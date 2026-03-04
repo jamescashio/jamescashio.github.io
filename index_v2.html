@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doug Cashio — Enterprise AI & Cybersecurity Solutions Architect</title>
+  <meta name="description"
+    content="Doug Cashio — Principal Solutions Consultant specializing in cybersecurity, AI infrastructure, and multi-agent orchestration. Enterprise AI portfolio, March 2026.">
+
+  <meta property="og:title" content="Doug Cashio — Enterprise AI & Cybersecurity Solutions Architect">
+  <meta property="og:description" content="Principal Solutions Consultant specializing in cybersecurity, AI infrastructure, and multi-agent orchestration. Professional portfolio for enterprise cybersecurity and AI solutions.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Doug Cashio — Enterprise AI & Cybersecurity Solutions Architect">
+  <meta name="twitter:description" content="Specializing in MxDR, M365, Azure, and enterprise secure cloud platform architecture.">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" integrity="sha384-vsrfeLOOY6KuIYKDlmVH5UiBmgIdB1oEf7p01YgWHuqmOHfZr374+odEv96n9tNC" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js" integrity="sha384-yxKDWWf0wwdUj/gPeuL11czrnKFQROnLgY8ll7En9NYoXibgg3C6NK/UDHNtUgWJ" crossorigin="anonymous"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      --lcars-gold: #F1DF6F;
+      --lcars-orange: #FF9933;
+      --lcars-peach: #FFCC99;
+      --lcars-blue: #9999FF;
+      --lcars-lavender: #CC99CC;
+      --lcars-red: #CC6666;
+      --lcars-teal: #99CCFF;
+      --lcars-cyan: #66CCCC;
+      --lcars-bg: #0A0A12;
+      --lcars-panel: rgba(15, 15, 30, 0.85);
+      --lcars-border: rgba(241, 223, 111, 0.15);
+      --glass-bg: rgba(20, 20, 40, 0.6);
+      --glass-border: rgba(241, 223, 111, 0.2);
+      --text-primary: #E8E6E3;
+      --text-secondary: #A0A0B0;
+      --starfleet-accent: #5B8CFF;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Exo 2', sans-serif;
+      background: var(--lcars-bg);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ── WARP STREAK ── */
+    @keyframes warpStreak {
+      0% {
+        opacity: 0;
+        transform: scaleX(0) translateX(-100%);
+      }
+
+      20% {
+        opacity: 1;
+      }
+
+      80% {
+        opacity: 0.6;
+      }
+
+      100% {
+        opacity: 0;
+        transform: scaleX(1) translateX(100%);
+      }
+    }
+
+    .warp-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+      overflow: hidden;
+    }
+
+    .warp-line {
+      position: absolute;
+      height: 1px;
+      width: 60%;
+      background: linear-gradient(90deg, transparent, rgba(241, 223, 111, 0.8), rgba(153, 204, 255, 0.6), transparent);
+      animation: warpStreak 1.8s ease-out forwards;
+      top: var(--t, 50%);
+    }
+
+    /* ── STARFIELD ── */
+    .starfield {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .starfield::before,
+    .starfield::after {
+      content: '';
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      top: -50%;
+      left: -50%;
+      background: radial-gradient(2px 2px at 20px 30px, rgba(255, 255, 255, 0.4), transparent),
+        radial-gradient(2px 2px at 40px 70px, rgba(153, 153, 255, 0.3), transparent),
+        radial-gradient(1px 1px at 90px 40px, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(1px 1px at 160px 120px, rgba(241, 223, 111, 0.3), transparent),
+        radial-gradient(2px 2px at 200px 200px, rgba(255, 255, 255, 0.3), transparent),
+        radial-gradient(1px 1px at 300px 80px, rgba(153, 204, 255, 0.4), transparent),
+        radial-gradient(1.5px 1.5px at 350px 250px, rgba(255, 255, 255, 0.35), transparent);
+      background-size: 400px 400px;
+      animation: drift 120s linear infinite;
+    }
+
+    .starfield::after {
+      animation-duration: 180s;
+      opacity: 0.5;
+    }
+
+    @keyframes drift {
+      to {
+        transform: translate(-200px, -200px);
+      }
+    }
+
+    /* ── LCARS FRAME ── */
+    .lcars-frame {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    .lcars-header {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      padding: 0;
+      margin-bottom: 2px;
+    }
+
+    .lcars-elbow {
+      width: 180px;
+      min-height: 120px;
+      background: var(--lcars-gold);
+      border-radius: 0 0 0 40px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    /* Cutout removed to fill the black gap and make elbow properly meet the lateral bars */
+
+    .lcars-header-bar {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .lcars-bar-top {
+      height: 40px;
+      background: var(--lcars-gold);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      border-radius: 0 20px 20px 0;
+      gap: 12px;
+    }
+
+    .lcars-bar-top span {
+      font-family: 'Orbitron', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--lcars-bg);
+      letter-spacing: 2px;
+    }
+
+    .lcars-bar-top .right-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* PICARD BUTTON */
+    #picard-btn {
+      font-family: 'Orbitron', monospace;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      background: rgba(10, 10, 18, 0.85);
+      color: var(--lcars-gold);
+      border: 2px solid var(--lcars-gold);
+      border-radius: 20px;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      box-shadow: 0 0 12px rgba(241, 223, 111, 0.3);
+    }
+
+    #picard-btn:hover {
+      background: var(--lcars-gold);
+      color: var(--lcars-bg);
+      box-shadow: 0 0 25px rgba(241, 223, 111, 0.7);
+    }
+
+    #picard-btn.speaking {
+      animation: picard-pulse 0.6s ease-in-out infinite alternate;
+    }
+
+    @keyframes picard-pulse {
+      from {
+        box-shadow: 0 0 10px rgba(241, 223, 111, 0.4);
+      }
+
+      to {
+        box-shadow: 0 0 30px rgba(241, 223, 111, 1), 0 0 60px rgba(241, 223, 111, 0.4);
+      }
+    }
+
+    .lcars-bar-mid {
+      display: flex;
+      gap: 2px;
+      height: 35px;
+    }
+
+    .lcars-bar-mid>div {
+      border-radius: 0 17px 17px 0;
+    }
+
+    .lcars-bar-mid .seg1 {
+      flex: 3;
+      background: var(--lcars-orange);
+    }
+
+    .lcars-bar-mid .seg2 {
+      flex: 2;
+      background: var(--lcars-peach);
+    }
+
+    .lcars-bar-mid .seg3 {
+      flex: 1;
+      background: var(--lcars-blue);
+    }
+
+    .lcars-bar-mid .seg4 {
+      flex: 1.5;
+      background: var(--lcars-lavender);
+    }
+
+    .lcars-bar-bottom {
+      height: 35px;
+      background: var(--lcars-orange);
+      border-radius: 0 17px 17px 0;
+      display: flex;
+      align-items: center;
+      padding-left: 20px;
+    }
+
+    .lcars-bar-bottom span {
+      font-family: 'Orbitron', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--lcars-bg);
+      letter-spacing: 3px;
+    }
+
+    .lcars-sidebar {
+      position: fixed;
+      left: 0;
+      top: 120px;
+      width: 180px;
+      bottom: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding-top: 10px;
+    }
+
+    .lcars-sidebar-seg {
+      width: 170px;
+      border-radius: 0 20px 20px 0;
+      padding: 8px 12px;
+      font-family: 'Orbitron', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--lcars-bg);
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      min-height: 38px;
+    }
+
+    .lcars-sidebar-seg:hover {
+      width: 178px;
+      filter: brightness(1.2);
+    }
+
+    .lcars-sidebar-spacer {
+      flex: 1;
+      width: 170px;
+      background: var(--lcars-gold);
+      border-radius: 0 20px 20px 0;
+      min-height: 20px;
+      opacity: 0.4;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .main-content {
+      margin-left: 195px;
+      padding: 20px 30px 60px 30px;
+      max-width: 1400px;
+    }
+
+    .report-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--lcars-gold);
+      letter-spacing: 4px;
+      margin-bottom: 4px;
+      text-shadow: 0 0 30px rgba(241, 223, 111, 0.4);
+    }
+
+    .report-subtitle {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 15px;
+      color: var(--lcars-teal);
+      letter-spacing: 3px;
+      margin-bottom: 30px;
+      opacity: 0.8;
+    }
+
+    /* ── SECTION HEADERS ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin: 50px 0 20px 0;
+      scroll-margin-top: 20px;
+      position: relative;
+    }
+
+    .section-header .bar {
+      height: 4px;
+      border-radius: 2px;
+      flex: 1;
+    }
+
+    .section-header h2 {
+      font-family: 'Orbitron', monospace;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      white-space: nowrap;
+    }
+
+    /* scan-line shimmer on section headers */
+    @keyframes scanPulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.7;
+        text-shadow: 0 0 20px currentColor;
+      }
+    }
+
+    .section-header h2 {
+      animation: scanPulse 4s ease-in-out infinite;
+    }
+
+    /* ── GLASS PANELS ── */
+    .glass-panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(241, 223, 111, 0.4), transparent);
+    }
+
+    .glass-panel h3 {
+      font-family: 'Orbitron', monospace;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--lcars-gold);
+      letter-spacing: 2px;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+    }
+
+    .glass-panel p,
+    .glass-panel li {
+      font-size: 18px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    .glass-panel strong {
+      color: var(--lcars-teal);
+      font-weight: 600;
+    }
+
+    /* ── TIMELINE ── */
+    .timeline {
+      position: relative;
+      padding-left: 40px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 14px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--lcars-gold), var(--lcars-orange), var(--lcars-blue), var(--lcars-cyan));
+      border-radius: 1px;
+    }
+
+    .timeline-event {
+      position: relative;
+      margin-bottom: 24px;
+      padding: 16px 20px;
+      background: rgba(20, 20, 40, 0.5);
+      border: 1px solid rgba(241, 223, 111, 0.1);
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .timeline-event:hover {
+      border-color: rgba(241, 223, 111, 0.3);
+      background: rgba(30, 30, 55, 0.6);
+    }
+
+    .timeline-event::before {
+      content: '';
+      position: absolute;
+      left: -33px;
+      top: 20px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--lcars-gold);
+      border: 2px solid var(--lcars-bg);
+      box-shadow: 0 0 10px rgba(241, 223, 111, 0.4);
+    }
+
+    .timeline-date {
+      font-family: 'Orbitron', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--lcars-orange);
+      letter-spacing: 1.5px;
+      margin-bottom: 4px;
+    }
+
+    .timeline-title {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--lcars-teal);
+      margin-bottom: 4px;
+    }
+
+    .timeline-desc {
+      font-size: 17px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    /* ── CREW ROSTER ── */
+    .crew-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .crew-card {
+      background: rgba(15, 15, 35, 0.7);
+      border: 1px solid rgba(153, 153, 255, 0.15);
+      border-radius: 10px;
+      padding: 18px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .crew-card:hover {
+      border-color: rgba(153, 153, 255, 0.35);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .crew-rank {
+      font-family: 'Orbitron', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .crew-name {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .crew-role {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      font-style: italic;
+    }
+
+    .crew-desc {
+      font-size: 16px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    /* ── STAT CARDS ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: rgba(15, 15, 35, 0.6);
+      border: 1px solid rgba(241, 223, 111, 0.1);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      border-color: rgba(241, 223, 111, 0.3);
+    }
+
+    .stat-value {
+      font-family: 'Orbitron', monospace;
+      font-size: 30px;
+      font-weight: 800;
+      margin-bottom: 2px;
+      text-shadow: 0 0 12px currentColor;
+    }
+
+    .stat-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+
+    /* ── CHARTS ── */
+    .chart-container {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 10px 0;
+    }
+
+    .chart-container canvas {
+      max-height: 400px;
+    }
+
+    .vis-network-container {
+      background: rgba(10, 10, 20, 0.5);
+      border: 1px solid rgba(241, 223, 111, 0.2);
+      border-radius: 10px;
+      padding: 10px;
+      height: 600px;
+      width: 100%;
+      position: relative;
+      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8);
+    }
+
+    .vis-network:focus {
+      outline: none;
+    }
+
+    /* ── CAPEX TABLE ── */
+    .capex-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 16px;
+    }
+
+    .capex-table th {
+      font-family: 'Orbitron', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      color: var(--lcars-gold);
+      text-align: left;
+      padding: 10px 14px;
+      border-bottom: 2px solid rgba(241, 223, 111, 0.2);
+      text-transform: uppercase;
+    }
+
+    .capex-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text-secondary);
+    }
+
+    .capex-table tr:hover td {
+      background: rgba(241, 223, 111, 0.03);
+    }
+
+    .capex-table .highlight {
+      color: var(--lcars-cyan);
+      font-weight: 600;
+    }
+
+    .capex-table .winner {
+      color: #66FF99;
+      font-weight: 700;
+    }
+
+    /* ── FOOTER ── */
+    .lcars-footer {
+      margin-left: 195px;
+      display: flex;
+      gap: 2px;
+      padding: 0 30px;
+    }
+
+    .lcars-footer>div {
+      height: 30px;
+      border-radius: 15px;
+    }
+
+    .lcars-footer .f1 {
+      flex: 4;
+      background: var(--lcars-blue);
+      opacity: 0.6;
+    }
+
+    .lcars-footer .f2 {
+      flex: 2;
+      background: var(--lcars-lavender);
+      opacity: 0.6;
+    }
+
+    .lcars-footer .f3 {
+      flex: 1;
+      background: var(--lcars-peach);
+      opacity: 0.6;
+    }
+
+    .lcars-footer .f4 {
+      flex: 3;
+      background: var(--lcars-gold);
+      opacity: 0.5;
+    }
+
+    .classification {
+      margin-left: 195px;
+      padding: 15px 30px;
+      text-align: center;
+      font-family: 'Orbitron', monospace;
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: var(--text-secondary);
+      opacity: 0.5;
+    }
+
+    /* ── CONTACT BAR ── */
+    .contact-bar {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+
+    .contact-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border: 1px solid rgba(241, 223, 111, 0.25);
+      border-radius: 25px;
+      background: rgba(15, 15, 35, 0.6);
+      color: var(--lcars-teal);
+      text-decoration: none;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      transition: all 0.3s ease;
+    }
+
+    .contact-link:hover {
+      border-color: var(--lcars-gold);
+      background: rgba(241, 223, 111, 0.08);
+      color: var(--lcars-gold);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(241, 223, 111, 0.15);
+    }
+
+    .contact-link svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+      flex-shrink: 0;
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(10, 10, 20, 0.5);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--lcars-gold);
+      border-radius: 3px;
+      opacity: 0.5;
+    }
+
+    /* ── TOP WARP CORE ANIMATION (from v1) ── */
+    @keyframes top-warp-flow {
+      0% {
+        background-position: 100% 0;
+      }
+
+      100% {
+        background-position: -100% 0;
+      }
+    }
+
+    @keyframes top-warp-pulse {
+
+      0%,
+      100% {
+        opacity: 0.8;
+        filter: brightness(1);
+      }
+
+      50% {
+        opacity: 1;
+        filter: brightness(1.4);
+      }
+    }
+
+    .top-warp-core {
+      height: 12px;
+      flex-grow: 1;
+      margin: 0 20px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, #0A0A12, #66CCCC, #E8E6E3, #66CCCC, #0A0A12);
+      background-size: 200% 100%;
+      animation: top-warp-flow 2s linear infinite, top-warp-pulse 2s ease-in-out infinite;
+      box-shadow: 0 0 15px rgba(102, 204, 204, 0.8), inset 0 0 10px rgba(232, 230, 227, 0.8);
+    }
+
+    /* ── TABS ── */
+    .tab-bar {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+
+    .tab-btn {
+      font-family: 'Orbitron', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      padding: 8px 18px;
+      border: 1px solid rgba(241, 223, 111, 0.2);
+      border-radius: 8px 8px 0 0;
+      background: rgba(15, 15, 35, 0.4);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+
+    .tab-btn.active {
+      background: rgba(241, 223, 111, 0.1);
+      color: var(--lcars-gold);
+      border-color: rgba(241, 223, 111, 0.4);
+      border-bottom-color: transparent;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .opex-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* ── DESIGN PHILOSOPHY PANEL ── */
+    .philosophy-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .philosophy-card {
+      background: rgba(10, 10, 25, 0.7);
+      border-radius: 12px;
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .philosophy-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+    }
+
+    .philosophy-card.rutan::before {
+      background: linear-gradient(90deg, var(--lcars-orange), var(--lcars-peach));
+    }
+
+    .philosophy-card.kelly::before {
+      background: linear-gradient(90deg, var(--lcars-blue), var(--lcars-teal));
+    }
+
+    .philosophy-card h4 {
+      font-family: 'Orbitron', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .philosophy-card.rutan h4 {
+      color: var(--lcars-orange);
+    }
+
+    .philosophy-card.kelly h4 {
+      color: var(--lcars-blue);
+    }
+
+    .philosophy-card .subtitle {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-style: italic;
+      margin-bottom: 12px;
+    }
+
+    .philosophy-card p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ── THE DRIVE HERO BLOCK ── */
+    .drive-hero {
+      background: linear-gradient(135deg, rgba(241, 223, 111, 0.06), rgba(255, 153, 51, 0.04));
+      border: 1px solid rgba(241, 223, 111, 0.25);
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin-top: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .drive-hero::before {
+      content: '"';
+      position: absolute;
+      top: -10px;
+      left: 16px;
+      font-size: 120px;
+      font-family: Georgia, serif;
+      color: rgba(241, 223, 111, 0.08);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .drive-hero p {
+      font-size: 17px;
+      line-height: 1.85;
+      color: var(--text-primary);
+    }
+
+    .drive-hero .drive-label {
+      font-family: 'Orbitron', monospace;
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--lcars-gold);
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-in {
+      animation: fadeInUp 0.6s ease forwards;
+      opacity: 0;
+    }
+
+    @keyframes pulse-glow {
+
+      0%,
+      100% {
+        box-shadow: 0 0 5px rgba(241, 223, 111, 0.2);
+      }
+
+      50% {
+        box-shadow: 0 0 20px rgba(241, 223, 111, 0.4);
+      }
+    }
+
+    .pulse {
+      animation: pulse-glow 3s ease-in-out infinite;
+    }
+
+    h1,
+    h2,
+    h3 {
+      text-shadow: 0 0 8px currentColor;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:900px) {
+      .lcars-sidebar {
+        display: none;
+      }
+
+      .main-content,
+      .lcars-footer,
+      .classification {
+        margin-left: 0;
+      }
+
+      .lcars-elbow {
+        width: 80px;
+      }
+
+      .crew-grid,
+      .philosophy-grid,
+      .opex-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* ── DASHBOARD LIGHTBOX ─────────────────────────────── */
+    .dash-thumb-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .dash-thumb {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(241, 223, 111, 0.25);
+      cursor: zoom-in;
+      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+    }
+
+    .dash-thumb:hover {
+      border-color: rgba(241, 223, 111, 0.6);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(241, 223, 111, 0.15);
+    }
+
+    .dash-thumb img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 260px;
+      object-fit: cover;
+      object-position: top;
+    }
+
+    .dash-thumb .zoom-hint {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(241, 223, 111, 0.4);
+      color: rgba(241, 223, 111, 0.9);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      padding: 3px 10px;
+      border-radius: 3px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .dash-thumb:hover .zoom-hint {
+      opacity: 1;
+    }
+
+    .dash-thumb .cap-label {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(102, 204, 204, 0.35);
+      color: var(--lcars-cyan);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      padding: 3px 10px;
+      border-radius: 3px;
+    }
+
+    /* Lightbox overlay */
+    #dashLb {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.93);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 14px;
+      animation: lb-fadein 0.2s ease;
+    }
+
+    #dashLb.open {
+      display: flex;
+    }
+
+    @keyframes lb-fadein {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    #dashLb img {
+      max-width: 90vw;
+      max-height: 82vh;
+      border-radius: 10px;
+      border: 2px solid rgba(241, 223, 111, 0.4);
+      box-shadow: 0 0 50px rgba(241, 223, 111, 0.2);
+      object-fit: contain;
+    }
+
+    #dashLbClose {
+      font-family: 'Orbitron', monospace;
+      font-size: 13px;
+      letter-spacing: 2px;
+      color: #F1DF6F;
+      background: rgba(20, 20, 40, 0.9);
+      border: 1px solid rgba(241, 223, 111, 0.4);
+      border-radius: 30px;
+      padding: 9px 28px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    #dashLbClose:hover {
+      background: rgba(241, 223, 111, 0.15);
+    }
+
+    #dashLbHint {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      color: rgba(241, 223, 111, 0.4);
+      letter-spacing: 1.5px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="warp-overlay" id="warpOverlay"></div>
+  <div class="starfield"></div>
+
+  <div class="lcars-frame">
+    <!-- ═══════════ HEADER ═══════════ -->
+    <div class="lcars-header">
+      <div class="lcars-elbow"></div>
+      <div class="lcars-header-bar">
+        <div class="lcars-bar-top">
+          <span>PORTFOLIO</span>
+          <div class="top-warp-core"></div>
+          <span>DOUG CASHIO</span>
+        </div>
+        <div class="lcars-bar-mid">
+          <div class="seg1"></div>
+          <div class="seg2"></div>
+          <div class="seg3"></div>
+          <div class="seg4"></div>
+        </div>
+        <div class="lcars-bar-bottom">
+          <span>ENTERPRISE AI & CYBERSECURITY SOLUTIONS ARCHITECT</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ SIDEBAR ═══════════ -->
+    <div class="lcars-sidebar">
+      <a class="lcars-sidebar-seg" style="background:var(--lcars-gold);" href="#summary" onclick="scrollToSection(event,'summary')">01 SUMMARY</a>
+      <a class="lcars-sidebar-seg" style="background:var(--lcars-orange);" href="#career-arc" onclick="scrollToSection(event,'career-arc')">02 CAREER ARC</a>
+      <a class="lcars-sidebar-seg" style="background:var(--lcars-peach);color:#222;" href="#core-competencies" onclick="scrollToSection(event,'core-competencies')">03 COMPETENCIES</a>
+      <a class="lcars-sidebar-seg" style="background:var(--lcars-blue);" href="#education" onclick="scrollToSection(event,'education')">04 CREDENTIALS</a>
+      <a class="lcars-sidebar-seg" style="background:var(--lcars-lavender);color:#222;" href="#testimonials" onclick="scrollToSection(event,'testimonials')">05 TESTIMONIALS</a>
+      <a class="lcars-sidebar-seg" style="background:var(--lcars-red);" href="#speaking" onclick="scrollToSection(event,'speaking')">06 SPEAKING</a>
+      <a class="lcars-sidebar-seg" style="background:var(--lcars-cyan);color:#222;" href="#lab" onclick="scrollToSection(event,'lab')">07 LAB ENV</a>
+      <div class="lcars-sidebar-spacer"></div>
+    </div>
+
+    <!-- ═══════════ MAIN CONTENT ═══════════ -->
+    <div class="main-content">
+      
+      <!-- HERO -->
+      <h1 class="report-title animate-in">DOUG CASHIO</h1>
+      <div class="report-subtitle animate-in" style="animation-delay:0.15s">
+        Enterprise AI & Cybersecurity Solutions Architect
+      </div>
+
+      <div class="glass-panel animate-in" style="animation-delay:0.2s; border-left:3px solid var(--lcars-gold);">
+        <p style="font-size:18px;">
+          Principal Solutions Consultant with 15+ years of experience spanning network administration, cloud security, and enterprise SaaS &mdash; specializing in MxDR, M365, Azure, and enterprise secure cloud platform architecture.<br><br>
+          <strong style="color:var(--lcars-gold);">Location:</strong> Gulf Coast, Florida
+        </p>
+      </div>
+
+      <div class="contact-bar animate-in" style="animation-delay:0.25s">
+        <a href="mailto:cashio@gmail.com" class="contact-link" title="Email">
+          <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>cashio@gmail.com
+        </a>
+        <a href="https://linkedin.com/in/dougcashio" target="_blank" rel="noopener" class="contact-link" title="LinkedIn">
+          <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14m-.5 15.5v-5.3a3.26 3.26 0 00-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 011.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 001.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 00-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>LinkedIn
+        </a>
+        <a href="https://github.com/jamescashio" target="_blank" rel="noopener" class="contact-link" title="GitHub">
+          <svg viewBox="0 0 24 24"><path d="M12 2A10 10 0 002 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z"/></svg>GitHub
+        </a>
+        <a href="https://www.credly.com/users/james-cashio/badges" target="_blank" rel="noopener" class="contact-link" title="Credly">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Credly
+        </a>
+      </div>
+
+      <!-- SECTION 2: SUMMARY -->
+      <div class="section-header" id="summary">
+        <div class="bar" style="background:linear-gradient(90deg,var(--lcars-orange),transparent);"></div>
+        <h2 style="color:var(--lcars-orange);">PROFESSIONAL SUMMARY</h2>
+        <div class="bar" style="background:linear-gradient(90deg,transparent,var(--lcars-orange));"></div>
+      </div>
+
+      <div class="glass-panel">
+        <p>Solutions consultant and systems architect with over 15 years in enterprise technology &mdash; from hands-on network administration and implementation engineering to cloud-first security services and AI-powered cybersecurity consulting.</p>
+        <br>
+        <p>Career trajectory spans the full evolution of modern enterprise IT: building and managing physical network infrastructure, pioneering cloud email security and productivity services for thousands of MSP and SMB customers, navigating multiple strategic acquisitions into a global enterprise information management organization, and now consulting on next-generation MxDR and AI-integrated security architectures.</p>
+        <br>
+        <p>Known for translating deeply technical concepts into engaging, accessible presentations &mdash; equally comfortable on stage at industry events and deep in a terminal deploying infrastructure. Passionate about sovereign AI, local-first architecture, and building production-grade proof-of-concept systems that validate enterprise concepts at personal lab scale.</p>
+      </div>
+
+      <!-- SECTION 3: CAREER ARC -->
+      <div class="section-header" id="career-arc">
+        <div class="bar" style="background:linear-gradient(90deg,var(--lcars-peach),transparent);"></div>
+        <h2 style="color:var(--lcars-peach);">CAREER ARC</h2>
+        <div class="bar" style="background:linear-gradient(90deg,transparent,var(--lcars-peach));"></div>
+      </div>
+
+      <div class="glass-panel">
+        <div class="timeline">
+          <div class="timeline-event">
+            <div class="timeline-date" style="color:var(--lcars-lavender);">Early Career</div>
+            <div class="timeline-title">NETWORK ADMINISTRATION & TECHNICAL SERVICES</div>
+            <div class="timeline-desc">Hands-on network administration managing physical switches, DNS, DHCP, VLANs, and firewall rules. Built the infrastructure instinct that comes from learning how networks actually fail &mdash; not how textbooks say they should.</div>
+          </div>
+          <div class="timeline-event">
+            <div class="timeline-date">Email Security & MSP Channel Enablement</div>
+            <div class="timeline-title">CLOUD SECURITY PIONEER</div>
+            <div class="timeline-desc">Joined a channel-first cloud security provider delivering email security, spam filtering, encryption, and hosted enterprise productivity services to a 4,500+ reseller community protecting 60,000+ businesses worldwide. Served as sales engineer and primary technical co-presenter at national industry events. Earned recognition for exceptional ability to engage audiences and translate complex security topics into accessible demonstrations.</div>
+          </div>
+          <div class="timeline-event">
+            <div class="timeline-date">Senior Consultant &rarr; Principal Solutions Consultant</div>
+            <div class="timeline-title">STRATEGIC ACQUISITIONS &rarr; ENTERPRISE SCALE</div>
+            <div class="timeline-desc">Through a series of strategic acquisitions, transitioned into one of the world's largest enterprise information management companies. Carried forward MSP-first DNA, email security expertise, and network engineering intuition into a global cybersecurity practice. Promoted from Senior Consultant to Principal Solutions Consultant.</div>
+          </div>
+          <div class="timeline-event" style="border-color:rgba(102,204,204,0.3);">
+            <div class="timeline-date">Principal Solutions Consultant &mdash; Enterprise SaaS & Cybersecurity</div>
+            <div class="timeline-title">CURRENT ROLE</div>
+            <div class="timeline-desc">Specializing in M365, Azure, and the full suite of enterprise secure cloud platform products &mdash; including MxDR (Managed Extended Detection & Response), email security, and SaaS integrations. Consulting with MSP partners and enterprise clients on next-generation cybersecurity architectures. Active speaker and co-presenter at major channel conferences, cybersecurity summits, and regional partner roadshows across the U.S. and internationally. 100% remote with national and international travel.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: CORE COMPETENCIES -->
+      <div class="section-header" id="core-competencies">
+        <div class="bar" style="background:linear-gradient(90deg,var(--lcars-blue),transparent);"></div>
+        <h2 style="color:var(--lcars-blue);">CORE COMPETENCIES</h2>
+        <div class="bar" style="background:linear-gradient(90deg,transparent,var(--lcars-blue));"></div>
+      </div>
+
+      <div class="philosophy-grid">
+        <div class="philosophy-card rutan">
+          <h4>CYBERSECURITY</h4>
+          <ul style="padding-left:16px; margin-top:10px; font-size:15px; color:var(--text-secondary); line-height:1.6;">
+            <li>MxDR / Managed Detection & Response</li>
+            <li>Zero Trust Architecture</li>
+            <li>SIEM Deployment & Log Correlation</li>
+            <li>Penetration Testing Concepts</li>
+            <li>Identity & Access Management</li>
+          </ul>
+        </div>
+        <div class="philosophy-card kelly">
+          <h4>CLOUD & INFRASTRUCTURE</h4>
+          <ul style="padding-left:16px; margin-top:10px; font-size:15px; color:var(--text-secondary); line-height:1.6;">
+            <li>Enterprise SaaS Architecture</li>
+            <li>Cloud Email Security & Encryption</li>
+            <li>M365 Administration & Licensing</li>
+            <li>Azure Cloud Services</li>
+            <li>Virtualization (Type 1 & Type 2 Hypervisors, LXC)</li>
+            <li>DNS / DHCP / VLAN Management</li>
+            <li>Network Administration</li>
+          </ul>
+        </div>
+        <div class="philosophy-card" style="border-top:3px solid var(--lcars-gold);">
+          <h4 style="color:var(--lcars-gold);">AI & AUTOMATION</h4>
+          <ul style="padding-left:16px; margin-top:10px; font-size:15px; color:var(--text-secondary); line-height:1.6;">
+            <li>Multi-Agent LLM Orchestration</li>
+            <li>RAG Pipeline Architecture</li>
+            <li>Model Context Protocol (MCP)</li>
+            <li>Local / Sovereign AI Deployment</li>
+            <li>Prompt Engineering (Since Nov 2022)</li>
+            <li>GPU-Accelerated Inference</li>
+          </ul>
+        </div>
+        <div class="philosophy-card" style="border-top:3px solid var(--lcars-lavender);">
+          <h4 style="color:var(--lcars-lavender);">CONSULTING & LEADERSHIP</h4>
+          <ul style="padding-left:16px; margin-top:10px; font-size:15px; color:var(--text-secondary); line-height:1.6;">
+            <li>MSP / SMB Channel Enablement</li>
+            <li>Technical Presales Engineering</li>
+            <li>Industry Speaking & Co-Presenting</li>
+            <li>Enterprise Client Advisory</li>
+            <li>Cross-Functional Collaboration</li>
+            <li>Event Roadshow Participation</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SECTION 5: EDUCATION & CERTIFICATIONS -->
+      <div class="section-header" id="education">
+        <div class="bar" style="background:linear-gradient(90deg,var(--lcars-cyan),transparent);"></div>
+        <h2 style="color:var(--lcars-cyan);">EDUCATION & CERTIFICATIONS</h2>
+        <div class="bar" style="background:linear-gradient(90deg,transparent,var(--lcars-cyan));"></div>
+      </div>
+
+      <div class="glass-panel" style="border-left:3px solid var(--lcars-cyan);">
+        <h3 style="color:var(--lcars-teal);">Education</h3>
+        <p><strong>Embry-Riddle Aeronautical University &mdash; Worldwide Campus</strong><br>
+        Bachelor of Science, Aeronautical Science<br>
+        1998 &mdash; 2001</p>
+
+        <h3 style="color:var(--lcars-teal); margin-top:24px;">Certifications & Badges</h3>
+        <table class="capex-table">
+          <tr>
+            <td>AI Workforce &mdash; Proficient</td>
+            <td class="highlight">Microsoft Global Channel Partner Sales</td>
+            <td>Feb 2026</td>
+          </tr>
+          <tr>
+            <td>Copilot for Microsoft 365 Technical Champion</td>
+            <td class="highlight">Microsoft Global Channel Partner Sales</td>
+            <td>May 2024</td>
+          </tr>
+          <tr>
+            <td>Filling the Funnel</td>
+            <td class="highlight">IB Sales Training</td>
+            <td>Apr 2021</td>
+          </tr>
+          <tr>
+            <td>MCSA: Office 365 &mdash; Certified 2019</td>
+            <td class="highlight">Microsoft</td>
+            <td>Apr 2019</td>
+          </tr>
+          <tr>
+            <td>Exam 347: Enabling Office 365 Services</td>
+            <td class="highlight">Microsoft</td>
+            <td>Apr 2019</td>
+          </tr>
+          <tr>
+            <td>Exam 346: Managing Office 365 Identities & Requirements</td>
+            <td class="highlight">Microsoft</td>
+            <td>Mar 2019</td>
+          </tr>
+        </table>
+        
+        <a href="https://www.credly.com/users/james-cashio/badges" target="_blank" rel="noopener" class="contact-link" style="margin-top:16px;">
+          View full badge wallet on Credly &rarr;
+        </a>
+      </div>
+
+      <!-- SECTION 6: WHAT COLLEAGUES SAY -->
+      <div class="section-header" id="testimonials">
+        <div class="bar" style="background:linear-gradient(90deg,var(--lcars-gold),transparent);"></div>
+        <h2 style="color:var(--lcars-gold);">WHAT COLLEAGUES SAY</h2>
+        <div class="bar" style="background:linear-gradient(90deg,transparent,var(--lcars-gold));"></div>
+      </div>
+
+      <div class="drive-hero" style="margin-top:0;">
+        <p style="font-style:italic;">
+          "Doug is a one-of-a-kind guy with a quick mind and a great sense of humor. I knew when I brought him in on calls with clients and prospects that he would find ways to engage them and make them feel at ease while competently and thoroughly addressing all their technical questions. Doug's a guy who fits in anywhere and who can make connections with anyone."
+        </p>
+        <div style="margin-top:12px; font-family:'Orbitron', monospace; font-size:12px; letter-spacing:1px; color:var(--lcars-gold); text-align:right;">
+          &mdash; Former Sales Colleague
+        </div>
+      </div>
+
+      <div class="drive-hero" style="background:linear-gradient(135deg, rgba(153, 204, 255, 0.06), rgba(153, 153, 255, 0.04)); border-color:rgba(153, 204, 255, 0.25);">
+        <p style="font-style:italic;">
+          "As the primary speaker and presenter I have a difficult time sharing the spotlight with speakers who are not able to hold their own with me on stage. Doug does not suffer this problem. As a sales engineer with detailed knowledge regarding all aspects of our products, Doug has provided a unique counter balance to my presentations. Some of our most productive speaking engagements were due in large part to Doug's incredible ability to bring the crowd into the conversation rather than presenting at them."
+        </p>
+        <div style="margin-top:12px; font-family:'Orbitron', monospace; font-size:12px; letter-spacing:1px; color:var(--lcars-teal); text-align:right;">
+          &mdash; Former Presenting Partner & Sales Leader
+        </div>
+      </div>
+
+      <!-- SECTION 7: SPEAKING & INDUSTRY PRESENCE -->
+      <div class="section-header" id="speaking">
+        <div class="bar" style="background:linear-gradient(90deg,var(--lcars-orange),transparent);"></div>
+        <h2 style="color:var(--lcars-orange);">SPEAKING & INDUSTRY PRESENCE</h2>
+        <div class="bar" style="background:linear-gradient(90deg,transparent,var(--lcars-orange));"></div>
+      </div>
+
+      <div class="glass-panel">
+        <p style="margin-bottom:14px;"><strong>Active speaker and co-presenter at major channel and cybersecurity events.</strong></p>
+        <ul style="padding-left:20px; display:flex; flex-direction:column; gap:8px; margin-bottom:16px; font-size:16px; color:var(--text-secondary);">
+          <li style="color:var(--text-primary);"><span style="color:var(--lcars-orange);">[&#9632;]</span> National cybersecurity partner summits and pre-day events</li>
+          <li style="color:var(--text-primary);"><span style="color:var(--lcars-orange);">[&#9632;]</span> International channel partner conferences</li>
+          <li style="color:var(--text-primary);"><span style="color:var(--lcars-orange);">[&#9632;]</span> Regional partner roadshows across the U.S.</li>
+          <li style="color:var(--text-primary);"><span style="color:var(--lcars-orange);">[&#9632;]</span> Cybersecurity-focused industry conventions</li>
+          <li style="color:var(--text-primary);"><span style="color:var(--lcars-orange);">[&#9632;]</span> Enterprise technology showcases</li>
+        </ul>
+        <p style="margin-top:16px;">Regular co-MC and co-presenter alongside sales and channel leadership at partner-facing events focused on MxDR, M365 security, cloud platform adoption, and MSP enablement.</p>
+      </div>
+
+      <!-- SECTION 8: HOMELAB -->
+      <div class="section-header" id="lab">
+        <div class="bar" style="background:linear-gradient(90deg,var(--lcars-red),transparent);"></div>
+        <h2 style="color:var(--lcars-red);">TESTING & HOME LAB ENVIRONMENT</h2>
+        <div class="bar" style="background:linear-gradient(90deg,transparent,var(--lcars-red));"></div>
+      </div>
+
+      <div class="glass-panel" style="border-left:3px solid var(--lcars-red);">
+        <p style="margin-bottom:20px;">Beyond the consulting practice, I maintain a production-grade personal lab environment used for continuous learning, rapid prototyping, and validating enterprise security and AI concepts at scale &mdash; including multi-agent LLM orchestration, SIEM deployment, GPU-accelerated local inference, and MCP-based infrastructure automation.</p>
+        
+        <div class="stats-row" style="margin-bottom: 24px;">
+          <div class="stat-card">
+            <div class="stat-value" style="color:var(--lcars-gold);">400+</div>
+            <div class="stat-label">Hours Invested</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color:var(--lcars-teal);">7</div>
+            <div class="stat-label">AI Agents Orchestrated</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color:#66FF99;">16&times;</div>
+            <div class="stat-label">GPU Performance Gain</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color:var(--lcars-lavender);">Full</div>
+            <div class="stat-label">Sovereign AI Stack</div>
+          </div>
+        </div>
+        
+        <div style="text-align:center; padding-top:10px;">
+          <a href="lab.html" class="contact-link" style="color: var(--lcars-bg); background: var(--lcars-red); border-color: var(--lcars-red); font-weight: 700; font-size: 15px; padding: 14px 28px; box-shadow: 0 0 20px rgba(204, 102, 102, 0.4);">EXPLORE THE LAB &rarr;</a>
+        </div>
+      </div>
+
+    </div><!-- /main-content -->
+
+    <!-- ═══════════ FOOTER ═══════════ -->
+    <div class="lcars-footer">
+      <div class="f1"></div>
+      <div class="f2"></div>
+      <div class="f3"></div>
+      <div class="f4"></div>
+    </div>
+    
+    <div class="classification" style="padding: 15px 30px; display: flex; flex-direction: column; align-items: center; gap: 10px; opacity: 0.7;">
+      <div style="display: flex; justify-content: space-between; width: 100%; max-width: 1400px;">
+        <div style="text-align: left;">DOUG CASHIO &mdash; Enterprise AI & Cybersecurity Solutions Architect | Gulf Coast, FL</div>
+        <div style="text-align: right;">cashio@gmail.com | LinkedIn | GitHub | Credly</div>
+      </div>
+      <div style="text-align: center; margin-top: 10px;">Portfolio architecture assisted by AI tooling</div>
+      <div style="text-align: center; margin-top: 5px;">&copy; 2026 Doug Cashio</div>
+    </div>
+
+  </div><!-- /lcars-frame -->
+
+  <script>
+    function scrollToSection(e, id) {
+      e.preventDefault();
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function spawnWarpStreak() {
+      const overlay = document.getElementById('warpOverlay');
+      if (!overlay) return;
+      for (let i = 0; i < 8; i++) {
+        setTimeout(() => {
+          const line = document.createElement('div');
+          line.className = 'warp-line';
+          line.style.setProperty('--t', (Math.random() * 100) + '%');
+          line.style.animationDelay = (Math.random() * 0.4) + 's';
+          line.style.width = (40 + Math.random() * 50) + '%';
+          overlay.appendChild(line);
+          setTimeout(() => line.remove(), 2500);
+        }, i * 80);
+      }
+    }
+
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx;
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new AudioContext();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function playFreq(freq, type, duration, vol, startTime) {
+      if (!audioCtx) return;
+      const t = startTime || audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, t);
+      gain.gain.setValueAtTime(vol, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(t);
+      osc.stop(t + duration);
+    }
+
+    function playHoverBeep() {
+      if (!audioCtx) return;
+      playFreq(850, 'sine', 0.08, 0.04);
+    }
+
+    function playClickChirp() {
+      if (!audioCtx) return;
+      playFreq(1200, 'sine', 0.08, 0.08);
+      setTimeout(() => playFreq(1600, 'sine', 0.12, 0.08), 50);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      spawnWarpStreak();
+      
+      document.body.addEventListener('click', initAudio, { once: true });
+      document.body.addEventListener('mousemove', initAudio, { once: true });
+
+      document.querySelectorAll('.lcars-sidebar-seg, a, button').forEach(el => {
+        el.addEventListener('mouseenter', playHoverBeep);
+        el.addEventListener('click', () => { playClickChirp(); });
+      });
+
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, { threshold: 0.08 });
+
+      document.querySelectorAll('.glass-panel, .timeline-event, .philosophy-card, .drive-hero').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(18px)';
+        el.style.transition = 'all 0.55s ease';
+        observer.observe(el);
+      });
+
+      document.querySelectorAll('.glass-panel').forEach((panel, i) => {
+        panel.classList.add('animate-in');
+        panel.style.animationDelay = (0.2 + (i * 0.07)) + 's';
+      });
+    });
+  </script>
+</body>
+</html>
