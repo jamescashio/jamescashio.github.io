@@ -1702,18 +1702,6 @@
       setTimeout(() => playFreq(1600, 'sine', 0.12, 0.08), 50);
     }
 
-    function picardMakeItSo() {
-      const btn = document.getElementById('picard-btn');
-      if (btn) btn.classList.add('speaking');
-      const audio = new Audio('make_it_so.mp3');
-      audio.play().then(() => {
-        audio.onended = () => { if (btn) btn.classList.remove('speaking'); };
-      }).catch(err => {
-        console.error("Audio play failed:", err);
-        if (btn) btn.classList.remove('speaking');
-      });
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
       spawnWarpStreak();
 

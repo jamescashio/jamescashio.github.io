@@ -26,6 +26,7 @@
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap');
 
     :root {
+      /* Base LCARS Colors - Now optimized for glowing effects */
       --lcars-gold: #F1DF6F;
       --lcars-orange: #FF9933;
       --lcars-peach: #FFCC99;
@@ -34,20 +35,29 @@
       --lcars-red: #CC6666;
       --lcars-teal: #99CCFF;
       --lcars-cyan: #66CCCC;
-      --lcars-bg: #0A0A12;
-      --lcars-panel: rgba(15, 15, 30, 0.85);
-      --lcars-border: rgba(241, 223, 111, 0.15);
-      --glass-bg: rgba(20, 20, 40, 0.6);
-      --glass-border: rgba(241, 223, 111, 0.2);
+      
+      /* New High-Tech Deep Background */
+      --lcars-bg: #05050A; 
+      
+      /* Glassmorphism Variables */
+      --glass-panel: rgba(10, 15, 30, 0.45);
+      --glass-border: rgba(102, 204, 204, 0.25);
+      --glass-highlight: rgba(255, 255, 255, 0.05);
+      
+      /* Glowing Overrides */
+      --glow-gold: 0 0 15px rgba(241, 223, 111, 0.5);
+      --glow-orange: 0 0 15px rgba(255, 153, 51, 0.5);
+      --glow-cyan: 0 0 15px rgba(102, 204, 204, 0.5);
+      
       --text-primary: #E8E6E3;
       --text-secondary: #A0A0B0;
-      --starfleet-accent: #5B8CFF;
+      --text-glow: 0 0 8px rgba(255, 255, 255, 0.4);
     }
 
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
     }
 
     html {
@@ -55,11 +65,25 @@
     }
 
     body {
-      font-family: 'Exo 2', sans-serif;
-      background: var(--lcars-bg);
+      background-color: var(--lcars-bg);
       color: var(--text-primary);
-      overflow-x: hidden;
+      font-family: 'Exo 2', sans-serif;
+      min-height: 100vh;
+      font-size: 16px;
       line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── WOW FACTOR: CRT SCANLINES OVERLAY ── */
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+      background-size: 100% 4px;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0.3;
     }
 
     /* ── WARP STREAK ── */
@@ -101,6 +125,18 @@
       background: linear-gradient(90deg, transparent, rgba(241, 223, 111, 0.8), rgba(153, 204, 255, 0.6), transparent);
       animation: warpStreak 1.8s ease-out forwards;
       top: var(--t, 50%);
+    }
+
+    /* ── DYNAMIC PARTICLE DATA STREAM ── */
+    #particle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1; /* Above starfield, below content */
+      pointer-events: none;
+      opacity: 0.6;
     }
 
     /* ── STARFIELD ── */
@@ -163,11 +199,15 @@
 
     .lcars-elbow {
       width: 180px;
-      min-height: 120px;
-      background: var(--lcars-gold);
-      border-radius: 0 0 0 40px;
+      min-height: 80px;
+      background: linear-gradient(135deg, rgba(241,223,111,0.9), rgba(255,153,51,0.8));
+      border-radius: 30px 0 0 40px;
       flex-shrink: 0;
       position: relative;
+      box-shadow: var(--glow-gold);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-right: none;
     }
 
     /* Cutout removed to fill the black gap and make elbow properly meet the lateral bars */
@@ -176,26 +216,37 @@
       flex: 1;
       display: flex;
       flex-direction: column;
+      justify-content: flex-start;
       gap: 2px;
     }
 
     .lcars-bar-top {
       height: 40px;
       background: var(--lcars-gold);
+      border: 1px solid rgba(241,223,111,0.6);
+      border-left: none;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 20px;
       border-radius: 0 20px 20px 0;
       gap: 12px;
+      box-shadow: 0 0 15px rgba(241,223,111,0.4), inset 0 0 10px rgba(241,223,111,0.3);
     }
 
     .lcars-bar-top span {
       font-family: 'Orbitron', monospace;
-      font-size: 11px;
-      font-weight: 700;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 2.5px;
+    }
+
+    .lcars-bar-top span:nth-of-type(1) {
       color: var(--lcars-bg);
-      letter-spacing: 2px;
+    }
+
+    .lcars-bar-top span:nth-of-type(2) {
+      color: var(--lcars-bg);
     }
 
     .lcars-bar-top .right-group {
@@ -241,49 +292,23 @@
       }
     }
 
-    .lcars-bar-mid {
-      display: flex;
-      gap: 2px;
-      height: 35px;
-    }
-
-    .lcars-bar-mid>div {
-      border-radius: 0 17px 17px 0;
-    }
-
-    .lcars-bar-mid .seg1 {
-      flex: 3;
-      background: var(--lcars-orange);
-    }
-
-    .lcars-bar-mid .seg2 {
-      flex: 2;
-      background: var(--lcars-peach);
-    }
-
-    .lcars-bar-mid .seg3 {
-      flex: 1;
-      background: var(--lcars-blue);
-    }
-
-    .lcars-bar-mid .seg4 {
-      flex: 1.5;
-      background: var(--lcars-lavender);
-    }
 
     .lcars-bar-bottom {
-      height: 35px;
+      height: 38px;
       background: var(--lcars-orange);
+      border: 1px solid rgba(255,153,51,0.6);
+      border-left: none;
       border-radius: 0 17px 17px 0;
       display: flex;
       align-items: center;
       padding-left: 20px;
+      box-shadow: 0 0 15px rgba(255,153,51,0.4), inset 0 0 10px rgba(255,153,51,0.3);
     }
 
     .lcars-bar-bottom span {
       font-family: 'Orbitron', monospace;
-      font-size: 12px;
-      font-weight: 600;
+      font-size: 13px;
+      font-weight: 800;
       color: var(--lcars-bg);
       letter-spacing: 3px;
     }
@@ -321,6 +346,8 @@
     .lcars-sidebar-seg:hover {
       width: 178px;
       filter: brightness(1.2);
+      box-shadow: 0 0 15px rgba(255,255,255,0.2);
+      text-shadow: 0 0 8px rgba(255,255,255,0.8);
     }
 
     .lcars-sidebar-spacer {
@@ -337,6 +364,28 @@
       margin-left: 195px;
       padding: 20px 30px 60px 30px;
       max-width: 1400px;
+      position: relative;
+    }
+    
+    .main-content::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: 
+        linear-gradient(rgba(102, 204, 204, 0.04) 2px, transparent 2px),
+        linear-gradient(90deg, rgba(102, 204, 204, 0.04) 2px, transparent 2px);
+      background-size: 50px 50px;
+      background-position: center top;
+      z-index: -1;
+      pointer-events: none;
+      mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+      animation: grid-slide 30s linear infinite;
+    }
+    
+    @keyframes grid-slide {
+      from { background-position: 0 0; }
+      to { background-position: 0 500px; }
     }
 
     .report-title {
@@ -402,15 +451,22 @@
 
     /* ── GLASS PANELS ── */
     .glass-panel {
-      background: var(--glass-bg);
+      background: var(--glass-panel);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(102, 204, 204, 0.05);
       border-radius: 12px;
       padding: 24px;
       margin-bottom: 20px;
       position: relative;
       overflow: hidden;
+      transition: all 0.4s ease;
+    }
+    
+    .glass-panel:hover {
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6), inset 0 0 30px rgba(102, 204, 204, 0.15);
+      border-color: rgba(102, 204, 204, 0.5);
     }
 
     .glass-panel::before {
@@ -431,6 +487,7 @@
       letter-spacing: 2px;
       margin-bottom: 14px;
       text-transform: uppercase;
+      text-shadow: var(--glow-gold);
     }
 
     .glass-panel p,
@@ -487,7 +544,13 @@
       border-radius: 50%;
       background: var(--lcars-gold);
       border: 2px solid var(--lcars-bg);
-      box-shadow: 0 0 10px rgba(241, 223, 111, 0.4);
+      box-shadow: var(--glow-gold);
+      transition: all 0.3s ease;
+    }
+    
+    .timeline-event:hover::before {
+      background: var(--lcars-cyan);
+      box-shadow: var(--glow-cyan);
     }
 
     .timeline-date {
@@ -521,7 +584,8 @@
     }
 
     .crew-card {
-      background: rgba(15, 15, 35, 0.7);
+      background: rgba(15, 15, 35, 0.4);
+      backdrop-filter: blur(10px);
       border: 1px solid rgba(153, 153, 255, 0.15);
       border-radius: 10px;
       padding: 18px;
@@ -531,9 +595,9 @@
     }
 
     .crew-card:hover {
-      border-color: rgba(153, 153, 255, 0.35);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+      border-color: rgba(153, 153, 255, 0.6);
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(153, 153, 255, 0.2);
     }
 
     .crew-rank {
@@ -578,27 +642,31 @@
       background: rgba(15, 15, 35, 0.6);
       border: 1px solid rgba(241, 223, 111, 0.1);
       border-radius: 10px;
-      padding: 16px;
+      padding: 28px 20px;
       text-align: center;
       transition: all 0.3s ease;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
     }
 
     .stat-card:hover {
-      border-color: rgba(241, 223, 111, 0.3);
+      border-color: rgba(241, 223, 111, 0.4);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 20px rgba(241, 223, 111, 0.1);
     }
 
     .stat-value {
       font-family: 'Orbitron', monospace;
-      font-size: 30px;
+      font-size: 48px;
       font-weight: 800;
-      margin-bottom: 2px;
-      text-shadow: 0 0 12px currentColor;
+      margin-bottom: 8px;
+      text-shadow: 0 0 15px currentColor;
     }
 
     .stat-label {
       font-family: 'Share Tech Mono', monospace;
-      font-size: 12px;
-      letter-spacing: 1.5px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 2px;
       color: var(--text-secondary);
       text-transform: uppercase;
     }
@@ -1162,7 +1230,7 @@
       <div class="lcars-elbow"></div>
       <div class="lcars-header-bar">
         <div class="lcars-bar-top">
-          <span>STARDATE 2026.060</span>
+          <span>STARDATE 2026.072</span>
           <div class="top-warp-core"></div>
           <span>USS ZEUSAPOLLO &bull; NCC-2026</span>
           <button id="picard-btn" onclick="picardMakeItSo()" title="Engage">&#x1F596; MAKE IT SO</button>
@@ -1191,6 +1259,8 @@
         onclick="scrollToSection(event,'visualizations')">04 VISUALS</a>
       <a class="lcars-sidebar-seg" style="background:var(--lcars-lavender);color:#222;" href="#future-plans"
         onclick="scrollToSection(event,'future-plans')">05 TRAJECTORY</a>
+      <a class="lcars-sidebar-seg" style="background:var(--lcars-gold);color:#222;" href="#zeusapollo-ecosystem"
+        onclick="scrollToSection(event,'zeusapollo-ecosystem')">05A ECOSYSTEM</a>
       <a class="lcars-sidebar-seg" style="background:var(--lcars-red);" href="#dashboards"
         onclick="scrollToSection(event,'dashboards')">05B DASHBOARDS</a>
       <a class="lcars-sidebar-seg" style="background:var(--lcars-cyan);color:#222;" href="#capex"
@@ -1241,14 +1311,14 @@
         </a>
       </div>
 
-      <div class="glass-panel animate-in" style="animation-delay:0.3s;border-left:3px solid var(--lcars-gold);">
+      <div class="glass-panel animate-in" style="animation-delay:0.35s;border-left:3px solid var(--lcars-gold);">
         <p style="font-size:16px;">
           <strong style="color:var(--lcars-gold);">Commanding Officer:</strong> Admiral Doug Cashio, Principal Solutions
           Consultant — Enterprise SaaS &amp; Cybersecurity<br>
-          <strong style="color:var(--lcars-gold);">Report Prepared:</strong> Stardate 2026.060 (March 1, 2026)<br>
+          <strong style="color:var(--lcars-gold);">Report Prepared:</strong> Stardate 2026.072 (March 13, 2026)<br>
 
           <strong style="color:var(--lcars-gold);">Classification:</strong> PUBLIC RELEASE — Portfolio Showcase<br>
-          <strong style="color:var(--lcars-teal);">Total Investment:</strong> ~400+ Hours Homelab Architecture &amp; AI
+          <strong style="color:var(--lcars-teal);">Total Investment:</strong> ~500+ Hours Homelab Architecture &amp; AI
           Engineering | 3.5 Years LLM Experience (Since ChatGPT, Nov 2022)
         </p>
       </div>
@@ -1446,7 +1516,7 @@
           <div class="stat-label">Monthly API Cost</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" style="color:var(--lcars-teal);">400+</div>
+          <div class="stat-value" style="color:var(--lcars-teal);">500+</div>
           <div class="stat-label">Homelab Hours Invested</div>
         </div>
       </div>
@@ -1641,7 +1711,7 @@
       </div>
 
       <div class="glass-panel">
-        <h3>Currently Deferred — Yellow Alert Items</h3>
+        <h3>Status Board — Active &amp; Deferred Items</h3>
         <table class="capex-table">
           <thead>
             <tr>
@@ -1653,40 +1723,40 @@
           </thead>
           <tbody>
             <tr>
-              <td class="highlight">Wazuh SIEM</td>
-              <td>Deployment scheduled — Proxmox LXC</td>
+              <td class="highlight" style="color:#66FF99;">Pi4 High Availability</td>
+              <td>COMPLETED &mdash; Home Assistant (Athena) migrated to hardware</td>
               <td>March 2026</td>
-              <td>Pi4 HA stabilization</td>
+              <td>Operational</td>
+            </tr>
+            <tr>
+              <td class="highlight" style="color:#66FF99;">Kali Linux VM (Offensive Intel)</td>
+              <td>COMPLETED &mdash; VM 110 Provisioned</td>
+              <td>March 2026</td>
+              <td>Operational</td>
+            </tr>
+            <tr>
+              <td class="highlight" style="color:#66FF99;">AI Stack Orchestration</td>
+              <td>COMPLETED &mdash; Ollama bound to 0.0.0.0, Docker MCP Toolkit active</td>
+              <td>March 2026</td>
+              <td>Operational</td>
+            </tr>
+            <tr>
+              <td class="highlight" style="color:#66FF99;">Proxmox Star Topology</td>
+              <td>COMPLETED &mdash; Confirmed via Orbi</td>
+              <td>March 2026</td>
+              <td>Operational</td>
+            </tr>
+            <tr>
+              <td class="highlight">Wazuh SIEM</td>
+              <td>Deployment scheduled &mdash; Proxmox LXC</td>
+              <td>April 2026</td>
+              <td>Pending deployment</td>
             </tr>
             <tr>
               <td class="highlight">ChromaDB v2 Migration</td>
-              <td>API mismatch — MCP server config needs update</td>
-              <td>March 2026</td>
-              <td>Ollama base URL migration</td>
-            </tr>
-            <tr>
-              <td class="highlight">MCP &rarr; GPU Migration</td>
-              <td>MCP config migration to GPU endpoint pending</td>
-              <td>March 2026</td>
-              <td>SSH key auth, model pull</td>
-            </tr>
-            <tr>
-              <td class="highlight">CT 101 Disk Resize</td>
-              <td>79% used (2GB &rarr; 8GB recommended)</td>
-              <td>March 2026</td>
-              <td>Maintenance window</td>
-            </tr>
-            <tr>
-              <td class="highlight">Pi4 High Availability</td>
-              <td>Hardware arriving ~March 3</td>
-              <td>March 2026</td>
-              <td>Amazon Basics 600VA UPS + NUT driver</td>
-            </tr>
-            <tr>
-              <td class="highlight">Kali Linux VM (AI pentesting)</td>
-              <td>Script ready, deployment pending</td>
+              <td>API mismatch &mdash; MCP server config needs update</td>
               <td>April 2026</td>
-              <td>Apollo resources post-Wazuh</td>
+              <td>Ollama base URL migration</td>
             </tr>
           </tbody>
         </table>
@@ -2144,59 +2214,33 @@
       </div>
 
       <div class="glass-panel" style="border-left:3px solid var(--lcars-peach);">
-        <h3>The Paradigm Shift — From Seats to Consumption</h3>
-        <p style="margin-bottom:14px;">The SaaS model is undergoing a fundamental inversion. The revenue of the future
-          no longer lies solely in per-seat licenses — it lies in <strong style="color:var(--lcars-peach);">API usage
-            and consumption</strong>. With new technology like MCP (Model Context Protocol), IDE integration, and CLI
-          tools, MSPs are desperate to develop bespoke AI solutions that automate the mundane and complex tasks that MCP
-          can unlock within the enterprise secure cloud ecosystem. The window of opportunity is right now — not six
-          months
-          from now.</p>
+        <h3>The Paradigm Shift: From Seats to Consumption</h3>
+        <p style="margin-bottom:14px;">SaaS revenue is undergoing a fundamental inversion. The future relies not on per-seat licenses, but on <strong style="color:var(--lcars-peach);">API consumption</strong>. With breakthroughs like MCP (Model Context Protocol), MSPs urgently need bespoke AI solutions to automate complex enterprise tasks. The window for creating this architecture is open right now.</p>
 
-        <h3 style="margin-top:24px;color:var(--lcars-gold);">Why the Admiral is the Right Creative Technologist</h3>
+        <h3 style="margin-top:24px;color:var(--lcars-gold);">Why I Am The Right Creative Technologist</h3>
 
-        <p style="margin-bottom:14px;"><strong>Zero Trust from Birth:</strong> <span style="font-style:italic;">"My dad
-            owned a pawn shop. I was raised on Zero Trust before it was an industry buzzword."</span> Security is not a
-          bolted-on feature — it is an innate, lifelong instinct applied to every architectural decision this fleet
-          makes.</p>
+        <p style="margin-bottom:14px;"><strong>Zero Trust from Birth:</strong> My dad owned a pawn shop. I was raised on "Zero Trust" long before it became an industry buzzword. Security isn't bolted on—it's innate to every architectural decision I make.</p>
 
-        <p style="margin-bottom:14px;"><strong>The Master Chef Analogy:</strong> I've been cooking since I was 5 years
-          old. I made my first jambalaya at 6 and my first gumbo at 8. Cooking requires the full use of all the senses —
-          adjusting heat, balancing spices, timing the reduction at the precise moment. A phenomenal meal is exactly
-          like elite model orchestration: you don't throw raw ingredients into a pot. You route specific tasks to the
-          right models at exactly the right moment to create a flawless, automated outcome.</p>
+        <p style="margin-bottom:14px;"><strong>The Master Chef Orchestration:</strong> I've been cooking since I was 5. Elite model orchestration is exactly like preparing a phenomenal meal: it's not about throwing raw ingredients into a pot. It's about routing specific tasks to the right models at exactly the right moment to create a flawless, automated outcome.</p>
 
-        <p style="margin-bottom:14px;"><strong>Innovation Born of Pain:</strong> Working heavily with MSPs has forged a
-          desire to innovate out of sheer operational pain. In the past, grand ideas were bottlenecked by procurement
-          cycles and development timelines. Today, armed with the ZeusApollo fleet and a full AI crew, I can rapidly
-          prototype these concepts in hours — transforming pain points into demonstrable PoCs for fast-track product
-          approval at the enterprise level.</p>
+        <p style="margin-bottom:14px;"><strong>Innovation Born of Pain:</strong> Years of consulting with MSPs forged my drive to innovate out of sheer operational friction. Today, armed with this AI fleet, I rapidly prototype solutions in hours—transforming enterprise pain points into demonstrable, production-ready PoCs.</p>
 
-        <p><strong>Kinesthetic Leadership — Lifting the Weights:</strong> The era of reading whitepapers and theorizing
-          about AI is over. I possess a lifelong history of kinesthetic learning: I don't just read about lifting
-          weights, I lift the iron. The ZeusApollo homelab is the physical manifestation of that ethos. I've built the
-          network, deployed the models, integrated the SIEM, and orchestrated the API routing. I am not imagining the
-          future of secure enterprise AI. <strong style="color:var(--lcars-cyan);">I am already running it in my living
-            room.</strong></p>
+        <p><strong>Kinesthetic Leadership:</strong> The era of reading whitepapers and theorizing about AI is over. I don't just read about lifting weights; I lift the iron. I've built the network, deployed the models, integrated the SIEM, and orchestrated the API routing. I am not imagining the future of secure enterprise AI. <strong style="color:var(--lcars-cyan);">I am already running it in my living room.</strong></p>
       </div>
 
       <!-- THE DRIVE — HERO BLOCK -->
       <div class="drive-hero">
-        <span class="drive-label">&#x1F50B; PRIMARY MOTIVATION VECTOR — ADMIRAL'S LOG</span>
+        <span class="drive-label">&#x1F50B; PRIMARY MOTIVATION VECTOR</span>
         <p>
           <strong style="color:var(--lcars-gold);">The Drive:</strong>
-          I haven't been this intellectually fired up since I was a <strong>6-year-old kid with an Apple IIe</strong>
-          and a green monochrome monitor, watching characters materialize on screen one phosphor dot at a time and
-          thinking: <em>I need to understand how this works.</em>
-          I am the type of guy who <strong>mowed lawns all summer in the brutal Louisiana heat</strong> — every dollar
-          saved, every blister earned — just to drop $900 at Radio Shack for 384kb of RAM,
-          pushing my <strong>Tandy 1000 to 640k</strong> so I could finally run EGA graphics.
-          That relentless, hands-on obsession — that visceral need to push hardware to its absolute limit — is
-          <em>exactly</em> what fuels the ZeusApollo fleet today.
-          The fundamental goal has never changed from those scorching summer afternoons:
-          <strong style="color:var(--lcars-peach);font-size:18px;">Work Smarter, Not Harder.</strong>
-          There is no technology in human history that embodies this Prime Directive more perfectly than sovereign,
-          orchestrated AI.
+          I haven't been this intellectually fired up since I was a <strong>6-year-old kid with an Apple IIe</strong>,
+          watching characters blink onto a monochrome monitor and realizing: <em>I have to understand how this works.</em><br><br>
+          I'm the kid who mowed lawns all summer in the brutal Louisiana heat just to buy 384kb of RAM from Radio Shack, 
+          maxing out my Tandy 1000 to run EGA graphics. That relentless, visceral need to push hardware to its absolute limit 
+          is exactly what fuels my engineering today.<br><br>
+          The fundamental goal hasn't changed since those summers:
+          <strong style="color:var(--lcars-peach);font-size:18px;">Work Smarter, Not Harder.</strong><br>
+          There is no technology in human history that embodies this Prime Directive more perfectly than sovereign, orchestrated AI.
         </p>
       </div>
 
@@ -2237,10 +2281,39 @@
             </p>
           </div>
         </div>
-        <p style="margin-top:20px;font-style:italic;color:var(--lcars-gold);text-align:center;font-size:15px;">
-          "Prototype wildly. Harden ruthlessly. Ship the capability that matters." &mdash; The ZeusApollo Design
-          Doctrine
-        </p>
+        <style>
+          .doctrine-container {
+            margin-top: 30px;
+            text-align: center;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 18px;
+            padding: 20px;
+            color: var(--text-primary);
+          }
+          .doctrine-title {
+            display: inline-block;
+            margin-top: 15px;
+            font-family: 'Orbitron', monospace;
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--lcars-gold);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            background: linear-gradient(90deg, var(--lcars-gold), var(--lcars-peach), var(--lcars-orange));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse-glow 2s infinite alternate;
+          }
+          @keyframes pulse-glow {
+            from { filter: drop-shadow(0 0 10px rgba(241, 223, 111, 0.4)); }
+            to { filter: drop-shadow(0 0 25px rgba(241, 223, 111, 1)); }
+          }
+        </style>
+        <div class="doctrine-container">
+          "Prototype wildly. Harden ruthlessly. Ship the capability that matters." <br>
+          <span class="doctrine-title">&mdash; Cashio Design Doctrine &mdash;</span>
+        </div>
       </div>
 
     </div><!-- /main-content -->
@@ -2253,8 +2326,8 @@
       <div class="f4"></div>
     </div>
     <div class="classification">
-      DOUG CASHIO — CREATIVE AI TECHNOLOGIST &bull; ZEUSAPOLLO COMMAND &bull; GULF COAST SECTOR &bull; STARDATE 2026.060
-      &bull; PREPARED BY GOOGLE ANTIGRAVITY &bull; CLASSIFICATION: PUBLIC RELEASE
+      DOUG CASHIO — CREATIVE AI TECHNOLOGIST &bull; ZEUSAPOLLO COMMAND &bull; GULF COAST SECTOR &bull; STARDATE 2026.072
+      &bull; CLASSIFICATION: PUBLIC RELEASE
     </div>
 
   </div><!-- /lcars-frame -->
@@ -2358,44 +2431,23 @@
       osc.stop(now + 0.6);
     }
 
-    // Picard "Make It So" Web Speech API
+    // Picard "Make It So" Actual Audio
     function picardMakeItSo() {
       initAudio();
       spawnWarpStreak();
       const btn = document.getElementById('picard-btn');
-      btn.classList.add('speaking');
+      if (btn) btn.classList.add('speaking');
 
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(
-          "Your attention please. Stardate 2026.060. This is Captain Jean-Luc Picard. " +
-          "After careful review of the ZeusApollo fleet status — the crew roster, the mission logs, " +
-          "the capital investment analysis, and the Admiral's extraordinary drive — " +
-          "I have one order for the engineering team: Make it so."
-        );
-        utterance.rate = 0.88;
-        utterance.pitch = 0.85;
-        utterance.volume = 1.0;
-
-        // Try to pick a deep British-sounding voice
-        const voices = window.speechSynthesis.getVoices();
-        const preferred = voices.find(v =>
-          v.name.toLowerCase().includes('daniel') ||
-          v.name.toLowerCase().includes('george') ||
-          v.name.toLowerCase().includes('arthur') ||
-          (v.lang === 'en-GB' && v.name.toLowerCase().includes('male'))
-        ) || voices.find(v => v.lang === 'en-GB') || voices.find(v => v.lang.startsWith('en'));
-        if (preferred) utterance.voice = preferred;
-
-        utterance.onend = () => btn.classList.remove('speaking');
-        utterance.onerror = () => btn.classList.remove('speaking');
-        window.speechSynthesis.speak(utterance);
-      } else {
+      const audio = new Audio('make_it_so.mp3');
+      audio.play().then(() => {
+        audio.onended = () => { if (btn) btn.classList.remove('speaking'); };
+      }).catch(err => {
+        console.error("Audio play failed:", err);
+        if (btn) btn.classList.remove('speaking');
         // Fallback: synthesized audio flourish
         playConfirmChirp();
-        setTimeout(() => btn.classList.remove('speaking'), 1200);
-        alert('Make it so, Number One. (Speech synthesis not supported in this browser.)');
-      }
+        setTimeout(() => { if (btn) btn.classList.remove('speaking') }, 1200);
+      });
     }
 
     // ══════════════════════════════════════════════════════════
@@ -2425,27 +2477,132 @@
         el.addEventListener('mouseenter', playTransporter);
       });
 
-      // Scroll animations
-      const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-          }
-        });
-      }, { threshold: 0.08 });
+      // ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ
+      // PARTICLE NETWORK BACKGROUND
+      // ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ
+      const canvas = document.getElementById('particle-canvas');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let width, height;
 
-      document.querySelectorAll('.glass-panel, .crew-card, .stat-card, .timeline-event, .philosophy-card, .drive-hero').forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(18px)';
-        el.style.transition = 'all 0.55s ease';
-        observer.observe(el);
+        function resizeCanvas() {
+          width = canvas.width = window.innerWidth;
+          height = canvas.height = window.innerHeight;
+        }
+        
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+          constructor() {
+            this.x = Math.random() * width;
+            this.y = Math.random() * height;
+            this.vx = (Math.random() - 0.5) * 0.5;
+            this.vy = (Math.random() - 0.5) * 0.5;
+            this.size = Math.random() * 2;
+          }
+          update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            if (this.x < 0 || this.x > width) this.vx *= -1;
+            if (this.y < 0 || this.y > height) this.vy *= -1;
+          }
+          draw() {
+            ctx.fillStyle = 'rgba(102, 204, 204, 0.5)';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        for (let i = 0; i < 60; i++) {
+          particles.push(new Particle());
+        }
+
+        function animateParticles() {
+          ctx.clearRect(0, 0, width, height);
+          
+          for (let i = 0; i < particles.length; i++) {
+            particles[i].update();
+            particles[i].draw();
+            
+            for (let j = i; j < particles.length; j++) {
+              const dx = particles[i].x - particles[j].x;
+              const dy = particles[i].y - particles[j].y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              
+              if (dist < 150) {
+                ctx.beginPath();
+                ctx.strokeStyle = `rgba(241, 223, 111, ${0.15 - dist/1000})`;
+                ctx.lineWidth = 0.5;
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.stroke();
+              }
+            }
+          }
+          requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+      }
+
+      // Scroll animations
+      // ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ
+      // GSAP LCARS BOOT SEQUENCE & SCROLL ANIMATIONS
+      // ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ
+      gsap.registerPlugin(ScrollTrigger);
+
+      const bootTl = gsap.timeline();
+      
+      bootTl.fromTo(".lcars-elbow", { x: -250, opacity: 0 }, { duration: 0.8, x: 0, opacity: 1, ease: "power3.out" })
+            .fromTo(".lcars-bar-top span, .top-warp-core, #picard-btn", { opacity: 0 }, { duration: 0.6, opacity: 1, stagger: 0.1, ease: "power2.out" }, "-=0.4")
+            .fromTo(".lcars-bar-bottom", { x: -100, opacity: 0 }, { duration: 0.6, x: 0, opacity: 1, ease: "power2.out" }, "-=0.4")
+            .fromTo(".lcars-sidebar-seg", { x: -50, opacity: 0 }, { duration: 0.6, x: 0, opacity: 1, stagger: 0.05, ease: "back.out(1.5)" }, "-=0.2")
+            // Main content entry
+            .fromTo(".report-title", { y: 20, opacity: 0 }, { duration: 0.8, y: 0, opacity: 1, ease: "power3.out" }, "-=0.2")
+            .fromTo(".report-subtitle", { y: 15, opacity: 0 }, { duration: 0.8, y: 0, opacity: 1, ease: "power3.out" }, "-=0.6")
+            .fromTo(".contact-bar .contact-link, a.contact-link.animate-in", { y: 10, opacity: 0 }, { duration: 0.6, y: 0, opacity: 1, stagger: 0.1, ease: "back.out(2)" }, "-=0.4");
+
+      // Remove the old CSS animate-in classes BEFORE GSAP initializes
+      document.querySelectorAll('.animate-in').forEach(el => {
+        el.classList.remove('animate-in');
+        el.style.opacity = '1';
+        el.style.transform = 'none';
       });
 
-      // Stagger entry animations for initial panels
-      document.querySelectorAll('.glass-panel').forEach((panel, i) => {
-        panel.classList.add('animate-in');
-        panel.style.animationDelay = (0.2 + (i * 0.07)) + 's';
+      const elementsToAnimate = gsap.utils.toArray('.glass-panel, .timeline-event, .philosophy-card, .drive-hero, .crew-card, .stat-card, .chart-container');
+      
+      elementsToAnimate.forEach(el => {
+        gsap.fromTo(el, 
+          { y: 40, opacity: 0 },
+          {
+            scrollTrigger: {
+              trigger: el,
+              start: "top 88%",
+              toggleActions: "play none none reverse"
+            },
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            ease: "power3.out"
+          }
+        );
+      });
+
+      // Shimmer effect for section headers on scroll
+      gsap.utils.toArray('.section-header h2').forEach(header => {
+        gsap.from(header, {
+          scrollTrigger: {
+            trigger: header,
+            start: "top 90%",
+            toggleActions: "play none none reverse"
+          },
+          opacity: 0,
+          scale: 0.9,
+          duration: 0.6,
+          ease: "back.out(1.5)"
+        });
       });
     });
 
@@ -2612,6 +2769,11 @@
     <button id="dashLbClose" onclick="closeDashLb()">&#10005; CLOSE</button>
     <div id="dashLbHint">ESC / BACKSPACE to close &nbsp;&bull;&nbsp; Click outside image to dismiss</div>
   </div>
+
+  <!-- GSAP Library & Plugins -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
 </body>
 
 </html>
