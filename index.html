@@ -1595,21 +1595,13 @@
       <div class="glass-panel" style="border-left:3px solid var(--lcars-red);">
         <p style="margin-bottom:20px;">Beyond the consulting practice, I maintain a production-grade personal lab
           environment used for continuous learning, rapid prototyping, and validating enterprise security and AI
-          concepts at scale &mdash; including multi-agent LLM orchestration, SIEM deployment, GPU-accelerated local
-          inference, and MCP-based infrastructure automation.</p>
-
-        <!-- HIGHLIGHT: GCP CLOUD RUN MCP SERVER -->
-        <h3 style="color:var(--lcars-orange); margin-top:24px; margin-bottom:12px;">FEATURED PROJECT: GCP Serverless MCP + Vertex AI</h3>
-        <p style="font-size:16px; margin-bottom:16px;">
-          Deployed a highly-scalable, serverless Model Context Protocol (MCP) server on <strong>Google Cloud Run</strong> 
-          to grant external Multi-Agent orchestrated systems direct access to GCP's enterprise-grade 
-          <strong>Vertex AI Gemini inference engine</strong>.
-        </p>
-        <ul style="padding-left:20px; display:flex; flex-direction:column; gap:8px; margin-bottom:30px; font-size:15px; color:var(--text-secondary);">
-          <li style="color:var(--text-primary);"><span style="color:var(--lcars-teal);">[&#9632;]</span> <strong>Architecture Stack:</strong> FastMCP (Python), Docker, Cloud Run, Secret Manager</li>
-          <li style="color:var(--text-primary);"><span style="color:var(--lcars-teal);">[&#9632;]</span> <strong>Security & Controls:</strong> Strict Bearer Token Auth via custom ASGI Proxy routing, automated Cloud Billing constraints</li>
-          <li style="color:var(--text-primary);"><span style="color:var(--lcars-teal);">[&#9632;]</span> <strong>Continuous Integration:</strong> Containerized multi-component build strictly versioned into Google Artifact Registry</li>
-          <li style="color:var(--text-primary);"><span style="color:var(--lcars-teal);">[&#9632;]</span> <strong>Source Code:</strong> <em style="color:var(--lcars-gold);">Private GCP IAM Repository &mdash; Walkthrough Available Upon Request</em></li>
+          concepts at scale. The current architecture incorporates:</p>
+          
+        <ul style="padding-left:20px; display:flex; flex-direction:column; gap:10px; margin-bottom:24px; font-size:16px; color:var(--text-secondary);">
+          <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">Offensive Security:</strong> Dedicated <strong>Kali Linux</strong> environment for penetration testing and red-team simulations.</li>
+          <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">Threat Detection & SIEM:</strong> Enterprise-grade <strong>Wazuh</strong> deployment for log correlation and active response.</li>
+          <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">Observability:</strong> Continuous infrastructure network monitoring utilizing <strong>Uptime Kuma</strong> and Grafana.</li>
+          <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">AI Infrastructure:</strong> GPU-accelerated local orchestration bridged directly to <strong>Google Cloud (GCP)</strong> via a custom Serverless <strong>MCP Gateway</strong> granting access to Vertex AI.</li>
         </ul>
 
         <div class="stats-row" style="margin-bottom: 24px;">
@@ -1629,6 +1621,18 @@
             <div class="stat-value" style="color:var(--lcars-lavender);">Full</div>
             <div class="stat-label">Sovereign AI Stack</div>
           </div>
+        </div>
+
+        <!-- FEATURED PROJECT: GCP MCP (Nested) -->
+        <div style="margin: 32px 0 24px 0; padding: 22px; background: rgba(10, 10, 20, 0.6); border-radius: 8px; border: 1px solid rgba(255,153,51,0.2); border-left: 3px solid var(--lcars-orange); box-shadow: inset 0 0 20px rgba(0,0,0,0.5);">
+          <h3 style="color:var(--lcars-orange); font-size:15px; margin-bottom:12px;">FEATURED PROJECT: GCP CLOUD RUN MCP SERVER</h3>
+          <p style="font-size:16px; margin-bottom:14px;">Architected and deployed a highly-scalable, serverless <strong>Model Context Protocol (MCP) gateway</strong> on Google Cloud Run to grant external Multi-Agent orchestrated systems direct capabilities and access to GCP's enterprise-grade Vertex AI Gemini inference engine.</p>
+          <ul style="padding-left:20px; display:flex; flex-direction:column; gap:8px; margin-top:0;">
+            <li><strong style="color:var(--lcars-teal);">Architecture Stack:</strong> FastMCP (Python), Docker, Cloud Run, Secret Manager</li>
+            <li><strong style="color:var(--lcars-teal);">Security & Controls:</strong> Strict Bearer Token Auth via custom ASGI Proxy routing, automated Cloud Billing constraints</li>
+            <li><strong style="color:var(--lcars-teal);">Continuous Integration:</strong> Containerized multi-component build strictly versioned into Google Artifact Registry</li>
+            <li><strong style="color:var(--lcars-teal);">Source Code:</strong> <em style="color:var(--text-secondary);">Private GCP IAM Repository &mdash; Documentation walkthrough available upon request</em></li>
+          </ul>
         </div>
 
         <div style="text-align:center; padding-top:10px;">
