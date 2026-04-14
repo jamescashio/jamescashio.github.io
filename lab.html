@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Doug Cashio — Enterprise AI & Cybersecurity Solutions Architect</title>
   <meta name="description"
-    content="Doug Cashio — Principal Solutions Consultant specializing in cybersecurity, AI infrastructure, and multi-agent orchestration. Enterprise AI portfolio, March 2026.">
+    content="Doug Cashio — Principal Solutions Consultant specializing in cybersecurity, AI infrastructure, and multi-agent orchestration. Enterprise AI portfolio, April 2026.">
 
   <meta property="og:title" content="Doug Cashio — Enterprise AI & Cybersecurity Solutions Architect">
   <meta property="og:description"
@@ -632,9 +632,10 @@
 
     /* ── STAT CARDS ── */
     .stats-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-      gap: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
       margin-bottom: 20px;
     }
 
@@ -642,10 +643,13 @@
       background: rgba(15, 15, 35, 0.6);
       border: 1px solid rgba(241, 223, 111, 0.1);
       border-radius: 10px;
-      padding: 28px 20px;
+      padding: 22px 14px;
       text-align: center;
       transition: all 0.3s ease;
       box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+      flex: 0 1 calc(25% - 12px);
+      min-width: 140px;
+      max-width: 200px;
     }
 
     .stat-card:hover {
@@ -656,15 +660,16 @@
 
     .stat-value {
       font-family: 'Orbitron', monospace;
-      font-size: 48px;
+      font-size: clamp(24px, 2.5vw, 36px);
       font-weight: 800;
       margin-bottom: 8px;
       text-shadow: 0 0 15px currentColor;
+      white-space: nowrap;
     }
 
     .stat-label {
       font-family: 'Share Tech Mono', monospace;
-      font-size: 14px;
+      font-size: clamp(9px, 0.8vw, 13px);
       font-weight: 600;
       letter-spacing: 2px;
       color: var(--text-secondary);
@@ -1085,7 +1090,11 @@
       }
 
       .stats-row {
-        grid-template-columns: repeat(2, 1fr);
+        justify-content: center;
+      }
+      .stat-card {
+        flex: 0 1 calc(50% - 12px);
+        max-width: none;
       }
     }
 
@@ -1216,10 +1225,83 @@
       color: rgba(241, 223, 111, 0.4);
       letter-spacing: 1.5px;
     }
+    /* ── CREW CARD HOLOGRAPHIC SHIMMER ── */
+    .crew-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%; width: 200%; height: 100%;
+      background: linear-gradient(115deg, transparent 30%, rgba(241,223,111,0.08) 45%, rgba(102,204,204,0.12) 50%, rgba(241,223,111,0.08) 55%, transparent 70%);
+      transition: left 0.8s ease;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .crew-card:hover::after {
+      left: 100%;
+    }
+
+    /* ── FLEET STATUS HEARTBEAT ── */
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      25% { transform: scale(1.2); opacity: 0.8; }
+      50% { transform: scale(1); opacity: 1; }
+      75% { transform: scale(1.15); opacity: 0.9; }
+    }
+
+    /* ── ANIMATED SECTION DIVIDER SHIMMER ── */
+    .section-header .bar {
+      position: relative;
+      overflow: hidden;
+    }
+    .section-header .bar::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%; width: 50%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      animation: barShimmer 4s ease-in-out infinite;
+    }
+    @keyframes barShimmer {
+      0% { left: -50%; }
+      100% { left: 150%; }
+    }
+
+    /* ── TIMELINE GLOW PULSE ── */
+    .timeline::before {
+      box-shadow: 0 0 8px rgba(241,223,111,0.3), 0 0 15px rgba(102,204,204,0.2);
+      animation: timelineGlow 4s ease-in-out infinite;
+    }
+    @keyframes timelineGlow {
+      0%, 100% { box-shadow: 0 0 8px rgba(241,223,111,0.3), 0 0 15px rgba(102,204,204,0.2); }
+      50% { box-shadow: 0 0 15px rgba(241,223,111,0.5), 0 0 25px rgba(102,204,204,0.4); }
+    }
+
+    /* ── LCARS FOOTER BAR SEQUENTIAL PULSE ── */
+    @keyframes footerBarPulse {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.4); box-shadow: 0 0 12px currentColor; }
+    }
+    .lcars-footer .f1 { animation: footerBarPulse 4s ease-in-out infinite; }
+    .lcars-footer .f2 { animation: footerBarPulse 4s ease-in-out infinite; animation-delay: 0.8s; }
+    .lcars-footer .f3 { animation: footerBarPulse 4s ease-in-out infinite; animation-delay: 1.6s; }
+    .lcars-footer .f4 { animation: footerBarPulse 4s ease-in-out infinite; animation-delay: 2.4s; }
+
+    /* ── ACTIVE SIDEBAR HIGHLIGHT ── */
+    .lcars-sidebar-seg.active-section {
+      width: 178px !important;
+      filter: brightness(1.3);
+      box-shadow: 0 0 20px rgba(255,255,255,0.25);
+    }
   </style>
 </head>
 
 <body>
+
+<!-- LCARS BOOT OVERLAY -->
+<div id="boot-overlay" style="position:fixed;inset:0;z-index:99999;background:#05050A;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;transition:opacity 0.8s ease;">
+  <div style="font-family:'Orbitron',monospace;font-size:14px;letter-spacing:4px;color:var(--lcars-gold);text-shadow:0 0 20px rgba(241,223,111,0.5);">ZEUSAPOLLO SYSTEMS ONLINE</div>
+  <div style="width:200px;height:3px;background:rgba(241,223,111,0.15);border-radius:2px;overflow:hidden;">
+    <div id="boot-bar" style="width:0%;height:100%;background:linear-gradient(90deg,var(--lcars-gold),var(--lcars-cyan));border-radius:2px;transition:width 1s ease-out;"></div>
+  </div>
+</div>
 
   <div class="warp-overlay" id="warpOverlay"></div>
   <div class="starfield"></div>
@@ -1230,7 +1312,7 @@
       <div class="lcars-elbow"></div>
       <div class="lcars-header-bar">
         <div class="lcars-bar-top">
-          <span>STARDATE 2026.072</span>
+          <span id="lcars-stardate">STARDATE 2026.072</span>
           <div class="top-warp-core"></div>
           <span>USS ZEUSAPOLLO &bull; NCC-2026</span>
           <button id="picard-btn" onclick="picardMakeItSo()" title="Engage">&#x1F596; MAKE IT SO</button>
@@ -1281,8 +1363,7 @@
 
       <h1 class="report-title animate-in">DOUG CASHIO — ENTERPRISE AI & CYBERSECURITY SOLUTIONS ARCHITECT</h1>
       <div class="report-subtitle animate-in" style="animation-delay:0.15s">
-        ZEUSAPOLLO COMMAND &mdash; AI INFRASTRUCTURE &amp; CYBERSECURITY PORTFOLIO &mdash; PUBLIC RELEASE &mdash; MARCH
-        2026
+        ZEUSAPOLLO COMMAND &mdash; AI INFRASTRUCTURE &amp; CYBERSECURITY PORTFOLIO &mdash; PUBLIC RELEASE &mdash; APRIL 2026 &mdash; UPDATED
       </div>
 
       <!-- CONTACT BAR -->
@@ -1315,7 +1396,7 @@
         <p style="font-size:16px;">
           <strong style="color:var(--lcars-gold);">Commanding Officer:</strong> Admiral Doug Cashio, Principal Solutions
           Consultant — Enterprise SaaS &amp; Cybersecurity<br>
-          <strong style="color:var(--lcars-gold);">Report Prepared:</strong> Stardate 2026.072 (March 13, 2026)<br>
+          <strong style="color:var(--lcars-gold);">Report Prepared:</strong> <span id="auto-stardate">Stardate 2026.072 (March 13, 2026)</span><br>
 
           <strong style="color:var(--lcars-gold);">Classification:</strong> PUBLIC RELEASE — Portfolio Showcase<br>
           <strong style="color:var(--lcars-teal);">Total Investment:</strong> ~500+ Hours Homelab Architecture &amp; AI
@@ -1369,18 +1450,20 @@
             <div class="timeline-date">PHASE 2 — TACTICAL EXPANSION (FEB 2026)</div>
             <div class="timeline-title">OpenClaw Discord Bot &amp; GPU Migration</div>
             <div class="timeline-desc">CT 103 (OpenClaw) deployed as the fleet's first autonomous AI agent — a Discord
-              bot running xAI Grok 4.1 Fast with Google Gemini Flash-Lite fallback, operating at ~$1–5/month. GPU
+              bot running xAI Grok with Google Gemini Flash-Lite fallback. GPU
               migration initiated: Ollama confirmed running on the GPU workstation's RTX 3080 with nomic-embed-text,
               Open WebUI
               responding on its web interface. Kali Linux AI deployment script created for automated pentesting.</div>
           </div>
           <div class="timeline-event" style="border-color:rgba(102,204,204,0.3);">
-            <div class="timeline-date">PHASE 2.5 — CURRENT POSITION (MAR 2026)</div>
+            <div class="timeline-date">PHASE 2.5 — CONSOLIDATION (MAR 2026)</div>
             <div class="timeline-title">Transitioning to Phase 3 — High Availability</div>
-            <div class="timeline-desc">ChromaDB API v2 migration pending. Ollama base URL migration to GPU node in
-              progress. Wazuh SIEM deployment imminent — the fleet is about to get its own Red
-              Alert system. Pi4 high-availability hardware arriving with Amazon Basics 600VA UPS and NUT driver
-              configuration. All systems: nominal.</div>
+            <div class="timeline-desc">ChromaDB API v2 migration completed. Ollama base URL migrated to GPU node. Fleet prepared for Phase 3 transition.</div>
+          </div>
+          <div class="timeline-event" style="border-color:rgba(102,204,204,0.3);">
+            <div class="timeline-date">PHASE 3 — CURRENT POSITION (APR 2026)</div>
+            <div class="timeline-title">Multi-Vector Fleet Operations</div>
+            <div class="timeline-desc">Zeus converted to Proxmox PVE 9.1.6 — zeusapollo two-node cluster established with Apollo. Wazuh SIEM deployed on CT104 for enterprise-grade log correlation and threat detection. Dual Plex architecture operational: Dionysus (NVENC) as PRIMARY, Hermes/CT108 (Quick Sync) as SECONDARY. NemoClaw AI agent deployed on GCP Cloud Run with NVIDIA Nemotron 120B. Fleet expanded to 9 AI agents. GCP cloud presence established with ~$265 in credits. The fleet has never been stronger.</div>
           </div>
         </div>
       </div>
@@ -1418,7 +1501,7 @@
           <div class="crew-role">Strategic Analysis &amp; Deep Architecture Research</div>
           <div class="crew-desc">Like Commander Spock analyzing sensor data, Antigravity provides calm, comprehensive,
             research-backed analysis. First consulted on complex architecture decisions and documentation review.
-            Upgraded to Gemini Pro Advanced ($20/mo) for maximum reasoning depth. Author of this report.</div>
+            Upgraded to Gemini 3.1 Pro for maximum reasoning depth. Author of this report.</div>
         </div>
         <div class="crew-card">
           <div
@@ -1428,43 +1511,63 @@
           <div class="crew-name">Grok (xAI)</div>
           <div class="crew-role">Discord Bot Primary Brain &amp; Rapid Response</div>
           <div class="crew-desc">Like Lieutenant Worf at Tactical, Grok handles real-time engagement through the
-            OpenClaw Discord channel. Grok 4.1 Fast for rapid-fire responses; Grok Pro 4.2 engaged for complex threat
-            reasoning. Upgraded to Grok Pro 4.2 ($16/mo) for maximum tactical awareness.</div>
+            OpenClaw Discord channel. Grok 4.2 Reasoning is now the PRIMARY engine for OpenClaw — rapid-fire responses at maximum tactical velocity. Grok Pro engaged for complex threat reasoning.</div>
         </div>
         <div class="crew-card">
           <div
             style="position:absolute;top:0;left:0;width:4px;height:100%;background:var(--lcars-orange);border-radius:4px 0 0 4px;">
           </div>
           <div class="crew-rank" style="color:var(--lcars-orange);">CHIEF ENGINEER</div>
-          <div class="crew-name">ChatGPT (OpenAI)</div>
+          <div class="crew-name">GPT-5.4 Thinking (OpenAI)</div>
           <div class="crew-role">Code Generation &amp; System Architecture</div>
-          <div class="crew-desc">Like Geordi La Forge in Engineering, ChatGPT handles heavy code generation, system
+          <div class="crew-desc">Like Geordi La Forge in Engineering, GPT-5.4 Thinking handles heavy code generation, system
             design, and technical troubleshooting. When we need to "reroute power through the secondary EPS conduits" —
-            Docker configs, Python scripts, MCP servers — this is the officer at the console. ChatGPT Plus ($20/mo).
+            Docker configs, Python scripts, MCP servers — this is the officer at the console. Primary engine for complex code generation and system architecture.
           </div>
         </div>
         <div class="crew-card">
           <div
             style="position:absolute;top:0;left:0;width:4px;height:100%;background:var(--lcars-gold);border-radius:4px 0 0 4px;">
           </div>
-          <div class="crew-rank" style="color:var(--lcars-gold);">CHIEF INTELLIGENCE OFFICER</div>
+          <div class="crew-rank" style="color:var(--lcars-gold);">PRIMARY ADVISOR / FLEET LEAD</div>
           <div class="crew-name">Claude (Anthropic)</div>
           <div class="crew-role">Strategic Planning &amp; Executive Reports</div>
-          <div class="crew-desc">Like Commander Troi reading the room, Claude specializes in nuanced analysis, long-form
-            documentation, and synthesizing the full operational picture. Maintains persistent memory across sessions
-            and serves as the Admiral's primary counsel on strategic decisions. Claude Pro ($20/mo).</div>
+          <div class="crew-desc">Promoted from counsel to primary advisor with Claude Pro subscription. Specializes in nuanced analysis, long-form documentation, and synthesizing the full operational picture. Maintains persistent memory across sessions and serves as the Admiral's first-call officer for all strategic decisions. The fleet's most trusted flag officer.</div>
         </div>
         <div class="crew-card">
-          <div
-            style="position:absolute;top:0;left:0;width:4px;height:100%;background:var(--lcars-lavender);border-radius:4px 0 0 4px;">
-          </div>
-          <div class="crew-rank" style="color:var(--lcars-lavender);">HELM / OPS / AUTONOMOUS CREW</div>
-          <div class="crew-name">Copilot, Ollama Local, OpenClaw</div>
-          <div class="crew-role">Navigation, Local Inference, Zero-Touch Ops</div>
-          <div class="crew-desc">M365 Pro Plus Copilot ($22/mo) for deep M365 integrations. Ollama (GPU-accelerated on
-            the GPU workstation) provides completely air-gapped inference — no data leaves the ship. OpenClaw on CT 103
-            operates
-            as an autonomous away team executing tasks via Discord with zero human intervention required.</div>
+          <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:var(--lcars-lavender);border-radius:4px 0 0 4px;"></div>
+          <div class="crew-rank" style="color:var(--lcars-lavender);">OPERATIONS OFFICER</div>
+          <div class="crew-name">Copilot (M365)</div>
+          <div class="crew-role">Deep Microsoft 365 Integration</div>
+          <div class="crew-desc">M365 Pro Plus Copilot embedded directly in the enterprise productivity stack. Handles document generation, email drafting, and Teams integration from inside the Microsoft ecosystem.</div>
+        </div>
+        <div class="crew-card">
+          <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:#66FF99;border-radius:4px 0 0 4px;"></div>
+          <div class="crew-rank" style="color:#66FF99;">CHIEF OF ENGINEERING — LOCAL OPS</div>
+          <div class="crew-name">Ollama (Local GPU)</div>
+          <div class="crew-role">Sovereign AI Inference — gemma4:31b-cloud &amp; qwen2.5vl:7b</div>
+          <div class="crew-desc">GPU-accelerated on the RTX 3080 workstation providing completely air-gapped inference — no data leaves the ship. Running gemma4:31b-cloud as primary model and qwen2.5vl:7b for vision tasks. ~80 tok/s at warp speed.</div>
+        </div>
+        <div class="crew-card">
+          <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:var(--lcars-red);border-radius:4px 0 0 4px;"></div>
+          <div class="crew-rank" style="color:var(--lcars-red);">AUTONOMOUS OPERATIONS / AWAY TEAM</div>
+          <div class="crew-name">OpenClaw (Discord Bot)</div>
+          <div class="crew-role">Zero-Touch Autonomous Agent — Grok 4.2 Reasoning PRIMARY</div>
+          <div class="crew-desc">Operating on CT103 as an autonomous away team executing tasks via Discord. Engine chain updated: Grok 4.2 Reasoning is now PRIMARY (promoted from Grok 4.1 Fast), Perplexity sonar-pro as Fallback 1, Gemini Flash-Lite as Fallback 2.</div>
+        </div>
+        <div class="crew-card">
+          <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:var(--lcars-cyan);border-radius:4px 0 0 4px;"></div>
+          <div class="crew-rank" style="color:var(--lcars-cyan);">RESEARCH OFFICER / INTELLIGENCE ANALYST</div>
+          <div class="crew-name">Perplexity Max</div>
+          <div class="crew-role">Deep Research &amp; Real-Time Information Retrieval</div>
+          <div class="crew-desc">Dedicated research station providing real-time web intelligence, citation-backed analysis, and deep-dive research capabilities. Perplexity Max subscription with Computer access for autonomous multi-step research workflows. The fleet's long-range sensors.</div>
+        </div>
+        <div class="crew-card">
+          <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:var(--lcars-orange);border-radius:4px 0 0 4px;"></div>
+          <div class="crew-rank" style="color:var(--lcars-orange);">CLOUD WARFARE SPECIALIST</div>
+          <div class="crew-name">NemoClaw (NVIDIA Nemotron 120B)</div>
+          <div class="crew-role">GCP Cloud Run — Heavy Inference &amp; Enterprise Scale</div>
+          <div class="crew-desc">Deployed on GCP Cloud Run VM (nemoclaw-zeusapollo, us-central1-a) running NVIDIA's Nemotron 120B model. The fleet's heavy cruiser — when local inference needs reinforcement, NemoClaw provides enterprise-scale reasoning power from the cloud.</div>
         </div>
         <div class="crew-card">
           <div
@@ -1473,7 +1576,7 @@
           <div class="crew-rank" style="color:var(--lcars-blue);">COMMANDING OFFICER</div>
           <div class="crew-name">Admiral Doug Cashio</div>
           <div class="crew-role">Principal Solutions Consultant — Enterprise SaaS &amp; Cybersecurity</div>
-          <div class="crew-desc">Picard doesn't fly the ship — he commands the crew. The Admiral orchestrates all 7 AI
+          <div class="crew-desc">Picard doesn't fly the ship — he commands the crew. The Admiral orchestrates all 9 AI
             agents through a unified workflow, leveraging each agent's unique strengths. Professional MxDR cybersecurity
             expertise from enterprise SaaS cybersecurity consulting directly informs the fleet's defensive posture and
             enterprise advisory practice.
@@ -1490,9 +1593,15 @@
         <div class="bar" style="background:linear-gradient(90deg,transparent,var(--lcars-peach));"></div>
       </div>
 
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:10px 16px;background:rgba(102,255,153,0.04);border:1px solid rgba(102,255,153,0.15);border-radius:8px;">
+        <div style="width:10px;height:10px;border-radius:50%;background:#66FF99;animation:heartbeat 2s ease-in-out infinite;box-shadow:0 0 10px rgba(102,255,153,0.6);"></div>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:2px;color:#66FF99;">FLEET STATUS: ALL SYSTEMS OPERATIONAL</span>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--text-secondary);margin-left:auto;" id="fleet-uptime">UPTIME: CALCULATING...</span>
+      </div>
+
       <div class="stats-row">
         <div class="stat-card pulse">
-          <div class="stat-value" style="color:var(--lcars-gold);">Phase 2.5</div>
+          <div class="stat-value" style="color:var(--lcars-gold);">Phase 3</div>
           <div class="stat-label">Current Operating Phase</div>
         </div>
         <div class="stat-card">
@@ -1508,12 +1617,8 @@
           <div class="stat-label">Speed Gain (GPU vs CPU)</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" style="color:var(--lcars-orange);">7</div>
+          <div class="stat-value" style="color:var(--lcars-orange);">9</div>
           <div class="stat-label">AI Agents Online</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" style="color:var(--lcars-lavender);">$1–5</div>
-          <div class="stat-label">Monthly API Cost</div>
         </div>
         <div class="stat-card">
           <div class="stat-value" style="color:var(--lcars-teal);">500+</div>
@@ -1598,8 +1703,12 @@
                 <td class="highlight">~65W idle</td>
               </tr>
               <tr>
-                <td>Zeus (Windows/Plex)</td>
+                <td>Zeus (Proxmox PVE 9.1.6)</td>
                 <td class="highlight">~80W idle</td>
+              </tr>
+              <tr>
+                <td>Dionysus (Unraid/Plex PRIMARY)</td>
+                <td class="highlight">~75W idle</td>
               </tr>
               <tr>
                 <td>GPU Workstation (RTX 3080 idle)</td>
@@ -1635,16 +1744,16 @@
                 <td class="winner">~$27/mo</td>
               </tr>
               <tr>
-                <td>ChatGPT Plus</td>
-                <td class="highlight">$20/mo</td>
+                <td>GPT-5.4 Thinking (free tier)</td>
+                <td class="highlight">$0/mo</td>
               </tr>
               <tr>
-                <td>Claude Pro</td>
-                <td class="highlight">$20/mo</td>
+                <td>Claude Pro (Annual)</td>
+                <td class="highlight">$17/mo</td>
               </tr>
               <tr>
-                <td>Gemini Pro Advanced</td>
-                <td class="highlight">$20/mo</td>
+                <td>Gemini 3.1 Pro</td>
+                <td class="highlight">$19.99/mo</td>
               </tr>
               <tr>
                 <td>xAI Grok Pro 4.2</td>
@@ -1652,15 +1761,19 @@
               </tr>
               <tr>
                 <td>M365 Pro Plus (Copilot)</td>
-                <td class="highlight">$22/mo</td>
+                <td class="highlight">Included in M365</td>
               </tr>
               <tr>
-                <td>Internet (existing)</td>
-                <td class="highlight">$0 incremental</td>
+                <td>Perplexity Max</td>
+                <td class="highlight">$200/mo</td>
+              </tr>
+              <tr>
+                <td>Internet (1Gbps Fiber)</td>
+                <td class="highlight">$65/mo</td>
               </tr>
               <tr style="border-top:2px solid rgba(241,223,111,0.2);">
                 <td style="font-weight:600;color:var(--text-primary);">Total Monthly OpEx</td>
-                <td class="winner">~$125/mo</td>
+                <td class="winner">~$345/mo</td>
               </tr>
             </table>
           </div>
@@ -1747,16 +1860,28 @@
               <td>Operational</td>
             </tr>
             <tr>
-              <td class="highlight">Wazuh SIEM</td>
-              <td>Deployment scheduled &mdash; Proxmox LXC</td>
+              <td class="highlight" style="color:#66FF99;">Wazuh SIEM &#x2705;</td>
+              <td>COMPLETED &mdash; CT104 deployed, enterprise-grade log correlation &amp; threat detection operational</td>
               <td>April 2026</td>
-              <td>Pending deployment</td>
+              <td>Operational</td>
             </tr>
             <tr>
-              <td class="highlight">ChromaDB v2 Migration</td>
-              <td>API mismatch &mdash; MCP server config needs update</td>
+              <td class="highlight" style="color:#66FF99;">Zeus Proxmox Conversion &#x2705;</td>
+              <td>COMPLETED &mdash; Zeus converted to Proxmox PVE 9.1.6, zeusapollo two-node cluster active</td>
               <td>April 2026</td>
-              <td>Ollama base URL migration</td>
+              <td>Operational</td>
+            </tr>
+            <tr>
+              <td class="highlight" style="color:#66FF99;">ChromaDB v2 Migration &#x2705;</td>
+              <td>COMPLETED &mdash; API v2 migration done, Ollama base URL migrated to GPU node</td>
+              <td>March 2026</td>
+              <td>Operational</td>
+            </tr>
+            <tr>
+              <td class="highlight" style="color:var(--lcars-cyan);">Autonomous Agent Testing</td>
+              <td>IN PROGRESS &mdash; Validating multi-agent autonomous workflows across fleet (OpenClaw, NemoClaw, GA)</td>
+              <td>Q2 2026</td>
+              <td>Phase 3 Ops</td>
             </tr>
           </tbody>
         </table>
@@ -1768,8 +1893,8 @@
           autonomy across five strategic pillars. This is not aspiration — this is an operational roadmap with hardware,
           software, and timeline already in motion.</p>
         <p style="margin-bottom:8px;"><strong>1. AI Inference at Warp Speed:</strong> All local AI workloads running on
-          the GPU workstation's RTX 3080 (or upgraded accelerator). RAG document ingestion fully operational via
-          ChromaDB v2. MCP
+          the GPU workstation's RTX 3080 (or upgraded accelerator). RAG2 document ingestion fully operational via
+          ChromaDB v2 — upgraded from standard RAG to multi-hop cognitive retrieval. MCP
           servers bridging every service to natural-language AI queries.</p>
         <p style="margin-bottom:8px;"><strong>2. Enterprise-Grade Security (Wazuh &amp; Kali):</strong> Wazuh acts as
           the fleet's internal MXDR sensors — continuously correlating logs across all nodes to detect anomalous
@@ -1777,20 +1902,20 @@
           This mirrors the enterprise MxDR methodology the Admiral consults on professionally — except we own the SOC.
         </p>
 
-        <p style="margin-bottom:8px;"><strong style="color:var(--lcars-orange);">2.5. RAG &rarr; RAG2: Upgrading the
-            Ship's Computer.</strong>
-          Standard RAG is like querying the ship's computer with a keyword search — fast, but shallow. Context is found,
+        <p style="margin-bottom:8px;"><strong style="color:var(--lcars-orange);">2.5. RAG &rarr; RAG2: Ship's Computer Upgraded. &#x2705;</strong>
+          The fleet's intelligence layer has been upgraded from standard RAG to <strong>RAG2</strong>.
+          Standard RAG was like querying the ship's computer with a keyword search — fast, but shallow. Context was found,
           not understood.
-          <strong>RAG2 is a fundamental architectural upgrade to the ship's intelligence layer:</strong> multi-hop
+          <strong>RAG2 is the operational replacement:</strong> multi-hop
           cognitive retrieval that chains reasoning steps across multiple knowledge sources, high-dimensional embedding
           vectors mapped directly to the local GPU, and contextual memory that doesn't just <em>find</em> information —
           it <em>reasons</em> across it.
           The ship's computer doesn't merely answer questions anymore. It synthesizes. It infers. It anticipates.
-          By implementing RAG2 with denser embeddings and a fully air-gapped local GPU pipeline, the fleet gains an
-          autonomous intelligence core that operates at sovereign speed — zero latency waiting on external APIs, zero
+          With RAG2 running on denser embeddings and a fully air-gapped local GPU pipeline, the fleet now operates an
+          autonomous intelligence core at sovereign speed — zero latency waiting on external APIs, zero
           data sovereignty risk, and reasoning depth that matches the most capable cloud-hosted systems.
-          <strong style="color:var(--lcars-cyan);">This is the upgrade from LCARS 4 to LCARS 7. The difference is not
-            incremental — it is generational.</strong>
+          <strong style="color:var(--lcars-cyan);">The upgrade from LCARS 4 to LCARS 7 is complete. The difference was not
+            incremental — it was generational.</strong>
         </p>
 
         <p style="margin-bottom:8px;"><strong>3. High Availability:</strong> Pi4 monitoring Apollo's heartbeat with
@@ -2325,12 +2450,25 @@
       <div class="f3"></div>
       <div class="f4"></div>
     </div>
-    <div class="classification">
-      DOUG CASHIO — CREATIVE AI TECHNOLOGIST &bull; ZEUSAPOLLO COMMAND &bull; GULF COAST SECTOR &bull; STARDATE 2026.072
-      &bull; CLASSIFICATION: PUBLIC RELEASE
+    <div class="classification" style="padding: 15px 30px; display: flex; flex-direction: column; align-items: center; gap: 10px; opacity: 0.7;">
+      <div style="display: flex; justify-content: space-between; width: 100%; max-width: 1400px;">
+        <div style="text-align: left;">DOUG CASHIO — ENTERPRISE AI & CYBERSECURITY SOLUTIONS ARCHITECT | Gulf Coast, FL</div>
+        <div style="text-align: right;">doug@cashio.us | LinkedIn | GitHub</div>
+      </div>
+      <div style="text-align: center; margin-top: 5px;">
+        <p style="font-family:'Share Tech Mono',monospace; letter-spacing:3px; color:var(--text-secondary);">/// END TRANSMISSION — <span id="footer-stardate-lab">STARDATE 2026.104</span> ///</p>
+        <p style="font-size:12px; color:rgba(200,200,220,0.3); margin-top:4px;">&copy; 2026 Doug Cashio</p>
+      </div>
     </div>
 
+    <button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to Top" style="position:fixed;bottom:30px;right:30px;z-index:100;font-family:'Orbitron',monospace;font-size:9px;font-weight:700;letter-spacing:2px;color:var(--lcars-gold);background:rgba(10,10,20,0.9);border:2px solid var(--lcars-gold);border-radius:50%;width:50px;height:50px;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 0 15px rgba(241,223,111,0.3);transition:all 0.3s;">&#9650;</button>
+
   </div><!-- /lcars-frame -->
+
+  <!-- GSAP Library & Plugins (loaded before main script for LCARS animations) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
 
   <script>
     // ══════════════════════════════════════════════════════════
@@ -2454,6 +2592,17 @@
     // DOM READY
     // ══════════════════════════════════════════════════════════
     document.addEventListener('DOMContentLoaded', () => {
+      // Boot overlay animation
+      const bootBar = document.getElementById('boot-bar');
+      const bootOverlay = document.getElementById('boot-overlay');
+      if (bootBar && bootOverlay) {
+        requestAnimationFrame(() => { bootBar.style.width = '100%'; });
+        setTimeout(() => {
+          bootOverlay.style.opacity = '0';
+          setTimeout(() => bootOverlay.remove(), 800);
+        }, 1200);
+      }
+
       spawnWarpStreak();
 
       // Pre-load voices for speech synthesis
@@ -2604,55 +2753,113 @@
           ease: "back.out(1.5)"
         });
       });
+
+      // Active sidebar section highlighting
+      const sidebarSegs = document.querySelectorAll('.lcars-sidebar-seg');
+      const sectionIds = [];
+      sidebarSegs.forEach(seg => {
+        const href = seg.getAttribute('href');
+        if (href && href.startsWith('#')) sectionIds.push({ id: href.slice(1), el: seg });
+      });
+      if (sectionIds.length > 0) {
+        const sectionObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            const match = sectionIds.find(s => s.id === entry.target.id);
+            if (match) {
+              if (entry.isIntersecting) {
+                sidebarSegs.forEach(s => s.classList.remove('active-section'));
+                match.el.classList.add('active-section');
+              }
+            }
+          });
+        }, { threshold: 0.2, rootMargin: '-10% 0px -70% 0px' });
+        sectionIds.forEach(s => {
+          const target = document.getElementById(s.id);
+          if (target) sectionObserver.observe(target);
+        });
+      }
     });
 
     // ══════════════════════════════════════════════════════════
     // VIS-NETWORK
     // ══════════════════════════════════════════════════════════
     function renderNetworkDiagram() {
+      // LCARS color palette
+      const C = { gold: '#F1DF6F', orange: '#FF9933', cyan: '#66CCCC', blue: '#9999FF', lavender: '#CC99CC', red: '#CC6666', green: '#66FF99', bg: '#0A0A12', dark: '#1a1a3a' };
+
       const nodes = new vis.DataSet([
-        { id: 'INET', label: '🌐 Internet\nISP Gateway', shape: 'box', color: { background: '#1a1a3a', border: '#66CCCC' }, font: { color: '#E8E6E3', size: 14, face: 'Exo 2' } },
-        { id: 'RTR', label: '🔀 Router / Switch\nGateway', shape: 'box', color: { background: '#2a2a4a', border: '#F1DF6F' }, font: { color: '#F1DF6F', size: 16, face: 'Orbitron' } },
-        { id: 'PROXMOX', label: '⚡ APOLLO\nProxmox Hypervisor', shape: 'box', color: { background: '#66CCCC', border: '#66CCCC' }, font: { color: '#0A0A12', size: 16, face: 'Orbitron' } },
-        { id: 'VM100', label: '🏠 VM 100\nHome Assistant', shape: 'box', color: { background: '#1a1a3a', border: '#66CCCC' }, font: { color: '#E8E6E3' } },
-        { id: 'CT101', label: '🛡️ CT 101\nAdGuard Home', shape: 'box', color: { background: '#1a1a3a', border: '#66CCCC' }, font: { color: '#E8E6E3' } },
-        { id: 'CT102', label: '🐳 CT 102\nDocker', shape: 'box', color: { background: '#1a1a3a', border: '#66CCCC' }, font: { color: '#E8E6E3' } },
-        { id: 'CT103', label: '🤖 CT 103\nOpenClaw Bot', shape: 'box', color: { background: '#1a1a3a', border: '#66CCCC' }, font: { color: '#E8E6E3' } },
-        { id: 'ZEUS', label: '🖥️ ZEUS\nWindows Server', shape: 'box', color: { background: '#FF9933', border: '#FF9933' }, font: { color: '#0A0A12', size: 16, face: 'Orbitron' } },
-        { id: 'ZPLEX', label: '📺 Plex Media', shape: 'box', color: { background: '#1a1a3a', border: '#FF9933' }, font: { color: '#E8E6E3' } },
-        { id: 'ZDOCKER', label: '🐳 Docker\nChromaDB', shape: 'box', color: { background: '#1a1a3a', border: '#FF9933' }, font: { color: '#E8E6E3' } },
-        { id: 'ZMCP', label: '🧠 MCP Servers\nRAG2 · CVE', shape: 'box', color: { background: '#1a1a3a', border: '#FF9933' }, font: { color: '#E8E6E3' } },
-        { id: 'TUF', label: '💎 GPU WORKSTATION\nRTX 3080', shape: 'box', color: { background: '#F1DF6F', border: '#F1DF6F' }, font: { color: '#0A0A12', size: 16, face: 'Orbitron' } },
-        { id: 'OLLAMA', label: '🔥 Ollama\n~80 tok/s', shape: 'box', color: { background: '#1a1a3a', border: '#F1DF6F' }, font: { color: '#E8E6E3' } },
-        { id: 'OPENWEBUI', label: '🌐 Open WebUI\n', shape: 'box', color: { background: '#1a1a3a', border: '#F1DF6F' }, font: { color: '#E8E6E3' } },
-        { id: 'PI4', label: '🥧 Raspberry Pi 4\nHA + UPS Monitor', shape: 'box', color: { background: '#9999FF', border: '#9999FF' }, font: { color: '#0A0A12', size: 14, face: 'Orbitron' } },
-        { id: 'NAS', label: '💾 NAS\nBackup Storage', shape: 'box', color: { background: '#CC99CC', border: '#CC99CC' }, font: { color: '#0A0A12', size: 14, face: 'Orbitron' } }
+        // Internet & Core
+        { id: 'INET',  label: '\u{1F310} Internet\nISP Gateway',                       shape: 'box', color: { background: '#0d0d22', border: C.cyan },    font: { color: '#E8E6E3', size: 13, face: 'Exo 2' } },
+        { id: 'RTR',   label: '\u{1F500} Router / Switch\nGateway',                  shape: 'box', color: { background: '#2a2a4a', border: C.gold },    font: { color: C.gold,    size: 16, face: 'Orbitron' } },
+
+        // APOLLO node
+        { id: 'APOLLO', label: '\u26A1 APOLLO\nProxmox PVE\nzeusapollo cluster', shape: 'box', color: { background: C.cyan,   border: C.cyan },    font: { color: C.bg,      size: 15, face: 'Orbitron' } },
+        { id: 'A_CT101',  label: '\u{1F6E1}\uFE0F AdGuard Primary',                       shape: 'box', color: { background: C.dark,   border: C.cyan },    font: { color: '#E8E6E3', size: 11 } },
+        { id: 'A_CT108',  label: '\u{1F4FA} Hermes\nPlex Secondary',                      shape: 'box', color: { background: C.dark,   border: C.cyan },    font: { color: '#E8E6E3', size: 11 } },
+        { id: 'A_CT111',  label: '\u{1F3E0} Home Assistant',                               shape: 'box', color: { background: C.dark,   border: C.cyan },    font: { color: '#E8E6E3', size: 11 } },
+        { id: 'A_CT112',  label: '\u{1F3AC} Media Stack',                                  shape: 'box', color: { background: C.dark,   border: C.cyan },    font: { color: '#E8E6E3', size: 11 } },
+        { id: 'A_CT113',  label: '\u{1F4BE} Rclone Backup',                                shape: 'box', color: { background: C.dark,   border: C.cyan },    font: { color: '#E8E6E3', size: 11 } },
+
+        // ZEUS node
+        { id: 'ZEUS',   label: '\u{1F5A5}\uFE0F ZEUS\nProxmox PVE 9.1.6\nzeusapollo cluster', shape: 'box', color: { background: C.orange, border: C.orange }, font: { color: C.bg,      size: 15, face: 'Orbitron' } },
+        { id: 'Z_CT102',  label: '\u{1F4CA} Kuma / Grafana',                              shape: 'box', color: { background: C.dark,   border: C.orange },  font: { color: '#E8E6E3', size: 11 } },
+        { id: 'Z_CT103',  label: '\u{1F916} OpenClaw Bot',                                shape: 'box', color: { background: C.dark,   border: C.orange },  font: { color: '#E8E6E3', size: 11 } },
+        { id: 'Z_CT104',  label: '\u{1F6A8} Wazuh SIEM',                                  shape: 'box', color: { background: C.dark,   border: C.red },     font: { color: C.red,     size: 11 } },
+        { id: 'Z_CT106',  label: '\u{1F9E0} MCP Stack',                                   shape: 'box', color: { background: C.dark,   border: C.orange },  font: { color: '#E8E6E3', size: 11 } },
+        { id: 'Z_CT107',  label: '\u2699\uFE0F n8n Automation',                            shape: 'box', color: { background: C.dark,   border: C.orange },  font: { color: '#E8E6E3', size: 11 } },
+        { id: 'Z_CT109',  label: '\u{1F6E1}\uFE0F AdGuard Secondary',                     shape: 'box', color: { background: C.dark,   border: C.orange },  font: { color: '#E8E6E3', size: 11 } },
+        { id: 'Z_VM110',  label: '\u{1F5E1}\uFE0F Kali Linux',                            shape: 'box', color: { background: C.dark,   border: C.red },     font: { color: C.red,     size: 11 } },
+
+        // Other fleet nodes
+        { id: 'DIONYSUS', label: '\u{1F4FA} DIONYSUS\nUnraid 7.2.4\nPlex PRIMARY / NVENC', shape: 'box', color: { background: '#4a1a3a', border: C.lavender }, font: { color: C.lavender, size: 13, face: 'Orbitron' } },
+        { id: 'TUF',      label: '\u{1F4A1} GPU WORKSTATION\nRTX 3080 — Ollama\n~80 tok/s',                   shape: 'box', color: { background: '#3a3a1a', border: C.gold },    font: { color: C.gold,    size: 13, face: 'Orbitron' } },
+        { id: 'NAS',      label: '\u{1F4BE} GENESIS NAS\nWD EX2 Ultra\nNFS Storage',                          shape: 'box', color: { background: '#2a1a3a', border: C.lavender }, font: { color: C.lavender, size: 13, face: 'Orbitron' } },
+        { id: 'ATHENA',   label: '\u{1F967} ATHENA (RPi4)\nRPi OS Lite\nGeneral Purpose Node',                                    shape: 'box', color: { background: C.dark,   border: C.blue },    font: { color: C.blue,    size: 13, face: 'Orbitron' } },
+        { id: 'GCP',      label: '\u2601\uFE0F GCP CLOUD\nNemoClaw VM\nCloud Run MCP\nVertex AI',                                  shape: 'box', color: { background: '#1a2a1a', border: C.green },   font: { color: C.green,   size: 13, face: 'Orbitron' } }
       ]);
+
       const edges = new vis.DataSet([
-        { from: 'INET', to: 'RTR', color: { color: '#66CCCC' }, width: 2 },
-        { from: 'RTR', to: 'PROXMOX', color: { color: '#F1DF6F' }, width: 2 },
-        { from: 'RTR', to: 'ZEUS', color: { color: '#F1DF6F' }, width: 2 },
-        { from: 'RTR', to: 'TUF', color: { color: '#F1DF6F' }, width: 2 },
-        { from: 'RTR', to: 'PI4', color: { color: '#F1DF6F' }, width: 2 },
-        { from: 'RTR', to: 'NAS', color: { color: '#F1DF6F' }, width: 2 },
-        { from: 'PROXMOX', to: 'VM100', color: { color: '#66CCCC' }, dashes: true },
-        { from: 'PROXMOX', to: 'CT101', color: { color: '#66CCCC' }, dashes: true },
-        { from: 'PROXMOX', to: 'CT102', color: { color: '#66CCCC' }, dashes: true },
-        { from: 'PROXMOX', to: 'CT103', color: { color: '#66CCCC' }, dashes: true },
-        { from: 'ZEUS', to: 'ZPLEX', color: { color: '#FF9933' }, dashes: true },
-        { from: 'ZEUS', to: 'ZDOCKER', color: { color: '#FF9933' }, dashes: true },
-        { from: 'ZEUS', to: 'ZMCP', color: { color: '#FF9933' }, dashes: true },
-        { from: 'TUF', to: 'OLLAMA', color: { color: '#F1DF6F' }, dashes: true },
-        { from: 'TUF', to: 'OPENWEBUI', color: { color: '#F1DF6F' }, dashes: true },
-        { from: 'CT101', to: 'RTR', label: 'DNS Filter', font: { color: '#CC6666', size: 10, background: '#0A0A12' }, color: { color: '#CC6666' }, arrows: 'to', dashes: true },
-        { from: 'NAS', to: 'PROXMOX', label: 'Auto Backup', font: { color: '#9999FF', size: 10, background: '#0A0A12' }, color: { color: '#9999FF' }, arrows: 'to', dashes: true },
-        { from: 'OLLAMA', to: 'ZMCP', label: 'RAG2 Inference', font: { color: '#FF9933', size: 10, background: '#0A0A12' }, color: { color: '#FF9933' }, arrows: 'to', dashes: true }
+        // Internet to core
+        { from: 'INET',   to: 'RTR',      color: { color: C.cyan },     width: 2 },
+        // Router to main nodes
+        { from: 'RTR',    to: 'APOLLO',   color: { color: C.cyan },     width: 2 },
+        { from: 'RTR',    to: 'ZEUS',     color: { color: C.orange },   width: 2 },
+        { from: 'RTR',    to: 'DIONYSUS', color: { color: C.lavender }, width: 2 },
+        { from: 'RTR',    to: 'TUF',      color: { color: C.gold },     width: 2 },
+        { from: 'RTR',    to: 'NAS',      color: { color: C.lavender }, width: 2 },
+        { from: 'RTR',    to: 'ATHENA',   color: { color: C.blue },     width: 2 },
+        { from: 'RTR',    to: 'GCP',      color: { color: C.green },    width: 1, dashes: [8,4] },
+        // Apollo children
+        { from: 'APOLLO', to: 'A_CT101',  color: { color: C.cyan },   dashes: true },
+        { from: 'APOLLO', to: 'A_CT108',  color: { color: C.cyan },   dashes: true },
+        { from: 'APOLLO', to: 'A_CT111',  color: { color: C.cyan },   dashes: true },
+        { from: 'APOLLO', to: 'A_CT112',  color: { color: C.cyan },   dashes: true },
+        { from: 'APOLLO', to: 'A_CT113',  color: { color: C.cyan },   dashes: true },
+        // Zeus children
+        { from: 'ZEUS',   to: 'Z_CT102',  color: { color: C.orange }, dashes: true },
+        { from: 'ZEUS',   to: 'Z_CT103',  color: { color: C.orange }, dashes: true },
+        { from: 'ZEUS',   to: 'Z_CT104',  color: { color: C.red    }, dashes: true },
+        { from: 'ZEUS',   to: 'Z_CT106',  color: { color: C.orange }, dashes: true },
+        { from: 'ZEUS',   to: 'Z_CT107',  color: { color: C.orange }, dashes: true },
+        { from: 'ZEUS',   to: 'Z_CT109',  color: { color: C.orange }, dashes: true },
+        { from: 'ZEUS',   to: 'Z_VM110',  color: { color: C.red    }, dashes: true },
+        // Cross-node flows
+        { from: 'A_CT101', to: 'RTR',     label: 'DNS Filter',     font: { color: C.red,     size: 10, background: C.bg }, color: { color: C.red    }, arrows: 'to', dashes: true },
+        { from: 'Z_CT109', to: 'RTR',     label: 'DNS Secondary',  font: { color: C.orange,  size: 10, background: C.bg }, color: { color: C.orange }, arrows: 'to', dashes: true },
+        { from: 'NAS',     to: 'APOLLO',  label: 'Auto Backup',    font: { color: C.blue,    size: 10, background: C.bg }, color: { color: C.blue   }, arrows: 'to', dashes: true },
+        { from: 'NAS',     to: 'ZEUS',    label: 'NFS',            font: { color: C.blue,    size: 10, background: C.bg }, color: { color: C.blue   }, arrows: 'to', dashes: true },
+        { from: 'NAS',     to: 'DIONYSUS',label: 'NFS Media',      font: { color: C.lavender,size: 10, background: C.bg }, color: { color: C.lavender},arrows: 'to', dashes: true },
+        { from: 'TUF',     to: 'Z_CT106', label: 'Ollama Inference',font:{ color: C.gold,    size: 10, background: C.bg }, color: { color: C.gold   }, arrows: 'to', dashes: true },
+        { from: 'Z_CT104', to: 'ZEUS',    label: 'SIEM Monitor',   font: { color: C.red,     size: 10, background: C.bg }, color: { color: C.red    }, arrows: 'to', dashes: true },
+        // Cluster link
+        { from: 'APOLLO',  to: 'ZEUS',    label: 'Cluster Link',   font: { color: C.cyan,    size: 10, background: C.bg }, color: { color: C.cyan   }, width: 2 }
       ]);
+
       const container = document.getElementById('vis-network-diagram');
       new vis.Network(container, { nodes, edges }, {
-        physics: { barnesHut: { gravitationalConstant: -3500, centralGravity: 0.1, springLength: 120, damping: 0.1 }, minVelocity: 0.75 },
-        edges: { smooth: { type: 'continuous' } },
-        interaction: { hover: true, tooltipDelay: 200 }
+        physics: { barnesHut: { gravitationalConstant: -6000, centralGravity: 0.08, springLength: 180, springConstant: 0.03, damping: 0.15, avoidOverlap: 0.5 }, minVelocity: 0.75, stabilization: { iterations: 200 } },
+        edges: { smooth: { type: 'continuous' }, font: { multi: false } },
+        interaction: { hover: true, tooltipDelay: 200, zoomView: true, dragView: true }
       });
     }
     document.addEventListener('DOMContentLoaded', renderNetworkDiagram);
@@ -2664,12 +2871,20 @@
     new Chart(phaseCtx, {
       type: 'bar',
       data: {
-        labels: ['Phase -1\nAwakening', 'Phase 0\nBaseline', 'Phase 0.5\nMCP Core', 'Phase 1\nContainers', 'Phase 2\nGPU + Bot', 'Phase 2.5\nCurrent', 'Phase 3\nHA + SIEM', 'Phase 4\nFull Auto'],
+        labels: ['Phase -1\nAwakening', 'Phase 0\nBaseline', 'Phase 0.5\nMCP Core', 'Phase 1\nContainers', 'Phase 2\nGPU + Bot', 'Phase 2.5\nConsolidation', 'Phase 3\nCURRENT', 'Phase 4\nFull Auto'],
         datasets: [
-          { label: 'AI Inference Speed', data: [2, 5, 12, 15, 55, 65, 75, 95], backgroundColor: 'rgba(241,223,111,0.7)', borderColor: '#F1DF6F', borderWidth: 1, borderRadius: 4 },
-          { label: 'Automation Coverage', data: [2, 5, 30, 40, 55, 60, 80, 95], backgroundColor: 'rgba(102,204,204,0.7)', borderColor: '#66CCCC', borderWidth: 1, borderRadius: 4 },
-          { label: 'Security Posture', data: [5, 10, 20, 35, 40, 45, 95, 99], backgroundColor: 'rgba(204,102,102,0.7)', borderColor: '#CC6666', borderWidth: 1, borderRadius: 4 },
-          { label: 'Resilience / HA', data: [5, 15, 15, 20, 25, 30, 85, 95], backgroundColor: 'rgba(153,153,255,0.7)', borderColor: '#9999FF', borderWidth: 1, borderRadius: 4 }
+          { label: 'AI Inference Speed', data: [2, 5, 12, 15, 55, 65, 75, 95],
+            backgroundColor: (ctx) => ctx.dataIndex === 6 ? 'rgba(102,204,204,0.85)' : 'rgba(241,223,111,0.7)',
+            borderColor: (ctx) => ctx.dataIndex === 6 ? '#66CCCC' : '#F1DF6F', borderWidth: (ctx) => ctx.dataIndex === 6 ? 2 : 1, borderRadius: 4 },
+          { label: 'Automation Coverage', data: [2, 5, 30, 40, 55, 60, 80, 95],
+            backgroundColor: (ctx) => ctx.dataIndex === 6 ? 'rgba(102,204,204,0.65)' : 'rgba(102,204,204,0.7)',
+            borderColor: '#66CCCC', borderWidth: 1, borderRadius: 4 },
+          { label: 'Security Posture', data: [5, 10, 20, 35, 40, 45, 95, 99],
+            backgroundColor: (ctx) => ctx.dataIndex === 6 ? 'rgba(102,204,204,0.5)' : 'rgba(204,102,102,0.7)',
+            borderColor: (ctx) => ctx.dataIndex === 6 ? '#66CCCC' : '#CC6666', borderWidth: 1, borderRadius: 4 },
+          { label: 'Resilience / HA', data: [5, 15, 15, 20, 25, 30, 85, 95],
+            backgroundColor: (ctx) => ctx.dataIndex === 6 ? 'rgba(102,204,204,0.35)' : 'rgba(153,153,255,0.7)',
+            borderColor: (ctx) => ctx.dataIndex === 6 ? '#66CCCC' : '#9999FF', borderWidth: 1, borderRadius: 4 }
         ]
       },
       options: {
@@ -2743,6 +2958,255 @@
       }
     });
 
+    // ══════════════════════════════════════════════════════════
+    // WOW FACTOR ENHANCEMENTS (6a-6e)
+    // ══════════════════════════════════════════════════════════
+    document.addEventListener('DOMContentLoaded', function() {
+
+    // ══════════════════════════════════════════════════════════
+    // AUTO-CALCULATING STARDATE (Change 6b)
+    // ══════════════════════════════════════════════════════════
+    (function updateStardate() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const start = new Date(year, 0, 1);
+      const dayOfYear = Math.floor((now - start) / 86400000) + 1;
+      const ddd = String(dayOfYear).padStart(3, '0');
+      const stardate = `${year}.${ddd}`;
+      const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      const humanDate = `${monthNames[now.getMonth()]} ${now.getDate()}, ${year}`;
+      const full = `Stardate ${stardate} (${humanDate})`;
+      const lcarsLabel = `STARDATE ${stardate}`;
+      const el = document.getElementById('auto-stardate');
+      if (el) el.textContent = full;
+      const lcarsEl = document.getElementById('lcars-stardate');
+      if (lcarsEl) lcarsEl.textContent = lcarsLabel;
+      const footerEl = document.getElementById('footer-stardate');
+      if (footerEl) footerEl.textContent = lcarsLabel;
+      const footerLabEl = document.getElementById('footer-stardate-lab');
+      if (footerLabEl) footerLabEl.textContent = lcarsLabel;
+    })();
+
+    // ══════════════════════════════════════════════════════════
+    // COUNTER ANIMATIONS ON STAT CARDS (Change 6a)
+    // ══════════════════════════════════════════════════════════
+    (function initCounters() {
+      const statCards = document.querySelectorAll('.stat-card .stat-value');
+      const observed = new Set();
+
+      function animateCounter(el) {
+        const raw = el.textContent.trim();
+        // Don't animate Phase labels
+        if (raw.toLowerCase().startsWith('phase')) return;
+
+        let prefix = '', suffix = '', num = 0;
+        if (raw.startsWith('~$')) {
+          prefix = '~$';
+          const digits = raw.replace(/[^0-9]/g, '');
+          num = parseInt(digits) || 0;
+        } else if (raw.startsWith('$')) {
+          prefix = '$';
+          suffix = raw.includes('–5') ? '–5' : '';
+          const digits = raw.replace(/[^0-9–]/g, '').split('–')[0];
+          num = parseInt(digits) || 0;
+        } else if (raw.endsWith('+')) {
+          suffix = '+';
+          num = parseInt(raw.replace(/[^0-9]/g, '')) || 0;
+        } else if (raw.endsWith('\xd7')) {
+          suffix = '\xd7';
+          num = parseInt(raw.replace(/[^0-9]/g, '')) || 0;
+        } else if (raw.startsWith('~')) {
+          prefix = '~';
+          num = parseInt(raw.replace(/[^0-9]/g, '')) || 0;
+        } else {
+          num = parseInt(raw.replace(/[^0-9]/g, '')) || 0;
+        }
+
+        if (num === 0) return;
+        const duration = 1200;
+        const steps = 40;
+        const stepTime = duration / steps;
+        let current = 0;
+        const increment = num / steps;
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= num) {
+            current = num;
+            clearInterval(timer);
+          }
+          el.textContent = prefix + Math.floor(current) + suffix;
+        }, stepTime);
+      }
+
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !observed.has(entry.target)) {
+            observed.add(entry.target);
+            animateCounter(entry.target);
+          }
+        });
+      }, { threshold: 0.4 });
+
+      statCards.forEach(el => io.observe(el));
+    })();
+
+    // ══════════════════════════════════════════════════════════
+    // SUBTLE CRT SCREEN FLICKER (Change 6c)
+    // ══════════════════════════════════════════════════════════
+    (function initFlicker() {
+      function flicker() {
+        document.body.style.opacity = '0.97';
+        setTimeout(() => { document.body.style.opacity = '1'; }, 100);
+        const next = 30000 + Math.random() * 30000;
+        setTimeout(flicker, next);
+      }
+      setTimeout(flicker, 30000 + Math.random() * 30000);
+    })();
+
+    // ══════════════════════════════════════════════════════════
+    // STAGGERED STAT CARD ENTRANCE (Change 6e)
+    // ══════════════════════════════════════════════════════════
+    (function initStaggeredStats() {
+      if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+      const statsRow = document.querySelector('.stats-row');
+      if (!statsRow) return;
+      const cards = statsRow.querySelectorAll('.stat-card');
+      gsap.from(cards, {
+        scrollTrigger: { trigger: statsRow, start: 'top 85%', once: true },
+        opacity: 0,
+        x: -30,
+        duration: 0.5,
+        stagger: 0.1,
+        ease: 'back.out(1.5)'
+      });
+    })();
+
+    // ══════════════════════════════════════════════════════════
+    // SECTION HEADER TYPEWRITER (Change 6d)
+    // ══════════════════════════════════════════════════════════
+    (function initTypewriter() {
+      if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined' || typeof TextPlugin === 'undefined') return;
+      gsap.registerPlugin(TextPlugin);
+      const headers = document.querySelectorAll('.section-header h2');
+      headers.forEach(h => {
+        const originalText = h.textContent;
+        h.textContent = '';
+        ScrollTrigger.create({
+          trigger: h,
+          start: 'top 88%',
+          once: true,
+          onEnter: () => {
+            gsap.to(h, {
+              duration: originalText.length * 0.04,
+              text: { value: originalText, delimiter: '' },
+              ease: 'none'
+            });
+          }
+        });
+      });
+    })();
+
+    // ═══════ PHOSPHOR BLOOM ON HEADINGS ═══════
+    document.querySelectorAll('.section-header h2, h3, .crew-name, .stat-value').forEach(el => {
+      el.addEventListener('mouseenter', function() {
+        this.style.transition = 'text-shadow 0.3s ease';
+        this.style.textShadow = '0 0 20px currentColor, 0 0 40px currentColor, 0 0 60px currentColor';
+      });
+      el.addEventListener('mouseleave', function() {
+        this.style.textShadow = '';
+      });
+    });
+
+    // ═══════ ANIMATED GRADIENT BORDER ON FEATURED PANELS ═══════
+    (function() {
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes borderGlow {
+          0% { border-color: rgba(102,204,204,0.3); }
+          33% { border-color: rgba(241,223,111,0.4); }
+          66% { border-color: rgba(204,102,102,0.3); }
+          100% { border-color: rgba(102,204,204,0.3); }
+        }
+        .stat-card.pulse {
+          animation: borderGlow 4s ease-in-out infinite, pulseSlow 3s ease-in-out infinite;
+        }
+        @keyframes pulseSlow {
+          0%, 100% { box-shadow: 0 0 15px rgba(241,223,111,0.15), inset 0 0 20px rgba(0,0,0,0.5); }
+          50% { box-shadow: 0 0 30px rgba(241,223,111,0.3), 0 0 60px rgba(241,223,111,0.1), inset 0 0 20px rgba(0,0,0,0.5); }
+        }
+        .crew-card:hover {
+          box-shadow: 0 0 25px rgba(102,204,204,0.2), inset 0 0 20px rgba(0,0,0,0.3) !important;
+        }
+        @keyframes scanline {
+          0% { transform: translateY(-100%); }
+          100% { transform: translateY(100vh); }
+        }
+        .topology-container::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 3px;
+          background: linear-gradient(90deg, transparent 20%, rgba(102,204,204,0.8) 45%, rgba(241,223,111,0.6) 50%, rgba(102,204,204,0.8) 55%, transparent 80%);
+          box-shadow: 0 0 15px rgba(102,204,204,0.4), 0 2px 10px rgba(102,204,204,0.3);
+          animation: scanline 6s linear infinite;
+          pointer-events: none;
+          z-index: 2;
+        }
+        .topology-container {
+          position: relative;
+          overflow: hidden;
+        }
+      `;
+      document.head.appendChild(style);
+
+      // Add topology-container class to the vis-network div
+      const netDiv = document.getElementById('vis-network-diagram');
+      if (netDiv) netDiv.classList.add('topology-container');
+    })();
+
+    // ═══════ PARALLAX DEPTH ON BACKGROUND ═══════
+    window.addEventListener('scroll', function() {
+      const scrolled = window.pageYOffset;
+      document.body.style.backgroundPositionY = (scrolled * 0.3) + 'px';
+    }, { passive: true });
+
+    // Fleet uptime counter
+    (function initUptime() {
+      const el = document.getElementById('fleet-uptime');
+      if (!el) return;
+      const bootTime = Date.now();
+      function updateUptime() {
+        const elapsed = Math.floor((Date.now() - bootTime) / 1000);
+        const h = Math.floor(elapsed / 3600);
+        const m = Math.floor((elapsed % 3600) / 60);
+        const s = elapsed % 60;
+        el.textContent = 'SESSION: ' + String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+      }
+      setInterval(updateUptime, 1000);
+      updateUptime();
+    })();
+
+    // Back to top button
+    (function() {
+      const btn = document.getElementById('back-to-top');
+      if (!btn) return;
+      window.addEventListener('scroll', () => {
+        btn.style.display = window.scrollY > 600 ? 'flex' : 'none';
+      }, { passive: true });
+      btn.addEventListener('mouseenter', () => {
+        btn.style.boxShadow = '0 0 25px rgba(241,223,111,0.6)';
+        btn.style.background = 'rgba(241,223,111,0.15)';
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.style.boxShadow = '0 0 15px rgba(241,223,111,0.3)';
+        btn.style.background = 'rgba(10,10,20,0.9)';
+      });
+    })();
+
+    }); // end DOMContentLoaded WOW enhancements
+
     // ─── DASHBOARD LIGHTBOX ───────────────────────────────
     function openDashLb(src) {
       document.getElementById('dashLbImg').src = src;
@@ -2771,9 +3235,6 @@
   </div>
 
   <!-- GSAP Library & Plugins -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
 </body>
 
 </html>

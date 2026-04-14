@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Doug Cashio — Enterprise AI & Cybersecurity Solutions Architect</title>
   <meta name="description"
-    content="Doug Cashio — Principal Solutions Consultant specializing in cybersecurity, AI infrastructure, and multi-agent orchestration. Enterprise AI portfolio, March 2026.">
+    content="Doug Cashio — Principal Solutions Consultant specializing in cybersecurity, AI infrastructure, and multi-agent orchestration. Enterprise AI portfolio, April 2026.">
 
   <meta property="og:title" content="Doug Cashio — Enterprise AI & Cybersecurity Solutions Architect">
   <meta property="og:description"
@@ -22,6 +22,8 @@
   <script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"
     integrity="sha384-yxKDWWf0wwdUj/gPeuL11czrnKFQROnLgY8ll7En9NYoXibgg3C6NK/UDHNtUgWJ"
     crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600;700&display=swap');
 
@@ -1244,10 +1246,45 @@
       margin-right: 12px;
       user-select: none;
     }
+    @keyframes footerBarPulse {
+      0%, 100% { opacity: 0.5; filter: brightness(1); }
+      50% { opacity: 0.85; filter: brightness(1.3); box-shadow: 0 0 15px currentColor; }
+    }
+    .lcars-footer .f1 { animation: footerBarPulse 4s ease-in-out infinite; animation-delay: 0s; }
+    .lcars-footer .f2 { animation: footerBarPulse 4s ease-in-out infinite; animation-delay: 0.8s; }
+    .lcars-footer .f3 { animation: footerBarPulse 4s ease-in-out infinite; animation-delay: 1.6s; }
+    .lcars-footer .f4 { animation: footerBarPulse 4s ease-in-out infinite; animation-delay: 2.4s; }
+
+    /* ── TYPING CURSOR ── */
+    #rotating-tagline::after {
+      content: '█';
+      animation: blink-cursor 1s step-end infinite;
+      color: var(--lcars-teal);
+      font-weight: 400;
+      margin-left: 2px;
+    }
+    @keyframes blink-cursor {
+      50% { opacity: 0; }
+    }
+
+    /* ── ACTIVE SIDEBAR HIGHLIGHT ── */
+    .lcars-sidebar-seg.active-section {
+      width: 178px !important;
+      filter: brightness(1.3);
+      box-shadow: 0 0 20px rgba(255,255,255,0.25);
+    }
   </style>
 </head>
 
 <body>
+
+<!-- LCARS BOOT OVERLAY -->
+<div id="boot-overlay" style="position:fixed;inset:0;z-index:99999;background:var(--lcars-bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;transition:opacity 0.8s ease;">
+  <div style="font-family:'Orbitron',monospace;font-size:14px;letter-spacing:4px;color:var(--lcars-gold);text-shadow:0 0 20px rgba(241,223,111,0.5);">LCARS INTERFACE LOADING</div>
+  <div style="width:200px;height:3px;background:rgba(241,223,111,0.15);border-radius:2px;overflow:hidden;">
+    <div id="boot-bar" style="width:0%;height:100%;background:linear-gradient(90deg,var(--lcars-gold),var(--lcars-cyan));border-radius:2px;transition:width 1s ease-out;"></div>
+  </div>
+</div>
 
   <div class="warp-overlay" id="warpOverlay"></div>
   <div class="starfield"></div>
@@ -1259,9 +1296,12 @@
       <div class="lcars-elbow"></div>
       <div class="lcars-header-bar">
         <div class="lcars-bar-top">
-          <span>PORTFOLIO</span>
+          <span id="stardate-display">STARDATE</span>
           <div class="top-warp-core"></div>
-          <span>DOUG CASHIO</span>
+          <div class="right-group">
+            <button id="picard-btn" onclick="picardMakeItSo()">MAKE IT SO</button>
+            <span>DOUG CASHIO</span>
+          </div>
         </div>
 
         <div class="lcars-bar-bottom">
@@ -1295,7 +1335,7 @@
       <!-- HERO -->
       <h1 class="report-title animate-in">DOUG CASHIO</h1>
       <div class="report-subtitle animate-in" style="animation-delay:0.15s">
-        Enterprise AI & Cybersecurity Solutions Architect
+        <p class="subtitle" id="rotating-tagline">Enterprise AI & Cybersecurity Solutions Architect</p>
       </div>
 
       <div class="glass-panel animate-in" style="animation-delay:0.2s; border-left:3px solid var(--lcars-gold);">
@@ -1305,6 +1345,25 @@
           architecture.<br><br>
           <strong style="color:var(--lcars-gold);">Location:</strong> Gulf Coast, Florida
         </p>
+      </div>
+
+      <div class="metrics-strip" style="display:flex; justify-content:center; gap:30px; margin:20px 0 10px 0; flex-wrap:wrap;">
+        <div style="text-align:center;">
+          <span style="font-family:'Orbitron',monospace; font-size:28px; font-weight:800; color:var(--lcars-gold); text-shadow:0 0 10px rgba(241,223,111,0.4);">15+</span>
+          <div style="font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:2px; color:var(--text-secondary); text-transform:uppercase; margin-top:4px;">Years Experience</div>
+        </div>
+        <div style="text-align:center;">
+          <span style="font-family:'Orbitron',monospace; font-size:28px; font-weight:800; color:var(--lcars-cyan); text-shadow:0 0 10px rgba(102,204,204,0.4);">4,500+</span>
+          <div style="font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:2px; color:var(--text-secondary); text-transform:uppercase; margin-top:4px;">Resellers Enabled</div>
+        </div>
+        <div style="text-align:center;">
+          <span style="font-family:'Orbitron',monospace; font-size:28px; font-weight:800; color:var(--lcars-orange); text-shadow:0 0 10px rgba(255,153,51,0.4);">60K+</span>
+          <div style="font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:2px; color:var(--text-secondary); text-transform:uppercase; margin-top:4px;">Businesses Protected</div>
+        </div>
+        <div style="text-align:center;">
+          <span style="font-family:'Orbitron',monospace; font-size:28px; font-weight:800; color:#66FF99; text-shadow:0 0 10px rgba(102,255,153,0.4);">9</span>
+          <div style="font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:2px; color:var(--text-secondary); text-transform:uppercase; margin-top:4px;">AI Agents</div>
+        </div>
       </div>
 
       <div class="contact-bar animate-in" style="animation-delay:0.25s">
@@ -1397,7 +1456,7 @@
           </div>
           <div class="timeline-event">
             <div class="timeline-date">Senior Consultant &rarr; Principal Solutions Consultant</div>
-            <div class="timeline-title">STRATEGIC ACQUISITIONS &rarr; ENTERPRISE SCALE</div>
+            <div class="timeline-title">ENTERPRISE SCALE</div>
             <div class="timeline-desc">Through a series of strategic acquisitions, transitioned into one of the world's
               largest enterprise information management companies. Carried forward MSP-first DNA, email security
               expertise, and network engineering intuition into a global cybersecurity practice. Promoted from Senior
@@ -1602,6 +1661,7 @@
           <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">Threat Detection & SIEM:</strong> Enterprise-grade <strong>Wazuh</strong> deployment for log correlation and active response.</li>
           <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">Observability:</strong> Continuous infrastructure network monitoring utilizing <strong>Uptime Kuma</strong> and Grafana.</li>
           <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">AI Infrastructure:</strong> GPU-accelerated local orchestration bridged directly to <strong>Google Cloud (GCP)</strong> via a custom Serverless <strong>MCP Gateway</strong> granting access to Vertex AI.</li>
+          <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">Cloud Expansion:</strong> <strong>NemoClaw</strong> AI agent (NVIDIA Nemotron 120B) deployed on <strong>GCP Cloud Run</strong> with ~$265 in active credits. Dual-Plex media architecture with <strong>Dionysus</strong> (NVENC) and <strong>Hermes</strong> (Quick Sync).</li>
         </ul>
 
         <div class="stats-row" style="margin-bottom: 24px;">
@@ -1610,7 +1670,7 @@
             <div class="stat-label">Hours Invested</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value" style="color:var(--lcars-teal);">7</div>
+            <div class="stat-value" style="color:var(--lcars-teal);">9</div>
             <div class="stat-label">AI Agents Orchestrated</div>
           </div>
           <div class="stat-card">
@@ -1632,6 +1692,7 @@
             <li><strong style="color:var(--lcars-teal);">Security & Controls:</strong> Strict Bearer Token Auth via custom ASGI Proxy routing, automated Cloud Billing constraints</li>
             <li><strong style="color:var(--lcars-teal);">Continuous Integration:</strong> Containerized multi-component build strictly versioned into Google Artifact Registry</li>
             <li><strong style="color:var(--lcars-teal);">Source Code:</strong> <em style="color:var(--text-secondary);">Private GCP IAM Repository &mdash; Documentation walkthrough available upon request</em></li>
+            <li><strong style="color:var(--lcars-teal);">Fleet Status:</strong> <em style="color:#66FF99;">Phase 3 — 9 Agents, 2-Node Proxmox Cluster, Dual Plex, Wazuh SIEM Live</em></li>
           </ul>
         </div>
 
@@ -1659,9 +1720,13 @@
           Coast, FL</div>
         <div style="text-align: right;">doug@cashio.us | LinkedIn | GitHub | Credly</div>
       </div>
-      <div style="text-align: center; margin-top: 5px;">&copy; 2026 Doug Cashio</div>
+      <div style="text-align: center; margin-top: 5px;">
+        <p style="font-family:'Share Tech Mono',monospace; letter-spacing:3px; color:var(--text-secondary);">/// END TRANSMISSION — <span id="footer-stardate">STARDATE 2026.104</span> ///</p>
+        <p style="font-size:12px; color:rgba(200,200,220,0.3); margin-top:4px;">&copy; 2026 Doug Cashio</p>
+      </div>
     </div>
 
+  <button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to Top" style="position:fixed;bottom:30px;right:30px;z-index:100;font-family:'Orbitron',monospace;font-size:9px;font-weight:700;letter-spacing:2px;color:var(--lcars-gold);background:rgba(10,10,20,0.9);border:2px solid var(--lcars-gold);border-radius:50%;width:50px;height:50px;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 0 15px rgba(241,223,111,0.3);transition:all 0.3s;">&#9650;</button>
   </div><!-- /lcars-frame -->
 
   <script>
@@ -1723,6 +1788,17 @@
     function picardMakeItSo() {
       const btn = document.getElementById('picard-btn');
       if (btn) btn.classList.add('speaking');
+      
+      // Trigger warp streak visual
+      spawnWarpStreak();
+      
+      // Brief red alert flash
+      const flash = document.createElement('div');
+      flash.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(204,102,102,0.15);z-index:9998;pointer-events:none;transition:opacity 0.8s;';
+      document.body.appendChild(flash);
+      setTimeout(() => { flash.style.opacity = '0'; }, 300);
+      setTimeout(() => flash.remove(), 1200);
+      
       const audio = new Audio('make_it_so.mp3');
       audio.play().then(() => {
         audio.onended = () => { if (btn) btn.classList.remove('speaking'); };
@@ -1733,6 +1809,102 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      // Boot overlay animation
+      const bootBar = document.getElementById('boot-bar');
+      const bootOverlay = document.getElementById('boot-overlay');
+      if (bootBar && bootOverlay) {
+        requestAnimationFrame(() => { bootBar.style.width = '100%'; });
+        setTimeout(() => {
+          bootOverlay.style.opacity = '0';
+          setTimeout(() => bootOverlay.remove(), 800);
+        }, 1200);
+      }
+
+      // Back to top button
+      const backToTop = document.getElementById('back-to-top');
+      if (backToTop) {
+        window.addEventListener('scroll', () => {
+          backToTop.style.display = window.scrollY > 600 ? 'flex' : 'none';
+        }, { passive: true });
+        backToTop.addEventListener('mouseenter', () => {
+          backToTop.style.boxShadow = '0 0 25px rgba(241,223,111,0.6)';
+          backToTop.style.background = 'rgba(241,223,111,0.15)';
+        });
+        backToTop.addEventListener('mouseleave', () => {
+          backToTop.style.boxShadow = '0 0 15px rgba(241,223,111,0.3)';
+          backToTop.style.background = 'rgba(10,10,20,0.9)';
+        });
+      }
+      // ═══════ AUTO-CALCULATING STARDATE ═══════
+      function updateStardate() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const start = new Date(year, 0, 0);
+        const diff = now - start;
+        const oneDay = 1000 * 60 * 60 * 24;
+        const dayOfYear = Math.floor(diff / oneDay);
+        const stardate = year + '.' + String(dayOfYear).padStart(3, '0');
+        const el = document.getElementById('stardate-display');
+        if (el) el.textContent = 'STARDATE ' + stardate;
+      }
+      updateStardate();
+
+      // Also update footer stardate
+      const footerSd = document.getElementById('footer-stardate');
+      if (footerSd) {
+        const now2 = new Date();
+        const yr2 = now2.getFullYear();
+        const s2 = new Date(yr2, 0, 0);
+        const d2 = Math.floor((now2 - s2) / (1000*60*60*24));
+        footerSd.textContent = 'STARDATE ' + yr2 + '.' + String(d2).padStart(3, '0');
+      }
+
+      // ═══════ ROTATING TAGLINES ═══════
+      const taglines = [
+        'Enterprise AI & Cybersecurity Solutions Architect',
+        'Building Production-Grade AI at Personal Lab Scale',
+        'From the Bridge of ZeusApollo Command',
+        '15+ Years in Enterprise Technology — Now Running AI Fleet Operations'
+      ];
+      let taglineIndex = 0;
+      function rotateTagline() {
+        const el = document.getElementById('rotating-tagline');
+        if (!el) return;
+        el.style.transition = 'opacity 0.6s ease';
+        el.style.opacity = '0';
+        setTimeout(() => {
+          taglineIndex = (taglineIndex + 1) % taglines.length;
+          el.textContent = taglines[taglineIndex];
+          el.style.opacity = '1';
+        }, 600);
+      }
+      setInterval(rotateTagline, 6000);
+
+      // Active sidebar section highlighting
+      const sidebarSegs = document.querySelectorAll('.lcars-sidebar-seg');
+      const sectionIds = [];
+      sidebarSegs.forEach(seg => {
+        const href = seg.getAttribute('href');
+        if (href && href.startsWith('#')) sectionIds.push({ id: href.slice(1), el: seg });
+      });
+      if (sectionIds.length > 0) {
+        const sectionObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            const match = sectionIds.find(s => s.id === entry.target.id);
+            if (match) {
+              if (entry.isIntersecting) {
+                sidebarSegs.forEach(s => s.classList.remove('active-section'));
+                match.el.classList.add('active-section');
+              }
+            }
+          });
+        }, { threshold: 0.2, rootMargin: '-10% 0px -70% 0px' });
+        sectionIds.forEach(s => {
+          const target = document.getElementById(s.id);
+          if (target) sectionObserver.observe(target);
+        });
+      }
+
       spawnWarpStreak();
 
       document.body.addEventListener('click', initAudio, { once: true });
@@ -1929,6 +2101,136 @@
           ease: "back.out(1.5)"
         });
       });
+
+      // ═══════ COUNTER ANIMATIONS FOR STAT VALUES ═══════
+      function animateCounter(el) {
+        const text = el.textContent.trim();
+        const match = text.match(/^([\d]+)(.*)/);
+        if (!match) return;
+        const target = parseInt(match[1]);
+        const suffix = match[2]; // captures +, ×, x, etc.
+        const duration = 1500;
+        const start = performance.now();
+        el.textContent = '0' + suffix;
+        
+        function step(now) {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+          const current = Math.round(target * eased);
+          el.textContent = current + suffix;
+          if (progress < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+
+      const statObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const val = entry.target.querySelector('.stat-value');
+            if (val && !val.dataset.counted) {
+              val.dataset.counted = 'true';
+              animateCounter(val);
+            }
+          }
+        });
+      }, { threshold: 0.5 });
+
+      document.querySelectorAll('.stat-card').forEach(card => statObserver.observe(card));
+
+      // Stagger stat cards specifically
+      gsap.utils.toArray('.stats-row').forEach(row => {
+        const cards = row.querySelectorAll('.stat-card');
+        gsap.fromTo(cards, 
+          { y: 40, opacity: 0 },
+          {
+            scrollTrigger: {
+              trigger: row,
+              start: "top 88%",
+              toggleActions: "play none none reverse"
+            },
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: "back.out(1.5)"
+          }
+        );
+      });
+
+      // Counter animation for metrics strip
+      const metricsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !entry.target.dataset.counted) {
+            entry.target.dataset.counted = 'true';
+            const spans = entry.target.querySelectorAll('span[style*="Orbitron"]');
+            spans.forEach(span => {
+              const text = span.textContent.trim();
+              const match = text.match(/^([\d,]+)(.*)/);
+              if (!match) return;
+              const target = parseInt(match[1].replace(/,/g, ''));
+              const suffix = match[2];
+              const hasComma = match[1].includes(',');
+              const duration = 1800;
+              const start = performance.now();
+              function step(now) {
+                const progress = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                let current = Math.round(target * eased);
+                let display = hasComma ? current.toLocaleString() : String(current);
+                span.textContent = display + suffix;
+                if (progress < 1) requestAnimationFrame(step);
+              }
+              requestAnimationFrame(step);
+            });
+          }
+        });
+      }, { threshold: 0.5 });
+      document.querySelectorAll('.metrics-strip').forEach(el => metricsObserver.observe(el));
+
+      // ═══════ SUBTLE CRT SCREEN FLICKER ═══════
+      function scheduleFlicker() {
+        const delay = 30000 + Math.random() * 30000; // 30-60 seconds
+        setTimeout(() => {
+          document.body.style.opacity = '0.97';
+          setTimeout(() => {
+            document.body.style.opacity = '1';
+            scheduleFlicker();
+          }, 100);
+        }, delay);
+      }
+      scheduleFlicker();
+
+      // ═══════ PHOSPHOR BLOOM ON HEADINGS ═══════
+      document.querySelectorAll('.section-header h2, h3, .stat-value, .timeline-title').forEach(el => {
+        el.addEventListener('mouseenter', function() {
+          this.style.transition = 'text-shadow 0.3s ease';
+          this.style.textShadow = '0 0 20px currentColor, 0 0 40px currentColor, 0 0 60px currentColor';
+        });
+        el.addEventListener('mouseleave', function() {
+          this.style.textShadow = '';
+        });
+      });
+
+      // ═══════ ACTIVE ROLE PULSE ON CURRENT TIMELINE ENTRY ═══════
+      document.querySelectorAll('.timeline-date').forEach(el => {
+        if (el.textContent.includes('Current') || el.textContent.includes('CURRENT') || el.textContent.includes('Present')) {
+          el.closest('.timeline-event').style.animation = 'currentRolePulse 3s ease-in-out infinite';
+        }
+      });
+      const pulseStyle = document.createElement('style');
+      pulseStyle.textContent = `
+        @keyframes currentRolePulse {
+          0%, 100% { border-color: rgba(102,255,153,0.3); box-shadow: 0 0 10px rgba(102,255,153,0.1); }
+          50% { border-color: rgba(102,255,153,0.6); box-shadow: 0 0 25px rgba(102,255,153,0.2); }
+        }
+      `;
+      document.head.appendChild(pulseStyle);
+
+      // ═══════ PARALLAX DEPTH ON BACKGROUND ═══════
+      window.addEventListener('scroll', function() {
+        const scrolled = window.pageYOffset;
+        document.body.style.backgroundPositionY = (scrolled * 0.3) + 'px';
+      }, { passive: true });
     });
   </script>
   
