@@ -62,6 +62,8 @@
 
     html {
       scroll-behavior: smooth;
+      overflow-x: hidden;
+      max-width: 100%;
     }
 
     body {
@@ -1098,6 +1100,137 @@
       }
     }
 
+    /* ── MOBILE OVERFLOW GUARDS (≤640px) ── */
+    @media(max-width:640px) {
+      .main-content {
+        padding: 16px 14px 50px 14px;
+      }
+      .classification {
+        padding: 12px 14px !important;
+      }
+      .classification > div:first-child {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center !important;
+      }
+      .classification > div:first-child > div {
+        text-align: center !important;
+      }
+      .lcars-footer {
+        padding: 0 14px;
+      }
+      .lcars-header {
+        min-width: 0;
+      }
+      .lcars-bar-top {
+        padding: 0 12px;
+        gap: 8px;
+        overflow: hidden;
+      }
+      .lcars-bar-top > span,
+      .lcars-bar-top .right-group {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .lcars-bar-top span {
+        font-size: 10px !important;
+        letter-spacing: 1.5px !important;
+      }
+      #picard-btn {
+        font-size: 9px;
+        padding: 5px 9px;
+        letter-spacing: 1px;
+      }
+      .lcars-bar-bottom {
+        padding-left: 12px;
+        overflow: hidden;
+      }
+      .lcars-bar-bottom span {
+        font-size: 10px !important;
+        letter-spacing: 1.5px !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+        width: 100%;
+      }
+      /* Section headers must wrap on mobile */
+      .section-header {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .section-header h2 {
+        white-space: normal !important;
+        font-size: 14px;
+        letter-spacing: 2px;
+        flex-basis: 100%;
+        order: -1;
+      }
+      .section-header .bar {
+        min-width: 40px;
+      }
+      .report-title {
+        font-size: 20px;
+        letter-spacing: 2.5px;
+      }
+      .report-subtitle {
+        font-size: 12px;
+        letter-spacing: 2px;
+      }
+      .stats-row {
+        flex-wrap: wrap;
+      }
+      .stat-card {
+        flex: 0 1 100%;
+        padding: 18px 10px;
+      }
+      .stat-value {
+        font-size: 32px;
+      }
+      .crew-grid {
+        grid-template-columns: 1fr;
+      }
+      table, pre, code {
+        max-width: 100%;
+      }
+      pre {
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      code {
+        word-break: break-word;
+      }
+      .glass-panel {
+        padding: 16px;
+      }
+      .contact-bar {
+        gap: 10px;
+      }
+      .contact-link {
+        padding: 8px 12px;
+        font-size: 11px;
+        letter-spacing: 1px;
+      }
+      .dash-thumb-grid {
+        grid-template-columns: 1fr;
+      }
+      .vis-network-container {
+        height: 400px;
+      }
+      img, canvas, svg, iframe {
+        max-width: 100%;
+        height: auto;
+      }
+      /* Any inline-styled wide flex rows */
+      [style*="max-width: 1400px"],
+      [style*="max-width:1400px"] {
+        max-width: 100% !important;
+      }
+    }
+
     /* ── DASHBOARD LIGHTBOX ─────────────────────────────── */
     .dash-thumb-grid {
       display: grid;
@@ -1296,10 +1429,10 @@
 <body>
 
 <!-- LCARS BOOT OVERLAY -->
-<div id="boot-overlay" style="position:fixed;inset:0;z-index:99999;background:#05050A;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;transition:opacity 0.8s ease;">
-  <div style="font-family:'Orbitron',monospace;font-size:14px;letter-spacing:4px;color:var(--lcars-gold);text-shadow:0 0 20px rgba(241,223,111,0.5);">ZEUSAPOLLO SYSTEMS ONLINE</div>
-  <div style="width:200px;height:3px;background:rgba(241,223,111,0.15);border-radius:2px;overflow:hidden;">
-    <div id="boot-bar" style="width:0%;height:100%;background:linear-gradient(90deg,var(--lcars-gold),var(--lcars-cyan));border-radius:2px;transition:width 1s ease-out;"></div>
+<div id="boot-overlay" style="position:fixed;inset:0;z-index:99999;background:#05050A;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;transition:opacity 0.35s ease;pointer-events:none;">
+  <div style="font-family:'Orbitron',monospace;font-size:13px;letter-spacing:3px;color:var(--lcars-gold);text-shadow:0 0 20px rgba(241,223,111,0.5);">ZEUSAPOLLO ONLINE</div>
+  <div style="width:160px;height:3px;background:rgba(241,223,111,0.15);border-radius:2px;overflow:hidden;">
+    <div id="boot-bar" style="width:0%;height:100%;background:linear-gradient(90deg,var(--lcars-gold),var(--lcars-cyan));border-radius:2px;transition:width 0.4s ease-out;"></div>
   </div>
 </div>
 
@@ -3099,11 +3232,16 @@
       const bootBar = document.getElementById('boot-bar');
       const bootOverlay = document.getElementById('boot-overlay');
       if (bootBar && bootOverlay) {
-        requestAnimationFrame(() => { bootBar.style.width = '100%'; });
-        setTimeout(() => {
-          bootOverlay.style.opacity = '0';
-          setTimeout(() => bootOverlay.remove(), 800);
-        }, 1200);
+        const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduce) {
+          bootOverlay.remove();
+        } else {
+          requestAnimationFrame(() => { bootBar.style.width = '100%'; });
+          setTimeout(() => {
+            bootOverlay.style.opacity = '0';
+            setTimeout(() => bootOverlay.remove(), 350);
+          }, 500);
+        }
       }
 
       spawnWarpStreak();

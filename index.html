@@ -55,6 +55,8 @@
 
     html {
       scroll-behavior: smooth;
+      overflow-x: hidden;
+      max-width: 100%;
     }
 
     body {
@@ -1082,6 +1084,138 @@
       }
     }
 
+    /* ── MOBILE OVERFLOW GUARDS (≤640px) ── */
+    @media(max-width:640px) {
+      .main-content {
+        padding: 16px 14px 50px 14px;
+      }
+      .classification {
+        padding: 12px 14px !important;
+      }
+      .classification > div:first-child {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center !important;
+      }
+      .classification > div:first-child > div {
+        text-align: center !important;
+      }
+      .lcars-footer {
+        padding: 0 14px;
+      }
+      /* Header bar: let long text shrink/ellipsis instead of overflowing */
+      .lcars-header {
+        min-width: 0;
+      }
+      .lcars-bar-top {
+        padding: 0 12px;
+        gap: 8px;
+        overflow: hidden;
+      }
+      .lcars-bar-top > span,
+      .lcars-bar-top .right-group {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .lcars-bar-top span {
+        font-size: 10px !important;
+        letter-spacing: 1.5px !important;
+      }
+      #picard-btn {
+        font-size: 9px;
+        padding: 5px 9px;
+        letter-spacing: 1px;
+      }
+      .lcars-bar-bottom {
+        padding-left: 12px;
+        overflow: hidden;
+      }
+      .lcars-bar-bottom span {
+        font-size: 10px !important;
+        letter-spacing: 1.5px !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+        width: 100%;
+      }
+      /* Section headers: allow wrap on small screens */
+      .section-header {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .section-header h2 {
+        white-space: normal;
+        font-size: 15px;
+        letter-spacing: 2px;
+        flex-basis: 100%;
+        order: -1;
+      }
+      .section-header .bar {
+        min-width: 40px;
+      }
+      .report-title {
+        font-size: 20px;
+        letter-spacing: 2.5px;
+      }
+      .report-subtitle {
+        font-size: 12px;
+        letter-spacing: 2px;
+      }
+      .stats-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .stat-card {
+        padding: 18px 10px;
+      }
+      .stat-value {
+        font-size: 32px;
+      }
+      .crew-grid {
+        grid-template-columns: 1fr;
+      }
+      /* Tame any wide tables / pre / code */
+      table, pre, code {
+        max-width: 100%;
+      }
+      pre {
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      code {
+        word-break: break-word;
+      }
+      .capex-table {
+        display: block;
+        overflow-x: auto;
+      }
+      .glass-panel {
+        padding: 16px;
+      }
+      .contact-bar {
+        gap: 10px;
+      }
+      .contact-link {
+        padding: 8px 12px;
+        font-size: 11px;
+        letter-spacing: 1px;
+      }
+      .metrics-strip {
+        gap: 14px !important;
+      }
+      .dash-thumb-grid {
+        grid-template-columns: 1fr;
+      }
+      img, canvas, svg, iframe {
+        max-width: 100%;
+        height: auto;
+      }
+    }
+
     /* ── DASHBOARD LIGHTBOX ─────────────────────────────── */
     .dash-thumb-grid {
       display: grid;
@@ -1279,10 +1413,10 @@
 <body>
 
 <!-- LCARS BOOT OVERLAY -->
-<div id="boot-overlay" style="position:fixed;inset:0;z-index:99999;background:var(--lcars-bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;transition:opacity 0.8s ease;">
+<div id="boot-overlay" style="position:fixed;inset:0;z-index:99999;background:var(--lcars-bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;transition:opacity 0.4s ease;">
   <div style="font-family:'Orbitron',monospace;font-size:14px;letter-spacing:4px;color:var(--lcars-gold);text-shadow:0 0 20px rgba(241,223,111,0.5);">LCARS INTERFACE LOADING</div>
   <div style="width:200px;height:3px;background:rgba(241,223,111,0.15);border-radius:2px;overflow:hidden;">
-    <div id="boot-bar" style="width:0%;height:100%;background:linear-gradient(90deg,var(--lcars-gold),var(--lcars-cyan));border-radius:2px;transition:width 1s ease-out;"></div>
+    <div id="boot-bar" style="width:0%;height:100%;background:linear-gradient(90deg,var(--lcars-gold),var(--lcars-cyan));border-radius:2px;transition:width 0.5s ease-out;"></div>
   </div>
 </div>
 
@@ -1819,11 +1953,16 @@
       const bootBar = document.getElementById('boot-bar');
       const bootOverlay = document.getElementById('boot-overlay');
       if (bootBar && bootOverlay) {
-        requestAnimationFrame(() => { bootBar.style.width = '100%'; });
-        setTimeout(() => {
-          bootOverlay.style.opacity = '0';
-          setTimeout(() => bootOverlay.remove(), 800);
-        }, 1200);
+        const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduce) {
+          bootOverlay.remove();
+        } else {
+          requestAnimationFrame(() => { bootBar.style.width = '100%'; });
+          setTimeout(() => {
+            bootOverlay.style.opacity = '0';
+            setTimeout(() => bootOverlay.remove(), 400);
+          }, 600);
+        }
       }
 
       // Back to top button
