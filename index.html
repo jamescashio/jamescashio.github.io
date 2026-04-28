@@ -2159,9 +2159,40 @@
         terminal.style.display = 'block';
 
         const { browser, os } = getBrowserAndOS();
-        
-        // GSAP show terminal box
-        gsap.from(terminal, { duration: 0.5, height: 0, opacity: 0, ease: "power2.out" });
+        const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // Show terminal box (skip animation when reduced-motion is requested)
+        if (reduceMotion) {
+          gsap.set(terminal, { height: 'auto', opacity: 1 });
+        } else {
+          gsap.from(terminal, { duration: 0.5, height: 0, opacity: 0, ease: "power2.out" });
+        }
+
+        // Render lines as full strings with a gentle opacity fade — never partial words.
+        // Each line element starts hidden, then snaps to its complete text and fades in.
+        function revealLines(lines) {
+          const ids = ["#term-line-1", "#term-line-2", "#term-line-3", "#term-line-4"];
+          ids.forEach(id => {
+            const el = document.querySelector(id);
+            if (el) el.style.opacity = '0';
+          });
+          // Set complete text immediately so any screenshot captures whole phrases.
+          Object.entries(lines).forEach(([id, value]) => {
+            const el = document.querySelector(id);
+            if (el) el.textContent = value;
+          });
+          if (reduceMotion) {
+            ids.forEach(id => {
+              const el = document.querySelector(id);
+              if (el) el.style.opacity = '1';
+            });
+            return;
+          }
+          const termTl = gsap.timeline();
+          Object.keys(lines).forEach((id, i) => {
+            termTl.to(id, { duration: 0.4, opacity: 1, ease: "power2.out" }, i === 0 ? 0 : "+=0.25");
+          });
+        }
 
         // Fetch IP and Geo
         fetch('https://ipapi.co/json/')
@@ -2171,19 +2202,19 @@
             const city = data.city || 'Unknown Sector';
             const region = data.region || 'Unknown Region';
             const country = data.country_name || 'Earth';
-
-            const termTl = gsap.timeline();
-            
-            termTl.to("#term-line-1", { duration: 1, text: `ESTABLISHING SECURE HANDSHAKE... SUCCESS`, ease: "none" })
-                  .to("#term-line-2", { duration: 1.5, text: `INCOMING CONNECTION DETECTED: ${ip}`, ease: "none" }, "+=0.2")
-                  .to("#term-line-3", { duration: 3, text: `ANALYZING TELEMETRY... ORIGIN: ${city}, ${region}, ${country} | PLATFORM: ${os} / ${browser}`, ease: "none" }, "+=0.2")
-                  .to("#term-line-4", { duration: 2, text: `CLEARANCE GRANTED. WELCOME, VISITOR.`, ease: "none" }, "+=0.4");
+            revealLines({
+              "#term-line-1": `ESTABLISHING SECURE HANDSHAKE... SUCCESS`,
+              "#term-line-2": `INCOMING CONNECTION DETECTED: ${ip}`,
+              "#term-line-3": `ANALYZING TELEMETRY... ORIGIN: ${city}, ${region}, ${country} | PLATFORM: ${os} / ${browser}`,
+              "#term-line-4": `CLEARANCE GRANTED. WELCOME, VISITOR.`
+            });
           })
           .catch(err => {
-            const termTl = gsap.timeline();
-            termTl.to("#term-line-1", { duration: 1, text: `ESTABLISHING SECURE HANDSHAKE... FAILED`, ease: "none" })
-                  .to("#term-line-2", { duration: 1.5, text: `TELEMETRY BLOCKED BY LOCAL FIREWALL.`, ease: "none" }, "+=0.2")
-                  .to("#term-line-4", { duration: 1.5, text: `GUEST CLEARANCE GRANTED. WELCOME.`, ease: "none" }, "+=0.4");
+            revealLines({
+              "#term-line-1": `ESTABLISHING SECURE HANDSHAKE... FAILED`,
+              "#term-line-2": `TELEMETRY BLOCKED BY LOCAL FIREWALL.`,
+              "#term-line-4": `GUEST CLEARANCE GRANTED. WELCOME.`
+            });
           });
       }
 

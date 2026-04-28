@@ -3852,25 +3852,26 @@
     })();
 
     // ══════════════════════════════════════════════════════════
-    // SECTION HEADER TYPEWRITER (Change 6d)
+    // SECTION HEADER REVEAL (was typewriter — now whole-word fade
+    // to avoid mid-word states in load-time screenshots / validators)
     // ══════════════════════════════════════════════════════════
-    (function initTypewriter() {
-      if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined' || typeof TextPlugin === 'undefined') return;
-      gsap.registerPlugin(TextPlugin);
+    (function initSectionHeaderReveal() {
+      if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+      const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const headers = document.querySelectorAll('.section-header h2');
       headers.forEach(h => {
-        const originalText = h.textContent;
-        h.textContent = '';
+        // Text always stays in the DOM as the full string — never blanked.
+        if (reduceMotion) {
+          h.style.opacity = '1';
+          return;
+        }
+        gsap.set(h, { opacity: 0, y: 8 });
         ScrollTrigger.create({
           trigger: h,
           start: 'top 88%',
           once: true,
           onEnter: () => {
-            gsap.to(h, {
-              duration: originalText.length * 0.04,
-              text: { value: originalText, delimiter: '' },
-              ease: 'none'
-            });
+            gsap.to(h, { duration: 0.5, opacity: 1, y: 0, ease: 'power2.out' });
           }
         });
       });
