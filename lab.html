@@ -1423,6 +1423,108 @@
       filter: brightness(1.3);
       box-shadow: 0 0 20px rgba(255,255,255,0.25);
     }
+
+    /* ── PRIME DIRECTIVE COMMAND CARD ── */
+    .prime-directive {
+      position: relative;
+      display: grid;
+      grid-template-columns: 56px 1fr auto;
+      gap: 18px;
+      align-items: center;
+      padding: 16px 22px;
+      margin: 18px 0 22px 0;
+      background: rgba(241,223,111,0.04);
+      border: 1px solid rgba(241,223,111,0.35);
+      border-left: 4px solid var(--lcars-gold);
+      border-radius: 10px;
+      box-shadow: 0 2px 18px rgba(0,0,0,0.35), inset 0 0 14px rgba(241,223,111,0.04);
+    }
+    .prime-directive::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: -1px; right: -1px; bottom: -1px;
+      border-radius: 10px;
+      pointer-events: none;
+      border: 1px solid transparent;
+      box-shadow: 0 0 0 1px rgba(102,204,204,0.12);
+    }
+    .prime-directive-sigil {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: radial-gradient(circle at 35% 30%, rgba(241,223,111,0.18), rgba(241,223,111,0.02) 70%);
+      border: 1px solid rgba(241,223,111,0.5);
+      font-family: 'Orbitron', monospace;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--lcars-gold);
+      letter-spacing: 1px;
+      box-shadow: inset 0 0 12px rgba(241,223,111,0.15);
+    }
+    .prime-directive-sigil span { line-height: 1; }
+    .prime-directive-body {
+      min-width: 0;
+    }
+    .prime-directive-label {
+      font-family: 'Orbitron', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--lcars-gold);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+    .prime-directive-text {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--text-primary);
+      letter-spacing: 0.4px;
+    }
+    .prime-directive-text strong { color: var(--lcars-cyan); }
+    .prime-directive-meta {
+      display: flex; flex-direction: column; gap: 4px;
+      align-items: flex-end;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    .prime-directive-meta .pd-eleven {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 3px 9px;
+      border: 1px solid rgba(102,255,153,0.4);
+      border-radius: 999px;
+      color: #66FF99;
+      background: rgba(102,255,153,0.07);
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+    .prime-directive-meta .pd-eleven::before {
+      content: '';
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #66FF99;
+      box-shadow: 0 0 8px rgba(102,255,153,0.7);
+      animation: heartbeat 2s ease-in-out infinite;
+    }
+    @media (max-width: 720px) {
+      .prime-directive {
+        grid-template-columns: 44px 1fr;
+        gap: 12px;
+        padding: 14px;
+      }
+      .prime-directive-sigil { width: 44px; height: 44px; font-size: 16px; }
+      .prime-directive-meta {
+        grid-column: 1 / -1;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .prime-directive-meta .pd-eleven::before { animation: none; }
+    }
   </style>
 </head>
 
@@ -1517,9 +1619,24 @@
           12 ACTIVE NODES &bull; ~18TB STORAGE &bull; 3-TIER LLM ROUTING &bull; 720h ADGUARD CAP
         </div>
         <div style="margin-left:auto; font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:1.5px; color:var(--lcars-gold);">
-          PRIME DIRECTIVE: PRESERVE USABILITY &bull; STAGE DEEPMIND/GCP SPRINT
+          DEEPMIND / GCP SPRINT &mdash; STAGED
         </div>
       </div>
+
+      <!-- ═════════ PRIME DIRECTIVE — COMMAND CARD ═════════ -->
+      <section class="prime-directive animate-in" style="animation-delay:0.19s;" role="note" aria-labelledby="prime-directive-label">
+        <div class="prime-directive-sigil" aria-hidden="true"><span>PD</span></div>
+        <div class="prime-directive-body">
+          <div id="prime-directive-label" class="prime-directive-label">Prime Directive &mdash; v15</div>
+          <div class="prime-directive-text">
+            Preserve a usable, working fleet. Stage the <strong>DeepMind / GCP Cloud Run / Vertex AI</strong> sprint without destabilizing the 3-tier LLM fabric. Security cleanup is a scheduled June workstream &mdash; documented, not deferred quietly. <em style="color:var(--lcars-gold); font-style:normal;">Make it so.</em>
+          </div>
+        </div>
+        <div class="prime-directive-meta" aria-hidden="true">
+          <span class="pd-eleven">PUSH&nbsp;TO&nbsp;11</span>
+          <span>v15 BASELINE &middot; STARDATE 2026.117</span>
+        </div>
+      </section>
 
       <!-- PUBLIC SAFETY NOTE -->
       <div class="animate-in" style="animation-delay:0.20s; padding:10px 16px; margin:0 0 18px 0; background:rgba(204,102,102,0.05); border:1px dashed rgba(204,102,102,0.35); border-radius:6px; font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:1px; color:var(--text-secondary); line-height:1.6;">
@@ -1756,7 +1873,7 @@
             </tr>
             <tr>
               <td><strong>Cloud</strong></td>
-              <td>GCP us-central1-a NemoClaw, Cloud Run / Vertex runway</td>
+              <td>GCP us-central1 &mdash; Cloud Run / Vertex AI sprint runway</td>
               <td class="highlight" style="color:#66FF99;">ACTIVE</td>
             </tr>
             <tr>
@@ -1900,7 +2017,7 @@
           <div class="timeline-event">
             <div class="timeline-date">PHASE 3 — MULTI-VECTOR OPERATIONS (APR 2026)</div>
             <div class="timeline-title">Cluster, SIEM, Cloud</div>
-            <div class="timeline-desc">Zeus converted to Proxmox PVE 9.1.6 &mdash; zeusapollo cluster established with Apollo, Athena QDevice. Wazuh SIEM live on dedicated SIEM container. Plex media stack consolidated to a single architecture (Dionysus NVENC primary, Hermes Quick Sync secondary). NemoClaw on GCP Cloud Run, ~$265 in credits. GCP Cloud Run MCP gateway architected with Bearer Token auth and Vertex AI access.</div>
+            <div class="timeline-desc">Zeus converted to Proxmox PVE 9.1.6 &mdash; zeusapollo cluster established with Apollo, Athena QDevice. Wazuh SIEM live on dedicated SIEM container. Plex media stack consolidated to a single architecture (Dionysus NVENC primary, Hermes Quick Sync secondary). GCP Cloud Run / Vertex AI runway opened with active credits. GCP Cloud Run MCP gateway architected with Bearer Token auth and Vertex AI access.</div>
           </div>
           <div class="timeline-event" style="border-color:rgba(102,204,204,0.5); background:rgba(102,204,204,0.05);">
             <div class="timeline-date" style="color:var(--lcars-cyan);">PHASE 3.5 / v15 BASELINE — CURRENT (APR 27 2026)</div>
@@ -2019,10 +2136,10 @@
         </div>
         <div class="crew-card">
           <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:var(--lcars-orange);border-radius:4px 0 0 4px;"></div>
-          <div class="crew-rank" style="color:var(--lcars-orange);">CLOUD WARFARE SPECIALIST</div>
-          <div class="crew-name">NemoClaw (NVIDIA Nemotron 120B)</div>
-          <div class="crew-role">GCP Cloud Run — Heavy Inference &amp; Enterprise Scale</div>
-          <div class="crew-desc">Deployed on GCP Cloud Run VM (nemoclaw-zeusapollo, us-central1-a) running NVIDIA's Nemotron 120B model. The fleet's heavy cruiser — when local inference needs reinforcement, NemoClaw provides enterprise-scale reasoning power from the cloud.</div>
+          <div class="crew-rank" style="color:var(--lcars-orange);">CLOUD AI SPRINT — RUNWAY OPEN</div>
+          <div class="crew-name">GCP Cloud Run &middot; Vertex AI</div>
+          <div class="crew-role">Heavy Inference &amp; Enterprise-Scale Reasoning Runway</div>
+          <div class="crew-desc">Active GCP Cloud Run / Vertex AI experimentation runway in us-central1, funded with cloud credits and gated by a Bearer Token MCP gateway. The fleet's reinforcement lane &mdash; when the DeepMind/GCP sprint kicks off, this is where heavy reasoning, embeddings, and multi-agent stress testing run.</div>
         </div>
         <div class="crew-card">
           <div
@@ -2379,7 +2496,7 @@
             </tr>
             <tr>
               <td class="highlight" style="color:var(--lcars-cyan);">Autonomous Agent Testing</td>
-              <td>IN PROGRESS &mdash; Validating multi-agent autonomous workflows across fleet (OpenClaw, NemoClaw, GA)</td>
+              <td>IN PROGRESS &mdash; Validating multi-agent autonomous workflows across fleet (OpenClaw, GCP/Vertex sprint, GA)</td>
               <td>Q2 2026</td>
               <td>Phase 3 Ops</td>
             </tr>
@@ -3464,7 +3581,7 @@
         { id: 'XAI',      label: '\u{1F9E0} xAI Grok 4.20\nReasoning Primary\nxAI public API',                   shape: 'box', color: { background: '#0d2233', border: C.cyan },   font: { color: C.cyan,    size: 12, face: 'Orbitron' } },
         { id: 'NAS',      label: '\u{1F4BE} GENESIS NAS\nWD EX2 Ultra\nNFS Storage',                          shape: 'box', color: { background: '#2a1a3a', border: C.lavender }, font: { color: C.lavender, size: 13, face: 'Orbitron' } },
         { id: 'ATHENA',   label: '\u{1F967} ATHENA (RPi4)\nRPi OS Lite\nGeneral Purpose Node',                                    shape: 'box', color: { background: C.dark,   border: C.blue },    font: { color: C.blue,    size: 13, face: 'Orbitron' } },
-        { id: 'GCP',      label: '\u2601\uFE0F GCP CLOUD\nNemoClaw VM\nCloud Run MCP\nVertex AI',                                  shape: 'box', color: { background: '#1a2a1a', border: C.green },   font: { color: C.green,   size: 13, face: 'Orbitron' } }
+        { id: 'GCP',      label: '\u2601\uFE0F GCP CLOUD\nCloud Run / Vertex AI\nMCP Gateway (Bearer)\nSprint Runway',           shape: 'box', color: { background: '#1a2a1a', border: C.green },   font: { color: C.green,   size: 13, face: 'Orbitron' } }
       ]);
 
       const edges = new vis.DataSet([
