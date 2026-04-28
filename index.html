@@ -1528,12 +1528,12 @@
         </a>
       </div>
 
-      <!-- IDENTITY TERMINAL OVERRIDE -->
-      <div class="identity-terminal animate-in" style="animation-delay: 0.3s; display: none;">
-        <div class="terminal-line"><span class="terminal-prefix">&gt;</span><span id="term-line-1"></span></div>
-        <div class="terminal-line"><span class="terminal-prefix">&gt;</span><span id="term-line-2"></span></div>
-        <div class="terminal-line"><span class="terminal-prefix">&gt;</span><span id="term-line-3"></span></div>
-        <div class="terminal-line" style="margin-top: 10px; color: #66FF99; text-shadow: 0 0 8px rgba(102,255,153,0.5); font-weight: bold;"><span class="terminal-prefix" style="color:#66FF99">&gt;</span><span id="term-line-4"></span><span class="cursor" style="display:inline-block; width:8px; height:15px; background:#66FF99; margin-left:4px; animation:blink 1s infinite;"></span></div>
+      <!-- IDENTITY TERMINAL (STATIC FULL-LINE RENDER) -->
+      <div class="identity-terminal animate-in" style="animation-delay: 0.3s;">
+        <div class="terminal-line"><span class="terminal-prefix">&gt;</span>ESTABLISHING SECURE HANDSHAKE... SUCCESS</div>
+        <div class="terminal-line"><span class="terminal-prefix">&gt;</span>INCOMING CONNECTION DETECTED: VISITOR SESSION</div>
+        <div class="terminal-line"><span class="terminal-prefix">&gt;</span>ANALYZING TELEMETRY... CLIENT SYSTEM PROFILE REDACTED</div>
+        <div class="terminal-line" style="margin-top: 10px; color: #66FF99; text-shadow: 0 0 8px rgba(102,255,153,0.5); font-weight: bold;"><span class="terminal-prefix" style="color:#66FF99">&gt;</span>CLEARANCE GRANTED. WELCOME, VISITOR.<span class="cursor" style="display:inline-block; width:8px; height:15px; background:#66FF99; margin-left:4px; animation:blink 1s infinite; vertical-align: middle;"></span></div>
       </div>
       
       <style>
@@ -2129,101 +2129,11 @@
       animateParticles();
 
       // ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ
-      // IDENTITY TERMINAL LOGIC
-      // ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ
-      function getBrowserAndOS() {
-        const ua = navigator.userAgent;
-        let browser = 'Unknown Browser';
-        let os = 'Unknown OS';
-
-        if (ua.indexOf("Firefox") > -1) browser = "Firefox";
-        else if (ua.indexOf("SamsungBrowser") > -1) browser = "Samsung Browser";
-        else if (ua.indexOf("Opera") > -1 || ua.indexOf("OPR") > -1) browser = "Opera";
-        else if (ua.indexOf("Trident") > -1) browser = "I.E.";
-        else if (ua.indexOf("Edge") > -1) browser = "Edge";
-        else if (ua.indexOf("Chrome") > -1) browser = "Chrome";
-        else if (ua.indexOf("Safari") > -1) browser = "Safari";
-
-        if (ua.indexOf("Win") > -1) os = "Windows";
-        else if (ua.indexOf("Mac") > -1) os = "MacOS";
-        else if (ua.indexOf("Linux") > -1) os = "Linux";
-        else if (ua.indexOf("Android") > -1) os = "Android";
-        else if (ua.indexOf("like Mac") > -1) os = "iOS";
-
-        return { browser, os };
-      }
-
-      function initIdentityTerminal() {
-        const terminal = document.querySelector('.identity-terminal');
-        if (!terminal) return;
-        terminal.style.display = 'block';
-
-        const { browser, os } = getBrowserAndOS();
-        const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-        // Show terminal box (skip animation when reduced-motion is requested)
-        if (reduceMotion) {
-          gsap.set(terminal, { height: 'auto', opacity: 1 });
-        } else {
-          gsap.from(terminal, { duration: 0.5, height: 0, opacity: 0, ease: "power2.out" });
-        }
-
-        // Render lines as full strings with a gentle opacity fade — never partial words.
-        // Lines are populated SYNCHRONOUSLY with complete fallback text up front so any
-        // screenshot — even one captured before network/geo lookup completes — sees whole
-        // phrases. Geo-dependent lines are upgraded in place once the fetch resolves.
-        const ids = ["#term-line-1", "#term-line-2", "#term-line-3", "#term-line-4"];
-        const elMap = {};
-        ids.forEach(id => { elMap[id] = document.querySelector(id); });
-
-        function setLine(id, value) {
-          if (elMap[id]) elMap[id].textContent = value;
-        }
-
-        // Initial complete-string render (no partial words possible).
-        setLine("#term-line-1", `ESTABLISHING SECURE HANDSHAKE... SUCCESS`);
-        setLine("#term-line-2", `INCOMING CONNECTION DETECTED: RESOLVING...`);
-        setLine("#term-line-3", `ANALYZING TELEMETRY... PLATFORM: ${os} / ${browser}`);
-        setLine("#term-line-4", `CLEARANCE GRANTED. WELCOME, VISITOR.`);
-
-        // Hide for fade-in (skip when reduced-motion is requested).
-        if (!reduceMotion) {
-          ids.forEach(id => { if (elMap[id]) elMap[id].style.opacity = '0'; });
-          const termTl = gsap.timeline();
-          ids.forEach((id, i) => {
-            termTl.to(id, { duration: 0.4, opacity: 1, ease: "power2.out" }, i === 0 ? 0 : "+=0.25");
-          });
-        } else {
-          ids.forEach(id => { if (elMap[id]) elMap[id].style.opacity = '1'; });
-        }
-
-        // Upgrade geo-dependent lines once IP lookup resolves. textContent is replaced
-        // atomically with the full new string — never character-by-character.
-        fetch('https://ipapi.co/json/')
-          .then(res => res.json())
-          .then(data => {
-            const ip = data.ip || 'UNKNOWN.IP';
-            const city = data.city || 'Unknown Sector';
-            const region = data.region || 'Unknown Region';
-            const country = data.country_name || 'Earth';
-            setLine("#term-line-2", `INCOMING CONNECTION DETECTED: ${ip}`);
-            setLine("#term-line-3", `ANALYZING TELEMETRY... ORIGIN: ${city}, ${region}, ${country} | PLATFORM: ${os} / ${browser}`);
-          })
-          .catch(() => {
-            setLine("#term-line-1", `ESTABLISHING SECURE HANDSHAKE... FAILED`);
-            setLine("#term-line-2", `TELEMETRY BLOCKED BY LOCAL FIREWALL.`);
-            setLine("#term-line-4", `GUEST CLEARANCE GRANTED. WELCOME.`);
-          });
-      }
-
-      // ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ
       // GSAP LCARS BOOT SEQUENCE & SCROLL ANIMATIONS
       // ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ
-      gsap.registerPlugin(ScrollTrigger, TextPlugin);
+      gsap.registerPlugin(ScrollTrigger);
 
-      const bootTl = gsap.timeline({
-        onComplete: initIdentityTerminal
-      });
+      const bootTl = gsap.timeline();
       
       bootTl.fromTo(".lcars-elbow", { x: -250, opacity: 0 }, { duration: 0.8, x: 0, opacity: 1, ease: "power3.out" })
             .fromTo(".lcars-bar-top span, .top-warp-core", { opacity: 0 }, { duration: 0.6, opacity: 1, stagger: 0.1, ease: "power2.out" }, "-=0.4")
@@ -2411,7 +2321,6 @@
   <!-- GSAP Library & Plugins -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
 </body>
 
 </html>
