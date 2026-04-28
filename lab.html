@@ -6,16 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Doug Cashio — Enterprise AI & Cybersecurity Solutions Architect</title>
   <meta name="description"
-    content="Doug Cashio — Principal Solutions Consultant specializing in cybersecurity, AI infrastructure, and multi-agent orchestration. Enterprise AI portfolio, April 2026.">
+    content="ZeusApollo Lab — v15 baseline (April 27, 2026). 12-node sovereign AI fleet with 3-tier LLM routing: xAI Grok 4.20 reasoning, ATLAS Mac Mini M4 edge, CashioTUF GPU fallback. Native MCP control plane.">
 
-  <meta property="og:title" content="Doug Cashio — Enterprise AI & Cybersecurity Solutions Architect">
+  <meta property="og:title" content="ZeusApollo Lab — v15 Baseline | Doug Cashio">
   <meta property="og:description"
-    content="Principal Solutions Consultant specializing in cybersecurity, AI infrastructure, and multi-agent orchestration. Enterprise-grade sovereign AI portfolio.">
+    content="v15 ZeusApollo Network Assessment — 12 active nodes, ~18TB storage, 3-tier LLM routing, ATLAS edge AI, native MCP. Enterprise-grade sovereign AI infrastructure portfolio.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Doug Cashio — Enterprise AI & Cybersecurity Solutions Architect">
+  <meta name="twitter:title" content="ZeusApollo Lab — v15 Baseline | Doug Cashio">
   <meta name="twitter:description"
-    content="Enterprise-grade sovereign AI infrastructure. Multi-agent orchestration. Zero Trust security.">
+    content="v15 baseline — 3-tier LLM fabric, ATLAS edge AI, native MCP control plane, Wazuh SIEM, GCP Cloud Run.">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"
     integrity="sha384-vsrfeLOOY6KuIYKDlmVH5UiBmgIdB1oEf7p01YgWHuqmOHfZr374+odEv96n9tNC"
     crossorigin="anonymous"></script>
@@ -1324,33 +1324,41 @@
           <div class="seg4"></div>
         </div>
         <div class="lcars-bar-bottom">
-          <span>UNITED FEDERATION OF HOMELABS — GULF COAST SECTOR — CLASSIFICATION: PUBLIC RELEASE</span>
+          <span>v15 NETWORK ASSESSMENT BASELINE — GULF COAST SECTOR — CLASSIFICATION: PUBLIC RELEASE</span>
         </div>
       </div>
     </div>
 
     <!-- ═══════════ SIDEBAR ═══════════ -->
     <div class="lcars-sidebar">
+      <a class="lcars-sidebar-seg" style="background:var(--lcars-cyan);color:#222;" href="#v15-deltas"
+        onclick="scrollToSection(event,'v15-deltas')">00 v15 DELTAS</a>
+      <a class="lcars-sidebar-seg" style="background:var(--lcars-gold);color:#222;" href="#llm-fabric"
+        onclick="scrollToSection(event,'llm-fabric')">01 LLM FABRIC</a>
+      <a class="lcars-sidebar-seg" style="background:var(--lcars-blue);" href="#fleet-map"
+        onclick="scrollToSection(event,'fleet-map')">02 FLEET MAP</a>
+      <a class="lcars-sidebar-seg" style="background:var(--lcars-teal);color:#222;" href="#atlas-hermes"
+        onclick="scrollToSection(event,'atlas-hermes')">03 ATLAS+HERMES</a>
       <a class="lcars-sidebar-seg" style="background:var(--lcars-gold);" href="#mission-log"
-        onclick="scrollToSection(event,'mission-log')">01 MISSION LOG</a>
+        onclick="scrollToSection(event,'mission-log')">04 MISSION LOG</a>
       <a class="lcars-sidebar-seg" style="background:var(--lcars-orange);" href="#crew-setup"
-        onclick="scrollToSection(event,'crew-setup')">02 CREW SETUP</a>
+        onclick="scrollToSection(event,'crew-setup')">05 CREW SETUP</a>
       <a class="lcars-sidebar-seg" style="background:var(--lcars-peach);color:#222;" href="#status-report"
-        onclick="scrollToSection(event,'status-report')">03 STATUS</a>
+        onclick="scrollToSection(event,'status-report')">06 STATUS</a>
       <a class="lcars-sidebar-seg" style="background:var(--lcars-blue);" href="#visualizations"
-        onclick="scrollToSection(event,'visualizations')">04 VISUALS</a>
+        onclick="scrollToSection(event,'visualizations')">07 VISUALS</a>
       <a class="lcars-sidebar-seg" style="background:var(--lcars-lavender);color:#222;" href="#future-plans"
-        onclick="scrollToSection(event,'future-plans')">05 TRAJECTORY</a>
-      <a class="lcars-sidebar-seg" style="background:var(--lcars-gold);color:#222;" href="#zeusapollo-ecosystem"
-        onclick="scrollToSection(event,'zeusapollo-ecosystem')">05A ECOSYSTEM</a>
+        onclick="scrollToSection(event,'future-plans')">08 ROADMAP</a>
+      <a class="lcars-sidebar-seg" style="background:var(--lcars-red);" href="#risk-register"
+        onclick="scrollToSection(event,'risk-register')">09 RISK</a>
       <a class="lcars-sidebar-seg" style="background:var(--lcars-red);" href="#dashboards"
-        onclick="scrollToSection(event,'dashboards')">05B DASHBOARDS</a>
+        onclick="scrollToSection(event,'dashboards')">10 DASHBOARDS</a>
       <a class="lcars-sidebar-seg" style="background:var(--lcars-cyan);color:#222;" href="#capex"
-        onclick="scrollToSection(event,'capex')">06 CAPEX CASE</a>
+        onclick="scrollToSection(event,'capex')">11 CAPEX</a>
       <a class="lcars-sidebar-seg" style="background:var(--lcars-lavender);color:#222;" href="#wish-list"
-        onclick="scrollToSection(event,'wish-list')">07 WISH LIST</a>
+        onclick="scrollToSection(event,'wish-list')">12 WISH LIST</a>
       <a class="lcars-sidebar-seg" style="background:var(--lcars-peach);color:#222;" href="#aspirations"
-        onclick="scrollToSection(event,'aspirations')">08 ASPIRATIONS</a>
+        onclick="scrollToSection(event,'aspirations')">13 DRIVE</a>
       <div class="lcars-sidebar-spacer"></div>
     </div>
 
@@ -1363,7 +1371,21 @@
 
       <h1 class="report-title animate-in">DOUG CASHIO — ENTERPRISE AI & CYBERSECURITY SOLUTIONS ARCHITECT</h1>
       <div class="report-subtitle animate-in" style="animation-delay:0.15s">
-        ZEUSAPOLLO COMMAND &mdash; AI INFRASTRUCTURE &amp; CYBERSECURITY PORTFOLIO &mdash; PUBLIC RELEASE &mdash; APRIL 2026 &mdash; UPDATED
+        ZEUSAPOLLO COMMAND &mdash; v15 NETWORK ASSESSMENT BASELINE &mdash; APRIL 27, 2026 &mdash; PENSACOLA, FL &mdash; PUBLIC RELEASE
+      </div>
+
+      <!-- v15 BASELINE BANNER -->
+      <div class="animate-in" style="animation-delay:0.18s; display:flex; flex-wrap:wrap; align-items:center; gap:14px; padding:12px 18px; margin:14px 0 18px 0; background:linear-gradient(90deg, rgba(102,204,204,0.08), rgba(241,223,111,0.04)); border:1px solid rgba(102,204,204,0.3); border-radius:8px;">
+        <div style="display:inline-flex; align-items:center; gap:10px;">
+          <span style="display:inline-block; width:9px; height:9px; border-radius:50%; background:#66FF99; box-shadow:0 0 10px rgba(102,255,153,0.7); animation:heartbeat 2s ease-in-out infinite;"></span>
+          <span style="font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:2px; color:var(--lcars-cyan);">v15 BASELINE &mdash; TESTLAB STABLE</span>
+        </div>
+        <div style="font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:1.5px; color:var(--text-secondary);">
+          12 ACTIVE NODES &bull; ~18TB STORAGE &bull; 3-TIER LLM ROUTING &bull; 720h ADGUARD CAP
+        </div>
+        <div style="margin-left:auto; font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:1.5px; color:var(--lcars-gold);">
+          PRIME DIRECTIVE: PRESERVE USABILITY &bull; STAGE DEEPMIND/GCP SPRINT
+        </div>
       </div>
 
       <!-- CONTACT BAR -->
@@ -1396,12 +1418,288 @@
         <p style="font-size:16px;">
           <strong style="color:var(--lcars-gold);">Commanding Officer:</strong> Admiral Doug Cashio, Principal Solutions
           Consultant — Enterprise SaaS &amp; Cybersecurity<br>
-          <strong style="color:var(--lcars-gold);">Report Prepared:</strong> <span id="auto-stardate">Stardate 2026.072 (March 13, 2026)</span><br>
-
-          <strong style="color:var(--lcars-gold);">Classification:</strong> PUBLIC RELEASE — Portfolio Showcase<br>
-          <strong style="color:var(--lcars-teal);">Total Investment:</strong> ~500+ Hours Homelab Architecture &amp; AI
+          <strong style="color:var(--lcars-gold);">Report Prepared:</strong> <span id="auto-stardate">Stardate 2026.117 (April 27, 2026)</span> &mdash; v15 Network Assessment baseline<br>
+          <strong style="color:var(--lcars-gold);">Classification:</strong> PUBLIC RELEASE — Portfolio Showcase &mdash; No secrets, API keys, or credentials reproduced<br>
+          <strong style="color:var(--lcars-teal);">Total Investment:</strong> 500+ Hours Homelab Architecture &amp; AI
           Engineering | 3.5 Years LLM Experience (Since ChatGPT, Nov 2022)
         </p>
+      </div>
+
+      <!-- ═══════════════════════════════════
+         v15 EXECUTIVE DELTAS — AT A GLANCE
+       ═══════════════════════════════════ -->
+      <div class="section-header" id="v15-deltas">
+        <div class="bar" style="background:linear-gradient(90deg,var(--lcars-cyan),transparent);"></div>
+        <h2 style="color:var(--lcars-cyan);">v15 EXECUTIVE DELTAS</h2>
+        <div class="bar" style="background:linear-gradient(90deg,transparent,var(--lcars-cyan));"></div>
+      </div>
+
+      <div class="glass-panel" style="border-left:3px solid var(--lcars-cyan);">
+        <p style="margin-bottom:18px;">v15 converts completed implementation work into the standing baseline and
+          moves deferred security work into a June lane. Six material changes since v14:</p>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:14px;">
+
+          <div style="padding:16px; background:rgba(102,255,153,0.05); border:1px solid rgba(102,255,153,0.25); border-left:3px solid #66FF99; border-radius:8px;">
+            <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:#66FF99; margin-bottom:6px;">COMPLETE</div>
+            <h3 style="color:var(--lcars-gold); font-size:14px; margin-bottom:8px;">ATLAS PLEX REMOVAL</h3>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Plex fully removed from ATLAS &mdash; no service, process, launchd item, or metadata residue. Single-Plex media topology restored.</p>
+          </div>
+
+          <div style="padding:16px; background:rgba(102,255,153,0.05); border:1px solid rgba(102,255,153,0.25); border-left:3px solid #66FF99; border-radius:8px;">
+            <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:#66FF99; margin-bottom:6px;">COMPLETE</div>
+            <h3 style="color:var(--lcars-gold); font-size:14px; margin-bottom:8px;">ATLAS UPS PROTECTION</h3>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Mac Mini M4 and external storage SSDs now on UPS. Brownout / power-loss risk for the edge AI node closed.</p>
+          </div>
+
+          <div style="padding:16px; background:rgba(102,255,153,0.05); border:1px solid rgba(102,255,153,0.25); border-left:3px solid #66FF99; border-radius:8px;">
+            <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:#66FF99; margin-bottom:6px;">VERIFIED</div>
+            <h3 style="color:var(--lcars-gold); font-size:14px; margin-bottom:8px;">ATLAS OLLAMA EDGE</h3>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Ollama v0.21.2_1 running as a system LaunchDaemon, bound to LAN, validated by chat completions from CT105. llama3.1:8b, qwen2.5:14b, nomic-embed-text staged.</p>
+          </div>
+
+          <div style="padding:16px; background:rgba(102,255,153,0.05); border:1px solid rgba(102,255,153,0.25); border-left:3px solid #66FF99; border-radius:8px;">
+            <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:#66FF99; margin-bottom:6px;">COMPLETE</div>
+            <h3 style="color:var(--lcars-gold); font-size:14px; margin-bottom:8px;">HERMES PROVIDER REPAIR</h3>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Invalid <code style="color:var(--lcars-teal); font-size:12px;">openai_compatible</code> provider removed. CT105 Hermes now routes xAI Grok 4.20 reasoning through a custom provider schema. Service active, no auth failures.</p>
+          </div>
+
+          <div style="padding:16px; background:rgba(102,255,153,0.05); border:1px solid rgba(102,255,153,0.25); border-left:3px solid #66FF99; border-radius:8px;">
+            <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:#66FF99; margin-bottom:6px;">VERIFIED</div>
+            <h3 style="color:var(--lcars-gold); font-size:14px; margin-bottom:8px;">CASHIOTUF LOCAL MODEL</h3>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">CashioTUF .116 corrected to LM Studio 0.4.12 (not Ollama). google/gemma-4-e4b on RTX 3080. Role: GPU fallback / local specialist.</p>
+          </div>
+
+          <div style="padding:16px; background:rgba(102,255,153,0.05); border:1px solid rgba(102,255,153,0.25); border-left:3px solid #66FF99; border-radius:8px;">
+            <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:#66FF99; margin-bottom:6px;">RESOLVED</div>
+            <h3 style="color:var(--lcars-gold); font-size:14px; margin-bottom:8px;">CT101 ADGUARD HEALTH</h3>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Querylog retention capped at 720h. Disk pressure dropped from <strong style="color:var(--lcars-red);">63.4% rising</strong> to <strong style="color:#66FF99;">~7% steady-state</strong>. No raw SQLite surgery required.</p>
+          </div>
+
+          <div style="padding:16px; background:rgba(255,153,51,0.05); border:1px solid rgba(255,153,51,0.3); border-left:3px solid var(--lcars-orange); border-radius:8px;">
+            <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:var(--lcars-orange); margin-bottom:6px;">JUNE LANE</div>
+            <h3 style="color:var(--lcars-gold); font-size:14px; margin-bottom:8px;">CREDENTIAL HARDENING</h3>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Plaintext credential exposure acknowledged as an accepted testlab risk &mdash; remediation (deploy keys, Ansible Vault, password rotation, plaintext purge) scheduled for June, after the DeepMind/GCP experimentation window.</p>
+          </div>
+
+        </div>
+
+        <div style="margin-top:20px; padding:14px 18px; background:rgba(241,223,111,0.04); border:1px dashed rgba(241,223,111,0.3); border-radius:8px; font-family:'Share Tech Mono',monospace; font-size:13px; color:var(--text-secondary); line-height:1.7;">
+          <strong style="color:var(--lcars-gold); letter-spacing:1.5px;">v15 prime directive:</strong> preserve usability now,
+          document risk clearly, avoid destabilizing working LLM paths before the experimentation window.
+          Security cleanup remains mandatory &mdash; it is a June workstream, not an emergency.
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+         3-TIER LLM ROUTING FABRIC
+       ═══════════════════════════════════ -->
+      <div class="section-header" id="llm-fabric">
+        <div class="bar" style="background:linear-gradient(90deg,var(--lcars-gold),transparent);"></div>
+        <h2 style="color:var(--lcars-gold);">3-TIER LLM ROUTING FABRIC</h2>
+        <div class="bar" style="background:linear-gradient(90deg,transparent,var(--lcars-gold));"></div>
+      </div>
+
+      <div class="glass-panel" style="border-left:3px solid var(--lcars-gold);">
+        <p style="margin-bottom:18px;">v15 separates cloud reasoning, local edge inference, and GPU fallback into
+          distinct roles. This avoids the v14 drift where provider syntax, local endpoints, and model intent were
+          mixed together. Each tier has a clearly defined endpoint, model runtime, and use case &mdash;
+          and the routing layer falls forward gracefully.</p>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:16px; margin-bottom:18px;">
+
+          <!-- Tier 1: Primary reasoning -->
+          <div style="padding:20px; background:rgba(241,223,111,0.04); border:1px solid rgba(241,223,111,0.3); border-radius:10px; position:relative; overflow:hidden;">
+            <div style="position:absolute; top:0; right:0; padding:4px 10px; background:rgba(102,255,153,0.15); color:#66FF99; font-family:'Orbitron',monospace; font-size:9px; letter-spacing:1.5px; border-bottom-left-radius:8px;">ACTIVE</div>
+            <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:var(--lcars-gold); margin-bottom:6px;">TIER 1 &mdash; PRIMARY REASONING</div>
+            <h3 style="color:var(--text-primary); font-size:16px; margin-bottom:10px;">xAI Grok 4.20 via Hermes</h3>
+            <div style="font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--lcars-cyan); margin-bottom:8px; word-break:break-all;">https://api.x.ai/v1</div>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.65;">grok-4.20-reasoning via Hermes custom provider on CT105. Default autonomous reasoning path for the agent fleet, OpenClaw Discord workflow, and high-cognition planning tasks.</p>
+          </div>
+
+          <!-- Tier 2: Local edge -->
+          <div style="padding:20px; background:rgba(102,204,204,0.04); border:1px solid rgba(102,204,204,0.3); border-radius:10px; position:relative; overflow:hidden;">
+            <div style="position:absolute; top:0; right:0; padding:4px 10px; background:rgba(102,255,153,0.15); color:#66FF99; font-family:'Orbitron',monospace; font-size:9px; letter-spacing:1.5px; border-bottom-left-radius:8px;">VERIFIED</div>
+            <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:var(--lcars-cyan); margin-bottom:6px;">TIER 2 &mdash; LOCAL EDGE</div>
+            <h3 style="color:var(--text-primary); font-size:16px; margin-bottom:10px;">ATLAS &middot; Ollama on Mac Mini M4</h3>
+            <div style="font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--lcars-cyan); margin-bottom:8px;">ATLAS .78 &mdash; Ollama v0.21.2_1</div>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.65;">llama3.1:8b, qwen2.5:14b, nomic-embed-text. LAN-local inference, embeddings, fallback work, and Apple Silicon experiments. Headless LaunchDaemon, IPv4-bound to avoid drift.</p>
+          </div>
+
+          <!-- Tier 3: GPU fallback -->
+          <div style="padding:20px; background:rgba(255,153,51,0.04); border:1px solid rgba(255,153,51,0.3); border-radius:10px; position:relative; overflow:hidden;">
+            <div style="position:absolute; top:0; right:0; padding:4px 10px; background:rgba(102,255,153,0.15); color:#66FF99; font-family:'Orbitron',monospace; font-size:9px; letter-spacing:1.5px; border-bottom-left-radius:8px;">VERIFIED</div>
+            <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:var(--lcars-orange); margin-bottom:6px;">TIER 3 &mdash; GPU FALLBACK</div>
+            <h3 style="color:var(--text-primary); font-size:16px; margin-bottom:10px;">CashioTUF &middot; LM Studio + Gemma</h3>
+            <div style="font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--lcars-cyan); margin-bottom:8px;">CashioTUF .116 &mdash; LM Studio 0.4.12</div>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.65;">google/gemma-4-e4b on RTX 3080 (Win 11 Pro, Ryzen 9 3900XT, 32GB). OpenAI-compatible LM Studio API. Role: RTX fallback, Gemma-specific tasks, Windows tooling, remote-desktop console for ATLAS.</p>
+          </div>
+
+          <!-- MCP tools tier (bonus) -->
+          <div style="padding:20px; background:rgba(204,153,204,0.04); border:1px solid rgba(204,153,204,0.3); border-radius:10px; position:relative; overflow:hidden;">
+            <div style="position:absolute; top:0; right:0; padding:4px 10px; background:rgba(102,255,153,0.15); color:#66FF99; font-family:'Orbitron',monospace; font-size:9px; letter-spacing:1.5px; border-bottom-left-radius:8px;">CLEAN</div>
+            <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:var(--lcars-lavender); margin-bottom:6px;">MCP TOOLS &mdash; CONTROL PLANE</div>
+            <h3 style="color:var(--text-primary); font-size:16px; margin-bottom:10px;">CT105 &rarr; CT106 Native MCP</h3>
+            <div style="font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--lcars-cyan); margin-bottom:8px;">mcp-omnibus &middot; ChromaDB &middot; native skill chain</div>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.65;">Tool execution and fleet RAG without the legacy socat dependency. Internal Hermes-to-MCP and external tunnel ingress kept architecturally distinct.</p>
+          </div>
+
+        </div>
+
+        <div style="padding:14px 18px; background:rgba(102,204,204,0.04); border:1px solid rgba(102,204,204,0.2); border-radius:8px; font-size:14px; color:var(--text-secondary); line-height:1.7;">
+          <strong style="color:var(--lcars-cyan);">Routing rule:</strong> primary inference does not get routed to ATLAS or CashioTUF by default &mdash; those are
+          local fallback / specialist endpoints. The fleet keeps high-reasoning work on the intended paid xAI key
+          instead of accidentally drifting onto local GGUF models.
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+         FLEET MAP — CURRENT STATE
+       ═══════════════════════════════════ -->
+      <div class="section-header" id="fleet-map">
+        <div class="bar" style="background:linear-gradient(90deg,var(--lcars-blue),transparent);"></div>
+        <h2 style="color:var(--lcars-blue);">FLEET MAP &mdash; CURRENT STATE</h2>
+        <div class="bar" style="background:linear-gradient(90deg,transparent,var(--lcars-blue));"></div>
+      </div>
+
+      <div class="glass-panel" style="border-left:3px solid var(--lcars-blue);">
+        <p style="margin-bottom:16px;">Twelve active nodes form the v15 working topology. ATLAS is removed from
+          the media layer and the LLM fabric is promoted into the main architecture.</p>
+
+        <table class="capex-table">
+          <thead>
+            <tr>
+              <th>Layer</th>
+              <th>Nodes</th>
+              <th>v15 Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Edge / WAN</strong></td>
+              <td>AT&amp;T BGW320 &rarr; Orbi RBR750 passthrough</td>
+              <td class="highlight" style="color:#66FF99;">ACTIVE</td>
+            </tr>
+            <tr>
+              <td><strong>Workstation</strong></td>
+              <td>CashioTUF .116 &mdash; Win 11 Pro, RTX 3080, LM Studio Gemma fallback</td>
+              <td class="highlight" style="color:#66FF99;">ACTIVE</td>
+            </tr>
+            <tr>
+              <td><strong>Proxmox cluster</strong></td>
+              <td>Zeus .31, Apollo .30, Athena .32 QDevice</td>
+              <td class="highlight" style="color:#66FF99;">ACTIVE</td>
+            </tr>
+            <tr>
+              <td><strong>Control plane</strong></td>
+              <td>CT200 .200, CT105 Hermes, CT106 mcp-omnibus, CT300 PBS</td>
+              <td class="highlight" style="color:#66FF99;">ACTIVE</td>
+            </tr>
+            <tr>
+              <td><strong>DNS / DHCP</strong></td>
+              <td>CT101 AdGuard primary, CT109 replica, CT100 AGH-Sync</td>
+              <td class="highlight" style="color:#66FF99;">ACTIVE</td>
+            </tr>
+            <tr>
+              <td><strong>Media stack</strong></td>
+              <td>Dionysus .77 Plex primary &middot; Hermes CT108 Plex secondary only</td>
+              <td class="highlight" style="color:var(--lcars-cyan);">SIMPLIFIED</td>
+            </tr>
+            <tr>
+              <td><strong>Storage</strong></td>
+              <td>Genesis NAS .149, ATLAS Tahoe-LAFS :3456, CT300 PBS</td>
+              <td class="highlight" style="color:#66FF99;">ACTIVE</td>
+            </tr>
+            <tr>
+              <td><strong>LLM fabric</strong></td>
+              <td>xAI primary &middot; ATLAS Ollama local &middot; CashioTUF LM Studio fallback</td>
+              <td class="highlight" style="color:var(--lcars-gold);">UPDATED</td>
+            </tr>
+            <tr>
+              <td><strong>Cloud</strong></td>
+              <td>GCP us-central1-a NemoClaw, Cloud Run / Vertex runway</td>
+              <td class="highlight" style="color:#66FF99;">ACTIVE</td>
+            </tr>
+            <tr>
+              <td><strong>OOB sentinel</strong></td>
+              <td>Athena .32 Uptime Kuma, QDevice, Wazuh agent</td>
+              <td class="highlight" style="color:#66FF99;">ACTIVE</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style="margin-top:18px; padding:12px 16px; background:rgba(204,102,102,0.05); border:1px solid rgba(204,102,102,0.25); border-radius:8px;">
+          <strong style="color:var(--lcars-red); font-family:'Orbitron',monospace; font-size:11px; letter-spacing:1.5px;">REMOVED FROM TARGET STATE:</strong>
+          <ul style="margin-top:8px; padding-left:20px; font-size:13px; color:var(--text-secondary); line-height:1.7;">
+            <li>ATLAS Plex tertiary &mdash; removed from target state and risk register</li>
+            <li>ATLAS Plex metadata path &mdash; removed from Atlas-Storage-2</li>
+            <li>ATLAS no-UPS risk &mdash; closed (node now on UPS)</li>
+            <li>CT101 disk pressure &mdash; downgraded from active to monitored healthy state</li>
+            <li>Hermes local LLM bridge as primary provider &mdash; xAI reasoning is the primary provider</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════
+         ATLAS EDGE NODE & HERMES MCP CARDS
+       ═══════════════════════════════════ -->
+      <div class="section-header" id="atlas-hermes">
+        <div class="bar" style="background:linear-gradient(90deg,var(--lcars-teal),transparent);"></div>
+        <h2 style="color:var(--lcars-teal);">ATLAS EDGE &amp; HERMES CONTROL PLANE</h2>
+        <div class="bar" style="background:linear-gradient(90deg,transparent,var(--lcars-teal));"></div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:18px; margin-bottom:24px;">
+
+        <!-- ATLAS card -->
+        <div class="glass-panel" style="border-left:3px solid var(--lcars-cyan); margin-bottom:0;">
+          <h3 style="color:var(--lcars-cyan);">ATLAS .78 &mdash; Mac Mini M4 Edge AI Node</h3>
+          <p style="margin-bottom:14px; font-size:14px;">A clean edge AI and distributed-storage node. Not a Plex
+            server, not a Proxmox node, and not the default paid reasoning provider.</p>
+
+          <table class="capex-table" style="font-size:14px;">
+            <tr><td><strong>Hardware</strong></td><td>Mac Mini M4 &middot; 24 GB unified memory &middot; 256 GB internal NVMe</td></tr>
+            <tr><td><strong>Network</strong></td><td>Static Ethernet, Wi-Fi off, on UPS</td></tr>
+            <tr><td><strong>Remote access</strong></td><td>Google Remote Desktop or Free Jump via CashioTUF</td></tr>
+            <tr><td><strong>Ollama</strong></td><td>v0.21.2_1 LaunchDaemon &middot; bound to LAN to avoid IPv6-only drift</td></tr>
+            <tr><td><strong>Model storage</strong></td><td>Atlas-Storage-2 (NVMe) &middot; ~13 GiB Ollama models populated</td></tr>
+            <tr><td><strong>Tahoe-LAFS</strong></td><td>Atlas-Storage-1 :3456 &middot; distributed encrypted storage role retained</td></tr>
+            <tr><td><strong>Plex</strong></td><td><span style="color:var(--lcars-red);">ABSENT</span> &mdash; no process, no launchd, no metadata residue</td></tr>
+          </table>
+
+          <div style="margin-top:14px; padding:12px; background:rgba(102,204,204,0.04); border:1px dashed rgba(102,204,204,0.3); border-radius:6px; font-size:13px; color:var(--text-secondary); line-height:1.7;">
+            <strong style="color:var(--lcars-cyan);">Storage layout:</strong>
+            <code style="font-size:12px; color:var(--text-secondary);">Macintosh HD</code> stays a thin boot/service tier;
+            <code style="font-size:12px; color:var(--text-secondary);">Atlas-Storage-1</code> hosts the Tahoe shares;
+            <code style="font-size:12px; color:var(--text-secondary);">Atlas-Storage-2</code> is the fast NVMe model tier with MLX staging available.
+          </div>
+        </div>
+
+        <!-- Hermes / MCP card -->
+        <div class="glass-panel" style="border-left:3px solid var(--lcars-orange); margin-bottom:0;">
+          <h3 style="color:var(--lcars-orange);">CT105 Hermes &amp; CT106 MCP &mdash; Control Plane</h3>
+          <p style="margin-bottom:14px; font-size:14px;">The Hermes repair was the most important control-plane
+            correction in v15. The agent now runs cleanly using the intended xAI key with all local fallbacks
+            preserved.</p>
+
+          <table class="capex-table" style="font-size:14px;">
+            <tr><td><strong>Hermes binary</strong></td><td>Hermes Agent v0.10.0 &mdash; <span style="color:#66FF99;">VERIFIED</span></td></tr>
+            <tr><td><strong>Primary provider</strong></td><td>custom &rarr; xAI grok-4.20-reasoning &mdash; <span style="color:#66FF99;">ACTIVE</span></td></tr>
+            <tr><td><strong>Secret location</strong></td><td><code style="font-size:12px;">.env</code> (XAI_API_KEY) &mdash; <span style="color:#66FF99;">SECURED</span> &middot; never reproduced in artifacts</td></tr>
+            <tr><td><strong>Invalid provider</strong></td><td><code style="font-size:12px;">openai_compatible</code> removed &mdash; <span style="color:#66FF99;">RESOLVED</span></td></tr>
+            <tr><td><strong>ATLAS fallback</strong></td><td>custom &rarr; ATLAS :11434/v1 &mdash; <span style="color:#66FF99;">ACTIVE</span></td></tr>
+            <tr><td><strong>CashioTUF fallback</strong></td><td>custom &rarr; CashioTUF :1234/v1 &mdash; <span style="color:#66FF99;">ACTIVE</span></td></tr>
+            <tr><td><strong>MCP path</strong></td><td>CT105 &rarr; CT106 native MCP &mdash; <span style="color:#66FF99;">CLEAN</span></td></tr>
+            <tr><td><strong>Legacy socat</strong></td><td>No CT105 references, no running processes &mdash; <span style="color:#66FF99;">CLEAN</span></td></tr>
+          </table>
+
+          <div style="margin-top:14px; padding:12px; background:rgba(255,153,51,0.04); border:1px dashed rgba(255,153,51,0.3); border-radius:6px; font-size:13px; color:var(--text-secondary); line-height:1.7;">
+            <strong style="color:var(--lcars-orange);">MCP topology distinction:</strong> internal Hermes-to-MCP
+            calls and external <code style="font-size:12px;">mcp.cashio.us</code> tunnel ingress are kept
+            architecturally separate. The native CT105&rarr;CT106 path does not depend on a legacy socat bridge.
+          </div>
+        </div>
+
       </div>
 
       <!-- ═══════════════════════════════════
@@ -1460,10 +1758,21 @@
             <div class="timeline-title">Transitioning to Phase 3 — High Availability</div>
             <div class="timeline-desc">ChromaDB API v2 migration completed. Ollama base URL migrated to GPU node. Fleet prepared for Phase 3 transition.</div>
           </div>
-          <div class="timeline-event" style="border-color:rgba(102,204,204,0.3);">
-            <div class="timeline-date">PHASE 3 — CURRENT POSITION (APR 2026)</div>
-            <div class="timeline-title">Multi-Vector Fleet Operations</div>
-            <div class="timeline-desc">Zeus converted to Proxmox PVE 9.1.6 — zeusapollo two-node cluster established with Apollo. Wazuh SIEM deployed on CT104 for enterprise-grade log correlation and threat detection. Dual Plex architecture operational: Dionysus (NVENC) as PRIMARY, Hermes/CT108 (Quick Sync) as SECONDARY. NemoClaw AI agent deployed on GCP Cloud Run with NVIDIA Nemotron 120B. Fleet expanded to 9 AI agents. GCP cloud presence established with ~$265 in credits. The fleet has never been stronger.</div>
+          <div class="timeline-event">
+            <div class="timeline-date">PHASE 3 — MULTI-VECTOR OPERATIONS (APR 2026)</div>
+            <div class="timeline-title">Cluster, SIEM, Cloud</div>
+            <div class="timeline-desc">Zeus converted to Proxmox PVE 9.1.6 &mdash; zeusapollo cluster established with Apollo, Athena QDevice. Wazuh SIEM live on CT104. Plex media stack consolidated to a single architecture (Dionysus NVENC primary, Hermes CT108 Quick Sync secondary). NemoClaw on GCP Cloud Run, ~$265 in credits. GCP Cloud Run MCP gateway architected with Bearer Token auth and Vertex AI access.</div>
+          </div>
+          <div class="timeline-event" style="border-color:rgba(102,204,204,0.5); background:rgba(102,204,204,0.05);">
+            <div class="timeline-date" style="color:var(--lcars-cyan);">PHASE 3.5 / v15 BASELINE — CURRENT (APR 27 2026)</div>
+            <div class="timeline-title" style="color:var(--lcars-cyan);">3-Tier LLM Fabric Online &mdash; Edge AI Verified</div>
+            <div class="timeline-desc">ATLAS .78 (Mac Mini M4) commissioned as a clean edge AI &amp; distributed-storage node:
+              Plex fully removed, UPS protection in place, Ollama v0.21.2_1 LaunchDaemon validated by chat completion from CT105.
+              CashioTUF .116 corrected to LM Studio + google/gemma-4-e4b on RTX 3080 (not Ollama). Hermes provider repair complete &mdash;
+              invalid <em>openai_compatible</em> removed; CT105 now routes xAI Grok 4.20 reasoning through a custom provider schema with ATLAS and CashioTUF fallbacks.
+              CT101 AdGuard querylog capped at 720h, disk pressure resolved. CT105&rarr;CT106 native MCP path verified clean &mdash;
+              no legacy socat processes. Fleet sized at 12 active nodes, ~18TB storage. Credential hardening intentionally
+              deferred to a June lane to keep the LLM paths stable through the upcoming DeepMind / GCP experimentation window.</div>
           </div>
         </div>
       </div>
@@ -1543,10 +1852,17 @@
         </div>
         <div class="crew-card">
           <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:#66FF99;border-radius:4px 0 0 4px;"></div>
-          <div class="crew-rank" style="color:#66FF99;">CHIEF OF ENGINEERING — LOCAL OPS</div>
-          <div class="crew-name">Ollama (Local GPU)</div>
-          <div class="crew-role">Sovereign AI Inference — gemma4:31b-cloud &amp; qwen2.5vl:7b</div>
-          <div class="crew-desc">GPU-accelerated on the RTX 3080 workstation providing completely air-gapped inference — no data leaves the ship. Running gemma4:31b-cloud as primary model and qwen2.5vl:7b for vision tasks. ~80 tok/s at warp speed.</div>
+          <div class="crew-rank" style="color:#66FF99;">CHIEF OF ENGINEERING — EDGE AI (ATLAS)</div>
+          <div class="crew-name">ATLAS .78 — Ollama on Mac Mini M4</div>
+          <div class="crew-role">Local Edge Inference — llama3.1:8b, qwen2.5:14b, nomic-embed-text</div>
+          <div class="crew-desc">Apple Silicon edge node providing LAN-local inference and embeddings without leaving the ship. Ollama v0.21.2_1 runs as a headless LaunchDaemon bound to the IPv4 LAN address; Tahoe-LAFS distributed encrypted storage shares run alongside on a separate volume. UPS protected. Plex absent.</div>
+        </div>
+        <div class="crew-card">
+          <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:var(--lcars-gold);border-radius:4px 0 0 4px;"></div>
+          <div class="crew-rank" style="color:var(--lcars-gold);">GPU FALLBACK / SPECIALIST</div>
+          <div class="crew-name">CashioTUF .116 — LM Studio + Gemma</div>
+          <div class="crew-role">RTX 3080 Fallback — google/gemma-4-e4b via LM Studio 0.4.12</div>
+          <div class="crew-desc">Windows 11 Pro workstation (Ryzen 9 3900XT, RTX 3080, 32GB) running LM Studio with an OpenAI-compatible local API on :1234/v1. Role: GPU fallback when ATLAS edge is offline, Gemma-specific tasks, Windows tooling, and remote-desktop console for ATLAS. Not Ollama &mdash; that role lives on ATLAS.</div>
         </div>
         <div class="crew-card">
           <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:var(--lcars-red);border-radius:4px 0 0 4px;"></div>
@@ -1601,24 +1917,24 @@
 
       <div class="stats-row">
         <div class="stat-card pulse">
-          <div class="stat-value" style="color:var(--lcars-gold);">Phase 3</div>
-          <div class="stat-label">Current Operating Phase</div>
+          <div class="stat-value" style="color:var(--lcars-gold);">v15</div>
+          <div class="stat-label">Active Baseline</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" style="color:var(--lcars-cyan);">~80</div>
-          <div class="stat-label">tok/s GPU (RTX 3080)</div>
+          <div class="stat-value" style="color:var(--lcars-cyan);">12</div>
+          <div class="stat-label">Active Fleet Nodes</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" style="color:var(--lcars-red);">~5</div>
-          <div class="stat-label">tok/s CPU (Zeus)</div>
+          <div class="stat-value" style="color:#66FF99;">3</div>
+          <div class="stat-label">Tier LLM Routing</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" style="color:#66FF99;">16&times;</div>
-          <div class="stat-label">Speed Gain (GPU vs CPU)</div>
+          <div class="stat-value" style="color:var(--lcars-orange);">18TB</div>
+          <div class="stat-label">Total Storage</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" style="color:var(--lcars-orange);">9</div>
-          <div class="stat-label">AI Agents Online</div>
+          <div class="stat-value" style="color:var(--lcars-lavender);">720h</div>
+          <div class="stat-label">AdGuard Log Cap</div>
         </div>
         <div class="stat-card">
           <div class="stat-value" style="color:var(--lcars-teal);">500+</div>
@@ -1628,12 +1944,10 @@
 
       <div class="glass-panel">
         <h3>Operational Capabilities &amp; Efficiency Gains</h3>
-        <p style="margin-bottom:14px;"><strong>GPU Migration (The Warp Core Upgrade):</strong> Phase 2 transitions AI
-          inference from Zeus's CPU (~5 tok/s — impulse speed) to the GPU workstation's RTX 3080 (~80 tok/s — warp
-          factor 8). This
-          is the single largest performance gain in the fleet's history: a <strong style="color:#66FF99;">16&times;
-            throughput improvement</strong> that transforms local AI from a novelty into a production-grade enterprise
-          capability.</p>
+        <p style="margin-bottom:14px;"><strong>3-Tier LLM Routing (v15):</strong> Cloud reasoning (xAI Grok 4.20) carries the
+          high-cognition workload while ATLAS Mac Mini M4 (Ollama) handles LAN-local inference and embeddings, and
+          CashioTUF (LM Studio + Gemma on RTX 3080) stands by as a GPU fallback. Each tier has a single, clear endpoint
+          and role &mdash; no provider syntax drift, no accidental fallback to local GGUF when paid reasoning was intended.</p>
         <p style="margin-bottom:14px;"><strong>Automated Deployment (Replicator Technology):</strong> Manual
           VM/container creation replaced by scripted deployments. The Kali Linux AI script automates the entire process
           — download, create, configure, and boot — bypassing 30–60 minutes of manual Proxmox clicking. Cloud-Init and
@@ -1707,16 +2021,20 @@
                 <td class="highlight">~80W idle</td>
               </tr>
               <tr>
-                <td>Dionysus (Unraid/Plex PRIMARY)</td>
+                <td>Dionysus (Unraid/Plex Primary)</td>
                 <td class="highlight">~75W idle</td>
               </tr>
               <tr>
-                <td>GPU Workstation (RTX 3080 idle)</td>
+                <td>CashioTUF (RTX 3080 idle)</td>
                 <td class="highlight">~90W idle</td>
               </tr>
               <tr>
-                <td>GPU Workstation (RTX 3080 AI load)</td>
+                <td>CashioTUF (RTX 3080 LM Studio load)</td>
                 <td class="highlight">~320W peak</td>
+              </tr>
+              <tr>
+                <td>ATLAS Mac Mini M4 (UPS)</td>
+                <td class="highlight">~10–18W</td>
               </tr>
               <tr>
                 <td>Genesis NAS</td>
@@ -1790,10 +2108,11 @@
       </div>
 
       <div class="glass-panel">
-        <h3>Network Topology — Homelab Architecture</h3>
-        <p style="margin-bottom:16px;">The fleet's command structure mapped across the homelab network. Every node is a
-          starship in the task force, interconnected via the main deflector (router/switch) with AdGuard Home filtering
-          all subspace communications. Drag nodes to explore. Hover for telemetry.</p>
+        <h3>Network Topology &mdash; v15 Fleet Architecture</h3>
+        <p style="margin-bottom:16px;">The v15 working topology: Apollo / Zeus / Athena Proxmox cluster, single-Plex media
+          stack on Dionysus + Hermes CT108 secondary, ATLAS Mac Mini M4 as the Ollama edge AI &amp; Tahoe-LAFS storage node,
+          CashioTUF as the LM Studio / Gemma GPU fallback, and xAI Grok 4.20 as the primary reasoning provider via
+          Hermes (CT105 / CT106 native MCP). Drag nodes to explore. Hover for telemetry.</p>
         <div id="vis-network-diagram" class="vis-network-container pulse"></div>
       </div>
 
@@ -1849,9 +2168,51 @@
             </tr>
             <tr>
               <td class="highlight" style="color:#66FF99;">AI Stack Orchestration</td>
-              <td>COMPLETED &mdash; Ollama bound to 0.0.0.0, Docker MCP Toolkit active</td>
+              <td>COMPLETED &mdash; ATLAS Ollama LaunchDaemon bound to LAN, Docker MCP Toolkit active</td>
               <td>March 2026</td>
               <td>Operational</td>
+            </tr>
+            <tr>
+              <td class="highlight" style="color:#66FF99;">ATLAS Plex Removal &#x2705;</td>
+              <td>COMPLETED &mdash; Plex service, launchd item, and metadata fully removed from ATLAS / Atlas-Storage-2</td>
+              <td>April 2026</td>
+              <td>v15 baseline</td>
+            </tr>
+            <tr>
+              <td class="highlight" style="color:#66FF99;">ATLAS UPS Protection &#x2705;</td>
+              <td>COMPLETED &mdash; Mac Mini M4 + external storage SSDs on UPS; brownout risk closed</td>
+              <td>April 2026</td>
+              <td>v15 baseline</td>
+            </tr>
+            <tr>
+              <td class="highlight" style="color:#66FF99;">Hermes Provider Repair &#x2705;</td>
+              <td>COMPLETED &mdash; invalid <em>openai_compatible</em> removed; xAI Grok 4.20 reasoning routed via custom provider; ATLAS + CashioTUF fallbacks active</td>
+              <td>April 2026</td>
+              <td>v15 baseline</td>
+            </tr>
+            <tr>
+              <td class="highlight" style="color:#66FF99;">CT101 AdGuard Health &#x2705;</td>
+              <td>RESOLVED &mdash; querylog retention capped at 720h; disk dropped from 63.4% rising to ~7% steady</td>
+              <td>April 2026</td>
+              <td>v15 baseline</td>
+            </tr>
+            <tr>
+              <td class="highlight" style="color:#66FF99;">Native MCP Audit &#x2705;</td>
+              <td>COMPLETED &mdash; CT105 &rarr; CT106 native MCP path verified clean; no legacy socat references</td>
+              <td>April 2026</td>
+              <td>v15 baseline</td>
+            </tr>
+            <tr>
+              <td class="highlight" style="color:var(--lcars-orange);">Credential Hardening</td>
+              <td>JUNE LANE &mdash; deploy keys, Ansible Vault, plaintext purge scheduled after DeepMind/GCP sprint</td>
+              <td>June 2026</td>
+              <td>Owner-deferred</td>
+            </tr>
+            <tr>
+              <td class="highlight" style="color:var(--lcars-cyan);">DeepMind / GCP Sprint</td>
+              <td>URGENT &mdash; experiment against frozen v15 topology; avoid topology churn through window</td>
+              <td>Now &rarr; next week</td>
+              <td>v15 baseline</td>
             </tr>
             <tr>
               <td class="highlight" style="color:#66FF99;">Proxmox Star Topology</td>
@@ -1972,6 +2333,148 @@
           Tamper-proof logging ensures absolute auditability of all AI actions for enterprise compliance,
           legal holds, and forensic investigation. Every agent action has a permanent, verifiable record.
         </p>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════
+         OPTIMIZATION ROADMAP — v15
+       ═══════════════════════════════════════════════════ -->
+      <div class="glass-panel" style="border-left:3px solid var(--lcars-cyan);">
+        <h3 style="color:var(--lcars-cyan);">Optimization Roadmap &mdash; v15 Re-Ranked</h3>
+        <p style="margin-bottom:14px;">Re-ranked for v15. Immediate work supports the DeepMind / GCP sprint;
+          May handles disaster recovery and observability; June carries the credential / security hardening lane.</p>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:14px;">
+
+          <div style="padding:16px; background:rgba(241,223,111,0.04); border:1px solid rgba(241,223,111,0.2); border-radius:8px;">
+            <div style="font-family:'Orbitron',monospace; font-size:11px; letter-spacing:2px; color:var(--lcars-gold); margin-bottom:8px;">PRIORITY 1 &mdash; NOW &rarr; NEXT WEEK</div>
+            <ul style="padding-left:18px; font-size:13px; color:var(--text-secondary); line-height:1.7;">
+              <li>Use v15 baseline in Antigravity / DeepMind / GCP prompts</li>
+              <li>Benchmark ATLAS Ollama models (llama3.1:8b, qwen2.5:14b, nomic-embed-text)</li>
+              <li>Hermes stability soak vs. xAI primary with ATLAS / CashioTUF fallbacks</li>
+              <li>Exercise CashioTUF LM Studio fallback during a planned ATLAS pause</li>
+              <li>Spend GCP / Vertex / DeepMind credits while topology is stable</li>
+              <li>Codify AdGuard 720h retention &amp; ATLAS service validation in CT200 playbooks</li>
+              <li>Add Uptime Kuma checks for ATLAS Ollama :11434 and Tahoe :3456</li>
+            </ul>
+          </div>
+
+          <div style="padding:16px; background:rgba(102,204,204,0.04); border:1px solid rgba(102,204,204,0.2); border-radius:8px;">
+            <div style="font-family:'Orbitron',monospace; font-size:11px; letter-spacing:2px; color:var(--lcars-cyan); margin-bottom:8px;">PRIORITY 2 &mdash; MAY</div>
+            <ul style="padding-left:18px; font-size:13px; color:var(--text-secondary); line-height:1.7;">
+              <li>PBS restore test for CT106 + VM 120 (DR confidence)</li>
+              <li>Cold-clone CT200 control plane to Zeus &mdash; restore runbook</li>
+              <li>Review CashioTUF UPS status &amp; protect if still unprotected</li>
+              <li>Prometheus / exporter layer for disk, endpoints, model services</li>
+              <li>Document remote ATLAS access path through CashioTUF</li>
+            </ul>
+          </div>
+
+          <div style="padding:16px; background:rgba(255,153,51,0.04); border:1px solid rgba(255,153,51,0.25); border-radius:8px;">
+            <div style="font-family:'Orbitron',monospace; font-size:11px; letter-spacing:2px; color:var(--lcars-orange); margin-bottom:8px;">PRIORITY 3 &mdash; JUNE SECURITY HARDENING</div>
+            <ul style="padding-left:18px; font-size:13px; color:var(--text-secondary); line-height:1.7;">
+              <li>Generate CT200 deploy key for ATLAS &mdash; remove sshpass dependency</li>
+              <li>Move remaining secrets into Ansible Vault or equivalent</li>
+              <li>Rotate exposed host password after key login is verified</li>
+              <li>Purge temporary scripts &amp; old playbooks containing plaintext credentials</li>
+              <li>Expand Wazuh + firewall hardening across CT200, CT105, ATLAS, endpoints</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════
+         RISK REGISTER — v15
+       ═══════════════════════════════════════════════════ -->
+      <div class="section-header" id="risk-register">
+        <div class="bar" style="background:linear-gradient(90deg,var(--lcars-red),transparent);"></div>
+        <h2 style="color:var(--lcars-red);">RISK REGISTER &mdash; v15</h2>
+        <div class="bar" style="background:linear-gradient(90deg,transparent,var(--lcars-red));"></div>
+      </div>
+
+      <div class="glass-panel" style="border-left:3px solid var(--lcars-red);">
+        <p style="margin-bottom:14px;">Risks are separated into resolved items (closed in v15) and accepted testlab risks.
+          The known credential exposure is serious but the remediation timeline is June by owner direction; no evidence
+          of active compromise has been observed.</p>
+
+        <table class="capex-table">
+          <thead>
+            <tr>
+              <th>Risk</th>
+              <th>Node</th>
+              <th>Likelihood</th>
+              <th>v15 Treatment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Plaintext credential exposure</strong></td>
+              <td>CT200 / ATLAS / temp scripts</td>
+              <td style="color:var(--lcars-red); font-weight:600;">HIGH</td>
+              <td>Accepted testlab risk until June. No secrets reproduced; rotation deferred to hardening sprint.</td>
+            </tr>
+            <tr>
+              <td>CashioTUF UPS unknown</td>
+              <td>CashioTUF</td>
+              <td style="color:var(--lcars-orange);">MEDIUM</td>
+              <td>Verify UPS status; protect if absent.</td>
+            </tr>
+            <tr>
+              <td>CT200 single instance</td>
+              <td>Apollo CT200</td>
+              <td style="color:var(--lcars-orange);">MEDIUM</td>
+              <td>Cold clone or restore runbook in May.</td>
+            </tr>
+            <tr>
+              <td>No true 3-node Proxmox HA</td>
+              <td>Fleet</td>
+              <td style="color:var(--lcars-orange);">MEDIUM</td>
+              <td>ATLAS is macOS &mdash; will not become a Proxmox node. Redesign or defer.</td>
+            </tr>
+            <tr>
+              <td>ATLAS external SSD disconnect</td>
+              <td>ATLAS</td>
+              <td style="color:var(--lcars-orange);">MEDIUM</td>
+              <td>Cable control + service health checks.</td>
+            </tr>
+            <tr>
+              <td>macOS TCC / permissions drift</td>
+              <td>ATLAS</td>
+              <td style="color:var(--lcars-orange);">MEDIUM</td>
+              <td>Monitor writes &amp; service status after macOS updates.</td>
+            </tr>
+            <tr>
+              <td>xAI API dependency</td>
+              <td>CT105</td>
+              <td style="color:var(--lcars-orange);">MEDIUM</td>
+              <td>Local fallbacks (ATLAS, CashioTUF) remain online and tested.</td>
+            </tr>
+            <tr>
+              <td>GCP / DeepMind sprint time pressure</td>
+              <td>Cloud</td>
+              <td style="color:var(--lcars-red); font-weight:600;">HIGH</td>
+              <td>Use v15 baseline; avoid topology churn through experimentation window.</td>
+            </tr>
+            <tr style="background:rgba(102,255,153,0.04);">
+              <td>CT101 disk pressure</td>
+              <td>CT101</td>
+              <td style="color:#66FF99;">LOW</td>
+              <td>Resolved. Retention 720h; disk ~7% used.</td>
+            </tr>
+            <tr style="background:rgba(102,255,153,0.04);">
+              <td>ATLAS no UPS</td>
+              <td>ATLAS</td>
+              <td style="color:#66FF99;">RESOLVED</td>
+              <td>Closed &mdash; ATLAS is on UPS.</td>
+            </tr>
+            <tr style="background:rgba(102,255,153,0.04);">
+              <td>ATLAS Plex tertiary drift</td>
+              <td>ATLAS</td>
+              <td style="color:#66FF99;">RESOLVED</td>
+              <td>Closed &mdash; Plex fully removed from ATLAS.</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <!-- ═══════════════════════════════════════════════════
@@ -2812,7 +3315,9 @@
 
         // Other fleet nodes
         { id: 'DIONYSUS', label: '\u{1F4FA} DIONYSUS\nUnraid 7.2.4\nPlex PRIMARY / NVENC', shape: 'box', color: { background: '#4a1a3a', border: C.lavender }, font: { color: C.lavender, size: 13, face: 'Orbitron' } },
-        { id: 'TUF',      label: '\u{1F4A1} GPU WORKSTATION\nRTX 3080 — Ollama\n~80 tok/s',                   shape: 'box', color: { background: '#3a3a1a', border: C.gold },    font: { color: C.gold,    size: 13, face: 'Orbitron' } },
+        { id: 'TUF',      label: '\u{1F4A1} CASHIOTUF .116\nLM Studio 0.4.12 — RTX 3080\nGemma fallback',     shape: 'box', color: { background: '#3a3a1a', border: C.gold },    font: { color: C.gold,    size: 13, face: 'Orbitron' } },
+        { id: 'ATLAS',    label: '\u{1F34F} ATLAS .78\nMac Mini M4 (UPS)\nOllama edge + Tahoe-LAFS',          shape: 'box', color: { background: '#1a3a3a', border: C.cyan },    font: { color: C.cyan,    size: 13, face: 'Orbitron' } },
+        { id: 'XAI',      label: '\u{1F9E0} xAI Grok 4.20\nReasoning Primary\napi.x.ai/v1',                   shape: 'box', color: { background: '#0d2233', border: C.cyan },   font: { color: C.cyan,    size: 12, face: 'Orbitron' } },
         { id: 'NAS',      label: '\u{1F4BE} GENESIS NAS\nWD EX2 Ultra\nNFS Storage',                          shape: 'box', color: { background: '#2a1a3a', border: C.lavender }, font: { color: C.lavender, size: 13, face: 'Orbitron' } },
         { id: 'ATHENA',   label: '\u{1F967} ATHENA (RPi4)\nRPi OS Lite\nGeneral Purpose Node',                                    shape: 'box', color: { background: C.dark,   border: C.blue },    font: { color: C.blue,    size: 13, face: 'Orbitron' } },
         { id: 'GCP',      label: '\u2601\uFE0F GCP CLOUD\nNemoClaw VM\nCloud Run MCP\nVertex AI',                                  shape: 'box', color: { background: '#1a2a1a', border: C.green },   font: { color: C.green,   size: 13, face: 'Orbitron' } }
@@ -2827,8 +3332,10 @@
         { from: 'RTR',    to: 'DIONYSUS', color: { color: C.lavender }, width: 2 },
         { from: 'RTR',    to: 'TUF',      color: { color: C.gold },     width: 2 },
         { from: 'RTR',    to: 'NAS',      color: { color: C.lavender }, width: 2 },
+        { from: 'RTR',    to: 'ATLAS',    color: { color: C.cyan },     width: 2 },
         { from: 'RTR',    to: 'ATHENA',   color: { color: C.blue },     width: 2 },
         { from: 'RTR',    to: 'GCP',      color: { color: C.green },    width: 1, dashes: [8,4] },
+        { from: 'RTR',    to: 'XAI',      color: { color: C.cyan },     width: 1, dashes: [8,4] },
         // Apollo children
         { from: 'APOLLO', to: 'A_CT101',  color: { color: C.cyan },   dashes: true },
         { from: 'APOLLO', to: 'A_CT108',  color: { color: C.cyan },   dashes: true },
@@ -2849,7 +3356,9 @@
         { from: 'NAS',     to: 'APOLLO',  label: 'Auto Backup',    font: { color: C.blue,    size: 10, background: C.bg }, color: { color: C.blue   }, arrows: 'to', dashes: true },
         { from: 'NAS',     to: 'ZEUS',    label: 'NFS',            font: { color: C.blue,    size: 10, background: C.bg }, color: { color: C.blue   }, arrows: 'to', dashes: true },
         { from: 'NAS',     to: 'DIONYSUS',label: 'NFS Media',      font: { color: C.lavender,size: 10, background: C.bg }, color: { color: C.lavender},arrows: 'to', dashes: true },
-        { from: 'TUF',     to: 'Z_CT106', label: 'Ollama Inference',font:{ color: C.gold,    size: 10, background: C.bg }, color: { color: C.gold   }, arrows: 'to', dashes: true },
+        { from: 'ATLAS',   to: 'Z_CT106', label: 'Ollama edge :11434', font:{ color: C.cyan, size: 10, background: C.bg }, color: { color: C.cyan }, arrows: 'to', dashes: true },
+        { from: 'TUF',     to: 'Z_CT106', label: 'LM Studio :1234',   font:{ color: C.gold, size: 10, background: C.bg }, color: { color: C.gold }, arrows: 'to', dashes: true },
+        { from: 'XAI',     to: 'Z_CT106', label: 'xAI primary',       font:{ color: C.cyan, size: 10, background: C.bg }, color: { color: C.cyan }, arrows: 'to', dashes: true },
         { from: 'Z_CT104', to: 'ZEUS',    label: 'SIEM Monitor',   font: { color: C.red,     size: 10, background: C.bg }, color: { color: C.red    }, arrows: 'to', dashes: true },
         // Cluster link
         { from: 'APOLLO',  to: 'ZEUS',    label: 'Cluster Link',   font: { color: C.cyan,    size: 10, background: C.bg }, color: { color: C.cyan   }, width: 2 }
@@ -2871,20 +3380,20 @@
     new Chart(phaseCtx, {
       type: 'bar',
       data: {
-        labels: ['Phase -1\nAwakening', 'Phase 0\nBaseline', 'Phase 0.5\nMCP Core', 'Phase 1\nContainers', 'Phase 2\nGPU + Bot', 'Phase 2.5\nConsolidation', 'Phase 3\nCURRENT', 'Phase 4\nFull Auto'],
+        labels: ['Phase -1\nAwakening', 'Phase 0\nBaseline', 'Phase 0.5\nMCP Core', 'Phase 1\nContainers', 'Phase 2\nGPU + Bot', 'Phase 2.5\nConsolidation', 'Phase 3\nMulti-Vector', 'v15 BASELINE\nCURRENT', 'Phase 4\nFull Auto'],
         datasets: [
-          { label: 'AI Inference Speed', data: [2, 5, 12, 15, 55, 65, 75, 95],
-            backgroundColor: (ctx) => ctx.dataIndex === 6 ? 'rgba(102,204,204,0.85)' : 'rgba(241,223,111,0.7)',
-            borderColor: (ctx) => ctx.dataIndex === 6 ? '#66CCCC' : '#F1DF6F', borderWidth: (ctx) => ctx.dataIndex === 6 ? 2 : 1, borderRadius: 4 },
-          { label: 'Automation Coverage', data: [2, 5, 30, 40, 55, 60, 80, 95],
-            backgroundColor: (ctx) => ctx.dataIndex === 6 ? 'rgba(102,204,204,0.65)' : 'rgba(102,204,204,0.7)',
+          { label: 'AI Inference Speed', data: [2, 5, 12, 15, 55, 65, 75, 88, 95],
+            backgroundColor: (ctx) => ctx.dataIndex === 7 ? 'rgba(102,204,204,0.85)' : 'rgba(241,223,111,0.7)',
+            borderColor: (ctx) => ctx.dataIndex === 7 ? '#66CCCC' : '#F1DF6F', borderWidth: (ctx) => ctx.dataIndex === 7 ? 2 : 1, borderRadius: 4 },
+          { label: 'Automation Coverage', data: [2, 5, 30, 40, 55, 60, 80, 90, 95],
+            backgroundColor: (ctx) => ctx.dataIndex === 7 ? 'rgba(102,204,204,0.65)' : 'rgba(102,204,204,0.7)',
             borderColor: '#66CCCC', borderWidth: 1, borderRadius: 4 },
-          { label: 'Security Posture', data: [5, 10, 20, 35, 40, 45, 95, 99],
-            backgroundColor: (ctx) => ctx.dataIndex === 6 ? 'rgba(102,204,204,0.5)' : 'rgba(204,102,102,0.7)',
-            borderColor: (ctx) => ctx.dataIndex === 6 ? '#66CCCC' : '#CC6666', borderWidth: 1, borderRadius: 4 },
-          { label: 'Resilience / HA', data: [5, 15, 15, 20, 25, 30, 85, 95],
-            backgroundColor: (ctx) => ctx.dataIndex === 6 ? 'rgba(102,204,204,0.35)' : 'rgba(153,153,255,0.7)',
-            borderColor: (ctx) => ctx.dataIndex === 6 ? '#66CCCC' : '#9999FF', borderWidth: 1, borderRadius: 4 }
+          { label: 'Security Posture', data: [5, 10, 20, 35, 40, 45, 78, 80, 99],
+            backgroundColor: (ctx) => ctx.dataIndex === 7 ? 'rgba(102,204,204,0.5)' : 'rgba(204,102,102,0.7)',
+            borderColor: (ctx) => ctx.dataIndex === 7 ? '#66CCCC' : '#CC6666', borderWidth: 1, borderRadius: 4 },
+          { label: 'Resilience / HA', data: [5, 15, 15, 20, 25, 30, 70, 82, 95],
+            backgroundColor: (ctx) => ctx.dataIndex === 7 ? 'rgba(102,204,204,0.35)' : 'rgba(153,153,255,0.7)',
+            borderColor: (ctx) => ctx.dataIndex === 7 ? '#66CCCC' : '#9999FF', borderWidth: 1, borderRadius: 4 }
         ]
       },
       options: {

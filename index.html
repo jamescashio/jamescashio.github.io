@@ -6,16 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Doug Cashio — Enterprise AI & Cybersecurity Solutions Architect</title>
   <meta name="description"
-    content="Doug Cashio — Principal Solutions Consultant specializing in cybersecurity, AI infrastructure, and multi-agent orchestration. Enterprise AI portfolio, April 2026.">
+    content="Doug Cashio — Principal Solutions Consultant specializing in cybersecurity, AI infrastructure, and multi-agent orchestration. ZeusApollo v15 baseline: 12-node sovereign AI fleet, 3-tier LLM routing, ~18TB storage. April 2026.">
 
   <meta property="og:title" content="Doug Cashio — Enterprise AI & Cybersecurity Solutions Architect">
   <meta property="og:description"
-    content="Principal Solutions Consultant specializing in cybersecurity, AI infrastructure, and multi-agent orchestration. Professional portfolio for enterprise cybersecurity and AI solutions.">
+    content="Principal Solutions Consultant — MxDR, M365, Azure, multi-agent orchestration. ZeusApollo v15: 12-node sovereign AI fleet, 3-tier LLM routing (xAI primary + ATLAS edge + GPU fallback), GCP Cloud Run MCP gateway.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Doug Cashio — Enterprise AI & Cybersecurity Solutions Architect">
   <meta name="twitter:description"
-    content="Specializing in MxDR, M365, Azure, and enterprise secure cloud platform architecture.">
+    content="MxDR, M365, Azure. ZeusApollo v15: 12-node sovereign AI fleet, 3-tier LLM routing, GCP Cloud Run MCP gateway.">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"
     integrity="sha384-vsrfeLOOY6KuIYKDlmVH5UiBmgIdB1oEf7p01YgWHuqmOHfZr374+odEv96n9tNC"
     crossorigin="anonymous"></script>
@@ -1361,8 +1361,8 @@
           <div style="font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:2px; color:var(--text-secondary); text-transform:uppercase; margin-top:4px;">Businesses Protected</div>
         </div>
         <div style="text-align:center;">
-          <span style="font-family:'Orbitron',monospace; font-size:28px; font-weight:800; color:#66FF99; text-shadow:0 0 10px rgba(102,255,153,0.4);">9</span>
-          <div style="font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:2px; color:var(--text-secondary); text-transform:uppercase; margin-top:4px;">AI Agents</div>
+          <span style="font-family:'Orbitron',monospace; font-size:28px; font-weight:800; color:#66FF99; text-shadow:0 0 10px rgba(102,255,153,0.4);">12</span>
+          <div style="font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:2px; color:var(--text-secondary); text-transform:uppercase; margin-top:4px;">Active Lab Nodes</div>
         </div>
       </div>
 
@@ -1652,47 +1652,53 @@
       </div>
 
       <div class="glass-panel" style="border-left:3px solid var(--lcars-red);">
-        <p style="margin-bottom:20px;">Beyond the consulting practice, I maintain a production-grade personal lab
+        <p style="margin-bottom:14px;">Beyond the consulting practice, I operate <strong style="color:var(--lcars-gold);">ZeusApollo</strong> &mdash; a production-grade personal lab
           environment used for continuous learning, rapid prototyping, and validating enterprise security and AI
-          concepts at scale. The current architecture incorporates:</p>
-          
+          concepts at scale. The architecture is documented under a formal versioned baseline; the current document is
+          the <strong style="color:var(--lcars-cyan);">v15 Network Assessment (April 27, 2026)</strong>.</p>
+
+        <div style="display:inline-flex; align-items:center; gap:10px; padding:8px 14px; margin-bottom:18px; background:rgba(102,204,204,0.08); border:1px solid rgba(102,204,204,0.3); border-radius:6px; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1.5px; color:var(--lcars-cyan);">
+          <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#66FF99; box-shadow:0 0 8px rgba(102,255,153,0.7);"></span>
+          v15 BASELINE &mdash; TESTLAB STABLE &mdash; STAGING DEEPMIND / GCP SPRINT
+        </div>
+
         <ul style="padding-left:20px; display:flex; flex-direction:column; gap:10px; margin-bottom:24px; font-size:16px; color:var(--text-secondary);">
-          <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">Offensive Security:</strong> Dedicated <strong>Kali Linux</strong> environment for penetration testing and red-team simulations.</li>
-          <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">Threat Detection & SIEM:</strong> Enterprise-grade <strong>Wazuh</strong> deployment for log correlation and active response.</li>
-          <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">Observability:</strong> Continuous infrastructure network monitoring utilizing <strong>Uptime Kuma</strong> and Grafana.</li>
-          <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">AI Infrastructure:</strong> GPU-accelerated local orchestration bridged directly to <strong>Google Cloud (GCP)</strong> via a custom Serverless <strong>MCP Gateway</strong> granting access to Vertex AI.</li>
-          <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">Cloud Expansion:</strong> <strong>NemoClaw</strong> AI agent (NVIDIA Nemotron 120B) deployed on <strong>GCP Cloud Run</strong> with ~$265 in active credits. Dual-Plex media architecture with <strong>Dionysus</strong> (NVENC) and <strong>Hermes</strong> (Quick Sync).</li>
+          <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">3-Tier LLM Routing Fabric:</strong> Cloud reasoning (xAI Grok 4.20 via Hermes), local edge (ATLAS Mac Mini M4 / Ollama), and GPU fallback (CashioTUF / LM Studio + Gemma) cleanly separated by role &mdash; no provider syntax drift.</li>
+          <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">Sovereign AI Edge Node:</strong> ATLAS .78 (Mac Mini M4, 24GB unified memory) running Ollama as a headless LaunchDaemon, paired with Tahoe-LAFS distributed encrypted storage on UPS-protected hardware.</li>
+          <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">Native MCP Control Plane:</strong> CT105 Hermes &rarr; CT106 native MCP / mcp-omnibus / ChromaDB, with no legacy socat bridges. Internal tool execution and external tunnel ingress kept architecturally distinct.</li>
+          <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">Threat Detection &amp; Observability:</strong> Wazuh SIEM for log correlation, AdGuard Home with active/replica/sync triad and a 720h querylog cap, Uptime Kuma reachability checks, dedicated Kali offensive node.</li>
+          <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">Cloud Expansion:</strong> <strong>NemoClaw</strong> deployed on <strong>GCP Cloud Run</strong> with active credits; sprint focus is DeepMind / Vertex experimentation while topology is intentionally frozen.</li>
         </ul>
 
         <div class="stats-row" style="margin-bottom: 24px;">
           <div class="stat-card">
-            <div class="stat-value" style="color:var(--lcars-gold);">500+</div>
-            <div class="stat-label">Hours Invested</div>
+            <div class="stat-value" style="color:var(--lcars-gold);">12</div>
+            <div class="stat-label">Active Fleet Nodes</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value" style="color:var(--lcars-teal);">9</div>
-            <div class="stat-label">AI Agents Orchestrated</div>
+            <div class="stat-value" style="color:var(--lcars-cyan);">18TB</div>
+            <div class="stat-label">Total Storage</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value" style="color:#66FF99;">16&times;</div>
-            <div class="stat-label">GPU Performance Gain</div>
+            <div class="stat-value" style="color:#66FF99;">3</div>
+            <div class="stat-label">Tier LLM Routing</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value" style="color:var(--lcars-lavender);">Full</div>
-            <div class="stat-label">Sovereign AI Stack</div>
+            <div class="stat-value" style="color:var(--lcars-lavender);">720h</div>
+            <div class="stat-label">AdGuard Log Cap</div>
           </div>
         </div>
 
         <!-- FEATURED PROJECT: GCP MCP (Nested) -->
         <div style="margin: 32px 0 24px 0; padding: 22px; background: rgba(10, 10, 20, 0.6); border-radius: 8px; border: 1px solid rgba(255,153,51,0.2); border-left: 3px solid var(--lcars-orange); box-shadow: inset 0 0 20px rgba(0,0,0,0.5);">
           <h3 style="color:var(--lcars-orange); font-size:15px; margin-bottom:12px;">FEATURED PROJECT: GCP CLOUD RUN MCP SERVER</h3>
-          <p style="font-size:16px; margin-bottom:14px;">Architected and deployed a highly-scalable, serverless <strong>Model Context Protocol (MCP) gateway</strong> on Google Cloud Run to grant external Multi-Agent orchestrated systems direct capabilities and access to GCP's enterprise-grade Vertex AI Gemini inference engine.</p>
+          <p style="font-size:16px; margin-bottom:14px;">Architected and deployed a highly-scalable, serverless <strong>Model Context Protocol (MCP) gateway</strong> on Google Cloud Run to grant external multi-agent orchestrated systems direct capabilities and access to GCP's enterprise-grade Vertex AI Gemini inference engine.</p>
           <ul style="padding-left:20px; display:flex; flex-direction:column; gap:8px; margin-top:0;">
             <li><strong style="color:var(--lcars-teal);">Architecture Stack:</strong> FastMCP (Python), Docker, Cloud Run, Secret Manager</li>
-            <li><strong style="color:var(--lcars-teal);">Security & Controls:</strong> Strict Bearer Token Auth via custom ASGI Proxy routing, automated Cloud Billing constraints</li>
+            <li><strong style="color:var(--lcars-teal);">Security &amp; Controls:</strong> Strict Bearer Token Auth via custom ASGI Proxy routing, automated Cloud Billing constraints</li>
             <li><strong style="color:var(--lcars-teal);">Continuous Integration:</strong> Containerized multi-component build strictly versioned into Google Artifact Registry</li>
             <li><strong style="color:var(--lcars-teal);">Source Code:</strong> <em style="color:var(--text-secondary);">Private GCP IAM Repository &mdash; Documentation walkthrough available upon request</em></li>
-            <li><strong style="color:var(--lcars-teal);">Fleet Status:</strong> <em style="color:#66FF99;">Phase 3 — 9 Agents, 2-Node Proxmox Cluster, Dual Plex, Wazuh SIEM Live</em></li>
+            <li><strong style="color:var(--lcars-teal);">Fleet Status:</strong> <em style="color:#66FF99;">v15 baseline &mdash; 12 active nodes, single-Plex media topology, ATLAS edge AI verified, Hermes xAI primary, Wazuh SIEM live</em></li>
           </ul>
         </div>
 
