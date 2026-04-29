@@ -1416,16 +1416,16 @@
     .command-deck {
       position: relative;
       display: grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-      gap: 22px;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      gap: 26px;
       align-items: stretch;
       margin: 4px 0 24px 0;
-      padding: 26px 28px;
+      padding: 22px 26px 20px 26px;
       background:
-        radial-gradient(circle at 8% 12%, rgba(255,153,51,0.10), transparent 55%),
-        radial-gradient(circle at 92% 88%, rgba(102,204,204,0.10), transparent 55%),
-        linear-gradient(180deg, rgba(20,20,40,0.72), rgba(10,10,20,0.85));
-      border: 1px solid rgba(241,223,111,0.22);
+        radial-gradient(circle at 8% 12%, rgba(255,153,51,0.12), transparent 55%),
+        radial-gradient(circle at 92% 88%, rgba(102,204,204,0.12), transparent 55%),
+        linear-gradient(180deg, rgba(20,20,40,0.72), rgba(10,10,20,0.88));
+      border: 1px solid rgba(241,223,111,0.28);
       border-radius: 14px;
       box-shadow:
         0 10px 60px rgba(0,0,0,0.55),
@@ -1451,7 +1451,7 @@
       font-size: 11px; letter-spacing: 3px;
       color: var(--lcars-cyan);
       text-transform: uppercase;
-      margin-bottom: 14px;
+      margin-bottom: 8px;
     }
     .deck-eyebrow .dot {
       width: 8px; height: 8px; border-radius: 50%;
@@ -1464,36 +1464,73 @@
 
     .deck-name {
       font-family: 'Orbitron', monospace;
-      font-size: 44px; font-weight: 800;
-      letter-spacing: 6px;
-      color: var(--lcars-gold);
-      line-height: 1.05;
-      margin: 0 0 6px 0;
-      text-shadow: 0 0 30px rgba(241,223,111,0.35);
+      font-size: clamp(52px, 6.4vw, 78px);
+      font-weight: 900;
+      letter-spacing: 8px;
+      background: linear-gradient(180deg, #FFE9A0 0%, var(--lcars-gold) 45%, #C9A04A 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: var(--lcars-gold); /* fallback */
+      line-height: 1.0;
+      margin: 0 0 4px 0;
+      text-shadow:
+        0 0 28px rgba(241,223,111,0.55),
+        0 0 60px rgba(241,223,111,0.25);
+      filter: drop-shadow(0 0 18px rgba(241,223,111,0.35));
+      position: relative;
+    }
+    .deck-name::after {
+      content: "";
+      display: block;
+      width: 96px;
+      height: 2px;
+      margin-top: 10px;
+      background: linear-gradient(90deg, var(--lcars-gold), rgba(102,204,204,0.7), transparent);
+      box-shadow: 0 0 14px rgba(241,223,111,0.6);
     }
     .deck-tagline {
       font-family: 'Orbitron', monospace;
-      font-size: 14px; letter-spacing: 4px;
+      font-size: 13.5px; letter-spacing: 3.5px;
       color: var(--lcars-teal);
-      margin-bottom: 16px;
+      margin: 8px 0 12px 0;
       text-transform: uppercase;
     }
     .deck-pitch {
-      font-size: 16px;
-      line-height: 1.65;
+      font-size: 16.5px;
+      line-height: 1.55;
       color: var(--text-primary);
-      margin-bottom: 18px;
-      max-width: 60ch;
+      margin: 0 0 14px 0;
+      max-width: 58ch;
     }
     .deck-pitch strong {
       color: var(--lcars-gold);
       font-weight: 600;
     }
+    .deck-valueprop {
+      font-family: 'Orbitron', monospace;
+      font-size: 17px;
+      line-height: 1.4;
+      letter-spacing: 0.8px;
+      color: #F0F0FF;
+      margin: 0 0 14px 0;
+      max-width: 56ch;
+      font-weight: 500;
+    }
+    .deck-valueprop em {
+      font-style: normal;
+      color: var(--lcars-cyan);
+      font-weight: 600;
+    }
+    .deck-valueprop b {
+      color: var(--lcars-gold);
+      font-weight: 700;
+    }
 
     /* — Status chips row under tagline — */
     .deck-status-row {
-      display: flex; flex-wrap: wrap; gap: 8px;
-      margin: 0 0 16px 0;
+      display: flex; flex-wrap: wrap; gap: 7px;
+      margin: 0 0 12px 0;
     }
     .deck-status {
       display: inline-flex; align-items: center; gap: 8px;
@@ -1523,8 +1560,8 @@
     /* — Proof bullets list — */
     .deck-proof {
       list-style: none;
-      padding: 0; margin: 0 0 18px 0;
-      display: grid; grid-template-columns: 1fr; gap: 6px;
+      padding: 0; margin: 0 0 14px 0;
+      display: grid; grid-template-columns: 1fr; gap: 5px;
     }
     .deck-proof li {
       display: grid;
@@ -1596,7 +1633,7 @@
     .deck-orch {
       position: relative;
       height: 100%;
-      min-height: 320px;
+      min-height: 360px;
       padding: 16px 18px;
       background:
         linear-gradient(180deg, rgba(10,10,20,0.55), rgba(15,15,30,0.65));
@@ -1764,20 +1801,28 @@
     @media (max-width: 900px) {
       .command-deck {
         grid-template-columns: 1fr;
-        padding: 22px 20px;
-        gap: 18px;
+        padding: 20px 18px;
+        gap: 16px;
       }
-      .deck-name { font-size: 34px; letter-spacing: 4px; }
+      .deck-left { order: 1; }
+      .deck-right { order: 2; }
+      .deck-name { font-size: clamp(40px, 9vw, 56px); letter-spacing: 5px; }
+      .deck-name::after { width: 72px; }
+      .deck-valueprop { font-size: 15px; }
       .deck-tagline { font-size: 12px; letter-spacing: 3px; }
       .deck-orch { min-height: 280px; }
     }
     @media (max-width: 640px) {
       .command-deck {
-        padding: 18px 14px;
+        padding: 16px 13px;
         border-radius: 10px;
+        gap: 14px;
       }
-      .deck-name { font-size: 26px; letter-spacing: 3px; }
-      .deck-tagline { font-size: 11px; letter-spacing: 2.5px; }
+      .deck-eyebrow { font-size: 10px; letter-spacing: 2px; gap: 8px; margin-bottom: 6px; }
+      .deck-name { font-size: 38px; letter-spacing: 3px; }
+      .deck-name::after { width: 56px; margin-top: 8px; }
+      .deck-tagline { font-size: 11px; letter-spacing: 2.5px; margin: 6px 0 10px 0; }
+      .deck-valueprop { font-size: 14.5px; line-height: 1.45; margin-bottom: 12px; }
       .deck-pitch { font-size: 14px; }
       .deck-cta { font-size: 10px; padding: 9px 12px; letter-spacing: 1.5px; }
       .deck-orch { padding: 12px; min-height: 240px; }
@@ -1868,12 +1913,11 @@
           </div>
           <h1 class="deck-name">DOUG CASHIO</h1>
           <div class="deck-tagline" id="rotating-tagline">Enterprise AI &amp; Cybersecurity Solutions Architect</div>
-          <p class="deck-pitch">
-            Principal Solutions Consultant with <strong>15+ years</strong> across
-            network engineering, cloud-first security, and enterprise SaaS &mdash;
-            now architecting <strong>production-grade AI</strong> for M365, Azure,
-            MxDR, and multi-agent orchestration. The lab below is where the
-            architecture earns its keep before the deck ever hits a customer.
+
+          <p class="deck-valueprop">
+            Architecting <b>production-grade AI &amp; cybersecurity systems</b> &mdash;
+            <em>multi-model orchestration</em>, <em>MxDR pipelines</em>, and
+            <em>observability meshes</em> proven at lab scale before they ever land in front of a customer.
           </p>
 
           <!-- Status chips: at-a-glance posture, no PII -->
