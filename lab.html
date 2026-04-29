@@ -4169,55 +4169,99 @@
 
       <!-- DESIGN PHILOSOPHY: RUTAN x KELLY JOHNSON -->
       <div class="glass-panel" style="margin-top:24px;">
-        <h3 style="color:var(--lcars-orange);">Design Philosophy — Rutan &times; Johnson</h3>
+        <h3 style="color:var(--lcars-orange);">Cashio Design Doctrine — Rutan &times; Johnson</h3>
         <p style="margin-bottom:18px;color:var(--text-secondary);">
-          My approach to building technology lives at the deliberate intersection of two aerospace legends whose
-          philosophies, taken together, form something greater than either alone:
+          The way I build sits at the intersection of two aerospace engineers who, taken together, defined how a small
+          team turns a strange idea into a flying machine: <strong style="color:var(--lcars-orange);">Burt Rutan</strong>
+          taught the world to prototype the unconventional and let the data — not the committee — decide.
+          <strong style="color:var(--lcars-blue);">Kelly Johnson</strong> taught the world to do it with a small team,
+          a clear chain of authority, and only the documentation that actually matters. Every system I build inherits
+          from both.
         </p>
         <div class="philosophy-grid">
           <div class="philosophy-card rutan">
             <h4>&#x1F6EB; Burt Rutan</h4>
-            <div class="subtitle">"Try the weird thing. Learn fast through flight test."</div>
+            <div class="subtitle">"If physics says it can fly, build it and find out."</div>
             <p>
-              Rutan built aircraft that should not have worked — then flew them until they either taught him something
-              or proved him right.
-              His philosophy: <strong style="color:var(--lcars-orange);">Experiment First.</strong>
-              Push prototypes into the air before the theory is perfect.
-              Embrace the weird architecture. Embrace the late-night test flight.
-              If it doesn't break, you didn't push hard enough.
-              The ZeusApollo homelab is my Scaled Composites hangar: a place where half-finished ideas get deployed,
-              tested against real workloads, and either earn their place in the fleet or get scrapped before they waste
-              another minute.
+              Rutan built canards, asymmetric twins, and composite airframes that looked wrong on paper and flew
+              beautifully off the ramp. His method:
+              <strong style="color:var(--lcars-orange);">prototype the unconventional</strong>,
+              cut metal (or carbon) before the theory is perfect, instrument every hop, and let the airframe teach you.
+              Unusual configurations are allowed — required, even — when the engineering demands it.
+              The ZeusApollo homelab is run the same way: a Scaled-Composites-style hangar where weird architectures
+              get flown against real workloads, kept if the data earns it, and scrapped without ceremony if it doesn't.
             </p>
           </div>
           <div class="philosophy-card kelly">
             <h4>&#x1F6A9; Kelly Johnson</h4>
-            <div class="subtitle">"Deliver a specific capability fast. Reliable. Repeatable."</div>
+            <div class="subtitle">"Be quick, be quiet, be on time. Keep it simple."</div>
             <p>
-              Kelly Johnson's Skunk Works didn't build concepts — they built aircraft that flew the next morning.
-              His philosophy: <strong style="color:var(--lcars-blue);">Mission-First.</strong>
-              Define the exact capability required. Build it lean. Make it reliable. Make it repeatable.
-              No bureaucracy between the engineer and the aircraft.
-              The moment a ZeusApollo prototype proves its value in the lab, the Kelly Johnson discipline kicks in:
-              harden it, document it, and ship the capability that actually matters — on time, on spec, and ready to
-              operate in the field.
+              Kelly Johnson's Skunk Works produced the U-2, SR-71, and F-117 with small teams,
+              direct authority, and almost no bureaucracy between the engineer and the aircraft. His method:
+              <strong style="color:var(--lcars-blue);">KISS</strong> — define the exact capability, build it lean,
+              make it field-serviceable, document only what matters, test early, and ship on schedule.
+              The moment a Rutan-style prototype proves itself in the lab, Johnson's discipline kicks in:
+              simplify the design until it can be operated under pressure, harden it, write the runbook a tired
+              operator can follow, and put the capability into service.
             </p>
           </div>
         </div>
+
         <style>
+          .doctrine-principles {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            margin-top: 26px;
+          }
+          .principle-card {
+            background: rgba(10, 10, 25, 0.55);
+            border: 1px solid rgba(241, 223, 111, 0.18);
+            border-radius: 10px;
+            padding: 16px 18px;
+            position: relative;
+          }
+          .principle-card .num {
+            font-family: 'Orbitron', monospace;
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: var(--lcars-peach);
+            opacity: 0.75;
+          }
+          .principle-card h5 {
+            font-family: 'Orbitron', monospace;
+            font-size: 13px;
+            letter-spacing: 1.5px;
+            color: var(--lcars-gold);
+            margin: 4px 0 8px 0;
+            text-transform: uppercase;
+          }
+          .principle-card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.55;
+            margin: 0;
+          }
           .doctrine-container {
             margin-top: 30px;
             text-align: center;
             font-family: 'Share Tech Mono', monospace;
-            font-size: 18px;
-            padding: 20px;
+            font-size: 17px;
+            padding: 22px 18px 14px;
+            color: var(--text-primary);
+            line-height: 1.7;
+          }
+          .doctrine-creed {
+            display: block;
+            max-width: 760px;
+            margin: 0 auto 18px;
             color: var(--text-primary);
           }
           .doctrine-title {
             display: inline-block;
-            margin-top: 15px;
+            margin-top: 6px;
             font-family: 'Orbitron', monospace;
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 800;
             color: var(--lcars-gold);
             text-transform: uppercase;
@@ -4233,8 +4277,40 @@
             to { filter: drop-shadow(0 0 25px rgba(241, 223, 111, 1)); }
           }
         </style>
+
+        <div class="doctrine-principles">
+          <div class="principle-card">
+            <div class="num">01</div>
+            <h5>Unconventional by Evidence</h5>
+            <p>Strange shapes are fine — required, even — when physics, profiling, or telemetry says they're the right answer. Novelty is justified, never decorative.</p>
+          </div>
+          <div class="principle-card">
+            <div class="num">02</div>
+            <h5>Prototype Before Committee</h5>
+            <p>Build the smallest flyable version. Put it in front of real workloads early. Let the prototype, not the meeting, settle the argument.</p>
+          </div>
+          <div class="principle-card">
+            <div class="num">03</div>
+            <h5>Simple Enough to Operate</h5>
+            <p>KISS, applied to systems: fewer moving parts, clearer interfaces, field-serviceable under pressure. If a tired operator can't run it at 2 a.m., it isn't done.</p>
+          </div>
+          <div class="principle-card">
+            <div class="num">04</div>
+            <h5>Instrumented by Default</h5>
+            <p>Every hop is a flight test. Build the gauges in from the start so the system tells you what it's doing — and so the next iteration is informed by data, not opinion.</p>
+          </div>
+          <div class="principle-card">
+            <div class="num">05</div>
+            <h5>Ship the Useful Capability</h5>
+            <p>Small team, clear authority, minimum ceremony, on time. Document what matters and nothing else. The deliverable is a capability that survives contact with reality.</p>
+          </div>
+        </div>
+
         <div class="doctrine-container">
-          "Prototype wildly. Harden ruthlessly. Ship the capability that matters." <br>
+          <span class="doctrine-creed">
+            Prototype the unconventional. Simplify until it can be operated under pressure.<br>
+            Instrument every hop. Ship the capability that survives contact with reality.
+          </span>
           <span class="doctrine-title">&mdash; Cashio Design Doctrine &mdash;</span>
         </div>
       </div>
