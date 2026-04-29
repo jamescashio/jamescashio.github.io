@@ -1993,7 +1993,7 @@
           <span style="font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:2px; color:var(--lcars-cyan);">v15 BASELINE &mdash; TESTLAB STABLE</span>
         </div>
         <div style="font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:1.5px; color:var(--text-secondary);">
-          12 ACTIVE NODES &bull; ~18TB STORAGE &bull; 3-TIER LLM ROUTING &bull; 720h ADGUARD CAP
+          12 ACTIVE NODES &bull; ~18TB STORAGE &bull; 3-TIER LLM ROUTING &bull; 720h TELEMETRY RETENTION
         </div>
         <div style="margin-left:auto; font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:1.5px; color:var(--lcars-gold);">
           DEEPMIND / GCP SPRINT &mdash; STAGED
@@ -2240,8 +2240,8 @@
 
           <div style="padding:16px; background:rgba(102,255,153,0.05); border:1px solid rgba(102,255,153,0.25); border-left:3px solid #66FF99; border-radius:8px;">
             <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:#66FF99; margin-bottom:6px;">RESOLVED</div>
-            <h3 style="color:var(--lcars-gold); font-size:14px; margin-bottom:8px;">ADGUARD PRIMARY HEALTH</h3>
-            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Querylog retention capped at 720h. Disk pressure dropped from <strong style="color:var(--lcars-red);">63.4% rising</strong> to <strong style="color:#66FF99;">~7% steady-state</strong>. No raw SQLite surgery required.</p>
+            <h3 style="color:var(--lcars-gold); font-size:14px; margin-bottom:8px;">SIGNAL MESH HEALTH</h3>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Telemetry retention capped at 720h. Disk pressure dropped from <strong style="color:var(--lcars-red);">63.4% rising</strong> to <strong style="color:#66FF99;">~7% steady-state</strong>. No raw SQLite surgery required.</p>
           </div>
 
           <div style="padding:16px; background:rgba(255,153,51,0.05); border:1px solid rgba(255,153,51,0.3); border-left:3px solid var(--lcars-orange); border-radius:8px;">
@@ -2365,7 +2365,7 @@
             </tr>
             <tr>
               <td><strong>DNS / DHCP</strong></td>
-              <td>AdGuard primary, AdGuard replica, AGH-Sync orchestrator</td>
+              <td>Policy telemetry primary, telemetry replica, sync orchestrator</td>
               <td class="highlight" style="color:#66FF99;">ACTIVE</td>
             </tr>
             <tr>
@@ -2402,7 +2402,7 @@
             <li>ATLAS media-service tertiary role &mdash; removed from target state and risk register (decoupled to free edge AI capacity)</li>
             <li>ATLAS media metadata path &mdash; removed from Atlas-Storage-2</li>
             <li>ATLAS no-UPS risk &mdash; closed (node now on UPS)</li>
-            <li>AdGuard primary disk pressure &mdash; downgraded from active to monitored healthy state</li>
+            <li>Policy telemetry primary disk pressure &mdash; downgraded from active to monitored healthy state</li>
             <li>Hermes local LLM bridge as primary provider &mdash; xAI reasoning is the primary provider</li>
           </ul>
         </div>
@@ -2505,8 +2505,8 @@
           </div>
           <div class="timeline-event">
             <div class="timeline-date">PHASE 1 — SYSTEMS ONLINE (EARLY 2025)</div>
-            <div class="timeline-title">AdGuard Home &amp; Docker Deployment</div>
-            <div class="timeline-desc">CT 101 (AdGuard Home) deployed as the fleet's "deflector array" — filtering DNS
+            <div class="timeline-title">Policy Telemetry &amp; Docker Deployment</div>
+            <div class="timeline-desc">CT 101 (policy telemetry node) deployed as the fleet's "deflector array" — filtering DNS
               across the entire subnet, catching the Neato vacuum's 123K+ rogue queries. CT 102 (Docker) and VM 100
               (Home Assistant) brought automation and containerization online. The fleet achieved basic operational
               readiness.</div>
@@ -2701,7 +2701,7 @@
         </div>
         <div class="stat-card">
           <div class="stat-value" style="color:var(--lcars-lavender);">720h</div>
-          <div class="stat-label">AdGuard Log Cap</div>
+          <div class="stat-label">Telemetry Retention Window</div>
         </div>
         <div class="stat-card">
           <div class="stat-value" style="color:var(--lcars-teal);">500+</div>
@@ -2722,7 +2722,7 @@
         <p style="margin-bottom:14px;"><strong>Proxmox Backup Automation:</strong> All nodes (VM 100, CT 101–103) back
           up automatically at 21:00 nightly to genesis-nfs. No manual intervention. The fleet protects itself.</p>
         <p><strong>MCP Integration (Universal Translator):</strong> Custom MCP servers bridge the gap between AI agents
-          and infrastructure. The AdGuard MCP lets Claude query DNS statistics in natural language. The Apollo health
+          and infrastructure. The telemetry MCP lets Claude query DNS statistics in natural language. The Apollo health
           monitor MCP provides live CPU/RAM/temperature telemetry. Future MCP servers for Wazuh and Home Assistant will
           complete the automation loop.</p>
 
@@ -2741,7 +2741,7 @@
             &bull; <strong style="color:var(--lcars-gold);">Natural-Language DNS Forensics:</strong>
             <em>"Show me which devices made the most DNS queries in the last 24 hours and flag any that contacted known
               malware domains."</em>
-            — The AI agent calls the AdGuard MCP server, pulls query logs, cross-references against threat intelligence
+            — The AI agent calls the observability MCP server, pulls query logs, cross-references against threat intelligence
             feeds, and returns
             a ranked risk report. No dashboards to click through. No logs to grep. One sentence, one answer.
           </p>
@@ -2958,8 +2958,8 @@
               <td>v15 baseline</td>
             </tr>
             <tr>
-              <td class="highlight" style="color:#66FF99;">AdGuard Primary Health &#x2705;</td>
-              <td>RESOLVED &mdash; querylog retention capped at 720h; disk dropped from 63.4% rising to ~7% steady</td>
+              <td class="highlight" style="color:#66FF99;">Signal Mesh Health &#x2705;</td>
+              <td>RESOLVED &mdash; telemetry retention capped at 720h; disk dropped from 63.4% rising to ~7% steady</td>
               <td>April 2026</td>
               <td>v15 baseline</td>
             </tr>
@@ -3120,7 +3120,7 @@
               <li>Hermes stability soak vs. xAI primary with ATLAS / CashioTUF fallbacks</li>
               <li>Exercise CashioTUF LM Studio fallback during a planned ATLAS pause</li>
               <li>Spend GCP / Vertex / DeepMind credits while topology is stable</li>
-              <li>Codify AdGuard 720h retention &amp; ATLAS service validation in Ansible playbooks</li>
+              <li>Codify 720h telemetry retention &amp; ATLAS service validation in Ansible playbooks</li>
               <li>Add Uptime Kuma checks for ATLAS Ollama edge endpoint and Tahoe distributed storage endpoint</li>
             </ul>
           </div>
@@ -3223,8 +3223,8 @@
               <td>Use v15 baseline; avoid topology churn through experimentation window.</td>
             </tr>
             <tr style="background:rgba(102,255,153,0.04);">
-              <td>AdGuard primary disk pressure</td>
-              <td>AdGuard primary</td>
+              <td>Policy telemetry primary disk pressure</td>
+              <td>Policy telemetry primary</td>
               <td style="color:#66FF99;">LOW</td>
               <td>Resolved. Retention 720h; disk ~7% used.</td>
             </tr>
@@ -4070,7 +4070,7 @@
 
         // APOLLO node
         { id: 'APOLLO', label: '\u26A1 APOLLO\nProxmox PVE\nzeusapollo cluster', shape: 'box', color: { background: C.cyan,   border: C.cyan },    font: { color: C.bg,      size: 15, face: 'Orbitron' } },
-        { id: 'A_CT101',  label: '\u{1F6E1}\uFE0F AdGuard Primary',                       shape: 'box', color: { background: C.dark,   border: C.cyan },    font: { color: '#E8E6E3', size: 11 } },
+        { id: 'A_CT101',  label: '\u{1F6E1}\uFE0F Policy Telemetry Primary',              shape: 'box', color: { background: C.dark,   border: C.cyan },    font: { color: '#E8E6E3', size: 11 } },
         { id: 'A_CT108',  label: '\u{1F4FA} Hermes\nMedia Secondary',                    shape: 'box', color: { background: C.dark,   border: C.cyan },    font: { color: '#E8E6E3', size: 11 } },
         { id: 'A_CT111',  label: '\u{1F3E0} Home Assistant',                               shape: 'box', color: { background: C.dark,   border: C.cyan },    font: { color: '#E8E6E3', size: 11 } },
         { id: 'A_CT112',  label: '\u{1F3AC} Media Stack',                                  shape: 'box', color: { background: C.dark,   border: C.cyan },    font: { color: '#E8E6E3', size: 11 } },
@@ -4083,7 +4083,7 @@
         { id: 'Z_CT104',  label: '\u{1F6A8} Wazuh SIEM',                                  shape: 'box', color: { background: C.dark,   border: C.red },     font: { color: C.red,     size: 11 } },
         { id: 'Z_CT106',  label: '\u{1F9E0} MCP Stack',                                   shape: 'box', color: { background: C.dark,   border: C.orange },  font: { color: '#E8E6E3', size: 11 } },
         { id: 'Z_CT107',  label: '\u2699\uFE0F n8n Automation',                            shape: 'box', color: { background: C.dark,   border: C.orange },  font: { color: '#E8E6E3', size: 11 } },
-        { id: 'Z_CT109',  label: '\u{1F6E1}\uFE0F AdGuard Secondary',                     shape: 'box', color: { background: C.dark,   border: C.orange },  font: { color: '#E8E6E3', size: 11 } },
+        { id: 'Z_CT109',  label: '\u{1F6E1}\uFE0F Policy Telemetry Replica',              shape: 'box', color: { background: C.dark,   border: C.orange },  font: { color: '#E8E6E3', size: 11 } },
         { id: 'Z_VM110',  label: '\u{1F5E1}\uFE0F Kali Linux',                            shape: 'box', color: { background: C.dark,   border: C.red },     font: { color: C.red,     size: 11 } },
 
         // Other fleet nodes
