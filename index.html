@@ -1490,6 +1490,66 @@
       font-weight: 600;
     }
 
+    /* — Status chips row under tagline — */
+    .deck-status-row {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin: 0 0 16px 0;
+    }
+    .deck-status {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 11px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10.5px;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      border-radius: 999px;
+      background: rgba(10,10,20,0.55);
+      border: 1px solid rgba(102,204,204,0.30);
+      color: var(--text-secondary);
+    }
+    .deck-status .swatch {
+      width: 7px; height: 7px; border-radius: 50%;
+      box-shadow: 0 0 8px currentColor;
+    }
+    .deck-status.gold   { color: var(--lcars-gold);   border-color: rgba(241,223,111,0.45); }
+    .deck-status.cyan   { color: var(--lcars-cyan);   border-color: rgba(102,204,204,0.45); }
+    .deck-status.green  { color: #66FF99;             border-color: rgba(102,255,153,0.45); }
+    .deck-status.lav    { color: var(--lcars-lavender); border-color: rgba(204,153,255,0.45); }
+    .deck-status .swatch.gold  { background: var(--lcars-gold); }
+    .deck-status .swatch.cyan  { background: var(--lcars-cyan); }
+    .deck-status .swatch.green { background: #66FF99; }
+    .deck-status .swatch.lav   { background: var(--lcars-lavender); }
+
+    /* — Proof bullets list — */
+    .deck-proof {
+      list-style: none;
+      padding: 0; margin: 0 0 18px 0;
+      display: grid; grid-template-columns: 1fr; gap: 6px;
+    }
+    .deck-proof li {
+      display: grid;
+      grid-template-columns: 14px 1fr;
+      gap: 10px;
+      align-items: baseline;
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--text-primary);
+      font-family: 'Share Tech Mono', monospace;
+      letter-spacing: 0.4px;
+    }
+    .deck-proof li::before {
+      content: "▸";
+      color: var(--lcars-cyan);
+      font-size: 12px;
+      line-height: 1;
+      transform: translateY(2px);
+    }
+    .deck-proof li strong {
+      color: var(--lcars-gold);
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
     .deck-cta-row {
       display: flex; flex-wrap: wrap; gap: 10px;
       margin-top: auto;
@@ -1723,6 +1783,8 @@
       .deck-orch { padding: 12px; min-height: 240px; }
       .deck-radar { height: 160px; }
       .deck-chips { grid-template-columns: 1fr; }
+      .deck-status { font-size: 9.5px; padding: 5px 9px; letter-spacing: 1.4px; }
+      .deck-proof li { font-size: 12.5px; }
     }
 
     /* ─── Reduced motion ─── */
@@ -1813,10 +1875,28 @@
             MxDR, and multi-agent orchestration. The lab below is where the
             architecture earns its keep before the deck ever hits a customer.
           </p>
+
+          <!-- Status chips: at-a-glance posture, no PII -->
+          <div class="deck-status-row" aria-label="Operational status">
+            <span class="deck-status gold"><span class="swatch gold" aria-hidden="true"></span>Available for advisory</span>
+            <span class="deck-status cyan"><span class="swatch cyan" aria-hidden="true"></span>Remote · National &amp; Intl. travel</span>
+            <span class="deck-status green"><span class="swatch green" aria-hidden="true"></span>Lab fabric online</span>
+            <span class="deck-status lav"><span class="swatch lav" aria-hidden="true"></span>NDA-ready engagements</span>
+          </div>
+
+          <!-- Proof bullets: concrete, public-safe, no PII -->
+          <ul class="deck-proof" aria-label="Proof points">
+            <li><span><strong>15+ yrs</strong> &mdash; network engineering &rarr; cloud security &rarr; enterprise AI</span></li>
+            <li><span>Channel impact: <strong>4,500+ resellers</strong>, <strong>60K+ businesses</strong> protected</span></li>
+            <li><span>Architecting <strong>MxDR &amp; multi-agent orchestration</strong> on M365 / Azure</span></li>
+            <li><span>Lab-validated: <strong>multi-tier LLM routing</strong>, sovereign inference, observability mesh</span></li>
+            <li><span>Active <strong>conference speaker</strong> &mdash; channel summits, partner roadshows, security events</span></li>
+          </ul>
+
           <div class="deck-cta-row">
             <a href="#lab" class="deck-cta deck-cta-primary" onclick="scrollToSection(event,'lab')">REVIEW LAB ARCHITECTURE</a>
             <a href="lab.html" class="deck-cta deck-cta-ghost">EXPLORE ORCHESTRATION FABRIC</a>
-            <a href="#summary" class="deck-cta deck-cta-ghost" onclick="scrollToSection(event,'summary')">PROFESSIONAL SUMMARY</a>
+            <a href="#summary" class="deck-cta deck-cta-ghost" onclick="scrollToSection(event,'summary')">SECURE CONTACT ON REQUEST</a>
           </div>
         </div>
 
@@ -1850,11 +1930,11 @@
                 </defs>
 
                 <!-- Central router hub -->
-                <circle cx="200" cy="100" r="30" fill="url(#hubGlow)"/>
-                <circle cx="200" cy="100" r="9" fill="#0A0A12" stroke="rgba(241,223,111,0.85)" stroke-width="1.5"/>
-                <text x="200" y="103" text-anchor="middle"
-                      font-family="Orbitron, monospace" font-size="7"
-                      fill="rgba(241,223,111,0.9)" letter-spacing="1">HERMES</text>
+                <circle cx="200" cy="100" r="34" fill="url(#hubGlow)"/>
+                <circle cx="200" cy="100" r="22" fill="#0A0A12" stroke="rgba(241,223,111,0.85)" stroke-width="1.5"/>
+                <text x="200" y="104" text-anchor="middle"
+                      font-family="Orbitron, monospace" font-size="9" font-weight="700"
+                      fill="rgba(241,223,111,0.95)" letter-spacing="0">HERMES</text>
 
                 <!-- Source pad: REQUEST -->
                 <rect x="14" y="86" width="58" height="28" rx="4"
