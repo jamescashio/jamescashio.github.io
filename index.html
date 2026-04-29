@@ -1797,10 +1797,10 @@
         </div>
 
         <ul style="padding-left:20px; display:flex; flex-direction:column; gap:10px; margin-bottom:24px; font-size:16px; color:var(--text-secondary);">
-          <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">3-Tier LLM Routing Fabric:</strong> Cloud reasoning (xAI Grok 4.20 via Hermes), local edge (ATLAS Mac Mini M4 / Ollama), and GPU fallback (CashioTUF / LM Studio + Gemma) cleanly separated by role &mdash; no provider syntax drift.</li>
+          <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">Multi-Model Orchestration Fabric:</strong> Role-routed LLMs across cloud reasoning (xAI Grok 4.20 via Hermes), local edge inference (ATLAS Mac Mini M4 / Ollama), and GPU specialist fallback (CashioTUF / LM Studio + Gemma) &mdash; with confidence-aware handoff and per-model latency telemetry.</li>
           <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">Sovereign AI Edge Node:</strong> ATLAS (Mac Mini M4, 24GB unified memory) running Ollama as a headless LaunchDaemon, paired with Tahoe-LAFS distributed encrypted storage on UPS-protected hardware.</li>
           <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">Native MCP Control Plane:</strong> Hermes agent &rarr; native MCP / mcp-omnibus / ChromaDB, with no legacy socat bridges. Internal tool execution and external tunnel ingress kept architecturally distinct.</li>
-          <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">Threat Detection &amp; Observability:</strong> Wazuh SIEM for log correlation, AdGuard Home with active/replica/sync triad and a 720h querylog cap, Uptime Kuma reachability checks, dedicated Kali offensive node.</li>
+          <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">Observability Mesh:</strong> Wazuh SIEM correlation, policy-aware DNS telemetry with active/replica/sync triad and a 720h query window, Uptime Kuma reachability sweeps, and a dedicated offensive validation node &mdash; every model hop, route, and signal accounted for.</li>
           <li><span style="color:var(--lcars-red); margin-right:8px;">[&#9632;]</span><strong style="color:var(--text-primary);">Cloud Expansion:</strong> <strong>GCP Cloud Run / Vertex AI</strong> sprint runway with active credits; focus is DeepMind / Vertex experimentation while local topology is intentionally frozen.</li>
         </ul>
 
@@ -1819,7 +1819,7 @@
           </div>
           <div class="stat-card">
             <div class="stat-value" style="color:var(--lcars-lavender);">720h</div>
-            <div class="stat-label">AdGuard Log Cap</div>
+            <div class="stat-label">Telemetry Window</div>
           </div>
         </div>
 
@@ -1832,7 +1832,7 @@
             <li><strong style="color:var(--lcars-teal);">Security &amp; Controls:</strong> Strict Bearer Token Auth via custom ASGI Proxy routing, automated Cloud Billing constraints</li>
             <li><strong style="color:var(--lcars-teal);">Continuous Integration:</strong> Containerized multi-component build strictly versioned into Google Artifact Registry</li>
             <li><strong style="color:var(--lcars-teal);">Source Code:</strong> <em style="color:var(--text-secondary);">Private GCP IAM Repository &mdash; Documentation walkthrough available upon request</em></li>
-            <li><strong style="color:var(--lcars-teal);">Fleet Status:</strong> <em style="color:#66FF99;">v15 baseline &mdash; 12 active nodes, single-Plex media topology, ATLAS edge AI verified, Hermes xAI primary, Wazuh SIEM live</em></li>
+            <li><strong style="color:var(--lcars-teal);">Fleet Status:</strong> <em style="color:#66FF99;">v15 baseline &mdash; 12 active nodes, consolidated media topology, ATLAS edge AI verified, Hermes xAI primary, observability mesh live</em></li>
           </ul>
         </div>
 
