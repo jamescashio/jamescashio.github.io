@@ -1407,6 +1407,330 @@
       filter: brightness(1.3);
       box-shadow: 0 0 20px rgba(255,255,255,0.25);
     }
+
+    /* ═══════════════════════════════════════════════════
+       COMMAND DECK HERO — v15 polish
+       Cinematic split hero: identity left, orchestration right.
+       Decorative-only; no live endpoints, no PII.
+       ═══════════════════════════════════════════════════ */
+    .command-deck {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+      gap: 22px;
+      align-items: stretch;
+      margin: 4px 0 24px 0;
+      padding: 26px 28px;
+      background:
+        radial-gradient(circle at 8% 12%, rgba(255,153,51,0.10), transparent 55%),
+        radial-gradient(circle at 92% 88%, rgba(102,204,204,0.10), transparent 55%),
+        linear-gradient(180deg, rgba(20,20,40,0.72), rgba(10,10,20,0.85));
+      border: 1px solid rgba(241,223,111,0.22);
+      border-radius: 14px;
+      box-shadow:
+        0 10px 60px rgba(0,0,0,0.55),
+        inset 0 0 30px rgba(102,204,204,0.06);
+      overflow: hidden;
+    }
+    .command-deck::before {
+      content: "";
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(241,223,111,0.55), transparent);
+    }
+    .command-deck::after {
+      content: "";
+      position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(102,204,204,0.45), transparent);
+    }
+    .deck-left { display: flex; flex-direction: column; min-width: 0; }
+    .deck-right { position: relative; min-width: 0; }
+
+    .deck-eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px; letter-spacing: 3px;
+      color: var(--lcars-cyan);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .deck-eyebrow .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #66FF99;
+      box-shadow: 0 0 12px rgba(102,255,153,0.85);
+    }
+    .deck-eyebrow .pipe {
+      color: rgba(241,223,111,0.45);
+    }
+
+    .deck-name {
+      font-family: 'Orbitron', monospace;
+      font-size: 44px; font-weight: 800;
+      letter-spacing: 6px;
+      color: var(--lcars-gold);
+      line-height: 1.05;
+      margin: 0 0 6px 0;
+      text-shadow: 0 0 30px rgba(241,223,111,0.35);
+    }
+    .deck-tagline {
+      font-family: 'Orbitron', monospace;
+      font-size: 14px; letter-spacing: 4px;
+      color: var(--lcars-teal);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+    .deck-pitch {
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--text-primary);
+      margin-bottom: 18px;
+      max-width: 60ch;
+    }
+    .deck-pitch strong {
+      color: var(--lcars-gold);
+      font-weight: 600;
+    }
+
+    .deck-cta-row {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      margin-top: auto;
+      padding-top: 8px;
+    }
+    .deck-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 16px;
+      font-family: 'Orbitron', monospace;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+      cursor: pointer;
+    }
+    .deck-cta-primary {
+      background: linear-gradient(90deg, var(--lcars-gold), #FFD27A);
+      color: #1A1408;
+      border: 1px solid rgba(241,223,111,0.7);
+      box-shadow: 0 0 18px rgba(241,223,111,0.35);
+    }
+    .deck-cta-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 26px rgba(241,223,111,0.55);
+    }
+    .deck-cta-ghost {
+      background: rgba(102,204,204,0.06);
+      color: var(--lcars-cyan);
+      border: 1px solid rgba(102,204,204,0.45);
+    }
+    .deck-cta-ghost:hover {
+      background: rgba(102,204,204,0.12);
+      box-shadow: 0 0 16px rgba(102,204,204,0.35);
+    }
+    .deck-cta-ghost::before {
+      content: "▸";
+      color: var(--lcars-cyan);
+      font-size: 10px;
+    }
+
+    /* — Right side: orchestration command panel — */
+    .deck-orch {
+      position: relative;
+      height: 100%;
+      min-height: 320px;
+      padding: 16px 18px;
+      background:
+        linear-gradient(180deg, rgba(10,10,20,0.55), rgba(15,15,30,0.65));
+      border: 1px solid rgba(102,204,204,0.25);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .deck-orch::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(102,204,204,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(102,204,204,0.05) 1px, transparent 1px);
+      background-size: 22px 22px;
+      pointer-events: none;
+      opacity: 0.55;
+    }
+    .deck-orch-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px;
+      font-family: 'Orbitron', monospace;
+      font-size: 10px; letter-spacing: 2.5px;
+      color: var(--lcars-gold);
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .deck-orch-head .live {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--lcars-cyan);
+      font-family: 'Share Tech Mono', monospace;
+      letter-spacing: 1.5px;
+    }
+    .deck-orch-head .live .heart {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #66FF99;
+      box-shadow: 0 0 10px rgba(102,255,153,0.85);
+      animation: heartbeat 2.4s ease-in-out infinite;
+    }
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.35); opacity: 0.7; }
+    }
+
+    .deck-radar {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      border-radius: 8px;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 50% 50%, rgba(255,153,51,0.07), transparent 70%);
+      border: 1px solid rgba(241,223,111,0.18);
+      margin-bottom: 12px;
+    }
+    .deck-radar svg {
+      width: 100%; height: 100%; display: block;
+    }
+    .deck-radar .lane {
+      stroke-dasharray: 4 6;
+      animation: laneFlow 6s linear infinite;
+    }
+    @keyframes laneFlow {
+      to { stroke-dashoffset: -200; }
+    }
+    .deck-radar .pulse {
+      animation: pulseDot 2.6s ease-in-out infinite;
+      transform-origin: center;
+    }
+    .deck-radar .pulse.delay-1 { animation-delay: 0.6s; }
+    .deck-radar .pulse.delay-2 { animation-delay: 1.2s; }
+    .deck-radar .pulse.delay-3 { animation-delay: 1.8s; }
+    @keyframes pulseDot {
+      0%, 100% { opacity: 0.55; r: 4; }
+      50%      { opacity: 1; r: 6; }
+    }
+
+    .deck-chips {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      position: relative;
+    }
+    .deck-chip {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      background: rgba(10,10,20,0.6);
+      border: 1px solid rgba(102,204,204,0.22);
+      border-radius: 6px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 1px;
+    }
+    .deck-chip .label {
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+    .deck-chip .val {
+      font-family: 'Orbitron', monospace;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .deck-chip .val.cyan   { color: var(--lcars-cyan); }
+    .deck-chip .val.gold   { color: var(--lcars-gold); }
+    .deck-chip .val.green  { color: #66FF99; }
+    .deck-chip .val.lav    { color: var(--lcars-lavender); }
+    .deck-chip .val.orange { color: var(--lcars-orange); }
+
+    /* ─── Operating Theater (Proof Stack) ─── */
+    .proof-stack {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin: 12px 0 6px 0;
+    }
+    .proof-card {
+      position: relative;
+      padding: 18px 18px 16px 18px;
+      background: linear-gradient(180deg, rgba(20,20,40,0.55), rgba(10,10,20,0.7));
+      border: 1px solid rgba(102,204,204,0.22);
+      border-left: 3px solid var(--lcars-cyan);
+      border-radius: 8px;
+      transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+      overflow: hidden;
+    }
+    .proof-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.55), inset 0 0 20px rgba(102,204,204,0.08);
+      border-color: rgba(102,204,204,0.45);
+    }
+    .proof-card .kind {
+      font-family: 'Orbitron', monospace;
+      font-size: 10px; letter-spacing: 2.5px;
+      color: var(--lcars-cyan);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .proof-card h4 {
+      font-family: 'Orbitron', monospace;
+      font-size: 14px;
+      color: var(--lcars-gold);
+      margin: 0 0 8px 0;
+      letter-spacing: 1px;
+    }
+    .proof-card p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0;
+    }
+    .proof-card.gold   { border-left-color: var(--lcars-gold); }
+    .proof-card.gold .kind { color: var(--lcars-gold); }
+    .proof-card.green  { border-left-color: #66FF99; }
+    .proof-card.green .kind { color: #66FF99; }
+    .proof-card.green h4 { color: #66FF99; }
+    .proof-card.orange { border-left-color: var(--lcars-orange); }
+    .proof-card.orange .kind { color: var(--lcars-orange); }
+    .proof-card.orange h4 { color: var(--lcars-orange); }
+    .proof-card.lav    { border-left-color: var(--lcars-lavender); }
+    .proof-card.lav .kind { color: var(--lcars-lavender); }
+    .proof-card.lav h4 { color: var(--lcars-lavender); }
+
+    /* ─── Mobile guards for command deck ─── */
+    @media (max-width: 900px) {
+      .command-deck {
+        grid-template-columns: 1fr;
+        padding: 22px 20px;
+        gap: 18px;
+      }
+      .deck-name { font-size: 34px; letter-spacing: 4px; }
+      .deck-tagline { font-size: 12px; letter-spacing: 3px; }
+      .deck-orch { min-height: 280px; }
+    }
+    @media (max-width: 640px) {
+      .command-deck {
+        padding: 18px 14px;
+        border-radius: 10px;
+      }
+      .deck-name { font-size: 26px; letter-spacing: 3px; }
+      .deck-tagline { font-size: 11px; letter-spacing: 2.5px; }
+      .deck-pitch { font-size: 14px; }
+      .deck-cta { font-size: 10px; padding: 9px 12px; letter-spacing: 1.5px; }
+      .deck-orch { padding: 12px; min-height: 240px; }
+      .deck-radar { height: 160px; }
+      .deck-chips { grid-template-columns: 1fr; }
+    }
+
+    /* ─── Reduced motion ─── */
+    @media (prefers-reduced-motion: reduce) {
+      .deck-radar .lane { animation: none; }
+      .deck-radar .pulse { animation: none; }
+      .deck-orch-head .live .heart { animation: none; }
+    }
   </style>
 </head>
 
@@ -1466,46 +1790,163 @@
     <!-- ═══════════ MAIN CONTENT ═══════════ -->
     <div class="main-content">
 
-      <!-- HERO -->
-      <h1 class="report-title animate-in">DOUG CASHIO</h1>
-      <div class="report-subtitle animate-in" style="animation-delay:0.15s">
-        <p class="subtitle" id="rotating-tagline">Enterprise AI & Cybersecurity Solutions Architect</p>
-      </div>
+      <!-- ═══════════ COMMAND DECK HERO (v15) ═══════════
+           Cinematic split: identity + value proposition (left)
+           and an orchestration command panel with model lanes
+           and telemetry chips (right). Decorative SVG only —
+           no live endpoints, no PII, no exact location.
+      ════════════════════════════════════════════════════ -->
+      <section class="command-deck animate-in" aria-label="Command Deck">
+        <div class="deck-left">
+          <div class="deck-eyebrow">
+            <span class="dot" aria-hidden="true"></span>
+            <span>ENTERPRISE AI &middot; CYBERSECURITY</span>
+            <span class="pipe">|</span>
+            <span>v15 BASELINE ONLINE</span>
+          </div>
+          <h1 class="deck-name">DOUG CASHIO</h1>
+          <div class="deck-tagline" id="rotating-tagline">Enterprise AI &amp; Cybersecurity Solutions Architect</div>
+          <p class="deck-pitch">
+            Principal Solutions Consultant with <strong>15+ years</strong> across
+            network engineering, cloud-first security, and enterprise SaaS &mdash;
+            now architecting <strong>production-grade AI</strong> for M365, Azure,
+            MxDR, and multi-agent orchestration. The lab below is where the
+            architecture earns its keep before the deck ever hits a customer.
+          </p>
+          <div class="deck-cta-row">
+            <a href="#lab" class="deck-cta deck-cta-primary" onclick="scrollToSection(event,'lab')">REVIEW LAB ARCHITECTURE</a>
+            <a href="lab.html" class="deck-cta deck-cta-ghost">EXPLORE ORCHESTRATION FABRIC</a>
+            <a href="#summary" class="deck-cta deck-cta-ghost" onclick="scrollToSection(event,'summary')">PROFESSIONAL SUMMARY</a>
+          </div>
+        </div>
 
-      <div class="glass-panel animate-in" style="animation-delay:0.2s; border-left:3px solid var(--lcars-gold);">
-        <p style="font-size:18px;">
-          Principal Solutions Consultant with 15+ years of experience spanning network administration, cloud security,
-          and enterprise SaaS &mdash; specializing in MxDR, M365, Azure, and enterprise secure cloud platform
-          architecture.<br><br>
-          <strong style="color:var(--lcars-gold);">Location:</strong> U.S.-based
-        </p>
-      </div>
+        <div class="deck-right">
+          <div class="deck-orch" role="img" aria-label="Multi-model orchestration command panel — decorative">
+            <div class="deck-orch-head">
+              <span>&#9670; ORCHESTRATION COMMAND DECK</span>
+              <span class="live"><span class="heart" aria-hidden="true"></span>FABRIC ONLINE</span>
+            </div>
 
-      <div class="metrics-strip" style="display:flex; justify-content:center; gap:30px; margin:20px 0 10px 0; flex-wrap:wrap;">
-        <div style="text-align:center;">
-          <span style="font-family:'Orbitron',monospace; font-size:28px; font-weight:800; color:var(--lcars-gold); text-shadow:0 0 10px rgba(241,223,111,0.4);">15+</span>
-          <div style="font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:2px; color:var(--text-secondary); text-transform:uppercase; margin-top:4px;">Years Experience</div>
-        </div>
-        <div style="text-align:center;">
-          <span style="font-family:'Orbitron',monospace; font-size:28px; font-weight:800; color:var(--lcars-cyan); text-shadow:0 0 10px rgba(102,204,204,0.4);">4,500+</span>
-          <div style="font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:2px; color:var(--text-secondary); text-transform:uppercase; margin-top:4px;">Resellers Enabled</div>
-        </div>
-        <div style="text-align:center;">
-          <span style="font-family:'Orbitron',monospace; font-size:28px; font-weight:800; color:var(--lcars-orange); text-shadow:0 0 10px rgba(255,153,51,0.4);">60K+</span>
-          <div style="font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:2px; color:var(--text-secondary); text-transform:uppercase; margin-top:4px;">Businesses Protected</div>
-        </div>
-        <div style="text-align:center;">
-          <span style="font-family:'Orbitron',monospace; font-size:28px; font-weight:800; color:#66FF99; text-shadow:0 0 10px rgba(102,255,153,0.4);">12</span>
-          <div style="font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:2px; color:var(--text-secondary); text-transform:uppercase; margin-top:4px;">Active Lab Nodes</div>
-        </div>
-      </div>
+            <!-- Decorative routing constellation -->
+            <div class="deck-radar" aria-hidden="true">
+              <svg viewBox="0 0 400 200" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="laneCyan" x1="0" x2="1">
+                    <stop offset="0%" stop-color="rgba(102,204,204,0.05)"/>
+                    <stop offset="100%" stop-color="rgba(102,204,204,0.85)"/>
+                  </linearGradient>
+                  <linearGradient id="laneGold" x1="0" x2="1">
+                    <stop offset="0%" stop-color="rgba(241,223,111,0.05)"/>
+                    <stop offset="100%" stop-color="rgba(241,223,111,0.85)"/>
+                  </linearGradient>
+                  <linearGradient id="laneGreen" x1="0" x2="1">
+                    <stop offset="0%" stop-color="rgba(102,255,153,0.05)"/>
+                    <stop offset="100%" stop-color="rgba(102,255,153,0.85)"/>
+                  </linearGradient>
+                  <radialGradient id="hubGlow" cx="0.5" cy="0.5" r="0.5">
+                    <stop offset="0%" stop-color="rgba(241,223,111,0.55)"/>
+                    <stop offset="100%" stop-color="rgba(241,223,111,0)"/>
+                  </radialGradient>
+                </defs>
 
+                <!-- Central router hub -->
+                <circle cx="200" cy="100" r="30" fill="url(#hubGlow)"/>
+                <circle cx="200" cy="100" r="9" fill="#0A0A12" stroke="rgba(241,223,111,0.85)" stroke-width="1.5"/>
+                <text x="200" y="103" text-anchor="middle"
+                      font-family="Orbitron, monospace" font-size="7"
+                      fill="rgba(241,223,111,0.9)" letter-spacing="1">HERMES</text>
+
+                <!-- Source pad: REQUEST -->
+                <rect x="14" y="86" width="58" height="28" rx="4"
+                      fill="rgba(10,10,20,0.6)" stroke="rgba(102,204,204,0.6)" stroke-width="1"/>
+                <text x="43" y="104" text-anchor="middle"
+                      font-family="Share Tech Mono, monospace" font-size="9"
+                      fill="rgba(102,204,204,0.9)">REQUEST</text>
+
+                <!-- Lanes from REQUEST to HUB -->
+                <path class="lane" d="M 72 100 Q 130 100 168 100"
+                      stroke="url(#laneCyan)" stroke-width="1.5" fill="none"/>
+
+                <!-- Three target model lanes from HUB -->
+                <path class="lane" d="M 230 100 Q 300 50 380 38"
+                      stroke="url(#laneCyan)" stroke-width="1.5" fill="none"/>
+                <path class="lane" d="M 230 100 Q 300 100 380 100"
+                      stroke="url(#laneGreen)" stroke-width="1.5" fill="none"/>
+                <path class="lane" d="M 230 100 Q 300 150 380 162"
+                      stroke="url(#laneGold)" stroke-width="1.5" fill="none"/>
+
+                <!-- Endpoints (decorative model lanes) -->
+                <g>
+                  <circle class="pulse" cx="380" cy="38" r="4" fill="rgba(102,204,204,0.95)"/>
+                  <text x="372" y="28" text-anchor="end"
+                        font-family="Share Tech Mono, monospace" font-size="9"
+                        fill="rgba(102,204,204,0.85)">CLOUD REASONING</text>
+                </g>
+                <g>
+                  <circle class="pulse delay-1" cx="380" cy="100" r="4" fill="rgba(102,255,153,0.95)"/>
+                  <text x="372" y="90" text-anchor="end"
+                        font-family="Share Tech Mono, monospace" font-size="9"
+                        fill="rgba(102,255,153,0.9)">EDGE INFERENCE</text>
+                </g>
+                <g>
+                  <circle class="pulse delay-2" cx="380" cy="162" r="4" fill="rgba(241,223,111,0.95)"/>
+                  <text x="372" y="180" text-anchor="end"
+                        font-family="Share Tech Mono, monospace" font-size="9"
+                        fill="rgba(241,223,111,0.9)">GPU SPECIALIST</text>
+                </g>
+
+                <!-- Telemetry orbit (decorative ring) -->
+                <circle cx="200" cy="100" r="62" fill="none"
+                        stroke="rgba(102,204,204,0.18)" stroke-width="1"
+                        stroke-dasharray="2 5"/>
+                <circle class="pulse delay-3" cx="262" cy="100" r="3" fill="rgba(204,153,255,0.9)"/>
+
+                <!-- Corner ticks -->
+                <path d="M6 6 L18 6 L6 6 L6 18" stroke="rgba(241,223,111,0.45)" fill="none"/>
+                <path d="M394 6 L382 6 L394 6 L394 18" stroke="rgba(241,223,111,0.45)" fill="none"/>
+                <path d="M6 194 L18 194 L6 194 L6 182" stroke="rgba(241,223,111,0.45)" fill="none"/>
+                <path d="M394 194 L382 194 L394 194 L394 182" stroke="rgba(241,223,111,0.45)" fill="none"/>
+              </svg>
+            </div>
+
+            <!-- Telemetry chip grid -->
+            <div class="deck-chips">
+              <div class="deck-chip">
+                <span class="label">YEARS</span>
+                <span class="val gold">15+</span>
+              </div>
+              <div class="deck-chip">
+                <span class="label">RESELLERS</span>
+                <span class="val cyan">4,500+</span>
+              </div>
+              <div class="deck-chip">
+                <span class="label">PROTECTED</span>
+                <span class="val orange">60K+</span>
+              </div>
+              <div class="deck-chip">
+                <span class="label">LAB NODES</span>
+                <span class="val green">12</span>
+              </div>
+              <div class="deck-chip">
+                <span class="label">LLM TIERS</span>
+                <span class="val lav">3</span>
+              </div>
+              <div class="deck-chip">
+                <span class="label">WARP FACTOR</span>
+                <span class="val gold">11</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Compact contact strip (non-PII) -->
       <div class="contact-bar animate-in" style="animation-delay:0.25s">
         <span class="contact-link" title="Secure Contact">
           <svg viewBox="0 0 24 24">
             <path
               d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
-          </svg>Secure contact available on request
+          </svg>Secure contact on request
         </span>
         <span class="contact-link" title="Professional Profile">
           <svg viewBox="0 0 24 24">
@@ -1533,7 +1974,7 @@
         <div class="terminal-line"><span class="terminal-prefix">&gt;</span>ANALYZING TELEMETRY... CLIENT SYSTEM PROFILE REDACTED</div>
         <div class="terminal-line" style="margin-top: 10px; color: #66FF99; text-shadow: 0 0 8px rgba(102,255,153,0.5); font-weight: bold;"><span class="terminal-prefix" style="color:#66FF99">&gt;</span>CLEARANCE GRANTED. WELCOME, VISITOR.<span class="cursor" style="display:inline-block; width:8px; height:15px; background:#66FF99; margin-left:4px; animation:blink 1s infinite; vertical-align: middle;"></span></div>
       </div>
-      
+
       <style>
         @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
       </style>
@@ -1773,6 +2214,53 @@
         </ul>
         <p style="margin-top:16px;">Regular co-MC and co-presenter alongside sales and channel leadership at
           partner-facing events focused on MxDR, M365 security, cloud platform adoption, and MSP enablement.</p>
+      </div>
+
+      <!-- SECTION 7.5: OPERATING THEATER (Proof Stack) -->
+      <div class="section-header" id="operating-theater">
+        <div class="bar" style="background:linear-gradient(90deg,var(--lcars-cyan),transparent);"></div>
+        <h2 style="color:var(--lcars-cyan);">OPERATING THEATER</h2>
+        <div class="bar" style="background:linear-gradient(90deg,transparent,var(--lcars-cyan));"></div>
+      </div>
+
+      <div class="glass-panel" style="border-left:3px solid var(--lcars-cyan);">
+        <p style="margin-bottom:18px; font-size:15px; color:var(--text-secondary); line-height:1.7;">
+          Where the architecture earns its keep. Each pillar is exercised against a live home-lab baseline before
+          it ever lands on a customer slide &mdash; a continuous proof-of-work loop covering orchestration,
+          observability, secure-by-default delivery, and disciplined cloud expansion.
+        </p>
+
+        <div class="proof-stack">
+          <div class="proof-card gold">
+            <div class="kind">PILLAR &middot; 01</div>
+            <h4>MULTI-MODEL ORCHESTRATION</h4>
+            <p>Role-routed cloud reasoning, sovereign edge inference, and GPU specialist fallback &mdash; with
+              confidence-aware hand-off so no single model is a single point of failure.</p>
+          </div>
+          <div class="proof-card green">
+            <div class="kind">PILLAR &middot; 02</div>
+            <h4>OBSERVABILITY MESH</h4>
+            <p>Every model hop, route, and signal accounted for: SIEM correlation, policy-aware DNS telemetry,
+              uptime sweeps, and a dedicated offensive validation node feeding the trace.</p>
+          </div>
+          <div class="proof-card orange">
+            <div class="kind">PILLAR &middot; 03</div>
+            <h4>SECURE-BY-DEFAULT DELIVERY</h4>
+            <p>MxDR, M365, and Azure secure-cloud architecture grounded in 15+ years of channel-scale email
+              security and network engineering &mdash; translated into modern AI-integrated controls.</p>
+          </div>
+          <div class="proof-card lav">
+            <div class="kind">PILLAR &middot; 04</div>
+            <h4>DISCIPLINED CLOUD EXPANSION</h4>
+            <p>Bearer-authenticated MCP gateway on GCP Cloud Run brokering Vertex AI Gemini for burst
+              experiments &mdash; serverless, billing-capped, auditable. Local topology stays intentionally frozen.</p>
+          </div>
+        </div>
+
+        <div style="margin-top:22px; padding:14px 18px; background:rgba(241,223,111,0.04); border:1px dashed rgba(241,223,111,0.3); border-radius:6px; font-family:'Share Tech Mono',monospace; font-size:12px; color:var(--text-secondary); letter-spacing:0.5px; line-height:1.7;">
+          <strong style="color:var(--lcars-gold);">PRIME DIRECTIVE:</strong>
+          preserve usability &middot; instrument every hop &middot; red-team the story &middot; harden on schedule.
+        </div>
       </div>
 
       <!-- SECTION 8: HOMELAB -->
@@ -2137,8 +2625,12 @@
             .fromTo(".lcars-bar-bottom", { x: -100, opacity: 0 }, { duration: 0.6, x: 0, opacity: 1, ease: "power2.out" }, "-=0.4")
             .fromTo(".lcars-sidebar-seg", { x: -50, opacity: 0 }, { duration: 0.6, x: 0, opacity: 1, stagger: 0.05, ease: "back.out(1.5)" }, "-=0.2")
             // Main content entry
-            .fromTo(".report-title", { y: 20, opacity: 0 }, { duration: 0.8, y: 0, opacity: 1, ease: "power3.out" }, "-=0.2")
-            .fromTo(".report-subtitle", { y: 15, opacity: 0 }, { duration: 0.8, y: 0, opacity: 1, ease: "power3.out" }, "-=0.6")
+            .fromTo(".command-deck", { y: 20, opacity: 0 }, { duration: 0.9, y: 0, opacity: 1, ease: "power3.out" }, "-=0.2")
+            .fromTo(".deck-name", { y: 12, opacity: 0 }, { duration: 0.7, y: 0, opacity: 1, ease: "power3.out" }, "-=0.5")
+            .fromTo(".deck-tagline", { y: 10, opacity: 0 }, { duration: 0.7, y: 0, opacity: 1, ease: "power3.out" }, "-=0.5")
+            .fromTo(".deck-pitch", { y: 8, opacity: 0 }, { duration: 0.6, y: 0, opacity: 1, ease: "power2.out" }, "-=0.4")
+            .fromTo(".deck-cta", { y: 8, opacity: 0 }, { duration: 0.5, y: 0, opacity: 1, stagger: 0.06, ease: "back.out(2)" }, "-=0.3")
+            .fromTo(".deck-chip", { y: 6, opacity: 0 }, { duration: 0.45, y: 0, opacity: 1, stagger: 0.04, ease: "power2.out" }, "-=0.3")
             .fromTo(".contact-bar .contact-link", { y: 10, opacity: 0 }, { duration: 0.6, y: 0, opacity: 1, stagger: 0.1, ease: "back.out(2)" }, "-=0.4");
 
       // Remove the old CSS animate-in classes BEFORE GSAP initializes

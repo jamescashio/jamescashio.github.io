@@ -1525,6 +1525,216 @@
     @media (prefers-reduced-motion: reduce) {
       .prime-directive-meta .pd-eleven::before { animation: none; }
     }
+
+    /* ═══════════════════════════════════════════════════
+       LAB COMMAND BRIDGE — v15 polish
+       Cinematic mission-control header card for the lab.
+       Decorative-only; no live endpoints, no PII.
+       ═══════════════════════════════════════════════════ */
+    .bridge-deck {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
+      gap: 22px;
+      align-items: stretch;
+      margin: 4px 0 18px 0;
+      padding: 22px 24px;
+      background:
+        radial-gradient(circle at 6% 14%, rgba(241,223,111,0.10), transparent 55%),
+        radial-gradient(circle at 96% 88%, rgba(102,204,204,0.10), transparent 55%),
+        linear-gradient(180deg, rgba(20,20,40,0.72), rgba(10,10,20,0.85));
+      border: 1px solid rgba(241,223,111,0.25);
+      border-radius: 14px;
+      box-shadow:
+        0 10px 60px rgba(0,0,0,0.55),
+        inset 0 0 30px rgba(102,204,204,0.06);
+      overflow: hidden;
+    }
+    .bridge-deck::before {
+      content: "";
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(241,223,111,0.55), transparent);
+    }
+    .bridge-deck::after {
+      content: "";
+      position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(102,204,204,0.45), transparent);
+    }
+    .bridge-left { display: flex; flex-direction: column; min-width: 0; }
+
+    .bridge-eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px; letter-spacing: 3px;
+      color: var(--lcars-cyan);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .bridge-eyebrow .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #66FF99;
+      box-shadow: 0 0 12px rgba(102,255,153,0.85);
+    }
+    .bridge-eyebrow .pipe { color: rgba(241,223,111,0.45); }
+
+    .bridge-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 28px; font-weight: 800;
+      letter-spacing: 5px;
+      color: var(--lcars-gold);
+      line-height: 1.05;
+      margin: 0 0 6px 0;
+      text-shadow: 0 0 30px rgba(241,223,111,0.35);
+    }
+    .bridge-sub {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 13px;
+      letter-spacing: 2px;
+      color: var(--lcars-teal);
+      margin-bottom: 14px;
+    }
+    .bridge-pitch {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text-primary);
+      margin-bottom: 14px;
+    }
+    .bridge-pitch strong { color: var(--lcars-gold); font-weight: 600; }
+
+    .bridge-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: auto;
+    }
+    .bridge-stat {
+      padding: 12px 10px;
+      background: rgba(10,10,20,0.55);
+      border: 1px solid rgba(102,204,204,0.22);
+      border-radius: 6px;
+      text-align: center;
+    }
+    .bridge-stat .v {
+      font-family: 'Orbitron', monospace;
+      font-size: 22px; font-weight: 800;
+      color: var(--lcars-gold);
+      letter-spacing: 1px;
+    }
+    .bridge-stat .l {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      color: var(--text-secondary);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+    .bridge-stat.cyan  .v { color: var(--lcars-cyan); }
+    .bridge-stat.green .v { color: #66FF99; }
+    .bridge-stat.lav   .v { color: var(--lcars-lavender); }
+
+    .bridge-right {
+      position: relative;
+      min-width: 0;
+      padding: 14px 16px;
+      background: linear-gradient(180deg, rgba(10,10,20,0.55), rgba(15,15,30,0.65));
+      border: 1px solid rgba(102,204,204,0.25);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .bridge-right::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(102,204,204,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(102,204,204,0.05) 1px, transparent 1px);
+      background-size: 22px 22px;
+      pointer-events: none;
+      opacity: 0.55;
+    }
+
+    .bridge-right-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px;
+      font-family: 'Orbitron', monospace;
+      font-size: 10px; letter-spacing: 2.5px;
+      color: var(--lcars-gold);
+      margin-bottom: 10px;
+      position: relative;
+    }
+    .bridge-right-head .live {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--lcars-cyan);
+      font-family: 'Share Tech Mono', monospace;
+      letter-spacing: 1.5px;
+    }
+    .bridge-right-head .live .heart {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #66FF99;
+      box-shadow: 0 0 10px rgba(102,255,153,0.85);
+      animation: bridgePulse 2.4s ease-in-out infinite;
+    }
+    @keyframes bridgePulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50%      { transform: scale(1.35); opacity: 0.7; }
+    }
+
+    .bridge-constellation {
+      position: relative;
+      width: 100%;
+      height: 240px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 50% 50%, rgba(241,223,111,0.06), transparent 70%);
+      border: 1px solid rgba(241,223,111,0.18);
+    }
+    .bridge-constellation svg { width: 100%; height: 100%; display: block; }
+    .bridge-constellation .lane {
+      stroke-dasharray: 4 6;
+      animation: bridgeLane 7s linear infinite;
+    }
+    @keyframes bridgeLane { to { stroke-dashoffset: -260; } }
+    .bridge-constellation .pulse {
+      animation: bridgeDot 2.6s ease-in-out infinite;
+      transform-origin: center;
+    }
+    .bridge-constellation .pulse.d1 { animation-delay: 0.4s; }
+    .bridge-constellation .pulse.d2 { animation-delay: 0.8s; }
+    .bridge-constellation .pulse.d3 { animation-delay: 1.2s; }
+    .bridge-constellation .pulse.d4 { animation-delay: 1.6s; }
+    .bridge-constellation .pulse.d5 { animation-delay: 2.0s; }
+    @keyframes bridgeDot {
+      0%, 100% { opacity: 0.55; r: 4; }
+      50%      { opacity: 1; r: 6; }
+    }
+    .bridge-constellation .orbit {
+      animation: bridgeOrbit 22s linear infinite;
+      transform-origin: 200px 120px;
+    }
+    @keyframes bridgeOrbit { to { transform: rotate(360deg); } }
+
+    @media (max-width: 900px) {
+      .bridge-deck {
+        grid-template-columns: 1fr;
+        padding: 20px 18px;
+        gap: 18px;
+      }
+      .bridge-title { font-size: 22px; letter-spacing: 3px; }
+      .bridge-constellation { height: 200px; }
+    }
+    @media (max-width: 640px) {
+      .bridge-deck { padding: 16px 12px; border-radius: 10px; }
+      .bridge-title { font-size: 18px; letter-spacing: 2.5px; }
+      .bridge-pitch { font-size: 13.5px; }
+      .bridge-stats { grid-template-columns: 1fr 1fr; }
+      .bridge-right { padding: 12px; }
+      .bridge-constellation { height: 180px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .bridge-constellation .lane,
+      .bridge-constellation .pulse,
+      .bridge-constellation .orbit,
+      .bridge-right-head .live .heart { animation: none; }
+    }
   </style>
 </head>
 
@@ -1606,10 +1816,175 @@
         style="margin-bottom: 20px; color: var(--lcars-bg); background: var(--lcars-gold); border-color: var(--lcars-gold); font-family: 'Orbitron', monospace; font-weight: 700; text-shadow: none;">&larr;
         BACK TO PORTFOLIO</a>
 
-      <h1 class="report-title animate-in">DOUG CASHIO — ENTERPRISE AI & CYBERSECURITY SOLUTIONS ARCHITECT</h1>
-      <div class="report-subtitle animate-in" style="animation-delay:0.15s">
-        ZEUSAPOLLO COMMAND &mdash; v15 NETWORK ASSESSMENT BASELINE &mdash; APRIL 27, 2026 &mdash; PUBLIC RELEASE
-      </div>
+      <!-- ═══════════ LAB COMMAND BRIDGE (v15) ═══════════
+           Cinematic mission-control header for the lab.
+           Static SVG only — no live endpoints, no PII.
+      ═══════════════════════════════════════════════════ -->
+      <section class="bridge-deck animate-in" aria-label="Lab Command Bridge">
+        <div class="bridge-left">
+          <div class="bridge-eyebrow">
+            <span class="dot" aria-hidden="true"></span>
+            <span>ZEUSAPOLLO COMMAND</span>
+            <span class="pipe">|</span>
+            <span>PUBLIC PORTFOLIO VIEW</span>
+          </div>
+          <h1 class="bridge-title">DOUG CASHIO &mdash; LAB &amp; ORCHESTRATION FABRIC</h1>
+          <div class="bridge-sub">v15 NETWORK ASSESSMENT BASELINE &middot; APRIL 27, 2026 &middot; PUBLIC RELEASE</div>
+          <p class="bridge-pitch">
+            A production-grade home lab running a <strong>3-tier LLM routing fabric</strong>,
+            sovereign edge inference, and an <strong>observability mesh</strong> that
+            instruments every model hop. Where <strong>WARP 11</strong> orchestration
+            stops being a slide and starts being telemetry.
+          </p>
+          <div class="bridge-stats">
+            <div class="bridge-stat">
+              <div class="v">12</div><div class="l">Active Nodes</div>
+            </div>
+            <div class="bridge-stat cyan">
+              <div class="v">~18TB</div><div class="l">Storage</div>
+            </div>
+            <div class="bridge-stat green">
+              <div class="v">3</div><div class="l">LLM Tiers</div>
+            </div>
+            <div class="bridge-stat lav">
+              <div class="v">720h</div><div class="l">Telemetry Window</div>
+            </div>
+            <div class="bridge-stat">
+              <div class="v">11</div><div class="l">Warp Factor</div>
+            </div>
+            <div class="bridge-stat green">
+              <div class="v">0</div><div class="l">Unrouted Reqs</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bridge-right">
+          <div class="bridge-right-head">
+            <span>&#9670; ORCHESTRATION CONSTELLATION</span>
+            <span class="live"><span class="heart" aria-hidden="true"></span>FABRIC ONLINE</span>
+          </div>
+          <div class="bridge-constellation" aria-hidden="true">
+            <svg viewBox="0 0 400 240" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="bLaneCyan" x1="0" x2="1">
+                  <stop offset="0%" stop-color="rgba(102,204,204,0.05)"/>
+                  <stop offset="100%" stop-color="rgba(102,204,204,0.85)"/>
+                </linearGradient>
+                <linearGradient id="bLaneGold" x1="0" x2="1">
+                  <stop offset="0%" stop-color="rgba(241,223,111,0.05)"/>
+                  <stop offset="100%" stop-color="rgba(241,223,111,0.85)"/>
+                </linearGradient>
+                <linearGradient id="bLaneGreen" x1="0" x2="1">
+                  <stop offset="0%" stop-color="rgba(102,255,153,0.05)"/>
+                  <stop offset="100%" stop-color="rgba(102,255,153,0.85)"/>
+                </linearGradient>
+                <linearGradient id="bLaneLav" x1="0" x2="1">
+                  <stop offset="0%" stop-color="rgba(204,153,255,0.05)"/>
+                  <stop offset="100%" stop-color="rgba(204,153,255,0.85)"/>
+                </linearGradient>
+                <linearGradient id="bLaneRed" x1="0" x2="1">
+                  <stop offset="0%" stop-color="rgba(204,102,102,0.05)"/>
+                  <stop offset="100%" stop-color="rgba(204,102,102,0.85)"/>
+                </linearGradient>
+                <radialGradient id="bHubGlow" cx="0.5" cy="0.5" r="0.5">
+                  <stop offset="0%" stop-color="rgba(241,223,111,0.55)"/>
+                  <stop offset="100%" stop-color="rgba(241,223,111,0)"/>
+                </radialGradient>
+              </defs>
+
+              <!-- Decorative orbital ring -->
+              <g class="orbit">
+                <circle cx="200" cy="120" r="86" fill="none"
+                        stroke="rgba(102,204,204,0.18)" stroke-width="1"
+                        stroke-dasharray="2 6"/>
+                <circle cx="286" cy="120" r="2.5" fill="rgba(102,204,204,0.85)"/>
+              </g>
+
+              <!-- Central HERMES router hub -->
+              <circle cx="200" cy="120" r="36" fill="url(#bHubGlow)"/>
+              <circle cx="200" cy="120" r="11" fill="#0A0A12"
+                      stroke="rgba(241,223,111,0.85)" stroke-width="1.5"/>
+              <text x="200" y="123" text-anchor="middle"
+                    font-family="Orbitron, monospace" font-size="7"
+                    fill="rgba(241,223,111,0.9)" letter-spacing="1">HERMES</text>
+
+              <!-- Five fabric lanes radiating outward -->
+              <path class="lane" d="M 200 120 Q 110 60 30 36"
+                    stroke="url(#bLaneCyan)" stroke-width="1.5" fill="none"/>
+              <path class="lane" d="M 200 120 Q 290 60 370 36"
+                    stroke="url(#bLaneGreen)" stroke-width="1.5" fill="none"/>
+              <path class="lane" d="M 200 120 Q 110 180 30 204"
+                    stroke="url(#bLaneGold)" stroke-width="1.5" fill="none"/>
+              <path class="lane" d="M 200 120 Q 290 180 370 204"
+                    stroke="url(#bLaneLav)" stroke-width="1.5" fill="none"/>
+              <path class="lane" d="M 200 120 L 200 218"
+                    stroke="url(#bLaneRed)" stroke-width="1.5" fill="none"/>
+
+              <!-- Endpoint nodes & labels -->
+              <g>
+                <circle class="pulse" cx="30" cy="36" r="4" fill="rgba(102,204,204,0.95)"/>
+                <text x="38" y="32"
+                      font-family="Share Tech Mono, monospace" font-size="9"
+                      fill="rgba(102,204,204,0.9)">CLOUD REASONING</text>
+                <text x="38" y="44"
+                      font-family="Share Tech Mono, monospace" font-size="7"
+                      fill="rgba(160,160,176,0.8)">xAI &middot; Hermes</text>
+              </g>
+              <g>
+                <circle class="pulse d1" cx="370" cy="36" r="4" fill="rgba(102,255,153,0.95)"/>
+                <text x="362" y="32" text-anchor="end"
+                      font-family="Share Tech Mono, monospace" font-size="9"
+                      fill="rgba(102,255,153,0.9)">EDGE INFERENCE</text>
+                <text x="362" y="44" text-anchor="end"
+                      font-family="Share Tech Mono, monospace" font-size="7"
+                      fill="rgba(160,160,176,0.8)">ATLAS &middot; Ollama</text>
+              </g>
+              <g>
+                <circle class="pulse d2" cx="30" cy="204" r="4" fill="rgba(241,223,111,0.95)"/>
+                <text x="38" y="218"
+                      font-family="Share Tech Mono, monospace" font-size="9"
+                      fill="rgba(241,223,111,0.9)">GPU SPECIALIST</text>
+                <text x="38" y="206"
+                      font-family="Share Tech Mono, monospace" font-size="7"
+                      fill="rgba(160,160,176,0.8)">CashioTUF &middot; LM Studio</text>
+              </g>
+              <g>
+                <circle class="pulse d3" cx="370" cy="204" r="4" fill="rgba(204,153,255,0.95)"/>
+                <text x="362" y="218" text-anchor="end"
+                      font-family="Share Tech Mono, monospace" font-size="9"
+                      fill="rgba(204,153,255,0.9)">RAG / MCP TOOLS</text>
+                <text x="362" y="206" text-anchor="end"
+                      font-family="Share Tech Mono, monospace" font-size="7"
+                      fill="rgba(160,160,176,0.8)">Chroma &middot; mcp-omnibus</text>
+              </g>
+              <g>
+                <circle class="pulse d4" cx="200" cy="218" r="4" fill="rgba(204,102,102,0.95)"/>
+                <text x="200" y="232" text-anchor="middle"
+                      font-family="Share Tech Mono, monospace" font-size="9"
+                      fill="rgba(204,102,102,0.9)">OBSERVABILITY MESH</text>
+              </g>
+
+              <!-- Source pad: REQUEST top center -->
+              <rect x="170" y="6" width="60" height="22" rx="4"
+                    fill="rgba(10,10,20,0.6)" stroke="rgba(102,204,204,0.5)" stroke-width="1"/>
+              <text x="200" y="20" text-anchor="middle"
+                    font-family="Share Tech Mono, monospace" font-size="9"
+                    fill="rgba(102,204,204,0.9)">REQUEST</text>
+              <path class="lane" d="M 200 28 L 200 109"
+                    stroke="url(#bLaneCyan)" stroke-width="1.5" fill="none"/>
+
+              <!-- Corner ticks -->
+              <path d="M6 6 L18 6 L6 6 L6 18" stroke="rgba(241,223,111,0.45)" fill="none"/>
+              <path d="M394 6 L382 6 L394 6 L394 18" stroke="rgba(241,223,111,0.45)" fill="none"/>
+              <path d="M6 234 L18 234 L6 234 L6 222" stroke="rgba(241,223,111,0.45)" fill="none"/>
+              <path d="M394 234 L382 234 L394 234 L394 222" stroke="rgba(241,223,111,0.45)" fill="none"/>
+            </svg>
+          </div>
+          <div style="margin-top:10px; font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:1.5px; color:var(--text-secondary); line-height:1.6;">
+            Decorative routing fabric &middot; representative steady-state telemetry &middot; no live endpoints rendered.
+          </div>
+        </div>
+      </section>
 
       <!-- v15 BASELINE BANNER -->
       <div class="animate-in" style="animation-delay:0.18s; display:flex; flex-wrap:wrap; align-items:center; gap:14px; padding:12px 18px; margin:14px 0 18px 0; background:linear-gradient(90deg, rgba(102,204,204,0.08), rgba(241,223,111,0.04)); border:1px solid rgba(102,204,204,0.3); border-radius:8px;">
@@ -3609,8 +3984,9 @@
             .fromTo(".lcars-bar-bottom", { x: -100, opacity: 0 }, { duration: 0.6, x: 0, opacity: 1, ease: "power2.out" }, "-=0.4")
             .fromTo(".lcars-sidebar-seg", { x: -50, opacity: 0 }, { duration: 0.6, x: 0, opacity: 1, stagger: 0.05, ease: "back.out(1.5)" }, "-=0.2")
             // Main content entry
-            .fromTo(".report-title", { y: 20, opacity: 0 }, { duration: 0.8, y: 0, opacity: 1, ease: "power3.out" }, "-=0.2")
-            .fromTo(".report-subtitle", { y: 15, opacity: 0 }, { duration: 0.8, y: 0, opacity: 1, ease: "power3.out" }, "-=0.6")
+            .fromTo(".bridge-deck", { y: 20, opacity: 0 }, { duration: 0.9, y: 0, opacity: 1, ease: "power3.out" }, "-=0.2")
+            .fromTo(".bridge-title", { y: 12, opacity: 0 }, { duration: 0.7, y: 0, opacity: 1, ease: "power3.out" }, "-=0.6")
+            .fromTo(".bridge-stat", { y: 6, opacity: 0 }, { duration: 0.45, y: 0, opacity: 1, stagger: 0.04, ease: "power2.out" }, "-=0.4")
             .fromTo(".contact-bar .contact-link, a.contact-link.animate-in", { y: 10, opacity: 0 }, { duration: 0.6, y: 0, opacity: 1, stagger: 0.1, ease: "back.out(2)" }, "-=0.4");
 
       // Remove the old CSS animate-in classes BEFORE GSAP initializes
