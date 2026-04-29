@@ -1714,6 +1714,18 @@
       50%      { opacity: 1; r: 6; }
     }
 
+    /* ─── Interactive lane hover (homepage wow) ─── */
+    .deck-radar .lane-group { cursor: pointer; transition: opacity 0.25s ease; }
+    .deck-radar .lane-hit { fill: transparent; stroke: transparent; pointer-events: stroke; stroke-width: 24; }
+    .deck-orch.lane-active .deck-radar .lane-group:not(.is-active) { opacity: 0.18; }
+    .deck-orch.lane-active .deck-radar .lane-group.is-active .pulse { r: 6; opacity: 1; }
+    .deck-orch.lane-active .deck-chip:not(.is-active) { opacity: 0.35; }
+    .deck-chip { transition: opacity 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; }
+    .deck-chip.is-active {
+      border-color: rgba(241,223,111,0.65);
+      box-shadow: 0 0 14px rgba(241,223,111,0.18);
+    }
+
     .deck-chips {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -1920,31 +1932,28 @@
 
           <p class="deck-valueprop">
             Architecting <b>production-grade AI &amp; cybersecurity systems</b> &mdash;
-            <em>multi-model orchestration</em>, <em>MxDR pipelines</em>, and
-            <em>observability meshes</em> proven at lab scale before they ever land in front of a customer.
+            multi-model orchestration, MxDR pipelines, and observability meshes
+            proven at lab scale before they ever land in front of a customer.
           </p>
 
-          <!-- Status chips: at-a-glance posture, no PII -->
+          <!-- Status chips: three high-signal posture indicators -->
           <div class="deck-status-row" aria-label="Operational status">
             <span class="deck-status gold"><span class="swatch gold" aria-hidden="true"></span>Available for advisory</span>
-            <span class="deck-status cyan"><span class="swatch cyan" aria-hidden="true"></span>Remote · National &amp; Intl. travel</span>
+            <span class="deck-status cyan"><span class="swatch cyan" aria-hidden="true"></span>Remote &middot; Travel-ready</span>
             <span class="deck-status green"><span class="swatch green" aria-hidden="true"></span>Lab fabric online</span>
-            <span class="deck-status lav"><span class="swatch lav" aria-hidden="true"></span>NDA-ready engagements</span>
           </div>
 
-          <!-- Proof bullets: concrete, public-safe, no PII -->
+          <!-- Proof bullets: three highest-value, public-safe -->
           <ul class="deck-proof" aria-label="Proof points">
             <li><span><strong>15+ yrs</strong> &mdash; network engineering &rarr; cloud security &rarr; enterprise AI</span></li>
             <li><span>Channel impact: <strong>4,500+ resellers</strong>, <strong>60K+ businesses</strong> protected</span></li>
-            <li><span>Architecting <strong>MxDR &amp; multi-agent orchestration</strong> on M365 / Azure</span></li>
-            <li><span>Lab-validated: <strong>multi-tier LLM routing</strong>, sovereign inference, observability mesh</span></li>
-            <li><span>Active <strong>conference speaker</strong> &mdash; channel summits, partner roadshows, security events</span></li>
+            <li><span>Lab-validated <strong>multi-tier LLM routing</strong> &amp; sovereign inference fabric</span></li>
           </ul>
 
           <div class="deck-cta-row">
-            <a href="#lab" class="deck-cta deck-cta-primary" onclick="scrollToSection(event,'lab')">REVIEW LAB ARCHITECTURE</a>
-            <a href="lab.html" class="deck-cta deck-cta-ghost">EXPLORE ORCHESTRATION FABRIC</a>
-            <a href="#summary" class="deck-cta deck-cta-ghost" onclick="scrollToSection(event,'summary')">SECURE CONTACT ON REQUEST</a>
+            <a href="mailto:doug@cashio.us" class="deck-cta deck-cta-primary">CONTACT &mdash; doug@cashio.us</a>
+            <a href="lab.html" class="deck-cta deck-cta-ghost">ENTER THE LAB</a>
+            <a href="https://www.credly.com/users/james-cashio/badges" target="_blank" rel="noopener" class="deck-cta deck-cta-ghost">CREDLY WALLET</a>
           </div>
         </div>
 
@@ -1995,28 +2004,29 @@
                 <path class="lane" d="M 72 100 Q 130 100 168 100"
                       stroke="url(#laneCyan)" stroke-width="1.5" fill="none"/>
 
-                <!-- Three target model lanes from HUB -->
-                <path class="lane" d="M 230 100 Q 300 50 380 38"
-                      stroke="url(#laneCyan)" stroke-width="1.5" fill="none"/>
-                <path class="lane" d="M 230 100 Q 300 100 380 100"
-                      stroke="url(#laneGreen)" stroke-width="1.5" fill="none"/>
-                <path class="lane" d="M 230 100 Q 300 150 380 162"
-                      stroke="url(#laneGold)" stroke-width="1.5" fill="none"/>
-
-                <!-- Endpoints (decorative model lanes) -->
-                <g>
+                <!-- Three target model lanes from HUB — each interactive -->
+                <g class="lane-group" data-lane="cloud">
+                  <path class="lane" d="M 230 100 Q 300 50 380 38"
+                        stroke="url(#laneCyan)" stroke-width="1.5" fill="none"/>
+                  <path class="lane-hit" d="M 230 100 Q 300 50 380 38"/>
                   <circle class="pulse" cx="380" cy="38" r="4" fill="rgba(102,204,204,0.95)"/>
                   <text x="372" y="28" text-anchor="end"
                         font-family="Share Tech Mono, monospace" font-size="9"
                         fill="rgba(102,204,204,0.85)">CLOUD REASONING</text>
                 </g>
-                <g>
+                <g class="lane-group" data-lane="edge">
+                  <path class="lane" d="M 230 100 Q 300 100 380 100"
+                        stroke="url(#laneGreen)" stroke-width="1.5" fill="none"/>
+                  <path class="lane-hit" d="M 230 100 Q 300 100 380 100"/>
                   <circle class="pulse delay-1" cx="380" cy="100" r="4" fill="rgba(102,255,153,0.95)"/>
                   <text x="372" y="90" text-anchor="end"
                         font-family="Share Tech Mono, monospace" font-size="9"
                         fill="rgba(102,255,153,0.9)">EDGE INFERENCE</text>
                 </g>
-                <g>
+                <g class="lane-group" data-lane="gpu">
+                  <path class="lane" d="M 230 100 Q 300 150 380 162"
+                        stroke="url(#laneGold)" stroke-width="1.5" fill="none"/>
+                  <path class="lane-hit" d="M 230 100 Q 300 150 380 162"/>
                   <circle class="pulse delay-2" cx="380" cy="162" r="4" fill="rgba(241,223,111,0.95)"/>
                   <text x="372" y="180" text-anchor="end"
                         font-family="Share Tech Mono, monospace" font-size="9"
@@ -2037,27 +2047,27 @@
               </svg>
             </div>
 
-            <!-- Telemetry chip grid -->
+            <!-- Telemetry chip grid — chips light up when their lane is hovered -->
             <div class="deck-chips">
-              <div class="deck-chip">
-                <span class="label">YEARS</span>
-                <span class="val gold">15+</span>
+              <div class="deck-chip" data-lane="cloud">
+                <span class="label">CLOUD MODELS</span>
+                <span class="val cyan">FRONTIER</span>
               </div>
-              <div class="deck-chip">
-                <span class="label">RESELLERS</span>
-                <span class="val cyan">4,500+</span>
-              </div>
-              <div class="deck-chip">
-                <span class="label">PROTECTED</span>
-                <span class="val orange">60K+</span>
-              </div>
-              <div class="deck-chip">
-                <span class="label">LAB NODES</span>
+              <div class="deck-chip" data-lane="edge">
+                <span class="label">EDGE NODES</span>
                 <span class="val green">12</span>
+              </div>
+              <div class="deck-chip" data-lane="gpu">
+                <span class="label">GPU LANE</span>
+                <span class="val gold">SPECIALIST</span>
               </div>
               <div class="deck-chip">
                 <span class="label">LLM TIERS</span>
                 <span class="val lav">3</span>
+              </div>
+              <div class="deck-chip">
+                <span class="label">SIGNAL COVERAGE</span>
+                <span class="val orange">360&deg;</span>
               </div>
               <div class="deck-chip">
                 <span class="label">WARP FACTOR</span>
@@ -2068,31 +2078,31 @@
         </div>
       </section>
 
-      <!-- Compact contact strip (non-PII) -->
+      <!-- Compact contact strip -->
       <div class="contact-bar animate-in" style="animation-delay:0.25s">
-        <span class="contact-link" title="Secure Contact">
+        <a href="mailto:doug@cashio.us" class="contact-link" title="Email Doug Cashio">
           <svg viewBox="0 0 24 24">
             <path
               d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
-          </svg>Secure contact on request
-        </span>
-        <span class="contact-link" title="Professional Profile">
+          </svg>doug@cashio.us
+        </a>
+        <a href="https://linkedin.com/in/dougcashio" target="_blank" rel="noopener" class="contact-link" title="LinkedIn">
           <svg viewBox="0 0 24 24">
             <path
               d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14m-.5 15.5v-5.3a3.26 3.26 0 00-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 011.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 001.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 00-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
-          </svg>Professional profile on request
-        </span>
-        <span class="contact-link" title="Project Portfolio">
+          </svg>LinkedIn
+        </a>
+        <a href="https://github.com/jamescashio" target="_blank" rel="noopener" class="contact-link" title="GitHub">
           <svg viewBox="0 0 24 24">
             <path
               d="M12 2A10 10 0 002 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z" />
-          </svg>Project portfolio on request
-        </span>
-        <span class="contact-link" title="Credential Wallet">
+          </svg>GitHub
+        </a>
+        <a href="https://www.credly.com/users/james-cashio/badges" target="_blank" rel="noopener" class="contact-link" title="Credly Badge Wallet">
           <svg viewBox="0 0 24 24">
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-          </svg>Credential wallet on request
-        </span>
+          </svg>Credly
+        </a>
       </div>
 
       <!-- IDENTITY TERMINAL (STATIC FULL-LINE RENDER) -->
@@ -2277,9 +2287,9 @@
           </tr>
         </table>
 
-        <span class="contact-link" style="margin-top:16px;">
-          Full credential wallet available on request &rarr;
-        </span>
+        <a href="https://www.credly.com/users/james-cashio/badges" target="_blank" rel="noopener" class="contact-link" style="margin-top:16px;">
+          View full badge wallet on Credly &rarr;
+        </a>
       </div>
 
       <!-- SECTION 6: WHAT COLLEAGUES SAY -->
@@ -2431,8 +2441,8 @@
             <div class="stat-label">Tier LLM Routing</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value" style="color:var(--lcars-lavender);">720h</div>
-            <div class="stat-label">Telemetry Window</div>
+            <div class="stat-value" style="color:var(--lcars-lavender);">360&deg;</div>
+            <div class="stat-label">Signal Coverage</div>
           </div>
         </div>
 
@@ -2470,7 +2480,7 @@
       style="padding: 15px 30px; display: flex; flex-direction: column; align-items: center; gap: 10px; opacity: 0.7;">
       <div style="display: flex; justify-content: space-between; width: 100%; max-width: 1400px;">
         <div style="text-align: left;">DOUG CASHIO &mdash; Enterprise AI & Cybersecurity Solutions Architect</div>
-        <div style="text-align: right;">Secure contact &middot; Professional profile &middot; Credential wallet on request</div>
+        <div style="text-align: right;"><a href="mailto:doug@cashio.us" style="color:inherit; text-decoration:none;">doug@cashio.us</a> &middot; <a href="https://linkedin.com/in/dougcashio" target="_blank" rel="noopener" style="color:inherit; text-decoration:none;">LinkedIn</a> &middot; <a href="https://github.com/jamescashio" target="_blank" rel="noopener" style="color:inherit; text-decoration:none;">GitHub</a> &middot; <a href="https://www.credly.com/users/james-cashio/badges" target="_blank" rel="noopener" style="color:inherit; text-decoration:none;">Credly</a></div>
       </div>
       <div style="text-align: center; margin-top: 5px;">
         <p style="font-family:'Share Tech Mono',monospace; letter-spacing:3px; color:var(--text-secondary);">/// END TRANSMISSION — <span id="footer-stardate">STARDATE 2026.104</span> ///</p>
@@ -2770,6 +2780,29 @@
         el.style.opacity = '1';
         el.style.transform = 'none';
       });
+
+      // Interactive lane hover — light the chip whose lane the visitor explores.
+      (function wireLaneHover() {
+        const orch = document.querySelector('.deck-orch');
+        if (!orch) return;
+        const lanes = orch.querySelectorAll('.lane-group[data-lane]');
+        const chips = orch.querySelectorAll('.deck-chip[data-lane]');
+        const setActive = (key) => {
+          if (key) orch.classList.add('lane-active'); else orch.classList.remove('lane-active');
+          lanes.forEach(g => g.classList.toggle('is-active', g.dataset.lane === key));
+          chips.forEach(c => c.classList.toggle('is-active', c.dataset.lane === key));
+        };
+        lanes.forEach(g => {
+          g.addEventListener('mouseenter', () => setActive(g.dataset.lane));
+          g.addEventListener('mouseleave', () => setActive(null));
+          g.addEventListener('focus', () => setActive(g.dataset.lane), true);
+          g.addEventListener('blur', () => setActive(null), true);
+        });
+        chips.forEach(c => {
+          c.addEventListener('mouseenter', () => setActive(c.dataset.lane));
+          c.addEventListener('mouseleave', () => setActive(null));
+        });
+      })();
 
       const elementsToAnimate = gsap.utils.toArray('.glass-panel, .timeline-event, .philosophy-card, .drive-hero, .crew-card, .stat-card');
       
