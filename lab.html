@@ -4208,40 +4208,71 @@
         </div>
 
         <style>
-          .doctrine-principles {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 14px;
-            margin-top: 26px;
+          .doctrine-bridge {
+            margin: 26px 0 14px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 14px;
+            color: var(--lcars-peach);
+            letter-spacing: 0.5px;
+            text-align: center;
+            opacity: 0.92;
           }
-          .principle-card {
+          .doctrine-accomplishments {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 14px;
+            margin-top: 6px;
+          }
+          .accomplishment-card {
             background: rgba(10, 10, 25, 0.55);
-            border: 1px solid rgba(241, 223, 111, 0.18);
             border-radius: 10px;
             padding: 16px 18px;
             position: relative;
+            border: 1px solid rgba(241, 223, 111, 0.18);
           }
-          .principle-card .num {
+          .accomplishment-card.rutan { border-left: 3px solid var(--lcars-orange); }
+          .accomplishment-card.kelly { border-left: 3px solid var(--lcars-blue); }
+          .accomplishment-card .tag {
             font-family: 'Orbitron', monospace;
-            font-size: 11px;
+            font-size: 10px;
             letter-spacing: 2px;
-            color: var(--lcars-peach);
-            opacity: 0.75;
+            text-transform: uppercase;
+            opacity: 0.85;
           }
-          .principle-card h5 {
+          .accomplishment-card.rutan .tag { color: var(--lcars-orange); }
+          .accomplishment-card.kelly .tag { color: var(--lcars-blue); }
+          .accomplishment-card h5 {
             font-family: 'Orbitron', monospace;
-            font-size: 13px;
-            letter-spacing: 1.5px;
+            font-size: 14px;
+            letter-spacing: 1px;
             color: var(--lcars-gold);
-            margin: 4px 0 8px 0;
+            margin: 4px 0 4px 0;
             text-transform: uppercase;
           }
-          .principle-card p {
+          .accomplishment-card .year {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 11px;
+            color: var(--lcars-peach);
+            opacity: 0.8;
+            margin-bottom: 6px;
+          }
+          .accomplishment-card p {
             font-size: 13px;
             color: var(--text-secondary);
             line-height: 1.55;
-            margin: 0;
+            margin: 0 0 8px 0;
           }
+          .accomplishment-card .src {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 11px;
+            opacity: 0.7;
+          }
+          .accomplishment-card .src a {
+            color: var(--lcars-peach);
+            text-decoration: none;
+            border-bottom: 1px dotted rgba(241, 223, 111, 0.4);
+          }
+          .accomplishment-card .src a:hover { opacity: 1; color: var(--lcars-gold); }
           .doctrine-container {
             margin-top: 30px;
             text-align: center;
@@ -4278,31 +4309,52 @@
           }
         </style>
 
-        <div class="doctrine-principles">
-          <div class="principle-card">
-            <div class="num">01</div>
-            <h5>Unconventional by Evidence</h5>
-            <p>Strange shapes are fine — required, even — when physics, profiling, or telemetry says they're the right answer. Novelty is justified, never decorative.</p>
+        <div class="doctrine-bridge">
+          The doctrine is not decorative: it borrows from aircraft that actually flew.
+        </div>
+
+        <div class="doctrine-accomplishments">
+          <div class="accomplishment-card rutan">
+            <div class="tag">Rutan &middot; Voyager</div>
+            <h5>Around the World, Nonstop, No Refuel</h5>
+            <div class="year">1986 &middot; 9 days, 3 minutes</div>
+            <p>Designed the all-composite Voyager that Dick Rutan and Jeana Yeager flew nonstop and unrefueled around the globe — a record that stood for 19 years and proved a small team could solve a problem the majors wouldn't touch.</p>
+            <div class="src"><a href="https://airandspace.si.edu/collection-objects/rutan-voyager/nasm_A19880322000" target="_blank" rel="noopener">airandspace.si.edu</a></div>
           </div>
-          <div class="principle-card">
-            <div class="num">02</div>
-            <h5>Prototype Before Committee</h5>
-            <p>Build the smallest flyable version. Put it in front of real workloads early. Let the prototype, not the meeting, settle the argument.</p>
+          <div class="accomplishment-card rutan">
+            <div class="tag">Rutan &middot; SpaceShipOne</div>
+            <h5>First Privately Funded Crewed Spaceflight</h5>
+            <div class="year">2004 &middot; Ansari X Prize</div>
+            <p>Scaled Composites' SpaceShipOne crossed 100 km twice in two weeks with a private crew and won the $10M Ansari X Prize — opening the door to commercial human spaceflight on a Skunk-Works-sized budget.</p>
+            <div class="src"><a href="https://www.britannica.com/technology/SpaceShipOne" target="_blank" rel="noopener">britannica.com</a></div>
           </div>
-          <div class="principle-card">
-            <div class="num">03</div>
-            <h5>Simple Enough to Operate</h5>
-            <p>KISS, applied to systems: fewer moving parts, clearer interfaces, field-serviceable under pressure. If a tired operator can't run it at 2 a.m., it isn't done.</p>
+          <div class="accomplishment-card rutan">
+            <div class="tag">Rutan &middot; GlobalFlyer</div>
+            <h5>Solo, Nonstop, Unrefueled Around the World</h5>
+            <div class="year">2005 &middot; 67 hours</div>
+            <p>Designed the Virgin Atlantic GlobalFlyer that Steve Fossett flew solo around the world without refueling — another canard, another composite airframe, another &ldquo;impossible&rdquo; mission turned into a flight log.</p>
+            <div class="src"><a href="https://www.britannica.com/biography/Burt-Rutan" target="_blank" rel="noopener">britannica.com</a></div>
           </div>
-          <div class="principle-card">
-            <div class="num">04</div>
-            <h5>Instrumented by Default</h5>
-            <p>Every hop is a flight test. Build the gauges in from the start so the system tells you what it's doing — and so the next iteration is informed by data, not opinion.</p>
+          <div class="accomplishment-card kelly">
+            <div class="tag">Kelly Johnson &middot; XP-80</div>
+            <h5>America's First Operational Jet Fighter</h5>
+            <div class="year">1943 &middot; 143 days, on schedule</div>
+            <p>Lockheed's Skunk Works delivered the XP-80 Shooting Star prototype in 143 days under a tiny team and direct authority — the founding proof that a small, focused org can out-build a committee.</p>
+            <div class="src"><a href="https://www.lockheedmartin.com/en-us/who-we-are/business-areas/aeronautics/skunkworks/kelly-14-rules.html" target="_blank" rel="noopener">lockheedmartin.com</a></div>
           </div>
-          <div class="principle-card">
-            <div class="num">05</div>
-            <h5>Ship the Useful Capability</h5>
-            <p>Small team, clear authority, minimum ceremony, on time. Document what matters and nothing else. The deliverable is a capability that survives contact with reality.</p>
+          <div class="accomplishment-card kelly">
+            <div class="tag">Kelly Johnson &middot; U-2</div>
+            <h5>High-Altitude Strategic Reconnaissance</h5>
+            <div class="year">1955 &middot; 70,000+ ft service ceiling</div>
+            <p>Skunk Works delivered the U-2 from blank sheet to flight test in roughly eight months — a single-purpose airframe built lean, operated quietly, and still in service decades later.</p>
+            <div class="src"><a href="https://www.lockheedmartin.com/en-us/news/features/history/u-2.html" target="_blank" rel="noopener">lockheedmartin.com</a></div>
+          </div>
+          <div class="accomplishment-card kelly">
+            <div class="tag">Kelly Johnson &middot; SR-71</div>
+            <h5>Mach 3+ Titanium Reconnaissance</h5>
+            <div class="year">1964 &middot; speed/altitude records still unbroken</div>
+            <p>The SR-71 Blackbird flew faster and higher than any air-breathing crewed aircraft before or since — engineered around new alloys, new fuel, and a discipline of &ldquo;document only what matters.&rdquo;</p>
+            <div class="src"><a href="https://www.lockheedmartin.com/en-us/news/features/history/blackbird.html" target="_blank" rel="noopener">lockheedmartin.com</a></div>
           </div>
         </div>
 
