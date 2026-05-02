@@ -3035,10 +3035,100 @@
             </div>
         </div>
 
-        <!-- Schematic Image Placeholder -->
+        <!-- Schematic Image Placeholder / Defiant SVG Render -->
         <div style="width:100%; height:400px; background:rgba(0,0,0,0.6); border:1px solid var(--lcars-orange); border-radius:8px; margin-bottom: 20px; display:flex; justify-content:center; align-items:center; position:relative; overflow:hidden;">
             <div style="position:absolute; top:0; left:0; right:0; bottom:0; background: radial-gradient(circle at center, rgba(255,153,51,0.1) 0%, transparent 70%); pointer-events:none;"></div>
-            <div style="font-family:'Orbitron',monospace; font-size:24px; color:var(--lcars-orange); opacity: 0.3; letter-spacing: 5px;">[ SCHEMATIC RENDER ONLINE ]</div>
+
+            <svg viewBox="0 0 800 400" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="position:absolute; z-index:1;">
+                <!-- Starship Defiant Top-Down Wireframe / LCARS style -->
+                <g transform="translate(400, 200) scale(1.4)">
+                    <!-- Outer Hull Shape -->
+                    <path d="M 0,-120
+                             C 20,-120 40,-100 50,-80
+                             C 80,-80 110,-50 110,0
+                             C 110,50 100,90 80,110
+                             C 50,110 20,120 0,120
+                             C -20,120 -50,110 -80,110
+                             C -100,90 -110,50 -110,0
+                             C -110,-50 -80,-80 -50,-80
+                             C -40,-100 -20,-120 0,-120 Z"
+                          fill="rgba(255,153,51,0.05)" stroke="var(--lcars-orange)" stroke-width="2"/>
+
+                    <!-- Warp Nacelles (Integrated) -->
+                    <rect x="-105" y="-30" width="25" height="120" rx="12" fill="rgba(0,249,255,0.05)" stroke="var(--lcars-cyan)" stroke-width="2" />
+                    <rect x="80" y="-30" width="25" height="120" rx="12" fill="rgba(0,249,255,0.05)" stroke="var(--lcars-cyan)" stroke-width="2" />
+
+                    <!-- Bussard Collectors (Red) -->
+                    <path d="M -105,-15 C -105,-25 -80,-25 -80,-15 Z" fill="var(--lcars-red)" />
+                    <path d="M 80,-15 C 80,-25 105,-25 105,-15 Z" fill="var(--lcars-red)" />
+
+                    <!-- Deflector (Nose) -->
+                    <path d="M -25,-120 L 25,-120 L 15,-100 L -15,-100 Z" fill="var(--lcars-amber)" stroke="var(--lcars-orange)" stroke-width="1"/>
+
+                    <!-- Bridge -->
+                    <circle cx="0" cy="-50" r="18" fill="none" stroke="var(--lcars-orange)" stroke-width="2"/>
+                    <circle cx="0" cy="-50" r="6" fill="var(--lcars-amber)" />
+
+                    <!-- Hull Details & Grid lines -->
+                    <line x1="-50" y1="-80" x2="50" y2="-80" stroke="var(--lcars-orange)" stroke-width="2" stroke-dasharray="6 2"/>
+                    <line x1="-80" y1="-30" x2="80" y2="-30" stroke="var(--lcars-orange)" stroke-width="1" stroke-dasharray="4 2"/>
+                    <line x1="-110" y1="0" x2="110" y2="0" stroke="var(--lcars-orange)" stroke-width="1" stroke-dasharray="2 4"/>
+                    <line x1="-80" y1="40" x2="80" y2="40" stroke="var(--lcars-orange)" stroke-width="1" stroke-dasharray="4 2"/>
+
+                    <!-- Central Spine -->
+                    <line x1="0" y1="-30" x2="0" y2="90" stroke="var(--lcars-orange)" stroke-width="2" />
+                    <rect x="-15" y="10" width="30" height="50" rx="5" fill="none" stroke="var(--lcars-cyan)" stroke-width="1"/>
+
+                    <!-- Impulse Engines -->
+                    <rect x="-45" y="112" width="30" height="8" rx="3" fill="var(--lcars-red)" opacity="0.8"/>
+                    <rect x="15" y="112" width="30" height="8" rx="3" fill="var(--lcars-red)" opacity="0.8"/>
+
+                    <!-- LCARS Text Labels -->
+                    <text x="-90" y="85" font-family="'Share Tech Mono',monospace" font-size="6" fill="var(--lcars-cyan)" transform="rotate(-90 -90 85)">WARP COIL PORT</text>
+                    <text x="95" y="85" font-family="'Share Tech Mono',monospace" font-size="6" fill="var(--lcars-cyan)" transform="rotate(-90 95 85)">WARP COIL STBD</text>
+                    <text x="8" y="-48" font-family="'Share Tech Mono',monospace" font-size="6" fill="var(--lcars-orange)">BRIDGE</text>
+                    <text x="18" y="-105" font-family="'Share Tech Mono',monospace" font-size="6" fill="var(--lcars-amber)">NAV DEFLECTOR</text>
+                    <text x="18" y="40" font-family="'Share Tech Mono',monospace" font-size="6" fill="var(--lcars-orange)">MAIN ENGINEERING</text>
+                </g>
+
+                <!-- Overlay UI Elements -->
+                <g font-family="'Share Tech Mono',monospace" font-size="12" fill="var(--lcars-orange)">
+                    <!-- Grid -->
+                    <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,153,51,0.2)" stroke-width="1" />
+                    <line x1="400" y1="0" x2="400" y2="400" stroke="rgba(255,153,51,0.2)" stroke-width="1" />
+
+                    <circle cx="400" cy="200" r="180" fill="none" stroke="rgba(255,153,51,0.1)" stroke-width="1" />
+                    <circle cx="400" cy="200" r="120" fill="none" stroke="rgba(0,249,255,0.1)" stroke-width="1" stroke-dasharray="10 5" />
+
+                    <!-- Coordinates and readouts -->
+                    <text x="30" y="40" fill="var(--lcars-cyan)" font-size="14" font-weight="bold" letter-spacing="1">SCHEMATIC: NX-74205</text>
+                    <text x="30" y="60" fill="var(--lcars-cyan)">CLASS: DEFIANT ESCORT</text>
+                    <text x="30" y="80">LENGTH: 170.68 METERS</text>
+                    <text x="30" y="100">DECKS: 4</text>
+
+                    <text x="600" y="40" fill="var(--lcars-red)" font-size="14" font-weight="bold" letter-spacing="1">STATUS: ACTIVE</text>
+                    <text x="600" y="60">SHIELDS: 100%</text>
+                    <text x="600" y="80">WEAPONS: ONLINE</text>
+                    <text x="600" y="100">AI CORE: NOMINAL</text>
+
+                    <!-- Scanning animation line -->
+                    <rect x="0" y="0" width="800" height="2" fill="var(--lcars-cyan)">
+                        <animate attributeName="y" values="0;400;0" dur="6s" repeatCount="indefinite" />
+                        <animate attributeName="opacity" values="0.8;0.2;0.8" dur="6s" repeatCount="indefinite" />
+                    </rect>
+
+                    <!-- Pulsing nodes -->
+                    <circle cx="360" cy="100" r="4" fill="var(--lcars-cyan)">
+                        <animate attributeName="opacity" values="1;0;1" dur="2s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="440" cy="150" r="4" fill="var(--lcars-cyan)">
+                        <animate attributeName="opacity" values="1;0;1" dur="3s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="400" cy="300" r="4" fill="var(--lcars-amber)">
+                        <animate attributeName="opacity" values="1;0;1" dur="1.5s" repeatCount="indefinite" />
+                    </circle>
+                </g>
+            </svg>
         </div>
 
         <!-- Interactive System Hotspots -->
