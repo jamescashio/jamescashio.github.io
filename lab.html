@@ -2860,7 +2860,13 @@
 
             const taskName = btn.parentElement.querySelector('strong').textContent;
             const log = document.getElementById('telemetry-log');
-            log.innerHTML += `<br>> Executing ${taskName}...`;
+
+            // Sanitize input to prevent XSS
+            const safeTaskName = taskName.replace(/[&<>'"]/g,
+                char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char])
+            );
+
+            log.innerHTML += `<br>&gt; Executing ${safeTaskName}...`;
             log.scrollTop = log.scrollHeight;
 
             if(typeof playLCARSSound !== 'undefined') playLCARSSound('alert');
@@ -2868,7 +2874,7 @@
             setTimeout(() => {
                 btn.textContent = "COMPLETED";
                 btn.style.background = "var(--lcars-green)";
-                log.innerHTML += `<br>> ${taskName} complete.`;
+                log.innerHTML += `<br>&gt; ${safeTaskName} complete.`;
                 log.scrollTop = log.scrollHeight;
                 if(typeof playLCARSSound !== 'undefined') playLCARSSound('confirm');
             }, 2000);
