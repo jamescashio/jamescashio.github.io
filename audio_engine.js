@@ -31,7 +31,7 @@ function toggleMute(e) {
         ambientOscL = null;
         ambientOscR = null;
     } else if (!isMuted && audioCtx && audioCtx.state === 'running') {
-        startAmbientHum();
+        // startAmbientHum();
     }
 }
 
@@ -42,7 +42,7 @@ function initAudio() {
   if (isMuted) return;
   if (!audioCtx) {
       audioCtx = new AudioContext();
-      startAmbientHum();
+      // startAmbientHum();
   }
   if (audioCtx.state === 'suspended') audioCtx.resume();
 }

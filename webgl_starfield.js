@@ -169,7 +169,7 @@ if (!gl) {
 
     gl.drawArrays(gl.POINTS, 0, numStars);
 
-    if (Math.random() < 0.005) { const starX = Math.random(); const starY = Math.random(); if (typeof playLCARSSound !== "undefined") { playLCARSSound("whoosh", starX, starY); } }
+    if (Math.random() < 0.005) { const starX = Math.random(); const starY = Math.random();  }
 
     requestAnimationFrame(render);
   }
