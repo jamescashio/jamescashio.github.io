@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Doug Cashio — Enterprise AI & Cybersecurity Solutions Architect</title>
   <meta name="description"
-    content="ZeusApollo Lab — v19.1 baseline (April 27, 2026). 11-node sovereign AI fleet with Multi-tier LLM routing: Grok 4.20/Think reasoning, ATLAS Mac Mini M4 .78 edge, CashioTUF GPU fallback. Native MCP control plane.">
+    content="ZeusApollo Lab — v19.1 baseline (April 27, 2026). 11-node sovereign AI fleet with Multi-tier LLM routing: DeepSeekV4 reasoning, ATLAS Mac Mini M4 .78 edge, CashioTUF GPU fallback. Native MCP control plane.">
 
   <meta property="og:title" content="ZeusApollo Lab — v19.1 Baseline | Doug Cashio">
   <meta property="og:description"
@@ -2416,7 +2416,7 @@
                       fill="rgba(102,204,204,0.9)">CLOUD REASONING</text>
                 <text x="38" y="44"
                       font-family="Share Tech Mono, monospace" font-size="7"
-                      fill="rgba(160,160,176,0.8)">xAI &middot; Hermes</text>
+                      fill="rgba(160,160,176,0.8)">DeepSeek &middot; Hermes</text>
               </g>
               <g>
                 <circle class="pulse d1" cx="370" cy="36" r="4" fill="rgba(102,255,153,0.95)"/>
@@ -2619,7 +2619,7 @@
 
             <div style="padding:16px; background:rgba(102,204,204,0.05); border:1px solid rgba(102,204,204,0.3); border-left:3px solid var(--lcars-cyan); border-radius:8px;">
               <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:var(--lcars-cyan); margin-bottom:6px;">PRIMARY REASONING</div>
-              <h4 style="color:var(--lcars-cyan); font-size:14px; margin:0 0 8px 0;">Grok 4.20/Think &middot; Hermes Control Plane</h4>
+              <h4 style="color:var(--lcars-cyan); font-size:14px; margin:0 0 8px 0;">DeepSeekV4 &middot; Hermes Control Plane</h4>
               <p style="font-size:13px; color:var(--text-secondary); line-height:1.6; margin:0;">High-context reasoning, multi-step planning, code synthesis. Routed via a custom provider schema with confidence-aware hand-off to local fallbacks.</p>
             </div>
 
@@ -2649,8 +2649,8 @@
 
             <div style="padding:16px; background:rgba(204,102,102,0.05); border:1px solid rgba(204,102,102,0.3); border-left:3px solid var(--lcars-red); border-radius:8px;">
               <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:var(--lcars-red); margin-bottom:6px;">AUTONOMOUS AWAY TEAM</div>
-              <h4 style="color:var(--lcars-red); font-size:14px; margin:0 0 8px 0;">OpenClaw &middot; Grok 4.2 Reasoning</h4>
-              <p style="font-size:13px; color:var(--text-secondary); line-height:1.6; margin:0;">Discord-resident agent with a Grok &rarr; Perplexity sonar-pro &rarr; Gemini Flash-Lite fallback chain. Telemetry surfaces which engine answered, and why.</p>
+              <h4 style="color:var(--lcars-red); font-size:14px; margin:0 0 8px 0;">OpenClaw &middot; DeepSeekV4 Reasoning</h4>
+              <p style="font-size:13px; color:var(--text-secondary); line-height:1.6; margin:0;">Discord-resident agent with DeepSeekV4 &rarr; Perplexity sonar-pro &rarr; Gemini Flash-Lite fallback chain. Telemetry surfaces which engine answered, and why.</p>
             </div>
 
           </div>
@@ -2741,7 +2741,7 @@
                 <div class="route-detail-title" id="rd-title">Cloud Reasoning</div>
                 <div class="route-detail-purpose" id="rd-purpose">High-context reasoning, multi-step planning, and code synthesis. Hermes routes via a custom provider schema with confidence-aware hand-off to local fallbacks.</div>
                 <div class="route-detail-grid">
-                  <div class="route-detail-cell"><span class="k">Engine</span><span id="rd-engine">Grok 4.20/Think &middot; Hermes</span></div>
+                  <div class="route-detail-cell"><span class="k">Engine</span><span id="rd-engine">DeepSeekV4 &middot; Hermes</span></div>
                   <div class="route-detail-cell"><span class="k">Use case</span><span id="rd-usecase">Heavy reasoning &amp; planning</span></div>
                   <div class="route-detail-cell"><span class="k">Fallback</span><span id="rd-fallback">Edge &rarr; GPU specialist</span></div>
                   <div class="route-detail-cell"><span class="k">Policy</span><span id="rd-policy">Public-safe &middot; redacted artifacts</span></div>
@@ -2844,7 +2844,7 @@
       </div>
 
       <div class="glass-panel" style="border-left:3px solid var(--lcars-cyan);">
-        <p style="margin-bottom:14px; font-size:14px;">ACTIVATE NEMOTRON OMNI + GROK-SPEAK. Input text to simulate reasoning pipeline and trigger browser TTS output.</p>
+        <p style="margin-bottom:14px; font-size:14px;">ACTIVATE NEMOTRON OMNI + DEEPSEEK-SPEAK. Input text to simulate reasoning pipeline and trigger browser TTS output.</p>
         <div style="display:flex; gap:10px;">
             <input type="text" id="voice-input" placeholder="Enter text..." style="flex-grow:1; background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--lcars-cyan); padding:8px; font-family:'Share Tech Mono',monospace;">
             <button onclick="testVoicePipeline()" style="font-family:'Orbitron',monospace; background:var(--lcars-cyan); color:#000; border:none; padding:8px 20px; cursor:pointer; border-radius:4px;">TRANSMIT</button>
@@ -2922,7 +2922,7 @@
           <div style="padding:16px; background:rgba(102,255,153,0.05); border:1px solid rgba(102,255,153,0.25); border-left:3px solid #66FF99; border-radius:8px;">
             <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:#66FF99; margin-bottom:6px;">COMPLETE</div>
             <h3 style="color:var(--lcars-gold); font-size:14px; margin-bottom:8px;">HERMES PROVIDER REPAIR</h3>
-            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Invalid <code style="color:var(--lcars-teal); font-size:12px;">openai_compatible</code> provider removed. Hermes control plane now routes Grok 4.20/Think reasoning through a custom provider schema. Service active, no auth failures.</p>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Invalid <code style="color:var(--lcars-teal); font-size:12px;">openai_compatible</code> provider removed. Hermes control plane now routes DeepSeekV4 reasoning through a custom provider schema. Service active, no auth failures.</p>
           </div>
 
           <div style="padding:16px; background:rgba(102,255,153,0.05); border:1px solid rgba(102,255,153,0.25); border-left:3px solid #66FF99; border-radius:8px;">
@@ -2973,9 +2973,9 @@
           <div style="padding:20px; background:rgba(241,223,111,0.04); border:1px solid rgba(241,223,111,0.3); border-radius:10px; position:relative; overflow:hidden;">
             <div style="position:absolute; top:0; right:0; padding:4px 10px; background:rgba(102,255,153,0.15); color:#66FF99; font-family:'Orbitron',monospace; font-size:9px; letter-spacing:1.5px; border-bottom-left-radius:8px;">ACTIVE</div>
             <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:var(--lcars-gold); margin-bottom:6px;">TIER 1 &mdash; PRIMARY REASONING</div>
-            <h3 style="color:var(--text-primary); font-size:16px; margin-bottom:10px;">Grok 4.20/Think via Hermes</h3>
-            <div style="font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--lcars-cyan); margin-bottom:8px; word-break:break-all;">xAI public API endpoint</div>
-            <p style="font-size:13px; color:var(--text-secondary); line-height:1.65;">grok-4.20-reasoning via Hermes v0.12.0 (Zeus LXC .105) on the control plane. Default autonomous reasoning path for the agent fleet, OpenClaw Discord workflow, and high-cognition planning tasks.</p>
+            <h3 style="color:var(--text-primary); font-size:16px; margin-bottom:10px;">DeepSeekV4 via Hermes</h3>
+            <div style="font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--lcars-cyan); margin-bottom:8px; word-break:break-all;">DeepSeek API endpoint</div>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.65;">DeepSeekV4 via Hermes v0.12.0 (Zeus LXC .105) on the control plane. Default autonomous reasoning path for the agent fleet, OpenClaw Discord workflow, and high-cognition planning tasks.</p>
           </div>
 
           <!-- Tier 2: Local edge -->
@@ -3009,7 +3009,7 @@
 
         <div style="padding:14px 18px; background:rgba(102,204,204,0.04); border:1px solid rgba(102,204,204,0.2); border-radius:8px; font-size:14px; color:var(--text-secondary); line-height:1.7;">
           <strong style="color:var(--lcars-cyan);">Routing rule:</strong> primary inference does not get routed to ATLAS or CashioTUF by default &mdash; those are
-          local fallback / specialist endpoints. The fleet keeps high-reasoning work on the intended paid xAI key
+          local fallback / specialist endpoints. The fleet keeps high-reasoning work on the intended paid DeepSeek key
           instead of accidentally drifting onto local GGUF models.
         </div>
       </div>
@@ -3210,7 +3210,7 @@
             </tr>
             <tr>
               <td><strong>LLM fabric</strong></td>
-              <td>xAI primary &middot; ATLAS Ollama local &middot; CashioTUF LM Studio fallback</td>
+              <td>DeepSeek primary &middot; ATLAS Ollama local &middot; CashioTUF LM Studio fallback</td>
               <td class="highlight" style="color:var(--lcars-gold);">UPDATED</td>
             </tr>
             <tr>
@@ -3233,7 +3233,7 @@
             <li>ATLAS media metadata path &mdash; removed from Atlas-Storage-2</li>
             <li>ATLAS no-UPS gap &mdash; closed (node now on UPS)</li>
             <li>Policy telemetry primary disk pressure &mdash; downgraded from active to monitored healthy state</li>
-            <li>Hermes local LLM bridge as primary provider &mdash; xAI reasoning is the primary provider</li>
+            <li>Hermes local LLM bridge as primary provider &mdash; DeepSeek reasoning is the primary provider</li>
           </ul>
         </div>
       </div>
@@ -3276,12 +3276,12 @@
         <div class="glass-panel" style="border-left:3px solid var(--lcars-orange); margin-bottom:0;">
           <h3 style="color:var(--lcars-orange);">Hermes Agent &amp; MCP &mdash; Control Plane</h3>
           <p style="margin-bottom:14px; font-size:14px;">The Hermes repair was the most important control-plane
-            correction in v19.1. The agent now runs cleanly using the intended xAI key with all local fallbacks
+            correction in v19.1. The agent now runs cleanly using the intended DeepSeek key with all local fallbacks
             preserved.</p>
 
           <table class="capex-table" style="font-size:14px;">
             <tr><td><strong>Hermes binary</strong></td><td>Hermes Agent v0.10.0 &mdash; <span style="color:#66FF99;">VERIFIED</span></td></tr>
-            <tr><td><strong>Primary provider</strong></td><td>custom &rarr; xAI grok-4.20-reasoning &mdash; <span style="color:#66FF99;">ACTIVE</span></td></tr>
+            <tr><td><strong>Primary provider</strong></td><td>custom &rarr; DeepSeekV4 &mdash; <span style="color:#66FF99;">ACTIVE</span></td></tr>
             <tr><td><strong>Key handling</strong></td><td>offline-managed &mdash; <span style="color:#66FF99;">PRIVATE</span> &middot; never reproduced in public artifacts</td></tr>
             <tr><td><strong>Invalid provider</strong></td><td><code style="font-size:12px;">openai_compatible</code> removed &mdash; <span style="color:#66FF99;">RESOLVED</span></td></tr>
             <tr><td><strong>ATLAS fallback</strong></td><td>custom &rarr; ATLAS edge endpoint &mdash; <span style="color:#66FF99;">ACTIVE</span></td></tr>
@@ -3358,7 +3358,7 @@
             <div class="timeline-date">PHASE 2 — TACTICAL EXPANSION (FEB 2026)</div>
             <div class="timeline-title">OpenClaw Discord Bot &amp; GPU Migration</div>
             <div class="timeline-desc">CT 103 (OpenClaw) deployed as the fleet's first autonomous AI agent — a Discord
-              bot running xAI Grok with Google Gemini Flash-Lite fallback. GPU
+              bot running DeepSeekV4 with Google Gemini Flash-Lite fallback. GPU
               migration initiated: Ollama confirmed running on the GPU workstation's RTX 3080 with nomic-embed-text,
               Open WebUI
               responding on its web interface. Kali Linux AI deployment script created for automated pentesting.</div>
@@ -3379,7 +3379,7 @@
             <div class="timeline-desc">ATLAS (Mac Mini M4) commissioned as a clean edge AI &amp; distributed-storage node:
               media-service residue fully decoupled, UPS protection in place, Ollama v0.21.2_1 LaunchDaemon validated by chat completion from the Hermes control plane.
               CashioTUF GPU fallback corrected to LM Studio + google/gemma-4-e4b on RTX 3080 (not Ollama). Hermes provider repair complete &mdash;
-              invalid <em>openai_compatible</em> removed; Hermes now routes Grok 4.20/Think reasoning through a custom provider schema with ATLAS and CashioTUF fallbacks.
+              invalid <em>openai_compatible</em> removed; Hermes now routes DeepSeekV4 reasoning through a custom provider schema with ATLAS and CashioTUF fallbacks.
               Policy-aware DNS telemetry primary capped at a 720h query window, disk pressure resolved. Hermes&rarr;MCP native path verified clean &mdash;
               no legacy socat processes. Fleet sized at 11 active nodes, ~18TB storage. Operational modernization is
               intentionally sequenced into a June lane to keep the LLM paths stable through the upcoming DeepMind / GCP experimentation window.</div>
@@ -3430,10 +3430,10 @@
             style="position:absolute;top:0;left:0;width:4px;height:100%;background:var(--lcars-red);border-radius:4px 0 0 4px;">
           </div>
           <div class="crew-rank" style="color:var(--lcars-red);">TACTICAL OFFICER / SECURITY CHIEF</div>
-          <div class="crew-name">Grok (xAI)</div>
+          <div class="crew-name">DeepSeek</div>
           <div class="crew-role">Discord Bot Primary Brain &amp; Rapid Response</div>
-          <div class="crew-desc">Like Lieutenant Worf at Tactical, Grok handles real-time engagement through the
-            OpenClaw Discord channel. Grok 4.2 Reasoning is now the PRIMARY engine for OpenClaw — rapid-fire responses at maximum tactical velocity. Grok Pro engaged for complex multi-step reasoning.</div>
+          <div class="crew-desc">Like Lieutenant Worf at Tactical, DeepSeekV4 handles real-time engagement through the
+            OpenClaw Discord channel. DeepSeekV4 Reasoning is now the PRIMARY engine for OpenClaw — rapid-fire responses at maximum tactical velocity. DeepSeekV4 engaged for complex multi-step reasoning.</div>
         </div>
         <div class="crew-card">
           <div
@@ -3481,8 +3481,8 @@
           <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:var(--lcars-red);border-radius:4px 0 0 4px;"></div>
           <div class="crew-rank" style="color:var(--lcars-red);">AUTONOMOUS OPERATIONS / AWAY TEAM</div>
           <div class="crew-name">OpenClaw (Discord Bot)</div>
-          <div class="crew-role">Zero-Touch Autonomous Agent — Grok 4.2 Reasoning PRIMARY</div>
-          <div class="crew-desc">Operating in a dedicated bot container as an autonomous away team executing tasks via Discord. Engine chain updated: Grok 4.2 Reasoning is now PRIMARY (promoted from Grok 4.1 Fast), Perplexity sonar-pro as Fallback 1, Gemini Flash-Lite as Fallback 2.</div>
+          <div class="crew-role">Zero-Touch Autonomous Agent — DeepSeekV4 Reasoning PRIMARY</div>
+          <div class="crew-desc">Operating in a dedicated bot container as an autonomous away team executing tasks via Discord. Engine chain updated: DeepSeekV4 Reasoning is now PRIMARY (promoted from DeepSeekV3 Fast), Perplexity sonar-pro as Fallback 1, Gemini Flash-Lite as Fallback 2.</div>
         </div>
         <div class="crew-card">
           <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:var(--lcars-cyan);border-radius:4px 0 0 4px;"></div>
@@ -3560,7 +3560,7 @@
 
       <div class="glass-panel">
         <h3>Operational Capabilities &amp; Efficiency Gains</h3>
-        <p style="margin-bottom:14px;"><strong>n8n Task-Aware Routing (v19.1):</strong> Cloud reasoning (Grok 4.20/Think) carries the
+        <p style="margin-bottom:14px;"><strong>n8n Task-Aware Routing (v19.1):</strong> Cloud reasoning (DeepSeekV4) carries the
           high-cognition workload while ATLAS Mac Mini M4 .78 (Ollama) handles LAN-local inference and embeddings, and
           CashioTUF (LM Studio + Gemma on RTX 3080) stands by as a GPU fallback. Each tier has a single, clear endpoint
           and role &mdash; no provider syntax drift, no accidental fallback to local GGUF when paid reasoning was intended.</p>
@@ -3688,7 +3688,7 @@
                 <td class="highlight">$19.99/mo</td>
               </tr>
               <tr>
-                <td>xAI Grok Pro 4.2</td>
+                <td>DeepSeekV4</td>
                 <td class="highlight">$16/mo</td>
               </tr>
               <tr>
@@ -3728,7 +3728,7 @@
         <h3>Network Topology &mdash; v19.1 Fleet Architecture</h3>
         <p style="margin-bottom:16px;">The v19.1 working topology: Apollo / Zeus / Athena Proxmox cluster, consolidated dedicated media
           stack on Dionysus + Hermes secondary, ATLAS Mac Mini M4 .78 as the Ollama edge AI &amp; Tahoe-LAFS storage node,
-          CashioTUF as the LM Studio / Gemma GPU fallback, and Grok 4.20/Think as the primary reasoning provider via
+          CashioTUF as the LM Studio / Gemma GPU fallback, and DeepSeekV4 as the primary reasoning provider via
           Hermes (native MCP control plane). Drag nodes to explore. Hover for telemetry.</p>
         <div id="vis-network-diagram" class="vis-network-container pulse"></div>
       </div>
@@ -3806,7 +3806,7 @@
             </tr>
             <tr>
               <td class="highlight" style="color:#66FF99;">Hermes Provider Repair &#x2705;</td>
-              <td>COMPLETED &mdash; invalid <em>openai_compatible</em> removed; Grok 4.20/Think reasoning routed via custom provider; ATLAS + CashioTUF fallbacks active</td>
+              <td>COMPLETED &mdash; invalid <em>openai_compatible</em> removed; DeepSeekV4 reasoning routed via custom provider; ATLAS + CashioTUF fallbacks active</td>
               <td>April 2026</td>
               <td>v19.1 baseline</td>
             </tr>
@@ -3970,7 +3970,7 @@
             <ul style="padding-left:18px; font-size:13px; color:var(--text-secondary); line-height:1.7;">
               <li>Use v19.1 baseline in Antigravity / DeepMind / GCP prompts</li>
               <li>Benchmark ATLAS Ollama models (Gemma-4 26B MoE MLX)</li>
-              <li>Hermes stability soak vs. xAI primary with ATLAS / CashioTUF fallbacks</li>
+              <li>Hermes stability soak vs. DeepSeek primary with ATLAS / CashioTUF fallbacks</li>
               <li>Exercise CashioTUF LM Studio fallback during a planned ATLAS pause</li>
               <li>Spend GCP / Vertex / DeepMind credits while topology is stable</li>
               <li>Codify 720h telemetry retention &amp; ATLAS service validation in Ansible playbooks</li>
@@ -4882,7 +4882,7 @@
           tag: 'TIER 1 · PRIMARY REASONING',
           title: 'Cloud Reasoning',
           purpose: 'High-context reasoning, multi-step planning, code synthesis. Hermes routes via a custom provider schema with confidence-aware hand-off to local fallbacks.',
-          engine: 'Grok 4.20/Think · Hermes',
+          engine: 'DeepSeekV4 · Hermes',
           usecase: 'Heavy reasoning & planning',
           fallback: 'Edge → GPU specialist',
           policy: 'Public-safe · redacted artifacts',
@@ -5149,7 +5149,7 @@
         { id: 'DIONYSUS', label: '\u{1F4FA} DIONYSUS\nUnraid 7.2.4\nMedia PRIMARY / NVENC', shape: 'box', color: { background: '#4a1a3a', border: C.lavender }, font: { color: C.lavender, size: 13, face: 'Orbitron' } },
         { id: 'TUF',      label: '\u{1F4A1} CASHIOTUF\nLM Studio 0.4.12 — RTX 3080\nGemma fallback',     shape: 'box', color: { background: '#3a3a1a', border: C.gold },    font: { color: C.gold,    size: 13, face: 'Orbitron' } },
         { id: 'ATLAS',    label: '\u{1F34F} ATLAS\nMac Mini M4 (UPS)\nOllama edge + Tahoe-LAFS',          shape: 'box', color: { background: '#1a3a3a', border: C.cyan },    font: { color: C.cyan,    size: 13, face: 'Orbitron' } },
-        { id: 'XAI',      label: '\u{1F9E0} Grok 4.20/Think\nReasoning Primary\nxAI public API',                   shape: 'box', color: { background: '#0d2233', border: C.cyan },   font: { color: C.cyan,    size: 12, face: 'Orbitron' } },
+        { id: 'DEEPSEEK',      label: '\u{1F9E0} DeepSeekV4\nReasoning Primary\nDeepSeek API',                   shape: 'box', color: { background: '#0d2233', border: C.cyan },   font: { color: C.cyan,    size: 12, face: 'Orbitron' } },
         { id: 'NAS',      label: '\u{1F4BE} GENESIS NAS\nWD EX2 Ultra\nNFS Storage',                          shape: 'box', color: { background: '#2a1a3a', border: C.lavender }, font: { color: C.lavender, size: 13, face: 'Orbitron' } },
         { id: 'ATHENA',   label: '\u{1F967} ATHENA (RPi4)\nRPi OS Lite\nGeneral Purpose Node',                                    shape: 'box', color: { background: C.dark,   border: C.blue },    font: { color: C.blue,    size: 13, face: 'Orbitron' } },
         { id: 'GCP',      label: '\u2601\uFE0F GCP CLOUD\nCloud Run / Vertex AI\nMCP Gateway (Bearer)\nSprint Runway',           shape: 'box', color: { background: '#1a2a1a', border: C.green },   font: { color: C.green,   size: 13, face: 'Orbitron' } }
@@ -5167,7 +5167,7 @@
         { from: 'RTR',    to: 'ATLAS',    color: { color: C.cyan },     width: 2 },
         { from: 'RTR',    to: 'ATHENA',   color: { color: C.blue },     width: 2 },
         { from: 'RTR',    to: 'GCP',      color: { color: C.green },    width: 1, dashes: [8,4] },
-        { from: 'RTR',    to: 'XAI',      color: { color: C.cyan },     width: 1, dashes: [8,4] },
+        { from: 'RTR',    to: 'DEEPSEEK',      color: { color: C.cyan },     width: 1, dashes: [8,4] },
         // Apollo children
         { from: 'APOLLO', to: 'A_CT101',  color: { color: C.cyan },   dashes: true },
         { from: 'APOLLO', to: 'A_CT108',  color: { color: C.cyan },   dashes: true },
@@ -5190,7 +5190,7 @@
         { from: 'NAS',     to: 'DIONYSUS',label: 'NFS Media',      font: { color: C.lavender,size: 10, background: C.bg }, color: { color: C.lavender},arrows: 'to', dashes: true },
         { from: 'ATLAS',   to: 'Z_CT106', label: 'Ollama edge', font:{ color: C.cyan, size: 10, background: C.bg }, color: { color: C.cyan }, arrows: 'to', dashes: true },
         { from: 'TUF',     to: 'Z_CT106', label: 'LM Studio fallback',   font:{ color: C.gold, size: 10, background: C.bg }, color: { color: C.gold }, arrows: 'to', dashes: true },
-        { from: 'XAI',     to: 'Z_CT106', label: 'xAI primary',       font:{ color: C.cyan, size: 10, background: C.bg }, color: { color: C.cyan }, arrows: 'to', dashes: true },
+        { from: 'DEEPSEEK',     to: 'Z_CT106', label: 'DeepSeek primary',       font:{ color: C.cyan, size: 10, background: C.bg }, color: { color: C.cyan }, arrows: 'to', dashes: true },
         { from: 'Z_CT104', to: 'ZEUS',    label: 'SIEM Monitor',   font: { color: C.red,     size: 10, background: C.bg }, color: { color: C.red    }, arrows: 'to', dashes: true },
         // Cluster link
         { from: 'APOLLO',  to: 'ZEUS',    label: 'Cluster Link',   font: { color: C.cyan,    size: 10, background: C.bg }, color: { color: C.cyan   }, width: 2 }
