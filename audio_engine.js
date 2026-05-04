@@ -12,7 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const muteBtn = document.createElement('button');
         muteBtn.id = 'mute-btn';
         muteBtn.style.cssText = "font-family: 'Orbitron', monospace; font-size: 10px; font-weight: 800; letter-spacing: 1.5px; background: rgba(10, 10, 18, 0.85); color: var(--lcars-gold); border: 1px solid var(--lcars-gold); border-radius: 20px; padding: 4px 10px; cursor: pointer; transition: all 0.3s; text-transform: uppercase; margin-right: 10px;";
-        muteBtn.innerHTML = isMuted ? '&#128263; MUTE ON' : '&#128266; AUDIO ON';
+        // SECURITY: Prevent XSS by avoiding innerHTML
+        muteBtn.textContent = isMuted ? '🔇 MUTE ON' : '🔈 AUDIO ON';
         muteBtn.onclick = toggleMute;
         headerBar.insertBefore(muteBtn, headerBar.firstChild);
     }
@@ -23,7 +24,8 @@ function toggleMute(e) {
     isMuted = !isMuted;
     localStorage.setItem('lcars_mute', isMuted);
     const btn = document.getElementById('mute-btn');
-    if (btn) btn.innerHTML = isMuted ? '&#128263; MUTE ON' : '&#128266; AUDIO ON';
+    // SECURITY: Prevent XSS by avoiding innerHTML
+    if (btn) btn.textContent = isMuted ? '🔇 MUTE ON' : '🔈 AUDIO ON';
 
     if (isMuted && audioCtx) {
         if (ambientOscL) ambientOscL.stop();

@@ -2860,7 +2860,11 @@
 
             const taskName = btn.parentElement.querySelector('strong').textContent;
             const log = document.getElementById('telemetry-log');
-            log.innerHTML += `<br>> Executing ${taskName}...`;
+
+            // SECURITY: Prevent XSS by avoiding innerHTML
+            log.appendChild(document.createElement('br'));
+            log.appendChild(document.createTextNode(`> Executing ${taskName}...`));
+
             log.scrollTop = log.scrollHeight;
 
             if(typeof playLCARSSound !== 'undefined') playLCARSSound('alert');
@@ -2868,7 +2872,11 @@
             setTimeout(() => {
                 btn.textContent = "COMPLETED";
                 btn.style.background = "var(--lcars-green)";
-                log.innerHTML += `<br>> ${taskName} complete.`;
+
+                // SECURITY: Prevent XSS by avoiding innerHTML
+                log.appendChild(document.createElement('br'));
+                log.appendChild(document.createTextNode(`> ${taskName} complete.`));
+
                 log.scrollTop = log.scrollHeight;
                 if(typeof playLCARSSound !== 'undefined') playLCARSSound('confirm');
             }, 2000);
@@ -4912,7 +4920,8 @@
         applyTone(rd.latF, r.latTone);
         applyTone(rd.sovF, r.sovTone);
         if (rd.signals) {
-          rd.signals.innerHTML = '';
+          // SECURITY: Prevent XSS by avoiding innerHTML
+          rd.signals.textContent = '';
           r.signals.forEach(s => {
             const span = document.createElement('span');
             span.className = 'route-signal';
