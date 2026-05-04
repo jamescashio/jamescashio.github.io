@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Lab Approval Preview — v19.1 LCARS Effects</title>
+  <style>
+    html,body{margin:0;height:100%;background:#050509;color:#f2f4ff;font-family:system-ui,sans-serif;overflow:hidden}
+    .toolbar{height:46px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 14px;background:#080a14;border-bottom:2px solid #ff9500;box-shadow:0 0 24px rgba(255,149,0,.25);font:700 12px/1 monospace;letter-spacing:1px;text-transform:uppercase;position:relative;z-index:2}
+    .toolbar b{color:#ffcc00}.toolbar span{color:#00f9ff}.toolbar a{color:#ffcc00;text-decoration:none;border:1px solid rgba(255,204,0,.35);padding:7px 10px;border-radius:999px;background:rgba(0,0,0,.28)}
+    iframe{display:block;width:100%;height:calc(100vh - 46px);border:0;background:#050509}
+  </style>
+</head>
+<body>
+  <div class="toolbar"><div><b>Approval Preview:</b> <span>lab.html + v19.1 Defiant LCARS effects</span> • current lab content preserved • silent mode</div><a href="../lab.html" target="_blank">Open raw branch lab</a></div>
+  <iframe id="site" src="../lab.html"></iframe>
+  <script>
+    localStorage.setItem('lcars_mute','true');
+    const frame = document.getElementById('site');
+    frame.addEventListener('load', () => {
+      try {
+        const doc = frame.contentDocument;
+        const win = frame.contentWindow;
+        win.localStorage.setItem('lcars_mute','true');
+        const link = doc.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'v19-effects.css';
+        doc.head.appendChild(link);
+        const script = doc.createElement('script');
+        script.src = 'v19-effects.js';
+        script.defer = true;
+        doc.body.appendChild(script);
+        const mute = doc.getElementById('mute-btn');
+        if(mute) mute.style.display='none';
+        win.playLCARSSound = function(){};
+        win.startAmbientHum = function(){};
+        win.initAudio = function(){};
+      } catch(e) {
+        console.warn('Preview injection blocked:', e);
+      }
+    });
+  </script>
+</body>
+</html>
