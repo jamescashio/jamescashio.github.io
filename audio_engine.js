@@ -186,9 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const closestBtn = e.target.closest('.lcars-sidebar-seg, .tab-btn, a, button, .route-chip');
         if(closestBtn) {
             if(closestBtn.id === 'picard-btn' || closestBtn.id === 'mute-btn') return;
-            // Prevent double-audio if the button itself calls playLCARSSound inline
-            if(closestBtn.getAttribute('onclick') && closestBtn.getAttribute('onclick').includes('playLCARSSound')) return;
-
             const rect = closestBtn.getBoundingClientRect();
             const x = (rect.left + rect.width / 2) / window.innerWidth;
             const y = (rect.top + rect.height / 2) / window.innerHeight;
