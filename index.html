@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZEUSAPOLLO v20.0 • Doug Cashio • Enterprise AI & Cybersecurity</title>
+<title>ZEUSAPOLLO v20.1 • Doug Cashio • Enterprise AI & Cybersecurity</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,200;0,300;0,400;0,600;0,700;1,300&family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -1096,7 +1096,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
       <div class="status-dot"></div>
       <div>
         <div class="hud-chip__label">Stardate</div>
-        <div class="hud-chip__value" id="stardate">2026.124</div>
+        <div class="hud-chip__value" id="stardate">2026.125</div>
       </div>
     </div>
     <div class="hud-chip">
@@ -1137,9 +1137,9 @@ input[type=text]::placeholder { color: var(--text-dim); }
 
   <div class="hero-eyebrow">
     <div class="status-dot"></div>
-    <span>v20.0 SOVEREIGN BASELINE</span>
+    <span>v20.1 SOVEREIGN BASELINE</span>
     <span style="color:var(--text-dim)">•</span>
-    <span>VERIFIED 05-04-2026</span>
+    <span>VERIFIED 05-05-2026</span>
   </div>
 
   <h1 class="hero-name glitch holo" data-text="DOUG CASHIO">DOUG CASHIO</h1>
@@ -1181,7 +1181,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
       Access Portfolio <i class="fas fa-arrow-right"></i>
     </button>
     <button class="btn btn--cyan btn--lg" onclick="scrollTo('lab')">
-      ZeusApollo Lab v20.0
+      ZeusApollo Lab v20.1
     </button>
     <button class="btn btn--purple btn--lg" onclick="scrollTo('topology')">
       <i class="fas fa-network-wired"></i> Topology
@@ -1220,7 +1220,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
 <section id="portfolio" class="section reveal">
   <div class="container">
 
-    <div class="section-label mb-4" style="color:var(--accent)">Mission Profile <span style="flex:none;color:var(--text-dim)">• Career Arc v20.0</span></div>
+    <div class="section-label mb-4" style="color:var(--accent)">Mission Profile <span style="flex:none;color:var(--text-dim)">• Career Arc v20.1</span></div>
     <div class="section-title section-title--xl mb-8" style="color:white">WHAT I BUILD</div>
 
     <div class="grid-12 gap-6">
@@ -1537,7 +1537,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
       <div>
         <div style="display:inline-block;padding:4px 12px;background:var(--accent);color:#0a0a0f;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:12px;">PRIMARY MISSION</div>
         <div class="section-title section-title--xl" style="color:white">ZEUSAPOLLO <span style="color:var(--accent)">v20.1</span></div>
-        <div class="mono fs-xs dim mt-4" style="letter-spacing:2px">SOVEREIGN INFRASTRUCTURE ASSESSMENT • 05-04-2026</div>
+        <div class="mono fs-xs dim mt-4" style="letter-spacing:2px">SOVEREIGN INFRASTRUCTURE ASSESSMENT • 05-05-2026</div>
       </div>
       <div style="text-align:right;">
         <div class="mono fs-xs dim" style="margin-bottom:4px">SOURCE: PROXMOX VE API + ADGUARD DHCP + PROJECT FILES</div>
@@ -1725,7 +1725,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
         <div class="flex justify-between items-start mb-5 flex-wrap gap-3">
           <div>
             <div class="section-label" style="color:var(--cyan)">🎤 Voice &amp; Agent Pipeline</div>
-            <div class="mono fs-xs dim mt-4">Nemotron Omni → grok-speak (Eve) • Validated 05-01-2026</div>
+            <div class="mono fs-xs dim mt-4">Nemotron Omni → grok-speak (Eve) • Validated 05-05-2026</div>
           </div>
           <span class="pill pill--green">$0 OPENROUTER FREE TIER</span>
         </div>
@@ -1869,7 +1869,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
     <a href="mailto:doug@cashio.us">doug@cashio.us</a>
     <a href="#" onclick="window.location.reload()">Reload Telemetry</a>
   </div>
-  <div class="footer-copy">ZEUSAPOLLO v20.0 • DOUG CASHIO • doug@cashio.us • SOVEREIGN INFRASTRUCTURE • 2026</div>
+  <div class="footer-copy">ZEUSAPOLLO v20.1 • DOUG CASHIO • doug@cashio.us • SOVEREIGN INFRASTRUCTURE • 2026</div>
 </footer>
 
 <!-- NODE MODAL -->
@@ -2375,7 +2375,7 @@ function updateStardate() {
 // COUNTDOWNS
 // ══════════════════════════════════════════════════
 function updateCountdowns() {
-  const gT = new Date('2026-05-05T00:00:00').getTime();
+  const gT = new Date('2026-06-04T00:00:00').getTime();
   const pT = new Date('2026-05-13T00:00:00').getTime();
   function tick() {
     const now = Date.now();
@@ -2611,7 +2611,7 @@ window.addEventListener('load', () => {
   const btn = document.getElementById('sound-btn');
   if (btn) btn.innerHTML = window._soundEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
 
-  setTimeout(() => showToast('LCARS v20.0 DEFIANT — SPATIAL AUDIO ACTIVE — ALL SYSTEMS NOMINAL', 'var(--accent)'), 1600);
+  setTimeout(() => showToast('LCARS v20.1 DEFIANT — SPATIAL AUDIO ACTIVE — ALL SYSTEMS NOMINAL', 'var(--accent)'), 1600);
 });
 
 window.ZEUSAPOLLO = { engageWarp, triggerRedAlert, simulateRoute, playSound, toggleSound };
@@ -2624,7 +2624,7 @@ window.ZEUSAPOLLO = { engageWarp, triggerRedAlert, simulateRoute, playSound, tog
     <rect x="0" y="794" width="1200" height="6" fill="#ff9500" opacity="0.5"/>
     <text x="600" y="360" font-family="monospace" font-size="100" font-weight="900" fill="#00f9ff" text-anchor="middle" opacity="0.9">DOUG CASHIO</text>
     <text x="600" y="420" font-family="monospace" font-size="24" fill="#ff9500" text-anchor="middle" letter-spacing="10">ENTERPRISE AI • CYBERSECURITY</text>
-    <text x="600" y="460" font-family="monospace" font-size="14" fill="#444" text-anchor="middle" letter-spacing="4">ZEUSAPOLLO v20.0 • SOVEREIGN INFRASTRUCTURE</text>
+    <text x="600" y="460" font-family="monospace" font-size="14" fill="#444" text-anchor="middle" letter-spacing="4">ZEUSAPOLLO v20.1 • SOVEREIGN INFRASTRUCTURE</text>
     <circle cx="280" cy="620" r="16" fill="none" stroke="#00ff9f" stroke-width="2"/>
     <circle cx="420" cy="620" r="16" fill="none" stroke="#00ff9f" stroke-width="2"/>
     <circle cx="560" cy="600" r="20" fill="none" stroke="#cc00ff" stroke-width="2.5"/>
