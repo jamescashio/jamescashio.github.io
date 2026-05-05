@@ -1115,20 +1115,28 @@ input[type=text]::placeholder { color: var(--text-dim); }
   <div class="hero-badges">
     <a href="https://www.credly.com/users/james-cashio/badges" target="_blank"
        class="hero-badge" style="border-color:var(--accent);color:var(--accent)">
-      <i class="fas fa-certificate"></i> Credly Badges
+      <i class="fas fa-certificate"></i> Cred Badges
     </a>
-    <span class="hero-badge" style="border-color:var(--cyan);color:var(--cyan)">
+    <a href="#"
+       class="hero-badge" style="border-color:var(--cyan);color:var(--cyan)"
+       onclick="event.preventDefault();showToast('<strong>3.5 Years LLM Ops</strong> — Since early 2023. DeepSeek, Gemini, Claude, Grok, Mistral, Llama.');playSound('confirm',0.5)">
       <i class="fas fa-brain"></i> 3.5yr LLM Ops
-    </span>
-    <span class="hero-badge" style="border-color:var(--purple);color:var(--purple)">
+    </a>
+    <a href="#"
+       class="hero-badge" style="border-color:var(--purple);color:var(--purple)"
+       onclick="event.preventDefault();showToast('<strong>11-Node Fleet</strong> — Apollo+Zeus dual hypervisors, PBS, Atlas M4, Dionysus Unraid, Kali, 5 LXC service nodes.');playSound('confirm',0.5)">
       <i class="fas fa-server"></i> 11-Node Fleet
-    </span>
-    <span class="hero-badge" style="border-color:var(--green);color:var(--green)">
+    </a>
+    <a href="#"
+       class="hero-badge" style="border-color:var(--green);color:var(--green)"
+       onclick="event.preventDefault();showToast('<strong>Zero-Trust</strong> — Network segmentation, VLAN isolation, mTLS between all MCP bridges, no flat fallback.');playSound('confirm',0.5)">
       <i class="fas fa-shield-alt"></i> Zero-Trust
-    </span>
-    <span class="hero-badge" style="border-color:var(--amber);color:var(--amber)">
+    </a>
+    <a href="#"
+       class="hero-badge" style="border-color:var(--amber);color:var(--amber)"
+       onclick="event.preventDefault();showToast('<strong>Mac Mini M4</strong> — 24GB unified memory, Gemma-4 26B MoE via MLX, primary Omnius sovereign LLM node.');playSound('confirm',0.5)">
       <i class="fas fa-microchip"></i> Mac Mini M4
-    </span>
+    </a>
   </div>
 
   <div class="hero-cta">
@@ -1144,23 +1152,23 @@ input[type=text]::placeholder { color: var(--text-dim); }
   </div>
 
   <div class="hero-stats">
-    <div class="hero-stat">
+    <div class="hero-stat" onclick="scrollTo('portfolio');playSound('press',0.5)" style="cursor:pointer">
       <div class="hero-stat__num accent" id="stat-years">3.5</div>
       <div class="hero-stat__label">Years LLM Ops</div>
     </div>
-    <div class="hero-stat">
+    <div class="hero-stat" onclick="scrollTo('topology');playSound('press',0.5)" style="cursor:pointer">
       <div class="hero-stat__num" style="color:var(--cyan)" id="stat-nodes">11</div>
       <div class="hero-stat__label">Fleet Nodes</div>
     </div>
-    <div class="hero-stat">
+    <div class="hero-stat" onclick="showToast('<strong>LLM Subscriptions</strong> — DeepSeek, Google AI, xAI/Grok, Perplexity, OpenAI, Anthropic, Mistral, Meta, Cohere, Replicate.');playSound('confirm',0.5)" style="cursor:pointer">
       <div class="hero-stat__num" style="color:var(--amber)" id="stat-llm">10</div>
       <div class="hero-stat__label">LLM Subscriptions</div>
     </div>
-    <div class="hero-stat">
+    <div class="hero-stat" onclick="scrollTo('career');playSound('press',0.5)" style="cursor:pointer">
       <div class="hero-stat__num" style="color:var(--green)" id="stat-exp">15+</div>
       <div class="hero-stat__label">Yrs Enterprise</div>
     </div>
-    <div class="hero-stat">
+    <div class="hero-stat" onclick="showToast('<strong>Knowledge Graph</strong> — 14 triples stored in Hermes MemPalace. Sovereign, local, always available.');playSound('confirm',0.5)" style="cursor:pointer">
       <div class="hero-stat__num" style="color:var(--purple)" id="stat-kg">14</div>
       <div class="hero-stat__label">KG Triples</div>
     </div>
@@ -1817,11 +1825,12 @@ input[type=text]::placeholder { color: var(--text-dim); }
 <footer id="footer">
   <div class="footer-links">
     <a href="https://www.credly.com/users/james-cashio/badges" target="_blank">Credly Badges</a>
-    <a href="https://github.com" target="_blank">GitHub</a>
-    <a href="https://linkedin.com" target="_blank">LinkedIn</a>
+    <a href="https://github.com/jamescashio" target="_blank">GitHub</a>
+    <a href="https://linkedin.com/in/doug-cashio" target="_blank">LinkedIn</a>
+    <a href="mailto:doug@cashio.us">doug@cashio.us</a>
     <a href="#" onclick="window.location.reload()">Reload Telemetry</a>
   </div>
-  <div class="footer-copy">ZEUSAPOLLO v19.1 • DOUG CASHIO • SOVEREIGN INFRASTRUCTURE • 2026</div>
+  <div class="footer-copy">ZEUSAPOLLO v19.2 • DOUG CASHIO • doug@cashio.us • SOVEREIGN INFRASTRUCTURE • 2026</div>
 </footer>
 
 <!-- NODE MODAL -->
