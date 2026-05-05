@@ -1502,7 +1502,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
     <div class="flex justify-between items-start mb-8 flex-wrap gap-4">
       <div>
         <div style="display:inline-block;padding:4px 12px;background:var(--accent);color:#0a0a0f;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:12px;">PRIMARY MISSION</div>
-        <div class="section-title section-title--xl" style="color:white">ZEUSAPOLLO <span style="color:var(--accent)">v20.0</span></div>
+        <div class="section-title section-title--xl" style="color:white">ZEUSAPOLLO <span style="color:var(--accent)">v20.1</span></div>
         <div class="mono fs-xs dim mt-4" style="letter-spacing:2px">SOVEREIGN INFRASTRUCTURE ASSESSMENT • 05-04-2026</div>
       </div>
       <div style="text-align:right;">
@@ -1640,20 +1640,12 @@ input[type=text]::placeholder { color: var(--text-dim); }
       </div>
     </div>
 
-    <!-- LLM ROUTING + CAPABILITIES LAPSE -->
+    <!-- LLM ROUTING (left) + VOICE PIPELINE (right) -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
-      <!-- Routing table -->
-      <div style="grid-column:1/2">
-        <div class="panel panel--accent" style="padding:24px;" id="lab-routing">
-          <div class="flex justify-between items-center mb-6 flex-wrap gap-3">
-            <div>
-              <div class="section-label" style="color:var(--accent)">Task-Aware LLM Routing</div>
-    <!-- LLM ROUTING (full width) -->
-    <div style="margin-bottom:20px;">
       <div class="panel panel--accent" style="padding:24px;" id="lab-routing">
         <div class="flex justify-between items-center mb-6 flex-wrap gap-3">
           <div>
-            <div class="section-label" style="color:var(--accent)">Task-Aware LLM Routing</div>
+            <div class="section-label" style="color:var(--accent)">⚡ Task-Aware LLM Routing</div>
             <div class="mono fs-xs dim mt-4">n8n • No flat fallback</div>
           </div>
           <button class="btn btn--sm" onclick="simulateRoute()">Simulate Route</button>
@@ -1683,10 +1675,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
           DeepSeekv4 is retained only when cost-per-token is a binding constraint.
         </div>
       </div>
-    </div>
 
-    <!-- VOICE & AGENT PIPELINE (full width) -->
-    <div style="margin-bottom:20px;">
       <div class="panel panel--cyan" style="padding:24px;">
         <div class="flex justify-between items-start mb-5 flex-wrap gap-3">
           <div>
@@ -1760,7 +1749,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
     <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;">
       <div>
         <div class="panel" style="padding:24px;">
-          <div class="section-label mb-6" style="color:var(--accent)">📊 Full Node Inventory — v20.0 Verified</div>
+          <div class="section-label mb-6" style="color:var(--accent)">📊 Full Node Inventory — v20.1 Verified</div>
           <div class="overflow-x">
             <table>
               <thead>
@@ -2211,6 +2200,7 @@ function initTopology() {
     { id:'genesis',   label:'GENESIS',  sub:'WD NAS',           x:.82, y:.72, col:'#00ff9f', size:14, desc:'2-Bay WD NAS — SMB shares, backups, docs | 192.168.1.149' },
     { id:'pbs',       label:'PBS',      sub:'BACKUPS',          x:.08, y:.90, col:'#00f9ff', size:13, desc:'Proxmox Backup Server — Apollo CT-300' },
     { id:'cashiotuf', label:'CASHIOTUF',sub:'RTX 3080',         x:.82, y:.90, col:'#ff0033', size:13, desc:'Fallback LLM host — Gemma-4-e4b via LM Studio' },
+    { id:'athena',    label:'ATHENA',   sub:'RASPBERRY PI 4',  x:.92, y:.65, col:'#00ff9f', size:12, desc:'Edge node — Pi-hole DNS, Tailscale subnet router, always-on' },
   ];
 
   const edges = [
@@ -2221,6 +2211,7 @@ function initTopology() {
     ['n8n','atlas'],['hermes','n8n'],['tools','atlas'],
     ['atlas','cashiotuf'],
     ['apollo','zeus'],['genesis','zeus'],['genesis','apollo'],
+    ['athena','internet'],['athena','zeus'],
   ];
 
   let hovered = null;
@@ -2373,24 +2364,13 @@ function simulateRoute() {
   playSound('confirm', 0.5);
 }
 
-function executeBurn(btn, mission) {
-  const orig = btn.textContent;
-  btn.textContent = '⟳ BURNING…'; btn.disabled = true;
-  playSound('alert', 0.5);
-  setTimeout(() => {
-    btn.textContent = '✓ DONE';
-    btn.style.background='var(--green)'; btn.style.color='#000'; btn.style.borderColor='var(--green)';
-    showToast(`<strong>${mission}</strong> — burn complete. Archived to Knowledge Graph.`, '#00ff9f');
-    playSound('success', 0.5);
-    setTimeout(()=>{ btn.textContent=orig; btn.style.background=''; btn.style.color=''; btn.style.borderColor=''; btn.disabled=false; }, 3000);
-  }, 1400);
-}
-
+// ══════════════════════════════════════════════════
+// INTERACTIONS
+// ══════════════════════════════════════════════════
 function runVoice() {
   const inp = document.getElementById('voice-input'), out = document.getElementById('voice-out');
   const text = inp.value.trim() || 'Test transmission. Sovereign cluster stable at Warp 11.';
-  out.style.display='block';
-  out.textContent = 'NEMOTRON: Transcribing & reasoning…';
+  out.style.display = 'block';
   playSound('alert', 0.5);
   setTimeout(() => {
     out.innerHTML = `<span style="color:var(--text-dim)">NEMOTRON:</span> "${text}"<br><span style="color:var(--green)">→ Reasoning complete. Confidence 94%.</span><br><br><span style="color:var(--text-dim)">GROK-SPEAK (Eve):</span> <em>"Acknowledged, Admiral. All systems nominal."</em>`;
