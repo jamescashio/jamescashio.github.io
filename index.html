@@ -273,7 +273,9 @@ scrollbar-color: var(--accent) transparent;
   font-weight: 600;
   border: 1px solid;
 }
-.pill--green  { border-color: var(--green);  color: var(--green);  background: rgba(0,255,159,0.08); }
+.pill--green  { border-color: var(--green);  color: var(--green);  background: rgba(0,255,159,0.08); box-shadow: 0 0 8px rgba(0,255,159,0.06); }
+.pill--green.active-pulse { animation: pulse-pill 2s ease-in-out infinite; }
+@keyframes pulse-pill { 0%,100%{box-shadow:0 0 8px rgba(0,255,159,0.06)} 50%{box-shadow:0 0 16px rgba(0,255,159,0.2)} }
 .pill--amber  { border-color: var(--amber);  color: var(--amber);  background: rgba(255,204,0,0.08); }
 .pill--red    { border-color: var(--red);    color: var(--red);    background: rgba(255,0,51,0.08); }
 .pill--cyan   { border-color: var(--cyan);   color: var(--cyan);   background: rgba(0,249,255,0.08); }
@@ -285,12 +287,14 @@ scrollbar-color: var(--accent) transparent;
    SECTION HEADERS
 ═══════════════════════════════════════════════ */
 .section-label {
-  font-family: var(--font-mono);
-  font-size: 11px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
   letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--text-dim);
-  display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: center; gap: 16px;
+  text-shadow: 0 0 20px currentColor;
 }
 .section-label::after {
   content: '';
@@ -562,20 +566,21 @@ scrollbar-color: var(--accent) transparent;
 .node-card__tele {
   height: 2px;
   margin-top: 12px;
-  border-radius: 1px;
-  background: linear-gradient(90deg, var(--node-color, var(--accent)), transparent);
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--node-color, var(--accent)) 60%, transparent);
   position: relative;
   overflow: hidden;
+  box-shadow: 0 0 6px var(--node-color, var(--accent));
 }
 .node-card__tele::after {
   content: '';
-  position: absolute; top: 0; left: -50%;
-  width: 50%; height: 100%;
-  background: rgba(255,255,255,0.6);
-  animation: tele-flow 2s linear infinite;
+  position: absolute; top: 0; left: -40%;
+  width: 40%; height: 100%;
+  background: rgba(255,255,255,0.7);
+  animation: tele-flow 1.8s ease-in-out infinite;
 }
 @keyframes tele-flow { to { left: 150%; } }
-.node-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+.node-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 14px; }
 
 /* ═══════════════════════════════════════════════
    ROUTE TABLE
@@ -586,10 +591,23 @@ scrollbar-color: var(--accent) transparent;
   background: var(--glass);
   border-radius: var(--radius);
   border-left: 3px solid;
-  transition: all 0.2s;
+  transition: all 0.25s cubic-bezier(0.2,0.9,0.3,1.1);
   margin-bottom: 8px;
+  position: relative;
 }
-.route-row:hover { background: rgba(255,255,255,0.05); transform: translateX(4px); }
+.route-row:hover {
+  background: rgba(255,255,255,0.06);
+  transform: translateX(6px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.route-row::after {
+  content: '';
+  position: absolute; top: 0; right: 0; bottom: 0; width: 1px;
+  background: linear-gradient(180deg, transparent, currentColor 50%, transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.route-row:hover::after { opacity: 0.2; }
 .route-row__class {
   font-family: var(--font-mono);
   font-size: 9px;
@@ -609,11 +627,27 @@ scrollbar-color: var(--accent) transparent;
   background: var(--glass);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius);
-  padding: 16px;
+  padding: 18px 14px 16px;
   text-align: center;
-  transition: all 0.2s;
+  transition: all 0.25s cubic-bezier(0.2,0.9,0.3,1.1);
+  position: relative;
+  overflow: hidden;
 }
-.sub-card:hover { background: rgba(255,255,255,0.06); transform: translateY(-2px); }
+.sub-card::before {
+  content: '';
+  position: absolute; top: 0; left: 10%; right: 10%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.sub-card:hover {
+  background: rgba(255,255,255,0.07);
+  transform: translateY(-4px);
+  border-color: rgba(255,255,255,0.15);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 30px rgba(255,149,0,0.05);
+}
+.sub-card:hover::before { opacity: 0.6; }
 .sub-card__name {
   font-family: var(--font-display);
   font-size: 13px;
@@ -1715,32 +1749,32 @@ input[type=text]::placeholder { color: var(--text-dim); }
         <div class="sub-card">
           <div class="sub-card__name" style="color:var(--accent)">Gemini 3.1 Pro</div>
           <div class="sub-card__detail">Gemini 3.1 Pro<br>Think • Mariner • 1TB</div>
-          <div class="sub-card__status"><span class="pill pill--green">ACTIVE</span></div>
+          <div class="sub-card__status"><span class="pill pill--green active-pulse">ACTIVE</span></div>
         </div>
         <div class="sub-card">
           <div class="sub-card__name" style="color:var(--cyan)">SuperGrok</div>
           <div class="sub-card__detail">2M context • DeepSearch<br>Think mode • Priority</div>
-          <div class="sub-card__status"><span class="pill pill--green">ACTIVE</span></div>
+          <div class="sub-card__status"><span class="pill pill--green active-pulse">ACTIVE</span></div>
         </div>
         <div class="sub-card">
           <div class="sub-card__name" style="color:var(--amber)">Perplexity Pro</div>
           <div class="sub-card__detail">1,500 Pro searches/day<br>Comet AI • Frontier models</div>
-          <div class="sub-card__status"><span class="pill pill--green">ACTIVE</span></div>
+          <div class="sub-card__status"><span class="pill pill--green active-pulse">ACTIVE</span></div>
         </div>
         <div class="sub-card">
           <div class="sub-card__name" style="color:white">ChatGPT Plus</div>
           <div class="sub-card__detail">GPT-5.5 Thinking Extended<br>Deep Research 10/mo</div>
-          <div class="sub-card__status"><span class="pill pill--green">ACTIVE</span></div>
+          <div class="sub-card__status"><span class="pill pill--green active-pulse">ACTIVE</span></div>
         </div>
         <div class="sub-card">
           <div class="sub-card__name" style="color:var(--purple)">DeepSeekv4</div>
           <div class="sub-card__detail">Cost-bound workflows<br>Think mode • Search</div>
-          <div class="sub-card__status"><span class="pill pill--green">ACTIVE</span></div>
+          <div class="sub-card__status"><span class="pill pill--green active-pulse">ACTIVE</span></div>
         </div>
         <div class="sub-card">
           <div class="sub-card__name" style="color:var(--cyan)">Claude Pro</div>
           <div class="sub-card__detail">Claude 4 Opus Extended<br>100K context • Projects</div>
-          <div class="sub-card__status"><span class="pill pill--green">ACTIVE</span></div>
+          <div class="sub-card__status"><span class="pill pill--green active-pulse">ACTIVE</span></div>
         </div>
       </div>
     </div>
