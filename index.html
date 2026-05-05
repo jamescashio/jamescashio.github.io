@@ -1662,7 +1662,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
           <div class="node-card__specs">LM Studio • Gemma-4-e4b</div>
           <div class="node-card__tele" style="--node-color:var(--red)"></div>
         </div>
-        <div class="node-card" style="--node-color:var(--green)" onclick="showNode('Athena','Edge Node — Raspberry Pi 4','8GB RAM · 64GB SD · Pi-hole · Tailscale subnet router · Low-power always-on','online')">
+        <div class="node-card" style="--node-color:var(--green)" onclick="showNode('Athena','Edge Node — Raspberry Pi 4','8GB RAM · 117GB SD · Unbound caching DNS · Tailscale subnet router · Uptime-Kuma · Low-power always-on','online')">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
             <div class="node-card__name">ATHENA</div>
             <span class="pill pill--green" style="font-size:9px">ONLINE</span>
@@ -1806,7 +1806,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
                 <tr><td>Plex LXC</td><td>Apollo LXC 108</td><td>Media server — UNTOUCHABLE</td><td><span class="pill pill--red">LOCKED</span></td></tr>
                 <tr><td>Home Assistant</td><td>Apollo LXC 120</td><td>Home automation</td><td><span class="pill pill--green">ON</span></td></tr>
                 <tr><td>Cashiotuf</td><td>RTX 3080 NUC</td><td>LM Studio failover — Gemma-4-e4b</td><td><span class="pill pill--green">ON</span></td></tr>
-                <tr><td>Athena</td><td>Raspberry Pi 4</td><td>Edge node — Pi-hole • Tailscale • always-on</td><td><span class="pill pill--green">ON</span></td></tr>
+                <tr><td>Athena</td><td>Raspberry Pi 4</td><td>Edge node — Unbound DNS • Tailscale • Kuma</td><td><span class="pill pill--green">ON</span></td></tr>
                 <tr><td>Kali-Intel</td><td>Zeus LXC 110</td><td>Pentesting • Autostart OFF</td><td><span class="pill pill--dim">OFF</span></td></tr>
               </tbody>
             </table>
@@ -1819,7 +1819,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
           <div class="section-label mb-6" style="color:var(--accent)">📜 Change Log</div>
           <div class="timeline-entry">
             <div class="timeline-entry__date">05-05-2026 v20.1</div>
-            <div class="timeline-entry__text">Removed OPENCLAW. Added Athena (RPi4 8GB). Upgraded CT-105 (6GB/4c). Open Design deployed (nexu-io). Google AI Ultra → Pro. Perplexity Max → Pro. Added Claude Pro. AgentUniverse agents registered (deepseek_reasoner + gemma_sovereign). Capabilities lapse + Burn List removed.</div>
+            <div class="timeline-entry__text">Removed OPENCLAW. Added Athena (RPi4 8GB). Provisioned Unbound caching DNS + Tailscale subnet router. Uptime-Kuma. Upgraded CT-105 (6GB/4c). Open Design deployed. Subscriptions: Gemini 3.1 Pro, Perplexity Pro, Claude Pro. Capabilities lapse + Burn List removed. Multi-agent polish pass.</div>
           </div>
           <div class="timeline-entry">
             <div class="timeline-entry__date">05-04-2026 v20.0</div>
@@ -2234,7 +2234,7 @@ function initTopology() {
     { id:'genesis',   label:'GENESIS',  sub:'WD NAS',           x:.82, y:.72, col:'#00ff9f', size:14, desc:'2-Bay WD NAS — SMB shares, backups, docs | 192.168.1.149' },
     { id:'pbs',       label:'PBS',      sub:'BACKUPS',          x:.08, y:.90, col:'#00f9ff', size:13, desc:'Proxmox Backup Server — Apollo CT-300' },
     { id:'cashiotuf', label:'CASHIOTUF',sub:'RTX 3080',         x:.82, y:.90, col:'#ff0033', size:13, desc:'Fallback LLM host — Gemma-4-e4b via LM Studio' },
-    { id:'athena',    label:'ATHENA',   sub:'RASPBERRY PI 4',  x:.92, y:.65, col:'#00ff9f', size:12, desc:'Edge node — Pi-hole DNS, Tailscale subnet router, always-on' },
+    { id:'athena',    label:'ATHENA',   sub:'RASPBERRY PI 4',  x:.92, y:.65, col:'#00ff9f', size:12, desc:'Edge node — Unbound caching DNS, Tailscale subnet router, Uptime-Kuma' },
   ];
 
   const edges = [
