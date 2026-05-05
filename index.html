@@ -1668,9 +1668,20 @@ input[type=text]::placeholder { color: var(--text-dim); }
             <span class="pill pill--green" style="font-size:9px">ONLINE</span>
           </div>
           <div class="node-card__sub">RASPBERRY PI 4</div>
-          <div class="node-card__specs">Pi-hole • Tailscale • Always-on</div>
+          <div class="node-card__specs">Unbound DNS • Tailscale • Kuma</div>
           <div class="node-card__tele" style="--node-color:var(--green)"></div>
         </div>
+      </div>
+    </div>
+
+    <!-- LATENCY MONITOR -->
+    <div class="mb-8">
+      <div class="flex justify-between items-center mb-4">
+        <div class="section-label" style="color:var(--accent)">🌐 Cluster Latency — Live</div>
+        <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim)" id="latency-ts"></span>
+      </div>
+      <div id="latency-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:8px;background:var(--glass);border-radius:var(--radius);border:1px solid var(--glass-border);min-height:32px">
+        <div style="font-size:11px;color:var(--text-dim)">Loading...</div>
       </div>
     </div>
 
@@ -2044,6 +2055,28 @@ function playSound(type, x=0.5) {
       case 'alert':   playTone(380, 0.18, 'sawtooth', 0.26, now, pan); break;
       case 'modal':   playTone(740, 0.06, 'sine', 0.22, now, pan); playTone(920, 0.08, 'sine', 0.16, now+0.05, pan); break;
       case 'warp':    playTone(520, 0.35, 'sawtooth', 0.22, now, pan); setTimeout(() => playTone(780, 0.4, 'sine', 0.16, _audioCtx.currentTime, pan), 180); break;
+      case 'transporter': {
+        for(let i=0;i<8;i++) {
+          const f = 400 + i*120 + Math.sin(i*1.5)*80;
+          setTimeout(() => playTone(f, 0.08, 'sine', 0.12, _audioCtx.currentTime, pan), i*50);
+        }
+        setTimeout(() => playTone(1200, 0.4, 'sine', 0.08, _audioCtx.currentTime, pan), 400);
+        break;
+      }
+      case 'phaser': {
+        playTone(1800, 0.03, 'square', 0.15, now, pan);
+        setTimeout(() => playTone(1200, 0.04, 'square', 0.12, _audioCtx.currentTime, pan), 30);
+        setTimeout(() => playTone(700, 0.08, 'sawtooth', 0.10, _audioCtx.currentTime, pan), 60);
+        break;
+      }
+      case 'shield': {
+        playTone(120, 0.25, 'sawtooth', 0.35, now, pan);
+        const n = _audioCtx.createOscillator(); n.type='sawtooth'; n.frequency.value=200;
+        const ng = _audioCtx.createGain(); ng.gain.value=0.15; ng.gain.linearRampToValueAtTime(0.0001, now+0.15);
+        n.connect(ng); ng.connect(pan); n.start(now); n.stop(now+0.2);
+        break;
+      }
+      case 'lcars':   playTone(1500, 0.03, 'sine', 0.18, now, pan); break;
     }
   } catch(e) {}
 }
@@ -2272,7 +2305,7 @@ function initTopology() {
     if (hovered) {
       const n = nodes.find(x=>x.id===hovered);
       showNode(n.label, n.sub, n.desc, 'online');
-      playSound('modal', 0.5);
+      playSound('transporter', 0.5);
     }
   });
 
@@ -2362,16 +2395,48 @@ function showNode(name, sub, desc, status) {
      status==='primary' ? ' <span style="font-size:11px;padding:2px 8px;background:var(--purple);color:#000;border-radius:4px;vertical-align:middle;margin-left:8px;font-family:var(--font-mono)">PRIMARY</span>' : '');
   document.getElementById('m-sub').textContent = sub;
   document.getElementById('m-desc').textContent = desc;
-  const modal = document.getElementById('node-modal');
-  modal.classList.add('open');
-  modal.onclick = e => { if(e.target===modal) closeModal(); };
-  playSound('modal', 0.5);
+  document.getElementById('node-modal').classList.add('open');
+  document.getElementById('node-modal').onclick = e => { if(e.target===document.getElementById('node-modal')) closeModal(); };
+  playSound('transporter', 0.5);
 }
 function closeModal() { document.getElementById('node-modal').classList.remove('open'); }
 function pingNode() {
   document.getElementById('m-desc').innerHTML = '<span style="color:var(--green);font-family:var(--font-mono)">PING: 3ms • TTL 64 • HEALTHY ✓</span>';
   playSound('success', 0.5);
 }
+
+// ══════════════════════════════════════════════════
+// LIVE LATENCY DASHBOARD
+// ══════════════════════════════════════════════════
+async function loadLatency() {
+  try {
+    const r = await fetch('status.json?_='+Date.now());
+    const d = await r.json();
+    const el = document.getElementById('latency-grid');
+    if (!el) return;
+    const ts = document.getElementById('latency-ts');
+    if (ts && d.timestamp) ts.textContent = d.timestamp.replace('T',' ').slice(0,16);
+    const nodes = d.nodes || {};
+    el.innerHTML = Object.entries(nodes).map(([name, v]) => {
+      const lat = v.latency || 'DOWN';
+      const ok = lat !== 'DOWN';
+      const ms = parseInt(lat);
+      const barPct = ok ? Math.min(100, ms * 3) : 100;
+      const color = ok ? (ms < 5 ? 'var(--green)' : ms < 20 ? 'var(--cyan)' : ms < 50 ? 'var(--amber)' : 'var(--red)') : 'var(--red)';
+      return `<div style="display:flex;align-items:center;gap:8px;padding:4px 8px;background:var(--glass);border-radius:4px">
+        <span style="font-family:var(--font-mono);font-size:11px;color:var(--text-dim);min-width:75px">${name}</span>
+        <div style="flex:1;height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden">
+          <div style="height:100%;width:${barPct}%;background:${color};border-radius:2px;transition:width 0.5s ease,background 0.3s"></div>
+        </div>
+        <span style="font-family:var(--font-mono);font-size:10px;color:${color};min-width:40px;text-align:right">${lat}</span>
+      </div>`;
+    }).join('');
+  } catch(e) { console.log('latency fetch:', e.message); }
+}
+
+// Poll latency every 30s
+setTimeout(loadLatency, 500);
+setInterval(loadLatency, 30000);
 
 // ══════════════════════════════════════════════════
 // INTERACTIONS
@@ -2424,7 +2489,7 @@ function triggerRedAlert() {
   const bar = document.createElement('div');
   bar.style.cssText='position:fixed;top:0;left:0;right:0;height:3px;background:var(--red);z-index:999;box-shadow:0 0 20px var(--red)';
   document.body.appendChild(bar);
-  playSound('alert', 0.5);
+  playSound('shield', 0.5);
   setTimeout(()=>{ document.body.style.filter=''; bar.style.opacity='0'; bar.style.transition='opacity 0.5s'; setTimeout(()=>bar.remove(),500); }, 1800);
 }
 
