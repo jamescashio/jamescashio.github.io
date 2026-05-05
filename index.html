@@ -1690,7 +1690,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
           <div class="flex justify-between items-start mb-5 flex-wrap gap-3">
             <div>
               <div class="section-label" style="color:var(--cyan)">🎤 Voice &amp; Agent Pipeline</div>
-              <div class="mono fs-xs dim mt-4">Nemotron Omni → grok-speak (Eve) • Validated 05-01-2026</div>
+              <div class="mono fs-xs dim mt-4">Nemotron Omni → deepseek-speak (Eve) • Validated 05-01-2026</div>
             </div>
             <span class="pill pill--green">$0 OPENROUTER FREE TIER</span>
           </div>
@@ -1705,7 +1705,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
               <div class="dim">Transcribe + Reason</div>
             </div>
             <div style="text-align:center;padding:10px;background:var(--glass);border-radius:var(--radius);font-size:10px;font-family:var(--font-mono)">
-              <div style="color:var(--purple);font-weight:700;margin-bottom:3px">GROK-SPEAK</div>
+              <div style="color:var(--purple);font-weight:700;margin-bottom:3px">DEEPSEEK-SPEAK</div>
               <div class="dim">Eve Voice 128kbps</div>
             </div>
             <div style="text-align:center;padding:10px;background:var(--glass);border-radius:var(--radius);font-size:10px;font-family:var(--font-mono)">
@@ -2363,7 +2363,31 @@ function runVoice() {
   out.textContent = 'NEMOTRON: Transcribing & reasoning…';
   playSound('alert', 0.5);
   setTimeout(() => {
-    out.innerHTML = `<span style="color:var(--text-dim)">NEMOTRON:</span> "${text}"<br><span style="color:var(--green)">→ Reasoning complete. Confidence 94%.</span><br><br><span style="color:var(--text-dim)">GROK-SPEAK (Eve):</span> <em>"Acknowledged, Admiral. All systems nominal."</em>`;
+    out.textContent = '';
+    const spanNemotron = document.createElement('span');
+    spanNemotron.style.color = 'var(--text-dim)';
+    spanNemotron.textContent = 'NEMOTRON:';
+
+    const spanReasoning = document.createElement('span');
+    spanReasoning.style.color = 'var(--green)';
+    spanReasoning.textContent = '→ Reasoning complete. Confidence 94%.';
+
+    const spanSpeak = document.createElement('span');
+    spanSpeak.style.color = 'var(--text-dim)';
+    spanSpeak.textContent = 'DEEPSEEK-SPEAK (Eve):';
+
+    const emAck = document.createElement('em');
+    emAck.textContent = '"Acknowledged. All systems nominal."';
+
+    out.appendChild(spanNemotron);
+    out.appendChild(document.createTextNode(' "' + text + '"'));
+    out.appendChild(document.createElement('br'));
+    out.appendChild(spanReasoning);
+    out.appendChild(document.createElement('br'));
+    out.appendChild(document.createElement('br'));
+    out.appendChild(spanSpeak);
+    out.appendChild(document.createTextNode(' '));
+    out.appendChild(emAck);
     playSound('success', 0.5);
     if ('speechSynthesis' in window) {
       const u = new SpeechSynthesisUtterance(text); u.pitch=1.05; u.rate=0.92;
