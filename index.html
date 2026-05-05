@@ -1045,6 +1045,60 @@ input[type=text]::placeholder { color: var(--text-dim); }
   line-height: 1.4;
   flex-shrink: 0;
 }
+/* CHANGELOG */
+.changelog { position: relative; }
+.changelog-entry {
+  display: flex; gap: 16px; padding: 18px 20px;
+  background: rgba(10,10,18,0.7);
+  border-radius: var(--radius);
+  border: 1px solid rgba(255,255,255,0.05);
+  margin-bottom: 12px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.changelog-entry:hover {
+  border-color: rgba(255,149,0,0.3);
+  box-shadow: 0 0 20px rgba(255,149,0,0.08);
+}
+.changelog-bar {
+  width: 4px; flex-shrink: 0; border-radius: 2px;
+}
+.changelog-date {
+  font-family: var(--font-mono);
+  font-size: 12px; font-weight: 700;
+  color: var(--accent); white-space: nowrap;
+  min-width: 115px; padding-top: 1px;
+}
+.changelog-body { flex: 1; }
+.changelog-body p {
+  margin: 0; font-size: 13px; line-height: 1.6; color: #ccc;
+}
+.changelog-body .tags {
+  display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;
+}
+.changelog-body .tags span {
+  font-size: 10px; padding: 2px 8px;
+  border-radius: 4px; background: rgba(255,255,255,0.06);
+  color: var(--text-dim); font-family: var(--font-mono);
+}
+/* FLOATING CHANGELOG TAB */
+#changelog-tab {
+  position: fixed; bottom: 24px; right: 24px;
+  z-index: 100; cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px;
+  background: rgba(10,10,18,0.88);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  font-size: 11px; font-family: var(--font-mono);
+  color: var(--accent);
+  backdrop-filter: blur(8px);
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 0 15px rgba(255,149,0,0.15);
+}
+#changelog-tab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(255,149,0,0.25);
+}
 </style>
 </head>
 <body>
@@ -1103,9 +1157,9 @@ input[type=text]::placeholder { color: var(--text-dim); }
 
   <div class="hero-eyebrow">
     <div class="status-dot"></div>
-    <span>v19.1 SOVEREIGN BASELINE</span>
+    <span>v19.2 SOVEREIGN BASELINE</span>
     <span style="color:var(--text-dim)">•</span>
-    <span>VERIFIED 05-01-2026</span>
+    <span>VERIFIED 05-04-2026</span>
   </div>
 
   <h1 class="hero-name glitch holo" data-text="DOUG CASHIO">DOUG CASHIO</h1>
@@ -1820,6 +1874,62 @@ input[type=text]::placeholder { color: var(--text-dim); }
 </section>
 
 <!-- ══════════════════════════════════════════
+     CHANGELOG
+══════════════════════════════════════════ -->
+<section id="changelog" class="section reveal changelog">
+  <div class="container">
+    <div class="section-label mb-4" style="color:var(--accent)">Release History <span style="flex:none;color:var(--text-dim)">• 2026 Q2</span></div>
+    <div class="section-title section-title--xl mb-8" style="color:white">CHANGE LOG</div>
+
+    <div class="changelog-entry">
+      <div class="changelog-bar" style="background:var(--accent)"></div>
+      <div class="changelog-date">05-04-2026 v19.2b</div>
+      <div class="changelog-body">
+        <p>Hero badges + stats now interactive with hover toasts. Email <strong>doug@cashio.us</strong> added to footer. All CTA buttons verified — Portfolio, Lab, Topology scroll targets wired. Social links fixed (GitHub/LinkedIn). Proxmox version corrected to 9.1.7.</p>
+        <div class="tags"><span>fix</span><span>ux</span><span>interaction</span></div>
+      </div>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-bar" style="background:var(--green)"></div>
+      <div class="changelog-date">05-04-2026 v19.2</div>
+      <div class="changelog-body">
+        <p>Full site rebuild from v5 template with sovereign LCARS design language. Career Arc timeline, Competencies &amp; Credentials panels merged from legacy Trek page. WebGL starfield <span style="color:var(--green)">✩</span>, particle cursor trail, spatial audio engine, topology canvas with clickable node modal, React tweaks panel.</p>
+        <div class="tags"><span>rebuild</span><span>starfield</span><span>audio</span><span>topology</span></div>
+      </div>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-bar" style="background:var(--cyan)"></div>
+      <div class="changelog-date">05-01-2026 v19.1</div>
+      <div class="changelog-body">
+        <p>Atlas MLX promoted to primary Omnius host — Gemma-4 26B MoE via MLX at 256K context. Three autonomous crons active. Knowledge Graph at 14 triples in Hermes MemPalace. Hermes v0.12.0 deployed with MCP bridge to Prometheus, Proxmox, Kuma, AdGuard.</p>
+        <div class="tags"><span>mlx</span><span>omnius</span><span>hermes</span><span>mcp</span></div>
+      </div>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-bar" style="background:var(--amber)"></div>
+      <div class="changelog-date">05-01-2026 v19.0</div>
+      <div class="changelog-body">
+        <p>Cluster-wide SSH key deployment across Zeus/Apollo nodes. Hermes LXC disk resized +17G (21GB free). ChromaDB migrated to dedicated port 8011 on CT-106. AdGuard health cron established on 15-minute interval.</p>
+        <div class="tags"><span>ssh</span><span>storage</span><span>cron</span></div>
+      </div>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="changelog-bar" style="background:var(--purple)"></div>
+      <div class="changelog-date">05-01-2026 v18.0</div>
+      <div class="changelog-body">
+        <p>Task-aware LLM routing via n8n workflow engine — no flat fallback. Nine stale routing claims corrected. Primary model chain established: DeepSeek V4 Pro (cloud) → Atlas MLX (Gemma-4) → Cashiotuf LM Studio (failover). Preferred model stack codified (DeepSeek Reckoner for reasoning, xAI/Grok for vision).</p>
+        <div class="tags"><span>routing</span><span>n8n</span><span>model-stack</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
      FOOTER
 ══════════════════════════════════════════ -->
 <footer id="footer">
@@ -1832,6 +1942,12 @@ input[type=text]::placeholder { color: var(--text-dim); }
   </div>
   <div class="footer-copy">ZEUSAPOLLO v19.2 • DOUG CASHIO • doug@cashio.us • SOVEREIGN INFRASTRUCTURE • 2026</div>
 </footer>
+
+<!-- FLOATING CHANGELOG TAB -->
+<div id="changelog-tab" onclick="document.getElementById('changelog').scrollIntoView({behavior:'smooth'});playSound('press',0.5)">
+  <span>⚡</span>
+  <span>CHANGE LOG</span>
+</div>
 
 <!-- NODE MODAL -->
 <div id="node-modal">
