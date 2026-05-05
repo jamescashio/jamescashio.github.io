@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZEUSAPOLLO v19.2 • Doug Cashio • Enterprise AI & Cybersecurity</title>
+<title>ZEUSAPOLLO v20.0 • Doug Cashio • Enterprise AI & Cybersecurity</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,200;0,300;0,400;0,600;0,700;1,300&family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -1103,7 +1103,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
 
   <div class="hero-eyebrow">
     <div class="status-dot"></div>
-    <span>v19.2 SOVEREIGN BASELINE</span>
+    <span>v20.0 SOVEREIGN BASELINE</span>
     <span style="color:var(--text-dim)">•</span>
     <span>VERIFIED 05-04-2026</span>
   </div>
@@ -1147,7 +1147,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
       Access Portfolio <i class="fas fa-arrow-right"></i>
     </button>
     <button class="btn btn--cyan btn--lg" onclick="scrollTo('lab')">
-      ZeusApollo Lab v19.2
+      ZeusApollo Lab v20.0
     </button>
     <button class="btn btn--purple btn--lg" onclick="scrollTo('topology')">
       <i class="fas fa-network-wired"></i> Topology
@@ -1186,7 +1186,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
 <section id="portfolio" class="section reveal">
   <div class="container">
 
-    <div class="section-label mb-4" style="color:var(--accent)">Mission Profile <span style="flex:none;color:var(--text-dim)">• Career Arc v19.2</span></div>
+    <div class="section-label mb-4" style="color:var(--accent)">Mission Profile <span style="flex:none;color:var(--text-dim)">• Career Arc v20.0</span></div>
     <div class="section-title section-title--xl mb-8" style="color:white">WHAT I BUILD</div>
 
     <div class="grid-12 gap-6">
@@ -1502,12 +1502,12 @@ input[type=text]::placeholder { color: var(--text-dim); }
     <div class="flex justify-between items-start mb-8 flex-wrap gap-4">
       <div>
         <div style="display:inline-block;padding:4px 12px;background:var(--accent);color:#0a0a0f;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:12px;">PRIMARY MISSION</div>
-        <div class="section-title section-title--xl" style="color:white">ZEUSAPOLLO <span style="color:var(--accent)">v19.2</span></div>
+        <div class="section-title section-title--xl" style="color:white">ZEUSAPOLLO <span style="color:var(--accent)">v20.0</span></div>
         <div class="mono fs-xs dim mt-4" style="letter-spacing:2px">SOVEREIGN INFRASTRUCTURE ASSESSMENT • 05-04-2026</div>
       </div>
       <div style="text-align:right;">
         <div class="mono fs-xs dim" style="margin-bottom:4px">SOURCE: PROXMOX VE API + ADGUARD DHCP + PROJECT FILES</div>
-        <span class="pill pill--green">11 NODES VERIFIED</span>
+        <span class="pill pill--green">18 NODES VERIFIED</span>
       </div>
     </div>
 
@@ -1573,6 +1573,69 @@ input[type=text]::placeholder { color: var(--text-dim); }
           <div class="node-card__sub">ZEUS LXC • LLM ROUTER</div>
           <div class="node-card__specs">Hermes → n8n → Model</div>
           <div class="node-card__tele" style="--node-color:var(--cyan)"></div>
+        </div>
+        <div class="node-card" style="--node-color:var(--cyan)" onclick="showNode('RAGFlow','Document RAG Pipeline','DeepSeek V4 Pro · Ollama nomic-embed-text · v0.25.1 · docs from Genesis NAS','online')">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+            <div class="node-card__name">RAGFLOW</div>
+            <span class="pill pill--cyan" style="font-size:9px">RAG</span>
+          </div>
+          <div class="node-card__sub">ZEUS LXC 103</div>
+          <div class="node-card__specs">DeepSeek V4 Pro • nomic-embed-text</div>
+          <div class="node-card__tele" style="--node-color:var(--cyan)"></div>
+        </div>
+        <div class="node-card" style="--node-color:var(--purple)" onclick="showNode('Omnius','High-Agency Sovereign AI','Antigravity mode · MCP: proxmox, adguard, kuma, prom, chroma · CT-106','primary')">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+            <div class="node-card__name">OMNIUS</div>
+            <span class="pill pill--purple" style="font-size:9px">SOVEREIGN</span>
+          </div>
+          <div class="node-card__sub">ZEUS LXC 106</div>
+          <div class="node-card__specs">Antigravity • MCP bridge</div>
+          <div class="node-card__tele" style="--node-color:var(--purple)"></div>
+        </div>
+        <div class="node-card" style="--node-color:var(--green)" onclick="showNode('Tools','Proxy & Tool Stack','LiteLLM 4000 · LobeChat 3210 · CodeGate 8989 · Portainer 8000 · Kuma 3001','online')">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+            <div class="node-card__name">TOOLS</div>
+            <span class="pill pill--green" style="font-size:9px">PROXY</span>
+          </div>
+          <div class="node-card__sub">ZEUS LXC 115</div>
+          <div class="node-card__specs">LiteLLM • CodeGate • LobeChat</div>
+          <div class="node-card__tele" style="--node-color:var(--green)"></div>
+        </div>
+        <div class="node-card" style="--node-color:var(--green)" onclick="showNode('Genesis','WD 2-Bay NAS','SMB shares: Public, SmartWare, proxmox-backup · 4.5TB free of 7.7TB','online')">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+            <div class="node-card__name">GENESIS</div>
+            <span class="pill pill--green" style="font-size:9px">NAS</span>
+          </div>
+          <div class="node-card__sub">192.168.1.149</div>
+          <div class="node-card__specs">WD 2-Bay • 7.7TB</div>
+          <div class="node-card__tele" style="--node-color:var(--green)"></div>
+        </div>
+        <div class="node-card" style="--node-color:var(--accent)" onclick="showNode('PBS','Proxmox Backup Server','CT-300 on Apollo · Central backup target for all CTs/VMs','online')">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+            <div class="node-card__name">PBS</div>
+            <span class="pill pill--accent" style="font-size:9px">BACKUP</span>
+          </div>
+          <div class="node-card__sub">APOLLO LXC 300</div>
+          <div class="node-card__specs">Proxmox Backup Server</div>
+          <div class="node-card__tele" style="--node-color:var(--accent)"></div>
+        </div>
+        <div class="node-card" style="--node-color:var(--amber)" onclick="showNode('Vaultwarden','Password Management','Bitwarden-compatible secrets manager · CT-114 on Zeus','online')">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+            <div class="node-card__name">VAULT</div>
+            <span class="pill pill--amber" style="font-size:9px">SECRETS</span>
+          </div>
+          <div class="node-card__sub">ZEUS LXC 114</div>
+          <div class="node-card__specs">Vaultwarden</div>
+          <div class="node-card__tele" style="--node-color:var(--amber)"></div>
+        </div>
+        <div class="node-card" style="--node-color:var(--red)" onclick="showNode('Cashiotuf','Fallback LLM Host','NUC w/ RTX 3080 · LM Studio Gemma-4-e4b · Failover tier','online')">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+            <div class="node-card__name">CASHIOTUF</div>
+            <span class="pill pill--red" style="font-size:9px">FAILOVER</span>
+          </div>
+          <div class="node-card__sub">RTX 3080 NUC</div>
+          <div class="node-card__specs">LM Studio • Gemma-4-e4b</div>
+          <div class="node-card__tele" style="--node-color:var(--red)"></div>
         </div>
       </div>
     </div>
@@ -1753,23 +1816,30 @@ input[type=text]::placeholder { color: var(--text-dim); }
     <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;">
       <div>
         <div class="panel" style="padding:24px;">
-          <div class="section-label mb-6" style="color:var(--accent)">📊 Full Node Inventory — v19.2 Verified</div>
+          <div class="section-label mb-6" style="color:var(--accent)">📊 Full Node Inventory — v20.0 Verified</div>
           <div class="overflow-x">
             <table>
               <thead>
                 <tr><th>Node</th><th>Host</th><th>Role</th><th>Status</th></tr>
               </thead>
               <tbody>
-                <tr><td>Hermes</td><td>Zeus LXC 105</td><td>Operations agent v0.12.0</td><td><span class="pill pill--green">ON</span></td></tr>
+                <tr><td>Hermes</td><td>Zeus LXC 105</td><td>Operations agent</td><td><span class="pill pill--green">ON</span></td></tr>
                 <tr><td>n8n</td><td>Zeus LXC 107</td><td>LLM router + workflow</td><td><span class="pill pill--green">ON</span></td></tr>
-                <tr><td>Openclaw</td><td>Zeus LXC 103</td><td>Mission-critical 8c/16GB/200GB</td><td><span class="pill pill--amber">BLOCKED</span></td></tr>
+                <tr><td>RAGFlow</td><td>Zeus LXC 103</td><td>Document RAG pipeline v0.25.1</td><td><span class="pill pill--green">ON</span></td></tr>
+                <tr><td>Omnius</td><td>Zeus LXC 106</td><td>High-agency sovereign AI — Antigravity</td><td><span class="pill pill--green">ON</span></td></tr>
+                <tr><td>Tools</td><td>Zeus LXC 115</td><td>LiteLLM + LobeChat + CodeGate + Portainer</td><td><span class="pill pill--green">ON</span></td></tr>
+                <tr><td>Vaultwarden</td><td>Zeus LXC 114</td><td>Bitwarden-compatible secrets</td><td><span class="pill pill--green">ON</span></td></tr>
+                <tr><td>AgentUniverse</td><td>Zeus LXC 105</td><td>Multi-agent framework (installed)</td><td><span class="pill pill--green">ON</span></td></tr>
                 <tr><td>Atlas MLX</td><td>Mac Mini M4</td><td>Primary Omnius • Gemma-4 26B MoE</td><td><span class="pill pill--green">ON</span></td></tr>
                 <tr><td>Wazuh</td><td>Zeus LXC 104</td><td>SIEM • Security monitoring</td><td><span class="pill pill--green">ON</span></td></tr>
                 <tr><td>AdGuard Primary</td><td>Apollo LXC 101</td><td>Primary DNS + DHCP</td><td><span class="pill pill--green">ON</span></td></tr>
                 <tr><td>AdGuard Secondary</td><td>Zeus LXC 109</td><td>Cross-hardware DNS backup</td><td><span class="pill pill--green">ON</span></td></tr>
+                <tr><td>PBS</td><td>Apollo LXC 300</td><td>Proxmox Backup Server</td><td><span class="pill pill--green">ON</span></td></tr>
+                <tr><td>Genesis</td><td>192.168.1.149</td><td>WD NAS — SMB shares, docs, backups</td><td><span class="pill pill--green">ON</span></td></tr>
                 <tr><td>Plex LXC</td><td>Apollo LXC 108</td><td>Media server — UNTOUCHABLE</td><td><span class="pill pill--red">LOCKED</span></td></tr>
                 <tr><td>Home Assistant</td><td>Apollo LXC 120</td><td>Home automation</td><td><span class="pill pill--green">ON</span></td></tr>
-                <tr><td>MCP Server</td><td>Zeus LXC 106</td><td>MCP server bridge</td><td><span class="pill pill--green">ON</span></td></tr>
+                <tr><td>Cashiotuf</td><td>RTX 3080 NUC</td><td>LM Studio failover — Gemma-4-e4b</td><td><span class="pill pill--green">ON</span></td></tr>
+                <tr><td>Openclaw</td><td>Zeus LXC 103</td><td>Mission-critical 8c/16GB/200GB</td><td><span class="pill pill--amber">BLOCKED</span></td></tr>
                 <tr><td>Kali-Intel</td><td>Zeus LXC 110</td><td>Pentesting • Autostart OFF</td><td><span class="pill pill--dim">OFF</span></td></tr>
               </tbody>
             </table>
@@ -1780,6 +1850,10 @@ input[type=text]::placeholder { color: var(--text-dim); }
       <div>
         <div class="panel" style="padding:24px;height:100%;">
           <div class="section-label mb-6" style="color:var(--accent)">📜 Change Log</div>
+          <div class="timeline-entry">
+            <div class="timeline-entry__date">05-05-2026 v20.0</div>
+            <div class="timeline-entry__text">18-node topology. RAGFlow v0.25.1 (CT-103). Ollama nomic-embed-text + DeepSeek V4 Pro. Omnius sovereign AI (CT-106). Tools stack (CT-115). Genesis NAS. PBS (CT-300). Vaultwarden (CT-114). Cashiotuf RTX3080 failover. AgentUniverse installed. Weekly maintenance agent. Memory palace infrastructure docs.</div>
+          </div>
           <div class="timeline-entry">
             <div class="timeline-entry__date">05-04-2026 v19.2</div>
             <div class="timeline-entry__text">Full site rebuild from v5 template. Added Career Arc, Competencies, Credentials. WebGL starfield. Particle cursor. Sound engine. Topology canvas.</div>
@@ -1813,7 +1887,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
     <a href="mailto:doug@cashio.us">doug@cashio.us</a>
     <a href="#" onclick="window.location.reload()">Reload Telemetry</a>
   </div>
-  <div class="footer-copy">ZEUSAPOLLO v19.2 • DOUG CASHIO • doug@cashio.us • SOVEREIGN INFRASTRUCTURE • 2026</div>
+  <div class="footer-copy">ZEUSAPOLLO v20.0 • DOUG CASHIO • doug@cashio.us • SOVEREIGN INFRASTRUCTURE • 2026</div>
 </footer>
 
 <!-- NODE MODAL -->
@@ -2179,18 +2253,26 @@ function initTopology() {
     { id:'adg',       label:'ADGUARD',  sub:'DNS/DHCP',         x:.08, y:.68, col:'#00f9ff', size:13, desc:'Primary DNS + DHCP — always on' },
     { id:'plex',      label:'PLEX 🔒',  sub:'MEDIA',            x:.20, y:.68, col:'#ff0033', size:13, desc:'UNTOUCHABLE — media server' },
     { id:'ha',        label:'HA',       sub:'HOME AUTO',        x:.32, y:.68, col:'#00ff9f', size:13, desc:'Home Assistant automation' },
-    { id:'hermes',    label:'HERMES',   sub:'OPS AGENT',        x:.43, y:.68, col:'#ffcc00', size:15, desc:'Operations agent v0.12.0 — you' },
+    { id:'hermes',    label:'HERMES',   sub:'OPS AGENT',        x:.43, y:.68, col:'#ffcc00', size:15, desc:'Operations agent — you' },
     { id:'n8n',       label:'n8n',      sub:'LLM ROUTER',       x:.55, y:.68, col:'#00f9ff', size:15, desc:'Task-aware LLM routing via n8n workflows' },
     { id:'wazuh',     label:'WAZUH',    sub:'SIEM',             x:.67, y:.68, col:'#ff9500', size:13, desc:'Security information & event management' },
-    { id:'openclaw',  label:'OPENCLAW', sub:'MISSION',          x:.55, y:.90, col:'#ff9500', size:13, desc:'Mission-critical LXC — blocked pending Zeus headroom' },
+    { id:'ragflow',   label:'RAGFLOW',  sub:'RAG PIPELINE',     x:.15, y:.90, col:'#00f9ff', size:14, desc:'Document RAG — DeepSeek V4 Pro + Ollama embeddings | CT-103' },
+    { id:'omnius',    label:'OMNIUS',   sub:'SOVEREIGN AI',     x:.30, y:.90, col:'#cc00ff', size:15, desc:'High-agency sovereign AI — Antigravity mode | CT-106' },
+    { id:'tools',     label:'TOOLS',    sub:'PROXY STACK',       x:.45, y:.90, col:'#00ff9f', size:14, desc:'LiteLLM, LobeChat, CodeGate, Portainer, Kuma | CT-115' },
+    { id:'vault',     label:'VAULT',    sub:'SECRETS',          x:.60, y:.90, col:'#ff9500', size:12, desc:'Vaultwarden password management | CT-114' },
+    { id:'genesis',   label:'GENESIS',  sub:'WD NAS',           x:.82, y:.72, col:'#00ff9f', size:14, desc:'2-Bay WD NAS — SMB shares, backups, docs | 192.168.1.149' },
+    { id:'pbs',       label:'PBS',      sub:'BACKUPS',          x:.08, y:.90, col:'#00f9ff', size:13, desc:'Proxmox Backup Server — Apollo CT-300' },
+    { id:'cashiotuf', label:'CASHIOTUF',sub:'RTX 3080',         x:.82, y:.90, col:'#ff0033', size:13, desc:'Fallback LLM host — Gemma-4-e4b via LM Studio' },
   ];
 
   const edges = [
-    ['internet','apollo'],['internet','zeus'],['internet','atlas'],
-    ['apollo','adg'],['apollo','plex'],['apollo','ha'],
-    ['zeus','hermes'],['zeus','n8n'],['zeus','wazuh'],['zeus','openclaw'],
-    ['n8n','atlas'],['hermes','n8n'],
-    ['apollo','zeus'],
+    ['internet','apollo'],['internet','zeus'],['internet','atlas'],['internet','genesis'],
+    ['apollo','adg'],['apollo','plex'],['apollo','ha'],['apollo','pbs'],
+    ['zeus','hermes'],['zeus','n8n'],['zeus','wazuh'],['zeus','ragflow'],
+    ['zeus','omnius'],['zeus','tools'],['zeus','vault'],
+    ['n8n','atlas'],['hermes','n8n'],['tools','atlas'],
+    ['atlas','cashiotuf'],
+    ['apollo','zeus'],['genesis','zeus'],['genesis','apollo'],
   ];
 
   let hovered = null;
@@ -2502,7 +2584,7 @@ window.addEventListener('load', () => {
   const btn = document.getElementById('sound-btn');
   if (btn) btn.innerHTML = window._soundEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
 
-  setTimeout(() => showToast('LCARS v19.2 DEFIANT — SPATIAL AUDIO ACTIVE — ALL SYSTEMS NOMINAL', 'var(--accent)'), 1600);
+  setTimeout(() => showToast('LCARS v20.0 DEFIANT — SPATIAL AUDIO ACTIVE — ALL SYSTEMS NOMINAL', 'var(--accent)'), 1600);
 });
 
 window.ZEUSAPOLLO = { engageWarp, triggerRedAlert, simulateRoute, playSound, toggleSound };
@@ -2515,7 +2597,7 @@ window.ZEUSAPOLLO = { engageWarp, triggerRedAlert, simulateRoute, playSound, tog
     <rect x="0" y="794" width="1200" height="6" fill="#ff9500" opacity="0.5"/>
     <text x="600" y="360" font-family="monospace" font-size="100" font-weight="900" fill="#00f9ff" text-anchor="middle" opacity="0.9">DOUG CASHIO</text>
     <text x="600" y="420" font-family="monospace" font-size="24" fill="#ff9500" text-anchor="middle" letter-spacing="10">ENTERPRISE AI • CYBERSECURITY</text>
-    <text x="600" y="460" font-family="monospace" font-size="14" fill="#444" text-anchor="middle" letter-spacing="4">ZEUSAPOLLO v19.2 • SOVEREIGN INFRASTRUCTURE</text>
+    <text x="600" y="460" font-family="monospace" font-size="14" fill="#444" text-anchor="middle" letter-spacing="4">ZEUSAPOLLO v20.0 • SOVEREIGN INFRASTRUCTURE</text>
     <circle cx="280" cy="620" r="16" fill="none" stroke="#00ff9f" stroke-width="2"/>
     <circle cx="420" cy="620" r="16" fill="none" stroke="#00ff9f" stroke-width="2"/>
     <circle cx="560" cy="600" r="20" fill="none" stroke="#cc00ff" stroke-width="2.5"/>
