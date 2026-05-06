@@ -19,6 +19,7 @@ Requires:
   - pip install httpx fastapi uvicorn
 """
 
+from typing import Optional
 import argparse
 import json
 import time
@@ -83,7 +84,7 @@ def classify_query(prompt: str) -> str:
     return "fast"
 
 
-def check_cache(prompt: str) -> str | None:
+def check_cache(prompt: str) -> Optional[str]:
     """Simple exact-match semantic cache."""
     prompt_clean = prompt.strip().lower()
     if prompt_clean in _cache:
@@ -101,7 +102,7 @@ def store_cache(prompt: str, response: str):
 
 
 # ─── BACKEND CALLS ──────────────────────────────────────────────────────────
-def call_cashiotuf(prompt: str, stream: bool = False) -> dict | None:
+def call_cashiotuf(prompt: str, stream: bool = False) -> Optional[dict]:
     """Call Cashiotuf's LM Studio (RTX 3080, Gemma-4-e4b)."""
     payload = {
         "model": "google/gemma-4-e4b",
@@ -119,7 +120,7 @@ def call_cashiotuf(prompt: str, stream: bool = False) -> dict | None:
         return None
 
 
-def call_ollama(prompt: str, model: str = "llama3.1:8b") -> dict | None:
+def call_ollama(prompt: str, model: str = "llama3.1:8b") -> Optional[dict]:
     """Call Atlas Ollama (Mac M4)."""
     payload = {
         "model": model,
