@@ -54,5 +54,31 @@
       "ip": "192.168.1.15",
       "latency": "1003ms"
     }
+  },
+  "models": {
+    "claude-sonnet-4.5": {
+      "provider": "Anthropic",
+      "status": "online",
+      "via": "LiteLLM :4000",
+      "role": "Code Generation"
+    },
+    "claude-opus-4.5": {
+      "provider": "Anthropic",
+      "status": "online",
+      "via": "LiteLLM :4000",
+      "role": "Sensitive / Deep Reasoning"
+    },
+    "deepseek-chat": {
+      "provider": "DeepSeek",
+      "status": "online",
+      "via": "LiteLLM :4000",
+      "role": "Cost-Bound / Fast"
+    },
+    "grok-reasoning": {
+      "provider": "xAI",
+      "status": "online",
+      "via": "LiteLLM :4000",
+      "role": "Hard Reasoning"
+    }
   }
 }

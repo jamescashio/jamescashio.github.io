@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdnjs.cloudflare.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https:; media-src 'self';">
 <title>ZEUSAPOLLO v21.0 • Doug Cashio • Enterprise AI & Cybersecurity</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,200;0,300;0,400;0,600;0,700;1,300&family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
@@ -1110,7 +1111,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
     <div class="hud-chip" style="display:none" id="hud-chip-llm">
       <div>
         <div class="hud-chip__label">LLM Fabric</div>
-        <div class="hud-chip__value" style="color:var(--cyan)">10 ACTIVE</div>
+        <div class="hud-chip__value" style="color:var(--cyan)">11 ACTIVE</div>
       </div>
     </div>
   </div>
@@ -1198,8 +1199,8 @@ input[type=text]::placeholder { color: var(--text-dim); }
       <div class="hero-stat__num" style="color:var(--cyan)" id="stat-nodes">11</div>
       <div class="hero-stat__label">Fleet Nodes</div>
     </div>
-    <div class="hero-stat" onclick="showToast('<strong>LLM Subscriptions</strong> — DeepSeek, Google AI, xAI/Grok, Perplexity, OpenAI, Anthropic, Mistral, Meta, Cohere, Replicate.');playSound('confirm',0.5)" style="cursor:pointer">
-      <div class="hero-stat__num" style="color:var(--amber)" id="stat-llm">10</div>
+    <div class="hero-stat" onclick="showToast('<strong>LLM Subscriptions</strong> — DeepSeek, Google AI, xAI/Grok, Perplexity, OpenAI, Anthropic (API+Pro), Mistral, Meta, Cohere, Replicate.');playSound('confirm',0.5)" style="cursor:pointer">
+      <div class="hero-stat__num" style="color:var(--amber)" id="stat-llm">11</div>
       <div class="hero-stat__label">LLM Subscriptions</div>
     </div>
     <div class="hero-stat" onclick="scrollTo('career');playSound('press',0.5)" style="cursor:pointer">
@@ -1708,9 +1709,13 @@ input[type=text]::placeholder { color: var(--text-dim); }
           <div class="route-row__class" style="color:var(--amber)">Real-Time</div>
           <div class="route-row__chain">DeepSeekv4 Search → Perplexity Pro → ChatGPT Deep Research</div>
         </div>
+        <div class="route-row" style="border-color:var(--accent)">
+          <div class="route-row__class" style="color:var(--accent)">Code Generation</div>
+          <div class="route-row__chain">Claude Sonnet 4.5 <span class="mono fs-xs" style="color:var(--accent)">(LiteLLM)</span> → Qwen-coder → GPT-5.5</div>
+        </div>
         <div class="route-row" style="border-color:var(--purple)">
           <div class="route-row__class" style="color:var(--purple)">Sensitive</div>
-          <div class="route-row__chain">Atlas (local) → Claude Pro → Omnius Sovereign</div>
+          <div class="route-row__chain">Atlas (local) → Claude API (LiteLLM) → Omnius Sovereign</div>
         </div>
         <div class="route-row" style="border-color:var(--green)">
           <div class="route-row__class" style="color:var(--green)">Cost-Bound</div>
@@ -1784,9 +1789,9 @@ input[type=text]::placeholder { color: var(--text-dim); }
           <div class="sub-card__status"><span class="pill pill--green active-pulse">ACTIVE</span></div>
         </div>
         <div class="sub-card">
-          <div class="sub-card__name" style="color:var(--cyan)">Claude Pro</div>
-          <div class="sub-card__detail">Claude 4 Opus Extended<br>100K context • Projects</div>
-          <div class="sub-card__status"><span class="pill pill--green active-pulse">ACTIVE</span></div>
+          <div class="sub-card__name" style="color:var(--cyan)">Claude API</div>
+          <div class="sub-card__detail">Sonnet 4.5 • Opus 4.5<br>LiteLLM • Code Gen</div>
+          <div class="sub-card__status"><span class="pill pill--green active-pulse">API+PRO</span></div>
         </div>
       </div>
     </div>
@@ -2499,11 +2504,12 @@ function simulateRoute() {
 // ══════════════════════════════════════════════════
 function runVoice() {
   const inp = document.getElementById('voice-input'), out = document.getElementById('voice-out');
-  const text = inp.value.trim() || 'Test transmission. Sovereign cluster stable at Warp 11.';
+  const text = (inp.value.trim() || 'Test transmission. Sovereign cluster stable at Warp 11.')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   out.style.display = 'block';
   playSound('alert', 0.5);
   setTimeout(() => {
-    out.innerHTML = `<span style="color:var(--text-dim)">NEMOTRON:</span> "${text}"<br><span style="color:var(--green)">→ Reasoning complete. Confidence 94%.</span><br><br><span style="color:var(--text-dim)">GROK-SPEAK (Eve):</span> <em>"Acknowledged, Admiral. All systems nominal."</em>`;
+    out.innerHTML = '<span style="color:var(--text-dim)">NEMOTRON:</span> "' + text + '"<br><span style="color:var(--green)">→ Reasoning complete. Confidence 94%.</span><br><br><span style="color:var(--text-dim)">GROK-SPEAK (Eve):</span> <em>"Acknowledged, Admiral. All systems nominal."</em>';
     playSound('success', 0.5);
     if ('speechSynthesis' in window) {
       const u = new SpeechSynthesisUtterance(text); u.pitch=1.05; u.rate=0.92;
