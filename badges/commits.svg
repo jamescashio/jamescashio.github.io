@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="24" viewBox="0 0 180 24">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0f"/>
+      <stop offset="100%" style="stop-color:#121220"/>
+    </linearGradient>
+    <filter id="g">
+      <feGaussianBlur stdDeviation="1" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="180" height="24" rx="4" fill="url(#bg)" stroke="#ff9500" stroke-width="0.5"/>
+  <!-- Label -->
+  <text x="8" y="14" font-family="'Courier New',monospace" font-size="10" font-weight="700"
+        fill="#ff9500" filter="url(#g)" letter-spacing="1">COMMITS</text>
+  <!-- Separator -->
+  <line x1="95" y1="4" x2="95" y2="20" stroke="#ff9500" stroke-width="0.3" opacity="0.3"/>
+  <!-- Value -->
+  <text x="184" y="15" font-family="'Courier New',monospace" font-size="14" font-weight="700"
+        fill="#ff9500" text-anchor="end" filter="url(#g)">236</text>
+</svg>

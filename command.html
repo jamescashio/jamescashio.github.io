@@ -127,7 +127,97 @@ body {
   letter-spacing: 1px;
 }
 
-/* ─── ARCHITECTURE DIAGRAM ─── */
+/* ─── TOPOLOGY DIAGRAM ─── */
+.topo-container {
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: rgba(0,0,0,0.3);
+}
+.topo-svg {
+  width: 100%;
+  display: block;
+}
+.topo-node {
+  cursor: pointer;
+  transition: filter 0.3s;
+}
+.topo-node:hover { filter: brightness(1.4); }
+.topo-node-bg {
+  transition: all 0.3s;
+}
+.topo-node:hover .topo-node-bg {
+  stroke-width: 2;
+}
+.topo-label {
+  font-family: 'Orbitron', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+.topo-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 6.5px;
+  letter-spacing: 0.5px;
+  text-anchor: middle;
+  dominant-baseline: central;
+  fill: var(--text-dim);
+}
+.topo-connector {
+  stroke-dasharray: 4 3;
+  animation: dash-flow 1s linear infinite;
+}
+@keyframes dash-flow {
+  to { stroke-dashoffset: -14; }
+}
+.topo-glow {
+  animation: topo-pulse 2.5s ease-in-out infinite;
+}
+@keyframes topo-pulse {
+  0%, 100% { opacity: 0.15; r: 12; }
+  50% { opacity: 0.35; r: 16; }
+}
+.topo-particle {
+  animation: particle-drift 3s ease-in-out infinite;
+}
+@keyframes particle-drift {
+  0% { opacity: 0; transform: translateY(0); }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-60px); }
+}
+.topo-internet-ring {
+  animation: spin-ring 8s linear infinite;
+  transform-origin: 450px 45px;
+}
+@keyframes spin-ring {
+  to { transform: rotate(360deg); }
+}
+.topo-data-dot {
+  animation: dot-flow 2.5s linear infinite;
+}
+@keyframes dot-flow {
+  0% { opacity: 0; }
+  5% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+/* Scan line overlay for topology */
+.topo-scan {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  animation: topo-scan 4s linear infinite;
+  pointer-events: none;
+  opacity: 0.3;
+}
+@keyframes topo-scan {
+  to { top: 100%; }
+}
 .arch-container {
   position: relative;
   width: 100%;
@@ -404,6 +494,206 @@ body {
       <span style="color:var(--text-dim)">•</span>
       <span id="clock">00:00:00</span>
       <span style="color:var(--text-dim)">UTC</span>
+    </div>
+  </div>
+
+  <!-- CLUSTER TOPOLOGY -->
+  <div class="panel panel--accent panel--scan" style="margin-bottom: 20px;">
+    <div class="panel-title">
+      <span>
+        <span class="section-label" style="font-size:11px;gap:10px;text-shadow:0 0 20px var(--cyan);">
+          <span style="color:var(--cyan);">◆ LIVE NETWORK</span>
+        </span>
+        CLUSTER TOPOLOGY
+      </span>
+      <span class="badge">2 HYPERVISORS • 11 LXCs • 1 MAC M4 • 1 RPI4</span>
+    </div>
+    <div class="topo-container" style="position:relative;">
+      <div class="topo-scan"></div>
+      <svg class="topo-svg" viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- Glow filters -->
+          <filter id="glow-orange"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="glow-cyan"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="glow-green"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="glow-purple"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="glow-red"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <!-- Grid pattern -->
+          <pattern id="topo-grid" width="24" height="24" patternUnits="userSpaceOnUse">
+            <path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(255,255,255,0.025)" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+
+        <!-- Background -->
+        <rect width="900" height="480" fill="url(#topo-grid)"/>
+
+        <!-- INTERNET node -->
+        <circle cx="450" cy="45" r="22" fill="rgba(255,149,0,0.08)" stroke="var(--accent)" stroke-width="1.5" filter="url(#glow-orange)"/>
+        <circle cx="450" cy="45" r="28" fill="none" stroke="var(--accent)" stroke-width="0.5" opacity="0.3" class="topo-internet-ring"/>
+        <text x="450" y="42" class="topo-label" fill="var(--accent)" style="font-size:7px">INTERNET</text>
+        <text x="450" y="50" class="topo-sub" fill="var(--accent)" style="font-size:5px">WAN</text>
+
+        <!-- Connection lines: Internet → Hypervisors -->
+        <!-- Apollo -->
+        <line x1="450" y1="67" x2="150" y2="110" stroke="var(--green)" stroke-width="0.8" opacity="0.4" stroke-dasharray="3 3" class="topo-connector"/>
+        <!-- Zeus -->
+        <line x1="450" y1="67" x2="450" y2="110" stroke="var(--cyan)" stroke-width="1" opacity="0.5" stroke-dasharray="3 3" class="topo-connector"/>
+        <!-- Atlas -->
+        <line x1="450" y1="67" x2="750" y2="110" stroke="var(--purple)" stroke-width="0.8" opacity="0.4" stroke-dasharray="3 3" class="topo-connector"/>
+
+        <!-- ═══ APOLLO COLUMN (x=150) ═══ -->
+        <!-- Apollo HV -->
+        <g class="topo-node">
+          <circle cx="150" cy="120" r="38" fill="rgba(0,255,159,0.06)" stroke="var(--green)" stroke-width="1.5" class="topo-node-bg" filter="url(#glow-green)"/>
+          <circle cx="150" cy="120" r="45" fill="none" stroke="var(--green)" stroke-width="0.5" opacity="0.15" class="topo-glow"/>
+          <text x="150" y="115" class="topo-label" fill="var(--green)" style="font-size:11px">APOLLO</text>
+          <text x="150" y="125" class="topo-sub" fill="var(--green)" style="font-size:5px">PRIMARY HV</text>
+        </g>
+
+        <!-- Apollo services (x=150, spaced y=175,205,235,265,295) -->
+        <!-- ROGUARD -->
+        <g class="topo-node">
+          <rect x="115" y="168" width="70" height="22" rx="11" fill="rgba(0,249,255,0.08)" stroke="var(--cyan)" stroke-width="1" class="topo-node-bg"/>
+          <text x="150" y="180" class="topo-label" fill="var(--cyan)" style="font-size:7px">ROGUARD</text>
+          <text x="150" y="196" class="topo-label" fill="var(--cyan)" style="font-size:5px;opacity:0.6">DNS/DHCP</text>
+          <line x1="150" y1="158" x2="150" y2="168" stroke="var(--cyan)" stroke-width="0.5" opacity="0.3" class="topo-connector"/>
+        </g>
+        <!-- PLEX -->
+        <g class="topo-node">
+          <rect x="115" y="208" width="70" height="22" rx="11" fill="rgba(255,0,51,0.08)" stroke="var(--red)" stroke-width="1" class="topo-node-bg"/>
+          <text x="150" y="220" class="topo-label" fill="var(--red)" style="font-size:7px">PLEX</text>
+          <text x="150" y="236" class="topo-label" fill="var(--red)" style="font-size:5px;opacity:0.6">MEDIA</text>
+          <line x1="150" y1="198" x2="150" y2="208" stroke="var(--red)" stroke-width="0.5" opacity="0.3" class="topo-connector"/>
+        </g>
+        <!-- HA -->
+        <g class="topo-node">
+          <rect x="115" y="258" width="70" height="22" rx="11" fill="rgba(0,255,159,0.08)" stroke="var(--green)" stroke-width="1" class="topo-node-bg"/>
+          <text x="150" y="270" class="topo-label" fill="var(--green)" style="font-size:7px">HA</text>
+          <text x="150" y="286" class="topo-label" fill="var(--green)" style="font-size:5px;opacity:0.6">HOME AUTO</text>
+          <line x1="150" y1="248" x2="150" y2="258" stroke="var(--green)" stroke-width="0.5" opacity="0.3" class="topo-connector"/>
+        </g>
+        <!-- PBS -->
+        <g class="topo-node">
+          <rect x="115" y="298" width="70" height="22" rx="11" fill="rgba(0,249,255,0.08)" stroke="var(--cyan)" stroke-width="1" class="topo-node-bg"/>
+          <text x="150" y="310" class="topo-label" fill="var(--cyan)" style="font-size:7px">PBS</text>
+          <text x="150" y="326" class="topo-label" fill="var(--cyan)" style="font-size:5px;opacity:0.6">BACKUPS</text>
+          <line x1="150" y1="308" x2="150" y2="298" stroke="var(--cyan)" stroke-width="0.5" opacity="0.3" class="topo-connector"/>
+        </g>
+        <!-- RAGFLOW -->
+        <g class="topo-node">
+          <rect x="115" y="338" width="70" height="22" rx="11" fill="rgba(0,249,255,0.08)" stroke="var(--cyan)" stroke-width="1" class="topo-node-bg"/>
+          <text x="150" y="350" class="topo-label" fill="var(--cyan)" style="font-size:7px">RAGFLOW</text>
+          <text x="150" y="366" class="topo-label" fill="var(--cyan)" style="font-size:5px;opacity:0.6">RAG PIPELINE</text>
+          <line x1="150" y1="360" x2="150" y2="338" stroke="var(--cyan)" stroke-width="0.5" opacity="0.3" class="topo-connector"/>
+        </g>
+
+        <!-- ═══ ZEUS COLUMN (x=450) ═══ -->
+        <!-- Zeus HV -->
+        <g class="topo-node">
+          <circle cx="450" cy="120" r="38" fill="rgba(0,249,255,0.06)" stroke="var(--cyan)" stroke-width="1.5" class="topo-node-bg" filter="url(#glow-cyan)"/>
+          <circle cx="450" cy="120" r="45" fill="none" stroke="var(--cyan)" stroke-width="0.5" opacity="0.15" class="topo-glow"/>
+          <text x="450" y="115" class="topo-label" fill="var(--cyan)" style="font-size:11px">ZEUS</text>
+          <text x="450" y="125" class="topo-sub" fill="var(--cyan)" style="font-size:5px">SECONDARY HV</text>
+        </g>
+
+        <!-- Zeus services (x=450) -->
+        <!-- HERMES -->
+        <g class="topo-node">
+          <rect x="415" y="168" width="70" height="22" rx="11" fill="rgba(255,149,0,0.08)" stroke="var(--accent)" stroke-width="1" class="topo-node-bg"/>
+          <text x="450" y="180" class="topo-label" fill="var(--accent)" style="font-size:7px">HERMES</text>
+          <text x="450" y="196" class="topo-label" fill="var(--accent)" style="font-size:5px;opacity:0.6">OPS AGENT</text>
+          <line x1="450" y1="158" x2="450" y2="168" stroke="var(--accent)" stroke-width="0.5" opacity="0.3" class="topo-connector"/>
+        </g>
+        <!-- n8n -->
+        <g class="topo-node">
+          <rect x="415" y="208" width="70" height="22" rx="11" fill="rgba(0,249,255,0.08)" stroke="var(--cyan)" stroke-width="1" class="topo-node-bg"/>
+          <text x="450" y="220" class="topo-label" fill="var(--cyan)" style="font-size:7px">n8n</text>
+          <text x="450" y="236" class="topo-label" fill="var(--cyan)" style="font-size:5px;opacity:0.6">LLM ROUTER</text>
+          <line x1="450" y1="198" x2="450" y2="208" stroke="var(--cyan)" stroke-width="0.5" opacity="0.3" class="topo-connector"/>
+        </g>
+        <!-- OMNIBUS -->
+        <g class="topo-node">
+          <rect x="415" y="258" width="70" height="22" rx="11" fill="rgba(204,0,255,0.08)" stroke="var(--purple)" stroke-width="1" class="topo-node-bg"/>
+          <circle cx="425" cy="264" r="3" fill="var(--purple)" opacity="0.6" class="pulse-circle"/>
+          <text x="450" y="270" class="topo-label" fill="var(--purple)" style="font-size:7px">OMNIBUS</text>
+          <text x="450" y="286" class="topo-label" fill="var(--purple)" style="font-size:5px;opacity:0.6">CONVERSATION AI</text>
+          <line x1="450" y1="248" x2="450" y2="258" stroke="var(--purple)" stroke-width="0.5" opacity="0.3" class="topo-connector"/>
+        </g>
+        <!-- TOOLS -->
+        <g class="topo-node">
+          <rect x="415" y="298" width="70" height="22" rx="11" fill="rgba(0,255,159,0.08)" stroke="var(--green)" stroke-width="1" class="topo-node-bg"/>
+          <text x="450" y="310" class="topo-label" fill="var(--green)" style="font-size:7px">TOOLS</text>
+          <text x="450" y="326" class="topo-label" fill="var(--green)" style="font-size:5px;opacity:0.6">PROXY STACK</text>
+          <line x1="450" y1="308" x2="450" y2="298" stroke="var(--green)" stroke-width="0.5" opacity="0.3" class="topo-connector"/>
+        </g>
+        <!-- VAULT -->
+        <g class="topo-node">
+          <rect x="415" y="338" width="70" height="22" rx="11" fill="rgba(255,149,0,0.08)" stroke="var(--accent)" stroke-width="1" class="topo-node-bg"/>
+          <text x="450" y="350" class="topo-label" fill="var(--accent)" style="font-size:7px">VAULT</text>
+          <text x="450" y="366" class="topo-label" fill="var(--accent)" style="font-size:5px;opacity:0.6">SECRETS</text>
+          <line x1="450" y1="360" x2="450" y2="338" stroke="var(--accent)" stroke-width="0.5" opacity="0.3" class="topo-connector"/>
+        </g>
+
+        <!-- ═══ ATLAS COLUMN (x=750) ═══ -->
+        <!-- Atlas -->
+        <g class="topo-node">
+          <circle cx="750" cy="120" r="38" fill="rgba(204,0,255,0.06)" stroke="var(--purple)" stroke-width="1.5" class="topo-node-bg" filter="url(#glow-purple)"/>
+          <circle cx="750" cy="120" r="45" fill="none" stroke="var(--purple)" stroke-width="0.5" opacity="0.15" class="topo-glow"/>
+          <text x="750" y="115" class="topo-label" fill="var(--purple)" style="font-size:11px">ATLAS</text>
+          <text x="750" y="125" class="topo-sub" fill="var(--purple)" style="font-size:5px">MAC MINI M4</text>
+        </g>
+
+        <!-- Atlas services (x=750) -->
+        <!-- WRAZUH -->
+        <g class="topo-node">
+          <rect x="715" y="168" width="70" height="22" rx="11" fill="rgba(255,149,0,0.08)" stroke="var(--accent)" stroke-width="1" class="topo-node-bg"/>
+          <text x="750" y="180" class="topo-label" fill="var(--accent)" style="font-size:7px">WRAZUH</text>
+          <text x="750" y="196" class="topo-label" fill="var(--accent)" style="font-size:5px;opacity:0.6">SIEM</text>
+          <line x1="750" y1="158" x2="750" y2="168" stroke="var(--accent)" stroke-width="0.5" opacity="0.3" class="topo-connector"/>
+        </g>
+        <!-- GENESIS -->
+        <g class="topo-node">
+          <rect x="715" y="208" width="70" height="22" rx="11" fill="rgba(0,255,159,0.08)" stroke="var(--green)" stroke-width="1" class="topo-node-bg"/>
+          <text x="750" y="220" class="topo-label" fill="var(--green)" style="font-size:7px">GENESIS</text>
+          <text x="750" y="236" class="topo-label" fill="var(--green)" style="font-size:5px;opacity:0.6">NAS</text>
+          <line x1="750" y1="198" x2="750" y2="208" stroke="var(--green)" stroke-width="0.5" opacity="0.3" class="topo-connector"/>
+        </g>
+        <!-- ATHENA -->
+        <g class="topo-node">
+          <rect x="715" y="258" width="70" height="22" rx="11" fill="rgba(0,249,255,0.08)" stroke="var(--cyan)" stroke-width="1" class="topo-node-bg"/>
+          <text x="750" y="270" class="topo-label" fill="var(--cyan)" style="font-size:7px">ATHENA</text>
+          <text x="750" y="286" class="topo-label" fill="var(--cyan)" style="font-size:5px;opacity:0.6">RASPBERRY PI 4</text>
+          <line x1="750" y1="248" x2="750" y2="258" stroke="var(--cyan)" stroke-width="0.5" opacity="0.3" class="topo-connector"/>
+        </g>
+        <!-- CASHOTUF -->
+        <g class="topo-node">
+          <rect x="715" y="298" width="70" height="22" rx="11" fill="rgba(255,0,51,0.08)" stroke="var(--red)" stroke-width="1" class="topo-node-bg"/>
+          <text x="750" y="310" class="topo-label" fill="var(--red)" style="font-size:7px">CASHIOTUF</text>
+          <text x="750" y="326" class="topo-label" fill="var(--red)" style="font-size:5px;opacity:0.6">K3S 3000</text>
+          <line x1="750" y1="308" x2="750" y2="298" stroke="var(--red)" stroke-width="0.5" opacity="0.3" class="topo-connector"/>
+        </g>
+
+        <!-- Inter-hypervisor connections -->
+        <line x1="188" y1="120" x2="412" y2="120" stroke="var(--cyan)" stroke-width="0.5" opacity="0.15" stroke-dasharray="2 4"/>
+        <line x1="488" y1="120" x2="712" y2="120" stroke="var(--purple)" stroke-width="0.5" opacity="0.15" stroke-dasharray="2 4"/>
+
+        <!-- Animated data particles on main lines -->
+        <circle r="2" fill="var(--accent)" opacity="0.8" filter="url(#glow-orange)">
+          <animateMotion dur="3s" repeatCount="indefinite"
+            path="M450,67 L150,110"/>
+        </circle>
+        <circle r="2" fill="var(--cyan)" opacity="0.8" filter="url(#glow-cyan)">
+          <animateMotion dur="3s" repeatCount="indefinite"
+            path="M450,67 L450,110"/>
+        </circle>
+        <circle r="2" fill="var(--purple)" opacity="0.8" filter="url(#glow-purple)">
+          <animateMotion dur="3s" repeatCount="indefinite"
+            path="M450,67 L750,110"/>
+        </circle>
+
+        <!-- Legend -->
+        <text x="20" y="470" class="topo-sub" fill="var(--text-dim)" style="font-size:5px">Animated live topology • Auto-scaled • Hover for details</text>
+      </svg>
     </div>
   </div>
 
