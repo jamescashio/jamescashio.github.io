@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-05-06T09:05:03",
-  "ts_epoch": 1778072703,
+  "timestamp": "2026-05-06T09:33:00",
+  "ts_epoch": 1778074380,
   "nodes": {
     "Apollo": {
       "ip": "192.168.1.30",
@@ -48,15 +48,23 @@
     },
     "Plex": {
       "ip": "192.168.1.108",
-      "latency": "2ms"
+      "latency": "2ms",
+      "status": "locked"
     },
     "Cashiotuf": {
       "ip": "192.168.1.15",
-      "latency": "1003ms"
+      "latency": "1003ms",
+      "status": "degraded"
     }
   },
   "models": {
     "claude-sonnet-4.5": {
+      "provider": "Anthropic",
+      "status": "online",
+      "via": "LiteLLM :4000",
+      "role": "Code Generation (legacy)"
+    },
+    "claude-sonnet-4.6": {
       "provider": "Anthropic",
       "status": "online",
       "via": "LiteLLM :4000",
@@ -67,6 +75,18 @@
       "status": "online",
       "via": "LiteLLM :4000",
       "role": "Sensitive / Deep Reasoning"
+    },
+    "claude-opus-4.6": {
+      "provider": "Anthropic",
+      "status": "online",
+      "via": "LiteLLM :4000",
+      "role": "Deep Reasoning / Strategy"
+    },
+    "claude-opus-4.7": {
+      "provider": "Anthropic",
+      "status": "online",
+      "via": "LiteLLM :4000",
+      "role": "Architecture / Strategy"
     },
     "deepseek-chat": {
       "provider": "DeepSeek",

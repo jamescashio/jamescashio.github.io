@@ -3,8 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Doug Cashio — Principal Solutions Consultant. Enterprise AI infrastructure, multi-model LLM orchestration, zero-trust cybersecurity. Sovereign ZeuApollo fleet.">
+<meta name="theme-color" content="#ff9500">
+<meta property="og:title" content="ZEUSAPOLLO v21.1 • Doug Cashio • Enterprise AI & Cybersecurity">
+<meta property="og:description" content="Sovereign AI infrastructure — 11-model LLM fabric, zero-trust architecture, 18-node fleet.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cashio.us">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='%230a0a0f'/><rect x='2' y='5' width='12' height='6' rx='2' fill='%23ff9500'/><circle cx='8' cy='8' r='2' fill='%230a0a0f'/></svg>">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdnjs.cloudflare.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https:; media-src 'self';">
-<title>ZEUSAPOLLO v21.0 • Doug Cashio • Enterprise AI & Cybersecurity</title>
+<title>ZEUSAPOLLO v21.1 • Doug Cashio • Enterprise AI & Cybersecurity</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,200;0,300;0,400;0,600;0,700;1,300&family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -869,6 +876,18 @@ scrollbar-color: var(--accent) transparent;
 .mb-6 { margin-bottom: 24px; }
 .mb-8 { margin-bottom: 32px; }
 .text-center { text-align: center; }
+
+/* Tabular numerals on all dashboard/metric cells */
+.metric, .dashboard-value, .latency-num, .route-lat, .stat-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .panel--scan::after { display: none; }
+  .node-card__tele::after { display: none; }
+}
 table { width: 100%; border-collapse: collapse; }
 th,td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--glass-border); font-size: 14px; }
 th { font-family: var(--font-mono); font-size: 11px; letter-spacing: 1px; color: var(--text-dim); font-weight: 400; }
@@ -1139,9 +1158,9 @@ input[type=text]::placeholder { color: var(--text-dim); }
 
   <div class="hero-eyebrow">
     <div class="status-dot"></div>
-    <span>v21.0 EVENT-DRIVEN BASELINE</span>
+    <span>v21.1 EVENT-DRIVEN BASELINE</span>
     <span style="color:var(--text-dim)">•</span>
-    <span>VERIFIED 05-05-2026</span>
+    <span>VERIFIED 05-06-2026</span>
   </div>
 
   <h1 class="hero-name glitch holo" data-text="DOUG CASHIO">DOUG CASHIO</h1>
@@ -1183,7 +1202,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
       Access Portfolio <i class="fas fa-arrow-right"></i>
     </button>
     <button class="btn btn--cyan btn--lg" onclick="scrollTo('lab');playSound('phaser',0.5)" onmouseenter="playSound('lcars',0.2)">
-      ZeusApollo Lab v21.0
+      ZeusApollo Lab v21.1
     </button>
     <button class="btn btn--purple btn--lg" onclick="scrollTo('topology');playSound('phaser',0.7)" onmouseenter="playSound('lcars',0.2)">
       <i class="fas fa-network-wired"></i> Topology
@@ -1199,7 +1218,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
       <div class="hero-stat__num" style="color:var(--cyan)" id="stat-nodes">11</div>
       <div class="hero-stat__label">Fleet Nodes</div>
     </div>
-    <div class="hero-stat" onclick="showToast('<strong>LLM Subscriptions</strong> — DeepSeek, Google AI, xAI/Grok, Perplexity, OpenAI, Anthropic (API+Pro), Mistral, Meta, Cohere, Replicate.');playSound('confirm',0.5)" style="cursor:pointer">
+    <div class="hero-stat" onclick="showToast('<strong>LLM Subscriptions</strong> — DeepSeek, Google AI, xAI/Grok, Perplexity, OpenAI, Anthropic API, Qwen, Mistral, Meta, Cohere, Replicate.');playSound('confirm',0.5)" style="cursor:pointer">
       <div class="hero-stat__num" style="color:var(--amber)" id="stat-llm">11</div>
       <div class="hero-stat__label">LLM Subscriptions</div>
     </div>
@@ -1222,7 +1241,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
 <section id="portfolio" class="section reveal">
   <div class="container">
 
-    <div class="section-label mb-4" style="color:var(--accent)">Mission Profile <span style="flex:none;color:var(--text-dim)">• Career Arc v21.0</span></div>
+    <div class="section-label mb-4" style="color:var(--accent)">Mission Profile <span style="flex:none;color:var(--text-dim)">• Career Arc v21.1</span></div>
     <div class="section-title section-title--xl mb-8" style="color:white">WHAT I BUILD</div>
 
     <div class="grid-12 gap-6">
@@ -1538,8 +1557,8 @@ input[type=text]::placeholder { color: var(--text-dim); }
     <div class="flex justify-between items-start mb-8 flex-wrap gap-4">
       <div>
         <div style="display:inline-block;padding:4px 12px;background:var(--accent);color:#0a0a0f;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:12px;">PRIMARY MISSION</div>
-        <div class="section-title section-title--xl" style="color:white">ZEUSAPOLLO <span style="color:var(--accent)">v21.0</span></div>
-        <div class="mono fs-xs dim mt-4" style="letter-spacing:2px">SOVEREIGN INFRASTRUCTURE ASSESSMENT • 05-05-2026</div>
+        <div class="section-title section-title--xl" style="color:white">ZEUSAPOLLO <span style="color:var(--accent)">v21.1</span></div>
+        <div class="mono fs-xs dim mt-4" style="letter-spacing:2px">SOVEREIGN INFRASTRUCTURE ASSESSMENT • 05-06-2026</div>
       </div>
       <div style="text-align:right;">
         <div class="mono fs-xs dim" style="margin-bottom:4px">SOURCE: PROXMOX VE API + ADGUARD DHCP + PROJECT FILES</div>
@@ -1711,7 +1730,11 @@ input[type=text]::placeholder { color: var(--text-dim); }
         </div>
         <div class="route-row" style="border-color:var(--accent)">
           <div class="route-row__class" style="color:var(--accent)">Code Generation</div>
-          <div class="route-row__chain">Claude Sonnet 4.5 <span class="mono fs-xs" style="color:var(--accent)">(LiteLLM)</span> → Qwen-coder → GPT-5.5</div>
+          <div class="route-row__chain">Claude Sonnet 4.6 <span class="mono fs-xs" style="color:var(--accent)">(LiteLLM)</span> → Qwen-coder → GPT-5.5</div>
+        </div>
+        <div class="route-row" style="border-color:var(--cyan)">
+          <div class="route-row__class" style="color:var(--cyan)">Architecture / Strategy</div>
+          <div class="route-row__chain">Claude Opus 4.7 <span class="mono fs-xs" style="color:var(--cyan)">(LiteLLM)</span> → DeepSeek-reasoner → Atlas (local)</div>
         </div>
         <div class="route-row" style="border-color:var(--purple)">
           <div class="route-row__class" style="color:var(--purple)">Sensitive</div>
@@ -1761,7 +1784,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
 
     <!-- LLM SUBSCRIPTION STACK -->
     <div class="panel" style="padding:24px;margin-bottom:20px;">
-      <div class="section-label mb-6" style="color:var(--accent);text-align:center">🤖 LLM Subscription Stack — 05-05-2026</div>
+      <div class="section-label mb-6" style="color:var(--accent);text-align:center">🤖 LLM Subscription Stack — 05-06-2026</div>
       <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;max-width:1200px;margin:0 auto;">
         <div class="sub-card">
           <div class="sub-card__name" style="color:var(--accent)">Gemini 3.1 Pro</div>
@@ -1790,7 +1813,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
         </div>
         <div class="sub-card">
           <div class="sub-card__name" style="color:var(--cyan)">Claude API</div>
-          <div class="sub-card__detail">Sonnet 4.5 • Opus 4.5<br>LiteLLM • Code Gen</div>
+          <div class="sub-card__detail">Sonnet 4.6 • Opus 4.7<br>LiteLLM • Code Gen</div>
           <div class="sub-card__status"><span class="pill pill--green active-pulse">API+PRO</span></div>
         </div>
       </div>
@@ -1800,7 +1823,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
     <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;">
       <div>
         <div class="panel" style="padding:24px;">
-          <div class="section-label mb-6" style="color:var(--accent)">📊 Full Node Inventory — v20.1 Verified</div>
+          <div class="section-label mb-6" style="color:var(--accent)">📊 Full Node Inventory — v21.1 Verified</div>
           <div class="overflow-x">
             <table>
               <thead>
@@ -1834,6 +1857,10 @@ input[type=text]::placeholder { color: var(--text-dim); }
       <div>
         <div class="panel" style="padding:24px;height:100%;">
           <div class="section-label mb-6" style="color:var(--accent)">📜 Change Log</div>
+          <div class="timeline-entry">
+            <div class="timeline-entry__date">05-06-2026 v21.1</div>
+            <div class="timeline-entry__text">SWARM KEY INTEGRATION. Claude Opus 4.7/4.6 + Sonnet 4.6 added via LiteLLM. API key rotated to Hermes Swarm key. Site polish: tabular nums, prefers-reduced-motion, inline favicon, OG meta, route table expanded with Architecture/Strategy tier. Status dashboard updated with LOCKED indicators.</div>
+          </div>
           <div class="timeline-entry">
             <div class="timeline-entry__date">05-05-2026 v21.0</div>
             <div class="timeline-entry__text">EVENT-DRIVEN ARCHITECTURE. NATS broker on Athena (port 4222). Three partitioned graph namespaces (Ontology/MemPalace/Omnius). Hermes NATS bridge daemon subscribing to cluster.node events. Proxmox token downgraded to PVEAuditor. Keepalived VRRP verified across AdGuard CT-101/CT-109. Swarm inference bridge on Atlas (:11235) routing to Cashiotuf LM Studio + Atlas Ollama. Wake-on-LAN quorum watchdog. OpenClaude-Portable integrated (portable AI coding agent 7 providers).</div>
@@ -1880,7 +1907,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
     <a href="/cdn-cgi/l/email-protection#d0b4bfa5b790b3b1a3b8b9bffea5a3"><span class="__cf_email__" data-cfemail="294d465c4e694a485a414046075c5a">[email&#160;protected]</span></a>
     <a href="#" onclick="window.location.reload()">Reload Telemetry</a>
   </div>
-  <div class="footer-copy">ZEUSAPOLLO v21.0 • DOUG CASHIO • <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="74101b0113341715071c1d1b5a0107">[email&#160;protected]</a> • EVENT-DRIVEN INFRASTRUCTURE • 2026</div>
+  <div class="footer-copy">ZEUSAPOLLO v21.1 • DOUG CASHIO • <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8eeae1fb c9eeccde">[email&#160;protected]</a> • EVENT-DRIVEN INFRASTRUCTURE • 2026</div>
 </footer>
 
 <!-- NODE MODAL -->
@@ -2648,7 +2675,7 @@ window.addEventListener('load', () => {
   const btn = document.getElementById('sound-btn');
   if (btn) btn.innerHTML = window._soundEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
 
-  setTimeout(() => showToast('LCARS v20.1 DEFIANT — SPATIAL AUDIO ACTIVE — ALL SYSTEMS NOMINAL', 'var(--accent)'), 1600);
+  setTimeout(() => showToast('LCARS v21.1 DEFIANT — SPATIAL AUDIO ACTIVE — ALL SYSTEMS NOMINAL', 'var(--accent)'), 1600);
 });
 
 window.ZEUSAPOLLO = { engageWarp, triggerRedAlert, simulateRoute, playSound, toggleSound };
@@ -2661,7 +2688,7 @@ window.ZEUSAPOLLO = { engageWarp, triggerRedAlert, simulateRoute, playSound, tog
     <rect x="0" y="794" width="1200" height="6" fill="#ff9500" opacity="0.5"/>
     <text x="600" y="360" font-family="monospace" font-size="100" font-weight="900" fill="#00f9ff" text-anchor="middle" opacity="0.9">DOUG CASHIO</text>
     <text x="600" y="420" font-family="monospace" font-size="24" fill="#ff9500" text-anchor="middle" letter-spacing="10">ENTERPRISE AI • CYBERSECURITY</text>
-    <text x="600" y="460" font-family="monospace" font-size="14" fill="#444" text-anchor="middle" letter-spacing="4">ZEUSAPOLLO v21.0 • EVENT-DRIVEN INFRASTRUCTURE</text>
+    <text x="600" y="460" font-family="monospace" font-size="14" fill="#444" text-anchor="middle" letter-spacing="4">ZEUSAPOLLO v21.1 • EVENT-DRIVEN INFRASTRUCTURE</text>
     <circle cx="280" cy="620" r="16" fill="none" stroke="#00ff9f" stroke-width="2"/>
     <circle cx="420" cy="620" r="16" fill="none" stroke="#00ff9f" stroke-width="2"/>
     <circle cx="560" cy="600" r="20" fill="none" stroke="#cc00ff" stroke-width="2.5"/>
