@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZEUSAPOLLO Command Center v21.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700&family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --accent: #ff9500;
+  --cyan: #00f9ff;
+  --green: #00ff9f;
+  --purple: #cc00ff;
+  --red: #ff0033;
+  --void: #0a0a0f;
+  --surface: rgba(12,12,22,0.88);
+  --glass: rgba(255,255,255,0.04);
+  --text: #e4e4f0;
+  --text-dim: #7a7a9a;
+}
+
+body {
+  background: var(--void);
+  font-family: 'Exo 2', sans-serif;
+  color: var(--text);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ─── STARFIELD ─── */
+#starfield {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ─── LAYOUT ─── */
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 20px 24px;
+}
+
+/* ─── HEADER ─── */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255,149,0,0.3);
+  margin-bottom: 24px;
+}
+
+.header h1 {
+  font-family: 'Orbitron', monospace;
+  font-size: 18px;
+  color: var(--cyan);
+  letter-spacing: 4px;
+}
+
+.header .status-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+}
+
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-dot.online { background: var(--green); box-shadow: 0 0 8px var(--green); animation: pulse 2s infinite; }
+.status-dot.warning { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ─── GRID ─── */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.grid.three { grid-template-columns: 1fr 1fr 1fr; }
+.grid.full { grid-template-columns: 1fr; }
+
+/* ─── PANELS ─── */
+.panel {
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 8px;
+  padding: 16px;
+  backdrop-filter: blur(12px);
+}
+
+.panel-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 10px;
+  color: var(--accent);
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.panel-title .badge {
+  font-size: 8px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(0,249,255,0.15);
+  color: var(--cyan);
+  letter-spacing: 1px;
+}
+
+/* ─── ARCHITECTURE DIAGRAM ─── */
+.arch-container {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: radial-gradient(ellipse at center, rgba(0,249,255,0.03) 0%, transparent 70%);
+}
+
+.arch-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.arch-node {
+  transition: all 0.3s ease;
+}
+.arch-node:hover { filter: brightness(1.3); }
+
+.arch-label {
+  font-family: 'Orbitron', monospace;
+  font-size: 9px;
+  fill: var(--text);
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.arch-label.sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 7px;
+  fill: var(--text-dim);
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.pulse-circle {
+  animation: archPulse 2s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes archPulse {
+  0%, 100% { opacity: 0.15; r: 6; }
+  50% { opacity: 0.4; r: 10; }
+}
+
+.data-line {
+  stroke-dasharray: 8 4;
+  animation: flow 1.5s linear infinite;
+}
+
+.data-line.alt { animation-duration: 2.2s; animation-direction: reverse; }
+.data-line.fast { animation-duration: 0.8s; }
+
+@keyframes flow {
+  to { stroke-dashoffset: -24; }
+}
+
+/* ─── EVENT TICKER ─── */
+.ticker-container {
+  height: 240px;
+  overflow: hidden;
+  position: relative;
+}
+
+.ticker-container::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(transparent, var(--surface));
+  pointer-events: none;
+}
+
+.ticker {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  line-height: 2;
+}
+
+.ticker-entry {
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  animation: fadeIn 0.3s forwards;
+}
+
+.ticker-entry .time { color: var(--text-dim); flex-shrink: 0; }
+.ticker-entry .event { color: var(--cyan); }
+.ticker-entry .detail { color: var(--text); }
+.ticker-entry .event.node-up { color: var(--green); }
+.ticker-entry .event.node-down { color: var(--red); }
+.ticker-entry .event.route { color: var(--accent); }
+.ticker-entry .event.security { color: var(--purple); }
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+/* ─── NODE STATUS ─── */
+.node-status-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.node-status-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  transition: background 0.2s;
+}
+
+.node-status-item:hover { background: rgba(255,255,255,0.05); }
+
+.node-status-item .name { color: var(--text); }
+.node-status-item .role { color: var(--text-dim); font-size: 8px; }
+
+.node-indicator {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+}
+
+.node-indicator.online { background: var(--green); }
+.node-indicator.primary { background: var(--purple); box-shadow: 0 0 6px var(--purple); }
+.node-indicator.router { background: var(--cyan); }
+.node-indicator.sovereign { background: var(--purple); }
+
+/* ─── METRICS ─── */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.metric {
+  text-align: center;
+  padding: 12px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 6px;
+}
+
+.metric-value {
+  font-family: 'Orbitron', monospace;
+  font-size: 22px;
+  color: var(--cyan);
+  letter-spacing: 2px;
+}
+
+.metric-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  color: var(--text-dim);
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
+
+/* ─── ROUTE PIE ─── */
+.route-bar {
+  display: flex;
+  height: 20px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.route-bar .segment {
+  transition: width 0.5s ease;
+}
+
+.route-bar .segment.fast { background: var(--cyan); }
+.route-bar .segment.deep { background: var(--purple); }
+.route-bar .segment.sovereign { background: var(--accent); }
+
+.route-legend {
+  display: flex;
+  gap: 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+}
+
+.route-legend-item { display: flex; align-items: center; gap: 6px; }
+.route-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+.route-legend-dot.fast { background: var(--cyan); }
+.route-legend-dot.deep { background: var(--purple); }
+.route-legend-dot.sovereign { background: var(--accent); }
+
+/* ─── TIMELINE ─── */
+.timeline {
+  position: relative;
+  padding-left: 20px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(var(--accent), var(--cyan), var(--purple));
+}
+
+.timeline-item {
+  margin-bottom: 12px;
+  position: relative;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -17px;
+  top: 5px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--void);
+}
+
+.timeline-date {
+  font-family: 'Orbitron', monospace;
+  font-size: 9px;
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+
+.timeline-text { color: var(--text-dim); margin-top: 2px; }
+
+/* ─── BACK LINK ─── */
+.back-link {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--accent);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.back-link:hover { opacity: 1; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr; }
+  .grid.three { grid-template-columns: 1fr; }
+  .arch-container { height: 300px; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <a href="index.html" class="back-link">← ZEUSAPOLLO v21.0</a>
+    </div>
+    <div class="status-bar">
+      <span class="status-dot online"></span>
+      <span>ALL SYSTEMS NOMINAL</span>
+      <span style="color:var(--text-dim)">•</span>
+      <span id="clock">00:00:00</span>
+      <span style="color:var(--text-dim)">UTC</span>
+    </div>
+  </div>
+
+  <!-- TOP ROW: Architecture + Event Ticker -->
+  <div class="grid">
+    <!-- Architecture Diagram -->
+    <div class="panel">
+      <div class="panel-title">
+        <span>Event-Driven Architecture</span>
+        <span class="badge">v21.0</span>
+      </div>
+      <div class="arch-container">
+        <svg class="arch-svg" viewBox="0 0 660 380" xmlns="http://www.w3.org/2000/svg">
+          <!-- Background grid -->
+          <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/>
+          </pattern>
+          <rect width="660" height="380" fill="url(#grid)"/>
+
+          <!-- Event flow lines -->
+          <line x1="80" y1="160" x2="330" y2="190" stroke="var(--green)" stroke-width="1.5" class="data-line fast"/>
+          <line x1="80" y1="140" x2="330" y2="170" stroke="var(--cyan)" stroke-width="1" class="data-line"/>
+          <line x1="330" y1="210" x2="580" y2="160" stroke="var(--accent)" stroke-width="1.5" class="data-line alt"/>
+          <line x1="330" y1="230" x2="580" y2="200" stroke="var(--purple)" stroke-width="1" class="data-line fast"/>
+          <line x1="80" y1="180" x2="330" y2="210" stroke="var(--accent)" stroke-width="1" class="data-line alt"/>
+
+          <!-- Proxmox Cluster (source) -->
+          <g class="arch-node">
+            <rect x="15" y="120" width="65" height="40" rx="4" fill="rgba(0,249,255,0.12)" stroke="var(--cyan)" stroke-width="1"/>
+            <text x="47" y="140" class="arch-label">PROXMOX</text>
+            <text x="47" y="150" class="arch-label sub">18 NODES</text>
+            <circle cx="47" cy="108" r="6" fill="none" stroke="var(--cyan)" stroke-width="1" class="pulse-circle"/>
+          </g>
+
+          <!-- Zeus Watcher -->
+          <g class="arch-node">
+            <rect x="110" y="148" width="55" height="30" rx="4" fill="rgba(0,255,159,0.12)" stroke="var(--green)" stroke-width="1"/>
+            <text x="137" y="158" class="arch-label sub">WATCHER</text>
+            <text x="137" y="170" class="arch-label sub" style="fill:var(--green)">30s POLL</text>
+          </g>
+
+          <!-- NATS Broker (center) -->
+          <g class="arch-node">
+            <rect x="270" y="155" width="120" height="55" rx="6" fill="rgba(255,149,0,0.15)" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="330" y="178" class="arch-label" style="fill:var(--accent)">N A T S</text>
+            <text x="330" y="190" class="arch-label sub">EVENT BUS • PORT 4222</text>
+            <text x="330" y="200" class="arch-label sub" style="fill:var(--accent)">ATHENA EDGE</text>
+          </g>
+
+          <!-- Hermes Bridge -->
+          <g class="arch-node">
+            <rect x="440" y="140" width="65" height="35" rx="4" fill="rgba(204,0,255,0.12)" stroke="var(--purple)" stroke-width="1"/>
+            <text x="472" y="152" class="arch-label sub">HERMES</text>
+            <text x="472" y="164" class="arch-label sub" style="fill:var(--purple)">BRIDGE</text>
+          </g>
+
+          <!-- Prometheus -->
+          <g class="arch-node">
+            <rect x="110" y="100" width="55" height="30" rx="4" fill="rgba(255,149,0,0.1)" stroke="var(--accent)" stroke-width="1"/>
+            <text x="137" y="111" class="arch-label sub">K U M A</text>
+            <text x="137" y="123" class="arch-label sub" style="fill:var(--accent)">MONITOR</text>
+          </g>
+
+          <!-- Omnius -->
+          <g class="arch-node">
+            <rect x="440" y="188" width="65" height="35" rx="4" fill="rgba(204,0,255,0.15)" stroke="var(--purple)" stroke-width="1.5"/>
+            <text x="472" y="200" class="arch-label sub" style="fill:var(--purple)">OMNIUS</text>
+            <text x="472" y="212" class="arch-label sub">SOVEREIGN AI</text>
+            <circle cx="472" cy="180" r="4" fill="var(--purple)" class="pulse-circle"/>
+          </g>
+
+          <!-- MCP Bridge -->
+          <g class="arch-node">
+            <rect x="540" y="175" width="50" height="30" rx="4" fill="rgba(0,249,255,0.1)" stroke="var(--cyan)" stroke-width="1"/>
+            <text x="565" y="187" class="arch-label sub">CODEGATE</text>
+            <text x="565" y="199" class="arch-label sub" style="fill:var(--cyan)">HITL</text>
+          </g>
+
+          <!-- Swarm Bridge -->
+          <g class="arch-node">
+            <rect x="440" y="100" width="65" height="30" rx="4" fill="rgba(0,249,255,0.12)" stroke="var(--cyan)" stroke-width="1"/>
+            <text x="472" y="112" class="arch-label sub">SWARM</text>
+            <text x="472" y="123" class="arch-label sub" style="fill:var(--cyan)}">BRIDGE</text>
+          </g>
+
+          <!-- Cashiotuf -->
+          <g class="arch-node">
+            <rect x="540" y="90" width="50" height="25" rx="4" fill="rgba(0,249,255,0.08)" stroke="var(--cyan)" stroke-width="0.8"/>
+            <text x="565" y="100" class="arch-label sub" style="fill:var(--cyan)">CASHIOTUF</text>
+            <text x="565" y="110" class="arch-label sub">RTX 3080</text>
+          </g>
+
+          <!-- Atlas -->
+          <g class="arch-node">
+            <rect x="540" y="120" width="50" height="25" rx="4" fill="rgba(204,0,255,0.08)" stroke="var(--purple)" stroke-width="0.8"/>
+            <text x="565" y="128" class="arch-label sub" style="fill:var(--purple)">ATLAS</text>
+            <text x="565" y="138" class="arch-label sub">M4 26B</text>
+          </g>
+
+          <!-- Graph namespaces -->
+          <g class="arch-node">
+            <rect x="100" y="290" width="130" height="65" rx="4" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.1)" stroke-width="0.8"/>
+            <text x="165" y="308" class="arch-label sub" style="fill:var(--accent)">GRAPH NAMESPACES</text>
+            <text x="165" y="322" class="arch-label sub" style="fill:var(--green)">ONTOLOGY</text>
+            <text x="165" y="334" class="arch-label sub" style="fill:var(--cyan)">MEMPALACE</text>
+            <text x="165" y="346" class="arch-label sub" style="fill:var(--purple)">OMNIUS</text>
+          </g>
+
+          <!-- Flow labels -->
+          <text x="200" y="145" class="arch-label sub" style="fill:var(--green);font-size:6px">cluster.node.*</text>
+          <text x="200" y="215" class="arch-label sub" style="fill:var(--accent);font-size:6px">agent.omnius.*</text>
+          <text x="390" y="155" class="arch-label sub" style="fill:var(--purple);font-size:6px">subscribed</text>
+          <text x="390" y="225" class="arch-label sub" style="fill:var(--accent);font-size:6px">proposals</text>
+          <text x="510" y="125" class="arch-label sub" style="fill:var(--accent);font-size:6px">inference</text>
+
+          <!-- Captain -->
+          <g class="arch-node">
+            <rect x="270" y="290" width="120" height="40" rx="20" fill="rgba(255,149,0,0.08)" stroke="var(--accent)" stroke-width="1" stroke-dasharray="4 2"/>
+            <text x="330" y="308" class="arch-label" style="fill:var(--accent)">CAPTAIN</text>
+            <text x="330" y="322" class="arch-label sub">HUMAN-IN-THE-LOOP</text>
+          </g>
+
+          <!-- Captain connection -->
+          <line x1="330" y1="210" x2="330" y2="290" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3 3" class="data-line alt"/>
+
+          <!-- Legend -->
+          <text x="490" y="360" class="arch-label sub" style="fill:var(--text-dim);font-size:6px">Animated data flow • v21.0 event-driven architecture</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Event Ticker -->
+    <div class="panel">
+      <div class="panel-title">
+        <span>Cluster Event Stream</span>
+        <span class="badge" id="event-count">0 EVENTS</span>
+      </div>
+      <div class="ticker-container">
+        <div class="ticker" id="ticker"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM ROW: Node Status + Metrics + Route Distribution + Timeline -->
+  <div class="grid three">
+    <!-- Node Status -->
+    <div class="panel">
+      <div class="panel-title">
+        <span>Fleet Status</span>
+        <span class="badge" id="node-count">18/18 ONLINE</span>
+      </div>
+      <div class="node-status-list" id="node-list"></div>
+    </div>
+
+    <!-- Metrics -->
+    <div class="panel">
+      <div class="panel-title">
+        <span>Swarm Bridge Metrics</span>
+        <span class="badge">5 MIN</span>
+      </div>
+      <div class="metrics-grid">
+        <div class="metric">
+          <div class="metric-value" id="total-routes">0</div>
+          <div class="metric-label">TOTAL QUERIES</div>
+        </div>
+        <div class="metric">
+          <div class="metric-value" id="cache-hit">0%</div>
+          <div class="metric-label">CACHE HIT RATE</div>
+        </div>
+        <div class="metric">
+          <div class="metric-value" id="avg-latency">0ms</div>
+          <div class="metric-label">AVG LATENCY</div>
+        </div>
+        <div class="metric">
+          <div class="metric-value" id="active-nodes">0</div>
+          <div class="metric-label">ACTIVE NODES</div>
+        </div>
+      </div>
+      <div style="margin-top:10px;">
+        <div class="route-bar">
+          <div class="segment fast" id="bar-fast" style="width:55%"></div>
+          <div class="segment deep" id="bar-deep" style="width:30%"></div>
+          <div class="segment sovereign" id="bar-sovereign" style="width:15%"></div>
+        </div>
+        <div class="route-legend">
+          <div class="route-legend-item"><span class="route-legend-dot fast"></span>Fast <span id="pct-fast" style="color:var(--text-dim)">55%</span></div>
+          <div class="route-legend-item"><span class="route-legend-dot deep"></span>Deep <span id="pct-deep" style="color:var(--text-dim)">30%</span></div>
+          <div class="route-legend-item"><span class="route-legend-dot sovereign"></span>Sovereign <span id="pct-sovereign" style="color:var(--text-dim)">15%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="panel">
+      <div class="panel-title">
+        <span>Architecture Evolution</span>
+        <span class="badge">v18 → v21</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-date">v21.0 • 05 MAY 26</div>
+          <div class="timeline-text">Event-driven architecture. NATS broker, graph namespaces, swarm bridge, VRRP HA.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">v20.1 • 05 MAY 26</div>
+          <div class="timeline-text">Athena RPi4 edge node. Unbound caching DNS. Tailscale subnet router.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">v20.0 • 04 MAY 26</div>
+          <div class="timeline-text">18-node topology. RAGFlow, Omnius sovereign AI, Tools stack, PBS.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">v19.2 • 04 MAY 26</div>
+          <div class="timeline-text">Full site rebuild. WebGL starfield, sound engine, topology canvas.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">v19.1 • 01 MAY 26</div>
+          <div class="timeline-text">Atlas MLX Omnius (Gemma-4 26B). Hermes v0.12.0.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="text-align:center;padding:24px 0;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-dim);border-top:1px solid rgba(255,255,255,0.05);margin-top:8px;">
+    ZEUSAPOLLO v21.0 COMMAND CENTER • SOVEREIGN AI INFRASTRUCTURE • DOUG CASHIO • doug@cashio.us
+  </div>
+</div>
+
+<script>
+// ─── STARFIELD ───
+const canvas = document.getElementById('starfield');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const stars = Array.from({ length: 120 }, () => ({
+  x: Math.random() * canvas.width,
+  y: Math.random() * canvas.height,
+  r: Math.random() * 1.5 + 0.3,
+  s: Math.random() * 0.3 + 0.05,
+  o: Math.random() * 0.8 + 0.2,
+}));
+
+function drawStars() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  stars.forEach(s => {
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(200,200,220,${s.o * (0.8 + 0.2 * Math.sin(Date.now() / 1000 * s.s))})`;
+    ctx.fill();
+    s.y -= s.s * 0.15;
+    if (s.y < -5) { s.y = canvas.height + 5; s.x = Math.random() * canvas.width; }
+  });
+  requestAnimationFrame(drawStars);
+}
+drawStars();
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+// ─── CLOCK ───
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent = now.toISOString().substr(11, 8);
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ─── EVENT TICKER ───
+const tickerEl = document.getElementById('ticker');
+const eventCountEl = document.getElementById('event-count');
+let eventCount = 0;
+
+const eventTypes = [
+  { time: '00:00:00', event: 'cluster.node.up', detail: 'Hermes bridge connected', cls: 'node-up' },
+  { time: '00:00:00', event: 'cluster.node.up', detail: 'Atlas MLX online', cls: 'node-up' },
+  { time: '00:00:00', event: 'cluster.node.up', detail: 'NATS broker ready', cls: 'node-up' },
+  { time: '00:00:00', event: 'inference.routed', detail: 'Fast → Cashiotuf (RTX 3080)', cls: 'route' },
+  { time: '00:00:00', event: 'inference.routed', detail: 'Deep → Atlas (M4 / Ollama)', cls: 'route' },
+  { time: '00:00:00', event: 'cluster.node.up', detail: 'Swarm bridge active on :11235', cls: 'node-up' },
+  { time: '00:00:00', event: 'security.mcp.ok', detail: 'Omnius MCP token: PVEAuditor ✓', cls: 'security' },
+  { time: '00:00:00', event: 'inference.routed', detail: 'Sovereign → Atlas (Llama 3.1)', cls: 'route' },
+  { time: '00:00:00', event: 'cluster.node.ok', detail: 'Keepalived VRRP: MASTER CT-101', cls: 'node-up' },
+  { time: '00:00:00', event: 'inference.complete', detail: 'Swarm: 185ms TTFT', cls: 'route' },
+  { time: '00:00:00', event: 'cluster.node.ready', detail: 'Graph namespaces: 3 partitions', cls: 'node-up' },
+  { time: '00:00:00', event: 'inference.routed', detail: 'Cache hit: 73% semantic match', cls: 'route' },
+];
+
+function addEvent() {
+  const evt = eventTypes[Math.floor(Math.random() * eventTypes.length)];
+  const now = new Date();
+  const time = now.toISOString().substr(11, 8);
+  const entry = document.createElement('div');
+  entry.className = 'ticker-entry';
+  entry.innerHTML = `<span class="time">${time}</span><span class="event ${evt.cls}">${evt.event}</span><span class="detail">${evt.detail}</span>`;
+  tickerEl.prepend(entry);
+  eventCount++;
+  eventCountEl.textContent = eventCount + ' EVENTS';
+
+  // Keep max 50 entries
+  while (tickerEl.children.length > 50) {
+    tickerEl.removeChild(tickerEl.lastChild);
+  }
+}
+
+// Generate initial events
+for (let i = 0; i < 12; i++) {
+  setTimeout(addEvent, i * 100);
+}
+
+// New events every 4-12 seconds
+setInterval(addEvent, 4000 + Math.random() * 8000);
+
+// ─── NODE LIST ───
+const nodes = [
+  { name: 'Apollo', role: 'PRIMARY HV', status: 'online' },
+  { name: 'Zeus', role: 'SECONDARY HV', status: 'online' },
+  { name: 'Hermes', role: 'OPS AGENT', status: 'online' },
+  { name: 'Omnius', role: 'SOVEREIGN AI', status: 'online' },
+  { name: 'Atlas', role: 'M4 AI NODE', status: 'primary' },
+  { name: 'Cashiotuf', role: 'RTX 3080', status: 'online' },
+  { name: 'NATS', role: 'EVENT BUS', status: 'online' },
+  { name: 'n8n', role: 'AUTOMATION', status: 'online' },
+  { name: 'CodeGate', role: 'MCP SECURITY', status: 'online' },
+  { name: 'RAGFlow', role: 'DOC RAG', status: 'online' },
+  { name: 'LiteLLM', role: 'API GATEWAY', status: 'online' },
+  { name: 'LobeChat', role: 'AI CHAT UI', status: 'online' },
+  { name: 'AdGuard', role: 'DNS MASTER', status: 'online' },
+  { name: 'AdGuard-2', role: 'DNS BACKUP', status: 'online' },
+  { name: 'Athena', role: 'EDGE RPI4', status: 'online' },
+  { name: 'Genesis', role: 'NAS', status: 'online' },
+  { name: 'PBS', role: 'BACKUP SERVER', status: 'online' },
+  { name: 'Vaultwarden', role: 'SECRETS', status: 'online' },
+];
+
+const nodeListEl = document.getElementById('node-list');
+const nodeCountEl = document.getElementById('node-count');
+
+nodes.forEach(n => {
+  const item = document.createElement('div');
+  item.className = 'node-status-item';
+  const indicatorClass = n.status === 'primary' ? 'primary' : 'online';
+  item.innerHTML = `
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="node-indicator ${indicatorClass}"></span>
+      <span class="name">${n.name}</span>
+    </div>
+    <span class="role">${n.role}</span>
+  `;
+  nodeListEl.appendChild(item);
+});
+
+const online = nodes.filter(n => n.status !== 'offline').length;
+nodeCountEl.textContent = `${online}/${nodes.length} ONLINE`;
+
+// ─── METRICS SIMULATION ───
+let totalRoutes = Math.floor(Math.random() * 120) + 250;
+let fastPct = 55 + Math.random() * 10;
+let deepPct = 25 + Math.random() * 8;
+let sovereignPct = 100 - fastPct - deepPct;
+
+function updateMetrics() {
+  totalRoutes += Math.floor(Math.random() * 3);
+  const cacheHit = (73 + Math.random() * 8).toFixed(0);
+  const latency = (140 + Math.random() * 80).toFixed(0);
+
+  // Shift distribution slightly
+  fastPct = Math.max(40, Math.min(70, fastPct + (Math.random() - 0.5) * 2));
+  deepPct = Math.max(15, Math.min(40, deepPct + (Math.random() - 0.5) * 2));
+  sovereignPct = Math.max(5, 100 - fastPct - deepPct);
+
+  document.getElementById('total-routes').textContent = totalRoutes;
+  document.getElementById('cache-hit').textContent = cacheHit + '%';
+  document.getElementById('avg-latency').textContent = latency + 'ms';
+  document.getElementById('active-nodes').textContent = nodes.filter(n => n.status !== 'offline').length;
+
+  document.getElementById('bar-fast').style.width = fastPct + '%';
+  document.getElementById('bar-deep').style.width = deepPct + '%';
+  document.getElementById('bar-sovereign').style.width = sovereignPct + '%';
+  document.getElementById('pct-fast').textContent = fastPct.toFixed(0) + '%';
+  document.getElementById('pct-deep').textContent = deepPct.toFixed(0) + '%';
+  document.getElementById('pct-sovereign').textContent = sovereignPct.toFixed(0) + '%';
+}
+
+setInterval(updateMetrics, 5000);
+updateMetrics();
+</script>
+
+</body>
+</html>
