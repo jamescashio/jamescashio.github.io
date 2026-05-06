@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-05-05T23:05:02",
-  "ts_epoch": 1778036702,
+  "timestamp": "2026-05-05T23:10:02",
+  "ts_epoch": 1778037002,
   "nodes": {
     "Apollo": {
       "ip": "192.168.1.30",
@@ -20,11 +20,11 @@
     },
     "Omnius": {
       "ip": "192.168.1.106",
-      "latency": "2ms"
+      "latency": "1ms"
     },
     "n8n": {
       "ip": "192.168.1.107",
-      "latency": "2ms"
+      "latency": "1ms"
     },
     "RAGFlow": {
       "ip": "192.168.1.118",
