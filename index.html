@@ -2026,7 +2026,9 @@ function initAudio() {
     const saved = localStorage.getItem('za_sound');
     if (saved !== null) window._soundEnabled = saved === 'true';
     if (window._soundEnabled) startHum();
-    document.addEventListener('click', () => { if (_audioCtx.state === 'suspended') _audioCtx.resume(); }, { once: true });
+    document.addEventListener('click', () => {
+      if (_audioCtx.state === 'suspended') _audioCtx.resume();
+    }, { once: true });
   } catch(e) { window._soundEnabled = false; }
 }
 
@@ -2046,13 +2048,16 @@ function playTone(f, d, type='sine', vol=0.25, t=null, dest=null) {
 function playSound(type, x=0.5) {
   if (!window._soundEnabled || !_audioCtx) return;
   try {
+    // Resume AudioContext if suspended (first click unlock)
+    if (_audioCtx.state === 'suspended') _audioCtx.resume();
     const now = _audioCtx.currentTime;
     const pan = _audioCtx.createStereoPanner();
     pan.pan.value = Math.max(-1, Math.min(1, (x - 0.5) * 1.6));
     switch(type) {
       case 'press': {
-        playTone(660, 0.04, 'square', 0.18, now, pan);
-        playTone(990, 0.06, 'sine', 0.12, now+0.02, pan);
+        playTone(660, 0.04, 'square', 0.20, now, pan);
+        playTone(990, 0.06, 'sine', 0.14, now+0.02, pan);
+        playTone(1320, 0.03, 'sine', 0.08, now+0.04, pan);
         break;
       }
       case 'confirm': {
