@@ -1,0 +1,201 @@
+#!/usr/bin/env python3
+"""
+ZEUSAPOLLO — Asymmetric Distributed Speculative Decoding Bridge
+===============================================================
+Turns your RTX 3080 (Cashiotuf) into a "L1 Predictor Cache" for your Mac M4 (Atlas).
+
+Architecture:
+  Cashiotuf (Windows, RTX 3080, LM Studio) → Rapid Draft Generator (2-4B model)
+  Atlas (macOS, M4 24GB, MLX) → Target Verifier (26B MoE)
+
+Flow:
+  1. User prompt arrives at Atlas
+  2. Atlas sends prompt to Cashiotuf LM Studio API
+  3. Cashiotuf generates 5 fast draft tokens
+  4. Atlas verifies all 5 in one parallel MLX forward pass
+  5. Returns accepted tokens → up to 5x speedup on highly predictable text
+
+Usage:
+  python3 zeusapollo_speculative_bridge.py [--port 11235]
+
+Requires:
+  - pip install mlx mlx-lm httpx (on Atlas/Mac)
+  - LM Studio running on Cashiotuf:1234 with gemma-4-e4b loaded
+  - mlx-community/gemma-4-26b-a4b-it-4bit cached locally on Atlas
+"""
+
+import argparse
+import json
+import time
+import httpx
+import mlx.core as mx
+from mlx_lm import load, generate
+from fastapi import FastAPI, Request
+from fastapi.responses import StreamingResponse
+import uvicorn
+
+# ─── CONFIG ─────────────────────────────────────────────────────────────────
+DRAFT_URL = "http://192.168.1.116:1234/v1/completions"  # Cashiotuf LM Studio
+TARGET_MODEL = "mlx-community/gemma-4-26b-a4b-it-4bit"
+DRAFT_TOKENS = 5  # Number of tokens to speculate per cycle
+TEMPERATURE = 0.2  # Lower = higher acceptance rate (best: 0.1-0.3)
+BRIDGE_PORT = 11235
+
+# ─── MODEL LOADING ──────────────────────────────────────────────────────────
+print("🔄 Loading target model (Gemma-4 26B)...")
+target_model, target_tokenizer = load(TARGET_MODEL)
+print(f"✅ Target loaded: {TARGET_MODEL}")
+
+# ─── DRAFT CLIENT ───────────────────────────────────────────────────────────
+client = httpx.Client(timeout=30.0)
+
+def get_draft_tokens(prompt: str, n: int = DRAFT_TOKENS) -> list[int]:
+    """Fetch draft tokens from Cashiotuf's LM Studio (RTX 3080)."""
+    payload = {
+        "model": "google/gemma-4-e4b",
+        "prompt": prompt,
+        "max_tokens": n,
+        "temperature": TEMPERATURE,
+        "top_p": 0.9,
+        "stream": False
+    }
+    try:
+        resp = client.post(DRAFT_URL, json=payload)
+        resp.raise_for_status()
+        text = resp.json()["choices"][0]["text"]
+        # Tokenize the draft output with the SAME tokenizer
+        tokens = target_tokenizer.encode(text)
+        return tokens[:n]
+    except Exception as e:
+        print(f"⚠️ Draft failed: {e}")
+        return []
+
+# ─── SPECULATIVE VERIFICATION ──────────────────────────────────────────────
+def speculative_generate(prompt: str, max_tokens: int = 512):
+    """
+    Main generation loop:
+    1. Cache the prompt
+    2. Get draft tokens from Cashiotuf
+    3. Verify against target model via MLX
+    4. Yield accepted tokens
+    """
+    input_ids = target_tokenizer.encode(prompt)
+    generated = 0
+    cache = None
+
+    while generated < max_tokens:
+        # Get draft tokens from RTX 3080
+        current_text = target_tokenizer.decode(input_ids)
+        draft_ids = get_draft_tokens(current_text)
+
+        if not draft_ids:
+            # Fallback: generate one token natively
+            logits = target_model(input_ids)
+            next_token = mx.argmax(logits[-1]).item()
+            input_ids.append(next_token)
+            text = target_tokenizer.decode([next_token])
+            yield text
+            generated += 1
+            continue
+
+        # Verify draft tokens against target
+        draft_tensor = mx.array([input_ids + draft_ids])
+        logits = target_model(draft_tensor)
+
+        # Acceptance check (rejection sampling)
+        accepted = 0
+        for i in range(len(draft_ids)):
+            target_prob = mx.softmax(logits[0, len(input_ids) + i - 1] if i > 0 else logits[0, len(input_ids) - 1])
+            draft_prob = mx.softmax(logits[0, len(input_ids) + i - 1])
+
+            # Simple greedy acceptance
+            if mx.argmax(target_prob).item() == draft_ids[i]:
+                accepted += 1
+            else:
+                break
+
+        if accepted == 0:
+            # No tokens accepted — fallback to native generation
+            logits = target_model(input_ids)
+            next_token = mx.argmax(logits[-1]).item()
+            input_ids.append(next_token)
+            text = target_tokenizer.decode([next_token])
+            yield text
+            generated += 1
+            continue
+
+        # Accept the verified tokens
+        for i in range(accepted):
+            input_ids.append(draft_ids[i])
+            text = target_tokenizer.decode([draft_ids[i]])
+            yield text
+            generated += 1
+
+        if accepted < len(draft_ids):
+            # Target rejected the rest — generate one more natively and continue
+            logits = target_model(input_ids)
+            next_token = mx.argmax(logits[-1]).item()
+            input_ids.append(next_token)
+            text = target_tokenizer.decode([next_token])
+            yield text
+            generated += 1
+
+# ─── API SERVER ─────────────────────────────────────────────────────────────
+app = FastAPI(title="ZeusApollo Speculative Bridge")
+
+@app.post("/v1/completions")
+async def completions(request: Request):
+    body = await request.json()
+    prompt = body.get("prompt", "")
+    max_tokens = body.get("max_tokens", 512)
+    stream = body.get("stream", False)
+
+    if stream:
+        return StreamingResponse(
+            stream_response(prompt, max_tokens),
+            media_type="text/event-stream"
+        )
+
+    # Non-streaming
+    result = "".join(speculative_generate(prompt, max_tokens))
+    return {
+        "choices": [{"text": result}],
+        "usage": {"total_tokens": len(result)}
+    }
+
+async def stream_response(prompt, max_tokens):
+    yield "data: " + json.dumps({"choices": [{"delta": {"role": "assistant"}}]}) + "\n\n"
+    for text in speculative_generate(prompt, max_tokens):
+        yield "data: " + json.dumps({"choices": [{"delta": {"content": text}}]}) + "\n\n"
+    yield "data: [DONE]\n\n"
+
+@app.get("/v1/models")
+async def list_models():
+    return {
+        "data": [
+            {"id": "zeusapollo-speculative", "object": "model", "created": int(time.time())}
+        ]
+    }
+
+@app.get("/health")
+async def health():
+    return {"status": "ok", "mode": "speculative", "draft": "cashiotuf:3080", "target": "atlas:m4"}
+
+# ─── MAIN ───────────────────────────────────────────────────────────────────
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="ZeusApollo Speculative Decoding Bridge")
+    parser.add_argument("--port", type=int, default=BRIDGE_PORT, help="Port to listen on")
+    args = parser.parse_args()
+
+    print(f"""
+╔══════════════════════════════════════════════════════════╗
+║     ZEUSAPOLLO — Distributed Speculative Decoding       ║
+╠══════════════════════════════════════════════════════════╣
+║  Drafter:  Cashiotuf (RTX 3080) → gemma-4-e4b          ║
+║  Verifier: Atlas (Mac M4)       → Gemma-4 26B MoE      ║
+║  Bridge:   http://0.0.0.0:{args.port}                    ║
+║  Tokens/cycle: {DRAFT_TOKENS} | Temperature: {TEMPERATURE}            ║
+╚══════════════════════════════════════════════════════════╝
+    """)
+
+    uvicorn.run(app, host="0.0.0.0", port=args.port, log_level="info")
