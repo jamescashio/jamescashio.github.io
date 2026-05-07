@@ -3,18 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Doug Cashio — Principal Solutions Consultant. Enterprise AI infrastructure, multi-model LLM orchestration, zero-trust cybersecurity. Sovereign ZeuApollo fleet.">
+<meta name="description" content="Doug Cashio — Principal Solutions Consultant. Enterprise AI infrastructure, multi-model LLM orchestration, zero-trust cybersecurity. Sovereign ZeusApollo fleet.">
 <meta name="theme-color" content="#ff9500">
-<meta property="og:title" content="ZEUSAPOLLO v21.1 • Doug Cashio • Enterprise AI & Cybersecurity">
-<meta property="og:description" content="Sovereign AI infrastructure — 11-model LLM fabric, zero-trust architecture, 18-node fleet.">
+<meta property="og:title" content="ZEUSAPOLLO v21.2a • Doug Cashio • Enterprise AI & Cybersecurity">
+<meta property="og:description" content="Sovereign AI infrastructure — 13-model LLM fabric, zero-trust architecture, hardened swarm bridge.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cashio.us">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='%230a0a0f'/><rect x='2' y='5' width='12' height='6' rx='2' fill='%23ff9500'/><circle cx='8' cy='8' r='2' fill='%230a0a0f'/></svg>">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdnjs.cloudflare.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https:; media-src 'self';">
-<title>ZEUSAPOLLO v21.1 • Doug Cashio • Enterprise AI & Cybersecurity</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; script-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://fonts.googleapis.com; media-src 'self';">
+<title>ZEUSAPOLLO v21.2a • Doug Cashio • Enterprise AI & Cybersecurity</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,200;0,300;0,400;0,600;0,700;1,300&family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; script-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://fonts.googleapis.com; media-src 'self';">
 
 <style>
 /* ═══════════════════════════════════════════════
@@ -876,63 +877,6 @@ scrollbar-color: var(--accent) transparent;
 .mb-6 { margin-bottom: 24px; }
 .mb-8 { margin-bottom: 32px; }
 .text-center { text-align: center; }
-
-/* Tabular numerals on all dashboard/metric cells */
-.metric, .dashboard-value, .latency-num, .route-lat, .stat-num {
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum" 1;
-}
-
-/* ═══════════════════════════════════════════════
-   FLEET PULSE — Hero Live Status Strip
-═══════════════════════════════════════════════ */
-#fleet-pulse {
-  max-width: 880px;
-  margin: 20px auto 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 4px;
-  padding: 10px 16px;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.05);
-  border-radius: var(--radius);
-  min-height: 32px;
-  transition: opacity 0.3s;
-}
-.pulse-node {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid transparent;
-  transition: all 0.3s;
-  cursor: default;
-}
-.pulse-node:hover {
-  background: rgba(255,255,255,0.07);
-  transform: translateY(-1px);
-}
-.pulse-node__dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-.pulse-node__dot--online { background: var(--green); box-shadow: 0 0 4px var(--green); }
-.pulse-node__dot--locked { background: var(--red); box-shadow: 0 0 4px var(--red); }
-.pulse-node__dot--degraded { background: var(--amber); box-shadow: 0 0 4px var(--amber); }
-.pulse-node__name { color: #777; letter-spacing: 0.5px; }
-.pulse-node__lat { color: var(--text-dim); font-size: 9px; min-width: 28px; text-align: right; }
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
-  .panel--scan::after { display: none; }
-  .node-card__tele::after { display: none; }
-}
 table { width: 100%; border-collapse: collapse; }
 th,td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--glass-border); font-size: 14px; }
 th { font-family: var(--font-mono); font-size: 11px; letter-spacing: 1px; color: var(--text-dim); font-weight: 400; }
@@ -1175,7 +1119,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
     <div class="hud-chip" style="display:none" id="hud-chip-llm">
       <div>
         <div class="hud-chip__label">LLM Fabric</div>
-        <div class="hud-chip__value" style="color:var(--cyan)">11 ACTIVE</div>
+        <div class="hud-chip__value" style="color:var(--cyan)">10 ACTIVE</div>
       </div>
     </div>
   </div>
@@ -1203,9 +1147,9 @@ input[type=text]::placeholder { color: var(--text-dim); }
 
   <div class="hero-eyebrow">
     <div class="status-dot"></div>
-    <span>v21.1 EVENT-DRIVEN BASELINE</span>
+    <span>v21.0 EVENT-DRIVEN BASELINE</span>
     <span style="color:var(--text-dim)">•</span>
-    <span>VERIFIED 05-06-2026</span>
+    <span>VERIFIED 05-05-2026</span>
   </div>
 
   <h1 class="hero-name glitch holo" data-text="DOUG CASHIO">DOUG CASHIO</h1>
@@ -1243,44 +1187,37 @@ input[type=text]::placeholder { color: var(--text-dim); }
   </div>
 
   <div class="hero-cta" style="margin-bottom:4px">
-    <button class="btn btn--lg" onclick="scrollToSection('portfolio');playSound('phaser',0.3)" onmouseenter="playSound('lcars',0.2)">
+    <button class="btn btn--lg" onclick="scrollTo('portfolio');playSound('phaser',0.3)" onmouseenter="playSound('lcars',0.2)">
       Access Portfolio <i class="fas fa-arrow-right"></i>
     </button>
-    <button class="btn btn--cyan btn--lg" onclick="scrollToSection('lab');playSound('phaser',0.5)" onmouseenter="playSound('lcars',0.2)">
-      ZeusApollo Lab v21.1
+    <button class="btn btn--cyan btn--lg" onclick="scrollTo('lab');playSound('phaser',0.5)" onmouseenter="playSound('lcars',0.2)">
+      ZeusApollo Lab v21.0
     </button>
-    <button class="btn btn--purple btn--lg" onclick="scrollToSection('topology');playSound('phaser',0.7)" onmouseenter="playSound('lcars',0.2)">
+    <button class="btn btn--purple btn--lg" onclick="scrollTo('topology');playSound('phaser',0.7)" onmouseenter="playSound('lcars',0.2)">
       <i class="fas fa-network-wired"></i> Topology
     </button>
   </div>
 
   <div class="hero-stats">
-    <div class="hero-stat" onclick="scrollToSection('portfolio');playSound('press',0.5)" style="cursor:pointer">
+    <div class="hero-stat" onclick="scrollTo('portfolio');playSound('press',0.5)" style="cursor:pointer">
       <div class="hero-stat__num accent" id="stat-years">3.5</div>
       <div class="hero-stat__label">Years LLM Ops</div>
     </div>
-    <div class="hero-stat" onclick="scrollToSection('topology');playSound('press',0.5)" style="cursor:pointer">
+    <div class="hero-stat" onclick="scrollTo('topology');playSound('press',0.5)" style="cursor:pointer">
       <div class="hero-stat__num" style="color:var(--cyan)" id="stat-nodes">11</div>
       <div class="hero-stat__label">Fleet Nodes</div>
     </div>
-    <div class="hero-stat" onclick="showToast('<strong>LLM Subscriptions</strong> — DeepSeek, Google AI, xAI/Grok, Perplexity, OpenAI, Anthropic API, Qwen, Mistral, Meta, Cohere, Replicate.');playSound('confirm',0.5)" style="cursor:pointer">
-      <div class="hero-stat__num" style="color:var(--amber)" id="stat-llm">11</div>
+    <div class="hero-stat" onclick="showToast('<strong>LLM Subscriptions</strong> — DeepSeek, Google AI, xAI/Grok, Perplexity, OpenAI, Anthropic, Mistral, Meta, Cohere, Replicate.');playSound('confirm',0.5)" style="cursor:pointer">
+      <div class="hero-stat__num" style="color:var(--amber)" id="stat-llm">10</div>
       <div class="hero-stat__label">LLM Subscriptions</div>
     </div>
-    <div class="hero-stat" onclick="scrollToSection('career');playSound('press',0.5)" style="cursor:pointer">
+    <div class="hero-stat" onclick="scrollTo('career');playSound('press',0.5)" style="cursor:pointer">
       <div class="hero-stat__num" style="color:var(--green)" id="stat-exp">15+</div>
       <div class="hero-stat__label">Yrs Enterprise</div>
     </div>
     <div class="hero-stat" onclick="showToast('<strong>Knowledge Graph</strong> — 14 triples stored in Hermes MemPalace. Sovereign, local, always available.');playSound('confirm',0.5)" style="cursor:pointer">
       <div class="hero-stat__num" style="color:var(--purple)" id="stat-kg">14</div>
       <div class="hero-stat__label">KG Triples</div>
-    </div>
-  </div>
-
-  <!-- Live Fleet Pulse -->
-  <div id="fleet-pulse">
-    <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text-dim);font-family:var(--font-mono);letter-spacing:1px;width:100%;justify-content:center;margin-bottom:2px">
-      <span class="status-dot"></span> LIVE FLEET TELEMETRY
     </div>
   </div>
 </section>
@@ -1293,7 +1230,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
 <section id="portfolio" class="section reveal">
   <div class="container">
 
-    <div class="section-label mb-4" style="color:var(--accent)">Mission Profile <span style="flex:none;color:var(--text-dim)">• Career Arc v21.1</span></div>
+    <div class="section-label mb-4" style="color:var(--accent)">Mission Profile <span style="flex:none;color:var(--text-dim)">• Career Arc v21.0</span></div>
     <div class="section-title section-title--xl mb-8" style="color:white">WHAT I BUILD</div>
 
     <div class="grid-12 gap-6">
@@ -1609,8 +1546,8 @@ input[type=text]::placeholder { color: var(--text-dim); }
     <div class="flex justify-between items-start mb-8 flex-wrap gap-4">
       <div>
         <div style="display:inline-block;padding:4px 12px;background:var(--accent);color:#0a0a0f;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:12px;">PRIMARY MISSION</div>
-        <div class="section-title section-title--xl" style="color:white">ZEUSAPOLLO <span style="color:var(--accent)">v21.1</span></div>
-        <div class="mono fs-xs dim mt-4" style="letter-spacing:2px">SOVEREIGN INFRASTRUCTURE ASSESSMENT • 05-06-2026</div>
+        <div class="section-title section-title--xl" style="color:white">ZEUSAPOLLO <span style="color:var(--accent)">v21.0</span></div>
+        <div class="mono fs-xs dim mt-4" style="letter-spacing:2px">SOVEREIGN INFRASTRUCTURE ASSESSMENT • 05-05-2026</div>
       </div>
       <div style="text-align:right;">
         <div class="mono fs-xs dim" style="margin-bottom:4px">SOURCE: PROXMOX VE API + ADGUARD DHCP + PROJECT FILES</div>
@@ -1780,17 +1717,9 @@ input[type=text]::placeholder { color: var(--text-dim); }
           <div class="route-row__class" style="color:var(--amber)">Real-Time</div>
           <div class="route-row__chain">DeepSeekv4 Search → Perplexity Pro → ChatGPT Deep Research</div>
         </div>
-        <div class="route-row" style="border-color:var(--accent)">
-          <div class="route-row__class" style="color:var(--accent)">Code Generation</div>
-          <div class="route-row__chain">Claude Sonnet 4.6 <span class="mono fs-xs" style="color:var(--accent)">(LiteLLM)</span> → Qwen-coder → GPT-5.5</div>
-        </div>
-        <div class="route-row" style="border-color:var(--cyan)">
-          <div class="route-row__class" style="color:var(--cyan)">Architecture / Strategy</div>
-          <div class="route-row__chain">Claude Opus 4.7 <span class="mono fs-xs" style="color:var(--cyan)">(LiteLLM)</span> → DeepSeek-reasoner → Atlas (local)</div>
-        </div>
         <div class="route-row" style="border-color:var(--purple)">
           <div class="route-row__class" style="color:var(--purple)">Sensitive</div>
-          <div class="route-row__chain">Atlas (local) → Claude API (LiteLLM) → Omnius Sovereign</div>
+          <div class="route-row__chain">Atlas (local) → Claude Pro → Omnius Sovereign</div>
         </div>
         <div class="route-row" style="border-color:var(--green)">
           <div class="route-row__class" style="color:var(--green)">Cost-Bound</div>
@@ -1836,7 +1765,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
 
     <!-- LLM SUBSCRIPTION STACK -->
     <div class="panel" style="padding:24px;margin-bottom:20px;">
-      <div class="section-label mb-6" style="color:var(--accent);text-align:center">🤖 LLM Subscription Stack — 05-06-2026</div>
+      <div class="section-label mb-6" style="color:var(--accent);text-align:center">🤖 LLM Subscription Stack — 05-05-2026</div>
       <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;max-width:1200px;margin:0 auto;">
         <div class="sub-card">
           <div class="sub-card__name" style="color:var(--accent)">Gemini 3.1 Pro</div>
@@ -1864,9 +1793,9 @@ input[type=text]::placeholder { color: var(--text-dim); }
           <div class="sub-card__status"><span class="pill pill--green active-pulse">ACTIVE</span></div>
         </div>
         <div class="sub-card">
-          <div class="sub-card__name" style="color:var(--cyan)">Claude API</div>
-          <div class="sub-card__detail">Sonnet 4.6 • Opus 4.7<br>LiteLLM • Code Gen</div>
-          <div class="sub-card__status"><span class="pill pill--green active-pulse">API+PRO</span></div>
+          <div class="sub-card__name" style="color:var(--cyan)">Claude Pro</div>
+          <div class="sub-card__detail">Claude 4 Opus Extended<br>100K context • Projects</div>
+          <div class="sub-card__status"><span class="pill pill--green active-pulse">ACTIVE</span></div>
         </div>
       </div>
     </div>
@@ -1875,7 +1804,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
     <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;">
       <div>
         <div class="panel" style="padding:24px;">
-          <div class="section-label mb-6" style="color:var(--accent)">📊 Full Node Inventory — v21.1 Verified</div>
+          <div class="section-label mb-6" style="color:var(--accent)">📊 Full Node Inventory — v20.1 Verified</div>
           <div class="overflow-x">
             <table>
               <thead>
@@ -1909,10 +1838,6 @@ input[type=text]::placeholder { color: var(--text-dim); }
       <div>
         <div class="panel" style="padding:24px;height:100%;">
           <div class="section-label mb-6" style="color:var(--accent)">📜 Change Log</div>
-          <div class="timeline-entry">
-            <div class="timeline-entry__date">05-06-2026 v21.1</div>
-            <div class="timeline-entry__text">SWARM KEY INTEGRATION. Claude Opus 4.7/4.6 + Sonnet 4.6 added via LiteLLM. API key rotated to Hermes Swarm key. Site polish: tabular nums, prefers-reduced-motion, inline favicon, OG meta, route table expanded with Architecture/Strategy tier. Status dashboard updated with LOCKED indicators.</div>
-          </div>
           <div class="timeline-entry">
             <div class="timeline-entry__date">05-05-2026 v21.0</div>
             <div class="timeline-entry__text">EVENT-DRIVEN ARCHITECTURE. NATS broker on Athena (port 4222). Three partitioned graph namespaces (Ontology/MemPalace/Omnius). Hermes NATS bridge daemon subscribing to cluster.node events. Proxmox token downgraded to PVEAuditor. Keepalived VRRP verified across AdGuard CT-101/CT-109. Swarm inference bridge on Atlas (:11235) routing to Cashiotuf LM Studio + Atlas Ollama. Wake-on-LAN quorum watchdog. OpenClaude-Portable integrated (portable AI coding agent 7 providers).</div>
@@ -1959,7 +1884,7 @@ input[type=text]::placeholder { color: var(--text-dim); }
     <a href="/cdn-cgi/l/email-protection#d0b4bfa5b790b3b1a3b8b9bffea5a3"><span class="__cf_email__" data-cfemail="294d465c4e694a485a414046075c5a">[email&#160;protected]</span></a>
     <a href="#" onclick="window.location.reload()">Reload Telemetry</a>
   </div>
-  <div class="footer-copy">ZEUSAPOLLO v21.1 • DOUG CASHIO • <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8eeae1fb c9eeccde">[email&#160;protected]</a> • EVENT-DRIVEN INFRASTRUCTURE • 2026</div>
+  <div class="footer-copy">ZEUSAPOLLO v21.0 • DOUG CASHIO • <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="74101b0113341715071c1d1b5a0107">[email&#160;protected]</a> • EVENT-DRIVEN INFRASTRUCTURE • 2026</div>
 </footer>
 
 <!-- NODE MODAL -->
@@ -2554,36 +2479,9 @@ setTimeout(loadLatency, 500);
 setInterval(loadLatency, 30000);
 
 // ══════════════════════════════════════════════════
-// FLEET PULSE — Hero Live Status Strip
-// ══════════════════════════════════════════════════
-async function loadFleetPulse() {
-  try {
-    const r = await fetch('status.json?_='+Date.now());
-    const d = await r.json();
-    const el = document.getElementById('fleet-pulse');
-    if (!el) return;
-    const nodes = d.nodes || {};
-    const colors = { online: ['var(--green)','rgba(0,255,159,0.1)','ONLINE'], locked: ['var(--red)','rgba(255,0,51,0.1)','LOCKED'], degraded: ['var(--amber)','rgba(255,204,0,0.1)','DEGRADED'] };
-    el.innerHTML = Object.entries(nodes).map(([name, v]) => {
-      const lat = v.latency || 'DOWN';
-      const ok = lat !== 'DOWN';
-      const ms = parseInt(lat);
-      const status = v.status || (ok ? 'online' : 'degraded');
-      const c = colors[status] || colors.online;
-      const dotClass = status === 'locked' ? 'pulse-node__dot--locked' : status === 'degraded' ? 'pulse-node__dot--degraded' : 'pulse-node__dot--online';
-      return `<div class="pulse-node" title="${name}: ${lat} — ${c[2]}">
-        <div class="pulse-node__dot ${dotClass}"></div>
-        <span class="pulse-node__name">${name.toUpperCase()}</span>
-        <span class="pulse-node__lat">${lat}</span>
-      </div>`;
-    }).join('');
-  } catch(e) { console.log('fleet pulse:', e.message); }
-}
-
-// ══════════════════════════════════════════════════
 // INTERACTIONS
 // ══════════════════════════════════════════════════
-function scrollToSection(id) { playSound('swoosh', 0.5); document.getElementById(id)?.scrollIntoView({ behavior:'smooth' }); }
+function scrollTo(id) { playSound('swoosh', 0.5); document.getElementById(id)?.scrollIntoView({ behavior:'smooth' }); }
 
 function activatePillar(el, name) {
   el.style.borderColor='white';
@@ -2614,35 +2512,7 @@ function runVoice() {
   out.style.display = 'block';
   playSound('alert', 0.5);
   setTimeout(() => {
-    // SECURITY: Prevent XSS by avoiding innerHTML
-    out.textContent = '';
-
-    const spanNemo = document.createElement('span');
-    spanNemo.style.color = 'var(--text-dim)';
-    spanNemo.textContent = 'NEMOTRON:';
-    out.appendChild(spanNemo);
-
-    out.appendChild(document.createTextNode(' "' + text + '"'));
-    out.appendChild(document.createElement('br'));
-
-    const spanReasoning = document.createElement('span');
-    spanReasoning.style.color = 'var(--green)';
-    spanReasoning.textContent = '→ Reasoning complete. Confidence 94%.';
-    out.appendChild(spanReasoning);
-
-    out.appendChild(document.createElement('br'));
-    out.appendChild(document.createElement('br'));
-
-    const spanGrok = document.createElement('span');
-    spanGrok.style.color = 'var(--text-dim)';
-    spanGrok.textContent = 'GROK-SPEAK (Eve):';
-    out.appendChild(spanGrok);
-
-    out.appendChild(document.createTextNode(' '));
-    const emGrok = document.createElement('em');
-    emGrok.textContent = '"Acknowledged, Admiral. All systems nominal."';
-    out.appendChild(emGrok);
-
+    out.innerHTML = `<span style="color:var(--text-dim)">NEMOTRON:</span> "${text}"<br><span style="color:var(--green)">→ Reasoning complete. Confidence 94%.</span><br><br><span style="color:var(--text-dim)">GROK-SPEAK (Eve):</span> <em>"Acknowledged, Admiral. All systems nominal."</em>`;
     playSound('success', 0.5);
     if ('speechSynthesis' in window) {
       const u = new SpeechSynthesisUtterance(text); u.pitch=1.05; u.rate=0.92;
@@ -2776,14 +2646,12 @@ window.addEventListener('load', () => {
   initTelemetry();
   initKeys();
   initHUDScroll();
-  loadFleetPulse();
-  setInterval(loadFleetPulse, 30000);
   if ('speechSynthesis' in window) speechSynthesis.getVoices();
 
   const btn = document.getElementById('sound-btn');
   if (btn) btn.innerHTML = window._soundEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
 
-  setTimeout(() => showToast('LCARS v21.1 DEFIANT — SPATIAL AUDIO ACTIVE — ALL SYSTEMS NOMINAL', 'var(--accent)'), 1600);
+  setTimeout(() => showToast('LCARS v20.1 DEFIANT — SPATIAL AUDIO ACTIVE — ALL SYSTEMS NOMINAL', 'var(--accent)'), 1600);
 });
 
 window.ZEUSAPOLLO = { engageWarp, triggerRedAlert, simulateRoute, playSound, toggleSound };
@@ -2796,7 +2664,7 @@ window.ZEUSAPOLLO = { engageWarp, triggerRedAlert, simulateRoute, playSound, tog
     <rect x="0" y="794" width="1200" height="6" fill="#ff9500" opacity="0.5"/>
     <text x="600" y="360" font-family="monospace" font-size="100" font-weight="900" fill="#00f9ff" text-anchor="middle" opacity="0.9">DOUG CASHIO</text>
     <text x="600" y="420" font-family="monospace" font-size="24" fill="#ff9500" text-anchor="middle" letter-spacing="10">ENTERPRISE AI • CYBERSECURITY</text>
-    <text x="600" y="460" font-family="monospace" font-size="14" fill="#444" text-anchor="middle" letter-spacing="4">ZEUSAPOLLO v21.1 • EVENT-DRIVEN INFRASTRUCTURE</text>
+    <text x="600" y="460" font-family="monospace" font-size="14" fill="#444" text-anchor="middle" letter-spacing="4">ZEUSAPOLLO v21.0 • EVENT-DRIVEN INFRASTRUCTURE</text>
     <circle cx="280" cy="620" r="16" fill="none" stroke="#00ff9f" stroke-width="2"/>
     <circle cx="420" cy="620" r="16" fill="none" stroke="#00ff9f" stroke-width="2"/>
     <circle cx="560" cy="600" r="20" fill="none" stroke="#cc00ff" stroke-width="2.5"/>

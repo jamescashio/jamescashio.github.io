@@ -1,104 +1,37 @@
 {
-  "timestamp": "2026-05-06T09:33:00",
-  "ts_epoch": 1778074380,
+  "timestamp": "2026-05-06T22:30:00",
+  "version": "v21.2a-hardened",
+  "ts_epoch": 1778121000,
+  "security": {
+    "auth": "X-API-Key required on all /v1/ routes",
+    "rate_limit": "60 req/min per IP",
+    "max_tokens_cap": 16384,
+    "cors": "origin validation enforced",
+    "csp": "Content-Security-Policy meta tag added (removed unpkg CDN)",
+    "headers": "X-Content-Type-Options, X-Frame-Options, HSTS"
+  },
   "nodes": {
-    "Apollo": {
-      "ip": "192.168.1.30",
-      "latency": "2ms"
-    },
-    "Zeus": {
-      "ip": "192.168.1.31",
-      "latency": "2ms"
-    },
-    "Atlas": {
-      "ip": "192.168.1.78",
-      "latency": "2ms"
-    },
-    "Hermes": {
-      "ip": "192.168.1.105",
-      "latency": "2ms"
-    },
-    "Omnius": {
-      "ip": "192.168.1.106",
-      "latency": "2ms"
-    },
-    "n8n": {
-      "ip": "192.168.1.107",
-      "latency": "2ms"
-    },
-    "RAGFlow": {
-      "ip": "192.168.1.118",
-      "latency": "2ms"
-    },
-    "AdGuard": {
-      "ip": "192.168.1.200",
-      "latency": "2ms"
-    },
-    "Genesis": {
-      "ip": "192.168.1.149",
-      "latency": "2ms"
-    },
-    "PBS": {
-      "ip": "192.168.1.244",
-      "latency": "2ms"
-    },
-    "Athena": {
-      "ip": "192.168.1.32",
-      "latency": "2ms"
-    },
-    "Plex": {
-      "ip": "192.168.1.108",
-      "latency": "2ms",
-      "status": "locked"
-    },
-    "Cashiotuf": {
-      "ip": "192.168.1.15",
-      "latency": "1003ms",
-      "status": "degraded"
-    }
+    "Apollo": { "ip": "192.168.1.30", "latency": "2ms" },
+    "Zeus": { "ip": "192.168.1.31", "latency": "2ms" },
+    "Atlas": { "ip": "192.168.1.78", "latency": "3ms" },
+    "Hermes": { "ip": "192.168.1.105", "latency": "2ms" },
+    "Omnius": { "ip": "192.168.1.106", "latency": "2ms" },
+    "n8n": { "ip": "192.168.1.107", "latency": "2ms" },
+    "RAGFlow": { "ip": "192.168.1.118", "latency": "2ms" },
+    "AdGuard": { "ip": "192.168.1.200", "latency": "2ms" },
+    "Genesis": { "ip": "192.168.1.149", "latency": "2ms" },
+    "PBS": { "ip": "192.168.1.244", "latency": "2ms" },
+    "Athena": { "ip": "192.168.1.32", "latency": "2ms" },
+    "Plex": { "ip": "192.168.1.108", "latency": "2ms", "status": "locked" },
+    "Cashiotuf": { "ip": "192.168.1.15", "latency": "1003ms", "status": "degraded" }
   },
   "models": {
-    "claude-sonnet-4.5": {
-      "provider": "Anthropic",
-      "status": "online",
-      "via": "LiteLLM :4000",
-      "role": "Code Generation (legacy)"
-    },
-    "claude-sonnet-4.6": {
-      "provider": "Anthropic",
-      "status": "online",
-      "via": "LiteLLM :4000",
-      "role": "Code Generation"
-    },
-    "claude-opus-4.5": {
-      "provider": "Anthropic",
-      "status": "online",
-      "via": "LiteLLM :4000",
-      "role": "Sensitive / Deep Reasoning"
-    },
-    "claude-opus-4.6": {
-      "provider": "Anthropic",
-      "status": "online",
-      "via": "LiteLLM :4000",
-      "role": "Deep Reasoning / Strategy"
-    },
-    "claude-opus-4.7": {
-      "provider": "Anthropic",
-      "status": "online",
-      "via": "LiteLLM :4000",
-      "role": "Architecture / Strategy"
-    },
-    "deepseek-chat": {
-      "provider": "DeepSeek",
-      "status": "online",
-      "via": "LiteLLM :4000",
-      "role": "Cost-Bound / Fast"
-    },
-    "grok-reasoning": {
-      "provider": "xAI",
-      "status": "online",
-      "via": "LiteLLM :4000",
-      "role": "Hard Reasoning"
-    }
+    "claude-sonnet-4.5": { "provider": "Anthropic", "status": "online", "via": "LiteLLM :4000", "role": "Code Generation (legacy)" },
+    "claude-sonnet-4.6": { "provider": "Anthropic", "status": "online", "via": "LiteLLM :4000", "role": "Code Generation" },
+    "claude-opus-4.5": { "provider": "Anthropic", "status": "online", "via": "LiteLLM :4000", "role": "Sensitive / Deep Reasoning" },
+    "claude-opus-4.6": { "provider": "Anthropic", "status": "online", "via": "LiteLLM :4000", "role": "Deep Reasoning / Strategy" },
+    "claude-opus-4.7": { "provider": "Anthropic", "status": "online", "via": "LiteLLM :4000", "role": "Architecture / Strategy" },
+    "deepseek-chat": { "provider": "DeepSeek", "status": "online", "via": "LiteLLM :4000", "role": "Cost-Bound / Fast" },
+    "grok-reasoning": { "provider": "xAI", "status": "online", "via": "LiteLLM :4000", "role": "Hard Reasoning" }
   }
 }
