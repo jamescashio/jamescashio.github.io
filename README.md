@@ -1,4 +1,4 @@
-# ZEUSAPOLLO v21.1 — Sovereign AI & Enterprise Cybersecurity
+# ZEUSAPOLLO v21.2a — Hardened Sovereign AI Infrastructure
 
 > *"The line between man and machine is not a wall — it's a bridge."*
 
@@ -12,7 +12,7 @@ A **live interactive portfolio** and **command center dashboard** showcasing a s
 |---|---|
 | **Stack** | Vanilla HTML/CSS/JS + WebGL • Deployed via GitHub Pages |
 | **Design System** | LCARS-inspired (Star Trek) • Dark cyberpunk aesthetic • Orange/Cyan signature palette |
-| **Build State** | 234+ commits • 203+ deployments • 3 AI contributors |
+| **Build State** | 235+ commits • 204+ deployments • 3 AI contributors |
 
 ---
 

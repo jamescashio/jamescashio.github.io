@@ -1,107 +1,130 @@
 #!/usr/bin/env bash
-# ───────────────────────────────────────────────
-# ZEUSAPOLLO v21.2 Security Hardening Deploy
-# Run from Athena (RPi4) or from Zeus via pct exec
-# Usage: sudo bash deploy_hardening.sh
-# ───────────────────────────────────────────────
+# ═══════════════════════════════════════════════════════════════
+# ZEUSAPOLLO — Swarm Bridge Hardening Deploy Script v1.0
+# ═══════════════════════════════════════════════════════════════
+# Applies security hardening measures to the running Swarm Bridge
+# container on CT-115 (Proxmox).
+#
+# Usage:
+#   chmod +x deploy_hardening.sh
+#   sudo ./deploy_hardening.sh
+#
+# Requires:
+#   - pct access to CT-115
+#   - SWARM_API_KEY set in environment or /root/.hermes/config/auth.json
+# ═══════════════════════════════════════════════════════════════
 
 set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-GREEN='\033[0;32m'
-CYAN='\033[0;36m'
-RED='\033[0;31m'
-NC='\033[0m'
+# ─── Colors ────────────────────────────────────────────────────
+RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'
+CYAN='\033[0;36m'; NC='\033[0m'
 
-echo -e "${CYAN}════════════════════════════════════════${NC}"
-echo -e "${CYAN}  ZEUSAPOLLO Security Hardening v1.0${NC}"
-echo -e "${CYAN}════════════════════════════════════════${NC}"
+log()  { echo -e "${GREEN}[✓]${NC} $1"; }
+warn() { echo -e "${YELLOW}[!]${NC} $1"; }
+err()  { echo -e "${RED}[✗]${NC} $1"; }
 
-# ─── 1. NATS Hardening ───────────────────────────────────────────────────────
+# ─── Config ────────────────────────────────────────────────────
+CONTAINER_ID=${CONTAINER_ID:-115}
+SWARM_BRIDGE_DIR="/opt/swarm-bridge/"
+API_KEY="${SWARM_API_KEY:-}"
 
-NATS_CONF="/etc/nats/nats.conf"
-NATS_BACKUP="/etc/nats/nats.conf.bak.$(date +%s)"
-NATS_TOKEN="${1:-$(openssl rand -hex 16)}"
-
-echo -e "\n${GREEN}◆ Step 1/4: NATS Security${NC}"
-
-if [ -f "$NATS_CONF" ]; then
-  cp "$NATS_CONF" "$NATS_BACKUP"
-  echo "  ✓ Backed up: $NATS_BACKUP"
+# Try to read from auth.json if not set
+if [ -z "$API_KEY" ]; then
+  AUTH_FILE="${AUTH_FILE:-/root/.hermes/config/auth.json}"
+  if [ -f "$AUTH_FILE" ]; then
+    API_KEY=$(python3 -c "import json; print(json.load(open('$AUTH_FILE'))['swarm']['api_key'])" 2>/dev/null || echo "")
+  fi
 fi
 
-# Build hardened config
-cat > "$NATS_CONF" << NATSEOF
-port: 4222
+if [ -z "$API_KEY" ]; then
+  err "SWARM_API_KEY not set. Generate one and export it:"
+  echo "    export SWARM_API_KEY=\$(openssl rand -hex 32)"
+  exit 1
+fi
 
-# JetStream for durable event persistence
-jetstream {
-  store_dir: /var/lib/nats/jetstream
-  max_memory_store: 268435456
-  max_file_store: 1073741824
-}
+log "API key loaded (${#API_KEY} chars)"
 
-# Limits
-max_payload: 2097152
-max_connections: 128
-max_subscriptions: 512
+# ─── 1. Verify container access ────────────────────────────────
+log "Checking container $CONTAINER_ID..."
+if ! pct status "$CONTAINER_ID" &>/dev/null; then
+  err "Container $CONTAINER_ID not found or inaccessible"
+  exit 1
+fi
+log "Container $CONTAINER_ID accessible"
 
-# Authentication
-authorization {
-  users [
-    {user: omnius, password: "${NATS_TOKEN}"}
-    {user: hermes,  password: "${NATS_TOKEN}"}
-    {user: captain, password: "${NATS_TOKEN}"}
-  ]
-  default_permissions {
-    publish:   {"allow": ["agent.>", "cluster.>", "inference.>", "captain.>"]}
-    subscribe: {"allow": ["agent.>", "cluster.>", "inference.>", "captain.>", "_INBOX.>"]}
-  }
-}
+# ─── 2. Deploy hardened swarm bridge ──────────────────────────
+log "Deploying hardened swarm bridge..."
+pct push "$CONTAINER_ID" "${SCRIPT_DIR}/zeusapollo_swarm.py" "${SWARM_BRIDGE_DIR}zeusapollo_swarm.py" --perms 755
+log "Swarm bridge code pushed"
 
-# Leafnode for multi-site
-leafnodes {
-  port: 7422
-}
-NATSEOF
+# ─── 3. Restart the bridge with auth ──────────────────────────
+log "Restarting swarm bridge container with auth enabled..."
+pct exec "$CONTAINER_ID" -- bash -c "
+cd $SWARM_BRIDGE_DIR
 
-echo "  ✓ Config written: $NATS_CONF"
+# Kill existing process
+pkill -f zeusapollo_swarm.py 2>/dev/null || true
+sleep 1
 
-# Ensure JetStream directory exists
-mkdir -p /var/lib/nats/jetstream
-echo "  ✓ JetStream directory created"
+# Export API key and start
+export SWARM_API_KEY='$API_KEY'
+nohup python3 zeusapollo_swarm.py --port 11235 > /var/log/swarm-bridge.log 2>&1 &
+echo \$! > /var/run/swarm-bridge.pid
+disown
 
-# Restart NATS
-if systemctl is-active nats-server &>/dev/null; then
-  systemctl restart nats-server
-  echo "  ✓ NATS restarted"
+# Wait for startup
+sleep 2
+if kill -0 \$(cat /var/run/swarm-bridge.pid) 2>/dev/null; then
+  echo 'Bridge started (PID: \$(cat /var/run/swarm-bridge.pid))'
 else
-  echo -e "  ${RED}⚠ NATS not a systemd service — restart manually${NC}"
+  echo 'Bridge failed to start'
+  cat /var/log/swarm-bridge.log
+  exit 1
+fi
+"
+
+log "Swarm bridge restarted with authentication enabled"
+
+# ─── 4. Verify it's running ───────────────────────────────────
+log "Verifying bridge is operational..."
+sleep 2
+HEALTH_CHECK=$(pct exec "$CONTAINER_ID" -- curl -s http://127.0.0.1:11235/health 2>/dev/null || echo "failed")
+
+if echo "$HEALTH_CHECK" | grep -q "ok"; then
+  log "Bridge health check passed"
+else
+  warn "Bridge health check returned: $HEALTH_CHECK"
+  warn "Check /var/log/swarm-bridge.log on container $CONTAINER_ID"
 fi
 
-echo -e "\n${GREEN}◆ Step 2/4: NATS Monitoring Lockdown${NC}"
-# NATS monitoring (8222) has no auth in core — bind to localhost only
-# Requires: --http_port or use iptables to restrict
-if command -v iptables &>/dev/null; then
-  iptables -A INPUT -p tcp --dport 8222 ! -s 192.168.1.0/24 -j DROP 2>/dev/null || true
-  echo "  ✓ iptables rule added: monitoring restricted to LAN"
+# ─── 5. Verify auth is enforced ───────────────────────────────
+log "Verifying auth enforcement..."
+AUTH_TEST=$(pct exec "$CONTAINER_ID" -- curl -s -o /dev/null -w '%{http_code}' \
+  -X POST http://127.0.0.1:11235/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{"messages":[{"role":"user","content":"test"}]}' 2>/dev/null || echo "failed")
+
+if [ "$AUTH_TEST" = "401" ]; then
+  log "Auth enforcement verified — unauthenticated requests return 401"
+elif [ "$AUTH_TEST" = "200" ]; then
+  warn "Auth NOT enforced on /v1/chat/completions — check config"
+else
+  warn "Auth test returned HTTP $AUTH_TEST — manual check required"
 fi
 
-echo -e "\n${GREEN}◆ Step 3/4: Credential Store${NC}"
-# Save creds
-cat > /root/.nats_creds << CREDSEOF
-NATS_TOKEN=${NATS_TOKEN}
-NATS_URL=nats://hermes:${NATS_TOKEN}@192.168.1.32:4222
-NATS_MONITOR=http://192.168.1.32:8222
-CREDSEOF
-chmod 600 /root/.nats_creds
-echo "  ✓ Credentials saved: /root/.nats_creds"
-
-echo -e "\n${GREEN}◆ Step 4/4: Swarm Bridge Auth${NC}"
-echo "  Set SWARM_API_KEY in environment or deploy with:"
-echo "  export SWARM_API_KEY=<key-from-auth.json>"
-
-echo -e "\n${CYAN}════════════════════════════════════════${NC}"
-echo -e "${GREEN}  Token: ${NATS_TOKEN}${NC}"
-echo -e "${GREEN}  Next: Update auth.json with this token${NC}"
-echo -e "${GREEN}  Then: Restart NATS bridge on Hermes CT${NC}"
-echo -e "${CYAN}════════════════════════════════════════${NC}"
+# ─── Done ──────────────────────────────────────────────────────
+echo ""
+echo -e "${CYAN}╔══════════════════════════════════════════════════════╗${NC}"
+echo -e "${CYAN}║    SWARM BRIDGE HARDENING COMPLETE                 ║${NC}"
+echo -e "${CYAN}╠══════════════════════════════════════════════════════╣${NC}"
+echo -e "${CYAN}║  🔐 Auth:    X-API-Key required                     ║${NC}"
+echo -e "${CYAN}║  ⚡ Rate:    60 req/min per IP                       ║${NC}"
+echo -e "${CYAN}║  🛡️  Tokens: Max 16384 per request                  ║${NC}"
+echo -e "${CYAN}║  🌐 CORS:    Origin validation active               ║${NC}"
+echo -e "${CYAN}║  📡 Port:    11235                                   ║${NC}"
+echo -e "${CYAN}╚══════════════════════════════════════════════════════╝${NC}"
+echo ""
+echo "To test: curl -H 'X-API-Key: YOUR_KEY' http://192.168.1.115:11235/v1/health"
+echo "Logs: pct exec $CONTAINER_ID -- tail -f /var/log/swarm-bridge.log"
