@@ -23,11 +23,31 @@ from typing import Optional
 import argparse
 import json
 import time
+import os
 import httpx
 import asyncio
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import StreamingResponse, JSONResponse
 import uvicorn
+
+# ─── AUTH ─────────────────────────────────────────────────────────────────────
+SWARM_API_KEY = os.environ.get("SWARM_API_KEY", "")
+if not SWARM_API_KEY:
+    # Fallback: try auth.json
+    try:
+        with open(os.path.expanduser("~/.hermes/auth.json")) as f:
+            auth = json.load(f)
+        SWARM_API_KEY = auth.get("swarm_bridge", {}).get("api_key", "")
+    except:
+        pass
+
+def verify_auth(request: Request):
+    """Simple API key check via X-API-Key header."""
+    if not SWARM_API_KEY:
+        return  # No key configured = no auth (legacy mode)
+    key = request.headers.get("X-API-Key", "")
+    if key != SWARM_API_KEY:
+        raise HTTPException(status_code=401, detail="Invalid or missing API key")
 
 # ─── SERVICE ENDPOINTS ──────────────────────────────────────────────────────
 CASHIOTUF_LM_STUDIO = "http://192.168.1.116:1234/v1/chat/completions"
@@ -184,6 +204,15 @@ def route_and_generate(prompt: str) -> str:
 
 # ─── FASTAPI SERVER ─────────────────────────────────────────────────────────
 app = FastAPI(title="ZeusApollo Swarm Bridge")
+
+# ─── AUTH MIDDLEWARE ──────────────────────────────────────────────────────────
+@app.middleware("http")
+async def auth_middleware(request: Request, call_next):
+    # Skip auth for health endpoint (used by monitoring)
+    if request.url.path == "/health":
+        return await call_next(request)
+    verify_auth(request)
+    return await call_next(request)
 
 
 @app.post("/v1/chat/completions")
