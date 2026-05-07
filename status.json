@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-05-07T11:05:02",
-  "ts_epoch": 1778166302,
+  "timestamp": "2026-05-07T11:10:02",
+  "ts_epoch": 1778166602,
   "nodes": {
     "Apollo": {
       "ip": "192.168.1.30",
@@ -12,15 +12,15 @@
     },
     "Atlas": {
       "ip": "192.168.1.78",
-      "latency": "3ms"
+      "latency": "2ms"
     },
     "Hermes": {
       "ip": "192.168.1.105",
-      "latency": "3ms"
+      "latency": "2ms"
     },
     "Omnius": {
       "ip": "192.168.1.106",
-      "latency": "3ms"
+      "latency": "2ms"
     },
     "n8n": {
       "ip": "192.168.1.107",
