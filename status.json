@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-05-08T05:20:02",
-  "ts_epoch": 1778232002,
+  "timestamp": "2026-05-08T05:25:02",
+  "ts_epoch": 1778232302,
   "nodes": {
     "Apollo": {
       "ip": "192.168.1.30",
@@ -36,11 +36,11 @@
     },
     "Genesis": {
       "ip": "192.168.1.149",
-      "latency": "2ms"
+      "latency": "3ms"
     },
     "PBS": {
       "ip": "192.168.1.244",
-      "latency": "2ms"
+      "latency": "5ms"
     },
     "Athena": {
       "ip": "192.168.1.32",
