@@ -1,10 +1,10 @@
 {
-  "timestamp": "2026-05-08T07:25:03",
-  "ts_epoch": 1778239503,
+  "timestamp": "2026-05-08T07:30:02",
+  "ts_epoch": 1778239802,
   "nodes": {
     "Apollo": {
       "ip": "192.168.1.30",
-      "latency": "35ms"
+      "latency": "2ms"
     },
     "Zeus": {
       "ip": "192.168.1.31",
@@ -48,7 +48,7 @@
     },
     "Plex": {
       "ip": "192.168.1.108",
-      "latency": "2ms"
+      "latency": "1ms"
     },
     "Cashiotuf": {
       "ip": "192.168.1.15",
