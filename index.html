@@ -2534,7 +2534,36 @@ function runVoice() {
   out.style.display = 'block';
   playSound('alert', 0.5);
   setTimeout(() => {
-    out.innerHTML = `<span style="color:var(--text-dim)">NEMOTRON:</span> "${text}"<br><span style="color:var(--green)">→ Reasoning complete. Confidence 94%.</span><br><br><span style="color:var(--text-dim)">GROK-SPEAK (Eve):</span> <em>"Acknowledged, Admiral. All systems nominal."</em>`;
+    // SECURITY: Prevent XSS by avoiding innerHTML
+    out.textContent = '';
+
+    const span1 = document.createElement('span');
+    span1.style.color = 'var(--text-dim)';
+    span1.textContent = 'NEMOTRON:';
+
+    const span2 = document.createElement('span');
+    span2.style.color = 'var(--green)';
+    span2.textContent = '→ Reasoning complete. Confidence 94%.';
+
+    const span3 = document.createElement('span');
+    span3.style.color = 'var(--text-dim)';
+    span3.textContent = 'GROK-SPEAK (Eve):';
+
+    const em = document.createElement('em');
+    em.textContent = '"Acknowledged, Admiral. All systems nominal."';
+
+    out.appendChild(span1);
+    out.appendChild(document.createTextNode(' "'));
+    out.appendChild(document.createTextNode(text));
+    out.appendChild(document.createTextNode('"'));
+    out.appendChild(document.createElement('br'));
+    out.appendChild(span2);
+    out.appendChild(document.createElement('br'));
+    out.appendChild(document.createElement('br'));
+    out.appendChild(span3);
+    out.appendChild(document.createTextNode(' '));
+    out.appendChild(em);
+
     playSound('success', 0.5);
     if ('speechSynthesis' in window) {
       const u = new SpeechSynthesisUtterance(text); u.pitch=1.05; u.rate=0.92;
