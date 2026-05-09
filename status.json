@@ -1,18 +1,18 @@
 {
-  "timestamp": "2026-05-09T01:40:13",
-  "ts_epoch": 1778305213,
+  "timestamp": "2026-05-09T01:45:03",
+  "ts_epoch": 1778305503,
   "nodes": {
     "Apollo": {
       "ip": "192.168.1.30",
-      "latency": "1049ms"
+      "latency": "2ms"
     },
     "Zeus": {
       "ip": "192.168.1.31",
-      "latency": "3ms"
+      "latency": "2ms"
     },
     "Atlas": {
       "ip": "192.168.1.78",
-      "latency": "3ms"
+      "latency": "2ms"
     },
     "Hermes": {
       "ip": "192.168.1.105",
@@ -20,11 +20,11 @@
     },
     "Omnius": {
       "ip": "192.168.1.106",
-      "latency": "3ms"
+      "latency": "2ms"
     },
     "n8n": {
       "ip": "192.168.1.107",
-      "latency": "3ms"
+      "latency": "2ms"
     },
     "RAGFlow": {
       "ip": "192.168.1.118",
