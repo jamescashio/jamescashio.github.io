@@ -1,10 +1,10 @@
 {
-  "timestamp": "2026-05-10T22:05:03",
-  "ts_epoch": 1778465103,
+  "timestamp": "2026-05-10T22:10:03",
+  "ts_epoch": 1778465403,
   "nodes": {
     "Apollo": {
       "ip": "192.168.1.30",
-      "latency": "2ms"
+      "latency": "3ms"
     },
     "Zeus": {
       "ip": "192.168.1.31",
@@ -32,7 +32,7 @@
     },
     "AdGuard": {
       "ip": "192.168.1.200",
-      "latency": "2ms"
+      "latency": "4ms"
     },
     "Genesis": {
       "ip": "192.168.1.149",
