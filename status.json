@@ -1,10 +1,10 @@
 {
-  "timestamp": "2026-05-11T03:40:03",
-  "ts_epoch": 1778485203,
+  "timestamp": "2026-05-11T03:45:11",
+  "ts_epoch": 1778485511,
   "nodes": {
     "Apollo": {
       "ip": "192.168.1.30",
-      "latency": "2ms"
+      "latency": "594ms"
     },
     "Zeus": {
       "ip": "192.168.1.31",
