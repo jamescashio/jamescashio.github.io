@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-05-12T10:55:03",
-  "ts_epoch": 1778597703,
+  "timestamp": "2026-05-12T14:00:01",
+  "ts_epoch": 1778608801,
   "nodes": {
     "Apollo": {
       "ip": "192.168.1.30",
@@ -12,7 +12,7 @@
     },
     "Atlas": {
       "ip": "192.168.1.78",
-      "latency": "3ms"
+      "latency": "2ms"
     },
     "Hermes": {
       "ip": "192.168.1.105",
@@ -26,12 +26,8 @@
       "ip": "192.168.1.107",
       "latency": "2ms"
     },
-    "RAGFlow": {
-      "ip": "192.168.1.118",
-      "latency": "1002ms"
-    },
     "AdGuard": {
-      "ip": "192.168.1.200",
+      "ip": "192.168.1.101",
       "latency": "2ms"
     },
     "Genesis": {
@@ -47,12 +43,16 @@
       "latency": "2ms"
     },
     "Plex": {
-      "ip": "192.168.1.108",
+      "ip": "192.168.1.193",
       "latency": "2ms"
     },
-    "Cashiotuf": {
-      "ip": "192.168.1.15",
-      "latency": "1002ms"
+    "AI-Stack": {
+      "ip": "192.168.1.112",
+      "latency": "2ms"
+    },
+    "Control-Plane": {
+      "ip": "192.168.1.200",
+      "latency": "2ms"
     }
   }
 }
