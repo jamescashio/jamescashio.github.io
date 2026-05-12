@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-05-12T01:30:03",
-  "ts_epoch": 1778563803,
+  "timestamp": "2026-05-12T01:35:03",
+  "ts_epoch": 1778564103,
   "nodes": {
     "Apollo": {
       "ip": "192.168.1.30",
@@ -32,11 +32,11 @@
     },
     "AdGuard": {
       "ip": "192.168.1.200",
-      "latency": "3ms"
+      "latency": "5ms"
     },
     "Genesis": {
       "ip": "192.168.1.149",
-      "latency": "2ms"
+      "latency": "4ms"
     },
     "PBS": {
       "ip": "192.168.1.244",
@@ -44,7 +44,7 @@
     },
     "Athena": {
       "ip": "192.168.1.32",
-      "latency": "2ms"
+      "latency": "3ms"
     },
     "Plex": {
       "ip": "192.168.1.108",
