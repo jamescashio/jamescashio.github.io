@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-05-11T23:25:03",
-  "ts_epoch": 1778556303,
+  "timestamp": "2026-05-11T23:30:03",
+  "ts_epoch": 1778556603,
   "nodes": {
     "Apollo": {
       "ip": "192.168.1.30",
@@ -24,15 +24,15 @@
     },
     "n8n": {
       "ip": "192.168.1.107",
-      "latency": "2ms"
+      "latency": "3ms"
     },
     "RAGFlow": {
       "ip": "192.168.1.118",
-      "latency": "1002ms"
+      "latency": "1003ms"
     },
     "AdGuard": {
       "ip": "192.168.1.200",
-      "latency": "3ms"
+      "latency": "2ms"
     },
     "Genesis": {
       "ip": "192.168.1.149",
