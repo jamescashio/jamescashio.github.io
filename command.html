@@ -990,7 +990,22 @@ function addEvent() {
   const time = now.toISOString().substr(11, 8);
   const entry = document.createElement('div');
   entry.className = 'ticker-entry';
-  entry.innerHTML = `<span class="time">${time}</span><span class="event ${evt.cls}">${evt.event}</span><span class="detail">${evt.detail}</span>`;
+
+  const timeSpan = document.createElement('span');
+  timeSpan.className = 'time';
+  timeSpan.textContent = time;
+
+  const eventSpan = document.createElement('span');
+  eventSpan.className = `event ${evt.cls}`;
+  eventSpan.textContent = evt.event;
+
+  const detailSpan = document.createElement('span');
+  detailSpan.className = 'detail';
+  detailSpan.textContent = evt.detail;
+
+  // SECURITY: Prevent XSS by avoiding innerHTML
+  entry.replaceChildren(timeSpan, eventSpan, detailSpan);
+
   tickerEl.prepend(entry);
   eventCount++;
   eventCountEl.textContent = eventCount + ' EVENTS';
@@ -1038,13 +1053,26 @@ nodes.forEach(n => {
   const item = document.createElement('div');
   item.className = 'node-status-item';
   const indicatorClass = n.status === 'primary' ? 'primary' : 'online';
-  item.innerHTML = `
-    <div style="display:flex;align-items:center;gap:8px;">
-      <span class="node-indicator ${indicatorClass}"></span>
-      <span class="name">${n.name}</span>
-    </div>
-    <span class="role">${n.role}</span>
-  `;
+
+  const innerDiv = document.createElement('div');
+  innerDiv.style.cssText = 'display:flex;align-items:center;gap:8px;';
+
+  const indicatorSpan = document.createElement('span');
+  indicatorSpan.className = `node-indicator ${indicatorClass}`;
+
+  const nameSpan = document.createElement('span');
+  nameSpan.className = 'name';
+  nameSpan.textContent = n.name;
+
+  innerDiv.replaceChildren(indicatorSpan, nameSpan);
+
+  const roleSpan = document.createElement('span');
+  roleSpan.className = 'role';
+  roleSpan.textContent = n.role;
+
+  // SECURITY: Prevent XSS by avoiding innerHTML
+  item.replaceChildren(innerDiv, roleSpan);
+
   nodeListEl.appendChild(item);
 });
 
