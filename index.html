@@ -2972,20 +2972,39 @@ async function loadLatency() {
     const ts = document.getElementById('latency-ts');
     if (ts && d.timestamp) ts.textContent = d.timestamp.replace('T',' ').slice(0,16);
     const nodes = d.nodes || {};
-    el.innerHTML = Object.entries(nodes).map(([name, v]) => {
+    // SECURITY: Prevent XSS by avoiding innerHTML
+    el.textContent = '';
+    Object.entries(nodes).forEach(([name, v]) => {
       const lat = v.latency || 'DOWN';
       const ok = lat !== 'DOWN';
       const ms = parseInt(lat);
       const barPct = ok ? Math.min(100, ms * 3) : 100;
       const color = ok ? (ms < 5 ? 'var(--green)' : ms < 20 ? 'var(--cyan)' : ms < 50 ? 'var(--amber)' : 'var(--red)') : 'var(--red)';
-      return `<div style="display:flex;align-items:center;gap:12px;padding:8px 12px;margin-bottom:3px;background:var(--glass);border-radius:6px">
-        <span style="font-family:var(--font-mono);font-size:14px;color:var(--text-dim);min-width:90px">${name}</span>
-        <div style="flex:1;height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden">
-          <div style="height:100%;width:${barPct}%;background:${color};border-radius:2px;transition:width 0.5s ease,background 0.3s"></div>
-        </div>
-        <span style="font-family:var(--font-mono);font-size: 17px;color:${color};min-width:45px;text-align:right">${lat}</span>
-      </div>`;
-    }).join('');
+
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:8px 12px;margin-bottom:3px;background:var(--glass);border-radius:6px';
+
+      const nameSpan = document.createElement('span');
+      nameSpan.style.cssText = 'font-family:var(--font-mono);font-size:14px;color:var(--text-dim);min-width:90px';
+      nameSpan.textContent = name;
+
+      const barContainer = document.createElement('div');
+      barContainer.style.cssText = 'flex:1;height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden';
+
+      const barFill = document.createElement('div');
+      barFill.style.cssText = `height:100%;width:${barPct}%;background:${color};border-radius:2px;transition:width 0.5s ease,background 0.3s`;
+      barContainer.appendChild(barFill);
+
+      const latSpan = document.createElement('span');
+      latSpan.style.cssText = `font-family:var(--font-mono);font-size: 17px;color:${color};min-width:45px;text-align:right`;
+      latSpan.textContent = lat;
+
+      row.appendChild(nameSpan);
+      row.appendChild(barContainer);
+      row.appendChild(latSpan);
+
+      el.appendChild(row);
+    });
   } catch(e) { /* latency fetch failed */ }
 }
 
