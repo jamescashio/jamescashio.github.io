@@ -81,8 +81,18 @@ CASHIOTUF_LM_STUDIO = "http://192.168.1.116:1234/v1/chat/completions"
 ATLAS_OLLAMA = "http://192.168.1.78:11434/api/generate"
 LITELLM_QWEN = "http://192.168.1.115:4000/v1/chat/completions"
 
-# LiteLLM auth
-LITELLM_KEY = "sk-zeu...-key"
+# SECURITY: Prevent hardcoded API keys by loading from environment or secure config
+LITELLM_KEY = os.environ.get("LITELLM_API_KEY", "")
+if not LITELLM_KEY:
+    try:
+        with open("/root/.hermes/config/auth.json") as f:
+            auth_config = json.load(f)
+            LITELLM_KEY = auth_config.get("litellm", {}).get("api_key", "")
+    except (FileNotFoundError, json.JSONDecodeError, KeyError):
+        pass
+
+if not LITELLM_KEY:
+    print("⚠️  WARNING: LITELLM_API_KEY not set — Qwen routing will fail")
 
 # Local MLX on Atlas (if bridge runs there)
 LOCAL_MLX_PORT = 11234
