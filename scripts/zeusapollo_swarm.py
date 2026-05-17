@@ -36,6 +36,7 @@ import asyncio
 from fastapi import FastAPI, Request, HTTPException, Response
 from fastapi.responses import StreamingResponse, JSONResponse
 import uvicorn
+import secrets
 
 # ─── CONFIGURATION ────────────────────────────────────────────────────────────
 
@@ -105,7 +106,8 @@ def verify_auth(request: Request) -> bool:
     if not API_KEY:
         return True  # No key configured = no auth (fail closed by config choice)
     key = request.headers.get("X-API-Key", "")
-    return key == API_KEY
+    # SECURITY: Prevent timing attacks by using secrets.compare_digest
+    return secrets.compare_digest(key, API_KEY)
 
 
 def require_auth(request: Request):
