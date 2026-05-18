@@ -30,6 +30,7 @@ import time
 import os
 import re
 import hashlib
+import secrets
 from collections import defaultdict
 import httpx
 import asyncio
@@ -82,7 +83,15 @@ ATLAS_OLLAMA = "http://192.168.1.78:11434/api/generate"
 LITELLM_QWEN = "http://192.168.1.115:4000/v1/chat/completions"
 
 # LiteLLM auth
-LITELLM_KEY = "sk-zeu...-key"
+# SECURITY: Remove hardcoded LITELLM_KEY and load from environment or config file.
+LITELLM_KEY = os.environ.get("LITELLM_KEY", "")
+if not LITELLM_KEY:
+    try:
+        with open("/root/.hermes/config/auth.json") as f:
+            auth_config = json.load(f)
+            LITELLM_KEY = auth_config.get("swarm", {}).get("litellm_key", "")
+    except (FileNotFoundError, json.JSONDecodeError, KeyError):
+        pass
 
 # Local MLX on Atlas (if bridge runs there)
 LOCAL_MLX_PORT = 11234
@@ -105,7 +114,8 @@ def verify_auth(request: Request) -> bool:
     if not API_KEY:
         return True  # No key configured = no auth (fail closed by config choice)
     key = request.headers.get("X-API-Key", "")
-    return key == API_KEY
+    # SECURITY: Use secrets.compare_digest to prevent timing attacks.
+    return secrets.compare_digest(key, API_KEY)
 
 
 def require_auth(request: Request):
