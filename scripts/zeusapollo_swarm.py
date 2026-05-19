@@ -31,6 +31,7 @@ import os
 import re
 import hashlib
 from collections import defaultdict
+import secrets
 import httpx
 import asyncio
 from fastapi import FastAPI, Request, HTTPException, Response
@@ -105,7 +106,8 @@ def verify_auth(request: Request) -> bool:
     if not API_KEY:
         return True  # No key configured = no auth (fail closed by config choice)
     key = request.headers.get("X-API-Key", "")
-    return key == API_KEY
+    # SECURITY: Prevent timing attacks when comparing authentication tokens
+    return secrets.compare_digest(key, API_KEY)
 
 
 def require_auth(request: Request):
