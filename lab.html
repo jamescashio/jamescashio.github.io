@@ -6,16 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Doug Cashio — Enterprise AI & Cybersecurity Solutions Architect</title>
   <meta name="description"
-    content="ZeusApollo Lab — v19.1 baseline (April 27, 2026). 11-node sovereign AI fleet with Multi-tier LLM routing: Grok 4.20/Think reasoning, ATLAS Mac Mini M4 .78 edge, CashioTUF GPU fallback. Native MCP control plane.">
+    content="ZeusApollo Lab — v23 baseline (May 21, 2026). 22-node sovereign AI fleet with Multi-tier LLM routing: DeepSeek V4-Pro, Gemini 2.5 Ultra, Grok 4.3, GPT-5.5. Consolidated LiteLLM Gateway on Port 4000.">
 
-  <meta property="og:title" content="ZeusApollo Lab — v19.1 Baseline | Doug Cashio">
+  <meta property="og:title" content="ZeusApollo Lab — v23 Baseline | Doug Cashio">
   <meta property="og:description"
-    content="v19.1 ZeusApollo Network Assessment — 11 active nodes, ~18TB storage, Multi-tier LLM routing, ATLAS edge AI, native MCP. Enterprise-grade sovereign AI infrastructure portfolio.">
+    content="v23 ZeusApollo Network Assessment — 22 active nodes, ~24TB storage, Multi-tier LLM routing, LiteLLM Gateway, native MCP. Enterprise-grade sovereign AI infrastructure portfolio.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="ZeusApollo Lab — v19.1 Baseline | Doug Cashio">
+  <meta name="twitter:title" content="ZeusApollo Lab — v23 Baseline | Doug Cashio">
   <meta name="twitter:description"
-    content="v19.1 baseline — Multi-tier LLM fabric, ATLAS edge AI, native MCP control plane, Wazuh SIEM, GCP Cloud Run.">
+    content="v23 baseline — Multi-tier LLM fabric, LiteLLM Gateway, native MCP control plane, Wazuh SIEM, GCP Cloud Run.">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"
     integrity="sha384-vsrfeLOOY6KuIYKDlmVH5UiBmgIdB1oEf7p01YgWHuqmOHfZr374+odEv96n9tNC"
     crossorigin="anonymous"></script>
@@ -2259,7 +2259,7 @@
           <div class="seg4"></div>
         </div>
         <div class="lcars-bar-bottom">
-          <span>v19.1 NETWORK ASSESSMENT BASELINE — CLASSIFICATION: PUBLIC RELEASE</span>
+          <span>v23 NETWORK ASSESSMENT BASELINE — CLASSIFICATION: PUBLIC RELEASE</span>
         </div>
       </div>
     </div>
@@ -2268,8 +2268,8 @@
     <div class="lcars-sidebar">
       <a class="lcars-sidebar-seg" style="background:var(--lcars-gold);color:#222;" href="#warp-11"
         onclick="scrollToSection(event,'warp-11')">★ WARP 11</a>
-      <a class="lcars-sidebar-seg" style="background:var(--lcars-cyan);color:#222;" href="#v19.1-deltas"
-        onclick="scrollToSection(event,'v19.1-deltas')">00 v19.1 DELTAS</a>
+      <a class="lcars-sidebar-seg" style="background:var(--lcars-cyan);color:#222;" href="#v23-deltas"
+        onclick="scrollToSection(event,'v23-deltas')">00 v23 DELTAS</a>
       <a class="lcars-sidebar-seg" style="background:var(--lcars-gold);color:#222;" href="#llm-fabric"
         onclick="scrollToSection(event,'llm-fabric')">01 LLM FABRIC</a>
       <a class="lcars-sidebar-seg" style="background:var(--lcars-blue);" href="#fleet-map"
@@ -2304,7 +2304,7 @@
         style="margin-bottom: 20px; color: var(--lcars-bg); background: var(--lcars-gold); border-color: var(--lcars-gold); font-family: 'Orbitron', monospace; font-weight: 700; text-shadow: none;">&larr;
         BACK TO PORTFOLIO</a>
 
-      <!-- ═══════════ LAB COMMAND BRIDGE (v19.1) ═══════════
+      <!-- ═══════════ LAB COMMAND BRIDGE (v23) ═══════════
            Cinematic mission-control header for the lab.
            Static SVG only — no live endpoints, no PII.
       ═══════════════════════════════════════════════════ -->
@@ -2314,10 +2314,10 @@
             <span class="dot" aria-hidden="true"></span>
             <span>ZEUSAPOLLO COMMAND</span>
             <span class="pipe">|</span>
-            <span>v19.1 CASE STUDY</span>
+            <span>v23 CASE STUDY</span>
           </div>
           <h1 class="bridge-title">DOUG CASHIO &mdash; LAB &amp; ORCHESTRATION FABRIC</h1>
-          <div class="bridge-sub">v19.1 NETWORK ASSESSMENT BASELINE &middot; APRIL 27, 2026 &middot; PUBLIC RELEASE</div>
+          <div class="bridge-sub">v23 NETWORK ASSESSMENT BASELINE &middot; MAY 21, 2026 &middot; PUBLIC RELEASE</div>
           <p class="bridge-pitch">
             An undeniably awesome, production-grade home lab running a <strong>Multi-tier LLM routing fabric</strong>,
             sovereign edge inference, and an <strong>observability mesh</strong> that
@@ -2326,10 +2326,10 @@
           </p>
           <div class="bridge-stats">
             <div class="bridge-stat">
-              <div class="v">11</div><div class="l">Active Nodes</div>
+              <div class="v">22</div><div class="l">Active Nodes</div>
             </div>
             <div class="bridge-stat cyan">
-              <div class="v">~18TB</div><div class="l">Storage</div>
+              <div class="v">~24TB</div><div class="l">Storage</div>
             </div>
             <div class="bridge-stat green">
               <div class="v">10</div><div class="l">LLM Subs</div>
@@ -2474,17 +2474,17 @@
         </div>
       </section>
 
-      <!-- v19.1 BASELINE BANNER -->
+      <!-- v23 BASELINE BANNER -->
       <div class="animate-in" style="animation-delay:0.18s; display:flex; flex-wrap:wrap; align-items:center; gap:14px; padding:12px 18px; margin:14px 0 18px 0; background:linear-gradient(90deg, rgba(102,204,204,0.08), rgba(241,223,111,0.04)); border:1px solid rgba(102,204,204,0.3); border-radius:8px;">
         <div style="display:inline-flex; align-items:center; gap:10px;">
           <span style="display:inline-block; width:9px; height:9px; border-radius:50%; background:#66FF99; box-shadow:0 0 10px rgba(102,255,153,0.7); animation:heartbeat 2s ease-in-out infinite;"></span>
-          <span style="font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:2px; color:var(--lcars-cyan);">v19.1 BASELINE &mdash; TESTLAB STABLE</span>
+          <span style="font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:2px; color:var(--lcars-cyan);">v23 BASELINE &mdash; TESTLAB STABLE</span>
         </div>
         <div style="font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:1.5px; color:var(--text-secondary);">
-          12 ACTIVE NODES &bull; ~18TB STORAGE &bull; 3-TIER LLM ROUTING &bull; 720h TELEMETRY RETENTION
+          22 ACTIVE NODES &bull; ~24TB STORAGE &bull; 3-TIER LLM ROUTING &bull; 720h TELEMETRY RETENTION
         </div>
         <div style="margin-left:auto; font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:1.5px; color:var(--lcars-gold);">
-          DEEPMIND / GCP SPRINT &mdash; STAGED
+          DEEPMIND / GCP SPRINT &mdash; INTEGRATED
         </div>
       </div>
 
@@ -2492,14 +2492,14 @@
       <section class="prime-directive animate-in" style="animation-delay:0.19s;" role="note" aria-labelledby="prime-directive-label">
         <div class="prime-directive-sigil" aria-hidden="true"><span>PD</span></div>
         <div class="prime-directive-body">
-          <div id="prime-directive-label" class="prime-directive-label">Prime Directive &mdash; v19.1</div>
+          <div id="prime-directive-label" class="prime-directive-label">Prime Directive &mdash; v23</div>
           <div class="prime-directive-text">
-            Preserve a usable, working fleet. Stage the <strong>DeepMind / GCP Cloud Run / Vertex AI</strong> sprint without destabilizing the Multi-tier LLM fabric. Security cleanup is a scheduled June workstream &mdash; documented, not deferred quietly. <em style="color:var(--lcars-gold); font-style:normal;">Make it so.</em>
+            Maintain a highly available, robust 22-node cluster. Successfully integrated LiteLLM Proxy Gateway on Atlas for multi-model orchestrations with fallback triggers, recovered Athena node, deployed Drive Organizer Apps Script, and optimized Hermes git indexing. Security cleanup is fully integrated and validated. <em style="color:var(--lcars-gold); font-style:normal;">Make it so.</em>
           </div>
         </div>
         <div class="prime-directive-meta" aria-hidden="true">
-          <span class="pd-eleven">PUSH&nbsp;TO&nbsp;11</span>
-          <span>v19.1 BASELINE &middot; STARDATE 2026.117</span>
+          <span class="pd-eleven">PUSH&nbsp;TO&nbsp;22</span>
+          <span>v23 BASELINE &middot; STARDATE 26141.3</span>
         </div>
       </section>
 
@@ -2532,7 +2532,7 @@
         <div class="mc-nav-inner">
           <span class="mc-nav-label">EXPLORE BY LAYER</span>
           <a href="#warp-11" class="mc-nav-pill" data-color="gold" data-mc-target="warp-11"><span class="dot" aria-hidden="true"></span>WARP 11</a>
-          <a href="#v19.1-deltas" class="mc-nav-pill" data-color="green" data-mc-target="v19.1-deltas"><span class="dot" aria-hidden="true"></span>v19.1 &Delta;</a>
+          <a href="#v23-deltas" class="mc-nav-pill" data-color="green" data-mc-target="v23-deltas"><span class="dot" aria-hidden="true"></span>v23 &Delta;</a>
           <a href="#llm-fabric" class="mc-nav-pill" data-color="gold" data-mc-target="llm-fabric"><span class="dot" aria-hidden="true"></span>3-TIER ROUTING</a>
           <a href="#fleet-map" class="mc-nav-pill" data-color="cyan" data-mc-target="fleet-map"><span class="dot" aria-hidden="true"></span>FLEET MAP</a>
           <a href="#atlas-hermes" class="mc-nav-pill" data-color="cyan" data-mc-target="atlas-hermes"><span class="dot" aria-hidden="true"></span>ATLAS / HERMES</a>
@@ -2542,12 +2542,12 @@
 
       <!-- CONTACT BAR -->
       <div class="contact-bar animate-in" style="animation-delay:0.22s">
-        <a href="mailto:doug@cashio.us" class="contact-link" title="Email Doug Cashio">
+        <a href="/cdn-cgi/l/email-protection#781c170d1f381b190b101117560d0b" class="contact-link" title="Email Doug Cashio">
           <svg viewBox="0 0 24 24">
             <path
               d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
           </svg>
-          doug@cashio.us
+          <span class="__cf_email__" data-cfemail="64000b1103240705170c0d0b4a1117">[email&#160;protected]</span>
         </a>
         <a href="https://linkedin.com/in/dougcashio" target="_blank" rel="noopener" class="contact-link" title="LinkedIn">
           <svg viewBox="0 0 24 24">
@@ -2575,7 +2575,7 @@
         <p style="font-size:16px;">
           <strong style="color:var(--lcars-gold);">Lab Operator:</strong> Doug Cashio &mdash; Principal Solutions
           Consultant, Enterprise SaaS &amp; Cybersecurity<br>
-          <strong style="color:var(--lcars-gold);">Baseline:</strong> <span id="auto-stardate">Stardate 2026.117 (April 27, 2026)</span> &mdash; v19.1 Network Assessment baseline<br>
+          <strong style="color:var(--lcars-gold);">Baseline:</strong> <span id="auto-stardate">Stardate 26141.3 (May 21, 2026)</span> &mdash; v23 Network Assessment baseline<br>
           <strong style="color:var(--lcars-gold);">Format:</strong> Public case study &mdash; architecture &amp; story; sensitive endpoints generalized by design<br>
           <strong style="color:var(--lcars-teal);">Total Investment:</strong> 500+ Hours Homelab Architecture &amp; AI
           Engineering | 3.5 Years LLM Experience (Since ChatGPT, Nov 2022)
@@ -2619,20 +2619,20 @@
 
             <div style="padding:16px; background:rgba(102,204,204,0.05); border:1px solid rgba(102,204,204,0.3); border-left:3px solid var(--lcars-cyan); border-radius:8px;">
               <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:var(--lcars-cyan); margin-bottom:6px;">PRIMARY REASONING</div>
-              <h4 style="color:var(--lcars-cyan); font-size:14px; margin:0 0 8px 0;">Grok 4.20/Think &middot; Hermes Control Plane</h4>
-              <p style="font-size:13px; color:var(--text-secondary); line-height:1.6; margin:0;">High-context reasoning, multi-step planning, code synthesis. Routed via a custom provider schema with confidence-aware hand-off to local fallbacks.</p>
+              <h4 style="color:var(--lcars-cyan); font-size:14px; margin:0 0 8px 0;">DeepSeek V4-Pro &middot; Hermes Control Plane</h4>
+              <p style="font-size:13px; color:var(--text-secondary); line-height:1.6; margin:0;">High-context reasoning, multi-step planning, code synthesis. Primary low-cost shield with confidence-aware fallback to local and cloud clusters.</p>
             </div>
 
             <div style="padding:16px; background:rgba(102,255,153,0.05); border:1px solid rgba(102,255,153,0.3); border-left:3px solid #66FF99; border-radius:8px;">
-              <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:#66FF99; margin-bottom:6px;">LOCAL EDGE INFERENCE</div>
-              <h4 style="color:#66FF99; font-size:14px; margin:0 0 8px 0;">ATLAS &middot; Ollama on Apple Silicon</h4>
-              <p style="font-size:13px; color:var(--text-secondary); line-height:1.6; margin:0;">LAN-local reasoning &amp; embeddings (Gemma-4 26B MoE MLX). Sovereign &mdash; no payload leaves the ship for routine work.</p>
+              <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:#66FF99; margin-bottom:6px;">LOCAL EDGE GATEWAY</div>
+              <h4 style="color:#66FF99; font-size:14px; margin:0 0 8px 0;">ATLAS &middot; LiteLLM Proxy Gateway</h4>
+              <p style="font-size:13px; color:var(--text-secondary); line-height:1.6; margin:0;">Consolidated edge API gateway on port 4000, aggregating local model cluster, managing key rotation, and caching vector parameters.</p>
             </div>
 
             <div style="padding:16px; background:rgba(255,204,102,0.05); border:1px solid rgba(255,204,102,0.3); border-left:3px solid var(--lcars-gold); border-radius:8px;">
               <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:var(--lcars-gold); margin-bottom:6px;">GPU SPECIALIST FALLBACK</div>
-              <h4 style="color:var(--lcars-gold); font-size:14px; margin:0 0 8px 0;">CashioTUF &middot; LM Studio + Gemma</h4>
-              <p style="font-size:13px; color:var(--text-secondary); line-height:1.6; margin:0;">RTX 3080 specialist for Gemma-class workloads, GPU-burstable jobs, and fallback if ATLAS is offline. OpenAI-compatible local API.</p>
+              <h4 style="color:var(--lcars-gold); font-size:14px; margin:0 0 8px 0;">CashioTUF &middot; LM Studio + Gemma-4</h4>
+              <p style="font-size:13px; color:var(--text-secondary); line-height:1.6; margin:0;">Win 11 Pro / RTX 3080 specialist running google/gemma-4-e4b fallback on port 1234. Burstable GPU runway for intensive processing.</p>
             </div>
 
             <div style="padding:16px; background:rgba(204,153,255,0.05); border:1px solid rgba(204,153,255,0.3); border-left:3px solid var(--lcars-lavender); border-radius:8px;">
@@ -2648,9 +2648,9 @@
             </div>
 
             <div style="padding:16px; background:rgba(204,102,102,0.05); border:1px solid rgba(204,102,102,0.3); border-left:3px solid var(--lcars-red); border-radius:8px;">
-              <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:var(--lcars-red); margin-bottom:6px;">AUTONOMOUS AWAY TEAM</div>
-              <h4 style="color:var(--lcars-red); font-size:14px; margin:0 0 8px 0;">OpenClaw &middot; Grok 4.2 Reasoning</h4>
-              <p style="font-size:13px; color:var(--text-secondary); line-height:1.6; margin:0;">Discord-resident agent with a Grok &rarr; Perplexity sonar-pro &rarr; Gemini Flash-Lite fallback chain. Telemetry surfaces which engine answered, and why.</p>
+              <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:var(--lcars-red); margin-bottom:6px;">SOVEREIGN EXECUTOR</div>
+              <h4 style="color:var(--lcars-red); font-size:14px; margin:0 0 8px 0;">Hermes Control Plane &middot; CT-105</h4>
+              <p style="font-size:13px; color:var(--text-secondary); line-height:1.6; margin:0;">Proxmox LXC executing sovereign task management, systemd service supervision, and passwordless SSH integration across all hardware nodes.</p>
             </div>
 
           </div>
@@ -2851,7 +2851,7 @@
         </div>
       </div>
 
-      <script>
+      <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         function executeBurn(btn) {
             btn.disabled = true;
             btn.textContent = "EXECUTING...";
@@ -2897,66 +2897,57 @@
         }
       </script>
 
-<div class="section-header" id="v19.1-deltas">
+<div class="section-header" id="v23-deltas">
         <div class="bar" style="background:linear-gradient(90deg,var(--lcars-cyan),transparent);"></div>
-        <h2 style="color:var(--lcars-cyan);">v19.1 EXECUTIVE DELTAS</h2>
+        <h2 style="color:var(--lcars-cyan);">v23 EXECUTIVE DELTAS</h2>
         <div class="bar" style="background:linear-gradient(90deg,transparent,var(--lcars-cyan));"></div>
       </div>
 
       <div class="glass-panel" style="border-left:3px solid var(--lcars-cyan);">
-        <p style="margin-bottom:18px;">v19.1 converts completed implementation work into the standing baseline and
-          moves deferred security work into a June lane. Six material changes since v14:</p>
+        <p style="margin-bottom:18px;">v23 converts all integration milestones into the active production baseline. Six material upgrades since v19.1:</p>
 
         <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:14px;">
 
           <div style="padding:16px; background:rgba(102,255,153,0.05); border:1px solid rgba(102,255,153,0.25); border-left:3px solid #66FF99; border-radius:8px;">
             <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:#66FF99; margin-bottom:6px;">COMPLETE</div>
-            <h3 style="color:var(--lcars-gold); font-size:14px; margin-bottom:8px;">ATLAS EDGE-NODE ROLE CLEANUP</h3>
-            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Media-service residue fully decoupled from ATLAS &mdash; no service, process, launchd item, or metadata footprint. ATLAS is now a single-purpose edge AI / distributed-storage node, freeing all CPU and IO for Ollama inference.</p>
+            <h3 style="color:var(--lcars-gold); font-size:14px; margin-bottom:8px;">UNIFIED LITELLM GATEWAY</h3>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Consolidated ATLAS Mac Mini M4 endpoint on port 4000 to manage multi-model sequential fallbacks (DeepSeek &rarr; Gemini Ultra &rarr; Grok &rarr; GPT-5.5). Optimizes latency and simplifies key rotation.</p>
           </div>
 
           <div style="padding:16px; background:rgba(102,255,153,0.05); border:1px solid rgba(102,255,153,0.25); border-left:3px solid #66FF99; border-radius:8px;">
-            <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:#66FF99; margin-bottom:6px;">COMPLETE</div>
-            <h3 style="color:var(--lcars-gold); font-size:14px; margin-bottom:8px;">ATLAS UPS PROTECTION</h3>
-            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Mac Mini M4 and external storage SSDs now on UPS. Brownout and power-loss continuity for the edge AI node addressed.</p>
+            <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:#66FF99; margin-bottom:6px;">RECOVERED</div>
+            <h3 style="color:var(--lcars-gold); font-size:14px; margin-bottom:8px;">ATHENA DOWNSTREAM RECOVERY</h3>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Pi4 edge node (.32) restored using non-interactive package repairs, upgrading 211 packages. Deployed custom kernel 6.18.29 and enabled passwordless SSH from CT-105.</p>
+          </div>
+
+          <div style="padding:16px; background:rgba(102,255,153,0.05); border:1px solid rgba(102,255,153,0.25); border-left:3px solid #66FF99; border-radius:8px;">
+            <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:#66FF99; margin-bottom:6px;">INTEGRATED</div>
+            <h3 style="color:var(--lcars-gold); font-size:14px; margin-bottom:8px;">GOOGLE DRIVE ORGANIZER</h3>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Deployed drive_organizer.js App Script utility to automatically structure folder taxonomy. Protects Google Drive API quotas from rate-limit thrashing.</p>
+          </div>
+
+          <div style="padding:16px; background:rgba(102,255,153,0.05); border:1px solid rgba(102,255,153,0.25); border-left:3px solid #66FF99; border-radius:8px;">
+            <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:#66FF99; margin-bottom:6px;">OPTIMIZED</div>
+            <h3 style="color:var(--lcars-gold); font-size:14px; margin-bottom:8px;">GIT EXCLUSION POLICIES</h3>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Expanded CT-105 gitignore profiles to exclude large python venvs/ and node_modules/ directories. Resolved local disk-wait times and storage thrashing during sync cycles.</p>
           </div>
 
           <div style="padding:16px; background:rgba(102,255,153,0.05); border:1px solid rgba(102,255,153,0.25); border-left:3px solid #66FF99; border-radius:8px;">
             <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:#66FF99; margin-bottom:6px;">VERIFIED</div>
-            <h3 style="color:var(--lcars-gold); font-size:14px; margin-bottom:8px;">ATLAS OLLAMA EDGE</h3>
-            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Ollama v0.21.2_1 running as a system LaunchDaemon, bound to LAN, validated by chat completions from the Hermes control plane. Gemma-4 26B MoE MLX staged.</p>
-          </div>
-
-          <div style="padding:16px; background:rgba(102,255,153,0.05); border:1px solid rgba(102,255,153,0.25); border-left:3px solid #66FF99; border-radius:8px;">
-            <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:#66FF99; margin-bottom:6px;">COMPLETE</div>
-            <h3 style="color:var(--lcars-gold); font-size:14px; margin-bottom:8px;">HERMES PROVIDER REPAIR</h3>
-            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Invalid <code style="color:var(--lcars-teal); font-size:12px;">openai_compatible</code> provider removed. Hermes control plane now routes Grok 4.20/Think reasoning through a custom provider schema. Service active, no auth failures.</p>
-          </div>
-
-          <div style="padding:16px; background:rgba(102,255,153,0.05); border:1px solid rgba(102,255,153,0.25); border-left:3px solid #66FF99; border-radius:8px;">
-            <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:#66FF99; margin-bottom:6px;">VERIFIED</div>
-            <h3 style="color:var(--lcars-gold); font-size:14px; margin-bottom:8px;">CASHIOTUF LOCAL MODEL</h3>
-            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">CashioTUF GPU fallback corrected to LM Studio 0.4.12 (not Ollama). google/gemma-4-e4b on RTX 3080. Role: GPU fallback / local specialist.</p>
+            <h3 style="color:var(--lcars-gold); font-size:14px; margin-bottom:8px;">CASHIOTUF LOCAL GATEWAY</h3>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Win 11 Pro / RTX 3080 fallback fully verified with LM Studio 0.4.12 running Gemma-4 (google/gemma-4-e4b) on port 1234. Standing by as primary local GPU backup.</p>
           </div>
 
           <div style="padding:16px; background:rgba(102,255,153,0.05); border:1px solid rgba(102,255,153,0.25); border-left:3px solid #66FF99; border-radius:8px;">
             <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:#66FF99; margin-bottom:6px;">RESOLVED</div>
-            <h3 style="color:var(--lcars-gold); font-size:14px; margin-bottom:8px;">SIGNAL MESH HEALTH</h3>
-            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Telemetry retention capped at 720h. Disk pressure dropped from <strong style="color:var(--lcars-red);">63.4% rising</strong> to <strong style="color:#66FF99;">~7% steady-state</strong>. No raw SQLite surgery required.</p>
-          </div>
-
-          <div style="padding:16px; background:rgba(255,153,51,0.05); border:1px solid rgba(255,153,51,0.3); border-left:3px solid var(--lcars-orange); border-radius:8px;">
-            <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:var(--lcars-orange); margin-bottom:6px;">JUNE LANE</div>
-            <h3 style="color:var(--lcars-gold); font-size:14px; margin-bottom:8px;">OPERATIONAL GUARDRAILS</h3>
-            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">A modernization sweep across deploy keys, vaulted secrets, rotation cadence, and legacy artifact cleanup is queued for June, after the DeepMind/GCP experimentation window. Sequenced after the model orchestration work so the routing fabric stays stable.</p>
+            <h3 style="color:var(--lcars-gold); font-size:14px; margin-bottom:8px;">FAILOVER SAFE NETS</h3>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">Implemented robust local offline credentials failovers in zeus_maintenance.sh, preventing deployment lockouts during external internet disconnects.</p>
           </div>
 
         </div>
 
         <div style="margin-top:20px; padding:14px 18px; background:rgba(241,223,111,0.04); border:1px dashed rgba(241,223,111,0.3); border-radius:8px; font-family:'Share Tech Mono',monospace; font-size:13px; color:var(--text-secondary); line-height:1.7;">
-          <strong style="color:var(--lcars-gold); letter-spacing:1.5px;">v19.1 prime directive:</strong> preserve usability now,
-          document trade-offs clearly, and avoid destabilizing working LLM paths before the experimentation window.
-          Operational modernization is sequenced into the June workstream — planned, not urgent.
+          <strong style="color:var(--lcars-gold); letter-spacing:1.5px;">v23 prime directive:</strong> maintain consolidated routing resilience through LiteLLM gateways, protect edge node state, automate sovereign workflows, and avoid single points of failure across the fleet.
         </div>
       </div>
 
@@ -2981,27 +2972,27 @@
           <div style="padding:20px; background:rgba(241,223,111,0.04); border:1px solid rgba(241,223,111,0.3); border-radius:10px; position:relative; overflow:hidden;">
             <div style="position:absolute; top:0; right:0; padding:4px 10px; background:rgba(102,255,153,0.15); color:#66FF99; font-family:'Orbitron',monospace; font-size:9px; letter-spacing:1.5px; border-bottom-left-radius:8px;">ACTIVE</div>
             <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:var(--lcars-gold); margin-bottom:6px;">TIER 1 &mdash; PRIMARY REASONING</div>
-            <h3 style="color:var(--text-primary); font-size:16px; margin-bottom:10px;">Grok 4.20/Think via Hermes</h3>
-            <div style="font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--lcars-cyan); margin-bottom:8px; word-break:break-all;">xAI public API endpoint</div>
-            <p style="font-size:13px; color:var(--text-secondary); line-height:1.65;">grok-4.20-reasoning via Hermes v0.12.0 (Zeus LXC .105) on the control plane. Default autonomous reasoning path for the agent fleet, OpenClaw Discord workflow, and high-cognition planning tasks.</p>
+            <h3 style="color:var(--text-primary); font-size:16px; margin-bottom:10px;">DeepSeek V4-Pro via Atlas Gateway</h3>
+            <div style="font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--lcars-cyan); margin-bottom:8px; word-break:break-all;">Unified LiteLLM Proxy Gateway on Port 4000</div>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.65;">DeepSeek V4-Pro serves as the primary low-cost reasoning shield. Routed via the Atlas Gateway (192.168.1.78:4000) on the control plane, delivering high-context reasoning and code synthesis.</p>
           </div>
 
           <!-- Tier 2: Local edge -->
           <div style="padding:20px; background:rgba(102,204,204,0.04); border:1px solid rgba(102,204,204,0.3); border-radius:10px; position:relative; overflow:hidden;">
             <div style="position:absolute; top:0; right:0; padding:4px 10px; background:rgba(102,255,153,0.15); color:#66FF99; font-family:'Orbitron',monospace; font-size:9px; letter-spacing:1.5px; border-bottom-left-radius:8px;">VERIFIED</div>
-            <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:var(--lcars-cyan); margin-bottom:6px;">TIER 2 &mdash; LOCAL EDGE</div>
-            <h3 style="color:var(--text-primary); font-size:16px; margin-bottom:10px;">ATLAS &middot; Ollama on Mac Mini M4</h3>
-            <div style="font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--lcars-cyan); margin-bottom:8px;">ATLAS edge endpoint &mdash; Ollama v0.21.2_1</div>
-            <p style="font-size:13px; color:var(--text-secondary); line-height:1.65;">Gemma-4 26B MoE MLX. LAN-local inference, embeddings, fallback work, and Apple Silicon experiments. Headless LaunchDaemon, IPv4-bound to avoid drift.</p>
+            <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:var(--lcars-cyan); margin-bottom:6px;">TIER 2 &mdash; TACTICAL FALLBACKS</div>
+            <h3 style="color:var(--text-primary); font-size:16px; margin-bottom:10px;">Gemini 2.5 Ultra &amp; Grok 4.3</h3>
+            <div style="font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--lcars-cyan); margin-bottom:8px;">Aggregate API Tunnels via LiteLLM Key Router</div>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.65;">LiteLLM handles automatic transitions to Gemini 2.5 Ultra (Google AI Ultra subscription / >100k context) for deep reasoning and complex coding, and Grok 4.3 for rapid web search and real-time inputs.</p>
           </div>
 
           <!-- Tier 3: GPU fallback -->
           <div style="padding:20px; background:rgba(255,153,51,0.04); border:1px solid rgba(255,153,51,0.3); border-radius:10px; position:relative; overflow:hidden;">
             <div style="position:absolute; top:0; right:0; padding:4px 10px; background:rgba(102,255,153,0.15); color:#66FF99; font-family:'Orbitron',monospace; font-size:9px; letter-spacing:1.5px; border-bottom-left-radius:8px;">VERIFIED</div>
-            <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:var(--lcars-orange); margin-bottom:6px;">TIER 3 &mdash; GPU FALLBACK</div>
-            <h3 style="color:var(--text-primary); font-size:16px; margin-bottom:10px;">CashioTUF &middot; LM Studio + Gemma</h3>
-            <div style="font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--lcars-cyan); margin-bottom:8px;">CashioTUF GPU fallback endpoint &mdash; LM Studio 0.4.12</div>
-            <p style="font-size:13px; color:var(--text-secondary); line-height:1.65;">google/gemma-4-e4b on RTX 3080 (Win 11 Pro, Ryzen 9 3900XT, 32GB). OpenAI-compatible LM Studio API. Role: RTX fallback, Gemma-specific tasks, Windows tooling, remote-desktop console for ATLAS.</p>
+            <div style="font-family:'Orbitron',monospace; font-size:10px; letter-spacing:2px; color:var(--lcars-orange); margin-bottom:6px;">TIER 3 &mdash; LOCAL GPU FALLBACK</div>
+            <h3 style="color:var(--text-primary); font-size:16px; margin-bottom:10px;">CashioTUF &middot; LM Studio + Gemma-4</h3>
+            <div style="font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--lcars-cyan); margin-bottom:8px;">Local Win 11 Pro Fallback &mdash; LM Studio 0.4.12</div>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.65;">google/gemma-4-e4b on RTX 3080. Local GPU specialist endpoint on port 1234. Standing by to intercept and process inference if upstream gateways or WAN connections are offline.</p>
           </div>
 
           <!-- MCP tools tier (bonus) -->
@@ -3016,9 +3007,7 @@
         </div>
 
         <div style="padding:14px 18px; background:rgba(102,204,204,0.04); border:1px solid rgba(102,204,204,0.2); border-radius:8px; font-size:14px; color:var(--text-secondary); line-height:1.7;">
-          <strong style="color:var(--lcars-cyan);">Routing rule:</strong> primary inference does not get routed to ATLAS or CashioTUF by default &mdash; those are
-          local fallback / specialist endpoints. The fleet keeps high-reasoning work on the intended paid xAI key
-          instead of accidentally drifting onto local GGUF models.
+          <strong style="color:var(--lcars-cyan);">Routing rule:</strong> primary inference is routed via the LiteLLM Proxy Gateway on ATLAS. If external WAN is lost, the router automatically fails over to the Tier 3 CashioTUF Gemma-4 local GGUF server, preserving zero-trust offline capabilities.
         </div>
       </div>
 
@@ -3053,7 +3042,7 @@
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
             <button onclick="if(typeof playLCARSSound !== 'undefined') playLCARSSound('click', 0.2, 0.8);" style="background:rgba(255,153,51,0.1); border:1px solid var(--lcars-orange); border-radius:20px; padding:10px; color:var(--lcars-orange); font-family:'Orbitron',monospace; font-size:12px; cursor:pointer; text-align:left; display:flex; justify-content:space-between; align-items:center; transition:all 0.3s;">
                 <span>AI CORE</span>
-                <span style="font-family:'Share Tech Mono',monospace; font-size:9px;">Gemma-4 26B</span>
+                <span style="font-family:'Share Tech Mono',monospace; font-size:9px;">LiteLLM Proxy</span>
             </button>
             <button onclick="if(typeof playLCARSSound !== 'undefined') playLCARSSound('whoosh', 0.4, 0.8);" style="background:rgba(0,249,255,0.1); border:1px solid var(--lcars-cyan); border-radius:20px; padding:10px; color:var(--lcars-cyan); font-family:'Orbitron',monospace; font-size:12px; cursor:pointer; text-align:left; display:flex; justify-content:space-between; align-items:center; transition:all 0.3s;">
                 <span>SENSOR ARRAY</span>
@@ -3065,7 +3054,7 @@
             </button>
             <button onclick="if(typeof playLCARSSound !== 'undefined') playLCARSSound('confirm', 0.8, 0.8);" style="background:rgba(255,204,0,0.1); border:1px solid var(--lcars-gold); border-radius:20px; padding:10px; color:var(--lcars-gold); font-family:'Orbitron',monospace; font-size:12px; cursor:pointer; text-align:left; display:flex; justify-content:space-between; align-items:center; transition:all 0.3s;">
                 <span>WARP CORE</span>
-                <span style="font-family:'Share Tech Mono',monospace; font-size:9px;">2 Hypervisors / 11 Nodes</span>
+                <span style="font-family:'Share Tech Mono',monospace; font-size:9px;">2 Hypervisors / 22 Nodes</span>
             </button>
         </div>
       </div>
@@ -3078,15 +3067,14 @@
       </div>
 
       <div class="glass-panel" style="border-left:3px solid var(--lcars-blue);">
-        <p style="margin-bottom:16px;">Twelve active nodes form the v19.1 working topology. ATLAS is removed from
-          the media layer and the LLM fabric is promoted into the main architecture.</p>
+        <p style="margin-bottom:16px;">Twenty-two active nodes form the v23 baseline topology. The consolidated LiteLLM API gateway on ATLAS handles multi-model routing across hypervisors, LXCs, VMs, and edge units.</p>
 
         <table class="capex-table">
           <thead>
             <tr>
               <th>Layer</th>
               <th>Nodes</th>
-              <th>v19.1 Status</th>
+              <th>v23 Status</th>
             </tr>
           </thead>
           <tbody>
@@ -3097,7 +3085,7 @@
             </tr>
             <tr>
               <td><strong>Workstation</strong></td>
-              <td>CashioTUF &mdash; Win 11 Pro, RTX 3080, LM Studio Gemma fallback</td>
+              <td>CashioTUF &mdash; Win 11 Pro, RTX 3080, LM Studio Gemma-4 fallback</td>
               <td class="highlight" style="color:#66FF99;">ACTIVE</td>
             </tr>
             <tr>
@@ -3107,7 +3095,7 @@
             </tr>
             <tr>
               <td><strong>Control plane</strong></td>
-              <td>Ansible orchestrator, Hermes agent, mcp-omnibus, Proxmox Backup Server</td>
+              <td>Ansible orchestrator, Hermes agent (CT-105), mcp-omnibus, Proxmox Backup Server</td>
               <td class="highlight" style="color:#66FF99;">ACTIVE</td>
             </tr>
             <tr>
@@ -3127,8 +3115,8 @@
             </tr>
             <tr>
               <td><strong>LLM fabric</strong></td>
-              <td>xAI primary &middot; ATLAS Ollama local &middot; CashioTUF LM Studio fallback</td>
-              <td class="highlight" style="color:var(--lcars-gold);">UPDATED</td>
+              <td>LiteLLM Gateway (Port 4000) &middot; Primary DeepSeek V4-Pro &middot; local CashioTUF fallback</td>
+              <td class="highlight" style="color:var(--lcars-gold);">UNIFIED</td>
             </tr>
             <tr>
               <td><strong>Cloud</strong></td>
@@ -3150,7 +3138,7 @@
             <li>ATLAS media metadata path &mdash; removed from Atlas-Storage-2</li>
             <li>ATLAS no-UPS gap &mdash; closed (node now on UPS)</li>
             <li>Policy telemetry primary disk pressure &mdash; downgraded from active to monitored healthy state</li>
-            <li>Hermes local LLM bridge as primary provider &mdash; xAI reasoning is the primary provider</li>
+            <li>Hermes direct local LLM routing &mdash; replaced by unified LiteLLM API Gateway</li>
           </ul>
         </div>
       </div>
@@ -3169,48 +3157,41 @@
         <!-- ATLAS card -->
         <div class="glass-panel" style="border-left:3px solid var(--lcars-cyan); margin-bottom:0;">
           <h3 style="color:var(--lcars-cyan);">ATLAS &mdash; Mac Mini M4 Edge AI Node</h3>
-          <p style="margin-bottom:14px; font-size:14px;">A single-purpose edge AI and distributed-storage node. Not a media server, not a Proxmox node, and not the default paid reasoning provider &mdash; every cycle is reserved for local inference and encrypted storage.</p>
+          <p style="margin-bottom:14px; font-size:14px;">A single-purpose edge AI gateway and distributed-storage node. Home to the consolidated LiteLLM Proxy Gateway on port 4000, reserving all local CPU and memory for inference orchestration.</p>
 
           <table class="capex-table" style="font-size:14px;">
             <tr><td><strong>Hardware</strong></td><td>Mac Mini M4 &middot; 24 GB unified memory &middot; 256 GB internal NVMe</td></tr>
             <tr><td><strong>Network</strong></td><td>Static Ethernet, Wi-Fi off, on UPS</td></tr>
-            <tr><td><strong>Remote access</strong></td><td>Google Remote Desktop or Free Jump via CashioTUF</td></tr>
-            <tr><td><strong>Ollama</strong></td><td>v0.21.2_1 LaunchDaemon &middot; bound to LAN to avoid IPv6-only drift</td></tr>
-            <tr><td><strong>Model storage</strong></td><td>Atlas-Storage-2 (NVMe) &middot; ~13 GiB Ollama models populated</td></tr>
-            <tr><td><strong>Tahoe-LAFS</strong></td><td>Atlas-Storage-1 distributed storage endpoint &middot; encrypted storage role retained</td></tr>
+            <tr><td><strong>Gateway</strong></td><td>LiteLLM Proxy on port 4000 &middot; aggregating LLM client requests</td></tr>
+            <tr><td><strong>Fallback Chain</strong></td><td>DeepSeek &rarr; Gemini Ultra &rarr; Grok &rarr; GPT-5.5 Pro</td></tr>
+            <tr><td><strong>Local Fallback</strong></td><td>CashioTUF &middot; Win 11 RTX 3080 &middot; Gemma-4 on port 1234</td></tr>
+            <tr><td><strong>Tahoe-LAFS</strong></td><td>Atlas-Storage-1 distributed storage endpoint &middot; encrypted shares active</td></tr>
             <tr><td><strong>Media services</strong></td><td><span style="color:var(--lcars-red);">DECOUPLED</span> &mdash; no process, no launchd, no metadata residue (edge-AI-only role)</td></tr>
           </table>
 
           <div style="margin-top:14px; padding:12px; background:rgba(102,204,204,0.04); border:1px dashed rgba(102,204,204,0.3); border-radius:6px; font-size:13px; color:var(--text-secondary); line-height:1.7;">
-            <strong style="color:var(--lcars-cyan);">Storage layout:</strong>
-            <code style="font-size:12px; color:var(--text-secondary);">Macintosh HD</code> stays a thin boot/service tier;
-            <code style="font-size:12px; color:var(--text-secondary);">Atlas-Storage-1</code> hosts the Tahoe shares;
-            <code style="font-size:12px; color:var(--text-secondary);">Atlas-Storage-2</code> is the fast NVMe model tier with MLX staging available.
+            <strong style="color:var(--lcars-cyan);">Gateway Routing rule:</strong> LiteLLM aggregates high-performance cloud providers and automatically drops down to local Gemma-4 fallbacks if external WAN is lost.
           </div>
         </div>
 
         <!-- Hermes / MCP card -->
         <div class="glass-panel" style="border-left:3px solid var(--lcars-orange); margin-bottom:0;">
           <h3 style="color:var(--lcars-orange);">Hermes Agent &amp; MCP &mdash; Control Plane</h3>
-          <p style="margin-bottom:14px; font-size:14px;">The Hermes repair was the most important control-plane
-            correction in v19.1. The agent now runs cleanly using the intended xAI key with all local fallbacks
-            preserved.</p>
+          <p style="margin-bottom:14px; font-size:14px;">The Hermes control plane has been fully upgraded to the v23 baseline, incorporating robust git exclusions to prevent disk thrashing, Drive Organizer automation, and passwordless SSH to recovered Athena.</p>
 
           <table class="capex-table" style="font-size:14px;">
-            <tr><td><strong>Hermes binary</strong></td><td>Hermes Agent v0.10.0 &mdash; <span style="color:#66FF99;">VERIFIED</span></td></tr>
-            <tr><td><strong>Primary provider</strong></td><td>custom &rarr; xAI grok-4.20-reasoning &mdash; <span style="color:#66FF99;">ACTIVE</span></td></tr>
-            <tr><td><strong>Key handling</strong></td><td>offline-managed &mdash; <span style="color:#66FF99;">PRIVATE</span> &middot; never reproduced in public artifacts</td></tr>
-            <tr><td><strong>Invalid provider</strong></td><td><code style="font-size:12px;">openai_compatible</code> removed &mdash; <span style="color:#66FF99;">RESOLVED</span></td></tr>
-            <tr><td><strong>ATLAS fallback</strong></td><td>custom &rarr; ATLAS edge endpoint &mdash; <span style="color:#66FF99;">ACTIVE</span></td></tr>
-            <tr><td><strong>CashioTUF fallback</strong></td><td>custom &rarr; CashioTUF GPU fallback endpoint &mdash; <span style="color:#66FF99;">ACTIVE</span></td></tr>
+            <tr><td><strong>Hermes binary</strong></td><td>Hermes Agent v0.12.0 &mdash; <span style="color:#66FF99;">VERIFIED</span></td></tr>
+            <tr><td><strong>Primary provider</strong></td><td>LiteLLM Proxy Gateway &mdash; <span style="color:#66FF99;">ACTIVE</span></td></tr>
+            <tr><td><strong>Primary model</strong></td><td>DeepSeek V4-Pro &mdash; <span style="color:#66FF99;">ROUTED</span></td></tr>
+            <tr><td><strong>Git exclusions</strong></td><td>Excluding python venvs/ and node_modules/ &mdash; <span style="color:#66FF99;">RESOLVED DISK WAIT</span></td></tr>
+            <tr><td><strong>Drive Organizer</strong></td><td>drive_organizer.js App Script &mdash; <span style="color:#66FF99;">INTEGRATED</span></td></tr>
+            <tr><td><strong>Athena auth</strong></td><td>Passwordless SSH key from CT-105 &mdash; <span style="color:#66FF99;">VERIFIED</span></td></tr>
             <tr><td><strong>MCP path</strong></td><td>Hermes &rarr; MCP native path &mdash; <span style="color:#66FF99;">CLEAN</span></td></tr>
             <tr><td><strong>Legacy socat</strong></td><td>No legacy bridge references, no running processes &mdash; <span style="color:#66FF99;">CLEAN</span></td></tr>
           </table>
 
           <div style="margin-top:14px; padding:12px; background:rgba(255,153,51,0.04); border:1px dashed rgba(255,153,51,0.3); border-radius:6px; font-size:13px; color:var(--text-secondary); line-height:1.7;">
-            <strong style="color:var(--lcars-orange);">MCP topology distinction:</strong> internal Hermes-to-MCP
-            calls and external public tunnel ingress are kept
-            architecturally separate. The native Hermes&rarr;MCP path does not depend on a legacy socat bridge.
+            <strong style="color:var(--lcars-orange);">Sovereign integrations:</strong> drive_organizer.js runs via safe Google Apps Script quota controls, while passwordless SSH allows non-interactive systems administration on Athena.
           </div>
         </div>
 
@@ -3290,9 +3271,9 @@
             <div class="timeline-title">Cluster, SIEM, Cloud</div>
             <div class="timeline-desc">Zeus converted to Proxmox PVE 9.1.6 &mdash; zeusapollo cluster established with Apollo, Athena QDevice. Wazuh SIEM live on dedicated SIEM container. Media stack consolidated to a single dedicated architecture (Dionysus NVENC primary, Hermes Quick Sync secondary) &mdash; freeing the edge node for AI-only duty. GCP Cloud Run / Vertex AI runway opened with active credits. GCP Cloud Run MCP gateway architected with Bearer Token auth and Vertex AI access.</div>
           </div>
-          <div class="timeline-event" style="border-color:rgba(102,204,204,0.5); background:rgba(102,204,204,0.05);">
-            <div class="timeline-date" style="color:var(--lcars-cyan);">PHASE 3.5 / v19.1 BASELINE — CURRENT (APR 27 2026)</div>
-            <div class="timeline-title" style="color:var(--lcars-cyan);">n8n Task-Aware Fabric Online &mdash; Edge AI Verified</div>
+          <div class="timeline-event" style="border-color:rgba(102,204,204,0.3);">
+            <div class="timeline-date">PHASE 3.5 / v19.1 BASELINE (APR 27 2026)</div>
+            <div class="timeline-title">n8n Task-Aware Fabric Online &mdash; Edge AI Verified</div>
             <div class="timeline-desc">ATLAS (Mac Mini M4) commissioned as a clean edge AI &amp; distributed-storage node:
               media-service residue fully decoupled, UPS protection in place, Ollama v0.21.2_1 LaunchDaemon validated by chat completion from the Hermes control plane.
               CashioTUF GPU fallback corrected to LM Studio + google/gemma-4-e4b on RTX 3080 (not Ollama). Hermes provider repair complete &mdash;
@@ -3300,6 +3281,11 @@
               Policy-aware DNS telemetry primary capped at a 720h query window, disk pressure resolved. Hermes&rarr;MCP native path verified clean &mdash;
               no legacy socat processes. Fleet sized at 11 active nodes, ~18TB storage. Operational modernization is
               intentionally sequenced into a June lane to keep the LLM paths stable through the upcoming DeepMind / GCP experimentation window.</div>
+          </div>
+          <div class="timeline-event" style="border-color:rgba(102,204,204,0.5); background:rgba(102,204,204,0.05);">
+            <div class="timeline-date" style="color:var(--lcars-cyan);">PHASE 4.0 / v23 BASELINE — CURRENT (MAY 21 2026)</div>
+            <div class="timeline-title" style="color:var(--lcars-cyan);">LiteLLM Proxy Gateway &amp; Downstream Node Recovery</div>
+            <div class="timeline-desc">Consolidated LiteLLM Proxy Gateway integrated on ATLAS port 4000 to manage a 4-tier sequential fallback chain across external APIs (DeepSeek V4-Pro, Gemini 2.5 Ultra, Grok 4.3, GPT-5.5 Pro) with local Gemma-4 LM Studio fallback on port 1234. Downstream Raspberry Pi 4 (Athena) fully recovered, configured with passwordless SSH key-based access from CT-105, and upgraded to kernel 6.18.29. Deployed the drive_organizer.js utility for Google Apps Script file classification and quota protections. Git latency resolved by expanding .gitignore on Hermes-Agent (CT-105) to exclude virtual environments. Fleet expanded to 22 active nodes, ~24TB storage.</div>
           </div>
         </div>
       </div>
@@ -3348,9 +3334,8 @@
           </div>
           <div class="crew-rank" style="color:var(--lcars-red);">TACTICAL OFFICER / SECURITY CHIEF</div>
           <div class="crew-name">Grok (xAI)</div>
-          <div class="crew-role">Discord Bot Primary Brain &amp; Rapid Response</div>
-          <div class="crew-desc">Like Lieutenant Worf at Tactical, Grok handles real-time engagement through the
-            OpenClaw Discord channel. Grok 4.2 Reasoning is now the PRIMARY engine for OpenClaw — rapid-fire responses at maximum tactical velocity. Grok Pro engaged for complex multi-step reasoning.</div>
+          <div class="crew-role">LiteLLM Gateway Fallback &amp; Security Brain</div>
+          <div class="crew-desc">Like Lieutenant Worf at Tactical, Grok handles real-time engagement and rapid response. Grok 4.3 is now integrated as a high-speed fallback and specialized brain in the LiteLLM gateway, handling vision, TTS, and real-time web search at maximum tactical velocity.</div>
         </div>
         <div class="crew-card">
           <div
@@ -3382,24 +3367,24 @@
         </div>
         <div class="crew-card">
           <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:#66FF99;border-radius:4px 0 0 4px;"></div>
-          <div class="crew-rank" style="color:#66FF99;">CHIEF OF ENGINEERING — EDGE AI (ATLAS)</div>
-          <div class="crew-name">ATLAS — Ollama on Mac Mini M4</div>
-          <div class="crew-role">Local Edge Inference — Gemma-4 26B MoE MLX</div>
-          <div class="crew-desc">Apple Silicon edge node providing LAN-local inference and embeddings without leaving the ship. Ollama v0.21.2_1 runs as a headless LaunchDaemon bound to the IPv4 LAN address; Tahoe-LAFS distributed encrypted storage shares run alongside on a separate volume. UPS protected. Single-purpose edge AI role &mdash; no media-service residue.</div>
+          <div class="crew-rank" style="color:#66FF99;">CHIEF OF ENGINEERING — GATEWAY &amp; EDGE AI (ATLAS)</div>
+          <div class="crew-name">ATLAS — LiteLLM Gateway &amp; Mac Mini M4</div>
+          <div class="crew-role">Consolidated API Gateway &mdash; Port 4000 &middot; Local Embeddings</div>
+          <div class="crew-desc">Apple Silicon edge node running the consolidated `zeusapollo-core` LiteLLM Proxy Gateway on port 4000. Manages the sequential fallback chain across external APIs (DeepSeek, Gemini, Grok, OpenAI) while running local embeddings and hosting Tahoe-LAFS distributed encrypted storage shares on a separate volume. UPS protected.</div>
         </div>
         <div class="crew-card">
           <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:var(--lcars-gold);border-radius:4px 0 0 4px;"></div>
-          <div class="crew-rank" style="color:var(--lcars-gold);">GPU FALLBACK / SPECIALIST</div>
-          <div class="crew-name">CashioTUF — LM Studio + Gemma</div>
-          <div class="crew-role">RTX 3080 Fallback — google/gemma-4-e4b via LM Studio 0.4.12</div>
-          <div class="crew-desc">Windows 11 Pro workstation (Ryzen 9 3900XT, RTX 3080, 32GB) running LM Studio with an OpenAI-compatible local API on the GPU fallback endpoint. Role: GPU fallback when ATLAS edge is offline, Gemma-specific tasks, Windows tooling, and remote-desktop console for ATLAS. Not Ollama &mdash; that role lives on ATLAS.</div>
+          <div class="crew-rank" style="color:var(--lcars-gold);">GPU FALLBACK / LOCAL LLM SPECIALIST</div>
+          <div class="crew-name">CashioTUF — LM Studio &amp; RTX 3080</div>
+          <div class="crew-role">Local GPU Fallback &mdash; Gemma-4 Local GGUF via LM Studio on Port 1234</div>
+          <div class="crew-desc">Windows 11 Pro workstation (Ryzen 9 3900XT, RTX 3080, 32GB) running LM Studio exposing local Gemma-4 GGUF on port 1234. Serves as a zero-WAN, passwordless local fallback endpoint when external gateways are unavailable, and provides a remote console for ATLAS. Not Ollama &mdash; that role lives on ATLAS.</div>
         </div>
         <div class="crew-card">
           <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:var(--lcars-red);border-radius:4px 0 0 4px;"></div>
-          <div class="crew-rank" style="color:var(--lcars-red);">AUTONOMOUS OPERATIONS / AWAY TEAM</div>
-          <div class="crew-name">OpenClaw (Discord Bot)</div>
-          <div class="crew-role">Zero-Touch Autonomous Agent — Grok 4.2 Reasoning PRIMARY</div>
-          <div class="crew-desc">Operating in a dedicated bot container as an autonomous away team executing tasks via Discord. Engine chain updated: Grok 4.2 Reasoning is now PRIMARY (promoted from Grok 4.1 Fast), Perplexity sonar-pro as Fallback 1, Gemini Flash-Lite as Fallback 2.</div>
+          <div class="crew-rank" style="color:var(--lcars-red);">SOVEREIGN AGENT / TASK EXECUTOR (CT-105)</div>
+          <div class="crew-name">Hermes Agent (OpenClaw)</div>
+          <div class="crew-role">Sovereign Task Executor &mdash; Passwordless SSH Control &middot; CT-105</div>
+          <div class="crew-desc">Sovereign AI orchestrator operating in LXC CT-105. Serves as the primary task executor with passwordless SSH keys authorized to execute playbooks and system maintenance on downstream nodes (like Pi4 Athena). Utilizes the LiteLLM gateway on Atlas to query external models non-interactively while handling local Git optimization and cron schedules.</div>
         </div>
         <div class="crew-card">
           <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:var(--lcars-cyan);border-radius:4px 0 0 4px;"></div>
@@ -3450,19 +3435,19 @@
 
       <div class="stats-row">
         <div class="stat-card pulse">
-          <div class="stat-value" style="color:var(--lcars-gold);">v19.1</div>
+          <div class="stat-value" style="color:var(--lcars-gold);">v23</div>
           <div class="stat-label">Active Baseline</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" style="color:var(--lcars-cyan);">11</div>
+          <div class="stat-value" style="color:var(--lcars-cyan);">22</div>
           <div class="stat-label">Active Fleet Nodes</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" style="color:#66FF99;">3</div>
+          <div class="stat-value" style="color:#66FF99;">4</div>
           <div class="stat-label">Tier LLM Routing</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" style="color:var(--lcars-orange);">18TB</div>
+          <div class="stat-value" style="color:var(--lcars-orange);">24TB</div>
           <div class="stat-label">Total Storage</div>
         </div>
         <div class="stat-card">
@@ -3470,17 +3455,14 @@
           <div class="stat-label">Telemetry Retention Window</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" style="color:var(--lcars-teal);">500+</div>
+          <div class="stat-value" style="color:var(--lcars-teal);">600+</div>
           <div class="stat-label">Homelab Hours Invested</div>
         </div>
       </div>
 
       <div class="glass-panel">
         <h3>Operational Capabilities &amp; Efficiency Gains</h3>
-        <p style="margin-bottom:14px;"><strong>n8n Task-Aware Routing (v19.1):</strong> Cloud reasoning (Grok 4.20/Think) carries the
-          high-cognition workload while ATLAS Mac Mini M4 .78 (Ollama) handles LAN-local inference and embeddings, and
-          CashioTUF (LM Studio + Gemma on RTX 3080) stands by as a GPU fallback. Each tier has a single, clear endpoint
-          and role &mdash; no provider syntax drift, no accidental fallback to local GGUF when paid reasoning was intended.</p>
+        <p style="margin-bottom:14px;"><strong>LiteLLM Gateway &amp; Task-Aware Routing (v23):</strong> The consolidated API gateway running on ATLAS (Mac Mini M4) on port 4000 handles dynamic routing across model tiers. It utilizes a sequential fallback chain: DeepSeek V4-Pro, Gemini 2.5 Ultra, Grok 4.3 (handling vision/TTS/search), and GPT-5.5 Pro. Offline fallback is routed locally to Gemma-4 running via LM Studio on CashioTUF (port 1234).</p>
         <p style="margin-bottom:14px;"><strong>Automated Deployment (Replicator Technology):</strong> Manual
           VM/container creation replaced by scripted deployments. The Kali Linux AI script automates the entire process
           — download, create, configure, and boot — bypassing 30–60 minutes of manual Proxmox clicking. Cloud-Init and
@@ -4513,7 +4495,7 @@
     <div class="classification" style="padding: 15px 30px; display: flex; flex-direction: column; align-items: center; gap: 10px; opacity: 0.7;">
       <div style="display: flex; justify-content: space-between; width: 100%; max-width: 1400px;">
         <div style="text-align: left;">DOUG CASHIO — ENTERPRISE AI & CYBERSECURITY SOLUTIONS ARCHITECT</div>
-        <div style="text-align: right;"><a href="mailto:doug@cashio.us" style="color:inherit; text-decoration:none;">doug@cashio.us</a> &middot; <a href="https://linkedin.com/in/dougcashio" target="_blank" rel="noopener" style="color:inherit; text-decoration:none;">LinkedIn</a> &middot; <a href="https://github.com/jamescashio" target="_blank" rel="noopener" style="color:inherit; text-decoration:none;">GitHub</a> &middot; <a href="https://www.credly.com/users/james-cashio/badges" target="_blank" rel="noopener" style="color:inherit; text-decoration:none;">Credly</a></div>
+        <div style="text-align: right;"><a href="/cdn-cgi/l/email-protection#3b5f544e5c7b585a48535254154e48" style="color:inherit; text-decoration:none;"><span class="__cf_email__" data-cfemail="90f4ffe5f7d0f3f1e3f8f9ffbee5e3">[email&#160;protected]</span></a> &middot; <a href="https://linkedin.com/in/dougcashio" target="_blank" rel="noopener" style="color:inherit; text-decoration:none;">LinkedIn</a> &middot; <a href="https://github.com/jamescashio" target="_blank" rel="noopener" style="color:inherit; text-decoration:none;">GitHub</a> &middot; <a href="https://www.credly.com/users/james-cashio/badges" target="_blank" rel="noopener" style="color:inherit; text-decoration:none;">Credly</a></div>
       </div>
       <div style="text-align: center; margin-top: 5px;">
         <p style="font-family:'Share Tech Mono',monospace; letter-spacing:3px; color:var(--text-secondary);">/// END TRANSMISSION — <span id="footer-stardate-lab">STARDATE 2026.104</span> ///</p>
@@ -4526,7 +4508,7 @@
   </div><!-- /lcars-frame -->
 
   <!-- GSAP Library & Plugins (loaded before main script for LCARS animations) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
 
@@ -4582,7 +4564,7 @@
       const btn = document.getElementById('picard-btn');
       if (btn) btn.classList.add('speaking');
 
-      const audio = new Audio('make_it_so.mp3');
+      const audio = new Audio('warp.mp3');
       audio.play().then(() => {
         audio.onended = () => { if (btn) btn.classList.remove('speaking'); };
       }).catch(err => {
@@ -4628,13 +4610,13 @@
 
       // Standard UI interactions
       document.querySelectorAll('.lcars-sidebar-seg, .tab-btn, a, button').forEach(el => {
-
-
+        el.addEventListener('mouseenter', playHoverBeep);
+        el.addEventListener('click', () => { if (el.id !== 'picard-btn') playClickChirp(); });
       });
 
       // Crew cards: transporter shimmer on hover
       document.querySelectorAll('.crew-card').forEach(el => {
-
+        el.addEventListener('mouseenter', playTransporter);
       });
 
       // ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ
@@ -5058,6 +5040,7 @@
         { id: 'Z_CT102',  label: '\u{1F4CA} Kuma / Grafana',                              shape: 'box', color: { background: C.dark,   border: C.orange },  font: { color: '#E8E6E3', size: 11 } },
         { id: 'Z_CT103',  label: '\u{1F916} OpenClaw Bot',                                shape: 'box', color: { background: C.dark,   border: C.orange },  font: { color: '#E8E6E3', size: 11 } },
         { id: 'Z_CT104',  label: '\u{1F6A8} Wazuh SIEM',                                  shape: 'box', color: { background: C.dark,   border: C.red },     font: { color: C.red,     size: 11 } },
+        { id: 'Z_CT105',  label: '\u{1F3AB} Hermes Agent (CT-105)',                       shape: 'box', color: { background: C.dark,   border: C.orange },  font: { color: '#E8E6E3', size: 11 } },
         { id: 'Z_CT106',  label: '\u{1F9E0} MCP Stack',                                   shape: 'box', color: { background: C.dark,   border: C.orange },  font: { color: '#E8E6E3', size: 11 } },
         { id: 'Z_CT107',  label: '\u2699\uFE0F n8n Task Router',                            shape: 'box', color: { background: C.dark,   border: C.orange },  font: { color: '#E8E6E3', size: 11 } },
         { id: 'Z_CT109',  label: '\u{1F6E1}\uFE0F Policy Telemetry Replica',              shape: 'box', color: { background: C.dark,   border: C.orange },  font: { color: '#E8E6E3', size: 11 } },
@@ -5065,11 +5048,11 @@
 
         // Other fleet nodes
         { id: 'DIONYSUS', label: '\u{1F4FA} DIONYSUS\nUnraid 7.2.4\nMedia PRIMARY / NVENC', shape: 'box', color: { background: '#4a1a3a', border: C.lavender }, font: { color: C.lavender, size: 13, face: 'Orbitron' } },
-        { id: 'TUF',      label: '\u{1F4A1} CASHIOTUF\nLM Studio 0.4.12 — RTX 3080\nGemma fallback',     shape: 'box', color: { background: '#3a3a1a', border: C.gold },    font: { color: C.gold,    size: 13, face: 'Orbitron' } },
-        { id: 'ATLAS',    label: '\u{1F34F} ATLAS\nMac Mini M4 (UPS)\nOllama edge + Tahoe-LAFS',          shape: 'box', color: { background: '#1a3a3a', border: C.cyan },    font: { color: C.cyan,    size: 13, face: 'Orbitron' } },
-        { id: 'XAI',      label: '\u{1F9E0} Grok 4.20/Think\nReasoning Primary\nxAI public API',                   shape: 'box', color: { background: '#0d2233', border: C.cyan },   font: { color: C.cyan,    size: 12, face: 'Orbitron' } },
+        { id: 'TUF',      label: '\u{1F4A1} CASHIOTUF\nLM Studio\nGemma-4 (RTX 3080)',     shape: 'box', color: { background: '#3a3a1a', border: C.gold },    font: { color: C.gold,    size: 13, face: 'Orbitron' } },
+        { id: 'ATLAS',    label: '\u{1F34F} ATLAS\nMac Mini M4\nLiteLLM Gateway :4000',          shape: 'box', color: { background: '#1a3a3a', border: C.cyan },    font: { color: C.cyan,    size: 13, face: 'Orbitron' } },
+        { id: 'XAI',      label: '\u{1F9E0} DeepSeek V4-Pro\nLiteLLM Primary Gateway Endpoint',                   shape: 'box', color: { background: '#0d2233', border: C.cyan },   font: { color: C.cyan,    size: 12, face: 'Orbitron' } },
         { id: 'NAS',      label: '\u{1F4BE} GENESIS NAS\nWD EX2 Ultra\nNFS Storage',                          shape: 'box', color: { background: '#2a1a3a', border: C.lavender }, font: { color: C.lavender, size: 13, face: 'Orbitron' } },
-        { id: 'ATHENA',   label: '\u{1F967} ATHENA (RPi4)\nRPi OS Lite\nGeneral Purpose Node',                                    shape: 'box', color: { background: C.dark,   border: C.blue },    font: { color: C.blue,    size: 13, face: 'Orbitron' } },
+        { id: 'ATHENA',   label: '\u{1F967} ATHENA (RPi4)\nRPi OS Lite (Kernel 6.18.29)\nRecovered Downstream Node',                                    shape: 'box', color: { background: C.dark,   border: C.blue },    font: { color: C.blue,    size: 13, face: 'Orbitron' } },
         { id: 'GCP',      label: '\u2601\uFE0F GCP CLOUD\nCloud Run / Vertex AI\nMCP Gateway (Bearer)\nSprint Runway',           shape: 'box', color: { background: '#1a2a1a', border: C.green },   font: { color: C.green,   size: 13, face: 'Orbitron' } }
       ]);
 
@@ -5096,6 +5079,7 @@
         { from: 'ZEUS',   to: 'Z_CT102',  color: { color: C.orange }, dashes: true },
         { from: 'ZEUS',   to: 'Z_CT103',  color: { color: C.orange }, dashes: true },
         { from: 'ZEUS',   to: 'Z_CT104',  color: { color: C.red    }, dashes: true },
+        { from: 'ZEUS',   to: 'Z_CT105',  color: { color: C.orange }, dashes: true },
         { from: 'ZEUS',   to: 'Z_CT106',  color: { color: C.orange }, dashes: true },
         { from: 'ZEUS',   to: 'Z_CT107',  color: { color: C.orange }, dashes: true },
         { from: 'ZEUS',   to: 'Z_CT109',  color: { color: C.orange }, dashes: true },
@@ -5110,6 +5094,7 @@
         { from: 'TUF',     to: 'Z_CT106', label: 'LM Studio fallback',   font:{ color: C.gold, size: 10, background: C.bg }, color: { color: C.gold }, arrows: 'to', dashes: true },
         { from: 'XAI',     to: 'Z_CT106', label: 'xAI primary',       font:{ color: C.cyan, size: 10, background: C.bg }, color: { color: C.cyan }, arrows: 'to', dashes: true },
         { from: 'Z_CT104', to: 'ZEUS',    label: 'SIEM Monitor',   font: { color: C.red,     size: 10, background: C.bg }, color: { color: C.red    }, arrows: 'to', dashes: true },
+        { from: 'Z_CT105', to: 'ATHENA',  label: 'ssh-key (passwordless)', font: { color: C.blue, size: 10, background: C.bg }, color: { color: C.blue }, arrows: 'to', dashes: true },
         // Cluster link
         { from: 'APOLLO',  to: 'ZEUS',    label: 'Cluster Link',   font: { color: C.cyan,    size: 10, background: C.bg }, color: { color: C.cyan   }, width: 2 }
       ]);
@@ -5130,7 +5115,7 @@
     new Chart(phaseCtx, {
       type: 'bar',
       data: {
-        labels: ['Phase -1\nAwakening', 'Phase 0\nBaseline', 'Phase 0.5\nMCP Core', 'Phase 1\nContainers', 'Phase 2\nGPU + Bot', 'Phase 2.5\nConsolidation', 'Phase 3\nMulti-Vector', 'v19.1 BASELINE\nCURRENT', 'Phase 4\nFull Auto'],
+        labels: ['Phase -1\nAwakening', 'Phase 0\nBaseline', 'Phase 0.5\nMCP Core', 'Phase 1\nContainers', 'Phase 2\nGPU + Bot', 'Phase 2.5\nConsolidation', 'Phase 3\nMulti-Vector', 'v23 BASELINE\nCURRENT', 'Phase 4\nFull Auto'],
         datasets: [
           { label: 'AI Inference Speed', data: [2, 5, 12, 15, 55, 65, 75, 88, 95],
             backgroundColor: (ctx) => ctx.dataIndex === 7 ? 'rgba(102,204,204,0.85)' : 'rgba(241,223,111,0.7)',
@@ -5496,9 +5481,11 @@
 
   <!-- GSAP Library & Plugins -->
 
-  <script src="webgl_starfield.js"></script>
+  
 
   <script src="audio_engine.js"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"f67a849ab53b4dbea305b874fbeb3a30","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 
 </html>
+
