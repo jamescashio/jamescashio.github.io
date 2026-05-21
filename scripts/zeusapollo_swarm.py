@@ -30,6 +30,7 @@ import time
 import os
 import re
 import hashlib
+import secrets
 from collections import defaultdict
 import httpx
 import asyncio
@@ -105,7 +106,8 @@ def verify_auth(request: Request) -> bool:
     if not API_KEY:
         return True  # No key configured = no auth (fail closed by config choice)
     key = request.headers.get("X-API-Key", "")
-    return key == API_KEY
+    # SECURITY: Prevent timing attacks by using constant-time string comparison
+    return secrets.compare_digest(key, API_KEY)
 
 
 def require_auth(request: Request):
