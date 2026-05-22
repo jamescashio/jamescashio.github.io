@@ -7,3 +7,8 @@
 **Vulnerability:** Used standard string equality (`==`) to verify the `X-API-Key` header against the expected `API_KEY` in Python. Standard string equality short-circuits on the first mismatched character, allowing an attacker to determine the secret via a timing attack by measuring the response time.
 **Learning:** Even internal or local scripts verifying secrets (e.g., bridge endpoints) are vulnerable to side-channel timing attacks if they use non-constant time comparisons for cryptographic secrets or tokens.
 **Prevention:** Always use `secrets.compare_digest()` (or an equivalent constant-time comparison function) instead of standard string equality (`==`) when validating API keys, passwords, or authentication tokens.
+
+## 2026-05-21 - [Hardcoded Secret: LITELLM_KEY]
+**Vulnerability:** Found a hardcoded API key (`LITELLM_KEY = "sk-zeu...-key"`) within `scripts/zeusapollo_swarm.py`. Hardcoding secrets in source code is a critical vulnerability that can lead to credential exposure if the repository is accessed by unauthorized users.
+**Learning:** Some standalone Python scripts in the codebase fail to integrate with the project's established secret management system (`/root/.hermes/config/auth.json`), likely due to being quick bridge or prototype scripts.
+**Prevention:** All API keys, tokens, and secrets must be loaded from environment variables or the central configuration file (`/root/.hermes/config/auth.json`). Never hardcode secrets directly into scripts, even for internal testing or routing services.
