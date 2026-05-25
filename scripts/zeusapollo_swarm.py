@@ -172,7 +172,8 @@ def check_cors(request: Request) -> Optional[str]:
     # Check referer as fallback
     if referer:
         for allowed in ALLOWED_ORIGINS:
-            if referer.startswith(allowed):
+            # SECURITY: Prevent subdomain bypass by requiring exact match or path separation
+            if referer == allowed or referer.startswith(allowed + '/'):
                 return allowed
         raise HTTPException(
             status_code=403,
