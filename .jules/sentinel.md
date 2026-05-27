@@ -12,3 +12,8 @@
 **Vulnerability:** The Referer validation in `scripts/zeusapollo_swarm.py` used `referer.startswith(allowed)` to verify if the referer was from an allowed origin. This permits a subdomain bypass attack, where a malicious origin like `http://localhost:11235.malicious.com` would falsely pass validation because it starts with the string `http://localhost:11235`.
 **Learning:** String prefix checks for URLs/origins are insufficient because domain boundaries aren't respected. The malicious actor controls the suffix of the domain name.
 **Prevention:** Never use unanchored `startswith()` checks for validating CORS origins or Referer headers. Always use exact equality matching (`referer == allowed`) or ensure the prefix includes a path separator (`referer.startswith(allowed + '/')`).
+
+## 2024-05-27 - [Missing Content-Security-Policy in FastAPI apps]
+**Vulnerability:** The FastAPI application lacked a `Content-Security-Policy` header, leaving the application more susceptible to cross-site scripting (XSS) or code injection attacks, especially if dynamic content is rendered.
+**Learning:** Even backend APIs should implement a strict CSP (`default-src 'none'`) to mitigate accidental exposures or vulnerabilities. However, doing so globally in FastAPI breaks auto-generated documentation pages (Swagger UI and ReDoc) because they rely on inline scripts and styles.
+**Prevention:** When applying strict Content-Security-Policy headers in FastAPI applications via middleware, conditionally exclude the OpenAPI documentation endpoints (`/docs`, `/redoc`, `/openapi.json`) to maintain functionality while securing the rest of the application.
