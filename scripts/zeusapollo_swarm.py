@@ -434,6 +434,11 @@ async def security_middleware(request: Request, call_next):
     response.headers["X-XSS-Protection"] = "1; mode=block"
     response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
 
+    # SECURITY: Prevent XSS and code injection by adding strict Content-Security-Policy
+    # (Exclude OpenAPI endpoints to avoid breaking Swagger UI/ReDoc)
+    if not request.url.path.startswith(("/docs", "/redoc", "/openapi.json")):
+        response.headers["Content-Security-Policy"] = "default-src 'none'"
+
     # Add CORS headers if origin was validated
     if request.url.path.startswith("/v1/"):
         response.headers["Access-Control-Allow-Origin"] = cors_origin or "*"
