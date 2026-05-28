@@ -12,3 +12,8 @@
 **Vulnerability:** The Referer validation in `scripts/zeusapollo_swarm.py` used `referer.startswith(allowed)` to verify if the referer was from an allowed origin. This permits a subdomain bypass attack, where a malicious origin like `http://localhost:11235.malicious.com` would falsely pass validation because it starts with the string `http://localhost:11235`.
 **Learning:** String prefix checks for URLs/origins are insufficient because domain boundaries aren't respected. The malicious actor controls the suffix of the domain name.
 **Prevention:** Never use unanchored `startswith()` checks for validating CORS origins or Referer headers. Always use exact equality matching (`referer == allowed`) or ensure the prefix includes a path separator (`referer.startswith(allowed + '/')`).
+
+## 2026-05-28 - [Hardcoded API Key in Python Script]
+**Vulnerability:** A hardcoded API key (`LITELLM_KEY = "sk-zeu...-key"`) was found in `scripts/zeusapollo_swarm.py`, which is a critical security vulnerability as it exposes the secret in the codebase, potentially granting unauthorized access to external services.
+**Learning:** Hardcoding secrets directly in source code is unsafe, even in scripts intended to run locally or inside restricted environments. It can easily be accidentally committed, leaked via logs, or extracted by malicious actors.
+**Prevention:** Never hardcode secrets. Always use environment variables (e.g., `os.environ.get("KEY")`) or local configuration files (e.g., `/root/.hermes/config/auth.json`) to load API keys securely.
