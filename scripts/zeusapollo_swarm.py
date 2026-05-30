@@ -433,6 +433,8 @@ async def security_middleware(request: Request, call_next):
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["X-XSS-Protection"] = "1; mode=block"
     response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    if not request.url.path.startswith(("/docs", "/redoc", "/openapi.json")):
+        response.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
 
     # SECURITY: Add restrictive CSP, but exclude OpenAPI docs to avoid breaking Swagger UI/ReDoc
     if request.url.path not in ["/docs", "/redoc", "/openapi.json"]:
