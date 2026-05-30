@@ -17,3 +17,8 @@
 **Vulnerability:** Adding strict `Content-Security-Policy` (CSP) headers (e.g., `default-src 'none'; frame-ancestors 'none'`) globally across all endpoints in a FastAPI application breaks the built-in OpenAPI documentation pages (`/docs`, `/redoc`), as they rely on inline scripts, external styles, and specific framing mechanisms.
 **Learning:** Implementing security headers globally without considering framework-specific endpoints (like Swagger UI) results in a broken developer experience and often leads to the rollback of the security control entirely.
 **Prevention:** When adding restrictive Content-Security-Policy headers to FastAPI applications, ensure OpenAPI documentation endpoints (`/docs`, `/redoc`, `/openapi.json`) are conditionally excluded to avoid breaking the Swagger UI and ReDoc pages.
+
+## 2024-05-30 - [DOM XSS Prevention in Event Ticker and Node List]
+**Vulnerability:** Found `innerHTML` used in `command.html` for both the event ticker (`entry.innerHTML = ...`) and the node list rendering (`item.innerHTML = ...`). The node list rendering was particularly vulnerable as it injected dynamic JSON data (from `status.json`) into the DOM.
+**Learning:** Even when populating simple lists or tickers from external or dynamic sources (like JSON files), using `innerHTML` introduces a significant risk of DOM XSS if the data source is compromised or tampered with.
+**Prevention:** Always use secure DOM creation methods (`document.createElement`, `textContent`, `classList.add`, and `appendChild`) instead of `innerHTML` when rendering lists or components with dynamic data.
