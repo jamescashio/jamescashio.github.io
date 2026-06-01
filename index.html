@@ -296,18 +296,20 @@ tbody tr:hover{background:var(--glass)}
 .cred.hl{color:var(--green);border-color:var(--green)}
 
 /* ---------- CASHIO DESIGN DOCTRINE ---------- */
-.doctrine{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.doctrine{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .dlaw{background:var(--surface-2);border:1px solid var(--glass-border);border-radius:var(--radius);padding:18px 18px 16px;position:relative;
-  transition:all var(--dur) var(--ease);overflow:hidden}
+  display:flex;flex-direction:column;transition:all var(--dur) var(--ease);overflow:hidden}
 .dlaw::after{content:attr(data-n);position:absolute;right:10px;top:2px;font-family:var(--font-display);font-weight:900;font-size:54px;
   color:var(--glass-highlight);opacity:.5;line-height:1;pointer-events:none}
 .dlaw:hover{border-color:var(--amber);box-shadow:0 0 22px rgba(255,204,0,.22);transform:translateY(-3px)}
 .dlaw .no{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;color:var(--amber)}
-.dlaw h3{font-family:var(--font-display);font-size:15px;letter-spacing:.04em;color:var(--text);margin:5px 0 7px}
+.dlaw h3{font-family:var(--font-display);font-size:15px;letter-spacing:.04em;color:var(--text);margin:5px 0 7px;min-height:2.4em;display:flex;align-items:flex-start}
 .dlaw p{font-size:13px;color:var(--text-dim);line-height:1.55}
-.dlaw .src{display:inline-block;margin-top:10px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:var(--text-dim);
-  border-top:1px solid var(--glass-border);padding-top:8px;opacity:.85}
+.dlaw .src{display:block;margin-top:auto;padding-top:12px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:var(--text-dim);
+  border-top:1px solid var(--glass-border);opacity:.85}
 .dlaw .src b{color:var(--cyan)}
+@media(max-width:880px){.doctrine{grid-template-columns:repeat(2,1fr)} .dlaw h3{min-height:0}}
+@media(max-width:560px){.doctrine{grid-template-columns:1fr}}
 /* ---------- CHANGELOG / VERSION DELTA ---------- */
 .cl-intro{color:var(--text-dim);font-size:14px;max-width:820px;margin-bottom:18px}
 .cl-intro b{color:var(--cyan)}
