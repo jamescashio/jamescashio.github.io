@@ -22,3 +22,7 @@
 **Vulnerability:** Found `innerHTML` used in `command.html` for both the event ticker (`entry.innerHTML = ...`) and the node list rendering (`item.innerHTML = ...`). The node list rendering was particularly vulnerable as it injected dynamic JSON data (from `status.json`) into the DOM.
 **Learning:** Even when populating simple lists or tickers from external or dynamic sources (like JSON files), using `innerHTML` introduces a significant risk of DOM XSS if the data source is compromised or tampered with.
 **Prevention:** Always use secure DOM creation methods (`document.createElement`, `textContent`, `classList.add`, and `appendChild`) instead of `innerHTML` when rendering lists or components with dynamic data.
+## 2026-06-01 - [Hardcoded API Keys in Python Scripts]
+**Vulnerability:** Found a hardcoded API key (`LITELLM_KEY`) in `scripts/zeusapollo_swarm.py`.
+**Learning:** Hardcoded secrets in scripts represent a critical vulnerability, as they can be easily leaked through source control, especially if the repository is public or inadvertently shared.
+**Prevention:** Always load secrets dynamically from environment variables (e.g., `os.environ.get()`) or secure, untracked configuration files (e.g., `~/.hermes/config/auth.json`), and provide fallback mechanisms that fail safely without executing unauthenticated.
