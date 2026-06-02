@@ -4,25 +4,40 @@ const _soundCache = {};
 window._soundEnabled = true;
 let _lastSoundPlayTime = 0;
 
+const SOUND_ASSETS = {
+  click: ['lcars_click.wav'],
+  hover: ['lcars_hover.wav'],
+  confirm: ['lcars_click.wav'],
+  success: ['lcars_success.wav'],
+  press: ['lcars_click.wav'],
+  redalert: ['redalert.wav'],
+  warp: ['warp.mp3', 'warp.wav'],
+  alert: ['lcars_click.wav'],
+  whoosh: ['lcars_hover.wav']
+};
+
+const SOUND_ALIASES = {
+  click: 'click',
+  hover: 'hover',
+  lcars: 'hover',
+  confirm: 'click',
+  success: 'success',
+  press: 'click',
+  redalert: 'redalert',
+  warp: 'warp',
+  alert: 'click',
+  whoosh: 'hover',
+  swoosh: 'hover',
+  phaser: 'click',
+  transporter: 'success'
+};
+
 function initAudio() {
   if (_audioCtx) return;
   try {
     _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    
-    // Strict whitelist-only sound files (voice-free only)
-    const assets = {
-      'click': ['lcars_click.wav'],
-      'hover': ['lcars_hover.wav'],
-      'confirm': ['lcars_click.wav'],
-      'success': ['lcars_success.wav'],
-      'press': ['lcars_click.wav'],
-      'redalert': ['redalert.wav'],
-      'warp': ['warp.mp3', 'warp.wav'],
-      'alert': ['lcars_click.wav'],
-      'whoosh': ['lcars_hover.wav']
-    };
-    
-    for (const [key, files] of Object.entries(assets)) {
+
+    for (const [key, files] of Object.entries(SOUND_ASSETS)) {
       _soundCache[key] = files.map(file => {
         const audio = new Audio(file);
         audio.preload = 'auto';
@@ -36,39 +51,27 @@ function initAudio() {
 
 function playLCARSSound(type, vol = 0.5, pitch = 1.0) {
   initAudio();
-  if (!_audioCtx) return;
+  if (!_audioCtx || !window._soundEnabled) return;
   if (_audioCtx.state === 'suspended') _audioCtx.resume();
-  
+
+  const soundType = SOUND_ALIASES[String(type).toLowerCase()] || 'click';
   const now = _audioCtx.currentTime;
-  
+
   // Cooldown to prevent sounds from stepping on each other / overlapping
-  if (type !== 'redalert' && type !== 'warp') {
+  if (soundType !== 'redalert' && soundType !== 'warp') {
     if (now - _lastSoundPlayTime < 0.08) {
       return; // Skip duplicate playbacks within 80ms
     }
     _lastSoundPlayTime = now;
   }
-  
-  const whitelistMap = {
-    'click': 'click',
-    'hover': 'hover',
-    'confirm': 'click',     // Remapped to voice-free click
-    'success': 'success',
-    'press': 'click',       // Remapped to voice-free click
-    'redalert': 'redalert',
-    'warp': 'warp',
-    'alert': 'click',       // Remapped to voice-free click
-    'whoosh': 'hover'
-  };
-  
-  type = whitelistMap[type] || 'click';
-  
-  if (_soundCache[type]) {
+
+  if (_soundCache[soundType]) {
     const playNext = (index) => {
-      if (index >= _soundCache[type].length) return;
-      const audio = _soundCache[type][index];
+      if (index >= _soundCache[soundType].length) return;
+      const audio = _soundCache[soundType][index];
       const playInstance = audio.cloneNode();
-      playInstance.volume = vol;
+      playInstance.volume = Math.max(0, Math.min(1, vol));
+      playInstance.playbackRate = Math.max(0.25, Math.min(4, pitch));
       playInstance.play().catch(() => playNext(index + 1));
     };
     playNext(0);

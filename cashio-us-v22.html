@@ -1540,7 +1540,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   <div class="hero-role">Solutions Architect &nbsp;•&nbsp; Sovereign Infrastructure &nbsp;•&nbsp; Multi-Model Orchestration</div>
 
   <div class="hero-badges">
-    <a href="https://www.credly.com/users/james-cashio/badges" target="_blank"
+    <a href="https://www.credly.com/users/james-cashio/badges" target="_blank" rel="noopener noreferrer"
        class="hero-badge hero-badge--accent">
       <i class="fas fa-certificate"></i> Cred Badges
     </a>
@@ -2171,7 +2171,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       </div>
     </div>
     <div class="mt-6 text-center">
-      <a href="https://www.credly.com/users/james-cashio/badges" target="_blank" class="btn btn--cyan">
+      <a href="https://www.credly.com/users/james-cashio/badges" target="_blank" rel="noopener noreferrer" class="btn btn--cyan">
         <i class="fas fa-certificate"></i> View All Credly Badges
       </a>
     </div>
@@ -2600,9 +2600,9 @@ tr:hover td { background: rgba(255,255,255,0.02); }
      FOOTER
 ══════════════════════════════════════════ -->
 <footer id="footer">
-  <div class="footer-links"><a href="https://www.credly.com/users/james-cashio/badges" target="_blank">Credly Badges</a>
-    <a href="https://github.com/jamescashio" target="_blank">GitHub</a>
-    <a href="https://linkedin.com/in/doug-cashio" target="_blank">LinkedIn</a>
+  <div class="footer-links"><a href="https://www.credly.com/users/james-cashio/badges" target="_blank" rel="noopener noreferrer">Credly Badges</a>
+    <a href="https://github.com/jamescashio" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <a href="https://linkedin.com/in/doug-cashio" target="_blank" rel="noopener noreferrer">LinkedIn</a>
     <a href="#" onclick="event.preventDefault();copyEmail()" id="copy-email-link" title="Click to copy">📋 doug@cashio.us</a>
     <a href="#" onclick="window.location.reload()">Reload Telemetry</a>
   </div>
@@ -3031,7 +3031,7 @@ function startHum() {
     gL.gain.value = gR.gain.value = 0.008;
     gB.gain.value = 0.003; // sub-bass barely audible
     lfo.connect(lfoG); lfoG.connect(oscL.frequency); lfoG.connect(oscR.frequency);
-    [oscL,fL,gL,pL],[oscR,fR,gR,pR].forEach(([o,f,g,p]) => { o.connect(f); f.connect(g); g.connect(p); p.connect(_audioCtx.destination); });
+    [[oscL,fL,gL,pL],[oscR,fR,gR,pR]].forEach(([o,f,g,p]) => { o.connect(f); f.connect(g); g.connect(p); p.connect(_audioCtx.destination); });
     oscB.connect(gB); gB.connect(_audioCtx.destination);
     oscL.start(); oscR.start(); oscB.start(); lfo.start();
     _ambientHum = { stop: () => {

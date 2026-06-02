@@ -4,14 +4,34 @@
  * Uses Kernel SDK to screenshot cashio.us and compare with baseline
  *
  * Usage: node scripts/check_regression.js [--update-baseline]
- * Requires: KERNEL_API_KEY env var
+ * Requires: KERNEL_API_KEY env var and @onkernel/sdk on NODE_PATH or installed locally
  */
 
-const { Kernel } = require('/root/.hermes/scripts/node_modules/@onkernel/sdk');
+const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 
+function loadKernel() {
+  try {
+    return require('@onkernel/sdk').Kernel;
+  } catch (err) {
+    if (process.env.KERNEL_SDK_PATH) {
+      try {
+        return require(process.env.KERNEL_SDK_PATH).Kernel;
+      } catch (pathErr) {
+        return require(path.join(process.env.KERNEL_SDK_PATH, '@onkernel/sdk')).Kernel;
+      }
+    }
+
+    throw new Error(
+      'Unable to load @onkernel/sdk. Install it locally, set NODE_PATH, or set KERNEL_SDK_PATH to the SDK module.'
+    );
+  }
+}
+
 const KERNEL_KEY = process.env.KERNEL_API_KEY;
+const BASE_URL = (process.env.REGRESSION_BASE_URL || 'https://cashio.us').replace(/\/$/, '');
+const VIEWPORT = { width: 1440, height: 1200 };
 const URLS = [
   { path: '/', name: 'index' },
   { path: '/command.html', name: 'command-center' },
@@ -19,8 +39,30 @@ const URLS = [
 const BASELINE_DIR = path.join(__dirname, '..', '.regression-baseline');
 const DIFF_DIR = path.join(__dirname, '..', '.regression-diffs');
 
+function bufferFromScreenshot(resp) {
+  if (Buffer.isBuffer(resp)) return resp;
+  if (resp instanceof ArrayBuffer) return Buffer.from(resp);
+  if (ArrayBuffer.isView(resp)) return Buffer.from(resp.buffer, resp.byteOffset, resp.byteLength);
+  if (resp && typeof resp.arrayBuffer === 'function') {
+    return resp.arrayBuffer().then(buf => Buffer.from(buf));
+  }
+  if (resp && typeof resp.data === 'string') {
+    return Buffer.from(resp.data, 'base64');
+  }
+  throw new Error('Unsupported screenshot response from Kernel SDK');
+}
+
+function sha256(buf) {
+  return crypto.createHash('sha256').update(buf).digest('hex');
+}
+
 async function main() {
   const updateBaseline = process.argv.includes('--update-baseline');
+  if (!KERNEL_KEY) {
+    throw new Error('KERNEL_API_KEY is required');
+  }
+
+  const Kernel = loadKernel();
   const kernel = new Kernel({ apiKey: KERNEL_KEY });
   const passed = [];
   const failed = [];
@@ -31,52 +73,66 @@ async function main() {
   console.log('🚀 ZEUSAPOLLO Visual Regression Checker\n');
 
   for (const { path: urlPath, name } of URLS) {
-    const url = `https://cashio.us${urlPath}`;
+    const url = `${BASE_URL}${urlPath}`;
     console.log(`  📸 Snapshotting ${url}...`);
+    let browserId;
 
     try {
       // Create browser
       const browser = await kernel.browsers.create({ headless: true });
-      const id = browser.session_id;
+      browserId = browser.session_id || browser.id;
+      if (!browserId) throw new Error('Kernel browser session did not include an id');
 
       // Navigate with wait
-      await kernel.browsers.playwright.execute(id, {
+      await kernel.browsers.playwright.execute(browserId, {
         code: `
-          await page.goto('${url}', { waitUntil: 'networkidle', timeout: 15000 });
-          await page.waitForTimeout(2000);
-          await page.evaluate(() => document.fonts.ready);
+          await page.setViewportSize(${JSON.stringify(VIEWPORT)});
+          await page.emulateMedia({ reducedMotion: 'reduce' });
+          await page.goto(${JSON.stringify(url)}, { waitUntil: 'networkidle', timeout: 30000 });
+          await page.evaluate(() => document.fonts && document.fonts.ready);
+          await page.addStyleTag({ content: \`
+            *, *::before, *::after {
+              animation: none !important;
+              caret-color: transparent !important;
+              transition: none !important;
+            }
+            canvas, video, [data-regression-dynamic] {
+              visibility: hidden !important;
+            }
+          \` });
+          await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
+          await page.waitForTimeout(1000);
         `
       });
 
       // Capture
-      const resp = await kernel.browsers.computer.captureScreenshot(id);
-      const buf = Buffer.from(await resp.arrayBuffer());
-
-      // Cleanup
-      await kernel.browsers.deleteByID(id);
+      const resp = await kernel.browsers.computer.captureScreenshot(browserId);
+      const buf = await bufferFromScreenshot(resp);
 
       const baselinePath = path.join(BASELINE_DIR, `${name}.png`);
       const snapshotPath = path.join(DIFF_DIR, `${name}.${Date.now()}.png`);
+      const hashPath = `${baselinePath}.sha256`;
 
       if (!fs.existsSync(baselinePath) || updateBaseline) {
         // Save as new baseline
         fs.writeFileSync(baselinePath, buf);
+        fs.writeFileSync(hashPath, `${sha256(buf)}\n`);
         console.log(`  ✅ ${name}: Baseline saved (${(buf.length / 1024).toFixed(1)}KB)`);
         passed.push(name);
       } else {
-        // Compare with baseline (simple size check — for real pixel diff, use pixelmatch)
+        // Compare exact bytes. This avoids false passes from similarly sized but different screenshots.
         const baseline = fs.readFileSync(baselinePath);
         fs.writeFileSync(snapshotPath, buf);
 
-        const sizeDiff = Math.abs(buf.length - baseline.length);
-        const threshold = baseline.length * 0.05; // 5% tolerance
+        const baselineHash = sha256(baseline);
+        const snapshotHash = sha256(buf);
 
-        if (sizeDiff < threshold) {
-          console.log(`  ✅ ${name}: PASS (size diff: ${(sizeDiff / 1024).toFixed(1)}KB / ${(threshold / 1024).toFixed(1)}KB threshold)`);
+        if (snapshotHash === baselineHash) {
+          console.log(`  ✅ ${name}: PASS (${snapshotHash.slice(0, 12)})`);
           passed.push(name);
           fs.unlinkSync(snapshotPath); // clean up pass
         } else {
-          console.log(`  ❌ ${name}: FAIL (size diff: ${(sizeDiff / 1024).toFixed(1)}KB > ${(threshold / 1024).toFixed(1)}KB threshold)`);
+          console.log(`  ❌ ${name}: FAIL (baseline ${baselineHash.slice(0, 12)} != snapshot ${snapshotHash.slice(0, 12)})`);
           console.log(`     Snapshot saved: ${snapshotPath}`);
           failed.push(name);
         }
@@ -84,6 +140,14 @@ async function main() {
     } catch (err) {
       console.log(`  ❌ ${name}: ERROR — ${err.message}`);
       failed.push(name);
+    } finally {
+      if (browserId) {
+        try {
+          await kernel.browsers.deleteByID(browserId);
+        } catch (cleanupErr) {
+          console.log(`     Cleanup warning: ${cleanupErr.message}`);
+        }
+      }
     }
   }
 
