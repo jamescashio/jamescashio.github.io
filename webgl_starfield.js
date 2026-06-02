@@ -128,13 +128,22 @@ if (!gl) {
   });
 
   function render() {
+    // Only render if canvas is visible in viewport
+    if (document.visibilityState === 'hidden') {
+      requestAnimationFrame(render);
+      return;
+    }
+    
     time += 0.01;
     mouseX += (targetMouseX - mouseX) * 0.05;
     mouseY += (targetMouseY - mouseY) * 0.05;
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    gl.viewport(0, 0, canvas.width, canvas.height);
+    // Only resize canvas if window size changed
+    if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+    }
 
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
