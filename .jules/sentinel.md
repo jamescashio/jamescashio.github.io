@@ -22,3 +22,8 @@
 **Vulnerability:** Found `innerHTML` used in `command.html` for both the event ticker (`entry.innerHTML = ...`) and the node list rendering (`item.innerHTML = ...`). The node list rendering was particularly vulnerable as it injected dynamic JSON data (from `status.json`) into the DOM.
 **Learning:** Even when populating simple lists or tickers from external or dynamic sources (like JSON files), using `innerHTML` introduces a significant risk of DOM XSS if the data source is compromised or tampered with.
 **Prevention:** Always use secure DOM creation methods (`document.createElement`, `textContent`, `classList.add`, and `appendChild`) instead of `innerHTML` when rendering lists or components with dynamic data.
+
+## 2024-06-02 - [Missing Authentication & Unprotected FastAPI Endpoints]
+**Vulnerability:** The distributed speculative decoding bridge API (`scripts/zeusapollo_bridge.py`) exposed endpoints like `/v1/completions` directly via a FastAPI app bound to `0.0.0.0`, with zero authentication, CORS validation, or security headers.
+**Learning:** Internal or "backend-to-backend" microservices (like this bridge running between a draft predictor and target verifier) are frequently left unprotected under the assumption that the network boundary is safe. However, unauthenticated internal APIs can be exploited for lateral movement, resource exhaustion (especially against AI endpoints), or data exposure if the internal network is ever breached.
+**Prevention:** Always mandate strict authentication (e.g., API keys verified via constant-time string comparison) and security boundaries (e.g., CSP headers) on all APIs, including those intended exclusively for internal, homelab, or cross-node communication.
