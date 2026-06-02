@@ -959,7 +959,7 @@ window.addEventListener('resize', () => {
 // ─── CLOCK ───
 function updateClock() {
   const now = new Date();
-  document.getElementById('clock').textContent = now.toISOString().substr(11, 8);
+  document.getElementById('clock').textContent = now.toISOString().slice(11, 19);
 }
 setInterval(updateClock, 1000);
 updateClock();
@@ -987,7 +987,7 @@ const eventTypes = [
 function addEvent() {
   const evt = eventTypes[Math.floor(Math.random() * eventTypes.length)];
   const now = new Date();
-  const time = now.toISOString().substr(11, 8);
+  const time = now.toISOString().slice(11, 19);
   const entry = document.createElement('div');
   entry.className = 'ticker-entry';
   // SECURITY: Prevent XSS by avoiding innerHTML
@@ -1018,8 +1018,19 @@ for (let i = 0; i < 12; i++) {
   setTimeout(addEvent, i * 100);
 }
 
-// New events every 4-12 seconds
-setInterval(addEvent, 4000 + Math.random() * 8000);
+function getTickerDelay() {
+  return 4000 + Math.random() * 8000;
+}
+
+function scheduleNextTickerEvent() {
+  setTimeout(() => {
+    addEvent();
+    scheduleNextTickerEvent();
+  }, getTickerDelay());
+}
+
+// New events every 4-12 seconds, with a fresh delay after each event
+scheduleNextTickerEvent();
 
 // ─── NODE LIST ───
 const nodes = [
