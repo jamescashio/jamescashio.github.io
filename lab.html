@@ -5412,9 +5412,16 @@
     })();
 
     // ═══════ PARALLAX DEPTH ON BACKGROUND ═══════
+    let tickingParallax = false;
     window.addEventListener('scroll', function() {
-      const scrolled = window.pageYOffset;
-      document.body.style.backgroundPositionY = (scrolled * 0.3) + 'px';
+      if (!tickingParallax) {
+        window.requestAnimationFrame(function() {
+          const scrolled = window.pageYOffset;
+          document.body.style.backgroundPositionY = (scrolled * 0.3) + 'px';
+          tickingParallax = false;
+        });
+        tickingParallax = true;
+      }
     }, { passive: true });
 
     // Fleet uptime counter
@@ -5437,8 +5444,15 @@
     (function() {
       const btn = document.getElementById('back-to-top');
       if (!btn) return;
+      let tickingBTT = false;
       window.addEventListener('scroll', () => {
-        btn.style.display = window.scrollY > 600 ? 'flex' : 'none';
+        if (!tickingBTT) {
+          window.requestAnimationFrame(() => {
+            btn.style.display = window.scrollY > 600 ? 'flex' : 'none';
+            tickingBTT = false;
+          });
+          tickingBTT = true;
+        }
       }, { passive: true });
       btn.addEventListener('mouseenter', () => {
         btn.style.boxShadow = '0 0 25px rgba(241,223,111,0.6)';

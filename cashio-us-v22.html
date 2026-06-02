@@ -25,7 +25,7 @@
       })();
       var toast = document.createElement('div');
       toast.className = 'toast';
-      toast.innerHTML = msg;
+      toast.textContent = msg;
       container.appendChild(toast);
       setTimeout(function(){ toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; 
         setTimeout(function(){ toast.remove(); }, 300); }, 3000);
