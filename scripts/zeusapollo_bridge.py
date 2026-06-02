@@ -27,10 +27,12 @@ Requires:
 import argparse
 import json
 import time
+import os
+import secrets
 import httpx
 import mlx.core as mx
 from mlx_lm import load, generate
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException, Response
 from fastapi.responses import StreamingResponse
 import uvicorn
 
@@ -40,6 +42,30 @@ TARGET_MODEL = "mlx-community/gemma-4-26b-a4b-it-4bit"
 DRAFT_TOKENS = 5  # Number of tokens to speculate per cycle
 TEMPERATURE = 0.2  # Lower = higher acceptance rate (best: 0.1-0.3)
 BRIDGE_PORT = 11235
+
+# ─── AUTHENTICATION SETUP ───────────────────────────────────────────────────
+# SECURITY: Load API key securely without hardcoding
+BRIDGE_API_KEY = os.environ.get("BRIDGE_API_KEY", "")
+if not BRIDGE_API_KEY:
+    try:
+        with open("/root/.hermes/config/auth.json") as f:
+            auth = json.load(f)
+            BRIDGE_API_KEY = auth.get("bridge", {}).get("api_key", "")
+    except Exception:
+        pass
+
+if not BRIDGE_API_KEY:
+    try:
+        with open(os.path.expanduser("~/.hermes/config/auth.json")) as f:
+            auth = json.load(f)
+            BRIDGE_API_KEY = auth.get("bridge", {}).get("api_key", "")
+    except Exception:
+        pass
+
+if not BRIDGE_API_KEY:
+    print("⚠️  WARNING: BRIDGE_API_KEY not set — auth DISABLED")
+    print("    Set via: export BRIDGE_API_KEY='your-key-here'")
+
 
 # ─── MODEL LOADING ──────────────────────────────────────────────────────────
 print("🔄 Loading target model (Gemma-4 26B)...")
@@ -143,6 +169,26 @@ def speculative_generate(prompt: str, max_tokens: int = 512):
 # ─── API SERVER ─────────────────────────────────────────────────────────────
 app = FastAPI(title="ZeusApollo Speculative Bridge")
 
+@app.middleware("http")
+async def security_middleware(request: Request, call_next):
+    """Global security middleware — auth + headers."""
+
+    # Apply auth to all /v1/ routes
+    if request.url.path.startswith("/v1/"):
+        if BRIDGE_API_KEY:
+            key = request.headers.get("X-API-Key", "")
+            # SECURITY: Prevent timing attacks by using constant-time string comparison
+            if not secrets.compare_digest(key, BRIDGE_API_KEY):
+                return Response(content='{"detail": "Unauthorized"}', media_type="application/json", status_code=401)
+
+    response = await call_next(request)
+
+    # SECURITY: Add restrictive CSP, but exclude OpenAPI docs to avoid breaking Swagger UI/ReDoc
+    if request.url.path not in ["/docs", "/redoc", "/openapi.json"]:
+        response.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
+
+    return response
+
 @app.post("/v1/completions")
 async def completions(request: Request):
     body = await request.json()
@@ -194,6 +240,7 @@ if __name__ == "__main__":
 ║  Drafter:  Cashiotuf (RTX 3080) → gemma-4-e4b          ║
 ║  Verifier: Atlas (Mac M4)       → Gemma-4 26B MoE      ║
 ║  Bridge:   http://0.0.0.0:{args.port}                    ║
+║  Auth:     {'ENABLED' if BRIDGE_API_KEY else '⚠️ DISABLED'}{' ' * (37 - len('ENABLED') if BRIDGE_API_KEY else 37 - len('⚠️ DISABLED'))}║
 ║  Tokens/cycle: {DRAFT_TOKENS} | Temperature: {TEMPERATURE}            ║
 ╚══════════════════════════════════════════════════════════╝
     """)
