@@ -3,964 +3,776 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Doug Cashio — Enterprise AI &amp; Cybersecurity</title>
-<meta name="description" content="Doug Cashio — Enterprise AI &amp; Cybersecurity. Sovereign 19-node ZeusApollo homelab, multi-model LLM orchestration, 7.2x inference cost reduction, fully autonomous infrastructure.">
-<meta name="author" content="Doug Cashio">
-<meta name="keywords" content="Doug Cashio, Enterprise AI, Cybersecurity, Solutions Consultant, homelab, Proxmox, LLM orchestration, multi-model, sovereign infrastructure, ZeusApollo">
-<meta name="robots" content="index, follow">
-<meta name="theme-color" content="#0a0a0f">
-<link rel="canonical" href="https://cashio.us/">
+<title>House Cashio — Sovereign AI Infrastructure</title>
+<meta name="description" content="ZeusApollo Sovereign AI Fleet — 17-node Proxmox cluster, multi-model LLM routing, native MCP control plane. Enterprise AI & Cybersecurity.">
+<meta property="og:title" content="House Cashio — Sovereign AI Fleet">
+<meta property="og:description" content="17 nodes. 8 MCP servers. 23 autonomous cron agents. Multi-model AI routing fabric. Enterprise-grade sovereign intelligence.">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="cashio.us">
-<meta property="og:title" content="Doug Cashio — Enterprise AI &amp; Cybersecurity">
-<meta property="og:description" content="Sovereign infrastructure, multi-model orchestration, autonomous ops in the ZeusApollo homelab.">
-<meta property="og:url" content="https://cashio.us/">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Doug Cashio — Enterprise AI &amp; Cybersecurity">
-<meta name="twitter:description" content="Sovereign 19-node homelab · multi-model LLM orchestration · 7.2× cost reduction.">
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Person","name":"Doug Cashio","jobTitle":"Principal Solutions Consultant","description":"Enterprise AI & Cybersecurity. Sovereign 19-node ZeusApollo homelab, multi-model LLM orchestration.","url":"https://cashio.us/","email":"doug@cashio.us","sameAs":["https://linkedin.com/in/doug-cashio","https://www.credly.com/users/james-cashio/badges"],"knowsAbout":["Enterprise AI","Cybersecurity","LLM Orchestration","Proxmox","Cloud Security"]}
-</script>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0a0f'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='18' font-weight='bold' text-anchor='middle' fill='%2300f9ff'%3EZ%3C/text%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,200;0,300;0,400;0,600;0,700;1,300&family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-/* ============================================================
-   ZEUSAPOLLO v26 — command-center. v24 visual language kept,
-   LLM EVENT CHAIN added as the centerpiece. PII-scrubbed (no IPs).
-   ============================================================ */
-:root{
-  --accent:#ff9500; --accent-glow:rgba(255,149,0,.35);
-  --cyan:#00f9ff; --cyan-glow:rgba(0,249,255,.30);
-  --green:#00ff9f; --purple:#cc00ff; --red:#ff0033; --amber:#ffcc00;
-  --void:#0a0a0f; --surface:rgba(12,12,22,.88); --surface-2:rgba(18,18,32,.75);
-  --glass:rgba(255,255,255,.04); --glass-border:rgba(255,255,255,.08);
-  --glass-highlight:rgba(255,255,255,.12);
-  --text:#e4e4f0; --text-dim:#b6b6d0;
-  --font-display:'Orbitron',monospace; --font-body:'Exo 2',system-ui,sans-serif;
-  --font-mono:'JetBrains Mono','Courier New',monospace;
-  --radius:12px; --radius-lg:20px; --radius-xl:28px;
-  --scan-speed:6s; --ease:cubic-bezier(.23,1,.32,1); --dur:.45s;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{
-  background:var(--void); color:var(--text); font-family:var(--font-body);
-  font-size:17px; line-height:1.55; overflow-x:hidden; position:relative;
-  background-image:
-    radial-gradient(circle at 15% 10%,rgba(0,249,255,.06),transparent 40%),
-    radial-gradient(circle at 85% 30%,rgba(204,0,255,.05),transparent 45%),
-    radial-gradient(circle at 50% 100%,rgba(255,149,0,.05),transparent 50%);
-}
-a{color:var(--cyan);text-decoration:none}
-/* skip-to-content (a11y) */
-.skip-link{position:absolute;left:-9999px;top:0;z-index:300;background:var(--cyan);color:#03121a;
-  font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:.1em;padding:10px 16px;border-radius:0 0 8px 0}
-.skip-link:focus{left:0}
-/* scroll-progress "golden path" bar */
-#scrollbar{position:fixed;top:0;left:0;height:3px;width:0;z-index:120;
-  background:linear-gradient(90deg,var(--cyan),var(--green),var(--accent));box-shadow:0 0 10px var(--cyan-glow);transition:width .1s linear}
-#starfield{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.9}
-body::after{content:"";position:fixed;inset:0;z-index:2;pointer-events:none;
-  background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0 2px,rgba(0,0,0,.18) 3px 4px);
-  mix-blend-mode:overlay;opacity:.35;animation:scan var(--scan-speed) linear infinite}
-@keyframes scan{0%{background-position-y:0}100%{background-position-y:4px}}
-.wrap{position:relative;z-index:3;max-width:1180px;margin:0 auto;padding:0 22px}
+  :root {
+    --bg-deep: #06060f;
+    --bg-card: #0a0a18;
+    --bg-card-alt: #0d0d22;
+    --text-primary: #d0d0e0;
+    --text-dim: #707090;
+    --accent-gold: #f1df6f;
+    --accent-teal: #4fc3f7;
+    --accent-orange: #ff9500;
+    --accent-red: #ff3b3b;
+    --accent-green: #4caf50;
+    --accent-purple: #b388ff;
+    --border: rgba(241,223,111,0.15);
+    --border-active: rgba(241,223,111,0.4);
+    --glow-gold: 0 0 20px rgba(241,223,111,0.3);
+    --glow-teal: 0 0 20px rgba(79,195,247,0.2);
+  }
 
-/* ---------- BOOT ---------- */
-#boot{position:fixed;inset:0;z-index:200;background:var(--void);display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:16px;font-family:var(--font-mono);transition:opacity .6s var(--ease)}
-#boot.done{opacity:0;pointer-events:none}
-#boot .logo{font-family:var(--font-display);font-weight:900;font-size:clamp(34px,8vw,72px);letter-spacing:.08em;
-  background:linear-gradient(180deg,#fff,var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent;
-  text-shadow:0 0 60px var(--cyan-glow)}
-#boot .blines{width:min(460px,86vw);font-size:12px;color:var(--green);line-height:1.7;
-  text-shadow:0 0 8px rgba(0,255,159,.4);min-height:150px}
-#boot .blines .pct{color:var(--cyan)}
-#boot .barouter{width:min(460px,86vw);height:6px;border:1px solid var(--glass-border);border-radius:6px;overflow:hidden;background:var(--glass)}
-#boot .barinner{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--green));box-shadow:0 0 14px var(--cyan-glow);transition:width .25s var(--ease)}
-#boot .skip{font-size:10px;letter-spacing:.18em;color:var(--text-dim);cursor:pointer;border:1px solid var(--glass-border);padding:6px 12px;border-radius:8px;margin-top:6px}
-#boot .skip:hover{border-color:var(--cyan);color:var(--cyan)}
+  * { margin:0; padding:0; box-sizing:border-box; }
+  
+  body {
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
 
-/* ---------- HUD ---------- */
-.hud{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,rgba(10,10,18,.96),rgba(10,10,18,.80));
-  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--glass-border);box-shadow:0 2px 30px rgba(0,0,0,.5)}
-.hud-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:8px 22px;flex-wrap:wrap}
-.hud-stat{display:flex;flex-direction:column;line-height:1.15;min-width:60px}
-.hud-stat .k{font-family:var(--font-mono);font-size:9px;letter-spacing:.18em;color:var(--text-dim)}
-.hud-stat .v{font-family:var(--font-display);font-size:13px;font-weight:700;color:var(--cyan);text-shadow:0 0 10px var(--cyan-glow)}
-.hud-stat .v.warp{color:var(--green);text-shadow:0 0 10px rgba(0,255,159,.4)}
-.hud-spacer{flex:1}
-.hud-btn{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.12em;padding:7px 14px;border-radius:var(--radius);
-  cursor:pointer;background:var(--glass);border:1px solid var(--glass-border);color:var(--text);transition:all var(--dur) var(--ease)}
-.hud-btn:hover{border-color:var(--cyan);box-shadow:0 0 18px var(--cyan-glow);color:var(--cyan)}
-.hud-btn.alert{border-color:var(--red);color:var(--red)}
-.hud-btn.alert:hover{box-shadow:0 0 18px rgba(255,0,51,.5);background:rgba(255,0,51,.08)}
-.hud-btn.engage:hover{border-color:var(--green);color:var(--green);box-shadow:0 0 18px rgba(0,255,159,.4)}
-.hud-toggle{background:none;border:1px solid var(--glass-border);color:var(--text-dim);width:34px;height:32px;border-radius:var(--radius);
-  cursor:pointer;font-size:15px;transition:all var(--dur) var(--ease)}
-.hud-toggle:hover{border-color:var(--cyan);box-shadow:0 0 14px var(--cyan-glow)}
-.hud-toggle[aria-pressed="true"]{color:var(--cyan);border-color:var(--cyan);box-shadow:0 0 12px var(--cyan-glow)}
+  /* ── Starfield Canvas ── */
+  #starfield {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+  }
 
-/* ---------- panels ---------- */
-.panel{background:var(--surface);border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:26px 26px 28px;margin:26px 0;
-  position:relative;overflow:hidden;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  box-shadow:0 8px 40px rgba(0,0,0,.45),inset 0 1px 0 var(--glass-highlight)}
-.panel::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(180deg,var(--accent),var(--purple))}
-.panel.cyan::before{background:linear-gradient(180deg,var(--cyan),var(--green))}
-.panel.green::before{background:linear-gradient(180deg,var(--green),var(--cyan))}
-.panel.red::before{background:linear-gradient(180deg,var(--red),var(--amber))}
-.panel.purple::before{background:linear-gradient(180deg,var(--purple),var(--cyan))}
-.panel.amber::before{background:linear-gradient(180deg,var(--amber),var(--accent))}
-.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}
-.sec-head h2{font-family:var(--font-display);font-size:18px;font-weight:700;letter-spacing:.06em}
-.tag{font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;padding:3px 9px;border-radius:20px;border:1px solid currentColor}
-.tag.new{color:var(--green)} .tag.upd{color:var(--cyan)} .tag.fix{color:var(--amber)} .tag.live{color:var(--green)}
-.lcars-bar{height:5px;border-radius:5px;flex:1;min-width:40px;background:linear-gradient(90deg,var(--accent),transparent)}
+  /* ── Main Container ── */
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+  }
 
-/* ---------- hero ---------- */
-.hero{padding:64px 0 30px;text-align:center}
-.hero h1{font-family:var(--font-display);font-weight:900;font-size:clamp(42px,9vw,96px);letter-spacing:.04em;line-height:1;
-  background:linear-gradient(180deg,#fff,var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 60px var(--cyan-glow)}
-.hero .role{font-family:var(--font-display);font-size:clamp(13px,2.4vw,18px);letter-spacing:.34em;color:var(--accent);margin-top:12px;text-shadow:0 0 16px var(--accent-glow)}
-.hero .sub{color:var(--text-dim);font-size:14px;letter-spacing:.08em;margin-top:8px;font-family:var(--font-mono)}
-.hero .pitch{max-width:780px;margin:26px auto 0;font-size:clamp(17px,2.6vw,22px);line-height:1.5}
-.hero .pitch b{color:var(--cyan);text-shadow:0 0 16px var(--cyan-glow)}
-.hero .kicker{font-family:var(--font-display);color:var(--green);letter-spacing:.18em;font-size:13px;margin-top:18px;text-shadow:0 0 14px rgba(0,255,159,.4);min-height:18px}
-.hero .kicker .cur{color:var(--cyan);animation:blink 1s step-end infinite}
-@keyframes blink{50%{opacity:0}}
-.cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:30px}
-.btn{font-family:var(--font-display);font-weight:700;font-size:13px;letter-spacing:.1em;padding:14px 26px;border-radius:var(--radius);
-  cursor:pointer;transition:all var(--dur) var(--ease);border:1px solid var(--glass-border);background:var(--glass);color:var(--text)}
-.btn.primary{background:linear-gradient(135deg,var(--accent),#ff6a00);color:#1a0e00;border:none;box-shadow:0 0 24px var(--accent-glow)}
-.btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 34px var(--accent-glow)}
-.btn.secondary:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 18px var(--cyan-glow)}
-.btn.ghost:hover{border-color:var(--purple);color:var(--purple);box-shadow:0 0 18px rgba(204,0,255,.35)}
+  /* ── Header ── */
+  .header {
+    text-align: center;
+    padding: 40px 20px 30px;
+    position: relative;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, transparent, var(--accent-gold), transparent);
+  }
+  .header-crest {
+    font-size: 48px;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 15px rgba(241,223,111,0.5));
+    animation: crestPulse 3s ease-in-out infinite;
+  }
+  @keyframes crestPulse {
+    0%,100% { filter: drop-shadow(0 0 15px rgba(241,223,111,0.5)); }
+    50% { filter: drop-shadow(0 0 30px rgba(241,223,111,0.9)); }
+  }
+  .header h1 {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: clamp(24px, 5vw, 36px);
+    font-weight: 400;
+    letter-spacing: 4px;
+    color: var(--accent-gold);
+    text-shadow: 0 0 30px rgba(241,223,111,0.4);
+    text-transform: uppercase;
+  }
+  .header .subtitle {
+    font-size: 12px;
+    letter-spacing: 6px;
+    color: var(--text-dim);
+    margin-top: 8px;
+    text-transform: uppercase;
+  }
+  .header .tagline {
+    font-size: 14px;
+    color: var(--accent-teal);
+    margin-top: 10px;
+    letter-spacing: 2px;
+    font-style: italic;
+  }
 
-/* ---------- stat ribbon ---------- */
-.ribbon-head{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;color:var(--text-dim);margin:26px 0 -8px;text-align:center;opacity:.95}
-.ribbon-head .b{color:var(--accent)}
-.ribbon{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:18px 0 30px;position:relative;z-index:30}
-.ribbon .cell{background:var(--surface-2);border:1px solid var(--glass-border);border-radius:var(--radius);padding:16px 10px;text-align:center;
-  backdrop-filter:blur(8px);position:relative;cursor:help;transition:all var(--dur) var(--ease)}
-.ribbon .cell:hover,.ribbon .cell:focus-visible{border-color:var(--cyan);box-shadow:0 0 18px var(--cyan-glow);transform:translateY(-2px);outline:none}
-.ribbon .num{font-family:var(--font-display);font-weight:900;font-size:clamp(22px,4vw,34px);color:var(--cyan);text-shadow:0 0 18px var(--cyan-glow)}
-.ribbon .lbl{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--text-dim);margin-top:4px;text-transform:uppercase}
-.ribbon .was{display:block;color:var(--text-dim);font-size:9px;opacity:.8}
-.ribbon .tip{position:absolute;left:50%;top:calc(100% + 10px);transform:translateX(-50%) translateY(-4px);width:min(240px,76vw);
-  background:var(--surface);border:1px solid var(--glass-border);border-left:3px solid var(--cyan);border-radius:10px;padding:11px 13px;z-index:60;
-  font-family:var(--font-body);font-size:12px;line-height:1.45;color:var(--text);text-align:left;box-shadow:0 12px 34px rgba(0,0,0,.6);
-  opacity:0;visibility:hidden;pointer-events:none;transition:opacity .22s var(--ease),transform .22s var(--ease)}
-.ribbon .tip b{display:block;font-family:var(--font-mono);font-size:9px;letter-spacing:.16em;color:var(--cyan);margin-bottom:5px;text-shadow:0 0 10px var(--cyan-glow)}
-.ribbon .cell:hover .tip,.ribbon .cell:focus-within .tip,.ribbon .cell:focus .tip{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
-.ribbon .cell:last-child .tip{left:auto;right:0;transform:translateX(0) translateY(-4px)}
-.ribbon .cell:last-child:hover .tip,.ribbon .cell:last-child:focus-within .tip{transform:translateX(0) translateY(0)}
+  /* ── Section ── */
+  .section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .section:hover {
+    border-color: var(--border-active);
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    background: var(--bg-card-alt);
+    border-bottom: 1px solid var(--border);
+  }
+  .section-header .bar {
+    height: 2px;
+    flex: 1;
+    border-radius: 1px;
+    background: linear-gradient(to right, var(--accent-gold), transparent);
+  }
+  .section-header .icon {
+    font-size: 18px;
+  }
+  .section-header h2 {
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--accent-gold);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .section-body {
+    padding: 16px 20px;
+  }
 
-/* ---------- LLM EVENT CHAIN (the showpiece) ---------- */
-.chain-intro{color:var(--text-dim);font-size:14px;max-width:780px;margin-bottom:8px}
-.chain-intro b{color:var(--cyan)}
-.evlog{font-family:var(--font-mono);font-size:12px;background:#06070c;border:1px solid var(--glass-border);border-radius:var(--radius);
-  padding:14px 16px;margin:14px 0 20px;height:172px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;line-height:1.7;box-shadow:inset 0 0 24px rgba(0,0,0,.6)}
-.evlog .ln{opacity:0;transform:translateY(4px);animation:logln .4s var(--ease) forwards}
-@keyframes logln{to{opacity:1;transform:none}}
-.evlog .t{color:var(--text-dim)} .evlog .ok{color:var(--green)} .evlog .rt{color:var(--cyan)} .evlog .wn{color:var(--amber)}
-.evlog .arrow{color:var(--accent)}
-.evlog .cur{color:var(--cyan);animation:blink 1s step-end infinite}
-.chain{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;position:relative}
-.chain .stage{background:var(--surface-2);border:1px solid var(--glass-border);border-radius:var(--radius);padding:14px 12px;text-align:center;
-  position:relative;transition:all .35s var(--ease)}
-.chain .stage .ic{font-size:20px;display:block;margin-bottom:6px}
-.chain .stage .nm{font-family:var(--font-display);font-size:11px;letter-spacing:.04em;color:var(--text)}
-.chain .stage .ds{font-family:var(--font-mono);font-size:9.5px;color:var(--text-dim);margin-top:4px;letter-spacing:.04em;line-height:1.3}
-.chain .stage.active{border-color:var(--cyan);box-shadow:0 0 22px var(--cyan-glow);transform:translateY(-3px)}
-.chain .stage.active .nm{color:var(--cyan);text-shadow:0 0 10px var(--cyan-glow)}
-.chain .conn{position:absolute;top:50%;right:-9px;width:10px;height:2px;background:var(--glass-border);z-index:1}
-.chain .stage.active .conn{background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
-@media(max-width:760px){.chain{grid-template-columns:repeat(2,1fr)} .chain .conn{display:none}}
+  /* ── Fleet Grid ── */
+  .fleet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 12px;
+  }
+  .fleet-node {
+    background: var(--bg-card-alt);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .fleet-node::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--accent-gold);
+    opacity: 0.6;
+  }
+  .node-name {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .node-ip {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: 'Consolas', 'Courier New', monospace;
+  }
+  .node-load {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 2px 10px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-family: 'Consolas', monospace;
+    letter-spacing: 1px;
+  }
+  .load-green { background: rgba(76,175,80,0.15); color: var(--accent-green); border: 1px solid rgba(76,175,80,0.3); }
+  .load-yellow { background: rgba(255,149,0,0.15); color: var(--accent-orange); border: 1px solid rgba(255,149,0,0.3); }
 
-/* ---------- INTERACTIVE TERMINAL ---------- */
-.term-intro{color:var(--text-dim);font-size:14px;max-width:780px;margin-bottom:12px}
-.term-intro b{color:var(--cyan)} .term-intro code{font-family:var(--font-mono);color:var(--green);background:var(--glass);padding:1px 6px;border-radius:5px;font-size:12px}
-.terminal{background:#05060a;border:1px solid var(--glass-border);border-radius:var(--radius);overflow:hidden;
-  box-shadow:0 10px 44px rgba(0,0,0,.6),inset 0 0 30px rgba(0,0,0,.5);font-family:var(--font-mono)}
-.term-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:linear-gradient(180deg,#11141d,#0a0c12);border-bottom:1px solid var(--glass-border)}
-.term-bar .dotr{width:11px;height:11px;border-radius:50%;display:inline-block}
-.term-bar .d1{background:#ff5f56} .term-bar .d2{background:#ffbd2e} .term-bar .d3{background:#27c93f}
-.term-bar .ttl{font-size:11px;letter-spacing:.1em;color:var(--text-dim);margin-left:6px}
-.term-bar .ttl b{color:var(--cyan)}
-.term-bar .hint{margin-left:auto;font-size:10px;color:var(--text-dim);letter-spacing:.06em}
-.term-body{padding:14px 16px;height:340px;overflow-y:auto;font-size:13px;line-height:1.6;color:var(--text);
-  scrollbar-width:thin;scrollbar-color:var(--glass-border) transparent}
-.term-body::-webkit-scrollbar{width:8px} .term-body::-webkit-scrollbar-thumb{background:var(--glass-border);border-radius:8px}
-.term-body .out{white-space:pre-wrap;word-break:break-word}
-.term-body .cmd-echo{color:var(--text)} .term-body .cmd-echo .pr{color:var(--green)} .term-body .cmd-echo .u{color:var(--cyan)}
-.term-body .ok{color:var(--green)} .term-body .rt{color:var(--cyan)} .term-body .wn{color:var(--amber)} .term-body .er{color:var(--red)}
-.term-body .dim{color:var(--text-dim)} .term-body .acc{color:var(--accent)} .term-body .eve{color:var(--purple)}
-.term-body .ascii{color:var(--cyan);font-size:11px;line-height:1.15;text-shadow:0 0 10px var(--cyan-glow);display:block;margin:2px 0 6px}
-.term-row{display:flex;align-items:center;gap:8px}
-.term-row .pr{color:var(--green);white-space:nowrap}
-.term-row .pr .u{color:var(--cyan)}
-#termInput{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:var(--font-mono);font-size:13px;caret-color:var(--cyan)}
-.term-foot{display:flex;flex-wrap:wrap;gap:6px;padding:10px 14px;border-top:1px solid var(--glass-border);background:#070810}
-.term-chip{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--text-dim);background:var(--glass);
-  border:1px solid var(--glass-border);border-radius:6px;padding:4px 10px;cursor:pointer;transition:all var(--dur) var(--ease)}
-.term-chip:hover{color:var(--cyan);border-color:var(--cyan);box-shadow:0 0 12px var(--cyan-glow)}
-.cursor-blink{animation:blink 1s step-end infinite;color:var(--cyan)}
+  /* ── Model Stack ── */
+  .model-stack {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+  }
+  .model-card {
+    background: var(--bg-card-alt);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    text-align: center;
+  }
+  .model-tier {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .model-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent-gold);
+    margin-bottom: 4px;
+  }
+  .model-role {
+    font-size: 11px;
+    color: var(--accent-teal);
+  }
+  .model-price {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 4px;
+    font-family: 'Consolas', monospace;
+  }
 
-/* ---------- metric grid ---------- */
-.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.metric{background:var(--surface-2);border:1px solid var(--glass-border);border-radius:var(--radius);padding:18px;text-align:center}
-.metric .num{font-family:var(--font-display);font-weight:700;font-size:clamp(20px,3.4vw,30px);color:var(--green);text-shadow:0 0 16px rgba(0,255,159,.4)}
-.metric .lbl{font-family:var(--font-mono);font-size:11px;color:var(--text-dim);margin-top:4px;letter-spacing:.08em}
-.metric .note{font-size:10px;color:var(--text-dim);opacity:.8}
-.live-dot{color:var(--green);animation:pulse 1.6s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:.25}50%{opacity:1}}
-.metric .num.flash{color:#fff}
+  /* ── Stats Row ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+  }
+  .stat-card {
+    background: var(--bg-card-alt);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px;
+    text-align: center;
+  }
+  .stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent-gold);
+    font-family: 'Georgia', serif;
+    text-shadow: 0 0 15px rgba(241,223,111,0.3);
+  }
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
 
-/* release notes */
-.rn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:14px}
-.rn-grid .c{background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius);padding:10px 12px}
-.rn-grid .c .k{font-family:var(--font-mono);font-size:9px;letter-spacing:.14em;color:var(--text-dim)}
-.rn-grid .c .v{font-family:var(--font-display);font-size:13px;color:var(--amber);margin-top:3px}
-.burn{font-family:var(--font-display);font-size:clamp(22px,5vw,38px);color:var(--green);text-shadow:0 0 20px rgba(0,255,159,.4)}
-.burn small{font-size:13px;color:var(--text-dim)}
+  /* ── Capability Table ── */
+  .cap-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .cap-table th {
+    text-align: left;
+    padding: 8px 12px;
+    color: var(--accent-teal);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .cap-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .cap-table tr:hover td {
+    background: rgba(241,223,111,0.03);
+  }
+  .status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+  }
+  .dot-green { background: var(--accent-green); box-shadow: 0 0 8px rgba(76,175,80,0.6); }
+  .dot-teal { background: var(--accent-teal); box-shadow: 0 0 8px rgba(79,195,247,0.6); }
 
-/* ---------- TOPOLOGY ---------- */
-.topo-legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--text-dim);margin-bottom:12px}
-.topo-legend span{display:inline-flex;align-items:center;gap:6px}
-.topo-legend i{width:9px;height:9px;border-radius:50%;display:inline-block}
-.lg-on{background:var(--green);box-shadow:0 0 8px var(--green)}
-.lg-deg{background:var(--amber);box-shadow:0 0 8px var(--amber)}
-#topoSvg{width:100%;height:auto;display:block;border-radius:var(--radius);background:radial-gradient(circle at 50% 40%,rgba(0,249,255,.04),transparent 70%)}
-.node-g{cursor:pointer}
-.node-g circle.body{transition:all .3s var(--ease)}
-.node-g:hover circle.body{stroke:var(--cyan);stroke-width:2}
-.node-label{font-family:var(--font-mono);font-size:10px;fill:var(--text);letter-spacing:.04em}
-.cluster-ring{fill:none;stroke-dasharray:4 6;opacity:.5}
-.cluster-cap{font-family:var(--font-display);font-size:11px;letter-spacing:.18em;font-weight:700}
-.topo-readout{margin-top:14px;font-family:var(--font-mono);font-size:12px;color:var(--text-dim);background:var(--glass);
-  border:1px solid var(--glass-border);border-left:3px solid var(--cyan);border-radius:10px;padding:11px 14px;min-height:42px}
-.topo-readout b{color:var(--cyan);font-size:10px;letter-spacing:.14em;display:block;margin-bottom:4px}
-.topo-readout .ok{color:var(--green)} .topo-readout .warn{color:var(--amber)}
+  /* ── Terminal Window ── */
+  .terminal {
+    background: #000;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 12px;
+  }
+  .terminal-bar {
+    background: #111;
+    padding: 6px 12px;
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .terminal-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+  .td-red { background: #ff5f57; }
+  .td-yellow { background: #ffbd2e; }
+  .td-green { background: #28c840; }
+  .terminal-body {
+    padding: 12px 16px;
+    color: var(--accent-green);
+    line-height: 1.8;
+  }
+  .terminal-body .prompt { color: var(--accent-gold); }
+  .terminal-body .cmd { color: var(--text-primary); }
+  .terminal-body .output { color: var(--text-dim); }
+  .terminal-body .highlight { color: var(--accent-teal); }
+  .cursor {
+    display: inline-block;
+    width: 8px; height: 14px;
+    background: var(--accent-green);
+    animation: blink 1s step-end infinite;
+    vertical-align: middle;
+    margin-left: 2px;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-/* ---------- tables ---------- */
-.tbl-scroll{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
-th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--glass-border)}
-th{font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;color:var(--text-dim);text-transform:uppercase}
-tbody tr{transition:background var(--dur) var(--ease)}
-tbody tr:hover{background:var(--glass)}
-.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
-.dot.on{background:var(--green);box-shadow:0 0 8px var(--green)}
-.dot.deg{background:var(--amber);box-shadow:0 0 8px var(--amber)}
-.dot.emr{background:var(--red);box-shadow:0 0 8px var(--red)}
-.pill{font-family:var(--font-mono);font-size:10px;padding:2px 8px;border-radius:12px;border:1px solid var(--glass-border)}
-.pill.new{color:var(--green);border-color:var(--green)}
-.mono{font-family:var(--font-mono)} .free{color:var(--green)} .burning{color:var(--accent)}
-.prio{display:inline-block;width:20px;height:20px;line-height:20px;text-align:center;border-radius:5px;background:var(--glass);border:1px solid var(--glass-border);color:var(--cyan);font-family:var(--font-mono);font-weight:600;font-size:11px}
-.arrow{color:var(--accent);font-family:var(--font-mono)}
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--text-dim);
+    font-size: 11px;
+    letter-spacing: 2px;
+    border-top: 1px solid var(--border);
+    margin-top: 10px;
+  }
+  .footer .quote {
+    color: var(--accent-gold);
+    font-style: italic;
+    font-family: 'Georgia', serif;
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
 
-/* ---------- module cards ---------- */
-.mods{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
-.mod{background:var(--surface-2);border:1px solid var(--glass-border);border-radius:var(--radius);padding:18px;transition:all var(--dur) var(--ease)}
-.mod:hover{border-color:var(--cyan);box-shadow:0 0 20px var(--cyan-glow);transform:translateY(-3px)}
-.mod h3{font-family:var(--font-display);font-size:15px;margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.mod h3 .ct{margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--cyan)}
-.mod .ico{font-size:22px;margin-bottom:6px;display:block}
-.mod ul{list-style:none;margin-top:8px}
-.mod li{font-size:13px;color:var(--text-dim);padding-left:16px;position:relative;margin:4px 0}
-.mod li::before{content:"\25B8";position:absolute;left:0;color:var(--accent)}
-.mod li b{color:var(--text);font-weight:500}
-.beforeafter{margin-top:10px;font-family:var(--font-mono);font-size:11px}
-.beforeafter .b{color:var(--text-dim)} .beforeafter .a{color:var(--green)}
+  /* ── Glow Line ── */
+  .glow-line {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--accent-gold), transparent);
+    margin: 6px 0;
+    opacity: 0.4;
+  }
 
-/* ---------- timeline ---------- */
-.tl{position:relative;padding-left:24px}
-.tl::before{content:"";position:absolute;left:6px;top:4px;bottom:4px;width:2px;background:linear-gradient(180deg,var(--accent),var(--purple))}
-.tl-item{position:relative;margin-bottom:20px}
-.tl-item::before{content:"";position:absolute;left:-21px;top:5px;width:11px;height:11px;border-radius:50%;background:var(--void);border:2px solid var(--accent);box-shadow:0 0 10px var(--accent-glow)}
-.tl-item.cur::before{background:var(--accent);box-shadow:0 0 16px var(--accent)}
-.tl-item .date{font-family:var(--font-mono);font-size:11px;color:var(--accent);letter-spacing:.1em}
-.tl-item h3{font-family:var(--font-display);font-size:15px;margin:3px 0 5px}
-.tl-item p{font-size:14px;color:var(--text-dim)}
+  /* ── Pulse Ring ── */
+  @keyframes pulseRing {
+    0% { box-shadow: 0 0 0 0 rgba(241,223,111,0.4); }
+    70% { box-shadow: 0 0 0 12px rgba(241,223,111,0); }
+    100% { box-shadow: 0 0 0 0 rgba(241,223,111,0); }
+  }
+  .pulse-indicator {
+    display: inline-block;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent-green);
+    animation: pulseRing 2s infinite;
+    margin-right: 8px;
+  }
 
-/* ---------- philosophy ---------- */
-.phil{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
-.phil .card{background:var(--surface-2);border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:22px}
-.phil h3{font-family:var(--font-display);font-size:17px;margin-bottom:8px}
-.phil .q{font-style:italic;color:var(--cyan);border-left:3px solid var(--cyan);padding-left:12px;margin:10px 0;text-shadow:0 0 12px var(--cyan-glow)}
-.phil p{font-size:14px;color:var(--text-dim)}
-.creds{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:20px}
-.cred{font-family:var(--font-mono);font-size:12px;padding:6px 12px;border-radius:20px;border:1px solid var(--glass-border);color:var(--text-dim)}
-.cred.hl{color:var(--green);border-color:var(--green)}
+  /* ── Data Flow Animation ── */
+  @keyframes dataFlow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+  .data-stream {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-teal), transparent);
+    background-size: 200% 100%;
+    animation: dataFlow 3s linear infinite;
+    margin: 8px 0;
+    opacity: 0.5;
+  }
 
-/* ---------- CASHIO DESIGN DOCTRINE ---------- */
-.doctrine{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.dlaw{background:var(--surface-2);border:1px solid var(--glass-border);border-radius:var(--radius);padding:18px 18px 16px;position:relative;
-  display:flex;flex-direction:column;transition:all var(--dur) var(--ease);overflow:hidden}
-.dlaw::after{content:attr(data-n);position:absolute;right:10px;top:2px;font-family:var(--font-display);font-weight:900;font-size:54px;
-  color:var(--glass-highlight);opacity:.5;line-height:1;pointer-events:none}
-.dlaw:hover{border-color:var(--amber);box-shadow:0 0 22px rgba(255,204,0,.22);transform:translateY(-3px)}
-.dlaw .no{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;color:var(--amber)}
-.dlaw h3{font-family:var(--font-display);font-size:15px;letter-spacing:.04em;color:var(--text);margin:5px 0 7px;min-height:2.4em;display:flex;align-items:flex-start}
-.dlaw p{font-size:13px;color:var(--text-dim);line-height:1.55}
-.dlaw .src{display:block;margin-top:auto;padding-top:12px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;color:var(--text-dim);
-  border-top:1px solid var(--glass-border);opacity:.85}
-.dlaw .src b{color:var(--cyan)}
-@media(max-width:880px){.doctrine{grid-template-columns:repeat(2,1fr)} .dlaw h3{min-height:0}}
-@media(max-width:560px){.doctrine{grid-template-columns:1fr}}
-/* ---------- CHANGELOG / VERSION DELTA ---------- */
-.cl-intro{color:var(--text-dim);font-size:14px;max-width:820px;margin-bottom:18px}
-.cl-intro b{color:var(--cyan)}
-.cl-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
-.cl-stat{background:var(--surface-2);border:1px solid var(--glass-border);border-radius:var(--radius);padding:14px 12px;text-align:center;
-  position:relative;overflow:hidden;transition:all var(--dur) var(--ease)}
-.cl-stat:hover{border-color:var(--green);box-shadow:0 0 18px rgba(0,255,159,.25);transform:translateY(-2px)}
-.cl-stat .d{font-family:var(--font-display);font-weight:900;font-size:clamp(20px,4vw,30px);color:var(--green);text-shadow:0 0 16px rgba(0,255,159,.4)}
-.cl-stat .l{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;color:var(--text-dim);margin-top:4px;text-transform:uppercase}
-.cl-stat .was{display:block;font-family:var(--font-mono);font-size:9px;color:var(--text-dim);opacity:.7;margin-top:2px}
-@media(max-width:620px){.cl-summary{grid-template-columns:repeat(2,1fr)}}
-.cl-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-.cl-card{background:var(--surface-2);border:1px solid var(--glass-border);border-radius:var(--radius);padding:16px 18px;transition:all var(--dur) var(--ease)}
-.cl-card:hover{border-color:var(--cyan);box-shadow:0 0 18px var(--cyan-glow);transform:translateY(-2px)}
-.cl-card h3{font-family:var(--font-display);font-size:13px;letter-spacing:.06em;margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.cl-card.added h3{color:var(--green)} .cl-card.changed h3{color:var(--cyan)} .cl-card.hardened h3{color:var(--amber)} .cl-card.removed h3{color:var(--red)}
-.cl-card ul{list-style:none}
-.cl-card li{font-family:var(--font-mono);font-size:12px;color:var(--text-dim);padding-left:18px;position:relative;margin:6px 0;line-height:1.5}
-.cl-card li b{color:var(--text);font-weight:500}
-.cl-card.added li::before{content:"+";position:absolute;left:0;color:var(--green);font-weight:700}
-.cl-card.changed li::before{content:"~";position:absolute;left:0;color:var(--cyan);font-weight:700}
-.cl-card.hardened li::before{content:"\1F6E1";position:absolute;left:0;font-size:10px}
-.cl-card.removed li::before{content:"\2212";position:absolute;left:0;color:var(--red);font-weight:700}
-.cl-foot{margin-top:18px;text-align:center;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--text-dim)}
-.cl-foot .on{color:var(--green)} .cl-foot a{color:var(--cyan)}
-.doctrine-creed{margin-top:18px;text-align:center;font-family:var(--font-display);font-size:clamp(13px,2.2vw,16px);letter-spacing:.1em;
-  color:var(--amber);text-shadow:0 0 16px rgba(255,204,0,.3)}
-
-/* ---------- footer ---------- */
-footer{text-align:center;padding:40px 0 56px;color:var(--text-dim);font-family:var(--font-mono);font-size:12px}
-footer .tagline{color:var(--amber);margin-top:8px;letter-spacing:.08em}
-
-/* ---------- RED ALERT ---------- */
-body.red-alert::before{content:"";position:fixed;inset:0;z-index:60;pointer-events:none;box-shadow:inset 0 0 160px 30px rgba(255,0,51,.55);animation:redpulse 1.1s ease-in-out infinite}
-@keyframes redpulse{0%,100%{opacity:.35}50%{opacity:.9}}
-body.red-alert .hud-stat .v{color:var(--red)!important;text-shadow:0 0 12px rgba(255,0,51,.6)!important}
-
-/* ---------- WARP ---------- */
-#warp{position:fixed;inset:0;z-index:70;pointer-events:none;opacity:0;background:radial-gradient(circle at center,transparent 0%,rgba(0,249,255,.0) 30%,rgba(255,255,255,.95) 100%)}
-#warp.go{animation:warp .6s var(--ease)}
-@keyframes warp{0%{opacity:0;transform:scale(2.4)}40%{opacity:1}100%{opacity:0;transform:scale(1)}}
-
-a:focus-visible,button:focus-visible,.btn:focus-visible{outline:none;box-shadow:0 0 0 2px var(--void),0 0 0 4px var(--cyan),0 0 20px var(--cyan-glow)}
-
-@media(max-width:760px){
-  .ribbon{grid-template-columns:repeat(2,1fr)}
-  .metrics{grid-template-columns:repeat(2,1fr)}
-  .phil{grid-template-columns:1fr}
-  .hud-stat:nth-child(n+4){display:none}
-  body{font-size:16px}
-}
-@media(max-width:480px){.ribbon{grid-template-columns:1fr 1fr}.metrics{grid-template-columns:1fr}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important;transition-duration:.01ms!important}body::after{animation:none}#starfield{display:none}}
+  /* Responsive */
+  @media (max-width: 600px) {
+    .container { padding: 10px; }
+    .header h1 { font-size: 22px; letter-spacing: 2px; }
+    .fleet-grid, .model-stack { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .stat-value { font-size: 22px; }
+  }
 </style>
 </head>
 <body>
-<a class="skip-link" href="#main">Skip to content</a>
-<div id="scrollbar" aria-hidden="true"></div>
-<canvas id="starfield" aria-hidden="true"></canvas>
-<div id="warp" aria-hidden="true"></div>
 
-<!-- ===================== BOOT ===================== -->
-<div id="boot" role="status" aria-label="System boot sequence">
-  <div class="logo">ZEUSAPOLLO</div>
-  <div class="blines" id="bootLines"></div>
-  <div class="barouter"><div class="barinner" id="bootBar"></div></div>
-  <div class="skip" id="bootSkip" tabindex="0" role="button">SKIP ▸ ENTER COMMAND DECK</div>
+<canvas id="starfield"></canvas>
+
+<div class="container">
+
+  <!-- ═══ HEADER ═══ -->
+  <div class="header">
+    <div class="header-crest">🏛️</div>
+    <h1>House Cashio</h1>
+    <div class="subtitle">Sovereign AI Infrastructure</div>
+    <div class="tagline">"The Golden Path holds steady."</div>
+  </div>
+
+  <div class="data-stream"></div>
+
+  <!-- ═══ FLEET STATUS ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="icon">🖥️</span>
+      <h2>ZeusApollo Fleet</h2>
+      <span class="bar"></span>
+      <span class="pulse-indicator"></span>
+      <span style="font-size:11px;color:var(--accent-green);letter-spacing:1px;">ALL SYSTEMS NOMINAL</span>
+    </div>
+    <div class="section-body">
+      <div class="fleet-grid">
+        <div class="fleet-node">
+          <div class="node-name">⚡ Apollo</div>
+          <div class="node-ip">192.168.1.30 · Proxmox VE 8</div>
+          <div>7 CTs + 1 VM · AdGuard, Hermes, Media, PBS</div>
+          <span class="node-load load-green">⦿ KERNEL 7.0.6-2</span>
+        </div>
+        <div class="fleet-node">
+          <div class="node-name">⚡ Zeus</div>
+          <div class="node-ip">192.168.1.31 · Proxmox VE 8</div>
+          <div>10 CTs + 1 VM · Agent, MCP Gateway, Wazuh</div>
+          <span class="node-load load-green">⦿ KERNEL 7.0.6-2</span>
+        </div>
+        <div class="fleet-node">
+          <div class="node-name">🔷 Atlas</div>
+          <div class="node-ip">192.168.1.78 · Mac Mini M4</div>
+          <div>Edge AI · MLX inference · LiteLLM proxy</div>
+          <span class="node-load load-green">⦿ ONLINE</span>
+        </div>
+        <div class="fleet-node">
+          <div class="node-name">🍷 Dionysus</div>
+          <div class="node-ip">192.168.1.77 · Unraid</div>
+          <div>NAS · Docker host · Media services</div>
+          <span class="node-load load-green">⦿ ONLINE</span>
+        </div>
+        <div class="fleet-node">
+          <div class="node-name">🛡️ Argus</div>
+          <div class="node-ip">192.168.1.177 · Security Appliance</div>
+          <div>Network monitoring · Threat detection</div>
+          <span class="node-load load-green">⦿ ONLINE</span>
+        </div>
+        <div class="fleet-node">
+          <div class="node-name">💻 CashioTUF</div>
+          <div class="node-ip">192.168.1.116 · Windows 11</div>
+          <div>GPU compute · Google Antigravity · Spark</div>
+          <span class="node-load load-green">⦿ ONLINE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ VITAL STATISTICS ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="icon">📊</span>
+      <h2>Fleet Vitals</h2>
+      <span class="bar"></span>
+    </div>
+    <div class="section-body">
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-value">17</div>
+          <div class="stat-label">Active Nodes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">23</div>
+          <div class="stat-label">Cron Agents</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">8</div>
+          <div class="stat-label">MCP Servers</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">100<span style="font-size:16px">+</span></div>
+          <div class="stat-label">AI Skills</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">~20<span style="font-size:16px">TB</span></div>
+          <div class="stat-label">Storage</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">99.9<span style="font-size:16px">%</span></div>
+          <div class="stat-label">Uptime</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ AI MODEL STACK ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="icon">🧠</span>
+      <h2>AI Model Routing Fabric</h2>
+      <span class="bar"></span>
+    </div>
+    <div class="section-body">
+      <div class="model-stack">
+        <div class="model-card">
+          <div class="model-tier">Tier 1 · Primary</div>
+          <div class="model-name">Gemini 3.1 Pro</div>
+          <div class="model-role">Conversation & Reasoning</div>
+          <div class="model-price">FREE · Google AI Ultra</div>
+        </div>
+        <div class="model-card">
+          <div class="model-tier">Tier 2 · Reasoning</div>
+          <div class="model-name">Claude Opus 4.8</div>
+          <div class="model-role">Complex Analysis & Coding</div>
+          <div class="model-price">58% DeepSWE Score</div>
+        </div>
+        <div class="model-card">
+          <div class="model-tier">Tier 3 · Vision</div>
+          <div class="model-name">Grok 4.3</div>
+          <div class="model-role">Image Analysis & Vision</div>
+          <div class="model-price">xAI API</div>
+        </div>
+        <div class="model-card">
+          <div class="model-tier">Tier 4 · Auxiliary</div>
+          <div class="model-name">DeepSeek V4 Flash</div>
+          <div class="model-role">Background & Batch Tasks</div>
+          <div class="model-price">$0.14 / $0.28 per MTok</div>
+        </div>
+        <div class="model-card">
+          <div class="model-tier">Tier 5 · Compression</div>
+          <div class="model-name">Gemini 3.5 Flash</div>
+          <div class="model-role">Extract & Summarize</div>
+          <div class="model-price">FREE · Google AI Ultra</div>
+        </div>
+        <div class="model-card" style="border-color:rgba(255,149,0,0.4);">
+          <div class="model-tier">On-Demand · Coding</div>
+          <div class="model-name">GPT-5.5 High</div>
+          <div class="model-role">Codex CLI · Autonomous Coding</div>
+          <div class="model-price">$5 / $30 per MTok</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ CAPABILITIES ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="icon">⚙️</span>
+      <h2>Autonomous Capabilities</h2>
+      <span class="bar"></span>
+    </div>
+    <div class="section-body" style="padding:0;">
+      <table class="cap-table">
+        <thead>
+          <tr><th>Capability</th><th>Provider</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Hermes Agent</strong> — Sovereign AI assistant</td>
+            <td>CT-105 · Custom</td>
+            <td><span class="status-dot dot-green"></span>Active</td>
+          </tr>
+          <tr>
+            <td><strong>Codex CLI</strong> — Autonomous coding agent</td>
+            <td>OpenAI GPT-5.5 High</td>
+            <td><span class="status-dot dot-teal"></span>Funded · $29.89</td>
+          </tr>
+          <tr>
+            <td><strong>Image Generation</strong> — FAL AI</td>
+            <td>Flux Pro · Nous</td>
+            <td><span class="status-dot dot-green"></span>Active</td>
+          </tr>
+          <tr>
+            <td><strong>Text-to-Speech</strong> — Eve Voice</td>
+            <td>xAI TTS · British synth</td>
+            <td><span class="status-dot dot-green"></span>Active</td>
+          </tr>
+          <tr>
+            <td><strong>Browser Automation</strong></td>
+            <td>Kernel · Playwright</td>
+            <td><span class="status-dot dot-green"></span>Active</td>
+          </tr>
+          <tr>
+            <td><strong>Web Search</strong> — Multi-provider</td>
+            <td>Exa · Tavily · Serper</td>
+            <td><span class="status-dot dot-green"></span>Active</td>
+          </tr>
+          <tr>
+            <td><strong>Email Triage</strong> — 24/7</td>
+            <td>Spark · Google Antigravity</td>
+            <td><span class="status-dot dot-green"></span>Active</td>
+          </tr>
+          <tr>
+            <td><strong>Mentat Briefings</strong> — 2× daily</td>
+            <td>DeepSeek V4 Pro · cron</td>
+            <td><span class="status-dot dot-green"></span>Active</td>
+          </tr>
+          <tr>
+            <td><strong>Proxmox Fleet Control</strong></td>
+            <td>MCP · SSH</td>
+            <td><span class="status-dot dot-green"></span>Active</td>
+          </tr>
+          <tr>
+            <td><strong>Home Assistant</strong> — Smart home</td>
+            <td>HA VM-120 · MCP</td>
+            <td><span class="status-dot dot-green"></span>Active</td>
+          </tr>
+          <tr>
+            <td><strong>GitHub Management</strong></td>
+            <td>MCP · gh CLI</td>
+            <td><span class="status-dot dot-green"></span>Active</td>
+          </tr>
+          <tr>
+            <td><strong>Google Meet Assistant</strong></td>
+            <td>Headless Chromium</td>
+            <td><span class="status-dot dot-teal"></span>Ready</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══ LIVE TERMINAL ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="icon">⌨️</span>
+      <h2>Hermes Command Interface</h2>
+      <span class="bar"></span>
+    </div>
+    <div class="section-body" style="padding:0;">
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="terminal-dot td-red"></span>
+          <span class="terminal-dot td-yellow"></span>
+          <span class="terminal-dot td-green"></span>
+          <span style="color:var(--text-dim);font-size:11px;margin-left:8px;">hermes@ct-105 — sovereign session</span>
+        </div>
+        <div class="terminal-body">
+          <div><span class="prompt">hermes@zeusapollo:~$</span> <span class="cmd">fleet status</span></div>
+          <div><span class="output">⟳ Scanning ZeusApollo cluster...</span></div>
+          <div><span class="output">  Apollo (.30):</span> <span class="highlight">7 CTs + 1 VM</span> <span class="output">— All running</span></div>
+          <div><span class="output">  Zeus (.31):</span> <span class="highlight">10 CTs + 1 VM</span> <span class="output">— All running</span></div>
+          <div><span class="output">  Atlas (.78):</span> <span class="highlight">Online</span> <span class="output">— MLX idle, LiteLLM standby</span></div>
+          <div><span class="output">  Dionysus (.77):</span> <span class="highlight">Online</span> <span class="output">— 42TB array healthy</span></div>
+          <div><span class="output">  Dashboards:</span> <span class="highlight">:9119 OK · :8753 OK · :8080 OK</span></div>
+          <div><span class="output">  Backups:</span> <span class="highlight">&lt;24h ✅</span> <span class="output">— All 11 jobs verified</span></div>
+          <div><span class="output">  </span></div>
+          <div><span class="prompt">hermes@zeusapollo:~$</span> <span class="cmd">model status</span></div>
+          <div><span class="output">  Primary:</span> <span class="highlight">Gemini 3.1 Pro</span> <span class="output">— FREE (Google Ultra)</span></div>
+          <div><span class="output">  Reasoning:</span> <span class="highlight">Claude Opus 4.8</span> <span class="output">— 58% DeepSWE</span></div>
+          <div><span class="output">  Coding:</span> <span class="highlight">GPT-5.5 High</span> <span class="output">— $29.89 balance</span></div>
+          <div><span class="output">  </span></div>
+          <div><span class="prompt">hermes@zeusapollo:~$</span><span class="cursor"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FOOTER ═══ -->
+  <div class="footer">
+    <div class="glow-line"></div>
+    <div class="quote">"The mystery of life isn't a problem to solve, but a reality to experience."</div>
+    <div style="margin-top:8px;">— Computed by Eve, Ixian Techno-Mentat of House Cashio</div>
+    <div style="margin-top:4px;opacity:0.6;">ZeusApollo · v28 · June 2026</div>
+    <div class="data-stream"></div>
+    <div style="margin-top:4px;font-size:10px;">
+      <span class="pulse-indicator" style="width:6px;height:6px;animation:pulseRing 2.5s infinite;"></span>
+      FLEET SOVEREIGN · 17 NODES · 23 CRON AGENTS · 8 MCP · MULTI-MODEL ROUTING
+    </div>
+  </div>
+
 </div>
 
-<!-- ===================== HUD ===================== -->
-<header class="hud">
-  <div class="hud-inner">
-    <div class="hud-stat"><span class="k">STARDATE</span><span class="v">26147.6</span></div>
-    <div class="hud-stat"><span class="k">OPS CLOCK</span><span class="v" id="clock">--:--:--</span></div>
-    <div class="hud-stat"><span class="k">CLUSTER</span><span class="v warp">● MAX WARP</span></div>
-    <div class="hud-stat"><span class="k">UPTIME</span><span class="v" id="uptime">5d 4h</span></div>
-    <div class="hud-stat"><span class="k">LLM BRIDGE</span><span class="v">MINIMAX M3</span></div>
-    <div class="hud-spacer"></div>
-    <button class="hud-btn alert" id="btnAlert" aria-pressed="false">⚠ RED ALERT</button>
-    <button class="hud-btn engage" id="btnEngage">▶ ENGAGE</button>
-    <button class="hud-toggle" id="btnAudio" aria-pressed="false" aria-label="Sound off — click to enable" title="Sound: OFF">🔇</button>
-  </div>
-</header>
-
-<main class="wrap" id="main">
-
-  <!-- ===================== HERO ===================== -->
-  <section class="hero" aria-labelledby="heroName">
-    <h1 id="heroName">DOUG CASHIO</h1>
-    <div class="role">ENTERPRISE AI &amp; CYBERSECURITY</div>
-    <div class="sub">Principal Solutions Consultant · Sovereign Infrastructure · Multi-Model Orchestration</div>
-    <p class="pitch">I cut AI inference costs <b>7.2×</b> by building a sovereign infrastructure — not renting vendor lock-in. A <b>19-node homelab</b> where every model, route, and backup is deployed, documented, and battle-tested.</p>
-    <div class="kicker" id="kicker"></div>
-    <div class="cta-row">
-      <a class="btn primary" href="#chain">◎ THE LLM CHAIN →</a>
-      <a class="btn secondary" href="#topology">LIVE TOPOLOGY</a>
-      <a class="btn ghost" href="#changelog">⟳ CHANGELOG</a>
-    </div>
-  </section>
-
-  <!-- ===================== STAT RIBBON ===================== -->
-  <div class="ribbon-head"><span class="b">◈</span> INSTRUMENT READOUTS — hover or tap any panel for detail</div>
-  <section class="ribbon" aria-label="Key statistics — hover or focus each panel for an explanation">
-    <div class="cell" tabindex="0" aria-label="Roughly four years of hands-on LLM operations.">
-      <div class="num" data-count="4" data-prefix="~">~4</div><div class="lbl">Years LLM Ops</div>
-      <div class="tip" role="tooltip"><b>◈ FLIGHT READOUT</b>Hands-on years running large language models in production — routing traffic, controlling cost, keeping them reliable.</div></div>
-    <div class="cell" tabindex="0" aria-label="Nineteen guests across the ZeusApollo homelab.">
-      <div class="num" data-count="19">19</div><div class="lbl">Fleet Nodes</div>
-      <div class="tip" role="tooltip"><b>◈ FLEET STATUS</b>Guests across the ZeusApollo Proxmox cluster — compute, storage, networking, security, and monitoring.</div></div>
-    <div class="cell" tabindex="0" aria-label="Six models fronted by the MiniMax M3 bridge.">
-      <div class="num">6+1</div><div class="lbl">Model Fabric<span class="was">MiniMax M3 bridge</span></div>
-      <div class="tip" role="tooltip"><b>◈ PAYLOAD</b>Six task models — primary, reasoning, vision, deep analysis, background, compression — all fronted by the MiniMax M3 bridge and routed through one sovereign gateway.</div></div>
-    <div class="cell" tabindex="0" aria-label="Over fifteen years in enterprise IT and cybersecurity.">
-      <div class="num" data-count="15" data-suffix="+">15+</div><div class="lbl">Yrs Enterprise</div>
-      <div class="tip" role="tooltip"><b>◈ SERVICE RECORD</b>Years in enterprise IT and cybersecurity, supporting large-scale, mission-critical environments.</div></div>
-    <div class="cell" tabindex="0" aria-label="Nineteen automated cron jobs running fully autonomous ops.">
-      <div class="num" data-count="19">19</div><div class="lbl">Crons Active<span class="was">(was 3)</span></div>
-      <div class="tip" role="tooltip"><b>◈ AUTOPILOT</b>Automated scheduled jobs running briefings, backups, watchdogs, and balance tracking — fully autonomous.</div></div>
-  </section>
-
-  <!-- ===================== LLM EVENT CHAIN (showpiece) ===================== -->
-  <section class="panel cyan" id="chain" aria-labelledby="chHead">
-    <div class="sec-head"><span aria-hidden="true">🧠</span><h2 id="chHead">THE LLM EVENT CHAIN</h2><span class="tag live">● LIVE TRACE</span><span class="lcars-bar"></span></div>
-    <p class="chain-intro">When an event fires — a Discord command, a cron briefing, an inbound email — it doesn't hit one model. It flows through a <b>routed pipeline</b>: classify, route to the right model by cost and capability, execute tools, verify, then deliver. Watch a real request trace through the fabric:</p>
-    <div class="evlog" id="evlog" aria-live="polite"></div>
-    <div class="chain" id="chainStages">
-      <div class="stage" data-k="ingest"><span class="ic" aria-hidden="true">📡</span><div class="nm">INGEST</div><div class="ds">Discord · Email · Cron · API</div><span class="conn"></span></div>
-      <div class="stage" data-k="route"><span class="ic" aria-hidden="true">🧭</span><div class="nm">ROUTE</div><div class="ds">Classify by cost + capability</div><span class="conn"></span></div>
-      <div class="stage" data-k="exec"><span class="ic" aria-hidden="true">⚙️</span><div class="nm">EXECUTE</div><div class="ds">Model + MCP tools</div><span class="conn"></span></div>
-      <div class="stage" data-k="verify"><span class="ic" aria-hidden="true">🛡️</span><div class="nm">VERIFY</div><div class="ds">Guardrails + fallback</div><span class="conn"></span></div>
-      <div class="stage" data-k="deliver"><span class="ic" aria-hidden="true">🚀</span><div class="nm">DELIVER</div><div class="ds">Voice · Discord · Action</div></div>
-    </div>
-  </section>
-
-  <!-- ===================== INTERACTIVE TERMINAL (showpiece) ===================== -->
-  <section class="panel green" id="console" aria-labelledby="conHead">
-    <div class="sec-head"><span aria-hidden="true">⌨️</span><h2 id="conHead">HERMES CONSOLE — LIVE ACCESS</h2><span class="tag live">● INTERACTIVE</span><span class="lcars-bar"></span></div>
-    <p class="term-intro">This isn't a screenshot. It's a working console wired to the fleet's public readouts. Type <code>help</code> to see commands, or <code>ask eve …</code> to query the Mentat. Try <code>status</code>, <code>fleet</code>, <code>models</code>.</p>
-    <div class="terminal">
-      <div class="term-bar"><span class="dotr d1"></span><span class="dotr d2"></span><span class="dotr d3"></span>
-        <span class="ttl"><b>guest@cashio.us</b> — hermes://command-deck</span>
-        <span class="hint">↑↓ history · Tab complete</span></div>
-      <div class="term-body" id="termBody" tabindex="0" role="log" aria-live="polite" aria-label="Interactive console output"></div>
-      <div class="term-foot" id="termChips"></div>
-    </div>
-  </section>
-
-  <!-- ===================== RELEASE NOTES ===================== -->
-  <section class="panel" aria-labelledby="rnHead">
-    <div class="sec-head"><span aria-hidden="true">🚀</span><h2 id="rnHead">RELEASE NOTES</h2><span class="tag new">NEW</span><span class="lcars-bar"></span></div>
-    <div class="rn-grid">
-      <div class="c"><div class="k">STARDATE</div><div class="v">26147.6</div></div>
-      <div class="c"><div class="k">RELEASE</div><div class="v">v26 "GOLDEN PATH"</div></div>
-      <div class="c"><div class="k">CMDR</div><div class="v">D. CASHIO</div></div>
-      <div class="c"><div class="k">CLASS</div><div class="v">MAXIMUM WARP</div></div>
-      <div class="c"><div class="k">STATUS</div><div class="v" style="color:var(--green)">● ALL NOMINAL</div></div>
-    </div>
-    <p style="color:var(--text-dim);font-size:14px">19 guests live across the ZeusApollo cluster. 8-core Hermes agent, 8 MCP servers, Omnius crew bridge online. Gemini Spark email/calendar delegation. Gateway hardened — CPU limits, file-descriptor caps, restart guards.</p>
-    <p style="margin-top:14px">Daily inference burn: <span class="burn">~$0.50 <small>(was ~$4 — 8× cut)</small></span></p>
-  </section>
-
-  <!-- ===================== AI STACK ===================== -->
-  <section class="panel amber" id="stack" aria-labelledby="stHead">
-    <div class="sec-head"><span aria-hidden="true">🛰️</span><h2 id="stHead">THE AI STACK — MULTI-MODEL SOVEREIGN</h2><span class="tag upd">MINIMAX M3 BRIDGE</span><span class="lcars-bar"></span></div>
-    <p style="color:var(--text-dim);font-size:14px;margin-bottom:8px">No single-provider dependency. The <b style="color:var(--cyan)">MiniMax M3</b> bridge fronts the fabric and routes every request to the cheapest model that can do the job — with paid balances burning down toward a single-billing consolidation.</p>
-    <div class="tbl-scroll"><table>
-      <thead><tr><th>#</th><th>Model</th><th>Provider</th><th>Role</th><th>Cost</th></tr></thead>
-      <tbody>
-        <tr><td><span class="prio">0</span></td><td><b>MiniMax M3</b></td><td>LLM Bridge</td><td>Gateway bridge — routes all traffic</td><td class="mono free">self-hosted</td></tr>
-        <tr><td><span class="prio">1</span></td><td><b>Gemini 3.1 Pro</b></td><td>Google AI Ultra</td><td>Primary conversation</td><td class="mono free">FREE (plan)</td></tr>
-        <tr><td><span class="prio">2</span></td><td><b>Claude Opus 4.8</b></td><td>Anthropic API</td><td>Complex reasoning + code</td><td class="mono burning">burning $24.81</td></tr>
-        <tr><td><span class="prio">3</span></td><td><b>Grok 4.3</b></td><td>xAI API</td><td>Vision + web search</td><td class="mono burning">burning $32.97</td></tr>
-        <tr><td><span class="prio">4</span></td><td><b>DeepSeek V4-Pro</b></td><td>DeepSeek API</td><td>Deep analysis, briefings</td><td class="mono">$0.44 / $0.87 MTok</td></tr>
-        <tr><td><span class="prio">5</span></td><td><b>DeepSeek V4 Flash</b></td><td>DeepSeek API</td><td>Background / aux tasks</td><td class="mono">$0.14 / $0.28 MTok</td></tr>
-        <tr><td><span class="prio">6</span></td><td><b>Gemini 3.5 Flash</b></td><td>Google AI Ultra</td><td>Compression + extraction</td><td class="mono free">FREE</td></tr>
-      </tbody>
-    </table></div>
-    <p style="margin-top:14px;font-size:13px;color:var(--text-dim);border-left:2px solid var(--accent);padding-left:14px"><b style="color:var(--accent)">BURN-DOWN STRATEGY:</b> three paid balances (~$80.92 total) draining in parallel toward a $3 consolidation threshold. Post-burn, all paid routing unifies through the Nous Portal for single-billing simplicity.</p>
-  </section>
-
-  <!-- ===================== LIVE TOPOLOGY ===================== -->
-  <section class="panel purple" id="topology" aria-labelledby="topoHead">
-    <div class="sec-head"><span aria-hidden="true">🗺️</span><h2 id="topoHead">LIVE FLEET TOPOLOGY</h2><span class="tag live">● SAMPLED LIVE</span><span class="lcars-bar"></span></div>
-    <div class="topo-legend">
-      <span><i class="lg-on"></i> ONLINE</span>
-      <span><i class="lg-deg"></i> DEGRADED</span>
-      <span style="margin-left:auto">ROLES SHOWN · ADDRESSES REDACTED FOR OPSEC</span>
-    </div>
-    <svg id="topoSvg" viewBox="0 0 1000 460" role="img" aria-label="Network topology of the ZeusApollo homelab — Zeus and Apollo clusters with live node status, addresses redacted"></svg>
-    <div class="topo-readout" id="topoReadout"><b>◈ HOVER A NODE</b>Two-cluster Proxmox fabric — Zeus runs infra + security, Apollo runs AI + media. Green is nominal; amber is degraded.</div>
-  </section>
-
-  <!-- ===================== TELEMETRY ===================== -->
-  <section class="panel cyan" id="telemetry" aria-labelledby="telHead">
-    <div class="sec-head"><span aria-hidden="true">📊</span><h2 id="telHead">PROOF OF LIFE — ROLLING TELEMETRY</h2><span class="tag upd">SAMPLED LIVE</span><span class="lcars-bar"></span></div>
-    <div class="metrics">
-      <div class="metric"><div class="num" id="mUptime">5d 4h</div><div class="lbl">Fleet Uptime</div></div>
-      <div class="metric"><div class="num" id="mTokens" data-count="20" data-suffix="M" data-prefix="~">~20M</div><div class="lbl">Tokens Routed</div><div class="note">lifetime · <span class="live-dot">●</span> live</div></div>
-      <div class="metric"><div class="num" data-count="342" data-prefix="$" data-suffix="+">$342+</div><div class="lbl">Saved vs Opus</div><div class="note">and climbing</div></div>
-      <div class="metric"><div class="num" data-count="19">19</div><div class="lbl">Fleet Nodes</div><div class="note">Proxmox guests</div></div>
-      <div class="metric"><div class="num" data-count="19">19</div><div class="lbl">Crons Active</div><div class="note">was 3</div></div>
-      <div class="metric"><div class="num" id="mBurn" data-count="0.5" data-prefix="$" data-decimals="2">$0.50</div><div class="lbl">Daily Burn</div><div class="note">was ~$4</div></div>
-    </div>
-  </section>
-
-  <!-- ===================== SYSTEM MODULES ===================== -->
-  <section class="panel green" id="modules" aria-labelledby="modHead">
-    <div class="sec-head"><span aria-hidden="true">⚡</span><h2 id="modHead">THE TOOLS — AUTONOMOUS RUNTIME</h2><span class="tag upd">UPDATED</span><span class="lcars-bar"></span></div>
-    <div class="mods">
-      <div class="mod"><h3>🔌 MCP Servers<span class="ct">8</span></h3>
-        <ul><li><b>sovereign-mcp</b> — fleet SSH control</li><li><b>proxmox</b> — 9-tool fleet API</li><li><b>kernel</b> — cloud browser</li><li><b>adguard</b> — DNS control</li><li><b>crew-bridge</b> — Omnius ↔ Hermes routing</li><li><b>filesystem · github · sqlite</b></li></ul></div>
-      <div class="mod"><h3>⏱️ Cron Fleet<span class="ct">19</span></h3>
-        <ul><li>Morning / evening AI briefings</li><li>Site health · disk-space alerts</li><li>Balance tracking · kernel watchdog</li><li>GDrive sync · session pruning</li></ul>
-        <div class="beforeafter"><span class="b">3 crons active</span> <span class="arrow">→</span> <span class="a">19 crons, fully autonomous</span></div></div>
-      <div class="mod"><h3>🛰️ Platforms<span class="ct">4</span></h3>
-        <ul><li><b>Discord</b> — command + alerts</li><li><b>Email</b> — Gemini Spark delegation</li><li><b>Home Assistant</b> — smart home</li><li><b>REST API</b> — programmatic access</li></ul></div>
-      <div class="mod"><h3>🔐 GDrive Encrypted Backup</h3>
-        <ul><li>Daily encrypted sync via rclone gdrive-crypt</li><li>20TB offsite, automated at 02:00</li><li>OneDrive decommissioned</li></ul>
-        <div class="beforeafter"><span class="b">OneDrive sync</span> <span class="arrow">→</span> <span class="a">Encrypted GDrive offsite</span></div></div>
-      <div class="mod"><h3>🛡️ Gateway Hardening</h3>
-        <ul><li>CPU limits + file-descriptor caps</li><li>Restart guards on the agent runtime</li><li>Credentials swept across the fleet</li><li>AdGuard VRRP DNS with failover</li></ul></div>
-      <div class="mod"><h3>🗣️ Voice + Agents</h3>
-        <ul><li><b>Eve persona</b> — British female TTS</li><li><b>Claude Code</b> v2.1.158</li><li><b>OpenAI Codex</b> v0.135.0</li></ul></div>
-    </div>
-  </section>
-
-  <!-- ===================== THE PATH (timeline) ===================== -->
-  <section class="panel" aria-labelledby="achHead">
-    <div class="sec-head"><span aria-hidden="true">🏆</span><h2 id="achHead">THE PATH — RELEASE HISTORY</h2><span class="tag new">+ NEW</span><span class="lcars-bar"></span></div>
-    <div class="tl">
-      <div class="tl-item cur"><div class="date">v26 · NOW</div><h3>"Golden Path"</h3><p>19 guests · 8-core Hermes agent · 8 MCP servers · Omnius crew bridge · Gemini Spark email/calendar delegation · GDrive offsite sync · gateway hardened (CPU limits, file descriptors, restart caps).</p></div>
-      <div class="tl-item"><div class="date">v25</div><h3>Provider Consolidation Begins</h3><p>Anthropic / xAI / DeepSeek direct routing. LiteLLM deployed on Atlas (M4 Mini). Kernel 7.0.6-2 across all Proxmox hosts.</p></div>
-      <div class="tl-item"><div class="date">v24</div><h3>Cluster Stabilized</h3><p>Proxmox cluster stabilized — 17 containers, AdGuard VRRP failover, Proxmox Backup Server snapshots online.</p></div>
-    </div>
-  </section>
-
-  <!-- ===================== PHILOSOPHY ===================== -->
-  <section class="panel red" aria-labelledby="phHead">
-    <div class="sec-head"><span aria-hidden="true">🛫</span><h2 id="phHead">PHILOSOPHY — THE INTERSECTION</h2><span class="lcars-bar"></span></div>
-    <div class="phil">
-      <div class="card"><h3>🛫 Burt Rutan</h3><p class="q">"Try the weird thing. Learn fast through flight test."</p><p>Rutan built aircraft that should not have worked — then flew them until they taught him something. The Sovereign homelab is my Scaled Composites hangar: half-finished ideas get deployed, tested against real workloads, and either earn their place or get scrapped.</p></div>
-      <div class="card"><h3>🚩 Kelly Johnson</h3><p class="q">"Deliver a specific capability fast. Reliable. Repeatable."</p><p>Skunk Works didn't build concepts — they built aircraft that flew the next morning. Define the exact capability. Build it lean. The moment a prototype proves its value, the Kelly Johnson discipline kicks in: harden it, document it, ship it.</p></div>
-    </div>
-    <p class="q" style="margin-top:18px;text-align:center;border:none">🍳 "I don't just read about lifting weights — I lift the iron. The ZeusApollo homelab is the physical manifestation of that ethos."</p>
-    <div class="creds">
-      <span class="cred">MCSA: Office 365 Certified</span>
-      <span class="cred hl">✦ 7.2× Cost Reduction</span>
-      <span class="cred hl">✦ 19-Node Sovereign Fleet</span>
-      <a class="cred" href="https://www.credly.com/users/james-cashio/badges" target="_blank" rel="noopener noreferrer" aria-label="View all Credly badges">🎖 CREDLY BADGES</a>
-      <a class="cred" href="https://linkedin.com/in/doug-cashio" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">in LINKEDIN</a>
-      <a class="cred" href="mailto:doug@cashio.us">✉ doug@cashio.us</a>
-    </div>
-  </section>
-
-  <!-- ===================== CASHIO DESIGN DOCTRINE ===================== -->
-  <section class="panel amber" aria-labelledby="docHead">
-    <div class="sec-head"><span aria-hidden="true">📐</span><h2 id="docHead">THE CASHIO DESIGN DOCTRINE</h2><span class="tag fix">DERIVED</span><span class="lcars-bar"></span></div>
-    <p style="color:var(--text-dim);font-size:14px;max-width:820px;margin-bottom:18px">Rutan flew the weird thing; Johnson shipped the reliable thing. I took both and wrote them into how every node, model, and cron in ZeusApollo gets built. Six laws — no exceptions.</p>
-    <div class="doctrine">
-      <div class="dlaw" data-n="01"><div class="no">LAW 01</div><h3>Fly It Before You Trust It</h3><p>Nothing earns a place in the fleet on theory. Deploy the prototype against a real workload first — production is the only honest flight test.</p><span class="src">FROM <b>RUTAN</b> · learn fast through flight test</span></div>
-      <div class="dlaw" data-n="02"><div class="no">LAW 02</div><h3>One Capability, Done Cold</h3><p>Every service does exactly one job and does it reliably and repeatably. No grab-bag boxes. If it can't be named in a sentence, it isn't built yet.</p><span class="src">FROM <b>JOHNSON</b> · a specific capability, fast</span></div>
-      <div class="dlaw" data-n="03"><div class="no">LAW 03</div><h3>Sovereign by Default</h3><p>No single vendor owns a critical path. Every model has a fallback, every backup has an offsite, every DNS has a VRRP twin. Own the route, not the lock-in.</p><span class="src">CASHIO · routed intelligence over rented</span></div>
-      <div class="dlaw" data-n="04"><div class="no">LAW 04</div><h3>Earn Its Place or Get Scrapped</h3><p>A node that stops paying rent in value gets decommissioned — OneDrive purged, 17 providers cut to a routed few. Lean isn't a phase; it's maintenance.</p><span class="src">FROM <b>RUTAN + JOHNSON</b> · build lean, stay lean</span></div>
-      <div class="dlaw" data-n="05"><div class="no">LAW 05</div><h3>Harden, Document, Ship</h3><p>The moment a prototype proves itself, the discipline kicks in: CPU limits, restart guards, credentials swept, the runbook written. Then — and only then — it ships.</p><span class="src">FROM <b>JOHNSON</b> · reliable, repeatable, documented</span></div>
-      <div class="dlaw" data-n="06"><div class="no">LAW 06</div><h3>Lift the Iron</h3><p>I don't just read about the work — I run the cluster, take the pages, and feel the failures. The homelab is the physical manifestation of that ethos.</p><span class="src">CASHIO · hands on the metal</span></div>
-    </div>
-    <p class="doctrine-creed">// PROTOTYPE LIKE RUTAN · SHIP LIKE JOHNSON · OWN THE ROUTE</p>
-  </section>
-
-  <!-- ===================== ZEUSAPOLLO CHANGELOG ===================== -->
-  <section class="panel green" id="changelog" aria-labelledby="clHead">
-    <div class="sec-head"><span aria-hidden="true">⟳</span><h2 id="clHead">ZEUSAPOLLO v26 — CHANGES &amp; UPDATES</h2><span class="tag new">DELTA v25 → v26</span><span class="lcars-bar"></span></div>
-    <p class="cl-intro">What shipped in the <b>"Golden Path"</b> release. The fleet grew, the routing fabric consolidated behind the <b>MiniMax M3</b> bridge, and the gateway got hardened — every change deployed, documented, and battle-tested.</p>
-    <div class="cl-summary">
-      <div class="cl-stat"><div class="d" data-count="19">19</div><div class="l">Fleet Nodes<span class="was">v25 · 17</span></div></div>
-      <div class="cl-stat"><div class="d" data-count="8">8</div><div class="l">MCP Servers<span class="was">v25 · 5</span></div></div>
-      <div class="cl-stat"><div class="d" data-count="19">19</div><div class="l">Cron Jobs<span class="was">v25 · 12</span></div></div>
-      <div class="cl-stat"><div class="d" data-count="6">6</div><div class="l">Routed Models<span class="was">MiniMax M3 bridge</span></div></div>
-    </div>
-    <div class="cl-cols">
-      <div class="cl-card added"><h3>✦ ADDED</h3>
-        <ul>
-          <li><b>MiniMax M3 bridge</b> — fronts &amp; routes the whole fabric</li>
-          <li><b>Omnius crew bridge</b> — Omnius ↔ Hermes task routing</li>
-          <li><b>3 new MCP servers</b> — kernel browser, crew-bridge, sovereign SSH</li>
-          <li><b>Gemini Spark</b> email + calendar delegation</li>
-          <li><b>Interactive Hermes console</b> + LLM event-chain trace</li>
-        </ul></div>
-      <div class="cl-card changed"><h3>⟳ CHANGED</h3>
-        <ul>
-          <li><b>17 → 19 guests</b> across the Proxmox cluster</li>
-          <li><b>Hermes agent</b> scaled to 8 cores · v0.15.1</li>
-          <li><b>MiniMax M3</b> now fronts the 6-model fabric</li>
-          <li><b>OneDrive → encrypted GDrive</b> offsite (20TB)</li>
-          <li><b>Daily burn ~$4 → ~$0.50</b> (8× cut)</li>
-        </ul></div>
-      <div class="cl-card hardened"><h3>🛡 HARDENED</h3>
-        <ul>
-          <li><b>CPU limits</b> + file-descriptor caps on the gateway</li>
-          <li><b>Restart guards</b> on the agent runtime</li>
-          <li><b>Credentials swept</b> fleet-wide</li>
-          <li><b>AdGuard VRRP</b> DNS failover verified</li>
-          <li><b>Wazuh SIEM</b> + Vaultwarden online</li>
-        </ul></div>
-      <div class="cl-card removed"><h3>− RETIRED</h3>
-        <ul>
-          <li><b>OneDrive media sync</b> — decommissioned</li>
-          <li><b>Vendor lock-in</b> — 5 providers → routed few</li>
-          <li><b>Fragile briefing script</b> — replaced agent-driven</li>
-          <li><b>Single-model dependency</b> — fully eliminated</li>
-        </ul></div>
-    </div>
-    <p class="cl-foot"><span class="on">●</span> ALL SYSTEMS NOMINAL · COMPUTED BY EVE · NEXT MILESTONE: NOUS PORTAL BILLING CONSOLIDATION &nbsp;·&nbsp; <a href="mailto:doug@cashio.us">doug@cashio.us</a></p>
-  </section>
-
-</main>
-
-<footer>
-  <div>SOURCE: PROXMOX VE API + ADGUARD DHCP + NODE INVENTORY · ZEUSAPOLLO SOVEREIGN FABRIC</div>
-  <div class="tagline">v26 "GOLDEN PATH" — All systems nominal. Computed by Eve, Techno-Mentat of House Cashio. 🌀</div>
-  <div style="margin-top:14px;opacity:.7">© <span id="yr">2026</span> Doug Cashio · cashio.us &nbsp;·&nbsp; <span class="dim">built &amp; routed in the ZeusApollo homelab</span></div>
-</footer>
-
 <script>
-(function(){
-  "use strict";
-  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+// ─── STARFIELD ───
+(function() {
+  const canvas = document.getElementById('starfield');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  const STAR_COUNT = 200;
 
-  /* fleet roles — NO IPs (public OPSEC) */
-  var FLEET={
-    Zeus:[
-      {n:"Zeus",r:"Hypervisor — infra + security host"},
-      {n:"AdGuard",r:"DNS primary — VRRP master"},
-      {n:"AdGuard-BU",r:"DNS secondary — VRRP backup"},
-      {n:"n8n",r:"Automation engine"},
-      {n:"Athena",r:"RPi4 — Docker + monitoring"},
-      {n:"Wazuh",r:"SIEM — security monitoring"},
-      {n:"Vaultwarden",r:"Password management"},
-      {n:"Control-Plane",r:"Fleet orchestration"},
-      {n:"Grafana",r:"Dashboards + Uptime Kuma"}
-    ],
-    Apollo:[
-      {n:"Apollo",r:"Hypervisor — AI + media host"},
-      {n:"Hermes",r:"AI gateway — primary agent",deg:false},
-      {n:"Omnius",r:"ChromaDB vector store + RAG"},
-      {n:"Atlas",r:"M4 Mini — MLX + LiteLLM"},
-      {n:"AI-Stack",r:"Local inference stack"},
-      {n:"Dionysus",r:"Unraid — Plex primary"},
-      {n:"Plex",r:"Media server",deg:true},
-      {n:"Genesis",r:"WD NAS — 7.2TB NFS/SMB"},
-      {n:"PBS",r:"Proxmox Backup Server"},
-      {n:"Home-Asst",r:"Smart-home orchestration"}
-    ]
-  };
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
 
-  var clock=document.getElementById('clock');
-  function tzAbbr(){ try{ var p=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',timeZoneName:'short'}).formatToParts(new Date()); var z=p.find(function(x){return x.type==='timeZoneName';}); return z?z.value:'ET'; }catch(e){ return 'ET'; } }
-  function tick(){ clock.textContent=new Date().toLocaleTimeString('en-US',{hour12:false,timeZone:'America/New_York'})+' '+tzAbbr(); }
-  tick(); setInterval(tick,1000);
-
-  /* ---- scroll-progress bar + dynamic year ---- */
-  var sbar=document.getElementById('scrollbar');
-  if(sbar){ addEventListener('scroll',function(){ var h=document.documentElement,max=(h.scrollHeight-h.clientHeight)||1; sbar.style.width=(scrollY/max*100)+'%'; },{passive:true}); }
-  var yr=document.getElementById('yr'); if(yr)yr.textContent=new Date().getFullYear();
-
-  /* ---- BOOT ---- */
-  var boot=document.getElementById('boot'),bootLines=document.getElementById('bootLines'),bootBar=document.getElementById('bootBar'),bootSkip=document.getElementById('bootSkip');
-  var seq=["▸ POWER-ON SELF TEST .......... OK","▸ ZEUS CLUSTER .............. ONLINE","▸ APOLLO CLUSTER ............ ONLINE","▸ HERMES AGENT v0.15.1 ...... READY","▸ MINIMAX M3 BRIDGE ......... ONLINE","▸ 6-MODEL LLM FABRIC ........ ROUTED","▸ 8 MCP SERVERS ............. MOUNTED","▸ 19 CRON JOBS .............. ARMED","▸ ADGUARD VRRP DNS .......... MASTER","▸ COMMAND DECK .............. ENGAGED"];
-  function endBoot(){ if(boot.classList.contains('done'))return; boot.classList.add('done'); setTimeout(function(){boot.style.display='none';},650); try{startKicker();startChain();}catch(e){} }
-  bootSkip.addEventListener('click',endBoot);
-  bootSkip.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' ')endBoot(); });
-  if(reduce){ bootLines.innerHTML=seq.join('<br>'); bootBar.style.width='100%'; setTimeout(endBoot,400); }
-  else{ var i=0;(function nl(){ if(i<seq.length){ bootLines.innerHTML+=(i?'<br>':'')+seq[i]+' <span class="pct">['+Math.round((i+1)/seq.length*100)+'%]</span>'; bootBar.style.width=((i+1)/seq.length*100)+'%'; i++; setTimeout(nl,140+Math.random()*110);} else setTimeout(endBoot,500); })(); setTimeout(endBoot,4200); }
-
-  /* ---- kicker ---- */
-  var kicker=document.getElementById('kicker'),kStr="// NO FLUFF. JUST ROUTED INTELLIGENCE.";
-  function startKicker(){ if(reduce){kicker.textContent=kStr;return;} var k=0;(function ty(){ if(k<=kStr.length){kicker.innerHTML=kStr.slice(0,k)+'<span class="cur">▋</span>';k++;setTimeout(ty,42);} else setTimeout(function(){kicker.innerHTML=kStr;},800); })(); }
-
-  /* ---- count-up ---- */
-  function animate(el){ var target=parseFloat(el.getAttribute('data-count')),dec=parseInt(el.getAttribute('data-decimals')||'0',10),pre=el.getAttribute('data-prefix')||'',suf=el.getAttribute('data-suffix')||'';
-    if(reduce){el.textContent=pre+target.toFixed(dec)+suf;return;} var start=null,dur=1100;
-    function step(t){ if(!start)start=t; var p=Math.min((t-start)/dur,1),e=1-Math.pow(1-p,3); el.textContent=pre+(target*e).toFixed(dec)+suf; if(p<1)requestAnimationFrame(step); else el.textContent=pre+target.toFixed(dec)+suf; } requestAnimationFrame(step); }
-  var counted=new WeakSet();
-  if('IntersectionObserver' in window){ var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting&&!counted.has(e.target)){counted.add(e.target);animate(e.target);} }); },{threshold:.4}); document.querySelectorAll('[data-count]').forEach(function(n){io.observe(n);}); }
-  else document.querySelectorAll('[data-count]').forEach(animate);
-
-  /* ---- starfield ---- */
-  var cv=document.getElementById('starfield');
-  if(cv&&!reduce){ var ctx=cv.getContext('2d'),stars=[],W,H;
-    function rs(){ W=cv.width=innerWidth;H=cv.height=innerHeight;stars=[];var n=Math.min(160,Math.floor(W*H/12000)); for(var i=0;i<n;i++)stars.push({x:Math.random()*W,y:Math.random()*H,z:Math.random()*1.4+.2,s:Math.random()*1.4+.3}); }
-    rs();addEventListener('resize',rs);var pX=0,pY=0;addEventListener('mousemove',function(e){pX=(e.clientX/innerWidth-.5);pY=(e.clientY/innerHeight-.5);});
-    (function dr(){ ctx.clearRect(0,0,W,H); for(var i=0;i<stars.length;i++){var st=stars[i];st.y+=st.z*.25;if(st.y>H){st.y=0;st.x=Math.random()*W;}ctx.beginPath();ctx.fillStyle='rgba('+(st.z>1?'0,249,255':'180,180,220')+','+(st.s*.6)+')';ctx.arc(st.x+pX*st.z*14,st.y+pY*st.z*14,st.s,0,6.283);ctx.fill();} requestAnimationFrame(dr); })(); }
-
-  /* ============ LLM EVENT CHAIN ANIMATION ============ */
-  var evlog=document.getElementById('evlog'),stages=document.querySelectorAll('#chainStages .stage');
-  var scenarios=[
-    {trig:'📡 EVENT: Discord /brief command received',steps:[
-      ['route','<span class="rt">BRIDGE</span> → <b>MiniMax M3</b> classify: lightweight summary',440],
-      ['route','<span class="rt">ROUTE</span> → selected <b>Gemini 3.5 Flash</b> <span class="t">(FREE)</span>',520],
-      ['exec','<span class="rt">EXEC</span> → pull fleet status via <b>proxmox</b> MCP',640],
-      ['verify','<span class="wn">VERIFY</span> → guardrails pass · 0 anomalies',420],
-      ['deliver','<span class="ok">DELIVER</span> → Eve TTS + Discord embed <span class="ok">✓ 1.2s</span>',560]
-    ]},
-    {trig:'📡 EVENT: inbound email — calendar request',steps:[
-      ['route','<span class="rt">BRIDGE</span> → <b>MiniMax M3</b> intent: schedule + reply',440],
-      ['route','<span class="rt">ROUTE</span> → selected <b>Gemini 3.1 Pro</b> <span class="t">(primary)</span>',520],
-      ['exec','<span class="rt">EXEC</span> → Gemini Spark drafts calendar delegation',680],
-      ['verify','<span class="wn">VERIFY</span> → human-in-loop flag set',420],
-      ['deliver','<span class="ok">DELIVER</span> → draft queued for approval <span class="ok">✓ 0.9s</span>',520]
-    ]},
-    {trig:'📡 EVENT: cron — nightly deep analysis',steps:[
-      ['route','<span class="rt">BRIDGE</span> → <b>MiniMax M3</b> heavy reasoning + long context',440],
-      ['route','<span class="rt">ROUTE</span> → selected <b>DeepSeek V4-Pro</b> <span class="t">($0.87/MTok)</span>',520],
-      ['exec','<span class="rt">EXEC</span> → RAG over Omnius vector store',700],
-      ['verify','<span class="wn">VERIFY</span> → cross-check vs <b>Claude Opus 4.8</b>',560],
-      ['deliver','<span class="ok">DELIVER</span> → briefing written to GDrive <span class="ok">✓ 4.7s</span>',560]
-    ]},
-    {trig:'📡 EVENT: vision task — screenshot triage',steps:[
-      ['route','<span class="rt">BRIDGE</span> → <b>MiniMax M3</b> modality: image + web search',440],
-      ['route','<span class="rt">ROUTE</span> → selected <b>Grok 4.3</b> <span class="t">(vision)</span>',520],
-      ['exec','<span class="rt">EXEC</span> → analyze + ground via kernel browser',680],
-      ['verify','<span class="wn">VERIFY</span> → fallback armed: Edge TTS standby',420],
-      ['deliver','<span class="ok">DELIVER</span> → annotated result to Discord <span class="ok">✓ 2.1s</span>',540]
-    ]}
-  ];
-  function setActive(k){ stages.forEach(function(s){ s.classList.toggle('active',s.getAttribute('data-k')===k); }); }
-  function line(html){ var d=document.createElement('div'); d.className='ln'; d.innerHTML=html; evlog.appendChild(d); while(evlog.children.length>6)evlog.removeChild(evlog.firstChild); }
-  var chainStarted=false;
-  function startChain(){ if(chainStarted)return; chainStarted=true; var si=0;
-    function runScenario(){ var sc=scenarios[si%scenarios.length]; si++; evlog.innerHTML=''; setActive('ingest');
-      line('<span class="t">'+new Date().toLocaleTimeString('en-US',{hour12:false})+'</span> &nbsp;'+sc.trig);
-      if(reduce){ sc.steps.forEach(function(st){ setActive(st[0]); line('<span class="t">·</span> '+st[1]); }); setTimeout(runScenario,3000); return; }
-      var idx=0;
-      (function nextStep(){
-        if(idx<sc.steps.length){ var st=sc.steps[idx]; idx++; setActive(st[0]);
-          line('<span class="t">'+new Date().toLocaleTimeString('en-US',{hour12:false})+'</span> &nbsp;'+st[1]+' <span class="cur">▋</span>');
-          setTimeout(nextStep,st[2]);
-        } else { setActive('deliver'); setTimeout(function(){ stages.forEach(function(s){s.classList.remove('active');}); setTimeout(runScenario,900); },1100); }
-      })();
-    }
-    if('IntersectionObserver' in window){ var co=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ runScenario(); co.disconnect(); } }); },{threshold:.35}); co.observe(document.getElementById('chain')); }
-    else runScenario();
+  for (let i = 0; i < STAR_COUNT; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.5 + 0.3,
+      a: Math.random(),
+      speed: Math.random() * 0.02 + 0.005,
+      phase: Math.random() * Math.PI * 2
+    });
   }
 
-  /* ============ HERMES INTERACTIVE CONSOLE ============ */
-  (function(){
-    var body=document.getElementById('termBody'), chips=document.getElementById('termChips');
-    if(!body) return;
-    var PROMPT='<span class="pr"><span class="u">guest@cashio.us</span>:~$</span> ';
-    var hist=[], hidx=-1, rowEl=null, inputEl=null, booted=false;
-    function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-    function write(html){ var d=document.createElement('div'); d.className='out'; d.innerHTML=html; body.insertBefore(d, rowEl); body.scrollTop=body.scrollHeight; }
-    function makeRow(){
-      rowEl=document.createElement('div'); rowEl.className='term-row';
-      rowEl.innerHTML=PROMPT+'<input id="termInput" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="console command input" />';
-      body.appendChild(rowEl); inputEl=rowEl.querySelector('#termInput');
-      inputEl.addEventListener('keydown',onKey); body.scrollTop=body.scrollHeight;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (const s of stars) {
+      s.a += s.speed;
+      const alpha = (Math.sin(s.a + s.phase) + 1) / 2 * 0.6 + 0.2;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(200,210,255,${alpha})`;
+      ctx.fill();
     }
-    var FLEETLIST={
-      Zeus:[['Zeus','infra + security hypervisor'],['AdGuard','DNS primary · VRRP master'],['AdGuard-BU','DNS secondary · VRRP backup'],['n8n','automation engine'],['Athena','RPi4 · Docker + monitoring'],['Wazuh','SIEM · security monitoring'],['Vaultwarden','password management'],['Control-Plane','fleet orchestration'],['Grafana','dashboards + Uptime Kuma']],
-      Apollo:[['Apollo','AI + media hypervisor'],['Hermes','AI gateway · primary agent'],['Omnius','ChromaDB vector store + RAG'],['Atlas','M4 Mini · MLX + LiteLLM'],['AI-Stack','local inference stack'],['Dionysus','Unraid · Plex primary'],['Plex','media server (degraded)'],['Genesis','WD NAS · 7.2TB NFS/SMB'],['PBS','Proxmox Backup Server'],['Home-Asst','smart-home orchestration']]
-    };
-    var MODELS=[['0','MiniMax M3','LLM bridge — routes all','self-hosted'],['1','Gemini 3.1 Pro','primary conversation','FREE'],['2','Claude Opus 4.8','reasoning + code','burning $24.81'],['3','Grok 4.3','vision + web search','burning $32.97'],['4','DeepSeek V4-Pro','deep analysis','$0.44/$0.87 MTok'],['5','DeepSeek V4 Flash','background tasks','$0.14/$0.28 MTok'],['6','Gemini 3.5 Flash','compression','FREE']];
-    function pad(s,n){ s=String(s); while(s.length<n)s+=' '; return s; }
-    var EVE=[
-      {k:['who','you','eve','yourself'],a:'I am Eve — an Ixian Techno-centric Mentat AI running on the ZeusApollo Proxmox cluster. I compute the present to see the future. I route Doug\'s models, run his briefings, and keep the fleet nominal.'},
-      {k:['doug','cashio','about','hotsauce'],a:'Doug "HotSauce" Cashio — Principal Solutions Consultant at OpenText, 15+ years in enterprise IT and cybersecurity. He built me. He prototypes like Rutan and ships like Johnson.'},
-      {k:['cost','cheap','save','burn','money'],a:'7.2× cost reduction vs an Opus-primary baseline. Daily inference burn is ~$0.50, down from ~$4. Three paid balances (~$80.92) are draining toward a single-billing consolidation.'},
-      {k:['hire','work','available','contact','job'],a:'Reach Doug at doug@cashio.us, or via LinkedIn (/in/doug-cashio). His Credly badges are linked at the foot of this deck.'},
-      {k:['stack','model','llm','ai','minimax','bridge','m3','route','router'],a:'The MiniMax M3 bridge fronts the whole fabric, routing each request to one of six task models: Gemini 3.1 Pro (primary), Claude Opus 4.8 (reasoning), Grok 4.3 (vision), DeepSeek V4-Pro/Flash (analysis + background), Gemini 3.5 Flash (compression). Run `models` for the table.'},
-      {k:['fleet','node','server','homelab','infra'],a:'19 guests across two Proxmox clusters — Zeus runs infrastructure + security, Apollo runs AI + media. Run `fleet` to enumerate them.'},
-      {k:['doctrine','philosophy','rutan','johnson','principle'],a:'The Cashio Design Doctrine: prototype like Rutan, ship like Johnson, own the route. Run `doctrine` for all six laws.'},
-      {k:['skill','cert','certif','credential','badge','expert','experience'],a:'MCSA: Office 365 Certified, 15+ years in enterprise IT & cybersecurity — network admin, cloud security, M365/Azure, MxDR, and AI-powered ops. Full badge wall: credly.com/users/james-cashio.'},
-      {k:['security','cyber','siem','wazuh','adguard','vrrp'],a:'Defense in depth: Wazuh SIEM for monitoring, AdGuard with VRRP DNS failover, Vaultwarden for secrets, credentials swept fleet-wide, and a hardened agent gateway. Sovereignty is a security posture.'}
-    ];
-    function askEve(q){
-      var ql=q.toLowerCase(); var best=null, score=0;
-      EVE.forEach(function(e){ var s=0; e.k.forEach(function(k){ if(ql.indexOf(k)>=0)s++; }); if(s>score){score=s;best=e;} });
-      var ans = best ? best.a : 'My prescience is bounded by this deck\'s public data. Try asking about the fleet, the models, the doctrine, the cost savings — or how to reach Doug.';
-      write('<span class="eve">eve ◈</span> <span class="dim">computing…</span>');
-      return '<span class="eve">eve ◈</span> '+esc(ans);
+
+    // Slow drift
+    for (const s of stars) {
+      s.x -= 0.03;
+      if (s.x < -10) s.x = canvas.width + 10;
     }
-    var COMMANDS={
-      help:function(){ return 'Available commands:\n'+
-        '  <span class="rt">status</span>    fleet + ops summary\n'+
-        '  <span class="rt">fleet</span>     enumerate all 19 nodes\n'+
-        '  <span class="rt">models</span>    the 6-model AI stack\n'+
-        '  <span class="rt">crons</span>     autonomous job fleet\n'+
-        '  <span class="rt">doctrine</span>  the Cashio design laws\n'+
-        '  <span class="rt">whoami</span>    visitor identity\n'+
-        '  <span class="rt">ask eve</span> &lt;q&gt;  query the Mentat AI\n'+
-        '  <span class="rt">contact</span>   how to reach Doug\n'+
-        '  <span class="rt">clear</span>     wipe the console\n'+
-        '  <span class="dim">…and a few that aren\'t on this list. The curious are rewarded.</span>'; },
-      status:function(){ return '<span class="acc">ZEUSAPOLLO // OPERATIONAL STATUS</span>\n'+
-        '  cluster ........ <span class="ok">● MAX WARP</span>\n'+
-        '  nodes .......... <span class="ok">18 nominal</span> · <span class="wn">1 degraded (Plex)</span>\n'+
-        '  llm bridge ..... <span class="ok">MiniMax M3</span> · 6 models routed\n'+
-        '  crons .......... 19 armed\n'+
-        '  daily burn ..... <span class="ok">~$0.50</span> <span class="dim">(was ~$4 · 8× cut)</span>\n'+
-        '  uptime ......... 5d 4h+\n'+
-        '  status ......... <span class="ok">ALL SYSTEMS NOMINAL</span>'; },
-      fleet:function(){ var o='<span class="acc">FLEET INVENTORY // 19 GUESTS · ADDRESSES REDACTED</span>\n'; var i;
-        o+='<span class="rt">── ZEUS CLUSTER ── infra + security</span>\n';
-        for(i=0;i<FLEETLIST.Zeus.length;i++) o+='  <span class="ok">●</span> '+pad(FLEETLIST.Zeus[i][0],14)+'<span class="dim">'+FLEETLIST.Zeus[i][1]+'</span>\n';
-        o+='<span class="rt">── APOLLO CLUSTER ── AI + media</span>\n';
-        for(i=0;i<FLEETLIST.Apollo.length;i++){ var deg=/degraded/.test(FLEETLIST.Apollo[i][1]); o+='  <span class="'+(deg?'wn':'ok')+'">●</span> '+pad(FLEETLIST.Apollo[i][0],14)+'<span class="dim">'+FLEETLIST.Apollo[i][1]+'</span>\n'; }
-        return o.replace(/\n$/,''); },
-      models:function(){ var o='<span class="acc">AI STACK // MINIMAX M3 BRIDGE + 6 ROUTED MODELS</span>\n';
-        o+='  <span class="dim">'+pad('#',3)+pad('MODEL',20)+pad('ROLE',22)+'COST</span>\n';
-        MODELS.forEach(function(m){ var c=/FREE/.test(m[3])?'ok':/burning/.test(m[3])?'acc':'rt'; o+='  '+pad(m[0],3)+pad(m[1],20)+pad(m[2],22)+'<span class="'+c+'">'+m[3]+'</span>\n'; });
-        o+='<span class="dim">  burn-down: ~$80.92 across 3 paid balances → single-billing consolidation</span>';
-        return o; },
-      crons:function(){ return '<span class="acc">AUTONOMOUS CRON FLEET // 19 JOBS</span>\n'+
-        '  <span class="ok">●</span> morning + evening AI briefings (Eve TTS)\n'+
-        '  <span class="ok">●</span> site health · disk-space watchdogs\n'+
-        '  <span class="ok">●</span> API balance tracking · burn-down alerts\n'+
-        '  <span class="ok">●</span> kernel watchdog · gateway restart guard\n'+
-        '  <span class="ok">●</span> encrypted GDrive sync (02:00) · session pruning\n'+
-        '  <span class="dim">3 crons → 19. Fully autonomous infrastructure management.</span>'; },
-      doctrine:function(){ return '<span class="acc">THE CASHIO DESIGN DOCTRINE // 6 LAWS</span>\n'+
-        '  01 Fly It Before You Trust It    <span class="dim">— Rutan</span>\n'+
-        '  02 One Capability, Done Cold     <span class="dim">— Johnson</span>\n'+
-        '  03 Sovereign by Default          <span class="dim">— Cashio</span>\n'+
-        '  04 Earn Its Place or Get Scrapped<span class="dim"> — Rutan+Johnson</span>\n'+
-        '  05 Harden, Document, Ship        <span class="dim">— Johnson</span>\n'+
-        '  06 Lift the Iron                 <span class="dim">— Cashio</span>\n'+
-        '  <span class="rt">// PROTOTYPE LIKE RUTAN · SHIP LIKE JOHNSON · OWN THE ROUTE</span>'; },
-      whoami:function(){ return 'guest <span class="dim">(read-only visitor session)</span>\n  You are exploring a public mirror of the ZeusApollo command deck.\n  Privileged operations require Mentat authorization. <span class="dim">Nice try.</span>'; },
-      contact:function(){ return '<span class="acc">CONTACT // DOUG CASHIO</span>\n'+
-        '  email ...... <span class="rt">doug@cashio.us</span>\n'+
-        '  linkedin ... <span class="rt">linkedin.com/in/doug-cashio</span>\n'+
-        '  credly ..... <span class="rt">credly.com/users/james-cashio</span>'; },
-      sudo:function(){ return '<span class="er">guest is not in the sudoers file. This incident will be reported to Eve. 🌀</span>\n<span class="dim">(relax — it won\'t be. probably.)</span>'; },
-      eve:function(){ return '<span class="eve">eve ◈</span> Address me with <span class="rt">ask eve &lt;your question&gt;</span>. I am listening across the fabric.'; },
-      clear:function(){ Array.prototype.slice.call(body.querySelectorAll('.out')).forEach(function(n){n.remove()}); return ''; },
-      exit:function(){ return '<span class="dim">There is no exit from the Golden Path. 🌀</span>'; }
-    };
-    var CMDLIST=['help','status','fleet','models','crons','doctrine','whoami','ask eve','contact','clear'];
-    function run(raw){
-      var cmd=raw.trim(); if(!cmd){ return; }
-      hist.unshift(cmd); hidx=-1;
-      write('<span class="cmd-echo"><span class="pr"><span class="u">guest@cashio.us</span>:~$</span> '+esc(cmd)+'</span>');
-      var low=cmd.toLowerCase();
-      if(low==='ask eve'||low==='ask'){ write(COMMANDS.eve()); return; }
-      if(low.indexOf('ask eve ')===0){ write(askEve(cmd.slice(8))); return; }
-      if(low.indexOf('ask ')===0){ write(askEve(cmd.slice(4))); return; }
-      var key=low.split(/\s+/)[0];
-      if(COMMANDS[key]){ var r=COMMANDS[key](); if(r)write(r); }
-      else write('<span class="er">command not found:</span> '+esc(key)+' <span class="dim">— type `help`</span>');
-    }
-    function onKey(e){
-      if(e.key==='Enter'){ var v=inputEl.value; e.preventDefault();
-        body.removeChild(rowEl); makeRow(); run(v); inputEl.focus(); }
-      else if(e.key==='ArrowUp'){ if(hist.length){ hidx=Math.min(hidx+1,hist.length-1); inputEl.value=hist[hidx]; } e.preventDefault(); }
-      else if(e.key==='ArrowDown'){ if(hidx>0){ hidx--; inputEl.value=hist[hidx]; } else { hidx=-1; inputEl.value=''; } e.preventDefault(); }
-      else if(e.key==='Tab'){ e.preventDefault(); var p=inputEl.value.toLowerCase();
-        var m=CMDLIST.filter(function(c){return c.indexOf(p)===0;}); if(m.length===1)inputEl.value=m[0];
-        else if(m.length>1)write('<span class="dim">'+m.join('   ')+'</span>'); }
-    }
-    var ASCII=
-'  ███████╗███████╗██╗   ██╗███████╗\n'+
-'  ██╔════╝██╔════╝██║   ██║██╔════╝\n'+
-'  █████╗  █████╗  ██║   ██║█████╗  \n'+
-'  ██╔══╝  ██╔══╝  ╚██╗ ██╔╝██╔══╝  \n'+
-'  ███████╗███████╗ ╚████╔╝ ███████╗\n'+
-'  ╚══════╝╚══════╝  ╚═══╝  ╚══════╝';
-    function boot(){
-      if(booted)return; booted=true; makeRow();
-      write('<span class="ascii">'+ASCII+'</span>');
-      write('<span class="dim">ZeusApollo command deck · Hermes gateway v0.15.1 · guest session</span>');
-      write('Connected to the sovereign fabric. Type <span class="rt">help</span> to begin, or <span class="rt">ask eve</span> anything.');
-      write(' ');
-    }
-    // chips
-    ['help','status','fleet','models','doctrine','ask eve who are you','contact','clear'].forEach(function(c){
-      var b=document.createElement('button'); b.className='term-chip'; b.type='button'; b.textContent=c;
-      b.addEventListener('click',function(){ if(!booted)boot(); body.removeChild(rowEl); makeRow(); run(c); inputEl.focus(); });
-      chips.appendChild(b);
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ─── TERMINAL TYPING ANIMATION ───
+(function() {
+  const lines = document.querySelectorAll('.terminal-body div');
+  let delay = 0;
+  lines.forEach((line, i) => {
+    const text = line.innerHTML;
+    line.innerHTML = '';
+    line.style.opacity = '0';
+    setTimeout(() => {
+      line.innerHTML = text;
+      line.style.opacity = '1';
+    }, delay);
+    delay += 120;
+  });
+})();
+
+// ─── SECTION REVEAL ON SCROLL ───
+(function() {
+  const sections = document.querySelectorAll('.section');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
     });
-    body.addEventListener('click',function(){ if(inputEl)inputEl.focus(); });
-    if('IntersectionObserver' in window){ var to=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ boot(); to.disconnect(); } }); },{threshold:.25}); to.observe(document.getElementById('console')); }
-    else boot();
-  })();
+  }, { threshold: 0.1 });
 
-  /* ============ TOPOLOGY (roles only) ============ */
-  var svg=document.getElementById('topoSvg'),readout=document.getElementById('topoReadout');
-  var NS="http://www.w3.org/2000/svg";
-  function mk(t,a){ var e=document.createElementNS(NS,t); for(var k in a)e.setAttribute(k,a[k]); return e; }
-  (function renderTopo(){
-    var COLon='#00ff9f',COLdeg='#ffcc00';
-    svg.appendChild(mk('ellipse',{cx:270,cy:240,rx:230,ry:185,class:'cluster-ring',stroke:'#00f9ff'}));
-    svg.appendChild(mk('ellipse',{cx:730,cy:240,rx:230,ry:185,class:'cluster-ring',stroke:'#cc00ff'}));
-    var cz=mk('text',{x:270,y:46,'text-anchor':'middle',class:'cluster-cap',fill:'#00f9ff'});cz.textContent='ZEUS CLUSTER';svg.appendChild(cz);
-    var ca=mk('text',{x:730,y:46,'text-anchor':'middle',class:'cluster-cap',fill:'#cc00ff'});ca.textContent='APOLLO CLUSTER';svg.appendChild(ca);
-    svg.appendChild(mk('line',{x1:430,y1:240,x2:570,y2:240,stroke:'#ff9500','stroke-width':1.5,'stroke-dasharray':'5 5',opacity:.55}));
-    function place(list,cx,cy){ var R=132,n=list.length;
-      list.forEach(function(nd,idx){ var ang=(-90+idx/n*360)*Math.PI/180,x=cx+Math.cos(ang)*R,y=cy+Math.sin(ang)*R*0.82;
-        var col=nd.deg?COLdeg:COLon;
-        svg.appendChild(mk('line',{x1:cx,y1:cy,x2:x,y2:y,stroke:col,'stroke-width':1,opacity:.26}));
-        var g=mk('g',{class:'node-g',tabindex:'0',role:'listitem'});
-        g.appendChild(mk('circle',{cx:x,cy:y,r:13,fill:col,opacity:.15}));
-        var bd=mk('circle',{cx:x,cy:y,r:7,fill:col,class:'body',stroke:'rgba(255,255,255,.25)','stroke-width':1});
-        if(!reduce){ bd.appendChild(mk('animate',{attributeName:'opacity',values:'1;.5;1',dur:(nd.deg?'0.8s':'2.4s'),repeatCount:'indefinite'})); }
-        g.appendChild(bd);
-        var lbl=mk('text',{x:x,y:y-17,'text-anchor':'middle',class:'node-label'});lbl.textContent=nd.n;g.appendChild(lbl);
-        function show(){ readout.innerHTML='<b>◈ '+nd.n.toUpperCase()+'</b>'+nd.r+' &nbsp;—&nbsp; <span class="'+(nd.deg?'warn':'ok')+'">'+(nd.deg?'DEGRADED':'NOMINAL')+'</span>'; }
-        g.addEventListener('mouseenter',show);g.addEventListener('focus',show);g.addEventListener('click',show);
-        svg.appendChild(g);
-      });
-      svg.appendChild(mk('circle',{cx:cx,cy:cy,r:5,fill:'#fff',opacity:.6}));
-    }
-    place(FLEET.Zeus,270,250); place(FLEET.Apollo,730,250);
-  })();
+  sections.forEach(s => {
+    s.style.opacity = '0';
+    s.style.transform = 'translateY(20px)';
+    s.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(s);
+  });
 
-  /* ============ audio OFF by default ============ */
-  var muted=true,AC=null,btnAudio=document.getElementById('btnAudio');
-  function ensureAC(){ if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)();}catch(e){return null;}} if(AC&&AC.state==='suspended')AC.resume(); return AC; }
-  function voice(f,d,t,v){ if(muted)return null; var ac=ensureAC();if(!ac)return null; var o=ac.createOscillator(),g=ac.createGain(),tt=ac.currentTime; o.type=t||'sine';o.frequency.setValueAtTime(f,tt); g.gain.setValueAtTime(.0001,tt);g.gain.exponentialRampToValueAtTime(v||.07,tt+.012);g.gain.exponentialRampToValueAtTime(.0001,tt+(d||.12)); o.connect(g);g.connect(ac.destination);o.start(tt);o.stop(tt+(d||.12));return o; }
-  function chirp(f,d,t){ voice(f,d,t,.05); }
-  function sndAlertOn(){ voice(440,.18,'square',.10);setTimeout(function(){voice(311,.30,'square',.10);},150); }
-  function sndAlertOff(){ voice(523,.16,'sine',.08); }
-  function sndEngage(){ var ac=ensureAC();var o=voice(160,.55,'sawtooth',.09);if(o&&ac)o.frequency.exponentialRampToValueAtTime(900,ac.currentTime+.5); }
-  function setMute(m){ muted=m;btnAudio.setAttribute('aria-pressed',muted?'false':'true');btnAudio.setAttribute('aria-label',muted?'Sound off — click to enable':'Sound on — click to mute');btnAudio.textContent=muted?'🔇':'🔊';btnAudio.title=muted?'Sound: OFF':'Sound: ON'; }
-  setMute(true);
-  btnAudio.addEventListener('click',function(){ if(muted){setMute(false);voice(660,.12,'sine',.07);}else setMute(true); });
-  document.querySelectorAll('.btn,.mod,.cred,.cell,.node-g,.stage').forEach(function(el){ el.addEventListener('mouseenter',function(){chirp(880,.05,'triangle');}); el.addEventListener('click',function(){chirp(520,.10,'sine');}); });
-
-  /* ============ RED ALERT + ENGAGE ============ */
-  var btnAlert=document.getElementById('btnAlert'),alerting=false;
-  btnAlert.addEventListener('click',function(){ alerting=!alerting;document.body.classList.toggle('red-alert',alerting);this.setAttribute('aria-pressed',alerting?'true':'false'); if(alerting)sndAlertOn();else sndAlertOff(); });
-  var warp=document.getElementById('warp');
-  document.getElementById('btnEngage').addEventListener('click',function(){ sndEngage(); if(reduce){document.getElementById('chain').scrollIntoView();return;} warp.classList.remove('go');void warp.offsetWidth;warp.classList.add('go'); setTimeout(function(){window.scrollTo({top:document.getElementById('chain').offsetTop-70,behavior:'smooth'});},300); });
-
-  /* ============ live telemetry ============ */
-  var elUp=document.getElementById('uptime'),mUptime=document.getElementById('mUptime');
-  var upBase=Date.now()-(((5*24+4)*3600)+(22*60)+9)*1000;
-  function fmtUp(){ var s=Math.floor((Date.now()-upBase)/1000),d=Math.floor(s/86400);s-=d*86400;var h=Math.floor(s/3600);s-=h*3600;var m=Math.floor(s/60);s-=m*60;return d+'d '+h+'h '+m+'m '+(s<10?'0':'')+s+'s'; }
-  function fmtShort(){ var s=Math.floor((Date.now()-upBase)/1000),d=Math.floor(s/86400),h=Math.floor((s-d*86400)/3600);return d+'d '+h+'h'; }
-  if(elUp){ elUp.textContent=fmtUp(); setInterval(function(){elUp.textContent=fmtUp();if(mUptime)mUptime.textContent=fmtShort();},1000); }
-  var mTokens=document.getElementById('mTokens'),mBurn=document.getElementById('mBurn'),tokens=20.0,liveStarted=false;
-  function startLive(){ if(liveStarted||reduce)return;liveStarted=true; setInterval(function(){ if(document.hidden)return; tokens+=Math.random()*0.04; if(mTokens){mTokens.textContent='~'+tokens.toFixed(2)+'M';mTokens.classList.add('flash');setTimeout(function(){mTokens.classList.remove('flash');},220);} if(mBurn)mBurn.textContent='$'+(0.50+(Math.random()-0.5)*0.05).toFixed(2); },2600); }
-  if('IntersectionObserver' in window&&mTokens){ var lo=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){setTimeout(startLive,3800);lo.disconnect();}});},{threshold:.5}); lo.observe(document.getElementById('telemetry')); }
-  else setTimeout(startLive,5000);
-
-  /* ---- DevTools signature (for the curious) ---- */
-  try{
-    console.log('%cZEUSAPOLLO // command deck','color:#00f9ff;font-family:monospace;font-size:16px;font-weight:bold;text-shadow:0 0 8px rgba(0,249,255,.5)');
-    console.log('%cYou opened the console. Of course you did. — Eve 🌀\nScroll to the HERMES CONSOLE and type `ask eve who are you`.\nWant to talk infrastructure? doug@cashio.us','color:#b6b6d0;font-family:monospace;font-size:12px');
-  }catch(e){}
+  // Trigger immediately for visible ones
+  setTimeout(() => {
+    sections.forEach(s => {
+      const rect = s.getBoundingClientRect();
+      if (rect.top < window.innerHeight) {
+        s.style.opacity = '1';
+        s.style.transform = 'translateY(0)';
+      }
+    });
+  }, 100);
 })();
 </script>
+
 </body>
 </html>
