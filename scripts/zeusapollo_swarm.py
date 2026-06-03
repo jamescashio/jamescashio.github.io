@@ -83,7 +83,15 @@ ATLAS_OLLAMA = "http://192.168.1.78:11434/api/generate"
 LITELLM_QWEN = "http://192.168.1.115:4000/v1/chat/completions"
 
 # LiteLLM auth
-LITELLM_KEY = "sk-zeu...-key"
+# SECURITY: Load LiteLLM API key from environment variable or configuration file to prevent hardcoded secrets
+LITELLM_KEY = os.environ.get("LITELLM_API_KEY", "")
+if not LITELLM_KEY:
+    try:
+        with open(os.path.expanduser("~/.hermes/config/auth.json")) as f:
+            auth_data = json.load(f)
+            LITELLM_KEY = auth_data.get("litellm", {}).get("api_key", "")
+    except (FileNotFoundError, json.JSONDecodeError, KeyError):
+        pass
 
 # Local MLX on Atlas (if bridge runs there)
 LOCAL_MLX_PORT = 11234
