@@ -22,3 +22,8 @@
 **Vulnerability:** Found `innerHTML` used in `command.html` for both the event ticker (`entry.innerHTML = ...`) and the node list rendering (`item.innerHTML = ...`). The node list rendering was particularly vulnerable as it injected dynamic JSON data (from `status.json`) into the DOM.
 **Learning:** Even when populating simple lists or tickers from external or dynamic sources (like JSON files), using `innerHTML` introduces a significant risk of DOM XSS if the data source is compromised or tampered with.
 **Prevention:** Always use secure DOM creation methods (`document.createElement`, `textContent`, `classList.add`, and `appendChild`) instead of `innerHTML` when rendering lists or components with dynamic data.
+
+## 2024-06-15 - [Hardcoded API Key Leakage]
+**Vulnerability:** A hardcoded API key (LITELLM_KEY) was found directly in the source code of `scripts/zeusapollo_swarm.py`.
+**Learning:** Storing secrets in source control exposes them to anyone with repository access, risking unauthorized usage, data breaches, and financial loss if the repository is ever compromised or made public.
+**Prevention:** Always load secrets dynamically from environment variables (`os.environ.get`) or external secure configuration files that are not checked into version control.
