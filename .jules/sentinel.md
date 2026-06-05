@@ -22,3 +22,8 @@
 **Vulnerability:** Found `innerHTML` used in `command.html` for both the event ticker (`entry.innerHTML = ...`) and the node list rendering (`item.innerHTML = ...`). The node list rendering was particularly vulnerable as it injected dynamic JSON data (from `status.json`) into the DOM.
 **Learning:** Even when populating simple lists or tickers from external or dynamic sources (like JSON files), using `innerHTML` introduces a significant risk of DOM XSS if the data source is compromised or tampered with.
 **Prevention:** Always use secure DOM creation methods (`document.createElement`, `textContent`, `classList.add`, and `appendChild`) instead of `innerHTML` when rendering lists or components with dynamic data.
+
+## 2026-06-03 - [Missing Authentication on Speculative Bridge]
+**Vulnerability:** The speculative decoding bridge (`scripts/zeusapollo_bridge.py`) was completely lacking authentication, exposing its endpoints to unauthenticated requests.
+**Learning:** Even internal helper scripts or bridges need authentication to prevent unauthorized usage or abuse within the local network, especially when they access expensive or restricted models.
+**Prevention:** Implement `X-API-Key` authentication consistently across all bridge and API endpoints, loading secrets securely from environment variables or protected configuration files, and using constant-time comparison for validation.
