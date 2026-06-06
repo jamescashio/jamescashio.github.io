@@ -45,7 +45,7 @@ API_KEY = os.environ.get("SWARM_API_KEY", "")
 if not API_KEY:
     # Try auth.json
     try:
-        with open("/root/.hermes/config/auth.json") as f:
+        with open(os.path.expanduser("~/.hermes/config/auth.json")) as f:
             auth = json.load(f)
             API_KEY = auth.get("swarm", {}).get("api_key", "")
     except (FileNotFoundError, json.JSONDecodeError, KeyError):
@@ -54,7 +54,7 @@ if not API_KEY:
 if not API_KEY:
     print("⚠️  WARNING: SWARM_API_KEY not set — auth DISABLED")
     print("    Set via: export SWARM_API_KEY='your-key-here'")
-    print("    Or add to /root/.hermes/config/auth.json under 'swarm.api_key'")
+    print("    Or add to ~/.hermes/config/auth.json under 'swarm.api_key'")
 
 # Rate limiting: max requests per sliding window
 RATE_LIMIT_REQUESTS = 60
@@ -83,7 +83,18 @@ ATLAS_OLLAMA = "http://192.168.1.78:11434/api/generate"
 LITELLM_QWEN = "http://192.168.1.115:4000/v1/chat/completions"
 
 # LiteLLM auth
-LITELLM_KEY = "sk-zeu...-key"
+# SECURITY: Remove hardcoded API key, load from environment or config
+LITELLM_KEY = os.environ.get("LITELLM_KEY", "")
+if not LITELLM_KEY:
+    try:
+        with open(os.path.expanduser("~/.hermes/config/auth.json")) as f:
+            auth = json.load(f)
+            LITELLM_KEY = auth.get("litellm", {}).get("api_key", "")
+    except (FileNotFoundError, json.JSONDecodeError, KeyError):
+        pass
+
+if not LITELLM_KEY:
+    print("⚠️  WARNING: LITELLM_KEY not set — LiteLLM requests will fail without valid auth")
 
 # Local MLX on Atlas (if bridge runs there)
 LOCAL_MLX_PORT = 11234

@@ -22,3 +22,7 @@
 **Vulnerability:** Found `innerHTML` used in `command.html` for both the event ticker (`entry.innerHTML = ...`) and the node list rendering (`item.innerHTML = ...`). The node list rendering was particularly vulnerable as it injected dynamic JSON data (from `status.json`) into the DOM.
 **Learning:** Even when populating simple lists or tickers from external or dynamic sources (like JSON files), using `innerHTML` introduces a significant risk of DOM XSS if the data source is compromised or tampered with.
 **Prevention:** Always use secure DOM creation methods (`document.createElement`, `textContent`, `classList.add`, and `appendChild`) instead of `innerHTML` when rendering lists or components with dynamic data.
+## 2024-06-06 - Hardcoded LiteLLM API Key and Insecure Config Paths
+**Vulnerability:** A hardcoded `LITELLM_KEY` was found embedded directly in `scripts/zeusapollo_swarm.py`, leaking an internal proxy API key. Additionally, configuration was reading from an absolute root path (`/root/.hermes/config/auth.json`), which caused potential permission errors or hardcoded dependency assumptions.
+**Learning:** Hardcoded credentials and strictly absolute paths to user home directories (`/root/`) frequently appear in ad-hoc networking bridge scripts between models. This highlights a gap in environment-agnostic security assumptions.
+**Prevention:** Always load secrets via environment variables (e.g. `os.environ.get`) and fall back to local JSON/YAML config files located using `os.path.expanduser("~/.hermes/...")` instead of absolute path hardcoding.
