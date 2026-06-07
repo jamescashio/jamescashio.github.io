@@ -460,10 +460,20 @@ async def security_middleware(request: Request, call_next):
 
 @app.post("/v1/chat/completions")
 async def chat_completions(request: Request):
-    body = await request.json()
-    prompt, max_tokens, stream = validate_request_body(body)
+    try:
+        body = await request.json()
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=400, detail="Invalid JSON body")
 
-    response_text = route_and_generate(prompt, max_tokens)
+    try:
+        prompt, max_tokens, stream = validate_request_body(body)
+        response_text = route_and_generate(prompt, max_tokens)
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        # SECURITY: Prevent leaking internal stack traces or connection errors to the client
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
     if stream:
         return StreamingResponse(
