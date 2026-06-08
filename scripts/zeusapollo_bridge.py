@@ -30,7 +30,7 @@ import time
 import httpx
 import mlx.core as mx
 from mlx_lm import load, generate
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import StreamingResponse
 import uvicorn
 
@@ -145,23 +145,30 @@ app = FastAPI(title="ZeusApollo Speculative Bridge")
 
 @app.post("/v1/completions")
 async def completions(request: Request):
-    body = await request.json()
-    prompt = body.get("prompt", "")
-    max_tokens = body.get("max_tokens", 512)
-    stream = body.get("stream", False)
+    try:
+        body = await request.json()
+        prompt = body.get("prompt", "")
+        max_tokens = body.get("max_tokens", 512)
+        stream = body.get("stream", False)
 
-    if stream:
-        return StreamingResponse(
-            stream_response(prompt, max_tokens),
-            media_type="text/event-stream"
-        )
+        if stream:
+            return StreamingResponse(
+                stream_response(prompt, max_tokens),
+                media_type="text/event-stream"
+            )
 
-    # Non-streaming
-    result = "".join(speculative_generate(prompt, max_tokens))
-    return {
-        "choices": [{"text": result}],
-        "usage": {"total_tokens": len(result)}
-    }
+        # Non-streaming
+        result = "".join(speculative_generate(prompt, max_tokens))
+        return {
+            "choices": [{"text": result}],
+            "usage": {"total_tokens": len(result)}
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        # SECURITY: Prevent leaking stack traces to the client
+        print(f"Internal error in completions: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 async def stream_response(prompt, max_tokens):
     yield "data: " + json.dumps({"choices": [{"delta": {"role": "assistant"}}]}) + "\n\n"

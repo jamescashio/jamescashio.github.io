@@ -460,29 +460,36 @@ async def security_middleware(request: Request, call_next):
 
 @app.post("/v1/chat/completions")
 async def chat_completions(request: Request):
-    body = await request.json()
-    prompt, max_tokens, stream = validate_request_body(body)
+    try:
+        body = await request.json()
+        prompt, max_tokens, stream = validate_request_body(body)
 
-    response_text = route_and_generate(prompt, max_tokens)
+        response_text = route_and_generate(prompt, max_tokens)
 
-    if stream:
-        return StreamingResponse(
-            stream_response(response_text),
-            media_type="text/event-stream"
-        )
+        if stream:
+            return StreamingResponse(
+                stream_response(response_text),
+                media_type="text/event-stream"
+            )
 
-    return {
-        "id": f"za-{int(time.time())}",
-        "object": "chat.completion",
-        "choices": [{
-            "index": 0,
-            "message": {
-                "role": "assistant",
-                "content": response_text
-            },
-            "finish_reason": "stop"
-        }]
-    }
+        return {
+            "id": f"za-{int(time.time())}",
+            "object": "chat.completion",
+            "choices": [{
+                "index": 0,
+                "message": {
+                    "role": "assistant",
+                    "content": response_text
+                },
+                "finish_reason": "stop"
+            }]
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        # SECURITY: Prevent leaking stack traces to the client
+        print(f"Internal error in chat_completions: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
 async def stream_response(text: str):
@@ -553,15 +560,20 @@ async def v1_health(request: Request):
 @app.get("/route")
 async def current_route(request: Request, query: str = ""):
     """Show routing for a query — auth required."""
-    if not query:
-        return {"error": "Provide a query parameter"}
-    route = classify_query(query)
-    return {"query": query[:100], "route": route, "target": {
-        "fast": "Cashiotuf (RTX 3080 / LM Studio)",
-        "deep": "Atlas (M4 / Ollama Qwen2.5 14B)",
-        "sovereign": "Atlas (M4 / Ollama Llama 3.1 8B)",
-        "strategic": "Qwen3.6-Max (cloud / LiteLLM)"
-    }.get(route, "unknown")}
+    try:
+        if not query:
+            return {"error": "Provide a query parameter"}
+        route = classify_query(query)
+        return {"query": query[:100], "route": route, "target": {
+            "fast": "Cashiotuf (RTX 3080 / LM Studio)",
+            "deep": "Atlas (M4 / Ollama Qwen2.5 14B)",
+            "sovereign": "Atlas (M4 / Ollama Llama 3.1 8B)",
+            "strategic": "Qwen3.6-Max (cloud / LiteLLM)"
+        }.get(route, "unknown")}
+    except Exception as e:
+        # SECURITY: Prevent leaking stack traces to the client
+        print(f"Internal error in current_route: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
 # ─── MAIN ───────────────────────────────────────────────────────────────────

@@ -26,3 +26,8 @@
 **Vulnerability:** A hardcoded `LITELLM_KEY` was found embedded directly in `scripts/zeusapollo_swarm.py`, leaking an internal proxy API key. Additionally, configuration was reading from an absolute root path (`/root/.hermes/config/auth.json`), which caused potential permission errors or hardcoded dependency assumptions.
 **Learning:** Hardcoded credentials and strictly absolute paths to user home directories (`/root/`) frequently appear in ad-hoc networking bridge scripts between models. This highlights a gap in environment-agnostic security assumptions.
 **Prevention:** Always load secrets via environment variables (e.g. `os.environ.get`) and fall back to local JSON/YAML config files located using `os.path.expanduser("~/.hermes/...")` instead of absolute path hardcoding.
+
+## 2024-06-08 - [FastAPI Unhandled Exception Stack Trace Leakage]
+**Vulnerability:** FastAPI endpoints in `zeusapollo_swarm.py` and `zeusapollo_bridge.py` lacked top-level exception handling. If an unhandled exception occurred, the internal error could potentially leak stack traces or internal system states to the client depending on the environment configuration, or cause the process to crash ungracefully.
+**Learning:** Unhandled exceptions in backend API routes are a common source of information disclosure. Default exception handlers may leak implementation details (like file paths, library versions, or specific database query failures) that aid attackers in reconnaissance.
+**Prevention:** Always include top-level `try/except Exception as e:` blocks in FastAPI endpoints to catch generic exceptions, log them securely on the server side, and raise a sanitized `HTTPException` (e.g., `500 Internal Server Error`) to the client to fail securely.
