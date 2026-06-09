@@ -31,7 +31,7 @@ import httpx
 import mlx.core as mx
 from mlx_lm import load, generate
 from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, JSONResponse
 import uvicorn
 
 # ─── CONFIG ─────────────────────────────────────────────────────────────────
@@ -143,6 +143,21 @@ def speculative_generate(prompt: str, max_tokens: int = 512):
 # ─── API SERVER ─────────────────────────────────────────────────────────────
 app = FastAPI(title="ZeusApollo Speculative Bridge")
 
+@app.middleware("http")
+async def security_middleware(request: Request, call_next):
+    """Global security middleware — adds security headers."""
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+
+    # SECURITY: Add restrictive CSP, but exclude OpenAPI docs to avoid breaking Swagger UI/ReDoc
+    if request.url.path not in ["/docs", "/redoc", "/openapi.json"]:
+        response.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
+
+    return response
+
 @app.post("/v1/completions")
 async def completions(request: Request):
     try:
@@ -178,15 +193,25 @@ async def stream_response(prompt, max_tokens):
 
 @app.get("/v1/models")
 async def list_models():
-    return {
-        "data": [
-            {"id": "zeusapollo-speculative", "object": "model", "created": int(time.time())}
-        ]
-    }
+    try:
+        return {
+            "data": [
+                {"id": "zeusapollo-speculative", "object": "model", "created": int(time.time())}
+            ]
+        }
+    except Exception as e:
+        # SECURITY: Prevent leaking stack traces to the client
+        print(f"Internal error in list_models: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 @app.get("/health")
 async def health():
-    return {"status": "ok", "mode": "speculative", "draft": "cashiotuf:3080", "target": "atlas:m4"}
+    try:
+        return {"status": "ok", "mode": "speculative", "draft": "cashiotuf:3080", "target": "atlas:m4"}
+    except Exception as e:
+        # SECURITY: Prevent leaking stack traces to the client
+        print(f"Internal error in health: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 # ─── MAIN ───────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
