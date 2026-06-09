@@ -31,3 +31,8 @@
 **Vulnerability:** FastAPI endpoints in `zeusapollo_swarm.py` and `zeusapollo_bridge.py` lacked top-level exception handling. If an unhandled exception occurred, the internal error could potentially leak stack traces or internal system states to the client depending on the environment configuration, or cause the process to crash ungracefully.
 **Learning:** Unhandled exceptions in backend API routes are a common source of information disclosure. Default exception handlers may leak implementation details (like file paths, library versions, or specific database query failures) that aid attackers in reconnaissance.
 **Prevention:** Always include top-level `try/except Exception as e:` blocks in FastAPI endpoints to catch generic exceptions, log them securely on the server side, and raise a sanitized `HTTPException` (e.g., `500 Internal Server Error`) to the client to fail securely.
+
+## 2024-06-09 - [Missing Security Headers in Secondary Bridge Script]
+**Vulnerability:** `scripts/zeusapollo_bridge.py`, a secondary bridge script used for speculative decoding, was missing basic security headers (like Content-Security-Policy, X-Frame-Options, X-Content-Type-Options) while the primary swarm script already possessed them.
+**Learning:** It is easy to overlook baseline security measures when creating secondary, internal, or highly specialized scripts (such as for speculative decoding). However, any exposed HTTP endpoint requires consistent baseline security headers to prevent attacks like clickjacking or content sniffing.
+**Prevention:** Always implement a security middleware applying strict HTTP headers (including CSP, HSTS, and X-Frame-Options) across all API surfaces, regardless of their primary intent or network positioning.
