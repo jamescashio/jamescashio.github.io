@@ -18,11 +18,6 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Doug Cashio — Enterprise AI &amp; Cybersecurity">
 <meta name="twitter:description" content="Sovereign 19-node homelab · multi-model LLM orchestration · 7.2× cost reduction.">
-<meta property="og:image" content="https://cashio.us/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="ZeusApollo — Doug Cashio&#39;s 19-node sovereign AI fleet">
-<meta name="twitter:image" content="https://cashio.us/og-image.png">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Person","name":"Doug Cashio","jobTitle":"Principal Solutions Consultant","description":"Enterprise AI & Cybersecurity. Sovereign 19-node ZeusApollo homelab, multi-model LLM orchestration.","url":"https://cashio.us/","email":"doug@cashio.us","sameAs":["https://linkedin.com/in/doug-cashio","https://www.credly.com/users/james-cashio/badges"],"knowsAbout":["Enterprise AI","Cybersecurity","LLM Orchestration","Proxmox","Cloud Security"]}
 </script>
@@ -34,7 +29,7 @@
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700&family=Orbitron:wght@600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,200;0,300;0,400;0,600;0,700;1,300&family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    ZEUSAPOLLO v26 — command-center. v24 visual language kept,
@@ -373,17 +368,6 @@ a:focus-visible,button:focus-visible,.btn:focus-visible{outline:none;box-shadow:
 }
 @media(max-width:480px){.ribbon{grid-template-columns:1fr 1fr}.metrics{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important;transition-duration:.01ms!important}body::after{animation:none}#starfield{display:none}}
-
-/* ===== v27 additions ===== */
-.deck-nav{position:fixed;left:0;right:0;top:0;z-index:60;display:flex;gap:2px;justify-content:center;flex-wrap:wrap;padding:7px 10px;background:rgba(10,10,15,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--glass-border);font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;transform:translateY(-130%);transition:transform .35s ease}
-.deck-nav.show{transform:translateY(0)}
-.deck-nav a{color:var(--text-dim);text-decoration:none;padding:4px 12px;border-radius:6px;transition:color .2s}
-.deck-nav a:hover{color:var(--cyan)}
-.deck-nav a.active{color:var(--cyan);text-shadow:0 0 8px var(--cyan-glow);background:var(--glass)}
-.plain{margin-top:12px;font-family:var(--font-mono);font-size:13px;line-height:1.6;color:var(--text-dim);border-left:2px solid var(--cyan);padding-left:12px}
-a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:2px;box-shadow:0 0 12px var(--cyan-glow)}
-.sync-chip{color:var(--green);font-family:var(--font-mono);font-size:11px;letter-spacing:.1em}
-@media(max-width:560px){#termInput{font-size:16px}.deck-nav{font-size:10px;letter-spacing:.1em}}
 </style>
 </head>
 <body>
@@ -415,11 +399,6 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   </div>
 </header>
 
-<nav class="deck-nav" id="deckNav" aria-label="Section navigation">
-  <a href="#chain">CHAIN</a><a href="#console">CONSOLE</a><a href="#stack">STACK</a><a href="#topology">TOPOLOGY</a><a href="#telemetry">TELEMETRY</a><a href="#changelog">CHANGELOG</a>
-</nav>
-
-
 <main class="wrap" id="main">
 
   <!-- ===================== HERO ===================== -->
@@ -427,8 +406,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
     <h1 id="heroName">DOUG CASHIO</h1>
     <div class="role">ENTERPRISE AI &amp; CYBERSECURITY</div>
     <div class="sub">Principal Solutions Consultant · Sovereign Infrastructure · Multi-Model Orchestration</div>
-    <p class="pitch">I cut AI inference costs <b>7.2×</b> — measured against an Opus-primary baseline — by building a sovereign infrastructure — not renting vendor lock-in. A <b>19-node homelab</b> where every model, route, and backup is deployed, documented, and battle-tested.</p>
-    <p class="plain">TRANSLATION FOR HUMANS // I design and run AI infrastructure that does the work of a cloud platform team — cheaper, private, and provably autonomous. Everything below is live proof.</p>
+    <p class="pitch">I cut AI inference costs <b>7.2×</b> by building a sovereign infrastructure — not renting vendor lock-in. A <b>19-node homelab</b> where every model, route, and backup is deployed, documented, and battle-tested.</p>
     <div class="kicker" id="kicker"></div>
     <div class="cta-row">
       <a class="btn primary" href="#chain">◎ THE LLM CHAIN →</a>
@@ -453,7 +431,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
       <div class="num" data-count="15" data-suffix="+">15+</div><div class="lbl">Yrs Enterprise</div>
       <div class="tip" role="tooltip"><b>◈ SERVICE RECORD</b>Years in enterprise IT and cybersecurity, supporting large-scale, mission-critical environments.</div></div>
     <div class="cell" tabindex="0" aria-label="Nineteen automated cron jobs running fully autonomous ops.">
-      <div class="num" data-count="19">19</div><div class="lbl">Crons Active<span class="was">(was 3 at launch)</span></div>
+      <div class="num" data-count="19">19</div><div class="lbl">Crons Active<span class="was">(was 3)</span></div>
       <div class="tip" role="tooltip"><b>◈ AUTOPILOT</b>Automated scheduled jobs running briefings, backups, watchdogs, and balance tracking — fully autonomous.</div></div>
   </section>
 
@@ -537,7 +515,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
       <div class="metric"><div class="num" id="mTokens" data-count="20" data-suffix="M" data-prefix="~">~20M</div><div class="lbl">Tokens Routed</div><div class="note">lifetime · <span class="live-dot">●</span> live</div></div>
       <div class="metric"><div class="num" data-count="342" data-prefix="$" data-suffix="+">$342+</div><div class="lbl">Saved vs Opus</div><div class="note">and climbing</div></div>
       <div class="metric"><div class="num" data-count="19">19</div><div class="lbl">Fleet Nodes</div><div class="note">Proxmox guests</div></div>
-      <div class="metric"><div class="num" data-count="19">19</div><div class="lbl">Crons Active</div><div class="note">was 3 at launch</div></div>
+      <div class="metric"><div class="num" data-count="19">19</div><div class="lbl">Crons Active</div><div class="note">was 3</div></div>
       <div class="metric"><div class="num" id="mBurn" data-count="0.5" data-prefix="$" data-decimals="2">$0.50</div><div class="lbl">Daily Burn</div><div class="note">was ~$4</div></div>
     </div>
   </section>
@@ -653,18 +631,6 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   </section>
 
 </main>
-
-
-  <!-- ===================== HAILING ===================== -->
-  <section class="panel" id="hailing" aria-labelledby="hailHead">
-    <div class="sec-head"><span aria-hidden="true">📡</span><h2 id="hailHead">HAILING FREQUENCIES — OPEN</h2><span class="tag upd">MONITORED</span><span class="lcars-bar"></span></div>
-    <p style="margin-bottom:16px">Hiring for AI infrastructure, platform engineering, or cybersecurity — or want a walkthrough of the fleet? The commander answers hails directly.</p>
-    <div class="cta-row">
-      <a class="btn primary" href="mailto:doug@cashio.us">✉ TRANSMIT MESSAGE</a>
-      <a class="btn secondary" href="https://linkedin.com/in/doug-cashio" target="_blank" rel="noopener">in LINKEDIN</a>
-      <a class="btn ghost" href="https://www.credly.com/users/james-cashio/badges" target="_blank" rel="noopener">🎖 CREDENTIALS</a>
-    </div>
-  </section>
 
 <footer>
   <div>SOURCE: PROXMOX VE API + ADGUARD DHCP + NODE INVENTORY · ZEUSAPOLLO SOVEREIGN FABRIC</div>
@@ -999,58 +965,6 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
     console.log('%cZEUSAPOLLO // command deck','color:#00f9ff;font-family:monospace;font-size:16px;font-weight:bold;text-shadow:0 0 8px rgba(0,249,255,.5)');
     console.log('%cYou opened the console. Of course you did. — Eve 🌀\nScroll to the HERMES CONSOLE and type `ask eve who are you`.\nWant to talk infrastructure? doug@cashio.us','color:#b6b6d0;font-family:monospace;font-size:12px');
   }catch(e){}
-})();
-</script>
-
-<script>
-/* ===== v27: live status layer + deck nav ===== */
-(function(){
-"use strict";
-function setText(id,t){var e=document.getElementById(id);if(e)e.textContent=t;}
-function applyStatus(s){
-  try{
-    if(s.uptime){setText('uptime',s.uptime);setText('mUptime',s.uptime);}
-    if(typeof s.daily_burn==='number'){setText('mBurn','$'+s.daily_burn.toFixed(2));}
-    if(typeof s.tokens_routed_m==='number'){setText('mTokens','~'+s.tokens_routed_m+'M');}
-    if(s.cluster_status){var c=document.querySelector('.hud-stat .v.warp');if(c)c.textContent=s.cluster_status;}
-    var ts=s.generated||s.timestamp;
-    if(ts){
-      var head=document.querySelector('#telemetry .sec-head');
-      if(head&&!head.querySelector('.sync-chip')){
-        var chip=document.createElement('span');chip.className='sync-chip';
-        var d=new Date(ts);
-        chip.textContent='● SYNCED '+(isNaN(d)?String(ts).slice(0,16):d.toISOString().replace('T',' ').slice(0,16)+'Z');
-        head.insertBefore(chip,head.querySelector('.lcars-bar'));
-      }
-    }
-  }catch(e){}
-}
-fetch('status.json',{cache:'no-store'})
-  .then(function(r){return r.ok?r.json():null;})
-  .then(function(s){if(s)applyStatus(s);})
-  .catch(function(){});
-
-var nav=document.getElementById('deckNav');
-var hero=document.querySelector('.hero');
-if(nav&&hero){
-  var links=nav.querySelectorAll('a');
-  window.addEventListener('scroll',function(){
-    nav.classList.toggle('show',window.scrollY>hero.offsetTop+hero.offsetHeight-80);
-  },{passive:true});
-  if('IntersectionObserver' in window){
-    var map={};
-    Array.prototype.forEach.call(links,function(a){map[a.getAttribute('href').slice(1)]=a;});
-    var io=new IntersectionObserver(function(es){
-      es.forEach(function(en){
-        if(en.isIntersecting){
-          Array.prototype.forEach.call(links,function(a){a.classList.remove('active');});
-          var a=map[en.target.id];if(a)a.classList.add('active');
-        }
-      });
-    },{rootMargin:'-40% 0px -50% 0px'});
-    Object.keys(map).forEach(function(id){var s=document.getElementById(id);if(s)io.observe(s);});
-  }
-}
 })();
 </script>
 </body>
