@@ -384,6 +384,22 @@ a:focus-visible,button:focus-visible,.btn:focus-visible{outline:none;box-shadow:
 a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:2px;box-shadow:0 0 12px var(--cyan-glow)}
 .sync-chip{color:var(--green);font-family:var(--font-mono);font-size:11px;letter-spacing:.1em}
 @media(max-width:560px){#termInput{font-size:16px}.deck-nav{font-size:10px;letter-spacing:.1em}}
+
+/* ===== BIT ===== */
+#bit{position:fixed;right:22px;bottom:22px;width:62px;height:62px;z-index:55;cursor:pointer;filter:drop-shadow(0 0 10px var(--cyan-glow))}
+#bit svg{width:100%;height:100%;animation:bitfloat 7s ease-in-out infinite}
+#bit polygon{fill:rgba(0,249,255,.10);stroke:var(--cyan);stroke-width:2.5;stroke-linejoin:round}
+#bit.yes polygon{fill:rgba(255,204,0,.30);stroke:var(--amber)}
+#bit.no polygon{fill:rgba(255,0,51,.30);stroke:var(--red)}
+#bit.no svg{animation:bitshake .12s linear 9}
+#bitSay{position:absolute;bottom:68px;right:4px;font-family:var(--font-mono);font-size:12px;letter-spacing:.22em;color:var(--cyan);opacity:0;transition:opacity .15s;white-space:nowrap;text-shadow:0 0 8px var(--cyan-glow)}
+#bit.yes #bitSay{color:var(--amber);text-shadow:0 0 8px rgba(255,204,0,.5)}
+#bit.no #bitSay{color:var(--red);text-shadow:0 0 8px rgba(255,0,51,.5)}
+#bit.say #bitSay{opacity:1}
+@keyframes bitfloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-9px) rotate(180deg)}}
+@keyframes bitshake{0%{transform:translate(2px,-1px)}25%{transform:translate(-2px,2px)}50%{transform:translate(1px,2px)}75%{transform:translate(-1px,-2px)}100%{transform:translate(0,0)}}
+@media(prefers-reduced-motion:reduce){#bit svg{animation:none}#bit.no svg{animation:none}}
+@media(max-width:560px){#bit{width:50px;height:50px;right:14px;bottom:14px}}
 </style>
 </head>
 <body>
@@ -658,13 +674,20 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   <!-- ===================== HAILING ===================== -->
   <section class="panel" id="hailing" aria-labelledby="hailHead">
     <div class="sec-head"><span aria-hidden="true">📡</span><h2 id="hailHead">HAILING FREQUENCIES — OPEN</h2><span class="tag upd">MONITORED</span><span class="lcars-bar"></span></div>
-    <p style="margin-bottom:16px">Hiring for AI infrastructure, platform engineering, or cybersecurity — or want a walkthrough of the fleet? The commander answers hails directly.</p>
+    <p style="margin-bottom:16px">Questions about the fleet, sovereign AI, or how any of this was built — or just want a walkthrough? The commander answers hails directly.</p>
     <div class="cta-row">
       <a class="btn primary" href="mailto:doug@cashio.us">✉ TRANSMIT MESSAGE</a>
       <a class="btn secondary" href="https://linkedin.com/in/doug-cashio" target="_blank" rel="noopener">in LINKEDIN</a>
       <a class="btn ghost" href="https://www.credly.com/users/james-cashio/badges" target="_blank" rel="noopener">🎖 CREDENTIALS</a>
     </div>
   </section>
+
+
+  <!-- ===================== BIT (Tron 1982 homage — original code) ===================== -->
+  <div id="bit" tabindex="0" role="button" aria-label="Bit — binary companion. Press to receive a yes or no." title="Bit · binary companion">
+    <svg viewBox="0 0 100 100" aria-hidden="true"><polygon id="bitShape" points="50,6 88,28 88,72 50,94 12,72 12,28"/></svg>
+    <span id="bitSay" aria-live="polite"></span>
+  </div>
 
 <footer>
   <div>SOURCE: PROXMOX VE API + ADGUARD DHCP + NODE INVENTORY · ZEUSAPOLLO SOVEREIGN FABRIC</div>
@@ -1051,6 +1074,32 @@ if(nav&&hero){
     Object.keys(map).forEach(function(id){var s=document.getElementById(id);if(s)io.observe(s);});
   }
 }
+})();
+</script>
+
+<script>
+/* ===== BIT — binary companion (original homage, Tron 1982) ===== */
+(function(){
+"use strict";
+var bit=document.getElementById('bit');if(!bit)return;
+var poly=document.getElementById('bitShape'),say=document.getElementById('bitSay');
+var IDLE='50,6 88,28 88,72 50,94 12,72 12,28';
+function star(n,R,r){var p=[];for(var i=0;i<n*2;i++){var a=Math.PI*i/n-Math.PI/2,rad=i%2?r:R;
+p.push((50+rad*Math.cos(a)).toFixed(1)+','+(50+rad*Math.sin(a)).toFixed(1));}return p.join(' ');}
+var YES=star(8,40,30),NO=star(12,46,13),busy=false;
+function answer(){
+  if(busy)return;busy=true;
+  var yes=Math.random()<.5;
+  bit.classList.add(yes?'yes':'no','say');
+  poly.setAttribute('points',yes?YES:NO);
+  say.textContent=yes?'YES':'NO NO NO NO';
+  setTimeout(function(){
+    bit.classList.remove('yes','no','say');
+    poly.setAttribute('points',IDLE);busy=false;
+  },yes?1400:1900);
+}
+bit.addEventListener('click',answer);
+bit.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();answer();}});
 })();
 </script>
 </body>
