@@ -424,8 +424,14 @@ app = FastAPI(title="ZeusApollo Swarm Bridge (Hardened)")
 async def security_middleware(request: Request, call_next):
     """Global security middleware — auth + rate limit + CORS + headers."""
 
-    # Apply auth + rate limit to all /v1/ routes
-    if request.url.path.startswith("/v1/"):
+    # Explicitly list public endpoints
+    public_endpoints = ["/health", "/docs", "/redoc", "/openapi.json"]
+
+    cors_origin = None
+
+    # SECURITY: Deny-by-default — apply auth + rate limit to ALL routes except explicitly public ones
+    # Avoid relying solely on URL prefix matching (e.g., startswith('/v1/')) to prevent unintended public exposure
+    if request.url.path not in public_endpoints:
         try:
             require_auth(request)
             require_rate_limit(request)
@@ -450,7 +456,7 @@ async def security_middleware(request: Request, call_next):
         response.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
 
     # Add CORS headers if origin was validated
-    if request.url.path.startswith("/v1/"):
+    if request.url.path not in public_endpoints:
         response.headers["Access-Control-Allow-Origin"] = cors_origin or "*"
         response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
         response.headers["Access-Control-Allow-Headers"] = "X-API-Key, Content-Type, Authorization"
