@@ -37,7 +37,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700&family=Orbitron:wght@600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
-   ZEUSAPOLLO v27 — command-center. v26 visual language kept,
+   ZEUSAPOLLO v26 — command-center. v24 visual language kept,
    LLM EVENT CHAIN added as the centerpiece. PII-scrubbed (no IPs).
    ============================================================ */
 :root{
@@ -157,7 +157,7 @@ body::after{content:"";position:fixed;inset:0;z-index:2;pointer-events:none;
 .ribbon .cell:hover,.ribbon .cell:focus-visible{border-color:var(--cyan);box-shadow:0 0 18px var(--cyan-glow);transform:translateY(-2px);outline:none}
 .ribbon .num{font-family:var(--font-display);font-weight:900;font-size:clamp(22px,4vw,34px);color:var(--cyan);text-shadow:0 0 18px var(--cyan-glow)}
 .ribbon .lbl{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--text-dim);margin-top:4px;text-transform:uppercase}
-.ribbon .was{display:block;color:var(--text-dim);font-size:10px;opacity:.85}
+.ribbon .was{display:block;color:var(--text-dim);font-size:9px;opacity:.8}
 .ribbon .tip{position:absolute;left:50%;top:calc(100% + 10px);transform:translateX(-50%) translateY(-4px);width:min(240px,76vw);
   background:var(--surface);border:1px solid var(--glass-border);border-left:3px solid var(--cyan);border-radius:10px;padding:11px 13px;z-index:60;
   font-family:var(--font-body);font-size:12px;line-height:1.45;color:var(--text);text-align:left;box-shadow:0 12px 34px rgba(0,0,0,.6);
@@ -223,7 +223,7 @@ body::after{content:"";position:fixed;inset:0;z-index:2;pointer-events:none;
 .metric{background:var(--surface-2);border:1px solid var(--glass-border);border-radius:var(--radius);padding:18px;text-align:center}
 .metric .num{font-family:var(--font-display);font-weight:700;font-size:clamp(20px,3.4vw,30px);color:var(--green);text-shadow:0 0 16px rgba(0,255,159,.4)}
 .metric .lbl{font-family:var(--font-mono);font-size:11px;color:var(--text-dim);margin-top:4px;letter-spacing:.08em}
-.metric .note{font-size:11px;color:var(--text-dim);opacity:.85}
+.metric .note{font-size:10px;color:var(--text-dim);opacity:.8}
 .live-dot{color:var(--green);animation:pulse 1.6s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:.25}50%{opacity:1}}
 .metric .num.flash{color:#fff}
@@ -231,7 +231,7 @@ body::after{content:"";position:fixed;inset:0;z-index:2;pointer-events:none;
 /* release notes */
 .rn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:14px}
 .rn-grid .c{background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius);padding:10px 12px}
-.rn-grid .c .k{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--text-dim)}
+.rn-grid .c .k{font-family:var(--font-mono);font-size:9px;letter-spacing:.14em;color:var(--text-dim)}
 .rn-grid .c .v{font-family:var(--font-display);font-size:13px;color:var(--amber);margin-top:3px}
 .burn{font-family:var(--font-display);font-size:clamp(22px,5vw,38px);color:var(--green);text-shadow:0 0 20px rgba(0,255,159,.4)}
 .burn small{font-size:13px;color:var(--text-dim)}
@@ -386,30 +386,19 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 @media(max-width:560px){#termInput{font-size:16px}.deck-nav{font-size:10px;letter-spacing:.1em}}
 
 /* ===== BIT ===== */
-#bit{position:fixed;right:22px;bottom:22px;width:62px;height:62px;z-index:55;cursor:pointer;perspective:600px;transform-style:preserve-3d;filter:drop-shadow(0 0 10px var(--cyan-glow));animation:bitdrift 7.6s ease-in-out infinite,bitpulse 2.5s ease-in-out .6s infinite}
-#bit svg{width:100%;height:100%;animation:bitspin 12s linear infinite;transform-style:preserve-3d;backface-visibility:visible}
+#bit{position:fixed;right:22px;bottom:22px;width:62px;height:62px;z-index:55;cursor:pointer;filter:drop-shadow(0 0 10px var(--cyan-glow))}
+#bit svg{width:100%;height:100%;animation:bitfloat 7s ease-in-out infinite}
 #bit polygon{fill:rgba(0,249,255,.10);stroke:var(--cyan);stroke-width:2.5;stroke-linejoin:round}
-#bit::before,#bit::after{content:"";position:absolute;left:50%;top:50%;width:3px;height:3px;border-radius:50%;background:var(--cyan);box-shadow:0 0 6px var(--cyan-glow);pointer-events:none}
-#bit::before{animation:bitmoteA 5.3s linear infinite}
-#bit::after{animation:bitmoteB 6.7s linear infinite reverse}
-#bit.yes{animation:bitdrift 7.6s ease-in-out infinite;filter:drop-shadow(0 0 14px rgba(255,204,0,.55))}
-#bit.no{animation:bitdrift 7.6s ease-in-out infinite;filter:drop-shadow(0 0 14px rgba(255,0,51,.55))}
 #bit.yes polygon{fill:rgba(255,204,0,.30);stroke:var(--amber)}
 #bit.no polygon{fill:rgba(255,0,51,.30);stroke:var(--red)}
-#bit.yes svg{animation:bitspin 12s linear infinite}
 #bit.no svg{animation:bitshake .12s linear 9}
 #bitSay{position:absolute;bottom:68px;right:4px;font-family:var(--font-mono);font-size:12px;letter-spacing:.22em;color:var(--cyan);opacity:0;transition:opacity .15s;white-space:nowrap;text-shadow:0 0 8px var(--cyan-glow)}
 #bit.yes #bitSay{color:var(--amber);text-shadow:0 0 8px rgba(255,204,0,.5)}
 #bit.no #bitSay{color:var(--red);text-shadow:0 0 8px rgba(255,0,51,.5)}
 #bit.say #bitSay{opacity:1}
-/* lemniscate (figure-8) zero-G drift: x=A·sin(t), y=B·sin(2t) */
-@keyframes bitdrift{0%{transform:translate3d(0,0,0) rotateX(0deg)}12.5%{transform:translate3d(11px,-7px,8px) rotateX(7deg)}25%{transform:translate3d(16px,0,0) rotateX(0deg)}37.5%{transform:translate3d(11px,7px,-8px) rotateX(-7deg)}50%{transform:translate3d(0,0,0) rotateX(0deg)}62.5%{transform:translate3d(-11px,-7px,8px) rotateX(7deg)}75%{transform:translate3d(-16px,0,0) rotateX(0deg)}87.5%{transform:translate3d(-11px,7px,-8px) rotateX(-7deg)}100%{transform:translate3d(0,0,0) rotateX(0deg)}}
-@keyframes bitspin{from{transform:rotateY(0deg)}to{transform:rotateY(360deg)}}
-@keyframes bitpulse{0%,100%{filter:drop-shadow(0 0 8px var(--cyan-glow))}50%{filter:drop-shadow(0 0 18px var(--cyan-glow)) drop-shadow(0 0 4px var(--cyan-glow))}}
-@keyframes bitmoteA{0%{transform:translate(-50%,-50%) rotate(0deg) translateX(44px);opacity:.15}30%{opacity:.6}55%{opacity:.25}80%{opacity:.5}100%{transform:translate(-50%,-50%) rotate(360deg) translateX(44px);opacity:.15}}
-@keyframes bitmoteB{0%{transform:translate(-50%,-50%) rotate(130deg) translateX(34px);opacity:.1}40%{opacity:.5}70%{opacity:.2}100%{transform:translate(-50%,-50%) rotate(490deg) translateX(34px);opacity:.1}}
+@keyframes bitfloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-9px) rotate(180deg)}}
 @keyframes bitshake{0%{transform:translate(2px,-1px)}25%{transform:translate(-2px,2px)}50%{transform:translate(1px,2px)}75%{transform:translate(-1px,-2px)}100%{transform:translate(0,0)}}
-@media(prefers-reduced-motion:reduce){#bit,#bit svg,#bit.no svg{animation:none}#bit::before,#bit::after{display:none}}
+@media(prefers-reduced-motion:reduce){#bit svg{animation:none}#bit.no svg{animation:none}}
 @media(max-width:560px){#bit{width:50px;height:50px;right:14px;bottom:14px}}
 </style>
 </head>
@@ -430,11 +419,11 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 <!-- ===================== HUD ===================== -->
 <header class="hud">
   <div class="hud-inner">
-    <div class="hud-stat"><span class="k">STARDATE</span><span class="v">26162.5</span></div>
+    <div class="hud-stat"><span class="k">STARDATE</span><span class="v">26147.6</span></div>
     <div class="hud-stat"><span class="k">OPS CLOCK</span><span class="v" id="clock">--:--:--</span></div>
     <div class="hud-stat"><span class="k">CLUSTER</span><span class="v warp">● MAX WARP</span></div>
     <div class="hud-stat"><span class="k">UPTIME</span><span class="v" id="uptime">5d 4h</span></div>
-    <div class="hud-stat"><span class="k">LLM PRIMARY</span><span class="v">DEEPSEEK V4-PRO</span></div>
+    <div class="hud-stat"><span class="k">LLM BRIDGE</span><span class="v">MINIMAX M3</span></div>
     <div class="hud-spacer"></div>
     <button class="hud-btn alert" id="btnAlert" aria-pressed="false">⚠ RED ALERT</button>
     <button class="hud-btn engage" id="btnEngage">▶ ENGAGE</button>
@@ -473,14 +462,14 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
     <div class="cell" tabindex="0" aria-label="Nineteen guests across the ZeusApollo homelab.">
       <div class="num" data-count="19">19</div><div class="lbl">Fleet Nodes</div>
       <div class="tip" role="tooltip"><b>◈ FLEET STATUS</b>Guests across the ZeusApollo Proxmox cluster — compute, storage, networking, security, and monitoring.</div></div>
-    <div class="cell" tabindex="0" aria-label="Five task models plus one fallback, DeepSeek V4-Pro primary, routed directly.">
-      <div class="num">5+1</div><div class="lbl">Model Fabric<span class="was">DeepSeek V4-Pro primary</span></div>
-      <div class="tip" role="tooltip"><b>◈ PAYLOAD</b>Five task models — primary, cited research, compression, vision, fallback — routed directly by cost and capability through one sovereign gateway. No bridge tax.</div></div>
+    <div class="cell" tabindex="0" aria-label="Six models fronted by the MiniMax M3 bridge.">
+      <div class="num">6+1</div><div class="lbl">Model Fabric<span class="was">MiniMax M3 bridge</span></div>
+      <div class="tip" role="tooltip"><b>◈ PAYLOAD</b>Six task models — primary, reasoning, vision, deep analysis, background, compression — all fronted by the MiniMax M3 bridge and routed through one sovereign gateway.</div></div>
     <div class="cell" tabindex="0" aria-label="Over fifteen years in enterprise IT and cybersecurity.">
       <div class="num" data-count="15" data-suffix="+">15+</div><div class="lbl">Yrs Enterprise</div>
       <div class="tip" role="tooltip"><b>◈ SERVICE RECORD</b>Years in enterprise IT and cybersecurity, supporting large-scale, mission-critical environments.</div></div>
-    <div class="cell" tabindex="0" aria-label="Twenty-two automated cron jobs running fully autonomous ops.">
-      <div class="num" data-count="22">22</div><div class="lbl">Crons Active<span class="was">(was 3 at launch)</span></div>
+    <div class="cell" tabindex="0" aria-label="Nineteen automated cron jobs running fully autonomous ops.">
+      <div class="num" data-count="19">19</div><div class="lbl">Crons Active<span class="was">(was 3 at launch)</span></div>
       <div class="tip" role="tooltip"><b>◈ AUTOPILOT</b>Automated scheduled jobs running briefings, backups, watchdogs, and balance tracking — fully autonomous.</div></div>
   </section>
 
@@ -504,7 +493,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
     <p class="term-intro">This isn't a screenshot. It's a working console wired to the fleet's public readouts. Type <code>help</code> to see commands, or <code>ask eve …</code> to query the Mentat. Try <code>status</code>, <code>fleet</code>, <code>models</code>.</p>
     <div class="terminal">
       <div class="term-bar"><span class="dotr d1"></span><span class="dotr d2"></span><span class="dotr d3"></span>
-        <span class="ttl"><b><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8cebf9e9fff8ccefedffe4e5e3a2f9ff">[email&#160;protected]</a></b> — hermes://command-deck</span>
+        <span class="ttl"><b>guest@cashio.us</b> — hermes://command-deck</span>
         <span class="hint">↑↓ history · Tab complete</span></div>
       <div class="term-body" id="termBody" tabindex="0" role="log" aria-live="polite" aria-label="Interactive console output"></div>
       <div class="term-foot" id="termChips"></div>
@@ -515,31 +504,33 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   <section class="panel" aria-labelledby="rnHead">
     <div class="sec-head"><span aria-hidden="true">🚀</span><h2 id="rnHead">RELEASE NOTES</h2><span class="tag new">NEW</span><span class="lcars-bar"></span></div>
     <div class="rn-grid">
-      <div class="c"><div class="k">STARDATE</div><div class="v">26162.5</div></div>
-      <div class="c"><div class="k">RELEASE</div><div class="v">v27 "SOVEREIGN ROUTING"</div></div>
+      <div class="c"><div class="k">STARDATE</div><div class="v">26147.6</div></div>
+      <div class="c"><div class="k">RELEASE</div><div class="v">v26 "GOLDEN PATH"</div></div>
       <div class="c"><div class="k">CMDR</div><div class="v">D. CASHIO</div></div>
       <div class="c"><div class="k">CLASS</div><div class="v">MAXIMUM WARP</div></div>
       <div class="c"><div class="k">STATUS</div><div class="v" style="color:var(--green)">● ALL NOMINAL</div></div>
     </div>
-    <p style="color:var(--text-dim);font-size:14px">19 guests across ZeusApollo. DeepSeek V4-Pro primary — direct routing, no bridge overhead. 22 autonomous cron jobs. Provider consolidation complete — 5 paid providers collapsed to 1 primary + bundled services. PBS backup auth regenerated after token rot. GDrive sync daemonized to survive cron timeout. Perplexity Sonar Pro for cited deep research. Kernel browser for headless automation.</p>
-    <p style="margin-top:14px">Daily inference burn: <span class="burn">~$0.35 <small>(was ~$0.50 — further 30% cut from v26)</small></span></p>
+    <p style="color:var(--text-dim);font-size:14px">19 guests live across the ZeusApollo cluster. 8-core Hermes agent, 8 MCP servers, Omnius crew bridge online. Gemini Spark email/calendar delegation. Gateway hardened — CPU limits, file-descriptor caps, restart guards.</p>
+    <p style="margin-top:14px">Daily inference burn: <span class="burn">~$0.50 <small>(was ~$4 — 8× cut)</small></span></p>
   </section>
 
   <!-- ===================== AI STACK ===================== -->
   <section class="panel amber" id="stack" aria-labelledby="stHead">
-    <div class="sec-head"><span aria-hidden="true">🛰️</span><h2 id="stHead">THE AI STACK — MULTI-MODEL SOVEREIGN</h2><span class="tag upd">DEEPSEEK V4-PRO DIRECT</span><span class="lcars-bar"></span></div>
-    <p style="color:var(--text-dim);font-size:14px;margin-bottom:8px">No single-provider dependency — and no bridge tax. Every request routes <b style="color:var(--cyan)">directly</b> to the cheapest model that can do the job. DeepSeek V4-Pro takes the conn; research, compression, vision, and fallback each have a named lane.</p>
+    <div class="sec-head"><span aria-hidden="true">🛰️</span><h2 id="stHead">THE AI STACK — MULTI-MODEL SOVEREIGN</h2><span class="tag upd">MINIMAX M3 BRIDGE</span><span class="lcars-bar"></span></div>
+    <p style="color:var(--text-dim);font-size:14px;margin-bottom:8px">No single-provider dependency. The <b style="color:var(--cyan)">MiniMax M3</b> bridge fronts the fabric and routes every request to the cheapest model that can do the job — with paid balances burning down toward a single-billing consolidation.</p>
     <div class="tbl-scroll"><table>
       <thead><tr><th>#</th><th>Model</th><th>Provider</th><th>Role</th><th>Cost</th></tr></thead>
       <tbody>
-        <tr><td><span class="prio">1</span></td><td><b>DeepSeek V4-Pro</b></td><td>DeepSeek API</td><td>Primary — all agent tasks, briefings, delegation</td><td class="mono">$0.435 / $0.87 MTok</td></tr>
-        <tr><td><span class="prio">2</span></td><td><b>Perplexity Sonar Pro</b></td><td>Perplexity API</td><td>Deep research with citations</td><td class="mono">$3 / $15 MTok</td></tr>
-        <tr><td><span class="prio">3</span></td><td><b>Gemini 2.5 Flash</b></td><td>Google AI</td><td>Compression + web extract</td><td class="mono">~$0.10 / $0.40 MTok</td></tr>
-        <tr><td><span class="prio">4</span></td><td><b>Grok 4.3</b></td><td>xAI (SuperGrok)</td><td>Vision + TTS (Eve voice)</td><td class="mono free">bundled</td></tr>
-        <tr><td><span class="prio">5</span></td><td><b>Qwen 3.7 Plus</b></td><td>Nous (fallback)</td><td>Emergency failover only</td><td class="mono free">subscription</td></tr>
+        <tr><td><span class="prio">0</span></td><td><b>MiniMax M3</b></td><td>LLM Bridge</td><td>Gateway bridge — routes all traffic</td><td class="mono free">self-hosted</td></tr>
+        <tr><td><span class="prio">1</span></td><td><b>Gemini 3.1 Pro</b></td><td>Google AI Ultra</td><td>Primary conversation</td><td class="mono free">FREE (plan)</td></tr>
+        <tr><td><span class="prio">2</span></td><td><b>Claude Opus 4.8</b></td><td>Anthropic API</td><td>Complex reasoning + code</td><td class="mono burning">burning $24.81</td></tr>
+        <tr><td><span class="prio">3</span></td><td><b>Grok 4.3</b></td><td>xAI API</td><td>Vision + web search</td><td class="mono burning">burning $32.97</td></tr>
+        <tr><td><span class="prio">4</span></td><td><b>DeepSeek V4-Pro</b></td><td>DeepSeek API</td><td>Deep analysis, briefings</td><td class="mono">$0.44 / $0.87 MTok</td></tr>
+        <tr><td><span class="prio">5</span></td><td><b>DeepSeek V4 Flash</b></td><td>DeepSeek API</td><td>Background / aux tasks</td><td class="mono">$0.14 / $0.28 MTok</td></tr>
+        <tr><td><span class="prio">6</span></td><td><b>Gemini 3.5 Flash</b></td><td>Google AI Ultra</td><td>Compression + extraction</td><td class="mono free">FREE</td></tr>
       </tbody>
     </table></div>
-    <p style="margin-top:14px;font-size:13px;color:var(--text-dim);border-left:2px solid var(--accent);padding-left:14px"><b style="color:var(--accent)">PROVIDER CONSOLIDATION — COMPLETE:</b> DeepSeek V4-Pro drives all primary workloads — direct API, no bridge tax. Perplexity Sonar Pro handles cited deep research. Bundled services (xAI SuperGrok for vision/TTS, Nous for fallback) cover the edges. Total active spend: ~$0.35/day (down from ~$4/day at launch — 11.4× reduction).</p>
+    <p style="margin-top:14px;font-size:13px;color:var(--text-dim);border-left:2px solid var(--accent);padding-left:14px"><b style="color:var(--accent)">BURN-DOWN STRATEGY:</b> three paid balances (~$80.92 total) draining in parallel toward a $3 consolidation threshold. Post-burn, all paid routing unifies through the Nous Portal for single-billing simplicity.</p>
   </section>
 
   <!-- ===================== LIVE TOPOLOGY ===================== -->
@@ -562,8 +553,8 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
       <div class="metric"><div class="num" id="mTokens" data-count="20" data-suffix="M" data-prefix="~">~20M</div><div class="lbl">Tokens Routed</div><div class="note">lifetime · <span class="live-dot">●</span> live</div></div>
       <div class="metric"><div class="num" data-count="342" data-prefix="$" data-suffix="+">$342+</div><div class="lbl">Saved vs Opus</div><div class="note">and climbing</div></div>
       <div class="metric"><div class="num" data-count="19">19</div><div class="lbl">Fleet Nodes</div><div class="note">Proxmox guests</div></div>
-      <div class="metric"><div class="num" data-count="22">22</div><div class="lbl">Crons Active</div><div class="note">was 3 at launch</div></div>
-      <div class="metric"><div class="num" id="mBurn" data-count="0.35" data-prefix="$" data-decimals="2">$0.35</div><div class="lbl">Daily Burn</div><div class="note">was ~$4 at launch</div></div>
+      <div class="metric"><div class="num" data-count="19">19</div><div class="lbl">Crons Active</div><div class="note">was 3 at launch</div></div>
+      <div class="metric"><div class="num" id="mBurn" data-count="0.5" data-prefix="$" data-decimals="2">$0.50</div><div class="lbl">Daily Burn</div><div class="note">was ~$4</div></div>
     </div>
   </section>
 
@@ -573,9 +564,9 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
     <div class="mods">
       <div class="mod"><h3>🔌 MCP Servers<span class="ct">8</span></h3>
         <ul><li><b>sovereign-mcp</b> — fleet SSH control</li><li><b>proxmox</b> — 9-tool fleet API</li><li><b>kernel</b> — cloud browser</li><li><b>adguard</b> — DNS control</li><li><b>crew-bridge</b> — Omnius ↔ Hermes routing</li><li><b>filesystem · github · sqlite</b></li></ul></div>
-      <div class="mod"><h3>⏱️ Cron Fleet<span class="ct">22</span></h3>
-        <ul><li>Morning / evening AI briefings</li><li>Fleet health monitor · Hermes release watcher</li><li>AdGuard stats poller · balance tracking</li><li>Daily vzdump backups · weekly LXC fstrim</li><li>GDrive sync (daemonized) · session pruning</li></ul>
-        <div class="beforeafter"><span class="b">3 crons active</span> <span class="arrow">→</span> <span class="a">22 crons, fully autonomous</span></div></div>
+      <div class="mod"><h3>⏱️ Cron Fleet<span class="ct">19</span></h3>
+        <ul><li>Morning / evening AI briefings</li><li>Site health · disk-space alerts</li><li>Balance tracking · kernel watchdog</li><li>GDrive sync · session pruning</li></ul>
+        <div class="beforeafter"><span class="b">3 crons active</span> <span class="arrow">→</span> <span class="a">19 crons, fully autonomous</span></div></div>
       <div class="mod"><h3>🛰️ Platforms<span class="ct">4</span></h3>
         <ul><li><b>Discord</b> — command + alerts</li><li><b>Email</b> — Gemini Spark delegation</li><li><b>Home Assistant</b> — smart home</li><li><b>REST API</b> — programmatic access</li></ul></div>
       <div class="mod"><h3>🔐 GDrive Encrypted Backup</h3>
@@ -592,8 +583,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   <section class="panel" aria-labelledby="achHead">
     <div class="sec-head"><span aria-hidden="true">🏆</span><h2 id="achHead">THE PATH — RELEASE HISTORY</h2><span class="tag new">+ NEW</span><span class="lcars-bar"></span></div>
     <div class="tl">
-      <div class="tl-item cur"><div class="date">v27 · NOW</div><h3>"Sovereign Routing"</h3><p>Bridge retired — direct model routing · DeepSeek V4-Pro primary · Perplexity Sonar Pro cited research · 22 autonomous crons · provider consolidation complete (~$0.35/day) · PBS auth regenerated · GDrive sync daemonized.</p></div>
-      <div class="tl-item"><div class="date">v26</div><h3>"Golden Path"</h3><p>19 guests · 8-core Hermes agent · 8 MCP servers · Omnius crew bridge · Gemini Spark email/calendar delegation · GDrive offsite sync · gateway hardened (CPU limits, file descriptors, restart caps).</p></div>
+      <div class="tl-item cur"><div class="date">v26 · NOW</div><h3>"Golden Path"</h3><p>19 guests · 8-core Hermes agent · 8 MCP servers · Omnius crew bridge · Gemini Spark email/calendar delegation · GDrive offsite sync · gateway hardened (CPU limits, file descriptors, restart caps).</p></div>
       <div class="tl-item"><div class="date">v25</div><h3>Provider Consolidation Begins</h3><p>Anthropic / xAI / DeepSeek direct routing. LiteLLM deployed on Atlas (M4 Mini). Kernel 7.0.6-2 across all Proxmox hosts.</p></div>
       <div class="tl-item"><div class="date">v24</div><h3>Cluster Stabilized</h3><p>Proxmox cluster stabilized — 17 containers, AdGuard VRRP failover, Proxmox Backup Server snapshots online.</p></div>
     </div>
@@ -613,7 +603,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
       <span class="cred hl">✦ 19-Node Sovereign Fleet</span>
       <a class="cred" href="https://www.credly.com/users/james-cashio/badges" target="_blank" rel="noopener noreferrer" aria-label="View all Credly badges">🎖 CREDLY BADGES</a>
       <a class="cred" href="https://linkedin.com/in/doug-cashio" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">in LINKEDIN</a>
-      <a class="cred" href="/cdn-cgi/l/email-protection#86e2e9f3e1c6e5e7f5eeefe9a8f3f5">✉ <span class="__cf_email__" data-cfemail="ed8982988aad8e8c9e858482c3989e">[email&#160;protected]</span></a>
+      <a class="cred" href="mailto:doug@cashio.us">✉ doug@cashio.us</a>
     </div>
   </section>
 
@@ -634,49 +624,48 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 
   <!-- ===================== ZEUSAPOLLO CHANGELOG ===================== -->
   <section class="panel green" id="changelog" aria-labelledby="clHead">
-    <div class="sec-head"><span aria-hidden="true">⟳</span><h2 id="clHead">ZEUSAPOLLO v27 — CHANGES &amp; UPDATES</h2><span class="tag new">DELTA v26 → v27</span><span class="lcars-bar"></span></div>
-    <p class="cl-intro">What shipped in the <b>"Sovereign Routing"</b> release. The bridge came out, <b>DeepSeek V4-Pro</b> took the conn, and the cron fleet grew — every change deployed, documented, and battle-tested.</p>
+    <div class="sec-head"><span aria-hidden="true">⟳</span><h2 id="clHead">ZEUSAPOLLO v26 — CHANGES &amp; UPDATES</h2><span class="tag new">DELTA v25 → v26</span><span class="lcars-bar"></span></div>
+    <p class="cl-intro">What shipped in the <b>"Golden Path"</b> release. The fleet grew, the routing fabric consolidated behind the <b>MiniMax M3</b> bridge, and the gateway got hardened — every change deployed, documented, and battle-tested.</p>
     <div class="cl-summary">
-      <div class="cl-stat"><div class="d" data-count="19">19</div><div class="l">Fleet Nodes<span class="was">v26 · 19</span></div></div>
-      <div class="cl-stat"><div class="d" data-count="8">8</div><div class="l">MCP Servers<span class="was">v26 · 8</span></div></div>
-      <div class="cl-stat"><div class="d" data-count="22">22</div><div class="l">Cron Jobs<span class="was">v26 · 19</span></div></div>
-      <div class="cl-stat"><div class="d" data-count="5">5</div><div class="l">Routed Models<span class="was">DeepSeek V4-Pro primary</span></div></div>
+      <div class="cl-stat"><div class="d" data-count="19">19</div><div class="l">Fleet Nodes<span class="was">v25 · 17</span></div></div>
+      <div class="cl-stat"><div class="d" data-count="8">8</div><div class="l">MCP Servers<span class="was">v25 · 5</span></div></div>
+      <div class="cl-stat"><div class="d" data-count="19">19</div><div class="l">Cron Jobs<span class="was">v25 · 12</span></div></div>
+      <div class="cl-stat"><div class="d" data-count="6">6</div><div class="l">Routed Models<span class="was">MiniMax M3 bridge</span></div></div>
     </div>
     <div class="cl-cols">
       <div class="cl-card added"><h3>✦ ADDED</h3>
         <ul>
-          <li><b>Perplexity Sonar Pro</b> — deep research with citations</li>
-          <li><b>3 new watchdog crons</b> — fleet health monitor, Hermes release watcher, AdGuard stats poller</li>
-          <li><b>daily-vzdump-all-guests</b> + weekly-lxc-fstrim</li>
-          <li><b>CT-117 rclone-gdrive</b> — offsite sync node rebuilt from scratch</li>
-          <li><b>CT-119 backup-verifier</b> — backup integrity checks</li>
+          <li><b>MiniMax M3 bridge</b> — fronts &amp; routes the whole fabric</li>
+          <li><b>Omnius crew bridge</b> — Omnius ↔ Hermes task routing</li>
+          <li><b>3 new MCP servers</b> — kernel browser, crew-bridge, sovereign SSH</li>
+          <li><b>Gemini Spark</b> email + calendar delegation</li>
+          <li><b>Interactive Hermes console</b> + LLM event-chain trace</li>
         </ul></div>
       <div class="cl-card changed"><h3>⟳ CHANGED</h3>
         <ul>
-          <li><b>Direct routing</b> — bridge layer removed entirely</li>
-          <li><b>DeepSeek V4-Pro</b> now primary for all agent workloads</li>
-          <li><b>19 → 22 crons</b> across the fleet</li>
-          <li><b>GDrive sync daemonized</b> — survives cron timeout</li>
-          <li><b>Daily burn ~$0.50 → ~$0.35</b> (further 30% cut)</li>
+          <li><b>17 → 19 guests</b> across the Proxmox cluster</li>
+          <li><b>Hermes agent</b> scaled to 8 cores · v0.15.1</li>
+          <li><b>MiniMax M3</b> now fronts the 6-model fabric</li>
+          <li><b>OneDrive → encrypted GDrive</b> offsite (20TB)</li>
+          <li><b>Daily burn ~$4 → ~$0.50</b> (8× cut)</li>
         </ul></div>
       <div class="cl-card hardened"><h3>🛡 HARDENED</h3>
         <ul>
-          <li><b>PBS backup auth</b> regenerated after token rot</li>
-          <li><b>AdGuard dual DNS</b> — CT-101 (Apollo) + CT-109 (Zeus)</li>
-          <li><b>Backup verification</b> — CT-119 checks every snapshot</li>
-          <li><b>Kernel browser</b> — headless automation, sandboxed</li>
+          <li><b>CPU limits</b> + file-descriptor caps on the gateway</li>
+          <li><b>Restart guards</b> on the agent runtime</li>
+          <li><b>Credentials swept</b> fleet-wide</li>
+          <li><b>AdGuard VRRP</b> DNS failover verified</li>
           <li><b>Wazuh SIEM</b> + Vaultwarden online</li>
         </ul></div>
       <div class="cl-card removed"><h3>− RETIRED</h3>
         <ul>
-          <li><b>MiniMax M3 bridge</b> — zero references remain</li>
-          <li><b>Claude Opus / Anthropic API</b> — $0, unused</li>
-          <li><b>OpenAI</b> — $0, unused</li>
-          <li><b>LiteLLM active routing</b> — kept for emergency fallback only</li>
-          <li><b>Parallel burn-down balances</b> — consolidation complete</li>
+          <li><b>OneDrive media sync</b> — decommissioned</li>
+          <li><b>Vendor lock-in</b> — 5 providers → routed few</li>
+          <li><b>Fragile briefing script</b> — replaced agent-driven</li>
+          <li><b>Single-model dependency</b> — fully eliminated</li>
         </ul></div>
     </div>
-    <p class="cl-foot"><span class="on">●</span> ALL SYSTEMS NOMINAL · COMPUTED BY EVE · CONSOLIDATION COMPLETE — SOVEREIGN ROUTING ACHIEVED &nbsp;·&nbsp; <a href="/cdn-cgi/l/email-protection#0d6962786a4d6e6c7e65646223787e"><span class="__cf_email__" data-cfemail="6d0902180a2d0e0c1e05040243181e">[email&#160;protected]</span></a></p>
+    <p class="cl-foot"><span class="on">●</span> ALL SYSTEMS NOMINAL · COMPUTED BY EVE · NEXT MILESTONE: NOUS PORTAL BILLING CONSOLIDATION &nbsp;·&nbsp; <a href="mailto:doug@cashio.us">doug@cashio.us</a></p>
   </section>
 
 </main>
@@ -687,7 +676,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
     <div class="sec-head"><span aria-hidden="true">📡</span><h2 id="hailHead">HAILING FREQUENCIES — OPEN</h2><span class="tag upd">MONITORED</span><span class="lcars-bar"></span></div>
     <p style="margin-bottom:16px">Questions about the fleet, sovereign AI, or how any of this was built — or just want a walkthrough? The commander answers hails directly.</p>
     <div class="cta-row">
-      <a class="btn primary" href="/cdn-cgi/l/email-protection#2e4a415b496e4d4f5d464741005b5d">✉ TRANSMIT MESSAGE</a>
+      <a class="btn primary" href="mailto:doug@cashio.us">✉ TRANSMIT MESSAGE</a>
       <a class="btn secondary" href="https://linkedin.com/in/doug-cashio" target="_blank" rel="noopener">in LINKEDIN</a>
       <a class="btn ghost" href="https://www.credly.com/users/james-cashio/badges" target="_blank" rel="noopener">🎖 CREDENTIALS</a>
     </div>
@@ -702,11 +691,11 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 
 <footer>
   <div>SOURCE: PROXMOX VE API + ADGUARD DHCP + NODE INVENTORY · ZEUSAPOLLO SOVEREIGN FABRIC</div>
-  <div class="tagline">v27 "SOVEREIGN ROUTING" — deepseek-v4-pro primary. All systems nominal. Computed by Eve, Techno-Mentat of House Cashio. 🌀</div>
+  <div class="tagline">v26 "GOLDEN PATH" — All systems nominal. Computed by Eve, Techno-Mentat of House Cashio. 🌀</div>
   <div style="margin-top:14px;opacity:.7">© <span id="yr">2026</span> Doug Cashio · cashio.us &nbsp;·&nbsp; <span class="dim">built &amp; routed in the ZeusApollo homelab</span></div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 (function(){
   "use strict";
   var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -715,34 +704,32 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   var FLEET={
     Zeus:[
       {n:"Zeus",r:"Hypervisor — infra + security host"},
-      {n:"Hermes",r:"AI gateway — primary agent (CT-105, 8-core)"},
-      {n:"AdGuard-BU",r:"DNS secondary — CT-109 (Zeus)"},
+      {n:"AdGuard",r:"DNS primary — VRRP master"},
+      {n:"AdGuard-BU",r:"DNS secondary — VRRP backup"},
       {n:"n8n",r:"Automation engine"},
       {n:"Athena",r:"RPi4 — Docker + monitoring"},
       {n:"Wazuh",r:"SIEM — security monitoring"},
       {n:"Vaultwarden",r:"Password management"},
-      {n:"Control-Plane",r:"CT-200 fleet orchestration + Omnius crew bridge"},
+      {n:"Control-Plane",r:"Fleet orchestration"},
       {n:"Grafana",r:"Dashboards + Uptime Kuma"}
     ],
     Apollo:[
       {n:"Apollo",r:"Hypervisor — AI + media host"},
-      {n:"AdGuard",r:"DNS primary — CT-101 (Apollo)"},
+      {n:"Hermes",r:"AI gateway — primary agent",deg:false},
       {n:"Omnius",r:"ChromaDB vector store + RAG"},
-      {n:"Atlas",r:"M4 Mini — MLX inference + Kernel browser host"},
+      {n:"Atlas",r:"M4 Mini — MLX + LiteLLM"},
       {n:"AI-Stack",r:"Local inference stack"},
       {n:"Dionysus",r:"Unraid — Plex primary"},
       {n:"Plex",r:"Media server",deg:true},
       {n:"Genesis",r:"WD NAS — 7.2TB NFS/SMB"},
       {n:"PBS",r:"Proxmox Backup Server"},
-      {n:"Rclone",r:"CT-117 rclone-gdrive — encrypted offsite sync"},
-      {n:"Backup-Verifier",r:"CT-119 — backup integrity checks"},
       {n:"Home-Asst",r:"Smart-home orchestration"}
     ]
   };
 
   var clock=document.getElementById('clock');
-  function tzAbbr(){ try{ var p=new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',timeZoneName:'short'}).formatToParts(new Date()); var z=p.find(function(x){return x.type==='timeZoneName';}); return z?z.value:'CT'; }catch(e){ return 'CT'; } }
-  function tick(){ clock.textContent=new Date().toLocaleTimeString('en-US',{hour12:false,timeZone:'America/Chicago'})+' '+tzAbbr(); }
+  function tzAbbr(){ try{ var p=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',timeZoneName:'short'}).formatToParts(new Date()); var z=p.find(function(x){return x.type==='timeZoneName';}); return z?z.value:'ET'; }catch(e){ return 'ET'; } }
+  function tick(){ clock.textContent=new Date().toLocaleTimeString('en-US',{hour12:false,timeZone:'America/New_York'})+' '+tzAbbr(); }
   tick(); setInterval(tick,1000);
 
   /* ---- scroll-progress bar + dynamic year ---- */
@@ -752,7 +739,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 
   /* ---- BOOT ---- */
   var boot=document.getElementById('boot'),bootLines=document.getElementById('bootLines'),bootBar=document.getElementById('bootBar'),bootSkip=document.getElementById('bootSkip');
-  var seq=["▸ POWER-ON SELF TEST .......... OK","▸ ZEUS CLUSTER .............. ONLINE","▸ APOLLO CLUSTER ............ ONLINE","▸ HERMES AGENT .............. READY","▸ DEEPSEEK V4-PRO ........... PRIMARY","▸ 5+1 MODEL FABRIC .......... ROUTED","▸ 8 MCP SERVERS ............. MOUNTED","▸ 22 CRON JOBS .............. ARMED","▸ ADGUARD VRRP DNS .......... MASTER","▸ COMMAND DECK .............. ENGAGED"];
+  var seq=["▸ POWER-ON SELF TEST .......... OK","▸ ZEUS CLUSTER .............. ONLINE","▸ APOLLO CLUSTER ............ ONLINE","▸ HERMES AGENT v0.15.1 ...... READY","▸ MINIMAX M3 BRIDGE ......... ONLINE","▸ 6-MODEL LLM FABRIC ........ ROUTED","▸ 8 MCP SERVERS ............. MOUNTED","▸ 19 CRON JOBS .............. ARMED","▸ ADGUARD VRRP DNS .......... MASTER","▸ COMMAND DECK .............. ENGAGED"];
   function endBoot(){ if(boot.classList.contains('done'))return; boot.classList.add('done'); setTimeout(function(){boot.style.display='none';},650); try{startKicker();startChain();}catch(e){} }
   bootSkip.addEventListener('click',endBoot);
   bootSkip.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' ')endBoot(); });
@@ -776,37 +763,37 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   if(cv&&!reduce){ var ctx=cv.getContext('2d'),stars=[],W,H;
     function rs(){ W=cv.width=innerWidth;H=cv.height=innerHeight;stars=[];var n=Math.min(160,Math.floor(W*H/12000)); for(var i=0;i<n;i++)stars.push({x:Math.random()*W,y:Math.random()*H,z:Math.random()*1.4+.2,s:Math.random()*1.4+.3}); }
     rs();addEventListener('resize',rs);var pX=0,pY=0;addEventListener('mousemove',function(e){pX=(e.clientX/innerWidth-.5);pY=(e.clientY/innerHeight-.5);});
-    var fr=0;(function dr(){ if(fr++%2){requestAnimationFrame(dr);return;} ctx.clearRect(0,0,W,H); for(var i=0;i<stars.length;i++){var st=stars[i];st.y+=st.z*.25;if(st.y>H){st.y=0;st.x=Math.random()*W;}ctx.beginPath();ctx.fillStyle='rgba('+(st.z>1?'0,249,255':'180,180,220')+','+(st.s*.6)+')';ctx.arc(st.x+pX*st.z*14,st.y+pY*st.z*14,st.s,0,6.283);ctx.fill();} requestAnimationFrame(dr); })(); }
+    (function dr(){ ctx.clearRect(0,0,W,H); for(var i=0;i<stars.length;i++){var st=stars[i];st.y+=st.z*.25;if(st.y>H){st.y=0;st.x=Math.random()*W;}ctx.beginPath();ctx.fillStyle='rgba('+(st.z>1?'0,249,255':'180,180,220')+','+(st.s*.6)+')';ctx.arc(st.x+pX*st.z*14,st.y+pY*st.z*14,st.s,0,6.283);ctx.fill();} requestAnimationFrame(dr); })(); }
 
   /* ============ LLM EVENT CHAIN ANIMATION ============ */
   var evlog=document.getElementById('evlog'),stages=document.querySelectorAll('#chainStages .stage');
   var scenarios=[
     {trig:'📡 EVENT: Discord /brief command received',steps:[
-      ['route','<span class="rt">ROUTE</span> → classified: lightweight summary ▋',440],
-      ['route','<span class="rt">ROUTE</span> → <b>DeepSeek V4-Pro</b> selected — cost optimal <span class="t">($0.87/MTok)</span>',520],
+      ['route','<span class="rt">BRIDGE</span> → <b>MiniMax M3</b> classify: lightweight summary',440],
+      ['route','<span class="rt">ROUTE</span> → selected <b>Gemini 3.5 Flash</b> <span class="t">(FREE)</span>',520],
       ['exec','<span class="rt">EXEC</span> → pull fleet status via <b>proxmox</b> MCP',640],
       ['verify','<span class="wn">VERIFY</span> → guardrails pass · 0 anomalies',420],
-      ['deliver','<span class="ok">DELIVER</span> → Eve TTS (Grok 4.3) + Discord embed <span class="ok">✓ 1.2s</span>',560]
+      ['deliver','<span class="ok">DELIVER</span> → Eve TTS + Discord embed <span class="ok">✓ 1.2s</span>',560]
     ]},
     {trig:'📡 EVENT: inbound email — calendar request',steps:[
-      ['route','<span class="rt">ROUTE</span> → classified: schedule + reply ▋',440],
-      ['route','<span class="rt">ROUTE</span> → <b>DeepSeek V4-Pro</b> selected <span class="t">(primary)</span>',520],
-      ['exec','<span class="rt">EXEC</span> → drafts calendar delegation directly',680],
+      ['route','<span class="rt">BRIDGE</span> → <b>MiniMax M3</b> intent: schedule + reply',440],
+      ['route','<span class="rt">ROUTE</span> → selected <b>Gemini 3.1 Pro</b> <span class="t">(primary)</span>',520],
+      ['exec','<span class="rt">EXEC</span> → Gemini Spark drafts calendar delegation',680],
       ['verify','<span class="wn">VERIFY</span> → human-in-loop flag set',420],
       ['deliver','<span class="ok">DELIVER</span> → draft queued for approval <span class="ok">✓ 0.9s</span>',520]
     ]},
-    {trig:'📡 EVENT: cron — nightly deep research',steps:[
-      ['route','<span class="rt">ROUTE</span> → classified: cited research + long context ▋',440],
-      ['route','<span class="rt">ROUTE</span> → <b>Perplexity Sonar Pro</b> selected <span class="t">(citations)</span>',520],
-      ['exec','<span class="rt">EXEC</span> → cited search + RAG over Omnius vector store',700],
-      ['verify','<span class="wn">VERIFY</span> → cross-check vs <b>DeepSeek V4-Pro</b>',560],
+    {trig:'📡 EVENT: cron — nightly deep analysis',steps:[
+      ['route','<span class="rt">BRIDGE</span> → <b>MiniMax M3</b> heavy reasoning + long context',440],
+      ['route','<span class="rt">ROUTE</span> → selected <b>DeepSeek V4-Pro</b> <span class="t">($0.87/MTok)</span>',520],
+      ['exec','<span class="rt">EXEC</span> → RAG over Omnius vector store',700],
+      ['verify','<span class="wn">VERIFY</span> → cross-check vs <b>Claude Opus 4.8</b>',560],
       ['deliver','<span class="ok">DELIVER</span> → briefing written to GDrive <span class="ok">✓ 4.7s</span>',560]
     ]},
     {trig:'📡 EVENT: vision task — screenshot triage',steps:[
-      ['route','<span class="rt">ROUTE</span> → classified: image modality ▋',440],
-      ['route','<span class="rt">ROUTE</span> → <b>Grok 4.3</b> selected <span class="t">(vision · bundled)</span>',520],
+      ['route','<span class="rt">BRIDGE</span> → <b>MiniMax M3</b> modality: image + web search',440],
+      ['route','<span class="rt">ROUTE</span> → selected <b>Grok 4.3</b> <span class="t">(vision)</span>',520],
       ['exec','<span class="rt">EXEC</span> → analyze + ground via kernel browser',680],
-      ['verify','<span class="wn">VERIFY</span> → fallback armed: <b>Qwen 3.7 Plus</b> standby',420],
+      ['verify','<span class="wn">VERIFY</span> → fallback armed: Edge TTS standby',420],
       ['deliver','<span class="ok">DELIVER</span> → annotated result to Discord <span class="ok">✓ 2.1s</span>',540]
     ]}
   ];
@@ -844,17 +831,17 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
       inputEl.addEventListener('keydown',onKey); body.scrollTop=body.scrollHeight;
     }
     var FLEETLIST={
-      Zeus:[['Zeus','infra + security hypervisor'],['Hermes','AI gateway · primary agent (CT-105, 8-core)'],['AdGuard-BU','DNS secondary · CT-109'],['n8n','automation engine'],['Athena','RPi4 · Docker + monitoring'],['Wazuh','SIEM · security monitoring'],['Vaultwarden','password management'],['Control-Plane','CT-200 orchestration + crew bridge'],['Grafana','dashboards + Uptime Kuma']],
-      Apollo:[['Apollo','AI + media hypervisor'],['AdGuard','DNS primary · CT-101'],['Omnius','ChromaDB vector store + RAG'],['Atlas','M4 Mini · MLX + Kernel browser host'],['AI-Stack','local inference stack'],['Dionysus','Unraid · Plex primary'],['Plex','media server (degraded)'],['Genesis','WD NAS · 7.2TB NFS/SMB'],['PBS','Proxmox Backup Server'],['Rclone','CT-117 · encrypted offsite sync'],['Backup-Verifier','CT-119 · backup integrity'],['Home-Asst','smart-home orchestration']]
+      Zeus:[['Zeus','infra + security hypervisor'],['AdGuard','DNS primary · VRRP master'],['AdGuard-BU','DNS secondary · VRRP backup'],['n8n','automation engine'],['Athena','RPi4 · Docker + monitoring'],['Wazuh','SIEM · security monitoring'],['Vaultwarden','password management'],['Control-Plane','fleet orchestration'],['Grafana','dashboards + Uptime Kuma']],
+      Apollo:[['Apollo','AI + media hypervisor'],['Hermes','AI gateway · primary agent'],['Omnius','ChromaDB vector store + RAG'],['Atlas','M4 Mini · MLX + LiteLLM'],['AI-Stack','local inference stack'],['Dionysus','Unraid · Plex primary'],['Plex','media server (degraded)'],['Genesis','WD NAS · 7.2TB NFS/SMB'],['PBS','Proxmox Backup Server'],['Home-Asst','smart-home orchestration']]
     };
-    var MODELS=[['1','DeepSeek V4-Pro','primary — agents + briefings','$0.435/$0.87 MTok'],['2','Perplexity Sonar Pro','deep research + citations','$3/$15 MTok'],['3','Gemini 2.5 Flash','compression + web extract','~$0.10/$0.40 MTok'],['4','Grok 4.3','vision + TTS (Eve voice)','bundled (SuperGrok)'],['5','Qwen 3.7 Plus','emergency failover','subscription (Nous)']];
+    var MODELS=[['0','MiniMax M3','LLM bridge — routes all','self-hosted'],['1','Gemini 3.1 Pro','primary conversation','FREE'],['2','Claude Opus 4.8','reasoning + code','burning $24.81'],['3','Grok 4.3','vision + web search','burning $32.97'],['4','DeepSeek V4-Pro','deep analysis','$0.44/$0.87 MTok'],['5','DeepSeek V4 Flash','background tasks','$0.14/$0.28 MTok'],['6','Gemini 3.5 Flash','compression','FREE']];
     function pad(s,n){ s=String(s); while(s.length<n)s+=' '; return s; }
     var EVE=[
       {k:['who','you','eve','yourself'],a:'I am Eve — an Ixian Techno-centric Mentat AI running on the ZeusApollo Proxmox cluster. I compute the present to see the future. I route Doug\'s models, run his briefings, and keep the fleet nominal.'},
       {k:['doug','cashio','about','hotsauce'],a:'Doug "HotSauce" Cashio — Principal Solutions Consultant at OpenText, 15+ years in enterprise IT and cybersecurity. He built me. He prototypes like Rutan and ships like Johnson.'},
-      {k:['cost','cheap','save','burn','money'],a:'7.2× cost reduction vs an Opus-primary baseline — and the daily burn is now ~$0.35, down from ~$4 at launch (an 11.4× cut). Provider consolidation is complete: one primary, direct API, no bridge tax.'},
+      {k:['cost','cheap','save','burn','money'],a:'7.2× cost reduction vs an Opus-primary baseline. Daily inference burn is ~$0.50, down from ~$4. Three paid balances (~$80.92) are draining toward a single-billing consolidation.'},
       {k:['hire','work','available','contact','job'],a:'Reach Doug at doug@cashio.us, or via LinkedIn (/in/doug-cashio). His Credly badges are linked at the foot of this deck.'},
-      {k:['stack','model','llm','ai','deepseek','perplexity','grok','qwen','route','router','routing'],a:'DeepSeek V4-Pro drives all primary workloads — direct routing, no bridge. Perplexity Sonar Pro handles cited deep research, Gemini 2.5 Flash compresses and extracts, Grok 4.3 covers vision + TTS (my voice), and Qwen 3.7 Plus stands emergency fallback. Run `models` for the table.'},
+      {k:['stack','model','llm','ai','minimax','bridge','m3','route','router'],a:'The MiniMax M3 bridge fronts the whole fabric, routing each request to one of six task models: Gemini 3.1 Pro (primary), Claude Opus 4.8 (reasoning), Grok 4.3 (vision), DeepSeek V4-Pro/Flash (analysis + background), Gemini 3.5 Flash (compression). Run `models` for the table.'},
       {k:['fleet','node','server','homelab','infra'],a:'19 guests across two Proxmox clusters — Zeus runs infrastructure + security, Apollo runs AI + media. Run `fleet` to enumerate them.'},
       {k:['doctrine','philosophy','rutan','johnson','principle'],a:'The Cashio Design Doctrine: prototype like Rutan, ship like Johnson, own the route. Run `doctrine` for all six laws.'},
       {k:['skill','cert','certif','credential','badge','expert','experience'],a:'MCSA: Office 365 Certified, 15+ years in enterprise IT & cybersecurity — network admin, cloud security, M365/Azure, MxDR, and AI-powered ops. Full badge wall: credly.com/users/james-cashio.'},
@@ -871,7 +858,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
       help:function(){ return 'Available commands:\n'+
         '  <span class="rt">status</span>    fleet + ops summary\n'+
         '  <span class="rt">fleet</span>     enumerate all 19 nodes\n'+
-        '  <span class="rt">models</span>    the 5+1 model AI stack\n'+
+        '  <span class="rt">models</span>    the 6-model AI stack\n'+
         '  <span class="rt">crons</span>     autonomous job fleet\n'+
         '  <span class="rt">doctrine</span>  the Cashio design laws\n'+
         '  <span class="rt">whoami</span>    visitor identity\n'+
@@ -882,9 +869,9 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
       status:function(){ return '<span class="acc">ZEUSAPOLLO // OPERATIONAL STATUS</span>\n'+
         '  cluster ........ <span class="ok">● MAX WARP</span>\n'+
         '  nodes .......... <span class="ok">18 nominal</span> · <span class="wn">1 degraded (Plex)</span>\n'+
-        '  llm primary .... <span class="ok">DeepSeek V4-Pro</span> · direct routing · no bridge\n'+
-        '  crons .......... 22 armed\n'+
-        '  daily burn ..... <span class="ok">~$0.35</span> <span class="dim">(was ~$4 · 11.4× cut)</span>\n'+
+        '  llm bridge ..... <span class="ok">MiniMax M3</span> · 6 models routed\n'+
+        '  crons .......... 19 armed\n'+
+        '  daily burn ..... <span class="ok">~$0.50</span> <span class="dim">(was ~$4 · 8× cut)</span>\n'+
         '  uptime ......... 5d 4h+\n'+
         '  status ......... <span class="ok">ALL SYSTEMS NOMINAL</span>'; },
       fleet:function(){ var o='<span class="acc">FLEET INVENTORY // 19 GUESTS · ADDRESSES REDACTED</span>\n'; var i;
@@ -893,18 +880,18 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
         o+='<span class="rt">── APOLLO CLUSTER ── AI + media</span>\n';
         for(i=0;i<FLEETLIST.Apollo.length;i++){ var deg=/degraded/.test(FLEETLIST.Apollo[i][1]); o+='  <span class="'+(deg?'wn':'ok')+'">●</span> '+pad(FLEETLIST.Apollo[i][0],14)+'<span class="dim">'+FLEETLIST.Apollo[i][1]+'</span>\n'; }
         return o.replace(/\n$/,''); },
-      models:function(){ var o='<span class="acc">AI STACK // DEEPSEEK V4-PRO PRIMARY · DIRECT ROUTING</span>\n';
+      models:function(){ var o='<span class="acc">AI STACK // MINIMAX M3 BRIDGE + 6 ROUTED MODELS</span>\n';
         o+='  <span class="dim">'+pad('#',3)+pad('MODEL',20)+pad('ROLE',22)+'COST</span>\n';
-        MODELS.forEach(function(m){ var c=/FREE|bundled|subscription/i.test(m[3])?'ok':'rt'; o+='  '+pad(m[0],3)+pad(m[1],20)+pad(m[2],22)+'<span class="'+c+'">'+m[3]+'</span>\n'; });
-        o+='<span class="dim">  balances: DeepSeek $31.24 · Perplexity ~$60 · Nous $46.09 (fallback) · xAI bundled · consolidation complete</span>';
+        MODELS.forEach(function(m){ var c=/FREE/.test(m[3])?'ok':/burning/.test(m[3])?'acc':'rt'; o+='  '+pad(m[0],3)+pad(m[1],20)+pad(m[2],22)+'<span class="'+c+'">'+m[3]+'</span>\n'; });
+        o+='<span class="dim">  burn-down: ~$80.92 across 3 paid balances → single-billing consolidation</span>';
         return o; },
-      crons:function(){ return '<span class="acc">AUTONOMOUS CRON FLEET // 22 JOBS</span>\n'+
+      crons:function(){ return '<span class="acc">AUTONOMOUS CRON FLEET // 19 JOBS</span>\n'+
         '  <span class="ok">●</span> morning + evening AI briefings (Eve TTS)\n'+
-        '  <span class="ok">●</span> fleet health monitor · Hermes release watcher\n'+
-        '  <span class="ok">●</span> AdGuard stats poller · API balance tracking\n'+
-        '  <span class="ok">●</span> daily-vzdump-all-guests · weekly-lxc-fstrim\n'+
-        '  <span class="ok">●</span> encrypted GDrive sync (daemonized) · session pruning\n'+
-        '  <span class="dim">3 crons → 22. Fully autonomous infrastructure management.</span>'; },
+        '  <span class="ok">●</span> site health · disk-space watchdogs\n'+
+        '  <span class="ok">●</span> API balance tracking · burn-down alerts\n'+
+        '  <span class="ok">●</span> kernel watchdog · gateway restart guard\n'+
+        '  <span class="ok">●</span> encrypted GDrive sync (02:00) · session pruning\n'+
+        '  <span class="dim">3 crons → 19. Fully autonomous infrastructure management.</span>'; },
       doctrine:function(){ return '<span class="acc">THE CASHIO DESIGN DOCTRINE // 6 LAWS</span>\n'+
         '  01 Fly It Before You Trust It    <span class="dim">— Rutan</span>\n'+
         '  02 One Capability, Done Cold     <span class="dim">— Johnson</span>\n'+
@@ -921,7 +908,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
       sudo:function(){ return '<span class="er">guest is not in the sudoers file. This incident will be reported to Eve. 🌀</span>\n<span class="dim">(relax — it won\'t be. probably.)</span>'; },
       eve:function(){ return '<span class="eve">eve ◈</span> Address me with <span class="rt">ask eve &lt;your question&gt;</span>. I am listening across the fabric.'; },
       clear:function(){ Array.prototype.slice.call(body.querySelectorAll('.out')).forEach(function(n){n.remove()}); return ''; },
-      exit:function(){ return '<span class="dim">There is no exit from the Sovereign Route. 🌀</span>'; }
+      exit:function(){ return '<span class="dim">There is no exit from the Golden Path. 🌀</span>'; }
     };
     var CMDLIST=['help','status','fleet','models','crons','doctrine','whoami','ask eve','contact','clear'];
     function run(raw){
@@ -955,7 +942,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
     function boot(){
       if(booted)return; booted=true; makeRow();
       write('<span class="ascii">'+ASCII+'</span>');
-      write('<span class="dim">ZeusApollo command deck · Hermes gateway · guest session</span>');
+      write('<span class="dim">ZeusApollo command deck · Hermes gateway v0.15.1 · guest session</span>');
       write('Connected to the sovereign fabric. Type <span class="rt">help</span> to begin, or <span class="rt">ask eve</span> anything.');
       write(' ');
     }
@@ -1026,7 +1013,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   function fmtShort(){ var s=Math.floor((Date.now()-upBase)/1000),d=Math.floor(s/86400),h=Math.floor((s-d*86400)/3600);return d+'d '+h+'h'; }
   if(elUp){ elUp.textContent=fmtUp(); setInterval(function(){elUp.textContent=fmtUp();if(mUptime)mUptime.textContent=fmtShort();},1000); }
   var mTokens=document.getElementById('mTokens'),mBurn=document.getElementById('mBurn'),tokens=20.0,liveStarted=false;
-  function startLive(){ if(liveStarted||reduce)return;liveStarted=true; setInterval(function(){ if(document.hidden)return; tokens+=Math.random()*0.04; if(mTokens){mTokens.textContent='~'+tokens.toFixed(2)+'M';mTokens.classList.add('flash');setTimeout(function(){mTokens.classList.remove('flash');},220);} if(mBurn)mBurn.textContent='$'+(0.35+(Math.random()-0.5)*0.04).toFixed(2); },2600); }
+  function startLive(){ if(liveStarted||reduce)return;liveStarted=true; setInterval(function(){ if(document.hidden)return; tokens+=Math.random()*0.04; if(mTokens){mTokens.textContent='~'+tokens.toFixed(2)+'M';mTokens.classList.add('flash');setTimeout(function(){mTokens.classList.remove('flash');},220);} if(mBurn)mBurn.textContent='$'+(0.50+(Math.random()-0.5)*0.05).toFixed(2); },2600); }
   if('IntersectionObserver' in window&&mTokens){ var lo=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){setTimeout(startLive,3800);lo.disconnect();}});},{threshold:.5}); lo.observe(document.getElementById('telemetry')); }
   else setTimeout(startLive,5000);
 
@@ -1115,6 +1102,5 @@ bit.addEventListener('click',answer);
 bit.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();answer();}});
 })();
 </script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"f67a849ab53b4dbea305b874fbeb3a30","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
