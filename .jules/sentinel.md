@@ -36,3 +36,8 @@
 **Vulnerability:** `scripts/zeusapollo_bridge.py`, a secondary bridge script used for speculative decoding, was missing basic security headers (like Content-Security-Policy, X-Frame-Options, X-Content-Type-Options) while the primary swarm script already possessed them.
 **Learning:** It is easy to overlook baseline security measures when creating secondary, internal, or highly specialized scripts (such as for speculative decoding). However, any exposed HTTP endpoint requires consistent baseline security headers to prevent attacks like clickjacking or content sniffing.
 **Prevention:** Always implement a security middleware applying strict HTTP headers (including CSP, HSTS, and X-Frame-Options) across all API surfaces, regardless of their primary intent or network positioning.
+
+## 2026-06-11 - [Path-Based Security Bypass via URL Prefix Matching]
+**Vulnerability:** The security middleware in `scripts/zeusapollo_swarm.py` relied solely on the URL prefix matching `startswith("/v1/")` to apply authentication, rate limiting, and CORS checks. Endpoints without this prefix (like the `/route` endpoint) were unintentionally exposed to unauthenticated public access.
+**Learning:** Using an allow-list or prefix-based approach for applying security controls is prone to bypass vulnerabilities when new routes are added or when routes purposefully exclude the prefix but require protection.
+**Prevention:** Always implement a deny-by-default approach for security middleware. Apply authentication and rate-limiting to ALL endpoints, and explicitly exclude known public paths (e.g., `/health`, `/docs`) using an explicit exclusion list rather than conditionally protecting based on prefixes.
