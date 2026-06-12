@@ -756,12 +756,12 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   function endBoot(){ if(boot.classList.contains('done'))return; boot.classList.add('done'); setTimeout(function(){boot.style.display='none';},650); try{startKicker();startChain();}catch(e){} }
   bootSkip.addEventListener('click',endBoot);
   bootSkip.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' ')endBoot(); });
-  if(reduce){ bootLines.innerHTML=seq.join('<br>'); bootBar.style.width='100%'; setTimeout(endBoot,400); }
-  else{ var i=0;(function nl(){ if(i<seq.length){ bootLines.innerHTML+=(i?'<br>':'')+seq[i]+' <span class="pct">['+Math.round((i+1)/seq.length*100)+'%]</span>'; bootBar.style.width=((i+1)/seq.length*100)+'%'; i++; setTimeout(nl,140+Math.random()*110);} else setTimeout(endBoot,500); })(); setTimeout(endBoot,4200); }
+  if(reduce){ bootLines.innerHTML=''; seq.forEach(function(s, idx){ if(idx>0) bootLines.appendChild(document.createElement('br')); bootLines.appendChild(document.createTextNode(s)); }); bootBar.style.width='100%'; setTimeout(endBoot,400); }
+  else{ var i=0;(function nl(){ if(i<seq.length){ if(i>0)bootLines.appendChild(document.createElement('br')); bootLines.appendChild(document.createTextNode(seq[i]+' ')); var pct=document.createElement('span'); pct.className='pct'; pct.textContent='['+Math.round((i+1)/seq.length*100)+'%]'; bootLines.appendChild(pct); bootBar.style.width=((i+1)/seq.length*100)+'%'; i++; setTimeout(nl,140+Math.random()*110);} else setTimeout(endBoot,500); })(); setTimeout(endBoot,4200); }
 
   /* ---- kicker ---- */
   var kicker=document.getElementById('kicker'),kStr="// NO FLUFF. JUST ROUTED INTELLIGENCE.";
-  function startKicker(){ if(reduce){kicker.textContent=kStr;return;} var k=0;(function ty(){ if(k<=kStr.length){kicker.innerHTML=kStr.slice(0,k)+'<span class="cur">▋</span>';k++;setTimeout(ty,42);} else setTimeout(function(){kicker.innerHTML=kStr;},800); })(); }
+  function startKicker(){ if(reduce){kicker.textContent=kStr;return;} var k=0;(function ty(){ if(k<=kStr.length){kicker.textContent=kStr.slice(0,k); var span=document.createElement('span'); span.className='cur'; span.textContent='▋'; kicker.appendChild(span); k++;setTimeout(ty,42);} else setTimeout(function(){kicker.textContent=kStr;},800); })(); }
 
   /* ---- count-up ---- */
   function animate(el){ var target=parseFloat(el.getAttribute('data-count')),dec=parseInt(el.getAttribute('data-decimals')||'0',10),pre=el.getAttribute('data-prefix')||'',suf=el.getAttribute('data-suffix')||'';
@@ -814,7 +814,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   function line(html){ var d=document.createElement('div'); d.className='ln'; d.innerHTML=html; evlog.appendChild(d); while(evlog.children.length>6)evlog.removeChild(evlog.firstChild); }
   var chainStarted=false;
   function startChain(){ if(chainStarted)return; chainStarted=true; var si=0;
-    function runScenario(){ var sc=scenarios[si%scenarios.length]; si++; evlog.innerHTML=''; setActive('ingest');
+    function runScenario(){ var sc=scenarios[si%scenarios.length]; si++; evlog.textContent=''; setActive('ingest');
       line('<span class="t">'+new Date().toLocaleTimeString('en-US',{hour12:false})+'</span> &nbsp;'+sc.trig);
       if(reduce){ sc.steps.forEach(function(st){ setActive(st[0]); line('<span class="t">·</span> '+st[1]); }); setTimeout(runScenario,3000); return; }
       var idx=0;
@@ -991,7 +991,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
         if(!reduce){ bd.appendChild(mk('animate',{attributeName:'opacity',values:'1;.5;1',dur:(nd.deg?'0.8s':'2.4s'),repeatCount:'indefinite'})); }
         g.appendChild(bd);
         var lbl=mk('text',{x:x,y:y-17,'text-anchor':'middle',class:'node-label'});lbl.textContent=nd.n;g.appendChild(lbl);
-        function show(){ readout.innerHTML='<b>◈ '+nd.n.toUpperCase()+'</b>'+nd.r+' &nbsp;—&nbsp; <span class="'+(nd.deg?'warn':'ok')+'">'+(nd.deg?'DEGRADED':'NOMINAL')+'</span>'; }
+        function show(){ readout.textContent=''; var b=document.createElement('b'); b.textContent='◈ '+nd.n.toUpperCase(); readout.appendChild(b); readout.appendChild(document.createTextNode(nd.r+'  —  ')); var s=document.createElement('span'); s.className=(nd.deg?'warn':'ok'); s.textContent=(nd.deg?'DEGRADED':'NOMINAL'); readout.appendChild(s); }
         g.addEventListener('mouseenter',show);g.addEventListener('focus',show);g.addEventListener('click',show);
         svg.appendChild(g);
       });
