@@ -34,7 +34,7 @@
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700&family=Orbitron:wght@600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;700&family=Orbitron:wght@600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    ZEUSAPOLLO v27 — command-center. v26 visual language kept,
@@ -47,7 +47,7 @@
   --void:#0a0a0f; --surface:rgba(12,12,22,.88); --surface-2:rgba(18,18,32,.75);
   --glass:rgba(255,255,255,.04); --glass-border:rgba(255,255,255,.08);
   --glass-highlight:rgba(255,255,255,.12);
-  --text:#e4e4f0; --text-dim:#b6b6d0;
+  --text:#e4e4f0; --text-dim:#c6c6e0;
   --font-display:'Orbitron',monospace; --font-body:'Exo 2',system-ui,sans-serif;
   --font-mono:'JetBrains Mono','Courier New',monospace;
   --radius:12px; --radius-lg:20px; --radius-xl:28px;
@@ -411,6 +411,106 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 @keyframes bitshake{0%{transform:translate(2px,-1px)}25%{transform:translate(-2px,2px)}50%{transform:translate(1px,2px)}75%{transform:translate(-1px,-2px)}100%{transform:translate(0,0)}}
 @media(prefers-reduced-motion:reduce){#bit,#bit svg,#bit.no svg{animation:none}#bit::before,#bit::after{display:none}}
 @media(max-width:560px){#bit{width:50px;height:50px;right:14px;bottom:14px}}
+/* ===== v28 enhancements (additive, look-and-feel preserved) ===== */
+.avail{font-family:var(--font-mono);font-size:13px;letter-spacing:.03em;color:var(--green);margin:4px 0 16px;text-shadow:0 0 12px rgba(0,255,159,.28)}
+.avail b{color:var(--cyan)}
+.sec-kick{font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;color:var(--text-dim);margin:-2px 0 14px;opacity:.9}
+.sec-kick::before{content:"▸ ";color:var(--accent)}
+abbr[title]{text-decoration:none;border-bottom:1px dotted var(--text-dim);cursor:help}
+.stack-cards{display:none}
+.stack-card{background:var(--surface-2);border:1px solid var(--glass-border);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px}
+.stack-card .sc-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.stack-card .sc-name{font-family:var(--font-display);font-weight:700;font-size:14px;color:var(--text)}
+.stack-card .sc-prio{font-family:var(--font-mono);font-size:11px;color:var(--cyan);border:1px solid var(--glass-border);border-radius:5px;padding:1px 7px}
+.stack-card .sc-prov{font-size:12px;color:var(--text-dim);margin-top:3px}
+.stack-card .sc-role{font-size:13px;color:var(--text);margin-top:6px}
+.stack-card .sc-cost{font-family:var(--font-mono);font-size:12px;color:var(--amber);margin-top:6px}
+.stack-card .sc-cost.free{color:var(--green)}
+@media(max-width:620px){#stack .tbl-scroll{display:none}#stack .stack-cards{display:block}}
+/* ===== v28.1 hero wow polish (additive; reduced-motion auto-disables animation) ===== */
+::selection{background:var(--cyan);color:#04121a}
+.hero{position:relative}
+.hero::before,.hero::after{content:"";position:absolute;width:40px;height:40px;border:2px solid var(--cyan);opacity:.4;pointer-events:none;filter:drop-shadow(0 0 6px var(--cyan-glow));animation:bracketGlow 4s ease-in-out infinite}
+.hero::before{top:8px;left:4px;border-right:0;border-bottom:0}
+.hero::after{bottom:2px;right:4px;border-left:0;border-top:0}
+@keyframes bracketGlow{0%,100%{opacity:.28}50%{opacity:.6}}
+#heroName{background:linear-gradient(115deg,#eafffe 0%,var(--cyan) 28%,#ffffff 50%,var(--cyan) 72%,#d6fbff 100%);background-size:240% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 60px var(--cyan-glow);animation:titleSheen 7s ease-in-out infinite,titlePulse 3.8s ease-in-out infinite}
+@keyframes titleSheen{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes titlePulse{0%,100%{text-shadow:0 0 52px var(--cyan-glow)}50%{text-shadow:0 0 80px var(--cyan-glow),-3px 0 20px rgba(204,0,255,.38),3px 0 20px rgba(0,249,255,.5)}}
+.hero .role{background:linear-gradient(90deg,var(--accent),#ffdf9c,var(--accent));background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:roleSheen 6s ease-in-out infinite}
+@keyframes roleSheen{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
+.hero-beam{width:min(340px,70%);height:2px;margin:16px auto 2px;background:linear-gradient(90deg,transparent,var(--cyan),var(--green),var(--accent),transparent);box-shadow:0 0 14px var(--cyan-glow);border-radius:2px;animation:beamGrow 1.2s var(--ease) .15s both,beamPulse 4s ease-in-out 1.4s infinite}
+@keyframes beamGrow{from{width:0;opacity:0}to{width:min(340px,70%);opacity:1}}
+@keyframes beamPulse{0%,100%{opacity:.72}50%{opacity:1;filter:brightness(1.3)}}
+.btn.primary{position:relative;overflow:hidden}
+.btn.primary::after{content:"";position:absolute;top:0;left:-70%;width:45%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-18deg);animation:btnShine 5s ease-in-out infinite;pointer-events:none}
+@keyframes btnShine{0%,55%{left:-70%}80%,100%{left:140%}}
+.ribbon .cell{transition:transform var(--dur) var(--ease),border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease)}
+.ribbon .cell:hover{border-color:var(--cyan);box-shadow:0 0 26px var(--cyan-glow);transform:translateY(-3px)}
+/* ===== v29 site-wide graphic-quality pass (additive · reduced-motion safe · progressive-enhanced) ===== */
+html{scrollbar-color:var(--cyan) transparent}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:rgba(255,255,255,.02)}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--cyan),var(--purple));border-radius:10px;border:2px solid var(--void)}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#6efcff,var(--cyan))}
+#grid{position:fixed;left:-25%;right:-25%;bottom:0;height:48vh;z-index:0;pointer-events:none;opacity:.4;overflow:hidden;transform:perspective(440px) rotateX(64deg);transform-origin:bottom center;-webkit-mask-image:linear-gradient(transparent,#000 72%);mask-image:linear-gradient(transparent,#000 72%)}
+#grid::before{content:"";position:absolute;left:0;right:0;top:-60%;bottom:-10%;background-image:repeating-linear-gradient(90deg,rgba(0,249,255,.11) 0 1px,transparent 1px 60px),repeating-linear-gradient(0deg,rgba(0,249,255,.08) 0 1px,transparent 1px 44px);animation:gridmove 6s linear infinite}
+@keyframes gridmove{from{transform:translateY(0)}to{transform:translateY(44px)}}
+.panel{background:linear-gradient(158deg,rgba(22,22,40,.74),var(--surface) 62%);border-color:rgba(255,255,255,.10);box-shadow:0 22px 60px -16px rgba(0,0,0,.72),0 0 0 1px rgba(255,255,255,.02),inset 0 1px 0 var(--glass-highlight)}
+.panel::after{content:"";position:absolute;top:-32%;right:-8%;width:46%;height:80%;border-radius:50%;background:radial-gradient(circle,var(--accent),transparent 68%);opacity:.07;pointer-events:none;filter:blur(10px)}
+.panel.cyan::after{background:radial-gradient(circle,var(--cyan),transparent 68%)}
+.panel.green::after{background:radial-gradient(circle,var(--green),transparent 68%)}
+.panel.amber::after{background:radial-gradient(circle,var(--amber),transparent 68%)}
+.panel.purple::after{background:radial-gradient(circle,var(--purple),transparent 68%)}
+.panel.red::after{background:radial-gradient(circle,var(--red),transparent 68%)}
+.panel::before{width:5px;filter:drop-shadow(0 0 10px rgba(255,149,0,.5))}
+.panel.cyan::before{filter:drop-shadow(0 0 10px rgba(0,249,255,.55))}
+.panel.green::before{filter:drop-shadow(0 0 10px rgba(0,255,159,.55))}
+.panel.amber::before{filter:drop-shadow(0 0 10px rgba(255,204,0,.5))}
+.panel.purple::before{filter:drop-shadow(0 0 10px rgba(204,0,255,.5))}
+.panel.red::before{filter:drop-shadow(0 0 10px rgba(255,0,51,.5))}
+.lcars-bar{position:relative;overflow:hidden}
+.panel.cyan .lcars-bar{background:linear-gradient(90deg,var(--cyan),transparent)}
+.panel.green .lcars-bar{background:linear-gradient(90deg,var(--green),transparent)}
+.panel.amber .lcars-bar{background:linear-gradient(90deg,var(--amber),transparent)}
+.panel.purple .lcars-bar{background:linear-gradient(90deg,var(--purple),transparent)}
+.panel.red .lcars-bar{background:linear-gradient(90deg,var(--red),transparent)}
+.lcars-bar::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(-120%);animation:lcarsShine 5s ease-in-out infinite}
+@keyframes lcarsShine{0%,62%{transform:translateX(-120%)}100%{transform:translateX(240%)}}
+.sec-head h2{text-shadow:0 0 20px rgba(255,255,255,.08)}
+.panel.cyan .sec-head h2{text-shadow:0 0 18px rgba(0,249,255,.28)}
+.panel.green .sec-head h2{text-shadow:0 0 18px rgba(0,255,159,.26)}
+.panel.amber .sec-head h2{text-shadow:0 0 18px rgba(255,204,0,.24)}
+.panel.purple .sec-head h2{text-shadow:0 0 18px rgba(204,0,255,.26)}
+.panel.red .sec-head h2{text-shadow:0 0 18px rgba(255,0,51,.24)}
+.tag{background:rgba(255,255,255,.05);box-shadow:0 0 14px -5px currentColor;backdrop-filter:blur(4px)}
+.metric,.phil .card,.rn-grid .c,.tl-item,.cred{transition:transform var(--dur) var(--ease),border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease),color var(--dur) var(--ease)}
+.metric:hover{border-color:var(--green);box-shadow:0 0 22px rgba(0,255,159,.28);transform:translateY(-3px)}
+.phil .card:hover{border-color:var(--cyan);box-shadow:0 0 24px var(--cyan-glow);transform:translateY(-3px)}
+.rn-grid .c:hover{border-color:var(--amber);box-shadow:0 0 16px rgba(255,204,0,.28);transform:translateY(-2px)}
+.tl-item:hover::before{transform:scale(1.25);box-shadow:0 0 18px var(--accent)}
+.tl-item:hover h3{color:var(--cyan)}
+.cred:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 14px var(--cyan-glow)}
+.btn.secondary,.btn.ghost{backdrop-filter:blur(6px)}
+.btn.secondary:hover,.btn.ghost:hover{transform:translateY(-2px)}
+.stack-card{transition:transform var(--dur) var(--ease),border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease)}
+.stack-card:hover{border-color:var(--amber);box-shadow:0 0 18px rgba(255,204,0,.22);transform:translateY(-2px)}
+body.reveal-on .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+body.reveal-on .reveal.in{opacity:1;transform:none}
+/* ===== v30 topology + section-icon polish ===== */
+#topoSvg{background:radial-gradient(circle at 27% 46%,rgba(0,249,255,.05),transparent 46%),radial-gradient(circle at 73% 46%,rgba(204,0,255,.05),transparent 46%)}
+.cluster-ring{stroke-dasharray:6 8}
+.node-g circle.body{transition:r .2s var(--ease),stroke-width .2s var(--ease)}
+.node-g:hover circle.body,.node-g:focus circle.body{r:9.5;stroke:var(--cyan);stroke-width:2}
+.node-g:focus{outline:none}
+.node-label{paint-order:stroke;stroke:rgba(5,6,12,.78);stroke-width:3px;stroke-linejoin:round}
+.sec-head>span[aria-hidden="true"]{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:var(--glass);border:1px solid var(--glass-border);box-shadow:inset 0 0 14px rgba(0,249,255,.10),0 0 16px -8px var(--cyan-glow);font-size:15px;line-height:1;flex:0 0 auto}
+.panel.cyan .sec-head>span[aria-hidden="true"]{border-color:rgba(0,249,255,.30);box-shadow:inset 0 0 16px rgba(0,249,255,.16),0 0 16px -6px rgba(0,249,255,.5)}
+.panel.green .sec-head>span[aria-hidden="true"]{border-color:rgba(0,255,159,.30);box-shadow:inset 0 0 16px rgba(0,255,159,.16),0 0 16px -6px rgba(0,255,159,.5)}
+.panel.amber .sec-head>span[aria-hidden="true"]{border-color:rgba(255,204,0,.30);box-shadow:inset 0 0 16px rgba(255,204,0,.14),0 0 16px -6px rgba(255,204,0,.45)}
+.panel.purple .sec-head>span[aria-hidden="true"]{border-color:rgba(204,0,255,.30);box-shadow:inset 0 0 16px rgba(204,0,255,.16),0 0 16px -6px rgba(204,0,255,.5)}
+.panel.red .sec-head>span[aria-hidden="true"]{border-color:rgba(255,0,51,.30);box-shadow:inset 0 0 16px rgba(255,0,51,.14),0 0 16px -6px rgba(255,0,51,.45)}
+body.anim-paused #grid::before,body.anim-paused::after{animation-play-state:paused!important}
 </style>
 </head>
 <body>
@@ -418,6 +518,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 <div id="scrollbar" aria-hidden="true"></div>
 <canvas id="starfield" aria-hidden="true"></canvas>
 <div id="warp" aria-hidden="true"></div>
+<div id="grid" aria-hidden="true"></div>
 
 <!-- ===================== BOOT ===================== -->
 <div id="boot" role="status" aria-label="System boot sequence">
@@ -453,13 +554,16 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   <section class="hero" aria-labelledby="heroName">
     <h1 id="heroName">DOUG CASHIO</h1>
     <div class="role">ENTERPRISE AI &amp; CYBERSECURITY</div>
+    <div class="hero-beam" aria-hidden="true"></div>
     <div class="sub">Principal Solutions Consultant · Sovereign Infrastructure · Multi-Model Orchestration</div>
     <p class="pitch">I cut AI inference costs <b>7.2×</b> — measured against an Opus-primary baseline — by building a sovereign infrastructure — not renting vendor lock-in. A <b>19-node homelab</b> where every model, route, and backup is deployed, documented, and battle-tested.</p>
     <p class="plain">TRANSLATION FOR HUMANS // I design and run AI infrastructure that does the work of a cloud platform team — cheaper, private, and provably autonomous. Everything below is live proof.</p>
     <div class="kicker" id="kicker"></div>
+    <p class="avail">✦ Open to <b>enterprise AI &amp; cybersecurity</b> consulting — the fastest way to judge the work is to use it.</p>
     <div class="cta-row">
-      <a class="btn primary" href="#chain">◎ THE LLM CHAIN →</a>
-      <a class="btn secondary" href="#topology">LIVE TOPOLOGY</a>
+      <a class="btn primary" href="#hailing">▸ WORK WITH ME</a>
+      <a class="btn secondary" href="#console">⌨ LIVE CONSOLE →</a>
+      <a class="btn ghost" href="#chain">◎ THE LLM CHAIN</a>
       <a class="btn ghost" href="#changelog">⟳ CHANGELOG</a>
     </div>
   </section>
@@ -487,6 +591,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   <!-- ===================== LLM EVENT CHAIN (showpiece) ===================== -->
   <section class="panel cyan" id="chain" aria-labelledby="chHead">
     <div class="sec-head"><span aria-hidden="true">🧠</span><h2 id="chHead">THE LLM EVENT CHAIN</h2><span class="tag live">● LIVE TRACE</span><span class="lcars-bar"></span></div>
+    <div class="sec-kick">FLIGHT TEST — one real event, the full route, start to finish</div>
     <p class="chain-intro">When an event fires — a Discord command, a cron briefing, an inbound email — it doesn't hit one model. It flows through a <b>routed pipeline</b>: classify, route to the right model by cost and capability, execute tools, verify, then deliver. Watch a real request trace through the fabric:</p>
     <div class="evlog" id="evlog" aria-live="polite"></div>
     <div class="chain" id="chainStages">
@@ -501,10 +606,11 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   <!-- ===================== INTERACTIVE TERMINAL (showpiece) ===================== -->
   <section class="panel green" id="console" aria-labelledby="conHead">
     <div class="sec-head"><span aria-hidden="true">⌨️</span><h2 id="conHead">HERMES CONSOLE — LIVE ACCESS</h2><span class="tag live">● INTERACTIVE</span><span class="lcars-bar"></span></div>
+    <div class="sec-kick">CLIMB INTO THE COCKPIT — this console is wired to the live fleet</div>
     <p class="term-intro">This isn't a screenshot. It's a working console wired to the fleet's public readouts. Type <code>help</code> to see commands, or <code>ask eve …</code> to query the Mentat. Try <code>status</code>, <code>fleet</code>, <code>models</code>.</p>
     <div class="terminal">
       <div class="term-bar"><span class="dotr d1"></span><span class="dotr d2"></span><span class="dotr d3"></span>
-        <span class="ttl"><b><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8cebf9e9fff8ccefedffe4e5e3a2f9ff">[email&#160;protected]</a></b> — hermes://command-deck</span>
+        <span class="ttl"><b>guest@cashio.us</b> — hermes://command-deck</span>
         <span class="hint">↑↓ history · Tab complete</span></div>
       <div class="term-body" id="termBody" tabindex="0" role="log" aria-live="polite" aria-label="Interactive console output"></div>
       <div class="term-foot" id="termChips"></div>
@@ -528,7 +634,8 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   <!-- ===================== AI STACK ===================== -->
   <section class="panel amber" id="stack" aria-labelledby="stHead">
     <div class="sec-head"><span aria-hidden="true">🛰️</span><h2 id="stHead">THE AI STACK — MULTI-MODEL SOVEREIGN</h2><span class="tag upd">DEEPSEEK V4-PRO DIRECT</span><span class="lcars-bar"></span></div>
-    <p style="color:var(--text-dim);font-size:14px;margin-bottom:8px">No single-provider dependency — and no bridge tax. Every request routes <b style="color:var(--cyan)">directly</b> to the cheapest model that can do the job. DeepSeek V4-Pro takes the conn; research, compression, vision, and fallback each have a named lane.</p>
+    <div class="sec-kick">ONE BIRD PER MISSION — the cheapest model that can fly each sortie</div>
+    <p style="color:var(--text-dim);font-size:14px;margin-bottom:8px">No single-provider dependency — and no bridge tax. Every request routes <b style="color:var(--cyan)">directly</b> to the cheapest model that can do the job. DeepSeek V4-Pro takes the conn; research, compression, vision, and fallback each have a named lane. <span class="dim">Prices are per <abbr title="million tokens">MTok</abbr> — input / output.</span></p>
     <div class="tbl-scroll"><table>
       <thead><tr><th>#</th><th>Model</th><th>Provider</th><th>Role</th><th>Cost</th></tr></thead>
       <tbody>
@@ -539,6 +646,13 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
         <tr><td><span class="prio">5</span></td><td><b>Qwen 3.7 Plus</b></td><td>Nous (fallback)</td><td>Emergency failover only</td><td class="mono free">subscription</td></tr>
       </tbody>
     </table></div>
+    <div class="stack-cards">
+      <div class="stack-card"><div class="sc-top"><span class="sc-name">DeepSeek V4-Pro</span><span class="sc-prio">#1</span></div><div class="sc-prov">DeepSeek API</div><div class="sc-role">Primary — all agent tasks, briefings, delegation</div><div class="sc-cost">$0.435 / $0.87 MTok</div></div>
+      <div class="stack-card"><div class="sc-top"><span class="sc-name">Perplexity Sonar Pro</span><span class="sc-prio">#2</span></div><div class="sc-prov">Perplexity API</div><div class="sc-role">Deep research with citations</div><div class="sc-cost">$3 / $15 MTok</div></div>
+      <div class="stack-card"><div class="sc-top"><span class="sc-name">Gemini 2.5 Flash</span><span class="sc-prio">#3</span></div><div class="sc-prov">Google AI</div><div class="sc-role">Compression + web extract</div><div class="sc-cost">~$0.10 / $0.40 MTok</div></div>
+      <div class="stack-card"><div class="sc-top"><span class="sc-name">Grok 4.3</span><span class="sc-prio">#4</span></div><div class="sc-prov">xAI (SuperGrok)</div><div class="sc-role">Vision + TTS (Eve voice)</div><div class="sc-cost free">bundled</div></div>
+      <div class="stack-card"><div class="sc-top"><span class="sc-name">Qwen 3.7 Plus</span><span class="sc-prio">#5</span></div><div class="sc-prov">Nous (fallback)</div><div class="sc-role">Emergency failover only</div><div class="sc-cost free">subscription</div></div>
+    </div>
     <p style="margin-top:14px;font-size:13px;color:var(--text-dim);border-left:2px solid var(--accent);padding-left:14px"><b style="color:var(--accent)">PROVIDER CONSOLIDATION — COMPLETE:</b> DeepSeek V4-Pro drives all primary workloads — direct API, no bridge tax. Perplexity Sonar Pro handles cited deep research. Bundled services (xAI SuperGrok for vision/TTS, Nous for fallback) cover the edges. Total active spend: ~$0.35/day (down from ~$4/day at launch — 11.4× reduction).</p>
   </section>
 
@@ -551,12 +665,13 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
       <span style="margin-left:auto">ROLES SHOWN · ADDRESSES REDACTED FOR OPSEC</span>
     </div>
     <svg id="topoSvg" viewBox="0 0 1000 460" role="img" aria-label="Network topology of the ZeusApollo homelab — Zeus and Apollo clusters with live node status, addresses redacted"></svg>
-    <div class="topo-readout" id="topoReadout"><b>◈ HOVER A NODE</b>Two-cluster Proxmox fabric — Zeus runs infra + security, Apollo runs AI + media. Green is nominal; amber is degraded.</div>
+    <div class="topo-readout" id="topoReadout" aria-live="polite" aria-atomic="true"><b>◈ HOVER A NODE</b>Two-cluster <abbr title="Open-source virtualization platform">Proxmox</abbr> fabric — Zeus runs infra + security, Apollo runs AI + media. Green is nominal; amber is degraded.</div>
   </section>
 
   <!-- ===================== TELEMETRY ===================== -->
   <section class="panel cyan" id="telemetry" aria-labelledby="telHead">
     <div class="sec-head"><span aria-hidden="true">📊</span><h2 id="telHead">PROOF OF LIFE — ROLLING TELEMETRY</h2><span class="tag upd">SAMPLED LIVE</span><span class="lcars-bar"></span></div>
+    <div class="sec-kick">INSTRUMENTS DON'T LIE — readouts sampled straight off the fabric</div>
     <div class="metrics">
       <div class="metric"><div class="num" id="mUptime">5d 4h</div><div class="lbl">Fleet Uptime</div></div>
       <div class="metric"><div class="num" id="mTokens" data-count="20" data-suffix="M" data-prefix="~">~20M</div><div class="lbl">Tokens Routed</div><div class="note">lifetime · <span class="live-dot">●</span> live</div></div>
@@ -571,20 +686,20 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   <section class="panel green" id="modules" aria-labelledby="modHead">
     <div class="sec-head"><span aria-hidden="true">⚡</span><h2 id="modHead">THE TOOLS — AUTONOMOUS RUNTIME</h2><span class="tag upd">UPDATED</span><span class="lcars-bar"></span></div>
     <div class="mods">
-      <div class="mod"><h3>🔌 MCP Servers<span class="ct">8</span></h3>
+      <div class="mod"><h3>🔌 <abbr title="Model Context Protocol — lets the agent call external tools">MCP</abbr> Servers<span class="ct">8</span></h3>
         <ul><li><b>sovereign-mcp</b> — fleet SSH control</li><li><b>proxmox</b> — 9-tool fleet API</li><li><b>kernel</b> — cloud browser</li><li><b>adguard</b> — DNS control</li><li><b>crew-bridge</b> — Omnius ↔ Hermes routing</li><li><b>filesystem · github · sqlite</b></li></ul></div>
       <div class="mod"><h3>⏱️ Cron Fleet<span class="ct">22</span></h3>
-        <ul><li>Morning / evening AI briefings</li><li>Fleet health monitor · Hermes release watcher</li><li>AdGuard stats poller · balance tracking</li><li>Daily vzdump backups · weekly LXC fstrim</li><li>GDrive sync (daemonized) · session pruning</li></ul>
+        <ul><li>Morning / evening AI briefings</li><li>Fleet health monitor · Hermes release watcher</li><li>AdGuard stats poller · balance tracking</li><li>Daily <abbr title="Proxmox guest backup utility">vzdump</abbr> backups · weekly <abbr title="Linux Containers">LXC</abbr> <abbr title="Filesystem trim — reclaims unused blocks">fstrim</abbr></li><li>GDrive sync (daemonized) · session pruning</li></ul>
         <div class="beforeafter"><span class="b">3 crons active</span> <span class="arrow">→</span> <span class="a">22 crons, fully autonomous</span></div></div>
       <div class="mod"><h3>🛰️ Platforms<span class="ct">4</span></h3>
         <ul><li><b>Discord</b> — command + alerts</li><li><b>Email</b> — Gemini Spark delegation</li><li><b>Home Assistant</b> — smart home</li><li><b>REST API</b> — programmatic access</li></ul></div>
       <div class="mod"><h3>🔐 GDrive Encrypted Backup</h3>
-        <ul><li>Daily encrypted sync via rclone gdrive-crypt</li><li>20TB offsite, automated at 02:00</li><li>OneDrive decommissioned</li></ul>
+        <ul><li>Daily encrypted sync via <abbr title="rsync for cloud storage">rclone</abbr> gdrive-crypt</li><li>20TB offsite, automated at 02:00</li><li>OneDrive decommissioned</li></ul>
         <div class="beforeafter"><span class="b">OneDrive sync</span> <span class="arrow">→</span> <span class="a">Encrypted GDrive offsite</span></div></div>
       <div class="mod"><h3>🛡️ Gateway Hardening</h3>
-        <ul><li>CPU limits + file-descriptor caps</li><li>Restart guards on the agent runtime</li><li>Credentials swept across the fleet</li><li>AdGuard VRRP DNS with failover</li></ul></div>
+        <ul><li>CPU limits + file-descriptor caps</li><li>Restart guards on the agent runtime</li><li>Credentials swept across the fleet</li><li>AdGuard <abbr title="Virtual Router Redundancy Protocol — automatic DNS failover">VRRP</abbr> DNS with failover</li></ul></div>
       <div class="mod"><h3>🗣️ Voice + Agents</h3>
-        <ul><li><b>Eve persona</b> — British female TTS</li><li><b>Claude Code</b> v2.1.158</li><li><b>OpenAI Codex</b> v0.135.0</li></ul></div>
+        <ul><li><b>Eve persona</b> — British female <abbr title="Text-to-Speech">TTS</abbr></li><li><b>Claude Code</b> v2.1.158</li><li><b>OpenAI Codex</b> v0.135.0</li></ul></div>
     </div>
   </section>
 
@@ -592,7 +707,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   <section class="panel" aria-labelledby="achHead">
     <div class="sec-head"><span aria-hidden="true">🏆</span><h2 id="achHead">THE PATH — RELEASE HISTORY</h2><span class="tag new">+ NEW</span><span class="lcars-bar"></span></div>
     <div class="tl">
-      <div class="tl-item cur"><div class="date">v27 · NOW</div><h3>"Sovereign Routing"</h3><p>Bridge retired — direct model routing · DeepSeek V4-Pro primary · Perplexity Sonar Pro cited research · 22 autonomous crons · provider consolidation complete (~$0.35/day) · PBS auth regenerated · GDrive sync daemonized.</p></div>
+      <div class="tl-item cur"><div class="date">v27 · NOW</div><h3>"Sovereign Routing"</h3><p>Bridge retired — direct model routing · DeepSeek V4-Pro primary · Perplexity Sonar Pro cited research · 22 autonomous crons · provider consolidation complete (~$0.35/day) · <abbr title="Proxmox Backup Server">PBS</abbr> auth regenerated · GDrive sync daemonized.</p></div>
       <div class="tl-item"><div class="date">v26</div><h3>"Golden Path"</h3><p>19 guests · 8-core Hermes agent · 8 MCP servers · Omnius crew bridge · Gemini Spark email/calendar delegation · GDrive offsite sync · gateway hardened (CPU limits, file descriptors, restart caps).</p></div>
       <div class="tl-item"><div class="date">v25</div><h3>Provider Consolidation Begins</h3><p>Anthropic / xAI / DeepSeek direct routing. LiteLLM deployed on Atlas (M4 Mini). Kernel 7.0.6-2 across all Proxmox hosts.</p></div>
       <div class="tl-item"><div class="date">v24</div><h3>Cluster Stabilized</h3><p>Proxmox cluster stabilized — 17 containers, AdGuard VRRP failover, Proxmox Backup Server snapshots online.</p></div>
@@ -613,7 +728,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
       <span class="cred hl">✦ 19-Node Sovereign Fleet</span>
       <a class="cred" href="https://www.credly.com/users/james-cashio/badges" target="_blank" rel="noopener noreferrer" aria-label="View all Credly badges">🎖 CREDLY BADGES</a>
       <a class="cred" href="https://linkedin.com/in/doug-cashio" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">in LINKEDIN</a>
-      <a class="cred" href="/cdn-cgi/l/email-protection#86e2e9f3e1c6e5e7f5eeefe9a8f3f5">✉ <span class="__cf_email__" data-cfemail="ed8982988aad8e8c9e858482c3989e">[email&#160;protected]</span></a>
+      <a class="cred" href="mailto:doug@cashio.us">✉ doug@cashio.us</a>
     </div>
   </section>
 
@@ -665,7 +780,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
           <li><b>AdGuard dual DNS</b> — CT-101 (Apollo) + CT-109 (Zeus)</li>
           <li><b>Backup verification</b> — CT-119 checks every snapshot</li>
           <li><b>Kernel browser</b> — headless automation, sandboxed</li>
-          <li><b>Wazuh SIEM</b> + Vaultwarden online</li>
+          <li><b>Wazuh <abbr title="Security Information and Event Management">SIEM</abbr></b> + Vaultwarden online</li>
         </ul></div>
       <div class="cl-card removed"><h3>− RETIRED</h3>
         <ul>
@@ -676,7 +791,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
           <li><b>Parallel burn-down balances</b> — consolidation complete</li>
         </ul></div>
     </div>
-    <p class="cl-foot"><span class="on">●</span> ALL SYSTEMS NOMINAL · COMPUTED BY EVE · CONSOLIDATION COMPLETE — SOVEREIGN ROUTING ACHIEVED &nbsp;·&nbsp; <a href="/cdn-cgi/l/email-protection#0d6962786a4d6e6c7e65646223787e"><span class="__cf_email__" data-cfemail="6d0902180a2d0e0c1e05040243181e">[email&#160;protected]</span></a></p>
+    <p class="cl-foot"><span class="on">●</span> ALL SYSTEMS NOMINAL · COMPUTED BY EVE · CONSOLIDATION COMPLETE — SOVEREIGN ROUTING ACHIEVED &nbsp;·&nbsp; <a href="mailto:doug@cashio.us">doug@cashio.us</a></p>
   </section>
 
 </main>
@@ -687,7 +802,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
     <div class="sec-head"><span aria-hidden="true">📡</span><h2 id="hailHead">HAILING FREQUENCIES — OPEN</h2><span class="tag upd">MONITORED</span><span class="lcars-bar"></span></div>
     <p style="margin-bottom:16px">Questions about the fleet, sovereign AI, or how any of this was built — or just want a walkthrough? The commander answers hails directly.</p>
     <div class="cta-row">
-      <a class="btn primary" href="/cdn-cgi/l/email-protection#2e4a415b496e4d4f5d464741005b5d">✉ TRANSMIT MESSAGE</a>
+      <a class="btn primary" href="mailto:doug@cashio.us">✉ TRANSMIT MESSAGE</a>
       <a class="btn secondary" href="https://linkedin.com/in/doug-cashio" target="_blank" rel="noopener">in LINKEDIN</a>
       <a class="btn ghost" href="https://www.credly.com/users/james-cashio/badges" target="_blank" rel="noopener">🎖 CREDENTIALS</a>
     </div>
@@ -706,7 +821,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   <div style="margin-top:14px;opacity:.7">© <span id="yr">2026</span> Doug Cashio · cashio.us &nbsp;·&nbsp; <span class="dim">built &amp; routed in the ZeusApollo homelab</span></div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 (function(){
   "use strict";
   var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -753,10 +868,12 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   /* ---- BOOT ---- */
   var boot=document.getElementById('boot'),bootLines=document.getElementById('bootLines'),bootBar=document.getElementById('bootBar'),bootSkip=document.getElementById('bootSkip');
   var seq=["▸ POWER-ON SELF TEST .......... OK","▸ ZEUS CLUSTER .............. ONLINE","▸ APOLLO CLUSTER ............ ONLINE","▸ HERMES AGENT .............. READY","▸ DEEPSEEK V4-PRO ........... PRIMARY","▸ 5+1 MODEL FABRIC .......... ROUTED","▸ 8 MCP SERVERS ............. MOUNTED","▸ 22 CRON JOBS .............. ARMED","▸ ADGUARD VRRP DNS .......... MASTER","▸ COMMAND DECK .............. ENGAGED"];
-  function endBoot(){ if(boot.classList.contains('done'))return; boot.classList.add('done'); setTimeout(function(){boot.style.display='none';},650); try{startKicker();startChain();}catch(e){} }
+  function endBoot(){ if(boot.classList.contains('done'))return; boot.classList.add('done'); setTimeout(function(){boot.style.display='none';},650); try{localStorage.setItem('za_boot_seen','1');}catch(e){} try{startKicker();startChain();}catch(e){} }
   bootSkip.addEventListener('click',endBoot);
   bootSkip.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' ')endBoot(); });
-  if(reduce){ bootLines.innerHTML=seq.join('<br>'); bootBar.style.width='100%'; setTimeout(endBoot,400); }
+  var bootSeen=false; try{bootSeen=localStorage.getItem('za_boot_seen')==='1';}catch(e){}
+  if(bootSeen){ boot.style.display='none'; setTimeout(function(){ try{startKicker();startChain();}catch(e){} },30); }
+  else if(reduce){ bootLines.innerHTML=seq.join('<br>'); bootBar.style.width='100%'; setTimeout(endBoot,400); }
   else{ var i=0;(function nl(){ if(i<seq.length){ bootLines.innerHTML+=(i?'<br>':'')+seq[i]+' <span class="pct">['+Math.round((i+1)/seq.length*100)+'%]</span>'; bootBar.style.width=((i+1)/seq.length*100)+'%'; i++; setTimeout(nl,140+Math.random()*110);} else setTimeout(endBoot,500); })(); setTimeout(endBoot,4200); }
 
   /* ---- kicker ---- */
@@ -776,7 +893,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   if(cv&&!reduce){ var ctx=cv.getContext('2d'),stars=[],W,H;
     function rs(){ W=cv.width=innerWidth;H=cv.height=innerHeight;stars=[];var n=Math.min(160,Math.floor(W*H/12000)); for(var i=0;i<n;i++)stars.push({x:Math.random()*W,y:Math.random()*H,z:Math.random()*1.4+.2,s:Math.random()*1.4+.3}); }
     rs();addEventListener('resize',rs);var pX=0,pY=0;addEventListener('mousemove',function(e){pX=(e.clientX/innerWidth-.5);pY=(e.clientY/innerHeight-.5);});
-    var fr=0;(function dr(){ if(fr++%2){requestAnimationFrame(dr);return;} ctx.clearRect(0,0,W,H); for(var i=0;i<stars.length;i++){var st=stars[i];st.y+=st.z*.25;if(st.y>H){st.y=0;st.x=Math.random()*W;}ctx.beginPath();ctx.fillStyle='rgba('+(st.z>1?'0,249,255':'180,180,220')+','+(st.s*.6)+')';ctx.arc(st.x+pX*st.z*14,st.y+pY*st.z*14,st.s,0,6.283);ctx.fill();} requestAnimationFrame(dr); })(); }
+    var fr=0;(function dr(){ if(document.hidden){setTimeout(dr,500);return;} if(fr++%2){requestAnimationFrame(dr);return;} ctx.clearRect(0,0,W,H); for(var i=0;i<stars.length;i++){var st=stars[i];st.y+=st.z*.25;if(st.y>H){st.y=0;st.x=Math.random()*W;}ctx.beginPath();ctx.fillStyle='rgba('+(st.z>1?'0,249,255':'180,180,220')+','+(st.s*.6)+')';ctx.arc(st.x+pX*st.z*14,st.y+pY*st.z*14,st.s,0,6.283);ctx.fill();} requestAnimationFrame(dr); })(); }
 
   /* ============ LLM EVENT CHAIN ANIMATION ============ */
   var evlog=document.getElementById('evlog'),stages=document.querySelectorAll('#chainStages .stage');
@@ -834,7 +951,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
     var body=document.getElementById('termBody'), chips=document.getElementById('termChips');
     if(!body) return;
     var PROMPT='<span class="pr"><span class="u">guest@cashio.us</span>:~$</span> ';
-    var hist=[], hidx=-1, rowEl=null, inputEl=null, booted=false;
+    var hist=[], hidx=-1, rowEl=null, inputEl=null, booted=false, demoed=false;
     function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
     function write(html){ var d=document.createElement('div'); d.className='out'; d.innerHTML=html; body.insertBefore(d, rowEl); body.scrollTop=body.scrollHeight; }
     function makeRow(){
@@ -937,7 +1054,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
       else write('<span class="er">command not found:</span> '+esc(key)+' <span class="dim">— type `help`</span>');
     }
     function onKey(e){
-      if(e.key==='Enter'){ var v=inputEl.value; e.preventDefault();
+      if(e.key==='Enter'){ var v=inputEl.value; e.preventDefault(); demoed=true;
         body.removeChild(rowEl); makeRow(); run(v); inputEl.focus(); }
       else if(e.key==='ArrowUp'){ if(hist.length){ hidx=Math.min(hidx+1,hist.length-1); inputEl.value=hist[hidx]; } e.preventDefault(); }
       else if(e.key==='ArrowDown'){ if(hidx>0){ hidx--; inputEl.value=hist[hidx]; } else { hidx=-1; inputEl.value=''; } e.preventDefault(); }
@@ -958,11 +1075,23 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
       write('<span class="dim">ZeusApollo command deck · Hermes gateway · guest session</span>');
       write('Connected to the sovereign fabric. Type <span class="rt">help</span> to begin, or <span class="rt">ask eve</span> anything.');
       write(' ');
+      setTimeout(autoDemo,1100);
+    }
+    function autoDemo(){
+      if(demoed||!inputEl)return; demoed=true;
+      var cmd='status';
+      if(reduce){ if(rowEl){body.removeChild(rowEl);} makeRow(); run(cmd); return; }
+      var k=0;
+      (function ty(){
+        if(document.activeElement===inputEl&&inputEl.value&&inputEl.value!==cmd.slice(0,k))return;
+        if(k<=cmd.length){ inputEl.value=cmd.slice(0,k); k++; setTimeout(ty,95); }
+        else { setTimeout(function(){ if(rowEl){body.removeChild(rowEl);} makeRow(); run(cmd); if(inputEl){inputEl.placeholder='try:  ask eve who are you';} },420); }
+      })();
     }
     // chips
     ['help','status','fleet','models','doctrine','ask eve who are you','contact','clear'].forEach(function(c){
       var b=document.createElement('button'); b.className='term-chip'; b.type='button'; b.textContent=c;
-      b.addEventListener('click',function(){ if(!booted)boot(); body.removeChild(rowEl); makeRow(); run(c); inputEl.focus(); });
+      b.addEventListener('click',function(){ demoed=true; if(!booted)boot(); body.removeChild(rowEl); makeRow(); run(c); inputEl.focus(); });
       chips.appendChild(b);
     });
     body.addEventListener('click',function(){ if(inputEl)inputEl.focus(); });
@@ -975,29 +1104,69 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
   var NS="http://www.w3.org/2000/svg";
   function mk(t,a){ var e=document.createElementNS(NS,t); for(var k in a)e.setAttribute(k,a[k]); return e; }
   (function renderTopo(){
-    var COLon='#00ff9f',COLdeg='#ffcc00';
-    svg.appendChild(mk('ellipse',{cx:270,cy:240,rx:230,ry:185,class:'cluster-ring',stroke:'#00f9ff'}));
-    svg.appendChild(mk('ellipse',{cx:730,cy:240,rx:230,ry:185,class:'cluster-ring',stroke:'#cc00ff'}));
-    var cz=mk('text',{x:270,y:46,'text-anchor':'middle',class:'cluster-cap',fill:'#00f9ff'});cz.textContent='ZEUS CLUSTER';svg.appendChild(cz);
-    var ca=mk('text',{x:730,y:46,'text-anchor':'middle',class:'cluster-cap',fill:'#cc00ff'});ca.textContent='APOLLO CLUSTER';svg.appendChild(ca);
-    svg.appendChild(mk('line',{x1:430,y1:240,x2:570,y2:240,stroke:'#ff9500','stroke-width':1.5,'stroke-dasharray':'5 5',opacity:.55}));
-    function place(list,cx,cy){ var R=132,n=list.length;
-      list.forEach(function(nd,idx){ var ang=(-90+idx/n*360)*Math.PI/180,x=cx+Math.cos(ang)*R,y=cy+Math.sin(ang)*R*0.82;
+    var COLon='#00ff9f',COLdeg='#ffcc00',ZX=270,AX=730,CY=250,RX=230,RY=185;
+    var defs=mk('defs',{});
+    defs.innerHTML='<filter id="fGlow" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+      '<radialGradient id="discZ"><stop offset="0%" stop-color="#00f9ff" stop-opacity=".14"/><stop offset="70%" stop-color="#00f9ff" stop-opacity=".03"/><stop offset="100%" stop-color="#00f9ff" stop-opacity="0"/></radialGradient>'+
+      '<radialGradient id="discA"><stop offset="0%" stop-color="#cc00ff" stop-opacity=".14"/><stop offset="70%" stop-color="#cc00ff" stop-opacity=".03"/><stop offset="100%" stop-color="#cc00ff" stop-opacity="0"/></radialGradient>'+
+      '<radialGradient id="swZ" cx="0" cy="0.5" r="1"><stop offset="0%" stop-color="#00f9ff" stop-opacity=".32"/><stop offset="100%" stop-color="#00f9ff" stop-opacity="0"/></radialGradient>'+
+      '<radialGradient id="swA" cx="0" cy="0.5" r="1"><stop offset="0%" stop-color="#cc00ff" stop-opacity=".32"/><stop offset="100%" stop-color="#cc00ff" stop-opacity="0"/></radialGradient>'+
+      '<clipPath id="clZ"><ellipse cx="'+ZX+'" cy="'+CY+'" rx="'+RX+'" ry="'+RY+'"/></clipPath>'+
+      '<clipPath id="clA"><ellipse cx="'+AX+'" cy="'+CY+'" rx="'+RX+'" ry="'+RY+'"/></clipPath>';
+    svg.appendChild(defs);
+    svg.appendChild(mk('ellipse',{cx:ZX,cy:CY,rx:RX,ry:RY,fill:'url(#discZ)'}));
+    svg.appendChild(mk('ellipse',{cx:AX,cy:CY,rx:RX,ry:RY,fill:'url(#discA)'}));
+    function sweep(cx,grad,clip){ var g=mk('g',{'clip-path':'url(#'+clip+')'});
+      var a0=-22*Math.PI/180,a1=22*Math.PI/180,r=252;
+      var d='M'+cx+' '+CY+' L'+(cx+r*Math.cos(a0)).toFixed(1)+' '+(CY+r*Math.sin(a0)).toFixed(1)+' A'+r+' '+r+' 0 0 1 '+(cx+r*Math.cos(a1)).toFixed(1)+' '+(CY+r*Math.sin(a1)).toFixed(1)+' Z';
+      var w=mk('path',{d:d,fill:'url(#'+grad+')'});
+      if(!reduce){ w.appendChild(mk('animateTransform',{attributeName:'transform',type:'rotate',from:'0 '+cx+' '+CY,to:'360 '+cx+' '+CY,dur:'7s',repeatCount:'indefinite'})); }
+      g.appendChild(w); svg.appendChild(g); }
+    sweep(ZX,'swZ','clZ'); sweep(AX,'swA','clA');
+    function radar(cx,col){ [80,150,212].forEach(function(rr){ svg.appendChild(mk('circle',{cx:cx,cy:CY,r:rr,fill:'none',stroke:col,'stroke-opacity':.08,'stroke-width':1})); }); }
+    radar(ZX,'#00f9ff'); radar(AX,'#cc00ff');
+    function ring(cx,col){ var e=mk('ellipse',{cx:cx,cy:CY,rx:RX,ry:RY,class:'cluster-ring',stroke:col,filter:'url(#fGlow)'});
+      if(!reduce){ e.appendChild(mk('animate',{attributeName:'stroke-dashoffset',values:'0;42',dur:'3s',repeatCount:'indefinite'})); } svg.appendChild(e); }
+    ring(ZX,'#00f9ff'); ring(AX,'#cc00ff');
+    var cz=mk('text',{x:ZX,y:46,'text-anchor':'middle',class:'cluster-cap',fill:'#00f9ff',filter:'url(#fGlow)'});cz.textContent='ZEUS CLUSTER';svg.appendChild(cz);
+    var ca=mk('text',{x:AX,y:46,'text-anchor':'middle',class:'cluster-cap',fill:'#cc00ff',filter:'url(#fGlow)'});ca.textContent='APOLLO CLUSTER';svg.appendChild(ca);
+    function pkt(x1,y1,x2,y2,col,dur,begin){ var p=mk('circle',{r:2.6,fill:col});
+      p.appendChild(mk('animateMotion',{dur:dur+'s',begin:begin+'s',repeatCount:'indefinite',path:'M'+x1+' '+y1+' L'+x2+' '+y2,calcMode:'spline',keyTimes:'0;1',keySplines:'.4 0 .2 1'}));
+      p.appendChild(mk('animate',{attributeName:'opacity',values:'0;1;1;0',keyTimes:'0;.15;.82;1',dur:dur+'s',begin:begin+'s',repeatCount:'indefinite'})); return p; }
+    svg.appendChild(mk('line',{x1:430,y1:CY,x2:570,y2:CY,stroke:'#ff9500','stroke-width':1.5,'stroke-dasharray':'5 5',opacity:.6}));
+    if(!reduce){ svg.appendChild(pkt(430,CY,570,CY,'#ff9500',1.6,0)); svg.appendChild(pkt(570,CY,430,CY,'#ffcc00',1.6,.8)); }
+    function ping(cx,col,begin){ var c=mk('circle',{cx:cx,cy:CY,r:6,fill:'none',stroke:col,'stroke-width':1.4,opacity:0});
+      c.appendChild(mk('animate',{attributeName:'r',values:'6;132',dur:'3.4s',begin:begin+'s',repeatCount:'indefinite',calcMode:'spline',keyTimes:'0;1',keySplines:'.2 .6 .2 1'}));
+      c.appendChild(mk('animate',{attributeName:'opacity',values:'.45;0',dur:'3.4s',begin:begin+'s',repeatCount:'indefinite'})); svg.appendChild(c); }
+    if(!reduce){ ping(ZX,'#00f9ff',0); ping(ZX,'#00f9ff',1.7); ping(AX,'#cc00ff',.6); ping(AX,'#cc00ff',2.3); }
+    function place(list,cx,cy,pc){ var R=132,n=list.length;
+      list.forEach(function(nd,idx){ var ang=(-90+idx/n*360)*Math.PI/180,x=+(cx+Math.cos(ang)*R).toFixed(1),y=+(cy+Math.sin(ang)*R*0.82).toFixed(1);
         var col=nd.deg?COLdeg:COLon;
-        svg.appendChild(mk('line',{x1:cx,y1:cy,x2:x,y2:y,stroke:col,'stroke-width':1,opacity:.26}));
+        var sp=mk('line',{x1:cx,y1:cy,x2:x,y2:y,stroke:col,'stroke-width':1,opacity:.26,class:'spoke'}); svg.appendChild(sp);
+        if(!reduce){ svg.appendChild(pkt(cx,cy,x,y,(nd.deg?COLdeg:pc),(1.7+Math.random()*1.1).toFixed(2),(idx*0.18).toFixed(2))); }
         var g=mk('g',{class:'node-g',tabindex:'0',role:'listitem'});
         g.appendChild(mk('circle',{cx:x,cy:y,r:13,fill:col,opacity:.15}));
-        var bd=mk('circle',{cx:x,cy:y,r:7,fill:col,class:'body',stroke:'rgba(255,255,255,.25)','stroke-width':1});
+        var bd=mk('circle',{cx:x,cy:y,r:7,fill:col,class:'body',stroke:'rgba(255,255,255,.28)','stroke-width':1});
         if(!reduce){ bd.appendChild(mk('animate',{attributeName:'opacity',values:'1;.5;1',dur:(nd.deg?'0.8s':'2.4s'),repeatCount:'indefinite'})); }
         g.appendChild(bd);
+        if(nd.deg){ var al=mk('circle',{cx:x,cy:y,r:8,fill:'none',stroke:COLdeg,'stroke-width':1.5,opacity:0});
+          if(!reduce){ al.appendChild(mk('animate',{attributeName:'r',values:'8;21',dur:'1.1s',repeatCount:'indefinite'})); al.appendChild(mk('animate',{attributeName:'opacity',values:'.9;0',dur:'1.1s',repeatCount:'indefinite'})); } g.appendChild(al); }
         var lbl=mk('text',{x:x,y:y-17,'text-anchor':'middle',class:'node-label'});lbl.textContent=nd.n;g.appendChild(lbl);
-        function show(){ readout.innerHTML='<b>◈ '+nd.n.toUpperCase()+'</b>'+nd.r+' &nbsp;—&nbsp; <span class="'+(nd.deg?'warn':'ok')+'">'+(nd.deg?'DEGRADED':'NOMINAL')+'</span>'; }
+        function show(){ readout.innerHTML='<b>◈ '+nd.n.toUpperCase()+'</b>'+nd.r+' &nbsp;—&nbsp; <span class="'+(nd.deg?'warn':'ok')+'">'+(nd.deg?'DEGRADED':'NOMINAL')+'</span>'; sp.setAttribute('opacity','.95'); sp.setAttribute('stroke-width','2'); }
+        function hide(){ sp.setAttribute('opacity','.26'); sp.setAttribute('stroke-width','1'); }
         g.addEventListener('mouseenter',show);g.addEventListener('focus',show);g.addEventListener('click',show);
+        g.addEventListener('mouseleave',hide);g.addEventListener('blur',hide);
         svg.appendChild(g);
       });
-      svg.appendChild(mk('circle',{cx:cx,cy:cy,r:5,fill:'#fff',opacity:.6}));
+      var core=mk('circle',{cx:cx,cy:cy,r:5,fill:'#fff',opacity:.85,filter:'url(#fGlow)'});
+      if(!reduce){ core.appendChild(mk('animate',{attributeName:'r',values:'5;7;5',dur:'2s',repeatCount:'indefinite'})); }
+      svg.appendChild(core);
     }
-    place(FLEET.Zeus,270,250); place(FLEET.Apollo,730,250);
+    place(FLEET.Zeus,ZX,CY,'#00f9ff'); place(FLEET.Apollo,AX,CY,'#cc00ff');
+    if(!reduce){ var inView=false;
+      if('IntersectionObserver' in window){ new IntersectionObserver(function(es){es.forEach(function(e){inView=e.isIntersecting;});},{threshold:.25}).observe(document.getElementById('topology')); }
+      setInterval(function(){ if(inView&&!document.hidden){ try{voice(1300+Math.random()*500,.035,'sine',.02);}catch(e){} } },1900);
+    }
   })();
 
   /* ============ audio OFF by default ============ */
@@ -1115,6 +1284,48 @@ bit.addEventListener('click',answer);
 bit.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();answer();}});
 })();
 </script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"f67a849ab53b4dbea305b874fbeb3a30","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+
+<script>
+/* ===== v29 scroll-reveal choreography (progressive enhancement) ===== */
+(function(){
+"use strict";
+if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+if(!('IntersectionObserver' in window))return;
+document.body.classList.add('reveal-on');
+var groups=['.panel','.ribbon .cell','.mods .mod','.doctrine .dlaw','.tl .tl-item','.cl-cols .cl-card','.cl-summary .cl-stat','.metrics .metric','.stack-cards .stack-card','.phil .card','.rn-grid .c'];
+var els=[];
+groups.forEach(function(sel){
+  Array.prototype.forEach.call(document.querySelectorAll(sel),function(el,i){
+    el.classList.add('reveal'); el.style.transitionDelay=Math.min(i*70,420)+'ms'; els.push(el);
+  });
+});
+var vh=window.innerHeight||document.documentElement.clientHeight;
+els.forEach(function(el){ var r=el.getBoundingClientRect(); if(r.top<vh*0.94&&r.bottom>0){ el.style.transitionDelay='0ms'; el.classList.add('in'); } });
+var io=new IntersectionObserver(function(es){
+  es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+},{threshold:.12,rootMargin:'0px 0px -8% 0px'});
+els.forEach(function(el){ if(!el.classList.contains('in'))io.observe(el); });
+})();
+</script>
+
+<script>
+/* ===== v30.1 perf: pause heavy animation off-screen / when tab hidden ===== */
+(function(){
+"use strict";
+if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+var svg=document.getElementById('topoSvg');
+function setTopo(run){ try{ if(!svg||!svg.pauseAnimations)return; if(run)svg.unpauseAnimations(); else svg.pauseAnimations(); }catch(e){} }
+var topoVisible=false;
+if(svg&&'IntersectionObserver' in window){
+  setTopo(false);
+  new IntersectionObserver(function(es){es.forEach(function(e){ topoVisible=e.isIntersecting; if(!document.hidden)setTopo(topoVisible); });},{threshold:.05}).observe(svg);
+} else { setTopo(true); topoVisible=true; }
+document.addEventListener('visibilitychange',function(){
+  if(document.hidden){ document.body.classList.add('anim-paused'); setTopo(false); }
+  else { document.body.classList.remove('anim-paused'); setTopo(topoVisible); }
+});
+})();
+</script>
+
 </body>
 </html>
