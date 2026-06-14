@@ -528,6 +528,24 @@ body.anim-paused #grid::before,body.anim-paused::after{animation-play-state:paus
 .chain .conn{background:linear-gradient(90deg,transparent,var(--cyan),transparent);background-size:220% 100%;animation:connFlow 1.6s linear infinite;opacity:.5;height:2px}
 @keyframes connFlow{from{background-position:220% 0}to{background-position:-220% 0}}
 @media(max-width:760px){.chain::after,.chain::before{display:none}}
+/* ===== v32 Bit upgrade — faceted core, film-accurate states, hover perk ===== */
+#bit #bitInner{fill:none;stroke:var(--cyan);stroke-width:1.2;opacity:.45;stroke-linejoin:round}
+#bit.yes{filter:drop-shadow(0 0 18px var(--cyan-glow)) drop-shadow(0 0 6px rgba(255,255,255,.6))}
+#bit.yes polygon{fill:rgba(0,249,255,.28);stroke:#9ffcff}
+#bit.yes #bitInner{stroke:#ffffff;opacity:.75}
+#bit.yes #bitSay{color:#9ffcff;text-shadow:0 0 10px var(--cyan-glow)}
+#bit.no #bitInner{stroke:var(--red);opacity:.7}
+#bit.maybe{filter:drop-shadow(0 0 14px rgba(255,204,0,.55))}
+#bit.maybe polygon{fill:rgba(255,204,0,.26);stroke:var(--amber)}
+#bit.maybe #bitInner{stroke:var(--amber);opacity:.7}
+#bit.maybe #bitSay{color:var(--amber);text-shadow:0 0 8px rgba(255,204,0,.5)}
+#bit.maybe svg{animation:bitwobble .5s ease-in-out 3}
+#bit:hover,#bit:focus-visible{filter:drop-shadow(0 0 22px var(--cyan-glow)) drop-shadow(0 0 6px var(--cyan-glow));outline:none}
+#bit:hover svg,#bit:focus-visible svg{animation-duration:5s}
+#bit:focus-visible{box-shadow:0 0 0 2px var(--cyan);border-radius:8px}
+#bit.say polygon{animation:bitflash .5s ease}
+@keyframes bitflash{0%{stroke-width:2.5}40%{stroke-width:5.5}100%{stroke-width:2.5}}
+@keyframes bitwobble{0%,100%{transform:rotate(0)}25%{transform:rotate(8deg)}75%{transform:rotate(-8deg)}}
 </style>
 </head>
 <body>
@@ -828,7 +846,7 @@ body.anim-paused #grid::before,body.anim-paused::after{animation-play-state:paus
 
   <!-- ===================== BIT (Tron 1982 homage — original code) ===================== -->
   <div id="bit" tabindex="0" role="button" aria-label="Bit — binary companion. Press to receive a yes or no." title="Bit · binary companion">
-    <svg viewBox="0 0 100 100" aria-hidden="true"><polygon id="bitShape" points="50,6 88,28 88,72 50,94 12,72 12,28"/></svg>
+    <svg viewBox="0 0 100 100" aria-hidden="true"><polygon id="bitShape" points="50,6 88,28 88,72 50,94 12,72 12,28"/><polygon id="bitInner" points="50,25.8 70.9,37.9 70.9,62.1 50,74.2 29.1,62.1 29.1,37.9"/></svg>
     <span id="bitSay" aria-live="polite"></span>
   </div>
 
@@ -1191,6 +1209,7 @@ body.anim-paused #grid::before,body.anim-paused::after{animation-play-state:paus
   function ensureAC(){ if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)();}catch(e){return null;}} if(AC&&AC.state==='suspended')AC.resume(); return AC; }
   function voice(f,d,t,v){ if(muted)return null; var ac=ensureAC();if(!ac)return null; var o=ac.createOscillator(),g=ac.createGain(),tt=ac.currentTime; o.type=t||'sine';o.frequency.setValueAtTime(f,tt); g.gain.setValueAtTime(.0001,tt);g.gain.exponentialRampToValueAtTime(v||.07,tt+.012);g.gain.exponentialRampToValueAtTime(.0001,tt+(d||.12)); o.connect(g);g.connect(ac.destination);o.start(tt);o.stop(tt+(d||.12));return o; }
   function chirp(f,d,t){ voice(f,d,t,.05); }
+  try{ window.bitVoice=voice; }catch(e){}
   function sndAlertOn(){ voice(440,.18,'square',.10);setTimeout(function(){voice(311,.30,'square',.10);},150); }
   function sndAlertOff(){ voice(523,.16,'sine',.08); }
   function sndEngage(){ var ac=ensureAC();var o=voice(160,.55,'sawtooth',.09);if(o&&ac)o.frequency.exponentialRampToValueAtTime(900,ac.currentTime+.5); }
@@ -1281,24 +1300,35 @@ if(nav&&hero){
 (function(){
 "use strict";
 var bit=document.getElementById('bit');if(!bit)return;
-var poly=document.getElementById('bitShape'),say=document.getElementById('bitSay');
+var poly=document.getElementById('bitShape'),inner=document.getElementById('bitInner'),say=document.getElementById('bitSay');
 var IDLE='50,6 88,28 88,72 50,94 12,72 12,28';
 function star(n,R,r){var p=[];for(var i=0;i<n*2;i++){var a=Math.PI*i/n-Math.PI/2,rad=i%2?r:R;
 p.push((50+rad*Math.cos(a)).toFixed(1)+','+(50+rad*Math.sin(a)).toFixed(1));}return p.join(' ');}
-var YES=star(8,40,30),NO=star(12,46,13),busy=false;
+function scl(pts,k){return pts.split(' ').map(function(p){var c=p.split(',');return (50+(c[0]-50)*k).toFixed(1)+','+(50+(c[1]-50)*k).toFixed(1);}).join(' ');}
+function setShape(s){ poly.setAttribute('points',s); if(inner)inner.setAttribute('points',scl(s,0.55)); }
+var YES=star(8,42,29),NO=star(12,46,12),MAYBE=star(5,40,22),busy=false,hov=false;
+function sfx(k){ var v=window.bitVoice; if(!v)return;
+  if(k==='yes'){ v(660,.12,'sine',.06); setTimeout(function(){v(990,.16,'sine',.06);},110); }
+  else if(k==='no'){ v(200,.16,'sawtooth',.08); setTimeout(function(){v(150,.22,'square',.07);},120); }
+  else if(k==='maybe'){ v(520,.14,'sine',.05); setTimeout(function(){v(440,.20,'sine',.05);},150); }
+  else { v(880,.05,'triangle',.04); }
+}
 function answer(){
   if(busy)return;busy=true;
-  var yes=Math.random()<.5;
-  bit.classList.add(yes?'yes':'no','say');
-  poly.setAttribute('points',yes?YES:NO);
-  say.textContent=yes?'YES':'NO NO NO NO';
+  var roll=Math.random(),kind=roll<0.08?'maybe':(roll<0.54?'yes':'no');
+  bit.classList.add(kind,'say');
+  setShape(kind==='yes'?YES:kind==='no'?NO:MAYBE);
+  say.textContent=kind==='yes'?'YES':kind==='no'?'NO NO NO NO':'MAYBE…';
+  sfx(kind);
   setTimeout(function(){
-    bit.classList.remove('yes','no','say');
-    poly.setAttribute('points',IDLE);busy=false;
-  },yes?1400:1900);
+    bit.classList.remove('yes','no','maybe','say');
+    setShape(IDLE);busy=false;
+  }, kind==='no'?1900:(kind==='maybe'?1600:1400));
 }
 bit.addEventListener('click',answer);
 bit.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();answer();}});
+bit.addEventListener('mouseenter',function(){ if(!hov){hov=true;sfx('blip');} });
+bit.addEventListener('mouseleave',function(){ hov=false; });
 })();
 </script>
 
