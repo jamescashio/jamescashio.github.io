@@ -558,6 +558,39 @@ code{font-family:var(--font-mono);color:var(--green);background:var(--glass);bor
 .deck-nav a{position:relative}
 .deck-nav a.active::after{content:"";position:absolute;left:12px;right:12px;bottom:1px;height:2px;background:var(--cyan);box-shadow:0 0 8px var(--cyan);border-radius:2px}
 .deck-nav{box-shadow:0 1px 0 rgba(0,249,255,.12),0 6px 24px rgba(0,0,0,.4)}
+/* ===== v35 Bit 3D — real CSS-3D hexagonal crystal ===== */
+#bit{filter:none!important;animation:bitdrift 7.6s ease-in-out infinite}
+#bit.yes,#bit.no,#bit.maybe,#bit:hover,#bit:focus-visible{filter:none!important}
+#bit .bit-glow{position:absolute;inset:8px;border-radius:50%;background:radial-gradient(circle,rgba(0,249,255,.5),transparent 70%);filter:blur(7px);z-index:-1;animation:bitglowpulse 2.6s ease-in-out infinite}
+@keyframes bitglowpulse{0%,100%{opacity:.45;transform:scale(.92)}50%{opacity:.85;transform:scale(1.08)}}
+#bit .bit3d{position:absolute;inset:0;transform-style:preserve-3d;animation:bitspin3d 9s linear infinite}
+@keyframes bitspin3d{from{transform:rotateX(-22deg) rotateY(0deg)}to{transform:rotateX(-22deg) rotateY(360deg)}}
+@keyframes bitspin3dno{0%{transform:rotateX(-22deg) rotateY(0) rotateZ(0)}25%{transform:rotateX(-16deg) rotateY(90deg) rotateZ(7deg)}50%{transform:rotateX(-28deg) rotateY(180deg) rotateZ(-7deg)}75%{transform:rotateX(-16deg) rotateY(270deg) rotateZ(7deg)}100%{transform:rotateX(-22deg) rotateY(360deg) rotateZ(0)}}
+#bit .bf{position:absolute;left:50%;top:50%;backface-visibility:visible}
+#bit .s{width:26px;height:34px;margin:-17px 0 0 -13px;background:rgba(0,249,255,.10);border:1px solid var(--cyan);box-shadow:inset 0 0 10px rgba(0,249,255,.35),0 0 6px var(--cyan-glow)}
+#bit .s0{transform:rotateY(0deg) translateZ(22.5px)}
+#bit .s1{transform:rotateY(60deg) translateZ(22.5px)}
+#bit .s2{transform:rotateY(120deg) translateZ(22.5px)}
+#bit .s3{transform:rotateY(180deg) translateZ(22.5px)}
+#bit .s4{transform:rotateY(240deg) translateZ(22.5px)}
+#bit .s5{transform:rotateY(300deg) translateZ(22.5px)}
+#bit .cap{width:52px;height:45px;margin:-22.5px 0 0 -26px;background:rgba(0,249,255,.07);border:1px solid var(--cyan);clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);box-shadow:0 0 8px var(--cyan-glow)}
+#bit .cap.top{transform:translateY(-17px) rotateX(90deg)}
+#bit .cap.bot{transform:translateY(17px) rotateX(90deg)}
+#bit .bit-core{width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#dffcff;box-shadow:0 0 12px var(--cyan),0 0 24px var(--cyan-glow)}
+#bit:hover .bit3d,#bit:focus-visible .bit3d{animation-duration:4s}
+#bit.say .bit-core{animation:bitcoreflash .5s ease}
+@keyframes bitcoreflash{0%{transform:scale(1)}45%{transform:scale(2.3)}100%{transform:scale(1)}}
+#bit.yes .s,#bit.yes .cap{border-color:#bff9ff;background:rgba(0,249,255,.20)}
+#bit.yes .bit-glow{background:radial-gradient(circle,rgba(120,250,255,.78),transparent 70%)}
+#bit.yes .bit3d{animation-duration:2.4s}
+#bit.no .s,#bit.no .cap{border-color:var(--red);background:rgba(255,0,51,.18)}
+#bit.no .bit-glow{background:radial-gradient(circle,rgba(255,0,51,.62),transparent 70%)}
+#bit.no .bit3d{animation:bitspin3dno 1.2s linear infinite}
+#bit.no .bit-core{background:#ff7088;box-shadow:0 0 12px var(--red),0 0 24px rgba(255,0,51,.5)}
+#bit.maybe .s,#bit.maybe .cap{border-color:var(--amber);background:rgba(255,204,0,.18)}
+#bit.maybe .bit-glow{background:radial-gradient(circle,rgba(255,204,0,.55),transparent 70%)}
+#bit.maybe .bit-core{background:#ffe08a;box-shadow:0 0 12px var(--amber)}
 </style>
 </head>
 <body>
@@ -889,7 +922,12 @@ code{font-family:var(--font-mono);color:var(--green);background:var(--glass);bor
 
   <!-- ===================== BIT (Tron 1982 homage — original code) ===================== -->
   <div id="bit" tabindex="0" role="button" aria-label="Bit — binary companion. Press to receive a yes or no." title="Bit · binary companion">
-    <svg viewBox="0 0 100 100" aria-hidden="true"><polygon id="bitShape" points="50,6 88,28 88,72 50,94 12,72 12,28"/><polygon id="bitInner" points="50,25.8 70.9,37.9 70.9,62.1 50,74.2 29.1,62.1 29.1,37.9"/></svg>
+    <div class="bit-glow" aria-hidden="true"></div>
+    <div class="bit3d" aria-hidden="true">
+      <span class="bf s s0"></span><span class="bf s s1"></span><span class="bf s s2"></span><span class="bf s s3"></span><span class="bf s s4"></span><span class="bf s s5"></span>
+      <span class="bf cap top"></span><span class="bf cap bot"></span>
+      <span class="bit-core"></span>
+    </div>
     <span id="bitSay" aria-live="polite"></span>
   </div>
 
@@ -1348,13 +1386,8 @@ if(nav&&hero){
 (function(){
 "use strict";
 var bit=document.getElementById('bit');if(!bit)return;
-var poly=document.getElementById('bitShape'),inner=document.getElementById('bitInner'),say=document.getElementById('bitSay');
-var IDLE='50,6 88,28 88,72 50,94 12,72 12,28';
-function star(n,R,r){var p=[];for(var i=0;i<n*2;i++){var a=Math.PI*i/n-Math.PI/2,rad=i%2?r:R;
-p.push((50+rad*Math.cos(a)).toFixed(1)+','+(50+rad*Math.sin(a)).toFixed(1));}return p.join(' ');}
-function scl(pts,k){return pts.split(' ').map(function(p){var c=p.split(',');return (50+(c[0]-50)*k).toFixed(1)+','+(50+(c[1]-50)*k).toFixed(1);}).join(' ');}
-function setShape(s){ poly.setAttribute('points',s); if(inner)inner.setAttribute('points',scl(s,0.55)); }
-var YES=star(8,42,29),NO=star(12,46,12),MAYBE=star(5,40,22),busy=false,hov=false;
+var say=document.getElementById('bitSay');
+var busy=false,hov=false;
 function sfx(k){ var v=window.bitVoice; if(!v)return;
   if(k==='yes'){ v(660,.12,'sine',.06); setTimeout(function(){v(990,.16,'sine',.06);},110); }
   else if(k==='no'){ v(200,.16,'sawtooth',.08); setTimeout(function(){v(150,.22,'square',.07);},120); }
@@ -1365,12 +1398,11 @@ function answer(){
   if(busy)return;busy=true;
   var roll=Math.random(),kind=roll<0.08?'maybe':(roll<0.54?'yes':'no');
   bit.classList.add(kind,'say');
-  setShape(kind==='yes'?YES:kind==='no'?NO:MAYBE);
   say.textContent=kind==='yes'?'YES':kind==='no'?'NO NO NO NO':'MAYBE…';
   sfx(kind);
   setTimeout(function(){
     bit.classList.remove('yes','no','maybe','say');
-    setShape(IDLE);busy=false;
+    busy=false;
   }, kind==='no'?1900:(kind==='maybe'?1600:1400));
 }
 bit.addEventListener('click',answer);
