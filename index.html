@@ -775,9 +775,9 @@ code{font-family:var(--font-mono);color:var(--green);background:var(--glass);bor
     <div class="metrics">
       <div class="metric"><div class="num" id="mUptime">5d 4h</div><div class="lbl">Fleet Uptime</div></div>
       <div class="metric"><div class="num" id="mTokens" data-count="20" data-suffix="M" data-prefix="~">~20M</div><div class="lbl">Tokens Routed</div><div class="note">lifetime · <span class="live-dot">●</span> live</div></div>
-      <div class="metric"><div class="num" data-count="342" data-prefix="$" data-suffix="+">$342+</div><div class="lbl">Saved vs Opus</div><div class="note">and climbing</div></div>
-      <div class="metric"><div class="num" data-count="19">19</div><div class="lbl">Fleet Nodes</div><div class="note">Proxmox guests</div></div>
-      <div class="metric"><div class="num" data-count="22">22</div><div class="lbl">Crons Active</div><div class="note">was 3 at launch</div></div>
+      <div class="metric"><div class="num" id="mSaved" data-count="342" data-prefix="$" data-suffix="+">$342+</div><div class="lbl">Saved vs Opus</div><div class="note">and climbing</div></div>
+      <div class="metric"><div class="num" id="mNodes" data-count="19">19</div><div class="lbl">Fleet Nodes</div><div class="note">Proxmox guests</div></div>
+      <div class="metric"><div class="num" id="mCrons" data-count="22">22</div><div class="lbl">Crons Active</div><div class="note">was 3 at launch</div></div>
       <div class="metric"><div class="num" id="mBurn" data-count="0.35" data-prefix="$" data-decimals="2">$0.35</div><div class="lbl">Daily Burn</div><div class="note">was ~$4 at launch</div></div>
     </div>
   </section>
@@ -795,7 +795,7 @@ code{font-family:var(--font-mono);color:var(--green);background:var(--glass);bor
       <div class="mod"><h3>⚙️ Crons Active</h3><ul><li>Scheduled autonomous jobs currently armed.</li><li><b>Source:</b> crontab + systemd timers across the fleet.</li></ul></div>
       <div class="mod"><h3>🔥 Daily Burn</h3><ul><li>Trailing 24-hour API spend, rolled up each night (now ~$0.35, was ~$4).</li><li><b>Source:</b> provider billing, summed by cron.</li></ul></div>
     </div>
-    <p style="margin-top:14px;font-size:13px;color:var(--text-dim);border-left:2px solid var(--accent);padding-left:14px"><b style="color:var(--accent)">SAMPLED LIVE:</b> figures sync from <code>status.json</code> on a schedule; between syncs the browser advances them so the deck stays alive. Addresses are redacted for OPSEC.</p>
+    <p style="margin-top:14px;font-size:13px;color:var(--text-dim);border-left:2px solid var(--accent);padding-left:14px"><b style="color:var(--accent)">LIVE FROM THE FLEET:</b> these readouts are written to <code>status.json</code> by a cron on the cluster and read straight into this panel — uptime ticks from the last restart; the rest refresh at each sync. Nothing here is fabricated. Addresses are redacted for OPSEC.</p>
   </section>
 
   <!-- ===================== SYSTEM MODULES ===================== -->
@@ -1228,13 +1228,16 @@ code{font-family:var(--font-mono);color:var(--green);background:var(--glass);bor
   (function renderTopo(){
     var COLon='#00ff9f',COLdeg='#ffcc00',ZX=270,AX=730,CY=250,RX=230,RY=185;
     var defs=mk('defs',{});
-    defs.innerHTML='<filter id="fGlow" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
-      '<radialGradient id="discZ"><stop offset="0%" stop-color="#00f9ff" stop-opacity=".14"/><stop offset="70%" stop-color="#00f9ff" stop-opacity=".03"/><stop offset="100%" stop-color="#00f9ff" stop-opacity="0"/></radialGradient>'+
-      '<radialGradient id="discA"><stop offset="0%" stop-color="#cc00ff" stop-opacity=".14"/><stop offset="70%" stop-color="#cc00ff" stop-opacity=".03"/><stop offset="100%" stop-color="#cc00ff" stop-opacity="0"/></radialGradient>'+
-      '<radialGradient id="swZ" cx="0" cy="0.5" r="1"><stop offset="0%" stop-color="#00f9ff" stop-opacity=".32"/><stop offset="100%" stop-color="#00f9ff" stop-opacity="0"/></radialGradient>'+
-      '<radialGradient id="swA" cx="0" cy="0.5" r="1"><stop offset="0%" stop-color="#cc00ff" stop-opacity=".32"/><stop offset="100%" stop-color="#cc00ff" stop-opacity="0"/></radialGradient>'+
-      '<clipPath id="clZ"><ellipse cx="'+ZX+'" cy="'+CY+'" rx="'+RX+'" ry="'+RY+'"/></clipPath>'+
-      '<clipPath id="clA"><ellipse cx="'+AX+'" cy="'+CY+'" rx="'+RX+'" ry="'+RY+'"/></clipPath>';
+    var flt=mk('filter',{id:'fGlow',x:'-70%',y:'-70%',width:'240%',height:'240%'});
+    flt.appendChild(mk('feGaussianBlur',{stdDeviation:'3',result:'b'}));
+    var fmg=mk('feMerge',{}); fmg.appendChild(mk('feMergeNode',{'in':'b'})); fmg.appendChild(mk('feMergeNode',{'in':'SourceGraphic'})); flt.appendChild(fmg); defs.appendChild(flt);
+    function rg(attrs,stops){ var g=mk('radialGradient',attrs); for(var i=0;i<stops.length;i++){ g.appendChild(mk('stop',{offset:stops[i][0],'stop-color':stops[i][1],'stop-opacity':stops[i][2]})); } return g; }
+    defs.appendChild(rg({id:'discZ'},[['0%','#00f9ff','.14'],['70%','#00f9ff','.03'],['100%','#00f9ff','0']]));
+    defs.appendChild(rg({id:'discA'},[['0%','#cc00ff','.14'],['70%','#cc00ff','.03'],['100%','#cc00ff','0']]));
+    defs.appendChild(rg({id:'swZ',cx:'0',cy:'0.5',r:'1'},[['0%','#00f9ff','.32'],['100%','#00f9ff','0']]));
+    defs.appendChild(rg({id:'swA',cx:'0',cy:'0.5',r:'1'},[['0%','#cc00ff','.32'],['100%','#cc00ff','0']]));
+    function clipE(id,cx){ var c=mk('clipPath',{id:id}); c.appendChild(mk('ellipse',{cx:cx,cy:CY,rx:RX,ry:RY})); return c; }
+    defs.appendChild(clipE('clZ',ZX)); defs.appendChild(clipE('clA',AX));
     svg.appendChild(defs);
     svg.appendChild(mk('ellipse',{cx:ZX,cy:CY,rx:RX,ry:RY,fill:'url(#discZ)'}));
     svg.appendChild(mk('ellipse',{cx:AX,cy:CY,rx:RX,ry:RY,fill:'url(#discA)'}));
@@ -1317,10 +1320,8 @@ code{font-family:var(--font-mono);color:var(--green);background:var(--glass);bor
   function fmtUp(){ var s=Math.floor((Date.now()-upBase)/1000),d=Math.floor(s/86400);s-=d*86400;var h=Math.floor(s/3600);s-=h*3600;var m=Math.floor(s/60);s-=m*60;return d+'d '+h+'h '+m+'m '+(s<10?'0':'')+s+'s'; }
   function fmtShort(){ var s=Math.floor((Date.now()-upBase)/1000),d=Math.floor(s/86400),h=Math.floor((s-d*86400)/3600);return d+'d '+h+'h'; }
   if(elUp){ elUp.textContent=fmtUp(); setInterval(function(){elUp.textContent=fmtUp();if(mUptime)mUptime.textContent=fmtShort();},1000); }
-  var mTokens=document.getElementById('mTokens'),mBurn=document.getElementById('mBurn'),tokens=20.0,liveStarted=false;
-  function startLive(){ if(liveStarted||reduce)return;liveStarted=true; setInterval(function(){ if(document.hidden)return; tokens+=Math.random()*0.04; if(mTokens){mTokens.textContent='~'+tokens.toFixed(2)+'M';mTokens.classList.add('flash');setTimeout(function(){mTokens.classList.remove('flash');},220);} if(mBurn)mBurn.textContent='$'+(0.35+(Math.random()-0.5)*0.04).toFixed(2); },2600); }
-  if('IntersectionObserver' in window&&mTokens){ var lo=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){setTimeout(startLive,3800);lo.disconnect();}});},{threshold:.5}); lo.observe(document.getElementById('telemetry')); }
-  else setTimeout(startLive,5000);
+  window.__zaBoot=function(ms){ if(ms&&!isNaN(ms)){ upBase=ms; if(elUp)elUp.textContent=fmtUp(); if(mUptime)mUptime.textContent=fmtShort(); } };
+  /* Telemetry figures are honest: count-up on scroll to their real values, then driven by status.json — no fabricated drift. */
 
   /* ---- DevTools signature (for the curious) ---- */
   try{
@@ -1337,9 +1338,13 @@ code{font-family:var(--font-mono);color:var(--green);background:var(--glass);bor
 function setText(id,t){var e=document.getElementById(id);if(e)e.textContent=t;}
 function applyStatus(s){
   try{
-    if(s.uptime){setText('uptime',s.uptime);setText('mUptime',s.uptime);}
+    if(s.boot_epoch&&window.__zaBoot){window.__zaBoot(s.boot_epoch*1000);}
+    else if(s.uptime){setText('uptime',s.uptime);setText('mUptime',s.uptime);}
     if(typeof s.daily_burn==='number'){setText('mBurn','$'+s.daily_burn.toFixed(2));}
     if(typeof s.tokens_routed_m==='number'){setText('mTokens','~'+s.tokens_routed_m+'M');}
+    if(typeof s.saved_vs_opus==='number'){setText('mSaved','$'+s.saved_vs_opus+'+');}
+    if(typeof s.fleet_nodes==='number'){setText('mNodes',String(s.fleet_nodes));}
+    if(typeof s.crons_active==='number'){setText('mCrons',String(s.crons_active));}
     if(s.cluster_status){var c=document.querySelector('.hud-stat .v.warp');if(c)c.textContent=s.cluster_status;}
     var ts=s.generated||s.timestamp;
     if(ts){

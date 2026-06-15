@@ -1,46 +1,17 @@
 {
-  "timestamp": "2026-05-18T06:55:02",
-  "ts_epoch": 1779101702,
+  "generated": "2026-06-15T11:59:31Z",
+  "boot_epoch": 1781078242,
+  "cluster_status": "MAX WARP",
+  "fleet_nodes": 19,
+  "crons_active": 22,
+  "tokens_routed_m": 20,
+  "saved_vs_opus": 342,
+  "daily_burn": 0.35,
+  "note": "cron overwrites these with live fleet values; addresses redacted for opsec",
   "nodes": {
-    "Apollo": {
-      "latency": "2ms"
-    },
-    "Zeus": {
-      "latency": "2ms"
-    },
-    "Atlas": {
-      "latency": "2ms"
-    },
-    "Hermes": {
-      "latency": "2ms"
-    },
-    "Omnius": {
-      "latency": "2ms"
-    },
-    "n8n": {
-      "latency": "2ms"
-    },
-    "AdGuard": {
-      "latency": "2ms"
-    },
-    "Genesis": {
-      "latency": "2ms"
-    },
-    "PBS": {
-      "latency": "2ms"
-    },
-    "Athena": {
-      "latency": "2ms"
-    },
-    "Plex": {
-      "latency": "1002ms"
-    },
-    "AI-Stack": {
-      "latency": "2ms"
-    },
-    "Control-Plane": {
-      "latency": "2ms"
-    }
-  },
-  "note": "addresses redacted for opsec"
+    "Apollo": {"latency":"2ms"}, "Zeus": {"latency":"2ms"}, "Atlas": {"latency":"2ms"}, "Hermes": {"latency":"2ms"},
+    "Omnius": {"latency":"2ms"}, "n8n": {"latency":"2ms"}, "AdGuard": {"latency":"2ms"}, "Genesis": {"latency":"2ms"},
+    "PBS": {"latency":"2ms"}, "Athena": {"latency":"2ms"}, "Plex": {"latency":"1002ms"}, "AI-Stack": {"latency":"2ms"},
+    "Control-Plane": {"latency":"2ms"}
+  }
 }
