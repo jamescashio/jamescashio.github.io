@@ -41,3 +41,8 @@
 **Vulnerability:** The security middleware in `scripts/zeusapollo_swarm.py` relied solely on the URL prefix matching `startswith("/v1/")` to apply authentication, rate limiting, and CORS checks. Endpoints without this prefix (like the `/route` endpoint) were unintentionally exposed to unauthenticated public access.
 **Learning:** Using an allow-list or prefix-based approach for applying security controls is prone to bypass vulnerabilities when new routes are added or when routes purposefully exclude the prefix but require protection.
 **Prevention:** Always implement a deny-by-default approach for security middleware. Apply authentication and rate-limiting to ALL endpoints, and explicitly exclude known public paths (e.g., `/health`, `/docs`) using an explicit exclusion list rather than conditionally protecting based on prefixes.
+
+## 2024-05-24 - [Missing Input Validation in API Endpoint]
+**Vulnerability:** The `/v1/completions` endpoint in `zeusapollo_bridge.py` lacked input validation for `prompt` length and `max_tokens` bounds, exposing the application to DoS attacks via resource exhaustion.
+**Learning:** Even internal AI bridge endpoints require strict input validation to prevent excessively large prompts or unbounded token generation from overwhelming local inference resources.
+**Prevention:** Always implement explicit bounds checking and type validation on all user-supplied parameters (e.g., capping prompt length and maximum generated tokens) at the API entry point.

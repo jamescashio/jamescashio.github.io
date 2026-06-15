@@ -166,6 +166,16 @@ async def completions(request: Request):
         max_tokens = body.get("max_tokens", 512)
         stream = body.get("stream", False)
 
+        # SECURITY: Input validation to prevent DoS (resource exhaustion)
+        if not isinstance(prompt, str):
+            raise HTTPException(status_code=400, detail="Invalid prompt")
+        if len(prompt) > 32000:
+            raise HTTPException(status_code=400, detail="Prompt exceeds 32K character limit")
+
+        if not isinstance(max_tokens, int) or max_tokens < 1:
+            max_tokens = 512
+        max_tokens = min(max_tokens, 16384)
+
         if stream:
             return StreamingResponse(
                 stream_response(prompt, max_tokens),
