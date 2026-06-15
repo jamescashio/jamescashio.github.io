@@ -551,6 +551,13 @@ body.anim-paused #grid::before,body.anim-paused::after{animation-play-state:paus
 @media(min-width:1px){#nebula{animation:nebuladrift 46s ease-in-out infinite alternate}}
 @keyframes nebuladrift{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(2%,2%,0) scale(1.08)}100%{transform:translate3d(-2%,1%,0) scale(1.05)}}
 code{font-family:var(--font-mono);color:var(--green);background:var(--glass);border:1px solid var(--glass-border);padding:1px 6px;border-radius:5px;font-size:.88em}
+/* ===== v34 interactive spotlight + nav polish ===== */
+.mod,.cell,.metric,.stack-card,.cl-card,.cl-stat,.dlaw{position:relative}
+.mod::before,.cell::before,.metric::before,.stack-card::before,.cl-card::before,.cl-stat::before,.dlaw::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s var(--ease);background:radial-gradient(160px circle at var(--gx,50%) var(--gy,50%),rgba(120,230,255,.14),transparent 60%)}
+.mod:hover::before,.cell:hover::before,.metric:hover::before,.stack-card:hover::before,.cl-card:hover::before,.cl-stat:hover::before,.dlaw:hover::before{opacity:1}
+.deck-nav a{position:relative}
+.deck-nav a.active::after{content:"";position:absolute;left:12px;right:12px;bottom:1px;height:2px;background:var(--cyan);box-shadow:0 0 8px var(--cyan);border-radius:2px}
+.deck-nav{box-shadow:0 1px 0 rgba(0,249,255,.12),0 6px 24px rgba(0,0,0,.4)}
 </style>
 </head>
 <body>
@@ -585,7 +592,7 @@ code{font-family:var(--font-mono);color:var(--green);background:var(--glass);bor
 </header>
 
 <nav class="deck-nav" id="deckNav" aria-label="Section navigation">
-  <a href="#chain">CHAIN</a><a href="#console">CONSOLE</a><a href="#stack">STACK</a><a href="#topology">TOPOLOGY</a><a href="#telemetry">TELEMETRY</a><a href="#changelog">CHANGELOG</a>
+  <a href="#sovereign">BRIEF</a><a href="#chain">CHAIN</a><a href="#console">CONSOLE</a><a href="#stack">STACK</a><a href="#topology">TOPOLOGY</a><a href="#telemetry">TELEMETRY</a><a href="#changelog">CHANGELOG</a>
 </nav>
 
 
@@ -1425,6 +1432,21 @@ if(!window.matchMedia('(hover:hover)').matches)return;
 var root=document.documentElement,tx=0,ty=0,mx=0,my=0,raf=0;
 function upd(){ raf=0; tx+=(mx-tx)*0.12; ty+=(my-ty)*0.12; root.style.setProperty('--px',tx.toFixed(4)); root.style.setProperty('--py',ty.toFixed(4)); if(Math.abs(mx-tx)>0.0008||Math.abs(my-ty)>0.0008)raf=requestAnimationFrame(upd); }
 window.addEventListener('mousemove',function(e){ if(document.hidden)return; mx=(e.clientX/window.innerWidth-0.5); my=(e.clientY/window.innerHeight-0.5); if(!raf)raf=requestAnimationFrame(upd); },{passive:true});
+})();
+</script>
+
+<script>
+/* ===== v34 card spotlight (cursor-follow glow) ===== */
+(function(){
+"use strict";
+if(!window.matchMedia||!window.matchMedia('(hover:hover)').matches)return;
+var sel='.mod,.cell,.metric,.stack-card,.cl-card,.cl-stat,.dlaw';
+document.addEventListener('mousemove',function(e){
+  var el=e.target.closest&&e.target.closest(sel); if(!el)return;
+  var r=el.getBoundingClientRect();
+  el.style.setProperty('--gx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%');
+  el.style.setProperty('--gy',((e.clientY-r.top)/r.height*100).toFixed(1)+'%');
+},{passive:true});
 })();
 </script>
 
