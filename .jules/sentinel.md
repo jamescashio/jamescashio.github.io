@@ -46,3 +46,8 @@
 **Vulnerability:** The `/v1/completions` endpoint in `zeusapollo_bridge.py` lacked input validation for `prompt` length and `max_tokens` bounds, exposing the application to DoS attacks via resource exhaustion.
 **Learning:** Even internal AI bridge endpoints require strict input validation to prevent excessively large prompts or unbounded token generation from overwhelming local inference resources.
 **Prevention:** Always implement explicit bounds checking and type validation on all user-supplied parameters (e.g., capping prompt length and maximum generated tokens) at the API entry point.
+
+## 2026-06-15 - [Missing Content-Security-Policy Headers on Main Pages]
+**Vulnerability:** The main application pages (`index.html`, `lab.html`, `command.html`) lacked Content-Security-Policy (CSP) headers, which were only present in an experimental file (`cashio-us-v22.html`). This missing defense-in-depth layer leaves the application more susceptible to Cross-Site Scripting (XSS) and data injection attacks.
+**Learning:** Security enhancements introduced in experimental or feature branches (like a restrictive CSP) can easily be missed when deploying main pages if not tracked as a global architectural requirement.
+**Prevention:** Ensure that all primary entry points (`.html` files) enforce a strict Content-Security-Policy restricting `script-src`, `style-src`, and `connect-src` to known good origins.
