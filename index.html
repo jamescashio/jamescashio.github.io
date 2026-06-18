@@ -1277,7 +1277,19 @@ code{font-family:var(--font-mono);color:var(--green);background:var(--glass);bor
         if(nd.deg){ var al=mk('circle',{cx:x,cy:y,r:8,fill:'none',stroke:COLdeg,'stroke-width':1.5,opacity:0});
           if(!reduce){ al.appendChild(mk('animate',{attributeName:'r',values:'8;21',dur:'1.1s',repeatCount:'indefinite'})); al.appendChild(mk('animate',{attributeName:'opacity',values:'.9;0',dur:'1.1s',repeatCount:'indefinite'})); } g.appendChild(al); }
         var lbl=mk('text',{x:x,y:y-17,'text-anchor':'middle',class:'node-label'});lbl.textContent=nd.n;g.appendChild(lbl);
-        function show(){ readout.innerHTML='<b>◈ '+nd.n.toUpperCase()+'</b>'+nd.r+' &nbsp;—&nbsp; <span class="'+(nd.deg?'warn':'ok')+'">'+(nd.deg?'DEGRADED':'NOMINAL')+'</span>'; sp.setAttribute('opacity','.95'); sp.setAttribute('stroke-width','2'); }
+        function show(){
+          // SECURITY: Prevent XSS by avoiding innerHTML
+          readout.textContent = '';
+          var b = document.createElement('b');
+          b.textContent = '◈ ' + nd.n.toUpperCase();
+          readout.appendChild(b);
+          readout.appendChild(document.createTextNode(nd.r + ' \xA0—\xA0 '));
+          var span = document.createElement('span');
+          span.className = nd.deg ? 'warn' : 'ok';
+          span.textContent = nd.deg ? 'DEGRADED' : 'NOMINAL';
+          readout.appendChild(span);
+          sp.setAttribute('opacity','.95'); sp.setAttribute('stroke-width','2');
+        }
         function hide(){ sp.setAttribute('opacity','.26'); sp.setAttribute('stroke-width','1'); }
         g.addEventListener('mouseenter',show);g.addEventListener('focus',show);g.addEventListener('click',show);
         g.addEventListener('mouseleave',hide);g.addEventListener('blur',hide);
