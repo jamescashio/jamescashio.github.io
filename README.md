@@ -1,8 +1,8 @@
-# ZEUSAPOLLO v21.2a — Hardened Sovereign AI Infrastructure
+# ZEUSAPOLLO v27 — Hardened Sovereign AI Infrastructure
 
 > *"The line between man and machine is not a wall — it's a bridge."*
 
-A **live interactive portfolio** and **command center dashboard** showcasing a sovereign AI infrastructure spanning 18+ nodes across two hypervisors, a Mac Mini M4, and edge devices, orchestrated through event-driven architecture.
+A **live interactive portfolio** and **command center dashboard** showcasing a sovereign AI infrastructure spanning 19 nodes across two hypervisors, a Mac Mini M4, and edge devices, orchestrated through event-driven architecture.
 
 ---
 
@@ -10,25 +10,25 @@ A **live interactive portfolio** and **command center dashboard** showcasing a s
 
 | Aspect | Detail |
 |---|---|
-| **Stack** | Vanilla HTML/CSS/JS + WebGL • Deployed via GitHub Pages |
+| **Stack** | Vanilla HTML/CSS/JS • Self-hosted fonts • Deployed via GitHub Pages |
 | **Design System** | LCARS-inspired (Star Trek) • Dark cyberpunk aesthetic • Orange/Cyan signature palette |
 | **Build State** | 235+ commits • 204+ deployments • 3 AI contributors |
 
 ---
 
-## 🧠 AI Stack
+## 🧠 AI Stack — v27 "Sovereign Routing"
 
-This site interfaces with a real homelab AI fabric:
+Every request routes **directly** to the cheapest model that can do the job — five models, one gateway, no bridge tax:
 
-| Component | Role | Hardware |
-|---|---|---|
-| **Atlas** | Primary AI node — Gemma-4 26B MoE (MLX) | Mac Mini M4 (24GB) |
-| **Cashiotuf** | GPU inference — LM Studio fallback | RTX 3080 (10GB) |
-| **Hermes** | Operations agent — system orchestration | ZeusApollo CT |
-| **Omnibus** | Sovereign mode — unrestricted reasoning | Atlas (Antigravity) |
-| **Athena** | Edge broker — NATS event bus, DNS, monitoring | RPi4 |
-| **n8n** | LLM router / workflow automation | ZeusApollo CT |
-| **LiteLLM** | Multi-model proxy (Grok, Claude, Qwen) | ZeusApollo CT |
+| # | Model | Provider | Role |
+|---|---|---|---|
+| 1 | **DeepSeek V4-Pro** | DeepSeek API | Primary — all agent tasks, briefings, delegation |
+| 2 | **Perplexity Sonar Pro** | Perplexity API | Deep research with citations |
+| 3 | **Gemini 2.5 Flash** | Google AI | Compression + web extract |
+| 4 | **Grok 4.3** | xAI (SuperGrok) | Vision + TTS (Eve voice) |
+| 5 | **Qwen 3.7 Plus** | Nous | Emergency failover only |
+
+Runs on a two-cluster Proxmox fabric (**Zeus** — infra + security; **Apollo** — AI + media) plus an **Atlas** Mac Mini M4 for local LiteLLM fallback. ~$0.35/day total inference burn.
 
 ---
 
@@ -48,11 +48,9 @@ This site interfaces with a real homelab AI fabric:
 | `index.html` | Main portfolio — hero, skills, fleet topology |
 | `command.html` | Command Center — live architecture, metrics, event ticker |
 | `audio_engine.js` | Voice synthesis & LCARS sound effects |
-| `webgl_starfield.js` | Animated starfield background canvas |
 | `zeusapollo_swarm.py` | Multi-model orchestration (swarm mode) |
 | `zeusapollo_bridge.py` | Speculative decoding bridge for Atlas |
 | `status.json` | Fleet status data (auto-generated) |
-| `tweaks-panel-2.jsx` | UI configuration panel |
 
 ---
 
