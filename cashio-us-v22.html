@@ -3524,7 +3524,21 @@ function engageWarp() {
 function showToast(html, col='var(--cyan)') {
   const t = document.createElement('div');
   t.style.cssText=`position:fixed;top:72px;right:24px;padding:14px 20px;background:rgba(10,10,18,0.96);border:1px solid ${col};border-radius:var(--radius-lg);font-size: 17px;z-index:400;max-width:340px;line-height:1.5;backdrop-filter:blur(10px);box-shadow:0 4px 30px rgba(0,0,0,0.4);transition:all 0.35s;`;
-  t.innerHTML = html; document.body.appendChild(t);
+
+  // SECURITY: Prevent XSS by avoiding innerHTML
+  const htmlStr = String(html);
+  const parts = htmlStr.split(/(<strong>.*?<\/strong>)/gi);
+  parts.forEach(part => {
+    if (part.toLowerCase().startsWith('<strong>') && part.toLowerCase().endsWith('</strong>')) {
+      const strong = document.createElement('strong');
+      strong.textContent = part.substring(8, part.length - 9);
+      t.appendChild(strong);
+    } else if (part) {
+      t.appendChild(document.createTextNode(part));
+    }
+  });
+
+  document.body.appendChild(t);
   setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateX(20px)'; setTimeout(()=>t.remove(),300); }, 3500);
 }
 
