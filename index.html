@@ -1066,11 +1066,51 @@ code{font-family:var(--font-mono);color:var(--green);background:var(--glass);bor
       ['deliver','<span class="ok">DELIVER</span> → annotated result to Discord <span class="ok">✓ 2.1s</span>',540]
     ]}
   ];
+
+  // SECURITY: Prevent XSS by using DOMParser and explicit node construction instead of innerHTML
+  function appendSafeHTML(element, htmlString) {
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(htmlString, 'text/html');
+    var allowedTags = ['B', 'I', 'U', 'EM', 'STRONG', 'SPAN', 'DIV', 'P', 'BR', 'A', 'CODE'];
+
+    function traverseAndAppend(node, targetNode) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        targetNode.appendChild(document.createTextNode(node.textContent));
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        var tagName = node.tagName.toUpperCase();
+        if (allowedTags.indexOf(tagName) !== -1) {
+          var newElement = document.createElement(tagName);
+          for (var i = 0; i < node.attributes.length; i++) {
+            var attrName = node.attributes[i].name;
+            var attrValue = node.attributes[i].value;
+            if (attrName.toLowerCase().indexOf('on') === 0) continue;
+            var urlCheck = attrValue.replace(/[\s\x00-\x1F\x7F]+/g, '').toLowerCase();
+            if (attrName.toLowerCase() === 'href' && urlCheck.indexOf('javascript:') === 0) continue;
+            newElement.setAttribute(attrName, attrValue);
+          }
+          targetNode.appendChild(newElement);
+          for (var j = 0; j < node.childNodes.length; j++) {
+            traverseAndAppend(node.childNodes[j], newElement);
+          }
+        } else {
+          for (var j = 0; j < node.childNodes.length; j++) {
+            traverseAndAppend(node.childNodes[j], targetNode);
+          }
+        }
+      }
+    }
+
+    var children = doc.body.childNodes;
+    for (var k = 0; k < children.length; k++) {
+      traverseAndAppend(children[k], element);
+    }
+  }
+
   function setActive(k){ stages.forEach(function(s){ s.classList.toggle('active',s.getAttribute('data-k')===k); }); }
-  function line(html){ var d=document.createElement('div'); d.className='ln'; d.innerHTML=html; evlog.appendChild(d); while(evlog.children.length>6)evlog.removeChild(evlog.firstChild); }
+  function line(html){ var d=document.createElement('div'); d.className='ln'; appendSafeHTML(d, html); evlog.appendChild(d); while(evlog.children.length>6)evlog.removeChild(evlog.firstChild); }
   var chainStarted=false;
   function startChain(){ if(chainStarted)return; chainStarted=true; var si=0;
-    function runScenario(){ var sc=scenarios[si%scenarios.length]; si++; evlog.innerHTML=''; setActive('ingest');
+    function runScenario(){ var sc=scenarios[si%scenarios.length]; si++; while(evlog.firstChild){evlog.removeChild(evlog.firstChild);} setActive('ingest');
       line('<span class="t">'+new Date().toLocaleTimeString('en-US',{hour12:false})+'</span> &nbsp;'+sc.trig);
       if(reduce){ sc.steps.forEach(function(st){ setActive(st[0]); line('<span class="t">·</span> '+st[1]); }); setTimeout(runScenario,3000); return; }
       var idx=0;
@@ -1092,7 +1132,7 @@ code{font-family:var(--font-mono);color:var(--green);background:var(--glass);bor
     var PROMPT='<span class="pr"><span class="u">guest@cashio.us</span>:~$</span> ';
     var hist=[], hidx=-1, rowEl=null, inputEl=null, booted=false, demoed=false;
     function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-    function write(html){ var d=document.createElement('div'); d.className='out'; d.innerHTML=html; body.insertBefore(d, rowEl); body.scrollTop=body.scrollHeight; }
+    function write(html){ var d=document.createElement('div'); d.className='out'; appendSafeHTML(d, html); body.insertBefore(d, rowEl); body.scrollTop=body.scrollHeight; }
     function makeRow(){
       rowEl=document.createElement('div'); rowEl.className='term-row';
       var pr = document.createElement('span'); pr.className = 'pr';
