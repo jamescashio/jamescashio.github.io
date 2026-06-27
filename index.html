@@ -1034,6 +1034,43 @@ code{font-family:var(--font-mono);color:var(--green);background:var(--glass);bor
       for(var c=comets.length-1;c>=0;c--){ var m=comets[c]; m.x+=m.vx;m.y+=m.vy;m.life++; var t=m.life/m.max; if(t>=1||m.x>W+60||m.y>H+60){comets.splice(c,1);continue;} var fade=Math.sin(Math.min(t,1)*Math.PI), tx=m.x-m.vx*7, ty=m.y-m.vy*7; var g=ctx.createLinearGradient(m.x,m.y,tx,ty); g.addColorStop(0,'rgba('+m.col+','+(0.9*fade).toFixed(3)+')'); g.addColorStop(1,'rgba('+m.col+',0)'); ctx.strokeStyle=g;ctx.lineWidth=2;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(m.x,m.y);ctx.lineTo(tx,ty);ctx.stroke(); ctx.beginPath();ctx.fillStyle='rgba('+m.col+','+(0.95*fade).toFixed(3)+')';ctx.arc(m.x,m.y,1.8,0,6.283);ctx.fill(); }
       requestAnimationFrame(dr); })(); }
 
+  /* ============ SECURE DOM TRAVERSAL ============ */
+  function safeHTML(html) {
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(html, 'text/html');
+    var frag = document.createDocumentFragment();
+    var allowedTags = ['SPAN', 'B', 'STRONG', 'I', 'EM', 'A', 'CODE', 'BR'];
+
+    function walk(node, parent) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        parent.appendChild(document.createTextNode(node.textContent));
+      } else if (node.nodeType === Node.ELEMENT_NODE && allowedTags.indexOf(node.tagName) !== -1) {
+        var el = document.createElement(node.tagName);
+        if (node.hasAttribute('class')) el.className = node.getAttribute('class');
+        if (node.tagName === 'A' && node.hasAttribute('href')) {
+          var href = node.getAttribute('href');
+          var sanitizedHref = href.replace(/[\x00-\x20\x7F]/g, '');
+          if (!/^javascript:/i.test(sanitizedHref)) {
+             el.setAttribute('href', href.trim());
+          }
+        }
+        for (var i = 0; i < node.childNodes.length; i++) {
+          walk(node.childNodes[i], el);
+        }
+        parent.appendChild(el);
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        // for disallowed tags, just process their children
+        for (var i = 0; i < node.childNodes.length; i++) {
+          walk(node.childNodes[i], parent);
+        }
+      }
+    }
+    for (var i = 0; i < doc.body.childNodes.length; i++) {
+      walk(doc.body.childNodes[i], frag);
+    }
+    return frag;
+  }
+
   /* ============ LLM EVENT CHAIN ANIMATION ============ */
   var evlog=document.getElementById('evlog'),stages=document.querySelectorAll('#chainStages .stage');
   var scenarios=[
@@ -1067,10 +1104,10 @@ code{font-family:var(--font-mono);color:var(--green);background:var(--glass);bor
     ]}
   ];
   function setActive(k){ stages.forEach(function(s){ s.classList.toggle('active',s.getAttribute('data-k')===k); }); }
-  function line(html){ var d=document.createElement('div'); d.className='ln'; d.innerHTML=html; evlog.appendChild(d); while(evlog.children.length>6)evlog.removeChild(evlog.firstChild); }
+  function line(html){ var d=document.createElement('div'); d.className='ln'; d.appendChild(safeHTML(html)); evlog.appendChild(d); while(evlog.children.length>6)evlog.removeChild(evlog.firstChild); }
   var chainStarted=false;
   function startChain(){ if(chainStarted)return; chainStarted=true; var si=0;
-    function runScenario(){ var sc=scenarios[si%scenarios.length]; si++; evlog.innerHTML=''; setActive('ingest');
+    function runScenario(){ var sc=scenarios[si%scenarios.length]; si++; evlog.textContent=''; setActive('ingest');
       line('<span class="t">'+new Date().toLocaleTimeString('en-US',{hour12:false})+'</span> &nbsp;'+sc.trig);
       if(reduce){ sc.steps.forEach(function(st){ setActive(st[0]); line('<span class="t">·</span> '+st[1]); }); setTimeout(runScenario,3000); return; }
       var idx=0;
@@ -1092,7 +1129,7 @@ code{font-family:var(--font-mono);color:var(--green);background:var(--glass);bor
     var PROMPT='<span class="pr"><span class="u">guest@cashio.us</span>:~$</span> ';
     var hist=[], hidx=-1, rowEl=null, inputEl=null, booted=false, demoed=false;
     function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-    function write(html){ var d=document.createElement('div'); d.className='out'; d.innerHTML=html; body.insertBefore(d, rowEl); body.scrollTop=body.scrollHeight; }
+    function write(html){ var d=document.createElement('div'); d.className='out'; d.appendChild(safeHTML(html)); body.insertBefore(d, rowEl); body.scrollTop=body.scrollHeight; }
     function makeRow(){
       rowEl=document.createElement('div'); rowEl.className='term-row';
       var pr = document.createElement('span'); pr.className = 'pr';

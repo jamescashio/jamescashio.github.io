@@ -3,3 +3,8 @@
 .DS_Store
 __pycache__/
 *.pyc
+node_modules/
+package*.json
+verify_xss_fix.png
+verify_ui.js
+playwright/
