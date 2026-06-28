@@ -33,6 +33,8 @@ from mlx_lm import load, generate
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import StreamingResponse, JSONResponse
 import uvicorn
+import os
+import secrets
 
 # ─── CONFIG ─────────────────────────────────────────────────────────────────
 DRAFT_URL = "http://192.168.1.116:1234/v1/completions"  # Cashiotuf LM Studio
@@ -40,6 +42,44 @@ TARGET_MODEL = "mlx-community/gemma-4-26b-a4b-it-4bit"
 DRAFT_TOKENS = 5  # Number of tokens to speculate per cycle
 TEMPERATURE = 0.2  # Lower = higher acceptance rate (best: 0.1-0.3)
 BRIDGE_PORT = 11235
+
+# API Key — load from env or config file
+API_KEY = os.environ.get("BRIDGE_API_KEY", "")
+if not API_KEY:
+    try:
+        with open(os.path.expanduser("~/.hermes/config/auth.json")) as f:
+            auth = json.load(f)
+            API_KEY = auth.get("bridge", {}).get("api_key", "")
+    except (FileNotFoundError, json.JSONDecodeError, KeyError):
+        pass
+
+if not API_KEY:
+    print("⚠️  WARNING: BRIDGE_API_KEY not set — auth DISABLED")
+
+def verify_auth(request: Request) -> bool:
+    """Verify X-API-Key or Authorization header."""
+    if not API_KEY:
+        return True  # Open if no key configured
+
+    key = request.headers.get("X-API-Key")
+    if not key:
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            key = auth_header.split(" ")[1]
+
+    if not key:
+        return False
+
+    # SECURITY: Use compare_digest to prevent timing attacks
+    return secrets.compare_digest(key, API_KEY)
+
+def require_auth(request: Request):
+    """Raise 401 if auth fails."""
+    if not verify_auth(request):
+        raise HTTPException(
+            status_code=401,
+            detail="Unauthorized — provide valid X-API-Key header"
+        )
 
 # ─── MODEL LOADING ──────────────────────────────────────────────────────────
 print("🔄 Loading target model (Gemma-4 26B)...")
@@ -146,7 +186,23 @@ app = FastAPI(title="ZeusApollo Speculative Bridge")
 @app.middleware("http")
 async def security_middleware(request: Request, call_next):
     """Global security middleware — adds security headers."""
+
+    # Explicitly list public endpoints
+    public_endpoints = ["/health", "/docs", "/redoc", "/openapi.json"]
+
+    # SECURITY: Deny-by-default — apply auth to ALL routes except explicitly public ones
+    # Avoid relying solely on URL prefix matching (e.g., startswith('/v1/')) to prevent unintended public exposure
+    if request.url.path not in public_endpoints:
+        try:
+            require_auth(request)
+        except HTTPException as exc:
+            return JSONResponse(
+                status_code=exc.status_code,
+                content={"error": exc.detail}
+            )
+
     response = await call_next(request)
+
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["X-XSS-Protection"] = "1; mode=block"
