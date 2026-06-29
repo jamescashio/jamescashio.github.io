@@ -2677,7 +2677,7 @@ function TweaksApp() {
   React.useEffect(() => {
     window._soundEnabled = tweaks.soundEnabled;
     const btn = document.getElementById('sound-btn');
-    if (btn) btn.innerHTML = tweaks.soundEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+    if (btn) { btn.textContent = ''; const i = document.createElement('i'); i.className = tweaks.soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute'; btn.appendChild(i); }
   }, [tweaks.soundEnabled]);
 
   return React.createElement(window.TweaksPanel, null,
@@ -3046,7 +3046,7 @@ function toggleSound() {
   window._soundEnabled = !window._soundEnabled;
   localStorage.setItem('za_sound', window._soundEnabled);
   const btn = document.getElementById('sound-btn');
-  if (btn) btn.innerHTML = window._soundEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+  if (btn) { btn.textContent = ''; const i = document.createElement('i'); i.className = window._soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute'; btn.appendChild(i); }
   if (window._soundEnabled) { if (!_ambientHum) startHum(); playSound('confirm'); }
   else if (_ambientHum) { _ambientHum.stop(); }
 }
@@ -3351,9 +3351,21 @@ function updateCountdowns() {
 // NODE MODAL
 // ══════════════════════════════════════════════════
 function showNode(name, sub, desc, status) {
-  document.getElementById('m-title').innerHTML = name +
-    (status==='online' ? ' <span style="font-size: 17px;padding:2px 8px;background:var(--green);color:#000;border-radius:4px;vertical-align:middle;margin-left:8px;font-family:var(--font-mono)">ONLINE</span>' :
-     status==='primary' ? ' <span style="font-size: 17px;padding:2px 8px;background:var(--purple);color:#000;border-radius:4px;vertical-align:middle;margin-left:8px;font-family:var(--font-mono)">PRIMARY</span>' : '');
+  const titleEl = document.getElementById('m-title');
+  titleEl.textContent = name;
+  if (status === 'online') {
+    const span = document.createElement('span');
+    span.style.cssText = 'font-size: 17px;padding:2px 8px;background:var(--green);color:#000;border-radius:4px;vertical-align:middle;margin-left:8px;font-family:var(--font-mono)';
+    span.textContent = 'ONLINE';
+    titleEl.appendChild(document.createTextNode(' '));
+    titleEl.appendChild(span);
+  } else if (status === 'primary') {
+    const span = document.createElement('span');
+    span.style.cssText = 'font-size: 17px;padding:2px 8px;background:var(--purple);color:#000;border-radius:4px;vertical-align:middle;margin-left:8px;font-family:var(--font-mono)';
+    span.textContent = 'PRIMARY';
+    titleEl.appendChild(document.createTextNode(' '));
+    titleEl.appendChild(span);
+  }
   document.getElementById('m-sub').textContent = sub;
   document.getElementById('m-desc').textContent = desc;
   document.getElementById('node-modal').classList.add('open');
@@ -3362,7 +3374,7 @@ function showNode(name, sub, desc, status) {
 }
 function closeModal() { document.getElementById('node-modal').classList.remove('open'); }
 function pingNode() {
-  document.getElementById('m-desc').innerHTML = '<span style="color:var(--green);font-family:var(--font-mono)">PING: 3ms • TTL 64 • HEALTHY ✓</span>';
+  const descEl = document.getElementById('m-desc'); descEl.textContent = ''; const span = document.createElement('span'); span.style.cssText = 'color:var(--green);font-family:var(--font-mono)'; span.textContent = 'PING: 3ms • TTL 64 • HEALTHY ✓'; descEl.appendChild(span);
   playSound('success', 0.5);
 }
 
@@ -3513,7 +3525,15 @@ function engageWarp() {
   playSound('warp', 0.5);
   const msg = document.createElement('div');
   msg.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:300;pointer-events:none;';
-  msg.innerHTML=`<div style="font-family:var(--font-display);font-size:5rem;font-weight:900;color:white;letter-spacing:8px;text-shadow:0 0 40px #fff,0 0 80px var(--cyan)">MAXIMUM WARP</div><div style="font-family:var(--font-mono);font-size: 17px;color:var(--cyan);letter-spacing:4px;margin-top:8px">ENGAGED • ALL NODES STABLE</div>`;
+  const div1 = document.createElement('div');
+  div1.style.cssText = 'font-family:var(--font-display);font-size:5rem;font-weight:900;color:white;letter-spacing:8px;text-shadow:0 0 40px #fff,0 0 80px var(--cyan)';
+  div1.textContent = 'MAXIMUM WARP';
+  const div2 = document.createElement('div');
+  div2.style.cssText = 'font-family:var(--font-mono);font-size: 17px;color:var(--cyan);letter-spacing:4px;margin-top:8px';
+  div2.textContent = 'ENGAGED • ALL NODES STABLE';
+  msg.textContent = '';
+  msg.appendChild(div1);
+  msg.appendChild(div2);
   document.body.appendChild(msg);
   setTimeout(()=>{ sf.style.filter=''; sf.style.transform=''; msg.style.transition='opacity 0.5s'; msg.style.opacity='0'; setTimeout(()=>msg.remove(),400); }, 1100);
 }
@@ -3692,7 +3712,7 @@ function initCounters() {
 // ══════════════════════════════════════════════════
 function initBackToTop() {
   const btn = document.createElement('button');
-  btn.innerHTML = '<i class="fas fa-arrow-up"></i>';
+  btn.textContent = ''; const i = document.createElement('i'); i.className = 'fas fa-arrow-up'; btn.appendChild(i);
   btn.style.cssText = 'position:fixed;bottom:28px;right:28px;z-index:200;width:44px;height:44px;border-radius:50%;background:var(--surface);border:1px solid var(--accent);color:var(--accent);font-size:18px;cursor:pointer;opacity:0;transform:translateY(20px);transition:all 0.3s ease;backdrop-filter:blur(8px);pointer-events:none;';
   btn.onclick = () => { window.scrollTo({top:0,behavior:'smooth'}); playSound('warp',0.5); };
   btn.onmouseenter = () => { btn.style.boxShadow='0 0 20px var(--accent-glow)'; playSound('lcars',0.3); };
@@ -3727,7 +3747,7 @@ window.addEventListener('load', () => {
   if ('speechSynthesis' in window) speechSynthesis.getVoices();
 
   const btn = document.getElementById('sound-btn');
-  if (btn) btn.innerHTML = window._soundEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+  if (btn) { btn.textContent = ''; const i = document.createElement('i'); i.className = window._soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute'; btn.appendChild(i); }
 
   setTimeout(() => showToast('ZEUSAPOLLO v22 — CHRONOMETER SYNCED — ALL SYSTEMS NOMINAL', 'var(--accent)'), 1600);
 });
