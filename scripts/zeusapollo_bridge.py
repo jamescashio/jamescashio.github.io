@@ -26,6 +26,8 @@ Requires:
 
 import argparse
 import json
+import os
+import secrets
 import time
 import httpx
 import mlx.core as mx
@@ -35,6 +37,19 @@ from fastapi.responses import StreamingResponse, JSONResponse
 import uvicorn
 
 # ─── CONFIG ─────────────────────────────────────────────────────────────────
+# API Key — load from env or config file
+BRIDGE_API_KEY = os.environ.get("BRIDGE_API_KEY", "")
+if not BRIDGE_API_KEY:
+    try:
+        with open(os.path.expanduser("~/.hermes/config/auth.json")) as f:
+            auth = json.load(f)
+            BRIDGE_API_KEY = auth.get("bridge", {}).get("api_key", "")
+    except (FileNotFoundError, json.JSONDecodeError, KeyError):
+        pass
+
+if not BRIDGE_API_KEY:
+    print("⚠️  WARNING: BRIDGE_API_KEY not set — auth DISABLED")
+
 DRAFT_URL = "http://192.168.1.116:1234/v1/completions"  # Cashiotuf LM Studio
 TARGET_MODEL = "mlx-community/gemma-4-26b-a4b-it-4bit"
 DRAFT_TOKENS = 5  # Number of tokens to speculate per cycle
@@ -143,9 +158,44 @@ def speculative_generate(prompt: str, max_tokens: int = 512):
 # ─── API SERVER ─────────────────────────────────────────────────────────────
 app = FastAPI(title="ZeusApollo Speculative Bridge")
 
+
+def verify_auth(request: Request) -> bool:
+    """Verify X-API-Key or Authorization header."""
+    if not BRIDGE_API_KEY:
+        return True
+
+    key = request.headers.get("X-API-Key", "")
+    if not key:
+        auth_header = request.headers.get("Authorization", "")
+        if auth_header.startswith("Bearer "):
+            key = auth_header[7:]
+
+    return secrets.compare_digest(key, BRIDGE_API_KEY)
+
+def require_auth(request: Request):
+    """Raise 401 if auth fails."""
+    if not verify_auth(request):
+        raise HTTPException(
+            status_code=401,
+            detail="Unauthorized — provide valid X-API-Key or Authorization header"
+        )
+
 @app.middleware("http")
 async def security_middleware(request: Request, call_next):
-    """Global security middleware — adds security headers."""
+    """Global security middleware — auth and headers."""
+    # Explicitly list public endpoints
+    public_endpoints = ["/health", "/docs", "/redoc", "/openapi.json"]
+
+    # SECURITY: Deny-by-default — apply auth to ALL routes except explicitly public ones
+    if request.url.path not in public_endpoints:
+        try:
+            require_auth(request)
+        except HTTPException as exc:
+            return JSONResponse(
+                status_code=exc.status_code,
+                content={"error": exc.detail}
+            )
+
     response = await call_next(request)
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"
