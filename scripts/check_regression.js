@@ -19,13 +19,15 @@ function loadKernel() {
       try {
         return require(process.env.KERNEL_SDK_PATH).Kernel;
       } catch (pathErr) {
-        return require(path.join(process.env.KERNEL_SDK_PATH, '@onkernel/sdk')).Kernel;
+        try {
+          return require(path.join(process.env.KERNEL_SDK_PATH, '@onkernel/sdk')).Kernel;
+        } catch (innerErr) {
+          // Fallthrough
+        }
       }
     }
 
-    throw new Error(
-      'Unable to load @onkernel/sdk. Install it locally, set NODE_PATH, or set KERNEL_SDK_PATH to the SDK module.'
-    );
+    throw new Error('Unable to load @onkernel/sdk. Install it locally, set NODE_PATH, or set KERNEL_SDK_PATH to the SDK module.');
   }
 }
 
@@ -161,7 +163,11 @@ async function main() {
   }
 }
 
-main().catch(err => {
-  console.error('Fatal:', err.message);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch(err => {
+    console.error('Fatal:', err.message);
+    process.exit(1);
+  });
+}
+
+module.exports = { loadKernel };
