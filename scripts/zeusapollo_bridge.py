@@ -28,6 +28,8 @@ import argparse
 import json
 import time
 import httpx
+import os
+import secrets
 import mlx.core as mx
 from mlx_lm import load, generate
 from fastapi import FastAPI, Request, HTTPException
@@ -40,6 +42,18 @@ TARGET_MODEL = "mlx-community/gemma-4-26b-a4b-it-4bit"
 DRAFT_TOKENS = 5  # Number of tokens to speculate per cycle
 TEMPERATURE = 0.2  # Lower = higher acceptance rate (best: 0.1-0.3)
 BRIDGE_PORT = 11235
+
+API_KEY = os.environ.get("BRIDGE_API_KEY", "")
+if not API_KEY:
+    try:
+        with open(os.path.expanduser("~/.hermes/config/auth.json")) as f:
+            auth = json.load(f)
+            API_KEY = auth.get("bridge", {}).get("api_key", "")
+    except (FileNotFoundError, json.JSONDecodeError, KeyError):
+        pass
+
+if not API_KEY:
+    print("⚠️  WARNING: BRIDGE_API_KEY not set — auth DISABLED")
 
 # ─── MODEL LOADING ──────────────────────────────────────────────────────────
 print("🔄 Loading target model (Gemma-4 26B)...")
@@ -143,9 +157,38 @@ def speculative_generate(prompt: str, max_tokens: int = 512):
 # ─── API SERVER ─────────────────────────────────────────────────────────────
 app = FastAPI(title="ZeusApollo Speculative Bridge")
 
+def verify_auth(request: Request) -> bool:
+    """Verify API key from header."""
+    if not API_KEY:
+        return True
+    key = request.headers.get("X-API-Key") or request.headers.get("Authorization", "").replace("Bearer ", "")
+    # SECURITY: Prevent timing attacks
+    return secrets.compare_digest(key, API_KEY)
+
+def require_auth(request: Request):
+    """Raise 401 if auth fails."""
+    if not verify_auth(request):
+        raise HTTPException(
+            status_code=401,
+            detail="Unauthorized — provide valid X-API-Key or Authorization header"
+        )
+
 @app.middleware("http")
 async def security_middleware(request: Request, call_next):
-    """Global security middleware — adds security headers."""
+    """Global security middleware — auth + rate limit + headers."""
+    # Explicitly list public endpoints
+    public_endpoints = ["/health", "/docs", "/redoc", "/openapi.json"]
+
+    # SECURITY: Deny-by-default — apply auth to ALL routes except explicitly public ones
+    if request.url.path not in public_endpoints:
+        try:
+            require_auth(request)
+        except HTTPException as exc:
+            return JSONResponse(
+                status_code=exc.status_code,
+                content={"error": exc.detail}
+            )
+
     response = await call_next(request)
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"
@@ -237,6 +280,7 @@ if __name__ == "__main__":
 ║  Verifier: Atlas (Mac M4)       → Gemma-4 26B MoE      ║
 ║  Bridge:   http://0.0.0.0:{args.port}                    ║
 ║  Tokens/cycle: {DRAFT_TOKENS} | Temperature: {TEMPERATURE}            ║
+║  Auth:     {'ENABLED' if API_KEY else '⚠️ DISABLED'}                    ║
 ╚══════════════════════════════════════════════════════════╝
     """)
 
