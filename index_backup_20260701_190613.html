@@ -254,7 +254,7 @@ body::after{content:"";position:fixed;inset:0;z-index:2;pointer-events:none;
 .topo-readout{margin-top:14px;font-family:var(--font-mono);font-size:12px;color:var(--text-dim);background:var(--glass);
   border:1px solid var(--glass-border);border-left:3px solid var(--cyan);border-radius:10px;padding:11px 14px;min-height:42px}
 .topo-readout b{color:var(--cyan);font-size:10px;letter-spacing:.14em;display:block;margin-bottom:4px}
-.topo-readout .ok{color:var(--green)} .topo-readout .warn{color:var(--amber)} .topo-readout .crit{color:var(--red)}
+.topo-readout .ok{color:var(--green)} .topo-readout .warn{color:var(--amber)}
 
 /* ---------- tables ---------- */
 .tbl-scroll{overflow-x:auto}
@@ -675,7 +675,7 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
     <p class="pitch"><span class="claim">I cut AI inference costs <b>7.2×</b>.</span><span class="qual">Measured against an Opus-primary baseline — by building sovereign infrastructure, not renting vendor lock-in. A <b>19-node homelab</b> where every model, route, and backup is deployed, documented, and battle-tested.</span></p>
     <p class="plain">TRANSLATION FOR HUMANS // I design and run AI infrastructure that does the work of a cloud platform team — cheaper, private, and provably autonomous. Everything below is live proof.</p>
     <ul class="sitrep" aria-label="Fleet sitrep at a glance">
-      <li><b id="sr-nodes">19</b> nodes</li><li><b>5</b> models</li><li><b id="sr-crons">31</b> crons</li><li><b id="sr-burn">$0.35</b>/day</li><li>uptime <b id="sr-uptime">5d 4h</b></li>
+      <li><b id="sr-nodes">19</b> nodes</li><li><b>5</b> models</li><li><b id="sr-crons">22</b> crons</li><li><b id="sr-burn">$0.35</b>/day</li><li>uptime <b id="sr-uptime">5d 4h</b></li>
     </ul>
     <a class="console-teaser" href="#console" id="consoleTeaser"><span class="ct-p" aria-hidden="true">&gt;</span> hermes console online — <span class="ct-go">click to connect</span><span class="ct-cur" aria-hidden="true">▋</span></a>
     <div class="kicker" id="kicker"></div>
@@ -695,14 +695,14 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
     <div class="cell" tabindex="0" aria-label="Nineteen guests across the ZeusApollo homelab.">
       <div class="num" data-count="19">19</div><div class="lbl">Fleet Nodes</div>
       <div class="tip" role="tooltip"><b>◈ FLEET STATUS</b>Guests across the ZeusApollo Proxmox cluster — compute, storage, networking, security, and monitoring.</div></div>
-    <div class="cell" tabindex="0" aria-label="Five task models, DeepSeek V4-Pro primary, routed directly.">
-      <div class="num">5</div><div class="lbl">Model Fabric<span class="was">DeepSeek V4-Pro primary</span></div>
+    <div class="cell" tabindex="0" aria-label="Five task models plus one fallback, DeepSeek V4-Pro primary, routed directly.">
+      <div class="num">5+1</div><div class="lbl">Model Fabric<span class="was">DeepSeek V4-Pro primary</span></div>
       <div class="tip" role="tooltip"><b>◈ PAYLOAD</b>Five task models — primary, cited research, compression, vision, fallback — routed directly by cost and capability through one sovereign gateway. No bridge tax.</div></div>
     <div class="cell" tabindex="0" aria-label="Over fifteen years in enterprise IT and cybersecurity.">
       <div class="num" data-count="15" data-suffix="+">15+</div><div class="lbl">Yrs Enterprise</div>
       <div class="tip" role="tooltip"><b>◈ SERVICE RECORD</b>Years in enterprise IT and cybersecurity, supporting large-scale, mission-critical environments.</div></div>
-    <div class="cell" tabindex="0" aria-label="Live count of automated cron jobs running fully autonomous ops.">
-      <div class="num" id="rbCrons" data-count="31">31</div><div class="lbl">Crons Active<span class="was">(was 3 at launch)</span></div>
+    <div class="cell" tabindex="0" aria-label="Twenty-two automated cron jobs running fully autonomous ops.">
+      <div class="num" data-count="22">22</div><div class="lbl">Crons Active<span class="was">(was 3 at launch)</span></div>
       <div class="tip" role="tooltip"><b>◈ AUTOPILOT</b>Automated scheduled jobs running briefings, backups, watchdogs, and balance tracking — fully autonomous.</div></div>
   </section>
 
@@ -714,7 +714,7 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
     <div class="mods" style="margin-top:16px">
       <div class="mod"><h3>🧭 Own the Route</h3><ul><li>Every request goes to the cheapest model that can do the job — five models, one gateway, no <abbr class="def" title="Bridge tax: the surcharge a router or aggregator adds on top of a model's own price — a middleman markup you pay just to reach the model.">bridge tax</abbr>.</li><li>No single-vendor lock-in; swap any model without a rebuild.</li></ul></div>
       <div class="mod"><h3>🔒 Private by Default</h3><ul><li>Inference and data stay on your own <abbr title="Open-source virtualization platform">Proxmox</abbr> fabric — not a third party's logs.</li><li>Sovereignty is a security posture, and a compliance one.</li></ul></div>
-      <div class="mod"><h3>🤖 Provably Autonomous</h3><ul><li><span class="live-crons">31</span> cron jobs run briefings, backups, and watchdogs 24/7 with no human in the loop.</li><li>The proof is live further down — not a slide.</li></ul></div>
+      <div class="mod"><h3>🤖 Provably Autonomous</h3><ul><li>22 cron jobs run briefings, backups, and watchdogs 24/7 with no human in the loop.</li><li>The proof is live further down — not a slide.</li></ul></div>
       <div class="mod"><h3>🛡️ Resilient by Design</h3><ul><li>Every model has a fallback, every backup an encrypted offsite, every DNS a <abbr title="Virtual Router Redundancy Protocol">VRRP</abbr> twin.</li><li>7.2× cheaper than an Opus-primary baseline — and hardened.</li></ul></div>
     </div>
     <p style="margin-top:14px;font-size:13px;color:var(--text-dim);border-left:2px solid var(--cyan);padding-left:14px"><b style="color:var(--cyan)">WHY IT MATTERS:</b> the levers a board cares about — cost, vendor risk, data privacy, and operational continuity — are exactly what a sovereign stack puts back under your control.</p>
@@ -760,13 +760,13 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
   <section class="panel" aria-labelledby="rnHead">
     <div class="sec-head"><span aria-hidden="true">🚀</span><h2 id="rnHead">RELEASE NOTES</h2><span class="tag new">NEW</span><span class="lcars-bar"></span></div>
     <div class="rn-grid">
-      <div class="c"><div class="k">STARDATE</div><div class="v">26182.5</div></div>
-      <div class="c"><div class="k">RELEASE</div><div class="v">v28 "BUTLERIAN JIHAD"</div></div>
+      <div class="c"><div class="k">STARDATE</div><div class="v">26162.5</div></div>
+      <div class="c"><div class="k">RELEASE</div><div class="v">v27 "SOVEREIGN ROUTING"</div></div>
       <div class="c"><div class="k">CMDR</div><div class="v">D. CASHIO</div></div>
       <div class="c"><div class="k">CLASS</div><div class="v">MAXIMUM WARP</div></div>
       <div class="c"><div class="k">STATUS</div><div class="v" style="color:var(--green)">● ALL NOMINAL</div></div>
     </div>
-    <p style="color:var(--text-dim);font-size:14px">19 guests across ZeusApollo. DeepSeek V4-Pro primary — direct routing, no bridge overhead. <span class="live-crons">31</span> autonomous cron jobs. Provider consolidation complete — 5 paid providers collapsed to 1 primary + bundled services. PBS backup auth regenerated after token rot. GDrive sync daemonized to survive cron timeout. Perplexity Sonar Pro for cited deep research. Kernel browser for headless automation. AdGuard retired — Technitium DNS fleet-wide.</p>
+    <p style="color:var(--text-dim);font-size:14px">19 guests across ZeusApollo. DeepSeek V4-Pro primary — direct routing, no bridge overhead. 22 autonomous cron jobs. Provider consolidation complete — 5 paid providers collapsed to 1 primary + bundled services. PBS backup auth regenerated after token rot. GDrive sync daemonized to survive cron timeout. Perplexity Sonar Pro for cited deep research. Kernel browser for headless automation.</p>
     <p style="margin-top:14px">Daily inference burn: <span class="burn">~$0.35 <small>(was ~$0.50 — further 30% cut from v26)</small></span></p>
   </section>
 
@@ -801,10 +801,10 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
     <div class="topo-legend">
       <span><i class="lg-on"></i> ONLINE</span>
       <span><i class="lg-deg"></i> DEGRADED</span>
-      <span style="margin-left:auto">ROLES + LIVE TELEMETRY · ADDRESSES REDACTED FOR OPSEC</span>
+      <span style="margin-left:auto">ROLES SHOWN · ADDRESSES REDACTED FOR OPSEC</span>
     </div>
     <svg id="topoSvg" viewBox="0 0 1000 460" role="img" aria-label="Network topology of the ZeusApollo homelab — Zeus and Apollo clusters with live node status, addresses redacted"></svg>
-    <div class="topo-readout" id="topoReadout" aria-live="polite" aria-atomic="true"><b>◈ HOVER A NODE</b>Two-cluster <abbr title="Open-source virtualization platform">Proxmox</abbr> fabric — Zeus runs infra + security, Apollo runs AI + media. Green is nominal; amber is degraded. Hover or focus a node for its live readout — latency, load, disk — straight from <code>status.json</code> where the fleet reports it.</div>
+    <div class="topo-readout" id="topoReadout" aria-live="polite" aria-atomic="true"><b>◈ HOVER A NODE</b>Two-cluster <abbr title="Open-source virtualization platform">Proxmox</abbr> fabric — Zeus runs infra + security, Apollo runs AI + media. Green is nominal; amber is degraded.</div>
   </section>
 
   <!-- ===================== TELEMETRY ===================== -->
@@ -813,10 +813,10 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
     <div class="sec-kick">INSTRUMENTS DON'T LIE — readouts sampled straight off the fabric</div>
     <div class="metrics">
       <div class="metric"><div class="num" id="mUptime">5d 4h</div><div class="lbl">Fleet Uptime</div></div>
-      <div class="metric"><div class="num" id="mTokens" data-count="22" data-suffix="M" data-prefix="~">~22M</div><div class="lbl">Tokens Routed</div><div class="note">lifetime · <span class="live-dot">●</span> live</div></div>
+      <div class="metric"><div class="num" id="mTokens" data-count="20" data-suffix="M" data-prefix="~">~20M</div><div class="lbl">Tokens Routed</div><div class="note">lifetime · <span class="live-dot">●</span> live</div></div>
       <div class="metric"><div class="num odo" id="mSaved" role="text" aria-label="Saved versus an Opus-primary baseline: 342 dollars and counting">$342.00</div><div class="lbl">Saved vs Opus</div><div class="note">≈ $2.17/day · <span class="live-dot" aria-hidden="true">●</span> counting</div></div>
       <div class="metric"><div class="num" id="mNodes" data-count="19">19</div><div class="lbl">Fleet Nodes</div><div class="note">Proxmox guests</div></div>
-      <div class="metric"><div class="num" id="mCrons" data-count="31">31</div><div class="lbl">Crons Active</div><div class="note">was 3 at launch</div></div>
+      <div class="metric"><div class="num" id="mCrons" data-count="22">22</div><div class="lbl">Crons Active</div><div class="note">was 3 at launch</div></div>
       <div class="metric"><div class="num" id="mBurn" data-count="0.35" data-prefix="$" data-decimals="2">$0.35</div><div class="lbl">Daily Burn</div><div class="note">was ~$4 at launch</div></div>
     </div>
   </section>
@@ -834,7 +834,7 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
       <div class="mod"><h3>⚙️ Crons Active</h3><ul><li>Scheduled autonomous jobs currently armed.</li><li><b>Source:</b> crontab + systemd timers across the fleet.</li></ul></div>
       <div class="mod"><h3>🔥 Daily Burn</h3><ul><li>Trailing 24-hour API spend, rolled up each night (now ~$0.35, was ~$4).</li><li><b>Source:</b> provider billing, summed by cron.</li></ul></div>
     </div>
-    <p style="margin-top:14px;font-size:13px;color:var(--text-dim);border-left:2px solid var(--accent);padding-left:14px"><b style="color:var(--accent)">LIVE FROM THE FLEET:</b> these readouts are written to <code>status.json</code> by a cron on the cluster and read straight into this panel — uptime ticks from the last restart; the rest refresh at each sync. Nothing here is fabricated. Addresses are redacted for OPSEC. And this whole page is open source — <a href="https://github.com/jamescashio/jamescashio.github.io" target="_blank" rel="noopener noreferrer">the proof includes its own code</a>.</p>
+    <p style="margin-top:14px;font-size:13px;color:var(--text-dim);border-left:2px solid var(--accent);padding-left:14px"><b style="color:var(--accent)">LIVE FROM THE FLEET:</b> these readouts are written to <code>status.json</code> by a cron on the cluster and read straight into this panel — uptime ticks from the last restart; the rest refresh at each sync. Nothing here is fabricated. Addresses are redacted for OPSEC.</p>
   </section>
 
   <!-- ===================== SYSTEM MODULES ===================== -->
@@ -842,17 +842,17 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
     <div class="sec-head"><span aria-hidden="true">⚡</span><h2 id="modHead">THE TOOLS — AUTONOMOUS RUNTIME</h2><span class="tag upd">UPDATED</span><span class="lcars-bar"></span></div>
     <div class="mods">
       <div class="mod"><h3>🔌 <abbr title="Model Context Protocol — lets the agent call external tools">MCP</abbr> Servers<span class="ct">8</span></h3>
-        <ul><li><b>sovereign-mcp</b> — fleet SSH control</li><li><b>proxmox</b> — 9-tool fleet API</li><li><b>kernel</b> — cloud browser</li><li><b>technitium</b> — DNS control</li><li><b>crew-bridge</b> — Omnius ↔ Hermes routing</li><li><b>filesystem · github · sqlite</b></li></ul></div>
-      <div class="mod"><h3>⏱️ Cron Fleet<span class="ct live-crons">31</span></h3>
-        <ul><li>Morning / evening AI briefings</li><li>Fleet health monitor · Hermes release watcher</li><li>Technitium stats poller · balance tracking</li><li>Daily <abbr title="Proxmox guest backup utility">vzdump</abbr> backups · weekly <abbr title="Linux Containers">LXC</abbr> <abbr title="Filesystem trim — reclaims unused blocks">fstrim</abbr></li><li>GDrive sync (daemonized) · session pruning</li></ul>
-        <div class="beforeafter"><span class="b">3 crons active</span> <span class="arrow">→</span> <span class="a"><span class="live-crons">31</span> crons, fully autonomous</span></div></div>
+        <ul><li><b>sovereign-mcp</b> — fleet SSH control</li><li><b>proxmox</b> — 9-tool fleet API</li><li><b>kernel</b> — cloud browser</li><li><b>adguard</b> — DNS control</li><li><b>crew-bridge</b> — Omnius ↔ Hermes routing</li><li><b>filesystem · github · sqlite</b></li></ul></div>
+      <div class="mod"><h3>⏱️ Cron Fleet<span class="ct">22</span></h3>
+        <ul><li>Morning / evening AI briefings</li><li>Fleet health monitor · Hermes release watcher</li><li>AdGuard stats poller · balance tracking</li><li>Daily <abbr title="Proxmox guest backup utility">vzdump</abbr> backups · weekly <abbr title="Linux Containers">LXC</abbr> <abbr title="Filesystem trim — reclaims unused blocks">fstrim</abbr></li><li>GDrive sync (daemonized) · session pruning</li></ul>
+        <div class="beforeafter"><span class="b">3 crons active</span> <span class="arrow">→</span> <span class="a">22 crons, fully autonomous</span></div></div>
       <div class="mod"><h3>🛰️ Platforms<span class="ct">4</span></h3>
         <ul><li><b>Discord</b> — command + alerts</li><li><b>Email</b> — Gemini Spark delegation</li><li><b>Home Assistant</b> — smart home</li><li><b>REST API</b> — programmatic access</li></ul></div>
       <div class="mod"><h3>🔐 GDrive Encrypted Backup</h3>
         <ul><li>Daily encrypted sync via <abbr title="rsync for cloud storage">rclone</abbr> gdrive-crypt</li><li>20TB offsite, automated at 02:00</li><li>OneDrive decommissioned</li></ul>
         <div class="beforeafter"><span class="b">OneDrive sync</span> <span class="arrow">→</span> <span class="a">Encrypted GDrive offsite</span></div></div>
       <div class="mod"><h3>🛡️ Gateway Hardening</h3>
-        <ul><li>CPU limits + file-descriptor caps</li><li>Restart guards on the agent runtime</li><li>Credentials swept across the fleet</li><li>Technitium <abbr title="Virtual Router Redundancy Protocol — automatic DNS failover">VRRP</abbr> DNS with failover</li></ul></div>
+        <ul><li>CPU limits + file-descriptor caps</li><li>Restart guards on the agent runtime</li><li>Credentials swept across the fleet</li><li>AdGuard <abbr title="Virtual Router Redundancy Protocol — automatic DNS failover">VRRP</abbr> DNS with failover</li></ul></div>
       <div class="mod"><h3>🗣️ Voice + Agents</h3>
         <ul><li><b>Eve persona</b> — British female <abbr title="Text-to-Speech">TTS</abbr></li><li><b>Claude Code</b> v2.1.158</li><li><b>OpenAI Codex</b> v0.135.0</li></ul></div>
     </div>
@@ -862,11 +862,10 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
   <section class="panel" id="path" aria-labelledby="achHead">
     <div class="sec-head"><span aria-hidden="true">🏆</span><h2 id="achHead">THE PATH — RELEASE HISTORY</h2><span class="tag new">+ NEW</span><span class="lcars-bar"></span></div>
     <div class="tl">
-      <div class="tl-item cur"><div class="date">v28 · NOW</div><h3>"Butlerian Jihad"</h3><p>Truth-and-clarity crusade — AdGuard retired, <b>Technitium DNS</b> takes the conn fleet-wide · cron count wired live from <code>status.json</code> (31 at press) · per-node topology telemetry — latency, load, disk on hover · every number auditable.</p></div>
-      <div class="tl-item"><div class="date">v27</div><h3>"Sovereign Routing"</h3><p>Bridge retired — direct model routing · DeepSeek V4-Pro primary · Perplexity Sonar Pro cited research · 22 autonomous crons · provider consolidation complete (~$0.35/day) · <abbr title="Proxmox Backup Server">PBS</abbr> auth regenerated · GDrive sync daemonized.</p></div>
+      <div class="tl-item cur"><div class="date">v27 · NOW</div><h3>"Sovereign Routing"</h3><p>Bridge retired — direct model routing · DeepSeek V4-Pro primary · Perplexity Sonar Pro cited research · 22 autonomous crons · provider consolidation complete (~$0.35/day) · <abbr title="Proxmox Backup Server">PBS</abbr> auth regenerated · GDrive sync daemonized.</p></div>
       <div class="tl-item"><div class="date">v26</div><h3>"Golden Path"</h3><p>19 guests · 8-core Hermes agent · 8 MCP servers · Omnius crew bridge · Gemini Spark email/calendar delegation · GDrive offsite sync · gateway hardened (CPU limits, file descriptors, restart caps).</p></div>
       <div class="tl-item"><div class="date">v25</div><h3>Provider Consolidation Begins</h3><p>Anthropic / xAI / DeepSeek direct routing. LiteLLM deployed on Atlas (M4 Mini). Kernel 7.0.6-2 across all Proxmox hosts.</p></div>
-      <div class="tl-item"><div class="date">v24</div><h3>Cluster Stabilized</h3><p>Proxmox cluster stabilized — 17 containers, Technitium VRRP failover, Proxmox Backup Server snapshots online.</p></div>
+      <div class="tl-item"><div class="date">v24</div><h3>Cluster Stabilized</h3><p>Proxmox cluster stabilized — 17 containers, AdGuard VRRP failover, Proxmox Backup Server snapshots online.</p></div>
     </div>
   </section>
 
@@ -910,14 +909,14 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
     <div class="cl-summary">
       <div class="cl-stat"><div class="d" data-count="19">19</div><div class="l">Fleet Nodes<span class="was">v26 · 19</span></div></div>
       <div class="cl-stat"><div class="d" data-count="8">8</div><div class="l">MCP Servers<span class="was">v26 · 8</span></div></div>
-      <div class="cl-stat"><div class="d" id="clCrons" data-count="31">31</div><div class="l">Cron Jobs<span class="was">v27 · 22 — now live</span></div></div>
+      <div class="cl-stat"><div class="d" data-count="22">22</div><div class="l">Cron Jobs<span class="was">v26 · 19</span></div></div>
       <div class="cl-stat"><div class="d" data-count="5">5</div><div class="l">Routed Models<span class="was">DeepSeek V4-Pro primary</span></div></div>
     </div>
     <div class="cl-cols">
       <div class="cl-card added"><h3>✦ ADDED</h3>
         <ul>
           <li><b>Perplexity Sonar Pro</b> — deep research with citations</li>
-          <li><b>3 new watchdog crons</b> — fleet health monitor, Hermes release watcher, Technitium stats poller</li>
+          <li><b>3 new watchdog crons</b> — fleet health monitor, Hermes release watcher, AdGuard stats poller</li>
           <li><b>daily-vzdump-all-guests</b> + weekly-lxc-fstrim</li>
           <li><b>CT-117 rclone-gdrive</b> — offsite sync node rebuilt from scratch</li>
           <li><b>CT-119 backup-verifier</b> — backup integrity checks</li>
@@ -926,14 +925,14 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
         <ul>
           <li><b>Direct routing</b> — bridge layer removed entirely</li>
           <li><b>DeepSeek V4-Pro</b> now primary for all agent workloads</li>
-          <li><b>19 → 22 crons</b> across the fleet — <span class="live-crons">31</span> today, live</li>
+          <li><b>19 → 22 crons</b> across the fleet</li>
           <li><b>GDrive sync daemonized</b> — survives cron timeout</li>
           <li><b>Daily burn ~$0.50 → ~$0.35</b> (further 30% cut)</li>
         </ul></div>
       <div class="cl-card hardened"><h3>🛡 HARDENED</h3>
         <ul>
           <li><b>PBS backup auth</b> regenerated after token rot</li>
-          <li><b>Technitium dual DNS</b> — CT-101 (Apollo) + CT-109 (Zeus)</li>
+          <li><b>AdGuard dual DNS</b> — CT-101 (Apollo) + CT-109 (Zeus)</li>
           <li><b>Backup verification</b> — CT-119 checks every snapshot</li>
           <li><b>Kernel browser</b> — headless automation, sandboxed</li>
           <li><b>Wazuh <abbr title="Security Information and Event Management">SIEM</abbr></b> + Vaultwarden online</li>
@@ -975,8 +974,8 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
   </div>
 
 <footer>
-  <div>SOURCE: PROXMOX VE API + TECHNITIUM DHCP + NODE INVENTORY · ZEUSAPOLLO SOVEREIGN FABRIC</div>
-  <div class="tagline">v28 "BUTLERIAN JIHAD" — deepseek-v4-pro primary. Never fake a number. All systems nominal. Computed by Eve, Techno-Mentat of House Cashio. 🌀</div>
+  <div>SOURCE: PROXMOX VE API + ADGUARD DHCP + NODE INVENTORY · ZEUSAPOLLO SOVEREIGN FABRIC</div>
+  <div class="tagline">v27 "SOVEREIGN ROUTING" — deepseek-v4-pro primary. All systems nominal. Computed by Eve, Techno-Mentat of House Cashio. 🌀</div>
   <div style="margin-top:14px;opacity:.7">© <span id="yr">2026</span> Doug Cashio · cashio.us &nbsp;·&nbsp; <span class="dim">built &amp; routed in the ZeusApollo homelab</span></div>
 </footer>
 
@@ -990,7 +989,7 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
     Zeus:[
       {n:"Zeus",r:"Hypervisor — infra + security host"},
       {n:"Hermes",r:"AI gateway — primary agent (CT-105, 8-core)"},
-      {n:"Technitium-BU",r:"DNS secondary — CT-109 (Zeus)"},
+      {n:"AdGuard-BU",r:"DNS secondary — CT-109 (Zeus)"},
       {n:"n8n",r:"Automation engine"},
       {n:"Athena",r:"RPi4 — Docker + monitoring"},
       {n:"Wazuh",r:"SIEM — security monitoring"},
@@ -1000,7 +999,7 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
     ],
     Apollo:[
       {n:"Apollo",r:"Hypervisor — AI + media host"},
-      {n:"Technitium",r:"DNS primary — CT-101 (Apollo)"},
+      {n:"AdGuard",r:"DNS primary — CT-101 (Apollo)"},
       {n:"Omnius",r:"ChromaDB vector store + RAG"},
       {n:"Atlas",r:"M4 Mini — MLX inference + Kernel browser host"},
       {n:"AI-Stack",r:"Local inference stack"},
@@ -1026,7 +1025,7 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
 
   /* ---- BOOT ---- */
   var boot=document.getElementById('boot'),bootLines=document.getElementById('bootLines'),bootBar=document.getElementById('bootBar'),bootSkip=document.getElementById('bootSkip');
-  var seq=["▸ POWER-ON SELF TEST .......... OK","▸ ZEUS CLUSTER .............. ONLINE","▸ APOLLO CLUSTER ............ ONLINE","▸ HERMES AGENT .............. READY","▸ DEEPSEEK V4-PRO ........... PRIMARY","▸ 5-MODEL FABRIC ............ ROUTED","▸ 8 MCP SERVERS ............. MOUNTED","▸ CRON FLEET ................ ARMED","▸ TECHNITIUM VRRP DNS ....... MASTER","▸ COMMAND DECK .............. ENGAGED"];
+  var seq=["▸ POWER-ON SELF TEST .......... OK","▸ ZEUS CLUSTER .............. ONLINE","▸ APOLLO CLUSTER ............ ONLINE","▸ HERMES AGENT .............. READY","▸ DEEPSEEK V4-PRO ........... PRIMARY","▸ 5+1 MODEL FABRIC .......... ROUTED","▸ 8 MCP SERVERS ............. MOUNTED","▸ 22 CRON JOBS .............. ARMED","▸ ADGUARD VRRP DNS .......... MASTER","▸ COMMAND DECK .............. ENGAGED"];
   function endBoot(){ if(boot.classList.contains('done'))return; boot.classList.add('done'); setTimeout(function(){boot.style.display='none';},650); try{localStorage.setItem('za_boot_seen','1');}catch(e){} try{startKicker();startChain();}catch(e){} }
   bootSkip.addEventListener('click',endBoot);
   bootSkip.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' ')endBoot(); });
@@ -1205,8 +1204,8 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
       inputEl.addEventListener('keydown',onKey); body.scrollTop=body.scrollHeight;
     }
     var FLEETLIST={
-      Zeus:[['Zeus','infra + security hypervisor'],['Hermes','AI gateway · primary agent (CT-105, 8-core)'],['Technitium-BU','DNS secondary · CT-109'],['n8n','automation engine'],['Athena','RPi4 · Docker + monitoring'],['Wazuh','SIEM · security monitoring'],['Vaultwarden','password management'],['Control-Plane','CT-200 orchestration + crew bridge'],['Grafana','dashboards + Uptime Kuma']],
-      Apollo:[['Apollo','AI + media hypervisor'],['Technitium','DNS primary · CT-101'],['Omnius','ChromaDB vector store + RAG'],['Atlas','M4 Mini · MLX + Kernel browser host'],['AI-Stack','local inference stack'],['Dionysus','Unraid · Plex primary'],['Plex','media server (degraded)'],['Genesis','WD NAS · 7.2TB NFS/SMB'],['PBS','Proxmox Backup Server'],['Rclone','CT-117 · encrypted offsite sync'],['Backup-Verifier','CT-119 · backup integrity'],['Home-Asst','smart-home orchestration']]
+      Zeus:[['Zeus','infra + security hypervisor'],['Hermes','AI gateway · primary agent (CT-105, 8-core)'],['AdGuard-BU','DNS secondary · CT-109'],['n8n','automation engine'],['Athena','RPi4 · Docker + monitoring'],['Wazuh','SIEM · security monitoring'],['Vaultwarden','password management'],['Control-Plane','CT-200 orchestration + crew bridge'],['Grafana','dashboards + Uptime Kuma']],
+      Apollo:[['Apollo','AI + media hypervisor'],['AdGuard','DNS primary · CT-101'],['Omnius','ChromaDB vector store + RAG'],['Atlas','M4 Mini · MLX + Kernel browser host'],['AI-Stack','local inference stack'],['Dionysus','Unraid · Plex primary'],['Plex','media server (degraded)'],['Genesis','WD NAS · 7.2TB NFS/SMB'],['PBS','Proxmox Backup Server'],['Rclone','CT-117 · encrypted offsite sync'],['Backup-Verifier','CT-119 · backup integrity'],['Home-Asst','smart-home orchestration']]
     };
     var MODELS=[['1','DeepSeek V4-Pro','primary — agents + briefings','$0.435/$0.87 MTok'],['2','Perplexity Sonar Pro','deep research + citations','$3/$15 MTok'],['3','Gemini 2.5 Flash','compression + web extract','~$0.10/$0.40 MTok'],['4','Grok 4.3','vision + TTS (Eve voice)','bundled (SuperGrok)'],['5','Qwen 3.7 Plus','emergency failover','subscription (Nous)']];
     function pad(s,n){ s=String(s); while(s.length<n)s+=' '; return s; }
@@ -1228,7 +1227,7 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
       {k:['fleet','node','server','homelab','infra'],a:'19 guests across two Proxmox clusters — Zeus runs infrastructure + security, Apollo runs AI + media. Run `fleet` to enumerate them.'},
       {k:['doctrine','philosophy','rutan','johnson','principle'],a:'The Cashio Design Doctrine: prototype like Rutan, ship like Johnson, own the route. Run `doctrine` for all six laws.'},
       {k:['skill','cert','certif','credential','badge','expert','experience'],a:'MCSA: Office 365 Certified, 15+ years in enterprise IT & cybersecurity — network admin, cloud security, M365/Azure, MxDR, and AI-powered ops. Full badge wall: credly.com/users/james-cashio.'},
-      {k:['security','cyber','siem','wazuh','technitium','vrrp'],a:'Defense in depth: Wazuh SIEM for monitoring, Technitium with VRRP DNS failover, Vaultwarden for secrets, credentials swept fleet-wide, and a hardened agent gateway. Sovereignty is a security posture.'}
+      {k:['security','cyber','siem','wazuh','adguard','vrrp'],a:'Defense in depth: Wazuh SIEM for monitoring, AdGuard with VRRP DNS failover, Vaultwarden for secrets, credentials swept fleet-wide, and a hardened agent gateway. Sovereignty is a security posture.'}
     ];
     function askEve(q){
       var ql=q.toLowerCase(); var best=null, score=0;
@@ -1237,13 +1236,11 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
       write('<span class="eve">eve ◈</span> <span class="dim">computing…</span>');
       return '<span class="eve">eve ◈</span> '+esc(ans);
     }
-    /* v28: live cron count — reads status.json via window.__zaStatus at call time; static fallback if sync hasn't landed */
-    function liveCrons(){ var s=window.__zaStatus; return (s&&typeof s.crons_active==='number')?String(s.crons_active):'31'; }
     var COMMANDS={
       help:function(){ return 'Available commands:\n'+
         '  <span class="rt">status</span>    fleet + ops summary\n'+
         '  <span class="rt">fleet</span>     enumerate all 19 nodes\n'+
-        '  <span class="rt">models</span>    the 5-model AI stack\n'+
+        '  <span class="rt">models</span>    the 5+1 model AI stack\n'+
         '  <span class="rt">crons</span>     autonomous job fleet\n'+
         '  <span class="rt">doctrine</span>  the Cashio design laws\n'+
         '  <span class="rt">whoami</span>    visitor identity\n'+
@@ -1255,9 +1252,9 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
         '  cluster ........ <span class="ok">● MAX WARP</span>\n'+
         '  nodes .......... <span class="ok">18 nominal</span> · <span class="wn">1 degraded (Plex)</span>\n'+
         '  llm primary .... <span class="ok">DeepSeek V4-Pro</span> · direct routing · no bridge\n'+
-        '  crons .......... '+liveCrons()+' armed\n'+
+        '  crons .......... 22 armed\n'+
         '  daily burn ..... <span class="ok">~$0.35</span> <span class="dim">(was ~$4 · 11.4× cut)</span>\n'+
-        '  uptime ......... '+fmtShort()+'+\n'+
+        '  uptime ......... 5d 4h+\n'+
         '  status ......... <span class="ok">ALL SYSTEMS NOMINAL</span>'; },
       fleet:function(){ var o='<span class="acc">FLEET INVENTORY // 19 GUESTS · ADDRESSES REDACTED</span>\n'; var i;
         o+='<span class="rt">── ZEUS CLUSTER ── infra + security</span>\n';
@@ -1270,13 +1267,13 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
         MODELS.forEach(function(m){ var c=/FREE|bundled|subscription/i.test(m[3])?'ok':'rt'; o+='  '+pad(m[0],3)+pad(m[1],20)+pad(m[2],22)+'<span class="'+c+'">'+m[3]+'</span>\n'; });
         o+='<span class="dim">  balances: DeepSeek $31.24 · Perplexity ~$60 · Nous $46.09 (fallback) · xAI bundled · consolidation complete</span>';
         return o; },
-      crons:function(){ return '<span class="acc">AUTONOMOUS CRON FLEET // '+liveCrons()+' JOBS</span>\n'+
+      crons:function(){ return '<span class="acc">AUTONOMOUS CRON FLEET // 22 JOBS</span>\n'+
         '  <span class="ok">●</span> morning + evening AI briefings (Eve TTS)\n'+
         '  <span class="ok">●</span> fleet health monitor · Hermes release watcher\n'+
-        '  <span class="ok">●</span> Technitium stats poller · API balance tracking\n'+
+        '  <span class="ok">●</span> AdGuard stats poller · API balance tracking\n'+
         '  <span class="ok">●</span> daily-vzdump-all-guests · weekly-lxc-fstrim\n'+
         '  <span class="ok">●</span> encrypted GDrive sync (daemonized) · session pruning\n'+
-        '  <span class="dim">3 crons → '+liveCrons()+'. Fully autonomous infrastructure management.</span>'; },
+        '  <span class="dim">3 crons → 22. Fully autonomous infrastructure management.</span>'; },
       doctrine:function(){ return '<span class="acc">THE CASHIO DESIGN DOCTRINE // 6 LAWS</span>\n'+
         '  01 Fly It Before You Trust It    <span class="dim">— Rutan</span>\n'+
         '  02 One Capability, Done Cold     <span class="dim">— Johnson</span>\n'+
@@ -1364,19 +1361,6 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
   var svg=document.getElementById('topoSvg'),readout=document.getElementById('topoReadout');
   var NS="http://www.w3.org/2000/svg";
   function mk(t,a){ var e=document.createElementNS(NS,t); for(var k in a)e.setAttribute(k,a[k]); return e; }
-  /* v28: live per-node telemetry from status.json nodes{}.
-     HONESTY RULES: values are shown verbatim as the cron wrote them — no interpolation, no estimates.
-     Load color-coding applies ONLY when the value is unambiguously a percentage (>1);
-     values ≤1 are unit-ambiguous (load average vs fraction) so we display the raw number and make no color claim.
-     Nodes absent from status.json fall back silently to the static role display. */
-  var NODE_LIVE=null, NODE_EL={};
-  var NODE_ALIAS={'Technitium':'AdGuard','Technitium-BU':'AdGuard-BU'}; /* tolerate legacy status.json keys until the homelab cron is updated */
-  function liveFor(name){ if(!NODE_LIVE)return null; return NODE_LIVE[name]||(NODE_ALIAS[name]?NODE_LIVE[NODE_ALIAS[name]]:null)||null; }
-  function loadCol(v){ if(typeof v!=='number'||v<=1)return null;
-    return v<30?'#00ff9f':(v<=70?'#ffcc00':'#ff0033'); }
-  window.__zaNodes=function(nodes){ if(!nodes||typeof nodes!=='object')return; NODE_LIVE=nodes;
-    Object.keys(NODE_EL).forEach(function(n){ var el=NODE_EL[n],lv=liveFor(n); if(!el||!lv||el.deg)return;
-      var c=loadCol(lv.load); if(c){ el.body.setAttribute('fill',c); el.halo.setAttribute('fill',c); } }); };
   (function renderTopo(){
     var COLon='#00ff9f',COLdeg='#ffcc00',ZX=270,AX=730,CY=250,RX=230,RY=185;
     var defs=mk('defs',{});
@@ -1422,11 +1406,10 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
         var sp=mk('line',{x1:cx,y1:cy,x2:x,y2:y,stroke:col,'stroke-width':1,opacity:.26,class:'spoke'}); svg.appendChild(sp);
         if(!reduce){ svg.appendChild(pkt(cx,cy,x,y,(nd.deg?COLdeg:pc),(1.7+Math.random()*1.1).toFixed(2),(idx*0.18).toFixed(2))); }
         var g=mk('g',{class:'node-g',tabindex:'0',role:'listitem'});
-        var halo=mk('circle',{cx:x,cy:y,r:13,fill:col,opacity:.15}); g.appendChild(halo);
+        g.appendChild(mk('circle',{cx:x,cy:y,r:13,fill:col,opacity:.15}));
         var bd=mk('circle',{cx:x,cy:y,r:7,fill:col,class:'body',stroke:'rgba(255,255,255,.28)','stroke-width':1});
         if(!reduce){ bd.appendChild(mk('animate',{attributeName:'opacity',values:'1;.5;1',dur:(nd.deg?'0.8s':'2.4s'),repeatCount:'indefinite'})); }
         g.appendChild(bd);
-        NODE_EL[nd.n]={body:bd,halo:halo,deg:!!nd.deg};
         if(nd.deg){ var al=mk('circle',{cx:x,cy:y,r:8,fill:'none',stroke:COLdeg,'stroke-width':1.5,opacity:0});
           if(!reduce){ al.appendChild(mk('animate',{attributeName:'r',values:'8;21',dur:'1.1s',repeatCount:'indefinite'})); al.appendChild(mk('animate',{attributeName:'opacity',values:'.9;0',dur:'1.1s',repeatCount:'indefinite'})); } g.appendChild(al); }
         var lbl=mk('text',{x:x,y:y-17,'text-anchor':'middle',class:'node-label'});lbl.textContent=nd.n;g.appendChild(lbl);
@@ -1441,27 +1424,6 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
           span.className = nd.deg ? 'warn' : 'ok';
           span.textContent = nd.deg ? 'DEGRADED' : 'NOMINAL';
           readout.appendChild(span);
-          /* v28: live readout — only fields the cron actually wrote, verbatim */
-          var lv=liveFor(nd.n);
-          if(lv){
-            var parts=[];
-            if(lv.latency!=null)parts.push(['lat',String(lv.latency)]);
-            if(lv.load!=null)parts.push(['load',String(lv.load)]);
-            if(lv.swap!=null)parts.push(['swap',String(lv.swap)]);
-            if(lv.disk_pct!=null)parts.push(['disk',String(lv.disk_pct)+'%']);
-            if(lv.dns_latency!=null)parts.push(['dns',String(lv.dns_latency)]);
-            if(parts.length){
-              readout.appendChild(document.createTextNode(' \xA0·\xA0 '));
-              var lm=document.createElement('span'); lm.className='ok'; lm.textContent='● LIVE  '; readout.appendChild(lm);
-              parts.forEach(function(p,i){
-                if(i)readout.appendChild(document.createTextNode(' · '));
-                var s2=document.createElement('span');
-                if(p[0]==='load'){ var c=loadCol(lv.load); if(c==='#ff0033')s2.className='crit'; else if(c==='#ffcc00')s2.className='warn'; else if(c==='#00ff9f')s2.className='ok'; }
-                s2.textContent=p[0]+' '+p[1];
-                readout.appendChild(s2);
-              });
-            }
-          }
           sp.setAttribute('opacity','.95'); sp.setAttribute('stroke-width','2');
         }
         function hide(){ sp.setAttribute('opacity','.26'); sp.setAttribute('stroke-width','1'); }
@@ -1538,21 +1500,13 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
 function setText(id,t){var e=document.getElementById(id);if(e)e.textContent=t;}
 function applyStatus(s){
   try{
-    window.__zaStatus=s; /* v28: shared live state — console + topology read this */
-    if(s.nodes&&window.__zaNodes){window.__zaNodes(s.nodes);}
     if(s.boot_epoch&&window.__zaBoot){window.__zaBoot(s.boot_epoch*1000);}
     else if(s.uptime){setText('uptime',s.uptime);setText('mUptime',s.uptime);}
     if(typeof s.daily_burn==='number'){setText('mBurn','$'+s.daily_burn.toFixed(2));setText('sr-burn','$'+s.daily_burn.toFixed(2));}
     if(typeof s.tokens_routed_m==='number'){setText('mTokens','~'+s.tokens_routed_m+'M');}
     if(typeof s.saved_vs_opus==='number'&&window.__odoSeed){window.__odoSeed(s.saved_vs_opus,typeof s.daily_burn==='number'?s.daily_burn:undefined);}
     if(typeof s.fleet_nodes==='number'){setText('mNodes',String(s.fleet_nodes));setText('sr-nodes',String(s.fleet_nodes));}
-    if(typeof s.crons_active==='number'){
-      var cv=String(s.crons_active);
-      /* v28: never hardcoded again — every cron readout traces to status.json.crons_active.
-         data-count is synced too so the scroll count-up animates to the live value, not a stale one. */
-      ['mCrons','sr-crons','rbCrons','clCrons'].forEach(function(id){var e=document.getElementById(id);if(e){e.textContent=cv;if(e.hasAttribute('data-count'))e.setAttribute('data-count',cv);}});
-      Array.prototype.forEach.call(document.querySelectorAll('.live-crons'),function(e){e.textContent=cv;});
-    }
+    if(typeof s.crons_active==='number'){setText('mCrons',String(s.crons_active));setText('sr-crons',String(s.crons_active));}
     if(s.cluster_status){var c=document.querySelector('.hud-stat .v.warp');if(c)c.textContent=s.cluster_status;}
     var ts=s.generated||s.timestamp;
     if(ts){
