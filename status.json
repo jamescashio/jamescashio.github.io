@@ -25,7 +25,7 @@
     "Hermes": {"latency":"2ms"},
     "Omnius": {"latency":"2ms"},
     "n8n": {"latency":"2ms"},
-    "AdGuard": {"latency":"2ms", "dns_latency":"15-20ms"},
+    "Technitium": {"latency":"2ms", "dns_latency":"15-20ms"},
     "Genesis": {"latency":"2ms"},
     "PBS": {"latency":"2ms", "disk_pct":89},
     "Athena": {"latency":"2ms"},
