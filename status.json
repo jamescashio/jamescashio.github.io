@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-02T00:53:21Z",
+  "generated": "2026-07-02T01:03:01Z",
   "boot_epoch": 1781078242,
   "cluster_status": "MAX WARP",
   "fleet_nodes": 19,
@@ -13,9 +13,11 @@
   "note": "v27 — Perplexity firehose active. PBS needs retention fix. XT8 router arriving June 23.",
   "providers": {
     "deepseek": "primary",
+    "glm": "coding+delegation-fallback",
     "perplexity": "research",
-    "gemini": "compression+vision",
-    "grok": "vision-fallback",
+    "gemini": "compression+extract",
+    "grok": "vision+tts",
+    "opus": "escalation",
     "qwen": "failover"
   },
   "nodes": {

@@ -675,7 +675,7 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
     <p class="pitch"><span class="claim">I cut AI inference costs <b>7.2×</b>.</span><span class="qual">Measured against an Opus-primary baseline — by building sovereign infrastructure, not renting vendor lock-in. A <b>19-node homelab</b> where every model, route, and backup is deployed, documented, and battle-tested.</span></p>
     <p class="plain">TRANSLATION FOR HUMANS // I design and run AI infrastructure that does the work of a cloud platform team — cheaper, private, and provably autonomous. Everything below is live proof.</p>
     <ul class="sitrep" aria-label="Fleet sitrep at a glance">
-      <li><b id="sr-nodes">19</b> nodes</li><li><b>5</b> models</li><li><b id="sr-crons">31</b> crons</li><li><b id="sr-burn">$0.35</b>/day</li><li>uptime <b id="sr-uptime">5d 4h</b></li>
+      <li><b id="sr-nodes">19</b> nodes</li><li><b>7</b> models</li><li><b id="sr-crons">31</b> crons</li><li><b id="sr-burn">$0.35</b>/day</li><li>uptime <b id="sr-uptime">5d 4h</b></li>
     </ul>
     <a class="console-teaser" href="#console" id="consoleTeaser"><span class="ct-p" aria-hidden="true">&gt;</span> hermes console online — <span class="ct-go">click to connect</span><span class="ct-cur" aria-hidden="true">▋</span></a>
     <div class="kicker" id="kicker"></div>
@@ -695,9 +695,9 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
     <div class="cell" tabindex="0" aria-label="Nineteen guests across the ZeusApollo homelab.">
       <div class="num" data-count="19">19</div><div class="lbl">Fleet Nodes</div>
       <div class="tip" role="tooltip"><b>◈ FLEET STATUS</b>Guests across the ZeusApollo Proxmox cluster — compute, storage, networking, security, and monitoring.</div></div>
-    <div class="cell" tabindex="0" aria-label="Five task models, DeepSeek V4-Pro primary, routed directly.">
-      <div class="num">5</div><div class="lbl">Model Fabric<span class="was">DeepSeek V4-Pro primary</span></div>
-      <div class="tip" role="tooltip"><b>◈ PAYLOAD</b>Five task models — primary, cited research, compression, vision, fallback — routed directly by cost and capability through one sovereign gateway. No bridge tax.</div></div>
+    <div class="cell" tabindex="0" aria-label="Seven task models, DeepSeek V4-Pro primary, Atlas-routed.">
+      <div class="num">7</div><div class="lbl">Model Fabric<span class="was">DeepSeek V4-Pro primary</span></div>
+      <div class="tip" role="tooltip"><b>◈ PAYLOAD</b>Seven task models — primary, coding, cited research, compression, vision, escalation, failover — routed by cost and capability through one sovereign Atlas gateway. No bridge tax.</div></div>
     <div class="cell" tabindex="0" aria-label="Over fifteen years in enterprise IT and cybersecurity.">
       <div class="num" data-count="15" data-suffix="+">15+</div><div class="lbl">Yrs Enterprise</div>
       <div class="tip" role="tooltip"><b>◈ SERVICE RECORD</b>Years in enterprise IT and cybersecurity, supporting large-scale, mission-critical environments.</div></div>
@@ -712,7 +712,7 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
     <div class="sec-kick">FOR THE NEWCOMER — what you're actually looking at</div>
     <p style="color:var(--text-dim);font-size:15px;max-width:880px;margin-bottom:6px"><b style="color:var(--cyan)">Sovereign AI</b> means owning the whole intelligence pipeline — the models you route to, the data they touch, and the hardware they run on — instead of renting one vendor's black box. ZeusApollo is that idea, built and running: a <b style="color:var(--cyan)">19-node</b> homelab doing the work of a cloud platform team for about <b style="color:var(--green)">$0.35/day</b>.</p>
     <div class="mods" style="margin-top:16px">
-      <div class="mod"><h3>🧭 Own the Route</h3><ul><li>Every request goes to the cheapest model that can do the job — five models, one gateway, no <abbr class="def" title="Bridge tax: the surcharge a router or aggregator adds on top of a model's own price — a middleman markup you pay just to reach the model.">bridge tax</abbr>.</li><li>No single-vendor lock-in; swap any model without a rebuild.</li></ul></div>
+      <div class="mod"><h3>🧭 Own the Route</h3><ul><li>Every request goes to the cheapest model that can do the job — seven models, one gateway, no <abbr class="def" title="Bridge tax: the surcharge a router or aggregator adds on top of a model's own price — a middleman markup you pay just to reach the model.">bridge tax</abbr>.</li><li>No single-vendor lock-in; swap any model without a rebuild.</li></ul></div>
       <div class="mod"><h3>🔒 Private by Default</h3><ul><li>Inference and data stay on your own <abbr title="Open-source virtualization platform">Proxmox</abbr> fabric — not a third party's logs.</li><li>Sovereignty is a security posture, and a compliance one.</li></ul></div>
       <div class="mod"><h3>🤖 Provably Autonomous</h3><ul><li><span class="live-crons">31</span> cron jobs run briefings, backups, and watchdogs 24/7 with no human in the loop.</li><li>The proof is live further down — not a slide.</li></ul></div>
       <div class="mod"><h3>🛡️ Resilient by Design</h3><ul><li>Every model has a fallback, every backup an encrypted offsite, every DNS a <abbr title="Virtual Router Redundancy Protocol">VRRP</abbr> twin.</li><li>7.2× cheaper than an Opus-primary baseline — and hardened.</li></ul></div>
@@ -761,38 +761,42 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
     <div class="sec-head"><span aria-hidden="true">🚀</span><h2 id="rnHead">RELEASE NOTES</h2><span class="tag new">NEW</span><span class="lcars-bar"></span></div>
     <div class="rn-grid">
       <div class="c"><div class="k">STARDATE</div><div class="v">26182.5</div></div>
-      <div class="c"><div class="k">RELEASE</div><div class="v">v28 "BUTLERIAN JIHAD"</div></div>
+      <div class="c"><div class="k">RELEASE</div><div class="v">v28 "KWISATZ HADERACH"</div></div>
       <div class="c"><div class="k">CMDR</div><div class="v">D. CASHIO</div></div>
       <div class="c"><div class="k">CLASS</div><div class="v">MAXIMUM WARP</div></div>
       <div class="c"><div class="k">STATUS</div><div class="v" style="color:var(--green)">● ALL NOMINAL</div></div>
     </div>
-    <p style="color:var(--text-dim);font-size:14px">19 guests across ZeusApollo. DeepSeek V4-Pro primary — direct routing, no bridge overhead. <span class="live-crons">31</span> autonomous cron jobs. Provider consolidation complete — 5 paid providers collapsed to 1 primary + bundled services. PBS backup auth regenerated after token rot. GDrive sync daemonized to survive cron timeout. Perplexity Sonar Pro for cited deep research. Kernel browser for headless automation. AdGuard retired — Technitium DNS fleet-wide.</p>
+    <p style="color:var(--text-dim);font-size:14px">19 guests across ZeusApollo. DeepSeek V4-Pro primary — Atlas-routed, no bridge tax. <span class="live-crons">31</span> autonomous cron jobs. Model fabric grown to 7 — GLM 5.2 self-hosted coding (zero cost), Claude Opus 4.8 escalation via Atlas proxy. Provider consolidation evolved — 5 paid APIs + 2 bundled/local. PBS backup auth regenerated after token rot. GDrive sync daemonized to survive cron timeout. Perplexity Sonar Pro for cited deep research. Kernel browser for headless automation. AdGuard retired — Technitium DNS fleet-wide.</p>
     <p style="margin-top:14px">Daily inference burn: <span class="burn">~$0.35 <small>(was ~$0.50 — further 30% cut from v26)</small></span></p>
   </section>
 
   <!-- ===================== AI STACK ===================== -->
   <section class="panel amber" id="stack" aria-labelledby="stHead">
-    <div class="sec-head"><span aria-hidden="true">🛰️</span><h2 id="stHead">THE AI STACK — MULTI-MODEL SOVEREIGN</h2><span class="tag upd">DEEPSEEK V4-PRO DIRECT</span><span class="lcars-bar"></span></div>
+    <div class="sec-head"><span aria-hidden="true">🛰️</span><h2 id="stHead">THE AI STACK — MULTI-MODEL SOVEREIGN</h2><span class="tag upd">DEEPSEEK V4-PRO · ATLAS-ROUTED</span><span class="lcars-bar"></span></div>
     <div class="sec-kick">ONE BIRD PER MISSION — the cheapest model that can fly each sortie</div>
-    <p style="color:var(--text-dim);font-size:14px;margin-bottom:8px">No single-provider dependency — and no bridge tax. Every request routes <b style="color:var(--cyan)">directly</b> to the cheapest model that can do the job. DeepSeek V4-Pro takes the conn; research, compression, vision, and fallback each have a named lane. <span class="dim">Prices are per <abbr title="million tokens">MTok</abbr> — input / output.</span></p>
+    <p style="color:var(--text-dim);font-size:14px;margin-bottom:8px">No single-provider dependency — and no bridge tax. Every request routes through <b style="color:var(--cyan)">Atlas LiteLLM</b> — a transparent sovereign gateway, direct API underneath, zero markup — to the cheapest model that can do the job. DeepSeek V4-Pro takes the conn; coding, research, compression, vision, escalation, and failover each have a named lane. <span class="dim">Prices are per <abbr title="million tokens">MTok</abbr> — input / output.</span></p>
     <div class="tbl-scroll"><table>
       <thead><tr><th>#</th><th>Model</th><th>Provider</th><th>Role</th><th>Cost</th></tr></thead>
       <tbody>
-        <tr><td><span class="prio">1</span></td><td><b>DeepSeek V4-Pro</b></td><td>DeepSeek API</td><td>Primary — all agent tasks, briefings, delegation</td><td class="mono">$0.435 / $0.87 MTok</td></tr>
-        <tr><td><span class="prio">2</span></td><td><b>Perplexity Sonar Pro</b></td><td>Perplexity API</td><td>Deep research with citations</td><td class="mono">$3 / $15 MTok</td></tr>
-        <tr><td><span class="prio">3</span></td><td><b>Gemini 2.5 Flash</b></td><td>Google AI</td><td>Compression + web extract</td><td class="mono">~$0.10 / $0.40 MTok</td></tr>
-        <tr><td><span class="prio">4</span></td><td><b>Grok 4.3</b></td><td>xAI (SuperGrok)</td><td>Vision + TTS (Eve voice)</td><td class="mono free">bundled</td></tr>
-        <tr><td><span class="prio">5</span></td><td><b>Qwen 3.7 Plus</b></td><td>Nous (fallback)</td><td>Emergency failover only</td><td class="mono free">subscription</td></tr>
+        <tr><td><span class="prio">1</span></td><td><b>DeepSeek V4-Pro</b></td><td>DeepSeek API (Atlas-routed)</td><td>Primary — all agent tasks, briefings, delegation</td><td class="mono">$0.27 / $1.10 MTok</td></tr>
+        <tr><td><span class="prio">2</span></td><td><b>GLM 5.2</b></td><td>Self-hosted (Atlas oMLX)</td><td>Coding + delegation fallback</td><td class="mono free">$0 (local)</td></tr>
+        <tr><td><span class="prio">3</span></td><td><b>Perplexity Sonar Pro</b></td><td>Perplexity API</td><td>Deep research with citations</td><td class="mono">$3 / $15 MTok</td></tr>
+        <tr><td><span class="prio">4</span></td><td><b>Gemini 2.5 Flash</b></td><td>Google AI</td><td>Compression + web extract</td><td class="mono">~$0.10 / $0.40 MTok</td></tr>
+        <tr><td><span class="prio">5</span></td><td><b>Grok 4.3</b></td><td>xAI (SuperGrok)</td><td>Vision + TTS (Eve voice)</td><td class="mono free">bundled</td></tr>
+        <tr><td><span class="prio">6</span></td><td><b>Claude Opus 4.8</b></td><td>Atlas proxy (zero direct Anthropic)</td><td>Escalation — complex reasoning, architecture</td><td class="mono">via Atlas</td></tr>
+        <tr><td><span class="prio">7</span></td><td><b>Qwen 3.7 Plus</b></td><td>Nous (subscription)</td><td>Emergency failover only</td><td class="mono free">subscription</td></tr>
       </tbody>
     </table></div>
     <div class="stack-cards">
-      <div class="stack-card"><div class="sc-top"><span class="sc-name">DeepSeek V4-Pro</span><span class="sc-prio">#1</span></div><div class="sc-prov">DeepSeek API</div><div class="sc-role">Primary — all agent tasks, briefings, delegation</div><div class="sc-cost">$0.435 / $0.87 MTok</div></div>
-      <div class="stack-card"><div class="sc-top"><span class="sc-name">Perplexity Sonar Pro</span><span class="sc-prio">#2</span></div><div class="sc-prov">Perplexity API</div><div class="sc-role">Deep research with citations</div><div class="sc-cost">$3 / $15 MTok</div></div>
-      <div class="stack-card"><div class="sc-top"><span class="sc-name">Gemini 2.5 Flash</span><span class="sc-prio">#3</span></div><div class="sc-prov">Google AI</div><div class="sc-role">Compression + web extract</div><div class="sc-cost">~$0.10 / $0.40 MTok</div></div>
-      <div class="stack-card"><div class="sc-top"><span class="sc-name">Grok 4.3</span><span class="sc-prio">#4</span></div><div class="sc-prov">xAI (SuperGrok)</div><div class="sc-role">Vision + TTS (Eve voice)</div><div class="sc-cost free">bundled</div></div>
-      <div class="stack-card"><div class="sc-top"><span class="sc-name">Qwen 3.7 Plus</span><span class="sc-prio">#5</span></div><div class="sc-prov">Nous (fallback)</div><div class="sc-role">Emergency failover only</div><div class="sc-cost free">subscription</div></div>
+      <div class="stack-card"><div class="sc-top"><span class="sc-name">DeepSeek V4-Pro</span><span class="sc-prio">#1</span></div><div class="sc-prov">DeepSeek API (Atlas-routed)</div><div class="sc-role">Primary — all agent tasks, briefings, delegation</div><div class="sc-cost">$0.27 / $1.10 MTok</div></div>
+      <div class="stack-card"><div class="sc-top"><span class="sc-name">GLM 5.2</span><span class="sc-prio">#2</span></div><div class="sc-prov">Self-hosted (Atlas oMLX)</div><div class="sc-role">Coding + delegation fallback</div><div class="sc-cost free">$0 (local)</div></div>
+      <div class="stack-card"><div class="sc-top"><span class="sc-name">Perplexity Sonar Pro</span><span class="sc-prio">#3</span></div><div class="sc-prov">Perplexity API</div><div class="sc-role">Deep research with citations</div><div class="sc-cost">$3 / $15 MTok</div></div>
+      <div class="stack-card"><div class="sc-top"><span class="sc-name">Gemini 2.5 Flash</span><span class="sc-prio">#4</span></div><div class="sc-prov">Google AI</div><div class="sc-role">Compression + web extract</div><div class="sc-cost">~$0.10 / $0.40 MTok</div></div>
+      <div class="stack-card"><div class="sc-top"><span class="sc-name">Grok 4.3</span><span class="sc-prio">#5</span></div><div class="sc-prov">xAI (SuperGrok)</div><div class="sc-role">Vision + TTS (Eve voice)</div><div class="sc-cost free">bundled</div></div>
+      <div class="stack-card"><div class="sc-top"><span class="sc-name">Claude Opus 4.8</span><span class="sc-prio">#6</span></div><div class="sc-prov">Atlas proxy (zero direct Anthropic)</div><div class="sc-role">Escalation — complex reasoning, architecture</div><div class="sc-cost">via Atlas</div></div>
+      <div class="stack-card"><div class="sc-top"><span class="sc-name">Qwen 3.7 Plus</span><span class="sc-prio">#7</span></div><div class="sc-prov">Nous (subscription)</div><div class="sc-role">Emergency failover only</div><div class="sc-cost free">subscription</div></div>
     </div>
-    <p style="margin-top:14px;font-size:13px;color:var(--text-dim);border-left:2px solid var(--accent);padding-left:14px"><b style="color:var(--accent)">PROVIDER CONSOLIDATION — COMPLETE:</b> DeepSeek V4-Pro drives all primary workloads — direct API, no bridge tax. Perplexity Sonar Pro handles cited deep research. Bundled services (xAI SuperGrok for vision/TTS, Nous for fallback) cover the edges. Total active spend: ~$0.35/day (down from ~$4/day at launch — 11.4× reduction).</p>
+    <p style="margin-top:14px;font-size:13px;color:var(--text-dim);border-left:2px solid var(--accent);padding-left:14px"><b style="color:var(--accent)">PROVIDER CONSOLIDATION — EVOLVED:</b> DeepSeek V4-Pro drives all primary workloads via Atlas LiteLLM routing — direct API, no bridge tax. GLM 5.2 handles coding self-hosted on Atlas (zero cost). Perplexity Sonar Pro covers cited deep research. Bundled services (xAI SuperGrok for vision/TTS, Nous for failover) and Atlas-proxied Opus 4.8 for escalation round out the edges. Total active spend: ~$0.35/day (down from ~$4/day at launch — 11.4× reduction).</p>
   </section>
 
   <!-- ===================== LIVE TOPOLOGY ===================== -->
@@ -828,7 +832,7 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
     <p style="color:var(--text-dim);font-size:14px;max-width:880px;margin-bottom:14px">Every number above is derived from the fleet itself. A cron writes a <code>status.json</code> snapshot from the live sources below; the page reads it and advances the figures between syncs so the panel never looks frozen.</p>
     <div class="mods">
       <div class="mod"><h3>⏱️ Fleet Uptime</h3><ul><li>Seconds since the last full-fleet restart, ticking live in your browser.</li><li><b>Source:</b> <abbr title="Open-source virtualization platform">Proxmox</abbr> guest uptime.</li></ul></div>
-      <div class="mod"><h3>🔢 Tokens Routed</h3><ul><li>Cumulative tokens dispatched across all five providers, lifetime.</li><li><b>Source:</b> provider usage logs, summed by the balance-tracker cron.</li></ul></div>
+      <div class="mod"><h3>🔢 Tokens Routed</h3><ul><li>Cumulative tokens dispatched across all seven routed models, lifetime.</li><li><b>Source:</b> provider usage logs, summed by the balance-tracker cron.</li></ul></div>
       <div class="mod"><h3>💰 Saved vs Opus</h3><ul><li>What the same work would cost on an Opus-primary baseline, minus actual spend.</li><li><b>Formula:</b> Σ(tokens × Opus rate) − Σ(tokens × routed rate).</li></ul></div>
       <div class="mod"><h3>🖥️ Fleet Nodes</h3><ul><li>Live count of <abbr title="Open-source virtualization platform">Proxmox</abbr> guests across Zeus + Apollo.</li><li><b>Source:</b> Proxmox VE API inventory.</li></ul></div>
       <div class="mod"><h3>⚙️ Crons Active</h3><ul><li>Scheduled autonomous jobs currently armed.</li><li><b>Source:</b> crontab + systemd timers across the fleet.</li></ul></div>
@@ -862,7 +866,7 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
   <section class="panel" id="path" aria-labelledby="achHead">
     <div class="sec-head"><span aria-hidden="true">🏆</span><h2 id="achHead">THE PATH — RELEASE HISTORY</h2><span class="tag new">+ NEW</span><span class="lcars-bar"></span></div>
     <div class="tl">
-      <div class="tl-item cur"><div class="date">v28 · NOW</div><h3>"Butlerian Jihad"</h3><p>Truth-and-clarity crusade — AdGuard retired, <b>Technitium DNS</b> takes the conn fleet-wide · cron count wired live from <code>status.json</code> (31 at press) · per-node topology telemetry — latency, load, disk on hover · every number auditable.</p></div>
+      <div class="tl-item cur"><div class="date">v28 · NOW</div><h3>"Kwisatz Haderach"</h3><p>Truth-and-clarity crusade — AdGuard retired, <b>Technitium DNS</b> takes the conn fleet-wide · cron count wired live from <code>status.json</code> (31 at press) · per-node topology telemetry — latency, load, disk on hover · model fabric grown to <b>7</b> — GLM 5.2 self-hosted coding, Opus 4.8 Atlas-proxied escalation · every number auditable.</p></div>
       <div class="tl-item"><div class="date">v27</div><h3>"Sovereign Routing"</h3><p>Bridge retired — direct model routing · DeepSeek V4-Pro primary · Perplexity Sonar Pro cited research · 22 autonomous crons · provider consolidation complete (~$0.35/day) · <abbr title="Proxmox Backup Server">PBS</abbr> auth regenerated · GDrive sync daemonized.</p></div>
       <div class="tl-item"><div class="date">v26</div><h3>"Golden Path"</h3><p>19 guests · 8-core Hermes agent · 8 MCP servers · Omnius crew bridge · Gemini Spark email/calendar delegation · GDrive offsite sync · gateway hardened (CPU limits, file descriptors, restart caps).</p></div>
       <div class="tl-item"><div class="date">v25</div><h3>Provider Consolidation Begins</h3><p>Anthropic / xAI / DeepSeek direct routing. LiteLLM deployed on Atlas (M4 Mini). Kernel 7.0.6-2 across all Proxmox hosts.</p></div>
@@ -911,7 +915,7 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
       <div class="cl-stat"><div class="d" data-count="19">19</div><div class="l">Fleet Nodes<span class="was">v26 · 19</span></div></div>
       <div class="cl-stat"><div class="d" data-count="8">8</div><div class="l">MCP Servers<span class="was">v26 · 8</span></div></div>
       <div class="cl-stat"><div class="d" id="clCrons" data-count="31">31</div><div class="l">Cron Jobs<span class="was">v27 · 22 — now live</span></div></div>
-      <div class="cl-stat"><div class="d" data-count="5">5</div><div class="l">Routed Models<span class="was">DeepSeek V4-Pro primary</span></div></div>
+      <div class="cl-stat"><div class="d" data-count="7">7</div><div class="l">Routed Models<span class="was">v27 · 5</span></div></div>
     </div>
     <div class="cl-cols">
       <div class="cl-card added"><h3>✦ ADDED</h3>
@@ -976,7 +980,7 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
 
 <footer>
   <div>SOURCE: PROXMOX VE API + TECHNITIUM DHCP + NODE INVENTORY · ZEUSAPOLLO SOVEREIGN FABRIC</div>
-  <div class="tagline">v28 "BUTLERIAN JIHAD" — deepseek-v4-pro primary. Never fake a number. All systems nominal. Computed by Eve, Techno-Mentat of House Cashio. 🌀</div>
+  <div class="tagline">v28 "KWISATZ HADERACH" — deepseek-v4-pro primary, seven birds on one gateway. Never fake a number. All systems nominal. Computed by Eve, Techno-Mentat of House Cashio. 🌀</div>
   <div style="margin-top:14px;opacity:.7">© <span id="yr">2026</span> Doug Cashio · cashio.us &nbsp;·&nbsp; <span class="dim">built &amp; routed in the ZeusApollo homelab</span></div>
 </footer>
 
@@ -1026,7 +1030,7 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
 
   /* ---- BOOT ---- */
   var boot=document.getElementById('boot'),bootLines=document.getElementById('bootLines'),bootBar=document.getElementById('bootBar'),bootSkip=document.getElementById('bootSkip');
-  var seq=["▸ POWER-ON SELF TEST .......... OK","▸ ZEUS CLUSTER .............. ONLINE","▸ APOLLO CLUSTER ............ ONLINE","▸ HERMES AGENT .............. READY","▸ DEEPSEEK V4-PRO ........... PRIMARY","▸ 5-MODEL FABRIC ............ ROUTED","▸ 8 MCP SERVERS ............. MOUNTED","▸ CRON FLEET ................ ARMED","▸ TECHNITIUM VRRP DNS ....... MASTER","▸ COMMAND DECK .............. ENGAGED"];
+  var seq=["▸ POWER-ON SELF TEST .......... OK","▸ ZEUS CLUSTER .............. ONLINE","▸ APOLLO CLUSTER ............ ONLINE","▸ HERMES AGENT .............. READY","▸ DEEPSEEK V4-PRO ........... PRIMARY","▸ 7-MODEL FABRIC ............ ROUTED","▸ 8 MCP SERVERS ............. MOUNTED","▸ CRON FLEET ................ ARMED","▸ TECHNITIUM VRRP DNS ....... MASTER","▸ COMMAND DECK .............. ENGAGED"];
   function endBoot(){ if(boot.classList.contains('done'))return; boot.classList.add('done'); setTimeout(function(){boot.style.display='none';},650); try{localStorage.setItem('za_boot_seen','1');}catch(e){} try{startKicker();startChain();}catch(e){} }
   bootSkip.addEventListener('click',endBoot);
   bootSkip.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' ')endBoot(); });
@@ -1118,7 +1122,7 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
   var scenarios=[
     {name:'DISCORD /brief',total:'1.2s',lat:{ingest:'30ms',route:'140ms',exec:'560ms',verify:'70ms',deliver:'400ms'},trig:'📡 EVENT: Discord /brief command received',steps:[
       ['route','<span class="rt">ROUTE</span> → classified: lightweight summary ▋',440],
-      ['route','<span class="rt">ROUTE</span> → <b>DeepSeek V4-Pro</b> selected — cost optimal <span class="t">($0.87/MTok)</span>',520],
+      ['route','<span class="rt">ROUTE</span> → <b>DeepSeek V4-Pro</b> selected — cost optimal <span class="t">($1.10/MTok out)</span>',520],
       ['exec','<span class="rt">EXEC</span> → pull fleet status via <b>proxmox</b> MCP',640],
       ['verify','<span class="wn">VERIFY</span> → guardrails pass · 0 anomalies',420],
       ['deliver','<span class="ok">DELIVER</span> → Eve TTS (Grok 4.3) + Discord embed <span class="ok">✓ 1.2s</span>',560]
@@ -1208,7 +1212,7 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
       Zeus:[['Zeus','infra + security hypervisor'],['Hermes','AI gateway · primary agent (CT-105, 8-core)'],['Technitium-BU','DNS secondary · CT-109'],['n8n','automation engine'],['Athena','RPi4 · Docker + monitoring'],['Wazuh','SIEM · security monitoring'],['Vaultwarden','password management'],['Control-Plane','CT-200 orchestration + crew bridge'],['Grafana','dashboards + Uptime Kuma']],
       Apollo:[['Apollo','AI + media hypervisor'],['Technitium','DNS primary · CT-101'],['Omnius','ChromaDB vector store + RAG'],['Atlas','M4 Mini · MLX + Kernel browser host'],['AI-Stack','local inference stack'],['Dionysus','Unraid · Plex primary'],['Plex','media server (degraded)'],['Genesis','WD NAS · 7.2TB NFS/SMB'],['PBS','Proxmox Backup Server'],['Rclone','CT-117 · encrypted offsite sync'],['Backup-Verifier','CT-119 · backup integrity'],['Home-Asst','smart-home orchestration']]
     };
-    var MODELS=[['1','DeepSeek V4-Pro','primary — agents + briefings','$0.435/$0.87 MTok'],['2','Perplexity Sonar Pro','deep research + citations','$3/$15 MTok'],['3','Gemini 2.5 Flash','compression + web extract','~$0.10/$0.40 MTok'],['4','Grok 4.3','vision + TTS (Eve voice)','bundled (SuperGrok)'],['5','Qwen 3.7 Plus','emergency failover','subscription (Nous)']];
+    var MODELS=[['1','DeepSeek V4-Pro','primary — agents + briefings','$0.27/$1.10 MTok'],['2','GLM 5.2','coding + delegation','$0 (local · Atlas oMLX)'],['3','Perplexity Sonar Pro','deep research + citations','$3/$15 MTok'],['4','Gemini 2.5 Flash','compression + web extract','~$0.10/$0.40 MTok'],['5','Grok 4.3','vision + TTS (Eve voice)','bundled (SuperGrok)'],['6','Claude Opus 4.8','escalation — architecture','via Atlas proxy'],['7','Qwen 3.7 Plus','emergency failover','subscription (Nous)']];
     function pad(s,n){ s=String(s); while(s.length<n)s+=' '; return s; }
     var PHIL=[
       ['Try the weird thing. Learn fast through flight test.','Burt Rutan'],
@@ -1222,9 +1226,9 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
     var EVE=[
       {k:['who','you','eve','yourself'],a:'I am Eve — an Ixian Techno-centric Mentat AI running on the ZeusApollo Proxmox cluster. I compute the present to see the future. I route Doug\'s models, run his briefings, and keep the fleet nominal.'},
       {k:['doug','cashio','about','hotsauce'],a:'Doug "HotSauce" Cashio — Principal Solutions Consultant at OpenText, 15+ years in enterprise IT and cybersecurity. He built me. He prototypes like Rutan and ships like Johnson.'},
-      {k:['cost','cheap','save','burn','money'],a:'7.2× cost reduction vs an Opus-primary baseline — and the daily burn is now ~$0.35, down from ~$4 at launch (an 11.4× cut). Provider consolidation is complete: one primary, direct API, no bridge tax.'},
+      {k:['cost','cheap','save','burn','money'],a:'7.2× cost reduction vs an Opus-primary baseline — and the daily burn is now ~$0.35, down from ~$4 at launch (an 11.4× cut). Provider consolidation evolved: 5 paid APIs + 2 bundled/local, all Atlas-routed, no bridge tax.'},
       {k:['hire','work','available','contact','job'],a:'Reach Doug at doug@cashio.us, or via LinkedIn (/in/dougcashio). His Credly badges are linked at the foot of this deck.'},
-      {k:['stack','model','llm','ai','deepseek','perplexity','grok','qwen','route','router','routing'],a:'DeepSeek V4-Pro drives all primary workloads — direct routing, no bridge. Perplexity Sonar Pro handles cited deep research, Gemini 2.5 Flash compresses and extracts, Grok 4.3 covers vision + TTS (my voice), and Qwen 3.7 Plus stands emergency fallback. Run `models` for the table.'},
+      {k:['stack','model','llm','ai','deepseek','glm','opus','claude','atlas','perplexity','grok','qwen','route','router','routing'],a:'Seven birds, one gateway — all Atlas-routed. DeepSeek V4-Pro drives primary workloads, GLM 5.2 codes self-hosted on Atlas (zero cost), Perplexity Sonar Pro handles cited deep research, Gemini 2.5 Flash compresses and extracts, Grok 4.3 covers vision + TTS (my voice), Claude Opus 4.8 stands escalation via Atlas proxy, and Qwen 3.7 Plus is emergency failover. Run `models` for the table.'},
       {k:['fleet','node','server','homelab','infra'],a:'19 guests across two Proxmox clusters — Zeus runs infrastructure + security, Apollo runs AI + media. Run `fleet` to enumerate them.'},
       {k:['doctrine','philosophy','rutan','johnson','principle'],a:'The Cashio Design Doctrine: prototype like Rutan, ship like Johnson, own the route. Run `doctrine` for all six laws.'},
       {k:['skill','cert','certif','credential','badge','expert','experience'],a:'MCSA: Office 365 Certified, 15+ years in enterprise IT & cybersecurity — network admin, cloud security, M365/Azure, MxDR, and AI-powered ops. Full badge wall: credly.com/users/james-cashio.'},
@@ -1243,7 +1247,7 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
       help:function(){ return 'Available commands:\n'+
         '  <span class="rt">status</span>    fleet + ops summary\n'+
         '  <span class="rt">fleet</span>     enumerate all 19 nodes\n'+
-        '  <span class="rt">models</span>    the 5-model AI stack\n'+
+        '  <span class="rt">models</span>    the 7-model AI stack\n'+
         '  <span class="rt">crons</span>     autonomous job fleet\n'+
         '  <span class="rt">doctrine</span>  the Cashio design laws\n'+
         '  <span class="rt">whoami</span>    visitor identity\n'+
@@ -1254,7 +1258,7 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
       status:function(){ return '<span class="acc">ZEUSAPOLLO // OPERATIONAL STATUS</span>\n'+
         '  cluster ........ <span class="ok">● MAX WARP</span>\n'+
         '  nodes .......... <span class="ok">18 nominal</span> · <span class="wn">1 degraded (Plex)</span>\n'+
-        '  llm primary .... <span class="ok">DeepSeek V4-Pro</span> · direct routing · no bridge\n'+
+        '  llm primary .... <span class="ok">DeepSeek V4-Pro</span> · Atlas-routed · no bridge tax\n'+
         '  crons .......... '+liveCrons()+' armed\n'+
         '  daily burn ..... <span class="ok">~$0.35</span> <span class="dim">(was ~$4 · 11.4× cut)</span>\n'+
         '  uptime ......... '+fmtShort()+'+\n'+
@@ -1265,10 +1269,10 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
         o+='<span class="rt">── APOLLO CLUSTER ── AI + media</span>\n';
         for(i=0;i<FLEETLIST.Apollo.length;i++){ var deg=/degraded/.test(FLEETLIST.Apollo[i][1]); o+='  <span class="'+(deg?'wn':'ok')+'">●</span> '+pad(FLEETLIST.Apollo[i][0],14)+'<span class="dim">'+FLEETLIST.Apollo[i][1]+'</span>\n'; }
         return o.replace(/\n$/,''); },
-      models:function(){ var o='<span class="acc">AI STACK // DEEPSEEK V4-PRO PRIMARY · DIRECT ROUTING</span>\n';
+      models:function(){ var o='<span class="acc">AI STACK // DEEPSEEK V4-PRO PRIMARY · ATLAS-ROUTED</span>\n';
         o+='  <span class="dim">'+pad('#',3)+pad('MODEL',20)+pad('ROLE',22)+'COST</span>\n';
-        MODELS.forEach(function(m){ var c=/FREE|bundled|subscription/i.test(m[3])?'ok':'rt'; o+='  '+pad(m[0],3)+pad(m[1],20)+pad(m[2],22)+'<span class="'+c+'">'+m[3]+'</span>\n'; });
-        o+='<span class="dim">  balances: DeepSeek $31.24 · Perplexity ~$60 · Nous $46.09 (fallback) · xAI bundled · consolidation complete</span>';
+        MODELS.forEach(function(m){ var c=/FREE|bundled|subscription|local/i.test(m[3])?'ok':'rt'; o+='  '+pad(m[0],3)+pad(m[1],20)+pad(m[2],22)+'<span class="'+c+'">'+m[3]+'</span>\n'; });
+        o+='<span class="dim">  balances: DeepSeek $31.24 · Perplexity ~$56 (live) · Nous $46.09 (failover) · xAI bundled · GLM local $0 · consolidation evolved</span>';
         return o; },
       crons:function(){ return '<span class="acc">AUTONOMOUS CRON FLEET // '+liveCrons()+' JOBS</span>\n'+
         '  <span class="ok">●</span> morning + evening AI briefings (Eve TTS)\n'+
