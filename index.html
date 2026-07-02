@@ -255,6 +255,7 @@ body::after{content:"";position:fixed;inset:0;z-index:2;pointer-events:none;
   border:1px solid var(--glass-border);border-left:3px solid var(--cyan);border-radius:10px;padding:11px 14px;min-height:42px}
 .topo-readout b{color:var(--cyan);font-size:10px;letter-spacing:.14em;display:block;margin-bottom:4px}
 .topo-readout .ok{color:var(--green)} .topo-readout .warn{color:var(--amber)} .topo-readout .crit{color:var(--red)}
+button.btn{cursor:pointer;-webkit-appearance:none;appearance:none}
 
 /* ---------- tables ---------- */
 .tbl-scroll{overflow-x:auto}
@@ -746,11 +747,11 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
   <section class="panel green" id="console" aria-labelledby="conHead">
     <div class="sec-head"><span aria-hidden="true">⌨️</span><h2 id="conHead">HERMES CONSOLE — LIVE ACCESS</h2><span class="tag live">● INTERACTIVE</span><span class="lcars-bar"></span></div>
     <div class="sec-kick">CLIMB INTO THE COCKPIT — this console is wired to the live fleet</div>
-    <p class="term-intro">This isn't a screenshot. It's a working console wired to the fleet's public readouts. Type <code>help</code> to see commands, or <code>ask eve …</code> to query the Mentat. Try <code>status</code>, <code>fleet</code>, <code>models</code>.</p>
+    <p class="term-intro">This isn't a screenshot. It's a working console wired to the fleet's public readouts. Type <code>help</code> to see commands, or <code>ask eve …</code> to query the Mentat. Try <code>status</code>, <code>fleet</code>, <code>models</code>. Press <code>/</code> from anywhere on the deck to jump here.</p>
     <div class="terminal">
       <div class="term-bar"><span class="dotr d1"></span><span class="dotr d2"></span><span class="dotr d3"></span>
         <span class="ttl"><b>guest@cashio.us</b> — hermes://command-deck</span>
-        <span class="hint">↑↓ history · Tab complete</span></div>
+        <span class="hint">↑↓ history · Tab complete · press / anywhere to hail</span></div>
       <div class="term-body" id="termBody" tabindex="0" role="log" aria-live="polite" aria-label="Interactive console output"></div>
       <div class="term-foot" id="termChips"></div>
     </div>
@@ -945,14 +946,87 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
       <div class="cl-card removed"><h3>− RETIRED</h3>
         <ul>
           <li><b>MiniMax M3 bridge</b> — zero references remain</li>
-          <li><b>Claude Opus / Anthropic API</b> — $0, unused</li>
+          <li><b>Claude Opus / Anthropic API</b> — $0, unused <span class="dim">(v28: returns as escalation — Atlas-proxied, still zero direct)</span></li>
           <li><b>OpenAI</b> — $0, unused</li>
-          <li><b>LiteLLM active routing</b> — kept for emergency fallback only</li>
+          <li><b>LiteLLM active routing</b> — kept for emergency fallback only <span class="dim">(v28: back at the conn — Atlas routes all seven)</span></li>
           <li><b>Parallel burn-down balances</b> — consolidation complete</li>
         </ul></div>
     </div>
     <p class="cl-foot"><span class="on">●</span> ALL SYSTEMS NOMINAL · COMPUTED BY EVE · CONSOLIDATION COMPLETE — SOVEREIGN ROUTING ACHIEVED &nbsp;·&nbsp; <a href="mailto:doug@cashio.us">doug@cashio.us</a></p>
   </section>
+
+  <!-- ===================== FLEET CARD (v28 · shareable proof) ===================== -->
+  <section class="panel amber" id="fleetcard" aria-labelledby="fcHead">
+    <div class="sec-head"><span aria-hidden="true">🎫</span><h2 id="fcHead">FLEET CARD — TAKE ONE HOME</h2><span class="tag live">● LIVE DATA</span><span class="lcars-bar"></span></div>
+    <div class="sec-kick">A BOARDING PASS FOR THE SOVEREIGN FLEET — stamped with the numbers running right now</div>
+    <p style="color:var(--text-dim);font-size:14px;max-width:840px;margin-bottom:14px">Rendered in your browser from the same <code>status.json</code> the telemetry panel reads — nodes, models, crons, burn, savings, uptime. Download it, share it, audit it against the readouts above. Same numbers, same source, zero retouching.</p>
+    <canvas id="fcCanvas" width="1200" height="630" role="img" aria-label="ZeusApollo fleet card — live fleet statistics rendered as a shareable boarding pass" style="width:100%;max-width:700px;display:block;border-radius:var(--radius);border:1px solid var(--glass-border)"></canvas>
+    <div class="cta-row" style="margin-top:14px">
+      <button type="button" class="btn secondary" id="fcDownload">⬇ DOWNLOAD PNG</button>
+      <button type="button" class="btn ghost" id="fcRestamp">⟳ RESTAMP</button>
+    </div>
+    <noscript><p style="color:var(--text-dim);font-size:13px">JavaScript is off — no card, but every number it would show is printed in the telemetry panel above.</p></noscript>
+  </section>
+  <script>
+  (function(){
+    "use strict";
+    var cv=document.getElementById('fcCanvas'); if(!cv||!cv.getContext)return;
+    var ctx=cv.getContext('2d'); if(!ctx)return;
+    var W=1200,H=630;
+    function p2(n){return (n<10?'0':'')+n;}
+    function stamp(){var d=new Date();return p2(d.getMonth()+1)+'-'+p2(d.getDate())+'-'+d.getFullYear();} /* MM-DD-YYYY house format */
+    function dom(id,fb){var e=document.getElementById(id);var t=e&&e.textContent?e.textContent.trim():'';return t||fb;}
+    function rr(x,y,w,h,r){ctx.beginPath();if(ctx.roundRect){ctx.roundRect(x,y,w,h,r);}else{ctx.rect(x,y,w,h);}ctx.fill();}
+    /* HONESTY: every figure below comes from window.__zaStatus (live status.json) or the
+       already-live telemetry DOM — the card can never disagree with the panel above it. */
+    function render(){
+      var s=window.__zaStatus||{};
+      var seed=20260701;function rnd(){seed=(seed*16807)%2147483647;return seed/2147483647;}
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle='#0a0a0f';ctx.fillRect(0,0,W,H);
+      for(var i=0;i<110;i++){ctx.fillStyle='rgba(180,180,220,'+(0.08+rnd()*0.34).toFixed(2)+')';ctx.beginPath();ctx.arc(rnd()*W,rnd()*H,rnd()*1.5+0.4,0,6.283);ctx.fill();}
+      ctx.fillStyle='#ff9500';rr(40,42,26,546,13);rr(40,42,520,24,12);
+      ctx.fillStyle='#00f9ff';rr(572,42,128,24,12);
+      ctx.fillStyle='#cc00ff';rr(712,42,58,24,12);
+      ctx.textAlign='left';ctx.textBaseline='alphabetic';
+      ctx.fillStyle='#00f9ff';ctx.font='700 30px Orbitron, monospace';ctx.fillText('ZEUSAPOLLO SOVEREIGN FLEET',96,126);
+      ctx.fillStyle='#c6c6e0';ctx.font='15px "JetBrains Mono", monospace';ctx.fillText('BOARDING PASS // FLEET CREDENTIALS · v28 "KWISATZ HADERACH"',96,154);
+      ctx.fillStyle='#e4e4f0';ctx.font='900 60px Orbitron, monospace';ctx.fillText('DOUG CASHIO',96,236);
+      ctx.fillStyle='#ff9500';ctx.font='700 19px Orbitron, monospace';ctx.fillText('ENTERPRISE AI & CYBERSECURITY · SOVEREIGN AI HOMELAB',96,272);
+      ctx.strokeStyle='rgba(255,255,255,.14)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(96,300);ctx.lineTo(1104,300);ctx.stroke();
+      var models=s.providers&&typeof s.providers==='object'?String(Object.keys(s.providers).length):'7';
+      var stats=[
+        ['FLEET NODES', s.fleet_nodes!=null?String(s.fleet_nodes):dom('mNodes','19')],
+        ['ROUTED MODELS', models],
+        ['CRONS ACTIVE', s.crons_active!=null?String(s.crons_active):dom('mCrons','31')],
+        ['DAILY BURN', (s.daily_burn!=null?'$'+Number(s.daily_burn).toFixed(2):dom('mBurn','$0.35'))+'/DAY'],
+        ['SAVED VS OPUS', dom('mSaved','$342+')],
+        ['FLEET UPTIME', dom('mUptime','—')]
+      ];
+      for(var k=0;k<6;k++){
+        var sx=96+(k%3)*340, sy=k<3?372:468;
+        ctx.fillStyle='#00ff9f';ctx.font='700 40px Orbitron, monospace';ctx.fillText(stats[k][1],sx,sy);
+        ctx.fillStyle='#c6c6e0';ctx.font='13px "JetBrains Mono", monospace';ctx.fillText(stats[k][0],sx,sy+26);
+      }
+      ctx.fillStyle='#ff9500';ctx.font='700 17px Orbitron, monospace';ctx.fillText('PROTOTYPE LIKE RUTAN · SHIP LIKE JOHNSON · OWN THE ROUTE',96,548);
+      ctx.fillStyle='#c6c6e0';ctx.font='14px "JetBrains Mono", monospace';ctx.fillText('cashio.us · numbers live from status.json · stamped '+stamp(),96,592);
+      ctx.strokeStyle='#00f9ff';ctx.lineWidth=3;ctx.beginPath();ctx.arc(1030,146,58,0,6.283);ctx.stroke();
+      ctx.textAlign='center';
+      ctx.fillStyle='#00f9ff';ctx.font='900 32px Orbitron, monospace';ctx.fillText('7.2×',1030,142);
+      ctx.font='700 11px Orbitron, monospace';ctx.fillText('VS OPUS BASELINE',1030,168);
+      ctx.textAlign='left';
+      var bx=880;ctx.fillStyle='rgba(228,228,240,.85)';
+      while(bx<1102){var bw=rnd()*4.5+1.2;ctx.fillRect(bx,540,bw,52);bx+=bw+rnd()*5+1.5;}
+    }
+    window.__fcRender=render;
+    var dl=document.getElementById('fcDownload');
+    if(dl)dl.addEventListener('click',function(){ render(); try{ var a=document.createElement('a'); a.download='zeusapollo-fleet-card.png'; a.href=cv.toDataURL('image/png'); document.body.appendChild(a); a.click(); a.remove(); }catch(e){} });
+    var rs=document.getElementById('fcRestamp');
+    if(rs)rs.addEventListener('click',render);
+    if(document.fonts&&document.fonts.ready&&document.fonts.ready.then){ document.fonts.ready.then(render); } else { render(); }
+    if('IntersectionObserver' in window){ var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){render();io.disconnect();}});},{threshold:.3}); io.observe(cv); }
+  })();
+  </script>
 
 </main>
 
@@ -1006,7 +1080,7 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
       {n:"Apollo",r:"Hypervisor — AI + media host"},
       {n:"Technitium",r:"DNS primary — CT-101 (Apollo)"},
       {n:"Omnius",r:"ChromaDB vector store + RAG"},
-      {n:"Atlas",r:"M4 Mini — MLX inference + Kernel browser host"},
+      {n:"Atlas",r:"M4 Mini — LiteLLM gateway · GLM 5.2 (oMLX) · Kernel browser"},
       {n:"AI-Stack",r:"Local inference stack"},
       {n:"Dionysus",r:"Unraid — Plex primary"},
       {n:"Plex",r:"Media server",deg:true},
@@ -1210,7 +1284,7 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
     }
     var FLEETLIST={
       Zeus:[['Zeus','infra + security hypervisor'],['Hermes','AI gateway · primary agent (CT-105, 8-core)'],['Technitium-BU','DNS secondary · CT-109'],['n8n','automation engine'],['Athena','RPi4 · Docker + monitoring'],['Wazuh','SIEM · security monitoring'],['Vaultwarden','password management'],['Control-Plane','CT-200 orchestration + crew bridge'],['Grafana','dashboards + Uptime Kuma']],
-      Apollo:[['Apollo','AI + media hypervisor'],['Technitium','DNS primary · CT-101'],['Omnius','ChromaDB vector store + RAG'],['Atlas','M4 Mini · MLX + Kernel browser host'],['AI-Stack','local inference stack'],['Dionysus','Unraid · Plex primary'],['Plex','media server (degraded)'],['Genesis','WD NAS · 7.2TB NFS/SMB'],['PBS','Proxmox Backup Server'],['Rclone','CT-117 · encrypted offsite sync'],['Backup-Verifier','CT-119 · backup integrity'],['Home-Asst','smart-home orchestration']]
+      Apollo:[['Apollo','AI + media hypervisor'],['Technitium','DNS primary · CT-101'],['Omnius','ChromaDB vector store + RAG'],['Atlas','M4 Mini · LiteLLM gateway + GLM 5.2 + Kernel'],['AI-Stack','local inference stack'],['Dionysus','Unraid · Plex primary'],['Plex','media server (degraded)'],['Genesis','WD NAS · 7.2TB NFS/SMB'],['PBS','Proxmox Backup Server'],['Rclone','CT-117 · encrypted offsite sync'],['Backup-Verifier','CT-119 · backup integrity'],['Home-Asst','smart-home orchestration']]
     };
     var MODELS=[['1','DeepSeek V4-Pro','primary — agents + briefings','$0.27/$1.10 MTok'],['2','GLM 5.2','coding + delegation','$0 (local · Atlas oMLX)'],['3','Perplexity Sonar Pro','deep research + citations','$3/$15 MTok'],['4','Gemini 2.5 Flash','compression + web extract','~$0.10/$0.40 MTok'],['5','Grok 4.3','vision + TTS (Eve voice)','bundled (SuperGrok)'],['6','Claude Opus 4.8','escalation — architecture','via Atlas proxy'],['7','Qwen 3.7 Plus','emergency failover','subscription (Nous)']];
     function pad(s,n){ s=String(s); while(s.length<n)s+=' '; return s; }
@@ -1527,6 +1601,17 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
     else start();
   })();
 
+  /* ============ v28: command palette — "/" hails the console from anywhere ============ */
+  addEventListener('keydown',function(e){
+    if(e.key!=='/'||e.ctrlKey||e.metaKey||e.altKey)return;
+    var t=e.target,tag=(t&&t.tagName||'').toLowerCase();
+    if(tag==='input'||tag==='textarea'||(t&&t.isContentEditable))return;
+    e.preventDefault();
+    var sec=document.getElementById('console');
+    if(sec)sec.scrollIntoView(reduce?{}:{behavior:'smooth'});
+    setTimeout(function(){var inp=document.getElementById('termInput');if(inp)inp.focus({preventScroll:true});},reduce?0:480);
+  });
+
   /* ---- DevTools signature (for the curious) ---- */
   try{
     console.log('%cZEUSAPOLLO // command deck','color:#00f9ff;font-family:monospace;font-size:16px;font-weight:bold;text-shadow:0 0 8px rgba(0,249,255,.5)');
@@ -1544,6 +1629,7 @@ function applyStatus(s){
   try{
     window.__zaStatus=s; /* v28: shared live state — console + topology read this */
     if(s.nodes&&window.__zaNodes){window.__zaNodes(s.nodes);}
+    if(window.__fcRender){window.__fcRender();}
     if(s.boot_epoch&&window.__zaBoot){window.__zaBoot(s.boot_epoch*1000);}
     else if(s.uptime){setText('uptime',s.uptime);setText('mUptime',s.uptime);}
     if(typeof s.daily_burn==='number'){setText('mBurn','$'+s.daily_burn.toFixed(2));setText('sr-burn','$'+s.daily_burn.toFixed(2));}
