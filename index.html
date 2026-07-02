@@ -1560,7 +1560,9 @@ function applyStatus(s){
       if(head&&!head.querySelector('.sync-chip')){
         var chip=document.createElement('span');chip.className='sync-chip';
         var d=new Date(ts);
-        chip.textContent='● SYNCED '+(isNaN(d)?String(ts).slice(0,16):d.toISOString().replace('T',' ').slice(0,16)+'Z');
+        /* v28: dates display as MM-DD-YYYY (house format) — UTC, minutes precision */
+        var p2=function(n){return (n<10?'0':'')+n;};
+        chip.textContent='● SYNCED '+(isNaN(d)?String(ts).slice(0,16):p2(d.getUTCMonth()+1)+'-'+p2(d.getUTCDate())+'-'+d.getUTCFullYear()+' '+p2(d.getUTCHours())+':'+p2(d.getUTCMinutes())+'Z');
         head.insertBefore(chip,head.querySelector('.lcars-bar'));
       }
     }
