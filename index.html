@@ -768,7 +768,7 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
       <div class="c"><div class="k">STATUS</div><div class="v" style="color:var(--green)">● ALL NOMINAL</div></div>
     </div>
     <p style="color:var(--text-dim);font-size:14px">19 guests across ZeusApollo. DeepSeek V4-Pro primary — Atlas-routed, no bridge tax. <span class="live-crons">31</span> autonomous cron jobs. Model fabric grown to 7 — GLM 5.2 self-hosted coding (zero cost), Claude Opus 4.8 escalation via Atlas proxy. Provider consolidation evolved — 5 paid APIs + 2 bundled/local. PBS backup auth regenerated after token rot. GDrive sync daemonized to survive cron timeout. Perplexity Sonar Pro for cited deep research. Kernel browser for headless automation. AdGuard retired — Technitium DNS fleet-wide.</p>
-    <p style="margin-top:14px">Daily inference burn: <span class="burn">~$0.35 <small>(was ~$0.50 — further 30% cut from v26)</small></span></p>
+    <p style="margin-top:14px">Daily inference burn: <span class="burn">~$0.35 <small>(held from v27 — 11.4× below the ~$4 launch burn)</small></span></p>
   </section>
 
   <!-- ===================== AI STACK ===================== -->
@@ -910,49 +910,47 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
 
   <!-- ===================== ZEUSAPOLLO CHANGELOG ===================== -->
   <section class="panel green" id="changelog" aria-labelledby="clHead">
-    <div class="sec-head"><span aria-hidden="true">⟳</span><h2 id="clHead">ZEUSAPOLLO v27 — CHANGES &amp; UPDATES</h2><span class="tag new">DELTA v26 → v27</span><span class="lcars-bar"></span></div>
-    <p class="cl-intro">What shipped in the <b>"Sovereign Routing"</b> release. The bridge came out, <b>DeepSeek V4-Pro</b> took the conn, and the cron fleet grew — every change deployed, documented, and battle-tested.</p>
+    <div class="sec-head"><span aria-hidden="true">⟳</span><h2 id="clHead">ZEUSAPOLLO v28 — CHANGES &amp; UPDATES</h2><span class="tag new">DELTA v27 → v28</span><span class="lcars-bar"></span></div>
+    <p class="cl-intro">What shipped in the <b>"Kwisatz Haderach"</b> release. The fabric grew to seven birds, <b>Atlas</b> took the routing conn, and every number on this deck now traces to <code>status.json</code> — deployed, documented, and battle-tested.</p>
     <div class="cl-summary">
-      <div class="cl-stat"><div class="d" data-count="19">19</div><div class="l">Fleet Nodes<span class="was">v26 · 19</span></div></div>
-      <div class="cl-stat"><div class="d" data-count="8">8</div><div class="l">MCP Servers<span class="was">v26 · 8</span></div></div>
+      <div class="cl-stat"><div class="d" data-count="19">19</div><div class="l">Fleet Nodes<span class="was">v27 · 19</span></div></div>
+      <div class="cl-stat"><div class="d" data-count="8">8</div><div class="l">MCP Servers<span class="was">v27 · 8</span></div></div>
       <div class="cl-stat"><div class="d" id="clCrons" data-count="31">31</div><div class="l">Cron Jobs<span class="was">v27 · 22 — now live</span></div></div>
       <div class="cl-stat"><div class="d" data-count="7">7</div><div class="l">Routed Models<span class="was">v27 · 5</span></div></div>
     </div>
     <div class="cl-cols">
       <div class="cl-card added"><h3>✦ ADDED</h3>
         <ul>
-          <li><b>Perplexity Sonar Pro</b> — deep research with citations</li>
-          <li><b>3 new watchdog crons</b> — fleet health monitor, Hermes release watcher, Technitium stats poller</li>
-          <li><b>daily-vzdump-all-guests</b> + weekly-lxc-fstrim</li>
-          <li><b>CT-117 rclone-gdrive</b> — offsite sync node rebuilt from scratch</li>
-          <li><b>CT-119 backup-verifier</b> — backup integrity checks</li>
+          <li><b>GLM 5.2</b> — self-hosted coding lane on Atlas oMLX ($0, local)</li>
+          <li><b>Claude Opus 4.8</b> — escalation tier via Atlas proxy, zero direct Anthropic</li>
+          <li><b>Live topology telemetry</b> — per-node latency · load · disk from <code>status.json</code></li>
+          <li><b>Fleet Card generator</b> — canvas boarding pass with scannable QR, PNG download</li>
+          <li><b>/ command palette</b> — hail the Hermes console from anywhere on the deck</li>
         </ul></div>
       <div class="cl-card changed"><h3>⟳ CHANGED</h3>
         <ul>
-          <li><b>Direct routing</b> — bridge layer removed entirely</li>
-          <li><b>DeepSeek V4-Pro</b> now primary for all agent workloads</li>
-          <li><b>19 → 22 crons</b> across the fleet — <span class="live-crons">31</span> today, live</li>
-          <li><b>GDrive sync daemonized</b> — survives cron timeout</li>
-          <li><b>Daily burn ~$0.50 → ~$0.35</b> (further 30% cut)</li>
+          <li><b>Model fabric 5 → 7</b> — every lane Atlas-routed (LiteLLM, transparent, zero markup)</li>
+          <li><b>DeepSeek pricing corrected</b> — $0.435/$0.87 → $0.27/$1.10 MTok, current published</li>
+          <li><b>Cron count wired live</b> — 22 static → <span class="live-crons">31</span> from <code>status.json</code>, never hardcoded again</li>
+          <li><b>SYNCED stamp</b> — MM-DD-YYYY house date format</li>
+          <li><b>Event chain</b> — new CODE·refactor scenario (GLM exec, Opus armed on verify)</li>
         </ul></div>
       <div class="cl-card hardened"><h3>🛡 HARDENED</h3>
         <ul>
-          <li><b>PBS backup auth</b> regenerated after token rot</li>
-          <li><b>Technitium dual DNS</b> — CT-101 (Apollo) + CT-109 (Zeus)</li>
-          <li><b>Backup verification</b> — CT-119 checks every snapshot</li>
-          <li><b>Kernel browser</b> — headless automation, sandboxed</li>
-          <li><b>Wazuh <abbr title="Security Information and Event Management">SIEM</abbr></b> + Vaultwarden online</li>
+          <li><b>Technitium DNS fleet-wide</b> — AdGuard fully retired, page + <code>status.json</code> reconciled</li>
+          <li><b>Content truth audit</b> — every figure traces to <code>status.json</code> or a labeled derivation</li>
+          <li><b>Count-up race fixed</b> — scroll animations land on live values, not stale statics</li>
+          <li><b>Zero new attack surface</b> — CSP + safeHTML untouched through the whole release</li>
         </ul></div>
       <div class="cl-card removed"><h3>− RETIRED</h3>
         <ul>
-          <li><b>MiniMax M3 bridge</b> — zero references remain</li>
-          <li><b>Claude Opus / Anthropic API</b> — $0, unused <span class="dim">(v28: returns as escalation — Atlas-proxied, still zero direct)</span></li>
-          <li><b>OpenAI</b> — $0, unused</li>
-          <li><b>LiteLLM active routing</b> — kept for emergency fallback only <span class="dim">(v28: back at the conn — Atlas routes all seven)</span></li>
-          <li><b>Parallel burn-down balances</b> — consolidation complete</li>
+          <li><b>AdGuard</b> — replaced by Technitium, permanent fleet decision</li>
+          <li><b>Hardcoded cron counts</b> — 16 call-sites now read the fleet</li>
+          <li><b>"5+1" model phrasing</b> — one count everywhere: 7</li>
+          <li><b>Decorative barcode</b> — replaced by a scannable QR to the deck</li>
         </ul></div>
     </div>
-    <p class="cl-foot"><span class="on">●</span> ALL SYSTEMS NOMINAL · COMPUTED BY EVE · CONSOLIDATION COMPLETE — SOVEREIGN ROUTING ACHIEVED &nbsp;·&nbsp; <a href="mailto:doug@cashio.us">doug@cashio.us</a></p>
+    <p class="cl-foot"><span class="on">●</span> ALL SYSTEMS NOMINAL · COMPUTED BY EVE · SEVEN BIRDS, ONE GATEWAY — NEVER FAKE A NUMBER &nbsp;·&nbsp; <a href="mailto:doug@cashio.us">doug@cashio.us</a></p>
   </section>
 
   <!-- ===================== FLEET CARD (v28 · shareable proof) ===================== -->
@@ -977,6 +975,10 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
     function stamp(){var d=new Date();return p2(d.getMonth()+1)+'-'+p2(d.getDate())+'-'+d.getFullYear();} /* MM-DD-YYYY house format */
     function dom(id,fb){var e=document.getElementById(id);var t=e&&e.textContent?e.textContent.trim():'';return t||fb;}
     function rr(x,y,w,h,r){ctx.beginPath();if(ctx.roundRect){ctx.roundRect(x,y,w,h,r);}else{ctx.rect(x,y,w,h);}ctx.fill();}
+    /* QR → https://cashio.us — matrix pre-generated offline (qrcode lib, ECC-M, v2) and
+       verified scannable by independent decode (zxing-cpp). Embedded as a constant: the
+       CSP allows no external scripts, and a static URL needs no runtime encoder. */
+    var QR=['1111111011000011101111111','1000001011001000101000001','1011101010000000101011101','1011101000010000001011101','1011101010111010101011101','1000001001000000001000001','1111111010101010101111111','0000000001100100100000000','1001111110101101010010111','0101110011001101000111110','1110001001011101011101001','0111010101111101001001111','0001001100001100101100001','1000110110100111010010010','1111011100111101001011111','1010010101110001010101101','1000111100100010111110110','0000000010011110100010110','1111111010010000101010001','1000001011001011100010011','1011101010101111111110001','1011101010100011111000011','1011101001001011110011111','1000001001100010010110111','1111111010000110111001001'];
     /* HONESTY: every figure below comes from window.__zaStatus (live status.json) or the
        already-live telemetry DOM — the card can never disagree with the panel above it. */
     function render(){
@@ -1004,8 +1006,8 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
         ['FLEET UPTIME', dom('mUptime','—')]
       ];
       for(var k=0;k<6;k++){
-        var sx=96+(k%3)*340, sy=k<3?372:468;
-        ctx.fillStyle='#00ff9f';ctx.font='700 40px Orbitron, monospace';ctx.fillText(stats[k][1],sx,sy);
+        var sx=96+(k%3)*260, sy=k<3?372:468;
+        ctx.fillStyle='#00ff9f';ctx.font='700 36px Orbitron, monospace';ctx.fillText(stats[k][1],sx,sy);
         ctx.fillStyle='#c6c6e0';ctx.font='13px "JetBrains Mono", monospace';ctx.fillText(stats[k][0],sx,sy+26);
       }
       ctx.fillStyle='#ff9500';ctx.font='700 17px Orbitron, monospace';ctx.fillText('PROTOTYPE LIKE RUTAN · SHIP LIKE JOHNSON · OWN THE ROUTE',96,548);
@@ -1015,8 +1017,11 @@ abbr.def{border-bottom:1px dotted var(--cyan);text-decoration:none;cursor:help;c
       ctx.fillStyle='#00f9ff';ctx.font='900 32px Orbitron, monospace';ctx.fillText('7.2×',1030,142);
       ctx.font='700 11px Orbitron, monospace';ctx.fillText('VS OPUS BASELINE',1030,168);
       ctx.textAlign='left';
-      var bx=880;ctx.fillStyle='rgba(228,228,240,.85)';
-      while(bx<1102){var bw=rnd()*4.5+1.2;ctx.fillRect(bx,540,bw,52);bx+=bw+rnd()*5+1.5;}
+      /* scannable QR badge — white plate for contrast, 4-module quiet zone */
+      ctx.fillStyle='#f2f2f7';rr(906,330,198,198,10);
+      ctx.fillStyle='#0a0a0f';
+      for(var qy=0;qy<25;qy++){for(var qx=0;qx<25;qx++){if(QR[qy].charAt(qx)==='1')ctx.fillRect(930+qx*6,354+qy*6,6,6);}}
+      ctx.textAlign='center';ctx.fillStyle='#00f9ff';ctx.font='11px "JetBrains Mono", monospace';ctx.fillText('SCAN TO BOARD · CASHIO.US',1005,552);ctx.textAlign='left';
     }
     window.__fcRender=render;
     var dl=document.getElementById('fcDownload');
