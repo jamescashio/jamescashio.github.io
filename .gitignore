@@ -1,10 +1,39 @@
+# Temporary and editor files
 .backup-*.html
+*.bak
+*.backup
 *.swp
 .DS_Store
 __pycache__/
 *.pyc
 node_modules/
 package*.json
+playwright/
 verify_xss_fix.png
 verify_ui.js
-playwright/
+
+# Historical HTML snapshots belong outside the public repository
+index_*backup*.html
+index_v*_golden_path.html
+cashio-us-v*.html
+v[0-9]*.html
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+auth.json
+**/auth.json
+credentials*.json
+secrets*.json
+
+# Private operational material
+internal/
+private/
+homelab-docs/
+status-private.json
+.jules/
