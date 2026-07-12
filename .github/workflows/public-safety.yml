@@ -1,0 +1,34 @@
+name: Public Site Safety
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  public-safety:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Scan for PII, secrets, private topology, and backups
+        run: python scripts/public_repo_guard.py
+
+      - name: Check Python syntax
+        run: |
+          python -m py_compile \
+            scripts/public_repo_guard.py \
+            scripts/zeusapollo_swarm.py \
+            scripts/zeusapollo_bridge.py
