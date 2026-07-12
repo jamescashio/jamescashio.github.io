@@ -24,7 +24,22 @@ jobs:
           python-version: "3.12"
 
       - name: Scan for PII, secrets, private topology, and backups
+        id: safety_scan
+        continue-on-error: true
         run: python scripts/public_repo_guard.py
+
+      - name: Upload safety report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-safety-report
+          path: public-safety-report.txt
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Enforce scan result
+        if: steps.safety_scan.outcome != 'success'
+        run: exit 1
 
       - name: Check Python syntax
         run: |
