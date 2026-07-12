@@ -4,6 +4,37 @@ All notable public-facing changes to the ZeusApollo portfolio and command deck a
 
 The project’s earlier development history remains available in Git. **v28 is the first release normalized into this changelog format.**
 
+## [v30] — 2026-07-12
+
+### Added
+
+- “The Sleeper Has Awakened” command-deck experience with richer depth, motion, and interactive presentation.
+- Expanded Hermes console demonstrations for `route`, `probe`, and `vetting` workflows.
+- Public AI-readiness experience under `/ai`.
+- Repository governance controls: `CODEOWNERS`, a pull-request safety checklist, Dependabot maintenance, and automated branch hygiene.
+- Documented repository settings and recommended branch-protection policy.
+
+### Changed
+
+- Increased the public automation baseline from 31 to 46 autonomous jobs.
+- Updated the vision-and-voice lane while preserving seven capability-based routing lanes.
+- Aligned `README.md`, `RELEASE_BODY.md`, `status.json`, and release automation to v30.
+- Replaced the one-off v28 publisher with the current v30 publisher while preserving the generic tag-triggered release workflow.
+- Reduced safety-workflow checkout depth and added concurrency controls to avoid duplicate work.
+
+### Security and privacy
+
+- Preserved coarse, privacy-safe public telemetry with detailed state retained privately.
+- Kept public bridge examples topology-neutral, environment-configured, and fail closed.
+- Added automated cleanup for stale pull requests and closed-PR branches.
+- Added a review gate for PII, secrets, private topology, operational telemetry, and historical backup artifacts.
+
+### Operational notes
+
+- GitHub Pages continues to deploy from `main`.
+- v30 is the current public release baseline: **19 nodes**, **7 model lanes**, **46 autonomous jobs**, and approximately **$0.35/day** estimated inference burn.
+- Repository-level branch protection and About metadata require repository-admin settings and are documented in `docs/REPOSITORY_SETTINGS.md`.
+
 ## [v28] — 2026-07-02
 
 ### Added
