@@ -20,11 +20,11 @@ The site is not intended to publish home addresses, personal phone numbers, pers
 
 The site does not intentionally require accounts, forms, advertising identifiers, or behavioral profiling. Standard web-hosting infrastructure may process ordinary request metadata such as IP address, browser type, requested page, timestamp, and diagnostic information.
 
-External links lead to third-party services with their own privacy practices. The primary public-safe lab page is self-contained and does not load third-party scripts or fonts.
+Some portfolio pages may request fonts, styles, or other static assets from third-party content-delivery providers. Those providers can receive ordinary connection metadata, including the visitor's IP address and browser request details. The public-safe `lab.html` page is self-contained and does not load third-party scripts or fonts. External profile links lead to third-party services with their own privacy practices.
 
 ## Cookies and analytics
 
-No first-party advertising cookies are intentionally set. If analytics are added later, this notice should be updated before deployment and the implementation should minimize collection, retention, and third-party sharing.
+No first-party advertising cookies are intentionally set, and no first-party behavioral analytics are intentionally operated. If analytics are added later, this notice should be updated before deployment and the implementation should minimize collection, retention, and third-party sharing.
 
 ## Security and retention
 
