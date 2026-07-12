@@ -9,14 +9,19 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: public-safety-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   public-safety:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -28,6 +33,11 @@ jobs:
         continue-on-error: true
         run: python scripts/public_repo_guard.py
 
+      - name: Verify release consistency
+        id: release_consistency
+        continue-on-error: true
+        run: python scripts/check_release_consistency.py
+
       - name: Upload safety report
         if: always()
         uses: actions/upload-artifact@v4
@@ -37,13 +47,14 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-      - name: Enforce scan result
-        if: steps.safety_scan.outcome != 'success'
+      - name: Enforce validation results
+        if: steps.safety_scan.outcome != 'success' || steps.release_consistency.outcome != 'success'
         run: exit 1
 
       - name: Check Python syntax
         run: |
           python -m py_compile \
             scripts/public_repo_guard.py \
+            scripts/check_release_consistency.py \
             scripts/zeusapollo_swarm.py \
             scripts/zeusapollo_bridge.py
