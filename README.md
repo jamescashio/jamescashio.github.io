@@ -1,73 +1,88 @@
-# ZEUSAPOLLO v27 — Hardened Sovereign AI Infrastructure
+# ZEUSAPOLLO v28 — “Kwisatz Haderach”
 
-> *"The line between man and machine is not a wall — it's a bridge."*
+> *“The line between man and machine is not a wall — it is a bridge.”*
 
-A **live interactive portfolio** and **command center dashboard** showcasing a sovereign AI infrastructure spanning 19 nodes across two hypervisors, a Mac Mini M4, and edge devices, orchestrated through event-driven architecture.
+A live interactive portfolio and command-center experience showcasing Doug Cashio’s sovereign AI infrastructure: **19 nodes**, a **7-model routing fabric**, and **31 autonomous jobs** operating across two Proxmox hosts, an Apple Silicon inference node, and supporting edge systems.
 
----
+## Current release
 
-## 🚀 Overview
-
-| Aspect | Detail |
+| Item | Current state |
 |---|---|
-| **Stack** | Vanilla HTML/CSS/JS • Self-hosted fonts • Deployed via GitHub Pages |
-| **Design System** | LCARS-inspired (Star Trek) • Dark cyberpunk aesthetic • Orange/Cyan signature palette |
-| **Build State** | 235+ commits • 204+ deployments • 3 AI contributors |
+| **Release** | v28 — “Kwisatz Haderach” |
+| **Fleet** | 19 nodes |
+| **Model fabric** | 7 routed models |
+| **Automation** | 31 active cron jobs |
+| **Estimated inference burn** | Approximately $0.35/day |
+| **Deployment** | GitHub Pages from `main` |
+| **Production site** | `https://cashio.us` |
 
----
+## What changed in v28
 
-## 🧠 AI Stack — v27 "Sovereign Routing"
+- Added a scannable fleet-card QR code and downloadable telemetry card.
+- Added the `/` command palette and expanded interactive command-deck navigation.
+- Expanded the AI fabric to seven models with Atlas-routed orchestration.
+- Added live topology and status-driven metrics sourced from `status.json`.
+- Replaced AdGuard references with Technitium DNS across the current fleet narrative.
+- Completed a consistency pass across metadata, cost claims, model counts, release notes, and UI copy.
+- Continued DOM-XSS hardening by replacing unsafe dynamic HTML construction in the primary experience.
 
-Every request routes **directly** to the cheapest model that can do the job — five models, one gateway, no bridge tax:
+See [`CHANGELOG.md`](CHANGELOG.md) for the normalized release record and [`RELEASE_BODY.md`](RELEASE_BODY.md) for the current GitHub Release notes.
 
-| # | Model | Provider | Role |
-|---|---|---|---|
-| 1 | **DeepSeek V4-Pro** | DeepSeek API | Primary — all agent tasks, briefings, delegation |
-| 2 | **Perplexity Sonar Pro** | Perplexity API | Deep research with citations |
-| 3 | **Gemini 2.5 Flash** | Google AI | Compression + web extract |
-| 4 | **Grok 4.3** | xAI (SuperGrok) | Vision + TTS (Eve voice) |
-| 5 | **Qwen 3.7 Plus** | Nous | Emergency failover only |
+## Architecture at a glance
 
-Runs on a two-cluster Proxmox fabric (**Zeus** — infra + security; **Apollo** — AI + media) plus an **Atlas** Mac Mini M4 for local LiteLLM fallback. ~$0.35/day total inference burn.
+- **Zeus** — infrastructure, security, orchestration, and control-plane services.
+- **Apollo** — AI, media, backup, and supporting workloads.
+- **Atlas** — Apple Silicon local inference and sovereign LiteLLM routing.
+- **Hermes / Omnius / n8n** — agents, tools, workflows, and autonomous operations.
+- **Technitium / PBS / Genesis / Athena** — DNS, backup, storage, and edge services.
 
----
+## AI routing fabric
 
-## 🛡️ Security
+| Priority | Model | Role |
+|---:|---|---|
+| 1 | DeepSeek V4-Pro | Primary agent tasks, briefings, and delegation |
+| 2 | GLM 5.2 | Local coding and delegation fallback |
+| 3 | Perplexity Sonar Pro | Cited deep research |
+| 4 | Gemini 2.5 Flash | Compression and web extraction |
+| 5 | Grok 4.3 | Vision and Eve voice/TTS workflows |
+| 6 | Claude Opus 4.8 | Escalation for complex reasoning and architecture |
+| 7 | Qwen 3.7 Plus | Emergency failover |
 
-- **CSP** enforced via meta tag
-- **DOM hardening** — no `innerHTML` injection (audited by Sentinel/Jules)
-- **Zero-trust** model across the fleet
-- **Regular security scanning** via automated PR pipeline
+## Security posture
 
----
+- Content Security Policy is defined in the primary page.
+- Public-facing telemetry is intentionally limited and PII-scrubbed.
+- Dynamic UI output in the primary experience avoids direct `innerHTML` assignment.
+- Automated security reviews and corrective pull requests are part of the repository workflow.
+- Internal bridge and orchestration services should remain private, authenticated, and network-restricted.
 
-## 📁 Key Files
+## Key files
 
 | File | Purpose |
 |---|---|
-| `index.html` | Main portfolio — hero, skills, fleet topology |
-| `command.html` | Command Center — live architecture, metrics, event ticker |
-| `audio_engine.js` | Voice synthesis & LCARS sound effects |
-| `zeusapollo_swarm.py` | Multi-model orchestration (swarm mode) |
-| `zeusapollo_bridge.py` | Speculative decoding bridge for Atlas |
-| `status.json` | Fleet status data (auto-generated) |
+| `index.html` | Main portfolio and command-deck experience |
+| `command.html` | Alternate command-center view |
+| `lab.html` | Lab-focused experience |
+| `status.json` | Public fleet telemetry consumed by the site |
+| `RELEASE_BODY.md` | Curated body used by the tag-triggered release workflow |
+| `CHANGELOG.md` | Normalized version history |
+| `scripts/create_release.sh` | Local release/tag helper |
+| `.github/workflows/release.yml` | GitHub Release automation for `v*` tags |
 
----
+## Release flow
 
-## 🔄 Deployments
+1. Update `CHANGELOG.md`, `RELEASE_BODY.md`, and the release line in this README.
+2. Confirm the site and telemetry agree on node, model, automation, and cost figures.
+3. Commit the release-note changes to `main`.
+4. Create and push a version tag such as `v28`.
+5. GitHub Actions publishes the release using `RELEASE_BODY.md`.
 
-**GitHub Pages** — 203+ automated deployments. The site auto-deploys from `main` on each commit. No build step required.
+## Contributors
 
----
+- **jamescashio** — architect and operator
+- **Claude** — AI pair programmer
+- **google-labs-jules[bot]** — security auditor and automated PR contributor
 
-## 🤝 Contributors
+## License
 
-- **jamescashio** — Human operator / architect
-- **claude** — AI pair programmer (Anthropic)
-- **google-labs-jules[bot]** — Security auditor & automated PR fixer
-
----
-
-## 📜 License
-
-Private project. All rights reserved.
+Source-visible portfolio project. **All rights reserved.** No reuse or redistribution rights are granted unless explicitly authorized by the owner.
