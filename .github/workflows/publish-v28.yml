@@ -1,0 +1,39 @@
+name: Publish v28 Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/publish-v28.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-v28
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+
+      - name: Verify curated release notes
+        run: |
+          test -s RELEASE_BODY.md
+          grep -q 'v28' RELEASE_BODY.md
+
+      - name: Create or update v28 GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v28
+          target_commitish: main
+          name: v28 — Kwisatz Haderach
+          body_path: RELEASE_BODY.md
+          draft: false
+          prerelease: false
+          make_latest: true
