@@ -27,6 +27,8 @@ Requires:
 import argparse
 import json
 import time
+import os
+import secrets
 import httpx
 import mlx.core as mx
 from mlx_lm import load, generate
@@ -40,6 +42,30 @@ TARGET_MODEL = "mlx-community/gemma-4-26b-a4b-it-4bit"
 DRAFT_TOKENS = 5  # Number of tokens to speculate per cycle
 TEMPERATURE = 0.2  # Lower = higher acceptance rate (best: 0.1-0.3)
 BRIDGE_PORT = 11235
+
+
+# ─── AUTHENTICATION ──────────────────────────────────────────────────────────
+BRIDGE_API_KEY = os.environ.get("BRIDGE_API_KEY", "")
+if not BRIDGE_API_KEY:
+    try:
+        import json as _json
+        with open(os.path.expanduser("~/.hermes/config/auth.json")) as f:
+            auth_data = _json.load(f)
+            BRIDGE_API_KEY = auth_data.get("bridge", {}).get("api_key", "")
+    except (FileNotFoundError, ValueError, KeyError):
+        pass
+
+def verify_auth(request: Request) -> bool:
+    if not BRIDGE_API_KEY:
+        # SECURITY: If no key is set in env/config, fail closed to prevent unauthorized access.
+        return False
+    key = request.headers.get("X-API-Key", "")
+    if not key:
+        auth_header = request.headers.get("Authorization", "")
+        if auth_header.startswith("Bearer "):
+            key = auth_header.split(" ")[1]
+    # SECURITY: Prevent timing attacks by using constant-time string comparison
+    return secrets.compare_digest(key, BRIDGE_API_KEY)
 
 # ─── MODEL LOADING ──────────────────────────────────────────────────────────
 print("🔄 Loading target model (Gemma-4 26B)...")
@@ -145,7 +171,16 @@ app = FastAPI(title="ZeusApollo Speculative Bridge")
 
 @app.middleware("http")
 async def security_middleware(request: Request, call_next):
-    """Global security middleware — adds security headers."""
+    """Global security middleware — adds security headers and authentication."""
+    public_endpoints = ["/health", "/docs", "/redoc", "/openapi.json"]
+
+    # SECURITY: Deny-by-default — apply auth to ALL routes except explicitly public ones
+    # Avoid relying solely on URL prefix matching to prevent unintended public exposure
+    if request.url.path not in public_endpoints:
+        if not verify_auth(request):
+            from fastapi.responses import JSONResponse
+            return JSONResponse(status_code=401, content={"error": "Unauthorized — provide valid X-API-Key header"})
+
     response = await call_next(request)
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"
