@@ -1,0 +1,49 @@
+name: Public Site Safety
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  public-safety:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Scan for PII, secrets, private topology, and backups
+        id: safety_scan
+        continue-on-error: true
+        run: python scripts/public_repo_guard.py
+
+      - name: Upload safety report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-safety-report
+          path: public-safety-report.txt
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Enforce scan result
+        if: steps.safety_scan.outcome != 'success'
+        run: exit 1
+
+      - name: Check Python syntax
+        run: |
+          python -m py_compile \
+            scripts/public_repo_guard.py \
+            scripts/zeusapollo_swarm.py \
+            scripts/zeusapollo_bridge.py
