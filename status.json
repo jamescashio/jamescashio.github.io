@@ -1,9 +1,10 @@
 {
-  "generated": "2026-07-12T22:15:00Z",
-  "version": "v28",
+  "generated": "2026-07-12T22:40:00Z",
+  "version": "v30",
+  "release_name": "The Sleeper Has Awakened",
   "cluster_status": "MAX WARP",
   "fleet_nodes": 19,
-  "crons_active": 31,
+  "crons_active": 46,
   "tokens_routed_m": 22,
   "daily_burn": 0.35,
   "note": "Privacy-preserving public telemetry. Detailed operational state remains private.",
