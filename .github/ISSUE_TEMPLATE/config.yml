@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/jamescashio/jamescashio.github.io/security/policy
+    about: Follow the private reporting guidance in SECURITY.md. Do not publish exploit details or sensitive information in a public issue.
+  - name: cashio.us
+    url: https://cashio.us
+    about: Visit the production portfolio site.
