@@ -13,8 +13,8 @@ set -euo pipefail
 : "${SWARM_API_KEY:?Set SWARM_API_KEY; deployment refuses to continue without it}"
 
 SOURCE_FILE="${SOURCE_FILE:-scripts/zeusapollo_swarm.py}"
-HEALTH_URL="${HEALTH_URL:-http://127.0.0.1:11235/health}"
-AUTH_TEST_URL="${AUTH_TEST_URL:-http://127.0.0.1:11235/v1/chat/completions}"
+HEALTH_URL="${HEALTH_URL:-http://localhost:11235/health}"
+AUTH_TEST_URL="${AUTH_TEST_URL:-http://localhost:11235/v1/chat/completions}"
 
 if [[ ! -f "$SOURCE_FILE" ]]; then
   echo "Source file not found: $SOURCE_FILE" >&2
