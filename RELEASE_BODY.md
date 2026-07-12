@@ -1,55 +1,59 @@
-## 🚀 v21.2a — Hardened Sovereign AI Infrastructure
+## 🚀 v28 — “Kwisatz Haderach”
 
-**Opus 4.7 security audit completed. All critical issues resolved.**
+**Release date:** July 2, 2026  
+**Status:** Maximum Warp
 
-### 🔐 Security Hardening
+v28 is the full consistency-and-polish release for the ZeusApollo command deck. It aligns the site, telemetry, release notes, and public architecture story around the current fleet: **19 nodes**, **7 routed models**, **31 autonomous jobs**, and an estimated **$0.35/day** inference burn.
 
-| # | Issue | Fix | Impact |
-|---|---|---|---|
-| **C1** | Auth fail-open | X-API-Key middleware on all /v1/ routes | Unauthenticated requests → 401 |
-| **C2** | No rate limiting | Token bucket: 60 req/min per IP | DoS protection |
-| **C3** | Shared NATS password | Per-deploy token generation | Credential isolation |
-| **C4** | No input validation | max_tokens capped at 16,384 | Financial DoS prevention |
-| **C5** | CSP too permissive | Removed unpkg.com from script-src | Tightened script sources |
-| **C6** | No CSRF protection | CORS origin validation + security headers | Browser-origin protection |
+### ✨ Experience and presentation
 
-### 🛡️ Security Headers Added
-- `X-Content-Type-Options: nosniff`
-- `X-Frame-Options: DENY`
-- `X-XSS-Protection: 1; mode=block`
-- `Strict-Transport-Security: max-age=31536000`
+- Added a downloadable **fleet card** with live telemetry values.
+- Replaced the decorative barcode with a verified, scannable QR code for `cashio.us`.
+- Added a `/` command palette for fast command-deck navigation.
+- Improved breadcrumbing, above-the-fold wayfinding, console discovery, and interactive trace replay.
+- Reworked release notes and fleet copy so all visible counts and claims agree.
 
-### 🔧 Infrastructure Changes
-- **Swarm Bridge v1.2** — Rewritten auth middleware with env/config-driven API key loading
-- **Rate limiter** — Per-IP sliding window (defaultdict + pruning)
-- **Input validator** — Type/range checks on max_tokens, 32K char prompt cap
-- **CORS validator** — Origin + Referer whitelist (10 known hosts)
-- **Two-tier health** — `/health` (public, minimal) vs `/v1/health` (auth'd, full topology)
-- **Deploy script** — `deploy_hardening.sh` with auth verification test
+### 🧠 Sovereign AI fabric
 
-### ✅ What Was Already Fixed
-- Swarm bridge API key in `auth.json`
-- LiteLLM Anthropic key restored (Opus 4.7 confirmed working)
-- NATS JetStream persistent deployment on CT-115 NVMe
+- Expanded the model fabric from five to seven routed models.
+- Added **GLM 5.2** as the local coding and delegation fallback.
+- Added **Claude Opus 4.8** as the escalation lane through the Atlas proxy.
+- Standardized DeepSeek V4-Pro as the Atlas-routed primary path.
+- Preserved specialized lanes for cited research, compression, vision/TTS, and emergency failover.
 
-### 📦 Files Changed
-- `zeusapollo_swarm.py` — Full hardening (+377 lines of auth/rate-limit/CORS/validation)
-- `index.html` — CSP meta tag tightened (no unpkg CDN), SEO metadata restored
-- `status.json` — Security posture section added
-- `deploy_hardening.sh` — NEW: automated deploy script with verification
-- `README.md` — Updated for v21.2a
+### 🛰️ Fleet and operations
 
-### 🧪 Verification
-```bash
-# Test auth enforcement
-curl -s -o /dev/null -w '%{http_code}' -X POST \
-  http://192.168.1.115:11235/v1/chat/completions \
-  -H "Content-Type: application/json" \
-  -d '{"messages":[{"role":"user","content":"test"}]}'
-# → 401 (Unauthorized)
+- Standardized current-state reporting at **19 nodes** and **31 active cron jobs**.
+- Migrated current DNS references from AdGuard to **Technitium DNS**.
+- Added live topology and status-driven values sourced from `status.json`.
+- Preserved GitHub Pages deployment from `main` with no application build step.
 
-# Test with valid key
-curl -s -H 'X-API-Key: YOUR_KEY' \
-  http://192.168.1.115:11235/v1/health
-# → full topology
-```
+### 🛡️ Security and quality
+
+- Continued DOM-XSS remediation across interactive output paths.
+- Kept the primary page’s public telemetry PII-scrubbed.
+- Maintained Content Security Policy controls and defensive browser headers where applicable.
+- Corrected the LinkedIn vanity URL and completed a metadata/SEO consistency pass.
+
+### 📊 Release baseline
+
+| Metric | v28 baseline |
+|---|---:|
+| Fleet nodes | 19 |
+| Routed models | 7 |
+| Autonomous cron jobs | 31 |
+| Estimated daily inference burn | ~$0.35 |
+| Cost reduction vs. launch baseline | 11.4× |
+| Cost reduction vs. Opus-primary baseline | 7.2× |
+
+### 📁 Primary files
+
+- `index.html` — production portfolio and command deck
+- `status.json` — public telemetry source
+- `README.md` — current architecture and release overview
+- `CHANGELOG.md` — normalized version history
+- `.github/workflows/release.yml` — tag-triggered GitHub Release workflow
+
+---
+
+*Built and operated by Doug Cashio with AI-assisted engineering and automated security review.*
