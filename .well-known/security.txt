@@ -5,3 +5,4 @@ Contact: mailto:admin@cashio.us
 Expires: 2027-06-09T00:00:00.000Z
 Preferred-Languages: en
 Canonical: https://cashio.us/.well-known/security.txt
+Policy: https://github.com/jamescashio/jamescashio.github.io/security/policy
