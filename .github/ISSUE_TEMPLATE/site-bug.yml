@@ -1,0 +1,55 @@
+name: Public site issue
+description: Report a reproducible problem with cashio.us without sharing sensitive data.
+title: "[Site] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve cashio.us. Do not include credentials, private infrastructure details, personal information, customer data, or employer-confidential information. Security vulnerabilities should follow SECURITY.md rather than this public form.
+  - type: input
+    id: page
+    attributes:
+      label: Affected page
+      description: Provide the public cashio.us path or repository file.
+      placeholder: /, /lab.html, or index.html
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe the visible behavior and expected result.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+      placeholder: |
+        1. Open...
+        2. Select...
+        3. Observe...
+    validations:
+      required: true
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      options:
+        - Chrome or Chromium
+        - Microsoft Edge
+        - Firefox
+        - Safari
+        - Mobile browser
+        - Other
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Public-safety confirmation
+      options:
+        - label: I removed personal information, credentials, private addresses, internal hostnames, and confidential data from this report and its attachments.
+          required: true
