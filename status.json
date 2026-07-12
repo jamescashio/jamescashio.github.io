@@ -1,38 +1,26 @@
 {
-  "generated": "2026-07-02T01:03:01Z",
-  "boot_epoch": 1781078242,
+  "generated": "2026-07-12T22:15:00Z",
+  "version": "v28",
   "cluster_status": "MAX WARP",
   "fleet_nodes": 19,
   "crons_active": 31,
   "tokens_routed_m": 22,
-  "saved_vs_opus": 342,
   "daily_burn": 0.35,
-  "perplexity_burn_rate": 8.05,
-  "perplexity_balance": 56.00,
-  "pbs_storage_pct": 89,
-  "note": "v27 — Perplexity firehose active. PBS needs retention fix. XT8 router arriving June 23.",
+  "note": "Privacy-preserving public telemetry. Detailed operational state remains private.",
   "providers": {
-    "deepseek": "primary",
-    "glm": "coding+delegation-fallback",
-    "perplexity": "research",
-    "gemini": "compression+extract",
-    "grok": "vision+tts",
-    "opus": "escalation",
-    "qwen": "failover"
+    "primary": "general agent routing",
+    "coding": "coding and delegation",
+    "research": "cited research",
+    "compression": "summarization and extraction",
+    "vision": "vision and voice",
+    "escalation": "complex reasoning",
+    "failover": "continuity"
   },
   "nodes": {
-    "Apollo": {"latency":"2ms", "load":0.96, "swap":"130MB"},
-    "Zeus": {"latency":"2ms", "load":65, "swap":"157MB"},
-    "Atlas": {"latency":"2ms"},
-    "Hermes": {"latency":"2ms"},
-    "Omnius": {"latency":"2ms"},
-    "n8n": {"latency":"2ms"},
-    "Technitium": {"latency":"2ms", "dns_latency":"15-20ms"},
-    "Genesis": {"latency":"2ms"},
-    "PBS": {"latency":"2ms", "disk_pct":89},
-    "Athena": {"latency":"2ms"},
-    "Plex": {"latency":"2ms"},
-    "AI-Stack": {"latency":"2ms"},
-    "Control-Plane": {"latency":"2ms"}
+    "compute_fabric": {"status": "online"},
+    "ai_gateway": {"status": "online"},
+    "automation_plane": {"status": "online"},
+    "security_plane": {"status": "online"},
+    "storage_plane": {"status": "online"}
   }
 }
