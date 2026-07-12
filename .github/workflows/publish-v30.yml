@@ -1,23 +1,30 @@
-name: Create GitHub Release
+name: Publish v30 Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
+    paths:
+      - '.github/workflows/publish-v30.yml'
+      - 'RELEASE_BODY.md'
+      - 'CHANGELOG.md'
+      - 'README.md'
+      - 'status.json'
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: release-${{ github.ref_name }}
+  group: publish-v30
   cancel-in-progress: true
 
 jobs:
-  release:
+  publish:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Checkout release tag
+      - name: Checkout main
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
@@ -27,17 +34,17 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Verify curated release baseline
+      - name: Verify public release baseline
         run: |
           test -s RELEASE_BODY.md
-          EXPECTED_TAG="$(python -c 'import json; print(json.load(open("status.json"))["version"])')"
-          test "$GITHUB_REF_NAME" = "$EXPECTED_TAG"
           python scripts/check_release_consistency.py
 
-      - name: Publish GitHub Release
+      - name: Create or update v30 GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          name: ${{ github.ref_name }} — ZeusApollo Sovereign AI Infrastructure
+          tag_name: v30
+          target_commitish: main
+          name: v30 — The Sleeper Has Awakened
           body_path: RELEASE_BODY.md
           draft: false
           prerelease: false

@@ -1,47 +1,47 @@
-## 🚀 v28 — “Kwisatz Haderach”
+## 🚀 v30 — “The Sleeper Has Awakened”
 
-**Release date:** July 2, 2026  
+**Release date:** July 12, 2026  
 **Status:** Maximum Warp
 
-v28 is the full consistency-and-polish release for the ZeusApollo command deck. It aligns the site, telemetry, release notes, and public architecture story around the current fleet: **19 nodes**, **7 routed models**, **31 autonomous jobs**, and an estimated **$0.35/day** inference burn.
+v30 advances the ZeusApollo command deck from a polished portfolio into a more expressive, interactive demonstration of sovereign AI operations. The verified public baseline is **19 nodes**, **7 routed model lanes**, **46 autonomous jobs**, and an estimated **$0.35/day** inference burn.
 
-### ✨ Experience and presentation
+### ✨ Command-deck experience
 
-- Added a downloadable **fleet card** with live telemetry values.
-- Replaced the decorative barcode with a verified, scannable QR code for `cashio.us`.
-- Added a `/` command palette for fast command-deck navigation.
-- Improved breadcrumbing, above-the-fold wayfinding, console discovery, and interactive trace replay.
-- Reworked release notes and fleet copy so all visible counts and claims agree.
+- Introduced the **“Sleeper Has Awakened”** experience with deeper atmospheric motion, interactive topology, and improved visual discovery.
+- Added richer section transitions, cursor-responsive effects, and expanded command-deck instrumentation.
+- Expanded the Hermes console demonstration with `route`, `probe`, and `vetting` commands.
+- Added the public-safe `/ai` experience for AI-readiness and advisory positioning.
+- Preserved accessibility controls, reduced-motion behavior, keyboard navigation, and semantic labels.
 
 ### 🧠 Sovereign AI fabric
 
-- Expanded the model fabric from five to seven routed models.
-- Added **GLM 5.2** as the local coding and delegation fallback.
-- Added **Claude Opus 4.8** as the escalation lane through the Atlas proxy.
-- Standardized DeepSeek V4-Pro as the Atlas-routed primary path.
-- Preserved specialized lanes for cited research, compression, vision/TTS, and emergency failover.
+- Retained seven capability-based lanes: primary, coding, research, compression, vision and voice, escalation, and failover.
+- Updated the vision-and-voice lane while preserving capability- and cost-aware routing through the sovereign gateway.
+- Continued to present model routing as an interchangeable fabric rather than a single-provider dependency.
+- Maintained the 7.2× comparison against an Opus-primary baseline and the 11.4× reduction from the original launch burn.
 
-### 🛰️ Fleet and operations
+### 🛰️ Fleet and autonomous operations
 
-- Standardized current-state reporting at **19 nodes** and **31 active cron jobs**.
-- Migrated current DNS references from AdGuard to **Technitium DNS**.
-- Added live topology and status-driven values sourced from `status.json`.
-- Preserved GitHub Pages deployment from `main` with no application build step.
+- Increased the public automation baseline from **31 to 46 autonomous jobs**.
+- Retained the **19-node** public fleet baseline.
+- Kept the estimated inference burn at approximately **$0.35/day**.
+- Continued privacy-preserving public telemetry: coarse capability and health categories only, with operational details retained privately.
 
-### 🛡️ Security and quality
+### 🛡️ Security, privacy, and governance
 
-- Continued DOM-XSS remediation across interactive output paths.
-- Kept the primary page’s public telemetry PII-scrubbed.
-- Maintained Content Security Policy controls and defensive browser headers where applicable.
-- Corrected the LinkedIn vanity URL and completed a metadata/SEO consistency pass.
+- Maintained fail-closed authentication in the public bridge reference implementations.
+- Preserved the public/private repository boundary for topology, credentials, detailed telemetry, incident records, and deployment procedures.
+- Added a pull-request checklist covering PII, secrets, topology, telemetry, accessibility, and release consistency.
+- Added `CODEOWNERS`, controlled Dependabot maintenance, automated stale-PR cleanup, and closed-branch pruning.
+- Added concurrency controls so repeated safety and maintenance events do not waste runner time.
 
 ### 📊 Release baseline
 
-| Metric | v28 baseline |
+| Metric | v30 baseline |
 |---|---:|
 | Fleet nodes | 19 |
-| Routed models | 7 |
-| Autonomous cron jobs | 31 |
+| Routed model lanes | 7 |
+| Autonomous jobs | 46 |
 | Estimated daily inference burn | ~$0.35 |
 | Cost reduction vs. launch baseline | 11.4× |
 | Cost reduction vs. Opus-primary baseline | 7.2× |
@@ -49,10 +49,13 @@ v28 is the full consistency-and-polish release for the ZeusApollo command deck. 
 ### 📁 Primary files
 
 - `index.html` — production portfolio and command deck
-- `status.json` — public telemetry source
-- `README.md` — current architecture and release overview
+- `ai/index.html` — public AI-readiness experience
+- `status.json` — privacy-preserving public telemetry source
+- `README.md` — current architecture, governance, and release overview
 - `CHANGELOG.md` — normalized version history
-- `.github/workflows/release.yml` — tag-triggered GitHub Release workflow
+- `.github/workflows/public-safety.yml` — public-release safety gate
+- `.github/workflows/branch-hygiene.yml` — stale backlog and branch cleanup
+- `.github/workflows/release.yml` — generic tag-triggered GitHub Release workflow
 
 ---
 
