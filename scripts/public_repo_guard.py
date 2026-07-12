@@ -10,6 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SELF = Path(__file__).resolve()
+REPORT = ROOT / "public-safety-report.txt"
 TEXT_SUFFIXES = {
     ".html", ".htm", ".js", ".mjs", ".css", ".json", ".md", ".txt",
     ".py", ".sh", ".yml", ".yaml", ".xml", ".svg", ".toml", ".ini",
@@ -34,7 +35,7 @@ SENSITIVE_STATUS_KEYS = {"balance", "burn_rate", "load", "swap", "latency", "dis
 
 def iter_files():
     for path in ROOT.rglob("*"):
-        if not path.is_file() or path.resolve() == SELF:
+        if not path.is_file() or path.resolve() in {SELF, REPORT.resolve()}:
             continue
         if any(part in SKIP_DIRS for part in path.parts):
             continue
@@ -95,15 +96,21 @@ def main() -> int:
         if findings:
             failures.append((path.relative_to(ROOT), findings))
 
+    lines: list[str] = []
     if failures:
-        print("Public repository safety scan failed:\n")
+        lines.append("Public repository safety scan failed:\n")
         for path, findings in failures:
-            print(f"- {path}: {'; '.join(sorted(set(findings)))}")
-        print("\nMove operational data to a private repository, sanitize the content, or use an approved public alias.")
-        return 1
+            lines.append(f"- {path}: {'; '.join(sorted(set(findings)))}")
+        lines.append("\nMove operational data to a private repository, sanitize the content, or use an approved public alias.")
+        result = 1
+    else:
+        lines.append("Public repository safety scan passed.")
+        result = 0
 
-    print("Public repository safety scan passed.")
-    return 0
+    output = "\n".join(lines) + "\n"
+    REPORT.write_text(output, encoding="utf-8")
+    print(output, end="")
+    return result
 
 
 if __name__ == "__main__":
