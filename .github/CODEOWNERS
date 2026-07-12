@@ -1,0 +1,11 @@
+# Default owner for the public cashio.us portfolio.
+* @jamescashio
+
+# Security, privacy, release, and workflow changes require explicit owner review.
+/.github/ @jamescashio
+/SECURITY.md @jamescashio
+/PRIVACY.md @jamescashio
+/status.json @jamescashio
+/RELEASE_BODY.md @jamescashio
+/CHANGELOG.md @jamescashio
+/scripts/ @jamescashio
