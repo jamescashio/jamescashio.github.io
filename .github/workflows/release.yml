@@ -5,17 +5,34 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref_name }}
+  cancel-in-progress: true
+
 jobs:
   release:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    timeout-minutes: 5
     steps:
       - name: Checkout release tag
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
-      - name: Verify curated release notes
-        run: test -s RELEASE_BODY.md
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify curated release baseline
+        run: |
+          test -s RELEASE_BODY.md
+          EXPECTED_TAG="$(python -c 'import json; print(json.load(open("status.json"))["version"])')"
+          test "$GITHUB_REF_NAME" = "$EXPECTED_TAG"
+          python scripts/check_release_consistency.py
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
