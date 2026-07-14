@@ -5863,10 +5863,13 @@
 
       function setFx(enabled) {
         fxEnabled = Boolean(enabled);
-        body.dataset.fx = fxEnabled ? "on" : "off";
+        var motionActive = effectiveMotion();
+        body.dataset.fx = motionActive ? "on" : "off";
         fxToggle.setAttribute("aria-pressed", String(fxEnabled));
-        fxToggle.setAttribute("aria-label", fxEnabled ? "Turn ambient visual effects off" : "Turn ambient visual effects on");
-        fxToggle.textContent = fxEnabled ? "FX ON" : "FX OFF";
+        fxToggle.setAttribute("aria-label", fxEnabled && !motionActive
+          ? "Ambient visual effects limited by reduced-motion or data-saver settings"
+          : (fxEnabled ? "Turn ambient visual effects off" : "Turn ambient visual effects on"));
+        fxToggle.textContent = fxEnabled && !motionActive ? "FX SAFE" : (motionActive ? "FX ON" : "FX OFF");
         try {
           window.localStorage.setItem("cashio-fx", fxEnabled ? "on" : "off");
         } catch (error) {
@@ -7355,7 +7358,8 @@
 
       if (typeof reduceMotion.addEventListener === "function") {
         reduceMotion.addEventListener("change", function () {
-          if (savedFx === null && reduceMotion.matches) setFx(false);
+          if (savedFx === null && reduceMotion.matches) fxEnabled = false;
+          setFx(fxEnabled);
           syncDeckMotion();
           refreshStarfield();
         });
