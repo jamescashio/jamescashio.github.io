@@ -70,33 +70,39 @@ async def health():
 @app.post("/v1/completions")
 async def completions(request: Request):
     try:
-        body = await request.json()
-    except Exception as exc:
-        raise HTTPException(status_code=400, detail="Invalid JSON") from exc
+        try:
+            body = await request.json()
+        except Exception as exc:
+            raise HTTPException(status_code=400, detail="Invalid JSON") from exc
 
-    prompt = body.get("prompt", "")
-    if not isinstance(prompt, str):
-        raise HTTPException(status_code=400, detail="prompt must be a string")
-    if len(prompt) > MAX_PROMPT_CHARS:
-        raise HTTPException(status_code=400, detail="Prompt exceeds configured limit")
+        prompt = body.get("prompt", "")
+        if not isinstance(prompt, str):
+            raise HTTPException(status_code=400, detail="prompt must be a string")
+        if len(prompt) > MAX_PROMPT_CHARS:
+            raise HTTPException(status_code=400, detail="Prompt exceeds configured limit")
 
-    requested_tokens = body.get("max_tokens", 512)
-    if not isinstance(requested_tokens, int) or requested_tokens < 1:
-        raise HTTPException(status_code=400, detail="max_tokens must be a positive integer")
-    body["max_tokens"] = min(requested_tokens, MAX_TOKENS)
+        requested_tokens = body.get("max_tokens", 512)
+        if not isinstance(requested_tokens, int) or requested_tokens < 1:
+            raise HTTPException(status_code=400, detail="max_tokens must be a positive integer")
+        body["max_tokens"] = min(requested_tokens, MAX_TOKENS)
 
-    draft_payload = dict(body)
-    draft_payload["max_tokens"] = min(body["max_tokens"], 8)
+        draft_payload = dict(body)
+        draft_payload["max_tokens"] = min(body["max_tokens"], 8)
 
-    try:
-        draft_response = await client.post(DRAFT_ENDPOINT, json=draft_payload)
-        draft_response.raise_for_status()
-        draft = draft_response.json()
+        try:
+            draft_response = await client.post(DRAFT_ENDPOINT, json=draft_payload)
+            draft_response.raise_for_status()
+            draft = draft_response.json()
 
-        target_payload = dict(body)
-        target_payload["draft"] = draft
-        target_response = await client.post(TARGET_ENDPOINT, json=target_payload)
-        target_response.raise_for_status()
-        return target_response.json()
-    except httpx.HTTPError as exc:
-        raise HTTPException(status_code=502, detail="Upstream model service unavailable") from exc
+            target_payload = dict(body)
+            target_payload["draft"] = draft
+            target_response = await client.post(TARGET_ENDPOINT, json=target_payload)
+            target_response.raise_for_status()
+            return target_response.json()
+        except httpx.HTTPError as exc:
+            raise HTTPException(status_code=502, detail="Upstream model service unavailable") from exc
+    except HTTPException:
+        raise
+    except Exception:
+        # SECURITY: Prevent internal state leakage on unexpected exceptions
+        raise HTTPException(status_code=500, detail="Internal Server Error") from None
