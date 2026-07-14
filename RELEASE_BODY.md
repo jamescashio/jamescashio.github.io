@@ -1,62 +1,45 @@
-## 🚀 v30 — “The Sleeper Has Awakened”
+## v30 — “The Sleeper Has Awakened”
 
-**Release date:** July 12, 2026  
-**Status:** Maximum Warp
+**Release date:** 07-14-2026
 
-v30 advances the ZeusApollo command deck from a polished portfolio into a more expressive, interactive demonstration of sovereign AI operations. The verified public baseline is **19 nodes**, **7 routed model lanes**, **46 autonomous jobs**, and an estimated **$0.35/day** inference burn.
+**Public status window:** 07-14-2026 through 07-17-2026
 
-### ✨ Command-deck experience
+v30 turns cashio.us into an interactive, cinematic proof deck for independently built enterprise AI, cybersecurity, automation, and sovereign infrastructure work.
 
-- Introduced the **“Sleeper Has Awakened”** experience with deeper atmospheric motion, interactive topology, and improved visual discovery.
-- Added richer section transitions, cursor-responsive effects, and expanded command-deck instrumentation.
-- Expanded the Hermes console demonstration with `route`, `probe`, and `vetting` commands.
-- Added the public-safe `/ai` experience for AI-readiness and advisory positioning.
-- Preserved accessibility controls, reduced-motion behavior, keyboard navigation, and semantic labels.
+### Experience
 
-### 🧠 Sovereign AI fabric
+- Introduces a four-scene House Cashio proof flight with original space and Dune-inspired CSS visuals.
+- Upgrades the Tron-inspired Bit companion while preserving its recognizable geometry.
+- Adds a self-paced mission, observable event-chain demonstration, safe local console, interactive fleet, and shareable Fleet Card.
+- Preserves reduced-motion support, keyboard navigation, semantic structure, and responsive layouts.
 
-- Retained seven capability-based lanes: primary, coding, research, compression, vision and voice, escalation, and failover.
-- Updated the vision-and-voice lane while preserving capability- and cost-aware routing through the sovereign gateway.
-- Continued to present model routing as an interchangeable fabric rather than a single-provider dependency.
-- Maintained the 7.2× comparison against an Opus-primary baseline and the 11.4× reduction from the original launch burn.
+### Public status reconciliation
 
-### 🛰️ Fleet and autonomous operations
-
-- Increased the public automation baseline from **31 to 46 autonomous jobs**.
-- Retained the **19-node** public fleet baseline.
-- Kept the estimated inference burn at approximately **$0.35/day**.
-- Continued privacy-preserving public telemetry: coarse capability and health categories only, with operational details retained privately.
-
-### 🛡️ Security, privacy, and governance
-
-- Maintained fail-closed authentication in the public bridge reference implementations.
-- Preserved the public/private repository boundary for topology, credentials, detailed telemetry, incident records, and deployment procedures.
-- Added a pull-request checklist covering PII, secrets, topology, telemetry, accessibility, and release consistency.
-- Added `CODEOWNERS`, controlled Dependabot maintenance, automated stale-PR cleanup, and closed-branch pruning.
-- Added concurrency controls so repeated safety and maintenance events do not waste runner time.
-
-### 📊 Release baseline
-
-| Metric | v30 baseline |
+| Metric | v30 public baseline |
 |---|---:|
-| Fleet nodes | 19 |
-| Routed model lanes | 7 |
-| Autonomous jobs | 46 |
-| Estimated daily inference burn | ~$0.35 |
-| Cost reduction vs. launch baseline | 11.4× |
-| Cost reduction vs. Opus-primary baseline | 7.2× |
+| Personal hosts | 2 |
+| Documented service roles | 19 |
+| Owner-reported healthy services | 17 |
+| Unreported services | 1 — Athena |
+| Decommissioned services | 1 — Home-Asst |
+| Configured model routes | 10 |
+| Automation jobs | 31, last reported |
+| Estimated daily inference burn | ~$0.35, last reported |
 
-### 📁 Primary files
+The status is owner supplied and sampled, not streaming telemetry. The interface automatically stops presenting health as current after 07-17-2026.
 
-- `index.html` — production portfolio and command deck
-- `ai/index.html` — public AI-readiness experience
-- `status.json` — privacy-preserving public telemetry source
-- `README.md` — current architecture, governance, and release overview
-- `CHANGELOG.md` — normalized version history
-- `.github/workflows/public-safety.yml` — public-release safety gate
-- `.github/workflows/branch-hygiene.yml` — stale backlog and branch cleanup
-- `.github/workflows/release.yml` — generic tag-triggered GitHub Release workflow
+### Model routing
+
+The configured routes are DeepSeek V4 Pro, Claude Sonnet 5, Grok 4.5, GLM 5.2, Gemma 4 26B A4B, Gemini 3.5 Flash, GPT-4o mini TTS, and three named failovers. Provider names were checked against official documentation on 07-14-2026. GPT-4o mini TTS remains visible but is labeled legacy/deprecated pending replacement evaluation.
+
+### Security, privacy, and employer boundary
+
+- No private addresses, ports, credentials, access procedures, customer data, or employer-confidential material are included.
+- Service roles are public-safe descriptions rather than deployment instructions.
+- Interactive demonstrations do not contact live infrastructure.
+- Public contact information is limited to the cashio.us domain and professional-profile links.
+- The repository safety scan and release-consistency checks protect the public branch before publication.
 
 ---
 
-*Built and operated by Doug Cashio with AI-assisted engineering and automated security review.*
+*Built and operated by Doug Cashio as a personal, independent work sample.*
