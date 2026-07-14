@@ -1,6 +1,6 @@
 # Privacy Notice for cashio.us
 
-**Last updated:** July 12, 2026
+**Last updated:** 07-14-2026
 
 cashio.us is a public professional portfolio operated by Doug Cashio.
 
