@@ -1,108 +1,74 @@
 # ZEUSAPOLLO v30 — “The Sleeper Has Awakened”
 
-> *“The line between man and machine is not a wall — it is a bridge.”*
+cashio.us is Doug Cashio’s interactive portfolio for independently built enterprise AI, cybersecurity, automation, and sovereign homelab work.
 
-A live interactive portfolio and command-center experience showcasing Doug Cashio’s sovereign AI work through **19 public-facing fleet nodes**, a **7-model routing fabric**, and **46 autonomous jobs**.
-
-The public repository demonstrates architecture, outcomes, and engineering discipline while intentionally withholding production addresses, ports, hostnames, container identifiers, credentials, detailed telemetry, and private deployment procedures.
+The public site shows sanitized proof and architectural roles while withholding addresses, ports, credentials, customer information, private access paths, and detailed operational telemetry.
 
 ## Current release
 
-| Item | Current state |
+| Item | Current public state |
 |---|---|
 | **Release** | v30 — “The Sleeper Has Awakened” |
-| **Fleet** | 19 nodes |
-| **Model fabric** | 7 routed model lanes |
-| **Automation** | 46 active jobs |
-| **Estimated inference burn** | Approximately $0.35/day |
+| **Status export** | Verified 07-14-2026; expires 07-17-2026 |
+| **Hosts** | 2 personal homelab hosts |
+| **Documented roles** | 19 public-safe service roles |
+| **Owner-reported healthy** | 17 services |
+| **Unreported** | 1 service — Athena |
+| **Decommissioned** | 1 service — Home-Asst |
+| **Model routes** | 10 configured routes |
+| **Automation** | 31 last-reported jobs |
+| **Estimated inference burn** | Approximately $0.35/day, last reported |
 | **Deployment** | GitHub Pages from `main` |
 | **Production site** | `https://cashio.us` |
 
-## What changed in v30
+The status export is owner supplied and sampled, not streaming telemetry. After 07-17-2026, the site automatically stops presenting its health snapshot as current.
 
-- Expanded the autonomous operations layer from 31 to 46 scheduled jobs.
-- Advanced the public command deck with the “Sleeper Has Awakened” experience, richer visual depth, interactive topology, and improved section discovery.
-- Expanded the Hermes console with `route`, `probe`, and `vetting` demonstrations.
-- Updated the vision-and-voice lane and retained seven capability-based routing lanes.
-- Added the public-safe `/ai` experience and stronger AI-readiness positioning.
-- Preserved the v28 privacy boundary while tightening repository governance, release consistency, and automated hygiene.
+## Model routing fabric
 
-See [`CHANGELOG.md`](CHANGELOG.md) for the normalized release record and [`RELEASE_BODY.md`](RELEASE_BODY.md) for the current GitHub Release notes.
+| Route | Configured model |
+|---|---|
+| Primary | DeepSeek V4 Pro |
+| Premium | Claude Sonnet 5 |
+| Research | Grok 4.5 |
+| Coding | GLM 5.2 |
+| Extraction | Gemma 4 26B A4B, local |
+| Vision | Gemini 3.5 Flash |
+| Voice | GPT-4o mini TTS, legacy/deprecated |
+| Failover 1 | DeepSeek V4 Flash |
+| Failover 2 | GLM 5.2 |
+| Failover 3 | Gemini 3.5 Flash |
 
-## Architecture at a glance
-
-- **Compute fabric** — virtualized workloads, local inference, and workload isolation.
-- **AI gateway** — capability- and cost-aware routing with specialized model lanes and fallback paths.
-- **Automation plane** — event-driven workflows, 46 scheduled jobs, agents, tools, and verification steps.
-- **Security plane** — authentication, least privilege, input validation, logging, and fail-closed behavior.
-- **Storage and recovery** — backups, retained artifacts, and separated public/private data paths.
-- **Observability** — detailed signals remain private; only coarse portfolio metrics are published.
-
-## AI routing fabric
-
-| Priority | Model lane | Role |
-|---:|---|---|
-| 1 | Primary | General agent tasks, briefings, and delegation |
-| 2 | Coding | Local coding and delegation fallback |
-| 3 | Research | Cited deep research |
-| 4 | Compression | Summarization and extraction |
-| 5 | Vision and voice | Visual understanding and voice workflows |
-| 6 | Escalation | Complex reasoning and architecture |
-| 7 | Failover | Continuity and emergency routing |
-
-## Prime Directive governance
-
-**Work smarter, not harder:** automate the repetitive controls and reserve human review for judgment.
-
-- Every pull request runs the public-site safety gate.
-- Pull requests use a public-release checklist covering PII, secrets, topology, telemetry, accessibility, and release consistency.
-- `CODEOWNERS` establishes a clear accountable owner.
-- Dependabot maintains GitHub Actions dependencies on a controlled monthly cadence.
-- Branch hygiene closes stale automation backlog and removes branches after their pull requests are closed.
-- Release notes, the README, `status.json`, and the in-page release panel must agree before a tag is published.
+These are configured routes, not live-traffic claims or a universal model ranking. Public names were reconciled against official provider catalogs on 07-14-2026. The legacy voice route remains visible so the public configuration is represented honestly.
 
 ## Public-safety posture
 
-- Content Security Policy is defined in the primary pages.
-- Public-facing telemetry is intentionally coarse and PII-scrubbed.
-- Public code examples require environment-injected configuration and fail closed when authentication is missing.
-- Historical HTML snapshots and detailed security journals are excluded from the active public branch.
-- Pull requests scan for private addresses, common secret formats, personal email domains, backup pages, and sensitive telemetry keys.
-- Operational deployment scripts, topology, credentials, and incident records belong in a private repository.
-
-Read [`SECURITY.md`](SECURITY.md), [`PRIVACY.md`](PRIVACY.md), the [`Public Site Protection Guide`](docs/PUBLIC_SITE_PROTECTION_GUIDE.md), and [`Repository Settings`](docs/REPOSITORY_SETTINGS.md).
+- No private network addresses, ports, credentials, customer data, employer-confidential material, or access procedures are published.
+- Service states are date bounded and automatically become historical after expiration.
+- The page performs no live infrastructure calls; interactive demonstrations remain browser local.
+- Public contact information is limited to the cashio.us domain and linked professional profiles.
+- Reduced-motion support, keyboard navigation, semantic labels, and a restrictive Content Security Policy are retained.
 
 ## Key files
 
 | File | Purpose |
 |---|---|
-| `index.html` | Main portfolio and command-deck experience |
-| `ai/index.html` | Public AI-readiness experience |
-| `command.html` | Alternate command-center view |
-| `lab.html` | Public-safe lab architecture view |
-| `status.json` | Coarse public telemetry consumed by the site |
-| `SECURITY.md` | Vulnerability reporting and repository scope |
+| `index.html` | Production portfolio and interactive command deck |
+| `status.json` | Coarse, dated public status contract |
+| `README.md` | Current public architecture and release summary |
+| `CHANGELOG.md` | Public-facing release history |
+| `RELEASE_BODY.md` | Current v30 release notes |
+| `SECURITY.md` | Vulnerability reporting and repository boundaries |
 | `PRIVACY.md` | Public privacy notice |
 | `scripts/public_repo_guard.py` | Automated public-repository safety scanner |
-| `.github/workflows/public-safety.yml` | Pull-request and `main` safety gate |
-| `.github/workflows/branch-hygiene.yml` | Stale pull-request and branch cleanup |
-| `RELEASE_BODY.md` | Curated body used by the release workflow |
-| `CHANGELOG.md` | Normalized version history |
+| `scripts/check_release_consistency.py` | Cross-file release consistency checker |
 
 ## Release flow
 
-1. Update `CHANGELOG.md`, `RELEASE_BODY.md`, `status.json`, and the release line in this README.
-2. Confirm the site and public telemetry agree on approved coarse metrics.
-3. Run `python scripts/public_repo_guard.py`.
-4. Merge through a reviewed pull request after required checks pass.
-5. Publish the current release tag, such as `v30`.
-6. GitHub Actions creates or updates the GitHub Release from `RELEASE_BODY.md`.
-
-## Contributors
-
-- **jamescashio** — architect and operator
-- **Claude** — AI pair programmer
-- **google-labs-jules[bot]** — security auditor and automated PR contributor
+1. Reconcile the dated public status export.
+2. Keep `index.html`, `status.json`, `README.md`, `CHANGELOG.md`, and `RELEASE_BODY.md` consistent.
+3. Run the public-safety and release-consistency checks.
+4. Merge the reviewed release branch into `main`.
+5. GitHub Pages publishes `https://cashio.us`.
 
 ## License
 
