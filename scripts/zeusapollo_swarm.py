@@ -80,30 +80,36 @@ async def health():
 @app.post("/v1/chat/completions")
 async def completions(request: Request):
     try:
-        body = await request.json()
-    except Exception as exc:
-        raise HTTPException(status_code=400, detail="Invalid JSON") from exc
-
-    messages = body.get("messages")
-    if not isinstance(messages, list) or not messages:
-        raise HTTPException(status_code=400, detail="messages must be a non-empty list")
-
-    prompt_size = sum(len(str(item.get("content", ""))) for item in messages if isinstance(item, dict))
-    if prompt_size > MAX_PROMPT_CHARS:
-        raise HTTPException(status_code=400, detail="Prompt exceeds configured limit")
-
-    requested_tokens = body.get("max_tokens", 512)
-    if not isinstance(requested_tokens, int) or requested_tokens < 1:
-        raise HTTPException(status_code=400, detail="max_tokens must be a positive integer")
-    body["max_tokens"] = min(requested_tokens, MAX_TOKENS)
-
-    last_error: Exception | None = None
-    for endpoint in (PRIMARY_ENDPOINT, FALLBACK_ENDPOINT):
         try:
-            response = await client.post(endpoint, json=body)
-            response.raise_for_status()
-            return response.json()
+            body = await request.json()
         except Exception as exc:
-            last_error = exc
+            raise HTTPException(status_code=400, detail="Invalid JSON") from exc
 
-    raise HTTPException(status_code=502, detail="Upstream model service unavailable") from last_error
+        messages = body.get("messages")
+        if not isinstance(messages, list) or not messages:
+            raise HTTPException(status_code=400, detail="messages must be a non-empty list")
+
+        prompt_size = sum(len(str(item.get("content", ""))) for item in messages if isinstance(item, dict))
+        if prompt_size > MAX_PROMPT_CHARS:
+            raise HTTPException(status_code=400, detail="Prompt exceeds configured limit")
+
+        requested_tokens = body.get("max_tokens", 512)
+        if not isinstance(requested_tokens, int) or requested_tokens < 1:
+            raise HTTPException(status_code=400, detail="max_tokens must be a positive integer")
+        body["max_tokens"] = min(requested_tokens, MAX_TOKENS)
+
+        last_error: Exception | None = None
+        for endpoint in (PRIMARY_ENDPOINT, FALLBACK_ENDPOINT):
+            try:
+                response = await client.post(endpoint, json=body)
+                response.raise_for_status()
+                return response.json()
+            except Exception as exc:
+                last_error = exc
+
+        raise HTTPException(status_code=502, detail="Upstream model service unavailable") from last_error
+    except HTTPException:
+        raise
+    except Exception as exc:
+        # SECURITY: Catch unexpected errors to prevent stack trace leaks
+        raise HTTPException(status_code=500, detail="Internal Server Error") from exc
