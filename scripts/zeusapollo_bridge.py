@@ -16,7 +16,24 @@ import httpx
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 
-BRIDGE_API_KEY = os.environ.get("BRIDGE_API_KEY", "").strip()
+
+def _load_secret(env_var: str) -> str:
+    # SECURITY: Load API keys from structured config fallback to avoid exposure in process environment variables
+    val = os.environ.pop(env_var, "").strip()
+    if val:
+        return val
+    try:
+        import json
+        conf = os.path.expanduser("~/.hermes/config/auth.json")
+        if os.path.isfile(conf):
+            with open(conf, "r", encoding="utf-8") as f:
+                return str(json.load(f).get(env_var, "")).strip()
+    except Exception:
+        pass
+    return ""
+
+
+BRIDGE_API_KEY = _load_secret("BRIDGE_API_KEY")
 DRAFT_ENDPOINT = os.environ.get("DRAFT_MODEL_ENDPOINT", "").strip()
 TARGET_ENDPOINT = os.environ.get("TARGET_MODEL_ENDPOINT", "").strip()
 MAX_PROMPT_CHARS = int(os.environ.get("MAX_PROMPT_CHARS", "32000"))
