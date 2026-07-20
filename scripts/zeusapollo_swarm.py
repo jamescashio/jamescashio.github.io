@@ -16,8 +16,25 @@ import httpx
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 
+
+def _load_secret(env_var: str) -> str:
+    # SECURITY: Load API keys from structured config fallback to avoid exposure in process environment variables
+    val = os.environ.pop(env_var, "").strip()
+    if val:
+        return val
+    try:
+        import json
+        conf = os.path.expanduser("~/.hermes/config/auth.json")
+        if os.path.isfile(conf):
+            with open(conf, "r", encoding="utf-8") as f:
+                return str(json.load(f).get(env_var, "")).strip()
+    except Exception:
+        pass
+    return ""
+
+
 APP_NAME = "ZeusApollo Public-Safe Swarm Reference"
-API_KEY = os.environ.get("SWARM_API_KEY", "").strip()
+API_KEY = _load_secret("SWARM_API_KEY")
 PRIMARY_ENDPOINT = os.environ.get("PRIMARY_MODEL_ENDPOINT", "").strip()
 FALLBACK_ENDPOINT = os.environ.get("FALLBACK_MODEL_ENDPOINT", "").strip()
 ALLOWED_ORIGINS = {
