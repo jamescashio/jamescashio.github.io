@@ -1,15 +1,17 @@
 ## v30 — “The Sleeper Has Awakened”
 
-**Release date:** 07-14-2026
+**Release date:** 07-22-2026
 
-**Public status window:** 07-14-2026 through 07-17-2026
+**Public status window:** 07-22-2026 through 08-21-2026, or until the next architecture change
 
-v30 turns cashio.us into an interactive, cinematic proof deck for independently built enterprise AI, cybersecurity, automation, and sovereign infrastructure work.
+v30 turns cashio.us into an interactive, cinematic sovereign AI proof deck: personally owned infrastructure, quality-first routing, disciplined cost, auditable automation, and human command.
 
 ### Experience
 
 - Introduces a four-scene House Cashio proof flight with original space and Dune-inspired CSS visuals.
+- Reframes the primary story around sovereign AI: quality-first routing, measured operating cost, protected context, and human command.
 - Upgrades the Tron-inspired Bit companion while preserving its recognizable geometry.
+- Adds an interactive business-value constellation translating technical evidence into efficiency, continuity, governance, and adoption outcomes.
 - Adds a self-paced mission, observable event-chain demonstration, safe local console, interactive fleet, and shareable Fleet Card.
 - Preserves reduced-motion support, keyboard navigation, semantic structure, and responsive layouts.
 
@@ -17,20 +19,21 @@ v30 turns cashio.us into an interactive, cinematic proof deck for independently 
 
 | Metric | v30 public baseline |
 |---|---:|
-| Personal hosts | 2 |
-| Documented service roles | 19 |
-| Owner-reported healthy services | 17 |
-| Unreported services | 1 — Athena |
-| Decommissioned services | 1 — Home-Asst |
+| Core hosts | 2 |
+| Documented service roles | 18 |
+| Owner-reported healthy services | 18 |
+| Verified containers | 18 of 18 running |
+| Athena | Owner-confirmed active physical Home Assistant edge node; outside container count |
 | Configured model routes | 10 |
-| Automation jobs | 31, last reported |
-| Estimated daily inference burn | ~$0.35, last reported |
+| Automation jobs | 71, last reported |
+| Automation health | 71 of 71; zero errors |
+| Observed AI operating cost | $0.26/day; $6.49 estimated monthly run rate; quality-first escalation retained |
 
-The status is owner supplied and sampled, not streaming telemetry. The interface automatically stops presenting health as current after 07-17-2026.
+The status is Hermes-generated, public-safe, and sampled—not streaming telemetry. The interface automatically stops presenting health as current after 08-21-2026 or the next architecture change.
 
 ### Model routing
 
-The configured routes are DeepSeek V4 Pro, Claude Sonnet 5, Grok 4.5, GLM 5.2, Gemma 4 26B A4B, Gemini 3.5 Flash, GPT-4o mini TTS, and three named failovers. Provider names were checked against official documentation on 07-14-2026. GPT-4o mini TTS remains visible but is labeled legacy/deprecated pending replacement evaluation.
+The ten-lane fabric includes Kimi K3, DeepSeek V4 Flash, DeepSeek V4 Pro, Gemini 3.6 Flash, Grok 4.5, Claude Sonnet 5, Sonar Pro, GPT-5.6 Sol, local Gemma 4 26B, and the Atlas/OpenRouter/ZenMux gateway layer. Hermes verified names, priorities, fallbacks, and provider state on 07-22-2026.
 
 ### Security, privacy, and employer boundary
 
