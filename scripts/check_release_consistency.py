@@ -25,7 +25,8 @@ def main() -> int:
     healthy = int(status["healthy_services"])
     routes = int(status["model_routes"])
     jobs = int(status["automation_jobs_last_reported"])
-    burn = float(status["daily_burn"])
+    daily_cost = float(status["observed_ai_cost_per_day"])
+    monthly_cost = float(status["estimated_ai_cost_per_month"])
 
     files = {
         "README.md": read("README.md"),
@@ -38,26 +39,29 @@ def main() -> int:
         "README release heading": ("README.md", f"# ZEUSAPOLLO {version}"),
         "README release name": ("README.md", release_name),
         "README status dates": ("README.md", f"Verified {verified}; expires {expires}"),
-        "README host count": ("README.md", f"| **Hosts** | {hosts} personal homelab hosts |"),
+        "README host count": ("README.md", f"| **Hosts** | {hosts} core homelab hosts, plus Athena at the edge |"),
         "README role count": ("README.md", f"| **Documented roles** | {roles} public-safe service roles |"),
         "README healthy count": ("README.md", f"| **Owner-reported healthy** | {healthy} services |"),
         "README route count": ("README.md", f"| **Model routes** | {routes} configured routes |"),
         "README automation count": ("README.md", f"| **Automation** | {jobs} last-reported jobs |"),
-        "README burn": ("README.md", f"Approximately ${burn:.2f}/day, last reported"),
+        "README operating cost": ("README.md", f"| **Observed AI operating cost** | ${daily_cost:.2f}/day; ${monthly_cost:.2f} estimated monthly run rate |"),
         "Changelog release": ("CHANGELOG.md", f"## [{version}] — {verified}"),
         "Release body version": ("RELEASE_BODY.md", f"{version} —"),
         "Release body healthy count": ("RELEASE_BODY.md", f"| Owner-reported healthy services | {healthy} |"),
         "Release body route count": ("RELEASE_BODY.md", f"| Configured model routes | {routes} |"),
         "Release body automation count": ("RELEASE_BODY.md", f"| Automation jobs | {jobs}, last reported |"),
-        "Release body burn": ("RELEASE_BODY.md", f"| Estimated daily inference burn | ~${burn:.2f}, last reported |"),
+        "Release body operating cost": ("RELEASE_BODY.md", f"| Observed AI operating cost | ${daily_cost:.2f}/day; ${monthly_cost:.2f} estimated monthly run rate; quality-first escalation retained |"),
         "In-page release": ("index.html", f"CASHIO.US // {version}"),
         "In-page healthy count": ("index.html", f'data-fleet="healthyServiceCount">{healthy}<'),
         "In-page route count": ("index.html", f'data-fleet="routeCount">{routes}<'),
         "In-page host count": ("index.html", f'data-fleet="hostCount">{hosts}<'),
         "In-page verified date": ("index.html", f'verifiedDisplay: "{verified}"'),
         "In-page expiry date": ("index.html", f'expiresDisplay: "{expires}"'),
-        "In-page burn": ("index.html", f'data-fleet="dailyBurn">${burn:.2f}<'),
-        "In-page legacy voice disclosure": ("index.html", "provider marks deprecated"),
+        "In-page daily cost": ("index.html", f'dailyBurn: {daily_cost:.2f}'),
+        "In-page monthly cost": ("index.html", f'monthlyRunRate: {monthly_cost:.2f}'),
+        "In-page Kimi K3 route": ("index.html", "<span>Kimi K3</span>"),
+        "In-page Gemini 3.6 route": ("index.html", "<span>Gemini 3.6 Flash</span>"),
+        "In-page automation health": ("index.html", f"{jobs} of {jobs} automations healthy"),
     }
 
     failures: list[str] = []

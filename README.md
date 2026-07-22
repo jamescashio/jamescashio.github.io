@@ -1,6 +1,6 @@
 # ZEUSAPOLLO v30 — “The Sleeper Has Awakened”
 
-cashio.us is Doug Cashio’s interactive portfolio for independently built enterprise AI, cybersecurity, automation, and sovereign homelab work.
+cashio.us is Doug Cashio’s interactive sovereign AI portfolio: personally owned infrastructure, quality-first model routing, cybersecurity, auditable automation, disciplined cost, and human command.
 
 The public site shows sanitized proof and architectural roles while withholding addresses, ports, credentials, customer information, private access paths, and detailed operational telemetry.
 
@@ -9,36 +9,36 @@ The public site shows sanitized proof and architectural roles while withholding 
 | Item | Current public state |
 |---|---|
 | **Release** | v30 — “The Sleeper Has Awakened” |
-| **Status export** | Verified 07-14-2026; expires 07-17-2026 |
-| **Hosts** | 2 personal homelab hosts |
-| **Documented roles** | 19 public-safe service roles |
-| **Owner-reported healthy** | 17 services |
-| **Unreported** | 1 service — Athena |
-| **Decommissioned** | 1 service — Home-Asst |
+| **Status export** | Verified 07-22-2026; expires 08-21-2026 |
+| **Hosts** | 2 core homelab hosts, plus Athena at the edge |
+| **Documented roles** | 18 public-safe service roles |
+| **Owner-reported healthy** | 18 services |
+| **Unreported** | 0 services |
+| **Automation health** | 71 of 71 jobs; zero errors |
 | **Model routes** | 10 configured routes |
-| **Automation** | 31 last-reported jobs |
-| **Estimated inference burn** | Approximately $0.35/day, last reported |
+| **Automation** | 71 last-reported jobs |
+| **Observed AI operating cost** | $0.26/day; $6.49 estimated monthly run rate |
 | **Deployment** | GitHub Pages from `main` |
 | **Production site** | `https://cashio.us` |
 
-The status export is owner supplied and sampled, not streaming telemetry. After 07-17-2026, the site automatically stops presenting its health snapshot as current.
+The status export is Hermes-generated, public-safe, and sampled—not streaming telemetry. It remains valid for 30 days or until the next architecture change. Athena is separately owner-confirmed active as a physical Home Assistant edge node and is not included in the 18-container count. The site never converts a current page-view date into a claim of live telemetry.
 
 ## Model routing fabric
 
 | Route | Configured model |
 |---|---|
-| Primary | DeepSeek V4 Pro |
-| Premium | Claude Sonnet 5 |
-| Research | Grok 4.5 |
-| Coding | GLM 5.2 |
-| Extraction | Gemma 4 26B A4B, local |
-| Vision | Gemini 3.5 Flash |
-| Voice | GPT-4o mini TTS, legacy/deprecated |
-| Failover 1 | DeepSeek V4 Flash |
-| Failover 2 | GLM 5.2 |
-| Failover 3 | Gemini 3.5 Flash |
+| Tier 0 — classify/draft | Kimi K3 |
+| Tier 1 — workhorse | DeepSeek V4 Flash |
+| Tier 2 — exception | DeepSeek V4 Pro |
+| Tier 3A — multimodal | Gemini 3.6 Flash |
+| Tier 3B — adversarial | Grok 4.5 |
+| Tier 4A — synthesis | Claude Sonnet 5 |
+| Tier 4B — research | Sonar Pro |
+| Tier 5 — adjudication | GPT-5.6 Sol |
+| Local fallback | Gemma 4 26B |
+| Gateway fabric | Atlas LiteLLM, OpenRouter, ZenMux |
 
-These are configured routes, not live-traffic claims or a universal model ranking. Public names were reconciled against official provider catalogs on 07-14-2026. The legacy voice route remains visible so the public configuration is represented honestly.
+These are configured lanes, not live-traffic claims or a universal model ranking. Hermes reconciled route roles, public model names, fallbacks, and provider state on 07-22-2026. Deprecated DeepSeek aliases were migrated to their current V4 names.
 
 ## Public-safety posture
 
