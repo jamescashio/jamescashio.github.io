@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -5206,25 +5206,2320 @@
         box-shadow: none;
       }
     }
+
+    /* v31 hierarchy and restraint pass */
+    :root {
+      --text-xs: 0.72rem;
+      --text-sm: 0.82rem;
+      --text-md: 1rem;
+      --text-lg: 1.18rem;
+      --border-subtle: rgba(198, 198, 224, 0.12);
+      --border-standard: rgba(198, 198, 224, 0.22);
+      --border-active: rgba(0, 249, 255, 0.52);
+      --line: var(--border-standard);
+      --line-hot: var(--border-active);
+    }
+
+    .site-header {
+      border-bottom-color: var(--border-subtle);
+      background: rgba(5, 7, 12, 0.9);
+    }
+
+    .header-inner {
+      min-height: 72px;
+    }
+
+    .brand-copy small {
+      display: none;
+    }
+
+    .primary-nav a {
+      font-size: var(--text-xs);
+    }
+
+    .deck-controls {
+      position: relative;
+    }
+
+    .deck-controls > summary {
+      min-width: 62px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border-subtle);
+      border-radius: 9px;
+      color: var(--quiet);
+      background: rgba(255,255,255,0.02);
+      cursor: pointer;
+      font: 900 var(--text-xs)/1 var(--mono);
+      letter-spacing: 0.06em;
+      list-style: none;
+      text-transform: uppercase;
+    }
+
+    .deck-controls > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .deck-controls[open] > summary {
+      color: #061014;
+      border-color: var(--cyan);
+      background: var(--cyan);
+    }
+
+    .deck-controls-panel {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      width: 220px;
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid var(--border-standard);
+      border-radius: 12px;
+      background: rgba(7,9,17,0.98);
+      box-shadow: 0 22px 60px rgba(0,0,0,0.52);
+    }
+
+    .deck-controls-panel > span {
+      color: var(--quiet);
+      font: 800 var(--text-xs)/1.4 var(--mono);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .deck-controls-panel .icon-button {
+      width: 100%;
+      justify-content: flex-start;
+    }
+
+    .hero {
+      min-height: calc(100svh - 72px);
+      align-content: center;
+      gap: clamp(34px, 6vh, 66px);
+      padding-block: clamp(48px, 8vh, 92px);
+    }
+
+    .deck-status {
+      display: flex;
+      min-height: 40px;
+      align-items: center;
+      gap: 10px 18px;
+      padding: 8px 14px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 999px;
+      color: var(--quiet);
+      background: rgba(5,6,12,0.66);
+      box-shadow: none;
+      font: 800 var(--text-xs)/1.35 var(--mono);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      backdrop-filter: blur(10px);
+    }
+
+    .deck-status strong {
+      color: var(--gold);
+    }
+
+    .deck-status span:last-child {
+      margin-left: auto;
+    }
+
+    .deck-status-dot {
+      width: 8px;
+      height: 8px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 12px rgba(255,204,0,0.5);
+    }
+
+    .hero-grid {
+      grid-template-columns: minmax(0, 1.24fr) minmax(330px, 0.76fr);
+      gap: clamp(46px, 7vw, 92px);
+      align-items: center;
+    }
+
+    .hero-copy {
+      max-width: 760px;
+    }
+
+    .identity-wordmark {
+      margin-bottom: 12px;
+      background: linear-gradient(100deg, #ffffff 8%, var(--cyan) 48%, #ffffff 68%, var(--gold) 100%);
+      background-size: 180% 100%;
+      font-size: clamp(2.3rem, 5vw, 4.9rem);
+      text-shadow: 0 0 32px rgba(0,249,255,0.12);
+    }
+
+    body[data-fx="on"] .identity-wordmark {
+      animation: identity-sheen 12s ease-in-out infinite;
+    }
+
+    .hero-copy .kicker {
+      margin-bottom: 24px;
+      color: var(--cyan);
+      border-color: rgba(0,249,255,0.24);
+      background: rgba(0,249,255,0.045);
+      box-shadow: none;
+      font-size: var(--text-xs);
+    }
+
+    .hero-copy .kicker::before {
+      background: var(--cyan);
+      box-shadow: 0 0 12px rgba(0,249,255,0.5);
+    }
+
+    .hero-copy h1 {
+      max-width: 11ch;
+      margin-bottom: 28px;
+      color: #fff;
+      font-size: clamp(3rem, 6.25vw, 6.1rem);
+      line-height: 0.94;
+    }
+
+    .hero-copy > p:not(.identity-wordmark) {
+      max-width: 640px;
+      color: var(--muted);
+      font-size: clamp(1.08rem, 1.6vw, 1.28rem);
+      line-height: 1.65;
+    }
+
+    .hero-actions {
+      margin-top: 36px;
+    }
+
+    .button:active,
+    .icon-button:active,
+    .compact-button:active {
+      transform: translateY(0) scale(0.985);
+    }
+
+    .button-primary {
+      color: #041014;
+      background: linear-gradient(105deg, var(--cyan), #a3eff9);
+      box-shadow: 0 12px 34px rgba(0,249,255,0.15);
+    }
+
+    .button-primary:hover,
+    .button-primary:focus-visible {
+      box-shadow: 0 18px 44px rgba(0,0,0,0.3), 0 0 24px rgba(0,249,255,0.16);
+    }
+
+    .hero-proof {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 0;
+      margin-top: 38px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .hero-proof li {
+      min-height: 0;
+      padding: 4px 18px;
+      border: 0;
+      border-left: 1px solid var(--border-subtle);
+      border-radius: 0;
+      color: var(--quiet);
+      background: transparent;
+      cursor: default;
+      font-size: var(--text-xs);
+      line-height: 1.45;
+    }
+
+    .hero-proof li:first-child {
+      padding-left: 0;
+      border-left: 0;
+    }
+
+    .hero-proof li:hover {
+      border-color: var(--border-subtle);
+      box-shadow: none;
+      transform: none;
+    }
+
+    .hero-proof strong,
+    .hero-proof li:nth-child(2) strong,
+    .hero-proof li:nth-child(3) strong {
+      margin-bottom: 7px;
+      color: var(--cyan);
+      font-size: clamp(1.25rem,2vw,1.7rem);
+      text-shadow: none;
+    }
+
+    .hero-proof li:first-child strong {
+      color: var(--gold);
+    }
+
+    .command-orbit {
+      min-height: 390px;
+      padding: 28px;
+      border-color: var(--border-standard);
+      background:
+        radial-gradient(circle at var(--orbit-x) var(--orbit-y), rgba(0,249,255,0.075), transparent 32%),
+        radial-gradient(circle at 88% 88%, rgba(200,164,92,0.09), transparent 34%),
+        linear-gradient(145deg, rgba(15,17,29,0.98), rgba(6,8,15,0.98));
+      box-shadow: 0 24px 72px rgba(0,0,0,0.42);
+    }
+
+    .command-orbit:hover,
+    .command-orbit:focus-within {
+      border-color: var(--border-active);
+      box-shadow: 0 28px 80px rgba(0,0,0,0.48), 0 0 24px rgba(0,249,255,0.08);
+    }
+
+    .profile-head {
+      min-height: 108px;
+    }
+
+    .profile-head h2 {
+      font-size: clamp(2rem,3.5vw,3.2rem);
+    }
+
+    .profile-state {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 4px 10px;
+      align-items: center;
+      margin: 28px 0 0 8px;
+      padding: 18px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .profile-state > span {
+      width: 9px;
+      height: 9px;
+      grid-row: 1 / 3;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 14px rgba(0,255,159,0.45);
+    }
+
+    .profile-state strong,
+    .profile-state small {
+      display: block;
+      font-family: var(--mono);
+    }
+
+    .profile-state strong {
+      color: var(--green);
+      font-size: var(--text-sm);
+      letter-spacing: 0.08em;
+    }
+
+    .profile-state small {
+      color: var(--quiet);
+      font-size: var(--text-xs);
+      letter-spacing: 0.06em;
+    }
+
+    .profile-details {
+      margin: 18px 0 0 8px;
+    }
+
+    .profile-details > summary {
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 13px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 9px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.018);
+      cursor: pointer;
+      font: 900 var(--text-xs)/1 var(--mono);
+      letter-spacing: 0.06em;
+      list-style: none;
+      text-transform: uppercase;
+    }
+
+    .profile-details > summary::after {
+      content: "+";
+      color: var(--cyan);
+      font-size: 1rem;
+    }
+
+    .profile-details[open] > summary::after {
+      content: "−";
+    }
+
+    .profile-details[open] .profile-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .profile-details .profile-metric {
+      min-height: 112px;
+    }
+
+    .profile-details .profile-metric strong {
+      font-size: clamp(1.55rem,2.5vw,2.25rem);
+    }
+
+    .proof-rail {
+      padding-block: clamp(72px, 10vw, 124px);
+    }
+
+    .proof-rail-head {
+      display: grid;
+      grid-template-columns: minmax(0,1fr) minmax(260px,0.55fr);
+      gap: 36px;
+      align-items: end;
+      margin-bottom: 32px;
+    }
+
+    .proof-rail-head h2 {
+      max-width: 760px;
+      margin-bottom: 0;
+      font-size: clamp(2rem,4vw,4rem);
+      line-height: 1.02;
+    }
+
+    .proof-rail-head > p {
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-size: var(--text-lg);
+    }
+
+    .proof-rail-grid {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 14px;
+    }
+
+    .proof-rail-card {
+      min-height: 350px;
+      display: flex;
+      flex-direction: column;
+      padding: clamp(24px,3vw,34px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      background: linear-gradient(150deg,rgba(17,19,32,0.84),rgba(8,9,16,0.88));
+      box-shadow: 0 18px 55px rgba(0,0,0,0.28);
+      transition: transform 180ms ease,border-color 180ms ease,box-shadow 180ms ease;
+    }
+
+    .proof-rail-card:hover,
+    .proof-rail-card:focus-within {
+      border-color: var(--border-active);
+      box-shadow: 0 22px 65px rgba(0,0,0,0.42),0 0 24px rgba(0,249,255,0.08);
+      transform: translateY(-2px);
+    }
+
+    .proof-rail-card > span {
+      color: var(--quiet);
+      font: 900 var(--text-xs)/1.3 var(--mono);
+      letter-spacing: 0.12em;
+    }
+
+    .proof-rail-card > strong {
+      margin: 34px 0 10px;
+      color: var(--cyan);
+      font-family: var(--display);
+      font-size: clamp(2rem,4vw,4rem);
+      letter-spacing: -0.055em;
+      line-height: 0.92;
+    }
+
+    .proof-rail-card:first-child > strong {
+      color: var(--gold);
+    }
+
+    .proof-rail-card:nth-child(n+2) > strong {
+      font-size: clamp(1.3rem,2.2vw,2.2rem);
+      letter-spacing: 0;
+    }
+
+    .proof-rail-card h3 {
+      margin-bottom: 12px;
+      font-size: clamp(1.3rem,2vw,1.8rem);
+    }
+
+    .proof-rail-card p {
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .proof-rail-card small {
+      display: block;
+      margin-top: auto;
+      padding-top: 20px;
+      color: var(--quiet);
+      font: 700 var(--text-xs)/1.5 var(--mono);
+    }
+
+    .proof-rail-card a {
+      margin-top: 18px;
+      color: var(--cyan);
+      font: 900 var(--text-sm)/1.4 var(--mono);
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .proof-mantra {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .telemetry-ribbon {
+      border-color: var(--border-subtle);
+      background: rgba(255,204,0,0.025);
+    }
+
+    .featured-case {
+      padding-top: clamp(96px,12vw,150px);
+    }
+
+    .case-study-label {
+      margin-bottom: 18px;
+      color: var(--gold);
+      font: 900 var(--text-xs)/1.4 var(--mono);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .case-study-grid {
+      display: grid;
+      grid-template-columns: minmax(0,0.95fr) minmax(390px,1.05fr);
+      gap: clamp(38px,6vw,80px);
+      align-items: center;
+      padding: clamp(30px,5vw,66px);
+      border: 1px solid var(--border-standard);
+      border-radius: 18px 32px 32px 56px;
+      background: linear-gradient(145deg,rgba(14,16,28,0.95),rgba(6,8,14,0.96));
+      box-shadow: 0 24px 80px rgba(0,0,0,0.38);
+    }
+
+    .case-study-story h2 {
+      max-width: 13ch;
+      font-size: clamp(2.2rem,4.5vw,4.7rem);
+      line-height: 0.98;
+    }
+
+    .case-story-steps {
+      display: grid;
+      gap: 1px;
+      margin: 34px 0;
+      border-block: 1px solid var(--border-subtle);
+    }
+
+    .case-story-steps article {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 20px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .case-story-steps article:last-child {
+      border-bottom: 0;
+    }
+
+    .case-story-steps span {
+      color: var(--quiet);
+      font: 900 var(--text-xs)/1.5 var(--mono);
+      letter-spacing: 0.09em;
+    }
+
+    .case-story-steps p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .case-story-steps strong {
+      color: var(--gold);
+    }
+
+    .route-architecture {
+      display: grid;
+      justify-items: center;
+      padding: clamp(24px,4vw,44px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      background:
+        linear-gradient(rgba(0,249,255,0.025) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(0,249,255,0.025) 1px,transparent 1px),
+        rgba(3,6,12,0.64);
+      background-size: 28px 28px;
+    }
+
+    .route-input,
+    .route-gate,
+    .route-output {
+      width: min(100%,420px);
+      padding: 15px 18px;
+      border: 1px solid var(--border-standard);
+      border-radius: 9px;
+      color: var(--ink);
+      background: rgba(12,14,25,0.94);
+      font: 900 var(--text-sm)/1.35 var(--mono);
+      letter-spacing: 0.06em;
+      text-align: center;
+    }
+
+    .route-gate {
+      border-color: rgba(255,204,0,0.42);
+      color: var(--gold);
+    }
+
+    .route-gate small {
+      display: block;
+      margin-top: 6px;
+      color: var(--quiet);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+
+    .route-options {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 8px;
+    }
+
+    .route-options div {
+      min-height: 112px;
+      display: grid;
+      align-content: center;
+      gap: 8px;
+      padding: 14px;
+      border: 1px solid var(--border-standard);
+      border-radius: 9px;
+      color: var(--cyan);
+      background: rgba(12,14,25,0.92);
+      text-align: center;
+    }
+
+    .route-options strong,
+    .route-options small {
+      display: block;
+      font-family: var(--mono);
+    }
+
+    .route-options strong {
+      font-size: var(--text-xs);
+    }
+
+    .route-options small {
+      color: var(--quiet);
+      font-size: var(--text-xs);
+    }
+
+    .route-arrow {
+      padding: 8px 0;
+      color: var(--quiet);
+    }
+
+    .route-output {
+      border-color: rgba(0,255,159,0.34);
+      color: var(--green);
+    }
+
+    .case-study-receipt {
+      display: grid;
+      grid-template-columns: repeat(4,minmax(0,1fr));
+      gap: 1px;
+      margin-top: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      background: var(--border-subtle);
+    }
+
+    .case-study-receipt span {
+      min-height: 88px;
+      display: grid;
+      align-content: center;
+      gap: 6px;
+      padding: 14px 18px;
+      color: var(--muted);
+      background: rgba(8,9,16,0.96);
+      font-size: var(--text-sm);
+    }
+
+    .case-study-receipt strong {
+      display: block;
+      color: var(--quiet);
+      font: 900 var(--text-xs)/1.3 var(--mono);
+      letter-spacing: 0.06em;
+    }
+
+    .flight-intro {
+      padding-bottom: 28px;
+    }
+
+    .flight-intro-shell {
+      display: grid;
+      grid-template-columns: minmax(0,1fr) minmax(240px,0.34fr);
+      gap: 40px;
+      align-items: end;
+      padding-top: 34px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .flight-intro h2 {
+      max-width: 860px;
+      margin-bottom: 16px;
+      font-size: clamp(2.2rem,4.5vw,4.6rem);
+      line-height: 0.98;
+    }
+
+    .flight-intro p:not(.eyebrow) {
+      max-width: 680px;
+      color: var(--muted);
+      font-size: var(--text-lg);
+    }
+
+    .flight-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .flight-mode-note {
+      padding: 20px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .flight-mode-note span,
+    .flight-mode-note strong,
+    .flight-mode-note small {
+      display: block;
+    }
+
+    .flight-mode-note span {
+      color: var(--quiet);
+      font: 900 var(--text-xs)/1.3 var(--mono);
+      letter-spacing: 0.08em;
+    }
+
+    .flight-mode-note strong {
+      margin-top: 8px;
+      color: var(--cyan);
+      font-family: var(--display);
+    }
+
+    .flight-mode-note small {
+      margin-top: 8px;
+      color: var(--quiet);
+      font-size: var(--text-xs);
+      line-height: 1.5;
+    }
+
+    .flight-brief {
+      display: grid;
+      grid-template-columns: repeat(4,minmax(0,1fr));
+      gap: 10px;
+      margin-top: 40px;
+    }
+
+    .flight-brief article {
+      min-height: 190px;
+      padding: 22px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.018);
+    }
+
+    .flight-brief span {
+      color: var(--gold);
+      font: 900 var(--text-xs)/1 var(--mono);
+    }
+
+    .flight-brief h3 {
+      margin: 30px 0 10px;
+      font-size: 1.25rem;
+    }
+
+    .flight-brief p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.96rem;
+    }
+
+    .scroll-world:not(.is-launched) {
+      display: none;
+    }
+
+    .scroll-world.is-launched {
+      display: block;
+    }
+
+    .proof-cell,
+    .cluster,
+    .terminal-guide,
+    .terminal,
+    .manifest-intro,
+    .fleet-card-frame,
+    .contact-deck {
+      box-shadow: 0 18px 55px rgba(0,0,0,0.34);
+    }
+
+    .profile-metric small,
+    .telemetry-meta,
+    .fleet-legend,
+    .topology-link span,
+    .cluster-head p,
+    .guest small,
+    .terminal-title,
+    .model-verification,
+    .fleet-card-facts span,
+    .house-sigil,
+    .independence-note strong,
+    .mission-progress-label,
+    .mission-step-tag,
+    .dune-mantra,
+    .boot-line,
+    .world-signal,
+    .world-exit {
+      font-size: var(--text-xs);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: minmax(0,0.9fr) minmax(360px,1.1fr);
+      gap: clamp(42px,7vw,100px);
+      align-items: center;
+      padding-block: clamp(30px,5vw,60px);
+      border-block: 1px solid var(--border-subtle);
+    }
+
+    .about-intro h2 {
+      max-width: 12ch;
+      font-size: clamp(2.3rem,4.5vw,4.7rem);
+      line-height: 0.98;
+    }
+
+    .about-intro > p:not(.eyebrow) {
+      color: var(--muted);
+      font-size: clamp(1.02rem,1.5vw,1.18rem);
+    }
+
+    .about-boundary {
+      margin-top: 24px;
+      padding: 16px 18px;
+      border-left: 3px solid var(--gold);
+      background: rgba(255,204,0,0.035);
+      font-size: var(--text-sm) !important;
+    }
+
+    .about-principles {
+      display: grid;
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      background: var(--border-subtle);
+    }
+
+    .about-principles article {
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      gap: 18px;
+      align-items: start;
+      padding: 20px;
+      background: rgba(8,9,16,0.98);
+    }
+
+    .about-principles article > span {
+      color: var(--cyan);
+      font: 900 var(--text-xs)/1.5 var(--mono);
+    }
+
+    .about-principles strong {
+      color: var(--ink);
+      font-family: var(--display);
+      font-size: 1.1rem;
+    }
+
+    .about-principles p {
+      margin: 5px 0 0;
+      color: var(--muted);
+    }
+
+    .bit-answer {
+      min-width: 190px;
+      min-height: 30px;
+      display: grid;
+      place-items: center;
+      padding: 6px 10px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 999px;
+      color: var(--cyan);
+      background: rgba(5,7,12,0.92);
+      font-size: var(--text-xs);
+      letter-spacing: 0.04em;
+      text-transform: none;
+    }
+
+    .bit-panel {
+      position: fixed;
+      right: 24px;
+      bottom: 126px;
+      z-index: 91;
+      width: min(360px,calc(100vw - 32px));
+      padding: 18px;
+      border: 1px solid var(--border-active);
+      border-radius: 16px 16px 16px 34px;
+      background: rgba(7,9,17,0.98);
+      box-shadow: 0 28px 80px rgba(0,0,0,0.58),0 0 30px rgba(0,249,255,0.08);
+      backdrop-filter: blur(18px);
+    }
+
+    .bit-panel[hidden] {
+      display: none;
+    }
+
+    .bit-panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .bit-panel-head span,
+    .bit-panel-head strong {
+      display: block;
+    }
+
+    .bit-panel-head span {
+      color: var(--cyan);
+      font: 900 var(--text-xs)/1.3 var(--mono);
+      letter-spacing: 0.12em;
+    }
+
+    .bit-panel-head strong {
+      margin-top: 5px;
+      font-family: var(--display);
+      font-size: 1rem;
+    }
+
+    .bit-close {
+      width: 36px;
+      height: 36px;
+      flex: 0 0 auto;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+      font-size: 1.3rem;
+    }
+
+    .bit-prompts {
+      display: grid;
+      gap: 7px;
+      margin-top: 14px;
+    }
+
+    .bit-prompts button,
+    .bit-easter {
+      min-height: 42px;
+      padding: 9px 12px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.02);
+      cursor: pointer;
+      font: 800 var(--text-sm)/1.25 var(--mono);
+      text-align: left;
+    }
+
+    .bit-prompts button:hover,
+    .bit-prompts button:focus-visible,
+    .bit-easter:hover,
+    .bit-easter:focus-visible {
+      color: var(--cyan);
+      border-color: var(--border-active);
+      background: rgba(0,249,255,0.045);
+    }
+
+    .bit-response {
+      margin: 14px 0 0;
+      padding: 12px;
+      border-left: 3px solid var(--cyan);
+      color: var(--muted);
+      background: rgba(0,249,255,0.035);
+      font-size: var(--text-sm);
+    }
+
+    .bit-easter {
+      width: 100%;
+      margin-top: 10px;
+      color: var(--quiet);
+      font-size: var(--text-xs);
+      text-align: center;
+    }
+
+    /* v31 apex refinement: graphical storytelling, depth and deliberate motion */
+    :root {
+      --panel-glass: rgba(10, 12, 21, 0.82);
+      --panel-deep: rgba(5, 7, 13, 0.96);
+      --ease-premium: cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .ambient-topography {
+      position: fixed;
+      inset: -18vh -12vw;
+      z-index: 2;
+      background:
+        repeating-radial-gradient(ellipse at 78% 26%, transparent 0 32px, rgba(0,249,255,0.055) 33px 34px, transparent 35px 54px),
+        repeating-radial-gradient(ellipse at 16% 76%, transparent 0 42px, rgba(255,204,0,0.035) 43px 44px, transparent 45px 68px);
+      opacity: 0.42;
+      pointer-events: none;
+      -webkit-mask-image: radial-gradient(circle at center, #000 0 42%, transparent 78%);
+      mask-image: radial-gradient(circle at center, #000 0 42%, transparent 78%);
+      transform: rotate(-7deg) scale(1.08);
+    }
+
+    body[data-fx="on"] .ambient-topography {
+      animation: topography-drift 28s ease-in-out infinite alternate;
+    }
+
+    .hero-grid {
+      position: relative;
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-copy::before {
+      position: absolute;
+      top: -34px;
+      left: -28px;
+      width: 92px;
+      height: 1px;
+      content: "";
+      background: linear-gradient(90deg, var(--cyan), transparent);
+      box-shadow: 0 0 14px rgba(0,249,255,0.25);
+    }
+
+    .hero-copy::after {
+      position: absolute;
+      top: -38px;
+      left: -34px;
+      width: 8px;
+      height: 8px;
+      content: "";
+      border: 1px solid var(--cyan);
+      transform: rotate(45deg);
+      box-shadow: 0 0 14px rgba(0,249,255,0.32);
+    }
+
+    .hero-copy h1 {
+      text-shadow: 0 20px 70px rgba(0,0,0,0.58);
+    }
+
+    .gradient-text {
+      background-image: linear-gradient(96deg, var(--cyan) 0%, #d9fbff 38%, var(--gold) 72%, #ff9d5c 100%);
+      filter: drop-shadow(0 10px 28px rgba(0,249,255,0.1));
+    }
+
+    .button {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      transition:
+        transform 180ms var(--ease-premium),
+        border-color 180ms ease,
+        color 180ms ease,
+        background 180ms ease,
+        box-shadow 240ms ease;
+    }
+
+    .button::before {
+      position: absolute;
+      inset: -2px auto -2px -42%;
+      z-index: -1;
+      width: 34%;
+      content: "";
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.48), transparent);
+      opacity: 0;
+      pointer-events: none;
+      transform: skewX(-18deg);
+    }
+
+    body[data-fx="on"] .button:hover::before,
+    body[data-fx="on"] .button:focus-visible::before {
+      animation: button-sheen 700ms var(--ease-premium);
+    }
+
+    .command-orbit {
+      min-height: 430px;
+      border-radius: 18px 28px 28px 64px;
+      background:
+        radial-gradient(circle at var(--orbit-x) var(--orbit-y), rgba(0,249,255,0.1), transparent 30%),
+        radial-gradient(circle at 84% 88%, rgba(200,164,92,0.13), transparent 34%),
+        linear-gradient(145deg, rgba(15,17,29,0.98), rgba(5,7,13,0.985));
+      box-shadow:
+        0 34px 100px rgba(0,0,0,0.52),
+        inset 0 1px 0 rgba(255,255,255,0.035),
+        inset 0 0 90px rgba(0,249,255,0.028);
+    }
+
+    .command-orbit::before {
+      width: 7px;
+      background: linear-gradient(180deg, var(--orange) 0 18%, var(--gold) 18% 35%, var(--cyan) 35% 78%, var(--violet) 78%);
+      box-shadow: 8px 0 30px rgba(0,249,255,0.035);
+    }
+
+    .command-orbit::after {
+      right: -145px;
+      bottom: -152px;
+      width: 390px;
+      height: 390px;
+      border-color: rgba(0,249,255,0.12);
+      box-shadow: 0 0 0 36px rgba(0,249,255,0.018), 0 0 0 74px rgba(177,140,255,0.014);
+    }
+
+    .profile-head,
+    .profile-state,
+    .profile-details {
+      position: relative;
+      z-index: 3;
+    }
+
+    .profile-head::after {
+      position: absolute;
+      right: 0;
+      bottom: -1px;
+      width: 31%;
+      height: 1px;
+      content: "";
+      background: linear-gradient(90deg, transparent, var(--cyan));
+      box-shadow: 0 0 10px rgba(0,249,255,0.34);
+    }
+
+    .system-orbit {
+      position: absolute;
+      right: -54px;
+      bottom: -74px;
+      z-index: 1;
+      width: 294px;
+      height: 294px;
+      border-radius: 50%;
+      opacity: 0.72;
+      pointer-events: none;
+    }
+
+    .orbit-ring {
+      position: absolute;
+      inset: 50%;
+      border: 1px solid rgba(0,249,255,0.16);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .orbit-ring-one {
+      width: 92px;
+      height: 92px;
+      border-style: dashed;
+    }
+
+    .orbit-ring-two {
+      width: 172px;
+      height: 172px;
+      border-color: rgba(255,204,0,0.13);
+    }
+
+    .orbit-ring-three {
+      width: 258px;
+      height: 258px;
+      border-color: rgba(177,140,255,0.11);
+      border-style: dashed;
+    }
+
+    body[data-fx="on"] .orbit-ring-one { animation: orbit-spin 16s linear infinite; }
+    body[data-fx="on"] .orbit-ring-two { animation: orbit-spin 24s linear infinite reverse; }
+    body[data-fx="on"] .orbit-ring-three { animation: orbit-spin 34s linear infinite; }
+
+    .orbit-node {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: rgba(214,238,245,0.62);
+      font: 800 0.58rem/1 var(--mono);
+      letter-spacing: 0.1em;
+    }
+
+    .orbit-node i {
+      width: 7px;
+      height: 7px;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      background: var(--panel-deep);
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    .orbit-node b { font: inherit; }
+    .orbit-node-local { top: 48px; left: 86px; color: var(--cyan); }
+    .orbit-node-policy { top: 143px; left: 12px; color: var(--gold); }
+    .orbit-node-verify { right: 16px; bottom: 74px; color: var(--green); }
+
+    .orbit-packet {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 11px 2px rgba(0,249,255,0.4);
+    }
+
+    .orbit-packet-one { top: 39px; left: 144px; }
+    .orbit-packet-two { right: 49px; bottom: 93px; background: var(--gold); box-shadow: 0 0 11px 2px rgba(255,204,0,0.32); }
+    body[data-fx="on"] .orbit-packet-one { animation: packet-pulse 2.8s ease-in-out infinite; }
+    body[data-fx="on"] .orbit-packet-two { animation: packet-pulse 2.8s 1.1s ease-in-out infinite; }
+
+    .orbit-coordinate {
+      position: absolute;
+      right: 42px;
+      bottom: 26px;
+      color: rgba(148,169,191,0.45);
+      font: 700 0.54rem/1 var(--mono);
+      letter-spacing: 0.08em;
+    }
+
+    .profile-state {
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+
+    .profile-state::after {
+      position: absolute;
+      inset: 0;
+      content: "";
+      background: linear-gradient(90deg, transparent, rgba(0,255,159,0.05), transparent);
+      pointer-events: none;
+      transform: translateX(-100%);
+    }
+
+    body[data-fx="on"] .profile-state::after {
+      animation: status-scan 5.2s ease-in-out infinite;
+    }
+
+    .proof-rail {
+      overflow: hidden;
+    }
+
+    .proof-rail::before {
+      position: absolute;
+      top: 0.08em;
+      right: -0.06em;
+      content: "PROOF";
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(0,249,255,0.035);
+      font: 900 clamp(7rem, 19vw, 19rem)/0.78 var(--display);
+      letter-spacing: -0.075em;
+      pointer-events: none;
+    }
+
+    .proof-rail-card {
+      min-height: 438px;
+      border-radius: 14px 20px 20px 42px;
+      background:
+        linear-gradient(130deg, rgba(255,255,255,0.025), transparent 36%),
+        linear-gradient(150deg,rgba(17,19,32,0.9),rgba(7,8,15,0.94));
+      box-shadow:
+        0 22px 65px rgba(0,0,0,0.32),
+        inset 0 1px 0 rgba(255,255,255,0.025);
+    }
+
+    .proof-rail-card::after {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 62px;
+      height: 62px;
+      content: "";
+      border-top: 1px solid rgba(0,249,255,0.24);
+      border-right: 1px solid rgba(0,249,255,0.24);
+      border-radius: 0 20px 0 0;
+      opacity: 0.64;
+      pointer-events: none;
+    }
+
+    .proof-rail-card:nth-child(1)::after { border-color: rgba(255,204,0,0.3); }
+    .proof-rail-card:nth-child(3)::after { border-color: rgba(0,255,159,0.25); }
+
+    .proof-rail-card > strong {
+      margin: 28px 0 0;
+    }
+
+    .proof-card-visual {
+      position: relative;
+      width: 100%;
+      height: 76px;
+      margin: 18px 0 22px;
+      overflow: hidden;
+      border-block: 1px solid var(--border-subtle);
+      background: rgba(0,0,0,0.12);
+    }
+
+    .proof-cost-visual {
+      display: grid;
+      grid-template-columns: 62px 1fr 32px;
+      gap: 8px;
+      align-content: center;
+      padding: 10px 0;
+    }
+
+    .proof-bar-label,
+    .proof-cost-visual b {
+      color: var(--quiet);
+      font: 800 0.56rem/1 var(--mono);
+      letter-spacing: 0.06em;
+    }
+
+    .proof-cost-visual b {
+      color: rgba(214,238,245,0.72);
+      text-align: right;
+    }
+
+    .proof-bar {
+      position: relative;
+      height: 5px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.055);
+    }
+
+    .proof-bar::after {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 100%;
+      content: "";
+      border-radius: inherit;
+      transform: scaleX(0);
+      transform-origin: left;
+    }
+
+    .proof-bar-premium::after { background: linear-gradient(90deg, rgba(255,204,0,0.38), var(--gold)); }
+    .proof-bar-routed::after { width: 14%; background: linear-gradient(90deg, rgba(0,249,255,0.32), var(--cyan)); }
+    body[data-fx="on"] .proof-rail-card.is-visible .proof-bar::after { animation: meter-fill 1.1s var(--ease-premium) 260ms forwards; }
+    body[data-fx="off"] .proof-bar::after { transform: scaleX(1); }
+
+    .proof-control-visual {
+      display: grid;
+      place-items: center;
+    }
+
+    .control-core {
+      position: relative;
+      z-index: 2;
+      color: var(--cyan);
+      font: 900 0.55rem/1 var(--mono);
+      letter-spacing: 0.1em;
+    }
+
+    .control-orbit {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      border: 1px solid rgba(0,249,255,0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .control-orbit-one { width: 62px; height: 30px; }
+    .control-orbit-two { width: 128px; height: 52px; border-color: rgba(177,140,255,0.18); }
+
+    .control-node {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 10px rgba(0,249,255,0.5);
+    }
+
+    .control-node-one { top: 22px; left: calc(50% - 61px); }
+    .control-node-two { top: 19px; right: calc(50% - 64px); background: var(--violet); box-shadow: 0 0 10px rgba(177,140,255,0.45); }
+    .control-node-three { bottom: 15px; left: calc(50% + 20px); background: var(--gold); box-shadow: 0 0 10px rgba(255,204,0,0.42); }
+    body[data-fx="on"] .control-orbit-one { animation: control-breathe 3.6s ease-in-out infinite; }
+    body[data-fx="on"] .control-orbit-two { animation: control-breathe 3.6s 1.2s ease-in-out infinite; }
+
+    .proof-trace-visual {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-items: center;
+      overflow: visible;
+    }
+
+    .proof-trace-visual::before {
+      position: absolute;
+      top: 31px;
+      right: 11%;
+      left: 11%;
+      height: 1px;
+      content: "";
+      background: linear-gradient(90deg, var(--cyan), var(--violet), var(--gold), var(--green));
+      opacity: 0.42;
+    }
+
+    .proof-trace-visual span {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      justify-items: center;
+      gap: 10px;
+    }
+
+    .proof-trace-visual i {
+      width: 9px;
+      height: 9px;
+      border: 2px solid var(--panel-deep);
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 0 1px rgba(0,249,255,0.38), 0 0 11px rgba(0,249,255,0.4);
+    }
+
+    .proof-trace-visual span:nth-child(2) i { background: var(--violet); box-shadow: 0 0 0 1px rgba(177,140,255,0.4), 0 0 11px rgba(177,140,255,0.34); }
+    .proof-trace-visual span:nth-child(3) i { background: var(--gold); box-shadow: 0 0 0 1px rgba(255,204,0,0.4), 0 0 11px rgba(255,204,0,0.3); }
+    .proof-trace-visual span:nth-child(4) i { background: var(--green); box-shadow: 0 0 0 1px rgba(0,255,159,0.4), 0 0 11px rgba(0,255,159,0.34); }
+    .proof-trace-visual b { color: var(--quiet); font: 800 0.5rem/1 var(--mono); letter-spacing: 0.05em; }
+
+    .case-study-grid {
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 86% 22%, rgba(0,249,255,0.07), transparent 26%),
+        radial-gradient(circle at 16% 84%, rgba(255,204,0,0.045), transparent 30%),
+        linear-gradient(145deg,rgba(14,16,28,0.97),rgba(5,7,13,0.98));
+    }
+
+    .case-study-grid::before {
+      position: absolute;
+      inset: 0;
+      content: "";
+      background: linear-gradient(115deg, transparent 0 48%, rgba(0,249,255,0.022) 48% 48.2%, transparent 48.2%);
+      pointer-events: none;
+    }
+
+    .case-study-grid > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .case-study-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .case-study-label::before {
+      width: 8px;
+      height: 8px;
+      content: "";
+      border: 1px solid var(--gold);
+      transform: rotate(45deg);
+      box-shadow: 0 0 12px rgba(255,204,0,0.22);
+    }
+
+    .route-architecture {
+      gap: 0;
+      overflow: hidden;
+      border-color: rgba(0,249,255,0.18);
+      background:
+        linear-gradient(rgba(0,249,255,0.035) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(0,249,255,0.035) 1px,transparent 1px),
+        radial-gradient(circle at center, rgba(0,249,255,0.055), transparent 52%),
+        rgba(2,5,10,0.76);
+      background-size: 28px 28px, 28px 28px, auto, auto;
+      box-shadow: inset 0 0 60px rgba(0,249,255,0.025), 0 24px 60px rgba(0,0,0,0.22);
+    }
+
+    .route-architecture::after {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      content: "";
+      background: linear-gradient(180deg, transparent 0 44%, rgba(0,249,255,0.055) 50%, transparent 56%);
+      pointer-events: none;
+      transform: translateY(-60%);
+    }
+
+    body[data-fx="on"] .route-architecture::after {
+      animation: architecture-scan 7s linear infinite;
+    }
+
+    .route-architecture > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .route-kicker {
+      width: 100%;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 22px;
+      color: var(--quiet);
+      font: 800 0.55rem/1 var(--mono);
+      letter-spacing: 0.09em;
+    }
+
+    .route-kicker i {
+      height: 1px;
+      background: linear-gradient(90deg, rgba(0,249,255,0.34), transparent);
+    }
+
+    .route-kicker b {
+      color: var(--green);
+      font: inherit;
+    }
+
+    .route-input,
+    .route-gate,
+    .route-output {
+      backdrop-filter: blur(10px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.025), 0 10px 30px rgba(0,0,0,0.18);
+    }
+
+    .route-gate {
+      background: linear-gradient(135deg, rgba(255,204,0,0.075), rgba(12,14,25,0.96));
+      box-shadow: inset 0 0 24px rgba(255,204,0,0.025), 0 0 20px rgba(255,204,0,0.035);
+    }
+
+    .route-options div {
+      position: relative;
+      overflow: hidden;
+      transition: border-color 180ms ease, background 180ms ease, transform 180ms var(--ease-premium);
+    }
+
+    .route-options div::before {
+      position: absolute;
+      top: 0;
+      left: 18%;
+      width: 64%;
+      height: 2px;
+      content: "";
+      background: linear-gradient(90deg, transparent, currentColor, transparent);
+      opacity: 0.46;
+    }
+
+    .route-options div:hover {
+      border-color: rgba(0,249,255,0.42);
+      background: rgba(0,249,255,0.045);
+      transform: translateY(-2px);
+    }
+
+    .route-options div:nth-child(2) { color: var(--gold); }
+    .route-options div:nth-child(3) { color: var(--violet); }
+
+    .route-arrow {
+      font-size: 0;
+    }
+
+    .route-arrow::before {
+      display: block;
+      width: 1px;
+      height: 25px;
+      margin-inline: auto;
+      content: "";
+      background: linear-gradient(180deg, transparent, var(--cyan), transparent);
+      box-shadow: 0 0 8px rgba(0,249,255,0.22);
+    }
+
+    body[data-fx="on"] .route-arrow::before {
+      animation: route-pulse 1.8s ease-in-out infinite;
+    }
+
+    .route-output {
+      background: linear-gradient(135deg, rgba(0,255,159,0.06), rgba(12,14,25,0.96));
+    }
+
+    .route-telemetry {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 20px;
+    }
+
+    .route-telemetry > span {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px;
+      align-items: center;
+      min-width: 0;
+      padding: 9px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 7px;
+      background: rgba(255,255,255,0.018);
+    }
+
+    .route-telemetry b,
+    .route-telemetry em {
+      font: 800 0.48rem/1 var(--mono);
+      letter-spacing: 0.05em;
+    }
+
+    .route-telemetry b { color: var(--quiet); }
+    .route-telemetry em { color: var(--green); font-style: normal; }
+
+    .route-meter {
+      position: relative;
+      grid-column: 1 / -1;
+      height: 2px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.055);
+    }
+
+    .route-meter::after {
+      position: absolute;
+      inset: 0 auto 0 0;
+      content: "";
+      background: linear-gradient(90deg, var(--cyan), var(--green));
+      box-shadow: 0 0 8px rgba(0,249,255,0.34);
+    }
+
+    .route-meter-privacy::after { width: 92%; }
+    .route-meter-quality::after { width: 84%; }
+    .route-meter-cost::after { width: 86%; }
+    .route-meter-trace::after { width: 100%; }
+
+    .case-study-receipt span {
+      position: relative;
+      transition: color 180ms ease, background 180ms ease;
+    }
+
+    .case-study-receipt span:hover {
+      color: var(--ink);
+      background: rgba(0,249,255,0.035);
+    }
+
+    .flight-brief {
+      position: relative;
+    }
+
+    .flight-brief::before {
+      position: absolute;
+      top: 57px;
+      right: 8%;
+      left: 8%;
+      z-index: 0;
+      height: 1px;
+      content: "";
+      background: linear-gradient(90deg, var(--gold), var(--cyan), var(--violet), var(--green));
+      opacity: 0.2;
+    }
+
+    .flight-brief article {
+      position: relative;
+      z-index: 1;
+      min-height: 226px;
+      overflow: hidden;
+      border-radius: 12px 18px 18px 32px;
+      background: linear-gradient(150deg, rgba(255,255,255,0.025), rgba(255,255,255,0.012));
+      transition: transform 220ms var(--ease-premium), border-color 180ms ease, background 180ms ease, box-shadow 220ms ease;
+    }
+
+    .flight-brief article::after {
+      position: absolute;
+      right: -26px;
+      bottom: -38px;
+      width: 106px;
+      height: 106px;
+      content: "";
+      border: 1px solid rgba(0,249,255,0.08);
+      border-radius: 50%;
+      box-shadow: 0 0 0 18px rgba(0,249,255,0.012);
+    }
+
+    .flight-brief article:hover,
+    .flight-brief article:focus-within {
+      border-color: rgba(0,249,255,0.3);
+      background: linear-gradient(150deg, rgba(0,249,255,0.045), rgba(255,255,255,0.012));
+      box-shadow: 0 22px 55px rgba(0,0,0,0.28);
+      transform: translateY(-4px);
+    }
+
+    .flight-brief article:nth-child(2):hover { border-color: rgba(0,249,255,0.32); }
+    .flight-brief article:nth-child(3):hover { border-color: rgba(177,140,255,0.32); }
+    .flight-brief article:nth-child(4):hover { border-color: rgba(0,255,159,0.3); }
+
+    .flight-brief h3 {
+      margin-top: 20px;
+    }
+
+    .flight-glyph {
+      position: relative;
+      width: 54px;
+      height: 42px;
+      margin-top: 18px;
+    }
+
+    .flight-glyph-arrival {
+      border-bottom: 1px solid rgba(255,204,0,0.34);
+    }
+
+    .flight-glyph-arrival::before {
+      position: absolute;
+      right: 9px;
+      bottom: 4px;
+      width: 28px;
+      height: 14px;
+      content: "";
+      border-radius: 50% 50% 5px 5px;
+      background: linear-gradient(180deg, rgba(255,204,0,0.28), rgba(255,204,0,0.02));
+      box-shadow: 0 -10px 22px rgba(255,204,0,0.14);
+    }
+
+    .flight-glyph-arrival i {
+      position: absolute;
+      top: 3px;
+      right: 8px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 12px rgba(255,204,0,0.48);
+    }
+
+    .flight-glyph-routing::before,
+    .flight-glyph-routing::after {
+      position: absolute;
+      top: 20px;
+      left: 8px;
+      width: 38px;
+      height: 1px;
+      content: "";
+      background: rgba(0,249,255,0.32);
+    }
+
+    .flight-glyph-routing::after { transform: rotate(28deg); transform-origin: left; }
+    .flight-glyph-routing i { position: absolute; width: 8px; height: 8px; border: 1px solid var(--cyan); border-radius: 50%; background: var(--panel-deep); }
+    .flight-glyph-routing i:nth-child(1) { top: 16px; left: 3px; }
+    .flight-glyph-routing i:nth-child(2) { top: 16px; right: 3px; }
+    .flight-glyph-routing i:nth-child(3) { right: 4px; bottom: 1px; border-color: var(--gold); }
+
+    .flight-glyph-evidence {
+      display: flex;
+      align-items: end;
+      gap: 5px;
+      padding: 5px 8px;
+      border: 1px solid rgba(177,140,255,0.2);
+      border-radius: 4px;
+    }
+
+    .flight-glyph-evidence i { width: 7px; background: var(--violet); opacity: 0.7; }
+    .flight-glyph-evidence i:nth-child(1) { height: 12px; }
+    .flight-glyph-evidence i:nth-child(2) { height: 24px; background: var(--cyan); }
+    .flight-glyph-evidence i:nth-child(3) { height: 18px; background: var(--gold); }
+
+    .flight-glyph-handoff {
+      border: 1px solid rgba(0,255,159,0.22);
+      border-radius: 50% 50% 8px 8px;
+    }
+
+    .flight-glyph-handoff::before,
+    .flight-glyph-handoff::after {
+      position: absolute;
+      top: 50%;
+      width: 13px;
+      height: 1px;
+      content: "";
+      background: var(--green);
+    }
+
+    .flight-glyph-handoff::before { left: -8px; }
+    .flight-glyph-handoff::after { right: -8px; }
+    .flight-glyph-handoff i { position: absolute; inset: 12px; border: 1px solid var(--green); border-radius: 50%; box-shadow: 0 0 13px rgba(0,255,159,0.2); }
+
+    .about-principles article {
+      position: relative;
+      overflow: hidden;
+      transition: background 180ms ease, transform 180ms var(--ease-premium);
+    }
+
+    .about-principles article::after {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 2px;
+      content: "";
+      background: var(--cyan);
+      opacity: 0;
+      transform: scaleY(0.25);
+      transition: opacity 180ms ease, transform 220ms var(--ease-premium);
+    }
+
+    .about-principles article:hover {
+      background: linear-gradient(90deg, rgba(0,249,255,0.045), rgba(8,9,16,0.98) 38%);
+      transform: translateX(3px);
+    }
+
+    .about-principles article:hover::after { opacity: 1; transform: scaleY(1); }
+
+    .contact-deck {
+      grid-template-columns: 210px minmax(0, 1fr) auto;
+      min-height: 380px;
+      background:
+        radial-gradient(circle at 12% 50%, rgba(255,204,0,0.075), transparent 18rem),
+        radial-gradient(circle at 85% 50%, rgba(0,249,255,0.1), transparent 30rem),
+        linear-gradient(135deg, rgba(15,20,34,0.98), rgba(6,8,14,0.98));
+    }
+
+    .contact-signal-map {
+      position: relative;
+      width: 190px;
+      height: 190px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+    }
+
+    .contact-ring {
+      position: absolute;
+      inset: 50%;
+      border: 1px solid rgba(0,249,255,0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .contact-ring-one { width: 62px; height: 62px; border-style: dashed; }
+    .contact-ring-two { width: 116px; height: 116px; border-color: rgba(255,204,0,0.18); }
+    .contact-ring-three { width: 176px; height: 176px; border-color: rgba(177,140,255,0.14); border-style: dashed; }
+    body[data-fx="on"] .contact-ring-one { animation: orbit-spin 10s linear infinite; }
+    body[data-fx="on"] .contact-ring-two { animation: orbit-spin 18s linear infinite reverse; }
+    body[data-fx="on"] .contact-ring-three { animation: orbit-spin 28s linear infinite; }
+
+    .contact-beacon {
+      width: 20px;
+      height: 20px;
+      border: 1px solid var(--cyan);
+      border-radius: 50%;
+      background: rgba(0,249,255,0.08);
+      box-shadow: 0 0 22px rgba(0,249,255,0.28), inset 0 0 10px rgba(0,249,255,0.25);
+    }
+
+    body[data-fx="on"] .contact-beacon { animation: beacon-breathe 2.8s ease-in-out infinite; }
+
+    .contact-signal-map b {
+      position: absolute;
+      bottom: 14px;
+      color: var(--green);
+      font: 800 0.55rem/1.35 var(--mono);
+      letter-spacing: 0.1em;
+      text-align: center;
+    }
+
+    .bit-panel {
+      background:
+        radial-gradient(circle at 92% 10%, rgba(0,249,255,0.1), transparent 30%),
+        rgba(7,9,17,0.97);
+      box-shadow: 0 32px 100px rgba(0,0,0,0.62), 0 0 38px rgba(0,249,255,0.09), inset 0 1px 0 rgba(255,255,255,0.035);
+    }
+
+    .bit-prompts button {
+      position: relative;
+      padding-left: 30px;
+    }
+
+    .bit-prompts button::before {
+      position: absolute;
+      top: 50%;
+      left: 12px;
+      width: 6px;
+      height: 6px;
+      content: "";
+      border: 1px solid currentColor;
+      transform: translateY(-50%) rotate(45deg);
+      opacity: 0.58;
+    }
+
+    /* Professional palette and identity lockup */
+    :root {
+      --ink: #f4f7f8;
+      --muted: #bec8d2;
+      --quiet: #8997a8;
+      --cyan: #6bd2da;
+      --cyan-strong: #3fbec8;
+      --orange: #d78c52;
+      --gold: #d8ba70;
+      --violet: #9b87c5;
+      --rose: #d26d89;
+      --green: #65ca99;
+      --warning: #d8ba70;
+    }
+
+    .identity-wordmark {
+      position: relative;
+      width: fit-content;
+      max-width: 100%;
+      display: inline-block;
+      margin: 0 0 18px;
+      padding: 0 0 13px;
+      color: var(--ink);
+      background: none;
+      -webkit-background-clip: border-box;
+      background-clip: border-box;
+      -webkit-text-fill-color: var(--ink);
+      font-size: clamp(2.35rem, 4.9vw, 4.65rem);
+      font-weight: 900;
+      letter-spacing: 0.055em;
+      line-height: 0.96;
+      text-shadow:
+        0 1px 0 rgba(255,255,255,0.08),
+        0 14px 42px rgba(0,0,0,0.58);
+      animation: none !important;
+    }
+
+    .identity-wordmark::after {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      content: "";
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--cyan) 0 72%, var(--gold) 72% 86%, transparent 86%);
+      box-shadow: 0 4px 18px rgba(107,210,218,0.16);
+    }
+
+    body[data-fx="on"] .identity-wordmark,
+    body.spice-surge .identity-wordmark {
+      color: var(--ink);
+      background: none;
+      -webkit-text-fill-color: var(--ink);
+      text-shadow:
+        0 1px 0 rgba(255,255,255,0.08),
+        0 14px 42px rgba(0,0,0,0.58);
+      animation: none !important;
+    }
+
+    .hero-copy .kicker {
+      color: #7bd7dd;
+      border-color: rgba(107,210,218,0.28);
+      background: rgba(107,210,218,0.055);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.025);
+    }
+
+    .hero-copy .kicker::before {
+      background: var(--cyan);
+      box-shadow: 0 0 10px rgba(107,210,218,0.34);
+    }
+
+    .gradient-text {
+      background-image: linear-gradient(96deg, #f5f7f8 0%, #b9e7ea 52%, var(--gold) 100%);
+      filter: drop-shadow(0 10px 26px rgba(107,210,218,0.07));
+    }
+
+    .deck-status {
+      border-color: rgba(190,200,210,0.14);
+      background: rgba(7,9,15,0.76);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.018);
+    }
+
+    .deck-status-dot {
+      background: var(--gold);
+      box-shadow: 0 0 9px rgba(216,186,112,0.32);
+    }
+
+    .button-primary {
+      color: #071114;
+      background: linear-gradient(105deg, #69cdd5, #a5e2e6);
+      box-shadow: 0 12px 32px rgba(63,190,200,0.13);
+    }
+
+    .button-primary:hover,
+    .button-primary:focus-visible {
+      box-shadow: 0 18px 44px rgba(0,0,0,0.32), 0 0 22px rgba(107,210,218,0.12);
+    }
+
+    .command-orbit,
+    .proof-rail-card,
+    .case-study-grid,
+    .route-architecture,
+    .flight-brief article,
+    .about-principles,
+    .contact-deck,
+    .bit-panel {
+      border-color: rgba(190,200,210,0.16);
+    }
+
+    .command-orbit:hover,
+    .command-orbit:focus-within,
+    .proof-rail-card:hover,
+    .proof-rail-card:focus-within,
+    .flight-brief article:hover,
+    .flight-brief article:focus-within {
+      border-color: rgba(107,210,218,0.42);
+    }
+
+    @keyframes topography-drift {
+      0% { transform: rotate(-7deg) scale(1.08) translate3d(-1%, -1%, 0); }
+      100% { transform: rotate(-4deg) scale(1.12) translate3d(1%, 1%, 0); }
+    }
+
+    @keyframes button-sheen {
+      0% { left: -42%; opacity: 0; }
+      20% { opacity: 0.48; }
+      100% { left: 112%; opacity: 0; }
+    }
+
+    @keyframes packet-pulse {
+      0%, 100% { opacity: 0.38; transform: scale(0.72); }
+      50% { opacity: 1; transform: scale(1.28); }
+    }
+
+    @keyframes status-scan {
+      0%, 58% { transform: translateX(-100%); opacity: 0; }
+      70% { opacity: 1; }
+      90%, 100% { transform: translateX(100%); opacity: 0; }
+    }
+
+    @keyframes meter-fill {
+      to { transform: scaleX(1); }
+    }
+
+    @keyframes control-breathe {
+      0%, 100% { opacity: 0.36; transform: translate(-50%, -50%) scale(0.96); }
+      50% { opacity: 0.88; transform: translate(-50%, -50%) scale(1.04); }
+    }
+
+    @keyframes architecture-scan {
+      0% { transform: translateY(-65%); opacity: 0; }
+      15% { opacity: 1; }
+      85% { opacity: 1; }
+      100% { transform: translateY(65%); opacity: 0; }
+    }
+
+    @keyframes route-pulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(0.62); }
+      50% { opacity: 1; transform: scaleY(1); }
+    }
+
+    @keyframes beacon-breathe {
+      0%, 100% { box-shadow: 0 0 14px rgba(0,249,255,0.18), inset 0 0 8px rgba(0,249,255,0.18); transform: scale(0.9); }
+      50% { box-shadow: 0 0 32px rgba(0,249,255,0.38), 0 0 58px rgba(0,249,255,0.12), inset 0 0 12px rgba(0,249,255,0.26); transform: scale(1.08); }
+    }
+
+    body[data-fx="off"] .ambient-topography,
+    body[data-fx="off"] .system-orbit,
+    body[data-fx="off"] .route-architecture::after {
+      animation: none;
+    }
+
+    @media (max-width: 1120px) {
+      .contact-deck {
+        grid-template-columns: minmax(0, 1fr) auto;
+      }
+
+      .contact-signal-map {
+        display: none;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .proof-card-visual {
+        max-width: 460px;
+      }
+
+      .route-telemetry {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .flight-brief::before {
+        display: none;
+      }
+
+      .contact-deck {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .ambient-topography,
+      .hero-copy::before,
+      .hero-copy::after {
+        display: none;
+      }
+
+      .proof-rail::before {
+        top: 0.18em;
+        font-size: 7rem;
+      }
+
+      .proof-rail-card {
+        min-height: 0;
+      }
+
+      .system-orbit {
+        right: -78px;
+        bottom: -92px;
+        opacity: 0.42;
+        transform: scale(0.82);
+      }
+
+      .route-kicker {
+        grid-template-columns: 1fr auto;
+      }
+
+      .route-kicker i {
+        display: none;
+      }
+
+      .route-telemetry {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .flight-brief article {
+        min-height: 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ambient-topography,
+      .orbit-ring,
+      .orbit-packet,
+      .profile-state::after,
+      .proof-bar::after,
+      .control-orbit,
+      .route-architecture::after,
+      .route-arrow::before,
+      .contact-ring,
+      .contact-beacon,
+      .button::before {
+        animation: none !important;
+      }
+
+      .proof-bar::after {
+        transform: scaleX(1);
+      }
+    }
+
+    @media (max-width: 1040px) {
+      .deck-status {
+        display: flex;
+      }
+
+      .case-study-grid,
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .case-study-story h2,
+      .about-intro h2 {
+        max-width: 16ch;
+      }
+
+      .case-study-receipt,
+      .flight-brief {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .hero-grid,
+      .proof-rail-head,
+      .flight-intro-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .deck-status {
+        flex-wrap: wrap;
+        border-radius: 12px;
+      }
+
+      .deck-status span:last-child {
+        width: 100%;
+        margin-left: 18px;
+      }
+
+      .proof-rail-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .proof-rail-card {
+        min-height: 0;
+      }
+
+      .case-study-grid {
+        padding: 26px;
+        border-radius: 16px 24px 24px 38px;
+      }
+
+      .case-study-receipt {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      body[data-deck-mode="compact"] .perspective-grid,
+      body[data-deck-mode="compact"] .spice-haze,
+      body[data-deck-mode="compact"] .hero::before,
+      body[data-deck-mode="compact"] .hero::after {
+        display: none;
+      }
+
+      body[data-deck-mode="compact"] .deck-status {
+        display: none;
+      }
+
+      body[data-deck-mode="compact"] #starfield {
+        opacity: 0.36;
+      }
+
+      body[data-deck-mode="compact"] .command-orbit {
+        transform: none !important;
+      }
+
+      .header-controls {
+        gap: 6px;
+      }
+
+      .deck-controls {
+        display: none;
+      }
+
+      .hero {
+        gap: 34px;
+        padding-top: 40px;
+      }
+
+      .identity-wordmark {
+        font-size: clamp(2rem,11vw,3rem);
+      }
+
+      .hero-copy h1 {
+        font-size: clamp(2.7rem,13vw,4rem);
+      }
+
+      .hero-proof {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .hero-proof li,
+      .hero-proof li:first-child {
+        padding: 0 0 14px;
+        border: 0;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .command-orbit {
+        min-height: 0;
+      }
+
+      .profile-details .profile-grid,
+      .case-study-receipt,
+      .flight-brief {
+        grid-template-columns: 1fr;
+      }
+
+      .case-story-steps article {
+        grid-template-columns: 1fr;
+        gap: 7px;
+      }
+
+      .route-options {
+        grid-template-columns: 1fr;
+      }
+
+      .route-options div {
+        min-height: 78px;
+      }
+
+      .flight-actions,
+      .flight-actions .button {
+        width: 100%;
+      }
+
+      .flight-brief article {
+        min-height: 0;
+      }
+
+      .bit-companion {
+        right: 12px;
+        bottom: 14px;
+      }
+
+      .bit-answer {
+        display: none;
+      }
+
+      .bit-panel {
+        right: 12px;
+        bottom: 92px;
+      }
+    }
+
+    @media print {
+      .bit-panel,
+      .deck-controls,
+      .flight-actions,
+      .flight-mode-note,
+      .ambient-topography,
+      .system-orbit,
+      .proof-card-visual,
+      .route-kicker,
+      .route-telemetry,
+      .flight-glyph,
+      .contact-signal-map {
+        display: none !important;
+      }
+
+      .proof-rail-card,
+      .case-study-grid,
+      .route-architecture,
+      .about-principles {
+        color: #111;
+        background: #fff;
+        box-shadow: none;
+      }
+    }
   </style>
 </head>
 <body data-fx="on" data-alert="off">
   <div class="scroll-progress" aria-hidden="true"><span id="scroll-progress-fill"></span></div>
   <div class="perspective-grid" aria-hidden="true"></div>
   <div class="spice-haze" aria-hidden="true"></div>
+  <div class="ambient-topography" aria-hidden="true"></div>
   <div class="alert-wash" aria-hidden="true"></div>
   <div class="warp-flash" id="warp-flash" aria-hidden="true"></div>
   <a class="skip-link" href="#main">Skip to mission control</a>
   <canvas id="starfield" aria-hidden="true"></canvas>
-  <div class="preview-flag" id="preview-flag" aria-label="Local preview, not deployed" hidden>Local preview • not deployed</div>
-  <button class="bit-companion" id="bit-companion" type="button" data-answer="idle" aria-label="Ask Bit, the binary companion, for a yes or no" aria-describedby="bit-answer">
+  <div class="preview-flag" id="preview-flag" hidden>Local preview • not deployed</div>
+  <button class="bit-companion" id="bit-companion" type="button" data-answer="idle" aria-label="Open Bit, the guide to this system" aria-describedby="bit-answer" aria-controls="bit-panel" aria-expanded="false">
     <span class="bit-aura" aria-hidden="true"></span>
     <span class="bit-crystal" aria-hidden="true"></span>
     <canvas class="bit-canvas" id="bit-canvas" aria-hidden="true"></canvas>
-    <span class="bit-answer" id="bit-answer">Ask Bit</span>
+    <span class="bit-answer" id="bit-answer">BIT // Ask about this system</span>
   </button>
+  <aside class="bit-panel" id="bit-panel" aria-labelledby="bit-panel-title" hidden>
+    <div class="bit-panel-head">
+      <div>
+        <span>◈ BIT</span>
+        <strong id="bit-panel-title">What would you like to see?</strong>
+      </div>
+      <button class="bit-close" id="bit-close" type="button" aria-label="Close Bit">×</button>
+    </div>
+    <div class="bit-prompts" role="group" aria-label="Suggested questions for Bit">
+      <button type="button" data-bit-target="topology">Show the architecture</button>
+      <button type="button" data-bit-target="featured-case">Explain the savings</button>
+      <button type="button" data-bit-target="topology">What runs locally?</button>
+      <button type="button" data-bit-message="The public deck uses a dated, owner-supplied snapshot—not a live infrastructure connection.">Is the data live?</button>
+      <button type="button" data-bit-target="hail">Contact Doug</button>
+    </div>
+    <p class="bit-response" id="bit-response" role="status">Choose a question and I’ll take you to the receipt.</p>
+    <button class="bit-easter" id="bit-easter" type="button">Ask Bit a yes / no question</button>
+  </aside>
 
-  <header class="site-header">
+  <header class="site-header" aria-label="CASHIO.US site header">
     <div class="shell header-inner">
       <a class="brand" href="#top" aria-label="CASHIO.US, return to top">
         <span class="brand-mark" aria-hidden="true">
@@ -5238,34 +7533,40 @@
 
       <nav class="primary-nav" aria-label="Primary navigation">
         <ul>
-          <li><a href="#proof">Proof</a></li>
-          <li><a href="#chain">Chain</a></li>
-          <li><a href="#console">Console</a></li>
-          <li><a href="#topology">Fleet</a></li>
-          <li><a href="#fleet-card">Card</a></li>
-          <li><a href="#hail">Build notes</a></li>
+          <li><a href="#proof-rail">Proof</a></li>
+          <li><a href="#topology">ZeusApollo</a></li>
+          <li><a href="#console">Work</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#hail">Contact</a></li>
         </ul>
       </nav>
 
       <details class="mobile-nav">
         <summary>Index</summary>
         <nav class="mobile-nav-panel" aria-label="Mobile navigation">
-          <a href="#mission">Choose mission</a>
-          <a href="#proof">Proof</a>
-          <a href="#chain">Event chain</a>
+          <a href="#proof-rail">Proof</a>
+          <a href="#featured-case">Featured case</a>
+          <a href="#flight-intro">Proof flight</a>
+          <a href="#topology">ZeusApollo</a>
           <a href="#console">Console</a>
-          <a href="#topology">Fleet</a>
+          <a href="#chain">Event chain</a>
           <a href="#manifest">Flight manifest</a>
-          <a href="#fleet-card">Fleet card</a>
-          <a href="#hail">Build notes</a>
+          <a href="#about">About Doug</a>
+          <a href="#hail">Contact</a>
         </nav>
       </details>
 
       <div class="header-controls">
-        <button class="icon-button alert-toggle" id="alert-toggle" type="button" aria-pressed="false" aria-label="Turn the visual red alert theme on">Alert</button>
         <button class="icon-button" id="fx-toggle" type="button" aria-pressed="true" aria-label="Turn ambient visual effects off">FX ON</button>
         <button class="icon-button sound-toggle" id="sound-toggle" type="button" aria-pressed="false" aria-label="Turn interface sound on">SND OFF</button>
-        <button class="button button-orange" type="button" data-open-mission>Engage mission</button>
+        <details class="deck-controls">
+          <summary>Deck</summary>
+          <div class="deck-controls-panel">
+            <span>Optional effects</span>
+            <button class="icon-button alert-toggle" id="alert-toggle" type="button" aria-pressed="false" aria-label="Turn the visual red alert theme on">Red alert</button>
+            <button class="icon-button" id="deck-mission" type="button" data-open-mission>Replay mission</button>
+          </div>
+        </details>
       </div>
     </div>
   </header>
@@ -5274,34 +7575,27 @@
 
   <main id="main">
     <section class="hero" id="top" aria-labelledby="hero-title">
-      <div class="shell deck-status" aria-label="Local command-deck readouts">
-        <div class="deck-stat"><span>Stardate // UTC</span><strong id="deck-stardate">----</strong></div>
-        <div class="deck-stat"><span>Local ops clock</span><strong id="deck-clock">--:--</strong></div>
-        <div class="deck-stat"><span>House</span><strong>CASHIO.US // v30</strong></div>
-        <div class="deck-stat"><span>Status export</span><strong id="snapshot-readout">Verified // 07-14-2026</strong></div>
-        <div class="deck-stat"><span>Primary route</span><strong>DeepSeek V4 Pro</strong></div>
+      <div class="shell deck-status" role="status" aria-label="ZeusApollo public status">
+        <span class="deck-status-dot" aria-hidden="true"></span>
+        <strong id="snapshot-readout">Sampled // 07-14-2026</strong>
+        <span>Sanitized public snapshot</span>
+        <span>No live systems · no private data</span>
       </div>
       <div class="shell hero-grid">
         <div class="hero-copy">
           <p class="identity-wordmark">DOUG CASHIO</p>
-          <span class="kicker">Enterprise AI &amp; Cybersecurity // Personal Homelab Portfolio</span>
+          <span class="kicker">Enterprise AI · Cybersecurity · Sovereign Systems</span>
           <h1 id="hero-title">I build AI systems that <span class="gradient-text">show their work.</span></h1>
-          <p><strong>Enterprise AI, cybersecurity, and sovereign infrastructure—translated for humans.</strong> This portfolio documents what I personally designed, built, operated, measured, and hardened: auditable systems that lower cost, protect data, survive failure, and make every important claim traceable to evidence.</p>
-          <p class="project-provenance" aria-label="Project provenance"><span>Personal homelab</span><span>Independently built</span><span>Sanitized public proof</span></p>
-          <div class="hero-signal" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
-          <p class="dune-mantra">House Cashio // The spice must flow // Proof before prophecy</p>
+          <p>I design secure AI infrastructure that lowers cost, protects private data, and explains every important action.</p>
           <div class="hero-actions">
-            <button class="button button-primary" type="button" data-open-mission>Engage 60-second mission <span aria-hidden="true">→</span></button>
-        <a class="button button-secondary" href="#hail">Build notes</a>
+            <button class="button button-primary" type="button" data-open-mission>View the 60-second proof <span aria-hidden="true">→</span></button>
+            <a class="button button-secondary" href="#featured-case">Explore ZeusApollo</a>
           </div>
-          <p class="instrument-label"><span>◈</span> Instrument readouts // hover or focus for the receipt</p>
-          <ul class="hero-proof" aria-label="At a glance">
-            <li tabindex="0" aria-describedby="tip-guests"><strong data-fleet="healthyServiceCount">17</strong> owner-reported healthy<span class="flight-tip" id="tip-guests" role="tooltip"><b>Fleet receipt</b>Owner-supplied status export verified 07-14-2026. Home-Asst is retired; Athena was not reported.</span></li>
-            <li tabindex="0" aria-describedby="tip-jobs"><strong data-fleet="hostCount">2</strong> personal hosts<span class="flight-tip" id="tip-jobs" role="tooltip"><b>Host receipt</b>Zeus and Apollo are personal homelab systems. No addresses or access paths are published.</span></li>
-            <li tabindex="0" aria-describedby="tip-models"><strong data-fleet="routeCount">10</strong> model routes<span class="flight-tip" id="tip-models" role="tooltip"><b>Payload receipt</b>Ten configured routes were owner-reported; public names were checked against official provider catalogs on 07-14-2026.</span></li>
-            <li tabindex="0" aria-describedby="tip-version"><strong>v30</strong> release candidate<span class="flight-tip" id="tip-version" role="tooltip"><b>Deck receipt</b>CASHIO.US // v30 is prepared for public GitHub publishing. This local file does not publish itself.</span></li>
+          <ul class="hero-proof">
+            <li><strong>7.2×</strong> lower matched-task unit cost</li>
+            <li><strong data-fleet="healthyServiceCount">17</strong> documented healthy services</li>
+            <li><strong data-fleet="routeCount">10</strong> configured model routes</li>
           </ul>
-          <a class="hero-ping" href="#console">Hermes console ready // local mode // press / to connect</a>
         </div>
 
         <aside class="command-orbit" aria-labelledby="profile-title">
@@ -5315,21 +7609,93 @@
             <div class="boot-track"><span></span></div>
           </div>
           <div class="command-core" aria-hidden="true"></div>
+          <div class="system-orbit" aria-hidden="true">
+            <span class="orbit-ring orbit-ring-one"></span>
+            <span class="orbit-ring orbit-ring-two"></span>
+            <span class="orbit-ring orbit-ring-three"></span>
+            <span class="orbit-node orbit-node-local"><i></i><b>LOCAL</b></span>
+            <span class="orbit-node orbit-node-policy"><i></i><b>POLICY</b></span>
+            <span class="orbit-node orbit-node-verify"><i></i><b>VERIFY</b></span>
+            <span class="orbit-packet orbit-packet-one"></span>
+            <span class="orbit-packet orbit-packet-two"></span>
+            <span class="orbit-coordinate">ZA // 30.419°N</span>
+          </div>
           <div class="profile-head">
-            <p>Operator profile // public proof</p>
+            <p>House Cashio // Public proof</p>
             <h2 id="profile-title">ZEUSAPOLLO</h2>
-            <span>Personally owned sovereign AI command deck</span>
+            <span>Sovereign AI command system</span>
           </div>
-          <div class="profile-grid">
-            <div class="profile-metric"><strong>7.2×</strong><span>Lower unit cost</span><small>Matched task vs Opus-primary baseline</small></div>
-            <div class="profile-metric"><strong data-fleet="dailyBurn">$0.35</strong><span>API inference / day</span><small>Last reported sampled spend</small></div>
-            <div class="profile-metric"><strong data-fleet="healthyServiceCount">17</strong><span>Healthy services</span><small>Owner-reported 07-14-2026</small></div>
-            <div class="profile-metric"><strong data-fleet="routeCount">10</strong><span>Model routes</span><small>Configured routes, not traffic claims</small></div>
-          </div>
-          <div class="profile-foot" aria-label="Additional profile facts">
-            <span>10 routes</span><span>15+ years enterprise</span><span>independent build</span>
-          </div>
+          <div class="profile-state"><span aria-hidden="true"></span><strong>LOCAL DEMO READY</strong><small>POLICY → ROUTE → VERIFY</small></div>
+          <details class="profile-details">
+            <summary>Inspect four readouts</summary>
+            <div class="profile-grid">
+              <div class="profile-metric"><strong>7.2×</strong><span>Lower unit cost</span><small>Matched task vs Opus-primary baseline</small></div>
+              <div class="profile-metric"><strong data-fleet="dailyBurn">$0.35</strong><span>API inference / day</span><small>Last reported sampled spend</small></div>
+              <div class="profile-metric"><strong data-fleet="healthyServiceCount">17</strong><span>Healthy services</span><small>Owner-reported 07-14-2026</small></div>
+              <div class="profile-metric"><strong data-fleet="routeCount">10</strong><span>Model routes</span><small>Configured routes, not traffic claims</small></div>
+            </div>
+            <div class="profile-foot">
+              <span>10 routes</span><span>15+ years enterprise</span><span>independent build</span>
+            </div>
+          </details>
         </aside>
+      </div>
+    </section>
+
+    <section class="proof-rail section" id="proof-rail" aria-labelledby="proof-rail-title">
+      <div class="shell">
+        <div class="proof-rail-head">
+          <div>
+            <p class="eyebrow">Proof, not promises</p>
+            <h2 id="proof-rail-title">Three claims. Three places to inspect them.</h2>
+          </div>
+          <p>Every headline number keeps its scope, source, and limitations attached.</p>
+        </div>
+        <div class="proof-rail-grid">
+          <article class="proof-rail-card">
+            <span>01 // COST</span>
+            <strong>7.2×</strong>
+            <div class="proof-card-visual proof-cost-visual" aria-hidden="true">
+              <span class="proof-bar-label">PREMIUM</span><i class="proof-bar proof-bar-premium"></i><b>1.00</b>
+              <span class="proof-bar-label">ROUTED</span><i class="proof-bar proof-bar-routed"></i><b>0.14</b>
+            </div>
+            <h3>Lower unit cost</h3>
+            <p>Matched-task comparison against a premium-model baseline using the same acceptance rubric.</p>
+            <small>Sampled portfolio benchmark // not total infrastructure cost</small>
+            <a href="#featured-case">View receipt <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="proof-rail-card">
+            <span>02 // CONTROL</span>
+            <strong>LOCAL-FIRST</strong>
+            <div class="proof-card-visual proof-control-visual" aria-hidden="true">
+              <span class="control-core">PRIVATE</span>
+              <span class="control-orbit control-orbit-one"></span>
+              <span class="control-orbit control-orbit-two"></span>
+              <i class="control-node control-node-one"></i>
+              <i class="control-node control-node-two"></i>
+              <i class="control-node control-node-three"></i>
+            </div>
+            <h3>Private by design</h3>
+            <p>Routine and sensitive workloads can remain under personally controlled infrastructure.</p>
+            <small>Public-safe architecture snapshot // verified 07-14-2026</small>
+            <a href="#topology">View architecture <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="proof-rail-card">
+            <span>03 // TRUST</span>
+            <strong>EXPLAINED</strong>
+            <div class="proof-card-visual proof-trace-visual" aria-hidden="true">
+              <span><i></i><b>POLICY</b></span>
+              <span><i></i><b>ROUTE</b></span>
+              <span><i></i><b>VERIFY</b></span>
+              <span><i></i><b>EXPLAIN</b></span>
+            </div>
+            <h3>Human-readable trail</h3>
+            <p>Policy, route, result, uncertainty, and next action remain visible to the operator.</p>
+            <small>Browser-local demonstration // no fleet access</small>
+            <a href="#chain">Run trace <span aria-hidden="true">→</span></a>
+          </article>
+        </div>
+        <p class="dune-mantra proof-mantra">House Cashio // The spice must flow // Proof before prophecy</p>
       </div>
     </section>
 
@@ -5340,6 +7706,71 @@
         <div class="telemetry-meta" id="telemetry-meta">No live connection // personal lab only</div>
       </div>
     </aside>
+
+    <section class="section featured-case" id="featured-case" aria-labelledby="featured-case-title">
+      <div class="shell">
+        <div class="case-study-label">Case study 01 // Policy-based model routing</div>
+        <div class="case-study-grid">
+          <div class="case-study-story">
+            <p class="eyebrow">Lower AI cost without losing control</p>
+            <h2 id="featured-case-title">Use premium reasoning only when the work earns it.</h2>
+            <div class="case-story-steps">
+              <article><span>THE PROBLEM</span><p>Premium models were being used for work that did not require premium reasoning.</p></article>
+              <article><span>THE CHANGE</span><p>A policy gate classified work by privacy, quality, complexity, and cost before selecting a route.</p></article>
+              <article><span>THE RESULT</span><p><strong>7.2× lower matched-task unit cost</strong>, with the acceptance rubric held constant.</p></article>
+            </div>
+            <a class="button button-primary" href="#proof">Inspect the complete receipt</a>
+          </div>
+          <div class="route-architecture" role="img" aria-label="User request enters a policy gate, routes to a local, value-cloud, or premium-cloud model, then is verified, logged, and explained to a human.">
+            <div class="route-kicker"><span>LIVE POLICY SIMULATION</span><i></i><b>4 SIGNALS</b></div>
+            <div class="route-input">USER REQUEST</div>
+            <span class="route-arrow" aria-hidden="true">↓</span>
+            <div class="route-gate">POLICY GATE<small>privacy · quality · complexity · cost</small></div>
+            <span class="route-arrow" aria-hidden="true">↓</span>
+            <div class="route-options">
+              <div><strong>LOCAL MODEL</strong><small>Private work</small></div>
+              <div><strong>VALUE CLOUD</strong><small>Routine work</small></div>
+              <div><strong>PREMIUM CLOUD</strong><small>Hard problems</small></div>
+            </div>
+            <span class="route-arrow" aria-hidden="true">↓</span>
+            <div class="route-output">VERIFY → LOG → HUMAN EXPLANATION</div>
+            <div class="route-telemetry" aria-hidden="true">
+              <span><b>PRIVACY</b><i class="route-meter route-meter-privacy"></i><em>LOCAL</em></span>
+              <span><b>QUALITY</b><i class="route-meter route-meter-quality"></i><em>PASS</em></span>
+              <span><b>COST</b><i class="route-meter route-meter-cost"></i><em>−86%</em></span>
+              <span><b>TRACE</b><i class="route-meter route-meter-trace"></i><em>SEALED</em></span>
+            </div>
+          </div>
+        </div>
+        <div class="case-study-receipt">
+          <span><strong>WHAT CHANGED</strong>Policy-based routing</span>
+          <span><strong>WHAT WAS MEASURED</strong>Matched-task unit cost</span>
+          <span><strong>CLAIM BOUNDARY</strong>Not total infrastructure cost</span>
+          <span><strong>EVIDENCE</strong>Baseline, rubric, calls, cost log</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="flight-intro section" id="flight-intro" aria-labelledby="flight-intro-title">
+      <div class="shell flight-intro-shell">
+        <div>
+          <p class="eyebrow">The House Cashio proof flight</p>
+          <h2 id="flight-intro-title">Choose the spectacle—or take the direct route.</h2>
+          <p>A four-stage journey through routing, evidence, resilience, and human handoff.</p>
+          <div class="flight-actions">
+            <button class="button button-primary" id="launch-flight" type="button" aria-controls="spice-flight" aria-expanded="false">Launch cinematic mode</button>
+            <a class="button button-secondary" id="read-flight" href="#flight-brief">Read as four simple cards</a>
+          </div>
+        </div>
+        <div class="flight-mode-note"><span>MODE</span><strong>Brief by default</strong><small>The cinematic flight runs only after you launch it.</small></div>
+      </div>
+      <div class="shell flight-brief" id="flight-brief">
+        <article><span>01</span><div class="flight-glyph flight-glyph-arrival" aria-hidden="true"><i></i></div><h3>Arrival</h3><p>Frame the human problem before choosing technical machinery.</p></article>
+        <article><span>02</span><div class="flight-glyph flight-glyph-routing" aria-hidden="true"><i></i><i></i><i></i></div><h3>Routing</h3><p>Choose by privacy, quality, cost, and task fit.</p></article>
+        <article><span>03</span><div class="flight-glyph flight-glyph-evidence" aria-hidden="true"><i></i><i></i><i></i></div><h3>Evidence</h3><p>Separate baseline, change, result, and verification.</p></article>
+        <article><span>04</span><div class="flight-glyph flight-glyph-handoff" aria-hidden="true"><i></i></div><h3>Handoff</h3><p>Explain what happened and what a person should do next.</p></article>
+      </div>
+    </section>
 
     <section class="scroll-world" id="spice-flight" aria-labelledby="spice-flight-title" aria-describedby="flight-instructions">
       <h2 class="visually-hidden" id="spice-flight-title">The House Cashio proof flight</h2>
@@ -5395,7 +7826,7 @@
           <div class="world-current" id="world-current">Scene 01 // Arrival</div>
           <div class="world-scroll-cue">Scroll to fly</div>
           <div class="world-progress-track" aria-hidden="true"><span></span></div>
-          <div class="world-nav" aria-label="Proof flight scenes">
+          <div class="world-nav" role="group" aria-label="Proof flight scenes">
             <button type="button" data-world-jump="0" aria-label="Go to scene 1: Arrival" aria-current="step">01</button>
             <button type="button" data-world-jump="1" aria-label="Go to scene 2: Intelligent routing">02</button>
             <button type="button" data-world-jump="2" aria-label="Go to scene 3: Evidence">03</button>
@@ -5782,9 +8213,33 @@
       </div>
     </section>
 
+    <section class="section about-doug" id="about" aria-labelledby="about-title">
+      <div class="shell about-grid">
+        <div class="about-intro">
+          <p class="eyebrow">About Doug</p>
+          <h2 id="about-title">Enterprise perspective.<br>Builder’s discipline.</h2>
+          <p>I’m Doug Cashio, a Principal Solutions Consultant working at the intersection of cybersecurity, enterprise architecture, and practical AI. ZeusApollo is the personal lab where I turn those ideas into independently built, measurable systems.</p>
+          <p class="about-boundary">This portfolio represents my personal work and views—not employer, customer, or partner systems.</p>
+        </div>
+        <div class="about-principles" aria-label="How Doug works">
+          <article><span>01</span><div><strong>Observe</strong><p>Start with the human problem, operating reality, and measurable baseline.</p></div></article>
+          <article><span>02</span><div><strong>Route</strong><p>Choose the smallest, safest capability that fits the work.</p></div></article>
+          <article><span>03</span><div><strong>Verify</strong><p>Instrument outcomes, failures, cost, and uncertainty.</p></div></article>
+          <article><span>04</span><div><strong>Explain</strong><p>Return a decision and next action a person can understand.</p></div></article>
+        </div>
+      </div>
+    </section>
+
     <section class="section" id="hail" aria-labelledby="hail-title">
       <div class="shell">
         <div class="contact-deck">
+          <div class="contact-signal-map" aria-hidden="true">
+            <span class="contact-ring contact-ring-one"></span>
+            <span class="contact-ring contact-ring-two"></span>
+            <span class="contact-ring contact-ring-three"></span>
+            <i class="contact-beacon"></i>
+            <b>CHANNEL<br>OPEN</b>
+          </div>
           <div>
             <p class="eyebrow">08 // Notes // source // conversation</p>
             <h2 id="hail-title">Built in public. Explained in full.</h2>
@@ -5803,7 +8258,7 @@
 
   <footer class="site-footer">
     <div class="shell footer-inner">
-      <span>© 2026 Doug Cashio // Personal build // CASHIO.US v30</span>
+      <span>© 2026 Doug Cashio // Personal build // CASHIO.US v31</span>
       <span class="footer-signal">House Cashio // The spice must flow // Every number earns its place.</span>
       <button class="house-sigil" id="house-awaken" type="button">◈ Awaken House Cashio</button>
       <p class="independence-note"><strong>Personal project notice.</strong> ZeusApollo is a personally owned homelab built and operated independently. This site uses sanitized, dated samples from that lab only—no employer or customer systems, code, data, roadmaps, confidential information, or endorsement are represented. Views are Doug’s own. Cinematic references use original CSS and mathematical fan-homage visuals; no studio artwork, logos, audio, or copied media are included.</p>
@@ -5844,8 +8299,15 @@
 
       var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
       var body = document.body;
+      var compactDeck = window.matchMedia("(max-width: 700px)");
       var fxToggle = document.getElementById("fx-toggle");
       var savedFx = null;
+
+      function syncCompactDeck() {
+        body.dataset.deckMode = compactDeck.matches ? "compact" : "full";
+      }
+
+      syncCompactDeck();
 
       try {
         savedFx = window.localStorage.getItem("cashio-fx");
@@ -6176,7 +8638,7 @@
         } else if (command.indexOf("ask eve") === 0) {
           appendLog("Preview mode: public, read-only narrative data only. No live AI endpoint is connected.", "warning");
         } else if (command === "flight") {
-          document.getElementById("spice-flight").scrollIntoView({ behavior: effectiveMotion() ? "smooth" : "auto", block: "start" });
+          launchProofFlight();
           appendLog("HOUSE CASHIO PROOF FLIGHT — four connected scenes: arrival, routing, evidence, and human handoff.", "answer");
         } else if (command === "warp") {
           pulseWarp();
@@ -6684,6 +9146,8 @@
 
       var scrollProgressFill = document.getElementById("scroll-progress-fill");
       var scrollWorld = document.getElementById("spice-flight");
+      var launchFlightButton = document.getElementById("launch-flight");
+      var readFlightLink = document.getElementById("read-flight");
       var worldStage = document.getElementById("world-stage");
       var worldScenes = Array.prototype.slice.call(document.querySelectorAll("[data-world-scene]"));
       var worldJumps = Array.prototype.slice.call(document.querySelectorAll("[data-world-jump]"));
@@ -6694,6 +9158,10 @@
       var alertToggle = document.getElementById("alert-toggle");
       var bitCompanion = document.getElementById("bit-companion");
       var bitAnswer = document.getElementById("bit-answer");
+      var bitPanel = document.getElementById("bit-panel");
+      var bitClose = document.getElementById("bit-close");
+      var bitResponse = document.getElementById("bit-response");
+      var bitEaster = document.getElementById("bit-easter");
       var deckBoot = document.getElementById("deck-boot");
       var commandOrbit = document.querySelector(".command-orbit");
       var deckClock = document.getElementById("deck-clock");
@@ -7154,41 +9622,89 @@
         });
       }
 
-      if (bitCompanion) {
+      if (bitCompanion && bitPanel) {
         var bitModes = [
           { key: "yes", label: "YES", announcement: "Bit says yes. Proceed, and keep the receipt." },
           { key: "no", label: "NO NO NO", announcement: "Bit says no. Check the guardrail before proceeding." }
         ];
         var bitIndex = -1;
-        bitCompanion.addEventListener("click", function () {
+
+        function setBitPanel(open) {
+          bitPanel.hidden = !open;
+          bitCompanion.setAttribute("aria-expanded", String(open));
+          bitCompanion.setAttribute("aria-label", open ? "Close Bit, the guide to this system" : "Open Bit, the guide to this system");
+          if (open && bitClose) bitClose.focus({ preventScroll: true });
+        }
+
+        function resetBit() {
+          bitCompanion.dataset.answer = "idle";
+          bitAnswer.textContent = "BIT // Ask about this system";
+          drawBitCanvas(window.performance ? window.performance.now() : 0, false);
+        }
+
+        function answerWithBit(mode) {
           window.clearTimeout(bitReturnTimer);
-          bitIndex = (bitIndex + 1) % bitModes.length;
-          var mode = bitModes[bitIndex];
           bitCompanion.dataset.answer = mode.key;
           bitAnswer.textContent = mode.label;
-          bitCompanion.setAttribute("aria-label", mode.announcement + " Bit will return to neutral.");
           bitCompanion.classList.remove("is-answering");
           void bitCompanion.offsetWidth;
           bitCompanion.classList.add("is-answering");
           window.setTimeout(function () { bitCompanion.classList.remove("is-answering"); }, 460);
           drawBitCanvas(window.performance ? window.performance.now() : 0, false);
           chainAnnouncement.textContent = mode.announcement;
+          if (bitResponse) bitResponse.textContent = mode.announcement;
           if (mode.key === "yes") {
             playTone(660, 0.1, "sine", 0.032);
             window.setTimeout(function () { playTone(990, 0.14, "sine", 0.028); }, 90);
-          } else if (mode.key === "no") {
+          } else {
             playTone(220, 0.14, "sawtooth", 0.034);
           }
-          bitReturnTimer = window.setTimeout(function () {
-            bitCompanion.dataset.answer = "idle";
-            bitAnswer.textContent = "Ask Bit";
-            bitCompanion.setAttribute("aria-label", "Ask Bit, the binary companion, for a yes or no");
-            drawBitCanvas(window.performance ? window.performance.now() : 0, false);
-          }, mode.key === "no" ? 1850 : 1450);
+          bitReturnTimer = window.setTimeout(resetBit, mode.key === "no" ? 1850 : 1450);
+        }
+
+        bitCompanion.addEventListener("click", function () {
+          setBitPanel(bitPanel.hidden);
+        });
+
+        if (bitClose) {
+          bitClose.addEventListener("click", function () {
+            setBitPanel(false);
+            bitCompanion.focus({ preventScroll: true });
+          });
+        }
+
+        Array.prototype.slice.call(bitPanel.querySelectorAll("[data-bit-target], [data-bit-message]")).forEach(function (prompt) {
+          prompt.addEventListener("click", function () {
+            var message = prompt.getAttribute("data-bit-message");
+            var targetId = prompt.getAttribute("data-bit-target");
+            if (message) {
+              answerWithBit(bitModes[1]);
+              if (bitResponse) bitResponse.textContent = message;
+              return;
+            }
+            var target = targetId ? document.getElementById(targetId) : null;
+            if (!target) return;
+            if (bitResponse) bitResponse.textContent = "Opening “" + prompt.textContent.trim() + "” and keeping the evidence in view.";
+            target.scrollIntoView({ behavior: effectiveMotion() ? "smooth" : "auto", block: "start" });
+          });
+        });
+
+        if (bitEaster) {
+          bitEaster.addEventListener("click", function () {
+            bitIndex = (bitIndex + 1) % bitModes.length;
+            answerWithBit(bitModes[bitIndex]);
+          });
+        }
+
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "Escape" && !bitPanel.hidden) {
+            setBitPanel(false);
+            bitCompanion.focus({ preventScroll: true });
+          }
         });
       }
 
-      Array.prototype.slice.call(document.querySelectorAll(".proof-cell, .profile-metric, .audience-shell, .cluster, .guest, .route-card, .manifest-panel, .principle, .fleet-card-frame")).forEach(function (surface) {
+      Array.prototype.slice.call(document.querySelectorAll(".proof-cell, .profile-metric, .audience-shell, .cluster, .guest, .route-card, .manifest-panel, .principle, .fleet-card-frame, .proof-rail-card, .route-architecture, .about-principles")).forEach(function (surface) {
         surface.classList.add("spotlight-surface");
       });
 
@@ -7212,8 +9728,8 @@
             spotlightPointer.target.style.setProperty("--gx", (px * 100).toFixed(1) + "%");
             spotlightPointer.target.style.setProperty("--gy", (py * 100).toFixed(1) + "%");
             if (effectiveMotion()) {
-              spotlightPointer.target.style.setProperty("--card-ry", ((px - 0.5) * 8).toFixed(2) + "deg");
-              spotlightPointer.target.style.setProperty("--card-rx", ((0.5 - py) * 8).toFixed(2) + "deg");
+              spotlightPointer.target.style.setProperty("--card-ry", ((px - 0.5) * 4).toFixed(2) + "deg");
+              spotlightPointer.target.style.setProperty("--card-rx", ((0.5 - py) * 4).toFixed(2) + "deg");
             }
           });
         }, { passive: true });
@@ -7286,6 +9802,32 @@
         burstSpiceAt(event.clientX, event.clientY, 11);
       }, { passive: true });
 
+      function launchProofFlight() {
+        if (!scrollWorld) return;
+        scrollWorld.classList.add("is-launched");
+        if (launchFlightButton) {
+          launchFlightButton.setAttribute("aria-expanded", "true");
+          launchFlightButton.textContent = "Cinematic mode launched";
+        }
+        window.requestAnimationFrame(function () {
+          updateScrollProgress();
+          scrollWorld.scrollIntoView({ behavior: effectiveMotion() ? "smooth" : "auto", block: "start" });
+        });
+      }
+
+      if (launchFlightButton) launchFlightButton.addEventListener("click", launchProofFlight);
+
+      if (readFlightLink) {
+        readFlightLink.addEventListener("click", function () {
+          if (!scrollWorld) return;
+          scrollWorld.classList.remove("is-launched");
+          if (launchFlightButton) {
+            launchFlightButton.setAttribute("aria-expanded", "false");
+            launchFlightButton.textContent = "Launch cinematic mode";
+          }
+        });
+      }
+
       worldJumps.forEach(function (button) {
         button.addEventListener("click", function () {
           var index = Math.max(0, Math.min(worldScenes.length - 1, Number(button.getAttribute("data-world-jump")) || 0));
@@ -7306,7 +9848,7 @@
         });
       });
 
-      revealItems = Array.prototype.slice.call(document.querySelectorAll(".section-head, .proof-cell, .audience-shell, .chain-console, .cluster, .terminal-wrap, .manifest-shell, .fleet-card-grid, .contact-deck"));
+      revealItems = Array.prototype.slice.call(document.querySelectorAll(".section-head, .proof-rail-head, .proof-rail-card, .case-study-grid, .case-study-receipt, .flight-intro-shell, .flight-brief, .proof-cell, .audience-shell, .chain-console, .cluster, .terminal-wrap, .manifest-shell, .fleet-card-grid, .about-grid, .contact-deck"));
       revealItems.forEach(function (item, index) {
         item.classList.add("reveal-item");
         item.style.setProperty("--reveal-delay", Math.min(index % 4 * 70, 210) + "ms");
@@ -7347,6 +9889,7 @@
       window.addEventListener("resize", function () {
         window.clearTimeout(resizeTimer);
         resizeTimer = window.setTimeout(function () {
+          syncCompactDeck();
           sizeCanvas();
           sizeBitCanvas();
           refreshStarfield();
