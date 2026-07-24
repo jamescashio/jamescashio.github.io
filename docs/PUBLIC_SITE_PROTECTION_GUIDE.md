@@ -47,7 +47,7 @@ A safe pattern is:
   "cluster_status": "MAX WARP",
   "fleet_nodes": 19,
   "crons_active": 31,
-  "daily_burn": 0.35,
+  "daily_burn": 0.26,
   "note": "Privacy-preserving public telemetry"
 }
 ```

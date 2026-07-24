@@ -7349,6 +7349,11 @@
       .scroll-progress,
       .alert-wash,
       .warp-flash,
+      .mission-spine,
+      .bit-panel,
+      .ambient-topography,
+      .nebula,
+      .fleet-map,
       .bit-companion,
       .house-sigil,
       .preview-flag,
@@ -7681,6 +7686,263 @@
       0%, 100% { opacity: 0.35; }
       35% { opacity: 1; }
     }
+
+    /* ── Ambient topography (ported from the v31 apex prototype) ── */
+    .ambient-topography {
+      position: fixed;
+      inset: -18vh -12vw;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.34;
+      background:
+        repeating-radial-gradient(ellipse at 78% 26%, transparent 0 32px, rgba(87, 232, 242, 0.05) 33px 34px, transparent 35px 54px),
+        repeating-radial-gradient(ellipse at 16% 76%, transparent 0 42px, rgba(246, 214, 106, 0.032) 43px 44px, transparent 45px 68px);
+      -webkit-mask-image: radial-gradient(circle at center, #000 0 42%, transparent 78%);
+      mask-image: radial-gradient(circle at center, #000 0 42%, transparent 78%);
+      transform: rotate(-7deg) scale(1.08);
+    }
+
+    body[data-fx="on"] .ambient-topography { animation: topography-drift 28s ease-in-out infinite alternate; }
+    body[data-fx="off"] .ambient-topography { opacity: 0.14; }
+
+    @keyframes topography-drift {
+      0% { transform: rotate(-7deg) scale(1.08) translate3d(-1%, -1%, 0); }
+      100% { transform: rotate(-4deg) scale(1.12) translate3d(1%, 1%, 0); }
+    }
+
+    /* ── Mission spine (section progress dots) ── */
+    .mission-spine {
+      position: fixed;
+      top: 50%;
+      right: 16px;
+      z-index: 56;
+      display: grid;
+      gap: 8px;
+      padding: 12px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(5, 8, 14, 0.74);
+      box-shadow: 0 18px 54px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.025);
+      backdrop-filter: blur(18px);
+      transform: translateY(-50%);
+    }
+
+    .mission-spine::before {
+      position: absolute;
+      top: 18px;
+      bottom: 18px;
+      left: 50%;
+      z-index: -1;
+      width: 1px;
+      content: "";
+      background: linear-gradient(180deg, transparent, rgba(87, 232, 242, 0.24) 18%, rgba(246, 214, 106, 0.2) 82%, transparent);
+      transform: translateX(-50%);
+    }
+
+    .mission-spine a {
+      position: relative;
+      width: 10px;
+      height: 10px;
+      display: block;
+      border: 1px solid rgba(190, 200, 210, 0.28);
+      border-radius: 50%;
+      background: #080b12;
+      box-shadow: 0 0 0 3px rgba(5, 8, 14, 0.9);
+      transition: transform 180ms cubic-bezier(.22, 1, .36, 1), border-color 180ms ease, background 180ms ease, box-shadow 220ms ease;
+    }
+
+    .mission-spine a::after {
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      width: max-content;
+      max-width: 190px;
+      padding: 7px 10px;
+      content: attr(data-scene-label);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--muted);
+      background: rgba(5, 8, 14, 0.94);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.38);
+      font: 800 0.61rem/1.2 var(--mono);
+      letter-spacing: 0.08em;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(6px, -50%);
+      transition: opacity 160ms ease, transform 180ms cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .mission-spine a:hover,
+    .mission-spine a:focus-visible {
+      border-color: var(--cyan);
+      transform: scale(1.25);
+    }
+
+    .mission-spine a:hover::after,
+    .mission-spine a:focus-visible::after {
+      opacity: 1;
+      transform: translate(0, -50%);
+    }
+
+    .mission-spine a[aria-current="location"] {
+      border-color: #d9f4f5;
+      background: var(--cyan);
+      box-shadow: 0 0 0 3px rgba(5, 8, 14, 0.9), 0 0 14px rgba(87, 232, 242, 0.7);
+    }
+
+    @media (max-width: 1100px) {
+      .mission-spine { display: none; }
+    }
+
+    /* ── Fleet cluster scan sweep ── */
+    .cluster::before {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: -38%;
+      z-index: 3;
+      width: 30%;
+      content: "";
+      pointer-events: none;
+      opacity: 0;
+      background: linear-gradient(90deg, transparent, rgba(87, 232, 242, 0.13), rgba(255, 255, 255, 0.09), transparent);
+      transform: skewX(-16deg);
+    }
+
+    body[data-fx="on"] .topology-board.is-online .cluster::before {
+      animation: fleet-scan 1.5s cubic-bezier(.23, 1, .32, 1) 420ms 1 both;
+    }
+
+    body[data-fx="on"] .topology-board.is-online .cluster:nth-child(2)::before {
+      animation-delay: 680ms;
+    }
+
+    @keyframes fleet-scan {
+      0% { left: -38%; opacity: 0; }
+      20% { opacity: 0.85; }
+      100% { left: 122%; opacity: 0; }
+    }
+
+    /* ── Bit guide panel ── */
+    .bit-panel {
+      position: fixed;
+      right: 44px;
+      bottom: 124px;
+      z-index: 91;
+      width: min(340px, calc(100vw - 32px));
+      padding: 18px;
+      border: 1px solid rgba(87, 232, 242, 0.4);
+      border-radius: 16px 16px 16px 34px;
+      background: rgba(7, 9, 17, 0.97);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.58), 0 0 30px rgba(87, 232, 242, 0.08);
+      backdrop-filter: blur(18px);
+    }
+
+    .bit-panel[hidden] { display: none; }
+
+    .bit-panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 13px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .bit-panel-head span,
+    .bit-panel-head strong,
+    .bit-panel-head small { display: block; }
+
+    .bit-panel-head span {
+      color: var(--cyan);
+      font: 900 0.62rem/1.3 var(--mono);
+      letter-spacing: 0.12em;
+    }
+
+    .bit-panel-head strong {
+      margin-top: 5px;
+      color: var(--ink);
+      font-family: var(--display);
+      font-size: 1rem;
+    }
+
+    .bit-panel-signal {
+      margin-top: 4px;
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .bit-close {
+      width: 36px;
+      height: 36px;
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+      font-size: 1.3rem;
+      line-height: 1;
+    }
+
+    .bit-close:hover,
+    .bit-close:focus-visible {
+      color: var(--cyan);
+      border-color: rgba(87, 232, 242, 0.5);
+    }
+
+    .bit-prompts {
+      display: grid;
+      gap: 7px;
+      margin-top: 13px;
+    }
+
+    .bit-prompts button,
+    .bit-easter {
+      min-height: 40px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.02);
+      cursor: pointer;
+      font: 800 0.72rem/1.25 var(--mono);
+      text-align: left;
+    }
+
+    .bit-prompts button:hover,
+    .bit-prompts button:focus-visible,
+    .bit-easter:hover,
+    .bit-easter:focus-visible {
+      color: var(--cyan);
+      border-color: rgba(87, 232, 242, 0.5);
+      background: rgba(87, 232, 242, 0.045);
+    }
+
+    .bit-response {
+      margin: 13px 0 0;
+      padding: 12px;
+      border-left: 3px solid var(--cyan);
+      color: var(--muted);
+      background: rgba(87, 232, 242, 0.035);
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+
+    .bit-easter {
+      width: 100%;
+      margin-top: 10px;
+      color: var(--quiet);
+      font-size: 0.62rem;
+      text-align: center;
+    }
+
+    @media (max-width: 560px) {
+      .bit-panel { right: 16px; bottom: 118px; }
+    }
   </style>
 </head>
 <body data-fx="on" data-alert="off">
@@ -7688,18 +7950,52 @@
   <div class="perspective-grid" aria-hidden="true"></div>
   <div class="nebula nebula-a" aria-hidden="true"></div>
   <div class="nebula nebula-b" aria-hidden="true"></div>
+  <div class="ambient-topography" aria-hidden="true"></div>
   <div class="spice-haze" aria-hidden="true"></div>
   <div class="alert-wash" aria-hidden="true"></div>
   <div class="warp-flash" id="warp-flash" aria-hidden="true"></div>
   <a class="skip-link" href="#main">Skip to mission control</a>
+  <nav class="mission-spine" aria-label="Deck progress">
+    <a href="#top" data-scene-label="OPENING // DOUG CASHIO" aria-current="location"><span class="visually-hidden">Opening</span></a>
+    <a href="#spice-flight" data-scene-label="JOURNEY // SOVEREIGN CORE"><span class="visually-hidden">Sovereign journey</span></a>
+    <a href="#proof" data-scene-label="PROOF // BUSINESS VALUE"><span class="visually-hidden">Business proof</span></a>
+    <a href="#chain" data-scene-label="DEMO // EVENT CHAIN"><span class="visually-hidden">Event chain demo</span></a>
+    <a href="#topology" data-scene-label="FLEET // ZEUSAPOLLO"><span class="visually-hidden">Fleet architecture</span></a>
+    <a href="#console" data-scene-label="CONSOLE // HERMES"><span class="visually-hidden">Hermes console</span></a>
+    <a href="#fleet-card" data-scene-label="CARD // TAKE THE PROOF"><span class="visually-hidden">Fleet card</span></a>
+    <a href="#hail" data-scene-label="CHANNEL // OPEN"><span class="visually-hidden">Contact</span></a>
+  </nav>
   <canvas id="starfield" aria-hidden="true"></canvas>
   <div class="preview-flag" id="preview-flag" aria-label="Local preview, not deployed" hidden>Local preview • not deployed</div>
-  <button class="bit-companion" id="bit-companion" type="button" data-answer="idle" aria-label="Ask Bit, the binary companion, for a yes or no" aria-describedby="bit-answer">
+  <button class="bit-companion" id="bit-companion" type="button" data-answer="idle" aria-label="Open Bit, the deck guide" aria-describedby="bit-answer" aria-controls="bit-panel" aria-expanded="false">
     <span class="bit-aura" aria-hidden="true"></span>
     <span class="bit-crystal" aria-hidden="true"></span>
     <canvas class="bit-canvas" id="bit-canvas" aria-hidden="true"></canvas>
-    <span class="bit-answer" id="bit-answer">Ask Bit</span>
+    <span class="bit-answer" id="bit-answer">BIT // Deck guide</span>
   </button>
+  <aside class="bit-panel" id="bit-panel" aria-labelledby="bit-panel-title" hidden>
+    <div class="bit-panel-head">
+      <div>
+        <span>◈ BIT</span>
+        <strong id="bit-panel-title">What would you like to see?</strong>
+        <small class="bit-panel-signal">Local guide // no data sent</small>
+      </div>
+      <button class="bit-close" id="bit-close" type="button" aria-label="Close Bit">×</button>
+    </div>
+    <div class="bit-prompts" role="group" aria-label="Suggested questions for Bit">
+      <button type="button" data-bit-mission>Take the 60-second mission</button>
+      <button type="button" data-bit-target="spice-flight">Fly the sovereign journey</button>
+      <button type="button" data-bit-target="proof">Show me the business proof</button>
+      <button type="button" data-bit-target="chain">Watch intent become evidence</button>
+      <button type="button" data-bit-target="topology">Show the fleet architecture</button>
+      <button type="button" data-bit-target="console">Open the Hermes console</button>
+      <button type="button" data-bit-target="fleet-card">Take the proof with you</button>
+      <button type="button" data-bit-message="This is an owner-reviewed public status export — dated evidence, not live telemetry, and never a remote-control path.">Is the data live?</button>
+      <button type="button" data-bit-target="hail">Contact Doug</button>
+    </div>
+    <p class="bit-response" id="bit-response" role="status">Choose a question and I’ll take you to the receipt.</p>
+    <button class="bit-easter" id="bit-easter" type="button">Ask Bit a yes / no question</button>
+  </aside>
 
   <header class="site-header">
     <div class="shell header-inner">
@@ -8110,7 +8406,6 @@
         </div>
 
         <div class="topology-board">
-          <canvas class="fleet-map" id="fleet-map" aria-hidden="true"></canvas>
           <article class="cluster" aria-labelledby="zeus-title">
             <header class="cluster-head">
               <div class="cluster-glyph" aria-hidden="true">Z</div>
@@ -8159,6 +8454,7 @@
           </article>
 
           <div class="topology-link" aria-hidden="true"><i></i><i></i><i></i><span>Architecture bus</span></div>
+          <canvas class="fleet-map" id="fleet-map" aria-hidden="true"></canvas>
         </div>
 
         <div class="sample-note">
@@ -9059,7 +9355,8 @@
         } else if (eggCommand.indexOf("earl grey") !== -1 || eggCommand === "tea") {
           appendLog("REPLICATOR — Tea. Earl Grey. Hot. …Replicator offline in local preview; recommend spice coffee.", "answer");
         } else if (eggCommand === "end of line" || eggCommand === "tron") {
-          if (bitCompanion) bitCompanion.click();
+          var bitEgg = document.getElementById("bit-easter");
+          if (bitEgg) bitEgg.click();
           appendLog("END OF LINE.", "answer");
         } else if (eggCommand === "greetings program" || eggCommand === "greetings") {
           appendLog("GREETINGS, PROGRAM. You fight for the users — the Grid approves.", "answer");
@@ -10551,33 +10848,98 @@
         });
       }
 
-      if (bitCompanion) {
+      var bitPanel = document.getElementById("bit-panel");
+      var bitClose = document.getElementById("bit-close");
+      var bitResponse = document.getElementById("bit-response");
+      var bitEasterButton = document.getElementById("bit-easter");
+      var bitMissionButton = bitPanel ? bitPanel.querySelector("[data-bit-mission]") : null;
+
+      if (bitCompanion && bitPanel) {
         var bitModes = [
           { key: "yes", label: "YES", announcement: "Bit says yes. Proceed, and keep the receipt." },
           { key: "no", label: "NO NO NO", announcement: "Bit says no. Check the guardrail before proceeding." }
         ];
         var bitIndex = -1;
-        bitCompanion.addEventListener("click", function () {
+
+        var setBitPanel = function (open) {
+          bitPanel.hidden = !open;
+          bitCompanion.setAttribute("aria-expanded", String(open));
+          bitCompanion.setAttribute("aria-label", open ? "Close Bit, the deck guide" : "Open Bit, the deck guide");
+          if (open) {
+            playUiSound("click");
+            if (bitClose) bitClose.focus({ preventScroll: true });
+          }
+        };
+
+        var resetBit = function () {
+          bitCompanion.dataset.answer = "idle";
+          bitAnswer.textContent = "BIT // Deck guide";
+          drawBitCanvas(window.performance ? window.performance.now() : 0, false);
+        };
+
+        var answerWithBit = function (mode) {
           window.clearTimeout(bitReturnTimer);
-          bitIndex = (bitIndex + 1) % bitModes.length;
-          var mode = bitModes[bitIndex];
           bitCompanion.dataset.answer = mode.key;
           bitAnswer.textContent = mode.label;
-          bitCompanion.setAttribute("aria-label", mode.announcement + " Bit will return to neutral.");
           bitCompanion.classList.remove("is-answering");
           void bitCompanion.offsetWidth;
           bitCompanion.classList.add("is-answering");
           window.setTimeout(function () { bitCompanion.classList.remove("is-answering"); }, 460);
           drawBitCanvas(window.performance ? window.performance.now() : 0, false);
           chainAnnouncement.textContent = mode.announcement;
+          if (bitResponse) bitResponse.textContent = mode.announcement;
           if (mode.key === "yes") playUiSound("bit-yes");
-          else if (mode.key === "no") playUiSound("bit-no");
-          bitReturnTimer = window.setTimeout(function () {
-            bitCompanion.dataset.answer = "idle";
-            bitAnswer.textContent = "Ask Bit";
-            bitCompanion.setAttribute("aria-label", "Ask Bit, the binary companion, for a yes or no");
-            drawBitCanvas(window.performance ? window.performance.now() : 0, false);
-          }, mode.key === "no" ? 1850 : 1450);
+          else playUiSound("bit-no");
+          bitReturnTimer = window.setTimeout(resetBit, mode.key === "no" ? 1850 : 1450);
+        };
+
+        bitCompanion.addEventListener("click", function () {
+          setBitPanel(bitPanel.hidden);
+        });
+
+        if (bitClose) {
+          bitClose.addEventListener("click", function () {
+            setBitPanel(false);
+            bitCompanion.focus({ preventScroll: true });
+          });
+        }
+
+        if (bitMissionButton) {
+          bitMissionButton.addEventListener("click", function () {
+            if (bitResponse) bitResponse.textContent = "Opening the five-transmission mission. Self-paced, under 60 seconds.";
+            setBitPanel(false);
+            openMission({ currentTarget: bitCompanion });
+          });
+        }
+
+        Array.prototype.slice.call(bitPanel.querySelectorAll("[data-bit-target], [data-bit-message]")).forEach(function (prompt) {
+          prompt.addEventListener("click", function () {
+            var message = prompt.getAttribute("data-bit-message");
+            if (message) {
+              answerWithBit(bitModes[1]);
+              if (bitResponse) bitResponse.textContent = message;
+              return;
+            }
+            var target = document.getElementById(prompt.getAttribute("data-bit-target"));
+            if (!target) return;
+            if (bitResponse) bitResponse.textContent = "Opening “" + prompt.textContent.trim() + "” — the receipt stays in view.";
+            playUiSound("route", 2);
+            target.scrollIntoView({ behavior: effectiveMotion() ? "smooth" : "auto", block: "start" });
+          });
+        });
+
+        if (bitEasterButton) {
+          bitEasterButton.addEventListener("click", function () {
+            bitIndex = (bitIndex + 1) % bitModes.length;
+            answerWithBit(bitModes[bitIndex]);
+          });
+        }
+
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "Escape" && !bitPanel.hidden) {
+            setBitPanel(false);
+            bitCompanion.focus({ preventScroll: true });
+          }
         });
       }
 
@@ -10708,6 +11070,7 @@
       });
 
       var primaryLinks = Array.prototype.slice.call(document.querySelectorAll(".primary-nav a[href^='#']"));
+      var spineLinks = Array.prototype.slice.call(document.querySelectorAll(".mission-spine a[href^='#']"));
       if ("IntersectionObserver" in window) {
         var deckObserver = new IntersectionObserver(function (entries) {
           entries.forEach(function (entry) {
@@ -10726,6 +11089,12 @@
                 if (isCurrent) link.setAttribute("aria-current", "location");
                 else link.removeAttribute("aria-current");
               });
+              if (spineLinks.some(function (link) { return link.getAttribute("href") === targetHref; })) {
+                spineLinks.forEach(function (link) {
+                  if (link.getAttribute("href") === targetHref) link.setAttribute("aria-current", "location");
+                  else link.removeAttribute("aria-current");
+                });
+              }
             }
           });
         }, { threshold: 0.12, rootMargin: "0px 0px -12% 0px" });

@@ -4,6 +4,13 @@ All notable public-facing changes to the ZeusApollo portfolio are recorded here.
 
 ## [v30 polish] — 07-23-2026 / 07-24-2026
 
+### Added — 07-24 apex port (from the v31 prototype)
+
+- Bit is now a deck guide: clicking Bit opens a local panel of suggested questions that fly the visitor to the mission, journey, proof, chain, fleet, console, card, or contact — with the classic yes/no toy preserved as its own easter-egg button and an honest "Is the data live?" answer.
+- Mission spine: a fixed progress rail of section dots with hover labels and a live current-section marker (desktop only).
+- Ambient topography contour layer behind the deck; cluster-wide fleet scan sweep when the topology powers on.
+- Corrected the daily-cost example in the protection guide docs to the measured $0.26.
+
 ### Added — 07-24 cinematic pass
 
 - Sample-based LCARS interface sound set (click, success, sequence, warp, red-alert klaxon) from repo-hosted assets, loaded only when sound is enabled, with the synth engine as automatic fallback.
