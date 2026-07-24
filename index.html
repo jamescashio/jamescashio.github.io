@@ -21,6 +21,17 @@
   <meta name="twitter:description" content="Enterprise AI, cybersecurity, and sovereign infrastructure—built independently and documented with public-safe proof.">
   <title>CASHIO.US // Doug Cashio — AI Systems That Show Their Work</title>
   <link rel="canonical" href="https://cashio.us/">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Doug Cashio",
+      "url": "https://cashio.us/",
+      "jobTitle": "Principal Solutions Consultant",
+      "sameAs": ["https://www.linkedin.com/in/dougcashio"],
+      "knowsAbout": ["Enterprise AI", "Cybersecurity", "Sovereign AI", "LLM orchestration", "Automation"]
+    }
+  </script>
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -7160,6 +7171,595 @@
       border-color: rgba(107,210,218,0.42);
     }
 
+    /* v31 gloves-off pass: the Sovereign Routing Observatory */
+    .policy-lab {
+      position: relative;
+      isolation: isolate;
+      padding-block: clamp(100px, 12vw, 170px);
+      overflow: hidden;
+    }
+
+    .policy-lab::before {
+      position: absolute;
+      top: 0.15em;
+      left: 50%;
+      z-index: -1;
+      content: "OBSERVATORY";
+      color: transparent;
+      font: 900 clamp(5rem, 15vw, 14rem)/1 var(--display);
+      letter-spacing: -0.06em;
+      -webkit-text-stroke: 1px rgba(107,210,218,0.055);
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+
+    .policy-lab::after {
+      position: absolute;
+      inset: 10% -10% 0;
+      z-index: -2;
+      content: "";
+      background:
+        radial-gradient(circle at 50% 46%, rgba(107,210,218,0.075), transparent 30%),
+        radial-gradient(circle at 76% 52%, rgba(155,135,197,0.055), transparent 26%),
+        radial-gradient(circle at 26% 68%, rgba(216,186,112,0.045), transparent 24%);
+      pointer-events: none;
+    }
+
+    .policy-lab-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.52fr);
+      gap: clamp(32px, 6vw, 84px);
+      align-items: end;
+      margin-bottom: clamp(34px, 5vw, 58px);
+    }
+
+    .policy-lab-head h2 {
+      max-width: 900px;
+      margin: 0;
+      font-size: clamp(2.5rem, 5.6vw, 6rem);
+      line-height: 0.95;
+    }
+
+    .policy-lab-head h2 span {
+      color: #b9e7ea;
+      background: linear-gradient(98deg, #d9f4f5, var(--cyan) 48%, var(--gold));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .policy-lab-intro {
+      padding: 20px 0 4px;
+      border-top: 1px solid rgba(107,210,218,0.24);
+    }
+
+    .policy-lab-intro > span {
+      color: var(--green);
+      font: 800 var(--text-xs)/1.4 var(--mono);
+      letter-spacing: 0.08em;
+    }
+
+    .policy-lab-intro p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 1.02rem;
+    }
+
+    .policy-console {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(265px, 0.84fr) minmax(390px, 1.18fr) minmax(280px, 0.88fr);
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid rgba(190,200,210,0.18);
+      border-radius: 22px 42px 42px 72px;
+      background: rgba(190,200,210,0.14);
+      box-shadow:
+        0 42px 120px rgba(0,0,0,0.52),
+        inset 0 1px 0 rgba(255,255,255,0.035);
+    }
+
+    .policy-console::before {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      z-index: 4;
+      height: 3px;
+      content: "";
+      background: linear-gradient(90deg, var(--gold), var(--orange) 30%, var(--cyan) 66%, var(--violet));
+      opacity: 0.86;
+    }
+
+    .policy-scenarios,
+    .policy-decision {
+      position: relative;
+      z-index: 2;
+      padding: clamp(24px, 3vw, 38px);
+      background: linear-gradient(155deg, rgba(10,13,22,0.98), rgba(5,7,13,0.985));
+    }
+
+    .policy-console-label {
+      display: block;
+      margin-bottom: 20px;
+      color: var(--quiet);
+      font: 900 var(--text-xs)/1.3 var(--mono);
+      letter-spacing: 0.1em;
+    }
+
+    .policy-scenario {
+      position: relative;
+      width: 100%;
+      min-height: 92px;
+      display: grid;
+      grid-template-columns: 34px 1fr auto;
+      gap: 13px;
+      align-items: center;
+      margin: 0 0 9px;
+      padding: 15px;
+      border: 1px solid rgba(190,200,210,0.12);
+      border-radius: 11px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.018);
+      cursor: pointer;
+      text-align: left;
+      transition:
+        transform 180ms var(--ease-premium),
+        color 180ms ease,
+        border-color 180ms ease,
+        background 180ms ease,
+        box-shadow 220ms ease;
+    }
+
+    .policy-scenario:hover,
+    .policy-scenario:focus-visible {
+      color: var(--ink);
+      border-color: rgba(107,210,218,0.34);
+      background: rgba(107,210,218,0.035);
+      transform: translateX(3px);
+    }
+
+    .policy-scenario[aria-pressed="true"] {
+      color: var(--ink);
+      border-color: rgba(107,210,218,0.5);
+      background:
+        linear-gradient(90deg, rgba(107,210,218,0.085), transparent 70%),
+        rgba(255,255,255,0.025);
+      box-shadow: inset 3px 0 0 var(--cyan), 0 10px 30px rgba(0,0,0,0.18);
+    }
+
+    .policy-scenario i,
+    .policy-scenario b,
+    .policy-scenario strong,
+    .policy-scenario small {
+      display: block;
+    }
+
+    .policy-scenario i {
+      color: var(--quiet);
+      font: 800 var(--text-xs)/1 var(--mono);
+      font-style: normal;
+    }
+
+    .policy-scenario strong {
+      color: inherit;
+      font: 700 0.94rem/1.25 var(--body);
+    }
+
+    .policy-scenario small {
+      margin-top: 4px;
+      color: var(--quiet);
+      font-size: var(--text-xs);
+      line-height: 1.35;
+    }
+
+    .policy-scenario b {
+      color: var(--cyan);
+      font: 900 0.61rem/1 var(--mono);
+      letter-spacing: 0.08em;
+    }
+
+    .policy-visual {
+      position: relative;
+      min-height: 600px;
+      overflow: hidden;
+      background:
+        linear-gradient(rgba(107,210,218,0.025) 1px, transparent 1px),
+        linear-gradient(90deg,rgba(107,210,218,0.025) 1px,transparent 1px),
+        radial-gradient(circle at 50% 48%, rgba(107,210,218,0.12), transparent 11%, rgba(155,135,197,0.06) 22%, transparent 42%),
+        #050811;
+      background-size: 32px 32px, 32px 32px, auto, auto;
+    }
+
+    .policy-stars {
+      position: absolute;
+      inset: 0;
+      opacity: 0.34;
+      background-image:
+        radial-gradient(circle at 13% 16%, rgba(255,255,255,0.9) 0 1px, transparent 1.4px),
+        radial-gradient(circle at 76% 24%, rgba(216,186,112,0.9) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 28% 74%, rgba(107,210,218,0.8) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 89% 82%, rgba(255,255,255,0.75) 0 1px, transparent 1.4px);
+      background-size: 113px 127px, 149px 173px, 181px 197px, 223px 211px;
+    }
+
+    .policy-orbit {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      border: 1px solid rgba(107,210,218,0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .policy-orbit::before {
+      position: absolute;
+      top: 50%;
+      left: -4px;
+      width: 7px;
+      height: 7px;
+      content: "";
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 16px rgba(107,210,218,0.72);
+      transform: translateY(-50%);
+    }
+
+    .policy-orbit-a { width: 172px; height: 172px; }
+    .policy-orbit-b { width: 290px; height: 290px; border-color: rgba(216,186,112,0.17); transform: translate(-50%, -50%) rotate(28deg); }
+    .policy-orbit-c { width: 420px; height: 420px; border-color: rgba(155,135,197,0.14); transform: translate(-50%, -50%) rotate(-18deg); }
+
+    .policy-core {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      z-index: 4;
+      width: 112px;
+      height: 112px;
+      display: grid;
+      place-content: center;
+      gap: 4px;
+      border: 1px solid rgba(107,210,218,0.46);
+      border-radius: 50%;
+      color: var(--cyan);
+      background: radial-gradient(circle, rgba(107,210,218,0.17), rgba(5,8,17,0.96) 68%);
+      box-shadow:
+        0 0 44px rgba(107,210,218,0.15),
+        inset 0 0 30px rgba(107,210,218,0.08);
+      font: 900 var(--text-xs)/1.2 var(--mono);
+      letter-spacing: 0.1em;
+      text-align: center;
+      transform: translate(-50%, -50%);
+    }
+
+    .policy-core strong {
+      color: var(--ink);
+      font-size: 0.65rem;
+    }
+
+    .policy-node {
+      position: absolute;
+      z-index: 3;
+      min-width: 72px;
+      padding: 7px 9px;
+      border: 1px solid rgba(190,200,210,0.14);
+      border-radius: 999px;
+      color: var(--quiet);
+      background: rgba(5,8,17,0.92);
+      font: 900 0.58rem/1 var(--mono);
+      letter-spacing: 0.07em;
+      text-align: center;
+      transition: color 260ms ease, border-color 260ms ease, box-shadow 260ms ease, transform 260ms var(--ease-premium);
+    }
+
+    .policy-node i {
+      position: absolute;
+      top: 50%;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 10px currentColor;
+      transform: translateY(-50%);
+    }
+
+    .policy-node-local { top: 15%; left: 9%; }
+    .policy-node-value { top: 14%; right: 8%; }
+    .policy-node-premium { right: 6%; bottom: 13%; }
+    .policy-node-verify { bottom: 12%; left: 8%; }
+    .policy-node-local i,
+    .policy-node-verify i { right: -4px; }
+    .policy-node-value i,
+    .policy-node-premium i { left: -4px; }
+
+    .policy-visual[data-policy-state="private"] .policy-node-local,
+    .policy-visual[data-policy-state="routine"] .policy-node-value,
+    .policy-visual[data-policy-state="strategy"] .policy-node-premium,
+    .policy-visual[data-policy-state="research"] .policy-node-verify {
+      color: var(--green);
+      border-color: rgba(101,202,153,0.52);
+      box-shadow: 0 0 28px rgba(101,202,153,0.14);
+      transform: scale(1.08);
+    }
+
+    .policy-visual[data-policy-state="research"] .policy-node-value,
+    .policy-visual[data-policy-state="research"] .policy-node-premium {
+      color: var(--cyan);
+      border-color: rgba(107,210,218,0.34);
+    }
+
+    .policy-packet {
+      position: absolute;
+      z-index: 5;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 16px rgba(216,186,112,0.72);
+      opacity: 0.7;
+    }
+
+    .policy-packet-a { top: 29%; left: 34%; }
+    .policy-packet-b { right: 31%; bottom: 28%; background: var(--cyan); box-shadow: 0 0 16px rgba(107,210,218,0.7); }
+
+    .policy-scanline {
+      position: absolute;
+      inset: -20% 0 auto;
+      height: 24%;
+      border-bottom: 1px solid rgba(107,210,218,0.2);
+      background: linear-gradient(180deg, transparent, rgba(107,210,218,0.028));
+      opacity: 0;
+    }
+
+    body[data-fx="on"] .policy-orbit-a { animation: policy-orbit-spin 18s linear infinite; }
+    body[data-fx="on"] .policy-orbit-b { animation: policy-orbit-spin-b 26s linear infinite reverse; }
+    body[data-fx="on"] .policy-orbit-c { animation: policy-orbit-spin-c 38s linear infinite; }
+    body[data-fx="on"] .policy-core { animation: policy-core-breathe 4.6s ease-in-out infinite; }
+    body[data-fx="on"] .policy-packet-a { animation: policy-packet-drift-a 4.2s ease-in-out infinite; }
+    body[data-fx="on"] .policy-packet-b { animation: policy-packet-drift-b 5.1s 0.8s ease-in-out infinite; }
+    body[data-fx="on"] .policy-scanline { animation: policy-scan 5.8s ease-in-out infinite; }
+
+    .policy-decision {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .policy-decision-kicker {
+      margin: 26px 0 8px;
+      color: var(--gold);
+      font: 900 var(--text-xs)/1.4 var(--mono);
+      letter-spacing: 0.08em;
+    }
+
+    .policy-decision h3 {
+      margin: 0;
+      color: var(--cyan);
+      font-size: clamp(2rem, 3.4vw, 3.35rem);
+      line-height: 0.95;
+    }
+
+    .policy-decision > p:not(.policy-decision-kicker) {
+      margin: 18px 0 24px;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .policy-factors {
+      display: grid;
+      gap: 1px;
+      margin: auto 0 0;
+      overflow: hidden;
+      border: 1px solid rgba(190,200,210,0.12);
+      border-radius: 11px;
+      background: rgba(190,200,210,0.12);
+    }
+
+    .policy-factors div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 11px 13px;
+      background: rgba(5,8,17,0.96);
+    }
+
+    .policy-factors dt,
+    .policy-factors dd {
+      margin: 0;
+      font: 800 var(--text-xs)/1.35 var(--mono);
+    }
+
+    .policy-factors dt { color: var(--quiet); }
+    .policy-factors dd { color: var(--green); text-align: right; }
+
+    .policy-receipt-code {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(107,210,218,0.18);
+      color: var(--quiet);
+      font: 700 0.62rem/1.45 var(--mono);
+      letter-spacing: 0.06em;
+    }
+
+    .policy-lab-note {
+      margin: 16px 0 0;
+      color: var(--quiet);
+      font: 700 var(--text-xs)/1.5 var(--mono);
+      text-align: center;
+    }
+
+    .bit-panel-signal {
+      display: block;
+      margin-top: 7px;
+      color: var(--green);
+      font: 700 0.58rem/1.3 var(--mono);
+      letter-spacing: 0.08em;
+    }
+
+    .policy-console.route-flash .policy-core {
+      animation: policy-route-confirm 620ms var(--ease-premium);
+    }
+
+    @keyframes policy-orbit-spin {
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    @keyframes policy-orbit-spin-b {
+      from { transform: translate(-50%, -50%) rotate(28deg); }
+      to { transform: translate(-50%, -50%) rotate(388deg); }
+    }
+
+    @keyframes policy-orbit-spin-c {
+      from { transform: translate(-50%, -50%) rotate(-18deg); }
+      to { transform: translate(-50%, -50%) rotate(342deg); }
+    }
+
+    @keyframes policy-core-breathe {
+      0%, 100% { box-shadow: 0 0 32px rgba(107,210,218,0.1), inset 0 0 24px rgba(107,210,218,0.06); }
+      50% { box-shadow: 0 0 58px rgba(107,210,218,0.2), 0 0 92px rgba(107,210,218,0.055), inset 0 0 34px rgba(107,210,218,0.1); }
+    }
+
+    @keyframes policy-packet-drift-a {
+      0%, 100% { transform: translate(0, 0) scale(0.72); opacity: 0.32; }
+      50% { transform: translate(92px, 86px) scale(1.28); opacity: 1; }
+    }
+
+    @keyframes policy-packet-drift-b {
+      0%, 100% { transform: translate(0, 0) scale(0.72); opacity: 0.3; }
+      50% { transform: translate(-92px, -78px) scale(1.24); opacity: 1; }
+    }
+
+    @keyframes policy-scan {
+      0%, 12% { top: -20%; opacity: 0; }
+      24% { opacity: 0.72; }
+      76% { opacity: 0.72; }
+      88%, 100% { top: 100%; opacity: 0; }
+    }
+
+    @keyframes policy-route-confirm {
+      0% { transform: translate(-50%, -50%) scale(0.8); filter: brightness(2); }
+      60% { transform: translate(-50%, -50%) scale(1.12); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    @media (max-width: 1120px) {
+      .policy-console {
+        grid-template-columns: minmax(270px, 0.8fr) minmax(390px, 1.2fr);
+      }
+
+      .policy-decision {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: minmax(220px, 0.72fr) minmax(0, 1fr);
+        gap: 0 34px;
+      }
+
+      .policy-decision .policy-console-label {
+        grid-column: 1 / -1;
+      }
+
+      .policy-decision-kicker,
+      .policy-decision h3,
+      .policy-decision > p:not(.policy-decision-kicker) {
+        grid-column: 1;
+      }
+
+      .policy-factors,
+      .policy-receipt-code {
+        grid-column: 2;
+      }
+
+      .policy-factors {
+        grid-row: 2 / 6;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .policy-lab-head,
+      .policy-console,
+      .policy-decision {
+        grid-template-columns: 1fr;
+      }
+
+      .policy-visual {
+        min-height: 520px;
+      }
+
+      .policy-decision .policy-console-label,
+      .policy-decision-kicker,
+      .policy-decision h3,
+      .policy-decision > p:not(.policy-decision-kicker),
+      .policy-factors,
+      .policy-receipt-code {
+        grid-column: 1;
+      }
+
+      .policy-factors {
+        grid-row: auto;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .policy-lab {
+        padding-block: 78px;
+      }
+
+      .policy-lab::before {
+        top: 0.35em;
+        font-size: 4.3rem;
+      }
+
+      .policy-lab-head h2 {
+        font-size: clamp(2.4rem, 12vw, 3.8rem);
+      }
+
+      .policy-console {
+        border-radius: 16px 24px 24px 38px;
+      }
+
+      .policy-scenarios,
+      .policy-decision {
+        padding: 22px;
+      }
+
+      .policy-scenario {
+        grid-template-columns: 28px 1fr;
+      }
+
+      .policy-scenario b {
+        display: none;
+      }
+
+      .policy-visual {
+        min-height: 430px;
+      }
+
+      .policy-orbit-c {
+        width: 340px;
+        height: 340px;
+      }
+
+      .policy-orbit-b {
+        width: 248px;
+        height: 248px;
+      }
+
+      .policy-node {
+        min-width: 62px;
+        padding-inline: 7px;
+        font-size: 0.51rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .policy-orbit,
+      .policy-core,
+      .policy-packet,
+      .policy-scanline {
+        animation: none !important;
+      }
+    }
+
     @keyframes topography-drift {
       0% { transform: rotate(-7deg) scale(1.08) translate3d(-1%, -1%, 0); }
       100% { transform: rotate(-4deg) scale(1.12) translate3d(1%, 1%, 0); }
@@ -7484,7 +8084,7 @@
     }
   </style>
 </head>
-<body data-fx="on" data-alert="off">
+<body data-fx="on" data-alert="off" data-sound="off" data-policy-route="private">
   <div class="scroll-progress" aria-hidden="true"><span id="scroll-progress-fill"></span></div>
   <div class="perspective-grid" aria-hidden="true"></div>
   <div class="spice-haze" aria-hidden="true"></div>
@@ -7505,13 +8105,15 @@
       <div>
         <span>◈ BIT</span>
         <strong id="bit-panel-title">What would you like to see?</strong>
+        <small class="bit-panel-signal">LOCAL GUIDE // NO DATA SENT</small>
       </div>
       <button class="bit-close" id="bit-close" type="button" aria-label="Close Bit">×</button>
     </div>
     <div class="bit-prompts" role="group" aria-label="Suggested questions for Bit">
+      <button type="button" data-bit-target="policy-lab">Run the routing lab</button>
       <button type="button" data-bit-target="topology">Show the architecture</button>
       <button type="button" data-bit-target="featured-case">Explain the savings</button>
-      <button type="button" data-bit-target="topology">What runs locally?</button>
+      <button type="button" data-bit-target="flight-intro">Show me the spectacle</button>
       <button type="button" data-bit-message="The public deck uses a dated, owner-supplied snapshot—not a live infrastructure connection.">Is the data live?</button>
       <button type="button" data-bit-target="hail">Contact Doug</button>
     </div>
@@ -7534,6 +8136,7 @@
       <nav class="primary-nav" aria-label="Primary navigation">
         <ul>
           <li><a href="#proof-rail">Proof</a></li>
+          <li><a href="#policy-lab">Lab</a></li>
           <li><a href="#topology">ZeusApollo</a></li>
           <li><a href="#console">Work</a></li>
           <li><a href="#about">About</a></li>
@@ -7546,6 +8149,7 @@
         <nav class="mobile-nav-panel" aria-label="Mobile navigation">
           <a href="#proof-rail">Proof</a>
           <a href="#featured-case">Featured case</a>
+          <a href="#policy-lab">Routing observatory</a>
           <a href="#flight-intro">Proof flight</a>
           <a href="#topology">ZeusApollo</a>
           <a href="#console">Console</a>
@@ -7593,8 +8197,8 @@
           </div>
           <ul class="hero-proof">
             <li><strong>7.2×</strong> lower matched-task unit cost</li>
-            <li><strong data-fleet="healthyServiceCount">17</strong> documented healthy services</li>
-            <li><strong data-fleet="routeCount">10</strong> configured model routes</li>
+            <li><strong data-fleet="healthyServiceCount">17</strong> healthy services in last snapshot</li>
+            <li><strong data-fleet="routeCount">10</strong> model routes in last snapshot</li>
           </ul>
         </div>
 
@@ -7635,7 +8239,7 @@
               <div class="profile-metric"><strong data-fleet="routeCount">10</strong><span>Model routes</span><small>Configured routes, not traffic claims</small></div>
             </div>
             <div class="profile-foot">
-              <span>10 routes</span><span>15+ years enterprise</span><span>independent build</span>
+              <span>10 routes</span><span>20+ years IT + security</span><span>independent build</span>
             </div>
           </details>
         </aside>
@@ -7748,6 +8352,77 @@
           <span><strong>CLAIM BOUNDARY</strong>Not total infrastructure cost</span>
           <span><strong>EVIDENCE</strong>Baseline, rubric, calls, cost log</span>
         </div>
+      </div>
+    </section>
+
+    <section class="section policy-lab" id="policy-lab" aria-labelledby="policy-lab-title">
+      <div class="shell">
+        <div class="policy-lab-head">
+          <div>
+            <p class="eyebrow">Interactive project 02 // Sovereign routing observatory</p>
+            <h2 id="policy-lab-title">Give the system a mission.<br><span>Watch policy decide.</span></h2>
+          </div>
+          <div class="policy-lab-intro">
+            <span>LOCAL BROWSER DEMO // NOTHING SENT</span>
+            <p>Choose a workload. The observatory weighs privacy, complexity, cost, and verification—then shows the route and its reasoning.</p>
+          </div>
+        </div>
+
+        <div class="policy-console">
+          <div class="policy-scenarios" role="group" aria-label="Choose a routing mission">
+            <span class="policy-console-label">01 // SELECT MISSION</span>
+            <button class="policy-scenario" type="button" data-policy-mode="private" aria-pressed="true">
+              <i aria-hidden="true">01</i>
+              <span><strong>Confidential incident</strong><small>Summarize a private security report.</small></span>
+              <b aria-hidden="true">LOCAL</b>
+            </button>
+            <button class="policy-scenario" type="button" data-policy-mode="routine" aria-pressed="false">
+              <i aria-hidden="true">02</i>
+              <span><strong>Routine automation</strong><small>Classify operational updates at scale.</small></span>
+              <b aria-hidden="true">VALUE</b>
+            </button>
+            <button class="policy-scenario" type="button" data-policy-mode="strategy" aria-pressed="false">
+              <i aria-hidden="true">03</i>
+              <span><strong>Executive strategy</strong><small>Compare consequential options and tradeoffs.</small></span>
+              <b aria-hidden="true">PREMIUM</b>
+            </button>
+            <button class="policy-scenario" type="button" data-policy-mode="research" aria-pressed="false">
+              <i aria-hidden="true">04</i>
+              <span><strong>Current research</strong><small>Find fresh evidence and keep citations attached.</small></span>
+              <b aria-hidden="true">HYBRID</b>
+            </button>
+          </div>
+
+          <div class="policy-visual" id="policy-visual" data-policy-state="private" aria-hidden="true">
+            <div class="policy-stars"></div>
+            <div class="policy-orbit policy-orbit-a"></div>
+            <div class="policy-orbit policy-orbit-b"></div>
+            <div class="policy-orbit policy-orbit-c"></div>
+            <div class="policy-core"><span>POLICY</span><strong id="policy-core-code">P-01</strong></div>
+            <span class="policy-node policy-node-local">LOCAL<i></i></span>
+            <span class="policy-node policy-node-value">VALUE<i></i></span>
+            <span class="policy-node policy-node-premium">PREMIUM<i></i></span>
+            <span class="policy-node policy-node-verify">VERIFY<i></i></span>
+            <i class="policy-packet policy-packet-a"></i>
+            <i class="policy-packet policy-packet-b"></i>
+            <div class="policy-scanline"></div>
+          </div>
+
+          <div class="policy-decision" aria-live="polite">
+            <span class="policy-console-label">03 // DECISION RECEIPT</span>
+            <p class="policy-decision-kicker" id="policy-decision-kicker">ROUTE 01 // PRIVACY OVERRIDE</p>
+            <h3 id="policy-route-title">LOCAL FIRST</h3>
+            <p id="policy-route-reason">Sensitive source material stays under local control. The route accepts a narrower capability envelope to preserve privacy.</p>
+            <dl class="policy-factors">
+              <div><dt>Privacy</dt><dd id="policy-privacy">Isolated</dd></div>
+              <div><dt>Reasoning</dt><dd id="policy-reasoning">Focused</dd></div>
+              <div><dt>Cost class</dt><dd id="policy-cost">Lowest</dd></div>
+              <div><dt>Verification</dt><dd id="policy-verification">Human check</dd></div>
+            </dl>
+            <div class="policy-receipt-code" id="policy-receipt-code">RECEIPT // ZA-P01 // BROWSER-LOCAL</div>
+          </div>
+        </div>
+        <p class="policy-lab-note" id="policy-announcement" role="status">Mission 01 selected. Local-first route explained.</p>
       </div>
     </section>
 
@@ -8054,6 +8729,7 @@
               <button class="command-chip" type="button" data-command="help">help</button>
               <button class="command-chip" type="button" data-command="status">status</button>
               <button class="command-chip" type="button" data-command="proof">proof</button>
+              <button class="command-chip" type="button" data-command="lab">lab</button>
               <button class="command-chip" type="button" data-command="models">models</button>
               <button class="command-chip" type="button" data-command="freshness">freshness</button>
               <button class="command-chip" type="button" data-command="topology">topology</button>
@@ -8082,7 +8758,7 @@
               <label for="terminal-input">Enter a local preview command</label>
               <input class="terminal-input" id="terminal-input" name="command" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Enter command…" aria-describedby="terminal-help">
               <button class="terminal-submit" type="submit">Execute</button>
-              <span class="visually-hidden" id="terminal-help">Available commands include help, status, proof, models, freshness, topology, flight, tour, warp, alert, spice, mentat, house, awaken, sound, contact, clear, and ask eve.</span>
+              <span class="visually-hidden" id="terminal-help">Available commands include help, status, proof, lab, models, freshness, topology, flight, tour, warp, alert, spice, mentat, house, awaken, sound, contact, clear, and ask eve.</span>
             </form>
           </div>
         </div>
@@ -8104,7 +8780,7 @@
             <p class="eyebrow">Ship index</p>
             <h3>One source of truth.</h3>
             <p>The preview treats each repeated figure as shared fleet state. Change it once; the hero, console, topology, manifest, and card stay aligned.</p>
-            <span class="status-badge">CASHIO.US // v30</span>
+            <span class="status-badge">CASHIO.US // v30 DATA · v31 EXPERIENCE</span>
             <p class="mentat-protocol"><strong>Mentat protocol</strong> Observe. Route. Verify. Explain.</p>
           </aside>
 
@@ -8125,7 +8801,7 @@
                   <div class="route-card"><strong>10 // FAILOVER 3</strong><span>Gemini 3.5 Flash</span><small>Multimodal final recovery route</small></div>
                 </div>
                 <div class="model-verification">
-                  <strong>Provider catalog check // 07-14-2026.</strong> Public names were reconciled against official documentation. Routes describe the owner-reported configuration, not live traffic or a universal model ranking. The voice route remains visible because truth outranks novelty; it should be evaluated before the next system refresh.
+                  <strong>Provider catalog check // 07-23-2026.</strong> Public names were reconciled against official documentation. Routes describe the owner-reported configuration, not live traffic or a universal model ranking. The voice route remains visible because truth outranks novelty; it should be evaluated before the next system refresh.
                   <ul class="model-sources" aria-label="Official model documentation">
                     <li><a href="https://api-docs.deepseek.com/quick_start/pricing/" target="_blank" rel="noopener noreferrer">DeepSeek</a></li>
                     <li><a href="https://platform.claude.com/docs/en/about-claude/models/overview" target="_blank" rel="noopener noreferrer">Anthropic</a></li>
@@ -8166,6 +8842,7 @@
               <summary data-manifest="log">Ship's log <span>current + history</span></summary>
               <div class="manifest-content">
                 <ol class="ship-log">
+                  <li><time datetime="2026-07-23">07-23-2026 // v31 observatory preview</time><strong>Gloves Off.</strong> Added the interactive Sovereign Routing Observatory, richer user-triggered sound design, Bit guidance routes, content reconciliation, and a new fidelity pass.</li>
                   <li><time datetime="2026-07-14">07-14-2026 // v30 release candidate</time><strong>House Cashio.</strong> Current public-safe service reconciliation, ten model routes, official catalog verification, cinematic motion, and upgraded Bit.</li>
                   <li><time datetime="2026-07-10">07-10-2026 // v29 local preview</time><strong>Mission Proof.</strong> Audience routing, guided proof flight, explicit freshness, accessible console, effects budget, and shareable Fleet Card.</li>
                   <li><time datetime="2026-07">v28 // prior public build</time><strong>Kwisatz Haderach.</strong> The earlier seven-lane configuration, Technitium DNS, fleet truth reconciliation, and auditable public proof.</li>
@@ -8605,14 +9282,17 @@
       var commandHistoryIndex = 0;
 
       var terminalResponses = {
-        help: "Available: status, proof, models, freshness, topology, flight, tour, warp, alert, spice, mentat, house, awaken, sound, contact, clear, ask eve. All commands are local and read-only.",
+        help: "Available: status, proof, lab, models, freshness, topology, flight, tour, warp, alert, spice, mentat, house, awaken, sound, contact, clear, ask eve. All commands are local and read-only.",
         status: isStale
           ? "CURRENT STATE UNKNOWN — the owner-supplied status export expired on " + sample.expiresDisplay + ". It previously recorded " + sample.healthyServiceCount + " healthy services, one retired service, and one unreported service across two hosts."
           : "FRESH OWNER-SUPPLIED EXPORT — verified " + sample.verifiedDisplay + ", expires " + sample.expiresDisplay + ": " + sample.healthyServiceCount + " healthy services, Home-Asst retired, and Athena unreported across two hosts. No live endpoints are queried.",
         proof: "Observed API inference spend moved from approximately $4/day to approximately $" + sample.dailyBurn.toFixed(2) + "/day after local-first routing. Scope: API inference only. The 7.2x benchmark is a separate matched-task comparison.",
         models: sample.routeCount + " configured routes: DeepSeek V4 Pro, Claude Sonnet 5, Grok 4.5, GLM 5.2, Gemma 4 26B A4B, Gemini 3.5 Flash, GPT-4o mini TTS, plus DeepSeek V4 Flash, GLM 5.2, and Gemini 3.5 Flash failovers. GPT-4o mini TTS is a configured legacy voice route and is flagged for replacement evaluation.",
         freshness: isStale ? "STALE — the owner-supplied public export expired on " + sample.expiresDisplay + ". Current health is not asserted." : "FRESH — the owner-supplied export was verified " + sample.verifiedDisplay + " and expires " + sample.expiresDisplay + ". It is sampled evidence, not streaming telemetry.",
-        topology: "ZEUS documents 8 roles: 7 owner-reported healthy and Athena unreported. APOLLO documents 11 roles: 10 owner-reported healthy and Home-Asst decommissioned. Status is fresh through " + sample.expiresDisplay + ".",
+        topology: isStale
+          ? "LAST VERIFIED SNAPSHOT — ZEUS documented 8 roles: 7 owner-reported healthy and Athena unreported. APOLLO documented 11 roles: 10 owner-reported healthy and Home-Asst decommissioned. That status window ended " + sample.expiresDisplay + "; current state is unknown."
+          : "ZEUS documents 8 roles: 7 owner-reported healthy and Athena unreported. APOLLO documents 11 roles: 10 owner-reported healthy and Home-Asst decommissioned. Status is fresh through " + sample.expiresDisplay + ".",
+        lab: "SOVEREIGN ROUTING OBSERVATORY — choose a private, routine, strategic, or research mission and inspect why policy selected the route. The demonstration runs entirely in this browser.",
         tour: "Use Run the 60-second mission at the top of the deck. The mission is self-paced and never contacts a live system.",
         contact: "Ask about the personal build at doug@cashio.us. No message is sent from this local preview."
       };
@@ -8637,6 +9317,11 @@
           appendLog("Console cleared. Type help to continue.", "answer");
         } else if (command.indexOf("ask eve") === 0) {
           appendLog("Preview mode: public, read-only narrative data only. No live AI endpoint is connected.", "warning");
+        } else if (command === "lab" || command === "route") {
+          var policyLab = document.getElementById("policy-lab");
+          if (policyLab) policyLab.scrollIntoView({ behavior: effectiveMotion() ? "smooth" : "auto", block: "start" });
+          appendLog(terminalResponses.lab, "answer");
+          playRouteSound(body.dataset.policyRoute || "private");
         } else if (command === "flight") {
           launchProofFlight();
           appendLog("HOUSE CASHIO PROOF FLIGHT — four connected scenes: arrival, routing, evidence, and human handoff.", "answer");
@@ -9183,7 +9868,24 @@
       var soundToggle = document.getElementById("sound-toggle");
       var soundEnabled = false;
       var audioContext = null;
+      var audioMaster = null;
+      var audioCompressor = null;
       var lastHoverToneAt = 0;
+      var policyConsole = document.querySelector(".policy-console");
+      var policyVisual = document.getElementById("policy-visual");
+      var policyScenarios = Array.prototype.slice.call(document.querySelectorAll("[data-policy-mode]"));
+      var policyCoreCode = document.getElementById("policy-core-code");
+      var policyDecisionKicker = document.getElementById("policy-decision-kicker");
+      var policyRouteTitle = document.getElementById("policy-route-title");
+      var policyRouteReason = document.getElementById("policy-route-reason");
+      var policyPrivacy = document.getElementById("policy-privacy");
+      var policyReasoning = document.getElementById("policy-reasoning");
+      var policyCost = document.getElementById("policy-cost");
+      var policyVerification = document.getElementById("policy-verification");
+      var policyReceiptCode = document.getElementById("policy-receipt-code");
+      var policyAnnouncement = document.getElementById("policy-announcement");
+      var policyFlashTimer = 0;
+      var policyBitTimer = 0;
       var bitCanvas = document.getElementById("bit-canvas");
       var bitContext = bitCanvas && bitCanvas.getContext ? bitCanvas.getContext("2d") : null;
       var bitCanvasSize = 0;
@@ -9357,62 +10059,168 @@
           var AudioContextClass = window.AudioContext || window.webkitAudioContext;
           if (!AudioContextClass) return null;
           audioContext = new AudioContextClass();
+          audioMaster = audioContext.createGain();
+          audioMaster.gain.value = 0.68;
+          if (audioContext.createDynamicsCompressor) {
+            audioCompressor = audioContext.createDynamicsCompressor();
+            audioCompressor.threshold.value = -24;
+            audioCompressor.knee.value = 18;
+            audioCompressor.ratio.value = 4;
+            audioCompressor.attack.value = 0.006;
+            audioCompressor.release.value = 0.24;
+            audioCompressor.connect(audioMaster);
+          }
+          audioMaster.connect(audioContext.destination);
         }
         if (audioContext.state === "suspended") audioContext.resume();
         return audioContext;
       }
 
-      function playTone(frequency, duration, type, volume) {
+      function audioDestination() {
+        return audioCompressor || audioMaster || (audioContext && audioContext.destination);
+      }
+
+      function playTone(frequency, duration, type, volume, pan, delay) {
         var activeContext = getAudioContext();
         if (!activeContext) return;
         var oscillator = activeContext.createOscillator();
+        var filter = activeContext.createBiquadFilter();
         var gain = activeContext.createGain();
-        var now = activeContext.currentTime;
+        var panner = activeContext.createStereoPanner ? activeContext.createStereoPanner() : null;
+        var now = activeContext.currentTime + (delay || 0);
+        var length = duration || 0.08;
         oscillator.type = type || "sine";
         oscillator.frequency.setValueAtTime(frequency || 520, now);
+        filter.type = "lowpass";
+        filter.frequency.setValueAtTime(Math.max(900, (frequency || 520) * 3.2), now);
+        filter.Q.value = 0.72;
         gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.exponentialRampToValueAtTime(volume || 0.035, now + 0.012);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + (duration || 0.08));
-        oscillator.connect(gain);
-        gain.connect(activeContext.destination);
+        gain.gain.exponentialRampToValueAtTime(volume || 0.035, now + Math.min(0.025, length * 0.22));
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + length);
+        oscillator.connect(filter);
+        filter.connect(gain);
+        if (panner) {
+          panner.pan.setValueAtTime(Math.max(-1, Math.min(1, pan || 0)), now);
+          gain.connect(panner);
+          panner.connect(audioDestination());
+        } else {
+          gain.connect(audioDestination());
+        }
         oscillator.start(now);
-        oscillator.stop(now + (duration || 0.08) + 0.02);
+        oscillator.stop(now + length + 0.03);
+      }
+
+      function playChord(notes, duration, volume, spread) {
+        (notes || []).forEach(function (note, index) {
+          var pan = notes.length > 1 ? (index / (notes.length - 1) - 0.5) * (spread || 0.44) : 0;
+          playTone(note, duration || 0.28, index % 2 ? "triangle" : "sine", (volume || 0.018) / Math.max(1, notes.length * 0.68), pan, index * 0.028);
+        });
+      }
+
+      function playNoiseSweep(duration, volume, startFrequency, endFrequency) {
+        var activeContext = getAudioContext();
+        if (!activeContext || !activeContext.createBufferSource) return;
+        var length = duration || 0.4;
+        var sampleRate = activeContext.sampleRate;
+        var buffer = activeContext.createBuffer(1, Math.max(1, Math.floor(sampleRate * length)), sampleRate);
+        var data = buffer.getChannelData(0);
+        for (var index = 0; index < data.length; index += 1) {
+          data[index] = (Math.random() * 2 - 1) * (1 - index / data.length);
+        }
+        var source = activeContext.createBufferSource();
+        var filter = activeContext.createBiquadFilter();
+        var gain = activeContext.createGain();
+        var now = activeContext.currentTime;
+        source.buffer = buffer;
+        filter.type = "bandpass";
+        filter.Q.value = 2.8;
+        filter.frequency.setValueAtTime(startFrequency || 180, now);
+        filter.frequency.exponentialRampToValueAtTime(endFrequency || 1800, now + length);
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(volume || 0.012, now + 0.035);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + length);
+        source.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioDestination());
+        source.start(now);
+        source.stop(now + length + 0.02);
       }
 
       function playWarpSound() {
         var activeContext = getAudioContext();
         if (!activeContext) return;
-        var oscillator = activeContext.createOscillator();
-        var gain = activeContext.createGain();
-        var now = activeContext.currentTime;
-        oscillator.type = "sawtooth";
-        oscillator.frequency.setValueAtTime(150, now);
-        oscillator.frequency.exponentialRampToValueAtTime(920, now + 0.46);
-        gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.exponentialRampToValueAtTime(0.048, now + 0.025);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.52);
-        oscillator.connect(gain);
-        gain.connect(activeContext.destination);
-        oscillator.start(now);
-        oscillator.stop(now + 0.54);
+        [110, 164.81, 220].forEach(function (frequency, index) {
+          var oscillator = activeContext.createOscillator();
+          var filter = activeContext.createBiquadFilter();
+          var gain = activeContext.createGain();
+          var panner = activeContext.createStereoPanner ? activeContext.createStereoPanner() : null;
+          var now = activeContext.currentTime + index * 0.02;
+          oscillator.type = index === 0 ? "sine" : "sawtooth";
+          oscillator.frequency.setValueAtTime(frequency, now);
+          oscillator.frequency.exponentialRampToValueAtTime(frequency * (7.2 + index), now + 0.68);
+          filter.type = "lowpass";
+          filter.frequency.setValueAtTime(420, now);
+          filter.frequency.exponentialRampToValueAtTime(4200, now + 0.62);
+          gain.gain.setValueAtTime(0.0001, now);
+          gain.gain.exponentialRampToValueAtTime(0.016 - index * 0.002, now + 0.045);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.72);
+          oscillator.connect(filter);
+          filter.connect(gain);
+          if (panner) {
+            panner.pan.value = (index - 1) * 0.42;
+            gain.connect(panner);
+            panner.connect(audioDestination());
+          } else {
+            gain.connect(audioDestination());
+          }
+          oscillator.start(now);
+          oscillator.stop(now + 0.75);
+        });
+        playNoiseSweep(0.72, 0.014, 140, 2600);
       }
 
       function playAlertSound() {
-        playTone(440, 0.17, "square", 0.045);
-        window.setTimeout(function () { playTone(311, 0.24, "square", 0.04); }, 145);
+        playTone(233.08, 0.28, "triangle", 0.03, -0.32);
+        playTone(349.23, 0.28, "triangle", 0.026, 0.32, 0.12);
+        playTone(174.61, 0.36, "sine", 0.022, 0, 0.28);
+      }
+
+      function playBitSound(mode) {
+        if (mode === "yes") {
+          playTone(659.25, 0.18, "sine", 0.026, -0.18);
+          playTone(987.77, 0.24, "triangle", 0.021, 0.18, 0.085);
+          playTone(1318.51, 0.3, "sine", 0.014, 0, 0.16);
+        } else {
+          playTone(246.94, 0.22, "triangle", 0.025, 0.2);
+          playTone(185, 0.3, "sine", 0.022, -0.2, 0.12);
+        }
+      }
+
+      function playRouteSound(mode) {
+        var routeChords = {
+          private: [196, 293.66, 392],
+          routine: [261.63, 392, 523.25],
+          strategy: [329.63, 493.88, 659.25],
+          research: [293.66, 440, 587.33, 880]
+        };
+        playChord(routeChords[mode] || routeChords.private, mode === "research" ? 0.42 : 0.34, 0.034, 0.68);
+        if (mode === "research") playNoiseSweep(0.34, 0.007, 620, 2400);
       }
 
       function setSound(enabled) {
         if (!soundToggle) return;
         if (enabled) {
           soundEnabled = true;
+          body.dataset.sound = "on";
           soundToggle.setAttribute("aria-pressed", "true");
           soundToggle.setAttribute("aria-label", "Turn interface sound off");
           soundToggle.textContent = "SND ON";
-          playTone(660, 0.11, "sine", 0.04);
+          playChord([220, 329.63, 440, 659.25], 0.42, 0.04, 0.72);
         } else {
-          playTone(390, 0.08, "sine", 0.025);
+          playTone(440, 0.15, "sine", 0.018, 0.2);
+          playTone(293.66, 0.22, "triangle", 0.016, -0.2, 0.09);
           soundEnabled = false;
+          body.dataset.sound = "off";
           soundToggle.setAttribute("aria-pressed", "false");
           soundToggle.setAttribute("aria-label", "Turn interface sound on");
           soundToggle.textContent = "SND OFF";
@@ -9441,6 +10249,110 @@
           chainAnnouncement.textContent = soundEnabled ? "Optional interface sound enabled." : "Interface sound disabled.";
         });
       }
+
+      var policyModes = {
+        private: {
+          code: "P-01",
+          kicker: "ROUTE 01 // PRIVACY OVERRIDE",
+          title: "LOCAL FIRST",
+          reason: "Sensitive source material stays under local control. The route accepts a narrower capability envelope to preserve privacy.",
+          privacy: "Isolated",
+          reasoning: "Focused",
+          cost: "Lowest",
+          verification: "Human check",
+          receipt: "RECEIPT // ZA-P01 // BROWSER-LOCAL",
+          announcement: "Mission 01 selected. Local-first route explained.",
+          bit: "BIT // LOCAL ROUTE SEALED"
+        },
+        routine: {
+          code: "P-02",
+          kicker: "ROUTE 02 // EFFICIENCY MATCH",
+          title: "VALUE CLOUD",
+          reason: "The work is repeatable, low-risk, and easy to test. A fast value route handles volume without spending premium reasoning.",
+          privacy: "Sanitized",
+          reasoning: "Routine",
+          cost: "Low",
+          verification: "Rubric + sample",
+          receipt: "RECEIPT // ZA-P02 // VALUE-ROUTE",
+          announcement: "Mission 02 selected. Value route chosen for routine automation.",
+          bit: "BIT // VALUE ROUTE CONFIRMED"
+        },
+        strategy: {
+          code: "P-03",
+          kicker: "ROUTE 03 // CAPABILITY ESCALATION",
+          title: "PREMIUM REASONING",
+          reason: "Consequential tradeoffs justify deeper reasoning. The route escalates capability, keeps assumptions visible, and requires a human decision.",
+          privacy: "Approved scope",
+          reasoning: "Deep",
+          cost: "Premium",
+          verification: "Human decision",
+          receipt: "RECEIPT // ZA-P03 // CAPABILITY-ESCALATED",
+          announcement: "Mission 03 selected. Premium reasoning justified by consequence and complexity.",
+          bit: "BIT // ESCALATION JUSTIFIED"
+        },
+        research: {
+          code: "P-04",
+          kicker: "ROUTE 04 // FRESHNESS REQUIRED",
+          title: "SEARCH + VERIFY",
+          reason: "Current facts require retrieval. The route combines research with a reasoning model, keeps citations attached, and separates fact from inference.",
+          privacy: "Public sources",
+          reasoning: "Hybrid",
+          cost: "Controlled",
+          verification: "Citations + date",
+          receipt: "RECEIPT // ZA-P04 // FRESHNESS-VERIFIED",
+          announcement: "Mission 04 selected. Hybrid research route keeps sources and dates attached.",
+          bit: "BIT // FRESHNESS VERIFIED"
+        }
+      };
+
+      function activatePolicyScenario(modeKey, initialize) {
+        var mode = policyModes[modeKey];
+        if (!mode || !policyVisual) return;
+        policyScenarios.forEach(function (button) {
+          button.setAttribute("aria-pressed", String(button.getAttribute("data-policy-mode") === modeKey));
+        });
+        policyVisual.dataset.policyState = modeKey;
+        body.dataset.policyRoute = modeKey;
+        if (policyCoreCode) policyCoreCode.textContent = mode.code;
+        if (policyDecisionKicker) policyDecisionKicker.textContent = mode.kicker;
+        if (policyRouteTitle) policyRouteTitle.textContent = mode.title;
+        if (policyRouteReason) policyRouteReason.textContent = mode.reason;
+        if (policyPrivacy) policyPrivacy.textContent = mode.privacy;
+        if (policyReasoning) policyReasoning.textContent = mode.reasoning;
+        if (policyCost) policyCost.textContent = mode.cost;
+        if (policyVerification) policyVerification.textContent = mode.verification;
+        if (policyReceiptCode) policyReceiptCode.textContent = mode.receipt;
+        if (policyAnnouncement) policyAnnouncement.textContent = mode.announcement;
+        if (chainAnnouncement) chainAnnouncement.textContent = mode.announcement;
+
+        window.clearTimeout(policyFlashTimer);
+        if (policyConsole) {
+          policyConsole.classList.remove("route-flash");
+          void policyConsole.offsetWidth;
+          policyConsole.classList.add("route-flash");
+          policyFlashTimer = window.setTimeout(function () {
+            policyConsole.classList.remove("route-flash");
+          }, 700);
+        }
+
+        if (!initialize) {
+          playRouteSound(modeKey);
+          window.clearTimeout(policyBitTimer);
+          if (bitAnswer && bitPanel && bitPanel.hidden) {
+            bitAnswer.textContent = mode.bit;
+            policyBitTimer = window.setTimeout(function () {
+              if (bitPanel.hidden) bitAnswer.textContent = "BIT // Ask about this system";
+            }, 1900);
+          }
+        }
+      }
+
+      policyScenarios.forEach(function (button) {
+        button.addEventListener("click", function () {
+          activatePolicyScenario(button.getAttribute("data-policy-mode"), false);
+        });
+      });
+      activatePolicyScenario("private", true);
 
       if (houseAwakenButton) {
         houseAwakenButton.addEventListener("click", function () {
@@ -9653,12 +10565,7 @@
           drawBitCanvas(window.performance ? window.performance.now() : 0, false);
           chainAnnouncement.textContent = mode.announcement;
           if (bitResponse) bitResponse.textContent = mode.announcement;
-          if (mode.key === "yes") {
-            playTone(660, 0.1, "sine", 0.032);
-            window.setTimeout(function () { playTone(990, 0.14, "sine", 0.028); }, 90);
-          } else {
-            playTone(220, 0.14, "sawtooth", 0.034);
-          }
+          playBitSound(mode.key);
           bitReturnTimer = window.setTimeout(resetBit, mode.key === "no" ? 1850 : 1450);
         }
 
@@ -9704,7 +10611,7 @@
         });
       }
 
-      Array.prototype.slice.call(document.querySelectorAll(".proof-cell, .profile-metric, .audience-shell, .cluster, .guest, .route-card, .manifest-panel, .principle, .fleet-card-frame, .proof-rail-card, .route-architecture, .about-principles")).forEach(function (surface) {
+      Array.prototype.slice.call(document.querySelectorAll(".proof-cell, .profile-metric, .audience-shell, .cluster, .guest, .route-card, .manifest-panel, .principle, .fleet-card-frame, .proof-rail-card, .route-architecture, .about-principles, .policy-console, .policy-scenario")).forEach(function (surface) {
         surface.classList.add("spotlight-surface");
       });
 
@@ -9848,7 +10755,7 @@
         });
       });
 
-      revealItems = Array.prototype.slice.call(document.querySelectorAll(".section-head, .proof-rail-head, .proof-rail-card, .case-study-grid, .case-study-receipt, .flight-intro-shell, .flight-brief, .proof-cell, .audience-shell, .chain-console, .cluster, .terminal-wrap, .manifest-shell, .fleet-card-grid, .about-grid, .contact-deck"));
+      revealItems = Array.prototype.slice.call(document.querySelectorAll(".section-head, .proof-rail-head, .proof-rail-card, .case-study-grid, .case-study-receipt, .policy-lab-head, .policy-console, .flight-intro-shell, .flight-brief, .proof-cell, .audience-shell, .chain-console, .cluster, .terminal-wrap, .manifest-shell, .fleet-card-grid, .about-grid, .contact-deck"));
       revealItems.forEach(function (item, index) {
         item.classList.add("reveal-item");
         item.style.setProperty("--reveal-delay", Math.min(index % 4 * 70, 210) + "ms");
