@@ -2,6 +2,14 @@
 
 All notable public-facing changes to the ZeusApollo portfolio are recorded here. Visible dates use MM-DD-YYYY.
 
+## [v31 experience update] — 07-23-2026
+
+- Added a continuously refreshed, cache-busted public `status.json` link with explicit online, offline, fresh, and stale states.
+- Updated the owner-reported vision and final failover routes to Gemini 3.6 Flash.
+- Replaced the deprecated GPT-4o mini TTS lane with the owner-reported Grok 4.6 Voice TTS route and documented the public-provider verification boundary.
+- Added interactive Fleet Card shield controls, a clearly labeled Red Alert drill, and richer route-card motion.
+- Kept every defense interaction browser-local and presentation-only; no live homelab action is exposed.
+
 ## [v30] — 07-14-2026
 
 ### Added
