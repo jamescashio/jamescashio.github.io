@@ -1,8 +1,14 @@
 {
+  "schema_version": 2,
   "version": "v30",
   "release_name": "The Sleeper Has Awakened",
+  "experience_version": "v31",
+  "experience_name": "Gloves Off",
   "verified_on": "07-14-2026",
   "expires_on": "07-17-2026",
+  "routes_verified_on": "07-23-2026",
+  "refresh_interval_seconds": 60,
+  "source_mode": "public_snapshot",
   "status_scope": "Owner-supplied public snapshot; not live telemetry",
   "hosts": 2,
   "documented_roles": 19,
@@ -24,10 +30,14 @@
     "research": "Grok 4.5",
     "coding": "GLM 5.2",
     "extraction": "Gemma 4 26B A4B",
-    "vision": "Gemini 3.5 Flash",
-    "voice": "GPT-4o mini TTS (legacy/deprecated)",
+    "vision": "Gemini 3.6 Flash",
+    "voice": "Grok 4.6 Voice TTS",
     "failover_1": "DeepSeek V4 Flash",
     "failover_2": "GLM 5.2",
-    "failover_3": "Gemini 3.5 Flash"
+    "failover_3": "Gemini 3.6 Flash"
+  },
+  "route_disclosures": {
+    "gemini": "Gemini 3.6 Flash is listed in current Google documentation.",
+    "voice": "Grok 4.6 Voice TTS is the owner-reported route name; xAI public documentation verifies the Voice/TTS API surface but does not publish that numeric alias."
   }
 }
