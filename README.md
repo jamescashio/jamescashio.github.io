@@ -32,13 +32,13 @@ The status export is owner supplied and sampled, not streaming telemetry. After 
 | Research | Grok 4.5 |
 | Coding | GLM 5.2 |
 | Extraction | Gemma 4 26B A4B, local |
-| Vision | Gemini 3.5 Flash |
-| Voice | GPT-4o mini TTS, legacy/deprecated |
+| Vision | Gemini 3.6 Flash |
+| Voice | Grok 4.6 Voice TTS, owner-reported route name |
 | Failover 1 | DeepSeek V4 Flash |
 | Failover 2 | GLM 5.2 |
-| Failover 3 | Gemini 3.5 Flash |
+| Failover 3 | Gemini 3.6 Flash |
 
-These are configured routes, not live-traffic claims or a universal model ranking. Public names were reconciled against official provider catalogs on 07-14-2026. The legacy voice route remains visible so the public configuration is represented honestly.
+These are configured routes, not live-traffic claims or a universal model ranking. The route catalog was reconciled on 07-23-2026. Google publicly documents Gemini 3.6 Flash. The Grok 4.6 Voice TTS label is the owner-reported route name; xAI's public documentation verifies its Voice/TTS API surface but does not currently publish that numeric alias.
 
 ## Public-safety posture
 
