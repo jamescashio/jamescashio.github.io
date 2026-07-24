@@ -1,16 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
-    <linearGradient id="z" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#00f9ff"/>
-      <stop offset="100%" stop-color="#cc00ff"/>
+    <linearGradient id="deck" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0d1820"/>
+      <stop offset="1" stop-color="#070911"/>
+    </linearGradient>
+    <linearGradient id="signal" x1="16" y1="18" x2="48" y2="47" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d9f4f5"/>
+      <stop offset=".48" stop-color="#6bd2da"/>
+      <stop offset="1" stop-color="#d8ba70"/>
     </linearGradient>
   </defs>
-  <rect width="512" height="512" rx="96" fill="#0a0a0f"/>
-  <rect x="10" y="10" width="492" height="492" rx="88" fill="none" stroke="#00f9ff" stroke-opacity="0.30" stroke-width="5"/>
-  <!-- soft glow underlay -->
-  <path d="M150 150 H362 V206 L238 356 H362 V412 H150 V356 L274 206 H150 Z"
-        fill="none" stroke="#00f9ff" stroke-opacity="0.35" stroke-width="22" stroke-linejoin="round"/>
-  <!-- main Z -->
-  <path d="M150 150 H362 V206 L238 356 H362 V412 H150 V356 L274 206 H150 Z"
-        fill="url(#z)" stroke="#9ffcff" stroke-width="4" stroke-linejoin="round"/>
+  <rect width="64" height="64" rx="14" fill="url(#deck)"/>
+  <path d="M32 9 52 21v22L32 55 12 43V21L32 9Z" fill="none" stroke="#6bd2da" stroke-opacity=".3" stroke-width="2"/>
+  <path d="m32 15 14 17-14 17-14-17 14-17Z" fill="url(#signal)"/>
+  <path d="m32 21 8.8 11L32 43 23.2 32 32 21Z" fill="#081018"/>
+  <circle cx="32" cy="32" r="3.5" fill="#d8ba70"/>
+  <path d="M13 46c11 5 27 6 39-1" fill="none" stroke="#d8ba70" stroke-linecap="round" stroke-width="2"/>
 </svg>

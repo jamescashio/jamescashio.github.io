@@ -38,7 +38,7 @@ The status export is owner supplied and sampled, not streaming telemetry. After 
 | Failover 2 | GLM 5.2 |
 | Failover 3 | Gemini 3.6 Flash |
 
-These are configured routes, not live-traffic claims or a universal model ranking. The route catalog was reconciled on 07-23-2026. Google publicly documents Gemini 3.6 Flash. The Grok 4.6 Voice TTS label is the owner-reported route name; xAI's public documentation verifies its Voice/TTS API surface but does not currently publish that numeric alias.
+These are configured routes, not live-traffic claims or a universal model ranking. The route catalog was reconciled on 07-24-2026. Current official documentation confirms DeepSeek V4 Pro and V4 Flash, Claude Sonnet 5, Gemini 3.6 Flash, Grok 4.5, and the xAI Voice/TTS API. The Grok 4.6 Voice TTS label is the owner-reported route name; xAI does not currently publish that numeric voice alias.
 
 ## Public-safety posture
 

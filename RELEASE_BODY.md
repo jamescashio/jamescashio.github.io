@@ -30,7 +30,7 @@ The status is owner supplied and sampled, not streaming telemetry. The interface
 
 ### Model routing
 
-The configured routes are DeepSeek V4 Pro, Claude Sonnet 5, Grok 4.5, GLM 5.2, Gemma 4 26B A4B, Gemini 3.6 Flash, Grok 4.6 Voice TTS, and three named failovers. The route catalog was checked on 07-23-2026. Google publicly documents Gemini 3.6 Flash. Grok 4.6 Voice TTS is the owner-reported route name; xAI's public documentation verifies its Voice/TTS API surface but does not currently publish that numeric alias.
+The configured routes are DeepSeek V4 Pro, Claude Sonnet 5, Grok 4.5, GLM 5.2, Gemma 4 26B A4B, Gemini 3.6 Flash, Grok 4.6 Voice TTS, and three named failovers. The route catalog was checked on 07-24-2026. Current official documentation confirms DeepSeek V4 Pro and V4 Flash, Claude Sonnet 5, Gemini 3.6 Flash, Grok 4.5, and the xAI Voice/TTS API. Grok 4.6 Voice TTS remains the owner-reported route label because xAI does not currently publish that numeric voice alias.
 
 ### Security, privacy, and employer boundary
 

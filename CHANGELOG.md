@@ -2,6 +2,15 @@
 
 All notable public-facing changes to the ZeusApollo portfolio are recorded here. Visible dates use MM-DD-YYYY.
 
+## [v31.1 experience polish] — 07-24-2026
+
+- Added a restrained mission spine so the long-form deck reads as a deliberate sequence rather than an endless page.
+- Made Bit section-aware and added a direct launch into the five-transmission, 60-second proof.
+- Added opt-in scene signatures, Bit-open tones, mission-step chords, and a cinematic flight launch sound while keeping all audio off by default.
+- Added quieter visual pacing around technical sections and a calmer close around the builder and contact scenes.
+- Rechecked current official provider documentation and corrected the Gemini 3.6 Flash and xAI Voice/TTS source links.
+- Replaced the decorative latitude readout with a coarse regional label to reduce unnecessary public location detail.
+
 ## [v31 experience update] — 07-23-2026
 
 - Added a continuously refreshed, cache-busted public `status.json` link with explicit online, offline, fresh, and stale states.

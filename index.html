@@ -32,12 +32,7 @@
       "knowsAbout": ["Enterprise AI", "Cybersecurity", "Sovereign AI", "LLM orchestration", "Automation"]
     }
   </script>
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="manifest" href="/site.webmanifest">
   <link rel="preload" as="image" href="assets/sovereign-star-chart-v1.webp" type="image/webp" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -8458,7 +8453,173 @@
       }
     }
 
+    /* v31.1 final polish: a quiet navigation spine and stronger scene pacing */
+    .mission-spine {
+      position: fixed;
+      top: 50%;
+      right: 18px;
+      z-index: 56;
+      display: grid;
+      gap: 8px;
+      padding: 12px 9px;
+      border: 1px solid rgba(190,200,210,0.13);
+      border-radius: 999px;
+      background: rgba(5,8,14,0.74);
+      box-shadow: 0 18px 54px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.025);
+      backdrop-filter: blur(18px);
+      transform: translateY(-50%);
+    }
+
+    .mission-spine::before {
+      position: absolute;
+      top: 18px;
+      bottom: 18px;
+      left: 50%;
+      z-index: -1;
+      width: 1px;
+      content: "";
+      background: linear-gradient(180deg, transparent, rgba(107,210,218,0.24) 18%, rgba(216,186,112,0.2) 82%, transparent);
+      transform: translateX(-50%);
+    }
+
+    .mission-spine a {
+      position: relative;
+      width: 10px;
+      height: 10px;
+      display: block;
+      border: 1px solid rgba(190,200,210,0.28);
+      border-radius: 50%;
+      background: #080b12;
+      box-shadow: 0 0 0 3px rgba(5,8,14,0.9);
+      transition:
+        transform 180ms var(--ease-premium),
+        border-color 180ms ease,
+        background 180ms ease,
+        box-shadow 220ms ease;
+    }
+
+    .mission-spine a::after {
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      width: max-content;
+      max-width: 190px;
+      padding: 7px 10px;
+      content: attr(data-scene-label);
+      border: 1px solid rgba(190,200,210,0.15);
+      border-radius: 6px;
+      color: var(--muted);
+      background: rgba(5,8,14,0.94);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.38);
+      font: 800 0.61rem/1.2 var(--mono);
+      letter-spacing: 0.08em;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(6px, -50%);
+      transition: opacity 160ms ease, transform 180ms var(--ease-premium);
+    }
+
+    .mission-spine a:hover,
+    .mission-spine a:focus-visible {
+      border-color: var(--cyan);
+      transform: scale(1.25);
+    }
+
+    .mission-spine a:hover::after,
+    .mission-spine a:focus-visible::after {
+      opacity: 1;
+      transform: translate(0, -50%);
+    }
+
+    .mission-spine a[aria-current="location"] {
+      border-color: #d9f4f5;
+      background: var(--cyan);
+      box-shadow:
+        0 0 0 3px rgba(5,8,14,0.9),
+        0 0 16px rgba(107,210,218,0.52);
+      transform: scale(1.25);
+    }
+
+    .bit-context {
+      display: grid;
+      grid-template-columns: auto minmax(0,1fr);
+      gap: 8px 12px;
+      align-items: center;
+      margin: 14px 0 2px;
+      padding: 11px 12px;
+      border: 1px solid rgba(107,210,218,0.14);
+      border-radius: 8px;
+      background: rgba(107,210,218,0.035);
+    }
+
+    .bit-context span {
+      color: var(--quiet);
+      font: 800 0.57rem/1.2 var(--mono);
+      letter-spacing: 0.09em;
+    }
+
+    .bit-context strong {
+      overflow: hidden;
+      color: #cdecee;
+      font: 800 0.68rem/1.25 var(--mono);
+      letter-spacing: 0.045em;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .bit-prompts button[data-bit-mission] {
+      color: #071114;
+      border-color: rgba(107,210,218,0.72);
+      background: linear-gradient(105deg, #69cdd5, #a5e2e6);
+      box-shadow: 0 10px 28px rgba(63,190,200,0.1);
+    }
+
+    .bit-prompts button[data-bit-mission]::before {
+      border-color: #071114;
+      background: rgba(7,17,20,0.18);
+    }
+
+    #featured-case,
+    #proof,
+    #topology,
+    #about {
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.012), transparent 16% 84%, rgba(255,255,255,0.009)),
+        radial-gradient(ellipse at 50% 50%, rgba(107,210,218,0.018), transparent 62%);
+    }
+
+    #policy-lab,
+    #fleet-card {
+      background:
+        radial-gradient(ellipse at 50% 40%, rgba(107,210,218,0.035), transparent 58%),
+        linear-gradient(180deg, rgba(4,7,13,0.3), rgba(9,9,17,0.54), rgba(4,7,13,0.28));
+    }
+
+    #about {
+      padding-top: clamp(120px, 13vw, 190px);
+      padding-bottom: clamp(120px, 13vw, 190px);
+    }
+
+    #hail {
+      padding-top: clamp(88px, 10vw, 144px);
+      padding-bottom: clamp(108px, 12vw, 170px);
+    }
+
+    @media (max-width: 1180px) {
+      .mission-spine {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .mission-spine a,
+      .mission-spine a::after {
+        transition: none;
+      }
+    }
+
     @media print {
+      .mission-spine,
       .bit-panel,
       .deck-controls,
       .flight-actions,
@@ -8493,6 +8654,16 @@
   <div class="alert-wash" aria-hidden="true"></div>
   <div class="warp-flash" id="warp-flash" aria-hidden="true"></div>
   <a class="skip-link" href="#main">Skip to mission control</a>
+  <nav class="mission-spine" aria-label="Mission progress">
+    <a href="#top" data-scene-label="OPENING // DOUG CASHIO" aria-current="location"><span class="visually-hidden">Opening</span></a>
+    <a href="#proof-rail" data-scene-label="PROOF // THREE CLAIMS"><span class="visually-hidden">Proof</span></a>
+    <a href="#policy-lab" data-scene-label="LAB // POLICY DECIDES"><span class="visually-hidden">Routing lab</span></a>
+    <a href="#flight-intro" data-scene-label="FLIGHT // CINEMATIC MODE"><span class="visually-hidden">Proof flight</span></a>
+    <a href="#proof" data-scene-label="EVIDENCE // READ THE RECEIPT"><span class="visually-hidden">Evidence receipt</span></a>
+    <a href="#topology" data-scene-label="FLEET // ZEUSAPOLLO"><span class="visually-hidden">Fleet architecture</span></a>
+    <a href="#about" data-scene-label="BUILDER // DOUG CASHIO"><span class="visually-hidden">About Doug</span></a>
+    <a href="#hail" data-scene-label="CHANNEL // OPEN"><span class="visually-hidden">Contact</span></a>
+  </nav>
   <canvas id="starfield" aria-hidden="true"></canvas>
   <div class="preview-flag" id="preview-flag" hidden>Local preview • not deployed</div>
   <button class="bit-companion" id="bit-companion" type="button" data-answer="idle" aria-label="Open Bit, the guide to this system" aria-describedby="bit-answer" aria-controls="bit-panel" aria-expanded="false">
@@ -8510,11 +8681,17 @@
       </div>
       <button class="bit-close" id="bit-close" type="button" aria-label="Close Bit">×</button>
     </div>
+    <div class="bit-context">
+      <span>YOU ARE HERE</span>
+      <strong id="bit-context">Opening // Doug Cashio</strong>
+    </div>
     <div class="bit-prompts" role="group" aria-label="Suggested questions for Bit">
+      <button type="button" data-bit-mission>Take the 60-second proof</button>
       <button type="button" data-bit-target="policy-lab">Run the routing lab</button>
       <button type="button" data-bit-target="topology">Show the architecture</button>
       <button type="button" data-bit-target="featured-case">Explain the savings</button>
       <button type="button" data-bit-target="flight-intro">Show me the spectacle</button>
+      <button type="button" data-bit-target="fleet-card">Take me to the shield matrix</button>
       <button type="button" data-bit-message="The public deck uses a dated, owner-supplied snapshot—not a live infrastructure connection.">Is the data live?</button>
       <button type="button" data-bit-target="hail">Contact Doug</button>
     </div>
@@ -8530,7 +8707,7 @@
         </span>
         <span class="brand-copy">
           <strong>CASHIO.US</strong>
-          <small>ZeusApollo // Services 17 // Routes 10</small>
+          <small>ZeusApollo // Public proof deck</small>
         </span>
       </a>
 
@@ -8623,7 +8800,7 @@
             <span class="orbit-node orbit-node-verify"><i></i><b>VERIFY</b></span>
             <span class="orbit-packet orbit-packet-one"></span>
             <span class="orbit-packet orbit-packet-two"></span>
-            <span class="orbit-coordinate">ZA // 30.419°N</span>
+            <span class="orbit-coordinate">ZA // GULF COAST</span>
           </div>
           <div class="profile-head">
             <p>House Cashio // Public proof</p>
@@ -9181,7 +9358,7 @@
             <p class="eyebrow">Ship index</p>
             <h3>One source of truth.</h3>
             <p>The preview treats each repeated figure as shared fleet state. Change it once; the hero, console, topology, manifest, and card stay aligned.</p>
-            <span class="status-badge">CASHIO.US // v30 DATA · v31 EXPERIENCE</span>
+            <span class="status-badge">CASHIO.US // v30 DATA · v31.1 EXPERIENCE</span>
             <div class="public-status-link" id="public-status-link" data-link-state="checking">
               <span class="public-status-pulse" aria-hidden="true"></span>
               <div>
@@ -9210,15 +9387,15 @@
                   <div class="route-card route-new" data-route-key="failover_3"><strong>10 // FAILOVER 3 · CURRENT</strong><span data-route-model>Gemini 3.6 Flash</span><small>Multimodal final recovery route</small></div>
                 </div>
                 <div class="model-verification">
-                  <strong>Provider catalog check // 07-23-2026.</strong> Gemini 3.6 Flash is confirmed in current Google documentation. Grok 4.6 Voice TTS is the owner-reported route name; xAI's public documentation verifies its Voice/TTS API surface but does not currently publish that numeric alias. Routes describe configuration, not live traffic or a universal model ranking.
+                  <strong>Provider catalog check // 07-24-2026.</strong> Current official documentation confirms DeepSeek V4 Pro and V4 Flash, Claude Sonnet 5, Gemini 3.6 Flash, Grok 4.5, and the xAI Voice/TTS API. “Grok 4.6 Voice TTS” remains the owner-reported route label because xAI does not publish that numeric voice alias. Routes describe configuration, not live traffic or a universal model ranking.
                   <ul class="model-sources" aria-label="Official model documentation">
                     <li><a href="https://api-docs.deepseek.com/quick_start/pricing/" target="_blank" rel="noopener noreferrer">DeepSeek</a></li>
                     <li><a href="https://platform.claude.com/docs/en/about-claude/models/overview" target="_blank" rel="noopener noreferrer">Anthropic</a></li>
                     <li><a href="https://docs.x.ai/developers/models/grok-4.5" target="_blank" rel="noopener noreferrer">xAI</a></li>
                     <li><a href="https://open.bigmodel.cn/glm-coding" target="_blank" rel="noopener noreferrer">Zhipu</a></li>
                     <li><a href="https://ai.google.dev/gemma/docs/core" target="_blank" rel="noopener noreferrer">Gemma</a></li>
-                    <li><a href="https://ai.google.dev/gemini-api/docs/generate-content/latest-model" target="_blank" rel="noopener noreferrer">Gemini 3.6</a></li>
-                    <li><a href="https://docs.x.ai/developers/models/text-to-speech" target="_blank" rel="noopener noreferrer">xAI voice</a></li>
+                    <li><a href="https://ai.google.dev/gemini-api/docs/models/gemini-3.6-flash" target="_blank" rel="noopener noreferrer">Gemini 3.6</a></li>
+                    <li><a href="https://docs.x.ai/developers/model-capabilities/audio/text-to-speech" target="_blank" rel="noopener noreferrer">xAI voice</a></li>
                   </ul>
                 </div>
               </div>
@@ -9251,6 +9428,7 @@
               <summary data-manifest="log">Ship's log <span>current + history</span></summary>
               <div class="manifest-content">
                 <ol class="ship-log">
+                  <li><time datetime="2026-07-24">07-24-2026 // v31.1 final polish</time><strong>Mission spine online.</strong> Added section-aware Bit guidance, distinct cinematic sound cues, a restrained page-progress instrument, quieter scene pacing, and a fresh official-provider catalog check.</li>
                   <li><time datetime="2026-07-23">07-23-2026 // v31 gloves off preview</time><strong>Shields up.</strong> Added the Sovereign Routing Observatory, cache-busted public status link, Gemini 3.6 routes, owner-reported Grok 4.6 Voice TTS, Fleet Card defense matrix, Red Alert drill, richer sound design, and Bit guidance routes.</li>
                   <li><time datetime="2026-07-14">07-14-2026 // v30 release candidate</time><strong>House Cashio.</strong> Current public-safe service reconciliation, ten model routes, official catalog verification, cinematic motion, and upgraded Bit.</li>
                   <li><time datetime="2026-07-10">07-10-2026 // v29 local preview</time><strong>Mission Proof.</strong> Audience routing, guided proof flight, explicit freshness, accessible console, effects budget, and shareable Fleet Card.</li>
@@ -9344,8 +9522,8 @@
           </div>
           <div>
             <p class="eyebrow">08 // Notes // source // conversation</p>
-            <h2 id="hail-title">Built in public. Explained in full.</h2>
-            <p>This is a personal, non-commercial work sample. If you are exploring reliable automation, honest measurement, or homelab AI, I am happy to compare notes about the build.</p>
+            <h2 id="hail-title">Build something powerful.<br>Leave it explainable.</h2>
+            <p>This is a personal, non-commercial work sample. If you are working on reliable automation, auditable AI, or secure infrastructure, I am happy to compare notes and show you how the system was built.</p>
           </div>
           <div class="contact-actions">
             <a class="button button-primary" href="mailto:doug@cashio.us?subject=Question%20about%20the%20ZeusApollo%20personal%20build">Ask about the build</a>
@@ -9360,7 +9538,7 @@
 
   <footer class="site-footer">
     <div class="shell footer-inner">
-      <span>© 2026 Doug Cashio // Personal build // CASHIO.US v31</span>
+      <span>© 2026 Doug Cashio // Personal build // CASHIO.US v31.1</span>
       <span class="footer-signal">House Cashio // The spice must flow // Every number earns its place.</span>
       <button class="house-sigil" id="house-awaken" type="button">◈ Awaken House Cashio</button>
       <p class="independence-note"><strong>Personal project notice.</strong> ZeusApollo is a personally owned homelab built and operated independently. This site uses sanitized, dated samples from that lab only—no employer or customer systems, code, data, roadmaps, confidential information, or endorsement are represented. Views are Doug’s own. Cinematic references use original CSS and mathematical fan-homage visuals; no studio artwork, logos, audio, or copied media are included.</p>
@@ -10045,6 +10223,7 @@
         missionInsight.textContent = step.insight;
         missionBack.disabled = missionIndex === 0;
         missionNext.textContent = missionIndex === missionSteps.length - 1 ? "Complete mission" : "Next transmission";
+        if (missionDialog.open) playMissionStepSound(missionIndex);
       }
 
       function updateMissionClock() {
@@ -10494,6 +10673,9 @@
       var bitClose = document.getElementById("bit-close");
       var bitResponse = document.getElementById("bit-response");
       var bitEaster = document.getElementById("bit-easter");
+      var bitContextLabel = document.getElementById("bit-context");
+      var bitMission = document.querySelector("[data-bit-mission]");
+      var missionSpineLinks = Array.prototype.slice.call(document.querySelectorAll(".mission-spine a[href^='#']"));
       var deckBoot = document.getElementById("deck-boot");
       var commandOrbit = document.querySelector(".command-orbit");
       var deckClock = document.getElementById("deck-clock");
@@ -10518,6 +10700,7 @@
       var audioMaster = null;
       var audioCompressor = null;
       var lastHoverToneAt = 0;
+      var lastSceneToneAt = 0;
       var policyConsole = document.querySelector(".policy-console");
       var policyVisual = document.getElementById("policy-visual");
       var policyScenarios = Array.prototype.slice.call(document.querySelectorAll("[data-policy-mode]"));
@@ -10860,6 +11043,41 @@
         };
         playChord(routeChords[mode] || routeChords.private, mode === "research" ? 0.42 : 0.34, 0.034, 0.68);
         if (mode === "research") playNoiseSweep(0.34, 0.007, 620, 2400);
+      }
+
+      function playBitOpenSound() {
+        playTone(392, 0.16, "sine", 0.018, -0.28);
+        playTone(587.33, 0.2, "triangle", 0.016, 0.28, 0.055);
+        playTone(783.99, 0.28, "sine", 0.012, 0, 0.12);
+      }
+
+      function playMissionStepSound(index) {
+        var missionChords = [
+          [196, 293.66, 392],
+          [220, 329.63, 440],
+          [261.63, 392, 523.25],
+          [293.66, 440, 587.33],
+          [329.63, 493.88, 659.25, 987.77]
+        ];
+        playChord(missionChords[index] || missionChords[0], 0.34, 0.028, 0.7);
+      }
+
+      function playSceneTransitionSound(index) {
+        if (!soundEnabled || document.hidden) return;
+        var now = Date.now();
+        if (now - lastSceneToneAt < 1200) return;
+        lastSceneToneAt = now;
+        var roots = [174.61, 196, 220, 246.94, 261.63, 293.66, 329.63];
+        var root = roots[Math.max(0, Math.min(roots.length - 1, index || 0))];
+        playTone(root, 0.16, "sine", 0.012, -0.18);
+        playTone(root * 1.5, 0.22, "triangle", 0.01, 0.18, 0.055);
+      }
+
+      function playFlightLaunchSound() {
+        playWarpSound();
+        playTone(73.42, 0.86, "sine", 0.024, 0);
+        playTone(293.66, 0.54, "triangle", 0.015, -0.34, 0.24);
+        playTone(440, 0.62, "sine", 0.012, 0.34, 0.34);
       }
 
       function setSound(enabled) {
@@ -11210,7 +11428,10 @@
           bitPanel.hidden = !open;
           bitCompanion.setAttribute("aria-expanded", String(open));
           bitCompanion.setAttribute("aria-label", open ? "Close Bit, the guide to this system" : "Open Bit, the guide to this system");
-          if (open && bitClose) bitClose.focus({ preventScroll: true });
+          if (open) {
+            if (bitClose) bitClose.focus({ preventScroll: true });
+            playBitOpenSound();
+          }
         }
 
         function resetBit() {
@@ -11242,6 +11463,14 @@
           bitClose.addEventListener("click", function () {
             setBitPanel(false);
             bitCompanion.focus({ preventScroll: true });
+          });
+        }
+
+        if (bitMission) {
+          bitMission.addEventListener("click", function () {
+            if (bitResponse) bitResponse.textContent = "Opening the five-transmission proof. Self-paced, under 60 seconds.";
+            setBitPanel(false);
+            openMission({ currentTarget: bitCompanion });
           });
         }
 
@@ -11377,6 +11606,7 @@
       function launchProofFlight() {
         if (!scrollWorld) return;
         scrollWorld.classList.add("is-launched");
+        playFlightLaunchSound();
         if (launchFlightButton) {
           launchFlightButton.setAttribute("aria-expanded", "true");
           launchFlightButton.textContent = "Cinematic mode launched";
@@ -11429,6 +11659,41 @@
       });
 
       var primaryLinks = Array.prototype.slice.call(document.querySelectorAll(".primary-nav a[href^='#']"));
+      var missionSceneMap = {
+        top: { target: "top", label: "Opening // Doug Cashio", tone: 0 },
+        "proof-rail": { target: "proof-rail", label: "Proof // Three inspectable claims", tone: 1 },
+        "featured-case": { target: "proof-rail", label: "Proof // Policy-routing case study", tone: 1 },
+        "policy-lab": { target: "policy-lab", label: "Lab // Watch policy decide", tone: 2 },
+        "flight-intro": { target: "flight-intro", label: "Flight // Choose your route", tone: 3 },
+        "spice-flight": { target: "flight-intro", label: "Flight // House Cashio proof flight", tone: 3 },
+        mission: { target: "flight-intro", label: "Inspection // Choose your depth", tone: 3 },
+        proof: { target: "proof", label: "Evidence // Read the receipt", tone: 4 },
+        chain: { target: "proof", label: "Evidence // Intent becomes a trace", tone: 4 },
+        topology: { target: "topology", label: "Fleet // ZeusApollo architecture", tone: 5 },
+        console: { target: "topology", label: "Console // Browser-local command deck", tone: 5 },
+        manifest: { target: "topology", label: "Manifest // Depth on demand", tone: 5 },
+        "fleet-card": { target: "topology", label: "Fleet Card // Raise shields", tone: 5 },
+        about: { target: "about", label: "Builder // Doug Cashio", tone: 6 },
+        hail: { target: "hail", label: "Channel // Open", tone: 6 }
+      };
+      var activeMissionScene = "";
+
+      function syncMissionScene(sectionId) {
+        var scene = missionSceneMap[sectionId];
+        if (!scene || scene.target === activeMissionScene) {
+          if (scene && bitContextLabel) bitContextLabel.textContent = scene.label;
+          return;
+        }
+        activeMissionScene = scene.target;
+        missionSpineLinks.forEach(function (link) {
+          var active = link.getAttribute("href") === "#" + scene.target;
+          if (active) link.setAttribute("aria-current", "location");
+          else link.removeAttribute("aria-current");
+        });
+        if (bitContextLabel) bitContextLabel.textContent = scene.label;
+        playSceneTransitionSound(scene.tone);
+      }
+
       if ("IntersectionObserver" in window) {
         var deckObserver = new IntersectionObserver(function (entries) {
           entries.forEach(function (entry) {
@@ -11437,6 +11702,7 @@
             if (entry.target.matches("section[id]")) {
               if (entry.target.id === "top") runDeckBoot();
               if (entry.target.id === "topology" && topologyBoard) topologyBoard.classList.add("is-online");
+              syncMissionScene(entry.target.id);
               var targetHref = "#" + entry.target.id;
               primaryLinks.forEach(function (link) {
                 link.classList.toggle("is-current", link.getAttribute("href") === targetHref);
@@ -11449,6 +11715,7 @@
       } else {
         revealItems.forEach(function (item) { item.classList.add("is-visible"); });
         if (topologyBoard) topologyBoard.classList.add("is-online");
+        syncMissionScene("top");
       }
 
       paintDeckClock();
