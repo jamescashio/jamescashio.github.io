@@ -1,8 +1,8 @@
 {
   "schema_version": 3,
-  "version": "v31.2",
-  "release_name": "Fleet Awakening",
-  "experience_version": "v31.2",
+  "version": "v31.3",
+  "release_name": "Spice Drive",
+  "experience_version": "v31.3",
   "experience_name": "Gloves Off",
   "reviewed_on": "07-24-2026",
   "routes_verified_on": "07-24-2026",
@@ -15,7 +15,7 @@
   "decommissioned_services": 1,
   "model_routes": 10,
   "automation_jobs_last_reported": 31,
-  "daily_burn": 0.35,
+  "daily_burn": 0.26,
   "note": "Privacy-preserving public architecture evidence. Detailed operational state remains private.",
   "service_summary": {
     "active": "18 owner-reviewed roles, including Athena",

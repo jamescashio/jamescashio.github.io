@@ -43,7 +43,7 @@ def main() -> int:
         "README route count": ("README.md", f"| **Model routes** | {routes} configured routes |"),
         "README automation count": ("README.md", f"| **Automation** | {jobs} last-reported jobs |"),
         "README burn": ("README.md", f"Approximately ${burn:.2f}/day, last reported"),
-        "Changelog release": ("CHANGELOG.md", f"## [{version} Fleet Awakening] — {reviewed}"),
+        "Changelog release": ("CHANGELOG.md", f"## [{version} {release_name}] — {reviewed}"),
         "Release body version": ("RELEASE_BODY.md", f"{version} —"),
         "Release body active count": ("RELEASE_BODY.md", f"| Owner-reviewed active roles | {active}, including Athena |"),
         "Release body route count": ("RELEASE_BODY.md", f"| Configured model routes | {routes} |"),

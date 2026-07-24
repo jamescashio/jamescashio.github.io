@@ -1,4 +1,4 @@
-# ZEUSAPOLLO v31.2 — “Fleet Awakening”
+# ZEUSAPOLLO v31.3 — “Spice Drive”
 
 cashio.us is Doug Cashio’s interactive portfolio for independently built enterprise AI, cybersecurity, automation, and sovereign homelab work.
 
@@ -8,7 +8,7 @@ The public site shows sanitized proof and architectural roles while withholding 
 
 | Item | Current public state |
 |---|---|
-| **Release** | v31.2 — “Fleet Awakening” |
+| **Release** | v31.3 — “Spice Drive” |
 | **Architecture inventory** | Owner reviewed 07-24-2026 |
 | **Hosts** | 2 personal homelab hosts |
 | **Documented roles** | 19 public-safe service roles |
@@ -16,7 +16,7 @@ The public site shows sanitized proof and architectural roles while withholding 
 | **Decommissioned** | 1 service — Home-Asst |
 | **Model routes** | 10 configured routes |
 | **Automation** | 31 last-reported jobs |
-| **Estimated inference burn** | Approximately $0.35/day, last reported |
+| **Estimated inference burn** | Approximately $0.26/day, last reported |
 | **Deployment** | GitHub Pages from `main` |
 | **Production site** | `https://cashio.us` |
 
@@ -56,7 +56,7 @@ These are configured routes, not live-traffic claims or a universal model rankin
 | `status.json` | Coarse, owner-reviewed public architecture contract |
 | `README.md` | Current public architecture and release summary |
 | `CHANGELOG.md` | Public-facing release history |
-| `RELEASE_BODY.md` | Current v31.2 release notes |
+| `RELEASE_BODY.md` | Current v31.3 release notes |
 | `SECURITY.md` | Vulnerability reporting and repository boundaries |
 | `PRIVACY.md` | Public privacy notice |
 | `scripts/public_repo_guard.py` | Automated public-repository safety scanner |

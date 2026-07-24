@@ -1,10 +1,10 @@
-## v31.2 — “Fleet Awakening”
+## v31.3 — “Spice Drive”
 
 **Release date:** 07-24-2026
 
 **Public architecture review:** 07-24-2026
 
-v31.2 turns cashio.us into an interactive, cinematic proof deck for independently built enterprise AI, cybersecurity, automation, and sovereign infrastructure work.
+v31.3 turns cashio.us into an interactive, cinematic proof deck for independently built enterprise AI, cybersecurity, automation, and sovereign infrastructure work.
 
 ### Experience
 
@@ -13,11 +13,12 @@ v31.2 turns cashio.us into an interactive, cinematic proof deck for independentl
 - Adds a self-paced mission, observable event-chain demonstration, safe local console, synchronized fleet scene, and shareable Fleet Card.
 - Moves Bit left and constrains its speech bubble and panel so every prompt remains visible.
 - Adds opt-in fleet-synchronization sound, Athena’s active-state treatment, and public-safe command-deck Easter eggs.
+- Adds a user-triggered efficiency-drive sequence with staged cost evidence, Bit feedback, and an opt-in spatial sound signature.
 - Preserves reduced-motion support, keyboard navigation, semantic structure, and responsive layouts.
 
 ### Public architecture reconciliation
 
-| Metric | v31.2 public baseline |
+| Metric | v31.3 public baseline |
 |---|---:|
 | Personal hosts | 2 |
 | Documented service roles | 19 |
@@ -25,7 +26,7 @@ v31.2 turns cashio.us into an interactive, cinematic proof deck for independentl
 | Decommissioned services | 1 — Home-Asst |
 | Configured model routes | 10 |
 | Automation jobs | 31, last reported |
-| Estimated daily inference burn | ~$0.35, last reported |
+| Estimated daily inference burn | ~$0.26, last reported |
 
 The inventory is owner reviewed and public safe. It describes architecture rather than live health and never exposes a remote-control path.
 

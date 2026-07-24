@@ -2,6 +2,13 @@
 
 All notable public-facing changes to the ZeusApollo portfolio are recorded here. Visible dates use MM-DD-YYYY.
 
+## [v31.3 Spice Drive] — 07-24-2026
+
+- Corrected the owner-reported sampled API inference spend to approximately $0.26/day and updated the corresponding $4.00 baseline comparison to approximately 15.4×.
+- Added a user-triggered efficiency-drive sequence that stages the baseline, policy route, verified result, and Bit handoff without implying a live system action.
+- Added an opt-in spatial drive sound, cinematic cost-wake geometry, and reduced-motion/mobile fallbacks.
+- Kept the public architecture boundary explicit: the effect is browser local, while the number remains a scoped historical sample rather than live telemetry.
+
 ## [v31.2 Fleet Awakening] — 07-24-2026
 
 - Reframed the dated health export as an owner-reviewed public architecture inventory, removing time-window health claims while keeping the public/private boundary explicit.
@@ -45,7 +52,7 @@ All notable public-facing changes to the ZeusApollo portfolio are recorded here.
 - Replaced the earlier seven-lane description with 10 configured model routes.
 - Labeled GPT-4o mini TTS as a legacy/deprecated configured route pending replacement evaluation.
 - Standardized every visible date to MM-DD-YYYY.
-- Reframed 31 automation jobs and approximately $0.35/day inference burn as last-reported evidence.
+- Reframed 31 automation jobs and the then-reported daily inference burn as last-reported evidence.
 - Made the earlier health claim time bounded so it could not be presented indefinitely.
 
 ### Security and privacy

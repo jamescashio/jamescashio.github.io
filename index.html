@@ -9039,6 +9039,250 @@
       }
     }
 
+    /* v31.3 Spice Drive: user-triggered cost proof, cinematic only when invited */
+    #proof {
+      position: relative;
+      overflow: clip;
+      isolation: isolate;
+    }
+
+    #proof > .shell {
+      position: relative;
+      z-index: 2;
+    }
+
+    .cost-wake {
+      position: absolute;
+      inset: 5% -12% 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+      opacity: 0;
+      perspective: 760px;
+      transition: opacity 500ms ease;
+    }
+
+    .cost-wake::before {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      width: min(72vw, 860px);
+      aspect-ratio: 1;
+      content: "";
+      border: 1px solid rgba(107,210,218,0.15);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, transparent 0 17%, rgba(107,210,218,0.035) 17.4% 17.8%, transparent 18.2% 31%, rgba(232,190,108,0.04) 31.4% 31.8%, transparent 32.2% 48%, rgba(177,140,255,0.035) 48.4% 48.8%, transparent 49.2%),
+        conic-gradient(from 90deg, transparent, rgba(107,210,218,0.09), transparent 18%, transparent 48%, rgba(232,190,108,0.08), transparent 68%);
+      filter: drop-shadow(0 0 32px rgba(107,210,218,0.06));
+      transform: translate(-50%, -18%) rotateX(66deg) scale(0.58);
+    }
+
+    .cost-wake i {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 1px;
+      height: 58%;
+      display: block;
+      opacity: 0;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(107,210,218,0.3) 22%, transparent);
+      box-shadow: 0 0 10px rgba(107,210,218,0.34);
+      transform-origin: 50% 0;
+      transform: rotate(var(--wake-angle)) translateY(40px) scaleY(0.12);
+    }
+
+    .cost-wake i:nth-child(1) { --wake-angle: -70deg; }
+    .cost-wake i:nth-child(2) { --wake-angle: -48deg; }
+    .cost-wake i:nth-child(3) { --wake-angle: -24deg; }
+    .cost-wake i:nth-child(4) { --wake-angle: 0deg; }
+    .cost-wake i:nth-child(5) { --wake-angle: 24deg; }
+    .cost-wake i:nth-child(6) { --wake-angle: 48deg; }
+    .cost-wake i:nth-child(7) { --wake-angle: 70deg; }
+
+    #proof.is-efficiency-engaged .cost-wake {
+      opacity: 0.9;
+    }
+
+    body[data-fx="on"] #proof.is-efficiency-engaged .cost-wake::before {
+      animation: cost-gate-open 1.8s cubic-bezier(.16,1,.3,1) both;
+    }
+
+    body[data-fx="on"] #proof.is-efficiency-engaged .cost-wake i {
+      animation: cost-wake-streak 1.45s cubic-bezier(.22,.61,.36,1) both;
+      animation-delay: calc(var(--wake-index, 0) * 55ms);
+    }
+
+    .proof-cell-result {
+      position: relative;
+      overflow: hidden;
+      border-color: rgba(110,231,168,0.3);
+      background:
+        radial-gradient(circle at 82% 20%, rgba(110,231,168,0.11), transparent 42%),
+        linear-gradient(145deg, rgba(107,210,218,0.045), rgba(5,8,14,0.86));
+    }
+
+    .proof-cell-result::before {
+      position: absolute;
+      inset: -65%;
+      content: "";
+      pointer-events: none;
+      opacity: 0.28;
+      background: conic-gradient(from 90deg, transparent, rgba(110,231,168,0.18), transparent 14%, transparent 46%, rgba(107,210,218,0.13), transparent 62%);
+    }
+
+    body[data-fx="on"] .proof-cell-result::before {
+      animation: cost-core-idle 18s linear infinite;
+    }
+
+    .proof-cell-result strong {
+      color: #caffdf;
+      text-shadow: 0 0 24px rgba(110,231,168,0.2);
+    }
+
+    #proof.is-efficiency-engaged .proof-cell {
+      animation: cost-proof-stage 760ms var(--ease-premium) both;
+    }
+
+    #proof.is-efficiency-engaged .proof-cell:nth-child(2) { animation-delay: 150ms; }
+    #proof.is-efficiency-engaged .proof-cell:nth-child(3) { animation-delay: 300ms; }
+    #proof.is-efficiency-engaged .proof-cell:nth-child(4) { animation-delay: 450ms; }
+
+    #proof.is-efficiency-engaged .proof-cell-result {
+      border-color: rgba(110,231,168,0.72);
+      box-shadow: 0 28px 80px rgba(0,0,0,0.44), 0 0 44px rgba(110,231,168,0.12), inset 0 0 48px rgba(110,231,168,0.045);
+    }
+
+    .cost-drive-console {
+      display: grid;
+      grid-template-columns: minmax(230px, auto) 1fr;
+      gap: 18px;
+      align-items: center;
+      margin-top: 18px;
+      padding: 14px;
+      border: 1px solid rgba(107,210,218,0.16);
+      border-radius: 14px;
+      background:
+        linear-gradient(90deg, rgba(107,210,218,0.055), transparent 38%),
+        rgba(4,7,12,0.68);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.24);
+    }
+
+    .efficiency-drive {
+      min-width: 250px;
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      grid-template-rows: auto auto;
+      gap: 1px 12px;
+      align-items: center;
+      text-align: left;
+    }
+
+    .efficiency-drive::after {
+      grid-row: 1 / 3;
+      align-self: stretch;
+    }
+
+    .efficiency-drive-core {
+      grid-row: 1 / 3;
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      font: 900 0.58rem/1 var(--mono);
+      box-shadow: inset 0 0 16px rgba(107,210,218,0.14);
+    }
+
+    .efficiency-drive strong {
+      font: 900 0.75rem/1.25 var(--mono);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .efficiency-drive small {
+      opacity: 0.72;
+      font: 700 0.61rem/1.25 var(--mono);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    #proof.is-efficiency-engaged .efficiency-drive-core {
+      animation: efficiency-core-lock 820ms cubic-bezier(.16,1,.3,1) both;
+    }
+
+    .efficiency-status {
+      min-height: 2.6em;
+      margin: 0;
+      color: var(--quiet);
+      font: 700 0.72rem/1.45 var(--mono);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    #proof.is-efficiency-complete .efficiency-status {
+      color: #a9eecb;
+    }
+
+    @keyframes cost-gate-open {
+      0% { opacity: 0; transform: translate(-50%, -18%) rotateX(66deg) scale(0.22) rotate(0deg); }
+      36% { opacity: 0.85; }
+      100% { opacity: 0.12; transform: translate(-50%, -18%) rotateX(66deg) scale(1.08) rotate(24deg); }
+    }
+
+    @keyframes cost-wake-streak {
+      0% { opacity: 0; transform: rotate(var(--wake-angle)) translateY(60px) scaleY(0.05); }
+      26% { opacity: 0.82; }
+      100% { opacity: 0; transform: rotate(var(--wake-angle)) translateY(-260px) scaleY(1.34); }
+    }
+
+    @keyframes cost-core-idle {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes cost-proof-stage {
+      0% { opacity: 0.42; transform: translateY(14px) scale(0.985); filter: saturate(0.45); }
+      58% { opacity: 1; transform: translateY(-4px) scale(1.012); filter: saturate(1.12); }
+      100% { opacity: 1; transform: none; filter: none; }
+    }
+
+    @keyframes efficiency-core-lock {
+      0% { transform: rotate(0deg) scale(0.78); box-shadow: inset 0 0 10px rgba(107,210,218,0.08); }
+      62% { transform: rotate(300deg) scale(1.18); box-shadow: inset 0 0 18px rgba(255,255,255,0.28), 0 0 22px rgba(107,210,218,0.32); }
+      100% { transform: rotate(360deg) scale(1); box-shadow: inset 0 0 18px rgba(110,231,168,0.18), 0 0 18px rgba(110,231,168,0.2); }
+    }
+
+    @media (max-width: 700px) {
+      .cost-drive-console {
+        grid-template-columns: 1fr;
+      }
+
+      .efficiency-drive {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .cost-wake {
+        inset-inline: -48%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cost-wake,
+      .cost-wake::before,
+      .cost-wake i,
+      .proof-cell-result::before,
+      #proof.is-efficiency-engaged .proof-cell,
+      #proof.is-efficiency-engaged .efficiency-drive-core {
+        animation: none !important;
+      }
+
+      #proof.is-efficiency-engaged .cost-wake {
+        opacity: 0.14;
+      }
+    }
+
     @media print {
       .mission-spine,
       .bit-panel,
@@ -9233,7 +9477,7 @@
             <summary>Inspect four readouts</summary>
             <div class="profile-grid">
               <div class="profile-metric"><strong>7.2×</strong><span>Lower unit cost</span><small>Matched task vs Opus-primary baseline</small></div>
-              <div class="profile-metric"><strong data-fleet="dailyBurn">$0.35</strong><span>API inference / day</span><small>Last reported sampled spend</small></div>
+              <div class="profile-metric"><strong data-fleet="dailyBurn">$0.26</strong><span>API inference / day</span><small>Last reported sampled spend</small></div>
               <div class="profile-metric"><strong data-fleet="activeRoleCount">18</strong><span>Active roles</span><small id="healthy-verified-copy">Owner reviewed 07-24-2026</small></div>
               <div class="profile-metric"><strong data-fleet="routeCount">10</strong><span>Model routes</span><small>Configured routes, not traffic claims</small></div>
             </div>
@@ -9545,6 +9789,7 @@
     </section>
 
     <section class="section" id="proof" aria-labelledby="proof-title">
+      <div class="cost-wake" aria-hidden="true"><i style="--wake-index:0"></i><i style="--wake-index:1"></i><i style="--wake-index:2"></i><i style="--wake-index:3"></i><i style="--wake-index:4"></i><i style="--wake-index:5"></i><i style="--wake-index:6"></i></div>
       <div class="shell">
         <div class="section-head">
           <div>
@@ -9565,10 +9810,10 @@
             <strong>Route by need</strong>
             <p>Local models handle routine work; billable reasoning is reserved for tasks that justify it.</p>
           </article>
-          <article class="proof-cell">
+          <article class="proof-cell proof-cell-result">
             <div class="proof-number">03 / RESULT</div>
-            <strong>≈ $0.35 / day</strong>
-            <p>Observed API inference spend after routing—approximately 11.4× below the rounded launch figure in that sampled period.</p>
+            <strong>≈ $0.26 / day</strong>
+            <p>Observed API inference spend after routing—approximately 15.4× below the rounded launch figure in that sampled period.</p>
           </article>
           <article class="proof-cell">
             <div class="proof-number">04 / VERIFICATION</div>
@@ -9583,8 +9828,16 @@
         </div>
 
         <div class="benchmark-strip">
-          <p><strong>Separate portfolio benchmark:</strong> A matched task comparison produced a 7.2× lower unit cost than the Opus baseline while using the same acceptance rubric. It is not the calculation behind the $4 → $0.35 daily result.</p>
+          <p><strong>Separate portfolio benchmark:</strong> A matched task comparison produced a 7.2× lower unit cost than the Opus baseline while using the same acceptance rubric. It is not the calculation behind the $4 → $0.26 daily result.</p>
           <div class="benchmark-value" aria-label="7.2 times lower unit cost">7.2×</div>
+        </div>
+        <div class="cost-drive-console">
+          <button class="button button-primary efficiency-drive" id="engage-efficiency-drive" type="button" aria-controls="efficiency-status">
+            <span class="efficiency-drive-core" aria-hidden="true">15.4×</span>
+            <strong>Engage efficiency drive</strong>
+            <small>Browser-local proof sequence</small>
+          </button>
+          <p class="efficiency-status" id="efficiency-status" aria-live="polite">Ready // stages baseline → policy route → result → verification</p>
         </div>
       </div>
     </section>
@@ -9791,7 +10044,7 @@
             <p class="eyebrow">Ship index</p>
             <h3>One source of truth.</h3>
             <p>The preview treats each repeated figure as shared fleet state. Change it once; the hero, console, topology, manifest, and card stay aligned.</p>
-            <span class="status-badge">CASHIO.US // v31.2 FLEET AWAKENING</span>
+            <span class="status-badge">CASHIO.US // v31.3 SPICE DRIVE</span>
             <div class="public-status-link" id="public-status-link" data-link-state="checking">
               <span class="public-status-pulse" aria-hidden="true"></span>
               <div>
@@ -9861,6 +10114,7 @@
               <summary data-manifest="log">Ship's log <span>current + history</span></summary>
               <div class="manifest-content">
                 <ol class="ship-log">
+                  <li><time datetime="2026-07-24">07-24-2026 // v31.3 Spice Drive</time><strong>Efficiency envelope corrected.</strong> Updated sampled API inference spend to $0.26/day and added a user-triggered cost-proof sequence with spatial sound, staged evidence, and reduced-motion restraint.</li>
                   <li><time datetime="2026-07-24">07-24-2026 // v31.2 Fleet Awakening</time><strong>Command fabric synchronized.</strong> Reframed the truth layer as an owner-reviewed architecture inventory, activated Athena, added a cinematic fleet sequence, moved Bit into view, and expanded the opt-in soundscape.</li>
                   <li><time datetime="2026-07-24">07-24-2026 // v31.1 final polish</time><strong>Mission spine online.</strong> Added section-aware Bit guidance, distinct cinematic sound cues, a restrained page-progress instrument, quieter scene pacing, and a fresh official-provider catalog check.</li>
                   <li><time datetime="2026-07-23">07-23-2026 // v31 gloves off preview</time><strong>Shields up.</strong> Added the Sovereign Routing Observatory, cache-busted public status link, Gemini 3.6 routes, owner-reported Grok 4.6 Voice TTS, Fleet Card defense matrix, Red Alert drill, richer sound design, and Bit guidance routes.</li>
@@ -9972,7 +10226,7 @@
 
   <footer class="site-footer">
     <div class="shell footer-inner">
-      <span>© 2026 Doug Cashio // Personal build // CASHIO.US v31.2</span>
+      <span>© 2026 Doug Cashio // Personal build // CASHIO.US v31.3</span>
       <span class="footer-signal">House Cashio // The spice must flow // Every number earns its place.</span>
       <button class="house-sigil" id="house-awaken" type="button">◈ Awaken House Cashio</button>
       <p class="independence-note"><strong>Personal project notice.</strong> ZeusApollo is a personally owned homelab built and operated independently. This site uses sanitized, dated samples from that lab only—no employer or customer systems, code, data, roadmaps, confidential information, or endorsement are represented. Views are Doug’s own. Cinematic references use original CSS and mathematical fan-homage visuals; no studio artwork, logos, audio, or copied media are included.</p>
@@ -10069,7 +10323,7 @@
         retiredRoleCount: 1,
         routeCount: 10,
         automationCount: 31,
-        dailyBurn: 0.35,
+        dailyBurn: 0.26,
         refreshIntervalSeconds: 60,
         routes: {
           primary: "DeepSeek V4 Pro",
@@ -10310,6 +10564,59 @@
         fleetSyncControl.addEventListener("click", runFleetSynchronization);
       }
 
+      var proofSection = document.getElementById("proof");
+      var efficiencyDriveControl = document.getElementById("engage-efficiency-drive");
+      var efficiencyStatus = document.getElementById("efficiency-status");
+      var efficiencyDriveTimers = [];
+
+      function clearEfficiencyDriveTimers() {
+        efficiencyDriveTimers.forEach(function (timer) {
+          window.clearTimeout(timer);
+        });
+        efficiencyDriveTimers = [];
+      }
+
+      function runEfficiencyDrive() {
+        if (!proofSection || !efficiencyDriveControl || !efficiencyStatus) return;
+        clearEfficiencyDriveTimers();
+        proofSection.classList.remove("is-efficiency-engaged", "is-efficiency-complete");
+        void proofSection.offsetWidth;
+        proofSection.classList.add("is-efficiency-engaged");
+        efficiencyDriveControl.disabled = true;
+        efficiencyDriveControl.querySelector("strong").textContent = "Routing sampled workload…";
+        efficiencyDriveControl.querySelector("small").textContent = "Policy gate engaged";
+        efficiencyStatus.textContent = "01 // Baseline locked at approximately $4.00 per day";
+        if (bitAnswer) bitAnswer.textContent = "BIT // EFFICIENCY DRIVE ENGAGED";
+        if (chainAnnouncement) chainAnnouncement.textContent = "Efficiency-drive presentation engaged. No live system was contacted.";
+        playEfficiencyDriveSound();
+
+        var stageDelay = effectiveMotion() ? 430 : 80;
+        efficiencyDriveTimers.push(window.setTimeout(function () {
+          efficiencyStatus.textContent = "02 // Local-first policy route selected";
+        }, stageDelay));
+        efficiencyDriveTimers.push(window.setTimeout(function () {
+          efficiencyStatus.textContent = "03 // Sampled API inference spend resolved at approximately $0.26 per day";
+        }, stageDelay * 2));
+        efficiencyDriveTimers.push(window.setTimeout(function () {
+          proofSection.classList.add("is-efficiency-complete");
+          efficiencyStatus.textContent = "Verified sample // $4.00 → $0.26 per day // approximately 15.4× below the rounded baseline";
+          efficiencyDriveControl.querySelector("strong").textContent = "Efficiency drive verified";
+          efficiencyDriveControl.querySelector("small").textContent = "Evidence boundary preserved";
+          if (bitAnswer) bitAnswer.textContent = "BIT // 15.4× COST DESCENT VERIFIED";
+        }, stageDelay * 3));
+        efficiencyDriveTimers.push(window.setTimeout(function () {
+          proofSection.classList.remove("is-efficiency-engaged");
+          efficiencyDriveControl.disabled = false;
+          efficiencyDriveControl.querySelector("strong").textContent = "Replay efficiency drive";
+          efficiencyDriveControl.querySelector("small").textContent = "Browser-local proof sequence";
+          if (bitAnswer && bitPanel && bitPanel.hidden) bitAnswer.textContent = "BIT // Ask about this system";
+        }, effectiveMotion() ? 2700 : 520));
+      }
+
+      if (efficiencyDriveControl) {
+        efficiencyDriveControl.addEventListener("click", runEfficiencyDrive);
+      }
+
       var audienceData = {
         outcomes: {
           tab: "tab-outcomes",
@@ -10500,7 +10807,7 @@
       var terminalResponses = {
         help: "Available: status, proof, lab, models, source, topology, sync, flight, tour, warp, alert, spice, mentat, house, awaken, sound, contact, clear, ask eve. All commands are browser-local and read-only. Classified protocols may reward curiosity.",
         status: "OWNER-REVIEWED ARCHITECTURE — two hosts, nineteen documented roles, eighteen active roles including Athena, and one intentionally retired role. Reviewed 07-24-2026. This is architecture inventory, not live health telemetry.",
-        proof: "Observed API inference spend moved from approximately $4/day to approximately $" + sample.dailyBurn.toFixed(2) + "/day after local-first routing. Scope: API inference only. The 7.2x benchmark is a separate matched-task comparison.",
+        proof: "Observed API inference spend moved from approximately $4/day to approximately $" + sample.dailyBurn.toFixed(2) + "/day after local-first routing—about 15.4x below the rounded baseline in that sample. Scope: API inference only. The 7.2x benchmark is a separate matched-task comparison.",
         models: sample.routeCount + " configured routes: DeepSeek V4 Pro, Claude Sonnet 5, Grok 4.5, GLM 5.2, Gemma 4 26B A4B, Gemini 3.6 Flash, Grok 4.6 Voice TTS, plus DeepSeek V4 Flash, GLM 5.2, and Gemini 3.6 Flash failovers. Grok 4.6 Voice TTS is the owner-reported route name; xAI public docs verify the Voice/TTS API surface, not that numeric alias.",
         source: "SOURCE DATE — owner reviewed 07-24-2026. The public file describes architecture and editorial configuration; it never queries private systems.",
         freshness: "SOURCE DATE — owner reviewed 07-24-2026. The public file describes architecture and editorial configuration; it never queries private systems.",
@@ -10654,7 +10961,7 @@
         {
           tag: "The intervention",
           title: "Spend expensive reasoning only where it earns its keep.",
-          text: "Routine work routes local-first. Higher-cost API reasoning is gated by need. The pattern reduced observed API inference spend from about $4 per day to about $0.35 per day in the sampled period.",
+          text: "Routine work routes local-first. Higher-cost API reasoning is gated by need. The pattern reduced observed API inference spend from about $4 per day to about $0.26 per day in the sampled period.",
           insight: "SCOPE // API inference spend only // approximate values labeled."
         },
         {
@@ -11490,6 +11797,17 @@
         playTone(587.33, 0.42, "sine", 0.016, 0.52, 0.52);
         playTone(783.99, 0.56, "sine", 0.013, 0.78, 0.7);
         playChord([220, 329.63, 440, 659.25], 0.66, 0.042, 0.88);
+      }
+
+      function playEfficiencyDriveSound() {
+        if (!soundEnabled || document.hidden) return;
+        playTone(48.99, 1.08, "sine", 0.026, 0);
+        playNoiseSweep(0.92, 0.011, 110, 3400);
+        playTone(164.81, 0.32, "triangle", 0.018, -0.82, 0.08);
+        playTone(246.94, 0.36, "sine", 0.017, -0.36, 0.24);
+        playTone(369.99, 0.42, "triangle", 0.016, 0.18, 0.42);
+        playTone(554.37, 0.5, "sine", 0.014, 0.62, 0.62);
+        playChord([246.94, 369.99, 493.88, 739.99], 0.72, 0.04, 0.9);
       }
 
       function playBitSound(mode) {
