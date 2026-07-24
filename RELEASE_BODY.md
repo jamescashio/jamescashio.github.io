@@ -1,32 +1,33 @@
-## v30 — “The Sleeper Has Awakened”
+## v31.2 — “Fleet Awakening”
 
-**Release date:** 07-14-2026
+**Release date:** 07-24-2026
 
-**Public status window:** 07-14-2026 through 07-17-2026
+**Public architecture review:** 07-24-2026
 
-v30 turns cashio.us into an interactive, cinematic proof deck for independently built enterprise AI, cybersecurity, automation, and sovereign infrastructure work.
+v31.2 turns cashio.us into an interactive, cinematic proof deck for independently built enterprise AI, cybersecurity, automation, and sovereign infrastructure work.
 
 ### Experience
 
 - Introduces a four-scene House Cashio proof flight with original space and Dune-inspired CSS visuals.
 - Upgrades the Tron-inspired Bit companion while preserving its recognizable geometry.
-- Adds a self-paced mission, observable event-chain demonstration, safe local console, interactive fleet, and shareable Fleet Card.
+- Adds a self-paced mission, observable event-chain demonstration, safe local console, synchronized fleet scene, and shareable Fleet Card.
+- Moves Bit left and constrains its speech bubble and panel so every prompt remains visible.
+- Adds opt-in fleet-synchronization sound, Athena’s active-state treatment, and public-safe command-deck Easter eggs.
 - Preserves reduced-motion support, keyboard navigation, semantic structure, and responsive layouts.
 
-### Public status reconciliation
+### Public architecture reconciliation
 
-| Metric | v30 public baseline |
+| Metric | v31.2 public baseline |
 |---|---:|
 | Personal hosts | 2 |
 | Documented service roles | 19 |
-| Owner-reported healthy services | 17 |
-| Unreported services | 1 — Athena |
+| Owner-reviewed active roles | 18, including Athena |
 | Decommissioned services | 1 — Home-Asst |
 | Configured model routes | 10 |
 | Automation jobs | 31, last reported |
 | Estimated daily inference burn | ~$0.35, last reported |
 
-The status is owner supplied and sampled, not streaming telemetry. The interface automatically stops presenting health as current after 07-17-2026.
+The inventory is owner reviewed and public safe. It describes architecture rather than live health and never exposes a remote-control path.
 
 ### Model routing
 

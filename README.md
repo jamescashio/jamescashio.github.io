@@ -1,4 +1,4 @@
-# ZEUSAPOLLO v30 — “The Sleeper Has Awakened”
+# ZEUSAPOLLO v31.2 — “Fleet Awakening”
 
 cashio.us is Doug Cashio’s interactive portfolio for independently built enterprise AI, cybersecurity, automation, and sovereign homelab work.
 
@@ -8,12 +8,11 @@ The public site shows sanitized proof and architectural roles while withholding 
 
 | Item | Current public state |
 |---|---|
-| **Release** | v30 — “The Sleeper Has Awakened” |
-| **Status export** | Verified 07-14-2026; expires 07-17-2026 |
+| **Release** | v31.2 — “Fleet Awakening” |
+| **Architecture inventory** | Owner reviewed 07-24-2026 |
 | **Hosts** | 2 personal homelab hosts |
 | **Documented roles** | 19 public-safe service roles |
-| **Owner-reported healthy** | 17 services |
-| **Unreported** | 1 service — Athena |
+| **Owner-reviewed active roles** | 18 roles, including Athena |
 | **Decommissioned** | 1 service — Home-Asst |
 | **Model routes** | 10 configured routes |
 | **Automation** | 31 last-reported jobs |
@@ -21,7 +20,7 @@ The public site shows sanitized proof and architectural roles while withholding 
 | **Deployment** | GitHub Pages from `main` |
 | **Production site** | `https://cashio.us` |
 
-The status export is owner supplied and sampled, not streaming telemetry. After 07-17-2026, the site automatically stops presenting its health snapshot as current.
+The inventory is an owner-reviewed public architecture map, not streaming health telemetry or a remote-control surface. It describes public-safe roles and boundaries while operational state remains private.
 
 ## Model routing fabric
 
@@ -43,7 +42,7 @@ These are configured routes, not live-traffic claims or a universal model rankin
 ## Public-safety posture
 
 - No private network addresses, ports, credentials, customer data, employer-confidential material, or access procedures are published.
-- Service states are date bounded and automatically become historical after expiration.
+- The architecture inventory is dated and owner reviewed; it does not claim live service health.
 - The page performs no live infrastructure calls; interactive demonstrations remain browser local.
 - Public contact information is limited to the cashio.us domain and linked professional profiles.
 - Reduced-motion support, keyboard navigation, semantic labels, and a restrictive Content Security Policy are retained.
@@ -54,10 +53,10 @@ These are configured routes, not live-traffic claims or a universal model rankin
 |---|---|
 | `index.html` | Production portfolio and interactive command deck |
 | `assets/sovereign-star-chart-v1.webp` | Original 32 KB cinematic atmosphere, optimized for the command deck |
-| `status.json` | Coarse, dated public status contract |
+| `status.json` | Coarse, owner-reviewed public architecture contract |
 | `README.md` | Current public architecture and release summary |
 | `CHANGELOG.md` | Public-facing release history |
-| `RELEASE_BODY.md` | Current v30 release notes |
+| `RELEASE_BODY.md` | Current v31.2 release notes |
 | `SECURITY.md` | Vulnerability reporting and repository boundaries |
 | `PRIVACY.md` | Public privacy notice |
 | `scripts/public_repo_guard.py` | Automated public-repository safety scanner |
@@ -65,7 +64,7 @@ These are configured routes, not live-traffic claims or a universal model rankin
 
 ## Release flow
 
-1. Reconcile the dated public status export.
+1. Reconcile the owner-reviewed public architecture inventory.
 2. Keep `index.html`, `status.json`, `README.md`, `CHANGELOG.md`, and `RELEASE_BODY.md` consistent.
 3. Run the public-safety and release-consistency checks.
 4. Merge the reviewed release branch into `main`.

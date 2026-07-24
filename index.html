@@ -1478,21 +1478,6 @@
       color: var(--green);
     }
 
-    .guest.is-unknown {
-      border-color: rgba(255,204,0,0.32);
-      background: rgba(255,204,0,0.035);
-      box-shadow: inset 3px 0 0 rgba(255,204,0,0.54);
-    }
-
-    .guest.is-unknown .guest-state {
-      background: var(--warning);
-      box-shadow: 0 0 12px rgba(255,204,0,0.46);
-    }
-
-    .guest.is-unknown small {
-      color: var(--warning);
-    }
-
     .guest.is-retired {
       opacity: 0.7;
       border-color: rgba(152,152,182,0.24);
@@ -1507,11 +1492,6 @@
 
     .guest.is-retired small {
       color: var(--quiet);
-    }
-
-    body.status-stale .guest:not(.is-unknown):not(.is-retired) .guest-state {
-      background: var(--quiet);
-      box-shadow: none;
     }
 
     .guest-copy {
@@ -8618,6 +8598,447 @@
       }
     }
 
+    /* v31.2 Fleet Awakening: cinematic architecture, bounded Bit, quieter truth layer */
+    .bit-companion {
+      right: clamp(74px, 6vw, 104px);
+    }
+
+    .bit-answer {
+      top: 50%;
+      right: calc(100% - 2px);
+      bottom: auto;
+      left: auto;
+      width: max-content;
+      min-width: 220px;
+      max-width: min(290px, calc(100vw - 190px));
+      min-height: 38px;
+      justify-items: start;
+      padding: 8px 14px;
+      text-align: left;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      transform: translateY(-50%);
+    }
+
+    .bit-panel {
+      right: clamp(74px, 6vw, 104px);
+      width: min(380px, calc(100vw - 112px));
+    }
+
+    .fleet-command-array {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(210px, 1.35fr);
+      gap: 1px;
+      margin: 0 0 20px;
+      overflow: hidden;
+      border: 1px solid rgba(107, 210, 218, 0.18);
+      border-radius: 14px;
+      background: rgba(107, 210, 218, 0.15);
+      box-shadow: 0 28px 84px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.03);
+      isolation: isolate;
+    }
+
+    .fleet-command-array::before {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      content: "";
+      opacity: 0.55;
+      background:
+        linear-gradient(90deg, transparent, rgba(107,210,218,0.08), transparent),
+        repeating-linear-gradient(90deg, transparent 0 72px, rgba(107,210,218,0.025) 73px 74px);
+      transform: translateX(-100%);
+    }
+
+    body[data-fx="on"] .fleet-command-array.is-synchronizing::before {
+      animation: fleet-spectrum 1.65s var(--ease-premium) both;
+    }
+
+    .fleet-command-metric {
+      min-height: 102px;
+      display: grid;
+      align-content: center;
+      gap: 4px;
+      padding: 18px;
+      background:
+        radial-gradient(circle at 86% 20%, rgba(107,210,218,0.08), transparent 38%),
+        rgba(7,10,17,0.96);
+    }
+
+    .fleet-command-metric span {
+      color: var(--quiet);
+      font: 800 0.6rem/1.3 var(--mono);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .fleet-command-metric strong {
+      color: #f6f8f5;
+      font: 800 clamp(1.65rem, 3vw, 2.45rem)/1 var(--display);
+      text-shadow: 0 0 24px rgba(107,210,218,0.08);
+    }
+
+    .fleet-command-metric.is-active strong {
+      color: #b8f3d5;
+      text-shadow: 0 0 24px rgba(110,231,168,0.16);
+    }
+
+    .fleet-command-metric.is-retired strong {
+      color: var(--quiet);
+    }
+
+    .fleet-sync-control {
+      min-height: 102px;
+      display: grid;
+      grid-template-columns: 58px 1fr;
+      gap: 14px;
+      align-items: center;
+      padding: 14px 16px;
+      border: 0;
+      color: #071114;
+      background:
+        linear-gradient(125deg, rgba(255,255,255,0.38), transparent 34%),
+        linear-gradient(105deg, #70d2d9, #b0e6e8);
+      cursor: pointer;
+      text-align: left;
+      transition: filter 180ms ease, transform 180ms var(--ease-premium), box-shadow 220ms ease;
+    }
+
+    .fleet-sync-control:hover,
+    .fleet-sync-control:focus-visible {
+      z-index: 2;
+      outline: none;
+      filter: brightness(1.07);
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.62), 0 0 36px rgba(107,210,218,0.22);
+      transform: translateY(-2px);
+    }
+
+    .fleet-sync-control:active {
+      transform: translateY(0) scale(0.985);
+    }
+
+    .fleet-sync-core {
+      position: relative;
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(7,17,20,0.34);
+      border-radius: 50%;
+      font: 900 0.7rem/1 var(--mono);
+    }
+
+    .fleet-sync-core::before,
+    .fleet-sync-core::after {
+      position: absolute;
+      content: "";
+      border: 1px dashed currentColor;
+      border-radius: 50%;
+    }
+
+    .fleet-sync-core::before { inset: 6px; }
+    .fleet-sync-core::after { inset: -6px; opacity: 0.35; }
+
+    body[data-fx="on"] .fleet-command-array.is-synchronizing .fleet-sync-core::before {
+      animation: orbit-spin 720ms linear 2;
+    }
+
+    body[data-fx="on"] .fleet-command-array.is-synchronizing .fleet-sync-core::after {
+      animation: fleet-sync-wave 1.4s ease-out both;
+    }
+
+    .fleet-sync-copy {
+      display: grid;
+      gap: 3px;
+    }
+
+    .fleet-sync-copy strong {
+      font: 900 0.83rem/1.25 var(--mono);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .fleet-sync-copy small {
+      font: 800 0.6rem/1.35 var(--mono);
+      opacity: 0.72;
+      text-transform: uppercase;
+    }
+
+    .fleet-sync-status {
+      min-height: 1.35em;
+      margin: -8px 0 18px;
+      color: var(--green);
+      font: 800 0.63rem/1.35 var(--mono);
+      letter-spacing: 0.06em;
+      text-align: right;
+      text-transform: uppercase;
+    }
+
+    .topology-board {
+      gap: 28px;
+      padding: 24px;
+      border: 1px solid rgba(107,210,218,0.16);
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 50% 0, rgba(107,210,218,0.08), transparent 38%),
+        linear-gradient(145deg, rgba(255,255,255,0.018), transparent 32%),
+        rgba(5,8,14,0.72);
+      box-shadow: 0 34px 110px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+
+    .topology-board::before,
+    .topology-board::after {
+      position: absolute;
+      z-index: -1;
+      content: "";
+      pointer-events: none;
+      border-radius: inherit;
+    }
+
+    .topology-board::before {
+      inset: -1px;
+      border: 1px solid transparent;
+      background: conic-gradient(from 180deg at 50% 50%, transparent, rgba(107,210,218,0.24), transparent 18%, transparent 82%, rgba(177,140,255,0.2), transparent) border-box;
+      -webkit-mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0.5;
+    }
+
+    .topology-board::after {
+      top: 12%;
+      right: 12%;
+      bottom: 12%;
+      left: 12%;
+      opacity: 0;
+      background: radial-gradient(ellipse, rgba(107,210,218,0.16), transparent 68%);
+      filter: blur(24px);
+      transform: scale(0.82);
+    }
+
+    body[data-fx="on"] .topology-board.is-synchronizing::after {
+      animation: fleet-core-sweep 1.7s ease-out both;
+    }
+
+    .cluster {
+      isolation: isolate;
+      border-color: rgba(190,200,210,0.18);
+      background:
+        linear-gradient(145deg, rgba(255,255,255,0.035), transparent 34%),
+        radial-gradient(circle at 12% 0, rgba(107,210,218,0.09), transparent 36%),
+        rgba(9,13,22,0.96);
+      transition: border-color 260ms ease, box-shadow 300ms ease, transform 360ms var(--ease-premium);
+    }
+
+    .cluster:nth-child(2) {
+      background:
+        linear-gradient(145deg, rgba(255,255,255,0.035), transparent 34%),
+        radial-gradient(circle at 12% 0, rgba(177,140,255,0.1), transparent 36%),
+        rgba(9,13,22,0.96);
+    }
+
+    .cluster::before {
+      position: absolute;
+      top: -22%;
+      bottom: -22%;
+      left: -38%;
+      z-index: 3;
+      width: 22%;
+      content: "";
+      pointer-events: none;
+      opacity: 0;
+      background: linear-gradient(90deg, transparent, rgba(107,210,218,0.13), rgba(255,255,255,0.08), transparent);
+      filter: blur(1px);
+      transform: skewX(-16deg);
+    }
+
+    body[data-fx="on"] .topology-board.is-synchronizing .cluster {
+      border-color: rgba(107,210,218,0.42);
+      box-shadow: 0 34px 90px rgba(0,0,0,0.48), 0 0 34px rgba(107,210,218,0.1), inset 0 0 50px rgba(107,210,218,0.035);
+      transform: translateY(-4px);
+    }
+
+    body[data-fx="on"] .topology-board.is-synchronizing .cluster:nth-child(2) {
+      border-color: rgba(177,140,255,0.42);
+      box-shadow: 0 34px 90px rgba(0,0,0,0.48), 0 0 34px rgba(177,140,255,0.1), inset 0 0 50px rgba(177,140,255,0.035);
+    }
+
+    body[data-fx="on"] .topology-board.is-synchronizing .cluster::before {
+      animation: fleet-scan 1.25s cubic-bezier(.23,1,.32,1) both;
+    }
+
+    body[data-fx="on"] .topology-board.is-synchronizing .cluster:nth-child(2)::before {
+      animation-delay: 180ms;
+    }
+
+    .cluster-glyph {
+      width: 54px;
+      height: 54px;
+      background:
+        radial-gradient(circle, rgba(107,210,218,0.14), transparent 60%),
+        rgba(4,9,15,0.72);
+      box-shadow: inset 0 0 24px rgba(25,201,235,0.1), 0 0 22px rgba(107,210,218,0.08);
+    }
+
+    .cluster-glyph::before {
+      position: absolute;
+      inset: 8px;
+      content: "";
+      border: 1px solid currentColor;
+      border-right-color: transparent;
+      border-radius: 50%;
+      opacity: 0.52;
+    }
+
+    body[data-fx="on"] .topology-board.is-online .cluster-glyph::before {
+      animation: orbit-spin 4.6s linear infinite;
+    }
+
+    .cluster:nth-child(2) .cluster-glyph {
+      color: #c2a8ff;
+      border-color: rgba(177,140,255,0.48);
+    }
+
+    .guest {
+      overflow: hidden;
+      transition: border-color 180ms ease, background 180ms ease, transform 180ms var(--ease-premium), box-shadow 220ms ease;
+    }
+
+    .guest:hover,
+    .guest:focus-within {
+      border-color: rgba(107,210,218,0.38);
+      background: rgba(107,210,218,0.045);
+      box-shadow: 0 12px 34px rgba(0,0,0,0.24), inset 2px 0 0 rgba(107,210,218,0.42);
+      transform: translateY(-2px);
+    }
+
+    .guest.is-athena {
+      border-color: rgba(110,231,168,0.42);
+      background:
+        radial-gradient(circle at 90% 20%, rgba(110,231,168,0.13), transparent 42%),
+        linear-gradient(100deg, rgba(107,210,218,0.08), rgba(110,231,168,0.035));
+      box-shadow: inset 3px 0 0 rgba(110,231,168,0.72), 0 0 24px rgba(110,231,168,0.06);
+    }
+
+    .guest.is-athena .guest-state {
+      background: #c6ffe2;
+      box-shadow: 0 0 5px #fff, 0 0 16px rgba(110,231,168,0.82);
+    }
+
+    .guest.is-athena small {
+      color: #a9eecb;
+    }
+
+    body[data-fx="on"] .topology-board.is-online .guest.is-athena .guest-state {
+      animation: athena-pulse 2.8s ease-in-out infinite;
+    }
+
+    .topology-link {
+      top: 62px;
+      width: 68px;
+    }
+
+    .topology-link::before {
+      height: 3px;
+      background: linear-gradient(90deg, var(--cyan), #f5ffff, var(--violet));
+    }
+
+    body[data-fx="on"] .topology-board.is-synchronizing .topology-link::after {
+      animation: topology-packet 520ms cubic-bezier(.65,0,.35,1) 3 alternate;
+    }
+
+    @keyframes fleet-spectrum {
+      0% { opacity: 0; transform: translateX(-100%); }
+      45% { opacity: 0.85; }
+      100% { opacity: 0; transform: translateX(100%); }
+    }
+
+    @keyframes fleet-sync-wave {
+      0% { opacity: 0.58; transform: scale(0.62); }
+      100% { opacity: 0; transform: scale(1.7); }
+    }
+
+    @keyframes fleet-core-sweep {
+      0% { opacity: 0; transform: scale(0.72); }
+      42% { opacity: 0.82; }
+      100% { opacity: 0; transform: scale(1.15); }
+    }
+
+    @keyframes fleet-scan {
+      0% { left: -38%; opacity: 0; }
+      20% { opacity: 0.86; }
+      100% { left: 122%; opacity: 0; }
+    }
+
+    @keyframes athena-pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 5px #fff, 0 0 16px rgba(110,231,168,0.72); }
+      50% { transform: scale(1.34); box-shadow: 0 0 7px #fff, 0 0 24px rgba(110,231,168,0.96); }
+    }
+
+    @media (max-width: 1180px) {
+      .bit-companion,
+      .bit-panel {
+        right: 48px;
+      }
+
+      .fleet-command-array {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .fleet-sync-control {
+        grid-column: 1 / -1;
+        min-height: 84px;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .fleet-command-array {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .fleet-sync-control {
+        grid-column: 1 / -1;
+      }
+
+      .topology-board {
+        padding: 14px;
+      }
+
+      .fleet-sync-status {
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .bit-companion {
+        right: 12px;
+      }
+
+      .bit-panel {
+        right: 12px;
+        width: min(380px, calc(100vw - 24px));
+      }
+
+      .fleet-command-metric {
+        min-height: 86px;
+        padding: 14px;
+      }
+
+      .fleet-command-metric strong {
+        font-size: 1.55rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fleet-command-array::before,
+      .topology-board::after,
+      .cluster::before,
+      .guest.is-athena .guest-state {
+        animation: none !important;
+      }
+    }
+
     @media print {
       .mission-spine,
       .bit-panel,
@@ -8692,7 +9113,7 @@
       <button type="button" data-bit-target="featured-case">Explain the savings</button>
       <button type="button" data-bit-target="flight-intro">Show me the spectacle</button>
       <button type="button" data-bit-target="fleet-card">Take me to the shield matrix</button>
-      <button type="button" data-bit-message="The public deck uses a dated, owner-supplied snapshot—not a live infrastructure connection.">Is the data live?</button>
+      <button type="button" data-bit-message="This is an owner-reviewed public architecture inventory—not live health telemetry and never a remote-control path.">Is the data live?</button>
       <button type="button" data-bit-target="hail">Contact Doug</button>
     </div>
     <p class="bit-response" id="bit-response" role="status">Choose a question and I’ll take you to the receipt.</p>
@@ -8757,11 +9178,11 @@
 
   <main id="main">
     <section class="hero" id="top" aria-labelledby="hero-title">
-      <div class="shell deck-status" role="status" aria-label="ZeusApollo public status">
+      <div class="shell deck-status" role="status" aria-label="ZeusApollo public architecture inventory">
         <span class="deck-status-dot" aria-hidden="true"></span>
-        <strong id="snapshot-readout">Sampled // 07-14-2026</strong>
-        <span>Sanitized public snapshot</span>
-        <span>No live systems · no private data</span>
+        <strong id="snapshot-readout">OWNER REVIEWED // 07-24-2026</strong>
+        <span>Public architecture inventory</span>
+        <span>No live control · no private data</span>
       </div>
       <div class="shell hero-grid">
         <div class="hero-copy">
@@ -8775,7 +9196,7 @@
           </div>
           <ul class="hero-proof">
             <li><strong>7.2×</strong> lower matched-task unit cost</li>
-            <li><strong data-fleet="healthyServiceCount">17</strong> healthy services in last snapshot</li>
+            <li><strong data-fleet="activeRoleCount">18</strong> active roles in the public architecture</li>
             <li><strong data-fleet="routeCount">10</strong> configured model routes</li>
           </ul>
         </div>
@@ -8784,7 +9205,7 @@
           <div class="deck-boot" id="deck-boot" aria-hidden="true" hidden>
             <div class="boot-brand">ZEUSAPOLLO</div>
             <div class="boot-line" style="--boot-delay:0ms">[01] PUBLIC PROOF DECK // HANDSHAKE ACCEPTED</div>
-            <div class="boot-line" id="status-boot-line" style="--boot-delay:140ms">[02] STATUS EXPORT // 07-14-2026 // EXP 07-17-2026</div>
+            <div class="boot-line" id="status-boot-line" style="--boot-delay:140ms">[02] ARCHITECTURE INVENTORY // OWNER REVIEWED</div>
             <div class="boot-line" style="--boot-delay:280ms">[03] HERMES CONSOLE // LOCAL SAFE MODE</div>
             <div class="boot-line" style="--boot-delay:420ms">[04] GUILD NAVIGATOR SPICE // PARTICLES READY</div>
             <div class="boot-line" style="--boot-delay:560ms">[05] COMMAND DECK // ENGAGED</div>
@@ -8813,7 +9234,7 @@
             <div class="profile-grid">
               <div class="profile-metric"><strong>7.2×</strong><span>Lower unit cost</span><small>Matched task vs Opus-primary baseline</small></div>
               <div class="profile-metric"><strong data-fleet="dailyBurn">$0.35</strong><span>API inference / day</span><small>Last reported sampled spend</small></div>
-              <div class="profile-metric"><strong data-fleet="healthyServiceCount">17</strong><span>Healthy services</span><small id="healthy-verified-copy">Owner-reported 07-14-2026</small></div>
+              <div class="profile-metric"><strong data-fleet="activeRoleCount">18</strong><span>Active roles</span><small id="healthy-verified-copy">Owner reviewed 07-24-2026</small></div>
               <div class="profile-metric"><strong data-fleet="routeCount">10</strong><span>Model routes</span><small>Configured routes, not traffic claims</small></div>
             </div>
             <div class="profile-foot">
@@ -8859,7 +9280,7 @@
             </div>
             <h3>Private by design</h3>
             <p>Routine and sensitive workloads can remain under personally controlled infrastructure.</p>
-            <small id="proof-control-freshness">Public-safe architecture snapshot // verified 07-14-2026</small>
+            <small id="proof-control-freshness">Public-safe architecture inventory // owner reviewed 07-24-2026</small>
             <a href="#topology">View architecture <span aria-hidden="true">→</span></a>
           </article>
           <article class="proof-rail-card">
@@ -8883,8 +9304,8 @@
 
     <aside class="telemetry-ribbon" aria-label="Telemetry freshness notice">
       <div class="shell telemetry-inner">
-        <span class="status-badge" id="telemetry-badge">Checking sample</span>
-        <div class="telemetry-copy" id="telemetry-copy"><strong>Telemetry is evidence, not decoration.</strong> Evaluating the owner-supplied status export.</div>
+        <span class="status-badge" id="telemetry-badge">Loading inventory</span>
+        <div class="telemetry-copy" id="telemetry-copy"><strong>Architecture is evidence, not decoration.</strong> Loading the owner-reviewed public inventory.</div>
         <div class="telemetry-meta" id="telemetry-meta">No live connection // personal lab only</div>
       </div>
     </aside>
@@ -9220,16 +9641,27 @@
         <div class="section-head">
           <div>
             <p class="eyebrow">04 // Fleet architecture</p>
-            <h2 id="topology-title">Two hosts. Seventeen healthy services.<br>One honest public status.</h2>
+            <h2 id="topology-title">Two hosts. Nineteen roles.<br>One sovereign command fabric.</h2>
           </div>
-          <p id="topology-summary">A public-safe role map of my personal lab—no addresses, ports, credentials, customer data, or access paths. The 07-14-2026 export confirmed 17 healthy services; Home-Asst is retired and Athena was not reported.</p>
+          <p id="topology-summary">An owner-reviewed, public-safe architecture map of my personal lab—18 active roles, one intentionally retired role, and no addresses, ports, credentials, customer data, or access paths.</p>
         </div>
 
-        <div class="fleet-legend" aria-label="Fleet status key">
-          <span><i aria-hidden="true"></i>Owner-reported healthy</span>
-          <span class="legend-unknown"><i aria-hidden="true"></i>Not reported</span>
-          <span class="legend-retired"><i aria-hidden="true"></i>Decommissioned</span>
-          <span class="legend-local" id="topology-window">Status window: 07-14-2026 → 07-17-2026 // no live endpoints</span>
+        <div class="fleet-command-array" id="fleet-command-array">
+          <div class="fleet-command-metric"><span>Physical hosts</span><strong data-fleet="hostCount">02</strong></div>
+          <div class="fleet-command-metric"><span>Documented roles</span><strong data-fleet="documentedRoleCount">19</strong></div>
+          <div class="fleet-command-metric is-active"><span>Owner-reviewed active</span><strong data-fleet="activeRoleCount">18</strong></div>
+          <div class="fleet-command-metric is-retired"><span>Intentionally retired</span><strong data-fleet="retiredRoleCount">01</strong></div>
+          <button class="fleet-sync-control" id="fleet-sync-control" type="button" aria-describedby="fleet-sync-status">
+            <span class="fleet-sync-core" aria-hidden="true">ZA</span>
+            <span class="fleet-sync-copy"><strong>Synchronize fleet</strong><small>Browser-local cinematic sequence</small></span>
+          </button>
+        </div>
+        <p class="fleet-sync-status" id="fleet-sync-status" role="status" aria-live="polite">COMMAND FABRIC // STANDING BY // NO LIVE CONTROL</p>
+
+        <div class="fleet-legend" aria-label="Fleet architecture key">
+          <span><i aria-hidden="true"></i>Owner-reviewed active role</span>
+          <span class="legend-retired"><i aria-hidden="true"></i>Intentionally retired</span>
+          <span class="legend-local" id="topology-window">Owner reviewed 07-24-2026 // architecture, not live health</span>
         </div>
 
         <div class="topology-board">
@@ -9240,13 +9672,13 @@
                 <h3 id="zeus-title">ZEUS // Host</h3>
                 <p>Infrastructure + security</p>
               </div>
-              <div class="cluster-count" aria-label="8 documented roles: 7 healthy and 1 unreported">08</div>
+              <div class="cluster-count" aria-label="8 documented active roles">08</div>
             </header>
             <ul class="guest-list" aria-label="Zeus public service inventory">
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Hermes</strong><small>AI gateway + primary agent</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Technitium-BU</strong><small>DNS secondary</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>n8n</strong><small>Automation engine</small></span></li>
-              <li class="guest is-unknown"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Athena</strong><small id="athena-status-copy">Not included in 07-14-2026 export</small></span></li>
+              <li class="guest is-athena"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Athena</strong><small id="athena-status-copy">Active // owner reviewed</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Wazuh</strong><small>SIEM monitoring</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Vaultwarden</strong><small>Password management</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Control-Plane</strong><small>Orchestration + crew bridge</small></span></li>
@@ -9261,7 +9693,7 @@
                 <h3 id="apollo-title">APOLLO // Host</h3>
                 <p>AI + media</p>
               </div>
-              <div class="cluster-count" aria-label="11 documented roles: 10 healthy and 1 decommissioned">11</div>
+              <div class="cluster-count" aria-label="11 documented roles: 10 active and 1 intentionally retired">11</div>
             </header>
             <ul class="guest-list" aria-label="Apollo public service inventory">
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Technitium</strong><small>DNS primary</small></span></li>
@@ -9269,12 +9701,12 @@
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Atlas</strong><small>LiteLLM + GLM + Kernel</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>AI-Stack</strong><small>Local inference</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Dionysus</strong><small>Unraid + Plex primary</small></span></li>
-              <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Plex</strong><small id="plex-status-copy">Owner-reported healthy · 07-14-2026</small></span></li>
+              <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Plex</strong><small id="plex-status-copy">Active role · owner reviewed</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Genesis</strong><small>NAS storage</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>PBS</strong><small>Proxmox backups</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Rclone</strong><small>Encrypted offsite sync</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Backup-Verifier</strong><small>Snapshot integrity</small></span></li>
-              <li class="guest is-retired"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Home-Asst</strong><small id="home-assist-status-copy">Decommissioned · 07-14-2026</small></span></li>
+              <li class="guest is-retired"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Home-Asst</strong><small id="home-assist-status-copy">Intentionally retired</small></span></li>
             </ul>
           </article>
 
@@ -9283,7 +9715,7 @@
 
         <div class="sample-note">
           <strong>Truth protocol</strong>
-          <span id="topology-note">Owner-supplied status export verified 07-14-2026 and valid through 07-17-2026. Athena remains unknown because it was absent from the export. No live endpoints are queried.</span>
+          <span id="topology-note">Owner-reviewed public architecture inventory dated 07-24-2026. It describes roles and boundaries, not live health. No private endpoint or control path is queried.</span>
         </div>
       </div>
     </section>
@@ -9309,8 +9741,9 @@
               <button class="command-chip" type="button" data-command="proof">proof</button>
               <button class="command-chip" type="button" data-command="lab">lab</button>
               <button class="command-chip" type="button" data-command="models">models</button>
-              <button class="command-chip" type="button" data-command="freshness">freshness</button>
+              <button class="command-chip" type="button" data-command="source">source</button>
               <button class="command-chip" type="button" data-command="topology">topology</button>
+              <button class="command-chip" type="button" data-command="sync">sync</button>
               <button class="command-chip" type="button" data-command="flight">flight</button>
               <button class="command-chip" type="button" data-command="warp">warp</button>
               <button class="command-chip" type="button" data-command="spice">spice</button>
@@ -9336,7 +9769,7 @@
               <label for="terminal-input">Enter a local preview command</label>
               <input class="terminal-input" id="terminal-input" name="command" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Enter command…" aria-describedby="terminal-help">
               <button class="terminal-submit" type="submit">Execute</button>
-              <span class="visually-hidden" id="terminal-help">Available commands include help, status, proof, lab, models, freshness, topology, flight, tour, warp, alert, spice, mentat, house, awaken, sound, contact, clear, and ask eve.</span>
+              <span class="visually-hidden" id="terminal-help">Available commands include help, status, proof, lab, models, source, topology, sync, flight, tour, warp, alert, spice, mentat, house, awaken, sound, contact, clear, and ask eve.</span>
             </form>
           </div>
         </div>
@@ -9358,14 +9791,14 @@
             <p class="eyebrow">Ship index</p>
             <h3>One source of truth.</h3>
             <p>The preview treats each repeated figure as shared fleet state. Change it once; the hero, console, topology, manifest, and card stay aligned.</p>
-            <span class="status-badge">CASHIO.US // v30 DATA · v31.1 EXPERIENCE</span>
+            <span class="status-badge">CASHIO.US // v31.2 FLEET AWAKENING</span>
             <div class="public-status-link" id="public-status-link" data-link-state="checking">
               <span class="public-status-pulse" aria-hidden="true"></span>
               <div>
-                <strong id="status-link-label">PUBLIC STATUS LINK // CHECKING</strong>
-                <small id="status-last-sync">Cache-busted browser refresh every 60 seconds.</small>
+                <strong id="status-link-label">PUBLIC INVENTORY // CHECKING</strong>
+                <small id="status-last-sync">Checking the owner-reviewed public file.</small>
               </div>
-              <button type="button" id="refresh-status" aria-label="Refresh the public status snapshot now">Sync</button>
+              <button type="button" id="refresh-status" aria-label="Refresh the public architecture inventory now">Sync</button>
             </div>
             <p class="mentat-protocol"><strong>Mentat protocol</strong> Observe. Route. Verify. Explain.</p>
           </aside>
@@ -9428,6 +9861,7 @@
               <summary data-manifest="log">Ship's log <span>current + history</span></summary>
               <div class="manifest-content">
                 <ol class="ship-log">
+                  <li><time datetime="2026-07-24">07-24-2026 // v31.2 Fleet Awakening</time><strong>Command fabric synchronized.</strong> Reframed the truth layer as an owner-reviewed architecture inventory, activated Athena, added a cinematic fleet sequence, moved Bit into view, and expanded the opt-in soundscape.</li>
                   <li><time datetime="2026-07-24">07-24-2026 // v31.1 final polish</time><strong>Mission spine online.</strong> Added section-aware Bit guidance, distinct cinematic sound cues, a restrained page-progress instrument, quieter scene pacing, and a fresh official-provider catalog check.</li>
                   <li><time datetime="2026-07-23">07-23-2026 // v31 gloves off preview</time><strong>Shields up.</strong> Added the Sovereign Routing Observatory, cache-busted public status link, Gemini 3.6 routes, owner-reported Grok 4.6 Voice TTS, Fleet Card defense matrix, Red Alert drill, richer sound design, and Bit guidance routes.</li>
                   <li><time datetime="2026-07-14">07-14-2026 // v30 release candidate</time><strong>House Cashio.</strong> Current public-safe service reconciliation, ten model routes, official catalog verification, cinematic motion, and upgraded Bit.</li>
@@ -9475,11 +9909,11 @@
             <p>The canvas is decorative; its complete content is repeated here for screen readers and anyone who does not render it.</p>
             <div class="fleet-card-facts" aria-label="Fleet Card facts">
               <span><strong>7.2×</strong> matched-task cost efficiency</span>
-              <span><strong data-fleet="healthyServiceCount">17</strong> healthy services</span>
+              <span><strong data-fleet="activeRoleCount">18</strong> active roles</span>
               <span><strong data-fleet="routeCount">10</strong> configured model routes</span>
               <span><strong data-fleet="hostCount">2</strong> personal homelab hosts</span>
             </div>
-            <p id="fleet-card-freshness"><strong>Freshness:</strong> owner-supplied status export verified 07-14-2026 and valid through 07-17-2026. It is sampled evidence, not streaming telemetry.</p>
+            <p id="fleet-card-freshness"><strong>Evidence boundary:</strong> owner-reviewed public architecture inventory dated 07-24-2026. It is not live health telemetry or a control surface.</p>
             <p class="defense-disclosure">DECK SIMULATION // Shield and Red Alert controls are browser-local presentation effects. They never contact or operate the homelab.</p>
             <div class="fleet-card-actions">
               <button class="button button-primary shield-button" id="raise-shields" type="button" aria-pressed="false">Raise shields</button>
@@ -9538,7 +9972,7 @@
 
   <footer class="site-footer">
     <div class="shell footer-inner">
-      <span>© 2026 Doug Cashio // Personal build // CASHIO.US v31.1</span>
+      <span>© 2026 Doug Cashio // Personal build // CASHIO.US v31.2</span>
       <span class="footer-signal">House Cashio // The spice must flow // Every number earns its place.</span>
       <button class="house-sigil" id="house-awaken" type="button">◈ Awaken House Cashio</button>
       <p class="independence-note"><strong>Personal project notice.</strong> ZeusApollo is a personally owned homelab built and operated independently. This site uses sanitized, dated samples from that lab only—no employer or customer systems, code, data, roadmaps, confidential information, or endorsement are represented. Views are Doug’s own. Cinematic references use original CSS and mathematical fan-homage visuals; no studio artwork, logos, audio, or copied media are included.</p>
@@ -9628,11 +10062,11 @@
       setFx(fxEnabled);
 
       var sample = {
-        verifiedDisplay: "07-14-2026",
-        expiresOn: "2026-07-17",
-        expiresDisplay: "07-17-2026",
-        healthyServiceCount: 17,
+        reviewedDisplay: "07-24-2026",
         hostCount: 2,
+        documentedRoleCount: 19,
+        activeRoleCount: 18,
+        retiredRoleCount: 1,
         routeCount: 10,
         automationCount: 31,
         dailyBurn: 0.35,
@@ -9678,19 +10112,14 @@
       var statusLastSync = document.getElementById("status-last-sync");
       var refreshStatusButton = document.getElementById("refresh-status");
       var statusRefreshTimer = 0;
-      var isStale = true;
-
-      function displayDateToIso(value) {
-        var text = String(value || "");
-        if (/^\d{4}-\d{2}-\d{2}$/.test(text)) return text;
-        var parts = text.split("-");
-        return parts.length === 3 ? parts[2] + "-" + parts[0] + "-" + parts[1] : "";
-      }
 
       function syncFleetValues() {
         Array.prototype.slice.call(document.querySelectorAll("[data-fleet]")).forEach(function (node) {
           var key = node.getAttribute("data-fleet");
-          if (Object.prototype.hasOwnProperty.call(sample, key)) node.textContent = fleetValue(key);
+          if (!Object.prototype.hasOwnProperty.call(sample, key)) return;
+          var value = fleetValue(key);
+          if (key === "hostCount" || key === "retiredRoleCount") value = value.padStart(2, "0");
+          node.textContent = value;
         });
       }
 
@@ -9704,27 +10133,19 @@
 
       function updateTerminalStatusCopy() {
         if (!terminalResponses) return;
-        terminalResponses.status = isStale
-          ? "CURRENT STATE UNKNOWN — the owner-supplied status export expired on " + sample.expiresDisplay + ". It previously recorded " + sample.healthyServiceCount + " healthy services, one retired service, and one unreported service across " + sample.hostCount + " hosts."
-          : "FRESH OWNER-SUPPLIED EXPORT — verified " + sample.verifiedDisplay + ", expires " + sample.expiresDisplay + ": " + sample.healthyServiceCount + " healthy services, Home-Asst retired, and Athena unreported across " + sample.hostCount + " hosts. The browser refreshes the public status file; no homelab endpoint is exposed.";
+        terminalResponses.status = "OWNER-REVIEWED ARCHITECTURE — " + sample.hostCount + " hosts, " + sample.documentedRoleCount + " documented roles, " + sample.activeRoleCount + " active roles including Athena, and " + sample.retiredRoleCount + " intentionally retired role. Reviewed " + sample.reviewedDisplay + ". This is architecture inventory, not live health telemetry.";
         terminalResponses.models = sample.routeCount + " configured routes: " + Object.keys(sample.routes).map(function (key) { return sample.routes[key]; }).join(", ") + ". Grok 4.6 Voice TTS is the owner-reported route name; xAI's public docs verify the Voice/TTS API surface, not that numeric alias.";
-        terminalResponses.freshness = isStale
-          ? "STALE — the public status file was reached, but its owner-supplied fleet snapshot expired on " + sample.expiresDisplay + ". Current health is not asserted."
-          : "FRESH — the owner-supplied export was verified " + sample.verifiedDisplay + " and expires " + sample.expiresDisplay + ". The browser checks the public file every " + sample.refreshIntervalSeconds + " seconds; it is not direct telemetry.";
-        terminalResponses.topology = isStale
-          ? "LAST VERIFIED SNAPSHOT — ZEUS documented 8 roles: 7 owner-reported healthy and Athena unreported. APOLLO documented 11 roles: 10 owner-reported healthy and Home-Asst decommissioned. That status window ended " + sample.expiresDisplay + "; current state is unknown."
-          : "ZEUS documents 8 roles: 7 owner-reported healthy and Athena unreported. APOLLO documents 11 roles: 10 owner-reported healthy and Home-Asst decommissioned. Status is fresh through " + sample.expiresDisplay + ".";
+        terminalResponses.freshness = "SOURCE DATE — owner reviewed " + sample.reviewedDisplay + ". The browser checks the public inventory file every " + sample.refreshIntervalSeconds + " seconds for editorial alignment; it never queries private systems.";
+        terminalResponses.topology = "ZEUS documents 8 active infrastructure and security roles, including Athena. APOLLO documents 11 roles: 10 active and Home-Asst intentionally retired. No addresses, ports, credentials, or access paths are published.";
       }
 
       function applyStatusSnapshot(data) {
         if (data && typeof data === "object") {
-          if (typeof data.verified_on === "string") sample.verifiedDisplay = data.verified_on;
-          if (typeof data.expires_on === "string") {
-            sample.expiresDisplay = data.expires_on;
-            sample.expiresOn = displayDateToIso(data.expires_on);
-          }
-          if (Number.isFinite(Number(data.healthy_services))) sample.healthyServiceCount = Number(data.healthy_services);
+          if (typeof data.reviewed_on === "string") sample.reviewedDisplay = data.reviewed_on;
           if (Number.isFinite(Number(data.hosts))) sample.hostCount = Number(data.hosts);
+          if (Number.isFinite(Number(data.documented_roles))) sample.documentedRoleCount = Number(data.documented_roles);
+          if (Number.isFinite(Number(data.active_roles))) sample.activeRoleCount = Number(data.active_roles);
+          if (Number.isFinite(Number(data.decommissioned_services))) sample.retiredRoleCount = Number(data.decommissioned_services);
           if (Number.isFinite(Number(data.model_routes))) sample.routeCount = Number(data.model_routes);
           if (Number.isFinite(Number(data.automation_jobs_last_reported))) sample.automationCount = Number(data.automation_jobs_last_reported);
           if (Number.isFinite(Number(data.daily_burn))) sample.dailyBurn = Number(data.daily_burn);
@@ -9738,48 +10159,38 @@
           }
         }
 
-        var expiryTime = new Date(sample.expiresOn + "T23:59:59Z");
-        isStale = !Number.isFinite(expiryTime.getTime()) || Date.now() > expiryTime.getTime();
-        body.classList.toggle("status-stale", isStale);
-        badge.classList.toggle("is-fresh", !isStale);
-        badge.textContent = isStale ? "Stale • expired " + sample.expiresDisplay : "Fresh • " + sample.verifiedDisplay;
-        snapshotReadout.textContent = isStale ? "Stale // " + sample.expiresDisplay : "Fresh // " + sample.verifiedDisplay;
+        badge.classList.add("is-fresh");
+        badge.textContent = "Owner reviewed • " + sample.reviewedDisplay;
+        snapshotReadout.textContent = "OWNER REVIEWED // " + sample.reviewedDisplay;
 
         var telemetryLead = document.createElement("strong");
-        telemetryLead.textContent = isStale ? "Current state unknown." : sample.healthyServiceCount + " services owner-reported healthy.";
-        var telemetryDetail = document.createTextNode(isStale
-          ? " The public file is reachable, but its fleet snapshot expired on " + sample.expiresDisplay + "; every service state below is historical."
-          : " Home-Asst is intentionally decommissioned; Athena was not included and remains unknown. The browser refreshes a public snapshot, not private endpoints.");
+        telemetryLead.textContent = sample.activeRoleCount + " active roles in the owner-reviewed public architecture.";
+        var telemetryDetail = document.createTextNode(" Athena is included; Home-Asst is intentionally retired. The browser refreshes only this public inventory—not private endpoints.");
         telemetryCopy.replaceChildren(telemetryLead, telemetryDetail);
-        telemetryMeta.textContent = "Public status file // verified " + sample.verifiedDisplay + " // expires " + sample.expiresDisplay + " // no private connection";
-        topologyNote.textContent = isStale
-          ? "This owner-supplied status export expired on " + sample.expiresDisplay + ". Service dots are historical and current health is not asserted. The browser checks only the sanitized public status file."
-          : "Owner-supplied status export verified " + sample.verifiedDisplay + " and valid through " + sample.expiresDisplay + ". Athena remains unknown because it was absent from the export. The browser checks only the sanitized public status file.";
+        telemetryMeta.textContent = "Public architecture file // owner reviewed " + sample.reviewedDisplay + " // no live control // no private connection";
+        topologyNote.textContent = "Owner-reviewed public architecture inventory dated " + sample.reviewedDisplay + ". It describes roles and boundaries, not live health. No private endpoint or control path is queried.";
 
-        if (statusBootLine) statusBootLine.textContent = "[02] STATUS EXPORT // " + sample.verifiedDisplay + " // EXP " + sample.expiresDisplay;
-        if (healthyVerifiedCopy) healthyVerifiedCopy.textContent = (isStale ? "Last reported " : "Owner-reported ") + sample.verifiedDisplay;
-        if (proofControlFreshness) proofControlFreshness.textContent = "Public-safe architecture snapshot // verified " + sample.verifiedDisplay;
-        if (topologySummary) topologySummary.textContent = "A public-safe role map of my personal lab—no addresses, ports, credentials, customer data, or access paths. The " + sample.verifiedDisplay + " export recorded " + sample.healthyServiceCount + " healthy services; Home-Asst is retired and Athena was not reported.";
-        if (topologyWindow) topologyWindow.textContent = "Status window: " + sample.verifiedDisplay + " → " + sample.expiresDisplay + " // sanitized public file";
-        if (athenaStatusCopy) athenaStatusCopy.textContent = "Not included in " + sample.verifiedDisplay + " export";
-        if (plexStatusCopy) plexStatusCopy.textContent = "Owner-reported healthy · " + sample.verifiedDisplay;
-        if (homeAssistStatusCopy) homeAssistStatusCopy.textContent = "Decommissioned · " + sample.verifiedDisplay;
+        if (statusBootLine) statusBootLine.textContent = "[02] ARCHITECTURE INVENTORY // REVIEWED " + sample.reviewedDisplay;
+        if (healthyVerifiedCopy) healthyVerifiedCopy.textContent = "Owner reviewed " + sample.reviewedDisplay;
+        if (proofControlFreshness) proofControlFreshness.textContent = "Public-safe architecture inventory // owner reviewed " + sample.reviewedDisplay;
+        if (topologySummary) topologySummary.textContent = "An owner-reviewed, public-safe architecture map of my personal lab—" + sample.activeRoleCount + " active roles, one intentionally retired role, and no addresses, ports, credentials, customer data, or access paths.";
+        if (topologyWindow) topologyWindow.textContent = "Owner reviewed " + sample.reviewedDisplay + " // architecture, not live health";
+        if (athenaStatusCopy) athenaStatusCopy.textContent = "Active role · owner reviewed";
+        if (plexStatusCopy) plexStatusCopy.textContent = "Active role · owner reviewed";
+        if (homeAssistStatusCopy) homeAssistStatusCopy.textContent = "Intentionally retired";
         if (fleetCardFreshness) {
           var freshnessLead = document.createElement("strong");
-          freshnessLead.textContent = "Freshness:";
+          freshnessLead.textContent = "Evidence boundary:";
           fleetCardFreshness.replaceChildren(
             freshnessLead,
-            document.createTextNode(" owner-supplied status export verified " + sample.verifiedDisplay + " and valid through " + sample.expiresDisplay + ". The browser refreshes the public file every " + sample.refreshIntervalSeconds + " seconds; it is not streaming telemetry.")
+            document.createTextNode(" owner-reviewed public architecture inventory dated " + sample.reviewedDisplay + ". It is not live health telemetry or a control surface.")
           );
         }
         if (modelRouteSummary) modelRouteSummary.textContent = sample.routeCount + " configured routes";
         if (automationSummary) automationSummary.textContent = sample.automationCount + " last-reported jobs";
 
-        document.querySelectorAll(".dynamic-health-copy").forEach(function (node) {
-          node.textContent = "; owner-reported healthy on " + sample.verifiedDisplay;
-        });
-        document.querySelectorAll(".dynamic-unknown-copy").forEach(function (node) {
-          node.textContent = "; not included in the " + sample.verifiedDisplay + " export; current state unknown";
+        document.querySelectorAll(".dynamic-active-copy").forEach(function (node) {
+          node.textContent = "; active role in owner-reviewed architecture dated " + sample.reviewedDisplay;
         });
 
         syncFleetValues();
@@ -9792,31 +10203,31 @@
         if (!publicStatusLink || window.location.protocol === "file:") {
           if (publicStatusLink) {
             publicStatusLink.dataset.linkState = "offline";
-            statusLinkLabel.textContent = "PUBLIC STATUS LINK // LOCAL FALLBACK";
+            statusLinkLabel.textContent = "PUBLIC INVENTORY // LOCAL FALLBACK";
             statusLastSync.textContent = "Serve over HTTP to enable automatic status refresh.";
           }
           return;
         }
 
         publicStatusLink.dataset.linkState = "checking";
-        statusLinkLabel.textContent = "PUBLIC STATUS LINK // CHECKING";
+        statusLinkLabel.textContent = "PUBLIC INVENTORY // CHECKING";
         if (refreshStatusButton) refreshStatusButton.disabled = true;
         try {
           var response = await fetch("./status.json?ts=" + Date.now(), { cache: "no-store" });
-          if (!response.ok) throw new Error("Status request failed");
+          if (!response.ok) throw new Error("Inventory request failed");
           var data = await response.json();
           applyStatusSnapshot(data);
           publicStatusLink.dataset.linkState = "online";
-          statusLinkLabel.textContent = isStale ? "PUBLIC STATUS LINK // SYNCED · DATA STALE" : "PUBLIC STATUS LINK // SYNCED · CURRENT";
+          statusLinkLabel.textContent = "PUBLIC INVENTORY // OWNER-REVIEWED";
           statusLastSync.textContent = "Checked " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }) + " · next check in " + sample.refreshIntervalSeconds + " seconds.";
-          if (announce && downloadStatus) downloadStatus.textContent = isStale ? "Public status refreshed. The fleet snapshot remains expired." : "Public status refreshed and current.";
+          if (announce && downloadStatus) downloadStatus.textContent = "Public architecture inventory synchronized.";
           window.clearInterval(statusRefreshTimer);
           statusRefreshTimer = window.setInterval(function () { refreshPublicStatus(false); }, sample.refreshIntervalSeconds * 1000);
         } catch (error) {
           publicStatusLink.dataset.linkState = "offline";
-          statusLinkLabel.textContent = "PUBLIC STATUS LINK // UNAVAILABLE";
-          statusLastSync.textContent = "Using the embedded public-safe fallback. No health claim is upgraded.";
-          if (announce && downloadStatus) downloadStatus.textContent = "Public status file unavailable. Embedded dated fallback retained.";
+          statusLinkLabel.textContent = "PUBLIC INVENTORY // EMBEDDED COPY";
+          statusLastSync.textContent = "Using the embedded owner-reviewed architecture inventory.";
+          if (announce && downloadStatus) downloadStatus.textContent = "Public inventory file unavailable. Embedded architecture copy retained.";
         } finally {
           if (refreshStatusButton) refreshStatusButton.disabled = false;
         }
@@ -9824,24 +10235,17 @@
 
       applyStatusSnapshot(null);
 
-      document.querySelectorAll(".guest:not(.is-unknown):not(.is-retired) .guest-copy").forEach(function (copy) {
+      document.querySelectorAll(".guest:not(.is-retired) .guest-copy").forEach(function (copy) {
         var status = document.createElement("span");
-        status.className = "visually-hidden dynamic-health-copy";
-        status.textContent = "; owner-reported healthy on " + sample.verifiedDisplay;
-        copy.appendChild(status);
-      });
-
-      document.querySelectorAll(".guest.is-unknown .guest-copy").forEach(function (copy) {
-        var status = document.createElement("span");
-        status.className = "visually-hidden dynamic-unknown-copy";
-        status.textContent = "; not included in the " + sample.verifiedDisplay + " export; current state unknown";
+        status.className = "visually-hidden dynamic-active-copy";
+        status.textContent = "; active role in owner-reviewed architecture dated " + sample.reviewedDisplay;
         copy.appendChild(status);
       });
 
       document.querySelectorAll(".guest.is-retired .guest-copy").forEach(function (copy) {
         var status = document.createElement("span");
         status.className = "visually-hidden";
-        status.textContent = "; decommissioned";
+        status.textContent = "; intentionally retired";
         copy.appendChild(status);
       });
 
@@ -9859,6 +10263,51 @@
 
       if (window.location.protocol === "http:" || window.location.protocol === "https:") {
         refreshPublicStatus(false);
+      }
+
+      var fleetCommandArray = document.getElementById("fleet-command-array");
+      var fleetSyncControl = document.getElementById("fleet-sync-control");
+      var fleetSyncStatus = document.getElementById("fleet-sync-status");
+      var fleetSyncTimer = 0;
+
+      function runFleetSynchronization() {
+        if (!topologyBoard || !fleetCommandArray) return;
+        window.clearTimeout(fleetSyncTimer);
+        topologyBoard.classList.remove("is-synchronizing");
+        fleetCommandArray.classList.remove("is-synchronizing");
+        void topologyBoard.offsetWidth;
+        topologyBoard.classList.add("is-online", "is-synchronizing");
+        fleetCommandArray.classList.add("is-synchronizing");
+        if (fleetSyncControl) {
+          fleetSyncControl.disabled = true;
+          fleetSyncControl.querySelector(".fleet-sync-copy strong").textContent = "Synchronizing…";
+          fleetSyncControl.querySelector(".fleet-sync-copy small").textContent = "Zeus ↔ Apollo handshake";
+        }
+        if (fleetSyncStatus) fleetSyncStatus.textContent = "COMMAND FABRIC // ROUTING 19 PUBLIC ROLES // PRESENTATION ONLY";
+        if (bitAnswer) bitAnswer.textContent = "BIT // FLEET SYNCHRONIZING";
+        playFleetSyncSound();
+
+        fleetSyncTimer = window.setTimeout(function () {
+          topologyBoard.classList.remove("is-synchronizing");
+          fleetCommandArray.classList.remove("is-synchronizing");
+          if (fleetSyncControl) {
+            fleetSyncControl.disabled = false;
+            fleetSyncControl.querySelector(".fleet-sync-copy strong").textContent = "Synchronize again";
+            fleetSyncControl.querySelector(".fleet-sync-copy small").textContent = "Browser-local cinematic sequence";
+          }
+          if (fleetSyncStatus) fleetSyncStatus.textContent = "FLEET SYNCHRONIZED // 02 HOSTS // 19 ROLES // NO LIVE CONTROL";
+          if (bitAnswer) {
+            bitAnswer.textContent = "BIT // FLEET SYNCHRONIZED";
+            window.setTimeout(function () {
+              if (bitPanel && bitPanel.hidden) bitAnswer.textContent = "BIT // Ask about this system";
+            }, 2200);
+          }
+          if (chainAnnouncement) chainAnnouncement.textContent = "Fleet architecture presentation synchronized. No live system was contacted.";
+        }, effectiveMotion() ? 1750 : 320);
+      }
+
+      if (fleetSyncControl) {
+        fleetSyncControl.addEventListener("click", runFleetSynchronization);
       }
 
       var audienceData = {
@@ -9879,7 +10328,7 @@
           tab: "tab-system",
           eyebrow: "Architecture route",
           heading: "Inspect the weight under the bar.",
-          summary: "See the personally operated infrastructure behind the headline: two hosts, seventeen owner-reported healthy services, ten configured model routes, scheduled automation, observability, backup, and verification.",
+          summary: "See the personally operated infrastructure behind the headline: two hosts, nineteen documented roles, ten configured model routes, scheduled automation, observability, backup, and verification.",
           cta: "Inspect the fleet",
           href: "#topology",
           outcomes: [
@@ -10049,16 +10498,13 @@
       var commandHistoryIndex = 0;
 
       var terminalResponses = {
-        help: "Available: status, proof, lab, models, freshness, topology, flight, tour, warp, alert, spice, mentat, house, awaken, sound, contact, clear, ask eve. All commands are local and read-only.",
-        status: isStale
-          ? "CURRENT STATE UNKNOWN — the owner-supplied status export expired on " + sample.expiresDisplay + ". It previously recorded " + sample.healthyServiceCount + " healthy services, one retired service, and one unreported service across two hosts."
-          : "FRESH OWNER-SUPPLIED EXPORT — verified " + sample.verifiedDisplay + ", expires " + sample.expiresDisplay + ": " + sample.healthyServiceCount + " healthy services, Home-Asst retired, and Athena unreported across two hosts. No live endpoints are queried.",
+        help: "Available: status, proof, lab, models, source, topology, sync, flight, tour, warp, alert, spice, mentat, house, awaken, sound, contact, clear, ask eve. All commands are browser-local and read-only. Classified protocols may reward curiosity.",
+        status: "OWNER-REVIEWED ARCHITECTURE — two hosts, nineteen documented roles, eighteen active roles including Athena, and one intentionally retired role. Reviewed 07-24-2026. This is architecture inventory, not live health telemetry.",
         proof: "Observed API inference spend moved from approximately $4/day to approximately $" + sample.dailyBurn.toFixed(2) + "/day after local-first routing. Scope: API inference only. The 7.2x benchmark is a separate matched-task comparison.",
         models: sample.routeCount + " configured routes: DeepSeek V4 Pro, Claude Sonnet 5, Grok 4.5, GLM 5.2, Gemma 4 26B A4B, Gemini 3.6 Flash, Grok 4.6 Voice TTS, plus DeepSeek V4 Flash, GLM 5.2, and Gemini 3.6 Flash failovers. Grok 4.6 Voice TTS is the owner-reported route name; xAI public docs verify the Voice/TTS API surface, not that numeric alias.",
-        freshness: isStale ? "STALE — the owner-supplied public export expired on " + sample.expiresDisplay + ". Current health is not asserted." : "FRESH — the owner-supplied export was verified " + sample.verifiedDisplay + " and expires " + sample.expiresDisplay + ". It is sampled evidence, not streaming telemetry.",
-        topology: isStale
-          ? "LAST VERIFIED SNAPSHOT — ZEUS documented 8 roles: 7 owner-reported healthy and Athena unreported. APOLLO documented 11 roles: 10 owner-reported healthy and Home-Asst decommissioned. That status window ended " + sample.expiresDisplay + "; current state is unknown."
-          : "ZEUS documents 8 roles: 7 owner-reported healthy and Athena unreported. APOLLO documents 11 roles: 10 owner-reported healthy and Home-Asst decommissioned. Status is fresh through " + sample.expiresDisplay + ".",
+        source: "SOURCE DATE — owner reviewed 07-24-2026. The public file describes architecture and editorial configuration; it never queries private systems.",
+        freshness: "SOURCE DATE — owner reviewed 07-24-2026. The public file describes architecture and editorial configuration; it never queries private systems.",
+        topology: "ZEUS documents 8 active infrastructure and security roles, including Athena. APOLLO documents 11 roles: 10 active and Home-Asst intentionally retired. No addresses, ports, credentials, or access paths are published.",
         lab: "SOVEREIGN ROUTING OBSERVATORY — choose a private, routine, strategic, or research mission and inspect why policy selected the route. The demonstration runs entirely in this browser.",
         tour: "Use Run the 60-second mission at the top of the deck. The mission is self-paced and never contacts a live system.",
         contact: "Ask about the personal build at doug@cashio.us. No message is sent from this local preview."
@@ -10089,6 +10535,9 @@
           if (policyLab) policyLab.scrollIntoView({ behavior: effectiveMotion() ? "smooth" : "auto", block: "start" });
           appendLog(terminalResponses.lab, "answer");
           playRouteSound(body.dataset.policyRoute || "private");
+        } else if (command === "sync") {
+          runFleetSynchronization();
+          appendLog("FLEET SYNCHRONIZATION — browser-local command fabric sequence initiated. No live system contacted.", "answer");
         } else if (command === "flight") {
           launchProofFlight();
           appendLog("HOUSE CASHIO PROOF FLIGHT — four connected scenes: arrival, routing, evidence, and human handoff.", "answer");
@@ -10109,6 +10558,16 @@
           appendLog("MENTAT PROTOCOL — observe the system, route by evidence, verify the receipt, explain the tradeoff.", "answer");
         } else if (command === "house") {
           appendLog("HOUSE CASHIO — sovereign by design, theatrical by choice, auditable by default.", "answer");
+        } else if (command === "defiant") {
+          runFleetSynchronization();
+          appendLog("DEFIANT PROTOCOL — compact, resilient, and difficult to intimidate. Tactical presentation sequence engaged.", "answer");
+        } else if (command === "foldspace") {
+          pulseWarp(function () {
+            if (effectiveMotion()) triggerSpiceSurge();
+          });
+          appendLog("FOLDING SPACE — the route moved; the evidence stayed attached.", "answer");
+        } else if (command === "rutan") {
+          appendLog("RUTAN PROTOCOL — try the weird thing, keep the experiment small, and let evidence arrive before opinion hardens.", "answer");
         } else if (command === "awaken" || command === "sleeper") {
           if (effectiveMotion()) {
             triggerSpiceSurge();
@@ -10119,7 +10578,7 @@
         } else if (command === "sound") {
           appendLog("Interface sound is " + (soundEnabled ? "ON" : "OFF") + ". Use the SND control in the command bar to change it.", "answer");
         } else if (Object.prototype.hasOwnProperty.call(terminalResponses, command)) {
-          appendLog(terminalResponses[command], command === "status" && isStale ? "warning" : "answer");
+          appendLog(terminalResponses[command], "answer");
         } else {
           appendLog("Unknown local command: " + command + ". Type help for the safe command list.", "warning");
         }
@@ -10200,9 +10659,9 @@
         },
         {
           tag: "The evidence",
-          title: "Make freshness visible.",
-          text: "A timestamped sample is useful evidence until it expires. After 72 hours, this deck stops implying current status and says CURRENT STATE UNKNOWN in plain language.",
-          insight: "TRUST PROTOCOL // Never convert old telemetry into a live claim."
+          title: "Make the evidence boundary visible.",
+          text: "The public inventory is owner reviewed and dated. It explains architecture without pretending to be live health telemetry or exposing a control path.",
+          insight: "TRUST PROTOCOL // Architecture proof is not an uptime claim."
         },
         {
           tag: "The handoff",
@@ -10383,7 +10842,7 @@
 
         var metrics = [
           ["7.2×", "MATCHED-TASK COST EFFICIENCY"],
-          [String(sample.healthyServiceCount), "HEALTHY SERVICES"],
+          [String(sample.activeRoleCount), "OWNER-REVIEWED ACTIVE ROLES"],
           [String(sample.routeCount), "CONFIGURED MODEL ROUTES"],
           [String(sample.hostCount), "PERSONAL HOMELAB HOSTS"]
         ];
@@ -10400,16 +10859,14 @@
 
         fleetCardContext.fillStyle = "rgba(255,204,0,.12)";
         fleetCardContext.fillRect(76, 538, 1020, 34);
-        cardText(isStale
-          ? "EXPIRED STATUS EXPORT • EXPIRED " + sample.expiresDisplay + " • CURRENT STATE UNKNOWN"
-          : "FRESH STATUS EXPORT • VERIFIED " + sample.verifiedDisplay + " • EXPIRES " + sample.expiresDisplay,
-          92, 561, 15, isStale ? "#ffcc00" : "#00ffae", "700", "JetBrains Mono, Consolas, monospace");
-        cardText("personal project • cashio.us • sanitized dated sample • no employer endorsement", 76, 611, 14, "#9898b6", "500", "JetBrains Mono, Consolas, monospace");
+        cardText("OWNER-REVIEWED ARCHITECTURE • " + sample.reviewedDisplay + " • NO LIVE CONTROL",
+          92, 561, 15, "#00ffae", "700", "JetBrains Mono, Consolas, monospace");
+        cardText("personal project • cashio.us • public-safe role map • no employer endorsement", 76, 611, 14, "#9898b6", "500", "JetBrains Mono, Consolas, monospace");
 
         fleetCardRendered = true;
         downloadCardButton.disabled = false;
         if (announce) {
-          downloadStatus.textContent = "Fleet Card rendered from the current public-safe status export.";
+          downloadStatus.textContent = "Fleet Card rendered from the owner-reviewed public architecture inventory.";
           chainAnnouncement.textContent = downloadStatus.textContent;
         }
       }
@@ -10463,7 +10920,7 @@
           var link = document.createElement("a");
           var url = URL.createObjectURL(blob);
           link.href = url;
-          link.download = "zeusapollo-fleet-card-" + sample.verifiedDisplay + ".png";
+          link.download = "zeusapollo-fleet-card-" + sample.reviewedDisplay + ".png";
           link.click();
           window.setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
           downloadStatus.textContent = "Fleet Card PNG prepared.";
@@ -11023,6 +11480,18 @@
         playTone(880, 0.5, "sine", 0.011, 0, 0.28);
       }
 
+      function playFleetSyncSound() {
+        if (!soundEnabled || document.hidden) return;
+        playTone(55, 0.92, "sine", 0.028, 0);
+        playNoiseSweep(0.82, 0.01, 180, 2800);
+        playTone(196, 0.28, "triangle", 0.022, -0.78, 0.06);
+        playTone(293.66, 0.32, "sine", 0.02, -0.38, 0.18);
+        playTone(392, 0.36, "triangle", 0.019, 0.12, 0.34);
+        playTone(587.33, 0.42, "sine", 0.016, 0.52, 0.52);
+        playTone(783.99, 0.56, "sine", 0.013, 0.78, 0.7);
+        playChord([220, 329.63, 440, 659.25], 0.66, 0.042, 0.88);
+      }
+
       function playBitSound(mode) {
         if (mode === "yes") {
           playTone(659.25, 0.18, "sine", 0.026, -0.18);
@@ -11236,7 +11705,7 @@
 
       document.addEventListener("pointerover", function (event) {
         if (!soundEnabled) return;
-        var target = event.target && event.target.closest ? event.target.closest(".button, .audience-tab, .command-chip, .manifest-panel summary, .primary-nav a, .house-sigil") : null;
+        var target = event.target && event.target.closest ? event.target.closest(".button, .audience-tab, .command-chip, .manifest-panel summary, .primary-nav a, .house-sigil, .fleet-sync-control, .bit-prompts button") : null;
         if (!target || target.contains(event.relatedTarget)) return;
         var now = Date.now();
         if (now - lastHoverToneAt < 85) return;
@@ -11246,7 +11715,7 @@
 
       document.addEventListener("click", function (event) {
         if (!soundEnabled) return;
-        var target = event.target && event.target.closest ? event.target.closest(".button, .audience-tab, .command-chip, .manifest-panel summary, .primary-nav a, .house-sigil") : null;
+        var target = event.target && event.target.closest ? event.target.closest(".button, .audience-tab, .command-chip, .manifest-panel summary, .primary-nav a, .house-sigil, .fleet-sync-control, .bit-prompts button") : null;
         if (target) playTone(520, 0.07, "sine", 0.018);
       }, { passive: true });
 
@@ -11344,8 +11813,8 @@
         if (heroRect && (heroRect.bottom <= 0 || heroRect.top >= window.innerHeight)) return;
         var alreadySeen = false;
         try {
-          alreadySeen = window.sessionStorage.getItem("cashio-deck-boot-v30-spice") === "seen";
-          if (!alreadySeen) window.sessionStorage.setItem("cashio-deck-boot-v30-spice", "seen");
+          alreadySeen = window.sessionStorage.getItem("cashio-deck-boot-v31-2") === "seen";
+          if (!alreadySeen) window.sessionStorage.setItem("cashio-deck-boot-v31-2", "seen");
         } catch (error) {
           alreadySeen = false;
         }
@@ -11504,6 +11973,25 @@
           }
         });
       }
+
+      var classifiedSequence = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
+      var classifiedProgress = 0;
+      document.addEventListener("keydown", function (event) {
+        var target = event.target;
+        if (target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
+        var expected = classifiedSequence[classifiedProgress];
+        if (event.key === expected) {
+          classifiedProgress += 1;
+          if (classifiedProgress === classifiedSequence.length) {
+            classifiedProgress = 0;
+            pulseWarp(runFleetSynchronization);
+            if (bitAnswer) bitAnswer.textContent = "BIT // CLASSIFIED DECK UNLOCKED";
+            if (chainAnnouncement) chainAnnouncement.textContent = "Classified House Cashio presentation protocol unlocked. No live system was contacted.";
+          }
+        } else {
+          classifiedProgress = event.key === classifiedSequence[0] ? 1 : 0;
+        }
+      });
 
       Array.prototype.slice.call(document.querySelectorAll(".proof-cell, .profile-metric, .audience-shell, .cluster, .guest, .route-card, .manifest-panel, .principle, .fleet-card-frame, .proof-rail-card, .route-architecture, .about-principles, .policy-console, .policy-scenario")).forEach(function (surface) {
         surface.classList.add("spotlight-surface");
