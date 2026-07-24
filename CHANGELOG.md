@@ -2,7 +2,20 @@
 
 All notable public-facing changes to the ZeusApollo portfolio are recorded here. Visible dates use MM-DD-YYYY.
 
-## [v30 polish] — 07-23-2026
+## [v30 polish] — 07-23-2026 / 07-24-2026
+
+### Added — 07-24 cinematic pass
+
+- Sample-based LCARS interface sound set (click, success, sequence, warp, red-alert klaxon) from repo-hosted assets, loaded only when sound is enabled, with the synth engine as automatic fallback.
+- Fleet topology "starmap": animated canvas with curved data links and traveling packets between Zeus, Apollo, and Athena, radar pings, cluster count-up on power-up, per-container breathing status lights, and hover states.
+- Athena edge upgrade: animated signal bars and an "Edge link active" state readout.
+- Hyperspace starfield burst on every warp pulse; slow-drifting hero nebulas.
+- Easter eggs for the observant: the Konami code triggers a Guild Navigator spice overload, and the console understands make it so, engage, red alert, tea earl grey hot, end of line, greetings program, fear/litany, kwisatz haderach, pantheon, konami, and xyzzy.
+- Bit companion moved inboard with its answer bubble anchored on-screen (it previously clipped off the right edge on hover).
+
+### Changed — 07-24
+
+- `command.html` archive is now noindexed and removed from the sitemap; `lab.html` labels its link to it as the v21 archive.
 
 ### Added
 
