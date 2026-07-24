@@ -57,7 +57,7 @@ def main() -> int:
         "In-page verified date": ("index.html", f'verifiedDisplay: "{verified}"'),
         "In-page expiry date": ("index.html", f'expiresDisplay: "{expires}"'),
         "In-page burn": ("index.html", f'data-fleet="dailyBurn">${burn:.2f}<'),
-        "In-page legacy voice disclosure": ("index.html", "provider marks deprecated"),
+        "In-page owner-reported voice disclosure": ("index.html", "owner-reported route name"),
     }
 
     failures: list[str] = []
