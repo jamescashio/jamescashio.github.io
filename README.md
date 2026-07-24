@@ -53,6 +53,7 @@ These are configured routes, not live-traffic claims or a universal model rankin
 | File | Purpose |
 |---|---|
 | `index.html` | Production portfolio and interactive command deck |
+| `assets/sovereign-star-chart-v1.webp` | Original 32 KB cinematic atmosphere, optimized for the command deck |
 | `status.json` | Coarse, dated public status contract |
 | `README.md` | Current public architecture and release summary |
 | `CHANGELOG.md` | Public-facing release history |

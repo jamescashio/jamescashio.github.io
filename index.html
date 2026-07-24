@@ -38,6 +38,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="manifest" href="/site.webmanifest">
+  <link rel="preload" as="image" href="assets/sovereign-star-chart-v1.webp" type="image/webp" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;700&family=JetBrains+Mono:wght@400;600;800&family=Orbitron:wght@600;700;900&display=swap" rel="stylesheet">
@@ -99,6 +100,30 @@
       font-size: 16px;
       line-height: 1.6;
       overflow-x: clip;
+    }
+
+    .sovereign-star-chart {
+      position: fixed;
+      inset: -2.5%;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.4;
+      background:
+        linear-gradient(180deg, rgba(5, 7, 12, 0.02), rgba(5, 7, 12, 0.44) 72%, rgba(5, 7, 12, 0.8)),
+        linear-gradient(90deg, rgba(5, 7, 12, 0.08), transparent 42%, rgba(5, 7, 12, 0.05)),
+        url("assets/sovereign-star-chart-v1.webp") center top / cover no-repeat;
+      filter: saturate(0.84) contrast(1.04);
+      transform: scale(1.035);
+      will-change: transform, opacity;
+    }
+
+    body[data-fx="on"] .sovereign-star-chart {
+      animation: sovereign-chart-drift 42s ease-in-out infinite alternate;
+    }
+
+    body[data-fx="off"] .sovereign-star-chart {
+      opacity: 0.3;
+      transform: none;
     }
 
     body::before {
@@ -2662,6 +2687,12 @@
 
     @keyframes orbit-spin {
       to { transform: rotate(1turn); }
+    }
+
+    @keyframes sovereign-chart-drift {
+      0% { opacity: 0.34; transform: scale(1.035) translate3d(-0.35%, -0.25%, 0); }
+      48% { opacity: 0.43; }
+      100% { opacity: 0.38; transform: scale(1.055) translate3d(0.45%, 0.35%, 0); }
     }
 
     /* ---------- v30 // CASHIO DNA restoration ---------- */
@@ -8110,6 +8141,11 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
+      .sovereign-star-chart {
+        animation: none !important;
+        transform: none !important;
+      }
+
       .policy-orbit,
       .policy-core,
       .policy-packet,
@@ -8317,6 +8353,12 @@
     }
 
     @media (max-width: 700px) {
+      .sovereign-star-chart {
+        inset: 0;
+        opacity: 0.26;
+        background-position: 60% top;
+      }
+
       body[data-deck-mode="compact"] .perspective-grid,
       body[data-deck-mode="compact"] .spice-haze,
       body[data-deck-mode="compact"] .hero::before,
@@ -8443,6 +8485,7 @@
   </style>
 </head>
 <body data-fx="on" data-alert="off" data-sound="off" data-policy-route="private">
+  <div class="sovereign-star-chart" aria-hidden="true"></div>
   <div class="scroll-progress" aria-hidden="true"><span id="scroll-progress-fill"></span></div>
   <div class="perspective-grid" aria-hidden="true"></div>
   <div class="spice-haze" aria-hidden="true"></div>

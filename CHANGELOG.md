@@ -8,6 +8,7 @@ All notable public-facing changes to the ZeusApollo portfolio are recorded here.
 - Updated the owner-reported vision and final failover routes to Gemini 3.6 Flash.
 - Replaced the deprecated GPT-4o mini TTS lane with the owner-reported Grok 4.6 Voice TTS route and documented the public-provider verification boundary.
 - Added interactive Fleet Card shield controls, a clearly labeled Red Alert drill, and richer route-card motion.
+- Added an original, optimized 32 KB sovereign star-chart atmosphere with quiet FX drift and reduced-motion/mobile restraint.
 - Kept every defense interaction browser-local and presentation-only; no live homelab action is exposed.
 
 ## [v30] — 07-14-2026
