@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#070911">
   <meta name="robots" content="index, follow">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data:; script-src 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data:; script-src 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="description" content="Doug Cashio's independently built sovereign AI portfolio: quality-first model routing, cybersecurity, human control, auditable automation, and disciplined cost.">
   <meta name="author" content="Doug Cashio">
@@ -32,10 +32,19 @@
   <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
   <link rel="manifest" href="./site.webmanifest">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;700&family=JetBrains+Mono:wght@400;600;800&family=Orbitron:wght@600;700;900&display=swap" rel="stylesheet">
+  <link rel="preload" href="./fonts/orbitron-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./fonts/exo-2-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./fonts/jetbrains-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <style>
+    /* Sovereign typography: every glyph served from this domain. */
+    @font-face { font-family: "Exo 2"; font-style: normal; font-weight: 400; font-display: swap; src: url("./fonts/exo-2-latin-400-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Exo 2"; font-style: normal; font-weight: 500; font-display: swap; src: url("./fonts/exo-2-latin-500-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Exo 2"; font-style: normal; font-weight: 700; font-display: swap; src: url("./fonts/exo-2-latin-700-normal.woff2") format("woff2"); }
+    @font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight: 400; font-display: swap; src: url("./fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2"); }
+    @font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight: 600 900; font-display: swap; src: url("./fonts/jetbrains-mono-latin-600-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Orbitron"; font-style: normal; font-weight: 600; font-display: swap; src: url("./fonts/orbitron-latin-600-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Orbitron"; font-style: normal; font-weight: 700; font-display: swap; src: url("./fonts/orbitron-latin-700-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Orbitron"; font-style: normal; font-weight: 900; font-display: swap; src: url("./fonts/orbitron-latin-900-normal.woff2") format("woff2"); }
     :root {
       --void: #0a0a0f;
       --space: #08090f;
@@ -7407,6 +7416,153 @@
         box-shadow: none;
       }
     }
+    /* ── Console typewriter caret ─────────────────────────────── */
+    .terminal-log .typed-line.is-typing::after {
+      display: inline-block;
+      margin-left: 2px;
+      content: "▋";
+      color: var(--cyan);
+      animation: typed-caret 0.72s steps(1) infinite;
+    }
+
+    @keyframes typed-caret {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* ── Architecture bus data packets ────────────────────────── */
+    .topology-link i {
+      position: absolute;
+      top: 13px;
+      left: -4px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      opacity: 0;
+      background: var(--cyan);
+      box-shadow: 0 0 10px rgba(87, 232, 242, 0.85);
+    }
+
+    body[data-fx="on"] .topology-link i { animation: bus-packet 2.9s linear infinite; }
+    .topology-link i:nth-of-type(2) { animation-delay: 0.95s; background: var(--gold); box-shadow: 0 0 10px rgba(246, 214, 106, 0.85); }
+    .topology-link i:nth-of-type(3) { animation-delay: 1.9s; background: var(--violet); box-shadow: 0 0 10px rgba(212, 120, 242, 0.85); }
+
+    @keyframes bus-packet {
+      0% { left: -4px; opacity: 0; }
+      14% { opacity: 1; }
+      86% { opacity: 1; }
+      100% { left: calc(100% - 2px); opacity: 0; }
+    }
+
+    /* ── Route spectrum lane inspection ───────────────────────── */
+    .route-spectrum-visual span { transition: transform 0.24s ease, filter 0.24s ease; }
+    .route-spectrum-visual span.is-hot { transform: scaleY(1.55); filter: brightness(1.6) saturate(1.2); }
+
+    .route-spectrum-readout {
+      min-height: 1.1em;
+      margin-top: 7px;
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.06em;
+      transition: color 0.2s ease;
+    }
+
+    .route-spectrum-readout.is-live { color: var(--cyan); }
+
+    /* ── Command palette ──────────────────────────────────────── */
+    #palette-dialog { width: min(calc(100% - 32px), 560px); }
+
+    .palette { display: flex; flex-direction: column; }
+
+    .palette-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      padding: 14px 18px 10px;
+      border-bottom: 1px solid var(--line);
+      font-family: var(--mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .palette-head .palette-hint { color: var(--quiet); letter-spacing: 0.06em; text-transform: none; }
+
+    #palette-input {
+      width: 100%;
+      padding: 14px 18px;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 0.95rem;
+    }
+
+    #palette-input:focus { outline: none; box-shadow: inset 0 -2px 0 var(--cyan); }
+
+    #palette-list {
+      max-height: min(46svh, 380px);
+      margin: 0;
+      padding: 8px;
+      list-style: none;
+      overflow-y: auto;
+    }
+
+    #palette-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      font-family: var(--body);
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+
+    #palette-list li[aria-selected="true"] {
+      color: var(--ink);
+      background: rgba(87, 232, 242, 0.1);
+      box-shadow: inset 2px 0 0 var(--cyan);
+    }
+
+    #palette-list li small {
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    #palette-list .palette-empty { color: var(--quiet); cursor: default; }
+
+    .palette-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 18px;
+      border-top: 1px solid var(--line);
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .palette-foot kbd {
+      padding: 2px 6px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.04);
+      font-family: var(--mono);
+      font-size: 0.6rem;
+    }
   </style>
 </head>
 <body data-fx="on" data-alert="off">
@@ -7540,6 +7696,7 @@
               <i></i>
             </div>
             <div class="route-spectrum-axis"><span>Routine / local</span><span>Severity + value</span><span>Frontier / adjudicate</span></div>
+            <div class="route-spectrum-readout" id="route-spectrum-readout" aria-hidden="true">Hover the spectrum to inspect each lane</div>
           </div>
           <div class="profile-foot" aria-label="Additional profile facts">
             <span>71/71 automations</span><span>2 core hosts + Athena edge</span><span>15+ years enterprise</span>
@@ -7880,7 +8037,7 @@
             <div class="athena-edge-state">Active</div>
           </article>
 
-          <div class="topology-link" aria-hidden="true"><span>Architecture bus</span></div>
+          <div class="topology-link" aria-hidden="true"><i></i><i></i><i></i><span>Architecture bus</span></div>
         </div>
 
         <div class="sample-note">
@@ -7924,6 +8081,7 @@
               <button class="command-chip" type="button" data-command="mentat">mentat</button>
               <button class="command-chip" type="button" data-command="awaken">awaken</button>
               <button class="command-chip" type="button" data-command="projects">projects</button>
+              <button class="command-chip" type="button" data-command="palette">palette</button>
               <button class="command-chip" type="button" data-command="contact">contact</button>
             </div>
           </aside>
@@ -7950,9 +8108,9 @@
               <label for="terminal-input">Enter a local preview command</label>
               <input class="terminal-input" id="terminal-input" name="command" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Enter command…" aria-describedby="terminal-help">
               <button class="terminal-submit" type="submit">Execute</button>
-              <span class="visually-hidden" id="terminal-help">Available commands include help, status, sovereign, quality, proof, models, cost, cascade, version, freshness, topology, flight, tour, projects, warp, alert, spice, mentat, house, awaken, sound, contact, clear, and ask eve. An optional cashio prefix is accepted.</span>
+              <span class="visually-hidden" id="terminal-help">Available commands include help, status, sovereign, quality, proof, models, cost, cascade, version, freshness, topology, flight, tour, projects, palette, warp, alert, spice, mentat, house, awaken, sound, contact, clear, and ask eve. An optional cashio prefix is accepted.</span>
             </form>
-            <div class="terminal-statusbar" aria-hidden="true"><span><strong>●</strong> sandbox ready</span><span>/ focus console</span><span>↑↓ history</span><span>zero network calls</span></div>
+            <div class="terminal-statusbar" aria-hidden="true"><span><strong>●</strong> sandbox ready</span><span>/ focus console</span><span>↑↓ history</span><span>Ctrl+K palette</span><span>zero network calls</span></div>
           </div>
         </div>
       </div>
@@ -8153,6 +8311,18 @@
         <button class="button button-secondary" id="mission-back" type="button" disabled>Back</button>
         <button class="button button-primary" id="mission-next" type="button">Next transmission</button>
       </footer>
+    </div>
+  </dialog>
+
+  <dialog id="palette-dialog" aria-labelledby="palette-title">
+    <div class="palette">
+      <header class="palette-head">
+        <span id="palette-title">Command palette // local</span>
+        <span class="palette-hint">↑↓ move · Enter run · Esc close</span>
+      </header>
+      <input id="palette-input" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Jump to a section or run a command…" aria-label="Filter palette commands">
+      <ul id="palette-list" role="listbox" aria-label="Palette results"></ul>
+      <footer class="palette-foot"><span>Local only // zero network calls</span><span><kbd>Ctrl</kbd> <kbd>K</kbd></span></footer>
     </div>
   </dialog>
 
@@ -8657,7 +8827,7 @@
       var commandHistoryIndex = 0;
 
       var terminalResponses = {
-        help: "Available: status, sovereign, quality, proof, models, cost, cascade, version, freshness, topology, flight, tour, projects, warp, alert, spice, mentat, house, awaken, sound, contact, clear, ask eve. Optional prefix: cashio. All commands are local and read-only.",
+        help: "Available: status, sovereign, quality, proof, models, cost, cascade, version, freshness, topology, flight, tour, projects, palette, warp, alert, spice, mentat, house, awaken, sound, contact, clear, ask eve. Optional prefix: cashio. All commands are local and read-only.",
         status: isStale
           ? "STALE — the Hermes public-safe export expired on " + sample.expiresDisplay + ". Current state is not asserted."
           : "FRESH HERMES EXPORT — 18 of 18 containers running across two core hosts; 71 of 71 automations healthy; zero cron errors. Verified " + sample.verifiedDisplay + ". Athena is separately owner-confirmed active as a physical Home Assistant edge node.",
@@ -8678,9 +8848,33 @@
       function appendLog(text, className) {
         var item = document.createElement("li");
         item.className = className || "answer";
-        item.textContent = text;
+        if (className === "prompt" || !effectiveMotion()) {
+          item.textContent = text;
+          terminalLog.appendChild(item);
+          terminalLog.scrollTop = terminalLog.scrollHeight;
+          return;
+        }
+        var fullText = document.createElement("span");
+        fullText.className = "visually-hidden";
+        fullText.textContent = text;
+        var typed = document.createElement("span");
+        typed.setAttribute("aria-hidden", "true");
+        typed.className = "typed-line is-typing";
+        item.appendChild(fullText);
+        item.appendChild(typed);
         terminalLog.appendChild(item);
         terminalLog.scrollTop = terminalLog.scrollHeight;
+        var visibleCount = 0;
+        var step = Math.max(1, Math.round(text.length / 44));
+        var typeTimer = window.setInterval(function () {
+          visibleCount = Math.min(text.length, visibleCount + step);
+          typed.textContent = text.slice(0, visibleCount);
+          terminalLog.scrollTop = terminalLog.scrollHeight;
+          if (visibleCount >= text.length) {
+            window.clearInterval(typeTimer);
+            typed.classList.remove("is-typing");
+          }
+        }, 16);
       }
 
       function executeCommand(rawCommand) {
@@ -8718,6 +8912,9 @@
           } else {
             appendLog("Spice field is paused because FX is off or reduced motion is active.", "warning");
           }
+        } else if (command === "palette") {
+          openPalette();
+          appendLog("Command palette open. Type to filter, Enter to run. Local only.", "answer");
         } else if (command === "mentat") {
           appendLog("MENTAT PROTOCOL — observe the system, route by evidence, verify the receipt, explain the tradeoff.", "answer");
         } else if (command === "house") {
@@ -9170,6 +9367,8 @@
 
       function drawStars(delta) {
         context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        var warpStretch = Math.min(30, Math.abs(spiceScrollVelocity) * 2.2);
+        var warpDirection = spiceScrollVelocity >= 0 ? 1 : -1;
         stars.forEach(function (star) {
           if (delta) {
             star.y += star.speed * delta;
@@ -9181,9 +9380,17 @@
           }
           var twinkleAlpha = Math.max(0.12, star.alpha * (0.68 + 0.32 * Math.sin(star.phase)));
           context.beginPath();
-          context.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-          context.fillStyle = "rgba(220, 244, 255, " + twinkleAlpha.toFixed(3) + ")";
-          context.fill();
+          if (warpStretch > 4.5) {
+            context.moveTo(star.x, star.y - warpStretch * warpDirection * (0.35 + star.radius * 0.45));
+            context.lineTo(star.x, star.y);
+            context.lineWidth = Math.max(0.6, star.radius * 0.9);
+            context.strokeStyle = "rgba(220, 244, 255, " + (twinkleAlpha * 0.9).toFixed(3) + ")";
+            context.stroke();
+          } else {
+            context.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+            context.fillStyle = "rgba(220, 244, 255, " + twinkleAlpha.toFixed(3) + ")";
+            context.fill();
+          }
         });
 
         if (delta && !shootingStar.active && Math.random() < delta / 18000) {
@@ -10149,6 +10356,232 @@
         if (topologyBoard) topologyBoard.classList.add("is-online");
       }
 
+      var routeSpectrumVisual = document.querySelector(".route-spectrum-visual");
+      var routeSpectrumReadout = document.getElementById("route-spectrum-readout");
+      var routeLaneSpans = routeSpectrumVisual ? Array.prototype.slice.call(routeSpectrumVisual.querySelectorAll("span")) : [];
+      var routeLaneDetails = [
+        "T0 // Kimi K3 — free classify + draft",
+        "T1 // DeepSeek V4 Flash — workhorse",
+        "T2 // DeepSeek V4 Pro — exception",
+        "T3A // Gemini 3.6 Flash — multimodal",
+        "T3B // Grok 4.5 — adversarial",
+        "T4A // Claude Sonnet 5 — synthesis",
+        "T4B // Sonar Pro — research",
+        "T5 // GPT-5.6 Sol — adjudication",
+        "LOCAL // Gemma 4 26B — fallback",
+        "FABRIC // Atlas · OpenRouter · ZenMux"
+      ];
+      var routeLaneActive = -1;
+
+      function setRouteLane(index) {
+        if (index === routeLaneActive) return;
+        routeLaneActive = index;
+        routeLaneSpans.forEach(function (span, spanIndex) {
+          span.classList.toggle("is-hot", spanIndex === index);
+        });
+        if (!routeSpectrumReadout) return;
+        if (index < 0) {
+          routeSpectrumReadout.classList.remove("is-live");
+          routeSpectrumReadout.textContent = "Hover the spectrum to inspect each lane";
+        } else {
+          routeSpectrumReadout.classList.add("is-live");
+          routeSpectrumReadout.textContent = routeLaneDetails[index] || "";
+        }
+      }
+
+      if (routeSpectrumVisual && routeLaneSpans.length) {
+        routeSpectrumVisual.addEventListener("pointermove", function (event) {
+          var rect = routeSpectrumVisual.getBoundingClientRect();
+          if (!rect.width) return;
+          var ratio = Math.max(0, Math.min(0.999, (event.clientX - rect.left) / rect.width));
+          setRouteLane(Math.floor(ratio * routeLaneSpans.length));
+        }, { passive: true });
+        routeSpectrumVisual.addEventListener("pointerleave", function () {
+          setRouteLane(-1);
+        });
+      }
+
+      var paletteDialog = document.getElementById("palette-dialog");
+      var paletteInput = document.getElementById("palette-input");
+      var paletteList = document.getElementById("palette-list");
+      var paletteMatches = [];
+      var paletteSelection = 0;
+      var lastPaletteFocus = null;
+
+      function paletteGoto(selector) {
+        return function () {
+          var target = document.querySelector(selector);
+          if (target) target.scrollIntoView({ behavior: effectiveMotion() ? "smooth" : "auto", block: "start" });
+        };
+      }
+
+      function paletteConsole(consoleCommand) {
+        return function () {
+          paletteGoto("#console")();
+          executeCommand(consoleCommand);
+          terminalInput.focus({ preventScroll: true });
+        };
+      }
+
+      var paletteEntries = [
+        { label: "Sovereign Core journey", tag: "Go", run: paletteGoto("#spice-flight") },
+        { label: "Three ways inside", tag: "Go", run: paletteGoto("#mission") },
+        { label: "Business proof", tag: "Go", run: paletteGoto("#proof") },
+        { label: "Event chain demo", tag: "Go", run: paletteGoto("#chain") },
+        { label: "Fleet topology", tag: "Go", run: paletteGoto("#topology") },
+        { label: "Hermes console", tag: "Go", run: paletteGoto("#console") },
+        { label: "Flight manifest", tag: "Go", run: paletteGoto("#manifest") },
+        { label: "Fleet card", tag: "Go", run: paletteGoto("#fleet-card") },
+        { label: "Open channel // contact", tag: "Go", run: paletteGoto("#hail") },
+        { label: "Engage 60-second mission", tag: "Run", run: function () { openMission(); } },
+        { label: "Run event chain", tag: "Run", run: function () { paletteGoto("#chain")(); chainButton.click(); } },
+        { label: "Render fleet card", tag: "Run", run: function () { paletteGoto("#fleet-card")(); drawFleetCard(true); } },
+        { label: "Copy proof summary", tag: "Run", run: function () { copyProofButton.click(); } },
+        { label: "Spice surge", tag: "Run", run: function () { triggerSpiceSurge(); } },
+        { label: "Warp pulse", tag: "Run", run: function () { pulseWarp(); } },
+        { label: "Toggle red alert theme", tag: "Toggle", run: function () { if (alertToggle) alertToggle.click(); } },
+        { label: "Toggle ambient FX", tag: "Toggle", run: function () { fxToggle.click(); } },
+        { label: "Toggle interface sound", tag: "Toggle", run: function () { if (soundToggle) soundToggle.click(); } },
+        { label: "status — fleet freshness", tag: "Console", run: paletteConsole("status") },
+        { label: "models — ten-lane fabric", tag: "Console", run: paletteConsole("models") },
+        { label: "cost — operating economics", tag: "Console", run: paletteConsole("cost") },
+        { label: "cascade — escalation tiers", tag: "Console", run: paletteConsole("cascade") },
+        { label: "projects — public builds", tag: "Console", run: paletteConsole("projects") }
+      ];
+
+      function paletteScore(query, haystack) {
+        if (!query) return 0;
+        var lowerQuery = query.toLowerCase();
+        var lowerHaystack = haystack.toLowerCase();
+        var queryIndex = 0;
+        var score = 0;
+        var lastMatch = -2;
+        for (var i = 0; i < lowerHaystack.length && queryIndex < lowerQuery.length; i += 1) {
+          if (lowerHaystack.charAt(i) === lowerQuery.charAt(queryIndex)) {
+            score += (lastMatch === i - 1 ? 1 : 4) + i * 0.02;
+            lastMatch = i;
+            queryIndex += 1;
+          }
+        }
+        return queryIndex === lowerQuery.length ? score : -1;
+      }
+
+      function setPaletteSelection(index) {
+        paletteSelection = index;
+        Array.prototype.slice.call(paletteList.children).forEach(function (item, itemIndex) {
+          if (item.classList.contains("palette-empty")) return;
+          item.setAttribute("aria-selected", String(itemIndex === index));
+          if (itemIndex === index && typeof item.scrollIntoView === "function") item.scrollIntoView({ block: "nearest" });
+        });
+      }
+
+      function runPaletteEntry(entry) {
+        closePalette();
+        playUiSound("confirm");
+        window.setTimeout(function () { entry.run(); }, 40);
+      }
+
+      function renderPaletteList() {
+        var query = paletteInput.value.trim();
+        paletteMatches = [];
+        paletteEntries.forEach(function (entry) {
+          var score = paletteScore(query, entry.tag + " " + entry.label);
+          if (score >= 0) paletteMatches.push({ entry: entry, score: score });
+        });
+        paletteMatches.sort(function (a, b) { return a.score - b.score; });
+        paletteList.replaceChildren();
+        if (!paletteMatches.length) {
+          var empty = document.createElement("li");
+          empty.className = "palette-empty";
+          empty.textContent = "No local match. Try status, fleet, or proof.";
+          paletteList.appendChild(empty);
+          return;
+        }
+        paletteMatches.forEach(function (match, index) {
+          var item = document.createElement("li");
+          item.setAttribute("role", "option");
+          item.setAttribute("aria-selected", "false");
+          var labelSpan = document.createElement("span");
+          labelSpan.textContent = match.entry.label;
+          var tagSpan = document.createElement("small");
+          tagSpan.textContent = match.entry.tag;
+          item.appendChild(labelSpan);
+          item.appendChild(tagSpan);
+          item.addEventListener("click", function () { runPaletteEntry(match.entry); });
+          item.addEventListener("pointerenter", function () { setPaletteSelection(index); });
+          paletteList.appendChild(item);
+        });
+        setPaletteSelection(0);
+      }
+
+      function openPalette() {
+        if (!paletteDialog || paletteDialog.open) return;
+        lastPaletteFocus = document.activeElement;
+        paletteInput.value = "";
+        renderPaletteList();
+        paletteDialog.showModal();
+        paletteInput.focus();
+        playUiSound("click");
+      }
+
+      function closePalette() {
+        if (paletteDialog && paletteDialog.open) paletteDialog.close();
+      }
+
+      if (paletteDialog) {
+        paletteInput.addEventListener("input", renderPaletteList);
+        paletteInput.addEventListener("keydown", function (event) {
+          if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+            event.preventDefault();
+            if (!paletteMatches.length) return;
+            var offset = event.key === "ArrowDown" ? 1 : -1;
+            setPaletteSelection((paletteSelection + offset + paletteMatches.length) % paletteMatches.length);
+          } else if (event.key === "Enter") {
+            event.preventDefault();
+            if (paletteMatches[paletteSelection]) runPaletteEntry(paletteMatches[paletteSelection].entry);
+          }
+        });
+        paletteDialog.addEventListener("click", function (event) {
+          if (event.target === paletteDialog) closePalette();
+        });
+        paletteDialog.addEventListener("close", function () {
+          if (lastPaletteFocus && typeof lastPaletteFocus.focus === "function") lastPaletteFocus.focus({ preventScroll: true });
+        });
+        document.addEventListener("keydown", function (event) {
+          if (event.key.toLowerCase() === "k" && (event.ctrlKey || event.metaKey) && !event.altKey && !event.shiftKey) {
+            event.preventDefault();
+            if (paletteDialog.open) closePalette();
+            else openPalette();
+          }
+        });
+      }
+
+      var identityWordmark = document.querySelector(".identity-wordmark");
+      function runIdentityDecrypt() {
+        if (!identityWordmark || !effectiveMotion()) return;
+        var finalText = identityWordmark.textContent;
+        var glyphs = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789◈#$%&";
+        var frame = 0;
+        var totalFrames = 24;
+        identityWordmark.setAttribute("aria-label", finalText);
+        var decryptTimer = window.setInterval(function () {
+          frame += 1;
+          var revealed = Math.floor((frame / totalFrames) * finalText.length);
+          var output = "";
+          for (var i = 0; i < finalText.length; i += 1) {
+            var character = finalText.charAt(i);
+            if (character === " " || i < revealed) output += character;
+            else output += glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+          }
+          identityWordmark.textContent = output;
+          if (frame >= totalFrames) {
+            window.clearInterval(decryptTimer);
+            identityWordmark.textContent = finalText;
+            identityWordmark.removeAttribute("aria-label");
+          }
+        }, 46);
+      }
+
       paintDeckClock();
       window.setInterval(paintDeckClock, 60000);
       updateScrollProgress();
@@ -10182,6 +10615,7 @@
       sizeBitCanvas();
       sizeJourneyCanvas();
       refreshStarfield();
+      runIdentityDecrypt();
     }());
   </script>
 </body>

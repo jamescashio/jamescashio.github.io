@@ -2,6 +2,24 @@
 
 All notable public-facing changes to the ZeusApollo portfolio are recorded here. Visible dates use MM-DD-YYYY.
 
+## [v30 polish] — 07-23-2026
+
+### Added
+
+- Local command palette (Ctrl+K / ⌘K, `palette` console command, chip): fuzzy jump to any section and one-keystroke access to the mission, event chain, Fleet Card, toggles, and console commands — fully local, zero network calls.
+- Route-spectrum lane inspector: hovering the hero routing spectrum names each of the ten quality-gated lanes.
+- Hermes console typewriter output with motion-safe caret; full text is exposed immediately to assistive technology.
+- Identity decrypt reveal on the hero wordmark and scroll-velocity warp streaks in the starfield (both FX- and reduced-motion-gated).
+- Animated data packets on the fleet architecture bus.
+
+### Changed
+
+- Typography is now fully self-hosted from `/fonts`; the Google Fonts dependency was removed and the Content Security Policy tightened accordingly.
+- `lab.html` refreshed from stale v28 figures to the verified v30 export (18 containers, 10 lanes, 71 jobs, $0.26/day observed).
+- `command.html` reframed as a clearly labeled v21.2a historical archive; view-time randomized counters were replaced with fixed, labeled period samples per the "never fake a number" standing order.
+- The hidden `/ai` deck's assessment CTAs now open a working email request instead of pointing at a page that was never published.
+- Sitemap `lastmod` dates refreshed.
+
 ## [v30] — 07-22-2026
 
 ### Added
