@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#070911">
   <meta name="robots" content="index, follow">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data:; script-src 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data:; script-src 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="description" content="Doug Cashio's independently built sovereign AI portfolio: quality-first model routing, cybersecurity, human control, auditable automation, and disciplined cost.">
   <meta name="author" content="Doug Cashio">
@@ -32,10 +32,19 @@
   <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
   <link rel="manifest" href="./site.webmanifest">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;700&family=JetBrains+Mono:wght@400;600;800&family=Orbitron:wght@600;700;900&display=swap" rel="stylesheet">
+  <link rel="preload" href="./fonts/orbitron-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./fonts/exo-2-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./fonts/jetbrains-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <style>
+    /* Sovereign typography: every glyph served from this domain. */
+    @font-face { font-family: "Exo 2"; font-style: normal; font-weight: 400; font-display: swap; src: url("./fonts/exo-2-latin-400-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Exo 2"; font-style: normal; font-weight: 500; font-display: swap; src: url("./fonts/exo-2-latin-500-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Exo 2"; font-style: normal; font-weight: 700; font-display: swap; src: url("./fonts/exo-2-latin-700-normal.woff2") format("woff2"); }
+    @font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight: 400; font-display: swap; src: url("./fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2"); }
+    @font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight: 600 900; font-display: swap; src: url("./fonts/jetbrains-mono-latin-600-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Orbitron"; font-style: normal; font-weight: 600; font-display: swap; src: url("./fonts/orbitron-latin-600-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Orbitron"; font-style: normal; font-weight: 700; font-display: swap; src: url("./fonts/orbitron-latin-700-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Orbitron"; font-style: normal; font-weight: 900; font-display: swap; src: url("./fonts/orbitron-latin-900-normal.woff2") format("woff2"); }
     :root {
       --void: #0a0a0f;
       --space: #08090f;
@@ -3660,7 +3669,7 @@
       --bit-color: var(--cyan);
       --bit-glow: rgba(0,249,255,0.54);
       position: fixed;
-      right: 24px;
+      right: 44px;
       bottom: 24px;
       z-index: 90;
       width: 86px;
@@ -3787,7 +3796,8 @@
       position: absolute;
       top: auto;
       bottom: calc(100% + 2px);
-      left: 50%;
+      right: -8px;
+      left: auto;
       min-width: 110px;
       min-height: 20px;
       color: currentColor;
@@ -3795,10 +3805,10 @@
       font-size: 0.54rem;
       font-weight: 900;
       letter-spacing: 0.12em;
-      text-align: center;
+      text-align: right;
       text-transform: uppercase;
       text-shadow: 0 0 10px currentColor;
-      transform: translateX(-50%);
+      transform-origin: bottom right;
       white-space: nowrap;
     }
 
@@ -6345,8 +6355,9 @@
       filter: drop-shadow(0 14px 24px rgba(0,0,0,0.44)) drop-shadow(0 0 13px color-mix(in srgb, var(--bit-color) 30%, transparent));
     }
 
+    .bit-answer { transition: transform 180ms ease; }
     .bit-companion:hover .bit-answer,
-    .bit-companion:focus-visible .bit-answer { transform: translateY(-2px) scale(1.04); }
+    .bit-companion:focus-visible .bit-answer { transform: translateY(-2px) scale(1.05); }
 
     /* v31 sovereign art direction: quality first, cost disciplined, human commanded. */
     .sovereign-promise {
@@ -7338,6 +7349,11 @@
       .scroll-progress,
       .alert-wash,
       .warp-flash,
+      .mission-spine,
+      .bit-panel,
+      .ambient-topography,
+      .nebula,
+      .fleet-map,
       .bit-companion,
       .house-sigil,
       .preview-flag,
@@ -7407,23 +7423,579 @@
         box-shadow: none;
       }
     }
+    /* ── Console typewriter caret ─────────────────────────────── */
+    .terminal-log .typed-line.is-typing::after {
+      display: inline-block;
+      margin-left: 2px;
+      content: "▋";
+      color: var(--cyan);
+      animation: typed-caret 0.72s steps(1) infinite;
+    }
+
+    @keyframes typed-caret {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* ── Architecture bus data packets ────────────────────────── */
+    .topology-link i {
+      position: absolute;
+      top: 13px;
+      left: -4px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      opacity: 0;
+      background: var(--cyan);
+      box-shadow: 0 0 10px rgba(87, 232, 242, 0.85);
+    }
+
+    body[data-fx="on"] .topology-link i { animation: bus-packet 2.9s linear infinite; }
+    .topology-link i:nth-of-type(2) { animation-delay: 0.95s; background: var(--gold); box-shadow: 0 0 10px rgba(246, 214, 106, 0.85); }
+    .topology-link i:nth-of-type(3) { animation-delay: 1.9s; background: var(--violet); box-shadow: 0 0 10px rgba(212, 120, 242, 0.85); }
+
+    @keyframes bus-packet {
+      0% { left: -4px; opacity: 0; }
+      14% { opacity: 1; }
+      86% { opacity: 1; }
+      100% { left: calc(100% - 2px); opacity: 0; }
+    }
+
+    /* ── Route spectrum lane inspection ───────────────────────── */
+    .route-spectrum-visual span { transition: transform 0.24s ease, filter 0.24s ease; }
+    .route-spectrum-visual span.is-hot { transform: scaleY(1.55); filter: brightness(1.6) saturate(1.2); }
+
+    .route-spectrum-readout {
+      min-height: 1.1em;
+      margin-top: 7px;
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.06em;
+      transition: color 0.2s ease;
+    }
+
+    .route-spectrum-readout.is-live { color: var(--cyan); }
+
+    /* ── Command palette ──────────────────────────────────────── */
+    #palette-dialog { width: min(calc(100% - 32px), 560px); }
+
+    .palette { display: flex; flex-direction: column; }
+
+    .palette-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      padding: 14px 18px 10px;
+      border-bottom: 1px solid var(--line);
+      font-family: var(--mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .palette-head .palette-hint { color: var(--quiet); letter-spacing: 0.06em; text-transform: none; }
+
+    #palette-input {
+      width: 100%;
+      padding: 14px 18px;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 0.95rem;
+    }
+
+    #palette-input:focus { outline: none; box-shadow: inset 0 -2px 0 var(--cyan); }
+
+    #palette-list {
+      max-height: min(46svh, 380px);
+      margin: 0;
+      padding: 8px;
+      list-style: none;
+      overflow-y: auto;
+    }
+
+    #palette-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      font-family: var(--body);
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+
+    #palette-list li[aria-selected="true"] {
+      color: var(--ink);
+      background: rgba(87, 232, 242, 0.1);
+      box-shadow: inset 2px 0 0 var(--cyan);
+    }
+
+    #palette-list li small {
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    #palette-list .palette-empty { color: var(--quiet); cursor: default; }
+
+    .palette-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 18px;
+      border-top: 1px solid var(--line);
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .palette-foot kbd {
+      padding: 2px 6px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.04);
+      font-family: var(--mono);
+      font-size: 0.6rem;
+    }
+
+    /* ── Hero nebula drift ────────────────────────────────────── */
+    .nebula {
+      position: fixed;
+      z-index: 0;
+      width: 58vmax;
+      height: 58vmax;
+      pointer-events: none;
+      border-radius: 50%;
+      opacity: 0;
+      filter: blur(60px);
+      transition: opacity 1.2s ease;
+    }
+
+    .nebula-a {
+      top: -22vmax;
+      left: -16vmax;
+      background: radial-gradient(circle at 40% 40%, rgba(87, 232, 242, 0.075), rgba(212, 120, 242, 0.045) 46%, transparent 68%);
+    }
+
+    .nebula-b {
+      right: -20vmax;
+      bottom: -26vmax;
+      background: radial-gradient(circle at 60% 55%, rgba(246, 214, 106, 0.06), rgba(255, 149, 0, 0.035) 44%, transparent 66%);
+    }
+
+    body[data-fx="on"] .nebula { opacity: 1; }
+    body[data-fx="on"] .nebula-a { animation: nebula-drift-a 46s ease-in-out infinite alternate; }
+    body[data-fx="on"] .nebula-b { animation: nebula-drift-b 58s ease-in-out infinite alternate; }
+
+    @keyframes nebula-drift-a {
+      to { transform: translate(9vmax, 6vmax) scale(1.14) rotate(14deg); }
+    }
+
+    @keyframes nebula-drift-b {
+      to { transform: translate(-8vmax, -5vmax) scale(1.1) rotate(-12deg); }
+    }
+
+    /* ── Fleet map canvas (topology) ──────────────────────────── */
+    .fleet-map {
+      position: absolute;
+      inset: -22px;
+      z-index: -1;
+      width: calc(100% + 44px);
+      height: calc(100% + 44px);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 900ms ease;
+    }
+
+    body[data-fx="on"] .topology-board.is-online .fleet-map { opacity: 1; }
+
+    /* ── Guest hover + live breathing ─────────────────────────── */
+    .guest {
+      transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease, background 220ms ease;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .guest:hover {
+        z-index: 2;
+        border-color: rgba(87, 232, 242, 0.55);
+        background: linear-gradient(100deg, rgba(87, 232, 242, 0.1), rgba(110, 231, 168, 0.045));
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 22px rgba(87, 232, 242, 0.14);
+        transform: translateY(-3px) scale(1.02);
+      }
+
+      .guest:hover .guest-state {
+        box-shadow: 0 0 6px #fff, 0 0 20px rgba(87, 232, 242, 0.95);
+      }
+
+      .guest:hover strong { color: var(--cyan); }
+    }
+
+    body[data-fx="on"] .topology-board.is-online .guest:not(.is-unknown):not(.is-retired) .guest-state {
+      animation: guest-breathe 3.4s ease-in-out calc(var(--guest-index, 0) * 420ms) infinite;
+    }
+
+    @keyframes guest-breathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.35); box-shadow: 0 0 8px #fff, 0 0 18px rgba(110, 231, 168, 0.8); }
+    }
+
+    /* ── Athena edge signal bars ──────────────────────────────── */
+    .athena-signal {
+      display: inline-flex;
+      gap: 3px;
+      align-items: flex-end;
+      height: 16px;
+      margin-right: 10px;
+    }
+
+    .athena-signal i {
+      width: 3px;
+      border-radius: 2px;
+      background: var(--gold);
+      box-shadow: 0 0 8px rgba(246, 214, 106, 0.65);
+      opacity: 0.4;
+    }
+
+    .athena-signal i:nth-child(1) { height: 5px; }
+    .athena-signal i:nth-child(2) { height: 9px; }
+    .athena-signal i:nth-child(3) { height: 13px; }
+    .athena-signal i:nth-child(4) { height: 16px; }
+
+    body[data-fx="on"] .topology-board.is-online .athena-signal i {
+      animation: athena-signal-step 1.9s ease-in-out infinite;
+    }
+
+    body[data-fx="on"] .topology-board.is-online .athena-signal i:nth-child(2) { animation-delay: 0.18s; }
+    body[data-fx="on"] .topology-board.is-online .athena-signal i:nth-child(3) { animation-delay: 0.36s; }
+    body[data-fx="on"] .topology-board.is-online .athena-signal i:nth-child(4) { animation-delay: 0.54s; }
+
+    @keyframes athena-signal-step {
+      0%, 100% { opacity: 0.35; }
+      35% { opacity: 1; }
+    }
+
+    /* ── Ambient topography (ported from the v31 apex prototype) ── */
+    .ambient-topography {
+      position: fixed;
+      inset: -18vh -12vw;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.34;
+      background:
+        repeating-radial-gradient(ellipse at 78% 26%, transparent 0 32px, rgba(87, 232, 242, 0.05) 33px 34px, transparent 35px 54px),
+        repeating-radial-gradient(ellipse at 16% 76%, transparent 0 42px, rgba(246, 214, 106, 0.032) 43px 44px, transparent 45px 68px);
+      -webkit-mask-image: radial-gradient(circle at center, #000 0 42%, transparent 78%);
+      mask-image: radial-gradient(circle at center, #000 0 42%, transparent 78%);
+      transform: rotate(-7deg) scale(1.08);
+    }
+
+    body[data-fx="on"] .ambient-topography { animation: topography-drift 28s ease-in-out infinite alternate; }
+    body[data-fx="off"] .ambient-topography { opacity: 0.14; }
+
+    @keyframes topography-drift {
+      0% { transform: rotate(-7deg) scale(1.08) translate3d(-1%, -1%, 0); }
+      100% { transform: rotate(-4deg) scale(1.12) translate3d(1%, 1%, 0); }
+    }
+
+    /* ── Mission spine (section progress dots) ── */
+    .mission-spine {
+      position: fixed;
+      top: 50%;
+      right: 16px;
+      z-index: 56;
+      display: grid;
+      gap: 8px;
+      padding: 12px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(5, 8, 14, 0.74);
+      box-shadow: 0 18px 54px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.025);
+      backdrop-filter: blur(18px);
+      transform: translateY(-50%);
+    }
+
+    .mission-spine::before {
+      position: absolute;
+      top: 18px;
+      bottom: 18px;
+      left: 50%;
+      z-index: -1;
+      width: 1px;
+      content: "";
+      background: linear-gradient(180deg, transparent, rgba(87, 232, 242, 0.24) 18%, rgba(246, 214, 106, 0.2) 82%, transparent);
+      transform: translateX(-50%);
+    }
+
+    .mission-spine a {
+      position: relative;
+      width: 10px;
+      height: 10px;
+      display: block;
+      border: 1px solid rgba(190, 200, 210, 0.28);
+      border-radius: 50%;
+      background: #080b12;
+      box-shadow: 0 0 0 3px rgba(5, 8, 14, 0.9);
+      transition: transform 180ms cubic-bezier(.22, 1, .36, 1), border-color 180ms ease, background 180ms ease, box-shadow 220ms ease;
+    }
+
+    .mission-spine a::after {
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      width: max-content;
+      max-width: 190px;
+      padding: 7px 10px;
+      content: attr(data-scene-label);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--muted);
+      background: rgba(5, 8, 14, 0.94);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.38);
+      font: 800 0.61rem/1.2 var(--mono);
+      letter-spacing: 0.08em;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(6px, -50%);
+      transition: opacity 160ms ease, transform 180ms cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .mission-spine a:hover,
+    .mission-spine a:focus-visible {
+      border-color: var(--cyan);
+      transform: scale(1.25);
+    }
+
+    .mission-spine a:hover::after,
+    .mission-spine a:focus-visible::after {
+      opacity: 1;
+      transform: translate(0, -50%);
+    }
+
+    .mission-spine a[aria-current="location"] {
+      border-color: #d9f4f5;
+      background: var(--cyan);
+      box-shadow: 0 0 0 3px rgba(5, 8, 14, 0.9), 0 0 14px rgba(87, 232, 242, 0.7);
+    }
+
+    @media (max-width: 1100px) {
+      .mission-spine { display: none; }
+    }
+
+    /* ── Fleet cluster scan sweep ── */
+    .cluster::before {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: -38%;
+      z-index: 3;
+      width: 30%;
+      content: "";
+      pointer-events: none;
+      opacity: 0;
+      background: linear-gradient(90deg, transparent, rgba(87, 232, 242, 0.13), rgba(255, 255, 255, 0.09), transparent);
+      transform: skewX(-16deg);
+    }
+
+    body[data-fx="on"] .topology-board.is-online .cluster::before {
+      animation: fleet-scan 1.5s cubic-bezier(.23, 1, .32, 1) 420ms 1 both;
+    }
+
+    body[data-fx="on"] .topology-board.is-online .cluster:nth-child(2)::before {
+      animation-delay: 680ms;
+    }
+
+    @keyframes fleet-scan {
+      0% { left: -38%; opacity: 0; }
+      20% { opacity: 0.85; }
+      100% { left: 122%; opacity: 0; }
+    }
+
+    /* ── Bit guide panel ── */
+    .bit-panel {
+      position: fixed;
+      right: 44px;
+      bottom: 124px;
+      z-index: 91;
+      width: min(340px, calc(100vw - 32px));
+      padding: 18px;
+      border: 1px solid rgba(87, 232, 242, 0.4);
+      border-radius: 16px 16px 16px 34px;
+      background: rgba(7, 9, 17, 0.97);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.58), 0 0 30px rgba(87, 232, 242, 0.08);
+      backdrop-filter: blur(18px);
+    }
+
+    .bit-panel[hidden] { display: none; }
+
+    .bit-panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 13px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .bit-panel-head span,
+    .bit-panel-head strong,
+    .bit-panel-head small { display: block; }
+
+    .bit-panel-head span {
+      color: var(--cyan);
+      font: 900 0.62rem/1.3 var(--mono);
+      letter-spacing: 0.12em;
+    }
+
+    .bit-panel-head strong {
+      margin-top: 5px;
+      color: var(--ink);
+      font-family: var(--display);
+      font-size: 1rem;
+    }
+
+    .bit-panel-signal {
+      margin-top: 4px;
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .bit-close {
+      width: 36px;
+      height: 36px;
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+      font-size: 1.3rem;
+      line-height: 1;
+    }
+
+    .bit-close:hover,
+    .bit-close:focus-visible {
+      color: var(--cyan);
+      border-color: rgba(87, 232, 242, 0.5);
+    }
+
+    .bit-prompts {
+      display: grid;
+      gap: 7px;
+      margin-top: 13px;
+    }
+
+    .bit-prompts button,
+    .bit-easter {
+      min-height: 40px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.02);
+      cursor: pointer;
+      font: 800 0.72rem/1.25 var(--mono);
+      text-align: left;
+    }
+
+    .bit-prompts button:hover,
+    .bit-prompts button:focus-visible,
+    .bit-easter:hover,
+    .bit-easter:focus-visible {
+      color: var(--cyan);
+      border-color: rgba(87, 232, 242, 0.5);
+      background: rgba(87, 232, 242, 0.045);
+    }
+
+    .bit-response {
+      margin: 13px 0 0;
+      padding: 12px;
+      border-left: 3px solid var(--cyan);
+      color: var(--muted);
+      background: rgba(87, 232, 242, 0.035);
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+
+    .bit-easter {
+      width: 100%;
+      margin-top: 10px;
+      color: var(--quiet);
+      font-size: 0.62rem;
+      text-align: center;
+    }
+
+    @media (max-width: 560px) {
+      .bit-panel { right: 16px; bottom: 118px; }
+    }
   </style>
 </head>
 <body data-fx="on" data-alert="off">
   <div class="scroll-progress" aria-hidden="true"><span id="scroll-progress-fill"></span></div>
   <div class="perspective-grid" aria-hidden="true"></div>
+  <div class="nebula nebula-a" aria-hidden="true"></div>
+  <div class="nebula nebula-b" aria-hidden="true"></div>
+  <div class="ambient-topography" aria-hidden="true"></div>
   <div class="spice-haze" aria-hidden="true"></div>
   <div class="alert-wash" aria-hidden="true"></div>
   <div class="warp-flash" id="warp-flash" aria-hidden="true"></div>
   <a class="skip-link" href="#main">Skip to mission control</a>
+  <nav class="mission-spine" aria-label="Deck progress">
+    <a href="#top" data-scene-label="OPENING // DOUG CASHIO" aria-current="location"><span class="visually-hidden">Opening</span></a>
+    <a href="#spice-flight" data-scene-label="JOURNEY // SOVEREIGN CORE"><span class="visually-hidden">Sovereign journey</span></a>
+    <a href="#proof" data-scene-label="PROOF // BUSINESS VALUE"><span class="visually-hidden">Business proof</span></a>
+    <a href="#chain" data-scene-label="DEMO // EVENT CHAIN"><span class="visually-hidden">Event chain demo</span></a>
+    <a href="#topology" data-scene-label="FLEET // ZEUSAPOLLO"><span class="visually-hidden">Fleet architecture</span></a>
+    <a href="#console" data-scene-label="CONSOLE // HERMES"><span class="visually-hidden">Hermes console</span></a>
+    <a href="#fleet-card" data-scene-label="CARD // TAKE THE PROOF"><span class="visually-hidden">Fleet card</span></a>
+    <a href="#hail" data-scene-label="CHANNEL // OPEN"><span class="visually-hidden">Contact</span></a>
+  </nav>
   <canvas id="starfield" aria-hidden="true"></canvas>
   <div class="preview-flag" id="preview-flag" aria-label="Local preview, not deployed" hidden>Local preview • not deployed</div>
-  <button class="bit-companion" id="bit-companion" type="button" data-answer="idle" aria-label="Ask Bit, the binary companion, for a yes or no" aria-describedby="bit-answer">
+  <button class="bit-companion" id="bit-companion" type="button" data-answer="idle" aria-label="Open Bit, the deck guide" aria-describedby="bit-answer" aria-controls="bit-panel" aria-expanded="false">
     <span class="bit-aura" aria-hidden="true"></span>
     <span class="bit-crystal" aria-hidden="true"></span>
     <canvas class="bit-canvas" id="bit-canvas" aria-hidden="true"></canvas>
-    <span class="bit-answer" id="bit-answer">Ask Bit</span>
+    <span class="bit-answer" id="bit-answer">BIT // Deck guide</span>
   </button>
+  <aside class="bit-panel" id="bit-panel" aria-labelledby="bit-panel-title" hidden>
+    <div class="bit-panel-head">
+      <div>
+        <span>◈ BIT</span>
+        <strong id="bit-panel-title">What would you like to see?</strong>
+        <small class="bit-panel-signal">Local guide // no data sent</small>
+      </div>
+      <button class="bit-close" id="bit-close" type="button" aria-label="Close Bit">×</button>
+    </div>
+    <div class="bit-prompts" role="group" aria-label="Suggested questions for Bit">
+      <button type="button" data-bit-mission>Take the 60-second mission</button>
+      <button type="button" data-bit-target="spice-flight">Fly the sovereign journey</button>
+      <button type="button" data-bit-target="proof">Show me the business proof</button>
+      <button type="button" data-bit-target="chain">Watch intent become evidence</button>
+      <button type="button" data-bit-target="topology">Show the fleet architecture</button>
+      <button type="button" data-bit-target="console">Open the Hermes console</button>
+      <button type="button" data-bit-target="fleet-card">Take the proof with you</button>
+      <button type="button" data-bit-message="This is an owner-reviewed public status export — dated evidence, not live telemetry, and never a remote-control path.">Is the data live?</button>
+      <button type="button" data-bit-target="hail">Contact Doug</button>
+    </div>
+    <p class="bit-response" id="bit-response" role="status">Choose a question and I’ll take you to the receipt.</p>
+    <button class="bit-easter" id="bit-easter" type="button">Ask Bit a yes / no question</button>
+  </aside>
 
   <header class="site-header">
     <div class="shell header-inner">
@@ -7540,6 +8112,7 @@
               <i></i>
             </div>
             <div class="route-spectrum-axis"><span>Routine / local</span><span>Severity + value</span><span>Frontier / adjudicate</span></div>
+            <div class="route-spectrum-readout" id="route-spectrum-readout" aria-hidden="true">Hover the spectrum to inspect each lane</div>
           </div>
           <div class="profile-foot" aria-label="Additional profile facts">
             <span>71/71 automations</span><span>2 core hosts + Athena edge</span><span>15+ years enterprise</span>
@@ -7875,12 +8448,13 @@
             <div class="athena-edge-glyph" aria-hidden="true">ATH</div>
             <div class="athena-edge-copy">
               <strong id="athena-title">ATHENA // Physical edge node</strong>
-              <span>Home Assistant continuity node // owner-confirmed active // kept outside the 18-container count</span>
+              <span>Home Assistant continuity node // owner-confirmed active // holds the edge outside the 18-container count</span>
             </div>
-            <div class="athena-edge-state">Active</div>
+            <div class="athena-edge-state"><span class="athena-signal" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Edge link active</div>
           </article>
 
-          <div class="topology-link" aria-hidden="true"><span>Architecture bus</span></div>
+          <div class="topology-link" aria-hidden="true"><i></i><i></i><i></i><span>Architecture bus</span></div>
+          <canvas class="fleet-map" id="fleet-map" aria-hidden="true"></canvas>
         </div>
 
         <div class="sample-note">
@@ -7924,6 +8498,7 @@
               <button class="command-chip" type="button" data-command="mentat">mentat</button>
               <button class="command-chip" type="button" data-command="awaken">awaken</button>
               <button class="command-chip" type="button" data-command="projects">projects</button>
+              <button class="command-chip" type="button" data-command="palette">palette</button>
               <button class="command-chip" type="button" data-command="contact">contact</button>
             </div>
           </aside>
@@ -7950,9 +8525,9 @@
               <label for="terminal-input">Enter a local preview command</label>
               <input class="terminal-input" id="terminal-input" name="command" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Enter command…" aria-describedby="terminal-help">
               <button class="terminal-submit" type="submit">Execute</button>
-              <span class="visually-hidden" id="terminal-help">Available commands include help, status, sovereign, quality, proof, models, cost, cascade, version, freshness, topology, flight, tour, projects, warp, alert, spice, mentat, house, awaken, sound, contact, clear, and ask eve. An optional cashio prefix is accepted.</span>
+              <span class="visually-hidden" id="terminal-help">Available commands include help, status, sovereign, quality, proof, models, cost, cascade, version, freshness, topology, flight, tour, projects, palette, warp, alert, spice, mentat, house, awaken, sound, contact, clear, and ask eve. An optional cashio prefix is accepted.</span>
             </form>
-            <div class="terminal-statusbar" aria-hidden="true"><span><strong>●</strong> sandbox ready</span><span>/ focus console</span><span>↑↓ history</span><span>zero network calls</span></div>
+            <div class="terminal-statusbar" aria-hidden="true"><span><strong>●</strong> sandbox ready</span><span>/ focus console</span><span>↑↓ history</span><span>Ctrl+K palette</span><span>try: make it so</span><span>zero network calls</span></div>
           </div>
         </div>
       </div>
@@ -8153,6 +8728,18 @@
         <button class="button button-secondary" id="mission-back" type="button" disabled>Back</button>
         <button class="button button-primary" id="mission-next" type="button">Next transmission</button>
       </footer>
+    </div>
+  </dialog>
+
+  <dialog id="palette-dialog" aria-labelledby="palette-title">
+    <div class="palette">
+      <header class="palette-head">
+        <span id="palette-title">Command palette // local</span>
+        <span class="palette-hint">↑↓ move · Enter run · Esc close</span>
+      </header>
+      <input id="palette-input" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Jump to a section or run a command…" aria-label="Filter palette commands">
+      <ul id="palette-list" role="listbox" aria-label="Palette results"></ul>
+      <footer class="palette-foot"><span>Local only // zero network calls</span><span><kbd>Ctrl</kbd> <kbd>K</kbd></span></footer>
     </div>
   </dialog>
 
@@ -8657,7 +9244,7 @@
       var commandHistoryIndex = 0;
 
       var terminalResponses = {
-        help: "Available: status, sovereign, quality, proof, models, cost, cascade, version, freshness, topology, flight, tour, projects, warp, alert, spice, mentat, house, awaken, sound, contact, clear, ask eve. Optional prefix: cashio. All commands are local and read-only.",
+        help: "Available: status, sovereign, quality, proof, models, cost, cascade, version, freshness, topology, flight, tour, projects, palette, warp, alert, spice, mentat, house, awaken, sound, contact, clear, ask eve. Optional prefix: cashio. All commands are local and read-only. The deck also hides a few homages for the observant.",
         status: isStale
           ? "STALE — the Hermes public-safe export expired on " + sample.expiresDisplay + ". Current state is not asserted."
           : "FRESH HERMES EXPORT — 18 of 18 containers running across two core hosts; 71 of 71 automations healthy; zero cron errors. Verified " + sample.verifiedDisplay + ". Athena is separately owner-confirmed active as a physical Home Assistant edge node.",
@@ -8678,9 +9265,33 @@
       function appendLog(text, className) {
         var item = document.createElement("li");
         item.className = className || "answer";
-        item.textContent = text;
+        if (className === "prompt" || !effectiveMotion()) {
+          item.textContent = text;
+          terminalLog.appendChild(item);
+          terminalLog.scrollTop = terminalLog.scrollHeight;
+          return;
+        }
+        var fullText = document.createElement("span");
+        fullText.className = "visually-hidden";
+        fullText.textContent = text;
+        var typed = document.createElement("span");
+        typed.setAttribute("aria-hidden", "true");
+        typed.className = "typed-line is-typing";
+        item.appendChild(fullText);
+        item.appendChild(typed);
         terminalLog.appendChild(item);
         terminalLog.scrollTop = terminalLog.scrollHeight;
+        var visibleCount = 0;
+        var step = Math.max(1, Math.round(text.length / 44));
+        var typeTimer = window.setInterval(function () {
+          visibleCount = Math.min(text.length, visibleCount + step);
+          typed.textContent = text.slice(0, visibleCount);
+          terminalLog.scrollTop = terminalLog.scrollHeight;
+          if (visibleCount >= text.length) {
+            window.clearInterval(typeTimer);
+            typed.classList.remove("is-typing");
+          }
+        }, 16);
       }
 
       function executeCommand(rawCommand) {
@@ -8693,6 +9304,7 @@
           terminalReactionTimer = window.setTimeout(function () { terminalShell.classList.remove("is-reacting"); }, 620);
         }
         if (command.indexOf("cashio ") === 0) command = command.slice(7).trim();
+        var eggCommand = command.replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
         commandHistory.push(command);
         commandHistoryIndex = commandHistory.length;
         appendLog("› " + command, "prompt");
@@ -8718,6 +9330,9 @@
           } else {
             appendLog("Spice field is paused because FX is off or reduced motion is active.", "warning");
           }
+        } else if (command === "palette") {
+          openPalette();
+          appendLog("Command palette open. Type to filter, Enter to run. Local only.", "answer");
         } else if (command === "mentat") {
           appendLog("MENTAT PROTOCOL — observe the system, route by evidence, verify the receipt, explain the tradeoff.", "answer");
         } else if (command === "house") {
@@ -8731,6 +9346,31 @@
           }
         } else if (command === "sound") {
           appendLog("Interface sound is " + (soundEnabled ? "ON" : "OFF") + ". Use the SND control in the command bar to change it.", "answer");
+        } else if (eggCommand === "make it so" || eggCommand === "engage") {
+          pulseWarp();
+          appendLog("COURSE LAID IN — warp preview engaged. The bridge is yours, commander.", "answer");
+        } else if (eggCommand === "red alert") {
+          if (alertToggle && body.dataset.alert !== "on") alertToggle.click();
+          appendLog("RED ALERT — all decks to stations. Shields are strictly cosmetic.", "answer");
+        } else if (eggCommand.indexOf("earl grey") !== -1 || eggCommand === "tea") {
+          appendLog("REPLICATOR — Tea. Earl Grey. Hot. …Replicator offline in local preview; recommend spice coffee.", "answer");
+        } else if (eggCommand === "end of line" || eggCommand === "tron") {
+          var bitEgg = document.getElementById("bit-easter");
+          if (bitEgg) bitEgg.click();
+          appendLog("END OF LINE.", "answer");
+        } else if (eggCommand === "greetings program" || eggCommand === "greetings") {
+          appendLog("GREETINGS, PROGRAM. You fight for the users — the Grid approves.", "answer");
+        } else if (eggCommand === "fear" || eggCommand === "litany" || eggCommand.indexOf("fear is") === 0) {
+          appendLog("MENTAT LITANY — Fear is the mind-killer. Focus returns. Route the work.", "answer");
+        } else if (eggCommand === "kwisatz haderach" || eggCommand === "kwisatz" || eggCommand === "muad dib" || eggCommand === "muaddib") {
+          triggerSpiceSurge();
+          appendLog("THE SLEEPER HAS AWAKENED — the path was always quality first.", "answer");
+        } else if (eggCommand === "konami") {
+          appendLog("Old codes still work on this deck: ↑ ↑ ↓ ↓ ← → ← → B A.", "answer");
+        } else if (eggCommand === "pantheon") {
+          appendLog("PANTHEON ROLL CALL — ZEUS holds compute. APOLLO holds storage. ATHENA holds the edge. HERMES carries the messages. ATLAS carries the models.", "answer");
+        } else if (eggCommand === "xyzzy") {
+          appendLog("Nothing happens. (A hollow voice says: plugh.)", "answer");
         } else if (Object.prototype.hasOwnProperty.call(terminalResponses, command)) {
           appendLog(terminalResponses[command], command === "status" && isStale ? "warning" : "answer");
         } else {
@@ -8891,6 +9531,7 @@
           missionTitle.focus();
         } else {
           closeMission();
+          playSample("fanfare", 0.3);
           if (effectiveMotion()) {
             pulseWarp(function () {
               document.getElementById("proof").scrollIntoView({ behavior: "smooth" });
@@ -9103,6 +9744,8 @@
       var shootingStar = { active: false, x: 0, y: 0, length: 0, speed: 0, life: 0 };
       var spiceScrollVelocity = 0;
       var spiceLastScrollY = window.scrollY || 0;
+      var warpBurstUntil = 0;
+      var spiceOverloadUntil = 0;
       var animationFrame = 0;
       var lastFrame = 0;
       var targetFrameMs = 1000 / 24;
@@ -9170,6 +9813,14 @@
 
       function drawStars(delta) {
         context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        var frameNow = window.performance ? window.performance.now() : Date.now();
+        var hyperspace = Math.max(0, (warpBurstUntil - frameNow) / 700);
+        var overload = Math.max(0, (spiceOverloadUntil - frameNow) / 4200);
+        var warpStretch = Math.min(30, Math.abs(spiceScrollVelocity) * 2.2);
+        var warpDirection = spiceScrollVelocity >= 0 ? 1 : -1;
+        var centerX = window.innerWidth / 2;
+        var centerY = window.innerHeight / 2;
+        var starTint = overload > 0 ? "246, 214, 106" : "220, 244, 255";
         stars.forEach(function (star) {
           if (delta) {
             star.y += star.speed * delta;
@@ -9181,9 +9832,27 @@
           }
           var twinkleAlpha = Math.max(0.12, star.alpha * (0.68 + 0.32 * Math.sin(star.phase)));
           context.beginPath();
-          context.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-          context.fillStyle = "rgba(220, 244, 255, " + twinkleAlpha.toFixed(3) + ")";
-          context.fill();
+          if (hyperspace > 0) {
+            var dx = star.x - centerX;
+            var dy = star.y - centerY;
+            var distance = Math.max(1, Math.hypot(dx, dy));
+            var streak = hyperspace * (26 + distance * 0.16);
+            context.moveTo(star.x, star.y);
+            context.lineTo(star.x + (dx / distance) * streak, star.y + (dy / distance) * streak);
+            context.lineWidth = Math.max(0.7, star.radius);
+            context.strokeStyle = "rgba(" + starTint + ", " + Math.min(1, twinkleAlpha + hyperspace * 0.5).toFixed(3) + ")";
+            context.stroke();
+          } else if (warpStretch > 4.5) {
+            context.moveTo(star.x, star.y - warpStretch * warpDirection * (0.35 + star.radius * 0.45));
+            context.lineTo(star.x, star.y);
+            context.lineWidth = Math.max(0.6, star.radius * 0.9);
+            context.strokeStyle = "rgba(" + starTint + ", " + (twinkleAlpha * 0.9).toFixed(3) + ")";
+            context.stroke();
+          } else {
+            context.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+            context.fillStyle = "rgba(" + starTint + ", " + twinkleAlpha.toFixed(3) + ")";
+            context.fill();
+          }
         });
 
         if (delta && !shootingStar.active && Math.random() < delta / 18000) {
@@ -9253,6 +9922,7 @@
           drawStars(Math.min(elapsed, 80));
           drawBitCanvas(timestamp, true);
           drawJourney(timestamp, true);
+          drawFleetMap(timestamp, true);
           lastFrame = timestamp;
         }
         animationFrame = window.requestAnimationFrame(animateStars);
@@ -9265,6 +9935,7 @@
         drawStars(0);
         drawBitCanvas(window.performance ? window.performance.now() : 0, false);
         drawJourney(window.performance ? window.performance.now() : 0, false);
+        drawFleetMap(window.performance ? window.performance.now() : 0, false);
         if (effectiveMotion() && !document.hidden) {
           animationFrame = window.requestAnimationFrame(animateStars);
         }
@@ -9479,6 +10150,51 @@
         bitCompanion.classList.add("bit-rendered");
       }
 
+      /* Sample-based interface sounds (repo-hosted assets, opt-in via SND).
+         Falls back to the synth engine when a file is missing or fails. */
+      var samplePaths = {
+        click: "./lcars_click.wav",
+        success: "./lcars_success.wav",
+        press: "./lcars_press.wav",
+        fanfare: "./lcars_confirm.wav",
+        warp: "./warp.wav",
+        alert: "./redalert.wav"
+      };
+      var sampleCache = {};
+      var samplesInitialized = false;
+
+      function initSamples() {
+        if (samplesInitialized) return;
+        samplesInitialized = true;
+        Object.keys(samplePaths).forEach(function (kind) {
+          try {
+            var element = new Audio(samplePaths[kind]);
+            element.preload = "auto";
+            element.addEventListener("error", function () {
+              delete sampleCache[kind];
+            });
+            sampleCache[kind] = element;
+          } catch (error) {
+            /* Missing media keeps the synth fallback. */
+          }
+        });
+      }
+
+      function playSample(kind, volume) {
+        if (!soundEnabled) return false;
+        var base = sampleCache[kind];
+        if (!base || base.readyState === 0 && base.networkState === 3) return false;
+        try {
+          var node = base.cloneNode();
+          node.volume = volume == null ? 0.3 : volume;
+          var playing = node.play();
+          if (playing && typeof playing.catch === "function") playing.catch(function () {});
+          return true;
+        } catch (error) {
+          return false;
+        }
+      }
+
       function getAudioContext() {
         if (!soundEnabled) return null;
         if (!audioContext) {
@@ -9558,6 +10274,7 @@
           playTone(920, 0.038, "sine", 0.009, 0, 1120);
           playTone(1380, 0.027, "triangle", 0.004, 0.012);
         } else if (kind === "click") {
+          if (playSample("click", 0.22)) return;
           playNoise(0.035, 0.006, 0, 2800);
           playTone(390, 0.065, "triangle", 0.015, 0, 520);
           playTone(780, 0.045, "sine", 0.009, 0.018);
@@ -9565,6 +10282,7 @@
           playTone(440, 0.08, "sine", 0.018, 0, 560);
           playTone(660, 0.11, "triangle", 0.015, 0.055, 880);
         } else if (kind === "success") {
+          if (playSample("success", 0.36)) return;
           playTone(523, 0.13, "sine", 0.023, 0);
           playTone(784, 0.15, "sine", 0.02, 0.075);
           playTone(1047, 0.2, "triangle", 0.017, 0.15);
@@ -9591,6 +10309,7 @@
       }
 
       function playWarpSound() {
+        if (playSample("warp", 0.46)) return;
         var activeContext = getAudioContext();
         if (!activeContext) return;
         playNoise(0.58, 0.012, 0, 1200);
@@ -9601,6 +10320,7 @@
       }
 
       function playAlertSound() {
+        if (playSample("alert", 0.3)) return;
         playUiSound("warning");
         playNoise(0.22, 0.008, 0.04, 900);
       }
@@ -9609,6 +10329,7 @@
         if (!soundToggle) return;
         if (enabled) {
           soundEnabled = true;
+          initSamples();
           soundToggle.setAttribute("aria-pressed", "true");
           soundToggle.setAttribute("aria-label", "Turn interface sound off");
           soundToggle.textContent = "SND ON";
@@ -9629,6 +10350,7 @@
         void body.offsetWidth;
         body.classList.add("spice-surge");
         burstSpiceAt(window.innerWidth * 0.5, window.innerHeight * 0.5, 24);
+        playSample("press", 0.28);
         playTone(220, 0.28, "sine", 0.022, 0, 330);
         playTone(330, 0.31, "triangle", 0.019, 0.085, 494);
         playTone(440, 0.36, "sine", 0.017, 0.17, 660);
@@ -9685,6 +10407,7 @@
           if (typeof callback === "function") callback();
           return;
         }
+        warpBurstUntil = (window.performance ? window.performance.now() : Date.now()) + 700;
         window.clearTimeout(warpTimer);
         warpFlash.classList.remove("is-active");
         void warpFlash.offsetWidth;
@@ -9845,6 +10568,164 @@
         journeyContext.restore();
       }
 
+      var fleetMap = document.getElementById("fleet-map");
+      var fleetMapContext = fleetMap ? fleetMap.getContext("2d", { alpha: true }) : null;
+      var fleetRoutes = [
+        { from: "zeus", to: "apollo", color: "87,232,242", lift: -64 },
+        { from: "apollo", to: "zeus", color: "212,120,242", lift: -104 },
+        { from: "zeus", to: "athena", color: "246,214,106", lift: 46 },
+        { from: "apollo", to: "athena", color: "246,214,106", lift: 46 }
+      ];
+      var fleetPackets = [];
+      var fleetPings = [];
+      var fleetLastTimestamp = 0;
+      var fleetNextPing = 0;
+      var fleetCountersRun = false;
+
+      for (var packetIndex = 0; packetIndex < 7; packetIndex += 1) {
+        fleetPackets.push({
+          route: packetIndex % fleetRoutes.length,
+          t: Math.random(),
+          speed: 0.00009 + Math.random() * 0.00009,
+          size: 1.6 + Math.random() * 1.5
+        });
+      }
+
+      function sizeFleetMap() {
+        if (!fleetMap || !fleetMapContext) return;
+        var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        var width = Math.max(1, fleetMap.clientWidth);
+        var height = Math.max(1, fleetMap.clientHeight);
+        fleetMap.width = Math.round(width * dpr);
+        fleetMap.height = Math.round(height * dpr);
+        fleetMapContext.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function fleetAnchors() {
+        var mapRect = fleetMap.getBoundingClientRect();
+        if (!mapRect.width) return null;
+        var glyphs = document.querySelectorAll(".cluster-glyph");
+        var athenaGlyph = document.querySelector(".athena-edge-glyph");
+        if (glyphs.length < 2 || !athenaGlyph) return null;
+        function centerOf(element) {
+          var rect = element.getBoundingClientRect();
+          return { x: rect.left + rect.width / 2 - mapRect.left, y: rect.top + rect.height / 2 - mapRect.top };
+        }
+        return { zeus: centerOf(glyphs[0]), apollo: centerOf(glyphs[1]), athena: centerOf(athenaGlyph) };
+      }
+
+      function fleetRoutePoint(anchors, route, t) {
+        var from = anchors[route.from];
+        var to = anchors[route.to];
+        var controlX = (from.x + to.x) / 2;
+        var controlY = (from.y + to.y) / 2 + route.lift;
+        var inverse = 1 - t;
+        return {
+          x: inverse * inverse * from.x + 2 * inverse * t * controlX + t * t * to.x,
+          y: inverse * inverse * from.y + 2 * inverse * t * controlY + t * t * to.y
+        };
+      }
+
+      function drawFleetMap(timestamp, animate) {
+        if (!fleetMap || !fleetMapContext) return;
+        var width = fleetMap.clientWidth;
+        var height = fleetMap.clientHeight;
+        if (!width || !height) return;
+        fleetMapContext.clearRect(0, 0, width, height);
+        if (!effectiveMotion() || !topologyBoard || !topologyBoard.classList.contains("is-online")) return;
+        var boardRect = topologyBoard.getBoundingClientRect();
+        if (boardRect.bottom < -60 || boardRect.top > window.innerHeight + 60) return;
+        var anchors = fleetAnchors();
+        if (!anchors) return;
+        var delta = 0;
+        if (animate) {
+          delta = fleetLastTimestamp ? Math.min(90, timestamp - fleetLastTimestamp) : 42;
+          fleetLastTimestamp = timestamp;
+        }
+
+        fleetMapContext.save();
+        fleetRoutes.forEach(function (route, routeIndex) {
+          if (routeIndex === 1) return;
+          var from = anchors[route.from];
+          var to = anchors[route.to];
+          fleetMapContext.beginPath();
+          fleetMapContext.moveTo(from.x, from.y);
+          fleetMapContext.quadraticCurveTo((from.x + to.x) / 2, (from.y + to.y) / 2 + route.lift, to.x, to.y);
+          fleetMapContext.strokeStyle = "rgba(" + route.color + ",0.14)";
+          fleetMapContext.lineWidth = 1;
+          fleetMapContext.setLineDash([3, 7]);
+          fleetMapContext.stroke();
+        });
+        fleetMapContext.setLineDash([]);
+
+        fleetPackets.forEach(function (packet) {
+          if (delta) packet.t += packet.speed * delta;
+          if (packet.t > 1) {
+            packet.t = 0;
+            packet.route = Math.floor(Math.random() * fleetRoutes.length);
+          }
+          var route = fleetRoutes[packet.route];
+          var point = fleetRoutePoint(anchors, route, packet.t);
+          var glow = fleetMapContext.createRadialGradient(point.x, point.y, 0, point.x, point.y, packet.size * 6);
+          glow.addColorStop(0, "rgba(" + route.color + ",0.72)");
+          glow.addColorStop(1, "rgba(" + route.color + ",0)");
+          fleetMapContext.fillStyle = glow;
+          fleetMapContext.fillRect(point.x - packet.size * 6, point.y - packet.size * 6, packet.size * 12, packet.size * 12);
+          fleetMapContext.beginPath();
+          fleetMapContext.arc(point.x, point.y, packet.size, 0, Math.PI * 2);
+          fleetMapContext.fillStyle = "rgba(255,255,255,0.85)";
+          fleetMapContext.fill();
+          for (var trail = 1; trail <= 3; trail += 1) {
+            var trailPoint = fleetRoutePoint(anchors, route, Math.max(0, packet.t - trail * 0.028));
+            fleetMapContext.beginPath();
+            fleetMapContext.arc(trailPoint.x, trailPoint.y, Math.max(0.4, packet.size * (1 - trail * 0.26)), 0, Math.PI * 2);
+            fleetMapContext.fillStyle = "rgba(" + route.color + "," + (0.48 - trail * 0.13).toFixed(2) + ")";
+            fleetMapContext.fill();
+          }
+        });
+
+        if (animate && timestamp > fleetNextPing) {
+          fleetNextPing = timestamp + 2100 + Math.random() * 1700;
+          var pingHosts = ["zeus", "apollo", "athena"];
+          fleetPings.push({ at: pingHosts[Math.floor(Math.random() * pingHosts.length)], born: timestamp });
+        }
+        fleetPings = fleetPings.filter(function (ping) {
+          var age = (timestamp - ping.born) / 1400;
+          if (age >= 1 || age < 0) return false;
+          var origin = anchors[ping.at];
+          fleetMapContext.beginPath();
+          fleetMapContext.arc(origin.x, origin.y, 26 + age * 76, 0, Math.PI * 2);
+          fleetMapContext.strokeStyle = "rgba(" + (ping.at === "athena" ? "246,214,106" : "87,232,242") + "," + ((1 - age) * 0.32).toFixed(3) + ")";
+          fleetMapContext.lineWidth = 1.2;
+          fleetMapContext.stroke();
+          return true;
+        });
+        fleetMapContext.restore();
+      }
+
+      function runFleetCounters() {
+        if (fleetCountersRun) return;
+        fleetCountersRun = true;
+        if (!effectiveMotion()) return;
+        Array.prototype.slice.call(document.querySelectorAll(".cluster-count")).forEach(function (counter) {
+          var finalText = counter.textContent.trim();
+          var target = parseInt(finalText, 10);
+          if (!Number.isFinite(target)) return;
+          var padLength = finalText.length;
+          var started = window.performance ? window.performance.now() : Date.now();
+          counter.textContent = "0".padStart(padLength, "0");
+          function tick(now) {
+            var progress = Math.min(1, (now - started) / 950);
+            var eased = 1 - Math.pow(1 - progress, 3);
+            counter.textContent = String(Math.round(target * eased)).padStart(padLength, "0");
+            if (progress < 1) window.requestAnimationFrame(tick);
+            else counter.textContent = finalText;
+          }
+          window.requestAnimationFrame(tick);
+          window.setTimeout(function () { counter.textContent = finalText; }, 1400);
+        });
+      }
+
       function updateScrollWorld() {
         if (!scrollWorld || !worldStage || !worldScenes.length) return;
         if (!effectiveMotion()) return;
@@ -9967,33 +10848,98 @@
         });
       }
 
-      if (bitCompanion) {
+      var bitPanel = document.getElementById("bit-panel");
+      var bitClose = document.getElementById("bit-close");
+      var bitResponse = document.getElementById("bit-response");
+      var bitEasterButton = document.getElementById("bit-easter");
+      var bitMissionButton = bitPanel ? bitPanel.querySelector("[data-bit-mission]") : null;
+
+      if (bitCompanion && bitPanel) {
         var bitModes = [
           { key: "yes", label: "YES", announcement: "Bit says yes. Proceed, and keep the receipt." },
           { key: "no", label: "NO NO NO", announcement: "Bit says no. Check the guardrail before proceeding." }
         ];
         var bitIndex = -1;
-        bitCompanion.addEventListener("click", function () {
+
+        var setBitPanel = function (open) {
+          bitPanel.hidden = !open;
+          bitCompanion.setAttribute("aria-expanded", String(open));
+          bitCompanion.setAttribute("aria-label", open ? "Close Bit, the deck guide" : "Open Bit, the deck guide");
+          if (open) {
+            playUiSound("click");
+            if (bitClose) bitClose.focus({ preventScroll: true });
+          }
+        };
+
+        var resetBit = function () {
+          bitCompanion.dataset.answer = "idle";
+          bitAnswer.textContent = "BIT // Deck guide";
+          drawBitCanvas(window.performance ? window.performance.now() : 0, false);
+        };
+
+        var answerWithBit = function (mode) {
           window.clearTimeout(bitReturnTimer);
-          bitIndex = (bitIndex + 1) % bitModes.length;
-          var mode = bitModes[bitIndex];
           bitCompanion.dataset.answer = mode.key;
           bitAnswer.textContent = mode.label;
-          bitCompanion.setAttribute("aria-label", mode.announcement + " Bit will return to neutral.");
           bitCompanion.classList.remove("is-answering");
           void bitCompanion.offsetWidth;
           bitCompanion.classList.add("is-answering");
           window.setTimeout(function () { bitCompanion.classList.remove("is-answering"); }, 460);
           drawBitCanvas(window.performance ? window.performance.now() : 0, false);
           chainAnnouncement.textContent = mode.announcement;
+          if (bitResponse) bitResponse.textContent = mode.announcement;
           if (mode.key === "yes") playUiSound("bit-yes");
-          else if (mode.key === "no") playUiSound("bit-no");
-          bitReturnTimer = window.setTimeout(function () {
-            bitCompanion.dataset.answer = "idle";
-            bitAnswer.textContent = "Ask Bit";
-            bitCompanion.setAttribute("aria-label", "Ask Bit, the binary companion, for a yes or no");
-            drawBitCanvas(window.performance ? window.performance.now() : 0, false);
-          }, mode.key === "no" ? 1850 : 1450);
+          else playUiSound("bit-no");
+          bitReturnTimer = window.setTimeout(resetBit, mode.key === "no" ? 1850 : 1450);
+        };
+
+        bitCompanion.addEventListener("click", function () {
+          setBitPanel(bitPanel.hidden);
+        });
+
+        if (bitClose) {
+          bitClose.addEventListener("click", function () {
+            setBitPanel(false);
+            bitCompanion.focus({ preventScroll: true });
+          });
+        }
+
+        if (bitMissionButton) {
+          bitMissionButton.addEventListener("click", function () {
+            if (bitResponse) bitResponse.textContent = "Opening the five-transmission mission. Self-paced, under 60 seconds.";
+            setBitPanel(false);
+            openMission({ currentTarget: bitCompanion });
+          });
+        }
+
+        Array.prototype.slice.call(bitPanel.querySelectorAll("[data-bit-target], [data-bit-message]")).forEach(function (prompt) {
+          prompt.addEventListener("click", function () {
+            var message = prompt.getAttribute("data-bit-message");
+            if (message) {
+              answerWithBit(bitModes[1]);
+              if (bitResponse) bitResponse.textContent = message;
+              return;
+            }
+            var target = document.getElementById(prompt.getAttribute("data-bit-target"));
+            if (!target) return;
+            if (bitResponse) bitResponse.textContent = "Opening “" + prompt.textContent.trim() + "” — the receipt stays in view.";
+            playUiSound("route", 2);
+            target.scrollIntoView({ behavior: effectiveMotion() ? "smooth" : "auto", block: "start" });
+          });
+        });
+
+        if (bitEasterButton) {
+          bitEasterButton.addEventListener("click", function () {
+            bitIndex = (bitIndex + 1) % bitModes.length;
+            answerWithBit(bitModes[bitIndex]);
+          });
+        }
+
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "Escape" && !bitPanel.hidden) {
+            setBitPanel(false);
+            bitCompanion.focus({ preventScroll: true });
+          }
         });
       }
 
@@ -10124,6 +11070,7 @@
       });
 
       var primaryLinks = Array.prototype.slice.call(document.querySelectorAll(".primary-nav a[href^='#']"));
+      var spineLinks = Array.prototype.slice.call(document.querySelectorAll(".mission-spine a[href^='#']"));
       if ("IntersectionObserver" in window) {
         var deckObserver = new IntersectionObserver(function (entries) {
           entries.forEach(function (entry) {
@@ -10131,7 +11078,10 @@
             if (entry.target.classList.contains("reveal-item")) entry.target.classList.add("is-visible");
             if (entry.target.matches("section[id]")) {
               if (entry.target.id === "top") runDeckBoot();
-              if (entry.target.id === "topology" && topologyBoard) topologyBoard.classList.add("is-online");
+              if (entry.target.id === "topology" && topologyBoard) {
+                topologyBoard.classList.add("is-online");
+                runFleetCounters();
+              }
               var targetHref = "#" + entry.target.id;
               primaryLinks.forEach(function (link) {
                 var isCurrent = link.getAttribute("href") === targetHref;
@@ -10139,6 +11089,12 @@
                 if (isCurrent) link.setAttribute("aria-current", "location");
                 else link.removeAttribute("aria-current");
               });
+              if (spineLinks.some(function (link) { return link.getAttribute("href") === targetHref; })) {
+                spineLinks.forEach(function (link) {
+                  if (link.getAttribute("href") === targetHref) link.setAttribute("aria-current", "location");
+                  else link.removeAttribute("aria-current");
+                });
+              }
             }
           });
         }, { threshold: 0.12, rootMargin: "0px 0px -12% 0px" });
@@ -10147,6 +11103,259 @@
       } else {
         revealItems.forEach(function (item) { item.classList.add("is-visible"); });
         if (topologyBoard) topologyBoard.classList.add("is-online");
+      }
+
+      var routeSpectrumVisual = document.querySelector(".route-spectrum-visual");
+      var routeSpectrumReadout = document.getElementById("route-spectrum-readout");
+      var routeLaneSpans = routeSpectrumVisual ? Array.prototype.slice.call(routeSpectrumVisual.querySelectorAll("span")) : [];
+      var routeLaneDetails = [
+        "T0 // Kimi K3 — free classify + draft",
+        "T1 // DeepSeek V4 Flash — workhorse",
+        "T2 // DeepSeek V4 Pro — exception",
+        "T3A // Gemini 3.6 Flash — multimodal",
+        "T3B // Grok 4.5 — adversarial",
+        "T4A // Claude Sonnet 5 — synthesis",
+        "T4B // Sonar Pro — research",
+        "T5 // GPT-5.6 Sol — adjudication",
+        "LOCAL // Gemma 4 26B — fallback",
+        "FABRIC // Atlas · OpenRouter · ZenMux"
+      ];
+      var routeLaneActive = -1;
+
+      function setRouteLane(index) {
+        if (index === routeLaneActive) return;
+        routeLaneActive = index;
+        routeLaneSpans.forEach(function (span, spanIndex) {
+          span.classList.toggle("is-hot", spanIndex === index);
+        });
+        if (!routeSpectrumReadout) return;
+        if (index < 0) {
+          routeSpectrumReadout.classList.remove("is-live");
+          routeSpectrumReadout.textContent = "Hover the spectrum to inspect each lane";
+        } else {
+          routeSpectrumReadout.classList.add("is-live");
+          routeSpectrumReadout.textContent = routeLaneDetails[index] || "";
+        }
+      }
+
+      if (routeSpectrumVisual && routeLaneSpans.length) {
+        routeSpectrumVisual.addEventListener("pointermove", function (event) {
+          var rect = routeSpectrumVisual.getBoundingClientRect();
+          if (!rect.width) return;
+          var ratio = Math.max(0, Math.min(0.999, (event.clientX - rect.left) / rect.width));
+          setRouteLane(Math.floor(ratio * routeLaneSpans.length));
+        }, { passive: true });
+        routeSpectrumVisual.addEventListener("pointerleave", function () {
+          setRouteLane(-1);
+        });
+      }
+
+      var paletteDialog = document.getElementById("palette-dialog");
+      var paletteInput = document.getElementById("palette-input");
+      var paletteList = document.getElementById("palette-list");
+      var paletteMatches = [];
+      var paletteSelection = 0;
+      var lastPaletteFocus = null;
+
+      function paletteGoto(selector) {
+        return function () {
+          var target = document.querySelector(selector);
+          if (target) target.scrollIntoView({ behavior: effectiveMotion() ? "smooth" : "auto", block: "start" });
+        };
+      }
+
+      function paletteConsole(consoleCommand) {
+        return function () {
+          paletteGoto("#console")();
+          executeCommand(consoleCommand);
+          terminalInput.focus({ preventScroll: true });
+        };
+      }
+
+      var paletteEntries = [
+        { label: "Sovereign Core journey", tag: "Go", run: paletteGoto("#spice-flight") },
+        { label: "Three ways inside", tag: "Go", run: paletteGoto("#mission") },
+        { label: "Business proof", tag: "Go", run: paletteGoto("#proof") },
+        { label: "Event chain demo", tag: "Go", run: paletteGoto("#chain") },
+        { label: "Fleet topology", tag: "Go", run: paletteGoto("#topology") },
+        { label: "Hermes console", tag: "Go", run: paletteGoto("#console") },
+        { label: "Flight manifest", tag: "Go", run: paletteGoto("#manifest") },
+        { label: "Fleet card", tag: "Go", run: paletteGoto("#fleet-card") },
+        { label: "Open channel // contact", tag: "Go", run: paletteGoto("#hail") },
+        { label: "Engage 60-second mission", tag: "Run", run: function () { openMission(); } },
+        { label: "Run event chain", tag: "Run", run: function () { paletteGoto("#chain")(); chainButton.click(); } },
+        { label: "Render fleet card", tag: "Run", run: function () { paletteGoto("#fleet-card")(); drawFleetCard(true); } },
+        { label: "Copy proof summary", tag: "Run", run: function () { copyProofButton.click(); } },
+        { label: "Spice surge", tag: "Run", run: function () { triggerSpiceSurge(); } },
+        { label: "Warp pulse", tag: "Run", run: function () { pulseWarp(); } },
+        { label: "Toggle red alert theme", tag: "Toggle", run: function () { if (alertToggle) alertToggle.click(); } },
+        { label: "Toggle ambient FX", tag: "Toggle", run: function () { fxToggle.click(); } },
+        { label: "Toggle interface sound", tag: "Toggle", run: function () { if (soundToggle) soundToggle.click(); } },
+        { label: "status — fleet freshness", tag: "Console", run: paletteConsole("status") },
+        { label: "models — ten-lane fabric", tag: "Console", run: paletteConsole("models") },
+        { label: "cost — operating economics", tag: "Console", run: paletteConsole("cost") },
+        { label: "cascade — escalation tiers", tag: "Console", run: paletteConsole("cascade") },
+        { label: "projects — public builds", tag: "Console", run: paletteConsole("projects") }
+      ];
+
+      function paletteScore(query, haystack) {
+        if (!query) return 0;
+        var lowerQuery = query.toLowerCase();
+        var lowerHaystack = haystack.toLowerCase();
+        var queryIndex = 0;
+        var score = 0;
+        var lastMatch = -2;
+        for (var i = 0; i < lowerHaystack.length && queryIndex < lowerQuery.length; i += 1) {
+          if (lowerHaystack.charAt(i) === lowerQuery.charAt(queryIndex)) {
+            score += (lastMatch === i - 1 ? 1 : 4) + i * 0.02;
+            lastMatch = i;
+            queryIndex += 1;
+          }
+        }
+        return queryIndex === lowerQuery.length ? score : -1;
+      }
+
+      function setPaletteSelection(index) {
+        paletteSelection = index;
+        Array.prototype.slice.call(paletteList.children).forEach(function (item, itemIndex) {
+          if (item.classList.contains("palette-empty")) return;
+          item.setAttribute("aria-selected", String(itemIndex === index));
+          if (itemIndex === index && typeof item.scrollIntoView === "function") item.scrollIntoView({ block: "nearest" });
+        });
+      }
+
+      function runPaletteEntry(entry) {
+        closePalette();
+        playUiSound("confirm");
+        window.setTimeout(function () { entry.run(); }, 40);
+      }
+
+      function renderPaletteList() {
+        var query = paletteInput.value.trim();
+        paletteMatches = [];
+        paletteEntries.forEach(function (entry) {
+          var score = paletteScore(query, entry.tag + " " + entry.label);
+          if (score >= 0) paletteMatches.push({ entry: entry, score: score });
+        });
+        paletteMatches.sort(function (a, b) { return a.score - b.score; });
+        paletteList.replaceChildren();
+        if (!paletteMatches.length) {
+          var empty = document.createElement("li");
+          empty.className = "palette-empty";
+          empty.textContent = "No local match. Try status, fleet, or proof.";
+          paletteList.appendChild(empty);
+          return;
+        }
+        paletteMatches.forEach(function (match, index) {
+          var item = document.createElement("li");
+          item.setAttribute("role", "option");
+          item.setAttribute("aria-selected", "false");
+          var labelSpan = document.createElement("span");
+          labelSpan.textContent = match.entry.label;
+          var tagSpan = document.createElement("small");
+          tagSpan.textContent = match.entry.tag;
+          item.appendChild(labelSpan);
+          item.appendChild(tagSpan);
+          item.addEventListener("click", function () { runPaletteEntry(match.entry); });
+          item.addEventListener("pointerenter", function () { setPaletteSelection(index); });
+          paletteList.appendChild(item);
+        });
+        setPaletteSelection(0);
+      }
+
+      function openPalette() {
+        if (!paletteDialog || paletteDialog.open) return;
+        lastPaletteFocus = document.activeElement;
+        paletteInput.value = "";
+        renderPaletteList();
+        paletteDialog.showModal();
+        paletteInput.focus();
+        playUiSound("click");
+      }
+
+      function closePalette() {
+        if (paletteDialog && paletteDialog.open) paletteDialog.close();
+      }
+
+      if (paletteDialog) {
+        paletteInput.addEventListener("input", renderPaletteList);
+        paletteInput.addEventListener("keydown", function (event) {
+          if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+            event.preventDefault();
+            if (!paletteMatches.length) return;
+            var offset = event.key === "ArrowDown" ? 1 : -1;
+            setPaletteSelection((paletteSelection + offset + paletteMatches.length) % paletteMatches.length);
+          } else if (event.key === "Enter") {
+            event.preventDefault();
+            if (paletteMatches[paletteSelection]) runPaletteEntry(paletteMatches[paletteSelection].entry);
+          }
+        });
+        paletteDialog.addEventListener("click", function (event) {
+          if (event.target === paletteDialog) closePalette();
+        });
+        paletteDialog.addEventListener("close", function () {
+          if (lastPaletteFocus && typeof lastPaletteFocus.focus === "function") lastPaletteFocus.focus({ preventScroll: true });
+        });
+        document.addEventListener("keydown", function (event) {
+          if (event.key.toLowerCase() === "k" && (event.ctrlKey || event.metaKey) && !event.altKey && !event.shiftKey) {
+            event.preventDefault();
+            if (paletteDialog.open) closePalette();
+            else openPalette();
+          }
+        });
+      }
+
+      var konamiSequence = ["arrowup", "arrowup", "arrowdown", "arrowdown", "arrowleft", "arrowright", "arrowleft", "arrowright", "b", "a"];
+      var konamiProgress = 0;
+
+      function triggerSpiceOverload() {
+        if (!effectiveMotion()) {
+          chainAnnouncement.textContent = "Spice overload requested, but FX is off or reduced motion is active.";
+          return;
+        }
+        spiceOverloadUntil = (window.performance ? window.performance.now() : Date.now()) + 4200;
+        triggerSpiceSurge();
+        burstSpiceAt(window.innerWidth * 0.5, window.innerHeight * 0.5, 30);
+        chainAnnouncement.textContent = "THE SPICE MUST FLOW — Guild Navigator overload engaged. Visual effect only.";
+        if (terminalLog) appendLog("THE SPICE MUST FLOW — Guild Navigator overload engaged.", "answer");
+      }
+
+      document.addEventListener("keydown", function (event) {
+        var target = event.target;
+        if (target && typeof target.matches === "function" && (target.matches("input, textarea, select") || target.isContentEditable)) return;
+        if (!event.key) return;
+        var key = event.key.toLowerCase();
+        konamiProgress = key === konamiSequence[konamiProgress] ? konamiProgress + 1 : (key === konamiSequence[0] ? 1 : 0);
+        if (konamiProgress === konamiSequence.length) {
+          konamiProgress = 0;
+          triggerSpiceOverload();
+        }
+      });
+
+      var identityWordmark = document.querySelector(".identity-wordmark");
+      function runIdentityDecrypt() {
+        if (!identityWordmark || !effectiveMotion()) return;
+        var finalText = identityWordmark.textContent;
+        var glyphs = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789◈#$%&";
+        var frame = 0;
+        var totalFrames = 24;
+        identityWordmark.setAttribute("aria-label", finalText);
+        var decryptTimer = window.setInterval(function () {
+          frame += 1;
+          var revealed = Math.floor((frame / totalFrames) * finalText.length);
+          var output = "";
+          for (var i = 0; i < finalText.length; i += 1) {
+            var character = finalText.charAt(i);
+            if (character === " " || i < revealed) output += character;
+            else output += glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+          }
+          identityWordmark.textContent = output;
+          if (frame >= totalFrames) {
+            window.clearInterval(decryptTimer);
+            identityWordmark.textContent = finalText;
+            identityWordmark.removeAttribute("aria-label");
+          }
+        }, 46);
       }
 
       paintDeckClock();
@@ -10162,6 +11371,7 @@
           sizeCanvas();
           sizeBitCanvas();
           sizeJourneyCanvas();
+          sizeFleetMap();
           refreshStarfield();
           updateScrollWorld();
         }, 160);
@@ -10181,7 +11391,9 @@
       sizeCanvas();
       sizeBitCanvas();
       sizeJourneyCanvas();
+      sizeFleetMap();
       refreshStarfield();
+      runIdentityDecrypt();
     }());
   </script>
 </body>

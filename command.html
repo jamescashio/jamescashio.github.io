@@ -5,7 +5,8 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; script-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://fonts.googleapis.com; media-src 'self';">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZEUSAPOLLO Command Center v21.2a</title>
+<meta name="robots" content="noindex, follow">
+<title>ZEUSAPOLLO Command Center — v21.2a Historical Archive</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700&family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
@@ -488,15 +489,22 @@ body {
   <!-- HEADER -->
   <div class="header">
     <div style="display:flex;align-items:center;gap:12px;">
-      <a href="index.html" class="back-link">← ZEUSAPOLLO v21.2a</a>
+      <a href="index.html" class="back-link">← CASHIO.US // CURRENT BUILD v30</a>
     </div>
     <div class="status-bar">
-      <span class="status-dot online"></span>
-      <span>ALL SYSTEMS NOMINAL</span>
+      <span class="status-dot warning"></span>
+      <span>HISTORICAL ARCHIVE • MAY 2026 ERA</span>
       <span style="color:var(--text-dim)">•</span>
       <span id="clock">00:00:00</span>
       <span style="color:var(--text-dim)">UTC</span>
     </div>
+  </div>
+
+  <!-- ARCHIVE NOTICE -->
+  <div style="margin-bottom:20px;padding:14px 18px;border:1px solid rgba(255,149,0,0.45);border-radius:8px;background:rgba(255,149,0,0.07);font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7;color:var(--text);">
+    <strong style="color:var(--accent);letter-spacing:2px;">◆ ARCHIVED BUILD — v21.2a (MAY 2026)</strong><br>
+    This page is preserved as a snapshot of an earlier ZeusApollo architecture. Topology, service names, and figures reflect that era and are replayed for illustration — nothing here is live, and the current verified fleet is documented on the
+    <a href="index.html" style="color:var(--cyan);">v30 command deck</a>.
   </div>
 
   <!-- CLUSTER TOPOLOGY -->
@@ -504,7 +512,7 @@ body {
     <div class="panel-title">
       <span>
         <span class="section-label" style="font-size:11px;gap:10px;text-shadow:0 0 20px var(--cyan);">
-          <span style="color:var(--cyan);">◆ LIVE NETWORK</span>
+          <span style="color:var(--cyan);">◆ ARCHIVED TOPOLOGY</span>
         </span>
         CLUSTER TOPOLOGY
       </span>
@@ -830,7 +838,7 @@ body {
     <!-- Event Ticker -->
     <div class="panel">
       <div class="panel-title">
-        <span>Cluster Event Stream</span>
+        <span>Cluster Event Stream — Archived Replay</span>
         <span class="badge" id="event-count">0 EVENTS</span>
       </div>
       <div class="ticker-container">
@@ -854,7 +862,7 @@ body {
     <div class="panel">
       <div class="panel-title">
         <span>Swarm Bridge Metrics</span>
-        <span class="badge">5 MIN</span>
+        <span class="badge">PERIOD SAMPLE</span>
       </div>
       <div class="metrics-grid">
         <div class="metric">
@@ -921,7 +929,7 @@ body {
 
   <!-- FOOTER -->
   <div style="text-align:center;padding:24px 0;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-dim);border-top:1px solid rgba(255,255,255,0.05);margin-top:8px;">
-    ZEUSAPOLLO v21.2a COMMAND CENTER • SOVEREIGN AI INFRASTRUCTURE • DOUG CASHIO • doug@cashio.us
+    ZEUSAPOLLO v21.2a COMMAND CENTER • HISTORICAL ARCHIVE • SOVEREIGN AI INFRASTRUCTURE • DOUG CASHIO • doug@cashio.us
   </div>
 </div>
 
@@ -1086,37 +1094,20 @@ nodes.forEach(n => {
 const online = nodes.filter(n => n.status !== 'offline').length;
 nodeCountEl.textContent = `${online}/${nodes.length} ONLINE`;
 
-// ─── METRICS SIMULATION ───
-let totalRoutes = Math.floor(Math.random() * 120) + 250;
-let fastPct = 55 + Math.random() * 10;
-let deepPct = 25 + Math.random() * 8;
-let sovereignPct = 100 - fastPct - deepPct;
+// ─── ARCHIVED PERIOD SAMPLE ───
+// Fixed illustrative figures from the v21.2a era; no counters are fabricated at view time.
+const archivedSample = { totalRoutes: '~300', cacheHit: '73%', latency: '185ms', fastPct: 55, deepPct: 30, sovereignPct: 15 };
 
-function updateMetrics() {
-  totalRoutes += Math.floor(Math.random() * 3);
-  const cacheHit = (73 + Math.random() * 8).toFixed(0);
-  const latency = (140 + Math.random() * 80).toFixed(0);
-
-  // Shift distribution slightly
-  fastPct = Math.max(40, Math.min(70, fastPct + (Math.random() - 0.5) * 2));
-  deepPct = Math.max(15, Math.min(40, deepPct + (Math.random() - 0.5) * 2));
-  sovereignPct = Math.max(5, 100 - fastPct - deepPct);
-
-  document.getElementById('total-routes').textContent = totalRoutes;
-  document.getElementById('cache-hit').textContent = cacheHit + '%';
-  document.getElementById('avg-latency').textContent = latency + 'ms';
-  document.getElementById('active-nodes').textContent = nodes.filter(n => n.status !== 'offline').length;
-
-  document.getElementById('bar-fast').style.width = fastPct + '%';
-  document.getElementById('bar-deep').style.width = deepPct + '%';
-  document.getElementById('bar-sovereign').style.width = sovereignPct + '%';
-  document.getElementById('pct-fast').textContent = fastPct.toFixed(0) + '%';
-  document.getElementById('pct-deep').textContent = deepPct.toFixed(0) + '%';
-  document.getElementById('pct-sovereign').textContent = sovereignPct.toFixed(0) + '%';
-}
-
-setInterval(updateMetrics, 5000);
-updateMetrics();
+document.getElementById('total-routes').textContent = archivedSample.totalRoutes;
+document.getElementById('cache-hit').textContent = archivedSample.cacheHit;
+document.getElementById('avg-latency').textContent = archivedSample.latency;
+document.getElementById('active-nodes').textContent = nodes.filter(n => n.status !== 'offline').length;
+document.getElementById('bar-fast').style.width = archivedSample.fastPct + '%';
+document.getElementById('bar-deep').style.width = archivedSample.deepPct + '%';
+document.getElementById('bar-sovereign').style.width = archivedSample.sovereignPct + '%';
+document.getElementById('pct-fast').textContent = archivedSample.fastPct + '%';
+document.getElementById('pct-deep').textContent = archivedSample.deepPct + '%';
+document.getElementById('pct-sovereign').textContent = archivedSample.sovereignPct + '%';
 </script>
 
 </body>

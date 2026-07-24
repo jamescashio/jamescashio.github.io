@@ -2,6 +2,44 @@
 
 All notable public-facing changes to the ZeusApollo portfolio are recorded here. Visible dates use MM-DD-YYYY.
 
+## [v30 polish] — 07-23-2026 / 07-24-2026
+
+### Added — 07-24 apex port (from the v31 prototype)
+
+- Bit is now a deck guide: clicking Bit opens a local panel of suggested questions that fly the visitor to the mission, journey, proof, chain, fleet, console, card, or contact — with the classic yes/no toy preserved as its own easter-egg button and an honest "Is the data live?" answer.
+- Mission spine: a fixed progress rail of section dots with hover labels and a live current-section marker (desktop only).
+- Ambient topography contour layer behind the deck; cluster-wide fleet scan sweep when the topology powers on.
+- Corrected the daily-cost example in the protection guide docs to the measured $0.26.
+
+### Added — 07-24 cinematic pass
+
+- Sample-based LCARS interface sound set (click, success, sequence, warp, red-alert klaxon) from repo-hosted assets, loaded only when sound is enabled, with the synth engine as automatic fallback.
+- Fleet topology "starmap": animated canvas with curved data links and traveling packets between Zeus, Apollo, and Athena, radar pings, cluster count-up on power-up, per-container breathing status lights, and hover states.
+- Athena edge upgrade: animated signal bars and an "Edge link active" state readout.
+- Hyperspace starfield burst on every warp pulse; slow-drifting hero nebulas.
+- Easter eggs for the observant: the Konami code triggers a Guild Navigator spice overload, and the console understands make it so, engage, red alert, tea earl grey hot, end of line, greetings program, fear/litany, kwisatz haderach, pantheon, konami, and xyzzy.
+- Bit companion moved inboard with its answer bubble anchored on-screen (it previously clipped off the right edge on hover).
+
+### Changed — 07-24
+
+- `command.html` archive is now noindexed and removed from the sitemap; `lab.html` labels its link to it as the v21 archive.
+
+### Added
+
+- Local command palette (Ctrl+K / ⌘K, `palette` console command, chip): fuzzy jump to any section and one-keystroke access to the mission, event chain, Fleet Card, toggles, and console commands — fully local, zero network calls.
+- Route-spectrum lane inspector: hovering the hero routing spectrum names each of the ten quality-gated lanes.
+- Hermes console typewriter output with motion-safe caret; full text is exposed immediately to assistive technology.
+- Identity decrypt reveal on the hero wordmark and scroll-velocity warp streaks in the starfield (both FX- and reduced-motion-gated).
+- Animated data packets on the fleet architecture bus.
+
+### Changed
+
+- Typography is now fully self-hosted from `/fonts`; the Google Fonts dependency was removed and the Content Security Policy tightened accordingly.
+- `lab.html` refreshed from stale v28 figures to the verified v30 export (18 containers, 10 lanes, 71 jobs, $0.26/day observed).
+- `command.html` reframed as a clearly labeled v21.2a historical archive; view-time randomized counters were replaced with fixed, labeled period samples per the "never fake a number" standing order.
+- The hidden `/ai` deck's assessment CTAs now open a working email request instead of pointing at a page that was never published.
+- Sitemap `lastmod` dates refreshed.
+
 ## [v30] — 07-22-2026
 
 ### Added
