@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#070911">
   <meta name="robots" content="index, follow">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data:; script-src 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data:; script-src 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="description" content="Doug Cashio's independently built ZeusApollo homelab portfolio: enterprise AI, cybersecurity, sovereign infrastructure, measurable outcomes, and auditable automation.">
   <meta name="author" content="Doug Cashio">
@@ -1797,6 +1797,93 @@
       margin-top: 12px;
     }
 
+    .public-status-link {
+      position: relative;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      margin-top: 16px;
+      padding: 12px;
+      border: 1px solid rgba(101,222,241,0.22);
+      border-radius: 10px;
+      background: rgba(0,249,255,0.026);
+      overflow: hidden;
+    }
+
+    .public-status-link::after {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,249,255,0.8), transparent);
+      content: "";
+      transform: translateX(-100%);
+    }
+
+    body[data-fx="on"] .public-status-link[data-link-state="checking"]::after {
+      animation: status-link-scan 1.4s linear infinite;
+    }
+
+    .public-status-pulse {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--warning);
+      box-shadow: 0 0 12px rgba(255,204,0,0.5);
+    }
+
+    .public-status-link[data-link-state="online"] .public-status-pulse {
+      background: var(--verified);
+      box-shadow: 0 0 15px rgba(0,255,174,0.6);
+    }
+
+    .public-status-link[data-link-state="offline"] .public-status-pulse {
+      background: var(--orange);
+      box-shadow: 0 0 15px rgba(255,149,0,0.55);
+    }
+
+    .public-status-link strong,
+    .public-status-link small {
+      display: block;
+      font-family: var(--mono);
+    }
+
+    .public-status-link strong {
+      color: var(--cyan);
+      font-size: var(--text-xs);
+      letter-spacing: 0.06em;
+    }
+
+    .public-status-link small {
+      margin-top: 3px;
+      color: var(--quiet);
+      font-size: 0.64rem;
+      line-height: 1.35;
+    }
+
+    .public-status-link button {
+      min-width: 52px;
+      min-height: 36px;
+      padding: 0 10px;
+      border: 1px solid rgba(101,222,241,0.3);
+      border-radius: 7px;
+      color: var(--ink);
+      background: rgba(255,255,255,0.035);
+      cursor: pointer;
+      font: 900 0.66rem/1 var(--mono);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .public-status-link button:hover,
+    .public-status-link button:focus-visible {
+      border-color: var(--border-active);
+      color: var(--cyan);
+      background: rgba(0,249,255,0.07);
+    }
+
     .manifest-intro .mentat-protocol {
       margin: 22px 0 0;
       padding: 14px 14px 14px 16px;
@@ -1876,11 +1963,55 @@
     }
 
     .route-card {
+      position: relative;
       min-height: 102px;
       padding: 14px;
       border: 1px solid rgba(135, 157, 188, 0.2);
       border-radius: 10px;
       background: rgba(255, 255, 255, 0.022);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+      overflow: hidden;
+      transform: translateZ(0);
+      transition:
+        transform 220ms ease,
+        border-color 220ms ease,
+        background 220ms ease,
+        box-shadow 220ms ease;
+    }
+
+    .route-card::before {
+      position: absolute;
+      inset: -50% auto -50% -36%;
+      width: 28%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.11), transparent);
+      content: "";
+      pointer-events: none;
+      transform: skewX(-16deg);
+      transition: left 520ms ease;
+    }
+
+    .route-card::after {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(0,249,255,0.48);
+      box-shadow: 0 0 12px rgba(0,249,255,0.45);
+      content: "";
+    }
+
+    body[data-fx="on"] .route-card:hover {
+      z-index: 2;
+      border-color: rgba(0,249,255,0.42);
+      background: linear-gradient(135deg, rgba(0,249,255,0.05), rgba(255,255,255,0.026));
+      box-shadow: 0 18px 42px rgba(0,0,0,0.28), 0 0 24px rgba(0,249,255,0.08);
+      transform: translateY(-3px) scale(1.008);
+    }
+
+    body[data-fx="on"] .route-card:hover::before {
+      left: 118%;
     }
 
     .route-card strong,
@@ -1916,6 +2047,21 @@
     .route-card.route-watch strong,
     .route-card.route-watch small {
       color: var(--warning);
+    }
+
+    .route-card.route-new {
+      border-color: rgba(0,255,174,0.28);
+      background: linear-gradient(135deg, rgba(0,255,174,0.05), rgba(0,249,255,0.025));
+      box-shadow: inset 3px 0 0 rgba(0,255,174,0.52);
+    }
+
+    .route-card.route-new strong {
+      color: var(--verified);
+    }
+
+    .route-card.route-new::after {
+      background: var(--verified);
+      box-shadow: 0 0 14px rgba(0,255,174,0.7);
     }
 
     .model-verification {
@@ -1993,12 +2139,163 @@
       align-items: center;
     }
 
+    .fleet-defense-stage {
+      position: relative;
+      isolation: isolate;
+      perspective: 1200px;
+    }
+
     .fleet-card-frame {
+      position: relative;
+      z-index: 2;
       padding: 10px;
       border: 1px solid rgba(101, 222, 241, 0.34);
       border-radius: 18px;
       background: rgba(4, 7, 12, 0.88);
       box-shadow: var(--shadow), 0 0 70px rgba(25, 201, 235, 0.08);
+      transition:
+        transform 420ms cubic-bezier(.2,.8,.2,1),
+        border-color 300ms ease,
+        box-shadow 300ms ease,
+        filter 300ms ease;
+    }
+
+    .shield-array {
+      position: absolute;
+      z-index: 4;
+      inset: -7%;
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.72);
+      transition: opacity 320ms ease, transform 620ms cubic-bezier(.16,1,.3,1);
+    }
+
+    .shield-array::before {
+      position: absolute;
+      inset: 8%;
+      border: 1px solid rgba(0,249,255,0.28);
+      border-radius: 50%;
+      background:
+        repeating-conic-gradient(from 15deg, rgba(0,249,255,0.08) 0 1deg, transparent 1deg 30deg),
+        radial-gradient(circle, transparent 51%, rgba(0,249,255,0.08) 64%, transparent 74%);
+      box-shadow:
+        inset 0 0 50px rgba(0,249,255,0.12),
+        0 0 50px rgba(0,249,255,0.11);
+      content: "";
+    }
+
+    .shield-ring,
+    .shield-sweep {
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .shield-ring {
+      border: 1px solid rgba(0,249,255,0.34);
+      box-shadow: 0 0 22px rgba(0,249,255,0.08);
+    }
+
+    .shield-ring-one { inset: 2%; }
+    .shield-ring-two { inset: 13%; border-style: dashed; }
+    .shield-ring-three { inset: 24%; border-color: rgba(255,204,0,0.26); }
+
+    .shield-sweep {
+      inset: 5%;
+      border-top: 3px solid rgba(160,252,255,0.9);
+      border-right: 1px solid transparent;
+      filter: drop-shadow(0 0 9px rgba(0,249,255,0.75));
+    }
+
+    .shield-array > i {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #d8ffff;
+      box-shadow: 0 0 16px rgba(0,249,255,0.9);
+    }
+
+    .shield-array > i:nth-of-type(1) { top: 12%; left: 49%; }
+    .shield-array > i:nth-of-type(2) { top: 49%; right: 5%; }
+    .shield-array > i:nth-of-type(3) { bottom: 10%; left: 48%; }
+    .shield-array > i:nth-of-type(4) { top: 49%; left: 4%; }
+
+    .defense-readout {
+      position: absolute;
+      z-index: 6;
+      top: 17px;
+      right: 18px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 10px;
+      border: 1px solid rgba(101,222,241,0.28);
+      border-radius: 7px;
+      background: rgba(4,8,16,0.84);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.32);
+      font: 900 0.62rem/1 var(--mono);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .defense-readout span { color: var(--quiet); }
+    .defense-readout strong { color: var(--warning); }
+
+    .fleet-card-grid[data-defense="raised"] .shield-array,
+    .fleet-card-grid[data-defense="alert"] .shield-array {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .fleet-card-grid[data-defense="raised"] .fleet-card-frame {
+      border-color: rgba(0,249,255,0.7);
+      box-shadow:
+        0 24px 80px rgba(0,0,0,0.5),
+        0 0 38px rgba(0,249,255,0.18),
+        inset 0 0 30px rgba(0,249,255,0.04);
+      transform: translateZ(24px) scale(0.975);
+    }
+
+    .fleet-card-grid[data-defense="raised"] .defense-readout strong {
+      color: var(--verified);
+      text-shadow: 0 0 12px rgba(0,255,174,0.5);
+    }
+
+    body[data-fx="on"] .fleet-card-grid[data-defense="raised"] .shield-sweep {
+      animation: shield-sweep 4.8s linear infinite;
+    }
+
+    body[data-fx="on"] .fleet-card-grid[data-defense="raised"] .shield-ring-two {
+      animation: shield-counterspin 9s linear infinite;
+    }
+
+    .fleet-card-grid[data-defense="alert"] .fleet-card-frame {
+      border-color: rgba(255,24,58,0.82);
+      box-shadow:
+        0 24px 90px rgba(0,0,0,0.55),
+        0 0 58px rgba(255,24,58,0.28),
+        inset 0 0 34px rgba(255,24,58,0.08);
+      filter: saturate(1.12);
+      transform: translateZ(28px) scale(0.97);
+    }
+
+    .fleet-card-grid[data-defense="alert"] .shield-array {
+      filter: hue-rotate(145deg) saturate(1.8);
+    }
+
+    .fleet-card-grid[data-defense="alert"] .defense-readout {
+      border-color: rgba(255,24,58,0.65);
+      background: rgba(40,2,8,0.9);
+    }
+
+    .fleet-card-grid[data-defense="alert"] .defense-readout strong {
+      color: #ff7188;
+      text-shadow: 0 0 14px rgba(255,24,58,0.75);
+    }
+
+    body[data-fx="on"] .fleet-card-grid[data-defense="alert"] .shield-array {
+      animation: alert-shield-pulse 900ms ease-in-out infinite;
     }
 
     #fleet-card-canvas {
@@ -2045,6 +2342,36 @@
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
+    }
+
+    .shield-button[aria-pressed="true"] {
+      border-color: rgba(0,255,174,0.72);
+      color: #001512;
+      background: linear-gradient(135deg, #92ffe2, #a8f8ff);
+      box-shadow: 0 0 25px rgba(0,255,174,0.18);
+    }
+
+    .alert-drill-button {
+      border-color: rgba(255,24,58,0.34);
+      color: #ff9aac;
+    }
+
+    .alert-drill-button:hover,
+    .alert-drill-button:focus-visible {
+      border-color: rgba(255,24,58,0.72);
+      color: white;
+      background: rgba(255,24,58,0.12);
+      box-shadow: 0 0 24px rgba(255,24,58,0.12);
+    }
+
+    .defense-disclosure {
+      margin: 16px 0;
+      padding: 11px 12px;
+      border-left: 2px solid var(--gold);
+      color: var(--quiet) !important;
+      background: rgba(255,204,0,0.032);
+      font: 800 0.66rem/1.55 var(--mono);
+      letter-spacing: 0.04em;
     }
 
     .download-status {
@@ -3629,6 +3956,19 @@
       100% { transform: scale(1); }
     }
     @keyframes alert-pulse { 50% { opacity: 0.08; } }
+    @keyframes status-link-scan {
+      to { transform: translateX(100%); }
+    }
+    @keyframes shield-sweep {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes shield-counterspin {
+      to { transform: rotate(-360deg); }
+    }
+    @keyframes alert-shield-pulse {
+      0%, 100% { opacity: 0.72; transform: scale(0.985); }
+      50% { opacity: 1; transform: scale(1.025); }
+    }
     @keyframes warp-burst {
       0% { opacity: 0; transform: scale(0.12) rotate(-2deg); }
       38% { opacity: 0.72; }
@@ -4951,6 +5291,24 @@
       .model-routes,
       .fleet-card-facts {
         grid-template-columns: 1fr;
+      }
+
+      .public-status-link {
+        grid-template-columns: auto minmax(0, 1fr);
+      }
+
+      .public-status-link button {
+        grid-column: 2;
+        justify-self: start;
+      }
+
+      .shield-array {
+        inset: -2%;
+      }
+
+      .defense-readout {
+        top: 10px;
+        right: 10px;
       }
 
       .fleet-card-actions,
@@ -8198,7 +8556,7 @@
           <ul class="hero-proof">
             <li><strong>7.2×</strong> lower matched-task unit cost</li>
             <li><strong data-fleet="healthyServiceCount">17</strong> healthy services in last snapshot</li>
-            <li><strong data-fleet="routeCount">10</strong> model routes in last snapshot</li>
+            <li><strong data-fleet="routeCount">10</strong> configured model routes</li>
           </ul>
         </div>
 
@@ -8206,7 +8564,7 @@
           <div class="deck-boot" id="deck-boot" aria-hidden="true" hidden>
             <div class="boot-brand">ZEUSAPOLLO</div>
             <div class="boot-line" style="--boot-delay:0ms">[01] PUBLIC PROOF DECK // HANDSHAKE ACCEPTED</div>
-            <div class="boot-line" style="--boot-delay:140ms">[02] STATUS EXPORT // 07-14-2026 // EXP 07-17-2026</div>
+            <div class="boot-line" id="status-boot-line" style="--boot-delay:140ms">[02] STATUS EXPORT // 07-14-2026 // EXP 07-17-2026</div>
             <div class="boot-line" style="--boot-delay:280ms">[03] HERMES CONSOLE // LOCAL SAFE MODE</div>
             <div class="boot-line" style="--boot-delay:420ms">[04] GUILD NAVIGATOR SPICE // PARTICLES READY</div>
             <div class="boot-line" style="--boot-delay:560ms">[05] COMMAND DECK // ENGAGED</div>
@@ -8235,7 +8593,7 @@
             <div class="profile-grid">
               <div class="profile-metric"><strong>7.2×</strong><span>Lower unit cost</span><small>Matched task vs Opus-primary baseline</small></div>
               <div class="profile-metric"><strong data-fleet="dailyBurn">$0.35</strong><span>API inference / day</span><small>Last reported sampled spend</small></div>
-              <div class="profile-metric"><strong data-fleet="healthyServiceCount">17</strong><span>Healthy services</span><small>Owner-reported 07-14-2026</small></div>
+              <div class="profile-metric"><strong data-fleet="healthyServiceCount">17</strong><span>Healthy services</span><small id="healthy-verified-copy">Owner-reported 07-14-2026</small></div>
               <div class="profile-metric"><strong data-fleet="routeCount">10</strong><span>Model routes</span><small>Configured routes, not traffic claims</small></div>
             </div>
             <div class="profile-foot">
@@ -8281,7 +8639,7 @@
             </div>
             <h3>Private by design</h3>
             <p>Routine and sensitive workloads can remain under personally controlled infrastructure.</p>
-            <small>Public-safe architecture snapshot // verified 07-14-2026</small>
+            <small id="proof-control-freshness">Public-safe architecture snapshot // verified 07-14-2026</small>
             <a href="#topology">View architecture <span aria-hidden="true">→</span></a>
           </article>
           <article class="proof-rail-card">
@@ -8644,14 +9002,14 @@
             <p class="eyebrow">04 // Fleet architecture</p>
             <h2 id="topology-title">Two hosts. Seventeen healthy services.<br>One honest public status.</h2>
           </div>
-          <p>A public-safe role map of my personal lab—no addresses, ports, credentials, customer data, or access paths. The 07-14-2026 export confirmed 17 healthy services; Home-Asst is retired and Athena was not reported.</p>
+          <p id="topology-summary">A public-safe role map of my personal lab—no addresses, ports, credentials, customer data, or access paths. The 07-14-2026 export confirmed 17 healthy services; Home-Asst is retired and Athena was not reported.</p>
         </div>
 
         <div class="fleet-legend" aria-label="Fleet status key">
           <span><i aria-hidden="true"></i>Owner-reported healthy</span>
           <span class="legend-unknown"><i aria-hidden="true"></i>Not reported</span>
           <span class="legend-retired"><i aria-hidden="true"></i>Decommissioned</span>
-          <span class="legend-local">Status window: 07-14-2026 → 07-17-2026 // no live endpoints</span>
+          <span class="legend-local" id="topology-window">Status window: 07-14-2026 → 07-17-2026 // no live endpoints</span>
         </div>
 
         <div class="topology-board">
@@ -8668,7 +9026,7 @@
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Hermes</strong><small>AI gateway + primary agent</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Technitium-BU</strong><small>DNS secondary</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>n8n</strong><small>Automation engine</small></span></li>
-              <li class="guest is-unknown"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Athena</strong><small>Not included in 07-14-2026 export</small></span></li>
+              <li class="guest is-unknown"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Athena</strong><small id="athena-status-copy">Not included in 07-14-2026 export</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Wazuh</strong><small>SIEM monitoring</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Vaultwarden</strong><small>Password management</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Control-Plane</strong><small>Orchestration + crew bridge</small></span></li>
@@ -8691,12 +9049,12 @@
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Atlas</strong><small>LiteLLM + GLM + Kernel</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>AI-Stack</strong><small>Local inference</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Dionysus</strong><small>Unraid + Plex primary</small></span></li>
-              <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Plex</strong><small>Owner-reported healthy · 07-14-2026</small></span></li>
+              <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Plex</strong><small id="plex-status-copy">Owner-reported healthy · 07-14-2026</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Genesis</strong><small>NAS storage</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>PBS</strong><small>Proxmox backups</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Rclone</strong><small>Encrypted offsite sync</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Backup-Verifier</strong><small>Snapshot integrity</small></span></li>
-              <li class="guest is-retired"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Home-Asst</strong><small>Decommissioned · 07-14-2026</small></span></li>
+              <li class="guest is-retired"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Home-Asst</strong><small id="home-assist-status-copy">Decommissioned · 07-14-2026</small></span></li>
             </ul>
           </article>
 
@@ -8781,42 +9139,50 @@
             <h3>One source of truth.</h3>
             <p>The preview treats each repeated figure as shared fleet state. Change it once; the hero, console, topology, manifest, and card stay aligned.</p>
             <span class="status-badge">CASHIO.US // v30 DATA · v31 EXPERIENCE</span>
+            <div class="public-status-link" id="public-status-link" data-link-state="checking">
+              <span class="public-status-pulse" aria-hidden="true"></span>
+              <div>
+                <strong id="status-link-label">PUBLIC STATUS LINK // CHECKING</strong>
+                <small id="status-last-sync">Cache-busted browser refresh every 60 seconds.</small>
+              </div>
+              <button type="button" id="refresh-status" aria-label="Refresh the public status snapshot now">Sync</button>
+            </div>
             <p class="mentat-protocol"><strong>Mentat protocol</strong> Observe. Route. Verify. Explain.</p>
           </aside>
 
           <div class="manifest-panels">
             <details class="manifest-panel" open>
-              <summary data-manifest="models">Model routes <span>10 configured routes</span></summary>
+              <summary data-manifest="models">Model routes <span id="model-route-summary">10 configured routes</span></summary>
               <div class="manifest-content">
                 <div class="model-routes">
-                  <div class="route-card"><strong>01 // PRIMARY</strong><span>DeepSeek V4 Pro</span><small>Agent tasks, briefings, delegation</small></div>
-                  <div class="route-card"><strong>02 // PREMIUM</strong><span>Claude Sonnet 5</span><small>High-value reasoning escalation</small></div>
-                  <div class="route-card"><strong>03 // RESEARCH</strong><span>Grok 4.5</span><small>Current research + knowledge work</small></div>
-                  <div class="route-card"><strong>04 // CODING</strong><span>GLM 5.2</span><small>Coding + delegation fallback</small></div>
-                  <div class="route-card"><strong>05 // EXTRACTION</strong><span>Gemma 4 26B A4B</span><small>Local extraction + compression</small></div>
-                  <div class="route-card"><strong>06 // VISION</strong><span>Gemini 3.5 Flash</span><small>Multimodal inspection + fast agent loops</small></div>
-                  <div class="route-card route-watch"><strong>07 // VOICE · LEGACY</strong><span>GPT-4o mini TTS</span><small>Configured voice route; provider marks deprecated</small></div>
-                  <div class="route-card"><strong>08 // FAILOVER 1</strong><span>DeepSeek V4 Flash</span><small>Fast first-line recovery route</small></div>
-                  <div class="route-card"><strong>09 // FAILOVER 2</strong><span>GLM 5.2</span><small>Secondary reasoning recovery</small></div>
-                  <div class="route-card"><strong>10 // FAILOVER 3</strong><span>Gemini 3.5 Flash</span><small>Multimodal final recovery route</small></div>
+                  <div class="route-card" data-route-key="primary"><strong>01 // PRIMARY</strong><span data-route-model>DeepSeek V4 Pro</span><small>Agent tasks, briefings, delegation</small></div>
+                  <div class="route-card" data-route-key="premium"><strong>02 // PREMIUM</strong><span data-route-model>Claude Sonnet 5</span><small>High-value reasoning escalation</small></div>
+                  <div class="route-card" data-route-key="research"><strong>03 // RESEARCH</strong><span data-route-model>Grok 4.5</span><small>Current research + knowledge work</small></div>
+                  <div class="route-card" data-route-key="coding"><strong>04 // CODING</strong><span data-route-model>GLM 5.2</span><small>Coding + delegation fallback</small></div>
+                  <div class="route-card" data-route-key="extraction"><strong>05 // EXTRACTION</strong><span data-route-model>Gemma 4 26B A4B</span><small>Local extraction + compression</small></div>
+                  <div class="route-card route-new" data-route-key="vision"><strong>06 // VISION · CURRENT</strong><span data-route-model>Gemini 3.6 Flash</span><small>Multimodal inspection + fast agent loops</small></div>
+                  <div class="route-card route-new" data-route-key="voice"><strong>07 // VOICE · OWNER ROUTE</strong><span data-route-model>Grok 4.6 Voice TTS</span><small>Owner-reported route name; public xAI docs verify the Voice API</small></div>
+                  <div class="route-card" data-route-key="failover_1"><strong>08 // FAILOVER 1</strong><span data-route-model>DeepSeek V4 Flash</span><small>Fast first-line recovery route</small></div>
+                  <div class="route-card" data-route-key="failover_2"><strong>09 // FAILOVER 2</strong><span data-route-model>GLM 5.2</span><small>Secondary reasoning recovery</small></div>
+                  <div class="route-card route-new" data-route-key="failover_3"><strong>10 // FAILOVER 3 · CURRENT</strong><span data-route-model>Gemini 3.6 Flash</span><small>Multimodal final recovery route</small></div>
                 </div>
                 <div class="model-verification">
-                  <strong>Provider catalog check // 07-23-2026.</strong> Public names were reconciled against official documentation. Routes describe the owner-reported configuration, not live traffic or a universal model ranking. The voice route remains visible because truth outranks novelty; it should be evaluated before the next system refresh.
+                  <strong>Provider catalog check // 07-23-2026.</strong> Gemini 3.6 Flash is confirmed in current Google documentation. Grok 4.6 Voice TTS is the owner-reported route name; xAI's public documentation verifies its Voice/TTS API surface but does not currently publish that numeric alias. Routes describe configuration, not live traffic or a universal model ranking.
                   <ul class="model-sources" aria-label="Official model documentation">
                     <li><a href="https://api-docs.deepseek.com/quick_start/pricing/" target="_blank" rel="noopener noreferrer">DeepSeek</a></li>
                     <li><a href="https://platform.claude.com/docs/en/about-claude/models/overview" target="_blank" rel="noopener noreferrer">Anthropic</a></li>
                     <li><a href="https://docs.x.ai/developers/models/grok-4.5" target="_blank" rel="noopener noreferrer">xAI</a></li>
                     <li><a href="https://open.bigmodel.cn/glm-coding" target="_blank" rel="noopener noreferrer">Zhipu</a></li>
                     <li><a href="https://ai.google.dev/gemma/docs/core" target="_blank" rel="noopener noreferrer">Gemma</a></li>
-                    <li><a href="https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash" target="_blank" rel="noopener noreferrer">Gemini</a></li>
-                    <li><a href="https://developers.openai.com/api/docs/models/gpt-4o-mini-tts" target="_blank" rel="noopener noreferrer">OpenAI voice</a></li>
+                    <li><a href="https://ai.google.dev/gemini-api/docs/generate-content/latest-model" target="_blank" rel="noopener noreferrer">Gemini 3.6</a></li>
+                    <li><a href="https://docs.x.ai/developers/models/text-to-speech" target="_blank" rel="noopener noreferrer">xAI voice</a></li>
                   </ul>
                 </div>
               </div>
             </details>
 
             <details class="manifest-panel">
-              <summary data-manifest="automation">Automation <span>31 last-reported jobs</span></summary>
+              <summary data-manifest="automation">Automation <span id="automation-summary">31 last-reported jobs</span></summary>
               <div class="manifest-content">
                 <ul class="manifest-list">
                   <li><strong>Briefings:</strong> morning and evening intelligence summaries with Eve voice delivery.</li>
@@ -8842,7 +9208,7 @@
               <summary data-manifest="log">Ship's log <span>current + history</span></summary>
               <div class="manifest-content">
                 <ol class="ship-log">
-                  <li><time datetime="2026-07-23">07-23-2026 // v31 observatory preview</time><strong>Gloves Off.</strong> Added the interactive Sovereign Routing Observatory, richer user-triggered sound design, Bit guidance routes, content reconciliation, and a new fidelity pass.</li>
+                  <li><time datetime="2026-07-23">07-23-2026 // v31 gloves off preview</time><strong>Shields up.</strong> Added the Sovereign Routing Observatory, cache-busted public status link, Gemini 3.6 routes, owner-reported Grok 4.6 Voice TTS, Fleet Card defense matrix, Red Alert drill, richer sound design, and Bit guidance routes.</li>
                   <li><time datetime="2026-07-14">07-14-2026 // v30 release candidate</time><strong>House Cashio.</strong> Current public-safe service reconciliation, ten model routes, official catalog verification, cinematic motion, and upgraded Bit.</li>
                   <li><time datetime="2026-07-10">07-10-2026 // v29 local preview</time><strong>Mission Proof.</strong> Audience routing, guided proof flight, explicit freshness, accessible console, effects budget, and shareable Fleet Card.</li>
                   <li><time datetime="2026-07">v28 // prior public build</time><strong>Kwisatz Haderach.</strong> The earlier seven-lane configuration, Technitium DNS, fleet truth reconciliation, and auditable public proof.</li>
@@ -8860,18 +9226,31 @@
         <div class="section-head">
           <div>
             <p class="eyebrow">07 // Take the proof home</p>
-            <h2 id="fleet-card-title">The receipt becomes the shareable.</h2>
+            <h2 id="fleet-card-title">Proof you can carry.<br>Shields you can raise.</h2>
           </div>
-          <p>Render a Fleet Card from the same public-safe status export used everywhere else. No random numbers, fake QR, or unstated freshness.</p>
+          <p>Render the evidence artifact, raise its defense matrix, or run a browser-local Red Alert drill. The facts still come from one public-safe status contract—never random numbers or fake freshness.</p>
         </div>
 
-        <div class="fleet-card-grid">
-          <div class="fleet-card-frame">
-            <canvas id="fleet-card-canvas" width="1200" height="630" aria-hidden="true"></canvas>
+        <div class="fleet-card-grid" id="fleet-defense" data-defense="standby">
+          <div class="fleet-defense-stage">
+            <div class="fleet-card-frame">
+              <canvas id="fleet-card-canvas" width="1200" height="630" aria-hidden="true"></canvas>
+            </div>
+            <div class="shield-array" aria-hidden="true">
+              <span class="shield-ring shield-ring-one"></span>
+              <span class="shield-ring shield-ring-two"></span>
+              <span class="shield-ring shield-ring-three"></span>
+              <span class="shield-sweep"></span>
+              <i></i><i></i><i></i><i></i>
+            </div>
+            <div class="defense-readout" aria-hidden="true">
+              <span>DEFENSE MATRIX</span>
+              <strong id="defense-visual-state">STANDBY</strong>
+            </div>
           </div>
           <div class="fleet-card-copy">
             <p class="eyebrow">ZeusApollo // Evidence artifact</p>
-            <h3>One card. Four verified facts. One honest caveat.</h3>
+            <h3>One card. Four verified facts. One shielded artifact.</h3>
             <p>The canvas is decorative; its complete content is repeated here for screen readers and anyone who does not render it.</p>
             <div class="fleet-card-facts" aria-label="Fleet Card facts">
               <span><strong>7.2×</strong> matched-task cost efficiency</span>
@@ -8879,12 +9258,15 @@
               <span><strong data-fleet="routeCount">10</strong> configured model routes</span>
               <span><strong data-fleet="hostCount">2</strong> personal homelab hosts</span>
             </div>
-            <p><strong>Freshness:</strong> owner-supplied status export verified 07-14-2026 and valid through 07-17-2026. It is sampled evidence, not streaming telemetry.</p>
+            <p id="fleet-card-freshness"><strong>Freshness:</strong> owner-supplied status export verified 07-14-2026 and valid through 07-17-2026. It is sampled evidence, not streaming telemetry.</p>
+            <p class="defense-disclosure">DECK SIMULATION // Shield and Red Alert controls are browser-local presentation effects. They never contact or operate the homelab.</p>
             <div class="fleet-card-actions">
-              <button class="button button-primary" id="render-card" type="button">Render Fleet Card</button>
+              <button class="button button-primary shield-button" id="raise-shields" type="button" aria-pressed="false">Raise shields</button>
+              <button class="button button-secondary alert-drill-button" id="red-alert-drill" type="button">Red Alert drill</button>
+              <button class="button button-secondary" id="render-card" type="button">Render card</button>
               <button class="button button-secondary" id="download-card" type="button" disabled>Download PNG</button>
             </div>
-            <p class="download-status" id="download-status"></p>
+            <p class="download-status" id="download-status" role="status" aria-live="polite">Defense matrix standing by.</p>
           </div>
         </div>
       </div>
@@ -9031,7 +9413,21 @@
         healthyServiceCount: 17,
         hostCount: 2,
         routeCount: 10,
-        dailyBurn: 0.35
+        automationCount: 31,
+        dailyBurn: 0.35,
+        refreshIntervalSeconds: 60,
+        routes: {
+          primary: "DeepSeek V4 Pro",
+          premium: "Claude Sonnet 5",
+          research: "Grok 4.5",
+          coding: "GLM 5.2",
+          extraction: "Gemma 4 26B A4B",
+          vision: "Gemini 3.6 Flash",
+          voice: "Grok 4.6 Voice TTS",
+          failover_1: "DeepSeek V4 Flash",
+          failover_2: "GLM 5.2",
+          failover_3: "Gemini 3.6 Flash"
+        }
       };
 
       function fleetValue(key) {
@@ -9039,44 +9435,184 @@
         return String(sample[key]);
       }
 
-      Array.prototype.slice.call(document.querySelectorAll("[data-fleet]")).forEach(function (node) {
-        var key = node.getAttribute("data-fleet");
-        if (Object.prototype.hasOwnProperty.call(sample, key)) node.textContent = fleetValue(key);
-      });
-
-      var expiryTime = new Date(sample.expiresOn + "T23:59:59Z");
-      var isStale = !Number.isFinite(expiryTime.getTime()) || Date.now() > expiryTime.getTime();
       var badge = document.getElementById("telemetry-badge");
       var telemetryCopy = document.getElementById("telemetry-copy");
       var telemetryMeta = document.getElementById("telemetry-meta");
       var topologyNote = document.getElementById("topology-note");
       var topologyBoard = document.querySelector(".topology-board");
       var snapshotReadout = document.getElementById("snapshot-readout");
-      body.classList.toggle("status-stale", isStale);
-      badge.classList.toggle("is-fresh", !isStale);
-      badge.textContent = isStale ? "Stale • expired " + sample.expiresDisplay : "Fresh • " + sample.verifiedDisplay;
-      snapshotReadout.textContent = isStale ? "Stale // " + sample.expiresDisplay : "Fresh // " + sample.verifiedDisplay;
-      var telemetryLead = document.createElement("strong");
-      telemetryLead.textContent = isStale ? "Current state unknown." : sample.healthyServiceCount + " services owner-reported healthy.";
-      var telemetryDetail = document.createTextNode(isStale
-        ? " The owner-supplied export expired on " + sample.expiresDisplay + "; every service state below is now historical."
-        : " Home-Asst is intentionally decommissioned; Athena was not included and remains unknown. This page does not query live endpoints.");
-      telemetryCopy.replaceChildren(telemetryLead, telemetryDetail);
-      telemetryMeta.textContent = "Personal lab status // verified " + sample.verifiedDisplay + " // expires " + sample.expiresDisplay + " // no live connection";
-      topologyNote.textContent = isStale
-        ? "This owner-supplied status export expired on " + sample.expiresDisplay + ". Service dots are historical and current health is not asserted. No live endpoints are queried."
-        : "Owner-supplied status export verified " + sample.verifiedDisplay + " and valid through " + sample.expiresDisplay + ". Athena remains unknown because it was absent from the export. No live endpoints are queried.";
+      var statusBootLine = document.getElementById("status-boot-line");
+      var healthyVerifiedCopy = document.getElementById("healthy-verified-copy");
+      var proofControlFreshness = document.getElementById("proof-control-freshness");
+      var topologySummary = document.getElementById("topology-summary");
+      var topologyWindow = document.getElementById("topology-window");
+      var athenaStatusCopy = document.getElementById("athena-status-copy");
+      var plexStatusCopy = document.getElementById("plex-status-copy");
+      var homeAssistStatusCopy = document.getElementById("home-assist-status-copy");
+      var fleetCardFreshness = document.getElementById("fleet-card-freshness");
+      var modelRouteSummary = document.getElementById("model-route-summary");
+      var automationSummary = document.getElementById("automation-summary");
+      var publicStatusLink = document.getElementById("public-status-link");
+      var statusLinkLabel = document.getElementById("status-link-label");
+      var statusLastSync = document.getElementById("status-last-sync");
+      var refreshStatusButton = document.getElementById("refresh-status");
+      var statusRefreshTimer = 0;
+      var isStale = true;
+
+      function displayDateToIso(value) {
+        var text = String(value || "");
+        if (/^\d{4}-\d{2}-\d{2}$/.test(text)) return text;
+        var parts = text.split("-");
+        return parts.length === 3 ? parts[2] + "-" + parts[0] + "-" + parts[1] : "";
+      }
+
+      function syncFleetValues() {
+        Array.prototype.slice.call(document.querySelectorAll("[data-fleet]")).forEach(function (node) {
+          var key = node.getAttribute("data-fleet");
+          if (Object.prototype.hasOwnProperty.call(sample, key)) node.textContent = fleetValue(key);
+        });
+      }
+
+      function syncRouteModels() {
+        Array.prototype.slice.call(document.querySelectorAll("[data-route-key]")).forEach(function (card) {
+          var key = card.getAttribute("data-route-key");
+          var target = card.querySelector("[data-route-model]");
+          if (target && sample.routes[key]) target.textContent = sample.routes[key];
+        });
+      }
+
+      function updateTerminalStatusCopy() {
+        if (!terminalResponses) return;
+        terminalResponses.status = isStale
+          ? "CURRENT STATE UNKNOWN — the owner-supplied status export expired on " + sample.expiresDisplay + ". It previously recorded " + sample.healthyServiceCount + " healthy services, one retired service, and one unreported service across " + sample.hostCount + " hosts."
+          : "FRESH OWNER-SUPPLIED EXPORT — verified " + sample.verifiedDisplay + ", expires " + sample.expiresDisplay + ": " + sample.healthyServiceCount + " healthy services, Home-Asst retired, and Athena unreported across " + sample.hostCount + " hosts. The browser refreshes the public status file; no homelab endpoint is exposed.";
+        terminalResponses.models = sample.routeCount + " configured routes: " + Object.keys(sample.routes).map(function (key) { return sample.routes[key]; }).join(", ") + ". Grok 4.6 Voice TTS is the owner-reported route name; xAI's public docs verify the Voice/TTS API surface, not that numeric alias.";
+        terminalResponses.freshness = isStale
+          ? "STALE — the public status file was reached, but its owner-supplied fleet snapshot expired on " + sample.expiresDisplay + ". Current health is not asserted."
+          : "FRESH — the owner-supplied export was verified " + sample.verifiedDisplay + " and expires " + sample.expiresDisplay + ". The browser checks the public file every " + sample.refreshIntervalSeconds + " seconds; it is not direct telemetry.";
+        terminalResponses.topology = isStale
+          ? "LAST VERIFIED SNAPSHOT — ZEUS documented 8 roles: 7 owner-reported healthy and Athena unreported. APOLLO documented 11 roles: 10 owner-reported healthy and Home-Asst decommissioned. That status window ended " + sample.expiresDisplay + "; current state is unknown."
+          : "ZEUS documents 8 roles: 7 owner-reported healthy and Athena unreported. APOLLO documents 11 roles: 10 owner-reported healthy and Home-Asst decommissioned. Status is fresh through " + sample.expiresDisplay + ".";
+      }
+
+      function applyStatusSnapshot(data) {
+        if (data && typeof data === "object") {
+          if (typeof data.verified_on === "string") sample.verifiedDisplay = data.verified_on;
+          if (typeof data.expires_on === "string") {
+            sample.expiresDisplay = data.expires_on;
+            sample.expiresOn = displayDateToIso(data.expires_on);
+          }
+          if (Number.isFinite(Number(data.healthy_services))) sample.healthyServiceCount = Number(data.healthy_services);
+          if (Number.isFinite(Number(data.hosts))) sample.hostCount = Number(data.hosts);
+          if (Number.isFinite(Number(data.model_routes))) sample.routeCount = Number(data.model_routes);
+          if (Number.isFinite(Number(data.automation_jobs_last_reported))) sample.automationCount = Number(data.automation_jobs_last_reported);
+          if (Number.isFinite(Number(data.daily_burn))) sample.dailyBurn = Number(data.daily_burn);
+          if (Number.isFinite(Number(data.refresh_interval_seconds))) {
+            sample.refreshIntervalSeconds = Math.max(60, Number(data.refresh_interval_seconds));
+          }
+          if (data.routes && typeof data.routes === "object") {
+            Object.keys(sample.routes).forEach(function (key) {
+              if (typeof data.routes[key] === "string" && data.routes[key].trim()) sample.routes[key] = data.routes[key].trim();
+            });
+          }
+        }
+
+        var expiryTime = new Date(sample.expiresOn + "T23:59:59Z");
+        isStale = !Number.isFinite(expiryTime.getTime()) || Date.now() > expiryTime.getTime();
+        body.classList.toggle("status-stale", isStale);
+        badge.classList.toggle("is-fresh", !isStale);
+        badge.textContent = isStale ? "Stale • expired " + sample.expiresDisplay : "Fresh • " + sample.verifiedDisplay;
+        snapshotReadout.textContent = isStale ? "Stale // " + sample.expiresDisplay : "Fresh // " + sample.verifiedDisplay;
+
+        var telemetryLead = document.createElement("strong");
+        telemetryLead.textContent = isStale ? "Current state unknown." : sample.healthyServiceCount + " services owner-reported healthy.";
+        var telemetryDetail = document.createTextNode(isStale
+          ? " The public file is reachable, but its fleet snapshot expired on " + sample.expiresDisplay + "; every service state below is historical."
+          : " Home-Asst is intentionally decommissioned; Athena was not included and remains unknown. The browser refreshes a public snapshot, not private endpoints.");
+        telemetryCopy.replaceChildren(telemetryLead, telemetryDetail);
+        telemetryMeta.textContent = "Public status file // verified " + sample.verifiedDisplay + " // expires " + sample.expiresDisplay + " // no private connection";
+        topologyNote.textContent = isStale
+          ? "This owner-supplied status export expired on " + sample.expiresDisplay + ". Service dots are historical and current health is not asserted. The browser checks only the sanitized public status file."
+          : "Owner-supplied status export verified " + sample.verifiedDisplay + " and valid through " + sample.expiresDisplay + ". Athena remains unknown because it was absent from the export. The browser checks only the sanitized public status file.";
+
+        if (statusBootLine) statusBootLine.textContent = "[02] STATUS EXPORT // " + sample.verifiedDisplay + " // EXP " + sample.expiresDisplay;
+        if (healthyVerifiedCopy) healthyVerifiedCopy.textContent = (isStale ? "Last reported " : "Owner-reported ") + sample.verifiedDisplay;
+        if (proofControlFreshness) proofControlFreshness.textContent = "Public-safe architecture snapshot // verified " + sample.verifiedDisplay;
+        if (topologySummary) topologySummary.textContent = "A public-safe role map of my personal lab—no addresses, ports, credentials, customer data, or access paths. The " + sample.verifiedDisplay + " export recorded " + sample.healthyServiceCount + " healthy services; Home-Asst is retired and Athena was not reported.";
+        if (topologyWindow) topologyWindow.textContent = "Status window: " + sample.verifiedDisplay + " → " + sample.expiresDisplay + " // sanitized public file";
+        if (athenaStatusCopy) athenaStatusCopy.textContent = "Not included in " + sample.verifiedDisplay + " export";
+        if (plexStatusCopy) plexStatusCopy.textContent = "Owner-reported healthy · " + sample.verifiedDisplay;
+        if (homeAssistStatusCopy) homeAssistStatusCopy.textContent = "Decommissioned · " + sample.verifiedDisplay;
+        if (fleetCardFreshness) {
+          var freshnessLead = document.createElement("strong");
+          freshnessLead.textContent = "Freshness:";
+          fleetCardFreshness.replaceChildren(
+            freshnessLead,
+            document.createTextNode(" owner-supplied status export verified " + sample.verifiedDisplay + " and valid through " + sample.expiresDisplay + ". The browser refreshes the public file every " + sample.refreshIntervalSeconds + " seconds; it is not streaming telemetry.")
+          );
+        }
+        if (modelRouteSummary) modelRouteSummary.textContent = sample.routeCount + " configured routes";
+        if (automationSummary) automationSummary.textContent = sample.automationCount + " last-reported jobs";
+
+        document.querySelectorAll(".dynamic-health-copy").forEach(function (node) {
+          node.textContent = "; owner-reported healthy on " + sample.verifiedDisplay;
+        });
+        document.querySelectorAll(".dynamic-unknown-copy").forEach(function (node) {
+          node.textContent = "; not included in the " + sample.verifiedDisplay + " export; current state unknown";
+        });
+
+        syncFleetValues();
+        syncRouteModels();
+        updateTerminalStatusCopy();
+        if (fleetCardCanvas && fleetCardContext) drawFleetCard(false);
+      }
+
+      async function refreshPublicStatus(announce) {
+        if (!publicStatusLink || window.location.protocol === "file:") {
+          if (publicStatusLink) {
+            publicStatusLink.dataset.linkState = "offline";
+            statusLinkLabel.textContent = "PUBLIC STATUS LINK // LOCAL FALLBACK";
+            statusLastSync.textContent = "Serve over HTTP to enable automatic status refresh.";
+          }
+          return;
+        }
+
+        publicStatusLink.dataset.linkState = "checking";
+        statusLinkLabel.textContent = "PUBLIC STATUS LINK // CHECKING";
+        if (refreshStatusButton) refreshStatusButton.disabled = true;
+        try {
+          var response = await fetch("./status.json?ts=" + Date.now(), { cache: "no-store" });
+          if (!response.ok) throw new Error("Status request failed");
+          var data = await response.json();
+          applyStatusSnapshot(data);
+          publicStatusLink.dataset.linkState = "online";
+          statusLinkLabel.textContent = isStale ? "PUBLIC STATUS LINK // SYNCED · DATA STALE" : "PUBLIC STATUS LINK // SYNCED · CURRENT";
+          statusLastSync.textContent = "Checked " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }) + " · next check in " + sample.refreshIntervalSeconds + " seconds.";
+          if (announce && downloadStatus) downloadStatus.textContent = isStale ? "Public status refreshed. The fleet snapshot remains expired." : "Public status refreshed and current.";
+          window.clearInterval(statusRefreshTimer);
+          statusRefreshTimer = window.setInterval(function () { refreshPublicStatus(false); }, sample.refreshIntervalSeconds * 1000);
+        } catch (error) {
+          publicStatusLink.dataset.linkState = "offline";
+          statusLinkLabel.textContent = "PUBLIC STATUS LINK // UNAVAILABLE";
+          statusLastSync.textContent = "Using the embedded public-safe fallback. No health claim is upgraded.";
+          if (announce && downloadStatus) downloadStatus.textContent = "Public status file unavailable. Embedded dated fallback retained.";
+        } finally {
+          if (refreshStatusButton) refreshStatusButton.disabled = false;
+        }
+      }
+
+      applyStatusSnapshot(null);
 
       document.querySelectorAll(".guest:not(.is-unknown):not(.is-retired) .guest-copy").forEach(function (copy) {
         var status = document.createElement("span");
-        status.className = "visually-hidden";
+        status.className = "visually-hidden dynamic-health-copy";
         status.textContent = "; owner-reported healthy on " + sample.verifiedDisplay;
         copy.appendChild(status);
       });
 
       document.querySelectorAll(".guest.is-unknown .guest-copy").forEach(function (copy) {
         var status = document.createElement("span");
-        status.className = "visually-hidden";
+        status.className = "visually-hidden dynamic-unknown-copy";
         status.textContent = "; not included in the " + sample.verifiedDisplay + " export; current state unknown";
         copy.appendChild(status);
       });
@@ -9093,6 +9629,16 @@
           guest.style.setProperty("--guest-index", String(index));
         });
       });
+
+      if (refreshStatusButton) {
+        refreshStatusButton.addEventListener("click", function () {
+          refreshPublicStatus(true);
+        });
+      }
+
+      if (window.location.protocol === "http:" || window.location.protocol === "https:") {
+        refreshPublicStatus(false);
+      }
 
       var audienceData = {
         outcomes: {
@@ -9287,7 +9833,7 @@
           ? "CURRENT STATE UNKNOWN — the owner-supplied status export expired on " + sample.expiresDisplay + ". It previously recorded " + sample.healthyServiceCount + " healthy services, one retired service, and one unreported service across two hosts."
           : "FRESH OWNER-SUPPLIED EXPORT — verified " + sample.verifiedDisplay + ", expires " + sample.expiresDisplay + ": " + sample.healthyServiceCount + " healthy services, Home-Asst retired, and Athena unreported across two hosts. No live endpoints are queried.",
         proof: "Observed API inference spend moved from approximately $4/day to approximately $" + sample.dailyBurn.toFixed(2) + "/day after local-first routing. Scope: API inference only. The 7.2x benchmark is a separate matched-task comparison.",
-        models: sample.routeCount + " configured routes: DeepSeek V4 Pro, Claude Sonnet 5, Grok 4.5, GLM 5.2, Gemma 4 26B A4B, Gemini 3.5 Flash, GPT-4o mini TTS, plus DeepSeek V4 Flash, GLM 5.2, and Gemini 3.5 Flash failovers. GPT-4o mini TTS is a configured legacy voice route and is flagged for replacement evaluation.",
+        models: sample.routeCount + " configured routes: DeepSeek V4 Pro, Claude Sonnet 5, Grok 4.5, GLM 5.2, Gemma 4 26B A4B, Gemini 3.6 Flash, Grok 4.6 Voice TTS, plus DeepSeek V4 Flash, GLM 5.2, and Gemini 3.6 Flash failovers. Grok 4.6 Voice TTS is the owner-reported route name; xAI public docs verify the Voice/TTS API surface, not that numeric alias.",
         freshness: isStale ? "STALE — the owner-supplied public export expired on " + sample.expiresDisplay + ". Current health is not asserted." : "FRESH — the owner-supplied export was verified " + sample.verifiedDisplay + " and expires " + sample.expiresDisplay + ". It is sampled evidence, not streaming telemetry.",
         topology: isStale
           ? "LAST VERIFIED SNAPSHOT — ZEUS documented 8 roles: 7 owner-reported healthy and Athena unreported. APOLLO documented 11 roles: 10 owner-reported healthy and Home-Asst decommissioned. That status window ended " + sample.expiresDisplay + "; current state is unknown."
@@ -9553,7 +10099,31 @@
       var renderCardButton = document.getElementById("render-card");
       var downloadCardButton = document.getElementById("download-card");
       var downloadStatus = document.getElementById("download-status");
+      var fleetDefense = document.getElementById("fleet-defense");
+      var raiseShieldsButton = document.getElementById("raise-shields");
+      var redAlertDrillButton = document.getElementById("red-alert-drill");
+      var defenseVisualState = document.getElementById("defense-visual-state");
+      var defenseTimer = 0;
       var fleetCardRendered = false;
+
+      function setFleetDefense(mode, announce) {
+        var nextMode = mode === "raised" || mode === "alert" ? mode : "standby";
+        if (!fleetDefense) return;
+        fleetDefense.dataset.defense = nextMode;
+        if (defenseVisualState) defenseVisualState.textContent = nextMode === "alert" ? "RED ALERT" : nextMode === "raised" ? "SHIELDS 100%" : "STANDBY";
+        if (raiseShieldsButton) {
+          var raised = nextMode !== "standby";
+          raiseShieldsButton.setAttribute("aria-pressed", String(raised));
+          raiseShieldsButton.textContent = raised ? "Lower shields" : "Raise shields";
+        }
+        if (announce && downloadStatus) {
+          downloadStatus.textContent = nextMode === "alert"
+            ? "Red Alert drill active. Shield matrix locked; browser-local presentation only."
+            : nextMode === "raised"
+              ? "Shield matrix raised. Evidence artifact protected; no live system contacted."
+              : "Shield matrix lowered. Defense simulation standing by.";
+        }
+      }
 
       function cardText(text, x, y, size, color, weight, family) {
         fleetCardContext.fillStyle = color;
@@ -9625,6 +10195,40 @@
       renderCardButton.addEventListener("click", function () {
         drawFleetCard(true);
       });
+
+      if (raiseShieldsButton) {
+        raiseShieldsButton.addEventListener("click", function () {
+          window.clearTimeout(defenseTimer);
+          var raised = fleetDefense && fleetDefense.dataset.defense !== "standby";
+          setFleetDefense(raised ? "standby" : "raised", true);
+          if (raised) {
+            playTone(392, 0.18, "triangle", 0.024, 0.2);
+            playTone(261.63, 0.28, "sine", 0.02, -0.2, 0.08);
+          } else {
+            playShieldSound();
+            if (bitAnswer) bitAnswer.textContent = "BIT // SHIELDS UP";
+          }
+        });
+      }
+
+      if (redAlertDrillButton) {
+        redAlertDrillButton.addEventListener("click", function () {
+          window.clearTimeout(defenseTimer);
+          setFleetDefense("alert", true);
+          setAlertMode(true, "Fleet Card Red Alert drill active. Presentation effect only.");
+          redAlertDrillButton.disabled = true;
+          redAlertDrillButton.textContent = "Alert active";
+          if (bitAnswer) bitAnswer.textContent = "BIT // RED ALERT";
+          defenseTimer = window.setTimeout(function () {
+            setAlertMode(false, "Red Alert drill complete. Visual theme restored.");
+            setFleetDefense("raised", false);
+            redAlertDrillButton.disabled = false;
+            redAlertDrillButton.textContent = "Red Alert drill";
+            downloadStatus.textContent = "Drill complete. Shield matrix remains raised.";
+            if (bitAnswer) bitAnswer.textContent = "BIT // SHIELDS HOLDING";
+          }, effectiveMotion() ? 6200 : 1800);
+        });
+      }
 
       downloadCardButton.addEventListener("click", function () {
         if (!fleetCardRendered) return;
@@ -10185,6 +10789,14 @@
         playTone(174.61, 0.36, "sine", 0.022, 0, 0.28);
       }
 
+      function playShieldSound() {
+        playNoiseSweep(0.62, 0.012, 220, 3200);
+        playTone(146.83, 0.44, "sine", 0.025, -0.45);
+        playTone(293.66, 0.36, "triangle", 0.021, 0.05, 0.08);
+        playTone(587.33, 0.42, "sine", 0.018, 0.45, 0.18);
+        playTone(880, 0.5, "sine", 0.011, 0, 0.28);
+      }
+
       function playBitSound(mode) {
         if (mode === "yes") {
           playTone(659.25, 0.18, "sine", 0.026, -0.18);
@@ -10521,16 +11133,26 @@
         updateScrollWorld();
       }
 
+      function setAlertMode(enabled, announcement) {
+        var active = Boolean(enabled);
+        body.dataset.alert = active ? "on" : "off";
+        if (alertToggle) {
+          alertToggle.setAttribute("aria-pressed", String(active));
+          alertToggle.setAttribute("aria-label", active ? "Turn the visual red alert theme off" : "Turn the visual red alert theme on");
+          alertToggle.textContent = active ? "Alert on" : "Alert";
+        }
+        if (chainAnnouncement) {
+          chainAnnouncement.textContent = announcement || (active
+            ? "Visual red alert theme enabled. This is a presentation effect only."
+            : "Visual red alert theme disabled.");
+        }
+        if (active) playAlertSound();
+        else playTone(523, 0.14, "sine", 0.03);
+      }
+
       if (alertToggle) {
         alertToggle.addEventListener("click", function () {
-          var enabled = body.dataset.alert !== "on";
-          body.dataset.alert = enabled ? "on" : "off";
-          alertToggle.setAttribute("aria-pressed", String(enabled));
-          alertToggle.setAttribute("aria-label", enabled ? "Turn the visual red alert theme off" : "Turn the visual red alert theme on");
-          alertToggle.textContent = enabled ? "Alert on" : "Alert";
-          chainAnnouncement.textContent = enabled ? "Visual red alert theme enabled. This is a presentation effect only." : "Visual red alert theme disabled.";
-          if (enabled) playAlertSound();
-          else playTone(523, 0.14, "sine", 0.03);
+          setAlertMode(body.dataset.alert !== "on");
         });
       }
 
