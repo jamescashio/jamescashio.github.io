@@ -6,6 +6,13 @@ All notable public-facing changes to the ZeusApollo portfolio are recorded here.
 
 Release name: “The Iron Ascendant.”
 
+### Added — fidelity pass
+
+- Procedural-noise cinema: the journey sun now has a boiling plasma surface (SVG fractal turbulence + displacement, slow SMIL drift), heat shimmer rises off the dune horizon, and a full-page animated film-grain layer makes the deck read like projected footage. All of it disappears under FX-off and reduced motion.
+- Journey scene composition: rotating corona spokes and chromatic limb on the sun, an original ringed-companion SVG with scroll parallax, a sunlight shaft with floating dust motes, gold rim light and atmospheric haze on the horizon.
+- Fixed the header collision where the brand subtitle could run beneath the primary nav; enlarged the journey depth readout.
+- Secondary pages (`/ai`, `lab.html`) bumped to the v31 release identity.
+
 ### Verified
 
 - Container figures re-verified live over cluster SSH on 07-26-2026: 17 of 18 core containers running, 1 stopped in a storage maintenance operation at verification time; cluster quorate with the Athena quorum device answering. The public host split was corrected to zeus 12 / Apollo 6 (previously shown as 11 / 7). Automation health remains Hermes-reported (71 of 71 at the 07-22-2026 report). Per the standing order: the number we publish is the number we measured.
