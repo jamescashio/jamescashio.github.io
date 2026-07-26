@@ -4,6 +4,14 @@ All notable public-facing changes to the ZeusApollo portfolio are recorded here.
 
 ## [v31 unreleased] — 07-25-2026
 
+### Added — visual chrome pass
+
+- **THE IRON**: an original SVG asset in the Operator chapter — a barbell loaded with six labeled plate-pairs (hardware · network · storage · models · policy · proof) that rack one by one on reveal with a periodic shine sweep. The "lift the iron" doctrine, drawn.
+- **House Cashio crest**: an original SVG sigil (hex shield, orbit, bolt) as an operator-card watermark and footer mark.
+- **HUD corner brackets** on nineteen major surfaces (proof cells, lab consoles, clusters, project cards, terminal, chain console, fleet card) — a single injected element per surface that tightens and brightens on hover.
+- Cinematic section seams: the flat hairline between chapters is now a centered glowing divider with a soft bloom.
+- Subtle chromatic split on the hero wordmark under FX.
+
 ### Added
 
 - **Policy Routing Lab** (new chapter 03): the doctrine made playable. Visitors pick one of six workloads and watch the quality gate qualify, refuse, and select a lane across the ten configured routes—with refusal reasons stated per lane and a relative-cost comparison. Privacy is demonstrated as a hard gate: private context refuses all eight hosted lanes and routes to local Gemma. Costs are a labeled relative index, never a fabricated per-task dollar figure.
