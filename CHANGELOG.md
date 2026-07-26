@@ -2,6 +2,64 @@
 
 All notable public-facing changes to the ZeusApollo portfolio are recorded here. Visible dates use MM-DD-YYYY.
 
+## [v31] — 07-26-2026
+
+Release name: “The Iron Ascendant.”
+
+### Added — fidelity pass
+
+- Procedural-noise cinema: the journey sun now has a boiling plasma surface (SVG fractal turbulence + displacement, slow SMIL drift), heat shimmer rises off the dune horizon, and a full-page animated film-grain layer makes the deck read like projected footage. All of it disappears under FX-off and reduced motion.
+- Journey scene composition: rotating corona spokes and chromatic limb on the sun, an original ringed-companion SVG with scroll parallax, a sunlight shaft with floating dust motes, gold rim light and atmospheric haze on the horizon.
+- Fixed the header collision where the brand subtitle could run beneath the primary nav; enlarged the journey depth readout.
+- Secondary pages (`/ai`, `lab.html`) bumped to the v31 release identity.
+
+### Verified
+
+- Container figures re-verified live over cluster SSH on 07-26-2026: 17 of 18 core containers running, 1 stopped in a storage maintenance operation at verification time; cluster quorate with the Athena quorum device answering. The public host split was corrected to zeus 12 / Apollo 6 (previously shown as 11 / 7). Automation health remains Hermes-reported (71 of 71 at the 07-22-2026 report). Per the standing order: the number we publish is the number we measured.
+
+### Added — eleven pass II
+
+- Ops data ticker above the footer: one continuous masked stream of the real verified numbers (containers, automations, lanes, cost, export date, Graphify nodes) — pauses on hover, parked when FX is off.
+- Section-head materialize: chapter titles now wipe in with a focus-pull (clip-path + blur) instead of a plain fade.
+- Hermes console self-test: the first time the console chapter is approached, the terminal types its own two-line diagnostic before the visitor touches it.
+- Rare deck-status signal glitch: every 40–75 seconds the hero readout bar jitters with chromatic fringing for a quarter second — ambient life, motion-gated.
+- Cursor aurora: a soft cyan-violet light that follows the pointer across the whole deck (desktop, FX-gated).
+
+### Added — eleven pass
+
+- Cinematic letterbox bars that sweep in on arrival and frame every warp jump.
+- **The Iron Ledger**: five rolling odometers under the Iron (30 build iterations, 18 containers, 71 automations, 10 lanes, 353,437 Graphify nodes) with slot-machine digit strips that roll when scrolled into view.
+- "Rack another set" control on the Iron — replays the plate drop and counts your sets.
+- Scroll-linked hero camera pull: the opening scene eases up and fades as the visitor descends, like a crane shot leaving the deck.
+- Magnetic primary buttons (composed via the `translate` property so no existing transform is disturbed).
+- Opt-in ambient deck hum behind the SND toggle: a 54 Hz root-and-fifth pad with a slow LFO swell, faded in and out, never audible unless sound is on.
+- The House crest is now drawn onto the shareable Fleet Card PNG.
+
+### Added — visual chrome pass
+
+- **THE IRON**: an original SVG asset in the Operator chapter — a barbell loaded with six labeled plate-pairs (hardware · network · storage · models · policy · proof) that rack one by one on reveal with a periodic shine sweep. The "lift the iron" doctrine, drawn.
+- **House Cashio crest**: an original SVG sigil (hex shield, orbit, bolt) as an operator-card watermark and footer mark.
+- **HUD corner brackets** on nineteen major surfaces (proof cells, lab consoles, clusters, project cards, terminal, chain console, fleet card) — a single injected element per surface that tightens and brightens on hover.
+- Cinematic section seams: the flat hairline between chapters is now a centered glowing divider with a soft bloom.
+- Subtle chromatic split on the hero wordmark under FX.
+
+### Added
+
+- **Policy Routing Lab** (new chapter 03): the doctrine made playable. Visitors pick one of six workloads and watch the quality gate qualify, refuse, and select a lane across the ten configured routes—with refusal reasons stated per lane and a relative-cost comparison. Privacy is demonstrated as a hard gate: private context refuses all eight hosted lanes and routes to local Gemma. Costs are a labeled relative index, never a fabricated per-task dollar figure.
+- **Featured builds** (new chapter 07): the seven public-safe projects were promoted out of a collapsed bullet list into a showcase with headline metrics (Graphify's 353,437 nodes now reads as a headline instead of buried text).
+- **The Operator** (new chapter 09): the portfolio previously contained no person. Adds who Doug is and the four-step working method, sourced only from claims already established on the site.
+- New console commands `lab`, `route`, `operator`, `builds`; palette and Bit guide entries for all three new sections.
+
+### Changed
+
+- Chapters renumbered 01–11 and every navigation surface (primary nav, mobile nav, mission spine, Bit panel, command palette) updated to match the new journey.
+- Removed six orphaned, unreferenced assets (`webgl_starfield.js`, `audio_engine.js`, `lcars_hover.wav`, `warp.mp3`, `make_it_so.mp3`, `og-image.png`).
+- Corrected the stale `$0.35` daily-cost example remaining in the protection-guide docs to the measured `$0.26`.
+
+### Notes
+
+- The routing lab's cost bars use a validated status palette (chosen / qualified / refused) rather than per-lane categorical hues: the site's gold and orange differ by only ΔE 9.5 to normal vision and can never sit adjacent in a chart. State is carried by text labels and a legend, never color alone.
+
 ## [v30 polish] — 07-23-2026 / 07-24-2026
 
 ### Added — 07-24 apex port (from the v31 prototype)

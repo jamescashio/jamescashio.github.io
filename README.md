@@ -1,4 +1,4 @@
-# ZEUSAPOLLO v30 — “The Sleeper Has Awakened”
+# ZEUSAPOLLO v31 — “The Iron Ascendant”
 
 cashio.us is Doug Cashio’s interactive sovereign AI portfolio: personally owned infrastructure, quality-first model routing, cybersecurity, auditable automation, disciplined cost, and human command.
 
@@ -8,20 +8,21 @@ The public site shows sanitized proof and architectural roles while withholding 
 
 | Item | Current public state |
 |---|---|
-| **Release** | v30 — “The Sleeper Has Awakened” |
-| **Status export** | Verified 07-22-2026; expires 08-21-2026 |
+| **Release** | v31 — “The Iron Ascendant” |
+| **Status export** | Verified 07-26-2026; expires 08-25-2026 |
 | **Hosts** | 2 core homelab hosts, plus Athena at the edge |
 | **Documented roles** | 18 public-safe service roles |
-| **Owner-reported healthy** | 18 services |
+| **Owner-reported healthy** | 17 services |
+| **Maintenance** | 1 container stopped in a storage maintenance operation at verification time |
 | **Unreported** | 0 services |
-| **Automation health** | 71 of 71 jobs; zero errors |
+| **Automation health** | 71 of 71 jobs at last Hermes report (07-22-2026); zero errors |
 | **Model routes** | 10 configured routes |
 | **Automation** | 71 last-reported jobs |
 | **Observed AI operating cost** | $0.26/day; $6.49 estimated monthly run rate |
 | **Deployment** | GitHub Pages from `main` |
 | **Production site** | `https://cashio.us` |
 
-The status export is Hermes-generated, public-safe, and sampled—not streaming telemetry. It remains valid for 30 days or until the next architecture change. Athena is separately owner-confirmed active as a physical Home Assistant edge node and is not included in the 18-container count. The site never converts a current page-view date into a claim of live telemetry.
+The v31 container figures come from an owner-run live verification over cluster SSH on 07-26-2026; automation and cost figures are Hermes-generated, public-safe, and sampled—not streaming telemetry. The export remains valid for 30 days or until the next architecture change. Athena is separately owner-confirmed active as a physical Home Assistant edge node and cluster quorum device, and is not included in the 18-container count. The site never converts a current page-view date into a claim of live telemetry.
 
 ## Model routing fabric
 
@@ -56,7 +57,7 @@ These are configured lanes, not live-traffic claims or a universal model ranking
 | `status.json` | Coarse, dated public status contract |
 | `README.md` | Current public architecture and release summary |
 | `CHANGELOG.md` | Public-facing release history |
-| `RELEASE_BODY.md` | Current v30 release notes |
+| `RELEASE_BODY.md` | Current v31 release notes |
 | `SECURITY.md` | Vulnerability reporting and repository boundaries |
 | `PRIVACY.md` | Public privacy notice |
 | `scripts/public_repo_guard.py` | Automated public-repository safety scanner |

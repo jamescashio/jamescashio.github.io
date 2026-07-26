@@ -1403,6 +1403,13 @@
       height: 2px;
       content: "";
       background: var(--line);
+      transition: background 400ms ease, box-shadow 400ms ease;
+    }
+
+    .chain.is-running::before,
+    .chain.is-complete::before {
+      background: linear-gradient(90deg, var(--cyan), var(--green) 55%, var(--gold));
+      box-shadow: 0 0 14px rgba(0, 255, 159, 0.3);
     }
 
     .chain-step {
@@ -1420,11 +1427,12 @@
       margin: 0 auto 16px;
       border: 2px solid var(--line);
       border-radius: 50%;
-      color: var(--quiet);
+      color: var(--muted);
       background: var(--panel-solid);
       font-family: var(--mono);
-      font-size: 0.75rem;
+      font-size: 0.84rem;
       font-weight: 900;
+      letter-spacing: 0.04em;
       transition: border-color 220ms ease, background 220ms ease, color 220ms ease, box-shadow 220ms ease;
     }
 
@@ -3148,8 +3156,14 @@
 
     @media (hover: hover) and (pointer: fine) {
       body[data-fx="on"] .hero-copy {
-        transform: translate3d(var(--hero-x, 0px), var(--hero-y, 0px), 0);
+        transform: translate3d(var(--hero-x, 0px), calc(var(--hero-y, 0px) - var(--hero-exit, 0) * 44px), 0);
+        opacity: calc(1 - var(--hero-exit, 0) * 0.6);
         transition: transform 110ms linear;
+      }
+
+      body[data-fx="on"] .command-orbit {
+        translate: 0 calc(var(--hero-exit, 0) * -26px);
+        opacity: calc(1 - var(--hero-exit, 0) * 0.5);
       }
     }
 
@@ -6042,9 +6056,13 @@
     }
 
     .chain-step.is-complete .chain-node {
-      background: rgba(0,255,159,0.12);
+      /* Layered over the solid panel so the connector line can never
+         strike through the number. */
+      background: linear-gradient(rgba(0, 255, 159, 0.16), rgba(0, 255, 159, 0.16)), var(--panel-solid);
       border-color: var(--green);
       color: var(--green);
+      text-shadow: 0 0 10px rgba(0, 255, 159, 0.55);
+      box-shadow: 0 0 0 5px rgba(0, 255, 159, 0.05), 0 0 22px rgba(0, 255, 159, 0.14);
     }
 
     .chain-result {
@@ -6667,12 +6685,12 @@
       z-index: 2;
       top: 42%;
       left: calc(3% + var(--route) * 10.35%);
-      width: 7px;
-      height: 7px;
-      border: 1px solid rgba(255,255,255,0.72);
+      width: 10px;
+      height: 10px;
+      border: 1px solid rgba(255,255,255,0.78);
       border-radius: 50%;
-      background: var(--route-color);
-      box-shadow: 0 0 4px #fff, 0 0 14px var(--route-color);
+      background: radial-gradient(circle at 32% 30%, rgba(255,255,255,0.85), var(--route-color) 55%);
+      box-shadow: 0 0 6px #fff, 0 0 18px var(--route-color);
       transform: translate(-50%,-50%);
     }
 
@@ -7462,20 +7480,32 @@
     }
 
     /* ── Route spectrum lane inspection ───────────────────────── */
-    .route-spectrum-visual span { transition: transform 0.24s ease, filter 0.24s ease; }
-    .route-spectrum-visual span.is-hot { transform: scaleY(1.55); filter: brightness(1.6) saturate(1.2); }
+    .route-spectrum-visual span { transition: transform 0.24s cubic-bezier(.22, 1, .36, 1), filter 0.24s ease, box-shadow 0.24s ease; }
+
+    .route-spectrum-visual span.is-hot {
+      filter: brightness(1.5) saturate(1.25);
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.28), 0 0 8px #fff, 0 0 26px var(--route-color);
+      transform: translate(-50%, -50%) scale(1.7);
+    }
 
     .route-spectrum-readout {
-      min-height: 1.1em;
-      margin-top: 7px;
+      min-height: 2.1em;
+      margin-top: 8px;
+      padding: 5px 9px;
+      border-left: 2px solid transparent;
+      border-radius: 0 6px 6px 0;
       color: var(--quiet);
       font-family: var(--mono);
       font-size: 0.62rem;
       letter-spacing: 0.06em;
-      transition: color 0.2s ease;
+      transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
     }
 
-    .route-spectrum-readout.is-live { color: var(--cyan); }
+    .route-spectrum-readout.is-live {
+      color: var(--cyan);
+      border-left-color: var(--cyan);
+      background: rgba(87, 232, 242, 0.06);
+    }
 
     /* ── Command palette ──────────────────────────────────────── */
     #palette-dialog { width: min(calc(100% - 32px), 560px); }
@@ -7943,6 +7973,1180 @@
     @media (max-width: 560px) {
       .bit-panel { right: 16px; bottom: 118px; }
     }
+
+    /* ═══ POLICY ROUTING LAB ═══════════════════════════════════
+       The doctrine claim ("quality gates the route, cost follows
+       consequence") made playable. Relative cost index only — no
+       fabricated per-task dollar figures. */
+    .lab-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+      gap: 26px;
+      align-items: start;
+    }
+
+    @media (max-width: 940px) {
+      .lab-shell { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    .lab-console {
+      position: relative;
+      padding: 20px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(160deg, rgba(87, 232, 242, 0.05), transparent 42%),
+        rgba(10, 15, 24, 0.92);
+      box-shadow: var(--shadow);
+    }
+
+    .lab-eyebrow {
+      color: var(--cyan);
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .lab-workloads {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .lab-workload {
+      position: relative;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 12px;
+      align-items: center;
+      padding: 11px 13px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.02);
+      cursor: pointer;
+      text-align: left;
+      transition: transform 200ms cubic-bezier(.22, 1, .36, 1), border-color 200ms ease, background 200ms ease, color 200ms ease;
+    }
+
+    .lab-workload:hover,
+    .lab-workload:focus-visible {
+      color: var(--ink);
+      border-color: rgba(87, 232, 242, 0.5);
+      background: rgba(87, 232, 242, 0.05);
+      transform: translateX(3px);
+    }
+
+    .lab-workload[aria-pressed="true"] {
+      color: var(--ink);
+      border-color: var(--cyan);
+      background: linear-gradient(100deg, rgba(87, 232, 242, 0.12), transparent 70%);
+      box-shadow: inset 3px 0 0 var(--cyan);
+    }
+
+    .lab-workload i {
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      border: 1px solid currentColor;
+      border-radius: 7px;
+      opacity: 0.72;
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      font-style: normal;
+      font-weight: 900;
+    }
+
+    .lab-workload strong {
+      display: block;
+      font-family: var(--body);
+      font-size: 0.86rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .lab-workload small {
+      display: block;
+      margin-top: 2px;
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ── Gate criteria lights ── */
+    .lab-gate {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .lab-gate-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .lab-criterion {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 9px;
+      align-items: center;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.015);
+    }
+
+    .lab-criterion span:first-child {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--quiet);
+      box-shadow: none;
+      transition: background 320ms ease, box-shadow 320ms ease;
+    }
+
+    .lab-criterion.is-lit span:first-child {
+      background: var(--green);
+      box-shadow: 0 0 6px #fff, 0 0 14px rgba(0, 255, 159, 0.8);
+    }
+
+    .lab-criterion.is-gated span:first-child {
+      background: var(--warning);
+      box-shadow: 0 0 6px #fff, 0 0 14px rgba(255, 204, 0, 0.75);
+    }
+
+    .lab-criterion b {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .lab-criterion.is-lit b { color: var(--ink); }
+
+    /* ── Candidate lanes with relative-cost bars ── */
+    .lab-lanes {
+      display: grid;
+      gap: 6px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .lab-lane {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 96px;
+      gap: 14px;
+      align-items: center;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.016);
+      opacity: 0.55;
+      transition: opacity 320ms ease, border-color 320ms ease, background 320ms ease, transform 320ms cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .lab-lane.is-candidate { opacity: 1; }
+
+    .lab-lane.is-chosen {
+      border-color: var(--green);
+      background: linear-gradient(100deg, rgba(0, 255, 159, 0.1), transparent 68%);
+      box-shadow: inset 3px 0 0 var(--green), 0 0 26px rgba(0, 255, 159, 0.08);
+      transform: translateX(4px);
+    }
+
+    .lab-lane-name {
+      display: flex;
+      gap: 8px;
+      align-items: baseline;
+      min-width: 0;
+    }
+
+    .lab-lane-name b {
+      color: var(--ink);
+      font-family: var(--body);
+      font-size: 0.82rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .lab-lane-name em {
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.55rem;
+      font-style: normal;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .lab-lane-state {
+      display: block;
+      margin-top: 2px;
+      font-family: var(--mono);
+      font-size: 0.56rem;
+      letter-spacing: 0.05em;
+    }
+
+    .lab-lane.is-chosen .lab-lane-state { color: var(--green); }
+    .lab-lane.is-blocked .lab-lane-state { color: var(--warning); }
+    .lab-lane:not(.is-chosen):not(.is-blocked) .lab-lane-state { color: var(--quiet); }
+
+    /* Bar: 4px rounded data-end anchored to a shared baseline, thin mark. */
+    .lab-bar {
+      position: relative;
+      height: 9px;
+      overflow: hidden;
+      border-radius: 4px;
+      background: rgba(174, 180, 202, 0.13);
+    }
+
+    .lab-bar > span {
+      position: absolute;
+      inset: 0 auto 0 0;
+      display: block;
+      width: var(--cost, 0%);
+      border-radius: 4px;
+      background: #8fa0bf;
+      transform-origin: left center;
+      transition: width 620ms cubic-bezier(.22, 1, .36, 1), background 320ms ease;
+    }
+
+    .lab-lane.is-chosen .lab-bar > span {
+      background: linear-gradient(90deg, var(--green), #9dffd4);
+      box-shadow: 0 0 12px rgba(0, 255, 159, 0.55);
+    }
+
+    .lab-lane.is-blocked .lab-bar > span {
+      background: repeating-linear-gradient(135deg, rgba(255, 204, 0, 0.55) 0 5px, rgba(255, 204, 0, 0.16) 5px 10px);
+    }
+
+    .lab-verdict {
+      display: grid;
+      gap: 4px;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border: 1px solid rgba(0, 255, 159, 0.34);
+      border-left-width: 3px;
+      border-radius: 10px;
+      background: rgba(0, 255, 159, 0.05);
+    }
+
+    .lab-verdict span {
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .lab-verdict strong {
+      color: var(--ink);
+      font-family: var(--display);
+      font-size: 1.02rem;
+      line-height: 1.3;
+    }
+
+    .lab-verdict p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.55;
+    }
+
+    .lab-scope {
+      margin: 12px 0 0;
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      line-height: 1.6;
+      letter-spacing: 0.03em;
+    }
+
+    .lab-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      align-items: center;
+      margin-top: 12px;
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .lab-legend span { display: inline-flex; gap: 7px; align-items: center; }
+
+    .lab-legend i {
+      width: 16px;
+      height: 8px;
+      border-radius: 3px;
+      font-style: normal;
+    }
+
+    .lab-legend .key-chosen { background: linear-gradient(90deg, var(--green), #9dffd4); }
+    .lab-legend .key-candidate { background: #8fa0bf; }
+    .lab-legend .key-blocked { background: repeating-linear-gradient(135deg, rgba(255, 204, 0, 0.7) 0 4px, rgba(255, 204, 0, 0.2) 4px 8px); }
+
+    /* ═══ PROJECTS SHOWCASE ════════════════════════════════════ */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(268px, 1fr));
+      gap: 14px;
+    }
+
+    .project-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      padding: 20px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(150deg, rgba(255, 255, 255, 0.03), transparent 46%),
+        rgba(11, 16, 25, 0.9);
+      transition: transform 280ms cubic-bezier(.22, 1, .36, 1), border-color 280ms ease, box-shadow 280ms ease;
+    }
+
+    .project-card::before {
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 2px;
+      content: "";
+      opacity: 0.62;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    }
+
+    .project-card:nth-child(3n+2)::before { background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+    .project-card:nth-child(3n+3)::before { background: linear-gradient(90deg, transparent, var(--violet), transparent); }
+
+    @media (hover: hover) and (pointer: fine) {
+      .project-card:hover {
+        border-color: rgba(87, 232, 242, 0.46);
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5), 0 0 26px rgba(87, 232, 242, 0.08);
+        transform: translateY(-5px);
+      }
+    }
+
+    .project-card .project-index {
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.56rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .project-card h3 {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--display);
+      font-size: 1.06rem;
+      letter-spacing: -0.01em;
+    }
+
+    .project-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
+
+    .project-metric {
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+
+    .project-metric strong {
+      color: var(--cyan);
+      font-family: var(--display);
+      font-size: 1.24rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .project-metric small {
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.56rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ═══ OPERATOR (the human behind the fleet) ════════════════ */
+    .operator-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr);
+      gap: 30px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .operator-shell { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    .operator-lede {
+      color: var(--muted);
+      font-size: 1.02rem;
+      line-height: 1.65;
+    }
+
+    .operator-lede strong { color: var(--ink); }
+
+    .operator-method {
+      display: grid;
+      gap: 10px;
+      margin-top: 20px;
+      padding: 0;
+      list-style: none;
+      counter-reset: method;
+    }
+
+    .operator-method li {
+      position: relative;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+      padding: 13px 15px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.016);
+      counter-increment: method;
+    }
+
+    .operator-method li::before {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      content: counter(method, decimal-leading-zero);
+      border: 1px solid rgba(87, 232, 242, 0.4);
+      border-radius: 8px;
+      color: var(--cyan);
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      font-weight: 900;
+    }
+
+    .operator-method strong {
+      display: block;
+      color: var(--ink);
+      font-family: var(--display);
+      font-size: 0.92rem;
+    }
+
+    .operator-method span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.5;
+    }
+
+    .operator-card {
+      position: relative;
+      padding: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(246, 214, 106, 0.32);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(160deg, rgba(246, 214, 106, 0.07), transparent 48%),
+        rgba(10, 14, 22, 0.93);
+      box-shadow: var(--shadow);
+    }
+
+    .operator-sigil {
+      width: 62px;
+      height: 62px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(246, 214, 106, 0.55);
+      border-radius: 50%;
+      color: var(--gold);
+      background: rgba(246, 214, 106, 0.06);
+      box-shadow: inset 0 0 26px rgba(246, 214, 106, 0.09);
+      font-family: var(--display);
+      font-size: 1.1rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+    }
+
+    body[data-fx="on"] .operator-card.is-visible .operator-sigil {
+      animation: operator-sigil-in 900ms cubic-bezier(.22, 1, .36, 1) both;
+    }
+
+    @keyframes operator-sigil-in {
+      from { opacity: 0; transform: scale(0.8) rotate(-14deg); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .operator-card h3 {
+      margin: 16px 0 2px;
+      color: var(--ink);
+      font-family: var(--display);
+      font-size: 1.3rem;
+    }
+
+    .operator-card .operator-role {
+      color: var(--gold);
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .operator-facts {
+      display: grid;
+      gap: 9px;
+      margin: 18px 0 0;
+      padding: 16px 0 0;
+      border-top: 1px solid var(--line);
+      list-style: none;
+    }
+
+    .operator-facts li {
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: baseline;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.04em;
+    }
+
+    .operator-facts li b {
+      color: var(--ink);
+      font-weight: 800;
+      text-align: right;
+    }
+
+    /* ═══ v31 CHROME: HUD framing, dividers, crest, the Iron ═══ */
+
+    /* Cinematic section transitions: glowing centered seam instead
+       of a flat hairline. */
+    .section + .section {
+      border-top: 0;
+      background:
+        radial-gradient(ellipse 46% 100% at 50% 0, rgba(87, 232, 242, 0.09), transparent 70%) top / 100% 110px no-repeat,
+        linear-gradient(90deg, transparent 6%, rgba(135, 157, 188, 0.2) 28%, rgba(87, 232, 242, 0.55) 50%, rgba(135, 157, 188, 0.2) 72%, transparent 94%) top / 100% 1px no-repeat;
+    }
+
+    /* HUD corner brackets: one injected element, eight gradients. */
+    .hud-framed { position: relative; }
+
+    .hud-corners {
+      --hud: rgba(87, 232, 242, 0.55);
+      position: absolute;
+      inset: 7px;
+      z-index: 5;
+      display: block;
+      pointer-events: none;
+      background:
+        linear-gradient(var(--hud), var(--hud)) left 0 top 0 / 13px 1.5px,
+        linear-gradient(var(--hud), var(--hud)) left 0 top 0 / 1.5px 13px,
+        linear-gradient(var(--hud), var(--hud)) right 0 top 0 / 13px 1.5px,
+        linear-gradient(var(--hud), var(--hud)) right 0 top 0 / 1.5px 13px,
+        linear-gradient(var(--hud), var(--hud)) left 0 bottom 0 / 13px 1.5px,
+        linear-gradient(var(--hud), var(--hud)) left 0 bottom 0 / 1.5px 13px,
+        linear-gradient(var(--hud), var(--hud)) right 0 bottom 0 / 13px 1.5px,
+        linear-gradient(var(--hud), var(--hud)) right 0 bottom 0 / 1.5px 13px;
+      background-repeat: no-repeat;
+      opacity: 0.4;
+      transition: opacity 260ms ease, inset 260ms cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .operator-card .hud-corners,
+    .fleet-card-frame .hud-corners { --hud: rgba(246, 214, 106, 0.55); }
+
+    @media (hover: hover) and (pointer: fine) {
+      .hud-framed:hover > .hud-corners { opacity: 1; inset: 3px; }
+    }
+
+    /* Identity wordmark: subtle chromatic split under FX. */
+    body[data-fx="on"] .identity-wordmark {
+      text-shadow:
+        -1.6px 0 rgba(87, 232, 242, 0.34),
+        1.6px 0 rgba(255, 46, 111, 0.26),
+        0 2px 0 rgba(0, 0, 0, 0.9),
+        0 0 36px rgba(87, 232, 242, 0.16);
+    }
+
+    /* House crest */
+    .crest-watermark {
+      position: absolute;
+      right: -34px;
+      bottom: -40px;
+      width: 190px;
+      height: 190px;
+      opacity: 0.1;
+      pointer-events: none;
+    }
+
+    .footer-crest {
+      width: 40px;
+      height: 40px;
+      flex: 0 0 auto;
+      opacity: 0.85;
+      filter: drop-shadow(0 0 10px rgba(246, 214, 106, 0.25));
+    }
+
+    /* THE IRON — weight under the bar */
+    .iron-stage {
+      position: relative;
+      margin: 0 0 40px;
+      padding: 26px 24px 18px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        radial-gradient(ellipse 70% 90% at 50% 110%, rgba(246, 214, 106, 0.06), transparent 60%),
+        rgba(9, 13, 21, 0.92);
+      box-shadow: var(--shadow);
+    }
+
+    .iron-head {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+
+    .iron-head strong {
+      color: var(--ink);
+      font-family: var(--display);
+      font-size: 1.02rem;
+      letter-spacing: 0.02em;
+    }
+
+    .iron-head span {
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .iron-svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 190px;
+    }
+
+    .iron-plate { opacity: 0; transform: translateY(-16px); }
+
+    body[data-fx="off"] .iron-plate,
+    .iron-stage.is-visible .iron-plate { opacity: 1; transform: none; }
+
+    body[data-fx="on"] .iron-stage.is-visible .iron-plate {
+      animation: iron-drop 560ms cubic-bezier(.22, 1.2, .36, 1) both;
+    }
+
+    body[data-fx="on"] .iron-stage.is-visible .iron-plate:nth-of-type(1) { animation-delay: 160ms; }
+    body[data-fx="on"] .iron-stage.is-visible .iron-plate:nth-of-type(2) { animation-delay: 300ms; }
+    body[data-fx="on"] .iron-stage.is-visible .iron-plate:nth-of-type(3) { animation-delay: 440ms; }
+    body[data-fx="on"] .iron-stage.is-visible .iron-plate:nth-of-type(4) { animation-delay: 580ms; }
+    body[data-fx="on"] .iron-stage.is-visible .iron-plate:nth-of-type(5) { animation-delay: 720ms; }
+    body[data-fx="on"] .iron-stage.is-visible .iron-plate:nth-of-type(6) { animation-delay: 860ms; }
+
+    @keyframes iron-drop {
+      from { opacity: 0; transform: translateY(-16px); }
+      62% { opacity: 1; transform: translateY(2px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    body[data-fx="on"] .iron-stage.is-visible .iron-shine {
+      animation: iron-shine-sweep 3.6s ease-in-out 1.2s infinite;
+    }
+
+    @keyframes iron-shine-sweep {
+      0%, 55% { transform: translateX(-120px); opacity: 0; }
+      70% { opacity: 0.9; }
+      85%, 100% { transform: translateX(620px); opacity: 0; }
+    }
+
+    .iron-caption {
+      margin: 6px 0 0;
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      line-height: 1.7;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .iron-caption b { color: var(--gold); font-weight: 800; }
+
+    /* Trace HUD: give the four readout cells an instrument feel. */
+    .trace-hud span {
+      border-radius: 8px;
+      color: var(--muted);
+    }
+
+    .trace-hud span::before {
+      position: absolute;
+      top: 0;
+      right: auto;
+      left: 0;
+      width: 42%;
+      height: 2px;
+      content: "";
+      background: linear-gradient(90deg, var(--cyan), transparent);
+      opacity: 0.5;
+      transition: width 300ms ease, opacity 300ms ease;
+    }
+
+    .chain-console.is-tracing .trace-hud span::before {
+      width: 100%;
+      opacity: 0.9;
+    }
+
+    /* Outcome chips: sigil prefix + charged state. */
+    .chain-outcomes span::before {
+      margin-right: 7px;
+      content: "◈";
+      color: var(--green);
+      opacity: 0.7;
+    }
+
+    .chain-outcomes.is-complete span {
+      border-color: rgba(0, 255, 159, 0.4);
+      box-shadow: 0 0 14px rgba(0, 255, 159, 0.07);
+    }
+
+    /* ═══ ELEVEN: letterbox, ledger, magnets, hum, reps ════════ */
+
+    /* Cinematic letterbox bars: arrival and warp. */
+    .cine-bars i {
+      position: fixed;
+      right: 0;
+      left: 0;
+      z-index: 120;
+      height: 0;
+      pointer-events: none;
+      background: #000;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+      transition: height 680ms cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .cine-bars i:first-child { top: 0; }
+    .cine-bars i:last-child { bottom: 0; }
+
+    body[data-fx="on"].cine-intro .cine-bars i,
+    body[data-fx="on"].cine-warp .cine-bars i { height: 46px; }
+
+    /* Magnetic primary buttons: composed via the translate property
+       so existing transform rules stay untouched. */
+    .button-primary {
+      translate: var(--mag-x, 0px) var(--mag-y, 0px);
+      transition-property: transform, border-color, color, background-color, box-shadow, filter, translate;
+      transition-duration: 170ms, 170ms, 170ms, 170ms, 170ms, 170ms, 90ms;
+    }
+
+    /* The Iron Ledger: rolling odometers of the accumulated work. */
+    .iron-ledger {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin: -26px 0 40px;
+      padding: 20px 22px;
+      border: 1px solid rgba(246, 214, 106, 0.24);
+      border-top: 0;
+      border-radius: 0 0 var(--radius) var(--radius);
+      background:
+        linear-gradient(180deg, rgba(246, 214, 106, 0.035), transparent 60%),
+        rgba(8, 12, 19, 0.94);
+    }
+
+    .ledger-item { text-align: center; }
+
+    .odometer {
+      display: block;
+      color: var(--gold);
+      font-family: var(--display);
+      font-size: clamp(1.4rem, 2.6vw, 2rem);
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+      text-shadow: 0 0 22px rgba(246, 214, 106, 0.28);
+    }
+
+    .odo-digit {
+      display: inline-block;
+      height: 1em;
+      overflow: hidden;
+      vertical-align: top;
+    }
+
+    .odo-strip {
+      display: inline-flex;
+      flex-direction: column;
+      transform: translateY(0);
+      transition: transform 1.35s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .odo-strip i {
+      height: 1em;
+      font-style: normal;
+      line-height: 1;
+    }
+
+    .odometer.is-rolling .odo-strip {
+      transform: translateY(calc(var(--odo-target, 0) * -1em));
+    }
+
+    .odo-sep { display: inline-block; }
+
+    .ledger-item small {
+      display: block;
+      margin-top: 7px;
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.56rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* Rack another set */
+    .iron-replay {
+      padding: 6px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--quiet);
+      background: transparent;
+      cursor: pointer;
+      font: 800 0.58rem/1.2 var(--mono);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .iron-replay:hover,
+    .iron-replay:focus-visible {
+      color: var(--gold);
+      border-color: rgba(246, 214, 106, 0.5);
+      background: rgba(246, 214, 106, 0.05);
+    }
+
+    /* ═══ JOURNEY SCENE CINEMA (v31 final) ═════════════════════ */
+
+    /* Header guard: the brand subtitle can never collide with nav. */
+    .brand-copy { min-width: 0; }
+
+    .brand-copy small {
+      display: block;
+      overflow: hidden;
+      max-width: clamp(150px, 16vw, 300px);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Sun: rotating corona spokes + chromatic limb shading. */
+    .world-sun-corona {
+      position: absolute;
+      inset: -46%;
+      pointer-events: none;
+      border-radius: 50%;
+      opacity: 0.75;
+      background: repeating-conic-gradient(from 0deg, rgba(255, 173, 66, 0.16) 0deg 6deg, transparent 6deg 26deg);
+      -webkit-mask-image: radial-gradient(circle, transparent 33%, #000 45%, transparent 71%);
+      mask-image: radial-gradient(circle, transparent 33%, #000 45%, transparent 71%);
+    }
+
+    body[data-fx="on"] .world-sun-corona { animation: corona-spin 74s linear infinite; }
+
+    @keyframes corona-spin { to { transform: rotate(360deg); } }
+
+    .world-sun-limb {
+      position: absolute;
+      inset: -2%;
+      pointer-events: none;
+      border-radius: 50%;
+      box-shadow:
+        inset -22px -16px 52px rgba(255, 64, 28, 0.34),
+        inset 14px 12px 46px rgba(255, 244, 204, 0.3);
+    }
+
+    /* Distant ringed companion: parallax against scroll progress. */
+    .world-planet {
+      position: absolute;
+      top: calc(13% + var(--world-progress, 0) * 9vh);
+      left: 11%;
+      width: clamp(70px, 8vw, 118px);
+      pointer-events: none;
+      opacity: calc(0.24 + var(--scene-1, 1) * 0.4);
+      filter: drop-shadow(0 0 18px rgba(87, 232, 242, 0.18));
+      transform: translate3d(calc(var(--world-progress, 0) * -6vw), 0, 0);
+    }
+
+    body[data-fx="on"] .world-planet { animation: planet-drift 26s ease-in-out infinite alternate; }
+
+    @keyframes planet-drift {
+      to { rotate: 3deg; translate: 0 -8px; }
+    }
+
+    /* Sunlight shaft with floating motes. */
+    .world-shaft {
+      position: absolute;
+      top: 6%;
+      right: 4%;
+      width: 32vw;
+      height: 88%;
+      pointer-events: none;
+      opacity: calc(var(--scene-1, 1) * 0.5);
+      background: linear-gradient(212deg, rgba(255, 204, 92, 0.14), rgba(255, 173, 66, 0.045) 42%, transparent 74%);
+      -webkit-mask-image: linear-gradient(#000, transparent 88%);
+      mask-image: linear-gradient(#000, transparent 88%);
+      transform: skewX(-9deg);
+    }
+
+    .world-motes { position: absolute; inset: 0; pointer-events: none; opacity: calc(var(--scene-1, 1) * 0.85); }
+
+    .world-motes i {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: rgba(255, 224, 150, 0.85);
+      box-shadow: 0 0 8px rgba(255, 204, 92, 0.8);
+      opacity: 0;
+    }
+
+    .world-motes i:nth-child(1) { top: 34%; right: 18%; }
+    .world-motes i:nth-child(2) { top: 52%; right: 26%; }
+    .world-motes i:nth-child(3) { top: 44%; right: 9%; }
+    .world-motes i:nth-child(4) { top: 63%; right: 20%; }
+    .world-motes i:nth-child(5) { top: 72%; right: 12%; }
+
+    body[data-fx="on"] .world-motes i { animation: mote-float 9s ease-in-out infinite; }
+    body[data-fx="on"] .world-motes i:nth-child(2) { animation-delay: 1.8s; animation-duration: 11s; }
+    body[data-fx="on"] .world-motes i:nth-child(3) { animation-delay: 3.4s; }
+    body[data-fx="on"] .world-motes i:nth-child(4) { animation-delay: 5.2s; animation-duration: 12s; }
+    body[data-fx="on"] .world-motes i:nth-child(5) { animation-delay: 6.8s; animation-duration: 10s; }
+
+    @keyframes mote-float {
+      0%, 100% { opacity: 0; transform: translateY(12px); }
+      18% { opacity: 1; }
+      82% { opacity: 0.5; }
+      100% { transform: translateY(-46px); }
+    }
+
+    /* Horizon: gold rim light on the dune line + atmospheric haze. */
+    .world-duneglow {
+      position: absolute;
+      right: 0;
+      bottom: 11%;
+      left: 0;
+      height: 3px;
+      pointer-events: none;
+      opacity: calc(0.25 + var(--scene-1, 1) * 0.5);
+      background: linear-gradient(90deg, transparent 4%, rgba(255, 173, 66, 0.5) 38%, rgba(255, 224, 150, 0.85) 62%, rgba(255, 173, 66, 0.3) 86%, transparent);
+      filter: blur(1px);
+      box-shadow: 0 0 22px rgba(255, 173, 66, 0.4);
+    }
+
+    .world-atmosphere {
+      position: absolute;
+      right: 0;
+      bottom: 8%;
+      left: 0;
+      height: 26%;
+      pointer-events: none;
+      opacity: calc(0.3 + var(--scene-1, 1) * 0.4);
+      background: linear-gradient(0deg, rgba(140, 60, 16, 0.22), rgba(255, 149, 0, 0.06) 46%, transparent);
+    }
+
+    /* ═══ FIDELITY PASS: plasma sun, heat haze, film grain ═════ */
+
+    .world-sun-plasma {
+      position: absolute;
+      inset: -6%;
+      overflow: visible;
+      pointer-events: none;
+      opacity: 0.85;
+      mix-blend-mode: screen;
+    }
+
+    body[data-fx="off"] .world-sun-plasma { display: none; }
+
+    body[data-fx="on"] .world-duneglow,
+    body[data-fx="on"] .world-atmosphere {
+      filter: blur(1px) url(#heat-haze);
+    }
+
+    .film-grain {
+      position: fixed;
+      inset: -50%;
+      z-index: 119;
+      pointer-events: none;
+      opacity: 0.035;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='11'/><feColorMatrix type='saturate' values='0'/></filter><rect width='240' height='240' filter='url(%23n)' opacity='0.55'/></svg>");
+    }
+
+    body[data-fx="off"] .film-grain { display: none; }
+
+    body[data-fx="on"] .film-grain { animation: grain-shift 1.3s steps(4) infinite; }
+
+    @keyframes grain-shift {
+      0%, 100% { transform: translate(0, 0); }
+      25% { transform: translate(-1.4%, 1%); }
+      50% { transform: translate(1%, -1.2%); }
+      75% { transform: translate(-0.7%, -0.5%); }
+    }
+
+    .journey-depth-value { font-size: 1.35em; }
+
+    /* Wind-blown sand drifting across the horizon. */
+    .world-sanddrift {
+      position: absolute;
+      right: -20%;
+      bottom: 10%;
+      left: -20%;
+      height: 9%;
+      pointer-events: none;
+      opacity: calc(var(--scene-1, 1) * 0.4);
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='60'><filter id='w'><feTurbulence type='fractalNoise' baseFrequency='0.012 0.09' numOctaves='2' seed='5'/><feColorMatrix type='matrix' values='0 0 0 0 1  0 0 0 0 0.72  0 0 0 0 0.32  0 0 0 0.5 0'/></filter><rect width='300' height='60' filter='url(%23w)'/></svg>");
+      background-size: 300px 100%;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent), linear-gradient(#000 20%, transparent 90%);
+      -webkit-mask-composite: source-in;
+      mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent), linear-gradient(#000 20%, transparent 90%);
+      mask-composite: intersect;
+      mix-blend-mode: screen;
+    }
+
+    body[data-fx="on"] .world-sanddrift { animation: sand-drift 17s linear infinite; }
+
+    @keyframes sand-drift {
+      to { background-position: -300px 0; }
+    }
+
+    /* Sand striations on the nearest dune ridge. */
+    .world-dunes span:nth-child(1) {
+      background-image:
+        repeating-linear-gradient(168deg, rgba(255, 214, 130, 0.05) 0 2px, transparent 2px 9px),
+        linear-gradient(160deg, rgba(255,204,0,0.34), rgba(95,29,12,0.76) 52%, rgba(10,6,14,0.92));
+    }
+
+    @media print {
+      .film-grain { display: none !important; }
+    }
+
+    /* ═══ ELEVEN II: ticker, materialize, glitch, aurora ═══════ */
+
+    /* Ops data ticker: one continuous stream of the real numbers. */
+    .data-ticker {
+      position: relative;
+      overflow: hidden;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: rgba(4, 7, 13, 0.9);
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+      mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+    }
+
+    .ticker-track {
+      display: flex;
+      width: max-content;
+      padding: 9px 0;
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .ticker-track > span { padding-right: 48px; }
+    .ticker-track b { color: var(--cyan); font-weight: 800; }
+    .ticker-track em { color: var(--gold); font-style: normal; }
+
+    body[data-fx="on"] .ticker-track {
+      animation: ticker-scroll 52s linear infinite;
+    }
+
+    .data-ticker:hover .ticker-track { animation-play-state: paused; }
+
+    @keyframes ticker-scroll {
+      to { transform: translateX(-50%); }
+    }
+
+    /* Section-head materialize: wipe + focus pull on reveal. */
+    body.motion-ready[data-fx="on"] .section-head.reveal-item {
+      clip-path: inset(-8px 92% -8px 0);
+      filter: blur(5px);
+      transition:
+        opacity 540ms ease var(--reveal-delay, 0ms),
+        transform 640ms cubic-bezier(.23, 1, .32, 1) var(--reveal-delay, 0ms),
+        clip-path 900ms cubic-bezier(.22, 1, .36, 1) var(--reveal-delay, 0ms),
+        filter 760ms ease calc(var(--reveal-delay, 0ms) + 140ms);
+    }
+
+    body.motion-ready[data-fx="on"] .section-head.reveal-item.is-visible {
+      clip-path: inset(-8px 0% -8px 0);
+      filter: blur(0);
+    }
+
+    /* Rare deck-status signal glitch. */
+    .deck-status.is-glitch {
+      animation: deck-glitch 280ms steps(2) 1;
+    }
+
+    @keyframes deck-glitch {
+      0% { transform: translateX(0); filter: none; }
+      25% { transform: translateX(-2px); filter: drop-shadow(2px 0 0 rgba(255, 46, 111, 0.55)) drop-shadow(-2px 0 0 rgba(87, 232, 242, 0.55)); }
+      50% { transform: translateX(1.5px) skewX(0.6deg); filter: drop-shadow(-2px 0 0 rgba(255, 46, 111, 0.4)); }
+      75% { transform: translateX(-1px); filter: drop-shadow(1px 0 0 rgba(87, 232, 242, 0.5)); }
+      100% { transform: translateX(0); filter: none; }
+    }
+
+    /* Cursor aurora: a soft light that follows the pointer. */
+    .cursor-aura {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      width: 360px;
+      height: 360px;
+      pointer-events: none;
+      opacity: 0;
+      background: radial-gradient(circle, rgba(87, 232, 242, 0.07), rgba(212, 120, 242, 0.03) 46%, transparent 70%);
+      mix-blend-mode: screen;
+      transition: opacity 600ms ease;
+      will-change: transform;
+    }
+
+    body[data-fx="on"] .cursor-aura.is-live { opacity: 1; }
+
+    @media print {
+      .data-ticker,
+      .cursor-aura { display: none !important; }
+    }
   </style>
 </head>
 <body data-fx="on" data-alert="off">
@@ -7954,15 +9158,19 @@
   <div class="spice-haze" aria-hidden="true"></div>
   <div class="alert-wash" aria-hidden="true"></div>
   <div class="warp-flash" id="warp-flash" aria-hidden="true"></div>
+  <div class="cine-bars" aria-hidden="true"><i></i><i></i></div>
+  <div class="film-grain" aria-hidden="true"></div>
+  <div class="cursor-aura" id="cursor-aura" aria-hidden="true"></div>
   <a class="skip-link" href="#main">Skip to mission control</a>
   <nav class="mission-spine" aria-label="Deck progress">
     <a href="#top" data-scene-label="OPENING // DOUG CASHIO" aria-current="location"><span class="visually-hidden">Opening</span></a>
     <a href="#spice-flight" data-scene-label="JOURNEY // SOVEREIGN CORE"><span class="visually-hidden">Sovereign journey</span></a>
     <a href="#proof" data-scene-label="PROOF // BUSINESS VALUE"><span class="visually-hidden">Business proof</span></a>
-    <a href="#chain" data-scene-label="DEMO // EVENT CHAIN"><span class="visually-hidden">Event chain demo</span></a>
+    <a href="#policy-lab" data-scene-label="LAB // POLICY DECIDES"><span class="visually-hidden">Routing lab</span></a>
     <a href="#topology" data-scene-label="FLEET // ZEUSAPOLLO"><span class="visually-hidden">Fleet architecture</span></a>
     <a href="#console" data-scene-label="CONSOLE // HERMES"><span class="visually-hidden">Hermes console</span></a>
-    <a href="#fleet-card" data-scene-label="CARD // TAKE THE PROOF"><span class="visually-hidden">Fleet card</span></a>
+    <a href="#projects" data-scene-label="BUILDS // SEVEN PUBLIC"><span class="visually-hidden">Featured builds</span></a>
+    <a href="#operator" data-scene-label="OPERATOR // DOUG CASHIO"><span class="visually-hidden">The operator</span></a>
     <a href="#hail" data-scene-label="CHANNEL // OPEN"><span class="visually-hidden">Contact</span></a>
   </nav>
   <canvas id="starfield" aria-hidden="true"></canvas>
@@ -7986,7 +9194,9 @@
       <button type="button" data-bit-mission>Take the 60-second mission</button>
       <button type="button" data-bit-target="spice-flight">Fly the sovereign journey</button>
       <button type="button" data-bit-target="proof">Show me the business proof</button>
-      <button type="button" data-bit-target="chain">Watch intent become evidence</button>
+      <button type="button" data-bit-target="policy-lab">Run the routing lab</button>
+      <button type="button" data-bit-target="projects">What has he built?</button>
+      <button type="button" data-bit-target="operator">Who built this?</button>
       <button type="button" data-bit-target="topology">Show the fleet architecture</button>
       <button type="button" data-bit-target="console">Open the Hermes console</button>
       <button type="button" data-bit-target="fleet-card">Take the proof with you</button>
@@ -8005,17 +9215,18 @@
         </span>
         <span class="brand-copy">
           <strong>CASHIO.US</strong>
-          <small>Sovereign AI // Services <span data-fleet="healthyServiceCount">18</span> // Routes <span data-fleet="routeCount">10</span></small>
+          <small>Sovereign AI // Services <span data-fleet="healthyServiceCount">17</span> // Routes <span data-fleet="routeCount">10</span></small>
         </span>
       </a>
 
       <nav class="primary-nav" aria-label="Primary navigation">
         <ul>
           <li><a href="#proof">Proof</a></li>
-          <li><a href="#chain">Chain</a></li>
-          <li><a href="#console">Console</a></li>
+          <li><a href="#policy-lab">Lab</a></li>
           <li><a href="#topology">Fleet</a></li>
-          <li><a href="#fleet-card">Card</a></li>
+          <li><a href="#console">Console</a></li>
+          <li><a href="#projects">Builds</a></li>
+          <li><a href="#operator">Operator</a></li>
           <li><a href="#hail">Contact</a></li>
         </ul>
       </nav>
@@ -8025,10 +9236,13 @@
         <nav class="mobile-nav-panel" aria-label="Mobile navigation">
           <a href="#mission">Choose mission</a>
           <a href="#proof">Proof</a>
+          <a href="#policy-lab">Routing lab</a>
           <a href="#chain">Event chain</a>
-          <a href="#console">Console</a>
           <a href="#topology">Fleet</a>
+          <a href="#console">Console</a>
+          <a href="#projects">Featured builds</a>
           <a href="#manifest">Flight manifest</a>
+          <a href="#operator">The operator</a>
           <a href="#fleet-card">Fleet card</a>
           <a href="#hail">Open channel</a>
         </nav>
@@ -8051,8 +9265,8 @@
       <div class="shell deck-status" aria-label="Local command-deck readouts">
         <div class="deck-stat"><span>Stardate // UTC</span><strong id="deck-stardate">----</strong></div>
         <div class="deck-stat"><span>Local ops clock</span><strong id="deck-clock">--:--</strong></div>
-        <div class="deck-stat"><span>House</span><strong>CASHIO.US // v30</strong></div>
-        <div class="deck-stat"><span>Status export</span><strong id="snapshot-readout">Verified // 07-22-2026</strong></div>
+        <div class="deck-stat"><span>House</span><strong>CASHIO.US // v31</strong></div>
+        <div class="deck-stat"><span>Status export</span><strong id="snapshot-readout">Verified // 07-26-2026</strong></div>
         <div class="deck-stat"><span>Entry route</span><strong>Kimi K3 // Tier 0</strong></div>
       </div>
       <div class="shell hero-grid">
@@ -8075,7 +9289,7 @@
           </div>
           <p class="instrument-label"><span>◈</span> Instrument readouts // hover or focus for the receipt</p>
           <ul class="hero-proof" aria-label="At a glance">
-            <li tabindex="0" aria-describedby="tip-guests"><strong data-fleet="healthyServiceCount">18</strong> containers running<span class="flight-tip" id="tip-guests" role="tooltip"><b>Fleet receipt</b>Hermes verified 18 of 18 containers running across Zeus and Apollo on 07-22-2026. Athena is separately owner-confirmed active as a physical Home Assistant edge node and is not included in that container count.</span></li>
+            <li tabindex="0" aria-describedby="tip-guests"><strong data-fleet="healthyServiceCount">17</strong> containers running<span class="flight-tip" id="tip-guests" role="tooltip"><b>Fleet receipt</b>An owner-run live check over cluster SSH verified 17 of 18 containers running across Zeus and Apollo on 07-26-2026; one was stopped in a storage maintenance operation. Athena is separately owner-confirmed active as a physical Home Assistant edge node and is not included in that container count.</span></li>
             <li tabindex="0" aria-describedby="tip-jobs"><strong data-fleet="hostCount">2</strong> core hosts<span class="flight-tip" id="tip-jobs" role="tooltip"><b>Host receipt</b>Zeus and Apollo are the two core homelab hosts. Athena is separately owner-confirmed active as a physical Home Assistant edge node. No addresses or access paths are published.</span></li>
             <li tabindex="0" aria-describedby="tip-models"><strong data-fleet="routeCount">10</strong> routing lanes<span class="flight-tip" id="tip-models" role="tooltip"><b>Payload receipt</b>The verified fabric includes Kimi K3, Gemini 3.6 Flash, DeepSeek V4 Flash/Pro, Grok 4.5, Sonnet 5, Sonar Pro, GPT-5.6 Sol, local Gemma, and gateway failover.</span></li>
             <li tabindex="0" aria-describedby="tip-efficiency"><strong>$6.49</strong> estimated monthly AI cost<span class="flight-tip" id="tip-efficiency" role="tooltip"><b>Cost receipt</b>The 07-22-2026 sample observed $0.26 per day and estimated a $6.49 monthly run rate. Premium routes remained available behind the quality gate.</span></li>
@@ -8087,7 +9301,7 @@
           <div class="deck-boot" id="deck-boot" aria-hidden="true" hidden>
             <div class="boot-brand">ZEUSAPOLLO</div>
             <div class="boot-line" style="--boot-delay:0ms">[01] PUBLIC PROOF DECK // HANDSHAKE ACCEPTED</div>
-            <div class="boot-line" style="--boot-delay:140ms">[02] STATUS EXPORT // 07-22-2026 // 18 OF 18 RUNNING</div>
+            <div class="boot-line" style="--boot-delay:140ms">[02] LIVE CHECK // 07-26-2026 // 17 OF 18 RUNNING</div>
             <div class="boot-line" style="--boot-delay:280ms">[03] HERMES CONSOLE // LOCAL SAFE MODE</div>
             <div class="boot-line" style="--boot-delay:420ms">[04] GUILD NAVIGATOR SPICE // PARTICLES READY</div>
             <div class="boot-line" style="--boot-delay:560ms">[05] COMMAND DECK // ENGAGED</div>
@@ -8103,7 +9317,7 @@
             <div class="profile-metric" data-signal="quality"><strong>QUALITY</strong><span>Gate before price</span><small>Capability, privacy, and reliability first</small><i aria-hidden="true"><b style="--signal-fill:100%"></b></i></div>
             <div class="profile-metric" data-signal="cost"><strong>$0.26</strong><span>Observed AI cost / day</span><small>$6.49 estimated monthly run rate</small><i aria-hidden="true"><b style="--signal-fill:66%"></b></i></div>
             <div class="profile-metric" data-signal="routes"><strong>10</strong><span>Policy routing lanes</span><small>Free + local → frontier escalation</small><i aria-hidden="true"><b style="--signal-fill:88%"></b></i></div>
-            <div class="profile-metric" data-signal="fleet"><strong>18/18</strong><span>Core containers</span><small>Verified running 07-22-2026</small><i aria-hidden="true"><b style="--signal-fill:100%"></b></i></div>
+            <div class="profile-metric" data-signal="fleet"><strong>17/18</strong><span>Core containers</span><small>Live-verified 07-26-2026</small><i aria-hidden="true"><b style="--signal-fill:94%"></b></i></div>
           </div>
           <div class="route-spectrum" aria-label="Quality-gated model routing spectrum from routine local work to frontier adjudication">
             <div class="route-spectrum-head"><span>Quality gate // active</span><strong>10 routes</strong></div>
@@ -8139,13 +9353,56 @@
           <canvas class="journey-canvas" id="journey-canvas"></canvas>
           <div class="journey-aperture"></div>
           <div class="journey-shards"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-          <div class="world-sun"><span class="world-sun-core"></span><span class="world-sun-flare"></span></div>
+          <div class="world-sun"><span class="world-sun-corona"></span><span class="world-sun-core"></span><svg class="world-sun-plasma" viewBox="0 0 200 200" aria-hidden="true">
+            <defs>
+              <filter id="sun-plasma" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.014 0.026" numOctaves="3" seed="7" result="noise">
+                  <animate attributeName="baseFrequency" dur="26s" values="0.014 0.026;0.019 0.032;0.014 0.026" repeatCount="indefinite"/>
+                </feTurbulence>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="15"/>
+              </filter>
+              <filter id="heat-haze" x="-10%" y="-60%" width="120%" height="220%">
+                <feTurbulence type="turbulence" baseFrequency="0.018 0.08" numOctaves="2" seed="3" result="haze">
+                  <animate attributeName="baseFrequency" dur="7s" values="0.018 0.08;0.024 0.11;0.018 0.08" repeatCount="indefinite"/>
+                </feTurbulence>
+                <feDisplacementMap in="SourceGraphic" in2="haze" scale="7"/>
+              </filter>
+              <radialGradient id="sun-surface" cx="0.42" cy="0.4">
+                <stop offset="0" stop-color="#fff7d6"/>
+                <stop offset="0.35" stop-color="#ffd24d"/>
+                <stop offset="0.72" stop-color="#ff8c1a"/>
+                <stop offset="1" stop-color="#e0470f"/>
+              </radialGradient>
+            </defs>
+            <circle cx="100" cy="100" r="76" fill="url(#sun-surface)" filter="url(#sun-plasma)"/>
+          </svg><span class="world-sun-flare"></span><span class="world-sun-limb"></span></div>
+          <div class="world-planet">
+            <svg viewBox="0 0 120 64" aria-hidden="true">
+              <defs>
+                <radialGradient id="planetBody" cx="0.36" cy="0.32">
+                  <stop offset="0" stop-color="#9ee7ef"/>
+                  <stop offset="0.55" stop-color="#2e7f92"/>
+                  <stop offset="1" stop-color="#0c2733"/>
+                </radialGradient>
+              </defs>
+              <ellipse cx="60" cy="32" rx="52" ry="13" fill="none" stroke="rgba(246,214,106,0.4)" stroke-width="1.4" transform="rotate(-16 60 32)"/>
+              <ellipse cx="60" cy="32" rx="44" ry="10" fill="none" stroke="rgba(87,232,242,0.32)" stroke-width="1" transform="rotate(-16 60 32)"/>
+              <circle cx="60" cy="32" r="19" fill="url(#planetBody)"/>
+              <path d="M41 32 a19 19 0 0 0 38 0" fill="rgba(5,12,18,0.55)"/>
+              <ellipse cx="60" cy="32" rx="52" ry="13" fill="none" stroke="rgba(246,214,106,0.14)" stroke-width="4" stroke-dasharray="1 7" transform="rotate(-16 60 32)"/>
+            </svg>
+          </div>
+          <div class="world-shaft"></div>
+          <div class="world-motes"><i></i><i></i><i></i><i></i><i></i></div>
           <div class="world-lens"></div>
           <div class="world-thopter"><span></span></div>
           <div class="world-spice-stream"></div>
           <div class="world-grid"></div>
           <div class="world-horizon"></div>
+          <div class="world-atmosphere"></div>
+          <div class="world-sanddrift"></div>
           <div class="world-dunes"><span></span><span></span><span></span><span></span></div>
+          <div class="world-duneglow"></div>
           <div class="world-orbit"><span class="world-orbit-core"></span><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
           <div class="world-receipt"><span class="world-receipt-bars"></span><span class="world-receipt-seal">Verified</span></div>
           <div class="world-gate"><span class="world-gate-core"></span></div>
@@ -8288,7 +9545,7 @@
               <div class="engine-core"><i></i><strong>Human</strong><span>Intent</span></div>
             </div>
             <div class="engine-decision"><span>Qualified route</span><strong id="engine-decision">MEASURED COST</strong></div>
-            <div class="engine-telemetry"><span><b>10</b> lanes</span><span><b>18/18</b> core</span><span><b>71/71</b> jobs</span></div>
+            <div class="engine-telemetry"><span><b>10</b> lanes</span><span><b>17/18</b> core</span><span><b>71/71</b> jobs</span></div>
           </div>
           <div class="value-story">
             <p class="eyebrow">Business translation // select a signal</p>
@@ -8299,7 +9556,7 @@
                 <small>01 // Economics</small><strong>$0.26 / day</strong><span>Observed AI cost with premium reasoning still available.</span>
               </button>
               <button class="value-node" type="button" data-value="continuity" aria-pressed="false">
-                <small>02 // Continuity</small><strong>18/18 + 71/71</strong><span>Services and scheduled work were healthy at verification.</span>
+                <small>02 // Continuity</small><strong>17/18 + 71/71</strong><span>Services and scheduled work were healthy at verification.</span>
               </button>
               <button class="value-node" type="button" data-value="governance" aria-pressed="false">
                 <small>03 // Governance</small><strong>10 policy lanes</strong><span>Task fit, privacy, cost, and severity shape each route.</span>
@@ -8328,11 +9585,85 @@
       </div>
     </section>
 
-    <section class="section" id="chain" data-chapter="03" aria-labelledby="chain-title">
+    <section class="section" id="policy-lab" data-chapter="03" aria-labelledby="policy-lab-title">
       <div class="shell">
         <div class="section-head">
           <div>
-            <p class="eyebrow">03 // User-triggered demo</p>
+            <p class="eyebrow">03 // Interactive routing lab</p>
+            <h2 id="policy-lab-title">Don't take the policy<br>on faith. Run it.</h2>
+          </div>
+          <p>Every claim above says quality gates the route and cost follows consequence. Pick a workload and watch the gate actually decide—which lanes qualify, which are refused, and which one earns the work.</p>
+        </div>
+
+        <div class="lab-shell">
+          <div class="lab-console">
+            <p class="lab-eyebrow">◈ Step 01 // Choose the workload</p>
+            <div class="lab-workloads" role="group" aria-label="Choose a workload to route">
+              <button class="lab-workload" type="button" data-workload="triage" aria-pressed="true">
+                <i aria-hidden="true">T0</i>
+                <span><strong>Triage 400 log lines</strong><small>Routine · non-sensitive</small></span>
+              </button>
+              <button class="lab-workload" type="button" data-workload="brief" aria-pressed="false">
+                <i aria-hidden="true">T1</i>
+                <span><strong>Draft the morning briefing</strong><small>Routine · scheduled</small></span>
+              </button>
+              <button class="lab-workload" type="button" data-workload="household" aria-pressed="false">
+                <i aria-hidden="true">PRV</i>
+                <span><strong>Summarize private household context</strong><small>Privacy-bound · must stay local</small></span>
+              </button>
+              <button class="lab-workload" type="button" data-workload="review" aria-pressed="false">
+                <i aria-hidden="true">T3</i>
+                <span><strong>Adversarial review of a code change</strong><small>Security-relevant · needs a second opinion</small></span>
+              </button>
+              <button class="lab-workload" type="button" data-workload="architect" aria-pressed="false">
+                <i aria-hidden="true">T4</i>
+                <span><strong>Architect a migration plan</strong><small>High value · cross-domain synthesis</small></span>
+              </button>
+              <button class="lab-workload" type="button" data-workload="sev1" aria-pressed="false">
+                <i aria-hidden="true">T5</i>
+                <span><strong>Adjudicate a severity-one incident</strong><small>Catastrophic consequence</small></span>
+              </button>
+            </div>
+
+            <div class="lab-gate">
+              <p class="lab-eyebrow">◈ Step 02 // The quality gate evaluates</p>
+              <div class="lab-gate-grid" id="lab-gate-grid">
+                <div class="lab-criterion" data-criterion="quality"><span aria-hidden="true"></span><b>Quality floor</b></div>
+                <div class="lab-criterion" data-criterion="privacy"><span aria-hidden="true"></span><b>Privacy</b></div>
+                <div class="lab-criterion" data-criterion="fit"><span aria-hidden="true"></span><b>Task fit</b></div>
+                <div class="lab-criterion" data-criterion="severity"><span aria-hidden="true"></span><b>Severity</b></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lab-console">
+            <p class="lab-eyebrow">◈ Step 03 // Qualified lanes compete on cost</p>
+            <ul class="lab-lanes" id="lab-lanes" aria-label="Routing lanes and their relative cost"></ul>
+
+            <div class="lab-legend" aria-hidden="true">
+              <span><i class="key-chosen"></i>Route taken</span>
+              <span><i class="key-candidate"></i>Qualified</span>
+              <span><i class="key-blocked"></i>Refused by gate</span>
+            </div>
+
+            <div class="lab-verdict" id="lab-verdict">
+              <span id="lab-verdict-kicker">Routed</span>
+              <strong id="lab-verdict-title">Kimi K3 // Tier 0</strong>
+              <p id="lab-verdict-copy">Routine classification clears the quality floor on the free entry lane, so nothing more expensive is justified.</p>
+            </div>
+
+            <p class="lab-scope"><strong>Scope:</strong> an illustrative policy simulation running entirely in your browser. Lane names and roles match the configured fabric verified 07-22-2026; bars show <em>relative</em> cost position across those lanes, not a metered per-task charge. The measured aggregate remains $0.26/day.</p>
+            <p class="visually-hidden" id="lab-announcement" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="chain" data-chapter="04" aria-labelledby="chain-title">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">04 // User-triggered demo</p>
             <h2 id="chain-title">Watch intent become evidence.</h2>
           </div>
           <p>Nothing runs until you ask. One event crosses the stack, leaves a trace, and returns a human-readable result.</p>
@@ -8389,11 +9720,11 @@
       </div>
     </section>
 
-    <section class="section" id="topology" data-chapter="04" aria-labelledby="topology-title">
+    <section class="section" id="topology" data-chapter="05" aria-labelledby="topology-title">
       <div class="shell">
         <div class="section-head">
           <div>
-            <p class="eyebrow">04 // Fleet architecture</p>
+            <p class="eyebrow">05 // Fleet architecture</p>
             <h2 id="topology-title">Two core hosts. Eighteen containers.<br>Athena online at the edge.</h2>
           </div>
           <p>A public-safe map of the verified ZeusApollo core—no addresses, ports, credentials, customer data, or access paths. Athena is shown separately because it is an owner-confirmed physical Home Assistant edge node, not a literal match in the container-name inventory.</p>
@@ -8402,7 +9733,7 @@
         <div class="fleet-legend" aria-label="Fleet status key">
           <span><i aria-hidden="true"></i>Verified running</span>
           <span class="legend-unknown"><i aria-hidden="true"></i>Owner-confirmed edge node</span>
-          <span class="legend-local">Export: 07-22-2026 // valid 30 days or until architecture changes</span>
+          <span class="legend-local">Live check: 07-26-2026 // valid 30 days or until architecture changes</span>
         </div>
 
         <div class="topology-board">
@@ -8413,7 +9744,7 @@
                 <h3 id="zeus-title">ZEUS // Host</h3>
                 <p>Primary compute node // Ryzen 7 5800H</p>
               </div>
-              <div class="cluster-count" aria-label="11 containers, all verified running">11</div>
+              <div class="cluster-count" aria-label="12 containers, all verified running">12</div>
             </header>
             <ul class="guest-list" aria-label="Featured Zeus public service roles">
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Hermes Agent</strong><small>Autonomous AI orchestration</small></span></li>
@@ -8423,6 +9754,7 @@
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Vaultwarden</strong><small>Self-hosted password manager</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Grafana + Uptime Kuma</strong><small>Dashboards + dead-man switch</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>LiteLLM Proxy</strong><small>Local LLM gateway node</small></span></li>
+              <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Ollama</strong><small>Local Gemma 4 26B inference</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>MCP Gateway</strong><small>Public-safe tool-sharing role</small></span></li>
             </ul>
           </article>
@@ -8434,13 +9766,12 @@
                 <h3 id="apollo-title">APOLLO // Host</h3>
                 <p>Storage + services node // i7-7700T</p>
               </div>
-              <div class="cluster-count" aria-label="7 containers, all verified running">07</div>
+              <div class="cluster-count" aria-label="6 containers: 5 verified running, 1 in a storage maintenance window">06</div>
             </header>
             <ul class="guest-list" aria-label="Featured Apollo public service roles">
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Technitium Primary</strong><small>Sovereign DNS + tracker blocking</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Proxmox Backup Server</strong><small>Deduplicated backups</small></span></li>
               <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>LiteLLM State</strong><small>PostgreSQL + Redis shared state</small></span></li>
-              <li class="guest"><span class="guest-state" aria-hidden="true"></span><span class="guest-copy"><strong>Ollama</strong><small>Local Gemma 4 26B inference</small></span></li>
             </ul>
           </article>
 
@@ -8459,16 +9790,16 @@
 
         <div class="sample-note">
           <strong>Truth protocol</strong>
-          <span id="topology-note">Reviewed <time id="truth-view-date">today</time>. Hermes verified 18 of 18 core containers running on 07-22-2026. Athena is separately owner-confirmed active as a physical Home Assistant edge node and is not included in that container count. No live endpoints are queried.</span>
+          <span id="topology-note">Reviewed <time id="truth-view-date">today</time>. A live check verified 17 of 18 core containers running on 07-26-2026; one was stopped in a storage maintenance operation. Athena is separately owner-confirmed active as a physical Home Assistant edge node and cluster quorum device, outside that count. No live endpoints are queried from this page.</span>
         </div>
       </div>
     </section>
 
-    <section class="section" id="console" data-chapter="05" aria-labelledby="console-title">
+    <section class="section" id="console" data-chapter="06" aria-labelledby="console-title">
       <div class="shell">
         <div class="section-head">
           <div>
-            <p class="eyebrow">05 // Accessible command console</p>
+            <p class="eyebrow">06 // Accessible command console</p>
             <h2 id="console-title">Curiosity gets a keyboard.</h2>
           </div>
           <p>The command form and output log are deliberately separate, labeled, and keyboard-ready. No command touches a real system.</p>
@@ -8513,7 +9844,7 @@
             <div class="terminal-idle-visual" id="terminal-idle-visual" aria-hidden="true">
               <div class="console-viz-orbit"><i></i><i></i><i></i><span>LOCAL<br>PROOF<br>FABRIC</span></div>
               <div class="console-viz-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-              <div class="console-viz-metrics"><span><b>10</b> routes</span><span><b>18/18</b> core</span><span><b>71/71</b> jobs</span></div>
+              <div class="console-viz-metrics"><span><b>10</b> routes</span><span><b>17/18</b> core</span><span><b>71/71</b> jobs</span></div>
               <div class="console-viz-caption"><strong>Awaiting human intent</strong><span>Local simulation // no network calls</span></div>
             </div>
             <ol class="terminal-log" id="terminal-log" role="log" aria-live="polite" aria-relevant="additions">
@@ -8533,11 +9864,74 @@
       </div>
     </section>
 
-    <section class="section" id="manifest" data-chapter="06" aria-labelledby="manifest-title">
+    <section class="section" id="projects" data-chapter="07" aria-labelledby="projects-title">
       <div class="shell">
         <div class="section-head">
           <div>
-            <p class="eyebrow">06 // Flight manifest</p>
+            <p class="eyebrow">07 // Public-safe builds</p>
+            <h2 id="projects-title">Seven builds.<br>One operating doctrine.</h2>
+          </div>
+          <p>Each of these runs on the same sovereign fabric documented above—owned end to end, measured, and sanitized for public view.</p>
+        </div>
+
+        <div class="project-grid">
+          <article class="project-card">
+            <p class="project-index">01 // Practice</p>
+            <h3>Cashio AI</h3>
+            <p>Fractional CAIO system for small and mid-size businesses: discovery, strategy, build, and long-term stewardship, with private-by-default architecture.</p>
+            <div class="project-metric"><strong>3</strong><small>Engagement tiers</small></div>
+          </article>
+
+          <article class="project-card">
+            <p class="project-index">02 // Security</p>
+            <h3>Exposure Assessment</h3>
+            <p>Cloud-exposure scanning, multi-source OSINT, and domain intelligence combined into one prioritized remediation picture with a full audit trail.</p>
+            <div class="project-metric"><strong>Multi</strong><small>Source correlation</small></div>
+          </article>
+
+          <article class="project-card">
+            <p class="project-index">03 // Operations</p>
+            <h3>ZeusApollo Dashboard Suite</h3>
+            <p>Interactive operations and briefing dashboards covering fleet health, model routing, spend, and automation status across the homelab.</p>
+            <div class="project-metric"><strong>8</strong><small>Dashboards</small></div>
+          </article>
+
+          <article class="project-card">
+            <p class="project-index">04 // Intelligence</p>
+            <h3>Sovereign Intelligence Briefing</h3>
+            <p>Executive-facing analysis of AI, security, and infrastructure developments—written to be acted on by decision makers, not just read by engineers.</p>
+            <div class="project-metric"><strong>Daily</strong><small>Cadence</small></div>
+          </article>
+
+          <article class="project-card">
+            <p class="project-index">05 // Industry</p>
+            <h3>The Shop Floor Signal</h3>
+            <p>Practical operations intelligence for industrial teams, translating automation and AI capability into decisions the floor can actually use.</p>
+            <div class="project-metric"><strong>Applied</strong><small>Operations focus</small></div>
+          </article>
+
+          <article class="project-card">
+            <p class="project-index">06 // Tooling</p>
+            <h3>Graphify</h3>
+            <p>A navigable code graph with community-driven documentation, turning a sprawling codebase into a queryable map of how everything actually connects.</p>
+            <div class="project-metric"><strong>353,437</strong><small>Nodes · 560,042 edges</small></div>
+          </article>
+
+          <article class="project-card">
+            <p class="project-index">07 // Autonomy</p>
+            <h3>Escalation Cascade</h3>
+            <p>Four-tier autonomous exception detection: free local checks escalate through DeepSeek and Sonnet to frontier adjudication only when severity earns it.</p>
+            <div class="project-metric"><strong>15 min</strong><small>Detection interval</small></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="manifest" data-chapter="08" aria-labelledby="manifest-title">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">08 // Flight manifest</p>
             <h2 id="manifest-title">Depth on demand.<br>Not in the way.</h2>
           </div>
           <p>The enthusiast detail is still here—models, automation, doctrine, and releases—condensed into one navigable instrument.</p>
@@ -8596,21 +9990,6 @@
             </details>
 
             <details class="manifest-panel">
-              <summary data-manifest="projects">Featured projects <span>7 public-safe builds</span></summary>
-              <div class="manifest-content">
-                <ul class="manifest-list">
-                  <li><strong>Cashio AI:</strong> fractional CAIO discovery, strategy, build, and stewardship system for SMBs.</li>
-                  <li><strong>Exposure Assessment:</strong> cloud-exposure scanning, multi-source OSINT, and domain intelligence.</li>
-                  <li><strong>ZeusApollo Dashboard Suite:</strong> eight interactive operations and briefing dashboards.</li>
-                  <li><strong>Sovereign Intelligence Briefing:</strong> executive-facing AI, security, and infrastructure analysis.</li>
-                  <li><strong>The Shop Floor Signal:</strong> practical operations intelligence for industrial teams.</li>
-                  <li><strong>Graphify:</strong> 353,437-node code graph with 560,042 edges and community-driven documentation.</li>
-                  <li><strong>Escalation Cascade:</strong> four-tier autonomous exception detection every fifteen minutes.</li>
-                </ul>
-              </div>
-            </details>
-
-            <details class="manifest-panel">
               <summary data-manifest="doctrine">Design doctrine <span>3 standing orders</span></summary>
               <div class="manifest-content">
                 <ul class="manifest-list">
@@ -8625,6 +10004,7 @@
               <summary data-manifest="log">Ship's log <span>current + history</span></summary>
               <div class="manifest-content">
                 <ol class="ship-log">
+                  <li><time datetime="2026-07-26">07-26-2026 // v31 Lift the Iron</time><strong>Live re-verification.</strong> Owner-run cluster check: 17 of 18 containers running (one in storage maintenance), quorum 3/3 with Athena answering, split corrected to Zeus 12 / Apollo 6. The number published is the number measured.</li>
                   <li><time datetime="2026-07-22">07-22-2026 // Hermes v0.19 Quicksilver</time><strong>Quicksilver fabric.</strong> Eighteen containers running, 71 healthy automations, Kimi K3 entry lane, Gemini 3.6 Flash QA, and a verified four-tier escalation cascade.</li>
                   <li><time datetime="2026-07-14">07-14-2026 // v30 release candidate</time><strong>House Cashio.</strong> Public-safe service reconciliation, cinematic proof flight, accessible console, and upgraded Bit.</li>
                   <li><time datetime="2026-07-10">07-10-2026 // v29 local preview</time><strong>Mission Proof.</strong> Audience routing, guided proof flight, explicit freshness, accessible console, effects budget, and shareable Fleet Card.</li>
@@ -8638,11 +10018,141 @@
       </div>
     </section>
 
-    <section class="section" id="fleet-card" data-chapter="07" aria-labelledby="fleet-card-title">
+    <section class="section" id="operator" data-chapter="09" aria-labelledby="operator-title">
       <div class="shell">
         <div class="section-head">
           <div>
-            <p class="eyebrow">07 // Take the proof home</p>
+            <p class="eyebrow">09 // The operator</p>
+            <h2 id="operator-title">A system is only as<br>honest as its builder.</h2>
+          </div>
+          <p>Everything on this deck was designed, built, operated, measured, and hardened by one person. Here is how that person works.</p>
+        </div>
+
+        <div class="iron-stage" aria-label="The stack as a loaded barbell: hardware, network, storage, models, policy, and proof, owned end to end">
+          <div class="iron-head">
+            <strong>THE IRON // Weight under the bar</strong>
+            <span>CASHIO doctrine // own the route end to end</span>
+            <button class="iron-replay" id="iron-replay" type="button">↻ Rack another set</button>
+          </div>
+          <svg class="iron-svg" viewBox="0 0 640 200" role="img" aria-hidden="true">
+            <defs>
+              <linearGradient id="ironBar" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#7c8aa5"/>
+                <stop offset="0.45" stop-color="#dfe7f4"/>
+                <stop offset="0.55" stop-color="#9aa8c2"/>
+                <stop offset="1" stop-color="#4c5871"/>
+              </linearGradient>
+              <linearGradient id="ironPlate" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="#101623"/>
+                <stop offset="0.5" stop-color="#1c2536"/>
+                <stop offset="1" stop-color="#0d1320"/>
+              </linearGradient>
+              <linearGradient id="ironShineGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="rgba(255,255,255,0)"/>
+                <stop offset="0.5" stop-color="rgba(255,255,255,0.55)"/>
+                <stop offset="1" stop-color="rgba(255,255,255,0)"/>
+              </linearGradient>
+            </defs>
+
+            <rect x="30" y="96" width="580" height="8" rx="4" fill="url(#ironBar)"/>
+            <rect x="156" y="92" width="7" height="16" rx="2" fill="#8fa0bf"/>
+            <rect x="477" y="92" width="7" height="16" rx="2" fill="#8fa0bf"/>
+
+            <g class="iron-plate">
+              <rect x="138" y="25" width="15" height="150" rx="4" fill="url(#ironPlate)" stroke="#57e8f2" stroke-width="1.4"/>
+              <rect x="487" y="25" width="15" height="150" rx="4" fill="url(#ironPlate)" stroke="#57e8f2" stroke-width="1.4"/>
+              <text x="145.5" y="100" transform="rotate(-90 145.5 100)" text-anchor="middle" fill="#aeb4ca" font-family="JetBrains Mono, monospace" font-size="8" font-weight="700" letter-spacing="1.5">HARDWARE</text>
+            </g>
+            <g class="iron-plate">
+              <rect x="119" y="34" width="15" height="132" rx="4" fill="url(#ironPlate)" stroke="#f6d66a" stroke-width="1.4"/>
+              <rect x="506" y="34" width="15" height="132" rx="4" fill="url(#ironPlate)" stroke="#f6d66a" stroke-width="1.4"/>
+              <text x="126.5" y="100" transform="rotate(-90 126.5 100)" text-anchor="middle" fill="#aeb4ca" font-family="JetBrains Mono, monospace" font-size="8" font-weight="700" letter-spacing="1.5">NETWORK</text>
+            </g>
+            <g class="iron-plate">
+              <rect x="100" y="43" width="15" height="114" rx="4" fill="url(#ironPlate)" stroke="#d478f2" stroke-width="1.4"/>
+              <rect x="525" y="43" width="15" height="114" rx="4" fill="url(#ironPlate)" stroke="#d478f2" stroke-width="1.4"/>
+              <text x="107.5" y="100" transform="rotate(-90 107.5 100)" text-anchor="middle" fill="#aeb4ca" font-family="JetBrains Mono, monospace" font-size="8" font-weight="700" letter-spacing="1.5">STORAGE</text>
+            </g>
+            <g class="iron-plate">
+              <rect x="81" y="52" width="15" height="96" rx="4" fill="url(#ironPlate)" stroke="#57e8f2" stroke-width="1.4"/>
+              <rect x="544" y="52" width="15" height="96" rx="4" fill="url(#ironPlate)" stroke="#57e8f2" stroke-width="1.4"/>
+              <text x="88.5" y="100" transform="rotate(-90 88.5 100)" text-anchor="middle" fill="#aeb4ca" font-family="JetBrains Mono, monospace" font-size="8" font-weight="700" letter-spacing="1.5">MODELS</text>
+            </g>
+            <g class="iron-plate">
+              <rect x="62" y="61" width="15" height="78" rx="4" fill="url(#ironPlate)" stroke="#f6d66a" stroke-width="1.4"/>
+              <rect x="563" y="61" width="15" height="78" rx="4" fill="url(#ironPlate)" stroke="#f6d66a" stroke-width="1.4"/>
+              <text x="69.5" y="100" transform="rotate(-90 69.5 100)" text-anchor="middle" fill="#aeb4ca" font-family="JetBrains Mono, monospace" font-size="8" font-weight="700" letter-spacing="1.5">POLICY</text>
+            </g>
+            <g class="iron-plate">
+              <rect x="43" y="70" width="15" height="60" rx="4" fill="url(#ironPlate)" stroke="#00ff9f" stroke-width="1.4"/>
+              <rect x="582" y="70" width="15" height="60" rx="4" fill="url(#ironPlate)" stroke="#00ff9f" stroke-width="1.4"/>
+              <text x="50.5" y="100" transform="rotate(-90 50.5 100)" text-anchor="middle" fill="#aeb4ca" font-family="JetBrains Mono, monospace" font-size="8" font-weight="700" letter-spacing="1.5">PROOF</text>
+            </g>
+
+            <rect class="iron-shine" x="0" y="88" width="72" height="24" fill="url(#ironShineGrad)" transform="skewX(-18)"/>
+          </svg>
+          <p class="iron-caption">Six layers under load — <b>hardware · network · storage · models · policy · proof</b> — every plate racked by one operator. Lift the iron.</p>
+        </div>
+
+        <div class="iron-ledger" id="iron-ledger" aria-label="Accumulated build totals from the verified export">
+          <div class="ledger-item"><span class="odometer" data-odometer="31"></span><small>Build iterations // v31</small></div>
+          <div class="ledger-item"><span class="odometer" data-odometer="18"></span><small>Service roles documented</small></div>
+          <div class="ledger-item"><span class="odometer" data-odometer="71"></span><small>Automations healthy</small></div>
+          <div class="ledger-item"><span class="odometer" data-odometer="10"></span><small>Routing lanes</small></div>
+          <div class="ledger-item"><span class="odometer" data-odometer="353,437"></span><small>Graphify nodes</small></div>
+        </div>
+
+        <div class="operator-shell">
+          <div>
+            <p class="operator-lede"><strong>I build systems that show their work.</strong> Fifteen-plus years in enterprise environments taught me that the hard part is rarely the technology—it is the trust. Somebody has to be able to explain what changed, why it changed, what it cost, and what remains uncertain. So I build for that conversation first, and let the architecture follow.</p>
+            <p class="operator-lede" style="margin-top:14px">ZeusApollo is where I prove it on my own dime. Nothing here is a vendor demo or a borrowed diagram. If a number appears on this page, I measured it, dated it, and published its limits alongside it.</p>
+
+            <ol class="operator-method" aria-label="How Doug works">
+              <li><strong>Frame</strong><span>Turn an ambiguous problem into a clear, testable outcome before choosing any machinery.</span></li>
+              <li><strong>Build</strong><span>Make the architecture real—owned end to end, private by default, and observable from day one.</span></li>
+              <li><strong>Verify</strong><span>Measure the actual result, publish the date and scope, and state the caveat out loud.</span></li>
+              <li><strong>Translate</strong><span>Hand it off in plain language, so the people who own the outcome can defend it without me.</span></li>
+            </ol>
+          </div>
+
+          <aside class="operator-card">
+            <svg class="crest-watermark" viewBox="0 0 100 100" aria-hidden="true">
+              <symbol id="house-crest-core" viewBox="0 0 100 100">
+                <path d="M50 4 89 26 89 74 50 96 11 74 11 26 Z" fill="none" stroke="#f6d66a" stroke-width="2.2"/>
+                <path d="M50 12 82 30 82 70 50 88 18 70 18 30 Z" fill="none" stroke="rgba(246,214,106,0.35)" stroke-width="1"/>
+                <circle cx="50" cy="50" r="27" fill="none" stroke="#57e8f2" stroke-width="1.1" stroke-dasharray="3 4"/>
+                <ellipse cx="50" cy="50" rx="34" ry="12" fill="none" stroke="rgba(87,232,242,0.55)" stroke-width="1" transform="rotate(-24 50 50)"/>
+                <path d="M54 26 41 52 50 52 44 74 61 45 51 45 58 26 Z" fill="#f6d66a" stroke="rgba(255,255,255,0.4)" stroke-width="0.6"/>
+                <circle cx="26" cy="38" r="1.7" fill="#57e8f2"/>
+                <circle cx="75" cy="34" r="1.4" fill="#57e8f2"/>
+                <circle cx="70" cy="68" r="1.7" fill="#00ff9f"/>
+                <path d="M38 82 50 88 62 82" fill="none" stroke="#f6d66a" stroke-width="1.6"/>
+              </symbol>
+              <use href="#house-crest-core"/>
+            </svg>
+            <div class="operator-sigil" aria-hidden="true">DC</div>
+            <p class="operator-role">Sovereign AI · Cybersecurity</p>
+            <h3>Doug Cashio</h3>
+            <ul class="operator-facts">
+              <li><span>Experience</span><b>15+ years enterprise</b></li>
+              <li><span>Practice</span><b>Fractional CAIO</b></li>
+              <li><span>Proving ground</span><b>ZeusApollo homelab</b></li>
+              <li><span>Based</span><b>Pensacola, Florida</b></li>
+              <li><span>Standing order</span><b>Never fake a number</b></li>
+            </ul>
+            <div class="fleet-card-actions" style="margin-top:18px">
+              <a class="button button-primary" href="#hail">Bring a hard problem</a>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="fleet-card" data-chapter="10" aria-labelledby="fleet-card-title">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">10 // Take the proof home</p>
             <h2 id="fleet-card-title">Proof you can take with you.</h2>
           </div>
           <p>Render a Fleet Card from the same public-safe status export used everywhere else—portable evidence with no random numbers, fake QR, or unstated freshness.</p>
@@ -8659,11 +10169,11 @@
             <p>The canvas is decorative; its complete content is repeated here for screen readers and anyone who does not render it.</p>
             <div class="fleet-card-facts" aria-label="Fleet Card facts">
               <span><strong>$0.26/day</strong> observed AI operating cost</span>
-              <span><strong>18/18</strong> containers verified running</span>
+              <span><strong>17/18</strong> containers running · 1 in maintenance</span>
               <span><strong>71/71</strong> automations healthy</span>
               <span><strong>10</strong> quality-gated model routes</span>
             </div>
-            <p><strong>Freshness:</strong> Hermes export verified 07-22-2026 and valid for 30 days or until the next architecture change. It is sampled evidence, not streaming telemetry.</p>
+            <p><strong>Freshness:</strong> container status live-verified 07-26-2026 over cluster SSH; automation and cost figures from the 07-22-2026 Hermes report. Valid 30 days or until the next architecture change. Sampled evidence, not streaming telemetry.</p>
             <div class="fleet-card-actions">
               <button class="button button-primary" id="render-card" type="button">Render Fleet Card</button>
               <button class="button button-secondary" id="download-card" type="button" disabled>Download PNG</button>
@@ -8676,11 +10186,11 @@
       </div>
     </section>
 
-    <section class="section" id="hail" data-chapter="08" aria-labelledby="hail-title">
+    <section class="section" id="hail" data-chapter="11" aria-labelledby="hail-title">
       <div class="shell">
         <div class="contact-deck">
           <div>
-            <p class="eyebrow">08 // Notes // source // conversation</p>
+            <p class="eyebrow">11 // Notes // source // conversation</p>
             <h2 id="hail-title">Open channel.<br>Bring a hard problem.</h2>
             <p>This independent work sample shows how I approach enterprise problems: clarify the outcome, build the system, route for quality, measure the real operating cost, and make the result understandable enough for somebody else to own. If you are wrestling with AI economics, automation reliability, explainability, or sovereign infrastructure, bring the messy version.</p>
             <div class="contact-signal" aria-label="Ways Doug works"><span><strong>Frame</strong>Turn ambiguity into a clear outcome.</span><span><strong>Build</strong>Make the architecture real.</span><span><strong>Verify</strong>Measure the result and expose the caveat.</span><span><strong>Translate</strong>Make technical depth useful to humans.</span></div>
@@ -8697,10 +10207,18 @@
     </section>
   </main>
 
+  <div class="data-ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span>◈ House Cashio ops stream // <b>17/18</b> containers live-verified ◈ 1 in maintenance window ◈ <b>71/71</b> automations at last report ◈ <b>10</b> quality-gated lanes ◈ <em>$0.26/day</em> observed AI cost ◈ <em>$6.49/mo</em> estimated run rate ◈ Hermes <b>v0.19</b> Quicksilver ◈ live check <em>07-26-2026</em> ◈ Athena edge link active ◈ Graphify <b>353,437</b> nodes ◈ zero cron errors ◈ never fake a number ◈ the spice must flow&nbsp;</span>
+      <span>◈ House Cashio ops stream // <b>17/18</b> containers live-verified ◈ 1 in maintenance window ◈ <b>71/71</b> automations at last report ◈ <b>10</b> quality-gated lanes ◈ <em>$0.26/day</em> observed AI cost ◈ <em>$6.49/mo</em> estimated run rate ◈ Hermes <b>v0.19</b> Quicksilver ◈ live check <em>07-26-2026</em> ◈ Athena edge link active ◈ Graphify <b>353,437</b> nodes ◈ zero cron errors ◈ never fake a number ◈ the spice must flow&nbsp;</span>
+    </div>
+  </div>
+
   <footer class="site-footer">
     <div class="shell footer-inner">
-      <span>© 2026 Doug Cashio // Personal build // CASHIO.US v30</span>
+      <span>© 2026 Doug Cashio // Personal build // CASHIO.US v31</span>
       <span class="footer-signal">House Cashio // The spice must flow // Every number earns its place.</span>
+      <svg class="footer-crest" viewBox="0 0 100 100" aria-hidden="true"><use href="#house-crest-core"/></svg>
       <button class="house-sigil" id="house-awaken" type="button">◈ Awaken House Cashio</button>
       <p class="independence-note"><strong>Personal project notice.</strong> ZeusApollo is a personally owned homelab built and operated independently. This site uses sanitized, dated samples from that lab only—no employer or customer systems, code, data, roadmaps, confidential information, or endorsement are represented. Views are Doug’s own. Cinematic references use original CSS and mathematical fan-homage visuals; no studio artwork, logos, audio, or copied media are included.</p>
     </div>
@@ -8794,11 +10312,11 @@
       setFx(fxEnabled);
 
       var sample = {
-        verifiedDisplay: "07-22-2026",
-        expiresOn: "2026-08-21",
-        expiresDisplay: "08-21-2026",
-        healthyServiceCount: 18,
-        latestOwnerUpdateDisplay: "07-22-2026",
+        verifiedDisplay: "07-26-2026",
+        expiresOn: "2026-08-25",
+        expiresDisplay: "08-25-2026",
+        healthyServiceCount: 17,
+        latestOwnerUpdateDisplay: "07-26-2026",
         hostCount: 2,
         routeCount: 10,
         automationCount: 71,
@@ -8838,10 +10356,10 @@
       telemetryLead.textContent = isStale ? "Current state unknown." : sample.healthyServiceCount + " services owner-reported healthy.";
       var telemetryDetail = document.createTextNode(isStale
         ? " The Hermes public-safe export expired on " + sample.expiresDisplay + "; current state is not asserted."
-        : " Hermes verified 18 of 18 core containers running and 71 of 71 automations healthy. Athena is separately owner-confirmed active as a physical Home Assistant edge node. This page does not query live endpoints.");
+        : " A 07-26-2026 live check over cluster SSH verified 17 of 18 core containers running; one was stopped in a storage maintenance operation. Automations were 71 of 71 healthy at the last Hermes report. Athena is separately owner-confirmed active as a physical Home Assistant edge node and cluster quorum device. This page does not query live endpoints.");
       telemetryCopy.replaceChildren(telemetryLead, telemetryDetail);
       telemetryMeta.textContent = "Personal lab status // verified " + sample.verifiedDisplay + " // expires " + sample.expiresDisplay + " // no live connection";
-      topologyNote.textContent = "Reviewed " + viewedDisplay + ". Hermes verified 18 of 18 core containers running on " + sample.verifiedDisplay + ". Athena is separately owner-confirmed active as a physical Home Assistant edge node and is not included in that container count. No live endpoints are queried.";
+      topologyNote.textContent = "Reviewed " + viewedDisplay + ". A live check verified 17 of 18 core containers running on " + sample.verifiedDisplay + "; one was stopped in a storage maintenance operation. Athena is separately owner-confirmed active as a physical Home Assistant edge node and cluster quorum device, outside that count. No live endpoints are queried from this page.";
 
       document.querySelectorAll(".guest:not(.is-unknown):not(.is-retired)").forEach(function (guest) {
         var copy = guest.querySelector(".guest-copy");
@@ -8992,7 +10510,7 @@
         continuity: {
           kicker: "Continuity // recoverable",
           title: "Healthy when measured. Designed to recover.",
-          copy: "Hermes verified 18 of 18 containers and 71 of 71 scheduled jobs healthy. Backup, DNS failover, monitoring, and Athena at the edge make continuity an operating discipline—not a green-dot claim.",
+          copy: "A 07-26 live check verified 17 of 18 containers running, with one held in a storage maintenance window; Hermes reported 71 of 71 scheduled jobs healthy. Backup, DNS failover, monitoring, and Athena at the edge make continuity an operating discipline—not a green-dot claim.",
           engineMode: "CONTINUITY",
           engineDecision: "RECOVERY PATH"
         },
@@ -9244,19 +10762,19 @@
       var commandHistoryIndex = 0;
 
       var terminalResponses = {
-        help: "Available: status, sovereign, quality, proof, models, cost, cascade, version, freshness, topology, flight, tour, projects, palette, warp, alert, spice, mentat, house, awaken, sound, contact, clear, ask eve. Optional prefix: cashio. All commands are local and read-only. The deck also hides a few homages for the observant.",
+        help: "Available: status, sovereign, quality, proof, lab, models, cost, cascade, version, freshness, topology, fleet, flight, tour, projects, builds, operator, palette, warp, alert, spice, mentat, house, awaken, sound, contact, clear, ask eve. Optional prefix: cashio. All commands are local and read-only. The deck also hides a few homages for the observant.",
         status: isStale
           ? "STALE — the Hermes public-safe export expired on " + sample.expiresDisplay + ". Current state is not asserted."
-          : "FRESH HERMES EXPORT — 18 of 18 containers running across two core hosts; 71 of 71 automations healthy; zero cron errors. Verified " + sample.verifiedDisplay + ". Athena is separately owner-confirmed active as a physical Home Assistant edge node.",
+          : "FRESH EXPORT — 17 of 18 containers running across two core hosts (one in a storage maintenance window); 71 of 71 automations healthy at last Hermes report; zero cron errors. Live-verified " + sample.verifiedDisplay + ". Athena is separately owner-confirmed active as a physical Home Assistant edge node and cluster quorum device.",
         sovereign: "SOVEREIGN AI DOCTRINE — own the stack; protect private context; route by policy; preserve local fallback; expose the evidence; keep consequential decisions under human command.",
         quality: "QUALITY GATE — capability, privacy, and reliability set the floor. The most efficient qualified route wins only after it clears that floor. Premium reasoning remains available for high-severity and high-value work.",
-        proof: "VERIFIED OPERATING RECEIPT — quality-gated routing across ten lanes; $" + sample.dailyBurn.toFixed(2) + "/day observed AI cost; $6.49 estimated monthly run rate; 18 of 18 containers running; 71 of 71 automations healthy. Scope excludes infrastructure, electricity, and human time.",
+        proof: "VERIFIED OPERATING RECEIPT — quality-gated routing across ten lanes; $" + sample.dailyBurn.toFixed(2) + "/day observed AI cost; $6.49 estimated monthly run rate; 17 of 18 containers running (one in maintenance); 71 of 71 automations at last report. Scope excludes infrastructure, electricity, and human time.",
         models: "TEN-LANE FABRIC — Kimi K3 entry classification; DeepSeek V4 Flash workhorse; DeepSeek V4 Pro exceptions; Gemini 3.6 Flash multimodal QA; Grok 4.5 adversarial review; Sonnet 5 synthesis; Sonar Pro research; GPT-5.6 Sol adjudication; local Gemma 4 26B fallback; Atlas/OpenRouter/ZenMux gateway fabric.",
         cost: "COST DISCIPLINE — quality qualifies the route before price. Observed AI cost: $0.26/day; estimated monthly run rate: $6.49. Ten configured lanes. Kimi K3 entry classification is billed at $0 through the verified ZenMux lane; premium reasoning activates when consequence earns it.",
         cascade: "ESCALATION CASCADE — Tier 0 bash detection every 15 minutes → Tier 1 DeepSeek V4 Pro warning verification → Tier 2 Claude Sonnet 5 critical synthesis → Tier 3 GPT-5.6 Sol catastrophic adjudication.",
         version: "HERMES AGENT v0.19 QUICKSILVER — Nous Research, released 07-21-2026. Previous release: v0.18.2.",
         freshness: isStale ? "STALE — the owner-supplied public export expired on " + sample.expiresDisplay + ". Current health is not asserted." : "FRESH — the owner-supplied export was verified " + sample.verifiedDisplay + " and expires " + sample.expiresDisplay + ". It is sampled evidence, not streaming telemetry.",
-        topology: "ZEUS: 11 containers verified running. APOLLO: 7 containers verified running. ATHENA: owner-confirmed active physical Home Assistant edge node, kept outside the 18-container count. No addresses or access paths are published.",
+        topology: "ZEUS: 12 containers verified running. APOLLO: 5 of 6 running; 1 stopped in a storage maintenance window. ATHENA: owner-confirmed active physical Home Assistant edge node and cluster quorum device, kept outside the 18-container count. No addresses or access paths are published.",
         tour: "Use Run the 60-second mission at the top of the deck. The mission is self-paced and never contacts a live system.",
         projects: "PUBLIC BUILD HIGHLIGHTS — Cashio AI, Exposure Assessment, ZeusApollo Dashboard Suite, Sovereign Intelligence Briefing, The Shop Floor Signal, Graphify code graph, and the four-tier Escalation Cascade.",
         contact: "Ask about the personal build at doug@cashio.us. No message is sent from this local preview."
@@ -9330,6 +10848,17 @@
           } else {
             appendLog("Spice field is paused because FX is off or reduced motion is active.", "warning");
           }
+        } else if (command === "fleet") {
+          appendLog(terminalResponses.topology, "answer");
+        } else if (command === "lab" || command === "route") {
+          document.getElementById("policy-lab").scrollIntoView({ behavior: effectiveMotion() ? "smooth" : "auto", block: "start" });
+          appendLog("POLICY ROUTING LAB — pick a workload and watch the quality gate qualify, refuse, and choose a lane. Local simulation; relative cost only.", "answer");
+        } else if (command === "operator" || command === "doug" || command === "about") {
+          document.getElementById("operator").scrollIntoView({ behavior: effectiveMotion() ? "smooth" : "auto", block: "start" });
+          appendLog("OPERATOR — Doug Cashio. 15+ years enterprise. Frame, build, verify, translate. Standing order: never fake a number.", "answer");
+        } else if (command === "builds") {
+          document.getElementById("projects").scrollIntoView({ behavior: effectiveMotion() ? "smooth" : "auto", block: "start" });
+          appendLog(terminalResponses.projects, "answer");
         } else if (command === "palette") {
           openPalette();
           appendLog("Command palette open. Type to filter, Enter to run. Local only.", "answer");
@@ -9442,8 +10971,8 @@
         {
           tag: "The architecture",
           title: "Give every component one clear job.",
-          text: "ZEUS runs eleven containers on the primary compute host. APOLLO runs seven on the storage and services host. Athena is separately owner-confirmed active as a physical Home Assistant edge node.",
-          insight: "FLEET MAP // 2 core hosts // 18 OF 18 containers // ATHENA at the edge."
+          text: "ZEUS runs twelve containers on the primary compute host. APOLLO runs six on the storage and services host, one of which was in a storage maintenance window at the 07-26 live check. Athena holds the edge as a physical Home Assistant node and cluster quorum device.",
+          insight: "FLEET MAP // 2 core hosts // 17 OF 18 running // ATHENA at the edge."
         },
         {
           tag: "The intervention",
@@ -9618,6 +11147,31 @@
         sealGlow.addColorStop(1, "rgba(255,173,66,0)");
         fleetCardContext.fillStyle = sealGlow;
         fleetCardContext.fillRect(-80, -80, 160, 160);
+
+        // House Cashio crest: hexagonal shield + Zeus bolt.
+        fleetCardContext.beginPath();
+        for (var hexPoint = 0; hexPoint < 6; hexPoint += 1) {
+          var hexAngle = Math.PI / 3 * hexPoint - Math.PI / 2;
+          var hexX = Math.cos(hexAngle) * 46;
+          var hexY = Math.sin(hexAngle) * 46;
+          if (hexPoint === 0) fleetCardContext.moveTo(hexX, hexY);
+          else fleetCardContext.lineTo(hexX, hexY);
+        }
+        fleetCardContext.closePath();
+        fleetCardContext.strokeStyle = "rgba(246,214,106,.7)";
+        fleetCardContext.lineWidth = 2;
+        fleetCardContext.stroke();
+        fleetCardContext.beginPath();
+        fleetCardContext.moveTo(4, -26);
+        fleetCardContext.lineTo(-9, 2);
+        fleetCardContext.lineTo(0, 2);
+        fleetCardContext.lineTo(-6, 26);
+        fleetCardContext.lineTo(11, -5);
+        fleetCardContext.lineTo(1, -5);
+        fleetCardContext.lineTo(8, -26);
+        fleetCardContext.closePath();
+        fleetCardContext.fillStyle = "rgba(246,214,106,.85)";
+        fleetCardContext.fill();
         fleetCardContext.restore();
 
         fleetCardContext.fillStyle = "#ff9500";
@@ -9642,7 +11196,7 @@
 
         var metrics = [
           ["$0.26/DAY", "OBSERVED AI OPERATING COST"],
-          ["18/18", "CONTAINERS VERIFIED RUNNING"],
+          ["17/18", "CONTAINERS VERIFIED RUNNING"],
           ["71/71", "AUTOMATIONS HEALTHY"],
           ["10", "QUALITY-GATED MODEL ROUTES"]
         ];
@@ -9699,7 +11253,7 @@
       });
 
       copyProofButton.addEventListener("click", function () {
-        var proofText = "Doug Cashio // ZeusApollo sovereign AI proof: quality-gated routing across " + sample.routeCount + " configured lanes; $" + sample.dailyBurn.toFixed(2) + "/day observed AI operating cost; $6.49 estimated monthly run rate; " + sample.healthyServiceCount + " of " + sample.healthyServiceCount + " containers running across " + sample.hostCount + " core hosts; " + sample.automationCount + " of " + sample.automationCount + " automations healthy. Athena is separately owner-confirmed active as a physical Home Assistant edge node. Hermes export verified " + sample.verifiedDisplay + ". No live endpoints or private access details are published. https://cashio.us";
+        var proofText = "Doug Cashio // ZeusApollo sovereign AI proof: quality-gated routing across " + sample.routeCount + " configured lanes; $" + sample.dailyBurn.toFixed(2) + "/day observed AI operating cost; $6.49 estimated monthly run rate; " + sample.healthyServiceCount + " of 18 containers running (1 in maintenance) across " + sample.hostCount + " core hosts; " + sample.automationCount + " of " + sample.automationCount + " automations healthy. Athena is separately owner-confirmed active as a physical Home Assistant edge node. Hermes export verified " + sample.verifiedDisplay + ". No live endpoints or private access details are published. https://cashio.us";
 
         function proofCopied() {
           downloadStatus.textContent = "Public-safe proof summary copied.";
@@ -9794,6 +11348,7 @@
         spiceParticles = [];
         var count = starBudget();
         for (var index = 0; index < count; index += 1) {
+          var temperature = Math.random();
           stars.push({
             x: Math.random() * window.innerWidth,
             y: Math.random() * window.innerHeight,
@@ -9801,7 +11356,8 @@
             alpha: Math.random() * 0.68 + 0.24,
             speed: Math.random() * 0.055 + 0.01,
             phase: Math.random() * Math.PI * 2,
-            twinkle: 0.0012 + Math.random() * 0.0032
+            twinkle: 0.0012 + Math.random() * 0.0032,
+            tint: temperature < 0.68 ? "220, 244, 255" : temperature < 0.88 ? "255, 236, 208" : "186, 216, 255"
           });
         }
         var spiceCount = spiceBudget();
@@ -9831,6 +11387,7 @@
             }
           }
           var twinkleAlpha = Math.max(0.12, star.alpha * (0.68 + 0.32 * Math.sin(star.phase)));
+          var fillTint = overload > 0 ? "246, 214, 106" : (star.tint || starTint);
           context.beginPath();
           if (hyperspace > 0) {
             var dx = star.x - centerX;
@@ -9840,17 +11397,17 @@
             context.moveTo(star.x, star.y);
             context.lineTo(star.x + (dx / distance) * streak, star.y + (dy / distance) * streak);
             context.lineWidth = Math.max(0.7, star.radius);
-            context.strokeStyle = "rgba(" + starTint + ", " + Math.min(1, twinkleAlpha + hyperspace * 0.5).toFixed(3) + ")";
+            context.strokeStyle = "rgba(" + fillTint + ", " + Math.min(1, twinkleAlpha + hyperspace * 0.5).toFixed(3) + ")";
             context.stroke();
           } else if (warpStretch > 4.5) {
             context.moveTo(star.x, star.y - warpStretch * warpDirection * (0.35 + star.radius * 0.45));
             context.lineTo(star.x, star.y);
             context.lineWidth = Math.max(0.6, star.radius * 0.9);
-            context.strokeStyle = "rgba(" + starTint + ", " + (twinkleAlpha * 0.9).toFixed(3) + ")";
+            context.strokeStyle = "rgba(" + fillTint + ", " + (twinkleAlpha * 0.9).toFixed(3) + ")";
             context.stroke();
           } else {
             context.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-            context.fillStyle = "rgba(" + starTint + ", " + twinkleAlpha.toFixed(3) + ")";
+            context.fillStyle = "rgba(" + fillTint + ", " + twinkleAlpha.toFixed(3) + ")";
             context.fill();
           }
         });
@@ -10334,8 +11891,10 @@
           soundToggle.setAttribute("aria-label", "Turn interface sound off");
           soundToggle.textContent = "SND ON";
           playUiSound("enable");
+          startHum();
         } else {
           playUiSound("click");
+          stopHum();
           soundEnabled = false;
           soundToggle.setAttribute("aria-pressed", "false");
           soundToggle.setAttribute("aria-label", "Turn interface sound on");
@@ -10408,6 +11967,8 @@
           return;
         }
         warpBurstUntil = (window.performance ? window.performance.now() : Date.now()) + 700;
+        body.classList.add("cine-warp");
+        window.setTimeout(function () { body.classList.remove("cine-warp"); }, 940);
         window.clearTimeout(warpTimer);
         warpFlash.classList.remove("is-active");
         void warpFlash.offsetWidth;
@@ -10431,12 +11992,18 @@
         }
       }
 
+      var heroSection = document.getElementById("top");
+
       function updateScrollProgress() {
         scrollFrame = 0;
         if (scrollProgressFill) {
           var scrollable = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
           var progress = Math.max(0, Math.min(1, window.scrollY / scrollable));
           scrollProgressFill.style.transform = "scaleX(" + progress.toFixed(4) + ")";
+        }
+        if (heroSection) {
+          var heroExit = Math.max(0, Math.min(1, window.scrollY / (window.innerHeight * 0.92)));
+          heroSection.style.setProperty("--hero-exit", heroExit.toFixed(3));
         }
         updateScrollWorld();
       }
@@ -10785,8 +12352,8 @@
         if (heroRect && (heroRect.bottom <= 0 || heroRect.top >= window.innerHeight)) return;
         var alreadySeen = false;
         try {
-          alreadySeen = window.sessionStorage.getItem("cashio-deck-boot-v30-spice") === "seen";
-          if (!alreadySeen) window.sessionStorage.setItem("cashio-deck-boot-v30-spice", "seen");
+          alreadySeen = window.sessionStorage.getItem("cashio-deck-boot-v31-iron") === "seen";
+          if (!alreadySeen) window.sessionStorage.setItem("cashio-deck-boot-v31-iron", "seen");
         } catch (error) {
           alreadySeen = false;
         }
@@ -11061,7 +12628,15 @@
         });
       });
 
-      revealItems = Array.prototype.slice.call(document.querySelectorAll(".section-head, .proof-cell, .audience-shell, .business-value-deck, .chain-console, .cluster, .athena-edge, .terminal-wrap, .manifest-shell, .fleet-card-grid, .contact-deck"));
+      Array.prototype.slice.call(document.querySelectorAll(".proof-cell, .lab-console, .cluster, .project-card, .operator-card, .fleet-card-frame, .terminal, .chain-console")).forEach(function (surface) {
+        surface.classList.add("hud-framed");
+        var corners = document.createElement("i");
+        corners.className = "hud-corners";
+        corners.setAttribute("aria-hidden", "true");
+        surface.appendChild(corners);
+      });
+
+      revealItems = Array.prototype.slice.call(document.querySelectorAll(".section-head, .proof-cell, .audience-shell, .business-value-deck, .chain-console, .cluster, .athena-edge, .terminal-wrap, .manifest-shell, .fleet-card-grid, .contact-deck, .lab-shell, .project-card, .operator-shell, .operator-card, .iron-stage"));
       revealItems.forEach(function (item, index) {
         item.classList.add("reveal-item");
         item.style.setProperty("--reveal-delay", Math.min(index % 4 * 70, 210) + "ms");
@@ -11082,6 +12657,7 @@
                 topologyBoard.classList.add("is-online");
                 runFleetCounters();
               }
+              if (entry.target.id === "console") runConsoleSelfTest();
               var targetHref = "#" + entry.target.id;
               primaryLinks.forEach(function (link) {
                 var isCurrent = link.getAttribute("href") === targetHref;
@@ -11150,6 +12726,208 @@
         });
       }
 
+      /* ── Policy routing lab ──────────────────────────────────
+         Relative cost index across the configured lanes (0 = free
+         entry lane, 100 = frontier adjudication). Deliberately not
+         a per-task dollar figure: the lab demonstrates the policy,
+         the dated export carries the measured spend. */
+      var labLanes = [
+        { id: "kimi", name: "Kimi K3", role: "T0 · free classify", cost: 0 },
+        { id: "gemma", name: "Gemma 4 26B", role: "Local · fallback", cost: 5 },
+        { id: "dsflash", name: "DeepSeek V4 Flash", role: "T1 · workhorse", cost: 14 },
+        { id: "gemini", name: "Gemini 3.6 Flash", role: "T3A · multimodal", cost: 27 },
+        { id: "dspro", name: "DeepSeek V4 Pro", role: "T2 · exception", cost: 36 },
+        { id: "sonar", name: "Sonar Pro", role: "T4B · research", cost: 49 },
+        { id: "grok", name: "Grok 4.5", role: "T3B · adversarial", cost: 63 },
+        { id: "sonnet", name: "Claude Sonnet 5", role: "T4A · synthesis", cost: 76 },
+        { id: "gpt", name: "GPT-5.6 Sol", role: "T5 · adjudication", cost: 100 },
+        { id: "fabric", name: "Atlas · OpenRouter · ZenMux", role: "Gateway fabric", cost: null }
+      ];
+
+      var labScenarios = {
+        triage: {
+          gate: { quality: "pass", privacy: "pass", fit: "pass", severity: "pass" },
+          chosen: "kimi",
+          blocked: {},
+          kicker: "Routed // free lane",
+          title: "Kimi K3 // Tier 0",
+          copy: "Routine, non-sensitive classification clears the quality floor on the free entry lane. Every more expensive lane is capable—none is justified. This is most of the day's work."
+        },
+        brief: {
+          gate: { quality: "pass", privacy: "pass", fit: "pass", severity: "pass" },
+          chosen: "dsflash",
+          blocked: { kimi: "Below quality floor for drafting" },
+          kicker: "Routed // workhorse",
+          title: "DeepSeek V4 Flash // Tier 1",
+          copy: "Narrative drafting needs more than the free classifier, so the gate raises the floor by one step—and stops there. The workhorse lane handles scheduled briefings without touching premium reasoning."
+        },
+        household: {
+          gate: { quality: "pass", privacy: "gated", fit: "pass", severity: "pass" },
+          chosen: "gemma",
+          blocked: {
+            kimi: "Private context may not leave the lab",
+            dsflash: "Private context may not leave the lab",
+            gemini: "Private context may not leave the lab",
+            dspro: "Private context may not leave the lab",
+            sonar: "Private context may not leave the lab",
+            grok: "Private context may not leave the lab",
+            sonnet: "Private context may not leave the lab",
+            gpt: "Private context may not leave the lab"
+          },
+          kicker: "Routed // local only",
+          title: "Gemma 4 26B // Local fallback",
+          copy: "Privacy is a gate, not a preference. Once context is private, every hosted lane is refused regardless of price or capability, and the work stays on owned hardware. Sovereignty is what makes this route possible at all."
+        },
+        review: {
+          gate: { quality: "pass", privacy: "pass", fit: "gated", severity: "pass" },
+          chosen: "grok",
+          blocked: {
+            kimi: "Below capability for security review",
+            gemma: "Below capability for security review",
+            dsflash: "Below capability for security review",
+            gemini: "Multimodal QA, not adversarial review",
+            dspro: "Below capability for security review",
+            sonar: "Research lane, not adversarial review"
+          },
+          kicker: "Routed // adversarial",
+          title: "Grok 4.5 // Tier 3B",
+          copy: "Task fit narrows the field before cost does. Cheaper lanes are refused for capability and the multimodal lane for role mismatch, leaving the least expensive lane that can genuinely argue with the code."
+        },
+        architect: {
+          gate: { quality: "pass", privacy: "pass", fit: "gated", severity: "pass" },
+          chosen: "sonnet",
+          blocked: {
+            kimi: "Below capability for cross-domain synthesis",
+            gemma: "Below capability for cross-domain synthesis",
+            dsflash: "Below capability for cross-domain synthesis",
+            gemini: "Below capability for cross-domain synthesis",
+            dspro: "Below capability for cross-domain synthesis",
+            sonar: "Research lane, not synthesis",
+            grok: "Adversarial lane, not synthesis"
+          },
+          kicker: "Routed // synthesis",
+          title: "Claude Sonnet 5 // Tier 4A",
+          copy: "High-value architecture earns premium reasoning. The frontier adjudication lane also qualifies but costs more without adding to this decision, so the gate stops at the cheapest lane that clears the bar."
+        },
+        sev1: {
+          gate: { quality: "pass", privacy: "pass", fit: "pass", severity: "gated" },
+          chosen: "gpt",
+          blocked: {
+            kimi: "Severity policy mandates frontier adjudication",
+            gemma: "Severity policy mandates frontier adjudication",
+            dsflash: "Severity policy mandates frontier adjudication",
+            gemini: "Severity policy mandates frontier adjudication",
+            dspro: "Severity policy mandates frontier adjudication",
+            sonar: "Severity policy mandates frontier adjudication",
+            grok: "Severity policy mandates frontier adjudication",
+            sonnet: "Severity policy mandates frontier adjudication"
+          },
+          kicker: "Routed // adjudication",
+          title: "GPT-5.6 Sol // Tier 5",
+          copy: "When consequence is catastrophic, cost stops being the deciding variable. Policy escalates straight to the frontier lane—and a human still owns the final call. This is the spend the discipline exists to protect."
+        }
+      };
+
+      var labWorkloadButtons = Array.prototype.slice.call(document.querySelectorAll(".lab-workload"));
+      var labLaneList = document.getElementById("lab-lanes");
+      var labGateGrid = document.getElementById("lab-gate-grid");
+      var labVerdictKicker = document.getElementById("lab-verdict-kicker");
+      var labVerdictTitle = document.getElementById("lab-verdict-title");
+      var labVerdictCopy = document.getElementById("lab-verdict-copy");
+      var labAnnouncement = document.getElementById("lab-announcement");
+      var labBuilt = false;
+
+      function buildLabLanes() {
+        if (!labLaneList || labBuilt) return;
+        labBuilt = true;
+        labLanes.forEach(function (lane) {
+          var item = document.createElement("li");
+          item.className = "lab-lane";
+          item.dataset.lane = lane.id;
+
+          var left = document.createElement("div");
+          var nameRow = document.createElement("div");
+          nameRow.className = "lab-lane-name";
+          var nameEl = document.createElement("b");
+          nameEl.textContent = lane.name;
+          var roleEl = document.createElement("em");
+          roleEl.textContent = lane.role;
+          nameRow.appendChild(nameEl);
+          nameRow.appendChild(roleEl);
+          var stateEl = document.createElement("small");
+          stateEl.className = "lab-lane-state";
+          left.appendChild(nameRow);
+          left.appendChild(stateEl);
+
+          var bar = document.createElement("div");
+          bar.className = "lab-bar";
+          if (lane.cost === null) {
+            bar.style.visibility = "hidden";
+          } else {
+            var fill = document.createElement("span");
+            bar.appendChild(fill);
+          }
+
+          item.appendChild(left);
+          item.appendChild(bar);
+          labLaneList.appendChild(item);
+        });
+      }
+
+      function runLabScenario(key, announce) {
+        var scenario = labScenarios[key];
+        if (!scenario || !labLaneList) return;
+        buildLabLanes();
+
+        labWorkloadButtons.forEach(function (button) {
+          button.setAttribute("aria-pressed", String(button.dataset.workload === key));
+        });
+
+        Array.prototype.slice.call(labGateGrid.querySelectorAll(".lab-criterion")).forEach(function (criterion) {
+          var state = scenario.gate[criterion.dataset.criterion];
+          criterion.classList.toggle("is-lit", state === "pass");
+          criterion.classList.toggle("is-gated", state === "gated");
+        });
+
+        Array.prototype.slice.call(labLaneList.children).forEach(function (item, index) {
+          var lane = labLanes[index];
+          var stateEl = item.querySelector(".lab-lane-state");
+          var fill = item.querySelector(".lab-bar > span");
+
+          if (lane.cost === null) {
+            item.className = "lab-lane is-candidate";
+            stateEl.textContent = "Carries every route";
+            return;
+          }
+
+          var blockedReason = scenario.blocked[lane.id];
+          var isChosen = scenario.chosen === lane.id;
+          item.className = "lab-lane" + (isChosen ? " is-chosen" : blockedReason ? " is-blocked" : " is-candidate");
+          if (isChosen) stateEl.textContent = "◈ Route taken · relative cost " + lane.cost;
+          else if (blockedReason) stateEl.textContent = "✕ " + blockedReason;
+          else stateEl.textContent = "Qualified · relative cost " + lane.cost;
+
+          if (fill) fill.style.setProperty("--cost", Math.max(2, lane.cost) + "%");
+        });
+
+        labVerdictKicker.textContent = scenario.kicker;
+        labVerdictTitle.textContent = scenario.title;
+        labVerdictCopy.textContent = scenario.copy;
+
+        if (announce) {
+          labAnnouncement.textContent = "Routed to " + scenario.title + ". " + scenario.copy;
+          playUiSound("route", Object.keys(labScenarios).indexOf(key));
+        }
+      }
+
+      labWorkloadButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          runLabScenario(button.dataset.workload, true);
+        });
+      });
+
+      if (labLaneList) runLabScenario("triage", false);
+
       var paletteDialog = document.getElementById("palette-dialog");
       var paletteInput = document.getElementById("palette-input");
       var paletteList = document.getElementById("palette-list");
@@ -11176,6 +12954,9 @@
         { label: "Sovereign Core journey", tag: "Go", run: paletteGoto("#spice-flight") },
         { label: "Three ways inside", tag: "Go", run: paletteGoto("#mission") },
         { label: "Business proof", tag: "Go", run: paletteGoto("#proof") },
+        { label: "Policy routing lab", tag: "Go", run: paletteGoto("#policy-lab") },
+        { label: "Featured builds", tag: "Go", run: paletteGoto("#projects") },
+        { label: "The operator // Doug Cashio", tag: "Go", run: paletteGoto("#operator") },
         { label: "Event chain demo", tag: "Go", run: paletteGoto("#chain") },
         { label: "Fleet topology", tag: "Go", run: paletteGoto("#topology") },
         { label: "Hermes console", tag: "Go", run: paletteGoto("#console") },
@@ -11332,6 +13113,206 @@
         }
       });
 
+      /* ── Iron Ledger odometers ── */
+      var odometers = Array.prototype.slice.call(document.querySelectorAll(".odometer[data-odometer]"));
+      var odometersRolled = false;
+
+      odometers.forEach(function (odometer) {
+        var raw = odometer.getAttribute("data-odometer");
+        odometer.setAttribute("aria-label", raw);
+        raw.split("").forEach(function (character, index) {
+          if (!/[0-9]/.test(character)) {
+            var separator = document.createElement("span");
+            separator.className = "odo-sep";
+            separator.setAttribute("aria-hidden", "true");
+            separator.textContent = character;
+            odometer.appendChild(separator);
+            return;
+          }
+          var digit = document.createElement("span");
+          digit.className = "odo-digit";
+          digit.setAttribute("aria-hidden", "true");
+          var strip = document.createElement("span");
+          strip.className = "odo-strip";
+          for (var value = 0; value < 10; value += 1) {
+            var cell = document.createElement("i");
+            cell.textContent = String(value);
+            strip.appendChild(cell);
+          }
+          strip.style.setProperty("--odo-target", character);
+          strip.style.transitionDelay = (index * 110) + "ms";
+          digit.appendChild(strip);
+          odometer.appendChild(digit);
+        });
+      });
+
+      function rollOdometers() {
+        if (odometersRolled) return;
+        odometersRolled = true;
+        odometers.forEach(function (odometer) { odometer.classList.add("is-rolling"); });
+        playUiSound("route", 4);
+      }
+
+      var ironLedger = document.getElementById("iron-ledger");
+      if (ironLedger && "IntersectionObserver" in window && effectiveMotion()) {
+        var ledgerObserver = new IntersectionObserver(function (entries) {
+          if (entries.some(function (entry) { return entry.isIntersecting; })) {
+            rollOdometers();
+            ledgerObserver.disconnect();
+          }
+        }, { threshold: 0.35 });
+        ledgerObserver.observe(ironLedger);
+      } else {
+        rollOdometers();
+      }
+
+      /* ── Rack another set ── */
+      var ironStage = document.querySelector(".iron-stage");
+      var ironReplay = document.getElementById("iron-replay");
+      var ironSets = 1;
+      if (ironReplay && ironStage) {
+        ironReplay.addEventListener("click", function () {
+          playUiSound("click");
+          if (!effectiveMotion()) return;
+          ironSets += 1;
+          ironStage.classList.remove("is-visible");
+          void ironStage.offsetWidth;
+          ironStage.classList.add("is-visible");
+          ironReplay.textContent = "↻ Set " + String(ironSets).padStart(2, "0") + " — rack it again";
+        });
+      }
+
+      /* ── Magnetic primary buttons ── */
+      if (window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+        var magnetTarget = null;
+        var magnetFrame = 0;
+        var magnetPointer = null;
+        document.addEventListener("pointermove", function (event) {
+          var target = event.target && event.target.closest ? event.target.closest(".button-primary") : null;
+          if (magnetTarget && magnetTarget !== target) {
+            magnetTarget.style.setProperty("--mag-x", "0px");
+            magnetTarget.style.setProperty("--mag-y", "0px");
+          }
+          magnetTarget = target;
+          if (!target || !effectiveMotion()) return;
+          magnetPointer = { target: target, x: event.clientX, y: event.clientY };
+          if (magnetFrame) return;
+          magnetFrame = window.requestAnimationFrame(function () {
+            magnetFrame = 0;
+            if (!magnetPointer) return;
+            var rect = magnetPointer.target.getBoundingClientRect();
+            var pullX = Math.max(-7, Math.min(7, (magnetPointer.x - rect.left - rect.width / 2) * 0.14));
+            var pullY = Math.max(-5, Math.min(5, (magnetPointer.y - rect.top - rect.height / 2) * 0.18));
+            magnetPointer.target.style.setProperty("--mag-x", pullX.toFixed(1) + "px");
+            magnetPointer.target.style.setProperty("--mag-y", pullY.toFixed(1) + "px");
+          });
+        }, { passive: true });
+        document.addEventListener("pointerout", function (event) {
+          if (magnetTarget && (!event.relatedTarget || !magnetTarget.contains(event.relatedTarget))) {
+            magnetTarget.style.setProperty("--mag-x", "0px");
+            magnetTarget.style.setProperty("--mag-y", "0px");
+            magnetTarget = null;
+          }
+        }, { passive: true });
+      }
+
+      /* ── Ambient deck hum (opt-in with SND) ── */
+      var humNodes = null;
+
+      function startHum() {
+        var activeContext = getAudioContext();
+        if (!activeContext || humNodes) return;
+        var gain = activeContext.createGain();
+        gain.gain.value = 0.0001;
+        var low = activeContext.createOscillator();
+        low.type = "sine";
+        low.frequency.value = 54;
+        var fifth = activeContext.createOscillator();
+        fifth.type = "sine";
+        fifth.frequency.value = 81;
+        fifth.detune.value = 5;
+        var fifthGain = activeContext.createGain();
+        fifthGain.gain.value = 0.32;
+        var lfo = activeContext.createOscillator();
+        lfo.frequency.value = 0.07;
+        var lfoGain = activeContext.createGain();
+        lfoGain.gain.value = 0.0022;
+        lfo.connect(lfoGain);
+        lfoGain.connect(gain.gain);
+        low.connect(gain);
+        fifth.connect(fifthGain);
+        fifthGain.connect(gain);
+        gain.connect(audioMaster || activeContext.destination);
+        gain.gain.setTargetAtTime(0.0058, activeContext.currentTime, 1.4);
+        low.start();
+        fifth.start();
+        lfo.start();
+        humNodes = { low: low, fifth: fifth, lfo: lfo, gain: gain };
+      }
+
+      function stopHum() {
+        if (!humNodes || !audioContext) { humNodes = null; return; }
+        var nodes = humNodes;
+        humNodes = null;
+        try {
+          nodes.gain.gain.setTargetAtTime(0.0001, audioContext.currentTime, 0.25);
+          window.setTimeout(function () {
+            nodes.low.stop();
+            nodes.fifth.stop();
+            nodes.lfo.stop();
+          }, 900);
+        } catch (error) {
+          /* Hum teardown is best-effort. */
+        }
+      }
+
+      /* ── Cursor aurora ── */
+      var cursorAura = document.getElementById("cursor-aura");
+      if (cursorAura && window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+        var auraFrame = 0;
+        var auraPointer = null;
+        document.addEventListener("pointermove", function (event) {
+          if (!effectiveMotion()) return;
+          auraPointer = { x: event.clientX, y: event.clientY };
+          cursorAura.classList.add("is-live");
+          if (auraFrame) return;
+          auraFrame = window.requestAnimationFrame(function () {
+            auraFrame = 0;
+            if (!auraPointer) return;
+            cursorAura.style.transform = "translate3d(" + (auraPointer.x - 180) + "px," + (auraPointer.y - 180) + "px,0)";
+          });
+        }, { passive: true });
+        document.documentElement.addEventListener("pointerleave", function () {
+          cursorAura.classList.remove("is-live");
+        });
+      }
+
+      /* ── Rare deck-status signal glitch ── */
+      var deckStatus = document.querySelector(".deck-status");
+      function scheduleDeckGlitch() {
+        window.setTimeout(function () {
+          if (deckStatus && effectiveMotion() && !document.hidden) {
+            deckStatus.classList.add("is-glitch");
+            window.setTimeout(function () { deckStatus.classList.remove("is-glitch"); }, 320);
+          }
+          scheduleDeckGlitch();
+        }, 42000 + Math.random() * 34000);
+      }
+      if (deckStatus) scheduleDeckGlitch();
+
+      /* ── Console self-test on first approach ── */
+      var consoleBooted = false;
+      function runConsoleSelfTest() {
+        if (consoleBooted) return;
+        consoleBooted = true;
+        window.setTimeout(function () {
+          appendLog("HERMES SELF-TEST // routes 10/10 ● containers 17/18 (1 maint) ● automations 71/71 last report ● export fresh", "answer");
+        }, 300);
+        window.setTimeout(function () {
+          appendLog("All lanes nominal. The prompt is yours.", "answer");
+        }, 1450);
+      }
+
       var identityWordmark = document.querySelector(".identity-wordmark");
       function runIdentityDecrypt() {
         if (!identityWordmark || !effectiveMotion()) return;
@@ -11394,6 +13375,10 @@
       sizeFleetMap();
       refreshStarfield();
       runIdentityDecrypt();
+      if (effectiveMotion()) {
+        body.classList.add("cine-intro");
+        window.setTimeout(function () { body.classList.remove("cine-intro"); }, 2100);
+      }
     }());
   </script>
 </body>
