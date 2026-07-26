@@ -8851,6 +8851,98 @@
       border-color: rgba(246, 214, 106, 0.5);
       background: rgba(246, 214, 106, 0.05);
     }
+
+    /* ═══ ELEVEN II: ticker, materialize, glitch, aurora ═══════ */
+
+    /* Ops data ticker: one continuous stream of the real numbers. */
+    .data-ticker {
+      position: relative;
+      overflow: hidden;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: rgba(4, 7, 13, 0.9);
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+      mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+    }
+
+    .ticker-track {
+      display: flex;
+      width: max-content;
+      padding: 9px 0;
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .ticker-track > span { padding-right: 48px; }
+    .ticker-track b { color: var(--cyan); font-weight: 800; }
+    .ticker-track em { color: var(--gold); font-style: normal; }
+
+    body[data-fx="on"] .ticker-track {
+      animation: ticker-scroll 52s linear infinite;
+    }
+
+    .data-ticker:hover .ticker-track { animation-play-state: paused; }
+
+    @keyframes ticker-scroll {
+      to { transform: translateX(-50%); }
+    }
+
+    /* Section-head materialize: wipe + focus pull on reveal. */
+    body.motion-ready[data-fx="on"] .section-head.reveal-item {
+      clip-path: inset(-8px 92% -8px 0);
+      filter: blur(5px);
+      transition:
+        opacity 540ms ease var(--reveal-delay, 0ms),
+        transform 640ms cubic-bezier(.23, 1, .32, 1) var(--reveal-delay, 0ms),
+        clip-path 900ms cubic-bezier(.22, 1, .36, 1) var(--reveal-delay, 0ms),
+        filter 760ms ease calc(var(--reveal-delay, 0ms) + 140ms);
+    }
+
+    body.motion-ready[data-fx="on"] .section-head.reveal-item.is-visible {
+      clip-path: inset(-8px 0% -8px 0);
+      filter: blur(0);
+    }
+
+    /* Rare deck-status signal glitch. */
+    .deck-status.is-glitch {
+      animation: deck-glitch 280ms steps(2) 1;
+    }
+
+    @keyframes deck-glitch {
+      0% { transform: translateX(0); filter: none; }
+      25% { transform: translateX(-2px); filter: drop-shadow(2px 0 0 rgba(255, 46, 111, 0.55)) drop-shadow(-2px 0 0 rgba(87, 232, 242, 0.55)); }
+      50% { transform: translateX(1.5px) skewX(0.6deg); filter: drop-shadow(-2px 0 0 rgba(255, 46, 111, 0.4)); }
+      75% { transform: translateX(-1px); filter: drop-shadow(1px 0 0 rgba(87, 232, 242, 0.5)); }
+      100% { transform: translateX(0); filter: none; }
+    }
+
+    /* Cursor aurora: a soft light that follows the pointer. */
+    .cursor-aura {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      width: 360px;
+      height: 360px;
+      pointer-events: none;
+      opacity: 0;
+      background: radial-gradient(circle, rgba(87, 232, 242, 0.07), rgba(212, 120, 242, 0.03) 46%, transparent 70%);
+      mix-blend-mode: screen;
+      transition: opacity 600ms ease;
+      will-change: transform;
+    }
+
+    body[data-fx="on"] .cursor-aura.is-live { opacity: 1; }
+
+    @media print {
+      .data-ticker,
+      .cursor-aura { display: none !important; }
+    }
   </style>
 </head>
 <body data-fx="on" data-alert="off">
@@ -8863,6 +8955,7 @@
   <div class="alert-wash" aria-hidden="true"></div>
   <div class="warp-flash" id="warp-flash" aria-hidden="true"></div>
   <div class="cine-bars" aria-hidden="true"><i></i><i></i></div>
+  <div class="cursor-aura" id="cursor-aura" aria-hidden="true"></div>
   <a class="skip-link" href="#main">Skip to mission control</a>
   <nav class="mission-spine" aria-label="Deck progress">
     <a href="#top" data-scene-label="OPENING // DOUG CASHIO" aria-current="location"><span class="visually-hidden">Opening</span></a>
@@ -9864,6 +9957,13 @@
       </div>
     </section>
   </main>
+
+  <div class="data-ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span>◈ House Cashio ops stream // <b>18/18</b> containers verified ◈ <b>71/71</b> automations healthy ◈ <b>10</b> quality-gated lanes ◈ <em>$0.26/day</em> observed AI cost ◈ <em>$6.49/mo</em> estimated run rate ◈ Hermes <b>v0.19</b> Quicksilver ◈ export verified <em>07-22-2026</em> ◈ Athena edge link active ◈ Graphify <b>353,437</b> nodes ◈ zero cron errors ◈ never fake a number ◈ the spice must flow&nbsp;</span>
+      <span>◈ House Cashio ops stream // <b>18/18</b> containers verified ◈ <b>71/71</b> automations healthy ◈ <b>10</b> quality-gated lanes ◈ <em>$0.26/day</em> observed AI cost ◈ <em>$6.49/mo</em> estimated run rate ◈ Hermes <b>v0.19</b> Quicksilver ◈ export verified <em>07-22-2026</em> ◈ Athena edge link active ◈ Graphify <b>353,437</b> nodes ◈ zero cron errors ◈ never fake a number ◈ the spice must flow&nbsp;</span>
+    </div>
+  </div>
 
   <footer class="site-footer">
     <div class="shell footer-inner">
@@ -12303,6 +12403,7 @@
                 topologyBoard.classList.add("is-online");
                 runFleetCounters();
               }
+              if (entry.target.id === "console") runConsoleSelfTest();
               var targetHref = "#" + entry.target.id;
               primaryLinks.forEach(function (link) {
                 var isCurrent = link.getAttribute("href") === targetHref;
@@ -12909,6 +13010,53 @@
         } catch (error) {
           /* Hum teardown is best-effort. */
         }
+      }
+
+      /* ── Cursor aurora ── */
+      var cursorAura = document.getElementById("cursor-aura");
+      if (cursorAura && window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+        var auraFrame = 0;
+        var auraPointer = null;
+        document.addEventListener("pointermove", function (event) {
+          if (!effectiveMotion()) return;
+          auraPointer = { x: event.clientX, y: event.clientY };
+          cursorAura.classList.add("is-live");
+          if (auraFrame) return;
+          auraFrame = window.requestAnimationFrame(function () {
+            auraFrame = 0;
+            if (!auraPointer) return;
+            cursorAura.style.transform = "translate3d(" + (auraPointer.x - 180) + "px," + (auraPointer.y - 180) + "px,0)";
+          });
+        }, { passive: true });
+        document.documentElement.addEventListener("pointerleave", function () {
+          cursorAura.classList.remove("is-live");
+        });
+      }
+
+      /* ── Rare deck-status signal glitch ── */
+      var deckStatus = document.querySelector(".deck-status");
+      function scheduleDeckGlitch() {
+        window.setTimeout(function () {
+          if (deckStatus && effectiveMotion() && !document.hidden) {
+            deckStatus.classList.add("is-glitch");
+            window.setTimeout(function () { deckStatus.classList.remove("is-glitch"); }, 320);
+          }
+          scheduleDeckGlitch();
+        }, 42000 + Math.random() * 34000);
+      }
+      if (deckStatus) scheduleDeckGlitch();
+
+      /* ── Console self-test on first approach ── */
+      var consoleBooted = false;
+      function runConsoleSelfTest() {
+        if (consoleBooted) return;
+        consoleBooted = true;
+        window.setTimeout(function () {
+          appendLog("HERMES SELF-TEST // routes 10/10 ● containers 18/18 ● automations 71/71 ● export fresh", "answer");
+        }, 300);
+        window.setTimeout(function () {
+          appendLog("All lanes nominal. The prompt is yours.", "answer");
+        }, 1450);
       }
 
       var identityWordmark = document.querySelector(".identity-wordmark");

@@ -4,6 +4,14 @@ All notable public-facing changes to the ZeusApollo portfolio are recorded here.
 
 ## [v31 unreleased] — 07-25-2026
 
+### Added — eleven pass II
+
+- Ops data ticker above the footer: one continuous masked stream of the real verified numbers (containers, automations, lanes, cost, export date, Graphify nodes) — pauses on hover, parked when FX is off.
+- Section-head materialize: chapter titles now wipe in with a focus-pull (clip-path + blur) instead of a plain fade.
+- Hermes console self-test: the first time the console chapter is approached, the terminal types its own two-line diagnostic before the visitor touches it.
+- Rare deck-status signal glitch: every 40–75 seconds the hero readout bar jitters with chromatic fringing for a quarter second — ambient life, motion-gated.
+- Cursor aurora: a soft cyan-violet light that follows the pointer across the whole deck (desktop, FX-gated).
+
 ### Added — eleven pass
 
 - Cinematic letterbox bars that sweep in on arrival and frame every warp jump.
