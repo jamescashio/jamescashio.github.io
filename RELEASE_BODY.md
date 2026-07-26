@@ -1,10 +1,10 @@
-## v30 — “The Sleeper Has Awakened”
+## v31 — “Lift the Iron”
 
-**Release date:** 07-22-2026
+**Release date:** 07-26-2026
 
-**Public status window:** 07-22-2026 through 08-21-2026, or until the next architecture change
+**Public status window:** 07-26-2026 through 08-25-2026, or until the next architecture change
 
-v30 turns cashio.us into an interactive, cinematic sovereign AI proof deck: personally owned infrastructure, quality-first routing, disciplined cost, auditable automation, and human command.
+v31 makes the doctrine playable and the builder visible: an interactive policy routing lab, a featured-builds showcase, the Operator chapter with THE IRON, a Bit deck guide, a command palette, and a full cinematic chrome pass — with container figures re-verified live over cluster SSH on release day.
 
 ### Experience
 
@@ -17,19 +17,19 @@ v30 turns cashio.us into an interactive, cinematic sovereign AI proof deck: pers
 
 ### Public status reconciliation
 
-| Metric | v30 public baseline |
+| Metric | v31 public baseline |
 |---|---:|
 | Core hosts | 2 |
 | Documented service roles | 18 |
-| Owner-reported healthy services | 18 |
-| Verified containers | 18 of 18 running |
-| Athena | Owner-confirmed active physical Home Assistant edge node; outside container count |
+| Owner-reported healthy services | 17 |
+| Verified containers | 17 of 18 running at the 07-26-2026 live check; 1 stopped in a storage maintenance operation |
+| Athena | Owner-confirmed active physical Home Assistant edge node and cluster quorum device; outside container count |
 | Configured model routes | 10 |
 | Automation jobs | 71, last reported |
-| Automation health | 71 of 71; zero errors |
+| Automation health | 71 of 71 at last Hermes report (07-22-2026); zero errors |
 | Observed AI operating cost | $0.26/day; $6.49 estimated monthly run rate; quality-first escalation retained |
 
-The status is Hermes-generated, public-safe, and sampled—not streaming telemetry. The interface automatically stops presenting health as current after 08-21-2026 or the next architecture change.
+Container figures come from an owner-run live verification over cluster SSH; automation and cost figures are Hermes-generated, public-safe, and sampled—not streaming telemetry. The interface automatically stops presenting health as current after 08-25-2026 or the next architecture change.
 
 ### Model routing
 

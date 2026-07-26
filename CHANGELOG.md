@@ -2,7 +2,13 @@
 
 All notable public-facing changes to the ZeusApollo portfolio are recorded here. Visible dates use MM-DD-YYYY.
 
-## [v31 unreleased] — 07-25-2026
+## [v31] — 07-26-2026
+
+Release name: “Lift the Iron.”
+
+### Verified
+
+- Container figures re-verified live over cluster SSH on 07-26-2026: 17 of 18 core containers running, 1 stopped in a storage maintenance operation at verification time; cluster quorate with the Athena quorum device answering. The public host split was corrected to zeus 12 / Apollo 6 (previously shown as 11 / 7). Automation health remains Hermes-reported (71 of 71 at the 07-22-2026 report). Per the standing order: the number we publish is the number we measured.
 
 ### Added — eleven pass II
 
