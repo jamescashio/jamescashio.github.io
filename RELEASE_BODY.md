@@ -8,12 +8,11 @@ v31 makes the doctrine playable and the builder visible: an interactive policy r
 
 ### Experience
 
-- Introduces a four-scene House Cashio proof flight with original space and Dune-inspired CSS visuals.
-- Reframes the primary story around sovereign AI: quality-first routing, measured operating cost, protected context, and human command.
-- Upgrades the Tron-inspired Bit companion while preserving its recognizable geometry.
-- Adds an interactive business-value constellation translating technical evidence into efficiency, continuity, governance, and adoption outcomes.
-- Adds a self-paced mission, observable event-chain demonstration, safe local console, interactive fleet, and shareable Fleet Card.
-- Preserves reduced-motion support, keyboard navigation, semantic structure, and responsive layouts.
+- Policy Routing Lab: six workloads drive the real quality gate across ten lanes, with per-lane refusal reasons and a labeled relative-cost comparison; privacy demonstrated as a hard gate routing to local inference.
+- The Operator chapter with THE IRON — an original barbell asset racking six labeled stack layers — plus the rolling Iron Ledger, featured-builds showcase, and House Cashio crest.
+- Bit upgraded to a guided-tour deck panel; command palette (Ctrl+K); mission spine progress rail; ops data ticker of verified figures.
+- Cinema layer: procedural plasma sun, heat-shimmer horizon, drifting sand, film grain, letterbox arrivals, hyperspace warp bursts, cursor aurora, and an opt-in LCARS sound set with ambient deck hum.
+- Preserves reduced-motion support, keyboard navigation, semantic structure, responsive layouts, and a fully self-hosted, CSP-strict asset chain.
 
 ### Public status reconciliation
 
