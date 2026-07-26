@@ -1,4 +1,4 @@
-# ZEUSAPOLLO v31 — “Lift the Iron”
+# ZEUSAPOLLO v31 — “The Iron Ascendant”
 
 cashio.us is Doug Cashio’s interactive sovereign AI portfolio: personally owned infrastructure, quality-first model routing, cybersecurity, auditable automation, disciplined cost, and human command.
 
@@ -8,7 +8,7 @@ The public site shows sanitized proof and architectural roles while withholding 
 
 | Item | Current public state |
 |---|---|
-| **Release** | v31 — “Lift the Iron” |
+| **Release** | v31 — “The Iron Ascendant” |
 | **Status export** | Verified 07-26-2026; expires 08-25-2026 |
 | **Hosts** | 2 core homelab hosts, plus Athena at the edge |
 | **Documented roles** | 18 public-safe service roles |
@@ -57,7 +57,7 @@ These are configured lanes, not live-traffic claims or a universal model ranking
 | `status.json` | Coarse, dated public status contract |
 | `README.md` | Current public architecture and release summary |
 | `CHANGELOG.md` | Public-facing release history |
-| `RELEASE_BODY.md` | Current v30 release notes |
+| `RELEASE_BODY.md` | Current v31 release notes |
 | `SECURITY.md` | Vulnerability reporting and repository boundaries |
 | `PRIVACY.md` | Public privacy notice |
 | `scripts/public_repo_guard.py` | Automated public-repository safety scanner |

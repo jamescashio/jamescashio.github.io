@@ -4,7 +4,7 @@ All notable public-facing changes to the ZeusApollo portfolio are recorded here.
 
 ## [v31] — 07-26-2026
 
-Release name: “Lift the Iron.”
+Release name: “The Iron Ascendant.”
 
 ### Verified
 
