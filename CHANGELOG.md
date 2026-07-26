@@ -2,6 +2,25 @@
 
 All notable public-facing changes to the ZeusApollo portfolio are recorded here. Visible dates use MM-DD-YYYY.
 
+## [v31 unreleased] — 07-25-2026
+
+### Added
+
+- **Policy Routing Lab** (new chapter 03): the doctrine made playable. Visitors pick one of six workloads and watch the quality gate qualify, refuse, and select a lane across the ten configured routes—with refusal reasons stated per lane and a relative-cost comparison. Privacy is demonstrated as a hard gate: private context refuses all eight hosted lanes and routes to local Gemma. Costs are a labeled relative index, never a fabricated per-task dollar figure.
+- **Featured builds** (new chapter 07): the seven public-safe projects were promoted out of a collapsed bullet list into a showcase with headline metrics (Graphify's 353,437 nodes now reads as a headline instead of buried text).
+- **The Operator** (new chapter 09): the portfolio previously contained no person. Adds who Doug is and the four-step working method, sourced only from claims already established on the site.
+- New console commands `lab`, `route`, `operator`, `builds`; palette and Bit guide entries for all three new sections.
+
+### Changed
+
+- Chapters renumbered 01–11 and every navigation surface (primary nav, mobile nav, mission spine, Bit panel, command palette) updated to match the new journey.
+- Removed six orphaned, unreferenced assets (`webgl_starfield.js`, `audio_engine.js`, `lcars_hover.wav`, `warp.mp3`, `make_it_so.mp3`, `og-image.png`).
+- Corrected the stale `$0.35` daily-cost example remaining in the protection-guide docs to the measured `$0.26`.
+
+### Notes
+
+- The routing lab's cost bars use a validated status palette (chosen / qualified / refused) rather than per-lane categorical hues: the site's gold and orange differ by only ΔE 9.5 to normal vision and can never sit adjacent in a chart. State is carried by text labels and a legend, never color alone.
+
 ## [v30 polish] — 07-23-2026 / 07-24-2026
 
 ### Added — 07-24 apex port (from the v31 prototype)

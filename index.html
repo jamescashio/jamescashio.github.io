@@ -7943,6 +7943,574 @@
     @media (max-width: 560px) {
       .bit-panel { right: 16px; bottom: 118px; }
     }
+
+    /* ═══ POLICY ROUTING LAB ═══════════════════════════════════
+       The doctrine claim ("quality gates the route, cost follows
+       consequence") made playable. Relative cost index only — no
+       fabricated per-task dollar figures. */
+    .lab-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+      gap: 26px;
+      align-items: start;
+    }
+
+    @media (max-width: 940px) {
+      .lab-shell { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    .lab-console {
+      position: relative;
+      padding: 20px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(160deg, rgba(87, 232, 242, 0.05), transparent 42%),
+        rgba(10, 15, 24, 0.92);
+      box-shadow: var(--shadow);
+    }
+
+    .lab-eyebrow {
+      color: var(--cyan);
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .lab-workloads {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .lab-workload {
+      position: relative;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 12px;
+      align-items: center;
+      padding: 11px 13px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.02);
+      cursor: pointer;
+      text-align: left;
+      transition: transform 200ms cubic-bezier(.22, 1, .36, 1), border-color 200ms ease, background 200ms ease, color 200ms ease;
+    }
+
+    .lab-workload:hover,
+    .lab-workload:focus-visible {
+      color: var(--ink);
+      border-color: rgba(87, 232, 242, 0.5);
+      background: rgba(87, 232, 242, 0.05);
+      transform: translateX(3px);
+    }
+
+    .lab-workload[aria-pressed="true"] {
+      color: var(--ink);
+      border-color: var(--cyan);
+      background: linear-gradient(100deg, rgba(87, 232, 242, 0.12), transparent 70%);
+      box-shadow: inset 3px 0 0 var(--cyan);
+    }
+
+    .lab-workload i {
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      border: 1px solid currentColor;
+      border-radius: 7px;
+      opacity: 0.72;
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      font-style: normal;
+      font-weight: 900;
+    }
+
+    .lab-workload strong {
+      display: block;
+      font-family: var(--body);
+      font-size: 0.86rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .lab-workload small {
+      display: block;
+      margin-top: 2px;
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ── Gate criteria lights ── */
+    .lab-gate {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .lab-gate-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .lab-criterion {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 9px;
+      align-items: center;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.015);
+    }
+
+    .lab-criterion span:first-child {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--quiet);
+      box-shadow: none;
+      transition: background 320ms ease, box-shadow 320ms ease;
+    }
+
+    .lab-criterion.is-lit span:first-child {
+      background: var(--green);
+      box-shadow: 0 0 6px #fff, 0 0 14px rgba(0, 255, 159, 0.8);
+    }
+
+    .lab-criterion.is-gated span:first-child {
+      background: var(--warning);
+      box-shadow: 0 0 6px #fff, 0 0 14px rgba(255, 204, 0, 0.75);
+    }
+
+    .lab-criterion b {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .lab-criterion.is-lit b { color: var(--ink); }
+
+    /* ── Candidate lanes with relative-cost bars ── */
+    .lab-lanes {
+      display: grid;
+      gap: 6px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .lab-lane {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 96px;
+      gap: 14px;
+      align-items: center;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.016);
+      opacity: 0.55;
+      transition: opacity 320ms ease, border-color 320ms ease, background 320ms ease, transform 320ms cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .lab-lane.is-candidate { opacity: 1; }
+
+    .lab-lane.is-chosen {
+      border-color: var(--green);
+      background: linear-gradient(100deg, rgba(0, 255, 159, 0.1), transparent 68%);
+      box-shadow: inset 3px 0 0 var(--green), 0 0 26px rgba(0, 255, 159, 0.08);
+      transform: translateX(4px);
+    }
+
+    .lab-lane-name {
+      display: flex;
+      gap: 8px;
+      align-items: baseline;
+      min-width: 0;
+    }
+
+    .lab-lane-name b {
+      color: var(--ink);
+      font-family: var(--body);
+      font-size: 0.82rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .lab-lane-name em {
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.55rem;
+      font-style: normal;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .lab-lane-state {
+      display: block;
+      margin-top: 2px;
+      font-family: var(--mono);
+      font-size: 0.56rem;
+      letter-spacing: 0.05em;
+    }
+
+    .lab-lane.is-chosen .lab-lane-state { color: var(--green); }
+    .lab-lane.is-blocked .lab-lane-state { color: var(--warning); }
+    .lab-lane:not(.is-chosen):not(.is-blocked) .lab-lane-state { color: var(--quiet); }
+
+    /* Bar: 4px rounded data-end anchored to a shared baseline, thin mark. */
+    .lab-bar {
+      position: relative;
+      height: 9px;
+      overflow: hidden;
+      border-radius: 4px;
+      background: rgba(174, 180, 202, 0.13);
+    }
+
+    .lab-bar > span {
+      position: absolute;
+      inset: 0 auto 0 0;
+      display: block;
+      width: var(--cost, 0%);
+      border-radius: 4px;
+      background: #8fa0bf;
+      transform-origin: left center;
+      transition: width 620ms cubic-bezier(.22, 1, .36, 1), background 320ms ease;
+    }
+
+    .lab-lane.is-chosen .lab-bar > span {
+      background: linear-gradient(90deg, var(--green), #9dffd4);
+      box-shadow: 0 0 12px rgba(0, 255, 159, 0.55);
+    }
+
+    .lab-lane.is-blocked .lab-bar > span {
+      background: repeating-linear-gradient(135deg, rgba(255, 204, 0, 0.55) 0 5px, rgba(255, 204, 0, 0.16) 5px 10px);
+    }
+
+    .lab-verdict {
+      display: grid;
+      gap: 4px;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border: 1px solid rgba(0, 255, 159, 0.34);
+      border-left-width: 3px;
+      border-radius: 10px;
+      background: rgba(0, 255, 159, 0.05);
+    }
+
+    .lab-verdict span {
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .lab-verdict strong {
+      color: var(--ink);
+      font-family: var(--display);
+      font-size: 1.02rem;
+      line-height: 1.3;
+    }
+
+    .lab-verdict p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.55;
+    }
+
+    .lab-scope {
+      margin: 12px 0 0;
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      line-height: 1.6;
+      letter-spacing: 0.03em;
+    }
+
+    .lab-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      align-items: center;
+      margin-top: 12px;
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .lab-legend span { display: inline-flex; gap: 7px; align-items: center; }
+
+    .lab-legend i {
+      width: 16px;
+      height: 8px;
+      border-radius: 3px;
+      font-style: normal;
+    }
+
+    .lab-legend .key-chosen { background: linear-gradient(90deg, var(--green), #9dffd4); }
+    .lab-legend .key-candidate { background: #8fa0bf; }
+    .lab-legend .key-blocked { background: repeating-linear-gradient(135deg, rgba(255, 204, 0, 0.7) 0 4px, rgba(255, 204, 0, 0.2) 4px 8px); }
+
+    /* ═══ PROJECTS SHOWCASE ════════════════════════════════════ */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(268px, 1fr));
+      gap: 14px;
+    }
+
+    .project-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      padding: 20px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(150deg, rgba(255, 255, 255, 0.03), transparent 46%),
+        rgba(11, 16, 25, 0.9);
+      transition: transform 280ms cubic-bezier(.22, 1, .36, 1), border-color 280ms ease, box-shadow 280ms ease;
+    }
+
+    .project-card::before {
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 2px;
+      content: "";
+      opacity: 0.62;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    }
+
+    .project-card:nth-child(3n+2)::before { background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+    .project-card:nth-child(3n+3)::before { background: linear-gradient(90deg, transparent, var(--violet), transparent); }
+
+    @media (hover: hover) and (pointer: fine) {
+      .project-card:hover {
+        border-color: rgba(87, 232, 242, 0.46);
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5), 0 0 26px rgba(87, 232, 242, 0.08);
+        transform: translateY(-5px);
+      }
+    }
+
+    .project-card .project-index {
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.56rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .project-card h3 {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--display);
+      font-size: 1.06rem;
+      letter-spacing: -0.01em;
+    }
+
+    .project-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
+
+    .project-metric {
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+
+    .project-metric strong {
+      color: var(--cyan);
+      font-family: var(--display);
+      font-size: 1.24rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .project-metric small {
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.56rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ═══ OPERATOR (the human behind the fleet) ════════════════ */
+    .operator-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr);
+      gap: 30px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .operator-shell { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    .operator-lede {
+      color: var(--muted);
+      font-size: 1.02rem;
+      line-height: 1.65;
+    }
+
+    .operator-lede strong { color: var(--ink); }
+
+    .operator-method {
+      display: grid;
+      gap: 10px;
+      margin-top: 20px;
+      padding: 0;
+      list-style: none;
+      counter-reset: method;
+    }
+
+    .operator-method li {
+      position: relative;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+      padding: 13px 15px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.016);
+      counter-increment: method;
+    }
+
+    .operator-method li::before {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      content: counter(method, decimal-leading-zero);
+      border: 1px solid rgba(87, 232, 242, 0.4);
+      border-radius: 8px;
+      color: var(--cyan);
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      font-weight: 900;
+    }
+
+    .operator-method strong {
+      display: block;
+      color: var(--ink);
+      font-family: var(--display);
+      font-size: 0.92rem;
+    }
+
+    .operator-method span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.5;
+    }
+
+    .operator-card {
+      position: relative;
+      padding: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(246, 214, 106, 0.32);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(160deg, rgba(246, 214, 106, 0.07), transparent 48%),
+        rgba(10, 14, 22, 0.93);
+      box-shadow: var(--shadow);
+    }
+
+    .operator-sigil {
+      width: 62px;
+      height: 62px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(246, 214, 106, 0.55);
+      border-radius: 50%;
+      color: var(--gold);
+      background: rgba(246, 214, 106, 0.06);
+      box-shadow: inset 0 0 26px rgba(246, 214, 106, 0.09);
+      font-family: var(--display);
+      font-size: 1.1rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+    }
+
+    body[data-fx="on"] .operator-card.is-visible .operator-sigil {
+      animation: operator-sigil-in 900ms cubic-bezier(.22, 1, .36, 1) both;
+    }
+
+    @keyframes operator-sigil-in {
+      from { opacity: 0; transform: scale(0.8) rotate(-14deg); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .operator-card h3 {
+      margin: 16px 0 2px;
+      color: var(--ink);
+      font-family: var(--display);
+      font-size: 1.3rem;
+    }
+
+    .operator-card .operator-role {
+      color: var(--gold);
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .operator-facts {
+      display: grid;
+      gap: 9px;
+      margin: 18px 0 0;
+      padding: 16px 0 0;
+      border-top: 1px solid var(--line);
+      list-style: none;
+    }
+
+    .operator-facts li {
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: baseline;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.04em;
+    }
+
+    .operator-facts li b {
+      color: var(--ink);
+      font-weight: 800;
+      text-align: right;
+    }
   </style>
 </head>
 <body data-fx="on" data-alert="off">
@@ -7959,10 +8527,11 @@
     <a href="#top" data-scene-label="OPENING // DOUG CASHIO" aria-current="location"><span class="visually-hidden">Opening</span></a>
     <a href="#spice-flight" data-scene-label="JOURNEY // SOVEREIGN CORE"><span class="visually-hidden">Sovereign journey</span></a>
     <a href="#proof" data-scene-label="PROOF // BUSINESS VALUE"><span class="visually-hidden">Business proof</span></a>
-    <a href="#chain" data-scene-label="DEMO // EVENT CHAIN"><span class="visually-hidden">Event chain demo</span></a>
+    <a href="#policy-lab" data-scene-label="LAB // POLICY DECIDES"><span class="visually-hidden">Routing lab</span></a>
     <a href="#topology" data-scene-label="FLEET // ZEUSAPOLLO"><span class="visually-hidden">Fleet architecture</span></a>
     <a href="#console" data-scene-label="CONSOLE // HERMES"><span class="visually-hidden">Hermes console</span></a>
-    <a href="#fleet-card" data-scene-label="CARD // TAKE THE PROOF"><span class="visually-hidden">Fleet card</span></a>
+    <a href="#projects" data-scene-label="BUILDS // SEVEN PUBLIC"><span class="visually-hidden">Featured builds</span></a>
+    <a href="#operator" data-scene-label="OPERATOR // DOUG CASHIO"><span class="visually-hidden">The operator</span></a>
     <a href="#hail" data-scene-label="CHANNEL // OPEN"><span class="visually-hidden">Contact</span></a>
   </nav>
   <canvas id="starfield" aria-hidden="true"></canvas>
@@ -7986,7 +8555,9 @@
       <button type="button" data-bit-mission>Take the 60-second mission</button>
       <button type="button" data-bit-target="spice-flight">Fly the sovereign journey</button>
       <button type="button" data-bit-target="proof">Show me the business proof</button>
-      <button type="button" data-bit-target="chain">Watch intent become evidence</button>
+      <button type="button" data-bit-target="policy-lab">Run the routing lab</button>
+      <button type="button" data-bit-target="projects">What has he built?</button>
+      <button type="button" data-bit-target="operator">Who built this?</button>
       <button type="button" data-bit-target="topology">Show the fleet architecture</button>
       <button type="button" data-bit-target="console">Open the Hermes console</button>
       <button type="button" data-bit-target="fleet-card">Take the proof with you</button>
@@ -8012,10 +8583,11 @@
       <nav class="primary-nav" aria-label="Primary navigation">
         <ul>
           <li><a href="#proof">Proof</a></li>
-          <li><a href="#chain">Chain</a></li>
-          <li><a href="#console">Console</a></li>
+          <li><a href="#policy-lab">Lab</a></li>
           <li><a href="#topology">Fleet</a></li>
-          <li><a href="#fleet-card">Card</a></li>
+          <li><a href="#console">Console</a></li>
+          <li><a href="#projects">Builds</a></li>
+          <li><a href="#operator">Operator</a></li>
           <li><a href="#hail">Contact</a></li>
         </ul>
       </nav>
@@ -8025,10 +8597,13 @@
         <nav class="mobile-nav-panel" aria-label="Mobile navigation">
           <a href="#mission">Choose mission</a>
           <a href="#proof">Proof</a>
+          <a href="#policy-lab">Routing lab</a>
           <a href="#chain">Event chain</a>
-          <a href="#console">Console</a>
           <a href="#topology">Fleet</a>
+          <a href="#console">Console</a>
+          <a href="#projects">Featured builds</a>
           <a href="#manifest">Flight manifest</a>
+          <a href="#operator">The operator</a>
           <a href="#fleet-card">Fleet card</a>
           <a href="#hail">Open channel</a>
         </nav>
@@ -8328,11 +8903,85 @@
       </div>
     </section>
 
-    <section class="section" id="chain" data-chapter="03" aria-labelledby="chain-title">
+    <section class="section" id="policy-lab" data-chapter="03" aria-labelledby="policy-lab-title">
       <div class="shell">
         <div class="section-head">
           <div>
-            <p class="eyebrow">03 // User-triggered demo</p>
+            <p class="eyebrow">03 // Interactive routing lab</p>
+            <h2 id="policy-lab-title">Don't take the policy<br>on faith. Run it.</h2>
+          </div>
+          <p>Every claim above says quality gates the route and cost follows consequence. Pick a workload and watch the gate actually decide—which lanes qualify, which are refused, and which one earns the work.</p>
+        </div>
+
+        <div class="lab-shell">
+          <div class="lab-console">
+            <p class="lab-eyebrow">◈ Step 01 // Choose the workload</p>
+            <div class="lab-workloads" role="group" aria-label="Choose a workload to route">
+              <button class="lab-workload" type="button" data-workload="triage" aria-pressed="true">
+                <i aria-hidden="true">T0</i>
+                <span><strong>Triage 400 log lines</strong><small>Routine · non-sensitive</small></span>
+              </button>
+              <button class="lab-workload" type="button" data-workload="brief" aria-pressed="false">
+                <i aria-hidden="true">T1</i>
+                <span><strong>Draft the morning briefing</strong><small>Routine · scheduled</small></span>
+              </button>
+              <button class="lab-workload" type="button" data-workload="household" aria-pressed="false">
+                <i aria-hidden="true">PRV</i>
+                <span><strong>Summarize private household context</strong><small>Privacy-bound · must stay local</small></span>
+              </button>
+              <button class="lab-workload" type="button" data-workload="review" aria-pressed="false">
+                <i aria-hidden="true">T3</i>
+                <span><strong>Adversarial review of a code change</strong><small>Security-relevant · needs a second opinion</small></span>
+              </button>
+              <button class="lab-workload" type="button" data-workload="architect" aria-pressed="false">
+                <i aria-hidden="true">T4</i>
+                <span><strong>Architect a migration plan</strong><small>High value · cross-domain synthesis</small></span>
+              </button>
+              <button class="lab-workload" type="button" data-workload="sev1" aria-pressed="false">
+                <i aria-hidden="true">T5</i>
+                <span><strong>Adjudicate a severity-one incident</strong><small>Catastrophic consequence</small></span>
+              </button>
+            </div>
+
+            <div class="lab-gate">
+              <p class="lab-eyebrow">◈ Step 02 // The quality gate evaluates</p>
+              <div class="lab-gate-grid" id="lab-gate-grid">
+                <div class="lab-criterion" data-criterion="quality"><span aria-hidden="true"></span><b>Quality floor</b></div>
+                <div class="lab-criterion" data-criterion="privacy"><span aria-hidden="true"></span><b>Privacy</b></div>
+                <div class="lab-criterion" data-criterion="fit"><span aria-hidden="true"></span><b>Task fit</b></div>
+                <div class="lab-criterion" data-criterion="severity"><span aria-hidden="true"></span><b>Severity</b></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lab-console">
+            <p class="lab-eyebrow">◈ Step 03 // Qualified lanes compete on cost</p>
+            <ul class="lab-lanes" id="lab-lanes" aria-label="Routing lanes and their relative cost"></ul>
+
+            <div class="lab-legend" aria-hidden="true">
+              <span><i class="key-chosen"></i>Route taken</span>
+              <span><i class="key-candidate"></i>Qualified</span>
+              <span><i class="key-blocked"></i>Refused by gate</span>
+            </div>
+
+            <div class="lab-verdict" id="lab-verdict">
+              <span id="lab-verdict-kicker">Routed</span>
+              <strong id="lab-verdict-title">Kimi K3 // Tier 0</strong>
+              <p id="lab-verdict-copy">Routine classification clears the quality floor on the free entry lane, so nothing more expensive is justified.</p>
+            </div>
+
+            <p class="lab-scope"><strong>Scope:</strong> an illustrative policy simulation running entirely in your browser. Lane names and roles match the configured fabric verified 07-22-2026; bars show <em>relative</em> cost position across those lanes, not a metered per-task charge. The measured aggregate remains $0.26/day.</p>
+            <p class="visually-hidden" id="lab-announcement" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="chain" data-chapter="04" aria-labelledby="chain-title">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">04 // User-triggered demo</p>
             <h2 id="chain-title">Watch intent become evidence.</h2>
           </div>
           <p>Nothing runs until you ask. One event crosses the stack, leaves a trace, and returns a human-readable result.</p>
@@ -8389,11 +9038,11 @@
       </div>
     </section>
 
-    <section class="section" id="topology" data-chapter="04" aria-labelledby="topology-title">
+    <section class="section" id="topology" data-chapter="05" aria-labelledby="topology-title">
       <div class="shell">
         <div class="section-head">
           <div>
-            <p class="eyebrow">04 // Fleet architecture</p>
+            <p class="eyebrow">05 // Fleet architecture</p>
             <h2 id="topology-title">Two core hosts. Eighteen containers.<br>Athena online at the edge.</h2>
           </div>
           <p>A public-safe map of the verified ZeusApollo core—no addresses, ports, credentials, customer data, or access paths. Athena is shown separately because it is an owner-confirmed physical Home Assistant edge node, not a literal match in the container-name inventory.</p>
@@ -8464,11 +9113,11 @@
       </div>
     </section>
 
-    <section class="section" id="console" data-chapter="05" aria-labelledby="console-title">
+    <section class="section" id="console" data-chapter="06" aria-labelledby="console-title">
       <div class="shell">
         <div class="section-head">
           <div>
-            <p class="eyebrow">05 // Accessible command console</p>
+            <p class="eyebrow">06 // Accessible command console</p>
             <h2 id="console-title">Curiosity gets a keyboard.</h2>
           </div>
           <p>The command form and output log are deliberately separate, labeled, and keyboard-ready. No command touches a real system.</p>
@@ -8533,11 +9182,74 @@
       </div>
     </section>
 
-    <section class="section" id="manifest" data-chapter="06" aria-labelledby="manifest-title">
+    <section class="section" id="projects" data-chapter="07" aria-labelledby="projects-title">
       <div class="shell">
         <div class="section-head">
           <div>
-            <p class="eyebrow">06 // Flight manifest</p>
+            <p class="eyebrow">07 // Public-safe builds</p>
+            <h2 id="projects-title">Seven builds.<br>One operating doctrine.</h2>
+          </div>
+          <p>Each of these runs on the same sovereign fabric documented above—owned end to end, measured, and sanitized for public view.</p>
+        </div>
+
+        <div class="project-grid">
+          <article class="project-card">
+            <p class="project-index">01 // Practice</p>
+            <h3>Cashio AI</h3>
+            <p>Fractional CAIO system for small and mid-size businesses: discovery, strategy, build, and long-term stewardship, with private-by-default architecture.</p>
+            <div class="project-metric"><strong>3</strong><small>Engagement tiers</small></div>
+          </article>
+
+          <article class="project-card">
+            <p class="project-index">02 // Security</p>
+            <h3>Exposure Assessment</h3>
+            <p>Cloud-exposure scanning, multi-source OSINT, and domain intelligence combined into one prioritized remediation picture with a full audit trail.</p>
+            <div class="project-metric"><strong>Multi</strong><small>Source correlation</small></div>
+          </article>
+
+          <article class="project-card">
+            <p class="project-index">03 // Operations</p>
+            <h3>ZeusApollo Dashboard Suite</h3>
+            <p>Interactive operations and briefing dashboards covering fleet health, model routing, spend, and automation status across the homelab.</p>
+            <div class="project-metric"><strong>8</strong><small>Dashboards</small></div>
+          </article>
+
+          <article class="project-card">
+            <p class="project-index">04 // Intelligence</p>
+            <h3>Sovereign Intelligence Briefing</h3>
+            <p>Executive-facing analysis of AI, security, and infrastructure developments—written to be acted on by decision makers, not just read by engineers.</p>
+            <div class="project-metric"><strong>Daily</strong><small>Cadence</small></div>
+          </article>
+
+          <article class="project-card">
+            <p class="project-index">05 // Industry</p>
+            <h3>The Shop Floor Signal</h3>
+            <p>Practical operations intelligence for industrial teams, translating automation and AI capability into decisions the floor can actually use.</p>
+            <div class="project-metric"><strong>Applied</strong><small>Operations focus</small></div>
+          </article>
+
+          <article class="project-card">
+            <p class="project-index">06 // Tooling</p>
+            <h3>Graphify</h3>
+            <p>A navigable code graph with community-driven documentation, turning a sprawling codebase into a queryable map of how everything actually connects.</p>
+            <div class="project-metric"><strong>353,437</strong><small>Nodes · 560,042 edges</small></div>
+          </article>
+
+          <article class="project-card">
+            <p class="project-index">07 // Autonomy</p>
+            <h3>Escalation Cascade</h3>
+            <p>Four-tier autonomous exception detection: free local checks escalate through DeepSeek and Sonnet to frontier adjudication only when severity earns it.</p>
+            <div class="project-metric"><strong>15 min</strong><small>Detection interval</small></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="manifest" data-chapter="08" aria-labelledby="manifest-title">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">08 // Flight manifest</p>
             <h2 id="manifest-title">Depth on demand.<br>Not in the way.</h2>
           </div>
           <p>The enthusiast detail is still here—models, automation, doctrine, and releases—condensed into one navigable instrument.</p>
@@ -8596,21 +9308,6 @@
             </details>
 
             <details class="manifest-panel">
-              <summary data-manifest="projects">Featured projects <span>7 public-safe builds</span></summary>
-              <div class="manifest-content">
-                <ul class="manifest-list">
-                  <li><strong>Cashio AI:</strong> fractional CAIO discovery, strategy, build, and stewardship system for SMBs.</li>
-                  <li><strong>Exposure Assessment:</strong> cloud-exposure scanning, multi-source OSINT, and domain intelligence.</li>
-                  <li><strong>ZeusApollo Dashboard Suite:</strong> eight interactive operations and briefing dashboards.</li>
-                  <li><strong>Sovereign Intelligence Briefing:</strong> executive-facing AI, security, and infrastructure analysis.</li>
-                  <li><strong>The Shop Floor Signal:</strong> practical operations intelligence for industrial teams.</li>
-                  <li><strong>Graphify:</strong> 353,437-node code graph with 560,042 edges and community-driven documentation.</li>
-                  <li><strong>Escalation Cascade:</strong> four-tier autonomous exception detection every fifteen minutes.</li>
-                </ul>
-              </div>
-            </details>
-
-            <details class="manifest-panel">
               <summary data-manifest="doctrine">Design doctrine <span>3 standing orders</span></summary>
               <div class="manifest-content">
                 <ul class="manifest-list">
@@ -8638,11 +9335,53 @@
       </div>
     </section>
 
-    <section class="section" id="fleet-card" data-chapter="07" aria-labelledby="fleet-card-title">
+    <section class="section" id="operator" data-chapter="09" aria-labelledby="operator-title">
       <div class="shell">
         <div class="section-head">
           <div>
-            <p class="eyebrow">07 // Take the proof home</p>
+            <p class="eyebrow">09 // The operator</p>
+            <h2 id="operator-title">A system is only as<br>honest as its builder.</h2>
+          </div>
+          <p>Everything on this deck was designed, built, operated, measured, and hardened by one person. Here is how that person works.</p>
+        </div>
+
+        <div class="operator-shell">
+          <div>
+            <p class="operator-lede"><strong>I build systems that show their work.</strong> Fifteen-plus years in enterprise environments taught me that the hard part is rarely the technology—it is the trust. Somebody has to be able to explain what changed, why it changed, what it cost, and what remains uncertain. So I build for that conversation first, and let the architecture follow.</p>
+            <p class="operator-lede" style="margin-top:14px">ZeusApollo is where I prove it on my own dime. Nothing here is a vendor demo or a borrowed diagram. If a number appears on this page, I measured it, dated it, and published its limits alongside it.</p>
+
+            <ol class="operator-method" aria-label="How Doug works">
+              <li><strong>Frame</strong><span>Turn an ambiguous problem into a clear, testable outcome before choosing any machinery.</span></li>
+              <li><strong>Build</strong><span>Make the architecture real—owned end to end, private by default, and observable from day one.</span></li>
+              <li><strong>Verify</strong><span>Measure the actual result, publish the date and scope, and state the caveat out loud.</span></li>
+              <li><strong>Translate</strong><span>Hand it off in plain language, so the people who own the outcome can defend it without me.</span></li>
+            </ol>
+          </div>
+
+          <aside class="operator-card">
+            <div class="operator-sigil" aria-hidden="true">DC</div>
+            <p class="operator-role">Sovereign AI · Cybersecurity</p>
+            <h3>Doug Cashio</h3>
+            <ul class="operator-facts">
+              <li><span>Experience</span><b>15+ years enterprise</b></li>
+              <li><span>Practice</span><b>Fractional CAIO</b></li>
+              <li><span>Proving ground</span><b>ZeusApollo homelab</b></li>
+              <li><span>Based</span><b>Pensacola, Florida</b></li>
+              <li><span>Standing order</span><b>Never fake a number</b></li>
+            </ul>
+            <div class="fleet-card-actions" style="margin-top:18px">
+              <a class="button button-primary" href="#hail">Bring a hard problem</a>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="fleet-card" data-chapter="10" aria-labelledby="fleet-card-title">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">10 // Take the proof home</p>
             <h2 id="fleet-card-title">Proof you can take with you.</h2>
           </div>
           <p>Render a Fleet Card from the same public-safe status export used everywhere else—portable evidence with no random numbers, fake QR, or unstated freshness.</p>
@@ -8676,11 +9415,11 @@
       </div>
     </section>
 
-    <section class="section" id="hail" data-chapter="08" aria-labelledby="hail-title">
+    <section class="section" id="hail" data-chapter="11" aria-labelledby="hail-title">
       <div class="shell">
         <div class="contact-deck">
           <div>
-            <p class="eyebrow">08 // Notes // source // conversation</p>
+            <p class="eyebrow">11 // Notes // source // conversation</p>
             <h2 id="hail-title">Open channel.<br>Bring a hard problem.</h2>
             <p>This independent work sample shows how I approach enterprise problems: clarify the outcome, build the system, route for quality, measure the real operating cost, and make the result understandable enough for somebody else to own. If you are wrestling with AI economics, automation reliability, explainability, or sovereign infrastructure, bring the messy version.</p>
             <div class="contact-signal" aria-label="Ways Doug works"><span><strong>Frame</strong>Turn ambiguity into a clear outcome.</span><span><strong>Build</strong>Make the architecture real.</span><span><strong>Verify</strong>Measure the result and expose the caveat.</span><span><strong>Translate</strong>Make technical depth useful to humans.</span></div>
@@ -9244,7 +9983,7 @@
       var commandHistoryIndex = 0;
 
       var terminalResponses = {
-        help: "Available: status, sovereign, quality, proof, models, cost, cascade, version, freshness, topology, flight, tour, projects, palette, warp, alert, spice, mentat, house, awaken, sound, contact, clear, ask eve. Optional prefix: cashio. All commands are local and read-only. The deck also hides a few homages for the observant.",
+        help: "Available: status, sovereign, quality, proof, lab, models, cost, cascade, version, freshness, topology, fleet, flight, tour, projects, builds, operator, palette, warp, alert, spice, mentat, house, awaken, sound, contact, clear, ask eve. Optional prefix: cashio. All commands are local and read-only. The deck also hides a few homages for the observant.",
         status: isStale
           ? "STALE — the Hermes public-safe export expired on " + sample.expiresDisplay + ". Current state is not asserted."
           : "FRESH HERMES EXPORT — 18 of 18 containers running across two core hosts; 71 of 71 automations healthy; zero cron errors. Verified " + sample.verifiedDisplay + ". Athena is separately owner-confirmed active as a physical Home Assistant edge node.",
@@ -9330,6 +10069,15 @@
           } else {
             appendLog("Spice field is paused because FX is off or reduced motion is active.", "warning");
           }
+        } else if (command === "lab" || command === "route") {
+          document.getElementById("policy-lab").scrollIntoView({ behavior: effectiveMotion() ? "smooth" : "auto", block: "start" });
+          appendLog("POLICY ROUTING LAB — pick a workload and watch the quality gate qualify, refuse, and choose a lane. Local simulation; relative cost only.", "answer");
+        } else if (command === "operator" || command === "doug" || command === "about") {
+          document.getElementById("operator").scrollIntoView({ behavior: effectiveMotion() ? "smooth" : "auto", block: "start" });
+          appendLog("OPERATOR — Doug Cashio. 15+ years enterprise. Frame, build, verify, translate. Standing order: never fake a number.", "answer");
+        } else if (command === "builds") {
+          document.getElementById("projects").scrollIntoView({ behavior: effectiveMotion() ? "smooth" : "auto", block: "start" });
+          appendLog(terminalResponses.projects, "answer");
         } else if (command === "palette") {
           openPalette();
           appendLog("Command palette open. Type to filter, Enter to run. Local only.", "answer");
@@ -11061,7 +11809,7 @@
         });
       });
 
-      revealItems = Array.prototype.slice.call(document.querySelectorAll(".section-head, .proof-cell, .audience-shell, .business-value-deck, .chain-console, .cluster, .athena-edge, .terminal-wrap, .manifest-shell, .fleet-card-grid, .contact-deck"));
+      revealItems = Array.prototype.slice.call(document.querySelectorAll(".section-head, .proof-cell, .audience-shell, .business-value-deck, .chain-console, .cluster, .athena-edge, .terminal-wrap, .manifest-shell, .fleet-card-grid, .contact-deck, .lab-shell, .project-card, .operator-shell, .operator-card"));
       revealItems.forEach(function (item, index) {
         item.classList.add("reveal-item");
         item.style.setProperty("--reveal-delay", Math.min(index % 4 * 70, 210) + "ms");
@@ -11150,6 +11898,208 @@
         });
       }
 
+      /* ── Policy routing lab ──────────────────────────────────
+         Relative cost index across the configured lanes (0 = free
+         entry lane, 100 = frontier adjudication). Deliberately not
+         a per-task dollar figure: the lab demonstrates the policy,
+         the dated export carries the measured spend. */
+      var labLanes = [
+        { id: "kimi", name: "Kimi K3", role: "T0 · free classify", cost: 0 },
+        { id: "gemma", name: "Gemma 4 26B", role: "Local · fallback", cost: 5 },
+        { id: "dsflash", name: "DeepSeek V4 Flash", role: "T1 · workhorse", cost: 14 },
+        { id: "gemini", name: "Gemini 3.6 Flash", role: "T3A · multimodal", cost: 27 },
+        { id: "dspro", name: "DeepSeek V4 Pro", role: "T2 · exception", cost: 36 },
+        { id: "sonar", name: "Sonar Pro", role: "T4B · research", cost: 49 },
+        { id: "grok", name: "Grok 4.5", role: "T3B · adversarial", cost: 63 },
+        { id: "sonnet", name: "Claude Sonnet 5", role: "T4A · synthesis", cost: 76 },
+        { id: "gpt", name: "GPT-5.6 Sol", role: "T5 · adjudication", cost: 100 },
+        { id: "fabric", name: "Atlas · OpenRouter · ZenMux", role: "Gateway fabric", cost: null }
+      ];
+
+      var labScenarios = {
+        triage: {
+          gate: { quality: "pass", privacy: "pass", fit: "pass", severity: "pass" },
+          chosen: "kimi",
+          blocked: {},
+          kicker: "Routed // free lane",
+          title: "Kimi K3 // Tier 0",
+          copy: "Routine, non-sensitive classification clears the quality floor on the free entry lane. Every more expensive lane is capable—none is justified. This is most of the day's work."
+        },
+        brief: {
+          gate: { quality: "pass", privacy: "pass", fit: "pass", severity: "pass" },
+          chosen: "dsflash",
+          blocked: { kimi: "Below quality floor for drafting" },
+          kicker: "Routed // workhorse",
+          title: "DeepSeek V4 Flash // Tier 1",
+          copy: "Narrative drafting needs more than the free classifier, so the gate raises the floor by one step—and stops there. The workhorse lane handles scheduled briefings without touching premium reasoning."
+        },
+        household: {
+          gate: { quality: "pass", privacy: "gated", fit: "pass", severity: "pass" },
+          chosen: "gemma",
+          blocked: {
+            kimi: "Private context may not leave the lab",
+            dsflash: "Private context may not leave the lab",
+            gemini: "Private context may not leave the lab",
+            dspro: "Private context may not leave the lab",
+            sonar: "Private context may not leave the lab",
+            grok: "Private context may not leave the lab",
+            sonnet: "Private context may not leave the lab",
+            gpt: "Private context may not leave the lab"
+          },
+          kicker: "Routed // local only",
+          title: "Gemma 4 26B // Local fallback",
+          copy: "Privacy is a gate, not a preference. Once context is private, every hosted lane is refused regardless of price or capability, and the work stays on owned hardware. Sovereignty is what makes this route possible at all."
+        },
+        review: {
+          gate: { quality: "pass", privacy: "pass", fit: "gated", severity: "pass" },
+          chosen: "grok",
+          blocked: {
+            kimi: "Below capability for security review",
+            gemma: "Below capability for security review",
+            dsflash: "Below capability for security review",
+            gemini: "Multimodal QA, not adversarial review",
+            dspro: "Below capability for security review",
+            sonar: "Research lane, not adversarial review"
+          },
+          kicker: "Routed // adversarial",
+          title: "Grok 4.5 // Tier 3B",
+          copy: "Task fit narrows the field before cost does. Cheaper lanes are refused for capability and the multimodal lane for role mismatch, leaving the least expensive lane that can genuinely argue with the code."
+        },
+        architect: {
+          gate: { quality: "pass", privacy: "pass", fit: "gated", severity: "pass" },
+          chosen: "sonnet",
+          blocked: {
+            kimi: "Below capability for cross-domain synthesis",
+            gemma: "Below capability for cross-domain synthesis",
+            dsflash: "Below capability for cross-domain synthesis",
+            gemini: "Below capability for cross-domain synthesis",
+            dspro: "Below capability for cross-domain synthesis",
+            sonar: "Research lane, not synthesis",
+            grok: "Adversarial lane, not synthesis"
+          },
+          kicker: "Routed // synthesis",
+          title: "Claude Sonnet 5 // Tier 4A",
+          copy: "High-value architecture earns premium reasoning. The frontier adjudication lane also qualifies but costs more without adding to this decision, so the gate stops at the cheapest lane that clears the bar."
+        },
+        sev1: {
+          gate: { quality: "pass", privacy: "pass", fit: "pass", severity: "gated" },
+          chosen: "gpt",
+          blocked: {
+            kimi: "Severity policy mandates frontier adjudication",
+            gemma: "Severity policy mandates frontier adjudication",
+            dsflash: "Severity policy mandates frontier adjudication",
+            gemini: "Severity policy mandates frontier adjudication",
+            dspro: "Severity policy mandates frontier adjudication",
+            sonar: "Severity policy mandates frontier adjudication",
+            grok: "Severity policy mandates frontier adjudication",
+            sonnet: "Severity policy mandates frontier adjudication"
+          },
+          kicker: "Routed // adjudication",
+          title: "GPT-5.6 Sol // Tier 5",
+          copy: "When consequence is catastrophic, cost stops being the deciding variable. Policy escalates straight to the frontier lane—and a human still owns the final call. This is the spend the discipline exists to protect."
+        }
+      };
+
+      var labWorkloadButtons = Array.prototype.slice.call(document.querySelectorAll(".lab-workload"));
+      var labLaneList = document.getElementById("lab-lanes");
+      var labGateGrid = document.getElementById("lab-gate-grid");
+      var labVerdictKicker = document.getElementById("lab-verdict-kicker");
+      var labVerdictTitle = document.getElementById("lab-verdict-title");
+      var labVerdictCopy = document.getElementById("lab-verdict-copy");
+      var labAnnouncement = document.getElementById("lab-announcement");
+      var labBuilt = false;
+
+      function buildLabLanes() {
+        if (!labLaneList || labBuilt) return;
+        labBuilt = true;
+        labLanes.forEach(function (lane) {
+          var item = document.createElement("li");
+          item.className = "lab-lane";
+          item.dataset.lane = lane.id;
+
+          var left = document.createElement("div");
+          var nameRow = document.createElement("div");
+          nameRow.className = "lab-lane-name";
+          var nameEl = document.createElement("b");
+          nameEl.textContent = lane.name;
+          var roleEl = document.createElement("em");
+          roleEl.textContent = lane.role;
+          nameRow.appendChild(nameEl);
+          nameRow.appendChild(roleEl);
+          var stateEl = document.createElement("small");
+          stateEl.className = "lab-lane-state";
+          left.appendChild(nameRow);
+          left.appendChild(stateEl);
+
+          var bar = document.createElement("div");
+          bar.className = "lab-bar";
+          if (lane.cost === null) {
+            bar.style.visibility = "hidden";
+          } else {
+            var fill = document.createElement("span");
+            bar.appendChild(fill);
+          }
+
+          item.appendChild(left);
+          item.appendChild(bar);
+          labLaneList.appendChild(item);
+        });
+      }
+
+      function runLabScenario(key, announce) {
+        var scenario = labScenarios[key];
+        if (!scenario || !labLaneList) return;
+        buildLabLanes();
+
+        labWorkloadButtons.forEach(function (button) {
+          button.setAttribute("aria-pressed", String(button.dataset.workload === key));
+        });
+
+        Array.prototype.slice.call(labGateGrid.querySelectorAll(".lab-criterion")).forEach(function (criterion) {
+          var state = scenario.gate[criterion.dataset.criterion];
+          criterion.classList.toggle("is-lit", state === "pass");
+          criterion.classList.toggle("is-gated", state === "gated");
+        });
+
+        Array.prototype.slice.call(labLaneList.children).forEach(function (item, index) {
+          var lane = labLanes[index];
+          var stateEl = item.querySelector(".lab-lane-state");
+          var fill = item.querySelector(".lab-bar > span");
+
+          if (lane.cost === null) {
+            item.className = "lab-lane is-candidate";
+            stateEl.textContent = "Carries every route";
+            return;
+          }
+
+          var blockedReason = scenario.blocked[lane.id];
+          var isChosen = scenario.chosen === lane.id;
+          item.className = "lab-lane" + (isChosen ? " is-chosen" : blockedReason ? " is-blocked" : " is-candidate");
+          if (isChosen) stateEl.textContent = "◈ Route taken · relative cost " + lane.cost;
+          else if (blockedReason) stateEl.textContent = "✕ " + blockedReason;
+          else stateEl.textContent = "Qualified · relative cost " + lane.cost;
+
+          if (fill) fill.style.setProperty("--cost", Math.max(2, lane.cost) + "%");
+        });
+
+        labVerdictKicker.textContent = scenario.kicker;
+        labVerdictTitle.textContent = scenario.title;
+        labVerdictCopy.textContent = scenario.copy;
+
+        if (announce) {
+          labAnnouncement.textContent = "Routed to " + scenario.title + ". " + scenario.copy;
+          playUiSound("route", Object.keys(labScenarios).indexOf(key));
+        }
+      }
+
+      labWorkloadButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          runLabScenario(button.dataset.workload, true);
+        });
+      });
+
+      if (labLaneList) runLabScenario("triage", false);
+
       var paletteDialog = document.getElementById("palette-dialog");
       var paletteInput = document.getElementById("palette-input");
       var paletteList = document.getElementById("palette-list");
@@ -11176,6 +12126,9 @@
         { label: "Sovereign Core journey", tag: "Go", run: paletteGoto("#spice-flight") },
         { label: "Three ways inside", tag: "Go", run: paletteGoto("#mission") },
         { label: "Business proof", tag: "Go", run: paletteGoto("#proof") },
+        { label: "Policy routing lab", tag: "Go", run: paletteGoto("#policy-lab") },
+        { label: "Featured builds", tag: "Go", run: paletteGoto("#projects") },
+        { label: "The operator // Doug Cashio", tag: "Go", run: paletteGoto("#operator") },
         { label: "Event chain demo", tag: "Go", run: paletteGoto("#chain") },
         { label: "Fleet topology", tag: "Go", run: paletteGoto("#topology") },
         { label: "Hermes console", tag: "Go", run: paletteGoto("#console") },
