@@ -3156,8 +3156,14 @@
 
     @media (hover: hover) and (pointer: fine) {
       body[data-fx="on"] .hero-copy {
-        transform: translate3d(var(--hero-x, 0px), var(--hero-y, 0px), 0);
+        transform: translate3d(var(--hero-x, 0px), calc(var(--hero-y, 0px) - var(--hero-exit, 0) * 44px), 0);
+        opacity: calc(1 - var(--hero-exit, 0) * 0.6);
         transition: transform 110ms linear;
+      }
+
+      body[data-fx="on"] .command-orbit {
+        translate: 0 calc(var(--hero-exit, 0) * -26px);
+        opacity: calc(1 - var(--hero-exit, 0) * 0.5);
       }
     }
 
@@ -8732,6 +8738,119 @@
       border-color: rgba(0, 255, 159, 0.4);
       box-shadow: 0 0 14px rgba(0, 255, 159, 0.07);
     }
+
+    /* ═══ ELEVEN: letterbox, ledger, magnets, hum, reps ════════ */
+
+    /* Cinematic letterbox bars: arrival and warp. */
+    .cine-bars i {
+      position: fixed;
+      right: 0;
+      left: 0;
+      z-index: 120;
+      height: 0;
+      pointer-events: none;
+      background: #000;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+      transition: height 680ms cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .cine-bars i:first-child { top: 0; }
+    .cine-bars i:last-child { bottom: 0; }
+
+    body[data-fx="on"].cine-intro .cine-bars i,
+    body[data-fx="on"].cine-warp .cine-bars i { height: 46px; }
+
+    /* Magnetic primary buttons: composed via the translate property
+       so existing transform rules stay untouched. */
+    .button-primary {
+      translate: var(--mag-x, 0px) var(--mag-y, 0px);
+      transition-property: transform, border-color, color, background-color, box-shadow, filter, translate;
+      transition-duration: 170ms, 170ms, 170ms, 170ms, 170ms, 170ms, 90ms;
+    }
+
+    /* The Iron Ledger: rolling odometers of the accumulated work. */
+    .iron-ledger {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin: -26px 0 40px;
+      padding: 20px 22px;
+      border: 1px solid rgba(246, 214, 106, 0.24);
+      border-top: 0;
+      border-radius: 0 0 var(--radius) var(--radius);
+      background:
+        linear-gradient(180deg, rgba(246, 214, 106, 0.035), transparent 60%),
+        rgba(8, 12, 19, 0.94);
+    }
+
+    .ledger-item { text-align: center; }
+
+    .odometer {
+      display: block;
+      color: var(--gold);
+      font-family: var(--display);
+      font-size: clamp(1.4rem, 2.6vw, 2rem);
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+      text-shadow: 0 0 22px rgba(246, 214, 106, 0.28);
+    }
+
+    .odo-digit {
+      display: inline-block;
+      height: 1em;
+      overflow: hidden;
+      vertical-align: top;
+    }
+
+    .odo-strip {
+      display: inline-flex;
+      flex-direction: column;
+      transform: translateY(0);
+      transition: transform 1.35s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .odo-strip i {
+      height: 1em;
+      font-style: normal;
+      line-height: 1;
+    }
+
+    .odometer.is-rolling .odo-strip {
+      transform: translateY(calc(var(--odo-target, 0) * -1em));
+    }
+
+    .odo-sep { display: inline-block; }
+
+    .ledger-item small {
+      display: block;
+      margin-top: 7px;
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 0.56rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* Rack another set */
+    .iron-replay {
+      padding: 6px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--quiet);
+      background: transparent;
+      cursor: pointer;
+      font: 800 0.58rem/1.2 var(--mono);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .iron-replay:hover,
+    .iron-replay:focus-visible {
+      color: var(--gold);
+      border-color: rgba(246, 214, 106, 0.5);
+      background: rgba(246, 214, 106, 0.05);
+    }
   </style>
 </head>
 <body data-fx="on" data-alert="off">
@@ -8743,6 +8862,7 @@
   <div class="spice-haze" aria-hidden="true"></div>
   <div class="alert-wash" aria-hidden="true"></div>
   <div class="warp-flash" id="warp-flash" aria-hidden="true"></div>
+  <div class="cine-bars" aria-hidden="true"><i></i><i></i></div>
   <a class="skip-link" href="#main">Skip to mission control</a>
   <nav class="mission-spine" aria-label="Deck progress">
     <a href="#top" data-scene-label="OPENING // DOUG CASHIO" aria-current="location"><span class="visually-hidden">Opening</span></a>
@@ -9570,6 +9690,7 @@
           <div class="iron-head">
             <strong>THE IRON // Weight under the bar</strong>
             <span>CASHIO doctrine // own the route end to end</span>
+            <button class="iron-replay" id="iron-replay" type="button">↻ Rack another set</button>
           </div>
           <svg class="iron-svg" viewBox="0 0 640 200" role="img" aria-hidden="true">
             <defs>
@@ -9629,6 +9750,14 @@
             <rect class="iron-shine" x="0" y="88" width="72" height="24" fill="url(#ironShineGrad)" transform="skewX(-18)"/>
           </svg>
           <p class="iron-caption">Six layers under load — <b>hardware · network · storage · models · policy · proof</b> — every plate racked by one operator. Lift the iron.</p>
+        </div>
+
+        <div class="iron-ledger" id="iron-ledger" aria-label="Accumulated build totals from the verified export">
+          <div class="ledger-item"><span class="odometer" data-odometer="30"></span><small>Build iterations // v30</small></div>
+          <div class="ledger-item"><span class="odometer" data-odometer="18"></span><small>Containers verified</small></div>
+          <div class="ledger-item"><span class="odometer" data-odometer="71"></span><small>Automations healthy</small></div>
+          <div class="ledger-item"><span class="odometer" data-odometer="10"></span><small>Routing lanes</small></div>
+          <div class="ledger-item"><span class="odometer" data-odometer="353,437"></span><small>Graphify nodes</small></div>
         </div>
 
         <div class="operator-shell">
@@ -10667,6 +10796,31 @@
         sealGlow.addColorStop(1, "rgba(255,173,66,0)");
         fleetCardContext.fillStyle = sealGlow;
         fleetCardContext.fillRect(-80, -80, 160, 160);
+
+        // House Cashio crest: hexagonal shield + Zeus bolt.
+        fleetCardContext.beginPath();
+        for (var hexPoint = 0; hexPoint < 6; hexPoint += 1) {
+          var hexAngle = Math.PI / 3 * hexPoint - Math.PI / 2;
+          var hexX = Math.cos(hexAngle) * 46;
+          var hexY = Math.sin(hexAngle) * 46;
+          if (hexPoint === 0) fleetCardContext.moveTo(hexX, hexY);
+          else fleetCardContext.lineTo(hexX, hexY);
+        }
+        fleetCardContext.closePath();
+        fleetCardContext.strokeStyle = "rgba(246,214,106,.7)";
+        fleetCardContext.lineWidth = 2;
+        fleetCardContext.stroke();
+        fleetCardContext.beginPath();
+        fleetCardContext.moveTo(4, -26);
+        fleetCardContext.lineTo(-9, 2);
+        fleetCardContext.lineTo(0, 2);
+        fleetCardContext.lineTo(-6, 26);
+        fleetCardContext.lineTo(11, -5);
+        fleetCardContext.lineTo(1, -5);
+        fleetCardContext.lineTo(8, -26);
+        fleetCardContext.closePath();
+        fleetCardContext.fillStyle = "rgba(246,214,106,.85)";
+        fleetCardContext.fill();
         fleetCardContext.restore();
 
         fleetCardContext.fillStyle = "#ff9500";
@@ -11383,8 +11537,10 @@
           soundToggle.setAttribute("aria-label", "Turn interface sound off");
           soundToggle.textContent = "SND ON";
           playUiSound("enable");
+          startHum();
         } else {
           playUiSound("click");
+          stopHum();
           soundEnabled = false;
           soundToggle.setAttribute("aria-pressed", "false");
           soundToggle.setAttribute("aria-label", "Turn interface sound on");
@@ -11457,6 +11613,8 @@
           return;
         }
         warpBurstUntil = (window.performance ? window.performance.now() : Date.now()) + 700;
+        body.classList.add("cine-warp");
+        window.setTimeout(function () { body.classList.remove("cine-warp"); }, 940);
         window.clearTimeout(warpTimer);
         warpFlash.classList.remove("is-active");
         void warpFlash.offsetWidth;
@@ -11480,12 +11638,18 @@
         }
       }
 
+      var heroSection = document.getElementById("top");
+
       function updateScrollProgress() {
         scrollFrame = 0;
         if (scrollProgressFill) {
           var scrollable = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
           var progress = Math.max(0, Math.min(1, window.scrollY / scrollable));
           scrollProgressFill.style.transform = "scaleX(" + progress.toFixed(4) + ")";
+        }
+        if (heroSection) {
+          var heroExit = Math.max(0, Math.min(1, window.scrollY / (window.innerHeight * 0.92)));
+          heroSection.style.setProperty("--hero-exit", heroExit.toFixed(3));
         }
         updateScrollWorld();
       }
@@ -12594,6 +12758,159 @@
         }
       });
 
+      /* ── Iron Ledger odometers ── */
+      var odometers = Array.prototype.slice.call(document.querySelectorAll(".odometer[data-odometer]"));
+      var odometersRolled = false;
+
+      odometers.forEach(function (odometer) {
+        var raw = odometer.getAttribute("data-odometer");
+        odometer.setAttribute("aria-label", raw);
+        raw.split("").forEach(function (character, index) {
+          if (!/[0-9]/.test(character)) {
+            var separator = document.createElement("span");
+            separator.className = "odo-sep";
+            separator.setAttribute("aria-hidden", "true");
+            separator.textContent = character;
+            odometer.appendChild(separator);
+            return;
+          }
+          var digit = document.createElement("span");
+          digit.className = "odo-digit";
+          digit.setAttribute("aria-hidden", "true");
+          var strip = document.createElement("span");
+          strip.className = "odo-strip";
+          for (var value = 0; value < 10; value += 1) {
+            var cell = document.createElement("i");
+            cell.textContent = String(value);
+            strip.appendChild(cell);
+          }
+          strip.style.setProperty("--odo-target", character);
+          strip.style.transitionDelay = (index * 110) + "ms";
+          digit.appendChild(strip);
+          odometer.appendChild(digit);
+        });
+      });
+
+      function rollOdometers() {
+        if (odometersRolled) return;
+        odometersRolled = true;
+        odometers.forEach(function (odometer) { odometer.classList.add("is-rolling"); });
+        playUiSound("route", 4);
+      }
+
+      var ironLedger = document.getElementById("iron-ledger");
+      if (ironLedger && "IntersectionObserver" in window && effectiveMotion()) {
+        var ledgerObserver = new IntersectionObserver(function (entries) {
+          if (entries.some(function (entry) { return entry.isIntersecting; })) {
+            rollOdometers();
+            ledgerObserver.disconnect();
+          }
+        }, { threshold: 0.35 });
+        ledgerObserver.observe(ironLedger);
+      } else {
+        rollOdometers();
+      }
+
+      /* ── Rack another set ── */
+      var ironStage = document.querySelector(".iron-stage");
+      var ironReplay = document.getElementById("iron-replay");
+      var ironSets = 1;
+      if (ironReplay && ironStage) {
+        ironReplay.addEventListener("click", function () {
+          playUiSound("click");
+          if (!effectiveMotion()) return;
+          ironSets += 1;
+          ironStage.classList.remove("is-visible");
+          void ironStage.offsetWidth;
+          ironStage.classList.add("is-visible");
+          ironReplay.textContent = "↻ Set " + String(ironSets).padStart(2, "0") + " — rack it again";
+        });
+      }
+
+      /* ── Magnetic primary buttons ── */
+      if (window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+        var magnetTarget = null;
+        var magnetFrame = 0;
+        var magnetPointer = null;
+        document.addEventListener("pointermove", function (event) {
+          var target = event.target && event.target.closest ? event.target.closest(".button-primary") : null;
+          if (magnetTarget && magnetTarget !== target) {
+            magnetTarget.style.setProperty("--mag-x", "0px");
+            magnetTarget.style.setProperty("--mag-y", "0px");
+          }
+          magnetTarget = target;
+          if (!target || !effectiveMotion()) return;
+          magnetPointer = { target: target, x: event.clientX, y: event.clientY };
+          if (magnetFrame) return;
+          magnetFrame = window.requestAnimationFrame(function () {
+            magnetFrame = 0;
+            if (!magnetPointer) return;
+            var rect = magnetPointer.target.getBoundingClientRect();
+            var pullX = Math.max(-7, Math.min(7, (magnetPointer.x - rect.left - rect.width / 2) * 0.14));
+            var pullY = Math.max(-5, Math.min(5, (magnetPointer.y - rect.top - rect.height / 2) * 0.18));
+            magnetPointer.target.style.setProperty("--mag-x", pullX.toFixed(1) + "px");
+            magnetPointer.target.style.setProperty("--mag-y", pullY.toFixed(1) + "px");
+          });
+        }, { passive: true });
+        document.addEventListener("pointerout", function (event) {
+          if (magnetTarget && (!event.relatedTarget || !magnetTarget.contains(event.relatedTarget))) {
+            magnetTarget.style.setProperty("--mag-x", "0px");
+            magnetTarget.style.setProperty("--mag-y", "0px");
+            magnetTarget = null;
+          }
+        }, { passive: true });
+      }
+
+      /* ── Ambient deck hum (opt-in with SND) ── */
+      var humNodes = null;
+
+      function startHum() {
+        var activeContext = getAudioContext();
+        if (!activeContext || humNodes) return;
+        var gain = activeContext.createGain();
+        gain.gain.value = 0.0001;
+        var low = activeContext.createOscillator();
+        low.type = "sine";
+        low.frequency.value = 54;
+        var fifth = activeContext.createOscillator();
+        fifth.type = "sine";
+        fifth.frequency.value = 81;
+        fifth.detune.value = 5;
+        var fifthGain = activeContext.createGain();
+        fifthGain.gain.value = 0.32;
+        var lfo = activeContext.createOscillator();
+        lfo.frequency.value = 0.07;
+        var lfoGain = activeContext.createGain();
+        lfoGain.gain.value = 0.0022;
+        lfo.connect(lfoGain);
+        lfoGain.connect(gain.gain);
+        low.connect(gain);
+        fifth.connect(fifthGain);
+        fifthGain.connect(gain);
+        gain.connect(audioMaster || activeContext.destination);
+        gain.gain.setTargetAtTime(0.0058, activeContext.currentTime, 1.4);
+        low.start();
+        fifth.start();
+        lfo.start();
+        humNodes = { low: low, fifth: fifth, lfo: lfo, gain: gain };
+      }
+
+      function stopHum() {
+        if (!humNodes || !audioContext) { humNodes = null; return; }
+        var nodes = humNodes;
+        humNodes = null;
+        try {
+          nodes.gain.gain.setTargetAtTime(0.0001, audioContext.currentTime, 0.25);
+          window.setTimeout(function () {
+            nodes.low.stop();
+            nodes.fifth.stop();
+            nodes.lfo.stop();
+          }, 900);
+        } catch (error) {
+          /* Hum teardown is best-effort. */
+        }
+      }
+
       var identityWordmark = document.querySelector(".identity-wordmark");
       function runIdentityDecrypt() {
         if (!identityWordmark || !effectiveMotion()) return;
@@ -12656,6 +12973,10 @@
       sizeFleetMap();
       refreshStarfield();
       runIdentityDecrypt();
+      if (effectiveMotion()) {
+        body.classList.add("cine-intro");
+        window.setTimeout(function () { body.classList.remove("cine-intro"); }, 2100);
+      }
     }());
   </script>
 </body>

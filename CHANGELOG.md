@@ -4,6 +4,16 @@ All notable public-facing changes to the ZeusApollo portfolio are recorded here.
 
 ## [v31 unreleased] — 07-25-2026
 
+### Added — eleven pass
+
+- Cinematic letterbox bars that sweep in on arrival and frame every warp jump.
+- **The Iron Ledger**: five rolling odometers under the Iron (30 build iterations, 18 containers, 71 automations, 10 lanes, 353,437 Graphify nodes) with slot-machine digit strips that roll when scrolled into view.
+- "Rack another set" control on the Iron — replays the plate drop and counts your sets.
+- Scroll-linked hero camera pull: the opening scene eases up and fades as the visitor descends, like a crane shot leaving the deck.
+- Magnetic primary buttons (composed via the `translate` property so no existing transform is disturbed).
+- Opt-in ambient deck hum behind the SND toggle: a 54 Hz root-and-fifth pad with a slow LFO swell, faded in and out, never audible unless sound is on.
+- The House crest is now drawn onto the shareable Fleet Card PNG.
+
 ### Added — visual chrome pass
 
 - **THE IRON**: an original SVG asset in the Operator chapter — a barbell loaded with six labeled plate-pairs (hardware · network · storage · models · policy · proof) that rack one by one on reveal with a periodic shine sweep. The "lift the iron" doctrine, drawn.
