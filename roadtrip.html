@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Gulf Coast Cruise — an animated road trip from Mobile, Alabama to Pensacola Beach in a 2025 Mercedes E350. A browser-local, hand-drawn SVG animation.">
+  <meta name="robots" content="index, follow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Gulf Coast Cruise — Mobile to Pensacola</title>
+  <style>
+    :root{
+      --bg1:#0b1220; --panel:#101726; --line:#24334c; --text:#e9f2ff; --muted:#9fb0c8;
+      --cyan:#55e7ff; --amber:#ffbf5a; --green:#59f0a8; --coral:#ff7a66;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{background:linear-gradient(180deg,#070a10,#0a101b 60%,#070a10);color:var(--text);
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5;
+      min-height:100vh;display:flex;flex-direction:column;align-items:center}
+    a{color:var(--cyan);text-decoration:none} a:hover{text-decoration:underline}
+    .wrap{width:min(1240px,calc(100% - 28px));margin:0 auto;padding:16px 0 48px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:10px 18px;
+      border:1px solid var(--line);border-radius:999px;background:rgba(16,23,38,.72);margin-bottom:16px}
+    .brand{font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-size:.8rem}
+    .brand small{color:var(--muted);font-weight:600;letter-spacing:.02em;text-transform:none}
+    h1{margin:6px 0 2px;font-size:clamp(1.4rem,3.6vw,2.2rem);
+      background:linear-gradient(180deg,#fff 10%,var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .sub{color:var(--muted);margin:0 0 14px;font-size:.95rem}
+    .stage{position:relative;border:1px solid var(--line);border-radius:20px;overflow:hidden;
+      background:#8ed4f2;box-shadow:0 18px 60px rgba(0,0,0,.35)}
+    .stage svg{display:block;width:100%;height:auto}
+    .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}
+    button{cursor:pointer;border:1px solid var(--line);border-radius:999px;background:rgba(16,23,38,.9);
+      color:var(--text);font:inherit;font-weight:700;padding:9px 16px;transition:transform .12s,border-color .12s}
+    button:hover{border-color:var(--cyan);transform:translateY(-1px)}
+    button[aria-pressed="true"]{border-color:var(--green);color:var(--green)}
+    .hud{margin-left:auto;display:flex;gap:14px;color:var(--muted);font-variant-numeric:tabular-nums;
+      font-size:.9rem;align-items:center}
+    .hud b{color:var(--cyan)}
+    .hint{color:var(--muted);font-size:.82rem;margin-top:10px}
+    footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);
+      font-size:.85rem;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;width:100%}
+    /* ---- scene animations ---- */
+    .cloud{animation:drift linear infinite}
+    @keyframes drift{from{transform:translateX(0)}to{transform:translateX(-1900px)}}
+    .hair{transform-origin:left center;animation:hairFlap .55s ease-in-out infinite alternate}
+    .hair2{animation-duration:.42s;animation-delay:.12s}
+    .scarf{transform-origin:left top;animation:hairFlap .5s ease-in-out infinite alternate-reverse}
+    @keyframes hairFlap{from{transform:rotate(-4deg) scaleY(.96)}to{transform:rotate(13deg) scaleY(1.05)}}
+    .idlecar .hair,.idlecar .scarf{animation-duration:1.6s}
+    .tail{transform-origin:right bottom;animation:wag .35s ease-in-out infinite alternate}
+    @keyframes wag{from{transform:rotate(-14deg)}to{transform:rotate(16deg)}}
+    .note{opacity:0;animation:noteFloat 2.4s ease-out infinite}
+    .note.n2{animation-delay:.8s}.note.n3{animation-delay:1.6s}
+    @keyframes noteFloat{0%{opacity:0;transform:translate(0,0) rotate(0)}12%{opacity:1}
+      100%{opacity:0;transform:translate(-90px,-120px) rotate(-24deg)}}
+    .gull{animation:gullBob 3.2s ease-in-out infinite alternate}
+    .gull.g2{animation-delay:1.1s}.gull.g3{animation-delay:2s}
+    @keyframes gullBob{from{transform:translate(0,0)}to{transform:translate(-46px,-26px)}}
+    .wingL,.wingR{transform-origin:center;animation:flap .5s ease-in-out infinite alternate}
+    .wingR{animation-direction:alternate-reverse}
+    @keyframes flap{from{transform:rotate(-16deg)}to{transform:rotate(22deg)}}
+    .dolphin{opacity:0;animation:leap 4.6s ease-in-out infinite}
+    .dolphin.d2{animation-delay:2.2s}
+    @keyframes leap{0%,18%{opacity:0;transform:translate(0,40px) rotate(18deg)}
+      32%{opacity:1;transform:translate(-46px,-64px) rotate(-6deg)}
+      46%{opacity:1;transform:translate(-96px,-72px) rotate(-22deg)}
+      62%,100%{opacity:0;transform:translate(-150px,44px) rotate(-46deg)}}
+    .sailboat{transform-origin:center bottom;animation:bobBoat 3.4s ease-in-out infinite alternate}
+    @keyframes bobBoat{from{transform:rotate(-2.4deg) translateY(0)}to{transform:rotate(2.6deg) translateY(6px)}}
+    .waveband{animation:waveSlide 5s linear infinite}
+    @keyframes waveSlide{from{transform:translateX(0)}to{transform:translateX(-140px)}}
+    .flag{transform-origin:left center;animation:hairFlap .7s ease-in-out infinite alternate}
+    .hair,.hair2,.scarf,.tail,.wingL,.wingR,.sailboat,.flag,.sunrays,.note,.dolphin,.gull{transform-box:fill-box}
+    .flipped text{display:none}
+    .sunrays{transform-origin:center;animation:sunSpin 40s linear infinite}
+    @keyframes sunSpin{to{transform:rotate(360deg)}}
+    .dust{animation:dustPuff .8s ease-out forwards}
+    @keyframes dustPuff{from{opacity:.8;transform:translate(0,0) scale(.4)}
+      to{opacity:0;transform:translate(-26px,-34px) scale(1.7)}}
+    .spark{animation:sparkFly 1.15s ease-out forwards}
+    @keyframes sparkFly{from{opacity:1;transform:translate(0,0) scale(1)}
+      70%{opacity:1}to{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.4)}}
+    .confetto{animation:confFall 2.6s ease-in forwards}
+    @keyframes confFall{from{opacity:1;transform:translate(0,0) rotate(0)}
+      to{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(540deg)}}
+    .jets{visibility:hidden}
+    .jets.fly{visibility:visible;animation:jetPass 5.6s linear forwards}
+    @keyframes jetPass{from{transform:translate(1800px,40px)}to{transform:translate(-2400px,-90px)}}
+    .bubble{opacity:0;transition:opacity .18s}
+    .bubble.show{opacity:1}
+    .pelican{opacity:0;transition:opacity .3s}
+    .pelican.here{opacity:1;animation:pelDrop 1.1s cubic-bezier(.2,1.6,.45,1) 1}
+    @keyframes pelDrop{from{transform:translateY(-260px)}to{transform:translateY(0)}}
+    .banner{opacity:0;transition:opacity .5s,transform .5s;transform:translateY(-14px)}
+    .banner.show{opacity:1;transform:translateY(0)}
+    .caption{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);max-width:92%;
+      background:rgba(9,14,24,.78);border:1px solid var(--line);border-radius:999px;color:#fff;
+      padding:7px 18px;font-weight:700;font-size:clamp(.8rem,2vw,1.02rem);white-space:nowrap;
+      overflow:hidden;text-overflow:ellipsis;transition:opacity .35s}
+    .caption.hide{opacity:0}
+    .paused .stage *{animation-play-state:paused!important}
+    @media (max-width:560px){.hud{display:none}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">Gulf Coast Cruise <small>· a cashio.us animation</small></div>
+    <nav><a href="index.html">← Back to cashio.us</a></nav>
+  </div>
+  <h1>Mobile → Pensacola, top down &amp; radio up</h1>
+  <p class="sub">A blonde-ponytailed pilot, a 2025 Mercedes E350, one lucky lap around the house, and 59 miles of I-10 East. Everything runs in your browser — no network calls.</p>
+
+  <div class="stage" id="stage">
+  <svg id="scene" viewBox="0 0 1600 900" role="img"
+       aria-label="Cartoon animation: a blonde woman drives a silver 2025 Mercedes E350 around her house in Mobile, Alabama, then along I-10 over Mobile Bay to Pensacola Beach, Florida.">
+    <defs>
+      <linearGradient id="skyDay" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#7cc7f4"/><stop offset=".62" stop-color="#bfe6fb"/><stop offset="1" stop-color="#eaf7ff"/>
+      </linearGradient>
+      <linearGradient id="skyDusk" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#3f4e9e"/><stop offset=".45" stop-color="#c66bb0"/>
+        <stop offset=".75" stop-color="#ff9d6f"/><stop offset="1" stop-color="#ffd9a0"/>
+      </linearGradient>
+      <linearGradient id="seaG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#2e9dc9"/><stop offset="1" stop-color="#155f86"/>
+      </linearGradient>
+      <linearGradient id="carPaint" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#f4f7fb"/><stop offset=".5" stop-color="#c3cdd9"/>
+        <stop offset=".62" stop-color="#98a5b4"/><stop offset="1" stop-color="#77828f"/>
+      </linearGradient>
+      <linearGradient id="glassG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#dff3ff"/><stop offset="1" stop-color="#8fc6e8"/>
+      </linearGradient>
+      <clipPath id="cabinClip"><rect x="-196" y="-210" width="308" height="140"/></clipPath>
+      <g id="gullDef">
+        <path class="wingL" d="M0 0 Q-16 -14 -30 -8" fill="none" stroke="#445" stroke-width="4" stroke-linecap="round"/>
+        <path class="wingR" d="M0 0 Q16 -14 30 -8" fill="none" stroke="#445" stroke-width="4" stroke-linecap="round"/>
+      </g>
+      <g id="jetDef">
+        <path d="M0 0 L38 6 L0 12 L8 6 Z" fill="#20408f"/>
+        <path d="M10 6 L-46 2 M10 6 L-46 10" stroke="#ffffffaa" stroke-width="3"/>
+        <path d="M14 2 L6 -6 L10 6" fill="#f2c531"/>
+      </g>
+    </defs>
+
+    <!-- sky: day base with dusk crossfading in as the trip progresses -->
+    <rect width="1600" height="900" fill="url(#skyDay)"/>
+    <rect id="duskSky" width="1600" height="900" fill="url(#skyDusk)" opacity="0"/>
+    <g id="sun" transform="translate(1330,150)">
+      <g class="sunrays" stroke="#ffdf7e" stroke-width="7" stroke-linecap="round" opacity=".85">
+        <path d="M0 -92 V-64 M0 92 V64 M-92 0 H-64 M92 0 H64 M-65 -65 L-46 -46 M65 65 L46 46 M-65 65 L-46 46 M65 -65 L46 -46"/>
+      </g>
+      <circle r="52" fill="#ffd94d"/><circle r="52" fill="#fff" opacity=".22"/>
+    </g>
+    <g id="clouds" fill="#ffffff" opacity=".92">
+      <g class="cloud" style="animation-duration:70s">
+        <ellipse cx="240" cy="130" rx="95" ry="34"/><ellipse cx="310" cy="112" rx="70" ry="28"/>
+        <ellipse cx="1050" cy="90" rx="110" ry="36"/><ellipse cx="1130" cy="110" rx="72" ry="26"/>
+        <ellipse cx="2140" cy="140" rx="95" ry="33"/><ellipse cx="2210" cy="120" rx="66" ry="25"/>
+      </g>
+      <g class="cloud" style="animation-duration:110s" opacity=".7">
+        <ellipse cx="620" cy="210" rx="80" ry="26"/><ellipse cx="680" cy="196" rx="55" ry="20"/>
+        <ellipse cx="1560" cy="180" rx="90" ry="28"/><ellipse cx="2520" cy="200" rx="84" ry="27"/>
+      </g>
+    </g>
+
+    <!-- FAR parallax (×0.30): Mobile skyline, then open Gulf on the Florida stretch -->
+    <g id="far">
+      <g transform="translate(1350,0)" fill="#9fb6cf">
+        <rect x="0" y="430" width="70" height="210"/><rect x="90" y="380" width="56" height="260"/>
+        <rect x="160" y="330" width="74" height="310" fill="#8ca6c4"/>
+        <path d="M197 330 L197 268 L212 330 Z" fill="#8ca6c4"/>
+        <rect x="252" y="410" width="60" height="230"/><rect x="326" y="360" width="80" height="280" fill="#93acc6"/>
+        <rect x="420" y="440" width="54" height="200"/>
+        <g fill="#c9d9ec"><rect x="14" y="450" width="10" height="14"/><rect x="36" y="450" width="10" height="14"/>
+          <rect x="14" y="480" width="10" height="14"/><rect x="36" y="480" width="10" height="14"/>
+          <rect x="104" y="400" width="9" height="12"/><rect x="122" y="400" width="9" height="12"/>
+          <rect x="104" y="428" width="9" height="12"/><rect x="176" y="352" width="10" height="13"/>
+          <rect x="196" y="352" width="10" height="13"/><rect x="216" y="352" width="10" height="13"/>
+          <rect x="176" y="380" width="10" height="13"/><rect x="216" y="380" width="10" height="13"/>
+          <rect x="266" y="430" width="9" height="12"/><rect x="286" y="430" width="9" height="12"/>
+          <rect x="342" y="382" width="10" height="13"/><rect x="362" y="382" width="10" height="13"/>
+          <rect x="382" y="382" width="10" height="13"/><rect x="342" y="412" width="10" height="13"/>
+          <rect x="434" y="460" width="9" height="12"/></g>
+        <text x="240" y="672" font-size="26" font-weight="800" fill="#6d87a8" text-anchor="middle"
+              font-family="Inter,system-ui,sans-serif" letter-spacing="6">MOBILE</text>
+      </g>
+      <rect x="4150" y="602" width="3400" height="94" fill="url(#seaG)" opacity=".85"/>
+      <g fill="none" stroke="#ffffff88" stroke-width="4" stroke-linecap="round" transform="translate(0,44)">
+        <path d="M4300 600 q20 -8 40 0 M4420 630 q20 -8 40 0 M4650 590 q20 -8 40 0
+                 M4900 620 q20 -8 40 0 M5200 596 q20 -8 40 0 M5600 626 q20 -8 40 0
+                 M6000 592 q20 -8 40 0 M6500 618 q20 -8 40 0 M7000 600 q20 -8 40 0"/>
+      </g>
+    </g>
+
+    <!-- MID parallax (×0.60): battleship, bay water, sailboat, dolphins, dunes, beach-ball tower -->
+    <g id="mid">
+      <rect x="3400" y="600" width="4500" height="130" fill="url(#seaG)"/>
+      <g class="waveband" fill="none" stroke="#ffffff77" stroke-width="5" stroke-linecap="round">
+        <path d="M3450 640 q22 -10 44 0 M3560 668 q22 -10 44 0 M3700 636 q22 -10 44 0
+                 M3850 664 q22 -10 44 0 M4010 640 q22 -10 44 0 M4180 668 q22 -10 44 0
+                 M4350 636 q22 -10 44 0 M4520 664 q22 -10 44 0 M4700 640 q22 -10 44 0
+                 M4880 664 q22 -10 44 0 M5060 636 q22 -10 44 0 M5240 664 q22 -10 44 0
+                 M5430 640 q22 -10 44 0 M5620 664 q22 -10 44 0 M5810 640 q22 -10 44 0
+                 M6010 664 q22 -10 44 0 M6210 640 q22 -10 44 0 M6420 664 q22 -10 44 0
+                 M6640 640 q22 -10 44 0 M6860 664 q22 -10 44 0 M7090 640 q22 -10 44 0
+                 M7330 664 q22 -10 44 0 M7580 640 q22 -10 44 0 M7800 664 q22 -10 44 0"/>
+      </g>
+      <!-- USS Alabama, moored in Battleship Memorial Park -->
+      <g transform="translate(4050,540)">
+        <path d="M-230 62 L-208 96 L214 96 L246 60 L150 60 L150 44 L-160 44 L-172 62 Z" fill="#5b6672"/>
+        <rect x="-92" y="6" width="150" height="40" fill="#6d7885"/>
+        <rect x="-52" y="-24" width="86" height="32" fill="#7b8794"/>
+        <rect x="-20" y="-52" width="34" height="30" fill="#6d7885"/>
+        <line x1="-4" y1="-92" x2="-4" y2="-52" stroke="#4c545e" stroke-width="7"/>
+        <g fill="#4c545e">
+          <path d="M-150 44 L-150 26 L-96 26 L-96 44 Z"/><path d="M76 44 L76 24 L132 24 L132 44 Z"/>
+          <rect x="-146" y="18" width="44" height="9" transform="rotate(-9 -124 22)"/>
+          <rect x="80" y="16" width="46" height="9" transform="rotate(-9 103 20)"/>
+        </g>
+        <g class="flag"><line x1="-4" y1="-92" x2="-4" y2="-64" stroke="none"/>
+          <path d="M-4 -92 L34 -84 L-4 -74 Z" fill="#c8323c"/></g>
+        <text x="8" y="128" font-size="24" font-weight="800" fill="#37536e" text-anchor="middle"
+              font-family="Inter,system-ui,sans-serif" letter-spacing="3">USS ALABAMA</text>
+      </g>
+      <g transform="translate(5230,650)"><g class="sailboat">
+        <path d="M-64 22 L-46 46 L52 46 L70 22 Z" fill="#e8593f"/>
+        <line x1="2" y1="22" x2="2" y2="-78" stroke="#5b4632" stroke-width="6"/>
+        <path d="M2 -78 L2 16 L-52 16 Z" fill="#fff"/><path d="M8 -70 L8 14 L54 14 Z" fill="#ffd94d"/></g>
+      </g>
+      <g transform="translate(5390,700)">
+        <g class="dolphin"><path d="M0 0 q28 -34 62 -18 q-6 18 -28 22 q14 8 10 24 q-26 2 -34 -12 q-16 2 -24 -4 q6 -10 14 -12" fill="#5f7f9d"/></g>
+        <g transform="translate(210,8)"><g class="dolphin d2"><path d="M0 0 q28 -34 62 -18 q-6 18 -28 22 q14 8 10 24 q-26 2 -34 -12 q-16 2 -24 -4 q6 -10 14 -12" fill="#6d8cab"/></g></g>
+      </g>
+      <!-- Florida dunes and sea oats -->
+      <g>
+        <path d="M8800 730 q220 -70 460 -6 q240 60 470 -8 q240 -66 480 0 q230 62 470 -4 q220 -58 420 6 L13100 730 Z"
+              fill="#f2e2b8" transform="translate(0,-46)"/>
+        <g stroke="#c9a86a" stroke-width="5" fill="none" stroke-linecap="round">
+          <path d="M9000 690 q-8 -46 8 -78 M9020 692 q10 -40 -2 -74 M9040 690 q14 -36 4 -66"/>
+          <path d="M9900 682 q-8 -46 8 -78 M9920 684 q10 -40 -2 -74"/>
+          <path d="M10900 688 q-8 -46 8 -78 M10920 690 q10 -40 -2 -74 M10944 686 q14 -36 4 -66"/>
+          <path d="M12100 684 q-8 -46 8 -78 M12120 686 q10 -40 -2 -74"/>
+        </g>
+      </g>
+      <!-- Pensacola Beach ball water tower -->
+      <g transform="translate(11500,470)">
+        <line x1="-40" y1="210" x2="0" y2="40" stroke="#8b93a1" stroke-width="10"/>
+        <line x1="40" y1="210" x2="0" y2="40" stroke="#8b93a1" stroke-width="10"/>
+        <line x1="0" y1="210" x2="0" y2="30" stroke="#9aa2b0" stroke-width="12"/>
+        <circle cx="0" cy="0" r="86" fill="#fff"/>
+        <path d="M-86 0 A86 86 0 0 1 -30 -80 L-16 0 Z" fill="#ffcf3d"/>
+        <path d="M-30 -80 A86 86 0 0 1 42 -75 L-16 0 Z" fill="#ff8c3a"/>
+        <path d="M42 -75 A86 86 0 0 1 86 0 L-16 0 Z" fill="#e84a4a"/>
+        <path d="M86 0 A86 86 0 0 1 20 84 L-16 0 Z" fill="#3fa9dc"/>
+        <path d="M20 84 A86 86 0 0 1 -62 60 L-16 0 Z" fill="#57bf6f"/>
+        <path d="M-62 60 A86 86 0 0 1 -86 0 L-16 0 Z" fill="#8a5fc2"/>
+        <circle cx="0" cy="0" r="86" fill="none" stroke="#d8dde5" stroke-width="5"/>
+        <g transform="translate(-130,-120)"><g class="gull"><use href="#gullDef"/></g></g>
+        <g transform="translate(150,-90)"><g class="gull g2"><use href="#gullDef"/></g></g>
+        <g transform="translate(60,-170)"><g class="gull g3"><use href="#gullDef"/></g></g>
+      </g>
+    </g>
+
+    <!-- NEAR layer (×1.0): the world strip the car actually drives through -->
+    <g id="near">
+      <!-- ground: Mobile-side grass, bay gap (bridge), Baldwin grass, Florida sand -->
+      <rect x="-500" y="716" width="6800" height="184" fill="#79c267"/>
+      <rect x="9800" y="716" width="4500" height="184" fill="#7dc46b"/>
+      <rect x="14300" y="716" width="7900" height="184" fill="#f4e4b6"/>
+      <!-- the road / bridge deck -->
+      <rect x="-500" y="768" width="22700" height="108" fill="#4a5260"/>
+      <rect x="-500" y="768" width="22700" height="7" fill="#39404b"/>
+      <line x1="-500" y1="822" x2="22200" y2="822" stroke="#ffd23e" stroke-width="7" stroke-dasharray="74 52"/>
+      <!-- bridge over Mobile Bay: back barrier + pilings -->
+      <g>
+        <rect x="6300" y="716" width="3500" height="52" fill="#8b95a3"/>
+        <g fill="#77808d">
+          <rect x="6300" y="738" width="3500" height="10"/>
+          <rect x="6420" y="716" width="16" height="52"/><rect x="6720" y="716" width="16" height="52"/>
+          <rect x="7020" y="716" width="16" height="52"/><rect x="7320" y="716" width="16" height="52"/>
+          <rect x="7620" y="716" width="16" height="52"/><rect x="7920" y="716" width="16" height="52"/>
+          <rect x="8220" y="716" width="16" height="52"/><rect x="8520" y="716" width="16" height="52"/>
+          <rect x="8820" y="716" width="16" height="52"/><rect x="9120" y="716" width="16" height="52"/>
+          <rect x="9420" y="716" width="16" height="52"/><rect x="9720" y="716" width="16" height="52"/>
+        </g>
+      </g>
+      <!-- big green interstate sign -->
+      <g transform="translate(2600,470)">
+        <rect x="-14" y="0" width="14" height="300" fill="#8b95a3"/><rect x="330" y="0" width="14" height="300" fill="#8b95a3"/>
+        <rect x="-60" y="-10" width="450" height="170" rx="14" fill="#12734b" stroke="#fff" stroke-width="6"/>
+        <path d="M42 34 q34 -26 68 0 q6 34 -34 58 q-40 -24 -34 -58 Z" fill="#c8323c" stroke="#fff" stroke-width="5"/>
+        <path d="M42 44 h68 v14 h-68 Z" fill="#1d4f91"/>
+        <text x="76" y="55" font-size="17" font-weight="800" fill="#fff" text-anchor="middle" font-family="Inter,system-ui,sans-serif">I-10</text>
+        <text x="240" y="52" font-size="34" font-weight="800" fill="#fff" text-anchor="middle" font-family="Inter,system-ui,sans-serif">EAST</text>
+        <text x="165" y="106" font-size="32" font-weight="700" fill="#fff" text-anchor="middle" font-family="Inter,system-ui,sans-serif">Pensacola  59</text>
+        <text x="165" y="140" font-size="22" font-weight="600" fill="#cfe8db" text-anchor="middle" font-family="Inter,system-ui,sans-serif">beach hair, don't care</text>
+      </g>
+      <!-- roadside pecan stand in Baldwin County -->
+      <g transform="translate(11050,560)">
+        <rect x="-10" y="90" width="14" height="110" fill="#7a5a3a"/><rect x="196" y="90" width="14" height="110" fill="#7a5a3a"/>
+        <rect x="-30" y="130" width="260" height="70" fill="#c98844"/>
+        <path d="M-46 96 L100 30 L246 96 Z" fill="#a4552f"/>
+        <rect x="-30" y="96" width="260" height="36" fill="#e8d8b8"/>
+        <text x="100" y="122" font-size="24" font-weight="800" fill="#7a4520" text-anchor="middle" font-family="Inter,system-ui,sans-serif">PECANS · PEACHES</text>
+        <text x="100" y="182" font-size="20" font-weight="700" fill="#5c3a1e" text-anchor="middle" font-family="Inter,system-ui,sans-serif">BOILED P-NUTS →</text>
+        <circle cx="-52" cy="196" r="18" fill="#f0a04b"/><circle cx="-80" cy="200" r="14" fill="#f0a04b"/>
+      </g>
+      <!-- state line -->
+      <g transform="translate(14000,430)">
+        <rect x="-12" y="0" width="16" height="340" fill="#8b95a3"/>
+        <rect x="-120" y="-16" width="240" height="150" rx="16" fill="#1d4f91" stroke="#fff" stroke-width="6"/>
+        <text x="0" y="26" font-size="26" font-weight="700" fill="#ffd23e" text-anchor="middle" font-family="Inter,system-ui,sans-serif">Welcome to</text>
+        <text x="0" y="66" font-size="40" font-weight="800" fill="#fff" text-anchor="middle" font-family="Inter,system-ui,sans-serif">FLORIDA</text>
+        <text x="0" y="102" font-size="19" font-weight="600" fill="#cfe0ff" text-anchor="middle" font-family="Inter,system-ui,sans-serif">The Sunshine State ☀</text>
+        <circle cx="96" cy="-8" r="22" fill="#ffd94d"/>
+      </g>
+      <rect x="14196" y="768" width="10" height="108" fill="#ffd23e" opacity=".7"/>
+      <!-- mile markers -->
+      <g fill="#12734b">
+        <g transform="translate(5000,650)"><rect x="-6" y="0" width="10" height="120" fill="#8b95a3"/><rect x="-30" y="-40" width="60" height="46" rx="6"/><text x="0" y="-8" font-size="24" font-weight="800" fill="#fff" text-anchor="middle" font-family="Inter,system-ui,sans-serif">27</text></g>
+        <g transform="translate(16600,650)"><rect x="-6" y="0" width="10" height="120" fill="#8b95a3"/><rect x="-30" y="-40" width="60" height="46" rx="6"/><text x="0" y="-8" font-size="24" font-weight="800" fill="#fff" text-anchor="middle" font-family="Inter,system-ui,sans-serif">12</text></g>
+      </g>
+      <!-- palm trees on the Florida stretch -->
+      <g transform="translate(15400,540)">
+        <path d="M0 200 q-14 -110 6 -196" stroke="#8a6b43" stroke-width="16" fill="none" stroke-linecap="round"/>
+        <g fill="#3e9e57"><path d="M6 4 q-70 -34 -120 6 q66 8 120 10 Z"/><path d="M6 4 q70 -34 120 6 q-66 8 -120 10 Z"/>
+          <path d="M6 4 q-40 -60 -104 -52 q44 40 104 52 Z"/><path d="M6 4 q40 -60 104 -52 q-44 40 -104 52 Z"/>
+          <path d="M6 4 q-4 -70 -30 -88 q26 6 30 88 Z"/></g>
+        <circle cx="-8" cy="16" r="10" fill="#8a6b43"/><circle cx="16" cy="18" r="10" fill="#8a6b43"/>
+      </g>
+      <g transform="translate(18600,530) scale(1.15)">
+        <path d="M0 200 q16 -110 -6 -196" stroke="#8a6b43" stroke-width="16" fill="none" stroke-linecap="round"/>
+        <g fill="#46ab60"><path d="M-6 4 q-70 -34 -120 6 q66 8 120 10 Z"/><path d="M-6 4 q70 -34 120 6 q-66 8 -120 10 Z"/>
+          <path d="M-6 4 q-40 -60 -104 -52 q44 40 104 52 Z"/><path d="M-6 4 q40 -60 104 -52 q-44 40 -104 52 Z"/></g>
+      </g>
+      <!-- arrival: PENSACOLA BEACH arch -->
+      <g transform="translate(19600,420)">
+        <rect x="-260" y="60" width="18" height="300" fill="#e8593f"/>
+        <rect x="242" y="60" width="18" height="300" fill="#e8593f"/>
+        <path d="M-270 80 Q0 -50 270 80" fill="none" stroke="#ffd23e" stroke-width="46" stroke-linecap="round"/>
+        <path d="M-270 80 Q0 -50 270 80" fill="none" stroke="#1d4f91" stroke-width="34" stroke-linecap="round"/>
+        <text x="0" y="46" font-size="34" font-weight="800" fill="#fff" text-anchor="middle" font-family="Inter,system-ui,sans-serif" letter-spacing="2">PENSACOLA</text>
+        <text x="0" y="130" font-size="30" font-weight="800" fill="#ffd23e" text-anchor="middle" font-family="Inter,system-ui,sans-serif" letter-spacing="8">B E A C H</text>
+        <g transform="translate(-120,-38)"><g id="pelican" class="pelican">
+          <path d="M0 0 q-26 -8 -30 -30 q22 -6 34 8 q20 -18 44 -6 q-8 26 -48 28 Z" fill="#d8c9a6"/>
+          <circle cx="14" cy="-26" r="12" fill="#e6d9ba"/><circle cx="18" cy="-29" r="2.6" fill="#222"/>
+          <path d="M24 -24 q26 4 30 14 q-20 8 -34 -4 Z" fill="#e8a03c"/>
+          <path d="M-2 2 l-4 14 M8 2 l-2 14" stroke="#b28c4e" stroke-width="4"/></g>
+        </g>
+      </g>
+
+      <!-- home sweet home, Mobile AL -->
+      <ellipse cx="500" cy="640" rx="400" ry="122" fill="none" stroke="#d9c9a8" stroke-width="34" opacity=".85"/>
+      <g id="carBehindLayer"></g>
+      <g id="house" transform="translate(500,430)">
+        <!-- live oak with spanish moss -->
+        <g transform="translate(-330,50)">
+          <path d="M0 240 q-10 -90 -34 -130 q40 18 34 -40 q30 30 44 -18 q16 44 40 30 q-16 46 18 52 q-34 22 -48 106 Z" fill="#7a5a3a"/>
+          <ellipse cx="-40" cy="-10" rx="86" ry="60" fill="#4d8f4f"/>
+          <ellipse cx="60" cy="-30" rx="96" ry="66" fill="#559a56"/>
+          <ellipse cx="10" cy="-70" rx="80" ry="54" fill="#61a862"/>
+          <g stroke="#9fb98e" stroke-width="6" stroke-linecap="round" fill="none">
+            <path d="M-70 36 q-4 26 4 44"/><path d="M40 30 q-6 30 2 52"/><path d="M110 8 q-4 24 4 40"/>
+          </g>
+        </g>
+        <!-- the cottage -->
+        <rect x="-160" y="60" width="360" height="200" fill="#f7e9c8"/>
+        <path d="M-190 66 L20 -70 L230 66 Z" fill="#b0492f"/>
+        <rect x="120" y="-40" width="40" height="70" fill="#9a5a48"/>
+        <rect x="-160" y="200" width="360" height="14" fill="#dcc79a"/>
+        <rect x="-176" y="52" width="392" height="16" fill="#e7d6ae"/>
+        <g fill="#7db4d8" stroke="#fff" stroke-width="6">
+          <rect x="-120" y="96" width="64" height="62"/><rect x="130" y="96" width="64" height="62"/>
+        </g>
+        <rect x="4" y="120" width="66" height="140" fill="#7a4b34" stroke="#fff" stroke-width="6"/>
+        <circle cx="58" cy="192" r="5" fill="#ffd23e"/>
+        <g stroke="#fff" stroke-width="10"><line x1="-150" y1="140" x2="-150" y2="260"/><line x1="-60" y1="140" x2="-60" y2="260"/>
+          <line x1="96" y1="140" x2="96" y2="260"/><line x1="186" y1="140" x2="186" y2="260"/></g>
+        <rect x="-170" y="128" width="380" height="14" fill="#fff"/>
+        <g fill="#e86ea0"><ellipse cx="-200" cy="266" rx="34" ry="20"/><ellipse cx="236" cy="266" rx="34" ry="20"/>
+          <ellipse cx="-236" cy="272" rx="24" ry="15" fill="#f08cb4"/></g>
+        <text x="20" y="300" font-size="24" font-weight="800" fill="#5c7a9e" text-anchor="middle" font-family="Inter,system-ui,sans-serif">Sweet Home Mobile</text>
+      </g>
+      <!-- mailbox -->
+      <g transform="translate(880,660)">
+        <rect x="-4" y="0" width="10" height="70" fill="#7a5a3a"/>
+        <rect x="-26" y="-28" width="60" height="30" rx="14" fill="#3d5a80"/>
+        <path d="M30 -24 l14 -12 v18 l-14 6 Z" fill="#c8323c"/>
+        <text x="2" y="-38" font-size="16" font-weight="700" fill="#5c7a9e" text-anchor="middle" font-family="Inter,system-ui,sans-serif">CASHIO</text>
+      </g>
+      <!-- good dog supervising from the yard -->
+      <g id="dog" transform="translate(760,700)">
+        <ellipse cx="0" cy="6" rx="34" ry="20" fill="#d8a24e"/>
+        <circle cx="30" cy="-14" r="16" fill="#d8a24e"/>
+        <path d="M22 -26 q-6 -14 2 -20 q8 6 8 18 Z" fill="#b9843c"/>
+        <path d="M40 -26 q8 -12 2 -20 q-10 4 -12 16 Z" fill="#b9843c"/>
+        <circle cx="34" cy="-16" r="2.6" fill="#222"/><circle cx="44" cy="-12" r="4" fill="#5c4326"/>
+        <path class="tail" d="M-30 -2 q-20 -8 -24 -26" stroke="#d8a24e" stroke-width="9" fill="none" stroke-linecap="round"/>
+        <g stroke="#d8a24e" stroke-width="8" stroke-linecap="round"><line x1="-12" y1="18" x2="-12" y2="30"/><line x1="14" y1="18" x2="14" y2="30"/></g>
+        <g id="woof" class="bubble"><rect x="40" y="-64" width="74" height="32" rx="14" fill="#fff"/>
+          <path d="M52 -34 l8 12 l6 -12 Z" fill="#fff"/>
+          <text x="77" y="-42" font-size="18" font-weight="800" fill="#333" text-anchor="middle" font-family="Inter,system-ui,sans-serif">Woof!</text></g>
+      </g>
+
+      <!-- THE CAR — 2025 Mercedes E350, silver, one blonde pilot -->
+      <g id="carFrontLayer">
+        <g id="car" transform="translate(500,745)">
+          <g id="carBody">
+            <g id="exhaustPuffs"></g>
+            <!-- body shell -->
+            <path d="M-186 -34 q-4 -26 28 -30 l34 -4 q28 -34 66 -46 q56 -18 104 -2 q34 12 52 40 l38 6 q40 8 44 34 l2 16 q2 16 -14 18 l-330 0 q-22 0 -24 -18 Z" fill="url(#carPaint)"/>
+            <!-- driver: clipped at the beltline, head out the open sunroof -->
+            <g clip-path="url(#cabinClip)"><g id="driver" transform="translate(-40,-96) scale(.9)">
+              <g class="hair"><path d="M14 -18 q-40 -6 -74 10 q-26 14 -30 34 q22 6 44 -2 q-12 12 -6 22 q30 2 48 -18 Z" fill="#f2c94c"/></g>
+              <g class="hair hair2"><path d="M10 -6 q-34 2 -58 20 q-14 12 -12 26 q26 0 44 -14 Z" fill="#e8ba32"/></g>
+              <circle cx="16" cy="-6" r="27" fill="#f7cfae"/>
+              <path d="M-8 -18 q10 -26 40 -20 q18 6 16 24 q-2 -6 -10 -8 q4 8 0 12 q-6 -12 -18 -14 q-16 -2 -28 6 Z" fill="#f2c94c"/>
+              <path d="M-2 -10 h20 v3 h8 v-3 h16 q2 12 -8 14 q-8 2 -10 -8 q-2 10 -12 8 q-10 -2 -14 -14 Z" fill="#2b2f36"/>
+              <path d="M24 8 q6 3 12 0" stroke="#c96a5a" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+              <circle cx="34" cy="2" r="3.4" fill="#f0a8a0" opacity=".7"/>
+              <g class="scarf"><path d="M-6 16 q-30 8 -44 28 q14 8 34 0 q16 -8 22 -20 Z" fill="#ff7a66"/></g>
+              <path d="M-4 14 q20 12 42 4 l6 18 q-26 10 -50 -2 Z" fill="#e8593f"/>
+              <path id="armWave" d="M30 24 q22 -2 30 18" stroke="#f7cfae" stroke-width="11" fill="none" stroke-linecap="round"/>
+            </g><circle cx="58" cy="-80" r="12" fill="none" stroke="#39404b" stroke-width="4.5"/></g>
+            <path d="M-58 -108 q52 -16 96 -2 q30 10 46 34 l-160 4 q6 -22 18 -36 Z" fill="url(#glassG)" fill-opacity=".38"/>
+            <line x1="-14" y1="-112" x2="-16" y2="-72" stroke="#8a97a5" stroke-width="5"/>
+            <path d="M-124 -66 l304 0" stroke="#ffffff88" stroke-width="5" stroke-linecap="round"/>
+            <path d="M-180 -20 l356 -2" stroke="#5d6570" stroke-width="4" opacity=".5"/>
+            <!-- front (right) end: closed sport grille + star -->
+            <path d="M168 -40 q16 2 18 14 l2 12 -30 0 Z" fill="#2f3540"/>
+            <circle cx="171" cy="-22" r="12" fill="#dfe6ee" stroke="#9aa4b0" stroke-width="3"/>
+            <path d="M171 -33 l3.5 8 -3.5 14 -3.5 -14 Z M160 -17 l22 0 -11 3 Z" fill="#6b7684"/>
+            <path d="M182 -36 q10 4 8 14 l-2 8 q8 -2 8 -10 q0 -10 -14 -12 Z" fill="#ffe9b0"/>
+            <!-- tail -->
+            <path d="M-186 -40 q-8 6 -6 16 l4 10 12 0 Z" fill="#c8323c"/>
+            <!-- rocker + plate -->
+            <rect x="-96" y="-14" width="200" height="10" rx="5" fill="#39404b"/>
+            <rect x="112" y="-12" width="64" height="26" rx="5" fill="#fff" stroke="#39404b" stroke-width="3"/>
+            <text x="144" y="7" font-size="17" font-weight="800" fill="#1d4f91" text-anchor="middle" font-family="Inter,system-ui,sans-serif">E350</text>
+            <text x="-150" y="-44" font-size="15" font-weight="700" fill="#5d6570" font-family="Inter,system-ui,sans-serif">E 350</text>
+            <!-- music notes from the cabin -->
+            <g fill="#25406b">
+              <g transform="translate(-70,-120)"><g class="note"><path d="M0 0 v-26 l14 -4 v26" stroke="#25406b" stroke-width="3.6" fill="none"/><circle cx="-1" cy="1" r="5"/><circle cx="13" cy="-3" r="5"/></g></g>
+              <g transform="translate(-40,-130)"><g class="note n2"><path d="M0 0 v-24" stroke="#25406b" stroke-width="3.6"/><circle cx="-1" cy="1" r="5"/><path d="M0 -24 q10 4 8 14" fill="none" stroke="#25406b" stroke-width="3.6"/></g></g>
+              <g transform="translate(-96,-112)"><g class="note n3"><path d="M0 0 v-22" stroke="#25406b" stroke-width="3.4"/><circle cx="-1" cy="1" r="4.6"/></g></g>
+            </g>
+            <g id="beep" class="bubble"><rect x="150" y="-140" width="130" height="40" rx="18" fill="#fff"/>
+              <path d="M170 -102 l10 16 l8 -16 Z" fill="#fff"/>
+              <text x="215" y="-112" font-size="22" font-weight="800" fill="#c8323c" text-anchor="middle" font-family="Inter,system-ui,sans-serif">BEEP BEEP!</text></g>
+          </g>
+          <!-- wheels: AMG-style five twin spokes -->
+          <g id="wheelR" transform="translate(-112,6)">
+            <circle r="46" fill="#23272e"/><circle r="30" fill="#c8d2dc"/><circle r="7" fill="#39404b"/>
+            <g stroke="#39404b" stroke-width="7" stroke-linecap="round">
+              <line x1="0" y1="-9" x2="0" y2="-27"/><line x1="8.6" y1="-2.8" x2="25.7" y2="-8.3"/>
+              <line x1="5.3" y1="7.3" x2="15.9" y2="21.8"/><line x1="-5.3" y1="7.3" x2="-15.9" y2="21.8"/>
+              <line x1="-8.6" y1="-2.8" x2="-25.7" y2="-8.3"/></g>
+          </g>
+          <g id="wheelF" transform="translate(122,6)">
+            <circle r="46" fill="#23272e"/><circle r="30" fill="#c8d2dc"/><circle r="7" fill="#39404b"/>
+            <g stroke="#39404b" stroke-width="7" stroke-linecap="round">
+              <line x1="0" y1="-9" x2="0" y2="-27"/><line x1="8.6" y1="-2.8" x2="25.7" y2="-8.3"/>
+              <line x1="5.3" y1="7.3" x2="15.9" y2="21.8"/><line x1="-5.3" y1="7.3" x2="-15.9" y2="21.8"/>
+              <line x1="-8.6" y1="-2.8" x2="-25.7" y2="-8.3"/></g>
+          </g>
+        </g>
+      </g>
+      <!-- bridge front rail passes in front of the car -->
+      <g fill="#98a2b0">
+        <rect x="6300" y="842" width="3500" height="12"/>
+        <rect x="6360" y="842" width="12" height="34"/><rect x="6660" y="842" width="12" height="34"/>
+        <rect x="6960" y="842" width="12" height="34"/><rect x="7260" y="842" width="12" height="34"/>
+        <rect x="7560" y="842" width="12" height="34"/><rect x="7860" y="842" width="12" height="34"/>
+        <rect x="8160" y="842" width="12" height="34"/><rect x="8460" y="842" width="12" height="34"/>
+        <rect x="8760" y="842" width="12" height="34"/><rect x="9060" y="842" width="12" height="34"/>
+        <rect x="9360" y="842" width="12" height="34"/><rect x="9660" y="842" width="12" height="34"/>
+        <rect x="6300" y="866" width="3500" height="10"/>
+      </g>
+    </g>
+
+    <!-- screen-space overlays -->
+    <g id="jets" class="jets">
+      <g transform="translate(0,120)"><use href="#jetDef"/></g>
+      <g transform="translate(70,90)"><use href="#jetDef"/></g>
+      <g transform="translate(70,150)"><use href="#jetDef"/></g>
+      <g transform="translate(140,120)"><use href="#jetDef"/></g>
+    </g>
+    <g id="fx"></g>
+    <g id="banner" class="banner">
+      <rect x="440" y="130" width="720" height="120" rx="26" fill="rgba(9,14,24,.82)" stroke="#ffd23e" stroke-width="4"/>
+      <text x="800" y="182" font-size="42" font-weight="800" fill="#ffd23e" text-anchor="middle" font-family="Inter,system-ui,sans-serif">YOU MADE IT! 🎉</text>
+      <text x="800" y="224" font-size="24" font-weight="600" fill="#e9f2ff" text-anchor="middle" font-family="Inter,system-ui,sans-serif">Mobile → Pensacola Beach · 59 miles of Gulf Coast</text>
+    </g>
+  </svg>
+  <div id="caption" class="caption">Mobile, Alabama — home sweet home 🏡</div>
+  </div>
+
+  <div class="controls">
+    <button id="btnPlay" aria-pressed="false">⏸ Pause</button>
+    <button id="btnReplay">↻ Replay</button>
+    <button id="btnHonk">📯 Honk</button>
+    <button id="btnMusic" aria-pressed="false">♪ Radio: off</button>
+    <div class="hud"><span>Speed <b id="hudMph">0</b> mph</span><span>Trip <b id="hudMi">0.0</b> / 59 mi</span><span id="hudLeg">Mobile, AL</span></div>
+  </div>
+  <p class="hint">Keys: <b>space</b> pause · <b>h</b> honk · <b>m</b> radio · <b>r</b> replay. Click the car to honk. Honors your reduced-motion setting. All audio is synthesized locally — nothing loads from the network.</p>
+
+  <footer>
+    <span>© 2026 Doug Cashio · drawn &amp; animated in one HTML file</span>
+    <span><a href="index.html">cashio.us</a> · <a href="lab.html">lab</a></span>
+  </footer>
+</div>
+
+<style>
+  #car{cursor:pointer}
+  #armWave{transform-origin:left top;transform-box:fill-box}
+  .wave #armWave{animation:armUp .55s ease-in-out infinite alternate}
+  @keyframes armUp{from{transform:rotate(-60deg) translate(6px,-6px)}to{transform:rotate(-95deg) translate(10px,-8px)}}
+</style>
+<script>
+(function(){
+  "use strict";
+  var $=function(id){return document.getElementById(id)};
+  var svg=$("scene"), stageWrap=document.body;
+  var car=$("car"), carBody=$("carBody"), wheelF=$("wheelF"), wheelR=$("wheelR");
+  var frontLayer=$("carFrontLayer"), behindLayer=$("carBehindLayer");
+  var near=$("near"), mid=$("mid"), far=$("far");
+  var duskSky=$("duskSky"), sun=$("sun"), fx=$("fx"), jets=$("jets");
+  var banner=$("banner"), pelican=$("pelican"), woof=$("woof"), beep=$("beep");
+  var caption=$("caption"), driver=$("driver");
+  var hudMph=$("hudMph"), hudMi=$("hudMi"), hudLeg=$("hudLeg");
+
+  // ---- timeline constants ----
+  var LAPS0=3, LAPS1=10.5, EXIT1=13, STOP=40.5, LOOP_AT=54;
+  var END=18700, VMAX=760, CARX=520, ROADY=798;
+  var CX=500, CY=628, RX=356, RY=112;
+
+  var t=0, last=null, paused=false, scroll=0, vel=0, wheelDeg=0, dustClock=0;
+  var fired={conf:false,jets:false,fw1:false,fw2:false,fw3:false,ban:false,pel:false,w1:false,w2:false};
+  var mphShow=0;
+
+  function easeIO(u){return u<0?0:u>1?1:.5-.5*Math.cos(Math.PI*u)}
+  function clamp(v,a,b){return v<a?a:v>b?b:v}
+
+  function speedAt(tt){
+    if(tt<12||tt>=STOP) return 0;
+    var rise=easeIO((tt-12)/3), fall=easeIO((STOP-tt)/3.5);
+    return VMAX*Math.min(rise,fall);
+  }
+
+  // ---- audio (all synthesized) ----
+  var AC=null, master=null, musicOn=false, musicTimer=null, nextBeat=0, beatIx=0;
+  function audio(){ if(!AC){ AC=new (window.AudioContext||window.webkitAudioContext)();
+      master=AC.createGain(); master.gain.value=.9; master.connect(AC.destination);} 
+    if(AC.state==="suspended")AC.resume(); return AC; }
+  function env(g,t0,a,h,r,peak){ g.gain.setValueAtTime(0,t0); g.gain.linearRampToValueAtTime(peak,t0+a);
+    g.gain.setValueAtTime(peak,t0+a+h); g.gain.linearRampToValueAtTime(0,t0+a+h+r); }
+  function honkSound(){ var c=audio(),t0=c.currentTime,f=c.createBiquadFilter();
+    f.type="lowpass"; f.frequency.value=1400; f.connect(master);
+    [[0,.16],[ .25,.24]].forEach(function(seg){ [466,587].forEach(function(fr){
+      var o=c.createOscillator(),g=c.createGain(); o.type="sawtooth"; o.frequency.value=fr;
+      env(g,t0+seg[0],.02,seg[1],.05,.14); o.connect(g); g.connect(f);
+      o.start(t0+seg[0]); o.stop(t0+seg[0]+seg[1]+.1); }); }); }
+  function whoosh(){ if(!musicOn&&!AC)return; var c=audio(),t0=c.currentTime,
+      len=1.6,buf=c.createBuffer(1,c.sampleRate*len,c.sampleRate),d=buf.getChannelData(0);
+    for(var i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+    var src=c.createBufferSource(),bp=c.createBiquadFilter(),g=c.createGain();
+    src.buffer=buf; bp.type="bandpass"; bp.Q.value=1.4;
+    bp.frequency.setValueAtTime(320,t0); bp.frequency.exponentialRampToValueAtTime(3200,t0+len*.6);
+    bp.frequency.exponentialRampToValueAtTime(500,t0+len);
+    env(g,t0,.15,len-.6,.45,.22); src.connect(bp); bp.connect(g); g.connect(master);
+    src.start(t0); src.stop(t0+len); }
+  var MEL=[523.25,659.25,783.99,659.25,880,783.99,659.25,523.25,587.33,698.46,880,698.46,783.99,659.25,523.25,0];
+  var BASS=[130.81,130.81,87.31,87.31,98,98,130.81,130.81];
+  function schedule(){ var c=AC, SPB=60/112/2; // eighth notes
+    while(nextBeat<c.currentTime+.35){
+      var i=beatIx%16, tB=nextBeat;
+      if(MEL[i]){ var o=c.createOscillator(),g=c.createGain(),f=c.createBiquadFilter();
+        o.type="square"; o.frequency.value=MEL[i]; f.type="lowpass"; f.frequency.value=2400;
+        env(g,tB,.015,SPB*.55,.06,.055); o.connect(f); f.connect(g); g.connect(master);
+        o.start(tB); o.stop(tB+SPB+.1); }
+      if(i%2===0){ var b=c.createOscillator(),bg=c.createGain();
+        b.type="triangle"; b.frequency.value=BASS[(i/2)%8];
+        env(bg,tB,.01,SPB*1.1,.08,.10); b.connect(bg); bg.connect(master);
+        b.start(tB); b.stop(tB+SPB*2); }
+      nextBeat+=SPB; beatIx++; } }
+  function setMusic(on){ musicOn=on; var btn=$("btnMusic");
+    btn.setAttribute("aria-pressed",on?"true":"false"); btn.textContent=on?"♪ Radio: on":"♪ Radio: off";
+    if(on){ audio(); nextBeat=AC.currentTime+.06; beatIx=0;
+      musicTimer=setInterval(schedule,120); }
+    else if(musicTimer){ clearInterval(musicTimer); musicTimer=null; } }
+
+  // ---- fx spawns ----
+  function ns(tag){return document.createElementNS("http://www.w3.org/2000/svg",tag)}
+  function puff(x,y,r,col,cls){ var c=ns("circle"); c.setAttribute("cx",x); c.setAttribute("cy",y);
+    c.setAttribute("r",r); c.setAttribute("fill",col); c.setAttribute("class",cls);
+    fx.appendChild(c); setTimeout(function(){c.remove()},1400); }
+  function burst(x,y){ var cols=["#ffd23e","#ff7a66","#55e7ff","#59f0a8","#e86ea0"];
+    for(var i=0;i<16;i++){ var a=i/16*2*Math.PI, R=70+Math.random()*90,
+      c=ns("circle"); c.setAttribute("cx",x); c.setAttribute("cy",y); c.setAttribute("r",4+Math.random()*4);
+      c.setAttribute("fill",cols[i%5]); c.setAttribute("class","spark");
+      c.style.setProperty("--dx",Math.cos(a)*R+"px"); c.style.setProperty("--dy",Math.sin(a)*R-30+"px");
+      fx.appendChild(c); (function(el){setTimeout(function(){el.remove()},1300)})(c); } }
+  function confetti(x){ var cols=["#ffd23e","#ff7a66","#55e7ff","#59f0a8","#e86ea0","#fff"];
+    for(var i=0;i<26;i++){ var r=ns("rect"); r.setAttribute("x",x-140+Math.random()*280);
+      r.setAttribute("y",90+Math.random()*80); r.setAttribute("width",10); r.setAttribute("height",16);
+      r.setAttribute("fill",cols[i%6]); r.setAttribute("class","confetto");
+      r.style.setProperty("--dx",(Math.random()*160-80)+"px"); r.style.setProperty("--dy",(320+Math.random()*220)+"px");
+      fx.appendChild(r); (function(el){setTimeout(function(){el.remove()},2700)})(r); } }
+  function bubble(el){ el.classList.add("show"); setTimeout(function(){el.classList.remove("show")},900); }
+
+  // ---- car pose ----
+  function setCar(x,y,s,flip,layerFront,bounce){
+    var want=layerFront?frontLayer:behindLayer;
+    if(car.parentNode!==want) want.appendChild(car);
+    car.classList.toggle("flipped",!!flip);
+    car.setAttribute("transform","translate("+x.toFixed(1)+","+(y+(bounce||0)).toFixed(1)+") scale("+(flip?-s:s).toFixed(3)+","+s.toFixed(3)+")");
+  }
+  function spinWheels(){ var rot="rotate("+(wheelDeg%360).toFixed(1)+")";
+    wheelF.setAttribute("transform","translate(122,6) "+rot);
+    wheelR.setAttribute("transform","translate(-112,6) "+rot); }
+
+  var capNow="";
+  function setCap(txt){ if(txt!==capNow){ capNow=txt; caption.textContent=txt; } }
+
+  function render(dt,quiet){
+    // --- world speed & scroll ---
+    vel=speedAt(t); scroll=clamp(scroll+vel*dt,0,END);
+    if(scroll>=END) vel=0;
+    var p=scroll/END;
+    near.setAttribute("transform","translate("+(-scroll)+",0)");
+    mid.setAttribute("transform","translate("+(-scroll*.6)+",0)");
+    far.setAttribute("transform","translate("+(-scroll*.3)+",0)");
+    duskSky.setAttribute("opacity",(p<.45?0:(p-.45)/.55*.88).toFixed(3));
+    sun.setAttribute("transform","translate("+(1330-480*p)+","+(150+310*p*p)+")");
+
+    // --- car by phase ---
+    var mph=0, spinV=vel;
+    if(t<LAPS0){ setCar(CX,CY+RY,1,false,true,0); driver.classList.add("wave"); car.classList.add("idlecar"); }
+    else if(t<LAPS1){ driver.classList.remove("wave"); car.classList.remove("idlecar");
+      var u=easeIO((t-LAPS0)/(LAPS1-LAPS0)), a=Math.PI/2-4*Math.PI*u;
+      var x=CX+RX*Math.cos(a), y=CY+RY*Math.sin(a), sn=Math.sin(a);
+      var s=.62+.38*(sn+1)/2, flip=sn<0;
+      setCar(x,y,s,flip,sn>=-.12,0);
+      spinV=900*Math.sin(Math.PI*clamp((t-LAPS0)/(LAPS1-LAPS0),0,1))+120; mph=24;
+      dustClock+=dt; if(dustClock>.14&&!quiet){ dustClock=0;
+        puff(x-(flip?-60:60)*s, y+40*s, 9+Math.random()*7, "#d9c9a8","dust"); }
+      if(!fired.w1&&t>4.4){fired.w1=true; if(!quiet)bubble(woof);}
+      if(!fired.w2&&t>8.1){fired.w2=true; if(!quiet)bubble(woof);}
+    }
+    else if(t<EXIT1){ var u2=easeIO((t-LAPS1)/(EXIT1-LAPS1));
+      setCar(CX+(CARX-CX)*u2+scroll, (CY+RY)+(ROADY-CY-RY)*u2, 1,false,true,0);
+      mph=10+u2*30; spinV=300+u2*400;
+      if(!quiet&&Math.random()<.25) puff(CARX+scroll-186,ROADY-14,8,"#b9c2cc","dust");
+    }
+    else { var bounce=Math.sin(t*9)*1.5*(vel/VMAX);
+      setCar(CARX+scroll,ROADY,1,false,true,bounce);
+      mph=vel/VMAX*70; if(t<STOP&&mph<10&&scroll<END*.5)mph=10;
+      if(t>=STOP+0.7){ driver.classList.add("wave"); car.classList.add("idlecar"); }
+    }
+    wheelDeg+=spinV*dt/46*57.3; spinWheels();
+    mphShow+=((t<LAPS0?0:mph)-mphShow)*Math.min(1,dt*6);
+    hudMph.textContent=Math.round(mphShow);
+    hudMi.textContent=(p*59).toFixed(1);
+
+    // --- events on the road ---
+    if(!fired.conf&&scroll>13480){fired.conf=true; if(!quiet)confetti(560);}
+    if(!fired.jets&&scroll>16200){fired.jets=true;
+      if(!quiet){jets.classList.add("fly"); whoosh();
+        setTimeout(function(){jets.classList.remove("fly")},5800);} }
+    if(t>41.0&&!fired.ban){fired.ban=true; banner.classList.add("show");}
+    if(t>41.5&&!fired.pel){fired.pel=true; pelican.classList.add("here");}
+    if(!quiet){ if(t>41.4&&!fired.fw1){fired.fw1=true; burst(1150,240);}
+      if(t>42.3&&!fired.fw2){fired.fw2=true; burst(880,180);}
+      if(t>43.2&&!fired.fw3){fired.fw3=true; burst(1330,300);} }
+
+    // --- captions & legs ---
+    if(t<LAPS0) setCap("Mobile, Alabama — home sweet home 🏡");
+    else if(t<LAPS1) setCap("One lap around the house for luck… okay, TWO 🍀");
+    else if(scroll<1500) setCap("Alright alright — I-10 East, here we come!");
+    else if(scroll<4300) setCap("Downtown Mobile off the port bow ⚓");
+    else if(scroll<8800) setCap("Crossing Mobile Bay — hey there, USS Alabama! 🐬");
+    else if(scroll<13480) setCap("Baldwin County: pecans, peaches, boiled p-nuts 🥜");
+    else if(scroll<16200) setCap("WELCOME TO FLORIDA — sunroof stays open ☀️");
+    else if(scroll<END) setCap("Blue Angels flyover!! ✈️✈️✈️✈️");
+    else setCap("Pensacola Beach, baby — toes in the sand 🏖️");
+    hudLeg.textContent = scroll<=0?"Mobile, AL": scroll<4300?"Mobile, AL":
+      scroll<8800?"Mobile Bay": scroll<13480?"Baldwin Co., AL":
+      scroll<END?"Florida!":"Pensacola Beach";
+  }
+
+  function resetFlags(){ for(var k in fired) fired[k]=false;
+    banner.classList.remove("show"); pelican.classList.remove("here");
+    jets.classList.remove("fly"); fx.textContent=""; }
+  function seek(target){ resetFlags(); t=0; scroll=0; vel=0; wheelDeg=0; mphShow=0;
+    var step=1/30; while(t<target){ t+=step; render(step,true); } }
+  function replay(){ seek(0); render(0,true); }
+
+  // ---- main loop ----
+  function frame(now){ if(last==null)last=now; var dt=Math.min((now-last)/1000,.05); last=now;
+    if(!paused){ t+=dt; render(dt,false);
+      if(t>=LOOP_AT){ replay(); } }
+    requestAnimationFrame(frame); }
+
+  function setPaused(pz){ paused=pz; document.body.classList.toggle("paused",pz);
+    var b=$("btnPlay"); b.textContent=pz?"▶ Play":"⏸ Pause";
+    b.setAttribute("aria-pressed",pz?"true":"false"); }
+
+  function honk(){ honkSound(); bubble(beep);
+    carBody.setAttribute("transform","translate(0,3) rotate(-1.4)");
+    setTimeout(function(){carBody.removeAttribute("transform")},260); }
+
+  $("btnPlay").addEventListener("click",function(){setPaused(!paused)});
+  $("btnReplay").addEventListener("click",function(){replay(); setPaused(false)});
+  $("btnHonk").addEventListener("click",honk);
+  car.addEventListener("click",honk);
+  $("btnMusic").addEventListener("click",function(){setMusic(!musicOn)});
+  document.addEventListener("keydown",function(e){
+    if(e.key===" "){e.preventDefault(); setPaused(!paused)}
+    else if(e.key==="h"||e.key==="H")honk();
+    else if(e.key==="m"||e.key==="M")setMusic(!musicOn);
+    else if(e.key==="r"||e.key==="R"){replay(); setPaused(false)} });
+
+  // reduced motion: open on the arrival postcard, let the user opt in to motion
+  if(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+    seek(41.8); banner.classList.add("show"); pelican.classList.add("here"); pelican.style.animation="none";
+    setPaused(true); setCap("Reduced motion is on — press Play if you'd like the full cruise 🏖️");
+  } else { render(0,true); }
+  window.__rt={seek:function(x){seek(x);render(0,true)},pause:function(p){setPaused(p)}};
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
