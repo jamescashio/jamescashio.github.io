@@ -32,7 +32,7 @@ Release name: “The Bridge.”
 
 ### Changed — content security policy
 
-- `script-src` now permits `'unsafe-eval'`: the component runtime evaluates its logic class at load. Every other source stays `'self'`, `connect-src` remains `'none'`, and the page opens no sockets. Third-party libraries moved to `assets/js/vendor/`, exempted from the email-domain rule in the public-safety guard so vendor license banners stay intact.
+- The root logic now ships as a first-party precompiled factory, so production no longer depends on `'unsafe-eval'`. Scripts remain self-hosted, `connect-src` stays `'none'`, and the page opens no sockets. Third-party libraries live under `assets/js/vendor/`, exempted from the email-domain rule in the public-safety guard so vendor license banners stay intact.
 
 ### Verified
 

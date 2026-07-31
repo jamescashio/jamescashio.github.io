@@ -45,7 +45,7 @@ The ten-lane fabric includes Kimi K3, DeepSeek V4 Flash, DeepSeek V4 Pro, Gemini
 - Service roles are public-safe descriptions rather than deployment instructions.
 - Interactive demonstrations do not contact live infrastructure.
 - Public contact information is limited to the cashio.us domain and professional-profile links.
-- The page-level CSP permits `'unsafe-eval'` because the component runtime evaluates its logic class at load. Every other source stays `'self'` and `connect-src` remains `'none'`, so the page opens no sockets.
+- The root logic ships as a first-party precompiled factory, so the page-level CSP does not require `'unsafe-eval'`. Scripts stay self-hosted and `connect-src` remains `'none'`, so the page opens no sockets.
 - The repository safety scan and release-consistency checks protect the public branch before publication.
 
 ---
