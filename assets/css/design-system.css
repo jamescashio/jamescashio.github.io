@@ -8,21 +8,21 @@
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url("../fonts/orbitron-600.woff2") format('woff2');
+  src: url("../../fonts/orbitron-latin-600-normal.woff2") format('woff2');
 }
 @font-face {
   font-family: 'Orbitron';
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url("../fonts/orbitron-700.woff2") format('woff2');
+  src: url("../../fonts/orbitron-latin-700-normal.woff2") format('woff2');
 }
 @font-face {
   font-family: 'Orbitron';
   font-style: normal;
   font-weight: 900;
   font-display: swap;
-  src: url("../fonts/orbitron-900.woff2") format('woff2');
+  src: url("../../fonts/orbitron-latin-900-normal.woff2") format('woff2');
 }
 
 /* Exo 2 — body / UI text */
@@ -31,21 +31,21 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url("../fonts/exo2-400.woff2") format('woff2');
+  src: url("../../fonts/exo-2-latin-400-normal.woff2") format('woff2');
 }
 @font-face {
   font-family: 'Exo 2';
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url("../fonts/exo2-500.woff2") format('woff2');
+  src: url("../../fonts/exo-2-latin-500-normal.woff2") format('woff2');
 }
 @font-face {
   font-family: 'Exo 2';
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url("../fonts/exo2-700.woff2") format('woff2');
+  src: url("../../fonts/exo-2-latin-700-normal.woff2") format('woff2');
 }
 
 /* JetBrains Mono — labels, telemetry, terminal */
@@ -54,14 +54,14 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url("../fonts/jetbrains-mono-400.woff2") format('woff2');
+  src: url("../../fonts/jetbrains-mono-latin-400-normal.woff2") format('woff2');
 }
 @font-face {
   font-family: 'JetBrains Mono';
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url("../fonts/jetbrains-mono-600.woff2") format('woff2');
+  src: url("../../fonts/jetbrains-mono-latin-600-normal.woff2") format('woff2');
 }
 
 /* ZEUSAPOLLO — Color system
