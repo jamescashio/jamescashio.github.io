@@ -1,0 +1,146 @@
+/* ===========================================================================
+   CASHIO.US — polish pass
+   Loaded last. Every rule here fixes a defect found in the pre-publish audit;
+   nothing changes the visual language of the deck.
+   =========================================================================== */
+
+/* --- 1. Header height ------------------------------------------------------
+   The sticky header wrapped to four rows on phones (193px = 23% of a 844px
+   viewport, permanently on screen). Collapse it to two: brand + controls on
+   one scrollable row, deck nav on the second. */
+
+:root { --za-hdr-h: 78px; }
+
+.za-hdr-nav a { white-space: nowrap; }
+
+@media (max-width: 899px) {
+  :root { --za-hdr-h: 84px; }
+  .za-hdr-ctl {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .za-hdr-ctl::-webkit-scrollbar { display: none; }
+  .za-hdr-nav { padding-top: 2px !important; }
+}
+
+@media (max-width: 660px) {
+  :root { --za-hdr-h: 88px; }
+  /* Share row one with the brand and scroll sideways instead of claiming a
+     row of its own — this is what took the header from four rows to two. */
+  .za-hdr-ctl {
+    width: auto !important;
+    flex: 1 1 0 !important;
+    min-width: 0;
+    margin-left: 0 !important;
+    /* flex-start, not flex-end: with overflow-x:auto a flex-end row renders
+       its overflow off the LEFT edge, where it is unreachable. */
+    justify-content: flex-start !important;
+    padding-left: 4px !important;
+    padding-right: 8px !important;
+  }
+  .za-hdr-row > div:first-child { position: relative; z-index: 1; background: rgba(6,6,12,.92); }
+  .za-hdr-ctl button { flex: 0 0 auto !important; }
+  /* Primary CTA first in the scroll strip so it is never the one off-screen. */
+  .za-hdr-ctl button:last-of-type { order: -1; }
+  .za-hdr-row > div:first-child a { padding: 0 10px 0 10px !important; font-size: 13px !important; }
+}
+
+@media (max-width: 420px) {
+  .za-hdr-ctl button {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    font-size: 9px !important;
+    letter-spacing: .06em !important;
+  }
+}
+
+/* --- 2. Anchor landing -----------------------------------------------------
+   scroll-margin-top was a flat 78px, so on phones (84-92px header) and tablets
+   every deck link parked its heading underneath the header. Track the real
+   header height per breakpoint. */
+
+section[id] { scroll-margin-top: calc(var(--za-hdr-h) + 10px); }
+
+/* --- 3. Bit deck-guide label ----------------------------------------------
+   The label is 128px wide, centred on a button pinned near the right edge, so
+   it overflowed the viewport by ~6px and clipped. Pull it inboard and let it
+   wrap instead of running off. */
+
+.za-bit { max-width: calc(100vw - 24px); }
+.za-bit [data-za-bitlabel] {
+  left: auto !important;
+  right: 0 !important;
+  margin-left: 0 !important;
+  text-align: right !important;
+}
+
+/* --- 3b. Two-column decks on narrow screens --------------------------------
+   Routing, Operator and Console laid out as `minmax(0,1.5fr) minmax(300px,1fr)`.
+   Below ~700px the 300px track eats the row and the prose column collapses to
+   roughly 55px, wrapping one word — or one letter — per line. Stack them. */
+
+@media (max-width: 900px) {
+  .za-split { grid-template-columns: minmax(0, 1fr) !important; }
+}
+
+@media (max-width: 560px) {
+  .za-lanehead { grid-template-columns: 96px minmax(0, 1fr) 72px !important; gap: 8px !important; }
+}
+
+/* --- 4. Focus visibility ---------------------------------------------------
+   Two conflicting :focus-visible rules shipped; the later one wins but leaves
+   no contrast against the orange CTA. Give the ring a dark halo so it reads on
+   every surface. */
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 5px rgba(0, 0, 0, .65);
+  border-radius: 6px;
+}
+
+/* --- 5. Reduced motion -----------------------------------------------------
+   The media block covered named keyframes only. Anything still mid-transition
+   when the preference is set kept easing. Stop all of it, and hold the
+   scroll-reveal groups visible. */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+  [data-anim] { opacity: 1 !important; transform: none !important; }
+}
+
+/* --- 6. Bottom HUD clearance ----------------------------------------------
+   The fixed HUD bar sat on top of the last CTA in the hero and the final line
+   of the footer on short viewports. */
+
+@media (max-width: 899px) {
+  #conn.za-deck { padding-bottom: 74px !important; }
+}
+
+/* --- 7. Touch targets ------------------------------------------------------
+   Several nav and chip controls were under the 24px minimum on phones. */
+
+@media (pointer: coarse) {
+  .za-hdr-nav a,
+  .za-hdr-ctl button { min-height: 32px; display: inline-flex; align-items: center; }
+}
+
+/* --- 8. Print --------------------------------------------------------------
+   Nobody prints a starship deck, but a black page that eats a cartridge is a
+   bad look if someone does. */
+
+@media print {
+  body { background: #fff !important; color: #111 !important; }
+  header, .za-bit, .za-rail, .za-hud, canvas { display: none !important; }
+  [data-anim] { opacity: 1 !important; transform: none !important; }
+}
