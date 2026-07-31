@@ -15,7 +15,7 @@
       ['2.53', 'OPERATING COST', '$0.26 / DAY', 'var(--green)'],
       ['2.84', 'ACCESS GRANTED', 'WELCOME TO THE GRID', 'var(--accent)']
     ];
-    
+
     const ZEUS = [
       ['hermes', 105, 'Autonomous AI orchestration', 64, 'Routes every request through one gateway, reconciles the fleet, and files the dated public-safe export this page reads from.'],
       ['mcp-gateway', 106, 'Public-safe tool sharing', 66, 'Agent tooling with explicit scope boundaries and human approval gates. Highest disk on Zeus and watched for it.'],
@@ -31,7 +31,7 @@
       ['backup-verifier', 119, 'Restore rehearsal', 11, 'Proves the backups actually restore. A backup nobody has restored is a rumour, not a control.'],
       ['control-plane', 200, 'Fleet control + reconciliation', 30, 'Where declared state meets running state, and the difference gets reported rather than hidden.']
     ];
-    
+
     const APOLLO = [
       ['technitium-dns', 101, 'Sovereign DNS + tracker blocking', 31, 'Primary resolver for the house. Every lookup stays on owned iron; 220,780 blocklist entries applied at the resolver.'],
       ['pbs', 300, 'Proxmox Backup Server', 62, 'Deduplicated snapshots for the whole fleet. 18 of 19 guests backed up inside 24 hours at the last check.'],
@@ -40,7 +40,7 @@
       ['plex-backup', 108, 'Media state protection', 14, 'Separate protection path for media state, isolated from the fleet backup chain.'],
       ['rclone-onedrive', 117, 'Offsite replication', 8, 'The offsite leg of the 3-2-1 rule. Local snapshots alone are not a backup strategy.']
     ];
-    
+
     const LANES = [
       ['00 // FREE CLASSIFY', 'Kimi K3', 'Free-tier classification and drafts through ZenMux. The entry lane clears routine work at zero marginal cost.', 4, 'var(--green)', 'green'],
       ['01 // WORKHORSE', 'DeepSeek V4 Flash', 'Monitoring, health checks and scheduled briefings — the lane that carries most of the daily volume.', 12, 'var(--green)', 'green'],
@@ -53,7 +53,7 @@
       ['LOCAL // FALLBACK', 'Gemma 4 26B', 'Local classification and draft generation on owned hardware. Privacy-bound work never leaves the house.', 2, 'var(--green)', 'green'],
       ['FABRIC // GATEWAYS', 'Atlas · OpenRouter · ZenMux', 'Routing, failover and free-tier access. One gateway, no bridge tax.', 8, 'var(--amber)', 'amber']
     ];
-    
+
     const IRON = [
       ['HARDWARE', 'PLATE 01 // HARDWARE', 'Two core hosts bought, racked and maintained personally — a Ryzen 7 5800H compute node and an i7-7700T storage node — with Atlas carrying standalone local inference and Athena holding the physical edge and cluster quorum. No rented control plane, no vendor cage.', 'var(--cyan)', 168],
       ['NETWORK', 'PLATE 02 // NETWORK', 'Sovereign DNS on Technitium, primary and clustered secondary, with tracker blocking at the resolver. Segmentation and fail-closed service behaviour are the default, not a hardening pass added later.', 'var(--green)', 186],
@@ -62,7 +62,7 @@
       ['POLICY', 'PLATE 05 // POLICY', 'Quality, privacy, task fit and severity qualify a route before price is consulted. Premium capability stays available; it just has to be earned by consequence.', 'var(--purple)', 168],
       ['PROOF', 'PLATE 06 // PROOF', 'Dated, scoped, reproducible receipts. Baseline, intervention, result and verification stay separate — and the caveat is published next to the number, every time.', 'var(--red)', 150]
     ];
-    
+
     const BUILDS = [
       ['01', 'GATEWAY', 'Hermes Orchestrator', 'One gateway in front of every model lane: policy enforcement, budget ceilings, health reconciliation, failover in both directions, and a dated public-safe export of its own state.', 'v0.19', 'Quicksilver release', 'accent', '◈', 'var(--accent)'],
       ['02', 'SECURITY', 'Exposure Assessment', 'Cloud-exposure scanning, multi-source OSINT and domain intelligence combined into one prioritized remediation picture with a full audit trail.', 'MULTI', 'Source correlation', 'red', '🛡', 'var(--red)'],
@@ -72,13 +72,13 @@
       ['06', 'TOOLING', 'Graphify', 'A navigable code graph with community-driven documentation, turning a sprawling codebase into a queryable map of how everything actually connects.', '353,437', 'Nodes · 560,042 edges', 'green', '▣', 'var(--green)'],
       ['07', 'AUTONOMY', 'Escalation Cascade', 'Four-tier autonomous exception detection: free local checks escalate through DeepSeek and Sol 5.6 Luna to frontier adjudication only when severity earns it.', '15 MIN', 'Detection interval', 'cyan', '◉', 'var(--cyan)']
     ];
-    
+
     const THEMES = {
       lcars: ['#ff9500', '#ff6a00', 'rgba(255,149,0,.35)'],
       tron: ['#00d0ff', '#0072ff', 'rgba(0,208,255,.38)'],
       ds9: ['#ffc14d', '#ff8a00', 'rgba(255,193,77,.35)']
     };
-    
+
     const DECKS = [
       ['conn', 'DECK 00 // VIEWSCREEN ENGAGED', 'YES // WELCOME TO THE GRID'],
       ['grid', 'DECK 01 // THE GRID ENGAGED', 'YES // 19 OF 19 RUNNING'],
@@ -89,7 +89,7 @@
       ['console', 'DECK 06 // CONSOLE ENGAGED', 'YES // TRY: MAKE IT SO'],
       ['hail', 'DECK 07 // CHANNEL OPEN', 'YES // HAILING FREQUENCIES OPEN']
     ];
-    
+
     const BIT_QUIPS = [
       'YES // I AM BIT. I KNOW TWO WORDS.',
       'YES // 18.3% OF DNS QUERIES BLOCKED AT SOURCE.',
@@ -101,14 +101,14 @@
       'NO // ZERO SECURITY UPDATES OUTSTANDING.',
       'YES // END OF LINE.'
     ];
-    
+
     /* mirrors bitPalette() + .bit-companion[data-answer] in the source deck */
     const BIT_COLOR = {
       idle: ['rgb(200,252,255)', 'rgba(0,249,255,0.46)', '#00f9ff'],
       yes: ['rgb(255,248,176)', 'rgba(255,204,0,0.5)', '#ffcc00'],
       no: ['rgb(255,154,170)', 'rgba(255,0,51,0.52)', '#ff0033']
     };
-    
+
     function makeStars(n, alpha) {
       const out = [];
       for (let i = 0; i < n; i++) {
@@ -116,7 +116,7 @@
       }
       return out.join(', ');
     }
-    
+
     class Component extends DCLogic {
       state = {
         bootStep: 0, booted: false, hidBoot: false,
@@ -131,7 +131,7 @@
           { k: 'hint', t: 'Type  help  for available commands.' }
         ]
       };
-    
+
       termWrap = React.createRef();
       stageRef = React.createRef();
       ironRef = React.createRef();
@@ -156,7 +156,7 @@
       starsB = makeStars(46, .95);
       rot = 0; vel = .11; dragging = false; lastX = 0;
       px = 0; py = 0; pxs = 0; pys = 0; pxw = 9; pyw = 9; nodeEls = null;
-    
+
       componentDidMount() {
         this.applyTheme();
         try {
@@ -192,13 +192,13 @@
           this.setState({ bootStep: n });
         }, 205);
       }
-    
+
       componentDidUpdate(prev) {
         if (prev.signature !== this.props.signature || prev.alertMode !== this.props.alertMode) this.applyTheme();
         if (prev.alertMode !== this.props.alertMode) this.setState({ alert: !!this.props.alertMode });
         if (prev.state && prev.state.alert !== this.state.alert) this.applyTheme();
       }
-    
+
       componentWillUnmount() {
         clearInterval(this.clockT); clearInterval(this.bootT); clearTimeout(this.rackT);
         clearTimeout(this.b1); clearTimeout(this.b2); clearTimeout(this.w1); clearTimeout(this.bootFail);
@@ -220,14 +220,14 @@
         clearInterval(this.pingT); clearTimeout(this.bitT2);
         if (window.ZABit) window.ZABit.stop();
       }
-    
+
       mountBit(tries) {
         const n = tries || 0;
         const ok = window.ZABit && this.bitCanvas.current && window.ZABit.mount(this.bitCanvas.current);
         if (ok) { window.ZABit.setStill(this.stillWanted()); return; }
         if (n < 40) this.bitT2 = setTimeout(() => this.mountBit(n + 1), 120);
       }
-    
+
       initIronSequence(tries) {
         const n = tries || 0;
         const panel = this.ironRef.current || document.querySelector('[data-anim="ironpanel"]');
@@ -260,7 +260,7 @@
         window.addEventListener('scroll', this.onIronScroll, { passive: true });
         this.onIronScroll();
       }
-    
+
       initMotion(tries) {
         const n = tries || 0;
         const G = window.gsap, ST = window.ScrollTrigger;
@@ -273,7 +273,7 @@
         G.registerPlugin(ST);
         if (window.SplitText) G.registerPlugin(window.SplitText);
         G.ticker.lagSmoothing(0);
-    
+
         if (!this.stillWanted() && window.Lenis && this.props.smoothScroll !== false) {
           this.lenis = new window.Lenis({ autoRaf: false, lerp: 0.1, wheelMultiplier: 0.9 });
           this.lenis.on('scroll', ST.update);
@@ -290,10 +290,10 @@
         else settle(-1, 0);
         if (this.state.hidBoot) this.heroIn();
       }
-    
+
       buildMotion(G, ST) {
         if (this.stillWanted()) { this.showAll(G); return; }
-    
+
         /* Reveals run off an IntersectionObserver rather than ScrollTrigger-attached from() tweens:
            in this runtime those triggers were being dropped after creation, which left the from-state
            applied and content invisible. An observer + to() tweens cannot fail that way — the resting
@@ -321,9 +321,9 @@
         if (ribbon && ribbon.children.length) {
           groups.push({ el: ribbon, items: [].slice.call(ribbon.children), each: 0.075, y: 30, x: 0, from: 'center', onPlay: () => this.countUp() });
         }
-    
+
         groups.forEach((g) => { G.set(g.items, { opacity: 0, y: g.y || 0, x: g.x || 0 }); g.el.__anim = g; });
-    
+
         this.revealIO = new IntersectionObserver((ents) => {
           ents.forEach((en) => {
             if (!en.isIntersecting) return;
@@ -337,7 +337,7 @@
           });
         }, { rootMargin: '0px 0px -14% 0px', threshold: 0.01 });
         groups.forEach((g) => this.revealIO.observe(g.el));
-    
+
         /* Guard: anything on screen but still invisible is a bug — reveal it. Off-screen groups keep
            their pending reveal, so the effect survives while invisible content cannot. */
         clearInterval(this.guard);
@@ -352,7 +352,7 @@
           });
         }, 1400);
       }
-    
+
       showAll(G) {
         document.querySelectorAll('[data-anim]').forEach((el) => {
           const list = [el].concat([].slice.call(el.children), [].slice.call(el.querySelectorAll('.za-l')));
@@ -362,7 +362,7 @@
           });
         });
       }
-    
+
       heroIn() {
         const G = window.gsap;
         if (!G || this.heroDone || this.stillWanted()) return;
@@ -380,16 +380,16 @@
           tl.from(sub, { opacity: 0, duration: 0.8 }, 0.34);
         }
       }
-    
+
       measureStage = () => {
         const el = this.stageRef.current;
         if (!el) { this.msT = setTimeout(this.measureStage, 150); return; }
         const w = Math.round(el.clientWidth);
         if (w && w !== this.state.stageW) this.setState({ stageW: w });
       };
-    
+
       sfx(n) { if (window.ZAAudio) window.ZAAudio.play(n); }
-    
+
       toggleSound = () => {
         const v = !this.state.snd;
         this.setState({ snd: v });
@@ -397,12 +397,12 @@
         try { localStorage.setItem('za_snd', v ? '1' : '0'); } catch (e) {}
         if (v) { this.sfx('granted'); this.bitSay('YES // AUDIO ONLINE', 'yes', 2600); }
       };
-    
+
       stillWanted() {
         if (this.props.reduceMotion) return true;
         try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; }
       }
-    
+
       startOrbit() {
         const rs = document.documentElement.style;
         const step = () => {
@@ -445,28 +445,28 @@
         };
         this.raf = requestAnimationFrame(step);
       }
-    
+
       dragStart = (e) => {
         if (e.target && e.target.closest && e.target.closest('button')) return;
         this.dragging = true; this.lastX = e.clientX;
         const el = this.stageRef.current;
         if (el) { el.style.cursor = 'grabbing'; try { el.setPointerCapture(e.pointerId); } catch (err) {} }
       };
-    
+
       dragMove = (e) => {
         if (!this.dragging) return;
         const dx = e.clientX - this.lastX;
         this.lastX = e.clientX;
         this.rot += dx * .42; this.vel = dx * .42;
       };
-    
+
       dragEnd = (e) => {
         if (!this.dragging) return;
         this.dragging = false;
         const el = this.stageRef.current;
         if (el) { el.style.cursor = 'grab'; try { el.releasePointerCapture(e.pointerId); } catch (err) {} }
       };
-    
+
       observeDecks() {
         if (!('IntersectionObserver' in window)) return;
         this.io = new IntersectionObserver((ents) => {
@@ -492,7 +492,7 @@
         }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
         DECKS.forEach(d => { const el = document.getElementById(d[0]); if (el) this.io.observe(el); });
       }
-    
+
       bitSay(msg, mood, ms) {
         clearTimeout(this.bitT); clearTimeout(this.bitM);
         this.setState({ bitMsg: msg, bitMood: mood || 'yes' });
@@ -500,7 +500,7 @@
         this.bitM = setTimeout(() => { this.setState({ bitMood: 'idle' }); if (window.ZABit) window.ZABit.setState('idle'); }, 1500);
         this.bitT = setTimeout(() => this.setState({ bitMsg: '' }), ms || 3200);
       }
-    
+
       bitPoke = () => {
         const q = BIT_QUIPS[this.state.quip % BIT_QUIPS.length];
         const no = q.indexOf('NO') === 0;
@@ -508,23 +508,23 @@
         this.sfx(no ? 'no' : 'yes');
         this.bitSay(q, no ? 'no' : 'yes', 4200);
       };
-    
+
       applyTheme() {
         const t = THEMES[this.props.signature] || THEMES.lcars;
         const r = document.documentElement.style;
         if (this.state.alert) { r.setProperty('--accent', '#ff0033'); r.setProperty('--accent-2', '#ff5a1f'); r.setProperty('--accent-glow', 'rgba(255,0,51,.45)'); }
         else { r.setProperty('--accent', t[0]); r.setProperty('--accent-2', t[1]); r.setProperty('--accent-glow', t[2]); }
       }
-    
+
       finishBoot() {
         clearInterval(this.bootT); clearTimeout(this.bootFail);
         this.sfx('granted');
         this.b1 = setTimeout(() => this.setState({ booted: true }), 560);
         this.b2 = setTimeout(() => { this.setState({ hidBoot: true }); this.bitSay('YES // WELCOME TO THE GRID', 'yes', 3600); this.countUp(); this.heroIn(); }, 1500);
       }
-    
+
       skip = () => { clearInterval(this.bootT); clearTimeout(this.bootFail); this.sfx('blip'); this.setState({ bootStep: BOOT.length, booted: true }); this.b2 = setTimeout(() => { this.setState({ hidBoot: true }); this.countUp(); this.heroIn(); }, 700); };
-    
+
       setClock() {
         const d = new Date();
         const p = (n) => String(n).padStart(2, '0');
@@ -535,7 +535,7 @@
           sd: d.getUTCFullYear() + '.' + String(day).padStart(3, '0')
         });
       }
-    
+
       scrollTo(id) {
         const el = document.getElementById(id);
         if (!el) return;
@@ -543,10 +543,10 @@
         if (this.lenis) this.lenis.scrollTo(y, { duration: 1.15 });
         else window.scrollTo({ top: y, behavior: 'smooth' });
       }
-    
+
       goConsole = () => { this.scrollTo('console'); setTimeout(() => { const i = document.getElementById('za-cmd'); if (i) i.focus(); }, 520); };
       goGrid = () => { this.sfx('impact'); this.scrollTo('grid'); };
-    
+
       toggleAlert = () => {
         this.setState(s => ({ alert: !s.alert }), () => {
           this.applyTheme();
@@ -556,9 +556,9 @@
           this.push(a ? [['err', '⚠ RED ALERT — all decks. This is a drill.']] : [['ok', '✔ STAND DOWN — condition green restored.']]);
         });
       };
-    
+
       doWarp = () => { this.sfx('warp'); this.sfx('impact'); this.setState({ warp: true }); clearTimeout(this.w1); this.w1 = setTimeout(() => this.setState({ warp: false }), 950); };
-    
+
       rackSet = () => {
         clearTimeout(this.rackT);
         this.ironRuns = (this.ironRuns || 0) + 1;
@@ -588,7 +588,7 @@
         };
         this.rackT = setTimeout(lift, 120);
       };
-    
+
       scrollTerm = () => {
         const w = this.termWrap.current;
         if (!w) return;
@@ -597,12 +597,12 @@
           if (getComputedStyle(all[i]).overflowY === 'auto') { all[i].scrollTop = all[i].scrollHeight; break; }
         }
       };
-    
+
       push(lines) {
         this.printQ = (this.printQ || []).concat(lines);
         this.drain();
       }
-    
+
       drain() {
         if (this.printing) return;
         this.printing = true;
@@ -616,9 +616,9 @@
         };
         tick();
       }
-    
+
       hoverSfx = () => this.sfx('hover');
-    
+
       toggleFx = () => {
         const v = !this.state.fx;
         this.setState({ fx: v });
@@ -626,21 +626,21 @@
         this.sfx(v ? 'yes' : 'blip');
         this.bitSay(v ? 'YES // EFFECTS ONLINE' : 'NO // EFFECTS DAMPENED', v ? 'yes' : 'no', 2600);
       };
-    
+
       engage = () => {
         this.sfx('impact');
         this.doWarp();
         this.bitSay('YES // MISSION ENGAGED', 'yes', 3200);
         setTimeout(() => this.scrollTo('grid'), 320);
       };
-    
+
       hail = () => {
         const open = !this.state.compareOpen;
         this.sfx(open ? 'granted' : 'blip');
         this.setState({ compareOpen: open, copied: false });
         this.bitSay(open ? 'YES // DIRECT CHANNEL READY' : 'YES // CHANNEL STANDING BY', 'yes', 3000);
       };
-    
+
       copyEmail = () => {
         const addr = 'doug@cashio.us';
         let settled = false;
@@ -672,7 +672,7 @@
           else fallback();
         } catch (e) { fallback(); }
       };
-    
+
       countUp = () => {
         if (this.stillWanted()) return;
         const box = this.ribbonRef.current; if (!box) return;
@@ -699,7 +699,7 @@
         cancelAnimationFrame(this.cRaf);
         this.cRaf = requestAnimationFrame(step);
       };
-    
+
       run = (raw) => {
         const cmd = String(raw || '').trim().toLowerCase().replace(/^cashio\s+/, '');
         if (!cmd) return;
@@ -793,13 +793,13 @@
         if (cmd === 'make it so') this.bitSay('YES // AYE, SIR. ENGAGE.', 'yes', 3600);
         this.push(out);
       };
-    
+
       onKey = (e) => { if (e.key === 'Enter') { const v = e.target.value; e.target.value = ''; this.sfx('key'); this.run(v); } };
-    
+
       renderVals() {
         const st = this.state;
         const lineColor = { in: 'var(--text)', ok: 'var(--green)', dim: 'var(--text-dim)', sys: 'var(--cyan)', err: 'var(--red)', hint: 'var(--amber)' };
-    
+
         const rows = [];
         ZEUS.forEach((n, i) => rows.push({ n, host: 'ZEUS', ring: 0, i }));
         APOLLO.forEach((n, i) => rows.push({ n, host: 'APOLLO', ring: 1, i }));
@@ -813,7 +813,7 @@
         while (outerR > 96 && (outerR + halfChip) * (P / (P - outerR)) > halfStage) outerR -= 4;
         outerR = Math.max(96, outerR);
         const innerR = Math.max(72, outerR * 0.71);
-    
+
         const nodes = rows.map((r, idx) => {
           const ring = r.ring === 0 ? { r: outerR, y: -60, count: ZEUS.length, off: 0 } : { r: innerR, y: 100, count: APOLLO.length, off: 22 };
           const a = ring.off + (360 / ring.count) * r.i;
@@ -841,7 +841,7 @@
             }
           };
         });
-    
+
         const an = rows[st.node] || rows[0];
         const activeNode = {
           name: an.n[0], role: an.n[2], note: an.n[4],
@@ -851,7 +851,7 @@
           diskColor: an.n[3] < 30 ? 'green' : an.n[3] < 50 ? 'cyan' : an.n[3] < 66 ? 'amber' : 'red',
           tagColor: 'green'
         };
-    
+
         const lanes = LANES.map((l, i) => {
           const sel = i === st.lane;
           return {
@@ -870,7 +870,7 @@
         });
         const al = LANES[st.lane];
         const activeLane = { model: al[1], tier: al[0], role: al[2], tagColor: al[5] };
-    
+
         const iron = IRON.map((p, i) => {
           const on = st.ironOn.indexOf(i) >= 0;
           const sel = i === st.ironPick;
@@ -907,9 +907,9 @@
           };
         });
         const ip = IRON[st.ironPick] || IRON[0];
-    
+
         const bc = BIT_COLOR[st.bitMood] || BIT_COLOR.idle;
-    
+
         return {
           rm: this.props.reduceMotion ? '1' : '0',
           fxAttr: st.fx ? 'on' : 'off',
