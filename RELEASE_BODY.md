@@ -4,12 +4,12 @@
 
 **Public status window:** 07-30-2026 through 08-29-2026, or until the next architecture change
 
-v32 rebuilds the portfolio as a starship bridge. Eight decks replace the eleven-chapter scroll, the Iron becomes a scroll-driven signature moment rather than a hover state, and the whole page ships as a real static site instead of one half-megabyte file — with container figures re-verified live over cluster SSH on release day.
+v32 rebuilds the portfolio as a starship bridge. Eight decks replace the eleven-chapter scroll, the Iron becomes an automatic deck-entry signature moment rather than a hover state, and the whole page ships as a real static site instead of one half-megabyte file — with container figures re-verified live over cluster SSH on release day.
 
 ### Experience
 
 - Eight decks: 00 Viewscreen, 01 The Grid, 02 Routing, 03 The Iron, 04 Builds, 05 Operator, 06 Console, 07 Hail.
-- The Iron is the signature moment: your scroll racks the six plates, and completing the set is the payoff.
+- The Iron is the signature moment: entering its deck racks all six plates automatically, and the completed set remains directly inspectable and replayable.
 - The Grid is a draggable fleet lattice; Routing is a selectable ten-lane charter; the Console is a local read-only narrative interface that opens no sockets and holds no credentials.
 - Bit is a live canvas companion rendering a stellated icosahedron; the LCARS sound set is synthesized in WebAudio, so the front page loads no audio files at all.
 - Motion is GSAP 3.15 with ScrollTrigger and SplitText over Lenis smooth scroll. Reveals run off an IntersectionObserver with a visibility guard, so a dropped trigger cannot leave content invisible.
@@ -27,6 +27,7 @@ v32 rebuilds the portfolio as a starship bridge. Eight decks replace the eleven-
 | Backup chain | 18 of 19 inside 24 hours at verification time |
 | Patch posture | 0 security updates due at verification time |
 | Athena | Owner-confirmed active physical Home Assistant edge node and cluster quorum device; outside container count |
+| Atlas | Standalone local Ollama inference host; outside Proxmox quorum and container count |
 | Configured model routes | 10 |
 | Automation jobs | 71, last reported |
 | Automation health | 71 of 71 at last Hermes report (07-22-2026); zero errors |

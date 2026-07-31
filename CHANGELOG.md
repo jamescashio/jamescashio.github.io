@@ -6,11 +6,18 @@ All notable public-facing changes to the ZeusApollo portfolio are recorded here.
 
 Release name: “The Bridge.”
 
+### Refined — owner-approved launch pass
+
+- Compare Notes now opens a visible owner-direct contact panel with independent copy-address and pre-addressed-email actions.
+- Atlas is documented as the standalone local Ollama inference host while the Proxmox totals remain 19 containers and quorum 3/3.
+- The footer operations stream now uses two intrinsic-width copies, eliminating compressed ticker text and separating it from the fixed command HUD.
+- All Credentials links now use the owner-supplied James Cashio badge collection URL.
+
 ### Changed — the deck rebuild
 
 - The site is now an eight-deck bridge: 00 Viewscreen, 01 The Grid, 02 Routing, 03 The Iron, 04 Builds, 05 Operator, 06 Console, 07 Hail. The eleven-chapter scroll narrative is retired.
 - Motion moved to GSAP 3.15 with ScrollTrigger and SplitText over Lenis smooth scroll. Scroll reveals run off an IntersectionObserver with a visibility guard, so a dropped trigger can never leave content stuck invisible.
-- The Iron is now the signature moment: scrolling the deck racks the six plates, and the set completing is the payoff rather than a hover state.
+- The Iron is now the signature moment: entering the deck racks all six plates automatically, and the completed set remains directly inspectable and replayable.
 - Bit became a live canvas companion with a stellated-icosahedron renderer; the LCARS sound set is fully synthesized in WebAudio, so the six `.wav` files are no longer loaded by the front page.
 - The page ships as `index.html` plus `assets/{css,js,fonts,img}` instead of one 492KB file. Total transfer is about 299KB gzipped. Nothing is fetched from a CDN at runtime.
 

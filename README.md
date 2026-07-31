@@ -11,6 +11,7 @@ The public site shows sanitized proof and architectural roles while withholding 
 | **Release** | v32 — “The Bridge” |
 | **Status export** | Verified 07-30-2026; expires 08-29-2026 |
 | **Hosts** | 2 core homelab hosts, plus Athena at the edge |
+| **Local inference host** | Atlas, standalone from the Proxmox quorum and 19-container total |
 | **Documented roles** | 19 public-safe service roles |
 | **Owner-reported healthy** | 19 services |
 | **Maintenance** | 0 containers stopped at verification time |
@@ -24,7 +25,7 @@ The public site shows sanitized proof and architectural roles while withholding 
 | **Deployment** | GitHub Pages from `main` |
 | **Production site** | `https://cashio.us` |
 
-The v32 container figures come from an owner-run live verification over cluster SSH on 07-30-2026; automation and cost figures are Hermes-generated, public-safe, and sampled—not streaming telemetry. The export remains valid for 30 days or until the next architecture change. Athena is separately owner-confirmed active as a physical Home Assistant edge node and cluster quorum device, and is not included in the 19-container count. The site never converts a current page-view date into a claim of live telemetry.
+The v32 container figures come from an owner-run live verification over cluster SSH on 07-30-2026; automation and cost figures are Hermes-generated, public-safe, and sampled—not streaming telemetry. The export remains valid for 30 days or until the next architecture change. Athena is separately owner-confirmed active as a physical Home Assistant edge node and cluster quorum device, and is not included in the 19-container count. Atlas is separately documented as a standalone local-inference host and is not included in the Proxmox quorum or container total. The site never converts a current page-view date into a claim of live telemetry.
 
 ## Model routing fabric
 
@@ -59,7 +60,7 @@ These are configured lanes, not live-traffic claims or a universal model ranking
 | `status.json` | Coarse, dated public status contract |
 | `README.md` | Current public architecture and release summary |
 | `CHANGELOG.md` | Public-facing release history |
-| `RELEASE_BODY.md` | Current v31 release notes |
+| `RELEASE_BODY.md` | Current v32 release notes |
 | `SECURITY.md` | Vulnerability reporting and repository boundaries |
 | `PRIVACY.md` | Public privacy notice |
 | `scripts/public_repo_guard.py` | Automated public-repository safety scanner |

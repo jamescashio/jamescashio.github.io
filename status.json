@@ -6,7 +6,7 @@
   "expiration_policy": "Valid for 30 days or until the next architecture change, whichever comes first.",
   "status_scope": "Owner-run live verification over cluster SSH plus the Hermes public-safe portfolio snapshot; not streaming telemetry",
   "hosts": 2,
-  "host_scope": "Two core homelab hosts; Athena is a separately confirmed physical edge node and cluster quorum device",
+  "host_scope": "Two core homelab hosts; Athena is the physical edge/quorum device; Atlas is a standalone local-inference host outside the Proxmox quorum and container total",
   "documented_roles": 19,
   "healthy_services": 19,
   "maintenance_services": 0,
@@ -25,7 +25,8 @@
     "backups": "18 of 19 containers backed up inside 24 hours at verification time",
     "patching": "0 security updates due across the fleet at verification time",
     "automation": "71 of 71 scheduled jobs healthy at last Hermes report (07-22-2026)",
-    "athena": "Owner-confirmed active physical Home Assistant edge node and cluster quorum device; outside container count"
+    "athena": "Owner-confirmed active physical Home Assistant edge node and cluster quorum device; outside container count",
+    "atlas": "Standalone local Ollama inference host; outside Proxmox quorum and the 19-container count"
   },
   "routes": {
     "tier_0": "Kimi K3",
