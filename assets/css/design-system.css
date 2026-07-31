@@ -1,0 +1,314 @@
+/* ZEUSAPOLLO Design System — global entry point.
+   Consumers link this one file. Import order matters: tokens before base. */
+/* ZEUSAPOLLO — Webfonts (self-hosted, from the source repo) */
+
+/* Orbitron — display / headings / numerals */
+@font-face {
+  font-family: 'Orbitron';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../../fonts/orbitron-latin-600-normal.woff2") format('woff2');
+}
+@font-face {
+  font-family: 'Orbitron';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../../fonts/orbitron-latin-700-normal.woff2") format('woff2');
+}
+@font-face {
+  font-family: 'Orbitron';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("../../fonts/orbitron-latin-900-normal.woff2") format('woff2');
+}
+
+/* Exo 2 — body / UI text */
+@font-face {
+  font-family: 'Exo 2';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../../fonts/exo-2-latin-400-normal.woff2") format('woff2');
+}
+@font-face {
+  font-family: 'Exo 2';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../../fonts/exo-2-latin-500-normal.woff2") format('woff2');
+}
+@font-face {
+  font-family: 'Exo 2';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../../fonts/exo-2-latin-700-normal.woff2") format('woff2');
+}
+
+/* JetBrains Mono — labels, telemetry, terminal */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../../fonts/jetbrains-mono-latin-400-normal.woff2") format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../../fonts/jetbrains-mono-latin-600-normal.woff2") format('woff2');
+}
+
+/* ZEUSAPOLLO — Color system
+   LCARS-inspired neon palette on a near-black "void". */
+:root {
+  /* ---- Signature neons ---- */
+  --accent: #ff9500;            /* LCARS orange — primary action / brand */
+  --accent-2: #ff6a00;          /* hotter orange for gradients */
+  --cyan: #00f9ff;              /* signal cyan — links, focus, data */
+  --green: #00ff9f;             /* nominal / success / "warp" */
+  --purple: #cc00ff;            /* media / secondary accent */
+  --red: #ff0033;              /* red alert / critical */
+  --amber: #ffcc00;            /* caution / changelog */
+
+  /* ---- Neon glows (use in box/text-shadow) ---- */
+  --accent-glow: rgba(255, 149, 0, .35);
+  --cyan-glow: rgba(0, 249, 255, .30);
+  --green-glow: rgba(0, 255, 159, .40);
+  --red-glow: rgba(255, 0, 51, .50);
+  --amber-glow: rgba(255, 204, 0, .30);
+  --purple-glow: rgba(204, 0, 255, .35);
+
+  /* ---- Surfaces ---- */
+  --void: #0a0a0f;                       /* page background */
+  --void-deep: #05060a;                  /* terminals / inset wells */
+  --surface: rgba(12, 12, 22, .88);      /* panels */
+  --surface-2: rgba(18, 18, 32, .75);    /* nested cards */
+  --glass: rgba(255, 255, 255, .04);     /* chips, faint fills */
+  --glass-border: rgba(255, 255, 255, .08);
+  --glass-highlight: rgba(255, 255, 255, .12);
+
+  /* ---- Text ---- */
+  --text: #e4e4f0;        /* primary */
+  --text-dim: #c6c6e0;    /* secondary / labels */
+  --on-accent: #1a0e00;   /* text on orange fills */
+  --on-cyan: #03121a;     /* text on cyan fills */
+
+  /* ---- Semantic aliases ---- */
+  --bg-page: var(--void);
+  --text-body: var(--text);
+  --text-muted: var(--text-dim);
+  --link: var(--cyan);
+  --brand: var(--accent);
+  --status-ok: var(--green);
+  --status-warn: var(--amber);
+  --status-crit: var(--red);
+  --surface-panel: var(--surface);
+  --surface-card: var(--surface-2);
+  --border: var(--glass-border);
+
+  /* ---- Ambient page wash (radial neon bloom) ---- */
+  --page-wash:
+    radial-gradient(circle at 15% 10%, rgba(0, 249, 255, .06), transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(204, 0, 255, .05), transparent 45%),
+    radial-gradient(circle at 50% 100%, rgba(255, 149, 0, .05), transparent 50%); /* @kind other */
+}
+
+/* ZEUSAPOLLO — Typography scale */
+:root {
+  /* ---- Families ---- */
+  --font-display: 'Orbitron', monospace;                 /* headings, hero, numerals */
+  --font-body: 'Exo 2', system-ui, sans-serif;           /* prose, UI */
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace; /* labels, telemetry */
+
+  /* ---- Display / heading sizes ---- */
+  --fs-hero: clamp(42px, 9vw, 96px); /* @kind font */
+  --fs-h1: clamp(28px, 5vw, 44px);     /* @kind font */
+  --fs-h2: 18px;                        /* panel section heads @kind font */
+  --fs-h3: 15px;                        /* card titles @kind font */
+
+  /* ---- Body ---- */
+  --fs-body-lg: clamp(17px, 2.6vw, 22px); /* @kind font */
+  --fs-body: 17px;
+  --fs-sm: 14px;
+  --fs-xs: 13px;
+
+  /* ---- Mono / label sizes ---- */
+  --fs-label: 11px;     /* eyebrow / key labels */
+  --fs-micro: 10px;     /* table headers, tags */
+  --fs-nano: 9px;       /* dense telemetry */
+
+  /* ---- Weights ---- */
+  --fw-regular: 400; /* @kind font */
+  --fw-medium: 500;  /* @kind font */
+  --fw-bold: 700;    /* @kind font */
+  --fw-black: 900;   /* @kind font */
+
+  /* ---- Line heights ---- */
+  --lh-tight: 1;     /* @kind font */
+  --lh-snug: 1.15;   /* @kind font */
+  --lh-body: 1.55;   /* @kind font */
+  --lh-loose: 1.7;   /* @kind font */
+
+  /* ---- Letter spacing (LCARS loves wide tracking) ---- */
+  --ls-display: .04em; /* @kind font */
+  --ls-label: .12em;   /* @kind font */
+  --ls-wide: .18em;    /* @kind font */
+  --ls-eyebrow: .34em;  /* hero role line @kind font */
+}
+
+/* ZEUSAPOLLO — Spacing, radii, layout */
+:root {
+  /* ---- Spacing scale ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 22px;
+  --space-6: 26px;
+  --space-7: 40px;
+  --space-8: 64px;
+
+  /* ---- Radii ---- */
+  --radius-sm: 6px;     /* chips, pills, small controls */
+  --radius: 12px;       /* buttons, cards, inputs */
+  --radius-lg: 20px;    /* panels */
+  --radius-xl: 28px;    /* hero containers */
+  --radius-pill: 999px;
+
+  /* ---- Layout ---- */
+  --wrap-max: 1180px;
+  --wrap-pad: 22px;
+  --panel-pad: 26px;
+  --accent-rail: 6px;   /* the LCARS colored bar on panel left edge */
+}
+
+/* ZEUSAPOLLO — Effects: shadows, glows, motion, borders */
+:root {
+  /* ---- Elevation shadows (deep, dark, with inner highlight) ---- */
+  --shadow-panel: 0 22px 60px -16px rgba(0, 0, 0, .72),
+                  0 0 0 1px rgba(255, 255, 255, .02),
+                  inset 0 1px 0 var(--glass-highlight);
+  --shadow-card: 0 8px 40px rgba(0, 0, 0, .45);
+  --shadow-hud: 0 2px 30px rgba(0, 0, 0, .5);
+  --shadow-terminal: 0 10px 44px rgba(0, 0, 0, .6), inset 0 0 30px rgba(0, 0, 0, .5);
+
+  /* ---- Neon focus ring (cyan double-stroke) ---- */
+  --ring: 0 0 0 2px var(--void), 0 0 0 4px var(--cyan), 0 0 20px var(--cyan-glow);
+
+  /* ---- Hover glows by color (box-shadow) ---- */
+  --glow-cyan: 0 0 18px var(--cyan-glow);
+  --glow-accent: 0 0 24px var(--accent-glow);
+  --glow-green: 0 0 22px var(--green-glow);
+  --glow-amber: 0 0 18px var(--amber-glow);
+
+  /* ---- Motion ---- */
+  --ease: cubic-bezier(.23, 1, .32, 1); /* @kind other */
+  --dur: .45s;       /* @kind other */
+  --dur-fast: .2s;   /* @kind other */
+  --scan-speed: 6s;  /* @kind other */
+
+  /* ---- Borders ---- */
+  --border-width: 1px; /* @kind spacing */
+  --border-glass: 1px solid var(--glass-border); /* @kind other */
+
+  /* ---- Backdrop blur ---- */
+  --blur-glass: blur(10px); /* @kind other */
+  --blur-hud: blur(14px);   /* @kind other */
+}
+
+/* Reusable keyframes shipped with the system */
+@keyframes za-blink { 50% { opacity: 0; } }
+@keyframes za-pulse { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+@keyframes za-scan { 0% { background-position-y: 0; } 100% { background-position-y: 4px; } }
+@keyframes za-redpulse { 0%, 100% { opacity: .35; } 50% { opacity: .9; } }
+
+/* ZEUSAPOLLO — Base element defaults.
+   Applies the void background, neon wash, scanline overlay and base type. */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scrollbar-color: var(--cyan) transparent; }
+
+body {
+  background: var(--void);
+  background-image: var(--page-wash);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Optional CRT scanline overlay — add class `za-scanlines` to <body> */
+body.za-scanlines::after {
+  content: "";
+  position: fixed; inset: 0; z-index: 2; pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(0,0,0,0) 0 2px, rgba(0,0,0,.18) 3px 4px);
+  mix-blend-mode: overlay; opacity: .35;
+  animation: za-scan var(--scan-speed) linear infinite;
+}
+
+a { color: var(--link); text-decoration: none; }
+a:hover { text-shadow: 0 0 12px var(--cyan-glow); }
+
+::selection { background: var(--cyan); color: var(--on-cyan); }
+
+::-webkit-scrollbar { width: 11px; height: 11px; }
+::-webkit-scrollbar-track { background: rgba(255,255,255,.02); }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--cyan), var(--purple));
+  border-radius: 10px; border: 2px solid var(--void);
+}
+
+:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; scroll-behavior: auto !important; }
+  body.za-scanlines::after { animation: none; }
+}
+
+/* ZEUSAPOLLO — Component interaction states.
+   Components paint their base look with inline styles; these classes add
+   hover / active / focus states that inline styles can't express. */
+
+/* ---- Button ---- */
+.za-btn { position: relative; overflow: hidden; }
+.za-btn--primary:hover { transform: translateY(-2px); box-shadow: 0 6px 34px var(--accent-glow); }
+.za-btn--secondary:hover { border-color: var(--cyan); color: var(--cyan); box-shadow: var(--glow-cyan); transform: translateY(-2px); }
+.za-btn--ghost:hover { border-color: var(--purple); color: var(--purple); box-shadow: 0 0 18px var(--purple-glow); }
+.za-btn--danger:hover { background: rgba(255,0,51,.08); box-shadow: 0 0 18px var(--red-glow); }
+.za-btn--engage:hover { box-shadow: var(--glow-green); }
+.za-btn:disabled { opacity: .4; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+.za-btn:active { transform: translateY(0) scale(.98); }
+
+/* ---- Panel ---- */
+.za-panel { position: relative; overflow: hidden; }
+
+/* ---- StatCell / Metric / Card hover lift ---- */
+.za-statcell { transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
+.za-statcell:hover { border-color: var(--cyan); box-shadow: 0 0 26px var(--cyan-glow); transform: translateY(-3px); }
+.za-metric:hover { border-color: var(--green); box-shadow: 0 0 22px var(--green-glow); transform: translateY(-3px); }
+.za-card-hover { transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
+.za-card-hover:hover { border-color: var(--cyan); box-shadow: var(--glow-cyan); transform: translateY(-3px); }
+
+/* ---- Tag ---- */
+.za-tag { backdrop-filter: blur(4px); }
+
+/* ---- Input / Select ---- */
+.za-input:focus { border-color: var(--cyan); box-shadow: var(--glow-cyan); outline: none; }
+.za-input::placeholder { color: var(--text-dim); opacity: .6; }
+
+/* ---- Chip ---- */
+.za-chip { transition: all var(--dur) var(--ease); cursor: pointer; }
+.za-chip:hover { color: var(--cyan); border-color: var(--cyan); box-shadow: var(--glow-cyan); }
+
+/* ---- Nav link ---- */
+.za-navlink { transition: color var(--dur-fast) var(--ease); }
+.za-navlink:hover, .za-navlink.is-active { color: var(--cyan); text-shadow: 0 0 8px var(--cyan-glow); }
+

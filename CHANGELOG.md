@@ -2,6 +2,42 @@
 
 All notable public-facing changes to the ZeusApollo portfolio are recorded here. Visible dates use MM-DD-YYYY.
 
+## [v32] — 07-30-2026
+
+Release name: “The Bridge.”
+
+### Refined — owner-approved launch pass
+
+- Compare Notes now opens a visible owner-direct contact panel with independent copy-address and pre-addressed-email actions.
+- Atlas is documented as the standalone local Ollama inference host while the Proxmox totals remain 19 containers and quorum 3/3.
+- The footer operations stream now uses two intrinsic-width copies, eliminating compressed ticker text and separating it from the fixed command HUD.
+- All Credentials links now use the owner-supplied James Cashio badge collection URL.
+
+### Changed — the deck rebuild
+
+- The site is now an eight-deck bridge: 00 Viewscreen, 01 The Grid, 02 Routing, 03 The Iron, 04 Builds, 05 Operator, 06 Console, 07 Hail. The eleven-chapter scroll narrative is retired.
+- Motion moved to GSAP 3.15 with ScrollTrigger and SplitText over Lenis smooth scroll. Scroll reveals run off an IntersectionObserver with a visibility guard, so a dropped trigger can never leave content stuck invisible.
+- The Iron is now the signature moment: entering the deck racks all six plates automatically, and the completed set remains directly inspectable and replayable.
+- Bit became a live canvas companion with a stellated-icosahedron renderer; the LCARS sound set is fully synthesized in WebAudio, so the six `.wav` files are no longer loaded by the front page.
+- The page ships as `index.html` plus `assets/{css,js,fonts,img}` instead of one 492KB file. Total transfer is about 299KB gzipped. Nothing is fetched from a CDN at runtime.
+
+### Fixed — pre-publish audit
+
+- Routing, Operator and Console collapsed on phones: a `minmax(300px,1fr)` track left the prose column around 55px wide, wrapping the Operator bio one word per line and the Console terminal one letter per line. Those grids now stack below 900px.
+- The sticky header wrapped to four rows and 193px on a 390px viewport — 23% of the screen, permanently. Rebuilt to two rows and 83px, with the primary CTA pinned to the front of the control strip.
+- `scroll-margin-top` was a flat 78px against an 83–193px header, so every deck link parked its heading underneath the header on phones and tablets. It now tracks real header height per breakpoint.
+- The head block was duplicated eight times — eight titles, eight canonicals, eight OG sets. Deduplicated. The design-system CSS was also shipping twice, once as modules and once as the concatenated entry point.
+- Fixed the clipped Bit deck-guide label, one serious ARIA violation, and a missing `lang` attribute. The deck reports zero axe violations against WCAG 2.1 AA, and zero console errors, failed requests or misplaced anchors at 1440, 834 and 390.
+- Added a `<noscript>` fallback carrying the key figures, font preloads, a print stylesheet, and reduced-motion coverage for transitions rather than named keyframes alone.
+
+### Changed — content security policy
+
+- `script-src` now permits `'unsafe-eval'`: the component runtime evaluates its logic class at load. Every other source stays `'self'`, `connect-src` remains `'none'`, and the page opens no sockets. Third-party libraries moved to `assets/js/vendor/`, exempted from the email-domain rule in the public-safety guard so vendor license banners stay intact.
+
+### Verified
+
+- Container figures re-verified live over cluster SSH on 07-30-2026: 19 of 19 documented containers running, zero in maintenance; cluster quorate with the Athena quorum device answering 3/3. Backup chain 18 of 19 inside 24 hours; 0 security updates due. The host split is zeus 13 / Apollo 6. Automation health remains Hermes-reported (71 of 71 at the 07-22-2026 report) and is no longer surfaced on the public deck. Per the standing order: the number we publish is the number we measured.
+
 ## [v31] — 07-26-2026
 
 Release name: “The Iron Ascendant.”

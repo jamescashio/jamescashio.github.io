@@ -1,0 +1,277 @@
+/* ===========================================================================
+   CASHIO.US — polish pass
+   Loaded last. Every rule here fixes a defect found in the pre-publish audit;
+   nothing changes the visual language of the deck.
+   =========================================================================== */
+
+/* --- 1. Header height ------------------------------------------------------
+   The sticky header wrapped to four rows on phones (193px = 23% of a 844px
+   viewport, permanently on screen). Collapse it to two: brand + controls on
+   one scrollable row, deck nav on the second. */
+
+:root { --za-hdr-h: 78px; }
+
+.za-hdr-nav a { white-space: nowrap; }
+
+@media (max-width: 899px) {
+  :root { --za-hdr-h: 84px; }
+  .za-hdr-ctl {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .za-hdr-ctl::-webkit-scrollbar { display: none; }
+  .za-hdr-nav { padding-top: 2px !important; }
+}
+
+@media (max-width: 660px) {
+  :root { --za-hdr-h: 88px; }
+  /* Share row one with the brand and scroll sideways instead of claiming a
+     row of its own — this is what took the header from four rows to two. */
+  .za-hdr-ctl {
+    width: auto !important;
+    flex: 1 1 0 !important;
+    min-width: 0;
+    margin-left: 0 !important;
+    /* flex-start, not flex-end: with overflow-x:auto a flex-end row renders
+       its overflow off the LEFT edge, where it is unreachable. */
+    justify-content: flex-start !important;
+    padding-left: 4px !important;
+    padding-right: 8px !important;
+  }
+  .za-hdr-row > div:first-child { position: relative; z-index: 1; background: rgba(6,6,12,.92); }
+  .za-hdr-ctl button { flex: 0 0 auto !important; }
+  /* Primary CTA first in the scroll strip so it is never the one off-screen. */
+  .za-hdr-ctl button:last-of-type { order: -1; }
+  .za-hdr-row > div:first-child a { padding: 0 10px 0 10px !important; font-size: 13px !important; }
+}
+
+@media (max-width: 420px) {
+  .za-hdr-ctl button {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    font-size: 9px !important;
+    letter-spacing: .06em !important;
+  }
+}
+
+/* --- 2. Anchor landing -----------------------------------------------------
+   scroll-margin-top was a flat 78px, so on phones (84-92px header) and tablets
+   every deck link parked its heading underneath the header. Track the real
+   header height per breakpoint. */
+
+section[id] { scroll-margin-top: calc(var(--za-hdr-h) + 10px); }
+
+/* --- 3. Bit deck-guide label ----------------------------------------------
+   The label is 128px wide, centred on a button pinned near the right edge, so
+   it overflowed the viewport by ~6px and clipped. Pull it inboard and let it
+   wrap instead of running off. */
+
+.za-bit { max-width: calc(100vw - 24px); }
+.za-bit [data-za-bitlabel] {
+  left: auto !important;
+  right: 0 !important;
+  margin-left: 0 !important;
+  text-align: right !important;
+}
+
+/* --- 3b. Two-column decks on narrow screens --------------------------------
+   Routing, Operator and Console laid out as `minmax(0,1.5fr) minmax(300px,1fr)`.
+   Below ~700px the 300px track eats the row and the prose column collapses to
+   roughly 55px, wrapping one word — or one letter — per line. Stack them. */
+
+@media (max-width: 900px) {
+  .za-split { grid-template-columns: minmax(0, 1fr) !important; }
+}
+
+@media (max-width: 560px) {
+  .za-lanehead { grid-template-columns: 96px minmax(0, 1fr) 72px !important; gap: 8px !important; }
+}
+
+/* --- 4. Focus visibility ---------------------------------------------------
+   Two conflicting :focus-visible rules shipped; the later one wins but leaves
+   no contrast against the orange CTA. Give the ring a dark halo so it reads on
+   every surface. */
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 5px rgba(0, 0, 0, .65);
+  border-radius: 6px;
+}
+
+/* --- 5. Reduced motion -----------------------------------------------------
+   The media block covered named keyframes only. Anything still mid-transition
+   when the preference is set kept easing. Stop all of it, and hold the
+   scroll-reveal groups visible. */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+  [data-anim] { opacity: 1 !important; transform: none !important; }
+}
+
+/* --- 6. Bottom HUD clearance ----------------------------------------------
+   The fixed HUD bar sat on top of the last CTA in the hero and the final line
+   of the footer on short viewports. */
+
+@media (max-width: 899px) {
+  #conn.za-deck { padding-bottom: 74px !important; }
+}
+
+/* --- 7. Touch targets ------------------------------------------------------
+   Several nav and chip controls were under the 24px minimum on phones. */
+
+@media (pointer: coarse) {
+  .za-hdr-nav a,
+  .za-hdr-ctl button { min-height: 32px; display: inline-flex; align-items: center; }
+}
+
+/* --- 8. Print --------------------------------------------------------------
+   Nobody prints a starship deck, but a black page that eats a cartridge is a
+   bad look if someone does. */
+
+@media print {
+  body { background: #fff !important; color: #111 !important; }
+  header, .za-bit, .za-rail, .za-hud, canvas { display: none !important; }
+  [data-anim] { opacity: 1 !important; transform: none !important; }
+}
+
+
+/* --- 9. Preview-approved interaction refinement ---------------------------
+   The Iron runs independently of scroll progress, the Hail CTA exposes a
+   durable contact panel, and the footer stream uses intrinsic-width copies. */
+
+@media (max-width: 520px) {
+  .za-iron-stage { min-height: 232px !important; gap: 3px !important; }
+  .za-iron-plate { min-width: 32px !important; max-width: 48px !important; }
+  .za-iron-plate-no { font-size: 7px !important; top: 8px !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .za-iron-plate { transform: translateY(0) scaleY(1) !important; transition: none !important; }
+}
+
+.za-iron { isolation: isolate; }
+.za-iron::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .34;
+  background:
+    linear-gradient(90deg, transparent 49.85%, rgba(255,149,0,.18) 50%, transparent 50.15%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.022) 0 1px, transparent 1px 58px);
+  mask-image: linear-gradient(180deg, #000, transparent 74%);
+  -webkit-mask-image: linear-gradient(180deg, #000, transparent 74%);
+}
+.za-iron-stage::before,
+.za-iron-stage::after {
+  content: '';
+  position: absolute;
+  bottom: 59px;
+  width: 18px;
+  height: 22px;
+  border: 1px solid rgba(255,149,0,.36);
+  background: linear-gradient(180deg, rgba(255,149,0,.16), rgba(6,6,12,.92));
+  box-shadow: 0 0 20px -9px var(--accent);
+}
+.za-iron-stage::before { left: -4px; border-radius: 8px 2px 2px 8px; }
+.za-iron-stage::after { right: -4px; border-radius: 2px 8px 8px 2px; }
+.za-iron-plate:hover { filter: brightness(1.18); transform: translateY(-5px) scaleY(1) !important; }
+.za-iron-meter > span { transition: flex .45s cubic-bezier(.23,1,.32,1), opacity .35s, box-shadow .35s; }
+
+.za-compare-panel {
+  margin-top: 22px;
+  max-width: 920px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 22px;
+  align-items: center;
+  padding: 22px 24px;
+  border: 1px solid rgba(0,249,255,.24);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(0,249,255,.075), rgba(16,16,28,.88) 46%, rgba(255,149,0,.08));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.045), 0 24px 54px -38px var(--cyan);
+  animation: za-channelOpen .42s cubic-bezier(.23,1,.32,1) both;
+}
+.za-compare-topics { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 13px; }
+.za-compare-topic {
+  display: inline-flex;
+  align-items: center;
+  min-height: 25px;
+  padding: 4px 9px;
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  background: rgba(255,255,255,.025);
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 8px;
+  line-height: 1.3;
+  letter-spacing: .15em;
+  white-space: nowrap;
+}
+.za-compare-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+.za-footer { padding-bottom: 42px; }
+.za-tick {
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  padding: 0 !important;
+  background: linear-gradient(90deg, rgba(0,249,255,.025), transparent 28%, rgba(255,149,0,.025));
+}
+.za-ticker-track { display: flex; flex: 0 0 auto; width: max-content !important; min-width: max-content; align-items: center; }
+.za-ticker-copy {
+  display: flex;
+  flex: 0 0 auto;
+  width: auto !important;
+  min-width: max-content;
+  align-items: center;
+  gap: 30px;
+  padding: 0 30px 0 0;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: .16em;
+  color: var(--text-dim);
+}
+.za-ticker-copy > span { display: inline-flex; align-items: center; min-height: 45px; }
+
+@media (max-width: 899px) {
+  .za-hud-msg { display: none !important; }
+  .za-compare-panel { grid-template-columns: 1fr; }
+  .za-compare-actions { justify-content: flex-start; }
+}
+@media (max-width: 699px) {
+  .za-bit {
+    display: flex !important;
+    right: 4px !important;
+    bottom: 38px !important;
+    transform: scale(.76);
+    transform-origin: right bottom;
+  }
+}
+@media (max-width: 620px) {
+  .za-hud-deck { padding: 0 10px !important; letter-spacing: .15em !important; }
+  .za-hud-tel { padding: 0 10px !important; letter-spacing: .12em !important; font-size: 8px !important; }
+  .za-compare-panel { padding: 18px; }
+  .za-compare-actions > * { flex: 1 1 180px; }
+  .za-ticker-copy { gap: 22px; padding-right: 22px; font-size: 9px; letter-spacing: .13em; }
+}
+@media (max-width: 360px) { .za-bit { transform: scale(.68); } }
+@media (max-width: 420px) { .za-hud-tel { display: none !important; } }
+
+@keyframes za-channelOpen {
+  from { opacity: 0; transform: translateY(-8px) scale(.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}

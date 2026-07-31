@@ -17,6 +17,11 @@ TEXT_SUFFIXES = {
 }
 SKIP_DIRS = {".git", "node_modules", "__pycache__", ".regression-baseline", ".regression-diffs"}
 ALLOWED_EMAIL_DOMAINS = {"cashio.us", "users.noreply.github.com"}
+# Third-party libraries carry their own license banners, which sometimes include
+# a vendor contact address. Those are not operator PII and must not be stripped —
+# the license requires the notice to stay intact. Scan them for secrets and
+# private addresses as usual; exempt them only from the email-domain rule.
+VENDOR_DIRS = ("assets/js/vendor/",)
 
 PATTERNS = {
     "private network address": re.compile(
@@ -59,11 +64,13 @@ def scan_file(path: Path) -> list[str]:
         if pattern.search(text):
             findings.append(label)
 
-    for match in EMAIL.finditer(text):
-        domain = match.group(1).lower()
-        if domain not in ALLOWED_EMAIL_DOMAINS:
-            findings.append(f"non-approved email domain: {domain}")
-            break
+    is_vendor = relative.as_posix().startswith(VENDOR_DIRS)
+    if not is_vendor:
+        for match in EMAIL.finditer(text):
+            domain = match.group(1).lower()
+            if domain not in ALLOWED_EMAIL_DOMAINS:
+                findings.append(f"non-approved email domain: {domain}")
+                break
 
     if relative.as_posix() == "status.json":
         try:

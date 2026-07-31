@@ -25,8 +25,14 @@ def main() -> int:
     healthy = int(status["healthy_services"])
     routes = int(status["model_routes"])
     jobs = int(status["automation_jobs_last_reported"])
+    backups = int(status["backups_inside_24h"])
+    patches_due = int(status["security_updates_due"])
     daily_cost = float(status["observed_ai_cost_per_day"])
     monthly_cost = float(status["estimated_ai_cost_per_month"])
+
+    # The deck spells the host count in words in its lead paragraph.
+    HOST_WORDS = {1: "One core host", 2: "Two core hosts", 3: "Three core hosts"}
+    host_phrase = HOST_WORDS.get(hosts, f"{hosts} core hosts")
 
     files = {
         "README.md": read("README.md"),
@@ -51,17 +57,29 @@ def main() -> int:
         "Release body route count": ("RELEASE_BODY.md", f"| Configured model routes | {routes} |"),
         "Release body automation count": ("RELEASE_BODY.md", f"| Automation jobs | {jobs}, last reported |"),
         "Release body operating cost": ("RELEASE_BODY.md", f"| Observed AI operating cost | ${daily_cost:.2f}/day; ${monthly_cost:.2f} estimated monthly run rate; quality-first escalation retained |"),
-        "In-page release": ("index.html", f"CASHIO.US // {version}"),
-        "In-page healthy count": ("index.html", f'data-fleet="healthyServiceCount">{healthy}<'),
-        "In-page route count": ("index.html", f'data-fleet="routeCount">{routes}<'),
-        "In-page host count": ("index.html", f'data-fleet="hostCount">{hosts}<'),
-        "In-page verified date": ("index.html", f'verifiedDisplay: "{verified}"'),
-        "In-page expiry date": ("index.html", f'expiresDisplay: "{expires}"'),
-        "In-page daily cost": ("index.html", f'dailyBurn: {daily_cost:.2f}'),
-        "In-page monthly cost": ("index.html", f'monthlyRunRate: {monthly_cost:.2f}'),
-        "In-page Kimi K3 route": ("index.html", "<span>Kimi K3</span>"),
-        "In-page Gemini 3.6 route": ("index.html", "<span>Gemini 3.6 Flash</span>"),
-        "In-page automation health": ("index.html", f"{jobs} of {jobs} automations healthy"),
+        # --- deck markers (v32 "The Bridge" DOM) -----------------------------
+        # The eleven-chapter page carried data-fleet attributes and a JS config
+        # block. The eight-deck build renders the same figures through StatCell
+        # imports and the boot sequence, so the checks anchor there instead.
+        "In-page release tag": ("index.html", f"{version} · {release_name.upper()}"),
+        "In-page release footer": ("index.html", f"ZEUSAPOLLO {version} // {release_name.upper()}"),
+        "In-page container stat": (
+            "index.html",
+            f'value="{healthy}/{roles}" label="CONTAINERS RUNNING" sub="LIVE CHECK {verified}"',
+        ),
+        "In-page route stat": ("index.html", f'value="{routes}" label="MODEL LANES"'),
+        "In-page patch stat": ("index.html", f'value="{patches_due}" label="SECURITY UPDATES DUE"'),
+        "In-page cost stat": (
+            "index.html",
+            f'value="${daily_cost:.2f}" label="OBSERVED AI COST / DAY" sub="${monthly_cost:.2f} EST. MONTHLY"',
+        ),
+        "In-page host count": ("index.html", f"{host_phrase}."),
+        "Boot documented roles": ("index.html", f"'CONTAINER ROLES', '{roles} DOCUMENTED'"),
+        "Boot live check": ("index.html", f"'LIVE CHECK {verified}', '{healthy} OF {roles} RUNNING'"),
+        "Boot backup chain": ("index.html", f"'BACKUP CHAIN', '{backups} OF {roles} INSIDE 24H'"),
+        "Boot operating cost": ("index.html", f"'OPERATING COST', '${daily_cost:.2f} / DAY'"),
+        "In-page Kimi K3 route": ("index.html", status["routes"]["tier_0"]),
+        "In-page Gemini 3.6 route": ("index.html", status["routes"]["tier_3_multimodal"]),
     }
 
     failures: list[str] = []
