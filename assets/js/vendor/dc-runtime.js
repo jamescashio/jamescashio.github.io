@@ -840,6 +840,13 @@
     }
   };
   function evalDcLogic(src) {
+    if (typeof window.__cashioRootComponentFactory === "function") {
+      return window.__cashioRootComponentFactory(
+        StreamableLogic,
+        StreamableLogic,
+        getReact()
+      );
+    }
     //! nosemgrep: eval-and-function-constructor
     const fn = new Function(
       "DCLogic",
