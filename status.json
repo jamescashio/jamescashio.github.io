@@ -1,6 +1,6 @@
 {
-  "version": "v32",
-  "release_name": "The Bridge",
+  "version": "v39",
+  "release_name": "Aurora",
   "verified_on": "07-30-2026",
   "expires_on": "08-29-2026",
   "expiration_policy": "Valid for 30 days or until the next architecture change, whichever comes first.",

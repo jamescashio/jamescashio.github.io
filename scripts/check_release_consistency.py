@@ -57,21 +57,23 @@ def main() -> int:
         "Release body route count": ("RELEASE_BODY.md", f"| Configured model routes | {routes} |"),
         "Release body automation count": ("RELEASE_BODY.md", f"| Automation jobs | {jobs}, last reported |"),
         "Release body operating cost": ("RELEASE_BODY.md", f"| Observed AI operating cost | ${daily_cost:.2f}/day; ${monthly_cost:.2f} estimated monthly run rate; quality-first escalation retained |"),
-        # --- deck markers (v32 "The Bridge" DOM) -----------------------------
+        # --- deck markers (v39 "Aurora" DOM) ---------------------------------
         # The eleven-chapter page carried data-fleet attributes and a JS config
-        # block. The eight-deck build renders the same figures through StatCell
-        # imports and the boot sequence, so the checks anchor there instead.
+        # block; v32 anchored on StatCell imports. v39 renders the stat rail
+        # from data- attributes on the cells and drives the boot sequence from
+        # a manifest in the data block, so the checks anchor there instead.
+        # The figures asserted are unchanged — only where they are read from.
         "In-page release tag": ("index.html", f"{version} · {release_name.upper()}"),
         "In-page release footer": ("index.html", f"ZEUSAPOLLO {version} // {release_name.upper()}"),
         "In-page container stat": (
             "index.html",
-            f'value="{healthy}/{roles}" label="CONTAINERS RUNNING" sub="LIVE CHECK {verified}"',
+            f'data-value="{healthy}/{roles}" data-label="CONTAINERS RUNNING" data-sub="LIVE CHECK {verified}"',
         ),
-        "In-page route stat": ("index.html", f'value="{routes}" label="MODEL LANES"'),
-        "In-page patch stat": ("index.html", f'value="{patches_due}" label="SECURITY UPDATES DUE"'),
+        "In-page route stat": ("index.html", f'data-value="{routes}" data-label="MODEL LANES"'),
+        "In-page patch stat": ("index.html", f'data-value="{patches_due}" data-label="SECURITY UPDATES DUE"'),
         "In-page cost stat": (
             "index.html",
-            f'value="${daily_cost:.2f}" label="OBSERVED AI COST / DAY" sub="${monthly_cost:.2f} EST. MONTHLY"',
+            f'data-value="${daily_cost:.2f}" data-label="OBSERVED AI COST / DAY" data-sub="${monthly_cost:.2f} EST. MONTHLY"',
         ),
         "In-page host count": ("index.html", f"{host_phrase}."),
         "Boot documented roles": ("index.html", f"'CONTAINER ROLES', '{roles} DOCUMENTED'"),

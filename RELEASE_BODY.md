@@ -1,10 +1,12 @@
-## v32 — “The Bridge”
+## v39 — “Aurora”
 
 **Release date:** 07-30-2026
 
 **Public status window:** 07-30-2026 through 08-29-2026, or until the next architecture change
 
-v32 rebuilds the portfolio as a starship bridge. Eight decks replace the eleven-chapter scroll, the Iron becomes an automatic deck-entry signature moment rather than a hover state, and the whole page ships as a real static site instead of one half-megabyte file — with container figures re-verified live over cluster SSH on release day.
+v39 renders the deck. The background stops being decoration and becomes a live WebGL scene — a star with three station rings around it, lit by its own photosphere and cut by god rays through the structure. Every texture is generated in code at load, so the page still fetches nothing. Same eight decks, same palette, same figures.
+
+What v32 established: Eight decks replace the eleven-chapter scroll, the Iron becomes an automatic deck-entry signature moment rather than a hover state, and the whole page ships as a real static site instead of one half-megabyte file — with container figures re-verified live over cluster SSH on release day.
 
 ### Experience
 
