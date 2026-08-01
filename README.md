@@ -1,4 +1,4 @@
-# ZEUSAPOLLO v32 — “The Bridge”
+# ZEUSAPOLLO v39 — “Aurora”
 
 cashio.us is Doug Cashio’s interactive sovereign AI portfolio: personally owned infrastructure, quality-first model routing, cybersecurity, auditable automation, disciplined cost, and human command.
 
@@ -8,7 +8,7 @@ The public site shows sanitized proof and architectural roles while withholding 
 
 | Item | Current public state |
 |---|---|
-| **Release** | v32 — “The Bridge” |
+| **Release** | v39 — “Aurora” |
 | **Status export** | Verified 07-30-2026; expires 08-29-2026 |
 | **Hosts** | 2 core homelab hosts, plus Athena at the edge |
 | **Local inference host** | Atlas, standalone from the Proxmox quorum and 19-container total |
@@ -25,7 +25,7 @@ The public site shows sanitized proof and architectural roles while withholding 
 | **Deployment** | GitHub Pages from `main` |
 | **Production site** | `https://cashio.us` |
 
-The v32 container figures come from an owner-run live verification over cluster SSH on 07-30-2026; automation and cost figures are Hermes-generated, public-safe, and sampled—not streaming telemetry. The export remains valid for 30 days or until the next architecture change. Athena is separately owner-confirmed active as a physical Home Assistant edge node and cluster quorum device, and is not included in the 19-container count. Atlas is separately documented as a standalone local-inference host and is not included in the Proxmox quorum or container total. The site never converts a current page-view date into a claim of live telemetry.
+The v39 container figures come from an owner-run live verification over cluster SSH on 07-30-2026; automation and cost figures are Hermes-generated, public-safe, and sampled—not streaming telemetry. The export remains valid for 30 days or until the next architecture change. Athena is separately owner-confirmed active as a physical Home Assistant edge node and cluster quorum device, and is not included in the 19-container count. Atlas is separately documented as a standalone local-inference host and is not included in the Proxmox quorum or container total. The site never converts a current page-view date into a claim of live telemetry.
 
 ## Model routing fabric
 

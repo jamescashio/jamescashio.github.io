@@ -2,6 +2,35 @@
 
 All notable public-facing changes to the ZeusApollo portfolio are recorded here. Visible dates use MM-DD-YYYY.
 
+## [v39] — 07-30-2026
+
+Release name: “Aurora.”
+
+### Added — the viewscreen becomes a place
+
+- The background is now a real WebGL scene: a star with three inclined station rings around it, rendered live rather than illustrated. The photosphere is a shader with granulation, limb darkening, sunspots and differential rotation; a chromosphere, corona and four prominences sit on top of it.
+- Every texture on the page is generated in code at load — hull, solar array and crinkled thermal foil, each with albedo, roughness, cavity AO and a Sobel-derived normal map. No image files are fetched or shipped.
+- God rays anchored to the star's screen position, plus bloom, anamorphic streaks, radial defocus, lens dirt, SMAA and a filmic viewscreen grade.
+- The camera rides a Catmull-Rom path with one keyframe per deck. The Iron is now a sticky, scroll-scrubbed sequence: six plates rack under the scroll while the veil lifts so the camera is visibly inside the station.
+- The console grew from nine commands to thirty-one, with per-host readouts, an ASCII stack diagram, a fleet banner, command history on the arrow keys, Tab completion and near-match suggestions on an unknown command.
+- Builds is now a portfolio grid with a featured entry, status pills, technology chips and per-build metrics.
+- Credly badge collection linked from the Hail deck, the Operator card and the console.
+- Bit, the deck-guide companion, is retained: the same `assets/js/bit.js` stellated-icosahedron renderer the site has shipped since v32, in a new dock. Every line it says is a published figure, it follows the FX switch, and it announces through an ARIA live region.
+
+### Changed
+
+- Adaptive quality: the page measures its own frame time and sheds the most expensive post pass first, in four tiers, ending in a held frame rather than a churning one. The FX control reports where it landed and resumes on click.
+- The custom cursor is gone; the native pointer is back everywhere.
+- The fleet lattice spins at roughly a quarter of its previous rate, and its packet pulses at less than half.
+- Console audio is fully synthesised — a star drone, filtered-noise transients and detuned tones through a shared feedback delay. Still off by default, and the page still ships no audio files.
+
+### Verified
+
+- Zero console errors across a full scroll crawl in both directions. 20–37 draw calls, 22.1k triangles.
+- Reduced motion renders a complete still page. With JavaScript disabled the boot overlay does not block and static content renders.
+- No horizontal overflow at 360, 414, 768, 1024, 1440 or 1920. Visible focus ring on every keyboard stop.
+- Every published figure reconciled against `status.json`, including all ten route names.
+
 ## [v32] — 07-30-2026
 
 Release name: “The Bridge.”
