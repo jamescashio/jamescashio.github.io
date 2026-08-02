@@ -1,8 +1,8 @@
 {
-  "version": "v39",
+  "version": "v40",
   "release_name": "Aurora",
-  "verified_on": "07-30-2026",
-  "expires_on": "08-29-2026",
+  "verified_on": "08-01-2026",
+  "expires_on": "08-31-2026",
   "expiration_policy": "Valid for 30 days or until the next architecture change, whichever comes first.",
   "status_scope": "Owner-run live verification over cluster SSH plus the Hermes public-safe portfolio snapshot; not streaming telemetry",
   "hosts": 2,
@@ -18,9 +18,9 @@
   "security_updates_due": 0,
   "observed_ai_cost_per_day": 0.26,
   "estimated_ai_cost_per_month": 6.49,
-  "note": "Live check 07-30-2026: 19 of 19 documented containers verified running. Cluster quorate with the Athena quorum device answering (3/3). Backup chain: 18 of 19 inside 24 hours at verification time. Patch posture: 0 security updates due. Automations are Hermes-reported (71 of 71 healthy at last report, 07-22-2026) and are no longer surfaced on the public deck. Cost figures are from the dated 07-21 to 07-22 sample.",
+  "note": "Live check 08-01-2026 at 20:40 CDT: 19 of 19 documented containers verified running. Cluster quorate with the Athena quorum device answering (3/3). Backup chain: 18 of 19 inside 24 hours at verification time. Patch posture: 0 security updates due. Automations are Hermes-reported (71 of 71 healthy at last report, 07-22-2026) and are no longer surfaced on the public deck. Cost figures are from the dated 07-21 to 07-22 sample.",
   "service_summary": {
-    "running": "19 of 19 documented containers verified running at the 07-30-2026 live check",
+    "running": "19 of 19 documented containers verified running at the 08-01-2026 live check",
     "maintenance": "0 containers stopped at verification time",
     "backups": "18 of 19 containers backed up inside 24 hours at verification time",
     "patching": "0 security updates due across the fleet at verification time",

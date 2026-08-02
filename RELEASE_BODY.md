@@ -1,31 +1,32 @@
-## v39 — “Aurora”
+## v40 — “Aurora”
 
-**Release date:** 07-30-2026
+**Release date:** 08-01-2026
 
-**Public status window:** 07-30-2026 through 08-29-2026, or until the next architecture change
+**Public status window:** 08-01-2026 through 08-31-2026, or until the next architecture change
 
-v39 renders the deck. The background stops being decoration and becomes a live WebGL scene — a star with three station rings around it, lit by its own photosphere and cut by god rays through the structure. Every texture is generated in code at load, so the page still fetches nothing. Same eight decks, same palette, same figures.
+v40 makes the Aurora deck faster, clearer, and complete without changing its look. The WebGL viewscreen now waits until after first paint, static HTML carries the real public figures, every viewport has complete deck navigation, and machine-readable front-door files explain the same dated public snapshot to crawlers and agents.
 
-What v32 established: Eight decks replace the eleven-chapter scroll, the Iron becomes an automatic deck-entry signature moment rather than a hover state, and the whole page ships as a real static site instead of one half-megabyte file — with container figures re-verified live over cluster SSH on release day.
+What v39 established remains intact: the live star and station scene, eight-deck structure, palette, typography, native pointer, and Bit as the deck-guide companion.
 
 ### Experience
 
-- Eight decks: 00 Viewscreen, 01 The Grid, 02 Routing, 03 The Iron, 04 Builds, 05 Operator, 06 Console, 07 Hail.
+- Eight decks: 00 Viewscreen, 01 The Grid, 02 Routing, 03 The Iron, 04 Builds, 05 Operator, 06 Console, 07 Hail, now reachable from a mobile deck sheet and complete desktop navigation.
 - The Iron is the signature moment: entering its deck racks all six plates automatically, and the completed set remains directly inspectable and replayable.
 - The Grid is a draggable fleet lattice; Routing is a selectable ten-lane charter; the Console is a local read-only narrative interface that opens no sockets and holds no credentials.
 - Bit is a live canvas companion rendering a stellated icosahedron; the LCARS sound set is synthesized in WebAudio, so the front page loads no audio files at all.
 - Motion is GSAP 3.15 with ScrollTrigger and SplitText over Lenis smooth scroll. Reveals run off an IntersectionObserver with a visibility guard, so a dropped trigger cannot leave content invisible.
-- Ships as `index.html` plus `assets/{css,js,fonts,img}`; about 299KB gzipped, down from 492KB. Nothing is fetched from a CDN at runtime.
-- Zero axe violations against WCAG 2.1 AA; zero console errors, failed requests or misplaced anchors verified at 1440, 834 and 390.
+- The WebGL scene is deferred beyond first paint, skipped under reduced motion, and available on demand from the FX control.
+- Static HTML carries 19/19 containers, 10 model lanes, 0 security updates, $0.26/day, and 14.4% DNS blocking before JavaScript enhancement.
+- `robots.txt` and `llms.txt` expose a public-safe, machine-readable front door while `/ai/` remains excluded from indexing.
 
 ### Public status reconciliation
 
-| Metric | v32 public baseline |
+| Metric | v40 public snapshot |
 |---|---:|
 | Core hosts | 2 |
 | Documented service roles | 19 |
 | Owner-reported healthy services | 19 |
-| Verified containers | 19 of 19 running at the 07-30-2026 live check; 0 in maintenance |
+| Verified containers | 19 of 19 running at the 08-01-2026 live check; 0 in maintenance |
 | Backup chain | 18 of 19 inside 24 hours at verification time |
 | Patch posture | 0 security updates due at verification time |
 | Athena | Owner-confirmed active physical Home Assistant edge node and cluster quorum device; outside container count |
@@ -35,7 +36,7 @@ What v32 established: Eight decks replace the eleven-chapter scroll, the Iron be
 | Automation health | 71 of 71 at last Hermes report (07-22-2026); zero errors |
 | Observed AI operating cost | $0.26/day; $6.49 estimated monthly run rate; quality-first escalation retained |
 
-Container figures come from an owner-run live verification over cluster SSH; automation and cost figures are Hermes-generated, public-safe, and sampled—not streaming telemetry. The interface automatically stops presenting health as current after 08-29-2026 or the next architecture change.
+Container and DNS figures come from an owner-run live verification over cluster SSH on 08-01-2026 at 20:40 CDT; automation and cost figures are Hermes-generated, public-safe, and sampled—not streaming telemetry. The DNS snapshot covers 219,628 queries: 89,851 cached, 31,547 blocked, and 98,230 resolved against 216,108 blocklist entries. The interface automatically stops presenting health as current after 08-31-2026 or the next architecture change.
 
 ### Model routing
 

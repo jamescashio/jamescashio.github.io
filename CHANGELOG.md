@@ -2,6 +2,28 @@
 
 All notable public-facing changes to the ZeusApollo portfolio are recorded here. Visible dates use MM-DD-YYYY.
 
+## [v40] — 08-01-2026
+
+Release name: “Aurora.”
+
+### Added — all tens release
+
+- Complete deck navigation now includes Hail on desktop and an eight-link, keyboard-contained LCARS deck sheet below 860 px.
+- The Viewscreen carries a direct open-channel invitation above the fold, while the wordmark returns to Deck 00.
+- Static HTML ships the real published figures before JavaScript enhancement, and the Console presents the dated status readout on first arrival.
+- `robots.txt` and `llms.txt` provide a public-safe machine-readable front door while keeping `/ai/` out of the index.
+
+### Changed
+
+- The WebGL viewscreen loads after first paint, waits until page load on coarse-pointer phones, stays inert under reduced motion, and can still load on demand through FX.
+- Hero contrast, stat labels, the Hail action, mobile header behavior, console input sizing, Bit’s phone footprint, ARIA labels, and landmark coverage were tightened without changing the palette, type, deck structure, scene, or native pointer.
+- Public truth moved to the owner-run 08-01-2026 20:40 CDT check: 19/19 containers, quorum 3/3, 18/19 backups inside 24 hours, 0 security updates, and a 219,628-query DNS sample with 14.4% blocked at source.
+
+### Verified
+
+- Repository safety and release-consistency gates pass against the v40 status contract.
+- WebGL, reduced-motion, no-JavaScript, responsive overflow, mobile navigation, console autorun, accessibility, and performance are exercised before publication.
+
 ## [v39] — 07-30-2026
 
 Release name: “Aurora.”
