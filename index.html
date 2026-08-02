@@ -766,10 +766,10 @@ a.brand:hover b{text-shadow:0 0 18px var(--accent-glow)}
          data-strip="Sovereign AI under human command — every number measured, dated, and published with its limits.">
   <div class="tagchip" data-anim><i></i>Doug Cashio · Pensacola, FL · 20+ years enterprise</div>
 
-  <h1 class="hero-type" data-anim>
-    <span class="l1" id="heroWord">SOVEREIGN</span>
-    <span class="l1b" id="heroWord2">AI</span>
-    <span class="l2" id="heroSub">UNDER HUMAN COMMAND</span>
+  <h1 class="hero-type" data-anim aria-label="Sovereign AI under human command">
+    <span class="l1" id="heroWord" aria-hidden="true">SOVEREIGN</span>
+    <span class="l1b" id="heroWord2" aria-hidden="true">AI</span>
+    <span class="l2" id="heroSub" aria-hidden="true">UNDER HUMAN COMMAND</span>
   </h1>
 
   <p class="hero-copy" data-anim>I own the stack, qualify every route for quality, privacy and reliability, then spend only what the work earns. Two core hosts. One local-inference host. Nineteen containers. Ten model lanes. One operator at the conn — and every number on this deck is measured, dated, and published with its limits.</p>
@@ -1068,7 +1068,7 @@ a.brand:hover b{text-shadow:0 0 18px var(--accent-glow)}
   This page queries nothing. Zero network calls beyond its own assets.
 </footer>
 
-<div id="bit" data-mood="idle">
+<div id="bit" data-mood="idle" role="complementary" aria-label="Bit, the deck guide">
   <span class="b-lab" id="bitLab">BIT // DECK GUIDE</span>
   <button class="b-btn" id="bitBtn" type="button" title="Bit // ask me"
           aria-label="Bit, the deck guide companion. Activate for a public-safe fact.">
@@ -1078,7 +1078,7 @@ a.brand:hover b{text-shadow:0 0 18px var(--accent-glow)}
   <span class="sr-only" id="bitLive" role="status" aria-live="polite"></span>
 </div>
 
-<div id="strip">
+<div id="strip" role="region" aria-label="Deck status">
   <span class="now" id="stripNow">DECK 00 // VIEWSCREEN</span>
   <span class="mid" id="stripMid">Sovereign AI under human command.</span>
   <span class="rt">19/19 NOMINAL · QUORUM 3/3</span>
