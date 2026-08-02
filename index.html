@@ -2028,6 +2028,20 @@ public-safe export and has no network path to scan anything.</span>`,
 <span class="dim">Read-only narrative interface. Zero network calls, zero credentials.
 Type </span><span class="hi">help</span><span class="dim"> for the full command list.</span>`);
 
+  /* v40: the console greets with the status readout, once, on arrival */
+  (function(){
+    var deck=document.getElementById('console');
+    if(!deck||!('IntersectionObserver' in window)) return;
+    var io=new IntersectionObserver(function(es){es.forEach(function(en){
+      if(!en.isIntersecting) return;
+      io.disconnect();
+      if(HIST.length) return;
+      w('<span class="u">doug@zeus:~$</span> status <span class="dim">// auto</span>');
+      w(pre(R.status()));
+    });},{threshold:.3});
+    io.observe(deck);
+  })();
+
   function run(raw){
     const cmd=(raw||'').trim().toLowerCase(); if(!cmd) return;
     HIST.push(cmd); hi = -1;
