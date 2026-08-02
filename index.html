@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="color-scheme" content="dark">
 <title>CASHIO.US // SOVEREIGN AI UNDER HUMAN COMMAND</title>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'none'; form-action 'none'; object-src 'none'; base-uri 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self'; form-action 'none'; object-src 'none'; base-uri 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="author" content="Doug Cashio">
 <meta name="keywords" content="Doug Cashio, enterprise AI, cybersecurity, sovereign AI, homelab, LLM orchestration, automation, ZeusApollo">
@@ -34,6 +34,7 @@
 <link rel="preload" href="fonts/orbitron-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/exo-2-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/jetbrains-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/js/vendor/gsap.min.js" as="script">
 <meta name="description" content="Doug Cashio — sovereign AI infrastructure under human command. Two core hosts, nineteen containers, ten model lanes. Every number measured, dated, and published with its limits.">
 
 <style>
@@ -606,6 +607,13 @@ body.alert::after{content:'';position:fixed;inset:0;z-index:70;pointer-events:no
 .no-js #chips,.no-js #lanes,.no-js #stack,.no-js .lane-head{display:none !important}
 .no-js .lattice-wrap{min-height:0}
 
+/* Phones get the finished command deck from the first paint. Their motion
+   controller still hydrates below, but it never gates readable content. */
+@media (max-width:759px){
+  #boot{display:none !important}
+  .js-motion [data-anim]{opacity:1}
+}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;
     transition-duration:.001ms !important;scroll-behavior:auto !important}
@@ -732,7 +740,7 @@ a.brand:hover b{text-shadow:0 0 18px var(--accent-glow)}
     <a href="#console">06 Console</a>
     <a href="#hail">07 Hail</a>
   </nav>
-  <button class="tog" id="deckBtn" type="button" aria-expanded="false" aria-controls="deckSheet" aria-label="Open deck navigation">DECKS</button>
+  <button class="tog" id="deckBtn" type="button" aria-expanded="false" aria-controls="deckSheet" aria-label="DECKS — open deck navigation">DECKS</button>
   <div class="stardate">STARDATE <b id="sd">2026.213</b> · <span id="utc">00:00:00 UTC</span></div>
   <button class="tog" id="fxBtn" aria-pressed="true" title="Toggle viewscreen effects">FX ON</button>
   <button class="tog" id="sndBtn" aria-pressed="false" title="Toggle console tones">SND OFF</button>
@@ -1484,24 +1492,25 @@ window.ZATEX = (function(){
 })();
 </script>
 <script>
-/* v40: the viewscreen loads after first paint. Reduced motion never runs it,
-   phones run it after load, FX ON loads it on demand. */
+/* v40: the viewscreen loads after first paint and first intent. Reduced
+   motion never runs it; a delayed fallback keeps the effect discoverable. */
 (function(){
-  var done=false;
+  var done=false, armed=false;
   function boot(){ if(done) return; done=true;
     var s=document.createElement('script');
     s.src='assets/js/vendor/za-viewscreen.js';
     document.body.appendChild(s);
   }
+  function arm(){ if(armed) return; armed=true;
+    ['pointerdown','wheel','touchstart','keydown'].forEach(function(type){
+      addEventListener(type,boot,{once:true,passive:true});
+    });
+    setTimeout(boot,innerWidth<760?15000:9000);
+  }
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){
     document.documentElement.classList.add('no-gl'); }
   else{
-    var idle=window.requestIdleCallback||function(f){setTimeout(f,300)};
-    if(matchMedia('(pointer: coarse)').matches && innerWidth<760){
-      var arm=function(){ idle(boot,{timeout:2200}); };
-      document.readyState==='complete'?arm():addEventListener('load',arm,{once:true});
-      setTimeout(boot,4200);
-    } else { idle(boot,{timeout:900}); setTimeout(boot,1800); }
+    document.readyState==='complete'?arm():addEventListener('load',arm,{once:true});
   }
   var fx=document.getElementById('fxBtn');
   if(fx) fx.addEventListener('click',function(){ setTimeout(function(){
@@ -2251,7 +2260,10 @@ if(!HAS_GSAP){
   function fillStack(){ $$('.plate').forEach(p=>p.classList.add('armed')); }
 
   function startPage(){
-    if(REDUCED){ startStill(); return; }
+    /* Keep the full launch sequence on larger screens. On phones, reveal the
+       same finished composition immediately so the cinematic boot never
+       becomes the page's largest-contentful-paint bottleneck. */
+    if(REDUCED || innerWidth<760){ startStill(); return; }
     document.body.classList.add('is-ready');
     gsap.set(['#conn .stat','.hero-copy','.cta-row .btn','.hint'],{opacity:0});
     setTimeout(unstick, 2800);
@@ -2461,6 +2473,9 @@ if(!HAS_GSAP){
   /* ── go: wait for the stage and the fonts, never gate content on them ── */
   let started=false;
   const go=()=>{ if(started) return; started=true;
+    /* Fonts use swap, so a phone should not hold its first stable frame on
+       the font-loading promise. Larger screens retain the synchronized boot. */
+    if(innerWidth<760){ startPage(); return; }
     (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve())
       .then(startPage).catch(startPage);
   };
