@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-build="v39">
+<html lang="en" data-build="v40">
 <head>
 <meta charset="utf-8">
 <meta name="color-scheme" content="dark">
@@ -38,7 +38,7 @@
 
 <style>
 /* ══════════════════════════════════════════════════════════════════════════
-   ZEUSAPOLLO v39 "AURORA" — the v32 Bridge language, rendered.
+   ZEUSAPOLLO v40 "AURORA" — the v32 Bridge language, rendered.
    Same palette, same type, same decks. A star, a station in rings around
    it, god rays through the structure, and a quality floor that defends
    itself. Native cursor.
@@ -782,11 +782,11 @@ a.brand:hover b{text-shadow:0 0 18px var(--accent-glow)}
   <div class="hint" data-anim>Press <kbd>/</kbd> anywhere to open the command console</div>
 
   <div class="stats" data-anim>
-    <div class="hull stat" data-value="19/19" data-label="CONTAINERS RUNNING" data-sub="LIVE CHECK 07-30-2026"><span class="rail-l"></span><div class="v" data-count="19" data-suffix="/19">0/19</div><div class="k">Containers running</div><div class="s">Live check 07-30-2026</div></div>
-    <div class="hull stat is-cyan" data-value="10" data-label="MODEL LANES"><span class="rail-l is-cyan"></span><div class="v" data-count="10">0</div><div class="k">Model lanes</div><div class="s">Free + local → frontier</div></div>
+    <div class="hull stat" data-value="19/19" data-label="CONTAINERS RUNNING" data-sub="LIVE CHECK 08-01-2026"><span class="rail-l"></span><div class="v" data-count="19" data-suffix="/19">19/19</div><div class="k">Containers running</div><div class="s">Live check 08-01-2026</div></div>
+    <div class="hull stat is-cyan" data-value="10" data-label="MODEL LANES"><span class="rail-l is-cyan"></span><div class="v" data-count="10">10</div><div class="k">Model lanes</div><div class="s">Free + local → frontier</div></div>
     <div class="hull stat is-green" data-value="0" data-label="SECURITY UPDATES DUE"><span class="rail-l is-green"></span><div class="v" data-count="0">0</div><div class="k">Security updates due</div><div class="s">Fleet fully patched</div></div>
-    <div class="hull stat" data-value="$0.26" data-label="OBSERVED AI COST / DAY" data-sub="$6.49 EST. MONTHLY"><span class="rail-l"></span><div class="v" data-count="0.26" data-prefix="$" data-dec="2">$0.00</div><div class="k">Observed AI cost / day</div><div class="s">$6.49 est. monthly</div></div>
-    <div class="hull stat is-cyan"><span class="rail-l is-cyan"></span><div class="v" data-count="18.3" data-suffix="%" data-dec="1">0%</div><div class="k">DNS queries blocked</div><div class="s">220,780 blocklist entries</div></div>
+    <div class="hull stat" data-value="$0.26" data-label="OBSERVED AI COST / DAY" data-sub="$6.49 EST. MONTHLY"><span class="rail-l"></span><div class="v" data-count="0.26" data-prefix="$" data-dec="2">$0.26</div><div class="k">Observed AI cost / day</div><div class="s">$6.49 est. monthly</div></div>
+    <div class="hull stat is-cyan"><span class="rail-l is-cyan"></span><div class="v" data-count="14.4" data-suffix="%" data-dec="1">14.4%</div><div class="k">DNS queries blocked</div><div class="s">216,108 blocklist entries</div></div>
   </div>
 </section>
 
@@ -799,7 +799,7 @@ a.brand:hover b{text-shadow:0 0 18px var(--accent-glow)}
     <span class="badge ok">19/19 running</span><span class="badge">Quorum 3/3</span>
   </div>
   <h2 class="deck-title" data-anim>Two core hosts. Atlas on inference.<br>Nineteen containers. <em>Athena holding quorum.</em></h2>
-  <p class="lede" data-anim>A public-safe map of the verified core, carrying root-disk telemetry from the 07-30-2026 check. Roles and container ids are published; addresses, ports, credentials, customer data and access paths are not. Drag the lattice to spin it, select a node to read its charter.</p>
+  <p class="lede" data-anim>A public-safe map of the verified core, carrying root-disk telemetry from the 08-01-2026 check. Roles and container ids are published; addresses, ports, credentials, customer data and access paths are not. Drag the lattice to spin it, select a node to read its charter.</p>
 
   <div class="lattice-wrap" data-anim>
     <div class="lat-hud"><span>Fleet lattice // public-safe</span><span>Drag · click to inspect</span></div>
@@ -815,24 +815,24 @@ a.brand:hover b{text-shadow:0 0 18px var(--accent-glow)}
     <div class="hull card" data-anim><span class="rail-l is-cyan"></span>
       <span class="tag">◎ Sovereign resolver</span>
       <h3>Every lookup lands on owned hardware</h3>
-      <p>Every lookup in the house resolves on owned hardware against 220,780 blocklist entries. Nothing is handed to a third-party resolver to be logged.</p>
+      <p>Every lookup in the house resolves on owned hardware against 216,108 blocklist entries. Nothing is handed to a third-party resolver to be logged.</p>
       <dl class="kv">
-        <dt>Queries in sample</dt><dd>12,100</dd>
-        <dt>Blocked at source</dt><dd>2,218</dd>
-        <dt>Cache hits</dt><dd>4,560</dd>
-        <dt>Active clients</dt><dd>56</dd>
-        <dt>Server failures</dt><dd>0</dd>
+        <dt>Queries in 24h sample</dt><dd>219,628</dd>
+        <dt>Blocked at source</dt><dd>31,547</dd>
+        <dt>Cache hits</dt><dd>89,851</dd>
+        <dt>Active clients</dt><dd>71</dd>
+        <dt>Server failures</dt><dd>16</dd>
         <dt>Refused</dt><dd>0</dd>
       </dl>
       <div class="chart">
-        <div class="chart-cap">Where 12,100 lookups went · 07-30-2026 sample</div>
-        <div class="stackbar" role="img" aria-label="Of 12,100 DNS lookups: 4,560 served from cache, 2,218 blocked at source, 5,322 resolved upstream by the owned resolver">
-          <i class="a" data-w="37.7"></i><i class="b" data-w="18.3"></i><i class="c" data-w="44.0"></i>
+        <div class="chart-cap">Where 219,628 lookups went · 08-01-2026 sample</div>
+        <div class="stackbar" role="img" aria-label="Of 219,628 DNS lookups in 24 hours: 89,851 served from cache, 31,547 blocked at source, 98,230 resolved upstream by the owned resolver">
+          <i class="a" data-w="40.9"></i><i class="b" data-w="14.4"></i><i class="c" data-w="44.7"></i>
         </div>
         <div class="legend">
-          <span><i style="background:#00d68a"></i>Cache hit <b>4,560</b></span>
-          <span><i style="background:#ff7a1a"></i>Blocked <b>2,218</b></span>
-          <span><i style="background:#252c44"></i>Resolved <b>5,322</b></span>
+          <span><i style="background:#00d68a"></i>Cache hit <b>89,851</b></span>
+          <span><i style="background:#ff7a1a"></i>Blocked <b>31,547</b></span>
+          <span><i style="background:#252c44"></i>Resolved <b>98,230</b></span>
         </div>
       </div>
     </div>
@@ -848,7 +848,7 @@ a.brand:hover b{text-shadow:0 0 18px var(--accent-glow)}
     </div>
   </div>
 
-  <div class="truth" data-anim><b>Truth protocol</b> — owner-run live check over cluster SSH on 07-30-2026 at 22:30 CDT. 19/19 containers running, quorum 3/3 with Athena answering, 18 of 19 guests backed up inside 24 hours, 0 security updates outstanding. Atlas is a standalone local-inference host and is not counted in the Proxmox quorum or 19-container total. Valid 30 days or until the next architecture change. This page queries nothing.</div>
+  <div class="truth" data-anim><b>Truth protocol</b> — owner-run live check over cluster SSH on 08-01-2026 at 20:40 CDT. 19/19 containers running, quorum 3/3 with Athena answering, 18 of 19 guests backed up inside 24 hours, 0 security updates outstanding. Atlas is a standalone local-inference host and is not counted in the Proxmox quorum or 19-container total. Valid 30 days or until the next architecture change. This page queries nothing.</div>
 </section>
 
 <!-- ══ DECK 02 // ROUTING ════════════════════════════════════════════════ -->
@@ -897,7 +897,7 @@ a.brand:hover b{text-shadow:0 0 18px var(--accent-glow)}
   <div class="deck-no" aria-hidden="true">03</div>
   <div class="deck-head" data-anim>
     <span class="eyebrow">Deck 03 // The Iron</span><span class="line"></span>
-    <span class="badge hot">v39 · AURORA</span>
+    <span class="badge hot">v40 · AURORA</span>
   </div>
   <h2 class="deck-title" data-anim>Six plates on the bar.<br><em>One operator under it.</em></h2>
   <p class="lede" data-anim>Anyone can name a stack. The weight is owning every layer of it at once — hardware, network, storage, models, policy and proof — while it stays online. The six-layer sequence racks automatically when this deck enters view; select any plate to inspect it.</p>
@@ -1032,7 +1032,7 @@ a.brand:hover b{text-shadow:0 0 18px var(--accent-glow)}
     <div class="hull card" data-anim><span class="rail-l is-green"></span><span class="tag">Mode</span><p>Local safe · egress none</p></div>
     <div class="hull card" data-anim><span class="rail-l is-green"></span><span class="tag">Gateway</span><p>Hermes v0.19</p></div>
     <div class="hull card" data-anim><span class="rail-l is-green"></span><span class="tag">Entry lane</span><p>Kimi K3 // Tier 0</p></div>
-    <div class="hull card" data-anim><span class="rail-l is-green"></span><span class="tag">Export</span><p>Verified 07-30-2026</p></div>
+    <div class="hull card" data-anim><span class="rail-l is-green"></span><span class="tag">Export</span><p>Verified 08-01-2026</p></div>
   </div>
   <div class="truth" data-anim><b>Scope</b> — commands answer from the dated public-safe export. The console holds no credentials, opens no sockets, and cannot reach the fleet.</div>
 </section>
@@ -1063,8 +1063,8 @@ a.brand:hover b{text-shadow:0 0 18px var(--accent-glow)}
 </main>
 
 <footer>
-  <b>CASHIO.US</b> · ZEUSAPOLLO v39 // AURORA<br>
-  Figures verified 07-30-2026 · valid 30 days or until the next architecture change<br>
+  <b>CASHIO.US</b> · ZEUSAPOLLO v40 // AURORA<br>
+  Figures verified 08-01-2026 · valid 30 days or until the next architecture change<br>
   This page queries nothing. Zero network calls beyond its own assets.
 </footer>
 
@@ -1089,10 +1089,10 @@ a.brand:hover b{text-shadow:0 0 18px var(--accent-glow)}
 <script src="assets/js/vendor/ScrambleTextPlugin.min.js"></script>
 <script src="assets/js/vendor/lenis.min.js"></script>
 <script src="assets/js/bit.js"></script>
-<!-- ══ DATA — mirrors status.json, verified 07-30-2026 ═══════════════════ -->
+<!-- ══ DATA — mirrors status.json, verified 08-01-2026 ═══════════════════ -->
 <script>
 window.ZA = {
-  version:"v39", release:"AURORA", verified:"07-30-2026", expires:"08-29-2026",
+  version:"v40", release:"AURORA", verified:"08-01-2026", expires:"08-31-2026",
   hosts:2, roles:19, healthy:19, lanes:10, backups24:18, secUpdates:0,
   costDay:0.26, costMonth:6.49, gateway:"Hermes v0.19 QUICKSILVER",
   links:{
@@ -1114,7 +1114,7 @@ window.ZA = {
     {n:"tools",h:"ZEUS",ct:"CT-119",d:35,r:"Utility surface",p:"Shared internal utilities the automation lanes call, versioned alongside the fleet."},
     {n:"backup-verifier",h:"APOLLO",ct:"CT-207",d:11,r:"Restore proof",p:"A backup nobody has restored is a rumor. This one proves the chain, which is how 18 of 19 is a number and not a hope."},
     {n:"control-plane",h:"ZEUS",ct:"CT-101",d:30,r:"Fleet control",p:"Reconciliation and lifecycle for every container, driven from declared state rather than memory."},
-    {n:"technitium-dns",h:"ZEUS",ct:"CT-102",d:31,r:"Sovereign resolver",p:"Primary DNS against 220,780 blocklist entries. 12,100 queries in the sample, 0 server failures."},
+    {n:"technitium-dns",h:"ZEUS",ct:"CT-102",d:31,r:"Sovereign resolver",p:"Primary DNS against 216,108 blocklist entries. 219,628 queries in the 24-hour sample, 16 server failures."},
     {n:"pbs",h:"APOLLO",ct:"CT-209",d:62,r:"Backup server",p:"Deduplicated, verified backup target for the whole fleet with retention held on owned disks."},
     {n:"litellm-state",h:"ZEUS",ct:"CT-117",d:4,r:"Routing state",p:"Budget ceilings, health and failover state for the lane proxy, kept separate from the proxy itself."},
     {n:"media-stack",h:"APOLLO",ct:"CT-211",d:56,r:"Media services",p:"Household media services, isolated from the AI fabric and from anything holding credentials."},
@@ -1135,8 +1135,8 @@ window.ZA = {
   ],
   plates:[
     {n:"HARDWARE",d:"Two core hosts bought, racked and maintained personally — a Ryzen 7 5800H compute node and an i7-7700T storage node — with Atlas carrying standalone local inference and Athena holding the physical edge and cluster quorum. No rented control plane, no vendor cage."},
-    {n:"NETWORK",d:"Every lookup in the house resolves on owned hardware against 220,780 blocklist entries, with a second authoritative resolver so name service survives maintenance on either host."},
-    {n:"STORAGE",d:"Deduplicated backup to an owned target, verified rather than assumed: 18 of 19 guests inside 24 hours at the 07-30-2026 check, with an encrypted offsite copy closing the 3-2-1 rule."},
+    {n:"NETWORK",d:"Every lookup in the house resolves on owned hardware against 216,108 blocklist entries, with a second authoritative resolver so name service survives maintenance on either host."},
+    {n:"STORAGE",d:"Deduplicated backup to an owned target, verified rather than assumed: 18 of 19 guests inside 24 hours at the 08-01-2026 check, with an encrypted offsite copy closing the 3-2-1 rule."},
     {n:"MODELS",d:"Ten configured lanes from free classification through local fallback to frontier adjudication, normalized behind one proxy so the routing law is policy, not plumbing."},
     {n:"POLICY",d:"Scope, privacy and budget resolve before execution. Secrets stay in owned custody, egress is deliberate, and every lane carries a ceiling it cannot spend past."},
     {n:"PROOF",d:"Nothing is published without a date, a scope and a stated limit. The figures on this page came from an owner-run live check, and they expire on purpose."}
@@ -1145,18 +1145,18 @@ window.ZA = {
      arms them. Rendered by the boot sequence and asserted by CI. */
   bootManifest:[
     ['CONTAINER ROLES', '19 DOCUMENTED'],
-    ['LIVE CHECK 07-30-2026', '19 OF 19 RUNNING'],
+    ['LIVE CHECK 08-01-2026', '19 OF 19 RUNNING'],
     ['BACKUP CHAIN', '18 OF 19 INSIDE 24H'],
     ['OPERATING COST', '$0.26 / DAY'],
     ['ROUTING FABRIC', '10 LANES ARMED']
   ],
   plateMeta:[
     {a:"2 core hosts + Athena",     b:"Owner-racked, owner-maintained"},
-    {a:"220,780 blocklist entries", b:"12,100 lookups in the sample"},
-    {a:"18 of 19 inside 24h",       b:"Verified 07-30-2026"},
+    {a:"216,108 blocklist entries", b:"219,628 lookups in the sample"},
+    {a:"18 of 19 inside 24h",       b:"Verified 08-01-2026"},
     {a:"10 configured lanes",       b:"Free + local → frontier"},
     {a:"0 security updates due",    b:"A spend ceiling on every lane"},
-    {a:"Every figure dated",        b:"Expires 08-29-2026"}
+    {a:"Every figure dated",        b:"Expires 08-31-2026"}
   ],
   builds:[
     {i:"◈",n:"Hermes Orchestrator",t:"01 // Gateway",d:"One gateway in front of every model lane: policy enforcement, budget ceilings, health reconciliation, failover in both directions, and a dated public-safe export of its own state.",mv:"v0.19",mk:"Quicksilver release",c:"",st:"running",feat:1,tech:["LiteLLM","Python","OpenRouter","ZenMux","systemd"]},
@@ -1913,11 +1913,11 @@ why        two hosts can tie. Athena breaks it, so the cluster cannot split-brai
 <span class="dim">Outside the container count, same reason as Atlas.</span>`,
 
     dns:()=>`<span class="ok">SOVEREIGN RESOLVER</span>  sample dated ${D.verified}
-queries      <span class="hi">12,100</span>        blocklist  <span class="hi">220,780</span> entries
-cache hits   <span class="hi">4,560</span>  (37.7%)
-blocked      <span class="hi">2,218</span>  (18.3%)
-resolved     <span class="hi">5,322</span>  (44.0%)
-clients      56           failures <span class="hi">0</span>       refused <span class="hi">0</span>
+queries      <span class="hi">219,628</span>       blocklist  <span class="hi">216,108</span> entries
+cache hits   <span class="hi">89,851</span>  (40.9%)
+blocked      <span class="hi">31,547</span>  (14.4%)
+resolved     <span class="hi">98,230</span>  (44.7%)
+clients      71           failures <span class="hi">16</span>      refused <span class="hi">0</span>
 <span class="dim">Every lookup in the house lands on owned hardware. Nothing is handed
 to a third-party resolver to be logged.</span>`,
 
@@ -1951,7 +1951,7 @@ only when consequence earns it. The aggregate is measured, not modelled.</span>`
       ├──────────────┤
       │  03 STORAGE  │  ${D.backups24}/${D.roles} inside 24h, verified
       ├──────────────┤
-      │  02 NETWORK  │  owned resolver, 220,780 blocklist entries
+      │  02 NETWORK  │  owned resolver, 216,108 blocklist entries
       ├──────────────┤
       │  01 HARDWARE │  two core hosts + Atlas + Athena
       └──────────────┘
@@ -1960,7 +1960,7 @@ only when consequence earns it. The aggregate is measured, not modelled.</span>`
     builds:()=>D.builds.map((b,i)=>` <span class="u">0${i+1} ${b.n.padEnd(32)}</span><span class="dim">${b.t.padEnd(20)}${(b.tech||[]).slice(0,3).join(', ')}</span>`).join('\n'),
 
     proof:()=>`<span class="ok">TRUTH PROTOCOL</span>
-Owner-run live check over cluster SSH on ${D.verified} at 22:30 CDT.
+Owner-run live check over cluster SSH on ${D.verified} at 20:40 CDT.
 ${D.healthy}/${D.roles} containers running · quorum 3/3 with Athena answering
 ${D.backups24} of ${D.roles} guests backed up inside 24 hours · ${D.secUpdates} security updates outstanding
 Atlas is standalone inference and is not counted in the quorum or the ${D.roles}.
@@ -2101,7 +2101,7 @@ const BIT = (function(){
     ['yes','YES // I AM BIT. I KNOW TWO WORDS.'],
     ['yes','YES // '+D.healthy+'/'+D.roles+' CONTAINERS RUNNING.'],
     ['no', 'NO // NO ADDRESSES. NO PORTS. NO CREDENTIALS.'],
-    ['yes','YES // 18.3% OF DNS QUERIES BLOCKED AT SOURCE.'],
+    ['yes','YES // 14.4% OF DNS QUERIES BLOCKED AT SOURCE.'],
     ['yes','YES // $'+D.costDay.toFixed(2)+' A DAY. THAT IS THE WHOLE BILL.'],
     ['no', 'NO // NOTHING HERE CALLS A LIVE SYSTEM.'],
     ['yes','YES // TEN LANES. ONE GATEWAY. NO BRIDGE TAX.'],
