@@ -1393,7 +1393,31 @@ window.ZATEX = (function(){
   return {hull,hex,grain,dirt,panel,foil,toNormal,cv};
 })();
 </script>
-<script src="assets/js/vendor/za-viewscreen.js"></script>
+<script>
+/* v40: the viewscreen loads after first paint. Reduced motion never runs it,
+   phones run it after load, FX ON loads it on demand. */
+(function(){
+  var done=false;
+  function boot(){ if(done) return; done=true;
+    var s=document.createElement('script');
+    s.src='assets/js/vendor/za-viewscreen.js';
+    document.body.appendChild(s);
+  }
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){
+    document.documentElement.classList.add('no-gl'); }
+  else{
+    var idle=window.requestIdleCallback||function(f){setTimeout(f,300)};
+    if(matchMedia('(pointer: coarse)').matches && innerWidth<760){
+      var arm=function(){ idle(boot,{timeout:2200}); };
+      document.readyState==='complete'?arm():addEventListener('load',arm,{once:true});
+      setTimeout(boot,4200);
+    } else { idle(boot,{timeout:900}); setTimeout(boot,1800); }
+  }
+  var fx=document.getElementById('fxBtn');
+  if(fx) fx.addEventListener('click',function(){ setTimeout(function(){
+    if(!done && fx.getAttribute('aria-pressed')==='true') boot(); },0); });
+})();
+</script>
 <!-- ══ PAGE MOTION, LATTICE, CHARTS, CONSOLE ════════════════════════════ -->
 <script>
 (function(){
@@ -2125,6 +2149,7 @@ if(!HAS_GSAP){
   function startPage(){
     if(REDUCED){ startStill(); return; }
     document.body.classList.add('is-ready');
+    gsap.set(['#conn .stat','.hero-copy','.cta-row .btn','.hint'],{opacity:0});
     setTimeout(unstick, 2800);
     addEventListener('load', ()=>setTimeout(unstick, 900), {once:true});
     const tl = gsap.timeline();
@@ -2336,7 +2361,7 @@ if(!HAS_GSAP){
       .then(startPage).catch(startPage);
   };
   if(window.ZAP && window.ZAP.ready) go();
-  else { addEventListener('za:stage-ready', go, {once:true}); setTimeout(go, 2800); }
+  else { addEventListener('za:stage-ready', go, {once:true}); setTimeout(go, 200); }
   addEventListener('load', ()=>ScrollTrigger.refresh());
 }
 })();
