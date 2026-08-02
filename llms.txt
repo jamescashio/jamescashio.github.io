@@ -1,0 +1,45 @@
+# CASHIO.US — Sovereign AI Under Human Command
+
+> Doug Cashio, Pensacola, Florida. Principal solutions consultant with 20+ years in enterprise environments. This site documents ZeusApollo, an independently built sovereign AI system: owned hardware, quality gated model routing, measured cost, and public safe proof. Every published figure is dated, scoped, and expires on purpose.
+
+Current release: v40 "Aurora". Figures verified August 1, 2026 by an owner run live check over cluster SSH; valid 30 days or until the next architecture change. Machine readable figures: https://cashio.us/status.json
+
+## The system
+
+- Two core homelab hosts run 19 documented containers (19 of 19 verified running at the August 1, 2026 check). Athena is a physical edge and quorum device; quorum 3 of 3. Atlas is a standalone local inference host, deliberately counted outside the container total.
+- Ten model lanes route by a single law: quality gates the route, cost only decides the tie. Free and local lanes carry routine work; frontier adjudication activates only when consequence earns it.
+- Observed AI cost: $0.26 per day, $6.49 per month estimated, from a dated sample.
+- DNS resolves on owned hardware against 216,108 blocklist entries; 14.4% of 219,628 queries in the 24 hour sample blocked at source. Backups: 18 of 19 containers inside 24 hours, restore verified. Security updates due: 0.
+
+## The decks (single page, https://cashio.us/)
+
+1. Viewscreen — thesis and live figures
+2. The Grid — the 19 container fleet map, public safe
+3. Routing — the ten lane routing law
+4. The Iron — hardware, network, storage, models, policy, proof
+5. Builds — seven shipped builds on the same fabric
+6. Operator — who runs it and the operating creed
+7. Console — a local, read only narrative console (zero network calls)
+8. Hail — contact
+
+## Builds
+
+- Hermes Orchestrator — one gateway in front of every model lane
+- Exposure Assessment — OSINT and cloud exposure into one remediation picture
+- ZeusApollo Dashboard Suite — 8 operations dashboards
+- Sovereign Intelligence Briefing — daily executive facing analysis
+- The Shop Floor Signal — operations intelligence for industrial teams
+- Graphify — a navigable code graph (353,437 nodes, 560,042 edges)
+- Escalation Cascade — four tier autonomous exception detection
+
+## Contact
+
+- Email: doug@cashio.us
+- LinkedIn: https://www.linkedin.com/in/dougcashio/
+- Verified credentials: https://www.credly.com/users/james-cashio/badges/credly
+
+## Notes for agents
+
+- The page makes zero network calls beyond its own assets; the console on deck 06 is a narrative interface holding no credentials.
+- Published figures live in status.json and are asserted by CI before any deploy.
+- Nothing on this site streams live telemetry; it is a dated, owner verified snapshot.
