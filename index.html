@@ -232,9 +232,10 @@ h2.deck-title em{font-style:normal;color:var(--accent);text-shadow:0 0 34px var(
   font-size:clamp(13px,2.2vw,34px);letter-spacing:.30em;color:var(--cyan);
   margin-top:clamp(16px,2.2vw,30px);text-shadow:0 0 12px rgba(4,6,12,.9),0 0 34px var(--cyan-glow);
 }
-.hero-copy{max-width:62ch;margin:clamp(24px,3.2vw,38px) auto 0;color:var(--text-dim);
+.hero-copy{max-width:62ch;margin:clamp(16px,2.6vw,30px) auto 0;color:var(--text-dim);
+  padding:16px 26px;border-radius:18px;background:radial-gradient(85% 130% at 50% 50%,rgba(5,6,10,.58),rgba(5,6,10,.30) 60%,transparent 100%);
   font-size:clamp(14.5px,.55vw + 13px,18px);text-wrap:pretty;
-  text-shadow:0 1px 12px rgba(4,5,10,.95),0 0 34px rgba(4,5,10,.8)}
+  text-shadow:0 1px 3px rgba(4,5,10,.98),0 1px 14px rgba(4,5,10,.95),0 0 36px rgba(4,5,10,.85)}
 .cta-row{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:clamp(28px,3.6vw,44px)}
 
 /* ── buttons: physically beveled, not flat outlines ──────────────────── */
@@ -262,9 +263,9 @@ h2.deck-title em{font-style:normal;color:var(--accent);text-shadow:0 0 34px var(
 }
 .btn-ghost:hover{transform:translateY(-3px);color:#bffcff;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 4px 10px rgba(0,0,0,.45),0 0 44px rgba(0,249,255,.26)}
-.btn-quiet{color:var(--text-dim);border-color:var(--glass-border);background:var(--glass)}
+.btn-quiet{color:var(--text);border-color:rgba(255,255,255,.16);background:rgba(6,7,13,.55);text-shadow:0 1px 8px rgba(4,5,10,.9)}
 .btn-quiet:hover{transform:translateY(-3px);color:var(--text);border-color:var(--glass-hi)}
-.hint{margin-top:20px;font:400 10px/1 'JetBrains Mono',monospace;letter-spacing:.24em;color:var(--text-mute);text-transform:uppercase}
+.hint{margin-top:20px;font:400 10px/1 'JetBrains Mono',monospace;letter-spacing:.24em;color:var(--text-dim);text-transform:uppercase;text-shadow:0 1px 10px rgba(4,5,10,.95),0 0 22px rgba(4,5,10,.85)}
 .hint kbd{border:1px solid var(--glass-border);border-radius:3px;padding:2px 6px;background:var(--glass);color:var(--text-dim)}
 
 /* ── stat rail ───────────────────────────────────────────────────────── */
@@ -275,9 +276,9 @@ h2.deck-title em{font-style:normal;color:var(--accent);text-shadow:0 0 34px var(
   line-height:1;color:var(--accent);text-shadow:0 0 30px var(--accent-glow);font-variant-numeric:tabular-nums}
 .stat.is-cyan .v{color:var(--cyan);text-shadow:0 0 30px var(--cyan-glow)}
 .stat.is-green .v{color:var(--green);text-shadow:0 0 30px var(--green-glow)}
-.stat .k{margin-top:9px;font:600 9.5px/1.4 'JetBrains Mono',monospace;letter-spacing:.19em;
+.stat .k{margin-top:9px;font:600 10.5px/1.4 'JetBrains Mono',monospace;letter-spacing:.17em;
   text-transform:uppercase;color:var(--text-dim)}
-.stat .s{margin-top:5px;font:400 9px/1.4 'JetBrains Mono',monospace;letter-spacing:.14em;
+.stat .s{margin-top:5px;font:400 10px/1.4 'JetBrains Mono',monospace;letter-spacing:.12em;
   text-transform:uppercase;color:var(--text-mute)}
 
 /* ── deck headers ────────────────────────────────────────────────────── */
@@ -417,7 +418,7 @@ h2.deck-title em{font-style:normal;color:var(--accent);text-shadow:0 0 34px var(
 .term-hint kbd{border:1px solid var(--glass-border);border-radius:3px;padding:1px 5px;
   background:var(--glass);color:var(--text-dim);margin:0 2px}
 .term-in input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:var(--text);
-  font:400 12.5px/1.4 'JetBrains Mono',monospace;letter-spacing:.03em}
+  font:400 12.5px/1.6 'JetBrains Mono',monospace;letter-spacing:.03em;padding:3px 0;min-height:24px}
 .term-in input:focus-visible{outline:none}
 .term-in:focus-within{box-shadow:inset 0 0 0 1px rgba(0,249,255,.35)}
 .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
@@ -627,6 +628,72 @@ body.alert::after{content:'';position:fixed;inset:0;z-index:70;pointer-events:no
   .term-out{font-size:11.5px;padding:16px}
   .lat-read{left:10px;right:10px;bottom:10px;min-width:0}
 }
+
+/* ══ v40 ADDITIONS — same palette, same type, no new hues ══════════════ */
+a.brand{color:var(--text)}
+a.brand:hover b{text-shadow:0 0 18px var(--accent-glow)}
+
+/* ask chip: the Hail invitation, above the fold */
+.tagchip-ask{margin-left:10px;color:var(--text-dim);border-color:rgba(0,249,255,.26)}
+.tagchip-ask i{background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+.tagchip-ask:hover{color:var(--cyan);border-color:rgba(0,249,255,.5)}
+@media (max-width:700px){.tagchip-ask{margin:10px 0 0}}
+
+/* status pill degrades by width instead of overflowing */
+#chrome .pill{flex:0 1 auto;min-width:0;overflow:hidden}
+.pill .p-short{display:none}
+@media (max-width:560px){.pill .p-full{display:none}.pill .p-short{display:inline}}
+@media (max-width:400px){#chrome .pill{padding:7px 8px}.pill .p-short{display:none}}
+@media (max-width:1240px){#chrome nav a{padding:8px 6px;letter-spacing:.10em}}
+
+/* deck select: phones get navigation instead of nothing */
+#deckBtn{display:none}
+@media (max-width:860px){#deckBtn{display:inline-flex;margin-left:auto}}
+@media (max-width:400px){#deckBtn{padding:7px 9px}}
+#deckSheet{position:fixed;inset:0;z-index:120}
+#deckSheet[hidden]{display:none}
+.ds-scrim{position:absolute;inset:0;background:rgba(4,5,9,.66);backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity .32s}
+.ds-panel{position:absolute;left:0;right:0;top:0;transform:translateY(-102%);
+  transition:transform .38s var(--ease-out-expo);
+  background:var(--panel-grad);border-bottom:1px solid rgba(255,149,0,.35);
+  box-shadow:var(--lift-2),inset 0 1px 0 var(--bevel-hi);
+  padding:12px var(--rail) 22px;max-height:88vh;overflow-y:auto;overscroll-behavior:contain}
+#deckSheet.on .ds-scrim{opacity:1}
+#deckSheet.on .ds-panel{transform:translateY(0)}
+.ds-head{display:flex;align-items:center;justify-content:space-between;height:44px;margin-bottom:8px}
+.ds-title{font:600 10.5px/1 'JetBrains Mono',monospace;letter-spacing:.34em;color:var(--text-mute)}
+.ds-links{display:grid;gap:4px}
+.ds-link{display:grid;grid-template-columns:58px 1fr;align-items:center;gap:14px;
+  padding:11px 12px;border-radius:10px;border:1px solid transparent;min-height:48px}
+.ds-link b{font-family:'Orbitron',sans-serif;font-weight:900;font-size:22px;letter-spacing:.02em;
+  color:var(--accent);text-shadow:0 0 18px var(--accent-glow)}
+.ds-link span{display:block;min-width:0}
+.ds-link i{display:block;font-style:normal;font:700 15px/1.25 'Exo 2',sans-serif;color:var(--text)}
+.ds-link em{display:block;font-style:normal;font:400 9.5px/1.5 'JetBrains Mono',monospace;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--text-mute);margin-top:3px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ds-link:hover,.ds-link:focus-visible{background:rgba(255,149,0,.08);border-color:rgba(255,149,0,.25)}
+.ds-link:hover i{color:var(--accent)}
+@media (prefers-reduced-motion:no-preference){
+  #deckSheet.on .ds-link{opacity:0;transform:translateY(-8px);
+    animation:dsIn .45s var(--ease-out-expo) forwards;animation-delay:calc(.04s + var(--i,0)*.035s)}
+  @keyframes dsIn{to{opacity:1;transform:none}}
+}
+@media (prefers-reduced-motion:reduce){.ds-scrim,.ds-panel{transition:none}}
+
+/* Bit yields on phones: smaller, calmer, speaks above the dock when tapped */
+@media (max-width:620px){
+  #bit{right:8px;bottom:44px;opacity:.55;transition:opacity .3s}
+  #bit:hover,#bit:focus-within,#bit[data-mood="yes"],#bit[data-mood="no"]{opacity:1}
+  #bit .b-btn{width:52px;height:52px}
+  #bit[data-mood="yes"] .b-lab,#bit[data-mood="no"] .b-lab{
+    display:block;position:absolute;right:0;bottom:calc(100% + 10px);margin:0;text-align:right;
+    background:rgba(6,7,12,.94);border:1px solid var(--glass-border);border-radius:8px;
+    padding:8px 12px;max-width:74vw}
+}
+/* the console input never triggers mobile browser zoom */
+@media (max-width:760px){.term-in input{font-size:16px}}
 </style>
 </head>
 <body class="js-motion no-js">
