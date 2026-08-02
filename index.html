@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" data-build="v39">
+<html lang="en" data-build="v40">
 <head>
 <meta charset="utf-8">
 <meta name="color-scheme" content="dark">
 <title>CASHIO.US // SOVEREIGN AI UNDER HUMAN COMMAND</title>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'none'; form-action 'none'; object-src 'none'; base-uri 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self'; form-action 'none'; object-src 'none'; base-uri 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="author" content="Doug Cashio">
 <meta name="keywords" content="Doug Cashio, enterprise AI, cybersecurity, sovereign AI, homelab, LLM orchestration, automation, ZeusApollo">
@@ -34,11 +34,12 @@
 <link rel="preload" href="fonts/orbitron-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/exo-2-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/jetbrains-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/js/vendor/gsap.min.js" as="script">
 <meta name="description" content="Doug Cashio — sovereign AI infrastructure under human command. Two core hosts, nineteen containers, ten model lanes. Every number measured, dated, and published with its limits.">
 
 <style>
 /* ══════════════════════════════════════════════════════════════════════════
-   ZEUSAPOLLO v39 "AURORA" — the v32 Bridge language, rendered.
+   ZEUSAPOLLO v40 "AURORA" — the v32 Bridge language, rendered.
    Same palette, same type, same decks. A star, a station in rings around
    it, god rays through the structure, and a quality floor that defends
    itself. Native cursor.
@@ -232,9 +233,10 @@ h2.deck-title em{font-style:normal;color:var(--accent);text-shadow:0 0 34px var(
   font-size:clamp(13px,2.2vw,34px);letter-spacing:.30em;color:var(--cyan);
   margin-top:clamp(16px,2.2vw,30px);text-shadow:0 0 12px rgba(4,6,12,.9),0 0 34px var(--cyan-glow);
 }
-.hero-copy{max-width:62ch;margin:clamp(24px,3.2vw,38px) auto 0;color:var(--text-dim);
+.hero-copy{max-width:62ch;margin:clamp(16px,2.6vw,30px) auto 0;color:var(--text-dim);
+  padding:16px 26px;border-radius:18px;background:radial-gradient(85% 130% at 50% 50%,rgba(5,6,10,.58),rgba(5,6,10,.30) 60%,transparent 100%);
   font-size:clamp(14.5px,.55vw + 13px,18px);text-wrap:pretty;
-  text-shadow:0 1px 12px rgba(4,5,10,.95),0 0 34px rgba(4,5,10,.8)}
+  text-shadow:0 1px 3px rgba(4,5,10,.98),0 1px 14px rgba(4,5,10,.95),0 0 36px rgba(4,5,10,.85)}
 .cta-row{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:clamp(28px,3.6vw,44px)}
 
 /* ── buttons: physically beveled, not flat outlines ──────────────────── */
@@ -262,9 +264,9 @@ h2.deck-title em{font-style:normal;color:var(--accent);text-shadow:0 0 34px var(
 }
 .btn-ghost:hover{transform:translateY(-3px);color:#bffcff;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 4px 10px rgba(0,0,0,.45),0 0 44px rgba(0,249,255,.26)}
-.btn-quiet{color:var(--text-dim);border-color:var(--glass-border);background:var(--glass)}
+.btn-quiet{color:var(--text);border-color:rgba(255,255,255,.16);background:rgba(6,7,13,.55);text-shadow:0 1px 8px rgba(4,5,10,.9)}
 .btn-quiet:hover{transform:translateY(-3px);color:var(--text);border-color:var(--glass-hi)}
-.hint{margin-top:20px;font:400 10px/1 'JetBrains Mono',monospace;letter-spacing:.24em;color:var(--text-mute);text-transform:uppercase}
+.hint{margin-top:20px;font:400 10px/1 'JetBrains Mono',monospace;letter-spacing:.24em;color:var(--text-dim);text-transform:uppercase;text-shadow:0 1px 10px rgba(4,5,10,.95),0 0 22px rgba(4,5,10,.85)}
 .hint kbd{border:1px solid var(--glass-border);border-radius:3px;padding:2px 6px;background:var(--glass);color:var(--text-dim)}
 
 /* ── stat rail ───────────────────────────────────────────────────────── */
@@ -275,9 +277,9 @@ h2.deck-title em{font-style:normal;color:var(--accent);text-shadow:0 0 34px var(
   line-height:1;color:var(--accent);text-shadow:0 0 30px var(--accent-glow);font-variant-numeric:tabular-nums}
 .stat.is-cyan .v{color:var(--cyan);text-shadow:0 0 30px var(--cyan-glow)}
 .stat.is-green .v{color:var(--green);text-shadow:0 0 30px var(--green-glow)}
-.stat .k{margin-top:9px;font:600 9.5px/1.4 'JetBrains Mono',monospace;letter-spacing:.19em;
+.stat .k{margin-top:9px;font:600 10.5px/1.4 'JetBrains Mono',monospace;letter-spacing:.17em;
   text-transform:uppercase;color:var(--text-dim)}
-.stat .s{margin-top:5px;font:400 9px/1.4 'JetBrains Mono',monospace;letter-spacing:.14em;
+.stat .s{margin-top:5px;font:400 10px/1.4 'JetBrains Mono',monospace;letter-spacing:.12em;
   text-transform:uppercase;color:var(--text-mute)}
 
 /* ── deck headers ────────────────────────────────────────────────────── */
@@ -417,7 +419,7 @@ h2.deck-title em{font-style:normal;color:var(--accent);text-shadow:0 0 34px var(
 .term-hint kbd{border:1px solid var(--glass-border);border-radius:3px;padding:1px 5px;
   background:var(--glass);color:var(--text-dim);margin:0 2px}
 .term-in input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:var(--text);
-  font:400 12.5px/1.4 'JetBrains Mono',monospace;letter-spacing:.03em}
+  font:400 12.5px/1.6 'JetBrains Mono',monospace;letter-spacing:.03em;padding:3px 0;min-height:24px}
 .term-in input:focus-visible{outline:none}
 .term-in:focus-within{box-shadow:inset 0 0 0 1px rgba(0,249,255,.35)}
 .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
@@ -605,6 +607,13 @@ body.alert::after{content:'';position:fixed;inset:0;z-index:70;pointer-events:no
 .no-js #chips,.no-js #lanes,.no-js #stack,.no-js .lane-head{display:none !important}
 .no-js .lattice-wrap{min-height:0}
 
+/* Phones get the finished command deck from the first paint. Their motion
+   controller still hydrates below, but it never gates readable content. */
+@media (max-width:759px){
+  #boot{display:none !important}
+  .js-motion [data-anim]{opacity:1}
+}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;
     transition-duration:.001ms !important;scroll-behavior:auto !important}
@@ -627,6 +636,72 @@ body.alert::after{content:'';position:fixed;inset:0;z-index:70;pointer-events:no
   .term-out{font-size:11.5px;padding:16px}
   .lat-read{left:10px;right:10px;bottom:10px;min-width:0}
 }
+
+/* ══ v40 ADDITIONS — same palette, same type, no new hues ══════════════ */
+a.brand{color:var(--text)}
+a.brand:hover b{text-shadow:0 0 18px var(--accent-glow)}
+
+/* ask chip: the Hail invitation, above the fold */
+.tagchip-ask{margin-left:10px;color:var(--text-dim);border-color:rgba(0,249,255,.26)}
+.tagchip-ask i{background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+.tagchip-ask:hover{color:var(--cyan);border-color:rgba(0,249,255,.5)}
+@media (max-width:700px){.tagchip-ask{margin:10px 0 0}}
+
+/* status pill degrades by width instead of overflowing */
+#chrome .pill{flex:0 1 auto;min-width:0;overflow:hidden}
+.pill .p-short{display:none}
+@media (max-width:560px){.pill .p-full{display:none}.pill .p-short{display:inline}}
+@media (max-width:400px){#chrome .pill{padding:7px 8px}.pill .p-short{display:none}}
+@media (max-width:1240px){#chrome nav a{padding:8px 6px;letter-spacing:.10em}}
+
+/* deck select: phones get navigation instead of nothing */
+#deckBtn{display:none}
+@media (max-width:860px){#deckBtn{display:inline-flex;margin-left:auto}}
+@media (max-width:400px){#deckBtn{padding:7px 9px}}
+#deckSheet{position:fixed;inset:0;z-index:120}
+#deckSheet[hidden]{display:none}
+.ds-scrim{position:absolute;inset:0;background:rgba(4,5,9,.66);backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity .32s}
+.ds-panel{position:absolute;left:0;right:0;top:0;transform:translateY(-102%);
+  transition:transform .38s var(--ease-out-expo);
+  background:var(--panel-grad);border-bottom:1px solid rgba(255,149,0,.35);
+  box-shadow:var(--lift-2),inset 0 1px 0 var(--bevel-hi);
+  padding:12px var(--rail) 22px;max-height:88vh;overflow-y:auto;overscroll-behavior:contain}
+#deckSheet.on .ds-scrim{opacity:1}
+#deckSheet.on .ds-panel{transform:translateY(0)}
+.ds-head{display:flex;align-items:center;justify-content:space-between;height:44px;margin-bottom:8px}
+.ds-title{font:600 10.5px/1 'JetBrains Mono',monospace;letter-spacing:.34em;color:var(--text-mute)}
+.ds-links{display:grid;gap:4px}
+.ds-link{display:grid;grid-template-columns:58px 1fr;align-items:center;gap:14px;
+  padding:11px 12px;border-radius:10px;border:1px solid transparent;min-height:48px}
+.ds-link b{font-family:'Orbitron',sans-serif;font-weight:900;font-size:22px;letter-spacing:.02em;
+  color:var(--accent);text-shadow:0 0 18px var(--accent-glow)}
+.ds-link span{display:block;min-width:0}
+.ds-link i{display:block;font-style:normal;font:700 15px/1.25 'Exo 2',sans-serif;color:var(--text)}
+.ds-link em{display:block;font-style:normal;font:400 9.5px/1.5 'JetBrains Mono',monospace;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--text-mute);margin-top:3px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ds-link:hover,.ds-link:focus-visible{background:rgba(255,149,0,.08);border-color:rgba(255,149,0,.25)}
+.ds-link:hover i{color:var(--accent)}
+@media (prefers-reduced-motion:no-preference){
+  #deckSheet.on .ds-link{opacity:0;transform:translateY(-8px);
+    animation:dsIn .45s var(--ease-out-expo) forwards;animation-delay:calc(.04s + var(--i,0)*.035s)}
+  @keyframes dsIn{to{opacity:1;transform:none}}
+}
+@media (prefers-reduced-motion:reduce){.ds-scrim,.ds-panel{transition:none}}
+
+/* Bit yields on phones: smaller, calmer, speaks above the dock when tapped */
+@media (max-width:620px){
+  #bit{right:8px;bottom:44px;opacity:.55;transition:opacity .3s}
+  #bit:hover,#bit:focus-within,#bit[data-mood="yes"],#bit[data-mood="no"]{opacity:1}
+  #bit .b-btn{width:52px;height:52px}
+  #bit[data-mood="yes"] .b-lab,#bit[data-mood="no"] .b-lab{
+    display:block;position:absolute;right:0;bottom:calc(100% + 10px);margin:0;text-align:right;
+    background:rgba(6,7,12,.94);border:1px solid var(--glass-border);border-radius:8px;
+    padding:8px 12px;max-width:74vw}
+}
+/* the console input never triggers mobile browser zoom */
+@media (max-width:760px){.term-in input{font-size:16px}}
 </style>
 </head>
 <body class="js-motion no-js">
@@ -655,7 +730,7 @@ body.alert::after{content:'';position:fixed;inset:0;z-index:70;pointer-events:no
 
 <!-- ══ COMMAND BAR ═══════════════════════════════════════════════════════ -->
 <header id="chrome">
-  <div class="brand">CASHIO<b>.US</b></div>
+  <a class="brand" href="#conn" aria-label="Cashio.us — return to the Viewscreen">CASHIO<b>.US</b></a>
   <nav aria-label="Decks">
     <a href="#grid">01 Grid</a>
     <a href="#routing">02 Routing</a>
@@ -663,12 +738,34 @@ body.alert::after{content:'';position:fixed;inset:0;z-index:70;pointer-events:no
     <a href="#builds">04 Builds</a>
     <a href="#operator">05 Operator</a>
     <a href="#console">06 Console</a>
+    <a href="#hail">07 Hail</a>
   </nav>
+  <button class="tog" id="deckBtn" type="button" aria-expanded="false" aria-controls="deckSheet" aria-label="DECKS — open deck navigation">DECKS</button>
   <div class="stardate">STARDATE <b id="sd">2026.213</b> · <span id="utc">00:00:00 UTC</span></div>
   <button class="tog" id="fxBtn" aria-pressed="true" title="Toggle viewscreen effects">FX ON</button>
   <button class="tog" id="sndBtn" aria-pressed="false" title="Toggle console tones">SND OFF</button>
-  <div class="pill"><i></i>All systems nominal</div>
+  <div class="pill"><i></i><span class="p-full">All systems nominal</span><span class="p-short">Nominal</span></div>
 </header>
+
+<div id="deckSheet" role="dialog" aria-modal="true" aria-label="Deck navigation" hidden>
+  <div class="ds-scrim" data-ds-close></div>
+  <div class="ds-panel">
+    <div class="ds-head">
+      <span class="ds-title">DECK SELECT</span>
+      <button class="tog" id="deckClose" type="button" aria-label="Close deck navigation">CLOSE ✕</button>
+    </div>
+    <nav class="ds-links" aria-label="All decks">
+      <a class="ds-link" href="#conn" style="--i:0" data-ds-close><b>00</b><span><i>Viewscreen</i><em>Sovereign AI under human command</em></span></a>
+      <a class="ds-link" href="#grid" style="--i:1" data-ds-close><b>01</b><span><i>The Grid</i><em>Nineteen containers on owned iron</em></span></a>
+      <a class="ds-link" href="#routing" style="--i:2" data-ds-close><b>02</b><span><i>Routing</i><em>Quality gates the route</em></span></a>
+      <a class="ds-link" href="#iron" style="--i:3" data-ds-close><b>03</b><span><i>The Iron</i><em>Six plates, one operator</em></span></a>
+      <a class="ds-link" href="#builds" style="--i:4" data-ds-close><b>04</b><span><i>Builds</i><em>Seven builds, one doctrine</em></span></a>
+      <a class="ds-link" href="#operator" style="--i:5" data-ds-close><b>05</b><span><i>Operator</i><em>Honest as its builder</em></span></a>
+      <a class="ds-link" href="#console" style="--i:6" data-ds-close><b>06</b><span><i>Console</i><em>Curiosity gets a keyboard</em></span></a>
+      <a class="ds-link" href="#hail" style="--i:7" data-ds-close><b>07</b><span><i>Hail</i><em>Talk shop with me</em></span></a>
+    </nav>
+  </div>
+</div>
 
 <main id="main">
 
@@ -676,11 +773,12 @@ body.alert::after{content:'';position:fixed;inset:0;z-index:70;pointer-events:no
 <section class="deck" id="conn" data-deck="00" data-label="Viewscreen"
          data-strip="Sovereign AI under human command — every number measured, dated, and published with its limits.">
   <div class="tagchip" data-anim><i></i>Doug Cashio · Pensacola, FL · 20+ years enterprise</div>
+  <a class="tagchip tagchip-ask" href="#hail" data-anim><i></i>Open channel · AI economics · automation reliability · sovereign infra</a>
 
-  <h1 class="hero-type" data-anim>
-    <span class="l1" id="heroWord">SOVEREIGN</span>
-    <span class="l1b" id="heroWord2">AI</span>
-    <span class="l2" id="heroSub">UNDER HUMAN COMMAND</span>
+  <h1 class="hero-type" data-anim aria-label="Sovereign AI under human command">
+    <span class="l1" id="heroWord" aria-hidden="true">SOVEREIGN</span>
+    <span class="l1b" id="heroWord2" aria-hidden="true">AI</span>
+    <span class="l2" id="heroSub" aria-hidden="true">UNDER HUMAN COMMAND</span>
   </h1>
 
   <p class="hero-copy" data-anim>I own the stack, qualify every route for quality, privacy and reliability, then spend only what the work earns. Two core hosts. One local-inference host. Nineteen containers. Ten model lanes. One operator at the conn — and every number on this deck is measured, dated, and published with its limits.</p>
@@ -693,11 +791,11 @@ body.alert::after{content:'';position:fixed;inset:0;z-index:70;pointer-events:no
   <div class="hint" data-anim>Press <kbd>/</kbd> anywhere to open the command console</div>
 
   <div class="stats" data-anim>
-    <div class="hull stat" data-value="19/19" data-label="CONTAINERS RUNNING" data-sub="LIVE CHECK 07-30-2026"><span class="rail-l"></span><div class="v" data-count="19" data-suffix="/19">0/19</div><div class="k">Containers running</div><div class="s">Live check 07-30-2026</div></div>
-    <div class="hull stat is-cyan" data-value="10" data-label="MODEL LANES"><span class="rail-l is-cyan"></span><div class="v" data-count="10">0</div><div class="k">Model lanes</div><div class="s">Free + local → frontier</div></div>
+    <div class="hull stat" data-value="19/19" data-label="CONTAINERS RUNNING" data-sub="LIVE CHECK 08-01-2026"><span class="rail-l"></span><div class="v" data-count="19" data-suffix="/19">19/19</div><div class="k">Containers running</div><div class="s">Live check 08-01-2026</div></div>
+    <div class="hull stat is-cyan" data-value="10" data-label="MODEL LANES"><span class="rail-l is-cyan"></span><div class="v" data-count="10">10</div><div class="k">Model lanes</div><div class="s">Free + local → frontier</div></div>
     <div class="hull stat is-green" data-value="0" data-label="SECURITY UPDATES DUE"><span class="rail-l is-green"></span><div class="v" data-count="0">0</div><div class="k">Security updates due</div><div class="s">Fleet fully patched</div></div>
-    <div class="hull stat" data-value="$0.26" data-label="OBSERVED AI COST / DAY" data-sub="$6.49 EST. MONTHLY"><span class="rail-l"></span><div class="v" data-count="0.26" data-prefix="$" data-dec="2">$0.00</div><div class="k">Observed AI cost / day</div><div class="s">$6.49 est. monthly</div></div>
-    <div class="hull stat is-cyan"><span class="rail-l is-cyan"></span><div class="v" data-count="18.3" data-suffix="%" data-dec="1">0%</div><div class="k">DNS queries blocked</div><div class="s">220,780 blocklist entries</div></div>
+    <div class="hull stat" data-value="$0.26" data-label="OBSERVED AI COST / DAY" data-sub="$6.49 EST. MONTHLY"><span class="rail-l"></span><div class="v" data-count="0.26" data-prefix="$" data-dec="2">$0.26</div><div class="k">Observed AI cost / day</div><div class="s">$6.49 est. monthly</div></div>
+    <div class="hull stat is-cyan"><span class="rail-l is-cyan"></span><div class="v" data-count="14.4" data-suffix="%" data-dec="1">14.4%</div><div class="k">DNS queries blocked</div><div class="s">216,108 blocklist entries</div></div>
   </div>
 </section>
 
@@ -710,7 +808,7 @@ body.alert::after{content:'';position:fixed;inset:0;z-index:70;pointer-events:no
     <span class="badge ok">19/19 running</span><span class="badge">Quorum 3/3</span>
   </div>
   <h2 class="deck-title" data-anim>Two core hosts. Atlas on inference.<br>Nineteen containers. <em>Athena holding quorum.</em></h2>
-  <p class="lede" data-anim>A public-safe map of the verified core, carrying root-disk telemetry from the 07-30-2026 check. Roles and container ids are published; addresses, ports, credentials, customer data and access paths are not. Drag the lattice to spin it, select a node to read its charter.</p>
+  <p class="lede" data-anim>A public-safe map of the verified core, carrying root-disk telemetry from the 08-01-2026 check. Roles and container ids are published; addresses, ports, credentials, customer data and access paths are not. Drag the lattice to spin it, select a node to read its charter.</p>
 
   <div class="lattice-wrap" data-anim>
     <div class="lat-hud"><span>Fleet lattice // public-safe</span><span>Drag · click to inspect</span></div>
@@ -726,24 +824,24 @@ body.alert::after{content:'';position:fixed;inset:0;z-index:70;pointer-events:no
     <div class="hull card" data-anim><span class="rail-l is-cyan"></span>
       <span class="tag">◎ Sovereign resolver</span>
       <h3>Every lookup lands on owned hardware</h3>
-      <p>Every lookup in the house resolves on owned hardware against 220,780 blocklist entries. Nothing is handed to a third-party resolver to be logged.</p>
+      <p>Every lookup in the house resolves on owned hardware against 216,108 blocklist entries. Nothing is handed to a third-party resolver to be logged.</p>
       <dl class="kv">
-        <dt>Queries in sample</dt><dd>12,100</dd>
-        <dt>Blocked at source</dt><dd>2,218</dd>
-        <dt>Cache hits</dt><dd>4,560</dd>
-        <dt>Active clients</dt><dd>56</dd>
-        <dt>Server failures</dt><dd>0</dd>
+        <dt>Queries in 24h sample</dt><dd>219,628</dd>
+        <dt>Blocked at source</dt><dd>31,547</dd>
+        <dt>Cache hits</dt><dd>89,851</dd>
+        <dt>Active clients</dt><dd>71</dd>
+        <dt>Server failures</dt><dd>16</dd>
         <dt>Refused</dt><dd>0</dd>
       </dl>
       <div class="chart">
-        <div class="chart-cap">Where 12,100 lookups went · 07-30-2026 sample</div>
-        <div class="stackbar" role="img" aria-label="Of 12,100 DNS lookups: 4,560 served from cache, 2,218 blocked at source, 5,322 resolved upstream by the owned resolver">
-          <i class="a" data-w="37.7"></i><i class="b" data-w="18.3"></i><i class="c" data-w="44.0"></i>
+        <div class="chart-cap">Where 219,628 lookups went · 08-01-2026 sample</div>
+        <div class="stackbar" role="img" aria-label="Of 219,628 DNS lookups in 24 hours: 89,851 served from cache, 31,547 blocked at source, 98,230 resolved upstream by the owned resolver">
+          <i class="a" data-w="40.9"></i><i class="b" data-w="14.4"></i><i class="c" data-w="44.7"></i>
         </div>
         <div class="legend">
-          <span><i style="background:#00d68a"></i>Cache hit <b>4,560</b></span>
-          <span><i style="background:#ff7a1a"></i>Blocked <b>2,218</b></span>
-          <span><i style="background:#252c44"></i>Resolved <b>5,322</b></span>
+          <span><i style="background:#00d68a"></i>Cache hit <b>89,851</b></span>
+          <span><i style="background:#ff7a1a"></i>Blocked <b>31,547</b></span>
+          <span><i style="background:#252c44"></i>Resolved <b>98,230</b></span>
         </div>
       </div>
     </div>
@@ -759,7 +857,7 @@ body.alert::after{content:'';position:fixed;inset:0;z-index:70;pointer-events:no
     </div>
   </div>
 
-  <div class="truth" data-anim><b>Truth protocol</b> — owner-run live check over cluster SSH on 07-30-2026 at 22:30 CDT. 19/19 containers running, quorum 3/3 with Athena answering, 18 of 19 guests backed up inside 24 hours, 0 security updates outstanding. Atlas is a standalone local-inference host and is not counted in the Proxmox quorum or 19-container total. Valid 30 days or until the next architecture change. This page queries nothing.</div>
+  <div class="truth" data-anim><b>Truth protocol</b> — owner-run live check over cluster SSH on 08-01-2026 at 20:40 CDT. 19/19 containers running, quorum 3/3 with Athena answering, 18 of 19 guests backed up inside 24 hours, 0 security updates outstanding. Atlas is a standalone local-inference host and is not counted in the Proxmox quorum or 19-container total. Valid 30 days or until the next architecture change. This page queries nothing.</div>
 </section>
 
 <!-- ══ DECK 02 // ROUTING ════════════════════════════════════════════════ -->
@@ -808,7 +906,7 @@ body.alert::after{content:'';position:fixed;inset:0;z-index:70;pointer-events:no
   <div class="deck-no" aria-hidden="true">03</div>
   <div class="deck-head" data-anim>
     <span class="eyebrow">Deck 03 // The Iron</span><span class="line"></span>
-    <span class="badge hot">v39 · AURORA</span>
+    <span class="badge hot">v40 · AURORA</span>
   </div>
   <h2 class="deck-title" data-anim>Six plates on the bar.<br><em>One operator under it.</em></h2>
   <p class="lede" data-anim>Anyone can name a stack. The weight is owning every layer of it at once — hardware, network, storage, models, policy and proof — while it stays online. The six-layer sequence racks automatically when this deck enters view; select any plate to inspect it.</p>
@@ -943,7 +1041,7 @@ body.alert::after{content:'';position:fixed;inset:0;z-index:70;pointer-events:no
     <div class="hull card" data-anim><span class="rail-l is-green"></span><span class="tag">Mode</span><p>Local safe · egress none</p></div>
     <div class="hull card" data-anim><span class="rail-l is-green"></span><span class="tag">Gateway</span><p>Hermes v0.19</p></div>
     <div class="hull card" data-anim><span class="rail-l is-green"></span><span class="tag">Entry lane</span><p>Kimi K3 // Tier 0</p></div>
-    <div class="hull card" data-anim><span class="rail-l is-green"></span><span class="tag">Export</span><p>Verified 07-30-2026</p></div>
+    <div class="hull card" data-anim><span class="rail-l is-green"></span><span class="tag">Export</span><p>Verified 08-01-2026</p></div>
   </div>
   <div class="truth" data-anim><b>Scope</b> — commands answer from the dated public-safe export. The console holds no credentials, opens no sockets, and cannot reach the fleet.</div>
 </section>
@@ -974,12 +1072,12 @@ body.alert::after{content:'';position:fixed;inset:0;z-index:70;pointer-events:no
 </main>
 
 <footer>
-  <b>CASHIO.US</b> · ZEUSAPOLLO v39 // AURORA<br>
-  Figures verified 07-30-2026 · valid 30 days or until the next architecture change<br>
+  <b>CASHIO.US</b> · ZEUSAPOLLO v40 // AURORA<br>
+  Figures verified 08-01-2026 · valid 30 days or until the next architecture change<br>
   This page queries nothing. Zero network calls beyond its own assets.
 </footer>
 
-<div id="bit" data-mood="idle">
+<div id="bit" data-mood="idle" role="complementary" aria-label="Bit, the deck guide">
   <span class="b-lab" id="bitLab">BIT // DECK GUIDE</span>
   <button class="b-btn" id="bitBtn" type="button" title="Bit // ask me"
           aria-label="Bit, the deck guide companion. Activate for a public-safe fact.">
@@ -989,7 +1087,7 @@ body.alert::after{content:'';position:fixed;inset:0;z-index:70;pointer-events:no
   <span class="sr-only" id="bitLive" role="status" aria-live="polite"></span>
 </div>
 
-<div id="strip">
+<div id="strip" role="region" aria-label="Deck status">
   <span class="now" id="stripNow">DECK 00 // VIEWSCREEN</span>
   <span class="mid" id="stripMid">Sovereign AI under human command.</span>
   <span class="rt">19/19 NOMINAL · QUORUM 3/3</span>
@@ -1000,10 +1098,10 @@ body.alert::after{content:'';position:fixed;inset:0;z-index:70;pointer-events:no
 <script src="assets/js/vendor/ScrambleTextPlugin.min.js"></script>
 <script src="assets/js/vendor/lenis.min.js"></script>
 <script src="assets/js/bit.js"></script>
-<!-- ══ DATA — mirrors status.json, verified 07-30-2026 ═══════════════════ -->
+<!-- ══ DATA — mirrors status.json, verified 08-01-2026 ═══════════════════ -->
 <script>
 window.ZA = {
-  version:"v39", release:"AURORA", verified:"07-30-2026", expires:"08-29-2026",
+  version:"v40", release:"AURORA", verified:"08-01-2026", expires:"08-31-2026",
   hosts:2, roles:19, healthy:19, lanes:10, backups24:18, secUpdates:0,
   costDay:0.26, costMonth:6.49, gateway:"Hermes v0.19 QUICKSILVER",
   links:{
@@ -1025,7 +1123,7 @@ window.ZA = {
     {n:"tools",h:"ZEUS",ct:"CT-119",d:35,r:"Utility surface",p:"Shared internal utilities the automation lanes call, versioned alongside the fleet."},
     {n:"backup-verifier",h:"APOLLO",ct:"CT-207",d:11,r:"Restore proof",p:"A backup nobody has restored is a rumor. This one proves the chain, which is how 18 of 19 is a number and not a hope."},
     {n:"control-plane",h:"ZEUS",ct:"CT-101",d:30,r:"Fleet control",p:"Reconciliation and lifecycle for every container, driven from declared state rather than memory."},
-    {n:"technitium-dns",h:"ZEUS",ct:"CT-102",d:31,r:"Sovereign resolver",p:"Primary DNS against 220,780 blocklist entries. 12,100 queries in the sample, 0 server failures."},
+    {n:"technitium-dns",h:"ZEUS",ct:"CT-102",d:31,r:"Sovereign resolver",p:"Primary DNS against 216,108 blocklist entries. 219,628 queries in the 24-hour sample, 16 server failures."},
     {n:"pbs",h:"APOLLO",ct:"CT-209",d:62,r:"Backup server",p:"Deduplicated, verified backup target for the whole fleet with retention held on owned disks."},
     {n:"litellm-state",h:"ZEUS",ct:"CT-117",d:4,r:"Routing state",p:"Budget ceilings, health and failover state for the lane proxy, kept separate from the proxy itself."},
     {n:"media-stack",h:"APOLLO",ct:"CT-211",d:56,r:"Media services",p:"Household media services, isolated from the AI fabric and from anything holding credentials."},
@@ -1046,8 +1144,8 @@ window.ZA = {
   ],
   plates:[
     {n:"HARDWARE",d:"Two core hosts bought, racked and maintained personally — a Ryzen 7 5800H compute node and an i7-7700T storage node — with Atlas carrying standalone local inference and Athena holding the physical edge and cluster quorum. No rented control plane, no vendor cage."},
-    {n:"NETWORK",d:"Every lookup in the house resolves on owned hardware against 220,780 blocklist entries, with a second authoritative resolver so name service survives maintenance on either host."},
-    {n:"STORAGE",d:"Deduplicated backup to an owned target, verified rather than assumed: 18 of 19 guests inside 24 hours at the 07-30-2026 check, with an encrypted offsite copy closing the 3-2-1 rule."},
+    {n:"NETWORK",d:"Every lookup in the house resolves on owned hardware against 216,108 blocklist entries, with a second authoritative resolver so name service survives maintenance on either host."},
+    {n:"STORAGE",d:"Deduplicated backup to an owned target, verified rather than assumed: 18 of 19 guests inside 24 hours at the 08-01-2026 check, with an encrypted offsite copy closing the 3-2-1 rule."},
     {n:"MODELS",d:"Ten configured lanes from free classification through local fallback to frontier adjudication, normalized behind one proxy so the routing law is policy, not plumbing."},
     {n:"POLICY",d:"Scope, privacy and budget resolve before execution. Secrets stay in owned custody, egress is deliberate, and every lane carries a ceiling it cannot spend past."},
     {n:"PROOF",d:"Nothing is published without a date, a scope and a stated limit. The figures on this page came from an owner-run live check, and they expire on purpose."}
@@ -1056,18 +1154,18 @@ window.ZA = {
      arms them. Rendered by the boot sequence and asserted by CI. */
   bootManifest:[
     ['CONTAINER ROLES', '19 DOCUMENTED'],
-    ['LIVE CHECK 07-30-2026', '19 OF 19 RUNNING'],
+    ['LIVE CHECK 08-01-2026', '19 OF 19 RUNNING'],
     ['BACKUP CHAIN', '18 OF 19 INSIDE 24H'],
     ['OPERATING COST', '$0.26 / DAY'],
     ['ROUTING FABRIC', '10 LANES ARMED']
   ],
   plateMeta:[
     {a:"2 core hosts + Athena",     b:"Owner-racked, owner-maintained"},
-    {a:"220,780 blocklist entries", b:"12,100 lookups in the sample"},
-    {a:"18 of 19 inside 24h",       b:"Verified 07-30-2026"},
+    {a:"216,108 blocklist entries", b:"219,628 lookups in the sample"},
+    {a:"18 of 19 inside 24h",       b:"Verified 08-01-2026"},
     {a:"10 configured lanes",       b:"Free + local → frontier"},
     {a:"0 security updates due",    b:"A spend ceiling on every lane"},
-    {a:"Every figure dated",        b:"Expires 08-29-2026"}
+    {a:"Every figure dated",        b:"Expires 08-31-2026"}
   ],
   builds:[
     {i:"◈",n:"Hermes Orchestrator",t:"01 // Gateway",d:"One gateway in front of every model lane: policy enforcement, budget ceilings, health reconciliation, failover in both directions, and a dated public-safe export of its own state.",mv:"v0.19",mk:"Quicksilver release",c:"",st:"running",feat:1,tech:["LiteLLM","Python","OpenRouter","ZenMux","systemd"]},
@@ -1393,7 +1491,32 @@ window.ZATEX = (function(){
   return {hull,hex,grain,dirt,panel,foil,toNormal,cv};
 })();
 </script>
-<script src="assets/js/vendor/za-viewscreen.js"></script>
+<script>
+/* v40: the viewscreen loads after first paint and first intent. Reduced
+   motion never runs it; a delayed fallback keeps the effect discoverable. */
+(function(){
+  var done=false, armed=false;
+  function boot(){ if(done) return; done=true;
+    var s=document.createElement('script');
+    s.src='assets/js/vendor/za-viewscreen.js';
+    document.body.appendChild(s);
+  }
+  function arm(){ if(armed) return; armed=true;
+    ['pointerdown','wheel','touchstart','keydown'].forEach(function(type){
+      addEventListener(type,boot,{once:true,passive:true});
+    });
+    setTimeout(boot,innerWidth<760?15000:9000);
+  }
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){
+    document.documentElement.classList.add('no-gl'); }
+  else{
+    document.readyState==='complete'?arm():addEventListener('load',arm,{once:true});
+  }
+  var fx=document.getElementById('fxBtn');
+  if(fx) fx.addEventListener('click',function(){ setTimeout(function(){
+    if(!done && fx.getAttribute('aria-pressed')==='true') boot(); },0); });
+})();
+</script>
 <!-- ══ PAGE MOTION, LATTICE, CHARTS, CONSOLE ════════════════════════════ -->
 <script>
 (function(){
@@ -1800,11 +1923,11 @@ why        two hosts can tie. Athena breaks it, so the cluster cannot split-brai
 <span class="dim">Outside the container count, same reason as Atlas.</span>`,
 
     dns:()=>`<span class="ok">SOVEREIGN RESOLVER</span>  sample dated ${D.verified}
-queries      <span class="hi">12,100</span>        blocklist  <span class="hi">220,780</span> entries
-cache hits   <span class="hi">4,560</span>  (37.7%)
-blocked      <span class="hi">2,218</span>  (18.3%)
-resolved     <span class="hi">5,322</span>  (44.0%)
-clients      56           failures <span class="hi">0</span>       refused <span class="hi">0</span>
+queries      <span class="hi">219,628</span>       blocklist  <span class="hi">216,108</span> entries
+cache hits   <span class="hi">89,851</span>  (40.9%)
+blocked      <span class="hi">31,547</span>  (14.4%)
+resolved     <span class="hi">98,230</span>  (44.7%)
+clients      71           failures <span class="hi">16</span>      refused <span class="hi">0</span>
 <span class="dim">Every lookup in the house lands on owned hardware. Nothing is handed
 to a third-party resolver to be logged.</span>`,
 
@@ -1838,7 +1961,7 @@ only when consequence earns it. The aggregate is measured, not modelled.</span>`
       ├──────────────┤
       │  03 STORAGE  │  ${D.backups24}/${D.roles} inside 24h, verified
       ├──────────────┤
-      │  02 NETWORK  │  owned resolver, 220,780 blocklist entries
+      │  02 NETWORK  │  owned resolver, 216,108 blocklist entries
       ├──────────────┤
       │  01 HARDWARE │  two core hosts + Atlas + Athena
       └──────────────┘
@@ -1847,7 +1970,7 @@ only when consequence earns it. The aggregate is measured, not modelled.</span>`
     builds:()=>D.builds.map((b,i)=>` <span class="u">0${i+1} ${b.n.padEnd(32)}</span><span class="dim">${b.t.padEnd(20)}${(b.tech||[]).slice(0,3).join(', ')}</span>`).join('\n'),
 
     proof:()=>`<span class="ok">TRUTH PROTOCOL</span>
-Owner-run live check over cluster SSH on ${D.verified} at 22:30 CDT.
+Owner-run live check over cluster SSH on ${D.verified} at 20:40 CDT.
 ${D.healthy}/${D.roles} containers running · quorum 3/3 with Athena answering
 ${D.backups24} of ${D.roles} guests backed up inside 24 hours · ${D.secUpdates} security updates outstanding
 Atlas is standalone inference and is not counted in the quorum or the ${D.roles}.
@@ -1914,6 +2037,20 @@ public-safe export and has no network path to scan anything.</span>`,
   w(`<span class="ok">HERMES local console — ${D.gateway}</span>
 <span class="dim">Read-only narrative interface. Zero network calls, zero credentials.
 Type </span><span class="hi">help</span><span class="dim"> for the full command list.</span>`);
+
+  /* v40: the console greets with the status readout, once, on arrival */
+  (function(){
+    var deck=document.getElementById('console');
+    if(!deck||!('IntersectionObserver' in window)) return;
+    var io=new IntersectionObserver(function(es){es.forEach(function(en){
+      if(!en.isIntersecting) return;
+      io.disconnect();
+      if(HIST.length) return;
+      w('<span class="u">doug@zeus:~$</span> status <span class="dim">// auto</span>');
+      w(pre(R.status()));
+    });},{threshold:.3});
+    io.observe(deck);
+  })();
 
   function run(raw){
     const cmd=(raw||'').trim().toLowerCase(); if(!cmd) return;
@@ -1988,7 +2125,7 @@ const BIT = (function(){
     ['yes','YES // I AM BIT. I KNOW TWO WORDS.'],
     ['yes','YES // '+D.healthy+'/'+D.roles+' CONTAINERS RUNNING.'],
     ['no', 'NO // NO ADDRESSES. NO PORTS. NO CREDENTIALS.'],
-    ['yes','YES // 18.3% OF DNS QUERIES BLOCKED AT SOURCE.'],
+    ['yes','YES // 14.4% OF DNS QUERIES BLOCKED AT SOURCE.'],
     ['yes','YES // $'+D.costDay.toFixed(2)+' A DAY. THAT IS THE WHOLE BILL.'],
     ['no', 'NO // NOTHING HERE CALLS A LIVE SYSTEM.'],
     ['yes','YES // TEN LANES. ONE GATEWAY. NO BRIDGE TAX.'],
@@ -2123,8 +2260,12 @@ if(!HAS_GSAP){
   function fillStack(){ $$('.plate').forEach(p=>p.classList.add('armed')); }
 
   function startPage(){
-    if(REDUCED){ startStill(); return; }
+    /* Keep the full launch sequence on larger screens. On phones, reveal the
+       same finished composition immediately so the cinematic boot never
+       becomes the page's largest-contentful-paint bottleneck. */
+    if(REDUCED || innerWidth<760){ startStill(); return; }
     document.body.classList.add('is-ready');
+    gsap.set(['#conn .stat','.hero-copy','.cta-row .btn','.hint'],{opacity:0});
     setTimeout(unstick, 2800);
     addEventListener('load', ()=>setTimeout(unstick, 900), {once:true});
     const tl = gsap.timeline();
@@ -2332,13 +2473,55 @@ if(!HAS_GSAP){
   /* ── go: wait for the stage and the fonts, never gate content on them ── */
   let started=false;
   const go=()=>{ if(started) return; started=true;
+    /* Fonts use swap, so a phone should not hold its first stable frame on
+       the font-loading promise. Larger screens retain the synchronized boot. */
+    if(innerWidth<760){ startPage(); return; }
     (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve())
       .then(startPage).catch(startPage);
   };
   if(window.ZAP && window.ZAP.ready) go();
-  else { addEventListener('za:stage-ready', go, {once:true}); setTimeout(go, 2800); }
+  else { addEventListener('za:stage-ready', go, {once:true}); setTimeout(go, 200); }
   addEventListener('load', ()=>ScrollTrigger.refresh());
 }
+})();
+</script>
+<script>
+/* ══ v40: deck select behaviour ══════════════════════════════════════════ */
+(function(){
+  var btn=document.getElementById('deckBtn'), sheet=document.getElementById('deckSheet');
+  if(!btn||!sheet) return;
+  var closeBtn=document.getElementById('deckClose'), open=false, last=null,
+      RM=matchMedia('(prefers-reduced-motion: reduce)');
+  function focusables(){ return sheet.querySelectorAll('a[href],button'); }
+  function set(v){
+    open=v; btn.setAttribute('aria-expanded',String(v));
+    if(v){
+      last=document.activeElement; sheet.hidden=false;
+      requestAnimationFrame(function(){ sheet.classList.add('on'); });
+      var f=focusables(); if(f.length) f[f.length>1?1:0].focus();
+      document.documentElement.style.overflow='hidden';
+    } else {
+      sheet.classList.remove('on');
+      document.documentElement.style.overflow='';
+      var done=function(){ sheet.hidden=true; };
+      RM.matches ? done() : setTimeout(done,340);
+      if(last&&last.focus) last.focus();
+    }
+  }
+  btn.addEventListener('click',function(){ set(!open); });
+  sheet.querySelectorAll('[data-ds-close]').forEach(function(el){
+    el.addEventListener('click',function(){ set(false); });
+  });
+  closeBtn.addEventListener('click',function(){ set(false); });
+  addEventListener('keydown',function(e){
+    if(!open) return;
+    if(e.key==='Escape'){ set(false); return; }
+    if(e.key!=='Tab') return;
+    var f=focusables(); if(!f.length) return;
+    var first=f[0], lastF=f[f.length-1];
+    if(e.shiftKey && document.activeElement===first){ e.preventDefault(); lastF.focus(); }
+    else if(!e.shiftKey && document.activeElement===lastF){ e.preventDefault(); first.focus(); }
+  });
 })();
 </script>
 </body>
