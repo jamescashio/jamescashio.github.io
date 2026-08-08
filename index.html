@@ -431,7 +431,10 @@ h2.deck-title em{font-style:normal;color:var(--accent);text-shadow:0 0 34px var(
 .chip:hover{border-color:rgba(0,249,255,.45);color:var(--cyan);transform:translateY(-2px);background:rgba(0,249,255,.07)}
 
 /* ── hail ────────────────────────────────────────────────────────────── */
-.hail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin-top:26px}
+.hail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px;margin-top:26px}
+/* five cards: one row on a wide rail, a balanced 3+2 in the mid band */
+@media (min-width:840px) and (max-width:1619px){.hail-grid{grid-template-columns:repeat(3,1fr)}}
+@media (min-width:1620px){.hail-grid .hail-card .val{font-size:18px}}
 .hail-card{padding:26px}
 .hail-card .lbl{font:600 9.5px/1 'JetBrains Mono',monospace;letter-spacing:.22em;text-transform:uppercase;color:var(--text-mute)}
 .hail-card .val{margin-top:11px;font:700 clamp(15px,1.6vw,21px)/1.3 'Orbitron',sans-serif;color:var(--accent);word-break:break-word}
@@ -555,6 +558,9 @@ footer b{color:var(--text-dim);font-weight:400}
   max-width:min(46vw,320px);
   font:600 9.5px/1.55 'JetBrains Mono',monospace;letter-spacing:.2em;text-transform:uppercase;
   color:var(--cyan);text-shadow:0 0 14px rgba(4,6,12,.95);
+  /* glass pill so the label stays legible when deck content passes beneath it */
+  padding:8px 12px;border-radius:8px;background:rgba(6,7,12,.88);
+  border:1px solid var(--glass-border);backdrop-filter:blur(8px);
   opacity:.85;transition:opacity .35s,color .35s}
 #bit[data-mood="yes"] .b-lab{color:var(--amber)}
 #bit[data-mood="no"]  .b-lab{color:var(--red)}
@@ -605,8 +611,9 @@ body.alert::after{content:'';position:fixed;inset:0;z-index:70;pointer-events:no
 .no-js #boot{display:none !important}
 .no-js #stage,.no-js #veil,.no-js #cur{display:none !important}
 .no-js [data-anim]{opacity:1 !important}
-.no-js #lattice,.no-js .lat-read,.no-js .term-out,.no-js .term-in,
+.no-js #lattice,.no-js .lat-read,.no-js .term-in,
 .no-js #chips,.no-js #lanes,.no-js #stack,.no-js .lane-head{display:none !important}
+/* without JS the console still shows its static status readout above */
 .no-js .lattice-wrap{min-height:0}
 
 /* Phones get the finished command deck from the first paint. Their motion
@@ -896,7 +903,7 @@ html{scrollbar-color:rgba(255,149,0,.6) #07080d;scrollbar-width:thin}
   "jobTitle":"Principal Solutions Consultant",
   "address":{"@type":"PostalAddress","addressLocality":"Pensacola","addressRegion":"FL","addressCountry":"US"},
   "email":"mailto:doug@cashio.us",
-  "sameAs":["https://www.linkedin.com/in/dougcashio/","https://www.credly.com/users/james-cashio/badges/credly"],
+  "sameAs":["https://www.linkedin.com/in/dougcashio/","https://www.credly.com/users/james-cashio/badges/credly","https://github.com/jamescashio/jamescashio.github.io"],
   "knowsAbout":["Sovereign AI","AI economics","Cybersecurity","Automation reliability","Infrastructure"]}
 ]}
 </script>
@@ -942,7 +949,7 @@ html{scrollbar-color:rgba(255,149,0,.6) #07080d;scrollbar-width:thin}
     <a href="#console">06 Console</a>
     <a href="#hail">07 Hail</a>
   </nav>
-  <button class="tog" id="deckBtn" type="button" aria-expanded="false" aria-controls="deckSheet" aria-label="Open deck navigation">DECKS</button>
+  <button class="tog" id="deckBtn" type="button" aria-expanded="false" aria-controls="deckSheet" aria-label="Decks — open deck navigation">DECKS</button>
   <div class="stardate">STARDATE <b id="sd">2026.213</b> · <span id="utc">00:00:00 UTC</span></div>
   <button class="tog" id="fxBtn" aria-pressed="true" title="Toggle viewscreen effects">FX ON</button>
   <button class="tog" id="sndBtn" aria-pressed="false" title="Toggle console tones">SND OFF</button>
@@ -1236,7 +1243,15 @@ html{scrollbar-color:rgba(255,149,0,.6) #07080d;scrollbar-width:thin}
   <div class="term" data-anim>
     <div class="term-bar"><span class="dot"></span><span class="dot y"></span><span class="dot g"></span>
       <span class="who">hermes@zeus</span><span class="safe">Safe mode // no egress</span></div>
-    <div class="term-out" id="termOut" role="log" aria-live="polite" tabindex="0"></div>
+    <!-- static readout so the console is never an empty box; the runtime clears it before greeting -->
+    <div class="term-out" id="termOut" role="log" aria-live="polite" tabindex="0"><div id="termStatic"><div><span class="ok">HERMES local console — Hermes v0.19 QUICKSILVER</span>
+<span class="dim">Read-only narrative interface. Zero network calls, zero credentials.
+Type </span><span class="hi">help</span><span class="dim"> for the full command list.</span></div><div><span class="u">doug@zeus:~$</span> status</div><div><pre style="margin:6px 0 14px;white-space:pre-wrap;font:inherit"><span class="ok">● ALL SYSTEMS NOMINAL</span>  verified 08-01-2026, expires 08-31-2026
+containers   <span class="hi">19/19</span> running        quorum <span class="hi">3/3</span> (Athena answering)
+backups      <span class="hi">18/19</span> inside 24h     patches <span class="hi">0</span> security updates due
+gateway      <span class="hi">Hermes v0.19 QUICKSILVER</span>
+cost         <span class="hi">$0.26</span>/day, <span class="hi">$6.49</span>/month estimated
+<span class="dim">Owner-run live check over cluster SSH. This console opens no sockets.</span></pre></div></div></div>
     <label class="term-in" for="termIn">
       <span class="ps">doug@zeus:~$</span>
       <input id="termIn" autocomplete="off" spellcheck="false" aria-label="Console command input" placeholder="type help">
@@ -1275,6 +1290,8 @@ html{scrollbar-color:rgba(255,149,0,.6) #07080d;scrollbar-width:thin}
       <div class="lbl">LinkedIn</div><div class="val">Experience ▸</div></a>
     <a class="hull hail-card" href="https://www.credly.com/users/james-cashio/badges/credly" target="_blank" rel="noopener" data-anim data-mag><span class="rail-l"></span>
       <div class="lbl">Credly</div><div class="val">Verified badges ▸</div></a>
+    <a class="hull hail-card is-cyan" href="https://github.com/jamescashio/jamescashio.github.io" target="_blank" rel="noopener" data-anim data-mag><span class="rail-l is-cyan"></span>
+      <div class="lbl">GitHub</div><div class="val">Source + releases ▸</div></a>
     <a class="hull hail-card" href="#conn" data-anim data-mag><span class="rail-l"></span>
       <div class="lbl">Return to</div><div class="val">The Viewscreen ▲</div></a>
   </div>
@@ -1318,7 +1335,8 @@ window.ZA = {
   links:{
     email:  "doug@cashio.us",
     li:     "https://www.linkedin.com/in/dougcashio/",
-    credly: "https://www.credly.com/users/james-cashio/badges/credly"
+    credly: "https://www.credly.com/users/james-cashio/badges/credly",
+    gh:     "https://github.com/jamescashio/jamescashio.github.io"
   },
   nodes:[
     {n:"hermes",h:"ZEUS",ct:"CT-105",d:64,r:"Autonomous AI orchestration",p:"Routes every request through one gateway, reconciles the fleet, and files the dated public-safe export this page reads from."},
@@ -2195,7 +2213,7 @@ ${list.map(n=>` <span class="u">${n.n.padEnd(17)}</span>${n.ct.padEnd(8)}root ${
     help:()=>`<span class="hi">FLEET</span>     status  fleet  zeus  apollo  atlas  athena  dns  backup  uptime
 <span class="hi">ROUTING</span>   routes  cost  lanes
 <span class="hi">BUILD</span>     iron  stack  builds  proof
-<span class="hi">OPERATOR</span>  whoami  contact  credly  linkedin
+<span class="hi">OPERATOR</span>  whoami  contact  credly  linkedin  github
 <span class="hi">SHELL</span>     banner  history  date  clear  help
 <span class="dim">↑/↓ walks history, Tab completes, Esc clears the line.
 Some commands answer in character. Try: make it so · red alert · sudo · scan · trace\nThe archive runs deeper than the list. Curiosity is a command.</span>`,
@@ -2285,11 +2303,14 @@ principal solutions consultant · sovereign AI · cybersecurity
     contact:()=>`email      <span class="hi">${L.email}</span>
 linkedin   <span class="u">${L.li}</span>
 credly     <span class="u">${L.credly}</span>
+github     <span class="u">${L.gh}</span>
 <span class="dim">Glad to compare notes on AI economics, automation reliability,
 explainability, or sovereign infrastructure.</span>`,
     credly:()=>{ window.open(L.credly,'_blank','noopener'); return `opening <span class="u">${L.credly}</span>
 <span class="dim">verified badges, issuer-signed</span>`; },
     linkedin:()=>{ window.open(L.li,'_blank','noopener'); return `opening <span class="u">${L.li}</span>`; },
+    github:()=>{ window.open(L.gh,'_blank','noopener'); return `opening <span class="u">${L.gh}</span>
+<span class="dim">the site is its own work sample — source, gates, and the release log</span>`; },
 
     banner:()=>{
       /* build the box from the content width so it can never drift */
@@ -2357,6 +2378,9 @@ public-safe export and has no network path to scan anything.</span>`,
   const NAMES = Object.keys(R);
   const HIST = [];
   let hi = -1, draft = '';
+
+  /* the static pre-printed readout hands off to the live console */
+  const stat=document.getElementById('termStatic'); if(stat) stat.remove();
 
   w(`<span class="ok">HERMES local console — ${D.gateway}</span>
 <span class="dim">Read-only narrative interface. Zero network calls, zero credentials.
