@@ -1,4 +1,4 @@
-# ZEUSAPOLLO v40 — “Aurora”
+# ZEUSAPOLLO v44 — “Aurora”
 
 cashio.us is Doug Cashio’s interactive sovereign AI portfolio: personally owned infrastructure, quality-first model routing, cybersecurity, auditable automation, disciplined cost, and human command.
 
@@ -8,7 +8,7 @@ The public site shows sanitized proof and architectural roles while withholding 
 
 | Item | Current public state |
 |---|---|
-| **Release** | v40 — “Aurora” |
+| **Release** | v44 — “Aurora” |
 | **Status export** | Verified 08-01-2026; expires 08-31-2026 |
 | **Hosts** | 2 core homelab hosts, plus Athena at the edge |
 | **Local inference host** | Atlas, standalone from the Proxmox quorum and 19-container total |
@@ -25,7 +25,7 @@ The public site shows sanitized proof and architectural roles while withholding 
 | **Deployment** | GitHub Pages from `main` |
 | **Production site** | `https://cashio.us` |
 
-The v40 container and DNS figures come from an owner-run live verification over cluster SSH on 08-01-2026; automation and cost figures are Hermes-generated, public-safe, and sampled—not streaming telemetry. The export remains valid for 30 days or until the next architecture change. Athena is separately owner-confirmed active as a physical Home Assistant edge node and cluster quorum device, and is not included in the 19-container count. Atlas is separately documented as a standalone local-inference host and is not included in the Proxmox quorum or container total. The site never converts a current page-view date into a claim of live telemetry.
+The v44 container and DNS figures come from an owner-run live verification over cluster SSH on 08-01-2026; automation and cost figures are Hermes-generated, public-safe, and sampled—not streaming telemetry. The export remains valid for 30 days or until the next architecture change. Athena is separately owner-confirmed active as a physical Home Assistant edge node and cluster quorum device, and is not included in the 19-container count. Atlas is separately documented as a standalone local-inference host and is not included in the Proxmox quorum or container total. The site never converts a current page-view date into a claim of live telemetry.
 
 ## Model routing fabric
 
@@ -60,7 +60,7 @@ These are configured lanes, not live-traffic claims or a universal model ranking
 | `status.json` | Coarse, dated public status contract |
 | `README.md` | Current public architecture and release summary |
 | `CHANGELOG.md` | Public-facing release history |
-| `RELEASE_BODY.md` | Current v40 release notes |
+| `RELEASE_BODY.md` | Current v44 release notes |
 | `SECURITY.md` | Vulnerability reporting and repository boundaries |
 | `PRIVACY.md` | Public privacy notice |
 | `scripts/public_repo_guard.py` | Automated public-repository safety scanner |

@@ -2,7 +2,7 @@
 
 > Doug Cashio, Pensacola, Florida. Principal solutions consultant with 20+ years in enterprise environments. This site documents ZeusApollo, an independently built sovereign AI system: owned hardware, quality gated model routing, measured cost, and public safe proof. Every published figure is dated, scoped, and expires on purpose.
 
-Current release: v40 "Aurora". Figures verified August 1, 2026 by an owner run live check over cluster SSH; valid 30 days or until the next architecture change. Machine readable figures: https://cashio.us/status.json
+Current release: v44 "Aurora". Figures verified August 1, 2026 by an owner run live check over cluster SSH; valid 30 days or until the next architecture change. Machine readable figures: https://cashio.us/status.json
 
 ## The system
 
