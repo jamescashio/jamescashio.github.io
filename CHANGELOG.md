@@ -2,6 +2,30 @@
 
 All notable public-facing changes to the ZeusApollo portfolio are recorded here. Visible dates use MM-DD-YYYY.
 
+## [v44] — 08-01-2026
+
+Release name: "Aurora." Figures re-verified by an owner-run live check over cluster SSH on 08-01-2026 at 20:40 CDT (19/19 running, quorum 3/3, 18/19 backed up inside 24h, 0 security updates due). The DNS figures moved to a fresh 24-hour sample from the same check: 219,628 queries, 14.4% blocked, 216,108 blocklist entries, 71 clients, 16 server failures published as measured.
+
+### Added
+- Deck navigation everywhere: 07 Hail in the chrome, the wordmark returns to the Viewscreen, and phones get a full deck-select sheet below 860px.
+- A live routing trace on deck 02: five honest scenarios fly a packet through the gates, cascade the lanes, select the qualifying lane, and print the decision — every model name and relative cost from the published lane table. Also available as `trace` in the console.
+- The console greets by typing `status` itself on first arrival; `bit` hands the deck guide the conn; a deep archive of unlisted in-character commands for the curious.
+- One light source: every hull catches the pointer with distance falloff. Living film grain, hero title specular, HUD lock brackets on the stats, cinematic segmented boot, meteors, LCARS scrollbar and selection, glinting deck rules.
+- The lattice heartbeat: a pulse leaves hermes every 8.5 seconds and rides the graph node to node.
+- A hand-built topology schematic on The Grid (zeus 13 CT, Apollo 6 CT, Athena quorum, Atlas outside) that strokes itself in on first view.
+- Four synthesized instruments for the trace, locks, and deck sheet — zero audio files, all behind the SND switch, still off by default.
+- Machine front door: robots.txt, llms.txt, JSON-LD structured data. New 93 KB social card replaces the 864 KB PNG.
+- An epigraph on the Operator deck, and the commandment greeting source readers.
+
+### Changed
+- The 637 KB viewscreen bundle now loads after first paint (idle-injected; reduced motion never loads it; phones wait for load; FX ON loads on demand). Mobile LCP 6.5s → 3.4s measured; desktop TBT 0 ms.
+- Real figures ship in the static HTML; the count-up remains a JS embellishment. Contrast over the live scene raised past the AA floor, pixel-verified. Console input meets 24px targets and no longer zooms iOS.
+- The console binds only its own chips (previously it hijacked any `.chip` styled button page-wide).
+- Bit yields on phones: smaller, calmer, speaks above the dock.
+
+### Verified
+- axe-core WCAG 2.2 AA: 0 violations. Lighthouse Accessibility 100. Zero console errors across a full sweep with WebGL live. No horizontal overflow 320 to 1920 including the FX HELD worst case. Reduced motion renders a complete still page with instant readouts. Every published figure reconciled against status.json.
+
 ## [v40] — 08-01-2026
 
 Release name: “Aurora.”

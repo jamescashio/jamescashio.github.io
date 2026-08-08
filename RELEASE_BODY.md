@@ -1,10 +1,10 @@
-## v40 — “Aurora”
+## v44 — “Aurora”
 
 **Release date:** 08-01-2026
 
 **Public status window:** 08-01-2026 through 08-31-2026, or until the next architecture change
 
-v40 makes the Aurora deck faster, clearer, and complete without changing its look. The WebGL viewscreen now waits until after first paint, static HTML carries the real public figures, every viewport has complete deck navigation, and machine-readable front-door files explain the same dated public snapshot to crawlers and agents.
+v44 makes the Aurora deck faster, clearer, and complete without changing its look. The WebGL viewscreen now waits until after first paint, static HTML carries the real public figures, every viewport has complete deck navigation, and machine-readable front-door files explain the same dated public snapshot to crawlers and agents.
 
 What v39 established remains intact: the live star and station scene, eight-deck structure, palette, typography, native pointer, and Bit as the deck-guide companion.
 
@@ -21,7 +21,7 @@ What v39 established remains intact: the live star and station scene, eight-deck
 
 ### Public status reconciliation
 
-| Metric | v40 public snapshot |
+| Metric | v44 public snapshot |
 |---|---:|
 | Core hosts | 2 |
 | Documented service roles | 19 |

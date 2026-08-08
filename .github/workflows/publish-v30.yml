@@ -1,15 +1,8 @@
-name: Publish v30 Release
+name: Publish legacy v30 release (manual only)
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/publish-v30.yml'
-      - 'RELEASE_BODY.md'
-      - 'CHANGELOG.md'
-      - 'README.md'
-      - 'status.json'
+  # Keep this archival release workflow available without rewriting the v30
+  # release notes whenever a newer site release lands on main.
   workflow_dispatch:
 
 permissions:

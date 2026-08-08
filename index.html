@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" data-build="v40">
+<html lang="en" data-build="v44">
 <head>
 <meta charset="utf-8">
 <meta name="color-scheme" content="dark">
 <title>CASHIO.US // SOVEREIGN AI UNDER HUMAN COMMAND</title>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self'; form-action 'none'; object-src 'none'; base-uri 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'none'; form-action 'none'; object-src 'none'; base-uri 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="author" content="Doug Cashio">
 <meta name="keywords" content="Doug Cashio, enterprise AI, cybersecurity, sovereign AI, homelab, LLM orchestration, automation, ZeusApollo">
@@ -17,14 +17,14 @@
 <meta property="og:title" content="Doug Cashio // Sovereign AI Under Human Command">
 <meta property="og:description" content="Quality high. Cost low. Control human. An independently built sovereign AI system documented with public-safe proof.">
 <meta property="og:url" content="https://cashio.us/">
-<meta property="og:image" content="https://cashio.us/og-image-sovereign-v2.png">
+<meta property="og:image" content="https://cashio.us/og-card.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Doug Cashio — Sovereign AI under human command. Quality high, cost low, proof visible.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Doug Cashio // Sovereign AI Under Human Command">
 <meta name="twitter:description" content="Quality high. Cost low. Control human. An independently built sovereign AI system documented with public-safe proof.">
-<meta name="twitter:image" content="https://cashio.us/og-image-sovereign-v2.png">
+<meta name="twitter:image" content="https://cashio.us/og-card.jpg">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
@@ -34,12 +34,11 @@
 <link rel="preload" href="fonts/orbitron-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/exo-2-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/jetbrains-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="assets/js/vendor/gsap.min.js" as="script">
 <meta name="description" content="Doug Cashio — sovereign AI infrastructure under human command. Two core hosts, nineteen containers, ten model lanes. Every number measured, dated, and published with its limits.">
 
 <style>
 /* ══════════════════════════════════════════════════════════════════════════
-   ZEUSAPOLLO v40 "AURORA" — the v32 Bridge language, rendered.
+   ZEUSAPOLLO v44 "AURORA" — the v32 Bridge language, rendered.
    Same palette, same type, same decks. A star, a station in rings around
    it, god rays through the structure, and a quality floor that defends
    itself. Native cursor.
@@ -132,8 +131,8 @@ h2.deck-title em{font-style:normal;color:var(--accent);text-shadow:0 0 34px var(
 /* raking specular sweep — the thing that reads as "lit by something" */
 .hull::after{
   content:'';position:absolute;inset:-1px;z-index:0;pointer-events:none;border-radius:inherit;
-  background:radial-gradient(120% 80% at var(--mx,50%) var(--my,0%),rgba(255,255,255,.09),transparent 58%);
-  opacity:0;transition:opacity .45s var(--ease-out-expo);
+  background:radial-gradient(120% 80% at var(--mx,50%) var(--my,0%),rgba(255,255,255,.11),transparent 58%);
+  opacity:var(--li,0);transition:opacity .18s linear;
 }
 .hull:hover::after,.hull:focus-within::after{opacity:1}
 .hull>*{position:relative;z-index:1}
@@ -178,14 +177,14 @@ h2.deck-title em{font-style:normal;color:var(--accent);text-shadow:0 0 34px var(
 /* ── boot / preloader ────────────────────────────────────────────────── */
 #boot{position:fixed;inset:0;z-index:200;background:#04050a;display:grid;place-items:center;
   font-family:'JetBrains Mono',monospace}
-#boot .b-in{width:min(520px,84vw);text-align:left}
+#boot .b-in{width:min(520px,84vw);text-align:left;position:relative}
 #boot .b-mark{font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(24px,5vw,38px);
   letter-spacing:.16em;color:var(--text);margin-bottom:26px}
 #boot .b-mark b{color:var(--accent)}
 #boot .b-log{font-size:11px;letter-spacing:.1em;color:var(--text-mute);height:88px;overflow:hidden;margin-bottom:16px}
 #boot .b-log div{opacity:0}
 #boot .b-log b{color:var(--green);font-weight:400}
-#boot .b-track{height:3px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+#boot .b-track{height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;mask:repeating-linear-gradient(90deg,#000 0 12px,transparent 12px 15px);-webkit-mask:repeating-linear-gradient(90deg,#000 0 12px,transparent 12px 15px)}
 #boot .b-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent-2),var(--accent),var(--amber));
   box-shadow:0 0 18px var(--accent-glow)}
 #boot .b-pct{margin-top:10px;font-size:10px;letter-spacing:.24em;color:var(--accent)}
@@ -221,7 +220,9 @@ h2.deck-title em{font-style:normal;color:var(--accent);text-shadow:0 0 34px var(
 .hero-type .l1,.hero-type .l1b{
   display:block;font-family:'Orbitron',sans-serif;font-weight:900;
   letter-spacing:-.03em;white-space:nowrap;
-  background:linear-gradient(178deg,#fff5e4 2%,var(--amber) 24%,var(--accent) 56%,var(--accent-2) 92%);
+  background-image:linear-gradient(115deg,transparent 44%,rgba(255,246,224,.92) 50%,transparent 56%),
+              linear-gradient(178deg,#fff5e4 2%,var(--amber) 24%,var(--accent) 56%,var(--accent-2) 92%);
+  background-size:240% 100%,100% 100%;background-position:-70% 0,0 0;background-repeat:no-repeat;
   -webkit-background-clip:text;background-clip:text;color:transparent;
   filter:drop-shadow(0 0 58px rgba(255,149,0,.34)) drop-shadow(0 2px 1px rgba(0,0,0,.95))
          drop-shadow(0 6px 22px rgba(0,0,0,.85));
@@ -234,8 +235,9 @@ h2.deck-title em{font-style:normal;color:var(--accent);text-shadow:0 0 34px var(
   margin-top:clamp(16px,2.2vw,30px);text-shadow:0 0 12px rgba(4,6,12,.9),0 0 34px var(--cyan-glow);
 }
 .hero-copy{max-width:62ch;margin:clamp(16px,2.6vw,30px) auto 0;color:var(--text-dim);
-  padding:16px 26px;border-radius:18px;background:radial-gradient(85% 130% at 50% 50%,rgba(5,6,10,.58),rgba(5,6,10,.30) 60%,transparent 100%);
   font-size:clamp(14.5px,.55vw + 13px,18px);text-wrap:pretty;
+  padding:16px 26px;border-radius:18px;
+  background:radial-gradient(85% 130% at 50% 50%,rgba(5,6,10,.58),rgba(5,6,10,.30) 60%,transparent 100%);
   text-shadow:0 1px 3px rgba(4,5,10,.98),0 1px 14px rgba(4,5,10,.95),0 0 36px rgba(4,5,10,.85)}
 .cta-row{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:clamp(28px,3.6vw,44px)}
 
@@ -702,10 +704,210 @@ a.brand:hover b{text-shadow:0 0 18px var(--accent-glow)}
 }
 /* the console input never triggers mobile browser zoom */
 @media (max-width:760px){.term-in input{font-size:16px}}
+
+/* ══ v41 WOW LAYER — grade, phosphor, lock-on. Same palette, no new hues. ══ */
+/* film grain: static, 3%, sits over the whole grade like a lens */
+#grain{position:fixed;inset:-2%;z-index:200;pointer-events:none;opacity:.028;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:240px 240px}
+.no-js #grain{display:none}
+
+/* CRT phosphor: each console color blooms its own light */
+.term-out{box-shadow:inset 0 0 90px rgba(0,0,0,.45)}
+.term-out .ok{text-shadow:0 0 9px rgba(0,255,159,.35)}
+.term-out .hi{text-shadow:0 0 9px rgba(255,149,0,.35)}
+.term-out .u{text-shadow:0 0 9px rgba(0,249,255,.30)}
+.term-out .warn{text-shadow:0 0 9px rgba(255,204,0,.30)}
+.term-out .bad{text-shadow:0 0 11px rgba(255,51,85,.45)}
+.term-out .cur{color:var(--green);animation:curBlink 1.06s steps(1) infinite}
+@keyframes curBlink{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.term-out .cur{animation:none}}
+
+/* stat lock-on: the value pops and its rail flashes when the count lands */
+.stat .v{transform-origin:left center}
+.stat.locked .rail-l{animation:railLock .8s var(--ease-out-expo)}
+@keyframes railLock{0%{opacity:1;box-shadow:0 0 30px var(--accent-glow),0 0 58px var(--accent-glow)}100%{opacity:.85}}
+
+/* deck strip: a bright spark rides the progress head */
+#strip::after{content:'';position:absolute;top:0;left:var(--sp,0%);width:30px;height:2px;
+  transform:translateX(-100%);pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.9));
+  box-shadow:0 0 10px var(--amber)}
+
+/* plate status dots arrive with a snap when a plate arms */
+@media (prefers-reduced-motion:no-preference){
+  .plate.armed .st{animation:stPop .55s var(--ease-out-expo)}
+  @keyframes stPop{0%{transform:scale(2.2);opacity:0}100%{transform:scale(1);opacity:1}}
+}
+
+/* operator epigraph: one visible whisper of the old commandment */
+.epigraph{margin:18px 0 0;padding:12px 16px;border-left:2px solid rgba(255,149,0,.5);
+  font:400 12.5px/1.7 'JetBrains Mono',monospace;letter-spacing:.04em;color:var(--text-dim);max-width:56ch}
+.epigraph span{display:block;margin-top:6px;font:600 9.5px/1.5 'JetBrains Mono',monospace;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--text-mute)}
+
+/* ══ v42 AAA LAYER — one light, film motion, HUD lock. No new hues. ═════ */
+/* living grain: the layer drifts by transform steps, compositor only */
+#grain{position:fixed;top:-50%;left:-50%;width:200%;height:200%;inset:auto;z-index:200;
+  pointer-events:none;opacity:.045;will-change:transform;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:240px 240px}
+@media (prefers-reduced-motion:no-preference){
+  #grain{animation:grainShift .72s steps(1) infinite}
+  @keyframes grainShift{
+    0%{transform:translate3d(0,0,0)}12.5%{transform:translate3d(-24px,18px,0)}
+    25%{transform:translate3d(14px,-30px,0)}37.5%{transform:translate3d(-38px,-8px,0)}
+    50%{transform:translate3d(28px,24px,0)}62.5%{transform:translate3d(-12px,34px,0)}
+    75%{transform:translate3d(34px,-16px,0)}87.5%{transform:translate3d(-28px,-26px,0)}
+    100%{transform:translate3d(0,0,0)}}
+}
+
+/* hero title sheen: sweeps once on reveal, replays on hover */
+@media (prefers-reduced-motion:no-preference){
+  .hero-type.sheen .l1{animation:titleSheen 1.9s .12s var(--ease-out-expo) both}
+  .hero-type.sheen .l1b{animation:titleSheen 1.9s .30s var(--ease-out-expo) both}
+  .hero-type:hover .l1{animation:titleSheen 1.5s both}
+  .hero-type:hover .l1b{animation:titleSheen 1.5s .13s both}
+  @keyframes titleSheen{from{background-position:-70% 0,0 0}to{background-position:170% 0,0 0}}
+}
+
+/* command buttons: a specular sweep crosses on hover */
+.btn-primary,.btn-ghost{overflow:hidden}
+.btn-primary::after,.btn-ghost::after{content:'';position:absolute;inset:0;pointer-events:none;
+  transform:translateX(-140%) skewX(-18deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.34),transparent)}
+@media (prefers-reduced-motion:no-preference){
+  .btn-primary:hover::after,.btn-ghost:hover::after{
+    transition:transform .6s var(--ease-out-expo);transform:translateX(140%) skewX(-18deg)}
+}
+
+/* CRT: a sync band drifts down the console; the tube degausses on arrival */
+.term::before{content:'';position:absolute;left:0;right:0;top:-40%;height:34%;z-index:5;pointer-events:none;
+  background:linear-gradient(180deg,transparent,rgba(160,220,255,.035) 45%,rgba(160,220,255,.06) 50%,transparent)}
+@media (prefers-reduced-motion:no-preference){
+  .term::before{animation:crtSync 7.5s linear infinite}
+  @keyframes crtSync{0%{transform:translateY(0)}60%{transform:translateY(440%)}100%{transform:translateY(440%)}}
+  .term.degauss{animation:degauss .5s var(--ease-out-expo)}
+  @keyframes degauss{0%{transform:scale(1.012,.988)}30%{transform:scale(.994,1.006)}
+    60%{transform:scale(1.004,.997)}100%{transform:scale(1)}}
+}
+
+/* HUD lock brackets snap around each stat when its count lands */
+.stat{--lockc:var(--accent)} .stat.is-cyan{--lockc:var(--cyan)} .stat.is-green{--lockc:var(--green)}
+.lockbr{position:absolute;inset:7px;pointer-events:none;z-index:2}
+.lockbr i{position:absolute;width:11px;height:11px;border:0 solid var(--lockc);opacity:.55}
+.lockbr i:nth-child(1){top:0;left:0;border-top-width:2px;border-left-width:2px}
+.lockbr i:nth-child(2){top:0;right:0;border-top-width:2px;border-right-width:2px}
+.lockbr i:nth-child(3){bottom:0;left:0;border-bottom-width:2px;border-left-width:2px}
+.lockbr i:nth-child(4){bottom:0;right:0;border-bottom-width:2px;border-right-width:2px}
+@media (prefers-reduced-motion:no-preference){
+  .lockbr{animation:lockIn .5s var(--ease-out-expo)}
+  @keyframes lockIn{from{transform:scale(1.14);opacity:0}to{transform:scale(1);opacity:1}}
+}
+
+/* ══ v43 SHOWTIME — boot, trace, sky, chrome furniture. No new hues. ════ */
+/* boot: the mark lands, a frame breathes in around the sequence */
+@media (prefers-reduced-motion:no-preference){
+  #boot .b-mark{animation:bmarkIn .9s var(--ease-out-expo) both}
+  @keyframes bmarkIn{from{opacity:0;transform:translateY(12px) scale(1.05)}to{opacity:1;transform:none}}
+  #boot .b-in::before{content:'';position:absolute;inset:-34px -40px;border:1px solid rgba(255,149,0,.18);
+    border-radius:14px;animation:bframe 1.1s var(--ease-out-expo) both}
+  @keyframes bframe{from{opacity:0;transform:scale(1.05)}to{opacity:1;transform:scale(1)}}
+}
+
+/* LCARS furniture: the scrollbar and selection belong to the ship too */
+::selection{background:rgba(255,149,0,.34);color:#fff}
+html{scrollbar-color:rgba(255,149,0,.6) #07080d;scrollbar-width:thin}
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:#07080d}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--accent-2),var(--accent));
+  border-radius:5px;border:2px solid #07080d}
+::-webkit-scrollbar-thumb:hover{background:var(--amber)}
+
+/* deck-head rules carry a slow travelling glint */
+@media (prefers-reduced-motion:no-preference){
+  .deck-head .line{position:relative;overflow:hidden}
+  .deck-head .line::after{content:'';position:absolute;top:0;bottom:0;width:90px;left:-90px;
+    background:linear-gradient(90deg,transparent,rgba(255,190,80,.55),transparent);
+    animation:ruleGlint 7s linear infinite}
+  @keyframes ruleGlint{0%{left:-90px}55%{left:100%}100%{left:100%}}
+}
+
+/* the routing trace */
+.flow{position:relative}
+.flow .step{transition:border-color .3s,box-shadow .3s}
+.flow .step.go{border-color:rgba(255,170,60,.55);box-shadow:0 0 24px rgba(255,149,0,.14)}
+.trace-bar{display:flex;align-items:center;gap:14px;margin:-8px 0 22px;flex-wrap:wrap}
+#traceBtn{border-color:rgba(255,149,0,.4);color:var(--accent)}
+#traceBtn:hover{background:rgba(255,149,0,.09);border-color:rgba(255,149,0,.6);color:var(--amber);transform:translateY(-2px)}
+#traceBtn[disabled]{opacity:.55;cursor:default;transform:none}
+.trace-out{font:400 10.5px/1.6 'JetBrains Mono',monospace;letter-spacing:.06em;color:var(--text-mute);min-height:17px}
+.trace-out .hi{color:var(--accent)} .trace-out .ok{color:var(--green)}
+.trace-out .u{color:var(--cyan)} .trace-out .dim{color:var(--text-mute)}
+#tracePkt{position:absolute;width:10px;height:10px;border-radius:50%;top:0;left:0;opacity:0;
+  pointer-events:none;z-index:3;
+  background:radial-gradient(circle,#fff,var(--amber) 45%,rgba(255,149,0,0) 72%);
+  box-shadow:0 0 14px var(--accent-glow),0 0 30px var(--accent-glow)}
+.lane{transition:background .25s}
+.lane.scan{background:rgba(255,149,0,.10)}
+
+/* the sky is alive: a meteor every so often, above the scene, below the text */
+#meteors{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.no-js #meteors{display:none}
+.meteor{position:absolute;width:150px;height:1.5px;border-radius:2px;opacity:0;
+  transform:rotate(16deg);
+  background:linear-gradient(90deg,rgba(255,255,255,.9),rgba(160,220,255,.28),transparent)}
+@media (prefers-reduced-motion:no-preference){
+  .meteor.fly{animation:meteorFly 1.15s ease-in both}
+  @keyframes meteorFly{0%{opacity:0;transform:rotate(16deg) translateX(0)}
+    8%{opacity:.85}100%{opacity:0;transform:rotate(16deg) translateX(46vw)}}
+}
+
+/* ══ v44 FINAL POLISH ═══════════════════════════════════════════════════ */
+/* topology schematic: drawn in line, alive on the links */
+.topo{display:block;width:100%;height:auto;margin-top:18px}
+.topo-t text{text-transform:uppercase}
+.topo-ctg{opacity:0;transition:opacity .8s .9s}
+.topo.on .topo-ctg{opacity:1}
+.topo-t{opacity:0;transition:opacity .8s 1.05s}
+.topo.on .topo-t{opacity:1}
+.topo-dashr{stroke-dasharray:4 5}
+@media (prefers-reduced-motion:no-preference){
+  .topo.on .topo-link{stroke-dasharray:4 6;animation:topoMarch 1.5s linear infinite}
+  .topo.on .topo-link2{stroke-dasharray:3 7;animation:topoMarch 2.2s linear infinite}
+  @keyframes topoMarch{to{stroke-dashoffset:-20}}
+}
+@media (prefers-reduced-motion:reduce){.topo-ctg,.topo-t{opacity:1;transition:none}}
+
+/* build icons: a slow survey ring appears on hover */
+@media (prefers-reduced-motion:no-preference){
+  .build .bico{position:relative}
+  .build:hover .bico::after{content:'';position:absolute;inset:-7px;border-radius:50%;
+    border:1px dashed rgba(0,249,255,.42);animation:bicoSpin 7s linear infinite}
+  .build.is-green:hover .bico::after{border-color:rgba(0,255,159,.42)}
+  @keyframes bicoSpin{to{transform:rotate(360deg)}}
+}
 </style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+ {"@type":"WebSite","url":"https://cashio.us/","name":"CASHIO.US",
+  "description":"Sovereign AI under human command. An independently built, owner operated AI system: owned hardware, quality gated model routing, measured cost, public safe proof."},
+ {"@type":"Person","name":"Doug Cashio","url":"https://cashio.us/",
+  "jobTitle":"Principal Solutions Consultant",
+  "address":{"@type":"PostalAddress","addressLocality":"Pensacola","addressRegion":"FL","addressCountry":"US"},
+  "email":"mailto:doug@cashio.us",
+  "sameAs":["https://www.linkedin.com/in/dougcashio/","https://www.credly.com/users/james-cashio/badges/credly"],
+  "knowsAbout":["Sovereign AI","AI economics","Cybersecurity","Automation reliability","Infrastructure"]}
+]}
+</script>
 </head>
 <body class="js-motion no-js">
 <script>document.body.classList.remove('no-js');</script>
+<!-- “Thou shalt not make a machine in the likeness of a human mind.”
+     Everything below answers to one operator. You read source — hail me:
+     doug@cashio.us · and try ‘butlerian’ in the deck 06 console. -->
+<div id="grain" aria-hidden="true"></div>
+<div id="meteors" aria-hidden="true"></div>
 <a class="skip" href="#conn">Skip to main content</a>
 
 <!-- ══ BOOT ══════════════════════════════════════════════════════════════ -->
@@ -740,13 +942,14 @@ a.brand:hover b{text-shadow:0 0 18px var(--accent-glow)}
     <a href="#console">06 Console</a>
     <a href="#hail">07 Hail</a>
   </nav>
-  <button class="tog" id="deckBtn" type="button" aria-expanded="false" aria-controls="deckSheet" aria-label="DECKS — open deck navigation">DECKS</button>
+  <button class="tog" id="deckBtn" type="button" aria-expanded="false" aria-controls="deckSheet" aria-label="Open deck navigation">DECKS</button>
   <div class="stardate">STARDATE <b id="sd">2026.213</b> · <span id="utc">00:00:00 UTC</span></div>
   <button class="tog" id="fxBtn" aria-pressed="true" title="Toggle viewscreen effects">FX ON</button>
   <button class="tog" id="sndBtn" aria-pressed="false" title="Toggle console tones">SND OFF</button>
   <div class="pill"><i></i><span class="p-full">All systems nominal</span><span class="p-short">Nominal</span></div>
 </header>
 
+<!-- ══ v40: DECK SELECT — navigation for every viewport ══════════════════ -->
 <div id="deckSheet" role="dialog" aria-modal="true" aria-label="Deck navigation" hidden>
   <div class="ds-scrim" data-ds-close></div>
   <div class="ds-panel">
@@ -766,6 +969,7 @@ a.brand:hover b{text-shadow:0 0 18px var(--accent-glow)}
     </nav>
   </div>
 </div>
+
 
 <main id="main">
 
@@ -854,6 +1058,7 @@ a.brand:hover b{text-shadow:0 0 18px var(--accent-glow)}
         <dt>Atlas</dt><dd>Standalone Ollama model host · qwen2.5:35b + laguna-xs-2.1 · outside cluster quorum</dd>
         <dt>Athena</dt><dd>Physical edge node · third quorum vote · breaks the tie so two hosts cannot split-brain</dd>
       </dl>
+      <svg class="topo" id="topoSchem" viewBox="0 0 420 206" role="img" aria-label="ZeusApollo topology: zeus with 13 containers and Apollo with 6 form the cluster, Athena holds the third quorum vote, Atlas runs standalone local inference outside the quorum."><g fill="none" stroke-linecap="round"><path class="topo-d topo-link" d="M168 68 H252" stroke="rgba(0,249,255,.55)" stroke-width="1.4"/><path class="topo-d topo-link" d="M168 80 H252" stroke="rgba(0,249,255,.35)" stroke-width="1"/><path class="topo-d topo-link2" d="M96 124 L198 152" stroke="rgba(0,255,159,.4)" stroke-width="1"/><path class="topo-d topo-link2" d="M324 124 L224 152" stroke="rgba(0,255,159,.4)" stroke-width="1"/><path class="topo-d topo-dash" d="M57 146 V124" stroke="rgba(139,139,168,.55)" stroke-width="1"/><rect class="topo-d" x="18" y="32" width="150" height="92" rx="10" stroke="rgba(255,149,0,.65)" stroke-width="1.4"/><rect class="topo-d" x="252" y="32" width="150" height="92" rx="10" stroke="rgba(255,149,0,.65)" stroke-width="1.4"/><circle class="topo-d" cx="211" cy="158" r="15" stroke="rgba(0,255,159,.7)" stroke-width="1.4"/><rect class="topo-d topo-dashr" x="20" y="146" width="76" height="34" rx="8" stroke="rgba(139,139,168,.6)" stroke-width="1.1"/></g><g class="topo-ctg" fill="rgba(255,170,60,.75)"><circle class="topo-ct" cx="40" cy="74" r="2.6"/><circle class="topo-ct" cx="53" cy="74" r="2.6"/><circle class="topo-ct" cx="66" cy="74" r="2.6"/><circle class="topo-ct" cx="79" cy="74" r="2.6"/><circle class="topo-ct" cx="92" cy="74" r="2.6"/><circle class="topo-ct" cx="40" cy="87" r="2.6"/><circle class="topo-ct" cx="53" cy="87" r="2.6"/><circle class="topo-ct" cx="66" cy="87" r="2.6"/><circle class="topo-ct" cx="79" cy="87" r="2.6"/><circle class="topo-ct" cx="92" cy="87" r="2.6"/><circle class="topo-ct" cx="40" cy="100" r="2.6"/><circle class="topo-ct" cx="53" cy="100" r="2.6"/><circle class="topo-ct" cx="66" cy="100" r="2.6"/><circle class="topo-ct" cx="288" cy="80" r="2.6"/><circle class="topo-ct" cx="301" cy="80" r="2.6"/><circle class="topo-ct" cx="314" cy="80" r="2.6"/><circle class="topo-ct" cx="288" cy="93" r="2.6"/><circle class="topo-ct" cx="301" cy="93" r="2.6"/><circle class="topo-ct" cx="314" cy="93" r="2.6"/></g><g class="topo-t" font-family="'JetBrains Mono',monospace" font-size="8.5" letter-spacing="1.5"><text x="30" y="50" fill="var(--accent)" font-weight="600">ZEUS</text><text x="30" y="61" fill="var(--text-mute)" font-size="7">13 CT · PRIMARY COMPUTE</text><text x="264" y="50" fill="var(--accent)" font-weight="600">APOLLO</text><text x="264" y="61" fill="var(--text-mute)" font-size="7">6 CT · STORAGE + SERVICES</text><text x="186" y="60" fill="rgba(0,249,255,.8)" font-size="7">CLUSTER</text><text x="234" y="161" fill="var(--green)" font-size="7">ATHENA · QUORUM 3/3</text><text x="26" y="167" fill="var(--text-dim)" font-size="7">ATLAS</text><text x="26" y="176" fill="var(--text-mute)" font-size="6.4">LOCAL INFERENCE · OUTSIDE QUORUM</text></g></svg>
     </div>
   </div>
 
@@ -877,6 +1082,11 @@ a.brand:hover b{text-shadow:0 0 18px var(--accent-glow)}
     <div class="step"><b>03 · Execute</b><span>The cheapest qualified lane takes the work.</span></div>
     <div class="step"><b>04 · Observe</b><span>Trace and measure — cost, latency, outcome.</span></div>
     <div class="step"><b>05 · Translate</b><span>Hand it back in language a person can own.</span></div>
+  </div>
+
+  <div class="trace-bar" data-anim>
+    <button class="chip" id="traceBtn" type="button">▸ Run a live trace</button>
+    <span class="trace-out" id="traceOut" aria-live="polite"><span class="dim">Watch a request clear the gates in real time.</span></span>
   </div>
 
   <div class="cols c2" style="align-items:start">
@@ -906,7 +1116,7 @@ a.brand:hover b{text-shadow:0 0 18px var(--accent-glow)}
   <div class="deck-no" aria-hidden="true">03</div>
   <div class="deck-head" data-anim>
     <span class="eyebrow">Deck 03 // The Iron</span><span class="line"></span>
-    <span class="badge hot">v40 · AURORA</span>
+    <span class="badge hot">v44 · AURORA</span>
   </div>
   <h2 class="deck-title" data-anim>Six plates on the bar.<br><em>One operator under it.</em></h2>
   <p class="lede" data-anim>Anyone can name a stack. The weight is owning every layer of it at once — hardware, network, storage, models, policy and proof — while it stays online. The six-layer sequence racks automatically when this deck enters view; select any plate to inspect it.</p>
@@ -984,6 +1194,7 @@ a.brand:hover b{text-shadow:0 0 18px var(--accent-glow)}
     <div data-anim>
       <p class="lede">I build systems that show their work. Twenty-plus years in enterprise environments taught me the hard part is rarely the technology — it is the trust. Somebody has to be able to explain what changed, why it changed, what it cost, and what remains uncertain. I build for that conversation first and let the architecture follow.</p>
       <p class="lede">ZeusApollo is where I prove it on my own dime. Nothing here is a vendor demo or a borrowed diagram. Every container, every route, every automation was designed, built, operated, measured, and hardened by one person. If a number appears on this deck, I measured it, dated it, and published its limits alongside it.</p>
+      <p class="epigraph" data-anim>“Thou shalt not make a machine in the likeness of a human mind.”<span>The old commandment holds on this deck — every machine here answers to one operator</span></p>
     </div>
     <div class="hull card" data-anim><span class="rail-l"></span>
       <span class="tag">▸ Doug Cashio</span>
@@ -1072,7 +1283,7 @@ a.brand:hover b{text-shadow:0 0 18px var(--accent-glow)}
 </main>
 
 <footer>
-  <b>CASHIO.US</b> · ZEUSAPOLLO v40 // AURORA<br>
+  <b>CASHIO.US</b> · ZEUSAPOLLO v44 // AURORA<br>
   Figures verified 08-01-2026 · valid 30 days or until the next architecture change<br>
   This page queries nothing. Zero network calls beyond its own assets.
 </footer>
@@ -1101,7 +1312,7 @@ a.brand:hover b{text-shadow:0 0 18px var(--accent-glow)}
 <!-- ══ DATA — mirrors status.json, verified 08-01-2026 ═══════════════════ -->
 <script>
 window.ZA = {
-  version:"v40", release:"AURORA", verified:"08-01-2026", expires:"08-31-2026",
+  version:"v44", release:"AURORA", verified:"08-01-2026", expires:"08-31-2026",
   hosts:2, roles:19, healthy:19, lanes:10, backups24:18, secUpdates:0,
   costDay:0.26, costMonth:6.49, gateway:"Hermes v0.19 QUICKSILVER",
   links:{
@@ -1492,7 +1703,7 @@ window.ZATEX = (function(){
 })();
 </script>
 <script>
-/* v40: the viewscreen loads after first paint and first intent. Reduced
+/* v44: the viewscreen loads after first paint and first intent. Reduced
    motion never runs it; a delayed fallback keeps the effect discoverable. */
 (function(){
   var done=false, armed=false;
@@ -1676,9 +1887,16 @@ const SND = (function(){
     ok(){   tone(392, 0.10,'sine',523.25,0.26); tone(587.33,0.16,'sine',783.99,0.18); },
     err(){  tone(146.83,0.20,'sawtooth',110,0.24); tick(320,0.10,3,0.20); },
     deck(){ sweep(240, 3400, 0.55, 0.13); tone(261.63,0.20,'triangle',392,0.16); },
-    plate(){ tick(1900,0.045,7,0.24); }
+    plate(){ tick(1900,0.045,7,0.24); },
+    /* v44: the trace, the locks, and the deck sheet get voices */
+    trace(){ sweep(300,2600,0.9,0.12); },
+    gate(){ tick(3100,0.03,10,0.20); },
+    lock(){ tone(659.25,0.09,'sine',987.77,0.22); tick(2100,0.04,8,0.16); },
+    whoosh(o){ o ? sweep(420,2200,0.34,0.13) : sweep(2200,420,0.30,0.11); }
   };
 })();
+
+window.ZASND = SND;
 
 /* ══ 2. inject repeating content ═══════════════════════════════════════ */
 $('#builds-grid').innerHTML = D.builds.map((b,i)=>`
@@ -1742,6 +1960,15 @@ clockTick(); setInterval(clockTick, 1000);
     const dd=Math.hypot(pts[i].x-pts[j].x, pts[i].y-pts[j].y, pts[i].z-pts[j].z);
     if(dd<1.15) edges.push({a:i,b:j,ph:Math.random()});
   }
+  /* v42: the gateway heartbeat — hop distance from hermes, breadth-first */
+  const DIST=(function(){
+    const d=pts.map(()=>99); d[0]=0; const q=[0];
+    const adj=pts.map(()=>[]);
+    edges.forEach(e=>{ adj[e.a].push(e.b); adj[e.b].push(e.a); });
+    while(q.length){ const n=q.shift(); for(const m of adj[n]) if(d[m]>d[n]+1){ d[m]=d[n]+1; q.push(m); } }
+    return d;
+  })();
+  const HBP=8.5;
   const diskCol = v => v<30 ? '#00ff9f' : v<50 ? '#00f9ff' : v<66 ? '#ffcc00' : '#ff9500';
 
   function size(){
@@ -1791,6 +2018,23 @@ clockTick(); setInterval(clockTick, 1000);
         x.fillStyle=g; x.beginPath(); x.arc(px,py,3.4*k+1.6,0,7); x.fill();
       }
     }
+    /* v42: heartbeat wave out of hermes */
+    if(!REDUCED){
+      const hb=t%HBP;
+      for(const e of edges){
+        const w0=Math.min(DIST[e.a],DIST[e.b])*0.26, w1=Math.max(DIST[e.a],DIST[e.b])*0.26+0.42;
+        if(hb>w0 && hb<w1+0.42){
+          const a=PR[e.a], b=PR[e.b], k=(a.k+b.k)/2, f=1-Math.min(1,(hb-w0)/(w1+0.42-w0));
+          x.strokeStyle='rgba(255,170,60,'+(0.05+0.22*f*k).toFixed(3)+')';
+          x.lineWidth=1.6; x.beginPath(); x.moveTo(a.sx,a.sy); x.lineTo(b.sx,b.sy); x.stroke();
+        }
+      }
+      if(hb<1.7){
+        const h0=PR[0], pr=hb/1.7;
+        x.strokeStyle='rgba(255,149,0,'+((1-pr)*0.5).toFixed(3)+')';
+        x.lineWidth=1.6; x.beginPath(); x.arc(h0.sx,h0.sy,6+pr*Math.min(W,H)*0.42,0,7); x.stroke();
+      }
+    }
     x.globalCompositeOperation='source-over';
 
     const order = pts.map((p,i)=>i).sort((a,b)=>PR[b].z-PR[a].z);
@@ -1801,6 +2045,14 @@ clockTick(); setInterval(clockTick, 1000);
         const pr=(t*0.55)%1;
         x.strokeStyle='rgba(255,149,0,'+((1-pr)*0.6).toFixed(3)+')';
         x.lineWidth=1.4; x.beginPath(); x.arc(p.sx,p.sy,r+pr*22,0,7); x.stroke();
+      }
+      if(!REDUCED){
+        const wh=(t%HBP)-DIST[i]*0.26;
+        if(wh>0 && wh<0.6){
+          const f=1-wh/0.6;
+          x.strokeStyle='rgba(255,190,80,'+(0.55*f*p.k).toFixed(3)+')';
+          x.lineWidth=1.3; x.beginPath(); x.arc(p.sx,p.sy,r+3+(1-f)*10,0,7); x.stroke();
+        }
       }
       x.save();
       x.shadowColor=col; x.shadowBlur=(on?28:hv?18:10)*p.k;
@@ -1875,6 +2127,56 @@ function showPlate(i, quiet){
 $$('.plate').forEach(el=> el.addEventListener('click',()=>showPlate(+el.dataset.plate)));
 
 /* ══ 6. console — read-only, local, and worth poking at ═══════════════ */
+/* ══ v43: the routing law, demonstrated live ═════════════════════════ */
+const TRACES=[
+  {ask:'Summarize a 40-page vendor document', lane:1, why:'routine drafting — the workhorse qualifies'},
+  {ask:'Read a screenshot of a failing dashboard', lane:3, why:'an artifact in the request — multimodal gate'},
+  {ask:'Design a cross-system escalation policy', lane:5, why:'consequence earns synthesis'},
+  {ask:'Verify a market claim with citations', lane:6, why:'claims must survive checking — research lane'},
+  {ask:'Every gateway unreachable — answer anyway', lane:8, why:'local fallback — private, slower, free'}
+];
+let traceI=0, tracing=false;
+(function trace(){
+  const btn=$('#traceBtn'), out=$('#traceOut'), flow=$('#flow');
+  if(!btn||!out||!flow) return;
+  const pkt=document.createElement('span'); pkt.id='tracePkt'; flow.appendChild(pkt);
+  function readout(sc,l){
+    out.innerHTML='<span class="u">'+sc.ask+'</span> → classify <span class="dim">(Kimi K3 · free)</span> → '
+      +'<span class="hi">'+l.m+'</span> · rel cost <span class="hi">'+(l.c?l.c+'/100':'n/a')+'</span> · '
+      +'<span class="ok">policy clean</span> — '+sc.why;
+  }
+  btn.addEventListener('click',()=>{
+    if(tracing) return;
+    const sc=TRACES[traceI++ % TRACES.length], l=D.lanes_tbl[sc.lane];
+    const laneEls=$$('.lane'), steps=$$('.flow .step');
+    if(REDUCED || !HAS_GSAP){ readout(sc,l); if(laneEls[sc.lane]) selectLane(laneEls[sc.lane]); return; }
+    tracing=true; btn.disabled=true; SND.trace();
+    out.innerHTML='<span class="dim">» '+sc.ask+'</span>';
+    steps.forEach(st=>st.classList.remove('go'));
+    const fb=flow.getBoundingClientRect();
+    const P=steps.map(st=>{const b=st.getBoundingClientRect();
+      return {x:b.left-fb.left+b.width/2-5, y:b.top-fb.top+b.height/2-5};});
+    const tl=gsap.timeline({onComplete(){ tracing=false; btn.disabled=false; }});
+    tl.set(pkt,{x:P[0].x,y:P[0].y,opacity:0}).to(pkt,{opacity:1,duration:.18},0);
+    steps.forEach((st,i)=>{
+      tl.add(()=>{ st.classList.add('go'); SND.gate(); }, i*0.36)
+        .to(pkt,{x:P[i].x,y:P[i].y,duration:.36,ease:'power2.inOut'}, Math.max(0,(i-1))*0.36);
+      if(i===2) tl.add(()=>{
+        laneEls.slice(0,sc.lane+1).forEach((le,j)=>{
+          setTimeout(()=>{ le.classList.add('scan');
+            setTimeout(()=>le.classList.remove('scan'),170);
+            if(j===sc.lane) selectLane(le);
+          }, j*70);
+        });
+      }, 2*0.36+.18);
+    });
+    tl.to(pkt,{opacity:0,duration:.3}, steps.length*0.36)
+      .add(()=>{ readout(sc,l); SND.lock();
+        setTimeout(()=>steps.forEach(st=>st.classList.remove('go')), 1700);
+      }, steps.length*0.36);
+  });
+})();
+
 (function term(){
   const out=$('#termOut'), inp=$('#termIn');
   const esc = t => String(t).replace(/[<>&]/g, c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
@@ -1896,7 +2198,7 @@ ${list.map(n=>` <span class="u">${n.n.padEnd(17)}</span>${n.ct.padEnd(8)}root ${
 <span class="hi">OPERATOR</span>  whoami  contact  credly  linkedin
 <span class="hi">SHELL</span>     banner  history  date  clear  help
 <span class="dim">↑/↓ walks history, Tab completes, Esc clears the line.
-Some commands answer in character. Try: make it so · red alert · sudo · scan</span>`,
+Some commands answer in character. Try: make it so · red alert · sudo · scan · trace\nThe archive runs deeper than the list. Curiosity is a command.</span>`,
 
     status:()=>`<span class="ok">● ALL SYSTEMS NOMINAL</span>  verified ${D.verified}, expires ${D.expires}
 containers   <span class="hi">${D.healthy}/${D.roles}</span> running        quorum <span class="hi">3/3</span> (Athena answering)
@@ -2013,6 +2315,28 @@ explainability, or sovereign infrastructure.</span>`,
                             : `<span class="dim">nothing yet</span>`,
 
     /* ── in character ─────────────────────────────────────────────── */
+    /* ── deep archive ── unlisted; found by the curious ── */
+    butlerian:()=>`<span class="hi">“Thou shalt not make a machine in the likeness of a human mind.”</span>
+<span class="dim">— Orange Catholic Bible</span>
+
+The commandment holds on this deck. Ten lanes, one gateway, zero autonomy.
+Every route ends at a human at the conn. <span class="ok">Sovereign AI under human command.</span>`,
+    mentat:()=>`<span class="hi">It is by will alone I set my mind in motion.</span>
+computation   ${D.healthy}/${D.roles} running · quorum 3/3 · $${D.costDay.toFixed(2)}/day · ${D.secUpdates} updates due
+<span class="dim">No sapho required. The juice here is coffee, and the figures are dated.</span>`,
+    spice:()=>`<span class="warn">The spice must flow.</span>  Here it flows at <span class="hi">$${D.costDay.toFixed(2)}/day</span>.
+<span class="dim">Metered, routed, and it never gets to steer the navigator.</span>`,
+    ix:()=>`<span class="ok">IXIAN WORKS</span>
+Machines built openly on owned iron, in service of their maker.
+No hidden cores. Every container is named on The Grid.
+<span class="dim">The Great Convention is satisfied. See also </span><span class="hi">butlerian</span>`,
+    trace:()=>{ const sc=TRACES[traceI++ % TRACES.length], l=D.lanes_tbl[sc.lane];
+      return `<span class="u">${sc.ask}</span>
+intent → policy <span class="ok">clean</span> → classify <span class="dim">Kimi K3 · free</span> → execute <span class="hi">${l.m}</span>
+rel cost <span class="hi">${l.c?l.c+'/100':'n/a'}</span> · ${sc.why}
+<span class="dim">The visual trace runs on deck 02. Quality gated the route; cost broke the tie.</span>`; },
+    bit:()=>{ BIT.mood('yes','YES // '+D.healthy+'/'+D.roles+' RUNNING. I CHECKED.', 3600);
+      return `<span class="dim">Bit has the conn for a moment.</span>`; },
     'make it so':()=>`<span class="ok">Engaging.</span> <span class="dim">…the fleet was already running. It usually is.</span>`,
     'red alert':()=>{ document.body.classList.add('alert');
       BIT.mood('no','NO // CONDITION ONE. THIS IS A DRILL.', 4200);
@@ -2045,9 +2369,21 @@ Type </span><span class="hi">help</span><span class="dim"> for the full command 
     var io=new IntersectionObserver(function(es){es.forEach(function(en){
       if(!en.isIntersecting) return;
       io.disconnect();
+      var tm=deck.querySelector('.term'); if(tm) tm.classList.add('degauss');
       if(HIST.length) return;
-      w('<span class="u">doug@zeus:~$</span> status <span class="dim">// auto</span>');
-      w(pre(R.status()));
+      var line=document.createElement('div');
+      line.innerHTML='<span class="u">doug@zeus:~$</span> <span class="at"></span><span class="cur">▋</span>';
+      out.appendChild(line); out.scrollTop=out.scrollHeight;
+      var at=line.querySelector('.at'), cur=line.querySelector('.cur'), cmd='status', ci=0;
+      function fin(){ cur.remove(); at.textContent=cmd; w(pre(R.status())); }
+      if(REDUCED){ fin(); return; }
+      var t0=performance.now();
+      (function step(){
+        var n=Math.min(cmd.length, Math.floor((performance.now()-t0)/70)+1);
+        if(n!==ci){ ci=n; at.textContent=cmd.slice(0,ci); SND.gate(); }
+        if(ci>=cmd.length){ setTimeout(fin,200); return; }
+        requestAnimationFrame(step);
+      })();
     });},{threshold:.3});
     io.observe(deck);
   })();
@@ -2102,7 +2438,7 @@ Type </span><span class="hi">help</span><span class="dim"> for the full command 
       else inp.value = HIST[hi];
     }
   });
-  $$('.chip').forEach(b=>b.addEventListener('click',()=>{ run(b.dataset.cmd); inp.focus(); }));
+  $$('#chips .chip').forEach(b=>b.addEventListener('click',()=>{ run(b.dataset.cmd); inp.focus(); }));
   addEventListener('keydown',e=>{
     if(e.key==='/' && document.activeElement!==inp){
       e.preventDefault(); $('#console').scrollIntoView({behavior:REDUCED?'auto':'smooth'});
@@ -2133,6 +2469,7 @@ const BIT = (function(){
     ['yes','YES // SIX PLATES ON THE BAR. LIFT THE IRON.'],
     ['no', 'NO // '+D.backups24+' OF '+D.roles+' BACKED UP. NOT '+D.roles+'. THAT IS THE POINT.'],
     ['yes','YES // QUORUM 3/3. ATHENA BREAKS THE TIE.'],
+    ['no', 'NO // NO MACHINE IN THE LIKENESS OF A HUMAN MIND. ONE OPERATOR AT THE CONN.'],
     ['yes','YES // END OF LINE.']
   ];
   let i = 0, timer = 0;
@@ -2301,6 +2638,7 @@ if(!HAS_GSAP){
      .fromTo('.cta-row .btn',{opacity:0,y:20,scale:.96},{opacity:1,y:0,scale:1,duration:.7,ease:'expo.out',stagger:.07}, .86)
      .fromTo('.hint',{opacity:0},{opacity:1,duration:.6}, 1.1)
      .fromTo('#conn .stat',{opacity:0,y:26},{opacity:1,y:0,duration:.8,ease:'expo.out',stagger:{each:.06}}, 1.0)
+     .add(()=>{ const ht=document.querySelector('.hero-type'); if(ht) ht.classList.add('sheen'); }, .60)
      .add(countUp, 1.15);
   }
 
@@ -2310,7 +2648,12 @@ if(!HAS_GSAP){
             pre=el.dataset.prefix||'', suf=el.dataset.suffix||'';
       gsap.fromTo({v:0},{v:to},{v:to,duration:1.5,ease:'power2.out',
         onStart(){ el.textContent=pre+(0).toFixed(dec)+suf; },
-        onUpdate(){ el.textContent=pre+this.targets()[0].v.toFixed(dec)+suf; }});
+        onUpdate(){ el.textContent=pre+this.targets()[0].v.toFixed(dec)+suf; },
+        onComplete(){ SND.gate(); const st=el.closest('.stat');
+          if(st && !st.querySelector('.lockbr')){ st.classList.add('locked');
+            const br=document.createElement('span'); br.className='lockbr'; br.setAttribute('aria-hidden','true');
+            br.innerHTML='<i></i><i></i><i></i><i></i>'; st.appendChild(br); }
+          gsap.fromTo(el,{scale:1.05},{scale:1,duration:.55,ease:'expo.out'}); }});
     });
   }
 
@@ -2447,13 +2790,25 @@ if(!HAS_GSAP){
 
   /* ── raking light, reticle, magnets ──────────────────────────────── */
   if(FINE){
-    document.addEventListener('pointermove', e=>{
-      const h = e.target.closest && e.target.closest('.hull');
-      if(!h) return;
-      const b=h.getBoundingClientRect();
-      h.style.setProperty('--mx',(((e.clientX-b.left)/b.width)*100).toFixed(1)+'%');
-      h.style.setProperty('--my',(((e.clientY-b.top)/b.height)*100).toFixed(1)+'%');
-    },{passive:true});
+    /* v42: one light source — every visible hull catches the pointer with falloff */
+    let _lx=-1e4,_ly=-1e4,_lp=false;
+    document.addEventListener('pointermove', e=>{ _lx=e.clientX; _ly=e.clientY; _lp=true; },{passive:true});
+    (function lightLoop(){
+      if(_lp){ _lp=false;
+        const R=Math.max(innerWidth,innerHeight)*0.55;
+        document.querySelectorAll('.hull').forEach(h=>{
+          const b=h.getBoundingClientRect();
+          if(b.width===0 || b.bottom<-120 || b.top>innerHeight+120){
+            if(h.__li){ h.style.setProperty('--li','0'); h.__li=0; } return; }
+          const d=Math.hypot(_lx-(b.left+b.width/2), _ly-(b.top+b.height/2));
+          const li=Math.max(0,1-d/R);
+          h.style.setProperty('--mx',(((_lx-b.left)/b.width)*100).toFixed(1)+'%');
+          h.style.setProperty('--my',(((_ly-b.top)/b.height)*100).toFixed(1)+'%');
+          h.style.setProperty('--li',(li*li).toFixed(3)); h.__li=li;
+        });
+      }
+      requestAnimationFrame(lightLoop);
+    })();
 
     if(!REDUCED) $$('[data-mag]').forEach(el=>{
       const qx=gsap.quickTo(el,'x',{duration:.5,ease:'power3'}),
@@ -2486,6 +2841,72 @@ if(!HAS_GSAP){
 })();
 </script>
 <script>
+/* ══ v41: card tilt — fine pointers only, GSAP owns the transform ══ */
+(function(){
+  if(!window.gsap) return;
+  if(!matchMedia('(pointer: fine)').matches) return;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.querySelectorAll('.build, #operator .hull').forEach(function(el){
+    var rx=gsap.quickTo(el,'rotationY',{duration:.6,ease:'power3'}),
+        ry=gsap.quickTo(el,'rotationX',{duration:.6,ease:'power3'});
+    gsap.set(el,{transformPerspective:1100});
+    el.addEventListener('pointermove',function(e){var b=el.getBoundingClientRect();
+      rx(((e.clientX-b.left)/b.width-.5)*4.2); ry((.5-(e.clientY-b.top)/b.height)*3.2);},{passive:true});
+    el.addEventListener('pointerleave',function(){rx(0);ry(0);});
+  });
+})();
+</script>
+<script>
+/* ══ v42: deck numerals drift against the scroll — depth for free ══ */
+(function(){
+  if(!window.gsap || !window.ScrollTrigger) return;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.querySelectorAll('.deck-no').forEach(function(el){
+    var sec=el.closest('.deck'); if(!sec) return;
+    gsap.fromTo(el,{yPercent:16},{yPercent:-16,ease:'none',
+      scrollTrigger:{trigger:sec,start:'top bottom',end:'bottom top',scrub:1}});
+  });
+})();
+</script>
+<script>
+/* ══ v43: occasional meteors — ambient, cheap, never on reduced motion ══ */
+(function(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var host=document.getElementById('meteors'); if(!host) return;
+  function spawn(){
+    if(!document.hidden && !document.documentElement.classList.contains('no-gl')){
+      var m=document.createElement('span'); m.className='meteor fly';
+      m.style.top=(4+Math.random()*42)+'%';
+      m.style.left=(2+Math.random()*55)+'%';
+      host.appendChild(m);
+      setTimeout(function(){ m.remove(); },1500);
+    }
+    setTimeout(spawn, 6500+Math.random()*7000);
+  }
+  setTimeout(spawn, 3200);
+})();
+</script>
+<script>
+/* ══ v44: the schematic draws itself in when the grid arrives ══ */
+(function(){
+  var svg=document.getElementById('topoSchem'); if(!svg) return;
+  var paths=svg.querySelectorAll('.topo-d');
+  var RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(RM || !window.gsap || !window.ScrollTrigger){ svg.classList.add('on'); return; }
+  paths.forEach(function(el){
+    var L=(el.getTotalLength&&el.getTotalLength())||300;
+    el.style.strokeDasharray=L; el.style.strokeDashoffset=L;
+  });
+  ScrollTrigger.create({trigger:svg,start:'top 85%',once:true,onEnter:function(){
+    gsap.to(paths,{strokeDashoffset:0,duration:1.15,ease:'power2.inOut',stagger:.07,
+      onComplete:function(){
+        paths.forEach(function(el){ el.style.strokeDasharray=''; el.style.strokeDashoffset=''; });
+        svg.classList.add('on');
+      }});
+  }});
+})();
+</script>
+<script>
 /* ══ v40: deck select behaviour ══════════════════════════════════════════ */
 (function(){
   var btn=document.getElementById('deckBtn'), sheet=document.getElementById('deckSheet');
@@ -2495,6 +2916,7 @@ if(!HAS_GSAP){
   function focusables(){ return sheet.querySelectorAll('a[href],button'); }
   function set(v){
     open=v; btn.setAttribute('aria-expanded',String(v));
+    if(window.ZASND && window.ZASND.whoosh) window.ZASND.whoosh(v);
     if(v){
       last=document.activeElement; sheet.hidden=false;
       requestAnimationFrame(function(){ sheet.classList.add('on'); });

@@ -1,5 +1,5 @@
 {
-  "version": "v40",
+  "version": "v44",
   "release_name": "Aurora",
   "verified_on": "08-01-2026",
   "expires_on": "08-31-2026",
@@ -18,7 +18,7 @@
   "security_updates_due": 0,
   "observed_ai_cost_per_day": 0.26,
   "estimated_ai_cost_per_month": 6.49,
-  "note": "Live check 08-01-2026 at 20:40 CDT: 19 of 19 documented containers verified running. Cluster quorate with the Athena quorum device answering (3/3). Backup chain: 18 of 19 inside 24 hours at verification time. Patch posture: 0 security updates due. Automations are Hermes-reported (71 of 71 healthy at last report, 07-22-2026) and are no longer surfaced on the public deck. Cost figures are from the dated 07-21 to 07-22 sample.",
+  "note": "Live check 08-01-2026 at 20:40 CDT: 19 of 19 documented containers verified running. Cluster quorate with the Athena quorum device answering (3/3). Backup chain: 18 of 19 inside 24 hours at verification time. Patch posture: 0 security updates due. Automations are Hermes-reported (71 of 71 healthy at last report, 07-22-2026) and are no longer surfaced on the public deck. Cost figures are from the dated 07-21 to 07-22 sample. DNS figures on the deck are from a 24-hour Technitium sample taken during the same 08-01-2026 check.",
   "service_summary": {
     "running": "19 of 19 documented containers verified running at the 08-01-2026 live check",
     "maintenance": "0 containers stopped at verification time",
