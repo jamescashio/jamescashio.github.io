@@ -166,6 +166,61 @@ class V31ReleaseContractTests(unittest.TestCase):
         self.assertIn("location.protocol !== 'file:' && FONT_PATHS[uuid]", self.html)
         self.assertIn("IMAGE_MIME.test(entry.mime)", self.html)
 
+    def test_approved_command_response_layer_is_productionized(self) -> None:
+        self.assertEqual(self.html.count('id="v31-command-response-bootstrap"'), 1)
+        for stale in (
+            'v31-preview-snapshot',
+            'production untouched',
+            '/files/cashio-light-cycles.png',
+            'ASSET_RECOGNIZER',
+        ):
+            self.assertNotIn(stale, self.html)
+
+        cycle_asset = ROOT / "assets" / "img" / "cashio-light-cycles.webp"
+        self.assertTrue(cycle_asset.is_file(), "Production light-cycle asset is missing")
+        self.assertLess(cycle_asset.stat().st_size, 200_000, "Light-cycle asset regressed in size")
+        self.assertIn("const ASSET_CYCLES = '/assets/img/cashio-light-cycles.webp';", self.html)
+
+    def test_command_rail_is_local_dated_and_has_safe_effect_controls(self) -> None:
+        start = self.html.index("const registry = Object.freeze({")
+        end = self.html.index("const aliases = Object.entries(registry)", start)
+        registry = self.html[start:end]
+        for marker in (
+            "19/19 containers verified running · quorum 3/3.",
+            "Hermes Agent v0.20.0 · Herald release · upstream 08-03-2026",
+            "Public-safe scope: documented build receipt and upstream release only; no current health or live-state claim.",
+            "FX OFF OR REDUCED MOTION. NO MOTION WAS ENABLED.",
+            "window.__plasmaReplay()",
+            "window.__recogNow",
+            "window.__v31xGridFx",
+            "SND // ",
+        ):
+            self.assertIn(marker, registry)
+        for network_api in ("fetch(", "XMLHttpRequest", "WebSocket", "EventSource", "sendBeacon", "window.open"):
+            self.assertNotIn(network_api, registry)
+
+    def test_v31_presentation_keeps_the_v44_source_lineage_marker(self) -> None:
+        self.assertIn("/^v44 \/\/ AURORA/", self.html)
+        self.assertIn("V31 // THE GRID \\u00b7 E.V.E.", self.html)
+
+    def test_grid_roving_tabindex_follows_the_requested_card(self) -> None:
+        self.assertIn(
+            "const current = (preferred && visible.includes(preferred) ? preferred : null) || focused ||",
+            self.html,
+        )
+
+    def test_command_response_installs_only_after_the_runtime_document_swap(self) -> None:
+        self.assertIn("const runtimeRoot = document.getElementById('dc-root');", self.html)
+        self.assertIn("return !!runtimeRoot && !document.querySelector('x-dc')", self.html)
+        self.assertIn("REQUIRED_DECKS.every((id) => runtimeRoot.querySelector('#' + id))", self.html)
+        self.assertIn("runtimeRoot.querySelector('[aria-label=\"Console command input\"]')", self.html)
+        build_install = self.html[self.html.index("function installBuildDirector()") : self.html.index("let gridResponseEpoch")]
+        self.assertIn("window.__V31BuildDirector = {", build_install)
+        self.assertIn("function markStatusRail()", self.html)
+        self.assertIn("rail.classList.add('v31x-status-rail')", self.html)
+        self.assertNotIn('body.v31x-controls-ready [data-dc-tpl="232"]', self.html)
+        self.assertIn("document.body.classList.add('v31x-controls-ready');", self.html)
+
 
 if __name__ == "__main__":
     unittest.main()
