@@ -105,6 +105,66 @@ class V31ReleaseContractTests(unittest.TestCase):
             "rgba(255,255,255",
         ):
             self.assertIn(marker, self.html)
+        self.assertIn("      mountPlasma(d);", self.html)
+        self.assertNotIn(
+            "if (d.fonts && d.fonts.check && d.fonts.check('900 20px Orbitron')) mountPlasma(d);",
+            self.html,
+            "The Reveal must not disappear when FontFaceSet.check is delayed or unavailable",
+        )
+
+    def test_embedded_runtime_obeys_the_live_script_csp(self) -> None:
+        """The production policy allows inline scripts, but not blob: or eval."""
+        for marker in (
+            "function bundlerEval(names, args, body)",
+            "Object.defineProperty(window, '__bundlerFunction'",
+            "Runtime CSP patch drift",
+            "CSP_RUNTIME_UUID",
+            "Preload bundled JavaScript dependencies inline",
+            "Inline bundled scripts while the parsed document is still detached",
+            "for (const pending of Array.from(doc.querySelectorAll('script[src]')))",
+            "if (pending.closest('x-dc'))",
+            "preload.textContent = pendingSource",
+            "pending.remove()",
+            "const pendingSource = await pendingBundle.text()",
+            "pending.textContent = pendingSource",
+            "const bundledScript = scriptSrc ? resourceBlobs[scriptSrc.split('#')[0]] : null",
+            "s.textContent = await bundledScript.text()",
+        ):
+            self.assertIn(marker, self.html)
+        self.assertLess(
+            self.html.index("for (const pending of Array.from(doc.querySelectorAll('script[src]')))"),
+            self.html.index("document.documentElement.replaceWith(doc.documentElement)"),
+            "Bundled scripts must be inlined before the runtime can detach them",
+        )
+
+    def test_embedded_assets_match_the_live_font_and_image_csp(self) -> None:
+        """Production permits same-origin fonts and data images, not blob URLs."""
+        manifest_match = re.search(
+            r'<script type="__bundler/manifest">\s*(\{.*?\})\s*</script>',
+            self.html,
+            re.DOTALL,
+        )
+        self.assertIsNotNone(manifest_match, "Bundler manifest is missing")
+        manifest = json.loads(manifest_match.group(1))
+        font_paths = {
+            "0bacb948-df39-4d94-93c4-93720754a7ce": "orbitron-latin-600-normal.woff2",
+            "cfb1bd30-26f7-4fbb-8a2a-ddc61c6bb223": "orbitron-latin-700-normal.woff2",
+            "3006d8e6-4e29-46d7-a6d1-fa07eb4d6565": "orbitron-latin-900-normal.woff2",
+            "2775d986-6ed9-4326-96e2-272e5fbee9c4": "exo-2-latin-400-normal.woff2",
+            "49fd112b-fa1a-4366-bdc8-29a91e900963": "exo-2-latin-500-normal.woff2",
+            "8c783f64-123a-4e54-a658-43bdadfd1af8": "exo-2-latin-700-normal.woff2",
+            "d58e88ba-4b4d-4810-ae2c-e734f06becc6": "jetbrains-mono-latin-400-normal.woff2",
+            "e8e8b7ed-b422-4b92-abb7-33814a4c7126": "jetbrains-mono-latin-600-normal.woff2",
+        }
+        for uuid, filename in font_paths.items():
+            entry = manifest[uuid]
+            embedded = base64.b64decode(entry["data"])
+            if entry["compressed"]:
+                embedded = gzip.decompress(embedded)
+            self.assertEqual(embedded, (ROOT / "fonts" / filename).read_bytes(), filename)
+            self.assertIn(f'"{uuid}": "/fonts/{filename}"', self.html)
+        self.assertIn("location.protocol !== 'file:' && FONT_PATHS[uuid]", self.html)
+        self.assertIn("IMAGE_MIME.test(entry.mime)", self.html)
 
 
 if __name__ == "__main__":

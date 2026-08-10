@@ -1013,7 +1013,8 @@ window.GSND = (function(){
       injectCss(d);
       mountBit(d);
       mountSound(d);
-      if (d.fonts && d.fonts.check && d.fonts.check('900 20px Orbitron')) mountPlasma(d);
+      /* Redraws every frame and picks up Orbitron as soon as the self-hosted face is ready. */
+      mountPlasma(d);
     } catch(e){}
   })();
 })();
@@ -2213,7 +2214,20 @@ document.addEventListener('DOMContentLoaded', async function() {
   function setStatus(msg) { if (loading) loading.textContent = msg; }
 
   const FONT_MIME = /^(font[/]|application[/](x-)?font-|application[/]vnd\.ms-fontobject)/i;
+  const IMAGE_MIME = /^image[/]/i;
+  const SCRIPT_MIME = /^(?:text|application)[/](?:x-)?(?:java|ecma)script(?:;|$)/i;
   const MIME_TOKEN = /^[\w.+-]+[/][\w.+-]+$/;
+  const CSP_RUNTIME_UUID = 'b76c4fb9-0172-434f-a699-9250bcde5c99';
+  const FONT_PATHS = Object.freeze({
+    "0bacb948-df39-4d94-93c4-93720754a7ce": "/fonts/orbitron-latin-600-normal.woff2",
+    "cfb1bd30-26f7-4fbb-8a2a-ddc61c6bb223": "/fonts/orbitron-latin-700-normal.woff2",
+    "3006d8e6-4e29-46d7-a6d1-fa07eb4d6565": "/fonts/orbitron-latin-900-normal.woff2",
+    "2775d986-6ed9-4326-96e2-272e5fbee9c4": "/fonts/exo-2-latin-400-normal.woff2",
+    "49fd112b-fa1a-4366-bdc8-29a91e900963": "/fonts/exo-2-latin-500-normal.woff2",
+    "8c783f64-123a-4e54-a658-43bdadfd1af8": "/fonts/exo-2-latin-700-normal.woff2",
+    "d58e88ba-4b4d-4810-ae2c-e734f06becc6": "/fonts/jetbrains-mono-latin-400-normal.woff2",
+    "e8e8b7ed-b422-4b92-abb7-33814a4c7126": "/fonts/jetbrains-mono-latin-600-normal.woff2"
+  });
   function toBase64(bytes) {
     let bin = '';
     for (let i = 0; i < bytes.length; i += 0x8000) {
@@ -2221,6 +2235,57 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
     return btoa(bin);
   }
+
+  // The live policy permits trusted inline scripts, but intentionally blocks
+  // blob: script sources and unsafe-eval. Reproduce Function-constructor
+  // semantics through a short-lived inline classic script instead.
+  let bundledEvalSeq = 0;
+  function bundlerEval(names, args, body) {
+    if (!Array.isArray(names) || !Array.isArray(args) ||
+        !names.every(function(name) { return /^[A-Za-z_$][\w$]*$/.test(name); })) {
+      throw new Error('Invalid bundled evaluator parameters');
+    }
+    const id = ++bundledEvalSeq;
+    const key = '__bundler_eval_' + id;
+    const box = { args: args, result: undefined, error: null, ran: false };
+    Object.defineProperty(window, key, { value: box, configurable: true });
+    const ref = 'window[' + JSON.stringify(key) + ']';
+    const script = document.createElement('script');
+    script.textContent =
+      'try{' + ref + '.ran=true;' + ref + '.result=(function(' + names.join(',') + '){\n' +
+      body + '\n}).apply(undefined,' + ref + '.args)}' +
+      'catch(__bundlerError){' + ref + '.error=__bundlerError}\n' +
+      '//# sourceURL=bundled-eval-' + id + '.js';
+    let parseError = null;
+    const capture = function(event) {
+      parseError = event.error || new SyntaxError(event.message || 'Bundled script parse failed');
+    };
+    window.addEventListener('error', capture, true);
+    try {
+      (document.head || document.documentElement).appendChild(script);
+    } finally {
+      window.removeEventListener('error', capture, true);
+      script.remove();
+      delete window[key];
+    }
+    if (parseError) throw parseError;
+    if (!box.ran) throw new Error('Inline bundled execution was blocked');
+    if (box.error) throw box.error;
+    return box.result;
+  }
+  Object.defineProperty(window, '__bundlerFunction', {
+    configurable: false,
+    enumerable: false,
+    writable: false,
+    value: function() {
+      const parts = Array.from(arguments);
+      const body = parts.length ? String(parts.pop()) : '';
+      const names = parts.map(String);
+      return function() {
+        return bundlerEval(names, Array.from(arguments), body);
+      };
+    }
+  });
 
   // Error sink persists across replaceWith since it's on window, not the DOM.
   window.addEventListener('error', function(e) {
@@ -2428,12 +2493,33 @@ document.addEventListener('DOMContentLoaded', async function() {
           }
         }
 
+        // The generated component runtime has exactly two Function-constructor
+        // call sites. Replace only that known runtime in memory; the manifest
+        // bytes stay untouched and drift fails closed.
+        if (uuid === CSP_RUNTIME_UUID) {
+          let runtimeSource = new TextDecoder().decode(finalBytes);
+          const runtimeNeedle = 'new Function(';
+          const runtimeHits = runtimeSource.split(runtimeNeedle).length - 1;
+          if (runtimeHits !== 2) {
+            throw new Error('Runtime CSP patch drift: expected 2 evaluators, found ' + runtimeHits);
+          }
+          runtimeSource = runtimeSource.split(runtimeNeedle).join('window.__bundlerFunction(');
+          if (runtimeSource.includes(runtimeNeedle)) {
+            throw new Error('Runtime CSP patch drift: replacement incomplete');
+          }
+          finalBytes = new TextEncoder().encode(runtimeSource);
+        }
+
         if (pageSet.has(uuid)) {
           pageTexts[uuid] = new TextDecoder().decode(finalBytes);
           return;
         }
-        if (FONT_MIME.test(entry.mime) && MIME_TOKEN.test(entry.mime)) {
-          // Strict artifact hosts allow font-src data: but not blob:.
+        if (FONT_MIME.test(entry.mime) && location.protocol !== 'file:' && FONT_PATHS[uuid]) {
+          // Production permits same-origin fonts; these files are byte-identical
+          // to the embedded copies. Standalone file:// keeps the data fallback.
+          blobUrls[uuid] = FONT_PATHS[uuid];
+        } else if ((FONT_MIME.test(entry.mime) || IMAGE_MIME.test(entry.mime)) && MIME_TOKEN.test(entry.mime)) {
+          // Strict artifact hosts permit data: images but reject blob: images.
           blobUrls[uuid] = 'data:' + entry.mime + ';base64,' +
             (entry.compressed ? toBase64(finalBytes) : entry.data);
         } else {
@@ -2459,6 +2545,25 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Artifact-host CSP (connect-src 'self') refuses fetch() of blob: URLs —
     // consumers read these Blobs directly. Survives the swap like the error sink.
     window.__resourceBlobs = resourceBlobs;
+
+    // Preload bundled JavaScript dependencies inline, in manifest-declared
+    // order, before the document swap. Production allows trusted inline code
+    // but deliberately blocks blob: script sources.
+    for (const entry of extResources) {
+      const meta = manifest[entry.uuid];
+      if (!meta || !SCRIPT_MIME.test(meta.mime)) continue;
+      const resourceUrl = blobUrls[entry.uuid];
+      const bundledScript = resourceUrl ? resourceBlobs[resourceUrl.split('#')[0]] : null;
+      if (!bundledScript) throw new Error('Missing bundled dependency: ' + entry.id);
+      const script = document.createElement('script');
+      script.dataset.bundledSource = entry.id;
+      script.textContent = await bundledScript.text();
+      (document.head || document.documentElement).appendChild(script);
+      script.remove();
+    }
+    if (!window.React || !window.ReactDOM || !window.Babel) {
+      throw new Error('Bundled React runtime did not initialize');
+    }
 
     setStatus('Rendering...');
     // Page uuids have no blob here — they ride inside about:blank#<uuid>
@@ -2492,6 +2597,31 @@ document.addEventListener('DOMContentLoaded', async function() {
     // createElement so they execute, awaiting onload for src scripts to
     // preserve ordering (React before ReactDOM before Babel before text/babel).
     const doc = new DOMParser().parseFromString(template, 'text/html');
+
+    // Inline bundled scripts while the parsed document is still detached.
+    // The runtime boots as soon as its recreated head script executes and can
+    // replace <x-dc>; doing this first prevents a nested <helmet> script from
+    // being remounted later with a production-blocked blob: URL.
+    for (const pending of Array.from(doc.querySelectorAll('script[src]'))) {
+      const pendingSrc = pending.getAttribute('src') || '';
+      const pendingBundle = pendingSrc ? resourceBlobs[pendingSrc.split('#')[0]] : null;
+      if (!pendingBundle) continue;
+      const pendingSource = await pendingBundle.text();
+      if (pending.closest('x-dc')) {
+        // Source inside the design template would be parsed as template text.
+        // Execute the dependency in this window now, then remove its helmet
+        // declaration so the runtime cannot remount or reinterpret it.
+        const preload = document.createElement('script');
+        preload.textContent = pendingSource;
+        (document.head || document.documentElement).appendChild(preload);
+        preload.remove();
+        pending.remove();
+        continue;
+      }
+      pending.textContent = pendingSource;
+      pending.removeAttribute('src');
+    }
+
     document.documentElement.replaceWith(doc.documentElement);
 
     // Resolve page-frame markers: mint this document's own blob for each
@@ -2524,13 +2654,16 @@ document.addEventListener('DOMContentLoaded', async function() {
       const s = document.createElement('script');
       for (const a of old.attributes) s.setAttribute(a.name, a.value);
       s.textContent = old.textContent;
-      // text/babel scripts with a src: read and inline. transformScriptTags
-      // does XHR against the src, but blob:null/ from a file:// origin is
-      // silently dropped. Inlining makes it a plain inline babel script,
-      // which transformScriptTags handles unconditionally.
-      if ((s.type === 'text/babel' || s.type === 'text/jsx') && s.src) {
-        const pre = resourceBlobs[s.src.split('#')[0]];
-        s.textContent = pre ? await pre.text() : await (await fetch(s.src)).text();
+      // Inline every bundled script so the production CSP never needs blob:
+      // or unsafe-eval. External Babel/JSX sources are also inlined so the
+      // transformer can process them after this document swap.
+      const scriptSrc = s.getAttribute('src') || '';
+      const bundledScript = scriptSrc ? resourceBlobs[scriptSrc.split('#')[0]] : null;
+      if (bundledScript) {
+        s.textContent = await bundledScript.text();
+        s.removeAttribute('src');
+      } else if ((s.type === 'text/babel' || s.type === 'text/jsx') && s.src) {
+        s.textContent = await (await fetch(s.src)).text();
         s.removeAttribute('src');
       }
       const p = s.src ? new Promise(function(r) { s.onload = s.onerror = r; }) : null;
