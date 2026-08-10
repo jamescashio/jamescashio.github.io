@@ -57,32 +57,90 @@ def main() -> int:
         "Release body route count": ("RELEASE_BODY.md", f"| Configured model routes | {routes} |"),
         "Release body automation count": ("RELEASE_BODY.md", f"| Automation jobs | {jobs}, last reported |"),
         "Release body operating cost": ("RELEASE_BODY.md", f"| Observed AI operating cost | ${daily_cost:.2f}/day; ${monthly_cost:.2f} estimated monthly run rate; quality-first escalation retained |"),
-        # --- deck markers (v39 "Aurora" DOM) ---------------------------------
-        # The eleven-chapter page carried data-fleet attributes and a JS config
-        # block; v32 anchored on StatCell imports. v39 renders the stat rail
-        # from data- attributes on the cells and drives the boot sequence from
-        # a manifest in the data block, so the checks anchor there instead.
-        # The figures asserted are unchanged — only where they are read from.
-        "In-page release tag": ("index.html", f"{version} · {release_name.upper()}"),
-        "In-page release footer": ("index.html", f"ZEUSAPOLLO {version} // {release_name.upper()}"),
-        "In-page container stat": (
-            "index.html",
-            f'data-value="{healthy}/{roles}" data-label="CONTAINERS RUNNING" data-sub="LIVE CHECK {verified}"',
-        ),
-        "In-page route stat": ("index.html", f'data-value="{routes}" data-label="MODEL LANES"'),
-        "In-page patch stat": ("index.html", f'data-value="{patches_due}" data-label="SECURITY UPDATES DUE"'),
-        "In-page cost stat": (
-            "index.html",
-            f'data-value="${daily_cost:.2f}" data-label="OBSERVED AI COST / DAY" data-sub="${monthly_cost:.2f} EST. MONTHLY"',
-        ),
-        "In-page host count": ("index.html", f"{host_phrase}."),
-        "Boot documented roles": ("index.html", f"'CONTAINER ROLES', '{roles} DOCUMENTED'"),
-        "Boot live check": ("index.html", f"'LIVE CHECK {verified}', '{healthy} OF {roles} RUNNING'"),
-        "Boot backup chain": ("index.html", f"'BACKUP CHAIN', '{backups} OF {roles} INSIDE 24H'"),
-        "Boot operating cost": ("index.html", f"'OPERATING COST', '${daily_cost:.2f} / DAY'"),
-        "In-page Kimi K3 route": ("index.html", status["routes"]["tier_0"]),
-        "In-page Gemini 3.6 route": ("index.html", status["routes"]["tier_3_multimodal"]),
     }
+
+    if "THE GRID · V31" in files["index.html"]:
+        route_words = {10: "ten"}.get(routes, str(routes))
+        checks.update(
+            {
+                # V31 intentionally presents a release identity distinct from
+                # the v44/Aurora data lineage retained in status.json. These
+                # two markers prove the wrapper transforms that exact lineage
+                # label instead of hiding an unrelated hard-coded value.
+                "In-page lineage selector": (
+                    "index.html",
+                    f"/^{version} \\/\\/ {release_name.upper()}/",
+                ),
+                "In-page V31 release tag": (
+                    "index.html",
+                    r"V31 // THE GRID \u00b7 E.V.E.",
+                ),
+                "In-page container stat": (
+                    "index.html",
+                    f"GRID SYSTEM ONLINE · {healthy}/{roles} CONTAINERS VERIFIED RUNNING",
+                ),
+                "In-page route stat": (
+                    "index.html",
+                    f"{route_words} model lanes",
+                ),
+                "In-page patch stat": (
+                    "index.html",
+                    f"SECURITY UPDATES DUE {patches_due}",
+                ),
+                "In-page backup stat": (
+                    "index.html",
+                    f"BACKUPS {backups}/{roles} INSIDE 24H",
+                ),
+                "In-page cost stat": (
+                    "index.html",
+                    f"${daily_cost:.2f} per day observed · ${monthly_cost:.2f} per month estimated",
+                ),
+                "In-page host count": ("index.html", f"{host_phrase}."),
+                "Grid tile count": (
+                    "index.html",
+                    f"{roles} tiles · light cycles",
+                ),
+                "Console live check": (
+                    "index.html",
+                    f"{healthy}/{roles} containers verified running",
+                ),
+                "Console verification dates": (
+                    "index.html",
+                    f"verified {verified} by E.V.E. · expires {expires}",
+                ),
+            }
+        )
+    else:
+        # Legacy Aurora decks render the stat rail from data- attributes and
+        # drive the boot sequence from a manifest in the data block.
+        checks.update(
+            {
+                "In-page release tag": ("index.html", f"{version} · {release_name.upper()}"),
+                "In-page release footer": ("index.html", f"ZEUSAPOLLO {version} // {release_name.upper()}"),
+                "In-page container stat": (
+                    "index.html",
+                    f'data-value="{healthy}/{roles}" data-label="CONTAINERS RUNNING" data-sub="LIVE CHECK {verified}"',
+                ),
+                "In-page route stat": ("index.html", f'data-value="{routes}" data-label="MODEL LANES"'),
+                "In-page patch stat": ("index.html", f'data-value="{patches_due}" data-label="SECURITY UPDATES DUE"'),
+                "In-page cost stat": (
+                    "index.html",
+                    f'data-value="${daily_cost:.2f}" data-label="OBSERVED AI COST / DAY" data-sub="${monthly_cost:.2f} EST. MONTHLY"',
+                ),
+                "In-page host count": ("index.html", f"{host_phrase}."),
+                "Boot documented roles": ("index.html", f"'CONTAINER ROLES', '{roles} DOCUMENTED'"),
+                "Boot live check": ("index.html", f"'LIVE CHECK {verified}', '{healthy} OF {roles} RUNNING'"),
+                "Boot backup chain": ("index.html", f"'BACKUP CHAIN', '{backups} OF {roles} INSIDE 24H'"),
+                "Boot operating cost": ("index.html", f"'OPERATING COST', '${daily_cost:.2f} / DAY'"),
+            }
+        )
+
+    checks.update(
+        {
+            "In-page Kimi K3 route": ("index.html", status["routes"]["tier_0"]),
+            "In-page Gemini 3.6 route": ("index.html", status["routes"]["tier_3_multimodal"]),
+        }
+    )
 
     failures: list[str] = []
     for label, (filename, expected) in checks.items():
