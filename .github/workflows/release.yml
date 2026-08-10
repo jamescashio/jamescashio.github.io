@@ -18,12 +18,12 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout release tag
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
@@ -35,7 +35,7 @@ jobs:
           python scripts/check_release_consistency.py
 
       - name: Publish GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           name: ${{ github.ref_name }} — ZeusApollo Sovereign AI Infrastructure
           body_path: RELEASE_BODY.md
