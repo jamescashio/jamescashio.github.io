@@ -1,13 +1,61 @@
 #!/usr/bin/env python3
-"""Verify that the public release sources agree with status.json."""
+"""Verify that the public release sources agree with status.json.
+
+status.json is the single source of truth for every published figure. This
+checker proves two things:
+
+1. Every figure status.json declares appears verbatim in the deck, the README,
+   the changelog and the release body.
+2. Every figure that was deliberately *withdrawn* stays withdrawn. Figures with
+   no fresh measurement are omitted entirely rather than published stale, so the
+   stale-token guard below is a hard gate, not a lint.
+"""
 
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+
+# Figures and services retired from the public site. None of these may return to
+# a published surface without a fresh, dated measurement — at which point the
+# entry is removed from this tuple in the same commit that republishes it.
+RETIRED_TOKENS: tuple[str, ...] = (
+    "$0.26",
+    "$6.49",
+    "71 of 71",
+    "71/71",
+    "219,628",
+    "31,547",
+    "216,108",
+    "89,851",
+    "14.4%",
+    "18 of 19",
+    "18/19",
+    "17/18",
+    "11 LXC",
+    "AdGuard",
+    "RAGFlow",
+    "LobeChat",
+    "CodeGate",
+    "Hermes v0.12.0",
+    "18 active nodes",
+    "deepseek-chat",
+)
+
+# Published surfaces the stale-figure guard covers. command.html is excluded:
+# it is an explicitly banner-marked historical archive of the v21.2a build.
+PUBLISHED_SURFACES: tuple[str, ...] = (
+    "index.html",
+    "lab.html",
+    "status.json",
+    "README.md",
+    "RELEASE_BODY.md",
+    "llms.txt",
+)
 
 
 def read(path: str) -> str:
@@ -23,129 +71,102 @@ def main() -> int:
     hosts = int(status["hosts"])
     roles = int(status["documented_roles"])
     healthy = int(status["healthy_services"])
-    routes = int(status["model_routes"])
-    jobs = int(status["automation_jobs_last_reported"])
-    backups = int(status["backups_inside_24h"])
-    patches_due = int(status["security_updates_due"])
-    daily_cost = float(status["observed_ai_cost_per_day"])
-    monthly_cost = float(status["estimated_ai_cost_per_month"])
+    lanes = int(status["public_capability_lanes"])
+    catalog = int(status["private_catalog_entries"])
 
     # The deck spells the host count in words in its lead paragraph.
-    HOST_WORDS = {1: "One core host", 2: "Two core hosts", 3: "Three core hosts"}
-    host_phrase = HOST_WORDS.get(hosts, f"{hosts} core hosts")
+    HOST_WORDS = {1: "One Proxmox host", 2: "Two Proxmox hosts", 3: "Three Proxmox hosts"}
+    host_phrase = HOST_WORDS.get(hosts, f"{hosts} Proxmox hosts")
+    ROLE_WORDS = {19: "nineteen"}
+    role_word = ROLE_WORDS.get(roles, str(roles))
+    LANE_WORDS = {10: "Ten"}
+    lane_word = LANE_WORDS.get(lanes, str(lanes))
+    CATALOG_WORDS = {36: "thirty-six"}
+    catalog_word = CATALOG_WORDS.get(catalog, str(catalog))
 
-    files = {
-        "README.md": read("README.md"),
-        "CHANGELOG.md": read("CHANGELOG.md"),
-        "RELEASE_BODY.md": read("RELEASE_BODY.md"),
-        "index.html": read("index.html"),
-    }
+    files = {name: read(name) for name in PUBLISHED_SURFACES}
+    files["CHANGELOG.md"] = read("CHANGELOG.md")
 
     checks = {
+        # ---- README ------------------------------------------------------
         "README release heading": ("README.md", f"# ZEUSAPOLLO {version}"),
         "README release name": ("README.md", release_name),
         "README status dates": ("README.md", f"Verified {verified}; expires {expires}"),
         "README host count": ("README.md", f"| **Hosts** | {hosts} core homelab hosts, plus Athena at the edge |"),
         "README role count": ("README.md", f"| **Documented roles** | {roles} public-safe service roles |"),
-        "README healthy count": ("README.md", f"| **Owner-reported healthy** | {healthy} services |"),
-        "README route count": ("README.md", f"| **Model routes** | {routes} configured routes |"),
-        "README automation count": ("README.md", f"| **Automation** | {jobs} last-reported jobs |"),
-        "README operating cost": ("README.md", f"| **Observed AI operating cost** | ${daily_cost:.2f}/day; ${monthly_cost:.2f} estimated monthly run rate |"),
+        "README healthy count": ("README.md", f"| **Verified running** | {healthy} of {roles} containers at the {verified} live check |"),
+        "README lane count": ("README.md", f"| **Public capability lanes** | {lanes} |"),
+        "README catalog count": ("README.md", f"| **Private model catalog entries** | {catalog} |"),
+        "README counting rule": ("README.md", status["counting_rule"]),
+        # ---- Changelog / release body ------------------------------------
         "Changelog release": ("CHANGELOG.md", f"## [{version}] — {verified}"),
         "Release body version": ("RELEASE_BODY.md", f"{version} —"),
-        "Release body healthy count": ("RELEASE_BODY.md", f"| Owner-reported healthy services | {healthy} |"),
-        "Release body route count": ("RELEASE_BODY.md", f"| Configured model routes | {routes} |"),
-        "Release body automation count": ("RELEASE_BODY.md", f"| Automation jobs | {jobs}, last reported |"),
-        "Release body operating cost": ("RELEASE_BODY.md", f"| Observed AI operating cost | ${daily_cost:.2f}/day; ${monthly_cost:.2f} estimated monthly run rate; quality-first escalation retained |"),
+        "Release body healthy count": ("RELEASE_BODY.md", f"| Verified containers running | {healthy} of {roles} |"),
+        "Release body lane count": ("RELEASE_BODY.md", f"| Public capability lanes | {lanes} |"),
+        "Release body catalog count": ("RELEASE_BODY.md", f"| Private model catalog entries | {catalog} |"),
+        # ---- The deck ----------------------------------------------------
+        "Deck build marker": ("index.html", 'data-build="v31-dyson"'),
+        "Deck release footer": ("index.html", f"ZEUSAPOLLO · {version.upper()} // {release_name.upper()}"),
+        "Deck verification chip": ("index.html", f"VERIFIED {verified}"),
+        "Deck container stat": ("index.html", f"<b>{healthy}/{roles}</b><span class=\"l\">Containers running</span>"),
+        "Deck host stat": ("index.html", f"<b>{hosts}</b><span class=\"l\">Proxmox hosts online</span>"),
+        "Deck lane stat": ("index.html", f"<b>{lanes}</b><span class=\"l\">Public capability lanes</span>"),
+        "Deck catalog stat": ("index.html", f"<b>{catalog}</b><span class=\"l\">Private catalog entries</span>"),
+        "Deck host sentence": ("index.html", f"{host_phrase} run {role_word} containers."),
+        "Deck lane sentence": ("index.html", f"{lane_word} public capability lanes sit in front of a private model catalog"),
+        "Deck catalog sentence": ("index.html", f"the private catalog behind the gateway holds {catalog_word} entries"),
+        "Deck E.V.E. branding": ("index.html", "E.V.E. — EVALUATION VERIFICATION ENGINE"),
+        "Deck Bit dock": ("index.html", 'data-bit data-mood="idle"'),
+        # ---- Console answers (deck logic) --------------------------------
+        "Console status line": (
+            "assets/js/deck-v31.js",
+            f"{healthy} of {roles} containers running · {hosts} Proxmox hosts online · cluster quorate",
+        ),
+        "Console catalog split": (
+            "assets/js/deck-v31.js",
+            f"{lanes} public capability lanes — the abstraction this page publishes.",
+        ),
+        "Console catalog entries": (
+            "assets/js/deck-v31.js",
+            f"{catalog} private model catalog entries — behind the gateway, not published.",
+        ),
+        # ---- Lab page ----------------------------------------------------
+        "Lab verified date": ("lab.html", f"verified {verified}"),
+        "Lab container count": ("lab.html", f"{healthy} of {roles} containers running"),
+        "Lab lane count": ("lab.html", f"{lanes} public capability lanes"),
+        "Lab catalog count": ("lab.html", f"{catalog} private gateway model entries"),
+        # ---- Routes ------------------------------------------------------
+        "In-page Kimi K3 route": ("index.html", status["routes"]["tier_0"]),
+        "In-page Gemini 3.6 route": ("index.html", status["routes"]["tier_3_multimodal"]),
+        "In-page DeepSeek V4 Pro route": ("index.html", status["routes"]["tier_2"]),
     }
 
-    if "THE GRID · V31" in files["index.html"]:
-        route_words = {10: "ten"}.get(routes, str(routes))
-        checks.update(
-            {
-                # V31 intentionally presents a release identity distinct from
-                # the v44/Aurora data lineage retained in status.json. These
-                # two markers prove the wrapper transforms that exact lineage
-                # label instead of hiding an unrelated hard-coded value.
-                "In-page lineage selector": (
-                    "index.html",
-                    f"/^{version} \\/\\/ {release_name.upper()}/",
-                ),
-                "In-page V31 release tag": (
-                    "index.html",
-                    r"V31 // THE GRID \u00b7 E.V.E.",
-                ),
-                "In-page container stat": (
-                    "index.html",
-                    f"GRID SYSTEM ONLINE · {healthy}/{roles} CONTAINERS VERIFIED RUNNING",
-                ),
-                "In-page route stat": (
-                    "index.html",
-                    f"{route_words} model lanes",
-                ),
-                "In-page patch stat": (
-                    "index.html",
-                    f"SECURITY UPDATES DUE {patches_due}",
-                ),
-                "In-page backup stat": (
-                    "index.html",
-                    f"BACKUPS {backups}/{roles} INSIDE 24H",
-                ),
-                "In-page cost stat": (
-                    "index.html",
-                    f"${daily_cost:.2f} per day observed · ${monthly_cost:.2f} per month estimated",
-                ),
-                "In-page host count": ("index.html", f"{host_phrase}."),
-                "Grid tile count": (
-                    "index.html",
-                    f"{roles} tiles · light cycles",
-                ),
-                "Console live check": (
-                    "index.html",
-                    f"{healthy}/{roles} containers verified running",
-                ),
-                "Console verification dates": (
-                    "index.html",
-                    f"verified {verified} by E.V.E. · expires {expires}",
-                ),
-            }
-        )
-    else:
-        # Legacy Aurora decks render the stat rail from data- attributes and
-        # drive the boot sequence from a manifest in the data block.
-        checks.update(
-            {
-                "In-page release tag": ("index.html", f"{version} · {release_name.upper()}"),
-                "In-page release footer": ("index.html", f"ZEUSAPOLLO {version} // {release_name.upper()}"),
-                "In-page container stat": (
-                    "index.html",
-                    f'data-value="{healthy}/{roles}" data-label="CONTAINERS RUNNING" data-sub="LIVE CHECK {verified}"',
-                ),
-                "In-page route stat": ("index.html", f'data-value="{routes}" data-label="MODEL LANES"'),
-                "In-page patch stat": ("index.html", f'data-value="{patches_due}" data-label="SECURITY UPDATES DUE"'),
-                "In-page cost stat": (
-                    "index.html",
-                    f'data-value="${daily_cost:.2f}" data-label="OBSERVED AI COST / DAY" data-sub="${monthly_cost:.2f} EST. MONTHLY"',
-                ),
-                "In-page host count": ("index.html", f"{host_phrase}."),
-                "Boot documented roles": ("index.html", f"'CONTAINER ROLES', '{roles} DOCUMENTED'"),
-                "Boot live check": ("index.html", f"'LIVE CHECK {verified}', '{healthy} OF {roles} RUNNING'"),
-                "Boot backup chain": ("index.html", f"'BACKUP CHAIN', '{backups} OF {roles} INSIDE 24H'"),
-                "Boot operating cost": ("index.html", f"'OPERATING COST', '${daily_cost:.2f} / DAY'"),
-            }
-        )
-
-    checks.update(
-        {
-            "In-page Kimi K3 route": ("index.html", status["routes"]["tier_0"]),
-            "In-page Gemini 3.6 route": ("index.html", status["routes"]["tier_3_multimodal"]),
-        }
-    )
+    files["assets/js/deck-v31.js"] = read("assets/js/deck-v31.js")
 
     failures: list[str] = []
     for label, (filename, expected) in checks.items():
         if expected not in files[filename]:
             failures.append(f"{label}: expected {expected!r} in {filename}")
+
+    # ---- the stale-figure guard -----------------------------------------
+    for filename in PUBLISHED_SURFACES:
+        haystack = files[filename]
+        for token in RETIRED_TOKENS:
+            if re.search(re.escape(token), haystack, re.IGNORECASE):
+                failures.append(
+                    f"Retired figure {token!r} reappeared in {filename}. "
+                    "Withdrawn figures need a fresh dated measurement before republication."
+                )
+
+    # The two counts describe different objects and must never be merged.
+    merged = re.search(
+        r"{}\s+(?:model\s+)?lanes".format(catalog), files["index.html"], re.IGNORECASE
+    )
+    if merged:
+        failures.append(
+            f"index.html publishes {catalog!r} as a lane count. "
+            f"{lanes} public capability lanes and {catalog} private catalog entries are different objects."
+        )
 
     if failures:
         print("Release consistency check failed:\n")
@@ -155,8 +176,10 @@ def main() -> int:
 
     print(
         f"Release consistency passed: {version} — {release_name}; "
-        f"{healthy}/{roles} owner-reported healthy roles; {hosts} hosts; "
-        f"{routes} model routes; status {verified} through {expires}."
+        f"{healthy}/{roles} containers verified running; {hosts} hosts; "
+        f"{lanes} public capability lanes; {catalog} private catalog entries; "
+        f"status {verified} through {expires}. "
+        f"{len(RETIRED_TOKENS)} retired figures confirmed absent from {len(PUBLISHED_SURFACES)} published surfaces."
     )
     return 0
 

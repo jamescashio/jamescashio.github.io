@@ -1,46 +1,53 @@
-## v44 — “Aurora”
+## v31 — “The Grid”
 
-**Release date:** 08-01-2026
+**Release date:** 08-10-2026
 
-**Public status window:** 08-01-2026 through 08-31-2026, or until the next architecture change
+**Public status window:** 08-10-2026 through 09-09-2026, or until the next architecture change
 
-v44 makes the Aurora deck faster, clearer, and complete without changing its look. The WebGL viewscreen now waits until after first paint, static HTML carries the real public figures, every viewport has complete deck navigation, and machine-readable front-door files explain the same dated public snapshot to crawlers and agents.
+v31 rebuilds the cashio.us front page around a live Dyson-swarm viewscreen and resets every published figure to the owner-verified 08-10-2026 architecture snapshot. Figures that could not be freshly measured were removed rather than carried forward.
 
-What v39 established remains intact: the live star and station scene, eight-deck structure, palette, typography, native pointer, and Bit as the deck-guide companion.
+The deck is framework-free: vanilla HTML, CSS and JavaScript on the ZeusApollo design system, with three.js self-hosted so the production Content Security Policy needs no third-party origin.
 
 ### Experience
 
-- Eight decks: 00 Viewscreen, 01 The Grid, 02 Routing, 03 The Iron, 04 Builds, 05 Operator, 06 Console, 07 Hail, now reachable from a mobile deck sheet and complete desktop navigation.
-- The Iron is the signature moment: entering its deck racks all six plates automatically, and the completed set remains directly inspectable and replayable.
-- The Grid is a draggable fleet lattice; Routing is a selectable ten-lane charter; the Console is a local read-only narrative interface that opens no sockets and holds no credentials.
-- Bit is a live canvas companion rendering a stellated icosahedron; the LCARS sound set is synthesized in WebAudio, so the front page loads no audio files at all.
-- Motion is GSAP 3.15 with ScrollTrigger and SplitText over Lenis smooth scroll. Reveals run off an IntersectionObserver with a visibility guard, so a dropped trigger cannot leave content invisible.
-- The WebGL scene is deferred beyond first paint, skipped under reduced motion, and available on demand from the FX control.
-- Static HTML carries 19/19 containers, 10 model lanes, 0 security updates, $0.26/day, and 14.4% DNS blocking before JavaScript enhancement.
-- `robots.txt` and `llms.txt` expose a public-safe, machine-readable front door while `/ai/` remains excluded from indexing.
+- Nine decks: 00 Snapshot, 01 The Grid, 02 Routing, 03 The Iron, 03B Lineage, 04 Builds, 05 Operator, 06 E.V.E., 07 Contact.
+- A new WebGL viewscreen (`<dyson-stage>`): a star under a partially built Dyson swarm — collector rings, an unfinished shell lattice, a shipyard throwing construction beams, a grid horizon and a starfield. The camera flies waypoints driven by scroll, with damped pointer parallax.
+- Deck 03B “Lineage” is new: Yeager, Johnson and Rutan as an interactive record card, with the operating rule taken from each.
+- The Grid is a selectable nineteen-node fleet ring; Routing is a ten-lane charter with a live routing trace; The Iron racks all six plates on entry.
+- Deck 06 is E.V.E. — the Evaluation Verification Engine console. Local, read-only, no network calls, answering from the same dated snapshot published on the page.
+- Bit returns as the deck-guide companion, calling each deck as it comes into view.
+- Deck audio is synthesized in WebAudio with no audio files and no ambient bed — discrete effects only, muted until the operator arms it.
+- Reduced motion renders a complete still page: the viewscreen holds a single frame, the plates rack instantly, and the routing trace resolves without animation.
 
 ### Public status reconciliation
 
-| Metric | v44 public snapshot |
+| Metric | v31 public snapshot |
 |---|---:|
 | Core hosts | 2 |
+| Cluster state | Quorate |
 | Documented service roles | 19 |
-| Owner-reported healthy services | 19 |
-| Verified containers | 19 of 19 running at the 08-01-2026 live check; 0 in maintenance |
-| Backup chain | 18 of 19 inside 24 hours at verification time |
-| Patch posture | 0 security updates due at verification time |
+| Verified containers running | 19 of 19 |
+| Maintenance | 0 containers stopped at verification time |
+| Public capability lanes | 10 |
+| Private model catalog entries | 36 |
 | Athena | Owner-confirmed active physical Home Assistant edge node and cluster quorum device; outside container count |
-| Atlas | Standalone local Ollama inference host; outside Proxmox quorum and container count |
-| Configured model routes | 10 |
-| Automation jobs | 71, last reported |
-| Automation health | 71 of 71 at last Hermes report (07-22-2026); zero errors |
-| Observed AI operating cost | $0.26/day; $6.49 estimated monthly run rate; quality-first escalation retained |
+| Atlas | Standalone LiteLLM gateway and local-inference host; outside Proxmox quorum and container count |
 
-Container and DNS figures come from an owner-run live verification over cluster SSH on 08-01-2026 at 20:40 CDT; automation and cost figures are Hermes-generated, public-safe, and sampled—not streaming telemetry. The DNS snapshot covers 219,628 queries: 89,851 cached, 31,547 blocked, and 98,230 resolved against 216,108 blocklist entries. The interface automatically stops presenting health as current after 08-31-2026 or the next architecture change.
+Container and service figures come from an owner-run live verification over cluster SSH on 08-10-2026. Public capability lanes and private model catalog entries count different objects and are never merged. The interface stops presenting health as current after 09-09-2026 or the next architecture change.
+
+### Withdrawn figures
+
+Five classes of figure were removed from every published surface and will not return without a fresh, dated measurement: AI operating cost per day and per month, automation job counts, DNS query sample figures, backup recovery telemetry, and security update counts. Nine retired service and topology references were purged alongside them; `CHANGELOG.md` names each one.
+
+`scripts/check_release_consistency.py` now fails the build if any of them reappear. The retired tokens themselves live only in that checker and in the changelog, so the guard cannot be satisfied by a surface that merely quotes them back.
 
 ### Model routing
 
-The ten-lane fabric includes Kimi K3, DeepSeek V4 Flash, DeepSeek V4 Pro, Gemini 3.6 Flash, Grok 4.5, Sol 5.6 Luna, Sonar Pro, GPT-5.6 Sol, local Gemma 4 26B, and the Atlas/OpenRouter/ZenMux gateway layer. Hermes verified names, priorities, fallbacks, and provider state on 07-22-2026.
+The ten public capability lanes are Kimi K3, DeepSeek V4 Flash, DeepSeek V4 Pro, Gemini 3.6 Flash, Grok 4.5, Sol 5.6 Luna, Sonar Pro, GPT-5.6 Sol, local Gemma 4 26B, and the Atlas/OpenRouter/ZenMux gateway fabric. The Atlas LiteLLM gateway is operational with DeepSeek V4 Pro and V4 Flash routes available.
+
+### Archives
+
+Previous releases stay reachable with their figures frozen as historical: `/grid.html` (V31 stage one, the 1982 grid), `/index-v44.html` (v44 “Aurora”), and `/command.html` (v21.2a, banner-marked as an archived build).
 
 ### Security, privacy, and employer boundary
 
@@ -48,9 +55,4 @@ The ten-lane fabric includes Kimi K3, DeepSeek V4 Flash, DeepSeek V4 Pro, Gemini
 - Service roles are public-safe descriptions rather than deployment instructions.
 - Interactive demonstrations do not contact live infrastructure.
 - Public contact information is limited to the cashio.us domain and professional-profile links.
-- The root logic ships as a first-party precompiled factory, so the page-level CSP does not require `'unsafe-eval'`. Scripts stay self-hosted and `connect-src` remains `'none'`, so the page opens no sockets.
-- The repository safety scan and release-consistency checks protect the public branch before publication.
-
----
-
-*Built and operated by Doug Cashio as a personal, independent work sample.*
+- All runtime dependencies are self-hosted; `connect-src` remains `'none'`.
