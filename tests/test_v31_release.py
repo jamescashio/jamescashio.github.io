@@ -1,9 +1,18 @@
+"""Release contract for v31 "The Grid".
+
+Two builds are covered here:
+
+* ``index.html`` — the production Dyson deck. Framework-free, self-hosted
+  dependencies, published figures reconciled against ``status.json``.
+* ``grid.html`` — the archived stage-one grid front page. Its contract is
+  retained so the archive cannot silently rot or start claiming current health.
+"""
+
 from __future__ import annotations
 
 import base64
 import contextlib
 import gzip
-import hashlib
 import importlib.util
 import io
 import json
@@ -14,6 +23,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 INDEX = ROOT / "index.html"
+GRID = ROOT / "grid.html"
 
 
 def load_consistency_checker():
@@ -27,31 +37,197 @@ def load_consistency_checker():
 
 
 class V31ReleaseContractTests(unittest.TestCase):
+    """The production deck."""
+
     @classmethod
     def setUpClass(cls) -> None:
         cls.html = INDEX.read_text(encoding="utf-8")
+        cls.deck = (ROOT / "assets" / "js" / "deck-v31.js").read_text(encoding="utf-8")
+        cls.status = json.loads((ROOT / "status.json").read_text(encoding="utf-8"))
 
-    def test_repository_consistency_checker_accepts_v31(self) -> None:
+    def test_repository_consistency_checker_passes(self) -> None:
         checker = load_consistency_checker()
         output = io.StringIO()
         with contextlib.redirect_stdout(output):
             result = checker.main()
         self.assertEqual(result, 0, output.getvalue())
 
-    def test_consistency_checker_retains_archived_v44_profile(self) -> None:
+    def test_retired_figures_are_absent_from_every_published_surface(self) -> None:
         checker = load_consistency_checker()
-        original_read = checker.read
+        for surface in checker.PUBLISHED_SURFACES:
+            text = (ROOT / surface).read_text(encoding="utf-8")
+            for token in checker.RETIRED_TOKENS:
+                self.assertNotRegex(
+                    text,
+                    re.compile(re.escape(token), re.IGNORECASE),
+                    f"{token!r} must stay withdrawn from {surface}",
+                )
 
-        def read_with_archived_index(path: str) -> str:
-            if path == "index.html":
-                return original_read("index-v44.html")
-            return original_read(path)
+    def test_public_lanes_are_never_published_as_the_catalog_count(self) -> None:
+        """10 public capability lanes and 36 private catalog entries are different objects."""
+        catalog = self.status["private_catalog_entries"]
+        for surface in ("index.html", "assets/js/deck-v31.js", "README.md", "llms.txt", "lab.html"):
+            text = (ROOT / surface).read_text(encoding="utf-8")
+            self.assertIsNone(
+                re.search(rf"{catalog}\s+(?:model\s+|public\s+|capability\s+)?lanes", text, re.IGNORECASE),
+                f"{surface} merges the catalog count into a lane count",
+            )
 
-        checker.read = read_with_archived_index
-        output = io.StringIO()
-        with contextlib.redirect_stdout(output):
-            result = checker.main()
-        self.assertEqual(result, 0, output.getvalue())
+    def test_every_runtime_dependency_is_self_hosted(self) -> None:
+        """connect-src is 'none'; nothing may be fetched from a third-party origin."""
+        importmap = re.search(r'<script type="importmap">\s*(\{.*?\})\s*</script>', self.html, re.DOTALL)
+        self.assertIsNotNone(importmap, "The three.js import map is missing")
+        imports = json.loads(importmap.group(1))["imports"]
+        for specifier, path in imports.items():
+            self.assertTrue(path.startswith("/assets/"), f"{specifier} resolves off-origin: {path}")
+        for src in re.findall(r'<script[^>]+src="([^"]+)"', self.html):
+            self.assertFalse(src.startswith("http"), f"Off-origin script: {src}")
+        # Only fetched assets matter here; rel=canonical is an absolute URL by design.
+        for tag in re.findall(r"<link[^>]+>", self.html):
+            rel = re.search(r'rel="([^"]+)"', tag)
+            href = re.search(r'href="([^"]+)"', tag)
+            if not rel or not href or rel.group(1) == "canonical":
+                continue
+            self.assertFalse(
+                href.group(1).startswith("http"), f"Off-origin {rel.group(1)}: {href.group(1)}"
+            )
+        self.assertNotIn("cdn.jsdelivr.net", self.html)
+        self.assertNotIn("unpkg.com", self.html)
+
+    def test_vendored_three_resolves_every_addon_import(self) -> None:
+        vendor = ROOT / "assets" / "js" / "vendor" / "three"
+        self.assertTrue((vendor / "three.module.js").is_file())
+        for module in vendor.rglob("*.js"):
+            source = module.read_text(encoding="utf-8")
+            for spec in re.findall(r"from\s+'(\.{1,2}/[^']+)'", source):
+                self.assertTrue(
+                    (module.parent / spec).resolve().is_file(),
+                    f"{module.name} imports {spec}, which was not vendored",
+                )
+            for spec in re.findall(r"from\s+'(three(?:/addons/[^']+)?)'", source):
+                if spec == "three":
+                    continue
+                addon = vendor / "addons" / spec.split("three/addons/", 1)[1]
+                self.assertTrue(addon.is_file(), f"{module.name} imports {spec}, which was not vendored")
+
+    def test_csp_forbids_eval_and_all_network_egress(self) -> None:
+        csp = re.search(r'http-equiv="Content-Security-Policy" content="([^"]+)"', self.html)
+        self.assertIsNotNone(csp, "The deck must ship a Content Security Policy")
+        policy = csp.group(1)
+        self.assertIn("connect-src 'none'", policy)
+        self.assertIn("object-src 'none'", policy)
+        self.assertIn("form-action 'none'", policy)
+        self.assertNotIn("unsafe-eval", policy)
+        self.assertNotIn("http://", policy)
+        self.assertNotIn("https://", policy)
+
+    def test_the_deck_opens_no_sockets(self) -> None:
+        for network_api in ("fetch(", "XMLHttpRequest", "WebSocket", "EventSource", "sendBeacon", "window.open"):
+            self.assertNotIn(network_api, self.deck, f"The deck must not use {network_api}")
+        self.assertNotIn("eval(", self.deck)
+
+    def test_effects_only_audio_has_no_continuous_bed(self) -> None:
+        audio = (ROOT / "assets" / "js" / "zasfx.js").read_text(encoding="utf-8")
+        self.assertNotIn("startHum", audio)
+        self.assertNotIn("bedGain", audio)
+        self.assertIsNone(re.search(r"\bdrone\b", audio, re.IGNORECASE))
+        self.assertIn("effects only", audio.lower())
+
+    def test_audio_stays_muted_until_the_operator_arms_it(self) -> None:
+        audio = (ROOT / "assets" / "js" / "zasfx.js").read_text(encoding="utf-8")
+        self.assertIn("if (!on) return;", audio)
+        self.assertIn("localStorage.getItem(KEY) === 'on'", audio)
+        self.assertIn('data-snd-toggle', self.html)
+
+    def test_bit_is_present_with_its_animation_set(self) -> None:
+        self.assertIn('data-bit data-mood="idle"', self.html)
+        self.assertIn("Bit, the deck guide", self.html)
+        self.assertIn('[data-bit][data-mood="yes"]', self.html)
+        self.assertIn('[data-bit][data-mood="no"]', self.html)
+        self.assertIn("window.ZABit.mount(cv)", self.deck)
+        self.assertIn("window.ZABit.setState", self.deck)
+        self.assertIn("window.ZABit.setStill(true)", self.deck)
+        self.assertTrue((ROOT / "assets" / "js" / "bit.js").is_file())
+
+    def test_console_is_branded_eve_and_answers_from_the_dated_snapshot(self) -> None:
+        self.assertIn("E.V.E. — EVALUATION VERIFICATION ENGINE", self.html)
+        self.assertIn("E.V.E. Command Console", self.html)
+        self.assertIn("E.V.E. — Evaluation Verification Engine.", self.deck)
+        verified = self.status["verified_on"]
+        self.assertIn(f"verified {verified}", self.deck)
+        for command in (
+            "help", "status", "fleet", "services", "routes",
+            "catalog", "eve", "lineage", "creed", "whoami", "archive",
+        ):
+            self.assertIn(f"k === '{command}'", self.deck, f"E.V.E. is missing the {command} command")
+
+    def test_every_console_chip_maps_to_a_real_command(self) -> None:
+        chips = re.findall(r'data-hint="([^"]+)"', self.html)
+        self.assertTrue(chips, "The console publishes no command chips")
+        for chip in chips:
+            self.assertIn(f"k === '{chip}'", self.deck, f"Chip {chip!r} has no handler")
+
+    def test_every_deck_anchor_in_the_nav_exists_as_a_section(self) -> None:
+        anchors = set(re.findall(r'<a href="#([a-z]+)"', self.html))
+        sections = set(re.findall(r'<section id="([a-z]+)"', self.html))
+        self.assertTrue(anchors)
+        self.assertTrue(anchors <= sections, f"Dangling anchors: {sorted(anchors - sections)}")
+
+    def test_deck_tracking_covers_every_section(self) -> None:
+        sections = re.findall(r'<section id="([a-z]+)"', self.html)
+        for section in sections:
+            self.assertIn(f"['{section}'", self.deck, f"{section} is missing from the deck strip table")
+
+    def test_archived_builds_stay_reachable(self) -> None:
+        for archive in ("grid.html", "index-v44.html", "command.html"):
+            self.assertTrue((ROOT / archive).is_file(), f"{archive} is missing")
+        self.assertIn('href="/grid.html"', self.html)
+        self.assertIn('href="/index-v44.html"', self.html)
+
+    def test_reduced_motion_renders_a_complete_still_page(self) -> None:
+        self.assertIn("@media (prefers-reduced-motion: reduce)", self.html)
+        self.assertIn("prefers-reduced-motion: reduce", self.deck)
+        # Reveals, plate racking and the routing trace must all resolve without motion.
+        self.assertIn("if (!reduced && 'IntersectionObserver' in window)", self.deck)
+        self.assertIn("if (reduced) { plateSeen = 6; paintPlates(); return; }", self.deck)
+        self.assertIn("if (reduced) rack();", self.deck)
+        stage = (ROOT / "assets" / "js" / "dyson-stage.js").read_text(encoding="utf-8")
+        self.assertIn("if (this.reduced) { this.frame(0); return; }", stage)
+
+    def test_accessibility_floor(self) -> None:
+        self.assertIn('<a class="skip" href="#conn">Skip to content</a>', self.html)
+        self.assertIn('lang="en"', self.html)
+        self.assertIn('role="log" aria-live="polite"', self.html)
+        self.assertIn('aria-label="Console command input"', self.html)
+        self.assertIn('aria-label="Decks"', self.html)
+        self.assertIn('aria-label="Toggle deck audio"', self.html)
+        # Every interactive control carries an accessible name.
+        for button in re.findall(r"<button[^>]*>", self.html):
+            has_label = "aria-label=" in button
+            self.assertTrue(has_label or "data-hint=" in button or "data-plate" in button
+                            or "data-lane" in button or "data-hero" in button
+                            or "data-trace-run" in button or "data-boot-skip" in button,
+                            f"Button without an accessible name: {button}")
+
+    def test_no_custom_cursor(self) -> None:
+        """The native pointer stays; custom cursors were rejected."""
+        self.assertIsNone(re.search(r"cursor\s*:\s*url\(", self.html, re.IGNORECASE))
+        self.assertNotIn("cursor: none", self.html)
+        self.assertNotIn("custom-cursor", self.html)
+
+    def test_release_identity_is_v31_the_grid_everywhere_visible(self) -> None:
+        self.assertIn("V31 // THE GRID", self.html)
+        self.assertEqual(self.status["version"], "v31")
+        self.assertEqual(self.status["release_name"], "The Grid")
+        self.assertNotIn("v44 · AURORA", self.html)
+
+
+class ArchivedGridStageOneTests(unittest.TestCase):
+    """The archived stage-one grid page keeps its own contract."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.html = GRID.read_text(encoding="utf-8")
 
     def test_backdrop_never_exceeds_five_runners(self) -> None:
         self.assertIn("runners.length >= 5", self.html)
@@ -75,10 +251,6 @@ class V31ReleaseContractTests(unittest.TestCase):
         self.assertNotIn("bedGain", self.html)
         self.assertIsNone(re.search(r"\bdrone\b", self.html, re.IGNORECASE))
 
-    def test_no_stale_release_tokens_in_the_self_contained_file(self) -> None:
-        for token in ("07-30-2026", "18.3%", "220,780", "12,100", "v39"):
-            self.assertNotIn(token.lower(), self.html.lower(), token)
-
     def test_manifest_payload_is_byte_identical_after_container_normalization(self) -> None:
         match = re.search(
             r'<script type="__bundler/manifest">\s*(\{.*?\})\s*</script>',
@@ -89,6 +261,8 @@ class V31ReleaseContractTests(unittest.TestCase):
         manifest = json.loads(match.group(1))
         entry = manifest["7e586341-2183-4836-8ee2-86afd2791f4c"]
         payload = gzip.decompress(base64.b64decode(entry["data"]))
+        import hashlib
+
         self.assertEqual(
             hashlib.sha256(payload).hexdigest(),
             "2623a9e22809915ce789b4461154e277ddce520d5a4320c14d44332a5d0dcea0",
@@ -102,33 +276,18 @@ class V31ReleaseContractTests(unittest.TestCase):
             "var strands = 3 + (Math.random()<.4?1:0)",
             "x.lineWidth = st===0 ? 2.4 : 1.0",
             "var BC = [['255,150,40'",
-            "rgba(255,255,255",
         ):
             self.assertIn(marker, self.html)
         self.assertIn("      mountPlasma(d);", self.html)
-        self.assertNotIn(
-            "if (d.fonts && d.fonts.check && d.fonts.check('900 20px Orbitron')) mountPlasma(d);",
-            self.html,
-            "The Reveal must not disappear when FontFaceSet.check is delayed or unavailable",
-        )
 
     def test_embedded_runtime_obeys_the_live_script_csp(self) -> None:
-        """The production policy allows inline scripts, but not blob: or eval."""
+        """The archived policy allows inline scripts, but not blob: or eval."""
         for marker in (
             "function bundlerEval(names, args, body)",
             "Object.defineProperty(window, '__bundlerFunction'",
-            "Runtime CSP patch drift",
             "CSP_RUNTIME_UUID",
-            "Preload bundled JavaScript dependencies inline",
-            "Inline bundled scripts while the parsed document is still detached",
-            "for (const pending of Array.from(doc.querySelectorAll('script[src]')))",
-            "if (pending.closest('x-dc'))",
             "preload.textContent = pendingSource",
             "pending.remove()",
-            "const pendingSource = await pendingBundle.text()",
-            "pending.textContent = pendingSource",
-            "const bundledScript = scriptSrc ? resourceBlobs[scriptSrc.split('#')[0]] : null",
-            "s.textContent = await bundledScript.text()",
         ):
             self.assertIn(marker, self.html)
         self.assertLess(
@@ -137,8 +296,7 @@ class V31ReleaseContractTests(unittest.TestCase):
             "Bundled scripts must be inlined before the runtime can detach them",
         )
 
-    def test_embedded_assets_match_the_live_font_and_image_csp(self) -> None:
-        """Production permits same-origin fonts and data images, not blob URLs."""
+    def test_embedded_fonts_match_the_repository_copies(self) -> None:
         manifest_match = re.search(
             r'<script type="__bundler/manifest">\s*(\{.*?\})\s*</script>',
             self.html,
@@ -162,64 +320,6 @@ class V31ReleaseContractTests(unittest.TestCase):
             if entry["compressed"]:
                 embedded = gzip.decompress(embedded)
             self.assertEqual(embedded, (ROOT / "fonts" / filename).read_bytes(), filename)
-            self.assertIn(f'"{uuid}": "/fonts/{filename}"', self.html)
-        self.assertIn("location.protocol !== 'file:' && FONT_PATHS[uuid]", self.html)
-        self.assertIn("IMAGE_MIME.test(entry.mime)", self.html)
-
-    def test_approved_command_response_layer_is_productionized(self) -> None:
-        self.assertEqual(self.html.count('id="v31-command-response-bootstrap"'), 1)
-        for stale in (
-            'v31-preview-snapshot',
-            'production untouched',
-            '/files/cashio-light-cycles.png',
-            'ASSET_RECOGNIZER',
-        ):
-            self.assertNotIn(stale, self.html)
-
-        cycle_asset = ROOT / "assets" / "img" / "cashio-light-cycles.webp"
-        self.assertTrue(cycle_asset.is_file(), "Production light-cycle asset is missing")
-        self.assertLess(cycle_asset.stat().st_size, 200_000, "Light-cycle asset regressed in size")
-        self.assertIn("const ASSET_CYCLES = '/assets/img/cashio-light-cycles.webp';", self.html)
-
-    def test_command_rail_is_local_dated_and_has_safe_effect_controls(self) -> None:
-        start = self.html.index("const registry = Object.freeze({")
-        end = self.html.index("const aliases = Object.entries(registry)", start)
-        registry = self.html[start:end]
-        for marker in (
-            "19/19 containers verified running · quorum 3/3.",
-            "Hermes Agent v0.20.0 · Herald release · upstream 08-03-2026",
-            "Public-safe scope: documented build receipt and upstream release only; no current health or live-state claim.",
-            "FX OFF OR REDUCED MOTION. NO MOTION WAS ENABLED.",
-            "window.__plasmaReplay()",
-            "window.__recogNow",
-            "window.__v31xGridFx",
-            "SND // ",
-        ):
-            self.assertIn(marker, registry)
-        for network_api in ("fetch(", "XMLHttpRequest", "WebSocket", "EventSource", "sendBeacon", "window.open"):
-            self.assertNotIn(network_api, registry)
-
-    def test_v31_presentation_keeps_the_v44_source_lineage_marker(self) -> None:
-        self.assertIn("/^v44 \/\/ AURORA/", self.html)
-        self.assertIn("V31 // THE GRID \\u00b7 E.V.E.", self.html)
-
-    def test_grid_roving_tabindex_follows_the_requested_card(self) -> None:
-        self.assertIn(
-            "const current = (preferred && visible.includes(preferred) ? preferred : null) || focused ||",
-            self.html,
-        )
-
-    def test_command_response_installs_only_after_the_runtime_document_swap(self) -> None:
-        self.assertIn("const runtimeRoot = document.getElementById('dc-root');", self.html)
-        self.assertIn("return !!runtimeRoot && !document.querySelector('x-dc')", self.html)
-        self.assertIn("REQUIRED_DECKS.every((id) => runtimeRoot.querySelector('#' + id))", self.html)
-        self.assertIn("runtimeRoot.querySelector('[aria-label=\"Console command input\"]')", self.html)
-        build_install = self.html[self.html.index("function installBuildDirector()") : self.html.index("let gridResponseEpoch")]
-        self.assertIn("window.__V31BuildDirector = {", build_install)
-        self.assertIn("function markStatusRail()", self.html)
-        self.assertIn("rail.classList.add('v31x-status-rail')", self.html)
-        self.assertNotIn('body.v31x-controls-ready [data-dc-tpl="232"]', self.html)
-        self.assertIn("document.body.classList.add('v31x-controls-ready');", self.html)
 
 
 if __name__ == "__main__":

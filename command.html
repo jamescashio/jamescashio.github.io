@@ -2,13 +2,26 @@
 <html lang="en">
 <head>
 <!-- SECURITY: Defense in depth against XSS -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; script-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://fonts.googleapis.com; media-src 'self';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; media-src 'self'; form-action 'none'; object-src 'none'; base-uri 'none'">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, follow">
 <title>ZEUSAPOLLO Command Center — v21.2a Historical Archive</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700&family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+/* Archived build: fonts self-hosted from /fonts/ so this historical page makes
+   no third-party request. Weights are mapped to the nearest available cut. */
+@font-face{font-family:'Orbitron';font-style:normal;font-weight:400;font-display:swap;src:url('/fonts/orbitron-latin-600-normal.woff2') format('woff2')}
+@font-face{font-family:'Orbitron';font-style:normal;font-weight:700;font-display:swap;src:url('/fonts/orbitron-latin-700-normal.woff2') format('woff2')}
+@font-face{font-family:'Orbitron';font-style:normal;font-weight:900;font-display:swap;src:url('/fonts/orbitron-latin-900-normal.woff2') format('woff2')}
+@font-face{font-family:'Exo 2';font-style:normal;font-weight:300;font-display:swap;src:url('/fonts/exo-2-latin-400-normal.woff2') format('woff2')}
+@font-face{font-family:'Exo 2';font-style:normal;font-weight:400;font-display:swap;src:url('/fonts/exo-2-latin-400-normal.woff2') format('woff2')}
+@font-face{font-family:'Exo 2';font-style:normal;font-weight:600;font-display:swap;src:url('/fonts/exo-2-latin-500-normal.woff2') format('woff2')}
+@font-face{font-family:'Exo 2';font-style:normal;font-weight:700;font-display:swap;src:url('/fonts/exo-2-latin-700-normal.woff2') format('woff2')}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:300;font-display:swap;src:url('/fonts/jetbrains-mono-latin-400-normal.woff2') format('woff2')}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:400;font-display:swap;src:url('/fonts/jetbrains-mono-latin-400-normal.woff2') format('woff2')}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:600;font-display:swap;src:url('/fonts/jetbrains-mono-latin-600-normal.woff2') format('woff2')}
+</style>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -481,6 +494,12 @@ body {
 </style>
 </head>
 <body>
+
+<div role="note" style="position:relative;z-index:9999;margin:0;padding:16px clamp(14px,4vw,28px);background:#1a0e00;border-bottom:2px solid #ff9500;color:#ffd9a3;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;line-height:1.65">
+  <strong style="display:block;font-size:14px;letter-spacing:.14em;color:#ff9500;margin-bottom:6px">ARCHIVED BUILD — v21.2a — May 2026</strong>
+  This page is a historical visualization. It does not represent the current ZeusApollo topology or service state.<br>
+  Current public architecture: <a href="https://cashio.us/lab.html" style="color:#55e7ff;text-decoration:underline">cashio.us/lab.html</a>
+</div>
 
 <canvas id="starfield"></canvas>
 

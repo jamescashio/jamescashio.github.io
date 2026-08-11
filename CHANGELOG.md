@@ -2,6 +2,31 @@
 
 All notable public-facing changes to the ZeusApollo portfolio are recorded here. Visible dates use MM-DD-YYYY.
 
+## [v31] — 08-10-2026
+
+Release name: "The Grid." The front page is rebuilt around a live Dyson-swarm viewscreen, and every published figure is reset to the owner-verified 08-10-2026 architecture snapshot taken over cluster SSH by E.V.E. (19 of 19 containers running, 2 Proxmox hosts online, cluster quorate, 10 public capability lanes, 36 private model catalog entries).
+
+### Added
+- `<dyson-stage>` — a framework-free WebGL viewscreen: a star under a partially built Dyson swarm with collector rings, an unfinished shell lattice, a shipyard throwing construction beams, a grid horizon and a starfield. Scroll flies the camera through nine waypoints; the pointer adds damped parallax.
+- Deck 03B "Lineage": Yeager, Johnson and Rutan as an interactive record card, each with the operating rule taken from it.
+- Deck 06 is branded E.V.E. — the Evaluation Verification Engine — with a fuller command set: `status`, `fleet`, `services`, `routes`, `catalog`, `eve`, `lineage`, `creed`, `whoami`, `bit`, `engage`, `archive`, `clear`, plus unlisted in-character commands.
+- three.js 0.185.1 and its postprocessing addons are self-hosted under `assets/js/vendor/three/`, so the production CSP needs no CDN origin and `connect-src` stays `'none'`.
+- The retired-figure guard in `scripts/check_release_consistency.py`: any withdrawn figure reappearing on a published surface now fails the build.
+- `/grid.html` archives the previous 1982-grid front page, joining `/index-v44.html` and `/command.html`.
+
+### Changed
+- The deck is now vanilla HTML/CSS/JS on the ZeusApollo design system, replacing the bundled component runtime. No build step, no framework, no inline eval.
+- Deck audio is effects only. The continuous engine-room bed that shipped in the source package was removed; voices remain synthesized in WebAudio with no audio files and stay muted until armed.
+- `command.html` carries an ARCHIVED BUILD v21.2a (May 2026) banner at the top, linking to the current public architecture view.
+- `lab.html` restates the current public snapshot and what stays private.
+
+### Removed
+- AI operating cost per day and per month, automation job counts, DNS query sample figures, backup recovery telemetry, and security update counts. A figure with no fresh measurement is now omitted entirely rather than published stale.
+- Retired service references: `deepseek-chat`, AdGuard, RAGFlow, LobeChat, CodeGate, Hermes v0.12.0, "17/18 containers", "11 LXCs", and "18 active nodes".
+
+### Verified
+- Zero console errors across a full deck sweep with WebGL live. Reduced motion renders a complete still page. No horizontal overflow from 320 to 1920. Every published figure reconciled against `status.json`, and every withdrawn figure confirmed absent from all six published surfaces.
+
 ## [v44] — 08-01-2026
 
 Release name: "Aurora." Figures re-verified by an owner-run live check over cluster SSH on 08-01-2026 at 20:40 CDT (19/19 running, quorum 3/3, 18/19 backed up inside 24h, 0 security updates due). The DNS figures moved to a fresh 24-hour sample from the same check: 219,628 queries, 14.4% blocked, 216,108 blocklist entries, 71 clients, 16 server failures published as measured.
