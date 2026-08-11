@@ -240,6 +240,23 @@ class V31ReleaseContractTests(unittest.TestCase):
         self.assertEqual(self.deck.count("LIFT(pkt.node) / 100 * ringGeom.s"), 2)
         self.assertIn("LIFT(selNode) / 100 * ringGeom.s", self.deck)
 
+    def test_script_free_pages_opt_out_of_email_obfuscation(self) -> None:
+        """Cloudflare rewrites mailto: links and injects a decode script. A page
+        that forbids scripts can never run it, so the address would render as
+        "[email protected]" forever unless the region opts out."""
+        for page in ("lab.html",):
+            html = (ROOT / page).read_text(encoding="utf-8")
+            csp = re.search(r'http-equiv="Content-Security-Policy" content="([^"]+)"', html)
+            if not csp or "script-src 'none'" not in csp.group(1):
+                continue
+            for match in re.finditer(r'<a[^>]+href="mailto:[^"]+"[^>]*>', html):
+                before = html[: match.start()]
+                self.assertGreater(
+                    before.rfind("<!--email_off-->"), before.rfind("<!--email_on-->"),
+                    f"{page} forbids scripts but leaves a mailto: link exposed to "
+                    f"Cloudflare obfuscation: {match.group(0)}",
+                )
+
     def test_archived_builds_stay_reachable(self) -> None:
         for archive in ("grid.html", "index-v44.html", "command.html"):
             self.assertTrue((ROOT / archive).is_file(), f"{archive} is missing")

@@ -122,9 +122,13 @@
       </section>
     </main>
 
-    <footer>
+    <!-- Cloudflare Email Address Obfuscation rewrites mailto: links and injects a
+       decode script. This page sets script-src 'none', so that script is blocked
+       and the address would render as "[email protected]" forever. The email_off
+       markers below opt this region out, keeping the page script-free. -->
+  <footer>
       <span>Doug Cashio · Enterprise AI &amp; Cybersecurity</span>
-      <span><a href="mailto:admin@cashio.us">admin@cashio.us</a> · <a href="/.well-known/security.txt">security.txt</a></span>
+      <span><!--email_off--><a href="mailto:admin@cashio.us">admin@cashio.us</a><!--email_on--> · <a href="/.well-known/security.txt">security.txt</a></span>
     </footer>
   </div>
 </body>
