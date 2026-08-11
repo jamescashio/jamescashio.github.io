@@ -56,7 +56,13 @@
   @keyframes za-sweep { 0% { transform: translateX(-110%); } 60%,100% { transform: translateX(320%); } }
   @keyframes za-spin { to { transform: rotate(360deg); } }
   @keyframes za-orbit { to { transform: rotate(360deg); } }
-  @keyframes za-counter { to { transform: rotate(-360deg); } }
+  @keyframes za-counter {
+    from { transform: translate(-50%,-50%) rotate(0deg); }
+    to   { transform: translate(-50%,-50%) rotate(-360deg); }
+  }
+  @keyframes za-ping-node { 0%,82%,100% { box-shadow: 0 0 0 0 rgba(0,249,255,0); } 88% { box-shadow: 0 0 16px 3px rgba(0,249,255,.55); } }
+  @keyframes za-dash { to { stroke-dashoffset: -24; } }
+  @keyframes za-packet-run { to { offset-distance: 100%; } }
   @keyframes za-packet { 0% { transform: translateX(-6px); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateX(var(--run,220px)); opacity: 0; } }
   @keyframes za-ping { 0% { transform: scale(.55); opacity: .85; } 100% { transform: scale(2.7); opacity: 0; } }
   @keyframes za-flicker { 0%,100% { opacity: 1; } 46% { opacity: .6; } 51% { opacity: 1; } }
@@ -111,8 +117,43 @@
   .hudbtn:hover { color: var(--cyan); border-color: var(--cyan); }
 
   /* deck 01 · fleet ring */
-  .za-orbit { animation: za-orbit 180s linear infinite; }
+  /* The map is wider than it is tall. Laying the ring out in percentage space
+     would make it an ellipse, and rotating an ellipse smears the orbits into
+     an irregular scatter. A square box holds the ring so rotation preserves
+     true circles; the box centres itself, the inner layer does the spinning. */
+  .fleet-ringbox { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); height: 94%; aspect-ratio: 1; max-width: 100%; }
+  .za-orbit { position: absolute; inset: 0; animation: za-orbit 180s linear infinite; }
   .za-node-wrap { position: absolute; transform: translate(-50%,-50%); animation: za-counter 180s linear infinite; }
+
+  /* link fabric: every container drawn back to the quorum core, rotating with
+     the ring because the svg lives inside it */
+  .fleet-links { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+  .fleet-links path { stroke-width: .28; stroke-dasharray: 3 4; animation: za-dash 2.4s linear infinite; transition: stroke-opacity var(--dur) var(--ease), stroke-width var(--dur) var(--ease); }
+  .fleet-links path.zeus { stroke: var(--accent); stroke-opacity: .3; }
+  .fleet-links path.apollo { stroke: var(--cyan); stroke-opacity: .3; }
+  .fleet-links path.is-sel { stroke-opacity: 1; stroke-width: .6; stroke-dasharray: none; filter: drop-shadow(0 0 2px currentColor); }
+  .fleet-links path.is-dim { stroke-opacity: .06; }
+
+  /* radar sweep: each node pings as the beam reaches its bearing */
+  .za-node { animation: za-ping-node 8s linear infinite; animation-delay: var(--ping, 0s); }
+  .fleetmap.is-filtered .za-node { animation-play-state: paused; }
+  .za-node.is-off { opacity: .2; filter: saturate(.2); }
+  .za-node.is-off:hover { opacity: .6; }
+
+  /* host filter chips */
+  .fleet-legend { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); display: flex; gap: 8px; z-index: 5; }
+  .fleet-chip { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 8.5px; letter-spacing: .16em; color: var(--text-dim); white-space: nowrap; background: rgba(6,7,12,.78); border: 1px solid var(--glass-border); border-radius: 999px; padding: 5px 11px; cursor: pointer; transition: all var(--dur-fast) var(--ease); backdrop-filter: blur(6px); }
+  .fleet-chip:hover { color: var(--text); border-color: var(--cyan); }
+  .fleet-chip[aria-pressed="true"] { color: var(--void); background: var(--chip, var(--cyan)); border-color: var(--chip, var(--cyan)); box-shadow: 0 0 16px -4px var(--chip, var(--cyan)); }
+  .fleet-chip i { width: 7px; height: 7px; border-radius: 2px; border: 1px solid currentColor; }
+
+  /* hover readout */
+  .fleet-tip { position: absolute; z-index: 6; pointer-events: none; transform: translate(-50%,-140%); padding: 5px 10px; border-radius: 8px; background: rgba(6,7,12,.94); border: 1px solid var(--cyan); color: var(--cyan); font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; white-space: nowrap; opacity: 0; transition: opacity var(--dur-fast) var(--ease); box-shadow: 0 0 18px -4px var(--cyan); }
+  .fleet-tip.is-on { opacity: 1; }
+
+  /* v30 starmap layer: curved routes, comet packets, expanding pings */
+  .fleet-starmap { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+
   .za-node { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; width: 38px; height: 32px; padding: 0; border-radius: 9px; cursor: pointer; font-family: var(--font-mono); font-size: 9px; background: rgba(8,10,18,.88); border: 1px solid rgba(255,149,0,.34); color: var(--text-dim); transition: all var(--dur-fast) var(--ease); }
   .za-node i { width: 4px; height: 4px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); }
   .za-node:hover { border-color: var(--cyan) !important; color: var(--cyan) !important; transform: scale(1.18); z-index: 4; }
@@ -304,12 +345,12 @@
     <span class="zt zt-cyan">QUORATE</span>
   </div>
   <h2 class="h2">Two hosts. Nineteen containers.<br><em>Everything answering.</em></h2>
-  <p class="lead">Every service below runs on hardware I bought and maintain. The ring is the live map: thirteen containers on Zeus, six on Apollo. Click any node to read what it does.</p>
+  <p class="lead">Every service below runs on hardware I bought and maintain. The ring is the live map: thirteen containers on Zeus, six on Apollo. Filter by host, walk it with the arrow keys, or click any node to read what it does.</p>
 
   <div class="g2" style="margin-top:28px">
     <div style="position:relative;border:1px solid var(--glass-border);border-radius:20px;background:radial-gradient(circle at 50% 52%,rgba(255,149,0,.09),rgba(6,7,12,.6) 64%);overflow:hidden;box-shadow:var(--shadow-panel)">
       <div style="display:flex;justify-content:space-between;gap:16px;padding:12px 16px;font-family:var(--font-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);border-bottom:1px solid var(--glass-border);position:relative;z-index:3">
-        <span style="white-space:nowrap">Fleet map // public-safe</span><span style="white-space:nowrap;color:var(--cyan)">Click a node to inspect</span>
+        <span style="white-space:nowrap">Fleet map // public-safe</span><span style="white-space:nowrap;color:var(--cyan)">Click a node · <kbd class="k">←</kbd><kbd class="k">→</kbd> to walk the ring</span>
       </div>
       <div class="fleetmap fleetmap-h" style="position:relative;height:520px">
         <div aria-hidden="true" style="position:absolute;left:50%;top:50%;width:74%;aspect-ratio:1/1;transform:translate(-50%,-50%);border-radius:50%;background:conic-gradient(from 0deg,rgba(0,249,255,.20),transparent 24%);animation:za-spin 8s linear infinite;opacity:.5"></div>
@@ -318,13 +359,20 @@
         <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;z-index:2">
           <div aria-hidden="true" style="position:absolute;left:50%;top:50%;width:74px;height:74px;margin:-37px 0 0 -37px;border:1px solid var(--accent);border-radius:50%;animation:za-ping 3.4s var(--ease) infinite"></div>
           <div style="font-family:var(--font-display);font-weight:900;font-size:18px;letter-spacing:.08em;color:var(--accent);text-shadow:0 0 22px var(--accent-glow);animation:za-flicker 7s linear infinite">QUORATE</div>
-          <div style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.18em;color:var(--text-dim);margin-top:4px">2 HOSTS · 19 CONTAINERS</div>
+          <div style="font-family:var(--font-mono);font-size:8px;letter-spacing:.14em;color:var(--text-dim);margin-top:4px;white-space:nowrap">2 HOSTS · 19 CT</div>
         </div>
-        <div data-orbit class="za-orbit" style="position:absolute;inset:0"></div>
+        <div class="fleet-ringbox" data-ringbox>
+          <div data-orbit class="za-orbit">
+            <svg class="fleet-links" data-links viewBox="0 0 100 100" aria-hidden="true"></svg>
+          </div>
+        </div>
+        <canvas class="fleet-starmap" data-starmap aria-hidden="true"></canvas>
+        <div class="fleet-tip" data-tip role="status" aria-live="polite"></div>
         <noscript><div style="position:absolute;left:0;right:0;bottom:40px;text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--text-dim)">The interactive fleet ring needs JavaScript. The service list below is complete without it.</div></noscript>
-        <div style="position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:flex;gap:16px;font-family:var(--font-mono);font-size:8.5px;letter-spacing:.16em;color:var(--text-dim);white-space:nowrap;z-index:3">
-          <span style="display:inline-flex;align-items:center;gap:6px"><i class="hostdot" style="border:1px solid rgba(255,149,0,.7)"></i>ZEUS · 13</span>
-          <span style="display:inline-flex;align-items:center;gap:6px"><i class="hostdot" style="border:1px solid rgba(0,249,255,.7)"></i>APOLLO · 6</span>
+        <div class="fleet-legend" role="group" aria-label="Filter the fleet map by host">
+          <button type="button" class="fleet-chip" data-host="ALL" aria-pressed="true" data-sfx="tick" style="--chip:var(--green)">ALL · 19</button>
+          <button type="button" class="fleet-chip" data-host="ZEUS" aria-pressed="false" data-sfx="tick" style="--chip:var(--accent)"><i></i>ZEUS · 13</button>
+          <button type="button" class="fleet-chip" data-host="APOLLO" aria-pressed="false" data-sfx="tick" style="--chip:var(--cyan)"><i></i>APOLLO · 6</button>
         </div>
       </div>
     </div>
@@ -339,8 +387,8 @@
         <p data-sel-p style="margin:14px 0 0;font-size:14px;line-height:1.62;color:var(--text-dim)">Routes every request through one gateway and keeps the fleet reconciled.</p>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <span class="zs za-statcell zs-accent"><b>13</b><span class="l">On Zeus</span><span class="s">Primary compute</span></span>
-        <span class="zs za-statcell zs-cyan"><b>6</b><span class="l">On Apollo</span><span class="s">Storage + services</span></span>
+        <span class="zs za-statcell zs-accent"><b data-count="13">13</b><span class="l">On Zeus</span><span class="s">Primary compute</span></span>
+        <span class="zs za-statcell zs-cyan"><b data-count="6">6</b><span class="l">On Apollo</span><span class="s">Storage + services</span></span>
       </div>
     </div>
   </div>

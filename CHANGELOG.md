@@ -13,6 +13,8 @@ Release name: "The Grid." The front page is rebuilt around a live Dyson-swarm vi
 - three.js 0.185.1 and its postprocessing addons are self-hosted under `assets/js/vendor/three/`, so the production CSP needs no CDN origin and `connect-src` stays `'none'`.
 - The retired-figure guard in `scripts/check_release_consistency.py`: any withdrawn figure reappearing on a published surface now fails the build.
 - `/grid.html` archives the previous 1982-grid front page, joining `/index-v44.html` and `/command.html`.
+- The Grid gets the v30 fleet starmap back: curved routes from every container to the quorum core, comet packets with trails riding those curves, expanding pings, and a breathing core ring — one canvas, one rAF loop, gated on reduced motion and on the deck being on screen.
+- The fleet ring is now operable: host filter chips (ALL / ZEUS / APOLLO), arrow-key and Home/End walking under a roving tabindex, a hover readout naming each container and its role, and count-ups on the host split.
 
 ### Changed
 - The deck is now vanilla HTML/CSS/JS on the ZeusApollo design system, replacing the bundled component runtime. No build step, no framework, no inline eval.
@@ -23,6 +25,11 @@ Release name: "The Grid." The front page is rebuilt around a live Dyson-swarm vi
 ### Removed
 - AI operating cost per day and per month, automation job counts, DNS query sample figures, backup recovery telemetry, and security update counts. A figure with no fresh measurement is now omitted entirely rather than published stale.
 - Retired service references: `deepseek-chat`, AdGuard, RAGFlow, LobeChat, CodeGate, Hermes v0.12.0, "17/18 containers", "11 LXCs", and "18 active nodes".
+
+### Fixed
+- The ring's counter-rotation keyframe set `transform: rotate()` alone, which replaced the centring `translate(-50%,-50%)`; every node drifted off its anchor and tilted as the ring turned. Both keyframes now carry both transforms.
+- The ring was laid out in percentage space on a map wider than it is tall, so it was an ellipse, and rotating an ellipse smeared the orbits into an irregular scatter. A square ring box now holds it and the orbits stay true circles.
+- The ring pauses on hover and on focus, so a node is never a target moving under the pointer.
 
 ### Verified
 - Zero console errors across a full deck sweep with WebGL live. Reduced motion renders a complete still page. No horizontal overflow from 320 to 1920. Every published figure reconciled against `status.json`, and every withdrawn figure confirmed absent from all six published surfaces.

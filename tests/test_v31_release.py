@@ -178,6 +178,68 @@ class V31ReleaseContractTests(unittest.TestCase):
         for section in sections:
             self.assertIn(f"['{section}'", self.deck, f"{section} is missing from the deck strip table")
 
+    def test_fleet_ring_geometry_cannot_regress_to_an_ellipse(self) -> None:
+        """A square ring box is what keeps rotation from smearing the orbits."""
+        self.assertIn(".fleet-ringbox", self.html)
+        self.assertIn("aspect-ratio: 1", self.html)
+        self.assertIn("var rx = zeus ? 41 : 26, ry = rx;", self.deck)
+
+    def test_counter_rotation_keeps_the_centring_transform(self) -> None:
+        """A bare rotate() keyframe replaces translate(-50%,-50%) and every node
+        drifts off its anchor and tilts. Both parts must be in both keyframes."""
+        block = self.html[self.html.index("@keyframes za-counter") : self.html.index("@keyframes za-ping-node")]
+        self.assertIn("from { transform: translate(-50%,-50%) rotate(0deg); }", block)
+        self.assertIn("to   { transform: translate(-50%,-50%) rotate(-360deg); }", block)
+
+    def test_ring_holds_still_when_reached_for(self) -> None:
+        """A target that drifts under the pointer is a motor-accessibility problem."""
+        self.assertIn(".fleetmap:hover .za-orbit", self.html)
+        self.assertIn(".za-orbit:focus-within", self.html)
+        self.assertIn("animation-play-state: paused", self.html)
+        # the animation must live in the stylesheet, or no rule can override it
+        self.assertNotIn('class="za-orbit" style="position:absolute;inset:0;animation', self.html)
+        self.assertIn(".za-orbit { position: absolute; inset: 0; animation: za-orbit", self.html)
+
+    def test_ring_is_operable_by_keyboard_with_a_roving_tabindex(self) -> None:
+        self.assertIn("b.tabIndex = -1;", self.deck)
+        self.assertIn("b.tabIndex = on ? 0 : -1;", self.deck)
+        for key in ("ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown", "Home", "End"):
+            self.assertIn(f"'{key}'", self.deck, f"the ring does not answer {key}")
+
+    def test_host_filter_covers_every_host_and_keeps_a_valid_selection(self) -> None:
+        hosts = set(re.findall(r'data-host="([A-Z]+)"', self.html))
+        self.assertEqual(hosts, {"ALL", "ZEUS", "APOLLO"})
+        self.assertIn("if (vis.indexOf(selNode) < 0) selNode = vis[0];", self.deck)
+        for chip in re.findall(r"<button[^>]*data-host[^>]*>", self.html):
+            self.assertIn("aria-pressed", chip)
+
+    def test_starmap_motion_is_bounded(self) -> None:
+        """One rAF loop, gated on reduced motion and on the deck being visible."""
+        self.assertIn("if (!gridOnScreen || reduced || !sctx)", self.deck)
+        self.assertIn("gridOnScreen = false;", self.deck)
+        self.assertEqual(self.deck.count("requestAnimationFrame(drawStarmap)"), 1)
+        # Node positions are derived from one rotation read, not measured per
+        # node — nineteen forced layouts a frame is the thing being prevented.
+        body = self.deck[self.deck.index("function drawStarmap(ts)"):self.deck.index("var runPulse = drawStarmap;")]
+        self.assertNotIn("getBoundingClientRect", body)
+        self.assertIn("Math.atan2", self.deck)
+        for helper in ("function fitStarmap()", "function measureRing(mapRect)"):
+            self.assertIn(helper, self.deck)
+
+    def test_routes_survive_reduced_motion(self) -> None:
+        """The canvas never runs under reduced motion, so the link fabric that
+        carries the meaning has to be SVG, not something the canvas draws."""
+        self.assertIn("linkSvg.appendChild(ln)", self.deck)
+        self.assertIn(".fleet-links path", self.html)
+        self.assertNotIn("sctx.quadraticCurveTo", self.deck)
+
+    def test_packets_ride_the_curve_the_svg_actually_draws(self) -> None:
+        """One lift function feeds both, so canvas and SVG cannot drift apart."""
+        self.assertIn("function LIFT(i) { return ((i % 4) - 1.5) * 3.2; }", self.deck)
+        self.assertIn("' Q' + ((x + 50) / 2).toFixed(2)", self.deck)
+        self.assertEqual(self.deck.count("LIFT(pkt.node) / 100 * ringGeom.s"), 2)
+        self.assertIn("LIFT(selNode) / 100 * ringGeom.s", self.deck)
+
     def test_archived_builds_stay_reachable(self) -> None:
         for archive in ("grid.html", "index-v44.html", "command.html"):
             self.assertTrue((ROOT / archive).is_file(), f"{archive} is missing")
@@ -201,13 +263,16 @@ class V31ReleaseContractTests(unittest.TestCase):
         self.assertIn('aria-label="Console command input"', self.html)
         self.assertIn('aria-label="Decks"', self.html)
         self.assertIn('aria-label="Toggle deck audio"', self.html)
-        # Every interactive control carries an accessible name.
-        for button in re.findall(r"<button[^>]*>", self.html):
-            has_label = "aria-label=" in button
-            self.assertTrue(has_label or "data-hint=" in button or "data-plate" in button
-                            or "data-lane" in button or "data-hero" in button
-                            or "data-trace-run" in button or "data-boot-skip" in button,
-                            f"Button without an accessible name: {button}")
+        # Every interactive control carries an accessible name: either an
+        # explicit aria-label, or visible text between the tags.
+        for match in re.finditer(r"<button([^>]*)>(.*?)</button>", self.html, re.DOTALL):
+            attrs, inner = match.group(1), match.group(2)
+            if "aria-label=" in attrs:
+                continue
+            text = re.sub(r"<[^>]+>", "", inner).strip()
+            self.assertTrue(
+                text, f"Button with neither aria-label nor visible text: <button{attrs}>"
+            )
 
     def test_no_custom_cursor(self) -> None:
         """The native pointer stays; custom cursors were rejected."""

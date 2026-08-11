@@ -181,8 +181,21 @@
   /* ── deck 01 · fleet ring ───────────────────────────────────────────── */
 
   var orbit = $('[data-orbit]');
-  var nodeBtns = [];
-  var selNode = 0;
+  var linkSvg = $('[data-links]');
+  var tip = $('[data-tip]');
+  var fleetmap = $('.fleetmap');
+  var nodeBtns = [], nodeGeo = [], links = [];
+  var selNode = 0, hostFilter = 'ALL';
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  // curve offset for node i, in viewBox units (0-100 across the ring box)
+  function LIFT(i) { return ((i % 4) - 1.5) * 3.2; }
+
+  function visibleIdx() {
+    var out = [];
+    NODES.forEach(function (n, i) { if (hostFilter === 'ALL' || n.h === hostFilter) out.push(i); });
+    return out;
+  }
+
   function paintNode() {
     var n = NODES[selNode];
     $('[data-sel-role]').textContent = '◈ ' + n.r.toUpperCase();
@@ -191,34 +204,278 @@
     $('[data-sel-p]').textContent = n.p;
     nodeBtns.forEach(function (b, i) {
       var on = i === selNode, zeus = NODES[i].h === 'ZEUS';
+      var off = hostFilter !== 'ALL' && NODES[i].h !== hostFilter;
       b.style.background = on ? 'rgba(255,149,0,.20)' : 'rgba(8,10,18,.88)';
       b.style.borderColor = on ? 'var(--accent)' : (zeus ? 'rgba(255,149,0,.34)' : 'rgba(0,249,255,.34)');
       b.style.color = on ? 'var(--accent)' : 'var(--text-dim)';
-      b.style.boxShadow = on ? '0 0 22px var(--accent-glow)' : 'none';
+      b.style.boxShadow = on ? '0 0 22px var(--accent-glow)' : '';
+      b.classList.toggle('is-off', off);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.tabIndex = on ? 0 : -1;   // roving tabindex: the ring is one stop
+      if (links[i]) {
+        links[i].classList.toggle('is-sel', on);
+        links[i].classList.toggle('is-dim', off);
+      }
     });
   }
-  if (orbit) {
+
+  function selectNode(i, focus) {
+    selNode = i;
+    paintNode();
+    if (focus && nodeBtns[i]) nodeBtns[i].focus();
+  }
+
+  if (orbit && linkSvg) {
     NODES.forEach(function (n, i) {
       var zeus = n.h === 'ZEUS';
       var list = NODES.filter(function (x) { return (x.h === 'ZEUS') === zeus; });
       var a = (list.indexOf(n) / list.length) * Math.PI * 2 - Math.PI / 2;
-      var rx = zeus ? 34 : 17, ry = zeus ? 38 : 19;
+      // square box, so the orbits are true circles; Apollo's inner orbit is
+      // pushed out far enough to clear the quorum label at the centre
+      var rx = zeus ? 41 : 26, ry = rx;
+      var x = 50 + Math.cos(a) * rx, y = 50 + Math.sin(a) * ry;
+      nodeGeo.push({ x: x, y: y, a: a });
+
+      // Link back to the quorum core, drawn inside the ring so it rotates with
+      // it. LIFT is in viewBox units and the canvas reuses the same fraction,
+      // so the comet packets ride exactly this curve at any map size.
+      var lift = LIFT(i);
+      var d = 'M' + x.toFixed(2) + ' ' + y.toFixed(2) +
+              ' Q' + ((x + 50) / 2).toFixed(2) + ' ' + ((y + 50) / 2 + lift).toFixed(2) +
+              ' 50 50';
+      var ln = document.createElementNS(SVGNS, 'path');
+      ln.setAttribute('d', d);
+      ln.setAttribute('fill', 'none');
+      ln.setAttribute('class', zeus ? 'zeus' : 'apollo');
+      ln.style.animationDelay = (-(i % 7) * 0.34) + 's';
+      linkSvg.appendChild(ln);
+      links.push(ln);
+
       var wrap = document.createElement('span');
       wrap.className = 'za-node-wrap';
-      wrap.style.left = (50 + Math.cos(a) * rx) + '%';
-      wrap.style.top = (50 + Math.sin(a) * ry) + '%';
+      wrap.style.left = x + '%';
+      wrap.style.top = y + '%';
+
       var b = document.createElement('button');
       b.type = 'button';
       b.className = 'za-node';
-      b.title = n.n; b.setAttribute('aria-label', n.n);
+      b.title = n.n + ' · ' + n.r;
+      b.setAttribute('aria-label', n.n + ', ' + n.r + ', ' + n.h + ' ' + n.ct);
+      b.tabIndex = -1;
+      // the radar beam takes 8s to come round; ping each node as it passes
+      b.style.setProperty('--ping', (((a + Math.PI / 2) / (Math.PI * 2)) * 8).toFixed(2) + 's');
       b.innerHTML = '<i></i>' + n.ct.replace('CT-', '');
-      b.addEventListener('click', function () { selNode = i; paintNode(); sfx('select'); });
+
+      b.addEventListener('click', function () { selectNode(i, false); sfx('select'); });
+      b.addEventListener('focus', function () { selectNode(i, false); });
+      b.addEventListener('pointerenter', function () { showTip(i, b); });
+      b.addEventListener('pointerleave', hideTip);
+      b.addEventListener('keydown', function (e) {
+        var vis = visibleIdx();
+        var at = vis.indexOf(selNode);
+        if (at < 0) return;
+        var next = null;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = vis[(at + 1) % vis.length];
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = vis[(at - 1 + vis.length) % vis.length];
+        else if (e.key === 'Home') next = vis[0];
+        else if (e.key === 'End') next = vis[vis.length - 1];
+        if (next === null) return;
+        e.preventDefault();
+        selectNode(next, true);
+        sfx('tick');
+      });
+
       wrap.appendChild(b);
       orbit.appendChild(wrap);
       nodeBtns.push(b);
     });
+    nodeBtns[0].tabIndex = 0;
     paintNode();
   }
+
+  function showTip(i, btn) {
+    if (!tip || !fleetmap) return;
+    var mr = fleetmap.getBoundingClientRect(), br = btn.getBoundingClientRect();
+    tip.textContent = NODES[i].n + ' · ' + NODES[i].r;
+    tip.style.left = (br.left + br.width / 2 - mr.left) + 'px';
+    tip.style.top = (br.top - mr.top) + 'px';
+    tip.classList.add('is-on');
+  }
+  function hideTip() { if (tip) tip.classList.remove('is-on'); }
+
+  /* host filter */
+  $$('[data-host]').forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      hostFilter = chip.getAttribute('data-host');
+      $$('[data-host]').forEach(function (c) {
+        c.setAttribute('aria-pressed', c === chip ? 'true' : 'false');
+      });
+      if (fleetmap) fleetmap.classList.toggle('is-filtered', hostFilter !== 'ALL');
+      var vis = visibleIdx();
+      if (vis.indexOf(selNode) < 0) selNode = vis[0];
+      paintNode();
+      sfx('select');
+    });
+  });
+
+  /* ── the starmap: curved routes, comet packets, expanding pings ───────
+     Carried over from the v30 fleet starmap. One canvas, one rAF loop, and it
+     only runs while the deck is on screen and motion is allowed.
+
+     The nodes ride a rotating container, so rather than measuring nineteen
+     elements every frame we read the ring's rotation once and derive every
+     position with trig — one layout read per frame instead of nineteen. */
+
+  var starmap = $('[data-starmap]'), sctx = starmap ? starmap.getContext('2d') : null;
+  var ringbox = $('[data-ringbox]');
+  var packets = [], pings = [], nextPing = 0, lastTs = 0;
+  var pulseRAF = null, pulseT0 = 0, gridOnScreen = false;
+  var ZEUS_RGB = '255,149,0', APOLLO_RGB = '0,249,255', CORE_RGB = '0,255,159';
+
+  for (var pk = 0; pk < 14; pk++) {
+    packets.push({
+      node: Math.floor((pk / 14) * 19),
+      t: (pk / 14),
+      speed: 0.00028 + (pk % 5) * 0.00007,
+      size: 1.5 + (pk % 3) * 0.55
+    });
+  }
+
+  function fitStarmap() {
+    if (!starmap || !fleetmap) return null;
+    var r = fleetmap.getBoundingClientRect();
+    var dpr = Math.min(devicePixelRatio || 1, 2);
+    if (starmap.width !== Math.round(r.width * dpr) || starmap.height !== Math.round(r.height * dpr)) {
+      starmap.width = Math.round(r.width * dpr);
+      starmap.height = Math.round(r.height * dpr);
+    }
+    sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return r;
+  }
+
+  /* Live pixel centre of node i, accounting for the ring's current rotation.
+     Measured against the square ring box, offset into fleetmap coordinates. */
+  var ringGeom = { cx: 0, cy: 0, s: 0 };
+  function measureRing(mapRect) {
+    if (!ringbox) return;
+    var b = ringbox.getBoundingClientRect();
+    ringGeom.cx = b.left - mapRect.left + b.width / 2;
+    ringGeom.cy = b.top - mapRect.top + b.height / 2;
+    ringGeom.s = b.width;
+  }
+  function nodeAt(i, cos, sin) {
+    var g = nodeGeo[i];
+    var dx = (g.x - 50) / 100 * ringGeom.s, dy = (g.y - 50) / 100 * ringGeom.s;
+    return { x: ringGeom.cx + dx * cos - dy * sin, y: ringGeom.cy + dx * sin + dy * cos };
+  }
+
+  function routePoint(from, to, lift, t) {
+    var mx = (from.x + to.x) / 2, my = (from.y + to.y) / 2 + lift;
+    var u = 1 - t;
+    return { x: u * u * from.x + 2 * u * t * mx + t * t * to.x,
+             y: u * u * from.y + 2 * u * t * my + t * t * to.y };
+  }
+
+  function drawStarmap(ts) {
+    if (!gridOnScreen || reduced || !sctx) { pulseRAF = null; return; }
+    var r = fitStarmap();
+    if (!r) { pulseRAF = null; return; }
+    var W = r.width, H = r.height;
+    measureRing(r);
+    var dt = lastTs ? Math.min(90, ts - lastTs) : 16;
+    lastTs = ts;
+
+    // one read of the ring's rotation drives all nineteen positions
+    var th = 0;
+    if (orbit) {
+      var m = getComputedStyle(orbit).transform;
+      if (m && m !== 'none') {
+        var v = m.slice(m.indexOf('(') + 1, -1).split(',');
+        th = Math.atan2(parseFloat(v[1]), parseFloat(v[0]));
+      }
+    }
+    var cos = Math.cos(th), sin = Math.sin(th);
+    var core = { x: ringGeom.cx, y: ringGeom.cy };
+
+    sctx.clearRect(0, 0, W, H);
+
+    // The routes themselves are SVG, so they survive reduced motion and stay in
+    // the accessibility tree. The canvas draws only what moves.
+    // comet packets riding the routes into the core
+    packets.forEach(function (pkt) {
+      if (hostFilter !== 'ALL' && NODES[pkt.node].h !== hostFilter) return;
+      pkt.t += pkt.speed * dt;
+      if (pkt.t > 1) {
+        pkt.t = 0;
+        var vis = visibleIdx();
+        pkt.node = vis[(vis.indexOf(pkt.node) + 7) % vis.length];
+      }
+      var from = nodeAt(pkt.node, cos, sin);
+      var rgb = NODES[pkt.node].h === 'ZEUS' ? ZEUS_RGB : APOLLO_RGB;
+      var pt = routePoint(from, core, LIFT(pkt.node) / 100 * ringGeom.s, pkt.t);
+
+      var glow = sctx.createRadialGradient(pt.x, pt.y, 0, pt.x, pt.y, pkt.size * 6);
+      glow.addColorStop(0, 'rgba(' + rgb + ',0.7)');
+      glow.addColorStop(1, 'rgba(' + rgb + ',0)');
+      sctx.fillStyle = glow;
+      sctx.fillRect(pt.x - pkt.size * 6, pt.y - pkt.size * 6, pkt.size * 12, pkt.size * 12);
+
+      for (var tr = 3; tr >= 1; tr--) {
+        var tp = routePoint(from, core, LIFT(pkt.node) / 100 * ringGeom.s, Math.max(0, pkt.t - tr * 0.03));
+        sctx.beginPath();
+        sctx.arc(tp.x, tp.y, Math.max(0.4, pkt.size * (1 - tr * 0.26)), 0, Math.PI * 2);
+        sctx.fillStyle = 'rgba(' + rgb + ',' + (0.48 - tr * 0.13).toFixed(2) + ')';
+        sctx.fill();
+      }
+      sctx.beginPath();
+      sctx.arc(pt.x, pt.y, pkt.size, 0, Math.PI * 2);
+      sctx.fillStyle = 'rgba(255,255,255,.88)';
+      sctx.fill();
+    });
+
+    // a node pings every couple of seconds; the core answers
+    if (ts > nextPing) {
+      nextPing = ts + 2100 + (packets.length * 47) % 1700;
+      var vis2 = visibleIdx();
+      pings.push({ node: vis2[(pings.length * 5 + 3) % vis2.length], born: ts });
+      if (pings.length > 6) pings.shift();
+    }
+    pings = pings.filter(function (pg) {
+      var age = (ts - pg.born) / 1500;
+      if (age >= 1 || age < 0) return false;
+      var o = nodeAt(pg.node, cos, sin);
+      sctx.beginPath();
+      sctx.arc(o.x, o.y, 8 + age * 62, 0, Math.PI * 2);
+      sctx.strokeStyle = 'rgba(' + (NODES[pg.node].h === 'ZEUS' ? ZEUS_RGB : APOLLO_RGB) + ',' + ((1 - age) * 0.34).toFixed(3) + ')';
+      sctx.lineWidth = 1.2;
+      sctx.stroke();
+      return true;
+    });
+
+    // the core answers with a slow breathing ring
+    var beat = (ts % 3400) / 3400;
+    sctx.beginPath();
+    sctx.arc(core.x, core.y, 30 + beat * 34, 0, Math.PI * 2);
+    sctx.strokeStyle = 'rgba(' + CORE_RGB + ',' + ((1 - beat) * 0.22).toFixed(3) + ')';
+    sctx.lineWidth = 1;
+    sctx.stroke();
+
+    // the selected node's own telemetry packet, brighter, on its own clock
+    if (!pulseT0) pulseT0 = ts;
+    var st = ((ts - pulseT0) % 2600) / 2600;
+    var sfrom = nodeAt(selNode, cos, sin);
+    var e = st < .5 ? 2 * st * st : 1 - Math.pow(-2 * st + 2, 2) / 2;
+    var sp = routePoint(sfrom, core, LIFT(selNode) / 100 * ringGeom.s, e);
+    var sg = sctx.createRadialGradient(sp.x, sp.y, 0, sp.x, sp.y, 14);
+    sg.addColorStop(0, 'rgba(255,255,255,' + (Math.sin(st * Math.PI) * 0.85).toFixed(2) + ')');
+    sg.addColorStop(0.4, 'rgba(' + APOLLO_RGB + ',' + (Math.sin(st * Math.PI) * 0.5).toFixed(2) + ')');
+    sg.addColorStop(1, 'rgba(' + APOLLO_RGB + ',0)');
+    sctx.fillStyle = sg;
+    sctx.fillRect(sp.x - 14, sp.y - 14, 28, 28);
+
+    pulseRAF = requestAnimationFrame(drawStarmap);
+  }
+  var runPulse = drawStarmap;
 
   /* ── deck 02 · lanes + trace ────────────────────────────────────────── */
 
@@ -483,6 +740,22 @@
 
   /* ── deck tracking · HUD strip + Bit lines + iron rack ──────────────── */
 
+  var counted = false;
+  function countUp() {
+    if (counted) return; counted = true;
+    $$('[data-count]').forEach(function (el) {
+      var target = parseInt(el.getAttribute('data-count'), 10);
+      if (reduced || !target) { el.textContent = String(target || el.textContent); return; }
+      var t0 = 0;
+      (function step(ts) {
+        if (!t0) t0 = ts;
+        var p = Math.min((ts - t0) / 900, 1);
+        el.textContent = String(Math.round(target * (1 - Math.pow(1 - p, 3))));
+        if (p < 1) requestAnimationFrame(step);
+      })(performance.now());
+    });
+  }
+
   var curDeck = 0;
   function paintDeck() {
     var d = DECKS[curDeck];
@@ -501,9 +774,24 @@
           paintDeck();
           bitFlash(DECKS[i][3], DECKS[i][3].indexOf('WITNESS') === 0 ? 'no' : 'yes', 2600);
           if (DECKS[i][0] === 'iron') rack();
+          if (DECKS[i][0] === 'grid') countUp();
+        }
+        // the fleet packet only animates while its deck is actually on screen
+        if (en.target.id === 'grid') {
+          gridOnScreen = true;
+          if (!pulseRAF && !reduced) { pulseT0 = 0; pulseRAF = requestAnimationFrame(runPulse); }
         }
       });
     }, { threshold: 0.34 });
+    // and stops the moment it leaves
+    new IntersectionObserver(function (es) {
+      es.forEach(function (en) {
+        if (en.target.id !== 'grid' || en.isIntersecting) return;
+        gridOnScreen = false;
+        lastTs = 0;
+        if (sctx && starmap) sctx.clearRect(0, 0, starmap.width, starmap.height);
+      });
+    }, { threshold: 0.01 }).observe(document.getElementById('grid'));
     DECKS.forEach(function (d) {
       var el = document.getElementById(d[0]);
       if (el) deckObs.observe(el);
