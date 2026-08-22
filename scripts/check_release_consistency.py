@@ -1,15 +1,5 @@
 #!/usr/bin/env python3
-"""Verify that the public release sources agree with status.json.
-
-status.json is the single source of truth for every published figure. This
-checker proves two things:
-
-1. Every figure status.json declares appears verbatim in the deck, the README,
-   the changelog and the release body.
-2. Every figure that was deliberately *withdrawn* stays withdrawn. Figures with
-   no fresh measurement are omitted entirely rather than published stale, so the
-   stale-token guard below is a hard gate, not a lint.
-"""
+"""Fail closed when the V47 source and GitHub Pages artifact disagree."""
 
 from __future__ import annotations
 
@@ -19,167 +9,263 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+PUBLIC_STATUS = ROOT / "public" / "status.json"
+DIST = ROOT / "dist"
 
-# Figures and services retired from the public site. None of these may return to
-# a published surface without a fresh, dated measurement — at which point the
-# entry is removed from this tuple in the same commit that republishes it.
-RETIRED_TOKENS: tuple[str, ...] = (
-    "$0.26",
-    "$6.49",
-    "71 of 71",
-    "71/71",
-    "219,628",
-    "31,547",
-    "216,108",
-    "89,851",
-    "14.4%",
-    "18 of 19",
-    "18/19",
-    "17/18",
-    "11 LXC",
-    "AdGuard",
-    "RAGFlow",
-    "LobeChat",
-    "CodeGate",
-    "Hermes v0.12.0",
-    "18 active nodes",
+TEXT_SUFFIXES = {".html", ".js", ".css", ".json", ".txt", ".xml", ".svg"}
+FORBIDDEN_LIVE = (
+    "10 August 2026",
+    "08-10-2026",
     "deepseek-chat",
+    "Creative AI Technologist",
+    "REQUEST A REVIEW",
 )
-
-# Published surfaces the stale-figure guard covers. command.html is excluded:
-# it is an explicitly banner-marked historical archive of the v21.2a build.
-PUBLISHED_SURFACES: tuple[str, ...] = (
-    "index.html",
-    "lab.html",
-    "status.json",
-    "README.md",
-    "RELEASE_BODY.md",
-    "llms.txt",
+PRIVATE_ADDRESS = re.compile(
+    r"\b(?:10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|"
+    r"172\.(?:1[6-9]|2\d|3[01])(?:\.\d{1,3}){2})\b"
 )
 
 
-def read(path: str) -> str:
-    return (ROOT / path).read_text(encoding="utf-8")
+def read(relative: str) -> str:
+    return (ROOT / relative).read_text(encoding="utf-8")
+
+
+def collect_text(folder: Path) -> str:
+    chunks: list[str] = []
+    for path in sorted(folder.rglob("*")):
+        if path.is_file() and path.suffix.lower() in TEXT_SUFFIXES:
+            chunks.append(path.read_text(encoding="utf-8"))
+    return "\n".join(chunks)
 
 
 def main() -> int:
-    status = json.loads(read("status.json"))
-    version = str(status["version"])
-    release_name = str(status["release_name"])
-    verified = str(status["verified_on"])
-    expires = str(status["expires_on"])
-    hosts = int(status["hosts"])
-    roles = int(status["documented_roles"])
-    healthy = int(status["healthy_services"])
-    lanes = int(status["public_capability_lanes"])
-    catalog = int(status["private_catalog_entries"])
-
-    # The deck spells the host count in words in its lead paragraph.
-    HOST_WORDS = {1: "One Proxmox host", 2: "Two Proxmox hosts", 3: "Three Proxmox hosts"}
-    host_phrase = HOST_WORDS.get(hosts, f"{hosts} Proxmox hosts")
-    ROLE_WORDS = {19: "nineteen"}
-    role_word = ROLE_WORDS.get(roles, str(roles))
-    LANE_WORDS = {10: "Ten"}
-    lane_word = LANE_WORDS.get(lanes, str(lanes))
-    CATALOG_WORDS = {36: "thirty-six"}
-    catalog_word = CATALOG_WORDS.get(catalog, str(catalog))
-
-    files = {name: read(name) for name in PUBLISHED_SURFACES}
-    files["CHANGELOG.md"] = read("CHANGELOG.md")
-
-    checks = {
-        # ---- README ------------------------------------------------------
-        "README release heading": ("README.md", f"# ZEUSAPOLLO {version}"),
-        "README release name": ("README.md", release_name),
-        "README status dates": ("README.md", f"Verified {verified}; expires {expires}"),
-        "README host count": ("README.md", f"| **Hosts** | {hosts} core homelab hosts, plus Athena at the edge |"),
-        "README role count": ("README.md", f"| **Documented roles** | {roles} public-safe service roles |"),
-        "README healthy count": ("README.md", f"| **Verified running** | {healthy} of {roles} containers at the {verified} live check |"),
-        "README lane count": ("README.md", f"| **Public capability lanes** | {lanes} |"),
-        "README catalog count": ("README.md", f"| **Private model catalog entries** | {catalog} |"),
-        "README counting rule": ("README.md", status["counting_rule"]),
-        # ---- Changelog / release body ------------------------------------
-        "Changelog release": ("CHANGELOG.md", f"## [{version}] — {verified}"),
-        "Release body version": ("RELEASE_BODY.md", f"{version} —"),
-        "Release body healthy count": ("RELEASE_BODY.md", f"| Verified containers running | {healthy} of {roles} |"),
-        "Release body lane count": ("RELEASE_BODY.md", f"| Public capability lanes | {lanes} |"),
-        "Release body catalog count": ("RELEASE_BODY.md", f"| Private model catalog entries | {catalog} |"),
-        # ---- The deck ----------------------------------------------------
-        "Deck build marker": ("index.html", 'data-build="v31-dyson"'),
-        "Deck release footer": ("index.html", f"ZEUSAPOLLO · {version.upper()} // {release_name.upper()}"),
-        "Deck verification chip": ("index.html", f"VERIFIED {verified}"),
-        "Deck container stat": ("index.html", f"<b>{healthy}/{roles}</b><span class=\"l\">Containers running</span>"),
-        "Deck host stat": ("index.html", f"<b>{hosts}</b><span class=\"l\">Proxmox hosts online</span>"),
-        "Deck lane stat": ("index.html", f"<b>{lanes}</b><span class=\"l\">Public capability lanes</span>"),
-        "Deck catalog stat": ("index.html", f"<b>{catalog}</b><span class=\"l\">Private catalog entries</span>"),
-        "Deck host sentence": ("index.html", f"{host_phrase} run {role_word} containers."),
-        "Deck lane sentence": ("index.html", f"{lane_word} public capability lanes sit in front of a private model catalog"),
-        "Deck catalog sentence": ("index.html", f"the private catalog behind the gateway holds {catalog_word} entries"),
-        "Deck E.V.E. branding": ("index.html", "E.V.E. — EVALUATION VERIFICATION ENGINE"),
-        "Deck Bit dock": ("index.html", 'data-bit data-mood="idle"'),
-        # ---- Console answers (deck logic) --------------------------------
-        "Console status line": (
-            "assets/js/deck-v31.js",
-            f"{healthy} of {roles} containers running · {hosts} Proxmox hosts online · cluster quorate",
-        ),
-        "Console catalog split": (
-            "assets/js/deck-v31.js",
-            f"{lanes} public capability lanes — the abstraction this page publishes.",
-        ),
-        "Console catalog entries": (
-            "assets/js/deck-v31.js",
-            f"{catalog} private model catalog entries — behind the gateway, not published.",
-        ),
-        # ---- Lab page ----------------------------------------------------
-        "Lab verified date": ("lab.html", f"verified {verified}"),
-        "Lab container count": ("lab.html", f"{healthy} of {roles} containers running"),
-        "Lab lane count": ("lab.html", f"{lanes} public capability lanes"),
-        "Lab catalog count": ("lab.html", f"{catalog} private gateway model entries"),
-        # ---- Routes ------------------------------------------------------
-        "In-page Kimi K3 route": ("index.html", status["routes"]["tier_0"]),
-        "In-page Gemini 3.6 route": ("index.html", status["routes"]["tier_3_multimodal"]),
-        "In-page DeepSeek V4 Pro route": ("index.html", status["routes"]["tier_2"]),
-    }
-
-    files["assets/js/deck-v31.js"] = read("assets/js/deck-v31.js")
-
     failures: list[str] = []
-    for label, (filename, expected) in checks.items():
-        if expected not in files[filename]:
-            failures.append(f"{label}: expected {expected!r} in {filename}")
 
-    # ---- the stale-figure guard -----------------------------------------
-    for filename in PUBLISHED_SURFACES:
-        haystack = files[filename]
-        for token in RETIRED_TOKENS:
-            if re.search(re.escape(token), haystack, re.IGNORECASE):
-                failures.append(
-                    f"Retired figure {token!r} reappeared in {filename}. "
-                    "Withdrawn figures need a fresh dated measurement before republication."
-                )
+    try:
+        status = json.loads(PUBLIC_STATUS.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"Release consistency check failed: public/status.json: {exc}")
+        return 1
 
-    # The two counts describe different objects and must never be merged.
-    merged = re.search(
-        r"{}\s+(?:model\s+)?lanes".format(catalog), files["index.html"], re.IGNORECASE
+    expected = {
+        "release": "V47 AWE",
+        "revised": "2026-08-21",
+        "status": "current",
+        "verified": "2026-08-21",
+        "verifiedLong": "21 August 2026",
+        "expires": "2026-09-20",
+    }
+    for key, value in expected.items():
+        if status.get(key) != value:
+            failures.append(f"public/status.json {key!r}: expected {value!r}, got {status.get(key)!r}")
+
+    exact_nested = {
+        ("proxmox", "version"): "9.2.11",
+        ("proxmox", "hostsOnline"): 2,
+        ("proxmox", "quorate"): True,
+        ("containers", "running"): 19,
+        ("containers", "documented"): 19,
+        ("containers", "stopped"): 0,
+        ("containers", "zeus"): 13,
+        ("containers", "apollo"): 6,
+        ("lanes", "public"): 10,
+        ("lanes", "privateCatalog"): 36,
+    }
+    for (group, key), value in exact_nested.items():
+        actual = status.get(group, {}).get(key)
+        if actual != value:
+            failures.append(f"public/status.json {group}.{key}: expected {value!r}, got {actual!r}")
+
+    if set(status.get("deepseek", [])) != {"deepseek-v4-flash", "deepseek-v4-pro"}:
+        failures.append("public/status.json must publish only deepseek-v4-flash and deepseek-v4-pro")
+    if "not a Proxmox host" not in str(status.get("atlas", "")):
+        failures.append("public/status.json must keep Atlas outside the Proxmox host count")
+    if "static" not in str(status.get("note", "")).lower():
+        failures.append("public/status.json must identify itself as a static snapshot")
+
+    if read("status.json") != read("public/status.json"):
+        failures.append("root status.json and public/status.json are not byte-identical")
+    for cname in ("CNAME", "public/CNAME"):
+        if read(cname).strip() != "cashio.us":
+            failures.append(f"{cname} must contain only cashio.us")
+
+    package = json.loads(read("package.json"))
+    if package.get("version") != "47.0.0":
+        failures.append("package.json version must be 47.0.0")
+    if package.get("scripts", {}).get("build") != "tsc --noEmit && vite build":
+        failures.append("package.json build script changed from the supplied TypeScript + Vite gate")
+
+    vite = read("vite.config.ts")
+    base_match = re.search(r"\bbase\s*:\s*([^,\n]+)", vite)
+    if base_match and base_match.group(1).strip().strip("\"'") != "/":
+        failures.append(f"Vite base must be '/', got {base_match.group(1).strip()!r}")
+
+    pages = read(".github/workflows/pages.yml")
+    for marker in (
+        "branches: [main, master]",
+        "npm install",
+        "npm run build",
+        "actions/upload-pages-artifact@v3",
+        "path: dist",
+        "actions/deploy-pages@v4",
+    ):
+        if marker not in pages:
+            failures.append(f"Pages workflow is missing {marker!r}")
+
+    required_source = {
+        "src/lib/store.ts": ("gate: false", "audio: true", "deck: 0"),
+        "src/lib/content.ts": (
+            'VERIFIED_LONG = "21 August 2026"',
+            '"19 OF 19 PUBLISHED CONTAINERS — RUNNING AT PROBE"',
+            '"deepseek-v4-flash"',
+            '"deepseek-v4-pro"',
+        ),
+        "src/components/decks.tsx": (
+            "SIGNED · OWNER · {VERIFIED_LONG}",
+            "CHANNEL LOCK · OPEN",
+            "za-plate-scan",
+            "COMMITTED",
+        ),
+        "src/components/eve-console.tsx": (
+            'command === "sitrep"',
+            'command === "current"',
+            'command === "help"',
+            'command === "whoami"',
+            "NO NETWORK CALLS",
+        ),
+        "src/lib/viewscreen-stage.js": (
+            "this.warpT = Math.max(0, this.warpT - dt * 1.05)",
+            "55 + warp * 34",
+            "Math.min(2.05",
+            "if (next !== this.craftTarget)",
+            "this.warpT = 1",
+        ),
+        "src/styles.css": (
+            "transform: translateY(28px)",
+            "filter: blur(12px)",
+            ".za-rise {\n  animation: za-rise 900ms",
+            "animation: za-shimmer 3.2s",
+            ".za-plate-scan::after",
+            "@media (prefers-reduced-motion: reduce)",
+        ),
+        "src/lib/sound.ts": (
+            "this.master.gain.setTargetAtTime(0.74",
+            'const names = ["x1", "sr71", "falcon", "starship", "epstein", "warp", "fold"]',
+            "NASA public-domain launch nats",
+            "No bed, no score.",
+        ),
+    }
+    for filename, markers in required_source.items():
+        text = read(filename)
+        for marker in markers:
+            if marker not in text:
+                failures.append(f"{filename} is missing V47 contract marker {marker!r}")
+
+    required_public = (
+        "public/command.html",
+        "public/lab.html",
+        "public/status.json",
+        "public/CNAME",
+        "public/favicon.svg",
+        "public/og.jpg",
+        "public/x-banner.jpg",
+        "public/plates/command.jpg",
+        "public/plates/rack.jpg",
+        "public/plates/operator.jpg",
+        "public/plates/fold.jpg",
+        "public/.well-known/security.txt",
+        "public/robots.txt",
+        "public/sitemap.xml",
     )
-    if merged:
-        failures.append(
-            f"index.html publishes {catalog!r} as a lane count. "
-            f"{lanes} public capability lanes and {catalog} private catalog entries are different objects."
+    for relative in required_public:
+        if not (ROOT / relative).is_file():
+            failures.append(f"required public asset is missing: {relative}")
+
+    for name in ("x1", "sr71", "falcon", "starship", "epstein", "warp", "fold"):
+        path = ROOT / "public" / "sfx" / f"{name}.wav"
+        if not path.is_file():
+            failures.append(f"required one-shot is missing: public/sfx/{name}.wav")
+            continue
+        head = path.read_bytes()[:12]
+        if len(head) < 12 or head[:4] != b"RIFF" or head[8:12] != b"WAVE":
+            failures.append(f"public/sfx/{name}.wav is not a valid RIFF/WAVE asset")
+
+    command = read("public/command.html")
+    for marker in ("Historical archive only", "May 2026", "This page does not describe the current fleet."):
+        if marker not in command:
+            failures.append(f"public/command.html is missing {marker!r}")
+    lab = read("public/lab.html")
+    if '<meta http-equiv="refresh" content="0; url=/" />' not in lab:
+        failures.append("public/lab.html must redirect to /")
+
+    if not DIST.is_dir():
+        failures.append("dist/ is missing; run npm run build before the release check")
+    else:
+        required_dist = (
+            "index.html",
+            "CNAME",
+            "command.html",
+            "lab.html",
+            "status.json",
+            "robots.txt",
+            "sitemap.xml",
+            ".well-known/security.txt",
         )
+        for relative in required_dist:
+            if not (DIST / relative).is_file():
+                failures.append(f"built Pages artifact is missing {relative}")
+
+        live = collect_text(DIST)
+        for marker in (
+            "21 August 2026",
+            "19 OF 19",
+            "QUORATE",
+            "10 PUBLIC",
+            "36 PRIVATE",
+            "AUDIO ON",
+            "SIGNED · OWNER",
+            "CHANNEL LOCK · OPEN",
+        ):
+            if marker.lower() not in live.lower():
+                failures.append(f"built Pages artifact is missing required marker {marker!r}")
+        for marker in FORBIDDEN_LIVE:
+            if marker.lower() in live.lower():
+                failures.append(f"forbidden stale wording appears in built Pages artifact: {marker!r}")
+        if PRIVATE_ADDRESS.search(live):
+            failures.append("an RFC1918 address appears in the built Pages artifact")
+
+        built_index = (DIST / "index.html").read_text(encoding="utf-8")
+        if 'src="/assets/' not in built_index or 'href="/assets/' not in built_index:
+            failures.append("built index does not use root-relative /assets/ URLs; Vite base may not be '/'")
+        if "/v47/" in built_index:
+            failures.append("built index is incorrectly nested under /v47/")
+        for csp in ("connect-src 'self'", "object-src 'none'", "form-action 'none'"):
+            if csp not in built_index:
+                failures.append(f"built index CSP is missing {csp!r}")
+
+    source_tree = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in sorted((ROOT / "src").rglob("*"))
+        if path.is_file() and path.suffix.lower() in {".ts", ".tsx", ".js", ".css"}
+    )
+    for token in ("google-analytics", "googletagmanager", "plausible.io", "segment.io", "mixpanel"):
+        if token in source_tree.lower():
+            failures.append(f"tracking/analytics dependency found in source: {token}")
+    for _, target in re.findall(r"fetch\(\s*([\x60'\"])(.+?)\1", source_tree):
+        if not target.startswith("/sfx/"):
+            failures.append(f"non-audio fetch target found in source: {target!r}")
 
     if failures:
-        print("Release consistency check failed:\n")
+        print("V47 release consistency check failed:\n")
         for failure in failures:
             print(f"- {failure}")
         return 1
 
     print(
-        f"Release consistency passed: {version} — {release_name}; "
-        f"{healthy}/{roles} containers verified running; {hosts} hosts; "
-        f"{lanes} public capability lanes; {catalog} private catalog entries; "
-        f"status {verified} through {expires}. "
-        f"{len(RETIRED_TOKENS)} retired figures confirmed absent from {len(PUBLISHED_SURFACES)} published surfaces."
+        "V47 release consistency passed: 21 August 2026 static snapshot; "
+        "19/19 containers; 2 Proxmox hosts quorate; 10 public lanes; "
+        "36 private catalog entries; root Pages base; archive, privacy, "
+        "motion, audio, and forbidden-token gates satisfied."
     )
     return 0
 

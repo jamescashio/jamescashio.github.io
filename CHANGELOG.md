@@ -2,6 +2,24 @@
 
 All notable public-facing changes to the ZeusApollo portfolio are recorded here. Visible dates use MM-DD-YYYY.
 
+## [v47] — 08-21-2026
+
+Release name: "AWE." The public site moves to a Vite 6 + React 19 GitHub Pages artifact while preserving the dated, public-safe ZeusApollo truth contract.
+
+### Changed
+
+- Extended viewscreen warp with stronger bloom and an FOV kick on every airframe change.
+- Added moving scan bands to the command, rack, operator, and fold plates.
+- Increased deck reveal blur and travel; accelerated the ROUTE shimmer.
+- Raised the effects bus while preserving the NASA public-domain rumble inside the Falcon and Starship one-shots.
+- Kept the 21 August 2026 snapshot at 19 of 19 containers, two Proxmox hosts quorate, ten public lanes, and thirty-six private catalog entries.
+- Moved GitHub Pages deployment to `.github/workflows/pages.yml` with Vite base `/`.
+
+### Boundaries
+
+- No loading or ENGAGE gate, Request a Review flow, tracking, analytics, cookies, production API calls, private addresses, ports, credentials, live-looking counters, score bed, or licensed franchise stems.
+- `/command.html` remains an explicitly marked May 2026 historical archive; `/lab.html` redirects to the current console.
+
 ## [v31] — 08-10-2026
 
 Release name: "The Grid." The front page is rebuilt around a live Dyson-swarm viewscreen, and every published figure is reset to the owner-verified 08-10-2026 architecture snapshot taken over cluster SSH by E.V.E. (19 of 19 containers running, 2 Proxmox hosts online, cluster quorate, 10 public capability lanes, 36 private model catalog entries).

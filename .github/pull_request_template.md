@@ -17,15 +17,17 @@ Describe the public-facing outcome and why this is the smallest safe change that
 
 ## Quality
 
+- [ ] `npm install` and `npm run build` pass.
 - [ ] `python scripts/public_repo_guard.py` passes.
-- [ ] `python scripts/check_release_consistency.py` passes when release or telemetry content changes.
+- [ ] `python scripts/check_release_consistency.py` passes.
+- [ ] `python -m unittest tests.test_v47_release` passes.
 - [ ] Keyboard access, reduced motion, responsive layout, and readable contrast were considered.
 - [ ] Dynamic content uses safe DOM APIs rather than untrusted `innerHTML`.
 
 ## Release consistency
 
-- [ ] `README.md`, `CHANGELOG.md`, `RELEASE_BODY.md`, `status.json`, and the in-page release panel agree.
-- [ ] The version, fleet count, model-lane count, automation count, and daily burn are verified.
+- [ ] `public/status.json`, root `status.json`, `CHANGELOG.md`, `RELEASE_BODY.md`, and the in-page release panel agree.
+- [ ] The 21 August 2026 snapshot remains 19/19 containers, 2 hosts quorate, 10 public lanes, and 36 private catalog entries; unmeasured figures remain withheld.
 - [ ] A release tag is created only after the safety workflow passes on `main`.
 
 ## Verification

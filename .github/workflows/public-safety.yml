@@ -23,6 +23,18 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install V47 dependencies
+        run: npm install
+
+      - name: Build the Pages artifact
+        run: npm run build
+
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
@@ -38,10 +50,10 @@ jobs:
         continue-on-error: true
         run: python scripts/check_release_consistency.py
 
-      - name: Verify V31 release contract
-        id: v31_release_contract
+      - name: Verify V47 release contract
+        id: v47_release_contract
         continue-on-error: true
-        run: python -m unittest tests.test_v31_release
+        run: python -m unittest tests.test_v47_release
 
       - name: Upload safety report
         if: always()
@@ -53,13 +65,11 @@ jobs:
           retention-days: 14
 
       - name: Enforce validation results
-        if: steps.safety_scan.outcome != 'success' || steps.release_consistency.outcome != 'success' || steps.v31_release_contract.outcome != 'success'
+        if: steps.safety_scan.outcome != 'success' || steps.release_consistency.outcome != 'success' || steps.v47_release_contract.outcome != 'success'
         run: exit 1
 
       - name: Check Python syntax
         run: |
           python -m py_compile \
             scripts/public_repo_guard.py \
-            scripts/check_release_consistency.py \
-            scripts/zeusapollo_swarm.py \
-            scripts/zeusapollo_bridge.py
+            scripts/check_release_consistency.py
