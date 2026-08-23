@@ -10,11 +10,13 @@ import {
   PILOT_CRAFT,
   PVE,
   POS,
+  PROTEUS_EVIDENCE,
   ROUTING_STAGES,
   SERVICE_FAMILIES,
   TELEMETRY,
   VERIFIED_LONG,
   WITHHELD,
+  DECK_CRAFT,
 } from "@/lib/content";
 import { getSound } from "@/lib/sound";
 import { useDeck } from "@/lib/store";
@@ -512,9 +514,9 @@ export function DeckIron({ s3 }: { s3: SecRef }) {
         </div>
         <Plate
           src="/plates/rack.jpg?v=48"
-          alt="Owned server rack, cyan and amber status lights"
+          alt="Conceptual server-rack visualization with cyan and amber status lights"
           className="h-[min(72vh,640px)] w-full"
-          chip={`PROBE ${host.name} · ${host.tag} · ${VERIFIED_LONG}`}
+          chip={`CONCEPT VISUAL · ${host.name} · ${host.tag}`}
         />
       </div>
     </DeckShell>
@@ -524,24 +526,27 @@ export function DeckIron({ s3 }: { s3: SecRef }) {
 export function DeckLineage({ s4 }: { s4: SecRef }) {
   const lock = useDeck((s) => s.craftLock);
   const set = useDeck((s) => s.set);
-  const pick = lock ?? 0;
-  const active = LINEAGE[pick] ?? LINEAGE[0];
+  const lockedPilot = lock == null ? -1 : PILOT_CRAFT.indexOf(lock);
+  const defaultPilot = PILOT_CRAFT.indexOf(DECK_CRAFT[4]);
+  const pick = lockedPilot >= 0 ? lockedPilot : Math.max(0, defaultPilot);
+  const active = LINEAGE[pick];
   return (
     <DeckShell index={4} sRef={s4}>
       <div className="max-w-6xl">
         <Kicker>05 · LINEAGE</Kicker>
-        <Title>FOUR PILOTS. FOUR RULES.</Title>
+        <Title>FOUR FLIGHT-TEST MINDS. FOUR RULES.</Title>
         <p className="mt-5 max-w-[58ch] text-[1.05rem] leading-relaxed text-muted">
-          The fleet is run the way a flight-test program is run. Click a pilot. The viewscreen changes airframe. The
-          rule holds.
+          Four disciplines shaped this program: find the edge, simplify the machine, question the shape, and fly with
+          precision. Select a lineage; the viewscreen acquires its airframe and the operating rule resolves.
         </p>
         <div className="mt-10 grid items-start gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="relative flex flex-col gap-2">
+          <div data-hud-clear className="relative flex flex-col gap-2">
             <div className="za-spine" aria-hidden />
             {LINEAGE.map((l, i) => (
               <button
                 key={l.name}
                 type="button"
+                aria-pressed={pick === i}
                 onClick={() => {
                   set({ craftLock: PILOT_CRAFT[i] });
                   getSound().craft(PILOT_CRAFT[i], "lineage");
@@ -557,11 +562,43 @@ export function DeckLineage({ s4 }: { s4: SecRef }) {
               </button>
             ))}
           </div>
-          <article className="za-panel relative overflow-hidden p-7">
+          <article key={active.name} data-hud-clear className="za-panel za-lineage-dossier relative overflow-hidden p-7">
             <div className="za-kicker">FLIGHT RULE {String(pick + 1).padStart(2, "0")} / 04</div>
             <h3 className="za-display mt-4 text-[clamp(1.8rem,3.4vw,3rem)]">{active.name}</h3>
             <p className="mt-5 text-xl leading-snug text-ink">{active.rule}</p>
             <p className="mt-5 max-w-[46ch] text-[1.02rem] leading-relaxed text-muted">{active.note}</p>
+            {active.name === "RUTAN" ? (
+              <section className="za-proteus-evidence mt-7" aria-label="Proteus flight-test evidence">
+                <figure>
+                  <div className="za-proteus-frame">
+                    <img
+                      src={PROTEUS_EVIDENCE.src}
+                      alt={PROTEUS_EVIDENCE.alt}
+                      className="za-proteus-photo"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <span className="za-proteus-grid" aria-hidden />
+                    <span className="za-proteus-acquire" aria-hidden />
+                    <span className="za-chip za-proteus-label">{PROTEUS_EVIDENCE.label}</span>
+                  </div>
+                  <figcaption className="za-proteus-credit">
+                    <span>{PROTEUS_EVIDENCE.credit} · OFFICIAL FLIGHT PHOTOGRAPH</span>
+                    <a href={PROTEUS_EVIDENCE.sourceUrl} target="_blank" rel="noreferrer">
+                      SOURCE ↗
+                    </a>
+                  </figcaption>
+                </figure>
+                <div className="za-proteus-facts" aria-label="Proteus specifications">
+                  {PROTEUS_EVIDENCE.facts.map(([label, value]) => (
+                    <div key={label}>
+                      <span>{label}</span>
+                      <strong>{value}</strong>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            ) : null}
             <p className="za-mono mt-8 text-[10px] text-dim">AIRFRAME LOCKED · {active.craft}</p>
             <div className="za-chip mt-5">
               <span className="h-1.5 w-1.5 rounded-full bg-green shadow-[0_0_8px_var(--color-green)]" />
@@ -588,12 +625,12 @@ export function DeckBuilds({ s5 }: { s5: SecRef }) {
         <Kicker>06 · BUILDS</Kicker>
         <Title>SEVEN TEST ARTICLES.</Title>
         <p className="mt-5 max-w-[58ch] text-[1.05rem] leading-relaxed text-muted">
-          Not mockups. Seven shipped builds on the same fabric. Click a marker or a row. Arrow keys fly the envelope.
+          Not mockups. Seven shipped builds on the same fabric. Select a marker or article to acquire its proof vector; arrow keys fly the range.
         </p>
         <div className="mt-8 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
           <BuildEnvelope sel={sel} onLock={lock} />
-          <div>
-            <div key={article.name} className="za-panel p-6">
+          <div data-hud-clear>
+            <div key={article.name} className="za-panel za-article-card p-6">
               <div className="flex items-center justify-between gap-3">
                 <div className="za-mono text-[10px] text-accent">
                   {String(sel + 1).padStart(2, "0")} · {article.tag}
@@ -605,18 +642,25 @@ export function DeckBuilds({ s5 }: { s5: SecRef }) {
               </div>
               <h3 className="za-display mt-3 text-3xl">{article.name}</h3>
               <p className="mt-4 text-[1.02rem] leading-relaxed text-muted">{article.note}</p>
+              <div className="za-article-telemetry mt-6 grid grid-cols-3 gap-px overflow-hidden rounded-[var(--radius-sm)] border border-line">
+                <span>ARTICLE · {String(sel + 1).padStart(2, "0")}/07</span>
+                <span>STATE · SHIPPED</span>
+                <span>CONTROL · MANUAL</span>
+              </div>
             </div>
-            <div className="mt-3 flex flex-col">
+            <div className="mt-3 flex flex-col" role="group" aria-label="Select a test article">
               {ARTICLES.map((a, i) => (
                 <button
                   key={a.name}
                   type="button"
                   onClick={() => lock(i)}
+                  aria-pressed={i === sel}
+                  aria-label={`Article ${i + 1} of 7, ${a.name}, ${a.tag}`}
                   className={`za-build-row flex min-h-11 items-center gap-3 rounded-[var(--radius-sm)] px-3 py-2 text-left ${
                     i === sel ? "on" : ""
                   }`}
                 >
-                  <span className="za-mono w-6 text-[10px] text-accent">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="za-build-index za-mono w-6 text-[10px] text-accent">{String(i + 1).padStart(2, "0")}</span>
                   <span className="flex-1 font-display text-[12px] tracking-wide">{a.name}</span>
                   <span className="za-mono text-[9px] text-dim">{a.tag}</span>
                 </button>
@@ -758,13 +802,17 @@ export function DeckContact({ s8, onCopy, copied }: { s8: SecRef; onCopy: () => 
   return (
     <DeckShell index={8} sRef={s8}>
       <div className="grid max-w-6xl items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-        <div>
+        <div data-hud-clear>
           <Kicker>09 · CONTACT</Kicker>
           <Title>HAIL.</Title>
           <p className="mt-4 max-w-[46ch] text-[1.1rem] leading-relaxed text-muted">
             If you work on AI routing, automation reliability, explainability, cybersecurity exposure, or sovereign
             infrastructure, I am glad to compare notes.
           </p>
+          <div className="za-mission-stamp mt-7" role="note" aria-label="Mission complete">
+            <span>MISSION COMPLETE · HUMAN COMMAND RETAINED</span>
+            <strong>OWN THE SYSTEM. PROVE THE CLAIM. KEEP A HUMAN IN COMMAND.</strong>
+          </div>
           <div className="za-panel za-hail mt-8 p-6">
             <div className="za-kicker">HAILING FREQUENCY</div>
             <div className="za-hail-scan" aria-hidden />

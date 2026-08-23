@@ -8,6 +8,16 @@ export type AirframeAudioTrigger =
 
 export const DEFAULT_AUDIO_ENABLED = false;
 
+export const AIRFRAME_SAMPLE_NAMES = [
+  "x1",
+  "sr71",
+  "proteus",
+  "starship",
+  "epstein",
+  "warp",
+  "fold",
+] as const;
+
 const DELIBERATE_TRIGGERS = new Set<AirframeAudioTrigger>(["pip", "lineage"]);
 
 export function canPlayAirframe({

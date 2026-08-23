@@ -16,7 +16,7 @@ def read(relative: str) -> str:
     return (ROOT / relative).read_text(encoding="utf-8")
 
 
-class V47ReleaseContractTests(unittest.TestCase):
+class V32ReleaseContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.status = json.loads(read("public/status.json"))
@@ -24,6 +24,7 @@ class V47ReleaseContractTests(unittest.TestCase):
         cls.content = read("src/lib/content.ts")
         cls.deck = read("src/components/command-deck.tsx")
         cls.decks = read("src/components/decks.tsx")
+        cls.envelope = read("src/components/build-envelope.tsx")
         cls.eve = read("src/components/eve-console.tsx")
         cls.stage = read("src/lib/viewscreen-stage.js")
         cls.sound = read("src/lib/sound.ts")
@@ -36,7 +37,8 @@ class V47ReleaseContractTests(unittest.TestCase):
         )
 
     def test_locked_snapshot_is_exact(self) -> None:
-        self.assertEqual(self.status["release"], "V47 AWE")
+        self.assertEqual(self.status["release"], "V32 MACH ONE")
+        self.assertEqual(self.status["revised"], "2026-08-22")
         self.assertEqual(self.status["verifiedLong"], "21 August 2026")
         self.assertEqual(self.status["expires"], "2026-09-20")
         self.assertEqual(self.status["proxmox"], {"version": "9.2.11", "hostsOnline": 2, "quorate": True})
@@ -48,6 +50,21 @@ class V47ReleaseContractTests(unittest.TestCase):
         self.assertEqual(set(self.status["deepseek"]), {"deepseek-v4-flash", "deepseek-v4-pro"})
         self.assertIn("not a Proxmox host", self.status["atlas"])
         self.assertEqual(read("status.json"), read("public/status.json"))
+
+    def test_release_identity_is_canonical_v32(self) -> None:
+        package = json.loads(read("package.json"))
+        self.assertEqual(package["version"], "32.0.0")
+        self.assertIn('V32 "MACH ONE"', self.content)
+        retired_candidate = "V" + "47"
+        for relative in (
+            "README.md",
+            "RELEASE_BODY.md",
+            "CHANGELOG.md",
+            ".github/workflows/public-safety.yml",
+            "scripts/check_release_consistency.py",
+        ):
+            with self.subTest(relative=relative):
+                self.assertNotIn(retired_candidate, read(relative).upper())
 
     def test_opens_on_snapshot_without_an_engage_gate_and_audio_is_opt_in(self) -> None:
         for marker in ("gate: false", "deck: 0", 'mode: "technical"', "audio: DEFAULT_AUDIO_ENABLED"):
@@ -89,7 +106,7 @@ class V47ReleaseContractTests(unittest.TestCase):
     def test_audio_is_quiet_deliberate_provenanced_and_bounded(self) -> None:
         self.assertIn("Quiet by default", self.sound)
         self.assertIn("this.master.gain.setTargetAtTime(0.42", self.sound)
-        self.assertIn('const names = ["x1", "sr71", "falcon", "starship", "epstein", "warp", "fold"]', self.sound)
+        self.assertIn('AIRFRAME_SAMPLE_NAMES', self.sound)
         self.assertNotIn("startBed", self.sound)
         self.assertNotIn("bedGain", self.sound)
         self.assertNotIn('sfx("craft"', self.deck)
@@ -103,14 +120,15 @@ class V47ReleaseContractTests(unittest.TestCase):
         self.assertEqual(provenance["policy"]["default"], "off")
         self.assertEqual(provenance["policy"]["trigger"], "explicit-selection-only")
         assets = provenance["assets"]
-        self.assertEqual(set(assets), {"x1", "sr71", "falcon", "starship", "epstein", "warp", "fold"})
-        for name in ("x1", "sr71", "falcon", "starship"):
+        self.assertEqual(set(assets), {"x1", "sr71", "proteus", "starship", "epstein", "warp", "fold"})
+        self.assertEqual(assets["proteus"]["kind"], "silent")
+        for name in ("x1", "sr71", "proteus", "starship"):
             self.assertIn(assets[name]["kind"], {"official-recording", "silent"})
             self.assertTrue(assets[name]["sourceUrl"].startswith("https://"))
         for name in ("epstein", "warp", "fold"):
             self.assertEqual(assets[name]["kind"], "original")
 
-        for name in ("x1", "sr71", "falcon", "starship", "epstein", "warp", "fold"):
+        for name in ("x1", "sr71", "proteus", "starship", "epstein", "warp", "fold"):
             path = ROOT / "public" / "sfx" / f"{name}.wav"
             with self.subTest(name=name), wave.open(str(path), "rb") as audio:
                 self.assertEqual(audio.getnchannels(), 1)
@@ -152,7 +170,38 @@ class V47ReleaseContractTests(unittest.TestCase):
         built = read("dist/index.html")
         self.assertIn('src="/assets/', built)
         self.assertIn('href="/assets/', built)
-        self.assertNotIn("/v47/", built)
+        self.assertIsNone(re.search(r"/v\d+/", built, flags=re.IGNORECASE))
+
+    def test_seven_articles_runs_a_motion_safe_proof_flight(self) -> None:
+        for marker in ("TEST_ROUTE", "drawPatrol", "drawTargetVector", "RANGE SWEEP", "PROOF FLIGHT"):
+            self.assertIn(marker, self.envelope)
+        self.assertIn("za-article-card", self.decks)
+        self.assertIn("aria-pressed={i === sel}", self.decks)
+        self.assertIn("@keyframes za-article-acquire", self.css)
+        self.assertIn(".za-article-card::after", self.css)
+        reduced = self.css[self.css.rindex("@media (prefers-reduced-motion: reduce)") :]
+        self.assertIn(".za-article-card::after", reduced)
+        self.assertIn("animation: none !important", reduced)
+
+    def test_proteus_has_credited_evidence_and_a_recognition_pass(self) -> None:
+        image = ROOT / "public" / "plates" / "proteus-nasa.webp"
+        self.assertTrue(image.is_file())
+        self.assertGreater(image.stat().st_size, 50_000)
+        provenance = json.loads(read("public/plates/provenance.json"))
+        self.assertEqual(provenance["assets"]["proteus-nasa"]["credit"], "NASA / ESPO")
+        self.assertIn("https://espo.nasa.gov/", provenance["assets"]["proteus-nasa"]["sourcePage"])
+        for marker in (
+            "FOUR FLIGHT-TEST MINDS. FOUR RULES.",
+            "FLIGHT-TEST EVIDENCE · MODEL 281",
+            "77.6 FT",
+            "2 × FJ44-2E",
+            "NASA / ESPO",
+        ):
+            self.assertIn(marker, self.live)
+        self.assertIn("pose: { yaw: -0.62, pitch: 0.42", self.stage)
+        self.assertIn("aria-pressed={pick === i}", self.decks)
+        reduced = self.css[self.css.rindex("@media (prefers-reduced-motion: reduce)") :]
+        self.assertIn(".za-proteus-acquire", reduced)
 
     def test_archive_and_lab_routes_are_exact(self) -> None:
         command = read("dist/command.html")

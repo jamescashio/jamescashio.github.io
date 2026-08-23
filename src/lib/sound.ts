@@ -1,4 +1,4 @@
-import { canPlayAirframe, type AirframeAudioTrigger } from "./audio-policy";
+import { AIRFRAME_SAMPLE_NAMES, canPlayAirframe, type AirframeAudioTrigger } from "./audio-policy";
 
 type OscType = OscillatorType;
 
@@ -119,8 +119,7 @@ export class ZASound {
 
   private loadSamples() {
     if (!this.ac) return;
-    const names = ["x1", "sr71", "falcon", "starship", "epstein", "warp", "fold"];
-    names.forEach((name, i) => {
+    AIRFRAME_SAMPLE_NAMES.forEach((name, i) => {
       if (this.sampleLoads[i]) return;
       this.sampleLoads[i] = fetch(`/sfx/${name}.wav?v=51`)
         .then((response) => (response.ok ? response.arrayBuffer() : Promise.reject()))

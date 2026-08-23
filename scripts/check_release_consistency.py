@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail closed when the V47 source and GitHub Pages artifact disagree."""
+"""Fail closed when the V32 source and GitHub Pages artifact disagree."""
 
 from __future__ import annotations
 
@@ -53,8 +53,8 @@ def main() -> int:
         return 1
 
     expected = {
-        "release": "V47 AWE",
-        "revised": "2026-08-21",
+        "release": "V32 MACH ONE",
+        "revised": "2026-08-22",
         "status": "current",
         "verified": "2026-08-21",
         "verifiedLong": "21 August 2026",
@@ -95,8 +95,8 @@ def main() -> int:
             failures.append(f"{cname} must contain only cashio.us")
 
     package = json.loads(read("package.json"))
-    if package.get("version") != "47.0.0":
-        failures.append("package.json version must be 47.0.0")
+    if package.get("version") != "32.0.0":
+        failures.append("package.json version must be 32.0.0")
     if package.get("scripts", {}).get("build") != "tsc --noEmit && vite build":
         failures.append("package.json build script changed from the supplied TypeScript + Vite gate")
 
@@ -121,6 +121,8 @@ def main() -> int:
         "src/lib/store.ts": ("gate: false", "audio: DEFAULT_AUDIO_ENABLED", "deck: 0"),
         "src/lib/content.ts": (
             'VERIFIED_LONG = "21 August 2026"',
+            'REVISED = "08-22-2026"',
+            'EXPIRES_AT = "2026-09-21T05:00:00Z"',
             '"19 OF 19 PUBLISHED CONTAINERS — RUNNING AT PROBE"',
             '"deepseek-v4-flash"',
             '"deepseek-v4-pro"',
@@ -131,6 +133,9 @@ def main() -> int:
             "SIGNED · OWNER · {VERIFIED_LONG}",
             "CHANNEL LOCK · OPEN",
             "za-plate-scan",
+            "PROTEUS_EVIDENCE",
+            "CONCEPT VISUAL",
+            "aria-pressed={pick === i}",
             "COMMITTED",
             'getSound().craft(PILOT_CRAFT[i], "lineage")',
         ),
@@ -147,6 +152,9 @@ def main() -> int:
             "Math.min(2.05",
             "if (next !== this.craftTarget)",
             "this.warpT = 1",
+            "pose: { yaw: -0.62, pitch: 0.42",
+            "solidOpacity: 0.64",
+            "lineageSolidOpacity: 0.08",
         ),
         "src/styles.css": (
             "transform: translateY(28px)",
@@ -154,17 +162,21 @@ def main() -> int:
             ".za-rise {\n  animation: za-rise 900ms",
             "animation: za-shimmer 3.2s",
             ".za-plate-scan::after",
+            ".za-proteus-acquire",
+            "@media (max-width: 639px)",
             "@media (prefers-reduced-motion: reduce)",
         ),
         "src/lib/sound.ts": (
             "Quiet by default",
             "this.master.gain.setTargetAtTime(0.42",
-            'const names = ["x1", "sr71", "falcon", "starship", "epstein", "warp", "fold"]',
+            "AIRFRAME_SAMPLE_NAMES",
             "craft(i: number, trigger: AirframeAudioTrigger)",
             "no first-gesture blast",
         ),
         "src/components/command-deck.tsx": (
             'getSound().craft(i, "pip")',
+            "za-command-header",
+            "md:block",
             "AUDIO ARMED",
             "AUDIO OFF",
         ),
@@ -173,7 +185,7 @@ def main() -> int:
         text = read(filename)
         for marker in markers:
             if marker not in text:
-                failures.append(f"{filename} is missing V47 contract marker {marker!r}")
+                failures.append(f"{filename} is missing V32 contract marker {marker!r}")
 
     required_public = (
         "public/command.html",
@@ -187,6 +199,8 @@ def main() -> int:
         "public/plates/rack.jpg",
         "public/plates/operator.jpg",
         "public/plates/fold.jpg",
+        "public/plates/proteus-nasa.webp",
+        "public/plates/provenance.json",
         "public/.well-known/security.txt",
         "public/robots.txt",
         "public/sitemap.xml",
@@ -196,7 +210,21 @@ def main() -> int:
         if not (ROOT / relative).is_file():
             failures.append(f"required public asset is missing: {relative}")
 
-    audio_names = ("x1", "sr71", "falcon", "starship", "epstein", "warp", "fold")
+    proteus_image = ROOT / "public" / "plates" / "proteus-nasa.webp"
+    if proteus_image.is_file() and proteus_image.stat().st_size <= 50_000:
+        failures.append("public/plates/proteus-nasa.webp is unexpectedly small")
+    try:
+        plate_provenance = json.loads(read("public/plates/provenance.json"))
+    except (OSError, json.JSONDecodeError) as exc:
+        plate_provenance = {}
+        failures.append(f"public/plates/provenance.json is invalid: {exc}")
+    proteus_source = plate_provenance.get("assets", {}).get("proteus-nasa", {})
+    if proteus_source.get("credit") != "NASA / ESPO":
+        failures.append("Proteus evidence plate must retain NASA / ESPO credit")
+    if not str(proteus_source.get("sourcePage", "")).startswith("https://espo.nasa.gov/"):
+        failures.append("Proteus evidence plate must retain its official NASA/ESPO source page")
+
+    audio_names = ("x1", "sr71", "proteus", "starship", "epstein", "warp", "fold")
     try:
         provenance = json.loads(read("public/sfx/provenance.json"))
     except (OSError, json.JSONDecodeError) as exc:
@@ -208,7 +236,7 @@ def main() -> int:
     audio_assets = provenance.get("assets", {})
     if set(audio_assets) != set(audio_names):
         failures.append("audio provenance must describe exactly the seven published one-shots")
-    for name in ("x1", "sr71", "falcon", "starship"):
+    for name in ("x1", "sr71", "proteus", "starship"):
         item = audio_assets.get(name, {})
         if item.get("kind") not in {"official-recording", "silent"}:
             failures.append(f"real-airframe cue {name!r} must be an official recording or intentional silence")
@@ -296,8 +324,8 @@ def main() -> int:
         built_index = (DIST / "index.html").read_text(encoding="utf-8")
         if 'src="/assets/' not in built_index or 'href="/assets/' not in built_index:
             failures.append("built index does not use root-relative /assets/ URLs; Vite base may not be '/'")
-        if "/v47/" in built_index:
-            failures.append("built index is incorrectly nested under /v47/")
+        if re.search(r"/v\d+/", built_index, flags=re.IGNORECASE):
+            failures.append("built index is incorrectly nested under a version directory")
         for csp in ("connect-src 'self'", "object-src 'none'", "form-action 'none'"):
             if csp not in built_index:
                 failures.append(f"built index CSP is missing {csp!r}")
@@ -315,13 +343,13 @@ def main() -> int:
             failures.append(f"non-audio fetch target found in source: {target!r}")
 
     if failures:
-        print("V47 release consistency check failed:\n")
+        print("V32 release consistency check failed:\n")
         for failure in failures:
             print(f"- {failure}")
         return 1
 
     print(
-        "V47 release consistency passed: 21 August 2026 static snapshot; "
+        "V32 release consistency passed: 21 August 2026 static snapshot; "
         "19/19 containers; 2 Proxmox hosts quorate; 10 public lanes; "
         "36 private catalog entries; root Pages base; archive, privacy, "
         "motion, opt-in audio, and forbidden-token gates satisfied."

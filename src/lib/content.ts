@@ -2,8 +2,9 @@ export const VERIFIED = "08-21-2026";
 export const VERIFIED_LONG = "21 August 2026";
 export const EXPIRES = "2026-09-20";
 export const EXPIRES_SHORT = "09-20-2026";
-export const REVISED = "08-21-2026";
-export const RELEASE = 'V47 "AWE"';
+export const EXPIRES_AT = "2026-09-21T05:00:00Z";
+export const REVISED = "08-22-2026";
+export const RELEASE = 'V32 "MACH ONE"';
 export const PVE = "9.2.11";
 
 export const BOOT = [
@@ -19,7 +20,7 @@ export const DECKS = [
   { id: "grid", num: "02", name: "THE GRID", tag: "Nineteen roles. Seven named. Twelve withheld on purpose." },
   { id: "routing", num: "03", name: "ROUTING", tag: "Quality picks the model. Cost only breaks a tie." },
   { id: "iron", num: "04", name: "THE IRON", tag: "Hardware in a room I can walk into." },
-  { id: "lineage", num: "05", name: "LINEAGE", tag: "Four pilots. Four rules. One program." },
+  { id: "lineage", num: "05", name: "LINEAGE", tag: "Four flight-test minds. Four rules. One program." },
   { id: "builds", num: "06", name: "BUILDS", tag: "Seven systems that shipped on one fabric." },
   { id: "operator", num: "07", name: "OPERATOR", tag: "One human, accountable for every automation." },
   { id: "eve", num: "08", name: "E.V.E.", tag: "Read-only. Browser-local. Zero network calls." },
@@ -39,14 +40,20 @@ export const TELEMETRY = [
   `VERIFIED ${VERIFIED_LONG} · VALID THRU ${EXPIRES_SHORT}`,
 ];
 
-export const DECK_CRAFT = [0, 1, 2, 3, 4, 4, 5, 5, 6];
+export const DECK_CRAFT = [0, 1, 2, 3, 2, 4, 5, 5, 6];
 export const CRAFT_DECK = [0, 1, 2, 3, 4, 6, 8];
 export const PILOT_CRAFT = [0, 1, 2, 3];
+
+export function resolveCraftIndex(deck: number, craftLock: number | null | undefined) {
+  const safeDeck = Math.max(0, Math.min(DECK_CRAFT.length - 1, Math.trunc(deck)));
+  if (safeDeck === 4 && craftLock != null && PILOT_CRAFT.includes(craftLock)) return craftLock;
+  return DECK_CRAFT[safeDeck] ?? DECK_CRAFT[0];
+}
 
 export const CRAFT = [
   ["BELL X-1", "1947", "Yeager takes it past Mach 1 and writes down exactly where the edge was."],
   ["SR-71 BLACKBIRD", "1964", "Kelly Johnson's answer: few parts, small team, absurd speed."],
-  ["FALCON 9", "2010", "The booster comes home. Reuse rewrites the economics of orbit."],
+  ["PROTEUS", "1998 · RUTAN", "Tandem wings, twin booms, two rear turbofans, and one reconfigurable test platform."],
   ["STARSHIP", "2023", "Fully reusable, or it does not count. Scale as a design goal."],
   ["EPSTEIN DRIVE", "THE EXPANSE", "A fusion torch that never quits — and the whole system opens up."],
   ["PHOENIX", "2063 · COCHRANE", "A missile that learned to bend space. Two nacelles, one field — distance stops being the limit."],
@@ -140,10 +147,10 @@ export const LINEAGE = [
     note: "Complexity is a schedule risk — which is why ten public lanes do the work of a private catalog of thirty-six.",
   },
   {
-    craft: "VOYAGER · SPACESHIPONE",
+    craft: "PROTEUS · 1998",
     name: "RUTAN",
-    rule: "Build it yourself, then fly it yourself.",
-    note: "Sovereign means the hardware, the routing, and the accountability are all mine. No vendor holds the keys to the house.",
+    rule: "Question the shape. Prove the answer in flight.",
+    note: "Proteus made unconventional geometry practical by keeping structure, payload, and flight test in the same learning loop. House Cashio follows that discipline: own the hardware, instrument the route, and let evidence — not familiarity — choose the design.",
   },
   {
     craft: "ENERGY MANAGEMENT",
@@ -152,6 +159,20 @@ export const LINEAGE = [
     note: "The unglamorous parts — backups, DNS, monitoring — get flown as carefully as the demo. That is the whole trick.",
   },
 ];
+
+export const PROTEUS_EVIDENCE = {
+  src: "/plates/proteus-nasa.webp?v=32",
+  alt: "Scaled Composites Proteus in flight, showing its forward canard, gull main wing, twin booms, and two rear-mounted turbofans",
+  label: "FLIGHT-TEST EVIDENCE · MODEL 281",
+  credit: "NASA / ESPO",
+  sourceUrl: "https://espo.nasa.gov/aircraft/Proteus",
+  facts: [
+    ["FIRST FLIGHT", "07-26-1998"],
+    ["MAIN SPAN", "77.6 FT"],
+    ["POWER", "2 × FJ44-2E"],
+    ["CONFIGURATIONS", "35+"],
+  ],
+} as const;
 
 export const ARTICLES = [
   {
@@ -209,7 +230,7 @@ export const LAWS = [
 ];
 
 export function daysLeft(now = Date.now()) {
-  const d = Math.ceil((new Date(EXPIRES + "T00:00:00Z").getTime() - now) / 86400000);
+  const d = Math.ceil((new Date(EXPIRES_AT).getTime() - now) / 86400000);
   return d;
 }
 

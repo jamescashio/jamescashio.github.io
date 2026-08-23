@@ -20,7 +20,7 @@ Describe the public-facing outcome and why this is the smallest safe change that
 - [ ] `npm install` and `npm run build` pass.
 - [ ] `python scripts/public_repo_guard.py` passes.
 - [ ] `python scripts/check_release_consistency.py` passes.
-- [ ] `python -m unittest tests.test_v47_release` passes.
+- [ ] `python -m unittest tests.test_v32_release` passes.
 - [ ] Keyboard access, reduced motion, responsive layout, and readable contrast were considered.
 - [ ] Dynamic content uses safe DOM APIs rather than untrusted `innerHTML`.
 

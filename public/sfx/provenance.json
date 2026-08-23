@@ -19,12 +19,10 @@
       "sourceUrl": "https://www.nasa.gov/gallery/sr-71-blackbird/",
       "note": "Reference only. No clean, attributable SR-71 operational recording was used."
     },
-    "falcon": {
-      "kind": "official-recording",
-      "sourceUrl": "https://www.dvidshub.net/video/996733/falcon-9-starlink-6-103-launch",
-      "credit": "U.S. Space Force video by Gwendolyn Kurzen, Space Launch Delta 45; DOD_111534714",
-      "rights": "DVIDS identifies the source work as public domain, subject to its copyright restrictions.",
-      "edit": "Mono excerpt from 00:04.35 to 00:05.43; high-pass 38 Hz, low-pass 6.4 kHz, fades, restrained normalization."
+    "proteus": {
+      "kind": "silent",
+      "sourceUrl": "https://www.nasa.gov/image-article/proteus-f-18-low-level-fly-by/",
+      "note": "Reference only. No clean, attributable Proteus flight recording was used; silence avoids substituting a generic turbofan cue."
     },
     "starship": {
       "kind": "silent",

@@ -7,6 +7,18 @@ test("audio is quiet by default", () => {
   assert.equal(policy.DEFAULT_AUDIO_ENABLED, false);
 });
 
+test("airframe sample order follows the visible fleet and keeps Proteus truthful", () => {
+  assert.deepEqual(policy.AIRFRAME_SAMPLE_NAMES, [
+    "x1",
+    "sr71",
+    "proteus",
+    "starship",
+    "epstein",
+    "warp",
+    "fold",
+  ]);
+});
+
 test("airframe audio only plays after opt-in on deliberate craft selections", () => {
   for (const trigger of ["pip", "lineage"]) {
     assert.equal(

@@ -10,10 +10,12 @@ import {
   VERIFIED_LONG,
   EXPIRES_SHORT,
   daysLeft,
+  resolveCraftIndex,
   stardate,
   validityShort,
 } from "@/lib/content";
 import { getSound } from "@/lib/sound";
+import { shouldYieldAirframeHud } from "@/lib/hud-layout";
 import { useDeck, type BitMood } from "@/lib/store";
 import type { ViewscreenStageElement } from "@/lib/viewscreen";
 import { BitMascot } from "./bit-mascot";
@@ -82,6 +84,7 @@ export function CommandDeck() {
   const [pathApollo, setPathApollo] = useState("");
   const [flash, setFlash] = useState(false);
   const [afFlash, setAfFlash] = useState(false);
+  const [hudYield, setHudYield] = useState(false);
   const [rips, setRips] = useState<{ id: number; x: number; y: number }[]>([]);
   const [sweep, setSweep] = useState(false);
   const jumpUntil = useRef(0);
@@ -101,6 +104,38 @@ export function CommandDeck() {
     window.addEventListener("pointerdown", on);
     return () => window.removeEventListener("pointerdown", on);
   }, []);
+
+  useEffect(() => {
+    const scroller = scRef.current;
+    let frame = 0;
+    const measure = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => {
+        const targets = [...document.querySelectorAll<HTMLElement>("[data-hud-clear]")].map((element) => {
+          const rect = element.getBoundingClientRect();
+          return { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom };
+        });
+        setHudYield(
+          shouldYieldAirframeHud(
+            { width: window.innerWidth, height: window.innerHeight },
+            targets,
+          ),
+        );
+      });
+    };
+
+    measure();
+    scroller?.addEventListener("scroll", measure, { passive: true });
+    window.addEventListener("resize", measure);
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(measure);
+    if (scroller) observer?.observe(scroller);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      scroller?.removeEventListener("scroll", measure);
+      window.removeEventListener("resize", measure);
+      observer?.disconnect();
+    };
+  }, [mode]);
 
   useEffect(() => {
     void import("@/lib/viewscreen-stage.js").then((mod) => {
@@ -223,7 +258,7 @@ export function CommandDeck() {
       const st = stageRef.current;
       st?.warp?.();
       st?.setDeck?.(i);
-      st?.setCraft?.(useDeck.getState().craftLock ?? DECK_CRAFT[i]);
+      st?.setCraft?.(resolveCraftIndex(i, useDeck.getState().craftLock));
       cinePulse();
       chapter(i);
       setSweep(true);
@@ -312,7 +347,7 @@ export function CommandDeck() {
     const st = stageRef.current;
     st?.setProgress?.(p);
     st?.setDeck?.(i);
-    st?.setCraft?.(useDeck.getState().craftLock ?? DECK_CRAFT[i]);
+    st?.setCraft?.(resolveCraftIndex(i, useDeck.getState().craftLock));
     const snd = getSound();
     if (useDeck.getState().audio) {
       snd.setDepth(p);
@@ -509,9 +544,9 @@ export function CommandDeck() {
   };
 
   const hud = photo ? "pointer-events-none invisible opacity-0" : "";
-  const craft = CRAFT[DECK_CRAFT[deck]];
+  const craftI = resolveCraftIndex(deck, craftLock);
+  const craft = CRAFT[craftI];
   const dleft = daysLeft();
-  const craftI = DECK_CRAFT[deck];
 
   return (
     <div className="relative h-dvh overflow-hidden bg-void text-ink">
@@ -582,7 +617,7 @@ export function CommandDeck() {
         </aside>
 
       <header
-        className={`pointer-events-none fixed left-0 right-0 top-0 z-50 flex items-center justify-between gap-3 px-4 py-3 md:left-[68px] ${hud}`}
+        className={`za-command-header pointer-events-none fixed left-0 right-0 top-0 z-50 flex items-center justify-between gap-3 px-4 py-3 md:left-[68px] ${hud}`}
       >
           <div className="pointer-events-auto za-chip">
             DECK {String(deck + 1).padStart(2, "0")} · {DECKS[deck].name}
@@ -679,7 +714,7 @@ export function CommandDeck() {
           </>
         )}
         <DeckContact s8={s8} onCopy={copyMail} copied={copied} />
-        <footer className="px-6 pb-20 pt-6 md:px-14">
+        <footer data-hud-clear className="px-6 pb-20 pt-6 md:px-14">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 za-mono text-[10px] text-dim">
             <span>{RELEASE}</span>
             <span>REVISED {REVISED}</span>
@@ -706,34 +741,38 @@ export function CommandDeck() {
         <div className="za-mono mt-2 max-w-[52ch] text-[11px] text-dim">{DECKS[chap].tag}</div>
       </div>
 
-      <div className={`fixed bottom-5 right-4 z-40 flex items-end gap-3 ${hud}`}>
+      <div className={`za-corner-hud fixed bottom-5 right-4 z-40 flex items-end gap-3 ${hudYield ? "yield" : ""} ${hud}`}>
         <div
-          className={`za-airframe hidden max-w-[250px] cursor-pointer rounded-[var(--radius-md)] border border-line bg-void/80 p-3 font-mono text-[10px] leading-relaxed tracking-[0.08em] text-dim hover:border-cyan sm:block ${afFlash ? "flash" : ""}`}
+          className={`za-airframe hidden max-w-[250px] cursor-pointer rounded-[var(--radius-md)] border border-line bg-void/80 p-3 font-mono text-[10px] leading-relaxed tracking-[0.08em] text-dim hover:border-cyan md:block ${afFlash ? "flash" : ""}`}
           onClick={() => goto(CRAFT_DECK[craftI])}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") goto(CRAFT_DECK[craftI]);
           }}
           role="button"
           tabIndex={0}
+          aria-label={`Open ${craft[0]} airframe deck`}
         >
           <div className="flex items-center gap-2">
-            <b className="text-cyan">AIRFRAME {String(DECK_CRAFT[deck] + 1).padStart(2, "0")} / 07</b>
+            <b className="text-cyan">AIRFRAME {String(craftI + 1).padStart(2, "0")} / 07</b>
+            <span className="za-airframe-compact-name text-ink">{craft[0]}</span>
             {audio && (
               <span className="za-eq ml-auto" aria-hidden>
                 <span /><span /><span /><span /><span />
               </span>
             )}
           </div>
-          <div className="mt-1 text-ink">{craft[0]}</div>
-          <div className="text-accent">{craft[1]}</div>
-          <div className="mt-1">{craft[2]}</div>
-          <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-white/10">
-            <div className="h-full bg-accent transition-[width] duration-300" style={{ width: `${prog}%` }} />
+          <div className="za-airframe-details">
+            <div className="mt-1 text-ink">{craft[0]}</div>
+            <div className="text-accent">{craft[1]}</div>
+            <div className="mt-1">{craft[2]}</div>
+            <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-white/10">
+              <div className="h-full bg-accent transition-[width] duration-300" style={{ width: `${prog}%` }} />
+            </div>
           </div>
         </div>
         <button
           type="button"
-          className="rounded-full focus-visible:outline-none"
+          className="za-bit-control rounded-full focus-visible:outline-none"
           onClick={() => {
             sfx("bitYes");
             bit("yes");
@@ -742,7 +781,7 @@ export function CommandDeck() {
           title="Talk to E.V.E."
           aria-label="Open E.V.E. console"
         >
-          <BitMascot mood={bitMood} size={104} />
+          <BitMascot mood={bitMood} size={hudYield ? 72 : 104} />
         </button>
       </div>
 

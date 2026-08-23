@@ -1,6 +1,6 @@
 // @ts-nocheck
 // ZeusApollo viewscreen — WebGL stage. Seven craft morph through each other as
-// the visitor descends the decks: X-1 → SR-71 → Falcon 9 → Starship →
+// the visitor descends the decks: X-1 → SR-71 → Proteus → Starship →
 // Epstein-drive ship → first warp ship → Dune highliner folding space.
 import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -281,32 +281,71 @@ const CRAFT = [
     },
     mag: 1.02
   },
-  { // 2 — Falcon 9. 70m tall, 3.7m core with a 5.2m fairing: 19:1 slender,
-    // octaweb of nine Merlins, four grid fins, four stowed legs.
-    name: 'FALCON 9', era: '2010', tint: 0xeaedf3,
-    mat: { metal: 0.34, rough: 0.5 }, glowColor: 0xffc27a, exhaust: [2.6, 0.24, 0xffc27a],
-    // white core, BLACK interstage band and legs, titanium grid fins, sooty base
-    livery: (x, y, z, pi) => (pi === 1 && x > 1.5 && x < 2.1) ? [0.1, 0.1, 0.12]
-      : (pi === 1 && x < -5.3) ? [0.45, 0.42, 0.4]
-      : pi === 4 ? [0.2, 0.2, 0.22]
-      : (pi >= 5 && pi <= 8) ? [0.38, 0.39, 0.43]
-      : (pi >= 9 && pi <= 12) ? [0.14, 0.14, 0.16]
-      : pi >= 13 ? [0.34, 0.3, 0.27] : [1, 1, 1],
+  { // 2 — Scaled Composites Model 281 Proteus. 56ft 4in long, 77.6ft main
+    // span, 54.7ft canard span: tandem gull wings, twin booms, two FJ44s.
+    name: 'PROTEUS', era: '1998 · RUTAN', tint: 0xb8c7d2,
+    mat: { metal: 0.18, rough: 0.64, env: 0.82, emis: 0.015 }, glowColor: 0x7ed9ee,
+    wire: 0x45a8c2,
+    // A settled, restrained three-quarter pose makes the tandem planform legible.
+    pose: { yaw: -0.62, pitch: 0.42, roll: -0.035, motion: 0.2, bloom: 0.22, exposure: 0.68 },
+    solidOpacity: 0.64,
+    wireOpacity: 0.58,
+    lineageSolidOpacity: 0.08,
+    lineageWireOpacity: 0.95,
+    // No theatrical exhaust: a high-altitude turbofan does not leave a rocket plume.
+    exhaust: [0, 0.18, 0xa9dfff],
+    livery: (x, y, z, pi) => pi === 1 ? [0.055, 0.10, 0.15]
+      : (pi === 12 || pi === 15) ? [0.16, 0.18, 0.2]
+      : (pi === 11 || pi === 14) ? [0.52, 0.58, 0.62]
+      : (pi === 10 || pi === 13) ? [0.66, 0.72, 0.76]
+      : (pi === 8 || pi === 9) ? [0.54, 0.60, 0.64]
+      : (pi === 6 || pi === 7) ? [0.64, 0.70, 0.74]
+      : pi === 16 ? [0.48, 0.55, 0.62]
+      : (pi >= 2 && pi <= 5 && Math.abs(z) > 4.45) ? [0.12, 0.17, 0.2]
+      : (pi >= 2 && pi <= 5) ? [0.84, 0.89, 0.92]
+      : [0.9, 0.93, 0.95],
     build: () => {
+      const gull = (side) => {
+        const root = 1.52 * side;
+        const tip = 5.42 * side;
+        const panel = plan([
+          [0.04, root], [-0.24, 3.25 * side], [-0.72, tip], [-1.28, tip],
+          [-1.38, 3.20 * side], [-1.52, root]
+        ], 0.09, 0.08);
+        panel.translate(0, 0, -root);
+        panel.rotateX(side * -0.075);
+        panel.translate(0, 0, root);
+        return panel;
+      };
       const parts = [
-        revolve([[6.20, 0.02], [5.98, 0.13], [5.62, 0.26], [5.22, 0.38], [4.86, 0.45],
-                 [4.60, 0.46], [3.38, 0.46], [3.32, 0.40]], 24),          // fairing
-        revolve([[3.32, 0.33], [2.08, 0.33], [2.04, 0.345], [1.56, 0.345], [1.52, 0.33],
-                 [-5.55, 0.33], [-5.88, 0.325]], 24),                     // stages + interstage
-        ring(0.335, 0.012, 3.30, 26), ring(0.335, 0.012, -1.7, 26),
-        tube(0.3, 0.35, 0.35, 24, -5.95, 0, 0)                            // octaweb skirt
+        revolve([[4.22, 0.025], [4.00, 0.13], [3.62, 0.28], [3.05, 0.44],
+                 [2.15, 0.56], [0.85, 0.58], [-0.45, 0.54], [-1.65, 0.43],
+                 [-2.52, 0.29], [-3.02, 0.14]], 26),                    // pressure cabin
+        (() => { const c = cap(0.34, 14, 0, 0, 0); c.scale(2.25, 0.48, 0.92); c.translate(2.30, 0.43, 0); return c; })(),
+        plan([[2.72, 0], [2.48, 1.34], [2.12, 3.72], [1.68, 3.84], [1.30, 1.34], [1.02, 0],
+              [1.30, -1.34], [1.68, -3.84], [2.12, -3.72], [2.48, -1.34]], 0.075, 0.02),
+        plan([[0.20, 0], [0.04, 1.52], [-1.52, 1.52], [-1.72, 0],
+              [-1.52, -1.52], [0.04, -1.52]], 0.11, 0.06),             // main wing centre
+        gull(1), gull(-1),
+        revolve([[0.40, 0.13], [-0.40, 0.16], [-2.10, 0.17], [-3.62, 0.14], [-4.12, 0.08]], 14)
+          .translate(0, 0.10, 1.38),
+        revolve([[0.40, 0.13], [-0.40, 0.16], [-2.10, 0.17], [-3.62, 0.14], [-4.12, 0.08]], 14)
+          .translate(0, 0.10, -1.38),
+        fin([[-2.72, 0.12], [-3.08, 0.92], [-3.70, 1.38], [-4.08, 0.14]], 0.075, 1.38, -0.05),
+        fin([[-2.72, 0.12], [-3.08, 0.92], [-3.70, 1.38], [-4.08, 0.14]], 0.075, -1.38, 0.05)
       ];
-      parts.push(...cluster(4, 0.50, (y, z, a) => slab(0.44, 0.35, 0.05, 1.28, y, z, 0, a)));
-      parts.push(...cluster(4, 0.385, (y, z, a) => slab(2.45, 0.13, 0.2, -4.6, y, z, 0, a)));
-      parts.push(...cluster(8, 0.21, (y, z) => bell(0.44, 0.062, 0.115, -6.2, y, z)));
-      parts.push(bell(0.44, 0.062, 0.115, -6.2, 0, 0));
+      for (const z of [0.58, -0.58]) {
+        parts.push(revolve([[0.58, 0.09], [0.38, 0.23], [0.05, 0.30], [-0.82, 0.31],
+                            [-1.70, 0.27], [-2.18, 0.16]], 18).translate(0, 0.32, z));
+        parts.push(ring(0.235, 0.026, 0.38, 20, 0.32, z));
+        parts.push(bell(0.28, 0.145, 0.20, -2.30, 0.32, z));
+      }
+      const pod = revolve([[1.55, 0.04], [1.32, 0.20], [0.82, 0.30], [-0.62, 0.31],
+                           [-1.18, 0.22], [-1.42, 0.05]], 16);
+      pod.scale(1, 0.72, 0.78); pod.translate(0, -0.48, 0); parts.push(pod);
       return parts;
-    }
+    },
+    mag: 0.88
   },
   { // 3 — Starship full stack. 121m, 9m dia: Ship with two fore and two aft
     // flaps, hot-stage ring, Super Heavy with 33 Raptors and four grid fins.
@@ -1174,11 +1213,13 @@ class ViewscreenStage extends HTMLElement {
     let cxNdc, cyNdc, fit;
     if (scaleB > scaleA) { fit = scaleB; cxNdc = 0.28; cyNdc = topNdc - halfB; }
     else { fit = scaleA; cxNdc = leftNdc + halfA; cyNdc = -(0.04 + p * 0.12); }
-    const cramped = fit < 0.44;
-    if (cramped) { fit = 0.76; cxNdc = 0.74; cyNdc = -(0.1 + p * 0.14); }
+    const lineageProteus = deck === 4 && this.craftTarget === 2 && this.camera.aspect >= 1.3;
+    const cramped = !lineageProteus && fit < 0.44;
+    if (lineageProteus) { fit = 0.34; cxNdc = 0.66; cyNdc = 0.04; }
+    else if (cramped) { fit = 0.76; cxNdc = 0.74; cyNdc = -(0.1 + p * 0.14); }
     fit = Math.min(fit, 1.0 / (this.mags[this.craftTarget] || 1));
     fit = Math.max(0.26, Math.min(0.98, fit)) * (1 - p * 0.06);
-    this.dim += ((cramped ? 0.66 : 1) - this.dim) * 0.06;
+    this.dim += (((lineageProteus ? 0.62 : cramped ? 0.66 : 1)) - this.dim) * 0.06;
 
     const halfNdcX = (R0 * fit) / halfW;
     if (cxNdc + halfNdcX > 0.99) cxNdc = 0.99 - halfNdcX;
@@ -1301,16 +1342,25 @@ class ViewscreenStage extends HTMLElement {
     this.hull.material.size = 0.052 + swirl * 0.02;
 
     const settled = 1 - Math.min(1, Math.abs(gap) * 2.4);
+    const pose = CRAFT[this.craftTarget].pose;
+    const poseLock = pose ? settled * Math.max(0, 1 - Math.abs(f - this.craftTarget) * 1.8) : 0;
+    const poseMotion = 1 + (((pose && pose.motion) || 1) - 1) * poseLock;
     for (let i = 0; i < this.wires.length; i++) {
       const w = i === i0 ? (1 - mix) : i === i0 + 1 ? mix : 0;
       const wm = this.wires[i].material;
-      wm.opacity += (w * (0.34 + (1 - settled) * 0.44) * this.dim - wm.opacity) * 0.25;
+      const wireOpacity = lineageProteus && i === 2
+        ? CRAFT[i].lineageWireOpacity
+        : CRAFT[i].wireOpacity === undefined ? 0.34 : CRAFT[i].wireOpacity;
+      wm.opacity += (w * (wireOpacity + (1 - settled) * 0.44) * this.dim - wm.opacity) * 0.25;
       this.wires[i].visible = wm.opacity > 0.004;
       const sm2 = this.solids[i].material;
-      sm2.opacity += (w * settled * 0.98 * this.dim - sm2.opacity) * 0.16;
+      const solidOpacity = lineageProteus && i === 2
+        ? CRAFT[i].lineageSolidOpacity
+        : CRAFT[i].solidOpacity === undefined ? 0.98 : CRAFT[i].solidOpacity;
+      sm2.opacity += (w * settled * solidOpacity * this.dim - sm2.opacity) * 0.16;
       this.solids[i].visible = sm2.opacity > 0.01;
     }
-    this.hull.material.opacity = (0.35 + (1 - settled) * 0.6) * this.dim;
+    this.hull.material.opacity = (lineageProteus ? 0.07 : 0.35 + (1 - settled) * 0.6) * this.dim;
 
     // flight: gentle bank and pitch, plus a roll through each transition.
     // Once settled, ease the accumulated roll home to the nearest full turn
@@ -1322,10 +1372,13 @@ class ViewscreenStage extends HTMLElement {
     }
     this.bankT = Math.max(0, (this.bankT || 0) - dt * 0.8);
     const bank = this.bankT * this.bankT * (this.bankDir || 1);
-    this.craftRig.rotation.y = -0.5 + Math.sin(t * 0.00021) * 0.26 + bank * 0.44;
-    this.craftRig.rotation.x = this._roll + Math.sin(t * 0.00031) * 0.09 + bank * 0.14;
-    this.craftRig.rotation.z = Math.sin(t * 0.00017) * 0.07 - Math.min(0.5, Math.abs(gap) * 0.5) - bank * 0.55;
-    this.craftRig.position.y = Math.sin(t * 0.0004) * 0.14;
+    const poseYaw = -0.5 + ((((pose && pose.yaw) ?? -0.5) + 0.5) * poseLock);
+    const posePitch = ((pose && pose.pitch) || 0) * poseLock;
+    const poseRoll = ((pose && pose.roll) || 0) * poseLock;
+    this.craftRig.rotation.y = poseYaw + Math.sin(t * 0.00021) * 0.26 * poseMotion + bank * 0.44;
+    this.craftRig.rotation.x = this._roll + posePitch + Math.sin(t * 0.00031) * 0.09 * poseMotion + bank * 0.14;
+    this.craftRig.rotation.z = poseRoll + Math.sin(t * 0.00017) * 0.07 * poseMotion - Math.min(0.5, Math.abs(gap) * 0.5) - bank * 0.55;
+    this.craftRig.position.y = Math.sin(t * 0.0004) * 0.14 * poseMotion;
 
     // exhaust interpolates length/width/colour between craft; the Blackbird
     // burns through its own twin ejectors instead of the shared centre plume
@@ -1513,7 +1566,9 @@ class ViewscreenStage extends HTMLElement {
     this.beams.material.opacity += ((deck === 2 ? 0.45 : 0) * this.dim - this.beams.material.opacity) * 0.06;
     this.beams.rotation.y = rot * 3;
 
-    this.bloom.strength = Math.min(2.05, (0.68 + warp * 1.15 + nearFold * 0.34 + nearWarp * 0.3) * (0.22 + this.dim * 0.82));
+    const poseBloom = 1 + ((((pose && pose.bloom) || 1) - 1) * poseLock);
+    const poseExposure = 1 + ((((pose && pose.exposure) || 1) - 1) * poseLock);
+    this.bloom.strength = Math.min(2.05, (0.68 + warp * 1.15 + nearFold * 0.34 + nearWarp * 0.3) * (0.22 + this.dim * 0.82) * poseBloom);
 
     if (this.grade) {
       this.grade.uniforms.uTime.value = t * 0.001;
@@ -1521,14 +1576,15 @@ class ViewscreenStage extends HTMLElement {
       this.grade.uniforms.uTear.value = Math.max(0, warp * 1.25 - 0.15);
       this.grade.uniforms.uStreak.value = (0.35 + warp * 1.1 + nearFold * 0.35) * this.dim;
     }
-    this.renderer.toneMappingExposure = 0.72 + this.dim * 0.62 + warp * 0.55;
+    this.renderer.toneMappingExposure = (0.72 + this.dim * 0.62 + warp * 0.55) * poseExposure;
     this.renderer.clear();
     this.renderer.render(this.bgScene, this.bgCam);
     this.composer.render();
   }
 
-  setProgress(v) { this.prog = Math.max(0, Math.min(1, v || 0)); }
-  setDeck(i) { this.deck = i | 0; }
+  _renderReduced() { if (this.reduce && this.renderer) this._frame(performance.now()); }
+  setProgress(v) { this.prog = Math.max(0, Math.min(1, v || 0)); this._renderReduced(); }
+  setDeck(i) { this.deck = i | 0; this._renderReduced(); }
   setCraft(i) {
     const next = Math.max(0, Math.min(CRAFT.length - 1, i | 0));
     if (next !== this.craftTarget) {
@@ -1537,13 +1593,15 @@ class ViewscreenStage extends HTMLElement {
       this.warpT = 1;
     }
     this.craftTarget = next;
+    if (this.reduce) { this.craftF = next; this.stage = next; this.warpT = 0; this._renderReduced(); }
   }
   setClearX(f) { this.clearX = Math.max(0.12, Math.min(0.9, f || 0.5)); }
   setClearRect(rx, by) {
     this.setClearX(rx);
     this.clearY = Math.max(0.3, Math.min(0.95, by || 0.85));
+    this._renderReduced();
   }
-  warp() { this.warpT = 1; }
+  warp() { if (!this.reduce) this.warpT = 1; }
   craftIndex() { return this.stage; }
 
   dispose() {
@@ -1569,7 +1627,7 @@ class ViewscreenStage extends HTMLElement {
   }
 }
 
-export { ViewscreenStage };
+export { CRAFT as CRAFT_SPECS, ViewscreenStage };
 
 if (typeof customElements !== "undefined" && !customElements.get("viewscreen-stage")) {
   customElements.define("viewscreen-stage", ViewscreenStage);

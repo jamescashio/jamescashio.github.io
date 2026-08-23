@@ -1,13 +1,13 @@
 {
   "name": "cashio-us",
   "private": true,
-  "version": "47.0.0",
+  "version": "32.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "node --test tests/audio-policy.test.mjs && python -m unittest tests.test_v47_release"
+    "test": "node --test tests/audio-policy.test.mjs tests/craft-lineage.test.mjs tests/hud-layout.test.mjs tests/release-validity.test.mjs && python -m unittest tests.test_v32_release"
   },
   "dependencies": {
     "react": "^19.2.0",

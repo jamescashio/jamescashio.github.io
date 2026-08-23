@@ -29,7 +29,7 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Install V47 dependencies
+      - name: Install V32 dependencies
         run: npm install
 
       - name: Build the Pages artifact
@@ -50,10 +50,10 @@ jobs:
         continue-on-error: true
         run: python scripts/check_release_consistency.py
 
-      - name: Verify V47 release contract
-        id: v47_release_contract
+      - name: Verify V32 release contract
+        id: v32_release_contract
         continue-on-error: true
-        run: python -m unittest tests.test_v47_release
+        run: python -m unittest tests.test_v32_release
 
       - name: Upload safety report
         if: always()
@@ -65,7 +65,7 @@ jobs:
           retention-days: 14
 
       - name: Enforce validation results
-        if: steps.safety_scan.outcome != 'success' || steps.release_consistency.outcome != 'success' || steps.v47_release_contract.outcome != 'success'
+        if: steps.safety_scan.outcome != 'success' || steps.release_consistency.outcome != 'success' || steps.v32_release_contract.outcome != 'success'
         run: exit 1
 
       - name: Check Python syntax

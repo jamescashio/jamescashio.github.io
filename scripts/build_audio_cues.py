@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the V47 restrained, mono, 48 kHz airframe cue set."""
+"""Build the V32 restrained, mono, 48 kHz airframe cue set."""
 
 from __future__ import annotations
 
@@ -33,59 +33,6 @@ def normalize(samples: list[float], rms_db: float = -18.0, peak_db: float = -4.5
     rms_target = 10 ** (rms_db / 20)
     scale = min(peak_target / peak, rms_target / rms)
     return [max(-1.0, min(1.0, value * scale)) for value in samples]
-
-
-def one_pole_highpass(samples: list[float], cutoff: float) -> list[float]:
-    dt = 1 / SAMPLE_RATE
-    rc = 1 / (2 * math.pi * cutoff)
-    alpha = rc / (rc + dt)
-    output = [0.0] * len(samples)
-    previous_input = samples[0] if samples else 0.0
-    previous_output = 0.0
-    for i, value in enumerate(samples):
-        previous_output = alpha * (previous_output + value - previous_input)
-        previous_input = value
-        output[i] = previous_output
-    return output
-
-
-def one_pole_lowpass(samples: list[float], cutoff: float) -> list[float]:
-    dt = 1 / SAMPLE_RATE
-    rc = 1 / (2 * math.pi * cutoff)
-    alpha = dt / (rc + dt)
-    output = [0.0] * len(samples)
-    previous = 0.0
-    for i, value in enumerate(samples):
-        previous += alpha * (value - previous)
-        output[i] = previous
-    return output
-
-
-def read_source_excerpt(path: Path, start: float, duration: float) -> list[float]:
-    with wave.open(str(path), "rb") as source:
-        if source.getsampwidth() != 2:
-            raise ValueError("Falcon source must be 16-bit PCM WAV")
-        channels = source.getnchannels()
-        source_rate = source.getframerate()
-        raw = source.readframes(source.getnframes())
-    values = struct.unpack(f"<{len(raw) // 2}h", raw)
-    mono = [sum(values[i : i + channels]) / channels / 32768 for i in range(0, len(values), channels)]
-    if source_rate != SAMPLE_RATE:
-        target_frames = round(len(mono) * SAMPLE_RATE / source_rate)
-        mono = [
-            mono[min(len(mono) - 1, round(i * source_rate / SAMPLE_RATE))]
-            for i in range(target_frames)
-        ]
-    first = round(start * SAMPLE_RATE)
-    last = first + round(duration * SAMPLE_RATE)
-    if last > len(mono):
-        raise ValueError("Falcon source is shorter than the requested excerpt")
-    excerpt = mono[first:last]
-    mean = sum(excerpt) / len(excerpt)
-    excerpt = [math.tanh((value - mean) * 1.12) for value in excerpt]
-    excerpt = one_pole_highpass(excerpt, 38)
-    excerpt = one_pole_lowpass(excerpt, 6_400)
-    return normalize(fade(excerpt, 0.045, 0.18), rms_db=-17.5, peak_db=-4.5)
 
 
 def original_epstein() -> list[float]:
@@ -168,7 +115,6 @@ def write_wav(path: Path, samples: list[float]) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--falcon-source", required=True, type=Path)
     parser.add_argument("--out-dir", type=Path, default=Path(__file__).resolve().parents[1] / "public" / "sfx")
     args = parser.parse_args()
 
@@ -176,7 +122,7 @@ def main() -> None:
     cues = {
         "x1": silence,
         "sr71": silence,
-        "falcon": read_source_excerpt(args.falcon_source, start=4.35, duration=1.08),
+        "proteus": silence,
         "starship": silence,
         "epstein": original_epstein(),
         "warp": original_warp(),

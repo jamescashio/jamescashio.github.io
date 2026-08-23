@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "assets": {
+    "proteus-nasa": {
+      "file": "/plates/proteus-nasa.webp",
+      "title": "Scaled Composites Proteus in flight",
+      "credit": "NASA / ESPO",
+      "sourcePage": "https://espo.nasa.gov/aircraft/Proteus",
+      "sourceAsset": "https://espo.nasa.gov/sites/default/files/wingext21ad.jpg",
+      "transform": "Resized to 1400 by 892 pixels and encoded as WebP; metadata removed; image content otherwise unchanged."
+    }
+  }
+}

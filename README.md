@@ -1,6 +1,6 @@
-# cashio.us V47 AWE
+# cashio.us V32 MACH ONE
 
-Public command console. Dated snapshot **21 August 2026**.
+Public command console. Release revision **22 August 2026**; dated architecture snapshot **21 August 2026**.
 
 ```
 npm install
