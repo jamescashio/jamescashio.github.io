@@ -3,7 +3,7 @@ export const VERIFIED_LONG = "21 August 2026";
 export const EXPIRES = "2026-09-20";
 export const EXPIRES_SHORT = "09-20-2026";
 export const EXPIRES_AT = "2026-09-21T05:00:00Z";
-export const REVISED = "08-22-2026";
+export const REVISED = "08-23-2026";
 export const RELEASE = 'V32 "MACH ONE"';
 export const PVE = "9.2.11";
 

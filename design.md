@@ -36,4 +36,4 @@ Cashio.us is a cinematic flight-test dossier viewed from a sovereign command dec
 
 ## Release boundary
 
-V32 MACH ONE is revised 22 August 2026 while preserving the 21 August 2026, 19/19, quorate snapshot. The validity window is inclusive through the end of 20 September 2026 in America/Chicago; root Pages base `/`; no Engage gate; no Request a Review; and the May 2026 `command.html` archive.
+V32 MACH ONE is revised 23 August 2026 while preserving the 21 August 2026, 19/19, quorate snapshot. The validity window is inclusive through the end of 20 September 2026 in America/Chicago; root Pages base `/`; no Engage gate; no Request a Review; and the May 2026 `command.html` archive.

@@ -1,7 +1,7 @@
 # V32 MACH ONE — BREAK THE BARRIER. OWN THE ROUTE.
 
 **Snapshot date:** 21 August 2026 at 15:39 CDT
-**Release revision:** 22 August 2026
+**Release revision:** 23 August 2026
 **Validity window:** through 20 September 2026, or until the next owner-verified architecture change
 
 V32 publishes the supplied Vite 6 + React 19 command console through GitHub Pages Actions. The release extends the viewscreen warp and FOV kick, adds plate scan bands, increases deck-reveal travel and blur, accelerates the ROUTE shimmer, strengthens the Seven Test Articles proof-flight sequence, replaces Falcon 9 with Burt Rutan's Proteus, adds a credited NASA/ESPO Proteus evidence plate and recognition pose, lets the corner HUD yield before it covers controls, and closes Hail with a human-command mission stamp. Audio remains restrained and opt-in. It does not redesign the locked console.

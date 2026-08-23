@@ -38,7 +38,7 @@ class V32ReleaseContractTests(unittest.TestCase):
 
     def test_locked_snapshot_is_exact(self) -> None:
         self.assertEqual(self.status["release"], "V32 MACH ONE")
-        self.assertEqual(self.status["revised"], "2026-08-22")
+        self.assertEqual(self.status["revised"], "2026-08-23")
         self.assertEqual(self.status["verifiedLong"], "21 August 2026")
         self.assertEqual(self.status["expires"], "2026-09-20")
         self.assertEqual(self.status["proxmox"], {"version": "9.2.11", "hostsOnline": 2, "quorate": True})

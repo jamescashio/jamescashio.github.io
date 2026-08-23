@@ -54,7 +54,7 @@ def main() -> int:
 
     expected = {
         "release": "V32 MACH ONE",
-        "revised": "2026-08-22",
+        "revised": "2026-08-23",
         "status": "current",
         "verified": "2026-08-21",
         "verifiedLong": "21 August 2026",
@@ -121,7 +121,7 @@ def main() -> int:
         "src/lib/store.ts": ("gate: false", "audio: DEFAULT_AUDIO_ENABLED", "deck: 0"),
         "src/lib/content.ts": (
             'VERIFIED_LONG = "21 August 2026"',
-            'REVISED = "08-22-2026"',
+            'REVISED = "08-23-2026"',
             'EXPIRES_AT = "2026-09-21T05:00:00Z"',
             '"19 OF 19 PUBLISHED CONTAINERS — RUNNING AT PROBE"',
             '"deepseek-v4-flash"',

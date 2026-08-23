@@ -1,6 +1,6 @@
 # cashio.us V32 MACH ONE
 
-Public command console. Release revision **22 August 2026**; dated architecture snapshot **21 August 2026**.
+Public command console. Release revision **23 August 2026**; dated architecture snapshot **21 August 2026**.
 
 ```
 npm install

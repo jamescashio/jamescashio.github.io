@@ -2,7 +2,7 @@
 
 This file records the canonical public release line for cashio.us. Visible dates use MM-DD-YYYY. Unpublished prototype numbering is intentionally omitted; Git history retains those experiments without presenting them as releases.
 
-## [v32] — 08-22-2026
+## [v32] — 08-23-2026
 
 Release name: "MACH ONE." The public site moves to a Vite 6 + React 19 GitHub Pages artifact while preserving the dated, public-safe ZeusApollo truth contract.
 
