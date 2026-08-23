@@ -1219,8 +1219,8 @@ button.za-lcars-pip {
   .za-hail-scan,
   .za-plate-scan::after,
   .za-lineage-dossier::before,
-  .za-proteus-photo,
-  .za-proteus-acquire,
+  .za-airframe-photo,
+  .za-airframe-acquire,
   .za-law-step,
   .za-corner-hud,
   .za-airframe,
@@ -1231,12 +1231,12 @@ button.za-lcars-pip {
   .za-article-card::after {
     display: none;
   }
-  .za-proteus-photo {
+  .za-airframe-photo {
     opacity: 1;
     filter: saturate(0.78) contrast(1.08) brightness(0.84);
     transform: scale(1.025);
   }
-  .za-proteus-acquire {
+  .za-airframe-acquire {
     display: none;
   }
   .za-plot-dot {
@@ -1400,10 +1400,10 @@ button.za-lcars-pip {
   mask-composite: exclude;
   animation: za-dossier-lock 780ms var(--ease-out) both;
 }
-.za-proteus-evidence {
+.za-airframe-evidence {
   position: relative;
 }
-.za-proteus-frame {
+.za-airframe-frame {
   position: relative;
   aspect-ratio: 1400 / 892;
   overflow: hidden;
@@ -1412,7 +1412,7 @@ button.za-lcars-pip {
   background: #080b10;
   box-shadow: inset 0 0 36px rgba(0, 0, 0, 0.56), 0 16px 42px rgba(0, 0, 0, 0.32);
 }
-.za-proteus-frame::after {
+.za-airframe-frame::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -1421,16 +1421,16 @@ button.za-lcars-pip {
     linear-gradient(180deg, rgba(4, 8, 14, 0.04), transparent 52%, rgba(4, 8, 14, 0.58)),
     radial-gradient(circle at 58% 43%, transparent 48%, rgba(2, 5, 9, 0.34) 100%);
 }
-.za-proteus-photo {
+.za-airframe-photo {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
   filter: saturate(0.78) contrast(1.08) brightness(0.84);
   transform: scale(1.025);
-  animation: za-proteus-resolve 980ms var(--ease-out) both;
+  animation: za-evidence-resolve 980ms var(--ease-out) both;
 }
-.za-proteus-grid {
+.za-airframe-grid {
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -1441,7 +1441,7 @@ button.za-lcars-pip {
   background-size: 13% 19%;
   mix-blend-mode: screen;
 }
-.za-proteus-acquire {
+.za-airframe-acquire {
   position: absolute;
   z-index: 2;
   inset: 0 auto 0 -18%;
@@ -1450,9 +1450,9 @@ button.za-lcars-pip {
   background: linear-gradient(90deg, transparent, rgba(0, 249, 255, 0.24), rgba(218, 252, 255, 0.8), transparent);
   filter: blur(0.4px);
   mix-blend-mode: screen;
-  animation: za-proteus-acquire 1.15s cubic-bezier(0.2, 0.75, 0.2, 1) 160ms both;
+  animation: za-evidence-acquire 1.15s cubic-bezier(0.2, 0.75, 0.2, 1) 160ms both;
 }
-.za-proteus-label {
+.za-airframe-label {
   position: absolute;
   z-index: 3;
   top: 12px;
@@ -1462,7 +1462,7 @@ button.za-lcars-pip {
   color: var(--color-cyan);
   backdrop-filter: blur(8px);
 }
-.za-proteus-credit {
+.za-airframe-credit {
   display: flex;
   justify-content: space-between;
   gap: 12px;
@@ -1472,17 +1472,22 @@ button.za-lcars-pip {
   letter-spacing: 0.14em;
   color: var(--color-dim);
 }
-.za-proteus-credit a {
+.za-airframe-credit a {
   color: var(--color-cyan);
   text-decoration: none;
 }
-.za-proteus-credit a:hover,
-.za-proteus-credit a:focus-visible {
+.za-airframe-credit a:hover,
+.za-airframe-credit a:focus-visible {
   color: var(--color-ink);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-.za-proteus-facts {
+.za-airframe-sources {
+  display: inline-flex;
+  gap: 12px;
+  white-space: nowrap;
+}
+.za-airframe-facts {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1px;
@@ -1492,22 +1497,22 @@ button.za-lcars-pip {
   border-radius: var(--radius-sm);
   background: rgba(0, 249, 255, 0.12);
 }
-.za-proteus-facts > div {
+.za-airframe-facts > div {
   min-width: 0;
   padding: 10px 9px;
   background: rgba(4, 7, 12, 0.9);
 }
-.za-proteus-facts span,
-.za-proteus-facts strong {
+.za-airframe-facts span,
+.za-airframe-facts strong {
   display: block;
   font-family: var(--font-mono);
 }
-.za-proteus-facts span {
+.za-airframe-facts span {
   font-size: 7px;
   letter-spacing: 0.12em;
   color: var(--color-dim);
 }
-.za-proteus-facts strong {
+.za-airframe-facts strong {
   margin-top: 5px;
   font-size: 10px;
   letter-spacing: 0.06em;
@@ -1517,22 +1522,22 @@ button.za-lcars-pip {
   from { opacity: 0; filter: brightness(2); }
   to { opacity: 1; filter: brightness(1); }
 }
-@keyframes za-proteus-resolve {
+@keyframes za-evidence-resolve {
   from { opacity: 0.32; filter: saturate(0) contrast(1.35) brightness(1.45); transform: scale(1.09); }
   to { opacity: 1; filter: saturate(0.78) contrast(1.08) brightness(0.84); transform: scale(1.025); }
 }
-@keyframes za-proteus-acquire {
+@keyframes za-evidence-acquire {
   from { transform: translateX(0); opacity: 0; }
   12% { opacity: 1; }
   82% { opacity: 0.82; }
   to { transform: translateX(660%); opacity: 0; }
 }
 @media (max-width: 520px) {
-  .za-proteus-credit {
+  .za-airframe-credit {
     flex-direction: column;
     gap: 5px;
   }
-  .za-proteus-facts {
+  .za-airframe-facts {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

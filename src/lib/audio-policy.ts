@@ -16,6 +16,7 @@ export const AIRFRAME_SAMPLE_NAMES = [
   "epstein",
   "warp",
   "fold",
+  "p51",
 ] as const;
 
 const DELIBERATE_TRIGGERS = new Set<AirframeAudioTrigger>(["pip", "lineage"]);

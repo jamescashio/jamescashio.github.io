@@ -2,13 +2,14 @@ import { useCallback, useEffect, useRef, useState, type Ref } from "react";
 import {
   ARTICLES,
   CRAFT,
-  CRAFT_DECK,
   DECK_CRAFT,
   DECKS,
   RELEASE,
   REVISED,
   VERIFIED_LONG,
   EXPIRES_SHORT,
+  craftLockAfterDeckChange,
+  craftRoute,
   daysLeft,
   resolveCraftIndex,
   stardate,
@@ -247,7 +248,7 @@ export function CommandDeck() {
   }, []);
 
   const goto = useCallback(
-    (i: number, auto = false) => {
+    (i: number, auto = false, craftOverride?: number | null) => {
       const el = listSections()[i]?.current;
       const sc = scRef.current;
       if (!el || !sc) return;
@@ -258,7 +259,8 @@ export function CommandDeck() {
       const st = stageRef.current;
       st?.warp?.();
       st?.setDeck?.(i);
-      st?.setCraft?.(resolveCraftIndex(i, useDeck.getState().craftLock));
+      const activeCraftLock = craftOverride === undefined ? useDeck.getState().craftLock : craftOverride;
+      st?.setCraft?.(resolveCraftIndex(i, activeCraftLock));
       cinePulse();
       chapter(i);
       setSweep(true);
@@ -271,6 +273,7 @@ export function CommandDeck() {
         deck: i,
         palette: false,
         shown: shown.includes(i) ? shown : [...shown, i],
+        ...(craftOverride === undefined ? {} : { craftLock: craftOverride }),
       });
       bit("yes");
       window.setTimeout(() => {
@@ -279,6 +282,14 @@ export function CommandDeck() {
       }, 420);
     },
     [bit, chapter, cinePulse, measureClear, measureTopo, set, sfx],
+  );
+
+  const gotoCraft = useCallback(
+    (craftIndex: number) => {
+      const route = craftRoute(craftIndex);
+      goto(route.deck, false, route.craftLock);
+    },
+    [goto],
   );
 
   useEffect(() => {
@@ -369,7 +380,11 @@ export function CommandDeck() {
     const next: Partial<{ deck: number; prog: number; shown: number[]; craftLock: number | null }> = {};
     if (i !== useDeck.getState().deck) {
       next.deck = i;
-      if (i !== 4) next.craftLock = null;
+      next.craftLock = craftLockAfterDeckChange(
+        useDeck.getState().craftLock,
+        i,
+        Date.now() <= jumpUntil.current,
+      );
       if (Date.now() > jumpUntil.current) chapter(i);
     }
     const pct = Math.round(p * 100);
@@ -630,7 +645,7 @@ export function CommandDeck() {
                 aria-label={`Warp to ${c[0]}`}
                 title={c[0]}
                 onClick={() => {
-                  goto(CRAFT_DECK[i]);
+                  gotoCraft(i);
                   getSound().craft(i, "pip");
                 }}
                 className={`za-lcars-pip ${i === craftI ? "on" : i < craftI ? "past" : ""}`}
@@ -741,19 +756,19 @@ export function CommandDeck() {
         <div className="za-mono mt-2 max-w-[52ch] text-[11px] text-dim">{DECKS[chap].tag}</div>
       </div>
 
-      <div className={`za-corner-hud fixed bottom-5 right-4 z-40 flex items-end gap-3 ${hudYield ? "yield" : ""} ${hud}`}>
+      <div className={`za-corner-hud fixed bottom-5 right-4 z-40 items-end gap-3 ${deck === 7 ? "hidden" : "flex"} ${hudYield ? "yield" : ""} ${hud}`}>
         <div
           className={`za-airframe hidden max-w-[250px] cursor-pointer rounded-[var(--radius-md)] border border-line bg-void/80 p-3 font-mono text-[10px] leading-relaxed tracking-[0.08em] text-dim hover:border-cyan md:block ${afFlash ? "flash" : ""}`}
-          onClick={() => goto(CRAFT_DECK[craftI])}
+          onClick={() => gotoCraft(craftI)}
           onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") goto(CRAFT_DECK[craftI]);
+            if (e.key === "Enter" || e.key === " ") gotoCraft(craftI);
           }}
           role="button"
           tabIndex={0}
           aria-label={`Open ${craft[0]} airframe deck`}
         >
           <div className="flex items-center gap-2">
-            <b className="text-cyan">AIRFRAME {String(craftI + 1).padStart(2, "0")} / 07</b>
+            <b className="text-cyan">AIRFRAME {String(craftI + 1).padStart(2, "0")} / {String(CRAFT.length).padStart(2, "0")}</b>
             <span className="za-airframe-compact-name text-ink">{craft[0]}</span>
             {audio && (
               <span className="za-eq ml-auto" aria-hidden>

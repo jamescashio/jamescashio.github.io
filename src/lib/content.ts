@@ -41,13 +41,26 @@ export const TELEMETRY = [
 ];
 
 export const DECK_CRAFT = [0, 1, 2, 3, 2, 4, 5, 5, 6];
-export const CRAFT_DECK = [0, 1, 2, 3, 4, 6, 8];
-export const PILOT_CRAFT = [0, 1, 2, 3];
+export const CRAFT_DECK = [0, 1, 2, 3, 5, 6, 8, 4];
+export const PILOT_CRAFT = [0, 1, 2, 7];
 
 export function resolveCraftIndex(deck: number, craftLock: number | null | undefined) {
   const safeDeck = Math.max(0, Math.min(DECK_CRAFT.length - 1, Math.trunc(deck)));
   if (safeDeck === 4 && craftLock != null && PILOT_CRAFT.includes(craftLock)) return craftLock;
   return DECK_CRAFT[safeDeck] ?? DECK_CRAFT[0];
+}
+
+export function craftRoute(craftIndex: number) {
+  const safeCraft = Math.max(0, Math.min(CRAFT_DECK.length - 1, Math.trunc(craftIndex)));
+  const deck = CRAFT_DECK[safeCraft];
+  return {
+    deck,
+    craftLock: deck === 4 && PILOT_CRAFT.includes(safeCraft) ? safeCraft : null,
+  };
+}
+
+export function craftLockAfterDeckChange(currentLock: number | null, nextDeck: number, programmaticJump: boolean) {
+  return nextDeck === 4 || programmaticJump ? currentLock : null;
 }
 
 export const CRAFT = [
@@ -58,6 +71,7 @@ export const CRAFT = [
   ["EPSTEIN DRIVE", "THE EXPANSE", "A fusion torch that never quits — and the whole system opens up."],
   ["PHOENIX", "2063 · COCHRANE", "A missile that learned to bend space. Two nacelles, one field — distance stops being the limit."],
   ["HEIGHLINER", "DUNE", "Fold space. Arrive without travelling. The destination comes to you."],
+  ["P-51D MUSTANG", "1944 · HOOVER", "Energy is never free. Spend it deliberately, and always leave yourself an out."],
 ] as const;
 
 export const LANES = [
@@ -138,77 +152,122 @@ export const LINEAGE = [
     craft: "X-1 · 1947",
     name: "YEAGER",
     rule: "Fly it to the edge, then write down exactly where the edge was.",
-    note: "Every figure on this site is that written-down edge, with a date on it. No telemetry theater. No live-looking numbers that went stale last Tuesday.",
+    note: "The X-1 turned an invisible barrier into measured flight data. Yeager's rule is controlled expansion of the envelope, followed by an exact record of where the edge moved. Every public figure here carries that same obligation: evidence, boundary, date.",
   },
   {
-    craft: "SKUNK WORKS · U-2 · SR-71",
+    craft: "SKUNK WORKS · SR-71 · 1964",
     name: "K. JOHNSON",
     rule: "Small team, few parts, short runway.",
-    note: "Complexity is a schedule risk — which is why ten public lanes do the work of a private catalog of thirty-six.",
+    note: "Kelly Johnson's team made sustained Mach 3 flight practical through small teams, direct authority, and ruthless control of complexity. Doug Cashio applies the same discipline: shorten the path between the person who sees the problem and the person who can change the machine.",
   },
   {
     craft: "PROTEUS · 1998",
     name: "RUTAN",
     rule: "Question the shape. Prove the answer in flight.",
-    note: "Proteus made unconventional geometry practical by keeping structure, payload, and flight test in the same learning loop. House Cashio follows that discipline: own the hardware, instrument the route, and let evidence — not familiarity — choose the design.",
+    note: "Proteus made unconventional geometry practical by keeping structure, payload, and flight test in the same learning loop. Doug Cashio follows that discipline: own the hardware, instrument the route, and let evidence — not familiarity — choose the design.",
   },
   {
-    craft: "ENERGY MANAGEMENT",
+    craft: "P-51D · ENERGY MANAGEMENT",
     name: "HOOVER",
     rule: "Precision is a habit, not a stunt.",
-    note: "The unglamorous parts — backups, DNS, monitoring — get flown as carefully as the demo. That is the whole trick.",
+    note: "Hoover made energy management visible in the P-51D: every input deliberate, every knot accounted for. Doug Cashio follows the same rule in systems work. Backups, DNS, monitoring, and recovery are practiced with the same precision as the demonstration.",
   },
 ];
 
-export const PROTEUS_EVIDENCE = {
-  src: "/plates/proteus-nasa.webp?v=32",
-  alt: "Scaled Composites Proteus in flight, showing its forward canard, gull main wing, twin booms, and two rear-mounted turbofans",
-  label: "FLIGHT-TEST EVIDENCE · MODEL 281",
-  credit: "NASA / ESPO",
-  sourceUrl: "https://espo.nasa.gov/aircraft/Proteus",
-  facts: [
-    ["FIRST FLIGHT", "07-26-1998"],
-    ["MAIN SPAN", "77.6 FT"],
-    ["POWER", "2 × FJ44-2E"],
-    ["CONFIGURATIONS", "35+"],
-  ],
-} as const;
+export const LINEAGE_EVIDENCE = [
+  {
+    src: "/plates/x1-nasa.webp?v=32",
+    alt: "Bell X-1 Glamorous Glennis in flight, its bright orange fuselage and shock pattern visible against the dark sky",
+    label: "FLIGHT-TEST EVIDENCE · X-1 #46-062",
+    credit: "NASA / USAF · LT. ROBERT A. HOOVER",
+    sourceUrl: "https://www.nasa.gov/image-article/x-1-shock-wave-pattern-visible-exhaust-plume/",
+    dataUrl: "https://www.nasa.gov/aeronautics/first-generation-x-1/",
+    facts: [
+      ["BARRIER FLIGHT", "10-14-1947"],
+      ["SPEED", "MACH 1.06"],
+      ["ALTITUDE", "43,000 FT"],
+      ["POWER", "4-CHAMBER XLR11"],
+    ],
+  },
+  {
+    src: "/plates/sr71-nasa.webp?v=32",
+    alt: "NASA Lockheed SR-71A Blackbird climbing after takeoff with landing gear still extended",
+    label: "FLIGHT-TEST EVIDENCE · SR-71A #844",
+    credit: "NASA · JIM ROSS",
+    sourceUrl: "https://www.nasa.gov/image-article/sr-71-blackbird-24/",
+    dataUrl: "https://www.nasa.gov/image-article/sr-71-3/",
+    facts: [
+      ["FIRST FLIGHT", "12-22-1964"],
+      ["CRUISE", "MACH 3.2"],
+      ["ALTITUDE", "85,000 FT"],
+      ["POWER", "2 × J58"],
+    ],
+  },
+  {
+    src: "/plates/proteus-nasa.webp?v=32",
+    alt: "Scaled Composites Proteus in flight, showing its forward canard, gull main wing, twin booms, and two rear-mounted turbofans",
+    label: "FLIGHT-TEST EVIDENCE · MODEL 281",
+    credit: "NASA / ESPO",
+    sourceUrl: "https://espo.nasa.gov/aircraft/Proteus",
+    dataUrl: "https://espo.nasa.gov/aircraft/Proteus",
+    facts: [
+      ["FIRST FLIGHT", "07-26-1998"],
+      ["MAIN SPAN", "77.6 FT"],
+      ["POWER", "2 × FJ44-2E"],
+      ["CONFIGURATIONS", "35+"],
+    ],
+  },
+  {
+    src: "/plates/p51d-usaf.webp?v=32",
+    alt: "A polished P-51D Mustang banking in flight, showing its laminar-flow wing and red tail",
+    label: "FLIGHT DISCIPLINE · P-51D MUSTANG",
+    credit: "USAF / AIR NATIONAL GUARD · TSGT HAMPTON STRAMLER",
+    sourceUrl: "https://www.dvidshub.net/image/9595085/p-51-mustang-over-luke-air-force-base",
+    dataUrl: "https://www.nationalmuseum.af.mil/Visit/Museum-Exhibits/Fact-Sheets/Display/Article/196263/north-american-p-51d-mustang/",
+    facts: [
+      ["MAX SPEED", "437 MPH"],
+      ["RANGE", "1,000 MI"],
+      ["CEILING", "41,900 FT"],
+      ["POWER", "1,695 HP MERLIN"],
+    ],
+  },
+] as const;
 
 export const ARTICLES = [
   {
     name: "HERMES ORCHESTRATOR",
     tag: "GATEWAY",
-    note: "A policy driven orchestration layer in front of the model lanes, with health checks, routing rules, verification, and human escalation boundaries.",
+    note: "A policy-driven orchestration layer in front of the model lanes, with health checks, routing rules, verification, and human escalation boundaries. Intent, qualification, execution, observation, and translation stay separate so an expensive model is a decision, not a default.",
   },
   {
     name: "ESCALATION CASCADE",
     tag: "AUTONOMOUS",
-    note: "A staged exception workflow that begins with inexpensive checks and escalates only when severity or uncertainty justifies it.",
+    note: "A staged exception workflow that begins with inexpensive checks and escalates only when severity or uncertainty justifies it. Every handoff leaves evidence for review; autonomy can proceed while authority stays bounded.",
   },
   {
     name: "EXPOSURE ASSESSMENT",
     tag: "SECURITY",
-    note: "OSINT and cloud exposure folded into a single remediation picture instead of five disconnected reports.",
+    note: "OSINT and cloud exposure folded into a single remediation picture instead of five disconnected reports. Findings resolve into reachability, evidence, ownership, and the next action — the shape of an attack path, not a pile of alerts.",
   },
   {
     name: "SOVEREIGN INTELLIGENCE BRIEFING",
     tag: "ANALYSIS",
-    note: "Executive-facing analysis of AI, security and infrastructure, produced on the same fabric it describes.",
+    note: "Executive-facing analysis of AI, security, and infrastructure, produced on the same fabric it describes. Claims stay tied to sources, uncertainty stays visible, and technical consequence becomes a decision a leader can act on.",
   },
   {
     name: "ZEUSAPOLLO DASHBOARD SUITE",
     tag: "OPERATIONS",
-    note: "Operations dashboards for fleet health, routing and service status across the estate.",
+    note: "Operations dashboards for fleet health, routing, and service status across the estate. Provenance, timestamps, refresh behavior, and visible stale states matter more than a green tile that only looks current.",
   },
   {
     name: "THE SHOP FLOOR SIGNAL",
     tag: "INDUSTRIAL",
-    note: "Operations intelligence for industrial teams — the same routing discipline pointed at a plant floor.",
+    note: "Operations intelligence for industrial teams — the same routing discipline pointed at a plant floor. Signals are qualified, exceptions escalate, and the person accountable for the line keeps command of the response.",
   },
   {
     name: "GRAPHIFY",
     tag: "TOOLING",
-    note: "A navigable code graph with community-driven documentation.",
+    note: "A navigable code graph with community-driven documentation. Ownership, coupling, and change paths become visible before a refactor turns into an outage.",
   },
 ];
 

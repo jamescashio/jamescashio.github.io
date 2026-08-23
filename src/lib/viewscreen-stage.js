@@ -1,7 +1,7 @@
 // @ts-nocheck
-// ZeusApollo viewscreen — WebGL stage. Seven craft morph through each other as
+// ZeusApollo viewscreen — WebGL stage. Eight craft morph through each other as
 // the visitor descends the decks: X-1 → SR-71 → Proteus → Starship →
-// Epstein-drive ship → first warp ship → Dune highliner folding space.
+// Epstein-drive ship → first warp ship → Dune highliner → P-51D Mustang.
 import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -73,6 +73,37 @@ void main(){
   vec3 col = mix(mix(amber, gold, rings), hot, core * 0.9);
   float lum = (v + core * 1.6) * uAmt;
   gl_FragColor = vec4(col * lum, min(1.0, lum * 0.9));
+}`;
+
+// A soft Fresnel boundary for the first warp ship. The field should read as a
+// volume catching starlight at its edge, not a latitude/longitude wire cage.
+const WARP_FIELD_VERT = `
+varying vec3 vNormal;
+varying vec3 vView;
+varying vec3 vLocal;
+void main(){
+  vec4 mv = modelViewMatrix * vec4(position, 1.0);
+  vNormal = normalize(normalMatrix * normal);
+  vView = normalize(-mv.xyz);
+  vLocal = position;
+  gl_Position = projectionMatrix * mv;
+}`;
+
+const WARP_FIELD_FRAG = `
+precision highp float;
+varying vec3 vNormal;
+varying vec3 vView;
+varying vec3 vLocal;
+uniform float uTime;
+uniform float uOpacity;
+uniform vec3 uColor;
+void main(){
+  float rim = pow(1.0 - max(dot(normalize(vNormal), normalize(vView)), 0.0), 3.4);
+  float contour = 0.72 + 0.28 * sin(vLocal.x * 3.6 - uTime * 1.6);
+  float wake = smoothstep(2.7, -2.8, vLocal.x);
+  float alpha = rim * contour * (0.58 + wake * 0.42) * uOpacity;
+  vec3 color = uColor * (0.34 + rim * 1.1);
+  gl_FragColor = vec4(color, alpha);
 }`;
 
 // Final grade: radial chromatic aberration, anamorphic streak off the
@@ -402,22 +433,26 @@ const CRAFT = [
       return parts;
     }
   },
-  { // 5 — Cochrane's Phoenix. Converted Titan II: Gemini-style command
-    // module, silver missile core, two Starfleet nacelles on bolted
-    // industrial pylons. Warp 1, April 5 2063. The rules bend.
+  { // 5 — Cochrane's Phoenix. Converted launch core with a compact command
+    // module and twin warp nacelles on swept industrial pylons.
     name: 'PHOENIX', era: '2063 · COCHRANE', tint: 0xc8d0da,
-    mat: { metal: 0.72, rough: 0.34, env: 1.7, emis: 0.12 },
-    glowColor: 0x00f9ff, exhaust: [2.6, 0.34, 0x66fff8],
-    // missile-silver core, scorched bell, dark cockpit, gunmetal nacelles,
-    // hot bussard collectors, cyan warp grilles
+    mat: { metal: 0.78, rough: 0.42, env: 1.28, emis: 0.025 },
+    pose: { yaw: -0.38, pitch: 0.12, roll: -0.06, motion: 0.22, bloom: 0.44, exposure: 0.78 },
+    solidOpacity: 0.9,
+    wireOpacity: 0.14,
+    glowColor: 0x58e8f4, exhaust: [0, 0.14, 0x66fff8],
+    // Missile silver, scorched bell, a dark cockpit, gunmetal nacelles,
+    // amber collectors, and cyan coils. The light stays on the machinery.
     livery: (x, y, z, pi) => pi === 2 ? [0.34, 0.30, 0.26]
       : pi === 6 ? [0.08, 0.14, 0.20]
-      : (pi === 8 || pi === 14) ? [1.95, 0.66, 0.16]
-      : (pi === 9 || pi === 15) ? [0.22, 1.70, 1.90]
-      : (pi === 7 || pi === 13) ? [0.50, 0.55, 0.64]
-      : (pi === 10 || pi === 16) ? [0.68, 0.70, 0.76]
-      : (pi === 12 || pi === 18) ? [1.55, 0.82, 0.32]
-      : (pi === 0 && x > 3.7) ? [1.18, 1.14, 1.08] : [1, 1, 1],
+      : pi === 7 ? [0.38, 0.43, 0.51]
+      : (pi === 9 || pi === 14) ? [1.34, 0.58, 0.18]
+      : (pi === 10 || pi === 15) ? [0.18, 1.12, 1.36]
+      : (pi === 8 || pi === 13) ? [0.42, 0.48, 0.57]
+      : (pi === 11 || pi === 16) ? [0.56, 0.60, 0.68]
+      : (pi === 12 || pi === 17) ? [1.18, 0.68, 0.28]
+      : (pi >= 3 && pi <= 5) ? [0.58, 0.62, 0.68]
+      : (pi === 0 && x > 3.7) ? [1.12, 1.09, 1.04] : [0.92, 0.95, 1.0],
     build: () => {
       const parts = [
         revolve([[4.95, 0.012], [4.80, 0.08], [4.58, 0.20], [4.28, 0.34],
@@ -430,26 +465,27 @@ const CRAFT = [
         ring(0.425, 0.02, -0.90, 24),
         slab(0.32, 0.11, 0.36, 4.15, 0.40, 0)                            // cockpit window
       ];
-      for (const z of [1.88, -1.88]) {
-        const y = -0.22;
+      parts.push(plan2([
+        [1.42, 0.36], [0.76, 1.92], [-0.92, 1.92], [-1.48, 0.38]
+      ], 0.075, 0.08));                                                   // swept pylon pair
+      for (const z of [2.04, -2.04]) {
+        const y = 0.18;
         parts.push(revolve(
-          [[2.78, 0.025], [2.58, 0.12], [2.32, 0.23], [2.08, 0.21],
-           [1.78, 0.27], [0.50, 0.31], [-1.20, 0.31], [-2.10, 0.26],
-           [-2.62, 0.15], [-2.92, 0.045]], 20
+          [[2.84, 0.025], [2.64, 0.12], [2.38, 0.24], [2.10, 0.22],
+           [1.76, 0.29], [0.45, 0.32], [-1.24, 0.32], [-2.16, 0.27],
+           [-2.68, 0.15], [-2.98, 0.045]], 22
         ).translate(-0.08, y, z));                                       // nacelle
-        const bus = new THREE.SphereGeometry(0.23, 16, 12);
+        const bus = new THREE.SphereGeometry(0.235, 18, 12);
         bus.scale(1.28, 1, 1);
-        bus.translate(2.42, y, z);
+        bus.translate(2.48, y, z);
         parts.push(bus);                                                 // bussard
-        parts.push(slab(2.35, 0.15, 0.045, -0.18, y, z + (z > 0 ? -0.31 : 0.31))); // grille
-        parts.push(slab(1.15, 0.09, 1.72, -0.35, y * 0.35, z * 0.55, 0,
-          z > 0 ? -0.14 : 0.14, z > 0 ? 0.08 : -0.08));                  // pylon
-        parts.push(ring(0.275, 0.018, -2.05, 16, y, z));
-        parts.push(ring(0.225, 0.042, 2.08, 16, y, z));                  // bussard collar
+        parts.push(slab(2.44, 0.12, 0.045, -0.14, y + 0.02, z + (z > 0 ? -0.32 : 0.32))); // coil
+        parts.push(ring(0.282, 0.018, -2.10, 18, y, z));
+        parts.push(ring(0.228, 0.038, 2.12, 18, y, z));                  // collector collar
       }
       return parts;
     },
-    mag: 1.48
+    mag: 1.34
   },
   { // 6 — Guild heighliner: a colossal ribbed cylinder, blunt at both ends.
     // It does not fly to you. It folds the space between.
@@ -488,6 +524,40 @@ const CRAFT = [
       return parts;
     },
     mag: 1.42
+  },
+  { // 7 — North American P-51D Mustang. The laminar-flow wing, bubble canopy,
+    // ventral radiator scoop, four-blade propeller and tall fin must read first.
+    name: 'P-51D MUSTANG', era: '1944 · HOOVER', tint: 0xbfc7ce,
+    mat: { metal: 0.84, rough: 0.32, env: 1.7, emis: 0.015 }, glowColor: 0x9fdfff,
+    wire: 0x67bed0,
+    pose: { yaw: -0.58, pitch: 0.28, roll: -0.08, motion: 0.22, bloom: 0.24, exposure: 0.72 },
+    solidOpacity: 0.72,
+    wireOpacity: 0.56,
+    lineageSolidOpacity: 0.07,
+    lineageWireOpacity: 0.96,
+    exhaust: [0, 0.12, 0xb9e8ff],
+    // Polished aluminum, a red fin and spinner, dark canopy and propeller.
+    livery: (x, y, z, pi) => (pi === 1 || pi === 4) ? [1.18, 0.16, 0.12]
+      : pi === 5 ? [0.06, 0.12, 0.17]
+      : (pi === 6 || pi === 7 || pi === 8) ? [0.14, 0.16, 0.18]
+      : [0.9, 0.94, 0.98],
+    build: () => [
+      revolve([[4.05, 0.035], [3.70, 0.18], [3.08, 0.34], [2.10, 0.42],
+               [0.78, 0.46], [-0.54, 0.44], [-1.72, 0.38], [-2.78, 0.29],
+               [-3.42, 0.20], [-3.72, 0.12]], 26),
+      revolve([[4.42, 0.025], [4.25, 0.20], [4.02, 0.30]], 18),
+      plan([[1.35, 0], [1.02, 1.18], [0.42, 3.84], [-0.32, 3.78], [-0.92, 1.06], [-1.22, 0],
+            [-0.92, -1.06], [-0.32, -3.78], [0.42, -3.84], [1.02, -1.18]], 0.10, -0.02),
+      plan([[-2.48, 0], [-2.58, 1.08], [-3.12, 1.68], [-3.46, 1.64], [-3.55, 0],
+            [-3.46, -1.64], [-3.12, -1.68], [-2.58, -1.08]], 0.075, 0.22),
+      fin([[-2.05, 0.20], [-2.42, 1.12], [-3.05, 1.66], [-3.58, 1.56], [-3.67, 0.16]], 0.08, 0),
+      (() => { const c = cap(0.34, 16, 0.74, 0.43, 0); c.scale(2.25, 0.72, 0.88); return c; })(),
+      (() => { const s = revolve([[0.20, 0.06], [-0.20, 0.18], [-0.68, 0.22], [-1.02, 0.10]], 14); s.scale(1, 0.72, 0.78); s.translate(-0.12, -0.46, 0); return s; })(),
+      slab(0.055, 2.24, 0.12, 4.38, 0, 0, 0, 0, 0.18),
+      slab(0.055, 0.12, 2.24, 4.38, 0, 0, 0, 0.18, 0),
+      ring(0.30, 0.018, 4.04, 20)
+    ],
+    mag: 0.9
   }
 ];
 
@@ -852,6 +922,7 @@ class ViewscreenStage extends HTMLElement {
     const rim = new THREE.DirectionalLight(0x00f9ff, 3.6); rim.position.set(-7, -1, -5);
     const rim2 = new THREE.DirectionalLight(0xff9500, 1.9); rim2.position.set(-4, 5, 7);
     const fill = new THREE.DirectionalLight(0xcc00ff, 1.2); fill.position.set(-2, 4, -7);
+    this.fillLight = fill;
     this.scene.add(key, rim, rim2, fill, new THREE.AmbientLight(0x35415e, 1.6));
     // travelling highlight — sells the metal even against a black void
     this.tracer = new THREE.PointLight(0xffffff, 26, 34, 1.8);
@@ -1026,26 +1097,62 @@ class ViewscreenStage extends HTMLElement {
     this.shock.rotation.y = Math.PI / 2;
     this.craftRig.add(this.shock);
 
-    // warp bubble — elongated Cochrane field, plus travelling warp rings
+    // Phoenix field boundary: soft edge volume, travelling field contours, and
+    // localised nacelle hardware. None of these elements should wash the deck.
+    this.warpFieldU = {
+      uTime: { value: 0 },
+      uOpacity: { value: 0 },
+      uColor: { value: new THREE.Color(0x42e7ef) }
+    };
     this.bubble = new THREE.Mesh(
-      new THREE.SphereGeometry(3.1, 24, 16),
-      new THREE.MeshBasicMaterial({ color: 0x00f9ff, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, wireframe: true, fog: false })
+      new THREE.SphereGeometry(3.0, 36, 22),
+      new THREE.ShaderMaterial({
+        uniforms: this.warpFieldU,
+        vertexShader: WARP_FIELD_VERT,
+        fragmentShader: WARP_FIELD_FRAG,
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+        fog: false
+      })
     );
     this.craftRig.add(this.bubble);
-    this.bubbleInner = new THREE.Mesh(
-      new THREE.SphereGeometry(2.15, 18, 12),
-      new THREE.MeshBasicMaterial({ color: 0x9fffff, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, wireframe: true, fog: false })
-    );
-    this.craftRig.add(this.bubbleInner);
-    this.warpRings = [0, 1].map((k) => {
+    this.bubbleInner = null;
+    this.warpRings = [0, 1, 2].map((k) => {
       const m = new THREE.Mesh(
-        new THREE.TorusGeometry(2.05, 0.045, 8, 48),
+        new THREE.TorusGeometry(1.7, 0.022, 6, 72),
         new THREE.MeshBasicMaterial({
-          color: k ? 0xff9500 : 0x00f9ff, transparent: true, opacity: 0,
+          color: k === 2 ? 0xffa22c : 0x3deaf2, transparent: true, opacity: 0,
           blending: THREE.AdditiveBlending, depthWrite: false, fog: false
         })
       );
       m.rotation.y = Math.PI / 2;
+      this.craftRig.add(m);
+      return m;
+    });
+    this.warpCoils = [1, -1].map((side) => {
+      const m = new THREE.Mesh(
+        new THREE.BoxGeometry(2.18, 0.035, 0.045),
+        new THREE.MeshBasicMaterial({
+          color: 0x55eff7, transparent: true, opacity: 0,
+          blending: THREE.AdditiveBlending, depthWrite: false, fog: false
+        })
+      );
+      m.position.set(-0.08, 0.16, side * 1.54);
+      this.craftRig.add(m);
+      return m;
+    });
+    this.warpCollectors = [1, -1].map((side) => {
+      const m = new THREE.Mesh(
+        new THREE.SphereGeometry(0.16, 14, 10),
+        new THREE.MeshBasicMaterial({
+          color: 0xffa534, transparent: true, opacity: 0,
+          blending: THREE.AdditiveBlending, depthWrite: false, fog: false
+        })
+      );
+      m.scale.set(1.34, 1, 1);
+      m.position.set(1.84, 0.16, side * 1.54);
       this.craftRig.add(m);
       return m;
     });
@@ -1213,13 +1320,21 @@ class ViewscreenStage extends HTMLElement {
     let cxNdc, cyNdc, fit;
     if (scaleB > scaleA) { fit = scaleB; cxNdc = 0.28; cyNdc = topNdc - halfB; }
     else { fit = scaleA; cxNdc = leftNdc + halfA; cyNdc = -(0.04 + p * 0.12); }
-    const lineageProteus = deck === 4 && this.craftTarget === 2 && this.camera.aspect >= 1.3;
-    const cramped = !lineageProteus && fit < 0.44;
-    if (lineageProteus) { fit = 0.34; cxNdc = 0.66; cyNdc = 0.04; }
+    const lineageRecognition = deck === 4 && (this.craftTarget === 2 || this.craftTarget === 7) && this.camera.aspect >= 1.3;
+    const phoenixDeck = this.craftTarget === 5 && (deck === 6 || deck === 7);
+    const narrowPhoenix = phoenixDeck && this.camera.aspect < 1;
+    const cramped = !lineageRecognition && !phoenixDeck && fit < 0.44;
+    if (lineageRecognition) { fit = 0.34; cxNdc = 0.66; cyNdc = 0.04; }
+    else if (phoenixDeck) {
+      fit = narrowPhoenix ? 0.27 : deck === 6 ? 0.22 : 0.28;
+      cxNdc = narrowPhoenix ? 0.42 : deck === 6 ? -0.42 : 0.7;
+      cyNdc = narrowPhoenix ? -0.42 : deck === 6 ? 0.66 : 0.42;
+    }
     else if (cramped) { fit = 0.76; cxNdc = 0.74; cyNdc = -(0.1 + p * 0.14); }
     fit = Math.min(fit, 1.0 / (this.mags[this.craftTarget] || 1));
     fit = Math.max(0.26, Math.min(0.98, fit)) * (1 - p * 0.06);
-    this.dim += (((lineageProteus ? 0.62 : cramped ? 0.66 : 1)) - this.dim) * 0.06;
+    const targetDim = lineageRecognition ? 0.62 : phoenixDeck ? (narrowPhoenix ? 0.4 : deck === 6 ? 0.6 : 0.76) : cramped ? 0.66 : 1;
+    this.dim += (targetDim - this.dim) * 0.06;
 
     const halfNdcX = (R0 * fit) / halfW;
     if (cxNdc + halfNdcX > 0.99) cxNdc = 0.99 - halfNdcX;
@@ -1348,19 +1463,20 @@ class ViewscreenStage extends HTMLElement {
     for (let i = 0; i < this.wires.length; i++) {
       const w = i === i0 ? (1 - mix) : i === i0 + 1 ? mix : 0;
       const wm = this.wires[i].material;
-      const wireOpacity = lineageProteus && i === 2
+      const wireOpacity = lineageRecognition && i === this.craftTarget
         ? CRAFT[i].lineageWireOpacity
         : CRAFT[i].wireOpacity === undefined ? 0.34 : CRAFT[i].wireOpacity;
       wm.opacity += (w * (wireOpacity + (1 - settled) * 0.44) * this.dim - wm.opacity) * 0.25;
       this.wires[i].visible = wm.opacity > 0.004;
       const sm2 = this.solids[i].material;
-      const solidOpacity = lineageProteus && i === 2
+      const solidOpacity = lineageRecognition && i === this.craftTarget
         ? CRAFT[i].lineageSolidOpacity
         : CRAFT[i].solidOpacity === undefined ? 0.98 : CRAFT[i].solidOpacity;
       sm2.opacity += (w * settled * solidOpacity * this.dim - sm2.opacity) * 0.16;
       this.solids[i].visible = sm2.opacity > 0.01;
     }
-    this.hull.material.opacity = (lineageProteus ? 0.07 : 0.35 + (1 - settled) * 0.6) * this.dim;
+    const cloudOpacity = lineageRecognition ? 0.07 : phoenixDeck ? 0.1 + (1 - settled) * 0.25 : 0.35 + (1 - settled) * 0.6;
+    this.hull.material.opacity = cloudOpacity * this.dim;
 
     // flight: gentle bank and pitch, plus a roll through each transition.
     // Once settled, ease the accumulated roll home to the nearest full turn
@@ -1476,32 +1592,44 @@ class ViewscreenStage extends HTMLElement {
     }
 
     const nearWarp = Math.max(0, 1 - Math.abs(f - 5) * 1.3);
-    const pulse = Math.sin(t * 0.0022) * 0.08;
-    this.bubble.material.opacity = nearWarp * 0.16 * this.dim;
-    this.bubble.scale.set(1.28 + pulse, 0.68 + pulse * 0.28, 0.68 + pulse * 0.28);
+    if (this.fillLight) this.fillLight.intensity = 1.2 - nearWarp * 1.16;
+    const pulse = Math.sin(t * 0.0018) * 0.04;
+    this.warpFieldU.uTime.value = t * 0.001;
+    const fieldDeckFactor = deck === 6 ? 0.64 : 1;
+    this.warpFieldU.uOpacity.value = nearWarp * 0.32 * fieldDeckFactor * this.dim;
+    this.bubble.scale.set(1.14 + pulse, 0.46 + pulse * 0.18, 0.64 + pulse * 0.2);
     this.bubble.visible = nearWarp > 0.01;
-    if (this.bubbleInner) {
-      this.bubbleInner.material.opacity = nearWarp * 0.14 * this.dim;
-      this.bubbleInner.scale.set(1.18 + pulse * 0.5, 0.55, 0.55);
-      this.bubbleInner.visible = nearWarp > 0.02;
-    }
     if (this.warpRings) {
       for (let k = 0; k < this.warpRings.length; k++) {
         const r = this.warpRings[k];
-        const dir = k === 0 ? 1 : -1;
-        r.position.x = Math.sin(t * 0.0015 + k * 2.2) * 1.7 * dir;
-        r.scale.setScalar(1.02 + nearWarp * 0.22 + Math.sin(t * 0.0024 + k) * 0.07);
-        r.material.opacity = nearWarp * 0.32 * this.dim;
+        const phase = (t * 0.00018 + k / this.warpRings.length) % 1;
+        r.position.x = 2.35 - phase * 4.9;
+        r.scale.set(1, 0.72 + phase * 0.08, 0.96 + phase * 0.12);
+        r.material.opacity = nearWarp * (0.12 + phase * 0.1) * this.dim;
         r.visible = nearWarp > 0.02;
+      }
+    }
+    if (this.warpCoils) {
+      const coilPulse = 0.82 + Math.sin(t * 0.0042) * 0.18;
+      for (const coil of this.warpCoils) {
+        coil.material.opacity = nearWarp * 0.34 * coilPulse * this.dim;
+        coil.visible = nearWarp > 0.02;
+      }
+    }
+    if (this.warpCollectors) {
+      const collectorPulse = 0.78 + Math.sin(t * 0.0034 + 0.8) * 0.22;
+      for (const collector of this.warpCollectors) {
+        collector.material.opacity = nearWarp * 0.26 * collectorPulse * this.dim;
+        collector.visible = nearWarp > 0.02;
       }
     }
     const phx = this.solids[5];
     if (phx && phx.material && phx.material.emissive) {
-      const em = 0.08 + nearWarp * (0.28 + Math.sin(t * 0.007) * 0.14);
+      const em = 0.012 + nearWarp * (0.026 + Math.sin(t * 0.004) * 0.008);
       phx.material.emissive.setHex(0x00f9ff).multiplyScalar(em);
     }
 
-    const nearFold = Math.max(0, Math.min(1, (f - 5.2) / 0.8));
+    const nearFold = Math.max(0, 1 - Math.abs(f - 6) * 1.25);
     this.fold.material.opacity = nearFold * 0.85 * this.dim;
     this.foldInner.material.opacity = nearFold * 0.6 * this.dim;
     this.fold.rotation.z = t * 0.0004;
@@ -1556,6 +1684,7 @@ class ViewscreenStage extends HTMLElement {
     this.nodes.instanceMatrix.needsUpdate = true;
     this.ring.rotation.z = rot * 2;
     this.ring.position.y = -this.gridF * 0.32;
+    this.ring.material.opacity = 0.4 * (1 - nearWarp) * this.dim;
     if (this.ring2) {
       this.ring2.rotation.z = -rot * 2.4;
       this.ring2.position.y = this.gridF * 0.5;

@@ -43,6 +43,11 @@
       "kind": "original",
       "sourceUrl": null,
       "note": "Original pressure-and-arrival abstraction; no sampled or franchise audio."
+    },
+    "p51": {
+      "kind": "silent",
+      "sourceUrl": "https://www.dvidshub.net/image/9595085/p-51-mustang-over-luke-air-force-base",
+      "note": "Reference only. No clean, attributable P-51D operational recording was used; silence avoids substituting a generic piston-engine cue."
     }
   }
 }

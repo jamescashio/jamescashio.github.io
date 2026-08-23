@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { frameDeltaSeconds } from "@/lib/animation-timing";
 import { POS } from "@/lib/content";
 
 const SHORT = ["HERMES", "ESCALATION", "EXPOSURE", "SOVEREIGN", "ZEUSAPOLLO", "SHOP FLOOR", "GRAPHIFY"];
@@ -268,7 +269,7 @@ export function BuildEnvelope({ sel, onLock }: { sel: number; onLock: (i: number
     });
 
     const draw = (now: number) => {
-      const dt = Math.min(0.05, (now - last) / 1000);
+      const dt = frameDeltaSeconds(now, last);
       last = now;
       const f = frame();
       const compact = f.w < 520;

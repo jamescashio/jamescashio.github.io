@@ -16,6 +16,7 @@ test("airframe sample order follows the visible fleet and keeps Proteus truthful
     "epstein",
     "warp",
     "fold",
+    "p51",
   ]);
 });
 
