@@ -231,7 +231,6 @@ export function CommandDeck() {
       const shown = useDeck.getState().shown;
       jumpUntil.current = Date.now() + (auto ? 2400 : 1600);
       sfx("nav", i);
-      sfx("craft", DECK_CRAFT[i]);
       lastDeck.current = i;
       set({
         deck: i,
@@ -246,24 +245,6 @@ export function CommandDeck() {
     },
     [bit, chapter, cinePulse, measureClear, measureTopo, set, sfx],
   );
-
-  const armAudio = useCallback(() => {
-    if (!useDeck.getState().audio) return;
-    const s = getSound();
-    if (s.armed) return;
-    s.arm();
-    window.setTimeout(() => s.craft(DECK_CRAFT[useDeck.getState().deck]), 90);
-  }, []);
-
-  useEffect(() => {
-    const onFirst = () => armAudio();
-    window.addEventListener("pointerdown", onFirst);
-    window.addEventListener("keydown", onFirst);
-    return () => {
-      window.removeEventListener("pointerdown", onFirst);
-      window.removeEventListener("keydown", onFirst);
-    };
-  }, [armAudio]);
 
   useEffect(() => {
     if (craftLock == null) return;
@@ -342,7 +323,6 @@ export function CommandDeck() {
       lastT.current = now;
       vel.current = vel.current * 0.72 + Math.min(1, dy / dtms / 2.6) * 0.28;
       snd.setVelocity(vel.current);
-      if (i !== useDeck.getState().deck && snd.craft) snd.craft(DECK_CRAFT[i]);
     }
     const shown = useDeck.getState().shown.slice();
     const bottom = sc.scrollTop + sc.clientHeight * 0.86;
@@ -445,11 +425,13 @@ export function CommandDeck() {
         const next = !useDeck.getState().audio;
         const s = getSound();
         if (next) {
-          s.arm();
-          s.prompt();
-          s.setDepth(useDeck.getState().prog / 100);
-        } else s.disarm();
-        set({ audio: next });
+          const armed = s.arm();
+          if (armed) s.prompt();
+          set({ audio: armed });
+        } else {
+          s.disarm();
+          set({ audio: false });
+        }
       }
       if (k >= "1" && k <= "9") goto(Number(k) - 1);
     };
@@ -488,18 +470,15 @@ export function CommandDeck() {
 
   const toggleAudio = () => {
     const s = getSound();
-    const on = useDeck.getState().audio;
-    if (on && !s.armed) {
-      s.arm();
-      window.setTimeout(() => s.craft(DECK_CRAFT[useDeck.getState().deck]), 90);
-      return;
-    }
-    const next = !on;
+    const next = !useDeck.getState().audio;
     if (next) {
-      s.arm();
-      window.setTimeout(() => s.craft(DECK_CRAFT[useDeck.getState().deck]), 90);
-    } else s.disarm();
-    set({ audio: next });
+      const armed = s.arm();
+      if (armed) s.prompt();
+      set({ audio: armed });
+    } else {
+      s.disarm();
+      set({ audio: false });
+    }
   };
 
   const toggleTour = () => {
@@ -615,7 +594,10 @@ export function CommandDeck() {
                 type="button"
                 aria-label={`Warp to ${c[0]}`}
                 title={c[0]}
-                onClick={() => goto(CRAFT_DECK[i])}
+                onClick={() => {
+                  goto(CRAFT_DECK[i]);
+                  getSound().craft(i, "pip");
+                }}
                 className={`za-lcars-pip ${i === craftI ? "on" : i < craftI ? "past" : ""}`}
                 style={{ width: i === craftI ? 26 : 14 }}
               />
@@ -634,14 +616,14 @@ export function CommandDeck() {
               className={`za-chip pointer-events-auto ${audio ? "border-cyan text-cyan" : ""}`}
               onClick={toggleAudio}
               aria-pressed={audio}
-              title={audio ? "Mute audio bus" : "Arm audio bus"}
+              title={audio ? "Mute selection audio" : "Arm selection audio"}
             >
               {audio ? (
                 <span className="za-eq !hidden sm:!flex" aria-hidden>
                   <span /><span /><span /><span /><span />
                 </span>
               ) : null}
-              {audio ? "AUDIO ON" : "AUDIO OFF"}
+              {audio ? "AUDIO ARMED" : "AUDIO OFF"}
             </button>
             <button
               type="button"

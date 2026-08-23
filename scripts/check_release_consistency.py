@@ -4,8 +4,11 @@
 from __future__ import annotations
 
 import json
+import math
 import re
+import struct
 import sys
+import wave
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -17,6 +20,8 @@ FORBIDDEN_LIVE = (
     "10 August 2026",
     "08-10-2026",
     "deepseek-chat",
+    "Gemini 3.6 Flash",
+    "Grok 4.5",
     "Creative AI Technologist",
     "REQUEST A REVIEW",
 )
@@ -113,18 +118,21 @@ def main() -> int:
             failures.append(f"Pages workflow is missing {marker!r}")
 
     required_source = {
-        "src/lib/store.ts": ("gate: false", "audio: true", "deck: 0"),
+        "src/lib/store.ts": ("gate: false", "audio: DEFAULT_AUDIO_ENABLED", "deck: 0"),
         "src/lib/content.ts": (
             'VERIFIED_LONG = "21 August 2026"',
             '"19 OF 19 PUBLISHED CONTAINERS — RUNNING AT PROBE"',
             '"deepseek-v4-flash"',
             '"deepseek-v4-pro"',
+            'model: "Gemini 3.7 Flash"',
+            'model: "Grok 4.6"',
         ),
         "src/components/decks.tsx": (
             "SIGNED · OWNER · {VERIFIED_LONG}",
             "CHANNEL LOCK · OPEN",
             "za-plate-scan",
             "COMMITTED",
+            'getSound().craft(PILOT_CRAFT[i], "lineage")',
         ),
         "src/components/eve-console.tsx": (
             'command === "sitrep"',
@@ -149,10 +157,16 @@ def main() -> int:
             "@media (prefers-reduced-motion: reduce)",
         ),
         "src/lib/sound.ts": (
-            "this.master.gain.setTargetAtTime(0.74",
+            "Quiet by default",
+            "this.master.gain.setTargetAtTime(0.42",
             'const names = ["x1", "sr71", "falcon", "starship", "epstein", "warp", "fold"]',
-            "NASA public-domain launch nats",
-            "No bed, no score.",
+            "craft(i: number, trigger: AirframeAudioTrigger)",
+            "no first-gesture blast",
+        ),
+        "src/components/command-deck.tsx": (
+            'getSound().craft(i, "pip")',
+            "AUDIO ARMED",
+            "AUDIO OFF",
         ),
     }
     for filename, markers in required_source.items():
@@ -176,19 +190,62 @@ def main() -> int:
         "public/.well-known/security.txt",
         "public/robots.txt",
         "public/sitemap.xml",
+        "public/sfx/provenance.json",
     )
     for relative in required_public:
         if not (ROOT / relative).is_file():
             failures.append(f"required public asset is missing: {relative}")
 
-    for name in ("x1", "sr71", "falcon", "starship", "epstein", "warp", "fold"):
+    audio_names = ("x1", "sr71", "falcon", "starship", "epstein", "warp", "fold")
+    try:
+        provenance = json.loads(read("public/sfx/provenance.json"))
+    except (OSError, json.JSONDecodeError) as exc:
+        provenance = {}
+        failures.append(f"public/sfx/provenance.json is invalid: {exc}")
+    policy = provenance.get("policy", {})
+    if policy.get("default") != "off" or policy.get("trigger") != "explicit-selection-only":
+        failures.append("audio provenance must lock off-by-default, explicit-selection-only behavior")
+    audio_assets = provenance.get("assets", {})
+    if set(audio_assets) != set(audio_names):
+        failures.append("audio provenance must describe exactly the seven published one-shots")
+    for name in ("x1", "sr71", "falcon", "starship"):
+        item = audio_assets.get(name, {})
+        if item.get("kind") not in {"official-recording", "silent"}:
+            failures.append(f"real-airframe cue {name!r} must be an official recording or intentional silence")
+        if not str(item.get("sourceUrl", "")).startswith("https://"):
+            failures.append(f"real-airframe cue {name!r} must have an HTTPS provenance source")
+    for name in ("epstein", "warp", "fold"):
+        if audio_assets.get(name, {}).get("kind") != "original":
+            failures.append(f"fictional cue {name!r} must be original sound design")
+
+    for name in audio_names:
         path = ROOT / "public" / "sfx" / f"{name}.wav"
         if not path.is_file():
             failures.append(f"required one-shot is missing: public/sfx/{name}.wav")
             continue
-        head = path.read_bytes()[:12]
-        if len(head) < 12 or head[:4] != b"RIFF" or head[8:12] != b"WAVE":
-            failures.append(f"public/sfx/{name}.wav is not a valid RIFF/WAVE asset")
+        try:
+            with wave.open(str(path), "rb") as audio:
+                channels = audio.getnchannels()
+                width = audio.getsampwidth()
+                rate = audio.getframerate()
+                frames = audio.getnframes()
+                raw = audio.readframes(frames)
+            if channels != 1 or width != 2 or rate < 44_100 or frames <= 0:
+                failures.append(f"public/sfx/{name}.wav must be mono 16-bit PCM at 44.1 kHz or higher")
+                continue
+            if frames / rate > 1.2:
+                failures.append(f"public/sfx/{name}.wav exceeds the 1.2-second one-shot limit")
+            samples = struct.unpack(f"<{len(raw) // 2}h", raw)
+            peak = max(abs(sample) for sample in samples)
+            if peak and 20 * math.log10(peak / 32767) > -3.0:
+                failures.append(f"public/sfx/{name}.wav exceeds the -3 dBFS peak ceiling")
+            if audio_assets.get(name, {}).get("kind") != "silent":
+                rms = math.sqrt(sum(sample * sample for sample in samples) / len(samples))
+                rms_dbfs = 20 * math.log10(rms / 32767) if rms else -math.inf
+                if not -32.0 < rms_dbfs <= -12.0:
+                    failures.append(f"public/sfx/{name}.wav RMS must stay between -32 and -12 dBFS")
+        except (OSError, EOFError, wave.Error, struct.error) as exc:
+            failures.append(f"public/sfx/{name}.wav is not a valid PCM WAVE asset: {exc}")
 
     command = read("public/command.html")
     for marker in ("Historical archive only", "May 2026", "This page does not describe the current fleet."):
@@ -210,6 +267,7 @@ def main() -> int:
             "robots.txt",
             "sitemap.xml",
             ".well-known/security.txt",
+            "sfx/provenance.json",
         )
         for relative in required_dist:
             if not (DIST / relative).is_file():
@@ -222,7 +280,8 @@ def main() -> int:
             "QUORATE",
             "10 PUBLIC",
             "36 PRIVATE",
-            "AUDIO ON",
+            "AUDIO OFF",
+            "AUDIO ARMED",
             "SIGNED · OWNER",
             "CHANNEL LOCK · OPEN",
         ):
@@ -265,7 +324,7 @@ def main() -> int:
         "V47 release consistency passed: 21 August 2026 static snapshot; "
         "19/19 containers; 2 Proxmox hosts quorate; 10 public lanes; "
         "36 private catalog entries; root Pages base; archive, privacy, "
-        "motion, audio, and forbidden-token gates satisfied."
+        "motion, opt-in audio, and forbidden-token gates satisfied."
     )
     return 0
 

@@ -544,7 +544,7 @@ export function DeckLineage({ s4 }: { s4: SecRef }) {
                 type="button"
                 onClick={() => {
                   set({ craftLock: PILOT_CRAFT[i] });
-                  getSound().craft(PILOT_CRAFT[i]);
+                  getSound().craft(PILOT_CRAFT[i], "lineage");
                 }}
                 onMouseEnter={() => getSound().target((i / 3 - 0.5) * 1.2)}
                 className={`za-panel za-pilot p-5 pl-8 text-left ${pick === i ? "on" : ""}`}

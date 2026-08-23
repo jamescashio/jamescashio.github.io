@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { DEFAULT_AUDIO_ENABLED } from "./audio-policy";
 import { DECKS } from "./content";
 
 export type Mode = "technical" | "executive";
@@ -32,7 +33,7 @@ export const useDeck = create<DeckStore>((set) => ({
   gate: false,
   deck: 0,
   mode: "technical",
-  audio: true,
+  audio: DEFAULT_AUDIO_ENABLED,
   alert: false,
   photo: false,
   palette: false,

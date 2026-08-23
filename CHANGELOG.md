@@ -11,13 +11,14 @@ Release name: "AWE." The public site moves to a Vite 6 + React 19 GitHub Pages a
 - Extended viewscreen warp with stronger bloom and an FOV kick on every airframe change.
 - Added moving scan bands to the command, rack, operator, and fold plates.
 - Increased deck reveal blur and travel; accelerated the ROUTE shimmer.
-- Raised the effects bus while preserving the NASA public-domain rumble inside the Falcon and Starship one-shots.
+- Replaced the hot, involuntary craft bus with off-by-default, explicit-selection audio: one verified public-domain U.S. Space Force Falcon recording, intentional silence where a real-airframe source could not be verified, and three original non-franchise transitions.
+- Updated the owner-confirmed multimodal and adversarial lane labels to Gemini 3.7 Flash and Grok 4.6; Sonar Pro remains the research lane.
 - Kept the 21 August 2026 snapshot at 19 of 19 containers, two Proxmox hosts quorate, ten public lanes, and thirty-six private catalog entries.
 - Moved GitHub Pages deployment to `.github/workflows/pages.yml` with Vite base `/`.
 
 ### Boundaries
 
-- No loading or ENGAGE gate, Request a Review flow, tracking, analytics, cookies, production API calls, private addresses, ports, credentials, live-looking counters, score bed, or licensed franchise stems.
+- No loading or ENGAGE gate, Request a Review flow, tracking, analytics, cookies, production API calls, private addresses, ports, credentials, live-looking counters, score bed, passive-scroll audio, first-gesture blast, or licensed franchise stems.
 - `/command.html` remains an explicitly marked May 2026 historical archive; `/lab.html` redirects to the current console.
 
 ## [v31] — 08-10-2026
