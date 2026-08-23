@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "policy": {
+    "default": "off",
+    "trigger": "explicit-selection-only",
+    "overlap": "a new airframe cue replaces the prior cue",
+    "realAirframes": "verified government recording or intentional silence",
+    "fictionalAirframes": "original synthesis only; no franchise stems"
+  },
+  "rightsGuidance": "https://www.dvidshub.net/about/copyright",
+  "assets": {
+    "x1": {
+      "kind": "silent",
+      "sourceUrl": "https://www.dvidshub.net/video/777553/bell-x-1-breaking-sound-barrier-animation",
+      "note": "Reference only. No verified period X-1 recording was used; silence avoids presenting an invented boom as archival audio."
+    },
+    "sr71": {
+      "kind": "silent",
+      "sourceUrl": "https://www.nasa.gov/gallery/sr-71-blackbird/",
+      "note": "Reference only. No clean, attributable SR-71 operational recording was used."
+    },
+    "proteus": {
+      "kind": "silent",
+      "sourceUrl": "https://www.nasa.gov/image-article/proteus-f-18-low-level-fly-by/",
+      "note": "Reference only. No clean, attributable Proteus flight recording was used; silence avoids substituting a generic turbofan cue."
+    },
+    "starship": {
+      "kind": "silent",
+      "sourceUrl": "https://www.spacex.com/vehicles/starship/",
+      "note": "Reference only. No verified public-domain launch recording was used."
+    },
+    "epstein": {
+      "kind": "original",
+      "sourceUrl": null,
+      "note": "Original deterministic magnetic-spool abstraction; no sampled or franchise audio."
+    },
+    "warp": {
+      "kind": "original",
+      "sourceUrl": null,
+      "note": "Original opposing spectral glide; no sampled or franchise audio."
+    },
+    "fold": {
+      "kind": "original",
+      "sourceUrl": null,
+      "note": "Original pressure-and-arrival abstraction; no sampled or franchise audio."
+    }
+  }
+}

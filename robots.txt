@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /ai/
-
-Sitemap: https://cashio.us/sitemap.xml

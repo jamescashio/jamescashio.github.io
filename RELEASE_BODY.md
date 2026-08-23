@@ -1,58 +1,44 @@
-## v31 — “The Grid”
+# V32 MACH ONE — BREAK THE BARRIER. OWN THE ROUTE.
 
-**Release date:** 08-10-2026
+**Snapshot date:** 21 August 2026 at 15:39 CDT
+**Release revision:** 23 August 2026
+**Validity window:** through 20 September 2026, or until the next owner-verified architecture change
 
-**Public status window:** 08-10-2026 through 09-09-2026, or until the next architecture change
+V32 publishes the supplied Vite 6 + React 19 command console through GitHub Pages Actions. The release extends the viewscreen warp and FOV kick, adds plate scan bands, increases deck-reveal travel and blur, accelerates the ROUTE shimmer, strengthens the Seven Test Articles proof-flight sequence, replaces Falcon 9 with Burt Rutan's Proteus, adds a credited NASA/ESPO Proteus evidence plate and recognition pose, lets the corner HUD yield before it covers controls, and closes Hail with a human-command mission stamp. Audio remains restrained and opt-in. It does not redesign the locked console.
 
-v31 rebuilds the cashio.us front page around a live Dyson-swarm viewscreen and resets every published figure to the owner-verified 08-10-2026 architecture snapshot. Figures that could not be freshly measured were removed rather than carried forward.
+## Locked public snapshot
 
-The deck is framework-free: vanilla HTML, CSS and JavaScript on the ZeusApollo design system, with three.js self-hosted so the production Content Security Policy needs no third-party origin.
-
-### Experience
-
-- Nine decks: 00 Snapshot, 01 The Grid, 02 Routing, 03 The Iron, 03B Lineage, 04 Builds, 05 Operator, 06 E.V.E., 07 Contact.
-- A new WebGL viewscreen (`<dyson-stage>`): a star under a partially built Dyson swarm — collector rings, an unfinished shell lattice, a shipyard throwing construction beams, a grid horizon and a starfield. The camera flies waypoints driven by scroll, with damped pointer parallax.
-- Deck 03B “Lineage” is new: Yeager, Johnson and Rutan as an interactive record card, with the operating rule taken from each.
-- The Grid is a selectable nineteen-node fleet ring; Routing is a ten-lane charter with a live routing trace; The Iron racks all six plates on entry.
-- Deck 06 is E.V.E. — the Evaluation Verification Engine console. Local, read-only, no network calls, answering from the same dated snapshot published on the page.
-- Bit returns as the deck-guide companion, calling each deck as it comes into view.
-- Deck audio is synthesized in WebAudio with no audio files and no ambient bed — discrete effects only, muted until the operator arms it.
-- Reduced motion renders a complete still page: the viewscreen holds a single frame, the plates rack instantly, and the routing trace resolves without animation.
-
-### Public status reconciliation
-
-| Metric | v31 public snapshot |
-|---|---:|
-| Core hosts | 2 |
-| Cluster state | Quorate |
-| Documented service roles | 19 |
-| Verified containers running | 19 of 19 |
-| Maintenance | 0 containers stopped at verification time |
+| Item | V32 public state |
+|---|---|
+| Proxmox VE | 9.2.11 |
+| Hosts | 2 online · quorate |
+| Containers | 19 of 19 · Zeus 13 · Apollo 6 |
 | Public capability lanes | 10 |
-| Private model catalog entries | 36 |
-| Athena | Owner-confirmed active physical Home Assistant edge node and cluster quorum device; outside container count |
-| Atlas | Standalone LiteLLM gateway and local-inference host; outside Proxmox quorum and container count |
+| Private catalog entries | 36 |
+| Owner-confirmed lane labels | Gemini 3.7 Flash · Grok 4.6 · Sonar Pro |
+| DeepSeek routes | `deepseek-v4-flash` · `deepseek-v4-pro` |
+| Atlas | Gateway and local inference · not a Proxmox host |
+| Cost | Withheld |
 
-Container and service figures come from an owner-run live verification over cluster SSH on 08-10-2026. Public capability lanes and private model catalog entries count different objects and are never merged. The interface stops presenting health as current after 09-09-2026 or the next architecture change.
+## Release boundaries
 
-### Withdrawn figures
+- Starts on SNAPSHOT with no loading or ENGAGE gate.
+- Audio is effects-only, off by default, and plays airframe cues only after deliberate pip or lineage selections. There is no first-gesture blast, passive-scroll audio, continuous bed, overlap, or licensed franchise stem.
+- Real-airframe cues use a traceable public-domain government recording or intentional silence; fictional transitions are original. Full attribution and edit notes ship in `public/sfx/provenance.json`.
+- E.V.E. remains browser-local, read-only, and limited to the dated export.
+- No tracking, analytics, cookies, production API calls, private addresses, ports, credentials, access paths, or live-looking counters.
+- `/lab.html` redirects to `/`; `/command.html` remains the explicitly marked May 2026 historical archive.
+- GitHub Pages deploys `dist` through `.github/workflows/pages.yml` with root base `/`.
 
-Five classes of figure were removed from every published surface and will not return without a fresh, dated measurement: AI operating cost per day and per month, automation job counts, DNS query sample figures, backup recovery telemetry, and security update counts. Nine retired service and topology references were purged alongside them; `CHANGELOG.md` names each one.
+## Verification
 
-`scripts/check_release_consistency.py` now fails the build if any of them reappear. The retired tokens themselves live only in that checker and in the changelog, so the guard cannot be satisfied by a surface that merely quotes them back.
+```text
+npm install
+npm run build
+node --test tests/audio-policy.test.mjs
+python scripts/public_repo_guard.py
+python scripts/check_release_consistency.py
+python -m unittest tests.test_v32_release
+```
 
-### Model routing
-
-The ten public capability lanes are Kimi K3, DeepSeek V4 Flash, DeepSeek V4 Pro, Gemini 3.6 Flash, Grok 4.5, Sol 5.6 Luna, Sonar Pro, GPT-5.6 Sol, local Gemma 4 26B, and the Atlas/OpenRouter/ZenMux gateway fabric. The Atlas LiteLLM gateway is operational with DeepSeek V4 Pro and V4 Flash routes available.
-
-### Archives
-
-Previous releases stay reachable with their figures frozen as historical: `/grid.html` (V31 stage one, the 1982 grid), `/index-v44.html` (v44 “Aurora”), and `/command.html` (v21.2a, banner-marked as an archived build).
-
-### Security, privacy, and employer boundary
-
-- No private addresses, ports, credentials, access procedures, customer data, or employer-confidential material are included.
-- Service roles are public-safe descriptions rather than deployment instructions.
-- Interactive demonstrations do not contact live infrastructure.
-- Public contact information is limited to the cashio.us domain and professional-profile links.
-- All runtime dependencies are self-hosted; `connect-src` remains `'none'`.
+Publishing remains gated on owner approval, PR review, merge, Pages completion, cache purge, and live HTTPS verification.

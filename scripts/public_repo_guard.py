@@ -72,7 +72,7 @@ def scan_file(path: Path) -> list[str]:
                 findings.append(f"non-approved email domain: {domain}")
                 break
 
-    if relative.as_posix() == "status.json":
+    if relative.as_posix() in {"status.json", "public/status.json", "dist/status.json"}:
         try:
             data = json.loads(text)
         except json.JSONDecodeError:
