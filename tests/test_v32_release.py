@@ -120,15 +120,15 @@ class V32ReleaseContractTests(unittest.TestCase):
         self.assertEqual(provenance["policy"]["default"], "off")
         self.assertEqual(provenance["policy"]["trigger"], "explicit-selection-only")
         assets = provenance["assets"]
-        self.assertEqual(set(assets), {"x1", "sr71", "proteus", "starship", "epstein", "warp", "fold"})
+        self.assertEqual(set(assets), {"x1", "sr71", "proteus", "starship", "epstein", "warp", "fold", "p51"})
         self.assertEqual(assets["proteus"]["kind"], "silent")
-        for name in ("x1", "sr71", "proteus", "starship"):
+        for name in ("x1", "sr71", "proteus", "starship", "p51"):
             self.assertIn(assets[name]["kind"], {"official-recording", "silent"})
             self.assertTrue(assets[name]["sourceUrl"].startswith("https://"))
         for name in ("epstein", "warp", "fold"):
             self.assertEqual(assets[name]["kind"], "original")
 
-        for name in ("x1", "sr71", "proteus", "starship", "epstein", "warp", "fold"):
+        for name in ("x1", "sr71", "proteus", "starship", "epstein", "warp", "fold", "p51"):
             path = ROOT / "public" / "sfx" / f"{name}.wav"
             with self.subTest(name=name), wave.open(str(path), "rb") as audio:
                 self.assertEqual(audio.getnchannels(), 1)
@@ -201,7 +201,7 @@ class V32ReleaseContractTests(unittest.TestCase):
         self.assertIn("pose: { yaw: -0.62, pitch: 0.42", self.stage)
         self.assertIn("aria-pressed={pick === i}", self.decks)
         reduced = self.css[self.css.rindex("@media (prefers-reduced-motion: reduce)") :]
-        self.assertIn(".za-proteus-acquire", reduced)
+        self.assertIn(".za-airframe-acquire", reduced)
 
     def test_archive_and_lab_routes_are_exact(self) -> None:
         command = read("dist/command.html")

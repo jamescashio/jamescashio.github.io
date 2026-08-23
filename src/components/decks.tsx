@@ -6,11 +6,11 @@ import {
   LANES,
   LAWS,
   LINEAGE,
+  LINEAGE_EVIDENCE,
   NAMED_ROLES,
   PILOT_CRAFT,
   PVE,
   POS,
-  PROTEUS_EVIDENCE,
   ROUTING_STAGES,
   SERVICE_FAMILIES,
   TELEMETRY,
@@ -109,6 +109,7 @@ function Plate({
 }) {
   return (
     <figure
+      data-hud-clear
       className={`za-plate ${className}`}
       onMouseEnter={() => getSound().tick()}
     >
@@ -339,7 +340,7 @@ export function DeckGrid({
           </div>
         </div>
 
-        <div className="mt-8 grid grid-cols-2 gap-2 md:grid-cols-4">
+        <div data-hud-clear className="mt-8 grid grid-cols-2 gap-2 md:grid-cols-4">
           {NAMED_ROLES.map((r, i) => (
             <button
               key={r.name + r.role}
@@ -398,7 +399,7 @@ export function DeckRouting({ s2 }: { s2: SecRef }) {
           internal provider inventory — and this page is policy, not a live provider status board.
         </p>
 
-        <div className="mt-10 grid gap-3 lg:grid-cols-[1fr_1.1fr]">
+        <div data-hud-clear className="mt-10 grid gap-3 lg:grid-cols-[1fr_1.1fr]">
           <div className="flex flex-col gap-1.5">
             {LANES.map((l, i) => (
               <button
@@ -473,7 +474,7 @@ export function DeckIron({ s3 }: { s3: SecRef }) {
             edge node. Atlas is not a Proxmox host. If I cannot put a hand on it, it does not count as mine. Click a
             host. The plate holds the lock.
           </p>
-          <div className="mt-8 grid gap-3 sm:grid-cols-2">
+          <div data-hud-clear className="mt-8 grid gap-3 sm:grid-cols-2">
             {HOSTS.map((h, i) => (
               <button
                 key={h.name}
@@ -530,6 +531,7 @@ export function DeckLineage({ s4 }: { s4: SecRef }) {
   const defaultPilot = PILOT_CRAFT.indexOf(DECK_CRAFT[4]);
   const pick = lockedPilot >= 0 ? lockedPilot : Math.max(0, defaultPilot);
   const active = LINEAGE[pick];
+  const evidence = LINEAGE_EVIDENCE[pick];
   return (
     <DeckShell index={4} sRef={s4}>
       <div className="max-w-6xl">
@@ -567,30 +569,32 @@ export function DeckLineage({ s4 }: { s4: SecRef }) {
             <h3 className="za-display mt-4 text-[clamp(1.8rem,3.4vw,3rem)]">{active.name}</h3>
             <p className="mt-5 text-xl leading-snug text-ink">{active.rule}</p>
             <p className="mt-5 max-w-[46ch] text-[1.02rem] leading-relaxed text-muted">{active.note}</p>
-            {active.name === "RUTAN" ? (
-              <section className="za-proteus-evidence mt-7" aria-label="Proteus flight-test evidence">
+            <section className="za-airframe-evidence mt-7" aria-label={`${active.name} aircraft evidence`}>
                 <figure>
-                  <div className="za-proteus-frame">
+                  <div className="za-airframe-frame">
                     <img
-                      src={PROTEUS_EVIDENCE.src}
-                      alt={PROTEUS_EVIDENCE.alt}
-                      className="za-proteus-photo"
+                      src={evidence.src}
+                      alt={evidence.alt}
+                      className="za-airframe-photo"
                       loading="lazy"
                       decoding="async"
                     />
-                    <span className="za-proteus-grid" aria-hidden />
-                    <span className="za-proteus-acquire" aria-hidden />
-                    <span className="za-chip za-proteus-label">{PROTEUS_EVIDENCE.label}</span>
+                    <span className="za-airframe-grid" aria-hidden />
+                    <span className="za-airframe-acquire" aria-hidden />
+                    <span className="za-chip za-airframe-label">{evidence.label}</span>
                   </div>
-                  <figcaption className="za-proteus-credit">
-                    <span>{PROTEUS_EVIDENCE.credit} · OFFICIAL FLIGHT PHOTOGRAPH</span>
-                    <a href={PROTEUS_EVIDENCE.sourceUrl} target="_blank" rel="noreferrer">
-                      SOURCE ↗
-                    </a>
+                  <figcaption className="za-airframe-credit">
+                    <span>{evidence.credit} · OFFICIAL FLIGHT PHOTOGRAPH</span>
+                    <span className="za-airframe-sources">
+                      <a href={evidence.sourceUrl} target="_blank" rel="noreferrer">PHOTO ↗</a>
+                      {evidence.dataUrl !== evidence.sourceUrl ? (
+                        <a href={evidence.dataUrl} target="_blank" rel="noreferrer">DATA ↗</a>
+                      ) : null}
+                    </span>
                   </figcaption>
                 </figure>
-                <div className="za-proteus-facts" aria-label="Proteus specifications">
-                  {PROTEUS_EVIDENCE.facts.map(([label, value]) => (
+                <div className="za-airframe-facts" aria-label={`${active.craft} specifications`}>
+                  {evidence.facts.map(([label, value]) => (
                     <div key={label}>
                       <span>{label}</span>
                       <strong>{value}</strong>
@@ -598,7 +602,6 @@ export function DeckLineage({ s4 }: { s4: SecRef }) {
                   ))}
                 </div>
               </section>
-            ) : null}
             <p className="za-mono mt-8 text-[10px] text-dim">AIRFRAME LOCKED · {active.craft}</p>
             <div className="za-chip mt-5">
               <span className="h-1.5 w-1.5 rounded-full bg-green shadow-[0_0_8px_var(--color-green)]" />
@@ -628,7 +631,9 @@ export function DeckBuilds({ s5 }: { s5: SecRef }) {
           Not mockups. Seven shipped builds on the same fabric. Select a marker or article to acquire its proof vector; arrow keys fly the range.
         </p>
         <div className="mt-8 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-          <BuildEnvelope sel={sel} onLock={lock} />
+          <div data-hud-clear>
+            <BuildEnvelope sel={sel} onLock={lock} />
+          </div>
           <div data-hud-clear>
             <div key={article.name} className="za-panel za-article-card p-6">
               <div className="flex items-center justify-between gap-3">
@@ -806,8 +811,8 @@ export function DeckContact({ s8, onCopy, copied }: { s8: SecRef; onCopy: () => 
           <Kicker>09 · CONTACT</Kicker>
           <Title>HAIL.</Title>
           <p className="mt-4 max-w-[46ch] text-[1.1rem] leading-relaxed text-muted">
-            If you work on AI routing, automation reliability, explainability, cybersecurity exposure, or sovereign
-            infrastructure, I am glad to compare notes.
+            If you are building AI routing, automation reliability, explainability, cybersecurity exposure, or
+            sovereign infrastructure — and need it to be both ambitious and provable — let us compare notes.
           </p>
           <div className="za-mission-stamp mt-7" role="note" aria-label="Mission complete">
             <span>MISSION COMPLETE · HUMAN COMMAND RETAINED</span>

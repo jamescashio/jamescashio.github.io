@@ -127,6 +127,7 @@ def main() -> None:
         "epstein": original_epstein(),
         "warp": original_warp(),
         "fold": original_fold(),
+        "p51": silence,
     }
     for name, samples in cues.items():
         write_wav(args.out_dir / f"{name}.wav", samples)

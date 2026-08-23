@@ -1,6 +1,22 @@
 {
-  "version": 1,
+  "version": 2,
   "assets": {
+    "x1-nasa": {
+      "file": "/plates/x1-nasa.webp",
+      "title": "Bell X-1-1 in flight",
+      "credit": "NASA / USAF photo by Lt. Robert A. Hoover",
+      "sourcePage": "https://www.nasa.gov/image-article/x-1-shock-wave-pattern-visible-exhaust-plume/",
+      "sourceAsset": "https://www.nasa.gov/wp-content/uploads/2023/03/340558main_EC72-3431_full-2.jpg",
+      "transform": "Resized within 1600 by 1200 pixels and encoded as WebP at quality 84; metadata removed; image content otherwise unchanged."
+    },
+    "sr71-nasa": {
+      "file": "/plates/sr71-nasa.webp",
+      "title": "NASA SR-71A in flight at takeoff",
+      "credit": "NASA photo by Jim Ross",
+      "sourcePage": "https://www.nasa.gov/image-article/sr-71-blackbird-24/",
+      "sourceAsset": "https://www.nasa.gov/wp-content/uploads/2023/03/335840main_EC97-43933-1_full.jpg",
+      "transform": "Resized within 1600 by 1200 pixels and encoded as WebP at quality 84; metadata removed; image content otherwise unchanged."
+    },
     "proteus-nasa": {
       "file": "/plates/proteus-nasa.webp",
       "title": "Scaled Composites Proteus in flight",
@@ -8,6 +24,14 @@
       "sourcePage": "https://espo.nasa.gov/aircraft/Proteus",
       "sourceAsset": "https://espo.nasa.gov/sites/default/files/wingext21ad.jpg",
       "transform": "Resized to 1400 by 892 pixels and encoded as WebP; metadata removed; image content otherwise unchanged."
+    },
+    "p51d-usaf": {
+      "file": "/plates/p51d-usaf.webp",
+      "title": "P-51 Mustang over Luke Air Force Base",
+      "credit": "U.S. Air National Guard photo by Tech. Sgt. Hampton Stramler",
+      "sourcePage": "https://www.dvidshub.net/image/9595085/p-51-mustang-over-luke-air-force-base",
+      "sourceAsset": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2604/9595085/2000w_q95.jpg",
+      "transform": "Resized within 1600 by 1200 pixels and encoded as WebP at quality 84; metadata removed; image content otherwise unchanged."
     }
   }
 }

@@ -741,7 +741,7 @@ export function CommandDeck() {
         <div className="za-mono mt-2 max-w-[52ch] text-[11px] text-dim">{DECKS[chap].tag}</div>
       </div>
 
-      <div className={`za-corner-hud fixed bottom-5 right-4 z-40 flex items-end gap-3 ${hudYield ? "yield" : ""} ${hud}`}>
+      <div className={`za-corner-hud fixed bottom-5 right-4 z-40 items-end gap-3 ${deck === 7 ? "hidden" : "flex"} ${hudYield ? "yield" : ""} ${hud}`}>
         <div
           className={`za-airframe hidden max-w-[250px] cursor-pointer rounded-[var(--radius-md)] border border-line bg-void/80 p-3 font-mono text-[10px] leading-relaxed tracking-[0.08em] text-dim hover:border-cyan md:block ${afFlash ? "flash" : ""}`}
           onClick={() => goto(CRAFT_DECK[craftI])}
@@ -753,7 +753,7 @@ export function CommandDeck() {
           aria-label={`Open ${craft[0]} airframe deck`}
         >
           <div className="flex items-center gap-2">
-            <b className="text-cyan">AIRFRAME {String(craftI + 1).padStart(2, "0")} / 07</b>
+            <b className="text-cyan">AIRFRAME {String(craftI + 1).padStart(2, "0")} / {String(CRAFT.length).padStart(2, "0")}</b>
             <span className="za-airframe-compact-name text-ink">{craft[0]}</span>
             {audio && (
               <span className="za-eq ml-auto" aria-hidden>

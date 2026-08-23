@@ -190,7 +190,7 @@ export class ZASound {
 
   craft(i: number, trigger: AirframeAudioTrigger) {
     if (!canPlayAirframe({ enabled: this.armed, armed: this.armed, trigger })) return;
-    const index = Math.max(0, Math.min(6, i | 0));
+    const index = Math.max(0, Math.min(AIRFRAME_SAMPLE_NAMES.length - 1, i | 0));
     const token = ++this.craftToken;
     const sample = this.samples[index];
     if (sample) {

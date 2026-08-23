@@ -133,7 +133,7 @@ def main() -> int:
             "SIGNED · OWNER · {VERIFIED_LONG}",
             "CHANNEL LOCK · OPEN",
             "za-plate-scan",
-            "PROTEUS_EVIDENCE",
+            "LINEAGE_EVIDENCE",
             "CONCEPT VISUAL",
             "aria-pressed={pick === i}",
             "COMMITTED",
@@ -162,7 +162,7 @@ def main() -> int:
             ".za-rise {\n  animation: za-rise 900ms",
             "animation: za-shimmer 3.2s",
             ".za-plate-scan::after",
-            ".za-proteus-acquire",
+            ".za-airframe-acquire",
             "@media (max-width: 639px)",
             "@media (prefers-reduced-motion: reduce)",
         ),
@@ -224,7 +224,7 @@ def main() -> int:
     if not str(proteus_source.get("sourcePage", "")).startswith("https://espo.nasa.gov/"):
         failures.append("Proteus evidence plate must retain its official NASA/ESPO source page")
 
-    audio_names = ("x1", "sr71", "proteus", "starship", "epstein", "warp", "fold")
+    audio_names = ("x1", "sr71", "proteus", "starship", "epstein", "warp", "fold", "p51")
     try:
         provenance = json.loads(read("public/sfx/provenance.json"))
     except (OSError, json.JSONDecodeError) as exc:
@@ -235,8 +235,8 @@ def main() -> int:
         failures.append("audio provenance must lock off-by-default, explicit-selection-only behavior")
     audio_assets = provenance.get("assets", {})
     if set(audio_assets) != set(audio_names):
-        failures.append("audio provenance must describe exactly the seven published one-shots")
-    for name in ("x1", "sr71", "proteus", "starship"):
+        failures.append("audio provenance must describe exactly the eight published one-shots")
+    for name in ("x1", "sr71", "proteus", "starship", "p51"):
         item = audio_assets.get(name, {})
         if item.get("kind") not in {"official-recording", "silent"}:
             failures.append(f"real-airframe cue {name!r} must be an official recording or intentional silence")

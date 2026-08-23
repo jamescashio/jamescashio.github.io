@@ -24,8 +24,11 @@ Cashio.us is a cinematic flight-test dossier viewed from a sovereign command dec
 - Selection transitions may bloom and sweep once; ambient motion stays restrained and never changes the user’s chosen article.
 - Audio remains off by default and only answers deliberate controls.
 - The Rutan airframe is Proteus: its tandem wings, twin booms, and two rear turbofans must read as a real experimental aircraft rather than a renamed rocket.
-- The Rutan dossier pairs a restrained three-quarter procedural airframe with a credited NASA/ESPO flight photograph and a compact factual rail; evidence outranks spectacle.
+- Every lineage resolves to an equal flight dossier: credited aircraft photograph, compact factual rail, photo provenance, and data source. Evidence outranks spectacle.
+- The lineage viewscreen and dossier must agree on the selected aircraft; Hoover resolves to a restrained P-51D recognition silhouette, never Starship.
+- The warp airframe reads as an early barrier-breaker: a silver launch core, swept industrial pylons, twin nacelles, localized coils, and a restrained field boundary. It must never become a wire cage or a white bloom across the copy.
 - The corner HUD yields whenever its full state would cover marked content; it compresses to an airframe chip and smaller Bit without disappearing.
+- E.V.E. owns its deck, so the global corner HUD stands down there instead of duplicating Bit over the console.
 - Hail resolves the journey with one static mission-complete thesis. Do not add another section or another ambient animation system.
 
 ## Responsive and accessible behavior
