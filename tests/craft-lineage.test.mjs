@@ -34,6 +34,28 @@ test("the Lineage deck and corner HUD resolve the same selected airframe", () =>
   assert.equal(LINEAGE[defaultPilot].name, "RUTAN");
 });
 
+test("every airframe pip routes to a deck that resolves the same selected craft", () => {
+  assert.equal(typeof content.craftRoute, "function", "airframe navigation must expose a complete deck and lock route");
+  for (let craftIndex = 0; craftIndex < CRAFT.length; craftIndex++) {
+    const route = content.craftRoute(craftIndex);
+    assert.equal(
+      content.resolveCraftIndex(route.deck, route.craftLock),
+      craftIndex,
+      `${CRAFT[craftIndex][0]} pip must not resolve to another aircraft`,
+    );
+  }
+});
+
+test("a programmatic P-51 jump keeps its Lineage lock across intermediate decks", () => {
+  assert.equal(typeof content.craftLockAfterDeckChange, "function", "scroll observation must distinguish jumps from manual travel");
+  const route = content.craftRoute(7);
+  const acrossBuilds = content.craftLockAfterDeckChange(route.craftLock, 5, true);
+  const atLineage = content.craftLockAfterDeckChange(acrossBuilds, 4, true);
+  assert.equal(atLineage, 7);
+  assert.equal(content.resolveCraftIndex(4, atLineage), 7);
+  assert.equal(content.craftLockAfterDeckChange(7, 5, false), null, "manual departure from Lineage releases its lock");
+});
+
 test("every flight-test mind has a sourced four-fact aircraft dossier", () => {
   assert.equal(LINEAGE_EVIDENCE.length, LINEAGE.length);
   for (const [i, evidence] of LINEAGE_EVIDENCE.entries()) {

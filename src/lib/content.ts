@@ -41,13 +41,26 @@ export const TELEMETRY = [
 ];
 
 export const DECK_CRAFT = [0, 1, 2, 3, 2, 4, 5, 5, 6];
-export const CRAFT_DECK = [0, 1, 2, 3, 4, 6, 8, 4];
+export const CRAFT_DECK = [0, 1, 2, 3, 5, 6, 8, 4];
 export const PILOT_CRAFT = [0, 1, 2, 7];
 
 export function resolveCraftIndex(deck: number, craftLock: number | null | undefined) {
   const safeDeck = Math.max(0, Math.min(DECK_CRAFT.length - 1, Math.trunc(deck)));
   if (safeDeck === 4 && craftLock != null && PILOT_CRAFT.includes(craftLock)) return craftLock;
   return DECK_CRAFT[safeDeck] ?? DECK_CRAFT[0];
+}
+
+export function craftRoute(craftIndex: number) {
+  const safeCraft = Math.max(0, Math.min(CRAFT_DECK.length - 1, Math.trunc(craftIndex)));
+  const deck = CRAFT_DECK[safeCraft];
+  return {
+    deck,
+    craftLock: deck === 4 && PILOT_CRAFT.includes(safeCraft) ? safeCraft : null,
+  };
+}
+
+export function craftLockAfterDeckChange(currentLock: number | null, nextDeck: number, programmaticJump: boolean) {
+  return nextDeck === 4 || programmaticJump ? currentLock : null;
 }
 
 export const CRAFT = [
