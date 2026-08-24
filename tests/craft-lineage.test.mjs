@@ -47,7 +47,11 @@ test("every airframe pip routes to a deck that resolves the same selected craft"
 });
 
 test("a programmatic P-51 jump keeps its Lineage lock across intermediate decks", () => {
-  assert.equal(typeof content.craftLockAfterDeckChange, "function", "scroll observation must distinguish jumps from manual travel");
+  assert.equal(
+    typeof content.craftLockAfterDeckChange,
+    "function",
+    "scroll observation must distinguish jumps from manual travel",
+  );
   const route = content.craftRoute(7);
   const acrossBuilds = content.craftLockAfterDeckChange(route.craftLock, 5, true);
   const atLineage = content.craftLockAfterDeckChange(acrossBuilds, 4, true);
@@ -125,5 +129,8 @@ test("the Phoenix renderer stays readable as a restrained twin-nacelle barrier-b
 
   const length = bounds.maxX - bounds.minX;
   const span = bounds.maxZ - bounds.minZ;
-  assert.ok(span > length * 0.5, `expected Phoenix nacelles to form a readable span (${span}) against length (${length})`);
+  assert.ok(
+    span > length * 0.5,
+    `expected Phoenix nacelles to form a readable span (${span}) against length (${length})`,
+  );
 });

@@ -11,10 +11,7 @@ export interface ViewscreenStageElement extends HTMLElement {
 declare module "react" {
   namespace JSX {
     interface IntrinsicElements {
-      "viewscreen-stage": React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement>,
-        HTMLElement
-      >;
+      "viewscreen-stage": React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
     }
   }
 }

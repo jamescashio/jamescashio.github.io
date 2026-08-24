@@ -1,24 +1,24 @@
-# V32 MACH ONE — BREAK THE BARRIER. OWN THE ROUTE.
+# V33 MACH ONE — BREAK THE BARRIER. OWN THE ROUTE.
 
 **Snapshot date:** 21 August 2026 at 15:39 CDT
-**Release revision:** 23 August 2026
+**Release revision:** 24 August 2026
 **Validity window:** through 20 September 2026, or until the next owner-verified architecture change
 
-V32 publishes the supplied Vite 6 + React 19 command console through GitHub Pages Actions. The release extends the viewscreen warp and FOV kick, adds plate scan bands, increases deck-reveal travel and blur, accelerates the ROUTE shimmer, strengthens the Seven Test Articles proof-flight sequence, replaces Falcon 9 with Burt Rutan's Proteus, adds a credited NASA/ESPO Proteus evidence plate and recognition pose, lets the corner HUD yield before it covers controls, and closes Hail with a human-command mission stamp. Audio remains restrained and opt-in. It does not redesign the locked console.
+V33 preserves the Vite 6 + React 19 command console and its Bit-centered Dune/LCARS identity while adding stable deck and article links, a visible four-beat 30-second flight, the exact owner-operator identity line, and a public-safe Black Box Receipt. It also strengthens keyboard and dialog behavior, mobile safe-area clearance, lazy/deferred loading, focused React module ownership, and deterministic release gates. Audio remains restrained and opt-in. The dated architecture snapshot remains unchanged.
 
 ## Locked public snapshot
 
-| Item | V32 public state |
-|---|---|
-| Proxmox VE | 9.2.11 |
-| Hosts | 2 online · quorate |
-| Containers | 19 of 19 · Zeus 13 · Apollo 6 |
-| Public capability lanes | 10 |
-| Private catalog entries | 36 |
-| Owner-confirmed lane labels | Gemini 3.7 Flash · Grok 4.6 · Sonar Pro |
-| DeepSeek routes | `deepseek-v4-flash` · `deepseek-v4-pro` |
-| Atlas | Gateway and local inference · not a Proxmox host |
-| Cost | Withheld |
+| Item                        | V33 public state                                 |
+| --------------------------- | ------------------------------------------------ |
+| Proxmox VE                  | 9.2.11                                           |
+| Hosts                       | 2 online · quorate                               |
+| Containers                  | 19 of 19 · Zeus 13 · Apollo 6                    |
+| Public capability lanes     | 10                                               |
+| Private catalog entries     | 36                                               |
+| Owner-confirmed lane labels | Gemini 3.7 Flash · Grok 4.6 · Sonar Pro          |
+| DeepSeek routes             | `deepseek-v4-flash` · `deepseek-v4-pro`          |
+| Atlas                       | Gateway and local inference · not a Proxmox host |
+| Cost                        | Withheld                                         |
 
 ## Release boundaries
 
@@ -33,9 +33,11 @@ V32 publishes the supplied Vite 6 + React 19 command console through GitHub Page
 ## Verification
 
 ```text
-npm install
+npm ci
+npm run lint
+npm run format:check
+npm test
 npm run build
-node --test tests/audio-policy.test.mjs
 python scripts/public_repo_guard.py
 python scripts/check_release_consistency.py
 python -m unittest tests.test_v32_release

@@ -27,8 +27,7 @@ export class ZASound {
   private context(): AudioContext | null {
     if (!this.ac) {
       const AC =
-        window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+        window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       if (!AC) return null;
       this.ac = new AC({ latencyHint: "interactive" });
 

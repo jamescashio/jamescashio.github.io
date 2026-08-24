@@ -1,0 +1,7 @@
+dist/
+node_modules/
+.superpowers/
+.worktrees/
+package-lock.json
+src/lib/viewscreen-stage.js
+public/**/*.{gif,ico,jpeg,jpg,png,svg,wav,webp}

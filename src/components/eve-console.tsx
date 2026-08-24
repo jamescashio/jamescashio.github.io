@@ -143,7 +143,9 @@ export function runEve(raw: string, history: string[] = []): EveResult {
 
   if (command === "history") {
     return {
-      out: history.length ? history.map((item, index) => `${String(index + 1).padStart(2, "0")} · ${item}`) : ["NO COMMAND HISTORY"],
+      out: history.length
+        ? history.map((item, index) => `${String(index + 1).padStart(2, "0")} · ${item}`)
+        : ["NO COMMAND HISTORY"],
     };
   }
 

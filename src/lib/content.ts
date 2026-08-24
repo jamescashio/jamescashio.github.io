@@ -3,8 +3,8 @@ export const VERIFIED_LONG = "21 August 2026";
 export const EXPIRES = "2026-09-20";
 export const EXPIRES_SHORT = "09-20-2026";
 export const EXPIRES_AT = "2026-09-21T05:00:00Z";
-export const REVISED = "08-23-2026";
-export const RELEASE = 'V32 "MACH ONE"';
+export const REVISED = "08-24-2026";
+export const RELEASE = 'V33 "MACH ONE"';
 export const PVE = "9.2.11";
 
 export const BOOT = [
@@ -16,7 +16,12 @@ export const BOOT = [
 ];
 
 export const DECKS = [
-  { id: "snapshot", num: "01", name: "SNAPSHOT", tag: "Dated figures only. No fresh measurement, no number on the page." },
+  {
+    id: "snapshot",
+    num: "01",
+    name: "SNAPSHOT",
+    tag: "Dated figures only. No fresh measurement, no number on the page.",
+  },
   { id: "grid", num: "02", name: "THE GRID", tag: "Nineteen roles. Seven named. Twelve withheld on purpose." },
   { id: "routing", num: "03", name: "ROUTING", tag: "Quality picks the model. Cost only breaks a tie." },
   { id: "iron", num: "04", name: "THE IRON", tag: "Hardware in a room I can walk into." },
@@ -69,22 +74,80 @@ export const CRAFT = [
   ["PROTEUS", "1998 · RUTAN", "Tandem wings, twin booms, two rear turbofans, and one reconfigurable test platform."],
   ["STARSHIP", "2023", "Fully reusable, or it does not count. Scale as a design goal."],
   ["EPSTEIN DRIVE", "THE EXPANSE", "A fusion torch that never quits — and the whole system opens up."],
-  ["PHOENIX", "2063 · COCHRANE", "A missile that learned to bend space. Two nacelles, one field — distance stops being the limit."],
+  [
+    "PHOENIX",
+    "2063 · COCHRANE",
+    "A missile that learned to bend space. Two nacelles, one field — distance stops being the limit.",
+  ],
   ["HEIGHLINER", "DUNE", "Fold space. Arrive without travelling. The destination comes to you."],
   ["P-51D MUSTANG", "1944 · HOOVER", "Energy is never free. Spend it deliberately, and always leave yourself an out."],
 ] as const;
 
 export const LANES = [
-  { id: "00", name: "FREE CLASSIFY", model: "Kimi K3", tid: "", use: "Sort the mail. Tag the ticket. Cheap, fast, good enough." },
-  { id: "01", name: "WORKHORSE", model: "DeepSeek V4 Flash", tid: "deepseek-v4-flash", use: "The daily grind. Drafts, refactors, first-pass analysis." },
-  { id: "02", name: "EXCEPTION", model: "DeepSeek V4 Pro", tid: "deepseek-v4-pro", use: "When the workhorse hesitates. Harder reasoning, still owned-cost." },
-  { id: "03A", name: "MULTIMODAL", model: "Gemini 3.7 Flash", tid: "", use: "Images, screenshots, diagrams. Eyes on the problem." },
-  { id: "03B", name: "ADVERSARIAL", model: "Grok 4.6", tid: "", use: "Stress-test the answer. Argue with it until it holds." },
-  { id: "04A", name: "SYNTHESIS", model: "Sol 5.6 Luna", tid: "", use: "Pull threads into one brief a human can actually use." },
+  {
+    id: "00",
+    name: "FREE CLASSIFY",
+    model: "Kimi K3",
+    tid: "",
+    use: "Sort the mail. Tag the ticket. Cheap, fast, good enough.",
+  },
+  {
+    id: "01",
+    name: "WORKHORSE",
+    model: "DeepSeek V4 Flash",
+    tid: "deepseek-v4-flash",
+    use: "The daily grind. Drafts, refactors, first-pass analysis.",
+  },
+  {
+    id: "02",
+    name: "EXCEPTION",
+    model: "DeepSeek V4 Pro",
+    tid: "deepseek-v4-pro",
+    use: "When the workhorse hesitates. Harder reasoning, still owned-cost.",
+  },
+  {
+    id: "03A",
+    name: "MULTIMODAL",
+    model: "Gemini 3.7 Flash",
+    tid: "",
+    use: "Images, screenshots, diagrams. Eyes on the problem.",
+  },
+  {
+    id: "03B",
+    name: "ADVERSARIAL",
+    model: "Grok 4.6",
+    tid: "",
+    use: "Stress-test the answer. Argue with it until it holds.",
+  },
+  {
+    id: "04A",
+    name: "SYNTHESIS",
+    model: "Sol 5.6 Luna",
+    tid: "",
+    use: "Pull threads into one brief a human can actually use.",
+  },
   { id: "04B", name: "RESEARCH", model: "Sonar Pro", tid: "", use: "Ground it. Cite it. Do not invent a source." },
-  { id: "05", name: "ADJUDICATION", model: "GPT-5.6 Sol", tid: "", use: "Highest-consequence calls. Frontier only when the cost of being wrong is higher than the token bill." },
-  { id: "LOC", name: "LOCAL FALLBACK", model: "Gemma 4 26B", tid: "", use: "The lights stay on when the cloud does not. Atlas, in the room." },
-  { id: "FAB", name: "GATEWAY FABRIC", model: "Atlas LiteLLM · OpenRouter · ZenMux", tid: "", use: "One door. No lock-in. No bridge tax." },
+  {
+    id: "05",
+    name: "ADJUDICATION",
+    model: "GPT-5.6 Sol",
+    tid: "",
+    use: "Highest-consequence calls. Frontier only when the cost of being wrong is higher than the token bill.",
+  },
+  {
+    id: "LOC",
+    name: "LOCAL FALLBACK",
+    model: "Gemma 4 26B",
+    tid: "",
+    use: "The lights stay on when the cloud does not. Atlas, in the room.",
+  },
+  {
+    id: "FAB",
+    name: "GATEWAY FABRIC",
+    model: "Atlas LiteLLM · OpenRouter · ZenMux",
+    tid: "",
+    use: "One door. No lock-in. No bridge tax.",
+  },
 ] as const;
 
 export const ROUTING_STAGES = [
@@ -223,7 +286,8 @@ export const LINEAGE_EVIDENCE = [
     label: "FLIGHT DISCIPLINE · P-51D MUSTANG",
     credit: "USAF / AIR NATIONAL GUARD · TSGT HAMPTON STRAMLER",
     sourceUrl: "https://www.dvidshub.net/image/9595085/p-51-mustang-over-luke-air-force-base",
-    dataUrl: "https://www.nationalmuseum.af.mil/Visit/Museum-Exhibits/Fact-Sheets/Display/Article/196263/north-american-p-51d-mustang/",
+    dataUrl:
+      "https://www.nationalmuseum.af.mil/Visit/Museum-Exhibits/Fact-Sheets/Display/Article/196263/north-american-p-51d-mustang/",
     facts: [
       ["MAX SPEED", "437 MPH"],
       ["RANGE", "1,000 MI"],

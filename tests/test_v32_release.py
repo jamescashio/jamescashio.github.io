@@ -16,14 +16,16 @@ def read(relative: str) -> str:
     return (ROOT / relative).read_text(encoding="utf-8")
 
 
-class V32ReleaseContractTests(unittest.TestCase):
+class V33ReleaseContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.status = json.loads(read("public/status.json"))
         cls.store = read("src/lib/store.ts")
         cls.content = read("src/lib/content.ts")
         cls.deck = read("src/components/command-deck.tsx")
+        cls.chrome = read("src/components/command-chrome.tsx")
         cls.decks = read("src/components/decks.tsx")
+        cls.primitives = read("src/components/deck-primitives.tsx")
         cls.envelope = read("src/components/build-envelope.tsx")
         cls.eve = read("src/components/eve-console.tsx")
         cls.stage = read("src/lib/viewscreen-stage.js")
@@ -37,8 +39,8 @@ class V32ReleaseContractTests(unittest.TestCase):
         )
 
     def test_locked_snapshot_is_exact(self) -> None:
-        self.assertEqual(self.status["release"], "V32 MACH ONE")
-        self.assertEqual(self.status["revised"], "2026-08-23")
+        self.assertEqual(self.status["release"], "V33 MACH ONE")
+        self.assertEqual(self.status["revised"], "2026-08-24")
         self.assertEqual(self.status["verifiedLong"], "21 August 2026")
         self.assertEqual(self.status["expires"], "2026-09-20")
         self.assertEqual(self.status["proxmox"], {"version": "9.2.11", "hostsOnline": 2, "quorate": True})
@@ -51,10 +53,10 @@ class V32ReleaseContractTests(unittest.TestCase):
         self.assertIn("not a Proxmox host", self.status["atlas"])
         self.assertEqual(read("status.json"), read("public/status.json"))
 
-    def test_release_identity_is_canonical_v32(self) -> None:
+    def test_release_identity_is_canonical_v33(self) -> None:
         package = json.loads(read("package.json"))
-        self.assertEqual(package["version"], "32.0.0")
-        self.assertIn('V32 "MACH ONE"', self.content)
+        self.assertEqual(package["version"], "33.0.0")
+        self.assertIn('V33 "MACH ONE"', self.content)
         retired_candidate = "V" + "47"
         for relative in (
             "README.md",
@@ -93,7 +95,7 @@ class V32ReleaseContractTests(unittest.TestCase):
         self.assertIn("st?.warp?.()", self.deck)
 
     def test_scan_band_rise_and_route_shimmer_contract(self) -> None:
-        self.assertIn('<span className="za-plate-scan" aria-hidden />', self.decks)
+        self.assertIn('<span className="za-plate-scan" aria-hidden />', self.primitives)
         scan = self.css[self.css.index(".za-plate-scan") : self.css.index(".za-plate-fade")]
         self.assertIn(".za-plate-scan::after", scan)
         self.assertIn("animation: za-hail-scan 3.6s linear infinite", scan)
@@ -113,7 +115,7 @@ class V32ReleaseContractTests(unittest.TestCase):
         self.assertNotIn("const armAudio", self.deck)
         self.assertIn('craft(i: number, trigger: AirframeAudioTrigger)', self.sound)
         self.assertIn('getSound().craft(PILOT_CRAFT[i], "lineage")', self.decks)
-        self.assertIn('getSound().craft(i, "pip")', self.deck)
+        self.assertIn('getSound().craft(index, "pip")', self.deck)
 
         provenance = json.loads(read("public/sfx/provenance.json"))
         self.assertEqual(provenance["version"], 1)
@@ -161,7 +163,7 @@ class V32ReleaseContractTests(unittest.TestCase):
 
     def test_pages_workflow_and_root_base_are_locked(self) -> None:
         workflow = read(".github/workflows/pages.yml")
-        for marker in ("npm install", "npm run build", "path: dist", "actions/deploy-pages@v4"):
+        for marker in ("npm ci", "npm run build", "path: dist", "actions/deploy-pages@v4"):
             self.assertIn(marker, workflow)
         vite = read("vite.config.ts")
         match = re.search(r"\bbase\s*:\s*([^,\n]+)", vite)
@@ -237,7 +239,9 @@ class V32ReleaseContractTests(unittest.TestCase):
             "form-action 'none'",
         ):
             self.assertIn(marker, self.index)
-        source = "\n".join((self.deck, self.decks, self.eve, self.sound, self.stage))
+        source = "\n".join(
+            (self.deck, self.chrome, self.decks, self.primitives, self.eve, self.sound, self.stage)
+        )
         fetches = [target for _, target in re.findall(r"fetch\(\s*([\x60'\"])(.+?)\1", source)]
         self.assertEqual(fetches, ["/sfx/$" + "{name}.wav?v=51"])
         for tracker in ("google-analytics", "googletagmanager", "plausible.io", "segment.io", "mixpanel"):
@@ -248,8 +252,8 @@ class V32ReleaseContractTests(unittest.TestCase):
         self.assertIn("animation: none !important", self.css)
         self.assertIn('href="#main-content"', self.deck)
         self.assertIn('id="main-content"', self.deck)
-        self.assertIn('aria-label="Command decks"', self.deck)
-        self.assertIn('aria-label="Mobile command decks"', self.deck)
+        self.assertIn('aria-label="Command decks"', self.chrome)
+        self.assertIn('aria-label="Mobile command decks"', self.chrome)
         self.assertIn('role="log"', self.eve)
         self.assertIn('aria-live="polite"', self.eve)
         self.assertIn('aria-label="E.V.E. command output"', self.eve)

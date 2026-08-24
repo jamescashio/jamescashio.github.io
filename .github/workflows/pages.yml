@@ -15,12 +15,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-      - run: npm install
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run test:node
       - run: npm run build
+      - run: npm run test:release
+      - run: python scripts/public_repo_guard.py
+      - run: python scripts/check_release_consistency.py
+      - name: Check Python syntax
+        run: |
+          python -m py_compile \
+            scripts/public_repo_guard.py \
+            scripts/check_release_consistency.py \
+            scripts/check_committed_whitespace.py
+      - run: python scripts/check_committed_whitespace.py
+        env:
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

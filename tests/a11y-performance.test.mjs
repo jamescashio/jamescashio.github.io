@@ -1,0 +1,831 @@
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import test from "node:test";
+import { JSDOM } from "jsdom";
+import { act, createElement } from "react";
+import { createRoot } from "react-dom/client";
+
+import { CommandDeck } from "../src/components/command-deck.tsx";
+import { useDeck } from "../src/lib/store.ts";
+
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+
+let focusHelpers;
+let stageScheduler;
+try {
+  focusHelpers = await import("../src/lib/deck-focus.ts");
+} catch {
+  focusHelpers = null;
+}
+try {
+  stageScheduler = await import("../src/lib/stage-load-scheduler.ts");
+} catch {
+  stageScheduler = null;
+}
+
+const stylesheet = await readFile(new URL("../src/styles.css", import.meta.url), "utf8");
+
+function mountCommandDeck({
+  url = "https://cashio.us/#deck=snapshot",
+  reducedMotion = true,
+  controlledTimers = false,
+} = {}) {
+  const dom = new JSDOM('<!doctype html><html><body><div id="root"></div></body></html>', {
+    url,
+  });
+  const realDateNow = Date.now;
+  let controlledNow = realDateNow();
+  const realSetTimeout = dom.window.setTimeout.bind(dom.window);
+  const realClearTimeout = dom.window.clearTimeout.bind(dom.window);
+  const controlledTimeouts = new Map();
+  let controlledTimeoutId = 1_000_000;
+  const setTimeout = (callback, delay = 0, ...args) => {
+    const timeout = Number(delay);
+    if (controlledTimers && (timeout === 3200 || timeout >= 7000)) {
+      const id = ++controlledTimeoutId;
+      controlledTimeouts.set(id, { callback: () => callback(...args), delay: timeout });
+      return id;
+    }
+    return realSetTimeout(callback, timeout, ...args);
+  };
+  const clearTimeout = (id) => {
+    if (!controlledTimeouts.delete(id)) realClearTimeout(id);
+  };
+  if (controlledTimers) Date.now = () => controlledNow;
+  const raf = new Map();
+  let rafId = 0;
+  const requestAnimationFrame = (callback) => {
+    const id = ++rafId;
+    raf.set(id, callback);
+    return id;
+  };
+  const cancelAnimationFrame = (id) => raf.delete(id);
+  Object.defineProperties(dom.window, {
+    matchMedia: {
+      configurable: true,
+      value: () => ({ matches: reducedMotion, addEventListener: () => {}, removeEventListener: () => {} }),
+    },
+    requestAnimationFrame: { configurable: true, value: requestAnimationFrame },
+    cancelAnimationFrame: { configurable: true, value: cancelAnimationFrame },
+    setTimeout: { configurable: true, value: setTimeout },
+    clearTimeout: { configurable: true, value: clearTimeout },
+  });
+  Object.defineProperty(dom.window.HTMLCanvasElement.prototype, "getContext", {
+    configurable: true,
+    value: () => null,
+  });
+  Object.defineProperties(dom.window.HTMLElement.prototype, {
+    attachEvent: { configurable: true, value: () => {} },
+    detachEvent: { configurable: true, value: () => {} },
+    offsetTop: {
+      configurable: true,
+      get() {
+        return this.dataset?.deck == null ? 0 : Number(this.dataset.deck) * 1000;
+      },
+    },
+    offsetHeight: {
+      configurable: true,
+      get() {
+        return this.matches?.("section[data-deck]") ? 1000 : 0;
+      },
+    },
+    scrollHeight: {
+      configurable: true,
+      get() {
+        return this.classList?.contains("za-scroll") ? 9000 : 0;
+      },
+    },
+    clientHeight: {
+      configurable: true,
+      get() {
+        return this.classList?.contains("za-scroll") ? 1000 : 0;
+      },
+    },
+    scrollTo: {
+      configurable: true,
+      value(options) {
+        const top = typeof options === "number" ? options : options?.top;
+        this.scrollTop = top ?? 0;
+        this.dataset.requestedScrollTop = String(this.scrollTop);
+      },
+    },
+  });
+  const globals = [
+    "window",
+    "document",
+    "navigator",
+    "HTMLElement",
+    "HTMLButtonElement",
+    "Event",
+    "KeyboardEvent",
+    "MouseEvent",
+    "requestAnimationFrame",
+    "cancelAnimationFrame",
+  ];
+  const prior = Object.fromEntries(globals.map((key) => [key, Object.getOwnPropertyDescriptor(globalThis, key)]));
+  Object.defineProperties(globalThis, {
+    window: { configurable: true, writable: true, value: dom.window },
+    document: { configurable: true, writable: true, value: dom.window.document },
+    navigator: { configurable: true, writable: true, value: dom.window.navigator },
+    HTMLElement: { configurable: true, writable: true, value: dom.window.HTMLElement },
+    HTMLButtonElement: { configurable: true, writable: true, value: dom.window.HTMLButtonElement },
+    Event: { configurable: true, writable: true, value: dom.window.Event },
+    KeyboardEvent: { configurable: true, writable: true, value: dom.window.KeyboardEvent },
+    MouseEvent: { configurable: true, writable: true, value: dom.window.MouseEvent },
+    requestAnimationFrame: { configurable: true, writable: true, value: requestAnimationFrame },
+    cancelAnimationFrame: { configurable: true, writable: true, value: cancelAnimationFrame },
+  });
+  useDeck.setState({
+    deck: 0,
+    mode: "technical",
+    audio: false,
+    alert: false,
+    photo: false,
+    palette: false,
+    tour: false,
+    railOpen: false,
+    shown: [0],
+    craftLock: null,
+  });
+  const root = createRoot(dom.window.document.getElementById("root"));
+  return {
+    dom,
+    document: dom.window.document,
+    async render() {
+      await act(async () => root.render(createElement(CommandDeck)));
+    },
+    async click(element) {
+      await act(async () => element.click());
+    },
+    async key(element, key, options = {}) {
+      let event;
+      await act(async () => {
+        event = new dom.window.KeyboardEvent("keydown", { key, bubbles: true, cancelable: true, ...options });
+        element.dispatchEvent(event);
+      });
+      return event;
+    },
+    async settle() {
+      await act(async () => {
+        await new Promise((resolve) => dom.window.setTimeout(resolve, 0));
+        await new Promise((resolve) => dom.window.setTimeout(resolve, 0));
+      });
+    },
+    async scrollDeck(index) {
+      const scroller = dom.window.document.querySelector("main.za-scroll");
+      assert.ok(scroller, "expected the command deck scroller");
+      await act(async () => {
+        scroller.scrollTop = Math.max(0, index * 1000 - 8);
+        scroller.dispatchEvent(new dom.window.Event("scroll"));
+      });
+    },
+    async runControlledTimeout(delay) {
+      const timer = [...controlledTimeouts.entries()].find(([, candidate]) => candidate.delay === delay);
+      assert.ok(timer, `expected a controlled ${delay}ms timeout`);
+      controlledTimeouts.delete(timer[0]);
+      controlledNow += delay;
+      await act(async () => timer[1].callback());
+    },
+    async history(direction) {
+      const changed = new Promise((resolve, reject) => {
+        const timeout = dom.window.setTimeout(
+          () => reject(new Error(`history.${direction}() did not change hash`)),
+          250,
+        );
+        dom.window.addEventListener(
+          "hashchange",
+          () => {
+            dom.window.clearTimeout(timeout);
+            resolve();
+          },
+          { once: true },
+        );
+      });
+      await act(async () => {
+        dom.window.history[direction]();
+        await changed;
+      });
+      await this.settle();
+    },
+    window: dom.window,
+    async cleanup() {
+      await act(async () => root.unmount());
+      Date.now = realDateNow;
+      dom.window.close();
+      for (const [key, descriptor] of Object.entries(prior)) {
+        if (descriptor) Object.defineProperty(globalThis, key, descriptor);
+        else delete globalThis[key];
+      }
+    },
+  };
+}
+
+function labeledButton(document, label) {
+  const button = document.querySelector(`button[aria-label="${label}"]`);
+  assert.ok(button, `expected button labelled ${label}`);
+  return button;
+}
+
+function flushPromises() {
+  return new Promise((resolve) => setImmediate(resolve));
+}
+
+function createSchedulerEnvironment({ idle = true } = {}) {
+  let id = 0;
+  const frames = new Map();
+  const timers = new Map();
+  const idles = new Map();
+  const listeners = new Map();
+  const environment = {
+    requestAnimationFrame(callback) {
+      const token = ++id;
+      frames.set(token, callback);
+      return token;
+    },
+    cancelAnimationFrame(token) {
+      frames.delete(token);
+    },
+    setTimeout(callback, delay) {
+      const token = ++id;
+      timers.set(token, { callback, delay });
+      return token;
+    },
+    clearTimeout(token) {
+      timers.delete(token);
+    },
+    addEventListener(type, callback) {
+      listeners.set(type, callback);
+    },
+    removeEventListener(type, callback) {
+      if (listeners.get(type) === callback) listeners.delete(type);
+    },
+  };
+  if (idle) {
+    environment.requestIdleCallback = (callback) => {
+      const token = ++id;
+      idles.set(token, callback);
+      return token;
+    };
+    environment.cancelIdleCallback = (token) => idles.delete(token);
+  }
+  return {
+    environment,
+    runFrame() {
+      const entry = frames.entries().next().value;
+      assert.ok(entry, "expected a scheduled animation frame");
+      frames.delete(entry[0]);
+      entry[1](performance.now());
+    },
+    runIdle() {
+      const entry = idles.entries().next().value;
+      assert.ok(entry, "expected an idle callback after the second frame");
+      idles.delete(entry[0]);
+      entry[1]({ didTimeout: false, timeRemaining: () => 10 });
+    },
+    runTimer(delay) {
+      const entry = [...timers.entries()].find(([, timer]) => timer.delay === delay);
+      assert.ok(entry, `expected a ${delay}ms timer`);
+      timers.delete(entry[0]);
+      entry[1].callback();
+    },
+    dispatch(type) {
+      listeners.get(type)?.({ type });
+    },
+    counts() {
+      return { frames: frames.size, timers: timers.size, idles: idles.size, listeners: listeners.size };
+    },
+  };
+}
+
+test("the normal dim token remains at the audited readable value", () => {
+  assert.match(stylesheet, /--color-dim:\s*#687f97\s*;/i);
+});
+
+test("aircraft pip buttons expose 24px hit targets around separate small marks", async () => {
+  const view = mountCommandDeck();
+  try {
+    await view.render();
+    const pip = view.document.querySelector('button[aria-label^="Warp to "]');
+    assert.ok(pip, "expected an aircraft pip button");
+    assert.ok(pip.querySelector(".za-lcars-pip-mark"), "the visible mark must be separate from its button hit target");
+    assert.equal(
+      pip.querySelector(".za-lcars-pip-mark").style.width,
+      "26px",
+      "selected visible width must remain 26px",
+    );
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("glyph controls have stable accessible names and stateful audio remains pressed", async () => {
+  const view = mountCommandDeck();
+  try {
+    await view.render();
+    for (const label of [
+      "Go to Snapshot deck",
+      "Run the 30-second flight",
+      "Arm selection audio",
+      "Expand command rail",
+      "Open deck navigator",
+    ])
+      labeledButton(view.document, label);
+    const audioToggles = [...view.document.querySelectorAll('button[aria-label="Arm selection audio"]')];
+    assert.ok(audioToggles.length >= 2, "rail and header audio toggles must both be named");
+    assert.ok(audioToggles.some((button) => button.getAttribute("aria-pressed") === "false"));
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("desktop rail deck controls keep stable names when collapsed and open", async () => {
+  const view = mountCommandDeck();
+  const expected = [
+    "Go to SNAPSHOT deck",
+    "Go to THE GRID deck",
+    "Go to ROUTING deck",
+    "Go to THE IRON deck",
+    "Go to LINEAGE deck",
+    "Go to BUILDS deck",
+    "Go to OPERATOR deck",
+    "Go to E.V.E. deck",
+    "Go to CONTACT deck",
+  ];
+  try {
+    await view.render();
+    const navigation = view.document.querySelector('nav[aria-label="Command decks"]');
+    const controls = [...navigation.querySelectorAll("button")];
+    assert.deepEqual(
+      controls.map((button) => button.getAttribute("aria-label")),
+      expected,
+    );
+    assert.deepEqual(
+      controls.map((button) => button.textContent),
+      ["01", "02", "03", "04", "05", "06", "07", "08", "09"],
+    );
+
+    await view.click(labeledButton(view.document, "Expand command rail"));
+    const openControls = [...navigation.querySelectorAll("button")];
+    assert.deepEqual(
+      openControls.map((button) => button.getAttribute("aria-label")),
+      expected,
+    );
+    assert.deepEqual(
+      openControls.map((button) => button.textContent),
+      [
+        "01SNAPSHOT",
+        "02THE GRID",
+        "03ROUTING",
+        "04THE IRON",
+        "05LINEAGE",
+        "06BUILDS",
+        "07OPERATOR",
+        "08E.V.E.",
+        "09CONTACT",
+      ],
+    );
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("only the real E.V.E. input owns arrow-key history behavior", async () => {
+  const view = mountCommandDeck();
+  try {
+    await view.render();
+    await view.click([...view.document.querySelectorAll("button")].find((button) => button.textContent === "STATUS"));
+    await view.click([...view.document.querySelectorAll("button")].find((button) => button.textContent === "SITREP"));
+    const input = view.document.querySelector("#eve-command");
+    input.focus();
+
+    const inputUp = await view.key(input, "ArrowUp");
+    assert.equal(inputUp.defaultPrevented, true);
+    assert.equal(input.value, "sitrep");
+    const inputUpAgain = await view.key(input, "ArrowUp");
+    assert.equal(inputUpAgain.defaultPrevented, true);
+    assert.equal(input.value, "status");
+    const inputDown = await view.key(input, "ArrowDown");
+    assert.equal(inputDown.defaultPrevented, true);
+    assert.equal(input.value, "sitrep");
+    const inputDownAgain = await view.key(input, "ArrowDown");
+    assert.equal(inputDownAgain.defaultPrevented, true);
+    assert.equal(input.value, "");
+    await view.key(input, "ArrowUp");
+    await view.key(input, "ArrowUp");
+    assert.equal(input.value, "status");
+
+    await act(async () => useDeck.setState({ tour: true }));
+    const flightButton = labeledButton(view.document, "Stop the 30-second flight");
+    assert.equal(flightButton.isConnected, true, "the unrelated button must be mounted after flight state changes");
+    const select = view.document.createElement("select");
+    const editable = view.document.createElement("div");
+    editable.setAttribute("contenteditable", "true");
+    view.document.body.append(select, editable);
+    const unrelated = [flightButton, view.document.querySelector('a[href="mailto:doug@cashio.us"]'), select, editable];
+    for (const control of unrelated) {
+      assert.equal(control.isConnected, true, `${control.tagName} must be a mounted interactive target`);
+      control.focus();
+      for (const key of ["ArrowUp", "ArrowDown"]) {
+        const event = await view.key(control, key);
+        assert.equal(event.defaultPrevented, false, `${control.tagName} ${key} must retain native behavior`);
+        assert.equal(input.value, "status", `${control.tagName} ${key} must not walk E.V.E. history`);
+        assert.equal(useDeck.getState().tour, true, `${control.tagName} ${key} must not stop flight`);
+      }
+    }
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("deck navigator initializes focus, traps both tab directions, closes safely, and restores its opener", async () => {
+  const view = mountCommandDeck();
+  try {
+    await view.render();
+    const opener = [...view.document.querySelectorAll('button[aria-label="Open deck navigator"]')].at(-1);
+    opener.focus();
+    await view.click(opener);
+    const dialog = view.document.querySelector('[role="dialog"][aria-label="Deck navigator"]');
+    assert.ok(dialog);
+    assert.equal(view.document.activeElement?.getAttribute("aria-label"), "Go to SNAPSHOT deck");
+
+    const controls = [...dialog.querySelectorAll("button")];
+    controls.at(-1).focus();
+    await view.key(controls.at(-1), "Tab");
+    assert.equal(view.document.activeElement, controls[0], "Tab must wrap from last to first");
+    await view.key(controls[0], "Tab", { shiftKey: true });
+    assert.equal(view.document.activeElement, controls.at(-1), "Shift+Tab must wrap from first to last");
+
+    await view.click(dialog.querySelector("div"));
+    assert.ok(view.document.querySelector('[role="dialog"]'), "clicking inside must not act like a backdrop click");
+    await view.key(dialog, "Escape");
+    assert.equal(view.document.querySelector('[role="dialog"]'), null);
+    assert.equal(view.document.activeElement, opener, "Escape must return focus to the exact opener");
+
+    await view.click(opener);
+    const reopened = view.document.querySelector('[role="dialog"]');
+    labeledButton(view.document, "Close deck navigator");
+    await view.click(reopened.parentElement);
+    assert.equal(view.document.querySelector('[role="dialog"]'), null, "a direct backdrop click must close");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("a distant manual jump creates one history entry while smooth-scroll observers and passive scrolling replace it", async () => {
+  const view = mountCommandDeck({
+    url: "https://cashio.us/#deck=builds&article=7",
+    reducedMotion: false,
+  });
+  try {
+    await view.render();
+    await view.scrollDeck(5);
+    assert.deepEqual({ deck: useDeck.getState().deck, article: useDeck.getState().sel }, { deck: 5, article: 6 });
+    const initialLength = view.window.history.length;
+
+    await view.click(labeledButton(view.document, "Go to ROUTING deck"));
+    await view.settle();
+    assert.equal(view.window.location.hash, "#deck=routing");
+    assert.equal(view.window.history.length, initialLength + 1, "manual navigation must push exactly one target entry");
+
+    for (const intermediateDeck of [4, 3, 2]) await view.scrollDeck(intermediateDeck);
+    await view.settle();
+    assert.equal(
+      view.window.location.hash,
+      "#deck=routing",
+      "smooth-scroll observers must not rewrite the target hash",
+    );
+    assert.equal(view.window.history.length, initialLength + 1, "smooth scrolling must not add intermediate entries");
+
+    await view.history("back");
+    assert.equal(view.window.location.hash, "#deck=builds&article=7");
+    await view.scrollDeck(5);
+    assert.deepEqual(
+      { deck: useDeck.getState().deck, article: useDeck.getState().sel },
+      { deck: 5, article: 6 },
+      "one Back must restore the complete Builds selection",
+    );
+
+    await view.history("forward");
+    assert.equal(view.window.location.hash, "#deck=routing");
+    await view.scrollDeck(2);
+    assert.equal(useDeck.getState().deck, 2, "one Forward must restore the manual target");
+
+    const passiveLength = view.window.history.length;
+    await view.scrollDeck(3);
+    await view.settle();
+    assert.equal(view.window.location.hash, "#deck=iron", "passive scrolling must keep the shareable hash current");
+    assert.equal(
+      view.window.history.length,
+      passiveLength,
+      "passive scrolling must replace instead of spamming history",
+    );
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("a controlled flight handoff replaces the hash without adding history", async () => {
+  const view = mountCommandDeck({ controlledTimers: true });
+  try {
+    await view.render();
+    const initialLength = view.window.history.length;
+    await view.click(labeledButton(view.document, "Run the 30-second flight"));
+    await view.runControlledTimeout(7500);
+
+    assert.equal(useDeck.getState().deck, 2);
+    assert.equal(view.window.location.hash, "#deck=routing");
+    assert.equal(view.window.history.length, initialLength, "flight handoffs must replace instead of pushing history");
+    assert.equal(useDeck.getState().audio, false, "the controlled handoff must not arm audio");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("interrupted and timed-out programmatic scrolls resume passive canonical replacement", async (t) => {
+  await t.test("wheel cancellation", async () => {
+    const view = mountCommandDeck({ controlledTimers: true, reducedMotion: false });
+    try {
+      await view.render();
+      const initialLength = view.window.history.length;
+      await view.click(labeledButton(view.document, "Go to ROUTING deck"));
+      const scroller = view.document.querySelector("main.za-scroll");
+      await act(async () => scroller.dispatchEvent(new view.window.Event("wheel", { bubbles: true })));
+      await view.scrollDeck(3);
+
+      assert.equal(view.window.location.hash, "#deck=iron");
+      assert.equal(view.window.history.length, initialLength + 1, "cancellation must retain one logical manual entry");
+    } finally {
+      await view.cleanup();
+    }
+  });
+
+  await t.test("bounded timeout", async () => {
+    const view = mountCommandDeck({ controlledTimers: true, reducedMotion: false });
+    try {
+      await view.render();
+      const initialLength = view.window.history.length;
+      await view.click(labeledButton(view.document, "Go to CONTACT deck"));
+      await view.scrollDeck(0);
+      assert.equal(
+        view.window.location.hash,
+        "#deck=contact",
+        "stalled observers must remain suppressed before timeout",
+      );
+
+      await view.runControlledTimeout(3200);
+      await view.scrollDeck(3);
+      assert.equal(view.window.location.hash, "#deck=iron");
+      assert.equal(view.window.history.length, initialLength + 1, "timeout recovery must replace the manual entry");
+    } finally {
+      await view.cleanup();
+    }
+  });
+});
+
+test("Executive history restoration remounts technical decks and restores Builds article 7", async () => {
+  const view = mountCommandDeck({
+    url: "https://cashio.us/#deck=builds&article=7",
+    reducedMotion: false,
+  });
+  try {
+    await view.render();
+    await view.scrollDeck(5);
+    await act(async () => useDeck.setState({ mode: "executive", shown: [0, 8] }));
+    assert.equal(view.document.querySelector('section[data-deck="5"]'), null, "Executive mode must begin unmounted");
+
+    await view.click(labeledButton(view.document, "Go to CONTACT deck"));
+    await view.settle();
+    await view.scrollDeck(8);
+    assert.equal(view.window.location.hash, "#deck=contact");
+    await view.history("back");
+
+    assert.equal(useDeck.getState().mode, "technical");
+    assert.ok(
+      view.document.querySelector('section[data-deck="5"]'),
+      "history restoration must remount technical decks",
+    );
+    assert.deepEqual({ deck: useDeck.getState().deck, article: useDeck.getState().sel }, { deck: 5, article: 6 });
+    assert.equal(view.window.location.hash, "#deck=builds&article=7");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("Executive GO navigation remounts a technical target and keeps the selected Builds article", async () => {
+  const view = mountCommandDeck({ reducedMotion: false });
+  try {
+    await view.render();
+    await act(async () => useDeck.setState({ mode: "executive", sel: 6, shown: [0, 8] }));
+    const opener = [...view.document.querySelectorAll('button[aria-label="Open deck navigator"]')].at(-1);
+    await view.click(opener);
+    await view.click(labeledButton(view.document, "Go to BUILDS deck"));
+    await view.settle();
+
+    assert.equal(useDeck.getState().mode, "technical");
+    assert.ok(view.document.querySelector('section[data-deck="5"]'), "GO must remount the requested technical deck");
+    assert.deepEqual({ deck: useDeck.getState().deck, article: useDeck.getState().sel }, { deck: 5, article: 6 });
+    assert.equal(view.window.location.hash, "#deck=builds&article=7");
+    assert.equal(
+      view.document.querySelector('[role="dialog"]'),
+      null,
+      "successful GO navigation must close the navigator",
+    );
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("the real airframe role-button owns shortcut keys while Enter and Space still activate it", async () => {
+  const view = mountCommandDeck();
+  const baseline = { deck: 4, sel: 3, audio: true, tour: false, mode: "technical" };
+  try {
+    await view.render();
+    const airframe = view.document.querySelector('[role="button"][aria-label^="Open "][aria-label$=" airframe deck"]');
+    assert.ok(airframe, "expected the real focusable airframe widget");
+    airframe.focus();
+
+    for (const key of ["ArrowLeft", "ArrowRight", "a", "t", "1", "9"]) {
+      await act(async () => useDeck.setState(baseline));
+      airframe.focus();
+      await view.key(airframe, key);
+      const state = useDeck.getState();
+      assert.deepEqual(
+        { deck: state.deck, sel: state.sel, audio: state.audio, tour: state.tour },
+        { deck: 4, sel: 3, audio: true, tour: false },
+        `${key} must remain owned by the focused role-button`,
+      );
+    }
+
+    for (const key of ["Enter", " "]) {
+      await act(async () => useDeck.setState(baseline));
+      airframe.focus();
+      await view.key(airframe, key);
+      assert.equal(useDeck.getState().deck, 2, `${JSON.stringify(key)} must activate the Proteus airframe route`);
+    }
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("focus cycling and shortcut exclusion cover boundaries and interactive descendants", () => {
+  assert.ok(focusHelpers, "the deck focus helper module must exist");
+  assert.equal(focusHelpers.nextFocusIndex(2, 3, false), 0);
+  assert.equal(focusHelpers.nextFocusIndex(0, 3, true), 2);
+  assert.equal(focusHelpers.nextFocusIndex(1, 3, false), 2);
+  assert.equal(focusHelpers.nextFocusIndex(-1, 3, false), 0);
+  assert.equal(focusHelpers.nextFocusIndex(-1, 3, true), 2);
+  assert.equal(focusHelpers.nextFocusIndex(0, 0, false), -1);
+
+  const dom = new JSDOM(
+    '<input><textarea></textarea><select></select><button><span></span></button><a><b></b></a><div contenteditable="true"><i></i></div><div role="button" tabindex="0"><em></em></div><div role="slider" tabindex="0"></div><p></p>',
+  );
+  for (const selector of [
+    "input",
+    "textarea",
+    "select",
+    "button",
+    "button span",
+    "a",
+    "a b",
+    "[contenteditable]",
+    "[contenteditable] i",
+    '[role="button"]',
+    '[role="button"] em',
+    '[role="slider"]',
+  ]) {
+    assert.equal(focusHelpers.isInteractiveShortcutTarget(dom.window.document.querySelector(selector)), true, selector);
+  }
+  assert.equal(focusHelpers.isInteractiveShortcutTarget(dom.window.document.querySelector("p")), false);
+});
+
+test("every deck and footer reserve the mobile rail and safe-area inset", async () => {
+  const view = mountCommandDeck();
+  try {
+    await view.render();
+    const decks = [...view.document.querySelectorAll("section[data-deck]")];
+    assert.ok(decks.length >= 9);
+    assert.ok(decks.every((deck) => deck.classList.contains("za-mobile-rail-clearance")));
+    assert.ok(view.document.querySelector("footer")?.classList.contains("za-mobile-rail-clearance"));
+    assert.ok(
+      view.document.querySelector('nav[aria-label="Mobile command decks"]')?.classList.contains("za-mobile-rail-safe"),
+    );
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("all below-fold plate and selected-aircraft evidence images are lazy and async", async () => {
+  const view = mountCommandDeck();
+  try {
+    await view.render();
+    const plates = [...view.document.querySelectorAll("img.za-plate-img")];
+    assert.equal(plates.length, 3, "technical mode must render rack, operator, and fold plates");
+    for (const image of plates) {
+      assert.equal(image.getAttribute("loading"), "lazy");
+      assert.equal(image.getAttribute("decoding"), "async");
+    }
+    const evidence = view.document.querySelector("img.za-airframe-photo");
+    assert.equal(evidence?.getAttribute("loading"), "lazy");
+    assert.equal(evidence?.getAttribute("decoding"), "async");
+    await act(async () => useDeck.setState({ mode: "executive" }));
+    const commandPlate = view.document.querySelector('img.za-plate-img[src^="/plates/command.jpg"]');
+    assert.ok(commandPlate, "executive mode must render the command plate");
+    assert.equal(commandPlate.getAttribute("loading"), "lazy");
+    assert.equal(commandPlate.getAttribute("decoding"), "async");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("stage loading waits for paint, accepts deliberate intent, and cancels cleanly", async () => {
+  assert.ok(stageScheduler, "the stage-load scheduler module must exist");
+  const fake = createSchedulerEnvironment();
+  let loads = 0;
+  let ready = 0;
+  const cancel = stageScheduler.scheduleStageLoad({
+    environment: fake.environment,
+    load: async () => (++loads, { stage: true }),
+    onReady: () => ready++,
+    onFallback: () => assert.fail("successful import must not fall back"),
+  });
+  assert.equal(loads, 0);
+  fake.dispatch("pointerdown");
+  assert.equal(loads, 0, "intent before the first frame must not import");
+  fake.runFrame();
+  assert.equal(loads, 0);
+  fake.dispatch("keydown");
+  await flushPromises();
+  assert.equal(loads, 1, "intent after first paint may accelerate the load");
+  assert.equal(ready, 1);
+  cancel();
+  assert.deepEqual(fake.counts(), { frames: 0, timers: 0, idles: 0, listeners: 0 });
+});
+
+test("stage loading prefers second-frame idle, has a bounded no-idle fallback, and handles rejection", async (t) => {
+  assert.ok(stageScheduler, "the stage-load scheduler module must exist");
+  await t.test("idle after two frames", async () => {
+    const fake = createSchedulerEnvironment();
+    let loads = 0;
+    stageScheduler.scheduleStageLoad({
+      environment: fake.environment,
+      load: async () => ++loads,
+      onReady: () => {},
+      onFallback: assert.fail,
+    });
+    fake.runFrame();
+    fake.runFrame();
+    assert.equal(loads, 0);
+    fake.runIdle();
+    await Promise.resolve();
+    assert.equal(loads, 1);
+  });
+
+  await t.test("timeout fallback without requestIdleCallback", async () => {
+    const fake = createSchedulerEnvironment({ idle: false });
+    let loads = 0;
+    stageScheduler.scheduleStageLoad({
+      environment: fake.environment,
+      load: async () => ++loads,
+      onReady: () => {},
+      onFallback: assert.fail,
+    });
+    fake.runFrame();
+    fake.runTimer(1600);
+    await Promise.resolve();
+    assert.equal(loads, 1);
+  });
+
+  await t.test("second-frame zero-delay path without requestIdleCallback", async () => {
+    const fake = createSchedulerEnvironment({ idle: false });
+    let loads = 0;
+    stageScheduler.scheduleStageLoad({
+      environment: fake.environment,
+      load: async () => ++loads,
+      onReady: () => {},
+      onFallback: assert.fail,
+    });
+    fake.runFrame();
+    fake.runFrame();
+    assert.equal(loads, 0);
+    fake.runTimer(0);
+    await Promise.resolve();
+    assert.equal(loads, 1);
+  });
+
+  await t.test("rejected import reaches the non-WebGL fallback without escaping", async () => {
+    const fake = createSchedulerEnvironment();
+    let fallback = 0;
+    stageScheduler.scheduleStageLoad({
+      environment: fake.environment,
+      load: async () => {
+        throw new Error("WebGL chunk unavailable");
+      },
+      onReady: assert.fail,
+      onFallback: () => fallback++,
+    });
+    fake.runFrame();
+    fake.dispatch("pointerdown");
+    await flushPromises();
+    assert.equal(fallback, 1);
+  });
+});

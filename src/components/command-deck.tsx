@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState, type Ref } from "react";
 import {
   ARTICLES,
   CRAFT,
-  DECK_CRAFT,
   DECKS,
   RELEASE,
   REVISED,
@@ -13,13 +12,35 @@ import {
   daysLeft,
   resolveCraftIndex,
   stardate,
-  validityShort,
 } from "@/lib/content";
 import { getSound } from "@/lib/sound";
+import { isInteractiveShortcutTarget } from "@/lib/deck-focus";
 import { shouldYieldAirframeHud } from "@/lib/hud-layout";
+import { scheduleStageLoad } from "@/lib/stage-load-scheduler";
+import {
+  beginHashRestore,
+  cancelHashRestore,
+  classifyHashChange,
+  consumeScrollDeck,
+  createHashTransitionState,
+  formatDeckHash,
+  hashWriteModeForNavigation,
+  parseDeckHash,
+  shouldStopFlightForNavigation,
+  type NavigationOrigin,
+} from "@/lib/deck-navigation";
+import {
+  flightActionAt,
+  isFlightStopKey,
+  nextFlightHandoffAt,
+  prepareFlightStart,
+  type FlightState,
+} from "@/lib/flight-plan";
 import { useDeck, type BitMood } from "@/lib/store";
 import type { ViewscreenStageElement } from "@/lib/viewscreen";
 import { BitMascot } from "./bit-mascot";
+import { CommandHeader, DesktopCommandRail, MobileCommandNavigation, MobileFlightControl } from "./command-chrome";
+import { DeckNavigator } from "./deck-navigator";
 import {
   DeckBrief,
   DeckBuilds,
@@ -50,6 +71,7 @@ export function CommandDeck() {
   const hubZ = useRef<HTMLDivElement>(null);
   const hubA = useRef<HTMLDivElement>(null);
   const stageRef = useRef<ViewscreenStageElement | null>(null);
+  const paletteOpener = useRef<HTMLElement | null>(null);
   const sectionBag = useRef({ s0, s1, s2, s3, s4, s5, s6, s7, s8 });
   sectionBag.current = { s0, s1, s2, s3, s4, s5, s6, s7, s8 };
   const listSections = () => {
@@ -88,8 +110,18 @@ export function CommandDeck() {
   const [hudYield, setHudYield] = useState(false);
   const [rips, setRips] = useState<{ id: number; x: number; y: number }[]>([]);
   const [sweep, setSweep] = useState(false);
+  const [flightElapsed, setFlightElapsed] = useState(0);
   const jumpUntil = useRef(0);
-  const tourI = useRef(0);
+  const flightTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const flightRun = useRef<FlightState | null>(null);
+  const hashTransition = useRef(createHashTransitionState());
+  const hashSuppressionTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const pendingNavigation = useRef<{
+    deck: number;
+    source: NavigationOrigin;
+    craftOverride?: number | null;
+    articleOverride?: number;
+  } | null>(null);
   const lastY = useRef(0);
   const lastT = useRef(0);
   const vel = useRef(0);
@@ -116,12 +148,7 @@ export function CommandDeck() {
           const rect = element.getBoundingClientRect();
           return { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom };
         });
-        setHudYield(
-          shouldYieldAirframeHud(
-            { width: window.innerWidth, height: window.innerHeight },
-            targets,
-          ),
-        );
+        setHudYield(shouldYieldAirframeHud({ width: window.innerWidth, height: window.innerHeight }, targets));
       });
     };
 
@@ -139,12 +166,16 @@ export function CommandDeck() {
   }, [mode]);
 
   useEffect(() => {
-    void import("@/lib/viewscreen-stage.js").then((mod) => {
-      const Ctor = (mod as { ViewscreenStage?: CustomElementConstructor }).ViewscreenStage;
-      if (Ctor && typeof customElements !== "undefined" && !customElements.get("viewscreen-stage")) {
-        customElements.define("viewscreen-stage", Ctor);
-      }
-      setStageOn(true);
+    return scheduleStageLoad({
+      load: () => import("@/lib/viewscreen-stage.js"),
+      onReady: (mod) => {
+        const Ctor = (mod as { ViewscreenStage?: CustomElementConstructor }).ViewscreenStage;
+        if (Ctor && typeof customElements !== "undefined" && !customElements.get("viewscreen-stage")) {
+          customElements.define("viewscreen-stage", Ctor);
+        }
+        setStageOn(true);
+      },
+      onFallback: () => setStageOn(false),
     });
   }, []);
 
@@ -241,17 +272,90 @@ export function CommandDeck() {
       const c = centre(cell);
       const hy = h.y + 18;
       const mid = (hy + c.top) / 2;
-      d[hub] += `M ${h.x.toFixed(1)} ${hy.toFixed(1)} C ${h.x.toFixed(1)} ${mid.toFixed(1)} ${c.x.toFixed(1)} ${mid.toFixed(1)} ${c.x.toFixed(1)} ${c.top.toFixed(1)} `;
+      d[hub] +=
+        `M ${h.x.toFixed(1)} ${hy.toFixed(1)} C ${h.x.toFixed(1)} ${mid.toFixed(1)} ${c.x.toFixed(1)} ${mid.toFixed(1)} ${c.x.toFixed(1)} ${c.top.toFixed(1)} `;
     });
     setPathZeus(d.zeus);
     setPathApollo(d.apollo);
   }, []);
 
+  const syncHash = useCallback((nextDeck: number, nextArticle: number, historyMode: "push" | "replace") => {
+    const hash = formatDeckHash({ deck: nextDeck, article: nextArticle });
+    if (window.location.hash === hash) return;
+    window.history[historyMode === "push" ? "pushState" : "replaceState"](window.history.state, "", hash);
+  }, []);
+
+  const clearHashSuppressionTimer = useCallback(() => {
+    if (hashSuppressionTimer.current != null) window.clearTimeout(hashSuppressionTimer.current);
+    hashSuppressionTimer.current = null;
+  }, []);
+
+  const cancelProgrammaticScroll = useCallback(() => {
+    clearHashSuppressionTimer();
+    hashTransition.current = cancelHashRestore(hashTransition.current);
+  }, [clearHashSuppressionTimer]);
+
+  const beginProgrammaticScroll = useCallback(
+    (targetDeck: number) => {
+      clearHashSuppressionTimer();
+      hashTransition.current = beginHashRestore(hashTransition.current, targetDeck);
+      hashSuppressionTimer.current = window.setTimeout(() => {
+        hashTransition.current = cancelHashRestore(hashTransition.current);
+        hashSuppressionTimer.current = null;
+      }, 3200);
+    },
+    [clearHashSuppressionTimer],
+  );
+
+  const stopFlight = useCallback(() => {
+    if (flightTimer.current != null) window.clearTimeout(flightTimer.current);
+    flightTimer.current = null;
+    flightRun.current = null;
+    setFlightElapsed(0);
+    cancelProgrammaticScroll();
+    if (useDeck.getState().tour) set({ tour: false });
+  }, [cancelProgrammaticScroll, set]);
+
+  const toggleTour = useCallback(() => {
+    if (useDeck.getState().tour) {
+      stopFlight();
+      return;
+    }
+    const start = prepareFlightStart(Date.now());
+    flightRun.current = start.flight;
+    setFlightElapsed(0);
+    set({ mode: start.mode, tour: true });
+  }, [set, stopFlight]);
+
+  const openPalette = useCallback(
+    (opener: HTMLElement | null) => {
+      paletteOpener.current = opener;
+      set({ palette: true });
+    },
+    [set],
+  );
+
+  const closePalette = useCallback(() => {
+    set({ palette: false });
+    const opener = paletteOpener.current;
+    paletteOpener.current = null;
+    opener?.focus();
+  }, [set]);
+
   const goto = useCallback(
-    (i: number, auto = false, craftOverride?: number | null) => {
+    (i: number, source: NavigationOrigin = "manual", craftOverride?: number | null, articleOverride?: number) => {
+      if (shouldStopFlightForNavigation(source)) stopFlight();
+      const technicalTarget = i > 0 && i < DECKS.length - 1;
+      if (technicalTarget && useDeck.getState().mode === "executive") {
+        if (useDeck.getState().deck !== i) beginProgrammaticScroll(i);
+        pendingNavigation.current = { deck: i, source, craftOverride, articleOverride };
+        set({ mode: "technical", palette: false });
+        return;
+      }
       const el = listSections()[i]?.current;
       const sc = scRef.current;
       if (!el || !sc) return;
+      if (useDeck.getState().deck !== i) beginProgrammaticScroll(i);
       const top = Math.max(0, el.offsetTop - 8);
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (reduce) sc.scrollTop = top;
@@ -266,31 +370,113 @@ export function CommandDeck() {
       setSweep(true);
       window.setTimeout(() => setSweep(false), 560);
       const shown = useDeck.getState().shown;
-      jumpUntil.current = Date.now() + (auto ? 2400 : 1600);
+      const selectedArticle =
+        articleOverride == null
+          ? useDeck.getState().sel
+          : Math.max(0, Math.min(ARTICLES.length - 1, Math.trunc(articleOverride)));
+      jumpUntil.current = Date.now() + (source === "flight" ? 2400 : 1600);
       sfx("nav", i);
       lastDeck.current = i;
       set({
         deck: i,
+        sel: selectedArticle,
         palette: false,
         shown: shown.includes(i) ? shown : [...shown, i],
         ...(craftOverride === undefined ? {} : { craftLock: craftOverride }),
       });
+      const historyMode = hashWriteModeForNavigation(source);
+      if (historyMode) syncHash(i, selectedArticle, historyMode);
       bit("yes");
       window.setTimeout(() => {
         measureClear();
         measureTopo();
       }, 420);
     },
-    [bit, chapter, cinePulse, measureClear, measureTopo, set, sfx],
+    [beginProgrammaticScroll, bit, chapter, cinePulse, measureClear, measureTopo, set, sfx, stopFlight, syncHash],
   );
+
+  useEffect(() => {
+    if (mode !== "technical" || pendingNavigation.current == null) return;
+    const pending = pendingNavigation.current;
+    pendingNavigation.current = null;
+    goto(pending.deck, pending.source, pending.craftOverride, pending.articleOverride);
+  }, [goto, mode]);
 
   const gotoCraft = useCallback(
     (craftIndex: number) => {
       const route = craftRoute(craftIndex);
-      goto(route.deck, false, route.craftLock);
+      goto(route.deck, "manual", route.craftLock);
     },
     [goto],
   );
+
+  const selectArticle = useCallback(
+    (article: number) => {
+      stopFlight();
+      const selected = Math.max(0, Math.min(ARTICLES.length - 1, Math.trunc(article)));
+      set({ sel: selected });
+      if (useDeck.getState().deck === 5) syncHash(5, selected, "push");
+      sfx("target", selected);
+    },
+    [set, sfx, stopFlight, syncHash],
+  );
+
+  const runFlight = useCallback(
+    (state: FlightState) => {
+      const tick = () => {
+        if (flightRun.current !== state || !useDeck.getState().tour || state.startedAt == null) return;
+        const elapsed = Date.now() - state.startedAt;
+        setFlightElapsed(elapsed);
+        const action = flightActionAt(elapsed);
+        if (action.kind === "complete") {
+          goto(action.deck, "flight");
+          flightTimer.current = null;
+          flightRun.current = null;
+          setFlightElapsed(30_000);
+          set({ tour: false });
+          return;
+        }
+
+        const article = "article" in action && typeof action.article === "number" ? action.article : undefined;
+        goto(action.deck, "flight", undefined, article);
+        const nextAt = nextFlightHandoffAt(elapsed);
+        if (nextAt == null) return;
+        flightTimer.current = window.setTimeout(tick, Math.max(0, nextAt - (Date.now() - state.startedAt)));
+      };
+      tick();
+    },
+    [goto, set],
+  );
+
+  useEffect(() => {
+    const restoreHash = () => {
+      const target = parseDeckHash(window.location.hash);
+      goto(target.deck, "hash", undefined, target.article);
+    };
+    if (window.location.hash) restoreHash();
+    else syncHash(useDeck.getState().deck, useDeck.getState().sel, "replace");
+    const onHashChange = () => {
+      const transition = classifyHashChange(hashTransition.current, window.location.hash);
+      hashTransition.current = transition.state;
+      if (transition.kind === "internal") return;
+      stopFlight();
+      restoreHash();
+    };
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, [goto, stopFlight, syncHash]);
+
+  useEffect(() => {
+    return () => {
+      if (flightTimer.current != null) window.clearTimeout(flightTimer.current);
+      clearHashSuppressionTimer();
+    };
+  }, [clearHashSuppressionTimer]);
+
+  useEffect(() => {
+    const state = flightRun.current;
+    if (tour && mode === "technical" && state && flightTimer.current == null) runFlight(state);
+  }, [mode, runFlight, tour]);
 
   useEffect(() => {
     if (craftLock == null) return;
@@ -325,13 +511,6 @@ export function CommandDeck() {
   const onScroll = useCallback(() => {
     const sc = scRef.current;
     if (!sc) return;
-    if (useDeck.getState().tour && Date.now() > jumpUntil.current) {
-      if (tourI.current) {
-        clearInterval(tourI.current);
-        tourI.current = 0;
-      }
-      set({ tour: false });
-    }
     const secs = listSections();
     let i = 0;
     const reallyScrolled = sc.scrollTop >= 80;
@@ -342,7 +521,8 @@ export function CommandDeck() {
         const el = r.current;
         if (el && el.offsetHeight > 160 && el.offsetTop <= y) i = k;
       });
-      const atEnd = canOverflow && sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 8 && sc.scrollTop > sc.clientHeight * 0.45;
+      const atEnd =
+        canOverflow && sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 8 && sc.scrollTop > sc.clientHeight * 0.45;
       if (atEnd) {
         for (let k = secs.length - 1; k >= 0; k--) {
           const el = secs[k].current;
@@ -377,22 +557,26 @@ export function CommandDeck() {
       if (!el || shown.includes(k)) return;
       if (el.offsetTop < bottom && el.offsetTop + el.offsetHeight > sc.scrollTop) shown.push(k);
     });
+    const scrollTransition = consumeScrollDeck(hashTransition.current, i);
+    hashTransition.current = scrollTransition.state;
+    if (hashTransition.current.restoringDeck == null) clearHashSuppressionTimer();
     const next: Partial<{ deck: number; prog: number; shown: number[]; craftLock: number | null }> = {};
     if (i !== useDeck.getState().deck) {
       next.deck = i;
-      next.craftLock = craftLockAfterDeckChange(
-        useDeck.getState().craftLock,
-        i,
-        Date.now() <= jumpUntil.current,
-      );
+      next.craftLock = craftLockAfterDeckChange(useDeck.getState().craftLock, i, Date.now() <= jumpUntil.current);
       if (Date.now() > jumpUntil.current) chapter(i);
     }
     const pct = Math.round(p * 100);
     if (pct !== useDeck.getState().prog) next.prog = pct;
     if (shown.length !== useDeck.getState().shown.length) next.shown = shown;
-    if (Object.keys(next).length) set(next);
+    if (Object.keys(next).length) {
+      set(next);
+      if (next.deck != null) {
+        if (scrollTransition.writeHash) syncHash(next.deck, useDeck.getState().sel, "replace");
+      }
+    }
     measureClear();
-  }, [chapter, measureClear, set]);
+  }, [chapter, clearHashSuppressionTimer, measureClear, set, syncHash]);
 
   useEffect(() => {
     const sc = scRef.current;
@@ -416,23 +600,25 @@ export function CommandDeck() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const k = (e.key || "").toLowerCase();
-      const typing = e.target && /input|textarea/i.test((e.target as HTMLElement).tagName || "");
+      const interactive = isInteractiveShortcutTarget(e.target);
+      const eveInput = e.target instanceof HTMLElement && e.target.matches("#eve-command");
       if (useDeck.getState().photo) {
         set({ photo: false });
         return;
       }
       if ((e.metaKey || e.ctrlKey) && k === "k") {
         e.preventDefault();
-        set({ palette: !useDeck.getState().palette });
+        if (useDeck.getState().palette) closePalette();
+        else openPalette(document.activeElement instanceof HTMLElement ? document.activeElement : null);
         sfx("prompt");
         return;
       }
       if (k === "escape") {
-        set({ palette: false });
+        if (useDeck.getState().palette) closePalette();
         return;
       }
-      if (typing) {
-        if (k === "arrowup" || k === "arrowdown") {
+      if (interactive) {
+        if (eveInput && (k === "arrowup" || k === "arrowdown")) {
           e.preventDefault();
           const h = hist;
           if (!h.length) return;
@@ -454,16 +640,16 @@ export function CommandDeck() {
         }
         return;
       }
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
+      if (isFlightStopKey(k)) stopFlight();
       const n = ARTICLES.length;
       if (k === "arrowright") {
         const sel = (useDeck.getState().sel + 1) % n;
-        set({ sel });
-        sfx("target", sel);
+        selectArticle(sel);
       }
       if (k === "arrowleft") {
         const sel = (useDeck.getState().sel + n - 1) % n;
-        set({ sel });
-        sfx("target", sel);
+        selectArticle(sel);
       }
       if (k === "r") {
         set({ alert: true });
@@ -483,11 +669,12 @@ export function CommandDeck() {
           set({ audio: false });
         }
       }
+      if (k === "t") toggleTour();
       if (k >= "1" && k <= "9") goto(Number(k) - 1);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [bit, goto, hist, histI, set, sfx]);
+  }, [bit, closePalette, goto, hist, histI, openPalette, selectArticle, set, sfx, stopFlight, toggleTour]);
 
   const run = (raw: string) => {
     const cmd = (raw || "").trim();
@@ -531,21 +718,6 @@ export function CommandDeck() {
     }
   };
 
-  const toggleTour = () => {
-    if (tour) {
-      if (tourI.current) clearInterval(tourI.current);
-      tourI.current = 0;
-      set({ tour: false });
-      return;
-    }
-    set({ tour: true });
-    goto((deck + 1) % 9, true);
-    tourI.current = window.setInterval(() => {
-      const cur = useDeck.getState().deck;
-      goto((cur + 1) % 9, true);
-    }, 9500);
-  };
-
   const copyMail = async () => {
     try {
       await navigator.clipboard.writeText("doug@cashio.us");
@@ -582,111 +754,41 @@ export function CommandDeck() {
       <div className={`za-warpflash ${flash ? "on" : ""}`} />
       <div className={`za-sweep ${sweep ? "on" : ""}`} aria-hidden />
 
-      <aside
-        className={`fixed left-0 top-0 z-40 hidden h-dvh flex-col bg-void/90 backdrop-blur-md transition-[width] duration-300 md:flex ${hud} ${
-          railOpen ? "w-[220px]" : "w-[68px]"
-        }`}
-      >
-          <button
-            type="button"
-            className="za-lcars-cap warm mx-0 mt-0 h-16 px-3 text-left text-[13px]"
-            onClick={() => goto(0)}
-          >
-            {railOpen ? "ZEUSAPOLLO" : "ZA"}
-          </button>
-          <nav aria-label="Command decks" className="mt-2 flex flex-1 flex-col gap-1 px-2">
-            {DECKS.map((d, i) => {
-              if (mode === "executive" && i !== 0 && i !== 8) return null;
-              const on = deck === i;
-              return (
-                <button
-                  key={d.id}
-                  type="button"
-                  onClick={() => goto(i)}
-                  onMouseEnter={() => sfx("tick")}
-                  className={`flex min-h-11 items-center gap-3 rounded-r-[22px] px-3 py-2 text-left transition-colors ${
-                    on ? "bg-accent text-on-accent" : "bg-white/5 text-dim hover:bg-cyan/15 hover:text-ink"
-                  }`}
-                >
-                  <span className="za-mono w-5 text-[10px]">{d.num}</span>
-                  {railOpen && <span className="za-mono text-[10px] tracking-[0.16em]">{d.name}</span>}
-                </button>
-              );
-            })}
-          </nav>
-          <div className="flex flex-col gap-1 p-2">
-            <button type="button" className="za-btn-ghost rounded-r-[22px] px-2 py-2 text-[10px]" onClick={toggleTour}>
-              {tour ? "◼" : "▸▸"} {railOpen && (tour ? "TOUR" : "AUTOPILOT")}
-            </button>
-            <button type="button" className="za-btn-ghost rounded-r-[22px] px-2 py-2 text-[10px]" onClick={toggleAudio}>
-              {audio ? "◉" : "○"} {railOpen && (audio ? "AUDIO" : "ARM AUDIO")}
-            </button>
-            <button
-              type="button"
-              className="za-lcars-cap cool min-h-11 px-3 text-[11px]"
-              onClick={() => set({ railOpen: !railOpen })}
-            >
-              {railOpen ? "STOW" : "▸"}
-            </button>
-          </div>
-        </aside>
+      <DesktopCommandRail
+        audio={audio}
+        deck={deck}
+        elapsedMs={flightElapsed}
+        hudClassName={hud}
+        mode={mode}
+        onDeckHover={() => sfx("tick")}
+        onNavigate={goto}
+        onStopFlight={stopFlight}
+        onToggleAudio={toggleAudio}
+        onToggleFlight={toggleTour}
+        onToggleRail={() => set({ railOpen: !railOpen })}
+        railOpen={railOpen}
+        tour={tour}
+      />
 
-      <header
-        className={`za-command-header pointer-events-none fixed left-0 right-0 top-0 z-50 flex items-center justify-between gap-3 px-4 py-3 md:left-[68px] ${hud}`}
-      >
-          <div className="pointer-events-auto za-chip">
-            DECK {String(deck + 1).padStart(2, "0")} · {DECKS[deck].name}
-          </div>
-          <div className="pointer-events-auto hidden items-center gap-1.5 sm:flex">
-            {CRAFT.map((c, i) => (
-              <button
-                key={c[0]}
-                type="button"
-                aria-label={`Warp to ${c[0]}`}
-                title={c[0]}
-                onClick={() => {
-                  gotoCraft(i);
-                  getSound().craft(i, "pip");
-                }}
-                className={`za-lcars-pip ${i === craftI ? "on" : i < craftI ? "past" : ""}`}
-                style={{ width: i === craftI ? 26 : 14 }}
-              />
-            ))}
-          </div>
-          <div className="pointer-events-auto flex items-center gap-2">
-            <span className="za-chip !hidden sm:!inline-flex">19/19 NOMINAL</span>
-            {tour ? <span className="za-chip text-accent">AUTOPILOT</span> : null}
-            <span className="za-chip !hidden md:!inline-flex">
-              <span className="h-1.5 w-1.5 rounded-full bg-green shadow-[0_0_8px_var(--color-green)]" />
-              {validityShort()}
-            </span>
-            <span className="za-chip !hidden lg:!inline-flex">SD {clock}</span>
-            <button
-              type="button"
-              className={`za-chip pointer-events-auto ${audio ? "border-cyan text-cyan" : ""}`}
-              onClick={toggleAudio}
-              aria-pressed={audio}
-              title={audio ? "Mute selection audio" : "Arm selection audio"}
-            >
-              {audio ? (
-                <span className="za-eq !hidden sm:!flex" aria-hidden>
-                  <span /><span /><span /><span /><span />
-                </span>
-              ) : null}
-              {audio ? "AUDIO ARMED" : "AUDIO OFF"}
-            </button>
-            <button
-              type="button"
-              className="za-chip pointer-events-auto hover:border-cyan hover:text-cyan"
-              onClick={() => {
-                set({ palette: true });
-                sfx("prompt");
-              }}
-            >
-              ⌘K
-            </button>
-          </div>
-        </header>
+      <MobileFlightControl active={tour} elapsedMs={flightElapsed} onStart={toggleTour} onStop={stopFlight} />
+
+      <CommandHeader
+        audio={audio}
+        clock={clock}
+        craftIndex={craftI}
+        deck={deck}
+        hudClassName={hud}
+        onNavigateCraft={(index) => {
+          gotoCraft(index);
+          getSound().craft(index, "pip");
+        }}
+        onOpenNavigator={(opener) => {
+          openPalette(opener);
+          sfx("prompt");
+        }}
+        onToggleAudio={toggleAudio}
+        tour={tour}
+      />
 
       <main
         id="main-content"
@@ -694,7 +796,10 @@ export function CommandDeck() {
         ref={scRef}
         className="za-scroll relative z-10 h-dvh overflow-x-hidden overflow-y-auto md:pl-[68px]"
         style={{ visibility: photo ? "hidden" : "visible" }}
+        onPointerDown={stopFlight}
+        onWheel={stopFlight}
         onTouchStart={(e) => {
+          stopFlight();
           swipeX.current = e.touches[0].clientX;
         }}
         onTouchEnd={(e) => {
@@ -723,13 +828,13 @@ export function CommandDeck() {
             <DeckRouting s2={s2} />
             <DeckIron s3={s3} />
             <DeckLineage s4={s4} />
-            <DeckBuilds s5={s5} />
+            <DeckBuilds s5={s5} onSelect={selectArticle} />
             <DeckOperator s6={s6} />
             <DeckEve s7={s7} lines={consoleLines} value={consoleValue} onChange={setConsoleValue} onRun={run} />
           </>
         )}
         <DeckContact s8={s8} onCopy={copyMail} copied={copied} />
-        <footer data-hud-clear className="px-6 pb-20 pt-6 md:px-14">
+        <footer data-hud-clear className="za-mobile-rail-clearance px-6 pb-20 pt-6 md:px-14">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 za-mono text-[10px] text-dim">
             <span>{RELEASE}</span>
             <span>REVISED {REVISED}</span>
@@ -756,23 +861,34 @@ export function CommandDeck() {
         <div className="za-mono mt-2 max-w-[52ch] text-[11px] text-dim">{DECKS[chap].tag}</div>
       </div>
 
-      <div className={`za-corner-hud fixed bottom-5 right-4 z-40 items-end gap-3 ${deck === 7 ? "hidden" : "flex"} ${hudYield ? "yield" : ""} ${hud}`}>
+      <div
+        className={`za-corner-hud fixed bottom-5 right-4 z-40 items-end gap-3 ${deck === 7 ? "hidden" : "flex"} ${hudYield ? "yield" : ""} ${hud}`}
+      >
         <div
           className={`za-airframe hidden max-w-[250px] cursor-pointer rounded-[var(--radius-md)] border border-line bg-void/80 p-3 font-mono text-[10px] leading-relaxed tracking-[0.08em] text-dim hover:border-cyan md:block ${afFlash ? "flash" : ""}`}
           onClick={() => gotoCraft(craftI)}
           onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") gotoCraft(craftI);
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              gotoCraft(craftI);
+            }
           }}
           role="button"
           tabIndex={0}
           aria-label={`Open ${craft[0]} airframe deck`}
         >
           <div className="flex items-center gap-2">
-            <b className="text-cyan">AIRFRAME {String(craftI + 1).padStart(2, "0")} / {String(CRAFT.length).padStart(2, "0")}</b>
+            <b className="text-cyan">
+              AIRFRAME {String(craftI + 1).padStart(2, "0")} / {String(CRAFT.length).padStart(2, "0")}
+            </b>
             <span className="za-airframe-compact-name text-ink">{craft[0]}</span>
             {audio && (
               <span className="za-eq ml-auto" aria-hidden>
-                <span /><span /><span /><span /><span />
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
               </span>
             )}
           </div>
@@ -800,35 +916,13 @@ export function CommandDeck() {
         </button>
       </div>
 
-      <nav
-        aria-label="Mobile command decks"
-        className={`fixed bottom-0 left-0 right-0 z-40 flex justify-around border-t border-line bg-void/90 py-2 backdrop-blur md:hidden ${hud}`}
-      >
-        {DECKS.filter((_, i) => (mode === "executive" ? i === 0 || i === 8 : true))
-          .slice(0, 6)
-          .map((d) => {
-            const i = DECKS.findIndex((x) => x.id === d.id);
-            return (
-              <button
-                key={d.id}
-                type="button"
-                aria-label={`Go to ${d.name}`}
-                onClick={() => goto(i)}
-                className={`za-mono min-h-11 px-2 py-2 text-[10px] ${deck === i ? "text-accent" : "text-dim"}`}
-              >
-                {d.num}
-              </button>
-            );
-          })}
-        <button
-          type="button"
-          aria-label="Open deck navigator"
-          className="za-mono min-h-11 px-2 py-2 text-[10px] text-cyan"
-          onClick={() => set({ palette: true })}
-        >
-          GO
-        </button>
-      </nav>
+      <MobileCommandNavigation
+        deck={deck}
+        hudClassName={hud}
+        mode={mode}
+        onNavigate={goto}
+        onOpenNavigator={openPalette}
+      />
 
       <div
         aria-hidden
@@ -855,52 +949,7 @@ export function CommandDeck() {
         </>
       )}
 
-      {palette && (
-        <div
-          className="fixed inset-0 z-[90] flex items-start justify-center bg-void/80 pt-[12vh] backdrop-blur-md"
-          onClick={(e) => {
-            const t = (e.target as HTMLElement).closest("[data-d]");
-            if (t) goto(Number((t as HTMLElement).dataset.d));
-            else set({ palette: false });
-          }}
-        >
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-label="Deck navigator"
-            className="w-[min(580px,90vw)] overflow-hidden rounded-[var(--radius-lg)] border border-line bg-surface shadow-[var(--shadow-panel)]"
-          >
-            <div className="flex items-center gap-2 border-b border-line px-5 py-3 za-mono text-[11px] tracking-[0.16em] text-cyan">
-              <span className="text-accent">▸</span> GO TO DECK
-              <span className="ml-auto text-dim">ESC TO CLOSE</span>
-            </div>
-            <div className="grid p-2">
-              {DECKS.map((d, i) => (
-                <button
-                  key={d.id}
-                  type="button"
-                  data-d={i}
-                  className={`flex w-full gap-4 rounded-[var(--radius-sm)] px-3 py-2.5 text-left ${
-                    i === deck ? "bg-accent/15 text-ink" : "hover:bg-white/5"
-                  }`}
-                >
-                  <span className="za-mono text-accent">{d.num}</span>
-                  <span className="font-display tracking-wide">{d.name}</span>
-                  <span className="ml-auto hidden za-mono text-[10px] text-dim sm:inline">{d.tag}</span>
-                </button>
-              ))}
-            </div>
-            <div className="flex flex-wrap gap-4 border-t border-line px-5 py-2 za-mono text-[9px] tracking-[0.14em] text-dim">
-              <span>1–9 JUMP</span>
-              <span className="text-green">CURRENT</span>
-              <span className="text-red">R RED ALERT</span>
-              <span>A AUDIO</span>
-              <span>T AUTOPILOT</span>
-              <span>⌘K PALETTE</span>
-            </div>
-          </div>
-        </div>
-      )}
+      {palette && <DeckNavigator deck={deck} onSelect={(index) => goto(index)} onClose={closePalette} />}
 
       {rips.map((r) => (
         <span key={r.id} className="za-rip" style={{ left: r.x, top: r.y }} aria-hidden />

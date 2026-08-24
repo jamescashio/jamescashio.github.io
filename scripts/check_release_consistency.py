@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail closed when the V32 source and GitHub Pages artifact disagree."""
+"""Fail closed when the V33 source and GitHub Pages artifact disagree."""
 
 from __future__ import annotations
 
@@ -53,8 +53,8 @@ def main() -> int:
         return 1
 
     expected = {
-        "release": "V32 MACH ONE",
-        "revised": "2026-08-23",
+        "release": "V33 MACH ONE",
+        "revised": "2026-08-24",
         "status": "current",
         "verified": "2026-08-21",
         "verifiedLong": "21 August 2026",
@@ -95,8 +95,8 @@ def main() -> int:
             failures.append(f"{cname} must contain only cashio.us")
 
     package = json.loads(read("package.json"))
-    if package.get("version") != "32.0.0":
-        failures.append("package.json version must be 32.0.0")
+    if package.get("version") != "33.0.0":
+        failures.append("package.json version must be 33.0.0")
     if package.get("scripts", {}).get("build") != "tsc --noEmit && vite build":
         failures.append("package.json build script changed from the supplied TypeScript + Vite gate")
 
@@ -108,8 +108,16 @@ def main() -> int:
     pages = read(".github/workflows/pages.yml")
     for marker in (
         "branches: [main, master]",
-        "npm install",
+        "npm ci",
+        "npm run lint",
+        "npm run format:check",
+        "npm run test:node",
         "npm run build",
+        "npm run test:release",
+        "python scripts/public_repo_guard.py",
+        "python scripts/check_release_consistency.py",
+        "python -m py_compile",
+        "python scripts/check_committed_whitespace.py",
         "actions/upload-pages-artifact@v3",
         "path: dist",
         "actions/deploy-pages@v4",
@@ -121,7 +129,7 @@ def main() -> int:
         "src/lib/store.ts": ("gate: false", "audio: DEFAULT_AUDIO_ENABLED", "deck: 0"),
         "src/lib/content.ts": (
             'VERIFIED_LONG = "21 August 2026"',
-            'REVISED = "08-23-2026"',
+            'REVISED = "08-24-2026"',
             'EXPIRES_AT = "2026-09-21T05:00:00Z"',
             '"19 OF 19 PUBLISHED CONTAINERS — RUNNING AT PROBE"',
             '"deepseek-v4-flash"',
@@ -132,12 +140,16 @@ def main() -> int:
         "src/components/decks.tsx": (
             "SIGNED · OWNER · {VERIFIED_LONG}",
             "CHANNEL LOCK · OPEN",
-            "za-plate-scan",
             "LINEAGE_EVIDENCE",
             "CONCEPT VISUAL",
             "aria-pressed={pick === i}",
             "COMMITTED",
             'getSound().craft(PILOT_CRAFT[i], "lineage")',
+        ),
+        "src/components/deck-primitives.tsx": (
+            "za-plate-scan",
+            'loading="lazy"',
+            'decoding="async"',
         ),
         "src/components/eve-console.tsx": (
             'command === "sitrep"',
@@ -174,9 +186,11 @@ def main() -> int:
             "no first-gesture blast",
         ),
         "src/components/command-deck.tsx": (
-            'getSound().craft(i, "pip")',
-            "za-command-header",
+            'getSound().craft(index, "pip")',
             "md:block",
+        ),
+        "src/components/command-chrome.tsx": (
+            "za-command-header",
             "AUDIO ARMED",
             "AUDIO OFF",
         ),
@@ -185,7 +199,7 @@ def main() -> int:
         text = read(filename)
         for marker in markers:
             if marker not in text:
-                failures.append(f"{filename} is missing V32 contract marker {marker!r}")
+                failures.append(f"{filename} is missing V33 contract marker {marker!r}")
 
     required_public = (
         "public/command.html",
@@ -343,13 +357,13 @@ def main() -> int:
             failures.append(f"non-audio fetch target found in source: {target!r}")
 
     if failures:
-        print("V32 release consistency check failed:\n")
+        print("V33 release consistency check failed:\n")
         for failure in failures:
             print(f"- {failure}")
         return 1
 
     print(
-        "V32 release consistency passed: 21 August 2026 static snapshot; "
+        "V33 release consistency passed: 21 August 2026 static snapshot; "
         "19/19 containers; 2 Proxmox hosts quorate; 10 public lanes; "
         "36 private catalog entries; root Pages base; archive, privacy, "
         "motion, opt-in audio, and forbidden-token gates satisfied."
