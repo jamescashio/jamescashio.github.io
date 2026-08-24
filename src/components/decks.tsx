@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, type ReactNode, type RefObject } from "react";
+import { useCallback, useMemo, useState, type RefObject } from "react";
 import {
   ARTICLES,
   EXPIRES_SHORT,
@@ -10,119 +10,23 @@ import {
   NAMED_ROLES,
   PILOT_CRAFT,
   PVE,
-  POS,
   ROUTING_STAGES,
   SERVICE_FAMILIES,
-  TELEMETRY,
   VERIFIED_LONG,
   WITHHELD,
   DECK_CRAFT,
 } from "@/lib/content";
 import { getSound } from "@/lib/sound";
 import { useDeck } from "@/lib/store";
+import { BlackBoxReceipt } from "./black-box-receipt";
 import { BitMascot } from "./bit-mascot";
 import { BuildEnvelope } from "./build-envelope";
+import { CountUp, DeckShell, Kicker, Plate, Ticker, Title } from "./deck-primitives";
 import { EveConsole } from "./eve-console";
 
 type SecRef = RefObject<HTMLElement | null>;
 
-function Kicker({ children }: { children: string }) {
-  return <div className="za-kicker mb-3">{children}</div>;
-}
-
-function Title({ children }: { children: ReactNode }) {
-  return <h2 className="za-display text-[clamp(2rem,5vw,4.4rem)] text-ink">{children}</h2>;
-}
-
-function CountUp({ to }: { to: number }) {
-  const [n, setN] = useState(0);
-  useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) {
-      setN(to);
-      return;
-    }
-    let raf = 0;
-    const t0 = performance.now();
-    const run = (t: number) => {
-      const k = Math.min(1, (t - t0) / 920);
-      setN(Math.round(to * (1 - (1 - k) ** 3)));
-      if (k < 1) raf = requestAnimationFrame(run);
-    };
-    raf = requestAnimationFrame(run);
-    return () => cancelAnimationFrame(raf);
-  }, [to]);
-  return <>{n}</>;
-}
-
-function DeckShell({
-  index,
-  sRef,
-  children,
-  className = "",
-}: {
-  index: number;
-  sRef: SecRef;
-  children: ReactNode;
-  className?: string;
-}) {
-  const shown = useDeck((s) => s.shown.includes(index));
-  return (
-    <section
-      ref={sRef}
-      data-deck={index}
-      className={`relative min-h-[92dvh] px-5 py-24 md:px-10 lg:px-14 ${className}`}
-    >
-      <div className={shown ? "za-rise" : "translate-y-6 opacity-0"}>{children}</div>
-    </section>
-  );
-}
-
-function Ticker() {
-  const items = [...TELEMETRY, ...TELEMETRY];
-  return (
-    <div className="za-ticker mt-10 max-w-xl border-y border-line py-2">
-      <div className="za-ticker-track za-mono text-[10px] tracking-[0.2em] text-cyan">
-        {items.map((t, i) => (
-          <span key={i} className="flex items-center gap-3">
-            <span className="h-1 w-1 rounded-full bg-green shadow-[0_0_8px_var(--color-green)]" />
-            {t}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function Plate({
-  src,
-  alt,
-  className = "",
-  fade = "bottom",
-  chip,
-}: {
-  src: string;
-  alt: string;
-  className?: string;
-  fade?: "bottom" | "right" | "left";
-  chip?: ReactNode;
-}) {
-  return (
-    <figure
-      data-hud-clear
-      className={`za-plate ${className}`}
-      onMouseEnter={() => getSound().tick()}
-    >
-      <img src={src} alt={alt} className="za-plate-img" decoding="async" />
-      <span className={`za-plate-fade ${fade}`} aria-hidden />
-      <span className="za-plate-scan" aria-hidden />
-      <span className="za-plate-bezel" aria-hidden />
-      <span className="za-plate-tick tl" aria-hidden />
-      <span className="za-plate-tick br" aria-hidden />
-      {chip ? <figcaption className="za-chip za-plate-chip">{chip}</figcaption> : null}
-    </figure>
-  );
-}
+export const IDENTITY_LINE = "DOUG CASHIO · ENTERPRISE AI + SECURITY SYSTEMS · OWNER-OPERATOR";
 
 export function DeckSnapshot({
   s0,
@@ -138,9 +42,14 @@ export function DeckSnapshot({
   const mode = useDeck((s) => s.mode);
   const set = useDeck((s) => s.set);
   return (
-    <section ref={s0} data-deck={0} className="relative min-h-[100dvh] px-5 pb-32 pt-24 md:px-10 lg:px-14">
+    <section
+      ref={s0}
+      data-deck={0}
+      className="za-mobile-rail-clearance relative min-h-[100dvh] px-5 pb-32 pt-24 md:px-10 lg:px-14"
+    >
       <div ref={copyCol} className="za-bracket max-w-[38rem] p-2">
         <Kicker>ZEUSAPOLLO · SOVEREIGN AI UNDER HUMAN COMMAND</Kicker>
+        <p className="za-mono mt-3 text-[11px] tracking-[0.12em] text-cyan">{IDENTITY_LINE}</p>
         <h1 className="za-display text-[clamp(2rem,4.8vw,4.4rem)] leading-[0.92]">
           OWN THE IRON AND THE <span className="za-shimmer-text">ROUTE</span>.
         </h1>
@@ -163,7 +72,9 @@ export function DeckSnapshot({
             className={`rounded-[10px] px-3 py-3 text-left ${mode === "technical" ? "bg-accent text-on-accent" : "text-dim"}`}
           >
             <div className="za-mono text-[10px] tracking-[0.2em]">TECHNICAL</div>
-            <div className="mt-1 font-sans text-[13px] leading-snug">Nine decks. Fleet, routing law, hardware, builds.</div>
+            <div className="mt-1 font-sans text-[13px] leading-snug">
+              Nine decks. Fleet, routing law, hardware, builds.
+            </div>
           </button>
           <button
             type="button"
@@ -235,7 +146,8 @@ export function DeckBrief({ sBrief }: { sBrief: SecRef }) {
             <article className="za-panel p-5">
               <div className="za-mono text-[10px] text-accent">01 · OUTCOME</div>
               <div className="za-display mt-3 text-5xl text-cyan">
-                <CountUp to={19} />/19
+                <CountUp to={19} />
+                /19
               </div>
               <p className="mt-3 text-sm leading-relaxed text-muted">
                 Published container workloads running during the {VERIFIED_LONG} verification probe. Two Proxmox hosts
@@ -317,23 +229,41 @@ export function DeckGrid({
             {pathZeus ? (
               <>
                 <circle r="3.4" className="za-packet" style={{ offsetPath: `path('${pathZeus}')` }} />
-                <circle r="2.6" className="za-packet" style={{ offsetPath: `path('${pathZeus}')`, animationDelay: "1.1s" }} />
-                <circle r="2.2" className="za-packet" style={{ offsetPath: `path('${pathZeus}')`, animationDelay: "2.2s" }} />
+                <circle
+                  r="2.6"
+                  className="za-packet"
+                  style={{ offsetPath: `path('${pathZeus}')`, animationDelay: "1.1s" }}
+                />
+                <circle
+                  r="2.2"
+                  className="za-packet"
+                  style={{ offsetPath: `path('${pathZeus}')`, animationDelay: "2.2s" }}
+                />
               </>
             ) : null}
             {pathApollo ? (
               <>
                 <circle r="3.4" className="za-packet cool" style={{ offsetPath: `path('${pathApollo}')` }} />
-                <circle r="2.4" className="za-packet cool" style={{ offsetPath: `path('${pathApollo}')`, animationDelay: "1.5s" }} />
+                <circle
+                  r="2.4"
+                  className="za-packet cool"
+                  style={{ offsetPath: `path('${pathApollo}')`, animationDelay: "1.5s" }}
+                />
               </>
             ) : null}
           </svg>
           <div className="flex flex-wrap gap-3">
-            <div ref={hubZ} className={`za-panel za-hub warm px-5 py-4 ${locked?.hub === "zeus" ? "border-accent" : ""}`}>
+            <div
+              ref={hubZ}
+              className={`za-panel za-hub warm px-5 py-4 ${locked?.hub === "zeus" ? "border-accent" : ""}`}
+            >
               <div className="za-display text-xl text-accent">ZEUS</div>
               <div className="za-mono mt-1 text-[10px] text-dim">13 RUNNING WORKLOADS</div>
             </div>
-            <div ref={hubA} className={`za-panel za-hub cool px-5 py-4 ${locked?.hub === "apollo" ? "border-cyan" : ""}`}>
+            <div
+              ref={hubA}
+              className={`za-panel za-hub cool px-5 py-4 ${locked?.hub === "apollo" ? "border-cyan" : ""}`}
+            >
               <div className="za-display text-xl text-cyan">APOLLO</div>
               <div className="za-mono mt-1 text-[10px] text-dim">6 RUNNING WORKLOADS</div>
             </div>
@@ -507,9 +437,9 @@ export function DeckIron({ s3 }: { s3: SecRef }) {
               ))}
             </ul>
             <p className="mt-4 text-sm text-muted">
-              A figure with no fresh measurement is omitted entirely rather than published stale. Owner-run
-              verification probe over cluster SSH by E.V.E. — a dated public-safe snapshot, not streaming telemetry.
-              This page makes no production network calls.
+              A figure with no fresh measurement is omitted entirely rather than published stale. Owner-run verification
+              probe over cluster SSH by E.V.E. — a dated public-safe snapshot, not streaming telemetry. This page makes
+              no production network calls.
             </p>
           </div>
         </div>
@@ -564,44 +494,52 @@ export function DeckLineage({ s4 }: { s4: SecRef }) {
               </button>
             ))}
           </div>
-          <article key={active.name} data-hud-clear className="za-panel za-lineage-dossier relative overflow-hidden p-7">
+          <article
+            key={active.name}
+            data-hud-clear
+            className="za-panel za-lineage-dossier relative overflow-hidden p-7"
+          >
             <div className="za-kicker">FLIGHT RULE {String(pick + 1).padStart(2, "0")} / 04</div>
             <h3 className="za-display mt-4 text-[clamp(1.8rem,3.4vw,3rem)]">{active.name}</h3>
             <p className="mt-5 text-xl leading-snug text-ink">{active.rule}</p>
             <p className="mt-5 max-w-[46ch] text-[1.02rem] leading-relaxed text-muted">{active.note}</p>
             <section className="za-airframe-evidence mt-7" aria-label={`${active.name} aircraft evidence`}>
-                <figure>
-                  <div className="za-airframe-frame">
-                    <img
-                      src={evidence.src}
-                      alt={evidence.alt}
-                      className="za-airframe-photo"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                    <span className="za-airframe-grid" aria-hidden />
-                    <span className="za-airframe-acquire" aria-hidden />
-                    <span className="za-chip za-airframe-label">{evidence.label}</span>
-                  </div>
-                  <figcaption className="za-airframe-credit">
-                    <span>{evidence.credit} · OFFICIAL FLIGHT PHOTOGRAPH</span>
-                    <span className="za-airframe-sources">
-                      <a href={evidence.sourceUrl} target="_blank" rel="noreferrer">PHOTO ↗</a>
-                      {evidence.dataUrl !== evidence.sourceUrl ? (
-                        <a href={evidence.dataUrl} target="_blank" rel="noreferrer">DATA ↗</a>
-                      ) : null}
-                    </span>
-                  </figcaption>
-                </figure>
-                <div className="za-airframe-facts" aria-label={`${active.craft} specifications`}>
-                  {evidence.facts.map(([label, value]) => (
-                    <div key={label}>
-                      <span>{label}</span>
-                      <strong>{value}</strong>
-                    </div>
-                  ))}
+              <figure>
+                <div className="za-airframe-frame">
+                  <img
+                    src={evidence.src}
+                    alt={evidence.alt}
+                    className="za-airframe-photo"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <span className="za-airframe-grid" aria-hidden />
+                  <span className="za-airframe-acquire" aria-hidden />
+                  <span className="za-chip za-airframe-label">{evidence.label}</span>
                 </div>
-              </section>
+                <figcaption className="za-airframe-credit">
+                  <span>{evidence.credit} · OFFICIAL FLIGHT PHOTOGRAPH</span>
+                  <span className="za-airframe-sources">
+                    <a href={evidence.sourceUrl} target="_blank" rel="noreferrer">
+                      PHOTO ↗
+                    </a>
+                    {evidence.dataUrl !== evidence.sourceUrl ? (
+                      <a href={evidence.dataUrl} target="_blank" rel="noreferrer">
+                        DATA ↗
+                      </a>
+                    ) : null}
+                  </span>
+                </figcaption>
+              </figure>
+              <div className="za-airframe-facts" aria-label={`${active.craft} specifications`}>
+                {evidence.facts.map(([label, value]) => (
+                  <div key={label}>
+                    <span>{label}</span>
+                    <strong>{value}</strong>
+                  </div>
+                ))}
+              </div>
+            </section>
             <p className="za-mono mt-8 text-[10px] text-dim">AIRFRAME LOCKED · {active.craft}</p>
             <div className="za-chip mt-5">
               <span className="h-1.5 w-1.5 rounded-full bg-green shadow-[0_0_8px_var(--color-green)]" />
@@ -614,21 +552,23 @@ export function DeckLineage({ s4 }: { s4: SecRef }) {
   );
 }
 
-export function DeckBuilds({ s5 }: { s5: SecRef }) {
+export function DeckBuilds({ s5, onSelect }: { s5: SecRef; onSelect: (article: number) => void }) {
   const sel = useDeck((s) => s.sel);
-  const set = useDeck((s) => s.set);
   const article = ARTICLES[sel];
-  const lock = useCallback((i: number) => {
-    set({ sel: i });
-    getSound().target((POS[i][0] / 100 - 0.5) * 1.4);
-  }, [set]);
+  const lock = useCallback(
+    (i: number) => {
+      onSelect(i);
+    },
+    [onSelect],
+  );
   return (
     <DeckShell index={5} sRef={s5}>
       <div className="max-w-6xl">
         <Kicker>06 · BUILDS</Kicker>
         <Title>SEVEN TEST ARTICLES.</Title>
         <p className="mt-5 max-w-[58ch] text-[1.05rem] leading-relaxed text-muted">
-          Not mockups. Seven shipped builds on the same fabric. Select a marker or article to acquire its proof vector; arrow keys fly the range.
+          Not mockups. Seven shipped builds on the same fabric. Select a marker or article to acquire its proof vector;
+          arrow keys fly the range.
         </p>
         <div className="mt-8 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
           <div data-hud-clear>
@@ -665,7 +605,9 @@ export function DeckBuilds({ s5 }: { s5: SecRef }) {
                     i === sel ? "on" : ""
                   }`}
                 >
-                  <span className="za-build-index za-mono w-6 text-[10px] text-accent">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="za-build-index za-mono w-6 text-[10px] text-accent">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
                   <span className="flex-1 font-display text-[12px] tracking-wide">{a.name}</span>
                   <span className="za-mono text-[9px] text-dim">{a.tag}</span>
                 </button>
@@ -761,7 +703,20 @@ export function DeckEve({
 }) {
   const bitMood = useDeck((s) => s.bitMood);
   const cmds = useMemo(
-    () => ["STATUS", "SITREP", "COST", "CURRENT", "FLEET", "LANES", "WITHHELD", "VERIFY", "WHOAMI", "TALK", "PHOTO", "CLEAR"],
+    () => [
+      "STATUS",
+      "SITREP",
+      "COST",
+      "CURRENT",
+      "FLEET",
+      "LANES",
+      "WITHHELD",
+      "VERIFY",
+      "WHOAMI",
+      "TALK",
+      "PHOTO",
+      "CLEAR",
+    ],
     [],
   );
   return (
@@ -811,8 +766,8 @@ export function DeckContact({ s8, onCopy, copied }: { s8: SecRef; onCopy: () => 
           <Kicker>09 · CONTACT</Kicker>
           <Title>HAIL.</Title>
           <p className="mt-4 max-w-[46ch] text-[1.1rem] leading-relaxed text-muted">
-            If you are building AI routing, automation reliability, explainability, cybersecurity exposure, or
-            sovereign infrastructure — and need it to be both ambitious and provable — let us compare notes.
+            If you are building AI routing, automation reliability, explainability, cybersecurity exposure, or sovereign
+            infrastructure — and need it to be both ambitious and provable — let us compare notes.
           </p>
           <div className="za-mission-stamp mt-7" role="note" aria-label="Mission complete">
             <span>MISSION COMPLETE · HUMAN COMMAND RETAINED</span>
@@ -829,6 +784,7 @@ export function DeckContact({ s8, onCopy, copied }: { s8: SecRef; onCopy: () => 
               PENSACOLA, FLORIDA · PUBLIC-SAFE SNAPSHOT · VERIFIED {VERIFIED_LONG}
             </p>
           </div>
+          <BlackBoxReceipt />
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <a href="mailto:doug@cashio.us" className="za-btn px-6 py-3 text-[12px]">
               EMAIL

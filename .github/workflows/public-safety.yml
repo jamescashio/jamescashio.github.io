@@ -21,7 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -29,16 +29,40 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Install V32 dependencies
-        run: npm install
-
-      - name: Build the Pages artifact
-        run: npm run build
-
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
           python-version: "3.12"
+
+      - name: Install V33 dependencies
+        id: install
+        continue-on-error: true
+        run: npm ci
+
+      - name: Lint maintained source
+        id: lint
+        continue-on-error: true
+        run: npm run lint
+
+      - name: Check formatting
+        id: format
+        continue-on-error: true
+        run: npm run format:check
+
+      - name: Run Node test suite
+        id: node_tests
+        continue-on-error: true
+        run: npm run test:node
+
+      - name: Build the Pages artifact
+        id: build
+        continue-on-error: true
+        run: npm run build
+
+      - name: Run release artifact tests
+        id: release_tests
+        continue-on-error: true
+        run: npm run test:release
 
       - name: Scan for PII, secrets, private topology, and backups
         id: safety_scan
@@ -50,10 +74,21 @@ jobs:
         continue-on-error: true
         run: python scripts/check_release_consistency.py
 
-      - name: Verify V32 release contract
-        id: v32_release_contract
+      - name: Check Python syntax
+        id: python_syntax
         continue-on-error: true
-        run: python -m unittest tests.test_v32_release
+        run: |
+          python -m py_compile \
+            scripts/public_repo_guard.py \
+            scripts/check_release_consistency.py \
+            scripts/check_committed_whitespace.py
+
+      - name: Check whitespace
+        id: whitespace
+        continue-on-error: true
+        run: python scripts/check_committed_whitespace.py
+        env:
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
 
       - name: Upload safety report
         if: always()
@@ -65,11 +100,5 @@ jobs:
           retention-days: 14
 
       - name: Enforce validation results
-        if: steps.safety_scan.outcome != 'success' || steps.release_consistency.outcome != 'success' || steps.v32_release_contract.outcome != 'success'
+        if: steps.install.outcome != 'success' || steps.lint.outcome != 'success' || steps.format.outcome != 'success' || steps.node_tests.outcome != 'success' || steps.build.outcome != 'success' || steps.release_tests.outcome != 'success' || steps.safety_scan.outcome != 'success' || steps.release_consistency.outcome != 'success' || steps.python_syntax.outcome != 'success' || steps.whitespace.outcome != 'success'
         run: exit 1
-
-      - name: Check Python syntax
-        run: |
-          python -m py_compile \
-            scripts/public_repo_guard.py \
-            scripts/check_release_consistency.py

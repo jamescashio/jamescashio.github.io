@@ -14,6 +14,8 @@ verify_ui.js
 public-safety-report.txt
 *.log
 PROMPT-FOR-CHATGPT.md
+.worktrees/
+.superpowers/
 
 # Historical HTML snapshots belong outside the public repository
 index_*backup*.html

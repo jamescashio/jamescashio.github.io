@@ -22,7 +22,7 @@ render_badge() {
   local value="$2"
   local color="$3"
   local output="$4"
-  
+
   cat > "$output" << BADGESVG
 <svg xmlns="http://www.w3.org/2000/svg" width="180" height="24" viewBox="0 0 180 24">
   <defs>

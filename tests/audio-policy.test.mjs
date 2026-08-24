@@ -22,27 +22,13 @@ test("airframe sample order follows the visible fleet and keeps Proteus truthful
 
 test("airframe audio only plays after opt-in on deliberate craft selections", () => {
   for (const trigger of ["pip", "lineage"]) {
-    assert.equal(
-      policy.canPlayAirframe({ enabled: true, armed: true, trigger }),
-      true,
-      trigger,
-    );
+    assert.equal(policy.canPlayAirframe({ enabled: true, armed: true, trigger }), true, trigger);
   }
 
   for (const trigger of ["first-gesture", "scroll", "deck-nav", "tour"]) {
-    assert.equal(
-      policy.canPlayAirframe({ enabled: true, armed: true, trigger }),
-      false,
-      trigger,
-    );
+    assert.equal(policy.canPlayAirframe({ enabled: true, armed: true, trigger }), false, trigger);
   }
 
-  assert.equal(
-    policy.canPlayAirframe({ enabled: false, armed: true, trigger: "pip" }),
-    false,
-  );
-  assert.equal(
-    policy.canPlayAirframe({ enabled: true, armed: false, trigger: "lineage" }),
-    false,
-  );
+  assert.equal(policy.canPlayAirframe({ enabled: false, armed: true, trigger: "pip" }), false);
+  assert.equal(policy.canPlayAirframe({ enabled: true, armed: false, trigger: "lineage" }), false);
 });

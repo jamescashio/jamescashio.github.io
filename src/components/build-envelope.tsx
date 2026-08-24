@@ -38,13 +38,7 @@ function quadraticPoint(a: Point, c: Point, b: Point, t: number): Point {
   };
 }
 
-function drawRangeSweep(
-  ctx: CanvasRenderingContext2D,
-  frame: Frame,
-  hub: Point,
-  now: number,
-  reduce: boolean,
-) {
+function drawRangeSweep(ctx: CanvasRenderingContext2D, frame: Frame, hub: Point, now: number, reduce: boolean) {
   const radius = Math.hypot(frame.w, frame.h) * 0.68;
   ctx.save();
   ctx.beginPath();
@@ -419,9 +413,8 @@ export function BuildEnvelope({ sel, onLock }: { sel: number; onLock: (i: number
         for (let i = 0; i < 2; i++) {
           ctx.beginPath();
           ctx.arc(lockedPoint.x, lockedPoint.y, 16 + bloom * (48 + i * 34), 0, Math.PI * 2);
-          ctx.strokeStyle = i === 0
-            ? `rgba(${AMBER}, ${flash.current * 0.9})`
-            : `rgba(${CYAN}, ${flash.current * 0.38})`;
+          ctx.strokeStyle =
+            i === 0 ? `rgba(${AMBER}, ${flash.current * 0.9})` : `rgba(${CYAN}, ${flash.current * 0.38})`;
           ctx.lineWidth = i === 0 ? 2 : 1;
           ctx.stroke();
         }
@@ -461,7 +454,11 @@ export function BuildEnvelope({ sel, onLock }: { sel: number; onLock: (i: number
       ctx.fillText(compact ? "PROOF FLIGHT" : "PROOF FLIGHT  //  TEST RANGE", compact ? 14 : f.l, 25);
       ctx.textAlign = "right";
       ctx.fillStyle = reduce ? "rgba(170,201,214,0.72)" : `rgba(${CYAN}, 0.88)`;
-      ctx.fillText(reduce ? "STATIC ROUTE" : `RUN ${String(patrol.leg + 1).padStart(2, "0")} / 07  ·  ACTIVE`, f.w - 16, 25);
+      ctx.fillText(
+        reduce ? "STATIC ROUTE" : `RUN ${String(patrol.leg + 1).padStart(2, "0")} / 07  ·  ACTIVE`,
+        f.w - 16,
+        25,
+      );
       ctx.textAlign = "left";
       ctx.fillStyle = "rgba(170,201,214,0.52)";
       ctx.fillText(compact ? "RANGE SWEEP" : "RANGE SWEEP  ·  LOCAL DISPLAY", compact ? 14 : f.l, f.h - 16);

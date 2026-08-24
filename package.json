@@ -1,13 +1,21 @@
 {
   "name": "cashio-us",
   "private": true,
-  "version": "32.0.0",
+  "version": "33.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
+    "check:layout": "npm run build && npm run check:layout:runtime",
+    "check:layout:runtime": "node scripts/check_layout_runtime.mjs",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\" \"tests/**/*.mjs\" \"scripts/**/*.mjs\" \"*.{js,json,md,ts}\" \"docs/**/*.md\" \".github/**/*.{md,yml,yaml}\" \"public/**/*.json\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx}\" \"tests/**/*.mjs\" \"scripts/**/*.mjs\" \"*.{js,json,md,ts}\" \"docs/**/*.md\" \".github/**/*.{md,yml,yaml}\" \"public/**/*.json\"",
+    "lint": "eslint . --max-warnings 0",
     "preview": "vite preview",
-    "test": "node --test tests/animation-timing.test.mjs tests/audio-policy.test.mjs tests/craft-lineage.test.mjs tests/hud-layout.test.mjs tests/release-validity.test.mjs && python -m unittest tests.test_v32_release"
+    "test:node": "node --import tsx --test tests/a11y-performance.test.mjs tests/animation-timing.test.mjs tests/audio-policy.test.mjs tests/craft-lineage.test.mjs tests/deck-navigation.test.mjs tests/flight-experience.test.mjs tests/flight-plan.test.mjs tests/hud-layout.test.mjs tests/layout-verifier.test.mjs tests/module-boundaries.test.mjs tests/release-gates.test.mjs tests/release-validity.test.mjs",
+    "test:release": "python -m unittest tests.test_v32_release tests.test_public_repo_guard tests.test_committed_whitespace",
+    "test": "npm run test:node && npm run build && npm run test:release",
+    "verify": "npm run lint && npm run format:check && npm run test:node && npm run build && npm run test:release && python scripts/public_repo_guard.py && python scripts/check_release_consistency.py && python scripts/check_committed_whitespace.py"
   },
   "dependencies": {
     "react": "^19.2.0",
@@ -16,13 +24,23 @@
     "zustand": "^5.0.11"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@tailwindcss/vite": "^4.1.11",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@types/three": "^0.185.0",
     "@vitejs/plugin-react": "^5.0.0",
+    "eslint": "^10.9.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.4",
+    "globals": "^17.11.0",
+    "jsdom": "^26.1.0",
+    "prettier": "^3.9.6",
     "tailwindcss": "^4.1.11",
+    "tsx": "^4.20.3",
     "typescript": "^5.8.3",
-    "vite": "^6.3.5"
+    "typescript-eslint": "^8.67.0",
+    "vite": "^6.3.5",
+    "ws": "^8.21.3"
   }
 }

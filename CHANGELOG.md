@@ -2,6 +2,24 @@
 
 This file records the canonical public release line for cashio.us. Visible dates use MM-DD-YYYY. Unpublished prototype numbering is intentionally omitted; Git history retains those experiments without presenting them as releases.
 
+## [v33] — 08-24-2026
+
+Release name: "MACH ONE." This release preserves the V32 command-deck identity while making its proof journey easier to enter, share, read, and operate.
+
+### Changed
+
+- Added canonical deck and Deck 06 article hashes with back/forward restoration and deterministic fallbacks.
+- Added the visible four-beat 30-second flight, exact owner-operator identity line, and dated Black Box Receipt.
+- Strengthened dialog focus, control naming, mobile safe-area clearance, lazy images, and post-paint viewscreen loading.
+- Split command chrome, navigation, shared deck primitives, flight control, and receipt UI into focused React modules.
+- Added warning-free lint, deterministic formatting checks, and fail-closed PR and Pages release gates.
+- Preserved the owner-verified 21 August 2026 snapshot and validity policy through 20 September 2026.
+
+### Boundaries
+
+- No redesign, new infrastructure claims, tracking, analytics, production API calls, private topology, credentials, automatic audio, or WebGL renderer rewrite.
+- `/command.html` remains the noindexed historical archive; `/lab.html` continues to redirect to the current root console.
+
 ## [v32] — 08-23-2026
 
 Release name: "MACH ONE." The public site moves to a Vite 6 + React 19 GitHub Pages artifact while preserving the dated, public-safe ZeusApollo truth contract.

@@ -74,11 +74,7 @@ function buildBitStellation(spike: number) {
     const a = bitBaseVertices[face[0]];
     const b = bitBaseVertices[face[1]];
     const c = bitBaseVertices[face[2]];
-    const apex = norm([
-      (a[0] + b[0] + c[0]) / 3,
-      (a[1] + b[1] + c[1]) / 3,
-      (a[2] + b[2] + c[2]) / 3,
-    ]);
+    const apex = norm([(a[0] + b[0] + c[0]) / 3, (a[1] + b[1] + c[1]) / 3, (a[2] + b[2] + c[2]) / 3]);
     const apexIndex = vertices.length;
     vertices.push([apex[0] * spike, apex[1] * spike, apex[2] * spike]);
     faces.push([face[0], face[1], apexIndex], [face[1], face[2], apexIndex], [face[2], face[0], apexIndex]);
@@ -108,15 +104,7 @@ function rotateBitVertex(vertex: number[], rotateX: number, rotateY: number) {
   return [x, y, z];
 }
 
-export function BitMascot({
-  mood,
-  size = 96,
-  className,
-}: {
-  mood: BitMood;
-  size?: number;
-  className?: string;
-}) {
+export function BitMascot({ mood, size = 96, className }: { mood: BitMood; size?: number; className?: string }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const moodRef = useRef(mood);
   moodRef.current = mood;
@@ -129,9 +117,7 @@ export function BitMascot({
     let raf = 0;
     let bitAngle = 0;
     let lastTs = 0;
-    const reduce =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const draw = (now: number) => {
       const dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -147,7 +133,8 @@ export function BitMascot({
       const state = moodRef.current;
       const elapsed = lastTs ? Math.min(80, Math.max(0, now - lastTs)) : 42;
       lastTs = now;
-      if (!reduce) bitAngle += elapsed * (state === "no" || state === "alert" ? 0.0027 : state === "yes" ? 0.0014 : 0.00105);
+      if (!reduce)
+        bitAngle += elapsed * (state === "no" || state === "alert" ? 0.0027 : state === "yes" ? 0.0014 : 0.00105);
       const pulse = 0.5 + 0.5 * Math.sin(now * 0.0022);
       const pal = palette(state);
       const geometry =
@@ -176,7 +163,9 @@ export function BitMascot({
         lightY = -0.5,
         lightZ = 0.76;
       const ordered = geometry.faces
-        .map((face, index) => [index, (points3d[face[0]][2] + points3d[face[1]][2] + points3d[face[2]][2]) / 3] as const)
+        .map(
+          (face, index) => [index, (points3d[face[0]][2] + points3d[face[1]][2] + points3d[face[2]][2]) / 3] as const,
+        )
         .sort((a, b) => a[1] - b[1]);
       ordered.forEach((entry) => {
         const face = geometry.faces[entry[0]];
