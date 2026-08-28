@@ -85,15 +85,33 @@ test("restores an external history hash without writing intermediate scroll deck
   const intermediate = navigation.consumeScrollDeck(restoring, 2);
   assert.deepEqual(intermediate, {
     writeHash: false,
+    updateDeck: false,
     state: { pendingInternalHash: null, restoringDeck: 5 },
   });
   const landed = navigation.consumeScrollDeck(intermediate.state, 5);
   assert.deepEqual(landed, {
     writeHash: false,
+    updateDeck: true,
     state: { pendingInternalHash: null, restoringDeck: null },
   });
   assert.deepEqual(navigation.consumeScrollDeck(landed.state, 6), {
     writeHash: true,
+    updateDeck: true,
+    state: { pendingInternalHash: null, restoringDeck: null },
+  });
+});
+
+test("keeps the logical deck stable while restoration crosses responsive geometry", () => {
+  const restoring = navigation.beginHashRestore(navigation.createHashTransitionState(), 8);
+
+  assert.deepEqual(navigation.consumeScrollDeck(restoring, 4), {
+    writeHash: false,
+    updateDeck: false,
+    state: { pendingInternalHash: null, restoringDeck: 8 },
+  });
+  assert.deepEqual(navigation.consumeScrollDeck(restoring, 8), {
+    writeHash: false,
+    updateDeck: true,
     state: { pendingInternalHash: null, restoringDeck: null },
   });
 });
@@ -109,6 +127,7 @@ test("a genuine user interruption cancels restored-scroll suppression and resume
   assert.deepEqual(interrupted, { pendingInternalHash: null, restoringDeck: null });
   assert.deepEqual(navigation.consumeScrollDeck(interrupted, 2), {
     writeHash: true,
+    updateDeck: true,
     state: { pendingInternalHash: null, restoringDeck: null },
   });
 });

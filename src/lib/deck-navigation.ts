@@ -39,11 +39,11 @@ export function cancelHashRestore(state: HashTransitionState): HashTransitionSta
 }
 
 export function consumeScrollDeck(state: HashTransitionState, deck: number) {
-  if (state.restoringDeck == null) return { writeHash: true, state };
+  if (state.restoringDeck == null) return { writeHash: true, updateDeck: true, state };
   if (state.restoringDeck === deck) {
-    return { writeHash: false, state: { ...state, restoringDeck: null } };
+    return { writeHash: false, updateDeck: true, state: { ...state, restoringDeck: null } };
   }
-  return { writeHash: false, state };
+  return { writeHash: false, updateDeck: false, state };
 }
 
 export function shouldStopFlightForNavigation(origin: NavigationOrigin) {

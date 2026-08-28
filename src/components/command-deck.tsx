@@ -116,6 +116,8 @@ export function CommandDeck() {
   const flightRun = useRef<FlightState | null>(null);
   const hashTransition = useRef(createHashTransitionState());
   const hashSuppressionTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const resizeAnchorTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const resizeAnchorFrame = useRef(0);
   const pendingNavigation = useRef<{
     deck: number;
     source: NavigationOrigin;
@@ -290,10 +292,18 @@ export function CommandDeck() {
     hashSuppressionTimer.current = null;
   }, []);
 
+  const clearResizeAnchor = useCallback(() => {
+    if (resizeAnchorTimer.current != null) window.clearTimeout(resizeAnchorTimer.current);
+    if (resizeAnchorFrame.current) window.cancelAnimationFrame(resizeAnchorFrame.current);
+    resizeAnchorTimer.current = null;
+    resizeAnchorFrame.current = 0;
+  }, []);
+
   const cancelProgrammaticScroll = useCallback(() => {
     clearHashSuppressionTimer();
+    clearResizeAnchor();
     hashTransition.current = cancelHashRestore(hashTransition.current);
-  }, [clearHashSuppressionTimer]);
+  }, [clearHashSuppressionTimer, clearResizeAnchor]);
 
   const beginProgrammaticScroll = useCallback(
     (targetDeck: number) => {
@@ -470,8 +480,9 @@ export function CommandDeck() {
     return () => {
       if (flightTimer.current != null) window.clearTimeout(flightTimer.current);
       clearHashSuppressionTimer();
+      clearResizeAnchor();
     };
-  }, [clearHashSuppressionTimer]);
+  }, [clearHashSuppressionTimer, clearResizeAnchor]);
 
   useEffect(() => {
     const state = flightRun.current;
@@ -561,7 +572,7 @@ export function CommandDeck() {
     hashTransition.current = scrollTransition.state;
     if (hashTransition.current.restoringDeck == null) clearHashSuppressionTimer();
     const next: Partial<{ deck: number; prog: number; shown: number[]; craftLock: number | null }> = {};
-    if (i !== useDeck.getState().deck) {
+    if (scrollTransition.updateDeck && i !== useDeck.getState().deck) {
       next.deck = i;
       next.craftLock = craftLockAfterDeckChange(useDeck.getState().craftLock, i, Date.now() <= jumpUntil.current);
       if (Date.now() > jumpUntil.current) chapter(i);
@@ -586,6 +597,20 @@ export function CommandDeck() {
     const onResize = () => {
       measureClear();
       measureTopo();
+      const targetDeck = useDeck.getState().deck;
+      beginProgrammaticScroll(targetDeck);
+      clearResizeAnchor();
+      resizeAnchorTimer.current = window.setTimeout(() => {
+        resizeAnchorTimer.current = null;
+        resizeAnchorFrame.current = window.requestAnimationFrame(() => {
+          resizeAnchorFrame.current = 0;
+          if (hashTransition.current.restoringDeck !== targetDeck) return;
+          const target = listSections()[targetDeck]?.current;
+          if (!target || !scRef.current) return;
+          scRef.current.scrollTo({ top: Math.max(0, target.offsetTop - 8), behavior: "auto" });
+          onScroll();
+        });
+      }, 120);
     };
     window.addEventListener("resize", onResize);
     const later = window.setTimeout(onResize, 500);
@@ -595,7 +620,7 @@ export function CommandDeck() {
       clearInterval(spy);
       clearTimeout(later);
     };
-  }, [measureClear, measureTopo, onScroll]);
+  }, [beginProgrammaticScroll, clearResizeAnchor, measureClear, measureTopo, onScroll]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

@@ -29,6 +29,7 @@ function mountCommandDeck({
   url = "https://cashio.us/#deck=snapshot",
   reducedMotion = true,
   controlledTimers = false,
+  responsiveGeometry = false,
 } = {}) {
   const dom = new JSDOM('<!doctype html><html><body><div id="root"></div></body></html>', {
     url,
@@ -39,9 +40,10 @@ function mountCommandDeck({
   const realClearTimeout = dom.window.clearTimeout.bind(dom.window);
   const controlledTimeouts = new Map();
   let controlledTimeoutId = 1_000_000;
+  let viewport = "desktop";
   const setTimeout = (callback, delay = 0, ...args) => {
     const timeout = Number(delay);
-    if (controlledTimers && (timeout === 3200 || timeout >= 7000)) {
+    if (controlledTimers && (timeout === 120 || timeout === 3200 || timeout >= 7000)) {
       const id = ++controlledTimeoutId;
       controlledTimeouts.set(id, { callback: () => callback(...args), delay: timeout });
       return id;
@@ -80,25 +82,26 @@ function mountCommandDeck({
     offsetTop: {
       configurable: true,
       get() {
-        return this.dataset?.deck == null ? 0 : Number(this.dataset.deck) * 1000;
+        if (this.dataset?.deck == null) return 0;
+        return Number(this.dataset.deck) * (responsiveGeometry && viewport === "mobile" ? 1100 : 1000);
       },
     },
     offsetHeight: {
       configurable: true,
       get() {
-        return this.matches?.("section[data-deck]") ? 1000 : 0;
+        return this.matches?.("section[data-deck]") ? (responsiveGeometry && viewport === "mobile" ? 1100 : 1000) : 0;
       },
     },
     scrollHeight: {
       configurable: true,
       get() {
-        return this.classList?.contains("za-scroll") ? 9000 : 0;
+        return this.classList?.contains("za-scroll") ? (responsiveGeometry && viewport === "mobile" ? 9900 : 9000) : 0;
       },
     },
     clientHeight: {
       configurable: true,
       get() {
-        return this.classList?.contains("za-scroll") ? 1000 : 0;
+        return this.classList?.contains("za-scroll") ? (responsiveGeometry && viewport === "mobile" ? 844 : 1000) : 0;
       },
     },
     scrollTo: {
@@ -185,6 +188,18 @@ function mountCommandDeck({
       controlledTimeouts.delete(timer[0]);
       controlledNow += delay;
       await act(async () => timer[1].callback());
+    },
+    async runLatestAnimationFrame() {
+      await act(async () => {
+        const pending = [...raf.entries()].at(-1);
+        assert.ok(pending, "expected a scheduled animation frame");
+        raf.delete(pending[0]);
+        pending[1](performance.now());
+      });
+    },
+    async resizeToMobile() {
+      viewport = "mobile";
+      await act(async () => dom.window.dispatchEvent(new dom.window.Event("resize")));
     },
     async history(direction) {
       const changed = new Promise((resolve, reject) => {
@@ -466,6 +481,28 @@ test("deck navigator initializes focus, traps both tab directions, closes safely
     labeledButton(view.document, "Close deck navigator");
     await view.click(reopened.parentElement);
     assert.equal(view.document.querySelector('[role="dialog"]'), null, "a direct backdrop click must close");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("resize preserves the Contact deck while responsive geometry settles", async () => {
+  const view = mountCommandDeck({
+    url: "https://cashio.us/#deck=contact",
+    controlledTimers: true,
+    responsiveGeometry: true,
+  });
+  try {
+    await view.render();
+    await view.resizeToMobile();
+    await view.runControlledTimeout(120);
+    await view.runLatestAnimationFrame();
+
+    const scroller = view.document.querySelector("main.za-scroll");
+    assert.equal(view.window.location.hash, "#deck=contact");
+    assert.equal(useDeck.getState().deck, 8);
+    assert.equal(view.document.querySelector(".za-command-header .za-chip")?.textContent?.trim(), "DECK 09 · CONTACT");
+    assert.equal(scroller.dataset.requestedScrollTop, "8792", "resize must re-anchor the logical Contact deck");
   } finally {
     await view.cleanup();
   }
