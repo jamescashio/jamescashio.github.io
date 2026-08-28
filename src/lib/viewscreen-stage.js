@@ -758,30 +758,39 @@ class ViewscreenStage extends HTMLElement {
     this.prog = 0; this.deck = 0; this.warpT = 0; this.mx = 0; this.my = 0; this.stage = 0;
     this.craftTarget = 0; this.craftF = 0; this.clearX = 0.5; this.clearY = 0.85; this.dim = 1;
     this.reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.paused = document.hidden;
 
-    try { this._initGL(); } catch (e) { console.warn('viewscreen: WebGL unavailable', e); this._fallback(); return; }
+    const start = () => {
+      if (this._started) return;
+      this._started = true;
+      try { this._initGL(); } catch (e) { console.warn('viewscreen: WebGL unavailable', e); this._fallback(); return; }
 
-    this._onResize = () => this._resize();
-    addEventListener('resize', this._onResize);
-    this._onVis = () => { this.paused = document.hidden; };
-    document.addEventListener('visibilitychange', this._onVis);
-    this._onMove = (e) => {
-      this.mx = (e.clientX / innerWidth - 0.5) * 2;
-      this.my = (e.clientY / innerHeight - 0.5) * 2;
-    };
-    addEventListener('pointermove', this._onMove, { passive: true });
-    addEventListener('pagehide', () => this.dispose(), { once: true });
+      this._onResize = () => this._resize();
+      addEventListener('resize', this._onResize);
+      this._onMove = (e) => {
+        this.mx = (e.clientX / innerWidth - 0.5) * 2;
+        this.my = (e.clientY / innerHeight - 0.5) * 2;
+      };
+      addEventListener('pointermove', this._onMove, { passive: true });
+      addEventListener('pagehide', () => this.dispose(), { once: true });
 
-    this._resize();
-    if (this.reduce) { this._frame(0); return; }
-    const loop = (t) => {
+      this._resize();
+      if (this.reduce) { this._frame(0); return; }
+      const loop = (t) => {
+        this._raf = requestAnimationFrame(loop);
+        if (!this.paused && shouldRenderFrame(t, this._previousRender ?? null, MINIMUM_FRAME_INTERVAL_MS)) {
+          this._previousRender = t;
+          this._frame(t);
+        }
+      };
       this._raf = requestAnimationFrame(loop);
-      if (!this.paused && shouldRenderFrame(t, this._previousRender ?? null, MINIMUM_FRAME_INTERVAL_MS)) {
-        this._previousRender = t;
-        this._frame(t);
-      }
     };
-    this._raf = requestAnimationFrame(loop);
+    this._onVis = () => {
+      this.paused = document.hidden;
+      if (!this.paused) start();
+    };
+    document.addEventListener('visibilitychange', this._onVis);
+    if (!this.paused) start();
   }
 
   disconnectedCallback() { this.dispose(); }
