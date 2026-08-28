@@ -413,11 +413,18 @@ export function CommandDeck() {
     goto(pending.deck, pending.source, pending.craftOverride, pending.articleOverride);
   }, [goto, mode]);
 
+  const focusPendingDestination = useCallback((landedDeck: number) => {
+    const target = pendingDestinationFocus.current;
+    if (target == null || target !== landedDeck || hashTransition.current.restoringDeck != null) return;
+    if (focusDeckHeading(document, target)) pendingDestinationFocus.current = null;
+  }, []);
+
   useEffect(() => {
     const target = pendingDestinationFocus.current;
-    if (palette || target == null || deck !== target) return;
-    if (focusDeckHeading(document, target)) pendingDestinationFocus.current = null;
-  }, [deck, mode, palette]);
+    if (palette || target == null || deck !== target || hashTransition.current.restoringDeck != null) return;
+    const frame = window.requestAnimationFrame(() => focusPendingDestination(target));
+    return () => window.cancelAnimationFrame(frame);
+  }, [deck, focusPendingDestination, mode, palette]);
 
   const gotoCraft = useCallback(
     (craftIndex: number) => {
@@ -597,17 +604,21 @@ export function CommandDeck() {
         if (scrollTransition.writeHash) syncHash(next.deck, useDeck.getState().sel, "replace");
       }
     }
+    focusPendingDestination(i);
     measureClear();
-  }, [chapter, clearHashSuppressionTimer, measureClear, set, syncHash]);
+  }, [chapter, clearHashSuppressionTimer, focusPendingDestination, measureClear, set, syncHash]);
 
   useEffect(() => {
     const sc = scRef.current;
     if (!sc) return;
     sc.addEventListener("scroll", onScroll, { passive: true });
     const spy = window.setInterval(onScroll, 240);
-    const onResize = () => {
+    const measureLayout = () => {
       measureClear();
       measureTopo();
+    };
+    const onResize = () => {
+      measureLayout();
       const targetDeck = useDeck.getState().deck;
       beginProgrammaticScroll(targetDeck);
       clearResizeAnchor();
@@ -624,7 +635,7 @@ export function CommandDeck() {
       }, 120);
     };
     window.addEventListener("resize", onResize);
-    const later = window.setTimeout(onResize, 500);
+    const later = window.setTimeout(measureLayout, 500);
     return () => {
       sc.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
@@ -941,7 +952,7 @@ export function CommandDeck() {
         </div>
         <button
           type="button"
-          className="za-bit-control rounded-full focus-visible:outline-none"
+          className="za-bit-control rounded-full"
           onClick={() => {
             sfx("bitYes");
             bit("yes");

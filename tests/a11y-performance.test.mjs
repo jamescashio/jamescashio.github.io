@@ -30,6 +30,7 @@ function mountCommandDeck({
   reducedMotion = true,
   controlledTimers = false,
   responsiveGeometry = false,
+  deferredSmoothScroll = false,
 } = {}) {
   const dom = new JSDOM('<!doctype html><html><body><div id="root"></div></body></html>', {
     url,
@@ -43,7 +44,7 @@ function mountCommandDeck({
   let viewport = "desktop";
   const setTimeout = (callback, delay = 0, ...args) => {
     const timeout = Number(delay);
-    if (controlledTimers && (timeout === 120 || timeout === 3200 || timeout >= 7000)) {
+    if (controlledTimers && (timeout === 120 || timeout === 500 || timeout === 3200 || timeout >= 7000)) {
       const id = ++controlledTimeoutId;
       controlledTimeouts.set(id, { callback: () => callback(...args), delay: timeout });
       return id;
@@ -108,8 +109,10 @@ function mountCommandDeck({
       configurable: true,
       value(options) {
         const top = typeof options === "number" ? options : options?.top;
-        this.scrollTop = top ?? 0;
-        this.dataset.requestedScrollTop = String(this.scrollTop);
+        const requestedTop = top ?? 0;
+        this.dataset.requestedScrollTop = String(requestedTop);
+        if (deferredSmoothScroll && typeof options === "object" && options?.behavior === "smooth") return;
+        this.scrollTop = requestedTop;
       },
     },
   });
@@ -621,6 +624,34 @@ test("deck navigator selection focuses Contact without displacing the commanded 
   }
 });
 
+test("deck navigator waits for the commanded smooth landing before focusing its destination", async () => {
+  const view = mountCommandDeck({ reducedMotion: false, deferredSmoothScroll: true });
+  try {
+    await view.render();
+    const opener = [...view.document.querySelectorAll('button[aria-label="Open deck navigator"]')].at(-1);
+    opener.focus();
+    await view.click(opener);
+
+    const contactHeading = view.document.querySelector('section[data-deck="8"] h2');
+    const dialog = view.document.querySelector('[role="dialog"][aria-label="Deck navigator"]');
+    await view.click(dialog.querySelector('button[aria-label="Go to CONTACT deck"]'));
+    const scroller = view.document.querySelector("main.za-scroll");
+
+    assert.equal(scroller.dataset.requestedScrollTop, "7992", "selection must command the Contact landing");
+    assert.notEqual(
+      view.document.activeElement,
+      contactHeading,
+      "the heading must not steal focus while the smooth scroll is still in flight",
+    );
+
+    await view.scrollDeck(8);
+    assert.equal(view.document.activeElement, contactHeading, "the landed destination must receive announcement focus");
+    assert.equal(scroller.scrollTop, 7992, "preventScroll focus must preserve the settled Contact landing");
+  } finally {
+    await view.cleanup();
+  }
+});
+
 test("contact and Builds expose the responsive layout hooks that prevent collisions and overflow", async () => {
   const view = mountCommandDeck();
   try {
@@ -721,6 +752,23 @@ test("resize preserves the Contact deck while responsive geometry settles", asyn
     assert.equal(useDeck.getState().deck, 8);
     assert.equal(view.document.querySelector(".za-command-header .za-chip")?.textContent?.trim(), "DECK 09 · CONTACT");
     assert.equal(scroller.dataset.requestedScrollTop, "8792", "resize must re-anchor the logical Contact deck");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("the delayed mount measurement never starts a responsive re-anchor", async () => {
+  const view = mountCommandDeck({ controlledTimers: true });
+  try {
+    await view.render();
+    await view.scrollDeck(3);
+    assert.equal(view.window.location.hash, "#deck=iron");
+
+    await view.runControlledTimeout(500);
+    await view.scrollDeck(4);
+
+    assert.equal(view.window.location.hash, "#deck=lineage", "early manual scrolling must remain authoritative");
+    assert.equal(useDeck.getState().deck, 4, "the mount-only measurement must not restore the previous deck");
   } finally {
     await view.cleanup();
   }
