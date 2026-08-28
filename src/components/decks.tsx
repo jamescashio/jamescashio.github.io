@@ -575,9 +575,6 @@ export function DeckBuilds({ s5, onSelect }: { s5: SecRef; onSelect: (article: n
           arrow keys fly the range.
         </p>
         <div className="mt-8 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-          <div data-hud-clear className="za-build-map">
-            <BuildEnvelope sel={sel} onLock={lock} />
-          </div>
           <div data-hud-clear className="za-build-details">
             <div key={article.name} className="za-panel za-article-card p-6">
               <div className="flex items-center justify-between gap-3">
@@ -617,6 +614,9 @@ export function DeckBuilds({ s5, onSelect }: { s5: SecRef; onSelect: (article: n
                 </button>
               ))}
             </div>
+          </div>
+          <div data-hud-clear className="za-build-map">
+            <BuildEnvelope sel={sel} onLock={lock} />
           </div>
         </div>
       </div>

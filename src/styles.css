@@ -488,6 +488,20 @@
 .za-build-selector {
   scroll-snap-type: x mandatory;
 }
+@media (min-width: 1024px) {
+  .za-build-map,
+  .za-build-details {
+    min-width: 0;
+  }
+  .za-build-map {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .za-build-details {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
 @media (max-width: 767px) {
   .za-contact-copy {
     margin-inline: -0.75rem;
