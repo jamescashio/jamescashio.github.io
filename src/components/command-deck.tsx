@@ -411,7 +411,9 @@ export function CommandDeck() {
     if (mode !== "technical" || pendingNavigation.current == null) return;
     const pending = pendingNavigation.current;
     pendingNavigation.current = null;
+    const destinationFocus = pendingDestinationFocus.current === pending.deck ? pending.deck : null;
     goto(pending.deck, pending.source, pending.craftOverride, pending.articleOverride);
+    if (destinationFocus != null) pendingDestinationFocus.current = destinationFocus;
   }, [goto, mode]);
 
   const focusPendingDestination = useCallback((landedDeck: number) => {

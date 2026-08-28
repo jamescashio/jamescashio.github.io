@@ -652,6 +652,39 @@ test("deck navigator waits for the commanded smooth landing before focusing its 
   }
 });
 
+test("Executive navigator selection focuses its technical destination after the remount landing", async () => {
+  const view = mountCommandDeck({ controlledTimers: true });
+  try {
+    await view.render();
+    await act(async () => useDeck.setState({ mode: "executive", shown: [0, 8] }));
+    assert.equal(view.document.querySelector('section[data-deck="2"]'), null, "Routing must begin unmounted");
+
+    const opener = [...view.document.querySelectorAll('button[aria-label="Open deck navigator"]')].at(-1);
+    opener.focus();
+    await view.click(opener);
+    const dialog = view.document.querySelector('[role="dialog"][aria-label="Deck navigator"]');
+    await view.click(dialog.querySelector('button[aria-label="Go to ROUTING deck"]'));
+
+    assert.equal(useDeck.getState().mode, "technical", "selection must remount the technical deck set");
+    const routingHeading = view.document.querySelector('section[data-deck="2"] h2');
+    assert.ok(routingHeading, "Routing heading must exist after the remount");
+    assert.equal(
+      view.document.activeElement === routingHeading,
+      false,
+      "focus must still wait for the commanded landing",
+    );
+
+    await view.scrollDeck(2);
+    assert.equal(
+      view.document.activeElement === routingHeading,
+      true,
+      "the remounted destination must receive landing focus",
+    );
+  } finally {
+    await view.cleanup();
+  }
+});
+
 test("superseded navigator intent never steals focus on a later passive visit", async (t) => {
   const selectContact = async (view) => {
     const opener = [...view.document.querySelectorAll('button[aria-label="Open deck navigator"]')].at(-1);
