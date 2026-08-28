@@ -45,12 +45,14 @@ export function DeckSnapshot({
     <section
       ref={s0}
       data-deck={0}
+      tabIndex={-1}
+      aria-label="SNAPSHOT deck"
       className="za-mobile-rail-clearance relative min-h-[100dvh] px-5 pb-32 pt-24 md:px-10 lg:px-14"
     >
       <div ref={copyCol} className="za-bracket max-w-[38rem] p-2">
         <Kicker>ZEUSAPOLLO · SOVEREIGN AI UNDER HUMAN COMMAND</Kicker>
         <p className="za-mono mt-3 text-[11px] tracking-[0.12em] text-cyan">{IDENTITY_LINE}</p>
-        <h1 className="za-display text-[clamp(2rem,4.8vw,4.4rem)] leading-[0.92]">
+        <h1 tabIndex={-1} className="za-display text-[clamp(2rem,4.8vw,4.4rem)] leading-[0.92]">
           OWN THE IRON AND THE <span className="za-shimmer-text">ROUTE</span>.
         </h1>
         <p className="za-mono mt-5 text-[11px] text-dim">
@@ -65,6 +67,7 @@ export function DeckSnapshot({
         <div className="mt-8 grid max-w-lg grid-cols-2 gap-2 rounded-[var(--radius-lg)] border border-line bg-void-2/70 p-1.5">
           <button
             type="button"
+            aria-pressed={mode === "technical"}
             onClick={() => {
               set({ mode: "technical", shown: [0] });
               getSound().prompt();
@@ -78,6 +81,7 @@ export function DeckSnapshot({
           </button>
           <button
             type="button"
+            aria-pressed={mode === "executive"}
             onClick={() => {
               set({ mode: "executive", shown: [0, 8] });
               getSound().prompt();
@@ -571,10 +575,10 @@ export function DeckBuilds({ s5, onSelect }: { s5: SecRef; onSelect: (article: n
           arrow keys fly the range.
         </p>
         <div className="mt-8 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-          <div data-hud-clear>
+          <div data-hud-clear className="za-build-map">
             <BuildEnvelope sel={sel} onLock={lock} />
           </div>
-          <div data-hud-clear>
+          <div data-hud-clear className="za-build-details">
             <div key={article.name} className="za-panel za-article-card p-6">
               <div className="flex items-center justify-between gap-3">
                 <div className="za-mono text-[10px] text-accent">
@@ -593,7 +597,7 @@ export function DeckBuilds({ s5, onSelect }: { s5: SecRef; onSelect: (article: n
                 <span>CONTROL · MANUAL</span>
               </div>
             </div>
-            <div className="mt-3 flex flex-col" role="group" aria-label="Select a test article">
+            <div className="za-build-selector mt-3 flex flex-col" role="group" aria-label="Select a test article">
               {ARTICLES.map((a, i) => (
                 <button
                   key={a.name}
@@ -762,7 +766,7 @@ export function DeckContact({ s8, onCopy, copied }: { s8: SecRef; onCopy: () => 
   return (
     <DeckShell index={8} sRef={s8}>
       <div className="grid max-w-6xl items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-        <div data-hud-clear>
+        <div data-hud-clear className="za-contact-copy">
           <Kicker>09 · CONTACT</Kicker>
           <Title>HAIL.</Title>
           <p className="mt-4 max-w-[46ch] text-[1.1rem] leading-relaxed text-muted">
@@ -780,7 +784,7 @@ export function DeckContact({ s8, onCopy, copied }: { s8: SecRef; onCopy: () => 
             <a href="mailto:doug@cashio.us" className="za-display mt-3 block text-[clamp(1.4rem,3vw,2.2rem)] text-cyan">
               doug@cashio.us
             </a>
-            <p className="za-mono mt-3 text-[11px] text-dim">
+            <p className="za-contact-meta za-mono mt-3 text-dim">
               PENSACOLA, FLORIDA · PUBLIC-SAFE SNAPSHOT · VERIFIED {VERIFIED_LONG}
             </p>
           </div>

@@ -14,7 +14,7 @@ import {
   stardate,
 } from "@/lib/content";
 import { getSound } from "@/lib/sound";
-import { isInteractiveShortcutTarget } from "@/lib/deck-focus";
+import { focusDeckHeading, isInteractiveShortcutTarget } from "@/lib/deck-focus";
 import { shouldYieldAirframeHud } from "@/lib/hud-layout";
 import { scheduleStageLoad } from "@/lib/stage-load-scheduler";
 import {
@@ -72,6 +72,7 @@ export function CommandDeck() {
   const hubA = useRef<HTMLDivElement>(null);
   const stageRef = useRef<ViewscreenStageElement | null>(null);
   const paletteOpener = useRef<HTMLElement | null>(null);
+  const pendingDestinationFocus = useRef<number | null>(null);
   const sectionBag = useRef({ s0, s1, s2, s3, s4, s5, s6, s7, s8 });
   sectionBag.current = { s0, s1, s2, s3, s4, s5, s6, s7, s8 };
   const listSections = () => {
@@ -411,6 +412,12 @@ export function CommandDeck() {
     pendingNavigation.current = null;
     goto(pending.deck, pending.source, pending.craftOverride, pending.articleOverride);
   }, [goto, mode]);
+
+  useEffect(() => {
+    const target = pendingDestinationFocus.current;
+    if (palette || target == null || deck !== target) return;
+    if (focusDeckHeading(document, target)) pendingDestinationFocus.current = null;
+  }, [deck, mode, palette]);
 
   const gotoCraft = useCallback(
     (craftIndex: number) => {
@@ -974,7 +981,17 @@ export function CommandDeck() {
         </>
       )}
 
-      {palette && <DeckNavigator deck={deck} onSelect={(index) => goto(index)} onClose={closePalette} />}
+      {palette && (
+        <DeckNavigator
+          deck={deck}
+          onSelect={(index) => {
+            paletteOpener.current = null;
+            pendingDestinationFocus.current = index;
+            goto(index);
+          }}
+          onClose={closePalette}
+        />
+      )}
 
       {rips.map((r) => (
         <span key={r.id} className="za-rip" style={{ left: r.x, top: r.y }} aria-hidden />

@@ -345,14 +345,96 @@ test("glyph controls have stable accessible names and stateful audio remains pre
     for (const label of [
       "Go to Snapshot deck",
       "Run the 30-second flight",
-      "Arm selection audio",
       "Expand command rail",
       "Open deck navigator",
     ])
       labeledButton(view.document, label);
-    const audioToggles = [...view.document.querySelectorAll('button[aria-label="Arm selection audio"]')];
+    const audioToggles = [...view.document.querySelectorAll("button")].filter((button) =>
+      button.getAttribute("aria-label")?.includes("Arm selection audio"),
+    );
     assert.ok(audioToggles.length >= 2, "rail and header audio toggles must both be named");
+    assert.ok(
+      audioToggles.every((button) => button.getAttribute("aria-label")?.includes("AUDIO OFF")),
+      "audio accessible names must retain the visible AUDIO OFF label",
+    );
     assert.ok(audioToggles.some((button) => button.getAttribute("aria-pressed") === "false"));
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("presentation and deck navigation expose one selected state per surface", async () => {
+  const view = mountCommandDeck();
+  try {
+    await view.render();
+    const modes = [...view.document.querySelectorAll("button")].filter((button) =>
+      /^(TECHNICAL|EXECUTIVE)/.test(button.textContent ?? ""),
+    );
+    assert.equal(modes.length, 2);
+    assert.equal(modes.filter((button) => button.getAttribute("aria-pressed") === "true").length, 1);
+    assert.equal(modes.filter((button) => button.getAttribute("aria-pressed") === "false").length, 1);
+
+    for (const label of ["Command decks", "Mobile command decks"]) {
+      const navigation = view.document.querySelector(`nav[aria-label="${label}"]`);
+      assert.ok(navigation, `expected ${label}`);
+      const current = navigation.querySelectorAll('[aria-current="page"]');
+      assert.equal(current.length, 1, `${label} must expose exactly one current destination`);
+      assert.equal(current[0].getAttribute("aria-label")?.toUpperCase().includes("SNAPSHOT"), true);
+    }
+
+    const opener = [...view.document.querySelectorAll('button[aria-label="Open deck navigator"]')].at(-1);
+    await view.click(opener);
+    const dialog = view.document.querySelector('[role="dialog"][aria-label="Deck navigator"]');
+    assert.equal(dialog.querySelectorAll('[aria-current="page"]').length, 1);
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("mobile navigation keeps Contact exposed as its current destination", async () => {
+  const view = mountCommandDeck({ url: "https://cashio.us/#deck=contact" });
+  try {
+    await view.render();
+    const navigation = view.document.querySelector('nav[aria-label="Mobile command decks"]');
+    const current = navigation.querySelectorAll('[aria-current="page"]');
+    assert.equal(current.length, 1);
+    assert.equal(current[0].getAttribute("aria-label"), "Go to CONTACT");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("GO and audio controls retain their visible labels in their accessible names", async () => {
+  const view = mountCommandDeck();
+  try {
+    await view.render();
+    const go = [...view.document.querySelectorAll("button")].find((button) => button.textContent?.trim() === "GO");
+    assert.ok(go);
+    assert.match(go.getAttribute("aria-label") ?? "", /\bGO\b/);
+
+    const headerAudio = [...view.document.querySelectorAll("button")].find((button) =>
+      button.textContent?.includes("AUDIO OFF"),
+    );
+    assert.ok(headerAudio);
+    assert.match(headerAudio.getAttribute("aria-label") ?? "", /AUDIO OFF/);
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("every deck is a named programmatic destination with a focusable heading", async () => {
+  const view = mountCommandDeck();
+  try {
+    await view.render();
+    const decks = [...view.document.querySelectorAll("section[data-deck]")];
+    assert.equal(decks.length, 9);
+    for (const deck of decks) {
+      assert.equal(deck.getAttribute("tabindex"), "-1");
+      assert.ok(deck.getAttribute("aria-label"), `deck ${deck.dataset.deck} must have an accessible name`);
+      const heading = deck.querySelector("h1, h2");
+      assert.ok(heading, `deck ${deck.dataset.deck} must have a heading`);
+      assert.equal(heading.getAttribute("tabindex"), "-1");
+    }
   } finally {
     await view.cleanup();
   }
@@ -486,6 +568,49 @@ test("deck navigator initializes focus, traps both tab directions, closes safely
     labeledButton(view.document, "Close deck navigator");
     await view.click(reopened.parentElement);
     assert.equal(view.document.querySelector('[role="dialog"]'), null, "a direct backdrop click must close");
+    assert.equal(view.document.activeElement, opener, "backdrop dismissal must return focus to the exact opener");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("deck navigator selection focus routes directly to the Contact heading", () => {
+  const dom = new JSDOM(`<!doctype html><body>
+    <button id="opener">OPEN</button>
+    <section data-deck="8"><h2 tabindex="-1">CONTACT</h2></section>
+  </body>`);
+  try {
+    const opener = dom.window.document.querySelector("#opener");
+    const contactHeading = dom.window.document.querySelector('section[data-deck="8"] h2');
+    opener.focus();
+    assert.equal(typeof focusHelpers?.focusDeckHeading, "function");
+    assert.equal(focusHelpers.focusDeckHeading(dom.window.document, 8), true);
+    assert.equal(dom.window.document.activeElement, contactHeading, "selection must announce the destination heading");
+    assert.notEqual(dom.window.document.activeElement, opener);
+  } finally {
+    dom.window.close();
+  }
+});
+
+test("contact and Builds expose the responsive layout hooks that prevent collisions and overflow", async () => {
+  const view = mountCommandDeck();
+  try {
+    await view.render();
+    assert.ok(view.document.querySelector('section[data-deck="8"] .za-contact-copy'));
+    assert.ok(view.document.querySelector('section[data-deck="8"] .za-contact-meta'));
+    assert.ok(view.document.querySelector('section[data-deck="8"] .za-receipt-claim'));
+    assert.ok(view.document.querySelector('section[data-deck="8"] .za-receipt-status'));
+    assert.ok(view.document.querySelector('section[data-deck="5"] .za-build-map'));
+    assert.ok(view.document.querySelector('section[data-deck="5"] .za-build-details'));
+    assert.ok(view.document.querySelector('section[data-deck="5"] .za-build-selector'));
+
+    assert.match(stylesheet, /\.za-contact-copy\s*\{[^}]*linear-gradient/is);
+    assert.doesNotMatch(stylesheet, /\.za-contact-copy\s*\{[^}]*backdrop-filter/is);
+    assert.match(stylesheet, /\.za-receipt-(?:claim|status)[^}]*font-size:\s*11px/is);
+    assert.match(stylesheet, /\.za-build-details\s*\{[^}]*order:\s*1/is);
+    assert.match(stylesheet, /\.za-build-map\s*\{[^}]*order:\s*2/is);
+    assert.match(stylesheet, /\.za-build-selector\s*\{[^}]*scroll-snap-type:\s*x\s+mandatory/is);
+    assert.match(stylesheet, /\.za-mobile-rail-clearance\s*\{[^}]*padding-top:/is);
   } finally {
     await view.cleanup();
   }
@@ -501,10 +626,22 @@ test("resize preserves the Contact deck while responsive geometry settles", asyn
     await view.render();
     await view.resizeToMobile();
     const scroller = view.document.querySelector("main.za-scroll");
-    assert.equal(scroller.scrollTop, 7992, "the desktop Contact offset must remain until the responsive anchor settles");
+    assert.equal(
+      scroller.scrollTop,
+      7992,
+      "the desktop Contact offset must remain until the responsive anchor settles",
+    );
     await view.dispatchScroll();
-    assert.equal(view.window.location.hash, "#deck=contact", "an intermediate mobile candidate must not rewrite the URL");
-    assert.equal(useDeck.getState().deck, 8, "an intermediate mobile candidate must not replace the logical Contact deck");
+    assert.equal(
+      view.window.location.hash,
+      "#deck=contact",
+      "an intermediate mobile candidate must not rewrite the URL",
+    );
+    assert.equal(
+      useDeck.getState().deck,
+      8,
+      "an intermediate mobile candidate must not replace the logical Contact deck",
+    );
     assert.equal(view.document.querySelector(".za-command-header .za-chip")?.textContent?.trim(), "DECK 09 · CONTACT");
 
     await view.runControlledTimeout(120);

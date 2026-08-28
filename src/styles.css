@@ -433,11 +433,54 @@
 
 @media (max-width: 767px) {
   .za-mobile-rail-clearance {
+    padding-top: 9.5rem;
     padding-bottom: calc(6rem + 60px + var(--za-safe-area-inset-bottom));
   }
   .za-mobile-rail-safe {
     min-height: calc(60px + var(--za-safe-area-inset-bottom));
     padding-bottom: var(--za-safe-area-inset-bottom);
+  }
+}
+.za-contact-copy {
+  border-radius: var(--radius-lg);
+  background: linear-gradient(90deg, rgb(4, 7, 12), rgb(5, 8, 13) 72%, rgb(7, 11, 18));
+  box-shadow: 0 0 40px rgba(4, 7, 12, 0.64);
+}
+.za-contact-meta {
+  font-size: 11px;
+}
+.za-receipt-claim,
+.za-receipt-status {
+  font-size: 11px;
+}
+.za-build-selector {
+  scroll-snap-type: x mandatory;
+}
+@media (max-width: 767px) {
+  .za-contact-copy {
+    margin-inline: -0.75rem;
+    padding: 0.75rem;
+    background: linear-gradient(180deg, rgb(4, 7, 12), rgb(5, 8, 13) 82%, rgb(7, 11, 18));
+  }
+  .za-build-details {
+    order: 1;
+    min-width: 0;
+  }
+  .za-build-map {
+    order: 2;
+    min-width: 0;
+  }
+  .za-build-selector {
+    max-width: 100%;
+    flex-direction: row;
+    gap: 0.5rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    padding-bottom: 0.5rem;
+  }
+  .za-build-selector > button {
+    min-width: min(17rem, 82vw);
+    scroll-snap-align: start;
   }
 }
 .za-eq {

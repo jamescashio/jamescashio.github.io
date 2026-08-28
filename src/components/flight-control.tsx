@@ -6,13 +6,34 @@ type FlightControlProps = {
   onStart: () => void;
   onStop: () => void;
   className?: string;
+  compact?: boolean;
 };
 
-export function FlightControl({ active, elapsedMs, onStart, onStop, className = "" }: FlightControlProps) {
+export function FlightControl({
+  active,
+  elapsedMs,
+  onStart,
+  onStop,
+  className = "",
+  compact = false,
+}: FlightControlProps) {
   const action = flightActionAt(elapsedMs);
   const currentIndex =
     action.kind === "complete" ? FLIGHT_BEATS.length - 1 : FLIGHT_BEATS.findIndex((beat) => beat.at === action.at);
   const currentBeat = FLIGHT_BEATS[Math.max(0, currentIndex)];
+
+  if (compact) {
+    return (
+      <button
+        type="button"
+        aria-label={active ? "Stop the 30-second flight" : "Run the 30-second flight"}
+        className={`za-btn-ghost min-h-11 w-[52px] px-1 py-2 text-[10px] leading-tight ${className}`}
+        onClick={active ? onStop : onStart}
+      >
+        30S
+      </button>
+    );
+  }
 
   if (!active) {
     return (

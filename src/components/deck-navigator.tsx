@@ -71,12 +71,12 @@ export function DeckNavigator({
               ref={index === deck ? currentDeckRef : undefined}
               type="button"
               aria-label={`Go to ${item.name} deck`}
+              aria-current={index === deck ? "page" : undefined}
               className={`flex w-full gap-4 rounded-[var(--radius-sm)] px-3 py-2.5 text-left ${
                 index === deck ? "bg-accent/15 text-ink" : "hover:bg-white/5"
               }`}
               onClick={() => {
                 onSelect(index);
-                onClose();
               }}
             >
               <span className="za-mono text-accent">{item.num}</span>

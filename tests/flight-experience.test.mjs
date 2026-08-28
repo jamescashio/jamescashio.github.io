@@ -153,6 +153,52 @@ test("FlightControl starts, stops, and restarts through real buttons", async () 
   }
 });
 
+test("compact FlightControl fits the collapsed rail while retaining full names and behavior", async () => {
+  let starts = 0;
+  let stops = 0;
+  const view = mount(
+    createElement(FlightControl, {
+      active: false,
+      compact: true,
+      elapsedMs: 0,
+      onStart: () => starts++,
+      onStop: () => stops++,
+    }),
+  );
+  try {
+    await view.render(
+      createElement(FlightControl, {
+        active: false,
+        compact: true,
+        elapsedMs: 0,
+        onStart: () => starts++,
+        onStop: () => stops++,
+      }),
+    );
+    const start = button(view.document, "30S");
+    assert.equal(start.getAttribute("aria-label"), "Run the 30-second flight");
+    assert.equal(start.classList.contains("w-[52px]"), true);
+    await view.click(start);
+    assert.equal(starts, 1);
+
+    await view.render(
+      createElement(FlightControl, {
+        active: true,
+        compact: true,
+        elapsedMs: 15_000,
+        onStart: () => starts++,
+        onStop: () => stops++,
+      }),
+    );
+    const stop = button(view.document, "30S");
+    assert.equal(stop.getAttribute("aria-label"), "Stop the 30-second flight");
+    await view.click(stop);
+    assert.equal(stops, 1);
+  } finally {
+    await view.cleanup();
+  }
+});
+
 test("FlightControl exposes the canonical current beat at each handoff", async () => {
   const view = mount(createElement(FlightControl, { active: true, elapsedMs: 0, onStart: () => {}, onStop: () => {} }));
   try {

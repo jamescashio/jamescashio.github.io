@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode, type RefObject } from "react";
-import { TELEMETRY } from "@/lib/content";
+import { DECKS, TELEMETRY } from "@/lib/content";
 import { getSound } from "@/lib/sound";
 import { useDeck } from "@/lib/store";
 
@@ -10,7 +10,11 @@ export function Kicker({ children }: { children: string }) {
 }
 
 export function Title({ children }: { children: ReactNode }) {
-  return <h2 className="za-display text-[clamp(2rem,5vw,4.4rem)] text-ink">{children}</h2>;
+  return (
+    <h2 tabIndex={-1} className="za-display text-[clamp(2rem,5vw,4.4rem)] text-ink">
+      {children}
+    </h2>
+  );
 }
 
 export function CountUp({ to }: { to: number }) {
@@ -50,6 +54,8 @@ export function DeckShell({
     <section
       ref={sRef}
       data-deck={index}
+      tabIndex={-1}
+      aria-label={`${DECKS[index].name} deck`}
       className={`za-mobile-rail-clearance relative min-h-[92dvh] px-5 py-24 md:px-10 lg:px-14 ${className}`}
     >
       <div className={shown ? "za-rise" : "translate-y-6 opacity-0"}>{children}</div>

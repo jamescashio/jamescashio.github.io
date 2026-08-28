@@ -4,6 +4,14 @@ export function nextFocusIndex(currentIndex: number, count: number, backwards: b
   return (currentIndex + (backwards ? -1 : 1) + count) % count;
 }
 
+export function focusDeckHeading(root: ParentNode, deck: number) {
+  const section = root.querySelector<HTMLElement>(`section[data-deck="${deck}"]`);
+  const heading = section?.querySelector<HTMLElement>("h1, h2");
+  if (!heading) return false;
+  heading.focus();
+  return true;
+}
+
 export function isInteractiveShortcutTarget(target: EventTarget | null) {
   if (!target || typeof (target as Element).closest !== "function") return false;
   return Boolean(
