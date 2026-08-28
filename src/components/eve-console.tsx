@@ -222,7 +222,7 @@ export function EveConsole({
           autoComplete="off"
           autoCapitalize="none"
           spellCheck={false}
-          className="min-w-0 flex-1 bg-transparent za-mono text-[12px] text-ink outline-none placeholder:text-dim"
+          className="min-w-0 flex-1 bg-transparent za-mono text-[12px] text-ink placeholder:text-dim"
           placeholder="type help"
         />
         <button type="submit" className="za-chip hover:border-cyan hover:text-cyan">

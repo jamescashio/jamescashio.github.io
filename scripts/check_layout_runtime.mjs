@@ -215,7 +215,28 @@ async function main() {
       );
     }
     const narrowResult = narrowEvaluation.result.value;
-    console.log(JSON.stringify({ mobile390: result, mobile320: narrowResult }, null, 2));
+    const eveFocusEvaluation = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const input = document.querySelector("#eve-command");
+        if (!input) return { ok: false, reason: "E.V.E. command input is missing" };
+        input.focus({ preventScroll: true });
+        const style = getComputedStyle(input);
+        const outlineWidth = parseFloat(style.outlineWidth);
+        const visibleOutline = style.outlineStyle !== "none" && outlineWidth > 0;
+        const visibleShadow = style.boxShadow !== "none";
+        return {
+          ok: document.activeElement === input && (visibleOutline || visibleShadow),
+          active: document.activeElement === input,
+          outlineStyle: style.outlineStyle,
+          outlineWidth,
+          boxShadow: style.boxShadow,
+        };
+      })()`,
+      returnByValue: true,
+    });
+    const eveFocus = eveFocusEvaluation.result.value;
+    console.log(JSON.stringify({ eveFocus, mobile390: result, mobile320: narrowResult }, null, 2));
+    assert.equal(eveFocus.ok, true, "E.V.E. command input must retain a visible keyboard focus indicator");
     assert.equal(result.ok, true, result.failures.join("; "));
     assert.equal(narrowResult.ok, true, narrowResult.failures.join("; "));
   }, resources);
