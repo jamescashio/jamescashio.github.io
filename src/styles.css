@@ -462,6 +462,12 @@
     padding: 0.75rem;
     background: linear-gradient(180deg, rgb(4, 7, 12), rgb(5, 8, 13) 82%, rgb(7, 11, 18));
   }
+  .za-mission-stamp span {
+    font-size: 11px;
+    line-height: 1.45;
+    letter-spacing: 0.08em;
+    overflow-wrap: anywhere;
+  }
   .za-build-details {
     order: 1;
     min-width: 0;

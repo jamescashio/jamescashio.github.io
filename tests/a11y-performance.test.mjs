@@ -611,6 +611,18 @@ test("contact and Builds expose the responsive layout hooks that prevent collisi
     assert.match(stylesheet, /\.za-build-map\s*\{[^}]*order:\s*2/is);
     assert.match(stylesheet, /\.za-build-selector\s*\{[^}]*scroll-snap-type:\s*x\s+mandatory/is);
     assert.match(stylesheet, /\.za-mobile-rail-clearance\s*\{[^}]*padding-top:/is);
+
+    const firstMobile = stylesheet.indexOf("@media (max-width: 767px)");
+    const contactMobile = stylesheet.indexOf("@media (max-width: 767px)", firstMobile + 1);
+    const contactMobileEnd = stylesheet.indexOf("\n.za-eq", contactMobile);
+    const contactMobileStyles = stylesheet.slice(contactMobile, contactMobileEnd);
+    const mobileMissionRule = contactMobileStyles.match(/\.za-mission-stamp span\s*\{([^}]*)\}/is)?.[1];
+    const missionRule = mobileMissionRule ?? stylesheet.match(/\.za-mission-stamp span\s*\{([^}]*)\}/is)?.[1];
+    const missionFontSize = Number(missionRule?.match(/font-size:\s*([\d.]+)px/i)?.[1]);
+    assert.ok(
+      mobileMissionRule && missionFontSize >= 11,
+      `mobile mission status must override the desktop 9px size with at least 11px; received ${missionFontSize}px`,
+    );
   } finally {
     await view.cleanup();
   }
