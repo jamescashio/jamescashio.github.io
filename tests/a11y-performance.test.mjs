@@ -285,11 +285,13 @@ function createSchedulerEnvironment({ idle = true } = {}) {
     clearTimeout(token) {
       timers.delete(token);
     },
-    addEventListener(type, callback) {
-      listeners.set(type, callback);
+    addEventListener(type, callback, options) {
+      listeners.set(type, { callback, options });
     },
-    removeEventListener(type, callback) {
-      if (listeners.get(type) === callback) listeners.delete(type);
+    removeEventListener(type, callback, options) {
+      const registered = listeners.get(type);
+      const capture = (value) => (typeof value === "boolean" ? value : Boolean(value?.capture));
+      if (registered?.callback === callback && capture(registered.options) === capture(options)) listeners.delete(type);
     },
   };
   if (idle) {
@@ -321,7 +323,10 @@ function createSchedulerEnvironment({ idle = true } = {}) {
       entry[1].callback();
     },
     dispatch(type) {
-      listeners.get(type)?.({ type });
+      listeners.get(type)?.callback({ type });
+    },
+    listenerOptions(type) {
+      return listeners.get(type)?.options;
     },
     counts() {
       return { frames: frames.size, timers: timers.size, idles: idles.size, listeners: listeners.size };
@@ -1085,6 +1090,25 @@ test("cancelling stage loading removes every intent listener and pending schedul
     onFallback: assert.fail,
   });
   assert.equal(fake.counts().listeners, 4, "pointer, keyboard, wheel, and touch intent must be observed");
+  cancel();
+  assert.deepEqual(fake.counts(), { frames: 0, timers: 0, idles: 0, listeners: 0 });
+});
+
+test("scroll and touch stage intent are passive while pointer and keyboard registration stays unchanged", () => {
+  assert.ok(stageScheduler, "the stage-load scheduler module must exist");
+  const fake = createSchedulerEnvironment();
+  const cancel = stageScheduler.scheduleStageLoad({
+    environment: fake.environment,
+    load: async () => assert.fail("the registration contract must not start loading"),
+    onReady: assert.fail,
+    onFallback: assert.fail,
+  });
+
+  assert.equal(fake.listenerOptions("pointerdown"), undefined);
+  assert.equal(fake.listenerOptions("keydown"), undefined);
+  assert.deepEqual(fake.listenerOptions("wheel"), { passive: true });
+  assert.deepEqual(fake.listenerOptions("touchstart"), { passive: true });
+
   cancel();
   assert.deepEqual(fake.counts(), { frames: 0, timers: 0, idles: 0, listeners: 0 });
 });

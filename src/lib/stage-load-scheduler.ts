@@ -3,8 +3,8 @@ type SchedulerEnvironment = {
   cancelAnimationFrame: (handle: number) => void;
   setTimeout: (callback: () => void, delay: number) => number;
   clearTimeout: (handle: number) => void;
-  addEventListener: (type: IntentEvent, listener: EventListener) => void;
-  removeEventListener: (type: IntentEvent, listener: EventListener) => void;
+  addEventListener: (type: IntentEvent, listener: EventListener, options?: AddEventListenerOptions) => void;
+  removeEventListener: (type: IntentEvent, listener: EventListener, options?: EventListenerOptions) => void;
 };
 
 type IntentEvent = "pointerdown" | "keydown" | "wheel" | "touchstart";
@@ -17,6 +17,7 @@ type StageLoadOptions<T> = {
 };
 
 const INTENT_EVENTS: IntentEvent[] = ["pointerdown", "keydown", "wheel", "touchstart"];
+const PASSIVE_INTENT_EVENTS = new Set<IntentEvent>(["wheel", "touchstart"]);
 const FALLBACK_MS = 12_000;
 
 export function scheduleStageLoad<T>({
@@ -64,7 +65,9 @@ export function scheduleStageLoad<T>({
     start();
   }
 
-  for (const type of INTENT_EVENTS) environment.addEventListener(type, onIntent);
+  for (const type of INTENT_EVENTS) {
+    environment.addEventListener(type, onIntent, PASSIVE_INTENT_EVENTS.has(type) ? { passive: true } : undefined);
+  }
   fallbackTimer = environment.setTimeout(() => {
     fallbackTimer = 0;
     startRequested = true;
