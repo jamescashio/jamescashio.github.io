@@ -202,6 +202,18 @@ function mountCommandDeck({
         pending[1](performance.now());
       });
     },
+    async runAnimationFrameBatch() {
+      await act(async () => {
+        const pending = [...raf.entries()];
+        for (const [id, callback] of pending) {
+          raf.delete(id);
+          callback(performance.now());
+        }
+      });
+    },
+    pendingAnimationFrames() {
+      return raf.size;
+    },
     async resizeToMobile() {
       viewport = "mobile";
       await act(async () => dom.window.dispatchEvent(new dom.window.Event("resize")));
@@ -296,11 +308,11 @@ function createSchedulerEnvironment({ idle = true } = {}) {
       frames.delete(entry[0]);
       entry[1](performance.now());
     },
-    runIdle() {
-      const entry = idles.entries().next().value;
-      assert.ok(entry, "expected an idle callback after the second frame");
-      idles.delete(entry[0]);
-      entry[1]({ didTimeout: false, timeRemaining: () => 10 });
+    runAllIdles() {
+      for (const [token, callback] of [...idles]) {
+        idles.delete(token);
+        callback({ didTimeout: false, timeRemaining: () => 10 });
+      }
     },
     runTimer(delay) {
       const entry = [...timers.entries()].find(([, timer]) => timer.delay === delay);
@@ -978,18 +990,18 @@ test("stage loading waits for paint, accepts deliberate intent, and cancels clea
   fake.dispatch("pointerdown");
   assert.equal(loads, 0, "intent before the first frame must not import");
   fake.runFrame();
-  assert.equal(loads, 0);
-  fake.dispatch("keydown");
+  assert.equal(loads, 0, "the first animation callback precedes the first completed paint");
+  fake.runFrame();
   await flushPromises();
-  assert.equal(loads, 1, "intent after first paint may accelerate the load");
+  assert.equal(loads, 1, "early deliberate intent must be remembered until first paint");
   assert.equal(ready, 1);
   cancel();
   assert.deepEqual(fake.counts(), { frames: 0, timers: 0, idles: 0, listeners: 0 });
 });
 
-test("stage loading prefers second-frame idle, has a bounded no-idle fallback, and handles rejection", async (t) => {
+test("stage loading ignores generic idle, starts once for every deliberate intent, and retains a long fallback", async (t) => {
   assert.ok(stageScheduler, "the stage-load scheduler module must exist");
-  await t.test("idle after two frames", async () => {
+  await t.test("idle and the second frame alone do not load the stage", async () => {
     const fake = createSchedulerEnvironment();
     let loads = 0;
     stageScheduler.scheduleStageLoad({
@@ -1000,14 +1012,33 @@ test("stage loading prefers second-frame idle, has a bounded no-idle fallback, a
     });
     fake.runFrame();
     fake.runFrame();
-    assert.equal(loads, 0);
-    fake.runIdle();
-    await Promise.resolve();
-    assert.equal(loads, 1);
+    fake.runAllIdles();
+    await flushPromises();
+    assert.equal(loads, 0, "a stationary visitor must retain the poster through idle time");
   });
 
-  await t.test("timeout fallback without requestIdleCallback", async () => {
-    const fake = createSchedulerEnvironment({ idle: false });
+  for (const intent of ["pointerdown", "keydown", "wheel", "touchstart"]) {
+    await t.test(`${intent} starts the stage exactly once after paint`, async () => {
+      const fake = createSchedulerEnvironment();
+      let loads = 0;
+      stageScheduler.scheduleStageLoad({
+        environment: fake.environment,
+        load: async () => ++loads,
+        onReady: () => {},
+        onFallback: assert.fail,
+      });
+      fake.runFrame();
+      fake.runFrame();
+      fake.dispatch(intent);
+      fake.dispatch(intent);
+      await flushPromises();
+      assert.equal(loads, 1, `${intent} must start one import and remove every intent listener`);
+      assert.deepEqual(fake.counts(), { frames: 0, timers: 0, idles: 0, listeners: 0 });
+    });
+  }
+
+  await t.test("only the 12-second fallback starts a stationary visitor", async () => {
+    const fake = createSchedulerEnvironment();
     let loads = 0;
     stageScheduler.scheduleStageLoad({
       environment: fake.environment,
@@ -1016,25 +1047,12 @@ test("stage loading prefers second-frame idle, has a bounded no-idle fallback, a
       onFallback: assert.fail,
     });
     fake.runFrame();
-    fake.runTimer(1600);
-    await Promise.resolve();
-    assert.equal(loads, 1);
-  });
-
-  await t.test("second-frame zero-delay path without requestIdleCallback", async () => {
-    const fake = createSchedulerEnvironment({ idle: false });
-    let loads = 0;
-    stageScheduler.scheduleStageLoad({
-      environment: fake.environment,
-      load: async () => ++loads,
-      onReady: () => {},
-      onFallback: assert.fail,
-    });
     fake.runFrame();
-    fake.runFrame();
+    fake.runAllIdles();
+    await flushPromises();
     assert.equal(loads, 0);
-    fake.runTimer(0);
-    await Promise.resolve();
+    fake.runTimer(12_000);
+    await flushPromises();
     assert.equal(loads, 1);
   });
 
@@ -1050,8 +1068,59 @@ test("stage loading prefers second-frame idle, has a bounded no-idle fallback, a
       onFallback: () => fallback++,
     });
     fake.runFrame();
+    fake.runFrame();
     fake.dispatch("pointerdown");
     await flushPromises();
     assert.equal(fallback, 1);
   });
+});
+
+test("cancelling stage loading removes every intent listener and pending schedule", () => {
+  assert.ok(stageScheduler, "the stage-load scheduler module must exist");
+  const fake = createSchedulerEnvironment();
+  const cancel = stageScheduler.scheduleStageLoad({
+    environment: fake.environment,
+    load: async () => assert.fail("cancelled scheduling must never import"),
+    onReady: assert.fail,
+    onFallback: assert.fail,
+  });
+  assert.equal(fake.counts().listeners, 4, "pointer, keyboard, wheel, and touch intent must be observed");
+  cancel();
+  assert.deepEqual(fake.counts(), { frames: 0, timers: 0, idles: 0, listeners: 0 });
+});
+
+test("the real command plate is the immediate viewscreen poster", async () => {
+  const view = mountCommandDeck();
+  try {
+    await view.render();
+    const poster = view.document.querySelector('img.za-stage-poster[src="/plates/command.jpg"]');
+    assert.ok(poster, "the existing command plate must cover the deferred cinematic stage");
+    assert.equal(poster.getAttribute("alt"), "", "the decorative poster must not duplicate deck content");
+    assert.equal(
+      view.document.querySelector("viewscreen-stage"),
+      null,
+      "the stage must remain deferred without intent",
+    );
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("audio-off and reduced-motion rendering drains while the armed sound meter remains scheduled", async () => {
+  const view = mountCommandDeck({ reducedMotion: true });
+  try {
+    await view.render();
+    for (let frame = 0; frame < 4; frame++) await view.runAnimationFrameBatch();
+    assert.equal(view.pendingAnimationFrames(), 0, "quiet reduced-motion mode must not retain continuous frame work");
+
+    await act(async () => useDeck.setState({ audio: true }));
+    assert.ok(view.pendingAnimationFrames() > 0, "arming audio must start the live sound-level meter");
+    await view.runAnimationFrameBatch();
+    assert.ok(view.pendingAnimationFrames() > 0, "the armed sound-level meter must remain live");
+
+    await act(async () => useDeck.setState({ audio: false }));
+    assert.equal(view.pendingAnimationFrames(), 0, "disarming audio must stop its frame loop immediately");
+  } finally {
+    await view.cleanup();
+  }
 });

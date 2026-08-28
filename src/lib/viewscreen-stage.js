@@ -9,6 +9,9 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { MeshSurfaceSampler } from 'three/addons/math/MeshSurfaceSampler.js';
+import { shouldRenderFrame } from './animation-timing.ts';
+
+const MINIMUM_FRAME_INTERVAL_MS = 1000 / 30;
 
 const NEBULA_VERT = `
 varying vec2 vUv;
@@ -771,7 +774,13 @@ class ViewscreenStage extends HTMLElement {
 
     this._resize();
     if (this.reduce) { this._frame(0); return; }
-    const loop = (t) => { this._raf = requestAnimationFrame(loop); if (!this.paused) this._frame(t); };
+    const loop = (t) => {
+      this._raf = requestAnimationFrame(loop);
+      if (!this.paused && shouldRenderFrame(t, this._previousRender ?? null, MINIMUM_FRAME_INTERVAL_MS)) {
+        this._previousRender = t;
+        this._frame(t);
+      }
+    };
     this._raf = requestAnimationFrame(loop);
   }
 

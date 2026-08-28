@@ -517,6 +517,10 @@ export function CommandDeck() {
   }, []);
 
   useEffect(() => {
+    if (!audio) {
+      document.documentElement.style.setProperty("--za-level", "0");
+      return;
+    }
     let raf = 0;
     const tick = () => {
       document.documentElement.style.setProperty("--za-level", String(getSound().level()));
@@ -524,7 +528,7 @@ export function CommandDeck() {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [audio]);
 
   const onScroll = useCallback(() => {
     const sc = scRef.current;
@@ -775,11 +779,13 @@ export function CommandDeck() {
       >
         Skip to content
       </a>
-      {stageOn ? (
-        <viewscreen-stage ref={stageRef as unknown as Ref<HTMLElement>} />
-      ) : (
-        <div className="fixed inset-0 z-0 bg-void" />
-      )}
+      <img
+        src="/plates/command.jpg"
+        alt=""
+        aria-hidden="true"
+        className={`za-stage-poster ${stageOn ? "is-hidden" : ""}`}
+      />
+      {stageOn && <viewscreen-stage ref={stageRef as unknown as Ref<HTMLElement>} className="za-stage-live" />}
       <div className="za-vignette" />
       <div className="za-spot" aria-hidden />
       <div className="za-scan" />

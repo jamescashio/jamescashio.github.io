@@ -3,11 +3,11 @@ type SchedulerEnvironment = {
   cancelAnimationFrame: (handle: number) => void;
   setTimeout: (callback: () => void, delay: number) => number;
   clearTimeout: (handle: number) => void;
-  requestIdleCallback?: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number;
-  cancelIdleCallback?: (handle: number) => void;
-  addEventListener: (type: "pointerdown" | "keydown", listener: EventListener) => void;
-  removeEventListener: (type: "pointerdown" | "keydown", listener: EventListener) => void;
+  addEventListener: (type: IntentEvent, listener: EventListener) => void;
+  removeEventListener: (type: IntentEvent, listener: EventListener) => void;
 };
+
+type IntentEvent = "pointerdown" | "keydown" | "wheel" | "touchstart";
 
 type StageLoadOptions<T> = {
   load: () => Promise<T>;
@@ -16,7 +16,8 @@ type StageLoadOptions<T> = {
   environment?: SchedulerEnvironment;
 };
 
-const FALLBACK_MS = 1600;
+const INTENT_EVENTS: IntentEvent[] = ["pointerdown", "keydown", "wheel", "touchstart"];
+const FALLBACK_MS = 12_000;
 
 export function scheduleStageLoad<T>({
   load,
@@ -26,25 +27,21 @@ export function scheduleStageLoad<T>({
 }: StageLoadOptions<T>) {
   let firstFrame = 0;
   let secondFrame = 0;
-  let idleCallback = 0;
   let fallbackTimer = 0;
-  let immediateTimer = 0;
   let painted = false;
+  let startRequested = false;
   let started = false;
   let cancelled = false;
 
   const removeIntentListeners = () => {
-    environment.removeEventListener("pointerdown", onIntent);
-    environment.removeEventListener("keydown", onIntent);
+    for (const type of INTENT_EVENTS) environment.removeEventListener(type, onIntent);
   };
 
   const clearSchedules = () => {
     if (firstFrame) environment.cancelAnimationFrame(firstFrame);
     if (secondFrame) environment.cancelAnimationFrame(secondFrame);
-    if (idleCallback) environment.cancelIdleCallback?.(idleCallback);
     if (fallbackTimer) environment.clearTimeout(fallbackTimer);
-    if (immediateTimer) environment.clearTimeout(immediateTimer);
-    firstFrame = secondFrame = idleCallback = fallbackTimer = immediateTimer = 0;
+    firstFrame = secondFrame = fallbackTimer = 0;
     removeIntentListeners();
   };
 
@@ -63,24 +60,24 @@ export function scheduleStageLoad<T>({
   };
 
   function onIntent() {
+    startRequested = true;
     start();
   }
 
-  environment.addEventListener("pointerdown", onIntent);
-  environment.addEventListener("keydown", onIntent);
+  for (const type of INTENT_EVENTS) environment.addEventListener(type, onIntent);
+  fallbackTimer = environment.setTimeout(() => {
+    fallbackTimer = 0;
+    startRequested = true;
+    start();
+  }, FALLBACK_MS);
   firstFrame = environment.requestAnimationFrame(() => {
     firstFrame = 0;
     if (cancelled) return;
-    painted = true;
-    fallbackTimer = environment.setTimeout(start, FALLBACK_MS);
     secondFrame = environment.requestAnimationFrame(() => {
       secondFrame = 0;
-      if (cancelled || started) return;
-      if (environment.requestIdleCallback) {
-        idleCallback = environment.requestIdleCallback(start, { timeout: 900 });
-      } else {
-        immediateTimer = environment.setTimeout(start, 0);
-      }
+      if (cancelled) return;
+      painted = true;
+      if (startRequested) start();
     });
   });
 
