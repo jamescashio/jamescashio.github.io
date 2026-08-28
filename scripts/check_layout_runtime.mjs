@@ -183,6 +183,31 @@ async function main() {
       throw new Error(evaluated.exceptionDetails.exception?.description ?? evaluated.exceptionDetails.text);
     }
     const result = evaluated.result.value;
+    await send("Runtime.evaluate", {
+      expression: `([...document.querySelectorAll('button[aria-label="Run the 30-second flight"]')].find((button) => button.getClientRects().length > 0)?.click())`,
+    });
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    const flightEvaluation = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const panel = [...document.querySelectorAll('section[aria-label="30-second flight status"]')].find((element) => element.getClientRects().length > 0);
+        const copy = document.querySelector('section[data-deck="0"] .za-bracket');
+        if (!panel || !copy) return { ok: false, reason: "active mobile flight panel or Snapshot copy is missing" };
+        const panelRect = panel.getBoundingClientRect();
+        const copyRect = copy.getBoundingClientRect();
+        const gap = copyRect.top - panelRect.bottom;
+        return {
+          ok: gap >= 8,
+          gap,
+          panel: { top: panelRect.top, bottom: panelRect.bottom, height: panelRect.height },
+          copyTop: copyRect.top,
+        };
+      })()`,
+      returnByValue: true,
+    });
+    const flight = flightEvaluation.result.value;
+    await send("Runtime.evaluate", {
+      expression: `([...document.querySelectorAll('button[aria-label="Stop the 30-second flight"]')].find((button) => button.getClientRects().length > 0)?.click())`,
+    });
     await send("Emulation.setDeviceMetricsOverride", { width: 320, height: 844, deviceScaleFactor: 1, mobile: true });
     const narrowEvaluation = await send("Runtime.evaluate", {
       expression: `(() => {
@@ -235,8 +260,30 @@ async function main() {
       returnByValue: true,
     });
     const eveFocus = eveFocusEvaluation.result.value;
-    console.log(JSON.stringify({ eveFocus, mobile390: result, mobile320: narrowResult }, null, 2));
+    const bitFocusEvaluation = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const button = document.querySelector(".za-bit-control");
+        if (!button) return { ok: false, reason: "Bit control is missing" };
+        button.focus({ preventScroll: true });
+        const style = getComputedStyle(button);
+        const outlineWidth = parseFloat(style.outlineWidth);
+        const visibleOutline = style.outlineStyle !== "none" && outlineWidth > 0;
+        const visibleShadow = style.boxShadow !== "none";
+        return {
+          ok: document.activeElement === button && (visibleOutline || visibleShadow),
+          active: document.activeElement === button,
+          outlineStyle: style.outlineStyle,
+          outlineWidth,
+          boxShadow: style.boxShadow,
+        };
+      })()`,
+      returnByValue: true,
+    });
+    const bitFocus = bitFocusEvaluation.result.value;
+    console.log(JSON.stringify({ bitFocus, eveFocus, flight, mobile390: result, mobile320: narrowResult }, null, 2));
+    assert.equal(bitFocus.ok, true, "Bit control must retain a visible keyboard focus indicator");
     assert.equal(eveFocus.ok, true, "E.V.E. command input must retain a visible keyboard focus indicator");
+    assert.equal(flight.ok, true, "Active mobile flight status must not overlap the Snapshot content");
     assert.equal(result.ok, true, result.failures.join("; "));
     assert.equal(narrowResult.ok, true, narrowResult.failures.join("; "));
   }, resources);

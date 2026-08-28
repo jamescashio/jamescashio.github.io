@@ -188,7 +188,9 @@
   .za-btn:hover {
     filter: brightness(1.12);
     transform: translateY(-2px);
-    box-shadow: 0 12px 40px rgba(255, 149, 0, 0.45), 0 0 24px rgba(255, 149, 0, 0.35);
+    box-shadow:
+      0 12px 40px rgba(255, 149, 0, 0.45),
+      0 0 24px rgba(255, 149, 0, 0.35);
   }
   .za-btn:active {
     transform: scale(0.96);
@@ -231,11 +233,7 @@
   position: fixed;
   inset: 0;
   z-index: 3;
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent 0 2px,
-    rgba(0, 0, 0, 0.14) 2px 3px
-  );
+  background: repeating-linear-gradient(to bottom, transparent 0 2px, rgba(0, 0, 0, 0.14) 2px 3px);
   mix-blend-mode: multiply;
   opacity: 0.35;
 }
@@ -467,6 +465,31 @@
   .za-snapshot-actions {
     margin-top: 1rem;
   }
+  section[aria-label="30-second flight status"].fixed {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  section[aria-label="30-second flight status"].fixed > ol,
+  section[aria-label="30-second flight status"].fixed > p:not(:first-child) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  section[aria-label="30-second flight status"].fixed > button {
+    width: auto;
+    min-width: 5.5rem;
+    margin-top: 0;
+  }
+  section[aria-label="30-second flight status"].fixed ~ main section[data-deck="0"].za-mobile-rail-clearance {
+    padding-top: 8.75rem;
+  }
   .za-mobile-rail-safe {
     min-height: calc(60px + var(--za-safe-area-inset-bottom));
     padding-bottom: var(--za-safe-area-inset-bottom);
@@ -548,11 +571,26 @@
   animation: za-eq 900ms ease-in-out infinite;
   transform-origin: bottom;
 }
-.za-eq span:nth-child(1) { animation-delay: 0ms; height: 40%; }
-.za-eq span:nth-child(2) { animation-delay: 120ms; height: 70%; }
-.za-eq span:nth-child(3) { animation-delay: 240ms; height: 50%; }
-.za-eq span:nth-child(4) { animation-delay: 80ms; height: 90%; }
-.za-eq span:nth-child(5) { animation-delay: 200ms; height: 35%; }
+.za-eq span:nth-child(1) {
+  animation-delay: 0ms;
+  height: 40%;
+}
+.za-eq span:nth-child(2) {
+  animation-delay: 120ms;
+  height: 70%;
+}
+.za-eq span:nth-child(3) {
+  animation-delay: 240ms;
+  height: 50%;
+}
+.za-eq span:nth-child(4) {
+  animation-delay: 80ms;
+  height: 90%;
+}
+.za-eq span:nth-child(5) {
+  animation-delay: 200ms;
+  height: 35%;
+}
 
 .za-flow-path {
   fill: none;
@@ -624,7 +662,12 @@
   position: fixed;
   inset: 0;
   z-index: 80;
-  background: radial-gradient(ellipse at 70% 45%, rgba(0, 249, 255, 0.28), rgba(255, 149, 0, 0.12) 38%, transparent 68%);
+  background: radial-gradient(
+    ellipse at 70% 45%,
+    rgba(0, 249, 255, 0.28),
+    rgba(255, 149, 0, 0.12) 38%,
+    transparent 68%
+  );
   mix-blend-mode: screen;
   opacity: 0;
   transition: opacity 180ms var(--ease-out);
@@ -676,7 +719,13 @@
 }
 
 .za-shimmer-text {
-  background: linear-gradient(100deg, var(--color-cyan) 0%, var(--color-ink) 32%, var(--color-accent) 68%, var(--color-cyan) 100%);
+  background: linear-gradient(
+    100deg,
+    var(--color-cyan) 0%,
+    var(--color-ink) 32%,
+    var(--color-accent) 68%,
+    var(--color-cyan) 100%
+  );
   background-size: 240% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -783,11 +832,7 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent 0 3px,
-    rgba(0, 0, 0, 0.16) 3px 4px
-  );
+  background: repeating-linear-gradient(to bottom, transparent 0 3px, rgba(0, 0, 0, 0.16) 3px 4px);
   mix-blend-mode: multiply;
   opacity: 0.32;
 }
@@ -846,7 +891,8 @@
   html,
   body,
   #app {
-    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Cpath d='M2 2 L12 2 L2 12Z' fill='%23ff9500'/%3E%3Ccircle cx='16' cy='16' r='4' fill='none' stroke='%2300f9ff' stroke-width='1.4'/%3E%3Cpath d='M16 8 V11.5 M16 20.5 V24 M8 16 H11.5 M20.5 16 H24' stroke='%2300f9ff' stroke-width='1.2' stroke-linecap='square'/%3E%3C/svg%3E")
+    cursor:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Cpath d='M2 2 L12 2 L2 12Z' fill='%23ff9500'/%3E%3Ccircle cx='16' cy='16' r='4' fill='none' stroke='%2300f9ff' stroke-width='1.4'/%3E%3Cpath d='M16 8 V11.5 M16 20.5 V24 M8 16 H11.5 M20.5 16 H24' stroke='%2300f9ff' stroke-width='1.2' stroke-linecap='square'/%3E%3C/svg%3E")
         2 2,
       crosshair;
   }
@@ -855,7 +901,8 @@
   [role="button"],
   input,
   .za-plate {
-    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Cpath d='M2 2 L13 2 L2 13Z' fill='%23ff9500'/%3E%3Ccircle cx='16' cy='16' r='5' fill='none' stroke='%23ff9500' stroke-width='1.5'/%3E%3C/svg%3E")
+    cursor:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Cpath d='M2 2 L13 2 L2 13Z' fill='%23ff9500'/%3E%3Ccircle cx='16' cy='16' r='5' fill='none' stroke='%23ff9500' stroke-width='1.5'/%3E%3C/svg%3E")
         2 2,
       pointer;
   }
@@ -967,7 +1014,9 @@
 .za-pilot:hover {
   transform: translateY(-3px);
   border-color: var(--color-cyan);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.4), 0 0 24px rgba(0, 249, 255, 0.12);
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.4),
+    0 0 24px rgba(0, 249, 255, 0.12);
 }
 
 .za-crosshair {
@@ -1037,7 +1086,7 @@
   background: conic-gradient(
     from 0deg,
     transparent 0 72%,
-    rgba(0, 249, 255, 0.0) 78%,
+    rgba(0, 249, 255, 0) 78%,
     rgba(0, 249, 255, 0.14) 88%,
     transparent 96%
   );
@@ -1174,7 +1223,13 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(100deg, transparent 38%, rgba(0, 249, 255, 0.15) 49%, rgba(232, 246, 255, 0.2) 50%, transparent 62%);
+  background: linear-gradient(
+    100deg,
+    transparent 38%,
+    rgba(0, 249, 255, 0.15) 49%,
+    rgba(232, 246, 255, 0.2) 50%,
+    transparent 62%
+  );
   transform: translateX(-125%);
   animation: za-article-scan 760ms 80ms var(--ease-out) both;
 }
@@ -1402,7 +1457,9 @@
   display: inline;
 }
 .za-bit-control {
-  transition: filter 260ms var(--ease-out), transform 260ms var(--ease-out);
+  transition:
+    filter 260ms var(--ease-out),
+    transform 260ms var(--ease-out);
 }
 .za-corner-hud.yield .za-bit-control {
   filter: saturate(0.92) brightness(0.9);
@@ -1451,7 +1508,9 @@
   background:
     linear-gradient(90deg, rgba(255, 149, 0, 0.12), rgba(0, 249, 255, 0.035) 68%, transparent),
     repeating-linear-gradient(0deg, transparent 0 9px, rgba(255, 255, 255, 0.018) 10px);
-  box-shadow: inset 0 1px rgba(255, 255, 255, 0.04), 0 0 26px rgba(255, 149, 0, 0.06);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.04),
+    0 0 26px rgba(255, 149, 0, 0.06);
 }
 .za-mission-stamp::after {
   content: "";
@@ -1515,8 +1574,17 @@
   inset: 0;
   border: 1px solid transparent;
   border-radius: inherit;
-  background: linear-gradient(115deg, rgba(0, 249, 255, 0.22), transparent 30%, rgba(255, 149, 0, 0.16) 74%, transparent) border-box;
-  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  background: linear-gradient(
+      115deg,
+      rgba(0, 249, 255, 0.22),
+      transparent 30%,
+      rgba(255, 149, 0, 0.16) 74%,
+      transparent
+    )
+    border-box;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) padding-box,
+    linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   animation: za-dossier-lock 780ms var(--ease-out) both;
@@ -1531,7 +1599,9 @@
   border: 1px solid rgba(0, 249, 255, 0.28);
   border-radius: var(--radius-md);
   background: #080b10;
-  box-shadow: inset 0 0 36px rgba(0, 0, 0, 0.56), 0 16px 42px rgba(0, 0, 0, 0.32);
+  box-shadow:
+    inset 0 0 36px rgba(0, 0, 0, 0.56),
+    0 16px 42px rgba(0, 0, 0, 0.32);
 }
 .za-airframe-frame::after {
   content: "";
@@ -1640,18 +1710,42 @@
   color: var(--color-ink);
 }
 @keyframes za-dossier-lock {
-  from { opacity: 0; filter: brightness(2); }
-  to { opacity: 1; filter: brightness(1); }
+  from {
+    opacity: 0;
+    filter: brightness(2);
+  }
+  to {
+    opacity: 1;
+    filter: brightness(1);
+  }
 }
 @keyframes za-evidence-resolve {
-  from { opacity: 0.32; filter: saturate(0) contrast(1.35) brightness(1.45); transform: scale(1.09); }
-  to { opacity: 1; filter: saturate(0.78) contrast(1.08) brightness(0.84); transform: scale(1.025); }
+  from {
+    opacity: 0.32;
+    filter: saturate(0) contrast(1.35) brightness(1.45);
+    transform: scale(1.09);
+  }
+  to {
+    opacity: 1;
+    filter: saturate(0.78) contrast(1.08) brightness(0.84);
+    transform: scale(1.025);
+  }
 }
 @keyframes za-evidence-acquire {
-  from { transform: translateX(0); opacity: 0; }
-  12% { opacity: 1; }
-  82% { opacity: 0.82; }
-  to { transform: translateX(660%); opacity: 0; }
+  from {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  82% {
+    opacity: 0.82;
+  }
+  to {
+    transform: translateX(660%);
+    opacity: 0;
+  }
 }
 @media (max-width: 520px) {
   .za-airframe-credit {
