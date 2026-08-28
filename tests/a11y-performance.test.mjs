@@ -612,16 +612,45 @@ test("contact and Builds expose the responsive layout hooks that prevent collisi
     assert.match(stylesheet, /\.za-build-selector\s*\{[^}]*scroll-snap-type:\s*x\s+mandatory/is);
     assert.match(stylesheet, /\.za-mobile-rail-clearance\s*\{[^}]*padding-top:/is);
 
-    const firstMobile = stylesheet.indexOf("@media (max-width: 767px)");
-    const contactMobile = stylesheet.indexOf("@media (max-width: 767px)", firstMobile + 1);
-    const contactMobileEnd = stylesheet.indexOf("\n.za-eq", contactMobile);
-    const contactMobileStyles = stylesheet.slice(contactMobile, contactMobileEnd);
-    const mobileMissionRule = contactMobileStyles.match(/\.za-mission-stamp span\s*\{([^}]*)\}/is)?.[1];
-    const missionRule = mobileMissionRule ?? stylesheet.match(/\.za-mission-stamp span\s*\{([^}]*)\}/is)?.[1];
-    const missionFontSize = Number(missionRule?.match(/font-size:\s*([\d.]+)px/i)?.[1]);
+    const mobileRanges = [...stylesheet.matchAll(/@media\s*\(max-width:\s*767px\)\s*\{/gi)].map((match) => {
+      const open = match.index + match[0].lastIndexOf("{");
+      let depth = 1;
+      let close = open + 1;
+      while (depth > 0 && close < stylesheet.length) {
+        if (stylesheet[close] === "{") depth += 1;
+        if (stylesheet[close] === "}") depth -= 1;
+        close += 1;
+      }
+      return { open, close };
+    });
+    const missionRules = [...stylesheet.matchAll(/\.za-mission-stamp span\s*\{([^}]*)\}/gis)].map((match) => ({
+      index: match.index,
+      declarations: Object.fromEntries(
+        match[1]
+          .split(";")
+          .map((entry) => entry.trim().split(/:\s*/, 2))
+          .filter((entry) => entry.length === 2),
+      ),
+      mobileOnly: mobileRanges.some(({ open, close }) => match.index > open && match.index < close),
+    }));
+    const desktopMission = Object.assign(
+      {},
+      ...missionRules.filter((rule) => !rule.mobileOnly).map((rule) => rule.declarations),
+    );
+    const mobileMission = Object.assign({}, ...missionRules.map((rule) => rule.declarations));
+    assert.equal(desktopMission["font-size"], "9px", "desktop mission microtype must retain its existing size");
     assert.ok(
-      mobileMissionRule && missionFontSize >= 11,
-      `mobile mission status must override the desktop 9px size with at least 11px; received ${missionFontSize}px`,
+      Number.parseFloat(mobileMission["font-size"]) >= 11,
+      `effective mobile mission status must be at least 11px; received ${mobileMission["font-size"]}`,
+    );
+    assert.deepEqual(
+      {
+        lineHeight: mobileMission["line-height"],
+        letterSpacing: mobileMission["letter-spacing"],
+        overflowWrap: mobileMission["overflow-wrap"],
+      },
+      { lineHeight: "1.45", letterSpacing: "0.08em", overflowWrap: "anywhere" },
+      "effective mobile mission status must retain collision-safe tracking and wrapping",
     );
   } finally {
     await view.cleanup();
