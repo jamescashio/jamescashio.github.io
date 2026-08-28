@@ -8,7 +8,7 @@ export function focusDeckHeading(root: ParentNode, deck: number) {
   const section = root.querySelector<HTMLElement>(`section[data-deck="${deck}"]`);
   const heading = section?.querySelector<HTMLElement>("h1, h2");
   if (!heading) return false;
-  heading.focus();
+  heading.focus({ preventScroll: true });
   return true;
 }
 

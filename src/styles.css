@@ -460,12 +460,20 @@
     padding-top: 9.5rem;
     padding-bottom: calc(6rem + 60px + var(--za-safe-area-inset-bottom));
   }
+  section[data-deck="0"].za-mobile-rail-clearance {
+    padding-top: 7rem;
+  }
+  .za-snapshot-modes,
+  .za-snapshot-actions {
+    margin-top: 1rem;
+  }
   .za-mobile-rail-safe {
     min-height: calc(60px + var(--za-safe-area-inset-bottom));
     padding-bottom: var(--za-safe-area-inset-bottom);
   }
 }
 .za-contact-copy {
+  min-width: 0;
   border-radius: var(--radius-lg);
   background: linear-gradient(90deg, rgb(4, 7, 12), rgb(5, 8, 13) 72%, rgb(7, 11, 18));
   box-shadow: 0 0 40px rgba(4, 7, 12, 0.64);
@@ -485,6 +493,9 @@
     margin-inline: -0.75rem;
     padding: 0.75rem;
     background: linear-gradient(180deg, rgb(4, 7, 12), rgb(5, 8, 13) 82%, rgb(7, 11, 18));
+  }
+  .za-hail > a.za-display {
+    font-size: clamp(1.1rem, 6vw, 1.4rem);
   }
   .za-build-details {
     order: 1;

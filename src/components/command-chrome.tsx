@@ -85,10 +85,10 @@ export function DesktopCommandRail({
           type="button"
           className="za-btn-ghost rounded-r-[22px] px-2 py-2 text-[10px]"
           onClick={onToggleAudio}
-          aria-label={audio ? "Mute selection audio · AUDIO ARMED" : "Arm selection audio · AUDIO OFF"}
+          aria-label={audio ? "Mute selection audio · AUDIO" : "Arm selection audio · ARM AUDIO"}
           aria-pressed={audio}
         >
-          {audio ? "◉" : "○"} {railOpen && (audio ? "AUDIO ARMED" : "AUDIO OFF")}
+          {audio ? "◉" : "○"} {railOpen && (audio ? "AUDIO" : "ARM AUDIO")}
         </button>
         <button
           type="button"

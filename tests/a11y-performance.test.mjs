@@ -355,7 +355,7 @@ test("aircraft pip buttons expose 24px hit targets around separate small marks",
   }
 });
 
-test("glyph controls have stable accessible names and stateful audio remains pressed", async () => {
+test("glyph controls preserve each visible audio label in their accessible names", async () => {
   const view = mountCommandDeck();
   try {
     await view.render();
@@ -366,15 +366,19 @@ test("glyph controls have stable accessible names and stateful audio remains pre
       "Open deck navigator",
     ])
       labeledButton(view.document, label);
-    const audioToggles = [...view.document.querySelectorAll("button")].filter((button) =>
-      button.getAttribute("aria-label")?.includes("Arm selection audio"),
+    await view.click(labeledButton(view.document, "Expand command rail"));
+    const railAudio = view.document.querySelector('aside button[aria-label*="Arm selection audio"]');
+    assert.ok(railAudio, "the expanded rail audio toggle must be named");
+    assert.match(railAudio.textContent ?? "", /ARM AUDIO/, "the established rail wording must remain visible");
+    assert.match(railAudio.getAttribute("aria-label") ?? "", /ARM AUDIO/);
+    assert.equal(railAudio.getAttribute("aria-pressed"), "false");
+
+    const headerAudio = [...view.document.querySelectorAll("button")].find((button) =>
+      button.textContent?.includes("AUDIO OFF"),
     );
-    assert.ok(audioToggles.length >= 2, "rail and header audio toggles must both be named");
-    assert.ok(
-      audioToggles.every((button) => button.getAttribute("aria-label")?.includes("AUDIO OFF")),
-      "audio accessible names must retain the visible AUDIO OFF label",
-    );
-    assert.ok(audioToggles.some((button) => button.getAttribute("aria-pressed") === "false"));
+    assert.ok(headerAudio, "the header audio toggle must retain its visible AUDIO OFF state");
+    assert.match(headerAudio.getAttribute("aria-label") ?? "", /AUDIO OFF/);
+    assert.equal(headerAudio.getAttribute("aria-pressed"), "false");
   } finally {
     await view.cleanup();
   }
@@ -591,19 +595,27 @@ test("deck navigator initializes focus, traps both tab directions, closes safely
   }
 });
 
-test("deck navigator selection focus routes directly to the Contact heading", () => {
+test("deck navigator selection focuses Contact without displacing the commanded scroll landing", () => {
   const dom = new JSDOM(`<!doctype html><body>
     <button id="opener">OPEN</button>
-    <section data-deck="8"><h2 tabindex="-1">CONTACT</h2></section>
+    <main><section data-deck="8"><h2 tabindex="-1">CONTACT</h2></section></main>
   </body>`);
   try {
     const opener = dom.window.document.querySelector("#opener");
+    const scroller = dom.window.document.querySelector("main");
     const contactHeading = dom.window.document.querySelector('section[data-deck="8"] h2');
+    const nativeFocus = contactHeading.focus.bind(contactHeading);
+    contactHeading.focus = (options) => {
+      nativeFocus(options);
+      if (!options?.preventScroll) scroller.scrollTop = 9382;
+    };
+    scroller.scrollTop = 9668;
     opener.focus();
     assert.equal(typeof focusHelpers?.focusDeckHeading, "function");
     assert.equal(focusHelpers.focusDeckHeading(dom.window.document, 8), true);
     assert.equal(dom.window.document.activeElement, contactHeading, "selection must announce the destination heading");
     assert.notEqual(dom.window.document.activeElement, opener);
+    assert.equal(scroller.scrollTop, 9668, "focus must preserve the commanded Contact scroll landing");
   } finally {
     dom.window.close();
   }

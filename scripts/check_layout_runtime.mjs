@@ -12,6 +12,7 @@ import { connectCdp, runWithLayoutCleanup } from "./layout-runtime-support.mjs";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = path.join(ROOT, "dist");
 const SAFE_AREA_PX = 20;
+const CTA_RAIL_GAP_PX = 24;
 
 function browserExecutable() {
   const candidates = [
@@ -104,7 +105,7 @@ async function waitForApp(send) {
   for (let attempt = 0; attempt < 100; attempt++) {
     const result = await send("Runtime.evaluate", {
       expression:
-        'document.readyState === "complete" && document.querySelectorAll(".za-lcars-pip").length === 8 && Boolean(document.querySelector(".za-mobile-rail-safe"))',
+        'document.readyState === "complete" && (!document.fonts || document.fonts.status === "loaded") && document.querySelectorAll(".za-lcars-pip").length === 8 && Boolean(document.querySelector(".za-mobile-rail-safe"))',
       returnByValue: true,
     });
     if (result.result.value) return;
@@ -173,7 +174,7 @@ async function main() {
           if (item.paddingBottom < 176) failures.push(item.tag + " deck=" + item.deck + " padding " + item.paddingBottom + "px is below 6rem + 60px + 20px");
         });
         const ctaBottom = cta?.getBoundingClientRect().bottom ?? Infinity;
-        if (ctaBottom >= railRect.top) failures.push("Snapshot CTA bottom " + ctaBottom + "px overlaps rail top " + railRect.top + "px");
+        if (ctaBottom > railRect.top - ${CTA_RAIL_GAP_PX}) failures.push("Snapshot CTA bottom " + ctaBottom + "px leaves less than ${CTA_RAIL_GAP_PX}px before rail top " + railRect.top + "px");
         return { ok: failures.length === 0, failures, viewport: [innerWidth, innerHeight], pips, rail: { height: railRect.height, top: railRect.top, paddingBottom: railPadding }, clearance, ctaBottom };
       })()`,
       returnByValue: true,
@@ -182,8 +183,41 @@ async function main() {
       throw new Error(evaluated.exceptionDetails.exception?.description ?? evaluated.exceptionDetails.text);
     }
     const result = evaluated.result.value;
-    console.log(JSON.stringify(result, null, 2));
+    await send("Emulation.setDeviceMetricsOverride", { width: 320, height: 844, deviceScaleFactor: 1, mobile: true });
+    const narrowEvaluation = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const section = document.querySelector('section[data-deck="8"]');
+        const contact = section?.querySelector('.za-contact-copy');
+        const email = contact?.querySelector('.za-hail a[href^="mailto:"]');
+        const sectionRect = section?.getBoundingClientRect();
+        const contactRect = contact?.getBoundingClientRect();
+        const failures = [];
+        if (!section || !contact || !email || !sectionRect || !contactRect) failures.push("Contact layout is missing");
+        if (document.documentElement.scrollWidth > innerWidth) failures.push("document width " + document.documentElement.scrollWidth + "px exceeds viewport " + innerWidth + "px");
+        if (section && section.scrollWidth > section.clientWidth) failures.push("Contact deck content width " + section.scrollWidth + "px exceeds its " + section.clientWidth + "px box");
+        if (contactRect && (contactRect.left < 0 || contactRect.right > innerWidth)) failures.push("Contact scrim spans " + contactRect.left + "px to " + contactRect.right + "px in a " + innerWidth + "px viewport");
+        if (email && email.scrollWidth > email.clientWidth) failures.push("Contact email width " + email.scrollWidth + "px exceeds its " + email.clientWidth + "px box");
+        return {
+          ok: failures.length === 0,
+          failures,
+          viewport: [innerWidth, innerHeight],
+          documentWidth: document.documentElement.scrollWidth,
+          section: section && { clientWidth: section.clientWidth, scrollWidth: section.scrollWidth },
+          contact: contactRect && { left: contactRect.left, right: contactRect.right, width: contactRect.width },
+          email: email && { clientWidth: email.clientWidth, scrollWidth: email.scrollWidth },
+        };
+      })()`,
+      returnByValue: true,
+    });
+    if (narrowEvaluation.exceptionDetails) {
+      throw new Error(
+        narrowEvaluation.exceptionDetails.exception?.description ?? narrowEvaluation.exceptionDetails.text,
+      );
+    }
+    const narrowResult = narrowEvaluation.result.value;
+    console.log(JSON.stringify({ mobile390: result, mobile320: narrowResult }, null, 2));
     assert.equal(result.ok, true, result.failures.join("; "));
+    assert.equal(narrowResult.ok, true, narrowResult.failures.join("; "));
   }, resources);
 }
 

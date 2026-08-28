@@ -64,7 +64,7 @@ export function DeckSnapshot({
           current public snapshot was verified on {VERIFIED_LONG}.
         </p>
 
-        <div className="mt-8 grid max-w-lg grid-cols-2 gap-2 rounded-[var(--radius-lg)] border border-line bg-void-2/70 p-1.5">
+        <div className="za-snapshot-modes mt-8 grid max-w-lg grid-cols-2 gap-2 rounded-[var(--radius-lg)] border border-line bg-void-2/70 p-1.5">
           <button
             type="button"
             aria-pressed={mode === "technical"}
@@ -93,7 +93,7 @@ export function DeckSnapshot({
           </button>
         </div>
 
-        <div className="mt-8 flex flex-wrap items-center gap-3">
+        <div className="za-snapshot-actions mt-8 flex flex-wrap items-center gap-3">
           <button type="button" className="za-btn px-7 py-3.5 text-[13px]" onClick={onEngage}>
             {mode === "executive" ? "READ THE BRIEF" : "DESCEND THE DECKS"}
           </button>
