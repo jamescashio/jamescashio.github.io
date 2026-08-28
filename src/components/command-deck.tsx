@@ -304,6 +304,7 @@ export function CommandDeck() {
     clearHashSuppressionTimer();
     clearResizeAnchor();
     hashTransition.current = cancelHashRestore(hashTransition.current);
+    pendingDestinationFocus.current = null;
   }, [clearHashSuppressionTimer, clearResizeAnchor]);
 
   const beginProgrammaticScroll = useCallback(
@@ -1003,8 +1004,8 @@ export function CommandDeck() {
           deck={deck}
           onSelect={(index) => {
             paletteOpener.current = null;
-            pendingDestinationFocus.current = index;
             goto(index);
+            pendingDestinationFocus.current = index;
           }}
           onClose={closePalette}
         />

@@ -652,6 +652,68 @@ test("deck navigator waits for the commanded smooth landing before focusing its 
   }
 });
 
+test("superseded navigator intent never steals focus on a later passive visit", async (t) => {
+  const selectContact = async (view) => {
+    const opener = [...view.document.querySelectorAll('button[aria-label="Open deck navigator"]')].at(-1);
+    opener.focus();
+    await view.click(opener);
+    const dialog = view.document.querySelector('[role="dialog"][aria-label="Deck navigator"]');
+    await view.click(dialog.querySelector('button[aria-label="Go to CONTACT deck"]'));
+    return view.document.querySelector('section[data-deck="8"] h2');
+  };
+
+  await t.test("wheel interruption", async () => {
+    const view = mountCommandDeck({ reducedMotion: false, deferredSmoothScroll: true });
+    try {
+      await view.render();
+      const contactHeading = await selectContact(view);
+      const scroller = view.document.querySelector("main.za-scroll");
+
+      await act(async () => scroller.dispatchEvent(new view.window.Event("wheel", { bubbles: true })));
+      await view.scrollDeck(3);
+      await view.scrollDeck(8);
+
+      assert.notEqual(view.document.activeElement, contactHeading, "interrupted focus intent must stay discarded");
+    } finally {
+      await view.cleanup();
+    }
+  });
+
+  await t.test("later rail destination", async () => {
+    const view = mountCommandDeck({ reducedMotion: false, deferredSmoothScroll: true });
+    try {
+      await view.render();
+      const contactHeading = await selectContact(view);
+      await view.click(labeledButton(view.document, "Go to ROUTING deck"));
+      await view.scrollDeck(2);
+      await view.scrollDeck(8);
+
+      assert.notEqual(
+        view.document.activeElement,
+        contactHeading,
+        "a later rail route must supersede navigator intent",
+      );
+    } finally {
+      await view.cleanup();
+    }
+  });
+
+  await t.test("external history restoration", async () => {
+    const view = mountCommandDeck({ reducedMotion: false, deferredSmoothScroll: true });
+    try {
+      await view.render();
+      const contactHeading = await selectContact(view);
+      await view.history("back");
+      await view.scrollDeck(0);
+      await view.scrollDeck(8);
+
+      assert.notEqual(view.document.activeElement, contactHeading, "Back must discard the superseded navigator intent");
+    } finally {
+      await view.cleanup();
+    }
+  });
+});
+
 test("contact and Builds expose the responsive layout hooks that prevent collisions and overflow", async () => {
   const view = mountCommandDeck();
   try {
