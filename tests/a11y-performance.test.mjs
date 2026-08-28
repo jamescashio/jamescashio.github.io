@@ -182,6 +182,11 @@ function mountCommandDeck({
         scroller.dispatchEvent(new dom.window.Event("scroll"));
       });
     },
+    async dispatchScroll() {
+      const scroller = dom.window.document.querySelector("main.za-scroll");
+      assert.ok(scroller, "expected the command deck scroller");
+      await act(async () => scroller.dispatchEvent(new dom.window.Event("scroll")));
+    },
     async runControlledTimeout(delay) {
       const timer = [...controlledTimeouts.entries()].find(([, candidate]) => candidate.delay === delay);
       assert.ok(timer, `expected a controlled ${delay}ms timeout`);
@@ -495,10 +500,16 @@ test("resize preserves the Contact deck while responsive geometry settles", asyn
   try {
     await view.render();
     await view.resizeToMobile();
+    const scroller = view.document.querySelector("main.za-scroll");
+    assert.equal(scroller.scrollTop, 7992, "the desktop Contact offset must remain until the responsive anchor settles");
+    await view.dispatchScroll();
+    assert.equal(view.window.location.hash, "#deck=contact", "an intermediate mobile candidate must not rewrite the URL");
+    assert.equal(useDeck.getState().deck, 8, "an intermediate mobile candidate must not replace the logical Contact deck");
+    assert.equal(view.document.querySelector(".za-command-header .za-chip")?.textContent?.trim(), "DECK 09 · CONTACT");
+
     await view.runControlledTimeout(120);
     await view.runLatestAnimationFrame();
 
-    const scroller = view.document.querySelector("main.za-scroll");
     assert.equal(view.window.location.hash, "#deck=contact");
     assert.equal(useDeck.getState().deck, 8);
     assert.equal(view.document.querySelector(".za-command-header .za-chip")?.textContent?.trim(), "DECK 09 · CONTACT");
