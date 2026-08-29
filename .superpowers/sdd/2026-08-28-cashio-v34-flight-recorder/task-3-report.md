@@ -144,3 +144,49 @@ The local Vite server started successfully at `http://127.0.0.1:5173/`, but the 
 - Reduced-motion runtime browser emulation remains unavailable, as explicitly deferred to Task 4. Automated complete-state coverage remains green.
 - `.npm-cache/` remains untracked and unstaged. No dated copy, identity, dependency, route, particle system, or audio-default behavior changed.
 - Focused correction commit: `c2c66675e2f894ea1b649260057c103215eda423` (`fix: harden V34 motion ownership`).
+
+## Review correction round 2 — cinematic timer probe
+
+### Delivered
+
+- Corrected the non-user-visible `data-cine` test probe to reflect the actual Zustand `cine` letterbox state rather than the unrelated chapter-overlay state.
+- Extended the rapid-navigation regression to retain and invoke the cleared first-generation 1100 ms callback, prove it cannot clear the newer letterbox, then invoke the live latest callback and prove the latest letterbox clears.
+- Preserved the existing keyed warp restart, stale 680 ms warp callback, and unmount cleanup assertions.
+
+### Test-first evidence
+
+#### RED
+
+```text
+node --import tsx --test tests/a11y-performance.test.mjs --test-name-pattern "rapid deck navigation"
+```
+
+Before the production probe correction, the focused test failed with:
+
+```text
+AssertionError: the latest cinematic timeout must clear its letterbox
+'true' !== 'false'
+```
+
+This demonstrated that `data-cine={chapOn}` did not observe the actual cinematic timer outcome.
+
+#### GREEN
+
+The same focused command passed: 53/53 Node tests. It now verifies `cine` is true initially and after the stale cleared 1100 ms callback, then false after the live latest 1100 ms callback.
+
+### Full verification
+
+- `npm run test:node` — PASS, 126/126.
+- `npm run lint` — PASS.
+- `npm run format:check` — PASS.
+- `npm run build` — PASS; existing deferred viewscreen chunk warning remains 632.43 kB minified / 164.67 kB gzip.
+- `python -m unittest tests.test_v32_release tests.test_public_repo_guard tests.test_committed_whitespace` — PASS.
+- `python scripts/check_release_consistency.py` — PASS.
+- `python scripts/public_repo_guard.py` — PASS.
+- `python scripts/check_committed_whitespace.py` — PASS.
+- `git diff --check` — PASS.
+
+### Scope and residual gap
+
+- Only `src/components/command-deck.tsx`, `tests/a11y-performance.test.mjs`, and this report changed in this round.
+- Reduced-motion runtime browser emulation remains deferred as approved. `.npm-cache/` remains untracked and unstaged.

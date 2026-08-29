@@ -949,7 +949,7 @@ export function CommandDeck() {
       </main>
 
       <div
-        data-cine={chapOn}
+        data-cine={cine}
         className={`pointer-events-none fixed bottom-[118px] left-[calc(68px+5vw)] z-40 transition duration-500 ${
           chapOn ? "opacity-100" : "translate-y-4 opacity-0"
         } ${hud}`}

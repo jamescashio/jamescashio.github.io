@@ -1554,8 +1554,19 @@ test("rapid deck navigation restarts the latest warp pulse and cleans its owned 
 
     await view.runClearedControlledTimeout(680);
     assert.ok(view.document.querySelector(".za-warpflash.on"), "an earlier timeout must not clear the latest pulse");
-    await view.runControlledTimeout(1100);
     assert.equal(view.document.querySelector("[data-cine]")?.getAttribute("data-cine"), "true");
+    await view.runClearedControlledTimeout(1100);
+    assert.equal(
+      view.document.querySelector("[data-cine]")?.getAttribute("data-cine"),
+      "true",
+      "an earlier cinematic timeout must not clear the latest letterbox",
+    );
+    await view.runControlledTimeout(1100);
+    assert.equal(
+      view.document.querySelector("[data-cine]")?.getAttribute("data-cine"),
+      "false",
+      "the latest cinematic timeout must clear its letterbox",
+    );
 
     await view.cleanup();
     cleaned = true;
