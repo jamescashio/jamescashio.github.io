@@ -449,19 +449,43 @@ const approvedDesktopEveScenario = {
   viewport: [1280, 720],
   hash: "#deck=eve",
   activeDeck: "7",
+  directDeepLink: true,
+  canonicalLandingSettled: true,
+  scrollTop: 12_000,
+  intendedScrollTop: 12_000,
+  scrollAlignmentDelta: 0,
   inputVisible: true,
+  promptSurfaceVisible: true,
+  runVisible: true,
   input: { left: 430, right: 850, top: 642, bottom: 660, width: 420, height: 18 },
   promptSurface: { left: 320, right: 960, top: 624, bottom: 680, width: 640, height: 56 },
-  inputHitAtCenter: true,
-  coveringSurfaces: [],
+  runControl: { left: 880, right: 940, top: 630, bottom: 674, width: 60, height: 44 },
+  inputTopmostHit: true,
+  runTopmostHit: true,
+  promptSurfaceSampleHits: [true, true, true, true, true, true, true, true, true],
+  fixedStickyEnumerationComplete: true,
+  fixedStickyIntersections: [],
   documentWidth: 1280,
   mainClientWidth: 1212,
   mainScrollWidth: 1212,
 };
 
-test("desktop E.V.E. acceptance recognizes a usable prompt inside the 1280 by 720 safe viewport", () => {
+test("desktop E.V.E. acceptance recognizes hand-derived 1280 and unchanged 1440 prompt geometry", () => {
   const validate = runtimeSupport.desktopEveAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
   assert.deepEqual(validate(approvedDesktopEveScenario), []);
+  assert.deepEqual(
+    validate({
+      ...approvedDesktopEveScenario,
+      viewport: [1440, 900],
+      input: { left: 510, right: 930, top: 752, bottom: 770, width: 420, height: 18 },
+      promptSurface: { left: 400, right: 1040, top: 734, bottom: 790, width: 640, height: 56 },
+      runControl: { left: 960, right: 1020, top: 740, bottom: 784, width: 60, height: 44 },
+      documentWidth: 1440,
+      mainClientWidth: 1372,
+      mainScrollWidth: 1372,
+    }),
+    [],
+  );
 });
 
 test("desktop E.V.E. acceptance rejects the observed below-viewport prompt geometry", () => {
@@ -470,8 +494,107 @@ test("desktop E.V.E. acceptance rejects the observed below-viewport prompt geome
     ...approvedDesktopEveScenario,
     input: { ...approvedDesktopEveScenario.input, top: 769.703125, bottom: 787.703125 },
     promptSurface: { ...approvedDesktopEveScenario.promptSurface, top: 755, bottom: 803 },
-    inputHitAtCenter: false,
+    inputTopmostHit: false,
   });
   assert.ok(failures.some((failure) => /20px bottom safe margin/.test(failure)));
-  assert.ok(failures.some((failure) => /hit target must be unobscured/.test(failure)));
+  assert.ok(failures.some((failure) => /input center must be the topmost hit target/.test(failure)));
+});
+
+test("desktop E.V.E. acceptance fails closed for every required numeric field", () => {
+  const validate = runtimeSupport.desktopEveAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  const mutations = [
+    ["viewport width", (value) => ({ ...approvedDesktopEveScenario, viewport: [value, 720] })],
+    ["viewport height", (value) => ({ ...approvedDesktopEveScenario, viewport: [1280, value] })],
+    ["documentWidth", (value) => ({ ...approvedDesktopEveScenario, documentWidth: value })],
+    ["mainClientWidth", (value) => ({ ...approvedDesktopEveScenario, mainClientWidth: value })],
+    ["mainScrollWidth", (value) => ({ ...approvedDesktopEveScenario, mainScrollWidth: value })],
+    ["scrollTop", (value) => ({ ...approvedDesktopEveScenario, scrollTop: value })],
+    ["intendedScrollTop", (value) => ({ ...approvedDesktopEveScenario, intendedScrollTop: value })],
+    ["scrollAlignmentDelta", (value) => ({ ...approvedDesktopEveScenario, scrollAlignmentDelta: value })],
+  ];
+  for (const rectName of ["input", "promptSurface", "runControl"]) {
+    for (const property of ["left", "right", "top", "bottom", "width", "height"]) {
+      mutations.push([
+        `${rectName}.${property}`,
+        (value) => ({
+          ...approvedDesktopEveScenario,
+          [rectName]: { ...approvedDesktopEveScenario[rectName], [property]: value },
+        }),
+      ]);
+    }
+  }
+  for (const [label, mutate] of mutations) {
+    for (const invalid of [undefined, Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]) {
+      const failures = validate(mutate(invalid));
+      assert.ok(failures.length > 0, `${label}=${String(invalid)} must fail closed`);
+    }
+  }
+});
+
+test("desktop E.V.E. acceptance rejects inconsistent input, form, and RUN rectangles", () => {
+  const validate = runtimeSupport.desktopEveAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  for (const rectName of ["input", "promptSurface", "runControl"]) {
+    const failures = validate({
+      ...approvedDesktopEveScenario,
+      [rectName]: { ...approvedDesktopEveScenario[rectName], right: approvedDesktopEveScenario[rectName].right - 1 },
+    });
+    assert.ok(
+      failures.some((failure) => /internally consistent/.test(failure)),
+      `${rectName} must be consistent`,
+    );
+  }
+});
+
+test("desktop E.V.E. acceptance requires direct deep-link landing and complete hit-test evidence", () => {
+  const validate = runtimeSupport.desktopEveAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  for (const property of [
+    "directDeepLink",
+    "canonicalLandingSettled",
+    "inputVisible",
+    "promptSurfaceVisible",
+    "runVisible",
+    "inputTopmostHit",
+    "runTopmostHit",
+    "fixedStickyEnumerationComplete",
+  ]) {
+    for (const invalid of [undefined, false]) {
+      const failures = validate({ ...approvedDesktopEveScenario, [property]: invalid });
+      assert.ok(failures.length > 0, `${property}=${String(invalid)} must fail closed`);
+    }
+  }
+  for (const sampleHits of [undefined, [], [true, true, true, true, false, true, true, true, true]]) {
+    const failures = validate({ ...approvedDesktopEveScenario, promptSurfaceSampleHits: sampleHits });
+    assert.ok(failures.length > 0, "full prompt surface samples must fail closed");
+  }
+  for (const intersections of [undefined, null, {}, [{ label: "HUD", pointerActiveChildren: ["button"] }]]) {
+    const failures = validate({ ...approvedDesktopEveScenario, fixedStickyIntersections: intersections });
+    assert.ok(failures.length > 0, "fixed/sticky intersection evidence must fail closed");
+  }
+});
+
+test("desktop E.V.E. acceptance rejects overflow, overlap, containment, and both obscured controls", () => {
+  const validate = runtimeSupport.desktopEveAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  const cases = [
+    ["document overflow", { documentWidth: 1281 }, /overflow horizontally/],
+    ["main overflow", { mainScrollWidth: 1213 }, /main scroller.*overflow horizontally/],
+    [
+      "fixed HUD overlap",
+      { fixedStickyIntersections: [{ label: "HUD", pointerActiveChildren: ["button"] }] },
+      /fixed or sticky surface must not cover/,
+    ],
+    [
+      "input outside form",
+      { input: { left: 300, right: 850, top: 642, bottom: 660, width: 550, height: 18 } },
+      /inside its visible prompt surface/,
+    ],
+    ["obscured input", { inputTopmostHit: false }, /input center must be the topmost hit target/],
+    ["obscured RUN", { runTopmostHit: false }, /RUN center must be the topmost hit target/],
+  ];
+  for (const [label, mutation, expected] of cases) {
+    const failures = validate({ ...approvedDesktopEveScenario, ...mutation });
+    assert.ok(
+      failures.some((failure) => expected.test(failure)),
+      label,
+    );
+  }
 });

@@ -314,16 +314,40 @@ export function desktopEveAcceptanceFailures(scenario) {
   const failures = [];
   const viewportWidth = scenario.viewport?.[0];
   const viewportHeight = scenario.viewport?.[1];
+  const finiteViewport =
+    Array.isArray(scenario.viewport) &&
+    scenario.viewport.length === 2 &&
+    Number.isFinite(viewportWidth) &&
+    Number.isFinite(viewportHeight);
   const validViewport =
-    (viewportWidth === 1280 && viewportHeight === 720) || (viewportWidth === 1440 && viewportHeight === 900);
+    finiteViewport &&
+    ((viewportWidth === 1280 && viewportHeight === 720) || (viewportWidth === 1440 && viewportHeight === 900));
   if (!validViewport) failures.push("desktop E.V.E. viewport must be 1280x720 or 1440x900");
+  if (scenario.directDeepLink !== true)
+    failures.push("desktop E.V.E. must load from a fresh direct #deck=eve deep link");
   if (scenario.hash !== "#deck=eve") failures.push("desktop E.V.E. scenario must use the exact #deck=eve URL");
   if (scenario.activeDeck !== "7") failures.push("desktop E.V.E. scenario must run at the exact E.V.E. deck");
+  if (scenario.canonicalLandingSettled !== true) failures.push("desktop E.V.E. canonical scroll landing must settle");
+
+  const landingFields = [scenario.scrollTop, scenario.intendedScrollTop, scenario.scrollAlignmentDelta];
+  const finiteLanding = landingFields.every(Number.isFinite);
+  if (!finiteLanding) {
+    failures.push("desktop E.V.E. scroll landing geometry must be finite");
+  } else if (
+    scenario.scrollAlignmentDelta < 0 ||
+    scenario.scrollAlignmentDelta > 1 ||
+    Math.abs(Math.abs(scenario.scrollTop - scenario.intendedScrollTop) - scenario.scrollAlignmentDelta) >
+      RECT_CONSISTENCY_TOLERANCE_PX
+  ) {
+    failures.push("desktop E.V.E. scroll landing must align within 1px");
+  }
 
   const finiteInput = hasFiniteRect(scenario.input);
   const finiteSurface = hasFiniteRect(scenario.promptSurface);
+  const finiteRun = hasFiniteRect(scenario.runControl);
   if (!finiteInput) failures.push("E.V.E. input must provide a finite rectangle");
   if (!finiteSurface) failures.push("E.V.E. prompt surface must provide a finite rectangle");
+  if (!finiteRun) failures.push("E.V.E. RUN control must provide a finite rectangle");
   if (finiteInput && !hasConsistentRect(scenario.input)) {
     failures.push(`E.V.E. input rectangle must be internally consistent within ${RECT_CONSISTENCY_TOLERANCE_PX}px`);
   }
@@ -332,7 +356,12 @@ export function desktopEveAcceptanceFailures(scenario) {
       `E.V.E. prompt surface rectangle must be internally consistent within ${RECT_CONSISTENCY_TOLERANCE_PX}px`,
     );
   }
-  if (!scenario.inputVisible) failures.push("E.V.E. command input must be visibly rendered");
+  if (finiteRun && !hasConsistentRect(scenario.runControl)) {
+    failures.push(`E.V.E. RUN rectangle must be internally consistent within ${RECT_CONSISTENCY_TOLERANCE_PX}px`);
+  }
+  if (scenario.inputVisible !== true) failures.push("E.V.E. command input must be visibly rendered");
+  if (scenario.promptSurfaceVisible !== true) failures.push("E.V.E. prompt surface must be visibly rendered");
+  if (scenario.runVisible !== true) failures.push("E.V.E. RUN control must be visibly rendered");
   if (finiteSurface && (scenario.promptSurface.width < 44 || scenario.promptSurface.height < 44)) {
     failures.push("E.V.E. prompt surface must provide a usable target of at least 44x44");
   }
@@ -357,6 +386,16 @@ export function desktopEveAcceptanceFailures(scenario) {
     failures.push("E.V.E. prompt surface must remain fully visible with a 20px bottom safe margin");
   }
   if (
+    validViewport &&
+    finiteRun &&
+    (scenario.runControl.left < 0 ||
+      scenario.runControl.right > viewportWidth ||
+      scenario.runControl.top < 0 ||
+      scenario.runControl.bottom > viewportHeight - 20)
+  ) {
+    failures.push("E.V.E. RUN control must remain fully visible with a 20px bottom safe margin");
+  }
+  if (
     finiteInput &&
     finiteSurface &&
     (scenario.input.left < scenario.promptSurface.left ||
@@ -366,11 +405,50 @@ export function desktopEveAcceptanceFailures(scenario) {
   ) {
     failures.push("E.V.E. input must remain inside its visible prompt surface");
   }
-  if (!scenario.inputHitAtCenter) failures.push("E.V.E. input hit target must be unobscured");
-  if (scenario.coveringSurfaces?.length !== 0) failures.push("fixed, rail, and HUD surfaces must not cover E.V.E.");
-  if (validViewport && scenario.documentWidth > viewportWidth)
-    failures.push("desktop E.V.E. must not overflow horizontally");
-  if (!(scenario.mainClientWidth > 0) || scenario.mainScrollWidth > scenario.mainClientWidth) {
+  if (
+    finiteRun &&
+    finiteSurface &&
+    (scenario.runControl.left < scenario.promptSurface.left ||
+      scenario.runControl.right > scenario.promptSurface.right ||
+      scenario.runControl.top < scenario.promptSurface.top ||
+      scenario.runControl.bottom > scenario.promptSurface.bottom)
+  ) {
+    failures.push("E.V.E. RUN control must remain inside its visible prompt surface");
+  }
+  if (scenario.inputTopmostHit !== true) failures.push("E.V.E. input center must be the topmost hit target");
+  if (scenario.runTopmostHit !== true) failures.push("E.V.E. RUN center must be the topmost hit target");
+  if (
+    !Array.isArray(scenario.promptSurfaceSampleHits) ||
+    scenario.promptSurfaceSampleHits.length !== 9 ||
+    !scenario.promptSurfaceSampleHits.every((hit) => hit === true)
+  ) {
+    failures.push("all nine E.V.E. prompt surface samples must resolve to the form or its controls");
+  }
+  if (scenario.fixedStickyEnumerationComplete !== true) {
+    failures.push("fixed and sticky surface enumeration must complete");
+  }
+  if (!Array.isArray(scenario.fixedStickyIntersections)) {
+    failures.push("fixed and sticky intersection evidence must be an array");
+  } else if (scenario.fixedStickyIntersections.length !== 0) {
+    failures.push("a fixed or sticky surface must not cover the E.V.E. prompt form");
+  }
+
+  const finiteWidths = [scenario.documentWidth, scenario.mainClientWidth, scenario.mainScrollWidth].every(
+    Number.isFinite,
+  );
+  if (!finiteWidths) {
+    failures.push("desktop E.V.E. document and main widths must be finite");
+  } else {
+    if (validViewport && scenario.documentWidth > viewportWidth)
+      failures.push("desktop E.V.E. must not overflow horizontally");
+    if (!(scenario.mainClientWidth > 0) || scenario.mainScrollWidth > scenario.mainClientWidth) {
+      failures.push("desktop E.V.E. main scroller must not overflow horizontally");
+    }
+  }
+  if (finiteWidths && scenario.documentWidth <= 0) {
+    failures.push("desktop E.V.E. document width must be positive");
+  }
+  if (finiteWidths && scenario.mainScrollWidth <= 0) {
     failures.push("desktop E.V.E. main scroller must not overflow horizontally");
   }
   return failures;

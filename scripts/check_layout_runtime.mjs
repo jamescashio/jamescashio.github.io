@@ -128,6 +128,184 @@ async function settleViewport(send, width, mobile, height = 844) {
   });
 }
 
+async function waitForCanonicalEveLanding(send, targetUrl, width, height) {
+  await settleViewport(send, width, false, height);
+  await send("Page.navigate", { url: "about:blank" });
+  const deepLink = `${targetUrl}#deck=eve`;
+  await send("Page.navigate", { url: deepLink });
+  await waitForApp(send);
+  let evidence;
+  for (let attempt = 0; attempt < 120; attempt++) {
+    const evaluation = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const main = document.querySelector("#main-content");
+        const section = document.querySelector('section[data-deck="7"]');
+        const intendedScrollTop = section ? Math.max(0, section.offsetTop - 8) : Number.NaN;
+        const scrollTop = main?.scrollTop ?? Number.NaN;
+        const scrollAlignmentDelta = Math.abs(scrollTop - intendedScrollTop);
+        const directDeepLink = location.href === ${JSON.stringify(deepLink)};
+        const activeDeck = main?.getAttribute("data-active-deck") ?? null;
+        return {
+          directDeepLink,
+          hash: location.hash,
+          activeDeck,
+          canonicalLandingSettled:
+            directDeepLink &&
+            location.hash === "#deck=eve" &&
+            activeDeck === "7" &&
+            Number.isFinite(scrollAlignmentDelta) &&
+            scrollAlignmentDelta <= 1,
+          scrollTop,
+          intendedScrollTop,
+          scrollAlignmentDelta,
+        };
+      })()`,
+      returnByValue: true,
+    });
+    evidence = evaluation.result.value;
+    if (evidence.canonicalLandingSettled) return evidence;
+    await new Promise((resolve) => setTimeout(resolve, 25));
+  }
+  throw new Error(`desktop E.V.E. canonical landing did not settle at ${width}x${height}: ${JSON.stringify(evidence)}`);
+}
+
+async function collectDesktopEveScenario(send, landingEvidence) {
+  const evaluation = await send("Runtime.evaluate", {
+    expression: `(() => {
+      const input = document.querySelector("#eve-command");
+      const promptSurface = input?.closest("form");
+      const runControl = promptSurface?.querySelector('button[type="submit"]');
+      const main = document.querySelector("#main-content");
+      if (!input || !promptSurface || !runControl || !main) {
+        return { error: "desktop E.V.E. prompt structure is missing" };
+      }
+      const rectOf = (element) => {
+        const rect = element.getBoundingClientRect();
+        return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, width: rect.width, height: rect.height };
+      };
+      const visible = (element) => {
+        const rect = element.getBoundingClientRect();
+        const style = getComputedStyle(element);
+        return (
+          rect.width > 0 &&
+          rect.height > 0 &&
+          style.display !== "none" &&
+          style.visibility !== "hidden" &&
+          style.opacity !== "0"
+        );
+      };
+      const overlaps = (a, b) => a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+      const center = (rect) => ({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+      const topmostAt = ({ x, y }) => document.elementFromPoint(x, y);
+      const associatedHit = (control, hit) => {
+        if (!hit) return false;
+        if (hit === control || control.contains(hit)) return true;
+        const label = hit instanceof HTMLLabelElement ? hit : hit.closest?.("label");
+        return label?.control === control;
+      };
+      const inputRect = input.getBoundingClientRect();
+      const promptRect = promptSurface.getBoundingClientRect();
+      const runRect = runControl.getBoundingClientRect();
+      const inputTopmostHit = associatedHit(input, topmostAt(center(inputRect)));
+      const runTopmostHit = associatedHit(runControl, topmostAt(center(runRect)));
+      const promptSamplePoints = [0.1, 0.5, 0.9].flatMap((yRatio) =>
+        [0.1, 0.5, 0.9].map((xRatio) => ({
+          x: promptRect.left + promptRect.width * xRatio,
+          y: promptRect.top + promptRect.height * yRatio,
+        })),
+      );
+      const promptSurfaceSampleHits = promptSamplePoints.map((point) => {
+        const hit = topmostAt(point);
+        return hit === promptSurface || (hit != null && promptSurface.contains(hit));
+      });
+      const labelOf = (element) =>
+        element.getAttribute("aria-label") || element.id ||
+        (typeof element.className === "string" && element.className.trim()) || element.tagName;
+      const fixedStickyIntersections = [...document.body.querySelectorAll("*")]
+        .flatMap((surface) => {
+          const style = getComputedStyle(surface);
+          const surfaceRect = surface.getBoundingClientRect();
+          if (
+            !["fixed", "sticky"].includes(style.position) ||
+            !visible(surface) ||
+            !overlaps(surfaceRect, promptRect)
+          ) return [];
+          const pointerActive = [surface, ...surface.querySelectorAll("*")].filter((candidate) => {
+            const candidateStyle = getComputedStyle(candidate);
+            return candidateStyle.pointerEvents !== "none" && visible(candidate) &&
+              overlaps(candidate.getBoundingClientRect(), promptRect);
+          });
+          if (pointerActive.length === 0) return [];
+          const overlapRect = {
+            left: Math.max(surfaceRect.left, promptRect.left),
+            right: Math.min(surfaceRect.right, promptRect.right),
+            top: Math.max(surfaceRect.top, promptRect.top),
+            bottom: Math.min(surfaceRect.bottom, promptRect.bottom),
+          };
+          const hit = topmostAt({
+            x: (overlapRect.left + overlapRect.right) / 2,
+            y: (overlapRect.top + overlapRect.bottom) / 2,
+          });
+          const covering = hit && (hit === surface || surface.contains(hit));
+          if (!covering) return [];
+          return [{
+            label: labelOf(surface),
+            position: style.position,
+            rect: rectOf(surface),
+            pointerActiveChildren: pointerActive.map(labelOf),
+          }];
+        });
+      return {
+        viewport: [innerWidth, innerHeight],
+        inputVisible: visible(input),
+        promptSurfaceVisible: visible(promptSurface),
+        runVisible: visible(runControl),
+        input: rectOf(input),
+        promptSurface: rectOf(promptSurface),
+        runControl: rectOf(runControl),
+        inputTopmostHit,
+        runTopmostHit,
+        promptSurfaceSampleHits,
+        fixedStickyEnumerationComplete: true,
+        fixedStickyIntersections,
+        documentWidth: Math.max(document.documentElement.scrollWidth, document.body.scrollWidth),
+        mainClientWidth: main.clientWidth,
+        mainScrollWidth: main.scrollWidth,
+      };
+    })()`,
+    returnByValue: true,
+  });
+  return { ...landingEvidence, ...evaluation.result.value };
+}
+
+async function setDesktopEveCoveringOverlay(send, present) {
+  await send("Runtime.evaluate", {
+    expression: `(() => {
+      document.querySelector("#layout-eve-covering-overlay")?.remove();
+      if (!${JSON.stringify(present)}) return true;
+      const promptSurface = document.querySelector("#eve-command")?.closest("form");
+      if (!promptSurface) return false;
+      const rect = promptSurface.getBoundingClientRect();
+      const overlay = document.createElement("div");
+      overlay.id = "layout-eve-covering-overlay";
+      overlay.setAttribute("aria-label", "Injected E.V.E. covering overlay");
+      Object.assign(overlay.style, {
+        position: "fixed",
+        left: rect.left + "px",
+        top: rect.top + "px",
+        width: rect.width + "px",
+        height: rect.height + "px",
+        zIndex: "2147483647",
+        pointerEvents: "auto",
+        background: "rgba(255, 0, 0, 0.2)",
+      });
+      document.body.append(overlay);
+      return true;
+    })()`,
+    returnByValue: true,
+  });
+}
+
 async function emulateReducedMotion(send, reduced) {
   await send("Emulation.setEmulatedMedia", {
     media: "",
@@ -616,101 +794,40 @@ async function main() {
     }
     const narrowResult = narrowEvaluation.result.value;
     const desktopEveScenarios = [];
+    let desktopEveOverlayNegative;
     for (const [width, height] of [
       [1280, 720],
       [1440, 900],
     ]) {
-      await settleViewport(send, width, false, height);
-      await send("Page.navigate", { url: "about:blank" });
-      await send("Page.navigate", { url: targetUrl });
-      await waitForApp(send);
-      const eveNavigation = await send("Runtime.evaluate", {
-        expression: `(() => {
-          const button = document.querySelector('button[aria-label="Go to E.V.E. deck"]');
-          if (!button) return false;
-          button.click();
-          return true;
-        })()`,
-        returnByValue: true,
-      });
-      if (!eveNavigation.result.value) throw new Error(`desktop E.V.E. rail control is missing at ${width}x${height}`);
-      for (let attempt = 0; attempt < 80; attempt++) {
-        const active = await send("Runtime.evaluate", {
-          expression: `(() => {
-            const main = document.querySelector("#main-content");
-            const section = document.querySelector('section[data-deck="7"]');
-            const landing = section ? Math.max(0, section.offsetTop - 8) : -1;
-            return (
-              location.hash === "#deck=eve" &&
-              main?.getAttribute("data-active-deck") === "7" &&
-              Math.abs(main.scrollTop - landing) <= 1
-            );
-          })()`,
-          returnByValue: true,
-        });
-        if (active.result.value) break;
-        await new Promise((resolve) => setTimeout(resolve, 25));
-      }
+      const landingEvidence = await waitForCanonicalEveLanding(send, targetUrl, width, height);
       await send("Runtime.evaluate", {
         expression: "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))",
         awaitPromise: true,
       });
-      const eveLayoutEvaluation = await send("Runtime.evaluate", {
-        expression: `(() => {
-          const input = document.querySelector("#eve-command");
-          const promptSurface = input?.closest("form");
-          const main = document.querySelector("#main-content");
-          if (!input || !promptSurface || !main) return { error: "desktop E.V.E. prompt structure is missing" };
-          const rectOf = (element) => {
-            const rect = element.getBoundingClientRect();
-            return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, width: rect.width, height: rect.height };
-          };
-          const overlaps = (a, b) => a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
-          const inputRect = input.getBoundingClientRect();
-          const promptRect = promptSurface.getBoundingClientRect();
-          const inputStyle = getComputedStyle(input);
-          const inputHitAtCenter = document.elementsFromPoint(
-            inputRect.left + inputRect.width / 2,
-            inputRect.top + inputRect.height / 2,
-          ).includes(input);
-          const coveringSurfaces = [...document.querySelectorAll(".za-command-header, .za-mobile-rail-safe, .za-corner-hud, .za-mobile-flight-control")]
-            .filter((element) => {
-              const style = getComputedStyle(element);
-              if (
-                !["fixed", "sticky"].includes(style.position) ||
-                style.pointerEvents === "none" ||
-                style.opacity === "0"
-              )
-                return false;
-              const rect = element.getBoundingClientRect();
-              return rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden" && overlaps(rect, promptRect);
-            })
-            .map((element) => element.getAttribute("aria-label") || element.className || element.tagName);
-          return {
-            viewport: [innerWidth, innerHeight],
-            hash: location.hash,
-            activeDeck: main.getAttribute("data-active-deck"),
-            inputVisible:
-              inputRect.width > 0 &&
-              inputRect.height > 0 &&
-              inputStyle.display !== "none" &&
-              inputStyle.visibility !== "hidden" &&
-              inputStyle.opacity !== "0",
-            input: rectOf(input),
-            promptSurface: rectOf(promptSurface),
-            inputHitAtCenter,
-            coveringSurfaces,
-            documentWidth: Math.max(document.documentElement.scrollWidth, document.body.scrollWidth),
-            mainClientWidth: main.clientWidth,
-            mainScrollWidth: main.scrollWidth,
-          };
-        })()`,
-        returnByValue: true,
-      });
-      const eveLayout = eveLayoutEvaluation.result.value;
+      const eveLayout = await collectDesktopEveScenario(send, landingEvidence);
       eveLayout.failures = eveLayout.error ? [eveLayout.error] : desktopEveAcceptanceFailures(eveLayout);
       eveLayout.ok = eveLayout.failures.length === 0;
       desktopEveScenarios.push(eveLayout);
+      if (width === 1280) {
+        await setDesktopEveCoveringOverlay(send, true);
+        const covered = await collectDesktopEveScenario(send, landingEvidence);
+        covered.failures = covered.error ? [covered.error] : desktopEveAcceptanceFailures(covered);
+        await setDesktopEveCoveringOverlay(send, false);
+        const recovered = await collectDesktopEveScenario(send, landingEvidence);
+        recovered.failures = recovered.error ? [recovered.error] : desktopEveAcceptanceFailures(recovered);
+        desktopEveOverlayNegative = {
+          covered,
+          recovered,
+          rejectedInput: covered.failures.some((failure) =>
+            /input center must be the topmost hit target/.test(failure),
+          ),
+          rejectedRun: covered.failures.some((failure) => /RUN center must be the topmost hit target/.test(failure)),
+          rejectedSurface: covered.failures.some((failure) => /all nine E.V.E. prompt surface samples/.test(failure)),
+          rejectedFixedSticky: covered.failures.some((failure) =>
+            /fixed or sticky surface must not cover/.test(failure),
+          ),
+        };
+      }
     }
     await settleViewport(send, 1280, false, 900);
     await send("Page.navigate", { url: `${targetUrl}?layout-focus#deck=contact` });
@@ -937,6 +1054,7 @@ async function main() {
           cinemas,
           decodedAssets,
           desktopLayout,
+          desktopEveOverlayNegative,
           desktopEveScenarios,
           eveFocus,
           flights,
@@ -979,6 +1097,32 @@ async function main() {
         true,
         `Desktop E.V.E. acceptance failed at ${scenario.viewport?.join("x")}: ${scenario.failures.join("; ")}`,
       ),
+    );
+    assert.ok(desktopEveOverlayNegative, "Desktop E.V.E. covering-overlay negative scenario must run");
+    assert.equal(
+      desktopEveOverlayNegative.rejectedInput,
+      true,
+      "A real covering overlay must fail the topmost E.V.E. input hit test",
+    );
+    assert.equal(
+      desktopEveOverlayNegative.rejectedRun,
+      true,
+      "A real covering overlay must fail the topmost E.V.E. RUN hit test",
+    );
+    assert.equal(
+      desktopEveOverlayNegative.rejectedSurface,
+      true,
+      "A real covering overlay must fail full E.V.E. prompt-surface sampling",
+    );
+    assert.equal(
+      desktopEveOverlayNegative.rejectedFixedSticky,
+      true,
+      "A real covering overlay must be enumerated as a fixed or sticky obstruction",
+    );
+    assert.deepEqual(
+      desktopEveOverlayNegative.recovered.failures,
+      [],
+      "Removing the E.V.E. covering overlay must restore a clean scenario",
     );
     flights.forEach((flight) =>
       assert.equal(
