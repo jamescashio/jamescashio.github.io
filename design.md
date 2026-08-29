@@ -55,4 +55,4 @@ V34 sharpens that thesis as a flight recorder, not a fireworks display. Every gl
 
 ## Release boundary
 
-V34 MACH ONE is revised 28 August 2026 while preserving the 21 August 2026, 19/19, quorate snapshot. The validity window is inclusive through the end of 20 September 2026 in America/Chicago; root Pages base `/`; no Engage gate; no Request a Review; and the May 2026 `command.html` archive.
+V34 MACH ONE is revised and fleet-verified 28 August 2026. The public-safe probe found two Proxmox hosts online and quorate on 9.2.11, with 18 of 19 guests running: Zeus 12/13 and Apollo 6/6. The fleet validity window is inclusive through the end of 27 September 2026 in America/Chicago. The separate ten-lane / thirty-six-entry routing inventory remains explicitly dated 21 August 2026. Root Pages base `/`; no Engage gate; no Request a Review; and the May 2026 `command.html` archive.

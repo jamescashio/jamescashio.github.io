@@ -7,7 +7,7 @@ Ship the approved V34 preservation polish as the next public Cashio.us release. 
 ## Binding constraints
 
 - The canonical release is `V34 MACH ONE`, package version `34.0.0`, revised `2026-08-28`.
-- The evidence remains a dated public-safe snapshot verified `2026-08-21` and valid through the end of `2026-09-20` in `America/Chicago`. No new infrastructure number, provider claim, address, port, access path, or production telemetry may be introduced.
+- The fleet evidence is a dated public-safe snapshot verified `2026-08-28` and valid through the end of `2026-09-27` in `America/Chicago`: Proxmox `9.2.11`; two hosts online and quorate; 18/19 guests running; Zeus 12/13; Apollo 6/6; one stopped guest remains unnamed. The separate routing policy inventory remains dated `2026-08-21`: ten public lanes and thirty-six private catalog entries. No new provider claim, address, port, access path, guest identifier, storage figure, utilization value, or production telemetry may be published.
 - Preserve all nine technical decks, Executive mode, canonical hashes, Back/Forward behavior, four-beat 30-second flight, craft lineage, Bit, opt-in audio, complete reduced-motion states, contact actions, Black Box Receipt, and the May 2026 `command.html` archive.
 - Preserve existing React/Zustand/Three.js architecture. Add no heavy dependency, route, particle system, always-on audio, generic card redesign, or additional closing section.
 - Behavior changes are test-first. Pure prose is reviewed against this spec; visual-only tuning is verified in the rendered browser and must not be protected by brittle source-text tests.
@@ -15,11 +15,13 @@ Ship the approved V34 preservation polish as the next public Cashio.us release. 
 
 ## 1. Canonical truth and editorial hierarchy
 
-Every public, repository, guard, and package surface agrees on V34. Public status language states the measurement boundary: use `19/19 AT 21 AUG PROBE`, `EXPORT VALID`, and `READ-ONLY`/`DATED EXPORT` language instead of undated `NOMINAL`, `ONLINE`, or bare `CURRENT` labels.
+Every public, repository, guard, and package surface agrees on V34. Public status language states the measurement boundary: use `18/19 AT 28 AUG PROBE`, `EXPORT VALID`, and `READ-ONLY`/`DATED EXPORT` language instead of undated `NOMINAL`, `ONLINE`, or bare `CURRENT` labels.
 
 Snapshot lets telemetry carry the figures and uses its paragraph to state the consequence: owned compute, quality-first routing, dated evidence, and one accountable operator. Technical and Executive choices promise audience value rather than page count.
 
-Executive mode organizes three outcomes: `ROUTE CONTROL`, `EVIDENCE BOUNDARY`, and `HUMAN AUTHORITY`. Routing keeps the quality-first title/subtitle and reduces the repeated explanation to a dated counting rule: public lanes and private catalog entries count different objects at the 21 August export.
+Executive mode organizes three outcomes: `ROUTE CONTROL`, `EVIDENCE BOUNDARY`, and `HUMAN AUTHORITY`. Routing keeps the quality-first title/subtitle and reduces the repeated explanation to a dated counting rule: public lanes and private catalog entries count different objects and were last confirmed in the 21 August routing inventory.
+
+The Grid keeps seven public-safe observed role families: Technitium DNS primary, Technitium DNS secondary, Wazuh, monitoring stack, n8n, PBS, and media services. It does not identify the stopped guest. Prometheus, individual media applications, and any other inside-guest service are not presented as freshly probed facts.
 
 Builds replaces universal `STATE · SHIPPED` with a defensible owner-built evidence label, replaces `STRONGEST BUILD` with `BUILD PROOF`, and bounds the autonomous article label. Lineage labels every interpretive rule as a `CASHIO OPERATING LESSON`. Operator copy is approximately half its current length and retains role, owner-operation, and human accountability. Contact wording and the Black Box Receipt remain unchanged.
 
