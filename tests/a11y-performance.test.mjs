@@ -29,6 +29,9 @@ function mountCommandDeck({
   url = "https://cashio.us/#deck=snapshot",
   reducedMotion = true,
   controlledTimers = false,
+  capturePulseTimers = false,
+  injectStyles = false,
+  canvasRuntime = false,
   now = Date.now(),
   responsiveGeometry = false,
   deferredSmoothScroll = false,
@@ -42,11 +45,19 @@ function mountCommandDeck({
   const realSetTimeout = dom.window.setTimeout.bind(dom.window);
   const realClearTimeout = dom.window.clearTimeout.bind(dom.window);
   const controlledTimeouts = new Map();
+  const clearedControlledTimeouts = [];
   let controlledTimeoutId = 1_000_000;
   let responsiveViewport = "desktop";
   const setTimeout = (callback, delay = 0, ...args) => {
     const timeout = Number(delay);
-    if (controlledTimers && (timeout === 120 || timeout === 500 || timeout === 3200 || timeout >= 7000)) {
+    if (
+      controlledTimers &&
+      (timeout === 120 ||
+        timeout === 500 ||
+        timeout === 3200 ||
+        timeout >= 7000 ||
+        (capturePulseTimers && (timeout === 680 || timeout === 1100)))
+    ) {
       const id = ++controlledTimeoutId;
       controlledTimeouts.set(id, { callback: () => callback(...args), delay: timeout });
       return id;
@@ -54,10 +65,50 @@ function mountCommandDeck({
     return realSetTimeout(callback, timeout, ...args);
   };
   const clearTimeout = (id) => {
-    if (!controlledTimeouts.delete(id)) realClearTimeout(id);
+    const controlled = controlledTimeouts.get(id);
+    if (controlled) {
+      controlledTimeouts.delete(id);
+      clearedControlledTimeouts.push(controlled);
+    } else realClearTimeout(id);
   };
   if (controlledTimers) Date.now = () => controlledNow;
   const raf = new Map();
+  const canvasObservers = { resize: [], visibility: [], ownership: [] };
+  const noopContext = new Proxy(
+    {
+      measureText: () => ({ width: 36 }),
+      createLinearGradient: () => ({ addColorStop: () => {} }),
+      createRadialGradient: () => ({ addColorStop: () => {} }),
+    },
+    { get: (target, key) => (key in target ? target[key] : () => {}) },
+  );
+  class TestObserver {
+    constructor(callback, bucket) {
+      this.callback = callback;
+      this.bucket = bucket;
+      this.disconnected = false;
+      canvasObservers[bucket].push(this);
+    }
+    observe() {}
+    disconnect() {
+      this.disconnected = true;
+    }
+  }
+  class TestResizeObserver extends TestObserver {
+    constructor(callback) {
+      super(callback, "resize");
+    }
+  }
+  class TestIntersectionObserver extends TestObserver {
+    constructor(callback) {
+      super(callback, "visibility");
+    }
+  }
+  class TestMutationObserver extends TestObserver {
+    constructor(callback) {
+      super(callback, "ownership");
+    }
+  }
   let rafId = 0;
   const requestAnimationFrame = (callback) => {
     const id = ++rafId;
@@ -79,8 +130,15 @@ function mountCommandDeck({
   });
   Object.defineProperty(dom.window.HTMLCanvasElement.prototype, "getContext", {
     configurable: true,
-    value: () => null,
+    value: () => (canvasRuntime ? noopContext : null),
   });
+  if (canvasRuntime) {
+    Object.assign(dom.window, {
+      ResizeObserver: TestResizeObserver,
+      IntersectionObserver: TestIntersectionObserver,
+      MutationObserver: TestMutationObserver,
+    });
+  }
   Object.defineProperties(dom.window.HTMLElement.prototype, {
     attachEvent: { configurable: true, value: () => {} },
     detachEvent: { configurable: true, value: () => {} },
@@ -143,6 +201,9 @@ function mountCommandDeck({
     "MouseEvent",
     "requestAnimationFrame",
     "cancelAnimationFrame",
+    "ResizeObserver",
+    "IntersectionObserver",
+    "MutationObserver",
   ];
   const prior = Object.fromEntries(globals.map((key) => [key, Object.getOwnPropertyDescriptor(globalThis, key)]));
   Object.defineProperties(globalThis, {
@@ -156,6 +217,21 @@ function mountCommandDeck({
     MouseEvent: { configurable: true, writable: true, value: dom.window.MouseEvent },
     requestAnimationFrame: { configurable: true, writable: true, value: requestAnimationFrame },
     cancelAnimationFrame: { configurable: true, writable: true, value: cancelAnimationFrame },
+    ResizeObserver: {
+      configurable: true,
+      writable: true,
+      value: canvasRuntime ? TestResizeObserver : dom.window.ResizeObserver,
+    },
+    IntersectionObserver: {
+      configurable: true,
+      writable: true,
+      value: canvasRuntime ? TestIntersectionObserver : dom.window.IntersectionObserver,
+    },
+    MutationObserver: {
+      configurable: true,
+      writable: true,
+      value: canvasRuntime ? TestMutationObserver : dom.window.MutationObserver,
+    },
   });
   useDeck.setState({
     deck: 0,
@@ -170,6 +246,11 @@ function mountCommandDeck({
     craftLock: null,
   });
   const root = createRoot(dom.window.document.getElementById("root"));
+  if (injectStyles) {
+    const style = dom.window.document.createElement("style");
+    style.textContent = stylesheet;
+    dom.window.document.head.append(style);
+  }
   return {
     dom,
     document: dom.window.document,
@@ -206,12 +287,17 @@ function mountCommandDeck({
       assert.ok(scroller, "expected the command deck scroller");
       await act(async () => scroller.dispatchEvent(new dom.window.Event("scroll")));
     },
-    async runControlledTimeout(delay) {
-      const timer = [...controlledTimeouts.entries()].find(([, candidate]) => candidate.delay === delay);
+    async runControlledTimeout(delay, occurrence = 0) {
+      const timer = [...controlledTimeouts.entries()].filter(([, candidate]) => candidate.delay === delay)[occurrence];
       assert.ok(timer, `expected a controlled ${delay}ms timeout`);
       controlledTimeouts.delete(timer[0]);
       controlledNow += delay;
       await act(async () => timer[1].callback());
+    },
+    async runClearedControlledTimeout(delay, occurrence = 0) {
+      const timer = clearedControlledTimeouts.filter((candidate) => candidate.delay === delay)[occurrence];
+      assert.ok(timer, `expected a cleared ${delay}ms timeout`);
+      await act(async () => timer.callback());
     },
     async runLatestAnimationFrame() {
       await act(async () => {
@@ -232,6 +318,21 @@ function mountCommandDeck({
     },
     pendingAnimationFrames() {
       return raf.size;
+    },
+    pendingAnimationFramesNamed(name) {
+      return [...raf.values()].filter((callback) => callback.name === name).length;
+    },
+    pendingControlledTimeouts() {
+      return controlledTimeouts.size;
+    },
+    pendingControlledTimeoutsFor(...delays) {
+      return [...controlledTimeouts.values()].filter((timer) => delays.includes(timer.delay)).length;
+    },
+    async canvasObserver(kind, entries = []) {
+      const observer = canvasObservers[kind].at(-1);
+      assert.ok(observer, `expected a ${kind} observer`);
+      await act(async () => observer.callback(entries));
+      return observer;
     },
     async resizeToMobile() {
       responsiveViewport = "mobile";
@@ -1402,7 +1503,11 @@ test("audio-off and reduced-motion rendering drains while the armed sound meter 
 });
 
 test("leaving Builds stands down its deck-owned motion without changing the selected article", async () => {
-  const view = mountCommandDeck({ url: "https://cashio.us/#deck=builds&article=7", reducedMotion: false });
+  const view = mountCommandDeck({
+    url: "https://cashio.us/#deck=builds&article=7",
+    reducedMotion: false,
+    injectStyles: true,
+  });
   try {
     await view.render();
     await view.scrollDeck(5);
@@ -1415,7 +1520,97 @@ test("leaving Builds stands down its deck-owned motion without changing the sele
 
     assert.equal(scroller?.dataset.activeDeck, "8", "the destination deck must replace the active motion owner");
     assert.equal(useDeck.getState().sel, 6, "standing down inactive Builds work must not alter article selection");
+    for (const selector of [".za-flow-path", ".za-heartbeat", ".za-boot-scan", ".za-ticker-track"]) {
+      const node = view.document.querySelector(selector);
+      assert.ok(node, `expected ${selector} to be present in a deck`);
+      assert.equal(
+        view.window.getComputedStyle(node).animationPlayState,
+        "paused",
+        `${selector} must stand down when its deck is inactive`,
+      );
+    }
   } finally {
     await view.cleanup();
+  }
+});
+
+test("rapid deck navigation restarts the latest warp pulse and cleans its owned timers", async () => {
+  const view = mountCommandDeck({
+    url: "https://cashio.us/",
+    reducedMotion: false,
+    controlledTimers: true,
+    capturePulseTimers: true,
+  });
+  let cleaned = false;
+  try {
+    await view.render();
+    await view.click(labeledButton(view.document, "Go to ROUTING deck"));
+    const firstFlash = view.document.querySelector(".za-warpflash.on");
+    assert.ok(firstFlash, "first navigation must start a warp flash");
+    await view.click(labeledButton(view.document, "Go to CONTACT deck"));
+    const latestFlash = view.document.querySelector(".za-warpflash.on");
+    assert.ok(latestFlash, "latest navigation must retain its warp flash");
+    assert.notEqual(latestFlash, firstFlash, "a fresh keyed flash must restart the CSS animation");
+
+    await view.runClearedControlledTimeout(680);
+    assert.ok(view.document.querySelector(".za-warpflash.on"), "an earlier timeout must not clear the latest pulse");
+    await view.runControlledTimeout(1100);
+    assert.equal(view.document.querySelector("[data-cine]")?.getAttribute("data-cine"), "true");
+
+    await view.cleanup();
+    cleaned = true;
+    assert.equal(view.pendingControlledTimeoutsFor(680, 1100), 0, "unmount must clear latest pulse timers");
+  } finally {
+    if (!cleaned) await view.cleanup();
+  }
+});
+
+test("Builds canvas owns its frame work across visibility and inactive-deck transitions", async () => {
+  const view = mountCommandDeck({
+    url: "https://cashio.us/#deck=builds&article=7",
+    reducedMotion: false,
+    canvasRuntime: true,
+  });
+  try {
+    await view.render();
+    const scroller = view.document.querySelector("main.za-scroll");
+    assert.equal(scroller?.dataset.activeDeck, "5");
+    assert.equal(useDeck.getState().sel, 6, "the real hash wiring must select Article 7");
+    const restingFrames = view.pendingAnimationFrames();
+    assert.equal(
+      view.pendingAnimationFramesNamed("animationFrame"),
+      0,
+      "the canvas must not animate before it is visible",
+    );
+
+    await view.canvasObserver("ownership", []);
+    await view.canvasObserver("visibility", [{ isIntersecting: true }]);
+    assert.ok(view.pendingAnimationFrames() > restingFrames, "an active, visible Builds deck may acquire one frame");
+
+    await act(async () => {
+      scroller.dataset.activeDeck = "8";
+    });
+    const ownership = await view.canvasObserver("ownership", []);
+    assert.equal(view.pendingAnimationFrames(), restingFrames, "inactive Builds must cancel its pending frame");
+    assert.equal(useDeck.getState().sel, 6, "standing down canvas work must not rewrite production selection");
+
+    await act(async () => {
+      scroller.dataset.activeDeck = "5";
+    });
+    await view.canvasObserver("visibility", [{ isIntersecting: false }]);
+    await view.canvasObserver("ownership", []);
+    assert.equal(
+      view.pendingAnimationFrames(),
+      restingFrames,
+      "hidden Builds must not reacquire work when it becomes active",
+    );
+
+    await view.canvasObserver("visibility", [{ isIntersecting: true }]);
+    assert.ok(view.pendingAnimationFrames() > restingFrames, "visible active Builds may resume its single owned frame");
+    await view.cleanup();
+    assert.equal(view.pendingAnimationFrames(), 0, "unmount must cancel the pending canvas frame");
+    assert.equal(ownership.disconnected, true, "unmount must disconnect canvas ownership observation");
+  } finally {
+    if (view.document.defaultView) await view.cleanup();
   }
 });

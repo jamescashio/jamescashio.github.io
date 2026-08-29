@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type Ref } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type Ref } from "react";
 import {
   ARTICLES,
   CRAFT,
@@ -108,6 +108,7 @@ export function CommandDeck() {
   const [pathZeus, setPathZeus] = useState("");
   const [pathApollo, setPathApollo] = useState("");
   const [flash, setFlash] = useState(false);
+  const [flashKey, setFlashKey] = useState(0);
   const [afFlash, setAfFlash] = useState(false);
   const [hudYield, setHudYield] = useState(false);
   const [eveLogHeight, setEveLogHeight] = useState(() =>
@@ -123,6 +124,9 @@ export function CommandDeck() {
   const hashSuppressionTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
   const resizeAnchorTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
   const resizeAnchorFrame = useRef(0);
+  const warpFlashTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const cineTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const cinePulseGeneration = useRef(0);
   const pendingNavigation = useRef<{
     deck: number;
     source: NavigationOrigin;
@@ -210,12 +214,33 @@ export function CommandDeck() {
     [set],
   );
 
+  const clearCinePulse = useCallback(() => {
+    if (warpFlashTimer.current != null) window.clearTimeout(warpFlashTimer.current);
+    if (cineTimer.current != null) window.clearTimeout(cineTimer.current);
+    warpFlashTimer.current = null;
+    cineTimer.current = null;
+    cinePulseGeneration.current += 1;
+  }, []);
+
   const cinePulse = useCallback(() => {
+    clearCinePulse();
+    const generation = ++cinePulseGeneration.current;
     set({ cine: true });
+    setFlashKey((key) => key + 1);
     setFlash(true);
-    window.setTimeout(() => setFlash(false), motionDurationMs("stage-warp"));
-    window.setTimeout(() => set({ cine: false }), 1100);
-  }, [set]);
+    warpFlashTimer.current = window.setTimeout(() => {
+      if (generation !== cinePulseGeneration.current) return;
+      warpFlashTimer.current = null;
+      setFlash(false);
+    }, motionDurationMs("stage-warp"));
+    cineTimer.current = window.setTimeout(() => {
+      if (generation !== cinePulseGeneration.current) return;
+      cineTimer.current = null;
+      set({ cine: false });
+    }, 1100);
+  }, [clearCinePulse, set]);
+
+  useEffect(() => clearCinePulse, [clearCinePulse]);
 
   const chapter = useCallback(
     (i: number) => {
@@ -791,7 +816,16 @@ export function CommandDeck() {
   const dleft = daysLeft();
 
   return (
-    <div className="relative h-dvh overflow-hidden bg-void text-ink">
+    <div
+      className="relative h-dvh overflow-hidden bg-void text-ink"
+      style={
+        {
+          "--za-deck-copy-duration": `${motionDurationMs("deck-copy")}ms`,
+          "--za-article-acquisition-duration": `${motionDurationMs("article-acquisition")}ms`,
+          "--za-stage-warp-duration": `${motionDurationMs("stage-warp")}ms`,
+        } as CSSProperties
+      }
+    >
       <a
         href="#main-content"
         className="sr-only fixed left-4 top-4 z-[200] bg-void text-cyan focus:not-sr-only focus:rounded-lg focus:border focus:border-cyan focus:px-4 focus:py-2 focus:font-mono focus:text-xs focus:outline-none"
@@ -808,7 +842,7 @@ export function CommandDeck() {
       <div className="za-vignette" />
       <div className="za-spot" aria-hidden />
       <div className="za-scan" />
-      <div className={`za-warpflash ${flash ? "on" : ""}`} />
+      <div key={flashKey} className={`za-warpflash ${flash ? "on" : ""}`} />
       <div className={`za-sweep ${sweep ? "on" : ""}`} aria-hidden />
 
       <DesktopCommandRail
@@ -915,6 +949,7 @@ export function CommandDeck() {
       </main>
 
       <div
+        data-cine={chapOn}
         className={`pointer-events-none fixed bottom-[118px] left-[calc(68px+5vw)] z-40 transition duration-500 ${
           chapOn ? "opacity-100" : "translate-y-4 opacity-0"
         } ${hud}`}

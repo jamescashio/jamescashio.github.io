@@ -68,6 +68,50 @@ def check_v34_public_surface(relative: str, text: str, failures: list[str], labe
             failures.append(f"must date routing count occurrence {occurrence} as the 21 August 2026 inventory")
 
 
+def check_v34_motion_contract(failures: list[str]) -> None:
+    """Keep the V34 motion boundary executable, rather than marker-comment based."""
+    stage = read("src/lib/viewscreen-stage.js")
+    deck = read("src/components/command-deck.tsx")
+    css = read("src/styles.css")
+    timing = read("src/lib/animation-timing.ts")
+    required = {
+        "src/lib/animation-timing.ts": (
+            '"deck-copy": 380',
+            '"article-acquisition": 560',
+            '"stage-warp": 680',
+        ),
+        "src/lib/viewscreen-stage.js": ("dt * (1000 / motionDurationMs('stage-warp'))",),
+        "src/components/command-deck.tsx": (
+            '"--za-deck-copy-duration": `${motionDurationMs("deck-copy")}ms`',
+            '"--za-article-acquisition-duration": `${motionDurationMs("article-acquisition")}ms`',
+            '"--za-stage-warp-duration": `${motionDurationMs("stage-warp")}ms`',
+        ),
+        "src/styles.css": (
+            "animation: za-rise var(--za-deck-copy-duration)",
+            "animation: za-article-acquire var(--za-article-acquisition-duration)",
+            "animation: za-warpflash var(--za-stage-warp-duration)",
+        ),
+    }
+    source_by_name = {
+        "src/lib/animation-timing.ts": timing,
+        "src/lib/viewscreen-stage.js": stage,
+        "src/components/command-deck.tsx": deck,
+        "src/styles.css": css,
+    }
+    for filename, markers in required.items():
+        for marker in markers:
+            if marker not in source_by_name[filename]:
+                failures.append(f"{filename} is missing executable V34 motion marker {marker!r}")
+    for stale in ("dt * 1.05", "V33 baseline retained", "animation: za-rise 900ms"):
+        if stale in stage or stale in css:
+            failures.append(f"V34 motion source retains obsolete V33 marker {stale!r}")
+    for deck_index in range(9):
+        selector = f'section:not([data-deck="{deck_index}"])'
+        for pseudo in ("*", "*::before", "*::after"):
+            if f"{selector} {pseudo}" not in css:
+                failures.append(f"inactive deck {deck_index} does not pause {pseudo} animation work")
+
+
 def main() -> int:
     failures: list[str] = []
 
@@ -188,7 +232,7 @@ def main() -> int:
             "NO NETWORK CALLS",
         ),
         "src/lib/viewscreen-stage.js": (
-            "this.warpT = Math.max(0, this.warpT - dt * 1.05)",
+            "this.warpT = Math.max(0, this.warpT - dt * (1000 / motionDurationMs('stage-warp')))",
             "55 + warp * 34",
             "Math.min(2.05",
             "if (next !== this.craftTarget)",
@@ -200,7 +244,7 @@ def main() -> int:
         "src/styles.css": (
             "transform: translateY(28px)",
             "filter: blur(12px)",
-            ".za-rise {\n  animation: za-rise 900ms",
+            "animation: za-rise var(--za-deck-copy-duration)",
             "animation: za-shimmer 3.2s",
             ".za-plate-scan::after",
             ".za-airframe-acquire",
@@ -229,6 +273,8 @@ def main() -> int:
         for marker in markers:
             if marker not in text:
                 failures.append(f"{filename} is missing V34 contract marker {marker!r}")
+
+    check_v34_motion_contract(failures)
 
     required_public = (
         "public/command.html",

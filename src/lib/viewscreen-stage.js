@@ -1300,8 +1300,6 @@ class ViewscreenStage extends HTMLElement {
     const dt = Math.min(0.05, (t - (this._last || t)) / 1000);
     this._last = t;
     const p = this.prog, deck = this.deck;
-    // V33 decayed with `this.warpT = Math.max(0, this.warpT - dt * 1.05)`;
-    // V34 keeps the same semantic warp while completing inside its 700ms bound.
     this.warpT = Math.max(0, this.warpT - dt * (1000 / motionDurationMs('stage-warp')));
     const warp = this.warpT * this.warpT;
 

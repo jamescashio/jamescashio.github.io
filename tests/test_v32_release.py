@@ -121,14 +121,36 @@ class V34ReleaseContractTests(unittest.TestCase):
         self.assertIn("Grok 4.6", self.live)
         self.assertIn("Sonar Pro", self.live)
 
-    def test_every_airframe_change_kicks_the_longer_warp_fov_and_bloom(self) -> None:
-        self.assertIn("this.warpT = Math.max(0, this.warpT - dt * 1.05)", self.stage)
+    def test_every_airframe_change_kicks_the_bounded_v34_warp_fov_and_bloom(self) -> None:
+        self.assertIn("motionDurationMs('stage-warp')", self.stage)
+        self.assertIn("dt * (1000 / motionDurationMs('stage-warp'))", self.stage)
+        self.assertNotIn("dt * 1.05", self.stage)
         self.assertIn("this.camera.fov += ((55 + warp * 34)", self.stage)
         self.assertIn("this.bloom.strength = Math.min(2.05", self.stage)
         craft_change = self.stage[self.stage.index("setCraft(i)") : self.stage.index("setClearX(f)")]
         self.assertIn("if (next !== this.craftTarget)", craft_change)
         self.assertIn("this.warpT = 1", craft_change)
         self.assertIn("st?.warp?.()", self.deck)
+
+    def test_motion_guard_rejects_a_dead_v33_warp_marker(self) -> None:
+        original_read = release_consistency.read
+
+        def stale_read(relative: str) -> str:
+            text = original_read(relative)
+            if relative == "src/lib/viewscreen-stage.js":
+                return text.replace(
+                    "dt * (1000 / motionDurationMs('stage-warp'))",
+                    "dt * 1.05",
+                )
+            return text
+
+        release_consistency.read = stale_read
+        try:
+            failures: list[str] = []
+            release_consistency.check_v34_motion_contract(failures)
+        finally:
+            release_consistency.read = original_read
+        self.assertTrue(any("obsolete V33 marker" in failure for failure in failures), failures)
 
     def test_scan_band_rise_and_route_shimmer_contract(self) -> None:
         self.assertIn('<span className="za-plate-scan" aria-hidden />', self.primitives)
@@ -138,7 +160,12 @@ class V34ReleaseContractTests(unittest.TestCase):
         rise = self.css[self.css.index("@keyframes za-rise") : self.css.index("@keyframes za-packet")]
         self.assertIn("translateY(28px)", rise)
         self.assertIn("blur(12px)", rise)
-        self.assertIn("animation: za-rise 900ms", self.css)
+        self.assertIn("animation: za-rise var(--za-deck-copy-duration)", self.css)
+        self.assertIn("animation: za-article-acquire var(--za-article-acquisition-duration)", self.css)
+        self.assertIn("animation: za-warpflash var(--za-stage-warp-duration)", self.css)
+        self.assertNotIn("V33 baseline retained", self.css)
+        self.assertNotIn("animation: za-rise 900ms", self.css)
+        self.assertIn('section:not([data-deck="0"]) *::after', self.css)
         self.assertIn("animation: za-shimmer 3.2s linear infinite", self.css)
 
     def test_audio_is_quiet_deliberate_provenanced_and_bounded(self) -> None:

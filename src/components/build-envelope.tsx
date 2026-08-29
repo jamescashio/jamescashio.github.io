@@ -487,6 +487,10 @@ export function BuildEnvelope({ sel, onLock }: { sel: number; onLock: (i: number
       if (inViewport && deckActive && !reduce) raf = requestAnimationFrame(animationFrame);
     };
     const requestDraw = () => {
+      if (!inViewport || !deckActive || reduce) {
+        draw(performance.now());
+        return;
+      }
       if (!raf) raf = requestAnimationFrame(animationFrame);
     };
     redraw.current = requestDraw;
