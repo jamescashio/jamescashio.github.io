@@ -16,7 +16,7 @@ def read(relative: str) -> str:
     return (ROOT / relative).read_text(encoding="utf-8")
 
 
-class V33ReleaseContractTests(unittest.TestCase):
+class V34ReleaseContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.status = json.loads(read("public/status.json"))
@@ -39,24 +39,24 @@ class V33ReleaseContractTests(unittest.TestCase):
         )
 
     def test_locked_snapshot_is_exact(self) -> None:
-        self.assertEqual(self.status["release"], "V33 MACH ONE")
-        self.assertEqual(self.status["revised"], "2026-08-24")
-        self.assertEqual(self.status["verifiedLong"], "21 August 2026")
-        self.assertEqual(self.status["expires"], "2026-09-20")
+        self.assertEqual(self.status["release"], "V34 MACH ONE")
+        self.assertEqual(self.status["revised"], "2026-08-28")
+        self.assertEqual(self.status["verifiedLong"], "28 August 2026")
+        self.assertEqual(self.status["expires"], "2026-09-27")
         self.assertEqual(self.status["proxmox"], {"version": "9.2.11", "hostsOnline": 2, "quorate": True})
         self.assertEqual(
             self.status["containers"],
-            {"running": 19, "documented": 19, "stopped": 0, "zeus": 13, "apollo": 6},
+            {"running": 18, "documented": 19, "stopped": 1, "zeus": 12, "apollo": 6},
         )
         self.assertEqual(self.status["lanes"], {"public": 10, "privateCatalog": 36})
         self.assertEqual(set(self.status["deepseek"]), {"deepseek-v4-flash", "deepseek-v4-pro"})
         self.assertIn("not a Proxmox host", self.status["atlas"])
         self.assertEqual(read("status.json"), read("public/status.json"))
 
-    def test_release_identity_is_canonical_v33(self) -> None:
+    def test_release_identity_is_canonical_v34(self) -> None:
         package = json.loads(read("package.json"))
-        self.assertEqual(package["version"], "33.0.0")
-        self.assertIn('V33 "MACH ONE"', self.content)
+        self.assertEqual(package["version"], "34.0.0")
+        self.assertIn('V34 "MACH ONE"', self.content)
         retired_candidate = "V" + "47"
         for relative in (
             "README.md",

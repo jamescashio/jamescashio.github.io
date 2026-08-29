@@ -11,6 +11,7 @@ import {
   PILOT_CRAFT,
   PVE,
   ROUTING_STAGES,
+  ROUTING_VERIFIED_LONG,
   SERVICE_FAMILIES,
   VERIFIED_LONG,
   WITHHELD,
@@ -56,12 +57,12 @@ export function DeckSnapshot({
           OWN THE IRON AND THE <span className="za-shimmer-text">ROUTE</span>.
         </h1>
         <p className="za-mono mt-5 text-[11px] text-dim">
-          PUBLIC SNAPSHOT VERIFIED {VERIFIED_LONG} · 19/19 RUNNING · 2 HOSTS QUORATE · NOT A LIVE COUNTER
+          18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6 · 2 HOSTS QUORATE · READ-ONLY DATED EXPORT
         </p>
         <p className="mt-6 max-w-[46ch] text-[1.05rem] leading-relaxed text-muted">
-          Two Proxmox hosts currently run nineteen containers. Ten public capability lanes sit in front of a private
-          catalog of thirty-six models, so the right model does the work while a person stays in command of it. The
-          current public snapshot was verified on {VERIFIED_LONG}.
+          Owned compute keeps the evidence close. Quality-first routing picks the right model; dated export rules keep
+          the claim bounded; one accountable operator keeps human authority in the loop. Fleet evidence was verified on
+          {VERIFIED_LONG}; routing inventory remains separately dated {ROUTING_VERIFIED_LONG}.
         </p>
 
         <div className="za-snapshot-modes mt-8 grid max-w-lg grid-cols-2 gap-2 rounded-[var(--radius-lg)] border border-line bg-void-2/70 p-1.5">
@@ -104,12 +105,12 @@ export function DeckSnapshot({
 
         <div className="za-chip mt-8">
           <span className="h-1.5 w-1.5 rounded-full bg-green shadow-[0_0_8px_var(--color-green)]" />
-          E.V.E. ONLINE · CURRENT · VERIFIED {VERIFIED_LONG} · VALID THRU {EXPIRES_SHORT}
+          E.V.E. ONLINE · READ-ONLY · DATED EXPORT · VERIFIED {VERIFIED_LONG} · VALID THRU {EXPIRES_SHORT}
         </div>
 
         <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {[
-            ["ZEUS", 13, "RUNNING WORKLOADS"],
+            ["ZEUS", 12, "OF 13 AT PROBE"],
             ["APOLLO", 6, "RUNNING WORKLOADS"],
             ["ATLAS", null, "GATEWAY · LOCAL INFERENCE"],
             ["ATHENA", null, "QUORUM SUPPORT"],
@@ -145,38 +146,31 @@ export function DeckBrief({ sBrief }: { sBrief: SecRef }) {
       <div className="grid max-w-6xl items-center gap-10 lg:grid-cols-[1.15fr_0.85fr]">
         <div>
           <Kicker>WHAT THIS ACTUALLY MEANS FOR A BUSINESS</Kicker>
-          <Title>ONE OUTCOME. TWO OWNERSHIPS. HUMAN COMMAND.</Title>
+          <Title>THREE OUTCOMES. ONE HUMAN COMMAND.</Title>
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             <article className="za-panel p-5">
-              <div className="za-mono text-[10px] text-accent">01 · OUTCOME</div>
+              <div className="za-mono text-[10px] text-accent">01 · ROUTE CONTROL</div>
               <div className="za-display mt-3 text-5xl text-cyan">
-                <CountUp to={19} />
+                <CountUp to={18} />
                 /19
               </div>
               <p className="mt-3 text-sm leading-relaxed text-muted">
-                Published container workloads running during the {VERIFIED_LONG} verification probe. Two Proxmox hosts
-                online. Cluster quorate. Ten public lanes in front of thirty-six private catalog entries.
+                Quality-first routing turns capability into a controlled decision. The 21 August inventory counts ten
+                public lanes and thirty-six private catalog entries as different objects.
               </p>
             </article>
             <article className="za-panel p-5">
-              <div className="za-mono text-[10px] text-accent">02 · OWNERSHIP</div>
-              <ul className="mt-3 space-y-3 text-sm text-muted">
-                <li>
-                  <b className="text-ink">OWN THE IRON.</b> 19 containers on 2 Proxmox hosts I physically own.
-                </li>
-                <li>
-                  <b className="text-ink">OWN THE ROUTE.</b> One gateway, ten lanes. Quality picks. Cost ties.
-                </li>
-                <li>
-                  <b className="text-ink">OWN THE PROOF.</b> Every figure dated. Stale numbers withheld.
-                </li>
-              </ul>
+              <div className="za-mono text-[10px] text-accent">02 · EVIDENCE BOUNDARY</div>
+              <p className="mt-3 text-sm leading-relaxed text-muted">
+                18 of 19 documented guests were running at the 28 August probe. Two Proxmox hosts were online and
+                quorate. The dated export is evidence, never telemetry.
+              </p>
             </article>
             <article className="za-panel p-5">
-              <div className="za-mono text-[10px] text-accent">03 · COMMAND</div>
+              <div className="za-mono text-[10px] text-accent">03 · HUMAN AUTHORITY</div>
               <p className="mt-3 text-sm leading-relaxed text-muted">
-                Autonomy runs. A human is accountable for it. If you work on routing, reliability, explainability, or
-                sovereign infrastructure — hail.
+                Owned compute and bounded autonomy leave a person accountable for routing, reliability, and the next
+                decision.
               </p>
             </article>
           </div>
@@ -218,8 +212,8 @@ export function DeckGrid({
         <Kicker>02 · THE GRID</Kicker>
         <Title>WHAT IS ACTUALLY RUNNING</Title>
         <p className="mt-5 max-w-[62ch] text-[1.05rem] leading-relaxed text-muted">
-          Nineteen documented container roles. Zeus currently runs thirteen workloads; Apollo runs six. Seven families
-          are named here. The other twelve stay public-safe — no addresses, no ports, no access paths, ever.
+          Nineteen documented roles. At the 28 August probe Zeus ran 12 of 13 and Apollo ran 6 of 6. Seven observed role
+          families are named here; the stopped guest stays unnamed and the remaining roles stay public-safe.
         </p>
 
         <div className="relative mt-8">
@@ -262,7 +256,7 @@ export function DeckGrid({
               className={`za-panel za-hub warm px-5 py-4 ${locked?.hub === "zeus" ? "border-accent" : ""}`}
             >
               <div className="za-display text-xl text-accent">ZEUS</div>
-              <div className="za-mono mt-1 text-[10px] text-dim">13 RUNNING WORKLOADS</div>
+              <div className="za-mono mt-1 text-[10px] text-dim">12/13 AT 28 AUG PROBE</div>
             </div>
             <div
               ref={hubA}
@@ -307,10 +301,9 @@ export function DeckGrid({
         </div>
         <p className="mt-6 max-w-[70ch] text-sm leading-relaxed text-muted">{SERVICE_FAMILIES}</p>
         <div className="mt-6 flex flex-wrap gap-3 text-[11px]">
-          <span className="za-chip">19 OF 19 VERIFIED RUNNING</span>
-          <span className="za-chip">CLUSTER QUORATE</span>
-          <span className="za-chip">EXPORT CURRENT</span>
-          <span className="za-chip">0 STOPPED AT VERIFICATION</span>
+          <span className="za-chip">18/19 AT 28 AUG PROBE</span>
+          <span className="za-chip">2 HOSTS ONLINE · QUORATE</span>
+          <span className="za-chip">READ-ONLY · DATED EXPORT</span>
         </div>
       </div>
     </DeckShell>
@@ -327,10 +320,9 @@ export function DeckRouting({ s2 }: { s2: SecRef }) {
         <Title>QUALITY PICKS THE MODEL.</Title>
         <p className="mt-2 za-display text-[clamp(1.2rem,2.4vw,2rem)] text-accent">COST ONLY BREAKS A TIE.</p>
         <p className="mt-5 max-w-[62ch] text-[1.05rem] leading-relaxed text-muted">
-          Quality picks the model. Cost only breaks a tie. Public capability lanes are not the same as private model
-          entries. The public site exposes ten capability classes. The private Atlas catalog currently contains
-          thirty-six model entries. The public number describes what the outside world can understand, not the complete
-          internal provider inventory — and this page is policy, not a live provider status board.
+          Quality picks the model. Cost only breaks a tie. Public capability lanes and private catalog entries count
+          different objects; both were last confirmed in the {ROUTING_VERIFIED_LONG} routing inventory. This is a dated
+          counting rule, not a live provider status board.
         </p>
 
         <div data-hud-clear className="mt-10 grid gap-3 lg:grid-cols-[1fr_1.1fr]">
@@ -383,9 +375,8 @@ export function DeckRouting({ s2 }: { s2: SecRef }) {
               />
             </div>
             <p className="za-mono mt-4 text-[10px] leading-relaxed text-dim">
-              TEN CONFIGURED PUBLIC CAPABILITY LANES — NOT A CLAIM THAT EVERY LANE IS ACTIVE ON EVERY REQUEST. THE
-              PRIVATE ATLAS CATALOG HOLDS 36 MODEL ENTRIES. THE TWO FIGURES COUNT DIFFERENT OBJECTS AND ARE NEVER
-              MERGED. DEEPSEEK TECHNICAL IDS: deepseek-v4-pro · deepseek-v4-flash.
+              ROUTING INVENTORY {ROUTING_VERIFIED_LONG.toUpperCase()} — TEN PUBLIC CAPABILITY LANES AND 36 PRIVATE
+              CATALOG ENTRIES COUNT DIFFERENT OBJECTS. DATED POLICY, NOT LIVE PROVIDER STATUS.
             </p>
           </div>
         </div>
@@ -404,9 +395,8 @@ export function DeckIron({ s3 }: { s3: SecRef }) {
           <Kicker>04 · THE IRON</Kicker>
           <Title>HARDWARE IN A ROOM I CAN WALK INTO.</Title>
           <p className="mt-5 max-w-[52ch] text-[1.05rem] leading-relaxed text-muted">
-            ZeusApollo currently runs Proxmox VE {PVE} across two online hosts with quorum maintained by its supporting
-            edge node. Atlas is not a Proxmox host. If I cannot put a hand on it, it does not count as mine. Click a
-            host. The plate holds the lock.
+            ZeusApollo ran Proxmox VE {PVE} across two online, quorate hosts at the dated probe. The public export
+            intentionally omits hardware and recovery implementation details. Click a host. The plate holds the lock.
           </p>
           <div data-hud-clear className="mt-8 grid gap-3 sm:grid-cols-2">
             {HOSTS.map((h, i) => (
@@ -503,7 +493,7 @@ export function DeckLineage({ s4 }: { s4: SecRef }) {
             data-hud-clear
             className="za-panel za-lineage-dossier relative overflow-hidden p-7"
           >
-            <div className="za-kicker">FLIGHT RULE {String(pick + 1).padStart(2, "0")} / 04</div>
+            <div className="za-kicker">CASHIO OPERATING LESSON {String(pick + 1).padStart(2, "0")} / 04</div>
             <h3 className="za-display mt-4 text-[clamp(1.8rem,3.4vw,3rem)]">{active.name}</h3>
             <p className="mt-5 text-xl leading-snug text-ink">{active.rule}</p>
             <p className="mt-5 max-w-[46ch] text-[1.02rem] leading-relaxed text-muted">{active.note}</p>
@@ -571,8 +561,8 @@ export function DeckBuilds({ s5, onSelect }: { s5: SecRef; onSelect: (article: n
         <Kicker>06 · BUILDS</Kicker>
         <Title>SEVEN TEST ARTICLES.</Title>
         <p className="mt-5 max-w-[58ch] text-[1.05rem] leading-relaxed text-muted">
-          Not mockups. Seven shipped builds on the same fabric. Select a marker or article to acquire its proof vector;
-          arrow keys fly the range.
+          Owner-built evidence, not universal status claims. Seven documented builds on the same fabric. Select a marker
+          or article to acquire its proof vector; arrow keys fly the range.
         </p>
         <div className="mt-8 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
           <div data-hud-clear className="za-build-details">
@@ -590,7 +580,7 @@ export function DeckBuilds({ s5, onSelect }: { s5: SecRef; onSelect: (article: n
               <p className="mt-4 text-[1.02rem] leading-relaxed text-muted">{article.note}</p>
               <div className="za-article-telemetry mt-6 grid grid-cols-3 gap-px overflow-hidden rounded-[var(--radius-sm)] border border-line">
                 <span>ARTICLE · {String(sel + 1).padStart(2, "0")}/07</span>
-                <span>STATE · SHIPPED</span>
+                <span>BUILD PROOF · OWNER-BUILT</span>
                 <span>CONTROL · MANUAL</span>
               </div>
             </div>
@@ -643,11 +633,9 @@ export function DeckOperator({ s6 }: { s6: SecRef }) {
             PENSACOLA, FLORIDA · SOVEREIGN AI · CYBERSECURITY · HUMAN COMMAND
           </p>
           <p className="mt-5 max-w-[46ch] text-[1.05rem] leading-relaxed text-muted">
-            Doug Cashio is a Principal Solutions Consultant and independent systems builder focused on sovereign AI,
-            cybersecurity, automation reliability, and explainable infrastructure. Twenty-plus years in enterprise
-            environments. The fleet, the routing law, the security posture and the publishing discipline are all
-            owner-run — and all auditable. The chair is empty on purpose. Autonomy runs. A human is accountable for it.
-            Never fake a number. Click a law. The leash is the point.
+            Principal Solutions Consultant and independent systems builder. Doug owns the compute, runs the routing
+            policy, and remains accountable for every automated decision. The chair is empty on purpose: human authority
+            stays visible.
           </p>
           <div className="mt-6 flex flex-wrap gap-2">
             {LAWS.map((_, i) => (
@@ -753,9 +741,9 @@ export function DeckEve({
           ))}
         </div>
         <p className="za-mono mt-5 text-[10px] text-dim">
-          EVERY ANSWER COMES FROM THE {VERIFIED_LONG} EXPORT — CURRENT THROUGH {EXPIRES_SHORT}. AFTER THAT THE CONSOLE
-          REPORTS HISTORY, NOT STATUS. 19 OF 19 CONTAINERS RUNNING · 2 PROXMOX HOSTS ONLINE · CLUSTER QUORATE · 10
-          PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES.
+          EVERY ANSWER COMES FROM THE READ-ONLY {VERIFIED_LONG} DATED EXPORT — VALID THROUGH {EXPIRES_SHORT}. AFTER THAT
+          THE CONSOLE REPORTS HISTORY, NOT STATUS. 18/19 AT 28 AUG PROBE · 2 PROXMOX HOSTS ONLINE · QUORATE · ROUTING
+          INVENTORY 21 AUG · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES.
         </p>
       </div>
     </DeckShell>

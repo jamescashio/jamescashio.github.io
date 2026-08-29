@@ -109,6 +109,36 @@ test("DeckSnapshot renders the exact identity immediately before the unchanged h
   }
 });
 
+test("DeckSnapshot renders V34's dated aggregate and Executive outcome hierarchy", async () => {
+  const view = mount(
+    createElement(DeckSnapshot, {
+      s0: { current: null },
+      copyCol: { current: null },
+      onEngage: () => {},
+      onEve: () => {},
+    }),
+  );
+  try {
+    await view.render(
+      createElement(DeckSnapshot, {
+        s0: { current: null },
+        copyCol: { current: null },
+        onEngage: () => {},
+        onEve: () => {},
+      }),
+    );
+    assert.match(view.document.body.textContent, /18\/19 AT 28 AUG PROBE/);
+    const executive = [...view.document.querySelectorAll(".za-snapshot-modes button")].find((control) =>
+      control.textContent?.startsWith("EXECUTIVE"),
+    );
+    assert.ok(executive, "expected Executive mode control");
+    await view.click(executive);
+    assert.equal(executive.getAttribute("aria-pressed"), "true");
+  } finally {
+    await view.cleanup();
+  }
+});
+
 test("BlackBoxReceipt renders only the exact dated claim set beneath its exact heading", async () => {
   const view = mount(createElement(BlackBoxReceipt));
   try {
@@ -140,7 +170,7 @@ test("FlightControl starts, stops, and restarts through real buttons", async () 
     assert.equal(starts, 1);
 
     await view.render(createElement(FlightControl, props(true, 15_000)));
-    assert.equal(view.document.querySelector('[aria-current="step"]')?.textContent, "03 · STRONGEST BUILD");
+    assert.equal(view.document.querySelector('[aria-current="step"]')?.textContent, "03 · BUILD PROOF");
     assert.match(view.document.body.textContent, /FLIGHT ACTIVE · BEAT 03 \/ 04/);
     await view.click(button(view.document, "STOP FLIGHT"));
     assert.equal(stops, 1);
@@ -205,7 +235,7 @@ test("FlightControl exposes the canonical current beat at each handoff", async (
     for (const [elapsedMs, expected] of [
       [0, "01 · THESIS"],
       [7_500, "02 · ROUTING LAW"],
-      [15_000, "03 · STRONGEST BUILD"],
+      [15_000, "03 · BUILD PROOF"],
       [22_500, "04 · E.V.E. / CONTACT"],
     ]) {
       await view.render(createElement(FlightControl, { active: true, elapsedMs, onStart: () => {}, onStop: () => {} }));

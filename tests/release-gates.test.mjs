@@ -36,9 +36,9 @@ function expandScript(scripts, name, seen = new Set()) {
   });
 }
 
-test("package metadata and deterministic local gates define the V33 release", async () => {
+test("package metadata and deterministic local gates define the V34 release", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "33.0.0");
+  assert.equal(packageJson.version, "34.0.0");
   for (const dependency of [
     "@eslint/js",
     "eslint",
@@ -79,10 +79,12 @@ test("package metadata and deterministic local gates define the V33 release", as
   const status = JSON.parse(await read("status.json"));
   const publicStatus = JSON.parse(await read("public/status.json"));
   assert.deepEqual(status, publicStatus);
-  assert.equal(status.release, "V33 MACH ONE");
-  assert.equal(status.revised, "2026-08-24");
-  assert.equal(status.verified, "2026-08-21");
-  assert.equal(status.expires, "2026-09-20");
+  assert.equal(status.release, "V34 MACH ONE");
+  assert.equal(status.revised, "2026-08-28");
+  assert.equal(status.verified, "2026-08-28");
+  assert.equal(status.expires, "2026-09-27");
+  assert.deepEqual(status.containers, { running: 18, documented: 19, stopped: 1, zeus: 12, apollo: 6 });
+  assert.equal(status.routingVerified, "2026-08-21");
 });
 
 test("Pages blocks artifact upload on the complete Node 22 and Python 3.12 gate chain", async () => {

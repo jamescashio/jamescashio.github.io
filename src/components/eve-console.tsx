@@ -39,11 +39,11 @@ const COMMANDS = [
 
 function currentLines(): string[] {
   const left = daysLeft();
-  if (exportState() === "CURRENT") {
+  if (exportState() === "VALID") {
     return [
-      `EXPORT CURRENT · ${left} DAY${left === 1 ? "" : "S"} LEFT`,
+      `EXPORT VALID · ${left} DAY${left === 1 ? "" : "S"} LEFT`,
       `VERIFIED ${VERIFIED_LONG} · VALID THROUGH ${EXPIRES_SHORT}`,
-      "STATIC PUBLIC SNAPSHOT · NOT LIVE TELEMETRY",
+      "READ-ONLY · DATED EXPORT · NOT LIVE TELEMETRY",
     ];
   }
   return [
@@ -66,7 +66,7 @@ export function runEve(raw: string, history: string[] = []): EveResult {
     return {
       out: [
         ...currentLines(),
-        "19 OF 19 PUBLISHED CONTAINERS RUNNING AT PROBE",
+        "18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6",
         "2 PROXMOX HOSTS ONLINE · CLUSTER QUORATE",
         "10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES",
       ],
@@ -78,11 +78,8 @@ export function runEve(raw: string, history: string[] = []): EveResult {
   if (command === "fleet") {
     return {
       out: [
-        "ZEUS · 13 CONTAINERS · PROXMOX HOST · QUORATE",
+        "ZEUS · 12/13 AT 28 AUG PROBE · PROXMOX HOST · QUORATE",
         "APOLLO · 6 CONTAINERS · PROXMOX HOST · QUORATE",
-        "ATLAS · GATEWAY AND LOCAL INFERENCE · NOT A PROXMOX HOST",
-        "ATHENA · QUORUM SUPPORT",
-        "GENESIS · PRIVATE STORAGE AND RECOVERY",
         SERVICE_FAMILIES.toUpperCase(),
       ],
     };
@@ -91,7 +88,7 @@ export function runEve(raw: string, history: string[] = []): EveResult {
   if (command === "lanes" || command === "routes") {
     return {
       out: [
-        "10 PUBLIC CAPABILITY LANES · 36 PRIVATE CATALOG ENTRIES",
+        "ROUTING INVENTORY 21 AUG · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES",
         "DEEPSEEK-V4-FLASH · DEEPSEEK-V4-PRO",
         "QUALITY PICKS THE MODEL · COST ONLY BREAKS A TIE",
       ],
@@ -117,7 +114,7 @@ export function runEve(raw: string, history: string[] = []): EveResult {
       out: [
         `${RELEASE} · VERIFIED ${VERIFIED_LONG}`,
         `PROXMOX VE ${PVE} · 2 HOSTS ONLINE · QUORATE`,
-        "OWNER-RUN SSH PROBE · PUBLIC-SAFE STATIC EXPORT",
+        "OWNER-RUN READ-ONLY PROBE · PUBLIC-SAFE DATED EXPORT",
         ...currentLines(),
       ],
     };

@@ -148,7 +148,7 @@ export function CommandHeader({
         ))}
       </div>
       <div className="pointer-events-auto flex items-center gap-2">
-        <span className="za-chip !hidden sm:!inline-flex">19/19 NOMINAL</span>
+        <span className="za-chip !hidden sm:!inline-flex">18/19 AT 28 AUG PROBE</span>
         {tour ? <span className="za-chip text-accent">AUTOPILOT</span> : null}
         <span className="za-chip !hidden md:!inline-flex">
           <span className="h-1.5 w-1.5 rounded-full bg-green shadow-[0_0_8px_var(--color-green)]" />

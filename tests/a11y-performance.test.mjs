@@ -387,6 +387,19 @@ test("glyph controls preserve each visible audio label in their accessible names
   }
 });
 
+test("command chrome frames aggregate evidence as a dated export", async () => {
+  const view = mountCommandDeck();
+  try {
+    await view.render();
+    const header = view.document.querySelector("header.za-command-header");
+    assert.match(header?.textContent ?? "", /18\/19 AT 28 AUG PROBE/);
+    assert.match(header?.textContent ?? "", /EXPORT VALID/);
+    assert.doesNotMatch(header?.textContent ?? "", /NOMINAL|CURRENT/);
+  } finally {
+    await view.cleanup();
+  }
+});
+
 test("presentation and deck navigation expose one selected state per surface", async () => {
   const view = mountCommandDeck();
   try {

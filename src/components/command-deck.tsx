@@ -892,7 +892,7 @@ export function CommandDeck() {
             <span>REVISED {REVISED}</span>
             <span className="inline-flex items-center gap-2 text-green">
               <span className="h-1.5 w-1.5 rounded-full bg-green shadow-[0_0_8px_var(--color-green)]" />
-              {dleft > 0 ? "CURRENT" : "EXPIRED"}
+              {dleft > 0 ? "DATED EXPORT VALID" : "DATED EXPORT EXPIRED"}
             </span>
             <span>FIGURES VERIFIED {VERIFIED_LONG}</span>
             <span>VALID THRU {dleft > 0 ? EXPIRES_SHORT : "— TREAT AS HISTORY"}</span>

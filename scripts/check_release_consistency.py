@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail closed when the V33 source and GitHub Pages artifact disagree."""
+"""Fail closed when the V34 source and GitHub Pages artifact disagree."""
 
 from __future__ import annotations
 
@@ -53,12 +53,12 @@ def main() -> int:
         return 1
 
     expected = {
-        "release": "V33 MACH ONE",
-        "revised": "2026-08-24",
-        "status": "current",
-        "verified": "2026-08-21",
-        "verifiedLong": "21 August 2026",
-        "expires": "2026-09-20",
+        "release": "V34 MACH ONE",
+        "revised": "2026-08-28",
+        "status": "dated-export",
+        "verified": "2026-08-28",
+        "verifiedLong": "28 August 2026",
+        "expires": "2026-09-27",
     }
     for key, value in expected.items():
         if status.get(key) != value:
@@ -68,10 +68,10 @@ def main() -> int:
         ("proxmox", "version"): "9.2.11",
         ("proxmox", "hostsOnline"): 2,
         ("proxmox", "quorate"): True,
-        ("containers", "running"): 19,
+        ("containers", "running"): 18,
         ("containers", "documented"): 19,
-        ("containers", "stopped"): 0,
-        ("containers", "zeus"): 13,
+        ("containers", "stopped"): 1,
+        ("containers", "zeus"): 12,
         ("containers", "apollo"): 6,
         ("lanes", "public"): 10,
         ("lanes", "privateCatalog"): 36,
@@ -80,6 +80,9 @@ def main() -> int:
         actual = status.get(group, {}).get(key)
         if actual != value:
             failures.append(f"public/status.json {group}.{key}: expected {value!r}, got {actual!r}")
+
+    if status.get("routingVerified") != "2026-08-21":
+        failures.append("public/status.json routingVerified must remain the separate 2026-08-21 inventory date")
 
     if set(status.get("deepseek", [])) != {"deepseek-v4-flash", "deepseek-v4-pro"}:
         failures.append("public/status.json must publish only deepseek-v4-flash and deepseek-v4-pro")
@@ -95,8 +98,8 @@ def main() -> int:
             failures.append(f"{cname} must contain only cashio.us")
 
     package = json.loads(read("package.json"))
-    if package.get("version") != "33.0.0":
-        failures.append("package.json version must be 33.0.0")
+    if package.get("version") != "34.0.0":
+        failures.append("package.json version must be 34.0.0")
     if package.get("scripts", {}).get("build") != "tsc --noEmit && vite build":
         failures.append("package.json build script changed from the supplied TypeScript + Vite gate")
 
@@ -128,10 +131,11 @@ def main() -> int:
     required_source = {
         "src/lib/store.ts": ("gate: false", "audio: DEFAULT_AUDIO_ENABLED", "deck: 0"),
         "src/lib/content.ts": (
-            'VERIFIED_LONG = "21 August 2026"',
-            'REVISED = "08-24-2026"',
-            'EXPIRES_AT = "2026-09-21T05:00:00Z"',
-            '"19 OF 19 PUBLISHED CONTAINERS — RUNNING AT PROBE"',
+            'VERIFIED_LONG = "28 August 2026"',
+            'ROUTING_VERIFIED_LONG = "21 August 2026"',
+            'REVISED = "08-28-2026"',
+            'EXPIRES_AT = "2026-09-28T05:00:00Z"',
+            '"18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6"',
             '"deepseek-v4-flash"',
             '"deepseek-v4-pro"',
             'model: "Gemini 3.7 Flash"',
@@ -199,7 +203,7 @@ def main() -> int:
         text = read(filename)
         for marker in markers:
             if marker not in text:
-                failures.append(f"{filename} is missing V33 contract marker {marker!r}")
+                failures.append(f"{filename} is missing V34 contract marker {marker!r}")
 
     required_public = (
         "public/command.html",
@@ -317,8 +321,8 @@ def main() -> int:
 
         live = collect_text(DIST)
         for marker in (
-            "21 August 2026",
-            "19 OF 19",
+            "28 August 2026",
+            "18/19 AT 28 AUG PROBE",
             "QUORATE",
             "10 PUBLIC",
             "36 PRIVATE",
@@ -357,14 +361,14 @@ def main() -> int:
             failures.append(f"non-audio fetch target found in source: {target!r}")
 
     if failures:
-        print("V33 release consistency check failed:\n")
+        print("V34 release consistency check failed:\n")
         for failure in failures:
             print(f"- {failure}")
         return 1
 
     print(
-        "V33 release consistency passed: 21 August 2026 static snapshot; "
-        "19/19 containers; 2 Proxmox hosts quorate; 10 public lanes; "
+        "V34 release consistency passed: 28 August 2026 dated export; "
+        "18/19 containers; 2 Proxmox hosts quorate; 10 public lanes; "
         "36 private catalog entries; root Pages base; archive, privacy, "
         "motion, opt-in audio, and forbidden-token gates satisfied."
     )
