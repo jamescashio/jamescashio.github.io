@@ -13,7 +13,7 @@
 
 ## Files changed
 
-`package.json`, `package-lock.json`, `status.json`, `public/status.json`, `README.md`, `CHANGELOG.md`, `RELEASE_BODY.md`, `scripts/check_release_consistency.py`, `src/lib/content.ts`, `src/lib/flight-plan.ts`, `src/components/command-chrome.tsx`, `src/components/command-deck.tsx`, `src/components/decks.tsx`, `src/components/eve-console.tsx`, and the seven Task 1 test files named in the brief.
+`package.json`, `package-lock.json`, `status.json`, `public/status.json`, `README.md`, `CHANGELOG.md`, `RELEASE_BODY.md`, `scripts/check_release_consistency.py`, `src/lib/content.ts`, `src/lib/flight-plan.ts`, `src/components/command-chrome.tsx`, `src/components/command-deck.tsx`, `src/components/decks.tsx`, `src/components/eve-console.tsx`, and the six Task 1 test files named in the brief.
 
 `src/components/command-deck.tsx` was additionally adjusted so the footer cannot render the forbidden bare `CURRENT` status label.
 
@@ -115,3 +115,54 @@ As a consequence, `python scripts/check_release_consistency.py` correctly fails 
 - Contact and Black Box Receipt source wording were not changed; the existing rendered receipt contract remains green.
 - `.npm-cache/` remains untracked and must not be staged.
 - Remaining concern: build/artifact-based validation is blocked solely by the sandbox access-denied error above. Run `npm run build`, then `python scripts/check_release_consistency.py`, in an approved environment before release.
+
+## Fix round 1 — reviewer findings
+
+Fix commit: `a685d56296756cb2c56e76f6494a5c9f04dce9cf` (`fix: close V34 public truth gaps`).
+
+### Implemented
+
+- Replaced stale V33 search/social metadata in `index.html` and the `public/lab.html` redirect fallback with V34 `DATED EXPORT` language, the 28 August verification date, and `18/19 AT 28 AUG PROBE`.
+- Added release-guard checks for `index.html` and `lab.html` independently in both source and `dist`. The global artifact scan no longer permits new V34 markers to mask stale claims in either surface; the preserved receipt and historical archive are not scanned by this per-file rule.
+- Replaced Technical and Executive page-count promises with audience-value promises.
+- Dated every Apollo aggregate surface as `6/6 AT 28 AUG PROBE`.
+- Made header-validity tests deterministic with injected timestamps for both the valid and expired boundaries.
+
+### RED
+
+Command:
+
+```text
+node --import tsx --test tests/release-gates.test.mjs tests/flight-experience.test.mjs tests/a11y-performance.test.mjs
+```
+
+Output:
+
+```text
+tests 64
+pass 59
+fail 5
+
+public metadata and redirect fallback carry only the V34 dated aggregate
+AssertionError: index.html must include 28 August 2026
+
+DeckSnapshot renders V34's dated aggregate and Executive outcome hierarchy
+AssertionError: expected /Detailed evidence, build proof, and operational context/; actual choice: "Nine decks. Fleet, routing law, hardware, builds."
+
+command chrome frames aggregate evidence as a dated export at valid and expired boundaries
+valid and expired assertions failed because rendered Apollo text was "APOLLO6 RUNNING WORKLOADS" rather than `APOLLO6/6 AT 28 AUG PROBE`.
+```
+
+The five failures were intentional and traced directly to the stale public surfaces, page-count copy, and undated Apollo presentation. The header test now supplies both dates explicitly, eliminating dependence on the wall clock.
+
+### GREEN and full verification
+
+- Focused command above — passed: 64 tests, 64 pass, 0 fail.
+- `npm run lint` — passed.
+- `npm run format:check` — passed.
+- `npm run test:node` — passed: 114 tests, 114 pass, 0 fail.
+- `python -m unittest tests.test_v32_release tests.test_public_repo_guard tests.test_committed_whitespace` — passed: 49 tests, 49 pass, 0 fail.
+- `python scripts/public_repo_guard.py` — passed.
+- `git diff --check` — passed before committing the fix.
+
+`python scripts/check_release_consistency.py` correctly fails against the stale V33 `dist` artifact, now with explicit per-file evidence for both `dist/index.html` and `dist/lab.html` (missing V34 markers and containing stale V33 claims). A sandboxed `npm run build` remains blocked by `Access is denied` while Vite reads its config, so an approved-environment build is still required before the artifact guard can pass.
