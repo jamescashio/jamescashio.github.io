@@ -2,11 +2,12 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { JSDOM } from "jsdom";
-import { act, createElement } from "react";
+import { act, createElement, useState } from "react";
 import { createRoot } from "react-dom/client";
 
 import { BlackBoxReceipt } from "../src/components/black-box-receipt.tsx";
-import { DeckBrief, DeckGrid, DeckIron, DeckSnapshot } from "../src/components/decks.tsx";
+import { CommandHeader } from "../src/components/command-chrome.tsx";
+import { DeckBrief, DeckGrid, DeckIron, DeckOperator, DeckRouting, DeckSnapshot } from "../src/components/decks.tsx";
 import { runEve } from "../src/components/eve-console.tsx";
 import { FlightControl } from "../src/components/flight-control.tsx";
 import { motionDurationMs } from "../src/lib/animation-timing.ts";
@@ -112,6 +113,37 @@ test("DeckSnapshot renders the exact identity immediately before the unchanged h
     assert.ok(identity, "expected exact owner-operator identity");
     assert.ok(hero, "expected unchanged hero heading");
     assert.equal(identity.nextElementSibling, hero, "the identity must immediately precede the hero heading");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("DeckSnapshot states the exact bounded 45-word introduction without changing identity or hero", async () => {
+  const view = mount(
+    createElement(DeckSnapshot, {
+      s0: { current: null },
+      copyCol: { current: null },
+      onEngage: () => {},
+      onEve: () => {},
+    }),
+  );
+  try {
+    await view.render(
+      createElement(DeckSnapshot, {
+        s0: { current: null },
+        copyCol: { current: null },
+        onEngage: () => {},
+        onEve: () => {},
+      }),
+    );
+    const introduction = view.document.querySelector(".za-snapshot-copy")?.textContent;
+    assert.equal(
+      introduction,
+      "Doug Cashio builds and operates sovereign AI and security systems on hardware he owns. Quality-first routing selects the right model, while dated public evidence keeps every claim bounded. Fleet evidence was verified on 28 August 2026; the routing inventory remains separately dated 21 August 2026.",
+    );
+    assert.ok(introduction.split(/\s+/u).length <= 55, "the introduction must stay within the 55-word clarity gate");
+    assert.match(view.document.body.textContent, /DOUG CASHIO · ENTERPRISE AI \+ SECURITY SYSTEMS · OWNER-OPERATOR/);
+    assert.equal(view.document.querySelector("h1")?.textContent, "OWN THE IRON AND THE ROUTE.");
   } finally {
     await view.cleanup();
   }
@@ -262,6 +294,166 @@ test("Executive choice promises outcomes rather than page count", async () => {
   }
 });
 
+test("Executive cards keep routing, fleet evidence, and human accountability as separate metrics", async () => {
+  const view = mount(createElement(DeckBrief, { sBrief: { current: null } }));
+  try {
+    Object.defineProperty(view.document.defaultView, "matchMedia", {
+      configurable: true,
+      value: () => ({ matches: true, addEventListener: () => {}, removeEventListener: () => {} }),
+    });
+    await view.render(createElement(DeckBrief, { sBrief: { current: null } }));
+    const cards = [...view.document.querySelectorAll("article")];
+    assert.equal(cards.length, 3);
+    assert.equal(cards[0].querySelector(".za-display")?.textContent, "10");
+    assert.equal(
+      cards[0].querySelector("p")?.textContent,
+      "Ten public capability lanes are recorded in the 21 August 2026 routing inventory. Thirty-six private catalog entries are a separate count.",
+    );
+    assert.doesNotMatch(cards[0].textContent, /18\/19/);
+    assert.equal(cards[1].querySelector(".za-display")?.textContent, "18/19");
+    assert.equal(
+      cards[1].querySelector("p")?.textContent,
+      "18 of 19 documented guests were running at the 28 August probe. Two Proxmox hosts were online and quorate. The dated export is evidence, never telemetry.",
+    );
+    assert.equal(cards[2].querySelector(".za-display")?.textContent, "1");
+    assert.match(cards[2].textContent, /OWNER ACCOUNTABLE/);
+    assert.equal(
+      cards[2].querySelector("p")?.textContent,
+      "Owned compute and bounded autonomy leave one person accountable for routing, reliability, and the next decision.",
+    );
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("interactive evidence choices expose and update their real selected state", async (t) => {
+  const ref = { current: null };
+
+  await t.test("Grid role-family locks", async () => {
+    const view = mount(createElement(DeckGrid, { s1: ref }));
+    try {
+      await view.render(createElement(DeckGrid, { s1: ref }));
+      const controls = [...view.document.querySelectorAll("section[data-deck='1'] button")];
+      assert.equal(controls.filter((control) => control.getAttribute("aria-pressed") === "true").length, 0);
+      assert.equal(
+        controls.every((control) => control.getAttribute("aria-pressed") === "false"),
+        true,
+      );
+      await view.click(controls[2]);
+      assert.deepEqual(
+        controls.map((control) => control.getAttribute("aria-pressed")),
+        ["false", "false", "true", "false", "false", "false", "false"],
+      );
+    } finally {
+      await view.cleanup();
+    }
+  });
+
+  await t.test("Routing lane detail", async () => {
+    const view = mount(createElement(DeckRouting, { s2: ref }));
+    try {
+      await view.render(createElement(DeckRouting, { s2: ref }));
+      const controls = [...view.document.querySelectorAll("section[data-deck='2'] button")];
+      const detail = view.document.getElementById("routing-lane-detail");
+      assert.ok(detail, "expected the controlled routing detail region");
+      assert.equal(detail.getAttribute("aria-live"), "polite");
+      assert.equal(detail.getAttribute("aria-atomic"), "true");
+      assert.equal(
+        controls.every((control) => control.getAttribute("aria-controls") === "routing-lane-detail"),
+        true,
+      );
+      assert.deepEqual(
+        controls.map((control) => control.getAttribute("aria-pressed")),
+        controls.map((_, index) => String(index === 1)),
+      );
+      await view.click(controls[4]);
+      assert.deepEqual(
+        controls.map((control) => control.getAttribute("aria-pressed")),
+        controls.map((_, index) => String(index === 4)),
+      );
+    } finally {
+      await view.cleanup();
+    }
+  });
+
+  await t.test("Iron host lock", async () => {
+    const view = mount(createElement(DeckIron, { s3: ref }));
+    try {
+      await view.render(createElement(DeckIron, { s3: ref }));
+      const controls = [...view.document.querySelectorAll("section[data-deck='3'] button")];
+      assert.deepEqual(
+        controls.map((control) => control.getAttribute("aria-pressed")),
+        ["true", "false"],
+      );
+      await view.click(controls[1]);
+      assert.deepEqual(
+        controls.map((control) => control.getAttribute("aria-pressed")),
+        ["false", "true"],
+      );
+    } finally {
+      await view.cleanup();
+    }
+  });
+
+  await t.test("Operator leash and law controls", async () => {
+    const view = mount(createElement(DeckOperator, { s6: ref }));
+    try {
+      await view.render(createElement(DeckOperator, { s6: ref }));
+      const chips = [...view.document.querySelectorAll("section[data-deck='6'] button.za-chip")];
+      const rows = [...view.document.querySelectorAll("section[data-deck='6'] .za-law-step")];
+      assert.deepEqual(
+        chips.map((control) => control.getAttribute("aria-pressed")),
+        ["true", "false", "false", "false"],
+      );
+      assert.deepEqual(
+        rows.map((control) => control.getAttribute("aria-pressed")),
+        ["true", "false", "false", "false"],
+      );
+      await view.click(chips[2]);
+      assert.deepEqual(
+        chips.map((control) => control.getAttribute("aria-pressed")),
+        ["false", "false", "true", "false"],
+      );
+      assert.deepEqual(
+        rows.map((control) => control.getAttribute("aria-pressed")),
+        ["false", "false", "true", "false"],
+      );
+    } finally {
+      await view.cleanup();
+    }
+  });
+});
+
+test("CommandHeader craft pips expose exactly one current craft and update it on click", async () => {
+  function HeaderHarness() {
+    const [craftIndex, setCraftIndex] = useState(0);
+    return createElement(CommandHeader, {
+      audio: false,
+      clock: "0000.000",
+      craftIndex,
+      deck: 0,
+      hudClassName: "",
+      onNavigateCraft: setCraftIndex,
+      onOpenNavigator: () => {},
+      onToggleAudio: () => {},
+      tour: false,
+    });
+  }
+
+  const view = mount(createElement(HeaderHarness));
+  try {
+    await view.render(createElement(HeaderHarness));
+    const pips = [...view.document.querySelectorAll('button[aria-label^="Warp to"]')];
+    assert.equal(pips.filter((pip) => pip.getAttribute("aria-current") === "true").length, 1);
+    assert.equal(pips[0].getAttribute("aria-current"), "true");
+    await view.click(pips[4]);
+    assert.equal(pips.filter((pip) => pip.getAttribute("aria-current") === "true").length, 1);
+    assert.equal(pips[4].getAttribute("aria-current"), "true");
+  } finally {
+    await view.cleanup();
+  }
+});
+
 test("E.V.E. status keeps routing counts on the separate 21 August 2026 inventory", () => {
   const lines = runEve("status").out;
   assert.ok(lines.includes("ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES"));
@@ -288,8 +480,8 @@ test("BlackBoxReceipt renders only the exact dated claim set beneath its exact h
     assert.deepEqual(
       [...receipt.querySelectorAll("li")].map((claim) => claim.textContent),
       [
-        "08-21-2026 · 19/19 PUBLISHED CONTAINERS RUNNING AT PROBE",
-        "08-21-2026 · 2 PROXMOX HOSTS QUORATE",
+        "08-28-2026 · 18/19 DOCUMENTED GUESTS RUNNING AT PROBE",
+        "08-28-2026 · 2 PROXMOX HOSTS QUORATE",
         "08-21-2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG",
       ],
     );

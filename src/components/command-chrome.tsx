@@ -139,6 +139,7 @@ export function CommandHeader({
             key={craft[0]}
             type="button"
             aria-label={`Warp to ${craft[0]}`}
+            aria-current={index === craftIndex ? "true" : undefined}
             title={craft[0]}
             onClick={() => onNavigateCraft(index)}
             className={`za-lcars-pip ${index === craftIndex ? "on" : index < craftIndex ? "past" : ""}`}

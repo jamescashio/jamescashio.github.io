@@ -6,6 +6,7 @@ import { act, createElement } from "react";
 import { createRoot } from "react-dom/client";
 
 import { CommandDeck } from "../src/components/command-deck.tsx";
+import { getSound } from "../src/lib/sound.ts";
 import { useDeck } from "../src/lib/store.ts";
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
@@ -70,6 +71,7 @@ function mountCommandDeck({
         timeout === 400 ||
         timeout === 500 ||
         timeout === 560 ||
+        timeout === 2200 ||
         timeout === 3200 ||
         timeout >= 7000 ||
         (capturePulseTimers && (timeout === 680 || timeout === 1100 || timeout === 1900)))
@@ -292,6 +294,7 @@ function mountCommandDeck({
     railOpen: false,
     shown: [0],
     bitMood: "idle",
+    copyEmailState: "idle",
     craftLock: null,
   });
   const root = createRoot(dom.window.document.getElementById("root"));
@@ -458,6 +461,16 @@ function labeledButton(document, label) {
 
 function flushPromises() {
   return new Promise((resolve) => setImmediate(resolve));
+}
+
+function deferredPromise() {
+  let resolve;
+  let reject;
+  const promise = new Promise((onResolve, onReject) => {
+    resolve = onResolve;
+    reject = onReject;
+  });
+  return { promise, reject, resolve };
 }
 
 function createSchedulerEnvironment({ idle = true } = {}) {
@@ -1818,22 +1831,132 @@ test("a live reduced-motion change settles CountUp without replaying and preserv
       [...view.document.querySelectorAll("article")]
         .find((article) => article.textContent?.includes("01 · ROUTE CONTROL"))
         ?.querySelector(".za-display");
-    assert.equal(routeMetric()?.textContent, "0/19", "the motion-enabled reveal must begin at zero");
+    assert.equal(routeMetric()?.textContent, "0", "the motion-enabled reveal must begin at zero");
     assert.equal(view.pendingAnimationFramesNamed("run"), 1, "CountUp must own one reveal frame");
 
     await view.setReducedMotion(true);
     assert.equal(view.pendingAnimationFramesNamed("run"), 0, "live reduced motion must cancel CountUp's owned frame");
-    assert.equal(routeMetric()?.textContent, "18/19", "live reduced motion must settle the final metric");
+    assert.equal(routeMetric()?.textContent, "10", "live reduced motion must settle the final metric");
 
     await view.setReducedMotion(false);
     assert.equal(view.pendingAnimationFramesNamed("run"), 0, "restoring motion must not replay a settled metric");
-    assert.equal(routeMetric()?.textContent, "18/19");
+    assert.equal(routeMetric()?.textContent, "10");
 
     await view.click(technicalMode);
     await view.click(executiveMode);
-    assert.equal(routeMetric()?.textContent, "0/19", "a future mount may begin a normal motion-enabled reveal");
+    assert.equal(routeMetric()?.textContent, "0", "a future mount may begin a normal motion-enabled reveal");
     assert.equal(view.pendingAnimationFramesNamed("run"), 1, "the future reveal must own one frame");
   } finally {
+    await view.cleanup();
+  }
+});
+
+test("COPY EMAIL announces only resolved clipboard success and keeps an honest usable fallback", async () => {
+  const view = mountCommandDeck({ url: "https://cashio.us/#deck=contact", controlledTimers: true });
+  const sound = getSound();
+  const originalSound = { err: sound.err, hail: sound.hail, ok: sound.ok };
+  const sounds = [];
+  sound.err = () => sounds.push("err");
+  sound.hail = () => sounds.push("hail");
+  sound.ok = () => sounds.push("ok");
+
+  const setClipboard = (writeText) => {
+    Object.defineProperty(view.window.navigator, "clipboard", {
+      configurable: true,
+      value: writeText ? { writeText } : undefined,
+    });
+  };
+  const copyControl = () =>
+    [...view.document.querySelectorAll("button")].find((control) =>
+      ["COPY EMAIL", "COPIED", "COPY FAILED"].includes(control.textContent),
+    );
+  const copyStatus = () => view.document.querySelector('[role="status"][aria-label="Email copy status"]');
+
+  try {
+    useDeck.setState({ audio: true });
+    const pending = deferredPromise();
+    setClipboard(() => pending.promise);
+    await view.render();
+
+    const emailLink = [...view.document.querySelectorAll('a[href="mailto:doug@cashio.us"]')].find(
+      (link) => link.textContent === "doug@cashio.us",
+    );
+    assert.ok(emailLink, "the selectable visible address and mailto fallback must remain available");
+    assert.equal(copyControl()?.textContent, "COPY EMAIL");
+    assert.ok(copyStatus(), "the email copy status must remain mounted before an attempt");
+    assert.equal(copyStatus()?.getAttribute("aria-live"), "polite");
+    assert.equal(copyStatus()?.textContent, "");
+
+    await view.click(copyControl());
+    assert.equal(copyControl()?.textContent, "COPY EMAIL", "an unresolved clipboard promise must not claim success");
+    assert.equal(copyStatus()?.textContent, "");
+    assert.equal(useDeck.getState().copyEmailState, "idle");
+    assert.deepEqual(sounds, []);
+
+    pending.resolve();
+    await view.settle();
+    assert.equal(copyControl()?.textContent, "COPIED");
+    assert.equal(copyStatus()?.textContent, "Email copied to clipboard.");
+    assert.equal(useDeck.getState().copyEmailState, "success");
+    assert.deepEqual(sounds, ["ok", "hail"]);
+
+    const overlappingPending = deferredPromise();
+    setClipboard(() => overlappingPending.promise);
+    await view.click(copyControl());
+    assert.equal(copyControl()?.textContent, "COPY EMAIL", "a retry must clear success while it is pending");
+    assert.equal(copyStatus()?.textContent, "");
+    assert.equal(view.pendingControlledTimeoutsFor(2200), 0, "a retry must cancel the prior success reset");
+    await view.runClearedControlledTimeout(2200);
+    assert.equal(copyControl()?.textContent, "COPY EMAIL", "a stale success timer must not erase a newer attempt");
+    overlappingPending.resolve();
+    await view.settle();
+    assert.equal(copyControl()?.textContent, "COPIED");
+
+    await view.runControlledTimeout(2200);
+    assert.equal(copyControl()?.textContent, "COPY EMAIL");
+    assert.equal(copyStatus()?.textContent, "");
+    assert.equal(useDeck.getState().copyEmailState, "idle");
+
+    sounds.length = 0;
+    setClipboard(async () => {
+      throw new Error("clipboard denied");
+    });
+    await view.click(copyControl());
+    await view.settle();
+    assert.equal(copyControl()?.textContent, "COPY FAILED");
+    assert.equal(
+      copyStatus()?.textContent,
+      "Copy failed. Select doug@cashio.us above to copy it or use the Email button.",
+    );
+    assert.equal(useDeck.getState().copyEmailState, "error");
+    assert.deepEqual(sounds, ["err"]);
+
+    const secondPending = deferredPromise();
+    sounds.length = 0;
+    setClipboard(() => secondPending.promise);
+    await view.click(copyControl());
+    assert.equal(copyControl()?.textContent, "COPY EMAIL", "a retry must clear the prior error while it is pending");
+    assert.equal(copyStatus()?.textContent, "");
+    assert.equal(useDeck.getState().copyEmailState, "idle");
+    assert.deepEqual(sounds, []);
+    secondPending.reject(new Error("clipboard denied again"));
+    await view.settle();
+
+    sounds.length = 0;
+    setClipboard(undefined);
+    await view.click(copyControl());
+    await view.settle();
+    assert.equal(copyControl()?.textContent, "COPY FAILED");
+    assert.equal(
+      copyStatus()?.textContent,
+      "Copy failed. Select doug@cashio.us above to copy it or use the Email button.",
+    );
+    assert.equal(useDeck.getState().copyEmailState, "error");
+    assert.deepEqual(sounds, ["err"]);
+  } finally {
+    sound.err = originalSound.err;
+    sound.hail = originalSound.hail;
+    sound.ok = originalSound.ok;
     await view.cleanup();
   }
 });

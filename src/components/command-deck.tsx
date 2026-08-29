@@ -95,7 +95,7 @@ export function CommandDeck() {
   const chap = useDeck((s) => s.chap);
   const chapText = useDeck((s) => s.chapText);
   const bitMood = useDeck((s) => s.bitMood);
-  const copied = useDeck((s) => s.copied);
+  const copyEmailState = useDeck((s) => s.copyEmailState);
   const craftLock = useDeck((s) => s.craftLock);
   const set = useDeck((s) => s.set);
 
@@ -131,6 +131,8 @@ export function CommandDeck() {
   const chapterInterval = useRef<ReturnType<typeof window.setInterval> | null>(null);
   const sweepTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
   const alertTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const copyEmailResetTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const copyEmailAttempt = useRef(0);
   const cinePulseGeneration = useRef(0);
   const pendingSmoothScrollTop = useRef<number | null>(null);
   const gotoRef = useRef<
@@ -218,6 +220,12 @@ export function CommandDeck() {
     if (!useDeck.getState().audio) return;
     const fn = (s as unknown as Record<string, (a?: number) => void>)[kind];
     if (typeof fn === "function") fn.call(s, arg);
+  }, []);
+
+  const invalidateCopyEmail = useCallback(() => {
+    copyEmailAttempt.current++;
+    if (copyEmailResetTimer.current != null) window.clearTimeout(copyEmailResetTimer.current);
+    copyEmailResetTimer.current = null;
   }, []);
 
   const bit = useCallback(
@@ -625,10 +633,11 @@ export function CommandDeck() {
   useEffect(() => {
     return () => {
       if (flightTimer.current != null) window.clearTimeout(flightTimer.current);
+      invalidateCopyEmail();
       clearHashSuppressionTimer();
       clearResizeAnchor();
     };
-  }, [clearHashSuppressionTimer, clearResizeAnchor]);
+  }, [clearHashSuppressionTimer, clearResizeAnchor, invalidateCopyEmail]);
 
   useEffect(() => {
     const state = flightRun.current;
@@ -893,15 +902,35 @@ export function CommandDeck() {
   };
 
   const copyMail = async () => {
+    const attempt = ++copyEmailAttempt.current;
+    if (copyEmailResetTimer.current != null) window.clearTimeout(copyEmailResetTimer.current);
+    copyEmailResetTimer.current = null;
+    set({ copyEmailState: "idle" });
+
+    if (typeof navigator.clipboard?.writeText !== "function") {
+      set({ copyEmailState: "error" });
+      sfx("err");
+      return;
+    }
+
     try {
       await navigator.clipboard.writeText("doug@cashio.us");
     } catch {
-      /* ignore */
+      if (copyEmailAttempt.current !== attempt) return;
+      set({ copyEmailState: "error" });
+      sfx("err");
+      return;
     }
-    set({ copied: true });
+    if (copyEmailAttempt.current !== attempt) return;
+    set({ copyEmailState: "success" });
     sfx("ok");
     sfx("hail");
-    window.setTimeout(() => set({ copied: false }), 2200);
+    copyEmailResetTimer.current = window.setTimeout(() => {
+      copyEmailResetTimer.current = null;
+      if (copyEmailAttempt.current === attempt && useDeck.getState().copyEmailState === "success") {
+        set({ copyEmailState: "idle" });
+      }
+    }, 2200);
   };
 
   const hud = photo ? "pointer-events-none invisible opacity-0" : "";
@@ -1019,7 +1048,7 @@ export function CommandDeck() {
               />
             </>
           )}
-          <DeckContact s8={s8} onCopy={copyMail} copied={copied} />
+          <DeckContact s8={s8} onCopy={copyMail} copyEmailState={copyEmailState} />
           <footer data-hud-clear className="za-mobile-rail-clearance px-6 pb-20 pt-6 md:px-14">
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 za-mono text-[10px] text-dim">
               <span>{RELEASE}</span>

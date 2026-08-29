@@ -2,9 +2,7 @@
 
 ## Creative thesis
 
-Cashio.us is a cinematic flight-test dossier viewed from a sovereign command deck. It should feel engineered, precise, and slightly dangerous: verified data behaves like instrumentation, while motion reveals cause and effect instead of decorating the page.
-
-V34 sharpens that thesis as a flight recorder, not a fireworks display. Every glow, scan, label, and claim must help a visitor acquire evidence, understand its date and boundary, or move toward an accountable human.
+Cashio.us is a sovereign command-deck flight recorder: a cinematic dossier where dated evidence reads as instrumentation and motion reveals cause and effect. V34 earns attention by helping a visitor acquire proof, understand its date and boundary, or reach an accountable human.
 
 ## Audience and action
 
@@ -43,7 +41,10 @@ V34 sharpens that thesis as a flight recorder, not a fireworks display. Every gl
 - Critical telemetry is at least 10 px on desktop and 11 px on mobile; decorative microtype may remain smaller only when it carries no decision or claim.
 - Snapshot actions and Bit keep separate protected zones at 390 px and 320 px widths.
 - Every article remains a native button with a visible focus state and explicit selected state.
-- Reduced motion shows the complete route, selected vector, lock reticle, and article content immediately, with no patrol, sweep, pulsing, or animated reveal.
+- PHOTO is a modal cinema view with a visible 44 px-or-larger EXIT CINEMA control, Escape dismissal, initial focus on the exit, and exact-opener restoration with an E.V.E. input fallback. While open, every background focus target—including the skip link—sits inside one inert, hidden boundary.
+- Article, craft, deck, and navigator selection exposes the correct native selected state (`aria-pressed`, `aria-current`, or equivalent) and an announced label. Global shortcuts may not invoke commands that are not represented by an available, named control.
+- At 320–1440 px there is no horizontal overflow and primary touch controls are at least 44 × 44 px. Responsive images use sized AVIF/WebP sources with a safe fallback; font loading and reserved dimensions must not shift copy or action geometry.
+- Reduced motion is reactive to preference changes and resolves the complete route, selected vector, lock reticle, and article content immediately: no glyph scrambling, alert pulse, warp flash, smooth scrolling, sliding bars, patrol, sweep, or animated reveal.
 
 ## Content truth contract
 
@@ -52,7 +53,17 @@ V34 sharpens that thesis as a flight recorder, not a fireworks display. Every gl
 - Executive mode resolves to route control, evidence boundaries, and human authority.
 - Builds uses defensible owner-built/evidence/control labels. Lineage rules are explicitly Cashio operating lessons, not attributed quotations.
 - Contact and the Black Box Receipt remain the static conclusion.
+- COPY EMAIL reports success only after copying succeeds and reports an explicit unavailable or failure state otherwise—never a false `COPIED` state.
+- Fleet and routing remain separate evidence surfaces: 18/19 guests, Zeus 12/13, Apollo 6/6, and two quorate hosts belong to the 28 August fleet probe; ten public lanes and thirty-six private catalog entries belong to the distinct 21 August routing inventory. Neither supports a claim about the other.
+
+## Acceptance gates
+
+- Median Lighthouse performance is at least 95 on mobile and 99 on desktop; Accessibility, Best Practices, and SEO remain 100. Mobile LCP is at most 2.5 seconds, TBT at most 100 ms, and CLS at most 0.05.
+- Full test, build, formatting, privacy and safety, release-consistency, layout, keyboard, deep-link, responsive-browser, and clean-console suites pass.
+- No dependencies, telemetry, sections, or animation systems are added. Preserve all nine decks, Bit, aircraft, palette, typography, the 30-second flight, the privacy boundary, and opt-in audio.
 
 ## Release boundary
 
 V34 MACH ONE is revised and fleet-verified 28 August 2026. The public-safe probe found two Proxmox hosts online and quorate on 9.2.11, with 18 of 19 guests running: Zeus 12/13 and Apollo 6/6. The fleet validity window is inclusive through the end of 27 September 2026 in America/Chicago. The separate ten-lane / thirty-six-entry routing inventory remains explicitly dated 21 August 2026. Root Pages base `/`; no Engage gate; no Request a Review; and the May 2026 `command.html` archive.
+
+This remains an approval-gated candidate: no publication, pull-request merge, or Pages deployment occurs until Doug approves the exact commit SHA and SHA-256 hashes of every changed public asset.

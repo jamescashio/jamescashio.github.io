@@ -18,7 +18,7 @@ import {
   DECK_CRAFT,
 } from "@/lib/content";
 import { getSound } from "@/lib/sound";
-import { useDeck } from "@/lib/store";
+import { useDeck, type CopyEmailState } from "@/lib/store";
 import { BlackBoxReceipt } from "./black-box-receipt";
 import { BitMascot } from "./bit-mascot";
 import { BuildEnvelope } from "./build-envelope";
@@ -60,9 +60,9 @@ export function DeckSnapshot({
           18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6 · 2 HOSTS QUORATE · READ-ONLY DATED EXPORT
         </p>
         <p className="za-snapshot-copy mt-6 max-w-[46ch] text-[1.05rem] leading-relaxed text-muted">
-          Owned compute keeps the evidence close. Quality-first routing picks the right model; dated export rules keep
-          the claim bounded; one accountable operator keeps human authority in the loop. Fleet evidence was verified on{" "}
-          {VERIFIED_LONG}; routing inventory remains separately dated {ROUTING_VERIFIED_LONG}.
+          Doug Cashio builds and operates sovereign AI and security systems on hardware he owns. Quality-first routing
+          selects the right model, while dated public evidence keeps every claim bounded. Fleet evidence was verified on
+          28 August 2026; the routing inventory remains separately dated 21 August 2026.
         </p>
 
         <div
@@ -150,16 +150,16 @@ export function DeckBrief({ sBrief }: { sBrief: SecRef }) {
             <article className="za-panel p-5">
               <div className="za-mono text-[10px] text-accent">01 · ROUTE CONTROL</div>
               <div className="za-display mt-3 text-5xl text-cyan">
-                <CountUp to={18} />
-                /19
+                <CountUp to={10} />
               </div>
               <p className="mt-3 text-sm leading-relaxed text-muted">
-                Quality-first routing turns capability into a controlled decision. The 21 August 2026 routing inventory
-                counts ten public lanes and thirty-six private catalog entries as different objects.
+                Ten public capability lanes are recorded in the 21 August 2026 routing inventory. Thirty-six private
+                catalog entries are a separate count.
               </p>
             </article>
             <article className="za-panel p-5">
               <div className="za-mono text-[10px] text-accent">02 · EVIDENCE BOUNDARY</div>
+              <div className="za-display mt-3 text-5xl text-cyan">18/19</div>
               <p className="mt-3 text-sm leading-relaxed text-muted">
                 18 of 19 documented guests were running at the 28 August probe. Two Proxmox hosts were online and
                 quorate. The dated export is evidence, never telemetry.
@@ -167,8 +167,10 @@ export function DeckBrief({ sBrief }: { sBrief: SecRef }) {
             </article>
             <article className="za-panel p-5">
               <div className="za-mono text-[10px] text-accent">03 · HUMAN AUTHORITY</div>
+              <div className="za-display mt-3 text-5xl text-cyan">1</div>
+              <div className="za-mono mt-2 text-[10px] text-accent">OWNER ACCOUNTABLE</div>
               <p className="mt-3 text-sm leading-relaxed text-muted">
-                Owned compute and bounded autonomy leave a person accountable for routing, reliability, and the next
+                Owned compute and bounded autonomy leave one person accountable for routing, reliability, and the next
                 decision.
               </p>
             </article>
@@ -207,6 +209,7 @@ export function DeckGrid({ s1 }: { s1: SecRef }) {
             <button
               key={r.name + r.role}
               type="button"
+              aria-pressed={lock === i}
               onMouseEnter={() => {
                 setHover(i);
                 getSound().target((i / 7 - 0.5) * 1.2);
@@ -263,6 +266,8 @@ export function DeckRouting({ s2 }: { s2: SecRef }) {
               <button
                 key={l.id}
                 type="button"
+                aria-pressed={active === i}
+                aria-controls="routing-lane-detail"
                 onClick={() => {
                   setActive(i);
                   getSound().ok();
@@ -278,7 +283,12 @@ export function DeckRouting({ s2 }: { s2: SecRef }) {
               </button>
             ))}
           </div>
-          <div className="za-panel relative overflow-hidden p-6">
+          <div
+            id="routing-lane-detail"
+            className="za-panel relative overflow-hidden p-6"
+            aria-live="polite"
+            aria-atomic="true"
+          >
             <div className="za-kicker">LANE {lane.id} · COMMITTED</div>
             <h3 className="za-display mt-3 text-3xl">{lane.name}</h3>
             <p className="za-mono mt-2 text-[12px] text-cyan">{lane.model}</p>
@@ -334,6 +344,7 @@ export function DeckIron({ s3 }: { s3: SecRef }) {
               <button
                 key={h.name}
                 type="button"
+                aria-pressed={probe === i}
                 onClick={() => {
                   setProbe(i);
                   getSound().target((i / Math.max(1, HOSTS.length - 1) - 0.5) * 1.2);
@@ -583,6 +594,7 @@ export function DeckOperator({ s6 }: { s6: SecRef }) {
               <button
                 key={i}
                 type="button"
+                aria-pressed={lawI === i}
                 className={`za-chip ${lawI === i ? "border-accent text-accent" : ""}`}
                 onClick={() => {
                   setLawI(i);
@@ -600,6 +612,7 @@ export function DeckOperator({ s6 }: { s6: SecRef }) {
                 {i > 0 ? <div className="za-law-join" /> : null}
                 <button
                   type="button"
+                  aria-pressed={i === lawI}
                   className={`za-law-step w-full text-left ${i === lawI ? "on" : ""}`}
                   style={{ animationDelay: `${i * 120}ms` }}
                   onClick={() => {
@@ -695,7 +708,15 @@ export function DeckEve({
   );
 }
 
-export function DeckContact({ s8, onCopy, copied }: { s8: SecRef; onCopy: () => void; copied: boolean }) {
+export function DeckContact({
+  s8,
+  onCopy,
+  copyEmailState,
+}: {
+  s8: SecRef;
+  onCopy: () => void;
+  copyEmailState: CopyEmailState;
+}) {
   return (
     <DeckShell index={8} sRef={s8}>
       <div className="grid max-w-6xl items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
@@ -727,7 +748,7 @@ export function DeckContact({ s8, onCopy, copied }: { s8: SecRef; onCopy: () => 
               EMAIL
             </a>
             <button type="button" className="za-btn-ghost min-h-11 px-5 py-3 text-[11px]" onClick={onCopy}>
-              {copied ? "COPIED" : "COPY EMAIL"}
+              {copyEmailState === "success" ? "COPIED" : copyEmailState === "error" ? "COPY FAILED" : "COPY EMAIL"}
             </button>
             <a
               href="https://www.linkedin.com/in/dougcashio"
@@ -746,6 +767,19 @@ export function DeckContact({ s8, onCopy, copied }: { s8: SecRef; onCopy: () => 
               CREDLY
             </a>
           </div>
+          <p
+            className="za-mono mt-3 min-h-5 text-[11px] leading-relaxed text-dim"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            aria-label="Email copy status"
+          >
+            {copyEmailState === "success"
+              ? "Email copied to clipboard."
+              : copyEmailState === "error"
+                ? "Copy failed. Select doug@cashio.us above to copy it or use the Email button."
+                : ""}
+          </p>
         </div>
         <Plate
           src="/plates/fold.jpg?v=48"
