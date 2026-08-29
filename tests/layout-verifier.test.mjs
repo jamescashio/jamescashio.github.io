@@ -343,6 +343,7 @@ test("mobile flight acceptance rejects an active STOP target below 44px", () => 
 const approvedCinemaScenario = {
   viewport: [390, 844],
   activeFlightStarted: true,
+  escapeObserverReady: true,
   skipPresent: false,
   flightPresent: false,
   exposedTabStops: ["EXIT CINEMA"],
@@ -353,15 +354,58 @@ const approvedCinemaScenario = {
     defaultPrevented: true,
     activeLabel: "EXIT CINEMA",
     openedFromExactOpener: true,
-    escape: { defaultPrevented: true, dialogPresent: false, activeIsOpener: true },
+    escape: {
+      observerReady: true,
+      observed: true,
+      defaultPrevented: true,
+      dialogPresent: false,
+      activeIsOpener: true,
+    },
   },
   shiftTab: {
     defaultPrevented: true,
     activeLabel: "EXIT CINEMA",
     openedFromExactOpener: true,
-    escape: { defaultPrevented: true, dialogPresent: false, activeIsOpener: true },
+    escape: {
+      observerReady: true,
+      observed: true,
+      defaultPrevented: true,
+      dialogPresent: false,
+      activeIsOpener: true,
+    },
   },
 };
+
+test("mobile cinema acceptance requires the Escape observer to be ready before either close", () => {
+  const validate = runtimeSupport.mobileCinemaAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  const scenario = structuredClone(approvedCinemaScenario);
+  scenario.tab.escape.observerReady = false;
+  scenario.shiftTab.escape.observerReady = true;
+  scenario.escapeObserverReady = false;
+
+  const failures = validate(scenario);
+
+  assert.ok(failures.some((failure) => /Escape observer must be ready/.test(failure)));
+});
+
+test("mobile cinema Escape requires the exact PHOTO opener even after its observer is ready", () => {
+  const validate = runtimeSupport.mobileCinemaAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  const scenario = structuredClone(approvedCinemaScenario);
+  scenario.escapeObserverReady = true;
+  for (const direction of [scenario.tab, scenario.shiftTab]) {
+    direction.escape.observerReady = true;
+    direction.escape.observed = true;
+  }
+  scenario.shiftTab.escape.activeIsOpener = false;
+
+  const failures = validate(scenario);
+
+  assert.equal(
+    failures.some((failure) => /Escape observer must be ready/.test(failure)),
+    false,
+  );
+  assert.ok(failures.some((failure) => /Escape.*exact PHOTO opener/.test(failure)));
+});
 
 test("mobile cinema acceptance rejects exposed background controls and an untrapped focus path", () => {
   const validate = runtimeSupport.mobileCinemaAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
@@ -599,15 +643,52 @@ test("desktop E.V.E. acceptance rejects overflow, overlap, containment, and both
   }
 });
 
+test("visual obstruction evidence includes foreground glyphs and painted pseudo-elements", () => {
+  const paints = runtimeSupport.visualPaintEvidence ?? (() => false);
+  const transparent = {
+    backgroundColor: "rgba(0, 0, 0, 0)",
+    backgroundImage: "none",
+    boxShadow: "none",
+    color: "rgba(0, 0, 0, 0)",
+    textShadow: "none",
+    borderTopWidth: "0px",
+    borderRightWidth: "0px",
+    borderBottomWidth: "0px",
+    borderLeftWidth: "0px",
+    borderTopStyle: "none",
+    borderRightStyle: "none",
+    borderBottomStyle: "none",
+    borderLeftStyle: "none",
+    borderTopColor: "rgba(0, 0, 0, 0)",
+    borderRightColor: "rgba(0, 0, 0, 0)",
+    borderBottomColor: "rgba(0, 0, 0, 0)",
+    borderLeftColor: "rgba(0, 0, 0, 0)",
+  };
+
+  assert.equal(paints({ ...transparent, color: "rgb(255, 255, 255)" }, true, []), true);
+  assert.equal(paints({ ...transparent, textShadow: "rgb(255, 0, 0) 0px 0px 2px" }, true, []), true);
+  assert.equal(paints(transparent, false, [{ ...transparent, content: '"WARNING"', color: "rgb(255, 0, 0)" }]), true);
+  assert.equal(
+    paints(transparent, false, [{ ...transparent, content: '""', backgroundColor: "rgb(255, 0, 0)" }]),
+    true,
+  );
+  assert.equal(paints({ ...transparent, color: "rgb(255, 255, 255)" }, true, [], [{ opacity: "0" }]), false);
+  assert.equal(paints(transparent, false, [{ ...transparent, content: "none" }]), false);
+});
+
 const normalMotionTransitions = {
-  routing: { durationMs: 500, delayMs: 0, property: "all" },
-  hud: { durationMs: 300, delayMs: 0, property: "width" },
-  rail: { durationMs: 300, delayMs: 0, property: "width" },
-  pip: { durationMs: 280, delayMs: 0, property: "height, background, box-shadow, width" },
+  routing: { properties: ["all"], durationsMs: [500], delaysMs: [0] },
+  hud: { properties: ["width"], durationsMs: [300], delaysMs: [0] },
+  rail: { properties: ["width"], durationsMs: [300], delaysMs: [0] },
+  pip: {
+    properties: ["height", "background", "box-shadow", "width"],
+    durationsMs: [280, 280, 280, 280],
+    delaysMs: [0, 0, 0, 0],
+  },
 };
 
 const reducedMotionTransitions = Object.fromEntries(
-  Object.keys(normalMotionTransitions).map((name) => [name, { durationMs: 0, delayMs: 0, property: "none" }]),
+  Object.keys(normalMotionTransitions).map((name) => [name, { properties: ["none"], durationsMs: [0], delaysMs: [0] }]),
 );
 
 const motionStartRects = {
@@ -648,8 +729,9 @@ const approvedMotionPreferenceScenario = {
   normalIntermediate: motionSamples(motionIntermediateRects, normalMotionTransitions),
   expectedFinal: structuredClone(motionFinalRects),
   reducedAfterInterrupt: motionSamples(motionFinalRects, reducedMotionTransitions),
-  restoredSamples: [0, 27.4, 88.8, 184.1, 326.6, 493.7].map((atMs) => ({
+  restoredSamples: [0, 16, 80, 180, 320, 470].map((atMs) => ({
     atMs,
+    observedAtMs: atMs + 14,
     elements: motionSamples(motionFinalRects, normalMotionTransitions),
   })),
   reducedAgain: motionSamples(motionFinalRects, reducedMotionTransitions),
@@ -688,7 +770,7 @@ test("motion preference acceptance rejects delayed-only restore evidence and non
   const scenario = structuredClone(approvedMotionPreferenceScenario);
   scenario.restoredSamples = [{ atMs: 600, elements: scenario.restoredSamples.at(-1).elements }];
   scenario.normalIntermediate.pip.rect = { width: 0, height: 0 };
-  scenario.reducedAfterInterrupt.hud.transition.property = "width";
+  scenario.reducedAfterInterrupt.hud.transition.properties = ["width"];
   scenario.pipTargetWasUnselected = false;
   const failures = validate(scenario);
 
@@ -699,4 +781,68 @@ test("motion preference acceptance rejects delayed-only restore evidence and non
     failures.some((failure) => /hud reduced-after-interrupt transition property must equal none/.test(failure)),
   );
   assert.ok(failures.some((failure) => /pip target must begin unselected and become selected/.test(failure)));
+});
+
+test("motion preference acceptance rejects restore captures outside their scheduled timing tolerance", () => {
+  const validate = runtimeSupport.motionPreferenceAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  const scenario = structuredClone(approvedMotionPreferenceScenario);
+  scenario.restoredSamples = [0, 16, 80, 180, 320, 470].map((atMs) => ({
+    atMs,
+    observedAtMs: atMs + 20,
+    elements: motionSamples(motionFinalRects, normalMotionTransitions),
+  }));
+  scenario.restoredSamples[3].observedAtMs = 400;
+
+  const failures = validate(scenario);
+
+  assert.ok(failures.some((failure) => /observed restore timing/.test(failure)));
+});
+
+test("motion preference acceptance preserves the scheduled restore timestamps separately from observation", () => {
+  const validate = runtimeSupport.motionPreferenceAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  const scenario = structuredClone(approvedMotionPreferenceScenario);
+  scenario.restoredSamples.forEach((sample) => {
+    sample.atMs = sample.observedAtMs;
+  });
+
+  const failures = validate(scenario);
+
+  assert.ok(failures.some((failure) => /scheduled restore timestamps/.test(failure)));
+});
+
+test("transition normalization repeats duration and delay lists for every effective pip property", () => {
+  const normalize = runtimeSupport.normalizeMotionTransitionLists ?? (() => null);
+  assert.deepEqual(normalize("height, background, box-shadow, width", "280ms", "0s"), {
+    properties: ["height", "background", "box-shadow", "width"],
+    durationsMs: [280, 280, 280, 280],
+    delaysMs: [0, 0, 0, 0],
+  });
+});
+
+test("motion preference acceptance identifies one incorrect effective pip transition tuple", () => {
+  const validate = runtimeSupport.motionPreferenceAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  const scenario = structuredClone(approvedMotionPreferenceScenario);
+  scenario.normalStart.pip.transition = {
+    properties: ["height", "background", "box-shadow", "width"],
+    durationsMs: [280, 280, 600, 280],
+    delaysMs: [0, 0, 0, 0],
+  };
+
+  const failures = validate(scenario);
+
+  assert.ok(
+    failures.some((failure) => /pip normal-start box-shadow transition duration must equal 280ms/.test(failure)),
+  );
+});
+
+test("browser version acceptance is optional locally and fail-closed when Chrome 147 is requested", () => {
+  const validate = runtimeSupport.browserVersionAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  const chrome147 = { product: "Chrome/147.0.7727.57", userAgent: "HeadlessChrome/147.0.0.0" };
+
+  assert.deepEqual(validate(chrome147), []);
+  assert.deepEqual(validate(chrome147, "147"), []);
+  assert.ok(
+    validate({ ...chrome147, product: "Chrome/152.0.0.0" }, "147").some((failure) => /Chrome 147/.test(failure)),
+  );
+  assert.ok(validate(chrome147, "not-a-major").some((failure) => /positive integer/.test(failure)));
 });

@@ -210,14 +210,19 @@ function hasConsistentRect(rect) {
 
 const MOTION_ELEMENTS = ["routing", "hud", "rail", "pip"];
 const MOTION_NORMAL_TRANSITIONS = {
-  routing: { durationMs: 500, delayMs: 0, property: "all" },
-  hud: { durationMs: 300, delayMs: 0, property: "width" },
-  rail: { durationMs: 300, delayMs: 0, property: "width" },
-  pip: { durationMs: 280, delayMs: 0, property: "height, background, box-shadow, width" },
+  routing: { properties: ["all"], durationsMs: [500], delaysMs: [0] },
+  hud: { properties: ["width"], durationsMs: [300], delaysMs: [0] },
+  rail: { properties: ["width"], durationsMs: [300], delaysMs: [0] },
+  pip: {
+    properties: ["height", "background", "box-shadow", "width"],
+    durationsMs: [280, 280, 280, 280],
+    delaysMs: [0, 0, 0, 0],
+  },
 };
 const MOTION_DIMENSIONS = { routing: ["width"], hud: ["width"], rail: ["width"], pip: ["width", "height"] };
 const MOTION_GEOMETRY_TOLERANCE_PX = 0.5;
 const MOTION_INTERMEDIATE_EPSILON_PX = 0.01;
+const MOTION_RESTORE_SCHEDULE_MS = [0, 16, 80, 180, 320, 470];
 
 function hasFiniteNonzeroMotionRect(rect) {
   return (
@@ -225,16 +230,50 @@ function hasFiniteNonzeroMotionRect(rect) {
   );
 }
 
+export function normalizeMotionTransitionLists(propertiesValue, durationsValue, delaysValue) {
+  const tokens = (value) =>
+    String(value ?? "")
+      .split(",")
+      .map((token) => token.trim())
+      .filter(Boolean);
+  const toMilliseconds = (token) => {
+    const parsed = Number.parseFloat(token);
+    if (!Number.isFinite(parsed)) return Number.NaN;
+    return token.toLowerCase().endsWith("ms") ? parsed : parsed * 1_000;
+  };
+  const properties = tokens(propertiesValue);
+  const durations = tokens(durationsValue).map(toMilliseconds);
+  const delays = tokens(delaysValue).map(toMilliseconds);
+  return {
+    properties,
+    durationsMs: properties.map((_, index) => durations[index % durations.length]),
+    delaysMs: properties.map((_, index) => delays[index % delays.length]),
+  };
+}
+
 function motionTransitionFailures(name, phase, transition, expected) {
   const failures = [];
-  if (!transition || transition.durationMs !== expected.durationMs) {
-    failures.push(`${name} ${phase} transition duration must equal ${expected.durationMs}ms`);
+  const properties = transition?.properties;
+  const durationsMs = transition?.durationsMs;
+  const delaysMs = transition?.delaysMs;
+  if (!Array.isArray(properties) || properties.length !== expected.properties.length) {
+    failures.push(`${name} ${phase} transition property must equal ${expected.properties.join(", ")}`);
+  } else if (properties.some((property, index) => property !== expected.properties[index])) {
+    failures.push(`${name} ${phase} transition property must equal ${expected.properties.join(", ")}`);
   }
-  if (!transition || transition.delayMs !== expected.delayMs) {
-    failures.push(`${name} ${phase} transition delay must equal ${expected.delayMs}ms`);
+  if (!Array.isArray(durationsMs) || durationsMs.length !== expected.properties.length) {
+    failures.push(`${name} ${phase} transition duration list must cover every effective property`);
   }
-  if (!transition || transition.property !== expected.property) {
-    failures.push(`${name} ${phase} transition property must equal ${expected.property}`);
+  if (!Array.isArray(delaysMs) || delaysMs.length !== expected.properties.length) {
+    failures.push(`${name} ${phase} transition delay list must cover every effective property`);
+  }
+  for (const [index, property] of expected.properties.entries()) {
+    if (durationsMs?.[index] !== expected.durationsMs[index]) {
+      failures.push(`${name} ${phase} ${property} transition duration must equal ${expected.durationsMs[index]}ms`);
+    }
+    if (delaysMs?.[index] !== expected.delaysMs[index]) {
+      failures.push(`${name} ${phase} ${property} transition delay must equal ${expected.delaysMs[index]}ms`);
+    }
   }
   return failures;
 }
@@ -272,7 +311,7 @@ export function motionPreferenceAcceptanceFailures(scenario) {
 
   for (const name of MOTION_ELEMENTS) {
     const expectedNormal = MOTION_NORMAL_TRANSITIONS[name];
-    const expectedReduced = { durationMs: 0, delayMs: 0, property: "none" };
+    const expectedReduced = { properties: ["none"], durationsMs: [0], delaysMs: [0] };
     failures.push(...motionSampleFailures(name, "normal-start", scenario?.normalStart?.[name], expectedNormal));
     failures.push(
       ...motionSampleFailures(name, "normal-intermediate", scenario?.normalIntermediate?.[name], expectedNormal),
@@ -316,6 +355,13 @@ export function motionPreferenceAcceptanceFailures(scenario) {
   }
 
   const restoredSamples = scenario?.restoredSamples;
+  if (
+    !Array.isArray(restoredSamples) ||
+    restoredSamples.length !== MOTION_RESTORE_SCHEDULE_MS.length ||
+    restoredSamples.some((sample, index) => sample?.atMs !== MOTION_RESTORE_SCHEDULE_MS[index])
+  ) {
+    failures.push("scheduled restore timestamps must remain exactly 0, 16, 80, 180, 320, and 470ms");
+  }
   if (!Array.isArray(restoredSamples) || restoredSamples.length === 0 || restoredSamples[0]?.atMs !== 0) {
     failures.push("restore samples must start immediately at 0ms");
   }
@@ -330,11 +376,21 @@ export function motionPreferenceAcceptanceFailures(scenario) {
   }
   if (Array.isArray(restoredSamples)) {
     let previousTime = -1;
+    let previousObservedTime = -1;
     for (const sample of restoredSamples) {
       if (!Number.isFinite(sample?.atMs) || sample.atMs < previousTime || sample.atMs < 0 || sample.atMs > 500) {
         failures.push("restore sample times must be finite, ordered, and within 0-500ms");
       }
       previousTime = sample?.atMs;
+      if (
+        !Number.isFinite(sample?.observedAtMs) ||
+        sample.observedAtMs < sample.atMs - 2 ||
+        sample.observedAtMs > sample.atMs + 120 ||
+        sample.observedAtMs < previousObservedTime
+      ) {
+        failures.push("observed restore timing must be ordered and within 2ms early to 120ms late of each schedule");
+      }
+      previousObservedTime = sample?.observedAtMs;
       for (const name of MOTION_ELEMENTS) {
         failures.push(
           ...motionSampleFailures(
@@ -353,6 +409,63 @@ export function motionPreferenceAcceptanceFailures(scenario) {
     }
   }
   return failures;
+}
+
+export function browserVersionAcceptanceFailures(version, expectedMajorValue) {
+  if (expectedMajorValue == null || expectedMajorValue === "") return [];
+  const expectedMajor = Number(expectedMajorValue);
+  if (!Number.isInteger(expectedMajor) || expectedMajor <= 0) {
+    return ["expected browser major must be a positive integer"];
+  }
+  const product = String(version?.product ?? "");
+  const match = product.match(/(?:Chrome|HeadlessChrome)\/(\d+)(?:\.|$)/);
+  if (!match) return [`Browser.getVersion must report Chrome ${expectedMajor}; received ${product || "no product"}`];
+  if (Number(match[1]) !== expectedMajor) {
+    return [`Browser.getVersion must report Chrome ${expectedMajor}; received ${product}`];
+  }
+  return [];
+}
+
+export function visualPaintEvidence(style, hasText, pseudoStyles, ancestorStyles) {
+  const colorPaints = (color) => {
+    if (!color || color === "transparent") return false;
+    const match = color.match(/^rgba?\((.*)\)$/);
+    if (!match) return true;
+    const channels = match[1].split(/[\s,/]+/).filter(Boolean);
+    return channels.length < 4 || Number(channels[3]) > 0;
+  };
+  const boxPaints = (candidate) => {
+    const borderPaints = ["Top", "Right", "Bottom", "Left"].some(
+      (side) =>
+        Number.parseFloat(candidate?.["border" + side + "Width"]) > 0 &&
+        candidate?.["border" + side + "Style"] !== "none" &&
+        colorPaints(candidate?.["border" + side + "Color"]),
+    );
+    return (
+      colorPaints(candidate?.backgroundColor) ||
+      (candidate?.backgroundImage && candidate.backgroundImage !== "none") ||
+      (candidate?.boxShadow && candidate.boxShadow !== "none") ||
+      borderPaints
+    );
+  };
+  const foregroundPaints = (candidate, textPresent) =>
+    Boolean(textPresent) &&
+    (colorPaints(candidate?.color) || (candidate?.textShadow && candidate.textShadow !== "none"));
+
+  const transparentAncestor = (ancestorStyles ?? []).some(
+    (ancestor) => Number.parseFloat(ancestor?.opacity ?? "1") === 0,
+  );
+  if (transparentAncestor || Number.parseFloat(style?.opacity ?? "1") === 0) return false;
+  if (boxPaints(style) || foregroundPaints(style, hasText)) return true;
+  return (pseudoStyles ?? []).some((pseudo) => {
+    const content = String(pseudo?.content ?? "").trim();
+    const generated = content !== "" && content !== "none" && content !== "normal";
+    return (
+      generated &&
+      Number.parseFloat(pseudo?.opacity ?? "1") !== 0 &&
+      (boxPaints(pseudo) || foregroundPaints(pseudo, true))
+    );
+  });
 }
 
 export function mobileFlightAcceptanceFailures(scenario) {
@@ -444,6 +557,15 @@ export function mobileCinemaAcceptanceFailures(scenario) {
   }
   if (!scenario.tab?.openedFromExactOpener || !scenario.shiftTab?.openedFromExactOpener) {
     failures.push("Tab and Shift+Tab must each begin from a fresh PHOTO opening");
+  }
+  if (
+    scenario.escapeObserverReady !== true ||
+    [scenario.tab, scenario.shiftTab].some((direction) => direction?.escape?.observerReady !== true)
+  ) {
+    failures.push("Escape observer must be ready before both close checks");
+  }
+  if ([scenario.tab, scenario.shiftTab].some((direction) => direction?.escape?.observed !== true)) {
+    failures.push("Escape observer must record both close events");
   }
   for (const direction of [scenario.tab, scenario.shiftTab]) {
     if (!direction?.escape?.defaultPrevented || direction.escape.dialogPresent || !direction.escape.activeIsOpener) {

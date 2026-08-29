@@ -8,6 +8,7 @@
     "build": "tsc --noEmit && vite build",
     "check:layout": "npm run build && npm run check:layout:runtime",
     "check:layout:runtime": "node scripts/check_layout_runtime.mjs",
+    "check:layout:runtime:pinned": "node scripts/check_layout_runtime.mjs --expected-browser-major=147",
     "format": "prettier --write \"src/**/*.{ts,tsx}\" \"tests/**/*.mjs\" \"scripts/**/*.mjs\" \"*.{js,json,md,ts}\" \"docs/**/*.md\" \".github/**/*.{md,yml,yaml}\" \"public/**/*.json\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx}\" \"tests/**/*.mjs\" \"scripts/**/*.mjs\" \"*.{js,json,md,ts}\" \"docs/**/*.md\" \".github/**/*.{md,yml,yaml}\" \"public/**/*.json\"",
     "lint": "eslint . --max-warnings 0",

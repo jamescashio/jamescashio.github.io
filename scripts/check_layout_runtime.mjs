@@ -8,12 +8,15 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import {
+  browserVersionAcceptanceFailures,
   connectCdp,
   desktopEveAcceptanceFailures,
   mobileCinemaAcceptanceFailures,
   mobileFlightAcceptanceFailures,
   motionPreferenceAcceptanceFailures,
+  normalizeMotionTransitionLists,
   runWithLayoutCleanup,
+  visualPaintEvidence,
 } from "./layout-runtime-support.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -21,6 +24,7 @@ const DIST = path.join(ROOT, "dist");
 const SAFE_AREA_PX = 20;
 const MOTION_PIP_LABEL = "Warp to P-51D MUSTANG";
 const MOTION_CAPTURE_SOURCE = `() => {
+  const normalizeTransition = ${normalizeMotionTransitionLists.toString()};
   const pipButton = [...document.querySelectorAll('.za-lcars-pip')]
     .find((element) => element.getAttribute('aria-label') === ${JSON.stringify(MOTION_PIP_LABEL)});
   const elements = {
@@ -29,22 +33,17 @@ const MOTION_CAPTURE_SOURCE = `() => {
     rail: document.querySelector('.za-command-rail'),
     pip: pipButton?.querySelector('.za-lcars-pip-mark') ?? null,
   };
-  const milliseconds = (value) => value.split(',').reduce((maximum, part) => {
-    const token = part.trim();
-    const parsed = token.endsWith('ms') ? parseFloat(token) : parseFloat(token) * 1000;
-    return Math.max(maximum, Number.isFinite(parsed) ? parsed : 0);
-  }, 0);
   const samples = Object.fromEntries(Object.entries(elements).map(([name, element]) => {
     if (!element) return [name, null];
     const rect = element.getBoundingClientRect();
     const style = getComputedStyle(element);
     return [name, {
       rect: { width: rect.width, height: rect.height },
-      transition: {
-        durationMs: milliseconds(style.transitionDuration),
-        delayMs: milliseconds(style.transitionDelay),
-        property: style.transitionProperty,
-      },
+      transition: normalizeTransition(
+        style.transitionProperty,
+        style.transitionDuration,
+        style.transitionDelay,
+      ),
     }];
   }));
   return {
@@ -52,6 +51,12 @@ const MOTION_CAPTURE_SOURCE = `() => {
     pipTargetSelected: pipButton?.matches('.on[aria-current="true"]') === true,
   };
 }`;
+
+function expectedBrowserMajor() {
+  const cliPrefix = "--expected-browser-major=";
+  const cliValue = process.argv.slice(2).find((argument) => argument.startsWith(cliPrefix));
+  return cliValue ? cliValue.slice(cliPrefix.length) : process.env.EXPECTED_BROWSER_MAJOR;
+}
 
 function browserExecutable() {
   const candidates = [
@@ -274,23 +279,19 @@ async function collectDesktopEveScenario(send, landingEvidence) {
           return hit === candidate || (hit != null && candidate.contains(hit));
         });
       };
-      const colorPaints = (color) => {
-        if (!color || color === "transparent") return false;
-        const match = color.match(/^rgba?\\((.*)\\)$/);
-        if (!match) return true;
-        const channels = match[1].split(/[\\s,\\/]+/).filter(Boolean);
-        return channels.length < 4 || Number(channels[3]) > 0;
-      };
+      const paintEvidence = ${visualPaintEvidence.toString()};
       const visuallyPaints = (element) => {
         const style = getComputedStyle(element);
-        const borderPaints = ["Top", "Right", "Bottom", "Left"].some((side) =>
-          parseFloat(style["border" + side + "Width"]) > 0 &&
-          style["border" + side + "Style"] !== "none" &&
-          colorPaints(style["border" + side + "Color"]),
+        const pseudoStyles = ["::before", "::after"].map((pseudo) => getComputedStyle(element, pseudo));
+        const ancestorStyles = [];
+        for (let ancestor = element.parentElement; ancestor; ancestor = ancestor.parentElement) {
+          ancestorStyles.push(getComputedStyle(ancestor));
+        }
+        const effectiveOpacity = [style, ...ancestorStyles].every(
+          (candidateStyle) => parseFloat(candidateStyle.opacity || "1") !== 0,
         );
-        return colorPaints(style.backgroundColor) || style.backgroundImage !== "none" ||
-          style.boxShadow !== "none" || borderPaints ||
-          element.matches("img, picture, svg, canvas, video");
+        return paintEvidence(style, Boolean(element.textContent?.trim()), pseudoStyles, ancestorStyles) ||
+          (effectiveOpacity && element.matches("img, picture, svg, canvas, video"));
       };
       const coversWhenPointerEnabled = (candidate) => {
         const value = candidate.style.getPropertyValue("pointer-events");
@@ -431,13 +432,14 @@ async function setDesktopEveVisualPointerNoneObstruction(send, present) {
   await send("Runtime.evaluate", {
     expression: `(() => {
       document.querySelector("#layout-eve-visual-pointer-none-obstruction")?.remove();
+      document.querySelector("#layout-eve-visual-pointer-none-obstruction-style")?.remove();
       if (!${JSON.stringify(present)}) return true;
       const input = document.querySelector("#eve-command");
       if (!input) return false;
       const rect = input.getBoundingClientRect();
       const overlay = document.createElement("div");
       overlay.id = "layout-eve-visual-pointer-none-obstruction";
-      overlay.setAttribute("aria-label", "Injected visual pointer-none E.V.E. obstruction");
+      overlay.setAttribute("aria-label", "Injected pseudo-element pointer-none E.V.E. obstruction");
       Object.assign(overlay.style, {
         position: "fixed",
         left: rect.left + rect.width / 2 - 40 + "px",
@@ -446,8 +448,15 @@ async function setDesktopEveVisualPointerNoneObstruction(send, present) {
         height: "20px",
         zIndex: "2147483647",
         pointerEvents: "none",
-        background: "rgb(255, 0, 0)",
+        background: "transparent",
+        color: "transparent",
       });
+      const style = document.createElement("style");
+      style.id = "layout-eve-visual-pointer-none-obstruction-style";
+      style.textContent = ${JSON.stringify(
+        '#layout-eve-visual-pointer-none-obstruction::before { content: "WARNING"; display: flex; position: absolute; inset: 0; align-items: center; justify-content: center; color: rgb(255, 0, 0); text-shadow: rgb(255, 255, 255) 0 0 2px; }',
+      )};
+      document.head.append(style);
       document.body.append(overlay);
       return true;
     })()`,
@@ -513,7 +522,9 @@ async function captureRestoredMotionSeries(send) {
       for (const atMs of schedule) {
         const remaining = atMs - (performance.now() - startedAt);
         if (remaining > 0) await new Promise((resolve) => setTimeout(resolve, remaining));
-        samples.push({ atMs, observedAtMs: performance.now() - startedAt, ...capture() });
+        const captured = capture();
+        const observedAtMs = performance.now() - startedAt;
+        samples.push({ atMs, observedAtMs, ...captured });
       }
       return samples;
     })()`,
@@ -602,6 +613,7 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
             visible.push({
               top: scroller.scrollTop,
               sectionOffset: scroller.scrollTop - section.offsetTop,
+              targetWidth: progress.style.width,
               rect: { width: rect.width, height: rect.height },
             });
           }
@@ -656,6 +668,7 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
         Object.fromEntries(Object.entries(normalStartCapture.elements).map(([name, sample]) => [name, sample.rect])),
       )};
       const finalRects = ${JSON.stringify(expectedFinal)};
+      const expectedHudTargetWidth = ${JSON.stringify(hudPath.final.targetWidth)};
       const dimensions = { routing: ['width'], hud: ['width'], rail: ['width'], pip: ['width', 'height'] };
       const isStrictlyIntermediate = (sample) => Object.entries(dimensions).every(([name, axes]) =>
         axes.every((axis) => {
@@ -688,8 +701,9 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
           frameCount += 1;
           const sample = capture();
           const elapsedMs = performance.now() - startedAt;
-          trace.push({ elapsedMs, rects: Object.fromEntries(Object.entries(sample.elements).map(([name, value]) => [name, value?.rect])) });
-          if (isStrictlyIntermediate(sample)) {
+          const hudTargetWidth = document.querySelector('.za-airframe-progress')?.style.width ?? null;
+          trace.push({ elapsedMs, hudTargetWidth, rects: Object.fromEntries(Object.entries(sample.elements).map(([name, value]) => [name, value?.rect])) });
+          if (hudTargetWidth === expectedHudTargetWidth && isStrictlyIntermediate(sample)) {
             resolve({ ok: true, frameCount, elapsedMs, trace, ...sample });
           } else if (frameCount >= 10 || elapsedMs >= 220) {
             resolve({ ok: false, reason: 'all four motion targets did not become intermediate together', frameCount, elapsedMs, trace, ...sample });
@@ -736,7 +750,7 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
     normalIntermediate: normalIntermediateCapture.elements,
     expectedFinal,
     reducedAfterInterrupt: reducedAfterInterruptCapture.elements,
-    restoredSamples: restoredSamples.map(({ observedAtMs, elements }) => ({ atMs: observedAtMs, elements })),
+    restoredSamples: restoredSamples.map(({ atMs, observedAtMs, elements }) => ({ atMs, observedAtMs, elements })),
     reducedAgain: reducedAgainCapture.elements,
   };
   const failures = motionPreferenceAcceptanceFailures(scenario);
@@ -774,6 +788,15 @@ async function main() {
     const connection = await connectCdp(pageEndpoint);
     resources.socket = connection.socket;
     const { send } = connection;
+    const reportedBrowserVersion = await send("Browser.getVersion");
+    const expectedMajor = expectedBrowserMajor();
+    const browserVersionFailures = browserVersionAcceptanceFailures(reportedBrowserVersion, expectedMajor);
+    const browserVersion = {
+      ...reportedBrowserVersion,
+      expectedMajor: expectedMajor || null,
+      failures: browserVersionFailures,
+      ok: browserVersionFailures.length === 0,
+    };
     await send("Runtime.enable");
     await send("Emulation.setDeviceMetricsOverride", {
       width: 1280,
@@ -1089,15 +1112,28 @@ async function main() {
           returnByValue: true,
         });
 
-        await send("Runtime.evaluate", {
-          expression: `(() => {
-            window.__zaLayoutEscape = null;
+        const escapeObserverEvaluation = await send("Runtime.evaluate", {
+          expression: `(async () => {
+            window.__zaLayoutEscape = { observerReady: false, observed: false, defaultPrevented: false };
             window.addEventListener("keydown", (event) => {
               if (event.key !== "Escape") return;
-              setTimeout(() => { window.__zaLayoutEscape = { defaultPrevented: event.defaultPrevented }; }, 0);
+              setTimeout(() => {
+                Object.assign(window.__zaLayoutEscape, {
+                  observed: true,
+                  defaultPrevented: event.defaultPrevented,
+                });
+              }, 0);
             }, { once: true });
+            window.__zaLayoutEscape.observerReady = true;
+            await new Promise((resolve) => setTimeout(resolve, 0));
+            return window.__zaLayoutEscape.observerReady === true;
           })()`,
+          awaitPromise: true,
+          returnByValue: true,
         });
+        if (escapeObserverEvaluation.result.value !== true) {
+          throw new Error(`Escape observer failed to become ready for ${shiftKey ? "Shift+Tab" : "Tab"} at ${width}px`);
+        }
         await send("Input.dispatchKeyEvent", {
           type: "keyDown",
           key: "Escape",
@@ -1116,10 +1152,18 @@ async function main() {
           expression: `(async () => {
             const opener = document.querySelector('[data-layout-cinema-opener="true"]');
             for (let attempt = 0; attempt < 30; attempt++) {
+              await new Promise((resolve) => setTimeout(resolve, 0));
               await new Promise((resolve) => requestAnimationFrame(resolve));
-              if (!document.querySelector('[role="dialog"]') && document.activeElement === opener) break;
+              if (
+                window.__zaLayoutEscape?.observerReady === true &&
+                window.__zaLayoutEscape?.observed === true &&
+                !document.querySelector('[role="dialog"]') &&
+                document.activeElement === opener
+              ) break;
             }
             return {
+              observerReady: window.__zaLayoutEscape?.observerReady === true,
+              observed: window.__zaLayoutEscape?.observed === true,
               defaultPrevented: window.__zaLayoutEscape?.defaultPrevented === true,
               dialogPresent: Boolean(document.querySelector('[role="dialog"]')),
               activeIsOpener: document.activeElement === opener,
@@ -1155,6 +1199,7 @@ async function main() {
         exposedTabStops: tabRun.opening.exposedTabStops,
         boundariesPassedEachOpening,
         allOpeningsMatchedExitGeometry,
+        escapeObserverReady: directionRuns.every(({ escape }) => escape.observerReady === true),
         exit: firstExit,
         tab: {
           ...tabRun.key,
@@ -1223,7 +1268,8 @@ async function main() {
     ]) {
       const landingEvidence = await waitForCanonicalEveLanding(send, targetUrl, width, height);
       await send("Runtime.evaluate", {
-        expression: "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))",
+        expression:
+          "new Promise((resolve) => setTimeout(() => requestAnimationFrame(() => requestAnimationFrame(resolve)), 550))",
         awaitPromise: true,
       });
       const eveLayout = await collectDesktopEveScenario(send, landingEvidence);
@@ -1333,6 +1379,7 @@ async function main() {
       JSON.stringify(
         {
           bitFocus,
+          browserVersion,
           cinemas,
           decodedAssets,
           desktopLayout,
@@ -1355,6 +1402,7 @@ async function main() {
       true,
       `Every optimized poster must decode with exact MIME and dimensions: ${JSON.stringify(decodedAssets.decoded)}`,
     );
+    assert.equal(browserVersion.ok, true, browserVersion.failures.join("; "));
     assert.equal(desktopLayout.ok, true, desktopLayout.failures.join("; "));
     assert.equal(bitFocus.ok, true, "Bit control must retain a visible keyboard focus indicator");
     assert.equal(eveFocus.ok, true, "E.V.E. command input must retain a visible keyboard focus indicator");

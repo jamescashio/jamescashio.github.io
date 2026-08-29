@@ -46,7 +46,7 @@ const requiredWorkflowCommands = [
   "python -m py_compile",
   "python scripts/check_committed_whitespace.py",
 ];
-const requiredPagesCommands = requiredWorkflowCommands.toSpliced(5, 0, "npm run check:layout:runtime");
+const requiredPagesCommands = requiredWorkflowCommands.toSpliced(5, 0, "npm run check:layout:runtime:pinned");
 
 function assertOrdered(text, markers, boundary, label) {
   let position = -1;
@@ -210,10 +210,19 @@ test("release checklist separates the fresh fleet export from routing provenance
 });
 
 test("Pages blocks artifact upload on the complete Node 22 and Python 3.12 gate chain", async () => {
+  const packageJson = JSON.parse(await read("package.json"));
   const workflow = await read(".github/workflows/pages.yml");
   assert.match(workflow, /node-version:\s*22/);
   assert.match(workflow, /python-version:\s*["']3\.12["']/);
   assert.match(workflow, /fetch-depth:\s*0/);
+  assert.equal(
+    packageJson.scripts["check:layout:runtime:pinned"],
+    "node scripts/check_layout_runtime.mjs --expected-browser-major=147",
+  );
+  assert.match(workflow, /browser-actions\/setup-chrome@v2/);
+  assert.match(workflow, /chrome-version:\s*["']?147\.0\.7727\.57["']?/);
+  assert.match(workflow, /CHROME_PATH:\s*\$\{\{\s*steps\.setup_chrome\.outputs\.chrome-path\s*\}\}/);
+  assert.match(workflow, /npm run check:layout:runtime:pinned/);
   assertOrdered(workflow, requiredPagesCommands, "actions/upload-pages-artifact@v3", "Pages");
 });
 
