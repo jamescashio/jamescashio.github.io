@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, type RefObject } from "react";
+import { useCallback, useMemo, useState, type CSSProperties, type RefObject } from "react";
 import {
   ARTICLES,
   EXPIRES_SHORT,
@@ -65,7 +65,10 @@ export function DeckSnapshot({
           {VERIFIED_LONG}; routing inventory remains separately dated {ROUTING_VERIFIED_LONG}.
         </p>
 
-        <div className="za-snapshot-modes mt-8 grid max-w-lg grid-cols-2 gap-2 rounded-[var(--radius-lg)] border border-line bg-void-2/70 p-1.5">
+        <div
+          data-hud-clear
+          className="za-snapshot-modes mt-8 grid max-w-lg grid-cols-2 gap-2 rounded-[var(--radius-lg)] border border-line bg-void-2/70 p-1.5"
+        >
           <button
             type="button"
             aria-pressed={mode === "technical"}
@@ -96,7 +99,7 @@ export function DeckSnapshot({
           </button>
         </div>
 
-        <div className="za-snapshot-actions mt-8 flex flex-wrap items-center gap-3">
+        <div data-hud-clear className="za-snapshot-actions mt-8 flex flex-wrap items-center gap-3">
           <button type="button" className="za-btn px-7 py-3.5 text-[13px]" onClick={onEngage}>
             {mode === "executive" ? "READ THE BRIEF" : "DESCEND THE DECKS"}
           </button>
@@ -105,7 +108,7 @@ export function DeckSnapshot({
           </button>
         </div>
 
-        <div className="za-chip mt-8">
+        <div data-hud-clear className="za-chip za-critical-telemetry mt-8">
           <span className="h-1.5 w-1.5 rounded-full bg-green shadow-[0_0_8px_var(--color-green)]" />
           E.V.E. ONLINE · READ-ONLY · DATED EXPORT · VERIFIED {VERIFIED_LONG} · VALID THRU {EXPIRES_SHORT}
         </div>
@@ -686,12 +689,14 @@ export function DeckEve({
   s7,
   lines,
   value,
+  logHeight,
   onChange,
   onRun,
 }: {
   s7: SecRef;
   lines: string[];
   value: string;
+  logHeight: number;
   onChange: (v: string) => void;
   onRun: (raw: string) => void;
 }) {
@@ -715,7 +720,7 @@ export function DeckEve({
   );
   return (
     <DeckShell index={7} sRef={s7}>
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-3xl" style={{ "--eve-log-height": `${logHeight}px` } as CSSProperties}>
         <div className="mb-6 flex items-end justify-between gap-4">
           <div>
             <Kicker>08 · E.V.E.</Kicker>
@@ -742,7 +747,7 @@ export function DeckEve({
             </button>
           ))}
         </div>
-        <p className="za-mono mt-5 text-[10px] text-dim">
+        <p className="za-critical-telemetry za-mono mt-5 text-[10px] text-dim">
           EVERY ANSWER COMES FROM THE READ-ONLY {VERIFIED_LONG} DATED EXPORT — VALID THROUGH {EXPIRES_SHORT}. AFTER THAT
           THE CONSOLE REPORTS HISTORY, NOT STATUS. 18/19 AT 28 AUG PROBE · 2 PROXMOX HOSTS ONLINE · QUORATE · ROUTING
           INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES.

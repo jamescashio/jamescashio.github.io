@@ -1235,7 +1235,7 @@
 }
 .za-article-telemetry {
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: 10px;
   line-height: 1.25;
   letter-spacing: 0.08em;
   color: var(--color-dim);
@@ -1432,10 +1432,6 @@
 }
 .za-airframe-compact-name {
   display: none;
-  max-width: 94px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 .za-corner-hud.yield {
   gap: 8px;
@@ -1453,13 +1449,19 @@
 .za-corner-hud.yield .za-airframe .za-eq {
   display: none;
 }
-.za-corner-hud.yield .za-airframe-compact-name {
-  display: inline;
-}
 .za-bit-control {
   transition:
     filter 260ms var(--ease-out),
     transform 260ms var(--ease-out);
+}
+
+[data-eve-console] [role="log"] {
+  height: var(--eve-log-height, min(42vh, 360px));
+  min-height: 0;
+}
+
+.za-critical-telemetry {
+  font-size: 10px;
 }
 .za-corner-hud.yield .za-bit-control {
   filter: saturate(0.92) brightness(0.9);
@@ -1480,8 +1482,19 @@
     right: 0.25rem;
   }
   .za-corner-hud.yield .za-bit-control {
-    transform: scale(0.72);
+    transform: scale(0.58);
     transform-origin: bottom right;
+  }
+  .za-corner-hud.yield {
+    top: 5rem;
+    bottom: auto;
+  }
+}
+
+@media (max-width: 767px) {
+  .za-article-telemetry,
+  .za-critical-telemetry {
+    font-size: 11px;
   }
 }
 
@@ -1494,7 +1507,7 @@
     max-width: 140px;
   }
   .za-corner-hud.yield .za-bit-control {
-    transform: scale(0.72);
+    transform: scale(0.58);
     transform-origin: bottom right;
   }
 }

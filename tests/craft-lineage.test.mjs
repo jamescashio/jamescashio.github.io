@@ -77,7 +77,8 @@ test("the Proteus renderer preserves its wider-than-long tandem-wing silhouette"
   assert.ok(proteus, "craft slot 2 must expose a renderable Proteus specification");
   assert.ok(proteus.pose?.pitch >= 0.4, "Proteus needs a planform-revealing recognition pitch");
   assert.ok(proteus.pose?.motion <= 0.4, "Proteus must settle instead of continuously tumbling");
-  assert.ok(proteus.pose?.bloom < 0.8, "Proteus bloom must preserve its white-airframe detail");
+  assert.ok(proteus.pose?.bloom <= 0.2, "Proteus bloom must preserve its white-airframe detail");
+  assert.ok(proteus.pose?.exposure <= 0.64, "Proteus exposure must preserve the tandem-wing and twin-boom silhouette");
   assert.ok(proteus.solidOpacity < 0.7, "Proteus must read as a restrained recognition silhouette");
   assert.ok(proteus.wireOpacity > 0.5, "Proteus needs a crisp tandem-wing outline");
   assert.ok(proteus.lineageSolidOpacity <= 0.08, "Lineage must show Proteus as a restrained blueprint silhouette");

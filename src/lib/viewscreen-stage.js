@@ -321,7 +321,7 @@ const CRAFT = [
     mat: { metal: 0.18, rough: 0.64, env: 0.82, emis: 0.015 }, glowColor: 0x7ed9ee,
     wire: 0x45a8c2,
     // A settled, restrained three-quarter pose makes the tandem planform legible.
-    pose: { yaw: -0.62, pitch: 0.42, roll: -0.035, motion: 0.2, bloom: 0.22, exposure: 0.68 },
+    pose: { yaw: -0.62, pitch: 0.42, roll: -0.035, motion: 0.2, bloom: 0.2, exposure: 0.64 },
     solidOpacity: 0.64,
     wireOpacity: 0.58,
     lineageSolidOpacity: 0.08,

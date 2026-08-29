@@ -15,7 +15,7 @@ import {
 } from "@/lib/content";
 import { getSound } from "@/lib/sound";
 import { focusDeckHeading, isInteractiveShortcutTarget } from "@/lib/deck-focus";
-import { shouldYieldAirframeHud } from "@/lib/hud-layout";
+import { eveConsoleLogHeight, shouldYieldAirframeHud } from "@/lib/hud-layout";
 import { scheduleStageLoad } from "@/lib/stage-load-scheduler";
 import {
   beginHashRestore,
@@ -109,6 +109,9 @@ export function CommandDeck() {
   const [flash, setFlash] = useState(false);
   const [afFlash, setAfFlash] = useState(false);
   const [hudYield, setHudYield] = useState(false);
+  const [eveLogHeight, setEveLogHeight] = useState(() =>
+    eveConsoleLogHeight({ height: window.innerHeight, width: window.innerWidth }),
+  );
   const [rips, setRips] = useState<{ id: number; x: number; y: number }[]>([]);
   const [sweep, setSweep] = useState(false);
   const [flightElapsed, setFlightElapsed] = useState(0);
@@ -152,6 +155,7 @@ export function CommandDeck() {
           return { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom };
         });
         setHudYield(shouldYieldAirframeHud({ width: window.innerWidth, height: window.innerHeight }, targets));
+        setEveLogHeight(eveConsoleLogHeight({ height: window.innerHeight, width: window.innerWidth }));
       });
     };
 
@@ -882,7 +886,14 @@ export function CommandDeck() {
             <DeckLineage s4={s4} />
             <DeckBuilds s5={s5} onSelect={selectArticle} />
             <DeckOperator s6={s6} />
-            <DeckEve s7={s7} lines={consoleLines} value={consoleValue} onChange={setConsoleValue} onRun={run} />
+            <DeckEve
+              s7={s7}
+              lines={consoleLines}
+              value={consoleValue}
+              logHeight={eveLogHeight}
+              onChange={setConsoleValue}
+              onRun={run}
+            />
           </>
         )}
         <DeckContact s8={s8} onCopy={copyMail} copied={copied} />

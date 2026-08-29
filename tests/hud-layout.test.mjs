@@ -11,6 +11,14 @@ test("the full HUD yields when it would cover marked controls", () => {
   );
 });
 
+test("the full HUD yields before it reaches a marked control", () => {
+  assert.equal(
+    shouldYieldAirframeHud({ width: 1440, height: 900 }, [{ left: 980, top: 620, right: 1100, bottom: 690 }]),
+    true,
+    "the airframe must compress before its lower edge reaches the protected control",
+  );
+});
+
 test("the HUD stays full when critical content is clear", () => {
   assert.equal(
     shouldYieldAirframeHud({ width: 1440, height: 900 }, [{ left: 420, top: 720, right: 900, bottom: 885 }]),
@@ -27,6 +35,19 @@ test("the mobile Bit HUD yields when it would cover marked content", () => {
     shouldYieldAirframeHud({ width: 390, height: 844 }, [{ left: 20, top: 300, right: 220, bottom: 520 }]),
     false,
   );
+});
+
+test("the mobile Bit yields before narrow Snapshot actions enter its protected zone", () => {
+  for (const viewport of [
+    { width: 390, height: 844 },
+    { width: 320, height: 844 },
+  ]) {
+    assert.equal(
+      shouldYieldAirframeHud(viewport, [{ left: 12, top: 580, right: 248, bottom: 640 }]),
+      true,
+      `${viewport.width}px Snapshot actions must remain outside Bit's protected zone`,
+    );
+  }
 });
 
 test("the 640–767px Bit HUD clears the persistent mobile deck rail", async () => {

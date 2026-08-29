@@ -32,6 +32,7 @@ function mountCommandDeck({
   now = Date.now(),
   responsiveGeometry = false,
   deferredSmoothScroll = false,
+  viewport = { width: 1440, height: 900 },
 } = {}) {
   const dom = new JSDOM('<!doctype html><html><body><div id="root"></div></body></html>', {
     url,
@@ -42,7 +43,7 @@ function mountCommandDeck({
   const realClearTimeout = dom.window.clearTimeout.bind(dom.window);
   const controlledTimeouts = new Map();
   let controlledTimeoutId = 1_000_000;
-  let viewport = "desktop";
+  let responsiveViewport = "desktop";
   const setTimeout = (callback, delay = 0, ...args) => {
     const timeout = Number(delay);
     if (controlledTimers && (timeout === 120 || timeout === 500 || timeout === 3200 || timeout >= 7000)) {
@@ -65,6 +66,8 @@ function mountCommandDeck({
   };
   const cancelAnimationFrame = (id) => raf.delete(id);
   Object.defineProperties(dom.window, {
+    innerWidth: { configurable: true, value: viewport.width },
+    innerHeight: { configurable: true, value: viewport.height },
     matchMedia: {
       configurable: true,
       value: () => ({ matches: reducedMotion, addEventListener: () => {}, removeEventListener: () => {} }),
@@ -85,25 +88,37 @@ function mountCommandDeck({
       configurable: true,
       get() {
         if (this.dataset?.deck == null) return 0;
-        return Number(this.dataset.deck) * (responsiveGeometry && viewport === "mobile" ? 1100 : 1000);
+        return Number(this.dataset.deck) * (responsiveGeometry && responsiveViewport === "mobile" ? 1100 : 1000);
       },
     },
     offsetHeight: {
       configurable: true,
       get() {
-        return this.matches?.("section[data-deck]") ? (responsiveGeometry && viewport === "mobile" ? 1100 : 1000) : 0;
+        return this.matches?.("section[data-deck]")
+          ? responsiveGeometry && responsiveViewport === "mobile"
+            ? 1100
+            : 1000
+          : 0;
       },
     },
     scrollHeight: {
       configurable: true,
       get() {
-        return this.classList?.contains("za-scroll") ? (responsiveGeometry && viewport === "mobile" ? 9900 : 9000) : 0;
+        return this.classList?.contains("za-scroll")
+          ? responsiveGeometry && responsiveViewport === "mobile"
+            ? 9900
+            : 9000
+          : 0;
       },
     },
     clientHeight: {
       configurable: true,
       get() {
-        return this.classList?.contains("za-scroll") ? (responsiveGeometry && viewport === "mobile" ? 844 : 1000) : 0;
+        return this.classList?.contains("za-scroll")
+          ? responsiveGeometry && responsiveViewport === "mobile"
+            ? 844
+            : 1000
+          : 0;
       },
     },
     scrollTo: {
@@ -219,7 +234,7 @@ function mountCommandDeck({
       return raf.size;
     },
     async resizeToMobile() {
-      viewport = "mobile";
+      responsiveViewport = "mobile";
       await act(async () => dom.window.dispatchEvent(new dom.window.Event("resize")));
     },
     async history(direction) {
@@ -580,6 +595,26 @@ test("only the real E.V.E. input owns arrow-key history behavior", async () => {
         assert.equal(useDeck.getState().tour, true, `${control.tagName} ${key} must not stop flight`);
       }
     }
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("E.V.E. keeps its usable command prompt in a 1280 by 720 first viewport", async () => {
+  const view = mountCommandDeck({
+    url: "https://cashio.us/#deck=eve",
+    viewport: { width: 1280, height: 720 },
+  });
+  try {
+    await view.render();
+    const consoleSurface = view.document.querySelector("[data-eve-console]");
+    const prompt = view.document.querySelector("#eve-command");
+    assert.ok(prompt, "expected the usable E.V.E. command prompt");
+    assert.equal(
+      consoleSurface?.parentElement?.style.getPropertyValue("--eve-log-height"),
+      "220px",
+      "the console log must yield enough vertical room for the prompt at laptop height",
+    );
   } finally {
     await view.cleanup();
   }
