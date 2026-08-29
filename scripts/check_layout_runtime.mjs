@@ -255,6 +255,54 @@ async function collectDesktopEveScenario(send, landingEvidence) {
       const labelOf = (element) =>
         element.getAttribute("aria-label") || element.id ||
         (typeof element.className === "string" && element.className.trim()) || element.tagName;
+      const overlapRectOf = (a, b) => ({
+        left: Math.max(a.left, b.left),
+        right: Math.min(a.right, b.right),
+        top: Math.max(a.top, b.top),
+        bottom: Math.min(a.bottom, b.bottom),
+      });
+      const samplePoints = (rect) => [0.1, 0.5, 0.9].flatMap((yRatio) =>
+        [0.1, 0.5, 0.9].map((xRatio) => ({
+          x: rect.left + (rect.right - rect.left) * xRatio,
+          y: rect.top + (rect.bottom - rect.top) * yRatio,
+        })),
+      );
+      const coversOwnOverlap = (candidate) => {
+        const overlapRect = overlapRectOf(candidate.getBoundingClientRect(), promptRect);
+        return samplePoints(overlapRect).some((point) => {
+          const hit = topmostAt(point);
+          return hit === candidate || (hit != null && candidate.contains(hit));
+        });
+      };
+      const colorPaints = (color) => {
+        if (!color || color === "transparent") return false;
+        const match = color.match(/^rgba?\\((.*)\\)$/);
+        if (!match) return true;
+        const channels = match[1].split(/[\\s,\\/]+/).filter(Boolean);
+        return channels.length < 4 || Number(channels[3]) > 0;
+      };
+      const visuallyPaints = (element) => {
+        const style = getComputedStyle(element);
+        const borderPaints = ["Top", "Right", "Bottom", "Left"].some((side) =>
+          parseFloat(style["border" + side + "Width"]) > 0 &&
+          style["border" + side + "Style"] !== "none" &&
+          colorPaints(style["border" + side + "Color"]),
+        );
+        return colorPaints(style.backgroundColor) || style.backgroundImage !== "none" ||
+          style.boxShadow !== "none" || borderPaints ||
+          element.matches("img, picture, svg, canvas, video");
+      };
+      const coversWhenPointerEnabled = (candidate) => {
+        const value = candidate.style.getPropertyValue("pointer-events");
+        const priority = candidate.style.getPropertyPriority("pointer-events");
+        candidate.style.setProperty("pointer-events", "auto", "important");
+        try {
+          return coversOwnOverlap(candidate);
+        } finally {
+          if (value) candidate.style.setProperty("pointer-events", value, priority);
+          else candidate.style.removeProperty("pointer-events");
+        }
+      };
       const fixedStickyIntersections = [...document.body.querySelectorAll("*")]
         .flatMap((surface) => {
           const style = getComputedStyle(surface);
@@ -264,29 +312,26 @@ async function collectDesktopEveScenario(send, landingEvidence) {
             !visible(surface) ||
             !overlaps(surfaceRect, promptRect)
           ) return [];
-          const pointerActive = [surface, ...surface.querySelectorAll("*")].filter((candidate) => {
+          const candidates = [surface, ...surface.querySelectorAll("*")];
+          const pointerActive = candidates.filter((candidate) => {
             const candidateStyle = getComputedStyle(candidate);
             return candidateStyle.pointerEvents !== "none" && visible(candidate) &&
               overlaps(candidate.getBoundingClientRect(), promptRect);
           });
-          if (pointerActive.length === 0) return [];
-          const overlapRect = {
-            left: Math.max(surfaceRect.left, promptRect.left),
-            right: Math.min(surfaceRect.right, promptRect.right),
-            top: Math.max(surfaceRect.top, promptRect.top),
-            bottom: Math.min(surfaceRect.bottom, promptRect.bottom),
-          };
-          const hit = topmostAt({
-            x: (overlapRect.left + overlapRect.right) / 2,
-            y: (overlapRect.top + overlapRect.bottom) / 2,
+          const coveringPointerActive = pointerActive.filter(coversOwnOverlap);
+          const visualPointerNone = candidates.filter((candidate) => {
+            const candidateStyle = getComputedStyle(candidate);
+            return candidateStyle.pointerEvents === "none" && visible(candidate) &&
+              overlaps(candidate.getBoundingClientRect(), promptRect) && visuallyPaints(candidate);
           });
-          const covering = hit && (hit === surface || surface.contains(hit));
-          if (!covering) return [];
+          const coveringVisualPointerNone = visualPointerNone.filter(coversWhenPointerEnabled);
+          if (coveringPointerActive.length === 0 && coveringVisualPointerNone.length === 0) return [];
           return [{
             label: labelOf(surface),
             position: style.position,
             rect: rectOf(surface),
-            pointerActiveChildren: pointerActive.map(labelOf),
+            pointerActiveChildren: coveringPointerActive.map(labelOf),
+            visualPointerNoneChildren: coveringVisualPointerNone.map(labelOf),
           }];
         });
       return {
@@ -332,6 +377,76 @@ async function setDesktopEveCoveringOverlay(send, present) {
         zIndex: "2147483647",
         pointerEvents: "auto",
         background: "rgba(255, 0, 0, 0.2)",
+      });
+      document.body.append(overlay);
+      return true;
+    })()`,
+    returnByValue: true,
+  });
+}
+
+async function setDesktopEveLocalizedChildObstruction(send, present) {
+  await send("Runtime.evaluate", {
+    expression: `(() => {
+      document.querySelector("#layout-eve-localized-child-obstruction")?.remove();
+      if (!${JSON.stringify(present)}) return true;
+      const promptSurface = document.querySelector("#eve-command")?.closest("form");
+      if (!promptSurface) return false;
+      const rect = promptSurface.getBoundingClientRect();
+      const overlay = document.createElement("div");
+      overlay.id = "layout-eve-localized-child-obstruction";
+      overlay.setAttribute("aria-label", "Injected pointer-none E.V.E. obstruction parent");
+      Object.assign(overlay.style, {
+        position: "fixed",
+        left: rect.left + "px",
+        top: rect.top + "px",
+        width: rect.width + "px",
+        height: rect.height + "px",
+        zIndex: "2147483647",
+        pointerEvents: "none",
+      });
+      const child = document.createElement("button");
+      child.type = "button";
+      child.setAttribute("aria-label", "Injected localized pointer-active E.V.E. obstruction");
+      Object.assign(child.style, {
+        position: "absolute",
+        left: "8px",
+        top: "17px",
+        width: "40px",
+        height: "20px",
+        border: "0",
+        padding: "0",
+        pointerEvents: "auto",
+        background: "rgb(255, 0, 0)",
+      });
+      overlay.append(child);
+      document.body.append(overlay);
+      return true;
+    })()`,
+    returnByValue: true,
+  });
+}
+
+async function setDesktopEveVisualPointerNoneObstruction(send, present) {
+  await send("Runtime.evaluate", {
+    expression: `(() => {
+      document.querySelector("#layout-eve-visual-pointer-none-obstruction")?.remove();
+      if (!${JSON.stringify(present)}) return true;
+      const input = document.querySelector("#eve-command");
+      if (!input) return false;
+      const rect = input.getBoundingClientRect();
+      const overlay = document.createElement("div");
+      overlay.id = "layout-eve-visual-pointer-none-obstruction";
+      overlay.setAttribute("aria-label", "Injected visual pointer-none E.V.E. obstruction");
+      Object.assign(overlay.style, {
+        position: "fixed",
+        left: rect.left + rect.width / 2 - 40 + "px",
+        top: rect.top + rect.height / 2 - 10 + "px",
+        width: "80px",
+        height: "20px",
+        zIndex: "2147483647",
+        pointerEvents: "none",
+        background: "rgb(255, 0, 0)",
       });
       document.body.append(overlay);
       return true;
@@ -1100,6 +1215,8 @@ async function main() {
     const narrowResult = narrowEvaluation.result.value;
     const desktopEveScenarios = [];
     let desktopEveOverlayNegative;
+    let desktopEveLocalizedChildNegative;
+    let desktopEveVisualPointerNoneNegative;
     for (const [width, height] of [
       [1280, 720],
       [1440, 900],
@@ -1129,6 +1246,40 @@ async function main() {
           rejectedRun: covered.failures.some((failure) => /RUN center must be the topmost hit target/.test(failure)),
           rejectedSurface: covered.failures.some((failure) => /all nine E.V.E. prompt surface samples/.test(failure)),
           rejectedFixedSticky: covered.failures.some((failure) =>
+            /fixed or sticky surface must not cover/.test(failure),
+          ),
+        };
+        await setDesktopEveLocalizedChildObstruction(send, true);
+        const localizedChildCovered = await collectDesktopEveScenario(send, landingEvidence);
+        localizedChildCovered.failures = localizedChildCovered.error
+          ? [localizedChildCovered.error]
+          : desktopEveAcceptanceFailures(localizedChildCovered);
+        await setDesktopEveLocalizedChildObstruction(send, false);
+        const localizedChildRecovered = await collectDesktopEveScenario(send, landingEvidence);
+        localizedChildRecovered.failures = localizedChildRecovered.error
+          ? [localizedChildRecovered.error]
+          : desktopEveAcceptanceFailures(localizedChildRecovered);
+        desktopEveLocalizedChildNegative = {
+          covered: localizedChildCovered,
+          recovered: localizedChildRecovered,
+          rejectedFixedSticky: localizedChildCovered.failures.some((failure) =>
+            /fixed or sticky surface must not cover/.test(failure),
+          ),
+        };
+        await setDesktopEveVisualPointerNoneObstruction(send, true);
+        const visualPointerNoneCovered = await collectDesktopEveScenario(send, landingEvidence);
+        visualPointerNoneCovered.failures = visualPointerNoneCovered.error
+          ? [visualPointerNoneCovered.error]
+          : desktopEveAcceptanceFailures(visualPointerNoneCovered);
+        await setDesktopEveVisualPointerNoneObstruction(send, false);
+        const visualPointerNoneRecovered = await collectDesktopEveScenario(send, landingEvidence);
+        visualPointerNoneRecovered.failures = visualPointerNoneRecovered.error
+          ? [visualPointerNoneRecovered.error]
+          : desktopEveAcceptanceFailures(visualPointerNoneRecovered);
+        desktopEveVisualPointerNoneNegative = {
+          covered: visualPointerNoneCovered,
+          recovered: visualPointerNoneRecovered,
+          rejectedFixedSticky: visualPointerNoneCovered.failures.some((failure) =>
             /fixed or sticky surface must not cover/.test(failure),
           ),
         };
@@ -1185,8 +1336,10 @@ async function main() {
           cinemas,
           decodedAssets,
           desktopLayout,
+          desktopEveLocalizedChildNegative,
           desktopEveOverlayNegative,
           desktopEveScenarios,
+          desktopEveVisualPointerNoneNegative,
           eveFocus,
           flights,
           motionPreference,
@@ -1242,6 +1395,31 @@ async function main() {
       desktopEveOverlayNegative.recovered.failures,
       [],
       "Removing the E.V.E. covering overlay must restore a clean scenario",
+    );
+    assert.ok(
+      desktopEveLocalizedChildNegative,
+      "Desktop E.V.E. localized pointer-active child negative scenario must run",
+    );
+    assert.equal(
+      desktopEveLocalizedChildNegative.rejectedFixedSticky,
+      true,
+      "Every localized pointer-active descendant must be tested in its own overlap region",
+    );
+    assert.deepEqual(
+      desktopEveLocalizedChildNegative.recovered.failures,
+      [],
+      "Removing the localized pointer-active obstruction must restore a clean scenario",
+    );
+    assert.ok(desktopEveVisualPointerNoneNegative, "Desktop E.V.E. visual pointer-none negative scenario must run");
+    assert.equal(
+      desktopEveVisualPointerNoneNegative.rejectedFixedSticky,
+      true,
+      "A visually painting pointer-none fixed surface must be rejected",
+    );
+    assert.deepEqual(
+      desktopEveVisualPointerNoneNegative.recovered.failures,
+      [],
+      "Removing the visual pointer-none obstruction must restore a clean scenario",
     );
     flights.forEach((flight) =>
       assert.equal(
