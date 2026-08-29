@@ -77,7 +77,7 @@ export function DeckSnapshot({
           >
             <div className="za-mono text-[10px] tracking-[0.2em]">TECHNICAL</div>
             <div className="mt-1 font-sans text-[13px] leading-snug">
-              Nine decks. Fleet, routing law, hardware, builds.
+              Detailed evidence, build proof, and operational context.
             </div>
           </button>
           <button
@@ -90,7 +90,9 @@ export function DeckSnapshot({
             className={`rounded-[10px] px-3 py-3 text-left ${mode === "executive" ? "bg-accent text-on-accent" : "text-dim"}`}
           >
             <div className="za-mono text-[10px] tracking-[0.2em]">EXECUTIVE</div>
-            <div className="mt-1 font-sans text-[13px] leading-snug">One page. What it means for a business.</div>
+            <div className="mt-1 font-sans text-[13px] leading-snug">
+              Route control, evidence boundary, human authority.
+            </div>
           </button>
         </div>
 
@@ -111,7 +113,7 @@ export function DeckSnapshot({
         <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {[
             ["ZEUS", 12, "OF 13 AT PROBE"],
-            ["APOLLO", 6, "RUNNING WORKLOADS"],
+            ["APOLLO", null, "6/6 AT 28 AUG PROBE"],
             ["ATLAS", null, "GATEWAY · LOCAL INFERENCE"],
             ["ATHENA", null, "QUORUM SUPPORT"],
             ["GENESIS", null, "PRIVATE STORAGE · RECOVERY"],
@@ -263,7 +265,7 @@ export function DeckGrid({
               className={`za-panel za-hub cool px-5 py-4 ${locked?.hub === "apollo" ? "border-cyan" : ""}`}
             >
               <div className="za-display text-xl text-cyan">APOLLO</div>
-              <div className="za-mono mt-1 text-[10px] text-dim">6 RUNNING WORKLOADS</div>
+              <div className="za-mono mt-1 text-[10px] text-dim">6/6 AT 28 AUG PROBE</div>
             </div>
           </div>
         </div>

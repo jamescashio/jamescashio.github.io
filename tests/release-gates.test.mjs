@@ -87,6 +87,15 @@ test("package metadata and deterministic local gates define the V34 release", as
   assert.equal(status.routingVerified, "2026-08-21");
 });
 
+test("public metadata and redirect fallback carry only the V34 dated aggregate", async () => {
+  const expected = ["28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT"];
+  for (const path of ["index.html", "public/lab.html"]) {
+    const text = await read(path);
+    for (const marker of expected) assert.match(text, new RegExp(marker), `${path} must include ${marker}`);
+    assert.doesNotMatch(text, /21 August 2026|19(?:\/| of )19|\bCURRENT\b|\bonline\b/i, path);
+  }
+});
+
 test("Pages blocks artifact upload on the complete Node 22 and Python 3.12 gate chain", async () => {
   const workflow = await read(".github/workflows/pages.yml");
   assert.match(workflow, /node-version:\s*22/);

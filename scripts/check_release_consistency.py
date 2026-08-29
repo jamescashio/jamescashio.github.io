@@ -16,6 +16,11 @@ PUBLIC_STATUS = ROOT / "public" / "status.json"
 DIST = ROOT / "dist"
 
 TEXT_SUFFIXES = {".html", ".js", ".css", ".json", ".txt", ".xml", ".svg"}
+V34_PUBLIC_SURFACES = {
+    "index.html": ("28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT"),
+    "lab.html": ("28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT"),
+}
+STALE_V33_PUBLIC_CLAIMS = re.compile(r"21 August 2026|19(?:/| of )19|\bCURRENT\b|\bonline\b", re.IGNORECASE)
 FORBIDDEN_LIVE = (
     "10 August 2026",
     "08-10-2026",
@@ -41,6 +46,14 @@ def collect_text(folder: Path) -> str:
         if path.is_file() and path.suffix.lower() in TEXT_SUFFIXES:
             chunks.append(path.read_text(encoding="utf-8"))
     return "\n".join(chunks)
+
+
+def check_v34_public_surface(relative: str, text: str, failures: list[str], label: str) -> None:
+    for marker in V34_PUBLIC_SURFACES[relative]:
+        if marker not in text:
+            failures.append(f"{label}/{relative} is missing V34 marker {marker!r}")
+    if STALE_V33_PUBLIC_CLAIMS.search(text):
+        failures.append(f"{label}/{relative} contains a stale V33 fleet claim")
 
 
 def main() -> int:
@@ -228,6 +241,9 @@ def main() -> int:
         if not (ROOT / relative).is_file():
             failures.append(f"required public asset is missing: {relative}")
 
+    for relative, source_relative in (("index.html", "index.html"), ("lab.html", "public/lab.html")):
+        check_v34_public_surface(relative, read(source_relative), failures, "source")
+
     proteus_image = ROOT / "public" / "plates" / "proteus-nasa.webp"
     if proteus_image.is_file() and proteus_image.stat().st_size <= 50_000:
         failures.append("public/plates/proteus-nasa.webp is unexpectedly small")
@@ -318,6 +334,11 @@ def main() -> int:
         for relative in required_dist:
             if not (DIST / relative).is_file():
                 failures.append(f"built Pages artifact is missing {relative}")
+
+        for relative in V34_PUBLIC_SURFACES:
+            path = DIST / relative
+            if path.is_file():
+                check_v34_public_surface(relative, path.read_text(encoding="utf-8"), failures, "dist")
 
         live = collect_text(DIST)
         for marker in (

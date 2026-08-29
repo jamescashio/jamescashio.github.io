@@ -29,6 +29,7 @@ function mountCommandDeck({
   url = "https://cashio.us/#deck=snapshot",
   reducedMotion = true,
   controlledTimers = false,
+  now = Date.now(),
   responsiveGeometry = false,
   deferredSmoothScroll = false,
 } = {}) {
@@ -36,7 +37,7 @@ function mountCommandDeck({
     url,
   });
   const realDateNow = Date.now;
-  let controlledNow = realDateNow();
+  let controlledNow = now;
   const realSetTimeout = dom.window.setTimeout.bind(dom.window);
   const realClearTimeout = dom.window.clearTimeout.bind(dom.window);
   const controlledTimeouts = new Map();
@@ -387,16 +388,24 @@ test("glyph controls preserve each visible audio label in their accessible names
   }
 });
 
-test("command chrome frames aggregate evidence as a dated export", async () => {
-  const view = mountCommandDeck();
-  try {
-    await view.render();
-    const header = view.document.querySelector("header.za-command-header");
-    assert.match(header?.textContent ?? "", /18\/19 AT 28 AUG PROBE/);
-    assert.match(header?.textContent ?? "", /EXPORT VALID/);
-    assert.doesNotMatch(header?.textContent ?? "", /NOMINAL|CURRENT/);
-  } finally {
-    await view.cleanup();
+test("command chrome frames aggregate evidence as a dated export at valid and expired boundaries", async (t) => {
+  for (const [name, now, expected] of [
+    ["valid", Date.parse("2026-09-27T12:00:00Z"), /EXPORT VALID/],
+    ["expired", Date.parse("2026-09-28T05:00:00Z"), /EXPORT EXPIRED/],
+  ]) {
+    await t.test(name, async () => {
+      const view = mountCommandDeck({ controlledTimers: true, now });
+      try {
+        await view.render();
+        const header = view.document.querySelector("header.za-command-header");
+        assert.match(header?.textContent ?? "", /18\/19 AT 28 AUG PROBE/);
+        assert.match(header?.textContent ?? "", expected);
+        assert.doesNotMatch(header?.textContent ?? "", /NOMINAL|CURRENT/);
+        assert.match(view.document.body.textContent, /APOLLO6\/6 AT 28 AUG PROBE/);
+      } finally {
+        await view.cleanup();
+      }
+    });
   }
 });
 

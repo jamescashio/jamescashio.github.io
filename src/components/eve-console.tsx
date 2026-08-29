@@ -79,7 +79,7 @@ export function runEve(raw: string, history: string[] = []): EveResult {
     return {
       out: [
         "ZEUS · 12/13 AT 28 AUG PROBE · PROXMOX HOST · QUORATE",
-        "APOLLO · 6 CONTAINERS · PROXMOX HOST · QUORATE",
+        "APOLLO · 6/6 AT 28 AUG PROBE · PROXMOX HOST · QUORATE",
         SERVICE_FAMILIES.toUpperCase(),
       ],
     };

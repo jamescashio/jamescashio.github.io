@@ -5,7 +5,7 @@ import { act, createElement } from "react";
 import { createRoot } from "react-dom/client";
 
 import { BlackBoxReceipt } from "../src/components/black-box-receipt.tsx";
-import { DeckSnapshot } from "../src/components/decks.tsx";
+import { DeckBrief, DeckSnapshot } from "../src/components/decks.tsx";
 import { FlightControl } from "../src/components/flight-control.tsx";
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
@@ -128,12 +128,27 @@ test("DeckSnapshot renders V34's dated aggregate and Executive outcome hierarchy
       }),
     );
     assert.match(view.document.body.textContent, /18\/19 AT 28 AUG PROBE/);
+    assert.match(view.document.body.textContent, /Detailed evidence, build proof, and operational context\./);
+    assert.match(view.document.body.textContent, /Route control, evidence boundary, human authority\./);
     const executive = [...view.document.querySelectorAll(".za-snapshot-modes button")].find((control) =>
       control.textContent?.startsWith("EXECUTIVE"),
     );
     assert.ok(executive, "expected Executive mode control");
     await view.click(executive);
     assert.equal(executive.getAttribute("aria-pressed"), "true");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("Executive choice promises outcomes rather than page count", async () => {
+  const view = mount(createElement(DeckBrief, { sBrief: { current: null } }));
+  try {
+    await view.render(createElement(DeckBrief, { sBrief: { current: null } }));
+    assert.match(view.document.body.textContent, /ROUTE CONTROL/);
+    assert.match(view.document.body.textContent, /EVIDENCE BOUNDARY/);
+    assert.match(view.document.body.textContent, /HUMAN AUTHORITY/);
+    assert.doesNotMatch(view.document.body.textContent, /One page|Nine decks/);
   } finally {
     await view.cleanup();
   }
