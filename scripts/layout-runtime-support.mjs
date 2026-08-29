@@ -208,6 +208,153 @@ function hasConsistentRect(rect) {
   );
 }
 
+const MOTION_ELEMENTS = ["routing", "hud", "rail", "pip"];
+const MOTION_NORMAL_TRANSITIONS = {
+  routing: { durationMs: 500, delayMs: 0, property: "all" },
+  hud: { durationMs: 300, delayMs: 0, property: "width" },
+  rail: { durationMs: 300, delayMs: 0, property: "width" },
+  pip: { durationMs: 280, delayMs: 0, property: "height, background, box-shadow, width" },
+};
+const MOTION_DIMENSIONS = { routing: ["width"], hud: ["width"], rail: ["width"], pip: ["width", "height"] };
+const MOTION_GEOMETRY_TOLERANCE_PX = 0.5;
+const MOTION_INTERMEDIATE_EPSILON_PX = 0.01;
+
+function hasFiniteNonzeroMotionRect(rect) {
+  return (
+    rect != null && Number.isFinite(rect.width) && rect.width > 0 && Number.isFinite(rect.height) && rect.height > 0
+  );
+}
+
+function motionTransitionFailures(name, phase, transition, expected) {
+  const failures = [];
+  if (!transition || transition.durationMs !== expected.durationMs) {
+    failures.push(`${name} ${phase} transition duration must equal ${expected.durationMs}ms`);
+  }
+  if (!transition || transition.delayMs !== expected.delayMs) {
+    failures.push(`${name} ${phase} transition delay must equal ${expected.delayMs}ms`);
+  }
+  if (!transition || transition.property !== expected.property) {
+    failures.push(`${name} ${phase} transition property must equal ${expected.property}`);
+  }
+  return failures;
+}
+
+function motionSampleFailures(name, phase, sample, expectedTransition) {
+  const failures = [];
+  if (!hasFiniteNonzeroMotionRect(sample?.rect)) {
+    failures.push(`${name} ${phase} rectangle must be finite and nonzero`);
+  }
+  failures.push(...motionTransitionFailures(name, phase, sample?.transition, expectedTransition));
+  return failures;
+}
+
+function motionRectMatches(actual, expected) {
+  return (
+    hasFiniteNonzeroMotionRect(actual) &&
+    hasFiniteNonzeroMotionRect(expected) &&
+    Math.abs(actual.width - expected.width) <= MOTION_GEOMETRY_TOLERANCE_PX &&
+    Math.abs(actual.height - expected.height) <= MOTION_GEOMETRY_TOLERANCE_PX
+  );
+}
+
+export function motionPreferenceAcceptanceFailures(scenario) {
+  const failures = [];
+  if (scenario?.pipTargetWasUnselected !== true || scenario?.pipTargetIsSelected !== true) {
+    failures.push("pip target must begin unselected and become selected through its real control");
+  }
+  if (
+    !Number.isInteger(scenario?.interruptSettledWithinFrames) ||
+    scenario.interruptSettledWithinFrames < 1 ||
+    scenario.interruptSettledWithinFrames > 2
+  ) {
+    failures.push("normal-to-reduced interruption must settle within two animation frames");
+  }
+
+  for (const name of MOTION_ELEMENTS) {
+    const expectedNormal = MOTION_NORMAL_TRANSITIONS[name];
+    const expectedReduced = { durationMs: 0, delayMs: 0, property: "none" };
+    failures.push(...motionSampleFailures(name, "normal-start", scenario?.normalStart?.[name], expectedNormal));
+    failures.push(
+      ...motionSampleFailures(name, "normal-intermediate", scenario?.normalIntermediate?.[name], expectedNormal),
+    );
+    failures.push(
+      ...motionSampleFailures(
+        name,
+        "reduced-after-interrupt",
+        scenario?.reducedAfterInterrupt?.[name],
+        expectedReduced,
+      ),
+    );
+    failures.push(...motionSampleFailures(name, "reduced-again", scenario?.reducedAgain?.[name], expectedReduced));
+
+    const startRect = scenario?.normalStart?.[name]?.rect;
+    const intermediateRect = scenario?.normalIntermediate?.[name]?.rect;
+    const finalRect = scenario?.expectedFinal?.[name];
+    if (!hasFiniteNonzeroMotionRect(finalRect))
+      failures.push(`${name} expected-final rectangle must be finite and nonzero`);
+    for (const dimension of MOTION_DIMENSIONS[name]) {
+      const start = startRect?.[dimension];
+      const intermediate = intermediateRect?.[dimension];
+      const final = finalRect?.[dimension];
+      if (
+        !Number.isFinite(start) ||
+        !Number.isFinite(intermediate) ||
+        !Number.isFinite(final) ||
+        Math.abs(start - final) <= MOTION_INTERMEDIATE_EPSILON_PX * 2 ||
+        Math.abs(intermediate - start) <= MOTION_INTERMEDIATE_EPSILON_PX ||
+        Math.abs(intermediate - final) <= MOTION_INTERMEDIATE_EPSILON_PX
+      ) {
+        failures.push(`${name} ${dimension} must be visibly intermediate under normal motion`);
+      }
+    }
+    if (!motionRectMatches(scenario?.reducedAfterInterrupt?.[name]?.rect, finalRect)) {
+      failures.push(`${name} must reach final geometry within two reduced-motion frames`);
+    }
+    if (!motionRectMatches(scenario?.reducedAgain?.[name]?.rect, finalRect)) {
+      failures.push(`${name} must retain final geometry on the second reduced-motion change`);
+    }
+  }
+
+  const restoredSamples = scenario?.restoredSamples;
+  if (!Array.isArray(restoredSamples) || restoredSamples.length === 0 || restoredSamples[0]?.atMs !== 0) {
+    failures.push("restore samples must start immediately at 0ms");
+  }
+  if (
+    !Array.isArray(restoredSamples) ||
+    restoredSamples.length < 4 ||
+    !restoredSamples.some((sample) => sample.atMs > 0 && sample.atMs < 100) ||
+    !restoredSamples.some((sample) => sample.atMs >= 100 && sample.atMs < 500) ||
+    !restoredSamples.some((sample) => sample.atMs >= 450 && sample.atMs <= 500)
+  ) {
+    failures.push("restore samples must cover the first 500ms, including early, middle, and late observations");
+  }
+  if (Array.isArray(restoredSamples)) {
+    let previousTime = -1;
+    for (const sample of restoredSamples) {
+      if (!Number.isFinite(sample?.atMs) || sample.atMs < previousTime || sample.atMs < 0 || sample.atMs > 500) {
+        failures.push("restore sample times must be finite, ordered, and within 0-500ms");
+      }
+      previousTime = sample?.atMs;
+      for (const name of MOTION_ELEMENTS) {
+        failures.push(
+          ...motionSampleFailures(
+            name,
+            `normal-restored-${sample?.atMs}ms`,
+            sample?.elements?.[name],
+            MOTION_NORMAL_TRANSITIONS[name],
+          ),
+        );
+        if (!motionRectMatches(sample?.elements?.[name]?.rect, scenario?.expectedFinal?.[name])) {
+          failures.push(
+            `${name} must not replay stale geometry during the first 500ms after normal motion is restored`,
+          );
+        }
+      }
+    }
+  }
+  return failures;
+}
+
 export function mobileFlightAcceptanceFailures(scenario) {
   const failures = [];
   const width = scenario.viewport?.[0];

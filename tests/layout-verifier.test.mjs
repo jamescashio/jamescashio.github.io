@@ -598,3 +598,105 @@ test("desktop E.V.E. acceptance rejects overflow, overlap, containment, and both
     );
   }
 });
+
+const normalMotionTransitions = {
+  routing: { durationMs: 500, delayMs: 0, property: "all" },
+  hud: { durationMs: 300, delayMs: 0, property: "width" },
+  rail: { durationMs: 300, delayMs: 0, property: "width" },
+  pip: { durationMs: 280, delayMs: 0, property: "height, background, box-shadow, width" },
+};
+
+const reducedMotionTransitions = Object.fromEntries(
+  Object.keys(normalMotionTransitions).map((name) => [name, { durationMs: 0, delayMs: 0, property: "none" }]),
+);
+
+const motionStartRects = {
+  routing: { width: 96, height: 6 },
+  hud: { width: 200, height: 4 },
+  rail: { width: 68, height: 900 },
+  pip: { width: 14, height: 4 },
+};
+
+const motionIntermediateRects = {
+  routing: { width: 180, height: 6 },
+  hud: { width: 160, height: 4 },
+  rail: { width: 100, height: 900 },
+  pip: { width: 18, height: 5.5 },
+};
+
+const motionFinalRects = {
+  routing: { width: 480, height: 6 },
+  hud: { width: 80, height: 4 },
+  rail: { width: 220, height: 900 },
+  pip: { width: 26, height: 8 },
+};
+
+function motionSamples(rects, transitions) {
+  return Object.fromEntries(
+    Object.keys(normalMotionTransitions).map((name) => [
+      name,
+      { rect: { ...rects[name] }, transition: { ...transitions[name] } },
+    ]),
+  );
+}
+
+const approvedMotionPreferenceScenario = {
+  interruptSettledWithinFrames: 2,
+  pipTargetWasUnselected: true,
+  pipTargetIsSelected: true,
+  normalStart: motionSamples(motionStartRects, normalMotionTransitions),
+  normalIntermediate: motionSamples(motionIntermediateRects, normalMotionTransitions),
+  expectedFinal: structuredClone(motionFinalRects),
+  reducedAfterInterrupt: motionSamples(motionFinalRects, reducedMotionTransitions),
+  restoredSamples: [0, 27.4, 88.8, 184.1, 326.6, 493.7].map((atMs) => ({
+    atMs,
+    elements: motionSamples(motionFinalRects, normalMotionTransitions),
+  })),
+  reducedAgain: motionSamples(motionFinalRects, reducedMotionTransitions),
+};
+
+test("motion preference acceptance proves mid-transition interruption and samples the full restore window", () => {
+  const validate = runtimeSupport.motionPreferenceAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  assert.deepEqual(validate(approvedMotionPreferenceScenario), []);
+});
+
+test("motion preference acceptance accepts a real subpixel intermediate pip frame", () => {
+  const validate = runtimeSupport.motionPreferenceAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  const scenario = structuredClone(approvedMotionPreferenceScenario);
+  scenario.normalIntermediate.pip.rect = { width: 24.640625, height: 7.546875 };
+
+  assert.deepEqual(validate(scenario), []);
+});
+
+test("motion preference acceptance accepts a moving HUD frame after real scroll retargeting", () => {
+  const validate = runtimeSupport.motionPreferenceAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  const scenario = structuredClone(approvedMotionPreferenceScenario);
+  scenario.normalStart.hud.rect.width = 123.1875;
+  scenario.normalIntermediate.hud.rect.width = 118.359375;
+  scenario.expectedFinal.hud.width = 118.71875;
+  scenario.reducedAfterInterrupt.hud.rect.width = 118.71875;
+  scenario.reducedAgain.hud.rect.width = 118.71875;
+  scenario.restoredSamples.forEach((sample) => {
+    sample.elements.hud.rect.width = 118.71875;
+  });
+
+  assert.deepEqual(validate(scenario), []);
+});
+
+test("motion preference acceptance rejects delayed-only restore evidence and non-semantic geometry", () => {
+  const validate = runtimeSupport.motionPreferenceAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  const scenario = structuredClone(approvedMotionPreferenceScenario);
+  scenario.restoredSamples = [{ atMs: 600, elements: scenario.restoredSamples.at(-1).elements }];
+  scenario.normalIntermediate.pip.rect = { width: 0, height: 0 };
+  scenario.reducedAfterInterrupt.hud.transition.property = "width";
+  scenario.pipTargetWasUnselected = false;
+  const failures = validate(scenario);
+
+  assert.ok(failures.some((failure) => /restore samples must start immediately/.test(failure)));
+  assert.ok(failures.some((failure) => /restore samples must cover the first 500ms/.test(failure)));
+  assert.ok(failures.some((failure) => /pip normal-intermediate rectangle must be finite and nonzero/.test(failure)));
+  assert.ok(
+    failures.some((failure) => /hud reduced-after-interrupt transition property must equal none/.test(failure)),
+  );
+  assert.ok(failures.some((failure) => /pip target must begin unselected and become selected/.test(failure)));
+});

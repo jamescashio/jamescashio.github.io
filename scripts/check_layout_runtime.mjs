@@ -12,12 +12,46 @@ import {
   desktopEveAcceptanceFailures,
   mobileCinemaAcceptanceFailures,
   mobileFlightAcceptanceFailures,
+  motionPreferenceAcceptanceFailures,
   runWithLayoutCleanup,
 } from "./layout-runtime-support.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = path.join(ROOT, "dist");
 const SAFE_AREA_PX = 20;
+const MOTION_PIP_LABEL = "Warp to P-51D MUSTANG";
+const MOTION_CAPTURE_SOURCE = `() => {
+  const pipButton = [...document.querySelectorAll('.za-lcars-pip')]
+    .find((element) => element.getAttribute('aria-label') === ${JSON.stringify(MOTION_PIP_LABEL)});
+  const elements = {
+    routing: document.querySelector('.za-routing-progress'),
+    hud: document.querySelector('.za-airframe-progress'),
+    rail: document.querySelector('.za-command-rail'),
+    pip: pipButton?.querySelector('.za-lcars-pip-mark') ?? null,
+  };
+  const milliseconds = (value) => value.split(',').reduce((maximum, part) => {
+    const token = part.trim();
+    const parsed = token.endsWith('ms') ? parseFloat(token) : parseFloat(token) * 1000;
+    return Math.max(maximum, Number.isFinite(parsed) ? parsed : 0);
+  }, 0);
+  const samples = Object.fromEntries(Object.entries(elements).map(([name, element]) => {
+    if (!element) return [name, null];
+    const rect = element.getBoundingClientRect();
+    const style = getComputedStyle(element);
+    return [name, {
+      rect: { width: rect.width, height: rect.height },
+      transition: {
+        durationMs: milliseconds(style.transitionDuration),
+        delayMs: milliseconds(style.transitionDelay),
+        property: style.transitionProperty,
+      },
+    }];
+  }));
+  return {
+    elements: samples,
+    pipTargetSelected: pipButton?.matches('.on[aria-current="true"]') === true,
+  };
+}`;
 
 function browserExecutable() {
   const candidates = [
@@ -306,18 +340,30 @@ async function setDesktopEveCoveringOverlay(send, present) {
   });
 }
 
-async function emulateReducedMotion(send, reduced) {
+async function setReducedMotionPreference(send, reduced) {
   await send("Emulation.setEmulatedMedia", {
     media: "",
     features: [{ name: "prefers-reduced-motion", value: reduced ? "reduce" : "no-preference" }],
   });
+}
+
+async function waitForReducedMotionPreference(send, reduced, frames = 0) {
   await send("Runtime.evaluate", {
     expression: `new Promise((resolve, reject) => {
       const expected = ${reduced};
+      const frames = ${frames};
       let attempts = 0;
+      const finish = () => {
+        let remaining = frames;
+        const frame = () => {
+          if (remaining-- <= 0) resolve();
+          else requestAnimationFrame(frame);
+        };
+        frame();
+      };
       const verify = () => {
         if (matchMedia("(prefers-reduced-motion: reduce)").matches === expected) {
-          requestAnimationFrame(() => requestAnimationFrame(resolve));
+          finish();
           return;
         }
         if (++attempts >= 60) reject(new Error("reduced-motion media preference did not update"));
@@ -327,6 +373,265 @@ async function emulateReducedMotion(send, reduced) {
     })`,
     awaitPromise: true,
   });
+}
+
+async function evaluateByValue(send, expression, awaitPromise = false) {
+  const evaluation = await send("Runtime.evaluate", { expression, awaitPromise, returnByValue: true });
+  if (evaluation.exceptionDetails) {
+    throw new Error(evaluation.exceptionDetails.exception?.description ?? evaluation.exceptionDetails.text);
+  }
+  return evaluation.result.value;
+}
+
+async function captureMotionElements(send) {
+  return evaluateByValue(send, `(${MOTION_CAPTURE_SOURCE})()`);
+}
+
+async function captureRestoredMotionSeries(send) {
+  return evaluateByValue(
+    send,
+    `(async () => {
+      const capture = ${MOTION_CAPTURE_SOURCE};
+      const schedule = [0, 16, 80, 180, 320, 470];
+      const startedAt = performance.now();
+      const samples = [];
+      for (const atMs of schedule) {
+        const remaining = atMs - (performance.now() - startedAt);
+        if (remaining > 0) await new Promise((resolve) => setTimeout(resolve, remaining));
+        samples.push({ atMs, observedAtMs: performance.now() - startedAt, ...capture() });
+      }
+      return samples;
+    })()`,
+    true,
+  );
+}
+
+async function runMotionPreferenceAcceptance(send, targetUrl) {
+  await setReducedMotionPreference(send, false);
+  await settleViewport(send, 1440, false, 1100);
+  await send("Page.navigate", { url: targetUrl });
+  await waitForApp(send);
+  await waitForReducedMotionPreference(send, false, 2);
+
+  const openedLineage = await evaluateByValue(
+    send,
+    `(() => {
+      const control = document.querySelector('button[aria-label="Go to LINEAGE deck"]');
+      if (!control) return false;
+      control.click();
+      return true;
+    })()`,
+  );
+  if (!openedLineage) throw new Error("LINEAGE rail control is missing from the motion scenario");
+  for (let attempt = 0; attempt < 100; attempt++) {
+    const landed = await evaluateByValue(
+      send,
+      `document.querySelector('#main-content')?.getAttribute('data-active-deck') === '4' && location.hash === '#deck=lineage'`,
+    );
+    if (landed) break;
+    if (attempt === 99) throw new Error("motion scenario did not land on LINEAGE through the real rail control");
+    await new Promise((resolve) => setTimeout(resolve, 25));
+  }
+  await new Promise((resolve) => setTimeout(resolve, 600));
+
+  const targetBaseline = await captureMotionElements(send);
+  const staticFinal = await evaluateByValue(
+    send,
+    `(() => {
+      const routing = document.querySelector('.za-routing-progress');
+      const rail = document.querySelector('.za-command-rail');
+      if (!routing || !rail) return null;
+      const routingRect = routing.getBoundingClientRect();
+      const routingParentRect = routing.parentElement?.getBoundingClientRect();
+      const railRect = rail.getBoundingClientRect();
+      if (!routingParentRect) return null;
+      return {
+        routing: { width: routingParentRect.width, height: routingRect.height },
+        rail: { width: 220, height: railRect.height },
+        pip: { width: 26, height: 8 },
+      };
+    })()`,
+  );
+  if (!staticFinal) throw new Error("semantic motion hooks are missing from the target baseline");
+
+  const hudPath = await evaluateByValue(
+    send,
+    `(async () => {
+      const scroller = document.querySelector('#main-content');
+      const section = document.querySelector('section[data-deck="4"]');
+      const hud = document.querySelector('.za-corner-hud');
+      const progress = document.querySelector('.za-airframe-progress');
+      const routingControls = [...document.querySelectorAll('button[aria-controls="routing-lane-detail"]')];
+      const routingTarget = routingControls.at(-1);
+      const pipTarget = [...document.querySelectorAll('.za-lcars-pip')]
+        .find((element) => element.getAttribute('aria-label') === ${JSON.stringify(MOTION_PIP_LABEL)});
+      const firstPip = document.querySelector('.za-lcars-pip');
+      const lineageControl = document.querySelector('button[aria-label="Go to LINEAGE deck"]');
+      if (
+        !scroller || !section || !hud || !progress || routingControls.length < 2 || !routingTarget ||
+        !pipTarget || !firstPip || !lineageControl
+      ) return { ok: false, reason: 'LINEAGE HUD structure or real reset controls are missing' };
+      const settle = () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(resolve, 340))));
+      const collectVisiblePoints = async () => {
+        const available = Math.max(120, section.offsetHeight - Math.min(scroller.clientHeight * 0.45, 480));
+        const visible = [];
+        for (const fraction of [0.8, 0.65, 0.5, 0.35, 0.2]) {
+          const top = Math.min(scroller.scrollHeight - scroller.clientHeight, section.offsetTop + available * fraction);
+          scroller.scrollTo({ top, behavior: 'auto' });
+          await settle();
+          const rect = progress.getBoundingClientRect();
+          if (
+            scroller.getAttribute('data-active-deck') === '4' &&
+            !hud.classList.contains('yield') && rect.width > 0 && rect.height > 0
+          ) {
+            visible.push({
+              top: scroller.scrollTop,
+              sectionOffset: scroller.scrollTop - section.offsetTop,
+              rect: { width: rect.width, height: rect.height },
+            });
+          }
+        }
+        return visible;
+      };
+      routingTarget.click();
+      document.querySelector('.za-command-rail button[aria-label="Expand command rail"]')?.click();
+      pipTarget.click();
+      await settle();
+      await settle();
+      const finalPoints = await collectVisiblePoints();
+      if (!pipTarget.matches('.on[aria-current="true"]') || finalPoints.length === 0) {
+        return { ok: false, reason: 'target craft did not expose a naturally visible final HUD path', points: finalPoints };
+      }
+
+      routingControls[1].click();
+      document.querySelector('.za-command-rail button[aria-label="Stow command rail"]')?.click();
+      firstPip.click();
+      await settle();
+      lineageControl.click();
+      await settle();
+      await settle();
+      const points = await collectVisiblePoints();
+      const pair = points.flatMap((start) => finalPoints.map((final) => ({ start, final })))
+        .find(({ start, final }) => Math.abs(start.rect.width - final.rect.width) > 3);
+      if (!pair) return { ok: false, reason: 'a distinct naturally visible LINEAGE HUD path was not found', points: [...points, ...finalPoints] };
+      const { start, final } = pair;
+      scroller.scrollTo({ top: start.top, behavior: 'auto' });
+      await settle();
+      const resetRect = progress.getBoundingClientRect();
+      if (
+        hud.classList.contains('yield') || resetRect.width <= 0 || resetRect.height <= 0 ||
+        pipTarget.matches('.on[aria-current="true"]') || routingControls[1].getAttribute('aria-pressed') !== 'true' ||
+        !document.querySelector('.za-command-rail button[aria-label="Expand command rail"]')
+      ) {
+        return { ok: false, reason: 'the real HUD and controls did not return to the normal-motion start state', points };
+      }
+      return { ok: true, start: { ...start, rect: { width: resetRect.width, height: resetRect.height } }, final };
+    })()`,
+    true,
+  );
+  if (!hudPath.ok) throw new Error(`${hudPath.reason}: ${JSON.stringify(hudPath.points ?? [])}`);
+  const expectedFinal = { ...staticFinal, hud: hudPath.final.rect };
+  const normalStartCapture = await captureMotionElements(send);
+
+  const normalIntermediateCapture = await evaluateByValue(
+    send,
+    `(async () => {
+      const capture = ${MOTION_CAPTURE_SOURCE};
+      const startRects = ${JSON.stringify(
+        Object.fromEntries(Object.entries(normalStartCapture.elements).map(([name, sample]) => [name, sample.rect])),
+      )};
+      const finalRects = ${JSON.stringify(expectedFinal)};
+      const dimensions = { routing: ['width'], hud: ['width'], rail: ['width'], pip: ['width', 'height'] };
+      const isStrictlyIntermediate = (sample) => Object.entries(dimensions).every(([name, axes]) =>
+        axes.every((axis) => {
+          const start = startRects[name][axis];
+          const final = finalRects[name][axis];
+          const value = sample.elements[name]?.rect?.[axis];
+          return (
+            Number.isFinite(value) &&
+            Math.abs(value - start) > 0.01 &&
+            Math.abs(value - final) > 0.01
+          );
+        })
+      );
+      const routingControls = [...document.querySelectorAll('button[aria-controls="routing-lane-detail"]')];
+      const routing = routingControls.at(-1);
+      const rail = document.querySelector('.za-command-rail button[aria-label="Expand command rail"]');
+      const pip = [...document.querySelectorAll('.za-lcars-pip')]
+        .find((element) => element.getAttribute('aria-label') === ${JSON.stringify(MOTION_PIP_LABEL)});
+      const scroller = document.querySelector('#main-content');
+      const section = document.querySelector('section[data-deck="4"]');
+      if (!routing || !rail || !pip || !scroller || !section) return { ok: false, reason: 'real motion controls are missing' };
+      routing.click();
+      rail.click();
+      pip.click();
+      const startedAt = performance.now();
+      return new Promise((resolve) => {
+        let frameCount = 0;
+        const trace = [];
+        const inspect = () => {
+          frameCount += 1;
+          const sample = capture();
+          const elapsedMs = performance.now() - startedAt;
+          trace.push({ elapsedMs, rects: Object.fromEntries(Object.entries(sample.elements).map(([name, value]) => [name, value?.rect])) });
+          if (isStrictlyIntermediate(sample)) {
+            resolve({ ok: true, frameCount, elapsedMs, trace, ...sample });
+          } else if (frameCount >= 10 || elapsedMs >= 220) {
+            resolve({ ok: false, reason: 'all four motion targets did not become intermediate together', frameCount, elapsedMs, trace, ...sample });
+          } else {
+            requestAnimationFrame(inspect);
+          }
+        };
+        requestAnimationFrame(() => {
+          scroller.scrollTo({ top: Math.max(0, section.offsetTop - 8), behavior: 'auto' });
+          requestAnimationFrame(() => {
+            scroller.scrollTo({ top: section.offsetTop + ${Number(hudPath.final.sectionOffset)}, behavior: 'auto' });
+            requestAnimationFrame(inspect);
+          });
+        });
+      });
+    })()`,
+    true,
+  );
+  if (!normalIntermediateCapture.ok) {
+    throw new Error(`${normalIntermediateCapture.reason}: ${JSON.stringify(normalIntermediateCapture)}`);
+  }
+
+  await setReducedMotionPreference(send, true);
+  await waitForReducedMotionPreference(send, true, 2);
+  const reducedAfterInterruptCapture = await captureMotionElements(send);
+
+  await setReducedMotionPreference(send, false);
+  await waitForReducedMotionPreference(send, false, 0);
+  const restoredSamples = await captureRestoredMotionSeries(send);
+
+  await setReducedMotionPreference(send, true);
+  await waitForReducedMotionPreference(send, true, 2);
+  const reducedAgainCapture = await captureMotionElements(send);
+
+  const scenario = {
+    interruptSettledWithinFrames: 2,
+    pipTargetWasUnselected: targetBaseline.pipTargetSelected === false,
+    pipTargetIsSelected:
+      normalIntermediateCapture.pipTargetSelected === true &&
+      reducedAfterInterruptCapture.pipTargetSelected === true &&
+      restoredSamples.every((sample) => sample.pipTargetSelected === true) &&
+      reducedAgainCapture.pipTargetSelected === true,
+    normalStart: normalStartCapture.elements,
+    normalIntermediate: normalIntermediateCapture.elements,
+    expectedFinal,
+    reducedAfterInterrupt: reducedAfterInterruptCapture.elements,
+    restoredSamples: restoredSamples.map(({ observedAtMs, elements }) => ({ atMs: observedAtMs, elements })),
+    reducedAgain: reducedAgainCapture.elements,
+  };
+  const failures = motionPreferenceAcceptanceFailures(scenario);
+  return {
+    ...scenario,
+    failures,
+    hudPath,
+    observedRestoreTimesMs: restoredSamples.map((sample) => sample.observedAtMs),
+    ok: failures.length === 0,
+  };
 }
 
 async function main() {
@@ -872,181 +1177,7 @@ async function main() {
       returnByValue: true,
     });
     const bitFocus = bitFocusEvaluation.result.value;
-    await emulateReducedMotion(send, false);
-    const normalMotionEvaluation = await send("Runtime.evaluate", {
-      expression: `(() => {
-        const elements = {
-          routing: document.querySelector('.za-routing-progress, #routing-lane-detail > div.mt-8 > div'),
-          hud: document.querySelector('.za-airframe-progress, .za-airframe-details > div:last-child > div'),
-          rail: document.querySelector('.za-command-rail, aside:has(nav[aria-label="Command decks"])'),
-          pip: document.querySelector('.za-lcars-pip-mark'),
-        };
-        const missing = Object.entries(elements).filter(([, element]) => !element).map(([name]) => name);
-        const seconds = (value) => value.split(',').reduce((maximum, part) => {
-          const token = part.trim();
-          const milliseconds = token.endsWith('ms') ? parseFloat(token) : parseFloat(token) * 1000;
-          return Math.max(maximum, Number.isFinite(milliseconds) ? milliseconds : 0);
-        }, 0);
-        return {
-          missing,
-          transitions: Object.fromEntries(Object.entries(elements).filter(([, element]) => element).map(([name, element]) => {
-            const style = getComputedStyle(element);
-            return [name, { durationMs: seconds(style.transitionDuration), delayMs: seconds(style.transitionDelay), property: style.transitionProperty }];
-          })),
-        };
-      })()`,
-      returnByValue: true,
-    });
-    const normalMotion = normalMotionEvaluation.result.value;
-    await emulateReducedMotion(send, true);
-    const reducedMotionEvaluation = await send("Runtime.evaluate", {
-      expression: `(async () => {
-        const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
-        const settle = async () => { await nextFrame(); await nextFrame(); };
-        const elements = () => ({
-          routing: document.querySelector('.za-routing-progress, #routing-lane-detail > div.mt-8 > div'),
-          hud: document.querySelector('.za-airframe-progress, .za-airframe-details > div:last-child > div'),
-          rail: document.querySelector('.za-command-rail, aside:has(nav[aria-label="Command decks"])'),
-          pip: document.querySelector('.za-lcars-pip-mark'),
-        });
-        const seconds = (value) => value.split(',').reduce((maximum, part) => {
-          const token = part.trim();
-          const milliseconds = token.endsWith('ms') ? parseFloat(token) : parseFloat(token) * 1000;
-          return Math.max(maximum, Number.isFinite(milliseconds) ? milliseconds : 0);
-        }, 0);
-        const transitionOf = (element) => {
-          const style = getComputedStyle(element);
-          return { durationMs: seconds(style.transitionDuration), delayMs: seconds(style.transitionDelay), property: style.transitionProperty };
-        };
-        const rectOf = (element) => {
-          const rect = element.getBoundingClientRect();
-          return { width: rect.width, height: rect.height };
-        };
-        const snapshot = () => Object.fromEntries(Object.entries(elements()).map(([name, element]) => [name, element ? rectOf(element) : null]));
-        const failures = [];
-        const initial = elements();
-        Object.entries(initial).forEach(([name, element]) => {
-          if (!element) failures.push(name + ' reduced-motion element is missing');
-          else {
-            const transition = transitionOf(element);
-            if (transition.durationMs !== 0 || transition.delayMs !== 0) {
-              failures.push(name + ' transition remains ' + transition.durationMs + 'ms + ' + transition.delayMs + 'ms delay (' + transition.property + ')');
-            }
-          }
-        });
-
-        const routingButtons = [...document.querySelectorAll('button[aria-controls="routing-lane-detail"]')];
-        routingButtons.at(-1)?.click();
-        document.querySelector('button[aria-label="Expand command rail"]')?.click();
-        [...document.querySelectorAll('.za-lcars-pip')].at(-1)?.click();
-        await settle();
-        const scroller = document.querySelector('#main-content');
-        if (scroller) {
-          scroller.scrollTo({ top: (scroller.scrollHeight - scroller.clientHeight) / 2, behavior: 'auto' });
-          scroller.dispatchEvent(new Event('scroll'));
-        }
-        await settle();
-        document.querySelector('.za-corner-hud')?.classList.remove('yield');
-        await nextFrame();
-
-        const changed = elements();
-        const routingPercent = parseFloat(changed.routing?.style.width ?? 'NaN');
-        const routingExpected = changed.routing?.parentElement ? changed.routing.parentElement.clientWidth * routingPercent / 100 : NaN;
-        const hudPercent = parseFloat(changed.hud?.style.width ?? 'NaN');
-        const hudExpected = changed.hud?.parentElement ? changed.hud.parentElement.clientWidth * hudPercent / 100 : NaN;
-        const changedGeometry = snapshot();
-        if (!Number.isFinite(routingExpected) || Math.abs(changedGeometry.routing.width - routingExpected) > 0.5) {
-          failures.push('routing progress did not resolve immediately to its inline width');
-        }
-        if (!Number.isFinite(hudExpected) || hudPercent <= 0 || Math.abs(changedGeometry.hud.width - hudExpected) > 0.5) {
-          failures.push('HUD progress did not resolve immediately to its inline width');
-        }
-        if (Math.abs(changedGeometry.rail.width - 220) > 0.5) failures.push('desktop rail did not resolve immediately to 220px');
-        const selectedPip = document.querySelector('.za-lcars-pip.on .za-lcars-pip-mark');
-        const selectedPipRect = selectedPip?.getBoundingClientRect();
-        if (!selectedPipRect || Math.abs(selectedPipRect.width - 26) > 0.5 || Math.abs(selectedPipRect.height - 8) > 0.5) {
-          failures.push('selected aircraft pip did not resolve immediately to 26x8px');
-        }
-
-        return {
-          failures,
-          ok: failures.length === 0,
-          transitions: Object.fromEntries(Object.entries(changed).filter(([, element]) => element).map(([name, element]) => [name, transitionOf(element)])),
-          changedGeometry,
-        };
-      })()`,
-      awaitPromise: true,
-      returnByValue: true,
-    });
-    const reducedMotion = reducedMotionEvaluation.result.value;
-    const settledReducedGeometry = reducedMotion.changedGeometry;
-    await emulateReducedMotion(send, false);
-    await new Promise((resolve) => setTimeout(resolve, 600));
-    const restoredMotionEvaluation = await send("Runtime.evaluate", {
-      expression: `(() => {
-        const elements = {
-          routing: document.querySelector('.za-routing-progress, #routing-lane-detail > div.mt-8 > div'),
-          hud: document.querySelector('.za-airframe-progress, .za-airframe-details > div:last-child > div'),
-          rail: document.querySelector('.za-command-rail, aside:has(nav[aria-label="Command decks"])'),
-          pip: document.querySelector('.za-lcars-pip-mark'),
-        };
-        const seconds = (value) => value.split(',').reduce((maximum, part) => {
-          const token = part.trim();
-          const milliseconds = token.endsWith('ms') ? parseFloat(token) : parseFloat(token) * 1000;
-          return Math.max(maximum, Number.isFinite(milliseconds) ? milliseconds : 0);
-        }, 0);
-        const geometry = Object.fromEntries(Object.entries(elements).map(([name, element]) => {
-          if (!element) return [name, null];
-          const rect = element.getBoundingClientRect();
-          return [name, { width: rect.width, height: rect.height }];
-        }));
-        const transitions = Object.fromEntries(Object.entries(elements).filter(([, element]) => element).map(([name, element]) => {
-          const style = getComputedStyle(element);
-          return [name, { durationMs: seconds(style.transitionDuration), delayMs: seconds(style.transitionDelay), property: style.transitionProperty }];
-        }));
-        return { geometry, transitions };
-      })()`,
-      returnByValue: true,
-    });
-    const restoredMotion = restoredMotionEvaluation.result.value;
-    await emulateReducedMotion(send, true);
-    const finalReducedEvaluation = await send("Runtime.evaluate", {
-      expression: `(() => Object.fromEntries(Object.entries({
-        routing: document.querySelector('.za-routing-progress, #routing-lane-detail > div.mt-8 > div'),
-        hud: document.querySelector('.za-airframe-progress, .za-airframe-details > div:last-child > div'),
-        rail: document.querySelector('.za-command-rail, aside:has(nav[aria-label="Command decks"])'),
-        pip: document.querySelector('.za-lcars-pip-mark'),
-      }).map(([name, element]) => {
-        if (!element) return [name, null];
-        const style = getComputedStyle(element);
-        const toMs = (value) => value.split(',').reduce((maximum, part) => Math.max(maximum, part.trim().endsWith('ms') ? parseFloat(part) : parseFloat(part) * 1000), 0);
-        return [name, { durationMs: toMs(style.transitionDuration), delayMs: toMs(style.transitionDelay) }];
-      })))()`,
-      returnByValue: true,
-    });
-    const finalReducedMotion = finalReducedEvaluation.result.value;
-    const restoredMotionFailures = [];
-    for (const [name, transition] of Object.entries(restoredMotion.transitions)) {
-      if (transition.durationMs <= 0) restoredMotionFailures.push(`${name} normal-motion transition was not restored`);
-    }
-    for (const [name, geometry] of Object.entries(restoredMotion.geometry)) {
-      const settled = settledReducedGeometry[name];
-      if (
-        !geometry ||
-        !settled ||
-        Math.abs(geometry.width - settled.width) > 0.5 ||
-        Math.abs(geometry.height - settled.height) > 0.5
-      ) {
-        restoredMotionFailures.push(`${name} replayed stale geometry after normal motion was restored`);
-      }
-    }
-    for (const [name, transition] of Object.entries(finalReducedMotion)) {
-      if (!transition || transition.durationMs !== 0 || transition.delayMs !== 0) {
-        restoredMotionFailures.push(`${name} transition survived the second reduced-motion change`);
-      }
-    }
-    restoredMotion.ok = restoredMotionFailures.length === 0;
-    restoredMotion.failures = restoredMotionFailures;
+    const motionPreference = await runMotionPreferenceAcceptance(send, targetUrl);
     console.log(
       JSON.stringify(
         {
@@ -1058,10 +1189,7 @@ async function main() {
           desktopEveScenarios,
           eveFocus,
           flights,
-          finalReducedMotion,
-          normalMotion,
-          reducedMotion,
-          restoredMotion,
+          motionPreference,
           snapshotGeometry,
           mobile320: narrowResult,
         },
@@ -1077,19 +1205,10 @@ async function main() {
     assert.equal(desktopLayout.ok, true, desktopLayout.failures.join("; "));
     assert.equal(bitFocus.ok, true, "Bit control must retain a visible keyboard focus indicator");
     assert.equal(eveFocus.ok, true, "E.V.E. command input must retain a visible keyboard focus indicator");
-    assert.deepEqual(
-      normalMotion.missing,
-      [],
-      `Normal-motion acceptance elements are missing: ${normalMotion.missing}`,
-    );
-    Object.entries(normalMotion.transitions).forEach(([name, transition]) =>
-      assert.ok(transition.durationMs > 0, `${name} must preserve its normal-motion transition`),
-    );
-    assert.equal(reducedMotion.ok, true, `Reduced-motion acceptance failed: ${reducedMotion.failures.join("; ")}`);
     assert.equal(
-      restoredMotion.ok,
+      motionPreference.ok,
       true,
-      `Live motion preference acceptance failed: ${restoredMotion.failures.join("; ")}`,
+      `Live motion preference acceptance failed: ${motionPreference.failures.join("; ")}`,
     );
     desktopEveScenarios.forEach((scenario) =>
       assert.equal(
