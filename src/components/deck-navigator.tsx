@@ -86,11 +86,10 @@ export function DeckNavigator({
           ))}
         </div>
         <div className="flex flex-wrap gap-4 border-t border-line px-5 py-2 za-mono text-[9px] tracking-[0.14em] text-dim">
-          <span>1–9 JUMP</span>
+          <span>ARROWS MOVE</span>
           <span className="text-green">CURRENT</span>
-          <span className="text-red">R RED ALERT</span>
-          <span>A AUDIO</span>
-          <span>T AUTOPILOT</span>
+          <span>ENTER SELECT</span>
+          <span>ESC CLOSE</span>
           <span>⌘K PALETTE</span>
         </div>
       </div>

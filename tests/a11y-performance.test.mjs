@@ -939,6 +939,27 @@ test("Snapshot prose separates the verification date from the preceding word", a
   }
 });
 
+test("deck navigator legend advertises only the available keyboard interactions", async () => {
+  const view = mountCommandDeck();
+  try {
+    await view.render();
+    const opener = [...view.document.querySelectorAll('button[aria-label="Open deck navigator"]')].at(-1);
+    await view.click(opener);
+    const dialog = view.document.querySelector('[role="dialog"][aria-label="Deck navigator"]');
+    assert.ok(dialog, "expected the visible deck navigator");
+
+    const legend = dialog.lastElementChild?.textContent ?? "";
+    for (const interaction of ["ARROWS MOVE", "ENTER SELECT", "ESC CLOSE", "⌘K PALETTE"]) {
+      assert.match(legend, new RegExp(interaction), `${interaction} must be advertised`);
+    }
+    for (const retiredShortcut of ["1–9 JUMP", "R RED ALERT", "A AUDIO", "T AUTOPILOT"]) {
+      assert.doesNotMatch(legend, new RegExp(retiredShortcut), `${retiredShortcut} must not be advertised`);
+    }
+  } finally {
+    await view.cleanup();
+  }
+});
+
 test("deck navigator initializes focus, traps both tab directions, closes safely, and restores its opener", async () => {
   const view = mountCommandDeck();
   try {
