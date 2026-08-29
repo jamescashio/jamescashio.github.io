@@ -1076,6 +1076,40 @@ test("deck navigator initializes focus, traps both tab directions, closes safely
   }
 });
 
+test("deck navigator arrow keys move and wrap deck-button focus without selecting a deck", async () => {
+  const view = mountCommandDeck();
+  try {
+    await view.render();
+    const pageArrow = await view.key(view.document.body, "ArrowRight");
+    assert.equal(pageArrow.defaultPrevented, false, "page arrows must remain native outside the dialog");
+    assert.equal(useDeck.getState().deck, 0, "page arrows must not act as hidden deck shortcuts");
+
+    await view.click([...view.document.querySelectorAll('button[aria-label="Open deck navigator"]')].at(-1));
+    const dialog = view.document.querySelector('[role="dialog"][aria-label="Deck navigator"]');
+    assert.ok(dialog, "expected the visible deck navigator");
+    const deckButtons = [...dialog.querySelectorAll('button[aria-label^="Go to "]')];
+    assert.equal(view.document.activeElement, deckButtons[0]);
+
+    const previous = await view.key(deckButtons[0], "ArrowLeft");
+    assert.equal(previous.defaultPrevented, true, "focused deck arrows must own navigation");
+    assert.equal(view.document.activeElement, deckButtons.at(-1), "ArrowLeft must wrap first to last");
+
+    const next = await view.key(deckButtons.at(-1), "ArrowDown");
+    assert.equal(next.defaultPrevented, true, "vertical arrows must use the same deck-button path");
+    assert.equal(view.document.activeElement, deckButtons[0], "ArrowDown must wrap last to first");
+
+    await view.key(deckButtons[0], "ArrowRight");
+    assert.equal(view.document.activeElement, deckButtons[1], "ArrowRight must focus the next deck");
+    await view.key(deckButtons[1], "ArrowUp");
+    assert.equal(view.document.activeElement, deckButtons[0], "ArrowUp must focus the previous deck");
+    assert.equal(useDeck.getState().deck, 0, "focus movement must not select a deck");
+    assert.equal(deckButtons[0].getAttribute("aria-current"), "page", "CURRENT must remain on the active deck");
+    assert.ok(view.document.querySelector('[role="dialog"]'), "focus movement must not close the navigator");
+  } finally {
+    await view.cleanup();
+  }
+});
+
 test("deck navigator selection focuses Contact without displacing the commanded scroll landing", () => {
   const dom = new JSDOM(`<!doctype html><body>
     <button id="opener">OPEN</button>
@@ -1654,18 +1688,33 @@ test("Builds article arrows work only while the focused article selector owns th
     await view.click(labeledButton(view.document, "Go to BUILDS deck"));
     const selector = view.document.querySelector('[role="group"][aria-label="Select a test article"]');
     assert.ok(selector, "expected the real Builds article selector");
-    const firstArticle = selector.querySelector("button");
-    assert.ok(firstArticle, "expected a focusable article selector control");
+    const articles = [...selector.querySelectorAll("button")];
+    assert.equal(articles.length, 7, "expected all seven focusable article controls");
 
     await act(async () => useDeck.setState({ sel: 0 }));
     const pageArrow = await view.key(view.document.body, "ArrowRight");
     assert.equal(pageArrow.defaultPrevented, false);
     assert.equal(useDeck.getState().sel, 0, "unfocused page arrows must not select an article");
 
-    firstArticle.focus();
-    const selectorArrow = await view.key(firstArticle, "ArrowLeft");
-    assert.equal(selectorArrow.defaultPrevented, true, "focused selector arrows must own their navigation");
-    assert.equal(useDeck.getState().sel, 6, "selector ArrowLeft must wrap to Article 7");
+    articles[3].focus();
+    const right = await view.key(articles[3], "ArrowRight");
+    assert.equal(right.defaultPrevented, true, "focused selector arrows must own their navigation");
+    assert.equal(useDeck.getState().sel, 4, "ArrowRight must select relative to the focused article");
+    assert.equal(view.document.activeElement, articles[4], "ArrowRight must move focus with selection");
+    assert.equal(articles[4].getAttribute("aria-pressed"), "true");
+    assert.match(articles[4].getAttribute("aria-label") ?? "", /^Article 5 of 7, .+, .+$/);
+
+    articles[2].focus();
+    const left = await view.key(articles[2], "ArrowLeft");
+    assert.equal(left.defaultPrevented, true);
+    assert.equal(useDeck.getState().sel, 1, "ArrowLeft must select relative to the focused article");
+    assert.equal(view.document.activeElement, articles[1], "ArrowLeft must move focus with selection");
+    assert.equal(articles[1].getAttribute("aria-pressed"), "true");
+
+    articles[0].focus();
+    await view.key(articles[0], "ArrowLeft");
+    assert.equal(view.document.activeElement, articles.at(-1), "ArrowLeft must wrap without escaping the selector");
+    assert.equal(articles.at(-1).getAttribute("aria-pressed"), "true");
   } finally {
     await view.cleanup();
   }

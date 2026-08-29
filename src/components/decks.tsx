@@ -536,9 +536,14 @@ export function DeckBuilds({ s5, onSelect }: { s5: SecRef; onSelect: (article: n
               aria-label="Select a test article"
               onKeyDown={(event) => {
                 if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+                const buttons = [...event.currentTarget.querySelectorAll<HTMLButtonElement>("button")];
+                const currentIndex = buttons.indexOf(document.activeElement as HTMLButtonElement);
+                if (currentIndex < 0) return;
                 event.preventDefault();
                 const direction = event.key === "ArrowRight" ? 1 : -1;
-                onSelect((sel + ARTICLES.length + direction) % ARTICLES.length);
+                const targetIndex = (currentIndex + ARTICLES.length + direction) % ARTICLES.length;
+                onSelect(targetIndex);
+                buttons[targetIndex].focus();
               }}
             >
               {ARTICLES.map((a, i) => (

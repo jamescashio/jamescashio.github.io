@@ -43,6 +43,23 @@ export function DeckNavigator({
             onClose();
             return;
           }
+          const arrowDirection =
+            event.key === "ArrowDown" || event.key === "ArrowRight"
+              ? 1
+              : event.key === "ArrowUp" || event.key === "ArrowLeft"
+                ? -1
+                : 0;
+          if (arrowDirection) {
+            const deckButtons = [
+              ...(dialogRef.current?.querySelectorAll<HTMLButtonElement>('button[aria-label^="Go to "]') ?? []),
+            ];
+            const currentIndex = deckButtons.indexOf(document.activeElement as HTMLButtonElement);
+            if (currentIndex >= 0) {
+              event.preventDefault();
+              deckButtons[(currentIndex + deckButtons.length + arrowDirection) % deckButtons.length].focus();
+            }
+            return;
+          }
           if (event.key !== "Tab") return;
           const controls = [...(dialogRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? [])];
           const currentIndex = controls.indexOf(document.activeElement as HTMLElement);
