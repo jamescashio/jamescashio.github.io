@@ -280,3 +280,99 @@ test("verification cleanup reports primary then cleanup failures deterministical
       error.errors[1] === cleanup,
   );
 });
+
+const approvedFlightScenario = {
+  viewport: [320, 844],
+  activeDeck: "8",
+  scrollerId: "main-content",
+  scrollerScrollTop: 8760,
+  contentPassedUnderSurface: true,
+  inactive: {
+    tagName: "BUTTON",
+    backgroundAlpha: 1,
+    beforeScroll: { left: 12, top: 68, width: 288, height: 44 },
+    afterScroll: { left: 12, top: 68, width: 288, height: 44 },
+  },
+  active: {
+    tagName: "SECTION",
+    backgroundAlpha: 1,
+    beforeScroll: { left: 12, top: 68, width: 288, height: 62 },
+    afterScroll: { left: 12, top: 68, width: 288, height: 62 },
+    stopControl: { tagName: "BUTTON", left: 199.734375, top: 77, width: 91.265625, height: 44 },
+  },
+};
+
+test("mobile flight acceptance rejects an opaque surface that skips Contact and approved fixed geometry", () => {
+  const validate = runtimeSupport.mobileFlightAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  const failures = validate({
+    ...approvedFlightScenario,
+    activeDeck: "0",
+    scrollerId: null,
+    contentPassedUnderSurface: false,
+    inactive: {
+      ...approvedFlightScenario.inactive,
+      beforeScroll: { left: 20, top: 80, width: 280, height: 48 },
+      afterScroll: { left: 20, top: 80, width: 280, height: 48 },
+    },
+  });
+
+  assert.ok(failures.some((failure) => /Contact deck/.test(failure)));
+  assert.ok(failures.some((failure) => /#main-content/.test(failure)));
+  assert.ok(failures.some((failure) => /pass beneath/.test(failure)));
+  assert.ok(failures.some((failure) => /inactive geometry/.test(failure)));
+});
+
+test("mobile flight acceptance recognizes the approved 320 and 390 Contact geometries", () => {
+  const validate = runtimeSupport.mobileFlightAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  assert.deepEqual(validate(approvedFlightScenario), []);
+  assert.deepEqual(validate({ ...approvedFlightScenario, viewport: [390, 844] }), []);
+});
+
+test("mobile flight acceptance rejects an active STOP target below 44px", () => {
+  const validate = runtimeSupport.mobileFlightAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  const failures = validate({
+    ...approvedFlightScenario,
+    active: {
+      ...approvedFlightScenario.active,
+      stopControl: { ...approvedFlightScenario.active.stopControl, height: 40 },
+    },
+  });
+  assert.ok(failures.some((failure) => /STOP FLIGHT.*at least 44px/.test(failure)));
+});
+
+test("mobile cinema acceptance rejects exposed background controls and an untrapped focus path", () => {
+  const validate = runtimeSupport.mobileCinemaAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  const failures = validate({
+    viewport: [390, 844],
+    activeFlightStarted: true,
+    skipPresent: true,
+    flightPresent: true,
+    exposedTabStops: ["EXIT CINEMA", "EMAIL"],
+    exit: { visible: true, left: 270, right: 380, top: 770, bottom: 820, width: 110, height: 50 },
+    tab: { defaultPrevented: false, activeLabel: "EMAIL" },
+    shiftTab: { defaultPrevented: false, activeLabel: "Skip to content" },
+  });
+
+  assert.ok(failures.some((failure) => /skip link/.test(failure)));
+  assert.ok(failures.some((failure) => /flight control/.test(failure)));
+  assert.ok(failures.some((failure) => /sole exposed tab stop/.test(failure)));
+  assert.ok(failures.some((failure) => /Tab loop/.test(failure)));
+  assert.ok(failures.some((failure) => /safe margins/.test(failure)));
+});
+
+test("mobile cinema acceptance recognizes the approved active-flight PHOTO focus boundary", () => {
+  const validate = runtimeSupport.mobileCinemaAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  assert.deepEqual(
+    validate({
+      viewport: [390, 844],
+      activeFlightStarted: true,
+      skipPresent: false,
+      flightPresent: false,
+      exposedTabStops: ["EXIT CINEMA"],
+      exit: { visible: true, left: 245, right: 370, top: 780, bottom: 824, width: 125, height: 44 },
+      tab: { defaultPrevented: true, activeLabel: "EXIT CINEMA" },
+      shiftTab: { defaultPrevented: true, activeLabel: "EXIT CINEMA" },
+    }),
+    [],
+  );
+});

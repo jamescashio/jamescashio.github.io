@@ -793,6 +793,10 @@ export function CommandDeck() {
       const interactive = isInteractiveShortcutTarget(e.target);
       const eveInput = e.target instanceof HTMLElement && e.target.matches("#eve-command");
       if (useDeck.getState().photo) {
+        if (k === "tab") {
+          e.preventDefault();
+          cinemaExit.current?.focus();
+        }
         if (k === "escape") {
           e.preventDefault();
           closeCinema();

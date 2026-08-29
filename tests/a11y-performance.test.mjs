@@ -860,6 +860,41 @@ test("PHOTO opens a visible cinema dialog that exits by button or Escape and res
   }
 });
 
+test("PHOTO cinema traps both Tab directions on EXIT without exposing background controls", async () => {
+  const view = mountCommandDeck({ controlledTimers: true });
+  try {
+    await view.render();
+    const photo = [...view.document.querySelectorAll('button[data-cmd="photo"]')].at(-1);
+    assert.ok(photo, "expected the visible E.V.E. PHOTO control");
+    photo.focus();
+    await view.click(photo);
+    await view.runControlledTimeout(400);
+    await view.runLatestAnimationFrame();
+
+    const dialog = view.document.querySelector('[role="dialog"][aria-label="Cinema view"]');
+    assert.ok(dialog, "PHOTO must open the cinema dialog");
+    const exit = [...dialog.querySelectorAll("button")].find((button) => button.textContent === "EXIT CINEMA");
+    assert.ok(exit, "cinema must expose EXIT CINEMA");
+    assert.equal(view.document.activeElement, exit, "cinema must begin on EXIT CINEMA");
+    assert.ok(view.document.querySelector("main")?.closest('[inert][aria-hidden="true"]'));
+
+    const tab = await view.key(exit, "Tab");
+    assert.equal(tab.defaultPrevented, true, "cinema must own forward Tab navigation");
+    assert.equal(view.document.activeElement, exit, "Tab must remain on EXIT CINEMA");
+
+    const shiftTab = await view.key(exit, "Tab", { shiftKey: true });
+    assert.equal(shiftTab.defaultPrevented, true, "cinema must own reverse Tab navigation");
+    assert.equal(view.document.activeElement, exit, "Shift+Tab must remain on EXIT CINEMA");
+
+    const exposedFocusable = [
+      ...view.document.querySelectorAll('a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])'),
+    ].filter((control) => !control.closest('[inert][aria-hidden="true"]'));
+    assert.deepEqual(exposedFocusable, [exit], "background controls must remain outside the exposed focus order");
+  } finally {
+    await view.cleanup();
+  }
+});
+
 test("mobile cinema exposes only its exit while fixed background controls are absent or isolated", async () => {
   const view = mountCommandDeck({
     controlledTimers: true,

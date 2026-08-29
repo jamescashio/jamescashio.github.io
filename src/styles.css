@@ -484,6 +484,7 @@
   section[aria-label="30-second flight status"].fixed > button {
     width: auto;
     min-width: 5.5rem;
+    min-height: 44px;
     margin-top: 0;
   }
   section[aria-label="30-second flight status"].fixed ~ main section[data-deck="0"].za-mobile-rail-clearance {

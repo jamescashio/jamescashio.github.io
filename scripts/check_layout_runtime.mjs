@@ -7,7 +7,12 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { connectCdp, runWithLayoutCleanup } from "./layout-runtime-support.mjs";
+import {
+  connectCdp,
+  mobileCinemaAcceptanceFailures,
+  mobileFlightAcceptanceFailures,
+  runWithLayoutCleanup,
+} from "./layout-runtime-support.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = path.join(ROOT, "dist");
@@ -264,76 +269,214 @@ async function main() {
       snapshotGeometry.push(evaluated.result.value);
     }
     const flights = [];
+    let cinema;
     for (const width of [320, 390]) {
       await settleViewport(send, width, true);
-      await send("Runtime.evaluate", {
-        expression: `document.documentElement.style.setProperty("--za-safe-area-inset-bottom", "${SAFE_AREA_PX}px"); document.querySelector(".za-scroll")?.scrollTo({ top: 0 });`,
-      });
-      const launchEvaluation = await send("Runtime.evaluate", {
-        expression: `(() => {
-          const button = [...document.querySelectorAll('button[aria-label="Run the 30-second flight"]')].find((element) => element.getClientRects().length > 0);
-          if (!button) return { ok: false, reason: "mobile flight launch control is missing" };
-          const style = getComputedStyle(button);
-          const color = style.backgroundColor;
-          const alpha =
-            color === "transparent"
-              ? 0
-              : color.includes("/")
-                ? Number.parseFloat(color.split("/").at(-1))
-                : color.startsWith("rgba(")
-                  ? Number.parseFloat(color.split(",").at(-1))
-                  : 1;
-          const rect = button.getBoundingClientRect();
+      const flightEvaluation = await send("Runtime.evaluate", {
+        expression: `(async () => {
+          const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
+          const settle = async () => {
+            await nextFrame();
+            await nextFrame();
+            await new Promise((resolve) => setTimeout(resolve, 20));
+          };
+          const rectOf = (element) => {
+            const rect = element.getBoundingClientRect();
+            return { left: rect.left, top: rect.top, width: rect.width, height: rect.height };
+          };
+          const alphaOf = (element) => {
+            const color = getComputedStyle(element).backgroundColor;
+            if (color === "transparent") return 0;
+            if (color.includes("/")) return Number.parseFloat(color.split("/").at(-1));
+            if (color.startsWith("rgba(")) return Number.parseFloat(color.split(",").at(-1));
+            return 1;
+          };
+          const overlaps = (first, second) =>
+            first.left < second.right && first.right > second.left && first.top < second.bottom && first.bottom > second.top;
+          const scroller = document.querySelector("#main-content");
+          const contact = document.querySelector('section[data-deck="8"]');
+          const email = contact?.querySelector('.za-hail a[href^="mailto:"]');
+          if (!scroller || !contact || !email) return { error: "Contact scroll scenario is missing" };
+          const selectContact = async () => {
+            scroller.scrollTo({ top: Math.max(0, contact.offsetTop - 8), behavior: "auto" });
+            await settle();
+          };
+          const passEmailBeneath = async (surface) => {
+            const surfaceRect = surface.getBoundingClientRect();
+            const emailRect = email.getBoundingClientRect();
+            scroller.scrollTo({ top: scroller.scrollTop + emailRect.top - surfaceRect.top - 8, behavior: "auto" });
+            await settle();
+          };
+
+          document.documentElement.style.setProperty("--za-safe-area-inset-bottom", "${SAFE_AREA_PX}px");
+          await selectContact();
+          const inactive = document.querySelector(".za-mobile-flight-control");
+          if (!inactive) return { error: "inactive mobile flight surface is missing" };
+          const inactiveBefore = rectOf(inactive);
+          const inactiveAlpha = alphaOf(inactive);
+          await passEmailBeneath(inactive);
+          const inactiveAfter = rectOf(inactive);
+          const inactiveOverlap = overlaps(email.getBoundingClientRect(), inactive.getBoundingClientRect());
+
+          inactive.click();
+          await settle();
+          scroller.scrollTo({ top: 0, behavior: "auto" });
+          await settle();
+          await selectContact();
+          const active = document.querySelector(".za-mobile-flight-control");
+          const stop = active?.querySelector('button[aria-label="Stop the 30-second flight"]');
+          if (!active || !stop) return { error: "active mobile flight panel or STOP FLIGHT control is missing" };
+          const activeBefore = rectOf(active);
+          const activeAlpha = alphaOf(active);
+          await passEmailBeneath(active);
+          const activeAfter = rectOf(active);
+          const activeOverlap = overlaps(email.getBoundingClientRect(), active.getBoundingClientRect());
+
           return {
-            ok: alpha === 1,
-            alpha,
-            backgroundColor: color,
-            rect: { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, width: rect.width, height: rect.height },
+            viewport: [innerWidth, innerHeight],
+            activeDeck: scroller.getAttribute("data-active-deck"),
+            scrollerId: scroller.id,
+            scrollerScrollTop: scroller.scrollTop,
+            contentPassedUnderSurface: inactiveOverlap && activeOverlap,
+            inactive: {
+              tagName: inactive.tagName,
+              backgroundAlpha: inactiveAlpha,
+              beforeScroll: inactiveBefore,
+              afterScroll: inactiveAfter,
+            },
+            active: {
+              tagName: active.tagName,
+              backgroundAlpha: activeAlpha,
+              beforeScroll: activeBefore,
+              afterScroll: activeAfter,
+              stopControl: { tagName: stop.tagName, ...rectOf(stop) },
+            },
+          };
+        })()`,
+        awaitPromise: true,
+        returnByValue: true,
+      });
+      if (flightEvaluation.exceptionDetails) {
+        throw new Error(
+          flightEvaluation.exceptionDetails.exception?.description ?? flightEvaluation.exceptionDetails.text,
+        );
+      }
+      const flight = flightEvaluation.result.value;
+      flight.failures = flight.error ? [flight.error] : mobileFlightAcceptanceFailures(flight);
+      flight.ok = flight.failures.length === 0;
+      flights.push(flight);
+
+      if (width === 320) {
+        await send("Runtime.evaluate", {
+          expression:
+            'document.querySelector(".za-mobile-flight-control button[aria-label=\\"Stop the 30-second flight\\"]")?.click()',
+        });
+        continue;
+      }
+
+      const openCinema = await send("Runtime.evaluate", {
+        expression: `(async () => {
+          const photo = [...document.querySelectorAll('button[data-cmd="photo"]')].find((element) => element.getClientRects().length > 0) ?? document.querySelector('button[data-cmd="photo"]');
+          if (!photo || !document.querySelector('.za-mobile-flight-control button[aria-label="Stop the 30-second flight"]')) return false;
+          photo.focus({ preventScroll: true });
+          photo.click();
+          await new Promise((resolve) => setTimeout(resolve, 450));
+          await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+          return Boolean(document.querySelector('[role="dialog"][aria-label="Cinema view"]'));
+        })()`,
+        awaitPromise: true,
+        returnByValue: true,
+      });
+      const activeFlightStarted = openCinema.result.value;
+      const dispatchTab = async (shiftKey) => {
+        await send("Runtime.evaluate", {
+          expression: `(() => {
+            window.__zaLayoutTab = null;
+            window.addEventListener("keydown", (event) => {
+              if (event.key !== "Tab") return;
+              setTimeout(() => {
+                const active = document.activeElement;
+                window.__zaLayoutTab = {
+                  defaultPrevented: event.defaultPrevented,
+                  activeLabel: active?.getAttribute("aria-label") || active?.textContent?.trim().replace(/\\s+/g, " ") || null,
+                };
+              }, 0);
+            }, { once: true });
+          })()`,
+        });
+        await send("Input.dispatchKeyEvent", {
+          type: "keyDown",
+          key: "Tab",
+          code: "Tab",
+          modifiers: shiftKey ? 8 : 0,
+          windowsVirtualKeyCode: 9,
+          nativeVirtualKeyCode: 9,
+        });
+        await send("Input.dispatchKeyEvent", {
+          type: "keyUp",
+          key: "Tab",
+          code: "Tab",
+          modifiers: shiftKey ? 8 : 0,
+          windowsVirtualKeyCode: 9,
+          nativeVirtualKeyCode: 9,
+        });
+        await new Promise((resolve) => setTimeout(resolve, 20));
+        const result = await send("Runtime.evaluate", { expression: "window.__zaLayoutTab", returnByValue: true });
+        return result.result.value;
+      };
+      const tab = await dispatchTab(false);
+      const shiftTab = await dispatchTab(true);
+      const cinemaEvaluation = await send("Runtime.evaluate", {
+        expression: `(() => {
+          const exit = [...document.querySelectorAll('[role="dialog"] button')].find((button) => button.textContent.trim() === "EXIT CINEMA");
+          if (!exit) return { error: "EXIT CINEMA is missing" };
+          const rect = exit.getBoundingClientRect();
+          const style = getComputedStyle(exit);
+          const visible = rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden" && style.opacity !== "0";
+          const exposedTabStops = [...document.querySelectorAll('a[href], button, input, select, textarea, [tabindex]')]
+            .filter((element) => element.tabIndex >= 0 && !element.disabled && !element.closest('[inert], [aria-hidden="true"]'))
+            .filter((element) => {
+              const candidate = element.getBoundingClientRect();
+              const candidateStyle = getComputedStyle(element);
+              return candidate.width > 0 && candidate.height > 0 && candidateStyle.display !== "none" && candidateStyle.visibility !== "hidden";
+            })
+            .map((element) => element.getAttribute("aria-label") || element.textContent.trim().replace(/\\s+/g, " "));
+          return {
+            viewport: [innerWidth, innerHeight],
+            activeFlightStarted: ${JSON.stringify(activeFlightStarted)},
+            skipPresent: Boolean(document.querySelector('a[href="#main-content"]')),
+            flightPresent: Boolean(document.querySelector('.za-mobile-flight-control')),
+            exposedTabStops,
+            exit: { visible, left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, width: rect.width, height: rect.height },
+            tab: ${JSON.stringify(tab)},
+            shiftTab: ${JSON.stringify(shiftTab)},
           };
         })()`,
         returnByValue: true,
       });
-      if (launchEvaluation.exceptionDetails)
-        throw new Error(
-          launchEvaluation.exceptionDetails.exception?.description ?? launchEvaluation.exceptionDetails.text,
-        );
+      cinema = cinemaEvaluation.result.value;
+      cinema.failures = cinema.error ? [cinema.error] : mobileCinemaAcceptanceFailures(cinema);
+      cinema.ok = cinema.failures.length === 0;
       await send("Runtime.evaluate", {
-        expression: `([...document.querySelectorAll('button[aria-label="Run the 30-second flight"]')].find((button) => button.getClientRects().length > 0)?.click())`,
-      });
-      await new Promise((resolve) => setTimeout(resolve, 50));
-      const flightEvaluation = await send("Runtime.evaluate", {
-        expression: `(() => {
-        const panel = [...document.querySelectorAll('section[aria-label="30-second flight status"]')].find((element) => element.getClientRects().length > 0);
-        const copy = document.querySelector('section[data-deck="0"] .za-bracket');
-        if (!panel || !copy) return { ok: false, reason: "active mobile flight panel or Snapshot copy is missing" };
-        const panelRect = panel.getBoundingClientRect();
-        const copyRect = copy.getBoundingClientRect();
-        const gap = copyRect.top - panelRect.bottom;
-        const backgroundColor = getComputedStyle(panel).backgroundColor;
-        const backgroundAlpha =
-          backgroundColor === "transparent"
-            ? 0
-            : backgroundColor.includes("/")
-              ? Number.parseFloat(backgroundColor.split("/").at(-1))
-              : backgroundColor.startsWith("rgba(")
-                ? Number.parseFloat(backgroundColor.split(",").at(-1))
-                : 1;
-        return {
-          ok: panelRect.top >= 0 && panelRect.bottom <= innerHeight && gap >= 8 && backgroundAlpha === 1,
-          gap,
-          panel: { top: panelRect.top, bottom: panelRect.bottom, height: panelRect.height, backgroundColor, backgroundAlpha },
-          copyTop: copyRect.top,
-        };
-      })()`,
+        expression: `(async () => {
+          document.querySelector('[role="dialog"] button')?.click();
+          for (let attempt = 0; attempt < 20; attempt++) {
+            await new Promise((resolve) => requestAnimationFrame(resolve));
+            if (!document.querySelector('[role="dialog"]') && !document.querySelector('[inert]')) return true;
+          }
+          return false;
+        })()`,
+        awaitPromise: true,
         returnByValue: true,
       });
-      if (flightEvaluation.exceptionDetails)
-        throw new Error(
-          flightEvaluation.exceptionDetails.exception?.description ?? flightEvaluation.exceptionDetails.text,
-        );
-      flights.push({ viewport: [width, 844], launch: launchEvaluation.result.value, ...flightEvaluation.result.value });
       await send("Runtime.evaluate", {
-        expression: `([...document.querySelectorAll('button[aria-label="Stop the 30-second flight"]')].find((button) => button.getClientRects().length > 0)?.click())`,
+        expression: `(async () => {
+          document.querySelector('.za-mobile-flight-control button[aria-label="Stop the 30-second flight"]')?.click();
+          const scroller = document.querySelector("#main-content");
+          scroller?.scrollTo({ top: 0, behavior: "auto" });
+          await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        })()`,
+        awaitPromise: true,
       });
     }
     await send("Emulation.setDeviceMetricsOverride", { width: 320, height: 844, deviceScaleFactor: 1, mobile: true });
@@ -410,7 +553,16 @@ async function main() {
     const bitFocus = bitFocusEvaluation.result.value;
     console.log(
       JSON.stringify(
-        { bitFocus, decodedAssets, desktopLayout, eveFocus, flights, snapshotGeometry, mobile320: narrowResult },
+        {
+          bitFocus,
+          cinema,
+          decodedAssets,
+          desktopLayout,
+          eveFocus,
+          flights,
+          snapshotGeometry,
+          mobile320: narrowResult,
+        },
         null,
         2,
       ),
@@ -424,12 +576,13 @@ async function main() {
     assert.equal(bitFocus.ok, true, "Bit control must retain a visible keyboard focus indicator");
     assert.equal(eveFocus.ok, true, "E.V.E. command input must retain a visible keyboard focus indicator");
     flights.forEach((flight) =>
-      assert.deepEqual(
-        { launchOpaque: flight.launch.ok, activePanelOpaqueAndClear: flight.ok },
-        { launchOpaque: true, activePanelOpaqueAndClear: true },
-        `Mobile flight surfaces must be opaque while preserving the active panel clearance at ${flight.viewport[0]}px`,
+      assert.equal(
+        flight.ok,
+        true,
+        `Mobile Contact flight acceptance failed at ${flight.viewport[0]}px: ${flight.failures.join("; ")}`,
       ),
     );
+    assert.equal(cinema.ok, true, `Mobile active-flight PHOTO cinema acceptance failed: ${cinema.failures.join("; ")}`);
     snapshotGeometry.forEach((result) => assert.equal(result.ok, true, result.failures.join("; ")));
     assert.equal(narrowResult.ok, true, narrowResult.failures.join("; "));
   }, resources);

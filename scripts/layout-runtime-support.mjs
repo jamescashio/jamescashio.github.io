@@ -187,3 +187,87 @@ export async function runWithLayoutCleanup(operation, resources, cleanupOptions)
   if (cleanupError) throw cleanupError;
   return result;
 }
+
+function hasExactRect(rect, expected) {
+  return (
+    rect != null && Object.entries(expected).every(([property, value]) => Number(rect[property]) === Number(value))
+  );
+}
+
+export function mobileFlightAcceptanceFailures(scenario) {
+  const failures = [];
+  const width = scenario.viewport?.[0];
+  if (![320, 390].includes(width) || scenario.viewport?.[1] !== 844) {
+    failures.push("mobile flight viewport must be 320x844 or 390x844");
+  }
+  if (scenario.activeDeck !== "8") failures.push("mobile flight scenario must run at the Contact deck");
+  if (scenario.scrollerId !== "main-content") failures.push("mobile flight scenario must scroll #main-content");
+  if (!(scenario.scrollerScrollTop > 0)) failures.push("#main-content must have a positive scroll position");
+  if (!scenario.contentPassedUnderSurface)
+    failures.push("receipt or email content must pass beneath the fixed surface");
+
+  if (scenario.inactive?.backgroundAlpha !== 1) failures.push("inactive flight background alpha must equal 1");
+  const inactiveRect = { left: 12, top: 68, width: 288, height: 44 };
+  if (
+    !hasExactRect(scenario.inactive?.beforeScroll, inactiveRect) ||
+    !hasExactRect(scenario.inactive?.afterScroll, inactiveRect)
+  ) {
+    failures.push("inactive geometry must remain fixed at x=12, top=68, width=288, height=44");
+  }
+
+  if (scenario.active?.backgroundAlpha !== 1) failures.push("active flight background alpha must equal 1");
+  const activeRect = { left: 12, top: 68, width: 288, height: 62 };
+  if (
+    !hasExactRect(scenario.active?.beforeScroll, activeRect) ||
+    !hasExactRect(scenario.active?.afterScroll, activeRect)
+  ) {
+    failures.push("active panel geometry must remain fixed at x=12, top=68, width=288, height=62");
+  }
+  if (!(scenario.active?.stopControl?.height >= 44)) {
+    failures.push("active STOP FLIGHT target must be at least 44px high");
+  }
+  if (
+    !hasExactRect(scenario.active?.stopControl, {
+      left: 199.734375,
+      top: 77,
+      width: 91.265625,
+      height: 44,
+    })
+  ) {
+    failures.push("active STOP FLIGHT geometry must remain x=199.734375, top=77, width=91.265625, height=44");
+  }
+  return failures;
+}
+
+export function mobileCinemaAcceptanceFailures(scenario) {
+  const failures = [];
+  if (scenario.viewport?.[0] !== 390 || scenario.viewport?.[1] !== 844) {
+    failures.push("mobile cinema viewport must be 390x844");
+  }
+  if (!scenario.activeFlightStarted) failures.push("PHOTO cinema must be entered from an active flight");
+  if (scenario.skipPresent) failures.push("skip link must be absent while cinema is open");
+  if (scenario.flightPresent) failures.push("flight control must be absent while cinema is open");
+  if (scenario.exposedTabStops?.length !== 1 || scenario.exposedTabStops[0] !== "EXIT CINEMA") {
+    failures.push("EXIT CINEMA must be the sole exposed tab stop");
+  }
+  if (!scenario.exit?.visible || scenario.exit.width < 44 || scenario.exit.height < 44) {
+    failures.push("EXIT CINEMA must be visible and at least 44x44");
+  }
+  if (
+    scenario.exit?.left < 20 ||
+    scenario.exit?.right > 370 ||
+    scenario.exit?.top < 20 ||
+    scenario.exit?.bottom > 824
+  ) {
+    failures.push("EXIT CINEMA must remain within 20px mobile safe margins");
+  }
+  if (
+    !scenario.tab?.defaultPrevented ||
+    scenario.tab?.activeLabel !== "EXIT CINEMA" ||
+    !scenario.shiftTab?.defaultPrevented ||
+    scenario.shiftTab?.activeLabel !== "EXIT CINEMA"
+  ) {
+    failures.push("Tab loop must keep both directions on EXIT CINEMA");
+  }
+  return failures;
+}
