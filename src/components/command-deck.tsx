@@ -17,6 +17,7 @@ import { getSound } from "@/lib/sound";
 import { focusDeckHeading, isInteractiveShortcutTarget } from "@/lib/deck-focus";
 import { eveConsoleLogHeight, shouldYieldAirframeHud } from "@/lib/hud-layout";
 import { motionDurationMs } from "@/lib/animation-timing";
+import { COMMAND_POSTER_SOURCES } from "@/lib/command-poster";
 import { scheduleStageLoad } from "@/lib/stage-load-scheduler";
 import {
   beginHashRestore,
@@ -958,10 +959,9 @@ export function CommandDeck() {
           Skip to content
         </a>
         <picture>
-          <source media="(max-width: 767px)" type="image/avif" srcSet="/plates/command-mobile.avif" />
-          <source media="(max-width: 767px)" type="image/webp" srcSet="/plates/command-mobile.webp" />
-          <source type="image/avif" srcSet="/plates/command-desktop.avif" />
-          <source type="image/webp" srcSet="/plates/command-desktop.webp" />
+          {COMMAND_POSTER_SOURCES.map((source) => (
+            <source key={source.type} {...source} />
+          ))}
           <img
             src="/plates/command.jpg"
             alt=""

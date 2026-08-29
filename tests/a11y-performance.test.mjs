@@ -25,6 +25,30 @@ try {
 }
 
 const stylesheet = await readFile(new URL("../src/styles.css", import.meta.url), "utf8");
+const documentMarkup = await readFile(new URL("../index.html", import.meta.url), "utf8");
+
+function responsiveSources(picture) {
+  return [...picture.querySelectorAll(":scope > source")].map((source) => ({
+    media: source.getAttribute("media"),
+    type: source.getAttribute("type"),
+    srcset: source.getAttribute("srcset"),
+    sizes: source.getAttribute("sizes"),
+  }));
+}
+
+function selectWidthCandidate(srcset, sizes, viewportWidth, devicePixelRatio) {
+  assert.equal(sizes, "100vw", "the selection model requires the viewport-width slot used by production");
+  const candidates = srcset
+    .split(",")
+    .map((candidate) => candidate.trim().match(/^(\S+)\s+(\d+)w$/))
+    .map((match) => {
+      assert.ok(match, `invalid width candidate in ${srcset}`);
+      return { url: match[1], width: Number(match[2]) };
+    })
+    .sort((a, b) => a.width - b.width);
+  const requiredWidth = viewportWidth * devicePixelRatio;
+  return candidates.find((candidate) => candidate.width >= requiredWidth) ?? candidates.at(-1);
+}
 
 function mountCommandDeck({
   url = "https://cashio.us/#deck=snapshot",
@@ -1616,18 +1640,27 @@ test("all below-fold plate and selected-aircraft evidence images are lazy and as
       /\.za-plate-picture\s*\{[^}]*display:\s*block;[^}]*width:\s*100%;[^}]*height:\s*100%/is,
       "the responsive wrapper must preserve the Plate's reserved geometry",
     );
+    const commandSources = responsiveSources(commandPicture);
+    assert.deepEqual(commandSources, [
+      {
+        media: null,
+        type: "image/avif",
+        srcset: "/plates/command-mobile.avif 768w, /plates/command-desktop.avif 1440w",
+        sizes: "100vw",
+      },
+      {
+        media: null,
+        type: "image/webp",
+        srcset: "/plates/command-mobile.webp 768w, /plates/command-desktop.webp 1440w",
+        sizes: "100vw",
+      },
+    ]);
+    const stagePicture = view.document.querySelector("img.za-stage-poster")?.closest("picture");
+    assert.ok(stagePicture);
     assert.deepEqual(
-      [...commandPicture.querySelectorAll(":scope > source")].map((source) => ({
-        media: source.getAttribute("media"),
-        type: source.getAttribute("type"),
-        srcset: source.getAttribute("srcset"),
-      })),
-      [
-        { media: "(max-width: 767px)", type: "image/avif", srcset: "/plates/command-mobile.avif" },
-        { media: "(max-width: 767px)", type: "image/webp", srcset: "/plates/command-mobile.webp" },
-        { media: null, type: "image/avif", srcset: "/plates/command-desktop.avif" },
-        { media: null, type: "image/webp", srcset: "/plates/command-desktop.webp" },
-      ],
+      commandSources,
+      responsiveSources(stagePicture),
+      "both command plates must share one selection set",
     );
     assert.equal(commandPlate.getAttribute("alt"), "Command viewscreen over a starfield");
     assert.equal(commandPlate.getAttribute("loading"), "lazy");
@@ -1780,18 +1813,36 @@ test("the real command plate is the immediate responsive viewscreen poster", asy
     assert.ok(poster, "the existing command plate must cover the deferred cinematic stage");
     const picture = poster.closest("picture");
     assert.ok(picture, "the immediate poster must offer optimized formats before the JPEG fallback");
-    assert.deepEqual(
-      [...picture.querySelectorAll(":scope > source")].map((source) => ({
-        media: source.getAttribute("media"),
-        type: source.getAttribute("type"),
-        srcset: source.getAttribute("srcset"),
-      })),
-      [
-        { media: "(max-width: 767px)", type: "image/avif", srcset: "/plates/command-mobile.avif" },
-        { media: "(max-width: 767px)", type: "image/webp", srcset: "/plates/command-mobile.webp" },
-        { media: null, type: "image/avif", srcset: "/plates/command-desktop.avif" },
-        { media: null, type: "image/webp", srcset: "/plates/command-desktop.webp" },
-      ],
+    const sources = responsiveSources(picture);
+    assert.equal(sources.length, 2, "each optimized format must expose one width-selection algorithm");
+    const avif = sources.find((source) => source.type === "image/avif");
+    assert.ok(avif);
+    const preloadDocument = new JSDOM(documentMarkup).window.document;
+    const preload = preloadDocument.querySelector('link[rel="preload"][as="image"][type="image/avif"]');
+    assert.ok(preload);
+    assert.equal(
+      preload.getAttribute("imagesrcset"),
+      avif.srcset,
+      "preload and picture candidates must be byte-equivalent",
+    );
+    assert.equal(
+      preload.getAttribute("imagesizes"),
+      avif.sizes,
+      "preload and picture slot sizes must be byte-equivalent",
+    );
+    const pictureChoice = selectWidthCandidate(avif.srcset, avif.sizes, 390, 2);
+    const preloadChoice = selectWidthCandidate(
+      preload.getAttribute("imagesrcset"),
+      preload.getAttribute("imagesizes"),
+      390,
+      2,
+    );
+    assert.deepEqual(pictureChoice, { url: "/plates/command-desktop.avif", width: 1440 });
+    assert.deepEqual(preloadChoice, pictureChoice);
+    assert.equal(
+      new Set([pictureChoice.url, preloadChoice.url]).size,
+      1,
+      "a 390px DPR2 preload and picture must resolve one URL instead of competing requests",
     );
     assert.equal(poster.getAttribute("alt"), "", "the decorative poster must not duplicate deck content");
     assert.equal(poster.getAttribute("aria-hidden"), "true");

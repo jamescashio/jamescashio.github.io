@@ -117,7 +117,7 @@ export function Plate({
   className?: string;
   fade?: "bottom" | "right" | "left";
   chip?: ReactNode;
-  sources?: readonly { srcSet: string; type: string; media?: string }[];
+  sources?: readonly { srcSet: string; type: string; media?: string; sizes?: string }[];
   width?: number;
   height?: number;
 }) {

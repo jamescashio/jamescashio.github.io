@@ -29,6 +29,7 @@ jobs:
       - run: npm run format:check
       - run: npm run test:node
       - run: npm run build
+      - run: npm run check:layout:runtime
       - run: npm run test:release
       - run: python scripts/public_repo_guard.py
       - run: python scripts/check_release_consistency.py

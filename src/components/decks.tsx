@@ -18,6 +18,7 @@ import {
   DECK_CRAFT,
 } from "@/lib/content";
 import { getSound } from "@/lib/sound";
+import { COMMAND_POSTER_SOURCES } from "@/lib/command-poster";
 import { useDeck, type CopyEmailState } from "@/lib/store";
 import { BlackBoxReceipt } from "./black-box-receipt";
 import { BitMascot } from "./bit-mascot";
@@ -180,12 +181,7 @@ export function DeckBrief({ sBrief }: { sBrief: SecRef }) {
           <Plate
             src="/plates/command.jpg?v=48"
             alt="Command viewscreen over a starfield"
-            sources={[
-              { media: "(max-width: 767px)", type: "image/avif", srcSet: "/plates/command-mobile.avif" },
-              { media: "(max-width: 767px)", type: "image/webp", srcSet: "/plates/command-mobile.webp" },
-              { type: "image/avif", srcSet: "/plates/command-desktop.avif" },
-              { type: "image/webp", srcSet: "/plates/command-desktop.webp" },
-            ]}
+            sources={COMMAND_POSTER_SOURCES}
             width={1680}
             height={945}
             className="h-[min(56vh,480px)] w-full"

@@ -46,6 +46,7 @@ const requiredWorkflowCommands = [
   "python -m py_compile",
   "python scripts/check_committed_whitespace.py",
 ];
+const requiredPagesCommands = requiredWorkflowCommands.toSpliced(5, 0, "npm run check:layout:runtime");
 
 function assertOrdered(text, markers, boundary, label) {
   let position = -1;
@@ -100,11 +101,17 @@ test("package metadata and deterministic local gates define the V34 release", as
     packageJson.scripts["test:node"],
     "tsc --noEmit",
     "vite build",
+    "node scripts/check_layout_runtime.mjs",
     packageJson.scripts["test:release"],
     "python scripts/public_repo_guard.py",
     "python scripts/check_release_consistency.py",
     "python scripts/check_committed_whitespace.py",
   ]);
+  assert.equal(
+    expandScript(packageJson.scripts, "verify").filter((command) => command === "vite build").length,
+    1,
+    "verify must build once before checking the built layout",
+  );
 
   const status = JSON.parse(await read("status.json"));
   const publicStatus = JSON.parse(await read("public/status.json"));
@@ -161,12 +168,14 @@ test("the document preloads only the critical fonts and one responsive AVIF post
       type: images[0].getAttribute("type"),
       srcset: images[0].getAttribute("imagesrcset"),
       sizes: images[0].getAttribute("imagesizes"),
+      priority: images[0].getAttribute("fetchpriority"),
     },
     {
       href: "/plates/command-desktop.avif",
       type: "image/avif",
       srcset: "/plates/command-mobile.avif 768w, /plates/command-desktop.avif 1440w",
       sizes: "100vw",
+      priority: "high",
     },
   );
   assert.equal(preloads.length, 4, "WebP, JPEG, and noncritical fonts must not be preloaded");
@@ -205,7 +214,7 @@ test("Pages blocks artifact upload on the complete Node 22 and Python 3.12 gate 
   assert.match(workflow, /node-version:\s*22/);
   assert.match(workflow, /python-version:\s*["']3\.12["']/);
   assert.match(workflow, /fetch-depth:\s*0/);
-  assertOrdered(workflow, requiredWorkflowCommands, "actions/upload-pages-artifact@v3", "Pages");
+  assertOrdered(workflow, requiredPagesCommands, "actions/upload-pages-artifact@v3", "Pages");
 });
 
 test("Public Site Safety preserves report upload and enforcement after every gate", async () => {

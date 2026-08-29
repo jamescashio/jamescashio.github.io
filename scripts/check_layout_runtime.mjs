@@ -37,6 +37,7 @@ function contentType(file) {
     {
       ".css": "text/css; charset=utf-8",
       ".html": "text/html; charset=utf-8",
+      ".avif": "image/avif",
       ".js": "text/javascript; charset=utf-8",
       ".jpg": "image/jpeg",
       ".svg": "image/svg+xml",
@@ -148,14 +149,52 @@ async function main() {
     await send("Runtime.enable");
     await send("Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
     await waitForApp(send);
-    const desktopEvaluation = await send("Runtime.evaluate", {
-      expression: `([...document.querySelectorAll(".za-lcars-pip")].map((element) => {
-        const rect = element.getBoundingClientRect();
-        return { width: rect.width, height: rect.height };
-      }))`,
+    const assetEvaluation = await send("Runtime.evaluate", {
+      expression: `(async () => {
+        const expected = [
+          { src: "/plates/command-desktop.avif", type: "image/avif", width: 1440, height: 810 },
+          { src: "/plates/command-desktop.webp", type: "image/webp", width: 1440, height: 810 },
+          { src: "/plates/command-mobile.avif", type: "image/avif", width: 768, height: 432 },
+          { src: "/plates/command-mobile.webp", type: "image/webp", width: 768, height: 432 },
+        ];
+        const decoded = await Promise.all(expected.map(async (asset) => {
+          try {
+            const response = await fetch(asset.src, { cache: "no-store" });
+            const contentType = response.headers.get("content-type")?.split(";", 1)[0] ?? null;
+            const image = new Image();
+            image.src = asset.src;
+            await image.decode();
+            return { ...asset, ok: response.ok && contentType === asset.type && image.naturalWidth === asset.width && image.naturalHeight === asset.height, status: response.status, contentType, naturalWidth: image.naturalWidth, naturalHeight: image.naturalHeight };
+          } catch (error) {
+            return { ...asset, ok: false, error: error instanceof Error ? error.message : String(error) };
+          }
+        }));
+        return { ok: decoded.every((asset) => asset.ok), decoded };
+      })()`,
+      awaitPromise: true,
       returnByValue: true,
     });
-    const desktopPips = desktopEvaluation.result.value;
+    if (assetEvaluation.exceptionDetails) {
+      throw new Error(assetEvaluation.exceptionDetails.exception?.description ?? assetEvaluation.exceptionDetails.text);
+    }
+    const decodedAssets = assetEvaluation.result.value;
+    const desktopEvaluation = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const pips = [...document.querySelectorAll(".za-lcars-pip")].map((element) => {
+          const rect = element.getBoundingClientRect();
+          return { width: rect.width, height: rect.height };
+        });
+        const actions = document.querySelector('section[data-deck="0"] .za-snapshot-actions');
+        const rect = actions?.getBoundingClientRect();
+        const failures = [];
+        if (!actions || !rect) failures.push("desktop Snapshot action row is missing");
+        else if (rect.height < 48) failures.push("desktop Snapshot action row measured " + rect.height + "px");
+        return { ok: failures.length === 0, failures, pips, actions: rect && { width: rect.width, height: rect.height } };
+      })()`,
+      returnByValue: true,
+    });
+    const desktopLayout = desktopEvaluation.result.value;
+    const desktopPips = desktopLayout.pips;
     const snapshotGeometry = [];
     for (const width of [320, 390]) {
       await settleViewport(send, width, true);
@@ -172,6 +211,9 @@ async function main() {
           paddingBottom: parseFloat(getComputedStyle(element).paddingBottom),
         }));
         const controls = [...document.querySelectorAll('section[data-deck="0"] .za-snapshot-modes button, section[data-deck="0"] .za-snapshot-actions button')];
+        const actionRow = document.querySelector('section[data-deck="0"] .za-snapshot-actions');
+        const actionButtons = [...(actionRow?.querySelectorAll("button") ?? [])];
+        const actionStyle = actionRow && getComputedStyle(actionRow);
         const expectedControls = ["TECHNICAL", "EXECUTIVE", "DESCEND THE DECKS", "OPEN E.V.E. CONSOLE"];
         const failures = [];
         if (pips.length !== 8) failures.push("expected eight aircraft pips");
@@ -199,14 +241,20 @@ async function main() {
         });
         controlRects.forEach((control) => {
           if (!control.displayed || control.disabled || control.width <= 0 || control.height <= 0) failures.push("Snapshot control " + control.label + " is not displayed, enabled, and nonzero");
+          if (control.width < 44 || control.height < 44) failures.push("Snapshot control " + control.label + " measured " + control.width + "x" + control.height + "px, below 44x44");
+          if (control.left < 0 || control.right > innerWidth) failures.push("Snapshot control " + control.label + " exceeds the " + innerWidth + "px viewport");
           if (control.top < 0 || control.bottom > railRect.top) failures.push("Snapshot control " + control.label + " must fit above rail: " + control.top + "px to " + control.bottom + "px, rail starts " + railRect.top + "px");
         });
         for (let i = 0; i < controlRects.length; i++) for (let j = i + 1; j < controlRects.length; j++) {
           const a = controlRects[i], b = controlRects[j];
           if (a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top) failures.push("Snapshot controls overlap: " + a.label + " and " + b.label);
         }
+        const actionRects = actionButtons.map((button) => button.getBoundingClientRect());
+        const gridColumns = actionStyle?.gridTemplateColumns.trim().split(/\\s+/).filter(Boolean) ?? [];
+        if (actionStyle?.display !== "grid" || gridColumns.length !== 2 || actionButtons.length !== 2) failures.push("Snapshot actions must render as one two-column grid");
+        if (actionRects.length === 2 && Math.abs(actionRects[0].top - actionRects[1].top) > 0.5) failures.push("Snapshot action buttons must share one row");
         if (document.documentElement.scrollWidth > innerWidth) failures.push("document width " + document.documentElement.scrollWidth + "px exceeds viewport " + innerWidth + "px");
-        return { ok: failures.length === 0, failures, viewport: [innerWidth, innerHeight], pips, rail: { height: railRect.height, top: railRect.top, bottom: railRect.bottom, paddingBottom: railPadding }, clearance, controls: controlRects };
+        return { ok: failures.length === 0, failures, viewport: [innerWidth, innerHeight], pips, rail: { height: railRect.height, top: railRect.top, bottom: railRect.bottom, paddingBottom: railPadding }, clearance, controls: controlRects, actionGrid: { display: actionStyle?.display, columns: gridColumns, buttons: actionRects.map((rect) => ({ top: rect.top, width: rect.width, height: rect.height })) } };
       })()`,
         returnByValue: true,
       });
@@ -323,7 +371,19 @@ async function main() {
       returnByValue: true,
     });
     const bitFocus = bitFocusEvaluation.result.value;
-    console.log(JSON.stringify({ bitFocus, eveFocus, flights, snapshotGeometry, mobile320: narrowResult }, null, 2));
+    console.log(
+      JSON.stringify(
+        { bitFocus, decodedAssets, desktopLayout, eveFocus, flights, snapshotGeometry, mobile320: narrowResult },
+        null,
+        2,
+      ),
+    );
+    assert.equal(
+      decodedAssets.ok,
+      true,
+      `Every optimized poster must decode with exact MIME and dimensions: ${JSON.stringify(decodedAssets.decoded)}`,
+    );
+    assert.equal(desktopLayout.ok, true, desktopLayout.failures.join("; "));
     assert.equal(bitFocus.ok, true, "Bit control must retain a visible keyboard focus indicator");
     assert.equal(eveFocus.ok, true, "E.V.E. command input must retain a visible keyboard focus indicator");
     flights.forEach((flight) =>
