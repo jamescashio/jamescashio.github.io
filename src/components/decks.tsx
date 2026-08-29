@@ -115,25 +115,19 @@ export function DeckSnapshot({
 
         <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {[
-            ["ZEUS", 12, "OF 13 AT PROBE"],
-            ["APOLLO", null, "6/6 AT 28 AUG PROBE"],
-            ["ATLAS", null, "GATEWAY · LOCAL INFERENCE"],
-            ["ATHENA", null, "QUORUM SUPPORT"],
-            ["GENESIS", null, "PRIVATE STORAGE · RECOVERY"],
-          ].map(([n, c, r]) => (
-            <div key={String(n)} className={`za-panel px-3 py-3 ${n === "GENESIS" ? "col-span-2 sm:col-span-1" : ""}`}>
+            ["ZEUS", "12/13", "AT 28 AUG PROBE"],
+            ["APOLLO", "6/6", "AT 28 AUG PROBE"],
+            ["FLEET", "18/19", "AT 28 AUG PROBE"],
+            ["HOSTS", "2", "CLUSTER QUORATE"],
+            ["PVE", PVE, "VERSION AT PROBE"],
+          ].map(([name, value, detail]) => (
+            <div key={name} className="za-panel px-3 py-3">
               <div className="flex items-center justify-between gap-2">
-                <div className="za-display text-[15px] text-cyan">{n}</div>
+                <div className="za-display text-[15px] text-cyan">{name}</div>
                 <span className="h-1.5 w-1.5 rounded-full bg-green shadow-[0_0_8px_var(--color-green)]" />
               </div>
               <div className="za-mono mt-1 text-[9px] text-dim">
-                {c != null ? (
-                  <>
-                    <CountUp to={c as number} /> {r as string}
-                  </>
-                ) : (
-                  (r as string)
-                )}
+                {value} · {detail}
               </div>
               <div className="za-heartbeat mt-2" aria-hidden />
             </div>
@@ -193,23 +187,10 @@ export function DeckBrief({ sBrief }: { sBrief: SecRef }) {
   );
 }
 
-export function DeckGrid({
-  s1,
-  hubZ,
-  hubA,
-  pathZeus,
-  pathApollo,
-}: {
-  s1: SecRef;
-  hubZ: RefObject<HTMLDivElement | null>;
-  hubA: RefObject<HTMLDivElement | null>;
-  pathZeus: string;
-  pathApollo: string;
-}) {
+export function DeckGrid({ s1 }: { s1: SecRef }) {
   const [hover, setHover] = useState<number | null>(null);
   const [lock, setLock] = useState<number | null>(null);
   const withheld = Array.from({ length: 12 }, (_, i) => i + 8);
-  const locked = lock != null ? NAMED_ROLES[lock] : null;
 
   return (
     <DeckShell index={1} sRef={s1}>
@@ -221,64 +202,11 @@ export function DeckGrid({
           families are named here; the stopped guest stays unnamed and the remaining roles stay public-safe.
         </p>
 
-        <div className="relative mt-8">
-          <svg
-            className="pointer-events-none absolute inset-0 h-full w-full"
-            aria-hidden
-            style={{ display: pathZeus || pathApollo ? "block" : "none" }}
-          >
-            <path d={pathZeus} className="za-flow-path" />
-            <path d={pathApollo} className="za-flow-path cool" />
-            {pathZeus ? (
-              <>
-                <circle r="3.4" className="za-packet" style={{ offsetPath: `path('${pathZeus}')` }} />
-                <circle
-                  r="2.6"
-                  className="za-packet"
-                  style={{ offsetPath: `path('${pathZeus}')`, animationDelay: "1.1s" }}
-                />
-                <circle
-                  r="2.2"
-                  className="za-packet"
-                  style={{ offsetPath: `path('${pathZeus}')`, animationDelay: "2.2s" }}
-                />
-              </>
-            ) : null}
-            {pathApollo ? (
-              <>
-                <circle r="3.4" className="za-packet cool" style={{ offsetPath: `path('${pathApollo}')` }} />
-                <circle
-                  r="2.4"
-                  className="za-packet cool"
-                  style={{ offsetPath: `path('${pathApollo}')`, animationDelay: "1.5s" }}
-                />
-              </>
-            ) : null}
-          </svg>
-          <div className="flex flex-wrap gap-3">
-            <div
-              ref={hubZ}
-              className={`za-panel za-hub warm px-5 py-4 ${locked?.hub === "zeus" ? "border-accent" : ""}`}
-            >
-              <div className="za-display text-xl text-accent">ZEUS</div>
-              <div className="za-mono mt-1 text-[10px] text-dim">12/13 AT 28 AUG PROBE</div>
-            </div>
-            <div
-              ref={hubA}
-              className={`za-panel za-hub cool px-5 py-4 ${locked?.hub === "apollo" ? "border-cyan" : ""}`}
-            >
-              <div className="za-display text-xl text-cyan">APOLLO</div>
-              <div className="za-mono mt-1 text-[10px] text-dim">6/6 AT 28 AUG PROBE</div>
-            </div>
-          </div>
-        </div>
-
         <div data-hud-clear className="mt-8 grid grid-cols-2 gap-2 md:grid-cols-4">
           {NAMED_ROLES.map((r, i) => (
             <button
               key={r.name + r.role}
               type="button"
-              data-hub={r.hub}
               onMouseEnter={() => {
                 setHover(i);
                 getSound().target((i / 7 - 0.5) * 1.2);
@@ -293,7 +221,6 @@ export function DeckGrid({
               <div className="za-mono text-[9px] text-dim">{String(i + 1).padStart(2, "0")}</div>
               <div className="mt-1 font-display text-[13px] tracking-wide text-ink">{r.name}</div>
               <div className="za-mono mt-1 text-[9px] text-cyan">{r.role}</div>
-              <div className="za-mono mt-2 text-[9px] text-dim">{r.hub.toUpperCase()}</div>
             </button>
           ))}
           {withheld.map((n) => (
@@ -341,7 +268,6 @@ export function DeckRouting({ s2 }: { s2: SecRef }) {
                   getSound().ok();
                   getSound().target((i / LANES.length - 0.5) * 1.4);
                 }}
-                data-model={l.tid || undefined}
                 className={`flex min-h-11 items-center gap-4 rounded-[var(--radius-md)] border px-3 py-2.5 text-left transition-colors ${
                   active === i ? "border-accent bg-accent/10" : "border-line bg-void-2/50 hover:border-cyan/40"
                 }`}
@@ -401,7 +327,7 @@ export function DeckIron({ s3 }: { s3: SecRef }) {
           <Title>HARDWARE IN A ROOM I CAN WALK INTO.</Title>
           <p className="mt-5 max-w-[52ch] text-[1.05rem] leading-relaxed text-muted">
             ZeusApollo ran Proxmox VE {PVE} across two online, quorate hosts at the dated probe. The public export
-            intentionally omits hardware and recovery implementation details. Click a host. The plate holds the lock.
+            intentionally omits hardware implementation details. Click a dated host label. The plate holds the lock.
           </p>
           <div data-hud-clear className="mt-8 grid gap-3 sm:grid-cols-2">
             {HOSTS.map((h, i) => (
@@ -410,7 +336,7 @@ export function DeckIron({ s3 }: { s3: SecRef }) {
                 type="button"
                 onClick={() => {
                   setProbe(i);
-                  getSound().target((i / 4 - 0.5) * 1.2);
+                  getSound().target((i / Math.max(1, HOSTS.length - 1) - 0.5) * 1.2);
                 }}
                 className={`za-panel p-5 text-left ${probe === i ? "border-accent" : ""}`}
               >
@@ -687,6 +613,7 @@ export function DeckOperator({ s6 }: { s6: SecRef }) {
 
 export function DeckEve({
   s7,
+  active,
   lines,
   value,
   logHeight,
@@ -694,6 +621,7 @@ export function DeckEve({
   onRun,
 }: {
   s7: SecRef;
+  active: boolean;
   lines: string[];
   value: string;
   logHeight: number;
@@ -731,7 +659,7 @@ export function DeckEve({
               <span className="text-cyan">help</span>.
             </p>
           </div>
-          <BitMascot mood={bitMood} size={88} />
+          <BitMascot active={active} mood={bitMood} size={88} />
         </div>
         <EveConsole lines={lines} value={value} onChange={onChange} onRun={onRun} />
         <div className="mt-4 flex flex-wrap gap-2">

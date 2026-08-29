@@ -1,14 +1,16 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { JSDOM } from "jsdom";
 import { act, createElement } from "react";
 import { createRoot } from "react-dom/client";
 
 import { BlackBoxReceipt } from "../src/components/black-box-receipt.tsx";
-import { DeckBrief, DeckSnapshot } from "../src/components/decks.tsx";
+import { DeckBrief, DeckGrid, DeckIron, DeckSnapshot } from "../src/components/decks.tsx";
 import { runEve } from "../src/components/eve-console.tsx";
 import { FlightControl } from "../src/components/flight-control.tsx";
 import { motionDurationMs } from "../src/lib/animation-timing.ts";
+import { BOOT, TELEMETRY } from "../src/lib/content.ts";
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -147,6 +149,101 @@ test("DeckSnapshot renders V34's dated aggregate and Executive outcome hierarchy
   }
 });
 
+test("current fleet decks expose only verified aggregate evidence without topology or role-to-host mapping", async () => {
+  const ref = { current: null };
+  const snapshot = mount(
+    createElement(DeckSnapshot, {
+      s0: ref,
+      copyCol: ref,
+      onEngage: () => {},
+      onEve: () => {},
+    }),
+  );
+  try {
+    await snapshot.render(
+      createElement(DeckSnapshot, {
+        s0: ref,
+        copyCol: ref,
+        onEngage: () => {},
+        onEve: () => {},
+      }),
+    );
+    const cards = [...snapshot.document.querySelectorAll(".za-panel")];
+    assert.equal(cards.length, 5, "Snapshot must retain its five-card evidence rhythm");
+    assert.deepEqual(
+      cards.map((card) => card.querySelector(".za-display")?.textContent),
+      ["ZEUS", "APOLLO", "FLEET", "HOSTS", "PVE"],
+    );
+    assert.doesNotMatch(
+      snapshot.document.body.textContent,
+      /ATLAS|ATHENA|GENESIS|GATEWAY|QUORUM SUPPORT|STORAGE|RECOVERY/i,
+    );
+  } finally {
+    await snapshot.cleanup();
+  }
+
+  const grid = mount(createElement(DeckGrid, { s1: ref }));
+  try {
+    await grid.render(createElement(DeckGrid, { s1: ref }));
+    const roleCards = [...grid.document.querySelectorAll("section[data-deck='1'] button")];
+    assert.equal(roleCards.length, 7, "Grid must retain the seven allowlisted role-family controls");
+    for (const card of roleCards) {
+      assert.doesNotMatch(card.textContent, /ZEUS|APOLLO/i, "a role family must not be assigned to a public host");
+      assert.equal(card.hasAttribute("data-hub"), false, "a role family must not expose a host-mapping attribute");
+    }
+    assert.equal(
+      grid.document.querySelector("section[data-deck='1'] svg"),
+      null,
+      "Grid must not render topology paths",
+    );
+  } finally {
+    await grid.cleanup();
+  }
+
+  const iron = mount(createElement(DeckIron, { s3: ref }));
+  try {
+    await iron.render(createElement(DeckIron, { s3: ref }));
+    const choices = [...iron.document.querySelectorAll("section[data-deck='3'] button .za-display")].map(
+      (label) => label.textContent,
+    );
+    assert.deepEqual(choices, ["ZEUS", "APOLLO"], "Iron may offer only the two freshly probed Proxmox hosts");
+    assert.doesNotMatch(iron.document.body.textContent, /ATLAS|ATHENA|GENESIS|GATEWAY|QUORUM SUPPORT|PRIVATE STORAGE/i);
+  } finally {
+    await iron.cleanup();
+  }
+});
+
+test("current status and release surfaces omit raw route identifiers and unprobed fleet topology", async () => {
+  const status = JSON.parse(await readFile(new URL("../status.json", import.meta.url), "utf8"));
+  const publicStatus = JSON.parse(await readFile(new URL("../public/status.json", import.meta.url), "utf8"));
+  const releaseBody = await readFile(new URL("../RELEASE_BODY.md", import.meta.url), "utf8");
+  assert.deepEqual(status, publicStatus, "root and public status exports must remain identical");
+  assert.deepEqual(Object.keys(status), [
+    "release",
+    "revised",
+    "status",
+    "verified",
+    "verifiedLong",
+    "expires",
+    "proxmox",
+    "containers",
+    "lanes",
+    "routingVerified",
+    "law",
+    "note",
+  ]);
+  assert.deepEqual(status.proxmox, { version: "9.2.11", hostsOnline: 2, quorate: true });
+  assert.deepEqual(status.containers, { running: 18, documented: 19, stopped: 1, zeus: 12, apollo: 6 });
+  assert.deepEqual(status.lanes, { public: 10, privateCatalog: 36 });
+  for (const surface of [JSON.stringify(status), releaseBody]) {
+    assert.doesNotMatch(surface, /deepseek-v4-(?:flash|pro)/i, "raw DeepSeek route identifiers must remain private");
+    assert.doesNotMatch(
+      surface,
+      /ATLAS|ATHENA|GENESIS|GATEWAY|QUORUM SUPPORT|PRIVATE STORAGE|RECOVERY INFRASTRUCTURE/i,
+    );
+  }
+});
+
 test("Executive choice promises outcomes rather than page count", async () => {
   const view = mount(createElement(DeckBrief, { sBrief: { current: null } }));
   try {
@@ -167,6 +264,13 @@ test("E.V.E. status keeps routing counts on the separate 21 August 2026 inventor
     lines.some((line) => /28 AUG(?:UST)? 2026.*10 PUBLIC/i.test(line)),
     false,
   );
+});
+
+test("fleet evidence keeps quorum at the verified cluster aggregate instead of assigning it per host", () => {
+  for (const line of [...BOOT, ...TELEMETRY, ...runEve("fleet").out]) {
+    assert.doesNotMatch(line, /^(?:ZEUS|APOLLO).*QUORAT|QUORUM ZEUS/i);
+  }
+  assert.ok(runEve("status").out.includes("2 PROXMOX HOSTS ONLINE · CLUSTER QUORATE"));
 });
 
 test("BlackBoxReceipt renders only the exact dated claim set beneath its exact heading", async () => {

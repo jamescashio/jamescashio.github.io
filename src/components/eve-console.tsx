@@ -78,8 +78,8 @@ export function runEve(raw: string, history: string[] = []): EveResult {
   if (command === "fleet") {
     return {
       out: [
-        "ZEUS · 12/13 AT 28 AUG PROBE · PROXMOX HOST · QUORATE",
-        "APOLLO · 6/6 AT 28 AUG PROBE · PROXMOX HOST · QUORATE",
+        "ZEUS · 12/13 AT 28 AUG PROBE · PROXMOX HOST",
+        "APOLLO · 6/6 AT 28 AUG PROBE · PROXMOX HOST",
         SERVICE_FAMILIES.toUpperCase(),
       ],
     };
@@ -89,7 +89,7 @@ export function runEve(raw: string, history: string[] = []): EveResult {
     return {
       out: [
         "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES",
-        "DEEPSEEK-V4-FLASH · DEEPSEEK-V4-PRO",
+        "DEEPSEEK V4 FLASH · DEEPSEEK V4 PRO",
         "QUALITY PICKS THE MODEL · COST ONLY BREAKS A TIE",
       ],
       go: 2,

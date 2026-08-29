@@ -10,7 +10,7 @@ export const PVE = "9.2.11";
 
 export const BOOT = [
   "E.V.E. EVALUATION VERIFICATION ENGINE — ONLINE",
-  "PROXMOX QUORUM ZEUS · APOLLO — QUORATE",
+  "PROXMOX VE 9.2.11 · 2 HOSTS · CLUSTER QUORATE",
   "18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6",
   "ROUTING INVENTORY 21 AUGUST 2026 — 10 PUBLIC LANES · 36 PRIVATE CATALOG",
   `DATED EXPORT · PUBLIC-SAFE · VERIFIED ${VERIFIED_LONG}`,
@@ -34,11 +34,10 @@ export const DECKS = [
 ] as const;
 
 export const TELEMETRY = [
-  "ZEUS · 12/13 RUNNING AT 28 AUG PROBE · QUORATE",
-  "APOLLO · 6/6 AT 28 AUG PROBE · QUORATE",
-  "ATLAS · GATEWAY · LOCAL INFERENCE",
-  "ATHENA · QUORUM SUPPORT",
-  "GENESIS · PRIVATE STORAGE · RECOVERY",
+  "ZEUS · 12/13 RUNNING AT 28 AUG PROBE",
+  "APOLLO · 6/6 RUNNING AT 28 AUG PROBE",
+  "FLEET · 18/19 AT 28 AUG PROBE",
+  "PROXMOX VE 9.2.11 · 2 HOSTS · CLUSTER QUORATE",
   "18/19 AT 28 AUG PROBE",
   "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG",
   "LAW · QUALITY PICKS THE MODEL",
@@ -89,64 +88,55 @@ export const LANES = [
     id: "00",
     name: "FREE CLASSIFY",
     model: "Kimi K3",
-    tid: "",
     use: "Sort the mail. Tag the ticket. Cheap, fast, good enough.",
   },
   {
     id: "01",
     name: "WORKHORSE",
     model: "DeepSeek V4 Flash",
-    tid: "deepseek-v4-flash",
     use: "The daily grind. Drafts, refactors, first-pass analysis.",
   },
   {
     id: "02",
     name: "EXCEPTION",
     model: "DeepSeek V4 Pro",
-    tid: "deepseek-v4-pro",
     use: "When the workhorse hesitates. Harder reasoning, still owned-cost.",
   },
   {
     id: "03A",
     name: "MULTIMODAL",
     model: "Gemini 3.7 Flash",
-    tid: "",
     use: "Images, screenshots, diagrams. Eyes on the problem.",
   },
   {
     id: "03B",
     name: "ADVERSARIAL",
     model: "Grok 4.6",
-    tid: "",
     use: "Stress-test the answer. Argue with it until it holds.",
   },
   {
     id: "04A",
     name: "SYNTHESIS",
     model: "Sol 5.6 Luna",
-    tid: "",
     use: "Pull threads into one brief a human can actually use.",
   },
-  { id: "04B", name: "RESEARCH", model: "Sonar Pro", tid: "", use: "Ground it. Cite it. Do not invent a source." },
+  { id: "04B", name: "RESEARCH", model: "Sonar Pro", use: "Ground it. Cite it. Do not invent a source." },
   {
     id: "05",
     name: "ADJUDICATION",
     model: "GPT-5.6 Sol",
-    tid: "",
     use: "Highest-consequence calls. Frontier only when the cost of being wrong is higher than the token bill.",
   },
   {
     id: "LOC",
     name: "LOCAL FALLBACK",
     model: "Gemma 4 26B",
-    tid: "",
-    use: "The lights stay on when the cloud does not. Atlas, in the room.",
+    use: "The lights stay on when the cloud does not. Owned local fallback keeps the route available.",
   },
   {
     id: "FAB",
     name: "GATEWAY FABRIC",
     model: "Atlas LiteLLM · OpenRouter · ZenMux",
-    tid: "",
     use: "One door. No lock-in. No bridge tax.",
   },
 ] as const;
@@ -160,13 +150,13 @@ export const ROUTING_STAGES = [
 ] as const;
 
 export const NAMED_ROLES = [
-  { name: "TECHNITIUM DNS", role: "PRIMARY · RESOLUTION", hub: "zeus" as const },
-  { name: "TECHNITIUM DNS", role: "SECONDARY · FAILOVER", hub: "zeus" as const },
-  { name: "WAZUH", role: "SECURITY MONITORING", hub: "zeus" as const },
-  { name: "MONITORING STACK", role: "OBSERVED ROLE FAMILY", hub: "zeus" as const },
-  { name: "N8N", role: "AUTOMATION", hub: "apollo" as const },
-  { name: "PBS", role: "BACKUP SERVICE", hub: "zeus" as const },
-  { name: "MEDIA SERVICES", role: "OBSERVED ROLE FAMILY", hub: "apollo" as const },
+  { name: "TECHNITIUM DNS", role: "PRIMARY · RESOLUTION" },
+  { name: "TECHNITIUM DNS", role: "SECONDARY · FAILOVER" },
+  { name: "WAZUH", role: "SECURITY MONITORING" },
+  { name: "MONITORING STACK", role: "OBSERVED ROLE FAMILY" },
+  { name: "N8N", role: "AUTOMATION" },
+  { name: "PBS", role: "BACKUP SERVICE" },
+  { name: "MEDIA SERVICES", role: "OBSERVED ROLE FAMILY" },
 ];
 
 export const SERVICE_FAMILIES =
@@ -176,35 +166,20 @@ export const WITHHELD = [
   "AI operating cost per day and month",
   "Automation job counts",
   "DNS query sample figures",
-  "Backup recovery telemetry",
+  "Backup verification figures",
   "Security update counts",
 ];
 
 export const HOSTS = [
   {
     name: "ZEUS",
-    tag: "QUORATE",
-    blurb: "Primary compute host. 12 of 13 documented guests were running at the dated probe.",
+    tag: "DATED HOST",
+    blurb: "12 of 13 documented guests were running at the 28 August probe.",
   },
   {
     name: "APOLLO",
-    tag: "QUORATE",
-    blurb: "Services host. All 6 documented guests were running at the dated probe.",
-  },
-  {
-    name: "ATLAS",
-    tag: "ROUTING",
-    blurb: "Gateway and local inference are separate from the Proxmox host count.",
-  },
-  {
-    name: "ATHENA",
-    tag: "QUORUM",
-    blurb: "Quorum support remains outside the documented guest count.",
-  },
-  {
-    name: "GENESIS",
-    tag: "WITHHELD",
-    blurb: "Recovery infrastructure is deliberately withheld from the dated export.",
+    tag: "DATED HOST",
+    blurb: "All 6 documented guests were running at the 28 August probe.",
   },
 ] as const;
 

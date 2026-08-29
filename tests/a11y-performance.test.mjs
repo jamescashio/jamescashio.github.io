@@ -74,14 +74,28 @@ function mountCommandDeck({
   if (controlledTimers) Date.now = () => controlledNow;
   const raf = new Map();
   const canvasObservers = { resize: [], visibility: [], ownership: [] };
-  const noopContext = new Proxy(
-    {
-      measureText: () => ({ width: 36 }),
-      createLinearGradient: () => ({ addColorStop: () => {} }),
-      createRadialGradient: () => ({ addColorStop: () => {} }),
-    },
-    { get: (target, key) => (key in target ? target[key] : () => {}) },
-  );
+  const canvasPaints = [];
+  const canvasContexts = new WeakMap();
+  const contextFor = (canvas) => {
+    if (canvasContexts.has(canvas)) return canvasContexts.get(canvas);
+    const context = new Proxy(
+      {
+        measureText: () => ({ width: 36 }),
+        createLinearGradient: () => ({ addColorStop: () => {} }),
+        createRadialGradient: () => ({ addColorStop: () => {} }),
+      },
+      {
+        get: (target, key) => (key in target ? target[key] : () => {}),
+        set(target, key, value) {
+          target[key] = value;
+          if (key === "fillStyle" || key === "strokeStyle") canvasPaints.push({ canvas, key, value });
+          return true;
+        },
+      },
+    );
+    canvasContexts.set(canvas, context);
+    return context;
+  };
   class TestObserver {
     constructor(callback, bucket) {
       this.callback = callback;
@@ -130,7 +144,9 @@ function mountCommandDeck({
   });
   Object.defineProperty(dom.window.HTMLCanvasElement.prototype, "getContext", {
     configurable: true,
-    value: () => (canvasRuntime ? noopContext : null),
+    value() {
+      return canvasRuntime ? contextFor(this) : null;
+    },
   });
   if (canvasRuntime) {
     Object.assign(dom.window, {
@@ -243,6 +259,7 @@ function mountCommandDeck({
     tour: false,
     railOpen: false,
     shown: [0],
+    bitMood: "idle",
     craftLock: null,
   });
   const root = createRoot(dom.window.document.getElementById("root"));
@@ -321,6 +338,15 @@ function mountCommandDeck({
     },
     pendingAnimationFramesNamed(name) {
       return [...raf.values()].filter((callback) => callback.name === name).length;
+    },
+    canvasPaintCount(canvas) {
+      return canvasPaints.filter((paint) => !canvas || paint.canvas === canvas).length;
+    },
+    canvasPaintValuesSince(index, canvas) {
+      return canvasPaints
+        .filter((paint) => !canvas || paint.canvas === canvas)
+        .slice(index)
+        .map((paint) => String(paint.value));
     },
     pendingControlledTimeouts() {
       return controlledTimeouts.size;
@@ -517,7 +543,7 @@ test("command chrome frames aggregate evidence as a dated export at valid and ex
         assert.match(header?.textContent ?? "", /18\/19 AT 28 AUG PROBE/);
         assert.match(header?.textContent ?? "", expected);
         assert.doesNotMatch(header?.textContent ?? "", /NOMINAL|CURRENT/);
-        assert.match(view.document.body.textContent, /APOLLO6\/6 AT 28 AUG PROBE/);
+        assert.match(view.document.body.textContent, /APOLLO6\/6 · AT 28 AUG PROBE/);
       } finally {
         await view.cleanup();
       }
@@ -1502,6 +1528,52 @@ test("audio-off and reduced-motion rendering drains while the armed sound meter 
   }
 });
 
+test("only the active command-deck Bit owns continuous frame work", async () => {
+  const view = mountCommandDeck({ reducedMotion: false, canvasRuntime: true });
+  try {
+    await view.render();
+    assert.equal(
+      view.pendingAnimationFramesNamed("loop"),
+      1,
+      "the inactive local E.V.E. Bit must not schedule beside the visible global Bit",
+    );
+
+    await view.scrollDeck(7);
+    assert.equal(view.pendingAnimationFramesNamed("loop"), 1, "the active E.V.E. Bit must own exactly one loop");
+
+    await view.scrollDeck(8);
+    assert.equal(view.pendingAnimationFramesNamed("loop"), 1, "leaving E.V.E. must cancel its local Bit loop");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("reduced-motion mood changes repaint the visible Bit without starting a frame loop", async () => {
+  const view = mountCommandDeck({ reducedMotion: true, canvasRuntime: true });
+  try {
+    await view.render();
+    const visibleBit = view.document.querySelector(".za-bit-control canvas");
+    assert.ok(visibleBit, "expected the visible global Bit canvas");
+    const before = view.canvasPaintCount(visibleBit);
+    assert.ok(before > 0, "the initial reduced-motion Bit must paint once");
+    assert.equal(view.pendingAnimationFramesNamed("loop"), 0);
+
+    await act(async () => useDeck.setState({ bitMood: "no" }));
+    await view.settle();
+    assert.equal(useDeck.getState().bitMood, "no");
+
+    const after = view.canvasPaintCount(visibleBit);
+    assert.ok(after > before, "the changed mood must repaint the visible Bit");
+    assert.ok(
+      view.canvasPaintValuesSince(before, visibleBit).some((value) => value.includes("255,154,170")),
+      "the repaint must use the selected no-mood palette",
+    );
+    assert.equal(view.pendingAnimationFramesNamed("loop"), 0, "reduced motion must stay single-frame after repaint");
+  } finally {
+    await view.cleanup();
+  }
+});
+
 test("leaving Builds stands down its deck-owned motion without changing the selected article", async () => {
   const view = mountCommandDeck({
     url: "https://cashio.us/#deck=builds&article=7",
@@ -1520,7 +1592,7 @@ test("leaving Builds stands down its deck-owned motion without changing the sele
 
     assert.equal(scroller?.dataset.activeDeck, "8", "the destination deck must replace the active motion owner");
     assert.equal(useDeck.getState().sel, 6, "standing down inactive Builds work must not alter article selection");
-    for (const selector of [".za-flow-path", ".za-heartbeat", ".za-boot-scan", ".za-ticker-track"]) {
+    for (const selector of [".za-heartbeat", ".za-boot-scan", ".za-ticker-track"]) {
       const node = view.document.querySelector(selector);
       assert.ok(node, `expected ${selector} to be present in a deck`);
       assert.equal(

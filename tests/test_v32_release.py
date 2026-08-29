@@ -55,8 +55,8 @@ class V34ReleaseContractTests(unittest.TestCase):
             {"running": 18, "documented": 19, "stopped": 1, "zeus": 12, "apollo": 6},
         )
         self.assertEqual(self.status["lanes"], {"public": 10, "privateCatalog": 36})
-        self.assertEqual(set(self.status["deepseek"]), {"deepseek-v4-flash", "deepseek-v4-pro"})
-        self.assertIn("not a Proxmox host", self.status["atlas"])
+        self.assertNotIn("deepseek", self.status)
+        self.assertNotIn("atlas", self.status)
         self.assertEqual(read("status.json"), read("public/status.json"))
 
     def test_public_surface_guard_requires_separate_routing_provenance(self) -> None:
@@ -88,6 +88,25 @@ class V34ReleaseContractTests(unittest.TestCase):
                         any("must date routing count occurrence" in failure for failure in failures),
                         failures,
                     )
+
+    def test_public_surface_guard_rejects_current_fleet_topology_and_raw_route_identifiers(self) -> None:
+        base = (
+            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+        )
+        fixtures = {
+            "unprobed gateway": base + " · ATLAS · GATEWAY · LOCAL INFERENCE",
+            "unprobed quorum support": base + " · ATHENA · QUORUM SUPPORT",
+            "unprobed recovery": base + " · GENESIS · PRIVATE STORAGE · RECOVERY",
+            "raw route id": base + " · deepseek-v4-flash",
+            "role host mapping": base + ' · hub:"zeus"',
+            "data attribute mapping": base + ' · data-hub="apollo"',
+        }
+        for label, text in fixtures.items():
+            failures: list[str] = []
+            release_consistency.check_v34_public_surface("index.html", text, failures, "test")
+            with self.subTest(label=label):
+                self.assertTrue(any("private current-fleet detail" in failure for failure in failures), failures)
 
     def test_release_identity_is_canonical_v34(self) -> None:
         package = json.loads(read("package.json"))

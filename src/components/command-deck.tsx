@@ -69,8 +69,6 @@ export function CommandDeck() {
   const s6 = useRef<HTMLElement>(null);
   const s7 = useRef<HTMLElement>(null);
   const s8 = useRef<HTMLElement>(null);
-  const hubZ = useRef<HTMLDivElement>(null);
-  const hubA = useRef<HTMLDivElement>(null);
   const stageRef = useRef<ViewscreenStageElement | null>(null);
   const paletteOpener = useRef<HTMLElement | null>(null);
   const pendingDestinationFocus = useRef<number | null>(null);
@@ -105,8 +103,6 @@ export function CommandDeck() {
   const [histI, setHistI] = useState(-1);
   const [clock, setClock] = useState("");
   const [stageOn, setStageOn] = useState(false);
-  const [pathZeus, setPathZeus] = useState("");
-  const [pathApollo, setPathApollo] = useState("");
   const [flash, setFlash] = useState(false);
   const [flashKey, setFlashKey] = useState(0);
   const [afFlash, setAfFlash] = useState(false);
@@ -282,36 +278,6 @@ export function CommandDeck() {
     st.setClearRect((r.right + 32) / w, (r.bottom + 12) / h);
   }, []);
 
-  const measureTopo = useCallback(() => {
-    const sec = s1.current;
-    const hz = hubZ.current;
-    const ha = hubA.current;
-    if (!sec || !hz || !ha) return;
-    const base = sec.getBoundingClientRect();
-    const centre = (el: HTMLElement) => {
-      const r = el.getBoundingClientRect();
-      return {
-        x: r.left - base.left + r.width / 2,
-        y: r.top - base.top + r.height / 2,
-        top: r.top - base.top,
-      };
-    };
-    const from = { zeus: centre(hz), apollo: centre(ha) };
-    const d = { zeus: "", apollo: "" };
-    sec.querySelectorAll<HTMLElement>("[data-hub]").forEach((cell) => {
-      const hub = cell.dataset.hub as "zeus" | "apollo" | undefined;
-      if (!hub || !from[hub]) return;
-      const h = from[hub];
-      const c = centre(cell);
-      const hy = h.y + 18;
-      const mid = (hy + c.top) / 2;
-      d[hub] +=
-        `M ${h.x.toFixed(1)} ${hy.toFixed(1)} C ${h.x.toFixed(1)} ${mid.toFixed(1)} ${c.x.toFixed(1)} ${mid.toFixed(1)} ${c.x.toFixed(1)} ${c.top.toFixed(1)} `;
-    });
-    setPathZeus(d.zeus);
-    setPathApollo(d.apollo);
-  }, []);
-
   const syncHash = useCallback((nextDeck: number, nextArticle: number, historyMode: "push" | "replace") => {
     const hash = formatDeckHash({ deck: nextDeck, article: nextArticle });
     if (window.location.hash === hash) return;
@@ -431,10 +397,9 @@ export function CommandDeck() {
       bit("yes");
       window.setTimeout(() => {
         measureClear();
-        measureTopo();
       }, 420);
     },
-    [beginProgrammaticScroll, bit, chapter, cinePulse, measureClear, measureTopo, set, sfx, stopFlight, syncHash],
+    [beginProgrammaticScroll, bit, chapter, cinePulse, measureClear, set, sfx, stopFlight, syncHash],
   );
 
   useEffect(() => {
@@ -646,10 +611,7 @@ export function CommandDeck() {
     if (!sc) return;
     sc.addEventListener("scroll", onScroll, { passive: true });
     const spy = window.setInterval(onScroll, 240);
-    const measureLayout = () => {
-      measureClear();
-      measureTopo();
-    };
+    const measureLayout = () => measureClear();
     const onResize = () => {
       measureLayout();
       const targetDeck = useDeck.getState().deck;
@@ -675,7 +637,7 @@ export function CommandDeck() {
       clearInterval(spy);
       clearTimeout(later);
     };
-  }, [beginProgrammaticScroll, clearResizeAnchor, measureClear, measureTopo, onScroll]);
+  }, [beginProgrammaticScroll, clearResizeAnchor, measureClear, onScroll]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -916,7 +878,7 @@ export function CommandDeck() {
         {mode === "executive" && <DeckBrief sBrief={sBrief} />}
         {mode === "technical" && (
           <>
-            <DeckGrid s1={s1} hubZ={hubZ} hubA={hubA} pathZeus={pathZeus} pathApollo={pathApollo} />
+            <DeckGrid s1={s1} />
             <DeckRouting s2={s2} />
             <DeckIron s3={s3} />
             <DeckLineage s4={s4} />
@@ -924,6 +886,7 @@ export function CommandDeck() {
             <DeckOperator s6={s6} />
             <DeckEve
               s7={s7}
+              active={!photo && deck === 7}
               lines={consoleLines}
               value={consoleValue}
               logHeight={eveLogHeight}

@@ -29,6 +29,14 @@ ROUTING_PROVENANCE_PREFIX = re.compile(
     re.IGNORECASE,
 )
 STALE_V33_FLEET_CLAIMS = re.compile(r"19(?:/| of )19|\bCURRENT\b|\bonline\b", re.IGNORECASE)
+PRIVATE_CURRENT_FLEET_PATTERNS = (
+    re.compile(r"\bATLAS\s*·\s*(?:GATEWAY|LOCAL INFERENCE)", re.IGNORECASE),
+    re.compile(r"\bATHENA\s*·\s*QUORUM SUPPORT", re.IGNORECASE),
+    re.compile(r"\bGENESIS\s*·\s*(?:PRIVATE STORAGE|RECOVERY)", re.IGNORECASE),
+    re.compile(r"\bdeepseek-v4-(?:flash|pro)\b", re.IGNORECASE),
+    re.compile(r"\bhub\s*[:=]\s*[\"'](?:zeus|apollo)\b", re.IGNORECASE),
+    re.compile(r"\bdata-hub\s*=\s*[\"'](?:zeus|apollo)\b", re.IGNORECASE),
+)
 FORBIDDEN_LIVE = (
     "10 August 2026",
     "08-10-2026",
@@ -56,6 +64,13 @@ def collect_text(folder: Path) -> str:
     return "\n".join(chunks)
 
 
+def check_current_public_privacy(text: str, failures: list[str], label: str) -> None:
+    for pattern in PRIVATE_CURRENT_FLEET_PATTERNS:
+        match = pattern.search(text)
+        if match:
+            failures.append(f"{label} contains private current-fleet detail {match.group(0)!r}")
+
+
 def check_v34_public_surface(relative: str, text: str, failures: list[str], label: str) -> None:
     for marker in V34_PUBLIC_SURFACES[relative]:
         if marker not in text:
@@ -66,6 +81,7 @@ def check_v34_public_surface(relative: str, text: str, failures: list[str], labe
         prefix = text[max(0, match.start() - 96) : match.start()]
         if not ROUTING_PROVENANCE_PREFIX.search(prefix):
             failures.append(f"must date routing count occurrence {occurrence} as the 21 August 2026 inventory")
+    check_current_public_privacy(text, failures, f"{label}/{relative}")
 
 
 def check_v34_motion_contract(failures: list[str]) -> None:
@@ -153,10 +169,10 @@ def main() -> int:
     if status.get("routingVerified") != "2026-08-21":
         failures.append("public/status.json routingVerified must remain the separate 2026-08-21 inventory date")
 
-    if set(status.get("deepseek", [])) != {"deepseek-v4-flash", "deepseek-v4-pro"}:
-        failures.append("public/status.json must publish only deepseek-v4-flash and deepseek-v4-pro")
-    if "not a Proxmox host" not in str(status.get("atlas", "")):
-        failures.append("public/status.json must keep Atlas outside the Proxmox host count")
+    for private_key in ("deepseek", "atlas"):
+        if private_key in status:
+            failures.append(f"public/status.json must not publish private field {private_key!r}")
+    check_current_public_privacy(json.dumps(status), failures, "public/status.json")
     if "static" not in str(status.get("note", "")).lower():
         failures.append("public/status.json must identify itself as a static snapshot")
 
@@ -205,8 +221,8 @@ def main() -> int:
             'REVISED = "08-28-2026"',
             'EXPIRES_AT = "2026-09-28T05:00:00Z"',
             '"18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6"',
-            '"deepseek-v4-flash"',
-            '"deepseek-v4-pro"',
+            'model: "DeepSeek V4 Flash"',
+            'model: "DeepSeek V4 Pro"',
             'model: "Gemini 3.7 Flash"',
             'model: "Grok 4.6"',
         ),
@@ -399,6 +415,7 @@ def main() -> int:
                 check_v34_public_surface(relative, path.read_text(encoding="utf-8"), failures, "dist")
 
         live = collect_text(DIST)
+        check_current_public_privacy(live, failures, "built Pages artifact")
         for marker in (
             "28 August 2026",
             "18/19 AT 28 AUG PROBE",
@@ -432,6 +449,8 @@ def main() -> int:
         for path in sorted((ROOT / "src").rglob("*"))
         if path.is_file() and path.suffix.lower() in {".ts", ".tsx", ".js", ".css"}
     )
+    check_current_public_privacy(source_tree, failures, "current source")
+    check_current_public_privacy(read("RELEASE_BODY.md"), failures, "RELEASE_BODY.md")
     for token in ("google-analytics", "googletagmanager", "plausible.io", "segment.io", "mixpanel"):
         if token in source_tree.lower():
             failures.append(f"tracking/analytics dependency found in source: {token}")

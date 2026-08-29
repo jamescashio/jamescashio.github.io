@@ -223,7 +223,7 @@ export function BitMascot({
     if (reduce || !active) draw(0);
     else raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, [active, size]);
+  }, [active, mood, size]);
 
   return (
     <canvas

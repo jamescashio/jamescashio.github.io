@@ -17,8 +17,6 @@ V34 preserves the Vite 6 + React 19 command console and its Bit-centered Dune/LC
 | Public capability lanes     | 10 · routing inventory 21 Aug                      |
 | Private catalog entries     | 36 · routing inventory 21 Aug                      |
 | Owner-confirmed lane labels | Gemini 3.7 Flash · Grok 4.6 · Sonar Pro            |
-| DeepSeek routes             | `deepseek-v4-flash` · `deepseek-v4-pro`            |
-| Atlas                       | Gateway and local inference · not a Proxmox host   |
 | Cost                        | Withheld                                           |
 
 ## Release boundaries
