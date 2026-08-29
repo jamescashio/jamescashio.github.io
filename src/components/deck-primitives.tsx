@@ -108,16 +108,34 @@ export function Plate({
   className = "",
   fade = "bottom",
   chip,
+  sources,
+  width,
+  height,
 }: {
   src: string;
   alt: string;
   className?: string;
   fade?: "bottom" | "right" | "left";
   chip?: ReactNode;
+  sources?: readonly { srcSet: string; type: string; media?: string }[];
+  width?: number;
+  height?: number;
 }) {
+  const image = (
+    <img src={src} alt={alt} className="za-plate-img" loading="lazy" decoding="async" width={width} height={height} />
+  );
   return (
     <figure data-hud-clear className={`za-plate ${className}`} onMouseEnter={() => getSound().tick()}>
-      <img src={src} alt={alt} className="za-plate-img" loading="lazy" decoding="async" />
+      {sources ? (
+        <picture className="za-plate-picture">
+          {sources.map((source) => (
+            <source key={`${source.media ?? "default"}-${source.type}`} {...source} />
+          ))}
+          {image}
+        </picture>
+      ) : (
+        image
+      )}
       <span className={`za-plate-fade ${fade}`} aria-hidden />
       <span className="za-plate-scan" aria-hidden />
       <span className="za-plate-bezel" aria-hidden />

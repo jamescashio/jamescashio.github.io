@@ -1164,6 +1164,48 @@ test("contact and Builds expose the responsive layout hooks that prevent collisi
   }
 });
 
+test("Snapshot reserves its desktop action row while 320 and 390 pixel layouts keep the two-column grid", () => {
+  const mobileRanges = [...stylesheet.matchAll(/@media\s*\(max-width:\s*767px\)\s*\{/gi)].map((match) => {
+    const open = match.index + match[0].lastIndexOf("{");
+    let depth = 1;
+    let close = open + 1;
+    while (depth > 0 && close < stylesheet.length) {
+      if (stylesheet[close] === "{") depth += 1;
+      if (stylesheet[close] === "}") depth -= 1;
+      close += 1;
+    }
+    return { open, close };
+  });
+  const actionRules = [...stylesheet.matchAll(/\.za-snapshot-actions\s*\{([^}]*)\}/gis)].map((match) => ({
+    index: match.index,
+    declarations: Object.fromEntries(
+      match[1]
+        .split(";")
+        .map((entry) => entry.trim().split(/:\s*/, 2))
+        .filter((entry) => entry.length === 2),
+    ),
+    mobileOnly: mobileRanges.some(({ open, close }) => match.index > open && match.index < close),
+  }));
+  const desktop = Object.assign({}, ...actionRules.filter((rule) => !rule.mobileOnly).map((rule) => rule.declarations));
+  const mobile = Object.assign(
+    {},
+    desktop,
+    ...actionRules.filter((rule) => rule.mobileOnly).map((rule) => rule.declarations),
+  );
+
+  assert.equal(desktop["min-height"], "48px", "desktop must reserve one stable primary-action row");
+  assert.deepEqual(
+    {
+      display: mobile.display,
+      columns: mobile["grid-template-columns"],
+      minHeight: mobile["min-height"],
+    },
+    { display: "grid", columns: "repeat(2, minmax(0, 1fr))", minHeight: "0" },
+    "both 320 and 390 pixel layouts must retain the existing compact grid without desktop reservation",
+  );
+  assert.doesNotMatch(stylesheet, /(?:^|[;{])\s*content-visibility\s*:/i, "real deck offsets must remain measurable");
+});
+
 test("resize preserves the Contact deck while responsive geometry settles", async () => {
   const view = mountCommandDeck({
     url: "https://cashio.us/#deck=contact",
@@ -1566,8 +1608,32 @@ test("all below-fold plate and selected-aircraft evidence images are lazy and as
     await act(async () => useDeck.setState({ mode: "executive" }));
     const commandPlate = view.document.querySelector('img.za-plate-img[src^="/plates/command.jpg"]');
     assert.ok(commandPlate, "executive mode must render the command plate");
+    const commandPicture = commandPlate.closest("picture");
+    assert.ok(commandPicture, "the executive command plate must select an optimized format before its JPEG fallback");
+    assert.ok(commandPicture.classList.contains("za-plate-picture"));
+    assert.match(
+      stylesheet,
+      /\.za-plate-picture\s*\{[^}]*display:\s*block;[^}]*width:\s*100%;[^}]*height:\s*100%/is,
+      "the responsive wrapper must preserve the Plate's reserved geometry",
+    );
+    assert.deepEqual(
+      [...commandPicture.querySelectorAll(":scope > source")].map((source) => ({
+        media: source.getAttribute("media"),
+        type: source.getAttribute("type"),
+        srcset: source.getAttribute("srcset"),
+      })),
+      [
+        { media: "(max-width: 767px)", type: "image/avif", srcset: "/plates/command-mobile.avif" },
+        { media: "(max-width: 767px)", type: "image/webp", srcset: "/plates/command-mobile.webp" },
+        { media: null, type: "image/avif", srcset: "/plates/command-desktop.avif" },
+        { media: null, type: "image/webp", srcset: "/plates/command-desktop.webp" },
+      ],
+    );
+    assert.equal(commandPlate.getAttribute("alt"), "Command viewscreen over a starfield");
     assert.equal(commandPlate.getAttribute("loading"), "lazy");
     assert.equal(commandPlate.getAttribute("decoding"), "async");
+    assert.equal(commandPlate.getAttribute("width"), "1680");
+    assert.equal(commandPlate.getAttribute("height"), "945");
   } finally {
     await view.cleanup();
   }
@@ -1706,13 +1772,34 @@ test("scroll and touch stage intent are passive while pointer and keyboard regis
   assert.deepEqual(fake.counts(), { frames: 0, timers: 0, idles: 0, listeners: 0 });
 });
 
-test("the real command plate is the immediate viewscreen poster", async () => {
+test("the real command plate is the immediate responsive viewscreen poster", async () => {
   const view = mountCommandDeck();
   try {
     await view.render();
     const poster = view.document.querySelector('img.za-stage-poster[src="/plates/command.jpg"]');
     assert.ok(poster, "the existing command plate must cover the deferred cinematic stage");
+    const picture = poster.closest("picture");
+    assert.ok(picture, "the immediate poster must offer optimized formats before the JPEG fallback");
+    assert.deepEqual(
+      [...picture.querySelectorAll(":scope > source")].map((source) => ({
+        media: source.getAttribute("media"),
+        type: source.getAttribute("type"),
+        srcset: source.getAttribute("srcset"),
+      })),
+      [
+        { media: "(max-width: 767px)", type: "image/avif", srcset: "/plates/command-mobile.avif" },
+        { media: "(max-width: 767px)", type: "image/webp", srcset: "/plates/command-mobile.webp" },
+        { media: null, type: "image/avif", srcset: "/plates/command-desktop.avif" },
+        { media: null, type: "image/webp", srcset: "/plates/command-desktop.webp" },
+      ],
+    );
     assert.equal(poster.getAttribute("alt"), "", "the decorative poster must not duplicate deck content");
+    assert.equal(poster.getAttribute("aria-hidden"), "true");
+    assert.equal(poster.getAttribute("width"), "1680");
+    assert.equal(poster.getAttribute("height"), "945");
+    assert.equal(poster.getAttribute("loading"), "eager");
+    assert.equal(poster.getAttribute("fetchpriority"), "high");
+    assert.equal(poster.getAttribute("decoding"), "async");
     assert.equal(
       view.document.querySelector("viewscreen-stage"),
       null,

@@ -180,6 +180,14 @@ export function DeckBrief({ sBrief }: { sBrief: SecRef }) {
           <Plate
             src="/plates/command.jpg?v=48"
             alt="Command viewscreen over a starfield"
+            sources={[
+              { media: "(max-width: 767px)", type: "image/avif", srcSet: "/plates/command-mobile.avif" },
+              { media: "(max-width: 767px)", type: "image/webp", srcSet: "/plates/command-mobile.webp" },
+              { type: "image/avif", srcSet: "/plates/command-desktop.avif" },
+              { type: "image/webp", srcSet: "/plates/command-desktop.webp" },
+            ]}
+            width={1680}
+            height={945}
             className="h-[min(56vh,480px)] w-full"
             chip="VIEWSCREEN · DEFIANT CLASS"
           />

@@ -957,12 +957,23 @@ export function CommandDeck() {
         >
           Skip to content
         </a>
-        <img
-          src="/plates/command.jpg"
-          alt=""
-          aria-hidden="true"
-          className={`za-stage-poster ${stageOn ? "is-hidden" : ""}`}
-        />
+        <picture>
+          <source media="(max-width: 767px)" type="image/avif" srcSet="/plates/command-mobile.avif" />
+          <source media="(max-width: 767px)" type="image/webp" srcSet="/plates/command-mobile.webp" />
+          <source type="image/avif" srcSet="/plates/command-desktop.avif" />
+          <source type="image/webp" srcSet="/plates/command-desktop.webp" />
+          <img
+            src="/plates/command.jpg"
+            alt=""
+            aria-hidden="true"
+            width={1680}
+            height={945}
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+            className={`za-stage-poster ${stageOn ? "is-hidden" : ""}`}
+          />
+        </picture>
         {stageOn && <viewscreen-stage ref={stageRef as unknown as Ref<HTMLElement>} className="za-stage-live" />}
         <div className="za-vignette" />
         <div className="za-spot" aria-hidden />
