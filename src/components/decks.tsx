@@ -315,7 +315,7 @@ export function DeckRouting({ s2 }: { s2: SecRef }) {
 
             <div className="mt-8 h-1.5 overflow-hidden rounded-full bg-white/10">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-cyan to-accent transition-all duration-500"
+                className="za-routing-progress h-full rounded-full bg-gradient-to-r from-cyan to-accent transition-all duration-500"
                 style={{ width: `${((active + 1) / LANES.length) * 100}%` }}
               />
             </div>

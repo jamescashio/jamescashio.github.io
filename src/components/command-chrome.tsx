@@ -38,7 +38,7 @@ export function DesktopCommandRail({
 }: DesktopCommandRailProps) {
   return (
     <aside
-      className={`fixed left-0 top-0 z-40 hidden h-dvh flex-col bg-void/90 backdrop-blur-md transition-[width] duration-300 md:flex ${hudClassName} ${
+      className={`za-command-rail fixed left-0 top-0 z-40 hidden h-dvh flex-col bg-void/90 backdrop-blur-md transition-[width] duration-300 md:flex ${hudClassName} ${
         railOpen ? "w-[220px]" : "w-[68px]"
       }`}
     >

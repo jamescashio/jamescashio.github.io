@@ -128,6 +128,29 @@ async function settleViewport(send, width, mobile, height = 844) {
   });
 }
 
+async function emulateReducedMotion(send, reduced) {
+  await send("Emulation.setEmulatedMedia", {
+    media: "",
+    features: [{ name: "prefers-reduced-motion", value: reduced ? "reduce" : "no-preference" }],
+  });
+  await send("Runtime.evaluate", {
+    expression: `new Promise((resolve, reject) => {
+      const expected = ${reduced};
+      let attempts = 0;
+      const verify = () => {
+        if (matchMedia("(prefers-reduced-motion: reduce)").matches === expected) {
+          requestAnimationFrame(() => requestAnimationFrame(resolve));
+          return;
+        }
+        if (++attempts >= 60) reject(new Error("reduced-motion media preference did not update"));
+        else setTimeout(verify, 25);
+      };
+      verify();
+    })`,
+    awaitPromise: true,
+  });
+}
+
 async function main() {
   const resources = {};
   const runGateWithCleanup = (operation) => runWithLayoutCleanup(operation, resources, { browserExitTimeoutMs: 5_000 });
@@ -732,6 +755,181 @@ async function main() {
       returnByValue: true,
     });
     const bitFocus = bitFocusEvaluation.result.value;
+    await emulateReducedMotion(send, false);
+    const normalMotionEvaluation = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const elements = {
+          routing: document.querySelector('.za-routing-progress, #routing-lane-detail > div.mt-8 > div'),
+          hud: document.querySelector('.za-airframe-progress, .za-airframe-details > div:last-child > div'),
+          rail: document.querySelector('.za-command-rail, aside:has(nav[aria-label="Command decks"])'),
+          pip: document.querySelector('.za-lcars-pip-mark'),
+        };
+        const missing = Object.entries(elements).filter(([, element]) => !element).map(([name]) => name);
+        const seconds = (value) => value.split(',').reduce((maximum, part) => {
+          const token = part.trim();
+          const milliseconds = token.endsWith('ms') ? parseFloat(token) : parseFloat(token) * 1000;
+          return Math.max(maximum, Number.isFinite(milliseconds) ? milliseconds : 0);
+        }, 0);
+        return {
+          missing,
+          transitions: Object.fromEntries(Object.entries(elements).filter(([, element]) => element).map(([name, element]) => {
+            const style = getComputedStyle(element);
+            return [name, { durationMs: seconds(style.transitionDuration), delayMs: seconds(style.transitionDelay), property: style.transitionProperty }];
+          })),
+        };
+      })()`,
+      returnByValue: true,
+    });
+    const normalMotion = normalMotionEvaluation.result.value;
+    await emulateReducedMotion(send, true);
+    const reducedMotionEvaluation = await send("Runtime.evaluate", {
+      expression: `(async () => {
+        const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
+        const settle = async () => { await nextFrame(); await nextFrame(); };
+        const elements = () => ({
+          routing: document.querySelector('.za-routing-progress, #routing-lane-detail > div.mt-8 > div'),
+          hud: document.querySelector('.za-airframe-progress, .za-airframe-details > div:last-child > div'),
+          rail: document.querySelector('.za-command-rail, aside:has(nav[aria-label="Command decks"])'),
+          pip: document.querySelector('.za-lcars-pip-mark'),
+        });
+        const seconds = (value) => value.split(',').reduce((maximum, part) => {
+          const token = part.trim();
+          const milliseconds = token.endsWith('ms') ? parseFloat(token) : parseFloat(token) * 1000;
+          return Math.max(maximum, Number.isFinite(milliseconds) ? milliseconds : 0);
+        }, 0);
+        const transitionOf = (element) => {
+          const style = getComputedStyle(element);
+          return { durationMs: seconds(style.transitionDuration), delayMs: seconds(style.transitionDelay), property: style.transitionProperty };
+        };
+        const rectOf = (element) => {
+          const rect = element.getBoundingClientRect();
+          return { width: rect.width, height: rect.height };
+        };
+        const snapshot = () => Object.fromEntries(Object.entries(elements()).map(([name, element]) => [name, element ? rectOf(element) : null]));
+        const failures = [];
+        const initial = elements();
+        Object.entries(initial).forEach(([name, element]) => {
+          if (!element) failures.push(name + ' reduced-motion element is missing');
+          else {
+            const transition = transitionOf(element);
+            if (transition.durationMs !== 0 || transition.delayMs !== 0) {
+              failures.push(name + ' transition remains ' + transition.durationMs + 'ms + ' + transition.delayMs + 'ms delay (' + transition.property + ')');
+            }
+          }
+        });
+
+        const routingButtons = [...document.querySelectorAll('button[aria-controls="routing-lane-detail"]')];
+        routingButtons.at(-1)?.click();
+        document.querySelector('button[aria-label="Expand command rail"]')?.click();
+        [...document.querySelectorAll('.za-lcars-pip')].at(-1)?.click();
+        await settle();
+        const scroller = document.querySelector('#main-content');
+        if (scroller) {
+          scroller.scrollTo({ top: (scroller.scrollHeight - scroller.clientHeight) / 2, behavior: 'auto' });
+          scroller.dispatchEvent(new Event('scroll'));
+        }
+        await settle();
+        document.querySelector('.za-corner-hud')?.classList.remove('yield');
+        await nextFrame();
+
+        const changed = elements();
+        const routingPercent = parseFloat(changed.routing?.style.width ?? 'NaN');
+        const routingExpected = changed.routing?.parentElement ? changed.routing.parentElement.clientWidth * routingPercent / 100 : NaN;
+        const hudPercent = parseFloat(changed.hud?.style.width ?? 'NaN');
+        const hudExpected = changed.hud?.parentElement ? changed.hud.parentElement.clientWidth * hudPercent / 100 : NaN;
+        const changedGeometry = snapshot();
+        if (!Number.isFinite(routingExpected) || Math.abs(changedGeometry.routing.width - routingExpected) > 0.5) {
+          failures.push('routing progress did not resolve immediately to its inline width');
+        }
+        if (!Number.isFinite(hudExpected) || hudPercent <= 0 || Math.abs(changedGeometry.hud.width - hudExpected) > 0.5) {
+          failures.push('HUD progress did not resolve immediately to its inline width');
+        }
+        if (Math.abs(changedGeometry.rail.width - 220) > 0.5) failures.push('desktop rail did not resolve immediately to 220px');
+        const selectedPip = document.querySelector('.za-lcars-pip.on .za-lcars-pip-mark');
+        const selectedPipRect = selectedPip?.getBoundingClientRect();
+        if (!selectedPipRect || Math.abs(selectedPipRect.width - 26) > 0.5 || Math.abs(selectedPipRect.height - 8) > 0.5) {
+          failures.push('selected aircraft pip did not resolve immediately to 26x8px');
+        }
+
+        return {
+          failures,
+          ok: failures.length === 0,
+          transitions: Object.fromEntries(Object.entries(changed).filter(([, element]) => element).map(([name, element]) => [name, transitionOf(element)])),
+          changedGeometry,
+        };
+      })()`,
+      awaitPromise: true,
+      returnByValue: true,
+    });
+    const reducedMotion = reducedMotionEvaluation.result.value;
+    const settledReducedGeometry = reducedMotion.changedGeometry;
+    await emulateReducedMotion(send, false);
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    const restoredMotionEvaluation = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const elements = {
+          routing: document.querySelector('.za-routing-progress, #routing-lane-detail > div.mt-8 > div'),
+          hud: document.querySelector('.za-airframe-progress, .za-airframe-details > div:last-child > div'),
+          rail: document.querySelector('.za-command-rail, aside:has(nav[aria-label="Command decks"])'),
+          pip: document.querySelector('.za-lcars-pip-mark'),
+        };
+        const seconds = (value) => value.split(',').reduce((maximum, part) => {
+          const token = part.trim();
+          const milliseconds = token.endsWith('ms') ? parseFloat(token) : parseFloat(token) * 1000;
+          return Math.max(maximum, Number.isFinite(milliseconds) ? milliseconds : 0);
+        }, 0);
+        const geometry = Object.fromEntries(Object.entries(elements).map(([name, element]) => {
+          if (!element) return [name, null];
+          const rect = element.getBoundingClientRect();
+          return [name, { width: rect.width, height: rect.height }];
+        }));
+        const transitions = Object.fromEntries(Object.entries(elements).filter(([, element]) => element).map(([name, element]) => {
+          const style = getComputedStyle(element);
+          return [name, { durationMs: seconds(style.transitionDuration), delayMs: seconds(style.transitionDelay), property: style.transitionProperty }];
+        }));
+        return { geometry, transitions };
+      })()`,
+      returnByValue: true,
+    });
+    const restoredMotion = restoredMotionEvaluation.result.value;
+    await emulateReducedMotion(send, true);
+    const finalReducedEvaluation = await send("Runtime.evaluate", {
+      expression: `(() => Object.fromEntries(Object.entries({
+        routing: document.querySelector('.za-routing-progress, #routing-lane-detail > div.mt-8 > div'),
+        hud: document.querySelector('.za-airframe-progress, .za-airframe-details > div:last-child > div'),
+        rail: document.querySelector('.za-command-rail, aside:has(nav[aria-label="Command decks"])'),
+        pip: document.querySelector('.za-lcars-pip-mark'),
+      }).map(([name, element]) => {
+        if (!element) return [name, null];
+        const style = getComputedStyle(element);
+        const toMs = (value) => value.split(',').reduce((maximum, part) => Math.max(maximum, part.trim().endsWith('ms') ? parseFloat(part) : parseFloat(part) * 1000), 0);
+        return [name, { durationMs: toMs(style.transitionDuration), delayMs: toMs(style.transitionDelay) }];
+      })))()`,
+      returnByValue: true,
+    });
+    const finalReducedMotion = finalReducedEvaluation.result.value;
+    const restoredMotionFailures = [];
+    for (const [name, transition] of Object.entries(restoredMotion.transitions)) {
+      if (transition.durationMs <= 0) restoredMotionFailures.push(`${name} normal-motion transition was not restored`);
+    }
+    for (const [name, geometry] of Object.entries(restoredMotion.geometry)) {
+      const settled = settledReducedGeometry[name];
+      if (
+        !geometry ||
+        !settled ||
+        Math.abs(geometry.width - settled.width) > 0.5 ||
+        Math.abs(geometry.height - settled.height) > 0.5
+      ) {
+        restoredMotionFailures.push(`${name} replayed stale geometry after normal motion was restored`);
+      }
+    }
+    for (const [name, transition] of Object.entries(finalReducedMotion)) {
+      if (!transition || transition.durationMs !== 0 || transition.delayMs !== 0) {
+        restoredMotionFailures.push(`${name} transition survived the second reduced-motion change`);
+      }
+    }
+    restoredMotion.ok = restoredMotionFailures.length === 0;
+    restoredMotion.failures = restoredMotionFailures;
     console.log(
       JSON.stringify(
         {
@@ -742,6 +940,10 @@ async function main() {
           desktopEveScenarios,
           eveFocus,
           flights,
+          finalReducedMotion,
+          normalMotion,
+          reducedMotion,
+          restoredMotion,
           snapshotGeometry,
           mobile320: narrowResult,
         },
@@ -757,6 +959,20 @@ async function main() {
     assert.equal(desktopLayout.ok, true, desktopLayout.failures.join("; "));
     assert.equal(bitFocus.ok, true, "Bit control must retain a visible keyboard focus indicator");
     assert.equal(eveFocus.ok, true, "E.V.E. command input must retain a visible keyboard focus indicator");
+    assert.deepEqual(
+      normalMotion.missing,
+      [],
+      `Normal-motion acceptance elements are missing: ${normalMotion.missing}`,
+    );
+    Object.entries(normalMotion.transitions).forEach(([name, transition]) =>
+      assert.ok(transition.durationMs > 0, `${name} must preserve its normal-motion transition`),
+    );
+    assert.equal(reducedMotion.ok, true, `Reduced-motion acceptance failed: ${reducedMotion.failures.join("; ")}`);
+    assert.equal(
+      restoredMotion.ok,
+      true,
+      `Live motion preference acceptance failed: ${restoredMotion.failures.join("; ")}`,
+    );
     desktopEveScenarios.forEach((scenario) =>
       assert.equal(
         scenario.ok,

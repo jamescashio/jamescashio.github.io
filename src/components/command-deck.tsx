@@ -1135,7 +1135,10 @@ export function CommandDeck() {
               <div className="text-accent">{craft[1]}</div>
               <div className="mt-1">{craft[2]}</div>
               <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-white/10">
-                <div className="h-full bg-accent transition-[width] duration-300" style={{ width: `${prog}%` }} />
+                <div
+                  className="za-airframe-progress h-full bg-accent transition-[width] duration-300"
+                  style={{ width: `${prog}%` }}
+                />
               </div>
             </div>
           </div>
