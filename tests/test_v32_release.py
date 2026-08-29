@@ -64,13 +64,30 @@ class V34ReleaseContractTests(unittest.TestCase):
             "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
             "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
         )
-        for text in (valid, valid.replace("21 AUGUST 2026", "28 AUGUST 2026"), valid.replace("21 AUGUST 2026 · ", "")):
+        fixtures = {
+            "valid": (valid, True),
+            "false date": (valid.replace("21 AUGUST 2026", "28 AUGUST 2026"), False),
+            "undated": (valid.replace("21 AUGUST 2026 · ", ""), False),
+            "mixed valid and undated": (
+                valid + " · 10 PUBLIC LANES · 36 PRIVATE CATALOG",
+                False,
+            ),
+            "mixed valid and false date": (
+                valid + " · ROUTING INVENTORY 28 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG",
+                False,
+            ),
+        }
+        for label, (text, expected_valid) in fixtures.items():
             failures: list[str] = []
             release_consistency.check_v34_public_surface("index.html", text, failures, "test")
-            if text == valid:
-                self.assertEqual(failures, [])
-            else:
-                self.assertIn("must date routing counts as the 21 August 2026 inventory", failures)
+            with self.subTest(label=label):
+                if expected_valid:
+                    self.assertEqual(failures, [])
+                else:
+                    self.assertTrue(
+                        any("must date routing count occurrence" in failure for failure in failures),
+                        failures,
+                    )
 
     def test_release_identity_is_canonical_v34(self) -> None:
         package = json.loads(read("package.json"))

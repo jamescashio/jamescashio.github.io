@@ -20,10 +20,13 @@ V34_PUBLIC_SURFACES = {
     "index.html": ("28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT", "ROUTING INVENTORY 21 AUGUST 2026"),
     "lab.html": ("28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT", "ROUTING INVENTORY 21 AUGUST 2026"),
 }
-ROUTING_PROVENANCE = "ROUTING INVENTORY 21 AUGUST 2026"
 ROUTING_COUNT_CLAIM = re.compile(
     r"\b10\s+PUBLIC(?:\s+CAPABILITY)?\s+LANES\b.*?\b36\s+PRIVATE\s+CATALOG(?:\s+ENTRIES)?\b",
     re.IGNORECASE | re.DOTALL,
+)
+ROUTING_PROVENANCE_PREFIX = re.compile(
+    r"ROUTING INVENTORY 21 AUGUST 2026\s*[:—·-]\s*$",
+    re.IGNORECASE,
 )
 STALE_V33_FLEET_CLAIMS = re.compile(r"19(?:/| of )19|\bCURRENT\b|\bonline\b", re.IGNORECASE)
 FORBIDDEN_LIVE = (
@@ -59,8 +62,10 @@ def check_v34_public_surface(relative: str, text: str, failures: list[str], labe
             failures.append(f"{label}/{relative} is missing V34 marker {marker!r}")
     if STALE_V33_FLEET_CLAIMS.search(text):
         failures.append(f"{label}/{relative} contains a stale V33 fleet claim")
-    if ROUTING_COUNT_CLAIM.search(text) and ROUTING_PROVENANCE not in text.upper():
-        failures.append("must date routing counts as the 21 August 2026 inventory")
+    for occurrence, match in enumerate(ROUTING_COUNT_CLAIM.finditer(text), start=1):
+        prefix = text[max(0, match.start() - 96) : match.start()]
+        if not ROUTING_PROVENANCE_PREFIX.search(prefix):
+            failures.append(f"must date routing count occurrence {occurrence} as the 21 August 2026 inventory")
 
 
 def main() -> int:
