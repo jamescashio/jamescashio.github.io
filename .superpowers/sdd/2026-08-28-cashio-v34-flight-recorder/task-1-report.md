@@ -166,3 +166,51 @@ The five failures were intentional and traced directly to the stale public surfa
 - `git diff --check` — passed before committing the fix.
 
 `python scripts/check_release_consistency.py` correctly fails against the stale V33 `dist` artifact, now with explicit per-file evidence for both `dist/index.html` and `dist/lab.html` (missing V34 markers and containing stale V33 claims). A sandboxed `npm run build` remains blocked by `Access is denied` while Vite reads its config, so an approved-environment build is still required before the artifact guard can pass.
+
+## Fix round 2 — routing inventory provenance
+
+Fix commit: `d968eda96e5a21137ea82fcb90f654a537e8c394` (`fix: preserve routing inventory provenance`).
+
+### Implemented
+
+- Dated each public metadata/fallback 10/36 claim as `ROUTING INVENTORY 21 AUGUST 2026`, distinct from the 28 August fleet probe.
+- Updated E.V.E. `status` and `lanes`, boot/telemetry, Executive, Routing, and console summary copy so every displayed routing count is explicitly the 21 August 2026 inventory.
+- Narrowed stale detection to obsolete fleet claims; a legitimate 21 August 2026 routing date is now allowed.
+- Added a pure guard test that accepts correct provenance and rejects undated or falsely 28-August-tagged 10/36 claims. The preserved receipt and historical archive remain outside per-file current-surface checks.
+
+### RED
+
+Command:
+
+```text
+node --import tsx --test tests/release-gates.test.mjs tests/flight-experience.test.mjs; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; python -m unittest tests.test_v32_release.V34ReleaseContractTests.test_public_surface_guard_requires_separate_routing_provenance
+```
+
+Output:
+
+```text
+tests 18
+pass 16
+fail 2
+
+E.V.E. status keeps routing counts on the separate 21 August 2026 inventory
+AssertionError: false == true
+
+public metadata and redirect fallback keep fleet and routing provenance distinct
+AssertionError: index.html must date 10/36 as routing inventory
+```
+
+The focused Python command did not run because the preceding Node command correctly returned non-zero. The two Node failures demonstrated the missing routing date in E.V.E. status and source metadata before production edits.
+
+### GREEN and full verification
+
+- Focused Node command — passed: 18 tests, 18 pass, 0 fail.
+- Focused guard fixture — `Ran 1 test ... OK`.
+- `npm run lint` — passed.
+- `npm run format:check` — passed.
+- `npm run test:node` — passed: 115 tests, 115 pass, 0 fail.
+- `python -m unittest tests.test_v32_release tests.test_public_repo_guard tests.test_committed_whitespace` — passed: 50 tests, 50 pass, 0 fail.
+- `python scripts/public_repo_guard.py` — passed.
+- `git diff --check` — passed before commit.
+
+`python scripts/check_release_consistency.py` correctly fails only because the stale pre-build `dist/index.html` and `dist/lab.html` lack `ROUTING INVENTORY 21 AUGUST 2026` and have undated routing counts. Sandbox Vite build remains blocked by `Access is denied`; rebuild in an approved environment before final artifact verification.
