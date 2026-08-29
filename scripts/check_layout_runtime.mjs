@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 
 import {
   connectCdp,
+  desktopEveAcceptanceFailures,
   mobileCinemaAcceptanceFailures,
   mobileFlightAcceptanceFailures,
   runWithLayoutCleanup,
@@ -119,8 +120,8 @@ async function waitForApp(send) {
   throw new Error("timed out waiting for the command deck layout");
 }
 
-async function settleViewport(send, width, mobile) {
-  await send("Emulation.setDeviceMetricsOverride", { width, height: 844, deviceScaleFactor: 1, mobile });
+async function settleViewport(send, width, mobile, height = 844) {
+  await send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 1, mobile });
   await send("Runtime.evaluate", {
     expression: "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))",
     awaitPromise: true,
@@ -591,6 +592,106 @@ async function main() {
       );
     }
     const narrowResult = narrowEvaluation.result.value;
+    const desktopEveScenarios = [];
+    for (const [width, height] of [
+      [1280, 720],
+      [1440, 900],
+    ]) {
+      await settleViewport(send, width, false, height);
+      await send("Page.navigate", { url: "about:blank" });
+      await send("Page.navigate", { url: targetUrl });
+      await waitForApp(send);
+      const eveNavigation = await send("Runtime.evaluate", {
+        expression: `(() => {
+          const button = document.querySelector('button[aria-label="Go to E.V.E. deck"]');
+          if (!button) return false;
+          button.click();
+          return true;
+        })()`,
+        returnByValue: true,
+      });
+      if (!eveNavigation.result.value) throw new Error(`desktop E.V.E. rail control is missing at ${width}x${height}`);
+      for (let attempt = 0; attempt < 80; attempt++) {
+        const active = await send("Runtime.evaluate", {
+          expression: `(() => {
+            const main = document.querySelector("#main-content");
+            const section = document.querySelector('section[data-deck="7"]');
+            const landing = section ? Math.max(0, section.offsetTop - 8) : -1;
+            return (
+              location.hash === "#deck=eve" &&
+              main?.getAttribute("data-active-deck") === "7" &&
+              Math.abs(main.scrollTop - landing) <= 1
+            );
+          })()`,
+          returnByValue: true,
+        });
+        if (active.result.value) break;
+        await new Promise((resolve) => setTimeout(resolve, 25));
+      }
+      await send("Runtime.evaluate", {
+        expression: "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))",
+        awaitPromise: true,
+      });
+      const eveLayoutEvaluation = await send("Runtime.evaluate", {
+        expression: `(() => {
+          const input = document.querySelector("#eve-command");
+          const promptSurface = input?.closest("form");
+          const main = document.querySelector("#main-content");
+          if (!input || !promptSurface || !main) return { error: "desktop E.V.E. prompt structure is missing" };
+          const rectOf = (element) => {
+            const rect = element.getBoundingClientRect();
+            return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, width: rect.width, height: rect.height };
+          };
+          const overlaps = (a, b) => a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+          const inputRect = input.getBoundingClientRect();
+          const promptRect = promptSurface.getBoundingClientRect();
+          const inputStyle = getComputedStyle(input);
+          const inputHitAtCenter = document.elementsFromPoint(
+            inputRect.left + inputRect.width / 2,
+            inputRect.top + inputRect.height / 2,
+          ).includes(input);
+          const coveringSurfaces = [...document.querySelectorAll(".za-command-header, .za-mobile-rail-safe, .za-corner-hud, .za-mobile-flight-control")]
+            .filter((element) => {
+              const style = getComputedStyle(element);
+              if (
+                !["fixed", "sticky"].includes(style.position) ||
+                style.pointerEvents === "none" ||
+                style.opacity === "0"
+              )
+                return false;
+              const rect = element.getBoundingClientRect();
+              return rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden" && overlaps(rect, promptRect);
+            })
+            .map((element) => element.getAttribute("aria-label") || element.className || element.tagName);
+          return {
+            viewport: [innerWidth, innerHeight],
+            hash: location.hash,
+            activeDeck: main.getAttribute("data-active-deck"),
+            inputVisible:
+              inputRect.width > 0 &&
+              inputRect.height > 0 &&
+              inputStyle.display !== "none" &&
+              inputStyle.visibility !== "hidden" &&
+              inputStyle.opacity !== "0",
+            input: rectOf(input),
+            promptSurface: rectOf(promptSurface),
+            inputHitAtCenter,
+            coveringSurfaces,
+            documentWidth: Math.max(document.documentElement.scrollWidth, document.body.scrollWidth),
+            mainClientWidth: main.clientWidth,
+            mainScrollWidth: main.scrollWidth,
+          };
+        })()`,
+        returnByValue: true,
+      });
+      const eveLayout = eveLayoutEvaluation.result.value;
+      eveLayout.failures = eveLayout.error ? [eveLayout.error] : desktopEveAcceptanceFailures(eveLayout);
+      eveLayout.ok = eveLayout.failures.length === 0;
+      desktopEveScenarios.push(eveLayout);
+    }
+    await settleViewport(send, 1280, false, 900);
+    await send("Page.navigate", { url: `${targetUrl}?layout-focus#deck=contact` });
+    await waitForApp(send);
     const eveFocusEvaluation = await send("Runtime.evaluate", {
       expression: `(() => {
         const input = document.querySelector("#eve-command");
@@ -638,6 +739,7 @@ async function main() {
           cinemas,
           decodedAssets,
           desktopLayout,
+          desktopEveScenarios,
           eveFocus,
           flights,
           snapshotGeometry,
@@ -655,6 +757,13 @@ async function main() {
     assert.equal(desktopLayout.ok, true, desktopLayout.failures.join("; "));
     assert.equal(bitFocus.ok, true, "Bit control must retain a visible keyboard focus indicator");
     assert.equal(eveFocus.ok, true, "E.V.E. command input must retain a visible keyboard focus indicator");
+    desktopEveScenarios.forEach((scenario) =>
+      assert.equal(
+        scenario.ok,
+        true,
+        `Desktop E.V.E. acceptance failed at ${scenario.viewport?.join("x")}: ${scenario.failures.join("; ")}`,
+      ),
+    );
     flights.forEach((flight) =>
       assert.equal(
         flight.ok,

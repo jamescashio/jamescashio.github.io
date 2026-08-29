@@ -444,3 +444,34 @@ test("mobile cinema acceptance requires isolated openings and Escape restoration
     assert.ok(failures.some((failure) => /each PHOTO opening/.test(failure)));
   }
 });
+
+const approvedDesktopEveScenario = {
+  viewport: [1280, 720],
+  hash: "#deck=eve",
+  activeDeck: "7",
+  inputVisible: true,
+  input: { left: 430, right: 850, top: 642, bottom: 660, width: 420, height: 18 },
+  promptSurface: { left: 320, right: 960, top: 624, bottom: 680, width: 640, height: 56 },
+  inputHitAtCenter: true,
+  coveringSurfaces: [],
+  documentWidth: 1280,
+  mainClientWidth: 1212,
+  mainScrollWidth: 1212,
+};
+
+test("desktop E.V.E. acceptance recognizes a usable prompt inside the 1280 by 720 safe viewport", () => {
+  const validate = runtimeSupport.desktopEveAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  assert.deepEqual(validate(approvedDesktopEveScenario), []);
+});
+
+test("desktop E.V.E. acceptance rejects the observed below-viewport prompt geometry", () => {
+  const validate = runtimeSupport.desktopEveAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  const failures = validate({
+    ...approvedDesktopEveScenario,
+    input: { ...approvedDesktopEveScenario.input, top: 769.703125, bottom: 787.703125 },
+    promptSurface: { ...approvedDesktopEveScenario.promptSurface, top: 755, bottom: 803 },
+    inputHitAtCenter: false,
+  });
+  assert.ok(failures.some((failure) => /20px bottom safe margin/.test(failure)));
+  assert.ok(failures.some((failure) => /hit target must be unobscured/.test(failure)));
+});

@@ -1558,6 +1558,12 @@
   min-height: 0;
 }
 
+@media (min-width: 768px) and (max-height: 760px) {
+  section[data-deck="7"].za-mobile-rail-clearance {
+    padding-top: 4.5rem;
+  }
+}
+
 .za-critical-telemetry {
   font-size: 10px;
 }

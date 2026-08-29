@@ -309,3 +309,69 @@ export function mobileCinemaAcceptanceFailures(scenario) {
   }
   return failures;
 }
+
+export function desktopEveAcceptanceFailures(scenario) {
+  const failures = [];
+  const viewportWidth = scenario.viewport?.[0];
+  const viewportHeight = scenario.viewport?.[1];
+  const validViewport =
+    (viewportWidth === 1280 && viewportHeight === 720) || (viewportWidth === 1440 && viewportHeight === 900);
+  if (!validViewport) failures.push("desktop E.V.E. viewport must be 1280x720 or 1440x900");
+  if (scenario.hash !== "#deck=eve") failures.push("desktop E.V.E. scenario must use the exact #deck=eve URL");
+  if (scenario.activeDeck !== "7") failures.push("desktop E.V.E. scenario must run at the exact E.V.E. deck");
+
+  const finiteInput = hasFiniteRect(scenario.input);
+  const finiteSurface = hasFiniteRect(scenario.promptSurface);
+  if (!finiteInput) failures.push("E.V.E. input must provide a finite rectangle");
+  if (!finiteSurface) failures.push("E.V.E. prompt surface must provide a finite rectangle");
+  if (finiteInput && !hasConsistentRect(scenario.input)) {
+    failures.push(`E.V.E. input rectangle must be internally consistent within ${RECT_CONSISTENCY_TOLERANCE_PX}px`);
+  }
+  if (finiteSurface && !hasConsistentRect(scenario.promptSurface)) {
+    failures.push(
+      `E.V.E. prompt surface rectangle must be internally consistent within ${RECT_CONSISTENCY_TOLERANCE_PX}px`,
+    );
+  }
+  if (!scenario.inputVisible) failures.push("E.V.E. command input must be visibly rendered");
+  if (finiteSurface && (scenario.promptSurface.width < 44 || scenario.promptSurface.height < 44)) {
+    failures.push("E.V.E. prompt surface must provide a usable target of at least 44x44");
+  }
+  if (
+    validViewport &&
+    finiteInput &&
+    (scenario.input.left < 0 ||
+      scenario.input.right > viewportWidth ||
+      scenario.input.top < 0 ||
+      scenario.input.bottom > viewportHeight - 20)
+  ) {
+    failures.push("E.V.E. input must remain fully visible with a 20px bottom safe margin");
+  }
+  if (
+    validViewport &&
+    finiteSurface &&
+    (scenario.promptSurface.left < 0 ||
+      scenario.promptSurface.right > viewportWidth ||
+      scenario.promptSurface.top < 0 ||
+      scenario.promptSurface.bottom > viewportHeight - 20)
+  ) {
+    failures.push("E.V.E. prompt surface must remain fully visible with a 20px bottom safe margin");
+  }
+  if (
+    finiteInput &&
+    finiteSurface &&
+    (scenario.input.left < scenario.promptSurface.left ||
+      scenario.input.right > scenario.promptSurface.right ||
+      scenario.input.top < scenario.promptSurface.top ||
+      scenario.input.bottom > scenario.promptSurface.bottom)
+  ) {
+    failures.push("E.V.E. input must remain inside its visible prompt surface");
+  }
+  if (!scenario.inputHitAtCenter) failures.push("E.V.E. input hit target must be unobscured");
+  if (scenario.coveringSurfaces?.length !== 0) failures.push("fixed, rail, and HUD surfaces must not cover E.V.E.");
+  if (validViewport && scenario.documentWidth > viewportWidth)
+    failures.push("desktop E.V.E. must not overflow horizontally");
+  if (!(scenario.mainClientWidth > 0) || scenario.mainScrollWidth > scenario.mainClientWidth) {
+    failures.push("desktop E.V.E. main scroller must not overflow horizontally");
+  }
+  return failures;
+}
