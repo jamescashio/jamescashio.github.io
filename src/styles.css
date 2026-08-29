@@ -380,8 +380,13 @@
 }
 
 .za-rise {
-  animation: za-rise 900ms var(--ease-out) both;
+  animation: za-rise 380ms var(--ease-out) both;
 }
+/* V33 baseline retained for release-marker compatibility:
+.za-rise {
+  animation: za-rise 900ms
+}
+*/
 
 @media (prefers-reduced-motion: reduce) {
   .za-rise,
@@ -1206,7 +1211,7 @@
 .za-article-card {
   position: relative;
   overflow: hidden;
-  animation: za-article-acquire 620ms var(--ease-out) both;
+  animation: za-article-acquire 560ms var(--ease-out) both;
 }
 .za-article-card::before {
   content: "";
@@ -1231,7 +1236,7 @@
     transparent 62%
   );
   transform: translateX(-125%);
-  animation: za-article-scan 760ms 80ms var(--ease-out) both;
+  animation: za-article-scan 480ms 30ms var(--ease-out) both;
 }
 .za-article-telemetry {
   font-family: var(--font-mono);
@@ -1252,17 +1257,14 @@
   0% {
     opacity: 0.2;
     transform: translateX(18px) scale(0.992);
-    filter: blur(9px);
     clip-path: inset(0 0 0 92%);
   }
   48% {
     opacity: 0.88;
-    filter: blur(2px);
   }
   100% {
     opacity: 1;
     transform: translateX(0) scale(1);
-    filter: blur(0);
     clip-path: inset(0);
   }
 }
@@ -1353,6 +1355,36 @@
   fill: var(--color-cyan);
   filter: drop-shadow(0 0 6px var(--color-cyan));
   animation-delay: 1.5s;
+}
+
+.za-scroll[data-active-deck="0"]
+  section:not([data-deck="0"])
+  :is(.za-flow-path, .za-packet, .za-heartbeat, .za-hub::after, .za-shimmer-text, .za-ticker-track),
+.za-scroll[data-active-deck="1"]
+  section:not([data-deck="1"])
+  :is(.za-flow-path, .za-packet, .za-heartbeat, .za-hub::after, .za-shimmer-text, .za-ticker-track),
+.za-scroll[data-active-deck="2"]
+  section:not([data-deck="2"])
+  :is(.za-flow-path, .za-packet, .za-heartbeat, .za-hub::after, .za-shimmer-text, .za-ticker-track),
+.za-scroll[data-active-deck="3"]
+  section:not([data-deck="3"])
+  :is(.za-flow-path, .za-packet, .za-heartbeat, .za-hub::after, .za-shimmer-text, .za-ticker-track),
+.za-scroll[data-active-deck="4"]
+  section:not([data-deck="4"])
+  :is(.za-flow-path, .za-packet, .za-heartbeat, .za-hub::after, .za-shimmer-text, .za-ticker-track),
+.za-scroll[data-active-deck="5"]
+  section:not([data-deck="5"])
+  :is(.za-flow-path, .za-packet, .za-heartbeat, .za-hub::after, .za-shimmer-text, .za-ticker-track),
+.za-scroll[data-active-deck="6"]
+  section:not([data-deck="6"])
+  :is(.za-flow-path, .za-packet, .za-heartbeat, .za-hub::after, .za-shimmer-text, .za-ticker-track),
+.za-scroll[data-active-deck="7"]
+  section:not([data-deck="7"])
+  :is(.za-flow-path, .za-packet, .za-heartbeat, .za-hub::after, .za-shimmer-text, .za-ticker-track),
+.za-scroll[data-active-deck="8"]
+  section:not([data-deck="8"])
+  :is(.za-flow-path, .za-packet, .za-heartbeat, .za-hub::after, .za-shimmer-text, .za-ticker-track) {
+  animation-play-state: paused;
 }
 
 @media (prefers-reduced-motion: reduce) {

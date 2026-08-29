@@ -106,7 +106,17 @@ function rotateBitVertex(vertex: number[], rotateX: number, rotateY: number) {
   return [x, y, z];
 }
 
-export function BitMascot({ mood, size = 96, className }: { mood: BitMood; size?: number; className?: string }) {
+export function BitMascot({
+  active = true,
+  mood,
+  size = 96,
+  className,
+}: {
+  active?: boolean;
+  mood: BitMood;
+  size?: number;
+  className?: string;
+}) {
   const ref = useRef<HTMLCanvasElement>(null);
   const moodRef = useRef(mood);
   moodRef.current = mood;
@@ -210,9 +220,10 @@ export function BitMascot({ mood, size = 96, className }: { mood: BitMood; size?
       }
       raf = requestAnimationFrame(loop);
     };
-    raf = requestAnimationFrame(reduce ? draw : loop);
+    if (reduce || !active) draw(0);
+    else raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, [size]);
+  }, [active, size]);
 
   return (
     <canvas

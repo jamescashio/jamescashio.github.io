@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { frameDeltaSeconds } from "@/lib/animation-timing";
+import { deckAnimationState, frameDeltaSeconds } from "@/lib/animation-timing";
 import { POS } from "@/lib/content";
 
 const SHORT = ["HERMES", "ESCALATION", "EXPOSURE", "SOVEREIGN", "ZEUSAPOLLO", "SHOP FLOOR", "GRAPHIFY"];
@@ -247,7 +247,8 @@ export function BuildEnvelope({ sel, onLock }: { sel: number; onLock: (i: number
 
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let reduce = motion.matches;
-    let active = false;
+    let inViewport = false;
+    let deckActive = false;
     let raf = 0;
     let last = performance.now();
 
@@ -483,7 +484,7 @@ export function BuildEnvelope({ sel, onLock }: { sel: number; onLock: (i: number
     const animationFrame = (now: number) => {
       raf = 0;
       draw(now);
-      if (active && !reduce) raf = requestAnimationFrame(animationFrame);
+      if (inViewport && deckActive && !reduce) raf = requestAnimationFrame(animationFrame);
     };
     const requestDraw = () => {
       if (!raf) raf = requestAnimationFrame(animationFrame);
@@ -505,8 +506,8 @@ export function BuildEnvelope({ sel, onLock }: { sel: number; onLock: (i: number
     resize.observe(el);
     const visibility = new IntersectionObserver(
       ([entry]) => {
-        active = entry.isIntersecting;
-        if (active) {
+        inViewport = entry.isIntersecting;
+        if (inViewport && deckActive) {
           last = performance.now();
           requestDraw();
         } else if (raf) {
@@ -517,6 +518,25 @@ export function BuildEnvelope({ sel, onLock }: { sel: number; onLock: (i: number
       { rootMargin: "140px 0px" },
     );
     visibility.observe(el);
+
+    const scrollRoot = el.closest<HTMLElement>("main.za-scroll");
+    const syncDeckActivity = () => {
+      const activeDeck = Number(scrollRoot?.dataset.activeDeck ?? -1);
+      const next = deckAnimationState({ activeDeck, ownerDeck: 5, selection: selRef.current }).active;
+      if (next === deckActive) return;
+      deckActive = next;
+      if (!deckActive && raf) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }
+      if (deckActive && inViewport) {
+        last = performance.now();
+        requestDraw();
+      }
+    };
+    const ownership = scrollRoot ? new MutationObserver(syncDeckActivity) : null;
+    if (scrollRoot) ownership?.observe(scrollRoot, { attributes: true, attributeFilter: ["data-active-deck"] });
+    syncDeckActivity();
 
     const onMotion = (event: MediaQueryListEvent) => {
       reduce = event.matches;
@@ -562,6 +582,7 @@ export function BuildEnvelope({ sel, onLock }: { sel: number; onLock: (i: number
       cancelAnimationFrame(raf);
       resize.disconnect();
       visibility.disconnect();
+      ownership?.disconnect();
       motion.removeEventListener("change", onMotion);
       c.removeEventListener("pointermove", onMove);
       c.removeEventListener("pointerleave", onLeave);

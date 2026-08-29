@@ -1400,3 +1400,22 @@ test("audio-off and reduced-motion rendering drains while the armed sound meter 
     await view.cleanup();
   }
 });
+
+test("leaving Builds stands down its deck-owned motion without changing the selected article", async () => {
+  const view = mountCommandDeck({ url: "https://cashio.us/#deck=builds&article=7", reducedMotion: false });
+  try {
+    await view.render();
+    await view.scrollDeck(5);
+    const scroller = view.document.querySelector("main.za-scroll");
+    assert.equal(scroller?.dataset.activeDeck, "5", "Builds must own its animation work while active");
+    assert.equal(useDeck.getState().sel, 6);
+
+    await view.click(labeledButton(view.document, "Go to CONTACT deck"));
+    await view.settle();
+
+    assert.equal(scroller?.dataset.activeDeck, "8", "the destination deck must replace the active motion owner");
+    assert.equal(useDeck.getState().sel, 6, "standing down inactive Builds work must not alter article selection");
+  } finally {
+    await view.cleanup();
+  }
+});

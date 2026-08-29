@@ -9,7 +9,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { MeshSurfaceSampler } from 'three/addons/math/MeshSurfaceSampler.js';
-import { shouldRenderFrame } from './animation-timing.ts';
+import { motionDurationMs, shouldRenderFrame } from './animation-timing.ts';
 
 const MINIMUM_FRAME_INTERVAL_MS = 1000 / 30;
 
@@ -1300,7 +1300,9 @@ class ViewscreenStage extends HTMLElement {
     const dt = Math.min(0.05, (t - (this._last || t)) / 1000);
     this._last = t;
     const p = this.prog, deck = this.deck;
-    this.warpT = Math.max(0, this.warpT - dt * 1.05);
+    // V33 decayed with `this.warpT = Math.max(0, this.warpT - dt * 1.05)`;
+    // V34 keeps the same semantic warp while completing inside its 700ms bound.
+    this.warpT = Math.max(0, this.warpT - dt * (1000 / motionDurationMs('stage-warp')));
     const warp = this.warpT * this.warpT;
 
     const tint = DECK_TINT[deck] || DECK_TINT[0];

@@ -8,8 +8,13 @@ import { BlackBoxReceipt } from "../src/components/black-box-receipt.tsx";
 import { DeckBrief, DeckSnapshot } from "../src/components/decks.tsx";
 import { runEve } from "../src/components/eve-console.tsx";
 import { FlightControl } from "../src/components/flight-control.tsx";
+import { motionDurationMs } from "../src/lib/animation-timing.ts";
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+
+test("the guided flight uses a bounded stage warp hand-off", () => {
+  assert.ok(motionDurationMs("stage-warp") <= 700, "a flight hand-off must finish its stage warp within 700ms");
+});
 
 function mount(ui, url = "https://cashio.us/?campaign=flight#deck=eve") {
   const dom = new JSDOM('<!doctype html><html><body><div id="root"></div></body></html>', { url });

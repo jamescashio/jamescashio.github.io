@@ -16,6 +16,7 @@ import {
 import { getSound } from "@/lib/sound";
 import { focusDeckHeading, isInteractiveShortcutTarget } from "@/lib/deck-focus";
 import { eveConsoleLogHeight, shouldYieldAirframeHud } from "@/lib/hud-layout";
+import { motionDurationMs } from "@/lib/animation-timing";
 import { scheduleStageLoad } from "@/lib/stage-load-scheduler";
 import {
   beginHashRestore,
@@ -212,7 +213,7 @@ export function CommandDeck() {
   const cinePulse = useCallback(() => {
     set({ cine: true });
     setFlash(true);
-    window.setTimeout(() => setFlash(false), 680);
+    window.setTimeout(() => setFlash(false), motionDurationMs("stage-warp"));
     window.setTimeout(() => set({ cine: false }), 1100);
   }, [set]);
 
@@ -517,7 +518,7 @@ export function CommandDeck() {
 
   useEffect(() => {
     setAfFlash(true);
-    const t = window.setTimeout(() => setAfFlash(false), 720);
+    const t = window.setTimeout(() => setAfFlash(false), motionDurationMs("deck-copy"));
     return () => window.clearTimeout(t);
   }, [deck]);
 
@@ -850,6 +851,7 @@ export function CommandDeck() {
         id="main-content"
         tabIndex={-1}
         ref={scRef}
+        data-active-deck={deck}
         className="za-scroll relative z-10 h-dvh overflow-x-hidden overflow-y-auto md:pl-[68px]"
         style={{ visibility: photo ? "hidden" : "visible" }}
         onPointerDown={stopFlight}
@@ -977,7 +979,7 @@ export function CommandDeck() {
           title="Talk to E.V.E."
           aria-label="Open E.V.E. console"
         >
-          <BitMascot mood={bitMood} size={hudYield ? 72 : 104} />
+          <BitMascot active={!photo && deck !== 7} mood={bitMood} size={hudYield ? 72 : 104} />
         </button>
       </div>
 
