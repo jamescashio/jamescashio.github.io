@@ -226,7 +226,8 @@ export function CommandDeck() {
     copyEmailAttempt.current++;
     if (copyEmailResetTimer.current != null) window.clearTimeout(copyEmailResetTimer.current);
     copyEmailResetTimer.current = null;
-  }, []);
+    set({ copyEmailState: "idle" });
+  }, [set]);
 
   const bit = useCallback(
     (mood: BitMood) => {

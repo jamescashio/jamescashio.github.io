@@ -1961,6 +1961,132 @@ test("COPY EMAIL announces only resolved clipboard success and keeps an honest u
   }
 });
 
+test("COPY EMAIL ignores an older clipboard completion after a newer attempt", async () => {
+  const view = mountCommandDeck({ url: "https://cashio.us/#deck=contact" });
+  const sound = getSound();
+  const originalSound = { err: sound.err, hail: sound.hail, ok: sound.ok };
+  const sounds = [];
+  sound.err = () => sounds.push("err");
+  sound.hail = () => sounds.push("hail");
+  sound.ok = () => sounds.push("ok");
+  const older = deferredPromise();
+  let attempt = 0;
+  Object.defineProperty(view.window.navigator, "clipboard", {
+    configurable: true,
+    value: {
+      writeText: () => {
+        attempt++;
+        return attempt === 1 ? older.promise : Promise.reject(new Error("newer attempt denied"));
+      },
+    },
+  });
+
+  try {
+    useDeck.setState({ audio: true });
+    await view.render();
+    const copyControl = () =>
+      [...view.document.querySelectorAll("button")].find((control) =>
+        ["COPY EMAIL", "COPIED", "COPY FAILED"].includes(control.textContent),
+      );
+    const copyStatus = () => view.document.querySelector('[role="status"][aria-label="Email copy status"]');
+
+    await view.click(copyControl());
+    assert.equal(useDeck.getState().copyEmailState, "idle");
+    await view.click(copyControl());
+    await view.settle();
+    assert.equal(copyControl()?.textContent, "COPY FAILED");
+    assert.match(copyStatus()?.textContent ?? "", /^Copy failed\./);
+    assert.deepEqual(sounds, ["err"]);
+
+    older.resolve();
+    await view.settle();
+    assert.equal(copyControl()?.textContent, "COPY FAILED", "an older success must not replace the newer error");
+    assert.equal(useDeck.getState().copyEmailState, "error");
+    assert.deepEqual(sounds, ["err"], "an older success must not play success audio");
+  } finally {
+    sound.err = originalSound.err;
+    sound.hail = originalSound.hail;
+    sound.ok = originalSound.ok;
+    await view.cleanup();
+  }
+});
+
+test("CommandDeck unmount resets copy state and blocks an older pending completion", async () => {
+  const view = mountCommandDeck({ url: "https://cashio.us/#deck=contact" });
+  const sound = getSound();
+  const originalSound = { err: sound.err, hail: sound.hail, ok: sound.ok };
+  const sounds = [];
+  sound.err = () => sounds.push("err");
+  sound.hail = () => sounds.push("hail");
+  sound.ok = () => sounds.push("ok");
+  const older = deferredPromise();
+  let attempt = 0;
+  let cleaned = false;
+  Object.defineProperty(view.window.navigator, "clipboard", {
+    configurable: true,
+    value: {
+      writeText: () => {
+        attempt++;
+        return attempt === 1 ? older.promise : Promise.reject(new Error("newer attempt denied"));
+      },
+    },
+  });
+
+  try {
+    useDeck.setState({ audio: true });
+    await view.render();
+    const copyControl = () =>
+      [...view.document.querySelectorAll("button")].find((control) =>
+        ["COPY EMAIL", "COPIED", "COPY FAILED"].includes(control.textContent),
+      );
+
+    await view.click(copyControl());
+    await view.click(copyControl());
+    await view.settle();
+    assert.equal(useDeck.getState().copyEmailState, "error");
+    assert.deepEqual(sounds, ["err"]);
+
+    await view.cleanup();
+    cleaned = true;
+    assert.equal(useDeck.getState().copyEmailState, "idle", "a same-runtime remount must begin with COPY EMAIL");
+
+    older.resolve();
+    await flushPromises();
+    assert.equal(useDeck.getState().copyEmailState, "idle", "a post-unmount completion must not restore stale state");
+    assert.deepEqual(sounds, ["err"], "a post-unmount completion must not play success audio");
+  } finally {
+    sound.err = originalSound.err;
+    sound.hail = originalSound.hail;
+    sound.ok = originalSound.ok;
+    if (!cleaned) await view.cleanup();
+  }
+});
+
+test("CommandDeck unmount clears a completed COPY EMAIL success", async () => {
+  const view = mountCommandDeck({ url: "https://cashio.us/#deck=contact", controlledTimers: true });
+  let cleaned = false;
+  Object.defineProperty(view.window.navigator, "clipboard", {
+    configurable: true,
+    value: { writeText: async () => {} },
+  });
+
+  try {
+    await view.render();
+    const copyControl = [...view.document.querySelectorAll("button")].find((control) =>
+      ["COPY EMAIL", "COPIED", "COPY FAILED"].includes(control.textContent),
+    );
+    await view.click(copyControl);
+    await view.settle();
+    assert.equal(useDeck.getState().copyEmailState, "success");
+
+    await view.cleanup();
+    cleaned = true;
+    assert.equal(useDeck.getState().copyEmailState, "idle", "a completed success must not leak across remounts");
+  } finally {
+    if (!cleaned) await view.cleanup();
+  }
+});
+
 test("leaving Builds stands down its deck-owned motion without changing the selected article", async () => {
   const view = mountCommandDeck({
     url: "https://cashio.us/#deck=builds&article=7",
