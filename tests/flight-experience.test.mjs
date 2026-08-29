@@ -208,6 +208,11 @@ test("current fleet decks expose only verified aggregate evidence without topolo
     );
     assert.deepEqual(choices, ["ZEUS", "APOLLO"], "Iron may offer only the two freshly probed Proxmox hosts");
     assert.doesNotMatch(iron.document.body.textContent, /ATLAS|ATHENA|GENESIS|GATEWAY|QUORUM SUPPORT|PRIVATE STORAGE/i);
+    assert.doesNotMatch(
+      iron.document.body.textContent,
+      /CLUSTER SSH|ACCESS PATH/i,
+      "the public Iron copy must not describe an internal access method",
+    );
   } finally {
     await iron.cleanup();
   }

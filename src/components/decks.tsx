@@ -362,9 +362,9 @@ export function DeckIron({ s3 }: { s3: SecRef }) {
               ))}
             </ul>
             <p className="mt-4 text-sm text-muted">
-              A figure with no fresh measurement is omitted entirely rather than published stale. Owner-run verification
-              probe over cluster SSH by E.V.E. — a dated public-safe snapshot, not streaming telemetry. This page makes
-              no production network calls.
+              A figure with no fresh measurement is omitted entirely rather than published stale. Owner-run aggregate
+              verification produced this dated public-safe snapshot—not streaming telemetry. This page makes no
+              production network calls.
             </p>
           </div>
         </div>
