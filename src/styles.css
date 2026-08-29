@@ -461,9 +461,11 @@
   section[data-deck="0"].za-mobile-rail-clearance {
     padding-top: 7rem;
   }
-  .za-snapshot-modes,
-  .za-snapshot-actions {
+  .za-snapshot-modes {
     margin-top: 1rem;
+  }
+  .za-snapshot-actions {
+    margin-top: -0.25rem;
   }
   .za-snapshot-copy {
     margin-right: -0.4rem;
