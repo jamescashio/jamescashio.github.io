@@ -135,7 +135,7 @@ export function runEve(raw: string, history: string[] = []): EveResult {
   }
 
   if (command === "photo") {
-    return { out: ["CINEMA VIEW · PRESS ANY KEY TO RETURN"], photo: true };
+    return { out: ["CINEMA VIEW · PRESS ESC OR EXIT CINEMA"], photo: true };
   }
 
   if (command === "history") {

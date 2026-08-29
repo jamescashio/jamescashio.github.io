@@ -775,7 +775,6 @@ class ViewscreenStage extends HTMLElement {
       addEventListener('pagehide', () => this.dispose(), { once: true });
 
       this._resize();
-      if (this.reduce) { this._frame(0); return; }
       const loop = (t) => {
         this._raf = requestAnimationFrame(loop);
         if (!this.paused && shouldRenderFrame(t, this._previousRender ?? null, MINIMUM_FRAME_INTERVAL_MS)) {
@@ -783,6 +782,8 @@ class ViewscreenStage extends HTMLElement {
           this._frame(t);
         }
       };
+      this._loop = loop;
+      if (this.reduce) { this._frame(0); return; }
       this._raf = requestAnimationFrame(loop);
     };
     this._onVis = () => {
@@ -1747,6 +1748,22 @@ class ViewscreenStage extends HTMLElement {
     this.setClearX(rx);
     this.clearY = Math.max(0.3, Math.min(0.95, by || 0.85));
     this._renderReduced();
+  }
+  setReducedMotion(reduce) {
+    const next = Boolean(reduce);
+    if (this.reduce === next) return;
+    this.reduce = next;
+    if (next) {
+      cancelAnimationFrame(this._raf);
+      this._raf = 0;
+      this.warpT = 0;
+      this.bankT = 0;
+      this.craftF = this.craftTarget;
+      this.stage = this.craftTarget;
+      this._renderReduced();
+      return;
+    }
+    if (this._started && !this.paused && !this._raf && this._loop) this._raf = requestAnimationFrame(this._loop);
   }
   warp() { if (!this.reduce) this.warpT = 1; }
   craftIndex() { return this.stage; }

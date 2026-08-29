@@ -48,15 +48,31 @@ function mountCommandDeck({
   const clearedControlledTimeouts = [];
   let controlledTimeoutId = 1_000_000;
   let responsiveViewport = "desktop";
+  let motionReduced = reducedMotion;
+  const motionListeners = new Set();
+  const motionMedia = {
+    get matches() {
+      return motionReduced;
+    },
+    media: "(prefers-reduced-motion: reduce)",
+    addEventListener(type, listener) {
+      if (type === "change") motionListeners.add(listener);
+    },
+    removeEventListener(type, listener) {
+      if (type === "change") motionListeners.delete(listener);
+    },
+  };
   const setTimeout = (callback, delay = 0, ...args) => {
     const timeout = Number(delay);
     if (
       controlledTimers &&
       (timeout === 120 ||
+        timeout === 400 ||
         timeout === 500 ||
+        timeout === 560 ||
         timeout === 3200 ||
         timeout >= 7000 ||
-        (capturePulseTimers && (timeout === 680 || timeout === 1100)))
+        (capturePulseTimers && (timeout === 680 || timeout === 1100 || timeout === 1900)))
     ) {
       const id = ++controlledTimeoutId;
       controlledTimeouts.set(id, { callback: () => callback(...args), delay: timeout });
@@ -135,7 +151,7 @@ function mountCommandDeck({
     innerHeight: { configurable: true, value: viewport.height },
     matchMedia: {
       configurable: true,
-      value: () => ({ matches: reducedMotion, addEventListener: () => {}, removeEventListener: () => {} }),
+      value: () => motionMedia,
     },
     requestAnimationFrame: { configurable: true, value: requestAnimationFrame },
     cancelAnimationFrame: { configurable: true, value: cancelAnimationFrame },
@@ -201,6 +217,7 @@ function mountCommandDeck({
         const top = typeof options === "number" ? options : options?.top;
         const requestedTop = top ?? 0;
         this.dataset.requestedScrollTop = String(requestedTop);
+        if (typeof options === "object" && options?.behavior) this.dataset.requestedScrollBehavior = options.behavior;
         if (deferredSmoothScroll && typeof options === "object" && options?.behavior === "smooth") return;
         this.scrollTop = requestedTop;
       },
@@ -363,6 +380,12 @@ function mountCommandDeck({
     async resizeToMobile() {
       responsiveViewport = "mobile";
       await act(async () => dom.window.dispatchEvent(new dom.window.Event("resize")));
+    },
+    async setReducedMotion(next) {
+      motionReduced = next;
+      await act(async () => {
+        for (const listener of motionListeners) listener({ matches: next, media: motionMedia.media });
+      });
     },
     async history(direction) {
       const changed = new Promise((resolve, reject) => {
@@ -722,6 +745,69 @@ test("only the real E.V.E. input owns arrow-key history behavior", async () => {
         assert.equal(useDeck.getState().tour, true, `${control.tagName} ${key} must not stop flight`);
       }
     }
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("PHOTO opens a visible cinema dialog that exits by button or Escape and restores focus", async () => {
+  const view = mountCommandDeck({ controlledTimers: true });
+  try {
+    await view.render();
+    const photo = [...view.document.querySelectorAll('button[data-cmd="photo"]')].at(-1);
+    assert.ok(photo, "expected the visible E.V.E. PHOTO control");
+    photo.focus();
+    await view.click(photo);
+    await view.runControlledTimeout(400);
+    await view.runLatestAnimationFrame();
+
+    const dialog = view.document.querySelector('[role="dialog"][aria-label="Cinema view"]');
+    assert.ok(dialog, "PHOTO must open an exposed cinema dialog");
+    assert.match(dialog.textContent ?? "", /CINEMA VIEW · PRESS ESC OR EXIT CINEMA/);
+    const exit = [...dialog.querySelectorAll("button")].find((button) => button.textContent === "EXIT CINEMA");
+    assert.ok(exit, "cinema dialog must expose an operable native EXIT CINEMA button");
+    assert.equal(view.document.activeElement, exit, "opening cinema must move focus into the dialog");
+    const inertBackground = view.document.querySelector("main")?.closest("[inert]");
+    assert.ok(inertBackground, "background controls must be inside one inert boundary");
+    const skipLinkBoundary = view.document.querySelector('a[href="#main-content"]')?.closest("[inert]");
+    assert.ok(skipLinkBoundary, "the skip link must be inside an inert boundary while cinema is open");
+    assert.equal(
+      skipLinkBoundary,
+      inertBackground,
+      "the skip link must be inert with every other background focus target",
+    );
+
+    await view.click(exit);
+    await view.runLatestAnimationFrame();
+    await view.settle();
+    assert.equal(view.document.querySelector('[role="dialog"]'), null);
+    assert.equal(view.document.activeElement, photo, "the available PHOTO opener must regain focus");
+
+    await view.click(photo);
+    await view.runControlledTimeout(400);
+    await view.runLatestAnimationFrame();
+    const escape = await view.key(view.document.querySelector('[role="dialog"]'), "Escape");
+    await view.runLatestAnimationFrame();
+    await view.settle();
+    assert.equal(escape.defaultPrevented, true, "Escape must be owned by the cinema dialog");
+    assert.equal(view.document.querySelector('[role="dialog"]'), null, "Escape must exit cinema");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("cinema exit falls back to the E.V.E. input when no opener is available", async () => {
+  const view = mountCommandDeck();
+  try {
+    await view.render();
+    await act(async () => useDeck.setState({ photo: true }));
+    const dialog = view.document.querySelector('[role="dialog"][aria-label="Cinema view"]');
+    assert.ok(dialog, "an externally opened cinema state must remain operable");
+    await view.runLatestAnimationFrame();
+    await view.click([...dialog.querySelectorAll("button")].find((button) => button.textContent === "EXIT CINEMA"));
+    await view.runLatestAnimationFrame();
+    await view.settle();
+    assert.equal(view.document.activeElement?.id, "eve-command", "exit must recover to the E.V.E. command input");
   } finally {
     await view.cleanup();
   }
@@ -1289,6 +1375,92 @@ test("the real airframe role-button owns shortcut keys while Enter and Space sti
   }
 });
 
+test("unmodified global printable keys do not trigger hidden page commands", async () => {
+  const view = mountCommandDeck();
+  try {
+    await view.render();
+    const baseline = { deck: 4, sel: 3, audio: false, tour: false, alert: false };
+    for (const key of ["a", "r", "t", "1", "9"]) {
+      await act(async () => useDeck.setState(baseline));
+      const event = await view.key(view.document.body, key);
+      assert.equal(event.defaultPrevented, false, `${key} must retain its native page behavior`);
+      const state = useDeck.getState();
+      assert.deepEqual(
+        { deck: state.deck, sel: state.sel, audio: state.audio, tour: state.tour, alert: state.alert },
+        baseline,
+        `${key} must not invoke a global command`,
+      );
+    }
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("manual vertical navigation still stops the active flight without becoming a hidden page command", async () => {
+  const view = mountCommandDeck();
+  try {
+    await view.render();
+    await view.click(labeledButton(view.document, "Run the 30-second flight"));
+    assert.equal(useDeck.getState().tour, true);
+
+    const arrow = await view.key(view.document.body, "ArrowDown");
+    assert.equal(arrow.defaultPrevented, false, "manual scrolling must retain its native page behavior");
+    assert.equal(useDeck.getState().tour, false, "manual vertical navigation must stop the guided flight");
+
+    await view.click(labeledButton(view.document, "Run the 30-second flight"));
+    await view.key(view.document.body, "ArrowDown", { ctrlKey: true });
+    assert.equal(useDeck.getState().tour, true, "modified vertical keys must retain the existing flight behavior");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("Ctrl or Command K still owns the deck navigator while Escape closes it", async () => {
+  const view = mountCommandDeck();
+  try {
+    await view.render();
+    const ctrlK = await view.key(view.document.body, "k", { ctrlKey: true });
+    assert.equal(ctrlK.defaultPrevented, true);
+    assert.ok(view.document.querySelector('[role="dialog"][aria-label="Deck navigator"]'));
+
+    const closeWithCtrlK = await view.key(view.document.body, "k", { ctrlKey: true });
+    assert.equal(closeWithCtrlK.defaultPrevented, true);
+    assert.equal(view.document.querySelector('[role="dialog"]'), null);
+
+    const commandK = await view.key(view.document.body, "k", { metaKey: true });
+    assert.equal(commandK.defaultPrevented, true);
+    assert.ok(view.document.querySelector('[role="dialog"][aria-label="Deck navigator"]'));
+    await view.key(view.document.querySelector('[role="dialog"]'), "Escape");
+    assert.equal(view.document.querySelector('[role="dialog"]'), null);
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("Builds article arrows work only while the focused article selector owns them", async () => {
+  const view = mountCommandDeck();
+  try {
+    await view.render();
+    await view.click(labeledButton(view.document, "Go to BUILDS deck"));
+    const selector = view.document.querySelector('[role="group"][aria-label="Select a test article"]');
+    assert.ok(selector, "expected the real Builds article selector");
+    const firstArticle = selector.querySelector("button");
+    assert.ok(firstArticle, "expected a focusable article selector control");
+
+    await act(async () => useDeck.setState({ sel: 0 }));
+    const pageArrow = await view.key(view.document.body, "ArrowRight");
+    assert.equal(pageArrow.defaultPrevented, false);
+    assert.equal(useDeck.getState().sel, 0, "unfocused page arrows must not select an article");
+
+    firstArticle.focus();
+    const selectorArrow = await view.key(firstArticle, "ArrowLeft");
+    assert.equal(selectorArrow.defaultPrevented, true, "focused selector arrows must own their navigation");
+    assert.equal(useDeck.getState().sel, 6, "selector ArrowLeft must wrap to Article 7");
+  } finally {
+    await view.cleanup();
+  }
+});
+
 test("focus cycling and shortcut exclusion cover boundaries and interactive descendants", () => {
   assert.ok(focusHelpers, "the deck focus helper module must exist");
   assert.equal(focusHelpers.nextFocusIndex(2, 3, false), 0);
@@ -1645,6 +1817,108 @@ test("rapid deck navigation restarts the latest warp pulse and cleans its owned 
     assert.equal(view.pendingControlledTimeoutsFor(680, 1100), 0, "unmount must clear latest pulse timers");
   } finally {
     if (!cleaned) await view.cleanup();
+  }
+});
+
+test("reduced motion settles active navigation effects and keeps later navigation immediate", async () => {
+  const view = mountCommandDeck({
+    url: "https://cashio.us/",
+    reducedMotion: false,
+    controlledTimers: true,
+    capturePulseTimers: true,
+  });
+  try {
+    await view.render();
+    await view.click(labeledButton(view.document, "Go to ROUTING deck"));
+    assert.ok(view.document.querySelector(".za-warpflash.on"), "motion-enabled navigation must begin its warp flash");
+    assert.equal(view.document.querySelector("[data-cine]")?.getAttribute("data-cine"), "true");
+
+    await view.setReducedMotion(true);
+    assert.equal(
+      view.document.querySelector(".za-warpflash.on"),
+      null,
+      "preference changes must cancel an active warp flash",
+    );
+    assert.equal(view.document.querySelector(".za-sweep.on"), null, "preference changes must cancel an active sweep");
+    assert.equal(view.document.querySelector("[data-cine]")?.getAttribute("data-cine"), "false");
+    assert.equal(useDeck.getState().chapOn, false, "preference changes must settle chapter text immediately");
+
+    await view.click(labeledButton(view.document, "Go to CONTACT deck"));
+    const scroller = view.document.querySelector("main.za-scroll");
+    assert.equal(scroller?.scrollTop, 7992, "reduced motion navigation must land without smooth scrolling");
+    assert.equal(view.document.querySelector(".za-warpflash.on"), null);
+    assert.equal(view.document.querySelector(".za-sweep.on"), null);
+    assert.equal(view.document.querySelector("[data-cine]")?.getAttribute("data-cine"), "false");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("Executive READ THE BRIEF scrolls immediately under reduced motion", async () => {
+  const view = mountCommandDeck({ reducedMotion: true, deferredSmoothScroll: true });
+  try {
+    await view.render();
+    const executiveMode = [...view.document.querySelectorAll("button")].find((button) =>
+      button.textContent?.includes("EXECUTIVE"),
+    );
+    assert.ok(executiveMode, "expected the Executive mode control");
+    await view.click(executiveMode);
+
+    const scroller = view.document.querySelector("main.za-scroll");
+    scroller.scrollTop = 321;
+    const readBrief = [...view.document.querySelectorAll("button")].find(
+      (button) => button.textContent === "READ THE BRIEF",
+    );
+    assert.ok(readBrief, "expected the Executive READ THE BRIEF control");
+    await view.click(readBrief);
+
+    assert.equal(scroller.scrollTop, 0, "reduced motion must land on the brief without an animated scroll");
+    assert.equal(
+      scroller.dataset.requestedScrollBehavior,
+      undefined,
+      "READ THE BRIEF must not request smooth scrolling under reduced motion",
+    );
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("a live reduced-motion change stops the red pulse without cancelling bounded alert dismissal", async () => {
+  const view = mountCommandDeck({ reducedMotion: false, controlledTimers: true, capturePulseTimers: true });
+  try {
+    await view.render();
+    const alertControl = view.document.querySelector('button[data-cmd="red alert"]');
+    assert.ok(alertControl, "red alert must remain available through a visible control");
+    await view.click(alertControl);
+
+    let border = view.document.querySelector('[class*="border-red"]');
+    assert.ok(
+      border.className.includes("animate-[za-redpulse"),
+      "motion-enabled alerts must begin their bounded pulse",
+    );
+    assert.equal(view.pendingControlledTimeoutsFor(1900), 1, "red alert must own one bounded dismissal timer");
+
+    await view.setReducedMotion(true);
+    border = view.document.querySelector('[class*="border-red"]');
+    assert.ok(border, "red alert must retain its static border and banner");
+    assert.equal(
+      border.className.includes("animate-[za-redpulse"),
+      false,
+      "reduced motion must suppress the red alert pulse",
+    );
+    assert.equal(
+      view.pendingControlledTimeoutsFor(1900),
+      1,
+      "preference changes must preserve the active alert's bounded dismissal",
+    );
+    await view.runControlledTimeout(1900);
+    assert.equal(
+      view.document.querySelector('[class*="border-red"]'),
+      null,
+      "the static alert must still dismiss on schedule",
+    );
+  } finally {
+    await view.cleanup();
   }
 });
 

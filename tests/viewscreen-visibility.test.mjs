@@ -97,3 +97,83 @@ test("a stage mounted in a hidden tab defers WebGL and frames until the tab is v
     restoreGlobals();
   }
 });
+
+test("an active stage settles its warp frame when reduced motion is enabled", async () => {
+  const previousGlobals = new Map();
+  const setGlobal = (name, value) => {
+    previousGlobals.set(name, Object.getOwnPropertyDescriptor(globalThis, name));
+    Object.defineProperty(globalThis, name, { configurable: true, value, writable: true });
+  };
+  const restoreGlobals = () => {
+    for (const [name, descriptor] of previousGlobals) {
+      if (descriptor) Object.defineProperty(globalThis, name, descriptor);
+      else delete globalThis[name];
+    }
+  };
+
+  const frames = new Map();
+  let nextFrame = 1;
+  class FakeHTMLElement {
+    constructor() {
+      this.style = {};
+    }
+
+    attachShadow() {
+      return { appendChild() {}, innerHTML: "" };
+    }
+  }
+
+  setGlobal("HTMLElement", FakeHTMLElement);
+  setGlobal("document", {
+    hidden: false,
+    createElement: () => ({}),
+    addEventListener() {},
+    removeEventListener() {},
+  });
+  let motionReduced = false;
+  setGlobal("matchMedia", () => ({ matches: motionReduced }));
+  setGlobal("innerWidth", 1440);
+  setGlobal("innerHeight", 900);
+  setGlobal("devicePixelRatio", 1);
+  setGlobal("addEventListener", () => {});
+  setGlobal("removeEventListener", () => {});
+  setGlobal("requestAnimationFrame", (callback) => {
+    const id = nextFrame++;
+    frames.set(id, callback);
+    return id;
+  });
+  setGlobal("cancelAnimationFrame", (id) => frames.delete(id));
+
+  try {
+    const { ViewscreenStage } = await import("../src/lib/viewscreen-stage.js");
+    class ProbeStage extends ViewscreenStage {
+      _initGL() {}
+      _resize() {}
+      _frame() {}
+    }
+    const stage = new ProbeStage();
+    stage.connectedCallback();
+    stage.warpT = 1;
+    assert.equal(frames.size, 1, "the active stage must own one motion frame");
+
+    stage.setReducedMotion(true);
+    assert.equal(stage.warpT, 0, "reduced motion must clear an owned stage warp");
+    assert.equal(frames.size, 0, "reduced motion must cancel the active stage frame loop");
+
+    stage.setReducedMotion(false);
+    assert.equal(frames.size, 1, "disabling reduced motion must resume the owned stage frame loop");
+
+    stage.dispose();
+    assert.equal(frames.size, 0);
+    motionReduced = true;
+    const initiallyReducedStage = new ProbeStage();
+    initiallyReducedStage.connectedCallback();
+    assert.equal(frames.size, 0, "an initially reduced stage must not schedule a motion frame");
+
+    initiallyReducedStage.setReducedMotion(false);
+    assert.equal(frames.size, 1, "an initially reduced stage must start its frame loop when the preference changes");
+    initiallyReducedStage.dispose();
+  } finally {
+    restoreGlobals();
+  }
+});

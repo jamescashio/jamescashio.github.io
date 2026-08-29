@@ -493,7 +493,7 @@ export function DeckBuilds({ s5, onSelect }: { s5: SecRef; onSelect: (article: n
         <Title>SEVEN TEST ARTICLES.</Title>
         <p className="mt-5 max-w-[58ch] text-[1.05rem] leading-relaxed text-muted">
           Owner-built evidence, not universal status claims. Seven documented builds on the same fabric. Select a marker
-          or article to acquire its proof vector; arrow keys fly the range.
+          or article to acquire its proof vector; focused selector arrow keys fly the range.
         </p>
         <div className="mt-8 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
           <div data-hud-clear className="za-build-details">
@@ -515,7 +515,17 @@ export function DeckBuilds({ s5, onSelect }: { s5: SecRef; onSelect: (article: n
                 <span>CONTROL · MANUAL</span>
               </div>
             </div>
-            <div className="za-build-selector mt-3 flex flex-col" role="group" aria-label="Select a test article">
+            <div
+              className="za-build-selector mt-3 flex flex-col"
+              role="group"
+              aria-label="Select a test article"
+              onKeyDown={(event) => {
+                if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+                event.preventDefault();
+                const direction = event.key === "ArrowRight" ? 1 : -1;
+                onSelect((sel + ARTICLES.length + direction) % ARTICLES.length);
+              }}
+            >
               {ARTICLES.map((a, i) => (
                 <button
                   key={a.name}
@@ -642,6 +652,7 @@ export function DeckEve({
       "WHOAMI",
       "TALK",
       "PHOTO",
+      "RED ALERT",
       "CLEAR",
     ],
     [],
