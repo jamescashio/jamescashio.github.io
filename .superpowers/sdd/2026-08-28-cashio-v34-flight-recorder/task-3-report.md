@@ -190,3 +190,4 @@ The same focused command passed: 53/53 Node tests. It now verifies `cine` is tru
 
 - Only `src/components/command-deck.tsx`, `tests/a11y-performance.test.mjs`, and this report changed in this round.
 - Reduced-motion runtime browser emulation remains deferred as approved. `.npm-cache/` remains untracked and unstaged.
+- Focused correction commit: `3867962b90b4f783b5b8503cdb7e5dd80164fd58` (`test: verify cinematic timer ownership`).
