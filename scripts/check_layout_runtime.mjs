@@ -172,30 +172,40 @@ async function main() {
           paddingBottom: parseFloat(getComputedStyle(element).paddingBottom),
         }));
         const controls = [...document.querySelectorAll('section[data-deck="0"] .za-snapshot-modes button, section[data-deck="0"] .za-snapshot-actions button')];
+        const expectedControls = ["TECHNICAL", "EXECUTIVE", "DESCEND THE DECKS", "OPEN E.V.E. CONSOLE"];
         const failures = [];
         if (pips.length !== 8) failures.push("expected eight aircraft pips");
         pips.forEach((pip, index) => {
           if (pip.width < 24 || pip.height < 24) failures.push("pip " + (index + 1) + " measured " + pip.width + "x" + pip.height);
         });
         const railPadding = parseFloat(getComputedStyle(rail).paddingBottom);
-        if (${width} === 320 && railRect.height < 80) {
+        if (railRect.height < 80) {
           failures.push("rail height " + railRect.height + "px is below 60px + mocked 20px inset");
         }
-        if (${width} === 320 && railPadding < 20) {
+        if (railPadding < 20) {
           failures.push("rail bottom padding " + railPadding + "px does not include mocked inset");
         }
         clearance.forEach((item) => {
           if (item.paddingBottom < 176) failures.push(item.tag + " deck=" + item.deck + " padding " + item.paddingBottom + "px is below 6rem + 60px + 20px");
         });
+        if (controls.length !== expectedControls.length) failures.push("expected exactly four Snapshot controls, found " + controls.length);
         const controlRects = controls.map((control) => {
           const rect = control.getBoundingClientRect();
-          return { label: control.textContent.trim().replace(/\\s+/g, " "), top: rect.top, bottom: rect.bottom };
+          const style = getComputedStyle(control);
+          return { label: control.textContent.trim().replace(/\\s+/g, " "), top: rect.top, bottom: rect.bottom, left: rect.left, right: rect.right, width: rect.width, height: rect.height, disabled: control.disabled, displayed: style.display !== "none" && style.visibility !== "hidden" && style.opacity !== "0" };
+        });
+        expectedControls.forEach((expected) => {
+          if (!controlRects.some((control) => control.label.startsWith(expected))) failures.push("missing Snapshot control " + expected);
         });
         controlRects.forEach((control) => {
-          if (control.bottom > railRect.top && control.top < railRect.bottom) {
-            failures.push("Snapshot control " + control.label + " spans " + control.top + "px to " + control.bottom + "px across rail " + railRect.top + "px to " + railRect.bottom + "px");
-          }
+          if (!control.displayed || control.disabled || control.width <= 0 || control.height <= 0) failures.push("Snapshot control " + control.label + " is not displayed, enabled, and nonzero");
+          if (control.top < 0 || control.bottom > railRect.top) failures.push("Snapshot control " + control.label + " must fit above rail: " + control.top + "px to " + control.bottom + "px, rail starts " + railRect.top + "px");
         });
+        for (let i = 0; i < controlRects.length; i++) for (let j = i + 1; j < controlRects.length; j++) {
+          const a = controlRects[i], b = controlRects[j];
+          if (a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top) failures.push("Snapshot controls overlap: " + a.label + " and " + b.label);
+        }
+        if (document.documentElement.scrollWidth > innerWidth) failures.push("document width " + document.documentElement.scrollWidth + "px exceeds viewport " + innerWidth + "px");
         return { ok: failures.length === 0, failures, viewport: [innerWidth, innerHeight], pips, rail: { height: railRect.height, top: railRect.top, bottom: railRect.bottom, paddingBottom: railPadding }, clearance, controls: controlRects };
       })()`,
         returnByValue: true,
@@ -205,16 +215,18 @@ async function main() {
       }
       snapshotGeometry.push(evaluated.result.value);
     }
-    await settleViewport(send, 320, true);
-    await send("Runtime.evaluate", {
-      expression: `document.documentElement.style.setProperty("--za-safe-area-inset-bottom", "${SAFE_AREA_PX}px"); document.querySelector(".za-scroll")?.scrollTo({ top: 0 });`,
-    });
-    await send("Runtime.evaluate", {
-      expression: `([...document.querySelectorAll('button[aria-label="Run the 30-second flight"]')].find((button) => button.getClientRects().length > 0)?.click())`,
-    });
-    await new Promise((resolve) => setTimeout(resolve, 50));
-    const flightEvaluation = await send("Runtime.evaluate", {
-      expression: `(() => {
+    const flights = [];
+    for (const width of [320, 390]) {
+      await settleViewport(send, width, true);
+      await send("Runtime.evaluate", {
+        expression: `document.documentElement.style.setProperty("--za-safe-area-inset-bottom", "${SAFE_AREA_PX}px"); document.querySelector(".za-scroll")?.scrollTo({ top: 0 });`,
+      });
+      await send("Runtime.evaluate", {
+        expression: `([...document.querySelectorAll('button[aria-label="Run the 30-second flight"]')].find((button) => button.getClientRects().length > 0)?.click())`,
+      });
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      const flightEvaluation = await send("Runtime.evaluate", {
+        expression: `(() => {
         const panel = [...document.querySelectorAll('section[aria-label="30-second flight status"]')].find((element) => element.getClientRects().length > 0);
         const copy = document.querySelector('section[data-deck="0"] .za-bracket');
         if (!panel || !copy) return { ok: false, reason: "active mobile flight panel or Snapshot copy is missing" };
@@ -222,18 +234,23 @@ async function main() {
         const copyRect = copy.getBoundingClientRect();
         const gap = copyRect.top - panelRect.bottom;
         return {
-          ok: gap >= 8,
+          ok: panelRect.top >= 0 && panelRect.bottom <= innerHeight && gap >= 8,
           gap,
           panel: { top: panelRect.top, bottom: panelRect.bottom, height: panelRect.height },
           copyTop: copyRect.top,
         };
       })()`,
-      returnByValue: true,
-    });
-    const flight = flightEvaluation.result.value;
-    await send("Runtime.evaluate", {
-      expression: `([...document.querySelectorAll('button[aria-label="Stop the 30-second flight"]')].find((button) => button.getClientRects().length > 0)?.click())`,
-    });
+        returnByValue: true,
+      });
+      if (flightEvaluation.exceptionDetails)
+        throw new Error(
+          flightEvaluation.exceptionDetails.exception?.description ?? flightEvaluation.exceptionDetails.text,
+        );
+      flights.push({ viewport: [width, 844], ...flightEvaluation.result.value });
+      await send("Runtime.evaluate", {
+        expression: `([...document.querySelectorAll('button[aria-label="Stop the 30-second flight"]')].find((button) => button.getClientRects().length > 0)?.click())`,
+      });
+    }
     await send("Emulation.setDeviceMetricsOverride", { width: 320, height: 844, deviceScaleFactor: 1, mobile: true });
     const narrowEvaluation = await send("Runtime.evaluate", {
       expression: `(() => {
@@ -306,10 +323,16 @@ async function main() {
       returnByValue: true,
     });
     const bitFocus = bitFocusEvaluation.result.value;
-    console.log(JSON.stringify({ bitFocus, eveFocus, flight, snapshotGeometry, mobile320: narrowResult }, null, 2));
+    console.log(JSON.stringify({ bitFocus, eveFocus, flights, snapshotGeometry, mobile320: narrowResult }, null, 2));
     assert.equal(bitFocus.ok, true, "Bit control must retain a visible keyboard focus indicator");
     assert.equal(eveFocus.ok, true, "E.V.E. command input must retain a visible keyboard focus indicator");
-    assert.equal(flight.ok, true, "Active mobile flight status must not overlap the Snapshot content");
+    flights.forEach((flight) =>
+      assert.equal(
+        flight.ok,
+        true,
+        `Active mobile flight status must fit and clear Snapshot content at ${flight.viewport[0]}px`,
+      ),
+    );
     snapshotGeometry.forEach((result) => assert.equal(result.ok, true, result.failures.join("; ")));
     assert.equal(narrowResult.ok, true, narrowResult.failures.join("; "));
   }, resources);

@@ -461,36 +461,6 @@
   section[data-deck="0"].za-mobile-rail-clearance {
     padding-top: 7rem;
   }
-  .za-snapshot-modes {
-    margin-top: 1rem;
-  }
-  .za-snapshot-actions {
-    margin-top: -0.25rem;
-  }
-  .za-snapshot-copy {
-    margin-right: -0.4rem;
-    margin-left: -0.4rem;
-    padding: 0 0.4rem;
-    border-radius: 8px;
-    background: linear-gradient(90deg, rgba(5, 6, 10, 0.96), rgba(5, 6, 10, 0.92));
-    box-shadow: 0 0 20px rgba(5, 6, 10, 0.58);
-    backdrop-filter: blur(8px);
-    line-height: 1.45;
-  }
-  .za-snapshot-modes button {
-    padding-top: 0.65rem;
-    padding-bottom: 0.65rem;
-  }
-  .za-snapshot-modes button > div:last-child {
-    font-size: 12px;
-    line-height: 1.28;
-  }
-}
-
-@media (max-width: 350px) {
-  .za-snapshot-actions {
-    margin-top: calc(1rem + 4.125rem);
-  }
   section[aria-label="30-second flight status"].fixed {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
@@ -519,6 +489,55 @@
   .za-mobile-rail-safe {
     min-height: calc(60px + var(--za-safe-area-inset-bottom));
     padding-bottom: var(--za-safe-area-inset-bottom);
+  }
+  .za-bracket > .za-display {
+    font-size: 1.75rem;
+  }
+  .za-snapshot-modes {
+    margin-top: 0.75rem;
+  }
+  .za-snapshot-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .za-snapshot-copy {
+    margin-right: -0.4rem;
+    margin-left: -0.4rem;
+    padding: 0 0.4rem;
+    border-radius: 8px;
+    background: linear-gradient(90deg, rgba(5, 6, 10, 0.96), rgba(5, 6, 10, 0.92));
+    box-shadow: 0 0 20px rgba(5, 6, 10, 0.58);
+    backdrop-filter: blur(8px);
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+  .za-snapshot-modes button {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  .za-snapshot-modes button > div:last-child {
+    font-size: 12px;
+    line-height: 1.28;
+  }
+  .za-snapshot-actions .za-btn,
+  .za-snapshot-actions .za-btn-ghost {
+    min-width: 0;
+    padding: 0.5rem;
+    font-size: 10px;
+    line-height: 1.2;
+    letter-spacing: 0.08em;
+    text-align: center;
+    white-space: normal;
+  }
+}
+
+@media (max-width: 350px) {
+  .za-snapshot-actions {
+    margin-top: 0.25rem;
   }
 }
 .za-contact-copy {
