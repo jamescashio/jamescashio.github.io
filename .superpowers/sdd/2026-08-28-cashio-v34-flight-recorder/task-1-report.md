@@ -214,3 +214,49 @@ The focused Python command did not run because the preceding Node command correc
 - `git diff --check` — passed before commit.
 
 `python scripts/check_release_consistency.py` correctly fails only because the stale pre-build `dist/index.html` and `dist/lab.html` lack `ROUTING INVENTORY 21 AUGUST 2026` and have undated routing counts. Sandbox Vite build remains blocked by `Access is denied`; rebuild in an approved environment before final artifact verification.
+
+## Fix round 3 — per-occurrence routing provenance
+
+Fix commit: `0018e8f84750544cc5d027272e6dce50037883b7` (`fix: bind routing provenance to each count`).
+
+### Implemented
+
+- Replaced the file-level routing-date presence check with a per-occurrence matcher. Each `10 PUBLIC ... 36 PRIVATE CATALOG` claim must have `ROUTING INVENTORY 21 AUGUST 2026` immediately before it, separated only by bounded whitespace and a label delimiter.
+- Added mixed fixtures containing one valid claim plus a second undated claim, and one valid claim plus a second falsely 28-August-tagged claim. Both are rejected; the valid fixture remains accepted.
+- Kept receipt and historical archive exclusions unchanged; current index/lab source and artifact checks remain the only per-file surfaces.
+
+### RED
+
+Command:
+
+```text
+python -m unittest tests.test_v32_release.V34ReleaseContractTests.test_public_surface_guard_requires_separate_routing_provenance
+```
+
+Output:
+
+```text
+Ran 1 test in 0.012s
+FAILED (failures=4)
+
+false date and undated fixtures returned the old file-level message,
+while mixed valid and undated plus mixed valid and false date returned no failures.
+The test expected a per-occurrence failure containing
+"must date routing count occurrence".
+```
+
+This proves the prior global marker could mask a second malformed routing claim.
+
+### GREEN and full verification
+
+- Focused Python fixture — passed: `Ran 1 test ... OK`.
+- Focused Node release/render suite — passed: 18 tests, 18 pass, 0 fail.
+- `npm run lint` — passed.
+- `npm run format:check` — passed.
+- `npm run test:node` — passed: 115 tests, 115 pass, 0 fail.
+- `python -m unittest tests.test_v32_release tests.test_public_repo_guard tests.test_committed_whitespace` — passed: 50 tests, 50 pass, 0 fail.
+- `python scripts/public_repo_guard.py` — passed.
+- `python scripts/check_release_consistency.py` — passed.
+- `git diff --check` — passed before commit.
+
+The artifact guard now passed because the current `dist` includes the V34 routing provenance. Browser and social-preview rendering remain deferred to later full release QA.
