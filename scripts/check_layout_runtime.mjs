@@ -129,7 +129,8 @@ async function settleViewport(send, width, mobile) {
 
 async function main() {
   const resources = {};
-  await runWithLayoutCleanup(async () => {
+  const runGateWithCleanup = (operation) => runWithLayoutCleanup(operation, resources, { browserExitTimeoutMs: 5_000 });
+  await runGateWithCleanup(async () => {
     const server = (resources.server = await serveDist());
     const targetUrl = `http://127.0.0.1:${server.address().port}/`;
     const profile = (resources.profile = await mkdtemp(path.join(tmpdir(), "cashio-layout-")));
@@ -152,7 +153,12 @@ async function main() {
     resources.socket = connection.socket;
     const { send } = connection;
     await send("Runtime.enable");
-    await send("Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+    await send("Emulation.setDeviceMetricsOverride", {
+      width: 1280,
+      height: 900,
+      deviceScaleFactor: 1,
+      mobile: false,
+    });
     await waitForApp(send);
     const assetEvaluation = await send("Runtime.evaluate", {
       expression: `(async () => {
@@ -269,7 +275,7 @@ async function main() {
       snapshotGeometry.push(evaluated.result.value);
     }
     const flights = [];
-    let cinema;
+    const cinemas = [];
     for (const width of [320, 390]) {
       await settleViewport(send, width, true);
       const flightEvaluation = await send("Runtime.evaluate", {
@@ -296,16 +302,24 @@ async function main() {
           const scroller = document.querySelector("#main-content");
           const contact = document.querySelector('section[data-deck="8"]');
           const email = contact?.querySelector('.za-hail a[href^="mailto:"]');
-          if (!scroller || !contact || !email) return { error: "Contact scroll scenario is missing" };
+          const receipt = contact?.querySelector('section[aria-labelledby="black-box-receipt-heading"]');
+          if (!scroller || !contact || !email || !receipt) return { error: "Contact scroll scenario is missing" };
           const selectContact = async () => {
             scroller.scrollTo({ top: Math.max(0, contact.offsetTop - 8), behavior: "auto" });
             await settle();
           };
-          const passEmailBeneath = async (surface) => {
-            const surfaceRect = surface.getBoundingClientRect();
-            const emailRect = email.getBoundingClientRect();
-            scroller.scrollTo({ top: scroller.scrollTop + emailRect.top - surfaceRect.top - 8, behavior: "auto" });
-            await settle();
+          const contentOverlaps = (surface) =>
+            [email, receipt].some((element) => overlaps(element.getBoundingClientRect(), surface.getBoundingClientRect()));
+          const passReceiptBeneath = async (surface) => {
+            for (let attempt = 0; attempt < 6; attempt++) {
+              if (contentOverlaps(surface)) return true;
+              const surfaceRect = surface.getBoundingClientRect();
+              const receiptRect = receipt.getBoundingClientRect();
+              scroller.scrollTop += receiptRect.top - surfaceRect.top - 8;
+              scroller.dispatchEvent(new Event("scroll"));
+              await settle();
+            }
+            return contentOverlaps(surface);
           };
 
           document.documentElement.style.setProperty("--za-safe-area-inset-bottom", "${SAFE_AREA_PX}px");
@@ -314,9 +328,8 @@ async function main() {
           if (!inactive) return { error: "inactive mobile flight surface is missing" };
           const inactiveBefore = rectOf(inactive);
           const inactiveAlpha = alphaOf(inactive);
-          await passEmailBeneath(inactive);
+          const inactiveOverlap = await passReceiptBeneath(inactive);
           const inactiveAfter = rectOf(inactive);
-          const inactiveOverlap = overlaps(email.getBoundingClientRect(), inactive.getBoundingClientRect());
 
           inactive.click();
           await settle();
@@ -328,9 +341,8 @@ async function main() {
           if (!active || !stop) return { error: "active mobile flight panel or STOP FLIGHT control is missing" };
           const activeBefore = rectOf(active);
           const activeAlpha = alphaOf(active);
-          await passEmailBeneath(active);
+          const activeOverlap = await passReceiptBeneath(active);
           const activeAfter = rectOf(active);
-          const activeOverlap = overlaps(email.getBoundingClientRect(), active.getBoundingClientRect());
 
           return {
             viewport: [innerWidth, innerHeight],
@@ -366,29 +378,58 @@ async function main() {
       flight.ok = flight.failures.length === 0;
       flights.push(flight);
 
-      if (width === 320) {
-        await send("Runtime.evaluate", {
-          expression:
-            'document.querySelector(".za-mobile-flight-control button[aria-label=\\"Stop the 30-second flight\\"]")?.click()',
+      const directionRuns = [];
+      for (const shiftKey of [false, true]) {
+        const openingEvaluation = await send("Runtime.evaluate", {
+          expression: `(async () => {
+            const opener = document.querySelector('button[data-cmd="photo"]');
+            const activeFlightStarted = Boolean(document.querySelector('.za-mobile-flight-control button[aria-label="Stop the 30-second flight"]'));
+            if (!opener || !activeFlightStarted) return { opened: false, activeFlightStarted };
+            opener.setAttribute("data-layout-cinema-opener", "true");
+            opener.focus({ preventScroll: true });
+            const openedFromExactOpener = document.activeElement === opener;
+            opener.click();
+            await new Promise((resolve) => setTimeout(resolve, 450));
+            await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+            const dialog = document.querySelector('[role="dialog"][aria-label="Cinema view"]');
+            const exit = [...(dialog?.querySelectorAll("button") ?? [])].find((button) => button.textContent.trim() === "EXIT CINEMA");
+            if (!dialog || !exit) return { opened: false, activeFlightStarted, openedFromExactOpener };
+            const rect = exit.getBoundingClientRect();
+            const style = getComputedStyle(exit);
+            const exposedTabStops = [...document.querySelectorAll('a[href], button, input, select, textarea, [tabindex]')]
+              .filter((element) => element.tabIndex >= 0 && !element.disabled && !element.closest('[inert], [aria-hidden="true"]'))
+              .filter((element) => {
+                const candidate = element.getBoundingClientRect();
+                const candidateStyle = getComputedStyle(element);
+                return candidate.width > 0 && candidate.height > 0 && candidateStyle.display !== "none" && candidateStyle.visibility !== "hidden";
+              })
+              .map((element) => element.getAttribute("aria-label") || element.textContent.trim().replace(/\\s+/g, " "));
+            return {
+              opened: true,
+              viewport: [innerWidth, innerHeight],
+              activeFlightStarted,
+              openedFromExactOpener,
+              skipPresent: Boolean(document.querySelector('a[href="#main-content"]')),
+              flightPresent: Boolean(document.querySelector(".za-mobile-flight-control")),
+              exposedTabStops,
+              exit: {
+                visible: rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden" && style.opacity !== "0",
+                left: rect.left,
+                right: rect.right,
+                top: rect.top,
+                bottom: rect.bottom,
+                width: rect.width,
+                height: rect.height,
+              },
+            };
+          })()`,
+          awaitPromise: true,
+          returnByValue: true,
         });
-        continue;
-      }
+        const opening = openingEvaluation.result.value;
+        if (!opening.opened)
+          throw new Error(`PHOTO cinema failed to open for ${shiftKey ? "Shift+Tab" : "Tab"} at ${width}px`);
 
-      const openCinema = await send("Runtime.evaluate", {
-        expression: `(async () => {
-          const photo = [...document.querySelectorAll('button[data-cmd="photo"]')].find((element) => element.getClientRects().length > 0) ?? document.querySelector('button[data-cmd="photo"]');
-          if (!photo || !document.querySelector('.za-mobile-flight-control button[aria-label="Stop the 30-second flight"]')) return false;
-          photo.focus({ preventScroll: true });
-          photo.click();
-          await new Promise((resolve) => setTimeout(resolve, 450));
-          await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-          return Boolean(document.querySelector('[role="dialog"][aria-label="Cinema view"]'));
-        })()`,
-        awaitPromise: true,
-        returnByValue: true,
-      });
-      const activeFlightStarted = openCinema.result.value;
-      const dispatchTab = async (shiftKey) => {
         await send("Runtime.evaluate", {
           expression: `(() => {
             window.__zaLayoutTab = null;
@@ -421,54 +462,93 @@ async function main() {
           nativeVirtualKeyCode: 9,
         });
         await new Promise((resolve) => setTimeout(resolve, 20));
-        const result = await send("Runtime.evaluate", { expression: "window.__zaLayoutTab", returnByValue: true });
-        return result.result.value;
+        const tabEvaluation = await send("Runtime.evaluate", {
+          expression: "window.__zaLayoutTab",
+          returnByValue: true,
+        });
+
+        await send("Runtime.evaluate", {
+          expression: `(() => {
+            window.__zaLayoutEscape = null;
+            window.addEventListener("keydown", (event) => {
+              if (event.key !== "Escape") return;
+              setTimeout(() => { window.__zaLayoutEscape = { defaultPrevented: event.defaultPrevented }; }, 0);
+            }, { once: true });
+          })()`,
+        });
+        await send("Input.dispatchKeyEvent", {
+          type: "keyDown",
+          key: "Escape",
+          code: "Escape",
+          windowsVirtualKeyCode: 27,
+          nativeVirtualKeyCode: 27,
+        });
+        await send("Input.dispatchKeyEvent", {
+          type: "keyUp",
+          key: "Escape",
+          code: "Escape",
+          windowsVirtualKeyCode: 27,
+          nativeVirtualKeyCode: 27,
+        });
+        const escapeEvaluation = await send("Runtime.evaluate", {
+          expression: `(async () => {
+            const opener = document.querySelector('[data-layout-cinema-opener="true"]');
+            for (let attempt = 0; attempt < 30; attempt++) {
+              await new Promise((resolve) => requestAnimationFrame(resolve));
+              if (!document.querySelector('[role="dialog"]') && document.activeElement === opener) break;
+            }
+            return {
+              defaultPrevented: window.__zaLayoutEscape?.defaultPrevented === true,
+              dialogPresent: Boolean(document.querySelector('[role="dialog"]')),
+              activeIsOpener: document.activeElement === opener,
+            };
+          })()`,
+          awaitPromise: true,
+          returnByValue: true,
+        });
+        directionRuns.push({
+          opening,
+          key: tabEvaluation.result.value,
+          escape: escapeEvaluation.result.value,
+        });
+      }
+
+      const [tabRun, shiftTabRun] = directionRuns;
+      const firstExit = tabRun.opening.exit;
+      const boundariesPassedEachOpening = directionRuns.every(
+        ({ opening }) =>
+          !opening.skipPresent &&
+          !opening.flightPresent &&
+          opening.exposedTabStops.length === 1 &&
+          opening.exposedTabStops[0] === "EXIT CINEMA",
+      );
+      const allOpeningsMatchedExitGeometry = directionRuns.every(
+        ({ opening }) => JSON.stringify(opening.exit) === JSON.stringify(firstExit),
+      );
+      const cinema = {
+        viewport: tabRun.opening.viewport,
+        activeFlightStarted: directionRuns.every(({ opening }) => opening.activeFlightStarted),
+        skipPresent: directionRuns.some(({ opening }) => opening.skipPresent),
+        flightPresent: directionRuns.some(({ opening }) => opening.flightPresent),
+        exposedTabStops: tabRun.opening.exposedTabStops,
+        boundariesPassedEachOpening,
+        allOpeningsMatchedExitGeometry,
+        exit: firstExit,
+        tab: {
+          ...tabRun.key,
+          openedFromExactOpener: tabRun.opening.openedFromExactOpener,
+          escape: tabRun.escape,
+        },
+        shiftTab: {
+          ...shiftTabRun.key,
+          openedFromExactOpener: shiftTabRun.opening.openedFromExactOpener,
+          escape: shiftTabRun.escape,
+        },
       };
-      const tab = await dispatchTab(false);
-      const shiftTab = await dispatchTab(true);
-      const cinemaEvaluation = await send("Runtime.evaluate", {
-        expression: `(() => {
-          const exit = [...document.querySelectorAll('[role="dialog"] button')].find((button) => button.textContent.trim() === "EXIT CINEMA");
-          if (!exit) return { error: "EXIT CINEMA is missing" };
-          const rect = exit.getBoundingClientRect();
-          const style = getComputedStyle(exit);
-          const visible = rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden" && style.opacity !== "0";
-          const exposedTabStops = [...document.querySelectorAll('a[href], button, input, select, textarea, [tabindex]')]
-            .filter((element) => element.tabIndex >= 0 && !element.disabled && !element.closest('[inert], [aria-hidden="true"]'))
-            .filter((element) => {
-              const candidate = element.getBoundingClientRect();
-              const candidateStyle = getComputedStyle(element);
-              return candidate.width > 0 && candidate.height > 0 && candidateStyle.display !== "none" && candidateStyle.visibility !== "hidden";
-            })
-            .map((element) => element.getAttribute("aria-label") || element.textContent.trim().replace(/\\s+/g, " "));
-          return {
-            viewport: [innerWidth, innerHeight],
-            activeFlightStarted: ${JSON.stringify(activeFlightStarted)},
-            skipPresent: Boolean(document.querySelector('a[href="#main-content"]')),
-            flightPresent: Boolean(document.querySelector('.za-mobile-flight-control')),
-            exposedTabStops,
-            exit: { visible, left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, width: rect.width, height: rect.height },
-            tab: ${JSON.stringify(tab)},
-            shiftTab: ${JSON.stringify(shiftTab)},
-          };
-        })()`,
-        returnByValue: true,
-      });
-      cinema = cinemaEvaluation.result.value;
-      cinema.failures = cinema.error ? [cinema.error] : mobileCinemaAcceptanceFailures(cinema);
+      cinema.failures = mobileCinemaAcceptanceFailures(cinema);
       cinema.ok = cinema.failures.length === 0;
-      await send("Runtime.evaluate", {
-        expression: `(async () => {
-          document.querySelector('[role="dialog"] button')?.click();
-          for (let attempt = 0; attempt < 20; attempt++) {
-            await new Promise((resolve) => requestAnimationFrame(resolve));
-            if (!document.querySelector('[role="dialog"]') && !document.querySelector('[inert]')) return true;
-          }
-          return false;
-        })()`,
-        awaitPromise: true,
-        returnByValue: true,
-      });
+      cinemas.push(cinema);
+
       await send("Runtime.evaluate", {
         expression: `(async () => {
           document.querySelector('.za-mobile-flight-control button[aria-label="Stop the 30-second flight"]')?.click();
@@ -555,7 +635,7 @@ async function main() {
       JSON.stringify(
         {
           bitFocus,
-          cinema,
+          cinemas,
           decodedAssets,
           desktopLayout,
           eveFocus,
@@ -582,10 +662,16 @@ async function main() {
         `Mobile Contact flight acceptance failed at ${flight.viewport[0]}px: ${flight.failures.join("; ")}`,
       ),
     );
-    assert.equal(cinema.ok, true, `Mobile active-flight PHOTO cinema acceptance failed: ${cinema.failures.join("; ")}`);
+    cinemas.forEach((cinema) =>
+      assert.equal(
+        cinema.ok,
+        true,
+        `Mobile active-flight PHOTO cinema acceptance failed at ${cinema.viewport[0]}px: ${cinema.failures.join("; ")}`,
+      ),
+    );
     snapshotGeometry.forEach((result) => assert.equal(result.ok, true, result.failures.join("; ")));
     assert.equal(narrowResult.ok, true, narrowResult.failures.join("; "));
-  }, resources);
+  });
 }
 
 await main();

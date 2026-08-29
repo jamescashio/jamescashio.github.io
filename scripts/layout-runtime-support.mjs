@@ -194,6 +194,20 @@ function hasExactRect(rect, expected) {
   );
 }
 
+const RECT_FIELDS = ["left", "right", "top", "bottom", "width", "height"];
+const RECT_CONSISTENCY_TOLERANCE_PX = 0.01;
+
+function hasFiniteRect(rect) {
+  return rect != null && RECT_FIELDS.every((property) => Number.isFinite(rect[property]));
+}
+
+function hasConsistentRect(rect) {
+  return (
+    Math.abs(rect.right - rect.left - rect.width) <= RECT_CONSISTENCY_TOLERANCE_PX &&
+    Math.abs(rect.bottom - rect.top - rect.height) <= RECT_CONSISTENCY_TOLERANCE_PX
+  );
+}
+
 export function mobileFlightAcceptanceFailures(scenario) {
   const failures = [];
   const width = scenario.viewport?.[0];
@@ -241,8 +255,11 @@ export function mobileFlightAcceptanceFailures(scenario) {
 
 export function mobileCinemaAcceptanceFailures(scenario) {
   const failures = [];
-  if (scenario.viewport?.[0] !== 390 || scenario.viewport?.[1] !== 844) {
-    failures.push("mobile cinema viewport must be 390x844");
+  const viewportWidth = scenario.viewport?.[0];
+  const viewportHeight = scenario.viewport?.[1];
+  const validViewport = [320, 390].includes(viewportWidth) && viewportHeight === 844;
+  if (!validViewport) {
+    failures.push("mobile cinema viewport must be 320x844 or 390x844");
   }
   if (!scenario.activeFlightStarted) failures.push("PHOTO cinema must be entered from an active flight");
   if (scenario.skipPresent) failures.push("skip link must be absent while cinema is open");
@@ -250,16 +267,25 @@ export function mobileCinemaAcceptanceFailures(scenario) {
   if (scenario.exposedTabStops?.length !== 1 || scenario.exposedTabStops[0] !== "EXIT CINEMA") {
     failures.push("EXIT CINEMA must be the sole exposed tab stop");
   }
-  if (!scenario.exit?.visible || scenario.exit.width < 44 || scenario.exit.height < 44) {
-    failures.push("EXIT CINEMA must be visible and at least 44x44");
-  }
-  if (
-    scenario.exit?.left < 20 ||
-    scenario.exit?.right > 370 ||
-    scenario.exit?.top < 20 ||
-    scenario.exit?.bottom > 824
-  ) {
-    failures.push("EXIT CINEMA must remain within 20px mobile safe margins");
+  const finiteExit = hasFiniteRect(scenario.exit);
+  if (!finiteExit) {
+    failures.push("EXIT CINEMA must provide a finite EXIT rectangle");
+  } else {
+    if (!hasConsistentRect(scenario.exit)) {
+      failures.push(`EXIT CINEMA rectangle must be internally consistent within ${RECT_CONSISTENCY_TOLERANCE_PX}px`);
+    }
+    if (!scenario.exit.visible || scenario.exit.width < 44 || scenario.exit.height < 44) {
+      failures.push("EXIT CINEMA must be visible and at least 44x44");
+    }
+    if (
+      validViewport &&
+      (scenario.exit.left < 20 ||
+        scenario.exit.right > viewportWidth - 20 ||
+        scenario.exit.top < 20 ||
+        scenario.exit.bottom > viewportHeight - 20)
+    ) {
+      failures.push("EXIT CINEMA must remain within 20px mobile safe margins");
+    }
   }
   if (
     !scenario.tab?.defaultPrevented ||
@@ -268,6 +294,18 @@ export function mobileCinemaAcceptanceFailures(scenario) {
     scenario.shiftTab?.activeLabel !== "EXIT CINEMA"
   ) {
     failures.push("Tab loop must keep both directions on EXIT CINEMA");
+  }
+  if (!scenario.tab?.openedFromExactOpener || !scenario.shiftTab?.openedFromExactOpener) {
+    failures.push("Tab and Shift+Tab must each begin from a fresh PHOTO opening");
+  }
+  for (const direction of [scenario.tab, scenario.shiftTab]) {
+    if (!direction?.escape?.defaultPrevented || direction.escape.dialogPresent || !direction.escape.activeIsOpener) {
+      failures.push("Escape must close cinema and restore the exact PHOTO opener after each direction");
+      break;
+    }
+  }
+  if (!scenario.boundariesPassedEachOpening || !scenario.allOpeningsMatchedExitGeometry) {
+    failures.push("skip, flight, tab-stop, and EXIT geometry checks must pass on each PHOTO opening");
   }
   return failures;
 }

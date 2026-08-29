@@ -340,6 +340,29 @@ test("mobile flight acceptance rejects an active STOP target below 44px", () => 
   assert.ok(failures.some((failure) => /STOP FLIGHT.*at least 44px/.test(failure)));
 });
 
+const approvedCinemaScenario = {
+  viewport: [390, 844],
+  activeFlightStarted: true,
+  skipPresent: false,
+  flightPresent: false,
+  exposedTabStops: ["EXIT CINEMA"],
+  boundariesPassedEachOpening: true,
+  allOpeningsMatchedExitGeometry: true,
+  exit: { visible: true, left: 228.5, right: 370, top: 780, bottom: 824, width: 141.5, height: 44 },
+  tab: {
+    defaultPrevented: true,
+    activeLabel: "EXIT CINEMA",
+    openedFromExactOpener: true,
+    escape: { defaultPrevented: true, dialogPresent: false, activeIsOpener: true },
+  },
+  shiftTab: {
+    defaultPrevented: true,
+    activeLabel: "EXIT CINEMA",
+    openedFromExactOpener: true,
+    escape: { defaultPrevented: true, dialogPresent: false, activeIsOpener: true },
+  },
+};
+
 test("mobile cinema acceptance rejects exposed background controls and an untrapped focus path", () => {
   const validate = runtimeSupport.mobileCinemaAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
   const failures = validate({
@@ -362,17 +385,62 @@ test("mobile cinema acceptance rejects exposed background controls and an untrap
 
 test("mobile cinema acceptance recognizes the approved active-flight PHOTO focus boundary", () => {
   const validate = runtimeSupport.mobileCinemaAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  assert.deepEqual(validate(approvedCinemaScenario), []);
+});
+
+test("mobile cinema acceptance recognizes the hand-derived 320 safe-margin geometry", () => {
+  const validate = runtimeSupport.mobileCinemaAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
   assert.deepEqual(
     validate({
-      viewport: [390, 844],
-      activeFlightStarted: true,
-      skipPresent: false,
-      flightPresent: false,
-      exposedTabStops: ["EXIT CINEMA"],
-      exit: { visible: true, left: 245, right: 370, top: 780, bottom: 824, width: 125, height: 44 },
-      tab: { defaultPrevented: true, activeLabel: "EXIT CINEMA" },
-      shiftTab: { defaultPrevented: true, activeLabel: "EXIT CINEMA" },
+      ...approvedCinemaScenario,
+      viewport: [320, 844],
+      exit: { ...approvedCinemaScenario.exit, left: 158.5, right: 300 },
     }),
     [],
   );
+});
+
+test("mobile cinema acceptance fails closed for every missing or non-finite EXIT rectangle field", () => {
+  const validate = runtimeSupport.mobileCinemaAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  for (const property of ["left", "right", "top", "bottom", "width", "height"]) {
+    for (const invalid of [undefined, Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]) {
+      const exit = { ...approvedCinemaScenario.exit, [property]: invalid };
+      if (invalid === undefined) delete exit[property];
+      const failures = validate({ ...approvedCinemaScenario, exit });
+      assert.ok(
+        failures.some((failure) => /finite EXIT rectangle/.test(failure)),
+        `${property}=${String(invalid)} must fail closed`,
+      );
+    }
+  }
+});
+
+test("mobile cinema acceptance rejects internally inconsistent EXIT rectangles", () => {
+  const validate = runtimeSupport.mobileCinemaAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  for (const exit of [
+    { ...approvedCinemaScenario.exit, right: 369 },
+    { ...approvedCinemaScenario.exit, bottom: 823 },
+  ]) {
+    const failures = validate({ ...approvedCinemaScenario, exit });
+    assert.ok(failures.some((failure) => /internally consistent/.test(failure)));
+  }
+});
+
+test("mobile cinema acceptance requires isolated openings and Escape restoration for both Tab directions", () => {
+  const validate = runtimeSupport.mobileCinemaAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  for (const direction of ["tab", "shiftTab"]) {
+    const failures = validate({
+      ...approvedCinemaScenario,
+      [direction]: {
+        ...approvedCinemaScenario[direction],
+        openedFromExactOpener: false,
+        escape: { defaultPrevented: false, dialogPresent: true, activeIsOpener: false },
+      },
+      boundariesPassedEachOpening: false,
+      allOpeningsMatchedExitGeometry: false,
+    });
+    assert.ok(failures.some((failure) => /fresh PHOTO opening/.test(failure)));
+    assert.ok(failures.some((failure) => /Escape.*exact PHOTO opener/.test(failure)));
+    assert.ok(failures.some((failure) => /each PHOTO opening/.test(failure)));
+  }
 });
