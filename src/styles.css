@@ -465,6 +465,15 @@
   .za-snapshot-actions {
     margin-top: 1rem;
   }
+  .za-snapshot-copy {
+    margin-right: -0.4rem;
+    margin-left: -0.4rem;
+    padding: 0.25rem 0.4rem;
+    border-radius: 8px;
+    background: linear-gradient(90deg, rgba(5, 6, 10, 0.96), rgba(5, 6, 10, 0.92));
+    box-shadow: 0 0 20px rgba(5, 6, 10, 0.58);
+    backdrop-filter: blur(8px);
+  }
   section[aria-label="30-second flight status"].fixed {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;

@@ -59,7 +59,7 @@ export function DeckSnapshot({
         <p className="za-mono mt-5 text-[11px] text-dim">
           18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6 · 2 HOSTS QUORATE · READ-ONLY DATED EXPORT
         </p>
-        <p className="mt-6 max-w-[46ch] text-[1.05rem] leading-relaxed text-muted">
+        <p className="za-snapshot-copy mt-6 max-w-[46ch] text-[1.05rem] leading-relaxed text-muted">
           Owned compute keeps the evidence close. Quality-first routing picks the right model; dated export rules keep
           the claim bounded; one accountable operator keeps human authority in the loop. Fleet evidence was verified on{" "}
           {VERIFIED_LONG}; routing inventory remains separately dated {ROUTING_VERIFIED_LONG}.
