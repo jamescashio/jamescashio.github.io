@@ -468,11 +468,26 @@
   .za-snapshot-copy {
     margin-right: -0.4rem;
     margin-left: -0.4rem;
-    padding: 0.25rem 0.4rem;
+    padding: 0 0.4rem;
     border-radius: 8px;
     background: linear-gradient(90deg, rgba(5, 6, 10, 0.96), rgba(5, 6, 10, 0.92));
     box-shadow: 0 0 20px rgba(5, 6, 10, 0.58);
     backdrop-filter: blur(8px);
+    line-height: 1.45;
+  }
+  .za-snapshot-modes button {
+    padding-top: 0.65rem;
+    padding-bottom: 0.65rem;
+  }
+  .za-snapshot-modes button > div:last-child {
+    font-size: 12px;
+    line-height: 1.28;
+  }
+}
+
+@media (max-width: 350px) {
+  .za-snapshot-actions {
+    margin-top: calc(1rem + 4.125rem);
   }
   section[aria-label="30-second flight status"].fixed {
     display: grid;

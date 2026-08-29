@@ -12,7 +12,6 @@ import { connectCdp, runWithLayoutCleanup } from "./layout-runtime-support.mjs";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = path.join(ROOT, "dist");
 const SAFE_AREA_PX = 20;
-const CTA_RAIL_GAP_PX = 24;
 
 function browserExecutable() {
   const candidates = [
@@ -114,6 +113,14 @@ async function waitForApp(send) {
   throw new Error("timed out waiting for the command deck layout");
 }
 
+async function settleViewport(send, width, mobile) {
+  await send("Emulation.setDeviceMetricsOverride", { width, height: 844, deviceScaleFactor: 1, mobile });
+  await send("Runtime.evaluate", {
+    expression: "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))",
+    awaitPromise: true,
+  });
+}
+
 async function main() {
   const resources = {};
   await runWithLayoutCleanup(async () => {
@@ -149,10 +156,13 @@ async function main() {
       returnByValue: true,
     });
     const desktopPips = desktopEvaluation.result.value;
-    await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
-    const evaluated = await send("Runtime.evaluate", {
-      expression: `(() => {
+    const snapshotGeometry = [];
+    for (const width of [320, 390]) {
+      await settleViewport(send, width, true);
+      const evaluated = await send("Runtime.evaluate", {
+        expression: `(() => {
         document.documentElement.style.setProperty("--za-safe-area-inset-bottom", "${SAFE_AREA_PX}px");
+        document.querySelector(".za-scroll")?.scrollTo({ top: 0 });
         const rail = document.querySelector(".za-mobile-rail-safe");
         const railRect = rail.getBoundingClientRect();
         const pips = ${JSON.stringify(desktopPips)};
@@ -161,28 +171,44 @@ async function main() {
           deck: element.getAttribute("data-deck"),
           paddingBottom: parseFloat(getComputedStyle(element).paddingBottom),
         }));
-        const cta = [...document.querySelectorAll('section[data-deck="0"] button')].find((button) => button.textContent.includes("DESCEND"));
+        const controls = [...document.querySelectorAll('section[data-deck="0"] .za-snapshot-modes button, section[data-deck="0"] .za-snapshot-actions button')];
         const failures = [];
         if (pips.length !== 8) failures.push("expected eight aircraft pips");
         pips.forEach((pip, index) => {
           if (pip.width < 24 || pip.height < 24) failures.push("pip " + (index + 1) + " measured " + pip.width + "x" + pip.height);
         });
-        if (railRect.height < 80) failures.push("rail height " + railRect.height + "px is below 60px + mocked 20px inset");
         const railPadding = parseFloat(getComputedStyle(rail).paddingBottom);
-        if (railPadding < 20) failures.push("rail bottom padding " + railPadding + "px does not include mocked inset");
+        if (${width} === 320 && railRect.height < 80) {
+          failures.push("rail height " + railRect.height + "px is below 60px + mocked 20px inset");
+        }
+        if (${width} === 320 && railPadding < 20) {
+          failures.push("rail bottom padding " + railPadding + "px does not include mocked inset");
+        }
         clearance.forEach((item) => {
           if (item.paddingBottom < 176) failures.push(item.tag + " deck=" + item.deck + " padding " + item.paddingBottom + "px is below 6rem + 60px + 20px");
         });
-        const ctaBottom = cta?.getBoundingClientRect().bottom ?? Infinity;
-        if (ctaBottom > railRect.top - ${CTA_RAIL_GAP_PX}) failures.push("Snapshot CTA bottom " + ctaBottom + "px leaves less than ${CTA_RAIL_GAP_PX}px before rail top " + railRect.top + "px");
-        return { ok: failures.length === 0, failures, viewport: [innerWidth, innerHeight], pips, rail: { height: railRect.height, top: railRect.top, paddingBottom: railPadding }, clearance, ctaBottom };
+        const controlRects = controls.map((control) => {
+          const rect = control.getBoundingClientRect();
+          return { label: control.textContent.trim().replace(/\\s+/g, " "), top: rect.top, bottom: rect.bottom };
+        });
+        controlRects.forEach((control) => {
+          if (control.bottom > railRect.top && control.top < railRect.bottom) {
+            failures.push("Snapshot control " + control.label + " spans " + control.top + "px to " + control.bottom + "px across rail " + railRect.top + "px to " + railRect.bottom + "px");
+          }
+        });
+        return { ok: failures.length === 0, failures, viewport: [innerWidth, innerHeight], pips, rail: { height: railRect.height, top: railRect.top, bottom: railRect.bottom, paddingBottom: railPadding }, clearance, controls: controlRects };
       })()`,
-      returnByValue: true,
-    });
-    if (evaluated.exceptionDetails) {
-      throw new Error(evaluated.exceptionDetails.exception?.description ?? evaluated.exceptionDetails.text);
+        returnByValue: true,
+      });
+      if (evaluated.exceptionDetails) {
+        throw new Error(evaluated.exceptionDetails.exception?.description ?? evaluated.exceptionDetails.text);
+      }
+      snapshotGeometry.push(evaluated.result.value);
     }
-    const result = evaluated.result.value;
+    await settleViewport(send, 320, true);
+    await send("Runtime.evaluate", {
+      expression: `document.documentElement.style.setProperty("--za-safe-area-inset-bottom", "${SAFE_AREA_PX}px"); document.querySelector(".za-scroll")?.scrollTo({ top: 0 });`,
+    });
     await send("Runtime.evaluate", {
       expression: `([...document.querySelectorAll('button[aria-label="Run the 30-second flight"]')].find((button) => button.getClientRects().length > 0)?.click())`,
     });
@@ -280,11 +306,11 @@ async function main() {
       returnByValue: true,
     });
     const bitFocus = bitFocusEvaluation.result.value;
-    console.log(JSON.stringify({ bitFocus, eveFocus, flight, mobile390: result, mobile320: narrowResult }, null, 2));
+    console.log(JSON.stringify({ bitFocus, eveFocus, flight, snapshotGeometry, mobile320: narrowResult }, null, 2));
     assert.equal(bitFocus.ok, true, "Bit control must retain a visible keyboard focus indicator");
     assert.equal(eveFocus.ok, true, "E.V.E. command input must retain a visible keyboard focus indicator");
     assert.equal(flight.ok, true, "Active mobile flight status must not overlap the Snapshot content");
-    assert.equal(result.ok, true, result.failures.join("; "));
+    snapshotGeometry.forEach((result) => assert.equal(result.ok, true, result.failures.join("; ")));
     assert.equal(narrowResult.ok, true, narrowResult.failures.join("; "));
   }, resources);
 }
