@@ -143,3 +143,4 @@ The local Vite server started successfully at `http://127.0.0.1:5173/`, but the 
 - The obsolete marker comments are removed; the V34 guard now validates executable constants, CSS variable wiring, <=700 ms stage warp, and each inactive deck's element/pseudo-element pause coverage.
 - Reduced-motion runtime browser emulation remains unavailable, as explicitly deferred to Task 4. Automated complete-state coverage remains green.
 - `.npm-cache/` remains untracked and unstaged. No dated copy, identity, dependency, route, particle system, or audio-default behavior changed.
+- Focused correction commit: `c2c66675e2f894ea1b649260057c103215eda423` (`fix: harden V34 motion ownership`).
