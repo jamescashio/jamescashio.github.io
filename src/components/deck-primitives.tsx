@@ -20,20 +20,43 @@ export function Title({ children }: { children: ReactNode }) {
 export function CountUp({ to }: { to: number }) {
   const [value, setValue] = useState(0);
   useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) {
-      setValue(to);
-      return;
-    }
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let frame = 0;
-    const startedAt = performance.now();
+    let startedAt = 0;
+    let settled = false;
+    const cancel = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+    };
     const run = (time: number) => {
+      frame = 0;
       const progress = Math.min(1, (time - startedAt) / 920);
       setValue(Math.round(to * (1 - (1 - progress) ** 3)));
       if (progress < 1) frame = requestAnimationFrame(run);
+      else settled = true;
     };
-    frame = requestAnimationFrame(run);
-    return () => cancelAnimationFrame(frame);
+    const start = () => {
+      if (motion.matches || settled || frame) return;
+      setValue(0);
+      startedAt = performance.now();
+      frame = requestAnimationFrame(run);
+    };
+    const settle = () => {
+      cancel();
+      settled = true;
+      setValue(to);
+    };
+    const onMotion = (event: MediaQueryListEvent) => {
+      if (event.matches) settle();
+      else start();
+    };
+    motion.addEventListener("change", onMotion);
+    if (motion.matches) settle();
+    else start();
+    return () => {
+      cancel();
+      motion.removeEventListener("change", onMotion);
+    };
   }, [to]);
   return <>{value}</>;
 }

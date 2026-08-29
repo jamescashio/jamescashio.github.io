@@ -1775,6 +1775,69 @@ test("reduced-motion mood changes repaint the visible Bit without starting a fra
   }
 });
 
+test("a live reduced-motion change settles Bit and resumes only its active owner", async () => {
+  const view = mountCommandDeck({ reducedMotion: false, canvasRuntime: true });
+  try {
+    await view.render();
+    const visibleBit = view.document.querySelector(".za-bit-control canvas");
+    assert.ok(visibleBit, "expected the visible global Bit canvas");
+    assert.equal(view.pendingAnimationFramesNamed("loop"), 1, "motion-enabled Bit must own one loop");
+
+    await view.runAnimationFrameBatch();
+    const beforeReduce = view.canvasPaintCount(visibleBit);
+    assert.ok(beforeReduce > 0, "Bit must paint before the live preference change");
+
+    await view.setReducedMotion(true);
+    assert.equal(view.pendingAnimationFramesNamed("loop"), 0, "live reduced motion must cancel Bit's owned loop");
+    assert.ok(
+      view.canvasPaintCount(visibleBit) > beforeReduce,
+      "live reduced motion must settle Bit with a final static paint",
+    );
+
+    await view.setReducedMotion(false);
+    assert.equal(view.pendingAnimationFramesNamed("loop"), 1, "restoring motion must resume only the active Bit loop");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("a live reduced-motion change settles CountUp without replaying and preserves future reveals", async () => {
+  const view = mountCommandDeck({ reducedMotion: false });
+  try {
+    await view.render();
+    const executiveMode = [...view.document.querySelectorAll("button")].find((button) =>
+      button.textContent?.includes("EXECUTIVE"),
+    );
+    const technicalMode = [...view.document.querySelectorAll("button")].find((button) =>
+      button.textContent?.includes("TECHNICAL"),
+    );
+    assert.ok(executiveMode && technicalMode, "expected both presentation-mode controls");
+    await view.click(executiveMode);
+
+    const routeMetric = () =>
+      [...view.document.querySelectorAll("article")]
+        .find((article) => article.textContent?.includes("01 · ROUTE CONTROL"))
+        ?.querySelector(".za-display");
+    assert.equal(routeMetric()?.textContent, "0/19", "the motion-enabled reveal must begin at zero");
+    assert.equal(view.pendingAnimationFramesNamed("run"), 1, "CountUp must own one reveal frame");
+
+    await view.setReducedMotion(true);
+    assert.equal(view.pendingAnimationFramesNamed("run"), 0, "live reduced motion must cancel CountUp's owned frame");
+    assert.equal(routeMetric()?.textContent, "18/19", "live reduced motion must settle the final metric");
+
+    await view.setReducedMotion(false);
+    assert.equal(view.pendingAnimationFramesNamed("run"), 0, "restoring motion must not replay a settled metric");
+    assert.equal(routeMetric()?.textContent, "18/19");
+
+    await view.click(technicalMode);
+    await view.click(executiveMode);
+    assert.equal(routeMetric()?.textContent, "0/19", "a future mount may begin a normal motion-enabled reveal");
+    assert.equal(view.pendingAnimationFramesNamed("run"), 1, "the future reveal must own one frame");
+  } finally {
+    await view.cleanup();
+  }
+});
+
 test("leaving Builds stands down its deck-owned motion without changing the selected article", async () => {
   const view = mountCommandDeck({
     url: "https://cashio.us/#deck=builds&article=7",

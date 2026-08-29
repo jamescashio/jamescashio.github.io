@@ -130,7 +130,8 @@ export function BitMascot({
     let bitAngle = 0;
     let lastTs = 0;
     let previousRender: number | null = null;
-    const reduce = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let reduce = motion.matches;
 
     const draw = (now: number) => {
       const dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -220,9 +221,35 @@ export function BitMascot({
       }
       raf = requestAnimationFrame(loop);
     };
+    const stop = () => {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    };
+    const start = () => {
+      if (reduce || !active || raf) return;
+      lastTs = 0;
+      previousRender = null;
+      raf = requestAnimationFrame(loop);
+    };
+    const settle = () => {
+      stop();
+      bitAngle = 0;
+      lastTs = 0;
+      previousRender = null;
+      draw(0);
+    };
+    const onMotion = (event: MediaQueryListEvent) => {
+      reduce = event.matches;
+      if (reduce) settle();
+      else start();
+    };
+    motion.addEventListener("change", onMotion);
     if (reduce || !active) draw(0);
-    else raf = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(raf);
+    else start();
+    return () => {
+      stop();
+      motion.removeEventListener("change", onMotion);
+    };
   }, [active, mood, size]);
 
   return (
