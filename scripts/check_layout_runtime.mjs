@@ -269,6 +269,34 @@ async function main() {
       await send("Runtime.evaluate", {
         expression: `document.documentElement.style.setProperty("--za-safe-area-inset-bottom", "${SAFE_AREA_PX}px"); document.querySelector(".za-scroll")?.scrollTo({ top: 0 });`,
       });
+      const launchEvaluation = await send("Runtime.evaluate", {
+        expression: `(() => {
+          const button = [...document.querySelectorAll('button[aria-label="Run the 30-second flight"]')].find((element) => element.getClientRects().length > 0);
+          if (!button) return { ok: false, reason: "mobile flight launch control is missing" };
+          const style = getComputedStyle(button);
+          const color = style.backgroundColor;
+          const alpha =
+            color === "transparent"
+              ? 0
+              : color.includes("/")
+                ? Number.parseFloat(color.split("/").at(-1))
+                : color.startsWith("rgba(")
+                  ? Number.parseFloat(color.split(",").at(-1))
+                  : 1;
+          const rect = button.getBoundingClientRect();
+          return {
+            ok: alpha === 1,
+            alpha,
+            backgroundColor: color,
+            rect: { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, width: rect.width, height: rect.height },
+          };
+        })()`,
+        returnByValue: true,
+      });
+      if (launchEvaluation.exceptionDetails)
+        throw new Error(
+          launchEvaluation.exceptionDetails.exception?.description ?? launchEvaluation.exceptionDetails.text,
+        );
       await send("Runtime.evaluate", {
         expression: `([...document.querySelectorAll('button[aria-label="Run the 30-second flight"]')].find((button) => button.getClientRects().length > 0)?.click())`,
       });
@@ -281,10 +309,19 @@ async function main() {
         const panelRect = panel.getBoundingClientRect();
         const copyRect = copy.getBoundingClientRect();
         const gap = copyRect.top - panelRect.bottom;
+        const backgroundColor = getComputedStyle(panel).backgroundColor;
+        const backgroundAlpha =
+          backgroundColor === "transparent"
+            ? 0
+            : backgroundColor.includes("/")
+              ? Number.parseFloat(backgroundColor.split("/").at(-1))
+              : backgroundColor.startsWith("rgba(")
+                ? Number.parseFloat(backgroundColor.split(",").at(-1))
+                : 1;
         return {
-          ok: panelRect.top >= 0 && panelRect.bottom <= innerHeight && gap >= 8,
+          ok: panelRect.top >= 0 && panelRect.bottom <= innerHeight && gap >= 8 && backgroundAlpha === 1,
           gap,
-          panel: { top: panelRect.top, bottom: panelRect.bottom, height: panelRect.height },
+          panel: { top: panelRect.top, bottom: panelRect.bottom, height: panelRect.height, backgroundColor, backgroundAlpha },
           copyTop: copyRect.top,
         };
       })()`,
@@ -294,7 +331,7 @@ async function main() {
         throw new Error(
           flightEvaluation.exceptionDetails.exception?.description ?? flightEvaluation.exceptionDetails.text,
         );
-      flights.push({ viewport: [width, 844], ...flightEvaluation.result.value });
+      flights.push({ viewport: [width, 844], launch: launchEvaluation.result.value, ...flightEvaluation.result.value });
       await send("Runtime.evaluate", {
         expression: `([...document.querySelectorAll('button[aria-label="Stop the 30-second flight"]')].find((button) => button.getClientRects().length > 0)?.click())`,
       });
@@ -387,10 +424,10 @@ async function main() {
     assert.equal(bitFocus.ok, true, "Bit control must retain a visible keyboard focus indicator");
     assert.equal(eveFocus.ok, true, "E.V.E. command input must retain a visible keyboard focus indicator");
     flights.forEach((flight) =>
-      assert.equal(
-        flight.ok,
-        true,
-        `Active mobile flight status must fit and clear Snapshot content at ${flight.viewport[0]}px`,
+      assert.deepEqual(
+        { launchOpaque: flight.launch.ok, activePanelOpaqueAndClear: flight.ok },
+        { launchOpaque: true, activePanelOpaqueAndClear: true },
+        `Mobile flight surfaces must be opaque while preserving the active panel clearance at ${flight.viewport[0]}px`,
       ),
     );
     snapshotGeometry.forEach((result) => assert.equal(result.ok, true, result.failures.join("; ")));

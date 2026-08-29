@@ -835,12 +835,10 @@ test("PHOTO opens a visible cinema dialog that exits by button or Escape and res
     assert.equal(view.document.activeElement, exit, "opening cinema must move focus into the dialog");
     const inertBackground = view.document.querySelector("main")?.closest("[inert]");
     assert.ok(inertBackground, "background controls must be inside one inert boundary");
-    const skipLinkBoundary = view.document.querySelector('a[href="#main-content"]')?.closest("[inert]");
-    assert.ok(skipLinkBoundary, "the skip link must be inside an inert boundary while cinema is open");
     assert.equal(
-      skipLinkBoundary,
-      inertBackground,
-      "the skip link must be inert with every other background focus target",
+      Boolean(view.document.querySelector('a[href="#main-content"]')),
+      false,
+      "the skip link must leave the accessibility and focus trees while cinema is open",
     );
 
     await view.click(exit);
@@ -857,6 +855,54 @@ test("PHOTO opens a visible cinema dialog that exits by button or Escape and res
     await view.settle();
     assert.equal(escape.defaultPrevented, true, "Escape must be owned by the cinema dialog");
     assert.equal(view.document.querySelector('[role="dialog"]'), null, "Escape must exit cinema");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("mobile cinema exposes only its exit while fixed background controls are absent or isolated", async () => {
+  const view = mountCommandDeck({
+    controlledTimers: true,
+    viewport: { width: 390, height: 844 },
+  });
+  try {
+    await view.render();
+    const photo = [...view.document.querySelectorAll('button[data-cmd="photo"]')].at(-1);
+    assert.ok(photo, "expected the mobile E.V.E. PHOTO opener");
+    photo.focus();
+    await view.click(photo);
+    await view.runControlledTimeout(400);
+    await view.runLatestAnimationFrame();
+
+    const dialog = view.document.querySelector('[role="dialog"][aria-label="Cinema view"]');
+    assert.ok(dialog, "mobile PHOTO must open its cinema dialog");
+    assert.equal(dialog.getAttribute("aria-modal"), "true");
+    const exit = [...dialog.querySelectorAll("button")].find((button) => button.textContent === "EXIT CINEMA");
+    assert.ok(exit, "cinema must retain its visible exit control");
+    assert.equal(view.document.activeElement, exit, "cinema must focus its exit control");
+
+    assert.equal(
+      Boolean(view.document.querySelector('a[href="#main-content"]')),
+      false,
+      "the skip link must not remain exposed while cinema is active",
+    );
+    assert.equal(
+      Boolean(view.document.querySelector("button.za-mobile-flight-control")),
+      false,
+      "the fixed mobile flight control must be visually absent while cinema is active",
+    );
+    const background = view.document.querySelector("main")?.closest('[inert][aria-hidden="true"]');
+    assert.ok(background, "every remaining background control must share the inert hidden boundary");
+    const exposedFocusable = [
+      ...view.document.querySelectorAll('a[href], button, input, [role="button"][tabindex]'),
+    ].filter((control) => !control.closest('[inert][aria-hidden="true"]'));
+    assert.equal(exposedFocusable.length, 1, "cinema must expose exactly one focus target");
+    assert.equal(exposedFocusable[0], exit, "EXIT CINEMA must be the only exposed focus target");
+
+    await view.click(exit);
+    await view.runLatestAnimationFrame();
+    await view.settle();
+    assert.equal(view.document.activeElement, photo, "cinema exit must restore the exact PHOTO opener");
   } finally {
     await view.cleanup();
   }

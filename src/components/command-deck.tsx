@@ -952,12 +952,14 @@ export function CommandDeck() {
       }
     >
       <div inert={photo || undefined} aria-hidden={photo || undefined}>
-        <a
-          href="#main-content"
-          className="sr-only fixed left-4 top-4 z-[200] bg-void text-cyan focus:not-sr-only focus:rounded-lg focus:border focus:border-cyan focus:px-4 focus:py-2 focus:font-mono focus:text-xs focus:outline-none"
-        >
-          Skip to content
-        </a>
+        {!photo && (
+          <a
+            href="#main-content"
+            className="sr-only fixed left-4 top-4 z-[200] bg-void text-cyan focus:not-sr-only focus:rounded-lg focus:border focus:border-cyan focus:px-4 focus:py-2 focus:font-mono focus:text-xs focus:outline-none"
+          >
+            Skip to content
+          </a>
+        )}
         <picture>
           {COMMAND_POSTER_SOURCES.map((source) => (
             <source key={source.type} {...source} />
@@ -997,7 +999,9 @@ export function CommandDeck() {
           tour={tour}
         />
 
-        <MobileFlightControl active={tour} elapsedMs={flightElapsed} onStart={toggleTour} onStop={stopFlight} />
+        {!photo && (
+          <MobileFlightControl active={tour} elapsedMs={flightElapsed} onStart={toggleTour} onStop={stopFlight} />
+        )}
 
         <CommandHeader
           audio={audio}

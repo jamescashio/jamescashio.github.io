@@ -249,7 +249,7 @@ export function MobileFlightControl({ active, elapsedMs, onStart, onStop }: Mobi
       elapsedMs={elapsedMs}
       onStart={onStart}
       onStop={onStop}
-      className="fixed left-3 top-[68px] z-50 w-[min(18rem,calc(100vw-1.5rem))] md:hidden"
+      className="za-mobile-flight-control fixed left-3 top-[68px] z-50 w-[min(18rem,calc(100vw-1.5rem))] md:hidden"
     />
   );
 }

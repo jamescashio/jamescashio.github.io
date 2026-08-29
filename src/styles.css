@@ -1913,6 +1913,11 @@
 .za-plate-img {
   filter: contrast(1.06) saturate(1.04);
 }
+@media (max-width: 767px) {
+  .za-mobile-flight-control {
+    background: var(--color-surface);
+  }
+}
 .za-plate::after {
   content: "";
   position: absolute;
