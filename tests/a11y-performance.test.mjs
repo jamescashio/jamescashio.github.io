@@ -1089,20 +1089,43 @@ test("deck navigator arrow keys move and wrap deck-button focus without selectin
     assert.ok(dialog, "expected the visible deck navigator");
     const deckButtons = [...dialog.querySelectorAll('button[aria-label^="Go to "]')];
     assert.equal(view.document.activeElement, deckButtons[0]);
+    const beforeFocusMoves = {
+      deck: useDeck.getState().deck,
+      sel: useDeck.getState().sel,
+      mode: useDeck.getState().mode,
+      palette: useDeck.getState().palette,
+      tour: useDeck.getState().tour,
+      hash: view.window.location.hash,
+    };
 
-    const previous = await view.key(deckButtons[0], "ArrowLeft");
-    assert.equal(previous.defaultPrevented, true, "focused deck arrows must own navigation");
+    const left = await view.key(deckButtons[0], "ArrowLeft");
+    assert.equal(left.defaultPrevented, true, "ArrowLeft must own focused deck navigation");
     assert.equal(view.document.activeElement, deckButtons.at(-1), "ArrowLeft must wrap first to last");
 
-    const next = await view.key(deckButtons.at(-1), "ArrowDown");
-    assert.equal(next.defaultPrevented, true, "vertical arrows must use the same deck-button path");
+    const right = await view.key(deckButtons.at(-1), "ArrowRight");
+    assert.equal(right.defaultPrevented, true, "ArrowRight must own focused deck navigation");
+    assert.equal(view.document.activeElement, deckButtons[0], "ArrowRight must wrap last to first");
+
+    const up = await view.key(deckButtons[0], "ArrowUp");
+    assert.equal(up.defaultPrevented, true, "ArrowUp must own focused deck navigation");
+    assert.equal(view.document.activeElement, deckButtons.at(-1), "ArrowUp must wrap first to last");
+
+    const down = await view.key(deckButtons.at(-1), "ArrowDown");
+    assert.equal(down.defaultPrevented, true, "ArrowDown must own focused deck navigation");
     assert.equal(view.document.activeElement, deckButtons[0], "ArrowDown must wrap last to first");
 
-    await view.key(deckButtons[0], "ArrowRight");
-    assert.equal(view.document.activeElement, deckButtons[1], "ArrowRight must focus the next deck");
-    await view.key(deckButtons[1], "ArrowUp");
-    assert.equal(view.document.activeElement, deckButtons[0], "ArrowUp must focus the previous deck");
-    assert.equal(useDeck.getState().deck, 0, "focus movement must not select a deck");
+    assert.deepEqual(
+      {
+        deck: useDeck.getState().deck,
+        sel: useDeck.getState().sel,
+        mode: useDeck.getState().mode,
+        palette: useDeck.getState().palette,
+        tour: useDeck.getState().tour,
+        hash: view.window.location.hash,
+      },
+      beforeFocusMoves,
+      "focus-only arrows must not change deck state or the canonical location",
+    );
     assert.equal(deckButtons[0].getAttribute("aria-current"), "page", "CURRENT must remain on the active deck");
     assert.ok(view.document.querySelector('[role="dialog"]'), "focus movement must not close the navigator");
   } finally {
@@ -1702,7 +1725,12 @@ test("Builds article arrows work only while the focused article selector owns th
     assert.equal(useDeck.getState().sel, 4, "ArrowRight must select relative to the focused article");
     assert.equal(view.document.activeElement, articles[4], "ArrowRight must move focus with selection");
     assert.equal(articles[4].getAttribute("aria-pressed"), "true");
-    assert.match(articles[4].getAttribute("aria-label") ?? "", /^Article 5 of 7, .+, .+$/);
+    assert.equal(articles[4].getAttribute("aria-label"), "Article 5 of 7, ZEUSAPOLLO DASHBOARD SUITE, OPERATIONS");
+    assert.equal(
+      view.window.location.hash,
+      "#deck=builds&article=5",
+      "non-boundary arrows must keep the hash canonical",
+    );
 
     articles[2].focus();
     const left = await view.key(articles[2], "ArrowLeft");
@@ -1711,10 +1739,15 @@ test("Builds article arrows work only while the focused article selector owns th
     assert.equal(view.document.activeElement, articles[1], "ArrowLeft must move focus with selection");
     assert.equal(articles[1].getAttribute("aria-pressed"), "true");
 
-    articles[0].focus();
-    await view.key(articles[0], "ArrowLeft");
-    assert.equal(view.document.activeElement, articles.at(-1), "ArrowLeft must wrap without escaping the selector");
-    assert.equal(articles.at(-1).getAttribute("aria-pressed"), "true");
+    articles[6].focus();
+    const wrap = await view.key(articles[6], "ArrowRight");
+    assert.equal(wrap.defaultPrevented, true, "Article 7 ArrowRight must own the wrap");
+    assert.equal(view.document.activeElement, articles[0], "Article 7 ArrowRight must wrap focus to Article 1");
+    assert.equal(articles[0].getAttribute("aria-pressed"), "true");
+    assert.equal(articles[0].getAttribute("aria-label"), "Article 1 of 7, HERMES ORCHESTRATOR, GATEWAY");
+    assert.equal(useDeck.getState().sel, 0, "Article 1 must become the selected store article");
+    assert.equal(view.document.querySelector(".za-build-details h3")?.textContent, "HERMES ORCHESTRATOR");
+    assert.equal(view.window.location.hash, "#deck=builds&article=1", "wrapped selection must use the canonical hash");
   } finally {
     await view.cleanup();
   }
