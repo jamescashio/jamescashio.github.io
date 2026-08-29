@@ -944,7 +944,9 @@ export function CommandDeck() {
             <b className="text-cyan">
               AIRFRAME {String(craftI + 1).padStart(2, "0")} / {String(CRAFT.length).padStart(2, "0")}
             </b>
-            <span className="za-airframe-compact-name text-ink">{craft[0]}</span>
+            <span data-airframe-compact-identity className="za-airframe-compact-name text-ink">
+              {craft[0]}
+            </span>
             {audio && (
               <span className="za-eq ml-auto" aria-hidden>
                 <span />

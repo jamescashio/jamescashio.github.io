@@ -1449,6 +1449,17 @@
 .za-corner-hud.yield .za-airframe .za-eq {
   display: none;
 }
+.za-corner-hud.yield .za-airframe > div:first-child {
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.za-corner-hud.yield .za-airframe-compact-name {
+  display: block;
+  flex-basis: 100%;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
 .za-bit-control {
   transition:
     filter 260ms var(--ease-out),

@@ -620,6 +620,46 @@ test("E.V.E. keeps its usable command prompt in a 1280 by 720 first viewport", a
   }
 });
 
+test("the yielded HUD still presents the full airframe identity", async () => {
+  const view = mountCommandDeck();
+  try {
+    await view.render();
+    for (const target of view.document.querySelectorAll("[data-hud-clear]")) {
+      target.getBoundingClientRect = () => ({
+        bottom: 690,
+        height: 70,
+        left: 980,
+        right: 1100,
+        top: 620,
+        width: 120,
+        x: 980,
+        y: 620,
+      });
+    }
+    await view.runAnimationFrameBatch();
+    const hud = view.document.querySelector(".za-corner-hud.yield");
+    assert.ok(hud, "expected the overlapping HUD to yield");
+    assert.equal(
+      hud.querySelector("[data-airframe-compact-identity]")?.textContent,
+      "BELL X-1",
+      "the compact HUD must retain the complete airframe name rather than ellipsizing or dropping it",
+    );
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("Snapshot prose separates the verification date from the preceding word", async () => {
+  const view = mountCommandDeck();
+  try {
+    await view.render();
+    const snapshot = view.document.querySelector('section[data-deck="0"]');
+    assert.match(snapshot?.textContent ?? "", /Fleet evidence was verified on 28 August 2026/);
+  } finally {
+    await view.cleanup();
+  }
+});
+
 test("deck navigator initializes focus, traps both tab directions, closes safely, and restores its opener", async () => {
   const view = mountCommandDeck();
   try {
