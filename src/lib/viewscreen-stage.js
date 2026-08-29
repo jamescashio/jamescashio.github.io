@@ -761,7 +761,10 @@ class ViewscreenStage extends HTMLElement {
     this.paused = document.hidden;
 
     const start = () => {
-      if (this._started) return;
+      if (this._started) {
+        if (!this.reduce && !this.paused && !this._raf && this._loop) this._raf = requestAnimationFrame(this._loop);
+        return;
+      }
       this._started = true;
       try { this._initGL(); } catch (e) { console.warn('viewscreen: WebGL unavailable', e); this._fallback(); return; }
 

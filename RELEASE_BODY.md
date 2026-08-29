@@ -5,7 +5,7 @@
 **Release revision:** 28 August 2026
 **Validity window:** through 27 September 2026 in America/Chicago, or until the next owner-verified architecture change
 
-V34 preserves the Vite 6 + React 19 command console and its Bit-centered Dune/LCARS identity while making the public truth more legible: dated aggregate evidence, separate routing provenance, Executive outcomes, Build Proof, and Cashio Operating Lessons. Audio remains restrained and opt-in. Contact wording and the Black Box Receipt are unchanged.
+V34 preserves the Vite 6 + React 19 command console and its Bit-centered Dune/LCARS identity while making the public truth more legible: dated aggregate evidence, separate routing provenance, Executive outcomes, Build Proof, and Cashio Operating Lessons. Audio remains restrained and opt-in. The Contact conclusion and voice are preserved, while the Black Box Receipt evidence is reconciled to the 28 August fleet export (18 of 19 documented guests) and the separate 21 August routing inventory (10 public capability lanes and 36 private catalog entries).
 
 ## Locked public snapshot
 
@@ -33,13 +33,9 @@ V34 preserves the Vite 6 + React 19 command console and its Bit-centered Dune/LC
 
 ```text
 npm ci
-npm run lint
-npm run format:check
-npm test
-npm run build
-python scripts/public_repo_guard.py
-python scripts/check_release_consistency.py
-python -m unittest tests.test_v32_release
+npm run verify
 ```
+
+`npm run verify` is the authoritative local gate: lint, format check, Node tests, build, the real runtime layout gate (`npm run check:layout:runtime`), release tests, public-repository safety, release consistency, and committed-whitespace verification.
 
 Publishing remains gated on owner approval, PR review, merge, Pages completion, cache purge, and live HTTPS verification.
