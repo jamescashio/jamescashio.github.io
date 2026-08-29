@@ -98,6 +98,23 @@ test("public metadata and redirect fallback keep fleet and routing provenance di
   }
 });
 
+test("release checklist separates the fresh fleet export from routing provenance and names V34 installation", async () => {
+  const template = await read(".github/pull_request_template.md");
+  assert.match(
+    template,
+    /^- \[ \] The 28 August 2026 fleet export remains 18\/19 containers \(Zeus 12\/13; Apollo 6\/6\), with 2 hosts online and the cluster quorate\.$/m,
+  );
+  assert.match(
+    template,
+    /^- \[ \] The routing inventory remains separately dated 21 August 2026, with 10 public lanes and 36 private catalog entries; unmeasured figures remain withheld\.$/m,
+  );
+  assert.doesNotMatch(template, /21 August 2026[^\r\n]*(?:19\/19|containers)/);
+
+  const workflow = await read(".github/workflows/public-safety.yml");
+  assert.match(workflow, /- name: Install V34 dependencies/);
+  assert.doesNotMatch(workflow, /- name: Install V33 dependencies/);
+});
+
 test("Pages blocks artifact upload on the complete Node 22 and Python 3.12 gate chain", async () => {
   const workflow = await read(".github/workflows/pages.yml");
   assert.match(workflow, /node-version:\s*22/);
