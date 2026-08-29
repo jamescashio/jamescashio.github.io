@@ -132,6 +132,10 @@ export function CommandDeck() {
   const sweepTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
   const alertTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
   const cinePulseGeneration = useRef(0);
+  const pendingSmoothScrollTop = useRef<number | null>(null);
+  const gotoRef = useRef<
+    ((deck: number, source?: NavigationOrigin, craftOverride?: number | null, articleOverride?: number) => void) | null
+  >(null);
   const pendingNavigation = useRef<{
     deck: number;
     source: NavigationOrigin;
@@ -273,6 +277,14 @@ export function CommandDeck() {
     alertTimer.current = null;
   }, []);
 
+  const settlePendingSmoothScroll = useCallback(() => {
+    const top = pendingSmoothScrollTop.current;
+    const scroller = scRef.current;
+    if (top == null || !scroller) return;
+    pendingSmoothScrollTop.current = null;
+    scroller.scrollTop = top;
+  }, []);
+
   const chapter = useCallback(
     (i: number) => {
       const name = DECKS[i].name;
@@ -306,12 +318,13 @@ export function CommandDeck() {
   useEffect(() => {
     stageRef.current?.setReducedMotion?.(reducedMotion);
     if (!reducedMotion) return;
+    settlePendingSmoothScroll();
     clearCinePulse();
     clearChapter();
     clearSweep();
     setFlash(false);
     set({ cine: false, chapOn: false, chapText: DECKS[useDeck.getState().deck].name });
-  }, [clearChapter, clearCinePulse, clearSweep, reducedMotion, set, stageOn]);
+  }, [clearChapter, clearCinePulse, clearSweep, reducedMotion, set, settlePendingSmoothScroll, stageOn]);
 
   useEffect(
     () => () => {
@@ -362,6 +375,7 @@ export function CommandDeck() {
   }, []);
 
   const cancelProgrammaticScroll = useCallback(() => {
+    pendingSmoothScrollTop.current = null;
     clearHashSuppressionTimer();
     clearResizeAnchor();
     hashTransition.current = cancelHashRestore(hashTransition.current);
@@ -459,8 +473,13 @@ export function CommandDeck() {
       if (!el || !sc) return;
       if (useDeck.getState().deck !== i) beginProgrammaticScroll(i);
       const top = Math.max(0, el.offsetTop - 8);
-      if (reducedMotion) sc.scrollTop = top;
-      else sc.scrollTo({ top, behavior: "smooth" });
+      if (reducedMotion) {
+        pendingSmoothScrollTop.current = null;
+        sc.scrollTop = top;
+      } else {
+        pendingSmoothScrollTop.current = top;
+        sc.scrollTo({ top, behavior: "smooth" });
+      }
       const st = stageRef.current;
       if (!reducedMotion) st?.warp?.();
       st?.setDeck?.(i);
@@ -512,6 +531,10 @@ export function CommandDeck() {
       syncHash,
     ],
   );
+
+  useEffect(() => {
+    gotoRef.current = goto;
+  }, [goto]);
 
   useEffect(() => {
     if (mode !== "technical" || pendingNavigation.current == null) return;
@@ -584,7 +607,7 @@ export function CommandDeck() {
   useEffect(() => {
     const restoreHash = () => {
       const target = parseDeckHash(window.location.hash);
-      goto(target.deck, "hash", undefined, target.article);
+      gotoRef.current?.(target.deck, "hash", undefined, target.article);
     };
     if (window.location.hash) restoreHash();
     else syncHash(useDeck.getState().deck, useDeck.getState().sel, "replace");
@@ -597,7 +620,7 @@ export function CommandDeck() {
     };
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
-  }, [goto, stopFlight, syncHash]);
+  }, [stopFlight, syncHash]);
 
   useEffect(() => {
     return () => {
@@ -649,6 +672,8 @@ export function CommandDeck() {
   const onScroll = useCallback(() => {
     const sc = scRef.current;
     if (!sc) return;
+    const pendingTop = pendingSmoothScrollTop.current;
+    if (pendingTop != null && Math.abs(sc.scrollTop - pendingTop) <= 1) pendingSmoothScrollTop.current = null;
     const secs = listSections();
     let i = 0;
     const reallyScrolled = sc.scrollTop >= 80;
@@ -735,6 +760,7 @@ export function CommandDeck() {
           if (hashTransition.current.restoringDeck !== targetDeck) return;
           const target = listSections()[targetDeck]?.current;
           if (!target || !scRef.current) return;
+          pendingSmoothScrollTop.current = null;
           scRef.current.scrollTo({ top: Math.max(0, target.offsetTop - 8), behavior: "auto" });
           onScroll();
         });
@@ -844,8 +870,13 @@ export function CommandDeck() {
     const brief = sBrief.current;
     const scroller = scRef.current;
     if (!brief || !scroller) return;
-    if (reducedMotion) scroller.scrollTop = brief.offsetTop;
-    else scroller.scrollTo({ top: brief.offsetTop, behavior: "smooth" });
+    if (reducedMotion) {
+      pendingSmoothScrollTop.current = null;
+      scroller.scrollTop = brief.offsetTop;
+    } else {
+      pendingSmoothScrollTop.current = brief.offsetTop;
+      scroller.scrollTo({ top: brief.offsetTop, behavior: "smooth" });
+    }
   };
 
   const toggleAudio = () => {
@@ -1006,9 +1037,9 @@ export function CommandDeck() {
 
         <div
           data-cine={cine}
-          className={`pointer-events-none fixed bottom-[118px] left-[calc(68px+5vw)] z-40 transition duration-500 ${
-            chapOn ? "opacity-100" : "translate-y-4 opacity-0"
-          } ${hud}`}
+          className={`za-chapter-overlay pointer-events-none fixed bottom-[118px] left-[calc(68px+5vw)] z-40 ${
+            reducedMotion ? "" : "transition duration-500"
+          } ${chapOn ? "opacity-100" : "translate-y-4 opacity-0"} ${hud}`}
         >
           <div className="za-kicker">DECK {String(chap + 1).padStart(2, "0")} / 09</div>
           <div className="za-display mt-2 text-[clamp(2rem,4.4vw,3.6rem)] drop-shadow-[0_0_28px_rgba(0,249,255,0.25)]">
@@ -1084,15 +1115,15 @@ export function CommandDeck() {
 
         <div
           aria-hidden
-          className={`pointer-events-none fixed left-0 right-0 top-0 z-[60] h-[9vh] border-b border-line bg-[#04050a] transition-transform duration-700 ${
-            cine ? "translate-y-0" : "-translate-y-full"
-          }`}
+          className={`za-cinema-bar pointer-events-none fixed left-0 right-0 top-0 z-[60] h-[9vh] border-b border-line bg-[#04050a] ${
+            reducedMotion ? "" : "transition-transform duration-700"
+          } ${cine ? "translate-y-0" : "-translate-y-full"}`}
         />
         <div
           aria-hidden
-          className={`pointer-events-none fixed bottom-0 left-0 right-0 z-[60] h-[9vh] border-t border-line bg-[#04050a] transition-transform duration-700 ${
-            cine ? "translate-y-0" : "translate-y-full"
-          }`}
+          className={`za-cinema-bar pointer-events-none fixed bottom-0 left-0 right-0 z-[60] h-[9vh] border-t border-line bg-[#04050a] ${
+            reducedMotion ? "" : "transition-transform duration-700"
+          } ${cine ? "translate-y-0" : "translate-y-full"}`}
         />
 
         {alert && (

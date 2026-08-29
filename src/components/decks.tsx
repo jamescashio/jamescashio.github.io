@@ -652,7 +652,6 @@ export function DeckEve({
       "WHOAMI",
       "TALK",
       "PHOTO",
-      "RED ALERT",
       "CLEAR",
     ],
     [],

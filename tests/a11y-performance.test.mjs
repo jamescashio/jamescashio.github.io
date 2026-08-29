@@ -92,6 +92,8 @@ function mountCommandDeck({
   const canvasObservers = { resize: [], visibility: [], ownership: [] };
   const canvasPaints = [];
   const canvasContexts = new WeakMap();
+  const scrollPositions = new WeakMap();
+  const pendingSmoothScrolls = new WeakMap();
   const contextFor = (canvas) => {
     if (canvasContexts.has(canvas)) return canvasContexts.get(canvas);
     const context = new Proxy(
@@ -211,6 +213,16 @@ function mountCommandDeck({
           : 0;
       },
     },
+    scrollTop: {
+      configurable: true,
+      get() {
+        return scrollPositions.get(this) ?? 0;
+      },
+      set(value) {
+        scrollPositions.set(this, Number(value) || 0);
+        pendingSmoothScrolls.delete(this);
+      },
+    },
     scrollTo: {
       configurable: true,
       value(options) {
@@ -218,7 +230,10 @@ function mountCommandDeck({
         const requestedTop = top ?? 0;
         this.dataset.requestedScrollTop = String(requestedTop);
         if (typeof options === "object" && options?.behavior) this.dataset.requestedScrollBehavior = options.behavior;
-        if (deferredSmoothScroll && typeof options === "object" && options?.behavior === "smooth") return;
+        if (deferredSmoothScroll && typeof options === "object" && options?.behavior === "smooth") {
+          pendingSmoothScrolls.set(this, requestedTop);
+          return;
+        }
         this.scrollTop = requestedTop;
       },
     },
@@ -302,6 +317,17 @@ function mountCommandDeck({
       });
       return event;
     },
+    async input(element, value) {
+      const setter = Object.getOwnPropertyDescriptor(dom.window.HTMLInputElement.prototype, "value")?.set;
+      assert.ok(setter, "expected the native input value setter");
+      const propsKey = Object.keys(element).find((key) => key.startsWith("__reactProps$"));
+      const onChange = propsKey ? element[propsKey]?.onChange : null;
+      assert.equal(typeof onChange, "function", "expected the controlled input change path");
+      await act(async () => {
+        setter.call(element, value);
+        onChange({ target: element });
+      });
+    },
     async settle() {
       await act(async () => {
         await new Promise((resolve) => dom.window.setTimeout(resolve, 0));
@@ -370,6 +396,9 @@ function mountCommandDeck({
     },
     pendingControlledTimeoutsFor(...delays) {
       return [...controlledTimeouts.values()].filter((timer) => delays.includes(timer.delay)).length;
+    },
+    pendingSmoothScrollTop(element) {
+      return pendingSmoothScrolls.get(element) ?? null;
     },
     async canvasObserver(kind, entries = []) {
       const observer = canvasObservers[kind].at(-1);
@@ -1826,14 +1855,24 @@ test("reduced motion settles active navigation effects and keeps later navigatio
     reducedMotion: false,
     controlledTimers: true,
     capturePulseTimers: true,
+    deferredSmoothScroll: true,
   });
   try {
     await view.render();
+    const scroller = view.document.querySelector("main.za-scroll");
     await view.click(labeledButton(view.document, "Go to ROUTING deck"));
+    assert.equal(scroller.scrollTop, 0, "the harness must keep the native smooth scroll physically pending");
+    assert.equal(view.pendingSmoothScrollTop(scroller), 1992, "Routing must be the pending smooth destination");
     assert.ok(view.document.querySelector(".za-warpflash.on"), "motion-enabled navigation must begin its warp flash");
     assert.equal(view.document.querySelector("[data-cine]")?.getAttribute("data-cine"), "true");
 
     await view.setReducedMotion(true);
+    assert.equal(
+      scroller.scrollTop,
+      1992,
+      "a live preference change must finish the pending Routing scroll immediately",
+    );
+    assert.equal(view.pendingSmoothScrollTop(scroller), null, "the native smooth scroll must no longer be pending");
     assert.equal(
       view.document.querySelector(".za-warpflash.on"),
       null,
@@ -1844,7 +1883,6 @@ test("reduced motion settles active navigation effects and keeps later navigatio
     assert.equal(useDeck.getState().chapOn, false, "preference changes must settle chapter text immediately");
 
     await view.click(labeledButton(view.document, "Go to CONTACT deck"));
-    const scroller = view.document.querySelector("main.za-scroll");
     assert.equal(scroller?.scrollTop, 7992, "reduced motion navigation must land without smooth scrolling");
     assert.equal(view.document.querySelector(".za-warpflash.on"), null);
     assert.equal(view.document.querySelector(".za-sweep.on"), null);
@@ -1854,8 +1892,31 @@ test("reduced motion settles active navigation effects and keeps later navigatio
   }
 });
 
-test("Executive READ THE BRIEF scrolls immediately under reduced motion", async () => {
-  const view = mountCommandDeck({ reducedMotion: true, deferredSmoothScroll: true });
+test("a live reduced-motion change removes chapter and cinema-bar transitions", async () => {
+  const view = mountCommandDeck({ reducedMotion: false });
+  try {
+    await view.render();
+    await view.click(labeledButton(view.document, "Go to ROUTING deck"));
+    const chapterOverlay = view.document.querySelector(".za-chapter-overlay");
+    const cinemaBars = [...view.document.querySelectorAll(".za-cinema-bar")];
+    assert.ok(chapterOverlay, "chapter motion must expose its runtime transition hook");
+    assert.equal(cinemaBars.length, 2, "both cinema bars must expose their runtime transition hook");
+    assert.ok(chapterOverlay.className.includes("duration-500"));
+    assert.ok(cinemaBars.every((bar) => bar.className.includes("duration-700")));
+
+    await view.setReducedMotion(true);
+    assert.equal(chapterOverlay.className.includes("transition"), false, "chapter settling must be immediate");
+    assert.ok(
+      cinemaBars.every((bar) => !bar.className.includes("transition") && !bar.className.includes("duration-700")),
+      "cinema bars must remove their live transition classes",
+    );
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("a live reduced-motion change finishes Executive READ THE BRIEF scrolling", async () => {
+  const view = mountCommandDeck({ reducedMotion: false, deferredSmoothScroll: true });
   try {
     await view.render();
     const executiveMode = [...view.document.querySelectorAll("button")].find((button) =>
@@ -1870,14 +1931,18 @@ test("Executive READ THE BRIEF scrolls immediately under reduced motion", async 
       (button) => button.textContent === "READ THE BRIEF",
     );
     assert.ok(readBrief, "expected the Executive READ THE BRIEF control");
+    const briefSection = [...view.document.querySelectorAll('section[data-deck="0"]')].find((section) =>
+      section.textContent?.includes("THREE OUTCOMES. ONE HUMAN COMMAND."),
+    );
+    assert.ok(briefSection, "expected the Executive brief destination");
+    Object.defineProperty(briefSection, "offsetTop", { configurable: true, value: 864 });
     await view.click(readBrief);
 
-    assert.equal(scroller.scrollTop, 0, "reduced motion must land on the brief without an animated scroll");
-    assert.equal(
-      scroller.dataset.requestedScrollBehavior,
-      undefined,
-      "READ THE BRIEF must not request smooth scrolling under reduced motion",
-    );
+    assert.equal(scroller.scrollTop, 321, "the harness must retain the pending Executive smooth scroll");
+    assert.equal(view.pendingSmoothScrollTop(scroller), 864);
+    await view.setReducedMotion(true);
+    assert.equal(scroller.scrollTop, 864, "the live preference change must land on the Executive brief immediately");
+    assert.equal(view.pendingSmoothScrollTop(scroller), null);
   } finally {
     await view.cleanup();
   }
@@ -1887,9 +1952,14 @@ test("a live reduced-motion change stops the red pulse without cancelling bounde
   const view = mountCommandDeck({ reducedMotion: false, controlledTimers: true, capturePulseTimers: true });
   try {
     await view.render();
-    const alertControl = view.document.querySelector('button[data-cmd="red alert"]');
-    assert.ok(alertControl, "red alert must remain available through a visible control");
-    await view.click(alertControl);
+    assert.equal(
+      Boolean(view.document.querySelector('button[data-cmd="red alert"]')),
+      false,
+      "RED ALERT must not add a visible command chip or tab stop",
+    );
+    const input = view.document.querySelector("#eve-command");
+    await view.input(input, "red alert");
+    await view.click(input.closest("form").querySelector('button[type="submit"]'));
 
     let border = view.document.querySelector('[class*="border-red"]');
     assert.ok(
@@ -1920,6 +1990,16 @@ test("a live reduced-motion change stops the red pulse without cancelling bounde
   } finally {
     await view.cleanup();
   }
+});
+
+test("reduced-motion styles explicitly disable chapter and cinema-bar transitions", () => {
+  assert.equal(
+    /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.za-chapter-overlay,[\s\S]*?\.za-cinema-bar[\s\S]*?transition:\s*none\s*!important/i.test(
+      stylesheet,
+    ),
+    true,
+    "reduced-motion CSS must explicitly disable chapter and cinema-bar transitions",
+  );
 });
 
 test("Builds canvas owns its frame work across visibility and inactive-deck transitions", async () => {

@@ -1467,7 +1467,9 @@
   .za-airframe,
   .za-bit-control,
   .za-stage-poster,
-  .za-stage-live {
+  .za-stage-live,
+  .za-chapter-overlay,
+  .za-cinema-bar {
     animation: none !important;
     transition: none !important;
   }
