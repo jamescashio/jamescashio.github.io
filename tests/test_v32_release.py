@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import importlib.util
 import math
 import re
 import struct
@@ -10,6 +11,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DIST = ROOT / "dist"
+
+_guard_spec = importlib.util.spec_from_file_location("release_consistency", ROOT / "scripts" / "check_release_consistency.py")
+assert _guard_spec and _guard_spec.loader
+release_consistency = importlib.util.module_from_spec(_guard_spec)
+_guard_spec.loader.exec_module(release_consistency)
 
 
 def read(relative: str) -> str:
@@ -52,6 +58,19 @@ class V34ReleaseContractTests(unittest.TestCase):
         self.assertEqual(set(self.status["deepseek"]), {"deepseek-v4-flash", "deepseek-v4-pro"})
         self.assertIn("not a Proxmox host", self.status["atlas"])
         self.assertEqual(read("status.json"), read("public/status.json"))
+
+    def test_public_surface_guard_requires_separate_routing_provenance(self) -> None:
+        valid = (
+            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+        )
+        for text in (valid, valid.replace("21 AUGUST 2026", "28 AUGUST 2026"), valid.replace("21 AUGUST 2026 · ", "")):
+            failures: list[str] = []
+            release_consistency.check_v34_public_surface("index.html", text, failures, "test")
+            if text == valid:
+                self.assertEqual(failures, [])
+            else:
+                self.assertIn("must date routing counts as the 21 August 2026 inventory", failures)
 
     def test_release_identity_is_canonical_v34(self) -> None:
         package = json.loads(read("package.json"))

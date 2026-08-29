@@ -68,7 +68,7 @@ export function runEve(raw: string, history: string[] = []): EveResult {
         ...currentLines(),
         "18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6",
         "2 PROXMOX HOSTS ONLINE · CLUSTER QUORATE",
-        "10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES",
+        "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES",
       ],
     };
   }
@@ -88,7 +88,7 @@ export function runEve(raw: string, history: string[] = []): EveResult {
   if (command === "lanes" || command === "routes") {
     return {
       out: [
-        "ROUTING INVENTORY 21 AUG · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES",
+        "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES",
         "DEEPSEEK-V4-FLASH · DEEPSEEK-V4-PRO",
         "QUALITY PICKS THE MODEL · COST ONLY BREAKS A TIE",
       ],

@@ -6,6 +6,7 @@ import { createRoot } from "react-dom/client";
 
 import { BlackBoxReceipt } from "../src/components/black-box-receipt.tsx";
 import { DeckBrief, DeckSnapshot } from "../src/components/decks.tsx";
+import { runEve } from "../src/components/eve-console.tsx";
 import { FlightControl } from "../src/components/flight-control.tsx";
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
@@ -152,6 +153,15 @@ test("Executive choice promises outcomes rather than page count", async () => {
   } finally {
     await view.cleanup();
   }
+});
+
+test("E.V.E. status keeps routing counts on the separate 21 August 2026 inventory", () => {
+  const lines = runEve("status").out;
+  assert.ok(lines.includes("ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES"));
+  assert.equal(
+    lines.some((line) => /28 AUG(?:UST)? 2026.*10 PUBLIC/i.test(line)),
+    false,
+  );
 });
 
 test("BlackBoxReceipt renders only the exact dated claim set beneath its exact heading", async () => {

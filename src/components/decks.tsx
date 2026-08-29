@@ -157,8 +157,8 @@ export function DeckBrief({ sBrief }: { sBrief: SecRef }) {
                 /19
               </div>
               <p className="mt-3 text-sm leading-relaxed text-muted">
-                Quality-first routing turns capability into a controlled decision. The 21 August inventory counts ten
-                public lanes and thirty-six private catalog entries as different objects.
+                Quality-first routing turns capability into a controlled decision. The 21 August 2026 routing inventory
+                counts ten public lanes and thirty-six private catalog entries as different objects.
               </p>
             </article>
             <article className="za-panel p-5">
@@ -745,7 +745,7 @@ export function DeckEve({
         <p className="za-mono mt-5 text-[10px] text-dim">
           EVERY ANSWER COMES FROM THE READ-ONLY {VERIFIED_LONG} DATED EXPORT — VALID THROUGH {EXPIRES_SHORT}. AFTER THAT
           THE CONSOLE REPORTS HISTORY, NOT STATUS. 18/19 AT 28 AUG PROBE · 2 PROXMOX HOSTS ONLINE · QUORATE · ROUTING
-          INVENTORY 21 AUG · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES.
+          INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES.
         </p>
       </div>
     </DeckShell>

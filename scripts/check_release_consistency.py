@@ -17,10 +17,15 @@ DIST = ROOT / "dist"
 
 TEXT_SUFFIXES = {".html", ".js", ".css", ".json", ".txt", ".xml", ".svg"}
 V34_PUBLIC_SURFACES = {
-    "index.html": ("28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT"),
-    "lab.html": ("28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT"),
+    "index.html": ("28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT", "ROUTING INVENTORY 21 AUGUST 2026"),
+    "lab.html": ("28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT", "ROUTING INVENTORY 21 AUGUST 2026"),
 }
-STALE_V33_PUBLIC_CLAIMS = re.compile(r"21 August 2026|19(?:/| of )19|\bCURRENT\b|\bonline\b", re.IGNORECASE)
+ROUTING_PROVENANCE = "ROUTING INVENTORY 21 AUGUST 2026"
+ROUTING_COUNT_CLAIM = re.compile(
+    r"\b10\s+PUBLIC(?:\s+CAPABILITY)?\s+LANES\b.*?\b36\s+PRIVATE\s+CATALOG(?:\s+ENTRIES)?\b",
+    re.IGNORECASE | re.DOTALL,
+)
+STALE_V33_FLEET_CLAIMS = re.compile(r"19(?:/| of )19|\bCURRENT\b|\bonline\b", re.IGNORECASE)
 FORBIDDEN_LIVE = (
     "10 August 2026",
     "08-10-2026",
@@ -52,8 +57,10 @@ def check_v34_public_surface(relative: str, text: str, failures: list[str], labe
     for marker in V34_PUBLIC_SURFACES[relative]:
         if marker not in text:
             failures.append(f"{label}/{relative} is missing V34 marker {marker!r}")
-    if STALE_V33_PUBLIC_CLAIMS.search(text):
+    if STALE_V33_FLEET_CLAIMS.search(text):
         failures.append(f"{label}/{relative} contains a stale V33 fleet claim")
+    if ROUTING_COUNT_CLAIM.search(text) and ROUTING_PROVENANCE not in text.upper():
+        failures.append("must date routing counts as the 21 August 2026 inventory")
 
 
 def main() -> int:

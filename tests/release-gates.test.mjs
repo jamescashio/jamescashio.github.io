@@ -87,12 +87,14 @@ test("package metadata and deterministic local gates define the V34 release", as
   assert.equal(status.routingVerified, "2026-08-21");
 });
 
-test("public metadata and redirect fallback carry only the V34 dated aggregate", async () => {
-  const expected = ["28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT"];
+test("public metadata and redirect fallback keep fleet and routing provenance distinct", async () => {
+  const fleetExpected = ["28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT"];
+  const routingExpected = "ROUTING INVENTORY 21 AUGUST 2026";
   for (const path of ["index.html", "public/lab.html"]) {
     const text = await read(path);
-    for (const marker of expected) assert.match(text, new RegExp(marker), `${path} must include ${marker}`);
-    assert.doesNotMatch(text, /21 August 2026|19(?:\/| of )19|\bCURRENT\b|\bonline\b/i, path);
+    for (const marker of fleetExpected) assert.match(text, new RegExp(marker), `${path} must include ${marker}`);
+    assert.match(text, new RegExp(routingExpected), `${path} must date 10/36 as routing inventory`);
+    assert.doesNotMatch(text, /19(?:\/| of )19|\bCURRENT\b|\bonline\b/i, path);
   }
 });
 
