@@ -5,7 +5,7 @@ import * as THREE from "three";
 /** A 2D context that is guaranteed to exist. Every canvas here is created in
  * this module, so a null context means the browser is not usable at all. */
 function context2d(canvas: HTMLCanvasElement): CanvasRenderingContext2D {
-  const context = context2d(canvas);
+  const context = canvas.getContext("2d");
   if (!context) throw new Error("viewscreen: 2D canvas context unavailable");
   return context;
 }
