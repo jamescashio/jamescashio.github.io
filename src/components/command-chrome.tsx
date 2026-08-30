@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { CRAFT, DECKS, DECK_SHORT, validityShort } from "@/lib/content";
 import type { Mode } from "@/lib/store";
 import { FlightControl } from "./flight-control";
@@ -212,13 +213,17 @@ export function MobileCommandNavigation({
   onNavigate,
   onOpenNavigator,
 }: MobileCommandNavigationProps) {
-  // Bring the active chip into view when the strip has scrolled past it.
-  // Guarded because jsdom, which the boundary tests render in, has no
-  // scrollIntoView, and because a chip already in view needs no scroll.
-  const scrollCurrentIntoView = (node: HTMLButtonElement | null) => {
+  // Bring the active chip into view, but only when the deck actually changes.
+  // An inline callback ref would be a new function on every render, so React
+  // would detach and reattach it each time the parent updated, including the
+  // once a second clock tick, and drag the strip back under anyone scrolling
+  // toward decks 07 to 09. Guarded for jsdom, which has no scrollIntoView.
+  const activeChip = useRef<HTMLButtonElement | null>(null);
+  useEffect(() => {
+    const node = activeChip.current;
     if (typeof node?.scrollIntoView !== "function") return;
     node.scrollIntoView({ block: "nearest", inline: "center" });
-  };
+  }, [deck]);
   // Every deck is reachable from the phone rail. The strip scrolls sideways and
   // keeps the current deck in view, rather than hiding decks 07 to 09 behind GO.
   const visibleDecks = DECKS.filter((_, index) => (mode === "executive" ? index === 0 || index === 8 : true));
@@ -235,7 +240,7 @@ export function MobileCommandNavigation({
             type="button"
             aria-label={`Go to ${item.name}`}
             aria-current={deck === index ? "page" : undefined}
-            ref={deck === index ? scrollCurrentIntoView : undefined}
+            ref={deck === index ? activeChip : undefined}
             onClick={() => onNavigate(index)}
             className={`za-mono min-h-11 min-w-11 shrink-0 rounded-md px-3 py-2 text-[10px] tracking-[0.12em] ${
               deck === index ? "bg-accent/15 text-accent" : "text-dim"
