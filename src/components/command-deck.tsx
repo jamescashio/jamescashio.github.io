@@ -113,6 +113,19 @@ export function CommandDeck() {
   const [histI, setHistI] = useState(-1);
   const [clock, setClock] = useState("");
   const [stageOn, setStageOn] = useState(false);
+  // While a smooth scroll is travelling, this holds the deck actually on screen
+  // so the header chip does not name a deck the visitor cannot see yet. It is
+  // null whenever nothing is gliding, and the chip then follows `deck` exactly,
+  // which keeps deep links and instant jumps correct from the first paint.
+  const [glideDeck, setGlideDeck] = useState<number | null>(null);
+  // Bit offers the console once, after a quiet moment on the first deck. The
+  // console is the best thing on the site and most visitors never press the
+  // button, so Bit points at it once and then never again this session.
+  const [bitNudge, setBitNudge] = useState(false);
+  const bitNudgeSpent = useRef(false);
+  // Read from a lazy initialiser rather than an effect: settling the preference
+  // after mount changed layout heights on the first paint and moved deep link
+  // targets out from under a scroll that had already been issued.
   const [reducedMotion, setReducedMotion] = useState(
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
   );
@@ -206,8 +219,19 @@ export function CommandDeck() {
   }, [mode]);
 
   useEffect(() => {
+    if (bitNudgeSpent.current || deck !== 0 || photo || palette || tour) return;
+    const timer = window.setTimeout(() => {
+      if (useDeck.getState().deck !== 0) return;
+      bitNudgeSpent.current = true;
+      setBitNudge(true);
+      window.setTimeout(() => setBitNudge(false), 9000);
+    }, 9000);
+    return () => window.clearTimeout(timer);
+  }, [deck, photo, palette, tour]);
+
+  useEffect(() => {
     return scheduleStageLoad({
-      load: () => import("@/lib/viewscreen-stage.js"),
+      load: () => import("@/lib/viewscreen-stage.ts"),
       onReady: (mod) => {
         const Ctor = (mod as { ViewscreenStage?: CustomElementConstructor }).ViewscreenStage;
         if (Ctor && typeof customElements !== "undefined" && !customElements.get("viewscreen-stage")) {
@@ -757,6 +781,7 @@ export function CommandDeck() {
       if (!el || shown.includes(k)) return;
       if (el.offsetTop < bottom && el.offsetTop + el.offsetHeight > sc.scrollTop) shown.push(k);
     });
+    setGlideDeck(pendingSmoothScrollTop.current == null ? null : i);
     const scrollTransition = consumeScrollDeck(hashTransition.current, i);
     hashTransition.current = scrollTransition.state;
     if (hashTransition.current.restoringDeck == null) clearHashSuppressionTimer();
@@ -1054,10 +1079,10 @@ export function CommandDeck() {
         )}
 
         <CommandHeader
+          arrivedDeck={glideDeck ?? deck}
           audio={audio}
           clock={clock}
           craftIndex={craftI}
-          deck={deck}
           hudClassName={hud}
           railOpen={railOpen}
           onNavigateCraft={(index) => {
@@ -1132,7 +1157,7 @@ export function CommandDeck() {
                 {dleft > 0 ? "DATED EXPORT VALID" : "DATED EXPORT EXPIRED"}
               </span>
               <span>FIGURES VERIFIED {VERIFIED_LONG}</span>
-              <span>VALID THRU {dleft > 0 ? EXPIRES_SHORT : "— TREAT AS HISTORY"}</span>
+              <span>VALID THRU {dleft > 0 ? EXPIRES_SHORT : "TREAT AS HISTORY"}</span>
               <span>ZERO INFRASTRUCTURE CALLS</span>
             </div>
           </footer>
@@ -1202,10 +1227,26 @@ export function CommandDeck() {
               </div>
             </div>
           </div>
+          {bitNudge && !reducedMotion && (
+            <div className="za-bit-nudge" role="note">
+              <span className="za-mono">TRY THE CONSOLE</span>
+              <b>Type help, or ask E.V.E. for status.</b>
+              <button
+                type="button"
+                className="za-bit-nudge-close"
+                aria-label="Dismiss the console tip"
+                onClick={() => setBitNudge(false)}
+              >
+                ×
+              </button>
+            </div>
+          )}
           <button
             type="button"
             className="za-bit-control rounded-full"
             onClick={() => {
+              setBitNudge(false);
+              bitNudgeSpent.current = true;
               sfx("bitYes");
               bit("yes");
               goto(7);

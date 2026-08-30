@@ -318,19 +318,21 @@ const approvedFlightScenario = {
   scrollerId: "main-content",
   scrollerScrollTop: 8760,
   contentPassedUnderSurface: true,
+  // The control is anchored 68px from the bottom of an 844px viewport, so an
+  // inactive 44px button sits at 732 and the active 62px panel at 714.
   inactive: {
     tagName: "BUTTON",
     backgroundAlpha: 1,
-    beforeScroll: { left: 12, top: 68, width: 288, height: 44 },
-    afterScroll: { left: 12, top: 68, width: 288, height: 44 },
+    beforeScroll: { left: 12, top: 732, width: 288, height: 44 },
+    afterScroll: { left: 12, top: 732, width: 288, height: 44 },
   },
   active: {
     tagName: "SECTION",
     backgroundAlpha: 1,
-    beforeScroll: { left: 12, top: 68, width: 288, height: 62 },
-    afterScroll: { left: 12, top: 68, width: 288, height: 62 },
+    beforeScroll: { left: 12, top: 714, width: 288, height: 62 },
+    afterScroll: { left: 12, top: 714, width: 288, height: 62 },
     criticalTelemetryFontSizesPx: { state: 11, progress: 11, now: 11 },
-    stopControl: { tagName: "BUTTON", left: 199.734375, top: 77, width: 91.265625, height: 44 },
+    stopControl: { tagName: "BUTTON", left: 199.734375, top: 723, width: 91.265625, height: 44 },
   },
 };
 

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { CRAFT, DECKS, DECK_SHORT, validityShort } from "@/lib/content";
 import type { Mode } from "@/lib/store";
 import { FlightControl } from "./flight-control";
@@ -62,12 +63,18 @@ export function DesktopCommandRail({
               aria-current={selected ? "page" : undefined}
               onClick={() => onNavigate(index)}
               onMouseEnter={onDeckHover}
-              className={`flex min-h-11 items-center gap-3 rounded-r-[22px] px-3 py-2 text-left transition-colors ${
+              className={`za-rail-deck relative flex min-h-11 items-center gap-3 rounded-r-[22px] px-3 py-2 text-left transition-colors ${
                 selected ? "bg-accent text-on-accent" : "bg-white/5 text-dim hover:bg-cyan/15 hover:text-ink"
               }`}
             >
               <span className="za-mono w-5 text-[10px]">{item.num}</span>
               {railOpen && <span className="za-mono text-[10px] tracking-[0.16em]">{item.name}</span>}
+              {!railOpen && (
+                <span className="za-rail-preview" aria-hidden>
+                  <b className="za-mono">{item.name}</b>
+                  <i>{item.tag}</i>
+                </span>
+              )}
             </button>
           );
         })}
@@ -107,7 +114,9 @@ export type CommandHeaderProps = {
   audio: boolean;
   clock: string;
   craftIndex: number;
-  deck: number;
+  /** The deck the scroller has settled on. This trails the pressed deck during
+   * a long glide, so the chip never names a deck that is not on screen yet. */
+  arrivedDeck: number;
   hudClassName: string;
   railOpen?: boolean;
   onNavigateCraft: (craft: number) => void;
@@ -120,7 +129,7 @@ export function CommandHeader({
   audio,
   clock,
   craftIndex,
-  deck,
+  arrivedDeck,
   hudClassName,
   railOpen = false,
   onNavigateCraft,
@@ -132,8 +141,8 @@ export function CommandHeader({
     <header
       className={`za-command-header pointer-events-none fixed left-0 right-0 top-0 z-50 flex items-center justify-between gap-3 px-4 py-3 md:left-[68px] ${railOpen ? "md:!left-[220px]" : ""} ${hudClassName}`}
     >
-      <div className="pointer-events-auto za-chip">
-        DECK {String(deck + 1).padStart(2, "0")} · {DECKS[deck].name}
+      <div className="pointer-events-auto za-chip" aria-live="polite">
+        DECK {String(arrivedDeck + 1).padStart(2, "0")} · {DECKS[arrivedDeck].name}
       </div>
       <div className="pointer-events-auto hidden items-center gap-0.5 xl:flex">
         {CRAFT.map((craft, index) => (
@@ -151,10 +160,6 @@ export function CommandHeader({
         ))}
       </div>
       <div className="pointer-events-auto flex items-center gap-2">
-        <span className="za-chip !hidden sm:!inline-flex min-h-11">
-          <span className="za-lock-pip" />
-          18/19 AT 28 AUG PROBE
-        </span>
         {tour ? <span className="za-chip min-h-11 text-accent">AUTOPILOT</span> : null}
         <span className="za-chip !hidden md:!inline-flex min-h-11">
           <span className="za-lock-pip" />
@@ -208,13 +213,24 @@ export function MobileCommandNavigation({
   onNavigate,
   onOpenNavigator,
 }: MobileCommandNavigationProps) {
-  const availableDecks = DECKS.filter((_, index) => (mode === "executive" ? index === 0 || index === 8 : true));
-  const visibleDecks =
-    mode === "technical" && deck >= 6 ? [...availableDecks.slice(0, 5), DECKS[deck]] : availableDecks.slice(0, 6);
+  // Bring the active chip into view, but only when the deck actually changes.
+  // An inline callback ref would be a new function on every render, so React
+  // would detach and reattach it each time the parent updated, including the
+  // once a second clock tick, and drag the strip back under anyone scrolling
+  // toward decks 07 to 09. Guarded for jsdom, which has no scrollIntoView.
+  const activeChip = useRef<HTMLButtonElement | null>(null);
+  useEffect(() => {
+    const node = activeChip.current;
+    if (typeof node?.scrollIntoView !== "function") return;
+    node.scrollIntoView({ block: "nearest", inline: "center" });
+  }, [deck]);
+  // Every deck is reachable from the phone rail. The strip scrolls sideways and
+  // keeps the current deck in view, rather than hiding decks 07 to 09 behind GO.
+  const visibleDecks = DECKS.filter((_, index) => (mode === "executive" ? index === 0 || index === 8 : true));
   return (
     <nav
       aria-label="Mobile command decks"
-      className={`za-mobile-rail-safe fixed bottom-0 left-0 right-0 z-40 flex justify-around border-t border-line bg-void/90 px-0 pt-2 backdrop-blur md:hidden ${hudClassName}`}
+      className={`za-mobile-rail-safe za-mobile-rail-scroll fixed bottom-0 left-0 right-0 z-40 flex items-stretch gap-1 overflow-x-auto border-t border-line bg-void/90 px-2 pt-2 backdrop-blur md:hidden ${hudClassName}`}
     >
       {visibleDecks.map((item) => {
         const index = DECKS.findIndex((deckItem) => deckItem.id === item.id);
@@ -224,8 +240,11 @@ export function MobileCommandNavigation({
             type="button"
             aria-label={`Go to ${item.name}`}
             aria-current={deck === index ? "page" : undefined}
+            ref={deck === index ? activeChip : undefined}
             onClick={() => onNavigate(index)}
-            className={`za-mono min-h-11 px-2 py-2 text-[10px] tracking-[0.12em] ${deck === index ? "text-accent" : "text-dim"}`}
+            className={`za-mono min-h-11 min-w-11 shrink-0 rounded-md px-3 py-2 text-[10px] tracking-[0.12em] ${
+              deck === index ? "bg-accent/15 text-accent" : "text-dim"
+            }`}
           >
             {DECK_SHORT[item.id]}
           </button>
@@ -234,7 +253,7 @@ export function MobileCommandNavigation({
       <button
         type="button"
         aria-label="Open deck navigator · GO"
-        className="za-mono min-h-11 px-2 py-2 text-[10px] text-cyan"
+        className="za-mono ml-auto min-h-11 min-w-11 shrink-0 rounded-md px-3 py-2 text-[10px] text-cyan"
         onClick={(event) => onOpenNavigator(event.currentTarget)}
       >
         GO
@@ -257,7 +276,7 @@ export function MobileFlightControl({ active, elapsedMs, onStart, onStop }: Mobi
       elapsedMs={elapsedMs}
       onStart={onStart}
       onStop={onStop}
-      className="za-mobile-flight-control fixed left-3 top-[68px] z-50 w-[min(18rem,calc(100vw-1.5rem))] md:hidden"
+      className="za-mobile-flight-control fixed bottom-[calc(env(safe-area-inset-bottom,0px)+4.25rem)] left-3 z-40 w-[min(18rem,calc(100vw-1.5rem))] md:hidden"
     />
   );
 }

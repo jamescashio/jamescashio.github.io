@@ -120,15 +120,25 @@ export class ZASound {
     if (!this.ac) return;
     AIRFRAME_SAMPLE_NAMES.forEach((name, i) => {
       if (this.sampleLoads[i]) return;
-      this.sampleLoads[i] = fetch(`/sfx/${name}.wav?v=51`)
-        .then((response) => (response.ok ? response.arrayBuffer() : Promise.reject()))
-        .then((bytes) => this.ac!.decodeAudioData(bytes))
+      // Opus in WebM first, at roughly one twentieth of the bytes. The PCM
+      // originals stay in place and are fetched only where a browser cannot
+      // decode Opus, so provenance and the release audio gates are unchanged.
+      // Both targets are written as literals here so the same origin egress
+      // gates can read them straight out of the source.
+      this.sampleLoads[i] = fetch(`/sfx/${name}.webm?v=52`)
+        .then((response) => this.decodeSample(response))
+        .catch(() => fetch(`/sfx/${name}.wav?v=52`).then((response) => this.decodeSample(response)))
         .then((buffer) => {
           this.samples[i] = buffer;
           return buffer;
         })
         .catch(() => null);
     });
+  }
+
+  private decodeSample(response: Response): Promise<AudioBuffer> {
+    if (!response.ok) return Promise.reject(new Error(`sfx ${response.status}`));
+    return response.arrayBuffer().then((bytes) => this.ac!.decodeAudioData(bytes));
   }
 
   level() {

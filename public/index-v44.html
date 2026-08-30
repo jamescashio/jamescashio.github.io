@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ARCHIVED DECK · V44 AURORA · cashio.us</title>
+    <meta name="description" content="Archive marker for release v44, Aurora. Superseded by the current cashio.us build." />
+    <meta name="color-scheme" content="dark" />
+    <style>
+      @font-face {
+        font-family: "Orbitron";
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+        src: url("/fonts/orbitron-700.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "Orbitron";
+        font-style: normal;
+        font-weight: 900;
+        font-display: swap;
+        src: url("/fonts/orbitron-900.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "Exo 2";
+        font-style: normal;
+        font-weight: 500;
+        font-display: swap;
+        src: url("/fonts/exo2-500.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "JetBrains Mono";
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url("/fonts/jetbrains-400.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "JetBrains Mono";
+        font-style: normal;
+        font-weight: 600;
+        font-display: swap;
+        src: url("/fonts/jetbrains-600.woff2") format("woff2");
+      }
+
+      :root {
+        --void: #05060a;
+        --surface: #0c1018;
+        --ink: #e8f6ff;
+        --muted: #8aa0b4;
+        --dim: #687f97;
+        --accent: #ff9500;
+        --accent-2: #ff6a00;
+        --cyan: #00f9ff;
+        --amber: #ffcc00;
+        --on-accent: #140800;
+        --line: rgba(0, 249, 255, 0.18);
+        --line-warm: rgba(255, 149, 0, 0.34);
+        --font-display: "Orbitron", ui-sans-serif, system-ui, sans-serif;
+        --font-sans: "Exo 2", ui-sans-serif, system-ui, sans-serif;
+        --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      html {
+        color-scheme: dark;
+        -webkit-text-size-adjust: 100%;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        min-height: 100dvh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: clamp(0.75rem, 4vw, 3rem);
+        background: var(--void);
+        color: var(--ink);
+        font-family: var(--font-sans);
+        font-weight: 500;
+        line-height: 1.6;
+      }
+      .bg {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .bg-grid {
+        background-image:
+          linear-gradient(rgba(0, 249, 255, 0.055) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 249, 255, 0.055) 1px, transparent 1px);
+        background-size: 64px 64px;
+        -webkit-mask-image: radial-gradient(ellipse at 50% 38%, #000 8%, transparent 70%);
+        mask-image: radial-gradient(ellipse at 50% 38%, #000 8%, transparent 70%);
+      }
+      .bg-vignette {
+        background: radial-gradient(ellipse at 58% 44%, transparent 28%, rgba(5, 6, 10, 0.62) 74%, #05060a 100%);
+      }
+      .bg-scan {
+        background: repeating-linear-gradient(to bottom, transparent 0 2px, rgba(0, 0, 0, 0.18) 2px 3px);
+        opacity: 0.4;
+      }
+      main {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 54rem;
+      }
+      .panel {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: rgba(12, 16, 24, 0.88);
+        box-shadow:
+          0 18px 60px rgba(0, 0, 0, 0.45),
+          0 0 40px rgba(0, 249, 255, 0.06);
+        animation: rise 480ms var(--ease) both;
+      }
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(18px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .rail {
+        display: flex;
+        gap: 4px;
+        height: 8px;
+      }
+      .rail span {
+        display: block;
+        height: 100%;
+      }
+      .rail .a {
+        flex: 0 0 22%;
+        background: var(--accent);
+        border-radius: 0 8px 8px 0;
+      }
+      .rail .b {
+        flex: 0 0 9%;
+        background: var(--cyan);
+        border-radius: 8px;
+      }
+      .rail .c {
+        flex: 1 1 auto;
+        background: rgba(255, 149, 0, 0.22);
+        border-radius: 8px 0 0 8px;
+      }
+      .body {
+        padding: clamp(1rem, 4.5vw, 2.75rem);
+      }
+      .kicker {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: var(--cyan);
+      }
+      .pip {
+        width: 8px;
+        height: 8px;
+        flex: 0 0 auto;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 12px rgba(255, 149, 0, 0.8);
+        animation: blink 1.9s steps(1, end) infinite;
+      }
+      @keyframes blink {
+        0%,
+        55% {
+          opacity: 1;
+        }
+        60%,
+        100% {
+          opacity: 0.25;
+        }
+      }
+      h1 {
+        margin: 0.7rem 0 0;
+        font-family: var(--font-display);
+        font-weight: 900;
+        font-size: clamp(2.6rem, 11vw, 5rem);
+        line-height: 0.95;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        overflow-wrap: break-word;
+      }
+      .readout {
+        margin-top: 1.15rem;
+        padding: 0.7rem 0.9rem;
+        border: 1px solid var(--line-warm);
+        border-left: 4px solid var(--accent);
+        border-radius: 10px;
+        background: rgba(255, 149, 0, 0.07);
+      }
+      .signal {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.25rem 0.75rem;
+        margin: 0;
+        font-family: var(--font-mono);
+        font-weight: 600;
+        font-size: clamp(0.72rem, 2.9vw, 1rem);
+        letter-spacing: 0.2em;
+        line-height: 1.5;
+        text-transform: uppercase;
+        color: var(--amber);
+      }
+      .signal span {
+        white-space: nowrap;
+      }
+      .signal .sep {
+        color: var(--dim);
+      }
+      .copy {
+        max-width: 46ch;
+        margin: 1.25rem 0 0;
+        font-size: clamp(0.98rem, 2.6vw, 1.05rem);
+        color: var(--muted);
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1.75rem;
+      }
+      a.btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        max-width: 100%;
+        padding: 0 1.25rem;
+        border-radius: 12px;
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: clamp(0.68rem, 2.4vw, 0.82rem);
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        text-decoration: none;
+        text-align: center;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        color: var(--on-accent);
+        box-shadow: 0 0 28px rgba(255, 149, 0, 0.35);
+        transition:
+          transform 150ms var(--ease),
+          filter 150ms var(--ease),
+          box-shadow 150ms var(--ease);
+      }
+      a.btn:hover {
+        filter: brightness(1.12);
+        transform: translateY(-2px);
+      }
+      a.ghost {
+        background: none;
+        border: 1px solid var(--line);
+        color: var(--ink);
+        font-family: var(--font-mono);
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        box-shadow: none;
+      }
+      a.ghost:hover {
+        filter: none;
+        background: rgba(0, 249, 255, 0.08);
+        border-color: var(--cyan);
+      }
+      .foot {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 1.75rem 0 0;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--line);
+      }
+      .chip {
+        max-width: 100%;
+        padding: 6px 12px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+        background: rgba(5, 6, 10, 0.55);
+      }
+      a:focus {
+        outline: 2px solid var(--cyan);
+        outline-offset: 3px;
+      }
+      a:focus:not(:focus-visible) {
+        outline: none;
+      }
+      a:focus-visible {
+        outline: 2px solid var(--cyan);
+        outline-offset: 3px;
+      }
+      ::selection {
+        background: rgba(255, 149, 0, 0.35);
+        color: var(--ink);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg bg-grid" aria-hidden="true"></div>
+    <div class="bg bg-vignette" aria-hidden="true"></div>
+    <div class="bg bg-scan" aria-hidden="true"></div>
+    <main>
+      <div class="panel">
+        <div class="rail" aria-hidden="true"><span class="a"></span><span class="b"></span><span class="c"></span></div>
+        <div class="body">
+          <p class="kicker"><span class="pip" aria-hidden="true"></span>ZEUSAPOLLO CONSOLE · ARCHIVED DECK</p>
+          <h1>AURORA</h1>
+          <div class="readout">
+            <p class="signal"><span>ARCHIVE V44</span><span class="sep">·</span><span>DECK SUPERSEDED</span></p>
+          </div>
+          <p class="copy">
+            This address held release v44, Aurora. That release has been superseded by the current build, and the deck it
+            served is no longer published here.
+          </p>
+          <p class="copy">The link stays reachable so nothing that pointed at it breaks. Everything current lives on the main console.</p>
+          <div class="actions">
+            <a class="btn" href="/">RETURN TO DECK 01</a>
+            <a class="btn ghost" href="/lab.html">OPEN THE DATED EXPORT</a>
+          </div>
+          <p class="foot">
+            <span class="chip">CASHIO.US</span><span class="chip">ARCHIVE MARKER</span><span class="chip">REVISED AUGUST 28, 2026</span>
+          </p>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

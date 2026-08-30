@@ -5,14 +5,14 @@ export const EXPIRES = "2026-09-27";
 export const EXPIRES_SHORT = "09-27-2026";
 export const EXPIRES_AT = "2026-09-28T05:00:00Z";
 export const REVISED = "08-28-2026";
-export const RELEASE = 'V34 "MACH ONE"';
+export const RELEASE = 'V35 "ALL TENS"';
 export const PVE = "9.2.11";
 
 export const BOOT = [
-  "E.V.E. EVALUATION VERIFICATION ENGINE — ONLINE",
+  "E.V.E. EVALUATION VERIFICATION ENGINE · ONLINE",
   "PROXMOX VE 9.2.11 · 2 HOSTS · CLUSTER QUORATE",
   "18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6",
-  "ROUTING INVENTORY 21 AUGUST 2026 — 10 PUBLIC LANES · 36 PRIVATE CATALOG",
+  "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG",
   `DATED EXPORT · PUBLIC-SAFE · VERIFIED ${VERIFIED_LONG}`,
 ];
 
@@ -85,11 +85,11 @@ export const CRAFT = [
   ["SR-71 BLACKBIRD", "1964", "Kelly Johnson's answer: few parts, small team, absurd speed."],
   ["PROTEUS", "1998 · RUTAN", "Tandem wings, twin booms, two rear turbofans, and one reconfigurable test platform."],
   ["STARSHIP", "2023", "Fully reusable, or it does not count. Scale as a design goal."],
-  ["EPSTEIN DRIVE", "THE EXPANSE", "A fusion torch that never quits — and the whole system opens up."],
+  ["EPSTEIN DRIVE", "THE EXPANSE", "A fusion torch that never quits, and the whole system opens up."],
   [
     "PHOENIX",
     "2063 · COCHRANE",
-    "A missile that learned to bend space. Two nacelles, one field — distance stops being the limit.",
+    "A missile that learned to bend space. Two nacelles, one field, and distance stops being the limit.",
   ],
   ["HEIGHLINER", "DUNE", "Fold space. Arrive without travelling. The destination comes to you."],
   ["P-51D MUSTANG", "1944 · HOOVER", "Energy is never free. Spend it deliberately, and always leave yourself an out."],
@@ -212,7 +212,7 @@ export const LINEAGE = [
     craft: "PROTEUS · 1998",
     name: "RUTAN",
     rule: "Question the shape. Prove the answer in flight.",
-    note: "Proteus made unconventional geometry practical by keeping structure, payload, and flight test in the same learning loop. Doug Cashio follows that discipline: own the hardware, instrument the route, and let evidence — not familiarity — choose the design.",
+    note: "Proteus made unconventional geometry practical by keeping structure, payload, and flight test in the same learning loop. Doug Cashio follows that discipline: own the hardware, instrument the route, and let evidence, not familiarity, choose the design.",
   },
   {
     craft: "P-51D · ENERGY MANAGEMENT",
@@ -296,7 +296,7 @@ export const ARTICLES = [
   {
     name: "EXPOSURE ASSESSMENT",
     tag: "SECURITY",
-    note: "OSINT and cloud exposure folded into a single remediation picture instead of five disconnected reports. Findings resolve into reachability, evidence, ownership, and the next action — the shape of an attack path, not a pile of alerts.",
+    note: "OSINT and cloud exposure folded into a single remediation picture instead of five disconnected reports. Findings resolve into reachability, evidence, ownership, and the next action: the shape of an attack path, not a pile of alerts.",
   },
   {
     name: "SOVEREIGN INTELLIGENCE BRIEFING",
@@ -311,7 +311,7 @@ export const ARTICLES = [
   {
     name: "THE SHOP FLOOR SIGNAL",
     tag: "INDUSTRIAL",
-    note: "Operations intelligence for industrial teams — the same routing discipline pointed at a plant floor. Signals are qualified, exceptions escalate, and the person accountable for the line keeps command of the response.",
+    note: "Operations intelligence for industrial teams, the same routing discipline pointed at a plant floor. Signals are qualified, exceptions escalate, and the person accountable for the line keeps command of the response.",
   },
   {
     name: "GRAPHIFY",

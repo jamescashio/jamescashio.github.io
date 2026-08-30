@@ -40,7 +40,7 @@ test("command chrome exports typed desktop, header, and mobile navigation bounda
       audio: false,
       clock: "0000.000",
       craftIndex: 0,
-      deck: 0,
+      arrivedDeck: 0,
       hudClassName: "",
       onNavigateCraft: noop,
       onOpenNavigator: noop,

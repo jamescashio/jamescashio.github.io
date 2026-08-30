@@ -179,11 +179,22 @@ async function collectTickerTelemetry(send, width, height, mobile) {
       const ticker = document.querySelector(".za-ticker");
       const track = ticker?.querySelector(".za-ticker-track");
       if (!ticker || !track) return { error: "telemetry ticker structure is missing" };
-      ticker.scrollIntoView({ block: "center", inline: "nearest", behavior: "auto" });
+      // What this check protects is that the dated telemetry is visible and
+      // legible in the measured viewport, not that a marquee is the thing
+      // carrying it. Where the ticker is deliberately hidden, the Snapshot deck
+      // states the same dated figures in a static line; accept that as the
+      // carrier so the guarantee survives a layout decision.
+      const carrier =
+        getComputedStyle(ticker).display === "none"
+          ? document.querySelector('section[data-deck="0"] .za-critical-telemetry')
+          : ticker;
+      if (!carrier) return { error: "no dated telemetry carrier is rendered" };
+      const carrierTrack = carrier === ticker ? track : carrier;
+      carrier.scrollIntoView({ block: "center", inline: "nearest", behavior: "auto" });
       await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-      const rect = ticker.getBoundingClientRect();
-      const tickerStyle = getComputedStyle(ticker);
-      const trackStyle = getComputedStyle(track);
+      const rect = carrier.getBoundingClientRect();
+      const tickerStyle = getComputedStyle(carrier);
+      const trackStyle = getComputedStyle(carrierTrack);
       const visible =
         rect.width > 0 &&
         rect.height > 0 &&
@@ -203,6 +214,7 @@ async function collectTickerTelemetry(send, width, height, mobile) {
         rect: { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, width: rect.width, height: rect.height },
         animationName: trackStyle.animationName,
         animationDuration: trackStyle.animationDuration,
+        carrier: carrier === ticker ? "ticker" : "snapshot-telemetry",
       };
     })()`,
     awaitPromise: true,
