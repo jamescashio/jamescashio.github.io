@@ -187,3 +187,604 @@ export async function runWithLayoutCleanup(operation, resources, cleanupOptions)
   if (cleanupError) throw cleanupError;
   return result;
 }
+
+function hasExactRect(rect, expected) {
+  return (
+    rect != null && Object.entries(expected).every(([property, value]) => Number(rect[property]) === Number(value))
+  );
+}
+
+const RECT_FIELDS = ["left", "right", "top", "bottom", "width", "height"];
+const RECT_CONSISTENCY_TOLERANCE_PX = 0.01;
+
+function hasFiniteRect(rect) {
+  return rect != null && RECT_FIELDS.every((property) => Number.isFinite(rect[property]));
+}
+
+function hasConsistentRect(rect) {
+  return (
+    Math.abs(rect.right - rect.left - rect.width) <= RECT_CONSISTENCY_TOLERANCE_PX &&
+    Math.abs(rect.bottom - rect.top - rect.height) <= RECT_CONSISTENCY_TOLERANCE_PX
+  );
+}
+
+const MOTION_ELEMENTS = ["routing", "hud", "rail", "pip"];
+const MOTION_NORMAL_TRANSITIONS = {
+  routing: { properties: ["all"], durationsMs: [500], delaysMs: [0] },
+  hud: { properties: ["width"], durationsMs: [300], delaysMs: [0] },
+  rail: { properties: ["width"], durationsMs: [300], delaysMs: [0] },
+  pip: {
+    properties: ["height", "background", "box-shadow", "width"],
+    durationsMs: [280, 280, 280, 280],
+    delaysMs: [0, 0, 0, 0],
+  },
+};
+const MOTION_DIMENSIONS = { routing: ["width"], hud: ["width"], rail: ["width"], pip: ["width", "height"] };
+const MOTION_GEOMETRY_TOLERANCE_PX = 0.5;
+const MOTION_INTERMEDIATE_EPSILON_PX = 0.01;
+const MOTION_RESTORE_SCHEDULE_MS = [0, 16, 80, 180, 320, 470];
+
+function hasFiniteNonzeroMotionRect(rect) {
+  return (
+    rect != null && Number.isFinite(rect.width) && rect.width > 0 && Number.isFinite(rect.height) && rect.height > 0
+  );
+}
+
+export function normalizeMotionTransitionLists(propertiesValue, durationsValue, delaysValue) {
+  const tokens = (value) =>
+    String(value ?? "")
+      .split(",")
+      .map((token) => token.trim())
+      .filter(Boolean);
+  const toMilliseconds = (token) => {
+    const parsed = Number.parseFloat(token);
+    if (!Number.isFinite(parsed)) return Number.NaN;
+    return token.toLowerCase().endsWith("ms") ? parsed : parsed * 1_000;
+  };
+  const properties = tokens(propertiesValue);
+  const durations = tokens(durationsValue).map(toMilliseconds);
+  const delays = tokens(delaysValue).map(toMilliseconds);
+  return {
+    properties,
+    durationsMs: properties.map((_, index) => durations[index % durations.length]),
+    delaysMs: properties.map((_, index) => delays[index % delays.length]),
+  };
+}
+
+function motionTransitionFailures(name, phase, transition, expected) {
+  const failures = [];
+  const properties = transition?.properties;
+  const durationsMs = transition?.durationsMs;
+  const delaysMs = transition?.delaysMs;
+  if (!Array.isArray(properties) || properties.length !== expected.properties.length) {
+    failures.push(`${name} ${phase} transition property must equal ${expected.properties.join(", ")}`);
+  } else if (properties.some((property, index) => property !== expected.properties[index])) {
+    failures.push(`${name} ${phase} transition property must equal ${expected.properties.join(", ")}`);
+  }
+  if (!Array.isArray(durationsMs) || durationsMs.length !== expected.properties.length) {
+    failures.push(`${name} ${phase} transition duration list must cover every effective property`);
+  }
+  if (!Array.isArray(delaysMs) || delaysMs.length !== expected.properties.length) {
+    failures.push(`${name} ${phase} transition delay list must cover every effective property`);
+  }
+  for (const [index, property] of expected.properties.entries()) {
+    if (durationsMs?.[index] !== expected.durationsMs[index]) {
+      failures.push(`${name} ${phase} ${property} transition duration must equal ${expected.durationsMs[index]}ms`);
+    }
+    if (delaysMs?.[index] !== expected.delaysMs[index]) {
+      failures.push(`${name} ${phase} ${property} transition delay must equal ${expected.delaysMs[index]}ms`);
+    }
+  }
+  return failures;
+}
+
+function motionSampleFailures(name, phase, sample, expectedTransition) {
+  const failures = [];
+  if (!hasFiniteNonzeroMotionRect(sample?.rect)) {
+    failures.push(`${name} ${phase} rectangle must be finite and nonzero`);
+  }
+  failures.push(...motionTransitionFailures(name, phase, sample?.transition, expectedTransition));
+  return failures;
+}
+
+function motionRectMatches(actual, expected) {
+  return (
+    hasFiniteNonzeroMotionRect(actual) &&
+    hasFiniteNonzeroMotionRect(expected) &&
+    Math.abs(actual.width - expected.width) <= MOTION_GEOMETRY_TOLERANCE_PX &&
+    Math.abs(actual.height - expected.height) <= MOTION_GEOMETRY_TOLERANCE_PX
+  );
+}
+
+export function motionPreferenceAcceptanceFailures(scenario) {
+  const failures = [];
+  if (scenario?.pipTargetWasUnselected !== true || scenario?.pipTargetIsSelected !== true) {
+    failures.push("pip target must begin unselected and become selected through its real control");
+  }
+  if (
+    !Number.isInteger(scenario?.interruptSettledWithinFrames) ||
+    scenario.interruptSettledWithinFrames < 1 ||
+    scenario.interruptSettledWithinFrames > 2
+  ) {
+    failures.push("normal-to-reduced interruption must settle within two animation frames");
+  }
+
+  for (const name of MOTION_ELEMENTS) {
+    const expectedNormal = MOTION_NORMAL_TRANSITIONS[name];
+    const expectedReduced = { properties: ["none"], durationsMs: [0], delaysMs: [0] };
+    failures.push(...motionSampleFailures(name, "normal-start", scenario?.normalStart?.[name], expectedNormal));
+    failures.push(
+      ...motionSampleFailures(name, "normal-intermediate", scenario?.normalIntermediate?.[name], expectedNormal),
+    );
+    failures.push(
+      ...motionSampleFailures(
+        name,
+        "reduced-after-interrupt",
+        scenario?.reducedAfterInterrupt?.[name],
+        expectedReduced,
+      ),
+    );
+    failures.push(...motionSampleFailures(name, "reduced-again", scenario?.reducedAgain?.[name], expectedReduced));
+
+    const startRect = scenario?.normalStart?.[name]?.rect;
+    const intermediateRect = scenario?.normalIntermediate?.[name]?.rect;
+    const finalRect = scenario?.expectedFinal?.[name];
+    if (!hasFiniteNonzeroMotionRect(finalRect))
+      failures.push(`${name} expected-final rectangle must be finite and nonzero`);
+    for (const dimension of MOTION_DIMENSIONS[name]) {
+      const start = startRect?.[dimension];
+      const intermediate = intermediateRect?.[dimension];
+      const final = finalRect?.[dimension];
+      if (
+        !Number.isFinite(start) ||
+        !Number.isFinite(intermediate) ||
+        !Number.isFinite(final) ||
+        Math.abs(start - final) <= MOTION_INTERMEDIATE_EPSILON_PX * 2 ||
+        Math.abs(intermediate - start) <= MOTION_INTERMEDIATE_EPSILON_PX ||
+        Math.abs(intermediate - final) <= MOTION_INTERMEDIATE_EPSILON_PX
+      ) {
+        failures.push(`${name} ${dimension} must be visibly intermediate under normal motion`);
+      }
+    }
+    if (!motionRectMatches(scenario?.reducedAfterInterrupt?.[name]?.rect, finalRect)) {
+      failures.push(`${name} must reach final geometry within two reduced-motion frames`);
+    }
+    if (!motionRectMatches(scenario?.reducedAgain?.[name]?.rect, finalRect)) {
+      failures.push(`${name} must retain final geometry on the second reduced-motion change`);
+    }
+  }
+
+  const restoredSamples = scenario?.restoredSamples;
+  if (
+    !Array.isArray(restoredSamples) ||
+    restoredSamples.length !== MOTION_RESTORE_SCHEDULE_MS.length ||
+    restoredSamples.some((sample, index) => sample?.atMs !== MOTION_RESTORE_SCHEDULE_MS[index])
+  ) {
+    failures.push("scheduled restore timestamps must remain exactly 0, 16, 80, 180, 320, and 470ms");
+  }
+  if (!Array.isArray(restoredSamples) || restoredSamples.length === 0 || restoredSamples[0]?.atMs !== 0) {
+    failures.push("restore samples must start immediately at 0ms");
+  }
+  if (
+    !Array.isArray(restoredSamples) ||
+    restoredSamples.length < 4 ||
+    !restoredSamples.some((sample) => sample.atMs > 0 && sample.atMs < 100) ||
+    !restoredSamples.some((sample) => sample.atMs >= 100 && sample.atMs < 500) ||
+    !restoredSamples.some((sample) => sample.atMs >= 450 && sample.atMs <= 500)
+  ) {
+    failures.push("restore samples must cover the first 500ms, including early, middle, and late observations");
+  }
+  if (Array.isArray(restoredSamples)) {
+    let previousTime = -1;
+    let previousObservedTime = -1;
+    for (const sample of restoredSamples) {
+      if (!Number.isFinite(sample?.atMs) || sample.atMs < previousTime || sample.atMs < 0 || sample.atMs > 500) {
+        failures.push("restore sample times must be finite, ordered, and within 0-500ms");
+      }
+      previousTime = sample?.atMs;
+      if (
+        !Number.isFinite(sample?.observedAtMs) ||
+        sample.observedAtMs < sample.atMs - 2 ||
+        sample.observedAtMs > sample.atMs + 120 ||
+        sample.observedAtMs < previousObservedTime
+      ) {
+        failures.push("observed restore timing must be ordered and within 2ms early to 120ms late of each schedule");
+      }
+      previousObservedTime = sample?.observedAtMs;
+      for (const name of MOTION_ELEMENTS) {
+        failures.push(
+          ...motionSampleFailures(
+            name,
+            `normal-restored-${sample?.atMs}ms`,
+            sample?.elements?.[name],
+            MOTION_NORMAL_TRANSITIONS[name],
+          ),
+        );
+        if (!motionRectMatches(sample?.elements?.[name]?.rect, scenario?.expectedFinal?.[name])) {
+          failures.push(
+            `${name} must not replay stale geometry during the first 500ms after normal motion is restored`,
+          );
+        }
+      }
+    }
+  }
+  return failures;
+}
+
+export function browserVersionAcceptanceFailures(version, expectedMajorValue) {
+  if (expectedMajorValue == null || expectedMajorValue === "") return [];
+  const expectedMajor = Number(expectedMajorValue);
+  if (!Number.isInteger(expectedMajor) || expectedMajor <= 0) {
+    return ["expected browser major must be a positive integer"];
+  }
+  const product = String(version?.product ?? "");
+  const match = product.match(/(?:Chrome|HeadlessChrome)\/(\d+)(?:\.|$)/);
+  if (!match) return [`Browser.getVersion must report Chrome ${expectedMajor}; received ${product || "no product"}`];
+  if (Number(match[1]) !== expectedMajor) {
+    return [`Browser.getVersion must report Chrome ${expectedMajor}; received ${product}`];
+  }
+  return [];
+}
+
+export function visualPaintEvidence(style, hasText, pseudoStyles, ancestorStyles) {
+  const colorPaints = (color) => {
+    if (!color || color === "transparent") return false;
+    const match = color.match(/^rgba?\((.*)\)$/);
+    if (!match) return true;
+    const channels = match[1].split(/[\s,/]+/).filter(Boolean);
+    return channels.length < 4 || Number(channels[3]) > 0;
+  };
+  const boxPaints = (candidate) => {
+    const borderPaints = ["Top", "Right", "Bottom", "Left"].some(
+      (side) =>
+        Number.parseFloat(candidate?.["border" + side + "Width"]) > 0 &&
+        candidate?.["border" + side + "Style"] !== "none" &&
+        colorPaints(candidate?.["border" + side + "Color"]),
+    );
+    return (
+      colorPaints(candidate?.backgroundColor) ||
+      (candidate?.backgroundImage && candidate.backgroundImage !== "none") ||
+      (candidate?.boxShadow && candidate.boxShadow !== "none") ||
+      borderPaints
+    );
+  };
+  const foregroundPaints = (candidate, textPresent) =>
+    Boolean(textPresent) &&
+    (colorPaints(candidate?.color) || (candidate?.textShadow && candidate.textShadow !== "none"));
+
+  const transparentAncestor = (ancestorStyles ?? []).some(
+    (ancestor) => Number.parseFloat(ancestor?.opacity ?? "1") === 0,
+  );
+  if (transparentAncestor || Number.parseFloat(style?.opacity ?? "1") === 0) return false;
+  if (boxPaints(style) || foregroundPaints(style, hasText)) return true;
+  return (pseudoStyles ?? []).some((pseudo) => {
+    const content = String(pseudo?.content ?? "").trim();
+    const generated = content !== "" && content !== "none" && content !== "normal";
+    return (
+      generated &&
+      Number.parseFloat(pseudo?.opacity ?? "1") !== 0 &&
+      (boxPaints(pseudo) || foregroundPaints(pseudo, true))
+    );
+  });
+}
+
+export function mobileFlightAcceptanceFailures(scenario) {
+  const failures = [];
+  const width = scenario.viewport?.[0];
+  if (![320, 390].includes(width) || scenario.viewport?.[1] !== 844) {
+    failures.push("mobile flight viewport must be 320x844 or 390x844");
+  }
+  if (scenario.activeDeck !== "8") failures.push("mobile flight scenario must run at the Contact deck");
+  if (scenario.scrollerId !== "main-content") failures.push("mobile flight scenario must scroll #main-content");
+  if (!(scenario.scrollerScrollTop > 0)) failures.push("#main-content must have a positive scroll position");
+  if (!scenario.contentPassedUnderSurface)
+    failures.push("receipt or email content must pass beneath the fixed surface");
+
+  if (scenario.inactive?.backgroundAlpha !== 1) failures.push("inactive flight background alpha must equal 1");
+  const inactiveRect = { left: 12, top: 68, width: 288, height: 44 };
+  if (
+    !hasExactRect(scenario.inactive?.beforeScroll, inactiveRect) ||
+    !hasExactRect(scenario.inactive?.afterScroll, inactiveRect)
+  ) {
+    failures.push("inactive geometry must remain fixed at x=12, top=68, width=288, height=44");
+  }
+
+  if (scenario.active?.backgroundAlpha !== 1) failures.push("active flight background alpha must equal 1");
+  const activeRect = { left: 12, top: 68, width: 288, height: 62 };
+  if (
+    !hasExactRect(scenario.active?.beforeScroll, activeRect) ||
+    !hasExactRect(scenario.active?.afterScroll, activeRect)
+  ) {
+    failures.push("active panel geometry must remain fixed at x=12, top=68, width=288, height=62");
+  }
+  if (!(scenario.active?.stopControl?.height >= 44)) {
+    failures.push("active STOP FLIGHT target must be at least 44px high");
+  }
+  failures.push(...flightTelemetryAcceptanceFailures(scenario.active?.criticalTelemetryFontSizesPx, width));
+  if (
+    !hasExactRect(scenario.active?.stopControl, {
+      left: 199.734375,
+      top: 77,
+      width: 91.265625,
+      height: 44,
+    })
+  ) {
+    failures.push("active STOP FLIGHT geometry must remain x=199.734375, top=77, width=91.265625, height=44");
+  }
+  return failures;
+}
+
+export function mobileCinemaAcceptanceFailures(scenario) {
+  const failures = [];
+  const viewportWidth = scenario.viewport?.[0];
+  const viewportHeight = scenario.viewport?.[1];
+  const validViewport = [320, 390].includes(viewportWidth) && viewportHeight === 844;
+  if (!validViewport) {
+    failures.push("mobile cinema viewport must be 320x844 or 390x844");
+  }
+  if (!scenario.activeFlightStarted) failures.push("PHOTO cinema must be entered from an active flight");
+  if (scenario.skipPresent) failures.push("skip link must be absent while cinema is open");
+  if (scenario.flightPresent) failures.push("flight control must be absent while cinema is open");
+  if (scenario.exposedTabStops?.length !== 1 || scenario.exposedTabStops[0] !== "EXIT CINEMA") {
+    failures.push("EXIT CINEMA must be the sole exposed tab stop");
+  }
+  const finiteExit = hasFiniteRect(scenario.exit);
+  if (!finiteExit) {
+    failures.push("EXIT CINEMA must provide a finite EXIT rectangle");
+  } else {
+    if (!hasConsistentRect(scenario.exit)) {
+      failures.push(`EXIT CINEMA rectangle must be internally consistent within ${RECT_CONSISTENCY_TOLERANCE_PX}px`);
+    }
+    if (!scenario.exit.visible || scenario.exit.width < 44 || scenario.exit.height < 44) {
+      failures.push("EXIT CINEMA must be visible and at least 44x44");
+    }
+    if (
+      validViewport &&
+      (scenario.exit.left < 20 ||
+        scenario.exit.right > viewportWidth - 20 ||
+        scenario.exit.top < 20 ||
+        scenario.exit.bottom > viewportHeight - 20)
+    ) {
+      failures.push("EXIT CINEMA must remain within 20px mobile safe margins");
+    }
+  }
+  if (
+    !scenario.tab?.defaultPrevented ||
+    scenario.tab?.activeLabel !== "EXIT CINEMA" ||
+    !scenario.shiftTab?.defaultPrevented ||
+    scenario.shiftTab?.activeLabel !== "EXIT CINEMA"
+  ) {
+    failures.push("Tab loop must keep both directions on EXIT CINEMA");
+  }
+  if (!scenario.tab?.openedFromExactOpener || !scenario.shiftTab?.openedFromExactOpener) {
+    failures.push("Tab and Shift+Tab must each begin from a fresh PHOTO opening");
+  }
+  if (
+    scenario.escapeObserverReady !== true ||
+    [scenario.tab, scenario.shiftTab].some((direction) => direction?.escape?.observerReady !== true)
+  ) {
+    failures.push("Escape observer must be ready before both close checks");
+  }
+  if ([scenario.tab, scenario.shiftTab].some((direction) => direction?.escape?.observed !== true)) {
+    failures.push("Escape observer must record both close events");
+  }
+  for (const direction of [scenario.tab, scenario.shiftTab]) {
+    if (!direction?.escape?.defaultPrevented || direction.escape.dialogPresent || !direction.escape.activeIsOpener) {
+      failures.push("Escape must close cinema and restore the exact PHOTO opener after each direction");
+      break;
+    }
+  }
+  if (!scenario.boundariesPassedEachOpening || !scenario.allOpeningsMatchedExitGeometry) {
+    failures.push("skip, flight, tab-stop, and EXIT geometry checks must pass on each PHOTO opening");
+  }
+  return failures;
+}
+
+export function desktopEveAcceptanceFailures(scenario) {
+  const failures = [];
+  const viewportWidth = scenario.viewport?.[0];
+  const viewportHeight = scenario.viewport?.[1];
+  const finiteViewport =
+    Array.isArray(scenario.viewport) &&
+    scenario.viewport.length === 2 &&
+    Number.isFinite(viewportWidth) &&
+    Number.isFinite(viewportHeight);
+  const validViewport =
+    finiteViewport &&
+    ((viewportWidth === 1280 && viewportHeight === 720) || (viewportWidth === 1440 && viewportHeight === 900));
+  if (!validViewport) failures.push("desktop E.V.E. viewport must be 1280x720 or 1440x900");
+  if (scenario.directDeepLink !== true)
+    failures.push("desktop E.V.E. must load from a fresh direct #deck=eve deep link");
+  if (scenario.hash !== "#deck=eve") failures.push("desktop E.V.E. scenario must use the exact #deck=eve URL");
+  if (scenario.activeDeck !== "7") failures.push("desktop E.V.E. scenario must run at the exact E.V.E. deck");
+  if (scenario.canonicalLandingSettled !== true) failures.push("desktop E.V.E. canonical scroll landing must settle");
+
+  const landingFields = [scenario.scrollTop, scenario.intendedScrollTop, scenario.scrollAlignmentDelta];
+  const finiteLanding = landingFields.every(Number.isFinite);
+  if (!finiteLanding) {
+    failures.push("desktop E.V.E. scroll landing geometry must be finite");
+  } else if (
+    scenario.scrollAlignmentDelta < 0 ||
+    scenario.scrollAlignmentDelta > 1 ||
+    Math.abs(Math.abs(scenario.scrollTop - scenario.intendedScrollTop) - scenario.scrollAlignmentDelta) >
+      RECT_CONSISTENCY_TOLERANCE_PX
+  ) {
+    failures.push("desktop E.V.E. scroll landing must align within 1px");
+  }
+
+  const finiteInput = hasFiniteRect(scenario.input);
+  const finiteSurface = hasFiniteRect(scenario.promptSurface);
+  const finiteRun = hasFiniteRect(scenario.runControl);
+  if (!finiteInput) failures.push("E.V.E. input must provide a finite rectangle");
+  if (!finiteSurface) failures.push("E.V.E. prompt surface must provide a finite rectangle");
+  if (!finiteRun) failures.push("E.V.E. RUN control must provide a finite rectangle");
+  if (finiteInput && !hasConsistentRect(scenario.input)) {
+    failures.push(`E.V.E. input rectangle must be internally consistent within ${RECT_CONSISTENCY_TOLERANCE_PX}px`);
+  }
+  if (finiteSurface && !hasConsistentRect(scenario.promptSurface)) {
+    failures.push(
+      `E.V.E. prompt surface rectangle must be internally consistent within ${RECT_CONSISTENCY_TOLERANCE_PX}px`,
+    );
+  }
+  if (finiteRun && !hasConsistentRect(scenario.runControl)) {
+    failures.push(`E.V.E. RUN rectangle must be internally consistent within ${RECT_CONSISTENCY_TOLERANCE_PX}px`);
+  }
+  if (scenario.inputVisible !== true) failures.push("E.V.E. command input must be visibly rendered");
+  if (scenario.promptSurfaceVisible !== true) failures.push("E.V.E. prompt surface must be visibly rendered");
+  if (scenario.runVisible !== true) failures.push("E.V.E. RUN control must be visibly rendered");
+  if (finiteSurface && (scenario.promptSurface.width < 44 || scenario.promptSurface.height < 44)) {
+    failures.push("E.V.E. prompt surface must provide a usable target of at least 44x44");
+  }
+  failures.push(...touchTargetAcceptanceFailures(scenario.input, "E.V.E. input"));
+  failures.push(...touchTargetAcceptanceFailures(scenario.runControl, "E.V.E. RUN control"));
+  failures.push(...criticalTelemetryAcceptanceFailures(scenario.criticalTelemetryFontSizesPx, viewportWidth, "E.V.E."));
+  if (
+    validViewport &&
+    finiteInput &&
+    (scenario.input.left < 0 ||
+      scenario.input.right > viewportWidth ||
+      scenario.input.top < 0 ||
+      scenario.input.bottom > viewportHeight - 20)
+  ) {
+    failures.push("E.V.E. input must remain fully visible with a 20px bottom safe margin");
+  }
+  if (
+    validViewport &&
+    finiteSurface &&
+    (scenario.promptSurface.left < 0 ||
+      scenario.promptSurface.right > viewportWidth ||
+      scenario.promptSurface.top < 0 ||
+      scenario.promptSurface.bottom > viewportHeight - 20)
+  ) {
+    failures.push("E.V.E. prompt surface must remain fully visible with a 20px bottom safe margin");
+  }
+  if (
+    validViewport &&
+    finiteRun &&
+    (scenario.runControl.left < 0 ||
+      scenario.runControl.right > viewportWidth ||
+      scenario.runControl.top < 0 ||
+      scenario.runControl.bottom > viewportHeight - 20)
+  ) {
+    failures.push("E.V.E. RUN control must remain fully visible with a 20px bottom safe margin");
+  }
+  if (
+    finiteInput &&
+    finiteSurface &&
+    (scenario.input.left < scenario.promptSurface.left ||
+      scenario.input.right > scenario.promptSurface.right ||
+      scenario.input.top < scenario.promptSurface.top ||
+      scenario.input.bottom > scenario.promptSurface.bottom)
+  ) {
+    failures.push("E.V.E. input must remain inside its visible prompt surface");
+  }
+  if (
+    finiteRun &&
+    finiteSurface &&
+    (scenario.runControl.left < scenario.promptSurface.left ||
+      scenario.runControl.right > scenario.promptSurface.right ||
+      scenario.runControl.top < scenario.promptSurface.top ||
+      scenario.runControl.bottom > scenario.promptSurface.bottom)
+  ) {
+    failures.push("E.V.E. RUN control must remain inside its visible prompt surface");
+  }
+  if (scenario.inputTopmostHit !== true) failures.push("E.V.E. input center must be the topmost hit target");
+  if (scenario.runTopmostHit !== true) failures.push("E.V.E. RUN center must be the topmost hit target");
+  if (
+    !Array.isArray(scenario.promptSurfaceSampleHits) ||
+    scenario.promptSurfaceSampleHits.length !== 9 ||
+    !scenario.promptSurfaceSampleHits.every((hit) => hit === true)
+  ) {
+    failures.push("all nine E.V.E. prompt surface samples must resolve to the form or its controls");
+  }
+  if (scenario.fixedStickyEnumerationComplete !== true) {
+    failures.push("fixed and sticky surface enumeration must complete");
+  }
+  if (!Array.isArray(scenario.fixedStickyIntersections)) {
+    failures.push("fixed and sticky intersection evidence must be an array");
+  } else if (scenario.fixedStickyIntersections.length !== 0) {
+    failures.push("a fixed or sticky surface must not cover the E.V.E. prompt form");
+  }
+
+  const finiteWidths = [scenario.documentWidth, scenario.mainClientWidth, scenario.mainScrollWidth].every(
+    Number.isFinite,
+  );
+  if (!finiteWidths) {
+    failures.push("desktop E.V.E. document and main widths must be finite");
+  } else {
+    if (validViewport && scenario.documentWidth > viewportWidth)
+      failures.push("desktop E.V.E. must not overflow horizontally");
+    if (!(scenario.mainClientWidth > 0) || scenario.mainScrollWidth > scenario.mainClientWidth) {
+      failures.push("desktop E.V.E. main scroller must not overflow horizontally");
+    }
+  }
+  if (finiteWidths && scenario.documentWidth <= 0) {
+    failures.push("desktop E.V.E. document width must be positive");
+  }
+  if (finiteWidths && scenario.mainScrollWidth <= 0) {
+    failures.push("desktop E.V.E. main scroller must not overflow horizontally");
+  }
+  return failures;
+}
+
+export function touchTargetAcceptanceFailures(rect, label = "control") {
+  if (!Number.isFinite(rect?.width) || !Number.isFinite(rect?.height)) {
+    return [`${label} actual target must provide finite width and height`];
+  }
+  if (rect.width < 44 || rect.height < 44) {
+    return [`${label} actual target must measure at least 44x44`];
+  }
+  return [];
+}
+
+export function criticalTelemetryAcceptanceFailures(fontSizesPx, viewportWidth, label = "critical") {
+  if (!Number.isFinite(viewportWidth)) {
+    return [`${label} critical telemetry viewport width must be finite`];
+  }
+  const minimumPx = viewportWidth < 768 ? 11 : 10;
+  if (
+    !Array.isArray(fontSizesPx) ||
+    fontSizesPx.length !== 2 ||
+    !fontSizesPx.every((size) => Number.isFinite(size) && size >= minimumPx)
+  ) {
+    return [`${label} critical telemetry must expose both safety boundaries at a minimum ${minimumPx}px font size`];
+  }
+  return [];
+}
+
+export function flightTelemetryAcceptanceFailures(fontSizesPx, viewportWidth) {
+  if (!Number.isFinite(viewportWidth)) {
+    return ["flight telemetry viewport width must be finite"];
+  }
+  const minimumPx = viewportWidth < 768 ? 11 : 10;
+  const fields = ["state", "progress", "now"];
+  const failures = [];
+  for (const field of fields) {
+    const size = fontSizesPx?.[field];
+    if (!Number.isFinite(size) || size < minimumPx) {
+      failures.push(`flight ${field} telemetry must provide a finite font size of at least ${minimumPx}px`);
+    }
+  }
+  return failures;
+}
+
+export function tickerTelemetryAcceptanceFailures(scenario) {
+  const failures = [];
+  const viewportWidth = scenario?.viewportWidth;
+  const fontSizePx = scenario?.fontSizePx;
+  if (!Number.isFinite(viewportWidth)) {
+    failures.push("ticker telemetry viewport width must be finite");
+  }
+  if (scenario?.visible !== true) {
+    failures.push("ticker telemetry must be visibly rendered in the measured viewport");
+  }
+  if (!Number.isFinite(fontSizePx)) {
+    failures.push("ticker telemetry font size must be finite");
+  } else if (Number.isFinite(viewportWidth)) {
+    const minimumPx = viewportWidth < 768 ? 11 : 10;
+    if (fontSizePx < minimumPx) {
+      failures.push(`ticker telemetry font size must be at least ${minimumPx}px`);
+    }
+  }
+  return failures;
+}

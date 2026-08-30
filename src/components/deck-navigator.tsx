@@ -43,6 +43,23 @@ export function DeckNavigator({
             onClose();
             return;
           }
+          const arrowDirection =
+            event.key === "ArrowDown" || event.key === "ArrowRight"
+              ? 1
+              : event.key === "ArrowUp" || event.key === "ArrowLeft"
+                ? -1
+                : 0;
+          if (arrowDirection) {
+            const deckButtons = [
+              ...(dialogRef.current?.querySelectorAll<HTMLButtonElement>('button[aria-label^="Go to "]') ?? []),
+            ];
+            const currentIndex = deckButtons.indexOf(document.activeElement as HTMLButtonElement);
+            if (currentIndex >= 0) {
+              event.preventDefault();
+              deckButtons[(currentIndex + deckButtons.length + arrowDirection) % deckButtons.length].focus();
+            }
+            return;
+          }
           if (event.key !== "Tab") return;
           const controls = [...(dialogRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? [])];
           const currentIndex = controls.indexOf(document.activeElement as HTMLElement);
@@ -71,12 +88,12 @@ export function DeckNavigator({
               ref={index === deck ? currentDeckRef : undefined}
               type="button"
               aria-label={`Go to ${item.name} deck`}
+              aria-current={index === deck ? "page" : undefined}
               className={`flex w-full gap-4 rounded-[var(--radius-sm)] px-3 py-2.5 text-left ${
                 index === deck ? "bg-accent/15 text-ink" : "hover:bg-white/5"
               }`}
               onClick={() => {
                 onSelect(index);
-                onClose();
               }}
             >
               <span className="za-mono text-accent">{item.num}</span>
@@ -86,11 +103,10 @@ export function DeckNavigator({
           ))}
         </div>
         <div className="flex flex-wrap gap-4 border-t border-line px-5 py-2 za-mono text-[9px] tracking-[0.14em] text-dim">
-          <span>1–9 JUMP</span>
+          <span>ARROWS MOVE</span>
           <span className="text-green">CURRENT</span>
-          <span className="text-red">R RED ALERT</span>
-          <span>A AUDIO</span>
-          <span>T AUTOPILOT</span>
+          <span>ENTER SELECT</span>
+          <span>ESC CLOSE</span>
           <span>⌘K PALETTE</span>
         </div>
       </div>

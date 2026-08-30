@@ -6,13 +6,34 @@ type FlightControlProps = {
   onStart: () => void;
   onStop: () => void;
   className?: string;
+  compact?: boolean;
 };
 
-export function FlightControl({ active, elapsedMs, onStart, onStop, className = "" }: FlightControlProps) {
+export function FlightControl({
+  active,
+  elapsedMs,
+  onStart,
+  onStop,
+  className = "",
+  compact = false,
+}: FlightControlProps) {
   const action = flightActionAt(elapsedMs);
   const currentIndex =
     action.kind === "complete" ? FLIGHT_BEATS.length - 1 : FLIGHT_BEATS.findIndex((beat) => beat.at === action.at);
   const currentBeat = FLIGHT_BEATS[Math.max(0, currentIndex)];
+
+  if (compact) {
+    return (
+      <button
+        type="button"
+        aria-label={active ? "Stop the 30-second flight" : "Run the 30-second flight"}
+        className={`za-btn-ghost min-h-11 w-[52px] px-1 py-2 text-[10px] leading-tight ${className}`}
+        onClick={active ? onStop : onStart}
+      >
+        30S
+      </button>
+    );
+  }
 
   if (!active) {
     return (
@@ -29,7 +50,7 @@ export function FlightControl({ active, elapsedMs, onStart, onStop, className = 
 
   return (
     <section className={`za-panel p-2 text-left ${className}`} aria-label="30-second flight status">
-      <p className="za-mono text-[9px] text-accent" aria-live="polite">
+      <p className="za-critical-telemetry za-mono text-accent" aria-live="polite">
         FLIGHT ACTIVE · BEAT {String(currentIndex + 1).padStart(2, "0")} / 04
       </p>
       <ol className="mt-2 space-y-1" aria-label="Flight progress">
@@ -37,13 +58,13 @@ export function FlightControl({ active, elapsedMs, onStart, onStop, className = 
           <li
             key={beat.label}
             aria-current={index === currentIndex ? "step" : undefined}
-            className={`za-mono text-[9px] ${index <= currentIndex ? "text-cyan" : "text-dim"}`}
+            className={`za-critical-telemetry za-mono ${index <= currentIndex ? "text-cyan" : "text-dim"}`}
           >
             {String(index + 1).padStart(2, "0")} · {beat.label}
           </li>
         ))}
       </ol>
-      <p className="za-mono mt-2 text-[9px] text-ink">NOW · {currentBeat.label}</p>
+      <p className="za-critical-telemetry za-mono mt-2 text-ink">NOW · {currentBeat.label}</p>
       <button
         type="button"
         aria-label="Stop the 30-second flight"

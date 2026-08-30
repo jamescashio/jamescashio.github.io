@@ -3,7 +3,7 @@ export const FLIGHT_DURATION_MS = 30_000;
 export const FLIGHT_BEATS = [
   { label: "THESIS", at: 0, deck: 0 },
   { label: "ROUTING LAW", at: 7_500, deck: 2 },
-  { label: "STRONGEST BUILD", at: 15_000, deck: 5, article: 0 },
+  { label: "BUILD PROOF", at: 15_000, deck: 5, article: 0 },
   { label: "E.V.E. / CONTACT", at: 22_500, deck: 7 },
 ] as const;
 

@@ -1,15 +1,14 @@
 {
-  "release": "V33 MACH ONE",
-  "revised": "2026-08-24",
-  "status": "current",
-  "verified": "2026-08-21",
-  "verifiedLong": "21 August 2026",
-  "expires": "2026-09-20",
+  "release": "V34 MACH ONE",
+  "revised": "2026-08-28",
+  "status": "dated-export",
+  "verified": "2026-08-28",
+  "verifiedLong": "28 August 2026",
+  "expires": "2026-09-27",
   "proxmox": { "version": "9.2.11", "hostsOnline": 2, "quorate": true },
-  "containers": { "running": 19, "documented": 19, "stopped": 0, "zeus": 13, "apollo": 6 },
+  "containers": { "running": 18, "documented": 19, "stopped": 1, "zeus": 12, "apollo": 6 },
   "lanes": { "public": 10, "privateCatalog": 36 },
-  "deepseek": ["deepseek-v4-pro", "deepseek-v4-flash"],
-  "atlas": "external gateway and local inference host — not a Proxmox host",
+  "routingVerified": "2026-08-21",
   "law": "Quality picks the model. Cost only breaks a tie.",
-  "note": "Dated public-safe snapshot from owner-run SSH probe on 21 August 2026 at 15:39 CDT. This file is static. This site makes no production network calls."
+  "note": "Read-only, dated public-safe export from an owner-run aggregate probe on 28 August 2026. Valid through 27 September 2026 in America/Chicago. This static file makes no production network calls."
 }

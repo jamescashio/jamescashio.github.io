@@ -24,11 +24,18 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
+      - uses: browser-actions/setup-chrome@v2
+        id: setup_chrome
+        with:
+          chrome-version: 147.0.7727.57
       - run: npm ci
       - run: npm run lint
       - run: npm run format:check
       - run: npm run test:node
       - run: npm run build
+      - run: npm run check:layout:runtime:pinned
+        env:
+          CHROME_PATH: ${{ steps.setup_chrome.outputs.chrome-path }}
       - run: npm run test:release
       - run: python scripts/public_repo_guard.py
       - run: python scripts/check_release_consistency.py

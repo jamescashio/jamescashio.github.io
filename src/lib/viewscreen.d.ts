@@ -4,6 +4,7 @@ export interface ViewscreenStageElement extends HTMLElement {
   setCraft(i: number): void;
   setClearX(f: number): void;
   setClearRect(rx: number, by: number): void;
+  setReducedMotion(reduce: boolean): void;
   warp(): void;
   craftIndex(): number;
 }

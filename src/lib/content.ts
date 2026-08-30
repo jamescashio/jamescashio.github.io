@@ -1,18 +1,19 @@
-export const VERIFIED = "08-21-2026";
-export const VERIFIED_LONG = "21 August 2026";
-export const EXPIRES = "2026-09-20";
-export const EXPIRES_SHORT = "09-20-2026";
-export const EXPIRES_AT = "2026-09-21T05:00:00Z";
-export const REVISED = "08-24-2026";
-export const RELEASE = 'V33 "MACH ONE"';
+export const VERIFIED = "08-28-2026";
+export const VERIFIED_LONG = "28 August 2026";
+export const ROUTING_VERIFIED_LONG = "21 August 2026";
+export const EXPIRES = "2026-09-27";
+export const EXPIRES_SHORT = "09-27-2026";
+export const EXPIRES_AT = "2026-09-28T05:00:00Z";
+export const REVISED = "08-28-2026";
+export const RELEASE = 'V34 "MACH ONE"';
 export const PVE = "9.2.11";
 
 export const BOOT = [
   "E.V.E. EVALUATION VERIFICATION ENGINE — ONLINE",
-  "PROXMOX QUORUM ZEUS · APOLLO — QUORATE",
-  "19 OF 19 PUBLISHED CONTAINERS — RUNNING AT PROBE",
-  "ATLAS GATEWAY — 10 PUBLIC LANES · 36 PRIVATE CATALOG",
-  `EXPORT CURRENT · PUBLIC SNAPSHOT VERIFIED ${VERIFIED_LONG}`,
+  "PROXMOX VE 9.2.11 · 2 HOSTS · CLUSTER QUORATE",
+  "18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6",
+  "ROUTING INVENTORY 21 AUGUST 2026 — 10 PUBLIC LANES · 36 PRIVATE CATALOG",
+  `DATED EXPORT · PUBLIC-SAFE · VERIFIED ${VERIFIED_LONG}`,
 ];
 
 export const DECKS = [
@@ -33,15 +34,14 @@ export const DECKS = [
 ] as const;
 
 export const TELEMETRY = [
-  "ZEUS · 13 RUNNING WORKLOADS · QUORATE",
-  "APOLLO · 6 RUNNING WORKLOADS · QUORATE",
-  "ATLAS · GATEWAY · LOCAL INFERENCE",
-  "ATHENA · QUORUM SUPPORT",
-  "GENESIS · PRIVATE STORAGE · RECOVERY",
-  "19/19 CONTAINERS RUNNING AT PROBE",
-  "10 PUBLIC LANES · 36 PRIVATE CATALOG",
+  "ZEUS · 12/13 RUNNING AT 28 AUG PROBE",
+  "APOLLO · 6/6 RUNNING AT 28 AUG PROBE",
+  "FLEET · 18/19 AT 28 AUG PROBE",
+  "PROXMOX VE 9.2.11 · 2 HOSTS · CLUSTER QUORATE",
+  "18/19 AT 28 AUG PROBE",
+  "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG",
   "LAW · QUALITY PICKS THE MODEL",
-  "EXPORT CURRENT · PUBLIC-SAFE SNAPSHOT",
+  "DATED EXPORT · READ-ONLY · PUBLIC-SAFE SNAPSHOT",
   `VERIFIED ${VERIFIED_LONG} · VALID THRU ${EXPIRES_SHORT}`,
 ];
 
@@ -88,64 +88,55 @@ export const LANES = [
     id: "00",
     name: "FREE CLASSIFY",
     model: "Kimi K3",
-    tid: "",
     use: "Sort the mail. Tag the ticket. Cheap, fast, good enough.",
   },
   {
     id: "01",
     name: "WORKHORSE",
     model: "DeepSeek V4 Flash",
-    tid: "deepseek-v4-flash",
     use: "The daily grind. Drafts, refactors, first-pass analysis.",
   },
   {
     id: "02",
     name: "EXCEPTION",
     model: "DeepSeek V4 Pro",
-    tid: "deepseek-v4-pro",
     use: "When the workhorse hesitates. Harder reasoning, still owned-cost.",
   },
   {
     id: "03A",
     name: "MULTIMODAL",
     model: "Gemini 3.7 Flash",
-    tid: "",
     use: "Images, screenshots, diagrams. Eyes on the problem.",
   },
   {
     id: "03B",
     name: "ADVERSARIAL",
     model: "Grok 4.6",
-    tid: "",
     use: "Stress-test the answer. Argue with it until it holds.",
   },
   {
     id: "04A",
     name: "SYNTHESIS",
     model: "Sol 5.6 Luna",
-    tid: "",
     use: "Pull threads into one brief a human can actually use.",
   },
-  { id: "04B", name: "RESEARCH", model: "Sonar Pro", tid: "", use: "Ground it. Cite it. Do not invent a source." },
+  { id: "04B", name: "RESEARCH", model: "Sonar Pro", use: "Ground it. Cite it. Do not invent a source." },
   {
     id: "05",
     name: "ADJUDICATION",
     model: "GPT-5.6 Sol",
-    tid: "",
     use: "Highest-consequence calls. Frontier only when the cost of being wrong is higher than the token bill.",
   },
   {
     id: "LOC",
     name: "LOCAL FALLBACK",
     model: "Gemma 4 26B",
-    tid: "",
-    use: "The lights stay on when the cloud does not. Atlas, in the room.",
+    use: "The lights stay on when the cloud does not. Owned local fallback keeps the route available.",
   },
   {
     id: "FAB",
     name: "GATEWAY FABRIC",
     model: "Atlas LiteLLM · OpenRouter · ZenMux",
-    tid: "",
     use: "One door. No lock-in. No bridge tax.",
   },
 ] as const;
@@ -159,54 +150,36 @@ export const ROUTING_STAGES = [
 ] as const;
 
 export const NAMED_ROLES = [
-  { name: "TECHNITIUM DNS", role: "PRIMARY · RESOLUTION", hub: "zeus" as const },
-  { name: "TECHNITIUM DNS", role: "SECONDARY · FAILOVER", hub: "zeus" as const },
-  { name: "WAZUH", role: "SECURITY MONITORING", hub: "zeus" as const },
-  { name: "PROMETHEUS", role: "METRICS · ZEUS AND APOLLO", hub: "zeus" as const },
-  { name: "N8N", role: "AUTOMATION", hub: "apollo" as const },
-  { name: "PBS", role: "BACKUP SERVICE", hub: "zeus" as const },
-  { name: "MEDIA SERVICES", role: "SABNZBD · RADARR · SONARR", hub: "apollo" as const },
+  { name: "TECHNITIUM DNS", role: "PRIMARY · RESOLUTION" },
+  { name: "TECHNITIUM DNS", role: "SECONDARY · FAILOVER" },
+  { name: "WAZUH", role: "SECURITY MONITORING" },
+  { name: "MONITORING STACK", role: "OBSERVED ROLE FAMILY" },
+  { name: "N8N", role: "AUTOMATION" },
+  { name: "PBS", role: "BACKUP SERVICE" },
+  { name: "MEDIA SERVICES", role: "OBSERVED ROLE FAMILY" },
 ];
 
 export const SERVICE_FAMILIES =
-  "Current service families verified 21 August 2026: Atlas gateway, Technitium DNS primary and secondary, Wazuh security monitoring, Prometheus monitoring, n8n automation, PostgreSQL state services, PBS backups, SABnzbd, Radarr, and Sonarr. All nineteen published container workloads were running during the verification probe.";
+  "Observed public-safe role families at the 28 August 2026 probe: Technitium DNS primary, Technitium DNS secondary, Wazuh, monitoring stack, n8n, PBS, and media services. The stopped guest remains unnamed.";
 
 export const WITHHELD = [
   "AI operating cost per day and month",
   "Automation job counts",
   "DNS query sample figures",
-  "Backup recovery telemetry",
+  "Backup verification figures",
   "Security update counts",
 ];
 
 export const HOSTS = [
   {
     name: "ZEUS",
-    tag: "QUORATE",
-    blurb:
-      "Primary compute host running thirteen containers. Ryzen 7 5800H platform, sixteen logical CPU threads, 28 GiB RAM.",
+    tag: "DATED HOST",
+    blurb: "12 of 13 documented guests were running at the 28 August probe.",
   },
   {
     name: "APOLLO",
-    tag: "QUORATE",
-    blurb:
-      "Storage and services host running six containers. Intel i7-7700T platform, eight logical CPU threads, 15 GiB RAM.",
-  },
-  {
-    name: "ATLAS",
-    tag: "OUTSIDE COUNT",
-    blurb:
-      "Atlas is the external gateway and local inference host that exposes the private model catalog to the rest of the system. Not a Proxmox host.",
-  },
-  {
-    name: "ATHENA",
-    tag: "EDGE",
-    blurb: "Quorum support. Physical edge node that keeps the two Proxmox hosts quorate. Outside the container count.",
-  },
-  {
-    name: "GENESIS",
-    tag: "PRIVATE",
-    blurb: "Private storage and recovery. Outside the container count. Implementation detail withheld.",
+    tag: "DATED HOST",
+    blurb: "All 6 documented guests were running at the 28 August probe.",
   },
 ] as const;
 
@@ -305,7 +278,7 @@ export const ARTICLES = [
   },
   {
     name: "ESCALATION CASCADE",
-    tag: "AUTONOMOUS",
+    tag: "BOUNDED AUTONOMY",
     note: "A staged exception workflow that begins with inexpensive checks and escalates only when severity or uncertainty justifies it. Every handoff leaves evidence for review; autonomy can proceed while authority stays bounded.",
   },
   {
@@ -358,12 +331,12 @@ export function daysLeft(now = Date.now()) {
 }
 
 export function exportState(now = Date.now()) {
-  return daysLeft(now) > 0 ? "CURRENT" : "EXPIRED";
+  return daysLeft(now) > 0 ? "VALID" : "EXPIRED";
 }
 
 export function validityShort(now = Date.now()) {
   const d = daysLeft(now);
-  return d > 0 ? `CURRENT · ${d}D LEFT` : "EXPIRED";
+  return d > 0 ? `EXPORT VALID · ${d}D LEFT` : "EXPORT EXPIRED";
 }
 
 export function stardate(now = new Date()) {

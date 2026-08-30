@@ -39,11 +39,11 @@ const COMMANDS = [
 
 function currentLines(): string[] {
   const left = daysLeft();
-  if (exportState() === "CURRENT") {
+  if (exportState() === "VALID") {
     return [
-      `EXPORT CURRENT · ${left} DAY${left === 1 ? "" : "S"} LEFT`,
+      `EXPORT VALID · ${left} DAY${left === 1 ? "" : "S"} LEFT`,
       `VERIFIED ${VERIFIED_LONG} · VALID THROUGH ${EXPIRES_SHORT}`,
-      "STATIC PUBLIC SNAPSHOT · NOT LIVE TELEMETRY",
+      "READ-ONLY · DATED EXPORT · NOT LIVE TELEMETRY",
     ];
   }
   return [
@@ -66,9 +66,9 @@ export function runEve(raw: string, history: string[] = []): EveResult {
     return {
       out: [
         ...currentLines(),
-        "19 OF 19 PUBLISHED CONTAINERS RUNNING AT PROBE",
+        "18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6",
         "2 PROXMOX HOSTS ONLINE · CLUSTER QUORATE",
-        "10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES",
+        "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES",
       ],
     };
   }
@@ -78,11 +78,8 @@ export function runEve(raw: string, history: string[] = []): EveResult {
   if (command === "fleet") {
     return {
       out: [
-        "ZEUS · 13 CONTAINERS · PROXMOX HOST · QUORATE",
-        "APOLLO · 6 CONTAINERS · PROXMOX HOST · QUORATE",
-        "ATLAS · GATEWAY AND LOCAL INFERENCE · NOT A PROXMOX HOST",
-        "ATHENA · QUORUM SUPPORT",
-        "GENESIS · PRIVATE STORAGE AND RECOVERY",
+        "ZEUS · 12/13 AT 28 AUG PROBE · PROXMOX HOST",
+        "APOLLO · 6/6 AT 28 AUG PROBE · PROXMOX HOST",
         SERVICE_FAMILIES.toUpperCase(),
       ],
     };
@@ -91,8 +88,8 @@ export function runEve(raw: string, history: string[] = []): EveResult {
   if (command === "lanes" || command === "routes") {
     return {
       out: [
-        "10 PUBLIC CAPABILITY LANES · 36 PRIVATE CATALOG ENTRIES",
-        "DEEPSEEK-V4-FLASH · DEEPSEEK-V4-PRO",
+        "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES",
+        "DEEPSEEK V4 FLASH · DEEPSEEK V4 PRO",
         "QUALITY PICKS THE MODEL · COST ONLY BREAKS A TIE",
       ],
       go: 2,
@@ -117,7 +114,7 @@ export function runEve(raw: string, history: string[] = []): EveResult {
       out: [
         `${RELEASE} · VERIFIED ${VERIFIED_LONG}`,
         `PROXMOX VE ${PVE} · 2 HOSTS ONLINE · QUORATE`,
-        "OWNER-RUN SSH PROBE · PUBLIC-SAFE STATIC EXPORT",
+        "OWNER-RUN READ-ONLY PROBE · PUBLIC-SAFE DATED EXPORT",
         ...currentLines(),
       ],
     };
@@ -138,7 +135,7 @@ export function runEve(raw: string, history: string[] = []): EveResult {
   }
 
   if (command === "photo") {
-    return { out: ["CINEMA VIEW · PRESS ANY KEY TO RETURN"], photo: true };
+    return { out: ["CINEMA VIEW · PRESS ESC OR EXIT CINEMA"], photo: true };
   }
 
   if (command === "history") {
@@ -188,8 +185,12 @@ export function EveConsole({
     <div className="za-panel relative overflow-hidden" data-eve-console>
       <div className="za-boot-scan" aria-hidden />
       <div className="relative flex items-center justify-between gap-3 border-b border-line px-4 py-3">
-        <span className="za-mono text-[10px] tracking-[0.18em] text-cyan">E.V.E. CONSOLE · SAFE MODE</span>
-        <span className="za-mono text-[9px] tracking-[0.16em] text-green">NO EGRESS</span>
+        <span className="za-critical-telemetry za-mono tracking-[0.18em] text-cyan" data-eve-safety-boundary>
+          E.V.E. CONSOLE · SAFE MODE
+        </span>
+        <span className="za-critical-telemetry za-mono tracking-[0.16em] text-green" data-eve-safety-boundary>
+          NO EGRESS
+        </span>
       </div>
       <div
         ref={logRef}
@@ -208,7 +209,7 @@ export function EveConsole({
           </div>
         ))}
       </div>
-      <form className="relative flex items-center gap-2 border-t border-line bg-void/75 px-4 py-3" onSubmit={submit}>
+      <form className="relative flex items-center gap-2 border-t border-line bg-void/75 px-4 py-1.5" onSubmit={submit}>
         <label htmlFor="eve-command" className="sr-only">
           E.V.E. command
         </label>
@@ -222,10 +223,10 @@ export function EveConsole({
           autoComplete="off"
           autoCapitalize="none"
           spellCheck={false}
-          className="min-w-0 flex-1 bg-transparent za-mono text-[12px] text-ink outline-none placeholder:text-dim"
+          className="min-h-11 min-w-[44px] flex-1 bg-transparent za-mono text-[12px] text-ink placeholder:text-dim"
           placeholder="type help"
         />
-        <button type="submit" className="za-chip hover:border-cyan hover:text-cyan">
+        <button type="submit" className="za-chip min-h-11 min-w-11 hover:border-cyan hover:text-cyan">
           RUN
         </button>
       </form>

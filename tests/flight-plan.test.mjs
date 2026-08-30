@@ -21,17 +21,17 @@ test("advertises four ordered beats across a 30-second flight", () => {
     [
       ["THESIS", 0],
       ["ROUTING LAW", 7_500],
-      ["STRONGEST BUILD", 15_000],
+      ["BUILD PROOF", 15_000],
       ["E.V.E. / CONTACT", 22_500],
     ],
   );
 });
 
-test("routes the strongest-build beat to Article 01 HERMES ORCHESTRATOR", () => {
+test("routes the Build Proof beat to Article 01 HERMES ORCHESTRATOR", () => {
   const action = flight.flightActionAt(15_000);
   assert.deepEqual(action, {
     kind: "beat",
-    label: "STRONGEST BUILD",
+    label: "BUILD PROOF",
     deck: 5,
     article: 0,
     at: 15_000,

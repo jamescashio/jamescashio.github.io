@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail closed when the V33 source and GitHub Pages artifact disagree."""
+"""Fail closed when the V34 source and GitHub Pages artifact disagree."""
 
 from __future__ import annotations
 
@@ -16,6 +16,27 @@ PUBLIC_STATUS = ROOT / "public" / "status.json"
 DIST = ROOT / "dist"
 
 TEXT_SUFFIXES = {".html", ".js", ".css", ".json", ".txt", ".xml", ".svg"}
+V34_PUBLIC_SURFACES = {
+    "index.html": ("28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT", "ROUTING INVENTORY 21 AUGUST 2026"),
+    "lab.html": ("28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT", "ROUTING INVENTORY 21 AUGUST 2026"),
+}
+ROUTING_COUNT_CLAIM = re.compile(
+    r"\b10\s+PUBLIC(?:\s+CAPABILITY)?\s+LANES\b.*?\b36\s+PRIVATE\s+CATALOG(?:\s+ENTRIES)?\b",
+    re.IGNORECASE | re.DOTALL,
+)
+ROUTING_PROVENANCE_PREFIX = re.compile(
+    r"ROUTING INVENTORY 21 AUGUST 2026\s*[:—·-]\s*$",
+    re.IGNORECASE,
+)
+STALE_V33_FLEET_CLAIMS = re.compile(r"19(?:/| of )19|\bCURRENT\b|\bonline\b", re.IGNORECASE)
+PRIVATE_CURRENT_FLEET_PATTERNS = (
+    re.compile(r"\bATLAS\s*·\s*(?:GATEWAY|LOCAL INFERENCE)", re.IGNORECASE),
+    re.compile(r"\bATHENA\s*·\s*QUORUM SUPPORT", re.IGNORECASE),
+    re.compile(r"\bGENESIS\s*·\s*(?:PRIVATE STORAGE|RECOVERY)", re.IGNORECASE),
+    re.compile(r"\bdeepseek-v4-(?:flash|pro)\b", re.IGNORECASE),
+    re.compile(r"\bhub\s*[:=]\s*[\"'](?:zeus|apollo)\b", re.IGNORECASE),
+    re.compile(r"\bdata-hub\s*=\s*[\"'](?:zeus|apollo)\b", re.IGNORECASE),
+)
 FORBIDDEN_LIVE = (
     "10 August 2026",
     "08-10-2026",
@@ -43,6 +64,70 @@ def collect_text(folder: Path) -> str:
     return "\n".join(chunks)
 
 
+def check_current_public_privacy(text: str, failures: list[str], label: str) -> None:
+    for pattern in PRIVATE_CURRENT_FLEET_PATTERNS:
+        match = pattern.search(text)
+        if match:
+            failures.append(f"{label} contains private current-fleet detail {match.group(0)!r}")
+
+
+def check_v34_public_surface(relative: str, text: str, failures: list[str], label: str) -> None:
+    for marker in V34_PUBLIC_SURFACES[relative]:
+        if marker not in text:
+            failures.append(f"{label}/{relative} is missing V34 marker {marker!r}")
+    if STALE_V33_FLEET_CLAIMS.search(text):
+        failures.append(f"{label}/{relative} contains a stale V33 fleet claim")
+    for occurrence, match in enumerate(ROUTING_COUNT_CLAIM.finditer(text), start=1):
+        prefix = text[max(0, match.start() - 96) : match.start()]
+        if not ROUTING_PROVENANCE_PREFIX.search(prefix):
+            failures.append(f"must date routing count occurrence {occurrence} as the 21 August 2026 inventory")
+    check_current_public_privacy(text, failures, f"{label}/{relative}")
+
+
+def check_v34_motion_contract(failures: list[str]) -> None:
+    """Keep the V34 motion boundary executable, rather than marker-comment based."""
+    stage = read("src/lib/viewscreen-stage.js")
+    deck = read("src/components/command-deck.tsx")
+    css = read("src/styles.css")
+    timing = read("src/lib/animation-timing.ts")
+    required = {
+        "src/lib/animation-timing.ts": (
+            '"deck-copy": 380',
+            '"article-acquisition": 560',
+            '"stage-warp": 680',
+        ),
+        "src/lib/viewscreen-stage.js": ("dt * (1000 / motionDurationMs('stage-warp'))",),
+        "src/components/command-deck.tsx": (
+            '"--za-deck-copy-duration": `${motionDurationMs("deck-copy")}ms`',
+            '"--za-article-acquisition-duration": `${motionDurationMs("article-acquisition")}ms`',
+            '"--za-stage-warp-duration": `${motionDurationMs("stage-warp")}ms`',
+        ),
+        "src/styles.css": (
+            "animation: za-rise var(--za-deck-copy-duration)",
+            "animation: za-article-acquire var(--za-article-acquisition-duration)",
+            "animation: za-warpflash var(--za-stage-warp-duration)",
+        ),
+    }
+    source_by_name = {
+        "src/lib/animation-timing.ts": timing,
+        "src/lib/viewscreen-stage.js": stage,
+        "src/components/command-deck.tsx": deck,
+        "src/styles.css": css,
+    }
+    for filename, markers in required.items():
+        for marker in markers:
+            if marker not in source_by_name[filename]:
+                failures.append(f"{filename} is missing executable V34 motion marker {marker!r}")
+    for stale in ("dt * 1.05", "V33 baseline retained", "animation: za-rise 900ms"):
+        if stale in stage or stale in css:
+            failures.append(f"V34 motion source retains obsolete V33 marker {stale!r}")
+    for deck_index in range(9):
+        selector = f'section:not([data-deck="{deck_index}"])'
+        for pseudo in ("*", "*::before", "*::after"):
+            if f"{selector} {pseudo}" not in css:
+                failures.append(f"inactive deck {deck_index} does not pause {pseudo} animation work")
+
+
 def main() -> int:
     failures: list[str] = []
 
@@ -53,12 +138,12 @@ def main() -> int:
         return 1
 
     expected = {
-        "release": "V33 MACH ONE",
-        "revised": "2026-08-24",
-        "status": "current",
-        "verified": "2026-08-21",
-        "verifiedLong": "21 August 2026",
-        "expires": "2026-09-20",
+        "release": "V34 MACH ONE",
+        "revised": "2026-08-28",
+        "status": "dated-export",
+        "verified": "2026-08-28",
+        "verifiedLong": "28 August 2026",
+        "expires": "2026-09-27",
     }
     for key, value in expected.items():
         if status.get(key) != value:
@@ -68,10 +153,10 @@ def main() -> int:
         ("proxmox", "version"): "9.2.11",
         ("proxmox", "hostsOnline"): 2,
         ("proxmox", "quorate"): True,
-        ("containers", "running"): 19,
+        ("containers", "running"): 18,
         ("containers", "documented"): 19,
-        ("containers", "stopped"): 0,
-        ("containers", "zeus"): 13,
+        ("containers", "stopped"): 1,
+        ("containers", "zeus"): 12,
         ("containers", "apollo"): 6,
         ("lanes", "public"): 10,
         ("lanes", "privateCatalog"): 36,
@@ -81,10 +166,13 @@ def main() -> int:
         if actual != value:
             failures.append(f"public/status.json {group}.{key}: expected {value!r}, got {actual!r}")
 
-    if set(status.get("deepseek", [])) != {"deepseek-v4-flash", "deepseek-v4-pro"}:
-        failures.append("public/status.json must publish only deepseek-v4-flash and deepseek-v4-pro")
-    if "not a Proxmox host" not in str(status.get("atlas", "")):
-        failures.append("public/status.json must keep Atlas outside the Proxmox host count")
+    if status.get("routingVerified") != "2026-08-21":
+        failures.append("public/status.json routingVerified must remain the separate 2026-08-21 inventory date")
+
+    for private_key in ("deepseek", "atlas"):
+        if private_key in status:
+            failures.append(f"public/status.json must not publish private field {private_key!r}")
+    check_current_public_privacy(json.dumps(status), failures, "public/status.json")
     if "static" not in str(status.get("note", "")).lower():
         failures.append("public/status.json must identify itself as a static snapshot")
 
@@ -95,8 +183,8 @@ def main() -> int:
             failures.append(f"{cname} must contain only cashio.us")
 
     package = json.loads(read("package.json"))
-    if package.get("version") != "33.0.0":
-        failures.append("package.json version must be 33.0.0")
+    if package.get("version") != "34.0.0":
+        failures.append("package.json version must be 34.0.0")
     if package.get("scripts", {}).get("build") != "tsc --noEmit && vite build":
         failures.append("package.json build script changed from the supplied TypeScript + Vite gate")
 
@@ -128,12 +216,13 @@ def main() -> int:
     required_source = {
         "src/lib/store.ts": ("gate: false", "audio: DEFAULT_AUDIO_ENABLED", "deck: 0"),
         "src/lib/content.ts": (
-            'VERIFIED_LONG = "21 August 2026"',
-            'REVISED = "08-24-2026"',
-            'EXPIRES_AT = "2026-09-21T05:00:00Z"',
-            '"19 OF 19 PUBLISHED CONTAINERS — RUNNING AT PROBE"',
-            '"deepseek-v4-flash"',
-            '"deepseek-v4-pro"',
+            'VERIFIED_LONG = "28 August 2026"',
+            'ROUTING_VERIFIED_LONG = "21 August 2026"',
+            'REVISED = "08-28-2026"',
+            'EXPIRES_AT = "2026-09-28T05:00:00Z"',
+            '"18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6"',
+            'model: "DeepSeek V4 Flash"',
+            'model: "DeepSeek V4 Pro"',
             'model: "Gemini 3.7 Flash"',
             'model: "Grok 4.6"',
         ),
@@ -159,7 +248,7 @@ def main() -> int:
             "NO NETWORK CALLS",
         ),
         "src/lib/viewscreen-stage.js": (
-            "this.warpT = Math.max(0, this.warpT - dt * 1.05)",
+            "this.warpT = Math.max(0, this.warpT - dt * (1000 / motionDurationMs('stage-warp')))",
             "55 + warp * 34",
             "Math.min(2.05",
             "if (next !== this.craftTarget)",
@@ -171,7 +260,7 @@ def main() -> int:
         "src/styles.css": (
             "transform: translateY(28px)",
             "filter: blur(12px)",
-            ".za-rise {\n  animation: za-rise 900ms",
+            "animation: za-rise var(--za-deck-copy-duration)",
             "animation: za-shimmer 3.2s",
             ".za-plate-scan::after",
             ".za-airframe-acquire",
@@ -199,7 +288,9 @@ def main() -> int:
         text = read(filename)
         for marker in markers:
             if marker not in text:
-                failures.append(f"{filename} is missing V33 contract marker {marker!r}")
+                failures.append(f"{filename} is missing V34 contract marker {marker!r}")
+
+    check_v34_motion_contract(failures)
 
     required_public = (
         "public/command.html",
@@ -223,6 +314,9 @@ def main() -> int:
     for relative in required_public:
         if not (ROOT / relative).is_file():
             failures.append(f"required public asset is missing: {relative}")
+
+    for relative, source_relative in (("index.html", "index.html"), ("lab.html", "public/lab.html")):
+        check_v34_public_surface(relative, read(source_relative), failures, "source")
 
     proteus_image = ROOT / "public" / "plates" / "proteus-nasa.webp"
     if proteus_image.is_file() and proteus_image.stat().st_size <= 50_000:
@@ -315,10 +409,16 @@ def main() -> int:
             if not (DIST / relative).is_file():
                 failures.append(f"built Pages artifact is missing {relative}")
 
+        for relative in V34_PUBLIC_SURFACES:
+            path = DIST / relative
+            if path.is_file():
+                check_v34_public_surface(relative, path.read_text(encoding="utf-8"), failures, "dist")
+
         live = collect_text(DIST)
+        check_current_public_privacy(live, failures, "built Pages artifact")
         for marker in (
-            "21 August 2026",
-            "19 OF 19",
+            "28 August 2026",
+            "18/19 AT 28 AUG PROBE",
             "QUORATE",
             "10 PUBLIC",
             "36 PRIVATE",
@@ -349,6 +449,8 @@ def main() -> int:
         for path in sorted((ROOT / "src").rglob("*"))
         if path.is_file() and path.suffix.lower() in {".ts", ".tsx", ".js", ".css"}
     )
+    check_current_public_privacy(source_tree, failures, "current source")
+    check_current_public_privacy(read("RELEASE_BODY.md"), failures, "RELEASE_BODY.md")
     for token in ("google-analytics", "googletagmanager", "plausible.io", "segment.io", "mixpanel"):
         if token in source_tree.lower():
             failures.append(f"tracking/analytics dependency found in source: {token}")
@@ -357,14 +459,14 @@ def main() -> int:
             failures.append(f"non-audio fetch target found in source: {target!r}")
 
     if failures:
-        print("V33 release consistency check failed:\n")
+        print("V34 release consistency check failed:\n")
         for failure in failures:
             print(f"- {failure}")
         return 1
 
     print(
-        "V33 release consistency passed: 21 August 2026 static snapshot; "
-        "19/19 containers; 2 Proxmox hosts quorate; 10 public lanes; "
+        "V34 release consistency passed: 28 August 2026 dated export; "
+        "18/19 containers; 2 Proxmox hosts quorate; 10 public lanes; "
         "36 private catalog entries; root Pages base; archive, privacy, "
         "motion, opt-in audio, and forbidden-token gates satisfied."
     )

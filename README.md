@@ -1,6 +1,6 @@
-# cashio.us V33 MACH ONE
+# cashio.us V34 MACH ONE
 
-Public command console. Release revision **24 August 2026**; dated architecture snapshot **21 August 2026**.
+Public command console. Release revision **28 August 2026**; read-only, dated fleet export **28 August 2026**, valid through **27 September 2026** in America/Chicago. Routing inventory remains separately dated **21 August 2026**.
 
 ```
 npm ci

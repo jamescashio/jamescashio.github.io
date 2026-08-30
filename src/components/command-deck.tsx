@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type Ref } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type Ref } from "react";
 import {
   ARTICLES,
   CRAFT,
@@ -14,8 +14,10 @@ import {
   stardate,
 } from "@/lib/content";
 import { getSound } from "@/lib/sound";
-import { isInteractiveShortcutTarget } from "@/lib/deck-focus";
-import { shouldYieldAirframeHud } from "@/lib/hud-layout";
+import { focusDeckHeading, isInteractiveShortcutTarget } from "@/lib/deck-focus";
+import { eveConsoleLogHeight, shouldYieldAirframeHud } from "@/lib/hud-layout";
+import { motionDurationMs } from "@/lib/animation-timing";
+import { COMMAND_POSTER_SOURCES } from "@/lib/command-poster";
 import { scheduleStageLoad } from "@/lib/stage-load-scheduler";
 import {
   beginHashRestore,
@@ -68,10 +70,11 @@ export function CommandDeck() {
   const s6 = useRef<HTMLElement>(null);
   const s7 = useRef<HTMLElement>(null);
   const s8 = useRef<HTMLElement>(null);
-  const hubZ = useRef<HTMLDivElement>(null);
-  const hubA = useRef<HTMLDivElement>(null);
   const stageRef = useRef<ViewscreenStageElement | null>(null);
   const paletteOpener = useRef<HTMLElement | null>(null);
+  const cinemaOpener = useRef<HTMLElement | null>(null);
+  const cinemaExit = useRef<HTMLButtonElement | null>(null);
+  const pendingDestinationFocus = useRef<number | null>(null);
   const sectionBag = useRef({ s0, s1, s2, s3, s4, s5, s6, s7, s8 });
   sectionBag.current = { s0, s1, s2, s3, s4, s5, s6, s7, s8 };
   const listSections = () => {
@@ -93,7 +96,7 @@ export function CommandDeck() {
   const chap = useDeck((s) => s.chap);
   const chapText = useDeck((s) => s.chapText);
   const bitMood = useDeck((s) => s.bitMood);
-  const copied = useDeck((s) => s.copied);
+  const copyEmailState = useDeck((s) => s.copyEmailState);
   const craftLock = useDeck((s) => s.craftLock);
   const set = useDeck((s) => s.set);
 
@@ -103,11 +106,16 @@ export function CommandDeck() {
   const [histI, setHistI] = useState(-1);
   const [clock, setClock] = useState("");
   const [stageOn, setStageOn] = useState(false);
-  const [pathZeus, setPathZeus] = useState("");
-  const [pathApollo, setPathApollo] = useState("");
+  const [reducedMotion, setReducedMotion] = useState(
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
   const [flash, setFlash] = useState(false);
+  const [flashKey, setFlashKey] = useState(0);
   const [afFlash, setAfFlash] = useState(false);
   const [hudYield, setHudYield] = useState(false);
+  const [eveLogHeight, setEveLogHeight] = useState(() =>
+    eveConsoleLogHeight({ height: window.innerHeight, width: window.innerWidth }),
+  );
   const [rips, setRips] = useState<{ id: number; x: number; y: number }[]>([]);
   const [sweep, setSweep] = useState(false);
   const [flightElapsed, setFlightElapsed] = useState(0);
@@ -116,6 +124,21 @@ export function CommandDeck() {
   const flightRun = useRef<FlightState | null>(null);
   const hashTransition = useRef(createHashTransitionState());
   const hashSuppressionTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const resizeAnchorTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const resizeAnchorFrame = useRef(0);
+  const warpFlashTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const cineTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const chapterTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const chapterInterval = useRef<ReturnType<typeof window.setInterval> | null>(null);
+  const sweepTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const alertTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const copyEmailResetTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const copyEmailAttempt = useRef(0);
+  const cinePulseGeneration = useRef(0);
+  const pendingSmoothScrollTop = useRef<number | null>(null);
+  const gotoRef = useRef<
+    ((deck: number, source?: NavigationOrigin, craftOverride?: number | null, articleOverride?: number) => void) | null
+  >(null);
   const pendingNavigation = useRef<{
     deck: number;
     source: NavigationOrigin;
@@ -127,6 +150,13 @@ export function CommandDeck() {
   const vel = useRef(0);
   const lastDeck = useRef(0);
   const swipeX = useRef<number | null>(null);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const onChange = (event: MediaQueryListEvent) => setReducedMotion(event.matches);
+    media.addEventListener("change", onChange);
+    return () => media.removeEventListener("change", onChange);
+  }, []);
 
   useEffect(() => {
     const on = (e: PointerEvent) => {
@@ -149,6 +179,7 @@ export function CommandDeck() {
           return { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom };
         });
         setHudYield(shouldYieldAirframeHud({ width: window.innerWidth, height: window.innerHeight }, targets));
+        setEveLogHeight(eveConsoleLogHeight({ height: window.innerHeight, width: window.innerWidth }));
       });
     };
 
@@ -192,6 +223,13 @@ export function CommandDeck() {
     if (typeof fn === "function") fn.call(s, arg);
   }, []);
 
+  const invalidateCopyEmail = useCallback(() => {
+    copyEmailAttempt.current++;
+    if (copyEmailResetTimer.current != null) window.clearTimeout(copyEmailResetTimer.current);
+    copyEmailResetTimer.current = null;
+    set({ copyEmailState: "idle" });
+  }, [set]);
+
   const bit = useCallback(
     (mood: BitMood) => {
       set({ bitMood: mood });
@@ -202,30 +240,109 @@ export function CommandDeck() {
     [set],
   );
 
+  const clearCinePulse = useCallback(() => {
+    if (warpFlashTimer.current != null) window.clearTimeout(warpFlashTimer.current);
+    if (cineTimer.current != null) window.clearTimeout(cineTimer.current);
+    warpFlashTimer.current = null;
+    cineTimer.current = null;
+    cinePulseGeneration.current += 1;
+  }, []);
+
   const cinePulse = useCallback(() => {
+    if (reducedMotion) return;
+    clearCinePulse();
+    const generation = ++cinePulseGeneration.current;
     set({ cine: true });
+    setFlashKey((key) => key + 1);
     setFlash(true);
-    window.setTimeout(() => setFlash(false), 680);
-    window.setTimeout(() => set({ cine: false }), 1100);
-  }, [set]);
+    warpFlashTimer.current = window.setTimeout(() => {
+      if (generation !== cinePulseGeneration.current) return;
+      warpFlashTimer.current = null;
+      setFlash(false);
+    }, motionDurationMs("stage-warp"));
+    cineTimer.current = window.setTimeout(() => {
+      if (generation !== cinePulseGeneration.current) return;
+      cineTimer.current = null;
+      set({ cine: false });
+    }, 1100);
+  }, [clearCinePulse, reducedMotion, set]);
+
+  useEffect(() => clearCinePulse, [clearCinePulse]);
+
+  const clearChapter = useCallback(() => {
+    if (chapterInterval.current != null) window.clearInterval(chapterInterval.current);
+    if (chapterTimer.current != null) window.clearTimeout(chapterTimer.current);
+    chapterInterval.current = null;
+    chapterTimer.current = null;
+  }, []);
+
+  const clearSweep = useCallback(() => {
+    if (sweepTimer.current != null) window.clearTimeout(sweepTimer.current);
+    sweepTimer.current = null;
+    setSweep(false);
+  }, []);
+
+  const clearAlertTimer = useCallback(() => {
+    if (alertTimer.current != null) window.clearTimeout(alertTimer.current);
+    alertTimer.current = null;
+  }, []);
+
+  const settlePendingSmoothScroll = useCallback(() => {
+    const top = pendingSmoothScrollTop.current;
+    const scroller = scRef.current;
+    if (top == null || !scroller) return;
+    pendingSmoothScrollTop.current = null;
+    scroller.scrollTop = top;
+  }, []);
 
   const chapter = useCallback(
     (i: number) => {
       const name = DECKS[i].name;
+      clearChapter();
+      if (reducedMotion) {
+        set({ chap: i, chapOn: false, chapText: name });
+        return;
+      }
       const glyphs = "▓▚█≡Ξ01/\\";
       let k = 0;
       set({ chap: i, chapOn: true, chapText: "█" });
-      const iv = window.setInterval(() => {
+      chapterInterval.current = window.setInterval(() => {
         k++;
         const n = Math.ceil(name.length * Math.min(1, k / 9));
         let out = name.slice(0, n);
         if (n < name.length) out += glyphs[(Math.random() * glyphs.length) | 0];
-        else window.clearInterval(iv);
+        else {
+          if (chapterInterval.current != null) window.clearInterval(chapterInterval.current);
+          chapterInterval.current = null;
+        }
         set({ chapText: out });
       }, 52);
-      window.setTimeout(() => set({ chapOn: false }), 1450);
+      chapterTimer.current = window.setTimeout(() => {
+        chapterTimer.current = null;
+        set({ chapOn: false });
+      }, 1450);
     },
-    [set],
+    [clearChapter, reducedMotion, set],
+  );
+
+  useEffect(() => {
+    stageRef.current?.setReducedMotion?.(reducedMotion);
+    if (!reducedMotion) return;
+    settlePendingSmoothScroll();
+    clearCinePulse();
+    clearChapter();
+    clearSweep();
+    setFlash(false);
+    set({ cine: false, chapOn: false, chapText: DECKS[useDeck.getState().deck].name });
+  }, [clearChapter, clearCinePulse, clearSweep, reducedMotion, set, settlePendingSmoothScroll, stageOn]);
+
+  useEffect(
+    () => () => {
+      clearChapter();
+      clearSweep();
+      clearAlertTimer();
+    },
+    [clearAlertTimer, clearChapter, clearSweep],
   );
 
   const measureClear = useCallback(() => {
@@ -249,36 +366,6 @@ export function CommandDeck() {
     st.setClearRect((r.right + 32) / w, (r.bottom + 12) / h);
   }, []);
 
-  const measureTopo = useCallback(() => {
-    const sec = s1.current;
-    const hz = hubZ.current;
-    const ha = hubA.current;
-    if (!sec || !hz || !ha) return;
-    const base = sec.getBoundingClientRect();
-    const centre = (el: HTMLElement) => {
-      const r = el.getBoundingClientRect();
-      return {
-        x: r.left - base.left + r.width / 2,
-        y: r.top - base.top + r.height / 2,
-        top: r.top - base.top,
-      };
-    };
-    const from = { zeus: centre(hz), apollo: centre(ha) };
-    const d = { zeus: "", apollo: "" };
-    sec.querySelectorAll<HTMLElement>("[data-hub]").forEach((cell) => {
-      const hub = cell.dataset.hub as "zeus" | "apollo" | undefined;
-      if (!hub || !from[hub]) return;
-      const h = from[hub];
-      const c = centre(cell);
-      const hy = h.y + 18;
-      const mid = (hy + c.top) / 2;
-      d[hub] +=
-        `M ${h.x.toFixed(1)} ${hy.toFixed(1)} C ${h.x.toFixed(1)} ${mid.toFixed(1)} ${c.x.toFixed(1)} ${mid.toFixed(1)} ${c.x.toFixed(1)} ${c.top.toFixed(1)} `;
-    });
-    setPathZeus(d.zeus);
-    setPathApollo(d.apollo);
-  }, []);
-
   const syncHash = useCallback((nextDeck: number, nextArticle: number, historyMode: "push" | "replace") => {
     const hash = formatDeckHash({ deck: nextDeck, article: nextArticle });
     if (window.location.hash === hash) return;
@@ -290,10 +377,20 @@ export function CommandDeck() {
     hashSuppressionTimer.current = null;
   }, []);
 
+  const clearResizeAnchor = useCallback(() => {
+    if (resizeAnchorTimer.current != null) window.clearTimeout(resizeAnchorTimer.current);
+    if (resizeAnchorFrame.current) window.cancelAnimationFrame(resizeAnchorFrame.current);
+    resizeAnchorTimer.current = null;
+    resizeAnchorFrame.current = 0;
+  }, []);
+
   const cancelProgrammaticScroll = useCallback(() => {
+    pendingSmoothScrollTop.current = null;
     clearHashSuppressionTimer();
+    clearResizeAnchor();
     hashTransition.current = cancelHashRestore(hashTransition.current);
-  }, [clearHashSuppressionTimer]);
+    pendingDestinationFocus.current = null;
+  }, [clearHashSuppressionTimer, clearResizeAnchor]);
 
   const beginProgrammaticScroll = useCallback(
     (targetDeck: number) => {
@@ -342,6 +439,35 @@ export function CommandDeck() {
     opener?.focus();
   }, [set]);
 
+  const openCinema = useCallback(
+    (opener: HTMLElement | null = document.activeElement instanceof HTMLElement ? document.activeElement : null) => {
+      cinemaOpener.current = opener && opener !== document.body && opener !== document.documentElement ? opener : null;
+      set({ photo: true });
+    },
+    [set],
+  );
+
+  const closeCinema = useCallback(() => {
+    const opener = cinemaOpener.current;
+    cinemaOpener.current = null;
+    set({ photo: false });
+    window.requestAnimationFrame(() => {
+      const fallback = document.querySelector<HTMLInputElement>("#eve-command");
+      (opener?.isConnected ? opener : fallback)?.focus();
+    });
+  }, [set]);
+
+  useEffect(() => {
+    if (!photo) return;
+    if (cinemaOpener.current == null) {
+      const active = document.activeElement;
+      if (active instanceof HTMLElement && active !== document.body && active !== document.documentElement)
+        cinemaOpener.current = active;
+    }
+    const frame = window.requestAnimationFrame(() => cinemaExit.current?.focus());
+    return () => window.cancelAnimationFrame(frame);
+  }, [photo]);
+
   const goto = useCallback(
     (i: number, source: NavigationOrigin = "manual", craftOverride?: number | null, articleOverride?: number) => {
       if (shouldStopFlightForNavigation(source)) stopFlight();
@@ -357,18 +483,28 @@ export function CommandDeck() {
       if (!el || !sc) return;
       if (useDeck.getState().deck !== i) beginProgrammaticScroll(i);
       const top = Math.max(0, el.offsetTop - 8);
-      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (reduce) sc.scrollTop = top;
-      else sc.scrollTo({ top, behavior: "smooth" });
+      if (reducedMotion) {
+        pendingSmoothScrollTop.current = null;
+        sc.scrollTop = top;
+      } else {
+        pendingSmoothScrollTop.current = top;
+        sc.scrollTo({ top, behavior: "smooth" });
+      }
       const st = stageRef.current;
-      st?.warp?.();
+      if (!reducedMotion) st?.warp?.();
       st?.setDeck?.(i);
       const activeCraftLock = craftOverride === undefined ? useDeck.getState().craftLock : craftOverride;
       st?.setCraft?.(resolveCraftIndex(i, activeCraftLock));
       cinePulse();
       chapter(i);
-      setSweep(true);
-      window.setTimeout(() => setSweep(false), 560);
+      if (!reducedMotion) {
+        clearSweep();
+        setSweep(true);
+        sweepTimer.current = window.setTimeout(() => {
+          sweepTimer.current = null;
+          setSweep(false);
+        }, 560);
+      }
       const shown = useDeck.getState().shown;
       const selectedArticle =
         articleOverride == null
@@ -389,18 +525,48 @@ export function CommandDeck() {
       bit("yes");
       window.setTimeout(() => {
         measureClear();
-        measureTopo();
       }, 420);
     },
-    [beginProgrammaticScroll, bit, chapter, cinePulse, measureClear, measureTopo, set, sfx, stopFlight, syncHash],
+    [
+      beginProgrammaticScroll,
+      bit,
+      chapter,
+      cinePulse,
+      clearSweep,
+      measureClear,
+      reducedMotion,
+      set,
+      sfx,
+      stopFlight,
+      syncHash,
+    ],
   );
+
+  useEffect(() => {
+    gotoRef.current = goto;
+  }, [goto]);
 
   useEffect(() => {
     if (mode !== "technical" || pendingNavigation.current == null) return;
     const pending = pendingNavigation.current;
     pendingNavigation.current = null;
+    const destinationFocus = pendingDestinationFocus.current === pending.deck ? pending.deck : null;
     goto(pending.deck, pending.source, pending.craftOverride, pending.articleOverride);
+    if (destinationFocus != null) pendingDestinationFocus.current = destinationFocus;
   }, [goto, mode]);
+
+  const focusPendingDestination = useCallback((landedDeck: number) => {
+    const target = pendingDestinationFocus.current;
+    if (target == null || target !== landedDeck || hashTransition.current.restoringDeck != null) return;
+    if (focusDeckHeading(document, target)) pendingDestinationFocus.current = null;
+  }, []);
+
+  useEffect(() => {
+    const target = pendingDestinationFocus.current;
+    if (palette || target == null || deck !== target || hashTransition.current.restoringDeck != null) return;
+    const frame = window.requestAnimationFrame(() => focusPendingDestination(target));
+    return () => window.cancelAnimationFrame(frame);
+  }, [deck, focusPendingDestination, mode, palette]);
 
   const gotoCraft = useCallback(
     (craftIndex: number) => {
@@ -451,7 +617,7 @@ export function CommandDeck() {
   useEffect(() => {
     const restoreHash = () => {
       const target = parseDeckHash(window.location.hash);
-      goto(target.deck, "hash", undefined, target.article);
+      gotoRef.current?.(target.deck, "hash", undefined, target.article);
     };
     if (window.location.hash) restoreHash();
     else syncHash(useDeck.getState().deck, useDeck.getState().sel, "replace");
@@ -464,14 +630,16 @@ export function CommandDeck() {
     };
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
-  }, [goto, stopFlight, syncHash]);
+  }, [stopFlight, syncHash]);
 
   useEffect(() => {
     return () => {
       if (flightTimer.current != null) window.clearTimeout(flightTimer.current);
+      invalidateCopyEmail();
       clearHashSuppressionTimer();
+      clearResizeAnchor();
     };
-  }, [clearHashSuppressionTimer]);
+  }, [clearHashSuppressionTimer, clearResizeAnchor, invalidateCopyEmail]);
 
   useEffect(() => {
     const state = flightRun.current;
@@ -485,7 +653,7 @@ export function CommandDeck() {
 
   useEffect(() => {
     setAfFlash(true);
-    const t = window.setTimeout(() => setAfFlash(false), 720);
+    const t = window.setTimeout(() => setAfFlash(false), motionDurationMs("deck-copy"));
     return () => window.clearTimeout(t);
   }, [deck]);
 
@@ -499,6 +667,10 @@ export function CommandDeck() {
   }, []);
 
   useEffect(() => {
+    if (!audio) {
+      document.documentElement.style.setProperty("--za-level", "0");
+      return;
+    }
     let raf = 0;
     const tick = () => {
       document.documentElement.style.setProperty("--za-level", String(getSound().level()));
@@ -506,11 +678,13 @@ export function CommandDeck() {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [audio]);
 
   const onScroll = useCallback(() => {
     const sc = scRef.current;
     if (!sc) return;
+    const pendingTop = pendingSmoothScrollTop.current;
+    if (pendingTop != null && Math.abs(sc.scrollTop - pendingTop) <= 1) pendingSmoothScrollTop.current = null;
     const secs = listSections();
     let i = 0;
     const reallyScrolled = sc.scrollTop >= 80;
@@ -561,7 +735,7 @@ export function CommandDeck() {
     hashTransition.current = scrollTransition.state;
     if (hashTransition.current.restoringDeck == null) clearHashSuppressionTimer();
     const next: Partial<{ deck: number; prog: number; shown: number[]; craftLock: number | null }> = {};
-    if (i !== useDeck.getState().deck) {
+    if (scrollTransition.updateDeck && i !== useDeck.getState().deck) {
       next.deck = i;
       next.craftLock = craftLockAfterDeckChange(useDeck.getState().craftLock, i, Date.now() <= jumpUntil.current);
       if (Date.now() > jumpUntil.current) chapter(i);
@@ -575,27 +749,43 @@ export function CommandDeck() {
         if (scrollTransition.writeHash) syncHash(next.deck, useDeck.getState().sel, "replace");
       }
     }
+    focusPendingDestination(i);
     measureClear();
-  }, [chapter, clearHashSuppressionTimer, measureClear, set, syncHash]);
+  }, [chapter, clearHashSuppressionTimer, focusPendingDestination, measureClear, set, syncHash]);
 
   useEffect(() => {
     const sc = scRef.current;
     if (!sc) return;
     sc.addEventListener("scroll", onScroll, { passive: true });
     const spy = window.setInterval(onScroll, 240);
+    const measureLayout = () => measureClear();
     const onResize = () => {
-      measureClear();
-      measureTopo();
+      measureLayout();
+      const targetDeck = useDeck.getState().deck;
+      beginProgrammaticScroll(targetDeck);
+      clearResizeAnchor();
+      resizeAnchorTimer.current = window.setTimeout(() => {
+        resizeAnchorTimer.current = null;
+        resizeAnchorFrame.current = window.requestAnimationFrame(() => {
+          resizeAnchorFrame.current = 0;
+          if (hashTransition.current.restoringDeck !== targetDeck) return;
+          const target = listSections()[targetDeck]?.current;
+          if (!target || !scRef.current) return;
+          pendingSmoothScrollTop.current = null;
+          scRef.current.scrollTo({ top: Math.max(0, target.offsetTop - 8), behavior: "auto" });
+          onScroll();
+        });
+      }, 120);
     };
     window.addEventListener("resize", onResize);
-    const later = window.setTimeout(onResize, 500);
+    const later = window.setTimeout(measureLayout, 500);
     return () => {
       sc.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       clearInterval(spy);
       clearTimeout(later);
     };
-  }, [measureClear, measureTopo, onScroll]);
+  }, [beginProgrammaticScroll, clearResizeAnchor, measureClear, onScroll]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -603,7 +793,14 @@ export function CommandDeck() {
       const interactive = isInteractiveShortcutTarget(e.target);
       const eveInput = e.target instanceof HTMLElement && e.target.matches("#eve-command");
       if (useDeck.getState().photo) {
-        set({ photo: false });
+        if (k === "tab") {
+          e.preventDefault();
+          cinemaExit.current?.focus();
+        }
+        if (k === "escape") {
+          e.preventDefault();
+          closeCinema();
+        }
         return;
       }
       if ((e.metaKey || e.ctrlKey) && k === "k") {
@@ -642,39 +839,10 @@ export function CommandDeck() {
       }
       if (e.altKey || e.ctrlKey || e.metaKey) return;
       if (isFlightStopKey(k)) stopFlight();
-      const n = ARTICLES.length;
-      if (k === "arrowright") {
-        const sel = (useDeck.getState().sel + 1) % n;
-        selectArticle(sel);
-      }
-      if (k === "arrowleft") {
-        const sel = (useDeck.getState().sel + n - 1) % n;
-        selectArticle(sel);
-      }
-      if (k === "r") {
-        set({ alert: true });
-        sfx("klaxon");
-        bit("alert");
-        window.setTimeout(() => set({ alert: false }), 1900);
-      }
-      if (k === "a") {
-        const next = !useDeck.getState().audio;
-        const s = getSound();
-        if (next) {
-          const armed = s.arm();
-          if (armed) s.prompt();
-          set({ audio: armed });
-        } else {
-          s.disarm();
-          set({ audio: false });
-        }
-      }
-      if (k === "t") toggleTour();
-      if (k >= "1" && k <= "9") goto(Number(k) - 1);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [bit, closePalette, goto, hist, histI, openPalette, selectArticle, set, sfx, stopFlight, toggleTour]);
+  }, [closeCinema, closePalette, hist, histI, openPalette, set, sfx, stopFlight]);
 
   const run = (raw: string) => {
     const cmd = (raw || "").trim();
@@ -697,11 +865,32 @@ export function CommandDeck() {
       bit("yes");
     }
     if (res.go != null) window.setTimeout(() => goto(res.go!), 650);
-    if (res.photo) window.setTimeout(() => set({ photo: true }), 400);
+    if (res.photo) window.setTimeout(() => openCinema(), 400);
     if (res.alert) {
       set({ alert: true });
       sfx("klaxon");
-      window.setTimeout(() => set({ alert: false }), 1900);
+      clearAlertTimer();
+      alertTimer.current = window.setTimeout(() => {
+        alertTimer.current = null;
+        set({ alert: false });
+      }, 1900);
+    }
+  };
+
+  const engage = () => {
+    if (mode !== "executive") {
+      goto(1);
+      return;
+    }
+    const brief = sBrief.current;
+    const scroller = scRef.current;
+    if (!brief || !scroller) return;
+    if (reducedMotion) {
+      pendingSmoothScrollTop.current = null;
+      scroller.scrollTop = brief.offsetTop;
+    } else {
+      pendingSmoothScrollTop.current = brief.offsetTop;
+      scroller.scrollTo({ top: brief.offsetTop, behavior: "smooth" });
     }
   };
 
@@ -719,15 +908,35 @@ export function CommandDeck() {
   };
 
   const copyMail = async () => {
+    const attempt = ++copyEmailAttempt.current;
+    if (copyEmailResetTimer.current != null) window.clearTimeout(copyEmailResetTimer.current);
+    copyEmailResetTimer.current = null;
+    set({ copyEmailState: "idle" });
+
+    if (typeof navigator.clipboard?.writeText !== "function") {
+      set({ copyEmailState: "error" });
+      sfx("err");
+      return;
+    }
+
     try {
       await navigator.clipboard.writeText("doug@cashio.us");
     } catch {
-      /* ignore */
+      if (copyEmailAttempt.current !== attempt) return;
+      set({ copyEmailState: "error" });
+      sfx("err");
+      return;
     }
-    set({ copied: true });
+    if (copyEmailAttempt.current !== attempt) return;
+    set({ copyEmailState: "success" });
     sfx("ok");
     sfx("hail");
-    window.setTimeout(() => set({ copied: false }), 2200);
+    copyEmailResetTimer.current = window.setTimeout(() => {
+      copyEmailResetTimer.current = null;
+      if (copyEmailAttempt.current === attempt && useDeck.getState().copyEmailState === "success") {
+        set({ copyEmailState: "idle" });
+      }
+    }, 2200);
   };
 
   const hud = photo ? "pointer-events-none invisible opacity-0" : "";
@@ -736,224 +945,290 @@ export function CommandDeck() {
   const dleft = daysLeft();
 
   return (
-    <div className="relative h-dvh overflow-hidden bg-void text-ink">
-      <a
-        href="#main-content"
-        className="sr-only fixed left-4 top-4 z-[200] bg-void text-cyan focus:not-sr-only focus:rounded-lg focus:border focus:border-cyan focus:px-4 focus:py-2 focus:font-mono focus:text-xs focus:outline-none"
-      >
-        Skip to content
-      </a>
-      {stageOn ? (
-        <viewscreen-stage ref={stageRef as unknown as Ref<HTMLElement>} />
-      ) : (
-        <div className="fixed inset-0 z-0 bg-void" />
-      )}
-      <div className="za-vignette" />
-      <div className="za-spot" aria-hidden />
-      <div className="za-scan" />
-      <div className={`za-warpflash ${flash ? "on" : ""}`} />
-      <div className={`za-sweep ${sweep ? "on" : ""}`} aria-hidden />
-
-      <DesktopCommandRail
-        audio={audio}
-        deck={deck}
-        elapsedMs={flightElapsed}
-        hudClassName={hud}
-        mode={mode}
-        onDeckHover={() => sfx("tick")}
-        onNavigate={goto}
-        onStopFlight={stopFlight}
-        onToggleAudio={toggleAudio}
-        onToggleFlight={toggleTour}
-        onToggleRail={() => set({ railOpen: !railOpen })}
-        railOpen={railOpen}
-        tour={tour}
-      />
-
-      <MobileFlightControl active={tour} elapsedMs={flightElapsed} onStart={toggleTour} onStop={stopFlight} />
-
-      <CommandHeader
-        audio={audio}
-        clock={clock}
-        craftIndex={craftI}
-        deck={deck}
-        hudClassName={hud}
-        onNavigateCraft={(index) => {
-          gotoCraft(index);
-          getSound().craft(index, "pip");
-        }}
-        onOpenNavigator={(opener) => {
-          openPalette(opener);
-          sfx("prompt");
-        }}
-        onToggleAudio={toggleAudio}
-        tour={tour}
-      />
-
-      <main
-        id="main-content"
-        tabIndex={-1}
-        ref={scRef}
-        className="za-scroll relative z-10 h-dvh overflow-x-hidden overflow-y-auto md:pl-[68px]"
-        style={{ visibility: photo ? "hidden" : "visible" }}
-        onPointerDown={stopFlight}
-        onWheel={stopFlight}
-        onTouchStart={(e) => {
-          stopFlight();
-          swipeX.current = e.touches[0].clientX;
-        }}
-        onTouchEnd={(e) => {
-          if (swipeX.current == null) return;
-          const dx = e.changedTouches[0].clientX - swipeX.current;
-          swipeX.current = null;
-          if (Math.abs(dx) < 72) return;
-          if (dx < 0) goto(Math.min(8, deck + 1));
-          else goto(Math.max(0, deck - 1));
-        }}
-      >
-        <DeckSnapshot
-          s0={s0}
-          copyCol={copyCol}
-          onEngage={() =>
-            mode === "executive"
-              ? sBrief.current && scRef.current?.scrollTo({ top: sBrief.current.offsetTop, behavior: "smooth" })
-              : goto(1)
-          }
-          onEve={() => goto(7)}
-        />
-        {mode === "executive" && <DeckBrief sBrief={sBrief} />}
-        {mode === "technical" && (
-          <>
-            <DeckGrid s1={s1} hubZ={hubZ} hubA={hubA} pathZeus={pathZeus} pathApollo={pathApollo} />
-            <DeckRouting s2={s2} />
-            <DeckIron s3={s3} />
-            <DeckLineage s4={s4} />
-            <DeckBuilds s5={s5} onSelect={selectArticle} />
-            <DeckOperator s6={s6} />
-            <DeckEve s7={s7} lines={consoleLines} value={consoleValue} onChange={setConsoleValue} onRun={run} />
-          </>
+    <div
+      className="relative h-dvh overflow-hidden bg-void text-ink"
+      style={
+        {
+          "--za-deck-copy-duration": `${motionDurationMs("deck-copy")}ms`,
+          "--za-article-acquisition-duration": `${motionDurationMs("article-acquisition")}ms`,
+          "--za-stage-warp-duration": `${motionDurationMs("stage-warp")}ms`,
+        } as CSSProperties
+      }
+    >
+      <div inert={photo || undefined} aria-hidden={photo || undefined}>
+        {!photo && (
+          <a
+            href="#main-content"
+            className="sr-only fixed left-4 top-4 z-[200] bg-void text-cyan focus:not-sr-only focus:rounded-lg focus:border focus:border-cyan focus:px-4 focus:py-2 focus:font-mono focus:text-xs focus:outline-none"
+          >
+            Skip to content
+          </a>
         )}
-        <DeckContact s8={s8} onCopy={copyMail} copied={copied} />
-        <footer data-hud-clear className="za-mobile-rail-clearance px-6 pb-20 pt-6 md:px-14">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 za-mono text-[10px] text-dim">
-            <span>{RELEASE}</span>
-            <span>REVISED {REVISED}</span>
-            <span className="inline-flex items-center gap-2 text-green">
-              <span className="h-1.5 w-1.5 rounded-full bg-green shadow-[0_0_8px_var(--color-green)]" />
-              {dleft > 0 ? "CURRENT" : "EXPIRED"}
-            </span>
-            <span>FIGURES VERIFIED {VERIFIED_LONG}</span>
-            <span>VALID THRU {dleft > 0 ? EXPIRES_SHORT : "— TREAT AS HISTORY"}</span>
-            <span>ZERO INFRASTRUCTURE CALLS</span>
-          </div>
-        </footer>
-      </main>
+        <picture>
+          {COMMAND_POSTER_SOURCES.map((source) => (
+            <source key={source.type} {...source} />
+          ))}
+          <img
+            src="/plates/command.jpg"
+            alt=""
+            aria-hidden="true"
+            width={1680}
+            height={945}
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+            className={`za-stage-poster ${stageOn ? "is-hidden" : ""}`}
+          />
+        </picture>
+        {stageOn && <viewscreen-stage ref={stageRef as unknown as Ref<HTMLElement>} className="za-stage-live" />}
+        <div className="za-vignette" />
+        <div className="za-spot" aria-hidden />
+        <div className="za-scan" />
+        <div key={flashKey} className={`za-warpflash ${flash ? "on" : ""}`} />
+        <div className={`za-sweep ${sweep ? "on" : ""}`} aria-hidden />
 
-      <div
-        className={`pointer-events-none fixed bottom-[118px] left-[calc(68px+5vw)] z-40 transition duration-500 ${
-          chapOn ? "opacity-100" : "translate-y-4 opacity-0"
-        } ${hud}`}
-      >
-        <div className="za-kicker">DECK {String(chap + 1).padStart(2, "0")} / 09</div>
-        <div className="za-display mt-2 text-[clamp(2rem,4.4vw,3.6rem)] drop-shadow-[0_0_28px_rgba(0,249,255,0.25)]">
-          {chapText}
-        </div>
-        <div className="za-mono mt-2 max-w-[52ch] text-[11px] text-dim">{DECKS[chap].tag}</div>
-      </div>
+        <DesktopCommandRail
+          audio={audio}
+          deck={deck}
+          elapsedMs={flightElapsed}
+          hudClassName={hud}
+          mode={mode}
+          onDeckHover={() => sfx("tick")}
+          onNavigate={goto}
+          onStopFlight={stopFlight}
+          onToggleAudio={toggleAudio}
+          onToggleFlight={toggleTour}
+          onToggleRail={() => set({ railOpen: !railOpen })}
+          railOpen={railOpen}
+          tour={tour}
+        />
 
-      <div
-        className={`za-corner-hud fixed bottom-5 right-4 z-40 items-end gap-3 ${deck === 7 ? "hidden" : "flex"} ${hudYield ? "yield" : ""} ${hud}`}
-      >
-        <div
-          className={`za-airframe hidden max-w-[250px] cursor-pointer rounded-[var(--radius-md)] border border-line bg-void/80 p-3 font-mono text-[10px] leading-relaxed tracking-[0.08em] text-dim hover:border-cyan md:block ${afFlash ? "flash" : ""}`}
-          onClick={() => gotoCraft(craftI)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              gotoCraft(craftI);
-            }
+        {!photo && (
+          <MobileFlightControl active={tour} elapsedMs={flightElapsed} onStart={toggleTour} onStop={stopFlight} />
+        )}
+
+        <CommandHeader
+          audio={audio}
+          clock={clock}
+          craftIndex={craftI}
+          deck={deck}
+          hudClassName={hud}
+          onNavigateCraft={(index) => {
+            gotoCraft(index);
+            getSound().craft(index, "pip");
           }}
-          role="button"
-          tabIndex={0}
-          aria-label={`Open ${craft[0]} airframe deck`}
+          onOpenNavigator={(opener) => {
+            openPalette(opener);
+            sfx("prompt");
+          }}
+          onToggleAudio={toggleAudio}
+          tour={tour}
+        />
+
+        <main
+          id="main-content"
+          tabIndex={-1}
+          ref={scRef}
+          data-active-deck={deck}
+          className="za-scroll relative z-10 h-dvh overflow-x-hidden overflow-y-auto md:pl-[68px]"
+          style={{ visibility: photo ? "hidden" : "visible" }}
+          onPointerDown={stopFlight}
+          onWheel={stopFlight}
+          onTouchStart={(e) => {
+            stopFlight();
+            swipeX.current = e.touches[0].clientX;
+          }}
+          onTouchEnd={(e) => {
+            if (swipeX.current == null) return;
+            const dx = e.changedTouches[0].clientX - swipeX.current;
+            swipeX.current = null;
+            if (Math.abs(dx) < 72) return;
+            if (dx < 0) goto(Math.min(8, deck + 1));
+            else goto(Math.max(0, deck - 1));
+          }}
         >
-          <div className="flex items-center gap-2">
-            <b className="text-cyan">
-              AIRFRAME {String(craftI + 1).padStart(2, "0")} / {String(CRAFT.length).padStart(2, "0")}
-            </b>
-            <span className="za-airframe-compact-name text-ink">{craft[0]}</span>
-            {audio && (
-              <span className="za-eq ml-auto" aria-hidden>
-                <span />
-                <span />
-                <span />
-                <span />
-                <span />
+          <DeckSnapshot s0={s0} copyCol={copyCol} onEngage={engage} onEve={() => goto(7)} />
+          {mode === "executive" && <DeckBrief sBrief={sBrief} />}
+          {mode === "technical" && (
+            <>
+              <DeckGrid s1={s1} />
+              <DeckRouting s2={s2} />
+              <DeckIron s3={s3} />
+              <DeckLineage s4={s4} />
+              <DeckBuilds s5={s5} onSelect={selectArticle} />
+              <DeckOperator s6={s6} />
+              <DeckEve
+                s7={s7}
+                active={!photo && deck === 7}
+                lines={consoleLines}
+                value={consoleValue}
+                logHeight={eveLogHeight}
+                onChange={setConsoleValue}
+                onRun={run}
+              />
+            </>
+          )}
+          <DeckContact s8={s8} onCopy={copyMail} copyEmailState={copyEmailState} />
+          <footer data-hud-clear className="za-mobile-rail-clearance px-6 pb-20 pt-6 md:px-14">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 za-mono text-[10px] text-dim">
+              <span>{RELEASE}</span>
+              <span>REVISED {REVISED}</span>
+              <span className="inline-flex items-center gap-2 text-green">
+                <span className="h-1.5 w-1.5 rounded-full bg-green shadow-[0_0_8px_var(--color-green)]" />
+                {dleft > 0 ? "DATED EXPORT VALID" : "DATED EXPORT EXPIRED"}
               </span>
-            )}
+              <span>FIGURES VERIFIED {VERIFIED_LONG}</span>
+              <span>VALID THRU {dleft > 0 ? EXPIRES_SHORT : "— TREAT AS HISTORY"}</span>
+              <span>ZERO INFRASTRUCTURE CALLS</span>
+            </div>
+          </footer>
+        </main>
+
+        <div
+          data-cine={cine}
+          className={`za-chapter-overlay pointer-events-none fixed bottom-[118px] left-[calc(68px+5vw)] z-40 ${
+            reducedMotion ? "" : "transition duration-500"
+          } ${chapOn ? "opacity-100" : "translate-y-4 opacity-0"} ${hud}`}
+        >
+          <div className="za-kicker">DECK {String(chap + 1).padStart(2, "0")} / 09</div>
+          <div className="za-display mt-2 text-[clamp(2rem,4.4vw,3.6rem)] drop-shadow-[0_0_28px_rgba(0,249,255,0.25)]">
+            {chapText}
           </div>
-          <div className="za-airframe-details">
-            <div className="mt-1 text-ink">{craft[0]}</div>
-            <div className="text-accent">{craft[1]}</div>
-            <div className="mt-1">{craft[2]}</div>
-            <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-white/10">
-              <div className="h-full bg-accent transition-[width] duration-300" style={{ width: `${prog}%` }} />
+          <div className="za-mono mt-2 max-w-[52ch] text-[11px] text-dim">{DECKS[chap].tag}</div>
+        </div>
+
+        <div
+          className={`za-corner-hud fixed bottom-5 right-4 z-40 items-end gap-3 ${deck === 7 ? "hidden" : "flex"} ${hudYield ? "yield" : ""} ${hud}`}
+        >
+          <div
+            className={`za-airframe hidden max-w-[250px] cursor-pointer rounded-[var(--radius-md)] border border-line bg-void/80 p-3 font-mono text-[10px] leading-relaxed tracking-[0.08em] text-dim hover:border-cyan md:block ${afFlash ? "flash" : ""}`}
+            onClick={() => gotoCraft(craftI)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                gotoCraft(craftI);
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label={`Open ${craft[0]} airframe deck`}
+          >
+            <div className="flex items-center gap-2">
+              <b className="text-cyan">
+                AIRFRAME {String(craftI + 1).padStart(2, "0")} / {String(CRAFT.length).padStart(2, "0")}
+              </b>
+              <span data-airframe-compact-identity className="za-airframe-compact-name text-ink">
+                {craft[0]}
+              </span>
+              {audio && (
+                <span className="za-eq ml-auto" aria-hidden>
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                </span>
+              )}
+            </div>
+            <div className="za-airframe-details">
+              <div className="mt-1 text-ink">{craft[0]}</div>
+              <div className="text-accent">{craft[1]}</div>
+              <div className="mt-1">{craft[2]}</div>
+              <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-white/10">
+                <div
+                  className="za-airframe-progress h-full bg-accent transition-[width] duration-300"
+                  style={{ width: `${prog}%` }}
+                />
+              </div>
             </div>
           </div>
+          <button
+            type="button"
+            className="za-bit-control rounded-full"
+            onClick={() => {
+              sfx("bitYes");
+              bit("yes");
+              goto(7);
+            }}
+            title="Talk to E.V.E."
+            aria-label="Open E.V.E. console"
+          >
+            <BitMascot active={!photo && deck !== 7} mood={bitMood} size={hudYield ? 72 : 104} />
+          </button>
         </div>
-        <button
-          type="button"
-          className="za-bit-control rounded-full focus-visible:outline-none"
-          onClick={() => {
-            sfx("bitYes");
-            bit("yes");
-            goto(7);
-          }}
-          title="Talk to E.V.E."
-          aria-label="Open E.V.E. console"
-        >
-          <BitMascot mood={bitMood} size={hudYield ? 72 : 104} />
-        </button>
+
+        <MobileCommandNavigation
+          deck={deck}
+          hudClassName={hud}
+          mode={mode}
+          onNavigate={goto}
+          onOpenNavigator={openPalette}
+        />
+
+        <div
+          aria-hidden
+          className={`za-cinema-bar pointer-events-none fixed left-0 right-0 top-0 z-[60] h-[9vh] border-b border-line bg-[#04050a] ${
+            reducedMotion ? "" : "transition-transform duration-700"
+          } ${cine ? "translate-y-0" : "-translate-y-full"}`}
+        />
+        <div
+          aria-hidden
+          className={`za-cinema-bar pointer-events-none fixed bottom-0 left-0 right-0 z-[60] h-[9vh] border-t border-line bg-[#04050a] ${
+            reducedMotion ? "" : "transition-transform duration-700"
+          } ${cine ? "translate-y-0" : "translate-y-full"}`}
+        />
+
+        {alert && (
+          <>
+            <div
+              aria-hidden
+              className={`pointer-events-none fixed inset-0 z-[70] border-[3px] border-red shadow-[inset_0_0_150px_rgba(255,0,51,0.45)] ${
+                reducedMotion ? "" : "animate-[za-redpulse_1.1s_ease_infinite]"
+              }`}
+            />
+            <div className="za-display fixed left-1/2 top-16 z-[71] -translate-x-1/2 rounded-[var(--radius-sm)] border border-red bg-[#120006]/90 px-5 py-2 text-[12px] tracking-[0.28em] text-red">
+              RED ALERT · DRILL ONLY
+            </div>
+          </>
+        )}
+
+        {palette && (
+          <DeckNavigator
+            deck={deck}
+            onSelect={(index) => {
+              paletteOpener.current = null;
+              goto(index);
+              pendingDestinationFocus.current = index;
+            }}
+            onClose={closePalette}
+          />
+        )}
+
+        {rips.map((r) => (
+          <span key={r.id} className="za-rip" style={{ left: r.x, top: r.y }} aria-hidden />
+        ))}
       </div>
 
-      <MobileCommandNavigation
-        deck={deck}
-        hudClassName={hud}
-        mode={mode}
-        onNavigate={goto}
-        onOpenNavigator={openPalette}
-      />
-
-      <div
-        aria-hidden
-        className={`pointer-events-none fixed left-0 right-0 top-0 z-[60] h-[9vh] border-b border-line bg-[#04050a] transition-transform duration-700 ${
-          cine ? "translate-y-0" : "-translate-y-full"
-        }`}
-      />
-      <div
-        aria-hidden
-        className={`pointer-events-none fixed bottom-0 left-0 right-0 z-[60] h-[9vh] border-t border-line bg-[#04050a] transition-transform duration-700 ${
-          cine ? "translate-y-0" : "translate-y-full"
-        }`}
-      />
-
-      {alert && (
-        <>
-          <div
-            aria-hidden
-            className="pointer-events-none fixed inset-0 z-[70] animate-[za-redpulse_1.1s_ease_infinite] border-[3px] border-red shadow-[inset_0_0_150px_rgba(255,0,51,0.45)]"
-          />
-          <div className="za-display fixed left-1/2 top-16 z-[71] -translate-x-1/2 rounded-[var(--radius-sm)] border border-red bg-[#120006]/90 px-5 py-2 text-[12px] tracking-[0.28em] text-red">
-            RED ALERT · DRILL ONLY
+      {photo && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Cinema view"
+          className="pointer-events-none fixed inset-0 z-[100] flex flex-col justify-between p-5 md:p-10"
+        >
+          <div className="za-display max-w-max border border-cyan/60 bg-void/70 px-4 py-3 text-[11px] tracking-[0.2em] text-cyan shadow-[0_0_28px_rgba(0,249,255,0.2)]">
+            CINEMA VIEW · PRESS ESC OR EXIT CINEMA
           </div>
-        </>
+          <button
+            ref={cinemaExit}
+            type="button"
+            className="za-btn pointer-events-auto self-end px-5 py-3 text-[11px]"
+            onClick={closeCinema}
+          >
+            EXIT CINEMA
+          </button>
+        </div>
       )}
-
-      {palette && <DeckNavigator deck={deck} onSelect={(index) => goto(index)} onClose={closePalette} />}
-
-      {rips.map((r) => (
-        <span key={r.id} className="za-rip" style={{ left: r.x, top: r.y }} aria-hidden />
-      ))}
     </div>
   );
 }

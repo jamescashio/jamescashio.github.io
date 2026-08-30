@@ -2,6 +2,21 @@
 
 This file records the canonical public release line for cashio.us. Visible dates use MM-DD-YYYY. Unpublished prototype numbering is intentionally omitted; Git history retains those experiments without presenting them as releases.
 
+## [v34] — 08-28-2026
+
+Release name: "MACH ONE." This preservation pass makes the public truth easier to read without broadening what it publishes.
+
+### Changed
+
+- Replaced undated health language with a read-only, dated 28 August aggregate export: 18/19 guests running, Zeus 12/13, Apollo 6/6, and two online quorate hosts on Proxmox 9.2.11.
+- Kept routing as a separate 21 August inventory: ten public lanes and thirty-six private catalog entries count different objects.
+- Reframed Executive mode around Route Control, Evidence Boundary, and Human Authority; labeled Build Proof and Cashio Operating Lessons.
+
+### Boundaries
+
+- The stopped guest remains unnamed. No raw guest, storage, utilization, network, provider, or access-path detail is added.
+- Contact wording and the Black Box Receipt remain unchanged; audio, motion, archive, and privacy boundaries remain intact.
+
 ## [v33] — 08-24-2026
 
 Release name: "MACH ONE." This release preserves the V32 command-deck identity while making its proof journey easier to enter, share, read, and operate.

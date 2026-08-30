@@ -9,6 +9,9 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { MeshSurfaceSampler } from 'three/addons/math/MeshSurfaceSampler.js';
+import { motionDurationMs, shouldRenderFrame } from './animation-timing.ts';
+
+const MINIMUM_FRAME_INTERVAL_MS = 1000 / 30;
 
 const NEBULA_VERT = `
 varying vec2 vUv;
@@ -318,7 +321,7 @@ const CRAFT = [
     mat: { metal: 0.18, rough: 0.64, env: 0.82, emis: 0.015 }, glowColor: 0x7ed9ee,
     wire: 0x45a8c2,
     // A settled, restrained three-quarter pose makes the tandem planform legible.
-    pose: { yaw: -0.62, pitch: 0.42, roll: -0.035, motion: 0.2, bloom: 0.22, exposure: 0.68 },
+    pose: { yaw: -0.62, pitch: 0.42, roll: -0.035, motion: 0.2, bloom: 0.2, exposure: 0.64 },
     solidOpacity: 0.64,
     wireOpacity: 0.58,
     lineageSolidOpacity: 0.08,
@@ -755,24 +758,43 @@ class ViewscreenStage extends HTMLElement {
     this.prog = 0; this.deck = 0; this.warpT = 0; this.mx = 0; this.my = 0; this.stage = 0;
     this.craftTarget = 0; this.craftF = 0; this.clearX = 0.5; this.clearY = 0.85; this.dim = 1;
     this.reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.paused = document.hidden;
 
-    try { this._initGL(); } catch (e) { console.warn('viewscreen: WebGL unavailable', e); this._fallback(); return; }
+    const start = () => {
+      if (this._started) {
+        if (!this.reduce && !this.paused && !this._raf && this._loop) this._raf = requestAnimationFrame(this._loop);
+        return;
+      }
+      this._started = true;
+      try { this._initGL(); } catch (e) { console.warn('viewscreen: WebGL unavailable', e); this._fallback(); return; }
 
-    this._onResize = () => this._resize();
-    addEventListener('resize', this._onResize);
-    this._onVis = () => { this.paused = document.hidden; };
-    document.addEventListener('visibilitychange', this._onVis);
-    this._onMove = (e) => {
-      this.mx = (e.clientX / innerWidth - 0.5) * 2;
-      this.my = (e.clientY / innerHeight - 0.5) * 2;
+      this._onResize = () => this._resize();
+      addEventListener('resize', this._onResize);
+      this._onMove = (e) => {
+        this.mx = (e.clientX / innerWidth - 0.5) * 2;
+        this.my = (e.clientY / innerHeight - 0.5) * 2;
+      };
+      addEventListener('pointermove', this._onMove, { passive: true });
+      addEventListener('pagehide', () => this.dispose(), { once: true });
+
+      this._resize();
+      const loop = (t) => {
+        this._raf = requestAnimationFrame(loop);
+        if (!this.paused && shouldRenderFrame(t, this._previousRender ?? null, MINIMUM_FRAME_INTERVAL_MS)) {
+          this._previousRender = t;
+          this._frame(t);
+        }
+      };
+      this._loop = loop;
+      if (this.reduce) { this._frame(0); return; }
+      this._raf = requestAnimationFrame(loop);
     };
-    addEventListener('pointermove', this._onMove, { passive: true });
-    addEventListener('pagehide', () => this.dispose(), { once: true });
-
-    this._resize();
-    if (this.reduce) { this._frame(0); return; }
-    const loop = (t) => { this._raf = requestAnimationFrame(loop); if (!this.paused) this._frame(t); };
-    this._raf = requestAnimationFrame(loop);
+    this._onVis = () => {
+      this.paused = document.hidden;
+      if (!this.paused) start();
+    };
+    document.addEventListener('visibilitychange', this._onVis);
+    if (!this.paused) start();
   }
 
   disconnectedCallback() { this.dispose(); }
@@ -1282,7 +1304,7 @@ class ViewscreenStage extends HTMLElement {
     const dt = Math.min(0.05, (t - (this._last || t)) / 1000);
     this._last = t;
     const p = this.prog, deck = this.deck;
-    this.warpT = Math.max(0, this.warpT - dt * 1.05);
+    this.warpT = Math.max(0, this.warpT - dt * (1000 / motionDurationMs('stage-warp')));
     const warp = this.warpT * this.warpT;
 
     const tint = DECK_TINT[deck] || DECK_TINT[0];
@@ -1729,6 +1751,22 @@ class ViewscreenStage extends HTMLElement {
     this.setClearX(rx);
     this.clearY = Math.max(0.3, Math.min(0.95, by || 0.85));
     this._renderReduced();
+  }
+  setReducedMotion(reduce) {
+    const next = Boolean(reduce);
+    if (this.reduce === next) return;
+    this.reduce = next;
+    if (next) {
+      cancelAnimationFrame(this._raf);
+      this._raf = 0;
+      this.warpT = 0;
+      this.bankT = 0;
+      this.craftF = this.craftTarget;
+      this.stage = this.craftTarget;
+      this._renderReduced();
+      return;
+    }
+    if (this._started && !this.paused && !this._raf && this._loop) this._raf = requestAnimationFrame(this._loop);
   }
   warp() { if (!this.reduce) this.warpT = 1; }
   craftIndex() { return this.stage; }

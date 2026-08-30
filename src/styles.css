@@ -188,7 +188,9 @@
   .za-btn:hover {
     filter: brightness(1.12);
     transform: translateY(-2px);
-    box-shadow: 0 12px 40px rgba(255, 149, 0, 0.45), 0 0 24px rgba(255, 149, 0, 0.35);
+    box-shadow:
+      0 12px 40px rgba(255, 149, 0, 0.45),
+      0 0 24px rgba(255, 149, 0, 0.35);
   }
   .za-btn:active {
     transform: scale(0.96);
@@ -231,11 +233,7 @@
   position: fixed;
   inset: 0;
   z-index: 3;
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent 0 2px,
-    rgba(0, 0, 0, 0.14) 2px 3px
-  );
+  background: repeating-linear-gradient(to bottom, transparent 0 2px, rgba(0, 0, 0, 0.14) 2px 3px);
   mix-blend-mode: multiply;
   opacity: 0.35;
 }
@@ -245,6 +243,30 @@
   inset: 0;
   z-index: 2;
   background: radial-gradient(ellipse at 70% 48%, transparent 28%, rgba(5, 6, 10, 0.55) 78%, #05060a 100%);
+}
+.za-stage-poster {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 1;
+  transition: opacity 480ms var(--ease-smooth);
+}
+.za-stage-poster.is-hidden {
+  opacity: 0;
+}
+.za-stage-live {
+  animation: za-stage-reveal 480ms var(--ease-smooth) both;
+}
+@keyframes za-stage-reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 .za-spot {
   pointer-events: none;
@@ -358,7 +380,7 @@
 }
 
 .za-rise {
-  animation: za-rise 900ms var(--ease-out) both;
+  animation: za-rise var(--za-deck-copy-duration) var(--ease-out) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -402,8 +424,8 @@
 }
 .za-lcars-pip {
   display: inline-flex;
-  min-width: 24px;
-  min-height: 24px;
+  min-width: 44px;
+  min-height: 44px;
   align-items: center;
   justify-content: center;
   border: 0;
@@ -430,14 +452,157 @@
 .za-lcars-pip.past .za-lcars-pip-mark {
   background: rgba(255, 149, 0, 0.45);
 }
+.za-snapshot-actions {
+  min-height: 48px;
+}
 
 @media (max-width: 767px) {
   .za-mobile-rail-clearance {
+    padding-top: 9.5rem;
     padding-bottom: calc(6rem + 60px + var(--za-safe-area-inset-bottom));
+  }
+  section[data-deck="0"].za-mobile-rail-clearance {
+    padding-top: 7rem;
+  }
+  section[aria-label="30-second flight status"].fixed {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  section[aria-label="30-second flight status"].fixed > ol,
+  section[aria-label="30-second flight status"].fixed > p:not(:first-child) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  section[aria-label="30-second flight status"].fixed > button {
+    width: auto;
+    min-width: 5.5rem;
+    min-height: 44px;
+    margin-top: 0;
+  }
+  section[aria-label="30-second flight status"].fixed ~ main section[data-deck="0"].za-mobile-rail-clearance {
+    padding-top: 8.75rem;
   }
   .za-mobile-rail-safe {
     min-height: calc(60px + var(--za-safe-area-inset-bottom));
     padding-bottom: var(--za-safe-area-inset-bottom);
+  }
+  .za-bracket > .za-display {
+    font-size: 1.75rem;
+  }
+  .za-snapshot-modes {
+    margin-top: 0.75rem;
+  }
+  .za-snapshot-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    min-height: 0;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .za-snapshot-copy {
+    margin-right: -0.4rem;
+    margin-left: -0.4rem;
+    padding: 0 0.4rem;
+    border-radius: 8px;
+    background: linear-gradient(90deg, rgba(5, 6, 10, 0.96), rgba(5, 6, 10, 0.92));
+    box-shadow: 0 0 20px rgba(5, 6, 10, 0.58);
+    backdrop-filter: blur(8px);
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+  .za-snapshot-modes button {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  .za-snapshot-modes button > div:last-child {
+    font-size: 12px;
+    line-height: 1.28;
+  }
+  .za-snapshot-actions .za-btn,
+  .za-snapshot-actions .za-btn-ghost {
+    min-width: 0;
+    padding: 0.5rem;
+    font-size: 10px;
+    line-height: 1.2;
+    letter-spacing: 0.08em;
+    text-align: center;
+    white-space: normal;
+  }
+}
+
+@media (max-width: 350px) {
+  .za-snapshot-actions {
+    margin-top: 0.25rem;
+  }
+}
+.za-contact-copy {
+  min-width: 0;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(90deg, rgb(4, 7, 12), rgb(5, 8, 13) 72%, rgb(7, 11, 18));
+  box-shadow: 0 0 40px rgba(4, 7, 12, 0.64);
+}
+.za-contact-meta {
+  font-size: 11px;
+}
+.za-receipt-claim,
+.za-receipt-status {
+  font-size: 11px;
+}
+.za-build-selector {
+  scroll-snap-type: x mandatory;
+}
+@media (min-width: 1024px) {
+  .za-build-map,
+  .za-build-details {
+    min-width: 0;
+  }
+  .za-build-map {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .za-build-details {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+@media (max-width: 767px) {
+  .za-contact-copy {
+    margin-inline: -0.75rem;
+    padding: 0.75rem;
+    background: linear-gradient(180deg, rgb(4, 7, 12), rgb(5, 8, 13) 82%, rgb(7, 11, 18));
+  }
+  .za-hail > a.za-display {
+    font-size: clamp(1.1rem, 6vw, 1.4rem);
+  }
+  .za-build-details {
+    order: 1;
+    min-width: 0;
+  }
+  .za-build-map {
+    order: 2;
+    min-width: 0;
+  }
+  .za-build-selector {
+    max-width: 100%;
+    flex-direction: row;
+    gap: 0.5rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    padding-bottom: 0.5rem;
+  }
+  .za-build-selector > button {
+    min-width: min(17rem, 82vw);
+    scroll-snap-align: start;
   }
 }
 .za-eq {
@@ -456,11 +621,26 @@
   animation: za-eq 900ms ease-in-out infinite;
   transform-origin: bottom;
 }
-.za-eq span:nth-child(1) { animation-delay: 0ms; height: 40%; }
-.za-eq span:nth-child(2) { animation-delay: 120ms; height: 70%; }
-.za-eq span:nth-child(3) { animation-delay: 240ms; height: 50%; }
-.za-eq span:nth-child(4) { animation-delay: 80ms; height: 90%; }
-.za-eq span:nth-child(5) { animation-delay: 200ms; height: 35%; }
+.za-eq span:nth-child(1) {
+  animation-delay: 0ms;
+  height: 40%;
+}
+.za-eq span:nth-child(2) {
+  animation-delay: 120ms;
+  height: 70%;
+}
+.za-eq span:nth-child(3) {
+  animation-delay: 240ms;
+  height: 50%;
+}
+.za-eq span:nth-child(4) {
+  animation-delay: 80ms;
+  height: 90%;
+}
+.za-eq span:nth-child(5) {
+  animation-delay: 200ms;
+  height: 35%;
+}
 
 .za-flow-path {
   fill: none;
@@ -532,14 +712,19 @@
   position: fixed;
   inset: 0;
   z-index: 80;
-  background: radial-gradient(ellipse at 70% 45%, rgba(0, 249, 255, 0.28), rgba(255, 149, 0, 0.12) 38%, transparent 68%);
+  background: radial-gradient(
+    ellipse at 70% 45%,
+    rgba(0, 249, 255, 0.28),
+    rgba(255, 149, 0, 0.12) 38%,
+    transparent 68%
+  );
   mix-blend-mode: screen;
   opacity: 0;
   transition: opacity 180ms var(--ease-out);
 }
 .za-warpflash.on {
   opacity: 1;
-  animation: za-warpflash 680ms var(--ease-out);
+  animation: za-warpflash var(--za-stage-warp-duration) var(--ease-out);
 }
 @keyframes za-warpflash {
   0% {
@@ -584,7 +769,13 @@
 }
 
 .za-shimmer-text {
-  background: linear-gradient(100deg, var(--color-cyan) 0%, var(--color-ink) 32%, var(--color-accent) 68%, var(--color-cyan) 100%);
+  background: linear-gradient(
+    100deg,
+    var(--color-cyan) 0%,
+    var(--color-ink) 32%,
+    var(--color-accent) 68%,
+    var(--color-cyan) 100%
+  );
   background-size: 240% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -644,6 +835,11 @@
     0 28px 80px rgba(0, 0, 0, 0.58),
     0 0 56px rgba(0, 249, 255, 0.1);
 }
+.za-plate-picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
 .za-plate-img {
   display: block;
   width: 100%;
@@ -691,11 +887,7 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent 0 3px,
-    rgba(0, 0, 0, 0.16) 3px 4px
-  );
+  background: repeating-linear-gradient(to bottom, transparent 0 3px, rgba(0, 0, 0, 0.16) 3px 4px);
   mix-blend-mode: multiply;
   opacity: 0.32;
 }
@@ -754,7 +946,8 @@
   html,
   body,
   #app {
-    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Cpath d='M2 2 L12 2 L2 12Z' fill='%23ff9500'/%3E%3Ccircle cx='16' cy='16' r='4' fill='none' stroke='%2300f9ff' stroke-width='1.4'/%3E%3Cpath d='M16 8 V11.5 M16 20.5 V24 M8 16 H11.5 M20.5 16 H24' stroke='%2300f9ff' stroke-width='1.2' stroke-linecap='square'/%3E%3C/svg%3E")
+    cursor:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Cpath d='M2 2 L12 2 L2 12Z' fill='%23ff9500'/%3E%3Ccircle cx='16' cy='16' r='4' fill='none' stroke='%2300f9ff' stroke-width='1.4'/%3E%3Cpath d='M16 8 V11.5 M16 20.5 V24 M8 16 H11.5 M20.5 16 H24' stroke='%2300f9ff' stroke-width='1.2' stroke-linecap='square'/%3E%3C/svg%3E")
         2 2,
       crosshair;
   }
@@ -763,7 +956,8 @@
   [role="button"],
   input,
   .za-plate {
-    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Cpath d='M2 2 L13 2 L2 13Z' fill='%23ff9500'/%3E%3Ccircle cx='16' cy='16' r='5' fill='none' stroke='%23ff9500' stroke-width='1.5'/%3E%3C/svg%3E")
+    cursor:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Cpath d='M2 2 L13 2 L2 13Z' fill='%23ff9500'/%3E%3Ccircle cx='16' cy='16' r='5' fill='none' stroke='%23ff9500' stroke-width='1.5'/%3E%3C/svg%3E")
         2 2,
       pointer;
   }
@@ -875,7 +1069,9 @@
 .za-pilot:hover {
   transform: translateY(-3px);
   border-color: var(--color-cyan);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.4), 0 0 24px rgba(0, 249, 255, 0.12);
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.4),
+    0 0 24px rgba(0, 249, 255, 0.12);
 }
 
 .za-crosshair {
@@ -945,7 +1141,7 @@
   background: conic-gradient(
     from 0deg,
     transparent 0 72%,
-    rgba(0, 249, 255, 0.0) 78%,
+    rgba(0, 249, 255, 0) 78%,
     rgba(0, 249, 255, 0.14) 88%,
     transparent 96%
   );
@@ -1065,7 +1261,7 @@
 .za-article-card {
   position: relative;
   overflow: hidden;
-  animation: za-article-acquire 620ms var(--ease-out) both;
+  animation: za-article-acquire var(--za-article-acquisition-duration) var(--ease-out) both;
 }
 .za-article-card::before {
   content: "";
@@ -1082,13 +1278,19 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(100deg, transparent 38%, rgba(0, 249, 255, 0.15) 49%, rgba(232, 246, 255, 0.2) 50%, transparent 62%);
+  background: linear-gradient(
+    100deg,
+    transparent 38%,
+    rgba(0, 249, 255, 0.15) 49%,
+    rgba(232, 246, 255, 0.2) 50%,
+    transparent 62%
+  );
   transform: translateX(-125%);
-  animation: za-article-scan 760ms 80ms var(--ease-out) both;
+  animation: za-article-scan 480ms 30ms var(--ease-out) both;
 }
 .za-article-telemetry {
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: 10px;
   line-height: 1.25;
   letter-spacing: 0.08em;
   color: var(--color-dim);
@@ -1105,17 +1307,14 @@
   0% {
     opacity: 0.2;
     transform: translateX(18px) scale(0.992);
-    filter: blur(9px);
     clip-path: inset(0 0 0 92%);
   }
   48% {
     opacity: 0.88;
-    filter: blur(2px);
   }
   100% {
     opacity: 1;
     transform: translateX(0) scale(1);
-    filter: blur(0);
     clip-path: inset(0);
   }
 }
@@ -1208,6 +1407,39 @@
   animation-delay: 1.5s;
 }
 
+.za-scroll[data-active-deck="0"] section:not([data-deck="0"]) *,
+.za-scroll[data-active-deck="1"] section:not([data-deck="1"]) *,
+.za-scroll[data-active-deck="2"] section:not([data-deck="2"]) *,
+.za-scroll[data-active-deck="3"] section:not([data-deck="3"]) *,
+.za-scroll[data-active-deck="4"] section:not([data-deck="4"]) *,
+.za-scroll[data-active-deck="5"] section:not([data-deck="5"]) *,
+.za-scroll[data-active-deck="6"] section:not([data-deck="6"]) *,
+.za-scroll[data-active-deck="7"] section:not([data-deck="7"]) *,
+.za-scroll[data-active-deck="8"] section:not([data-deck="8"]) * {
+  animation-play-state: paused;
+}
+
+.za-scroll[data-active-deck="0"] section:not([data-deck="0"]) *::before,
+.za-scroll[data-active-deck="0"] section:not([data-deck="0"]) *::after,
+.za-scroll[data-active-deck="1"] section:not([data-deck="1"]) *::before,
+.za-scroll[data-active-deck="1"] section:not([data-deck="1"]) *::after,
+.za-scroll[data-active-deck="2"] section:not([data-deck="2"]) *::before,
+.za-scroll[data-active-deck="2"] section:not([data-deck="2"]) *::after,
+.za-scroll[data-active-deck="3"] section:not([data-deck="3"]) *::before,
+.za-scroll[data-active-deck="3"] section:not([data-deck="3"]) *::after,
+.za-scroll[data-active-deck="4"] section:not([data-deck="4"]) *::before,
+.za-scroll[data-active-deck="4"] section:not([data-deck="4"]) *::after,
+.za-scroll[data-active-deck="5"] section:not([data-deck="5"]) *::before,
+.za-scroll[data-active-deck="5"] section:not([data-deck="5"]) *::after,
+.za-scroll[data-active-deck="6"] section:not([data-deck="6"]) *::before,
+.za-scroll[data-active-deck="6"] section:not([data-deck="6"]) *::after,
+.za-scroll[data-active-deck="7"] section:not([data-deck="7"]) *::before,
+.za-scroll[data-active-deck="7"] section:not([data-deck="7"]) *::after,
+.za-scroll[data-active-deck="8"] section:not([data-deck="8"]) *::before,
+.za-scroll[data-active-deck="8"] section:not([data-deck="8"]) *::after {
+  animation-play-state: paused;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .za-article-card,
   .za-article-card::after,
@@ -1243,7 +1475,15 @@
   .za-law-step,
   .za-corner-hud,
   .za-airframe,
-  .za-bit-control {
+  .za-airframe-progress,
+  .za-bit-control,
+  .za-command-rail,
+  .za-lcars-pip-mark,
+  .za-routing-progress,
+  .za-stage-poster,
+  .za-stage-live,
+  .za-chapter-overlay,
+  .za-cinema-bar {
     animation: none !important;
     transition: none !important;
   }
@@ -1283,10 +1523,6 @@
 }
 .za-airframe-compact-name {
   display: none;
-  max-width: 94px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 .za-corner-hud.yield {
   gap: 8px;
@@ -1304,11 +1540,36 @@
 .za-corner-hud.yield .za-airframe .za-eq {
   display: none;
 }
+.za-corner-hud.yield .za-airframe > div:first-child {
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
 .za-corner-hud.yield .za-airframe-compact-name {
-  display: inline;
+  display: block;
+  flex-basis: 100%;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 .za-bit-control {
-  transition: filter 260ms var(--ease-out), transform 260ms var(--ease-out);
+  transition:
+    filter 260ms var(--ease-out),
+    transform 260ms var(--ease-out);
+}
+
+[data-eve-console] [role="log"] {
+  height: var(--eve-log-height, min(42vh, 360px));
+  min-height: 0;
+}
+
+@media (min-width: 768px) and (max-height: 760px) {
+  section[data-deck="7"].za-mobile-rail-clearance {
+    padding-top: 4.5rem;
+  }
+}
+
+.za-critical-telemetry {
+  font-size: 10px;
 }
 .za-corner-hud.yield .za-bit-control {
   filter: saturate(0.92) brightness(0.9);
@@ -1329,8 +1590,19 @@
     right: 0.25rem;
   }
   .za-corner-hud.yield .za-bit-control {
-    transform: scale(0.72);
+    transform: scale(0.58);
     transform-origin: bottom right;
+  }
+  .za-corner-hud.yield {
+    top: 5rem;
+    bottom: auto;
+  }
+}
+
+@media (max-width: 767px) {
+  .za-article-telemetry,
+  .za-critical-telemetry {
+    font-size: 11px;
   }
 }
 
@@ -1343,7 +1615,7 @@
     max-width: 140px;
   }
   .za-corner-hud.yield .za-bit-control {
-    transform: scale(0.72);
+    transform: scale(0.58);
     transform-origin: bottom right;
   }
 }
@@ -1357,7 +1629,9 @@
   background:
     linear-gradient(90deg, rgba(255, 149, 0, 0.12), rgba(0, 249, 255, 0.035) 68%, transparent),
     repeating-linear-gradient(0deg, transparent 0 9px, rgba(255, 255, 255, 0.018) 10px);
-  box-shadow: inset 0 1px rgba(255, 255, 255, 0.04), 0 0 26px rgba(255, 149, 0, 0.06);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.04),
+    0 0 26px rgba(255, 149, 0, 0.06);
 }
 .za-mission-stamp::after {
   content: "";
@@ -1372,6 +1646,14 @@
   font-size: 9px;
   letter-spacing: 0.2em;
   color: var(--color-accent);
+}
+@media (max-width: 767px) {
+  .za-mission-stamp span {
+    font-size: 11px;
+    line-height: 1.45;
+    letter-spacing: 0.08em;
+    overflow-wrap: anywhere;
+  }
 }
 .za-mission-stamp strong {
   display: block;
@@ -1413,8 +1695,17 @@
   inset: 0;
   border: 1px solid transparent;
   border-radius: inherit;
-  background: linear-gradient(115deg, rgba(0, 249, 255, 0.22), transparent 30%, rgba(255, 149, 0, 0.16) 74%, transparent) border-box;
-  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  background: linear-gradient(
+      115deg,
+      rgba(0, 249, 255, 0.22),
+      transparent 30%,
+      rgba(255, 149, 0, 0.16) 74%,
+      transparent
+    )
+    border-box;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) padding-box,
+    linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   animation: za-dossier-lock 780ms var(--ease-out) both;
@@ -1429,7 +1720,9 @@
   border: 1px solid rgba(0, 249, 255, 0.28);
   border-radius: var(--radius-md);
   background: #080b10;
-  box-shadow: inset 0 0 36px rgba(0, 0, 0, 0.56), 0 16px 42px rgba(0, 0, 0, 0.32);
+  box-shadow:
+    inset 0 0 36px rgba(0, 0, 0, 0.56),
+    0 16px 42px rgba(0, 0, 0, 0.32);
 }
 .za-airframe-frame::after {
   content: "";
@@ -1538,18 +1831,42 @@
   color: var(--color-ink);
 }
 @keyframes za-dossier-lock {
-  from { opacity: 0; filter: brightness(2); }
-  to { opacity: 1; filter: brightness(1); }
+  from {
+    opacity: 0;
+    filter: brightness(2);
+  }
+  to {
+    opacity: 1;
+    filter: brightness(1);
+  }
 }
 @keyframes za-evidence-resolve {
-  from { opacity: 0.32; filter: saturate(0) contrast(1.35) brightness(1.45); transform: scale(1.09); }
-  to { opacity: 1; filter: saturate(0.78) contrast(1.08) brightness(0.84); transform: scale(1.025); }
+  from {
+    opacity: 0.32;
+    filter: saturate(0) contrast(1.35) brightness(1.45);
+    transform: scale(1.09);
+  }
+  to {
+    opacity: 1;
+    filter: saturate(0.78) contrast(1.08) brightness(0.84);
+    transform: scale(1.025);
+  }
 }
 @keyframes za-evidence-acquire {
-  from { transform: translateX(0); opacity: 0; }
-  12% { opacity: 1; }
-  82% { opacity: 0.82; }
-  to { transform: translateX(660%); opacity: 0; }
+  from {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  82% {
+    opacity: 0.82;
+  }
+  to {
+    transform: translateX(660%);
+    opacity: 0;
+  }
 }
 @media (max-width: 520px) {
   .za-airframe-credit {
@@ -1606,6 +1923,11 @@
 }
 .za-plate-img {
   filter: contrast(1.06) saturate(1.04);
+}
+@media (max-width: 767px) {
+  .za-mobile-flight-control {
+    background: var(--color-surface);
+  }
 }
 .za-plate::after {
   content: "";

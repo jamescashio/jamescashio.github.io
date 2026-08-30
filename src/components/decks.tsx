@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, type RefObject } from "react";
+import { useCallback, useMemo, useState, type CSSProperties, type RefObject } from "react";
 import {
   ARTICLES,
   EXPIRES_SHORT,
@@ -11,13 +11,15 @@ import {
   PILOT_CRAFT,
   PVE,
   ROUTING_STAGES,
+  ROUTING_VERIFIED_LONG,
   SERVICE_FAMILIES,
   VERIFIED_LONG,
   WITHHELD,
   DECK_CRAFT,
 } from "@/lib/content";
 import { getSound } from "@/lib/sound";
-import { useDeck } from "@/lib/store";
+import { COMMAND_POSTER_SOURCES } from "@/lib/command-poster";
+import { useDeck, type CopyEmailState } from "@/lib/store";
 import { BlackBoxReceipt } from "./black-box-receipt";
 import { BitMascot } from "./bit-mascot";
 import { BuildEnvelope } from "./build-envelope";
@@ -27,6 +29,52 @@ import { EveConsole } from "./eve-console";
 type SecRef = RefObject<HTMLElement | null>;
 
 export const IDENTITY_LINE = "DOUG CASHIO · ENTERPRISE AI + SECURITY SYSTEMS · OWNER-OPERATOR";
+
+const SUPPORTING_PLATE_SIZES = "(min-width: 1024px) 50vw, 100vw";
+const SUPPORTING_PLATE_PREVIEWS = {
+  rack: "data:image/jpeg;base64,/9j/2wBDABwcHBweHCAkJCAtMCswLUI9Nzc9QmRHTUdNR2SXXm5eXm5el4aihHuEoobwvaenvfD/6d3p////////////////2wBDARwcHBweHCAkJCAtMCswLUI9Nzc9QmRHTUdNR2SXXm5eXm5el4aihHuEoobwvaenvfD/6d3p////////////////wgARCAAgADADASIAAhEBAxEB/8QAGAABAQEBAQAAAAAAAAAAAAAAAgMAAQb/xAAVAQEBAAAAAAAAAAAAAAAAAAAAAf/aAAwDAQACEAMQAAAA82wyt5EnO8a4woucTT3D/8QAJBAAAQMCBQUBAAAAAAAAAAAAAQACERBRAxIhMaETImGBkbH/2gAIAQEAAT8ACMI9KwWE9sFpOh8rEblO6NczrFAut+LE1ExCigBOyg6yeF74RPbvKNZYFmFh8RNP/8QAFhEAAwAAAAAAAAAAAAAAAAAAAAEg/9oACAECAQE/ABT/AP/EABQRAQAAAAAAAAAAAAAAAAAAACD/2gAIAQMBAT8AX//Z",
+  operator:
+    "data:image/jpeg;base64,/9j/2wBDABwcHBweHCAkJCAtMCswLUI9Nzc9QmRHTUdNR2SXXm5eXm5el4aihHuEoobwvaenvfD/6d3p////////////////2wBDARwcHBweHCAkJCAtMCswLUI9Nzc9QmRHTUdNR2SXXm5eXm5el4aihHuEoobwvaenvfD/6d3p////////////////wgARCAAgADADASIAAhEBAxEB/8QAGQABAQEBAQEAAAAAAAAAAAAAAgEAAwQG/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAH/2gAMAwEAAhADEAAAAPnE4Vl2cx6QcLrLKabIn//EABwQAAMBAQEAAwAAAAAAAAAAAAABEQISQTFRcf/aAAgBAQABPwCNCRDw0QfPWv0XJU4N5Tf14PltT4Nc1JIpR+FqKylRUaMwbyVH/8QAFREBAQAAAAAAAAAAAAAAAAAAASD/2gAIAQIBAT8AK//EABQRAQAAAAAAAAAAAAAAAAAAACD/2gAIAQMBAT8AX//Z",
+  fold: "data:image/jpeg;base64,/9j/2wBDABwcHBweHCAkJCAtMCswLUI9Nzc9QmRHTUdNR2SXXm5eXm5el4aihHuEoobwvaenvfD/6d3p////////////////2wBDARwcHBweHCAkJCAtMCswLUI9Nzc9QmRHTUdNR2SXXm5eXm5el4aihHuEoobwvaenvfD/6d3p////////////////wgARCAAbADADASIAAhEBAxEB/8QAGQAAAwEBAQAAAAAAAAAAAAAAAgQFAwAG/8QAFgEAAwAAAAAAAAAAAAAAAAAAAAEC/9oADAMBAAIQAxAAAADzpiQMYsPJxwroJ5sInUuHP4LUkBmv/8QAIxAAAgEDAwUBAQAAAAAAAAAAAQIAAxExEiFhBBATQVEigf/aAAgBAQABPwAWguMbzQtVUOCdv7HpFfU8bAXsZaFSIisxAUGPayUl3IyR9MXx1HdW9EANH6R0OpQ1wwBBlVNNR7YEXhwIKi4Ls3AE89NSQlMDmUuoQEfgbYlXrxpsEZTHqFuB2wIO2pvp7f/EABkRAAMAAwAAAAAAAAAAAAAAAAABAhASMf/aAAgBAgEBPwDhuTSeGkyZUn//xAAaEQEBAAIDAAAAAAAAAAAAAAABAAIREBIh/9oACAEDAQE/APG6aZx1wKTkt//Z",
+} as const;
+const SUPPORTING_PLATE_SOURCES = {
+  rack: [
+    {
+      type: "image/avif",
+      srcSet: "/plates/rack-mobile.avif 768w, /plates/rack-desktop.avif 1440w",
+      sizes: SUPPORTING_PLATE_SIZES,
+    },
+    {
+      type: "image/webp",
+      srcSet: "/plates/rack-mobile.webp 768w, /plates/rack-desktop.webp 1440w",
+      sizes: SUPPORTING_PLATE_SIZES,
+    },
+  ],
+  operator: [
+    {
+      type: "image/avif",
+      srcSet: "/plates/operator-mobile.avif 768w, /plates/operator-desktop.avif 1440w",
+      sizes: SUPPORTING_PLATE_SIZES,
+    },
+    {
+      type: "image/webp",
+      srcSet: "/plates/operator-mobile.webp 768w, /plates/operator-desktop.webp 1440w",
+      sizes: SUPPORTING_PLATE_SIZES,
+    },
+  ],
+  fold: [
+    {
+      type: "image/avif",
+      srcSet: "/plates/fold-mobile.avif 768w, /plates/fold-desktop.avif 1440w",
+      sizes: SUPPORTING_PLATE_SIZES,
+    },
+    {
+      type: "image/webp",
+      srcSet: "/plates/fold-mobile.webp 768w, /plates/fold-desktop.webp 1440w",
+      sizes: SUPPORTING_PLATE_SIZES,
+    },
+  ],
+} as const;
 
 export function DeckSnapshot({
   s0,
@@ -45,26 +93,32 @@ export function DeckSnapshot({
     <section
       ref={s0}
       data-deck={0}
+      tabIndex={-1}
+      aria-label="SNAPSHOT deck"
       className="za-mobile-rail-clearance relative min-h-[100dvh] px-5 pb-32 pt-24 md:px-10 lg:px-14"
     >
       <div ref={copyCol} className="za-bracket max-w-[38rem] p-2">
         <Kicker>ZEUSAPOLLO · SOVEREIGN AI UNDER HUMAN COMMAND</Kicker>
         <p className="za-mono mt-3 text-[11px] tracking-[0.12em] text-cyan">{IDENTITY_LINE}</p>
-        <h1 className="za-display text-[clamp(2rem,4.8vw,4.4rem)] leading-[0.92]">
+        <h1 tabIndex={-1} className="za-display text-[clamp(2rem,4.8vw,4.4rem)] leading-[0.92]">
           OWN THE IRON AND THE <span className="za-shimmer-text">ROUTE</span>.
         </h1>
-        <p className="za-mono mt-5 text-[11px] text-dim">
-          PUBLIC SNAPSHOT VERIFIED {VERIFIED_LONG} · 19/19 RUNNING · 2 HOSTS QUORATE · NOT A LIVE COUNTER
+        <p className="za-critical-telemetry za-mono mt-5 text-[11px] text-dim">
+          18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6 · 2 HOSTS QUORATE · READ-ONLY DATED EXPORT
         </p>
-        <p className="mt-6 max-w-[46ch] text-[1.05rem] leading-relaxed text-muted">
-          Two Proxmox hosts currently run nineteen containers. Ten public capability lanes sit in front of a private
-          catalog of thirty-six models, so the right model does the work while a person stays in command of it. The
-          current public snapshot was verified on {VERIFIED_LONG}.
+        <p className="za-snapshot-copy mt-6 max-w-[46ch] text-[1.05rem] leading-relaxed text-muted">
+          Doug Cashio builds and operates sovereign AI and security systems on hardware he owns. Quality-first routing
+          selects the right model, while dated public evidence keeps every claim bounded. Fleet evidence was verified on
+          28 August 2026; the routing inventory remains separately dated 21 August 2026.
         </p>
 
-        <div className="mt-8 grid max-w-lg grid-cols-2 gap-2 rounded-[var(--radius-lg)] border border-line bg-void-2/70 p-1.5">
+        <div
+          data-hud-clear
+          className="za-snapshot-modes mt-8 grid max-w-lg grid-cols-2 gap-2 rounded-[var(--radius-lg)] border border-line bg-void-2/70 p-1.5"
+        >
           <button
             type="button"
+            aria-pressed={mode === "technical"}
             onClick={() => {
               set({ mode: "technical", shown: [0] });
               getSound().prompt();
@@ -73,11 +127,12 @@ export function DeckSnapshot({
           >
             <div className="za-mono text-[10px] tracking-[0.2em]">TECHNICAL</div>
             <div className="mt-1 font-sans text-[13px] leading-snug">
-              Nine decks. Fleet, routing law, hardware, builds.
+              Detailed evidence, build proof, and operational context.
             </div>
           </button>
           <button
             type="button"
+            aria-pressed={mode === "executive"}
             onClick={() => {
               set({ mode: "executive", shown: [0, 8] });
               getSound().prompt();
@@ -85,11 +140,13 @@ export function DeckSnapshot({
             className={`rounded-[10px] px-3 py-3 text-left ${mode === "executive" ? "bg-accent text-on-accent" : "text-dim"}`}
           >
             <div className="za-mono text-[10px] tracking-[0.2em]">EXECUTIVE</div>
-            <div className="mt-1 font-sans text-[13px] leading-snug">One page. What it means for a business.</div>
+            <div className="mt-1 font-sans text-[13px] leading-snug">
+              Route control, evidence boundary, human authority.
+            </div>
           </button>
         </div>
 
-        <div className="mt-8 flex flex-wrap items-center gap-3">
+        <div data-hud-clear className="za-snapshot-actions mt-8 flex flex-wrap items-center gap-3">
           <button type="button" className="za-btn px-7 py-3.5 text-[13px]" onClick={onEngage}>
             {mode === "executive" ? "READ THE BRIEF" : "DESCEND THE DECKS"}
           </button>
@@ -98,32 +155,26 @@ export function DeckSnapshot({
           </button>
         </div>
 
-        <div className="za-chip mt-8">
+        <div data-hud-clear className="za-chip za-critical-telemetry mt-8">
           <span className="h-1.5 w-1.5 rounded-full bg-green shadow-[0_0_8px_var(--color-green)]" />
-          E.V.E. ONLINE · CURRENT · VERIFIED {VERIFIED_LONG} · VALID THRU {EXPIRES_SHORT}
+          E.V.E. ONLINE · READ-ONLY · DATED EXPORT · VERIFIED {VERIFIED_LONG} · VALID THRU {EXPIRES_SHORT}
         </div>
 
         <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {[
-            ["ZEUS", 13, "RUNNING WORKLOADS"],
-            ["APOLLO", 6, "RUNNING WORKLOADS"],
-            ["ATLAS", null, "GATEWAY · LOCAL INFERENCE"],
-            ["ATHENA", null, "QUORUM SUPPORT"],
-            ["GENESIS", null, "PRIVATE STORAGE · RECOVERY"],
-          ].map(([n, c, r]) => (
-            <div key={String(n)} className={`za-panel px-3 py-3 ${n === "GENESIS" ? "col-span-2 sm:col-span-1" : ""}`}>
+            ["ZEUS", "12/13", "AT 28 AUG PROBE"],
+            ["APOLLO", "6/6", "AT 28 AUG PROBE"],
+            ["FLEET", "18/19", "AT 28 AUG PROBE"],
+            ["HOSTS", "2", "CLUSTER QUORATE"],
+            ["PVE", PVE, "VERSION AT PROBE"],
+          ].map(([name, value, detail]) => (
+            <div key={name} className="za-panel px-3 py-3">
               <div className="flex items-center justify-between gap-2">
-                <div className="za-display text-[15px] text-cyan">{n}</div>
+                <div className="za-display text-[15px] text-cyan">{name}</div>
                 <span className="h-1.5 w-1.5 rounded-full bg-green shadow-[0_0_8px_var(--color-green)]" />
               </div>
-              <div className="za-mono mt-1 text-[9px] text-dim">
-                {c != null ? (
-                  <>
-                    <CountUp to={c as number} /> {r as string}
-                  </>
-                ) : (
-                  (r as string)
-                )}
+              <div className="za-critical-telemetry za-mono mt-1 text-[9px] text-dim">
+                {value} · {detail}
               </div>
               <div className="za-heartbeat mt-2" aria-hidden />
             </div>
@@ -141,38 +192,33 @@ export function DeckBrief({ sBrief }: { sBrief: SecRef }) {
       <div className="grid max-w-6xl items-center gap-10 lg:grid-cols-[1.15fr_0.85fr]">
         <div>
           <Kicker>WHAT THIS ACTUALLY MEANS FOR A BUSINESS</Kicker>
-          <Title>ONE OUTCOME. TWO OWNERSHIPS. HUMAN COMMAND.</Title>
+          <Title>THREE OUTCOMES. ONE HUMAN COMMAND.</Title>
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             <article className="za-panel p-5">
-              <div className="za-mono text-[10px] text-accent">01 · OUTCOME</div>
+              <div className="za-mono text-[10px] text-accent">01 · ROUTE CONTROL</div>
               <div className="za-display mt-3 text-5xl text-cyan">
-                <CountUp to={19} />
-                /19
+                <CountUp to={10} />
               </div>
               <p className="mt-3 text-sm leading-relaxed text-muted">
-                Published container workloads running during the {VERIFIED_LONG} verification probe. Two Proxmox hosts
-                online. Cluster quorate. Ten public lanes in front of thirty-six private catalog entries.
+                Ten public capability lanes are recorded in the 21 August 2026 routing inventory. Thirty-six private
+                catalog entries are a separate count.
               </p>
             </article>
             <article className="za-panel p-5">
-              <div className="za-mono text-[10px] text-accent">02 · OWNERSHIP</div>
-              <ul className="mt-3 space-y-3 text-sm text-muted">
-                <li>
-                  <b className="text-ink">OWN THE IRON.</b> 19 containers on 2 Proxmox hosts I physically own.
-                </li>
-                <li>
-                  <b className="text-ink">OWN THE ROUTE.</b> One gateway, ten lanes. Quality picks. Cost ties.
-                </li>
-                <li>
-                  <b className="text-ink">OWN THE PROOF.</b> Every figure dated. Stale numbers withheld.
-                </li>
-              </ul>
+              <div className="za-mono text-[10px] text-accent">02 · EVIDENCE BOUNDARY</div>
+              <div className="za-display mt-3 text-5xl text-cyan">18/19</div>
+              <p className="mt-3 text-sm leading-relaxed text-muted">
+                18 of 19 documented guests were running at the 28 August probe. Two Proxmox hosts were online and
+                quorate. The dated export is evidence, never telemetry.
+              </p>
             </article>
             <article className="za-panel p-5">
-              <div className="za-mono text-[10px] text-accent">03 · COMMAND</div>
+              <div className="za-mono text-[10px] text-accent">03 · HUMAN AUTHORITY</div>
+              <div className="za-display mt-3 text-5xl text-cyan">1</div>
+              <div className="za-mono mt-2 text-[10px] text-accent">OWNER ACCOUNTABLE</div>
               <p className="mt-3 text-sm leading-relaxed text-muted">
-                Autonomy runs. A human is accountable for it. If you work on routing, reliability, explainability, or
-                sovereign infrastructure — hail.
+                Owned compute and bounded autonomy leave one person accountable for routing, reliability, and the next
+                decision.
               </p>
             </article>
           </div>
@@ -181,6 +227,9 @@ export function DeckBrief({ sBrief }: { sBrief: SecRef }) {
           <Plate
             src="/plates/command.jpg?v=48"
             alt="Command viewscreen over a starfield"
+            sources={COMMAND_POSTER_SOURCES}
+            width={1680}
+            height={945}
             className="h-[min(56vh,480px)] w-full"
             chip="VIEWSCREEN · DEFIANT CLASS"
           />
@@ -190,23 +239,10 @@ export function DeckBrief({ sBrief }: { sBrief: SecRef }) {
   );
 }
 
-export function DeckGrid({
-  s1,
-  hubZ,
-  hubA,
-  pathZeus,
-  pathApollo,
-}: {
-  s1: SecRef;
-  hubZ: RefObject<HTMLDivElement | null>;
-  hubA: RefObject<HTMLDivElement | null>;
-  pathZeus: string;
-  pathApollo: string;
-}) {
+export function DeckGrid({ s1 }: { s1: SecRef }) {
   const [hover, setHover] = useState<number | null>(null);
   const [lock, setLock] = useState<number | null>(null);
   const withheld = Array.from({ length: 12 }, (_, i) => i + 8);
-  const locked = lock != null ? NAMED_ROLES[lock] : null;
 
   return (
     <DeckShell index={1} sRef={s1}>
@@ -214,68 +250,16 @@ export function DeckGrid({
         <Kicker>02 · THE GRID</Kicker>
         <Title>WHAT IS ACTUALLY RUNNING</Title>
         <p className="mt-5 max-w-[62ch] text-[1.05rem] leading-relaxed text-muted">
-          Nineteen documented container roles. Zeus currently runs thirteen workloads; Apollo runs six. Seven families
-          are named here. The other twelve stay public-safe — no addresses, no ports, no access paths, ever.
+          Nineteen documented roles. At the 28 August probe Zeus ran 12 of 13 and Apollo ran 6 of 6. Seven observed role
+          families are named here; the stopped guest stays unnamed and the remaining roles stay public-safe.
         </p>
-
-        <div className="relative mt-8">
-          <svg
-            className="pointer-events-none absolute inset-0 h-full w-full"
-            aria-hidden
-            style={{ display: pathZeus || pathApollo ? "block" : "none" }}
-          >
-            <path d={pathZeus} className="za-flow-path" />
-            <path d={pathApollo} className="za-flow-path cool" />
-            {pathZeus ? (
-              <>
-                <circle r="3.4" className="za-packet" style={{ offsetPath: `path('${pathZeus}')` }} />
-                <circle
-                  r="2.6"
-                  className="za-packet"
-                  style={{ offsetPath: `path('${pathZeus}')`, animationDelay: "1.1s" }}
-                />
-                <circle
-                  r="2.2"
-                  className="za-packet"
-                  style={{ offsetPath: `path('${pathZeus}')`, animationDelay: "2.2s" }}
-                />
-              </>
-            ) : null}
-            {pathApollo ? (
-              <>
-                <circle r="3.4" className="za-packet cool" style={{ offsetPath: `path('${pathApollo}')` }} />
-                <circle
-                  r="2.4"
-                  className="za-packet cool"
-                  style={{ offsetPath: `path('${pathApollo}')`, animationDelay: "1.5s" }}
-                />
-              </>
-            ) : null}
-          </svg>
-          <div className="flex flex-wrap gap-3">
-            <div
-              ref={hubZ}
-              className={`za-panel za-hub warm px-5 py-4 ${locked?.hub === "zeus" ? "border-accent" : ""}`}
-            >
-              <div className="za-display text-xl text-accent">ZEUS</div>
-              <div className="za-mono mt-1 text-[10px] text-dim">13 RUNNING WORKLOADS</div>
-            </div>
-            <div
-              ref={hubA}
-              className={`za-panel za-hub cool px-5 py-4 ${locked?.hub === "apollo" ? "border-cyan" : ""}`}
-            >
-              <div className="za-display text-xl text-cyan">APOLLO</div>
-              <div className="za-mono mt-1 text-[10px] text-dim">6 RUNNING WORKLOADS</div>
-            </div>
-          </div>
-        </div>
 
         <div data-hud-clear className="mt-8 grid grid-cols-2 gap-2 md:grid-cols-4">
           {NAMED_ROLES.map((r, i) => (
             <button
               key={r.name + r.role}
               type="button"
-              data-hub={r.hub}
+              aria-pressed={lock === i}
               onMouseEnter={() => {
                 setHover(i);
                 getSound().target((i / 7 - 0.5) * 1.2);
@@ -290,7 +274,6 @@ export function DeckGrid({
               <div className="za-mono text-[9px] text-dim">{String(i + 1).padStart(2, "0")}</div>
               <div className="mt-1 font-display text-[13px] tracking-wide text-ink">{r.name}</div>
               <div className="za-mono mt-1 text-[9px] text-cyan">{r.role}</div>
-              <div className="za-mono mt-2 text-[9px] text-dim">{r.hub.toUpperCase()}</div>
             </button>
           ))}
           {withheld.map((n) => (
@@ -303,10 +286,9 @@ export function DeckGrid({
         </div>
         <p className="mt-6 max-w-[70ch] text-sm leading-relaxed text-muted">{SERVICE_FAMILIES}</p>
         <div className="mt-6 flex flex-wrap gap-3 text-[11px]">
-          <span className="za-chip">19 OF 19 VERIFIED RUNNING</span>
-          <span className="za-chip">CLUSTER QUORATE</span>
-          <span className="za-chip">EXPORT CURRENT</span>
-          <span className="za-chip">0 STOPPED AT VERIFICATION</span>
+          <span className="za-chip">18/19 AT 28 AUG PROBE</span>
+          <span className="za-chip">2 HOSTS ONLINE · QUORATE</span>
+          <span className="za-chip">READ-ONLY · DATED EXPORT</span>
         </div>
       </div>
     </DeckShell>
@@ -323,10 +305,9 @@ export function DeckRouting({ s2 }: { s2: SecRef }) {
         <Title>QUALITY PICKS THE MODEL.</Title>
         <p className="mt-2 za-display text-[clamp(1.2rem,2.4vw,2rem)] text-accent">COST ONLY BREAKS A TIE.</p>
         <p className="mt-5 max-w-[62ch] text-[1.05rem] leading-relaxed text-muted">
-          Quality picks the model. Cost only breaks a tie. Public capability lanes are not the same as private model
-          entries. The public site exposes ten capability classes. The private Atlas catalog currently contains
-          thirty-six model entries. The public number describes what the outside world can understand, not the complete
-          internal provider inventory — and this page is policy, not a live provider status board.
+          Quality picks the model. Cost only breaks a tie. Public capability lanes and private catalog entries count
+          different objects; both were last confirmed in the {ROUTING_VERIFIED_LONG} routing inventory. This is a dated
+          counting rule, not a live provider status board.
         </p>
 
         <div data-hud-clear className="mt-10 grid gap-3 lg:grid-cols-[1fr_1.1fr]">
@@ -335,12 +316,13 @@ export function DeckRouting({ s2 }: { s2: SecRef }) {
               <button
                 key={l.id}
                 type="button"
+                aria-pressed={active === i}
+                aria-controls="routing-lane-detail"
                 onClick={() => {
                   setActive(i);
                   getSound().ok();
                   getSound().target((i / LANES.length - 0.5) * 1.4);
                 }}
-                data-model={l.tid || undefined}
                 className={`flex min-h-11 items-center gap-4 rounded-[var(--radius-md)] border px-3 py-2.5 text-left transition-colors ${
                   active === i ? "border-accent bg-accent/10" : "border-line bg-void-2/50 hover:border-cyan/40"
                 }`}
@@ -351,7 +333,12 @@ export function DeckRouting({ s2 }: { s2: SecRef }) {
               </button>
             ))}
           </div>
-          <div className="za-panel relative overflow-hidden p-6">
+          <div
+            id="routing-lane-detail"
+            className="za-panel relative overflow-hidden p-6"
+            aria-live="polite"
+            aria-atomic="true"
+          >
             <div className="za-kicker">LANE {lane.id} · COMMITTED</div>
             <h3 className="za-display mt-3 text-3xl">{lane.name}</h3>
             <p className="za-mono mt-2 text-[12px] text-cyan">{lane.model}</p>
@@ -374,14 +361,13 @@ export function DeckRouting({ s2 }: { s2: SecRef }) {
 
             <div className="mt-8 h-1.5 overflow-hidden rounded-full bg-white/10">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-cyan to-accent transition-all duration-500"
+                className="za-routing-progress h-full rounded-full bg-gradient-to-r from-cyan to-accent transition-all duration-500"
                 style={{ width: `${((active + 1) / LANES.length) * 100}%` }}
               />
             </div>
             <p className="za-mono mt-4 text-[10px] leading-relaxed text-dim">
-              TEN CONFIGURED PUBLIC CAPABILITY LANES — NOT A CLAIM THAT EVERY LANE IS ACTIVE ON EVERY REQUEST. THE
-              PRIVATE ATLAS CATALOG HOLDS 36 MODEL ENTRIES. THE TWO FIGURES COUNT DIFFERENT OBJECTS AND ARE NEVER
-              MERGED. DEEPSEEK TECHNICAL IDS: deepseek-v4-pro · deepseek-v4-flash.
+              ROUTING INVENTORY {ROUTING_VERIFIED_LONG.toUpperCase()} — TEN PUBLIC CAPABILITY LANES AND 36 PRIVATE
+              CATALOG ENTRIES COUNT DIFFERENT OBJECTS. DATED POLICY, NOT LIVE PROVIDER STATUS.
             </p>
           </div>
         </div>
@@ -400,18 +386,18 @@ export function DeckIron({ s3 }: { s3: SecRef }) {
           <Kicker>04 · THE IRON</Kicker>
           <Title>HARDWARE IN A ROOM I CAN WALK INTO.</Title>
           <p className="mt-5 max-w-[52ch] text-[1.05rem] leading-relaxed text-muted">
-            ZeusApollo currently runs Proxmox VE {PVE} across two online hosts with quorum maintained by its supporting
-            edge node. Atlas is not a Proxmox host. If I cannot put a hand on it, it does not count as mine. Click a
-            host. The plate holds the lock.
+            ZeusApollo ran Proxmox VE {PVE} across two online, quorate hosts at the dated probe. The public export
+            intentionally omits hardware implementation details. Click a dated host label. The plate holds the lock.
           </p>
           <div data-hud-clear className="mt-8 grid gap-3 sm:grid-cols-2">
             {HOSTS.map((h, i) => (
               <button
                 key={h.name}
                 type="button"
+                aria-pressed={probe === i}
                 onClick={() => {
                   setProbe(i);
-                  getSound().target((i / 4 - 0.5) * 1.2);
+                  getSound().target((i / Math.max(1, HOSTS.length - 1) - 0.5) * 1.2);
                 }}
                 className={`za-panel p-5 text-left ${probe === i ? "border-accent" : ""}`}
               >
@@ -437,15 +423,20 @@ export function DeckIron({ s3 }: { s3: SecRef }) {
               ))}
             </ul>
             <p className="mt-4 text-sm text-muted">
-              A figure with no fresh measurement is omitted entirely rather than published stale. Owner-run verification
-              probe over cluster SSH by E.V.E. — a dated public-safe snapshot, not streaming telemetry. This page makes
-              no production network calls.
+              A figure with no fresh measurement is omitted entirely rather than published stale. Owner-run aggregate
+              verification produced this dated public-safe snapshot—not streaming telemetry. This page makes no
+              production network calls.
             </p>
           </div>
         </div>
         <Plate
           src="/plates/rack.jpg?v=48"
           alt="Conceptual server-rack visualization with cyan and amber status lights"
+          sources={SUPPORTING_PLATE_SOURCES.rack}
+          width={1680}
+          height={1120}
+          deferUntilNear
+          placeholderSrc={SUPPORTING_PLATE_PREVIEWS.rack}
           className="h-[min(72vh,640px)] w-full"
           chip={`CONCEPT VISUAL · ${host.name} · ${host.tag}`}
         />
@@ -499,7 +490,7 @@ export function DeckLineage({ s4 }: { s4: SecRef }) {
             data-hud-clear
             className="za-panel za-lineage-dossier relative overflow-hidden p-7"
           >
-            <div className="za-kicker">FLIGHT RULE {String(pick + 1).padStart(2, "0")} / 04</div>
+            <div className="za-kicker">CASHIO OPERATING LESSON {String(pick + 1).padStart(2, "0")} / 04</div>
             <h3 className="za-display mt-4 text-[clamp(1.8rem,3.4vw,3rem)]">{active.name}</h3>
             <p className="mt-5 text-xl leading-snug text-ink">{active.rule}</p>
             <p className="mt-5 max-w-[46ch] text-[1.02rem] leading-relaxed text-muted">{active.note}</p>
@@ -567,14 +558,11 @@ export function DeckBuilds({ s5, onSelect }: { s5: SecRef; onSelect: (article: n
         <Kicker>06 · BUILDS</Kicker>
         <Title>SEVEN TEST ARTICLES.</Title>
         <p className="mt-5 max-w-[58ch] text-[1.05rem] leading-relaxed text-muted">
-          Not mockups. Seven shipped builds on the same fabric. Select a marker or article to acquire its proof vector;
-          arrow keys fly the range.
+          Owner-built evidence, not universal status claims. Seven documented builds on the same fabric. Select a marker
+          or article to acquire its proof vector; focused selector arrow keys fly the range.
         </p>
         <div className="mt-8 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-          <div data-hud-clear>
-            <BuildEnvelope sel={sel} onLock={lock} />
-          </div>
-          <div data-hud-clear>
+          <div data-hud-clear className="za-build-details">
             <div key={article.name} className="za-panel za-article-card p-6">
               <div className="flex items-center justify-between gap-3">
                 <div className="za-mono text-[10px] text-accent">
@@ -589,11 +577,26 @@ export function DeckBuilds({ s5, onSelect }: { s5: SecRef; onSelect: (article: n
               <p className="mt-4 text-[1.02rem] leading-relaxed text-muted">{article.note}</p>
               <div className="za-article-telemetry mt-6 grid grid-cols-3 gap-px overflow-hidden rounded-[var(--radius-sm)] border border-line">
                 <span>ARTICLE · {String(sel + 1).padStart(2, "0")}/07</span>
-                <span>STATE · SHIPPED</span>
+                <span>BUILD PROOF · OWNER-BUILT</span>
                 <span>CONTROL · MANUAL</span>
               </div>
             </div>
-            <div className="mt-3 flex flex-col" role="group" aria-label="Select a test article">
+            <div
+              className="za-build-selector mt-3 flex flex-col"
+              role="group"
+              aria-label="Select a test article"
+              onKeyDown={(event) => {
+                if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+                const buttons = [...event.currentTarget.querySelectorAll<HTMLButtonElement>("button")];
+                const currentIndex = buttons.indexOf(document.activeElement as HTMLButtonElement);
+                if (currentIndex < 0) return;
+                event.preventDefault();
+                const direction = event.key === "ArrowRight" ? 1 : -1;
+                const targetIndex = (currentIndex + ARTICLES.length + direction) % ARTICLES.length;
+                onSelect(targetIndex);
+                buttons[targetIndex].focus();
+              }}
+            >
               {ARTICLES.map((a, i) => (
                 <button
                   key={a.name}
@@ -614,6 +617,9 @@ export function DeckBuilds({ s5, onSelect }: { s5: SecRef; onSelect: (article: n
               ))}
             </div>
           </div>
+          <div data-hud-clear className="za-build-map">
+            <BuildEnvelope sel={sel} onLock={lock} />
+          </div>
         </div>
       </div>
     </DeckShell>
@@ -628,6 +634,11 @@ export function DeckOperator({ s6 }: { s6: SecRef }) {
         <Plate
           src="/plates/operator.jpg?v=48"
           alt="Empty command chair facing the viewscreen"
+          sources={SUPPORTING_PLATE_SOURCES.operator}
+          width={1680}
+          height={1120}
+          deferUntilNear
+          placeholderSrc={SUPPORTING_PLATE_PREVIEWS.operator}
           className="h-[min(70vh,620px)] w-full"
           fade="right"
           chip="THE CHAIR · HUMAN ACCOUNTABLE"
@@ -639,17 +650,16 @@ export function DeckOperator({ s6 }: { s6: SecRef }) {
             PENSACOLA, FLORIDA · SOVEREIGN AI · CYBERSECURITY · HUMAN COMMAND
           </p>
           <p className="mt-5 max-w-[46ch] text-[1.05rem] leading-relaxed text-muted">
-            Doug Cashio is a Principal Solutions Consultant and independent systems builder focused on sovereign AI,
-            cybersecurity, automation reliability, and explainable infrastructure. Twenty-plus years in enterprise
-            environments. The fleet, the routing law, the security posture and the publishing discipline are all
-            owner-run — and all auditable. The chair is empty on purpose. Autonomy runs. A human is accountable for it.
-            Never fake a number. Click a law. The leash is the point.
+            Principal Solutions Consultant and independent systems builder. Doug owns the compute, runs the routing
+            policy, and remains accountable for every automated decision. The chair is empty on purpose: human authority
+            stays visible.
           </p>
           <div className="mt-6 flex flex-wrap gap-2">
             {LAWS.map((_, i) => (
               <button
                 key={i}
                 type="button"
+                aria-pressed={lawI === i}
                 className={`za-chip ${lawI === i ? "border-accent text-accent" : ""}`}
                 onClick={() => {
                   setLawI(i);
@@ -667,6 +677,7 @@ export function DeckOperator({ s6 }: { s6: SecRef }) {
                 {i > 0 ? <div className="za-law-join" /> : null}
                 <button
                   type="button"
+                  aria-pressed={i === lawI}
                   className={`za-law-step w-full text-left ${i === lawI ? "on" : ""}`}
                   style={{ animationDelay: `${i * 120}ms` }}
                   onClick={() => {
@@ -690,14 +701,18 @@ export function DeckOperator({ s6 }: { s6: SecRef }) {
 
 export function DeckEve({
   s7,
+  active,
   lines,
   value,
+  logHeight,
   onChange,
   onRun,
 }: {
   s7: SecRef;
+  active: boolean;
   lines: string[];
   value: string;
+  logHeight: number;
   onChange: (v: string) => void;
   onRun: (raw: string) => void;
 }) {
@@ -721,7 +736,7 @@ export function DeckEve({
   );
   return (
     <DeckShell index={7} sRef={s7}>
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-3xl" style={{ "--eve-log-height": `${logHeight}px` } as CSSProperties}>
         <div className="mb-6 flex items-end justify-between gap-4">
           <div>
             <Kicker>08 · E.V.E.</Kicker>
@@ -732,7 +747,7 @@ export function DeckEve({
               <span className="text-cyan">help</span>.
             </p>
           </div>
-          <BitMascot mood={bitMood} size={88} />
+          <BitMascot active={active} mood={bitMood} size={88} />
         </div>
         <EveConsole lines={lines} value={value} onChange={onChange} onRun={onRun} />
         <div className="mt-4 flex flex-wrap gap-2">
@@ -748,21 +763,29 @@ export function DeckEve({
             </button>
           ))}
         </div>
-        <p className="za-mono mt-5 text-[10px] text-dim">
-          EVERY ANSWER COMES FROM THE {VERIFIED_LONG} EXPORT — CURRENT THROUGH {EXPIRES_SHORT}. AFTER THAT THE CONSOLE
-          REPORTS HISTORY, NOT STATUS. 19 OF 19 CONTAINERS RUNNING · 2 PROXMOX HOSTS ONLINE · CLUSTER QUORATE · 10
-          PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES.
+        <p className="za-critical-telemetry za-mono mt-5 text-[10px] text-dim">
+          EVERY ANSWER COMES FROM THE READ-ONLY {VERIFIED_LONG} DATED EXPORT — VALID THROUGH {EXPIRES_SHORT}. AFTER THAT
+          THE CONSOLE REPORTS HISTORY, NOT STATUS. 18/19 AT 28 AUG PROBE · 2 PROXMOX HOSTS ONLINE · QUORATE · ROUTING
+          INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES.
         </p>
       </div>
     </DeckShell>
   );
 }
 
-export function DeckContact({ s8, onCopy, copied }: { s8: SecRef; onCopy: () => void; copied: boolean }) {
+export function DeckContact({
+  s8,
+  onCopy,
+  copyEmailState,
+}: {
+  s8: SecRef;
+  onCopy: () => void;
+  copyEmailState: CopyEmailState;
+}) {
   return (
     <DeckShell index={8} sRef={s8}>
       <div className="grid max-w-6xl items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-        <div data-hud-clear>
+        <div data-hud-clear className="za-contact-copy">
           <Kicker>09 · CONTACT</Kicker>
           <Title>HAIL.</Title>
           <p className="mt-4 max-w-[46ch] text-[1.1rem] leading-relaxed text-muted">
@@ -780,7 +803,7 @@ export function DeckContact({ s8, onCopy, copied }: { s8: SecRef; onCopy: () => 
             <a href="mailto:doug@cashio.us" className="za-display mt-3 block text-[clamp(1.4rem,3vw,2.2rem)] text-cyan">
               doug@cashio.us
             </a>
-            <p className="za-mono mt-3 text-[11px] text-dim">
+            <p className="za-contact-meta za-mono mt-3 text-dim">
               PENSACOLA, FLORIDA · PUBLIC-SAFE SNAPSHOT · VERIFIED {VERIFIED_LONG}
             </p>
           </div>
@@ -790,7 +813,7 @@ export function DeckContact({ s8, onCopy, copied }: { s8: SecRef; onCopy: () => 
               EMAIL
             </a>
             <button type="button" className="za-btn-ghost min-h-11 px-5 py-3 text-[11px]" onClick={onCopy}>
-              {copied ? "COPIED" : "COPY EMAIL"}
+              {copyEmailState === "success" ? "COPIED" : copyEmailState === "error" ? "COPY FAILED" : "COPY EMAIL"}
             </button>
             <a
               href="https://www.linkedin.com/in/dougcashio"
@@ -809,10 +832,28 @@ export function DeckContact({ s8, onCopy, copied }: { s8: SecRef; onCopy: () => 
               CREDLY
             </a>
           </div>
+          <p
+            className="za-mono mt-3 min-h-5 text-[11px] leading-relaxed text-dim"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            aria-label="Email copy status"
+          >
+            {copyEmailState === "success"
+              ? "Email copied to clipboard."
+              : copyEmailState === "error"
+                ? "Copy failed. Select doug@cashio.us above to copy it or use the Email button."
+                : ""}
+          </p>
         </div>
         <Plate
           src="/plates/fold.jpg?v=48"
           alt="Heighliner folding space"
+          sources={SUPPORTING_PLATE_SOURCES.fold}
+          width={1680}
+          height={945}
+          deferUntilNear
+          placeholderSrc={SUPPORTING_PLATE_PREVIEWS.fold}
           className="h-[min(62vh,560px)] w-full"
           chip="HEIGHLINER · FOLD SPACE"
         />

@@ -45,7 +45,7 @@ export function BlackBoxReceipt() {
       </h3>
       <ul className="mt-4 space-y-2">
         {BLACK_BOX_RECEIPT_CLAIMS.map((claim) => (
-          <li key={claim} className="za-mono text-[10px] leading-relaxed text-dim">
+          <li key={claim} className="za-receipt-claim za-mono leading-relaxed text-dim">
             {claim}
           </li>
         ))}
@@ -53,7 +53,7 @@ export function BlackBoxReceipt() {
       <button type="button" className="za-btn-ghost mt-5 min-h-11 px-4 py-3 text-[10px]" onClick={copyOrShare}>
         COPY / SHARE LINK
       </button>
-      <p className="za-mono mt-3 min-h-4 text-[10px] text-dim" role="status" aria-live="polite">
+      <p className="za-receipt-status za-mono mt-3 min-h-4 text-dim" role="status" aria-live="polite">
         {status}
       </p>
     </section>

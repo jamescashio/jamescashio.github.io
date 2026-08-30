@@ -1,7 +1,9 @@
 import { useEffect, useRef } from "react";
+import { shouldRenderFrame } from "@/lib/animation-timing";
 import type { BitMood } from "@/lib/store";
 
 const PHI = (1 + Math.sqrt(5)) / 2;
+const MINIMUM_FRAME_INTERVAL_MS = 1000 / 30;
 
 function norm(v: number[]) {
   const l = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]) || 1;
@@ -104,7 +106,17 @@ function rotateBitVertex(vertex: number[], rotateX: number, rotateY: number) {
   return [x, y, z];
 }
 
-export function BitMascot({ mood, size = 96, className }: { mood: BitMood; size?: number; className?: string }) {
+export function BitMascot({
+  active = true,
+  mood,
+  size = 96,
+  className,
+}: {
+  active?: boolean;
+  mood: BitMood;
+  size?: number;
+  className?: string;
+}) {
   const ref = useRef<HTMLCanvasElement>(null);
   const moodRef = useRef(mood);
   moodRef.current = mood;
@@ -117,7 +129,9 @@ export function BitMascot({ mood, size = 96, className }: { mood: BitMood; size?
     let raf = 0;
     let bitAngle = 0;
     let lastTs = 0;
-    const reduce = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let previousRender: number | null = null;
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let reduce = motion.matches;
 
     const draw = (now: number) => {
       const dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -201,12 +215,42 @@ export function BitMascot({ mood, size = 96, className }: { mood: BitMood; size?
     };
 
     const loop = (now: number) => {
-      draw(now);
+      if (shouldRenderFrame(now, previousRender, MINIMUM_FRAME_INTERVAL_MS)) {
+        draw(now);
+        previousRender = now;
+      }
       raf = requestAnimationFrame(loop);
     };
-    raf = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(raf);
-  }, [size]);
+    const stop = () => {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    };
+    const start = () => {
+      if (reduce || !active || raf) return;
+      lastTs = 0;
+      previousRender = null;
+      raf = requestAnimationFrame(loop);
+    };
+    const settle = () => {
+      stop();
+      bitAngle = 0;
+      lastTs = 0;
+      previousRender = null;
+      draw(0);
+    };
+    const onMotion = (event: MediaQueryListEvent) => {
+      reduce = event.matches;
+      if (reduce) settle();
+      else start();
+    };
+    motion.addEventListener("change", onMotion);
+    if (reduce || !active) draw(0);
+    else start();
+    return () => {
+      stop();
+      motion.removeEventListener("change", onMotion);
+    };
+  }, [active, mood, size]);
 
   return (
     <canvas

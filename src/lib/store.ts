@@ -4,6 +4,7 @@ import { DECKS } from "./content";
 
 export type Mode = "technical" | "executive";
 export type BitMood = "idle" | "yes" | "no" | "alert" | "think";
+export type CopyEmailState = "idle" | "success" | "error";
 
 interface DeckStore {
   gate: boolean;
@@ -24,7 +25,7 @@ interface DeckStore {
   chapOn: boolean;
   chap: number;
   chapText: string;
-  copied: boolean;
+  copyEmailState: CopyEmailState;
   craftLock: number | null;
   set: (p: Partial<DeckStore>) => void;
 }
@@ -48,7 +49,7 @@ export const useDeck = create<DeckStore>((set) => ({
   chapOn: false,
   chap: 0,
   chapText: DECKS[0].name,
-  copied: false,
+  copyEmailState: "idle",
   craftLock: null,
   set: (p) => set(p),
 }));

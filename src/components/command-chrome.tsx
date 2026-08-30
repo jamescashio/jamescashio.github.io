@@ -38,7 +38,7 @@ export function DesktopCommandRail({
 }: DesktopCommandRailProps) {
   return (
     <aside
-      className={`fixed left-0 top-0 z-40 hidden h-dvh flex-col bg-void/90 backdrop-blur-md transition-[width] duration-300 md:flex ${hudClassName} ${
+      className={`za-command-rail fixed left-0 top-0 z-40 hidden h-dvh flex-col bg-void/90 backdrop-blur-md transition-[width] duration-300 md:flex ${hudClassName} ${
         railOpen ? "w-[220px]" : "w-[68px]"
       }`}
     >
@@ -59,6 +59,7 @@ export function DesktopCommandRail({
               key={item.id}
               type="button"
               aria-label={`Go to ${item.name} deck`}
+              aria-current={selected ? "page" : undefined}
               onClick={() => onNavigate(index)}
               onMouseEnter={onDeckHover}
               className={`flex min-h-11 items-center gap-3 rounded-r-[22px] px-3 py-2 text-left transition-colors ${
@@ -74,16 +75,17 @@ export function DesktopCommandRail({
       <div className="flex flex-col gap-1 p-2">
         <FlightControl
           active={tour}
+          compact={!railOpen}
           elapsedMs={elapsedMs}
           onStart={onToggleFlight}
           onStop={onStopFlight}
-          className="w-[210px] rounded-r-[22px]"
+          className={railOpen ? "w-[204px] rounded-r-[22px]" : "rounded-r-[22px]"}
         />
         <button
           type="button"
           className="za-btn-ghost rounded-r-[22px] px-2 py-2 text-[10px]"
           onClick={onToggleAudio}
-          aria-label={audio ? "Mute selection audio" : "Arm selection audio"}
+          aria-label={audio ? "Mute selection audio · AUDIO" : "Arm selection audio · ARM AUDIO"}
           aria-pressed={audio}
         >
           {audio ? "◉" : "○"} {railOpen && (audio ? "AUDIO" : "ARM AUDIO")}
@@ -131,12 +133,13 @@ export function CommandHeader({
       <div className="pointer-events-auto za-chip">
         DECK {String(deck + 1).padStart(2, "0")} · {DECKS[deck].name}
       </div>
-      <div className="pointer-events-auto hidden items-center gap-1.5 sm:flex">
+      <div className="pointer-events-auto hidden items-center gap-0.5 xl:flex">
         {CRAFT.map((craft, index) => (
           <button
             key={craft[0]}
             type="button"
             aria-label={`Warp to ${craft[0]}`}
+            aria-current={index === craftIndex ? "true" : undefined}
             title={craft[0]}
             onClick={() => onNavigateCraft(index)}
             className={`za-lcars-pip ${index === craftIndex ? "on" : index < craftIndex ? "past" : ""}`}
@@ -146,7 +149,7 @@ export function CommandHeader({
         ))}
       </div>
       <div className="pointer-events-auto flex items-center gap-2">
-        <span className="za-chip !hidden sm:!inline-flex">19/19 NOMINAL</span>
+        <span className="za-chip !hidden sm:!inline-flex">18/19 AT 28 AUG PROBE</span>
         {tour ? <span className="za-chip text-accent">AUTOPILOT</span> : null}
         <span className="za-chip !hidden md:!inline-flex">
           <span className="h-1.5 w-1.5 rounded-full bg-green shadow-[0_0_8px_var(--color-green)]" />
@@ -158,7 +161,7 @@ export function CommandHeader({
           className={`za-chip pointer-events-auto ${audio ? "border-cyan text-cyan" : ""}`}
           onClick={onToggleAudio}
           aria-pressed={audio}
-          aria-label={audio ? "Mute selection audio" : "Arm selection audio"}
+          aria-label={audio ? "Mute selection audio · AUDIO ARMED" : "Arm selection audio · AUDIO OFF"}
           title={audio ? "Mute selection audio" : "Arm selection audio"}
         >
           {audio ? (
@@ -197,30 +200,32 @@ export function MobileCommandNavigation({
   onNavigate,
   onOpenNavigator,
 }: MobileCommandNavigationProps) {
+  const availableDecks = DECKS.filter((_, index) => (mode === "executive" ? index === 0 || index === 8 : true));
+  const visibleDecks =
+    mode === "technical" && deck >= 6 ? [...availableDecks.slice(0, 5), DECKS[deck]] : availableDecks.slice(0, 6);
   return (
     <nav
       aria-label="Mobile command decks"
       className={`za-mobile-rail-safe fixed bottom-0 left-0 right-0 z-40 flex justify-around border-t border-line bg-void/90 px-0 pt-2 backdrop-blur md:hidden ${hudClassName}`}
     >
-      {DECKS.filter((_, index) => (mode === "executive" ? index === 0 || index === 8 : true))
-        .slice(0, 6)
-        .map((item) => {
-          const index = DECKS.findIndex((deckItem) => deckItem.id === item.id);
-          return (
-            <button
-              key={item.id}
-              type="button"
-              aria-label={`Go to ${item.name}`}
-              onClick={() => onNavigate(index)}
-              className={`za-mono min-h-11 px-2 py-2 text-[10px] ${deck === index ? "text-accent" : "text-dim"}`}
-            >
-              {item.num}
-            </button>
-          );
-        })}
+      {visibleDecks.map((item) => {
+        const index = DECKS.findIndex((deckItem) => deckItem.id === item.id);
+        return (
+          <button
+            key={item.id}
+            type="button"
+            aria-label={`Go to ${item.name}`}
+            aria-current={deck === index ? "page" : undefined}
+            onClick={() => onNavigate(index)}
+            className={`za-mono min-h-11 px-2 py-2 text-[10px] ${deck === index ? "text-accent" : "text-dim"}`}
+          >
+            {item.num}
+          </button>
+        );
+      })}
       <button
         type="button"
-        aria-label="Open deck navigator"
+        aria-label="Open deck navigator · GO"
         className="za-mono min-h-11 px-2 py-2 text-[10px] text-cyan"
         onClick={(event) => onOpenNavigator(event.currentTarget)}
       >
@@ -244,7 +249,7 @@ export function MobileFlightControl({ active, elapsedMs, onStart, onStop }: Mobi
       elapsedMs={elapsedMs}
       onStart={onStart}
       onStop={onStop}
-      className="fixed left-3 top-[68px] z-50 w-[min(18rem,calc(100vw-1.5rem))] md:hidden"
+      className="za-mobile-flight-control fixed left-3 top-[68px] z-50 w-[min(18rem,calc(100vw-1.5rem))] md:hidden"
     />
   );
 }
