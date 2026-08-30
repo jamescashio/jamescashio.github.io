@@ -19,8 +19,9 @@ const HUD_EDGE = 16;
 const MOBILE_NAV_CLEARANCE = 80;
 const CLEARANCE = 32;
 
-export function eveConsoleLogHeight({ height }: ViewportBounds) {
-  return Math.max(160, Math.min(288, height - 500));
+export function eveConsoleLogHeight({ width, height }: ViewportBounds) {
+  const maximum = width < MOBILE_NAV_BREAKPOINT ? 240 : 288;
+  return Math.max(160, Math.min(maximum, height - 500));
 }
 
 function fullHudBounds({ width, height }: ViewportBounds): ElementBounds | null {

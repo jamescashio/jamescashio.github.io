@@ -2,7 +2,17 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const { shouldYieldAirframeHud } = await import("../src/lib/hud-layout.ts");
+const { eveConsoleLogHeight, shouldYieldAirframeHud } = await import("../src/lib/hud-layout.ts");
+
+test("the mobile E.V.E. log yields a 20px safe margin above the fixed command rail", () => {
+  for (const width of [320, 390]) {
+    assert.equal(
+      eveConsoleLogHeight({ width, height: 844 }),
+      240,
+      `${width}px must lift the 44px prompt clear of the rail that begins at y=784`,
+    );
+  }
+});
 
 test("the full HUD yields when it would cover marked controls", () => {
   assert.equal(
