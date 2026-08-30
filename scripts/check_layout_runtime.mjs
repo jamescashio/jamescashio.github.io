@@ -8,6 +8,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import {
+  browserExitDiagnostic,
   browserVersionAcceptanceFailures,
   connectCdp,
   criticalTelemetryAcceptanceFailures,
@@ -130,9 +131,9 @@ function devtoolsEndpoint(processHandle) {
       clearTimeout(timer);
       resolve(match[1]);
     });
-    processHandle.once("exit", (code) => {
+    processHandle.once("exit", (code, signal) => {
       clearTimeout(timer);
-      reject(new Error(`browser exited before layout verification (${code ?? "unknown"})`));
+      reject(new Error(browserExitDiagnostic(code, signal, buffer)));
     });
   });
 }
