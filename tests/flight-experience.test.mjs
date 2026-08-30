@@ -515,6 +515,35 @@ test("FlightControl starts, stops, and restarts through real buttons", async () 
   }
 });
 
+test("FlightControl keeps every active status readout at the critical telemetry size", async () => {
+  const view = mount(
+    createElement(FlightControl, { active: true, elapsedMs: 15_000, onStart: () => {}, onStop: () => {} }),
+  );
+  try {
+    await view.render(
+      createElement(FlightControl, { active: true, elapsedMs: 15_000, onStart: () => {}, onStop: () => {} }),
+    );
+    const progress = [...view.document.querySelectorAll('ol[aria-label="Flight progress"] li')];
+    const readouts = [
+      view.document.querySelector('p[aria-live="polite"]'),
+      ...progress,
+      [...view.document.querySelectorAll("p")].find((element) => element.textContent?.startsWith("NOW ·")),
+    ];
+
+    assert.equal(progress.length, 4, "expected the four canonical flight beats");
+    for (const readout of readouts) {
+      assert.ok(readout, "expected every active flight status readout");
+      assert.equal(
+        readout.classList.contains("za-critical-telemetry"),
+        true,
+        `${readout.textContent} must use the responsive 10px desktop / 11px mobile telemetry treatment`,
+      );
+    }
+  } finally {
+    await view.cleanup();
+  }
+});
+
 test("compact FlightControl fits the collapsed rail while retaining full names and behavior", async () => {
   let starts = 0;
   let stops = 0;
