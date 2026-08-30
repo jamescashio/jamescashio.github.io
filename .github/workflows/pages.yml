@@ -28,6 +28,11 @@ jobs:
         id: setup_chrome
         with:
           chrome-version: 147.0.7727.57
+      - name: Configure the pinned Chrome sandbox
+        run: |
+          sudo chown root:root /opt/google/chrome/chrome-sandbox
+          sudo chmod 4755 /opt/google/chrome/chrome-sandbox
+          test "$(stat -c '%U:%G %a' /opt/google/chrome/chrome-sandbox)" = "root:root 4755"
       - run: npm ci
       - run: npm run lint
       - run: npm run format:check
