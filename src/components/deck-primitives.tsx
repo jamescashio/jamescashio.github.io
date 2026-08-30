@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode, type RefObject } from "react";
+import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import { DECKS, TELEMETRY } from "@/lib/content";
 import { getSound } from "@/lib/sound";
 import { useDeck } from "@/lib/store";
@@ -111,6 +111,7 @@ export function Plate({
   sources,
   width,
   height,
+  deferUntilNear = false,
 }: {
   src: string;
   alt: string;
@@ -120,16 +121,56 @@ export function Plate({
   sources?: readonly { srcSet: string; type: string; media?: string; sizes?: string }[];
   width?: number;
   height?: number;
+  deferUntilNear?: boolean;
 }) {
+  const figureRef = useRef<HTMLElement>(null);
+  const [isNear, setIsNear] = useState(!deferUntilNear);
+  useEffect(() => {
+    if (!deferUntilNear || isNear) return;
+    const figure = figureRef.current;
+    if (!figure || typeof window.IntersectionObserver !== "function") {
+      setIsNear(true);
+      return;
+    }
+    const observer = new window.IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        setIsNear(true);
+      },
+      { rootMargin: "640px 0px" },
+    );
+    observer.observe(figure);
+    return () => observer.disconnect();
+  }, [deferUntilNear, isNear]);
+
+  const deferred = deferUntilNear && !isNear;
   const image = (
-    <img src={src} alt={alt} className="za-plate-img" loading="lazy" decoding="async" width={width} height={height} />
+    <img
+      src={deferred ? "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" : src}
+      data-src={deferred ? src : undefined}
+      alt={alt}
+      className="za-plate-img"
+      loading="lazy"
+      decoding="async"
+      fetchPriority={deferUntilNear ? "low" : undefined}
+      width={width}
+      height={height}
+    />
   );
   return (
-    <figure data-hud-clear className={`za-plate ${className}`} onMouseEnter={() => getSound().tick()}>
+    <figure ref={figureRef} data-hud-clear className={`za-plate ${className}`} onMouseEnter={() => getSound().tick()}>
       {sources ? (
         <picture className="za-plate-picture">
           {sources.map((source) => (
-            <source key={`${source.media ?? "default"}-${source.type}`} {...source} />
+            <source
+              key={`${source.media ?? "default"}-${source.type}`}
+              type={source.type}
+              media={source.media}
+              sizes={source.sizes}
+              srcSet={deferred ? undefined : source.srcSet}
+              data-srcset={deferred ? source.srcSet : undefined}
+            />
           ))}
           {image}
         </picture>

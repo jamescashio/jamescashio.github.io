@@ -30,6 +30,46 @@ type SecRef = RefObject<HTMLElement | null>;
 
 export const IDENTITY_LINE = "DOUG CASHIO · ENTERPRISE AI + SECURITY SYSTEMS · OWNER-OPERATOR";
 
+const SUPPORTING_PLATE_SIZES = "(min-width: 1024px) 50vw, 100vw";
+const SUPPORTING_PLATE_SOURCES = {
+  rack: [
+    {
+      type: "image/avif",
+      srcSet: "/plates/rack-mobile.avif 768w, /plates/rack-desktop.avif 1440w",
+      sizes: SUPPORTING_PLATE_SIZES,
+    },
+    {
+      type: "image/webp",
+      srcSet: "/plates/rack-mobile.webp 768w, /plates/rack-desktop.webp 1440w",
+      sizes: SUPPORTING_PLATE_SIZES,
+    },
+  ],
+  operator: [
+    {
+      type: "image/avif",
+      srcSet: "/plates/operator-mobile.avif 768w, /plates/operator-desktop.avif 1440w",
+      sizes: SUPPORTING_PLATE_SIZES,
+    },
+    {
+      type: "image/webp",
+      srcSet: "/plates/operator-mobile.webp 768w, /plates/operator-desktop.webp 1440w",
+      sizes: SUPPORTING_PLATE_SIZES,
+    },
+  ],
+  fold: [
+    {
+      type: "image/avif",
+      srcSet: "/plates/fold-mobile.avif 768w, /plates/fold-desktop.avif 1440w",
+      sizes: SUPPORTING_PLATE_SIZES,
+    },
+    {
+      type: "image/webp",
+      srcSet: "/plates/fold-mobile.webp 768w, /plates/fold-desktop.webp 1440w",
+      sizes: SUPPORTING_PLATE_SIZES,
+    },
+  ],
+} as const;
+
 export function DeckSnapshot({
   s0,
   copyCol,
@@ -57,7 +97,7 @@ export function DeckSnapshot({
         <h1 tabIndex={-1} className="za-display text-[clamp(2rem,4.8vw,4.4rem)] leading-[0.92]">
           OWN THE IRON AND THE <span className="za-shimmer-text">ROUTE</span>.
         </h1>
-        <p className="za-mono mt-5 text-[11px] text-dim">
+        <p className="za-critical-telemetry za-mono mt-5 text-[11px] text-dim">
           18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6 · 2 HOSTS QUORATE · READ-ONLY DATED EXPORT
         </p>
         <p className="za-snapshot-copy mt-6 max-w-[46ch] text-[1.05rem] leading-relaxed text-muted">
@@ -127,7 +167,7 @@ export function DeckSnapshot({
                 <div className="za-display text-[15px] text-cyan">{name}</div>
                 <span className="h-1.5 w-1.5 rounded-full bg-green shadow-[0_0_8px_var(--color-green)]" />
               </div>
-              <div className="za-mono mt-1 text-[9px] text-dim">
+              <div className="za-critical-telemetry za-mono mt-1 text-[9px] text-dim">
                 {value} · {detail}
               </div>
               <div className="za-heartbeat mt-2" aria-hidden />
@@ -386,6 +426,10 @@ export function DeckIron({ s3 }: { s3: SecRef }) {
         <Plate
           src="/plates/rack.jpg?v=48"
           alt="Conceptual server-rack visualization with cyan and amber status lights"
+          sources={SUPPORTING_PLATE_SOURCES.rack}
+          width={1680}
+          height={1120}
+          deferUntilNear
           className="h-[min(72vh,640px)] w-full"
           chip={`CONCEPT VISUAL · ${host.name} · ${host.tag}`}
         />
@@ -583,6 +627,10 @@ export function DeckOperator({ s6 }: { s6: SecRef }) {
         <Plate
           src="/plates/operator.jpg?v=48"
           alt="Empty command chair facing the viewscreen"
+          sources={SUPPORTING_PLATE_SOURCES.operator}
+          width={1680}
+          height={1120}
+          deferUntilNear
           className="h-[min(70vh,620px)] w-full"
           fade="right"
           chip="THE CHAIR · HUMAN ACCOUNTABLE"
@@ -793,6 +841,10 @@ export function DeckContact({
         <Plate
           src="/plates/fold.jpg?v=48"
           alt="Heighliner folding space"
+          sources={SUPPORTING_PLATE_SOURCES.fold}
+          width={1680}
+          height={945}
+          deferUntilNear
           className="h-[min(62vh,560px)] w-full"
           chip="HEIGHLINER · FOLD SPACE"
         />

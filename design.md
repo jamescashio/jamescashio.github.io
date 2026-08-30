@@ -59,6 +59,7 @@ Cashio.us is a sovereign command-deck flight recorder: a cinematic dossier where
 ## Acceptance gates
 
 - Median Lighthouse performance is at least 95 on mobile and 99 on desktop; Accessibility, Best Practices, and SEO remain 100. Mobile LCP is at most 2.5 seconds, TBT at most 100 ms, and CLS at most 0.05.
+- Initial page transfer is at most 300 KB.
 - Full test, build, formatting, privacy and safety, release-consistency, layout, keyboard, deep-link, responsive-browser, and clean-console suites pass.
 - No dependencies, telemetry, sections, or animation systems are added. Preserve all nine decks, Bit, aircraft, palette, typography, the 30-second flight, the privacy boundary, and opt-in audio.
 
