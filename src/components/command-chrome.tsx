@@ -1,4 +1,4 @@
-import { CRAFT, DECKS, validityShort } from "@/lib/content";
+import { CRAFT, DECKS, DECK_SHORT, validityShort } from "@/lib/content";
 import type { Mode } from "@/lib/store";
 import { FlightControl } from "./flight-control";
 
@@ -109,6 +109,7 @@ export type CommandHeaderProps = {
   craftIndex: number;
   deck: number;
   hudClassName: string;
+  railOpen?: boolean;
   onNavigateCraft: (craft: number) => void;
   onOpenNavigator: (opener: HTMLElement) => void;
   onToggleAudio: () => void;
@@ -121,6 +122,7 @@ export function CommandHeader({
   craftIndex,
   deck,
   hudClassName,
+  railOpen = false,
   onNavigateCraft,
   onOpenNavigator,
   onToggleAudio,
@@ -128,7 +130,7 @@ export function CommandHeader({
 }: CommandHeaderProps) {
   return (
     <header
-      className={`za-command-header pointer-events-none fixed left-0 right-0 top-0 z-50 flex items-center justify-between gap-3 px-4 py-3 md:left-[68px] ${hudClassName}`}
+      className={`za-command-header pointer-events-none fixed left-0 right-0 top-0 z-50 flex items-center justify-between gap-3 px-4 py-3 md:left-[68px] ${railOpen ? "md:!left-[220px]" : ""} ${hudClassName}`}
     >
       <div className="pointer-events-auto za-chip">
         DECK {String(deck + 1).padStart(2, "0")} · {DECKS[deck].name}
@@ -149,16 +151,19 @@ export function CommandHeader({
         ))}
       </div>
       <div className="pointer-events-auto flex items-center gap-2">
-        <span className="za-chip !hidden sm:!inline-flex">18/19 AT 28 AUG PROBE</span>
-        {tour ? <span className="za-chip text-accent">AUTOPILOT</span> : null}
-        <span className="za-chip !hidden md:!inline-flex">
-          <span className="h-1.5 w-1.5 rounded-full bg-green shadow-[0_0_8px_var(--color-green)]" />
+        <span className="za-chip !hidden sm:!inline-flex min-h-11">
+          <span className="za-lock-pip" />
+          18/19 AT 28 AUG PROBE
+        </span>
+        {tour ? <span className="za-chip min-h-11 text-accent">AUTOPILOT</span> : null}
+        <span className="za-chip !hidden md:!inline-flex min-h-11">
+          <span className="za-lock-pip" />
           {validityShort()}
         </span>
         <span className="za-chip !hidden lg:!inline-flex">SD {clock}</span>
         <button
           type="button"
-          className={`za-chip pointer-events-auto ${audio ? "border-cyan text-cyan" : ""}`}
+          className={`za-chip pointer-events-auto min-h-11 ${audio ? "border-cyan text-cyan" : ""}`}
           onClick={onToggleAudio}
           aria-pressed={audio}
           aria-label={audio ? "Mute selection audio · AUDIO ARMED" : "Arm selection audio · AUDIO OFF"}
@@ -173,11 +178,14 @@ export function CommandHeader({
               <span />
             </span>
           ) : null}
-          {audio ? "AUDIO ARMED" : "AUDIO OFF"}
+          <span className="za-audio-mark sm:hidden" aria-hidden>
+            {audio ? "◉" : "○"}
+          </span>
+          <span className="za-audio-copy hidden sm:inline">{audio ? "AUDIO ARMED" : "AUDIO OFF"}</span>
         </button>
         <button
           type="button"
-          className="za-chip pointer-events-auto hover:border-cyan hover:text-cyan"
+          className="za-chip pointer-events-auto min-h-11 min-w-11 hover:border-cyan hover:text-cyan"
           aria-label="Open deck navigator"
           onClick={(event) => onOpenNavigator(event.currentTarget)}
         >
@@ -217,9 +225,9 @@ export function MobileCommandNavigation({
             aria-label={`Go to ${item.name}`}
             aria-current={deck === index ? "page" : undefined}
             onClick={() => onNavigate(index)}
-            className={`za-mono min-h-11 px-2 py-2 text-[10px] ${deck === index ? "text-accent" : "text-dim"}`}
+            className={`za-mono min-h-11 px-2 py-2 text-[10px] tracking-[0.12em] ${deck === index ? "text-accent" : "text-dim"}`}
           >
-            {item.num}
+            {DECK_SHORT[item.id]}
           </button>
         );
       })}

@@ -317,6 +317,7 @@ function mountCommandDeck({
     audio: false,
     alert: false,
     photo: false,
+    still: false,
     palette: false,
     tour: false,
     railOpen: false,

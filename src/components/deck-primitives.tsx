@@ -17,9 +17,13 @@ export function Title({ children }: { children: ReactNode }) {
   );
 }
 
-export function CountUp({ to }: { to: number }) {
+export function CountUp({ to, armed = true }: { to: number; armed?: boolean }) {
   const [value, setValue] = useState(0);
   useEffect(() => {
+    if (!armed) {
+      setValue(0);
+      return;
+    }
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let frame = 0;
     let startedAt = 0;
@@ -57,7 +61,7 @@ export function CountUp({ to }: { to: number }) {
       cancel();
       motion.removeEventListener("change", onMotion);
     };
-  }, [to]);
+  }, [to, armed]);
   return <>{value}</>;
 }
 
@@ -89,11 +93,11 @@ export function DeckShell({
 export function Ticker() {
   const items = [...TELEMETRY, ...TELEMETRY];
   return (
-    <div className="za-ticker mt-10 max-w-xl border-y border-line py-2">
+    <div data-hud-clear className="za-ticker mt-10 max-w-xl border-y border-line py-2">
       <div className="za-critical-telemetry za-ticker-track za-mono tracking-[0.2em] text-cyan">
         {items.map((item, index) => (
           <span key={`${item}-${index}`} className="flex items-center gap-3">
-            <span className="h-1 w-1 rounded-full bg-green shadow-[0_0_8px_var(--color-green)]" />
+            <span className="za-lock-pip" />
             {item}
           </span>
         ))}

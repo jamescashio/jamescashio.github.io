@@ -45,8 +45,9 @@ void main(){
   float clouds = smoothstep(0.28, 0.92, n * 0.75 + m * 0.35);
   float vign = smoothstep(1.25, 0.15, length(vUv - 0.5) * 1.6);
   vec3 col = mix(uA, uB, clamp(n * 1.25 + uProg * 0.25, 0.0, 1.0));
-  col *= clouds * 0.5;
-  col += uB * pow(clouds, 3.0) * 0.25;
+  col *= clouds * 0.55;
+  col += uB * pow(clouds, 3.0) * 0.42;
+  col += vec3(0.0, 0.035, 0.04) * clouds;
   gl_FragColor = vec4(col * vign + vec3(0.017, 0.017, 0.026), 1.0);
 }`;
 
@@ -158,7 +159,7 @@ void main(){
     st += (max(a - 0.5, 0.0) + max(b - 0.5, 0.0)) * wt;
     ws += wt;
   }
-  col += st / ws * uStreak * vec3(0.5, 0.78, 1.0);
+  col += st / ws * uStreak * vec3(0.58, 0.88, 1.0) * 1.18;
   col *= smoothstep(1.4, 0.2, dot(c, c) * 2.6);
   float g = fract(sin(dot(uv * uRes + uTime, vec2(12.9898, 78.233))) * 43758.5453);
   col += (g - 0.5) * 0.024 * uAmt;
@@ -851,7 +852,7 @@ class ViewscreenStage extends HTMLElement {
     sg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     sg.setAttribute('color', new THREE.BufferAttribute(col, 3));
     this.stars = new THREE.Points(sg, new THREE.PointsMaterial({
-      size: 0.3, sizeAttenuation: true, vertexColors: true, transparent: true,
+      size: 0.38, sizeAttenuation: true, vertexColors: true, transparent: true,
       map: this.glintTex, opacity: 0.95,
       blending: THREE.AdditiveBlending, depthWrite: false, fog: false
     }));
@@ -1414,10 +1415,10 @@ class ViewscreenStage extends HTMLElement {
 
     this.stars.rotation.y = t * 0.000018 + this.mx * 0.035;
     this.stars.rotation.x = this.my * 0.022;
-    if (!this._twk || t - this._twk > 90) {
+    if (!this._twk || t - this._twk > 70) {
       this._twk = t;
       const c = this.stars.geometry.attributes.color, a = c.array;
-      for (let k = 0; k < 26; k++) {
+      for (let k = 0; k < 40; k++) {
         const i = ((Math.random() * (a.length / 3)) | 0) * 3;
         const f = 0.6 + Math.random() * 0.7;
         a[i] = Math.min(1, a[i] * f); a[i + 1] = Math.min(1, a[i + 1] * f); a[i + 2] = Math.min(1, a[i + 2] * f);
@@ -1431,11 +1432,11 @@ class ViewscreenStage extends HTMLElement {
       const arr = this.streaks.geometry.attributes.position.array;
       for (let i = 0; i < this.stkLen.length; i++) {
         const b = i * 3, e = (i * 2 + 1) * 3;
-        const k = 1 + this.stkLen[i] * warp * 0.85;
+        const k = 1 + this.stkLen[i] * warp * 1.25;
         arr[e] = this.stkBase[b] * k; arr[e + 1] = this.stkBase[b + 1] * k; arr[e + 2] = this.stkBase[b + 2] * k;
       }
       this.streaks.geometry.attributes.position.needsUpdate = true;
-      sm.opacity = Math.min(0.9, warp * 1.1) * this.dim;
+      sm.opacity = Math.min(1, warp * 1.35) * this.dim;
       this.streaks.visible = true;
     } else if (this.streaks.visible) {
       sm.opacity = 0; this.streaks.visible = false;
@@ -1719,7 +1720,7 @@ class ViewscreenStage extends HTMLElement {
 
     const poseBloom = 1 + ((((pose && pose.bloom) || 1) - 1) * poseLock);
     const poseExposure = 1 + ((((pose && pose.exposure) || 1) - 1) * poseLock);
-    this.bloom.strength = Math.min(2.05, (0.68 + warp * 1.15 + nearFold * 0.34 + nearWarp * 0.3) * (0.22 + this.dim * 0.82) * poseBloom);
+    this.bloom.strength = Math.min(2.25, (0.74 + warp * 1.35 + nearFold * 0.34 + nearWarp * 0.3) * (0.22 + this.dim * 0.82) * poseBloom);
 
     if (this.grade) {
       this.grade.uniforms.uTime.value = t * 0.001;

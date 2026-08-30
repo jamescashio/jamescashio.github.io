@@ -145,7 +145,7 @@ class V34ReleaseContractTests(unittest.TestCase):
         self.assertIn("dt * (1000 / motionDurationMs('stage-warp'))", self.stage)
         self.assertNotIn("dt * 1.05", self.stage)
         self.assertIn("this.camera.fov += ((55 + warp * 34)", self.stage)
-        self.assertIn("this.bloom.strength = Math.min(2.05", self.stage)
+        self.assertIn("this.bloom.strength = Math.min(2.25", self.stage)
         craft_change = self.stage[self.stage.index("setCraft(i)") : self.stage.index("setClearX(f)")]
         self.assertIn("if (next !== this.craftTarget)", craft_change)
         self.assertIn("this.warpT = 1", craft_change)

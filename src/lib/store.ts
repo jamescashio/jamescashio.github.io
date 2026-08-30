@@ -13,6 +13,7 @@ interface DeckStore {
   audio: boolean;
   alert: boolean;
   photo: boolean;
+  still: boolean;
   palette: boolean;
   tour: boolean;
   railOpen: boolean;
@@ -37,6 +38,7 @@ export const useDeck = create<DeckStore>((set) => ({
   audio: DEFAULT_AUDIO_ENABLED,
   alert: false,
   photo: false,
+  still: false,
   palette: false,
   tour: false,
   railOpen: false,

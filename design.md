@@ -42,6 +42,7 @@ Cashio.us is a sovereign command-deck flight recorder: a cinematic dossier where
 - Snapshot actions and Bit keep separate protected zones at 390 px and 320 px widths.
 - Every article remains a native button with a visible focus state and explicit selected state.
 - PHOTO is a modal cinema view with a visible 44 px-or-larger EXIT CINEMA control, Escape dismissal, initial focus on the exit, and exact-opener restoration with an E.V.E. input fallback. While open, every background focus target—including the skip link—sits inside one inert, hidden boundary.
+- ARM THE STILL is a modal LinkedIn 1.91:1 executive plate with a visible 44 px-or-larger EXIT STILL control, Escape dismissal, and opener restoration. It publishes only dated-export figures already on the Snapshot deck.
 - Article, craft, deck, and navigator selection exposes the correct native selected state (`aria-pressed`, `aria-current`, or equivalent) and an announced label. Global shortcuts may not invoke commands that are not represented by an available, named control.
 - At 320–1440 px there is no horizontal overflow and primary touch controls are at least 44 × 44 px. Responsive images use sized AVIF/WebP sources with a safe fallback; font loading and reserved dimensions must not shift copy or action geometry.
 - Reduced motion is reactive to preference changes and resolves the complete route, selected vector, lock reticle, and article content immediately: no glyph scrambling, alert pulse, warp flash, smooth scrolling, sliding bars, patrol, sweep, or animated reveal.
