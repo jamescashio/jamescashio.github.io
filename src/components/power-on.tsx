@@ -8,7 +8,14 @@ export function PowerOn({ reducedMotion, onDone }: { reducedMotion: boolean; onD
   const [tick, setTick] = useState(reducedMotion ? DURATION_MS : 0);
 
   useEffect(() => {
-    if (reducedMotion) return;
+    // Reduced motion has no sequence to play, so it must still be released.
+    // Returning early here left the overlay up permanently for exactly the
+    // visitors who asked for less movement, with no way past it but a key
+    // press, which is the one group that should never have to find a trick.
+    if (reducedMotion) {
+      onDone();
+      return;
+    }
     const started = performance.now();
     let frame = 0;
     const loop = (now: number) => {
