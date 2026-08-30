@@ -6,14 +6,7 @@ import tseslint from "typescript-eslint";
 import { defineConfig, globalIgnores } from "eslint/config";
 
 export default defineConfig([
-  globalIgnores([
-    "dist/**",
-    "node_modules/**",
-    ".superpowers/**",
-    ".worktrees/**",
-    "public/**",
-    "src/lib/viewscreen-stage.js",
-  ]),
+  globalIgnores(["dist/**", "node_modules/**", ".superpowers/**", ".worktrees/**", "public/**"]),
   {
     files: ["src/**/*.{ts,tsx}", "vite.config.ts"],
     extends: [

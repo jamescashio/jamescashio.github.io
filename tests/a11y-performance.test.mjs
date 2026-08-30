@@ -656,8 +656,11 @@ test("command chrome frames aggregate evidence as a dated export at valid and ex
       try {
         await view.render();
         const header = view.document.querySelector("header.za-command-header");
-        assert.match(header?.textContent ?? "", /18\/19 AT 28 AUG PROBE/);
+        // The header frames validity only. The dated figure is stated once, in
+        // the hero, rather than repeated across the chrome.
         assert.match(header?.textContent ?? "", expected);
+        assert.doesNotMatch(header?.textContent ?? "", /18\/19 AT 28 AUG PROBE/);
+        assert.match(view.document.body.textContent, /MEASURED 28 AUGUST 2026 · 18 OF 19 SERVICES UP/);
         assert.doesNotMatch(header?.textContent ?? "", /NOMINAL|CURRENT/);
         assert.match(view.document.body.textContent, /APOLLO6\/6 · AT 28 AUG PROBE/);
       } finally {
@@ -765,10 +768,18 @@ test("desktop rail deck controls keep stable names when collapsed and open", asy
       controls.map((button) => button.getAttribute("aria-label")),
       expected,
     );
+    // Collapsed, each control shows its number and carries a hover preview of
+    // the deck name and tag. The accessible name above is what does not change.
     assert.deepEqual(
-      controls.map((button) => button.textContent),
+      controls.map((button) => button.textContent.slice(0, 2)),
       ["01", "02", "03", "04", "05", "06", "07", "08", "09"],
     );
+    for (const [index, button] of controls.entries()) {
+      const preview = button.querySelector(".za-rail-preview");
+      assert.ok(preview, "a collapsed rail control must preview its deck");
+      assert.equal(preview.getAttribute("aria-hidden"), "true", "the preview must not double the accessible name");
+      assert.ok(preview.textContent.length > 2, `deck ${index} preview must name the deck`);
+    }
 
     await view.click(labeledButton(view.document, "Expand command rail"));
     const openControls = [...navigation.querySelectorAll("button")];
@@ -1041,7 +1052,8 @@ test("Snapshot prose separates the verification date from the preceding word", a
   try {
     await view.render();
     const snapshot = view.document.querySelector('section[data-deck="0"]');
-    assert.match(snapshot?.textContent ?? "", /Fleet evidence was verified on 28 August 2026/);
+    assert.match(snapshot?.textContent ?? "", /MEASURED 28 AUGUST 2026 · 18 OF 19 SERVICES UP/);
+    assert.match(snapshot?.textContent ?? "", /VERIFIED 28 August 2026/);
   } finally {
     await view.cleanup();
   }

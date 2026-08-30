@@ -22,6 +22,46 @@ export interface EveResult {
   alert?: boolean;
 }
 
+/** Deep cuts. Nothing here is listed in help, nothing here changes state, and
+ * nothing here leaves the browser. The surface of the site stays professional;
+ * anyone who goes looking in the console finds the shelf the work was built on. */
+const LORE: Record<string, string[]> = {
+  "butlerian jihad": [
+    "FIRST LAW OF THE HOUSE",
+    "THOU SHALT NOT MAKE A MACHINE IN THE LIKENESS OF A HUMAN MIND.",
+    "SO THE MACHINES HERE ARE NOT MINDS. THEY ARE INSTRUMENTS, THEY ARE DATED,",
+    "AND EVERY ONE OF THEM ANSWERS TO A NAMED HUMAN.",
+  ],
+  ix: [
+    "HOUSE IX · MACHINE CULTURE UNDER LICENCE",
+    "BUILD THE INSTRUMENT. DOCUMENT THE INSTRUMENT. KEEP THE OPERATOR IN THE LOOP.",
+    "THE INTERFACE YOU ARE READING IS THE IXIAN HALF OF THAT BARGAIN.",
+  ],
+  omnius: ["NO SOVEREIGN MACHINE INTELLIGENCE IS RESIDENT ON THIS FLEET.", "THAT IS THE WHOLE POINT."],
+  "master control": ["END OF LINE."],
+  mcp: ["END OF LINE."],
+  tron: ["I FIGHT FOR THE USER.", "SO DOES EVERY ROUTE ON THIS PAGE."],
+  flynn: ["THE ONLY WAY TO WIN IS NOT TO PLAY.", "SO WE PUBLISH THE EVIDENCE INSTEAD."],
+  bit: ["YES.", "NO.", "BIT IS IN THE CORNER. BIT ONLY EVER HAD TWO ANSWERS."],
+  beltalowda: ["OYE, BELTALOWDA.", "THE SHIP IS OWNED. THE AIR IS PAID FOR. THE WORK IS OURS."],
+  epstein: ["THE EPSTEIN DRIVE BURNS FOR AS LONG AS YOU CAN STAND THE THRUST.", "SO DOES A GOOD BUILD."],
+  "tea earl grey hot": ["REPLICATOR OFFLINE. THIS DECK IS READ ONLY.", "BRING YOUR OWN."],
+  engage: ["MAKE IT SO.", "COURSE LAID IN. THE DECKS ARE YOURS."],
+  "make it so": ["AYE, CAPTAIN.", "THAT PHRASE MEANS EXECUTE HERE TOO, NOT PROPOSE."],
+  "the line must be drawn here": ["THIS FAR. NO FURTHER.", "THE EVIDENCE BOUNDARY IS THE LINE."],
+  yeager: ["THE X-1 DID NOT BREAK THE SOUND BARRIER BY GUESSING WHERE IT WAS.", "IT MEASURED, THEN IT WENT."],
+  "kelly johnson": [
+    "KEEP IT SIMPLE, STUPID. BE QUICK, BE QUIET, BE ON TIME.",
+    "FOURTEEN RULES BUILT THE BLACKBIRD. THIS FLEET RUNS ON FEWER.",
+  ],
+  rutan: ["IF IT LOOKS WRONG AND IT FLIES RIGHT, IT IS RIGHT.", "PROTEUS IS ON DECK 05."],
+  hoover: ["THE SMOOTHEST HANDS IN AVIATION SHUT THE ENGINES OFF AND LANDED ANYWAY.", "PLAN FOR THE DEAD STICK."],
+  skunkworks: ["BE QUICK, BE QUIET, BE ON TIME.", "ONE OPERATOR, SHORT CHAIN, NO COMMITTEE."],
+  xyzzy: ["NOTHING HAPPENS.", "A HOLLOW VOICE SAYS: TYPE HELP."],
+  sudo: ["THERE IS NO PRIVILEGE TO ESCALATE. THIS CONSOLE READS A STATIC FILE.", "NICE TRY THOUGH."],
+  "42": ["THE ANSWER IS DATED 28 AUGUST 2026 AND EXPIRES 27 SEPTEMBER 2026.", "THE QUESTION IS ON DECK 03."],
+};
+
 const COMMANDS = [
   "help",
   "status / sitrep",
@@ -155,6 +195,9 @@ export function runEve(raw: string, history: string[] = []): EveResult {
     return { out: ["RED ALERT · LOCAL CINEMA ONLY · NO SYSTEM ACTION"], alert: true };
   }
 
+  const lore = LORE[command];
+  if (lore) return { out: lore };
+
   return { out: [`UNKNOWN COMMAND · ${command.toUpperCase()}`, "TYPE HELP FOR THE LOCAL COMMAND LIST"], bad: true };
 }
 
@@ -195,9 +238,10 @@ export function EveConsole({
       <div
         ref={logRef}
         role="log"
+        tabIndex={0}
         aria-live="polite"
-        aria-label="E.V.E. command output"
-        className="relative h-[min(42vh,360px)] min-h-64 overflow-y-auto px-4 py-4 za-mono text-[11px] leading-6 text-muted"
+        aria-label="E.V.E. command output, scrollable"
+        className="za-eve-log relative h-[min(42vh,360px)] min-h-64 overflow-y-auto px-4 py-4 za-mono text-[11px] leading-6 text-muted"
       >
         {lines.map((line, index) => (
           <div

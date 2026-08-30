@@ -103,13 +103,15 @@ export function DeckSnapshot({
         <h1 tabIndex={-1} className="za-display text-[clamp(2rem,4.8vw,4.4rem)] leading-[0.92]">
           OWN THE IRON AND THE <span className="za-shimmer-text">ROUTE</span>.
         </h1>
-        <p className="za-critical-telemetry za-mono mt-5 text-[11px] text-dim">
-          18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6 · 2 HOSTS QUORATE · READ-ONLY DATED EXPORT
+        <p className="za-snapshot-lede mt-5 max-w-[44ch] text-[1.2rem] leading-snug text-ink">
+          I run AI and security systems on servers I own, and I publish the evidence that they work.
         </p>
-        <p className="za-snapshot-copy mt-6 max-w-[46ch] text-[1.05rem] leading-relaxed text-muted">
-          Doug Cashio builds and operates sovereign AI and security systems on hardware he owns. Quality-first routing
-          selects the right model, while dated public evidence keeps every claim bounded. Fleet evidence was verified on
-          28 August 2026; the routing inventory remains separately dated 21 August 2026.
+        <p className="za-snapshot-copy mt-5 max-w-[46ch] text-[1.05rem] leading-relaxed text-muted">
+          Every claim here is measured and dated. Nineteen services run on two machines in a room I can walk into, and a
+          routing layer picks the best model for each job rather than the cheapest.
+        </p>
+        <p className="za-critical-telemetry za-mono mt-5 text-[11px] text-dim">
+          MEASURED 28 AUGUST 2026 · 18 OF 19 SERVICES UP · BOTH MACHINES HEALTHY
         </p>
 
         <div
@@ -160,7 +162,7 @@ export function DeckSnapshot({
           E.V.E. ONLINE · READ-ONLY · DATED EXPORT · VERIFIED {VERIFIED_LONG} · VALID THRU {EXPIRES_SHORT}
         </div>
 
-        <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        <div data-hud-clear className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {[
             ["ZEUS", "12/13", "AT 28 AUG PROBE"],
             ["APOLLO", "6/6", "AT 28 AUG PROBE"],
@@ -366,7 +368,7 @@ export function DeckRouting({ s2 }: { s2: SecRef }) {
               />
             </div>
             <p className="za-mono mt-4 text-[10px] leading-relaxed text-dim">
-              ROUTING INVENTORY {ROUTING_VERIFIED_LONG.toUpperCase()} — TEN PUBLIC CAPABILITY LANES AND 36 PRIVATE
+              ROUTING INVENTORY {ROUTING_VERIFIED_LONG.toUpperCase()} · TEN PUBLIC CAPABILITY LANES AND 36 PRIVATE
               CATALOG ENTRIES COUNT DIFFERENT OBJECTS. DATED POLICY, NOT LIVE PROVIDER STATUS.
             </p>
           </div>
@@ -414,17 +416,17 @@ export function DeckIron({ s3 }: { s3: SecRef }) {
             ))}
           </div>
           <div className="mt-6 za-panel p-5">
-            <div className="za-kicker text-red">WITHHELD — NO FRESH MEASUREMENT</div>
+            <div className="za-kicker text-red">WITHHELD · NO FRESH MEASUREMENT</div>
             <ul className="mt-3 grid gap-2 sm:grid-cols-2">
               {WITHHELD.map((w) => (
                 <li key={w} className="za-mono text-[11px] text-dim">
-                  — {w.toUpperCase()}
+                  · {w.toUpperCase()}
                 </li>
               ))}
             </ul>
             <p className="mt-4 text-sm text-muted">
               A figure with no fresh measurement is omitted entirely rather than published stale. Owner-run aggregate
-              verification produced this dated public-safe snapshot—not streaming telemetry. This page makes no
+              verification produced this dated public safe snapshot, not streaming telemetry. This page makes no
               production network calls.
             </p>
           </div>
@@ -764,7 +766,7 @@ export function DeckEve({
           ))}
         </div>
         <p className="za-critical-telemetry za-mono mt-5 text-[10px] text-dim">
-          EVERY ANSWER COMES FROM THE READ-ONLY {VERIFIED_LONG} DATED EXPORT — VALID THROUGH {EXPIRES_SHORT}. AFTER THAT
+          EVERY ANSWER COMES FROM THE READ ONLY {VERIFIED_LONG} DATED EXPORT · VALID THROUGH {EXPIRES_SHORT}. AFTER THAT
           THE CONSOLE REPORTS HISTORY, NOT STATUS. 18/19 AT 28 AUG PROBE · 2 PROXMOX HOSTS ONLINE · QUORATE · ROUTING
           INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES.
         </p>
@@ -790,7 +792,7 @@ export function DeckContact({
           <Title>HAIL.</Title>
           <p className="mt-4 max-w-[46ch] text-[1.1rem] leading-relaxed text-muted">
             If you are building AI routing, automation reliability, explainability, cybersecurity exposure, or sovereign
-            infrastructure — and need it to be both ambitious and provable — let us compare notes.
+            infrastructure, and need it to be both ambitious and provable, let us compare notes.
           </p>
           <div className="za-mission-stamp mt-7" role="note" aria-label="Mission complete">
             <span>MISSION COMPLETE · HUMAN COMMAND RETAINED</span>
@@ -830,6 +832,15 @@ export function DeckContact({
               className="za-btn-ghost min-h-11 px-5 py-3 text-[11px]"
             >
               CREDLY
+            </a>
+            <a
+              href="https://github.com/jamescashio/jamescashio.github.io"
+              target="_blank"
+              rel="noreferrer"
+              className="za-btn-ghost min-h-11 px-5 py-3 text-[11px]"
+              aria-label="Read the source of this site on GitHub"
+            >
+              SOURCE
             </a>
           </div>
           <p

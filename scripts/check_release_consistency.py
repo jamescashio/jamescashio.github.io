@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail closed when the V34 source and GitHub Pages artifact disagree."""
+"""Fail closed when the V35 source and GitHub Pages artifact disagree."""
 
 from __future__ import annotations
 
@@ -56,6 +56,33 @@ def read(relative: str) -> str:
     return (ROOT / relative).read_text(encoding="utf-8")
 
 
+STAGE_DIR = "src/lib/stage"
+
+_WHITESPACE = re.compile(r"\s+")
+
+
+def collapse(text: str) -> str:
+    """Drop whitespace so a marker survives a formatter reflow."""
+    return _WHITESPACE.sub("", text)
+
+
+def contains(text: str, marker: str) -> bool:
+    """Marker match that tolerates the line breaks Prettier introduces."""
+    return marker in text or collapse(marker) in collapse(text)
+
+
+def read_stage() -> str:
+    """The viewscreen stage is a directory of typed modules, not one file.
+
+    Contract markers may live in any of them, so the gate reads them as one
+    body of source. Adding a module never silently drops a marker check.
+    """
+    parts = sorted((ROOT / STAGE_DIR).glob("*.ts"))
+    if not parts:
+        raise SystemExit(f"{STAGE_DIR} holds no stage modules")
+    return "\n".join(path.read_text(encoding="utf-8") for path in parts)
+
+
 def collect_text(folder: Path) -> str:
     chunks: list[str] = []
     for path in sorted(folder.rglob("*")):
@@ -86,7 +113,7 @@ def check_v34_public_surface(relative: str, text: str, failures: list[str], labe
 
 def check_v34_motion_contract(failures: list[str]) -> None:
     """Keep the V34 motion boundary executable, rather than marker-comment based."""
-    stage = read("src/lib/viewscreen-stage.js")
+    stage = read_stage()
     deck = read("src/components/command-deck.tsx")
     css = read("src/styles.css")
     timing = read("src/lib/animation-timing.ts")
@@ -96,7 +123,7 @@ def check_v34_motion_contract(failures: list[str]) -> None:
             '"article-acquisition": 560',
             '"stage-warp": 680',
         ),
-        "src/lib/viewscreen-stage.js": ("dt * (1000 / motionDurationMs('stage-warp'))",),
+        "src/lib/stage": ('dt * (1000 / motionDurationMs("stage-warp"))',),
         "src/components/command-deck.tsx": (
             '"--za-deck-copy-duration": `${motionDurationMs("deck-copy")}ms`',
             '"--za-article-acquisition-duration": `${motionDurationMs("article-acquisition")}ms`',
@@ -110,13 +137,13 @@ def check_v34_motion_contract(failures: list[str]) -> None:
     }
     source_by_name = {
         "src/lib/animation-timing.ts": timing,
-        "src/lib/viewscreen-stage.js": stage,
+        "src/lib/stage": stage,
         "src/components/command-deck.tsx": deck,
         "src/styles.css": css,
     }
     for filename, markers in required.items():
         for marker in markers:
-            if marker not in source_by_name[filename]:
+            if not contains(source_by_name[filename], marker):
                 failures.append(f"{filename} is missing executable V34 motion marker {marker!r}")
     for stale in ("dt * 1.05", "V33 baseline retained", "animation: za-rise 900ms"):
         if stale in stage or stale in css:
@@ -138,7 +165,7 @@ def main() -> int:
         return 1
 
     expected = {
-        "release": "V34 MACH ONE",
+        "release": "V35 ALL TENS",
         "revised": "2026-08-28",
         "status": "dated-export",
         "verified": "2026-08-28",
@@ -183,8 +210,8 @@ def main() -> int:
             failures.append(f"{cname} must contain only cashio.us")
 
     package = json.loads(read("package.json"))
-    if package.get("version") != "34.0.0":
-        failures.append("package.json version must be 34.0.0")
+    if package.get("version") != "35.0.0":
+        failures.append("package.json version must be 35.0.0")
     if package.get("scripts", {}).get("build") != "tsc --noEmit && vite build":
         failures.append("package.json build script changed from the supplied TypeScript + Vite gate")
 
@@ -247,8 +274,8 @@ def main() -> int:
             'command === "whoami"',
             "NO NETWORK CALLS",
         ),
-        "src/lib/viewscreen-stage.js": (
-            "this.warpT = Math.max(0, this.warpT - dt * (1000 / motionDurationMs('stage-warp')))",
+        "src/lib/stage": (
+            'this.warpT = Math.max(0, this.warpT - dt * (1000 / motionDurationMs("stage-warp")))',
             "55 + warp * 34",
             "Math.min(2.05",
             "if (next !== this.craftTarget)",
@@ -285,9 +312,9 @@ def main() -> int:
         ),
     }
     for filename, markers in required_source.items():
-        text = read(filename)
+        text = read_stage() if filename == STAGE_DIR else read(filename)
         for marker in markers:
-            if marker not in text:
+            if not contains(text, marker):
                 failures.append(f"{filename} is missing V34 contract marker {marker!r}")
 
     check_v34_motion_contract(failures)
@@ -454,18 +481,23 @@ def main() -> int:
     for token in ("google-analytics", "googletagmanager", "plausible.io", "segment.io", "mixpanel"):
         if token in source_tree.lower():
             failures.append(f"tracking/analytics dependency found in source: {token}")
-    for _, target in re.findall(r"fetch\(\s*([\x60'\"])(.+?)\1", source_tree):
+    fetch_targets = [target for _, target in re.findall(r"fetch\(\s*([\x60'\"])(.+?)\1", source_tree)]
+    if not fetch_targets:
+        # A refactor that hides every literal behind a helper would otherwise
+        # pass this gate vacuously while still being free to reach anywhere.
+        failures.append("no literal fetch target found in source; the same-origin egress gate cannot read it")
+    for target in fetch_targets:
         if not target.startswith("/sfx/"):
             failures.append(f"non-audio fetch target found in source: {target!r}")
 
     if failures:
-        print("V34 release consistency check failed:\n")
+        print("V35 release consistency check failed:\n")
         for failure in failures:
             print(f"- {failure}")
         return 1
 
     print(
-        "V34 release consistency passed: 28 August 2026 dated export; "
+        "V35 release consistency passed: 28 August 2026 dated export; "
         "18/19 containers; 2 Proxmox hosts quorate; 10 public lanes; "
         "36 private catalog entries; root Pages base; archive, privacy, "
         "motion, opt-in audio, and forbidden-token gates satisfied."

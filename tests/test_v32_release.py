@@ -18,6 +18,12 @@ release_consistency = importlib.util.module_from_spec(_guard_spec)
 _guard_spec.loader.exec_module(release_consistency)
 
 
+def read_stage() -> str:
+    """Read every typed viewscreen stage module as one body of source."""
+    parts = sorted((ROOT / "src/lib/stage").glob("*.ts"))
+    return "\n".join(path.read_text(encoding="utf-8") for path in parts)
+
+
 def read(relative: str) -> str:
     return (ROOT / relative).read_text(encoding="utf-8")
 
@@ -34,7 +40,8 @@ class V34ReleaseContractTests(unittest.TestCase):
         cls.primitives = read("src/components/deck-primitives.tsx")
         cls.envelope = read("src/components/build-envelope.tsx")
         cls.eve = read("src/components/eve-console.tsx")
-        cls.stage = read("src/lib/viewscreen-stage.js")
+        cls.stage = read_stage()
+        cls.stage_flat = re.sub(r"\s+", "", cls.stage)
         cls.sound = read("src/lib/sound.ts")
         cls.css = read("src/styles.css")
         cls.index = read("index.html")
@@ -45,7 +52,7 @@ class V34ReleaseContractTests(unittest.TestCase):
         )
 
     def test_locked_snapshot_is_exact(self) -> None:
-        self.assertEqual(self.status["release"], "V34 MACH ONE")
+        self.assertEqual(self.status["release"], "V35 ALL TENS")
         self.assertEqual(self.status["revised"], "2026-08-28")
         self.assertEqual(self.status["verifiedLong"], "28 August 2026")
         self.assertEqual(self.status["expires"], "2026-09-27")
@@ -108,10 +115,10 @@ class V34ReleaseContractTests(unittest.TestCase):
             with self.subTest(label=label):
                 self.assertTrue(any("private current-fleet detail" in failure for failure in failures), failures)
 
-    def test_release_identity_is_canonical_v34(self) -> None:
+    def test_release_identity_is_canonical_v35(self) -> None:
         package = json.loads(read("package.json"))
-        self.assertEqual(package["version"], "34.0.0")
-        self.assertIn('V34 "MACH ONE"', self.content)
+        self.assertEqual(package["version"], "35.0.0")
+        self.assertIn('V35 "ALL TENS"', self.content)
         retired_candidate = "V" + "47"
         for relative in (
             "README.md",
@@ -140,35 +147,43 @@ class V34ReleaseContractTests(unittest.TestCase):
         self.assertIn("Grok 4.6", self.live)
         self.assertIn("Sonar Pro", self.live)
 
+    def assertInStage(self, marker: str) -> None:
+        """Assert a stage contract marker is present, tolerating formatter reflow.
+
+        The stage is Prettier formatted, so a marker written on one line in the
+        source may be wrapped across several. Compare with whitespace removed.
+        """
+        if marker in self.stage:
+            return
+        self.assertIn(re.sub(r"\s+", "", marker), self.stage_flat)
+
     def test_every_airframe_change_kicks_the_bounded_v34_warp_fov_and_bloom(self) -> None:
-        self.assertIn("motionDurationMs('stage-warp')", self.stage)
-        self.assertIn("dt * (1000 / motionDurationMs('stage-warp'))", self.stage)
+        self.assertInStage('motionDurationMs("stage-warp")')
+        self.assertInStage('dt * (1000 / motionDurationMs("stage-warp"))')
         self.assertNotIn("dt * 1.05", self.stage)
-        self.assertIn("this.camera.fov += ((55 + warp * 34)", self.stage)
-        self.assertIn("this.bloom.strength = Math.min(2.05", self.stage)
-        craft_change = self.stage[self.stage.index("setCraft(i)") : self.stage.index("setClearX(f)")]
+        self.assertInStage("this.camera.fov += (55 + warp * 34 + (1 - arrive) * 26 - this.camera.fov)")
+        self.assertInStage("this.bloom.strength = Math.min(2.05")
+        craft_change = self.stage[self.stage.index("setCraft(i: number)") : self.stage.index("setClearX(f: number)")]
         self.assertIn("if (next !== this.craftTarget)", craft_change)
         self.assertIn("this.warpT = 1", craft_change)
         self.assertIn("st?.warp?.()", self.deck)
 
     def test_motion_guard_rejects_a_dead_v33_warp_marker(self) -> None:
-        original_read = release_consistency.read
+        """The stage now spans several typed modules, so the guard reads them as one."""
+        original_read_stage = release_consistency.read_stage
 
-        def stale_read(relative: str) -> str:
-            text = original_read(relative)
-            if relative == "src/lib/viewscreen-stage.js":
-                return text.replace(
-                    "dt * (1000 / motionDurationMs('stage-warp'))",
-                    "dt * 1.05",
-                )
-            return text
+        def stale_read_stage() -> str:
+            return original_read_stage().replace(
+                'dt * (1000 / motionDurationMs("stage-warp"))',
+                "dt * 1.05",
+            )
 
-        release_consistency.read = stale_read
+        release_consistency.read_stage = stale_read_stage
         try:
             failures: list[str] = []
             release_consistency.check_v34_motion_contract(failures)
         finally:
-            release_consistency.read = original_read
+            release_consistency.read_stage = original_read_stage
         self.assertTrue(any("obsolete V33 marker" in failure for failure in failures), failures)
 
     def test_scan_band_rise_and_route_shimmer_contract(self) -> None:
@@ -282,7 +297,7 @@ class V34ReleaseContractTests(unittest.TestCase):
             "NASA / ESPO",
         ):
             self.assertIn(marker, self.live)
-        self.assertIn("pose: { yaw: -0.62, pitch: 0.42", self.stage)
+        self.assertInStage("pose: { yaw: -0.62, pitch: 0.42")
         self.assertIn("aria-pressed={pick === i}", self.decks)
         reduced = self.css[self.css.rindex("@media (prefers-reduced-motion: reduce)") :]
         self.assertIn(".za-airframe-acquire", reduced)
@@ -325,7 +340,8 @@ class V34ReleaseContractTests(unittest.TestCase):
             (self.deck, self.chrome, self.decks, self.primitives, self.eve, self.sound, self.stage)
         )
         fetches = [target for _, target in re.findall(r"fetch\(\s*([\x60'\"])(.+?)\1", source)]
-        self.assertEqual(fetches, ["/sfx/$" + "{name}.wav?v=51"])
+        # Opus first, PCM as the fallback. Both stay same origin under /sfx/.
+        self.assertEqual(fetches, ["/sfx/$" + "{name}.webm?v=52", "/sfx/$" + "{name}.wav?v=52"])
         for tracker in ("google-analytics", "googletagmanager", "plausible.io", "segment.io", "mixpanel"):
             self.assertNotIn(tracker, source.lower())
 
@@ -338,7 +354,7 @@ class V34ReleaseContractTests(unittest.TestCase):
         self.assertIn('aria-label="Mobile command decks"', self.chrome)
         self.assertIn('role="log"', self.eve)
         self.assertIn('aria-live="polite"', self.eve)
-        self.assertIn('aria-label="E.V.E. command output"', self.eve)
+        self.assertIn('aria-label="E.V.E. command output, scrollable"', self.eve)
 
     def test_release_preserves_security_discovery_and_crawler_files(self) -> None:
         for relative in (".well-known/security.txt", "robots.txt", "sitemap.xml"):

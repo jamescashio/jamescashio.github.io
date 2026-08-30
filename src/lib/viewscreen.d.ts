@@ -17,10 +17,4 @@ declare module "react" {
   }
 }
 
-declare module "@/lib/viewscreen-stage.js" {
-  export class ViewscreenStage extends HTMLElement {}
-  const value: unknown;
-  export default value;
-}
-
 export {};

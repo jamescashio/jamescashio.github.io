@@ -60,7 +60,7 @@ test("a stage mounted in a hidden tab defers WebGL and frames until the tab is v
   setGlobal("cancelAnimationFrame", (id) => frames.delete(id));
 
   try {
-    const { ViewscreenStage } = await import("../src/lib/viewscreen-stage.js");
+    const { ViewscreenStage } = await import("../src/lib/viewscreen-stage.ts");
     class ProbeStage extends ViewscreenStage {
       _initGL() {
         initializations += 1;
@@ -145,7 +145,7 @@ test("an active stage settles its warp frame when reduced motion is enabled", as
   setGlobal("cancelAnimationFrame", (id) => frames.delete(id));
 
   try {
-    const { ViewscreenStage } = await import("../src/lib/viewscreen-stage.js");
+    const { ViewscreenStage } = await import("../src/lib/viewscreen-stage.ts");
     class ProbeStage extends ViewscreenStage {
       _initGL() {}
       _resize() {}
@@ -233,7 +233,7 @@ test("an active stage resumes after reduced motion is disabled while hidden", as
   setGlobal("cancelAnimationFrame", (id) => frames.delete(id));
 
   try {
-    const { ViewscreenStage } = await import("../src/lib/viewscreen-stage.js");
+    const { ViewscreenStage } = await import("../src/lib/viewscreen-stage.ts");
     class ProbeStage extends ViewscreenStage {
       _initGL() {
         initializations += 1;

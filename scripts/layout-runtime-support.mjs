@@ -1,6 +1,10 @@
 import { rm } from "node:fs/promises";
 import WebSocket from "ws";
 
+/** Distance from the bottom of the viewport to the mobile flight control,
+ * matching `bottom-[calc(env(safe-area-inset-bottom,0px)+4.25rem)]` in the tree. */
+const MOBILE_FLIGHT_BOTTOM_OFFSET_PX = 68;
+
 const DEFAULT_CONNECT_TIMEOUT_MS = 10_000;
 const DEFAULT_COMMAND_TIMEOUT_MS = 10_000;
 const DEFAULT_CLEANUP_TIMEOUT_MS = 2_000;
@@ -488,36 +492,43 @@ export function mobileFlightAcceptanceFailures(scenario) {
   if (!scenario.contentPassedUnderSurface)
     failures.push("receipt or email content must pass beneath the fixed surface");
 
+  // The flight control is anchored to the bottom of the viewport, clear of the
+  // deck rail, so the hero headline is the first thing a phone visitor reads.
+  // Derive the expected top from the viewport rather than pinning a constant,
+  // so a spacing change updates the contract instead of breaking it.
+  const viewportHeight = scenario.viewport?.[1] ?? 0;
+  const bottomOffsetPx = MOBILE_FLIGHT_BOTTOM_OFFSET_PX;
   if (scenario.inactive?.backgroundAlpha !== 1) failures.push("inactive flight background alpha must equal 1");
-  const inactiveRect = { left: 12, top: 68, width: 288, height: 44 };
+  const inactiveRect = { left: 12, top: viewportHeight - bottomOffsetPx - 44, width: 288, height: 44 };
   if (
     !hasExactRect(scenario.inactive?.beforeScroll, inactiveRect) ||
     !hasExactRect(scenario.inactive?.afterScroll, inactiveRect)
   ) {
-    failures.push("inactive geometry must remain fixed at x=12, top=68, width=288, height=44");
+    failures.push(`inactive geometry must remain fixed at x=12, top=${inactiveRect.top}, width=288, height=44`);
   }
 
   if (scenario.active?.backgroundAlpha !== 1) failures.push("active flight background alpha must equal 1");
-  const activeRect = { left: 12, top: 68, width: 288, height: 62 };
+  const activeRect = { left: 12, top: viewportHeight - bottomOffsetPx - 62, width: 288, height: 62 };
   if (
     !hasExactRect(scenario.active?.beforeScroll, activeRect) ||
     !hasExactRect(scenario.active?.afterScroll, activeRect)
   ) {
-    failures.push("active panel geometry must remain fixed at x=12, top=68, width=288, height=62");
+    failures.push(`active panel geometry must remain fixed at x=12, top=${activeRect.top}, width=288, height=62`);
   }
   if (!(scenario.active?.stopControl?.height >= 44)) {
     failures.push("active STOP FLIGHT target must be at least 44px high");
   }
   failures.push(...flightTelemetryAcceptanceFailures(scenario.active?.criticalTelemetryFontSizesPx, width));
+  const stopTop = activeRect.top + 9;
   if (
     !hasExactRect(scenario.active?.stopControl, {
       left: 199.734375,
-      top: 77,
+      top: stopTop,
       width: 91.265625,
       height: 44,
     })
   ) {
-    failures.push("active STOP FLIGHT geometry must remain x=199.734375, top=77, width=91.265625, height=44");
+    failures.push(`active STOP FLIGHT geometry must remain x=199.734375, top=${stopTop}, width=91.265625, height=44`);
   }
   return failures;
 }

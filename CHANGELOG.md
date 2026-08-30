@@ -2,6 +2,38 @@
 
 This file records the canonical public release line for cashio.us. Visible dates use MM-DD-YYYY. Unpublished prototype numbering is intentionally omitted; Git history retains those experiments without presenting them as releases.
 
+## [v35] — 08-30-2026
+
+Release name: "ALL TENS." A quality pass against the nine category audit of the live V34 build. No published figure changes: the dated export, the fleet counts and the routing inventory are exactly as verified on 28 August 2026, because no fresh measurement was taken.
+
+### Changed
+
+- The hero opens with one plain sentence before any operator shorthand, and the dated figure is stated once rather than repeated across the chrome.
+- The header deck chip follows the deck the scroll has reached instead of the deck that was pressed, so the chrome and the content cannot disagree during a glide.
+- The collapsed command rail previews each deck name and tag on hover, and the phone rail carries all nine decks on a scrolling strip.
+- The corner heads up display stays anchored above the phone deck rail instead of jumping to the top of the screen, and the flight control moved out of the hero.
+- The viewscreen stage arrives instead of appearing: the camera opens tight with the lens wide and pulls back into the conn while the plate dissolves through it.
+- Bit offers the console once, after a quiet moment on the first deck.
+
+### Added
+
+- A branded 404 page, and archive markers at /grid.html and /index-v44.html so superseded release URLs stay reachable.
+- A link to the source repository on the contact deck.
+- Twenty console responses that are not listed in help, at console depth only.
+
+### Performance
+
+- Airframe one shots ship as Opus in WebM with the PCM originals kept as a fallback: 443 KB down to 24 KB. Provenance and the audio gates are unchanged.
+- The four JPEG fallbacks behind the AVIF and WebP plates were re-encoded, saving 165 KB.
+
+### Code
+
+- The 1,801 line untyped viewscreen stage is now six typed modules under src/lib/stage, inside strict TypeScript and eslint with zero warnings. The release gates read the stage as a directory and tolerate formatter reflow.
+
+### Boundaries
+
+- Every published figure, date and boundary is carried forward unchanged. The stopped guest remains unnamed. Audio remains off until a visitor arms it.
+
 ## [v34] — 08-28-2026
 
 Release name: "MACH ONE." This preservation pass makes the public truth easier to read without broadening what it publishes.

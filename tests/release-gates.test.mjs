@@ -69,7 +69,7 @@ function expandScript(scripts, name, seen = new Set()) {
 
 test("package metadata and deterministic local gates define the V34 release", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "34.0.0");
+  assert.equal(packageJson.version, "35.0.0");
   for (const dependency of [
     "@eslint/js",
     "eslint",
@@ -116,7 +116,7 @@ test("package metadata and deterministic local gates define the V34 release", as
   const status = JSON.parse(await read("status.json"));
   const publicStatus = JSON.parse(await read("public/status.json"));
   assert.deepEqual(status, publicStatus);
-  assert.equal(status.release, "V34 MACH ONE");
+  assert.equal(status.release, "V35 ALL TENS");
   assert.equal(status.revised, "2026-08-28");
   assert.equal(status.verified, "2026-08-28");
   assert.equal(status.expires, "2026-09-27");
@@ -205,7 +205,7 @@ test("release checklist separates the fresh fleet export from routing provenance
   assert.doesNotMatch(template, /21 August 2026[^\r\n]*(?:19\/19|containers)/);
 
   const workflow = await read(".github/workflows/public-safety.yml");
-  assert.match(workflow, /- name: Install V34 dependencies/);
+  assert.match(workflow, /- name: Install V35 dependencies/);
   assert.doesNotMatch(workflow, /- name: Install V33 dependencies/);
 });
 

@@ -4,6 +4,7 @@ const MOTION_DURATION_MS = {
   "deck-copy": 380,
   "article-acquisition": 560,
   "stage-warp": 680,
+  "stage-arrival": 2200,
 } as const;
 
 type MotionKind = keyof typeof MOTION_DURATION_MS;

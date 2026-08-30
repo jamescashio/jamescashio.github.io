@@ -89,7 +89,7 @@ export function DeckShell({
 export function Ticker() {
   const items = [...TELEMETRY, ...TELEMETRY];
   return (
-    <div className="za-ticker mt-10 max-w-xl border-y border-line py-2">
+    <div data-hud-clear className="za-ticker mt-10 max-w-xl border-y border-line py-2">
       <div className="za-critical-telemetry za-ticker-track za-mono tracking-[0.2em] text-cyan">
         {items.map((item, index) => (
           <span key={`${item}-${index}`} className="flex items-center gap-3">

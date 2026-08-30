@@ -34,7 +34,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install V34 dependencies
+      - name: Install V35 dependencies
         id: install
         continue-on-error: true
         run: npm ci

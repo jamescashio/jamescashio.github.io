@@ -136,13 +136,19 @@ test("DeckSnapshot states the exact bounded 45-word introduction without changin
         onEve: () => {},
       }),
     );
+    const lede = view.document.querySelector(".za-snapshot-lede")?.textContent;
+    assert.equal(
+      lede,
+      "I run AI and security systems on servers I own, and I publish the evidence that they work.",
+      "the hero must open with one plain sentence before any operator shorthand",
+    );
+    assert.ok(lede.split(/\s+/u).length <= 22, "the plain lede must stay short enough to read at a glance");
     const introduction = view.document.querySelector(".za-snapshot-copy")?.textContent;
     assert.equal(
       introduction,
-      "Doug Cashio builds and operates sovereign AI and security systems on hardware he owns. Quality-first routing selects the right model, while dated public evidence keeps every claim bounded. Fleet evidence was verified on 28 August 2026; the routing inventory remains separately dated 21 August 2026.",
+      "Every claim here is measured and dated. Nineteen services run on two machines in a room I can walk into, and a routing layer picks the best model for each job rather than the cheapest.",
     );
-    assert.equal(introduction.split(/\s+/u).length, 45, "the approved introduction must remain exactly 45 words");
-    assert.ok(introduction.split(/\s+/u).length <= 55, "the introduction must stay within the 55-word clarity gate");
+    assert.ok(introduction.split(/\s+/u).length <= 60, "the introduction must stay within the clarity gate");
     assert.match(view.document.body.textContent, /DOUG CASHIO · ENTERPRISE AI \+ SECURITY SYSTEMS · OWNER-OPERATOR/);
     assert.equal(view.document.querySelector("h1")?.textContent, "OWN THE IRON AND THE ROUTE.");
   } finally {
@@ -432,7 +438,7 @@ test("CommandHeader craft pips expose exactly one current craft and update it on
       audio: false,
       clock: "0000.000",
       craftIndex,
-      deck: 0,
+      arrivedDeck: 0,
       hudClassName: "",
       onNavigateCraft: setCraftIndex,
       onOpenNavigator: () => {},

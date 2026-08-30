@@ -6,7 +6,7 @@ import * as content from "../src/lib/content.ts";
 const { CRAFT, DECK_CRAFT, LINEAGE, LINEAGE_EVIDENCE, PILOT_CRAFT } = content;
 
 if (globalThis.HTMLElement == null) globalThis.HTMLElement = class {};
-const stage = await import("../src/lib/viewscreen-stage.js");
+const stage = await import("../src/lib/viewscreen-stage.ts");
 
 test("the Rutan lineage selection resolves to Proteus instead of a second SpaceX vehicle", () => {
   const rutanIndex = LINEAGE.findIndex(({ name }) => name === "RUTAN");

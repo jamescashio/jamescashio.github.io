@@ -1,15 +1,15 @@
-# V34 MACH ONE — DATED EVIDENCE. HUMAN COMMAND.
+# V35 ALL TENS · DATED EVIDENCE. HUMAN COMMAND.
 
 **Fleet export date:** 28 August 2026
 **Routing inventory date:** 21 August 2026
 **Release revision:** 28 August 2026
 **Validity window:** through 27 September 2026 in America/Chicago, or until the next owner-verified architecture change
 
-V34 preserves the Vite 6 + React 19 command console and its Bit-centered Dune/LCARS identity while making the public truth more legible: dated aggregate evidence, separate routing provenance, Executive outcomes, Build Proof, and Cashio Operating Lessons. Audio remains restrained and opt-in. The Contact conclusion and voice are preserved, while the Black Box Receipt evidence is reconciled to the 28 August fleet export (18 of 19 documented guests) and the separate 21 August routing inventory (10 public capability lanes and 36 private catalog entries).
+V35 is a quality pass against the nine category audit of the live V34 build. No published figure changes: the dated export, the fleet counts and the routing inventory are exactly as verified on 28 August 2026. It preserves the Vite 6 + React 19 command console and its Bit-centered Dune/LCARS identity while making the public truth more legible: dated aggregate evidence, separate routing provenance, Executive outcomes, Build Proof, and Cashio Operating Lessons. Audio remains restrained and opt-in. The Contact conclusion and voice are preserved, while the Black Box Receipt evidence is reconciled to the 28 August fleet export (18 of 19 documented guests) and the separate 21 August routing inventory (10 public capability lanes and 36 private catalog entries).
 
 ## Locked public snapshot
 
-| Item                        | V34 public state                                   |
+| Item                        | V35 public state                                   |
 | --------------------------- | -------------------------------------------------- |
 | Proxmox VE                  | 9.2.11                                             |
 | Containers                  | 18 of 19 at 28 Aug probe · Zeus 12/13 · Apollo 6/6 |
