@@ -361,7 +361,7 @@ export class ViewscreenStage extends HTMLElement {
     this.stars = new THREE.Points(
       sg,
       new THREE.PointsMaterial({
-        size: 0.3,
+        size: 0.38,
         sizeAttenuation: true,
         vertexColors: true,
         transparent: true,
@@ -1242,11 +1242,11 @@ export class ViewscreenStage extends HTMLElement {
 
     this.stars.rotation.y = t * 0.000018 + this.mx * 0.035;
     this.stars.rotation.x = this.my * 0.022;
-    if (!this._twk || t - this._twk > 90) {
+    if (!this._twk || t - this._twk > 70) {
       this._twk = t;
       const c = this.stars.geometry.attributes.color,
         a = c.array;
-      for (let k = 0; k < 26; k++) {
+      for (let k = 0; k < 40; k++) {
         const i = ((Math.random() * (a.length / 3)) | 0) * 3;
         const f = 0.6 + Math.random() * 0.7;
         a[i] = Math.min(1, a[i] * f);
@@ -1263,13 +1263,13 @@ export class ViewscreenStage extends HTMLElement {
       for (let i = 0; i < this.stkLen.length; i++) {
         const b = i * 3,
           e = (i * 2 + 1) * 3;
-        const k = 1 + this.stkLen[i] * warp * 0.85;
+        const k = 1 + this.stkLen[i] * warp * 1.25;
         arr[e] = this.stkBase[b] * k;
         arr[e + 1] = this.stkBase[b + 1] * k;
         arr[e + 2] = this.stkBase[b + 2] * k;
       }
       this.streaks.geometry.attributes.position.needsUpdate = true;
-      sm.opacity = Math.min(0.9, warp * 1.1) * this.dim;
+      sm.opacity = Math.min(1, warp * 1.35) * this.dim;
       this.streaks.visible = true;
     } else if (this.streaks.visible) {
       sm.opacity = 0;
@@ -1592,8 +1592,8 @@ export class ViewscreenStage extends HTMLElement {
     const poseBloom = 1 + (((pose && pose.bloom) || 1) - 1) * poseLock;
     const poseExposure = 1 + (((pose && pose.exposure) || 1) - 1) * poseLock;
     this.bloom.strength = Math.min(
-      2.05,
-      (0.68 + warp * 1.15 + nearFold * 0.34 + nearWarp * 0.3 + (1 - arrive) * 0.52) *
+      2.25,
+      (0.74 + warp * 1.35 + nearFold * 0.34 + nearWarp * 0.3 + (1 - arrive) * 0.52) *
         (0.22 + this.dim * 0.82) *
         poseBloom,
     );

@@ -25,6 +25,7 @@ import { BitMascot } from "./bit-mascot";
 import { BuildEnvelope } from "./build-envelope";
 import { CountUp, DeckShell, Kicker, Plate, Ticker, Title } from "./deck-primitives";
 import { EveConsole } from "./eve-console";
+import { HermesProof } from "./hermes-proof";
 
 type SecRef = RefObject<HTMLElement | null>;
 
@@ -81,11 +82,14 @@ export function DeckSnapshot({
   copyCol,
   onEngage,
   onEve,
+  onStill,
 }: {
   s0: SecRef;
   copyCol: RefObject<HTMLDivElement | null>;
   onEngage: () => void;
   onEve: () => void;
+  onFlight?: () => void;
+  onStill?: () => void;
 }) {
   const mode = useDeck((s) => s.mode);
   const set = useDeck((s) => s.set);
@@ -125,7 +129,7 @@ export function DeckSnapshot({
               set({ mode: "technical", shown: [0] });
               getSound().prompt();
             }}
-            className={`rounded-[10px] px-3 py-3 text-left ${mode === "technical" ? "bg-accent text-on-accent" : "text-dim"}`}
+            className={`min-h-11 rounded-[10px] px-3 py-3 text-left ${mode === "technical" ? "bg-accent text-on-accent" : "text-dim"}`}
           >
             <div className="za-mono text-[10px] tracking-[0.2em]">TECHNICAL</div>
             <div className="mt-1 font-sans text-[13px] leading-snug">
@@ -139,7 +143,7 @@ export function DeckSnapshot({
               set({ mode: "executive", shown: [0, 8] });
               getSound().prompt();
             }}
-            className={`rounded-[10px] px-3 py-3 text-left ${mode === "executive" ? "bg-accent text-on-accent" : "text-dim"}`}
+            className={`min-h-11 rounded-[10px] px-3 py-3 text-left ${mode === "executive" ? "bg-accent text-on-accent" : "text-dim"}`}
           >
             <div className="za-mono text-[10px] tracking-[0.2em]">EXECUTIVE</div>
             <div className="mt-1 font-sans text-[13px] leading-snug">
@@ -149,12 +153,25 @@ export function DeckSnapshot({
         </div>
 
         <div data-hud-clear className="za-snapshot-actions mt-8 flex flex-wrap items-center gap-3">
-          <button type="button" className="za-btn px-7 py-3.5 text-[13px]" onClick={onEngage}>
-            {mode === "executive" ? "READ THE BRIEF" : "DESCEND THE DECKS"}
-          </button>
-          <button type="button" className="za-btn-ghost px-5 py-3 text-[11px]" onClick={onEve}>
-            OPEN E.V.E. CONSOLE
-          </button>
+          {mode === "executive" ? (
+            <>
+              <button type="button" className="za-btn px-7 py-3.5 text-[13px]" onClick={() => onStill?.()}>
+                ARM THE STILL
+              </button>
+              <button type="button" className="za-btn-ghost px-5 py-3 text-[11px]" onClick={onEngage}>
+                READ THE BRIEF
+              </button>
+            </>
+          ) : (
+            <>
+              <button type="button" className="za-btn px-7 py-3.5 text-[13px]" onClick={onEngage}>
+                DESCEND THE DECKS
+              </button>
+              <button type="button" className="za-btn-ghost px-5 py-3 text-[11px]" onClick={onEve}>
+                OPEN E.V.E. CONSOLE
+              </button>
+            </>
+          )}
         </div>
 
         <div data-hud-clear className="za-chip za-critical-telemetry mt-8">
@@ -577,6 +594,7 @@ export function DeckBuilds({ s5, onSelect }: { s5: SecRef; onSelect: (article: n
               </div>
               <h3 className="za-display mt-3 text-3xl">{article.name}</h3>
               <p className="mt-4 text-[1.02rem] leading-relaxed text-muted">{article.note}</p>
+              {sel === 0 ? <HermesProof /> : null}
               <div className="za-article-telemetry mt-6 grid grid-cols-3 gap-px overflow-hidden rounded-[var(--radius-sm)] border border-line">
                 <span>ARTICLE · {String(sel + 1).padStart(2, "0")}/07</span>
                 <span>BUILD PROOF · OWNER-BUILT</span>

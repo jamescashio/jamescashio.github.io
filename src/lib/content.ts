@@ -33,6 +33,18 @@ export const DECKS = [
   { id: "contact", num: "09", name: "CONTACT", tag: "Hail: doug@cashio.us" },
 ] as const;
 
+export const DECK_SHORT: Record<(typeof DECKS)[number]["id"], string> = {
+  snapshot: "SNAP",
+  grid: "GRID",
+  routing: "ROUTE",
+  iron: "IRON",
+  lineage: "LINE",
+  builds: "BUILD",
+  operator: "OPS",
+  eve: "EVE",
+  contact: "HAIL",
+};
+
 export const TELEMETRY = [
   "ZEUS · 12/13 RUNNING AT 28 AUG PROBE",
   "APOLLO · 6/6 RUNNING AT 28 AUG PROBE",

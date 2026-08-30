@@ -51,7 +51,7 @@ void main(){
     st += (max(a - 0.5, 0.0) + max(b - 0.5, 0.0)) * wt;
     ws += wt;
   }
-  col += st / ws * uStreak * vec3(0.5, 0.78, 1.0);
+  col += st / ws * uStreak * vec3(0.58, 0.88, 1.0) * 1.18;
   col *= smoothstep(1.4, 0.2, dot(c, c) * 2.6);
   float g = fract(sin(dot(uv * uRes + uTime, vec2(12.9898, 78.233))) * 43758.5453);
   col += (g - 0.5) * 0.024 * uAmt;

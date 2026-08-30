@@ -33,8 +33,9 @@ void main(){
   float clouds = smoothstep(0.28, 0.92, n * 0.75 + m * 0.35);
   float vign = smoothstep(1.25, 0.15, length(vUv - 0.5) * 1.6);
   vec3 col = mix(uA, uB, clamp(n * 1.25 + uProg * 0.25, 0.0, 1.0));
-  col *= clouds * 0.5;
-  col += uB * pow(clouds, 3.0) * 0.25;
+  col *= clouds * 0.55;
+  col += uB * pow(clouds, 3.0) * 0.42;
+  col += vec3(0.0, 0.035, 0.04) * clouds;
   gl_FragColor = vec4(col * vign + vec3(0.017, 0.017, 0.026), 1.0);
 }`;
 

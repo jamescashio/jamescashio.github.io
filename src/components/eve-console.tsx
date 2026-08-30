@@ -269,6 +269,7 @@ export function EveConsole({
           spellCheck={false}
           className="min-h-11 min-w-[44px] flex-1 bg-transparent za-mono text-[12px] text-ink placeholder:text-dim"
           placeholder="type help"
+          suppressHydrationWarning
         />
         <button type="submit" className="za-chip min-h-11 min-w-11 hover:border-cyan hover:text-cyan">
           RUN

@@ -40,6 +40,11 @@ Release name: "MACH ONE." This preservation pass makes the public truth easier t
 
 ### Changed
 
+- Added the LinkedIn executive still (EXECUTIVE → ARM THE STILL): a 1.91:1 LCARS plate of the dated export, dismissed with Escape / EXIT STILL.
+- Restaged viewscreen HUD, Hermes article-01 schematic, and acquisition bloom so the first five seconds read as a command console without changing palette, type, Bit, or nine decks.
+
+### Changed
+
 - Replaced undated health language with a read-only, dated 28 August aggregate export: 18/19 guests running, Zeus 12/13, Apollo 6/6, and two online quorate hosts on Proxmox 9.2.11.
 - Kept routing as a separate 21 August inventory: ten public lanes and thirty-six private catalog entries count different objects.
 - Reframed Executive mode around Route Control, Evidence Boundary, and Human Authority; labeled Build Proof and Cashio Operating Lessons.

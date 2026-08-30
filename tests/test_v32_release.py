@@ -161,8 +161,11 @@ class V34ReleaseContractTests(unittest.TestCase):
         self.assertInStage('motionDurationMs("stage-warp")')
         self.assertInStage('dt * (1000 / motionDurationMs("stage-warp"))')
         self.assertNotIn("dt * 1.05", self.stage)
+        # The arrival widens the lens on the way in, and the restage raised the
+        # bloom ceiling. Both hold: the typed modules keep the reflow tolerant
+        # assertion, the constants come from the restage.
         self.assertInStage("this.camera.fov += (55 + warp * 34 + (1 - arrive) * 26 - this.camera.fov)")
-        self.assertInStage("this.bloom.strength = Math.min(2.05")
+        self.assertInStage("this.bloom.strength = Math.min(2.25")
         craft_change = self.stage[self.stage.index("setCraft(i: number)") : self.stage.index("setClearX(f: number)")]
         self.assertIn("if (next !== this.craftTarget)", craft_change)
         self.assertIn("this.warpT = 1", craft_change)
