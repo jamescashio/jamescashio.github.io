@@ -230,6 +230,37 @@ test("a stuck server shutdown is bounded while remaining resources are cleaned",
   }
 });
 
+test("early browser exit diagnostics preserve the signal and Chrome stderr", () => {
+  assert.equal(
+    typeof runtimeSupport.browserExitDiagnostic,
+    "function",
+    "the verifier must expose actionable early-exit diagnostics",
+  );
+  const diagnostic = runtimeSupport.browserExitDiagnostic(
+    null,
+    "SIGTRAP",
+    "[FATAL:zygote_host_impl_linux.cc] No usable sandbox!",
+  );
+  assert.match(diagnostic, /signal SIGTRAP/);
+  assert.match(diagnostic, /No usable sandbox!/);
+});
+
+test("cleanup skips a browser process that already terminated by signal", async () => {
+  const profile = await mkdtemp(path.join(tmpdir(), "cashio-layout-test-signaled-browser-"));
+  const resources = fakeResources(profile);
+  resources.browser.signalCode = "SIGTRAP";
+  resources.browser.killCalls = 0;
+  resources.browser.kill = () => {
+    resources.browser.killCalls += 1;
+  };
+
+  await cleanupLayoutResources(resources, { browserExitTimeoutMs: 25 });
+
+  assert.equal(resources.browser.killCalls, 0);
+  assert.equal(resources.server.closed, true);
+  await assertProfileRemoved(profile);
+});
+
 test("verification cleanup preserves a primary-only failure", async () => {
   assert.equal(
     typeof runtimeSupport.runWithLayoutCleanup,

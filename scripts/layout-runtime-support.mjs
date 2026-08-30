@@ -30,6 +30,14 @@ function terminateSocket(socket) {
   }
 }
 
+export function browserExitDiagnostic(code, signal, stderr) {
+  const outcome = signal ? `signal ${signal}` : `code ${code ?? "unknown"}`;
+  const stderrTail = String(stderr ?? "")
+    .trim()
+    .slice(-4_096);
+  return `browser exited before layout verification (${outcome})${stderrTail ? `\nChrome stderr:\n${stderrTail}` : ""}`;
+}
+
 export async function connectCdp(
   endpoint,
   {
@@ -129,7 +137,7 @@ export async function cleanupLayoutResources(
   } catch (error) {
     errors.push(error);
   }
-  if (browser && browser.exitCode == null) {
+  if (browser && browser.exitCode == null && browser.signalCode == null) {
     try {
       const exited = new Promise((resolve) => browser.once("exit", resolve));
       browser.kill();
