@@ -298,6 +298,7 @@ const approvedFlightScenario = {
     backgroundAlpha: 1,
     beforeScroll: { left: 12, top: 68, width: 288, height: 62 },
     afterScroll: { left: 12, top: 68, width: 288, height: 62 },
+    criticalTelemetryFontSizesPx: { state: 11, progress: 11, now: 11 },
     stopControl: { tagName: "BUTTON", left: 199.734375, top: 77, width: 91.265625, height: 44 },
   },
 };
@@ -501,9 +502,10 @@ const approvedDesktopEveScenario = {
   inputVisible: true,
   promptSurfaceVisible: true,
   runVisible: true,
-  input: { left: 430, right: 850, top: 642, bottom: 660, width: 420, height: 18 },
+  input: { left: 430, right: 850, top: 630, bottom: 674, width: 420, height: 44 },
   promptSurface: { left: 320, right: 960, top: 624, bottom: 680, width: 640, height: 56 },
   runControl: { left: 880, right: 940, top: 630, bottom: 674, width: 60, height: 44 },
+  criticalTelemetryFontSizesPx: [10, 10],
   inputTopmostHit: true,
   runTopmostHit: true,
   promptSurfaceSampleHits: [true, true, true, true, true, true, true, true, true],
@@ -521,7 +523,7 @@ test("desktop E.V.E. acceptance recognizes hand-derived 1280 and unchanged 1440 
     validate({
       ...approvedDesktopEveScenario,
       viewport: [1440, 900],
-      input: { left: 510, right: 930, top: 752, bottom: 770, width: 420, height: 18 },
+      input: { left: 510, right: 930, top: 740, bottom: 784, width: 420, height: 44 },
       promptSurface: { left: 400, right: 1040, top: 734, bottom: 790, width: 640, height: 56 },
       runControl: { left: 960, right: 1020, top: 740, bottom: 784, width: 60, height: 44 },
       documentWidth: 1440,
@@ -530,6 +532,78 @@ test("desktop E.V.E. acceptance recognizes hand-derived 1280 and unchanged 1440 
     }),
     [],
   );
+});
+
+test("touch-target acceptance requires actual 44px by 44px control rectangles", () => {
+  const validate = runtimeSupport.touchTargetAcceptanceFailures ?? (() => ["touch-target validator unavailable"]);
+  assert.deepEqual(validate({ width: 44, height: 44 }, "aircraft selector"), []);
+  for (const [label, rect] of [
+    ["narrow", { width: 43.99, height: 44 }],
+    ["short", { width: 44, height: 43.99 }],
+    ["missing width", { height: 44 }],
+    ["non-finite height", { width: 44, height: Number.NaN }],
+  ]) {
+    assert.ok(validate(rect, "aircraft selector").length > 0, `${label} actual rectangle must fail closed`);
+  }
+});
+
+test("desktop E.V.E. acceptance rejects undersized input and RUN rectangles", () => {
+  const validate = runtimeSupport.desktopEveAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  for (const [label, rectName, mutation] of [
+    ["input width", "input", { right: 473.99, width: 43.99 }],
+    ["input height", "input", { bottom: 673.99, height: 43.99 }],
+    ["RUN width", "runControl", { right: 923.99, width: 43.99 }],
+    ["RUN height", "runControl", { bottom: 673.99, height: 43.99 }],
+  ]) {
+    const failures = validate({
+      ...approvedDesktopEveScenario,
+      [rectName]: { ...approvedDesktopEveScenario[rectName], ...mutation },
+    });
+    assert.ok(
+      failures.some((failure) => /actual target.*44x44/i.test(failure)),
+      `${label} must be rejected from its actual rectangle`,
+    );
+  }
+});
+
+test("desktop E.V.E. acceptance enforces the 10px critical telemetry floor", () => {
+  const validate = runtimeSupport.desktopEveAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  assert.deepEqual(validate(approvedDesktopEveScenario), []);
+  for (const fontSizes of [[9.99, 10], [10, 9.99], [10, Number.NaN], undefined]) {
+    const failures = validate({ ...approvedDesktopEveScenario, criticalTelemetryFontSizesPx: fontSizes });
+    assert.ok(
+      failures.some((failure) => /critical telemetry.*10px/i.test(failure)),
+      `font sizes ${String(fontSizes)} must fail closed`,
+    );
+  }
+});
+
+test("E.V.E. critical telemetry raises its runtime floor to 11px on mobile", () => {
+  const validate =
+    runtimeSupport.criticalTelemetryAcceptanceFailures ?? (() => ["critical-telemetry validator unavailable"]);
+  assert.deepEqual(validate([10, 10], 1280, "E.V.E."), []);
+  assert.deepEqual(validate([11, 11], 320, "E.V.E."), []);
+  assert.deepEqual(validate([11, 11], 390, "E.V.E."), []);
+  assert.ok(validate([10.99, 11], 320, "E.V.E.").some((failure) => /11px/.test(failure)));
+  assert.ok(validate([11, 10.99], 390, "E.V.E.").some((failure) => /11px/.test(failure)));
+  assert.ok(validate([9.99, 10], 1280, "E.V.E.").some((failure) => /10px/.test(failure)));
+  assert.ok(validate(undefined, 320, "E.V.E.").length > 0, "missing telemetry evidence must fail closed");
+});
+
+test("flight telemetry runtime evidence is numeric and uses the desktop and mobile floors", () => {
+  const validate = runtimeSupport.flightTelemetryAcceptanceFailures ?? (() => ["flight validator unavailable"]);
+  assert.deepEqual(validate({ state: 10, progress: 10, now: 10 }, 1280), []);
+  assert.deepEqual(validate({ state: 11, progress: 11, now: 11 }, 320), []);
+  assert.deepEqual(validate({ state: 11, progress: 11, now: 11 }, 390), []);
+  for (const [label, viewportWidth, telemetry] of [
+    ["desktop state", 1280, { state: 9.99, progress: 10, now: 10 }],
+    ["mobile progress", 320, { state: 11, progress: 10.99, now: 11 }],
+    ["mobile NOW", 390, { state: 11, progress: 11, now: 10.99 }],
+    ["missing", 320, { state: 11, progress: 11 }],
+    ["non-finite", 1280, { state: 10, progress: Number.NaN, now: 10 }],
+  ]) {
+    assert.ok(validate(telemetry, viewportWidth).length > 0, `${label} evidence must fail closed`);
+  }
 });
 
 test("desktop E.V.E. acceptance rejects the observed below-viewport prompt geometry", () => {

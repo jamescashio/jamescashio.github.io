@@ -185,8 +185,12 @@ export function EveConsole({
     <div className="za-panel relative overflow-hidden" data-eve-console>
       <div className="za-boot-scan" aria-hidden />
       <div className="relative flex items-center justify-between gap-3 border-b border-line px-4 py-3">
-        <span className="za-mono text-[10px] tracking-[0.18em] text-cyan">E.V.E. CONSOLE · SAFE MODE</span>
-        <span className="za-mono text-[9px] tracking-[0.16em] text-green">NO EGRESS</span>
+        <span className="za-critical-telemetry za-mono tracking-[0.18em] text-cyan" data-eve-safety-boundary>
+          E.V.E. CONSOLE · SAFE MODE
+        </span>
+        <span className="za-critical-telemetry za-mono tracking-[0.16em] text-green" data-eve-safety-boundary>
+          NO EGRESS
+        </span>
       </div>
       <div
         ref={logRef}
@@ -205,7 +209,7 @@ export function EveConsole({
           </div>
         ))}
       </div>
-      <form className="relative flex items-center gap-2 border-t border-line bg-void/75 px-4 py-3" onSubmit={submit}>
+      <form className="relative flex items-center gap-2 border-t border-line bg-void/75 px-4 py-1.5" onSubmit={submit}>
         <label htmlFor="eve-command" className="sr-only">
           E.V.E. command
         </label>
@@ -219,10 +223,10 @@ export function EveConsole({
           autoComplete="off"
           autoCapitalize="none"
           spellCheck={false}
-          className="min-w-0 flex-1 bg-transparent za-mono text-[12px] text-ink placeholder:text-dim"
+          className="min-h-11 min-w-[44px] flex-1 bg-transparent za-mono text-[12px] text-ink placeholder:text-dim"
           placeholder="type help"
         />
-        <button type="submit" className="za-chip hover:border-cyan hover:text-cyan">
+        <button type="submit" className="za-chip min-h-11 min-w-11 hover:border-cyan hover:text-cyan">
           RUN
         </button>
       </form>

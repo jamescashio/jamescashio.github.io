@@ -145,9 +145,12 @@ function mountCommandDeck({
       this.callback = callback;
       this.bucket = bucket;
       this.disconnected = false;
+      this.targets = [];
       canvasObservers[bucket].push(this);
     }
-    observe() {}
+    observe(target) {
+      this.targets.push(target);
+    }
     disconnect() {
       this.disconnected = true;
     }
@@ -158,8 +161,9 @@ function mountCommandDeck({
     }
   }
   class TestIntersectionObserver extends TestObserver {
-    constructor(callback) {
+    constructor(callback, options) {
       super(callback, "visibility");
+      this.rootMargin = options?.rootMargin ?? "0px";
     }
   }
   class TestMutationObserver extends TestObserver {
@@ -428,7 +432,11 @@ function mountCommandDeck({
       return pendingSmoothScrolls.get(element) ?? null;
     },
     async canvasObserver(kind, entries = []) {
-      const observer = canvasObservers[kind].at(-1);
+      const observers = canvasObservers[kind];
+      const observer =
+        kind === "ownership"
+          ? observers.at(-1)
+          : [...observers].reverse().find((candidate) => candidate.rootMargin === "140px 0px");
       assert.ok(observer, `expected a ${kind} observer`);
       await act(async () => observer.callback(entries));
       return observer;
@@ -573,7 +581,7 @@ test("the normal dim token remains at the audited readable value", () => {
   assert.match(stylesheet, /--color-dim:\s*#687f97\s*;/i);
 });
 
-test("aircraft pip buttons expose 24px hit targets around separate small marks", async () => {
+test("aircraft pip buttons keep the 26px selected mark separate from the button target", async () => {
   const view = mountCommandDeck();
   try {
     await view.render();
@@ -584,6 +592,25 @@ test("aircraft pip buttons expose 24px hit targets around separate small marks",
       pip.querySelector(".za-lcars-pip-mark").style.width,
       "26px",
       "selected visible width must remain 26px",
+    );
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("E.V.E. exposes both safety boundaries as critical telemetry", async () => {
+  const view = mountCommandDeck({ url: "https://cashio.us/#deck=eve" });
+  try {
+    await view.render();
+    const boundaries = [...view.document.querySelectorAll("[data-eve-safety-boundary]")];
+    assert.deepEqual(
+      boundaries.map((boundary) => boundary.textContent?.trim()),
+      ["E.V.E. CONSOLE · SAFE MODE", "NO EGRESS"],
+      "the real SAFE MODE and NO EGRESS boundaries must both participate in telemetry checks",
+    );
+    assert.ok(
+      boundaries.every((boundary) => boundary.classList.contains("za-critical-telemetry")),
+      "both E.V.E. boundaries must use the audited critical-telemetry floor",
     );
   } finally {
     await view.cleanup();

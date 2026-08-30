@@ -500,6 +500,7 @@ export function mobileFlightAcceptanceFailures(scenario) {
   if (!(scenario.active?.stopControl?.height >= 44)) {
     failures.push("active STOP FLIGHT target must be at least 44px high");
   }
+  failures.push(...flightTelemetryAcceptanceFailures(scenario.active?.criticalTelemetryFontSizesPx, width));
   if (
     !hasExactRect(scenario.active?.stopControl, {
       left: 199.734375,
@@ -634,6 +635,9 @@ export function desktopEveAcceptanceFailures(scenario) {
   if (finiteSurface && (scenario.promptSurface.width < 44 || scenario.promptSurface.height < 44)) {
     failures.push("E.V.E. prompt surface must provide a usable target of at least 44x44");
   }
+  failures.push(...touchTargetAcceptanceFailures(scenario.input, "E.V.E. input"));
+  failures.push(...touchTargetAcceptanceFailures(scenario.runControl, "E.V.E. RUN control"));
+  failures.push(...criticalTelemetryAcceptanceFailures(scenario.criticalTelemetryFontSizesPx, viewportWidth, "E.V.E."));
   if (
     validViewport &&
     finiteInput &&
@@ -719,6 +723,41 @@ export function desktopEveAcceptanceFailures(scenario) {
   }
   if (finiteWidths && scenario.mainScrollWidth <= 0) {
     failures.push("desktop E.V.E. main scroller must not overflow horizontally");
+  }
+  return failures;
+}
+
+export function touchTargetAcceptanceFailures(rect, label = "control") {
+  if (!Number.isFinite(rect?.width) || !Number.isFinite(rect?.height)) {
+    return [`${label} actual target must provide finite width and height`];
+  }
+  if (rect.width < 44 || rect.height < 44) {
+    return [`${label} actual target must measure at least 44x44`];
+  }
+  return [];
+}
+
+export function criticalTelemetryAcceptanceFailures(fontSizesPx, viewportWidth, label = "critical") {
+  const minimumPx = Number.isFinite(viewportWidth) && viewportWidth < 768 ? 11 : 10;
+  if (
+    !Array.isArray(fontSizesPx) ||
+    fontSizesPx.length !== 2 ||
+    !fontSizesPx.every((size) => Number.isFinite(size) && size >= minimumPx)
+  ) {
+    return [`${label} critical telemetry must expose both safety boundaries at a minimum ${minimumPx}px font size`];
+  }
+  return [];
+}
+
+export function flightTelemetryAcceptanceFailures(fontSizesPx, viewportWidth) {
+  const minimumPx = Number.isFinite(viewportWidth) && viewportWidth < 768 ? 11 : 10;
+  const fields = ["state", "progress", "now"];
+  const failures = [];
+  for (const field of fields) {
+    const size = fontSizesPx?.[field];
+    if (!Number.isFinite(size) || size < minimumPx) {
+      failures.push(`flight ${field} telemetry must provide a finite font size of at least ${minimumPx}px`);
+    }
   }
   return failures;
 }

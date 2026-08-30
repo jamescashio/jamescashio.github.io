@@ -424,8 +424,8 @@
 }
 .za-lcars-pip {
   display: inline-flex;
-  min-width: 24px;
-  min-height: 24px;
+  min-width: 44px;
+  min-height: 44px;
   align-items: center;
   justify-content: center;
   border: 0;

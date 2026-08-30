@@ -133,7 +133,7 @@ export function CommandHeader({
       <div className="pointer-events-auto za-chip">
         DECK {String(deck + 1).padStart(2, "0")} · {DECKS[deck].name}
       </div>
-      <div className="pointer-events-auto hidden items-center gap-1.5 sm:flex">
+      <div className="pointer-events-auto hidden items-center gap-0.5 xl:flex">
         {CRAFT.map((craft, index) => (
           <button
             key={craft[0]}

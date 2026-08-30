@@ -10,12 +10,15 @@ import { fileURLToPath } from "node:url";
 import {
   browserVersionAcceptanceFailures,
   connectCdp,
+  criticalTelemetryAcceptanceFailures,
   desktopEveAcceptanceFailures,
+  flightTelemetryAcceptanceFailures,
   mobileCinemaAcceptanceFailures,
   mobileFlightAcceptanceFailures,
   motionPreferenceAcceptanceFailures,
   normalizeMotionTransitionLists,
   runWithLayoutCleanup,
+  touchTargetAcceptanceFailures,
   visualPaintEvidence,
 } from "./layout-runtime-support.mjs";
 
@@ -245,6 +248,9 @@ async function collectDesktopEveScenario(send, landingEvidence) {
       const inputRect = input.getBoundingClientRect();
       const promptRect = promptSurface.getBoundingClientRect();
       const runRect = runControl.getBoundingClientRect();
+      const criticalTelemetryFontSizesPx = [...document.querySelectorAll("[data-eve-safety-boundary]")].map((element) =>
+        parseFloat(getComputedStyle(element).fontSize),
+      );
       const inputTopmostHit = associatedHit(input, topmostAt(center(inputRect)));
       const runTopmostHit = associatedHit(runControl, topmostAt(center(runRect)));
       const promptSamplePoints = [0.1, 0.5, 0.9].flatMap((yRatio) =>
@@ -343,6 +349,7 @@ async function collectDesktopEveScenario(send, landingEvidence) {
         input: rectOf(input),
         promptSurface: rectOf(promptSurface),
         runControl: rectOf(runControl),
+        criticalTelemetryFontSizesPx,
         inputTopmostHit,
         runTopmostHit,
         promptSurfaceSampleHits,
@@ -851,6 +858,61 @@ async function main() {
     });
     const desktopLayout = desktopEvaluation.result.value;
     const desktopPips = desktopLayout.pips;
+    desktopLayout.failures.push(
+      ...desktopPips.flatMap((pip, index) => touchTargetAcceptanceFailures(pip, `aircraft selector ${index + 1}`)),
+    );
+    desktopLayout.ok = desktopLayout.failures.length === 0;
+    const desktopFlightEvaluation = await send("Runtime.evaluate", {
+      expression: `(async () => {
+        const settle = async (delay = 0) => {
+          if (delay > 0) await new Promise((resolve) => setTimeout(resolve, delay));
+          await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        };
+        const rail = document.querySelector(".za-command-rail");
+        const expand = rail?.querySelector('button[aria-label="Expand command rail"]');
+        if (!rail || !expand) return { error: "desktop expanded flight control setup is missing" };
+        expand.click();
+        await settle(350);
+        const start = rail.querySelector('button[aria-label="Run the 30-second flight"]');
+        if (!start) return { error: "desktop flight start control is missing after expansion" };
+        start.click();
+        await settle();
+        const status = rail.querySelector('section[aria-label="30-second flight status"]');
+        const state = status?.querySelector('p[aria-live="polite"]');
+        const progress = status?.querySelector('ol[aria-label="Flight progress"] [aria-current="step"]');
+        const now = [...(status?.querySelectorAll(":scope > p") ?? [])].find((element) =>
+          element.textContent?.trim().startsWith("NOW ·"),
+        );
+        const stop = status?.querySelector('button[aria-label="Stop the 30-second flight"]');
+        const fontSize = (element) => element ? parseFloat(getComputedStyle(element).fontSize) : Number.NaN;
+        const criticalTelemetryFontSizesPx = {
+          state: fontSize(state),
+          progress: fontSize(progress),
+          now: fontSize(now),
+        };
+        stop?.click();
+        await settle();
+        rail.querySelector('button[aria-label="Stow command rail"]')?.click();
+        await settle(350);
+        return { viewport: [innerWidth, innerHeight], criticalTelemetryFontSizesPx };
+      })()`,
+      awaitPromise: true,
+      returnByValue: true,
+    });
+    if (desktopFlightEvaluation.exceptionDetails) {
+      throw new Error(
+        desktopFlightEvaluation.exceptionDetails.exception?.description ??
+          desktopFlightEvaluation.exceptionDetails.text,
+      );
+    }
+    const desktopFlightTelemetry = desktopFlightEvaluation.result.value;
+    desktopFlightTelemetry.failures = desktopFlightTelemetry.error
+      ? [desktopFlightTelemetry.error]
+      : flightTelemetryAcceptanceFailures(
+          desktopFlightTelemetry.criticalTelemetryFontSizesPx,
+          desktopFlightTelemetry.viewport?.[0],
+        );
+    desktopFlightTelemetry.ok = desktopFlightTelemetry.failures.length === 0;
     const snapshotGeometry = [];
     for (const width of [320, 390]) {
       await settleViewport(send, width, true);
@@ -871,10 +933,19 @@ async function main() {
         const actionButtons = [...(actionRow?.querySelectorAll("button") ?? [])];
         const actionStyle = actionRow && getComputedStyle(actionRow);
         const expectedControls = ["TECHNICAL", "EXECUTIVE", "DESCEND THE DECKS", "OPEN E.V.E. CONSOLE"];
+        const eveInput = document.querySelector("#eve-command");
+        const eveRun = eveInput?.closest("form")?.querySelector('button[type="submit"]');
+        const eveTargetRect = (element) => {
+          const target = element?.getBoundingClientRect();
+          return target ? { width: target.width, height: target.height } : null;
+        };
+        const eveCriticalTelemetryFontSizesPx = [...document.querySelectorAll("[data-eve-safety-boundary]")].map((element) =>
+          parseFloat(getComputedStyle(element).fontSize),
+        );
         const failures = [];
         if (pips.length !== 8) failures.push("expected eight aircraft pips");
         pips.forEach((pip, index) => {
-          if (pip.width < 24 || pip.height < 24) failures.push("pip " + (index + 1) + " measured " + pip.width + "x" + pip.height);
+          if (pip.width < 44 || pip.height < 44) failures.push("pip " + (index + 1) + " measured " + pip.width + "x" + pip.height);
         });
         const railPadding = parseFloat(getComputedStyle(rail).paddingBottom);
         if (railRect.height < 80) {
@@ -910,14 +981,21 @@ async function main() {
         if (actionStyle?.display !== "grid" || gridColumns.length !== 2 || actionButtons.length !== 2) failures.push("Snapshot actions must render as one two-column grid");
         if (actionRects.length === 2 && Math.abs(actionRects[0].top - actionRects[1].top) > 0.5) failures.push("Snapshot action buttons must share one row");
         if (document.documentElement.scrollWidth > innerWidth) failures.push("document width " + document.documentElement.scrollWidth + "px exceeds viewport " + innerWidth + "px");
-        return { ok: failures.length === 0, failures, viewport: [innerWidth, innerHeight], pips, rail: { height: railRect.height, top: railRect.top, bottom: railRect.bottom, paddingBottom: railPadding }, clearance, controls: controlRects, actionGrid: { display: actionStyle?.display, columns: gridColumns, buttons: actionRects.map((rect) => ({ top: rect.top, width: rect.width, height: rect.height })) } };
+        return { ok: failures.length === 0, failures, viewport: [innerWidth, innerHeight], pips, rail: { height: railRect.height, top: railRect.top, bottom: railRect.bottom, paddingBottom: railPadding }, clearance, controls: controlRects, eveControls: { input: eveTargetRect(eveInput), run: eveTargetRect(eveRun), criticalTelemetryFontSizesPx: eveCriticalTelemetryFontSizesPx }, actionGrid: { display: actionStyle?.display, columns: gridColumns, buttons: actionRects.map((rect) => ({ top: rect.top, width: rect.width, height: rect.height })) } };
       })()`,
         returnByValue: true,
       });
       if (evaluated.exceptionDetails) {
         throw new Error(evaluated.exceptionDetails.exception?.description ?? evaluated.exceptionDetails.text);
       }
-      snapshotGeometry.push(evaluated.result.value);
+      const mobileLayout = evaluated.result.value;
+      mobileLayout.failures.push(
+        ...touchTargetAcceptanceFailures(mobileLayout.eveControls?.input, "E.V.E. input"),
+        ...touchTargetAcceptanceFailures(mobileLayout.eveControls?.run, "E.V.E. RUN control"),
+        ...criticalTelemetryAcceptanceFailures(mobileLayout.eveControls?.criticalTelemetryFontSizesPx, width, "E.V.E."),
+      );
+      mobileLayout.ok = mobileLayout.failures.length === 0;
+      snapshotGeometry.push(mobileLayout);
     }
     const flights = [];
     const cinemas = [];
@@ -988,6 +1066,12 @@ async function main() {
           const activeAlpha = alphaOf(active);
           const activeOverlap = await passReceiptBeneath(active);
           const activeAfter = rectOf(active);
+          const state = active.querySelector('p[aria-live="polite"]');
+          const progress = active.querySelector('ol[aria-label="Flight progress"] [aria-current="step"]');
+          const now = [...active.querySelectorAll(":scope > p")].find((element) =>
+            element.textContent?.trim().startsWith("NOW ·"),
+          );
+          const fontSize = (element) => element ? parseFloat(getComputedStyle(element).fontSize) : Number.NaN;
 
           return {
             viewport: [innerWidth, innerHeight],
@@ -1006,6 +1090,11 @@ async function main() {
               backgroundAlpha: activeAlpha,
               beforeScroll: activeBefore,
               afterScroll: activeAfter,
+              criticalTelemetryFontSizesPx: {
+                state: fontSize(state),
+                progress: fontSize(progress),
+                now: fontSize(now),
+              },
               stopControl: { tagName: stop.tagName, ...rectOf(stop) },
             },
           };
@@ -1382,6 +1471,7 @@ async function main() {
           browserVersion,
           cinemas,
           decodedAssets,
+          desktopFlightTelemetry,
           desktopLayout,
           desktopEveLocalizedChildNegative,
           desktopEveOverlayNegative,
@@ -1404,6 +1494,11 @@ async function main() {
     );
     assert.equal(browserVersion.ok, true, browserVersion.failures.join("; "));
     assert.equal(desktopLayout.ok, true, desktopLayout.failures.join("; "));
+    assert.equal(
+      desktopFlightTelemetry.ok,
+      true,
+      `Desktop flight telemetry acceptance failed: ${desktopFlightTelemetry.failures.join("; ")}`,
+    );
     assert.equal(bitFocus.ok, true, "Bit control must retain a visible keyboard focus indicator");
     assert.equal(eveFocus.ok, true, "E.V.E. command input must retain a visible keyboard focus indicator");
     assert.equal(
