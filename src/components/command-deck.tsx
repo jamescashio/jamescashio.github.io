@@ -123,14 +123,19 @@ export function CommandDeck() {
   // button, so Bit points at it once and then never again this session.
   const [bitNudge, setBitNudge] = useState(false);
   const bitNudgeSpent = useRef(false);
-  // The restage reads the motion preference in an effect rather than a lazy
-  // initialiser, so the first render never touches matchMedia.
-  const [reducedMotion, setReducedMotion] = useState(false);
+  // Read from a lazy initialiser rather than an effect: settling the preference
+  // after mount changed layout heights on the first paint and moved deep link
+  // targets out from under a scroll that had already been issued.
+  const [reducedMotion, setReducedMotion] = useState(
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
   const [flash, setFlash] = useState(false);
   const [flashKey, setFlashKey] = useState(0);
   const [afFlash, setAfFlash] = useState(false);
   const [hudYield, setHudYield] = useState(false);
-  const [eveLogHeight, setEveLogHeight] = useState(320);
+  const [eveLogHeight, setEveLogHeight] = useState(() =>
+    eveConsoleLogHeight({ height: window.innerHeight, width: window.innerWidth }),
+  );
   const [rips, setRips] = useState<{ id: number; x: number; y: number }[]>([]);
   const [sweep, setSweep] = useState(false);
   const [flightElapsed, setFlightElapsed] = useState(0);
@@ -151,12 +156,6 @@ export function CommandDeck() {
   const copyEmailAttempt = useRef(0);
   const cinePulseGeneration = useRef(0);
   const pendingSmoothScrollTop = useRef<number | null>(null);
-  // Content above a destination can grow after the jump is issued: the Builds
-  // deck mounts its proof panel, a plate decodes, a font swaps. Any of those
-  // moves the target and leaves a deep link parked short of the deck it named.
-  // These hold the destination while the layout finishes settling under it.
-  const settleDeck = useRef<number | null>(null);
-  const settleUntil = useRef(0);
   const gotoRef = useRef<
     ((deck: number, source?: NavigationOrigin, craftOverride?: number | null, articleOverride?: number) => void) | null
   >(null);
@@ -420,8 +419,6 @@ export function CommandDeck() {
 
   const cancelProgrammaticScroll = useCallback(() => {
     pendingSmoothScrollTop.current = null;
-    settleDeck.current = null;
-    settleUntil.current = 0;
     clearHashSuppressionTimer();
     clearResizeAnchor();
     hashTransition.current = cancelHashRestore(hashTransition.current);
@@ -543,8 +540,6 @@ export function CommandDeck() {
         pendingSmoothScrollTop.current = top;
         sc.scrollTo({ top, behavior: "smooth" });
       }
-      settleDeck.current = i;
-      settleUntil.current = performance.now() + 1400;
       const st = stageRef.current;
       if (!reducedMotion) st?.warp?.();
       st?.setDeck?.(i);
@@ -600,45 +595,6 @@ export function CommandDeck() {
   useEffect(() => {
     gotoRef.current = goto;
   }, [goto]);
-
-  // Hold the destination while the layout settles beneath it. Without this a
-  // deep link can land short: the scroll is computed from offsetTop, then a
-  // deck above the target grows (the Builds proof panel mounts, a plate
-  // decodes, a font swaps) and the target moves out from under it.
-  //
-  // This reacts to the content actually resizing rather than polling frames,
-  // and any real input from the visitor ends it immediately, so it can never
-  // fight a scroll someone is performing.
-  useEffect(() => {
-    const sc = scRef.current;
-    if (!sc || settleDeck.current == null) return;
-    const stop = () => {
-      settleDeck.current = null;
-      settleUntil.current = 0;
-    };
-    const realign = () => {
-      const target = settleDeck.current;
-      if (target == null) return;
-      if (performance.now() > settleUntil.current) return stop();
-      const el = listSections()[target]?.current;
-      if (!el) return;
-      const top = Math.max(0, el.offsetTop - 8);
-      const drift = Math.abs(sc.scrollTop - top);
-      if (drift <= 1 || drift >= sc.clientHeight) return;
-      pendingSmoothScrollTop.current = top;
-      sc.scrollTo({ top, behavior: "auto" });
-    };
-    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(realign);
-    if (observer) for (const child of Array.from(sc.children)) observer.observe(child);
-    const intent: (keyof WindowEventMap)[] = ["wheel", "touchstart", "keydown", "pointerdown"];
-    for (const type of intent) window.addEventListener(type, stop, { passive: true, once: true });
-    const timer = window.setTimeout(stop, 1500);
-    return () => {
-      observer?.disconnect();
-      for (const type of intent) window.removeEventListener(type, stop);
-      window.clearTimeout(timer);
-    };
-  }, [deck]);
 
   useEffect(() => {
     if (mode !== "technical" || pendingNavigation.current == null) return;

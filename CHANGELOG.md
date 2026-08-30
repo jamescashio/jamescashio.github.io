@@ -42,6 +42,7 @@ Release name: "MACH ONE." This preservation pass makes the public truth easier t
 
 - Added the LinkedIn executive still (EXECUTIVE → ARM THE STILL): a 1.91:1 LCARS plate of the dated export, dismissed with Escape / EXIT STILL.
 - Restaged viewscreen HUD, Hermes article-01 schematic, and acquisition bloom so the first five seconds read as a command console without changing palette, type, Bit, or nine decks.
+- First-paint E.V.E. log height follows the viewport so `#deck=eve` canonical landing survives the Pages layout-runtime gate.
 
 ### Changed
 

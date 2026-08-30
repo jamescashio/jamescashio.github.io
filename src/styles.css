@@ -2100,6 +2100,10 @@
   display: block;
   width: 100%;
   height: auto;
+  /* Reserve the box before the schematic paints. Without this the Builds deck
+     grows after layout and pushes every deck below it, which is what left a
+     deep link to E.V.E. parked short of its own deck. */
+  aspect-ratio: 640 / 86;
   margin-top: 0.85rem;
 }
 .za-hermes-spine {
