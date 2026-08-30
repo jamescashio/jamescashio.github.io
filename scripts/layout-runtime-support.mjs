@@ -750,7 +750,10 @@ export function criticalTelemetryAcceptanceFailures(fontSizesPx, viewportWidth, 
 }
 
 export function flightTelemetryAcceptanceFailures(fontSizesPx, viewportWidth) {
-  const minimumPx = Number.isFinite(viewportWidth) && viewportWidth < 768 ? 11 : 10;
+  if (!Number.isFinite(viewportWidth)) {
+    return ["flight telemetry viewport width must be finite"];
+  }
+  const minimumPx = viewportWidth < 768 ? 11 : 10;
   const fields = ["state", "progress", "now"];
   const failures = [];
   for (const field of fields) {

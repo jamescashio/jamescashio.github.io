@@ -593,6 +593,7 @@ test("E.V.E. critical telemetry raises its runtime floor to 11px on mobile", () 
 test("flight telemetry runtime evidence is numeric and uses the desktop and mobile floors", () => {
   const validate = runtimeSupport.flightTelemetryAcceptanceFailures ?? (() => ["flight validator unavailable"]);
   assert.deepEqual(validate({ state: 10, progress: 10, now: 10 }, 1280), []);
+  assert.deepEqual(validate({ state: 10, progress: 10, now: 10 }, 1440), []);
   assert.deepEqual(validate({ state: 11, progress: 11, now: 11 }, 320), []);
   assert.deepEqual(validate({ state: 11, progress: 11, now: 11 }, 390), []);
   for (const [label, viewportWidth, telemetry] of [
@@ -601,6 +602,9 @@ test("flight telemetry runtime evidence is numeric and uses the desktop and mobi
     ["mobile NOW", 390, { state: 11, progress: 11, now: 10.99 }],
     ["missing", 320, { state: 11, progress: 11 }],
     ["non-finite", 1280, { state: 10, progress: Number.NaN, now: 10 }],
+    ["missing viewport", undefined, { state: 11, progress: 11, now: 11 }],
+    ["NaN viewport", Number.NaN, { state: 11, progress: 11, now: 11 }],
+    ["infinite viewport", Number.POSITIVE_INFINITY, { state: 11, progress: 11, now: 11 }],
   ]) {
     assert.ok(validate(telemetry, viewportWidth).length > 0, `${label} evidence must fail closed`);
   }
