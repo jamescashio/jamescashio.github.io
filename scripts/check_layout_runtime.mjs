@@ -18,6 +18,7 @@ import {
   motionPreferenceAcceptanceFailures,
   normalizeMotionTransitionLists,
   runWithLayoutCleanup,
+  tickerTelemetryAcceptanceFailures,
   touchTargetAcceptanceFailures,
   visualPaintEvidence,
 } from "./layout-runtime-support.mjs";
@@ -168,6 +169,51 @@ async function settleViewport(send, width, mobile, height = 844) {
     expression: "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))",
     awaitPromise: true,
   });
+}
+
+async function collectTickerTelemetry(send, width, height, mobile) {
+  await settleViewport(send, width, mobile, height);
+  const evaluation = await send("Runtime.evaluate", {
+    expression: `(async () => {
+      const ticker = document.querySelector(".za-ticker");
+      const track = ticker?.querySelector(".za-ticker-track");
+      if (!ticker || !track) return { error: "telemetry ticker structure is missing" };
+      ticker.scrollIntoView({ block: "center", inline: "nearest", behavior: "auto" });
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      const rect = ticker.getBoundingClientRect();
+      const tickerStyle = getComputedStyle(ticker);
+      const trackStyle = getComputedStyle(track);
+      const visible =
+        rect.width > 0 &&
+        rect.height > 0 &&
+        rect.bottom > 0 &&
+        rect.top < innerHeight &&
+        tickerStyle.display !== "none" &&
+        tickerStyle.visibility !== "hidden" &&
+        tickerStyle.opacity !== "0" &&
+        trackStyle.display !== "none" &&
+        trackStyle.visibility !== "hidden" &&
+        trackStyle.opacity !== "0";
+      return {
+        viewportWidth: innerWidth,
+        viewportHeight: innerHeight,
+        fontSizePx: parseFloat(trackStyle.fontSize),
+        visible,
+        rect: { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, width: rect.width, height: rect.height },
+        animationName: trackStyle.animationName,
+        animationDuration: trackStyle.animationDuration,
+      };
+    })()`,
+    awaitPromise: true,
+    returnByValue: true,
+  });
+  if (evaluation.exceptionDetails) {
+    throw new Error(evaluation.exceptionDetails.exception?.description ?? evaluation.exceptionDetails.text);
+  }
+  const scenario = evaluation.result.value;
+  scenario.failures = scenario.error ? [scenario.error] : tickerTelemetryAcceptanceFailures(scenario);
+  scenario.ok = scenario.failures.length === 0;
+  return scenario;
 }
 
 async function waitForCanonicalEveLanding(send, targetUrl, width, height) {
@@ -913,6 +959,14 @@ async function main() {
           desktopFlightTelemetry.viewport?.[0],
         );
     desktopFlightTelemetry.ok = desktopFlightTelemetry.failures.length === 0;
+    const tickerTelemetry = [];
+    for (const [width, height, mobile] of [
+      [1280, 900, false],
+      [320, 844, true],
+      [390, 844, true],
+    ]) {
+      tickerTelemetry.push(await collectTickerTelemetry(send, width, height, mobile));
+    }
     const snapshotGeometry = [];
     for (const width of [320, 390]) {
       await settleViewport(send, width, true);
@@ -1481,6 +1535,7 @@ async function main() {
           flights,
           motionPreference,
           snapshotGeometry,
+          tickerTelemetry,
           mobile320: narrowResult,
         },
         null,
@@ -1498,6 +1553,13 @@ async function main() {
       desktopFlightTelemetry.ok,
       true,
       `Desktop flight telemetry acceptance failed: ${desktopFlightTelemetry.failures.join("; ")}`,
+    );
+    tickerTelemetry.forEach((scenario) =>
+      assert.equal(
+        scenario.ok,
+        true,
+        `Ticker telemetry acceptance failed at ${scenario.viewportWidth}x${scenario.viewportHeight}: ${scenario.failures.join("; ")}`,
+      ),
     );
     assert.equal(bitFocus.ok, true, "Bit control must retain a visible keyboard focus indicator");
     assert.equal(eveFocus.ok, true, "E.V.E. command input must retain a visible keyboard focus indicator");

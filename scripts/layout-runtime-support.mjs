@@ -764,3 +764,24 @@ export function flightTelemetryAcceptanceFailures(fontSizesPx, viewportWidth) {
   }
   return failures;
 }
+
+export function tickerTelemetryAcceptanceFailures(scenario) {
+  const failures = [];
+  const viewportWidth = scenario?.viewportWidth;
+  const fontSizePx = scenario?.fontSizePx;
+  if (!Number.isFinite(viewportWidth)) {
+    failures.push("ticker telemetry viewport width must be finite");
+  }
+  if (scenario?.visible !== true) {
+    failures.push("ticker telemetry must be visibly rendered in the measured viewport");
+  }
+  if (!Number.isFinite(fontSizePx)) {
+    failures.push("ticker telemetry font size must be finite");
+  } else if (Number.isFinite(viewportWidth)) {
+    const minimumPx = viewportWidth < 768 ? 11 : 10;
+    if (fontSizePx < minimumPx) {
+      failures.push(`ticker telemetry font size must be at least ${minimumPx}px`);
+    }
+  }
+  return failures;
+}

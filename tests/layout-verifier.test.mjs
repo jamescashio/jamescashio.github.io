@@ -610,6 +610,30 @@ test("flight telemetry runtime evidence is numeric and uses the desktop and mobi
   }
 });
 
+test("visible ticker telemetry uses finite desktop and mobile font floors", () => {
+  const validate = runtimeSupport.tickerTelemetryAcceptanceFailures ?? (() => ["ticker validator unavailable"]);
+  for (const scenario of [
+    { viewportWidth: 1280, fontSizePx: 10, visible: true },
+    { viewportWidth: 1440, fontSizePx: 10, visible: true },
+    { viewportWidth: 320, fontSizePx: 11, visible: true },
+    { viewportWidth: 390, fontSizePx: 11, visible: true },
+  ]) {
+    assert.deepEqual(validate(scenario), []);
+  }
+  for (const [label, scenario] of [
+    ["desktop floor", { viewportWidth: 1280, fontSizePx: 9.99, visible: true }],
+    ["mobile 320 floor", { viewportWidth: 320, fontSizePx: 10.99, visible: true }],
+    ["mobile 390 floor", { viewportWidth: 390, fontSizePx: 10.99, visible: true }],
+    ["hidden ticker", { viewportWidth: 1280, fontSizePx: 10, visible: false }],
+    ["missing viewport", { fontSizePx: 11, visible: true }],
+    ["NaN viewport", { viewportWidth: Number.NaN, fontSizePx: 11, visible: true }],
+    ["missing value", { viewportWidth: 320, visible: true }],
+    ["infinite value", { viewportWidth: 320, fontSizePx: Number.POSITIVE_INFINITY, visible: true }],
+  ]) {
+    assert.ok(validate(scenario).length > 0, `${label} evidence must fail closed`);
+  }
+});
+
 test("desktop E.V.E. acceptance rejects the observed below-viewport prompt geometry", () => {
   const validate = runtimeSupport.desktopEveAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
   const failures = validate({

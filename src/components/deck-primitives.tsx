@@ -90,7 +90,7 @@ export function Ticker() {
   const items = [...TELEMETRY, ...TELEMETRY];
   return (
     <div className="za-ticker mt-10 max-w-xl border-y border-line py-2">
-      <div className="za-ticker-track za-mono text-[10px] tracking-[0.2em] text-cyan">
+      <div className="za-critical-telemetry za-ticker-track za-mono tracking-[0.2em] text-cyan">
         {items.map((item, index) => (
           <span key={`${item}-${index}`} className="flex items-center gap-3">
             <span className="h-1 w-1 rounded-full bg-green shadow-[0_0_8px_var(--color-green)]" />
