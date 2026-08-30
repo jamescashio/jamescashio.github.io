@@ -738,7 +738,10 @@ export function touchTargetAcceptanceFailures(rect, label = "control") {
 }
 
 export function criticalTelemetryAcceptanceFailures(fontSizesPx, viewportWidth, label = "critical") {
-  const minimumPx = Number.isFinite(viewportWidth) && viewportWidth < 768 ? 11 : 10;
+  if (!Number.isFinite(viewportWidth)) {
+    return [`${label} critical telemetry viewport width must be finite`];
+  }
+  const minimumPx = viewportWidth < 768 ? 11 : 10;
   if (
     !Array.isArray(fontSizesPx) ||
     fontSizesPx.length !== 2 ||

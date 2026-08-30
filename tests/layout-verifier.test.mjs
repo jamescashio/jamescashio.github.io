@@ -578,16 +578,27 @@ test("desktop E.V.E. acceptance enforces the 10px critical telemetry floor", () 
   }
 });
 
-test("E.V.E. critical telemetry raises its runtime floor to 11px on mobile", () => {
+test("E.V.E. critical telemetry uses finite desktop and mobile viewport floors", () => {
   const validate =
     runtimeSupport.criticalTelemetryAcceptanceFailures ?? (() => ["critical-telemetry validator unavailable"]);
-  assert.deepEqual(validate([10, 10], 1280, "E.V.E."), []);
-  assert.deepEqual(validate([11, 11], 320, "E.V.E."), []);
-  assert.deepEqual(validate([11, 11], 390, "E.V.E."), []);
+  for (const [viewportWidth, fontSizes] of [
+    [1280, [10, 10]],
+    [1440, [10, 10]],
+    [320, [11, 11]],
+    [390, [11, 11]],
+  ]) {
+    assert.deepEqual(validate(fontSizes, viewportWidth, "E.V.E."), []);
+  }
   assert.ok(validate([10.99, 11], 320, "E.V.E.").some((failure) => /11px/.test(failure)));
   assert.ok(validate([11, 10.99], 390, "E.V.E.").some((failure) => /11px/.test(failure)));
   assert.ok(validate([9.99, 10], 1280, "E.V.E.").some((failure) => /10px/.test(failure)));
   assert.ok(validate(undefined, 320, "E.V.E.").length > 0, "missing telemetry evidence must fail closed");
+  for (const viewportWidth of [undefined, Number.NaN, Number.POSITIVE_INFINITY]) {
+    assert.ok(
+      validate([10, 10], viewportWidth, "E.V.E.").some((failure) => /viewport width must be finite/i.test(failure)),
+      `viewport ${String(viewportWidth)} must fail closed`,
+    );
+  }
 });
 
 test("flight telemetry runtime evidence is numeric and uses the desktop and mobile floors", () => {
