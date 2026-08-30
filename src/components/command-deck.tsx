@@ -36,6 +36,7 @@ import {
   isFlightStopKey,
   nextFlightHandoffAt,
   prepareFlightStart,
+  FLIGHT_DURATION_MS,
   type FlightState,
 } from "@/lib/flight-plan";
 import { useDeck, type BitMood } from "@/lib/store";
@@ -56,6 +57,9 @@ import {
   DeckSnapshot,
 } from "./decks";
 import { INTRO, runEve } from "./eve-console";
+import { PowerOn } from "./power-on";
+import { ViewscreenHud } from "./viewscreen-hud";
+import { ExecutiveStill } from "./executive-still";
 
 export function CommandDeck() {
   const scRef = useRef<HTMLDivElement>(null);
@@ -74,6 +78,7 @@ export function CommandDeck() {
   const paletteOpener = useRef<HTMLElement | null>(null);
   const cinemaOpener = useRef<HTMLElement | null>(null);
   const cinemaExit = useRef<HTMLButtonElement | null>(null);
+  const stillOpener = useRef<HTMLElement | null>(null);
   const pendingDestinationFocus = useRef<number | null>(null);
   const sectionBag = useRef({ s0, s1, s2, s3, s4, s5, s6, s7, s8 });
   sectionBag.current = { s0, s1, s2, s3, s4, s5, s6, s7, s8 };
@@ -87,9 +92,11 @@ export function CommandDeck() {
   const audio = useDeck((s) => s.audio);
   const alert = useDeck((s) => s.alert);
   const photo = useDeck((s) => s.photo);
+  const still = useDeck((s) => s.still);
   const palette = useDeck((s) => s.palette);
   const tour = useDeck((s) => s.tour);
   const railOpen = useDeck((s) => s.railOpen);
+  const gate = useDeck((s) => s.gate);
   const prog = useDeck((s) => s.prog);
   const cine = useDeck((s) => s.cine);
   const chapOn = useDeck((s) => s.chapOn);
@@ -106,33 +113,29 @@ export function CommandDeck() {
   const [histI, setHistI] = useState(-1);
   const [clock, setClock] = useState("");
   const [stageOn, setStageOn] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(
-    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-  );
+  const [reducedMotion, setReducedMotion] = useState(false);
   const [flash, setFlash] = useState(false);
   const [flashKey, setFlashKey] = useState(0);
   const [afFlash, setAfFlash] = useState(false);
   const [hudYield, setHudYield] = useState(false);
-  const [eveLogHeight, setEveLogHeight] = useState(() =>
-    eveConsoleLogHeight({ height: window.innerHeight, width: window.innerWidth }),
-  );
+  const [eveLogHeight, setEveLogHeight] = useState(320);
   const [rips, setRips] = useState<{ id: number; x: number; y: number }[]>([]);
   const [sweep, setSweep] = useState(false);
   const [flightElapsed, setFlightElapsed] = useState(0);
   const jumpUntil = useRef(0);
-  const flightTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const flightTimer = useRef<number | null>(null);
   const flightRun = useRef<FlightState | null>(null);
   const hashTransition = useRef(createHashTransitionState());
-  const hashSuppressionTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
-  const resizeAnchorTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const hashSuppressionTimer = useRef<number | null>(null);
+  const resizeAnchorTimer = useRef<number | null>(null);
   const resizeAnchorFrame = useRef(0);
-  const warpFlashTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
-  const cineTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
-  const chapterTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
-  const chapterInterval = useRef<ReturnType<typeof window.setInterval> | null>(null);
-  const sweepTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
-  const alertTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
-  const copyEmailResetTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const warpFlashTimer = useRef<number | null>(null);
+  const cineTimer = useRef<number | null>(null);
+  const chapterTimer = useRef<number | null>(null);
+  const chapterInterval = useRef<number | null>(null);
+  const sweepTimer = useRef<number | null>(null);
+  const alertTimer = useRef<number | null>(null);
+  const copyEmailResetTimer = useRef<number | null>(null);
   const copyEmailAttempt = useRef(0);
   const cinePulseGeneration = useRef(0);
   const pendingSmoothScrollTop = useRef<number | null>(null);
@@ -153,6 +156,8 @@ export function CommandDeck() {
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReducedMotion(media.matches);
+    setEveLogHeight(eveConsoleLogHeight({ height: window.innerHeight, width: window.innerWidth }));
     const onChange = (event: MediaQueryListEvent) => setReducedMotion(event.matches);
     media.addEventListener("change", onChange);
     return () => media.removeEventListener("change", onChange);
@@ -454,6 +459,23 @@ export function CommandDeck() {
     window.requestAnimationFrame(() => {
       const fallback = document.querySelector<HTMLInputElement>("#eve-command");
       (opener?.isConnected ? opener : fallback)?.focus();
+    });
+  }, [set]);
+
+  const openStill = useCallback(() => {
+    const active = document.activeElement;
+    stillOpener.current =
+      active instanceof HTMLElement && active !== document.body && active !== document.documentElement ? active : null;
+    stopFlight();
+    set({ still: true, cine: true, mode: "executive", shown: [0, 8] });
+    sfx("prompt");
+  }, [set, sfx, stopFlight]);
+  const closeStill = useCallback(() => {
+    const opener = stillOpener.current;
+    stillOpener.current = null;
+    set({ still: false, cine: false });
+    window.requestAnimationFrame(() => {
+      if (opener?.isConnected) opener.focus();
     });
   }, [set]);
 
@@ -792,6 +814,13 @@ export function CommandDeck() {
       const k = (e.key || "").toLowerCase();
       const interactive = isInteractiveShortcutTarget(e.target);
       const eveInput = e.target instanceof HTMLElement && e.target.matches("#eve-command");
+      if (useDeck.getState().still) {
+        if (k === "escape") {
+          e.preventDefault();
+          closeStill();
+        }
+        return;
+      }
       if (useDeck.getState().photo) {
         if (k === "tab") {
           e.preventDefault();
@@ -842,7 +871,7 @@ export function CommandDeck() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [closeCinema, closePalette, hist, histI, openPalette, set, sfx, stopFlight]);
+  }, [closeCinema, closePalette, closeStill, hist, histI, openPalette, set, sfx, stopFlight]);
 
   const run = (raw: string) => {
     const cmd = (raw || "").trim();
@@ -939,14 +968,17 @@ export function CommandDeck() {
     }, 2200);
   };
 
-  const hud = photo ? "pointer-events-none invisible opacity-0" : "";
+  const overlay = photo || still;
+  const hud = overlay ? "pointer-events-none invisible opacity-0" : "";
   const craftI = resolveCraftIndex(deck, craftLock);
   const craft = CRAFT[craftI];
   const dleft = daysLeft();
+  const flightBeat = flightActionAt(flightElapsed);
+  const beatLabel = flightBeat.kind === "complete" ? "CONTACT" : flightBeat.label;
 
   return (
     <div
-      className="relative h-dvh overflow-hidden bg-void text-ink"
+      className={`relative h-dvh overflow-hidden bg-void text-ink ${!gate && !overlay ? "za-systems-online" : ""} ${reducedMotion ? "za-prefers-static" : ""}`}
       style={
         {
           "--za-deck-copy-duration": `${motionDurationMs("deck-copy")}ms`,
@@ -955,8 +987,8 @@ export function CommandDeck() {
         } as CSSProperties
       }
     >
-      <div inert={photo || undefined} aria-hidden={photo || undefined}>
-        {!photo && (
+      <div inert={overlay || gate || undefined} aria-hidden={overlay || gate || undefined}>
+        {!overlay && (
           <a
             href="#main-content"
             className="sr-only fixed left-4 top-4 z-[200] bg-void text-cyan focus:not-sr-only focus:rounded-lg focus:border focus:border-cyan focus:px-4 focus:py-2 focus:font-mono focus:text-xs focus:outline-none"
@@ -984,6 +1016,16 @@ export function CommandDeck() {
         <div className="za-vignette" />
         <div className="za-spot" aria-hidden />
         <div className="za-scan" />
+        <div className={`za-flight-streaks ${tour && !gate && !overlay ? "on" : ""}`} aria-hidden />
+        <ViewscreenHud
+          online={!gate && !overlay && deck !== 7}
+          tour={tour}
+          craftName={craft[0]}
+          clock={clock}
+          beatLabel={beatLabel}
+          elapsedMs={flightElapsed}
+          reducedMotion={reducedMotion}
+        />
         <div key={flashKey} className={`za-warpflash ${flash ? "on" : ""}`} />
         <div className={`za-sweep ${sweep ? "on" : ""}`} aria-hidden />
 
@@ -1003,7 +1045,7 @@ export function CommandDeck() {
           tour={tour}
         />
 
-        {!photo && (
+        {!overlay && (
           <MobileFlightControl active={tour} elapsedMs={flightElapsed} onStart={toggleTour} onStop={stopFlight} />
         )}
 
@@ -1013,6 +1055,7 @@ export function CommandDeck() {
           craftIndex={craftI}
           deck={deck}
           hudClassName={hud}
+          railOpen={railOpen}
           onNavigateCraft={(index) => {
             gotoCraft(index);
             getSound().craft(index, "pip");
@@ -1030,8 +1073,8 @@ export function CommandDeck() {
           tabIndex={-1}
           ref={scRef}
           data-active-deck={deck}
-          className="za-scroll relative z-10 h-dvh overflow-x-hidden overflow-y-auto md:pl-[68px]"
-          style={{ visibility: photo ? "hidden" : "visible" }}
+          className={`za-scroll relative z-10 h-dvh overflow-x-hidden overflow-y-auto ${railOpen ? "md:pl-[220px]" : "md:pl-[68px]"}`}
+          style={{ visibility: overlay ? "hidden" : "visible" }}
           onPointerDown={stopFlight}
           onWheel={stopFlight}
           onTouchStart={(e) => {
@@ -1047,7 +1090,14 @@ export function CommandDeck() {
             else goto(Math.max(0, deck - 1));
           }}
         >
-          <DeckSnapshot s0={s0} copyCol={copyCol} onEngage={engage} onEve={() => goto(7)} />
+          <DeckSnapshot
+            s0={s0}
+            copyCol={copyCol}
+            onEngage={engage}
+            onEve={() => goto(7)}
+            onFlight={toggleTour}
+            onStill={openStill}
+          />
           {mode === "executive" && <DeckBrief sBrief={sBrief} />}
           {mode === "technical" && (
             <>
@@ -1059,7 +1109,7 @@ export function CommandDeck() {
               <DeckOperator s6={s6} />
               <DeckEve
                 s7={s7}
-                active={!photo && deck === 7}
+                active={!overlay && deck === 7}
                 lines={consoleLines}
                 value={consoleValue}
                 logHeight={eveLogHeight}
@@ -1073,8 +1123,8 @@ export function CommandDeck() {
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 za-mono text-[10px] text-dim">
               <span>{RELEASE}</span>
               <span>REVISED {REVISED}</span>
-              <span className="inline-flex items-center gap-2 text-green">
-                <span className="h-1.5 w-1.5 rounded-full bg-green shadow-[0_0_8px_var(--color-green)]" />
+              <span className="inline-flex items-center gap-2 text-cyan">
+                <span className="za-lock-pip" />
                 {dleft > 0 ? "DATED EXPORT VALID" : "DATED EXPORT EXPIRED"}
               </span>
               <span>FIGURES VERIFIED {VERIFIED_LONG}</span>
@@ -1087,14 +1137,20 @@ export function CommandDeck() {
         <div
           data-cine={cine}
           className={`za-chapter-overlay pointer-events-none fixed bottom-[118px] left-[calc(68px+5vw)] z-40 ${
-            reducedMotion ? "" : "transition duration-500"
+            reducedMotion ? "" : "transition-[opacity,transform] duration-500"
           } ${chapOn ? "opacity-100" : "translate-y-4 opacity-0"} ${hud}`}
         >
+          <span className="za-chapter-cap" aria-hidden />
           <div className="za-kicker">DECK {String(chap + 1).padStart(2, "0")} / 09</div>
           <div className="za-display mt-2 text-[clamp(2rem,4.4vw,3.6rem)] drop-shadow-[0_0_28px_rgba(0,249,255,0.25)]">
             {chapText}
           </div>
           <div className="za-mono mt-2 max-w-[52ch] text-[11px] text-dim">{DECKS[chap].tag}</div>
+          {tour ? (
+            <div className="za-vs-meter mt-4 max-w-xs">
+              <span style={{ width: `${Math.min(100, (flightElapsed / FLIGHT_DURATION_MS) * 100)}%` }} />
+            </div>
+          ) : null}
         </div>
 
         <div
@@ -1153,7 +1209,7 @@ export function CommandDeck() {
             title="Talk to E.V.E."
             aria-label="Open E.V.E. console"
           >
-            <BitMascot active={!photo && deck !== 7} mood={bitMood} size={hudYield ? 72 : 104} />
+            <BitMascot active={!overlay && deck !== 7} mood={bitMood} size={hudYield ? 72 : 104} />
           </button>
         </div>
 
@@ -1209,6 +1265,27 @@ export function CommandDeck() {
         ))}
       </div>
 
+      {gate && (
+        <PowerOn
+          reducedMotion={reducedMotion}
+          onDone={() => {
+            set({ gate: false, bitMood: "yes" });
+            cinePulse();
+            if (!reducedMotion) {
+              clearSweep();
+              setSweep(true);
+              sweepTimer.current = window.setTimeout(() => {
+                sweepTimer.current = null;
+                setSweep(false);
+              }, 560);
+            }
+            window.setTimeout(() => {
+              if (useDeck.getState().bitMood === "yes") set({ bitMood: "idle" });
+            }, 1600);
+          }}
+        />
+      )}
+
       {photo && (
         <div
           role="dialog"
@@ -1229,6 +1306,8 @@ export function CommandDeck() {
           </button>
         </div>
       )}
+
+      {still && <ExecutiveStill onClose={closeStill} />}
     </div>
   );
 }

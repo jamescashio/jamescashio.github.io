@@ -250,7 +250,7 @@ def main() -> int:
         "src/lib/viewscreen-stage.js": (
             "this.warpT = Math.max(0, this.warpT - dt * (1000 / motionDurationMs('stage-warp')))",
             "55 + warp * 34",
-            "Math.min(2.05",
+            "Math.min(2.25",
             "if (next !== this.craftTarget)",
             "this.warpT = 1",
             "pose: { yaw: -0.62, pitch: 0.42",
