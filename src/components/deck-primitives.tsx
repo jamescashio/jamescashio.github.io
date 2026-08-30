@@ -112,6 +112,7 @@ export function Plate({
   width,
   height,
   deferUntilNear = false,
+  placeholderSrc,
 }: {
   src: string;
   alt: string;
@@ -122,6 +123,7 @@ export function Plate({
   width?: number;
   height?: number;
   deferUntilNear?: boolean;
+  placeholderSrc?: string;
 }) {
   const figureRef = useRef<HTMLElement>(null);
   const [isNear, setIsNear] = useState(!deferUntilNear);
@@ -147,13 +149,13 @@ export function Plate({
   const deferred = deferUntilNear && !isNear;
   const image = (
     <img
-      src={deferred ? "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" : src}
+      src={deferred ? (placeholderSrc ?? src) : src}
       data-src={deferred ? src : undefined}
       alt={alt}
       className="za-plate-img"
       loading="lazy"
       decoding="async"
-      fetchPriority={deferUntilNear ? "low" : undefined}
+      fetchPriority={deferred ? "low" : undefined}
       width={width}
       height={height}
     />
@@ -161,7 +163,19 @@ export function Plate({
   return (
     <figure ref={figureRef} data-hud-clear className={`za-plate ${className}`} onMouseEnter={() => getSound().tick()}>
       {sources ? (
-        <picture className="za-plate-picture">
+        <picture
+          className="za-plate-picture"
+          style={
+            placeholderSrc
+              ? {
+                  backgroundImage: `url("${placeholderSrc}")`,
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "cover",
+                }
+              : undefined
+          }
+        >
           {sources.map((source) => (
             <source
               key={`${source.media ?? "default"}-${source.type}`}

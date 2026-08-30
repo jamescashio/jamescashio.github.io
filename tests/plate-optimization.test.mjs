@@ -42,8 +42,32 @@ function imageDimensions(buffer, extension) {
   };
 }
 
-function staticDocument(ui) {
-  return new JSDOM(`<!doctype html><body>${renderToStaticMarkup(ui)}</body>`).window.document;
+function staticDocument(ui, url = "https://cashio.us/#deck=snapshot") {
+  return new JSDOM(`<!doctype html><body>${renderToStaticMarkup(ui)}</body>`, { url }).window.document;
+}
+
+function inlineJpeg(src) {
+  const match = src?.match(/^data:image\/jpeg;base64,(.+)$/);
+  assert.ok(match, "plate preview must be an inline JPEG");
+  const buffer = Buffer.from(match[1], "base64");
+  assert.equal(buffer[0], 0xff);
+  assert.equal(buffer[1], 0xd8);
+  let offset = 2;
+  while (offset < buffer.length - 8) {
+    while (buffer[offset] === 0xff) offset++;
+    const marker = buffer[offset++];
+    if (marker === 0xd9 || marker === 0xda) break;
+    const length = buffer.readUInt16BE(offset);
+    if ([0xc0, 0xc1, 0xc2].includes(marker)) {
+      return {
+        buffer,
+        width: buffer.readUInt16BE(offset + 5),
+        height: buffer.readUInt16BE(offset + 3),
+      };
+    }
+    offset += length;
+  }
+  assert.fail("inline JPEG must expose intrinsic dimensions");
 }
 
 test("Snapshot marks every decision-carrying fleet value and date as critical telemetry", () => {
@@ -80,6 +104,8 @@ const plateContracts = [
     fallback: "/plates/rack.jpg?v=48",
     width: 1680,
     height: 1120,
+    previewWidth: 48,
+    previewHeight: 32,
   },
   {
     name: "operator",
@@ -87,6 +113,8 @@ const plateContracts = [
     fallback: "/plates/operator.jpg?v=48",
     width: 1680,
     height: 1120,
+    previewWidth: 48,
+    previewHeight: 32,
   },
   {
     name: "fold",
@@ -94,6 +122,8 @@ const plateContracts = [
     fallback: "/plates/fold.jpg?v=48",
     width: 1680,
     height: 945,
+    previewWidth: 48,
+    previewHeight: 27,
   },
 ];
 
@@ -107,9 +137,23 @@ test("Rack, Operator, and Contact render sized responsive formats behind near-vi
     assert.equal(image.getAttribute("loading"), "lazy");
     assert.equal(image.getAttribute("decoding"), "async");
     assert.equal(image.getAttribute("fetchpriority"), "low");
-    assert.match(image.getAttribute("src"), /^data:image\/gif;base64,/);
+    const preview = inlineJpeg(image.getAttribute("src"));
+    assert.deepEqual(
+      { width: preview.width, height: preview.height },
+      { width: contract.previewWidth, height: contract.previewHeight },
+      `${contract.name} preview must preserve the source composition`,
+    );
+    assert.ok(preview.buffer.length <= 1_400, `${contract.name} preview must remain an extremely small inline asset`);
 
-    const sources = [...image.closest("picture").querySelectorAll(":scope > source")].map((source) => ({
+    const picture = image.closest("picture");
+    assert.ok(
+      picture.style.backgroundImage.includes(image.getAttribute("src")),
+      `${contract.name} must keep its real preview behind the slow full-resolution decode`,
+    );
+    assert.equal(picture.style.backgroundSize, "cover");
+    assert.equal(picture.style.backgroundPosition, "center");
+
+    const sources = [...picture.querySelectorAll(":scope > source")].map((source) => ({
       type: source.getAttribute("type"),
       srcset: source.getAttribute("data-srcset"),
       activeSrcset: source.getAttribute("srcset"),
@@ -130,6 +174,30 @@ test("Rack, Operator, and Contact render sized responsive formats behind near-vi
       },
     ]);
   }
+});
+
+test("direct Contact rendering keeps the real fold composition opaque while the full image is unavailable", () => {
+  const ref = { current: null };
+  const document = staticDocument(
+    createElement(
+      "div",
+      null,
+      createElement("img", { className: "za-stage-poster", src: "/plates/command.jpg", alt: "" }),
+      createElement(DeckContact, { s8: ref, onCopy: () => {}, copyEmailState: "idle" }),
+    ),
+    "https://cashio.us/#deck=contact",
+  );
+  assert.equal(document.location.hash, "#deck=contact");
+  assert.equal(document.querySelector(".za-stage-poster")?.getAttribute("src"), "/plates/command.jpg");
+
+  const image = document.querySelector('img[data-src="/plates/fold.jpg?v=48"]');
+  assert.ok(image, "Contact must withhold its remote fold candidate during the slow-image state");
+  const preview = inlineJpeg(image.getAttribute("src"));
+  assert.deepEqual({ width: preview.width, height: preview.height }, { width: 48, height: 27 });
+  const picture = image.closest("picture");
+  assert.ok(picture.style.backgroundImage.includes(image.getAttribute("src")));
+  assert.equal(picture.style.backgroundSize, "cover");
+  assert.equal(picture.style.backgroundPosition, "center");
 });
 
 test("a deferred plate exposes no remote candidate until its near-view observer intersects", async () => {
@@ -159,6 +227,8 @@ test("a deferred plate exposes no remote candidate until its near-view observer 
     document: { configurable: true, writable: true, value: dom.window.document },
   });
   const root = createRoot(dom.window.document.getElementById("root"));
+  const previewSrc =
+    "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////2wBDAf//////////////////////////////////////////////////////////////////////////////////////wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAf/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIQAxAAAAF//8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABBQJ//8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAgBAwEBPwF//8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAgBAgEBPwF//8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQAGPwJ//8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPyF//9oADAMBAAIAAwAAABAf/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAgBAwEBPxB//8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAgBAgEBPxB//8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxB//9k=";
 
   try {
     await act(async () =>
@@ -169,6 +239,7 @@ test("a deferred plate exposes no remote candidate until its near-view observer 
           width: 1680,
           height: 1120,
           deferUntilNear: true,
+          placeholderSrc: previewSrc,
           sources: [
             {
               type: "image/avif",
@@ -184,6 +255,8 @@ test("a deferred plate exposes no remote candidate until its near-view observer 
     assert.equal(observations.length, 1);
     assert.equal(image.getAttribute("data-src"), "/plates/rack.jpg?v=48");
     assert.equal(source.getAttribute("srcset"), null);
+    assert.equal(image.getAttribute("fetchpriority"), "low");
+    assert.ok(image.closest("picture").style.backgroundImage.includes(previewSrc));
 
     await act(async () => callback([{ isIntersecting: false }]));
     assert.equal(image.getAttribute("data-src"), "/plates/rack.jpg?v=48");
@@ -191,7 +264,12 @@ test("a deferred plate exposes no remote candidate until its near-view observer 
     await act(async () => callback([{ isIntersecting: true }]));
     assert.equal(image.getAttribute("src"), "/plates/rack.jpg?v=48");
     assert.equal(image.getAttribute("data-src"), null);
+    assert.equal(image.getAttribute("fetchpriority"), null);
     assert.equal(source.getAttribute("srcset"), "/plates/rack-mobile.avif 768w, /plates/rack-desktop.avif 1440w");
+    assert.ok(
+      image.closest("picture").style.backgroundImage.includes(previewSrc),
+      "the opaque preview must remain under a slow full-resolution decode",
+    );
     assert.equal(disconnected, true);
   } finally {
     await act(async () => root.unmount());

@@ -31,6 +31,12 @@ type SecRef = RefObject<HTMLElement | null>;
 export const IDENTITY_LINE = "DOUG CASHIO · ENTERPRISE AI + SECURITY SYSTEMS · OWNER-OPERATOR";
 
 const SUPPORTING_PLATE_SIZES = "(min-width: 1024px) 50vw, 100vw";
+const SUPPORTING_PLATE_PREVIEWS = {
+  rack: "data:image/jpeg;base64,/9j/2wBDABwcHBweHCAkJCAtMCswLUI9Nzc9QmRHTUdNR2SXXm5eXm5el4aihHuEoobwvaenvfD/6d3p////////////////2wBDARwcHBweHCAkJCAtMCswLUI9Nzc9QmRHTUdNR2SXXm5eXm5el4aihHuEoobwvaenvfD/6d3p////////////////wgARCAAgADADASIAAhEBAxEB/8QAGAABAQEBAQAAAAAAAAAAAAAAAgMAAQb/xAAVAQEBAAAAAAAAAAAAAAAAAAAAAf/aAAwDAQACEAMQAAAA82wyt5EnO8a4woucTT3D/8QAJBAAAQMCBQUBAAAAAAAAAAAAAQACERBRAxIhMaETImGBkbH/2gAIAQEAAT8ACMI9KwWE9sFpOh8rEblO6NczrFAut+LE1ExCigBOyg6yeF74RPbvKNZYFmFh8RNP/8QAFhEAAwAAAAAAAAAAAAAAAAAAAAEg/9oACAECAQE/ABT/AP/EABQRAQAAAAAAAAAAAAAAAAAAACD/2gAIAQMBAT8AX//Z",
+  operator:
+    "data:image/jpeg;base64,/9j/2wBDABwcHBweHCAkJCAtMCswLUI9Nzc9QmRHTUdNR2SXXm5eXm5el4aihHuEoobwvaenvfD/6d3p////////////////2wBDARwcHBweHCAkJCAtMCswLUI9Nzc9QmRHTUdNR2SXXm5eXm5el4aihHuEoobwvaenvfD/6d3p////////////////wgARCAAgADADASIAAhEBAxEB/8QAGQABAQEBAQEAAAAAAAAAAAAAAgEAAwQG/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAH/2gAMAwEAAhADEAAAAPnE4Vl2cx6QcLrLKabIn//EABwQAAMBAQEAAwAAAAAAAAAAAAABEQISQTFRcf/aAAgBAQABPwCNCRDw0QfPWv0XJU4N5Tf14PltT4Nc1JIpR+FqKylRUaMwbyVH/8QAFREBAQAAAAAAAAAAAAAAAAAAASD/2gAIAQIBAT8AK//EABQRAQAAAAAAAAAAAAAAAAAAACD/2gAIAQMBAT8AX//Z",
+  fold: "data:image/jpeg;base64,/9j/2wBDABwcHBweHCAkJCAtMCswLUI9Nzc9QmRHTUdNR2SXXm5eXm5el4aihHuEoobwvaenvfD/6d3p////////////////2wBDARwcHBweHCAkJCAtMCswLUI9Nzc9QmRHTUdNR2SXXm5eXm5el4aihHuEoobwvaenvfD/6d3p////////////////wgARCAAbADADASIAAhEBAxEB/8QAGQAAAwEBAQAAAAAAAAAAAAAAAgQFAwAG/8QAFgEAAwAAAAAAAAAAAAAAAAAAAAEC/9oADAMBAAIQAxAAAADzpiQMYsPJxwroJ5sInUuHP4LUkBmv/8QAIxAAAgEDAwUBAQAAAAAAAAAAAQIAAxExEiFhBBATQVEigf/aAAgBAQABPwAWguMbzQtVUOCdv7HpFfU8bAXsZaFSIisxAUGPayUl3IyR9MXx1HdW9EANH6R0OpQ1wwBBlVNNR7YEXhwIKi4Ls3AE89NSQlMDmUuoQEfgbYlXrxpsEZTHqFuB2wIO2pvp7f/EABkRAAMAAwAAAAAAAAAAAAAAAAABAhASMf/aAAgBAgEBPwDhuTSeGkyZUn//xAAaEQEBAAIDAAAAAAAAAAAAAAABAAIREBIh/9oACAEDAQE/APG6aZx1wKTkt//Z",
+} as const;
 const SUPPORTING_PLATE_SOURCES = {
   rack: [
     {
@@ -430,6 +436,7 @@ export function DeckIron({ s3 }: { s3: SecRef }) {
           width={1680}
           height={1120}
           deferUntilNear
+          placeholderSrc={SUPPORTING_PLATE_PREVIEWS.rack}
           className="h-[min(72vh,640px)] w-full"
           chip={`CONCEPT VISUAL · ${host.name} · ${host.tag}`}
         />
@@ -631,6 +638,7 @@ export function DeckOperator({ s6 }: { s6: SecRef }) {
           width={1680}
           height={1120}
           deferUntilNear
+          placeholderSrc={SUPPORTING_PLATE_PREVIEWS.operator}
           className="h-[min(70vh,620px)] w-full"
           fade="right"
           chip="THE CHAIR · HUMAN ACCOUNTABLE"
@@ -845,6 +853,7 @@ export function DeckContact({
           width={1680}
           height={945}
           deferUntilNear
+          placeholderSrc={SUPPORTING_PLATE_PREVIEWS.fold}
           className="h-[min(62vh,560px)] w-full"
           chip="HEIGHLINER · FOLD SPACE"
         />
