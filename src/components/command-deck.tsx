@@ -113,12 +113,16 @@ export function CommandDeck() {
   const [histI, setHistI] = useState(-1);
   const [clock, setClock] = useState("");
   const [stageOn, setStageOn] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
   const [flash, setFlash] = useState(false);
   const [flashKey, setFlashKey] = useState(0);
   const [afFlash, setAfFlash] = useState(false);
   const [hudYield, setHudYield] = useState(false);
-  const [eveLogHeight, setEveLogHeight] = useState(320);
+  const [eveLogHeight, setEveLogHeight] = useState(() =>
+    eveConsoleLogHeight({ height: window.innerHeight, width: window.innerWidth }),
+  );
   const [rips, setRips] = useState<{ id: number; x: number; y: number }[]>([]);
   const [sweep, setSweep] = useState(false);
   const [flightElapsed, setFlightElapsed] = useState(0);
