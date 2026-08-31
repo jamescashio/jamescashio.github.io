@@ -681,8 +681,10 @@ class V34ReleaseContractTests(unittest.TestCase):
         if match:
             self.assertEqual(match.group(1).strip().strip("\"'"), "/")
         built = read("dist/index.html")
-        self.assertIn('src="/assets/', built)
-        self.assertIn('href="/assets/', built)
+        entry_match = re.search(r'src="(/assets/index-[\w-]+\.js)"', built)
+        self.assertIsNotNone(entry_match)
+        entry = read(f"dist/{entry_match.group(1).lstrip('/')}")
+        self.assertIsNotNone(re.search(r'assets/main-[\w-]+\.css', entry))
         self.assertIsNone(re.search(r"/v\d+/", built, flags=re.IGNORECASE))
 
     def test_built_root_is_the_single_prerendered_react_command_deck(self) -> None:
@@ -691,13 +693,14 @@ class V34ReleaseContractTests(unittest.TestCase):
         self.assertEqual(len(roots), 1)
         self.assertIn('data-prerendered="v35"', roots[0])
         self.assertIn("OWN THE IRON", built)
-        self.assertEqual(len(re.findall(r'data-deck="\d"', built)), 9)
+        self.assertEqual(len(re.findall(r'<section\b[^>]*\bdata-deck="\d"', built)), 9)
         self.assertIn('aria-label="CONTACT deck"', built)
         self.assertEqual(len(re.findall(r'<script\b[^>]*\bsrc="/assets/index-[\w-]+\.js"', built)), 1)
-        self.assertEqual(
-            len(re.findall(r'<link\b[^>]*\bhref="/assets/index-[\w-]+\.css"', built)),
-            1,
-        )
+        self.assertEqual(len(re.findall(r'<link\b[^>]*\brel="stylesheet"', built)), 0)
+        entry_path = re.search(r'<script\b[^>]*\bsrc="(/assets/index-[\w-]+\.js)"', built)
+        self.assertIsNotNone(entry_path)
+        entry = read(f"dist/{entry_path.group(1).lstrip('/')}")
+        self.assertEqual(len(re.findall(r'assets/main-[\w-]+\.css', entry)), 1)
 
     def test_seven_articles_runs_a_motion_safe_proof_flight(self) -> None:
         for marker in ("TEST_ROUTE", "drawPatrol", "drawTargetVector", "RANGE SWEEP", "PROOF FLIGHT"):

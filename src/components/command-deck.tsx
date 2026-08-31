@@ -933,18 +933,18 @@ export function CommandDeck() {
   }, [chapter, clearHashSuppressionTimer, focusPendingDestination, measureClear, set, syncHash]);
 
   useEffect(() => {
-    const scroller = scRef.current;
-    if (!scroller) return;
     const cancelRestoreOnUserIntent = () => {
       if (restoreAnchorIntent.current || hashTransition.current.restoringDeck != null) cancelProgrammaticScroll();
     };
     for (const type of ["wheel", "pointerdown", "touchstart"] as const) {
-      scroller.addEventListener(type, cancelRestoreOnUserIntent, { passive: true });
+      window.addEventListener(type, cancelRestoreOnUserIntent, { capture: true, passive: true });
     }
+    window.addEventListener("keydown", cancelRestoreOnUserIntent, { capture: true });
     return () => {
       for (const type of ["wheel", "pointerdown", "touchstart"] as const) {
-        scroller.removeEventListener(type, cancelRestoreOnUserIntent);
+        window.removeEventListener(type, cancelRestoreOnUserIntent, { capture: true });
       }
+      window.removeEventListener("keydown", cancelRestoreOnUserIntent, { capture: true });
     };
   }, [cancelProgrammaticScroll]);
 

@@ -1009,6 +1009,68 @@ test("the delayed direct-link anchor yields to newer scroll and route intent", a
     });
   }
 
+  for (const intent of ["pointerdown", "keydown"]) {
+    await t.test(`fixed-rail ${intent} intent`, async () => {
+      const view = mountCommandDeck({
+        url: "https://cashio.us/#deck=builds&article=1",
+        controlledTimers: true,
+      });
+      try {
+        await view.render();
+        const railTarget = labeledButton(view.document, "Go to ROUTING deck");
+        const frameCount = view.pendingAnimationFrames();
+        if (intent === "keydown") await view.key(railTarget, "Enter");
+        else
+          await act(async () =>
+            railTarget.dispatchEvent(new view.window.Event("pointerdown", { bubbles: true, cancelable: true })),
+          );
+
+        await view.runControlledTimeoutEvenIfCleared(360);
+
+        assert.equal(
+          view.pendingAnimationFrames(),
+          frameCount,
+          `${intent} on a fixed rail must invalidate stale direct-link settlement before click navigation`,
+        );
+      } finally {
+        await view.cleanup();
+      }
+    });
+  }
+
+  await t.test("real hashchange followed by resize", async () => {
+    const view = mountCommandDeck({
+      url: "https://cashio.us/#deck=builds&article=1",
+      controlledTimers: true,
+    });
+    try {
+      await view.render();
+      const scroller = view.document.querySelector("main.za-scroll");
+      view.window.history.replaceState(null, "", "#deck=routing");
+      await act(async () =>
+        view.window.dispatchEvent(
+          new view.window.HashChangeEvent("hashchange", {
+            oldURL: "https://cashio.us/#deck=builds&article=1",
+            newURL: "https://cashio.us/#deck=routing",
+          }),
+        ),
+      );
+      await act(async () => view.window.dispatchEvent(new view.window.Event("resize")));
+      await view.runControlledTimeout(120);
+      await view.runLatestAnimationFrame();
+      const frameCount = view.pendingAnimationFrames();
+
+      await view.runControlledTimeoutEvenIfCleared(360);
+
+      assert.equal(view.window.location.hash, "#deck=routing");
+      assert.equal(useDeck.getState().deck, 2, "the real hash destination must remain the logical deck");
+      assert.equal(scroller.scrollTop, 1992, "resize must re-anchor the newer hash destination");
+      assert.equal(view.pendingAnimationFrames(), frameCount, "stale initial settlement must remain invalidated");
+    } finally {
+      await view.cleanup();
+    }
+  });
+
   await t.test("newer silent hash intent", async () => {
     const view = mountCommandDeck({
       url: "https://cashio.us/#deck=builds&article=1",

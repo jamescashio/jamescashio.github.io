@@ -156,7 +156,7 @@ async function waitForApp(send) {
   for (let attempt = 0; attempt < 100; attempt++) {
     const result = await send("Runtime.evaluate", {
       expression:
-        'document.readyState === "complete" && (!document.fonts || document.fonts.status === "loaded") && document.querySelectorAll(".za-lcars-pip").length === 8 && Boolean(document.querySelector(".za-mobile-rail-safe"))',
+        'document.readyState === "complete" && (!document.fonts || document.fonts.status === "loaded") && document.querySelector("#root")?.dataset.clientActivated === "true" && !document.querySelector("style[data-critical-shell]") && document.querySelectorAll(".za-lcars-pip").length === 8 && Boolean(document.querySelector(".za-mobile-rail-safe"))',
       returnByValue: true,
     });
     if (result.result.value) return;
@@ -1381,7 +1381,7 @@ async function main() {
     assert.equal(
       validityGeometryResult.ok,
       true,
-      `Full validity-state geometry acceptance failed: ${JSON.stringify(validityGeometryResult.defectEvidence)}`,
+      `Full validity-state geometry acceptance failed: ${JSON.stringify({ failures: validityGeometryResult.failures, defectEvidence: validityGeometryResult.defectEvidence })}`,
     );
     const assetEvaluation = await send("Runtime.evaluate", {
       expression: `(async () => {
@@ -1522,6 +1522,55 @@ async function main() {
           parseFloat(getComputedStyle(element).fontSize),
         );
         const failures = [];
+        const readabilityTargets = {
+          headline: 'section[data-deck="0"] h1',
+          lede: '.za-snapshot-lede',
+          body: '.za-snapshot-copy',
+          telemetry: 'section[data-deck="0"] .za-critical-telemetry',
+          technical: '.za-snapshot-modes > button:first-child',
+          executive: '.za-snapshot-modes > button:last-child',
+          descend: '.za-snapshot-actions > button:first-child',
+          eve: '.za-snapshot-actions > button:last-child',
+          activeRail: 'nav[aria-label="Mobile command decks"] button[aria-current="page"]',
+        };
+        const readability = Object.entries(readabilityTargets).map(([name, selector]) => {
+          const element = document.querySelector(selector);
+          if (!element) return { name, selector, present: false };
+          const rect = element.getBoundingClientRect();
+          const style = getComputedStyle(element);
+          const visible = style.display !== "none" && style.visibility !== "hidden" && Number(style.opacity) > 0;
+          const viewportClipped = rect.left < -0.5 || rect.right > innerWidth + 0.5;
+          const contentClipped = element.scrollWidth > element.clientWidth + 1;
+          let ancestorClipped = false;
+          let ancestor = element.parentElement;
+          while (ancestor && ancestor !== document.body) {
+            const ancestorStyle = getComputedStyle(ancestor);
+            if (["hidden", "clip"].includes(ancestorStyle.overflowX)) {
+              const boundary = ancestor.getBoundingClientRect();
+              if (rect.left < boundary.left - 0.5 || rect.right > boundary.right + 0.5) ancestorClipped = true;
+            }
+            ancestor = ancestor.parentElement;
+          }
+          return {
+            name,
+            selector,
+            present: true,
+            visible,
+            left: rect.left,
+            right: rect.right,
+            clientWidth: element.clientWidth,
+            scrollWidth: element.scrollWidth,
+            viewportClipped,
+            contentClipped,
+            ancestorClipped,
+          };
+        });
+        readability.forEach((item) => {
+          if (!item.present) failures.push("missing readability target " + item.name);
+          else if (!item.visible || item.viewportClipped || item.contentClipped || item.ancestorClipped) {
+            failures.push("Snapshot readability target " + item.name + " is horizontally clipped: " + JSON.stringify(item));
+          }
+        });
         if (pips.length !== 8) failures.push("expected eight aircraft pips");
         pips.forEach((pip, index) => {
           if (pip.width < 44 || pip.height < 44) failures.push("pip " + (index + 1) + " measured " + pip.width + "x" + pip.height);
@@ -1560,7 +1609,7 @@ async function main() {
         if (actionStyle?.display !== "grid" || gridColumns.length !== 2 || actionButtons.length !== 2) failures.push("Snapshot actions must render as one two-column grid");
         if (actionRects.length === 2 && Math.abs(actionRects[0].top - actionRects[1].top) > 0.5) failures.push("Snapshot action buttons must share one row");
         if (document.documentElement.scrollWidth > innerWidth) failures.push("document width " + document.documentElement.scrollWidth + "px exceeds viewport " + innerWidth + "px");
-        return { ok: failures.length === 0, failures, viewport: [innerWidth, innerHeight], pips, rail: { height: railRect.height, top: railRect.top, bottom: railRect.bottom, paddingBottom: railPadding }, clearance, controls: controlRects, eveControls: { input: eveTargetRect(eveInput), run: eveTargetRect(eveRun), criticalTelemetryFontSizesPx: eveCriticalTelemetryFontSizesPx }, actionGrid: { display: actionStyle?.display, columns: gridColumns, buttons: actionRects.map((rect) => ({ top: rect.top, width: rect.width, height: rect.height })) } };
+        return { ok: failures.length === 0, failures, viewport: [innerWidth, innerHeight], pips, rail: { height: railRect.height, top: railRect.top, bottom: railRect.bottom, paddingBottom: railPadding }, clearance, controls: controlRects, readability, eveControls: { input: eveTargetRect(eveInput), run: eveTargetRect(eveRun), criticalTelemetryFontSizesPx: eveCriticalTelemetryFontSizesPx }, actionGrid: { display: actionStyle?.display, columns: gridColumns, buttons: actionRects.map((rect) => ({ top: rect.top, width: rect.width, height: rect.height })) } };
       })()`,
         returnByValue: true,
       });

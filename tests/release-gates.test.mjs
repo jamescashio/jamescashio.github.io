@@ -189,7 +189,7 @@ test("the document preloads only the critical fonts and one responsive AVIF post
   assert.equal(preloads.length, 2, "WebP, JPEG, and noncritical fonts must not be preloaded");
 });
 
-test("the built document contains one real prerendered command deck with external hashed assets", async () => {
+test("the built document contains one real prerendered command deck with a critical shell and deferred hashed assets", async () => {
   const dom = new JSDOM(await read("dist/index.html"));
   const document = dom.window.document;
   const roots = [...document.querySelectorAll("#root")];
@@ -204,9 +204,13 @@ test("the built document contains one real prerendered command deck with externa
   const scripts = [...document.querySelectorAll('script[type="module"][src]')];
   const styles = [...document.querySelectorAll('link[rel="stylesheet"][href]')];
   assert.equal(scripts.length, 1);
-  assert.equal(styles.length, 1);
+  assert.equal(styles.length, 0, "the complete stylesheet must wait for intent-aware client activation");
+  assert.equal(document.querySelectorAll("style[data-critical-shell]").length, 1);
   assert.match(scripts[0].getAttribute("src") ?? "", /^\/assets\/index-[\w-]+\.js$/);
-  assert.match(styles[0].getAttribute("href") ?? "", /^\/assets\/index-[\w-]+\.css$/);
+  const entryPath = scripts[0].getAttribute("src")?.replace(/^\//, "");
+  assert.ok(entryPath);
+  const entry = await read(`dist/${entryPath}`);
+  assert.equal(entry.match(/assets\/main-[\w-]+\.css/g)?.length, 1);
 });
 
 test("public metadata and redirect fallback keep fleet and routing provenance distinct", async () => {

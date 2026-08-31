@@ -687,8 +687,10 @@ def main() -> int:
             failures.append("an RFC1918 address appears in the built Pages artifact")
 
         built_index = (DIST / "index.html").read_text(encoding="utf-8")
-        if 'src="/assets/' not in built_index or 'href="/assets/' not in built_index:
+        if 'src="/assets/' not in built_index:
             failures.append("built index does not use root-relative /assets/ URLs; Vite base may not be '/'")
+        if len(list((DIST / "assets").glob("main-*.css"))) != 1:
+            failures.append("built artifact must contain exactly one deferred hashed main stylesheet")
         if re.search(r"/v\d+/", built_index, flags=re.IGNORECASE):
             failures.append("built index is incorrectly nested under a version directory")
         for csp in ("connect-src 'self'", "object-src 'none'", "form-action 'none'"):
