@@ -167,6 +167,16 @@
     color: var(--color-muted);
     background: rgba(5, 6, 10, 0.55);
   }
+  .za-validity-chip {
+    inline-size: 34ch;
+    justify-content: center;
+    white-space: nowrap;
+  }
+  .za-validity-footer-status {
+    inline-size: 26ch;
+    justify-content: center;
+    white-space: nowrap;
+  }
   .za-btn {
     display: inline-flex;
     align-items: center;

@@ -11,6 +11,7 @@ import {
   craftLockAfterDeckChange,
   craftRoute,
   daysLeft,
+  nextValidityRefreshAt,
   resolveCraftIndex,
   stardate,
   validityShort,
@@ -148,6 +149,8 @@ export function CommandDeck() {
   const [flightElapsed, setFlightElapsed] = useState(0);
   const jumpUntil = useRef(0);
   const flightTimer = useRef<number | null>(null);
+  const validityTimer = useRef<number | null>(null);
+  const validityGeneration = useRef(0);
   const flightRun = useRef<FlightState | null>(null);
   const hashTransition = useRef(createHashTransitionState());
   const hashSuppressionTimer = useRef<number | null>(null);
@@ -199,9 +202,24 @@ export function CommandDeck() {
     return () => media.removeEventListener("change", onChange);
   }, []);
 
-  useEffect(() => {
-    const now = Date.now();
-    setValidity({ days: daysLeft(now), label: validityShort(now) });
+  useIsomorphicLayoutEffect(() => {
+    const generation = ++validityGeneration.current;
+    const refresh = () => {
+      if (generation !== validityGeneration.current) return;
+      validityTimer.current = null;
+      const now = Date.now();
+      setValidity({ days: daysLeft(now), label: validityShort(now) });
+      const nextRefresh = nextValidityRefreshAt(now);
+      if (nextRefresh != null) {
+        validityTimer.current = window.setTimeout(refresh, Math.max(1, nextRefresh - now));
+      }
+    };
+    refresh();
+    return () => {
+      validityGeneration.current += 1;
+      if (validityTimer.current != null) window.clearTimeout(validityTimer.current);
+      validityTimer.current = null;
+    };
   }, []);
 
   useIsomorphicLayoutEffect(() => {
@@ -1278,13 +1296,18 @@ export function CommandDeck() {
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 za-mono text-[10px] text-dim">
               <span>{RELEASE}</span>
               <span>REVISED {REVISED}</span>
-              <span className="inline-flex items-center gap-2 text-cyan">
+              <span
+                data-validity-footer-status
+                className="za-validity-footer-status inline-flex items-center gap-2 text-cyan"
+              >
                 <span className="za-lock-pip" />
-                {validity.days == null
-                  ? "DATED EXPORT · VALID THRU"
-                  : validity.days > 0
-                    ? "DATED EXPORT VALID"
-                    : "DATED EXPORT EXPIRED"}
+                <span data-validity-footer-label>
+                  {validity.days == null
+                    ? "DATED EXPORT STATUS"
+                    : validity.days > 0
+                      ? "DATED EXPORT VALID"
+                      : "DATED EXPORT EXPIRED"}
+                </span>
               </span>
               <span>FIGURES VERIFIED {VERIFIED_LONG}</span>
               <span>VALID THRU {validity.days == null || validity.days > 0 ? EXPIRES_SHORT : "TREAT AS HISTORY"}</span>

@@ -55,6 +55,7 @@ function mountCommandDeck({
   reducedMotion = true,
   controlledTimers = false,
   capturePulseTimers = false,
+  captureValidityTimers = false,
   injectStyles = false,
   canvasRuntime = false,
   now = Date.now(),
@@ -100,6 +101,7 @@ function mountCommandDeck({
         timeout === 2200 ||
         timeout === 3200 ||
         timeout >= 7000 ||
+        (captureValidityTimers && (timeout === 1000 || timeout === 86400000)) ||
         (capturePulseTimers && (timeout === 680 || timeout === 1100 || timeout === 1900)))
     ) {
       const id = ++controlledTimeoutId;
@@ -606,6 +608,42 @@ function createSchedulerEnvironment({ idle = true } = {}) {
 
 test("the normal dim token remains at the audited readable value", () => {
   assert.match(stylesheet, /--color-dim:\s*#687f97\s*;/i);
+});
+
+test("validity surfaces reserve compact stable geometry for live boundary changes", () => {
+  assert.match(stylesheet, /\.za-validity-chip\s*\{[^}]*inline-size:\s*34ch\s*;/s);
+  assert.match(stylesheet, /\.za-validity-footer-status\s*\{[^}]*inline-size:\s*26ch\s*;/s);
+});
+
+test("the validity clock crosses a day and exact expiry without remounting or duplicate StrictMode timers", async () => {
+  const view = mountCommandDeck({
+    captureValidityTimers: true,
+    controlledTimers: true,
+    now: Date.parse("2026-09-27T04:59:59.000Z"),
+    strictMode: true,
+  });
+  try {
+    await view.render();
+    const header = view.document.querySelector("[data-validity-chip]");
+    const footer = view.document.querySelector("[data-validity-footer-status]");
+    assert.equal(header?.textContent?.replace(/\s+/g, " ").trim(), "EXPORT VALID · 2D LEFT");
+    assert.match(footer?.textContent ?? "", /DATED EXPORT VALID/);
+    assert.equal(view.pendingControlledTimeoutsFor(1000), 1, "StrictMode must leave one live day timer");
+
+    await view.runClearedControlledTimeout(1000);
+    assert.equal(view.pendingControlledTimeoutsFor(1000), 1, "a stale StrictMode callback must not duplicate timers");
+
+    await view.runControlledTimeout(1000);
+    assert.equal(header?.textContent?.replace(/\s+/g, " ").trim(), "EXPORT VALID · 1D LEFT");
+    assert.equal(view.pendingControlledTimeoutsFor(86400000), 1, "the next timer must target exact expiry");
+
+    await view.runControlledTimeout(86400000);
+    assert.match(header?.textContent ?? "", /EXPORT EXPIRED/);
+    assert.match(footer?.textContent ?? "", /DATED EXPORT EXPIRED/);
+    assert.equal(view.pendingControlledTimeoutsFor(1000, 86400000), 0, "expired validity must own no timer");
+  } finally {
+    await view.cleanup();
+  }
 });
 
 test("live motion changes settle one-shot command-deck entrance motion for the session", async () => {

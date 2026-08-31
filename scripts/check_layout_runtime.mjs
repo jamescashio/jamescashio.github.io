@@ -926,6 +926,57 @@ async function main() {
       mobile: false,
     });
     await waitForApp(send);
+    const validityGeometryEvaluation = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const chip = document.querySelector("[data-validity-chip]");
+        const chipLabel = document.querySelector("[data-validity-label]");
+        const footer = document.querySelector("[data-validity-footer-status]");
+        const footerLabel = document.querySelector("[data-validity-footer-label]");
+        const audio = document.querySelector('.za-command-header button[aria-label*="selection audio"]');
+        if (!chip || !chipLabel || !footer || !footerLabel || !audio) {
+          return { ok: false, failures: ["validity geometry hooks are missing"], samples: [] };
+        }
+        const original = { chip: chipLabel.textContent, footer: footerLabel.textContent };
+        const variants = [
+          ["EXPORT STATUS · DATED", "DATED EXPORT STATUS"],
+          ["EXPORT VALID · 1D LEFT", "DATED EXPORT VALID"],
+          ["EXPORT EXPIRED", "DATED EXPORT EXPIRED"],
+        ];
+        const samples = variants.map(([headerText, footerText]) => {
+          chipLabel.textContent = headerText;
+          footerLabel.textContent = footerText;
+          const chipRect = chip.getBoundingClientRect();
+          const footerRect = footer.getBoundingClientRect();
+          const audioRect = audio.getBoundingClientRect();
+          return {
+            headerText,
+            footerText,
+            chip: { left: chipRect.left, top: chipRect.top, width: chipRect.width, height: chipRect.height },
+            footer: { left: footerRect.left, top: footerRect.top, width: footerRect.width, height: footerRect.height },
+            audio: { left: audioRect.left, top: audioRect.top },
+          };
+        });
+        chipLabel.textContent = original.chip;
+        footerLabel.textContent = original.footer;
+        const baseline = samples[0];
+        const maximumShift = Math.max(...samples.slice(1).flatMap((sample) => [
+          Math.abs(sample.chip.left - baseline.chip.left),
+          Math.abs(sample.chip.top - baseline.chip.top),
+          Math.abs(sample.chip.width - baseline.chip.width),
+          Math.abs(sample.chip.height - baseline.chip.height),
+          Math.abs(sample.footer.left - baseline.footer.left),
+          Math.abs(sample.footer.top - baseline.footer.top),
+          Math.abs(sample.footer.width - baseline.footer.width),
+          Math.abs(sample.footer.height - baseline.footer.height),
+          Math.abs(sample.audio.left - baseline.audio.left),
+          Math.abs(sample.audio.top - baseline.audio.top),
+        ]));
+        const failures = maximumShift > 0.5 ? ["validity text caused " + maximumShift + "px of layout shift"] : [];
+        return { ok: failures.length === 0, failures, maximumShift, samples };
+      })()`,
+      returnByValue: true,
+    });
+    const validityGeometry = validityGeometryEvaluation.result.value;
     const assetEvaluation = await send("Runtime.evaluate", {
       expression: `(async () => {
         const expected = [
@@ -1586,6 +1637,50 @@ async function main() {
     });
     const bitFocus = bitFocusEvaluation.result.value;
     const motionPreference = await runMotionPreferenceAcceptance(send, targetUrl);
+    await send("Page.addScriptToEvaluateOnNewDocument", {
+      source: `(() => {
+        const messages = [];
+        const describe = (value) => {
+          if (value instanceof Error) return value.stack || value.message;
+          if (typeof value === "string") return value;
+          try { return JSON.stringify(value); } catch { return String(value); }
+        };
+        for (const level of ["warn", "error"]) {
+          const original = console[level].bind(console);
+          console[level] = (...args) => {
+            messages.push({ level, text: args.map(describe).join(" ") });
+            original(...args);
+          };
+        }
+        addEventListener("error", (event) => messages.push({ level: "error", text: event.message }));
+        addEventListener("unhandledrejection", (event) =>
+          messages.push({ level: "error", text: "unhandled rejection: " + describe(event.reason) }),
+        );
+        Object.defineProperty(window, "__v35BrowserMessages", { value: messages });
+      })();`,
+    });
+    await send("Page.navigate", { url: `${targetUrl}?hydration-console#deck=eve` });
+    await waitForApp(send);
+    const hydrationEvaluation = await send("Runtime.evaluate", {
+      expression: `(async () => {
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        const messages = window.__v35BrowserMessages ?? [];
+        const root = document.querySelector('#root[data-prerendered="v35"]');
+        return {
+          ok: messages.length === 0 && Boolean(root) && document.querySelectorAll('#root').length === 1 &&
+            document.querySelectorAll('section[data-deck]').length === 9 &&
+            document.querySelector('#main-content')?.dataset.activeDeck === '7',
+          messages,
+          markedRoots: document.querySelectorAll('#root[data-prerendered="v35"]').length,
+          roots: document.querySelectorAll('#root').length,
+          decks: document.querySelectorAll('section[data-deck]').length,
+          activeDeck: document.querySelector('#main-content')?.dataset.activeDeck ?? null,
+        };
+      })()`,
+      awaitPromise: true,
+      returnByValue: true,
+    });
+    const hydrationConsole = hydrationEvaluation.result.value;
     console.log(
       JSON.stringify(
         {
@@ -1601,9 +1696,11 @@ async function main() {
           desktopEveVisualPointerNoneNegative,
           eveFocus,
           flights,
+          hydrationConsole,
           motionPreference,
           snapshotGeometry,
           tickerTelemetry,
+          validityGeometry,
           mobile320: narrowResult,
         },
         null,
@@ -1616,6 +1713,12 @@ async function main() {
       `Every optimized poster must decode with exact MIME and dimensions: ${JSON.stringify(decodedAssets.decoded)}`,
     );
     assert.equal(browserVersion.ok, true, browserVersion.failures.join("; "));
+    assert.equal(
+      hydrationConsole.ok,
+      true,
+      `Direct-link hydration emitted browser warnings/errors or lost its built tree: ${JSON.stringify(hydrationConsole)}`,
+    );
+    assert.equal(validityGeometry.ok, true, validityGeometry.failures.join("; "));
     assert.equal(desktopLayout.ok, true, desktopLayout.failures.join("; "));
     assert.equal(
       desktopFlightTelemetry.ok,

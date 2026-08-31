@@ -163,9 +163,9 @@ export function CommandHeader({
       </div>
       <div className="pointer-events-auto flex items-center gap-2">
         {tour ? <span className="za-chip min-h-11 text-accent">AUTOPILOT</span> : null}
-        <span className="za-chip !hidden md:!inline-flex min-h-11">
+        <span data-validity-chip className="za-chip za-validity-chip !hidden min-h-11 md:!inline-flex">
           <span className="za-lock-pip" />
-          {validityLabel}
+          <span data-validity-label>{validityLabel}</span>
         </span>
         <span className="za-chip !hidden lg:!inline-flex">SD {clock}</span>
         <button
