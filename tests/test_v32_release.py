@@ -348,6 +348,33 @@ class V34ReleaseContractTests(unittest.TestCase):
         self.assertFalse(safe["hasDynamicAlphaJoin"])
         self.assertFalse(release_consistency.has_stale_current_code_literal(safe))
 
+    def test_public_surface_guard_composes_dynamic_risk_through_every_public_form(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "forms.tsx"
+            bundle = root / "assets" / "forms.js"
+            bundle.parent.mkdir()
+            source.write_text(
+                'declare const dynamic: string;\n'
+                'const fragment = `HO${dynamic}S`; const alias = (fragment);\n'
+                'const cycleA = cycleB; const cycleB = cycleA;\n'
+                'export const a = fragment + " CURRENT STATUS";\n'
+                'export const b = (alias) + " CURRENT STATUS";\n'
+                'export const c = dynamic ? fragment : `HO${dynamic}S`;\n'
+                'export const view = <><p>{`HO${dynamic}S`} CURRENT STATUS</p><p>{fragment} CURRENT STATUS</p><p>{`HO${cycleA}S`} CURRENT STATUS</p></>;\n'
+                'export const safe = <p>{`hello ${dynamic} world`}</p>;\n',
+                encoding="utf-8",
+            )
+            bundle.write_text(
+                'const fragment=`HO${dynamic}S`;const claim=fragment+" CURRENT STATUS";const view=`HO${dynamic}S CURRENT STATUS`;\n',
+                encoding="utf-8",
+            )
+            literals = release_consistency.collect_public_code_literals([source, bundle])
+        risky = [literal for literal in literals if literal["hasDynamicAlphaJoin"] and "CURRENT STATUS" in literal["value"]]
+        self.assertGreaterEqual(len(risky), 6, literals)
+        self.assertTrue(all(release_consistency.has_stale_current_code_literal(literal) for literal in risky))
+        self.assertTrue(any("hello" in literal["value"] and not literal["hasDynamicAlphaJoin"] for literal in literals), literals)
+
     def test_public_surface_guard_rejects_current_fleet_topology_and_raw_route_identifiers(self) -> None:
         base = (
             "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
