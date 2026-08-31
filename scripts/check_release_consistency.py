@@ -25,10 +25,13 @@ ROUTING_COUNT_CLAIM = re.compile(
     re.IGNORECASE | re.DOTALL,
 )
 ROUTING_PROVENANCE_PREFIX = re.compile(
-    r"ROUTING INVENTORY 21 AUGUST 2026\s*[:—·-]\s*$",
+    r"(?:ROUTING INVENTORY 21 AUGUST 2026|08-21-2026)\s*[:—·-]\s*$",
     re.IGNORECASE,
 )
-STALE_V33_FLEET_CLAIMS = re.compile(r"19(?:/| of )19|\bCURRENT\b|\bonline\b", re.IGNORECASE)
+STALE_V33_FLEET_CLAIMS = re.compile(
+    r"19(?:/| of )19|\bCURRENT\s+(?:FLEET|STATUS)\b|\bFLEET\s*(?:STATUS\s*)?ONLINE\b",
+    re.IGNORECASE,
+)
 PRIVATE_CURRENT_FLEET_PATTERNS = (
     re.compile(r"\bATLAS\s*·\s*(?:GATEWAY|LOCAL INFERENCE)", re.IGNORECASE),
     re.compile(r"\bATHENA\s*·\s*QUORUM SUPPORT", re.IGNORECASE),
@@ -212,8 +215,8 @@ def main() -> int:
     package = json.loads(read("package.json"))
     if package.get("version") != "35.0.0":
         failures.append("package.json version must be 35.0.0")
-    if package.get("scripts", {}).get("build") != "tsc --noEmit && vite build":
-        failures.append("package.json build script changed from the supplied TypeScript + Vite gate")
+    if package.get("scripts", {}).get("build") != "tsc --noEmit && vite build && node --import tsx scripts/prerender.mts":
+        failures.append("package.json build script changed from the supplied TypeScript + Vite + prerender gate")
 
     vite = read("vite.config.ts")
     base_match = re.search(r"\bbase\s*:\s*([^,\n]+)", vite)
@@ -233,7 +236,10 @@ def main() -> int:
         "python scripts/check_release_consistency.py",
         "python -m py_compile",
         "python scripts/check_committed_whitespace.py",
-        "actions/upload-pages-artifact@v3",
+        "GH_TOKEN: ${{ github.token }}",
+        'test "$(gh api repos/${GITHUB_REPOSITORY}/pages --jq .build_type)" = "workflow"',
+        "actions/configure-pages@v5",
+        "actions/upload-pages-artifact@v4",
         "path: dist",
         "actions/deploy-pages@v4",
     ):

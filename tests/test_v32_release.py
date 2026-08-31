@@ -96,6 +96,16 @@ class V34ReleaseContractTests(unittest.TestCase):
                         failures,
                     )
 
+    def test_public_surface_guard_accepts_dated_eve_availability_and_receipt_provenance(self) -> None:
+        text = (
+            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG · "
+            "E.V.E. ONLINE · 08-21-2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+        )
+        failures: list[str] = []
+        release_consistency.check_v34_public_surface("index.html", text, failures, "test")
+        self.assertEqual(failures, [])
+
     def test_public_surface_guard_rejects_current_fleet_topology_and_raw_route_identifiers(self) -> None:
         base = (
             "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "

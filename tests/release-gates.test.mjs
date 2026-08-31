@@ -237,7 +237,7 @@ test("release checklist separates the fresh fleet export from routing provenance
   assert.doesNotMatch(workflow, /- name: Install V33 dependencies/);
 });
 
-test("Pages blocks artifact upload on the complete Node 22 and Python 3.12 gate chain", async () => {
+test("Pages refuses artifact upload unless GitHub Actions owns the Pages source after every release gate", async () => {
   const packageJson = JSON.parse(await read("package.json"));
   const workflow = await read(".github/workflows/pages.yml");
   assert.match(workflow, /node-version:\s*22/);
@@ -251,7 +251,30 @@ test("Pages blocks artifact upload on the complete Node 22 and Python 3.12 gate 
   assert.match(workflow, /chrome-version:\s*["']?147\.0\.7727\.57["']?/);
   assert.match(workflow, /CHROME_PATH:\s*\$\{\{\s*steps\.setup_chrome\.outputs\.chrome-path\s*\}\}/);
   assert.match(workflow, /npm run check:layout:runtime:pinned/);
-  assertOrdered(workflow, requiredPagesCommands, "actions/upload-pages-artifact@v3", "Pages");
+
+  const workflowOnlySourceGuard = 'test "$(gh api repos/${GITHUB_REPOSITORY}/pages --jq .build_type)" = "workflow"';
+  const buildJob = workflow.slice(workflow.indexOf("  build:"), workflow.indexOf("  deploy:"));
+  const deployJob = workflow.slice(workflow.indexOf("  deploy:"));
+  const missingWorkflowOnlyControls = [
+    workflow.includes("permissions: {}") &&
+    /permissions:\s*\n\s+contents:\s*read\s*\n\s+pages:\s*read/.test(buildJob) &&
+    /permissions:\s*\n\s+pages:\s*write\s*\n\s+id-token:\s*write/.test(deployJob)
+      ? null
+      : "least-sufficient job permissions",
+    workflow.includes("GH_TOKEN: ${{ github.token }}") ? null : "job token",
+    workflow.includes(workflowOnlySourceGuard) ? null : "workflow-only Pages source guard",
+    workflow.includes("actions/configure-pages@v5") ? null : "configure-pages v5",
+    workflow.includes("actions/upload-pages-artifact@v4") ? null : "upload-pages-artifact v4",
+  ].filter(Boolean);
+  assert.deepEqual(missingWorkflowOnlyControls, []);
+  assert.doesNotMatch(workflow, /actions\/upload-pages-artifact@v3/);
+  assert.doesNotMatch(workflow, /jekyll/i);
+  assertOrdered(
+    workflow,
+    [...requiredPagesCommands, workflowOnlySourceGuard, "actions/configure-pages@v5"],
+    "actions/upload-pages-artifact@v4",
+    "Pages",
+  );
 });
 
 test("Public Site Safety preserves report upload and enforcement after every gate", async () => {
