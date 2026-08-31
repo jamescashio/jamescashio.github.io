@@ -4,8 +4,10 @@
 from __future__ import annotations
 
 import json
+import html
 import math
 import re
+import subprocess
 import struct
 import sys
 import unicodedata
@@ -34,10 +36,15 @@ APPROVED_DATED_PUBLIC_CLAIMS = (
     "E.V.E. ONLINE · READ-ONLY · DATED EXPORT",
     "2 HOSTS ONLINE · QUORATE",
     "2 PROXMOX HOSTS ONLINE · QUORATE",
+    "2 PROXMOX HOSTS ONLINE · CLUSTER QUORATE",
+    "Two Proxmox hosts were online and quorate.",
     "two online, quorate hosts at the dated probe",
     "08-21-2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG",
 )
-APPROVED_PUBLIC_STATUS_LABELS = ("E.V.E. EVALUATION VERIFICATION ENGINE · ONLINE",)
+APPROVED_PUBLIC_STATUS_LABELS = (
+    "E.V.E. EVALUATION VERIFICATION ENGINE · ONLINE",
+    "SYSTEMS ONLINE · HUMAN COMMAND RETAINED",
+)
 APPROVED_TECHNICAL_CLASS_TOKENS = {"za-systems-online", "is-online"}
 CURRENT_CLAIM_SUBJECTS = {
     "atlas",
@@ -129,67 +136,75 @@ def check_current_public_privacy(text: str, failures: list[str], label: str) -> 
 
 
 class PublicSurfaceParser(HTMLParser):
-    """Collect visible units and non-exempt attribute values without flattening context."""
+    """Collect one ordered public text stream plus complete, contextual attributes."""
 
-    _INTERACTIVE_TAGS = {"a", "button", "input", "select", "textarea"}
+    _BLOCK_TAGS = {"article", "aside", "div", "footer", "header", "li", "main", "p", "section", "td", "th"}
 
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
-        self._stack: list[dict[str, object]] = [{"tag": "root", "text": [], "interactive_child": False}]
-        self.visible_units: list[str] = []
+        self.visible_text: list[str] = []
         self.attribute_values: list[str] = []
+        self._open_tags: list[str] = []
+        self._safe_current_depth = 0
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        self.visible_text.append(" ")
+        self._open_tags.append(tag)
+        if tag == "button" and dict(attrs).get("data-cmd") == "current":
+            self._safe_current_depth += 1
         for name, value in attrs:
             if value is None:
                 continue
             if name == "class":
-                self.attribute_values.extend(
+                # Preserve a single remaining scan unit: `hosts online` must not
+                # disappear merely because adjacent class tokens are implementation-safe.
+                remaining = " ".join(
                     token for token in value.split() if token not in APPROVED_TECHNICAL_CLASS_TOKENS
                 )
+                if remaining:
+                    self.attribute_values.append(remaining)
             elif not (name == "data-cmd" and value == "current"):
                 self.attribute_values.append(value)
-        if tag in self._INTERACTIVE_TAGS:
-            for node in self._stack:
-                node["interactive_child"] = True
-        self._stack.append({"tag": tag, "text": [], "interactive_child": False})
 
     def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         self.handle_starttag(tag, attrs)
-        self.handle_endtag(tag)
-
-    def handle_data(self, data: str) -> None:
-        for node in self._stack:
-            node["text"].append(data)  # type: ignore[index]
 
     def handle_endtag(self, tag: str) -> None:
-        if len(self._stack) == 1:
-            return
-        node = self._stack.pop()
-        if not node["interactive_child"]:
-            text = " ".join(node["text"])  # type: ignore[arg-type]
-            if text.strip():
-                self.visible_units.append(text)
+        # Only a real block close is a sentence boundary. An unmatched malformed
+        # close stays whitespace so HOSTS</div>ONLINE cannot evade the guard.
+        if tag in self._open_tags:
+            while self._open_tags:
+                opened = self._open_tags.pop()
+                if opened == tag:
+                    break
+            self.visible_text.append(". " if tag in self._BLOCK_TAGS else " ")
+        else:
+            self.visible_text.append(" ")
+        if tag == "button" and self._safe_current_depth:
+            self._safe_current_depth -= 1
 
-    def close(self) -> None:
-        super().close()
-        while len(self._stack) > 1:
-            self.handle_endtag(str(self._stack[-1]["tag"]))
-        if not self.visible_units and not self._stack[0]["interactive_child"]:
-            text = " ".join(self._stack[0]["text"])  # type: ignore[arg-type]
-            if text.strip():
-                self.visible_units.append(text)
+    def handle_data(self, data: str) -> None:
+        # HTMLParser preserves source order even for fragments and bad close tags.
+        if not (self._safe_current_depth and data.strip() == "CURRENT"):
+            self.visible_text.append(data)
 
 
 def blank_exact_approved_visible_phrases(text: str) -> str:
     """Blank only complete, case-sensitive approved visible phrases."""
     for phrase in (*APPROVED_DATED_PUBLIC_CLAIMS, *APPROVED_PUBLIC_STATUS_LABELS):
-        text = re.sub(rf"(?<!\w){re.escape(phrase)}(?!\w)", lambda match: " " * len(match.group(0)), text)
+        exact_words = r"\s+".join(re.escape(word) for word in phrase.split(" "))
+        text = re.sub(rf"(?<!\w){exact_words}(?!\w)", lambda match: " " * len(match.group(0)), text)
     return text
 
 
 def public_claim_tokens(text: str) -> list[str]:
-    normalized = unicodedata.normalize("NFKD", text).casefold()
+    normalized = html.unescape(text)
+    normalized = "".join(char for char in normalized if unicodedata.category(char) not in {"Cf", "Mn", "Mc", "Me"})
+    normalized = unicodedata.normalize("NFKC", normalized)
+    # E.V.E. is a subject spelling, not a sentence terminator; the exact
+    # approved dated phrase was already blanked before this normalization.
+    normalized = re.sub(r"\b(e[._-]?v[._-]?e)\.(?=\s)", r"\1", normalized, flags=re.IGNORECASE)
+    normalized = unicodedata.normalize("NFKC", normalized).casefold()
     tokens = re.findall(r"[a-z0-9]+", normalized)
     merged: list[str] = []
     index = 0
@@ -204,16 +219,26 @@ def public_claim_tokens(text: str) -> list[str]:
 
 
 def has_stale_current_public_claim(text: str) -> bool:
-    if DIRECT_STALE_FLEET_CLAIM.search(text):
+    normalized = html.unescape(text)
+    normalized = "".join(char for char in normalized if unicodedata.category(char) not in {"Cf", "Mn", "Mc", "Me"})
+    normalized = unicodedata.normalize("NFKC", normalized)
+    normalized = re.sub(r"\b(e[._-]?v[._-]?e)\.(?=\s)", r"\1", normalized, flags=re.IGNORECASE)
+    if DIRECT_STALE_FLEET_CLAIM.search(normalized):
         return True
-    tokens = public_claim_tokens(text)
-    token_set = set(tokens)
-    subjects = CURRENT_CLAIM_SUBJECTS & token_set
-    if not subjects:
-        return False
-    if "online" in token_set:
-        return True
-    return "current" in token_set and bool(CURRENT_CLAIM_QUALIFIERS & token_set)
+    # Sentence boundaries are the only claim boundaries. Tags and newlines are
+    # already ordinary whitespace in the ordered stream, so they cannot hide a
+    # status assertion; unrelated sentences cannot be accidentally combined.
+    for sentence in re.split(r"[.!?]+(?=\s|$)\s*", normalized):
+        tokens = public_claim_tokens(sentence)
+        for index, token in enumerate(tokens):
+            if token not in CURRENT_CLAIM_SUBJECTS:
+                continue
+            window = tokens[max(0, index - 12) : index + 13]
+            if "online" in window:
+                return True
+            if "current" in window and CURRENT_CLAIM_QUALIFIERS & set(window):
+                return True
+    return False
 
 
 def public_surface_has_stale_current_claim(text: str) -> bool:
@@ -222,7 +247,32 @@ def public_surface_has_stale_current_claim(text: str) -> bool:
     parser.close()
     if any(has_stale_current_public_claim(value) for value in parser.attribute_values):
         return True
-    return any(has_stale_current_public_claim(blank_exact_approved_visible_phrases(value)) for value in parser.visible_units)
+    visible = "".join(parser.visible_text)
+    return has_stale_current_public_claim(blank_exact_approved_visible_phrases(visible))
+
+
+def collect_public_code_literals(paths: list[Path]) -> list[dict[str, str]]:
+    """Use TypeScript's parser so shipped literals cannot evade the HTML guard."""
+    if not paths:
+        return []
+    result = subprocess.run(
+        ["node", str(ROOT / "scripts" / "collect_public_code_literals.mjs"), *(str(path) for path in paths)],
+        cwd=ROOT,
+        capture_output=True,
+        check=True,
+        text=True,
+    )
+    return json.loads(result.stdout)
+
+
+def has_stale_current_code_literal(literal: dict[str, str]) -> bool:
+    # TypeScript may surface UTF-8 source bytes from legacy checked-in JSX as
+    # U+00C2 followed by the intended middle dot; normalize that representation
+    # before comparing the exact approved public phrases.
+    value = literal["value"].replace("\u00c2\u00b7", "\u00b7")
+    if literal.get("context") == "class":
+        value = " ".join(token for token in value.split() if token not in APPROVED_TECHNICAL_CLASS_TOKENS)
+    return bool(value) and has_stale_current_public_claim(blank_exact_approved_visible_phrases(value))
 
 
 def check_v34_public_surface(relative: str, text: str, failures: list[str], label: str) -> None:
@@ -363,8 +413,9 @@ def main() -> int:
         "GH_TOKEN: ${{ github.token }}",
         'test "$(gh api repos/${GITHUB_REPOSITORY}/pages --jq .build_type)" = "workflow"',
         "actions/configure-pages@v5",
-        "actions/upload-pages-artifact@v4",
+        "actions/upload-pages-artifact@v5",
         "path: dist",
+        "include-hidden-files: true",
         "actions/deploy-pages@v4",
     ):
         if marker not in pages:
@@ -607,6 +658,22 @@ def main() -> int:
         if path.is_file() and path.suffix.lower() in {".ts", ".tsx", ".js", ".css"}
     )
     check_current_public_privacy(source_tree, failures, "current source")
+    literal_paths = [
+        path
+        for path in sorted((ROOT / "src").rglob("*"))
+        if path.is_file() and path.suffix.lower() in {".ts", ".tsx", ".js"}
+    ]
+    if DIST.is_dir():
+        literal_paths.extend(path for path in sorted(DIST.rglob("*.js")) if path.is_file())
+    try:
+        literals = collect_public_code_literals(literal_paths)
+    except (OSError, subprocess.CalledProcessError, json.JSONDecodeError) as exc:
+        failures.append(f"could not parse shipped public code literals: {exc}")
+    else:
+        for literal in literals:
+            if has_stale_current_code_literal(literal):
+                failures.append(f"shipped public code literal contains a stale/current claim: {literal['file']}")
+                break
     check_current_public_privacy(read("RELEASE_BODY.md"), failures, "RELEASE_BODY.md")
     for token in ("google-analytics", "googletagmanager", "plausible.io", "segment.io", "mixpanel"):
         if token in source_tree.lower():

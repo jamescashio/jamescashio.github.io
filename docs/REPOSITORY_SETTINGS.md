@@ -47,7 +47,9 @@ Under **Settings → General → Pull Requests**:
   `build_type=workflow` setting and fails closed, but it never changes that
   repository setting.
 - The Pages workflow uploads only the validated `dist` artifact after all local
-  gates, source verification, and Pages configuration complete.
+  gates, source verification, and Pages configuration complete. It uses
+  `upload-pages-artifact@v5` with hidden-file inclusion so the required
+  `dist/.well-known/security.txt` is published with the validated artifact.
 - Enforce HTTPS.
 - Preserve the `CNAME` file for `cashio.us`.
 

@@ -214,7 +214,7 @@ perf: prerender and hydrate the V35 command deck
 
 - [ ] **Step 1: Add failing workflow contract tests**
 
-Assert that the Pages workflow reads the Pages endpoint with the job token, compares `.build_type` with the literal `workflow`, uses `actions/configure-pages@v5`, and uploads with `actions/upload-pages-artifact@v4` only after the complete gate chain and source check.
+Assert that the Pages workflow reads the Pages endpoint with the job token, compares `.build_type` with the literal `workflow`, uses `actions/configure-pages@v5`, and uploads with `actions/upload-pages-artifact@v5` only after the complete gate chain and source check. Set `include-hidden-files: true`: the validated `dist/.well-known/security.txt` discovery file is a required public artifact and v4 would silently omit it.
 
 - [ ] **Step 2: Verify RED**
 

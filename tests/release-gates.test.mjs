@@ -264,15 +264,18 @@ test("Pages refuses artifact upload unless GitHub Actions owns the Pages source 
     workflow.includes("GH_TOKEN: ${{ github.token }}") ? null : "job token",
     workflow.includes(workflowOnlySourceGuard) ? null : "workflow-only Pages source guard",
     workflow.includes("actions/configure-pages@v5") ? null : "configure-pages v5",
-    workflow.includes("actions/upload-pages-artifact@v4") ? null : "upload-pages-artifact v4",
+    workflow.includes("actions/upload-pages-artifact@v5") ? null : "upload-pages-artifact v5",
+    /actions\/upload-pages-artifact@v5[\s\S]{0,280}include-hidden-files:\s*true/.test(workflow)
+      ? null
+      : "hidden Pages artifact inclusion",
   ].filter(Boolean);
   assert.deepEqual(missingWorkflowOnlyControls, []);
-  assert.doesNotMatch(workflow, /actions\/upload-pages-artifact@v3/);
+  assert.doesNotMatch(workflow, /actions\/upload-pages-artifact@v[34]/);
   assert.doesNotMatch(workflow, /jekyll/i);
   assertOrdered(
     workflow,
     [...requiredPagesCommands, workflowOnlySourceGuard, "actions/configure-pages@v5"],
-    "actions/upload-pages-artifact@v4",
+    "actions/upload-pages-artifact@v5",
     "Pages",
   );
 });

@@ -5,6 +5,7 @@ import importlib.util
 import math
 import re
 import struct
+import tempfile
 import unittest
 import wave
 from pathlib import Path
@@ -103,6 +104,8 @@ class V34ReleaseContractTests(unittest.TestCase):
             "E.V.E. ONLINE · READ-ONLY · DATED EXPORT · "
             "08-21-2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG · "
             "E.V.E. EVALUATION VERIFICATION ENGINE · ONLINE. "
+            "2 HOSTS ONLINE · QUORATE · 2 PROXMOX HOSTS ONLINE · CLUSTER QUORATE · "
+            "Two Proxmox hosts were online and quorate. SYSTEMS ONLINE · HUMAN COMMAND RETAINED. "
             "Try sitrep, current, or help."
         )
         failures: list[str] = []
@@ -165,6 +168,50 @@ class V34ReleaseContractTests(unittest.TestCase):
             release_consistency.check_v34_public_surface("index.html", f"{dated_surface} · {bypass}", failures, "test")
             with self.subTest(label=label):
                 self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
+
+    def test_public_surface_guard_rejects_fragment_unicode_and_script_bypasses(self) -> None:
+        dated_surface = (
+            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+        )
+        fixtures = {
+            "remaining class unit": '<div class="za-systems-online hosts online"></div>',
+            "nested current control": '<div>HOSTS <button data-cmd="current">CURRENT</button> ONLINE</div>',
+            "siblings": '<span>HOSTS</span><span>ONLINE</span>',
+            "malformed": 'HOSTS</div>ONLINE',
+            "fragment": '<>HOSTS <span>ONLINE</span></>',
+            "fullwidth fleet": '１９／１９',
+            "zero width online": 'HOSTS ONL\u200bINE',
+            "combining online": 'HOSTS ONLI\u0307NE',
+            "script entity": '<script>document.write("HOSTS ONL&#73;NE")</script>',
+        }
+        for label, bypass in fixtures.items():
+            failures: list[str] = []
+            release_consistency.check_v34_public_surface("index.html", f"{dated_surface} · {bypass}", failures, "test")
+            with self.subTest(label=label):
+                self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
+
+    def test_public_surface_guard_keeps_sentence_boundaries(self) -> None:
+        text = (
+            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG · "
+            "Host a party. Later, go online with friends."
+        )
+        failures: list[str] = []
+        release_consistency.check_v34_public_surface("index.html", text, failures, "test")
+        self.assertEqual(failures, [])
+
+    def test_public_surface_guard_rejects_shipped_source_and_bundle_literals(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "claim.tsx"
+            bundle = root / "assets" / "claim.js"
+            bundle.parent.mkdir()
+            source.write_text('export const claim = "HOSTS ONLINE";\n', encoding="utf-8")
+            bundle.write_text('const claim = "SYSTEMS ONLINE";\n', encoding="utf-8")
+            literals = release_consistency.collect_public_code_literals([source, bundle])
+        self.assertTrue(release_consistency.has_stale_current_code_literal(literals[0]), literals)
+        self.assertTrue(release_consistency.has_stale_current_code_literal(literals[1]), literals)
 
     def test_public_surface_guard_rejects_current_fleet_topology_and_raw_route_identifiers(self) -> None:
         base = (

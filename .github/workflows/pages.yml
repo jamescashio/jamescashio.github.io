@@ -60,9 +60,11 @@ jobs:
         run: |
           test "$(gh api repos/${GITHUB_REPOSITORY}/pages --jq .build_type)" = "workflow"
       - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v4
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: dist
+          # Pages must receive the validated security-discovery file as well.
+          include-hidden-files: true
   deploy:
     needs: build
     runs-on: ubuntu-latest
