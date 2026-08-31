@@ -592,6 +592,24 @@ test("the normal dim token remains at the audited readable value", () => {
   assert.match(stylesheet, /--color-dim:\s*#687f97\s*;/i);
 });
 
+test("live motion changes settle one-shot command-deck entrance motion for the session", async () => {
+  const view = mountCommandDeck({ reducedMotion: false });
+  try {
+    await view.render();
+    const root = view.document.querySelector("#root > div");
+    assert.ok(root, "expected the command-deck root");
+    assert.equal(root.classList.contains("za-motion-preference-settled"), false);
+
+    await view.setReducedMotion(true);
+    assert.equal(root.classList.contains("za-motion-preference-settled"), true);
+
+    await view.setReducedMotion(false);
+    assert.equal(root.classList.contains("za-motion-preference-settled"), true);
+  } finally {
+    await view.cleanup();
+  }
+});
+
 test("aircraft pip buttons keep the 26px selected mark separate from the button target", async () => {
   const view = mountCommandDeck();
   try {

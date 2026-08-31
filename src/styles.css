@@ -386,6 +386,10 @@
   animation: za-rise var(--za-deck-copy-duration) var(--ease-out) both;
 }
 
+.za-motion-preference-settled .za-rise {
+  animation: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .za-rise,
   .za-scan,

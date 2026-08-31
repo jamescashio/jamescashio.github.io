@@ -130,6 +130,7 @@ export function CommandDeck() {
   const [reducedMotion, setReducedMotion] = useState(
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
   );
+  const [motionPreferenceSettled, setMotionPreferenceSettled] = useState(false);
   const [flash, setFlash] = useState(false);
   const [flashKey, setFlashKey] = useState(0);
   const [afFlash, setAfFlash] = useState(false);
@@ -176,7 +177,10 @@ export function CommandDeck() {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     setReducedMotion(media.matches);
     setEveLogHeight(eveConsoleLogHeight({ height: window.innerHeight, width: window.innerWidth }));
-    const onChange = (event: MediaQueryListEvent) => setReducedMotion(event.matches);
+    const onChange = (event: MediaQueryListEvent) => {
+      setMotionPreferenceSettled(true);
+      setReducedMotion(event.matches);
+    };
     media.addEventListener("change", onChange);
     return () => media.removeEventListener("change", onChange);
   }, []);
@@ -1019,7 +1023,7 @@ export function CommandDeck() {
 
   return (
     <div
-      className={`relative h-dvh overflow-hidden bg-void text-ink ${!gate && !overlay ? "za-systems-online" : ""} ${reducedMotion ? "za-prefers-static" : ""}`}
+      className={`relative h-dvh overflow-hidden bg-void text-ink ${!gate && !overlay ? "za-systems-online" : ""} ${reducedMotion ? "za-prefers-static" : ""} ${motionPreferenceSettled ? "za-motion-preference-settled" : ""}`}
       style={
         {
           "--za-deck-copy-duration": `${motionDurationMs("deck-copy")}ms`,
