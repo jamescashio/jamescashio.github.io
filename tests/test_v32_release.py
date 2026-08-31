@@ -102,7 +102,8 @@ class V34ReleaseContractTests(unittest.TestCase):
             "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG · "
             "E.V.E. ONLINE · READ-ONLY · DATED EXPORT · "
             "08-21-2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG · "
-            "E.V.E. EVALUATION VERIFICATION ENGINE · ONLINE"
+            "E.V.E. EVALUATION VERIFICATION ENGINE · ONLINE. "
+            "Try sitrep, current, or help."
         )
         failures: list[str] = []
         release_consistency.check_v34_public_surface("index.html", text, failures, "test")
@@ -138,6 +139,32 @@ class V34ReleaseContractTests(unittest.TestCase):
         failures: list[str] = []
         release_consistency.check_v34_public_surface("index.html", text, failures, "test")
         self.assertEqual(failures, [])
+
+    def test_public_surface_guard_rejects_approved_phrase_and_structural_bypasses(self) -> None:
+        dated_surface = (
+            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+        )
+        approved = "E.V.E. ONLINE · READ-ONLY · DATED EXPORT"
+        repeated = " ".join([approved] * 6)
+        fixtures = {
+            "approved phrase before claim": f"{approved} HOSTS ONLINE",
+            "approved phrase after subject": f"HOSTS {approved} ONLINE",
+            "visible technical class wording": "<p>HOSTS is-online</p>",
+            "allowed current command dangerous attribute": '<button data-cmd="current" title="SYSTEMS ONLINE">CURRENT</button>',
+            "newlines": "<p>HOSTS\nONLINE</p>",
+            "long HTML tag": '<p>HOSTS <span data-filler="' + "x" * 600 + '">ONLINE</span></p>',
+            "repeated approved phrases": f"HOSTS {repeated} ONLINE",
+            "hyphenated EVE": "E-V-E ONLINE",
+            "mixed punctuation EVE": "e_v.e ONLINE",
+            "allowed class dangerous attribute": '<div class="za-systems-online is-online" title="SYSTEMS ONLINE"></div>',
+            "allowed command adjacent visible claim": '<button data-cmd="current">CURRENT <span>HOSTS ONLINE</span></button>',
+        }
+        for label, bypass in fixtures.items():
+            failures: list[str] = []
+            release_consistency.check_v34_public_surface("index.html", f"{dated_surface} · {bypass}", failures, "test")
+            with self.subTest(label=label):
+                self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
 
     def test_public_surface_guard_rejects_current_fleet_topology_and_raw_route_identifiers(self) -> None:
         base = (

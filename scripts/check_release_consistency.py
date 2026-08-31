@@ -8,7 +8,9 @@ import math
 import re
 import struct
 import sys
+import unicodedata
 import wave
+from html.parser import HTMLParser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -36,17 +38,27 @@ APPROVED_DATED_PUBLIC_CLAIMS = (
     "08-21-2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG",
 )
 APPROVED_PUBLIC_STATUS_LABELS = ("E.V.E. EVALUATION VERIFICATION ENGINE · ONLINE",)
-APPROVED_TECHNICAL_TOKENS = ("za-systems-online", "is-online")
-APPROVED_TECHNICAL_MARKUP = (
-    re.compile(r'<button\b[^>]*\bdata-cmd="current"[^>]*>CURRENT</button>'),
-)
-CURRENT_CLAIM_SUBJECT = r"(?:atlas|zeus|apollo|e\.?v\.?e\.?|systems?|hosts?|fleet|routing|lanes?|services?|infrastructure)"
-STALE_CURRENT_PUBLIC_CLAIMS = re.compile(
-    rf"19(?:/| of )19|"
-    rf"\b{CURRENT_CLAIM_SUBJECT}(?:[^\r\n]{{0,48}}?)\b(?:current|online)\b|"
-    rf"\b(?:current|online)\b(?:[^\r\n]{{0,48}}?)\b(?:{CURRENT_CLAIM_SUBJECT}|status)\b",
-    re.IGNORECASE,
-)
+APPROVED_TECHNICAL_CLASS_TOKENS = {"za-systems-online", "is-online"}
+CURRENT_CLAIM_SUBJECTS = {
+    "atlas",
+    "zeus",
+    "apollo",
+    "eve",
+    "system",
+    "systems",
+    "host",
+    "hosts",
+    "fleet",
+    "routing",
+    "lane",
+    "lanes",
+    "service",
+    "services",
+    "infrastructure",
+}
+CURRENT_CLAIM_STATUS = {"current", "online"}
+CURRENT_CLAIM_QUALIFIERS = {"active", "availability", "health", "state", "status"}
+DIRECT_STALE_FLEET_CLAIM = re.compile(r"\b19\s*(?:/|of)\s*19\b", re.IGNORECASE)
 PRIVATE_CURRENT_FLEET_PATTERNS = (
     re.compile(r"\bATLAS\s*·\s*(?:GATEWAY|LOCAL INFERENCE)", re.IGNORECASE),
     re.compile(r"\bATHENA\s*·\s*QUORUM SUPPORT", re.IGNORECASE),
@@ -116,24 +128,108 @@ def check_current_public_privacy(text: str, failures: list[str], label: str) -> 
             failures.append(f"{label} contains private current-fleet detail {match.group(0)!r}")
 
 
-def sanitize_approved_dated_public_claims(text: str) -> str:
-    """Remove only exact approved dated phrases before stale-claim scanning."""
-    for phrase in APPROVED_DATED_PUBLIC_CLAIMS:
-        text = text.replace(phrase, "APPROVED DATED CLAIM")
-    for label in APPROVED_PUBLIC_STATUS_LABELS:
-        text = text.replace(label, "APPROVED STATUS LABEL")
-    for token in APPROVED_TECHNICAL_TOKENS:
-        text = text.replace(token, "APPROVED TECHNICAL TOKEN")
-    for markup in APPROVED_TECHNICAL_MARKUP:
-        text = markup.sub("APPROVED TECHNICAL TOKEN", text)
+class PublicSurfaceParser(HTMLParser):
+    """Collect visible units and non-exempt attribute values without flattening context."""
+
+    _INTERACTIVE_TAGS = {"a", "button", "input", "select", "textarea"}
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self._stack: list[dict[str, object]] = [{"tag": "root", "text": [], "interactive_child": False}]
+        self.visible_units: list[str] = []
+        self.attribute_values: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        for name, value in attrs:
+            if value is None:
+                continue
+            if name == "class":
+                self.attribute_values.extend(
+                    token for token in value.split() if token not in APPROVED_TECHNICAL_CLASS_TOKENS
+                )
+            elif not (name == "data-cmd" and value == "current"):
+                self.attribute_values.append(value)
+        if tag in self._INTERACTIVE_TAGS:
+            for node in self._stack:
+                node["interactive_child"] = True
+        self._stack.append({"tag": tag, "text": [], "interactive_child": False})
+
+    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        self.handle_starttag(tag, attrs)
+        self.handle_endtag(tag)
+
+    def handle_data(self, data: str) -> None:
+        for node in self._stack:
+            node["text"].append(data)  # type: ignore[index]
+
+    def handle_endtag(self, tag: str) -> None:
+        if len(self._stack) == 1:
+            return
+        node = self._stack.pop()
+        if not node["interactive_child"]:
+            text = " ".join(node["text"])  # type: ignore[arg-type]
+            if text.strip():
+                self.visible_units.append(text)
+
+    def close(self) -> None:
+        super().close()
+        while len(self._stack) > 1:
+            self.handle_endtag(str(self._stack[-1]["tag"]))
+        if not self.visible_units and not self._stack[0]["interactive_child"]:
+            text = " ".join(self._stack[0]["text"])  # type: ignore[arg-type]
+            if text.strip():
+                self.visible_units.append(text)
+
+
+def blank_exact_approved_visible_phrases(text: str) -> str:
+    """Blank only complete, case-sensitive approved visible phrases."""
+    for phrase in (*APPROVED_DATED_PUBLIC_CLAIMS, *APPROVED_PUBLIC_STATUS_LABELS):
+        text = re.sub(rf"(?<!\w){re.escape(phrase)}(?!\w)", lambda match: " " * len(match.group(0)), text)
     return text
+
+
+def public_claim_tokens(text: str) -> list[str]:
+    normalized = unicodedata.normalize("NFKD", text).casefold()
+    tokens = re.findall(r"[a-z0-9]+", normalized)
+    merged: list[str] = []
+    index = 0
+    while index < len(tokens):
+        if tokens[index : index + 3] == ["e", "v", "e"]:
+            merged.append("eve")
+            index += 3
+        else:
+            merged.append(tokens[index])
+            index += 1
+    return merged
+
+
+def has_stale_current_public_claim(text: str) -> bool:
+    if DIRECT_STALE_FLEET_CLAIM.search(text):
+        return True
+    tokens = public_claim_tokens(text)
+    token_set = set(tokens)
+    subjects = CURRENT_CLAIM_SUBJECTS & token_set
+    if not subjects:
+        return False
+    if "online" in token_set:
+        return True
+    return "current" in token_set and bool(CURRENT_CLAIM_QUALIFIERS & token_set)
+
+
+def public_surface_has_stale_current_claim(text: str) -> bool:
+    parser = PublicSurfaceParser()
+    parser.feed(text)
+    parser.close()
+    if any(has_stale_current_public_claim(value) for value in parser.attribute_values):
+        return True
+    return any(has_stale_current_public_claim(blank_exact_approved_visible_phrases(value)) for value in parser.visible_units)
 
 
 def check_v34_public_surface(relative: str, text: str, failures: list[str], label: str) -> None:
     for marker in V34_PUBLIC_SURFACES[relative]:
         if marker not in text:
             failures.append(f"{label}/{relative} is missing V34 marker {marker!r}")
-    if STALE_CURRENT_PUBLIC_CLAIMS.search(sanitize_approved_dated_public_claims(text)):
+    if public_surface_has_stale_current_claim(text):
         failures.append(f"{label}/{relative} contains a stale/current public claim")
     for occurrence, match in enumerate(ROUTING_COUNT_CLAIM.finditer(text), start=1):
         prefix = text[max(0, match.start() - 96) : match.start()]
