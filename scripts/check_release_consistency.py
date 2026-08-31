@@ -209,6 +209,7 @@ class PublicSurfaceParser(HTMLParser):
         # HTMLParser preserves source order even for fragments and bad close tags.
         if self._safe_current_depth and self._safe_current_direct and data.strip() == "CURRENT":
             self._current_controls[-1] = True
+            self.visible_text.append(" CURRENT ")
         else:
             self.visible_text.append(data)
 
@@ -265,13 +266,13 @@ def has_stale_current_public_claim(text: str, *, allow_ordinary_online: bool = T
             )
             if not ordinary_go_online:
                 return True
-        for index, token in enumerate(tokens):
-            if token not in CURRENT_CLAIM_SUBJECTS:
-                continue
-            window = tokens[max(0, index - 12) : index + 13]
-            if "online" in window:
+        subject_indexes = [index for index, token in enumerate(tokens) if token in CURRENT_CLAIM_SUBJECTS]
+        current_indexes = [index for index, token in enumerate(tokens) if token == "current"]
+        qualifier_indexes = [index for index, token in enumerate(tokens) if token in CURRENT_CLAIM_QUALIFIERS]
+        for subject in subject_indexes:
+            if "online" in tokens[max(0, subject - 2) : subject + 3]:
                 return True
-            if "current" in window and CURRENT_CLAIM_QUALIFIERS & set(window):
+            if any(max(subject, current, qualifier) - min(subject, current, qualifier) <= 3 for current in current_indexes for qualifier in qualifier_indexes):
                 return True
     return False
 

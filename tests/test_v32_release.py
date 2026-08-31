@@ -292,6 +292,40 @@ class V34ReleaseContractTests(unittest.TestCase):
             with self.subTest(label=label):
                 self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
 
+    def test_public_surface_guard_keeps_direct_button_current_in_context(self) -> None:
+        dated_surface = (
+            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+        )
+        fixtures = {
+            "direct": 'HOSTS <button data-cmd="current">CURRENT</button> STATUS',
+            "nested": 'HOSTS <button data-cmd="current"><span>CURRENT</span></button> STATUS',
+            "self closing": "HOSTS <button data-cmd='current'/> STATUS",
+        }
+        for label, markup in fixtures.items():
+            failures: list[str] = []
+            release_consistency.check_v34_public_surface("index.html", f"{dated_surface} · {markup}", failures, "test")
+            with self.subTest(label=label):
+                self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
+
+    def test_public_surface_guard_resolves_scoped_const_template_claims(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "claim.tsx"
+            bundle = root / "assets" / "claim.js"
+            bundle.parent.mkdir()
+            source.write_text(
+                'const middle = "ST"; const outer = "HO" + middle;\n'
+                'export const view = <p>{`${outer}S CURRENT STATUS`}</p>;\n'
+                'function shadow() { const middle = "XX"; return `HO${middle}S`; }\n',
+                encoding="utf-8",
+            )
+            bundle.write_text('const middle="ST";const claim=`HO${middle}S CURRENT STATUS`;\n', encoding="utf-8")
+            literals = release_consistency.collect_public_code_literals([source, bundle])
+        claims = [literal for literal in literals if literal["value"] == "HOSTS CURRENT STATUS"]
+        self.assertGreaterEqual(len(claims), 2, literals)
+        self.assertTrue(all(release_consistency.has_stale_current_code_literal(literal) for literal in claims))
+
     def test_public_surface_guard_rejects_current_fleet_topology_and_raw_route_identifiers(self) -> None:
         base = (
             "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "

@@ -19,37 +19,55 @@ function isClassProperty(node) {
   return false;
 }
 
-function literalValue(node) {
+function literalValue(node, scope, resolving = new Set()) {
   if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) return node.text;
   if (ts.isTemplateExpression(node)) {
     let value = node.head.text;
     for (const span of node.templateSpans) {
       // A dynamic interpolation is a whitespace wildcard: it cannot join two
       // words, but it cannot conceal HOSTS ... ONLINE either.
-      value += literalValue(span.expression) ?? " ";
+      const resolved = literalValue(span.expression, scope, resolving);
+      if (resolved === null) {
+        const joinsAlphabeticFragments = /[A-Za-z]$/.test(value) && /^[A-Za-z]/.test(span.literal.text);
+        const hasStatusMarker = /\b(?:current|online|status)\b/i.test(value + span.literal.text);
+        value += joinsAlphabeticFragments && hasStatusMarker ? "" : " ";
+      } else {
+        value += resolved;
+      }
       value += span.literal.text;
     }
     return value;
   }
   if (ts.isBinaryExpression(node) && node.operatorToken.kind === ts.SyntaxKind.PlusToken) {
-    const left = literalValue(node.left);
-    const right = literalValue(node.right);
+    const left = literalValue(node.left, scope, resolving);
+    const right = literalValue(node.right, scope, resolving);
     return left !== null && right !== null ? left + right : null;
   }
-  if (ts.isParenthesizedExpression(node)) return literalValue(node.expression);
+  if (ts.isParenthesizedExpression(node)) return literalValue(node.expression, scope, resolving);
   if (ts.isConditionalExpression(node)) {
-    if (node.condition.kind === ts.SyntaxKind.TrueKeyword) return literalValue(node.whenTrue);
-    if (node.condition.kind === ts.SyntaxKind.FalseKeyword) return literalValue(node.whenFalse);
-    const whenTrue = literalValue(node.whenTrue);
-    const whenFalse = literalValue(node.whenFalse);
+    if (node.condition.kind === ts.SyntaxKind.TrueKeyword) return literalValue(node.whenTrue, scope, resolving);
+    if (node.condition.kind === ts.SyntaxKind.FalseKeyword) return literalValue(node.whenFalse, scope, resolving);
+    const whenTrue = literalValue(node.whenTrue, scope, resolving);
+    const whenFalse = literalValue(node.whenFalse, scope, resolving);
     return whenTrue !== null && whenTrue === whenFalse ? whenTrue : null;
+  }
+  if (ts.isIdentifier(node)) {
+    for (let current = scope; current; current = current.parent) {
+      const binding = current.bindings.get(node.text);
+      if (!binding) continue;
+      if (resolving.has(binding)) return null;
+      resolving.add(binding);
+      const value = literalValue(binding.initializer, binding.scope, resolving);
+      resolving.delete(binding);
+      return value;
+    }
   }
   return null;
 }
 
-function hasEvaluableParent(node) {
+function hasEvaluableParent(node, scope) {
   const parent = node.parent;
-  return Boolean(parent && ts.isExpression(parent) && literalValue(parent) !== null);
+  return Boolean(parent && ts.isExpression(parent) && literalValue(parent, scope) !== null);
 }
 
 const results = [];
@@ -60,9 +78,27 @@ for (const filename of process.argv.slice(2)) {
   if (file.parseDiagnostics.length) {
     throw new Error(`unsupported or invalid source syntax in ${filename}`);
   }
+  const scopeFor = new WeakMap();
+  const rootScope = { parent: null, bindings: new Map() };
+  function indexScopes(node, scope) {
+    let active = scope;
+    if (node !== file && (ts.isBlock(node) || ts.isFunctionLike(node))) {
+      active = { parent: scope, bindings: new Map() };
+    }
+    scopeFor.set(node, active);
+    if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer) {
+      const list = node.parent;
+      if (ts.isVariableDeclarationList(list) && list.flags & ts.NodeFlags.Const) {
+        active.bindings.set(node.name.text, { initializer: node.initializer, scope: active });
+      }
+    }
+    ts.forEachChild(node, (child) => indexScopes(child, active));
+  }
+  indexScopes(file, rootScope);
   function visit(node) {
-    const value = literalValue(node);
-    if (value !== null && !hasEvaluableParent(node)) {
+    const scope = scopeFor.get(node) ?? rootScope;
+    const value = literalValue(node, scope);
+    if (value !== null && !hasEvaluableParent(node, scope)) {
       results.push({ file: path.normalize(filename), value, context: isClassProperty(node) ? "class" : "literal" });
     }
     if (ts.isJsxText(node) && node.getText().trim()) {
