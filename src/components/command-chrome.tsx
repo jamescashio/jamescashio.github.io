@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { CRAFT, DECKS, DECK_SHORT, validityShort } from "@/lib/content";
+import { CRAFT, DECKS, DECK_SHORT, INITIAL_VALIDITY_LABEL } from "@/lib/content";
 import type { Mode } from "@/lib/store";
 import { FlightControl } from "./flight-control";
 
@@ -123,6 +123,7 @@ export type CommandHeaderProps = {
   onOpenNavigator: (opener: HTMLElement) => void;
   onToggleAudio: () => void;
   tour: boolean;
+  validityLabel?: string;
 };
 
 export function CommandHeader({
@@ -136,6 +137,7 @@ export function CommandHeader({
   onOpenNavigator,
   onToggleAudio,
   tour,
+  validityLabel = INITIAL_VALIDITY_LABEL,
 }: CommandHeaderProps) {
   return (
     <header
@@ -163,7 +165,7 @@ export function CommandHeader({
         {tour ? <span className="za-chip min-h-11 text-accent">AUTOPILOT</span> : null}
         <span className="za-chip !hidden md:!inline-flex min-h-11">
           <span className="za-lock-pip" />
-          {validityShort()}
+          {validityLabel}
         </span>
         <span className="za-chip !hidden lg:!inline-flex">SD {clock}</span>
         <button

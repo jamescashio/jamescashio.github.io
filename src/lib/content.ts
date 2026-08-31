@@ -351,6 +351,8 @@ export function validityShort(now = Date.now()) {
   return d > 0 ? `EXPORT VALID · ${d}D LEFT` : "EXPORT EXPIRED";
 }
 
+export const INITIAL_VALIDITY_LABEL = `DATED EXPORT · VALID THRU ${EXPIRES_SHORT}`;
+
 export function stardate(now = new Date()) {
   const y = now.getUTCFullYear();
   const start = Date.UTC(y, 0, 1);

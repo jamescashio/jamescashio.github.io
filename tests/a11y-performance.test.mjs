@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { JSDOM } from "jsdom";
-import { act, createElement } from "react";
+import { act, createElement, StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 import { CommandDeck } from "../src/components/command-deck.tsx";
@@ -61,6 +61,7 @@ function mountCommandDeck({
   responsiveGeometry = false,
   deferredSmoothScroll = false,
   viewport = { width: 1440, height: 900 },
+  strictMode = false,
 } = {}) {
   const dom = new JSDOM('<!doctype html><html><body><div id="root"></div></body></html>', {
     url,
@@ -92,6 +93,7 @@ function mountCommandDeck({
     if (
       controlledTimers &&
       (timeout === 120 ||
+        timeout === 360 ||
         timeout === 400 ||
         timeout === 500 ||
         timeout === 560 ||
@@ -119,6 +121,7 @@ function mountCommandDeck({
   const canvasPaints = [];
   const canvasContexts = new WeakMap();
   const scrollPositions = new WeakMap();
+  const scrollWrites = new WeakMap();
   const pendingSmoothScrolls = new WeakMap();
   const contextFor = (canvas) => {
     if (canvasContexts.has(canvas)) return canvasContexts.get(canvas);
@@ -250,6 +253,7 @@ function mountCommandDeck({
       },
       set(value) {
         scrollPositions.set(this, Number(value) || 0);
+        scrollWrites.set(this, (scrollWrites.get(this) ?? 0) + 1);
         pendingSmoothScrolls.delete(this);
       },
     },
@@ -336,7 +340,8 @@ function mountCommandDeck({
     dom,
     document: dom.window.document,
     async render() {
-      await act(async () => root.render(createElement(CommandDeck)));
+      const tree = createElement(CommandDeck);
+      await act(async () => root.render(strictMode ? createElement(StrictMode, null, tree) : tree));
     },
     async click(element) {
       await act(async () => element.click());
@@ -391,6 +396,14 @@ function mountCommandDeck({
       assert.ok(timer, `expected a cleared ${delay}ms timeout`);
       await act(async () => timer.callback());
     },
+    async runControlledTimeoutEvenIfCleared(delay) {
+      const timer = [...controlledTimeouts.entries()].find(([, candidate]) => candidate.delay === delay);
+      if (timer) controlledTimeouts.delete(timer[0]);
+      const callback = timer?.[1] ?? clearedControlledTimeouts.find((candidate) => candidate.delay === delay);
+      assert.ok(callback, `expected a live or cleared ${delay}ms timeout`);
+      controlledNow += delay;
+      await act(async () => callback.callback());
+    },
     async runLatestAnimationFrame() {
       await act(async () => {
         const pending = [...raf.entries()].at(-1);
@@ -431,6 +444,9 @@ function mountCommandDeck({
     },
     pendingSmoothScrollTop(element) {
       return pendingSmoothScrolls.get(element) ?? null;
+    },
+    scrollWriteCount(element) {
+      return scrollWrites.get(element) ?? 0;
     },
     async canvasObserver(kind, entries = []) {
       const observers = canvasObservers[kind];
@@ -870,6 +886,146 @@ test("initial direct links land synchronously without navigation effects", async
     assert.equal(view.document.querySelector(".za-sweep.on"), null, "the initial landing must not create a sweep");
     assert.equal(view.document.querySelector("[data-cine]")?.getAttribute("data-cine"), "false");
     assert.equal(useDeck.getState().chapOn, false, "the initial landing must not create a chapter effect");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("the delayed direct-link anchor yields to newer scroll and route intent", async (t) => {
+  await t.test("manual scroll", async () => {
+    const view = mountCommandDeck({
+      url: "https://cashio.us/#deck=builds&article=1",
+      controlledTimers: true,
+    });
+    try {
+      await view.render();
+      const scroller = view.document.querySelector("main.za-scroll");
+      scroller.scrollTop = 2992;
+      await view.dispatchScroll();
+
+      const frameCount = view.pendingAnimationFrames();
+      await view.runControlledTimeoutEvenIfCleared(360);
+      assert.equal(scroller.scrollTop, 2992, "a stale cleared callback must not restore the original deck");
+      assert.equal(view.window.location.hash, "#deck=iron", "the visitor's newer manual deck must stay canonical");
+      assert.equal(view.pendingAnimationFrames(), frameCount, "manual scrolling must invalidate stale restore work");
+    } finally {
+      await view.cleanup();
+    }
+  });
+
+  for (const type of ["wheel", "pointerdown", "touchstart"]) {
+    await t.test(`${type} intent`, async () => {
+      const view = mountCommandDeck({
+        url: "https://cashio.us/#deck=builds&article=1",
+        controlledTimers: true,
+        strictMode: true,
+      });
+      try {
+        await view.render();
+        const scroller = view.document.querySelector("main.za-scroll");
+        assert.equal(
+          view.pendingControlledTimeoutsFor(360),
+          1,
+          "StrictMode must leave exactly one live restore anchor",
+        );
+        const event = new view.window.Event(type, { bubbles: true, cancelable: true });
+        if (type === "touchstart") Object.defineProperty(event, "touches", { value: [{ clientX: 240 }] });
+        await act(async () => scroller.dispatchEvent(event));
+        const frameCount = view.pendingAnimationFrames();
+
+        await view.runControlledTimeoutEvenIfCleared(360);
+
+        assert.equal(
+          view.pendingAnimationFrames(),
+          frameCount,
+          `${type} must invalidate even a cleared restore callback that races cleanup`,
+        );
+      } finally {
+        await view.cleanup();
+      }
+    });
+  }
+
+  await t.test("newer silent hash intent", async () => {
+    const view = mountCommandDeck({
+      url: "https://cashio.us/#deck=builds&article=1",
+      controlledTimers: true,
+    });
+    try {
+      await view.render();
+      const scroller = view.document.querySelector("main.za-scroll");
+      scroller.scrollTop = 2992;
+      view.window.history.replaceState(null, "", "#deck=routing");
+
+      await view.runControlledTimeout(360);
+      await view.runLatestAnimationFrame();
+
+      assert.equal(scroller.scrollTop, 2992, "stale restore work must not move after a newer hash intent");
+      assert.equal(view.window.location.hash, "#deck=routing");
+    } finally {
+      await view.cleanup();
+    }
+  });
+});
+
+test("the delayed direct-link anchor skips a settled target without another scroll write", async () => {
+  const view = mountCommandDeck({
+    url: "https://cashio.us/#deck=builds&article=1",
+    controlledTimers: true,
+  });
+  try {
+    await view.render();
+    const scroller = view.document.querySelector("main.za-scroll");
+    const writes = view.scrollWriteCount(scroller);
+
+    await view.runControlledTimeout(360);
+    await view.runLatestAnimationFrame();
+
+    assert.equal(view.scrollWriteCount(scroller), writes, "a settled target must not receive a redundant anchor write");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("the delayed direct-link anchor corrects a small input-free layout settlement", async () => {
+  const view = mountCommandDeck({
+    url: "https://cashio.us/#deck=builds&article=1",
+    controlledTimers: true,
+  });
+  try {
+    await view.render();
+    const scroller = view.document.querySelector("main.za-scroll");
+    scroller.scrollTop = 4966;
+    await view.dispatchScroll();
+
+    await view.runControlledTimeout(360);
+    await view.runLatestAnimationFrame();
+
+    assert.equal(scroller.scrollTop, 4992, "minor startup layout settlement must retain the direct-link landing");
+    assert.equal(view.window.location.hash, "#deck=builds&article=1");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("the guarded direct-link anchor remains boundedly available for late offscreen layout settlement", async () => {
+  const view = mountCommandDeck({
+    url: "https://cashio.us/#deck=builds&article=1",
+    controlledTimers: true,
+  });
+  try {
+    await view.render();
+    const scroller = view.document.querySelector("main.za-scroll");
+    await view.runControlledTimeout(360);
+    await view.runLatestAnimationFrame();
+    scroller.scrollTop = 4960;
+    await view.dispatchScroll();
+
+    await view.runControlledTimeout(360);
+    await view.runLatestAnimationFrame();
+
+    assert.equal(scroller.scrollTop, 4992, "a later intrinsic-layout shift must retain the direct-link landing");
+    assert.equal(view.pendingControlledTimeoutsFor(360), 1, "settlement must retain only one bounded live check");
   } finally {
     await view.cleanup();
   }

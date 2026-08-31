@@ -5,22 +5,25 @@ import { createElement } from "react";
 import { renderToString } from "react-dom/server";
 import { CashioApp } from "../src/app";
 
-const ROOT_MARKER = /\bid\s*=\s*(["'])root\1/gi;
-const EMPTY_ROOT = /<div([^>]*\bid\s*=\s*(["'])root\2[^>]*)>\s*<\/div>/i;
+const DIV_OPENING = /<div\b([^>]*)>/gi;
+const EMPTY_DIV = /<div\b([^>]*)>\s*<\/div>/gi;
+const EXACT_ROOT_ID = /(?:^|\s)id\s*=\s*(["'])root\1(?=\s|$)/i;
 
 export function renderCashioApp() {
   return renderToString(createElement(CashioApp));
 }
 
 export function injectPrerenderedApp(documentHtml: string, appHtml: string) {
-  const rootMarkers = documentHtml.match(ROOT_MARKER) ?? [];
-  const emptyRoot = documentHtml.match(EMPTY_ROOT);
+  const rootMarkers = [...documentHtml.matchAll(DIV_OPENING)].filter((match) => EXACT_ROOT_ID.test(match[1]));
+  const emptyRoots = [...documentHtml.matchAll(EMPTY_DIV)].filter((match) => EXACT_ROOT_ID.test(match[1]));
 
-  if (rootMarkers.length !== 1 || !emptyRoot) {
+  if (rootMarkers.length !== 1 || emptyRoots.length !== 1) {
     throw new Error("Expected exactly one empty root marker in the built document");
   }
 
-  return documentHtml.replace(EMPTY_ROOT, `<div${emptyRoot[1]} data-prerendered="v35">${appHtml}</div>`);
+  return documentHtml.replace(EMPTY_DIV, (match, attributes: string) =>
+    EXACT_ROOT_ID.test(attributes) ? `<div${attributes} data-prerendered="v35">${appHtml}</div>` : match,
+  );
 }
 
 export async function prerenderDist(distIndex = resolve("dist/index.html")) {

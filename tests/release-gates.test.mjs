@@ -83,7 +83,7 @@ test("package metadata and deterministic local gates define the V35 release", as
   }
   assert.equal(packageJson.scripts.lint, "eslint . --max-warnings 0");
   const formattingScope =
-    '"src/**/*.{ts,tsx}" "tests/**/*.mjs" "scripts/**/*.mjs" "*.{js,json,md,ts}" "docs/**/*.md" ".github/**/*.{md,yml,yaml}" "public/**/*.json"';
+    '"src/**/*.{ts,tsx}" "tests/**/*.mjs" "scripts/**/*.{mjs,mts}" "*.{js,json,md,ts}" "docs/**/*.md" ".github/**/*.{md,yml,yaml}" "public/**/*.json"';
   assert.equal(packageJson.scripts.format, `prettier --write ${formattingScope}`);
   assert.equal(packageJson.scripts["format:check"], `prettier --check ${formattingScope}`);
   const expandedTest = expandScript(packageJson.scripts, "test");
@@ -92,11 +92,15 @@ test("package metadata and deterministic local gates define the V35 release", as
     "tsc --noEmit",
     "vite build",
     "node --import tsx scripts/prerender.mts",
+    packageJson.scripts["test:artifact"],
     packageJson.scripts["test:release"],
   ]);
   assert.match(expandedTest[0], /^node --import tsx --test /);
   assert.match(expandedTest[0], /tests\/prerender\.test\.mjs/);
-  assert.match(expandedTest[4], /^python -m unittest /);
+  assert.doesNotMatch(expandedTest[0], /tests\/release-gates\.test\.mjs/);
+  assert.equal(packageJson.scripts["test:artifact"], "node --import tsx --test tests/release-gates.test.mjs");
+  assert.match(expandedTest[4], /tests\/release-gates\.test\.mjs/);
+  assert.match(expandedTest[5], /^python -m unittest /);
   assert.deepEqual(expandScript(packageJson.scripts, "verify"), [
     packageJson.scripts.lint,
     packageJson.scripts["format:check"],
@@ -104,6 +108,7 @@ test("package metadata and deterministic local gates define the V35 release", as
     "tsc --noEmit",
     "vite build",
     "node --import tsx scripts/prerender.mts",
+    packageJson.scripts["test:artifact"],
     "node scripts/check_layout_runtime.mjs",
     packageJson.scripts["test:release"],
     "python scripts/public_repo_guard.py",

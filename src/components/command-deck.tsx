@@ -7,11 +7,13 @@ import {
   REVISED,
   VERIFIED_LONG,
   EXPIRES_SHORT,
+  INITIAL_VALIDITY_LABEL,
   craftLockAfterDeckChange,
   craftRoute,
   daysLeft,
   resolveCraftIndex,
   stardate,
+  validityShort,
 } from "@/lib/content";
 import { getSound } from "@/lib/sound";
 import { focusDeckHeading, isInteractiveShortcutTarget } from "@/lib/deck-focus";
@@ -63,6 +65,9 @@ import { ViewscreenHud } from "./viewscreen-hud";
 import { ExecutiveStill } from "./executive-still";
 
 const INITIAL_VIEWPORT = { height: 900, width: 1440 } as const;
+const RESTORE_ANCHOR_DELAY_MS = 360;
+const RESTORE_ANCHOR_MAX_CHECKS = 8;
+const RESTORE_SCROLL_CANCEL_DELTA = 48;
 const useIsomorphicLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 export function CommandDeck() {
@@ -116,6 +121,10 @@ export function CommandDeck() {
   const [hist, setHist] = useState<string[]>([]);
   const [histI, setHistI] = useState(-1);
   const [clock, setClock] = useState("");
+  const [validity, setValidity] = useState<{ days: number | null; label: string }>({
+    days: null,
+    label: INITIAL_VALIDITY_LABEL,
+  });
   const [stageOn, setStageOn] = useState(false);
   // While a smooth scroll is travelling, this holds the deck actually on screen
   // so the header chip does not name a deck the visitor cannot see yet. It is
@@ -144,6 +153,15 @@ export function CommandDeck() {
   const hashSuppressionTimer = useRef<number | null>(null);
   const resizeAnchorTimer = useRef<number | null>(null);
   const resizeAnchorFrame = useRef(0);
+  const restoreAnchorTimer = useRef<number | null>(null);
+  const restoreAnchorFrame = useRef(0);
+  const restoreAnchorGeneration = useRef(0);
+  const restoreAnchorIntent = useRef<{
+    deck: number;
+    hash: string;
+    initialScrollTop: number;
+    remainingChecks: number;
+  } | null>(null);
   const warpFlashTimer = useRef<number | null>(null);
   const cineTimer = useRef<number | null>(null);
   const chapterTimer = useRef<number | null>(null);
@@ -179,6 +197,11 @@ export function CommandDeck() {
     };
     media.addEventListener("change", onChange);
     return () => media.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    const now = Date.now();
+    setValidity({ days: daysLeft(now), label: validityShort(now) });
   }, []);
 
   useIsomorphicLayoutEffect(() => {
@@ -438,13 +461,23 @@ export function CommandDeck() {
     resizeAnchorFrame.current = 0;
   }, []);
 
+  const clearRestoreAnchor = useCallback(() => {
+    restoreAnchorGeneration.current += 1;
+    if (restoreAnchorTimer.current != null) window.clearTimeout(restoreAnchorTimer.current);
+    if (restoreAnchorFrame.current) window.cancelAnimationFrame(restoreAnchorFrame.current);
+    restoreAnchorTimer.current = null;
+    restoreAnchorFrame.current = 0;
+    restoreAnchorIntent.current = null;
+  }, []);
+
   const cancelProgrammaticScroll = useCallback(() => {
     pendingSmoothScrollTop.current = null;
     clearHashSuppressionTimer();
     clearResizeAnchor();
+    clearRestoreAnchor();
     hashTransition.current = cancelHashRestore(hashTransition.current);
     pendingDestinationFocus.current = null;
-  }, [clearHashSuppressionTimer, clearResizeAnchor]);
+  }, [clearHashSuppressionTimer, clearResizeAnchor, clearRestoreAnchor]);
 
   const beginProgrammaticScroll = useCallback(
     (targetDeck: number) => {
@@ -604,16 +637,47 @@ export function CommandDeck() {
       if (historyMode) syncHash(i, selectedArticle, historyMode);
       if (source !== "restore") bit("yes");
       if (source === "restore") {
-        clearResizeAnchor();
-        resizeAnchorTimer.current = window.setTimeout(() => {
-          resizeAnchorTimer.current = null;
-          resizeAnchorFrame.current = window.requestAnimationFrame(() => {
-            resizeAnchorFrame.current = 0;
-            const target = listSections()[i]?.current;
-            if (!target || !scRef.current) return;
-            scRef.current.scrollTop = Math.max(0, target.offsetTop - 8);
-          });
-        }, 120);
+        clearRestoreAnchor();
+        const generation = restoreAnchorGeneration.current;
+        restoreAnchorIntent.current = {
+          deck: i,
+          hash: window.location.hash,
+          initialScrollTop: sc.scrollTop,
+          remainingChecks: RESTORE_ANCHOR_MAX_CHECKS,
+        };
+        const scheduleRestoreCheck = () => {
+          restoreAnchorTimer.current = window.setTimeout(() => {
+            if (generation !== restoreAnchorGeneration.current) return;
+            restoreAnchorTimer.current = null;
+            restoreAnchorFrame.current = window.requestAnimationFrame(() => {
+              if (generation !== restoreAnchorGeneration.current) return;
+              restoreAnchorFrame.current = 0;
+              const intent = restoreAnchorIntent.current;
+              if (!intent || intent.deck !== i || intent.hash !== window.location.hash) {
+                restoreAnchorIntent.current = null;
+                return;
+              }
+              if (parseDeckHash(window.location.hash).deck !== i || useDeck.getState().deck !== i) {
+                restoreAnchorIntent.current = null;
+                return;
+              }
+              const target = listSections()[i]?.current;
+              if (!target || !scRef.current) {
+                restoreAnchorIntent.current = null;
+                return;
+              }
+              const settledTop = Math.max(0, target.offsetTop - 8);
+              if (Math.abs(scRef.current.scrollTop - settledTop) > 1) {
+                intent.initialScrollTop = settledTop;
+                scRef.current.scrollTop = settledTop;
+              }
+              intent.remainingChecks -= 1;
+              if (intent.remainingChecks > 0) scheduleRestoreCheck();
+              else restoreAnchorIntent.current = null;
+            });
+          }, RESTORE_ANCHOR_DELAY_MS);
+        };
+        scheduleRestoreCheck();
       }
       window.setTimeout(() => {
         measureClear();
@@ -625,7 +689,7 @@ export function CommandDeck() {
       chapter,
       clearChapter,
       clearCinePulse,
-      clearResizeAnchor,
+      clearRestoreAnchor,
       cinePulse,
       clearSweep,
       measureClear,
@@ -733,8 +797,9 @@ export function CommandDeck() {
       invalidateCopyEmail();
       clearHashSuppressionTimer();
       clearResizeAnchor();
+      clearRestoreAnchor();
     };
-  }, [clearHashSuppressionTimer, clearResizeAnchor, invalidateCopyEmail]);
+  }, [clearHashSuppressionTimer, clearResizeAnchor, clearRestoreAnchor, invalidateCopyEmail]);
 
   useEffect(() => {
     const state = flightRun.current;
@@ -802,6 +867,13 @@ export function CommandDeck() {
         }
       }
     }
+    const restoreIntent = restoreAnchorIntent.current;
+    if (
+      restoreIntent &&
+      i !== restoreIntent.deck &&
+      Math.abs(sc.scrollTop - restoreIntent.initialScrollTop) > RESTORE_SCROLL_CANCEL_DELTA
+    )
+      cancelProgrammaticScroll();
     const max = Math.max(1, sc.scrollHeight - sc.clientHeight);
     const p = Math.min(1, Math.max(0, sc.scrollTop / max));
     const st = stageRef.current;
@@ -847,7 +919,15 @@ export function CommandDeck() {
     }
     focusPendingDestination(i);
     measureClear();
-  }, [chapter, clearHashSuppressionTimer, focusPendingDestination, measureClear, set, syncHash]);
+  }, [
+    cancelProgrammaticScroll,
+    chapter,
+    clearHashSuppressionTimer,
+    focusPendingDestination,
+    measureClear,
+    set,
+    syncHash,
+  ]);
 
   useEffect(() => {
     const sc = scRef.current;
@@ -858,6 +938,7 @@ export function CommandDeck() {
     const onResize = () => {
       measureLayout();
       const targetDeck = useDeck.getState().deck;
+      clearRestoreAnchor();
       beginProgrammaticScroll(targetDeck);
       clearResizeAnchor();
       resizeAnchorTimer.current = window.setTimeout(() => {
@@ -881,7 +962,7 @@ export function CommandDeck() {
       clearInterval(spy);
       clearTimeout(later);
     };
-  }, [beginProgrammaticScroll, clearResizeAnchor, measureClear, onScroll]);
+  }, [beginProgrammaticScroll, clearResizeAnchor, clearRestoreAnchor, measureClear, onScroll]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -1046,7 +1127,6 @@ export function CommandDeck() {
   const hud = overlay ? "pointer-events-none invisible opacity-0" : "";
   const craftI = resolveCraftIndex(deck, craftLock);
   const craft = CRAFT[craftI];
-  const dleft = daysLeft();
   const flightBeat = flightActionAt(flightElapsed);
   const beatLabel = flightBeat.kind === "complete" ? "CONTACT" : flightBeat.label;
 
@@ -1140,6 +1220,7 @@ export function CommandDeck() {
           }}
           onToggleAudio={toggleAudio}
           tour={tour}
+          validityLabel={validity.label}
         />
 
         <main
@@ -1199,10 +1280,14 @@ export function CommandDeck() {
               <span>REVISED {REVISED}</span>
               <span className="inline-flex items-center gap-2 text-cyan">
                 <span className="za-lock-pip" />
-                {dleft > 0 ? "DATED EXPORT VALID" : "DATED EXPORT EXPIRED"}
+                {validity.days == null
+                  ? "DATED EXPORT · VALID THRU"
+                  : validity.days > 0
+                    ? "DATED EXPORT VALID"
+                    : "DATED EXPORT EXPIRED"}
               </span>
               <span>FIGURES VERIFIED {VERIFIED_LONG}</span>
-              <span>VALID THRU {dleft > 0 ? EXPIRES_SHORT : "TREAT AS HISTORY"}</span>
+              <span>VALID THRU {validity.days == null || validity.days > 0 ? EXPIRES_SHORT : "TREAT AS HISTORY"}</span>
               <span>ZERO INFRASTRUCTURE CALLS</span>
             </div>
           </footer>
