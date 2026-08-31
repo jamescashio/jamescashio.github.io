@@ -326,6 +326,28 @@ class V34ReleaseContractTests(unittest.TestCase):
         self.assertGreaterEqual(len(claims), 2, literals)
         self.assertTrue(all(release_consistency.has_stale_current_code_literal(literal) for literal in claims))
 
+    def test_public_surface_guard_preserves_dynamic_template_risk_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "claim.tsx"
+            bundle = root / "assets" / "claim.js"
+            bundle.parent.mkdir()
+            source.write_text(
+                'declare const dynamic: string;\n'
+                'const left = right; const right = left;\n'
+                'export const view = <p>{`HO${dynamic}S CURRENT STATUS`}{`HO${left}S CURRENT STATUS`}</p>;\n'
+                'export const safe = `hello ${dynamic} world`;\n',
+                encoding="utf-8",
+            )
+            bundle.write_text('const claim=`HO${dynamic}S CURRENT STATUS`;\n', encoding="utf-8")
+            literals = release_consistency.collect_public_code_literals([source, bundle])
+        risky = [literal for literal in literals if "CURRENT STATUS" in literal["value"] and literal["hasDynamicAlphaJoin"]]
+        self.assertGreaterEqual(len(risky), 3, literals)
+        self.assertTrue(all(release_consistency.has_stale_current_code_literal(literal) for literal in risky))
+        safe = next(literal for literal in literals if literal["value"].startswith("hello") and "CURRENT" not in literal["value"])
+        self.assertFalse(safe["hasDynamicAlphaJoin"])
+        self.assertFalse(release_consistency.has_stale_current_code_literal(safe))
+
     def test_public_surface_guard_rejects_current_fleet_topology_and_raw_route_identifiers(self) -> None:
         base = (
             "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "

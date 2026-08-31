@@ -310,6 +310,9 @@ def has_stale_current_code_literal(literal: dict[str, str]) -> bool:
     value = literal["value"].replace("\u00c2\u00b7", "\u00b7")
     if literal.get("context") == "class":
         value = " ".join(token for token in value.split() if token not in APPROVED_TECHNICAL_CLASS_TOKENS)
+    normalized = public_claim_tokens(value)
+    if literal.get("hasDynamicAlphaJoin") and {"current", "online", "status"} & set(normalized):
+        return True
     return bool(value) and has_stale_current_public_claim(
         blank_exact_approved_visible_phrases(value), allow_ordinary_online=False
     )

@@ -70,6 +70,22 @@ function hasEvaluableParent(node, scope) {
   return Boolean(parent && ts.isExpression(parent) && literalValue(parent, scope) !== null);
 }
 
+function hasDynamicAlphaJoin(node, scope) {
+  if (ts.isTemplateExpression(node)) {
+    let left = node.head.text;
+    for (const span of node.templateSpans) {
+      const unresolved = literalValue(span.expression, scope) === null;
+      if (unresolved && /[A-Za-z]$/.test(left) && /^[A-Za-z]/.test(span.literal.text)) return true;
+      if (hasDynamicAlphaJoin(span.expression, scope)) return true;
+      left += (unresolved ? " " : literalValue(span.expression, scope)) + span.literal.text;
+    }
+  }
+  if (ts.isBinaryExpression(node) || ts.isConditionalExpression(node)) {
+    return ts.forEachChild(node, (child) => hasDynamicAlphaJoin(child, scope)) ?? false;
+  }
+  return false;
+}
+
 const results = [];
 for (const filename of process.argv.slice(2)) {
   const source = fs.readFileSync(filename, "utf8");
@@ -99,10 +115,20 @@ for (const filename of process.argv.slice(2)) {
     const scope = scopeFor.get(node) ?? rootScope;
     const value = literalValue(node, scope);
     if (value !== null && !hasEvaluableParent(node, scope)) {
-      results.push({ file: path.normalize(filename), value, context: isClassProperty(node) ? "class" : "literal" });
+      results.push({
+        file: path.normalize(filename),
+        value,
+        context: isClassProperty(node) ? "class" : "literal",
+        hasDynamicAlphaJoin: hasDynamicAlphaJoin(node, scope),
+      });
     }
     if (ts.isJsxText(node) && node.getText().trim()) {
-      results.push({ file: path.normalize(filename), value: node.getText(), context: "visible" });
+      results.push({
+        file: path.normalize(filename),
+        value: node.getText(),
+        context: "visible",
+        hasDynamicAlphaJoin: false,
+      });
     }
     ts.forEachChild(node, visit);
   }
