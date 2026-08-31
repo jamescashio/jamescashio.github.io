@@ -148,6 +148,7 @@ class PublicSurfaceParser(HTMLParser):
         self._safe_current_depth = 0
         self._safe_current_direct = False
         self._current_controls: list[bool] = []
+        self.invalid_current_context = False
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         self.visible_text.append(" ")
@@ -169,7 +170,14 @@ class PublicSurfaceParser(HTMLParser):
                 )
                 if remaining:
                     self.attribute_values.append(remaining)
-            elif not (name == "data-cmd" and value == "current"):
+            elif name == "data-cmd" and value == "current":
+                if tag != "button":
+                    # Only the named command button is structural. Every other
+                    # tag retains a typed marker and fails closed, including a
+                    # standalone self-closing impostor.
+                    self.invalid_current_context = True
+                    self.visible_text.append(" CURRENT ")
+            else:
                 self.attribute_values.append(value)
 
     def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
@@ -272,6 +280,8 @@ def public_surface_has_stale_current_claim(text: str) -> bool:
     parser = PublicSurfaceParser()
     parser.feed(text)
     parser.close()
+    if parser.invalid_current_context:
+        return True
     if any(has_stale_current_public_claim(value, allow_ordinary_online=False) for value in parser.attribute_values):
         return True
     visible = "".join(parser.visible_text)

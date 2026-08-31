@@ -274,6 +274,24 @@ class V34ReleaseContractTests(unittest.TestCase):
             with self.subTest(label=label):
                 self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
 
+    def test_public_surface_guard_rejects_non_button_current_contexts(self) -> None:
+        dated_surface = (
+            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+        )
+        fixtures = {
+            "input self closing": "HOSTS <input data-cmd='current'/> STATUS",
+            "div paired": "HOSTS <div data-cmd='current'>CURRENT</div> STATUS",
+            "span nested": "HOSTS <span data-cmd='current'><i>CURRENT</i></span> STATUS",
+            "custom self closing": "HOSTS <current-control data-cmd='current'/> STATUS",
+            "div standalone": "<div data-cmd='current'></div>",
+        }
+        for label, markup in fixtures.items():
+            failures: list[str] = []
+            release_consistency.check_v34_public_surface("index.html", f"{dated_surface} · {markup}", failures, "test")
+            with self.subTest(label=label):
+                self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
+
     def test_public_surface_guard_rejects_current_fleet_topology_and_raw_route_identifiers(self) -> None:
         base = (
             "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
