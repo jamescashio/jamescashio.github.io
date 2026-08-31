@@ -375,6 +375,27 @@ class V34ReleaseContractTests(unittest.TestCase):
         self.assertTrue(all(release_consistency.has_stale_current_code_literal(literal) for literal in risky))
         self.assertTrue(any("hello" in literal["value"] and not literal["hasDynamicAlphaJoin"] for literal in literals), literals)
 
+    def test_public_surface_guard_marks_dynamic_alpha_joins_across_aggregate_boundaries(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "boundary.tsx"
+            bundle = root / "assets" / "boundary.js"
+            bundle.parent.mkdir()
+            source.write_text(
+                'declare const dynamic: string; const fragment = `HO${dynamic}`; const alias = (fragment);\n'
+                'export const a = fragment + "STS CURRENT STATUS";\n'
+                'export const b = "HO" + dynamic + "STS CURRENT STATUS";\n'
+                'export const c = dynamic ? alias + "STS CURRENT STATUS" : fragment + "STS CURRENT STATUS";\n'
+                'export const view = <p>{alias}STS CURRENT STATUS</p>; export const safe = `hello ${dynamic} world`;\n',
+                encoding="utf-8",
+            )
+            bundle.write_text('const fragment=`HO${dynamic}`;const claim=fragment+"STS CURRENT STATUS";\n', encoding="utf-8")
+            literals = release_consistency.collect_public_code_literals([source, bundle])
+        risky = [literal for literal in literals if "CURRENT STATUS" in literal["value"] and literal["hasDynamicAlphaJoin"]]
+        self.assertGreaterEqual(len(risky), 5, literals)
+        self.assertTrue(all(release_consistency.has_stale_current_code_literal(literal) for literal in risky))
+        self.assertTrue(any("hello" in literal["value"] and not literal["hasDynamicAlphaJoin"] for literal in literals), literals)
+
     def test_public_surface_guard_rejects_current_fleet_topology_and_raw_route_identifiers(self) -> None:
         base = (
             "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "

@@ -21,30 +21,39 @@ function isClassProperty(node) {
 
 function evaluate(node, scope, resolving = new Set()) {
   if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node))
-    return { value: node.text, hasDynamicAlphaJoin: false };
+    return { value: node.text, hasDynamicAlphaJoin: false, unresolved: false };
   if (ts.isTemplateExpression(node)) {
     let value = node.head.text;
     let hasDynamicAlphaJoin = false;
+    let unresolved = false;
     for (const span of node.templateSpans) {
       const resolved = evaluate(span.expression, scope, resolving);
       if (resolved === null) {
         const joinsAlphabeticFragments = /[A-Za-z]$/.test(value) && /^[A-Za-z]/.test(span.literal.text);
         hasDynamicAlphaJoin ||= joinsAlphabeticFragments;
+        unresolved = true;
         value += joinsAlphabeticFragments ? "" : " ";
       } else {
         value += resolved.value;
         hasDynamicAlphaJoin ||= resolved.hasDynamicAlphaJoin;
+        unresolved ||= resolved.unresolved;
       }
       value += span.literal.text;
     }
-    return { value, hasDynamicAlphaJoin };
+    return { value, hasDynamicAlphaJoin, unresolved };
   }
   if (ts.isBinaryExpression(node) && node.operatorToken.kind === ts.SyntaxKind.PlusToken) {
     const left = evaluate(node.left, scope, resolving);
     const right = evaluate(node.right, scope, resolving);
-    return left && right
-      ? { value: left.value + right.value, hasDynamicAlphaJoin: left.hasDynamicAlphaJoin || right.hasDynamicAlphaJoin }
-      : null;
+    if (!left || !right) return null;
+    const value = left.value + right.value;
+    const unresolved = left.unresolved || right.unresolved;
+    return {
+      value,
+      unresolved,
+      hasDynamicAlphaJoin:
+        left.hasDynamicAlphaJoin || right.hasDynamicAlphaJoin || (unresolved && /[A-Za-z].*[A-Za-z]/.test(value)),
+    };
   }
   if (ts.isParenthesizedExpression(node)) return evaluate(node.expression, scope, resolving);
   if (ts.isConditionalExpression(node)) {
@@ -56,36 +65,43 @@ function evaluate(node, scope, resolving = new Set()) {
       ? {
           value: `${whenTrue.value} ${whenFalse.value}`,
           hasDynamicAlphaJoin: whenTrue.hasDynamicAlphaJoin || whenFalse.hasDynamicAlphaJoin,
+          unresolved: whenTrue.unresolved || whenFalse.unresolved,
         }
       : null;
   }
   if (ts.isJsxExpression(node))
-    return node.expression ? evaluate(node.expression, scope, resolving) : { value: "", hasDynamicAlphaJoin: false };
+    return node.expression
+      ? evaluate(node.expression, scope, resolving)
+      : { value: "", hasDynamicAlphaJoin: false, unresolved: false };
   if (ts.isJsxElement(node) || ts.isJsxFragment(node)) {
     const children = node.children
       .map(
         (child) =>
           evaluate(child, scope, resolving) ??
-          (ts.isJsxText(child) ? { value: child.getText(), hasDynamicAlphaJoin: false } : null),
+          (ts.isJsxText(child) ? { value: child.getText(), hasDynamicAlphaJoin: false, unresolved: false } : null),
       )
       .filter(Boolean);
+    const value = children.map((child) => child.value).join(" ");
+    const unresolved = children.some((child) => child.unresolved);
     return {
-      value: children.map((child) => child.value).join(" "),
-      hasDynamicAlphaJoin: children.some((child) => child.hasDynamicAlphaJoin),
+      value,
+      unresolved,
+      hasDynamicAlphaJoin:
+        children.some((child) => child.hasDynamicAlphaJoin) || (unresolved && /[A-Za-z].*[A-Za-z]/.test(value)),
     };
   }
   if (ts.isIdentifier(node)) {
     for (let current = scope; current; current = current.parent) {
       const binding = current.bindings.get(node.text);
       if (!binding) continue;
-      if (resolving.has(binding)) return null;
+      if (resolving.has(binding)) return { value: " ", hasDynamicAlphaJoin: false, unresolved: true };
       resolving.add(binding);
       const value = evaluate(binding.initializer, binding.scope, resolving);
       resolving.delete(binding);
       return value;
     }
   }
-  return null;
+  return { value: " ", hasDynamicAlphaJoin: false, unresolved: true };
 }
 
 function hasEvaluableParent(node, scope) {
