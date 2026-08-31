@@ -174,6 +174,12 @@ function jsxSourceTag(node) {
 function jsxFactoryName(expression) {
   if (ts.isIdentifier(expression)) return expression.text;
   if (ts.isPropertyAccessExpression(expression)) return expression.name.text;
+  if (ts.isElementAccessExpression(expression)) {
+    const argument = expression.argumentExpression;
+    if (argument && (ts.isStringLiteral(argument) || ts.isNoSubstitutionTemplateLiteral(argument))) {
+      return argument.text;
+    }
+  }
   return null;
 }
 
@@ -222,6 +228,10 @@ function jsxFactoryHasVisualTextSeparation(call) {
   if (!call || !isJsxFactoryCall(call)) return false;
   const props = call.arguments[1];
   if (!props || !ts.isObjectLiteralExpression(props)) return false;
+  return jsxPropsHaveVisualTextSeparation(props);
+}
+
+function jsxPropsHaveVisualTextSeparation(props) {
   const classProperty = props.properties.find(
     (property) => ts.isPropertyAssignment(property) && ["class", "className"].includes(propertyNameText(property.name)),
   );
@@ -229,6 +239,48 @@ function jsxFactoryHasVisualTextSeparation(call) {
   const initializer = classProperty.initializer;
   if (!ts.isStringLiteral(initializer) && !ts.isNoSubstitutionTemplateLiteral(initializer)) return false;
   return /(?:^|\s)(?:gap(?:-[xy])?-[^\s]+|space-[xy]-[^\s]+)(?:\s|$)/.test(initializer.text);
+}
+
+function resolveObjectLiteral(node, scope, resolving) {
+  if (ts.isObjectLiteralExpression(node)) return { node, scope };
+  if (ts.isParenthesizedExpression(node)) return resolveObjectLiteral(node.expression, scope, resolving);
+  if (!ts.isIdentifier(node)) return null;
+  for (let current = scope; current; current = current.parent) {
+    const binding = current.bindings.get(node.text);
+    if (!binding) continue;
+    if (resolving.has(binding)) return null;
+    resolving.add(binding);
+    const resolved = resolveObjectLiteral(binding.initializer, binding.scope, resolving);
+    resolving.delete(binding);
+    return resolved;
+  }
+  return null;
+}
+
+function jsxPropsChildrenValue(props, scope, resolving, seenProps = new Set()) {
+  if (seenProps.has(props)) return unknownValue(false);
+  seenProps.add(props);
+  const branches = [];
+  for (const property of props.properties) {
+    if (ts.isPropertyAssignment(property) && propertyNameText(property.name) === "children") {
+      branches.push(
+        ts.isArrayLiteralExpression(property.initializer)
+          ? renderedArrayValue(property.initializer, scope, resolving, jsxPropsHaveVisualTextSeparation(props))
+          : evaluate(property.initializer, scope, resolving),
+      );
+      continue;
+    }
+    if (ts.isSpreadAssignment(property)) {
+      const spread = resolveObjectLiteral(property.expression, scope, resolving);
+      branches.push(
+        spread
+          ? jsxPropsChildrenValue(spread.node, spread.scope, resolving, seenProps)
+          : unsupportedValue(property.expression, scope, resolving),
+      );
+    }
+  }
+  seenProps.delete(props);
+  return branches.length ? alternatives(...branches) : staticValue("");
 }
 
 function evaluate(node, scope, resolving = new Set()) {
@@ -273,15 +325,9 @@ function evaluate(node, scope, resolving = new Set()) {
   if (isJsxFactoryCall(node)) {
     const props = node.arguments[1];
     if (!props || props.kind === ts.SyntaxKind.NullKeyword) return staticValue("");
-    if (!ts.isObjectLiteralExpression(props)) return unknownValue(false);
-    const children = props.properties.find(
-      (property) => ts.isPropertyAssignment(property) && propertyNameText(property.name) === "children",
-    );
-    return children && ts.isPropertyAssignment(children)
-      ? evaluate(children.initializer, scope, resolving)
-      : props.properties.some((property) => ts.isSpreadAssignment(property))
-        ? unknownValue(false)
-        : staticValue("");
+    const resolved = resolveObjectLiteral(props, scope, resolving);
+    if (!resolved) return unsupportedValue(props, scope, resolving);
+    return jsxPropsChildrenValue(resolved.node, resolved.scope, resolving);
   }
   if (ts.isIdentifier(node)) {
     for (let current = scope; current; current = current.parent) {
