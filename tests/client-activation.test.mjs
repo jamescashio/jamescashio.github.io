@@ -10,6 +10,7 @@ function frameScheduler() {
   const frames = new Map();
   const timers = new Map();
   const listeners = new Map();
+  const reportedErrors = [];
   return {
     scheduler: {
       requestAnimationFrame(callback) {
@@ -35,6 +36,9 @@ function frameScheduler() {
       removeEventListener(type, listener) {
         listeners.get(type)?.delete(listener);
       },
+      reportError(error) {
+        reportedErrors.push(error);
+      },
     },
     runNext() {
       const entry = frames.entries().next().value;
@@ -57,6 +61,7 @@ function frameScheduler() {
     listenerCount() {
       return [...listeners.values()].reduce((count, entries) => count + entries.size, 0);
     },
+    reportedErrors,
   };
 }
 
@@ -190,6 +195,48 @@ test("the first touch swipe preserves its coordinates and navigates exactly once
   dom.window.close();
 });
 
+test("pointerdown before touchstart preserves the browser-ordered first swipe exactly once", async () => {
+  const frames = frameScheduler();
+  const dom = new JSDOM('<!doctype html><body><main tabindex="-1"></main></body>');
+  const target = dom.window.document.querySelector("main");
+  let resolveActivation;
+  const activation = new Promise((resolve) => {
+    resolveActivation = resolve;
+  });
+  let swipeStart = null;
+  const navigations = [];
+  target.addEventListener("touchstart", (event) => {
+    swipeStart = event.touches[0].clientX;
+  });
+  target.addEventListener("touchend", (event) => {
+    const dx = event.changedTouches[0].clientX - swipeStart;
+    if (Math.abs(dx) >= 72) navigations.push(dx < 0 ? "next" : "previous");
+  });
+  scheduleClientActivation(() => activation, frames.scheduler);
+
+  frames.dispatchIntent("pointerdown", { type: "pointerdown", target });
+  frames.dispatchIntent("touchstart", {
+    type: "touchstart",
+    target,
+    touches: [{ identifier: 9, clientX: 280, clientY: 420, target }],
+  });
+  frames.dispatchIntent("touchend", {
+    type: "touchend",
+    target,
+    changedTouches: [{ identifier: 9, clientX: 100, clientY: 423, target }],
+    preventDefault() {},
+    stopImmediatePropagation() {},
+  });
+
+  resolveActivation();
+  await activation;
+  await Promise.resolve();
+
+  assert.deepEqual(navigations, ["next"], "the Pointer Events ordering must not consume the complete swipe");
+  assert.equal(frames.listenerCount(), 0);
+  dom.window.close();
+});
+
 test("pointerdown on a control descendant replays the stable activatable ancestor once", async () => {
   const frames = frameScheduler();
   const dom = new JSDOM("<!doctype html><body><button><span>GO</span></button></body>");
@@ -256,6 +303,81 @@ test("an external anchor keeps its native navigation click and is never replayed
   await Promise.resolve();
   assert.equal(clicks, 1, "activation must not duplicate external navigation");
   dom.window.close();
+});
+
+test("an external-anchor descendant inside main tabindex=-1 keeps one native click", async () => {
+  const frames = frameScheduler();
+  const dom = new JSDOM(
+    '<!doctype html><body><main tabindex="-1"><a href="https://example.net/"><span>LEAVE</span></a></main></body>',
+    { url: "https://cashio.us/" },
+  );
+  const anchor = dom.window.document.querySelector("a");
+  const child = anchor.querySelector("span");
+  let resolveActivation;
+  const activation = new Promise((resolve) => {
+    resolveActivation = resolve;
+  });
+  let clicks = 0;
+  let prevented = false;
+  anchor.addEventListener("click", (event) => {
+    event.preventDefault();
+    clicks += 1;
+  });
+  scheduleClientActivation(() => activation, frames.scheduler);
+
+  frames.dispatchIntent("pointerdown", { type: "pointerdown", target: child });
+  frames.dispatchIntent("click", {
+    type: "click",
+    target: child,
+    preventDefault: () => (prevented = true),
+    stopImmediatePropagation() {},
+  });
+  if (!prevented) child.dispatchEvent(new dom.window.MouseEvent("click", { bubbles: true, cancelable: true }));
+
+  assert.equal(clicks, 1, "main must not replace or suppress the native external-anchor target");
+  resolveActivation();
+  await activation;
+  await Promise.resolve();
+  assert.equal(clicks, 1, "hydration must not replay the external navigation");
+  dom.window.close();
+});
+
+test("failed activation cleans interception, reports the error, and replays no application command", async () => {
+  const frames = frameScheduler();
+  const dom = new JSDOM("<!doctype html><body><button>OPEN</button></body>");
+  const target = dom.window.document.querySelector("button");
+  let rejectActivation;
+  const activation = new Promise((_, reject) => {
+    rejectActivation = reject;
+  });
+  let clicks = 0;
+  target.addEventListener("click", () => (clicks += 1));
+  const queuedMicrotasks = [];
+  const nativeQueueMicrotask = globalThis.queueMicrotask;
+  globalThis.queueMicrotask = (callback) => queuedMicrotasks.push(callback);
+  try {
+    scheduleClientActivation(() => activation, frames.scheduler);
+    frames.dispatchIntent("pointerdown", { type: "pointerdown", target });
+    frames.dispatchIntent("click", {
+      type: "click",
+      target,
+      preventDefault() {},
+      stopImmediatePropagation() {},
+    });
+
+    const error = new Error("hydration failed");
+    rejectActivation(error);
+    await activation.catch(() => undefined);
+    await Promise.resolve();
+
+    assert.equal(clicks, 0, "a failed client must not replay a command whose handler is unavailable");
+    assert.deepEqual(frames.reportedErrors, [error], "the original failure must be surfaced through the host");
+    assert.equal(frames.listenerCount(), 0, "failed activation must remove every interception listener");
+    assert.equal(queuedMicrotasks.length, 0, "failure reporting must not manufacture an unhandled throw");
+  } finally {
+    globalThis.queueMicrotask = nativeQueueMicrotask;
+    dom.window.close();
+  }
 });
 
 test("client activation yields two frames so the prerendered initial route paints before hydration", () => {

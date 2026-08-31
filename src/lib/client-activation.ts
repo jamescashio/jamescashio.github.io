@@ -6,7 +6,9 @@ type ActivationScheduler = Pick<
   | "clearTimeout"
   | "addEventListener"
   | "removeEventListener"
->;
+> & {
+  reportError?: (error: unknown) => void;
+};
 
 type ActivationOptions = {
   defer?: boolean;
@@ -20,7 +22,8 @@ type TouchPointSnapshot = {
 
 const ACTIVATION_DELAY_MS = 250;
 const ACTIVATION_INTENTS = ["pointerdown", "keydown", "touchstart", "hashchange", "popstate"];
-const ACTIVATABLE_SELECTOR = 'button,input,select,textarea,[role="button"],[role="menuitem"],[tabindex]';
+const ACTIVATABLE_SELECTOR =
+  'button,input,select,textarea,a[href],[role="button"],[role="menuitem"],[tabindex]:not([tabindex="-1"])';
 const SWIPE_THRESHOLD_PX = 72;
 
 function stableActivatableTarget(target: EventTarget | null) {
@@ -29,6 +32,7 @@ function stableActivatableTarget(target: EventTarget | null) {
     "closest" in target && typeof target.closest === "function" ? target.closest(ACTIVATABLE_SELECTOR) : target;
   if (!candidate || typeof candidate !== "object" || !("click" in candidate) || typeof candidate.click !== "function")
     return null;
+  if ("closest" in candidate && typeof candidate.closest === "function" && candidate.closest("a[href]")) return null;
   return candidate as HTMLElement;
 }
 
@@ -92,6 +96,16 @@ export function scheduleClientActivation(
   let touchStart: TouchPointSnapshot | null = null;
   let pendingSwipeEnd: TouchPointSnapshot | null = null;
 
+  function reportActivationError(error: unknown) {
+    if (typeof scheduler.reportError === "function") {
+      scheduler.reportError(error);
+      return;
+    }
+    const hostReportError = (globalThis as typeof globalThis & { reportError?: (reason: unknown) => void }).reportError;
+    if (typeof hostReportError === "function") hostReportError(error);
+    else console.error("Client activation failed", error);
+  }
+
   function removeIntentListeners() {
     for (const type of ACTIVATION_INTENTS) scheduler.removeEventListener(type, finish, true);
   }
@@ -108,11 +122,12 @@ export function scheduleClientActivation(
     event.stopImmediatePropagation();
   }
 
-  function releaseClick() {
+  function releaseClick(replay: boolean) {
     if (!replayTarget) return;
     scheduler.removeEventListener("click", interceptClick, true);
-    if (interceptedClick && !cancelled) replayTarget.click();
+    if (replay && interceptedClick && !cancelled) replayTarget.click();
     replayTarget = null;
+    interceptedClick = false;
   }
 
   function cancelTouchReplay() {
@@ -153,6 +168,15 @@ export function scheduleClientActivation(
     touchStart = start;
     scheduler.addEventListener("touchend", captureTouchEnd, true);
     scheduler.addEventListener("touchcancel", cancelTouchReplay, true);
+  }
+
+  function captureTouchAfterPointer(event: Event) {
+    scheduler.removeEventListener("touchstart", captureTouchAfterPointer, true);
+    captureTouchGesture(event);
+  }
+
+  function removeTouchAfterPointerListener() {
+    scheduler.removeEventListener("touchstart", captureTouchAfterPointer, true);
   }
 
   function replayKeyboardIntent(intent: Event | undefined) {
@@ -202,23 +226,33 @@ export function scheduleClientActivation(
     const keyIntent = intent as KeyboardEvent | undefined;
     const keyClick = keyIntent?.type === "keydown" && (keyIntent.key === "Enter" || keyIntent.key === " ");
     if (intent?.type === "touchstart") captureTouchGesture(intent);
+    if (intent?.type === "pointerdown") scheduler.addEventListener("touchstart", captureTouchAfterPointer, true);
     if (intent?.type === "pointerdown" || keyClick) replayTarget = stableActivatableTarget(intent?.target ?? null);
     if (replayTarget) scheduler.addEventListener("click", interceptClick, true);
 
     const release = () => {
       activationReady = true;
-      releaseClick();
+      removeTouchAfterPointerListener();
+      releaseClick(true);
       replayKeyboard?.();
       replaySwipe();
     };
-    const result = activate();
+    const reject = (error: unknown) => {
+      activationReady = false;
+      removeTouchAfterPointerListener();
+      releaseClick(false);
+      cancelTouchReplay();
+      reportActivationError(error);
+    };
+    let result: void | PromiseLike<unknown>;
+    try {
+      result = activate();
+    } catch (error) {
+      reject(error);
+      return;
+    }
     if (result && typeof result.then === "function") {
-      Promise.resolve(result).then(release, (error) => {
-        release();
-        queueMicrotask(() => {
-          throw error;
-        });
-      });
+      Promise.resolve(result).then(release, reject);
     } else {
       release();
     }
@@ -245,6 +279,7 @@ export function scheduleClientActivation(
     frame = 0;
     timer = 0;
     removeIntentListeners();
+    removeTouchAfterPointerListener();
     scheduler.removeEventListener("click", interceptClick, true);
     cancelTouchReplay();
     replayTarget = null;

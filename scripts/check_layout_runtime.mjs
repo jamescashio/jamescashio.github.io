@@ -385,13 +385,28 @@ async function runEarlyActivationAcceptance(send, targetUrl) {
     media: "screen",
     features: [{ name: "prefers-reduced-motion", value: "reduce" }],
   });
-  await send("Page.navigate", { url: `${targetUrl}?startup-direct#deck=iron` });
-  await waitForApp(send);
-  await settle();
-  const directSettlement = await waitForCanonicalDeck(send, 3);
-  const direct = (
-    await send("Runtime.evaluate", {
-      expression: `(() => {
+  const nativeRoutes = [
+    ["grid", 1],
+    ["routing", 2],
+    ["iron", 3],
+    ["lineage", 4],
+    ["builds", 5],
+    ["operator", 6],
+    ["eve", 7],
+    ["contact", 8],
+    ["builds&article=7", 5],
+  ];
+  const directRoutes = [];
+  for (const [route, deckIndex] of nativeRoutes) {
+    await send("Page.navigate", {
+      url: `${targetUrl}?startup-native-${deckIndex}-${encodeURIComponent(route)}#deck=${route}`,
+    });
+    await waitForApp(send);
+    await settle();
+    const settlement = await waitForCanonicalDeck(send, deckIndex);
+    const observed = (
+      await send("Runtime.evaluate", {
+        expression: `(() => {
         const resources = performance.getEntriesByType("resource");
         const bootstrap = resources.find((entry) => /\\/assets\\/index-[^/]+\\.js$/.test(entry.name));
         const main = resources.find((entry) => /\\/assets\\/main-[^/]+\\.js$/.test(entry.name));
@@ -410,10 +425,15 @@ async function runEarlyActivationAcceptance(send, targetUrl) {
           frames: window.__v35DirectFrames ?? [],
         };
       })()`,
-      returnByValue: true,
-    })
-  ).result.value;
-  direct.settlement = directSettlement;
+        returnByValue: true,
+      })
+    ).result.value;
+    observed.route = route;
+    observed.deckIndex = deckIndex;
+    observed.settlement = settlement;
+    directRoutes.push(observed);
+  }
+  const direct = directRoutes.find((route) => route.route === "iron");
 
   await send("Page.navigate", { url: `${targetUrl}?critical-parity-early-ctrl` });
   await waitForCriticalShell(send);
@@ -433,14 +453,15 @@ async function runEarlyActivationAcceptance(send, targetUrl) {
 
   await send("Page.navigate", { url: `${targetUrl}?critical-parity-early-swipe` });
   await waitForCriticalShell(send);
-  await send("Runtime.evaluate", {
-    expression: `(() => {
-      const target = document.querySelector("#main-content");
-      const touch = (x) => new Touch({ identifier: 41, target, clientX: x, clientY: 420, screenX: x, screenY: 420 });
-      target.dispatchEvent(new TouchEvent("touchstart", { bubbles: true, cancelable: true, touches: [touch(330)], targetTouches: [touch(330)], changedTouches: [touch(330)] }));
-      target.dispatchEvent(new TouchEvent("touchend", { bubbles: true, cancelable: true, touches: [], targetTouches: [], changedTouches: [touch(100)] }));
-    })()`,
+  await send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: [{ x: 330, y: 420, id: 41, radiusX: 1, radiusY: 1, force: 1 }],
   });
+  await send("Input.dispatchTouchEvent", {
+    type: "touchMove",
+    touchPoints: [{ x: 100, y: 423, id: 41, radiusX: 1, radiusY: 1, force: 1 }],
+  });
+  await send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
   await waitForApp(send);
   await settle();
   const swipeSettlement = await waitForCanonicalDeck(send, 1);
@@ -485,10 +506,52 @@ async function runEarlyActivationAcceptance(send, targetUrl) {
     })
   ).result.value;
 
+  await send("Page.navigate", { url: `${targetUrl}?critical-parity-early-external` });
+  await waitForCriticalShell(send);
+  await send("Runtime.evaluate", {
+    expression: `(() => {
+      const main = document.querySelector("#main-content");
+      const anchor = document.createElement("a");
+      anchor.href = "https://example.net/";
+      const child = document.createElement("span");
+      child.textContent = "EXTERNAL TEST";
+      anchor.append(child);
+      main.append(anchor);
+      window.__v35ExternalClicks = 0;
+      anchor.addEventListener("click", (event) => {
+        event.preventDefault();
+        window.__v35ExternalClicks += 1;
+      });
+      child.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true, cancelable: true, pointerId: 8 }));
+      child.click();
+    })()`,
+  });
+  await waitForApp(send);
+  await settle();
+  const external = (
+    await send("Runtime.evaluate", {
+      expression: `({ clickCount: window.__v35ExternalClicks ?? 0, hash: location.hash })`,
+      returnByValue: true,
+    })
+  ).result.value;
+
   const visibleWrongDirectFrame = direct.frames.find(
     (frame) => frame.visibility !== "hidden" && frame.nearestDeck === 0 && frame.activated !== true,
   );
   const failures = [];
+  for (const route of directRoutes) {
+    const visibleNativeFrames = route.frames.filter(
+      (frame) => frame.visibility !== "hidden" && frame.activated !== true && frame.present,
+    );
+    const nativeFrame = visibleNativeFrames[0];
+    if (
+      !nativeFrame ||
+      nativeFrame.scrollAlignmentDelta > 1 ||
+      nativeFrame.sectionAlignmentDelta > 1 ||
+      nativeFrame.nearestDeck !== route.deckIndex
+    )
+      failures.push(`native ${route.route} startup missed the canonical first frame: ${JSON.stringify(route)}`);
+  }
   if (
     direct.hash !== "#deck=iron" ||
     direct.nearestDeck.deck !== 3 ||
@@ -512,8 +575,10 @@ async function runEarlyActivationAcceptance(send, targetUrl) {
     failures.push(`first swipe did not navigate exactly once to Grid: ${JSON.stringify(swipe)}`);
   if (!click.executivePressed || click.pressedCount !== 1)
     failures.push(`first descendant click did not select Executive exactly once: ${JSON.stringify(click)}`);
+  if (external.clickCount !== 1)
+    failures.push(`first external anchor click was not preserved exactly once: ${JSON.stringify(external)}`);
 
-  return { direct, ctrlK, swipe, click, failures, ok: failures.length === 0 };
+  return { directRoutes, direct, ctrlK, swipe, click, external, failures, ok: failures.length === 0 };
 }
 
 async function settleViewport(send, width, mobile, height = 844) {
@@ -1747,7 +1812,7 @@ async function main() {
     });
     await send("Page.addScriptToEvaluateOnNewDocument", {
       source: `(() => {
-        if (!location.search.includes("startup-direct")) return;
+        if (!location.search.includes("startup-native")) return;
         const frames = [];
         Object.defineProperty(window, "__v35DirectFrames", { value: frames });
         let count = 0;
@@ -1764,10 +1829,33 @@ async function main() {
             }, { deck: -1, delta: Number.POSITIVE_INFINITY });
             frames.push({
               activated: root.dataset.clientActivated === "true",
+              present: true,
               nearestDeck: nearest.deck,
               visibility: getComputedStyle(root).visibility,
+              scrollTop: scroller.scrollTop,
+              expectedScrollTop: (() => {
+                const anchor = document.getElementById(location.hash.slice(1));
+                const section = anchor?.closest("section[data-deck]");
+                if (!section) return null;
+                return Math.min(Math.max(0, section.offsetTop - 8), Math.max(0, scroller.scrollHeight - scroller.clientHeight));
+              })(),
+              sectionTop: (() => {
+                const anchor = document.getElementById(location.hash.slice(1));
+                return anchor?.closest("section[data-deck]")?.getBoundingClientRect().top ?? null;
+              })(),
+              anchorTop: document.getElementById(location.hash.slice(1))?.getBoundingClientRect().top ?? null,
+              expectedSectionTop: (() => {
+                const anchor = document.getElementById(location.hash.slice(1));
+                const section = anchor?.closest("section[data-deck]");
+                if (!section) return null;
+                const expectedScrollTop = Math.min(Math.max(0, section.offsetTop - 8), Math.max(0, scroller.scrollHeight - scroller.clientHeight));
+                return section.offsetTop - expectedScrollTop;
+              })(),
               atMs: performance.now(),
             });
+            const frame = frames.at(-1);
+            frame.scrollAlignmentDelta = Math.abs(frame.scrollTop - frame.expectedScrollTop);
+            frame.sectionAlignmentDelta = Math.abs(frame.sectionTop - frame.expectedSectionTop);
           }
           count += 1;
           if (count < 60 && root?.dataset.clientActivated !== "true") requestAnimationFrame(sample);
