@@ -5,6 +5,11 @@ import path from "node:path";
 import ts from "typescript";
 
 function isClassProperty(node) {
+  if (ts.isJsxAttribute(node)) return node.name.text === "className" || node.name.text === "class";
+  if (ts.isPropertyAssignment(node)) {
+    const name = node.name;
+    return ts.isIdentifier(name) && (name.text === "className" || name.text === "class");
+  }
   for (let current = node; current.parent; current = current.parent) {
     const parent = current.parent;
     if (ts.isJsxAttribute(parent)) {
@@ -92,10 +97,11 @@ function staticRelation(value) {
   return relation;
 }
 
-function result(value, relation) {
+function result(value, relation, supported = true) {
   return {
     value,
     relation,
+    supported,
     hasDynamicAlphaJoin: Boolean(relation[SCAN_RESET] & (1 << SCAN_RISK)),
   };
 }
@@ -104,25 +110,56 @@ function staticValue(value) {
   return result(value, staticRelation(value));
 }
 
-function unknownValue() {
+function unknownValue(supported = true) {
   return result(
     " ",
     mapRelation((state) => {
       if (state === SCAN_RISK) return SCAN_RISK;
       return state === SCAN_ALPHA || state === SCAN_ALPHA_UNKNOWN ? SCAN_ALPHA_UNKNOWN : SCAN_RESET;
     }),
+    supported,
   );
 }
 
 function concatenate(left, right) {
-  return result(left.value + right.value, composeRelations(left.relation, right.relation));
+  return result(
+    left.value + right.value,
+    composeRelations(left.relation, right.relation),
+    left.supported && right.supported,
+  );
 }
 
 function alternatives(...branches) {
   return result(
     branches.map((branch) => branch.value).join(" "),
     unionRelations(...branches.map((branch) => branch.relation)),
+    branches.every((branch) => branch.supported),
   );
+}
+
+function unsupportedValue(node, scope, resolving) {
+  const branches = [unknownValue()];
+  ts.forEachChild(node, (child) => {
+    if (ts.isExpression(child)) {
+      branches.push(
+        ts.isCallExpression(node) && ts.isArrayLiteralExpression(child)
+          ? renderedArrayValue(child, scope, resolving, false)
+          : evaluate(child, scope, resolving),
+      );
+    }
+  });
+  const combined = alternatives(...branches);
+  return result(combined.value, combined.relation, false);
+}
+
+function renderedArrayValue(node, scope, resolving, separateChildren) {
+  return node.elements.reduce((combined, element, index) => {
+    const separated = separateChildren && index > 0 ? concatenate(combined, staticValue(" ")) : combined;
+    if (ts.isArrayLiteralExpression(element)) {
+      return concatenate(separated, renderedArrayValue(element, scope, resolving, separateChildren));
+    }
+    return concatenate(separated, isBlockTextNode(element) ? staticValue(" ") : evaluate(element, scope, resolving));
+  }, staticValue(""));
 }
 
 function propertyNameText(name) {
@@ -158,7 +195,7 @@ function isBlockTextNode(node) {
   return isJsxFactoryCall(node) && BLOCK_TEXT_TAGS.has(jsxFactoryTag(node));
 }
 
-function isJsxChildrenArray(node) {
+function isDirectJsxChildrenArray(node) {
   const property = node.parent;
   if (!ts.isPropertyAssignment(property) || propertyNameText(property.name) !== "children") return false;
   const props = property.parent;
@@ -166,8 +203,19 @@ function isJsxChildrenArray(node) {
   return ts.isObjectLiteralExpression(props) && isJsxFactoryCall(call) && call.arguments[1] === props;
 }
 
+function jsxChildrenArrayRoot(node) {
+  let root = node;
+  while (ts.isArrayLiteralExpression(root.parent)) root = root.parent;
+  return isDirectJsxChildrenArray(root) ? root : null;
+}
+
+function isJsxChildrenArray(node) {
+  return Boolean(jsxChildrenArrayRoot(node));
+}
+
 function jsxChildrenArrayCall(node) {
-  return isJsxChildrenArray(node) ? node.parent.parent.parent : null;
+  const root = jsxChildrenArrayRoot(node);
+  return root ? root.parent.parent.parent : null;
 }
 
 function jsxFactoryHasVisualTextSeparation(call) {
@@ -220,20 +268,20 @@ function evaluate(node, scope, resolving = new Set()) {
     const preserveAdjacency = isJsxChildrenArray(node);
     if (!preserveAdjacency) return staticValue("");
     const separateChildren = jsxFactoryHasVisualTextSeparation(jsxChildrenArrayCall(node));
-    return node.elements.reduce((result, element, index) => {
-      const separated = separateChildren && index > 0 ? concatenate(result, staticValue(" ")) : result;
-      return concatenate(separated, isBlockTextNode(element) ? staticValue(" ") : evaluate(element, scope, resolving));
-    }, staticValue(""));
+    return renderedArrayValue(node, scope, resolving, separateChildren);
   }
   if (isJsxFactoryCall(node)) {
     const props = node.arguments[1];
-    if (!props || !ts.isObjectLiteralExpression(props)) return staticValue("");
+    if (!props || props.kind === ts.SyntaxKind.NullKeyword) return staticValue("");
+    if (!ts.isObjectLiteralExpression(props)) return unknownValue(false);
     const children = props.properties.find(
       (property) => ts.isPropertyAssignment(property) && propertyNameText(property.name) === "children",
     );
     return children && ts.isPropertyAssignment(children)
       ? evaluate(children.initializer, scope, resolving)
-      : staticValue("");
+      : props.properties.some((property) => ts.isSpreadAssignment(property))
+        ? unknownValue(false)
+        : staticValue("");
   }
   if (ts.isIdentifier(node)) {
     for (let current = scope; current; current = current.parent) {
@@ -245,8 +293,9 @@ function evaluate(node, scope, resolving = new Set()) {
       resolving.delete(binding);
       return value;
     }
+    return unknownValue();
   }
-  return unknownValue();
+  return unsupportedValue(node, scope, resolving);
 }
 
 function hasEvaluableParent(node, scope) {
@@ -254,7 +303,7 @@ function hasEvaluableParent(node, scope) {
   if (isJsxFactoryCall(node) && isBlockTextNode(node)) return false;
   const parent = node.parent;
   if (parent && ts.isArrayLiteralExpression(parent) && !isJsxChildrenArray(parent)) return false;
-  return Boolean(parent && ts.isExpression(parent) && evaluate(parent, scope) !== null);
+  return Boolean(parent && ts.isExpression(parent) && evaluate(parent, scope).supported);
 }
 
 const results = [];

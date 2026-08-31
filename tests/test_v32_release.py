@@ -416,6 +416,57 @@ class V34ReleaseContractTests(unittest.TestCase):
         self.assertFalse(safe_gap["hasDynamicAlphaJoin"])
         self.assertFalse(release_consistency.has_stale_current_code_literal(safe_gap))
 
+    def test_public_surface_guard_cannot_hide_claims_in_unsupported_wrappers_or_nested_children(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "wrapped.tsx"
+            bundle = root / "assets" / "wrapped.js"
+            bundle.parent.mkdir()
+            source.write_text(
+                'declare const dynamic: string; declare function identity<T>(value: T): T; const fragment = `HO${dynamic}`;\n'
+                'export const joined = <p>{identity(fragment + "STS CURRENT STATUS")}</p>;\n'
+                'export const adjacent = <p>{identity(fragment)}STS CURRENT STATUS WRAPPED EDGE SOURCE</p>;\n'
+                'export const wrapped = <p>{identity("HOSTS ONLINE")}</p>;\n'
+                'export const tagged = String.raw`HOSTS ONLINE`; export const logical = dynamic && "HOSTS ONLINE";\n',
+                encoding="utf-8",
+            )
+            bundle.write_text(
+                'const fragment=`HO${dynamic}`;\n'
+                'const nested=jsxs("p",{children:[[jsx("span",{children:fragment})],"STS CURRENT STATUS"]});\n'
+                'const wrapped=jsx("p",{children:identity("HOSTS ONLINE")});\n'
+                'const joined=jsx("p",{children:identity(fragment+"STS CURRENT STATUS")});\n'
+                'const adjacent=jsxs("p",{children:[identity(fragment),"STS CURRENT STATUS WRAPPED EDGE BUNDLE"]});\n'
+                'const wrappedArray=jsx("p",{children:identity([[jsx("span",{children:fragment})],"STS CURRENT STATUS WRAPPED ARRAY BUNDLE"])});\n'
+                'const tagged=String.raw`HOSTS ONLINE`;const logical=dynamic&&"HOSTS ONLINE";\n'
+                'const classed=jsx("div",{className:`za-systems-online ${dynamic?"is-online":""}`});\n',
+                encoding="utf-8",
+            )
+            literals = release_consistency.collect_public_code_literals([source, bundle])
+        risky = [
+            literal
+            for literal in literals
+            if literal["hasDynamicAlphaJoin"] and "CURRENT STATUS" in literal["value"]
+        ]
+        self.assertTrue(any(literal["file"].endswith("wrapped.tsx") for literal in risky), literals)
+        self.assertTrue(any(literal["file"].endswith("wrapped.js") for literal in risky), literals)
+        self.assertTrue(any("WRAPPED EDGE SOURCE" in literal["value"] for literal in risky), literals)
+        self.assertTrue(any("WRAPPED EDGE BUNDLE" in literal["value"] for literal in risky), literals)
+        self.assertTrue(any("WRAPPED ARRAY BUNDLE" in literal["value"] for literal in risky), literals)
+        static_claims = [
+            literal
+            for literal in literals
+            if "HOSTS ONLINE" in literal["value"]
+            and release_consistency.has_stale_current_code_literal(literal)
+        ]
+        self.assertGreaterEqual(len(static_claims), 6, literals)
+        class_records = [literal for literal in literals if "za-systems-online" in literal["value"]]
+        self.assertTrue(class_records, literals)
+        self.assertTrue(all(literal["context"] == "class" for literal in class_records), class_records)
+        self.assertTrue(
+            all(not release_consistency.has_stale_current_code_literal(literal) for literal in class_records),
+            class_records,
+        )
+
     def test_public_surface_guard_rejects_current_fleet_topology_and_raw_route_identifiers(self) -> None:
         base = (
             "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
