@@ -28,8 +28,23 @@ ROUTING_PROVENANCE_PREFIX = re.compile(
     r"(?:ROUTING INVENTORY 21 AUGUST 2026|08-21-2026)\s*[:—·-]\s*$",
     re.IGNORECASE,
 )
-STALE_V33_FLEET_CLAIMS = re.compile(
-    r"19(?:/| of )19|\bCURRENT\s+(?:FLEET|STATUS)\b|\bFLEET\s*(?:STATUS\s*)?ONLINE\b",
+APPROVED_DATED_PUBLIC_CLAIMS = (
+    "E.V.E. ONLINE · READ-ONLY · DATED EXPORT",
+    "2 HOSTS ONLINE · QUORATE",
+    "2 PROXMOX HOSTS ONLINE · QUORATE",
+    "two online, quorate hosts at the dated probe",
+    "08-21-2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG",
+)
+APPROVED_PUBLIC_STATUS_LABELS = ("E.V.E. EVALUATION VERIFICATION ENGINE · ONLINE",)
+APPROVED_TECHNICAL_TOKENS = ("za-systems-online", "is-online")
+APPROVED_TECHNICAL_MARKUP = (
+    re.compile(r'<button\b[^>]*\bdata-cmd="current"[^>]*>CURRENT</button>'),
+)
+CURRENT_CLAIM_SUBJECT = r"(?:atlas|zeus|apollo|e\.?v\.?e\.?|systems?|hosts?|fleet|routing|lanes?|services?|infrastructure)"
+STALE_CURRENT_PUBLIC_CLAIMS = re.compile(
+    rf"19(?:/| of )19|"
+    rf"\b{CURRENT_CLAIM_SUBJECT}(?:[^\r\n]{{0,48}}?)\b(?:current|online)\b|"
+    rf"\b(?:current|online)\b(?:[^\r\n]{{0,48}}?)\b(?:{CURRENT_CLAIM_SUBJECT}|status)\b",
     re.IGNORECASE,
 )
 PRIVATE_CURRENT_FLEET_PATTERNS = (
@@ -101,12 +116,25 @@ def check_current_public_privacy(text: str, failures: list[str], label: str) -> 
             failures.append(f"{label} contains private current-fleet detail {match.group(0)!r}")
 
 
+def sanitize_approved_dated_public_claims(text: str) -> str:
+    """Remove only exact approved dated phrases before stale-claim scanning."""
+    for phrase in APPROVED_DATED_PUBLIC_CLAIMS:
+        text = text.replace(phrase, "APPROVED DATED CLAIM")
+    for label in APPROVED_PUBLIC_STATUS_LABELS:
+        text = text.replace(label, "APPROVED STATUS LABEL")
+    for token in APPROVED_TECHNICAL_TOKENS:
+        text = text.replace(token, "APPROVED TECHNICAL TOKEN")
+    for markup in APPROVED_TECHNICAL_MARKUP:
+        text = markup.sub("APPROVED TECHNICAL TOKEN", text)
+    return text
+
+
 def check_v34_public_surface(relative: str, text: str, failures: list[str], label: str) -> None:
     for marker in V34_PUBLIC_SURFACES[relative]:
         if marker not in text:
             failures.append(f"{label}/{relative} is missing V34 marker {marker!r}")
-    if STALE_V33_FLEET_CLAIMS.search(text):
-        failures.append(f"{label}/{relative} contains a stale V33 fleet claim")
+    if STALE_CURRENT_PUBLIC_CLAIMS.search(sanitize_approved_dated_public_claims(text)):
+        failures.append(f"{label}/{relative} contains a stale/current public claim")
     for occurrence, match in enumerate(ROUTING_COUNT_CLAIM.finditer(text), start=1):
         prefix = text[max(0, match.start() - 96) : match.start()]
         if not ROUTING_PROVENANCE_PREFIX.search(prefix):

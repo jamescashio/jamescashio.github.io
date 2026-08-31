@@ -100,7 +100,40 @@ class V34ReleaseContractTests(unittest.TestCase):
         text = (
             "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
             "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG · "
-            "E.V.E. ONLINE · 08-21-2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+            "E.V.E. ONLINE · READ-ONLY · DATED EXPORT · "
+            "08-21-2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG · "
+            "E.V.E. EVALUATION VERIFICATION ENGINE · ONLINE"
+        )
+        failures: list[str] = []
+        release_consistency.check_v34_public_surface("index.html", text, failures, "test")
+        self.assertEqual(failures, [])
+
+    def test_public_surface_guard_rejects_stale_or_current_claim_variants(self) -> None:
+        dated_surface = (
+            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+        )
+        fixtures = {
+            "atlas availability": "ATLAS ONLINE",
+            "systems availability": "SYSTEMS ONLINE",
+            "current routing": "CURRENT ROUTING STATUS",
+            "host availability": "HOSTS: ONLINE",
+            "fleet availability": "FLEET STATUS · ONLINE",
+            "reversed host availability": "ONLINE — HOSTS",
+            "lowercase EVE bypass": "e.v.e. online · read-only · dated export",
+        }
+        for label, claim in fixtures.items():
+            failures: list[str] = []
+            release_consistency.check_v34_public_surface("index.html", f"{dated_surface} · {claim}", failures, "test")
+            with self.subTest(label=label):
+                self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
+
+    def test_public_surface_guard_ignores_only_the_exact_technical_status_class(self) -> None:
+        text = (
+            '28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · '
+            'ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG · '
+            '<div class="za-systems-online is-online" role="status"></div>'
+            '<button data-cmd="current">CURRENT</button><button data-cmd="fleet">FLEET</button>'
         )
         failures: list[str] = []
         release_consistency.check_v34_public_surface("index.html", text, failures, "test")
