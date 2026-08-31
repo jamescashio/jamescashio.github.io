@@ -67,7 +67,7 @@ function expandScript(scripts, name, seen = new Set()) {
   });
 }
 
-test("package metadata and deterministic local gates define the V34 release", async () => {
+test("package metadata and deterministic local gates define the V35 release", async () => {
   const packageJson = JSON.parse(await read("package.json"));
   assert.equal(packageJson.version, "35.0.0");
   for (const dependency of [
@@ -91,16 +91,19 @@ test("package metadata and deterministic local gates define the V34 release", as
     packageJson.scripts["test:node"],
     "tsc --noEmit",
     "vite build",
+    "node --import tsx scripts/prerender.mts",
     packageJson.scripts["test:release"],
   ]);
   assert.match(expandedTest[0], /^node --import tsx --test /);
-  assert.match(expandedTest[3], /^python -m unittest /);
+  assert.match(expandedTest[0], /tests\/prerender\.test\.mjs/);
+  assert.match(expandedTest[4], /^python -m unittest /);
   assert.deepEqual(expandScript(packageJson.scripts, "verify"), [
     packageJson.scripts.lint,
     packageJson.scripts["format:check"],
     packageJson.scripts["test:node"],
     "tsc --noEmit",
     "vite build",
+    "node --import tsx scripts/prerender.mts",
     "node scripts/check_layout_runtime.mjs",
     packageJson.scripts["test:release"],
     "python scripts/public_repo_guard.py",
@@ -154,7 +157,7 @@ test("the document preloads only the critical fonts and one responsive AVIF post
 
   assert.deepEqual(
     fonts.map((link) => link.getAttribute("href")),
-    ["/fonts/orbitron-900.woff2", "/fonts/exo2-500.woff2", "/fonts/jetbrains-400.woff2"],
+    ["/fonts/orbitron-900.woff2"],
   );
   for (const font of fonts) {
     assert.equal(font.getAttribute("type"), "font/woff2");
@@ -178,7 +181,27 @@ test("the document preloads only the critical fonts and one responsive AVIF post
       priority: "high",
     },
   );
-  assert.equal(preloads.length, 4, "WebP, JPEG, and noncritical fonts must not be preloaded");
+  assert.equal(preloads.length, 2, "WebP, JPEG, and noncritical fonts must not be preloaded");
+});
+
+test("the built document contains one real prerendered command deck with external hashed assets", async () => {
+  const dom = new JSDOM(await read("dist/index.html"));
+  const document = dom.window.document;
+  const roots = [...document.querySelectorAll("#root")];
+
+  assert.equal(roots.length, 1, "the built document must expose exactly one app root");
+  assert.equal(roots[0].getAttribute("data-prerendered"), "v35");
+  assert.match(roots[0].textContent ?? "", /OWN THE IRON/);
+  assert.equal(roots[0].querySelectorAll("section[data-deck]").length, 9);
+  assert.ok(roots[0].querySelector('[aria-label="CONTACT deck"]'));
+  assert.equal(roots[0].children.length, 1, "the root must contain only the shared React tree");
+
+  const scripts = [...document.querySelectorAll('script[type="module"][src]')];
+  const styles = [...document.querySelectorAll('link[rel="stylesheet"][href]')];
+  assert.equal(scripts.length, 1);
+  assert.equal(styles.length, 1);
+  assert.match(scripts[0].getAttribute("src") ?? "", /^\/assets\/index-[\w-]+\.js$/);
+  assert.match(styles[0].getAttribute("href") ?? "", /^\/assets\/index-[\w-]+\.css$/);
 });
 
 test("public metadata and redirect fallback keep fleet and routing provenance distinct", async () => {

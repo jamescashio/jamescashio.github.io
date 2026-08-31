@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type Ref } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type Ref } from "react";
 import {
   ARTICLES,
   CRAFT,
@@ -62,6 +62,9 @@ import { PowerOn } from "./power-on";
 import { ViewscreenHud } from "./viewscreen-hud";
 import { ExecutiveStill } from "./executive-still";
 
+const INITIAL_VIEWPORT = { height: 900, width: 1440 } as const;
+const useIsomorphicLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
+
 export function CommandDeck() {
   const scRef = useRef<HTMLDivElement>(null);
   const copyCol = useRef<HTMLDivElement>(null);
@@ -124,20 +127,13 @@ export function CommandDeck() {
   // button, so Bit points at it once and then never again this session.
   const [bitNudge, setBitNudge] = useState(false);
   const bitNudgeSpent = useRef(false);
-  // Read from a lazy initialiser rather than an effect: settling the preference
-  // after mount changed layout heights on the first paint and moved deep link
-  // targets out from under a scroll that had already been issued.
-  const [reducedMotion, setReducedMotion] = useState(
-    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-  );
+  const [reducedMotion, setReducedMotion] = useState(false);
   const [motionPreferenceSettled, setMotionPreferenceSettled] = useState(false);
   const [flash, setFlash] = useState(false);
   const [flashKey, setFlashKey] = useState(0);
   const [afFlash, setAfFlash] = useState(false);
   const [hudYield, setHudYield] = useState(false);
-  const [eveLogHeight, setEveLogHeight] = useState(() =>
-    eveConsoleLogHeight({ height: window.innerHeight, width: window.innerWidth }),
-  );
+  const [eveLogHeight, setEveLogHeight] = useState(() => eveConsoleLogHeight(INITIAL_VIEWPORT));
   const [rips, setRips] = useState<{ id: number; x: number; y: number }[]>([]);
   const [sweep, setSweep] = useState(false);
   const [flightElapsed, setFlightElapsed] = useState(0);
@@ -173,7 +169,7 @@ export function CommandDeck() {
   const lastDeck = useRef(0);
   const swipeX = useRef<number | null>(null);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     setReducedMotion(media.matches);
     setEveLogHeight(eveConsoleLogHeight({ height: window.innerHeight, width: window.innerWidth }));
@@ -184,6 +180,22 @@ export function CommandDeck() {
     media.addEventListener("change", onChange);
     return () => media.removeEventListener("change", onChange);
   }, []);
+
+  useIsomorphicLayoutEffect(() => {
+    const sections = [
+      ...(scRef.current?.querySelectorAll<HTMLElement>('section[data-deck]:not([data-deck="0"])') ?? []),
+    ];
+    for (const section of sections) {
+      section.style.contentVisibility = "auto";
+      section.style.containIntrinsicSize = "auto 100dvh";
+    }
+    return () => {
+      for (const section of sections) {
+        section.style.removeProperty("content-visibility");
+        section.style.removeProperty("contain-intrinsic-size");
+      }
+    };
+  }, [mode]);
 
   useEffect(() => {
     const on = (e: PointerEvent) => {
@@ -201,7 +213,11 @@ export function CommandDeck() {
     const measure = () => {
       window.cancelAnimationFrame(frame);
       frame = window.requestAnimationFrame(() => {
-        const targets = [...document.querySelectorAll<HTMLElement>("[data-hud-clear]")].map((element) => {
+        const targets = [
+          ...(scroller?.querySelectorAll<HTMLElement>(
+            `section[data-deck="${deck}"] [data-hud-clear], footer[data-hud-clear]`,
+          ) ?? []),
+        ].map((element) => {
           const rect = element.getBoundingClientRect();
           return { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom };
         });
@@ -221,7 +237,7 @@ export function CommandDeck() {
       window.removeEventListener("resize", measure);
       observer?.disconnect();
     };
-  }, [mode]);
+  }, [deck, mode]);
 
   useEffect(() => {
     if (bitNudgeSpent.current || deck !== 0 || photo || palette || tour) return;
@@ -537,7 +553,7 @@ export function CommandDeck() {
       const el = listSections()[i]?.current;
       const sc = scRef.current;
       if (!el || !sc) return;
-      if (source !== "restore" && useDeck.getState().deck !== i) beginProgrammaticScroll(i);
+      if (useDeck.getState().deck !== i) beginProgrammaticScroll(i);
       const top = Math.max(0, el.offsetTop - 8);
       if (!animateNavigation) {
         pendingSmoothScrollTop.current = null;
@@ -587,6 +603,18 @@ export function CommandDeck() {
       const historyMode = hashWriteModeForNavigation(source);
       if (historyMode) syncHash(i, selectedArticle, historyMode);
       if (source !== "restore") bit("yes");
+      if (source === "restore") {
+        clearResizeAnchor();
+        resizeAnchorTimer.current = window.setTimeout(() => {
+          resizeAnchorTimer.current = null;
+          resizeAnchorFrame.current = window.requestAnimationFrame(() => {
+            resizeAnchorFrame.current = 0;
+            const target = listSections()[i]?.current;
+            if (!target || !scRef.current) return;
+            scRef.current.scrollTop = Math.max(0, target.offsetTop - 8);
+          });
+        }, 120);
+      }
       window.setTimeout(() => {
         measureClear();
       }, 420);
@@ -597,6 +625,7 @@ export function CommandDeck() {
       chapter,
       clearChapter,
       clearCinePulse,
+      clearResizeAnchor,
       cinePulse,
       clearSweep,
       measureClear,

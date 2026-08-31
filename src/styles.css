@@ -8,14 +8,14 @@
   font-family: "Orbitron";
   font-style: normal;
   font-weight: 600;
-  font-display: swap;
+  font-display: optional;
   src: url("/fonts/orbitron-600.woff2") format("woff2");
 }
 @font-face {
   font-family: "Orbitron";
   font-style: normal;
   font-weight: 700;
-  font-display: swap;
+  font-display: optional;
   src: url("/fonts/orbitron-700.woff2") format("woff2");
 }
 @font-face {
@@ -29,35 +29,35 @@
   font-family: "Exo 2";
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: optional;
   src: url("/fonts/exo2-500.woff2") format("woff2");
 }
 @font-face {
   font-family: "Exo 2";
   font-style: normal;
   font-weight: 500;
-  font-display: swap;
+  font-display: optional;
   src: url("/fonts/exo2-500.woff2") format("woff2");
 }
 @font-face {
   font-family: "Exo 2";
   font-style: normal;
   font-weight: 700;
-  font-display: swap;
+  font-display: optional;
   src: url("/fonts/exo2-700.woff2") format("woff2");
 }
 @font-face {
   font-family: "JetBrains Mono";
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: optional;
   src: url("/fonts/jetbrains-400.woff2") format("woff2");
 }
 @font-face {
   font-family: "JetBrains Mono";
   font-style: normal;
   font-weight: 600;
-  font-display: swap;
+  font-display: optional;
   src: url("/fonts/jetbrains-600.woff2") format("woff2");
 }
 

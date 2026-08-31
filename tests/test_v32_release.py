@@ -274,6 +274,20 @@ class V34ReleaseContractTests(unittest.TestCase):
         self.assertIn('href="/assets/', built)
         self.assertIsNone(re.search(r"/v\d+/", built, flags=re.IGNORECASE))
 
+    def test_built_root_is_the_single_prerendered_react_command_deck(self) -> None:
+        built = read("dist/index.html")
+        roots = re.findall(r'<div\b[^>]*\bid="root"[^>]*>', built)
+        self.assertEqual(len(roots), 1)
+        self.assertIn('data-prerendered="v35"', roots[0])
+        self.assertIn("OWN THE IRON", built)
+        self.assertEqual(len(re.findall(r'data-deck="\d"', built)), 9)
+        self.assertIn('aria-label="CONTACT deck"', built)
+        self.assertEqual(len(re.findall(r'<script\b[^>]*\bsrc="/assets/index-[\w-]+\.js"', built)), 1)
+        self.assertEqual(
+            len(re.findall(r'<link\b[^>]*\bhref="/assets/index-[\w-]+\.css"', built)),
+            1,
+        )
+
     def test_seven_articles_runs_a_motion_safe_proof_flight(self) -> None:
         for marker in ("TEST_ROUTE", "drawPatrol", "drawTargetVector", "RANGE SWEEP", "PROOF FLIGHT"):
             self.assertIn(marker, self.envelope)
