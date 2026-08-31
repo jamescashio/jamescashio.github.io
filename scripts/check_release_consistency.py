@@ -147,6 +147,7 @@ class PublicSurfaceParser(HTMLParser):
         self._open_tags: list[str] = []
         self._safe_current_depth = 0
         self._safe_current_direct = False
+        self._current_controls: list[bool] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         self.visible_text.append(" ")
@@ -154,6 +155,7 @@ class PublicSurfaceParser(HTMLParser):
         if tag == "button" and dict(attrs).get("data-cmd") == "current":
             self._safe_current_depth += 1
             self._safe_current_direct = True
+            self._current_controls.append(False)
         elif self._safe_current_depth:
             self._safe_current_direct = False
         for name, value in attrs:
@@ -172,8 +174,15 @@ class PublicSurfaceParser(HTMLParser):
 
     def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         self.handle_starttag(tag, attrs)
+        self.handle_endtag(tag)
 
     def handle_endtag(self, tag: str) -> None:
+        if tag == "button" and self._safe_current_depth and self._current_controls:
+            # A direct exact CURRENT label is already represented structurally
+            # and safe in isolation. Nested or self-closing controls need an
+            # explicit typed marker so surrounding status text is still scanned.
+            if not self._current_controls.pop():
+                self.visible_text.append(" CURRENT ")
         # Only a real block close is a sentence boundary. An unmatched malformed
         # close stays whitespace so HOSTS</div>ONLINE cannot evade the guard.
         if tag in self._open_tags:
@@ -190,7 +199,9 @@ class PublicSurfaceParser(HTMLParser):
 
     def handle_data(self, data: str) -> None:
         # HTMLParser preserves source order even for fragments and bad close tags.
-        if not (self._safe_current_depth and self._safe_current_direct and data.strip() == "CURRENT"):
+        if self._safe_current_depth and self._safe_current_direct and data.strip() == "CURRENT":
+            self._current_controls[-1] = True
+        else:
             self.visible_text.append(data)
 
 
@@ -223,7 +234,7 @@ def public_claim_tokens(text: str) -> list[str]:
     return merged
 
 
-def has_stale_current_public_claim(text: str) -> bool:
+def has_stale_current_public_claim(text: str, *, allow_ordinary_online: bool = True) -> bool:
     normalized = html.unescape(text)
     normalized = "".join(char for char in normalized if unicodedata.category(char) not in {"Cf", "Mn", "Mc", "Me"})
     normalized = unicodedata.normalize("NFKC", normalized)
@@ -235,12 +246,17 @@ def has_stale_current_public_claim(text: str) -> bool:
     # status assertion; unrelated sentences cannot be accidentally combined.
     for sentence in re.split(r"[.!?]+(?=\s|$)\s*", normalized):
         tokens = public_claim_tokens(sentence)
-        # After narrowly approved dated phrases and typed structural tokens are
-        # removed, any public (capitalized) ONLINE assertion is a live-status
-        # claim. Ordinary prose such as "go online with friends" remains a
-        # separate non-status sentence.
-        if any(match.group(0) != "online" for match in re.finditer(r"\bonline\b", sentence, re.IGNORECASE)):
-            return True
+        if "online" in tokens:
+            # The sole prose exception is the ordinary verb construction "go
+            # online" in a separate sentence with no status marker. Attributes
+            # never receive this exception.
+            ordinary_go_online = (
+                allow_ordinary_online
+                and any(tokens[index : index + 2] == ["go", "online"] for index in range(len(tokens) - 1))
+                and not (set(tokens) & (CURRENT_CLAIM_SUBJECTS | CURRENT_CLAIM_QUALIFIERS | {"current"}))
+            )
+            if not ordinary_go_online:
+                return True
         for index, token in enumerate(tokens):
             if token not in CURRENT_CLAIM_SUBJECTS:
                 continue
@@ -256,7 +272,7 @@ def public_surface_has_stale_current_claim(text: str) -> bool:
     parser = PublicSurfaceParser()
     parser.feed(text)
     parser.close()
-    if any(has_stale_current_public_claim(value) for value in parser.attribute_values):
+    if any(has_stale_current_public_claim(value, allow_ordinary_online=False) for value in parser.attribute_values):
         return True
     visible = "".join(parser.visible_text)
     return has_stale_current_public_claim(blank_exact_approved_visible_phrases(visible))
@@ -283,7 +299,9 @@ def has_stale_current_code_literal(literal: dict[str, str]) -> bool:
     value = literal["value"].replace("\u00c2\u00b7", "\u00b7")
     if literal.get("context") == "class":
         value = " ".join(token for token in value.split() if token not in APPROVED_TECHNICAL_CLASS_TOKENS)
-    return bool(value) and has_stale_current_public_claim(blank_exact_approved_visible_phrases(value))
+    return bool(value) and has_stale_current_public_claim(
+        blank_exact_approved_visible_phrases(value), allow_ordinary_online=False
+    )
 
 
 def check_v34_public_surface(relative: str, text: str, failures: list[str], label: str) -> None:

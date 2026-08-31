@@ -245,10 +245,32 @@ class V34ReleaseContractTests(unittest.TestCase):
             "pool": "POOL ONLINE",
             "control plane": "CONTROL PLANE ONLINE",
             "gateway": "GATEWAY ONLINE",
+            "lower cluster": "cluster online",
+            "lower node": "node online",
+            "lower pool": "pool online",
+            "lower control plane": "control plane online",
+            "lower gateway": "gateway online",
+            "mixed cluster": "CLUSTER online",
+            "lower attribute": '<div title="cluster online"></div>',
         }
         for label, bypass in fixtures.items():
             failures: list[str] = []
             release_consistency.check_v34_public_surface("index.html", f"{dated_surface} · {bypass}", failures, "test")
+            with self.subTest(label=label):
+                self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
+
+    def test_public_surface_guard_balances_self_closing_current_controls(self) -> None:
+        dated_surface = (
+            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+        )
+        fixtures = {
+            "self closing then status": "<button data-cmd='current'/>CURRENT <span>HOSTS</span> STATUS",
+            "nested self closing": "<button data-cmd='current'><span/></button>HOSTS STATUS",
+        }
+        for label, markup in fixtures.items():
+            failures: list[str] = []
+            release_consistency.check_v34_public_surface("index.html", f"{dated_surface} · {markup}", failures, "test")
             with self.subTest(label=label):
                 self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
 
