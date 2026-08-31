@@ -438,6 +438,132 @@ export function browserVersionAcceptanceFailures(version, expectedMajorValue) {
   return [];
 }
 
+const VALIDITY_VIEWPORT_WIDTHS = [768, 834, 1024, 1280];
+const VALIDITY_LABELS = [
+  "EXPORT STATUS · DATED",
+  "EXPORT VALID · 29D LEFT",
+  "EXPORT VALID · 1D LEFT",
+  "EXPORT EXPIRED",
+];
+const VALIDITY_GEOMETRY_TOLERANCE_PX = 0.5;
+
+function validityRectsOverlap(first, second) {
+  return (
+    first.left < second.right && first.right > second.left && first.top < second.bottom && first.bottom > second.top
+  );
+}
+
+function validityRectMatches(first, second) {
+  return (
+    hasFiniteRect(first) &&
+    hasFiniteRect(second) &&
+    RECT_FIELDS.every((property) => Math.abs(first[property] - second[property]) <= VALIDITY_GEOMETRY_TOLERANCE_PX)
+  );
+}
+
+function validitySurfaceFailures(surface, surfaceName, viewportWidth, stateName) {
+  const failures = [];
+  if (!hasFiniteRect(surface?.rect) || !hasConsistentRect(surface.rect)) {
+    failures.push(`${stateName} ${surfaceName} must provide a finite consistent rectangle`);
+    return failures;
+  }
+  if (surface.rect.left < 0 || surface.rect.right > viewportWidth) {
+    failures.push(`${stateName} ${surfaceName} must remain within the viewport`);
+  }
+  const label = surface.label;
+  if (
+    !Number.isFinite(label?.clientWidth) ||
+    !Number.isFinite(label?.scrollWidth) ||
+    label.clientWidth <= 0 ||
+    label.scrollWidth <= 0 ||
+    label.scrollWidth > label.clientWidth + VALIDITY_GEOMETRY_TOLERANCE_PX
+  ) {
+    failures.push(`${stateName} ${surfaceName} label must not overflow`);
+  }
+  if (
+    !hasFiniteRect(label?.rect) ||
+    !hasConsistentRect(label.rect) ||
+    label.rect.left < surface.rect.left - VALIDITY_GEOMETRY_TOLERANCE_PX ||
+    label.rect.right > surface.rect.right + VALIDITY_GEOMETRY_TOLERANCE_PX ||
+    label.rect.top < surface.rect.top - VALIDITY_GEOMETRY_TOLERANCE_PX ||
+    label.rect.bottom > surface.rect.bottom + VALIDITY_GEOMETRY_TOLERANCE_PX
+  ) {
+    failures.push(`${stateName} ${surfaceName} label must remain contained without clipping`);
+  }
+  if (
+    label?.ariaHidden === true ||
+    label?.display === "none" ||
+    ["hidden", "collapse"].includes(label?.visibility) ||
+    ["hidden", "clip"].includes(label?.overflowX) ||
+    label?.textOverflow === "ellipsis" ||
+    Number(label?.opacity) === 0
+  ) {
+    failures.push(`${stateName} ${surfaceName} label must remain accessible without clipping or ellipsis`);
+  }
+  if (!Array.isArray(surface.siblings)) {
+    failures.push(`${stateName} ${surfaceName} siblings must be enumerated`);
+  } else {
+    for (const sibling of surface.siblings) {
+      if (!hasFiniteRect(sibling?.rect) || !hasConsistentRect(sibling.rect)) {
+        failures.push(`${stateName} ${surfaceName} sibling ${sibling?.name ?? "unknown"} must have finite geometry`);
+      } else if (validityRectsOverlap(surface.rect, sibling.rect)) {
+        failures.push(`${stateName} ${surfaceName} must not overlap ${sibling.name ?? "an adjacent sibling"}`);
+      }
+    }
+  }
+  return failures;
+}
+
+export function validityGeometryAcceptanceFailures(states) {
+  const failures = [];
+  const expectedStates = VALIDITY_VIEWPORT_WIDTHS.flatMap((viewportWidth) =>
+    [false, true].flatMap((railOpen) =>
+      [false, true].map((tour) => `${viewportWidth}:${railOpen ? "open" : "stowed"}:${tour ? "active" : "inactive"}`),
+    ),
+  );
+  const stateKeys = Array.isArray(states)
+    ? states.map(
+        (state) =>
+          `${state?.viewportWidth}:${state?.railOpen ? "open" : "stowed"}:${state?.tour ? "active" : "inactive"}`,
+      )
+    : [];
+  if (
+    stateKeys.length !== expectedStates.length ||
+    expectedStates.some((expected) => stateKeys.filter((key) => key === expected).length !== 1)
+  ) {
+    failures.push("validity geometry must cover 768, 834, 1024, and 1280 with each rail and flight state exactly once");
+  }
+  for (const state of states ?? []) {
+    const stateName = `${state.viewportWidth}px ${state.railOpen ? "open rail" : "stowed rail"} ${state.tour ? "active flight" : "inactive flight"}`;
+    if (
+      !Array.isArray(state.samples) ||
+      state.samples.length !== VALIDITY_LABELS.length ||
+      VALIDITY_LABELS.some((label) => state.samples.filter((sample) => sample?.label === label).length !== 1)
+    ) {
+      failures.push(`${stateName} must cover the placeholder, longest valid, 1D, and expired labels exactly once`);
+      continue;
+    }
+    const baseline = state.samples[0];
+    for (const sample of state.samples) {
+      for (const surfaceName of ["header", "footer"]) {
+        const surface = sample[surfaceName];
+        failures.push(...validitySurfaceFailures(surface, surfaceName, state.viewportWidth, stateName));
+        if (!validityRectMatches(surface?.rect, baseline[surfaceName]?.rect)) {
+          failures.push(`${stateName} ${surfaceName} geometry must stay fixed across validity labels`);
+        }
+        const baselineSiblings = baseline[surfaceName]?.siblings ?? [];
+        for (const sibling of surface?.siblings ?? []) {
+          const original = baselineSiblings.find((candidate) => candidate.name === sibling.name);
+          if (!original || !validityRectMatches(sibling.rect, original.rect)) {
+            failures.push(`${stateName} ${surfaceName} sibling ${sibling.name} geometry must stay fixed across labels`);
+          }
+        }
+      }
+    }
+  }
+  return failures;
+}
+
 export function visualPaintEvidence(style, hasText, pseudoStyles, ancestorStyles) {
   const colorPaints = (color) => {
     if (!color || color === "transparent") return false;

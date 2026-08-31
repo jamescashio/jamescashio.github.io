@@ -1015,3 +1015,68 @@ test("browser version acceptance is optional locally and fail-closed when Chrome
   );
   assert.ok(validate(chrome147, "not-a-major").some((failure) => /positive integer/.test(failure)));
 });
+
+function validitySurface(left, width, labelWidth = width - 24) {
+  return {
+    rect: { left, right: left + width, top: 12, bottom: 56, width, height: 44 },
+    label: {
+      ariaHidden: false,
+      clientWidth: labelWidth,
+      scrollWidth: labelWidth,
+      rect: { left: left + 12, right: left + 12 + labelWidth, top: 12, bottom: 56, width: labelWidth, height: 44 },
+      display: "block",
+      visibility: "visible",
+      overflowX: "visible",
+      textOverflow: "clip",
+    },
+    siblings: [
+      {
+        name: "audio",
+        rect: { left: left + width + 8, right: left + width + 52, top: 12, bottom: 56, width: 44, height: 44 },
+      },
+    ],
+  };
+}
+
+function validValidityGeometryMatrix() {
+  const labels = ["EXPORT STATUS · DATED", "EXPORT VALID · 29D LEFT", "EXPORT VALID · 1D LEFT", "EXPORT EXPIRED"];
+  return [768, 834, 1024, 1280].flatMap((viewportWidth) =>
+    [false, true].flatMap((railOpen) =>
+      [false, true].map((tour) => ({
+        viewportWidth,
+        railOpen,
+        tour,
+        samples: labels.map((label) => ({
+          label,
+          header: validitySurface(viewportWidth - 300, 180),
+          footer: validitySurface(240, 150),
+        })),
+      })),
+    ),
+  );
+}
+
+test("validity geometry acceptance covers every supported width, rail, flight, and label state", () => {
+  const validate = runtimeSupport.validityGeometryAcceptanceFailures ?? (() => ["validator unavailable"]);
+  assert.deepEqual(validate(validValidityGeometryMatrix()), []);
+});
+
+test("validity geometry acceptance rejects overflow, inaccessible text, overlap, escape, and label shift", () => {
+  const validate = runtimeSupport.validityGeometryAcceptanceFailures ?? (() => ["validator unavailable"]);
+  const matrix = validValidityGeometryMatrix();
+  matrix[0].samples[0].header.label.scrollWidth += 1;
+  matrix[1].samples[0].footer.label.ariaHidden = true;
+  matrix[2].samples[0].header.siblings[0].rect.left -= 9;
+  matrix[2].samples[0].header.siblings[0].rect.right -= 9;
+  matrix[3].samples[0].footer.rect.left = -1;
+  matrix[3].samples[0].footer.rect.right = 149;
+  matrix[4].samples[1].header.rect.width += 1;
+  matrix[4].samples[1].header.rect.right += 1;
+
+  const failures = validate(matrix);
+  assert.ok(failures.some((failure) => /header label must not overflow/.test(failure)));
+  assert.ok(failures.some((failure) => /footer label must remain accessible/.test(failure)));
+  assert.ok(failures.some((failure) => /header must not overlap audio/.test(failure)));
+  assert.ok(failures.some((failure) => /footer must remain within the viewport/.test(failure)));
+  assert.ok(failures.some((failure) => /header geometry must stay fixed/.test(failure)));
+});

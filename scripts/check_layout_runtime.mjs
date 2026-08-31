@@ -21,6 +21,7 @@ import {
   runWithLayoutCleanup,
   tickerTelemetryAcceptanceFailures,
   touchTargetAcceptanceFailures,
+  validityGeometryAcceptanceFailures,
   visualPaintEvidence,
 } from "./layout-runtime-support.mjs";
 
@@ -170,6 +171,185 @@ async function settleViewport(send, width, mobile, height = 844) {
     expression: "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))",
     awaitPromise: true,
   });
+}
+
+async function setValidityLayoutState(send, width, railOpen, tour) {
+  await settleViewport(send, width, false, 900);
+  await send("Runtime.evaluate", {
+    expression: `(async () => {
+      const desiredRailOpen = ${railOpen};
+      const desiredTour = ${tour};
+      const railToggle = document.querySelector(
+        desiredRailOpen ? 'button[aria-label="Expand command rail"]' : 'button[aria-label="Stow command rail"]',
+      );
+      railToggle?.click();
+      if (railToggle) await new Promise((resolve) => setTimeout(resolve, 360));
+      const flightToggle = document.querySelector(
+        desiredTour
+          ? '.za-command-rail button[aria-label="Run the 30-second flight"]'
+          : '.za-command-rail button[aria-label="Stop the 30-second flight"]',
+      );
+      flightToggle?.click();
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      return {
+        railOpen: Boolean(document.querySelector('button[aria-label="Stow command rail"]')),
+        tour: Boolean(document.querySelector('.za-command-header')?.textContent?.includes('AUTOPILOT')),
+      };
+    })()`,
+    awaitPromise: true,
+    returnByValue: true,
+  });
+}
+
+async function collectValidityGeometryState(send, viewportWidth, railOpen, tour) {
+  await setValidityLayoutState(send, viewportWidth, railOpen, tour);
+  const evaluation = await send("Runtime.evaluate", {
+    expression: `(() => {
+      const labels = [
+        "EXPORT STATUS · DATED",
+        "EXPORT VALID · 29D LEFT",
+        "EXPORT VALID · 1D LEFT",
+        "EXPORT EXPIRED",
+      ];
+      const chip = document.querySelector("[data-validity-chip]");
+      const chipLabel = document.querySelector("[data-validity-label]");
+      const footer = document.querySelector("[data-validity-footer-status]");
+      const footerLabel = document.querySelector("[data-validity-footer-label]");
+      const header = document.querySelector(".za-command-header");
+      const footerRow = footer?.parentElement;
+      const rect = (element) => {
+        const value = element.getBoundingClientRect();
+        return { left: value.left, right: value.right, top: value.top, bottom: value.bottom, width: value.width, height: value.height };
+      };
+      const textEvidence = (element) => {
+        const style = getComputedStyle(element);
+        return {
+          ariaHidden: Boolean(element.closest('[aria-hidden="true"]')),
+          clientWidth: element.clientWidth,
+          scrollWidth: element.scrollWidth,
+          rect: rect(element),
+          display: style.display,
+          visibility: style.visibility,
+          overflowX: style.overflowX,
+          textOverflow: style.textOverflow,
+          opacity: style.opacity,
+        };
+      };
+      const isVisible = (element) => {
+        const value = rect(element);
+        const style = getComputedStyle(element);
+        return value.width > 0 && value.height > 0 && style.display !== "none" && style.visibility !== "hidden";
+      };
+      const siblings = (surface, owner, outerOwner) => {
+        const candidates = [
+          ...owner.children,
+          ...(outerOwner ? [...outerOwner.children].filter((element) => element !== owner) : []),
+        ];
+        return candidates
+          .filter((element) => element !== surface && !element.contains(surface) && isVisible(element))
+          .map((element, index) => ({
+            name: element.getAttribute("aria-label") || element.textContent?.replace(/\\s+/g, " ").trim() || "sibling-" + index,
+            rect: rect(element),
+          }));
+      };
+      if (!chip || !chipLabel || !footer || !footerLabel || !header || !footerRow) {
+        return { error: "validity geometry hooks are missing", samples: [] };
+      }
+      const original = { chip: chipLabel.textContent, footer: footerLabel.textContent };
+      const samples = labels.map((label) => {
+        chipLabel.textContent = label;
+        footerLabel.textContent = label === "EXPORT EXPIRED" ? "DATED EXPORT EXPIRED" : "DATED EXPORT VALID";
+        return {
+          label,
+          header: {
+            rect: rect(chip),
+            label: textEvidence(chipLabel),
+            siblings: siblings(chip, chip.parentElement, header),
+          },
+          footer: {
+            rect: rect(footer),
+            label: textEvidence(footerLabel),
+            siblings: siblings(footer, footerRow),
+          },
+        };
+      });
+      chipLabel.textContent = original.chip;
+      footerLabel.textContent = original.footer;
+      return {
+        viewportWidth: innerWidth,
+        railOpen: Boolean(document.querySelector('button[aria-label="Stow command rail"]')),
+        tour: Boolean(header.textContent?.includes("AUTOPILOT")),
+        samples,
+      };
+    })()`,
+    returnByValue: true,
+  });
+  if (evaluation.exceptionDetails) {
+    throw new Error(evaluation.exceptionDetails.exception?.description ?? evaluation.exceptionDetails.text);
+  }
+  return evaluation.result.value;
+}
+
+function summarizeValidityGeometryState(state) {
+  const summarizeSurface = (surfaceName) => {
+    const baseline = state.samples[0][surfaceName];
+    const shifts = state.samples.flatMap((sample) =>
+      ["left", "right", "top", "bottom", "width", "height"].map((property) =>
+        Math.abs(sample[surfaceName].rect[property] - baseline.rect[property]),
+      ),
+    );
+    const siblingOverlaps = state.samples.flatMap((sample) =>
+      sample[surfaceName].siblings.map((sibling) => {
+        const surface = sample[surfaceName].rect;
+        const other = sibling.rect;
+        const verticalOverlap = Math.max(0, Math.min(surface.bottom, other.bottom) - Math.max(surface.top, other.top));
+        const horizontalOverlap = Math.max(
+          0,
+          Math.min(surface.right, other.right) - Math.max(surface.left, other.left),
+        );
+        return verticalOverlap > 0 ? horizontalOverlap : 0;
+      }),
+    );
+    const siblingGaps = state.samples.flatMap((sample) =>
+      sample[surfaceName].siblings.flatMap((sibling) => {
+        const surface = sample[surfaceName].rect;
+        const other = sibling.rect;
+        const verticalOverlap = Math.max(0, Math.min(surface.bottom, other.bottom) - Math.max(surface.top, other.top));
+        if (verticalOverlap <= 0) return [];
+        if (other.right <= surface.left) return [surface.left - other.right];
+        if (other.left >= surface.right) return [other.left - surface.right];
+        return [0];
+      }),
+    );
+    return {
+      rect: baseline.rect,
+      maximumShift: Math.max(...shifts),
+      maximumLabelOverflow: Math.max(
+        ...state.samples.map((sample) =>
+          Math.max(0, sample[surfaceName].label.scrollWidth - sample[surfaceName].label.clientWidth),
+        ),
+      ),
+      maximumSiblingOverlap: Math.max(0, ...siblingOverlaps),
+      minimumSiblingGap: Math.min(...siblingGaps),
+      maximumViewportEscape: Math.max(
+        ...state.samples.map((sample) =>
+          Math.max(0, -sample[surfaceName].rect.left, sample[surfaceName].rect.right - state.viewportWidth),
+        ),
+      ),
+      labels: state.samples.map((sample) => ({
+        label: sample.label,
+        clientWidth: sample[surfaceName].label.clientWidth,
+        scrollWidth: sample[surfaceName].label.scrollWidth,
+      })),
+    };
+  };
+  return {
+    viewportWidth: state.viewportWidth,
+    railOpen: state.railOpen,
+    tour: state.tour,
+    header: summarizeSurface("header"),
+    footer: summarizeSurface("footer"),
+  };
 }
 
 async function collectTickerTelemetry(send, width, height, mobile) {
@@ -926,57 +1106,21 @@ async function main() {
       mobile: false,
     });
     await waitForApp(send);
-    const validityGeometryEvaluation = await send("Runtime.evaluate", {
-      expression: `(() => {
-        const chip = document.querySelector("[data-validity-chip]");
-        const chipLabel = document.querySelector("[data-validity-label]");
-        const footer = document.querySelector("[data-validity-footer-status]");
-        const footerLabel = document.querySelector("[data-validity-footer-label]");
-        const audio = document.querySelector('.za-command-header button[aria-label*="selection audio"]');
-        if (!chip || !chipLabel || !footer || !footerLabel || !audio) {
-          return { ok: false, failures: ["validity geometry hooks are missing"], samples: [] };
+    const validityGeometry = [];
+    for (const viewportWidth of [768, 834, 1024, 1280]) {
+      for (const railOpen of [false, true]) {
+        for (const tour of [false, true]) {
+          validityGeometry.push(await collectValidityGeometryState(send, viewportWidth, railOpen, tour));
         }
-        const original = { chip: chipLabel.textContent, footer: footerLabel.textContent };
-        const variants = [
-          ["EXPORT STATUS · DATED", "DATED EXPORT STATUS"],
-          ["EXPORT VALID · 1D LEFT", "DATED EXPORT VALID"],
-          ["EXPORT EXPIRED", "DATED EXPORT EXPIRED"],
-        ];
-        const samples = variants.map(([headerText, footerText]) => {
-          chipLabel.textContent = headerText;
-          footerLabel.textContent = footerText;
-          const chipRect = chip.getBoundingClientRect();
-          const footerRect = footer.getBoundingClientRect();
-          const audioRect = audio.getBoundingClientRect();
-          return {
-            headerText,
-            footerText,
-            chip: { left: chipRect.left, top: chipRect.top, width: chipRect.width, height: chipRect.height },
-            footer: { left: footerRect.left, top: footerRect.top, width: footerRect.width, height: footerRect.height },
-            audio: { left: audioRect.left, top: audioRect.top },
-          };
-        });
-        chipLabel.textContent = original.chip;
-        footerLabel.textContent = original.footer;
-        const baseline = samples[0];
-        const maximumShift = Math.max(...samples.slice(1).flatMap((sample) => [
-          Math.abs(sample.chip.left - baseline.chip.left),
-          Math.abs(sample.chip.top - baseline.chip.top),
-          Math.abs(sample.chip.width - baseline.chip.width),
-          Math.abs(sample.chip.height - baseline.chip.height),
-          Math.abs(sample.footer.left - baseline.footer.left),
-          Math.abs(sample.footer.top - baseline.footer.top),
-          Math.abs(sample.footer.width - baseline.footer.width),
-          Math.abs(sample.footer.height - baseline.footer.height),
-          Math.abs(sample.audio.left - baseline.audio.left),
-          Math.abs(sample.audio.top - baseline.audio.top),
-        ]));
-        const failures = maximumShift > 0.5 ? ["validity text caused " + maximumShift + "px of layout shift"] : [];
-        return { ok: failures.length === 0, failures, maximumShift, samples };
-      })()`,
-      returnByValue: true,
-    });
-    const validityGeometry = validityGeometryEvaluation.result.value;
+      }
+    }
+    await setValidityLayoutState(send, 1280, false, false);
+    const validityGeometryFailures = validityGeometryAcceptanceFailures(validityGeometry);
+    const validityGeometryResult = {
+      ok: validityGeometryFailures.length === 0,
+      failures: validityGeometryFailures,
+      states: validityGeometry.map(summarizeValidityGeometryState),
+    };
     const assetEvaluation = await send("Runtime.evaluate", {
       expression: `(async () => {
         const expected = [
@@ -1700,7 +1844,7 @@ async function main() {
           motionPreference,
           snapshotGeometry,
           tickerTelemetry,
-          validityGeometry,
+          validityGeometry: validityGeometryResult,
           mobile320: narrowResult,
         },
         null,
@@ -1718,7 +1862,7 @@ async function main() {
       true,
       `Direct-link hydration emitted browser warnings/errors or lost its built tree: ${JSON.stringify(hydrationConsole)}`,
     );
-    assert.equal(validityGeometry.ok, true, validityGeometry.failures.join("; "));
+    assert.equal(validityGeometryResult.ok, true, validityGeometryResult.failures.join("; "));
     assert.equal(desktopLayout.ok, true, desktopLayout.failures.join("; "));
     assert.equal(
       desktopFlightTelemetry.ok,

@@ -168,14 +168,22 @@
     background: rgba(5, 6, 10, 0.55);
   }
   .za-validity-chip {
+    flex: 0 0 34ch;
     inline-size: 34ch;
     justify-content: center;
     white-space: nowrap;
   }
+  .za-validity-chip [data-validity-label] {
+    display: block;
+  }
   .za-validity-footer-status {
+    flex: 0 0 26ch;
     inline-size: 26ch;
     justify-content: center;
     white-space: nowrap;
+  }
+  .za-validity-footer-status [data-validity-footer-label] {
+    display: block;
   }
   .za-btn {
     display: inline-flex;
@@ -236,6 +244,21 @@
     font-size: 13px;
     letter-spacing: 0.08em;
     caret-color: var(--color-cyan);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1439px) {
+  .za-command-header .za-audio-copy,
+  .za-command-header button[aria-label*="selection audio"] .za-eq {
+    display: none !important;
+  }
+  .za-command-header .za-audio-mark {
+    display: inline !important;
+  }
+  .za-command-header button[aria-label*="selection audio"] {
+    inline-size: 44px;
+    justify-content: center;
+    padding-inline: 0;
   }
 }
 

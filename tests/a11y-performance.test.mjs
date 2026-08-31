@@ -611,8 +611,12 @@ test("the normal dim token remains at the audited readable value", () => {
 });
 
 test("validity surfaces reserve compact stable geometry for live boundary changes", () => {
-  assert.match(stylesheet, /\.za-validity-chip\s*\{[^}]*inline-size:\s*34ch\s*;/s);
-  assert.match(stylesheet, /\.za-validity-footer-status\s*\{[^}]*inline-size:\s*26ch\s*;/s);
+  assert.match(stylesheet, /\.za-validity-chip\s*\{[^}]*flex:\s*0 0 34ch\s*;[^}]*inline-size:\s*34ch\s*;/s);
+  assert.match(stylesheet, /\.za-validity-footer-status\s*\{[^}]*flex:\s*0 0 26ch\s*;[^}]*inline-size:\s*26ch\s*;/s);
+  assert.match(
+    stylesheet,
+    /@media \(min-width:\s*768px\) and \(max-width:\s*1439px\)[\s\S]*?\.za-command-header \.za-audio-copy,[\s\S]*?\{[^}]*display:\s*none !important/s,
+  );
 });
 
 test("the validity clock crosses a day and exact expiry without remounting or duplicate StrictMode timers", async () => {
