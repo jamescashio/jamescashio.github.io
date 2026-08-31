@@ -185,6 +185,11 @@
   .za-validity-footer-status [data-validity-footer-label] {
     display: block;
   }
+  .za-validity-through {
+    flex: 0 0 31ch;
+    inline-size: 31ch;
+    white-space: nowrap;
+  }
   .za-btn {
     display: inline-flex;
     align-items: center;

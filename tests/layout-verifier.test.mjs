@@ -1058,16 +1058,17 @@ function validValidityGeometryMatrix() {
 
 test("validity geometry acceptance covers every supported width, rail, flight, and label state", () => {
   const validate = runtimeSupport.validityGeometryAcceptanceFailures ?? (() => ["validator unavailable"]);
-  assert.deepEqual(validate(validValidityGeometryMatrix()), []);
+  assert.deepEqual(validate(withFullValidityEvidence()), []);
 });
 
 test("validity geometry acceptance rejects overflow, inaccessible text, overlap, escape, and label shift", () => {
   const validate = runtimeSupport.validityGeometryAcceptanceFailures ?? (() => ["validator unavailable"]);
-  const matrix = validValidityGeometryMatrix();
+  const matrix = withFullValidityEvidence();
   matrix[0].samples[0].header.label.scrollWidth += 1;
   matrix[1].samples[0].footer.label.ariaHidden = true;
-  matrix[2].samples[0].header.siblings[0].rect.left -= 9;
-  matrix[2].samples[0].header.siblings[0].rect.right -= 9;
+  const overlappingAudio = matrix[2].samples[0].header.siblings.find((sibling) => sibling.name === "audio");
+  overlappingAudio.rect.left -= 9;
+  overlappingAudio.rect.right -= 9;
   matrix[3].samples[0].footer.rect.left = -1;
   matrix[3].samples[0].footer.rect.right = 149;
   matrix[4].samples[1].header.rect.width += 1;
@@ -1079,4 +1080,224 @@ test("validity geometry acceptance rejects overflow, inaccessible text, overlap,
   assert.ok(failures.some((failure) => /header must not overlap audio/.test(failure)));
   assert.ok(failures.some((failure) => /footer must remain within the viewport/.test(failure)));
   assert.ok(failures.some((failure) => /header geometry must stay fixed/.test(failure)));
+});
+
+const fullValidityTuples = [
+  {
+    id: "ssr-placeholder",
+    source: "ssr-fixture",
+    headerLabel: "EXPORT STATUS · DATED",
+    footerLabel: "DATED EXPORT STATUS",
+    validThroughText: "VALID THRU 09-27-2026",
+  },
+  {
+    id: "live-longest",
+    source: "react-live",
+    headerLabel: "EXPORT VALID · 29D LEFT",
+    footerLabel: "DATED EXPORT VALID",
+    validThroughText: "VALID THRU 09-27-2026",
+  },
+  {
+    id: "live-1d",
+    source: "react-live",
+    headerLabel: "EXPORT VALID · 1D LEFT",
+    footerLabel: "DATED EXPORT VALID",
+    validThroughText: "VALID THRU 09-27-2026",
+  },
+  {
+    id: "live-expired",
+    source: "react-live",
+    headerLabel: "EXPORT EXPIRED",
+    footerLabel: "DATED EXPORT EXPIRED",
+    validThroughText: "VALID THRU TREAT AS HISTORY",
+  },
+];
+
+function withFullValidityEvidence(matrix = validValidityGeometryMatrix()) {
+  for (const state of matrix) {
+    state.samples.forEach((sample, index) => {
+      const deckRight = sample.header.rect.left - (state.tour ? 106 : 8);
+      sample.fullState = { ...fullValidityTuples[index] };
+      sample.identities = {
+        header: [
+          {
+            name: "validity",
+            visible: true,
+            accessibleText: sample.fullState.headerLabel,
+            rect: { ...sample.header.rect },
+          },
+          {
+            name: "audio",
+            visible: true,
+            accessibleText: "Arm selection audio · AUDIO OFF",
+            rect: { ...sample.header.siblings[0].rect },
+          },
+          {
+            name: "navigator",
+            visible: true,
+            accessibleText: "Open deck navigator",
+            rect: {
+              left: state.viewportWidth - 60,
+              right: state.viewportWidth - 16,
+              top: 12,
+              bottom: 56,
+              width: 44,
+              height: 44,
+            },
+          },
+          {
+            name: "deck",
+            visible: true,
+            accessibleText: "DECK 01 · SNAPSHOT",
+            rect: {
+              left: deckRight - 100,
+              right: deckRight,
+              top: 12,
+              bottom: 56,
+              width: 100,
+              height: 44,
+            },
+          },
+        ],
+        footer: [
+          {
+            name: "release",
+            visible: true,
+            accessibleText: 'V35 "ALL TENS"',
+            rect: { left: 20, right: 100, top: 12, bottom: 27, width: 80, height: 15 },
+          },
+          {
+            name: "revised",
+            visible: true,
+            accessibleText: "REVISED 08-28-2026",
+            rect: { left: 110, right: 230, top: 12, bottom: 27, width: 120, height: 15 },
+          },
+          {
+            name: "validity",
+            visible: true,
+            accessibleText: sample.fullState.footerLabel,
+            rect: { ...sample.footer.rect },
+          },
+          {
+            name: "verified",
+            visible: true,
+            accessibleText: "FIGURES VERIFIED 28 August 2026",
+            rect: { left: 400, right: 580, top: 12, bottom: 27, width: 180, height: 15 },
+          },
+          {
+            name: "valid-through",
+            visible: true,
+            accessibleText: sample.fullState.validThroughText,
+            rect: { left: 20, right: 170, top: 60, bottom: 75, width: 150, height: 15 },
+          },
+          {
+            name: "zero-calls",
+            visible: true,
+            accessibleText: "ZERO INFRASTRUCTURE CALLS",
+            rect: { left: 180, right: 350, top: 60, bottom: 75, width: 170, height: 15 },
+          },
+        ],
+      };
+      if (state.viewportWidth >= 1024) {
+        sample.identities.header.push({
+          name: "clock",
+          visible: true,
+          accessibleText: "SD 2026243.1",
+          rect: { left: deckRight - 198, right: deckRight - 108, top: 12, bottom: 56, width: 90, height: 44 },
+        });
+      }
+      if (state.viewportWidth >= 1280) {
+        sample.identities.header.push({
+          name: "airframe-status",
+          visible: true,
+          accessibleText: "Airframe status",
+          rect: { left: 20, right: 300, top: 12, bottom: 56, width: 280, height: 44 },
+        });
+      }
+      if (state.tour) {
+        sample.identities.header.push({
+          name: "autopilot",
+          visible: true,
+          accessibleText: "AUTOPILOT",
+          rect: {
+            left: sample.header.rect.left - 98,
+            right: sample.header.rect.left - 8,
+            top: 12,
+            bottom: 56,
+            width: 90,
+            height: 44,
+          },
+        });
+      }
+      sample.header.siblings = sample.identities.header.filter((identity) => identity.name !== "validity");
+      sample.footer.siblings = sample.identities.footer.filter((identity) => identity.name !== "validity");
+    });
+  }
+  return matrix;
+}
+
+test("validity geometry acceptance rejects an incorrect or incomplete full state tuple", () => {
+  const validate = runtimeSupport.validityGeometryAcceptanceFailures ?? (() => ["validator unavailable"]);
+  const matrix = withFullValidityEvidence();
+  matrix[0].samples[0].fullState.footerLabel = "DATED EXPORT VALID";
+  matrix[1].samples[3].fullState.validThroughText = "VALID THRU 09-27-2026";
+  const failures = validate(matrix);
+  assert.ok(failures.some((failure) => /SSR placeholder full validity tuple/.test(failure)));
+  assert.ok(failures.some((failure) => /expired full validity tuple/.test(failure)));
+});
+
+test("validity geometry acceptance rejects missing, hidden, zero-sized, escaped, or overlapping required identities", () => {
+  const validate = runtimeSupport.validityGeometryAcceptanceFailures ?? (() => ["validator unavailable"]);
+  const matrix = withFullValidityEvidence();
+  matrix[0].samples[0].identities.header = matrix[0].samples[0].identities.header.filter(
+    (identity) => identity.name !== "audio",
+  );
+  matrix[1].samples[0].identities.header.find((identity) => identity.name === "navigator").visible = false;
+  const clock = matrix
+    .find((state) => state.viewportWidth === 1024)
+    .samples[0].identities.header.find((identity) => identity.name === "clock");
+  clock.rect.width = 0;
+  clock.rect.right = clock.rect.left;
+  const escaped = matrix[3].samples[0].identities.footer.find((identity) => identity.name === "valid-through");
+  escaped.rect.left = 769;
+  escaped.rect.right = 919;
+  const overlap = matrix[4].samples[0].identities.header.find((identity) => identity.name === "audio");
+  overlap.rect.left = matrix[4].samples[0].header.rect.right - 1;
+  overlap.rect.right = overlap.rect.left + overlap.rect.width;
+
+  const failures = validate(matrix);
+  assert.ok(failures.some((failure) => /required header identity audio must be present/.test(failure)));
+  assert.ok(failures.some((failure) => /navigator must remain visible and accessible/.test(failure)));
+  assert.ok(failures.some((failure) => /clock must have nonzero finite geometry/.test(failure)));
+  assert.ok(failures.some((failure) => /valid-through must remain within the viewport/.test(failure)));
+  assert.ok(failures.some((failure) => /validity must not overlap audio/.test(failure)));
+});
+
+test("validity geometry stability uses local layout while retaining absolute viewport evidence", () => {
+  const validate = runtimeSupport.validityGeometryAcceptanceFailures ?? (() => ["validator unavailable"]);
+  const matrix = withFullValidityEvidence();
+  const state = matrix[0];
+  for (const sample of state.samples) {
+    sample.footer.stabilityRect = { ...sample.footer.rect };
+    sample.identities.footer.forEach((identity) => {
+      identity.stabilityRect = { ...identity.rect };
+    });
+    sample.footer.siblings.forEach((sibling) => {
+      sibling.stabilityRect = { ...sibling.rect };
+    });
+  }
+  const translated = state.samples[1];
+  for (const evidence of [
+    translated.footer,
+    translated.footer.label,
+    ...translated.identities.footer,
+    ...translated.footer.siblings,
+  ]) {
+    evidence.rect.top += 20;
+    evidence.rect.bottom += 20;
+  }
+  assert.deepEqual(validate(matrix), []);
+
+  translated.identities.footer.find((identity) => identity.name === "valid-through").stabilityRect.width += 1;
+  assert.ok(validate(matrix).some((failure) => /footer identity valid-through geometry must stay fixed/.test(failure)));
 });

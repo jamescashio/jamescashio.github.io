@@ -184,12 +184,17 @@ async function setValidityLayoutState(send, width, railOpen, tour) {
       );
       railToggle?.click();
       if (railToggle) await new Promise((resolve) => setTimeout(resolve, 360));
-      const flightToggle = document.querySelector(
-        desiredTour
-          ? '.za-command-rail button[aria-label="Run the 30-second flight"]'
-          : '.za-command-rail button[aria-label="Stop the 30-second flight"]',
-      );
-      flightToggle?.click();
+      document.querySelector('.za-command-rail button[aria-label="Stop the 30-second flight"]')?.click();
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+      document.querySelector('.za-command-rail button[aria-label$="Go to Snapshot deck"]')?.click();
+      const main = document.querySelector("#main-content");
+      main?.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      main?.dispatchEvent(new Event("scroll"));
+      await new Promise((resolve) => setTimeout(resolve, 180));
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      if (desiredTour) {
+        document.querySelector('.za-command-rail button[aria-label="Run the 30-second flight"]')?.click();
+      }
       await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
       return {
         railOpen: Boolean(document.querySelector('button[aria-label="Stow command rail"]')),
@@ -201,25 +206,36 @@ async function setValidityLayoutState(send, width, railOpen, tour) {
   });
 }
 
-async function collectValidityGeometryState(send, viewportWidth, railOpen, tour) {
+async function collectValidityGeometrySample(send, viewportWidth, railOpen, tour, expectedState) {
   await setValidityLayoutState(send, viewportWidth, railOpen, tour);
   const evaluation = await send("Runtime.evaluate", {
-    expression: `(() => {
-      const labels = [
-        "EXPORT STATUS · DATED",
-        "EXPORT VALID · 29D LEFT",
-        "EXPORT VALID · 1D LEFT",
-        "EXPORT EXPIRED",
-      ];
+    expression: `(async () => {
+      const expectedState = ${JSON.stringify(expectedState)};
       const chip = document.querySelector("[data-validity-chip]");
       const chipLabel = document.querySelector("[data-validity-label]");
       const footer = document.querySelector("[data-validity-footer-status]");
       const footerLabel = document.querySelector("[data-validity-footer-label]");
       const header = document.querySelector(".za-command-header");
       const footerRow = footer?.parentElement;
+      const footerChildren = [...(footerRow?.children ?? [])];
+      const validThrough = footerRow?.querySelector("[data-validity-through]");
       const rect = (element) => {
+        if (!element) return null;
         const value = element.getBoundingClientRect();
         return { left: value.left, right: value.right, top: value.top, bottom: value.bottom, width: value.width, height: value.height };
+      };
+      const relativeRect = (element, owner) => {
+        const value = rect(element);
+        const origin = rect(owner);
+        if (!value || !origin) return null;
+        return {
+          left: value.left - origin.left,
+          right: value.right - origin.left,
+          top: value.top - origin.top,
+          bottom: value.bottom - origin.top,
+          width: value.width,
+          height: value.height,
+        };
       };
       const textEvidence = (element) => {
         const style = getComputedStyle(element);
@@ -235,59 +251,204 @@ async function collectValidityGeometryState(send, viewportWidth, railOpen, tour)
           opacity: style.opacity,
         };
       };
-      const isVisible = (element) => {
+      const identity = (name, element, owner) => {
+        if (!element) return { name, visible: false, ariaHidden: false, accessibleText: "", rect: null, stabilityRect: null };
         const value = rect(element);
         const style = getComputedStyle(element);
-        return value.width > 0 && value.height > 0 && style.display !== "none" && style.visibility !== "hidden";
-      };
-      const siblings = (surface, owner, outerOwner) => {
-        const candidates = [
-          ...owner.children,
-          ...(outerOwner ? [...outerOwner.children].filter((element) => element !== owner) : []),
-        ];
-        return candidates
-          .filter((element) => element !== surface && !element.contains(surface) && isVisible(element))
-          .map((element, index) => ({
-            name: element.getAttribute("aria-label") || element.textContent?.replace(/\\s+/g, " ").trim() || "sibling-" + index,
-            rect: rect(element),
-          }));
-      };
-      if (!chip || !chipLabel || !footer || !footerLabel || !header || !footerRow) {
-        return { error: "validity geometry hooks are missing", samples: [] };
-      }
-      const original = { chip: chipLabel.textContent, footer: footerLabel.textContent };
-      const samples = labels.map((label) => {
-        chipLabel.textContent = label;
-        footerLabel.textContent = label === "EXPORT EXPIRED" ? "DATED EXPORT EXPIRED" : "DATED EXPORT VALID";
         return {
-          label,
-          header: {
-            rect: rect(chip),
-            label: textEvidence(chipLabel),
-            siblings: siblings(chip, chip.parentElement, header),
-          },
-          footer: {
-            rect: rect(footer),
-            label: textEvidence(footerLabel),
-            siblings: siblings(footer, footerRow),
-          },
+          name,
+          visible:
+            value.width > 0 &&
+            value.height > 0 &&
+            style.display !== "none" &&
+            !["hidden", "collapse"].includes(style.visibility) &&
+            Number(style.opacity) !== 0,
+          ariaHidden: Boolean(element.closest('[aria-hidden="true"]')),
+          accessibleText:
+            element.getAttribute("aria-label") ||
+            element.textContent?.replace(/\\s+/g, " ").trim() ||
+            [...element.querySelectorAll("[aria-label]")]
+              .map((child) => child.getAttribute("aria-label"))
+              .filter(Boolean)
+              .join(" · "),
+          rect: value,
+          stabilityRect: relativeRect(element, owner),
         };
-      });
-      chipLabel.textContent = original.chip;
-      footerLabel.textContent = original.footer;
+      };
+      if (!chip || !chipLabel || !footer || !footerLabel || !header || !footerRow || !validThrough) {
+        return { error: "validity geometry hooks are missing" };
+      }
+      if (expectedState.source === "ssr-fixture") {
+        chipLabel.textContent = expectedState.headerLabel;
+        footerLabel.textContent = expectedState.footerLabel;
+        validThrough.textContent = expectedState.validThroughText;
+      }
+      const headerCluster = chip.parentElement;
+      const deck = header.firstElementChild;
+      const airframeStatus = header.children[1];
+      const audio = header.querySelector('button[aria-label*="selection audio"]');
+      const navigator = header.querySelector('button[aria-label="Open deck navigator"]');
+      const autopilot = [...headerCluster.children].find((element) => element.textContent?.trim() === "AUTOPILOT");
+      const clock = [...headerCluster.children].find((element) => element.textContent?.trim().startsWith("SD "));
+      const headerIdentities = [
+        identity("deck", deck, header),
+        identity("validity", chip, header),
+        identity("audio", audio, header),
+        identity("navigator", navigator, header),
+      ];
+      if (innerWidth >= 1024) headerIdentities.push(identity("clock", clock, header));
+      if (innerWidth >= 1280) headerIdentities.push(identity("airframe-status", airframeStatus, header));
+      if (${tour}) headerIdentities.push(identity("autopilot", autopilot, header));
+      const headerSurface = {
+        rect: rect(chip),
+        stabilityRect: relativeRect(chip, header),
+        label: textEvidence(chipLabel),
+        siblings: headerIdentities.filter((candidate) => candidate.name !== "validity"),
+      };
+      footer.scrollIntoView({ block: "end", inline: "nearest", behavior: "auto" });
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      const footerIdentities = [
+        identity("release", footerChildren[0], footerRow),
+        identity("revised", footerChildren[1], footerRow),
+        identity("validity", footerChildren[2], footerRow),
+        identity("verified", footerChildren[3], footerRow),
+        identity("valid-through", validThrough, footerRow),
+        identity("zero-calls", footerChildren[5], footerRow),
+      ];
+      const sample = {
+        label: chipLabel.textContent,
+        fullState: {
+          id: expectedState.id,
+          source: expectedState.source,
+          headerLabel: chipLabel.textContent,
+          footerLabel: footerLabel.textContent,
+          validThroughText: validThrough.textContent,
+        },
+        identities: { header: headerIdentities, footer: footerIdentities },
+        header: headerSurface,
+        footer: {
+          rect: rect(footer),
+          stabilityRect: relativeRect(footer, footerRow),
+          label: textEvidence(footerLabel),
+          siblings: footerIdentities.filter((candidate) => candidate.name !== "validity"),
+        },
+      };
       return {
         viewportWidth: innerWidth,
         railOpen: Boolean(document.querySelector('button[aria-label="Stow command rail"]')),
         tour: Boolean(header.textContent?.includes("AUTOPILOT")),
-        samples,
+        sample,
       };
     })()`,
+    awaitPromise: true,
     returnByValue: true,
   });
   if (evaluation.exceptionDetails) {
     throw new Error(evaluation.exceptionDetails.exception?.description ?? evaluation.exceptionDetails.text);
   }
   return evaluation.result.value;
+}
+
+async function setControlledValidityState(send, now, expected) {
+  const evaluation = await send("Runtime.evaluate", {
+    expression: `(async () => {
+      window.__v35SetValidityNow(${now});
+      const timerRan = window.__v35RunValidityTimer();
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      return {
+        timerRan,
+        headerLabel: document.querySelector('[data-validity-label]')?.textContent ?? null,
+        footerLabel: document.querySelector('[data-validity-footer-label]')?.textContent ?? null,
+        validThroughText: document.querySelector('[data-validity-through]')?.textContent ?? null,
+      };
+    })()`,
+    awaitPromise: true,
+    returnByValue: true,
+  });
+  if (evaluation.exceptionDetails) {
+    throw new Error(evaluation.exceptionDetails.exception?.description ?? evaluation.exceptionDetails.text);
+  }
+  const actual = evaluation.result.value;
+  assert.equal(actual.timerRan, true, `controlled validity timer must run for ${expected.id}`);
+  assert.deepEqual(
+    {
+      headerLabel: actual.headerLabel,
+      footerLabel: actual.footerLabel,
+      validThroughText: actual.validThroughText,
+    },
+    {
+      headerLabel: expected.headerLabel,
+      footerLabel: expected.footerLabel,
+      validThroughText: expected.validThroughText,
+    },
+    `React must render the complete ${expected.id} validity tuple`,
+  );
+}
+
+async function collectValidityGeometryMatrix(send) {
+  const states = [
+    {
+      id: "ssr-placeholder",
+      source: "ssr-fixture",
+      headerLabel: "EXPORT STATUS · DATED",
+      footerLabel: "DATED EXPORT STATUS",
+      validThroughText: "VALID THRU 09-27-2026",
+    },
+    {
+      id: "live-longest",
+      source: "react-live",
+      headerLabel: "EXPORT VALID · 29D LEFT",
+      footerLabel: "DATED EXPORT VALID",
+      validThroughText: "VALID THRU 09-27-2026",
+    },
+    {
+      id: "live-1d",
+      source: "react-live",
+      headerLabel: "EXPORT VALID · 1D LEFT",
+      footerLabel: "DATED EXPORT VALID",
+      validThroughText: "VALID THRU 09-27-2026",
+    },
+    {
+      id: "live-expired",
+      source: "react-live",
+      headerLabel: "EXPORT EXPIRED",
+      footerLabel: "DATED EXPORT EXPIRED",
+      validThroughText: "VALID THRU TREAT AS HISTORY",
+    },
+  ];
+  const layouts = [768, 834, 1024, 1280].flatMap((viewportWidth) =>
+    [false, true].flatMap((railOpen) => [false, true].map((tour) => ({ viewportWidth, railOpen, tour, samples: [] }))),
+  );
+  const collectState = async (state) => {
+    for (const layout of layouts) {
+      const result = await collectValidityGeometrySample(
+        send,
+        layout.viewportWidth,
+        layout.railOpen,
+        layout.tour,
+        state,
+      );
+      assert.equal(result.error, undefined, result.error);
+      assert.equal(result.viewportWidth, layout.viewportWidth);
+      assert.equal(result.railOpen, layout.railOpen, `rail state must be real at ${layout.viewportWidth}px`);
+      assert.equal(result.tour, layout.tour, `flight state must be real at ${layout.viewportWidth}px`);
+      layout.samples.push(result.sample);
+    }
+  };
+  await collectState(states[1]);
+  await setControlledValidityState(send, Date.parse("2026-09-27T05:00:00Z"), states[2]);
+  await collectState(states[2]);
+  await setControlledValidityState(send, Date.parse("2026-09-28T05:00:00Z"), states[3]);
+  await collectState(states[3]);
+  await collectState(states[0]);
+  for (const layout of layouts) {
+    layout.samples.sort(
+      (first, second) =>
+        states.findIndex((state) => state.id === first.fullState.id) -
+        states.findIndex((state) => state.id === second.fullState.id),
+    );
+  }
+  return layouts;
 }
 
 function summarizeValidityGeometryState(state) {
@@ -350,6 +511,58 @@ function summarizeValidityGeometryState(state) {
     header: summarizeSurface("header"),
     footer: summarizeSurface("footer"),
   };
+}
+
+function summarizeValidityGeometryDefects(states) {
+  const rectFields = ["left", "right", "top", "bottom", "width", "height"];
+  const delta = (actual, baseline) =>
+    Math.max(...rectFields.map((property) => Math.abs((actual?.[property] ?? 0) - (baseline?.[property] ?? 0))));
+  return states.flatMap((state) => {
+    const baseline = state.samples[0];
+    const samples = state.samples.slice(1).flatMap((sample) => {
+      const surfaces = ["header", "footer"].flatMap((surfaceName) => {
+        const baselineIdentities = baseline.identities[surfaceName];
+        const shiftedIdentities = sample.identities[surfaceName].flatMap((identity) => {
+          const original = baselineIdentities.find((candidate) => candidate.name === identity.name);
+          const maximumDelta = delta(
+            identity.stabilityRect ?? identity.rect,
+            original?.stabilityRect ?? original?.rect,
+          );
+          return maximumDelta > 0.5
+            ? [
+                {
+                  name: identity.name,
+                  maximumDelta,
+                  baselineText: original?.accessibleText ?? null,
+                  actualText: identity.accessibleText,
+                  baseline: original?.stabilityRect ?? original?.rect ?? null,
+                  actual: identity.stabilityRect ?? identity.rect,
+                },
+              ]
+            : [];
+        });
+        const surfaceDelta = delta(
+          sample[surfaceName].stabilityRect ?? sample[surfaceName].rect,
+          baseline[surfaceName].stabilityRect ?? baseline[surfaceName].rect,
+        );
+        return surfaceDelta > 0.5 || shiftedIdentities.length > 0
+          ? [{ surface: surfaceName, surfaceDelta, shiftedIdentities }]
+          : [];
+      });
+      return surfaces.length > 0 ? [{ state: sample.fullState.id, surfaces }] : [];
+    });
+    return samples.length > 0
+      ? [
+          {
+            viewportWidth: state.viewportWidth,
+            railOpen: state.railOpen,
+            tour: state.tour,
+            baseline: baseline.fullState.id,
+            samples,
+          },
+        ]
+      : [];
+  });
 }
 
 async function collectTickerTelemetry(send, width, height, mobile) {
@@ -1099,28 +1312,77 @@ async function main() {
       ok: browserVersionFailures.length === 0,
     };
     await send("Runtime.enable");
+    await send("Page.enable");
+    await send("Page.addScriptToEvaluateOnNewDocument", {
+      source: `(() => {
+        if (!location.search.includes("validity-matrix")) return;
+        const nativeDateNow = Date.now.bind(Date);
+        let controlledNow = Date.parse("2026-08-30T12:00:00Z");
+        const nativeSetTimeout = window.setTimeout.bind(window);
+        const nativeClearTimeout = window.clearTimeout.bind(window);
+        const validityTimers = new Map();
+        Date.now = () => controlledNow;
+        window.setTimeout = (callback, delay = 0, ...args) => {
+          const id = nativeSetTimeout(callback, delay, ...args);
+          if (Number(delay) >= 60_000) validityTimers.set(id, { callback, args });
+          return id;
+        };
+        window.clearTimeout = (id) => {
+          validityTimers.delete(id);
+          return nativeClearTimeout(id);
+        };
+        Object.defineProperties(window, {
+          __v35SetValidityNow: {
+            value: (next) => { controlledNow = Number(next); },
+          },
+          __v35RunValidityTimer: {
+            value: () => {
+              const entries = [...validityTimers.entries()];
+              const entry = entries.at(-1);
+              if (!entry) return false;
+              const [id, timer] = entry;
+              validityTimers.delete(id);
+              nativeClearTimeout(id);
+              timer.callback(...timer.args);
+              return true;
+            },
+          },
+          __v35RestoreDateNow: {
+            value: () => {
+              controlledNow = nativeDateNow();
+              Date.now = nativeDateNow;
+            },
+          },
+        });
+      })();`,
+    });
     await send("Emulation.setDeviceMetricsOverride", {
       width: 1280,
       height: 900,
       deviceScaleFactor: 1,
       mobile: false,
     });
+    await send("Page.navigate", { url: `${targetUrl}?validity-matrix` });
     await waitForApp(send);
-    const validityGeometry = [];
-    for (const viewportWidth of [768, 834, 1024, 1280]) {
-      for (const railOpen of [false, true]) {
-        for (const tour of [false, true]) {
-          validityGeometry.push(await collectValidityGeometryState(send, viewportWidth, railOpen, tour));
-        }
-      }
-    }
+    await send("Runtime.evaluate", {
+      expression: "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))",
+      awaitPromise: true,
+    });
+    const validityGeometry = await collectValidityGeometryMatrix(send);
+    await send("Runtime.evaluate", { expression: "window.__v35RestoreDateNow()" });
     await setValidityLayoutState(send, 1280, false, false);
     const validityGeometryFailures = validityGeometryAcceptanceFailures(validityGeometry);
     const validityGeometryResult = {
       ok: validityGeometryFailures.length === 0,
       failures: validityGeometryFailures,
       states: validityGeometry.map(summarizeValidityGeometryState),
+      defectEvidence: summarizeValidityGeometryDefects(validityGeometry),
     };
+    assert.equal(
+      validityGeometryResult.ok,
+      true,
+      `Full validity-state geometry acceptance failed: ${JSON.stringify(validityGeometryResult.defectEvidence)}`,
+    );
     const assetEvaluation = await send("Runtime.evaluate", {
       expression: `(async () => {
         const expected = [

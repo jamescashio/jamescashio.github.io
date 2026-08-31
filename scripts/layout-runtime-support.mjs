@@ -445,6 +445,40 @@ const VALIDITY_LABELS = [
   "EXPORT VALID · 1D LEFT",
   "EXPORT EXPIRED",
 ];
+const FULL_VALIDITY_STATES = [
+  {
+    id: "ssr-placeholder",
+    description: "SSR placeholder",
+    source: "ssr-fixture",
+    headerLabel: "EXPORT STATUS · DATED",
+    footerLabel: "DATED EXPORT STATUS",
+    validThroughText: "VALID THRU 09-27-2026",
+  },
+  {
+    id: "live-longest",
+    description: "longest valid",
+    source: "react-live",
+    headerLabel: "EXPORT VALID · 29D LEFT",
+    footerLabel: "DATED EXPORT VALID",
+    validThroughText: "VALID THRU 09-27-2026",
+  },
+  {
+    id: "live-1d",
+    description: "1D valid",
+    source: "react-live",
+    headerLabel: "EXPORT VALID · 1D LEFT",
+    footerLabel: "DATED EXPORT VALID",
+    validThroughText: "VALID THRU 09-27-2026",
+  },
+  {
+    id: "live-expired",
+    description: "expired",
+    source: "react-live",
+    headerLabel: "EXPORT EXPIRED",
+    footerLabel: "DATED EXPORT EXPIRED",
+    validThroughText: "VALID THRU TREAT AS HISTORY",
+  },
+];
 const VALIDITY_GEOMETRY_TOLERANCE_PX = 0.5;
 
 function validityRectsOverlap(first, second) {
@@ -459,6 +493,10 @@ function validityRectMatches(first, second) {
     hasFiniteRect(second) &&
     RECT_FIELDS.every((property) => Math.abs(first[property] - second[property]) <= VALIDITY_GEOMETRY_TOLERANCE_PX)
   );
+}
+
+function validityStabilityRect(evidence) {
+  return evidence?.stabilityRect ?? evidence?.rect;
 }
 
 function validitySurfaceFailures(surface, surfaceName, viewportWidth, stateName) {
@@ -514,6 +552,55 @@ function validitySurfaceFailures(surface, surfaceName, viewportWidth, stateName)
   return failures;
 }
 
+function expectedValidityIdentityNames(state, surfaceName) {
+  if (surfaceName === "footer") {
+    return ["release", "revised", "validity", "verified", "valid-through", "zero-calls"];
+  }
+  const names = ["deck", "validity", "audio", "navigator"];
+  if (state.viewportWidth >= 1024) names.push("clock");
+  if (state.viewportWidth >= 1280) names.push("airframe-status");
+  if (state.tour) names.push("autopilot");
+  return names;
+}
+
+function validityIdentityFailures(identities, expectedNames, surfaceName, viewportWidth, stateName) {
+  const failures = [];
+  const evidence = Array.isArray(identities) ? identities : [];
+  const accepted = [];
+  for (const name of expectedNames) {
+    const matches = evidence.filter((identity) => identity?.name === name);
+    if (matches.length !== 1) {
+      failures.push(`${stateName} required ${surfaceName} identity ${name} must be present exactly once`);
+      continue;
+    }
+    const identity = matches[0];
+    if (identity.visible !== true || identity.ariaHidden === true || !String(identity.accessibleText ?? "").trim()) {
+      failures.push(`${stateName} ${surfaceName} identity ${name} must remain visible and accessible`);
+    }
+    if (
+      !hasFiniteRect(identity.rect) ||
+      !hasConsistentRect(identity.rect) ||
+      identity.rect.width <= 0 ||
+      identity.rect.height <= 0
+    ) {
+      failures.push(`${stateName} ${surfaceName} identity ${name} must have nonzero finite geometry`);
+      continue;
+    }
+    if (identity.rect.left < 0 || identity.rect.right > viewportWidth) {
+      failures.push(`${stateName} ${surfaceName} identity ${name} must remain within the viewport`);
+    }
+    accepted.push(identity);
+  }
+  for (const [index, first] of accepted.entries()) {
+    for (const second of accepted.slice(index + 1)) {
+      if (validityRectsOverlap(first.rect, second.rect)) {
+        failures.push(`${stateName} ${surfaceName} ${first.name} must not overlap ${second.name}`);
+      }
+    }
+  }
+  return failures;
+}
+
 export function validityGeometryAcceptanceFailures(states) {
   const failures = [];
   const expectedStates = VALIDITY_VIEWPORT_WIDTHS.flatMap((viewportWidth) =>
@@ -544,17 +631,47 @@ export function validityGeometryAcceptanceFailures(states) {
       continue;
     }
     const baseline = state.samples[0];
+    for (const expected of FULL_VALIDITY_STATES) {
+      const matches = state.samples.filter((sample) => sample?.fullState?.id === expected.id);
+      const fullState = matches[0]?.fullState;
+      if (
+        matches.length !== 1 ||
+        Object.entries(expected).some(
+          ([property, value]) => property !== "description" && fullState?.[property] !== value,
+        ) ||
+        matches[0]?.label !== expected.headerLabel
+      ) {
+        failures.push(`${stateName} ${expected.description} full validity tuple must be exact and complete`);
+      }
+    }
     for (const sample of state.samples) {
       for (const surfaceName of ["header", "footer"]) {
         const surface = sample[surfaceName];
         failures.push(...validitySurfaceFailures(surface, surfaceName, state.viewportWidth, stateName));
-        if (!validityRectMatches(surface?.rect, baseline[surfaceName]?.rect)) {
+        const expectedNames = expectedValidityIdentityNames(state, surfaceName);
+        const identities = sample.identities?.[surfaceName];
+        failures.push(
+          ...validityIdentityFailures(identities, expectedNames, surfaceName, state.viewportWidth, stateName),
+        );
+        if (!validityRectMatches(validityStabilityRect(surface), validityStabilityRect(baseline[surfaceName]))) {
           failures.push(`${stateName} ${surfaceName} geometry must stay fixed across validity labels`);
+        }
+        const baselineIdentities = baseline.identities?.[surfaceName] ?? [];
+        for (const name of expectedNames) {
+          const identity = identities?.find((candidate) => candidate.name === name);
+          const original = baselineIdentities.find((candidate) => candidate.name === name);
+          if (
+            !identity ||
+            !original ||
+            !validityRectMatches(validityStabilityRect(identity), validityStabilityRect(original))
+          ) {
+            failures.push(`${stateName} ${surfaceName} identity ${name} geometry must stay fixed across states`);
+          }
         }
         const baselineSiblings = baseline[surfaceName]?.siblings ?? [];
         for (const sibling of surface?.siblings ?? []) {
           const original = baselineSiblings.find((candidate) => candidate.name === sibling.name);
-          if (!original || !validityRectMatches(sibling.rect, original.rect)) {
+          if (!original || !validityRectMatches(validityStabilityRect(sibling), validityStabilityRect(original))) {
             failures.push(`${stateName} ${surfaceName} sibling ${sibling.name} geometry must stay fixed across labels`);
           }
         }

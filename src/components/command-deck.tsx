@@ -1310,7 +1310,9 @@ export function CommandDeck() {
                 </span>
               </span>
               <span>FIGURES VERIFIED {VERIFIED_LONG}</span>
-              <span>VALID THRU {validity.days == null || validity.days > 0 ? EXPIRES_SHORT : "TREAT AS HISTORY"}</span>
+              <span data-validity-through className="za-validity-through">
+                VALID THRU {validity.days == null || validity.days > 0 ? EXPIRES_SHORT : "TREAT AS HISTORY"}
+              </span>
               <span>ZERO INFRASTRUCTURE CALLS</span>
             </div>
           </footer>

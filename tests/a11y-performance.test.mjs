@@ -619,6 +619,26 @@ test("validity surfaces reserve compact stable geometry for live boundary change
   );
 });
 
+test("footer VALID THRU provenance reserves the longest live state without hiding adjacent status", async () => {
+  const view = mountCommandDeck();
+  try {
+    await view.render();
+    const provenance = view.document.querySelector("[data-validity-through]");
+    const zeroCalls = [...view.document.querySelectorAll("footer span")].find((element) =>
+      element.textContent?.includes("ZERO INFRASTRUCTURE CALLS"),
+    );
+    assert.ok(provenance, "the real VALID THRU sibling must expose its semantic geometry hook");
+    assert.equal(provenance?.textContent, "VALID THRU 09-27-2026");
+    assert.ok(zeroCalls, "the adjacent ZERO INFRASTRUCTURE CALLS status must remain rendered");
+    assert.match(
+      stylesheet,
+      /\.za-validity-through\s*\{[^}]*flex:\s*0 0 31ch\s*;[^}]*inline-size:\s*31ch\s*;[^}]*white-space:\s*nowrap\s*;/s,
+    );
+  } finally {
+    await view.cleanup();
+  }
+});
+
 test("the validity clock crosses a day and exact expiry without remounting or duplicate StrictMode timers", async () => {
   const view = mountCommandDeck({
     captureValidityTimers: true,
