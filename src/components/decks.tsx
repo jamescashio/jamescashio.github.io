@@ -101,6 +101,7 @@ export function DeckSnapshot({
       aria-label="SNAPSHOT deck"
       className="za-mobile-rail-clearance relative min-h-[100dvh] px-5 pb-32 pt-24 md:px-10 lg:px-14"
     >
+      <span id="deck=snapshot" aria-hidden="true" className="pointer-events-none absolute left-0 top-0" />
       <div ref={copyCol} className="za-bracket max-w-[38rem] p-2">
         <Kicker>ZEUSAPOLLO · SOVEREIGN AI UNDER HUMAN COMMAND</Kicker>
         <p className="za-mono mt-3 text-[11px] tracking-[0.12em] text-cyan">{IDENTITY_LINE}</p>
@@ -628,7 +629,10 @@ export function DeckBuilds({ s5, onSelect }: { s5: SecRef; onSelect: (article: n
                     i === sel ? "on" : ""
                   }`}
                 >
-                  <span className="za-build-index za-mono w-6 text-[10px] text-accent">
+                  <span
+                    id={`deck=builds&article=${i + 1}`}
+                    className="za-build-index za-mono w-6 text-[10px] text-accent"
+                  >
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="flex-1 font-display text-[12px] tracking-wide">{a.name}</span>

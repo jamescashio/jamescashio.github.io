@@ -85,6 +85,9 @@ export function DeckShell({
       aria-label={`${DECKS[index].name} deck`}
       className={`za-mobile-rail-clearance relative min-h-[92dvh] px-5 py-24 md:px-10 lg:px-14 ${className}`}
     >
+      {index > 0 ? (
+        <span id={`deck=${DECKS[index].id}`} aria-hidden="true" className="pointer-events-none absolute left-0 top-0" />
+      ) : null}
       <div className={shown ? "za-rise" : "translate-y-6 opacity-0"}>{children}</div>
     </section>
   );

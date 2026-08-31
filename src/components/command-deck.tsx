@@ -21,6 +21,7 @@ import { focusDeckHeading, isInteractiveShortcutTarget } from "@/lib/deck-focus"
 import { eveConsoleLogHeight, shouldYieldAirframeHud } from "@/lib/hud-layout";
 import { motionDurationMs } from "@/lib/animation-timing";
 import { COMMAND_POSTER_SOURCES } from "@/lib/command-poster";
+import { markClientReady } from "@/lib/client-ready";
 import { scheduleStageLoad } from "@/lib/stage-load-scheduler";
 import {
   beginHashRestore,
@@ -883,10 +884,12 @@ export function CommandDeck() {
     }
     const max = Math.max(1, sc.scrollHeight - sc.clientHeight);
     const p = Math.min(1, Math.max(0, sc.scrollTop / max));
+    const activeRestoreDeck = restoreAnchorIntent.current?.deck;
+    const observedStageDeck = activeRestoreDeck ?? i;
     const st = stageRef.current;
     st?.setProgress?.(p);
-    st?.setDeck?.(i);
-    st?.setCraft?.(resolveCraftIndex(i, useDeck.getState().craftLock));
+    st?.setDeck?.(observedStageDeck);
+    st?.setCraft?.(resolveCraftIndex(observedStageDeck, useDeck.getState().craftLock));
     const snd = getSound();
     if (useDeck.getState().audio) {
       snd.setDepth(p);
@@ -906,7 +909,6 @@ export function CommandDeck() {
       if (el.offsetTop < bottom && el.offsetTop + el.offsetHeight > sc.scrollTop) shown.push(k);
     });
     setGlideDeck(pendingSmoothScrollTop.current == null ? null : i);
-    const activeRestoreDeck = restoreAnchorIntent.current?.deck;
     const scrollTransition =
       activeRestoreDeck != null && i !== activeRestoreDeck
         ? { writeHash: false, updateDeck: false, state: hashTransition.current }
@@ -984,7 +986,7 @@ export function CommandDeck() {
     };
   }, [beginProgrammaticScroll, clearResizeAnchor, clearRestoreAnchor, measureClear, onScroll]);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const k = (e.key || "").toLowerCase();
       const interactive = isInteractiveShortcutTarget(e.target);
@@ -1047,6 +1049,10 @@ export function CommandDeck() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [closeCinema, closePalette, closeStill, hist, histI, openPalette, set, sfx, stopFlight]);
+
+  useIsomorphicLayoutEffect(() => {
+    markClientReady();
+  }, []);
 
   const run = (raw: string) => {
     const cmd = (raw || "").trim();

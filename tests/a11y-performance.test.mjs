@@ -611,7 +611,8 @@ test("the normal dim token remains at the audited readable value", () => {
 });
 
 test("validity surfaces reserve compact stable geometry for live boundary changes", () => {
-  assert.match(stylesheet, /\.za-validity-chip\s*\{[^}]*flex:\s*0 0 34ch\s*;[^}]*inline-size:\s*34ch\s*;/s);
+  assert.match(stylesheet, /\.za-validity-chip\s*\{[^}]*flex:\s*0 0 204px\s*;[^}]*inline-size:\s*204px\s*;/s);
+  assert.match(stylesheet, /\.za-clock-chip\s*\{[^}]*flex:\s*0 0 117px\s*;[^}]*inline-size:\s*117px\s*;/s);
   assert.match(stylesheet, /\.za-validity-footer-status\s*\{[^}]*flex:\s*0 0 26ch\s*;[^}]*inline-size:\s*26ch\s*;/s);
   assert.match(
     stylesheet,
@@ -1149,6 +1150,37 @@ test("the delayed direct-link anchor corrects a large input-free intrinsic layou
 
     assert.equal(scroller.scrollTop, 4992, "large intrinsic growth must retain the requested direct-link landing");
     assert.equal(view.window.location.hash, "#deck=builds&article=1");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("restore-protected intrinsic settlement keeps the viewscreen on the requested airframe", async () => {
+  const view = mountCommandDeck({
+    url: "https://cashio.us/#deck=builds&article=1",
+    controlledTimers: true,
+  });
+  try {
+    await view.render();
+    await view.runAnimationFrameBatch();
+    await view.runAnimationFrameBatch();
+    await view.runControlledTimeout(12_000);
+    await flushPromises();
+    await view.settle();
+    const stage = view.document.querySelector("viewscreen-stage");
+    const scroller = view.document.querySelector("main.za-scroll");
+    assert.ok(stage, "expected the normally deferred viewscreen after its no-input fallback");
+    const observedDecks = [];
+    const observedCraft = [];
+    stage.setDeck = (deck) => observedDecks.push(deck);
+    stage.setCraft = (craft) => observedCraft.push(craft);
+
+    scroller.scrollTop = 1992;
+    await view.dispatchScroll();
+
+    assert.equal(useDeck.getState().deck, 5, "logical restoration must remain on Builds");
+    assert.deepEqual(observedDecks, [5], "the stage must not observe transient Routing during protected settlement");
+    assert.deepEqual(observedCraft, [4], "the stage must keep the Builds airframe until restoration settles");
   } finally {
     await view.cleanup();
   }

@@ -1,12 +1,12 @@
 import "./styles.css";
 import { createRoot, hydrateRoot } from "react-dom/client";
 import { CashioApp } from "@/app";
+import { clientReady } from "@/lib/client-ready";
+export { clientReady } from "@/lib/client-ready";
 
 const root = document.getElementById("root");
 
 if (!root) throw new Error("Cashio app root is missing");
-document.querySelector("style[data-critical-shell]")?.remove();
-root.dataset.clientActivated = "true";
 
 if (root.dataset.prerendered === "v35") {
   hydrateRoot(root, <CashioApp />);
@@ -15,3 +15,8 @@ if (root.dataset.prerendered === "v35") {
 } else {
   throw new Error("Cashio app root is neither prerendered nor empty");
 }
+
+void clientReady.then(() => {
+  document.querySelector("style[data-critical-shell]")?.remove();
+  root.dataset.clientActivated = "true";
+});

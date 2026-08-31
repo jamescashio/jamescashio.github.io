@@ -168,10 +168,16 @@
     background: rgba(5, 6, 10, 0.55);
   }
   .za-validity-chip {
-    flex: 0 0 34ch;
-    inline-size: 34ch;
+    flex: 0 0 204px;
+    inline-size: 204px;
     justify-content: center;
     white-space: nowrap;
+  }
+  .za-clock-chip {
+    flex: 0 0 117px;
+    inline-size: 117px;
+    min-height: 44px;
+    justify-content: center;
   }
   .za-validity-chip [data-validity-label] {
     display: block;

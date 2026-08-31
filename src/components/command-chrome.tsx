@@ -167,7 +167,7 @@ export function CommandHeader({
           <span className="za-lock-pip" />
           <span data-validity-label>{validityLabel}</span>
         </span>
-        <span className="za-chip !hidden lg:!inline-flex">SD {clock}</span>
+        <span className="za-chip za-clock-chip !hidden lg:!inline-flex">SD {clock}</span>
         <button
           type="button"
           className={`za-chip pointer-events-auto min-h-11 ${audio ? "border-cyan text-cyan" : ""}`}

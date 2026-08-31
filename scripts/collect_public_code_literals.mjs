@@ -389,7 +389,11 @@ function hasEvaluableParent(node, scope) {
 const results = [];
 for (const filename of process.argv.slice(2)) {
   const source = fs.readFileSync(filename, "utf8");
-  const scriptKind = filename.endsWith(".tsx") ? ts.ScriptKind.TSX : ts.ScriptKind.JS;
+  const scriptKind = filename.endsWith(".tsx")
+    ? ts.ScriptKind.TSX
+    : filename.endsWith(".ts")
+      ? ts.ScriptKind.TS
+      : ts.ScriptKind.JS;
   const file = ts.createSourceFile(filename, source, ts.ScriptTarget.Latest, true, scriptKind);
   if (file.parseDiagnostics.length) {
     throw new Error(`unsupported or invalid source syntax in ${filename}`);

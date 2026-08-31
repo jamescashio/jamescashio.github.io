@@ -165,6 +165,357 @@ async function waitForApp(send) {
   throw new Error("timed out waiting for the command deck layout");
 }
 
+async function waitForCriticalShell(send) {
+  for (let attempt = 0; attempt < 100; attempt++) {
+    const result = await send("Runtime.evaluate", {
+      expression:
+        'document.readyState !== "loading" && Boolean(document.querySelector("#root[data-prerendered=\\"v35\\"]")) && !document.querySelector("#root")?.dataset.clientActivated && Boolean(document.querySelector("style[data-critical-shell]")) && window.__v35CriticalActivationHeld === true',
+      returnByValue: true,
+    });
+    if (result.result.value) return;
+    await new Promise((resolve) => setTimeout(resolve, 5));
+  }
+  throw new Error("timed out waiting for the prerendered critical shell");
+}
+
+async function captureCriticalGeometry(send) {
+  const evaluation = await send("Runtime.evaluate", {
+    expression: `(() => {
+      const selectors = [
+        ".za-bracket",
+        "section[data-deck=\\"0\\"] h1",
+        ".za-snapshot-lede",
+        ".za-snapshot-copy",
+        "section[data-deck=\\"0\\"] .za-critical-telemetry",
+        ".za-snapshot-modes",
+        ".za-snapshot-actions",
+        ".za-bracket > .za-chip",
+        "section[data-deck=\\"0\\"] .za-panel",
+        ".za-command-header",
+        ".za-command-header > .pointer-events-auto:last-child",
+        ".za-validity-chip",
+        ".za-clock-chip",
+        '.za-command-header button[aria-label*="selection audio"]',
+        '.za-command-header button[aria-label="Open deck navigator"]',
+        ".za-command-rail",
+        ".za-command-rail > nav",
+        ".za-command-rail > nav > button:first-child",
+        ".za-mobile-flight-control",
+        ".za-mobile-rail-scroll",
+        ".za-corner-hud",
+        ".za-airframe",
+        ".za-bit-control",
+      ];
+      const values = {};
+      for (const selector of selectors) {
+        const element = document.querySelector(selector);
+        if (!element) {
+          values[selector] = null;
+          continue;
+        }
+        const rect = element.getBoundingClientRect();
+        const style = getComputedStyle(element);
+        values[selector] = {
+          rect: { left: rect.left, top: rect.top, width: rect.width, height: rect.height },
+          style: {
+            display: style.display,
+            position: style.position,
+            boxSizing: style.boxSizing,
+            fontFamily: style.fontFamily,
+            fontSize: style.fontSize,
+            fontWeight: style.fontWeight,
+            lineHeight: style.lineHeight,
+            padding: style.padding,
+            margin: style.margin,
+            gap: style.gap,
+            gridTemplateColumns: style.gridTemplateColumns,
+            borderRadius: style.borderRadius,
+          },
+        };
+      }
+      return values;
+    })()`,
+    returnByValue: true,
+  });
+  return evaluation.result.value;
+}
+
+function criticalGeometryFailures(before, after, width) {
+  const failures = [];
+  for (const [selector, initial] of Object.entries(before)) {
+    const activated = after[selector];
+    if (!initial || !activated) {
+      failures.push(`${width}px ${selector} must exist before and after activation`);
+      continue;
+    }
+    const initialHidden = initial.style.display === "none" || (initial.rect.width === 0 && initial.rect.height === 0);
+    const activatedHidden =
+      activated.style.display === "none" || (activated.rect.width === 0 && activated.rect.height === 0);
+    if (initialHidden && activatedHidden) continue;
+    for (const property of [
+      "display",
+      "position",
+      "boxSizing",
+      "fontFamily",
+      "fontSize",
+      "fontWeight",
+      "lineHeight",
+      "padding",
+      "gap",
+      "gridTemplateColumns",
+    ]) {
+      if (initial.style[property] !== activated.style[property])
+        failures.push(`${width}px ${selector} ${property}: ${initial.style[property]} -> ${activated.style[property]}`);
+    }
+    const initialRadius = Number.parseFloat(initial.style.borderRadius);
+    const activatedRadius = Number.parseFloat(activated.style.borderRadius);
+    const pillThreshold =
+      Math.min(initial.rect.width, initial.rect.height, activated.rect.width, activated.rect.height) / 2;
+    const equivalentPills = initialRadius >= pillThreshold && activatedRadius >= pillThreshold;
+    if (initial.style.borderRadius !== activated.style.borderRadius && !equivalentPills)
+      failures.push(
+        `${width}px ${selector} borderRadius: ${initial.style.borderRadius} -> ${activated.style.borderRadius}`,
+      );
+    for (const edge of ["left", "top", "width", "height"]) {
+      if (selector === ".za-bracket" && edge === "height") continue;
+      const delta = Math.abs(initial.rect[edge] - activated.rect[edge]);
+      if (delta > 1) failures.push(`${width}px ${selector} ${edge} shifted ${delta.toFixed(3)}px`);
+    }
+  }
+  return failures;
+}
+
+async function runCriticalShellParity(send, targetUrl, width, height, mobile) {
+  await send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 1, mobile });
+  await send("Emulation.setEmulatedMedia", {
+    media: "screen",
+    features: [{ name: "prefers-reduced-motion", value: "reduce" }],
+  });
+  await send("Page.navigate", { url: `${targetUrl}?critical-parity-${width}` });
+  await waitForCriticalShell(send);
+  await send("Runtime.evaluate", {
+    expression: "document.fonts ? document.fonts.ready : Promise.resolve()",
+    awaitPromise: true,
+  });
+  const before = await captureCriticalGeometry(send);
+  await send("Runtime.evaluate", { expression: "window.__v35ReleaseCriticalActivation()" });
+  try {
+    await waitForApp(send);
+  } catch (error) {
+    const diagnostic = await send("Runtime.evaluate", {
+      expression: `({
+        readyState: document.readyState,
+        root: document.querySelector("#root")?.dataset ?? null,
+        criticalShell: Boolean(document.querySelector("style[data-critical-shell]")),
+        pips: document.querySelectorAll(".za-lcars-pip").length,
+        mobileRail: Boolean(document.querySelector(".za-mobile-rail-safe")),
+        errors: window.__v35CriticalActivationErrors ?? [],
+        resources: performance.getEntriesByType("resource").map((entry) => entry.name),
+      })`,
+      returnByValue: true,
+    });
+    throw new Error(`${error.message}: ${JSON.stringify(diagnostic.result.value)}`, { cause: error });
+  }
+  await send("Runtime.evaluate", {
+    expression: "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))",
+    awaitPromise: true,
+  });
+  const after = await captureCriticalGeometry(send);
+  const failures = criticalGeometryFailures(before, after, width);
+  return { width, height, before, after, failures, ok: failures.length === 0 };
+}
+
+async function waitForCanonicalDeck(send, deckIndex) {
+  let last = null;
+  let consecutive = 0;
+  for (let attempt = 0; attempt < 40; attempt++) {
+    last = (
+      await send("Runtime.evaluate", {
+        expression: `(() => {
+          const main = document.querySelector("#main-content");
+          const section = document.querySelector('section[data-deck="${deckIndex}"]');
+          if (!main || !section) return { present: false };
+          const intendedScrollTop = Math.max(0, section.offsetTop - 8);
+          const maximumScrollTop = Math.max(0, main.scrollHeight - main.clientHeight);
+          const expectedScrollTop = Math.min(intendedScrollTop, maximumScrollTop);
+          const expectedSectionTop = section.offsetTop - expectedScrollTop;
+          const sectionTop = section.getBoundingClientRect().top;
+          return {
+            present: true,
+            activeDeck: main.dataset.activeDeck ?? null,
+            scrollTop: main.scrollTop,
+            expectedScrollTop,
+            sectionTop,
+            expectedSectionTop,
+            scrollAlignmentDelta: Math.abs(main.scrollTop - expectedScrollTop),
+            sectionAlignmentDelta: Math.abs(sectionTop - expectedSectionTop),
+          };
+        })()`,
+        returnByValue: true,
+      })
+    ).result.value;
+    if (
+      last.present &&
+      last.activeDeck === String(deckIndex) &&
+      last.scrollAlignmentDelta <= 1 &&
+      last.sectionAlignmentDelta <= 1
+    )
+      consecutive += 1;
+    else consecutive = 0;
+    if (consecutive >= 3) return last;
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  return last;
+}
+
+async function runEarlyActivationAcceptance(send, targetUrl) {
+  const settle = () =>
+    send("Runtime.evaluate", {
+      expression: "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))",
+      awaitPromise: true,
+    });
+
+  await send("Emulation.setDeviceMetricsOverride", {
+    width: 390,
+    height: 844,
+    deviceScaleFactor: 1,
+    mobile: true,
+  });
+  await send("Emulation.setEmulatedMedia", {
+    media: "screen",
+    features: [{ name: "prefers-reduced-motion", value: "reduce" }],
+  });
+  await send("Page.navigate", { url: `${targetUrl}?startup-direct#deck=iron` });
+  await waitForApp(send);
+  await settle();
+  const directSettlement = await waitForCanonicalDeck(send, 3);
+  const direct = (
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const resources = performance.getEntriesByType("resource");
+        const bootstrap = resources.find((entry) => /\\/assets\\/index-[^/]+\\.js$/.test(entry.name));
+        const main = resources.find((entry) => /\\/assets\\/main-[^/]+\\.js$/.test(entry.name));
+        const scroller = document.querySelector("#main-content");
+        const scrollerTop = scroller?.getBoundingClientRect().top ?? 0;
+        const sections = [...document.querySelectorAll("section[data-deck]")];
+        const nearestDeck = sections.reduce((best, section) => {
+          const deck = Number(section.getAttribute("data-deck"));
+          const delta = Math.abs(section.getBoundingClientRect().top - scrollerTop);
+          return delta < best.delta ? { deck, delta } : best;
+        }, { deck: -1, delta: Number.POSITIVE_INFINITY });
+        return {
+          hash: location.hash,
+          nearestDeck,
+          activationRequestGapMs: bootstrap && main ? main.startTime - bootstrap.responseEnd : null,
+          frames: window.__v35DirectFrames ?? [],
+        };
+      })()`,
+      returnByValue: true,
+    })
+  ).result.value;
+  direct.settlement = directSettlement;
+
+  await send("Page.navigate", { url: `${targetUrl}?critical-parity-early-ctrl` });
+  await waitForCriticalShell(send);
+  await send("Input.dispatchKeyEvent", { type: "keyDown", key: "k", code: "KeyK", modifiers: 2 });
+  await send("Input.dispatchKeyEvent", { type: "keyUp", key: "k", code: "KeyK", modifiers: 2 });
+  await waitForApp(send);
+  await settle();
+  const ctrlK = (
+    await send("Runtime.evaluate", {
+      expression: `({
+        navigatorOpen: Boolean(document.querySelector('[role="dialog"][aria-label="Deck navigator"]')),
+        dialogCount: document.querySelectorAll('[role="dialog"][aria-label="Deck navigator"]').length,
+      })`,
+      returnByValue: true,
+    })
+  ).result.value;
+
+  await send("Page.navigate", { url: `${targetUrl}?critical-parity-early-swipe` });
+  await waitForCriticalShell(send);
+  await send("Runtime.evaluate", {
+    expression: `(() => {
+      const target = document.querySelector("#main-content");
+      const touch = (x) => new Touch({ identifier: 41, target, clientX: x, clientY: 420, screenX: x, screenY: 420 });
+      target.dispatchEvent(new TouchEvent("touchstart", { bubbles: true, cancelable: true, touches: [touch(330)], targetTouches: [touch(330)], changedTouches: [touch(330)] }));
+      target.dispatchEvent(new TouchEvent("touchend", { bubbles: true, cancelable: true, touches: [], targetTouches: [], changedTouches: [touch(100)] }));
+    })()`,
+  });
+  await waitForApp(send);
+  await settle();
+  const swipeSettlement = await waitForCanonicalDeck(send, 1);
+  const swipe = (
+    await send("Runtime.evaluate", {
+      expression: `({
+        hash: location.hash,
+        gridTop: document.querySelector('section[data-deck="1"]')?.getBoundingClientRect().top ?? null,
+        scrollerTop: document.querySelector("#main-content")?.getBoundingClientRect().top ?? null,
+        activeDeck: document.querySelector("#main-content")?.dataset.activeDeck ?? null,
+      })`,
+      returnByValue: true,
+    })
+  ).result.value;
+  swipe.settlement = swipeSettlement;
+
+  await send("Page.navigate", { url: `${targetUrl}?critical-parity-early-click` });
+  await waitForCriticalShell(send);
+  await send("Runtime.evaluate", {
+    expression: `(() => {
+      const button = [...document.querySelectorAll(".za-snapshot-modes button")]
+        .find((candidate) => candidate.textContent?.includes("EXECUTIVE"));
+      const descendant = button?.querySelector("div");
+      if (!button || !descendant) throw new Error("the prerendered Executive control is missing");
+      descendant.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true, cancelable: true, pointerId: 7 }));
+      button.click();
+    })()`,
+  });
+  await waitForApp(send);
+  await settle();
+  const click = (
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const executive = [...document.querySelectorAll(".za-snapshot-modes button")]
+          .find((candidate) => candidate.textContent?.includes("EXECUTIVE"));
+        return {
+          executivePressed: executive?.getAttribute("aria-pressed") === "true",
+          pressedCount: document.querySelectorAll('.za-snapshot-modes button[aria-pressed="true"]').length,
+        };
+      })()`,
+      returnByValue: true,
+    })
+  ).result.value;
+
+  const visibleWrongDirectFrame = direct.frames.find(
+    (frame) => frame.visibility !== "hidden" && frame.nearestDeck === 0 && frame.activated !== true,
+  );
+  const failures = [];
+  if (
+    direct.hash !== "#deck=iron" ||
+    direct.nearestDeck.deck !== 3 ||
+    direct.settlement?.activeDeck !== "3" ||
+    direct.settlement?.scrollAlignmentDelta > 1 ||
+    direct.settlement?.sectionAlignmentDelta > 1
+  )
+    failures.push(`direct Iron startup did not settle synchronously: ${JSON.stringify(direct)}`);
+  if (typeof direct.activationRequestGapMs !== "number" || direct.activationRequestGapMs > 100)
+    failures.push(`direct Iron activation import waited ${direct.activationRequestGapMs}ms`);
+  if (visibleWrongDirectFrame)
+    failures.push(`direct Iron exposed Snapshot before activation: ${JSON.stringify(visibleWrongDirectFrame)}`);
+  if (!ctrlK.navigatorOpen || ctrlK.dialogCount !== 1)
+    failures.push(`first Ctrl+K did not open exactly one navigator: ${JSON.stringify(ctrlK)}`);
+  if (
+    swipe.hash !== "#deck=grid" ||
+    swipe.activeDeck !== "1" ||
+    swipe.settlement?.scrollAlignmentDelta > 1 ||
+    swipe.settlement?.sectionAlignmentDelta > 1
+  )
+    failures.push(`first swipe did not navigate exactly once to Grid: ${JSON.stringify(swipe)}`);
+  if (!click.executivePressed || click.pressedCount !== 1)
+    failures.push(`first descendant click did not select Executive exactly once: ${JSON.stringify(click)}`);
+
+  return { direct, ctrlK, swipe, click, failures, ok: failures.length === 0 };
+}
+
 async function settleViewport(send, width, mobile, height = 844) {
   await send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 1, mobile });
   await send("Runtime.evaluate", {
@@ -1356,6 +1707,89 @@ async function main() {
         });
       })();`,
     });
+    await send("Page.addScriptToEvaluateOnNewDocument", {
+      source: `(() => {
+        if (!location.search.includes("critical-parity")) return;
+        const nativeSetTimeout = window.setTimeout.bind(window);
+        const nativeClearTimeout = window.clearTimeout.bind(window);
+        let heldActivation = null;
+        const activationErrors = [];
+        const heldId = 2_500_000_000;
+        window.setTimeout = (callback, delay = 0, ...args) => {
+          if (Number(delay) === 250 && heldActivation == null) {
+            heldActivation = { callback, args };
+            return heldId;
+          }
+          return nativeSetTimeout(callback, delay, ...args);
+        };
+        window.clearTimeout = (id) => {
+          if (id === heldId) {
+            heldActivation = null;
+            return;
+          }
+          nativeClearTimeout(id);
+        };
+        Object.defineProperty(window, "__v35ReleaseCriticalActivation", {
+          value: () => {
+            const held = heldActivation;
+            heldActivation = null;
+            if (!held) throw new Error("critical activation was not held");
+            held.callback(...held.args);
+          },
+        });
+        Object.defineProperty(window, "__v35CriticalActivationHeld", {
+          get: () => heldActivation != null,
+        });
+        addEventListener("error", (event) => activationErrors.push(event.message));
+        addEventListener("unhandledrejection", (event) => activationErrors.push(String(event.reason)));
+        Object.defineProperty(window, "__v35CriticalActivationErrors", { value: activationErrors });
+      })();`,
+    });
+    await send("Page.addScriptToEvaluateOnNewDocument", {
+      source: `(() => {
+        if (!location.search.includes("startup-direct")) return;
+        const frames = [];
+        Object.defineProperty(window, "__v35DirectFrames", { value: frames });
+        let count = 0;
+        const sample = () => {
+          const root = document.querySelector("#root");
+          const scroller = document.querySelector("#main-content");
+          const sections = [...document.querySelectorAll("section[data-deck]")];
+          if (root && scroller && sections.length) {
+            const scrollerTop = scroller.getBoundingClientRect().top;
+            const nearest = sections.reduce((best, section) => {
+              const deck = Number(section.getAttribute("data-deck"));
+              const delta = Math.abs(section.getBoundingClientRect().top - scrollerTop);
+              return delta < best.delta ? { deck, delta } : best;
+            }, { deck: -1, delta: Number.POSITIVE_INFINITY });
+            frames.push({
+              activated: root.dataset.clientActivated === "true",
+              nearestDeck: nearest.deck,
+              visibility: getComputedStyle(root).visibility,
+              atMs: performance.now(),
+            });
+          }
+          count += 1;
+          if (count < 60 && root?.dataset.clientActivated !== "true") requestAnimationFrame(sample);
+        };
+        requestAnimationFrame(sample);
+      })();`,
+    });
+    const criticalShellParity = [
+      await runCriticalShellParity(send, targetUrl, 390, 844, true),
+      await runCriticalShellParity(send, targetUrl, 1280, 900, false),
+    ];
+    for (const result of criticalShellParity) {
+      if (!result.ok) console.error(JSON.stringify(result, null, 2));
+      assert.equal(
+        result.ok,
+        true,
+        `Critical shell drifted from activated geometry at ${result.width}px: ${result.failures.join("; ")}`,
+      );
+    }
+    const earlyActivation = await runEarlyActivationAcceptance(send, targetUrl);
+    assert.equal(earlyActivation.ok, true, `Early activation outcomes failed: ${earlyActivation.failures.join("; ")}`);
+    await send("Emulation.setEmulatedMedia", { media: "screen", features: [] });
     await send("Emulation.setDeviceMetricsOverride", {
       width: 1280,
       height: 900,
@@ -2142,6 +2576,8 @@ async function main() {
           bitFocus,
           browserVersion,
           cinemas,
+          criticalShellParity,
+          earlyActivation,
           decodedAssets,
           desktopFlightTelemetry,
           desktopLayout,
@@ -2168,6 +2604,10 @@ async function main() {
       `Every optimized poster must decode with exact MIME and dimensions: ${JSON.stringify(decodedAssets.decoded)}`,
     );
     assert.equal(browserVersion.ok, true, browserVersion.failures.join("; "));
+    criticalShellParity.forEach((result) =>
+      assert.equal(result.ok, true, `Critical shell parity failed at ${result.width}px: ${result.failures.join("; ")}`),
+    );
+    assert.equal(earlyActivation.ok, true, earlyActivation.failures.join("; "));
     assert.equal(
       hydrationConsole.ok,
       true,

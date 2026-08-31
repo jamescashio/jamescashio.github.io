@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import { JSDOM } from "jsdom";
 
 import { scheduleClientActivation } from "../src/lib/client-activation.ts";
 
@@ -89,6 +90,174 @@ test("a click completed before asynchronous activation is replayed once after th
   assert.equal(frames.listenerCount(), 0);
 });
 
+test("a non-Snapshot initial route starts activation synchronously", () => {
+  const frames = frameScheduler();
+  let activations = 0;
+
+  scheduleClientActivation(
+    () => {
+      activations += 1;
+    },
+    frames.scheduler,
+    { defer: false },
+  );
+
+  assert.equal(activations, 1, "a direct-link route must not paint the unrelated Snapshot shell first");
+  assert.equal(frames.pending(), 0);
+  assert.equal(frames.listenerCount(), 0);
+});
+
+test("the first Ctrl+K command is preserved until the hydrated shortcut handler is ready", async () => {
+  const frames = frameScheduler();
+  const dom = new JSDOM("<!doctype html><body><button>OPEN</button></body>");
+  const target = dom.window.document.querySelector("button");
+  let resolveActivation;
+  const activation = new Promise((resolve) => {
+    resolveActivation = resolve;
+  });
+  let opened = 0;
+  let prevented = 0;
+  let stopped = 0;
+  dom.window.addEventListener("keydown", (event) => {
+    if (event.ctrlKey && event.key.toLowerCase() === "k") opened += 1;
+  });
+  scheduleClientActivation(() => activation, frames.scheduler);
+
+  frames.dispatchIntent("keydown", {
+    type: "keydown",
+    key: "k",
+    code: "KeyK",
+    ctrlKey: true,
+    metaKey: false,
+    altKey: false,
+    shiftKey: false,
+    repeat: false,
+    location: 0,
+    target,
+    preventDefault: () => (prevented += 1),
+    stopImmediatePropagation: () => (stopped += 1),
+  });
+  assert.equal(opened, 0);
+
+  resolveActivation();
+  await activation;
+  await Promise.resolve();
+
+  assert.equal(opened, 1, "the original navigator command must run exactly once after hydration");
+  assert.equal(prevented, 1, "the browser must not consume Ctrl+K before replay");
+  assert.equal(stopped, 1);
+  dom.window.close();
+});
+
+test("the first touch swipe preserves its coordinates and navigates exactly once after hydration", async () => {
+  const frames = frameScheduler();
+  const dom = new JSDOM("<!doctype html><body><main></main></body>");
+  const target = dom.window.document.querySelector("main");
+  let resolveActivation;
+  const activation = new Promise((resolve) => {
+    resolveActivation = resolve;
+  });
+  let swipeStart = null;
+  const navigations = [];
+  target.addEventListener("touchstart", (event) => {
+    swipeStart = event.touches[0].clientX;
+  });
+  target.addEventListener("touchend", (event) => {
+    const dx = event.changedTouches[0].clientX - swipeStart;
+    if (Math.abs(dx) >= 72) navigations.push(dx < 0 ? "next" : "previous");
+  });
+  scheduleClientActivation(() => activation, frames.scheduler);
+
+  frames.dispatchIntent("touchstart", {
+    type: "touchstart",
+    target,
+    touches: [{ identifier: 7, clientX: 260, clientY: 420, target }],
+  });
+  frames.dispatchIntent("touchend", {
+    type: "touchend",
+    target,
+    changedTouches: [{ identifier: 7, clientX: 120, clientY: 423, target }],
+    preventDefault() {},
+    stopImmediatePropagation() {},
+  });
+  assert.deepEqual(navigations, []);
+
+  resolveActivation();
+  await activation;
+  await Promise.resolve();
+
+  assert.deepEqual(navigations, ["next"], "the preserved swipe must reach the real handler exactly once");
+  dom.window.close();
+});
+
+test("pointerdown on a control descendant replays the stable activatable ancestor once", async () => {
+  const frames = frameScheduler();
+  const dom = new JSDOM("<!doctype html><body><button><span>GO</span></button></body>");
+  const button = dom.window.document.querySelector("button");
+  const child = button.querySelector("span");
+  let resolveActivation;
+  const activation = new Promise((resolve) => {
+    resolveActivation = resolve;
+  });
+  let clicks = 0;
+  let prevented = false;
+  button.addEventListener("click", () => (clicks += 1));
+  scheduleClientActivation(() => activation, frames.scheduler);
+
+  frames.dispatchIntent("pointerdown", { type: "pointerdown", target: child });
+  frames.dispatchIntent("click", {
+    type: "click",
+    target: button,
+    preventDefault: () => (prevented = true),
+    stopImmediatePropagation() {},
+  });
+  if (!prevented) button.click();
+  assert.equal(clicks, 0, "the unhydrated control must not run before its real handler exists");
+
+  resolveActivation();
+  await activation;
+  await Promise.resolve();
+
+  assert.equal(clicks, 1);
+  dom.window.close();
+});
+
+test("an external anchor keeps its native navigation click and is never replayed", async () => {
+  const frames = frameScheduler();
+  const dom = new JSDOM('<!doctype html><body><a href="https://example.net/"><span>LEAVE</span></a></body>', {
+    url: "https://cashio.us/",
+  });
+  const anchor = dom.window.document.querySelector("a");
+  const child = anchor.querySelector("span");
+  let resolveActivation;
+  const activation = new Promise((resolve) => {
+    resolveActivation = resolve;
+  });
+  let clicks = 0;
+  let prevented = false;
+  anchor.addEventListener("click", (event) => {
+    event.preventDefault();
+    clicks += 1;
+  });
+  scheduleClientActivation(() => activation, frames.scheduler);
+
+  frames.dispatchIntent("pointerdown", { type: "pointerdown", target: child });
+  frames.dispatchIntent("click", {
+    type: "click",
+    target: anchor,
+    preventDefault: () => (prevented = true),
+    stopImmediatePropagation() {},
+  });
+  if (!prevented) anchor.click();
+  assert.equal(clicks, 1, "the native external action must remain available during activation");
+
+  resolveActivation();
+  await activation;
+  await Promise.resolve();
+  assert.equal(clicks, 1, "activation must not duplicate external navigation");
+  dom.window.close();
+});
+
 test("client activation yields two frames so the prerendered initial route paints before hydration", () => {
   const frames = frameScheduler();
   let activations = 0;
@@ -153,6 +322,7 @@ test("the prerendered route has a readable inline shell while the full styleshee
   ]);
 
   assert.match(documentHtml, /<style data-critical-shell>/);
+  assert.match(documentHtml, /<style data-critical-fonts>/);
   for (const selector of [
     ".za-systems-\\6fnline",
     "#main-content",
@@ -210,6 +380,10 @@ test("the prerendered route has a readable inline shell while the full styleshee
     /\.za-bit-control,[\s\S]*?\.za-bit-control canvas \{[\s\S]*?width: 104px;[\s\S]*?height: 104px;/,
     "desktop Bit must keep its activated footprint",
   );
-  assert.match(main, /document\.querySelector\("style\[data-critical-shell\]"\)\?\.remove\(\)/);
-  assert.match(main, /root\.dataset\.clientActivated = "true"/);
+  assert.match(
+    main,
+    /clientReady\.then\(\(\) => \{[\s\S]*?document\.querySelector\("style\[data-critical-shell\]"\)\?\.remove\(\);[\s\S]*?root\.dataset\.clientActivated = "true"/,
+    "activation must retire only shell rules and become observable after React layout effects are ready",
+  );
+  assert.doesNotMatch(main, /style\[data-critical-fonts\][\s\S]*?remove/);
 });

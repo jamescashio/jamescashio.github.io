@@ -31,7 +31,7 @@
     />
     <meta property="og:image" content="https://cashio.us/og.jpg" />
     <meta name="theme-color" content="#05060a" />
-    <style data-critical-shell>
+    <style data-critical-fonts>
       @font-face {
         font-family: "Orbitron";
         font-style: normal;
@@ -67,6 +67,8 @@
         font-display: optional;
         src: url("/fonts/jetbrains-600.woff2") format("woff2");
       }
+    </style>
+    <style data-critical-shell>
       *,
       ::before,
       ::after {
@@ -133,7 +135,6 @@
       #root:not([data-client-activated]) .za-vs-hud,
       #root:not([data-client-activated]) .za-warpflash,
       #root:not([data-client-activated]) .za-sweep,
-      #root:not([data-client-activated]) .za-command-rail,
       #root:not([data-client-activated]) .za-chapter-overlay,
       #root:not([data-client-activated]) .za-cinema-bar {
         display: none;
@@ -154,12 +155,16 @@
       .za-command-header > * {
         pointer-events: auto;
       }
+      .za-command-rail {
+        display: none;
+      }
       .za-command-header > .flex {
         display: flex;
         align-items: center;
         gap: 0.5rem;
       }
       .za-command-header .hidden,
+      .za-command-header [class~="!hidden"],
       .za-validity-chip {
         display: none;
       }
@@ -172,12 +177,30 @@
         border-radius: 999px;
         background: rgba(5, 6, 10, 0.72);
         color: #8aa0b4;
-        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
         font-size: 10px;
         letter-spacing: 0.16em;
       }
+      .za-validity-chip {
+        display: none;
+        min-height: 44px;
+        flex: 0 0 204px;
+        inline-size: 204px;
+        justify-content: center;
+        white-space: nowrap;
+      }
       .za-command-header button.za-chip {
         min-height: 44px;
+      }
+      .za-command-header .za-chip {
+        white-space: nowrap;
+      }
+      .za-clock-chip {
+        flex: 0 0 117px;
+        inline-size: 117px;
+        min-width: 117px;
+        min-height: 44px;
+        justify-content: center;
       }
       #main-content {
         position: relative;
@@ -205,7 +228,7 @@
       }
       .za-kicker,
       .za-mono {
-        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
         letter-spacing: 0.08em;
       }
       .za-kicker {
@@ -306,6 +329,14 @@
         line-height: 1.5;
         text-transform: uppercase;
       }
+      .za-snapshot-actions .za-btn {
+        padding: 0.875rem 1.75rem;
+        font-size: 13px;
+      }
+      .za-snapshot-actions .za-btn-ghost {
+        padding: 0.75rem 1.25rem;
+        font-size: 11px;
+      }
       .za-btn {
         border: 0;
         background: linear-gradient(135deg, #ff9500, #ff6a00);
@@ -317,7 +348,7 @@
       .za-btn-ghost {
         border: 1px solid rgba(0, 249, 255, 0.18);
         background: transparent;
-        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
         letter-spacing: 0.14em;
       }
       .za-mobile-flight-control {
@@ -326,6 +357,11 @@
         bottom: 4.25rem;
         left: 0.75rem;
         width: min(18rem, calc(100vw - 1.5rem));
+        min-height: 44px;
+        padding: 0.5rem;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 10px;
+        line-height: 1.25;
       }
       .za-mobile-rail-scroll {
         position: fixed;
@@ -355,6 +391,7 @@
         display: block;
         padding: 0;
         border: 0;
+        border-radius: 999px;
         background: transparent;
       }
       .za-corner-hud .za-airframe {
@@ -367,7 +404,7 @@
         border-radius: 12px;
         background: rgba(5, 6, 10, 0.8);
         color: #687f97;
-        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
         font-size: 10px;
         line-height: 1.625;
         letter-spacing: 0.08em;
@@ -389,7 +426,7 @@
         border-radius: 6px;
         background: transparent;
         color: #687f97;
-        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
         font-size: 10px;
         letter-spacing: 0.12em;
       }
@@ -512,8 +549,15 @@
           width: 72px !important;
           height: 72px !important;
         }
+        .za-corner-hud .za-bit-control {
+          transform: scale(0.58);
+          transform-origin: bottom right;
+        }
       }
       @media (min-width: 768px) {
+        section[data-deck="0"] > .za-bracket > .za-chip {
+          margin-top: 2rem;
+        }
         .za-command-rail {
           position: fixed;
           z-index: 40;
@@ -528,15 +572,49 @@
         }
         .za-command-rail nav {
           display: flex;
-          flex: 1;
+          flex: none;
+          height: calc(100dvh - 228px);
           flex-direction: column;
           gap: 0.25rem;
+          margin-top: 0.5rem;
+          padding-right: 0.5rem;
+          padding-left: 0.5rem;
+        }
+        .za-command-rail > button:first-child {
+          height: 64px;
+          flex-shrink: 0;
+          padding: 0 0.75rem;
+          text-align: left;
+        }
+        .za-command-rail > div:last-child {
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+          padding: 0.5rem;
         }
         .za-command-rail button {
           min-height: 44px;
           border: 0;
           background: transparent;
           color: #8aa0b4;
+        }
+        .za-command-rail nav > button {
+          position: relative;
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          padding: 0.5rem 0.75rem;
+          border-radius: 0 22px 22px 0;
+          text-align: left;
+          height: 44px;
+          flex-shrink: 0;
+          overflow: hidden;
+        }
+        .za-command-rail .za-rail-preview {
+          display: none;
+        }
+        .za-command-header .za-validity-chip {
+          display: flex;
         }
         .za-command-header {
           left: 68px;
@@ -553,7 +631,23 @@
           display: none;
         }
       }
+      @media (min-width: 640px) and (max-width: 767px), (min-width: 1440px) {
+        .za-command-header .za-audio-copy {
+          display: inline;
+        }
+      }
+      @media (min-width: 768px) and (max-width: 1439px) {
+        .za-command-header button[aria-label*="selection audio"] {
+          inline-size: 44px;
+          justify-content: center;
+          padding-right: 0;
+          padding-left: 0;
+        }
+      }
       @media (min-width: 1024px) {
+        .za-command-header [class~="lg:!inline-flex"] {
+          display: inline-flex;
+        }
         section[data-deck] {
           padding-right: 3.5rem;
           padding-left: 3.5rem;
