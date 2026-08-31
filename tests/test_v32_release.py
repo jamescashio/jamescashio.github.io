@@ -386,7 +386,8 @@ class V34ReleaseContractTests(unittest.TestCase):
                 'export const a = fragment + "STS CURRENT STATUS";\n'
                 'export const b = "HO" + dynamic + "STS CURRENT STATUS";\n'
                 'export const c = dynamic ? alias + "STS CURRENT STATUS" : fragment + "STS CURRENT STATUS";\n'
-                'export const view = <p>{alias}STS CURRENT STATUS</p>; export const safe = `hello ${dynamic} world`;\n',
+                'export const view = <p>{alias}STS CURRENT STATUS</p>; export const safe = `hello ${dynamic} world`;\n'
+                'export const safeStatus = <p><span aria-hidden />DATED EXPORT STATUS · VERIFIED {dynamic} · VALID THRU </p>;\n',
                 encoding="utf-8",
             )
             bundle.write_text('const fragment=`HO${dynamic}`;const claim=fragment+"STS CURRENT STATUS";\n', encoding="utf-8")
@@ -395,6 +396,13 @@ class V34ReleaseContractTests(unittest.TestCase):
         self.assertGreaterEqual(len(risky), 5, literals)
         self.assertTrue(all(release_consistency.has_stale_current_code_literal(literal) for literal in risky))
         self.assertTrue(any("hello" in literal["value"] and not literal["hasDynamicAlphaJoin"] for literal in literals), literals)
+        self.assertTrue(
+            any(
+                "DATED EXPORT STATUS" in literal["value"] and not literal["hasDynamicAlphaJoin"]
+                for literal in literals
+            ),
+            literals,
+        )
 
     def test_public_surface_guard_rejects_current_fleet_topology_and_raw_route_identifiers(self) -> None:
         base = (

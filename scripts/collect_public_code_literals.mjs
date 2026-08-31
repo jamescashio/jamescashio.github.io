@@ -19,41 +19,73 @@ function isClassProperty(node) {
   return false;
 }
 
+function staticValue(value) {
+  return {
+    value,
+    hasDynamicAlphaJoin: false,
+    canBeEmpty: value.length === 0,
+    startsAlpha: /^[A-Za-z]/.test(value),
+    endsAlpha: /[A-Za-z]$/.test(value),
+    startsUnknown: false,
+    endsUnknown: false,
+  };
+}
+
+function unknownValue() {
+  return {
+    value: " ",
+    hasDynamicAlphaJoin: false,
+    canBeEmpty: true,
+    startsAlpha: false,
+    endsAlpha: false,
+    startsUnknown: true,
+    endsUnknown: true,
+  };
+}
+
+function concatenate(left, right) {
+  return {
+    value: left.value + right.value,
+    hasDynamicAlphaJoin:
+      left.hasDynamicAlphaJoin ||
+      right.hasDynamicAlphaJoin ||
+      (left.endsUnknown && right.startsAlpha) ||
+      (left.endsAlpha && right.startsUnknown),
+    canBeEmpty: left.canBeEmpty && right.canBeEmpty,
+    startsAlpha: left.startsAlpha || (left.canBeEmpty && right.startsAlpha),
+    endsAlpha: right.endsAlpha || (right.canBeEmpty && left.endsAlpha),
+    startsUnknown: left.startsUnknown || (left.canBeEmpty && right.startsUnknown),
+    endsUnknown: right.endsUnknown || (right.canBeEmpty && left.endsUnknown),
+  };
+}
+
+function alternatives(...branches) {
+  return {
+    value: branches.map((branch) => branch.value).join(" "),
+    hasDynamicAlphaJoin: branches.some((branch) => branch.hasDynamicAlphaJoin),
+    canBeEmpty: branches.some((branch) => branch.canBeEmpty),
+    startsAlpha: branches.some((branch) => branch.startsAlpha),
+    endsAlpha: branches.some((branch) => branch.endsAlpha),
+    startsUnknown: branches.some((branch) => branch.startsUnknown),
+    endsUnknown: branches.some((branch) => branch.endsUnknown),
+  };
+}
+
 function evaluate(node, scope, resolving = new Set()) {
-  if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node))
-    return { value: node.text, hasDynamicAlphaJoin: false, unresolved: false };
+  if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) return staticValue(node.text);
+  if (ts.isJsxText(node)) return staticValue(node.getFullText());
   if (ts.isTemplateExpression(node)) {
-    let value = node.head.text;
-    let hasDynamicAlphaJoin = false;
-    let unresolved = false;
+    let result = staticValue(node.head.text);
     for (const span of node.templateSpans) {
-      const resolved = evaluate(span.expression, scope, resolving);
-      if (resolved === null) {
-        const joinsAlphabeticFragments = /[A-Za-z]$/.test(value) && /^[A-Za-z]/.test(span.literal.text);
-        hasDynamicAlphaJoin ||= joinsAlphabeticFragments;
-        unresolved = true;
-        value += joinsAlphabeticFragments ? "" : " ";
-      } else {
-        value += resolved.value;
-        hasDynamicAlphaJoin ||= resolved.hasDynamicAlphaJoin;
-        unresolved ||= resolved.unresolved;
-      }
-      value += span.literal.text;
+      result = concatenate(result, evaluate(span.expression, scope, resolving));
+      result = concatenate(result, staticValue(span.literal.text));
     }
-    return { value, hasDynamicAlphaJoin, unresolved };
+    return result;
   }
   if (ts.isBinaryExpression(node) && node.operatorToken.kind === ts.SyntaxKind.PlusToken) {
     const left = evaluate(node.left, scope, resolving);
     const right = evaluate(node.right, scope, resolving);
-    if (!left || !right) return null;
-    const value = left.value + right.value;
-    const unresolved = left.unresolved || right.unresolved;
-    return {
-      value,
-      unresolved,
-      hasDynamicAlphaJoin:
-        left.hasDynamicAlphaJoin || right.hasDynamicAlphaJoin || (unresolved && /[A-Za-z].*[A-Za-z]/.test(value)),
-    };
+    return concatenate(left, right);
   }
   if (ts.isParenthesizedExpression(node)) return evaluate(node.expression, scope, resolving);
   if (ts.isConditionalExpression(node)) {
@@ -61,50 +93,37 @@ function evaluate(node, scope, resolving = new Set()) {
     if (node.condition.kind === ts.SyntaxKind.FalseKeyword) return evaluate(node.whenFalse, scope, resolving);
     const whenTrue = evaluate(node.whenTrue, scope, resolving);
     const whenFalse = evaluate(node.whenFalse, scope, resolving);
-    return whenTrue && whenFalse
-      ? {
-          value: `${whenTrue.value} ${whenFalse.value}`,
-          hasDynamicAlphaJoin: whenTrue.hasDynamicAlphaJoin || whenFalse.hasDynamicAlphaJoin,
-          unresolved: whenTrue.unresolved || whenFalse.unresolved,
-        }
-      : null;
+    return alternatives(whenTrue, whenFalse);
   }
-  if (ts.isJsxExpression(node))
-    return node.expression
-      ? evaluate(node.expression, scope, resolving)
-      : { value: "", hasDynamicAlphaJoin: false, unresolved: false };
+  if (ts.isJsxExpression(node)) return node.expression ? evaluate(node.expression, scope, resolving) : staticValue("");
   if (ts.isJsxElement(node) || ts.isJsxFragment(node)) {
-    const children = node.children
-      .map(
-        (child) =>
-          evaluate(child, scope, resolving) ??
-          (ts.isJsxText(child) ? { value: child.getText(), hasDynamicAlphaJoin: false, unresolved: false } : null),
-      )
-      .filter(Boolean);
-    const value = children.map((child) => child.value).join(" ");
-    const unresolved = children.some((child) => child.unresolved);
-    return {
-      value,
-      unresolved,
-      hasDynamicAlphaJoin:
-        children.some((child) => child.hasDynamicAlphaJoin) || (unresolved && /[A-Za-z].*[A-Za-z]/.test(value)),
-    };
+    return node.children.reduce(
+      (result, child) =>
+        concatenate(
+          result,
+          ts.isJsxElement(child) || ts.isJsxFragment(child) || ts.isJsxSelfClosingElement(child)
+            ? staticValue(" ")
+            : evaluate(child, scope, resolving),
+        ),
+      staticValue(""),
+    );
   }
   if (ts.isIdentifier(node)) {
     for (let current = scope; current; current = current.parent) {
       const binding = current.bindings.get(node.text);
       if (!binding) continue;
-      if (resolving.has(binding)) return { value: " ", hasDynamicAlphaJoin: false, unresolved: true };
+      if (resolving.has(binding)) return unknownValue();
       resolving.add(binding);
       const value = evaluate(binding.initializer, binding.scope, resolving);
       resolving.delete(binding);
       return value;
     }
   }
-  return { value: " ", hasDynamicAlphaJoin: false, unresolved: true };
+  return unknownValue();
 }
 
 function hasEvaluableParent(node, scope) {
+  if (ts.isJsxElement(node) || ts.isJsxFragment(node)) return false;
   const parent = node.parent;
   return Boolean(parent && ts.isExpression(parent) && evaluate(parent, scope) !== null);
 }
@@ -137,7 +156,7 @@ for (const filename of process.argv.slice(2)) {
   function visit(node) {
     const scope = scopeFor.get(node) ?? rootScope;
     const result = evaluate(node, scope);
-    if (result !== null && !hasEvaluableParent(node, scope)) {
+    if ((result.value.trim() || result.hasDynamicAlphaJoin) && !hasEvaluableParent(node, scope)) {
       results.push({
         file: path.normalize(filename),
         value: result.value,
