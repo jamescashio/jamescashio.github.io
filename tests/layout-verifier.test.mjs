@@ -911,6 +911,29 @@ test("motion preference acceptance accepts a moving HUD frame after real scroll 
   assert.deepEqual(validate(scenario), []);
 });
 
+test("motion preference acceptance uses the synchronized scroll HUD target across restore and reduced-again", () => {
+  const validate = runtimeSupport.motionPreferenceAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
+  const scenario = structuredClone(approvedMotionPreferenceScenario);
+  scenario.normalStart.hud.rect.width = 114.234375;
+  scenario.normalIntermediate.hud.rect.width = 105.5;
+  scenario.expectedFinal.hud.width = 100.796875;
+  scenario.reducedAfterInterrupt.hud.rect.width = 100.796875;
+  scenario.reducedAgain.hud.rect.width = 100.796875;
+  scenario.restoredSamples.forEach((sample) => {
+    sample.elements.hud.rect.width = 100.796875;
+  });
+
+  assert.deepEqual(validate(scenario), []);
+
+  const stalePreSyncTarget = structuredClone(scenario);
+  stalePreSyncTarget.expectedFinal.hud.width = 109.75;
+  const staleFailures = validate(stalePreSyncTarget);
+  assert.ok(
+    staleFailures.some((failure) => /hud must retain final geometry|hud must not replay stale geometry/.test(failure)),
+    "the stale pre-synchronization 49% target must fail against canonical 45% observations",
+  );
+});
+
 test("motion preference acceptance rejects delayed-only restore evidence and non-semantic geometry", () => {
   const validate = runtimeSupport.motionPreferenceAcceptanceFailures ?? (() => ["acceptance validator unavailable"]);
   const scenario = structuredClone(approvedMotionPreferenceScenario);

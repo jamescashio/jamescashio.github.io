@@ -1552,6 +1552,11 @@
   background: rgba(5, 6, 10, 0.92);
   box-shadow: 0 0 18px rgba(0, 249, 255, 0.1);
 }
+.za-motion-preference-settled .za-corner-hud.yield .za-airframe {
+  width: 250px;
+  max-width: 250px;
+  padding: 12px;
+}
 .za-corner-hud.yield .za-airframe-details,
 .za-corner-hud.yield .za-airframe .za-eq {
   display: none;
@@ -2788,9 +2793,6 @@
   .za-bit-line {
     letter-spacing: 0.08em;
     font-size: 11px;
-  }
-  .za-mobile-flight-control {
-    display: none;
   }
   .za-power-on-core {
     width: min(44rem, calc(100vw - 1.5rem));

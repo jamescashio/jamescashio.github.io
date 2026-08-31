@@ -610,6 +610,51 @@ test("live motion changes settle one-shot command-deck entrance motion for the s
   }
 });
 
+test("settled motion keeps the airframe geometry carrier rendered when collision HUD yields", async () => {
+  const view = mountCommandDeck({ injectStyles: true, reducedMotion: false });
+  try {
+    await view.render();
+    const root = view.document.querySelector("#root > div");
+    const hud = view.document.querySelector(".za-corner-hud");
+    const progress = view.document.querySelector(".za-airframe-progress");
+    assert.ok(root && hud && progress, "expected the command-deck airframe HUD");
+
+    root.classList.add("za-motion-preference-settled");
+    hud.classList.add("yield");
+    const ancestors = [];
+    for (let current = progress; current && current !== hud.parentElement; current = current.parentElement)
+      ancestors.push(current);
+    assert.ok(
+      ancestors.every((element) => view.window.getComputedStyle(element).display !== "none"),
+      "the progress geometry carrier must not be hidden by yielded HUD compaction",
+    );
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("settled motion retains the normal airframe geometry when collision HUD yields", async () => {
+  const view = mountCommandDeck({ injectStyles: true, reducedMotion: false });
+  try {
+    await view.render();
+    const root = view.document.querySelector("#root > div");
+    const hud = view.document.querySelector(".za-corner-hud");
+    const airframe = view.document.querySelector(".za-airframe");
+    assert.ok(root && hud && airframe, "expected the command-deck airframe HUD");
+
+    root.classList.add("za-motion-preference-settled");
+    hud.classList.add("yield");
+    const settled = view.window.getComputedStyle(airframe);
+    assert.deepEqual(
+      { maxWidth: settled.maxWidth, padding: settled.padding, width: settled.width },
+      { maxWidth: "250px", padding: "12px", width: "250px" },
+      "settled collision handling must retain the standard airframe geometry",
+    );
+  } finally {
+    await view.cleanup();
+  }
+});
+
 test("aircraft pip buttons keep the 26px selected mark separate from the button target", async () => {
   const view = mountCommandDeck();
   try {
@@ -1000,6 +1045,39 @@ test("mobile cinema exposes only its exit while fixed background controls are ab
     await view.runLatestAnimationFrame();
     await view.settle();
     assert.equal(view.document.activeElement, photo, "cinema exit must restore the exact PHOTO opener");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("mobile flight surface remains visible below the tablet breakpoint and cinema removes it by rendering state", async () => {
+  assert.doesNotMatch(
+    stylesheet,
+    /@media\s*\(max-width:\s*767px\)\s*\{[\s\S]*?\.za-mobile-flight-control\s*\{[^}]*display:\s*none/is,
+    "the mobile breakpoint must not hide the preserved 30-second flight surface",
+  );
+
+  const view = mountCommandDeck({
+    controlledTimers: true,
+    injectStyles: true,
+    viewport: { width: 390, height: 844 },
+  });
+  try {
+    await view.render();
+    const flight = view.document.querySelector(".za-mobile-flight-control");
+    assert.ok(flight, "mobile command chrome must render the 30-second flight surface below 768px");
+    assert.notEqual(
+      view.window.getComputedStyle(flight).display,
+      "none",
+      "mobile flight must not be hidden by a responsive CSS override",
+    );
+
+    await act(async () => useDeck.setState({ photo: true }));
+    assert.equal(
+      view.document.querySelector(".za-mobile-flight-control"),
+      null,
+      "cinema must remove the flight surface through the component render path",
+    );
   } finally {
     await view.cleanup();
   }

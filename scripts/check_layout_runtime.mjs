@@ -598,6 +598,35 @@ async function captureRestoredMotionSeries(send) {
   );
 }
 
+async function synchronizeMotionScroll(send) {
+  const synchronized = await evaluateByValue(
+    send,
+    `(async () => {
+      const scroller = document.querySelector('#main-content');
+      const progress = document.querySelector('.za-airframe-progress');
+      const track = progress?.parentElement;
+      if (!scroller || !progress || !track) return { ok: false, reason: 'motion scroll synchronization hooks are missing' };
+      scroller.dispatchEvent(new Event('scroll'));
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      const maxScroll = Math.max(1, scroller.scrollHeight - scroller.clientHeight);
+      const progressPercent = Math.round(Math.min(1, Math.max(0, scroller.scrollTop / maxScroll)) * 100);
+      const targetWidth = \`\${progressPercent}%\`;
+      const trackRect = track.getBoundingClientRect();
+      const progressRect = progress.getBoundingClientRect();
+      return {
+        ok: progress.style.width === targetWidth,
+        reason: progress.style.width === targetWidth ? null : 'real scroll listener did not synchronize HUD progress',
+        progressPercent,
+        targetWidth,
+        rect: { width: (trackRect.width * progressPercent) / 100, height: progressRect.height },
+      };
+    })()`,
+    true,
+  );
+  if (!synchronized?.ok) throw new Error(synchronized?.reason ?? "motion scroll synchronization failed");
+  return synchronized;
+}
+
 async function runMotionPreferenceAcceptance(send, targetUrl) {
   await setReducedMotionPreference(send, false);
   await settleViewport(send, 1440, false, 1100);
@@ -608,7 +637,7 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
   const openedLineage = await evaluateByValue(
     send,
     `(() => {
-      const control = document.querySelector('button[aria-label="Go to LINEAGE deck"]');
+      const control = document.querySelector('button[aria-label="05 LINEAGE · Go to LINEAGE deck"]');
       if (!control) return false;
       control.click();
       return true;
@@ -658,7 +687,7 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
       const pipTarget = [...document.querySelectorAll('.za-lcars-pip')]
         .find((element) => element.getAttribute('aria-label') === ${JSON.stringify(MOTION_PIP_LABEL)});
       const firstPip = document.querySelector('.za-lcars-pip');
-      const lineageControl = document.querySelector('button[aria-label="Go to LINEAGE deck"]');
+      const lineageControl = document.querySelector('button[aria-label="05 LINEAGE · Go to LINEAGE deck"]');
       if (
         !scroller || !section || !hud || !progress || routingControls.length < 2 || !routingTarget ||
         !pipTarget || !firstPip || !lineageControl
@@ -723,7 +752,6 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
     true,
   );
   if (!hudPath.ok) throw new Error(`${hudPath.reason}: ${JSON.stringify(hudPath.points ?? [])}`);
-  const expectedFinal = { ...staticFinal, hud: hudPath.final.rect };
   const normalStartCapture = await captureMotionElements(send);
 
   const normalIntermediateCapture = await evaluateByValue(
@@ -733,21 +761,7 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
       const startRects = ${JSON.stringify(
         Object.fromEntries(Object.entries(normalStartCapture.elements).map(([name, sample]) => [name, sample.rect])),
       )};
-      const finalRects = ${JSON.stringify(expectedFinal)};
-      const expectedHudTargetWidth = ${JSON.stringify(hudPath.final.targetWidth)};
       const dimensions = { routing: ['width'], hud: ['width'], rail: ['width'], pip: ['width', 'height'] };
-      const isStrictlyIntermediate = (sample) => Object.entries(dimensions).every(([name, axes]) =>
-        axes.every((axis) => {
-          const start = startRects[name][axis];
-          const final = finalRects[name][axis];
-          const value = sample.elements[name]?.rect?.[axis];
-          return (
-            Number.isFinite(value) &&
-            Math.abs(value - start) > 0.01 &&
-            Math.abs(value - final) > 0.01
-          );
-        })
-      );
       const routingControls = [...document.querySelectorAll('button[aria-controls="routing-lane-detail"]')];
       const routing = routingControls.at(-1);
       const rail = document.querySelector('.za-command-rail button[aria-label="Expand command rail"]');
@@ -755,7 +769,11 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
         .find((element) => element.getAttribute('aria-label') === ${JSON.stringify(MOTION_PIP_LABEL)});
       const scroller = document.querySelector('#main-content');
       const section = document.querySelector('section[data-deck="4"]');
-      if (!routing || !rail || !pip || !scroller || !section) return { ok: false, reason: 'real motion controls are missing' };
+      const progress = document.querySelector('.za-airframe-progress');
+      const progressTrack = progress?.parentElement;
+      if (!routing || !rail || !pip || !scroller || !section || !progress || !progressTrack) {
+        return { ok: false, reason: 'real motion controls are missing' };
+      }
       routing.click();
       rail.click();
       pip.click();
@@ -763,14 +781,35 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
       return new Promise((resolve) => {
         let frameCount = 0;
         const trace = [];
+        let finalRects = null;
+        let expectedHudTargetWidth = null;
+        const isStrictlyIntermediate = (sample) => Object.entries(dimensions).every(([name, axes]) =>
+          axes.every((axis) => {
+            const start = startRects[name][axis];
+            const final = finalRects?.[name]?.[axis];
+            const value = sample.elements[name]?.rect?.[axis];
+            return (
+              Number.isFinite(value) &&
+              Number.isFinite(final) &&
+              Math.abs(value - start) > 0.01 &&
+              Math.abs(value - final) > 0.01
+            );
+          })
+        );
         const inspect = () => {
           frameCount += 1;
           const sample = capture();
           const elapsedMs = performance.now() - startedAt;
-          const hudTargetWidth = document.querySelector('.za-airframe-progress')?.style.width ?? null;
+          const hudTargetWidth = progress.style.width;
           trace.push({ elapsedMs, hudTargetWidth, rects: Object.fromEntries(Object.entries(sample.elements).map(([name, value]) => [name, value?.rect])) });
           if (hudTargetWidth === expectedHudTargetWidth && isStrictlyIntermediate(sample)) {
-            resolve({ ok: true, frameCount, elapsedMs, trace, ...sample });
+            resolve({
+              ok: true,
+              frameCount,
+              elapsedMs,
+              trace,
+              ...sample,
+            });
           } else if (frameCount >= 10 || elapsedMs >= 220) {
             resolve({ ok: false, reason: 'all four motion targets did not become intermediate together', frameCount, elapsedMs, trace, ...sample });
           } else {
@@ -781,7 +820,19 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
           scroller.scrollTo({ top: Math.max(0, section.offsetTop - 8), behavior: 'auto' });
           requestAnimationFrame(() => {
             scroller.scrollTo({ top: section.offsetTop + ${Number(hudPath.final.sectionOffset)}, behavior: 'auto' });
-            requestAnimationFrame(inspect);
+            scroller.dispatchEvent(new Event('scroll'));
+            requestAnimationFrame(() => {
+              const maxScroll = Math.max(1, scroller.scrollHeight - scroller.clientHeight);
+              const targetProgressPercent = Math.round(Math.min(1, Math.max(0, scroller.scrollTop / maxScroll)) * 100);
+              expectedHudTargetWidth = \`\${targetProgressPercent}%\`;
+              const trackRect = progressTrack.getBoundingClientRect();
+              const progressRect = progress.getBoundingClientRect();
+              finalRects = {
+                ...${JSON.stringify(staticFinal)},
+                hud: { width: (trackRect.width * targetProgressPercent) / 100, height: progressRect.height },
+              };
+              inspect();
+            });
           });
         });
       });
@@ -794,6 +845,8 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
 
   await setReducedMotionPreference(send, true);
   await waitForReducedMotionPreference(send, true, 2);
+  const canonicalScroll = await synchronizeMotionScroll(send);
+  const expectedFinal = { ...staticFinal, hud: canonicalScroll.rect };
   const reducedAfterInterruptCapture = await captureMotionElements(send);
 
   await setReducedMotionPreference(send, false);
@@ -802,6 +855,7 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
 
   await setReducedMotionPreference(send, true);
   await waitForReducedMotionPreference(send, true, 2);
+  await synchronizeMotionScroll(send);
   const reducedAgainCapture = await captureMotionElements(send);
 
   const scenario = {
@@ -815,6 +869,7 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
     normalStart: normalStartCapture.elements,
     normalIntermediate: normalIntermediateCapture.elements,
     expectedFinal,
+    synchronization: canonicalScroll,
     reducedAfterInterrupt: reducedAfterInterruptCapture.elements,
     restoredSamples: restoredSamples.map(({ atMs, observedAtMs, elements }) => ({ atMs, observedAtMs, elements })),
     reducedAgain: reducedAgainCapture.elements,
