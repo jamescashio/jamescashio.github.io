@@ -68,7 +68,6 @@ import { ExecutiveStill } from "./executive-still";
 const INITIAL_VIEWPORT = { height: 900, width: 1440 } as const;
 const RESTORE_ANCHOR_DELAY_MS = 360;
 const RESTORE_ANCHOR_MAX_CHECKS = 8;
-const RESTORE_SCROLL_CANCEL_DELTA = 48;
 const useIsomorphicLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 export function CommandDeck() {
@@ -162,7 +161,6 @@ export function CommandDeck() {
   const restoreAnchorIntent = useRef<{
     deck: number;
     hash: string;
-    initialScrollTop: number;
     remainingChecks: number;
   } | null>(null);
   const warpFlashTimer = useRef<number | null>(null);
@@ -660,7 +658,6 @@ export function CommandDeck() {
         restoreAnchorIntent.current = {
           deck: i,
           hash: window.location.hash,
-          initialScrollTop: sc.scrollTop,
           remainingChecks: RESTORE_ANCHOR_MAX_CHECKS,
         };
         const scheduleRestoreCheck = () => {
@@ -686,7 +683,6 @@ export function CommandDeck() {
               }
               const settledTop = Math.max(0, target.offsetTop - 8);
               if (Math.abs(scRef.current.scrollTop - settledTop) > 1) {
-                intent.initialScrollTop = settledTop;
                 scRef.current.scrollTop = settledTop;
               }
               intent.remainingChecks -= 1;
@@ -885,13 +881,6 @@ export function CommandDeck() {
         }
       }
     }
-    const restoreIntent = restoreAnchorIntent.current;
-    if (
-      restoreIntent &&
-      i !== restoreIntent.deck &&
-      Math.abs(sc.scrollTop - restoreIntent.initialScrollTop) > RESTORE_SCROLL_CANCEL_DELTA
-    )
-      cancelProgrammaticScroll();
     const max = Math.max(1, sc.scrollHeight - sc.clientHeight);
     const p = Math.min(1, Math.max(0, sc.scrollTop / max));
     const st = stageRef.current;
@@ -917,7 +906,11 @@ export function CommandDeck() {
       if (el.offsetTop < bottom && el.offsetTop + el.offsetHeight > sc.scrollTop) shown.push(k);
     });
     setGlideDeck(pendingSmoothScrollTop.current == null ? null : i);
-    const scrollTransition = consumeScrollDeck(hashTransition.current, i);
+    const activeRestoreDeck = restoreAnchorIntent.current?.deck;
+    const scrollTransition =
+      activeRestoreDeck != null && i !== activeRestoreDeck
+        ? { writeHash: false, updateDeck: false, state: hashTransition.current }
+        : consumeScrollDeck(hashTransition.current, i);
     hashTransition.current = scrollTransition.state;
     if (hashTransition.current.restoringDeck == null) clearHashSuppressionTimer();
     const next: Partial<{ deck: number; prog: number; shown: number[]; craftLock: number | null }> = {};
@@ -937,15 +930,23 @@ export function CommandDeck() {
     }
     focusPendingDestination(i);
     measureClear();
-  }, [
-    cancelProgrammaticScroll,
-    chapter,
-    clearHashSuppressionTimer,
-    focusPendingDestination,
-    measureClear,
-    set,
-    syncHash,
-  ]);
+  }, [chapter, clearHashSuppressionTimer, focusPendingDestination, measureClear, set, syncHash]);
+
+  useEffect(() => {
+    const scroller = scRef.current;
+    if (!scroller) return;
+    const cancelRestoreOnUserIntent = () => {
+      if (restoreAnchorIntent.current || hashTransition.current.restoringDeck != null) cancelProgrammaticScroll();
+    };
+    for (const type of ["wheel", "pointerdown", "touchstart"] as const) {
+      scroller.addEventListener(type, cancelRestoreOnUserIntent, { passive: true });
+    }
+    return () => {
+      for (const type of ["wheel", "pointerdown", "touchstart"] as const) {
+        scroller.removeEventListener(type, cancelRestoreOnUserIntent);
+      }
+    };
+  }, [cancelProgrammaticScroll]);
 
   useEffect(() => {
     const sc = scRef.current;
@@ -955,8 +956,9 @@ export function CommandDeck() {
     const measureLayout = () => measureClear();
     const onResize = () => {
       measureLayout();
-      const targetDeck = useDeck.getState().deck;
-      clearRestoreAnchor();
+      const directLinkDeck = restoreAnchorIntent.current?.deck;
+      const targetDeck = directLinkDeck ?? useDeck.getState().deck;
+      if (directLinkDeck == null) clearRestoreAnchor();
       beginProgrammaticScroll(targetDeck);
       clearResizeAnchor();
       resizeAnchorTimer.current = window.setTimeout(() => {

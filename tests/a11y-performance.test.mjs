@@ -962,6 +962,7 @@ test("the delayed direct-link anchor yields to newer scroll and route intent", a
     try {
       await view.render();
       const scroller = view.document.querySelector("main.za-scroll");
+      scroller.dispatchEvent(new view.window.Event("wheel", { bubbles: true, cancelable: true }));
       scroller.scrollTop = 2992;
       await view.dispatchScroll();
 
@@ -1064,6 +1065,27 @@ test("the delayed direct-link anchor corrects a small input-free layout settleme
     await view.runLatestAnimationFrame();
 
     assert.equal(scroller.scrollTop, 4992, "minor startup layout settlement must retain the direct-link landing");
+    assert.equal(view.window.location.hash, "#deck=builds&article=1");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("the delayed direct-link anchor corrects a large input-free intrinsic layout settlement", async () => {
+  const view = mountCommandDeck({
+    url: "https://cashio.us/#deck=builds&article=1",
+    controlledTimers: true,
+  });
+  try {
+    await view.render();
+    const scroller = view.document.querySelector("main.za-scroll");
+    scroller.scrollTop = 2992;
+    await view.dispatchScroll();
+
+    await view.runControlledTimeout(360);
+    await view.runLatestAnimationFrame();
+
+    assert.equal(scroller.scrollTop, 4992, "large intrinsic growth must retain the requested direct-link landing");
     assert.equal(view.window.location.hash, "#deck=builds&article=1");
   } finally {
     await view.cleanup();
@@ -1792,6 +1814,9 @@ test("the delayed mount measurement never starts a responsive re-anchor", async 
   const view = mountCommandDeck({ controlledTimers: true });
   try {
     await view.render();
+    view.document
+      .querySelector("main.za-scroll")
+      ?.dispatchEvent(new view.window.Event("wheel", { bubbles: true, cancelable: true }));
     await view.scrollDeck(3);
     assert.equal(view.window.location.hash, "#deck=iron");
 
