@@ -19,37 +19,60 @@ function isClassProperty(node) {
   return false;
 }
 
-function literalValue(node, scope, resolving = new Set()) {
-  if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) return node.text;
+function evaluate(node, scope, resolving = new Set()) {
+  if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node))
+    return { value: node.text, hasDynamicAlphaJoin: false };
   if (ts.isTemplateExpression(node)) {
     let value = node.head.text;
+    let hasDynamicAlphaJoin = false;
     for (const span of node.templateSpans) {
-      // A dynamic interpolation is a whitespace wildcard: it cannot join two
-      // words, but it cannot conceal HOSTS ... ONLINE either.
-      const resolved = literalValue(span.expression, scope, resolving);
+      const resolved = evaluate(span.expression, scope, resolving);
       if (resolved === null) {
         const joinsAlphabeticFragments = /[A-Za-z]$/.test(value) && /^[A-Za-z]/.test(span.literal.text);
-        const hasStatusMarker = /\b(?:current|online|status)\b/i.test(value + span.literal.text);
-        value += joinsAlphabeticFragments && hasStatusMarker ? "" : " ";
+        hasDynamicAlphaJoin ||= joinsAlphabeticFragments;
+        value += joinsAlphabeticFragments ? "" : " ";
       } else {
-        value += resolved;
+        value += resolved.value;
+        hasDynamicAlphaJoin ||= resolved.hasDynamicAlphaJoin;
       }
       value += span.literal.text;
     }
-    return value;
+    return { value, hasDynamicAlphaJoin };
   }
   if (ts.isBinaryExpression(node) && node.operatorToken.kind === ts.SyntaxKind.PlusToken) {
-    const left = literalValue(node.left, scope, resolving);
-    const right = literalValue(node.right, scope, resolving);
-    return left !== null && right !== null ? left + right : null;
+    const left = evaluate(node.left, scope, resolving);
+    const right = evaluate(node.right, scope, resolving);
+    return left && right
+      ? { value: left.value + right.value, hasDynamicAlphaJoin: left.hasDynamicAlphaJoin || right.hasDynamicAlphaJoin }
+      : null;
   }
-  if (ts.isParenthesizedExpression(node)) return literalValue(node.expression, scope, resolving);
+  if (ts.isParenthesizedExpression(node)) return evaluate(node.expression, scope, resolving);
   if (ts.isConditionalExpression(node)) {
-    if (node.condition.kind === ts.SyntaxKind.TrueKeyword) return literalValue(node.whenTrue, scope, resolving);
-    if (node.condition.kind === ts.SyntaxKind.FalseKeyword) return literalValue(node.whenFalse, scope, resolving);
-    const whenTrue = literalValue(node.whenTrue, scope, resolving);
-    const whenFalse = literalValue(node.whenFalse, scope, resolving);
-    return whenTrue !== null && whenTrue === whenFalse ? whenTrue : null;
+    if (node.condition.kind === ts.SyntaxKind.TrueKeyword) return evaluate(node.whenTrue, scope, resolving);
+    if (node.condition.kind === ts.SyntaxKind.FalseKeyword) return evaluate(node.whenFalse, scope, resolving);
+    const whenTrue = evaluate(node.whenTrue, scope, resolving);
+    const whenFalse = evaluate(node.whenFalse, scope, resolving);
+    return whenTrue && whenFalse
+      ? {
+          value: `${whenTrue.value} ${whenFalse.value}`,
+          hasDynamicAlphaJoin: whenTrue.hasDynamicAlphaJoin || whenFalse.hasDynamicAlphaJoin,
+        }
+      : null;
+  }
+  if (ts.isJsxExpression(node))
+    return node.expression ? evaluate(node.expression, scope, resolving) : { value: "", hasDynamicAlphaJoin: false };
+  if (ts.isJsxElement(node) || ts.isJsxFragment(node)) {
+    const children = node.children
+      .map(
+        (child) =>
+          evaluate(child, scope, resolving) ??
+          (ts.isJsxText(child) ? { value: child.getText(), hasDynamicAlphaJoin: false } : null),
+      )
+      .filter(Boolean);
+    return {
+      value: children.map((child) => child.value).join(" "),
+      hasDynamicAlphaJoin: children.some((child) => child.hasDynamicAlphaJoin),
+    };
   }
   if (ts.isIdentifier(node)) {
     for (let current = scope; current; current = current.parent) {
@@ -57,7 +80,7 @@ function literalValue(node, scope, resolving = new Set()) {
       if (!binding) continue;
       if (resolving.has(binding)) return null;
       resolving.add(binding);
-      const value = literalValue(binding.initializer, binding.scope, resolving);
+      const value = evaluate(binding.initializer, binding.scope, resolving);
       resolving.delete(binding);
       return value;
     }
@@ -67,23 +90,7 @@ function literalValue(node, scope, resolving = new Set()) {
 
 function hasEvaluableParent(node, scope) {
   const parent = node.parent;
-  return Boolean(parent && ts.isExpression(parent) && literalValue(parent, scope) !== null);
-}
-
-function hasDynamicAlphaJoin(node, scope) {
-  if (ts.isTemplateExpression(node)) {
-    let left = node.head.text;
-    for (const span of node.templateSpans) {
-      const unresolved = literalValue(span.expression, scope) === null;
-      if (unresolved && /[A-Za-z]$/.test(left) && /^[A-Za-z]/.test(span.literal.text)) return true;
-      if (hasDynamicAlphaJoin(span.expression, scope)) return true;
-      left += (unresolved ? " " : literalValue(span.expression, scope)) + span.literal.text;
-    }
-  }
-  if (ts.isBinaryExpression(node) || ts.isConditionalExpression(node)) {
-    return ts.forEachChild(node, (child) => hasDynamicAlphaJoin(child, scope)) ?? false;
-  }
-  return false;
+  return Boolean(parent && ts.isExpression(parent) && evaluate(parent, scope) !== null);
 }
 
 const results = [];
@@ -113,13 +120,13 @@ for (const filename of process.argv.slice(2)) {
   indexScopes(file, rootScope);
   function visit(node) {
     const scope = scopeFor.get(node) ?? rootScope;
-    const value = literalValue(node, scope);
-    if (value !== null && !hasEvaluableParent(node, scope)) {
+    const result = evaluate(node, scope);
+    if (result !== null && !hasEvaluableParent(node, scope)) {
       results.push({
         file: path.normalize(filename),
-        value,
+        value: result.value,
         context: isClassProperty(node) ? "class" : "literal",
-        hasDynamicAlphaJoin: hasDynamicAlphaJoin(node, scope),
+        hasDynamicAlphaJoin: result.hasDynamicAlphaJoin,
       });
     }
     if (ts.isJsxText(node) && node.getText().trim()) {
