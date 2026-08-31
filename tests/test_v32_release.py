@@ -470,8 +470,15 @@ class V34ReleaseContractTests(unittest.TestCase):
     def test_public_surface_guard_aggregates_aliased_props_and_computed_jsx_factories(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
+            source = root / "wrapped-props.tsx"
             bundle = root / "assets" / "props.js"
             bundle.parent.mkdir()
+            source.write_text(
+                'declare function identity<T>(value: T): T;\n'
+                'const sourceProps = identity({ children: ["HOSTS ", "CURRENT STATUS WRAPPED SOURCE PROPS"] });\n'
+                'export const sourceView = jsxs("p", sourceProps);\n',
+                encoding="utf-8",
+            )
             bundle.write_text(
                 'const props = { children: ["HOSTS ", "CURRENT STATUS ALIASED PROPS"] };\n'
                 'const aliased = jsxs("p", props);\n'
@@ -479,14 +486,22 @@ class V34ReleaseContractTests(unittest.TestCase):
                 '{ children: ["HOSTS ", "CURRENT STATUS COMPUTED FACTORY"] });\n'
                 'const base = { children: [["HOSTS "], ["CURRENT STATUS SPREAD PROPS"]] };\n'
                 'const spreadProps = { ...base }; const spread = jsxs("p", spreadProps);\n'
-                'const cycleA = cycleB; const cycleB = cycleA; const cyclic = jsxs("p", cycleA);\n',
+                'const cycleA = cycleB; const cycleB = cycleA; const cyclic = jsxs("p", cycleA);\n'
+                'const wrappedProps = identity({ children: ["HOSTS ", "CURRENT STATUS WRAPPED BUILT PROPS"] });\n'
+                'const wrappedView = jsxs("p", wrappedProps);\n'
+                'const nestedWrappedProps = identity(identity({ children: [["HOSTS "], '
+                '["CURRENT STATUS NESTED WRAPPED PROPS"]] }));\n'
+                'const nestedWrappedView = ReactRuntime["jsxs"]("p", nestedWrappedProps);\n',
                 encoding="utf-8",
             )
-            literals = release_consistency.collect_public_code_literals([bundle])
+            literals = release_consistency.collect_public_code_literals([source, bundle])
         expected = {
             "HOSTS CURRENT STATUS ALIASED PROPS",
             "HOSTS CURRENT STATUS COMPUTED FACTORY",
             "HOSTS CURRENT STATUS SPREAD PROPS",
+            "HOSTS CURRENT STATUS WRAPPED SOURCE PROPS",
+            "HOSTS CURRENT STATUS WRAPPED BUILT PROPS",
+            "HOSTS CURRENT STATUS NESTED WRAPPED PROPS",
         }
         claims = [literal for literal in literals if literal["value"] in expected]
         self.assertEqual({literal["value"] for literal in claims}, expected, literals)

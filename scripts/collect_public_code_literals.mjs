@@ -283,6 +283,33 @@ function jsxPropsChildrenValue(props, scope, resolving, seenProps = new Set()) {
   return branches.length ? alternatives(...branches) : staticValue("");
 }
 
+function nestedObjectLiterals(node, scope, resolving, found = [], seen = new Set()) {
+  if (seen.has(node)) return found;
+  seen.add(node);
+  if (ts.isObjectLiteralExpression(node)) {
+    found.push({ node, scope });
+    return found;
+  }
+  if (ts.isIdentifier(node)) {
+    for (let current = scope; current; current = current.parent) {
+      const binding = current.bindings.get(node.text);
+      if (!binding) continue;
+      if (resolving.has(binding)) return found;
+      resolving.add(binding);
+      nestedObjectLiterals(binding.initializer, binding.scope, resolving, found, seen);
+      resolving.delete(binding);
+      return found;
+    }
+    return found;
+  }
+  ts.forEachChild(node, (child) => {
+    if (ts.isExpression(child) && !(ts.isCallExpression(node) && child === node.expression)) {
+      nestedObjectLiterals(child, scope, resolving, found, seen);
+    }
+  });
+  return found;
+}
+
 function evaluate(node, scope, resolving = new Set()) {
   if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) return staticValue(node.text);
   if (ts.isJsxText(node)) return staticValue(node.getFullText());
@@ -326,7 +353,14 @@ function evaluate(node, scope, resolving = new Set()) {
     const props = node.arguments[1];
     if (!props || props.kind === ts.SyntaxKind.NullKeyword) return staticValue("");
     const resolved = resolveObjectLiteral(props, scope, resolving);
-    if (!resolved) return unsupportedValue(props, scope, resolving);
+    if (!resolved) {
+      const candidates = nestedObjectLiterals(props, scope, resolving);
+      if (!candidates.length) return unsupportedValue(props, scope, resolving);
+      const retained = alternatives(
+        ...candidates.map((candidate) => jsxPropsChildrenValue(candidate.node, candidate.scope, resolving)),
+      );
+      return result(retained.value, retained.relation, false);
+    }
     return jsxPropsChildrenValue(resolved.node, resolved.scope, resolving);
   }
   if (ts.isIdentifier(node)) {
