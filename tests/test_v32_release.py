@@ -387,13 +387,22 @@ class V34ReleaseContractTests(unittest.TestCase):
                 'export const b = "HO" + dynamic + "STS CURRENT STATUS";\n'
                 'export const c = dynamic ? alias + "STS CURRENT STATUS" : fragment + "STS CURRENT STATUS";\n'
                 'export const view = <p>{alias}STS CURRENT STATUS</p>; export const safe = `hello ${dynamic} world`;\n'
+                'export const nested = <p><span>{alias}</span>STS CURRENT STATUS</p>;\n'
+                'export const deep = <p><span><em>{alias}</em></span>STS CURRENT STATUS</p>;\n'
                 'export const safeStatus = <p><span aria-hidden />DATED EXPORT STATUS · VERIFIED {dynamic} · VALID THRU </p>;\n',
                 encoding="utf-8",
             )
-            bundle.write_text('const fragment=`HO${dynamic}`;const claim=fragment+"STS CURRENT STATUS";\n', encoding="utf-8")
+            bundle.write_text(
+                'const fragment=`HO${dynamic}`;const claim=fragment+"STS CURRENT STATUS";\n'
+                'const nested=jsxs("p",{children:[jsx("span",{children:fragment}),"STS CURRENT STATUS"]});\n'
+                'const deep=jsxs("p",{children:[jsx("span",{children:jsx("em",{children:fragment})}),"STS CURRENT STATUS"]});\n'
+                'const safeStatus=jsxs("p",{children:[jsx("span",{}),"DATED EXPORT STATUS · VERIFIED ",dynamic," · VALID THRU "]});\n'
+                'const safeGap=jsxs("div",{className:"flex gap-3",children:[jsx("span",{children:"18/19 AT 28 AUG PROBE"}),jsx("span",{children:"2 HOSTS ONLINE · QUORATE"}),jsx("span",{children:"READ-ONLY · DATED EXPORT"})]});\n',
+                encoding="utf-8",
+            )
             literals = release_consistency.collect_public_code_literals([source, bundle])
         risky = [literal for literal in literals if "CURRENT STATUS" in literal["value"] and literal["hasDynamicAlphaJoin"]]
-        self.assertGreaterEqual(len(risky), 5, literals)
+        self.assertGreaterEqual(len(risky), 9, literals)
         self.assertTrue(all(release_consistency.has_stale_current_code_literal(literal) for literal in risky))
         self.assertTrue(any("hello" in literal["value"] and not literal["hasDynamicAlphaJoin"] for literal in literals), literals)
         self.assertTrue(
@@ -403,6 +412,9 @@ class V34ReleaseContractTests(unittest.TestCase):
             ),
             literals,
         )
+        safe_gap = next(literal for literal in literals if "18/19 AT 28 AUG PROBE" in literal["value"])
+        self.assertFalse(safe_gap["hasDynamicAlphaJoin"])
+        self.assertFalse(release_consistency.has_stale_current_code_literal(safe_gap))
 
     def test_public_surface_guard_rejects_current_fleet_topology_and_raw_route_identifiers(self) -> None:
         base = (

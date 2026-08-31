@@ -19,56 +19,168 @@ function isClassProperty(node) {
   return false;
 }
 
-function staticValue(value) {
+const SCAN_RESET = 0;
+const SCAN_ALPHA = 1;
+const SCAN_ALPHA_UNKNOWN = 2;
+const SCAN_RISK = 3;
+const SCAN_STATE_COUNT = 4;
+
+const BLOCK_TEXT_TAGS = new Set([
+  "address",
+  "article",
+  "aside",
+  "blockquote",
+  "div",
+  "dl",
+  "fieldset",
+  "figcaption",
+  "figure",
+  "footer",
+  "form",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "header",
+  "hr",
+  "li",
+  "main",
+  "nav",
+  "ol",
+  "p",
+  "pre",
+  "section",
+  "table",
+  "ul",
+]);
+
+function mapRelation(step) {
+  return Array.from({ length: SCAN_STATE_COUNT }, (_, state) => 1 << step(state));
+}
+
+function composeRelations(left, right) {
+  return left.map((leftMask) => {
+    let resultMask = 0;
+    for (let state = 0; state < SCAN_STATE_COUNT; state += 1) {
+      if (leftMask & (1 << state)) resultMask |= right[state];
+    }
+    return resultMask;
+  });
+}
+
+function unionRelations(...relations) {
+  return Array.from({ length: SCAN_STATE_COUNT }, (_, state) =>
+    relations.reduce((mask, relation) => mask | relation[state], 0),
+  );
+}
+
+function staticRelation(value) {
+  let relation = mapRelation((state) => state);
+  for (const character of value) {
+    const alphabetic = /[A-Za-z]/.test(character);
+    relation = composeRelations(
+      relation,
+      mapRelation((state) => {
+        if (state === SCAN_RISK) return SCAN_RISK;
+        if (!alphabetic) return SCAN_RESET;
+        return state === SCAN_ALPHA_UNKNOWN ? SCAN_RISK : SCAN_ALPHA;
+      }),
+    );
+  }
+  return relation;
+}
+
+function result(value, relation) {
   return {
     value,
-    hasDynamicAlphaJoin: false,
-    canBeEmpty: value.length === 0,
-    startsAlpha: /^[A-Za-z]/.test(value),
-    endsAlpha: /[A-Za-z]$/.test(value),
-    startsUnknown: false,
-    endsUnknown: false,
+    relation,
+    hasDynamicAlphaJoin: Boolean(relation[SCAN_RESET] & (1 << SCAN_RISK)),
   };
+}
+
+function staticValue(value) {
+  return result(value, staticRelation(value));
 }
 
 function unknownValue() {
-  return {
-    value: " ",
-    hasDynamicAlphaJoin: false,
-    canBeEmpty: true,
-    startsAlpha: false,
-    endsAlpha: false,
-    startsUnknown: true,
-    endsUnknown: true,
-  };
+  return result(
+    " ",
+    mapRelation((state) => {
+      if (state === SCAN_RISK) return SCAN_RISK;
+      return state === SCAN_ALPHA || state === SCAN_ALPHA_UNKNOWN ? SCAN_ALPHA_UNKNOWN : SCAN_RESET;
+    }),
+  );
 }
 
 function concatenate(left, right) {
-  return {
-    value: left.value + right.value,
-    hasDynamicAlphaJoin:
-      left.hasDynamicAlphaJoin ||
-      right.hasDynamicAlphaJoin ||
-      (left.endsUnknown && right.startsAlpha) ||
-      (left.endsAlpha && right.startsUnknown),
-    canBeEmpty: left.canBeEmpty && right.canBeEmpty,
-    startsAlpha: left.startsAlpha || (left.canBeEmpty && right.startsAlpha),
-    endsAlpha: right.endsAlpha || (right.canBeEmpty && left.endsAlpha),
-    startsUnknown: left.startsUnknown || (left.canBeEmpty && right.startsUnknown),
-    endsUnknown: right.endsUnknown || (right.canBeEmpty && left.endsUnknown),
-  };
+  return result(left.value + right.value, composeRelations(left.relation, right.relation));
 }
 
 function alternatives(...branches) {
-  return {
-    value: branches.map((branch) => branch.value).join(" "),
-    hasDynamicAlphaJoin: branches.some((branch) => branch.hasDynamicAlphaJoin),
-    canBeEmpty: branches.some((branch) => branch.canBeEmpty),
-    startsAlpha: branches.some((branch) => branch.startsAlpha),
-    endsAlpha: branches.some((branch) => branch.endsAlpha),
-    startsUnknown: branches.some((branch) => branch.startsUnknown),
-    endsUnknown: branches.some((branch) => branch.endsUnknown),
-  };
+  return result(
+    branches.map((branch) => branch.value).join(" "),
+    unionRelations(...branches.map((branch) => branch.relation)),
+  );
+}
+
+function propertyNameText(name) {
+  return ts.isIdentifier(name) || ts.isStringLiteral(name) ? name.text : null;
+}
+
+function jsxSourceTag(node) {
+  const tag = ts.isJsxElement(node) ? node.openingElement.tagName : node.tagName;
+  return ts.isIdentifier(tag) ? tag.text.toLowerCase() : null;
+}
+
+function jsxFactoryName(expression) {
+  if (ts.isIdentifier(expression)) return expression.text;
+  if (ts.isPropertyAccessExpression(expression)) return expression.name.text;
+  return null;
+}
+
+function isJsxFactoryCall(node) {
+  if (!ts.isCallExpression(node)) return false;
+  return ["jsx", "jsxs", "jsxDEV"].includes(jsxFactoryName(node.expression));
+}
+
+function jsxFactoryTag(node) {
+  if (!isJsxFactoryCall(node)) return null;
+  const tag = node.arguments[0];
+  return tag && (ts.isStringLiteral(tag) || ts.isNoSubstitutionTemplateLiteral(tag)) ? tag.text.toLowerCase() : null;
+}
+
+function isBlockTextNode(node) {
+  if (ts.isJsxElement(node) || ts.isJsxSelfClosingElement(node)) {
+    return BLOCK_TEXT_TAGS.has(jsxSourceTag(node));
+  }
+  return isJsxFactoryCall(node) && BLOCK_TEXT_TAGS.has(jsxFactoryTag(node));
+}
+
+function isJsxChildrenArray(node) {
+  const property = node.parent;
+  if (!ts.isPropertyAssignment(property) || propertyNameText(property.name) !== "children") return false;
+  const props = property.parent;
+  const call = props.parent;
+  return ts.isObjectLiteralExpression(props) && isJsxFactoryCall(call) && call.arguments[1] === props;
+}
+
+function jsxChildrenArrayCall(node) {
+  return isJsxChildrenArray(node) ? node.parent.parent.parent : null;
+}
+
+function jsxFactoryHasVisualTextSeparation(call) {
+  if (!call || !isJsxFactoryCall(call)) return false;
+  const props = call.arguments[1];
+  if (!props || !ts.isObjectLiteralExpression(props)) return false;
+  const classProperty = props.properties.find(
+    (property) => ts.isPropertyAssignment(property) && ["class", "className"].includes(propertyNameText(property.name)),
+  );
+  if (!classProperty || !ts.isPropertyAssignment(classProperty)) return false;
+  const initializer = classProperty.initializer;
+  if (!ts.isStringLiteral(initializer) && !ts.isNoSubstitutionTemplateLiteral(initializer)) return false;
+  return /(?:^|\s)(?:gap(?:-[xy])?-[^\s]+|space-[xy]-[^\s]+)(?:\s|$)/.test(initializer.text);
 }
 
 function evaluate(node, scope, resolving = new Set()) {
@@ -96,17 +208,32 @@ function evaluate(node, scope, resolving = new Set()) {
     return alternatives(whenTrue, whenFalse);
   }
   if (ts.isJsxExpression(node)) return node.expression ? evaluate(node.expression, scope, resolving) : staticValue("");
+  if (ts.isJsxSelfClosingElement(node)) return staticValue("");
   if (ts.isJsxElement(node) || ts.isJsxFragment(node)) {
     return node.children.reduce(
       (result, child) =>
-        concatenate(
-          result,
-          ts.isJsxElement(child) || ts.isJsxFragment(child) || ts.isJsxSelfClosingElement(child)
-            ? staticValue(" ")
-            : evaluate(child, scope, resolving),
-        ),
+        concatenate(result, isBlockTextNode(child) ? staticValue(" ") : evaluate(child, scope, resolving)),
       staticValue(""),
     );
+  }
+  if (ts.isArrayLiteralExpression(node)) {
+    const preserveAdjacency = isJsxChildrenArray(node);
+    if (!preserveAdjacency) return staticValue("");
+    const separateChildren = jsxFactoryHasVisualTextSeparation(jsxChildrenArrayCall(node));
+    return node.elements.reduce((result, element, index) => {
+      const separated = separateChildren && index > 0 ? concatenate(result, staticValue(" ")) : result;
+      return concatenate(separated, isBlockTextNode(element) ? staticValue(" ") : evaluate(element, scope, resolving));
+    }, staticValue(""));
+  }
+  if (isJsxFactoryCall(node)) {
+    const props = node.arguments[1];
+    if (!props || !ts.isObjectLiteralExpression(props)) return staticValue("");
+    const children = props.properties.find(
+      (property) => ts.isPropertyAssignment(property) && propertyNameText(property.name) === "children",
+    );
+    return children && ts.isPropertyAssignment(children)
+      ? evaluate(children.initializer, scope, resolving)
+      : staticValue("");
   }
   if (ts.isIdentifier(node)) {
     for (let current = scope; current; current = current.parent) {
@@ -124,7 +251,9 @@ function evaluate(node, scope, resolving = new Set()) {
 
 function hasEvaluableParent(node, scope) {
   if (ts.isJsxElement(node) || ts.isJsxFragment(node)) return false;
+  if (isJsxFactoryCall(node) && isBlockTextNode(node)) return false;
   const parent = node.parent;
+  if (parent && ts.isArrayLiteralExpression(parent) && !isJsxChildrenArray(parent)) return false;
   return Boolean(parent && ts.isExpression(parent) && evaluate(parent, scope) !== null);
 }
 
