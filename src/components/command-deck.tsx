@@ -28,6 +28,7 @@ import {
   formatDeckHash,
   hashWriteModeForNavigation,
   parseDeckHash,
+  shouldAnimateNavigation,
   shouldStopFlightForNavigation,
   type NavigationOrigin,
 } from "@/lib/deck-navigation";
@@ -521,6 +522,7 @@ export function CommandDeck() {
   const goto = useCallback(
     (i: number, source: NavigationOrigin = "manual", craftOverride?: number | null, articleOverride?: number) => {
       if (shouldStopFlightForNavigation(source)) stopFlight();
+      const animateNavigation = shouldAnimateNavigation(source, reducedMotion);
       const technicalTarget = i > 0 && i < DECKS.length - 1;
       if (technicalTarget && useDeck.getState().mode === "executive") {
         if (useDeck.getState().deck !== i) beginProgrammaticScroll(i);
@@ -531,9 +533,9 @@ export function CommandDeck() {
       const el = listSections()[i]?.current;
       const sc = scRef.current;
       if (!el || !sc) return;
-      if (useDeck.getState().deck !== i) beginProgrammaticScroll(i);
+      if (source !== "restore" && useDeck.getState().deck !== i) beginProgrammaticScroll(i);
       const top = Math.max(0, el.offsetTop - 8);
-      if (reducedMotion) {
+      if (!animateNavigation) {
         pendingSmoothScrollTop.current = null;
         sc.scrollTop = top;
       } else {
@@ -541,13 +543,21 @@ export function CommandDeck() {
         sc.scrollTo({ top, behavior: "smooth" });
       }
       const st = stageRef.current;
-      if (!reducedMotion) st?.warp?.();
+      if (animateNavigation) st?.warp?.();
       st?.setDeck?.(i);
       const activeCraftLock = craftOverride === undefined ? useDeck.getState().craftLock : craftOverride;
       st?.setCraft?.(resolveCraftIndex(i, activeCraftLock));
-      cinePulse();
-      chapter(i);
-      if (!reducedMotion) {
+      if (source === "restore") {
+        clearCinePulse();
+        clearChapter();
+        clearSweep();
+        setFlash(false);
+        set({ cine: false, chapOn: false, chapText: DECKS[i].name });
+      } else {
+        cinePulse();
+        chapter(i);
+      }
+      if (animateNavigation) {
         clearSweep();
         setSweep(true);
         sweepTimer.current = window.setTimeout(() => {
@@ -561,7 +571,7 @@ export function CommandDeck() {
           ? useDeck.getState().sel
           : Math.max(0, Math.min(ARTICLES.length - 1, Math.trunc(articleOverride)));
       jumpUntil.current = Date.now() + (source === "flight" ? 2400 : 1600);
-      sfx("nav", i);
+      if (source !== "restore") sfx("nav", i);
       lastDeck.current = i;
       set({
         deck: i,
@@ -572,7 +582,7 @@ export function CommandDeck() {
       });
       const historyMode = hashWriteModeForNavigation(source);
       if (historyMode) syncHash(i, selectedArticle, historyMode);
-      bit("yes");
+      if (source !== "restore") bit("yes");
       window.setTimeout(() => {
         measureClear();
       }, 420);
@@ -581,6 +591,8 @@ export function CommandDeck() {
       beginProgrammaticScroll,
       bit,
       chapter,
+      clearChapter,
+      clearCinePulse,
       cinePulse,
       clearSweep,
       measureClear,
@@ -665,18 +677,18 @@ export function CommandDeck() {
   );
 
   useEffect(() => {
-    const restoreHash = () => {
+    const restoreHash = (source: "hash" | "restore") => {
       const target = parseDeckHash(window.location.hash);
-      gotoRef.current?.(target.deck, "hash", undefined, target.article);
+      gotoRef.current?.(target.deck, source, undefined, target.article);
     };
-    if (window.location.hash) restoreHash();
+    if (window.location.hash) restoreHash("restore");
     else syncHash(useDeck.getState().deck, useDeck.getState().sel, "replace");
     const onHashChange = () => {
       const transition = classifyHashChange(hashTransition.current, window.location.hash);
       hashTransition.current = transition.state;
       if (transition.kind === "internal") return;
       stopFlight();
-      restoreHash();
+      restoreHash("hash");
     };
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
@@ -1196,7 +1208,7 @@ export function CommandDeck() {
             }}
             role="button"
             tabIndex={0}
-            aria-label={`Open ${craft[0]} airframe deck`}
+            title="Open airframe deck"
           >
             <div className="flex items-center gap-2">
               <b className="text-cyan">
@@ -1226,6 +1238,7 @@ export function CommandDeck() {
                 />
               </div>
             </div>
+            <span className="sr-only">Open airframe deck</span>
           </div>
           {bitNudge && !reducedMotion && (
             <div className="za-bit-nudge" role="note">

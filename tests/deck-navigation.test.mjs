@@ -136,11 +136,17 @@ test("only manual navigation stops the flight, while hash restoration remains on
   assert.equal(navigation.shouldStopFlightForNavigation("manual"), true);
   assert.equal(navigation.shouldStopFlightForNavigation("flight"), false);
   assert.equal(navigation.shouldStopFlightForNavigation("hash"), false);
+  assert.equal(navigation.shouldStopFlightForNavigation("restore"), false);
   assert.equal(typeof navigation.hashWriteModeForNavigation, "function");
   assert.equal(navigation.hashWriteModeForNavigation("manual"), "push");
   assert.equal(navigation.hashWriteModeForNavigation("flight"), "replace");
   assert.equal(navigation.hashWriteModeForNavigation("hash"), null);
+  assert.equal(navigation.hashWriteModeForNavigation("restore"), null);
   assert.equal(navigation.shouldWriteHashForNavigation("manual"), true);
   assert.equal(navigation.shouldWriteHashForNavigation("flight"), true);
   assert.equal(navigation.shouldWriteHashForNavigation("hash"), false);
+  assert.equal(navigation.shouldWriteHashForNavigation("restore"), false);
+  assert.equal(navigation.shouldAnimateNavigation("restore", false), false);
+  assert.equal(navigation.shouldAnimateNavigation("manual", false), true);
+  assert.equal(navigation.shouldAnimateNavigation("manual", true), false);
 });

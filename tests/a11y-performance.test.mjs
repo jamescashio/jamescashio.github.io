@@ -487,9 +487,19 @@ function mountCommandDeck({
 }
 
 function labeledButton(document, label) {
-  const button = document.querySelector(`button[aria-label="${label}"]`);
+  const button =
+    document.querySelector(`button[aria-label="${label}"]`) ??
+    [...document.querySelectorAll("button")].find((candidate) =>
+      candidate.getAttribute("aria-label")?.endsWith(`· ${label}`),
+    );
   assert.ok(button, `expected button labelled ${label}`);
   return button;
+}
+
+function normalizedVisibleLabel(element) {
+  const clone = element.cloneNode(true);
+  clone.querySelectorAll('[aria-hidden="true"], .sr-only').forEach((node) => node.remove());
+  return (clone.textContent ?? "").replace(/\s+/g, " ").trim().toUpperCase();
 }
 
 function flushPromises() {
@@ -623,7 +633,7 @@ test("glyph controls preserve each visible audio label in their accessible names
   try {
     await view.render();
     for (const label of [
-      "Go to Snapshot deck",
+      "ZA · Go to Snapshot deck",
       "Run the 30-second flight",
       "Expand command rail",
       "Open deck navigator",
@@ -706,7 +716,7 @@ test("mobile navigation keeps Contact exposed as its current destination", async
     const navigation = view.document.querySelector('nav[aria-label="Mobile command decks"]');
     const current = navigation.querySelectorAll('[aria-current="page"]');
     assert.equal(current.length, 1);
-    assert.equal(current[0].getAttribute("aria-label"), "Go to CONTACT");
+    assert.equal(current[0].getAttribute("aria-label"), "09 HAIL · Go to CONTACT");
   } finally {
     await view.cleanup();
   }
@@ -748,60 +758,55 @@ test("every deck is a named programmatic destination with a focusable heading", 
   }
 });
 
-test("desktop rail deck controls keep stable names when collapsed and open", async () => {
+test("deck navigation names contain every normalized visible label on both rails", async () => {
   const view = mountCommandDeck();
-  const expected = [
-    "Go to SNAPSHOT deck",
-    "Go to THE GRID deck",
-    "Go to ROUTING deck",
-    "Go to THE IRON deck",
-    "Go to LINEAGE deck",
-    "Go to BUILDS deck",
-    "Go to OPERATOR deck",
-    "Go to E.V.E. deck",
-    "Go to CONTACT deck",
-  ];
   try {
     await view.render();
-    const navigation = view.document.querySelector('nav[aria-label="Command decks"]');
-    const controls = [...navigation.querySelectorAll("button")];
-    assert.deepEqual(
-      controls.map((button) => button.getAttribute("aria-label")),
-      expected,
-    );
-    // Collapsed, each control shows its number and carries a hover preview of
-    // the deck name and tag. The accessible name above is what does not change.
-    assert.deepEqual(
-      controls.map((button) => button.textContent.slice(0, 2)),
-      ["01", "02", "03", "04", "05", "06", "07", "08", "09"],
-    );
-    for (const [index, button] of controls.entries()) {
-      const preview = button.querySelector(".za-rail-preview");
-      assert.ok(preview, "a collapsed rail control must preview its deck");
-      assert.equal(preview.getAttribute("aria-hidden"), "true", "the preview must not double the accessible name");
-      assert.ok(preview.textContent.length > 2, `deck ${index} preview must name the deck`);
+    for (const label of ["Command decks", "Mobile command decks"]) {
+      const navigation = view.document.querySelector(`nav[aria-label="${label}"]`);
+      assert.ok(navigation, `expected ${label}`);
+      const controls = [...navigation.querySelectorAll("button")].slice(0, 9);
+      assert.equal(controls.length, 9, `${label} must expose all nine decks`);
+      for (const control of controls) {
+        const visible = normalizedVisibleLabel(control);
+        const name = (control.getAttribute("aria-label") ?? "").replace(/\s+/g, " ").trim().toUpperCase();
+        assert.ok(
+          name.includes(visible),
+          `${label} name ${JSON.stringify(name)} must contain ${JSON.stringify(visible)}`,
+        );
+      }
     }
 
     await view.click(labeledButton(view.document, "Expand command rail"));
-    const openControls = [...navigation.querySelectorAll("button")];
-    assert.deepEqual(
-      openControls.map((button) => button.getAttribute("aria-label")),
-      expected,
+    const cap = view.document.querySelector(".za-lcars-cap.warm");
+    assert.equal(normalizedVisibleLabel(cap), "ZEUSAPOLLO");
+    assert.ok((cap.getAttribute("aria-label") ?? "").toUpperCase().includes("ZEUSAPOLLO"));
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("initial direct links land synchronously without navigation effects", async () => {
+  const view = mountCommandDeck({
+    url: "https://cashio.us/?entry=proof#deck=builds&article=1",
+    reducedMotion: false,
+    deferredSmoothScroll: true,
+  });
+  try {
+    await view.render();
+    const scroller = view.document.querySelector("main.za-scroll");
+    assert.equal(scroller?.scrollTop, 4992, "the initial direct link must use a direct scrollTop landing");
+    assert.equal(view.pendingSmoothScrollTop(scroller), null, "the initial landing must not start smooth scrolling");
+    assert.equal(
+      scroller?.dataset.requestedScrollBehavior,
+      undefined,
+      "the initial landing must not call smooth scrollTo",
     );
-    assert.deepEqual(
-      openControls.map((button) => button.textContent),
-      [
-        "01SNAPSHOT",
-        "02THE GRID",
-        "03ROUTING",
-        "04THE IRON",
-        "05LINEAGE",
-        "06BUILDS",
-        "07OPERATOR",
-        "08E.V.E.",
-        "09CONTACT",
-      ],
-    );
+    assert.equal(useDeck.getState().sel, 0, "the direct link must select its requested Article 1");
+    assert.equal(view.document.querySelector(".za-warpflash.on"), null, "the initial landing must not create a warp");
+    assert.equal(view.document.querySelector(".za-sweep.on"), null, "the initial landing must not create a sweep");
+    assert.equal(view.document.querySelector("[data-cine]")?.getAttribute("data-cine"), "false");
+    assert.equal(useDeck.getState().chapOn, false, "the initial landing must not create a chapter effect");
   } finally {
     await view.cleanup();
   }
@@ -1655,8 +1660,15 @@ test("the real airframe role-button owns shortcut keys while Enter and Space sti
   const baseline = { deck: 4, sel: 3, audio: true, tour: false, mode: "technical" };
   try {
     await view.render();
-    const airframe = view.document.querySelector('[role="button"][aria-label^="Open "][aria-label$=" airframe deck"]');
+    const airframe = view.document.querySelector('[role="button"][title="Open airframe deck"]');
     assert.ok(airframe, "expected the real focusable airframe widget");
+    assert.equal(
+      airframe.getAttribute("aria-label"),
+      null,
+      "visible airframe identity must not be replaced by aria-label",
+    );
+    assert.match(normalizedVisibleLabel(airframe), /AIRFRAME/);
+    assert.equal(airframe.querySelector(".sr-only")?.textContent, "Open airframe deck");
     airframe.focus();
 
     for (const key of ["ArrowLeft", "ArrowRight", "a", "t", "1", "9"]) {

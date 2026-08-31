@@ -47,7 +47,7 @@ export function DesktopCommandRail({
         type="button"
         className="za-lcars-cap warm mx-0 mt-0 h-16 px-3 text-left text-[13px]"
         onClick={() => onNavigate(0)}
-        aria-label="Go to Snapshot deck"
+        aria-label={`${railOpen ? "ZEUSAPOLLO" : "ZA"} · Go to Snapshot deck`}
       >
         {railOpen ? "ZEUSAPOLLO" : "ZA"}
       </button>
@@ -59,7 +59,7 @@ export function DesktopCommandRail({
             <button
               key={item.id}
               type="button"
-              aria-label={`Go to ${item.name} deck`}
+              aria-label={`${item.num} ${item.name} · Go to ${item.name} deck`}
               aria-current={selected ? "page" : undefined}
               onClick={() => onNavigate(index)}
               onMouseEnter={onDeckHover}
@@ -238,7 +238,7 @@ export function MobileCommandNavigation({
           <button
             key={item.id}
             type="button"
-            aria-label={`Go to ${item.name}`}
+            aria-label={`${item.num} ${DECK_SHORT[item.id]} · Go to ${item.name}`}
             aria-current={deck === index ? "page" : undefined}
             ref={deck === index ? activeChip : undefined}
             onClick={() => onNavigate(index)}
@@ -246,7 +246,7 @@ export function MobileCommandNavigation({
               deck === index ? "bg-accent/15 text-accent" : "text-dim"
             }`}
           >
-            {DECK_SHORT[item.id]}
+            {item.num} {DECK_SHORT[item.id]}
           </button>
         );
       })}

@@ -61,7 +61,7 @@ test("command chrome exports typed desktop, header, and mobile navigation bounda
     }),
   );
   assert.match(mobile, /aria-label="Mobile command decks"/);
-  assert.match(mobile, /aria-label="Go to SNAPSHOT"/);
+  assert.match(mobile, /aria-label="01 SNAP · Go to SNAPSHOT"/);
 });
 
 test("deck primitives and focused visitor components remain independently importable", () => {
