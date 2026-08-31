@@ -228,7 +228,7 @@ Expected: missing workflow-only source guard/configuration and the older artifac
 
 - [ ] **Step 3: Harden the declarative release path**
 
-Add a fail-closed `gh api repos/${GITHUB_REPOSITORY}/pages --jq .build_type` check, compare it with `workflow`, configure Pages with v5, and upload the already-verified `dist` artifact with v4. Do not add a fallback branch publisher.
+Add a fail-closed `gh api repos/${GITHUB_REPOSITORY}/pages --jq .build_type` check, compare it with `workflow`, configure Pages with v5, and upload the already-verified `dist` artifact with `upload-pages-artifact@v5` and `include-hidden-files: true` so `.well-known/security.txt` remains in the validated artifact. Do not add a fallback branch publisher.
 
 - [ ] **Step 4: Remove unsupported repository debris**
 

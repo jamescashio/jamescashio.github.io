@@ -213,6 +213,45 @@ class V34ReleaseContractTests(unittest.TestCase):
         self.assertTrue(release_consistency.has_stale_current_code_literal(literals[0]), literals)
         self.assertTrue(release_consistency.has_stale_current_code_literal(literals[1]), literals)
 
+    def test_public_surface_guard_collects_static_template_claims(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "claim.tsx"
+            bundle = root / "assets" / "claim.js"
+            bundle.parent.mkdir()
+            source.write_text(
+                'const a = `HOSTS ${"ONLINE"}`;\n'
+                'const b = `HOSTS ${`ON${"LINE"}`}`;\n'
+                'const c = "HOSTS " + `ON${"LINE"}`;\n'
+                'const d = true ? `HOSTS ${"ONLINE"}` : "safe";\n'
+                'export const view = <p>{`HOSTS ${"ONLINE"}`}</p>;\n',
+                encoding="utf-8",
+            )
+            bundle.write_text('const claim = `HOSTS ${"ONLINE"}`;\n', encoding="utf-8")
+            literals = release_consistency.collect_public_code_literals([source, bundle])
+        values = [literal["value"] for literal in literals]
+        self.assertGreaterEqual(values.count("HOSTS ONLINE"), 5, values)
+        self.assertTrue(all(release_consistency.has_stale_current_code_literal(literal) for literal in literals if literal["value"] == "HOSTS ONLINE"))
+
+    def test_public_surface_guard_rejects_any_residual_online_and_nested_current_context(self) -> None:
+        dated_surface = (
+            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+        )
+        fixtures = {
+            "nested current status": 'HOSTS <button data-cmd="current"><span>CURRENT</span></button> STATUS',
+            "cluster attr": '<div title="CLUSTER ONLINE"></div>',
+            "node attr": '<div aria-label="NODE ONLINE"></div>',
+            "pool": "POOL ONLINE",
+            "control plane": "CONTROL PLANE ONLINE",
+            "gateway": "GATEWAY ONLINE",
+        }
+        for label, bypass in fixtures.items():
+            failures: list[str] = []
+            release_consistency.check_v34_public_surface("index.html", f"{dated_surface} · {bypass}", failures, "test")
+            with self.subTest(label=label):
+                self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
+
     def test_public_surface_guard_rejects_current_fleet_topology_and_raw_route_identifiers(self) -> None:
         base = (
             "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "

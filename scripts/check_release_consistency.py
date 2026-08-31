@@ -146,12 +146,16 @@ class PublicSurfaceParser(HTMLParser):
         self.attribute_values: list[str] = []
         self._open_tags: list[str] = []
         self._safe_current_depth = 0
+        self._safe_current_direct = False
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         self.visible_text.append(" ")
         self._open_tags.append(tag)
         if tag == "button" and dict(attrs).get("data-cmd") == "current":
             self._safe_current_depth += 1
+            self._safe_current_direct = True
+        elif self._safe_current_depth:
+            self._safe_current_direct = False
         for name, value in attrs:
             if value is None:
                 continue
@@ -182,10 +186,11 @@ class PublicSurfaceParser(HTMLParser):
             self.visible_text.append(" ")
         if tag == "button" and self._safe_current_depth:
             self._safe_current_depth -= 1
+            self._safe_current_direct = False
 
     def handle_data(self, data: str) -> None:
         # HTMLParser preserves source order even for fragments and bad close tags.
-        if not (self._safe_current_depth and data.strip() == "CURRENT"):
+        if not (self._safe_current_depth and self._safe_current_direct and data.strip() == "CURRENT"):
             self.visible_text.append(data)
 
 
@@ -230,6 +235,12 @@ def has_stale_current_public_claim(text: str) -> bool:
     # status assertion; unrelated sentences cannot be accidentally combined.
     for sentence in re.split(r"[.!?]+(?=\s|$)\s*", normalized):
         tokens = public_claim_tokens(sentence)
+        # After narrowly approved dated phrases and typed structural tokens are
+        # removed, any public (capitalized) ONLINE assertion is a live-status
+        # claim. Ordinary prose such as "go online with friends" remains a
+        # separate non-status sentence.
+        if any(match.group(0) != "online" for match in re.finditer(r"\bonline\b", sentence, re.IGNORECASE)):
+            return True
         for index, token in enumerate(tokens):
             if token not in CURRENT_CLAIM_SUBJECTS:
                 continue
