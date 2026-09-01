@@ -1177,10 +1177,20 @@ test("restore-protected intrinsic settlement keeps the viewscreen on the request
 
     scroller.scrollTop = 1992;
     await view.dispatchScroll();
+    await view.dispatchScroll();
+    await view.dispatchScroll();
 
     assert.equal(useDeck.getState().deck, 5, "logical restoration must remain on Builds");
-    assert.deepEqual(observedDecks, [5], "the stage must not observe transient Routing during protected settlement");
-    assert.deepEqual(observedCraft, [4], "the stage must keep the Builds airframe until restoration settles");
+    assert.deepEqual(
+      [...new Set(observedDecks)],
+      [5],
+      "the stage must not observe transient Routing during protected settlement",
+    );
+    assert.deepEqual(
+      [...new Set(observedCraft)],
+      [4],
+      "the stage must keep the Builds airframe until restoration settles",
+    );
   } finally {
     await view.cleanup();
   }
