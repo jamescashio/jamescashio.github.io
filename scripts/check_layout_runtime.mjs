@@ -166,6 +166,11 @@ async function waitForApp(send) {
 }
 
 async function waitForCriticalShell(send) {
+  // The held critical shell is a stable state: the page keeps
+  // __v35CriticalActivationHeld until a deliberate input releases it, so a
+  // longer poll cannot admit a false positive. It only needs to outlast a slow
+  // navigation commit on a busy runner, which the previous 5 ms interval
+  // (~half a second of patience) did not.
   for (let attempt = 0; attempt < 100; attempt++) {
     const result = await send("Runtime.evaluate", {
       expression:
@@ -173,7 +178,7 @@ async function waitForCriticalShell(send) {
       returnByValue: true,
     });
     if (result.result.value) return;
-    await new Promise((resolve) => setTimeout(resolve, 5));
+    await new Promise((resolve) => setTimeout(resolve, 50));
   }
   throw new Error("timed out waiting for the prerendered critical shell");
 }
@@ -808,21 +813,21 @@ async function collectValidityGeometryMatrix(send) {
       source: "ssr-fixture",
       headerLabel: "EXPORT STATUS · DATED",
       footerLabel: "DATED EXPORT STATUS",
-      validThroughText: "VALID THRU 09-27-2026",
+      validThroughText: "VALID THRU 09-30-2026",
     },
     {
       id: "live-longest",
       source: "react-live",
-      headerLabel: "EXPORT VALID · 29D LEFT",
+      headerLabel: "EXPORT VALID · 30D LEFT",
       footerLabel: "DATED EXPORT VALID",
-      validThroughText: "VALID THRU 09-27-2026",
+      validThroughText: "VALID THRU 09-30-2026",
     },
     {
       id: "live-1d",
       source: "react-live",
       headerLabel: "EXPORT VALID · 1D LEFT",
       footerLabel: "DATED EXPORT VALID",
-      validThroughText: "VALID THRU 09-27-2026",
+      validThroughText: "VALID THRU 09-30-2026",
     },
     {
       id: "live-expired",
@@ -851,10 +856,11 @@ async function collectValidityGeometryMatrix(send) {
       layout.samples.push(result.sample);
     }
   };
+  await setControlledValidityState(send, Date.parse("2026-09-01T05:00:00Z"), states[1]);
   await collectState(states[1]);
-  await setControlledValidityState(send, Date.parse("2026-09-27T05:00:00Z"), states[2]);
+  await setControlledValidityState(send, Date.parse("2026-09-30T05:00:00Z"), states[2]);
   await collectState(states[2]);
-  await setControlledValidityState(send, Date.parse("2026-09-28T05:00:00Z"), states[3]);
+  await setControlledValidityState(send, Date.parse("2026-10-01T05:00:00Z"), states[3]);
   await collectState(states[3]);
   await collectState(states[0]);
   for (const layout of layouts) {

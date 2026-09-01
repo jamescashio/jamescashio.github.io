@@ -37,7 +37,7 @@ export function ExecutiveStill({ onClose }: { onClose: () => void }) {
           </div>
           <div>
             <div className="za-display text-cyan">18/19</div>
-            <div className="za-mono">FLEET · 28 AUG</div>
+            <div className="za-mono">FLEET · 31 AUG</div>
           </div>
           <div>
             <div className="za-display text-cyan">1</div>

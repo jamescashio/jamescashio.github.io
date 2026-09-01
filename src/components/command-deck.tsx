@@ -23,6 +23,7 @@ import { motionDurationMs } from "@/lib/animation-timing";
 import { COMMAND_POSTER_SOURCES } from "@/lib/command-poster";
 import { markClientReady } from "@/lib/client-ready";
 import { scheduleStageLoad } from "@/lib/stage-load-scheduler";
+import { createStageNotifier } from "@/lib/stage-sync";
 import {
   beginHashRestore,
   cancelHashRestore,
@@ -85,6 +86,7 @@ export function CommandDeck() {
   const s7 = useRef<HTMLElement>(null);
   const s8 = useRef<HTMLElement>(null);
   const stageRef = useRef<ViewscreenStageElement | null>(null);
+  const stageNotifier = useRef(createStageNotifier());
   const paletteOpener = useRef<HTMLElement | null>(null);
   const cinemaOpener = useRef<HTMLElement | null>(null);
   const cinemaExit = useRef<HTMLButtonElement | null>(null);
@@ -614,9 +616,9 @@ export function CommandDeck() {
       }
       const st = stageRef.current;
       if (animateNavigation) st?.warp?.();
-      st?.setDeck?.(i);
+      stageNotifier.current.deck(st, i);
       const activeCraftLock = craftOverride === undefined ? useDeck.getState().craftLock : craftOverride;
-      st?.setCraft?.(resolveCraftIndex(i, activeCraftLock));
+      stageNotifier.current.craft(st, resolveCraftIndex(i, activeCraftLock));
       if (source === "restore") {
         clearCinePulse();
         clearChapter();
@@ -823,7 +825,7 @@ export function CommandDeck() {
 
   useEffect(() => {
     if (craftLock == null) return;
-    stageRef.current?.setCraft?.(craftLock);
+    stageNotifier.current.craft(stageRef.current, craftLock);
   }, [craftLock]);
 
   useEffect(() => {
@@ -887,9 +889,9 @@ export function CommandDeck() {
     const activeRestoreDeck = restoreAnchorIntent.current?.deck;
     const observedStageDeck = activeRestoreDeck ?? i;
     const st = stageRef.current;
-    st?.setProgress?.(p);
-    st?.setDeck?.(observedStageDeck);
-    st?.setCraft?.(resolveCraftIndex(observedStageDeck, useDeck.getState().craftLock));
+    stageNotifier.current.progress(st, p);
+    stageNotifier.current.deck(st, observedStageDeck);
+    stageNotifier.current.craft(st, resolveCraftIndex(observedStageDeck, useDeck.getState().craftLock));
     const snd = getSound();
     if (useDeck.getState().audio) {
       snd.setDepth(p);

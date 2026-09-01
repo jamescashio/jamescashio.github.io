@@ -81,7 +81,7 @@ test("Snapshot marks every decision-carrying fleet value and date as critical te
     }),
   );
   const fleetSummary = [...document.querySelectorAll("p")].find((node) =>
-    node.textContent?.startsWith("MEASURED 28 AUGUST 2026"),
+    node.textContent?.startsWith("MEASURED 31 AUGUST 2026"),
   );
   assert.ok(fleetSummary, "Snapshot must retain its dated fleet summary");
   assert.ok(fleetSummary.classList.contains("za-critical-telemetry"));

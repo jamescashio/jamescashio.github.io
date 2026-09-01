@@ -629,7 +629,7 @@ test("footer VALID THRU provenance reserves the longest live state without hidin
       element.textContent?.includes("ZERO INFRASTRUCTURE CALLS"),
     );
     assert.ok(provenance, "the real VALID THRU sibling must expose its semantic geometry hook");
-    assert.equal(provenance?.textContent, "VALID THRU 09-27-2026");
+    assert.equal(provenance?.textContent, "VALID THRU 09-30-2026");
     assert.ok(zeroCalls, "the adjacent ZERO INFRASTRUCTURE CALLS status must remain rendered");
     assert.match(
       stylesheet,
@@ -644,7 +644,7 @@ test("the validity clock crosses a day and exact expiry without remounting or du
   const view = mountCommandDeck({
     captureValidityTimers: true,
     controlledTimers: true,
-    now: Date.parse("2026-09-27T04:59:59.000Z"),
+    now: Date.parse("2026-09-30T04:59:59.000Z"),
     strictMode: true,
   });
   try {
@@ -801,8 +801,8 @@ test("glyph controls preserve each visible audio label in their accessible names
 
 test("command chrome frames aggregate evidence as a dated export at valid and expired boundaries", async (t) => {
   for (const [name, now, expected] of [
-    ["valid", Date.parse("2026-09-27T12:00:00Z"), /EXPORT VALID/],
-    ["expired", Date.parse("2026-09-28T05:00:00Z"), /EXPORT EXPIRED/],
+    ["valid", Date.parse("2026-09-30T12:00:00Z"), /EXPORT VALID/],
+    ["expired", Date.parse("2026-10-01T05:00:00Z"), /EXPORT EXPIRED/],
   ]) {
     await t.test(name, async () => {
       const view = mountCommandDeck({ controlledTimers: true, now });
@@ -812,10 +812,10 @@ test("command chrome frames aggregate evidence as a dated export at valid and ex
         // The header frames validity only. The dated figure is stated once, in
         // the hero, rather than repeated across the chrome.
         assert.match(header?.textContent ?? "", expected);
-        assert.doesNotMatch(header?.textContent ?? "", /18\/19 AT 28 AUG PROBE/);
-        assert.match(view.document.body.textContent, /MEASURED 28 AUGUST 2026 · 18 OF 19 SERVICES UP/);
+        assert.doesNotMatch(header?.textContent ?? "", /18\/19 AT 31 AUG PROBE/);
+        assert.match(view.document.body.textContent, /MEASURED 31 AUGUST 2026 · 18 OF 19 SERVICES UP/);
         assert.doesNotMatch(header?.textContent ?? "", /NOMINAL|CURRENT/);
-        assert.match(view.document.body.textContent, /APOLLO6\/6 · AT 28 AUG PROBE/);
+        assert.match(view.document.body.textContent, /APOLLO6\/6 · AT 31 AUG PROBE/);
       } finally {
         await view.cleanup();
       }
@@ -1175,22 +1175,19 @@ test("restore-protected intrinsic settlement keeps the viewscreen on the request
     stage.setDeck = (deck) => observedDecks.push(deck);
     stage.setCraft = (craft) => observedCraft.push(craft);
 
+    await view.dispatchScroll();
+
+    assert.deepEqual(observedDecks, [5], "the newly available stage must acquire the restored Builds deck once");
+    assert.deepEqual(observedCraft, [4], "the newly available stage must acquire the Builds airframe once");
+
     scroller.scrollTop = 1992;
     await view.dispatchScroll();
     await view.dispatchScroll();
     await view.dispatchScroll();
 
     assert.equal(useDeck.getState().deck, 5, "logical restoration must remain on Builds");
-    assert.deepEqual(
-      [...new Set(observedDecks)],
-      [5],
-      "the stage must not observe transient Routing during protected settlement",
-    );
-    assert.deepEqual(
-      [...new Set(observedCraft)],
-      [4],
-      "the stage must keep the Builds airframe until restoration settles",
-    );
+    assert.deepEqual(observedDecks, [5], "the stage must not observe transient Routing or duplicate notifications");
+    assert.deepEqual(observedCraft, [4], "the stage must keep the Builds airframe until restoration settles");
   } finally {
     await view.cleanup();
   }
@@ -1498,8 +1495,8 @@ test("Snapshot prose separates the verification date from the preceding word", a
   try {
     await view.render();
     const snapshot = view.document.querySelector('section[data-deck="0"]');
-    assert.match(snapshot?.textContent ?? "", /MEASURED 28 AUGUST 2026 · 18 OF 19 SERVICES UP/);
-    assert.match(snapshot?.textContent ?? "", /VERIFIED 28 August 2026/);
+    assert.match(snapshot?.textContent ?? "", /MEASURED 31 AUGUST 2026 · 18 OF 19 SERVICES UP/);
+    assert.match(snapshot?.textContent ?? "", /VERIFIED 31 August 2026/);
   } finally {
     await view.cleanup();
   }

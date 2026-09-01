@@ -174,7 +174,7 @@ test("DeckSnapshot renders V34's dated aggregate and Executive outcome hierarchy
         onEve: () => {},
       }),
     );
-    assert.match(view.document.body.textContent, /18\/19 AT 28 AUG PROBE/);
+    assert.match(view.document.body.textContent, /18\/19 AT 31 AUG PROBE/);
     assert.match(view.document.body.textContent, /Detailed evidence, build proof, and operational context\./);
     assert.match(view.document.body.textContent, /Route control, evidence boundary, human authority\./);
     const executive = [...view.document.querySelectorAll(".za-snapshot-modes button")].find((control) =>
@@ -320,7 +320,7 @@ test("Executive cards keep routing, fleet evidence, and human accountability as 
     assert.equal(cards[1].querySelector(".za-display")?.textContent, "18/19");
     assert.equal(
       cards[1].querySelector("p")?.textContent,
-      "18 of 19 documented guests were running at the 28 August probe. Two Proxmox hosts were online and quorate. The dated export is evidence, never telemetry.",
+      "18 of 19 documented guests were running at the 31 August probe. Two Proxmox hosts were online and quorate. The dated export is evidence, never telemetry.",
     );
     assert.equal(cards[2].querySelector(".za-display")?.textContent, "1");
     assert.match(cards[2].textContent, /OWNER ACCOUNTABLE/);
@@ -465,7 +465,7 @@ test("E.V.E. status keeps routing counts on the separate 21 August 2026 inventor
   const lines = runEve("status").out;
   assert.ok(lines.includes("ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES"));
   assert.equal(
-    lines.some((line) => /28 AUG(?:UST)? 2026.*10 PUBLIC/i.test(line)),
+    lines.some((line) => /31 AUG(?:UST)? 2026.*10 PUBLIC/i.test(line)),
     false,
   );
 });
@@ -485,15 +485,52 @@ test("BlackBoxReceipt renders only the exact dated claim set beneath its exact h
     assert.ok(receipt, "expected Black Box Receipt region");
     assert.equal(receipt.querySelector("h3")?.textContent, "BLACK BOX RECEIPT");
     assert.deepEqual(
-      [...receipt.querySelectorAll("li")].map((claim) => claim.textContent),
+      [...receipt.querySelectorAll("li.za-receipt-claim")].map((claim) => claim.textContent),
       [
-        "08-28-2026 · 18/19 DOCUMENTED GUESTS RUNNING AT PROBE",
-        "08-28-2026 · 2 PROXMOX HOSTS QUORATE",
+        "08-31-2026 · 18/19 DOCUMENTED GUESTS RUNNING AT PROBE",
+        "08-31-2026 · 2 PROXMOX HOSTS QUORATE",
         "08-21-2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG",
       ],
     );
   } finally {
     await view.cleanup();
+  }
+});
+
+test("the ship's log keeps every superseded deck reachable without republishing its figures", async () => {
+  const view = mount(createElement(BlackBoxReceipt));
+  try {
+    await view.render(createElement(BlackBoxReceipt));
+    const receipt = view.document.querySelector('[aria-labelledby="black-box-receipt-heading"]');
+    assert.ok(receipt, "expected Black Box Receipt region");
+    const links = [...receipt.querySelectorAll("a")].map((anchor) => anchor.getAttribute("href"));
+    for (const archive of ["/grid.html", "/index-v44.html", "/command.html"]) {
+      assert.ok(links.includes(archive), `ship's log must link the preserved ${archive} marker`);
+    }
+    const log = receipt.textContent;
+    assert.match(log, /SHIP'S LOG/);
+    assert.doesNotMatch(log, /19\s*(?:\/|of)\s*19/i, "a superseded fleet figure must never ride along in the log");
+    assert.doesNotMatch(log, /08-10-2026/, "a withdrawn export date must never ride along in the log");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("E.V.E. log recites the canonical release line with its preserved archives", () => {
+  const lines = runEve("log").out;
+  assert.match(lines[0], /SHIP'S LOG/);
+  assert.match(lines[1], /V36 "GREEN BOARD" · THIS DECK · REVISED 08-31-2026/);
+  assert.ok(
+    lines.some((line) => line.includes("/grid.html")),
+    "the log must point at the preserved V31 marker",
+  );
+  assert.ok(
+    lines.some((line) => line.includes("/command.html")),
+    "the log must point at the preserved May 2026 archive",
+  );
+  assert.equal(runEve("shipslog").out.join("\n"), lines.join("\n"), "shipslog must alias log");
+  for (const line of lines) {
+    assert.doesNotMatch(line, /19\s*\/\s*19/, "the log must never republish a superseded figure");
   }
 });
 
