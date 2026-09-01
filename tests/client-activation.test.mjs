@@ -464,6 +464,11 @@ test("the prerendered route has a readable inline shell while the full styleshee
   ]) {
     assert.ok(documentHtml.includes(selector), `critical shell must cover ${selector}`);
   }
+  assert.match(
+    documentHtml,
+    /\.za-command-header button\[aria-label="Open deck navigator"\]\s*\{[^}]*min-width:\s*44px;/,
+    "the critical shell must preserve the navigator's activated 44px width",
+  );
   assert.doesNotMatch(bootstrap, /styles\.css/, "the full stylesheet must not block the prerendered LCP");
   assert.match(main, /import "\.\/styles\.css";/, "normal activation must restore the complete design stylesheet");
   assert.match(documentHtml, /#root:not\(\[data-client-activated\]\) \.za-vs-hud/);
