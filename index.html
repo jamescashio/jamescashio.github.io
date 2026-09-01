@@ -5,8 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
+      content="default-src 'self'; script-src 'self' 'sha256-mG8+yzmRuTIc/6ooISWYV7Vep9IP0nCbq+acAhO5YRg='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
     />
+    <script data-critical-route>
+      (() => {
+        if (!location.hash.startsWith("#deck=")) return;
+        const align = () => {
+          const scroller = document.getElementById("main-content");
+          const anchor = document.getElementById(location.hash.slice(1));
+          const section = anchor?.closest("section[data-deck]");
+          if (!scroller || !section) return;
+          const maximum = Math.max(0, scroller.scrollHeight - scroller.clientHeight);
+          scroller.scrollTop = Math.min(Math.max(0, section.offsetTop - 8), maximum);
+        };
+        const observer = new MutationObserver(align);
+        observer.observe(document.documentElement, { childList: true, subtree: true });
+        addEventListener(
+          "DOMContentLoaded",
+          () => {
+            align();
+            observer.disconnect();
+          },
+          { once: true },
+        );
+        align();
+      })();
+    </script>
     <title>cashio.us · ZeusApollo command console</title>
     <meta
       name="description"

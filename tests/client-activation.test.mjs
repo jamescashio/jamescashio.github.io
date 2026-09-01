@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { JSDOM } from "jsdom";
@@ -513,4 +514,49 @@ test("the prerendered route has a readable inline shell while the full styleshee
     "activation must retire only shell rules and become observable after React layout effects are ready",
   );
   assert.doesNotMatch(main, /style\[data-critical-fonts\][\s\S]*?remove/);
+});
+
+test("the hashed pre-paint route helper aligns a direct deck before the app markup can render", async () => {
+  const documentHtml = await readFile(new URL("../index.html", import.meta.url), "utf8");
+  const sourceDocument = new JSDOM(documentHtml).window.document;
+  const helper = sourceDocument.querySelector("script[data-critical-route]");
+  const bootstrap = sourceDocument.querySelector('script[type="module"][src="/src/bootstrap.ts"]');
+
+  assert.ok(helper, "the pre-paint route helper must be present in the document head");
+  assert.ok(bootstrap, "the deferred activation bootstrap must remain present");
+  assert.ok(
+    helper.compareDocumentPosition(bootstrap) & sourceDocument.defaultView.Node.DOCUMENT_POSITION_FOLLOWING,
+    "the pre-paint route helper must execute before client activation",
+  );
+
+  const helperSource = helper.textContent ?? "";
+  const helperHash = createHash("sha256").update(helperSource).digest("base64");
+  const csp = sourceDocument.querySelector('meta[http-equiv="Content-Security-Policy"]')?.getAttribute("content");
+  assert.match(
+    csp ?? "",
+    new RegExp(`script-src 'self' 'sha256-${helperHash.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}'`),
+  );
+
+  const dom = new JSDOM("<!doctype html><html><head></head><body></body></html>", {
+    runScripts: "outside-only",
+    url: "https://cashio.us/#deck=iron",
+  });
+  dom.window.eval(helperSource);
+
+  const main = dom.window.document.createElement("main");
+  main.id = "main-content";
+  Object.defineProperty(main, "scrollHeight", { configurable: true, value: 5_000 });
+  Object.defineProperty(main, "clientHeight", { configurable: true, value: 844 });
+  const section = dom.window.document.createElement("section");
+  section.dataset.deck = "3";
+  Object.defineProperty(section, "offsetTop", { configurable: true, value: 3_600 });
+  const anchor = dom.window.document.createElement("span");
+  anchor.id = "deck=iron";
+  section.append(anchor);
+  main.append(section);
+  dom.window.document.body.append(main);
+  await Promise.resolve();
+
+  assert.equal(main.scrollTop, 3_592, "the direct Iron route must align at the canonical eight-pixel inset");
+  dom.window.close();
 });
