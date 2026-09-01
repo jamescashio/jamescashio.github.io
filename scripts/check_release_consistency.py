@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail closed when the V35 source and GitHub Pages artifact disagree."""
+"""Fail closed when the V36 source and GitHub Pages artifact disagree."""
 
 from __future__ import annotations
 
@@ -21,8 +21,8 @@ DIST = ROOT / "dist"
 
 TEXT_SUFFIXES = {".html", ".js", ".css", ".json", ".txt", ".xml", ".svg"}
 V34_PUBLIC_SURFACES = {
-    "index.html": ("28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT", "ROUTING INVENTORY 21 AUGUST 2026"),
-    "lab.html": ("28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT", "ROUTING INVENTORY 21 AUGUST 2026"),
+    "index.html": ("31 August 2026", "18/19 AT 31 AUG PROBE", "DATED EXPORT", "ROUTING INVENTORY 21 AUGUST 2026"),
+    "lab.html": ("31 August 2026", "18/19 AT 31 AUG PROBE", "DATED EXPORT", "ROUTING INVENTORY 21 AUGUST 2026"),
 }
 ROUTING_COUNT_CLAIM = re.compile(
     r"\b10\s+PUBLIC(?:\s+CAPABILITY)?\s+LANES\b.*?\b36\s+PRIVATE\s+CATALOG(?:\s+ENTRIES)?\b",
@@ -385,12 +385,12 @@ def main() -> int:
         return 1
 
     expected = {
-        "release": "V35 ALL TENS",
-        "revised": "2026-08-28",
+        "release": "V36 GREEN BOARD",
+        "revised": "2026-08-31",
         "status": "dated-export",
-        "verified": "2026-08-28",
-        "verifiedLong": "28 August 2026",
-        "expires": "2026-09-27",
+        "verified": "2026-08-31",
+        "verifiedLong": "31 August 2026",
+        "expires": "2026-09-30",
     }
     for key, value in expected.items():
         if status.get(key) != value:
@@ -430,8 +430,8 @@ def main() -> int:
             failures.append(f"{cname} must contain only cashio.us")
 
     package = json.loads(read("package.json"))
-    if package.get("version") != "35.0.0":
-        failures.append("package.json version must be 35.0.0")
+    if package.get("version") != "36.0.0":
+        failures.append("package.json version must be 36.0.0")
     if package.get("scripts", {}).get("build") != "tsc --noEmit && vite build && node --import tsx scripts/prerender.mts":
         failures.append("package.json build script changed from the supplied TypeScript + Vite + prerender gate")
 
@@ -467,11 +467,11 @@ def main() -> int:
     required_source = {
         "src/lib/store.ts": ("gate: false", "audio: DEFAULT_AUDIO_ENABLED", "deck: 0"),
         "src/lib/content.ts": (
-            'VERIFIED_LONG = "28 August 2026"',
+            'VERIFIED_LONG = "31 August 2026"',
             'ROUTING_VERIFIED_LONG = "21 August 2026"',
-            'REVISED = "08-28-2026"',
-            'EXPIRES_AT = "2026-09-28T05:00:00Z"',
-            '"18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6"',
+            'REVISED = "08-31-2026"',
+            'EXPIRES_AT = "2026-10-01T05:00:00Z"',
+            '"18/19 AT 31 AUG PROBE · ZEUS 12/13 · APOLLO 6/6"',
             'model: "DeepSeek V4 Flash"',
             'model: "DeepSeek V4 Pro"',
             'model: "Gemini 3.7 Flash"',
@@ -668,8 +668,8 @@ def main() -> int:
         live = collect_text(DIST)
         check_current_public_privacy(live, failures, "built Pages artifact")
         for marker in (
-            "28 August 2026",
-            "18/19 AT 28 AUG PROBE",
+            "31 August 2026",
+            "18/19 AT 31 AUG PROBE",
             "QUORATE",
             "10 PUBLIC",
             "36 PRIVATE",
@@ -733,13 +733,13 @@ def main() -> int:
             failures.append(f"non-audio fetch target found in source: {target!r}")
 
     if failures:
-        print("V35 release consistency check failed:\n")
+        print("V36 release consistency check failed:\n")
         for failure in failures:
             print(f"- {failure}")
         return 1
 
     print(
-        "V35 release consistency passed: 28 August 2026 dated export; "
+        "V36 release consistency passed: 31 August 2026 dated export; "
         "18/19 containers; 2 Proxmox hosts quorate; 10 public lanes; "
         "36 private catalog entries; root Pages base; archive, privacy, "
         "motion, opt-in audio, and forbidden-token gates satisfied."

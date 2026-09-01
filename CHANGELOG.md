@@ -2,6 +2,25 @@
 
 This file records the canonical public release line for cashio.us. Visible dates use MM-DD-YYYY. Unpublished prototype numbering is intentionally omitted; Git history retains those experiments without presenting them as releases.
 
+## [v36] — 08-31-2026
+
+Release name: "GREEN BOARD." A fresh owner-run read-only probe on 31 August 2026 re-verified the fleet with figures identical to the 28 August export, and the release path itself was repaired so verified work actually reaches production.
+
+### Changed
+
+- The dated fleet export moves to 31 August 2026 with a validity window through 30 September 2026 in America/Chicago. Every figure is unchanged from the 28 August probe: 18/19 documented guests, Zeus 12/13, Apollo 6/6, two quorate hosts on Proxmox VE 9.2.11. The routing inventory keeps its separate 21 August 2026 date because its source was not re-measured.
+- Viewscreen stage notifications are edge-triggered: the deck, airframe, and progress values reach the stage only when they change, so settlement scroll bursts can no longer duplicate notifications or fail the deploy gate on a slower runner. A replacement stage instance still receives a complete first sync.
+
+### Added
+
+- A Ship's Log in the Evidence Locker: every superseded deck stays reachable through its archive marker — V31 at /grid.html, the V44 prototype at /index-v44.html, and the May 2026 archive at /command.html — named without republishing a superseded figure.
+- E.V.E. answers `log` (and `shipslog`) with the same canonical release line at console depth.
+- Pull requests now run the pinned-browser layout gate that the deploy workflow enforces, so a green pull request can no longer strand a red deployment.
+
+### Boundaries
+
+- The stopped guest remains unnamed. Withheld figures stay withheld. Audio remains off until a visitor arms it.
+
 ## [v35] — 08-30-2026
 
 Release name: "ALL TENS." A quality pass against the nine category audit of the live V34 build. No published figure changes: the dated export, the fleet counts and the routing inventory are exactly as verified on 28 August 2026, because no fresh measurement was taken.

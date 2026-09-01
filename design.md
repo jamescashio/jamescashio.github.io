@@ -55,7 +55,7 @@ Cashio.us is a sovereign command-deck flight recorder: a cinematic dossier where
 - Builds uses defensible owner-built/evidence/control labels. Lineage rules are explicitly Cashio operating lessons, not attributed quotations.
 - Contact and the Black Box Receipt remain the static conclusion.
 - COPY EMAIL reports success only after copying succeeds and reports an explicit unavailable or failure state otherwise—never a false `COPIED` state.
-- Fleet and routing remain separate evidence surfaces: 18/19 guests, Zeus 12/13, Apollo 6/6, and two quorate hosts belong to the 28 August fleet probe; ten public lanes and thirty-six private catalog entries belong to the distinct 21 August routing inventory. Neither supports a claim about the other.
+- Fleet and routing remain separate evidence surfaces: 18/19 guests, Zeus 12/13, Apollo 6/6, and two quorate hosts belong to the 31 August fleet probe; ten public lanes and thirty-six private catalog entries belong to the distinct 21 August routing inventory. Neither supports a claim about the other.
 
 ## Acceptance gates
 
@@ -66,6 +66,6 @@ Cashio.us is a sovereign command-deck flight recorder: a cinematic dossier where
 
 ## Release boundary
 
-V34 MACH ONE is revised and fleet-verified 28 August 2026. The public-safe probe found two Proxmox hosts online and quorate on 9.2.11, with 18 of 19 guests running: Zeus 12/13 and Apollo 6/6. The fleet validity window is inclusive through the end of 27 September 2026 in America/Chicago. The separate ten-lane / thirty-six-entry routing inventory remains explicitly dated 21 August 2026. Root Pages base `/`; no Engage gate; no Request a Review; and the May 2026 `command.html` archive.
+V36 GREEN BOARD is revised and fleet-verified 31 August 2026 by a fresh owner-run read-only probe. The public-safe probe found two Proxmox hosts online and quorate on 9.2.11, with 18 of 19 guests running: Zeus 12/13 and Apollo 6/6 — figures identical to the 28 August export. The fleet validity window is inclusive through the end of 30 September 2026 in America/Chicago. The separate ten-lane / thirty-six-entry routing inventory remains explicitly dated 21 August 2026 because its source was not re-measured. Root Pages base `/`; no Engage gate; no Request a Review; the May 2026 `command.html` archive; and the Ship's Log keeps `/grid.html` and `/index-v44.html` reachable from the Evidence Locker.
 
 This remains an approval-gated candidate: no publication, pull-request merge, or Pages deployment occurs until Doug approves the exact commit SHA and SHA-256 hashes of every changed public asset.

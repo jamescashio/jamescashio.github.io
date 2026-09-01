@@ -441,7 +441,7 @@ export function browserVersionAcceptanceFailures(version, expectedMajorValue) {
 const VALIDITY_VIEWPORT_WIDTHS = [768, 834, 1024, 1280];
 const VALIDITY_LABELS = [
   "EXPORT STATUS · DATED",
-  "EXPORT VALID · 29D LEFT",
+  "EXPORT VALID · 30D LEFT",
   "EXPORT VALID · 1D LEFT",
   "EXPORT EXPIRED",
 ];
@@ -452,15 +452,15 @@ const FULL_VALIDITY_STATES = [
     source: "ssr-fixture",
     headerLabel: "EXPORT STATUS · DATED",
     footerLabel: "DATED EXPORT STATUS",
-    validThroughText: "VALID THRU 09-27-2026",
+    validThroughText: "VALID THRU 09-30-2026",
   },
   {
     id: "live-longest",
     description: "longest valid",
     source: "react-live",
-    headerLabel: "EXPORT VALID · 29D LEFT",
+    headerLabel: "EXPORT VALID · 30D LEFT",
     footerLabel: "DATED EXPORT VALID",
-    validThroughText: "VALID THRU 09-27-2026",
+    validThroughText: "VALID THRU 09-30-2026",
   },
   {
     id: "live-1d",
@@ -468,7 +468,7 @@ const FULL_VALIDITY_STATES = [
     source: "react-live",
     headerLabel: "EXPORT VALID · 1D LEFT",
     footerLabel: "DATED EXPORT VALID",
-    validThroughText: "VALID THRU 09-27-2026",
+    validThroughText: "VALID THRU 09-30-2026",
   },
   {
     id: "live-expired",

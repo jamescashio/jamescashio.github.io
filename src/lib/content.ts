@@ -1,17 +1,17 @@
-export const VERIFIED = "08-28-2026";
-export const VERIFIED_LONG = "28 August 2026";
+export const VERIFIED = "08-31-2026";
+export const VERIFIED_LONG = "31 August 2026";
 export const ROUTING_VERIFIED_LONG = "21 August 2026";
-export const EXPIRES = "2026-09-27";
-export const EXPIRES_SHORT = "09-27-2026";
-export const EXPIRES_AT = "2026-09-28T05:00:00Z";
-export const REVISED = "08-28-2026";
-export const RELEASE = 'V35 "ALL TENS"';
+export const EXPIRES = "2026-09-30";
+export const EXPIRES_SHORT = "09-30-2026";
+export const EXPIRES_AT = "2026-10-01T05:00:00Z";
+export const REVISED = "08-31-2026";
+export const RELEASE = 'V36 "GREEN BOARD"';
 export const PVE = "9.2.11";
 
 export const BOOT = [
   "E.V.E. EVALUATION VERIFICATION ENGINE · ONLINE",
   "PROXMOX VE 9.2.11 · 2 HOSTS · CLUSTER QUORATE",
-  "18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6",
+  "18/19 AT 31 AUG PROBE · ZEUS 12/13 · APOLLO 6/6",
   "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG",
   `DATED EXPORT · PUBLIC-SAFE · VERIFIED ${VERIFIED_LONG}`,
 ];
@@ -46,11 +46,11 @@ export const DECK_SHORT: Record<(typeof DECKS)[number]["id"], string> = {
 };
 
 export const TELEMETRY = [
-  "ZEUS · 12/13 RUNNING AT 28 AUG PROBE",
-  "APOLLO · 6/6 RUNNING AT 28 AUG PROBE",
-  "FLEET · 18/19 AT 28 AUG PROBE",
+  "ZEUS · 12/13 RUNNING AT 31 AUG PROBE",
+  "APOLLO · 6/6 RUNNING AT 31 AUG PROBE",
+  "FLEET · 18/19 AT 31 AUG PROBE",
   "PROXMOX VE 9.2.11 · 2 HOSTS · CLUSTER QUORATE",
-  "18/19 AT 28 AUG PROBE",
+  "18/19 AT 31 AUG PROBE",
   "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG",
   "LAW · QUALITY PICKS THE MODEL",
   "DATED EXPORT · READ-ONLY · PUBLIC-SAFE SNAPSHOT",
@@ -172,7 +172,7 @@ export const NAMED_ROLES = [
 ];
 
 export const SERVICE_FAMILIES =
-  "Observed public-safe role families at the 28 August 2026 probe: Technitium DNS primary, Technitium DNS secondary, Wazuh, monitoring stack, n8n, PBS, and media services. The stopped guest remains unnamed.";
+  "Observed public-safe role families at the 31 August 2026 probe: Technitium DNS primary, Technitium DNS secondary, Wazuh, monitoring stack, n8n, PBS, and media services. The stopped guest remains unnamed.";
 
 export const WITHHELD = [
   "AI operating cost per day and month",
@@ -186,12 +186,12 @@ export const HOSTS = [
   {
     name: "ZEUS",
     tag: "DATED HOST",
-    blurb: "12 of 13 documented guests were running at the 28 August probe.",
+    blurb: "12 of 13 documented guests were running at the 31 August probe.",
   },
   {
     name: "APOLLO",
     tag: "DATED HOST",
-    blurb: "All 6 documented guests were running at the 28 August probe.",
+    blurb: "All 6 documented guests were running at the 31 August probe.",
   },
 ] as const;
 

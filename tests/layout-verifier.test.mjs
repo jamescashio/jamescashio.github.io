@@ -1039,7 +1039,7 @@ function validitySurface(left, width, labelWidth = width - 24) {
 }
 
 function validValidityGeometryMatrix() {
-  const labels = ["EXPORT STATUS · DATED", "EXPORT VALID · 29D LEFT", "EXPORT VALID · 1D LEFT", "EXPORT EXPIRED"];
+  const labels = ["EXPORT STATUS · DATED", "EXPORT VALID · 30D LEFT", "EXPORT VALID · 1D LEFT", "EXPORT EXPIRED"];
   return [768, 834, 1024, 1280].flatMap((viewportWidth) =>
     [false, true].flatMap((railOpen) =>
       [false, true].map((tour) => ({
@@ -1088,21 +1088,21 @@ const fullValidityTuples = [
     source: "ssr-fixture",
     headerLabel: "EXPORT STATUS · DATED",
     footerLabel: "DATED EXPORT STATUS",
-    validThroughText: "VALID THRU 09-27-2026",
+    validThroughText: "VALID THRU 09-30-2026",
   },
   {
     id: "live-longest",
     source: "react-live",
-    headerLabel: "EXPORT VALID · 29D LEFT",
+    headerLabel: "EXPORT VALID · 30D LEFT",
     footerLabel: "DATED EXPORT VALID",
-    validThroughText: "VALID THRU 09-27-2026",
+    validThroughText: "VALID THRU 09-30-2026",
   },
   {
     id: "live-1d",
     source: "react-live",
     headerLabel: "EXPORT VALID · 1D LEFT",
     footerLabel: "DATED EXPORT VALID",
-    validThroughText: "VALID THRU 09-27-2026",
+    validThroughText: "VALID THRU 09-30-2026",
   },
   {
     id: "live-expired",
@@ -1169,7 +1169,7 @@ function withFullValidityEvidence(matrix = validValidityGeometryMatrix()) {
           {
             name: "revised",
             visible: true,
-            accessibleText: "REVISED 08-28-2026",
+            accessibleText: "REVISED 08-31-2026",
             rect: { left: 110, right: 230, top: 12, bottom: 27, width: 120, height: 15 },
           },
           {
@@ -1181,7 +1181,7 @@ function withFullValidityEvidence(matrix = validValidityGeometryMatrix()) {
           {
             name: "verified",
             visible: true,
-            accessibleText: "FIGURES VERIFIED 28 August 2026",
+            accessibleText: "FIGURES VERIFIED 31 August 2026",
             rect: { left: 400, right: 580, top: 12, bottom: 27, width: 180, height: 15 },
           },
           {
@@ -1240,7 +1240,7 @@ test("validity geometry acceptance rejects an incorrect or incomplete full state
   const validate = runtimeSupport.validityGeometryAcceptanceFailures ?? (() => ["validator unavailable"]);
   const matrix = withFullValidityEvidence();
   matrix[0].samples[0].fullState.footerLabel = "DATED EXPORT VALID";
-  matrix[1].samples[3].fullState.validThroughText = "VALID THRU 09-27-2026";
+  matrix[1].samples[3].fullState.validThroughText = "VALID THRU 09-30-2026";
   const failures = validate(matrix);
   assert.ok(failures.some((failure) => /SSR placeholder full validity tuple/.test(failure)));
   assert.ok(failures.some((failure) => /expired full validity tuple/.test(failure)));

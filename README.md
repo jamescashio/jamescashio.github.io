@@ -1,6 +1,6 @@
-# cashio.us V35 ALL TENS
+# cashio.us V36 GREEN BOARD
 
-Public command console. Release revision **28 August 2026**; read-only, dated fleet export **28 August 2026**, valid through **27 September 2026** in America/Chicago. Routing inventory remains separately dated **21 August 2026**.
+Public command console. Release revision **31 August 2026**; read-only, dated fleet export **31 August 2026**, valid through **30 September 2026** in America/Chicago. Routing inventory remains separately dated **21 August 2026**.
 
 ## Supported local commands
 
