@@ -34,7 +34,19 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install V35 dependencies
+      - name: Set up the pinned release browser
+        id: setup_chrome
+        uses: browser-actions/setup-chrome@v2
+        with:
+          chrome-version: 147.0.7727.57
+
+      - name: Configure the pinned Chrome sandbox
+        run: |
+          sudo chown root:root /opt/google/chrome/chrome-sandbox
+          sudo chmod 4755 /opt/google/chrome/chrome-sandbox
+          test "$(stat -c '%U:%G %a' /opt/google/chrome/chrome-sandbox)" = "root:root 4755"
+
+      - name: Install V36 dependencies
         id: install
         continue-on-error: true
         run: npm ci
@@ -58,6 +70,14 @@ jobs:
         id: build
         continue-on-error: true
         run: npm run build
+
+      - name: Run the pinned-browser layout gate
+        id: layout
+        continue-on-error: true
+        run: npm run check:layout:runtime:pinned
+        env:
+          CHROME_PATH: ${{ steps.setup_chrome.outputs.chrome-path }}
+          CHROME_DEVEL_SANDBOX: /opt/google/chrome/chrome-sandbox
 
       - name: Run release artifact tests
         id: release_tests
@@ -100,5 +120,5 @@ jobs:
           retention-days: 14
 
       - name: Enforce validation results
-        if: steps.install.outcome != 'success' || steps.lint.outcome != 'success' || steps.format.outcome != 'success' || steps.node_tests.outcome != 'success' || steps.build.outcome != 'success' || steps.release_tests.outcome != 'success' || steps.safety_scan.outcome != 'success' || steps.release_consistency.outcome != 'success' || steps.python_syntax.outcome != 'success' || steps.whitespace.outcome != 'success'
+        if: steps.install.outcome != 'success' || steps.lint.outcome != 'success' || steps.format.outcome != 'success' || steps.node_tests.outcome != 'success' || steps.build.outcome != 'success' || steps.layout.outcome != 'success' || steps.release_tests.outcome != 'success' || steps.safety_scan.outcome != 'success' || steps.release_consistency.outcome != 'success' || steps.python_syntax.outcome != 'success' || steps.whitespace.outcome != 'success'
         run: exit 1

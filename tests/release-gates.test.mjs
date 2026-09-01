@@ -68,9 +68,9 @@ function expandScript(scripts, name, seen = new Set()) {
   });
 }
 
-test("package metadata and deterministic local gates define the V35 release", async () => {
+test("package metadata and deterministic local gates define the V36 release", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "35.0.0");
+  assert.equal(packageJson.version, "36.0.0");
   for (const dependency of [
     "@eslint/js",
     "eslint",
@@ -125,10 +125,10 @@ test("package metadata and deterministic local gates define the V35 release", as
   const status = JSON.parse(await read("status.json"));
   const publicStatus = JSON.parse(await read("public/status.json"));
   assert.deepEqual(status, publicStatus);
-  assert.equal(status.release, "V35 ALL TENS");
-  assert.equal(status.revised, "2026-08-28");
-  assert.equal(status.verified, "2026-08-28");
-  assert.equal(status.expires, "2026-09-27");
+  assert.equal(status.release, "V36 GREEN BOARD");
+  assert.equal(status.revised, "2026-08-31");
+  assert.equal(status.verified, "2026-08-31");
+  assert.equal(status.expires, "2026-09-30");
   assert.deepEqual(status.containers, { running: 18, documented: 19, stopped: 1, zeus: 12, apollo: 6 });
   assert.equal(status.routingVerified, "2026-08-21");
 });
@@ -225,7 +225,7 @@ test("the built document contains one real prerendered command deck with a criti
 });
 
 test("public metadata and redirect fallback keep fleet and routing provenance distinct", async () => {
-  const fleetExpected = ["28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT"];
+  const fleetExpected = ["31 August 2026", "18/19 AT 31 AUG PROBE", "DATED EXPORT"];
   const routingExpected = "ROUTING INVENTORY 21 AUGUST 2026";
   for (const path of ["index.html", "public/lab.html"]) {
     const text = await read(path);
@@ -239,7 +239,7 @@ test("release checklist separates the fresh fleet export from routing provenance
   const template = await read(".github/pull_request_template.md");
   assert.match(
     template,
-    /^- \[ \] The 28 August 2026 fleet export remains 18\/19 containers \(Zeus 12\/13; Apollo 6\/6\), with 2 hosts online and the cluster quorate\.$/m,
+    /^- \[ \] The 31 August 2026 fleet export remains 18\/19 containers \(Zeus 12\/13; Apollo 6\/6\), with 2 hosts online and the cluster quorate\.$/m,
   );
   assert.match(
     template,
@@ -248,8 +248,8 @@ test("release checklist separates the fresh fleet export from routing provenance
   assert.doesNotMatch(template, /21 August 2026[^\r\n]*(?:19\/19|containers)/);
 
   const workflow = await read(".github/workflows/public-safety.yml");
-  assert.match(workflow, /- name: Install V35 dependencies/);
-  assert.doesNotMatch(workflow, /- name: Install V33 dependencies/);
+  assert.match(workflow, /- name: Install V36 dependencies/);
+  assert.doesNotMatch(workflow, /- name: Install V35 dependencies/);
 });
 
 test("Pages refuses artifact upload unless GitHub Actions owns the Pages source after every release gate", async () => {
@@ -300,7 +300,7 @@ test("Public Site Safety preserves report upload and enforcement after every gat
   assert.match(workflow, /node-version:\s*22/);
   assert.match(workflow, /python-version:\s*["']3\.12["']/);
   assert.match(workflow, /fetch-depth:\s*0/);
-  assertOrdered(workflow, requiredWorkflowCommands, "Upload safety report", "Public Site Safety");
+  assertOrdered(workflow, requiredPagesCommands, "Upload safety report", "Public Site Safety");
   const upload = workflow.indexOf("Upload safety report");
   const enforcement = workflow.indexOf("Enforce validation results");
   assert.ok(upload >= 0 && enforcement > upload, "report upload must precede fail-closed enforcement");
@@ -313,6 +313,7 @@ test("Public Site Safety preserves report upload and enforcement after every gat
     "format",
     "node_tests",
     "build",
+    "layout",
     "release_tests",
     "safety_scan",
     "release_consistency",
@@ -321,4 +322,19 @@ test("Public Site Safety preserves report upload and enforcement after every gat
   ]) {
     assert.match(enforcementBlock, new RegExp(`steps\\.${step}\\.outcome != 'success'`));
   }
+});
+
+test("Public Site Safety runs the same pinned release browser as the deploy gate", async () => {
+  const workflow = await read(".github/workflows/public-safety.yml");
+  assert.match(workflow, /browser-actions\/setup-chrome@v2/);
+  assert.match(workflow, /chrome-version:\s*["']?147\.0\.7727\.57["']?/);
+  assert.match(workflow, /CHROME_PATH:\s*\$\{\{\s*steps\.setup_chrome\.outputs\.chrome-path\s*\}\}/);
+  assert.match(workflow, /CHROME_DEVEL_SANDBOX:\s*\/opt\/google\/chrome\/chrome-sandbox/);
+  const pages = await read(".github/workflows/pages.yml");
+  const pinnedChrome = /chrome-version:\s*["']?(\d+\.\d+\.\d+\.\d+)["']?/;
+  assert.equal(
+    workflow.match(pinnedChrome)?.[1],
+    pages.match(pinnedChrome)?.[1],
+    "a PR must certify layout on the exact browser the deploy gate will use",
+  );
 });
