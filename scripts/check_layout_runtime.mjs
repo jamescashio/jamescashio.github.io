@@ -166,6 +166,11 @@ async function waitForApp(send) {
 }
 
 async function waitForCriticalShell(send) {
+  // The held critical shell is a stable state: the page keeps
+  // __v35CriticalActivationHeld until a deliberate input releases it, so a
+  // longer poll cannot admit a false positive. It only needs to outlast a slow
+  // navigation commit on a busy runner, which the previous 5 ms interval
+  // (~half a second of patience) did not.
   for (let attempt = 0; attempt < 100; attempt++) {
     const result = await send("Runtime.evaluate", {
       expression:
@@ -173,7 +178,7 @@ async function waitForCriticalShell(send) {
       returnByValue: true,
     });
     if (result.result.value) return;
-    await new Promise((resolve) => setTimeout(resolve, 5));
+    await new Promise((resolve) => setTimeout(resolve, 50));
   }
   throw new Error("timed out waiting for the prerendered critical shell");
 }
