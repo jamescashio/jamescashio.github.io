@@ -117,7 +117,7 @@ export function DeckSnapshot({
           routing layer picks the best model for each job rather than the cheapest.
         </p>
         <p className="za-critical-telemetry za-mono mt-5 text-[11px] text-dim">
-          MEASURED 28 AUGUST 2026 · 18 OF 19 SERVICES UP · BOTH MACHINES HEALTHY
+          MEASURED 31 AUGUST 2026 · 18 OF 19 SERVICES UP · BOTH MACHINES HEALTHY
         </p>
 
         <div
@@ -183,9 +183,9 @@ export function DeckSnapshot({
 
         <div data-hud-clear className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {[
-            ["ZEUS", "12/13", "AT 28 AUG PROBE"],
-            ["APOLLO", "6/6", "AT 28 AUG PROBE"],
-            ["FLEET", "18/19", "AT 28 AUG PROBE"],
+            ["ZEUS", "12/13", "AT 31 AUG PROBE"],
+            ["APOLLO", "6/6", "AT 31 AUG PROBE"],
+            ["FLEET", "18/19", "AT 31 AUG PROBE"],
             ["HOSTS", "2", "CLUSTER QUORATE"],
             ["PVE", PVE, "VERSION AT PROBE"],
           ].map(([name, value, detail]) => (
@@ -229,7 +229,7 @@ export function DeckBrief({ sBrief }: { sBrief: SecRef }) {
               <div className="za-mono text-[10px] text-accent">02 · EVIDENCE BOUNDARY</div>
               <div className="za-display mt-3 text-5xl text-cyan">18/19</div>
               <p className="mt-3 text-sm leading-relaxed text-muted">
-                18 of 19 documented guests were running at the 28 August probe. Two Proxmox hosts were online and
+                18 of 19 documented guests were running at the 31 August probe. Two Proxmox hosts were online and
                 quorate. The dated export is evidence, never telemetry.
               </p>
             </article>
@@ -271,7 +271,7 @@ export function DeckGrid({ s1 }: { s1: SecRef }) {
         <Kicker>02 · THE GRID</Kicker>
         <Title>WHAT IS ACTUALLY RUNNING</Title>
         <p className="mt-5 max-w-[62ch] text-[1.05rem] leading-relaxed text-muted">
-          Nineteen documented roles. At the 28 August probe Zeus ran 12 of 13 and Apollo ran 6 of 6. Seven observed role
+          Nineteen documented roles. At the 31 August probe Zeus ran 12 of 13 and Apollo ran 6 of 6. Seven observed role
           families are named here; the stopped guest stays unnamed and the remaining roles stay public-safe.
         </p>
 
@@ -307,7 +307,7 @@ export function DeckGrid({ s1 }: { s1: SecRef }) {
         </div>
         <p className="mt-6 max-w-[70ch] text-sm leading-relaxed text-muted">{SERVICE_FAMILIES}</p>
         <div className="mt-6 flex flex-wrap gap-3 text-[11px]">
-          <span className="za-chip">18/19 AT 28 AUG PROBE</span>
+          <span className="za-chip">18/19 AT 31 AUG PROBE</span>
           <span className="za-chip">2 HOSTS ONLINE · QUORATE</span>
           <span className="za-chip">READ-ONLY · DATED EXPORT</span>
         </div>
@@ -749,6 +749,7 @@ export function DeckEve({
       "LANES",
       "WITHHELD",
       "VERIFY",
+      "LOG",
       "WHOAMI",
       "TALK",
       "PHOTO",
@@ -787,7 +788,7 @@ export function DeckEve({
         </div>
         <p className="za-critical-telemetry za-mono mt-5 text-[10px] text-dim">
           EVERY ANSWER COMES FROM THE READ ONLY {VERIFIED_LONG} DATED EXPORT · VALID THROUGH {EXPIRES_SHORT}. AFTER THAT
-          THE CONSOLE REPORTS HISTORY, NOT STATUS. 18/19 AT 28 AUG PROBE · 2 PROXMOX HOSTS ONLINE · QUORATE · ROUTING
+          THE CONSOLE REPORTS HISTORY, NOT STATUS. 18/19 AT 31 AUG PROBE · 2 PROXMOX HOSTS ONLINE · QUORATE · ROUTING
           INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES.
         </p>
       </div>

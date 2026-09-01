@@ -5,6 +5,7 @@ import {
   EXPIRES_SHORT,
   PVE,
   RELEASE,
+  REVISED,
   SERVICE_FAMILIES,
   VERIFIED_LONG,
   WITHHELD,
@@ -59,7 +60,7 @@ const LORE: Record<string, string[]> = {
   skunkworks: ["BE QUICK, BE QUIET, BE ON TIME.", "ONE OPERATOR, SHORT CHAIN, NO COMMITTEE."],
   xyzzy: ["NOTHING HAPPENS.", "A HOLLOW VOICE SAYS: TYPE HELP."],
   sudo: ["THERE IS NO PRIVILEGE TO ESCALATE. THIS CONSOLE READS A STATIC FILE.", "NICE TRY THOUGH."],
-  "42": ["THE ANSWER IS DATED 28 AUGUST 2026 AND EXPIRES 27 SEPTEMBER 2026.", "THE QUESTION IS ON DECK 03."],
+  "42": ["THE ANSWER IS DATED 31 AUGUST 2026 AND EXPIRES 30 SEPTEMBER 2026.", "THE QUESTION IS ON DECK 03."],
 };
 
 const COMMANDS = [
@@ -70,6 +71,7 @@ const COMMANDS = [
   "lanes",
   "cost / withheld",
   "verify",
+  "log",
   "whoami",
   "talk",
   "photo",
@@ -106,7 +108,7 @@ export function runEve(raw: string, history: string[] = []): EveResult {
     return {
       out: [
         ...currentLines(),
-        "18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6",
+        "18/19 AT 31 AUG PROBE · ZEUS 12/13 · APOLLO 6/6",
         "2 PROXMOX HOSTS ONLINE · CLUSTER QUORATE",
         "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES",
       ],
@@ -118,8 +120,8 @@ export function runEve(raw: string, history: string[] = []): EveResult {
   if (command === "fleet") {
     return {
       out: [
-        "ZEUS · 12/13 AT 28 AUG PROBE · PROXMOX HOST",
-        "APOLLO · 6/6 AT 28 AUG PROBE · PROXMOX HOST",
+        "ZEUS · 12/13 AT 31 AUG PROBE · PROXMOX HOST",
+        "APOLLO · 6/6 AT 31 AUG PROBE · PROXMOX HOST",
         SERVICE_FAMILIES.toUpperCase(),
       ],
     };
@@ -156,6 +158,23 @@ export function runEve(raw: string, history: string[] = []): EveResult {
         `PROXMOX VE ${PVE} · 2 HOSTS ONLINE · QUORATE`,
         "OWNER-RUN READ-ONLY PROBE · PUBLIC-SAFE DATED EXPORT",
         ...currentLines(),
+      ],
+    };
+  }
+
+  if (command === "log" || command === "shipslog" || command === "ship's log" || command === "releases") {
+    return {
+      out: [
+        "SHIP'S LOG · CANONICAL RELEASE LINE",
+        `${RELEASE} · THIS DECK · REVISED ${REVISED}`,
+        "V35 ALL TENS · QUALITY PASS AGAINST THE LIVE AUDIT",
+        "V34 MACH ONE · PRESERVATION PASS",
+        "V33 MACH ONE · PROOF JOURNEY",
+        "V32 MACH ONE · REACT COMMAND DECK",
+        "V31 THE GRID · ARCHIVED AT /grid.html",
+        "V44 AURORA · PROTOTYPE · ARCHIVED AT /index-v44.html",
+        "V21.2A COMMAND · MAY 2026 · ARCHIVED AT /command.html",
+        "GIT HISTORY RETAINS EVERY EXPERIMENT WITHOUT PRESENTING IT AS A RELEASE",
       ],
     };
   }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BLACK_BOX_RECEIPT_CLAIMS, canonicalReceiptUrl } from "@/lib/black-box-receipt";
+import { BLACK_BOX_RECEIPT_CLAIMS, SHIPS_LOG, canonicalReceiptUrl } from "@/lib/black-box-receipt";
 
 function isShareCancellation(error: unknown) {
   return typeof error === "object" && error != null && "name" in error && error.name === "AbortError";
@@ -56,6 +56,24 @@ export function BlackBoxReceipt() {
       <p className="za-receipt-status za-mono mt-3 min-h-4 text-dim" role="status" aria-live="polite">
         {status}
       </p>
+      <div className="mt-5 border-t border-line pt-4">
+        <div className="za-kicker">SHIP&apos;S LOG · SUPERSEDED DECKS STAY REACHABLE</div>
+        <ul className="mt-3 flex flex-wrap gap-2">
+          {SHIPS_LOG.map((entry) =>
+            entry.href ? (
+              <li key={entry.name}>
+                <a href={entry.href} className="za-chip inline-flex hover:border-cyan hover:text-cyan">
+                  {entry.name} <span className="ml-2 text-dim">{entry.note}</span>
+                </a>
+              </li>
+            ) : (
+              <li key={entry.name} className="za-chip inline-flex border-cyan/40 text-cyan" aria-current="page">
+                {entry.name} <span className="ml-2 text-dim">{entry.note}</span>
+              </li>
+            ),
+          )}
+        </ul>
+      </div>
     </section>
   );
 }
