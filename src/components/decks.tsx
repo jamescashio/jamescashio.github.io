@@ -32,6 +32,7 @@ type SecRef = RefObject<HTMLElement | null>;
 export const IDENTITY_LINE = "DOUG CASHIO · ENTERPRISE AI + SECURITY SYSTEMS · OWNER-OPERATOR";
 
 const SUPPORTING_PLATE_SIZES = "(min-width: 1024px) 50vw, 100vw";
+const BUILD_ARTICLE_ANCHOR_IDS = ARTICLES.map((_, index) => `deck=builds&article=${index + 1}`);
 const SUPPORTING_PLATE_PREVIEWS = {
   rack: "data:image/jpeg;base64,/9j/2wBDABwcHBweHCAkJCAtMCswLUI9Nzc9QmRHTUdNR2SXXm5eXm5el4aihHuEoobwvaenvfD/6d3p////////////////2wBDARwcHBweHCAkJCAtMCswLUI9Nzc9QmRHTUdNR2SXXm5eXm5el4aihHuEoobwvaenvfD/6d3p////////////////wgARCAAgADADASIAAhEBAxEB/8QAGAABAQEBAQAAAAAAAAAAAAAAAgMAAQb/xAAVAQEBAAAAAAAAAAAAAAAAAAAAAf/aAAwDAQACEAMQAAAA82wyt5EnO8a4woucTT3D/8QAJBAAAQMCBQUBAAAAAAAAAAAAAQACERBRAxIhMaETImGBkbH/2gAIAQEAAT8ACMI9KwWE9sFpOh8rEblO6NczrFAut+LE1ExCigBOyg6yeF74RPbvKNZYFmFh8RNP/8QAFhEAAwAAAAAAAAAAAAAAAAAAAAEg/9oACAECAQE/ABT/AP/EABQRAQAAAAAAAAAAAAAAAAAAACD/2gAIAQMBAT8AX//Z",
   operator:
@@ -101,6 +102,7 @@ export function DeckSnapshot({
       aria-label="SNAPSHOT deck"
       className="za-mobile-rail-clearance relative min-h-[100dvh] px-5 pb-32 pt-24 md:px-10 lg:px-14"
     >
+      <span id="deck=snapshot" aria-hidden="true" className="pointer-events-none absolute left-0 top-0" />
       <div ref={copyCol} className="za-bracket max-w-[38rem] p-2">
         <Kicker>ZEUSAPOLLO · SOVEREIGN AI UNDER HUMAN COMMAND</Kicker>
         <p className="za-mono mt-3 text-[11px] tracking-[0.12em] text-cyan">{IDENTITY_LINE}</p>
@@ -572,7 +574,7 @@ export function DeckBuilds({ s5, onSelect }: { s5: SecRef; onSelect: (article: n
     [onSelect],
   );
   return (
-    <DeckShell index={5} sRef={s5}>
+    <DeckShell index={5} sRef={s5} nativeAnchorIds={BUILD_ARTICLE_ANCHOR_IDS}>
       <div className="max-w-6xl">
         <Kicker>06 · BUILDS</Kicker>
         <Title>SEVEN TEST ARTICLES.</Title>

@@ -5,7 +5,7 @@ export type DeckHashState = {
   article: number;
 };
 
-export type NavigationOrigin = "manual" | "flight" | "hash";
+export type NavigationOrigin = "manual" | "flight" | "hash" | "restore";
 
 export type HashTransitionState = {
   pendingInternalHash: string | null;
@@ -51,13 +51,17 @@ export function shouldStopFlightForNavigation(origin: NavigationOrigin) {
 }
 
 export function shouldWriteHashForNavigation(origin: NavigationOrigin) {
-  return origin !== "hash";
+  return origin === "manual" || origin === "flight";
 }
 
 export function hashWriteModeForNavigation(origin: NavigationOrigin) {
   if (origin === "manual") return "push" as const;
   if (origin === "flight") return "replace" as const;
   return null;
+}
+
+export function shouldAnimateNavigation(origin: NavigationOrigin, reducedMotion: boolean) {
+  return origin !== "restore" && !reducedMotion;
 }
 
 function safeDeckIndex(value: number) {

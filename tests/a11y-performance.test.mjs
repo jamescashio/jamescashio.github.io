@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { JSDOM } from "jsdom";
-import { act, createElement } from "react";
+import { act, createElement, StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 import { CommandDeck } from "../src/components/command-deck.tsx";
@@ -55,12 +55,14 @@ function mountCommandDeck({
   reducedMotion = true,
   controlledTimers = false,
   capturePulseTimers = false,
+  captureValidityTimers = false,
   injectStyles = false,
   canvasRuntime = false,
   now = Date.now(),
   responsiveGeometry = false,
   deferredSmoothScroll = false,
   viewport = { width: 1440, height: 900 },
+  strictMode = false,
 } = {}) {
   const dom = new JSDOM('<!doctype html><html><body><div id="root"></div></body></html>', {
     url,
@@ -92,12 +94,14 @@ function mountCommandDeck({
     if (
       controlledTimers &&
       (timeout === 120 ||
+        timeout === 360 ||
         timeout === 400 ||
         timeout === 500 ||
         timeout === 560 ||
         timeout === 2200 ||
         timeout === 3200 ||
         timeout >= 7000 ||
+        (captureValidityTimers && (timeout === 1000 || timeout === 86400000)) ||
         (capturePulseTimers && (timeout === 680 || timeout === 1100 || timeout === 1900)))
     ) {
       const id = ++controlledTimeoutId;
@@ -119,6 +123,7 @@ function mountCommandDeck({
   const canvasPaints = [];
   const canvasContexts = new WeakMap();
   const scrollPositions = new WeakMap();
+  const scrollWrites = new WeakMap();
   const pendingSmoothScrolls = new WeakMap();
   const contextFor = (canvas) => {
     if (canvasContexts.has(canvas)) return canvasContexts.get(canvas);
@@ -250,6 +255,7 @@ function mountCommandDeck({
       },
       set(value) {
         scrollPositions.set(this, Number(value) || 0);
+        scrollWrites.set(this, (scrollWrites.get(this) ?? 0) + 1);
         pendingSmoothScrolls.delete(this);
       },
     },
@@ -336,7 +342,8 @@ function mountCommandDeck({
     dom,
     document: dom.window.document,
     async render() {
-      await act(async () => root.render(createElement(CommandDeck)));
+      const tree = createElement(CommandDeck);
+      await act(async () => root.render(strictMode ? createElement(StrictMode, null, tree) : tree));
     },
     async click(element) {
       await act(async () => element.click());
@@ -391,6 +398,14 @@ function mountCommandDeck({
       assert.ok(timer, `expected a cleared ${delay}ms timeout`);
       await act(async () => timer.callback());
     },
+    async runControlledTimeoutEvenIfCleared(delay) {
+      const timer = [...controlledTimeouts.entries()].find(([, candidate]) => candidate.delay === delay);
+      if (timer) controlledTimeouts.delete(timer[0]);
+      const callback = timer?.[1] ?? clearedControlledTimeouts.find((candidate) => candidate.delay === delay);
+      assert.ok(callback, `expected a live or cleared ${delay}ms timeout`);
+      controlledNow += delay;
+      await act(async () => callback.callback());
+    },
     async runLatestAnimationFrame() {
       await act(async () => {
         const pending = [...raf.entries()].at(-1);
@@ -431,6 +446,9 @@ function mountCommandDeck({
     },
     pendingSmoothScrollTop(element) {
       return pendingSmoothScrolls.get(element) ?? null;
+    },
+    scrollWriteCount(element) {
+      return scrollWrites.get(element) ?? 0;
     },
     async canvasObserver(kind, entries = []) {
       const observers = canvasObservers[kind];
@@ -487,9 +505,19 @@ function mountCommandDeck({
 }
 
 function labeledButton(document, label) {
-  const button = document.querySelector(`button[aria-label="${label}"]`);
+  const button =
+    document.querySelector(`button[aria-label="${label}"]`) ??
+    [...document.querySelectorAll("button")].find((candidate) =>
+      candidate.getAttribute("aria-label")?.endsWith(`· ${label}`),
+    );
   assert.ok(button, `expected button labelled ${label}`);
   return button;
+}
+
+function normalizedVisibleLabel(element) {
+  const clone = element.cloneNode(true);
+  clone.querySelectorAll('[aria-hidden="true"], .sr-only').forEach((node) => node.remove());
+  return (clone.textContent ?? "").replace(/\s+/g, " ").trim().toUpperCase();
 }
 
 function flushPromises() {
@@ -582,6 +610,130 @@ test("the normal dim token remains at the audited readable value", () => {
   assert.match(stylesheet, /--color-dim:\s*#687f97\s*;/i);
 });
 
+test("validity surfaces reserve compact stable geometry for live boundary changes", () => {
+  assert.match(stylesheet, /\.za-validity-chip\s*\{[^}]*flex:\s*0 0 204px\s*;[^}]*inline-size:\s*204px\s*;/s);
+  assert.match(stylesheet, /\.za-clock-chip\s*\{[^}]*flex:\s*0 0 117px\s*;[^}]*inline-size:\s*117px\s*;/s);
+  assert.match(stylesheet, /\.za-validity-footer-status\s*\{[^}]*flex:\s*0 0 26ch\s*;[^}]*inline-size:\s*26ch\s*;/s);
+  assert.match(
+    stylesheet,
+    /@media \(min-width:\s*768px\) and \(max-width:\s*1439px\)[\s\S]*?\.za-command-header \.za-audio-copy,[\s\S]*?\{[^}]*display:\s*none !important/s,
+  );
+});
+
+test("footer VALID THRU provenance reserves the longest live state without hiding adjacent status", async () => {
+  const view = mountCommandDeck();
+  try {
+    await view.render();
+    const provenance = view.document.querySelector("[data-validity-through]");
+    const zeroCalls = [...view.document.querySelectorAll("footer span")].find((element) =>
+      element.textContent?.includes("ZERO INFRASTRUCTURE CALLS"),
+    );
+    assert.ok(provenance, "the real VALID THRU sibling must expose its semantic geometry hook");
+    assert.equal(provenance?.textContent, "VALID THRU 09-27-2026");
+    assert.ok(zeroCalls, "the adjacent ZERO INFRASTRUCTURE CALLS status must remain rendered");
+    assert.match(
+      stylesheet,
+      /\.za-validity-through\s*\{[^}]*flex:\s*0 0 31ch\s*;[^}]*inline-size:\s*31ch\s*;[^}]*white-space:\s*nowrap\s*;/s,
+    );
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("the validity clock crosses a day and exact expiry without remounting or duplicate StrictMode timers", async () => {
+  const view = mountCommandDeck({
+    captureValidityTimers: true,
+    controlledTimers: true,
+    now: Date.parse("2026-09-27T04:59:59.000Z"),
+    strictMode: true,
+  });
+  try {
+    await view.render();
+    const header = view.document.querySelector("[data-validity-chip]");
+    const footer = view.document.querySelector("[data-validity-footer-status]");
+    assert.equal(header?.textContent?.replace(/\s+/g, " ").trim(), "EXPORT VALID · 2D LEFT");
+    assert.match(footer?.textContent ?? "", /DATED EXPORT VALID/);
+    assert.equal(view.pendingControlledTimeoutsFor(1000), 1, "StrictMode must leave one live day timer");
+
+    await view.runClearedControlledTimeout(1000);
+    assert.equal(view.pendingControlledTimeoutsFor(1000), 1, "a stale StrictMode callback must not duplicate timers");
+
+    await view.runControlledTimeout(1000);
+    assert.equal(header?.textContent?.replace(/\s+/g, " ").trim(), "EXPORT VALID · 1D LEFT");
+    assert.equal(view.pendingControlledTimeoutsFor(86400000), 1, "the next timer must target exact expiry");
+
+    await view.runControlledTimeout(86400000);
+    assert.match(header?.textContent ?? "", /EXPORT EXPIRED/);
+    assert.match(footer?.textContent ?? "", /DATED EXPORT EXPIRED/);
+    assert.equal(view.pendingControlledTimeoutsFor(1000, 86400000), 0, "expired validity must own no timer");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("live motion changes settle one-shot command-deck entrance motion for the session", async () => {
+  const view = mountCommandDeck({ reducedMotion: false });
+  try {
+    await view.render();
+    const root = view.document.querySelector("#root > div");
+    assert.ok(root, "expected the command-deck root");
+    assert.equal(root.classList.contains("za-motion-preference-settled"), false);
+
+    await view.setReducedMotion(true);
+    assert.equal(root.classList.contains("za-motion-preference-settled"), true);
+
+    await view.setReducedMotion(false);
+    assert.equal(root.classList.contains("za-motion-preference-settled"), true);
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("settled motion keeps the airframe geometry carrier rendered when collision HUD yields", async () => {
+  const view = mountCommandDeck({ injectStyles: true, reducedMotion: false });
+  try {
+    await view.render();
+    const root = view.document.querySelector("#root > div");
+    const hud = view.document.querySelector(".za-corner-hud");
+    const progress = view.document.querySelector(".za-airframe-progress");
+    assert.ok(root && hud && progress, "expected the command-deck airframe HUD");
+
+    root.classList.add("za-motion-preference-settled");
+    hud.classList.add("yield");
+    const ancestors = [];
+    for (let current = progress; current && current !== hud.parentElement; current = current.parentElement)
+      ancestors.push(current);
+    assert.ok(
+      ancestors.every((element) => view.window.getComputedStyle(element).display !== "none"),
+      "the progress geometry carrier must not be hidden by yielded HUD compaction",
+    );
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("settled motion retains the normal airframe geometry when collision HUD yields", async () => {
+  const view = mountCommandDeck({ injectStyles: true, reducedMotion: false });
+  try {
+    await view.render();
+    const root = view.document.querySelector("#root > div");
+    const hud = view.document.querySelector(".za-corner-hud");
+    const airframe = view.document.querySelector(".za-airframe");
+    assert.ok(root && hud && airframe, "expected the command-deck airframe HUD");
+
+    root.classList.add("za-motion-preference-settled");
+    hud.classList.add("yield");
+    const settled = view.window.getComputedStyle(airframe);
+    assert.deepEqual(
+      { maxWidth: settled.maxWidth, padding: settled.padding, width: settled.width },
+      { maxWidth: "250px", padding: "12px", width: "250px" },
+      "settled collision handling must retain the standard airframe geometry",
+    );
+  } finally {
+    await view.cleanup();
+  }
+});
+
 test("aircraft pip buttons keep the 26px selected mark separate from the button target", async () => {
   const view = mountCommandDeck();
   try {
@@ -623,7 +775,7 @@ test("glyph controls preserve each visible audio label in their accessible names
   try {
     await view.render();
     for (const label of [
-      "Go to Snapshot deck",
+      "ZA · Go to Snapshot deck",
       "Run the 30-second flight",
       "Expand command rail",
       "Open deck navigator",
@@ -706,7 +858,7 @@ test("mobile navigation keeps Contact exposed as its current destination", async
     const navigation = view.document.querySelector('nav[aria-label="Mobile command decks"]');
     const current = navigation.querySelectorAll('[aria-current="page"]');
     assert.equal(current.length, 1);
-    assert.equal(current[0].getAttribute("aria-label"), "Go to CONTACT");
+    assert.equal(current[0].getAttribute("aria-label"), "09 HAIL · Go to CONTACT");
   } finally {
     await view.cleanup();
   }
@@ -748,60 +900,310 @@ test("every deck is a named programmatic destination with a focusable heading", 
   }
 });
 
-test("desktop rail deck controls keep stable names when collapsed and open", async () => {
+test("deck navigation names contain every normalized visible label on both rails", async () => {
   const view = mountCommandDeck();
-  const expected = [
-    "Go to SNAPSHOT deck",
-    "Go to THE GRID deck",
-    "Go to ROUTING deck",
-    "Go to THE IRON deck",
-    "Go to LINEAGE deck",
-    "Go to BUILDS deck",
-    "Go to OPERATOR deck",
-    "Go to E.V.E. deck",
-    "Go to CONTACT deck",
-  ];
   try {
     await view.render();
-    const navigation = view.document.querySelector('nav[aria-label="Command decks"]');
-    const controls = [...navigation.querySelectorAll("button")];
-    assert.deepEqual(
-      controls.map((button) => button.getAttribute("aria-label")),
-      expected,
-    );
-    // Collapsed, each control shows its number and carries a hover preview of
-    // the deck name and tag. The accessible name above is what does not change.
-    assert.deepEqual(
-      controls.map((button) => button.textContent.slice(0, 2)),
-      ["01", "02", "03", "04", "05", "06", "07", "08", "09"],
-    );
-    for (const [index, button] of controls.entries()) {
-      const preview = button.querySelector(".za-rail-preview");
-      assert.ok(preview, "a collapsed rail control must preview its deck");
-      assert.equal(preview.getAttribute("aria-hidden"), "true", "the preview must not double the accessible name");
-      assert.ok(preview.textContent.length > 2, `deck ${index} preview must name the deck`);
+    for (const label of ["Command decks", "Mobile command decks"]) {
+      const navigation = view.document.querySelector(`nav[aria-label="${label}"]`);
+      assert.ok(navigation, `expected ${label}`);
+      const controls = [...navigation.querySelectorAll("button")].slice(0, 9);
+      assert.equal(controls.length, 9, `${label} must expose all nine decks`);
+      for (const control of controls) {
+        const visible = normalizedVisibleLabel(control);
+        const name = (control.getAttribute("aria-label") ?? "").replace(/\s+/g, " ").trim().toUpperCase();
+        assert.ok(
+          name.includes(visible),
+          `${label} name ${JSON.stringify(name)} must contain ${JSON.stringify(visible)}`,
+        );
+      }
     }
 
     await view.click(labeledButton(view.document, "Expand command rail"));
-    const openControls = [...navigation.querySelectorAll("button")];
-    assert.deepEqual(
-      openControls.map((button) => button.getAttribute("aria-label")),
-      expected,
+    const cap = view.document.querySelector(".za-lcars-cap.warm");
+    assert.equal(normalizedVisibleLabel(cap), "ZEUSAPOLLO");
+    assert.ok((cap.getAttribute("aria-label") ?? "").toUpperCase().includes("ZEUSAPOLLO"));
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("initial direct links land synchronously without navigation effects", async () => {
+  const view = mountCommandDeck({
+    url: "https://cashio.us/?entry=proof#deck=builds&article=1",
+    reducedMotion: false,
+    deferredSmoothScroll: true,
+  });
+  try {
+    await view.render();
+    const scroller = view.document.querySelector("main.za-scroll");
+    assert.equal(scroller?.scrollTop, 4992, "the initial direct link must use a direct scrollTop landing");
+    assert.equal(view.pendingSmoothScrollTop(scroller), null, "the initial landing must not start smooth scrolling");
+    assert.equal(
+      scroller?.dataset.requestedScrollBehavior,
+      undefined,
+      "the initial landing must not call smooth scrollTo",
     );
-    assert.deepEqual(
-      openControls.map((button) => button.textContent),
-      [
-        "01SNAPSHOT",
-        "02THE GRID",
-        "03ROUTING",
-        "04THE IRON",
-        "05LINEAGE",
-        "06BUILDS",
-        "07OPERATOR",
-        "08E.V.E.",
-        "09CONTACT",
-      ],
-    );
+    assert.equal(useDeck.getState().sel, 0, "the direct link must select its requested Article 1");
+    assert.equal(view.document.querySelector(".za-warpflash.on"), null, "the initial landing must not create a warp");
+    assert.equal(view.document.querySelector(".za-sweep.on"), null, "the initial landing must not create a sweep");
+    assert.equal(view.document.querySelector("[data-cine]")?.getAttribute("data-cine"), "false");
+    assert.equal(useDeck.getState().chapOn, false, "the initial landing must not create a chapter effect");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("the delayed direct-link anchor yields to newer scroll and route intent", async (t) => {
+  await t.test("manual scroll", async () => {
+    const view = mountCommandDeck({
+      url: "https://cashio.us/#deck=builds&article=1",
+      controlledTimers: true,
+    });
+    try {
+      await view.render();
+      const scroller = view.document.querySelector("main.za-scroll");
+      scroller.dispatchEvent(new view.window.Event("wheel", { bubbles: true, cancelable: true }));
+      scroller.scrollTop = 2992;
+      await view.dispatchScroll();
+
+      const frameCount = view.pendingAnimationFrames();
+      await view.runControlledTimeoutEvenIfCleared(360);
+      assert.equal(scroller.scrollTop, 2992, "a stale cleared callback must not restore the original deck");
+      assert.equal(view.window.location.hash, "#deck=iron", "the visitor's newer manual deck must stay canonical");
+      assert.equal(view.pendingAnimationFrames(), frameCount, "manual scrolling must invalidate stale restore work");
+    } finally {
+      await view.cleanup();
+    }
+  });
+
+  for (const type of ["wheel", "pointerdown", "touchstart"]) {
+    await t.test(`${type} intent`, async () => {
+      const view = mountCommandDeck({
+        url: "https://cashio.us/#deck=builds&article=1",
+        controlledTimers: true,
+        strictMode: true,
+      });
+      try {
+        await view.render();
+        const scroller = view.document.querySelector("main.za-scroll");
+        assert.equal(
+          view.pendingControlledTimeoutsFor(360),
+          1,
+          "StrictMode must leave exactly one live restore anchor",
+        );
+        const event = new view.window.Event(type, { bubbles: true, cancelable: true });
+        if (type === "touchstart") Object.defineProperty(event, "touches", { value: [{ clientX: 240 }] });
+        await act(async () => scroller.dispatchEvent(event));
+        const frameCount = view.pendingAnimationFrames();
+
+        await view.runControlledTimeoutEvenIfCleared(360);
+
+        assert.equal(
+          view.pendingAnimationFrames(),
+          frameCount,
+          `${type} must invalidate even a cleared restore callback that races cleanup`,
+        );
+      } finally {
+        await view.cleanup();
+      }
+    });
+  }
+
+  for (const intent of ["pointerdown", "keydown"]) {
+    await t.test(`fixed-rail ${intent} intent`, async () => {
+      const view = mountCommandDeck({
+        url: "https://cashio.us/#deck=builds&article=1",
+        controlledTimers: true,
+      });
+      try {
+        await view.render();
+        const railTarget = labeledButton(view.document, "Go to ROUTING deck");
+        const frameCount = view.pendingAnimationFrames();
+        if (intent === "keydown") await view.key(railTarget, "Enter");
+        else
+          await act(async () =>
+            railTarget.dispatchEvent(new view.window.Event("pointerdown", { bubbles: true, cancelable: true })),
+          );
+
+        await view.runControlledTimeoutEvenIfCleared(360);
+
+        assert.equal(
+          view.pendingAnimationFrames(),
+          frameCount,
+          `${intent} on a fixed rail must invalidate stale direct-link settlement before click navigation`,
+        );
+      } finally {
+        await view.cleanup();
+      }
+    });
+  }
+
+  await t.test("real hashchange followed by resize", async () => {
+    const view = mountCommandDeck({
+      url: "https://cashio.us/#deck=builds&article=1",
+      controlledTimers: true,
+    });
+    try {
+      await view.render();
+      const scroller = view.document.querySelector("main.za-scroll");
+      view.window.history.replaceState(null, "", "#deck=routing");
+      await act(async () =>
+        view.window.dispatchEvent(
+          new view.window.HashChangeEvent("hashchange", {
+            oldURL: "https://cashio.us/#deck=builds&article=1",
+            newURL: "https://cashio.us/#deck=routing",
+          }),
+        ),
+      );
+      await act(async () => view.window.dispatchEvent(new view.window.Event("resize")));
+      await view.runControlledTimeout(120);
+      await view.runLatestAnimationFrame();
+      const frameCount = view.pendingAnimationFrames();
+
+      await view.runControlledTimeoutEvenIfCleared(360);
+
+      assert.equal(view.window.location.hash, "#deck=routing");
+      assert.equal(useDeck.getState().deck, 2, "the real hash destination must remain the logical deck");
+      assert.equal(scroller.scrollTop, 1992, "resize must re-anchor the newer hash destination");
+      assert.equal(view.pendingAnimationFrames(), frameCount, "stale initial settlement must remain invalidated");
+    } finally {
+      await view.cleanup();
+    }
+  });
+
+  await t.test("newer silent hash intent", async () => {
+    const view = mountCommandDeck({
+      url: "https://cashio.us/#deck=builds&article=1",
+      controlledTimers: true,
+    });
+    try {
+      await view.render();
+      const scroller = view.document.querySelector("main.za-scroll");
+      scroller.scrollTop = 2992;
+      view.window.history.replaceState(null, "", "#deck=routing");
+
+      await view.runControlledTimeout(360);
+      await view.runLatestAnimationFrame();
+
+      assert.equal(scroller.scrollTop, 2992, "stale restore work must not move after a newer hash intent");
+      assert.equal(view.window.location.hash, "#deck=routing");
+    } finally {
+      await view.cleanup();
+    }
+  });
+});
+
+test("the delayed direct-link anchor skips a settled target without another scroll write", async () => {
+  const view = mountCommandDeck({
+    url: "https://cashio.us/#deck=builds&article=1",
+    controlledTimers: true,
+  });
+  try {
+    await view.render();
+    const scroller = view.document.querySelector("main.za-scroll");
+    const writes = view.scrollWriteCount(scroller);
+
+    await view.runControlledTimeout(360);
+    await view.runLatestAnimationFrame();
+
+    assert.equal(view.scrollWriteCount(scroller), writes, "a settled target must not receive a redundant anchor write");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("the delayed direct-link anchor corrects a small input-free layout settlement", async () => {
+  const view = mountCommandDeck({
+    url: "https://cashio.us/#deck=builds&article=1",
+    controlledTimers: true,
+  });
+  try {
+    await view.render();
+    const scroller = view.document.querySelector("main.za-scroll");
+    scroller.scrollTop = 4966;
+    await view.dispatchScroll();
+
+    await view.runControlledTimeout(360);
+    await view.runLatestAnimationFrame();
+
+    assert.equal(scroller.scrollTop, 4992, "minor startup layout settlement must retain the direct-link landing");
+    assert.equal(view.window.location.hash, "#deck=builds&article=1");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("the delayed direct-link anchor corrects a large input-free intrinsic layout settlement", async () => {
+  const view = mountCommandDeck({
+    url: "https://cashio.us/#deck=builds&article=1",
+    controlledTimers: true,
+  });
+  try {
+    await view.render();
+    const scroller = view.document.querySelector("main.za-scroll");
+    scroller.scrollTop = 2992;
+    await view.dispatchScroll();
+
+    await view.runControlledTimeout(360);
+    await view.runLatestAnimationFrame();
+
+    assert.equal(scroller.scrollTop, 4992, "large intrinsic growth must retain the requested direct-link landing");
+    assert.equal(view.window.location.hash, "#deck=builds&article=1");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("restore-protected intrinsic settlement keeps the viewscreen on the requested airframe", async () => {
+  const view = mountCommandDeck({
+    url: "https://cashio.us/#deck=builds&article=1",
+    controlledTimers: true,
+  });
+  try {
+    await view.render();
+    await view.runAnimationFrameBatch();
+    await view.runAnimationFrameBatch();
+    await view.runControlledTimeout(12_000);
+    await flushPromises();
+    await view.settle();
+    const stage = view.document.querySelector("viewscreen-stage");
+    const scroller = view.document.querySelector("main.za-scroll");
+    assert.ok(stage, "expected the normally deferred viewscreen after its no-input fallback");
+    const observedDecks = [];
+    const observedCraft = [];
+    stage.setDeck = (deck) => observedDecks.push(deck);
+    stage.setCraft = (craft) => observedCraft.push(craft);
+
+    scroller.scrollTop = 1992;
+    await view.dispatchScroll();
+
+    assert.equal(useDeck.getState().deck, 5, "logical restoration must remain on Builds");
+    assert.deepEqual(observedDecks, [5], "the stage must not observe transient Routing during protected settlement");
+    assert.deepEqual(observedCraft, [4], "the stage must keep the Builds airframe until restoration settles");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("the guarded direct-link anchor remains boundedly available for late offscreen layout settlement", async () => {
+  const view = mountCommandDeck({
+    url: "https://cashio.us/#deck=builds&article=1",
+    controlledTimers: true,
+  });
+  try {
+    await view.render();
+    const scroller = view.document.querySelector("main.za-scroll");
+    await view.runControlledTimeout(360);
+    await view.runLatestAnimationFrame();
+    scroller.scrollTop = 4960;
+    await view.dispatchScroll();
+
+    await view.runControlledTimeout(360);
+    await view.runLatestAnimationFrame();
+
+    assert.equal(scroller.scrollTop, 4992, "a later intrinsic-layout shift must retain the direct-link landing");
+    assert.equal(view.pendingControlledTimeoutsFor(360), 1, "settlement must retain only one bounded live check");
   } finally {
     await view.cleanup();
   }
@@ -977,6 +1379,39 @@ test("mobile cinema exposes only its exit while fixed background controls are ab
     await view.runLatestAnimationFrame();
     await view.settle();
     assert.equal(view.document.activeElement, photo, "cinema exit must restore the exact PHOTO opener");
+  } finally {
+    await view.cleanup();
+  }
+});
+
+test("mobile flight surface remains visible below the tablet breakpoint and cinema removes it by rendering state", async () => {
+  assert.doesNotMatch(
+    stylesheet,
+    /@media\s*\(max-width:\s*767px\)\s*\{[\s\S]*?\.za-mobile-flight-control\s*\{[^}]*display:\s*none/is,
+    "the mobile breakpoint must not hide the preserved 30-second flight surface",
+  );
+
+  const view = mountCommandDeck({
+    controlledTimers: true,
+    injectStyles: true,
+    viewport: { width: 390, height: 844 },
+  });
+  try {
+    await view.render();
+    const flight = view.document.querySelector(".za-mobile-flight-control");
+    assert.ok(flight, "mobile command chrome must render the 30-second flight surface below 768px");
+    assert.notEqual(
+      view.window.getComputedStyle(flight).display,
+      "none",
+      "mobile flight must not be hidden by a responsive CSS override",
+    );
+
+    await act(async () => useDeck.setState({ photo: true }));
+    assert.equal(
+      view.document.querySelector(".za-mobile-flight-control"),
+      null,
+      "cinema must remove the flight surface through the component render path",
+    );
   } finally {
     await view.cleanup();
   }
@@ -1473,6 +1908,9 @@ test("the delayed mount measurement never starts a responsive re-anchor", async 
   const view = mountCommandDeck({ controlledTimers: true });
   try {
     await view.render();
+    view.document
+      .querySelector("main.za-scroll")
+      ?.dispatchEvent(new view.window.Event("wheel", { bubbles: true, cancelable: true }));
     await view.scrollDeck(3);
     assert.equal(view.window.location.hash, "#deck=iron");
 
@@ -1655,8 +2093,15 @@ test("the real airframe role-button owns shortcut keys while Enter and Space sti
   const baseline = { deck: 4, sel: 3, audio: true, tour: false, mode: "technical" };
   try {
     await view.render();
-    const airframe = view.document.querySelector('[role="button"][aria-label^="Open "][aria-label$=" airframe deck"]');
+    const airframe = view.document.querySelector('[role="button"][title="Open airframe deck"]');
     assert.ok(airframe, "expected the real focusable airframe widget");
+    assert.equal(
+      airframe.getAttribute("aria-label"),
+      null,
+      "visible airframe identity must not be replaced by aria-label",
+    );
+    assert.match(normalizedVisibleLabel(airframe), /AIRFRAME/);
+    assert.equal(airframe.querySelector(".sr-only")?.textContent, "Open airframe deck");
     airframe.focus();
 
     for (const key of ["ArrowLeft", "ArrowRight", "a", "t", "1", "9"]) {

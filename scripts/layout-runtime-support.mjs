@@ -438,6 +438,249 @@ export function browserVersionAcceptanceFailures(version, expectedMajorValue) {
   return [];
 }
 
+const VALIDITY_VIEWPORT_WIDTHS = [768, 834, 1024, 1280];
+const VALIDITY_LABELS = [
+  "EXPORT STATUS · DATED",
+  "EXPORT VALID · 29D LEFT",
+  "EXPORT VALID · 1D LEFT",
+  "EXPORT EXPIRED",
+];
+const FULL_VALIDITY_STATES = [
+  {
+    id: "ssr-placeholder",
+    description: "SSR placeholder",
+    source: "ssr-fixture",
+    headerLabel: "EXPORT STATUS · DATED",
+    footerLabel: "DATED EXPORT STATUS",
+    validThroughText: "VALID THRU 09-27-2026",
+  },
+  {
+    id: "live-longest",
+    description: "longest valid",
+    source: "react-live",
+    headerLabel: "EXPORT VALID · 29D LEFT",
+    footerLabel: "DATED EXPORT VALID",
+    validThroughText: "VALID THRU 09-27-2026",
+  },
+  {
+    id: "live-1d",
+    description: "1D valid",
+    source: "react-live",
+    headerLabel: "EXPORT VALID · 1D LEFT",
+    footerLabel: "DATED EXPORT VALID",
+    validThroughText: "VALID THRU 09-27-2026",
+  },
+  {
+    id: "live-expired",
+    description: "expired",
+    source: "react-live",
+    headerLabel: "EXPORT EXPIRED",
+    footerLabel: "DATED EXPORT EXPIRED",
+    validThroughText: "VALID THRU TREAT AS HISTORY",
+  },
+];
+const VALIDITY_GEOMETRY_TOLERANCE_PX = 0.5;
+
+function validityRectsOverlap(first, second) {
+  return (
+    first.left < second.right && first.right > second.left && first.top < second.bottom && first.bottom > second.top
+  );
+}
+
+function validityRectMatches(first, second) {
+  return (
+    hasFiniteRect(first) &&
+    hasFiniteRect(second) &&
+    RECT_FIELDS.every((property) => Math.abs(first[property] - second[property]) <= VALIDITY_GEOMETRY_TOLERANCE_PX)
+  );
+}
+
+function validityStabilityRect(evidence) {
+  return evidence?.stabilityRect ?? evidence?.rect;
+}
+
+function validitySurfaceFailures(surface, surfaceName, viewportWidth, stateName) {
+  const failures = [];
+  if (!hasFiniteRect(surface?.rect) || !hasConsistentRect(surface.rect)) {
+    failures.push(`${stateName} ${surfaceName} must provide a finite consistent rectangle`);
+    return failures;
+  }
+  if (surface.rect.left < 0 || surface.rect.right > viewportWidth) {
+    failures.push(`${stateName} ${surfaceName} must remain within the viewport`);
+  }
+  const label = surface.label;
+  if (
+    !Number.isFinite(label?.clientWidth) ||
+    !Number.isFinite(label?.scrollWidth) ||
+    label.clientWidth <= 0 ||
+    label.scrollWidth <= 0 ||
+    label.scrollWidth > label.clientWidth + VALIDITY_GEOMETRY_TOLERANCE_PX
+  ) {
+    failures.push(`${stateName} ${surfaceName} label must not overflow`);
+  }
+  if (
+    !hasFiniteRect(label?.rect) ||
+    !hasConsistentRect(label.rect) ||
+    label.rect.left < surface.rect.left - VALIDITY_GEOMETRY_TOLERANCE_PX ||
+    label.rect.right > surface.rect.right + VALIDITY_GEOMETRY_TOLERANCE_PX ||
+    label.rect.top < surface.rect.top - VALIDITY_GEOMETRY_TOLERANCE_PX ||
+    label.rect.bottom > surface.rect.bottom + VALIDITY_GEOMETRY_TOLERANCE_PX
+  ) {
+    failures.push(`${stateName} ${surfaceName} label must remain contained without clipping`);
+  }
+  if (
+    label?.ariaHidden === true ||
+    label?.display === "none" ||
+    ["hidden", "collapse"].includes(label?.visibility) ||
+    ["hidden", "clip"].includes(label?.overflowX) ||
+    label?.textOverflow === "ellipsis" ||
+    Number(label?.opacity) === 0
+  ) {
+    failures.push(`${stateName} ${surfaceName} label must remain accessible without clipping or ellipsis`);
+  }
+  if (!Array.isArray(surface.siblings)) {
+    failures.push(`${stateName} ${surfaceName} siblings must be enumerated`);
+  } else {
+    for (const sibling of surface.siblings) {
+      if (!hasFiniteRect(sibling?.rect) || !hasConsistentRect(sibling.rect)) {
+        failures.push(`${stateName} ${surfaceName} sibling ${sibling?.name ?? "unknown"} must have finite geometry`);
+      } else if (validityRectsOverlap(surface.rect, sibling.rect)) {
+        failures.push(`${stateName} ${surfaceName} must not overlap ${sibling.name ?? "an adjacent sibling"}`);
+      }
+    }
+  }
+  return failures;
+}
+
+function expectedValidityIdentityNames(state, surfaceName) {
+  if (surfaceName === "footer") {
+    return ["release", "revised", "validity", "verified", "valid-through", "zero-calls"];
+  }
+  const names = ["deck", "validity", "audio", "navigator"];
+  if (state.viewportWidth >= 1024) names.push("clock");
+  if (state.viewportWidth >= 1280) names.push("airframe-status");
+  if (state.tour) names.push("autopilot");
+  return names;
+}
+
+function validityIdentityFailures(identities, expectedNames, surfaceName, viewportWidth, stateName) {
+  const failures = [];
+  const evidence = Array.isArray(identities) ? identities : [];
+  const accepted = [];
+  for (const name of expectedNames) {
+    const matches = evidence.filter((identity) => identity?.name === name);
+    if (matches.length !== 1) {
+      failures.push(`${stateName} required ${surfaceName} identity ${name} must be present exactly once`);
+      continue;
+    }
+    const identity = matches[0];
+    if (identity.visible !== true || identity.ariaHidden === true || !String(identity.accessibleText ?? "").trim()) {
+      failures.push(`${stateName} ${surfaceName} identity ${name} must remain visible and accessible`);
+    }
+    if (
+      !hasFiniteRect(identity.rect) ||
+      !hasConsistentRect(identity.rect) ||
+      identity.rect.width <= 0 ||
+      identity.rect.height <= 0
+    ) {
+      failures.push(`${stateName} ${surfaceName} identity ${name} must have nonzero finite geometry`);
+      continue;
+    }
+    if (identity.rect.left < 0 || identity.rect.right > viewportWidth) {
+      failures.push(`${stateName} ${surfaceName} identity ${name} must remain within the viewport`);
+    }
+    accepted.push(identity);
+  }
+  for (const [index, first] of accepted.entries()) {
+    for (const second of accepted.slice(index + 1)) {
+      if (validityRectsOverlap(first.rect, second.rect)) {
+        failures.push(`${stateName} ${surfaceName} ${first.name} must not overlap ${second.name}`);
+      }
+    }
+  }
+  return failures;
+}
+
+export function validityGeometryAcceptanceFailures(states) {
+  const failures = [];
+  const expectedStates = VALIDITY_VIEWPORT_WIDTHS.flatMap((viewportWidth) =>
+    [false, true].flatMap((railOpen) =>
+      [false, true].map((tour) => `${viewportWidth}:${railOpen ? "open" : "stowed"}:${tour ? "active" : "inactive"}`),
+    ),
+  );
+  const stateKeys = Array.isArray(states)
+    ? states.map(
+        (state) =>
+          `${state?.viewportWidth}:${state?.railOpen ? "open" : "stowed"}:${state?.tour ? "active" : "inactive"}`,
+      )
+    : [];
+  if (
+    stateKeys.length !== expectedStates.length ||
+    expectedStates.some((expected) => stateKeys.filter((key) => key === expected).length !== 1)
+  ) {
+    failures.push("validity geometry must cover 768, 834, 1024, and 1280 with each rail and flight state exactly once");
+  }
+  for (const state of states ?? []) {
+    const stateName = `${state.viewportWidth}px ${state.railOpen ? "open rail" : "stowed rail"} ${state.tour ? "active flight" : "inactive flight"}`;
+    if (
+      !Array.isArray(state.samples) ||
+      state.samples.length !== VALIDITY_LABELS.length ||
+      VALIDITY_LABELS.some((label) => state.samples.filter((sample) => sample?.label === label).length !== 1)
+    ) {
+      failures.push(`${stateName} must cover the placeholder, longest valid, 1D, and expired labels exactly once`);
+      continue;
+    }
+    const baseline = state.samples[0];
+    for (const expected of FULL_VALIDITY_STATES) {
+      const matches = state.samples.filter((sample) => sample?.fullState?.id === expected.id);
+      const fullState = matches[0]?.fullState;
+      if (
+        matches.length !== 1 ||
+        Object.entries(expected).some(
+          ([property, value]) => property !== "description" && fullState?.[property] !== value,
+        ) ||
+        matches[0]?.label !== expected.headerLabel
+      ) {
+        failures.push(`${stateName} ${expected.description} full validity tuple must be exact and complete`);
+      }
+    }
+    for (const sample of state.samples) {
+      for (const surfaceName of ["header", "footer"]) {
+        const surface = sample[surfaceName];
+        failures.push(...validitySurfaceFailures(surface, surfaceName, state.viewportWidth, stateName));
+        const expectedNames = expectedValidityIdentityNames(state, surfaceName);
+        const identities = sample.identities?.[surfaceName];
+        failures.push(
+          ...validityIdentityFailures(identities, expectedNames, surfaceName, state.viewportWidth, stateName),
+        );
+        if (!validityRectMatches(validityStabilityRect(surface), validityStabilityRect(baseline[surfaceName]))) {
+          failures.push(`${stateName} ${surfaceName} geometry must stay fixed across validity labels`);
+        }
+        const baselineIdentities = baseline.identities?.[surfaceName] ?? [];
+        for (const name of expectedNames) {
+          const identity = identities?.find((candidate) => candidate.name === name);
+          const original = baselineIdentities.find((candidate) => candidate.name === name);
+          if (
+            !identity ||
+            !original ||
+            !validityRectMatches(validityStabilityRect(identity), validityStabilityRect(original))
+          ) {
+            failures.push(`${stateName} ${surfaceName} identity ${name} geometry must stay fixed across states`);
+          }
+        }
+        const baselineSiblings = baseline[surfaceName]?.siblings ?? [];
+        for (const sibling of surface?.siblings ?? []) {
+          const original = baselineSiblings.find((candidate) => candidate.name === sibling.name);
+          if (!original || !validityRectMatches(validityStabilityRect(sibling), validityStabilityRect(original))) {
+            failures.push(`${stateName} ${surfaceName} sibling ${sibling.name} geometry must stay fixed across labels`);
+          }
+        }
+      }
+    }
+  }
+  return failures;
+}
+
 export function visualPaintEvidence(style, hasText, pseudoStyles, ancestorStyles) {
   const colorPaints = (color) => {
     if (!color || color === "transparent") return false;

@@ -40,7 +40,16 @@ Under **Settings → General → Pull Requests**:
 
 ## GitHub Pages
 
-- Source: deploy from the `main` branch root unless moved to a dedicated Actions deployment later.
+- Source: **GitHub Actions** only. Branch-root and Jekyll publishing are not supported.
+- Before a release can deploy, an authorized repository owner must manually set
+  **Settings → Pages → Build and deployment → Source** to **GitHub Actions**.
+  This is a separate action-time prerequisite: the workflow verifies the live
+  `build_type=workflow` setting and fails closed, but it never changes that
+  repository setting.
+- The Pages workflow uploads only the validated `dist` artifact after all local
+  gates, source verification, and Pages configuration complete. It uses
+  `upload-pages-artifact@v5` with hidden-file inclusion so the required
+  `dist/.well-known/security.txt` is published with the validated artifact.
 - Enforce HTTPS.
 - Preserve the `CNAME` file for `cashio.us`.
 

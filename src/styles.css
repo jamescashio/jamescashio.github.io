@@ -8,14 +8,14 @@
   font-family: "Orbitron";
   font-style: normal;
   font-weight: 600;
-  font-display: swap;
+  font-display: optional;
   src: url("/fonts/orbitron-600.woff2") format("woff2");
 }
 @font-face {
   font-family: "Orbitron";
   font-style: normal;
   font-weight: 700;
-  font-display: swap;
+  font-display: optional;
   src: url("/fonts/orbitron-700.woff2") format("woff2");
 }
 @font-face {
@@ -29,35 +29,35 @@
   font-family: "Exo 2";
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: optional;
   src: url("/fonts/exo2-500.woff2") format("woff2");
 }
 @font-face {
   font-family: "Exo 2";
   font-style: normal;
   font-weight: 500;
-  font-display: swap;
+  font-display: optional;
   src: url("/fonts/exo2-500.woff2") format("woff2");
 }
 @font-face {
   font-family: "Exo 2";
   font-style: normal;
   font-weight: 700;
-  font-display: swap;
+  font-display: optional;
   src: url("/fonts/exo2-700.woff2") format("woff2");
 }
 @font-face {
   font-family: "JetBrains Mono";
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: optional;
   src: url("/fonts/jetbrains-400.woff2") format("woff2");
 }
 @font-face {
   font-family: "JetBrains Mono";
   font-style: normal;
   font-weight: 600;
-  font-display: swap;
+  font-display: optional;
   src: url("/fonts/jetbrains-600.woff2") format("woff2");
 }
 
@@ -167,6 +167,35 @@
     color: var(--color-muted);
     background: rgba(5, 6, 10, 0.55);
   }
+  .za-validity-chip {
+    flex: 0 0 204px;
+    inline-size: 204px;
+    justify-content: center;
+    white-space: nowrap;
+  }
+  .za-clock-chip {
+    flex: 0 0 117px;
+    inline-size: 117px;
+    min-height: 44px;
+    justify-content: center;
+  }
+  .za-validity-chip [data-validity-label] {
+    display: block;
+  }
+  .za-validity-footer-status {
+    flex: 0 0 26ch;
+    inline-size: 26ch;
+    justify-content: center;
+    white-space: nowrap;
+  }
+  .za-validity-footer-status [data-validity-footer-label] {
+    display: block;
+  }
+  .za-validity-through {
+    flex: 0 0 31ch;
+    inline-size: 31ch;
+    white-space: nowrap;
+  }
   .za-btn {
     display: inline-flex;
     align-items: center;
@@ -226,6 +255,21 @@
     font-size: 13px;
     letter-spacing: 0.08em;
     caret-color: var(--color-cyan);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1439px) {
+  .za-command-header .za-audio-copy,
+  .za-command-header button[aria-label*="selection audio"] .za-eq {
+    display: none !important;
+  }
+  .za-command-header .za-audio-mark {
+    display: inline !important;
+  }
+  .za-command-header button[aria-label*="selection audio"] {
+    inline-size: 44px;
+    justify-content: center;
+    padding-inline: 0;
   }
 }
 
@@ -384,6 +428,10 @@
 
 .za-rise {
   animation: za-rise var(--za-deck-copy-duration) var(--ease-out) both;
+}
+
+.za-motion-preference-settled .za-rise {
+  animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1547,6 +1595,11 @@
   border-color: rgba(0, 249, 255, 0.28);
   background: rgba(5, 6, 10, 0.92);
   box-shadow: 0 0 18px rgba(0, 249, 255, 0.1);
+}
+.za-motion-preference-settled .za-corner-hud.yield .za-airframe {
+  width: 250px;
+  max-width: 250px;
+  padding: 12px;
 }
 .za-corner-hud.yield .za-airframe-details,
 .za-corner-hud.yield .za-airframe .za-eq {
@@ -2784,9 +2837,6 @@
   .za-bit-line {
     letter-spacing: 0.08em;
     font-size: 11px;
-  }
-  .za-mobile-flight-control {
-    display: none;
   }
   .za-power-on-core {
     width: min(44rem, calc(100vw - 1.5rem));

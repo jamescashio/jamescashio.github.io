@@ -5,6 +5,7 @@ import importlib.util
 import math
 import re
 import struct
+import tempfile
 import unittest
 import wave
 from pathlib import Path
@@ -95,6 +96,416 @@ class V34ReleaseContractTests(unittest.TestCase):
                         any("must date routing count occurrence" in failure for failure in failures),
                         failures,
                     )
+
+    def test_public_surface_guard_accepts_dated_eve_availability_and_receipt_provenance(self) -> None:
+        text = (
+            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG · "
+            "E.V.E. ONLINE · READ-ONLY · DATED EXPORT · "
+            "08-21-2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG · "
+            "E.V.E. EVALUATION VERIFICATION ENGINE · ONLINE. "
+            "2 HOSTS ONLINE · QUORATE · 2 PROXMOX HOSTS ONLINE · CLUSTER QUORATE · "
+            "Two Proxmox hosts were online and quorate. SYSTEMS ONLINE · HUMAN COMMAND RETAINED. "
+            "Try sitrep, current, or help."
+        )
+        failures: list[str] = []
+        release_consistency.check_v34_public_surface("index.html", text, failures, "test")
+        self.assertEqual(failures, [])
+
+    def test_public_surface_guard_rejects_stale_or_current_claim_variants(self) -> None:
+        dated_surface = (
+            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+        )
+        fixtures = {
+            "atlas availability": "ATLAS ONLINE",
+            "systems availability": "SYSTEMS ONLINE",
+            "current routing": "CURRENT ROUTING STATUS",
+            "host availability": "HOSTS: ONLINE",
+            "fleet availability": "FLEET STATUS · ONLINE",
+            "reversed host availability": "ONLINE — HOSTS",
+            "lowercase EVE bypass": "e.v.e. online · read-only · dated export",
+        }
+        for label, claim in fixtures.items():
+            failures: list[str] = []
+            release_consistency.check_v34_public_surface("index.html", f"{dated_surface} · {claim}", failures, "test")
+            with self.subTest(label=label):
+                self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
+
+    def test_public_surface_guard_ignores_only_the_exact_technical_status_class(self) -> None:
+        text = (
+            '28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · '
+            'ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG · '
+            '<div class="za-systems-online is-online" role="status"></div>'
+            '<button data-cmd="current">CURRENT</button><button data-cmd="fleet">FLEET</button>'
+        )
+        failures: list[str] = []
+        release_consistency.check_v34_public_surface("index.html", text, failures, "test")
+        self.assertEqual(failures, [])
+
+    def test_public_surface_guard_rejects_approved_phrase_and_structural_bypasses(self) -> None:
+        dated_surface = (
+            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+        )
+        approved = "E.V.E. ONLINE · READ-ONLY · DATED EXPORT"
+        repeated = " ".join([approved] * 6)
+        fixtures = {
+            "approved phrase before claim": f"{approved} HOSTS ONLINE",
+            "approved phrase after subject": f"HOSTS {approved} ONLINE",
+            "visible technical class wording": "<p>HOSTS is-online</p>",
+            "allowed current command dangerous attribute": '<button data-cmd="current" title="SYSTEMS ONLINE">CURRENT</button>',
+            "newlines": "<p>HOSTS\nONLINE</p>",
+            "long HTML tag": '<p>HOSTS <span data-filler="' + "x" * 600 + '">ONLINE</span></p>',
+            "repeated approved phrases": f"HOSTS {repeated} ONLINE",
+            "hyphenated EVE": "E-V-E ONLINE",
+            "mixed punctuation EVE": "e_v.e ONLINE",
+            "allowed class dangerous attribute": '<div class="za-systems-online is-online" title="SYSTEMS ONLINE"></div>',
+            "allowed command adjacent visible claim": '<button data-cmd="current">CURRENT <span>HOSTS ONLINE</span></button>',
+        }
+        for label, bypass in fixtures.items():
+            failures: list[str] = []
+            release_consistency.check_v34_public_surface("index.html", f"{dated_surface} · {bypass}", failures, "test")
+            with self.subTest(label=label):
+                self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
+
+    def test_public_surface_guard_rejects_fragment_unicode_and_script_bypasses(self) -> None:
+        dated_surface = (
+            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+        )
+        fixtures = {
+            "remaining class unit": '<div class="za-systems-online hosts online"></div>',
+            "nested current control": '<div>HOSTS <button data-cmd="current">CURRENT</button> ONLINE</div>',
+            "siblings": '<span>HOSTS</span><span>ONLINE</span>',
+            "malformed": 'HOSTS</div>ONLINE',
+            "fragment": '<>HOSTS <span>ONLINE</span></>',
+            "fullwidth fleet": '１９／１９',
+            "zero width online": 'HOSTS ONL\u200bINE',
+            "combining online": 'HOSTS ONLI\u0307NE',
+            "script entity": '<script>document.write("HOSTS ONL&#73;NE")</script>',
+        }
+        for label, bypass in fixtures.items():
+            failures: list[str] = []
+            release_consistency.check_v34_public_surface("index.html", f"{dated_surface} · {bypass}", failures, "test")
+            with self.subTest(label=label):
+                self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
+
+    def test_public_surface_guard_keeps_sentence_boundaries(self) -> None:
+        text = (
+            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG · "
+            "Host a party. Later, go online with friends."
+        )
+        failures: list[str] = []
+        release_consistency.check_v34_public_surface("index.html", text, failures, "test")
+        self.assertEqual(failures, [])
+
+    def test_public_surface_guard_rejects_shipped_source_and_bundle_literals(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "claim.tsx"
+            bundle = root / "assets" / "claim.js"
+            bundle.parent.mkdir()
+            source.write_text('export const claim = "HOSTS ONLINE";\n', encoding="utf-8")
+            bundle.write_text('const claim = "SYSTEMS ONLINE";\n', encoding="utf-8")
+            literals = release_consistency.collect_public_code_literals([source, bundle])
+        self.assertTrue(release_consistency.has_stale_current_code_literal(literals[0]), literals)
+        self.assertTrue(release_consistency.has_stale_current_code_literal(literals[1]), literals)
+
+    def test_public_surface_guard_collects_static_template_claims(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "claim.tsx"
+            bundle = root / "assets" / "claim.js"
+            bundle.parent.mkdir()
+            source.write_text(
+                'const a = `HOSTS ${"ONLINE"}`;\n'
+                'const b = `HOSTS ${`ON${"LINE"}`}`;\n'
+                'const c = "HOSTS " + `ON${"LINE"}`;\n'
+                'const d = true ? `HOSTS ${"ONLINE"}` : "safe";\n'
+                'export const view = <p>{`HOSTS ${"ONLINE"}`}</p>;\n',
+                encoding="utf-8",
+            )
+            bundle.write_text('const claim = `HOSTS ${"ONLINE"}`;\n', encoding="utf-8")
+            literals = release_consistency.collect_public_code_literals([source, bundle])
+        values = [literal["value"] for literal in literals]
+        self.assertGreaterEqual(values.count("HOSTS ONLINE"), 5, values)
+        self.assertTrue(all(release_consistency.has_stale_current_code_literal(literal) for literal in literals if literal["value"] == "HOSTS ONLINE"))
+
+    def test_public_surface_guard_rejects_any_residual_online_and_nested_current_context(self) -> None:
+        dated_surface = (
+            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+        )
+        fixtures = {
+            "nested current status": 'HOSTS <button data-cmd="current"><span>CURRENT</span></button> STATUS',
+            "cluster attr": '<div title="CLUSTER ONLINE"></div>',
+            "node attr": '<div aria-label="NODE ONLINE"></div>',
+            "pool": "POOL ONLINE",
+            "control plane": "CONTROL PLANE ONLINE",
+            "gateway": "GATEWAY ONLINE",
+            "lower cluster": "cluster online",
+            "lower node": "node online",
+            "lower pool": "pool online",
+            "lower control plane": "control plane online",
+            "lower gateway": "gateway online",
+            "mixed cluster": "CLUSTER online",
+            "lower attribute": '<div title="cluster online"></div>',
+        }
+        for label, bypass in fixtures.items():
+            failures: list[str] = []
+            release_consistency.check_v34_public_surface("index.html", f"{dated_surface} · {bypass}", failures, "test")
+            with self.subTest(label=label):
+                self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
+
+    def test_public_surface_guard_balances_self_closing_current_controls(self) -> None:
+        dated_surface = (
+            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+        )
+        fixtures = {
+            "self closing then status": "<button data-cmd='current'/>CURRENT <span>HOSTS</span> STATUS",
+            "nested self closing": "<button data-cmd='current'><span/></button>HOSTS STATUS",
+        }
+        for label, markup in fixtures.items():
+            failures: list[str] = []
+            release_consistency.check_v34_public_surface("index.html", f"{dated_surface} · {markup}", failures, "test")
+            with self.subTest(label=label):
+                self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
+
+    def test_public_surface_guard_rejects_non_button_current_contexts(self) -> None:
+        dated_surface = (
+            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+        )
+        fixtures = {
+            "input self closing": "HOSTS <input data-cmd='current'/> STATUS",
+            "div paired": "HOSTS <div data-cmd='current'>CURRENT</div> STATUS",
+            "span nested": "HOSTS <span data-cmd='current'><i>CURRENT</i></span> STATUS",
+            "custom self closing": "HOSTS <current-control data-cmd='current'/> STATUS",
+            "div standalone": "<div data-cmd='current'></div>",
+        }
+        for label, markup in fixtures.items():
+            failures: list[str] = []
+            release_consistency.check_v34_public_surface("index.html", f"{dated_surface} · {markup}", failures, "test")
+            with self.subTest(label=label):
+                self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
+
+    def test_public_surface_guard_keeps_direct_button_current_in_context(self) -> None:
+        dated_surface = (
+            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+        )
+        fixtures = {
+            "direct": 'HOSTS <button data-cmd="current">CURRENT</button> STATUS',
+            "nested": 'HOSTS <button data-cmd="current"><span>CURRENT</span></button> STATUS',
+            "self closing": "HOSTS <button data-cmd='current'/> STATUS",
+        }
+        for label, markup in fixtures.items():
+            failures: list[str] = []
+            release_consistency.check_v34_public_surface("index.html", f"{dated_surface} · {markup}", failures, "test")
+            with self.subTest(label=label):
+                self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
+
+    def test_public_surface_guard_resolves_scoped_const_template_claims(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "claim.tsx"
+            bundle = root / "assets" / "claim.js"
+            bundle.parent.mkdir()
+            source.write_text(
+                'const middle = "ST"; const outer = "HO" + middle;\n'
+                'export const view = <p>{`${outer}S CURRENT STATUS`}</p>;\n'
+                'function shadow() { const middle = "XX"; return `HO${middle}S`; }\n',
+                encoding="utf-8",
+            )
+            bundle.write_text('const middle="ST";const claim=`HO${middle}S CURRENT STATUS`;\n', encoding="utf-8")
+            literals = release_consistency.collect_public_code_literals([source, bundle])
+        claims = [literal for literal in literals if literal["value"] == "HOSTS CURRENT STATUS"]
+        self.assertGreaterEqual(len(claims), 2, literals)
+        self.assertTrue(all(release_consistency.has_stale_current_code_literal(literal) for literal in claims))
+
+    def test_public_surface_guard_preserves_dynamic_template_risk_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "claim.tsx"
+            bundle = root / "assets" / "claim.js"
+            bundle.parent.mkdir()
+            source.write_text(
+                'declare const dynamic: string;\n'
+                'const left = right; const right = left;\n'
+                'export const view = <p>{`HO${dynamic}S CURRENT STATUS`}{`HO${left}S CURRENT STATUS`}</p>;\n'
+                'export const safe = `hello ${dynamic} world`;\n',
+                encoding="utf-8",
+            )
+            bundle.write_text('const claim=`HO${dynamic}S CURRENT STATUS`;\n', encoding="utf-8")
+            literals = release_consistency.collect_public_code_literals([source, bundle])
+        risky = [literal for literal in literals if "CURRENT STATUS" in literal["value"] and literal["hasDynamicAlphaJoin"]]
+        self.assertGreaterEqual(len(risky), 3, literals)
+        self.assertTrue(all(release_consistency.has_stale_current_code_literal(literal) for literal in risky))
+        safe = next(literal for literal in literals if literal["value"].startswith("hello") and "CURRENT" not in literal["value"])
+        self.assertFalse(safe["hasDynamicAlphaJoin"])
+        self.assertFalse(release_consistency.has_stale_current_code_literal(safe))
+
+    def test_public_surface_guard_composes_dynamic_risk_through_every_public_form(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "forms.tsx"
+            bundle = root / "assets" / "forms.js"
+            bundle.parent.mkdir()
+            source.write_text(
+                'declare const dynamic: string;\n'
+                'const fragment = `HO${dynamic}S`; const alias = (fragment);\n'
+                'const cycleA = cycleB; const cycleB = cycleA;\n'
+                'export const a = fragment + " CURRENT STATUS";\n'
+                'export const b = (alias) + " CURRENT STATUS";\n'
+                'export const c = dynamic ? fragment : `HO${dynamic}S`;\n'
+                'export const view = <><p>{`HO${dynamic}S`} CURRENT STATUS</p><p>{fragment} CURRENT STATUS</p><p>{`HO${cycleA}S`} CURRENT STATUS</p></>;\n'
+                'export const safe = <p>{`hello ${dynamic} world`}</p>;\n',
+                encoding="utf-8",
+            )
+            bundle.write_text(
+                'const fragment=`HO${dynamic}S`;const claim=fragment+" CURRENT STATUS";const view=`HO${dynamic}S CURRENT STATUS`;\n',
+                encoding="utf-8",
+            )
+            literals = release_consistency.collect_public_code_literals([source, bundle])
+        risky = [literal for literal in literals if literal["hasDynamicAlphaJoin"] and "CURRENT STATUS" in literal["value"]]
+        self.assertGreaterEqual(len(risky), 6, literals)
+        self.assertTrue(all(release_consistency.has_stale_current_code_literal(literal) for literal in risky))
+        self.assertTrue(any("hello" in literal["value"] and not literal["hasDynamicAlphaJoin"] for literal in literals), literals)
+
+    def test_public_surface_guard_marks_dynamic_alpha_joins_across_aggregate_boundaries(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "boundary.tsx"
+            bundle = root / "assets" / "boundary.js"
+            bundle.parent.mkdir()
+            source.write_text(
+                'declare const dynamic: string; const fragment = `HO${dynamic}`; const alias = (fragment);\n'
+                'export const a = fragment + "STS CURRENT STATUS";\n'
+                'export const b = "HO" + dynamic + "STS CURRENT STATUS";\n'
+                'export const c = dynamic ? alias + "STS CURRENT STATUS" : fragment + "STS CURRENT STATUS";\n'
+                'export const view = <p>{alias}STS CURRENT STATUS</p>; export const safe = `hello ${dynamic} world`;\n'
+                'export const nested = <p><span>{alias}</span>STS CURRENT STATUS</p>;\n'
+                'export const deep = <p><span><em>{alias}</em></span>STS CURRENT STATUS</p>;\n'
+                'export const safeStatus = <p><span aria-hidden />DATED EXPORT STATUS · VERIFIED {dynamic} · VALID THRU </p>;\n',
+                encoding="utf-8",
+            )
+            bundle.write_text(
+                'const fragment=`HO${dynamic}`;const claim=fragment+"STS CURRENT STATUS";\n'
+                'const nested=jsxs("p",{children:[jsx("span",{children:fragment}),"STS CURRENT STATUS"]});\n'
+                'const deep=jsxs("p",{children:[jsx("span",{children:jsx("em",{children:fragment})}),"STS CURRENT STATUS"]});\n'
+                'const safeStatus=jsxs("p",{children:[jsx("span",{}),"DATED EXPORT STATUS · VERIFIED ",dynamic," · VALID THRU "]});\n'
+                'const safeGap=jsxs("div",{className:"flex gap-3",children:[jsx("span",{children:"18/19 AT 28 AUG PROBE"}),jsx("span",{children:"2 HOSTS ONLINE · QUORATE"}),jsx("span",{children:"READ-ONLY · DATED EXPORT"})]});\n',
+                encoding="utf-8",
+            )
+            literals = release_consistency.collect_public_code_literals([source, bundle])
+        risky = [literal for literal in literals if "CURRENT STATUS" in literal["value"] and literal["hasDynamicAlphaJoin"]]
+        self.assertGreaterEqual(len(risky), 9, literals)
+        self.assertTrue(all(release_consistency.has_stale_current_code_literal(literal) for literal in risky))
+        self.assertTrue(any("hello" in literal["value"] and not literal["hasDynamicAlphaJoin"] for literal in literals), literals)
+        self.assertTrue(
+            any(
+                "DATED EXPORT STATUS" in literal["value"] and not literal["hasDynamicAlphaJoin"]
+                for literal in literals
+            ),
+            literals,
+        )
+        safe_gap = next(literal for literal in literals if "18/19 AT 28 AUG PROBE" in literal["value"])
+        self.assertFalse(safe_gap["hasDynamicAlphaJoin"])
+        self.assertFalse(release_consistency.has_stale_current_code_literal(safe_gap))
+
+    def test_public_surface_guard_cannot_hide_claims_in_unsupported_wrappers_or_nested_children(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "wrapped.tsx"
+            bundle = root / "assets" / "wrapped.js"
+            bundle.parent.mkdir()
+            source.write_text(
+                'declare const dynamic: string; declare function identity<T>(value: T): T; const fragment = `HO${dynamic}`;\n'
+                'export const joined = <p>{identity(fragment + "STS CURRENT STATUS")}</p>;\n'
+                'export const adjacent = <p>{identity(fragment)}STS CURRENT STATUS WRAPPED EDGE SOURCE</p>;\n'
+                'export const wrapped = <p>{identity("HOSTS ONLINE")}</p>;\n'
+                'export const tagged = String.raw`HOSTS ONLINE`; export const logical = dynamic && "HOSTS ONLINE";\n',
+                encoding="utf-8",
+            )
+            bundle.write_text(
+                'const fragment=`HO${dynamic}`;\n'
+                'const nested=jsxs("p",{children:[[jsx("span",{children:fragment})],"STS CURRENT STATUS"]});\n'
+                'const wrapped=jsx("p",{children:identity("HOSTS ONLINE")});\n'
+                'const joined=jsx("p",{children:identity(fragment+"STS CURRENT STATUS")});\n'
+                'const adjacent=jsxs("p",{children:[identity(fragment),"STS CURRENT STATUS WRAPPED EDGE BUNDLE"]});\n'
+                'const wrappedArray=jsx("p",{children:identity([[jsx("span",{children:fragment})],"STS CURRENT STATUS WRAPPED ARRAY BUNDLE"])});\n'
+                'const tagged=String.raw`HOSTS ONLINE`;const logical=dynamic&&"HOSTS ONLINE";\n'
+                'const classed=jsx("div",{className:`za-systems-online ${dynamic?"is-online":""}`});\n',
+                encoding="utf-8",
+            )
+            literals = release_consistency.collect_public_code_literals([source, bundle])
+        risky = [
+            literal
+            for literal in literals
+            if literal["hasDynamicAlphaJoin"] and "CURRENT STATUS" in literal["value"]
+        ]
+        self.assertTrue(any(literal["file"].endswith("wrapped.tsx") for literal in risky), literals)
+        self.assertTrue(any(literal["file"].endswith("wrapped.js") for literal in risky), literals)
+        self.assertTrue(any("WRAPPED EDGE SOURCE" in literal["value"] for literal in risky), literals)
+        self.assertTrue(any("WRAPPED EDGE BUNDLE" in literal["value"] for literal in risky), literals)
+        self.assertTrue(any("WRAPPED ARRAY BUNDLE" in literal["value"] for literal in risky), literals)
+        static_claims = [
+            literal
+            for literal in literals
+            if "HOSTS ONLINE" in literal["value"]
+            and release_consistency.has_stale_current_code_literal(literal)
+        ]
+        self.assertGreaterEqual(len(static_claims), 6, literals)
+        class_records = [literal for literal in literals if "za-systems-online" in literal["value"]]
+        self.assertTrue(class_records, literals)
+        self.assertTrue(all(literal["context"] == "class" for literal in class_records), class_records)
+        self.assertTrue(
+            all(not release_consistency.has_stale_current_code_literal(literal) for literal in class_records),
+            class_records,
+        )
+
+    def test_public_surface_guard_aggregates_aliased_props_and_computed_jsx_factories(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "wrapped-props.tsx"
+            bundle = root / "assets" / "props.js"
+            bundle.parent.mkdir()
+            source.write_text(
+                'declare function identity<T>(value: T): T;\n'
+                'const sourceProps = identity({ children: ["HOSTS ", "CURRENT STATUS WRAPPED SOURCE PROPS"] });\n'
+                'export const sourceView = jsxs("p", sourceProps);\n',
+                encoding="utf-8",
+            )
+            bundle.write_text(
+                'const props = { children: ["HOSTS ", "CURRENT STATUS ALIASED PROPS"] };\n'
+                'const aliased = jsxs("p", props);\n'
+                'const computed = ReactRuntime["jsxs"]("p", '
+                '{ children: ["HOSTS ", "CURRENT STATUS COMPUTED FACTORY"] });\n'
+                'const base = { children: [["HOSTS "], ["CURRENT STATUS SPREAD PROPS"]] };\n'
+                'const spreadProps = { ...base }; const spread = jsxs("p", spreadProps);\n'
+                'const cycleA = cycleB; const cycleB = cycleA; const cyclic = jsxs("p", cycleA);\n'
+                'const wrappedProps = identity({ children: ["HOSTS ", "CURRENT STATUS WRAPPED BUILT PROPS"] });\n'
+                'const wrappedView = jsxs("p", wrappedProps);\n'
+                'const nestedWrappedProps = identity(identity({ children: [["HOSTS "], '
+                '["CURRENT STATUS NESTED WRAPPED PROPS"]] }));\n'
+                'const nestedWrappedView = ReactRuntime["jsxs"]("p", nestedWrappedProps);\n',
+                encoding="utf-8",
+            )
+            literals = release_consistency.collect_public_code_literals([source, bundle])
+        expected = {
+            "HOSTS CURRENT STATUS ALIASED PROPS",
+            "HOSTS CURRENT STATUS COMPUTED FACTORY",
+            "HOSTS CURRENT STATUS SPREAD PROPS",
+            "HOSTS CURRENT STATUS WRAPPED SOURCE PROPS",
+            "HOSTS CURRENT STATUS WRAPPED BUILT PROPS",
+            "HOSTS CURRENT STATUS NESTED WRAPPED PROPS",
+        }
+        claims = [literal for literal in literals if literal["value"] in expected]
+        self.assertEqual({literal["value"] for literal in claims}, expected, literals)
+        self.assertTrue(all(release_consistency.has_stale_current_code_literal(literal) for literal in claims))
 
     def test_public_surface_guard_rejects_current_fleet_topology_and_raw_route_identifiers(self) -> None:
         base = (
@@ -270,9 +681,26 @@ class V34ReleaseContractTests(unittest.TestCase):
         if match:
             self.assertEqual(match.group(1).strip().strip("\"'"), "/")
         built = read("dist/index.html")
-        self.assertIn('src="/assets/', built)
-        self.assertIn('href="/assets/', built)
+        entry_match = re.search(r'src="(/assets/index-[\w-]+\.js)"', built)
+        self.assertIsNotNone(entry_match)
+        entry = read(f"dist/{entry_match.group(1).lstrip('/')}")
+        self.assertIsNotNone(re.search(r'assets/main-[\w-]+\.css', entry))
         self.assertIsNone(re.search(r"/v\d+/", built, flags=re.IGNORECASE))
+
+    def test_built_root_is_the_single_prerendered_react_command_deck(self) -> None:
+        built = read("dist/index.html")
+        roots = re.findall(r'<div\b[^>]*\bid="root"[^>]*>', built)
+        self.assertEqual(len(roots), 1)
+        self.assertIn('data-prerendered="v35"', roots[0])
+        self.assertIn("OWN THE IRON", built)
+        self.assertEqual(len(re.findall(r'<section\b[^>]*\bdata-deck="\d"', built)), 9)
+        self.assertIn('aria-label="CONTACT deck"', built)
+        self.assertEqual(len(re.findall(r'<script\b[^>]*\bsrc="/assets/index-[\w-]+\.js"', built)), 1)
+        self.assertEqual(len(re.findall(r'<link\b[^>]*\brel="stylesheet"', built)), 0)
+        entry_path = re.search(r'<script\b[^>]*\bsrc="(/assets/index-[\w-]+\.js)"', built)
+        self.assertIsNotNone(entry_path)
+        entry = read(f"dist/{entry_path.group(1).lstrip('/')}")
+        self.assertEqual(len(re.findall(r'assets/main-[\w-]+\.css', entry)), 1)
 
     def test_seven_articles_runs_a_motion_safe_proof_flight(self) -> None:
         for marker in ("TEST_ROUTE", "drawPatrol", "drawTargetVector", "RANGE SWEEP", "PROOF FLIGHT"):

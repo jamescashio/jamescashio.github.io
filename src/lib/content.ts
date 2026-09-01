@@ -351,6 +351,14 @@ export function validityShort(now = Date.now()) {
   return d > 0 ? `EXPORT VALID · ${d}D LEFT` : "EXPORT EXPIRED";
 }
 
+export function nextValidityRefreshAt(now = Date.now()) {
+  const expiry = new Date(EXPIRES_AT).getTime();
+  if (now >= expiry) return null;
+  return expiry - Math.max(0, daysLeft(now) - 1) * 86400000;
+}
+
+export const INITIAL_VALIDITY_LABEL = "EXPORT STATUS · DATED";
+
 export function stardate(now = new Date()) {
   const y = now.getUTCFullYear();
   const start = Date.UTC(y, 0, 1);

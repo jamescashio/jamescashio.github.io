@@ -67,7 +67,7 @@ function expandScript(scripts, name, seen = new Set()) {
   });
 }
 
-test("package metadata and deterministic local gates define the V34 release", async () => {
+test("package metadata and deterministic local gates define the V35 release", async () => {
   const packageJson = JSON.parse(await read("package.json"));
   assert.equal(packageJson.version, "35.0.0");
   for (const dependency of [
@@ -83,7 +83,7 @@ test("package metadata and deterministic local gates define the V34 release", as
   }
   assert.equal(packageJson.scripts.lint, "eslint . --max-warnings 0");
   const formattingScope =
-    '"src/**/*.{ts,tsx}" "tests/**/*.mjs" "scripts/**/*.mjs" "*.{js,json,md,ts}" "docs/**/*.md" ".github/**/*.{md,yml,yaml}" "public/**/*.json"';
+    '"src/**/*.{ts,tsx}" "tests/**/*.mjs" "scripts/**/*.{mjs,mts}" "*.{js,json,md,ts}" "docs/**/*.md" ".github/**/*.{md,yml,yaml}" "public/**/*.json"';
   assert.equal(packageJson.scripts.format, `prettier --write ${formattingScope}`);
   assert.equal(packageJson.scripts["format:check"], `prettier --check ${formattingScope}`);
   const expandedTest = expandScript(packageJson.scripts, "test");
@@ -91,16 +91,24 @@ test("package metadata and deterministic local gates define the V34 release", as
     packageJson.scripts["test:node"],
     "tsc --noEmit",
     "vite build",
+    "node --import tsx scripts/prerender.mts",
+    packageJson.scripts["test:artifact"],
     packageJson.scripts["test:release"],
   ]);
   assert.match(expandedTest[0], /^node --import tsx --test /);
-  assert.match(expandedTest[3], /^python -m unittest /);
+  assert.match(expandedTest[0], /tests\/prerender\.test\.mjs/);
+  assert.doesNotMatch(expandedTest[0], /tests\/release-gates\.test\.mjs/);
+  assert.equal(packageJson.scripts["test:artifact"], "node --import tsx --test tests/release-gates.test.mjs");
+  assert.match(expandedTest[4], /tests\/release-gates\.test\.mjs/);
+  assert.match(expandedTest[5], /^python -m unittest /);
   assert.deepEqual(expandScript(packageJson.scripts, "verify"), [
     packageJson.scripts.lint,
     packageJson.scripts["format:check"],
     packageJson.scripts["test:node"],
     "tsc --noEmit",
     "vite build",
+    "node --import tsx scripts/prerender.mts",
+    packageJson.scripts["test:artifact"],
     "node scripts/check_layout_runtime.mjs",
     packageJson.scripts["test:release"],
     "python scripts/public_repo_guard.py",
@@ -154,7 +162,7 @@ test("the document preloads only the critical fonts and one responsive AVIF post
 
   assert.deepEqual(
     fonts.map((link) => link.getAttribute("href")),
-    ["/fonts/orbitron-900.woff2", "/fonts/exo2-500.woff2", "/fonts/jetbrains-400.woff2"],
+    ["/fonts/orbitron-900.woff2"],
   );
   for (const font of fonts) {
     assert.equal(font.getAttribute("type"), "font/woff2");
@@ -178,7 +186,31 @@ test("the document preloads only the critical fonts and one responsive AVIF post
       priority: "high",
     },
   );
-  assert.equal(preloads.length, 4, "WebP, JPEG, and noncritical fonts must not be preloaded");
+  assert.equal(preloads.length, 2, "WebP, JPEG, and noncritical fonts must not be preloaded");
+});
+
+test("the built document contains one real prerendered command deck with a critical shell and deferred hashed assets", async () => {
+  const dom = new JSDOM(await read("dist/index.html"));
+  const document = dom.window.document;
+  const roots = [...document.querySelectorAll("#root")];
+
+  assert.equal(roots.length, 1, "the built document must expose exactly one app root");
+  assert.equal(roots[0].getAttribute("data-prerendered"), "v35");
+  assert.match(roots[0].textContent ?? "", /OWN THE IRON/);
+  assert.equal(roots[0].querySelectorAll("section[data-deck]").length, 9);
+  assert.ok(roots[0].querySelector('[aria-label="CONTACT deck"]'));
+  assert.equal(roots[0].children.length, 1, "the root must contain only the shared React tree");
+
+  const scripts = [...document.querySelectorAll('script[type="module"][src]')];
+  const styles = [...document.querySelectorAll('link[rel="stylesheet"][href]')];
+  assert.equal(scripts.length, 1);
+  assert.equal(styles.length, 0, "the complete stylesheet must wait for intent-aware client activation");
+  assert.equal(document.querySelectorAll("style[data-critical-shell]").length, 1);
+  assert.match(scripts[0].getAttribute("src") ?? "", /^\/assets\/index-[\w-]+\.js$/);
+  const entryPath = scripts[0].getAttribute("src")?.replace(/^\//, "");
+  assert.ok(entryPath);
+  const entry = await read(`dist/${entryPath}`);
+  assert.equal(entry.match(/assets\/main-[\w-]+\.css/g)?.length, 1);
 });
 
 test("public metadata and redirect fallback keep fleet and routing provenance distinct", async () => {
@@ -209,7 +241,7 @@ test("release checklist separates the fresh fleet export from routing provenance
   assert.doesNotMatch(workflow, /- name: Install V33 dependencies/);
 });
 
-test("Pages blocks artifact upload on the complete Node 22 and Python 3.12 gate chain", async () => {
+test("Pages refuses artifact upload unless GitHub Actions owns the Pages source after every release gate", async () => {
   const packageJson = JSON.parse(await read("package.json"));
   const workflow = await read(".github/workflows/pages.yml");
   assert.match(workflow, /node-version:\s*22/);
@@ -223,7 +255,33 @@ test("Pages blocks artifact upload on the complete Node 22 and Python 3.12 gate 
   assert.match(workflow, /chrome-version:\s*["']?147\.0\.7727\.57["']?/);
   assert.match(workflow, /CHROME_PATH:\s*\$\{\{\s*steps\.setup_chrome\.outputs\.chrome-path\s*\}\}/);
   assert.match(workflow, /npm run check:layout:runtime:pinned/);
-  assertOrdered(workflow, requiredPagesCommands, "actions/upload-pages-artifact@v3", "Pages");
+
+  const workflowOnlySourceGuard = 'test "$(gh api repos/${GITHUB_REPOSITORY}/pages --jq .build_type)" = "workflow"';
+  const buildJob = workflow.slice(workflow.indexOf("  build:"), workflow.indexOf("  deploy:"));
+  const deployJob = workflow.slice(workflow.indexOf("  deploy:"));
+  const missingWorkflowOnlyControls = [
+    workflow.includes("permissions: {}") &&
+    /permissions:\s*\n\s+contents:\s*read\s*\n\s+pages:\s*read/.test(buildJob) &&
+    /permissions:\s*\n\s+pages:\s*write\s*\n\s+id-token:\s*write/.test(deployJob)
+      ? null
+      : "least-sufficient job permissions",
+    workflow.includes("GH_TOKEN: ${{ github.token }}") ? null : "job token",
+    workflow.includes(workflowOnlySourceGuard) ? null : "workflow-only Pages source guard",
+    workflow.includes("actions/configure-pages@v5") ? null : "configure-pages v5",
+    workflow.includes("actions/upload-pages-artifact@v5") ? null : "upload-pages-artifact v5",
+    /actions\/upload-pages-artifact@v5[\s\S]{0,280}include-hidden-files:\s*true/.test(workflow)
+      ? null
+      : "hidden Pages artifact inclusion",
+  ].filter(Boolean);
+  assert.deepEqual(missingWorkflowOnlyControls, []);
+  assert.doesNotMatch(workflow, /actions\/upload-pages-artifact@v[34]/);
+  assert.doesNotMatch(workflow, /jekyll/i);
+  assertOrdered(
+    workflow,
+    [...requiredPagesCommands, workflowOnlySourceGuard, "actions/configure-pages@v5"],
+    "actions/upload-pages-artifact@v5",
+    "Pages",
+  );
 });
 
 test("Public Site Safety preserves report upload and enforcement after every gate", async () => {

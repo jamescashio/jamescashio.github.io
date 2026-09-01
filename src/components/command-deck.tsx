@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type Ref } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type Ref } from "react";
 import {
   ARTICLES,
   CRAFT,
@@ -7,17 +7,21 @@ import {
   REVISED,
   VERIFIED_LONG,
   EXPIRES_SHORT,
+  INITIAL_VALIDITY_LABEL,
   craftLockAfterDeckChange,
   craftRoute,
   daysLeft,
+  nextValidityRefreshAt,
   resolveCraftIndex,
   stardate,
+  validityShort,
 } from "@/lib/content";
 import { getSound } from "@/lib/sound";
 import { focusDeckHeading, isInteractiveShortcutTarget } from "@/lib/deck-focus";
 import { eveConsoleLogHeight, shouldYieldAirframeHud } from "@/lib/hud-layout";
 import { motionDurationMs } from "@/lib/animation-timing";
 import { COMMAND_POSTER_SOURCES } from "@/lib/command-poster";
+import { markClientReady } from "@/lib/client-ready";
 import { scheduleStageLoad } from "@/lib/stage-load-scheduler";
 import {
   beginHashRestore,
@@ -28,6 +32,7 @@ import {
   formatDeckHash,
   hashWriteModeForNavigation,
   parseDeckHash,
+  shouldAnimateNavigation,
   shouldStopFlightForNavigation,
   type NavigationOrigin,
 } from "@/lib/deck-navigation";
@@ -60,6 +65,11 @@ import { INTRO, runEve } from "./eve-console";
 import { PowerOn } from "./power-on";
 import { ViewscreenHud } from "./viewscreen-hud";
 import { ExecutiveStill } from "./executive-still";
+
+const INITIAL_VIEWPORT = { height: 900, width: 1440 } as const;
+const RESTORE_ANCHOR_DELAY_MS = 360;
+const RESTORE_ANCHOR_MAX_CHECKS = 8;
+const useIsomorphicLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 export function CommandDeck() {
   const scRef = useRef<HTMLDivElement>(null);
@@ -112,6 +122,10 @@ export function CommandDeck() {
   const [hist, setHist] = useState<string[]>([]);
   const [histI, setHistI] = useState(-1);
   const [clock, setClock] = useState("");
+  const [validity, setValidity] = useState<{ days: number | null; label: string }>({
+    days: null,
+    label: INITIAL_VALIDITY_LABEL,
+  });
   const [stageOn, setStageOn] = useState(false);
   // While a smooth scroll is travelling, this holds the deck actually on screen
   // so the header chip does not name a deck the visitor cannot see yet. It is
@@ -123,29 +137,33 @@ export function CommandDeck() {
   // button, so Bit points at it once and then never again this session.
   const [bitNudge, setBitNudge] = useState(false);
   const bitNudgeSpent = useRef(false);
-  // Read from a lazy initialiser rather than an effect: settling the preference
-  // after mount changed layout heights on the first paint and moved deep link
-  // targets out from under a scroll that had already been issued.
-  const [reducedMotion, setReducedMotion] = useState(
-    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-  );
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const [motionPreferenceSettled, setMotionPreferenceSettled] = useState(false);
   const [flash, setFlash] = useState(false);
   const [flashKey, setFlashKey] = useState(0);
   const [afFlash, setAfFlash] = useState(false);
   const [hudYield, setHudYield] = useState(false);
-  const [eveLogHeight, setEveLogHeight] = useState(() =>
-    eveConsoleLogHeight({ height: window.innerHeight, width: window.innerWidth }),
-  );
+  const [eveLogHeight, setEveLogHeight] = useState(() => eveConsoleLogHeight(INITIAL_VIEWPORT));
   const [rips, setRips] = useState<{ id: number; x: number; y: number }[]>([]);
   const [sweep, setSweep] = useState(false);
   const [flightElapsed, setFlightElapsed] = useState(0);
   const jumpUntil = useRef(0);
   const flightTimer = useRef<number | null>(null);
+  const validityTimer = useRef<number | null>(null);
+  const validityGeneration = useRef(0);
   const flightRun = useRef<FlightState | null>(null);
   const hashTransition = useRef(createHashTransitionState());
   const hashSuppressionTimer = useRef<number | null>(null);
   const resizeAnchorTimer = useRef<number | null>(null);
   const resizeAnchorFrame = useRef(0);
+  const restoreAnchorTimer = useRef<number | null>(null);
+  const restoreAnchorFrame = useRef(0);
+  const restoreAnchorGeneration = useRef(0);
+  const restoreAnchorIntent = useRef<{
+    deck: number;
+    hash: string;
+    remainingChecks: number;
+  } | null>(null);
   const warpFlashTimer = useRef<number | null>(null);
   const cineTimer = useRef<number | null>(null);
   const chapterTimer = useRef<number | null>(null);
@@ -171,14 +189,53 @@ export function CommandDeck() {
   const lastDeck = useRef(0);
   const swipeX = useRef<number | null>(null);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     setReducedMotion(media.matches);
     setEveLogHeight(eveConsoleLogHeight({ height: window.innerHeight, width: window.innerWidth }));
-    const onChange = (event: MediaQueryListEvent) => setReducedMotion(event.matches);
+    const onChange = (event: MediaQueryListEvent) => {
+      setMotionPreferenceSettled(true);
+      setReducedMotion(event.matches);
+    };
     media.addEventListener("change", onChange);
     return () => media.removeEventListener("change", onChange);
   }, []);
+
+  useIsomorphicLayoutEffect(() => {
+    const generation = ++validityGeneration.current;
+    const refresh = () => {
+      if (generation !== validityGeneration.current) return;
+      validityTimer.current = null;
+      const now = Date.now();
+      setValidity({ days: daysLeft(now), label: validityShort(now) });
+      const nextRefresh = nextValidityRefreshAt(now);
+      if (nextRefresh != null) {
+        validityTimer.current = window.setTimeout(refresh, Math.max(1, nextRefresh - now));
+      }
+    };
+    refresh();
+    return () => {
+      validityGeneration.current += 1;
+      if (validityTimer.current != null) window.clearTimeout(validityTimer.current);
+      validityTimer.current = null;
+    };
+  }, []);
+
+  useIsomorphicLayoutEffect(() => {
+    const sections = [
+      ...(scRef.current?.querySelectorAll<HTMLElement>('section[data-deck]:not([data-deck="0"])') ?? []),
+    ];
+    for (const section of sections) {
+      section.style.contentVisibility = "auto";
+      section.style.containIntrinsicSize = "auto 100dvh";
+    }
+    return () => {
+      for (const section of sections) {
+        section.style.removeProperty("content-visibility");
+        section.style.removeProperty("contain-intrinsic-size");
+      }
+    };
+  }, [mode]);
 
   useEffect(() => {
     const on = (e: PointerEvent) => {
@@ -196,7 +253,11 @@ export function CommandDeck() {
     const measure = () => {
       window.cancelAnimationFrame(frame);
       frame = window.requestAnimationFrame(() => {
-        const targets = [...document.querySelectorAll<HTMLElement>("[data-hud-clear]")].map((element) => {
+        const targets = [
+          ...(scroller?.querySelectorAll<HTMLElement>(
+            `section[data-deck="${deck}"] [data-hud-clear], footer[data-hud-clear]`,
+          ) ?? []),
+        ].map((element) => {
           const rect = element.getBoundingClientRect();
           return { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom };
         });
@@ -216,7 +277,7 @@ export function CommandDeck() {
       window.removeEventListener("resize", measure);
       observer?.disconnect();
     };
-  }, [mode]);
+  }, [deck, mode]);
 
   useEffect(() => {
     if (bitNudgeSpent.current || deck !== 0 || photo || palette || tour) return;
@@ -417,13 +478,23 @@ export function CommandDeck() {
     resizeAnchorFrame.current = 0;
   }, []);
 
+  const clearRestoreAnchor = useCallback(() => {
+    restoreAnchorGeneration.current += 1;
+    if (restoreAnchorTimer.current != null) window.clearTimeout(restoreAnchorTimer.current);
+    if (restoreAnchorFrame.current) window.cancelAnimationFrame(restoreAnchorFrame.current);
+    restoreAnchorTimer.current = null;
+    restoreAnchorFrame.current = 0;
+    restoreAnchorIntent.current = null;
+  }, []);
+
   const cancelProgrammaticScroll = useCallback(() => {
     pendingSmoothScrollTop.current = null;
     clearHashSuppressionTimer();
     clearResizeAnchor();
+    clearRestoreAnchor();
     hashTransition.current = cancelHashRestore(hashTransition.current);
     pendingDestinationFocus.current = null;
-  }, [clearHashSuppressionTimer, clearResizeAnchor]);
+  }, [clearHashSuppressionTimer, clearResizeAnchor, clearRestoreAnchor]);
 
   const beginProgrammaticScroll = useCallback(
     (targetDeck: number) => {
@@ -521,6 +592,7 @@ export function CommandDeck() {
   const goto = useCallback(
     (i: number, source: NavigationOrigin = "manual", craftOverride?: number | null, articleOverride?: number) => {
       if (shouldStopFlightForNavigation(source)) stopFlight();
+      const animateNavigation = shouldAnimateNavigation(source, reducedMotion);
       const technicalTarget = i > 0 && i < DECKS.length - 1;
       if (technicalTarget && useDeck.getState().mode === "executive") {
         if (useDeck.getState().deck !== i) beginProgrammaticScroll(i);
@@ -533,7 +605,7 @@ export function CommandDeck() {
       if (!el || !sc) return;
       if (useDeck.getState().deck !== i) beginProgrammaticScroll(i);
       const top = Math.max(0, el.offsetTop - 8);
-      if (reducedMotion) {
+      if (!animateNavigation) {
         pendingSmoothScrollTop.current = null;
         sc.scrollTop = top;
       } else {
@@ -541,13 +613,21 @@ export function CommandDeck() {
         sc.scrollTo({ top, behavior: "smooth" });
       }
       const st = stageRef.current;
-      if (!reducedMotion) st?.warp?.();
+      if (animateNavigation) st?.warp?.();
       st?.setDeck?.(i);
       const activeCraftLock = craftOverride === undefined ? useDeck.getState().craftLock : craftOverride;
       st?.setCraft?.(resolveCraftIndex(i, activeCraftLock));
-      cinePulse();
-      chapter(i);
-      if (!reducedMotion) {
+      if (source === "restore") {
+        clearCinePulse();
+        clearChapter();
+        clearSweep();
+        setFlash(false);
+        set({ cine: false, chapOn: false, chapText: DECKS[i].name });
+      } else {
+        cinePulse();
+        chapter(i);
+      }
+      if (animateNavigation) {
         clearSweep();
         setSweep(true);
         sweepTimer.current = window.setTimeout(() => {
@@ -561,7 +641,7 @@ export function CommandDeck() {
           ? useDeck.getState().sel
           : Math.max(0, Math.min(ARTICLES.length - 1, Math.trunc(articleOverride)));
       jumpUntil.current = Date.now() + (source === "flight" ? 2400 : 1600);
-      sfx("nav", i);
+      if (source !== "restore") sfx("nav", i);
       lastDeck.current = i;
       set({
         deck: i,
@@ -572,7 +652,48 @@ export function CommandDeck() {
       });
       const historyMode = hashWriteModeForNavigation(source);
       if (historyMode) syncHash(i, selectedArticle, historyMode);
-      bit("yes");
+      if (source !== "restore") bit("yes");
+      if (source === "restore") {
+        clearRestoreAnchor();
+        const generation = restoreAnchorGeneration.current;
+        restoreAnchorIntent.current = {
+          deck: i,
+          hash: window.location.hash,
+          remainingChecks: RESTORE_ANCHOR_MAX_CHECKS,
+        };
+        const scheduleRestoreCheck = () => {
+          restoreAnchorTimer.current = window.setTimeout(() => {
+            if (generation !== restoreAnchorGeneration.current) return;
+            restoreAnchorTimer.current = null;
+            restoreAnchorFrame.current = window.requestAnimationFrame(() => {
+              if (generation !== restoreAnchorGeneration.current) return;
+              restoreAnchorFrame.current = 0;
+              const intent = restoreAnchorIntent.current;
+              if (!intent || intent.deck !== i || intent.hash !== window.location.hash) {
+                restoreAnchorIntent.current = null;
+                return;
+              }
+              if (parseDeckHash(window.location.hash).deck !== i || useDeck.getState().deck !== i) {
+                restoreAnchorIntent.current = null;
+                return;
+              }
+              const target = listSections()[i]?.current;
+              if (!target || !scRef.current) {
+                restoreAnchorIntent.current = null;
+                return;
+              }
+              const settledTop = Math.max(0, target.offsetTop - 8);
+              if (Math.abs(scRef.current.scrollTop - settledTop) > 1) {
+                scRef.current.scrollTop = settledTop;
+              }
+              intent.remainingChecks -= 1;
+              if (intent.remainingChecks > 0) scheduleRestoreCheck();
+              else restoreAnchorIntent.current = null;
+            });
+          }, RESTORE_ANCHOR_DELAY_MS);
+        };
+        scheduleRestoreCheck();
+      }
       window.setTimeout(() => {
         measureClear();
       }, 420);
@@ -581,6 +702,9 @@ export function CommandDeck() {
       beginProgrammaticScroll,
       bit,
       chapter,
+      clearChapter,
+      clearCinePulse,
+      clearRestoreAnchor,
       cinePulse,
       clearSweep,
       measureClear,
@@ -665,18 +789,18 @@ export function CommandDeck() {
   );
 
   useEffect(() => {
-    const restoreHash = () => {
+    const restoreHash = (source: "hash" | "restore") => {
       const target = parseDeckHash(window.location.hash);
-      gotoRef.current?.(target.deck, "hash", undefined, target.article);
+      gotoRef.current?.(target.deck, source, undefined, target.article);
     };
-    if (window.location.hash) restoreHash();
+    if (window.location.hash) restoreHash("restore");
     else syncHash(useDeck.getState().deck, useDeck.getState().sel, "replace");
     const onHashChange = () => {
       const transition = classifyHashChange(hashTransition.current, window.location.hash);
       hashTransition.current = transition.state;
       if (transition.kind === "internal") return;
       stopFlight();
-      restoreHash();
+      restoreHash("hash");
     };
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
@@ -688,8 +812,9 @@ export function CommandDeck() {
       invalidateCopyEmail();
       clearHashSuppressionTimer();
       clearResizeAnchor();
+      clearRestoreAnchor();
     };
-  }, [clearHashSuppressionTimer, clearResizeAnchor, invalidateCopyEmail]);
+  }, [clearHashSuppressionTimer, clearResizeAnchor, clearRestoreAnchor, invalidateCopyEmail]);
 
   useEffect(() => {
     const state = flightRun.current;
@@ -759,10 +884,12 @@ export function CommandDeck() {
     }
     const max = Math.max(1, sc.scrollHeight - sc.clientHeight);
     const p = Math.min(1, Math.max(0, sc.scrollTop / max));
+    const activeRestoreDeck = restoreAnchorIntent.current?.deck;
+    const observedStageDeck = activeRestoreDeck ?? i;
     const st = stageRef.current;
     st?.setProgress?.(p);
-    st?.setDeck?.(i);
-    st?.setCraft?.(resolveCraftIndex(i, useDeck.getState().craftLock));
+    st?.setDeck?.(observedStageDeck);
+    st?.setCraft?.(resolveCraftIndex(observedStageDeck, useDeck.getState().craftLock));
     const snd = getSound();
     if (useDeck.getState().audio) {
       snd.setDepth(p);
@@ -782,7 +909,10 @@ export function CommandDeck() {
       if (el.offsetTop < bottom && el.offsetTop + el.offsetHeight > sc.scrollTop) shown.push(k);
     });
     setGlideDeck(pendingSmoothScrollTop.current == null ? null : i);
-    const scrollTransition = consumeScrollDeck(hashTransition.current, i);
+    const scrollTransition =
+      activeRestoreDeck != null && i !== activeRestoreDeck
+        ? { writeHash: false, updateDeck: false, state: hashTransition.current }
+        : consumeScrollDeck(hashTransition.current, i);
     hashTransition.current = scrollTransition.state;
     if (hashTransition.current.restoringDeck == null) clearHashSuppressionTimer();
     const next: Partial<{ deck: number; prog: number; shown: number[]; craftLock: number | null }> = {};
@@ -805,6 +935,22 @@ export function CommandDeck() {
   }, [chapter, clearHashSuppressionTimer, focusPendingDestination, measureClear, set, syncHash]);
 
   useEffect(() => {
+    const cancelRestoreOnUserIntent = () => {
+      if (restoreAnchorIntent.current || hashTransition.current.restoringDeck != null) cancelProgrammaticScroll();
+    };
+    for (const type of ["wheel", "pointerdown", "touchstart"] as const) {
+      window.addEventListener(type, cancelRestoreOnUserIntent, { capture: true, passive: true });
+    }
+    window.addEventListener("keydown", cancelRestoreOnUserIntent, { capture: true });
+    return () => {
+      for (const type of ["wheel", "pointerdown", "touchstart"] as const) {
+        window.removeEventListener(type, cancelRestoreOnUserIntent, { capture: true });
+      }
+      window.removeEventListener("keydown", cancelRestoreOnUserIntent, { capture: true });
+    };
+  }, [cancelProgrammaticScroll]);
+
+  useEffect(() => {
     const sc = scRef.current;
     if (!sc) return;
     sc.addEventListener("scroll", onScroll, { passive: true });
@@ -812,7 +958,9 @@ export function CommandDeck() {
     const measureLayout = () => measureClear();
     const onResize = () => {
       measureLayout();
-      const targetDeck = useDeck.getState().deck;
+      const directLinkDeck = restoreAnchorIntent.current?.deck;
+      const targetDeck = directLinkDeck ?? useDeck.getState().deck;
+      if (directLinkDeck == null) clearRestoreAnchor();
       beginProgrammaticScroll(targetDeck);
       clearResizeAnchor();
       resizeAnchorTimer.current = window.setTimeout(() => {
@@ -836,9 +984,9 @@ export function CommandDeck() {
       clearInterval(spy);
       clearTimeout(later);
     };
-  }, [beginProgrammaticScroll, clearResizeAnchor, measureClear, onScroll]);
+  }, [beginProgrammaticScroll, clearResizeAnchor, clearRestoreAnchor, measureClear, onScroll]);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const k = (e.key || "").toLowerCase();
       const interactive = isInteractiveShortcutTarget(e.target);
@@ -901,6 +1049,10 @@ export function CommandDeck() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [closeCinema, closePalette, closeStill, hist, histI, openPalette, set, sfx, stopFlight]);
+
+  useIsomorphicLayoutEffect(() => {
+    markClientReady();
+  }, []);
 
   const run = (raw: string) => {
     const cmd = (raw || "").trim();
@@ -1001,13 +1153,12 @@ export function CommandDeck() {
   const hud = overlay ? "pointer-events-none invisible opacity-0" : "";
   const craftI = resolveCraftIndex(deck, craftLock);
   const craft = CRAFT[craftI];
-  const dleft = daysLeft();
   const flightBeat = flightActionAt(flightElapsed);
   const beatLabel = flightBeat.kind === "complete" ? "CONTACT" : flightBeat.label;
 
   return (
     <div
-      className={`relative h-dvh overflow-hidden bg-void text-ink ${!gate && !overlay ? "za-systems-online" : ""} ${reducedMotion ? "za-prefers-static" : ""}`}
+      className={`relative h-dvh overflow-hidden bg-void text-ink ${!gate && !overlay ? "za-systems-online" : ""} ${reducedMotion ? "za-prefers-static" : ""} ${motionPreferenceSettled ? "za-motion-preference-settled" : ""}`}
       style={
         {
           "--za-deck-copy-duration": `${motionDurationMs("deck-copy")}ms`,
@@ -1095,6 +1246,7 @@ export function CommandDeck() {
           }}
           onToggleAudio={toggleAudio}
           tour={tour}
+          validityLabel={validity.label}
         />
 
         <main
@@ -1152,12 +1304,23 @@ export function CommandDeck() {
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 za-mono text-[10px] text-dim">
               <span>{RELEASE}</span>
               <span>REVISED {REVISED}</span>
-              <span className="inline-flex items-center gap-2 text-cyan">
+              <span
+                data-validity-footer-status
+                className="za-validity-footer-status inline-flex items-center gap-2 text-cyan"
+              >
                 <span className="za-lock-pip" />
-                {dleft > 0 ? "DATED EXPORT VALID" : "DATED EXPORT EXPIRED"}
+                <span data-validity-footer-label>
+                  {validity.days == null
+                    ? "DATED EXPORT STATUS"
+                    : validity.days > 0
+                      ? "DATED EXPORT VALID"
+                      : "DATED EXPORT EXPIRED"}
+                </span>
               </span>
               <span>FIGURES VERIFIED {VERIFIED_LONG}</span>
-              <span>VALID THRU {dleft > 0 ? EXPIRES_SHORT : "TREAT AS HISTORY"}</span>
+              <span data-validity-through className="za-validity-through">
+                VALID THRU {validity.days == null || validity.days > 0 ? EXPIRES_SHORT : "TREAT AS HISTORY"}
+              </span>
               <span>ZERO INFRASTRUCTURE CALLS</span>
             </div>
           </footer>
@@ -1196,7 +1359,7 @@ export function CommandDeck() {
             }}
             role="button"
             tabIndex={0}
-            aria-label={`Open ${craft[0]} airframe deck`}
+            title="Open airframe deck"
           >
             <div className="flex items-center gap-2">
               <b className="text-cyan">
@@ -1219,13 +1382,14 @@ export function CommandDeck() {
               <div className="mt-1 text-ink">{craft[0]}</div>
               <div className="text-accent">{craft[1]}</div>
               <div className="mt-1">{craft[2]}</div>
-              <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-white/10">
-                <div
-                  className="za-airframe-progress h-full bg-accent transition-[width] duration-300"
-                  style={{ width: `${prog}%` }}
-                />
-              </div>
             </div>
+            <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-white/10">
+              <div
+                className="za-airframe-progress h-full bg-accent transition-[width] duration-300"
+                style={{ width: `${prog}%` }}
+              />
+            </div>
+            <span className="sr-only">Open airframe deck</span>
           </div>
           {bitNudge && !reducedMotion && (
             <div className="za-bit-nudge" role="note">

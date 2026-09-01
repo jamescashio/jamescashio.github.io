@@ -3,16 +3,16 @@ on:
   push:
     branches: [main, master]
   workflow_dispatch:
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+permissions: {}
 concurrency:
   group: pages
   cancel-in-progress: true
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
     steps:
       - uses: actions/checkout@v4
         with:
@@ -54,12 +54,23 @@ jobs:
       - run: python scripts/check_committed_whitespace.py
         env:
           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
-      - uses: actions/upload-pages-artifact@v3
+      - name: Require GitHub Actions Pages source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          test "$(gh api repos/${GITHUB_REPOSITORY}/pages --jq .build_type)" = "workflow"
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: dist
+          # Pages must receive the validated security-discovery file as well.
+          include-hidden-files: true
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

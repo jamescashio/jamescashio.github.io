@@ -21,6 +21,7 @@ import {
   runWithLayoutCleanup,
   tickerTelemetryAcceptanceFailures,
   touchTargetAcceptanceFailures,
+  validityGeometryAcceptanceFailures,
   visualPaintEvidence,
 } from "./layout-runtime-support.mjs";
 
@@ -155,7 +156,7 @@ async function waitForApp(send) {
   for (let attempt = 0; attempt < 100; attempt++) {
     const result = await send("Runtime.evaluate", {
       expression:
-        'document.readyState === "complete" && (!document.fonts || document.fonts.status === "loaded") && document.querySelectorAll(".za-lcars-pip").length === 8 && Boolean(document.querySelector(".za-mobile-rail-safe"))',
+        'document.readyState === "complete" && (!document.fonts || document.fonts.status === "loaded") && document.querySelector("#root")?.dataset.clientActivated === "true" && !document.querySelector("style[data-critical-shell]") && document.querySelectorAll(".za-lcars-pip").length === 8 && Boolean(document.querySelector(".za-mobile-rail-safe"))',
       returnByValue: true,
     });
     if (result.result.value) return;
@@ -164,11 +165,819 @@ async function waitForApp(send) {
   throw new Error("timed out waiting for the command deck layout");
 }
 
+async function waitForCriticalShell(send) {
+  for (let attempt = 0; attempt < 100; attempt++) {
+    const result = await send("Runtime.evaluate", {
+      expression:
+        'document.readyState !== "loading" && Boolean(document.querySelector("#root[data-prerendered=\\"v35\\"]")) && !document.querySelector("#root")?.dataset.clientActivated && Boolean(document.querySelector("style[data-critical-shell]")) && window.__v35CriticalActivationHeld === true',
+      returnByValue: true,
+    });
+    if (result.result.value) return;
+    await new Promise((resolve) => setTimeout(resolve, 5));
+  }
+  throw new Error("timed out waiting for the prerendered critical shell");
+}
+
+async function captureCriticalGeometry(send) {
+  const evaluation = await send("Runtime.evaluate", {
+    expression: `(() => {
+      const selectors = [
+        ".za-bracket",
+        "section[data-deck=\\"0\\"] h1",
+        ".za-snapshot-lede",
+        ".za-snapshot-copy",
+        "section[data-deck=\\"0\\"] .za-critical-telemetry",
+        ".za-snapshot-modes",
+        ".za-snapshot-actions",
+        ".za-bracket > .za-chip",
+        "section[data-deck=\\"0\\"] .za-panel",
+        ".za-command-header",
+        ".za-command-header > .pointer-events-auto:last-child",
+        ".za-validity-chip",
+        ".za-clock-chip",
+        '.za-command-header button[aria-label*="selection audio"]',
+        '.za-command-header button[aria-label="Open deck navigator"]',
+        ".za-command-rail",
+        ".za-command-rail > nav",
+        ".za-command-rail > nav > button:first-child",
+        ".za-mobile-flight-control",
+        ".za-mobile-rail-scroll",
+        ".za-corner-hud",
+        ".za-airframe",
+        ".za-bit-control",
+      ];
+      const values = {};
+      for (const selector of selectors) {
+        const element = document.querySelector(selector);
+        if (!element) {
+          values[selector] = null;
+          continue;
+        }
+        const rect = element.getBoundingClientRect();
+        const style = getComputedStyle(element);
+        values[selector] = {
+          rect: { left: rect.left, top: rect.top, width: rect.width, height: rect.height },
+          style: {
+            display: style.display,
+            position: style.position,
+            boxSizing: style.boxSizing,
+            fontFamily: style.fontFamily,
+            fontSize: style.fontSize,
+            fontWeight: style.fontWeight,
+            lineHeight: style.lineHeight,
+            padding: style.padding,
+            margin: style.margin,
+            gap: style.gap,
+            gridTemplateColumns: style.gridTemplateColumns,
+            borderRadius: style.borderRadius,
+          },
+        };
+      }
+      return values;
+    })()`,
+    returnByValue: true,
+  });
+  return evaluation.result.value;
+}
+
+function criticalGeometryFailures(before, after, width) {
+  const failures = [];
+  for (const [selector, initial] of Object.entries(before)) {
+    const activated = after[selector];
+    if (!initial || !activated) {
+      failures.push(`${width}px ${selector} must exist before and after activation`);
+      continue;
+    }
+    const initialHidden = initial.style.display === "none" || (initial.rect.width === 0 && initial.rect.height === 0);
+    const activatedHidden =
+      activated.style.display === "none" || (activated.rect.width === 0 && activated.rect.height === 0);
+    if (initialHidden && activatedHidden) continue;
+    for (const property of [
+      "display",
+      "position",
+      "boxSizing",
+      "fontFamily",
+      "fontSize",
+      "fontWeight",
+      "lineHeight",
+      "padding",
+      "gap",
+      "gridTemplateColumns",
+    ]) {
+      if (initial.style[property] !== activated.style[property])
+        failures.push(`${width}px ${selector} ${property}: ${initial.style[property]} -> ${activated.style[property]}`);
+    }
+    const initialRadius = Number.parseFloat(initial.style.borderRadius);
+    const activatedRadius = Number.parseFloat(activated.style.borderRadius);
+    const pillThreshold =
+      Math.min(initial.rect.width, initial.rect.height, activated.rect.width, activated.rect.height) / 2;
+    const equivalentPills = initialRadius >= pillThreshold && activatedRadius >= pillThreshold;
+    if (initial.style.borderRadius !== activated.style.borderRadius && !equivalentPills)
+      failures.push(
+        `${width}px ${selector} borderRadius: ${initial.style.borderRadius} -> ${activated.style.borderRadius}`,
+      );
+    for (const edge of ["left", "top", "width", "height"]) {
+      if (selector === ".za-bracket" && edge === "height") continue;
+      const delta = Math.abs(initial.rect[edge] - activated.rect[edge]);
+      if (delta > 1) failures.push(`${width}px ${selector} ${edge} shifted ${delta.toFixed(3)}px`);
+    }
+  }
+  return failures;
+}
+
+async function runCriticalShellParity(send, targetUrl, width, height, mobile) {
+  await send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 1, mobile });
+  await send("Emulation.setEmulatedMedia", {
+    media: "screen",
+    features: [{ name: "prefers-reduced-motion", value: "reduce" }],
+  });
+  await send("Page.navigate", { url: `${targetUrl}?critical-parity-${width}` });
+  await waitForCriticalShell(send);
+  await send("Runtime.evaluate", {
+    expression: "document.fonts ? document.fonts.ready : Promise.resolve()",
+    awaitPromise: true,
+  });
+  const before = await captureCriticalGeometry(send);
+  await send("Runtime.evaluate", { expression: "window.__v35ReleaseCriticalActivation()" });
+  try {
+    await waitForApp(send);
+  } catch (error) {
+    const diagnostic = await send("Runtime.evaluate", {
+      expression: `({
+        readyState: document.readyState,
+        root: document.querySelector("#root")?.dataset ?? null,
+        criticalShell: Boolean(document.querySelector("style[data-critical-shell]")),
+        pips: document.querySelectorAll(".za-lcars-pip").length,
+        mobileRail: Boolean(document.querySelector(".za-mobile-rail-safe")),
+        errors: window.__v35CriticalActivationErrors ?? [],
+        resources: performance.getEntriesByType("resource").map((entry) => entry.name),
+      })`,
+      returnByValue: true,
+    });
+    throw new Error(`${error.message}: ${JSON.stringify(diagnostic.result.value)}`, { cause: error });
+  }
+  await send("Runtime.evaluate", {
+    expression: "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))",
+    awaitPromise: true,
+  });
+  const after = await captureCriticalGeometry(send);
+  const failures = criticalGeometryFailures(before, after, width);
+  return { width, height, before, after, failures, ok: failures.length === 0 };
+}
+
+async function waitForCanonicalDeck(send, deckIndex) {
+  let last = null;
+  let consecutive = 0;
+  for (let attempt = 0; attempt < 40; attempt++) {
+    last = (
+      await send("Runtime.evaluate", {
+        expression: `(() => {
+          const main = document.querySelector("#main-content");
+          const section = document.querySelector('section[data-deck="${deckIndex}"]');
+          if (!main || !section) return { present: false };
+          const intendedScrollTop = Math.max(0, section.offsetTop - 8);
+          const maximumScrollTop = Math.max(0, main.scrollHeight - main.clientHeight);
+          const expectedScrollTop = Math.min(intendedScrollTop, maximumScrollTop);
+          const expectedSectionTop = section.offsetTop - expectedScrollTop;
+          const sectionTop = section.getBoundingClientRect().top;
+          return {
+            present: true,
+            activeDeck: main.dataset.activeDeck ?? null,
+            scrollTop: main.scrollTop,
+            expectedScrollTop,
+            sectionTop,
+            expectedSectionTop,
+            scrollAlignmentDelta: Math.abs(main.scrollTop - expectedScrollTop),
+            sectionAlignmentDelta: Math.abs(sectionTop - expectedSectionTop),
+          };
+        })()`,
+        returnByValue: true,
+      })
+    ).result.value;
+    if (
+      last.present &&
+      last.activeDeck === String(deckIndex) &&
+      last.scrollAlignmentDelta <= 1 &&
+      last.sectionAlignmentDelta <= 1
+    )
+      consecutive += 1;
+    else consecutive = 0;
+    if (consecutive >= 3) return last;
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  return last;
+}
+
+async function runEarlyActivationAcceptance(send, targetUrl) {
+  const settle = () =>
+    send("Runtime.evaluate", {
+      expression: "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))",
+      awaitPromise: true,
+    });
+
+  await send("Emulation.setDeviceMetricsOverride", {
+    width: 390,
+    height: 844,
+    deviceScaleFactor: 1,
+    mobile: true,
+  });
+  await send("Emulation.setEmulatedMedia", {
+    media: "screen",
+    features: [{ name: "prefers-reduced-motion", value: "reduce" }],
+  });
+  const nativeRoutes = [
+    ["grid", 1],
+    ["routing", 2],
+    ["iron", 3],
+    ["lineage", 4],
+    ["builds", 5],
+    ["operator", 6],
+    ["eve", 7],
+    ["contact", 8],
+    ["builds&article=7", 5],
+  ];
+  const directRoutes = [];
+  for (const [route, deckIndex] of nativeRoutes) {
+    await send("Page.navigate", {
+      url: `${targetUrl}?startup-native-${deckIndex}-${encodeURIComponent(route)}#deck=${route}`,
+    });
+    await waitForApp(send);
+    await settle();
+    const settlement = await waitForCanonicalDeck(send, deckIndex);
+    const observed = (
+      await send("Runtime.evaluate", {
+        expression: `(() => {
+        const resources = performance.getEntriesByType("resource");
+        const bootstrap = resources.find((entry) => /\\/assets\\/index-[^/]+\\.js$/.test(entry.name));
+        const main = resources.find((entry) => /\\/assets\\/main-[^/]+\\.js$/.test(entry.name));
+        const scroller = document.querySelector("#main-content");
+        const scrollerTop = scroller?.getBoundingClientRect().top ?? 0;
+        const sections = [...document.querySelectorAll("section[data-deck]")];
+        const nearestDeck = sections.reduce((best, section) => {
+          const deck = Number(section.getAttribute("data-deck"));
+          const delta = Math.abs(section.getBoundingClientRect().top - scrollerTop);
+          return delta < best.delta ? { deck, delta } : best;
+        }, { deck: -1, delta: Number.POSITIVE_INFINITY });
+        return {
+          hash: location.hash,
+          nearestDeck,
+          activationRequestGapMs: bootstrap && main ? main.startTime - bootstrap.responseEnd : null,
+          frames: window.__v35DirectFrames ?? [],
+        };
+      })()`,
+        returnByValue: true,
+      })
+    ).result.value;
+    observed.route = route;
+    observed.deckIndex = deckIndex;
+    observed.settlement = settlement;
+    directRoutes.push(observed);
+  }
+  const direct = directRoutes.find((route) => route.route === "iron");
+
+  await send("Page.navigate", { url: `${targetUrl}?critical-parity-early-ctrl` });
+  await waitForCriticalShell(send);
+  await send("Input.dispatchKeyEvent", { type: "keyDown", key: "k", code: "KeyK", modifiers: 2 });
+  await send("Input.dispatchKeyEvent", { type: "keyUp", key: "k", code: "KeyK", modifiers: 2 });
+  await waitForApp(send);
+  await settle();
+  const ctrlK = (
+    await send("Runtime.evaluate", {
+      expression: `({
+        navigatorOpen: Boolean(document.querySelector('[role="dialog"][aria-label="Deck navigator"]')),
+        dialogCount: document.querySelectorAll('[role="dialog"][aria-label="Deck navigator"]').length,
+      })`,
+      returnByValue: true,
+    })
+  ).result.value;
+
+  await send("Page.navigate", { url: `${targetUrl}?critical-parity-early-swipe` });
+  await waitForCriticalShell(send);
+  await send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: [{ x: 330, y: 420, id: 41, radiusX: 1, radiusY: 1, force: 1 }],
+  });
+  await send("Input.dispatchTouchEvent", {
+    type: "touchMove",
+    touchPoints: [{ x: 100, y: 423, id: 41, radiusX: 1, radiusY: 1, force: 1 }],
+  });
+  await send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+  await waitForApp(send);
+  await settle();
+  const swipeSettlement = await waitForCanonicalDeck(send, 1);
+  const swipe = (
+    await send("Runtime.evaluate", {
+      expression: `({
+        hash: location.hash,
+        gridTop: document.querySelector('section[data-deck="1"]')?.getBoundingClientRect().top ?? null,
+        scrollerTop: document.querySelector("#main-content")?.getBoundingClientRect().top ?? null,
+        activeDeck: document.querySelector("#main-content")?.dataset.activeDeck ?? null,
+      })`,
+      returnByValue: true,
+    })
+  ).result.value;
+  swipe.settlement = swipeSettlement;
+
+  await send("Page.navigate", { url: `${targetUrl}?critical-parity-early-click` });
+  await waitForCriticalShell(send);
+  await send("Runtime.evaluate", {
+    expression: `(() => {
+      const button = [...document.querySelectorAll(".za-snapshot-modes button")]
+        .find((candidate) => candidate.textContent?.includes("EXECUTIVE"));
+      const descendant = button?.querySelector("div");
+      if (!button || !descendant) throw new Error("the prerendered Executive control is missing");
+      descendant.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true, cancelable: true, pointerId: 7 }));
+      button.click();
+    })()`,
+  });
+  await waitForApp(send);
+  await settle();
+  const click = (
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const executive = [...document.querySelectorAll(".za-snapshot-modes button")]
+          .find((candidate) => candidate.textContent?.includes("EXECUTIVE"));
+        return {
+          executivePressed: executive?.getAttribute("aria-pressed") === "true",
+          pressedCount: document.querySelectorAll('.za-snapshot-modes button[aria-pressed="true"]').length,
+        };
+      })()`,
+      returnByValue: true,
+    })
+  ).result.value;
+
+  await send("Page.navigate", { url: `${targetUrl}?critical-parity-early-external` });
+  await waitForCriticalShell(send);
+  await send("Runtime.evaluate", {
+    expression: `(() => {
+      const main = document.querySelector("#main-content");
+      const anchor = document.createElement("a");
+      anchor.href = "https://example.net/";
+      const child = document.createElement("span");
+      child.textContent = "EXTERNAL TEST";
+      anchor.append(child);
+      main.append(anchor);
+      window.__v35ExternalClicks = 0;
+      anchor.addEventListener("click", (event) => {
+        event.preventDefault();
+        window.__v35ExternalClicks += 1;
+      });
+      child.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true, cancelable: true, pointerId: 8 }));
+      child.click();
+    })()`,
+  });
+  await waitForApp(send);
+  await settle();
+  const external = (
+    await send("Runtime.evaluate", {
+      expression: `({ clickCount: window.__v35ExternalClicks ?? 0, hash: location.hash })`,
+      returnByValue: true,
+    })
+  ).result.value;
+
+  const visibleWrongDirectFrame = direct.frames.find(
+    (frame) => frame.visibility !== "hidden" && frame.nearestDeck === 0 && frame.activated !== true,
+  );
+  const failures = [];
+  for (const route of directRoutes) {
+    const visibleNativeFrames = route.frames.filter(
+      (frame) => frame.visibility !== "hidden" && frame.activated !== true && frame.present,
+    );
+    const nativeFrame = visibleNativeFrames[0];
+    if (
+      !nativeFrame ||
+      nativeFrame.scrollAlignmentDelta > 1 ||
+      nativeFrame.sectionAlignmentDelta > 1 ||
+      nativeFrame.nearestDeck !== route.deckIndex
+    )
+      failures.push(`native ${route.route} startup missed the canonical first frame: ${JSON.stringify(route)}`);
+  }
+  if (
+    direct.hash !== "#deck=iron" ||
+    direct.nearestDeck.deck !== 3 ||
+    direct.settlement?.activeDeck !== "3" ||
+    direct.settlement?.scrollAlignmentDelta > 1 ||
+    direct.settlement?.sectionAlignmentDelta > 1
+  )
+    failures.push(`direct Iron startup did not settle synchronously: ${JSON.stringify(direct)}`);
+  if (typeof direct.activationRequestGapMs !== "number" || direct.activationRequestGapMs > 100)
+    failures.push(`direct Iron activation import waited ${direct.activationRequestGapMs}ms`);
+  if (visibleWrongDirectFrame)
+    failures.push(`direct Iron exposed Snapshot before activation: ${JSON.stringify(visibleWrongDirectFrame)}`);
+  if (!ctrlK.navigatorOpen || ctrlK.dialogCount !== 1)
+    failures.push(`first Ctrl+K did not open exactly one navigator: ${JSON.stringify(ctrlK)}`);
+  if (
+    swipe.hash !== "#deck=grid" ||
+    swipe.activeDeck !== "1" ||
+    swipe.settlement?.scrollAlignmentDelta > 1 ||
+    swipe.settlement?.sectionAlignmentDelta > 1
+  )
+    failures.push(`first swipe did not navigate exactly once to Grid: ${JSON.stringify(swipe)}`);
+  if (!click.executivePressed || click.pressedCount !== 1)
+    failures.push(`first descendant click did not select Executive exactly once: ${JSON.stringify(click)}`);
+  if (external.clickCount !== 1)
+    failures.push(`first external anchor click was not preserved exactly once: ${JSON.stringify(external)}`);
+
+  return { directRoutes, direct, ctrlK, swipe, click, external, failures, ok: failures.length === 0 };
+}
+
 async function settleViewport(send, width, mobile, height = 844) {
   await send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 1, mobile });
   await send("Runtime.evaluate", {
     expression: "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))",
     awaitPromise: true,
+  });
+}
+
+async function setValidityLayoutState(send, width, railOpen, tour) {
+  await settleViewport(send, width, false, 900);
+  await send("Runtime.evaluate", {
+    expression: `(async () => {
+      const desiredRailOpen = ${railOpen};
+      const desiredTour = ${tour};
+      const railToggle = document.querySelector(
+        desiredRailOpen ? 'button[aria-label="Expand command rail"]' : 'button[aria-label="Stow command rail"]',
+      );
+      railToggle?.click();
+      if (railToggle) await new Promise((resolve) => setTimeout(resolve, 360));
+      document.querySelector('.za-command-rail button[aria-label="Stop the 30-second flight"]')?.click();
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+      document.querySelector('.za-command-rail button[aria-label$="Go to Snapshot deck"]')?.click();
+      const main = document.querySelector("#main-content");
+      main?.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      main?.dispatchEvent(new Event("scroll"));
+      await new Promise((resolve) => setTimeout(resolve, 180));
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      if (desiredTour) {
+        document.querySelector('.za-command-rail button[aria-label="Run the 30-second flight"]')?.click();
+      }
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      return {
+        railOpen: Boolean(document.querySelector('button[aria-label="Stow command rail"]')),
+        tour: Boolean(document.querySelector('.za-command-header')?.textContent?.includes('AUTOPILOT')),
+      };
+    })()`,
+    awaitPromise: true,
+    returnByValue: true,
+  });
+}
+
+async function collectValidityGeometrySample(send, viewportWidth, railOpen, tour, expectedState) {
+  await setValidityLayoutState(send, viewportWidth, railOpen, tour);
+  const evaluation = await send("Runtime.evaluate", {
+    expression: `(async () => {
+      const expectedState = ${JSON.stringify(expectedState)};
+      const chip = document.querySelector("[data-validity-chip]");
+      const chipLabel = document.querySelector("[data-validity-label]");
+      const footer = document.querySelector("[data-validity-footer-status]");
+      const footerLabel = document.querySelector("[data-validity-footer-label]");
+      const header = document.querySelector(".za-command-header");
+      const footerRow = footer?.parentElement;
+      const footerChildren = [...(footerRow?.children ?? [])];
+      const validThrough = footerRow?.querySelector("[data-validity-through]");
+      const rect = (element) => {
+        if (!element) return null;
+        const value = element.getBoundingClientRect();
+        return { left: value.left, right: value.right, top: value.top, bottom: value.bottom, width: value.width, height: value.height };
+      };
+      const relativeRect = (element, owner) => {
+        const value = rect(element);
+        const origin = rect(owner);
+        if (!value || !origin) return null;
+        return {
+          left: value.left - origin.left,
+          right: value.right - origin.left,
+          top: value.top - origin.top,
+          bottom: value.bottom - origin.top,
+          width: value.width,
+          height: value.height,
+        };
+      };
+      const textEvidence = (element) => {
+        const style = getComputedStyle(element);
+        return {
+          ariaHidden: Boolean(element.closest('[aria-hidden="true"]')),
+          clientWidth: element.clientWidth,
+          scrollWidth: element.scrollWidth,
+          rect: rect(element),
+          display: style.display,
+          visibility: style.visibility,
+          overflowX: style.overflowX,
+          textOverflow: style.textOverflow,
+          opacity: style.opacity,
+        };
+      };
+      const identity = (name, element, owner) => {
+        if (!element) return { name, visible: false, ariaHidden: false, accessibleText: "", rect: null, stabilityRect: null };
+        const value = rect(element);
+        const style = getComputedStyle(element);
+        return {
+          name,
+          visible:
+            value.width > 0 &&
+            value.height > 0 &&
+            style.display !== "none" &&
+            !["hidden", "collapse"].includes(style.visibility) &&
+            Number(style.opacity) !== 0,
+          ariaHidden: Boolean(element.closest('[aria-hidden="true"]')),
+          accessibleText:
+            element.getAttribute("aria-label") ||
+            element.textContent?.replace(/\\s+/g, " ").trim() ||
+            [...element.querySelectorAll("[aria-label]")]
+              .map((child) => child.getAttribute("aria-label"))
+              .filter(Boolean)
+              .join(" · "),
+          rect: value,
+          stabilityRect: relativeRect(element, owner),
+        };
+      };
+      if (!chip || !chipLabel || !footer || !footerLabel || !header || !footerRow || !validThrough) {
+        return { error: "validity geometry hooks are missing" };
+      }
+      if (expectedState.source === "ssr-fixture") {
+        chipLabel.textContent = expectedState.headerLabel;
+        footerLabel.textContent = expectedState.footerLabel;
+        validThrough.textContent = expectedState.validThroughText;
+      }
+      const headerCluster = chip.parentElement;
+      const deck = header.firstElementChild;
+      const airframeStatus = header.children[1];
+      const audio = header.querySelector('button[aria-label*="selection audio"]');
+      const navigator = header.querySelector('button[aria-label="Open deck navigator"]');
+      const autopilot = [...headerCluster.children].find((element) => element.textContent?.trim() === "AUTOPILOT");
+      const clock = [...headerCluster.children].find((element) => element.textContent?.trim().startsWith("SD "));
+      const headerIdentities = [
+        identity("deck", deck, header),
+        identity("validity", chip, header),
+        identity("audio", audio, header),
+        identity("navigator", navigator, header),
+      ];
+      if (innerWidth >= 1024) headerIdentities.push(identity("clock", clock, header));
+      if (innerWidth >= 1280) headerIdentities.push(identity("airframe-status", airframeStatus, header));
+      if (${tour}) headerIdentities.push(identity("autopilot", autopilot, header));
+      const headerSurface = {
+        rect: rect(chip),
+        stabilityRect: relativeRect(chip, header),
+        label: textEvidence(chipLabel),
+        siblings: headerIdentities.filter((candidate) => candidate.name !== "validity"),
+      };
+      footer.scrollIntoView({ block: "end", inline: "nearest", behavior: "auto" });
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      const footerIdentities = [
+        identity("release", footerChildren[0], footerRow),
+        identity("revised", footerChildren[1], footerRow),
+        identity("validity", footerChildren[2], footerRow),
+        identity("verified", footerChildren[3], footerRow),
+        identity("valid-through", validThrough, footerRow),
+        identity("zero-calls", footerChildren[5], footerRow),
+      ];
+      const sample = {
+        label: chipLabel.textContent,
+        fullState: {
+          id: expectedState.id,
+          source: expectedState.source,
+          headerLabel: chipLabel.textContent,
+          footerLabel: footerLabel.textContent,
+          validThroughText: validThrough.textContent,
+        },
+        identities: { header: headerIdentities, footer: footerIdentities },
+        header: headerSurface,
+        footer: {
+          rect: rect(footer),
+          stabilityRect: relativeRect(footer, footerRow),
+          label: textEvidence(footerLabel),
+          siblings: footerIdentities.filter((candidate) => candidate.name !== "validity"),
+        },
+      };
+      return {
+        viewportWidth: innerWidth,
+        railOpen: Boolean(document.querySelector('button[aria-label="Stow command rail"]')),
+        tour: Boolean(header.textContent?.includes("AUTOPILOT")),
+        sample,
+      };
+    })()`,
+    awaitPromise: true,
+    returnByValue: true,
+  });
+  if (evaluation.exceptionDetails) {
+    throw new Error(evaluation.exceptionDetails.exception?.description ?? evaluation.exceptionDetails.text);
+  }
+  return evaluation.result.value;
+}
+
+async function setControlledValidityState(send, now, expected) {
+  const evaluation = await send("Runtime.evaluate", {
+    expression: `(async () => {
+      window.__v35SetValidityNow(${now});
+      const timerRan = window.__v35RunValidityTimer();
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      return {
+        timerRan,
+        headerLabel: document.querySelector('[data-validity-label]')?.textContent ?? null,
+        footerLabel: document.querySelector('[data-validity-footer-label]')?.textContent ?? null,
+        validThroughText: document.querySelector('[data-validity-through]')?.textContent ?? null,
+      };
+    })()`,
+    awaitPromise: true,
+    returnByValue: true,
+  });
+  if (evaluation.exceptionDetails) {
+    throw new Error(evaluation.exceptionDetails.exception?.description ?? evaluation.exceptionDetails.text);
+  }
+  const actual = evaluation.result.value;
+  assert.equal(actual.timerRan, true, `controlled validity timer must run for ${expected.id}`);
+  assert.deepEqual(
+    {
+      headerLabel: actual.headerLabel,
+      footerLabel: actual.footerLabel,
+      validThroughText: actual.validThroughText,
+    },
+    {
+      headerLabel: expected.headerLabel,
+      footerLabel: expected.footerLabel,
+      validThroughText: expected.validThroughText,
+    },
+    `React must render the complete ${expected.id} validity tuple`,
+  );
+}
+
+async function collectValidityGeometryMatrix(send) {
+  const states = [
+    {
+      id: "ssr-placeholder",
+      source: "ssr-fixture",
+      headerLabel: "EXPORT STATUS · DATED",
+      footerLabel: "DATED EXPORT STATUS",
+      validThroughText: "VALID THRU 09-27-2026",
+    },
+    {
+      id: "live-longest",
+      source: "react-live",
+      headerLabel: "EXPORT VALID · 29D LEFT",
+      footerLabel: "DATED EXPORT VALID",
+      validThroughText: "VALID THRU 09-27-2026",
+    },
+    {
+      id: "live-1d",
+      source: "react-live",
+      headerLabel: "EXPORT VALID · 1D LEFT",
+      footerLabel: "DATED EXPORT VALID",
+      validThroughText: "VALID THRU 09-27-2026",
+    },
+    {
+      id: "live-expired",
+      source: "react-live",
+      headerLabel: "EXPORT EXPIRED",
+      footerLabel: "DATED EXPORT EXPIRED",
+      validThroughText: "VALID THRU TREAT AS HISTORY",
+    },
+  ];
+  const layouts = [768, 834, 1024, 1280].flatMap((viewportWidth) =>
+    [false, true].flatMap((railOpen) => [false, true].map((tour) => ({ viewportWidth, railOpen, tour, samples: [] }))),
+  );
+  const collectState = async (state) => {
+    for (const layout of layouts) {
+      const result = await collectValidityGeometrySample(
+        send,
+        layout.viewportWidth,
+        layout.railOpen,
+        layout.tour,
+        state,
+      );
+      assert.equal(result.error, undefined, result.error);
+      assert.equal(result.viewportWidth, layout.viewportWidth);
+      assert.equal(result.railOpen, layout.railOpen, `rail state must be real at ${layout.viewportWidth}px`);
+      assert.equal(result.tour, layout.tour, `flight state must be real at ${layout.viewportWidth}px`);
+      layout.samples.push(result.sample);
+    }
+  };
+  await collectState(states[1]);
+  await setControlledValidityState(send, Date.parse("2026-09-27T05:00:00Z"), states[2]);
+  await collectState(states[2]);
+  await setControlledValidityState(send, Date.parse("2026-09-28T05:00:00Z"), states[3]);
+  await collectState(states[3]);
+  await collectState(states[0]);
+  for (const layout of layouts) {
+    layout.samples.sort(
+      (first, second) =>
+        states.findIndex((state) => state.id === first.fullState.id) -
+        states.findIndex((state) => state.id === second.fullState.id),
+    );
+  }
+  return layouts;
+}
+
+function summarizeValidityGeometryState(state) {
+  const summarizeSurface = (surfaceName) => {
+    const baseline = state.samples[0][surfaceName];
+    const shifts = state.samples.flatMap((sample) =>
+      ["left", "right", "top", "bottom", "width", "height"].map((property) =>
+        Math.abs(sample[surfaceName].rect[property] - baseline.rect[property]),
+      ),
+    );
+    const siblingOverlaps = state.samples.flatMap((sample) =>
+      sample[surfaceName].siblings.map((sibling) => {
+        const surface = sample[surfaceName].rect;
+        const other = sibling.rect;
+        const verticalOverlap = Math.max(0, Math.min(surface.bottom, other.bottom) - Math.max(surface.top, other.top));
+        const horizontalOverlap = Math.max(
+          0,
+          Math.min(surface.right, other.right) - Math.max(surface.left, other.left),
+        );
+        return verticalOverlap > 0 ? horizontalOverlap : 0;
+      }),
+    );
+    const siblingGaps = state.samples.flatMap((sample) =>
+      sample[surfaceName].siblings.flatMap((sibling) => {
+        const surface = sample[surfaceName].rect;
+        const other = sibling.rect;
+        const verticalOverlap = Math.max(0, Math.min(surface.bottom, other.bottom) - Math.max(surface.top, other.top));
+        if (verticalOverlap <= 0) return [];
+        if (other.right <= surface.left) return [surface.left - other.right];
+        if (other.left >= surface.right) return [other.left - surface.right];
+        return [0];
+      }),
+    );
+    return {
+      rect: baseline.rect,
+      maximumShift: Math.max(...shifts),
+      maximumLabelOverflow: Math.max(
+        ...state.samples.map((sample) =>
+          Math.max(0, sample[surfaceName].label.scrollWidth - sample[surfaceName].label.clientWidth),
+        ),
+      ),
+      maximumSiblingOverlap: Math.max(0, ...siblingOverlaps),
+      minimumSiblingGap: Math.min(...siblingGaps),
+      maximumViewportEscape: Math.max(
+        ...state.samples.map((sample) =>
+          Math.max(0, -sample[surfaceName].rect.left, sample[surfaceName].rect.right - state.viewportWidth),
+        ),
+      ),
+      labels: state.samples.map((sample) => ({
+        label: sample.label,
+        clientWidth: sample[surfaceName].label.clientWidth,
+        scrollWidth: sample[surfaceName].label.scrollWidth,
+      })),
+    };
+  };
+  return {
+    viewportWidth: state.viewportWidth,
+    railOpen: state.railOpen,
+    tour: state.tour,
+    header: summarizeSurface("header"),
+    footer: summarizeSurface("footer"),
+  };
+}
+
+function summarizeValidityGeometryDefects(states) {
+  const rectFields = ["left", "right", "top", "bottom", "width", "height"];
+  const delta = (actual, baseline) =>
+    Math.max(...rectFields.map((property) => Math.abs((actual?.[property] ?? 0) - (baseline?.[property] ?? 0))));
+  return states.flatMap((state) => {
+    const baseline = state.samples[0];
+    const samples = state.samples.slice(1).flatMap((sample) => {
+      const surfaces = ["header", "footer"].flatMap((surfaceName) => {
+        const baselineIdentities = baseline.identities[surfaceName];
+        const shiftedIdentities = sample.identities[surfaceName].flatMap((identity) => {
+          const original = baselineIdentities.find((candidate) => candidate.name === identity.name);
+          const maximumDelta = delta(
+            identity.stabilityRect ?? identity.rect,
+            original?.stabilityRect ?? original?.rect,
+          );
+          return maximumDelta > 0.5
+            ? [
+                {
+                  name: identity.name,
+                  maximumDelta,
+                  baselineText: original?.accessibleText ?? null,
+                  actualText: identity.accessibleText,
+                  baseline: original?.stabilityRect ?? original?.rect ?? null,
+                  actual: identity.stabilityRect ?? identity.rect,
+                },
+              ]
+            : [];
+        });
+        const surfaceDelta = delta(
+          sample[surfaceName].stabilityRect ?? sample[surfaceName].rect,
+          baseline[surfaceName].stabilityRect ?? baseline[surfaceName].rect,
+        );
+        return surfaceDelta > 0.5 || shiftedIdentities.length > 0
+          ? [{ surface: surfaceName, surfaceDelta, shiftedIdentities }]
+          : [];
+      });
+      return surfaces.length > 0 ? [{ state: sample.fullState.id, surfaces }] : [];
+    });
+    return samples.length > 0
+      ? [
+          {
+            viewportWidth: state.viewportWidth,
+            railOpen: state.railOpen,
+            tour: state.tour,
+            baseline: baseline.fullState.id,
+            samples,
+          },
+        ]
+      : [];
   });
 }
 
@@ -598,6 +1407,35 @@ async function captureRestoredMotionSeries(send) {
   );
 }
 
+async function synchronizeMotionScroll(send) {
+  const synchronized = await evaluateByValue(
+    send,
+    `(async () => {
+      const scroller = document.querySelector('#main-content');
+      const progress = document.querySelector('.za-airframe-progress');
+      const track = progress?.parentElement;
+      if (!scroller || !progress || !track) return { ok: false, reason: 'motion scroll synchronization hooks are missing' };
+      scroller.dispatchEvent(new Event('scroll'));
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      const maxScroll = Math.max(1, scroller.scrollHeight - scroller.clientHeight);
+      const progressPercent = Math.round(Math.min(1, Math.max(0, scroller.scrollTop / maxScroll)) * 100);
+      const targetWidth = \`\${progressPercent}%\`;
+      const trackRect = track.getBoundingClientRect();
+      const progressRect = progress.getBoundingClientRect();
+      return {
+        ok: progress.style.width === targetWidth,
+        reason: progress.style.width === targetWidth ? null : 'real scroll listener did not synchronize HUD progress',
+        progressPercent,
+        targetWidth,
+        rect: { width: (trackRect.width * progressPercent) / 100, height: progressRect.height },
+      };
+    })()`,
+    true,
+  );
+  if (!synchronized?.ok) throw new Error(synchronized?.reason ?? "motion scroll synchronization failed");
+  return synchronized;
+}
+
 async function runMotionPreferenceAcceptance(send, targetUrl) {
   await setReducedMotionPreference(send, false);
   await settleViewport(send, 1440, false, 1100);
@@ -608,7 +1446,7 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
   const openedLineage = await evaluateByValue(
     send,
     `(() => {
-      const control = document.querySelector('button[aria-label="Go to LINEAGE deck"]');
+      const control = document.querySelector('button[aria-label="05 LINEAGE · Go to LINEAGE deck"]');
       if (!control) return false;
       control.click();
       return true;
@@ -658,7 +1496,7 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
       const pipTarget = [...document.querySelectorAll('.za-lcars-pip')]
         .find((element) => element.getAttribute('aria-label') === ${JSON.stringify(MOTION_PIP_LABEL)});
       const firstPip = document.querySelector('.za-lcars-pip');
-      const lineageControl = document.querySelector('button[aria-label="Go to LINEAGE deck"]');
+      const lineageControl = document.querySelector('button[aria-label="05 LINEAGE · Go to LINEAGE deck"]');
       if (
         !scroller || !section || !hud || !progress || routingControls.length < 2 || !routingTarget ||
         !pipTarget || !firstPip || !lineageControl
@@ -723,7 +1561,6 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
     true,
   );
   if (!hudPath.ok) throw new Error(`${hudPath.reason}: ${JSON.stringify(hudPath.points ?? [])}`);
-  const expectedFinal = { ...staticFinal, hud: hudPath.final.rect };
   const normalStartCapture = await captureMotionElements(send);
 
   const normalIntermediateCapture = await evaluateByValue(
@@ -733,21 +1570,7 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
       const startRects = ${JSON.stringify(
         Object.fromEntries(Object.entries(normalStartCapture.elements).map(([name, sample]) => [name, sample.rect])),
       )};
-      const finalRects = ${JSON.stringify(expectedFinal)};
-      const expectedHudTargetWidth = ${JSON.stringify(hudPath.final.targetWidth)};
       const dimensions = { routing: ['width'], hud: ['width'], rail: ['width'], pip: ['width', 'height'] };
-      const isStrictlyIntermediate = (sample) => Object.entries(dimensions).every(([name, axes]) =>
-        axes.every((axis) => {
-          const start = startRects[name][axis];
-          const final = finalRects[name][axis];
-          const value = sample.elements[name]?.rect?.[axis];
-          return (
-            Number.isFinite(value) &&
-            Math.abs(value - start) > 0.01 &&
-            Math.abs(value - final) > 0.01
-          );
-        })
-      );
       const routingControls = [...document.querySelectorAll('button[aria-controls="routing-lane-detail"]')];
       const routing = routingControls.at(-1);
       const rail = document.querySelector('.za-command-rail button[aria-label="Expand command rail"]');
@@ -755,7 +1578,11 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
         .find((element) => element.getAttribute('aria-label') === ${JSON.stringify(MOTION_PIP_LABEL)});
       const scroller = document.querySelector('#main-content');
       const section = document.querySelector('section[data-deck="4"]');
-      if (!routing || !rail || !pip || !scroller || !section) return { ok: false, reason: 'real motion controls are missing' };
+      const progress = document.querySelector('.za-airframe-progress');
+      const progressTrack = progress?.parentElement;
+      if (!routing || !rail || !pip || !scroller || !section || !progress || !progressTrack) {
+        return { ok: false, reason: 'real motion controls are missing' };
+      }
       routing.click();
       rail.click();
       pip.click();
@@ -763,14 +1590,35 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
       return new Promise((resolve) => {
         let frameCount = 0;
         const trace = [];
+        let finalRects = null;
+        let expectedHudTargetWidth = null;
+        const isStrictlyIntermediate = (sample) => Object.entries(dimensions).every(([name, axes]) =>
+          axes.every((axis) => {
+            const start = startRects[name][axis];
+            const final = finalRects?.[name]?.[axis];
+            const value = sample.elements[name]?.rect?.[axis];
+            return (
+              Number.isFinite(value) &&
+              Number.isFinite(final) &&
+              Math.abs(value - start) > 0.01 &&
+              Math.abs(value - final) > 0.01
+            );
+          })
+        );
         const inspect = () => {
           frameCount += 1;
           const sample = capture();
           const elapsedMs = performance.now() - startedAt;
-          const hudTargetWidth = document.querySelector('.za-airframe-progress')?.style.width ?? null;
+          const hudTargetWidth = progress.style.width;
           trace.push({ elapsedMs, hudTargetWidth, rects: Object.fromEntries(Object.entries(sample.elements).map(([name, value]) => [name, value?.rect])) });
           if (hudTargetWidth === expectedHudTargetWidth && isStrictlyIntermediate(sample)) {
-            resolve({ ok: true, frameCount, elapsedMs, trace, ...sample });
+            resolve({
+              ok: true,
+              frameCount,
+              elapsedMs,
+              trace,
+              ...sample,
+            });
           } else if (frameCount >= 10 || elapsedMs >= 220) {
             resolve({ ok: false, reason: 'all four motion targets did not become intermediate together', frameCount, elapsedMs, trace, ...sample });
           } else {
@@ -781,7 +1629,19 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
           scroller.scrollTo({ top: Math.max(0, section.offsetTop - 8), behavior: 'auto' });
           requestAnimationFrame(() => {
             scroller.scrollTo({ top: section.offsetTop + ${Number(hudPath.final.sectionOffset)}, behavior: 'auto' });
-            requestAnimationFrame(inspect);
+            scroller.dispatchEvent(new Event('scroll'));
+            requestAnimationFrame(() => {
+              const maxScroll = Math.max(1, scroller.scrollHeight - scroller.clientHeight);
+              const targetProgressPercent = Math.round(Math.min(1, Math.max(0, scroller.scrollTop / maxScroll)) * 100);
+              expectedHudTargetWidth = \`\${targetProgressPercent}%\`;
+              const trackRect = progressTrack.getBoundingClientRect();
+              const progressRect = progress.getBoundingClientRect();
+              finalRects = {
+                ...${JSON.stringify(staticFinal)},
+                hud: { width: (trackRect.width * targetProgressPercent) / 100, height: progressRect.height },
+              };
+              inspect();
+            });
           });
         });
       });
@@ -794,6 +1654,8 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
 
   await setReducedMotionPreference(send, true);
   await waitForReducedMotionPreference(send, true, 2);
+  const canonicalScroll = await synchronizeMotionScroll(send);
+  const expectedFinal = { ...staticFinal, hud: canonicalScroll.rect };
   const reducedAfterInterruptCapture = await captureMotionElements(send);
 
   await setReducedMotionPreference(send, false);
@@ -802,6 +1664,7 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
 
   await setReducedMotionPreference(send, true);
   await waitForReducedMotionPreference(send, true, 2);
+  await synchronizeMotionScroll(send);
   const reducedAgainCapture = await captureMotionElements(send);
 
   const scenario = {
@@ -815,6 +1678,7 @@ async function runMotionPreferenceAcceptance(send, targetUrl) {
     normalStart: normalStartCapture.elements,
     normalIntermediate: normalIntermediateCapture.elements,
     expectedFinal,
+    synchronization: canonicalScroll,
     reducedAfterInterrupt: reducedAfterInterruptCapture.elements,
     restoredSamples: restoredSamples.map(({ atMs, observedAtMs, elements }) => ({ atMs, observedAtMs, elements })),
     reducedAgain: reducedAgainCapture.elements,
@@ -864,13 +1728,183 @@ async function main() {
       ok: browserVersionFailures.length === 0,
     };
     await send("Runtime.enable");
+    await send("Page.enable");
+    await send("Page.addScriptToEvaluateOnNewDocument", {
+      source: `(() => {
+        if (!location.search.includes("validity-matrix")) return;
+        const nativeDateNow = Date.now.bind(Date);
+        let controlledNow = Date.parse("2026-08-30T12:00:00Z");
+        const nativeSetTimeout = window.setTimeout.bind(window);
+        const nativeClearTimeout = window.clearTimeout.bind(window);
+        const validityTimers = new Map();
+        Date.now = () => controlledNow;
+        window.setTimeout = (callback, delay = 0, ...args) => {
+          const id = nativeSetTimeout(callback, delay, ...args);
+          if (Number(delay) >= 60_000) validityTimers.set(id, { callback, args });
+          return id;
+        };
+        window.clearTimeout = (id) => {
+          validityTimers.delete(id);
+          return nativeClearTimeout(id);
+        };
+        Object.defineProperties(window, {
+          __v35SetValidityNow: {
+            value: (next) => { controlledNow = Number(next); },
+          },
+          __v35RunValidityTimer: {
+            value: () => {
+              const entries = [...validityTimers.entries()];
+              const entry = entries.at(-1);
+              if (!entry) return false;
+              const [id, timer] = entry;
+              validityTimers.delete(id);
+              nativeClearTimeout(id);
+              timer.callback(...timer.args);
+              return true;
+            },
+          },
+          __v35RestoreDateNow: {
+            value: () => {
+              controlledNow = nativeDateNow();
+              Date.now = nativeDateNow;
+            },
+          },
+        });
+      })();`,
+    });
+    await send("Page.addScriptToEvaluateOnNewDocument", {
+      source: `(() => {
+        if (!location.search.includes("critical-parity")) return;
+        const nativeSetTimeout = window.setTimeout.bind(window);
+        const nativeClearTimeout = window.clearTimeout.bind(window);
+        let heldActivation = null;
+        const activationErrors = [];
+        const heldId = 2_500_000_000;
+        window.setTimeout = (callback, delay = 0, ...args) => {
+          if (Number(delay) === 250 && heldActivation == null) {
+            heldActivation = { callback, args };
+            return heldId;
+          }
+          return nativeSetTimeout(callback, delay, ...args);
+        };
+        window.clearTimeout = (id) => {
+          if (id === heldId) {
+            heldActivation = null;
+            return;
+          }
+          nativeClearTimeout(id);
+        };
+        Object.defineProperty(window, "__v35ReleaseCriticalActivation", {
+          value: () => {
+            const held = heldActivation;
+            heldActivation = null;
+            if (!held) throw new Error("critical activation was not held");
+            held.callback(...held.args);
+          },
+        });
+        Object.defineProperty(window, "__v35CriticalActivationHeld", {
+          get: () => heldActivation != null,
+        });
+        addEventListener("error", (event) => activationErrors.push(event.message));
+        addEventListener("unhandledrejection", (event) => activationErrors.push(String(event.reason)));
+        Object.defineProperty(window, "__v35CriticalActivationErrors", { value: activationErrors });
+      })();`,
+    });
+    await send("Page.addScriptToEvaluateOnNewDocument", {
+      source: `(() => {
+        if (!location.search.includes("startup-native")) return;
+        const frames = [];
+        Object.defineProperty(window, "__v35DirectFrames", { value: frames });
+        let count = 0;
+        const sample = () => {
+          const root = document.querySelector("#root");
+          const scroller = document.querySelector("#main-content");
+          const sections = [...document.querySelectorAll("section[data-deck]")];
+          if (root && scroller && sections.length) {
+            const scrollerTop = scroller.getBoundingClientRect().top;
+            const nearest = sections.reduce((best, section) => {
+              const deck = Number(section.getAttribute("data-deck"));
+              const delta = Math.abs(section.getBoundingClientRect().top - scrollerTop);
+              return delta < best.delta ? { deck, delta } : best;
+            }, { deck: -1, delta: Number.POSITIVE_INFINITY });
+            frames.push({
+              activated: root.dataset.clientActivated === "true",
+              present: true,
+              nearestDeck: nearest.deck,
+              visibility: getComputedStyle(root).visibility,
+              scrollTop: scroller.scrollTop,
+              expectedScrollTop: (() => {
+                const anchor = document.getElementById(location.hash.slice(1));
+                const section = anchor?.closest("section[data-deck]");
+                if (!section) return null;
+                return Math.min(Math.max(0, section.offsetTop - 8), Math.max(0, scroller.scrollHeight - scroller.clientHeight));
+              })(),
+              sectionTop: (() => {
+                const anchor = document.getElementById(location.hash.slice(1));
+                return anchor?.closest("section[data-deck]")?.getBoundingClientRect().top ?? null;
+              })(),
+              anchorTop: document.getElementById(location.hash.slice(1))?.getBoundingClientRect().top ?? null,
+              expectedSectionTop: (() => {
+                const anchor = document.getElementById(location.hash.slice(1));
+                const section = anchor?.closest("section[data-deck]");
+                if (!section) return null;
+                const expectedScrollTop = Math.min(Math.max(0, section.offsetTop - 8), Math.max(0, scroller.scrollHeight - scroller.clientHeight));
+                return section.offsetTop - expectedScrollTop;
+              })(),
+              atMs: performance.now(),
+            });
+            const frame = frames.at(-1);
+            frame.scrollAlignmentDelta = Math.abs(frame.scrollTop - frame.expectedScrollTop);
+            frame.sectionAlignmentDelta = Math.abs(frame.sectionTop - frame.expectedSectionTop);
+          }
+          count += 1;
+          if (count < 60 && root?.dataset.clientActivated !== "true") requestAnimationFrame(sample);
+        };
+        requestAnimationFrame(sample);
+      })();`,
+    });
+    const criticalShellParity = [
+      await runCriticalShellParity(send, targetUrl, 390, 844, true),
+      await runCriticalShellParity(send, targetUrl, 1280, 900, false),
+    ];
+    for (const result of criticalShellParity) {
+      if (!result.ok) console.error(JSON.stringify(result, null, 2));
+      assert.equal(
+        result.ok,
+        true,
+        `Critical shell drifted from activated geometry at ${result.width}px: ${result.failures.join("; ")}`,
+      );
+    }
+    const earlyActivation = await runEarlyActivationAcceptance(send, targetUrl);
+    assert.equal(earlyActivation.ok, true, `Early activation outcomes failed: ${earlyActivation.failures.join("; ")}`);
+    await send("Emulation.setEmulatedMedia", { media: "screen", features: [] });
     await send("Emulation.setDeviceMetricsOverride", {
       width: 1280,
       height: 900,
       deviceScaleFactor: 1,
       mobile: false,
     });
+    await send("Page.navigate", { url: `${targetUrl}?validity-matrix` });
     await waitForApp(send);
+    await send("Runtime.evaluate", {
+      expression: "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))",
+      awaitPromise: true,
+    });
+    const validityGeometry = await collectValidityGeometryMatrix(send);
+    await send("Runtime.evaluate", { expression: "window.__v35RestoreDateNow()" });
+    await setValidityLayoutState(send, 1280, false, false);
+    const validityGeometryFailures = validityGeometryAcceptanceFailures(validityGeometry);
+    const validityGeometryResult = {
+      ok: validityGeometryFailures.length === 0,
+      failures: validityGeometryFailures,
+      states: validityGeometry.map(summarizeValidityGeometryState),
+      defectEvidence: summarizeValidityGeometryDefects(validityGeometry),
+    };
+    assert.equal(
+      validityGeometryResult.ok,
+      true,
+      `Full validity-state geometry acceptance failed: ${JSON.stringify({ failures: validityGeometryResult.failures, defectEvidence: validityGeometryResult.defectEvidence })}`,
+    );
     const assetEvaluation = await send("Runtime.evaluate", {
       expression: `(async () => {
         const expected = [
@@ -1010,6 +2044,55 @@ async function main() {
           parseFloat(getComputedStyle(element).fontSize),
         );
         const failures = [];
+        const readabilityTargets = {
+          headline: 'section[data-deck="0"] h1',
+          lede: '.za-snapshot-lede',
+          body: '.za-snapshot-copy',
+          telemetry: 'section[data-deck="0"] .za-critical-telemetry',
+          technical: '.za-snapshot-modes > button:first-child',
+          executive: '.za-snapshot-modes > button:last-child',
+          descend: '.za-snapshot-actions > button:first-child',
+          eve: '.za-snapshot-actions > button:last-child',
+          activeRail: 'nav[aria-label="Mobile command decks"] button[aria-current="page"]',
+        };
+        const readability = Object.entries(readabilityTargets).map(([name, selector]) => {
+          const element = document.querySelector(selector);
+          if (!element) return { name, selector, present: false };
+          const rect = element.getBoundingClientRect();
+          const style = getComputedStyle(element);
+          const visible = style.display !== "none" && style.visibility !== "hidden" && Number(style.opacity) > 0;
+          const viewportClipped = rect.left < -0.5 || rect.right > innerWidth + 0.5;
+          const contentClipped = element.scrollWidth > element.clientWidth + 1;
+          let ancestorClipped = false;
+          let ancestor = element.parentElement;
+          while (ancestor && ancestor !== document.body) {
+            const ancestorStyle = getComputedStyle(ancestor);
+            if (["hidden", "clip"].includes(ancestorStyle.overflowX)) {
+              const boundary = ancestor.getBoundingClientRect();
+              if (rect.left < boundary.left - 0.5 || rect.right > boundary.right + 0.5) ancestorClipped = true;
+            }
+            ancestor = ancestor.parentElement;
+          }
+          return {
+            name,
+            selector,
+            present: true,
+            visible,
+            left: rect.left,
+            right: rect.right,
+            clientWidth: element.clientWidth,
+            scrollWidth: element.scrollWidth,
+            viewportClipped,
+            contentClipped,
+            ancestorClipped,
+          };
+        });
+        readability.forEach((item) => {
+          if (!item.present) failures.push("missing readability target " + item.name);
+          else if (!item.visible || item.viewportClipped || item.contentClipped || item.ancestorClipped) {
+            failures.push("Snapshot readability target " + item.name + " is horizontally clipped: " + JSON.stringify(item));
+          }
+        });
         if (pips.length !== 8) failures.push("expected eight aircraft pips");
         pips.forEach((pip, index) => {
           if (pip.width < 44 || pip.height < 44) failures.push("pip " + (index + 1) + " measured " + pip.width + "x" + pip.height);
@@ -1048,7 +2131,7 @@ async function main() {
         if (actionStyle?.display !== "grid" || gridColumns.length !== 2 || actionButtons.length !== 2) failures.push("Snapshot actions must render as one two-column grid");
         if (actionRects.length === 2 && Math.abs(actionRects[0].top - actionRects[1].top) > 0.5) failures.push("Snapshot action buttons must share one row");
         if (document.documentElement.scrollWidth > innerWidth) failures.push("document width " + document.documentElement.scrollWidth + "px exceeds viewport " + innerWidth + "px");
-        return { ok: failures.length === 0, failures, viewport: [innerWidth, innerHeight], pips, rail: { height: railRect.height, top: railRect.top, bottom: railRect.bottom, paddingBottom: railPadding }, clearance, controls: controlRects, eveControls: { input: eveTargetRect(eveInput), run: eveTargetRect(eveRun), criticalTelemetryFontSizesPx: eveCriticalTelemetryFontSizesPx }, actionGrid: { display: actionStyle?.display, columns: gridColumns, buttons: actionRects.map((rect) => ({ top: rect.top, width: rect.width, height: rect.height })) } };
+        return { ok: failures.length === 0, failures, viewport: [innerWidth, innerHeight], pips, rail: { height: railRect.height, top: railRect.top, bottom: railRect.bottom, paddingBottom: railPadding }, clearance, controls: controlRects, readability, eveControls: { input: eveTargetRect(eveInput), run: eveTargetRect(eveRun), criticalTelemetryFontSizesPx: eveCriticalTelemetryFontSizesPx }, actionGrid: { display: actionStyle?.display, columns: gridColumns, buttons: actionRects.map((rect) => ({ top: rect.top, width: rect.width, height: rect.height })) } };
       })()`,
         returnByValue: true,
       });
@@ -1531,12 +2614,58 @@ async function main() {
     });
     const bitFocus = bitFocusEvaluation.result.value;
     const motionPreference = await runMotionPreferenceAcceptance(send, targetUrl);
+    await send("Page.addScriptToEvaluateOnNewDocument", {
+      source: `(() => {
+        const messages = [];
+        const describe = (value) => {
+          if (value instanceof Error) return value.stack || value.message;
+          if (typeof value === "string") return value;
+          try { return JSON.stringify(value); } catch { return String(value); }
+        };
+        for (const level of ["warn", "error"]) {
+          const original = console[level].bind(console);
+          console[level] = (...args) => {
+            messages.push({ level, text: args.map(describe).join(" ") });
+            original(...args);
+          };
+        }
+        addEventListener("error", (event) => messages.push({ level: "error", text: event.message }));
+        addEventListener("unhandledrejection", (event) =>
+          messages.push({ level: "error", text: "unhandled rejection: " + describe(event.reason) }),
+        );
+        Object.defineProperty(window, "__v35BrowserMessages", { value: messages });
+      })();`,
+    });
+    await send("Page.navigate", { url: `${targetUrl}?hydration-console#deck=eve` });
+    await waitForApp(send);
+    const hydrationEvaluation = await send("Runtime.evaluate", {
+      expression: `(async () => {
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        const messages = window.__v35BrowserMessages ?? [];
+        const root = document.querySelector('#root[data-prerendered="v35"]');
+        return {
+          ok: messages.length === 0 && Boolean(root) && document.querySelectorAll('#root').length === 1 &&
+            document.querySelectorAll('section[data-deck]').length === 9 &&
+            document.querySelector('#main-content')?.dataset.activeDeck === '7',
+          messages,
+          markedRoots: document.querySelectorAll('#root[data-prerendered="v35"]').length,
+          roots: document.querySelectorAll('#root').length,
+          decks: document.querySelectorAll('section[data-deck]').length,
+          activeDeck: document.querySelector('#main-content')?.dataset.activeDeck ?? null,
+        };
+      })()`,
+      awaitPromise: true,
+      returnByValue: true,
+    });
+    const hydrationConsole = hydrationEvaluation.result.value;
     console.log(
       JSON.stringify(
         {
           bitFocus,
           browserVersion,
           cinemas,
+          criticalShellParity,
+          earlyActivation,
           decodedAssets,
           desktopFlightTelemetry,
           desktopLayout,
@@ -1546,9 +2675,11 @@ async function main() {
           desktopEveVisualPointerNoneNegative,
           eveFocus,
           flights,
+          hydrationConsole,
           motionPreference,
           snapshotGeometry,
           tickerTelemetry,
+          validityGeometry: validityGeometryResult,
           mobile320: narrowResult,
         },
         null,
@@ -1561,6 +2692,16 @@ async function main() {
       `Every optimized poster must decode with exact MIME and dimensions: ${JSON.stringify(decodedAssets.decoded)}`,
     );
     assert.equal(browserVersion.ok, true, browserVersion.failures.join("; "));
+    criticalShellParity.forEach((result) =>
+      assert.equal(result.ok, true, `Critical shell parity failed at ${result.width}px: ${result.failures.join("; ")}`),
+    );
+    assert.equal(earlyActivation.ok, true, earlyActivation.failures.join("; "));
+    assert.equal(
+      hydrationConsole.ok,
+      true,
+      `Direct-link hydration emitted browser warnings/errors or lost its built tree: ${JSON.stringify(hydrationConsole)}`,
+    );
+    assert.equal(validityGeometryResult.ok, true, validityGeometryResult.failures.join("; "));
     assert.equal(desktopLayout.ok, true, desktopLayout.failures.join("; "));
     assert.equal(
       desktopFlightTelemetry.ok,

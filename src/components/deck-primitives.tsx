@@ -70,13 +70,16 @@ export function DeckShell({
   sRef,
   children,
   className = "",
+  nativeAnchorIds = [],
 }: {
   index: number;
   sRef: SecRef;
   children: ReactNode;
   className?: string;
+  nativeAnchorIds?: readonly string[];
 }) {
   const shown = useDeck((state) => state.shown.includes(index));
+  const deckAnchorIds = index > 0 ? [`deck=${DECKS[index].id}`, ...nativeAnchorIds] : nativeAnchorIds;
   return (
     <section
       ref={sRef}
@@ -85,6 +88,15 @@ export function DeckShell({
       aria-label={`${DECKS[index].name} deck`}
       className={`za-mobile-rail-clearance relative min-h-[92dvh] px-5 py-24 md:px-10 lg:px-14 ${className}`}
     >
+      {deckAnchorIds.map((id) => (
+        <span
+          key={id}
+          id={id}
+          aria-hidden="true"
+          className="pointer-events-none"
+          style={{ position: "absolute", left: 0, top: "-8px" }}
+        />
+      ))}
       <div className={shown ? "za-rise" : "translate-y-6 opacity-0"}>{children}</div>
     </section>
   );

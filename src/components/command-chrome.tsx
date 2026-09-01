@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { CRAFT, DECKS, DECK_SHORT, validityShort } from "@/lib/content";
+import { CRAFT, DECKS, DECK_SHORT, INITIAL_VALIDITY_LABEL } from "@/lib/content";
 import type { Mode } from "@/lib/store";
 import { FlightControl } from "./flight-control";
 
@@ -47,7 +47,7 @@ export function DesktopCommandRail({
         type="button"
         className="za-lcars-cap warm mx-0 mt-0 h-16 px-3 text-left text-[13px]"
         onClick={() => onNavigate(0)}
-        aria-label="Go to Snapshot deck"
+        aria-label={`${railOpen ? "ZEUSAPOLLO" : "ZA"} · Go to Snapshot deck`}
       >
         {railOpen ? "ZEUSAPOLLO" : "ZA"}
       </button>
@@ -59,7 +59,7 @@ export function DesktopCommandRail({
             <button
               key={item.id}
               type="button"
-              aria-label={`Go to ${item.name} deck`}
+              aria-label={`${item.num} ${item.name} · Go to ${item.name} deck`}
               aria-current={selected ? "page" : undefined}
               onClick={() => onNavigate(index)}
               onMouseEnter={onDeckHover}
@@ -123,6 +123,7 @@ export type CommandHeaderProps = {
   onOpenNavigator: (opener: HTMLElement) => void;
   onToggleAudio: () => void;
   tour: boolean;
+  validityLabel?: string;
 };
 
 export function CommandHeader({
@@ -136,6 +137,7 @@ export function CommandHeader({
   onOpenNavigator,
   onToggleAudio,
   tour,
+  validityLabel = INITIAL_VALIDITY_LABEL,
 }: CommandHeaderProps) {
   return (
     <header
@@ -161,11 +163,11 @@ export function CommandHeader({
       </div>
       <div className="pointer-events-auto flex items-center gap-2">
         {tour ? <span className="za-chip min-h-11 text-accent">AUTOPILOT</span> : null}
-        <span className="za-chip !hidden md:!inline-flex min-h-11">
+        <span data-validity-chip className="za-chip za-validity-chip !hidden min-h-11 md:!inline-flex">
           <span className="za-lock-pip" />
-          {validityShort()}
+          <span data-validity-label>{validityLabel}</span>
         </span>
-        <span className="za-chip !hidden lg:!inline-flex">SD {clock}</span>
+        <span className="za-chip za-clock-chip !hidden lg:!inline-flex">SD {clock}</span>
         <button
           type="button"
           className={`za-chip pointer-events-auto min-h-11 ${audio ? "border-cyan text-cyan" : ""}`}
@@ -238,7 +240,7 @@ export function MobileCommandNavigation({
           <button
             key={item.id}
             type="button"
-            aria-label={`Go to ${item.name}`}
+            aria-label={`${item.num} ${DECK_SHORT[item.id]} · Go to ${item.name}`}
             aria-current={deck === index ? "page" : undefined}
             ref={deck === index ? activeChip : undefined}
             onClick={() => onNavigate(index)}
@@ -246,7 +248,7 @@ export function MobileCommandNavigation({
               deck === index ? "bg-accent/15 text-accent" : "text-dim"
             }`}
           >
-            {DECK_SHORT[item.id]}
+            {item.num} {DECK_SHORT[item.id]}
           </button>
         );
       })}
