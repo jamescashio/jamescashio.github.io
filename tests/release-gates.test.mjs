@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFile, stat } from "node:fs/promises";
 import test from "node:test";
 import { JSDOM } from "jsdom";
@@ -207,6 +208,16 @@ test("the built document contains one real prerendered command deck with a criti
   assert.equal(styles.length, 0, "the complete stylesheet must wait for intent-aware client activation");
   assert.equal(document.querySelectorAll("style[data-critical-shell]").length, 1);
   assert.match(scripts[0].getAttribute("src") ?? "", /^\/assets\/index-[\w-]+\.js$/);
+  const criticalRoute = document.querySelector("script[data-critical-route]");
+  assert.ok(criticalRoute, "the built document must retain the synchronous pre-paint route helper");
+  const criticalRouteHash = createHash("sha256")
+    .update(criticalRoute.textContent ?? "")
+    .digest("base64");
+  const csp = document.querySelector('meta[http-equiv="Content-Security-Policy"]')?.getAttribute("content") ?? "";
+  assert.ok(
+    csp.includes(`'sha256-${criticalRouteHash}'`),
+    "the built pre-paint route helper must retain its exact CSP hash",
+  );
   const entryPath = scripts[0].getAttribute("src")?.replace(/^\//, "");
   assert.ok(entryPath);
   const entry = await read(`dist/${entryPath}`);
