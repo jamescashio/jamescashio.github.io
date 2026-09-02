@@ -25,6 +25,7 @@ import { BitMascot } from "./bit-mascot";
 import { BuildEnvelope } from "./build-envelope";
 import { CountUp, DeckShell, Kicker, Plate, Ticker, Title } from "./deck-primitives";
 import { EveConsole } from "./eve-console";
+import { FleetGrid } from "./fleet-grid";
 import { HermesProof } from "./hermes-proof";
 
 type SecRef = RefObject<HTMLElement | null>;
@@ -263,46 +264,47 @@ export function DeckBrief({ sBrief }: { sBrief: SecRef }) {
 export function DeckGrid({ s1 }: { s1: SecRef }) {
   const [hover, setHover] = useState<number | null>(null);
   const [lock, setLock] = useState<number | null>(null);
-  const withheld = Array.from({ length: 12 }, (_, i) => i + 8);
+  const focusRole = useCallback((index: number | null) => {
+    setHover(index);
+    if (index != null) getSound().target((index / 7 - 0.5) * 1.2);
+  }, []);
+  const lockRole = useCallback((index: number) => {
+    setLock((current) => (current === index ? null : index));
+    getSound().ok();
+  }, []);
 
   return (
     <DeckShell index={1} sRef={s1}>
-      <div className="relative max-w-5xl">
+      <div className="relative max-w-6xl">
         <Kicker>02 · THE GRID</Kicker>
         <Title>WHAT IS ACTUALLY RUNNING</Title>
         <p className="mt-5 max-w-[62ch] text-[1.05rem] leading-relaxed text-muted">
-          Nineteen documented roles. At the 28 August probe Zeus ran 12 of 13 and Apollo ran 6 of 6. Seven observed role
-          families are named here; the stopped guest stays unnamed and the remaining roles stay public-safe.
+          Nineteen documented roles on two hosts. At the 28 August probe Zeus ran 12 of 13 and Apollo ran 6 of 6. Seven
+          observed role families are named on the map; the stopped guest stays unnamed and the remaining roles stay
+          public-safe. Select a role family to trace its route.
         </p>
 
-        <div data-hud-clear className="mt-8 grid grid-cols-2 gap-2 md:grid-cols-4">
+        <div data-hud-clear className="mt-8">
+          <FleetGrid hover={hover} lock={lock} onHover={focusRole} onLock={lockRole} />
+        </div>
+
+        <div data-hud-clear className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7">
           {NAMED_ROLES.map((r, i) => (
             <button
               key={r.name + r.role}
               type="button"
               aria-pressed={lock === i}
-              onMouseEnter={() => {
-                setHover(i);
-                getSound().target((i / 7 - 0.5) * 1.2);
-              }}
+              onMouseEnter={() => focusRole(i)}
               onMouseLeave={() => setHover(null)}
-              onClick={() => {
-                setLock(i);
-                getSound().ok();
-              }}
-              className={`za-panel p-4 text-left transition-colors ${hover === i || lock === i ? "border-accent" : ""}`}
+              onFocus={() => setHover(i)}
+              onBlur={() => setHover(null)}
+              onClick={() => lockRole(i)}
+              className={`za-panel za-role-tile p-3 text-left transition-colors ${hover === i || lock === i ? "border-accent" : ""}`}
             >
               <div className="za-mono text-[9px] text-dim">{String(i + 1).padStart(2, "0")}</div>
-              <div className="mt-1 font-display text-[13px] tracking-wide text-ink">{r.name}</div>
-              <div className="za-mono mt-1 text-[9px] text-cyan">{r.role}</div>
+              <div className="mt-1 font-display text-[12px] leading-tight tracking-wide text-ink">{r.name}</div>
+              <div className="za-mono mt-1 text-[8px] leading-snug text-cyan">{r.role}</div>
             </button>
-          ))}
-          {withheld.map((n) => (
-            <div key={n} className="za-panel border-dashed p-4 opacity-70">
-              <div className="za-mono text-[9px] text-dim">ROLE {String(n).padStart(2, "0")}</div>
-              <div className="mt-2 h-2 w-24 rounded-full bg-white/10" />
-              <div className="za-mono mt-2 text-[9px] text-dim">PUBLIC-SAFE · NOT ITEMIZED</div>
-            </div>
           ))}
         </div>
         <p className="mt-6 max-w-[70ch] text-sm leading-relaxed text-muted">{SERVICE_FAMILIES}</p>
@@ -326,9 +328,9 @@ export function DeckRouting({ s2 }: { s2: SecRef }) {
         <Title>QUALITY PICKS THE MODEL.</Title>
         <p className="mt-2 za-display text-[clamp(1.2rem,2.4vw,2rem)] text-accent">COST ONLY BREAKS A TIE.</p>
         <p className="mt-5 max-w-[62ch] text-[1.05rem] leading-relaxed text-muted">
-          Quality picks the model. Cost only breaks a tie. Public capability lanes and private catalog entries count
-          different objects; both were last confirmed in the {ROUTING_VERIFIED_LONG} routing inventory. This is a dated
-          counting rule, not a live provider status board.
+          Every job is classified first, then sent to the lane that does that kind of work best. Ten public capability
+          lanes and 36 private catalog entries are separate counts, both confirmed in the {ROUTING_VERIFIED_LONG}{" "}
+          routing inventory. Select a lane to see what it is for and how the five stage routing computer commits to it.
         </p>
 
         <div data-hud-clear className="mt-10 grid gap-3 lg:grid-cols-[1fr_1.1fr]">
@@ -407,8 +409,9 @@ export function DeckIron({ s3 }: { s3: SecRef }) {
           <Kicker>04 · THE IRON</Kicker>
           <Title>HARDWARE IN A ROOM I CAN WALK INTO.</Title>
           <p className="mt-5 max-w-[52ch] text-[1.05rem] leading-relaxed text-muted">
-            ZeusApollo ran Proxmox VE {PVE} across two online, quorate hosts at the dated probe. The public export
-            intentionally omits hardware implementation details. Click a dated host label. The plate holds the lock.
+            ZeusApollo ran Proxmox VE {PVE} across two online, quorate hosts at the dated probe. Two machines, one
+            cluster, in a room I can walk into. The public export leaves out hardware implementation details on purpose.
+            Select a host to read its probe result.
           </p>
           <div data-hud-clear className="mt-8 grid gap-3 sm:grid-cols-2">
             {HOSTS.map((h, i) => (
@@ -434,19 +437,24 @@ export function DeckIron({ s3 }: { s3: SecRef }) {
               </button>
             ))}
           </div>
-          <div className="mt-6 za-panel p-5">
-            <div className="za-kicker text-red">WITHHELD · NO FRESH MEASUREMENT</div>
-            <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+          <div className="za-withheld mt-6 za-panel p-5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="za-kicker">EVIDENCE RULE · WITHHELD UNTIL RE-MEASURED</div>
+              <span className="za-chip">{WITHHELD.length} FIGURES HELD</span>
+            </div>
+            <p className="mt-3 text-sm leading-relaxed text-muted">
+              A figure with no fresh measurement is left out rather than published stale. These five wait for the next
+              owner-run probe:
+            </p>
+            <ul className="mt-3 flex flex-wrap gap-2">
               {WITHHELD.map((w) => (
-                <li key={w} className="za-mono text-[11px] text-dim">
-                  · {w.toUpperCase()}
+                <li key={w} className="za-withheld-item za-mono text-[10px] text-dim">
+                  {w.toUpperCase()}
                 </li>
               ))}
             </ul>
-            <p className="mt-4 text-sm text-muted">
-              A figure with no fresh measurement is omitted entirely rather than published stale. Owner-run aggregate
-              verification produced this dated public safe snapshot, not streaming telemetry. This page makes no
-              production network calls.
+            <p className="za-mono mt-4 text-[10px] tracking-[0.14em] text-dim">
+              DATED PUBLIC SAFE SNAPSHOT · NOT STREAMING TELEMETRY · ZERO PRODUCTION NETWORK CALLS
             </p>
           </div>
         </div>
@@ -693,7 +701,7 @@ export function DeckOperator({ s6 }: { s6: SecRef }) {
               </button>
             ))}
           </div>
-          <ol className="mt-8">
+          <ol data-hud-clear className="mt-8">
             {LAWS.map((law, i) => (
               <li key={law}>
                 {i > 0 ? <div className="za-law-join" /> : null}
@@ -714,7 +722,9 @@ export function DeckOperator({ s6 }: { s6: SecRef }) {
               </li>
             ))}
           </ol>
-          <div className="za-stamp mt-8">SIGNED · OWNER · {VERIFIED_LONG}</div>
+          <div data-hud-clear className="za-stamp mt-8">
+            SIGNED · OWNER · {VERIFIED_LONG}
+          </div>
         </div>
       </div>
     </DeckShell>

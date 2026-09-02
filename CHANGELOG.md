@@ -34,6 +34,16 @@ Release name: "ALL TENS." A quality pass against the nine category audit of the 
 
 - Every published figure, date and boundary is carried forward unchanged. The stopped guest remains unnamed. Audio remains off until a visitor arms it.
 
+### Polish — 09-02-2026
+
+A visual pass on the live V35 build. No published figure changes: every count, date and boundary is exactly as verified on 28 August 2026.
+
+- The viewscreen targeting frame (heading tape, scope, corner brackets, scan line and status banner) now stands down once the visitor leaves the snapshot deck and returns for the 30-second flight, so no headline, tile or lane list is drawn over on decks two through nine. Phones drop the corner brackets entirely.
+- The Grid deck replaces twelve placeholder tiles with a fleet map: two host rings holding the nineteen documented guest slots (the stopped guest marked), the quorum core, and the seven observed role families on curved routes with packets in flight. Selecting a role family traces its route; roles are never attributed to a host. Phones get a portrait layout; reduced motion gets a still map.
+- The hero status banner clears the airframe dossier at 1440 by 900, and the operator deck's leash list and signature yield the corner dossier like the rest of the deck copy.
+- The withheld figures on the Iron deck read as an evidence rule with five held items rather than a red warning block, and the routing and iron ledes explain what to do on the deck in plain language.
+- Displays wider than 1920 pixels center the decks instead of pinning them to the far left.
+
 ## [v34] — 08-28-2026
 
 Release name: "MACH ONE." This preservation pass makes the public truth easier to read without broadening what it publishes.

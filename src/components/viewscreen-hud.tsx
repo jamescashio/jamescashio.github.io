@@ -11,6 +11,9 @@ type ViewscreenHudProps = {
   beatLabel: string;
   elapsedMs: number;
   reducedMotion: boolean;
+  /** Full targeting frame (brackets, heading tape, scope, banner). Off the hero deck the
+   * HUD collapses to its readout so deck copy is never drawn over. */
+  frame?: boolean;
 };
 
 export function ViewscreenHud({
@@ -21,6 +24,7 @@ export function ViewscreenHud({
   beatLabel,
   elapsedMs,
   reducedMotion,
+  frame = true,
 }: ViewscreenHudProps) {
   const [locked, setLocked] = useState(reducedMotion && online);
 
@@ -43,7 +47,7 @@ export function ViewscreenHud({
 
   return (
     <div
-      className={`za-vs-hud ${online ? "is-online" : ""} ${locked ? "is-locked" : ""} ${tour ? "is-flight" : ""}`}
+      className={`za-vs-hud ${online ? "is-online" : ""} ${locked ? "is-locked" : ""} ${tour ? "is-flight" : ""} ${frame ? "" : "is-compact"}`}
       role="status"
       aria-live="polite"
       aria-label={spoken}

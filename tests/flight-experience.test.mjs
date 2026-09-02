@@ -224,17 +224,45 @@ test("current fleet decks expose only verified aggregate evidence without topolo
   const grid = mount(createElement(DeckGrid, { s1: ref }));
   try {
     await grid.render(createElement(DeckGrid, { s1: ref }));
-    const roleCards = [...grid.document.querySelectorAll("section[data-deck='1'] button")];
+    const roleCards = [...grid.document.querySelectorAll("section[data-deck='1'] button.za-role-tile")];
     assert.equal(roleCards.length, 7, "Grid must retain the seven allowlisted role-family controls");
-    for (const card of roleCards) {
-      assert.doesNotMatch(card.textContent, /ZEUS|APOLLO/i, "a role family must not be assigned to a public host");
+    const roleMarkers = [...grid.document.querySelectorAll("section[data-deck='1'] button.za-fleet-marker")];
+    assert.equal(roleMarkers.length, 7, "the fleet map must carry exactly the seven allowlisted role families");
+    for (const card of [...roleCards, ...roleMarkers]) {
+      assert.doesNotMatch(
+        `${card.textContent} ${card.getAttribute("aria-label") ?? ""}`,
+        /ZEUS|APOLLO/i,
+        "a role family must not be assigned to a public host",
+      );
       assert.equal(card.hasAttribute("data-hub"), false, "a role family must not expose a host-mapping attribute");
     }
-    assert.equal(
-      grid.document.querySelector("section[data-deck='1'] svg"),
-      null,
-      "Grid must not render topology paths",
-    );
+    // The fleet map may draw the published aggregates (two hosts, nineteen guest
+    // slots, one quorum core) but never a role-to-host edge: every named route
+    // terminates at the core, and host groups carry no role text.
+    const map = grid.document.querySelector("section[data-deck='1'] svg");
+    assert.ok(map, "Grid renders the fleet map");
+    assert.equal(map.querySelectorAll("[data-hub]").length, 0, "the fleet map must not expose host-mapping attributes");
+    for (const host of map.querySelectorAll(".za-fleet-host")) {
+      assert.match(
+        host.textContent,
+        /^(ZEUS|APOLLO)\s*(12 OF 13|6 OF 6) AT PROBE$/,
+        "host rings carry only published tallies",
+      );
+      assert.equal(
+        host.querySelectorAll(".za-fleet-role, .za-fleet-route").length,
+        0,
+        "no role route may enter a host ring",
+      );
+    }
+    const routes = [...map.querySelectorAll(".za-fleet-role .za-fleet-route")];
+    assert.equal(routes.length, 7, "one route per allowlisted role family");
+    for (const routePath of routes) {
+      assert.match(
+        routePath.getAttribute("d"),
+        /\s500 222$|\s280 440$/,
+        "every role route terminates at the quorum core",
+      );
+    }
   } finally {
     await grid.cleanup();
   }
@@ -340,7 +368,8 @@ test("interactive evidence choices expose and update their real selected state",
     const view = mount(createElement(DeckGrid, { s1: ref }));
     try {
       await view.render(createElement(DeckGrid, { s1: ref }));
-      const controls = [...view.document.querySelectorAll("section[data-deck='1'] button")];
+      const controls = [...view.document.querySelectorAll("section[data-deck='1'] button.za-role-tile")];
+      const markers = [...view.document.querySelectorAll("section[data-deck='1'] button.za-fleet-marker")];
       assert.equal(controls.filter((control) => control.getAttribute("aria-pressed") === "true").length, 0);
       assert.equal(
         controls.every((control) => control.getAttribute("aria-pressed") === "false"),
@@ -351,6 +380,13 @@ test("interactive evidence choices expose and update their real selected state",
         controls.map((control) => control.getAttribute("aria-pressed")),
         ["false", "false", "true", "false", "false", "false", "false"],
       );
+      assert.deepEqual(
+        markers.map((marker) => marker.getAttribute("aria-pressed")),
+        ["false", "false", "true", "false", "false", "false", "false"],
+        "the fleet map marker mirrors the tile lock",
+      );
+      await view.click(markers[2]);
+      assert.equal(controls[2].getAttribute("aria-pressed"), "false", "selecting the locked family again releases it");
     } finally {
       await view.cleanup();
     }

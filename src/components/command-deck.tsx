@@ -1205,6 +1205,7 @@ export function CommandDeck() {
           beatLabel={beatLabel}
           elapsedMs={flightElapsed}
           reducedMotion={reducedMotion}
+          frame={deck === 0 || tour}
         />
         <div key={flashKey} className={`za-warpflash ${flash ? "on" : ""}`} />
         <div className={`za-sweep ${sweep ? "on" : ""}`} aria-hidden />
