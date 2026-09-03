@@ -1,13 +1,13 @@
 import { useEffect, useId, useMemo, useState } from "react";
-import { NAMED_ROLES, PVE } from "@/lib/content";
+import { NAMED_ROLES, PVE, STOPPED_GUESTS, VERIFIED_LONG } from "@/lib/content";
 
 type Point = { x: number; y: number };
 
 /**
- * The Grid starmap: the 28 August probe drawn as a fleet map.
+ * The Grid starmap: the dated probe drawn as a fleet map.
  *
- * Two host rings hold the 19 documented guest slots (13 on Zeus, one of them the
- * stopped guest; 6 on Apollo). The seven observed role families orbit the quorum
+ * Two host rings hold the 19 documented guest slots (13 on Zeus, 6 on Apollo; a
+ * stopped guest, when the probe finds one, draws red). The seven observed role families orbit the quorum
  * core on curved routes with packets in flight. Roles are never attributed to a
  * host, because the public export withholds that mapping on purpose.
  */
@@ -27,7 +27,8 @@ type Layout = {
 
 const ZEUS_SLOTS = 13;
 const APOLLO_SLOTS = 6;
-const STOPPED_SLOT = 8; // the one documented guest that was stopped at the probe
+/** Ring slot that draws as stopped when the probe found a stopped guest; null when every guest ran. */
+const STOPPED_SLOT: number | null = STOPPED_GUESTS > 0 ? 8 : null;
 
 /** Wide map: hosts left and right of the quorum core. */
 const LANDSCAPE: Layout = {
@@ -131,7 +132,7 @@ export function FleetGrid({ hover, lock, onHover, onLock }: FleetGridProps) {
   const focus = hover ?? lock;
 
   return (
-    <figure className="za-fleet-grid" aria-label="Fleet map of the 28 August 2026 probe">
+    <figure className="za-fleet-grid" aria-label={`Fleet map of the ${VERIFIED_LONG} probe`}>
       <svg viewBox={`0 0 ${layout.width} ${layout.height}`} role="img" aria-hidden="true" focusable="false">
         <defs>
           <radialGradient id={`${uid}-core`} cx="50%" cy="50%" r="50%">
@@ -196,7 +197,7 @@ export function FleetGrid({ hover, lock, onHover, onLock }: FleetGridProps) {
 
         {/* host rings */}
         {[
-          { host: ZEUS, slots: zeusSlots, name: "ZEUS", tally: "12 OF 13 AT PROBE" },
+          { host: ZEUS, slots: zeusSlots, name: "ZEUS", tally: "13 OF 13 AT PROBE" },
           { host: APOLLO, slots: apolloSlots, name: "APOLLO", tally: "6 OF 6 AT PROBE" },
         ].map(({ host, slots, name, tally }) => (
           <g key={name} className="za-fleet-host">
@@ -213,7 +214,7 @@ export function FleetGrid({ hover, lock, onHover, onLock }: FleetGridProps) {
               {name}
             </text>
             {slots.map((p, i) => {
-              const stopped = name === "ZEUS" && i === STOPPED_SLOT;
+              const stopped = name === "ZEUS" && STOPPED_SLOT !== null && i === STOPPED_SLOT;
               return (
                 <g key={i} className={`za-fleet-slot ${stopped ? "is-stopped" : ""}`}>
                   <circle cx={p.x} cy={p.y} r="6" filter={stopped ? undefined : `url(#${uid}-glow)`} />
@@ -295,9 +296,11 @@ export function FleetGrid({ hover, lock, onHover, onLock }: FleetGridProps) {
         <span>
           <i className="is-lit" /> GUEST SLOT AT PROBE
         </span>
-        <span>
-          <i className="is-stopped" /> STOPPED GUEST
-        </span>
+        {STOPPED_GUESTS > 0 ? (
+          <span>
+            <i className="is-stopped" /> STOPPED GUEST
+          </span>
+        ) : null}
         <span>
           <i className="is-route" /> OBSERVED ROLE FAMILY · SELECT TO TRACE
         </span>

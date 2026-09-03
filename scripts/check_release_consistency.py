@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail closed when the V35 source and GitHub Pages artifact disagree."""
+"""Fail closed when the V36 source and GitHub Pages artifact disagree."""
 
 from __future__ import annotations
 
@@ -21,15 +21,15 @@ DIST = ROOT / "dist"
 
 TEXT_SUFFIXES = {".html", ".js", ".css", ".json", ".txt", ".xml", ".svg"}
 V34_PUBLIC_SURFACES = {
-    "index.html": ("28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT", "ROUTING INVENTORY 21 AUGUST 2026"),
-    "lab.html": ("28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT", "ROUTING INVENTORY 21 AUGUST 2026"),
+    "index.html": ("2 September 2026", "19/19 AT 2 SEP PROBE", "DATED EXPORT", "ROUTING INVENTORY 2 SEPTEMBER 2026"),
+    "lab.html": ("2 September 2026", "19/19 AT 2 SEP PROBE", "DATED EXPORT", "ROUTING INVENTORY 2 SEPTEMBER 2026"),
 }
 ROUTING_COUNT_CLAIM = re.compile(
-    r"\b10\s+PUBLIC(?:\s+CAPABILITY)?\s+LANES\b.*?\b36\s+PRIVATE\s+CATALOG(?:\s+ENTRIES)?\b",
+    r"\b10\s+PUBLIC(?:\s+CAPABILITY)?\s+LANES\b.*?\b22\s+PRIVATE\s+CATALOG(?:\s+ENTRIES)?\b",
     re.IGNORECASE | re.DOTALL,
 )
 ROUTING_PROVENANCE_PREFIX = re.compile(
-    r"(?:ROUTING INVENTORY 21 AUGUST 2026|08-21-2026)\s*[:—·-]\s*$",
+    r"(?:ROUTING INVENTORY 2 SEPTEMBER 2026|09-02-2026)\s*[:—·-]\s*$",
     re.IGNORECASE,
 )
 APPROVED_DATED_PUBLIC_CLAIMS = (
@@ -39,7 +39,7 @@ APPROVED_DATED_PUBLIC_CLAIMS = (
     "2 PROXMOX HOSTS ONLINE · CLUSTER QUORATE",
     "Two Proxmox hosts were online and quorate.",
     "two online, quorate hosts at the dated probe",
-    "08-21-2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG",
+    "09-02-2026 · 10 PUBLIC LANES · 22 PRIVATE CATALOG",
 )
 APPROVED_PUBLIC_STATUS_LABELS = (
     "E.V.E. EVALUATION VERIFICATION ENGINE · ONLINE",
@@ -65,7 +65,12 @@ CURRENT_CLAIM_SUBJECTS = {
 }
 CURRENT_CLAIM_STATUS = {"current", "online"}
 CURRENT_CLAIM_QUALIFIERS = {"active", "availability", "health", "state", "status"}
-DIRECT_STALE_FLEET_CLAIM = re.compile(r"\b19\s*(?:/|of)\s*19\b", re.IGNORECASE)
+# Fleet figures from superseded probes. "18/19" alone is not listed because the
+# 2 September export publishes 18 of 19 backups verified inside 24 hours.
+DIRECT_STALE_FLEET_CLAIM = re.compile(
+    r"\b(?:18\s*(?:/|of)\s*19\s+(?:AT\s+28\s+AUG|documented\s+guests\s+(?:were\s+)?running|services\s+up)|12\s*(?:/|of)\s*13|28\s+AUG(?:UST)?\s+(?:PROBE|2026))\b",
+    re.IGNORECASE,
+)
 PRIVATE_CURRENT_FLEET_PATTERNS = (
     re.compile(r"\bATLAS\s*·\s*(?:GATEWAY|LOCAL INFERENCE)", re.IGNORECASE),
     re.compile(r"\bATHENA\s*·\s*QUORUM SUPPORT", re.IGNORECASE),
@@ -327,7 +332,7 @@ def check_v34_public_surface(relative: str, text: str, failures: list[str], labe
     for occurrence, match in enumerate(ROUTING_COUNT_CLAIM.finditer(text), start=1):
         prefix = text[max(0, match.start() - 96) : match.start()]
         if not ROUTING_PROVENANCE_PREFIX.search(prefix):
-            failures.append(f"must date routing count occurrence {occurrence} as the 21 August 2026 inventory")
+            failures.append(f"must date routing count occurrence {occurrence} as the 2 September 2026 inventory")
     check_current_public_privacy(text, failures, f"{label}/{relative}")
 
 
@@ -385,12 +390,12 @@ def main() -> int:
         return 1
 
     expected = {
-        "release": "V35 ALL TENS",
-        "revised": "2026-08-28",
+        "release": "V36 FRESH FIX",
+        "revised": "2026-09-02",
         "status": "dated-export",
-        "verified": "2026-08-28",
-        "verifiedLong": "28 August 2026",
-        "expires": "2026-09-27",
+        "verified": "2026-09-02",
+        "verifiedLong": "2 September 2026",
+        "expires": "2026-10-02",
     }
     for key, value in expected.items():
         if status.get(key) != value:
@@ -400,21 +405,21 @@ def main() -> int:
         ("proxmox", "version"): "9.2.11",
         ("proxmox", "hostsOnline"): 2,
         ("proxmox", "quorate"): True,
-        ("containers", "running"): 18,
+        ("containers", "running"): 19,
         ("containers", "documented"): 19,
-        ("containers", "stopped"): 1,
-        ("containers", "zeus"): 12,
+        ("containers", "stopped"): 0,
+        ("containers", "zeus"): 13,
         ("containers", "apollo"): 6,
         ("lanes", "public"): 10,
-        ("lanes", "privateCatalog"): 36,
+        ("lanes", "privateCatalog"): 22,
     }
     for (group, key), value in exact_nested.items():
         actual = status.get(group, {}).get(key)
         if actual != value:
             failures.append(f"public/status.json {group}.{key}: expected {value!r}, got {actual!r}")
 
-    if status.get("routingVerified") != "2026-08-21":
-        failures.append("public/status.json routingVerified must remain the separate 2026-08-21 inventory date")
+    if status.get("routingVerified") != "2026-09-02":
+        failures.append("public/status.json routingVerified must be the 2026-09-02 inventory date")
 
     for private_key in ("deepseek", "atlas"):
         if private_key in status:
@@ -430,8 +435,8 @@ def main() -> int:
             failures.append(f"{cname} must contain only cashio.us")
 
     package = json.loads(read("package.json"))
-    if package.get("version") != "35.0.0":
-        failures.append("package.json version must be 35.0.0")
+    if package.get("version") != "36.0.0":
+        failures.append("package.json version must be 36.0.0")
     if package.get("scripts", {}).get("build") != "tsc --noEmit && vite build && node --import tsx scripts/prerender.mts":
         failures.append("package.json build script changed from the supplied TypeScript + Vite + prerender gate")
 
@@ -467,11 +472,11 @@ def main() -> int:
     required_source = {
         "src/lib/store.ts": ("gate: false", "audio: DEFAULT_AUDIO_ENABLED", "deck: 0"),
         "src/lib/content.ts": (
-            'VERIFIED_LONG = "28 August 2026"',
-            'ROUTING_VERIFIED_LONG = "21 August 2026"',
-            'REVISED = "08-28-2026"',
-            'EXPIRES_AT = "2026-09-28T05:00:00Z"',
-            '"18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6"',
+            'VERIFIED_LONG = "2 September 2026"',
+            'ROUTING_VERIFIED_LONG = "2 September 2026"',
+            'REVISED = "09-02-2026"',
+            'EXPIRES_AT = "2026-10-03T05:00:00Z"',
+            '"19/19 AT 2 SEP PROBE · ZEUS 13/13 · APOLLO 6/6"',
             'model: "DeepSeek V4 Flash"',
             'model: "DeepSeek V4 Pro"',
             'model: "Gemini 3.7 Flash"',
@@ -668,11 +673,11 @@ def main() -> int:
         live = collect_text(DIST)
         check_current_public_privacy(live, failures, "built Pages artifact")
         for marker in (
-            "28 August 2026",
-            "18/19 AT 28 AUG PROBE",
+            "2 September 2026",
+            "19/19 AT 2 SEP PROBE",
             "QUORATE",
             "10 PUBLIC",
-            "36 PRIVATE",
+            "22 PRIVATE",
             "AUDIO OFF",
             "AUDIO ARMED",
             "SIGNED · OWNER",
@@ -733,15 +738,15 @@ def main() -> int:
             failures.append(f"non-audio fetch target found in source: {target!r}")
 
     if failures:
-        print("V35 release consistency check failed:\n")
+        print("V36 release consistency check failed:\n")
         for failure in failures:
             print(f"- {failure}")
         return 1
 
     print(
-        "V35 release consistency passed: 28 August 2026 dated export; "
-        "18/19 containers; 2 Proxmox hosts quorate; 10 public lanes; "
-        "36 private catalog entries; root Pages base; archive, privacy, "
+        "V36 release consistency passed: 2 September 2026 dated export; "
+        "19/19 containers; 2 Proxmox hosts quorate; 10 public lanes; "
+        "22 private catalog entries; root Pages base; archive, privacy, "
         "motion, opt-in audio, and forbidden-token gates satisfied."
     )
     return 0

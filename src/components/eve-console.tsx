@@ -59,7 +59,7 @@ const LORE: Record<string, string[]> = {
   skunkworks: ["BE QUICK, BE QUIET, BE ON TIME.", "ONE OPERATOR, SHORT CHAIN, NO COMMITTEE."],
   xyzzy: ["NOTHING HAPPENS.", "A HOLLOW VOICE SAYS: TYPE HELP."],
   sudo: ["THERE IS NO PRIVILEGE TO ESCALATE. THIS CONSOLE READS A STATIC FILE.", "NICE TRY THOUGH."],
-  "42": ["THE ANSWER IS DATED 28 AUGUST 2026 AND EXPIRES 27 SEPTEMBER 2026.", "THE QUESTION IS ON DECK 03."],
+  "42": ["THE ANSWER IS DATED 2 SEPTEMBER 2026 AND EXPIRES 2 OCTOBER 2026.", "THE QUESTION IS ON DECK 03."],
 };
 
 const COMMANDS = [
@@ -106,9 +106,9 @@ export function runEve(raw: string, history: string[] = []): EveResult {
     return {
       out: [
         ...currentLines(),
-        "18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6",
+        "19/19 AT 2 SEP PROBE · ZEUS 13/13 · APOLLO 6/6",
         "2 PROXMOX HOSTS ONLINE · CLUSTER QUORATE",
-        "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES",
+        "ROUTING INVENTORY 2 SEPTEMBER 2026 · 10 PUBLIC LANES · 22 PRIVATE CATALOG ENTRIES",
       ],
     };
   }
@@ -118,8 +118,8 @@ export function runEve(raw: string, history: string[] = []): EveResult {
   if (command === "fleet") {
     return {
       out: [
-        "ZEUS · 12/13 AT 28 AUG PROBE · PROXMOX HOST",
-        "APOLLO · 6/6 AT 28 AUG PROBE · PROXMOX HOST",
+        "ZEUS · 13/13 AT 2 SEP PROBE · PROXMOX HOST",
+        "APOLLO · 6/6 AT 2 SEP PROBE · PROXMOX HOST",
         SERVICE_FAMILIES.toUpperCase(),
       ],
     };
@@ -128,7 +128,7 @@ export function runEve(raw: string, history: string[] = []): EveResult {
   if (command === "lanes" || command === "routes") {
     return {
       out: [
-        "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES",
+        "ROUTING INVENTORY 2 SEPTEMBER 2026 · 10 PUBLIC LANES · 22 PRIVATE CATALOG ENTRIES",
         "DEEPSEEK V4 FLASH · DEEPSEEK V4 PRO",
         "QUALITY PICKS THE MODEL · COST ONLY BREAKS A TIE",
       ],
@@ -139,7 +139,8 @@ export function runEve(raw: string, history: string[] = []): EveResult {
   if (command === "cost") {
     return {
       out: [
-        "WITHHELD · NO FRESH PUBLIC COST MEASUREMENT",
+        `AI OPERATING COST · $25.07 · TRAILING 30 DAYS AT THE ${VERIFIED_LONG.toUpperCase()} PROBE`,
+        "PER-DAY FIGURE WITHHELD · NO TRAILING 24 HOUR LEDGER TOTAL",
         "A FIGURE WITH NO FRESH MEASUREMENT IS OMITTED, NEVER PUBLISHED STALE",
       ],
     };

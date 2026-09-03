@@ -1,23 +1,26 @@
-# V35 ALL TENS · DATED EVIDENCE. HUMAN COMMAND.
+# V36 FRESH FIX · DATED EVIDENCE. HUMAN COMMAND.
 
-**Fleet export date:** 28 August 2026
-**Routing inventory date:** 21 August 2026
-**Release revision:** 28 August 2026
-**Validity window:** through 27 September 2026 in America/Chicago, or until the next owner-verified architecture change
+**Fleet export date:** 2 September 2026
+**Routing inventory date:** 2 September 2026
+**Release revision:** 2 September 2026
+**Validity window:** through 2 October 2026 in America/Chicago, or until the next owner-verified architecture change
 
-V35 is a quality pass against the nine category audit of the live V34 build. No published figure changes: the dated export, the fleet counts and the routing inventory are exactly as verified on 28 August 2026. It preserves the Vite 6 + React 19 command console and its Bit-centered Dune/LCARS identity while making the public truth more legible: dated aggregate evidence, separate routing provenance, Executive outcomes, Build Proof, and Cashio Operating Lessons. Audio remains restrained and opt-in. The Contact conclusion and voice are preserved, while the Black Box Receipt evidence is reconciled to the 28 August fleet export (18 of 19 documented guests) and the separate 21 August routing inventory (10 public capability lanes and 36 private catalog entries).
+V36 is a re-date of the public evidence against a fresh owner-run probe. Every published figure was measured on 2 September 2026: the fleet export, the routing inventory and, for the first time, three previously withheld figures (a 24 hour DNS query sample, backups verified inside 24 hours, and trailing 30 day AI operating cost). The Vite 6 + React 19 command console and its Bit-centered Dune/LCARS identity are unchanged. The Black Box Receipt evidence is reconciled to the 2 September fleet export (19 of 19 documented guests) and the 2 September routing inventory (10 public capability lanes and 22 private catalog entries).
 
 ## Locked public snapshot
 
-| Item                        | V35 public state                                   |
-| --------------------------- | -------------------------------------------------- |
-| Proxmox VE                  | 9.2.11                                             |
-| Containers                  | 18 of 19 at 28 Aug probe · Zeus 12/13 · Apollo 6/6 |
-| Hosts                       | 2 online · quorate at the 28 Aug probe             |
-| Public capability lanes     | 10 · routing inventory 21 Aug                      |
-| Private catalog entries     | 36 · routing inventory 21 Aug                      |
-| Owner-confirmed lane labels | Gemini 3.7 Flash · Grok 4.6 · Sonar Pro            |
-| Cost                        | Withheld                                           |
+| Item                        | V36 public state                                  |
+| --------------------------- | ------------------------------------------------- |
+| Proxmox VE                  | 9.2.11                                            |
+| Containers                  | 19 of 19 at 2 Sep probe · Zeus 13/13 · Apollo 6/6 |
+| Hosts                       | 2 online · quorate at the 2 Sep probe             |
+| Public capability lanes     | 10 · routing inventory 2 Sep                      |
+| Private catalog entries     | 22 · routing inventory 2 Sep                      |
+| Owner-confirmed lane labels | Gemini 3.7 Flash · Grok 4.6 · Sonar Pro           |
+| DNS queries, trailing 24h   | 226,783                                           |
+| Backups inside 24h          | 18 of 19                                          |
+| AI cost, trailing 30 days   | $25.07                                            |
+| Withheld                    | Cost per day · automation jobs · security updates |
 
 ## Release boundaries
 

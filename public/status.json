@@ -1,14 +1,36 @@
 {
-  "release": "V35 ALL TENS",
-  "revised": "2026-08-28",
+  "release": "V36 FRESH FIX",
+  "revised": "2026-09-02",
   "status": "dated-export",
-  "verified": "2026-08-28",
-  "verifiedLong": "28 August 2026",
-  "expires": "2026-09-27",
-  "proxmox": { "version": "9.2.11", "hostsOnline": 2, "quorate": true },
-  "containers": { "running": 18, "documented": 19, "stopped": 1, "zeus": 12, "apollo": 6 },
-  "lanes": { "public": 10, "privateCatalog": 36 },
-  "routingVerified": "2026-08-21",
+  "verified": "2026-09-02",
+  "verifiedLong": "2 September 2026",
+  "expires": "2026-10-02",
+  "proxmox": {
+    "version": "9.2.11",
+    "hostsOnline": 2,
+    "quorate": true
+  },
+  "containers": {
+    "running": 19,
+    "documented": 19,
+    "stopped": 0,
+    "zeus": 13,
+    "apollo": 6
+  },
+  "lanes": {
+    "public": 10,
+    "privateCatalog": 22
+  },
+  "routingVerified": "2026-09-02",
+  "fresh": {
+    "dnsQueriesSampled24h": 226783,
+    "backupsVerifiedInside24h": {
+      "verified": 18,
+      "documented": 19
+    },
+    "aiCostPerMonthUsd": 25.07
+  },
+  "withheld": ["AI operating cost per day", "Automation job counts", "Security update counts"],
   "law": "Quality picks the model. Cost only breaks a tie.",
-  "note": "Read-only, dated public-safe export from an owner-run aggregate probe on 28 August 2026. Valid through 27 September 2026 in America/Chicago. This static file makes no production network calls."
+  "note": "Read-only, dated public-safe export from an owner-run aggregate probe on 2 September 2026. Valid through 2 October 2026 in America/Chicago. This static file makes no production network calls."
 }

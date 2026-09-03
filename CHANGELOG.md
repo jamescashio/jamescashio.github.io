@@ -2,6 +2,25 @@
 
 This file records the canonical public release line for cashio.us. Visible dates use MM-DD-YYYY. Unpublished prototype numbering is intentionally omitted; Git history retains those experiments without presenting them as releases.
 
+## [v36] — 09-02-2026
+
+Release name: "FRESH FIX." A re-date against a fresh owner-run probe on 2 September 2026. In aviation a fix is a verified position; this release moves every published figure to one taken today.
+
+### Changed
+
+- Fleet export re-dated to 2 September 2026: 19 of 19 documented guests running (Zeus 13/13, Apollo 6/6), two Proxmox hosts online and quorate on 9.2.11. The stopped guest from the 28 August probe is running again, so the Grid fleet map and its legend no longer mark one.
+- Routing inventory re-dated to 2 September 2026: 10 public capability lanes and 22 private catalog entries. Lane model labels are unchanged pending owner confirmation.
+- Validity window now runs through 2 October 2026.
+
+### Added
+
+- Three previously withheld figures are published for the first time, each with its measurement method on the Iron deck: 226,783 DNS queries in the trailing 24 hours, 18 of 19 backups verified inside 24 hours, and $25.07 of AI operating cost over the trailing 30 days. The E.V.E. `cost` command reports the 30 day figure.
+- `status.json` carries a `fresh` block and a `withheld` list so the export says what it measured and what it held.
+
+### Boundaries
+
+- Three figures stay withheld with their reason: AI cost per day (no trailing 24 hour ledger total), automation job counts (execution ledger empty at the probe), and security update counts (measured, but not published while an update is pending). The twelve unnamed roles stay unnamed. Audio remains off until a visitor arms it.
+
 ## [v35] — 08-30-2026
 
 Release name: "ALL TENS." A quality pass against the nine category audit of the live V34 build. No published figure changes: the dated export, the fleet counts and the routing inventory are exactly as verified on 28 August 2026, because no fresh measurement was taken.

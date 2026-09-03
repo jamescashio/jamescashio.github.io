@@ -49,7 +49,7 @@ test("renderCashioApp keeps its initial validity markup deterministic across cal
 
     assert.equal(septemberMarkup, augustMarkup);
     assert.match(augustMarkup, /EXPORT STATUS · DATED/);
-    assert.match(augustMarkup, /VALID THRU 09-27-2026/);
+    assert.match(augustMarkup, /VALID THRU 10-02-2026/);
     assert.doesNotMatch(augustMarkup, /\d+D LEFT/);
   } finally {
     Date.now = realNow;

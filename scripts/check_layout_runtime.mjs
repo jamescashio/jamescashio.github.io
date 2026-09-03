@@ -808,21 +808,21 @@ async function collectValidityGeometryMatrix(send) {
       source: "ssr-fixture",
       headerLabel: "EXPORT STATUS · DATED",
       footerLabel: "DATED EXPORT STATUS",
-      validThroughText: "VALID THRU 09-27-2026",
+      validThroughText: "VALID THRU 10-02-2026",
     },
     {
       id: "live-longest",
       source: "react-live",
       headerLabel: "EXPORT VALID · 29D LEFT",
       footerLabel: "DATED EXPORT VALID",
-      validThroughText: "VALID THRU 09-27-2026",
+      validThroughText: "VALID THRU 10-02-2026",
     },
     {
       id: "live-1d",
       source: "react-live",
       headerLabel: "EXPORT VALID · 1D LEFT",
       footerLabel: "DATED EXPORT VALID",
-      validThroughText: "VALID THRU 09-27-2026",
+      validThroughText: "VALID THRU 10-02-2026",
     },
     {
       id: "live-expired",
@@ -852,9 +852,9 @@ async function collectValidityGeometryMatrix(send) {
     }
   };
   await collectState(states[1]);
-  await setControlledValidityState(send, Date.parse("2026-09-27T05:00:00Z"), states[2]);
+  await setControlledValidityState(send, Date.parse("2026-10-02T05:00:00Z"), states[2]);
   await collectState(states[2]);
-  await setControlledValidityState(send, Date.parse("2026-09-28T05:00:00Z"), states[3]);
+  await setControlledValidityState(send, Date.parse("2026-10-03T05:00:00Z"), states[3]);
   await collectState(states[3]);
   await collectState(states[0]);
   for (const layout of layouts) {
@@ -1733,7 +1733,7 @@ async function main() {
       source: `(() => {
         if (!location.search.includes("validity-matrix")) return;
         const nativeDateNow = Date.now.bind(Date);
-        let controlledNow = Date.parse("2026-08-30T12:00:00Z");
+        let controlledNow = Date.parse("2026-09-04T12:00:00Z");
         const nativeSetTimeout = window.setTimeout.bind(window);
         const nativeClearTimeout = window.clearTimeout.bind(window);
         const validityTimers = new Map();

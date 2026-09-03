@@ -53,35 +53,35 @@ class V34ReleaseContractTests(unittest.TestCase):
         )
 
     def test_locked_snapshot_is_exact(self) -> None:
-        self.assertEqual(self.status["release"], "V35 ALL TENS")
-        self.assertEqual(self.status["revised"], "2026-08-28")
-        self.assertEqual(self.status["verifiedLong"], "28 August 2026")
-        self.assertEqual(self.status["expires"], "2026-09-27")
+        self.assertEqual(self.status["release"], "V36 FRESH FIX")
+        self.assertEqual(self.status["revised"], "2026-09-02")
+        self.assertEqual(self.status["verifiedLong"], "2 September 2026")
+        self.assertEqual(self.status["expires"], "2026-10-02")
         self.assertEqual(self.status["proxmox"], {"version": "9.2.11", "hostsOnline": 2, "quorate": True})
         self.assertEqual(
             self.status["containers"],
-            {"running": 18, "documented": 19, "stopped": 1, "zeus": 12, "apollo": 6},
+            {"running": 19, "documented": 19, "stopped": 0, "zeus": 13, "apollo": 6},
         )
-        self.assertEqual(self.status["lanes"], {"public": 10, "privateCatalog": 36})
+        self.assertEqual(self.status["lanes"], {"public": 10, "privateCatalog": 22})
         self.assertNotIn("deepseek", self.status)
         self.assertNotIn("atlas", self.status)
         self.assertEqual(read("status.json"), read("public/status.json"))
 
     def test_public_surface_guard_requires_separate_routing_provenance(self) -> None:
         valid = (
-            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
-            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+            "2 September 2026 · 19/19 AT 2 SEP PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 2 SEPTEMBER 2026 · 10 PUBLIC LANES · 22 PRIVATE CATALOG"
         )
         fixtures = {
             "valid": (valid, True),
-            "false date": (valid.replace("21 AUGUST 2026", "28 AUGUST 2026"), False),
-            "undated": (valid.replace("21 AUGUST 2026 · ", ""), False),
+            "false date": (valid.replace("2 SEPTEMBER 2026", "28 AUGUST 2026"), False),
+            "undated": (valid.replace("ROUTING INVENTORY 2 SEPTEMBER 2026 · ", ""), False),
             "mixed valid and undated": (
-                valid + " · 10 PUBLIC LANES · 36 PRIVATE CATALOG",
+                valid + " · 10 PUBLIC LANES · 22 PRIVATE CATALOG",
                 False,
             ),
             "mixed valid and false date": (
-                valid + " · ROUTING INVENTORY 28 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG",
+                valid + " · ROUTING INVENTORY 28 AUGUST 2026 · 10 PUBLIC LANES · 22 PRIVATE CATALOG",
                 False,
             ),
         }
@@ -99,10 +99,10 @@ class V34ReleaseContractTests(unittest.TestCase):
 
     def test_public_surface_guard_accepts_dated_eve_availability_and_receipt_provenance(self) -> None:
         text = (
-            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
-            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG · "
+            "2 September 2026 · 19/19 AT 2 SEP PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 2 SEPTEMBER 2026 · 10 PUBLIC LANES · 22 PRIVATE CATALOG · "
             "E.V.E. ONLINE · READ-ONLY · DATED EXPORT · "
-            "08-21-2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG · "
+            "09-02-2026 · 10 PUBLIC LANES · 22 PRIVATE CATALOG · "
             "E.V.E. EVALUATION VERIFICATION ENGINE · ONLINE. "
             "2 HOSTS ONLINE · QUORATE · 2 PROXMOX HOSTS ONLINE · CLUSTER QUORATE · "
             "Two Proxmox hosts were online and quorate. SYSTEMS ONLINE · HUMAN COMMAND RETAINED. "
@@ -114,8 +114,8 @@ class V34ReleaseContractTests(unittest.TestCase):
 
     def test_public_surface_guard_rejects_stale_or_current_claim_variants(self) -> None:
         dated_surface = (
-            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
-            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+            "2 September 2026 · 19/19 AT 2 SEP PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 2 SEPTEMBER 2026 · 10 PUBLIC LANES · 22 PRIVATE CATALOG"
         )
         fixtures = {
             "atlas availability": "ATLAS ONLINE",
@@ -134,8 +134,8 @@ class V34ReleaseContractTests(unittest.TestCase):
 
     def test_public_surface_guard_ignores_only_the_exact_technical_status_class(self) -> None:
         text = (
-            '28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · '
-            'ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG · '
+            '2 September 2026 · 19/19 AT 2 SEP PROBE · DATED EXPORT · '
+            'ROUTING INVENTORY 2 SEPTEMBER 2026 · 10 PUBLIC LANES · 22 PRIVATE CATALOG · '
             '<div class="za-systems-online is-online" role="status"></div>'
             '<button data-cmd="current">CURRENT</button><button data-cmd="fleet">FLEET</button>'
         )
@@ -145,8 +145,8 @@ class V34ReleaseContractTests(unittest.TestCase):
 
     def test_public_surface_guard_rejects_approved_phrase_and_structural_bypasses(self) -> None:
         dated_surface = (
-            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
-            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+            "2 September 2026 · 19/19 AT 2 SEP PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 2 SEPTEMBER 2026 · 10 PUBLIC LANES · 22 PRIVATE CATALOG"
         )
         approved = "E.V.E. ONLINE · READ-ONLY · DATED EXPORT"
         repeated = " ".join([approved] * 6)
@@ -171,8 +171,8 @@ class V34ReleaseContractTests(unittest.TestCase):
 
     def test_public_surface_guard_rejects_fragment_unicode_and_script_bypasses(self) -> None:
         dated_surface = (
-            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
-            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+            "2 September 2026 · 19/19 AT 2 SEP PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 2 SEPTEMBER 2026 · 10 PUBLIC LANES · 22 PRIVATE CATALOG"
         )
         fixtures = {
             "remaining class unit": '<div class="za-systems-online hosts online"></div>',
@@ -180,7 +180,7 @@ class V34ReleaseContractTests(unittest.TestCase):
             "siblings": '<span>HOSTS</span><span>ONLINE</span>',
             "malformed": 'HOSTS</div>ONLINE',
             "fragment": '<>HOSTS <span>ONLINE</span></>',
-            "fullwidth fleet": '１９／１９',
+            "fullwidth fleet": '１２／１３',
             "zero width online": 'HOSTS ONL\u200bINE',
             "combining online": 'HOSTS ONLI\u0307NE',
             "script entity": '<script>document.write("HOSTS ONL&#73;NE")</script>',
@@ -193,8 +193,8 @@ class V34ReleaseContractTests(unittest.TestCase):
 
     def test_public_surface_guard_keeps_sentence_boundaries(self) -> None:
         text = (
-            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
-            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG · "
+            "2 September 2026 · 19/19 AT 2 SEP PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 2 SEPTEMBER 2026 · 10 PUBLIC LANES · 22 PRIVATE CATALOG · "
             "Host a party. Later, go online with friends."
         )
         failures: list[str] = []
@@ -235,8 +235,8 @@ class V34ReleaseContractTests(unittest.TestCase):
 
     def test_public_surface_guard_rejects_any_residual_online_and_nested_current_context(self) -> None:
         dated_surface = (
-            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
-            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+            "2 September 2026 · 19/19 AT 2 SEP PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 2 SEPTEMBER 2026 · 10 PUBLIC LANES · 22 PRIVATE CATALOG"
         )
         fixtures = {
             "nested current status": 'HOSTS <button data-cmd="current"><span>CURRENT</span></button> STATUS',
@@ -261,8 +261,8 @@ class V34ReleaseContractTests(unittest.TestCase):
 
     def test_public_surface_guard_balances_self_closing_current_controls(self) -> None:
         dated_surface = (
-            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
-            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+            "2 September 2026 · 19/19 AT 2 SEP PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 2 SEPTEMBER 2026 · 10 PUBLIC LANES · 22 PRIVATE CATALOG"
         )
         fixtures = {
             "self closing then status": "<button data-cmd='current'/>CURRENT <span>HOSTS</span> STATUS",
@@ -276,8 +276,8 @@ class V34ReleaseContractTests(unittest.TestCase):
 
     def test_public_surface_guard_rejects_non_button_current_contexts(self) -> None:
         dated_surface = (
-            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
-            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+            "2 September 2026 · 19/19 AT 2 SEP PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 2 SEPTEMBER 2026 · 10 PUBLIC LANES · 22 PRIVATE CATALOG"
         )
         fixtures = {
             "input self closing": "HOSTS <input data-cmd='current'/> STATUS",
@@ -294,8 +294,8 @@ class V34ReleaseContractTests(unittest.TestCase):
 
     def test_public_surface_guard_keeps_direct_button_current_in_context(self) -> None:
         dated_surface = (
-            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
-            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+            "2 September 2026 · 19/19 AT 2 SEP PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 2 SEPTEMBER 2026 · 10 PUBLIC LANES · 22 PRIVATE CATALOG"
         )
         fixtures = {
             "direct": 'HOSTS <button data-cmd="current">CURRENT</button> STATUS',
@@ -397,7 +397,7 @@ class V34ReleaseContractTests(unittest.TestCase):
                 'const nested=jsxs("p",{children:[jsx("span",{children:fragment}),"STS CURRENT STATUS"]});\n'
                 'const deep=jsxs("p",{children:[jsx("span",{children:jsx("em",{children:fragment})}),"STS CURRENT STATUS"]});\n'
                 'const safeStatus=jsxs("p",{children:[jsx("span",{}),"DATED EXPORT STATUS · VERIFIED ",dynamic," · VALID THRU "]});\n'
-                'const safeGap=jsxs("div",{className:"flex gap-3",children:[jsx("span",{children:"18/19 AT 28 AUG PROBE"}),jsx("span",{children:"2 HOSTS ONLINE · QUORATE"}),jsx("span",{children:"READ-ONLY · DATED EXPORT"})]});\n',
+                'const safeGap=jsxs("div",{className:"flex gap-3",children:[jsx("span",{children:"19/19 AT 2 SEP PROBE"}),jsx("span",{children:"2 HOSTS ONLINE · QUORATE"}),jsx("span",{children:"READ-ONLY · DATED EXPORT"})]});\n',
                 encoding="utf-8",
             )
             literals = release_consistency.collect_public_code_literals([source, bundle])
@@ -412,7 +412,7 @@ class V34ReleaseContractTests(unittest.TestCase):
             ),
             literals,
         )
-        safe_gap = next(literal for literal in literals if "18/19 AT 28 AUG PROBE" in literal["value"])
+        safe_gap = next(literal for literal in literals if "19/19 AT 2 SEP PROBE" in literal["value"])
         self.assertFalse(safe_gap["hasDynamicAlphaJoin"])
         self.assertFalse(release_consistency.has_stale_current_code_literal(safe_gap))
 
@@ -509,8 +509,8 @@ class V34ReleaseContractTests(unittest.TestCase):
 
     def test_public_surface_guard_rejects_current_fleet_topology_and_raw_route_identifiers(self) -> None:
         base = (
-            "28 August 2026 · 18/19 AT 28 AUG PROBE · DATED EXPORT · "
-            "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG"
+            "2 September 2026 · 19/19 AT 2 SEP PROBE · DATED EXPORT · "
+            "ROUTING INVENTORY 2 SEPTEMBER 2026 · 10 PUBLIC LANES · 22 PRIVATE CATALOG"
         )
         fixtures = {
             "unprobed gateway": base + " · ATLAS · GATEWAY · LOCAL INFERENCE",
@@ -528,8 +528,8 @@ class V34ReleaseContractTests(unittest.TestCase):
 
     def test_release_identity_is_canonical_v35(self) -> None:
         package = json.loads(read("package.json"))
-        self.assertEqual(package["version"], "35.0.0")
-        self.assertIn('V35 "ALL TENS"', self.content)
+        self.assertEqual(package["version"], "36.0.0")
+        self.assertIn('V36 "FRESH FIX"', self.content)
         retired_candidate = "V" + "47"
         for relative in (
             "README.md",

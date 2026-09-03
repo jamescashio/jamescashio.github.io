@@ -68,9 +68,9 @@ function expandScript(scripts, name, seen = new Set()) {
   });
 }
 
-test("package metadata and deterministic local gates define the V35 release", async () => {
+test("package metadata and deterministic local gates define the V36 release", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "35.0.0");
+  assert.equal(packageJson.version, "36.0.0");
   for (const dependency of [
     "@eslint/js",
     "eslint",
@@ -125,12 +125,12 @@ test("package metadata and deterministic local gates define the V35 release", as
   const status = JSON.parse(await read("status.json"));
   const publicStatus = JSON.parse(await read("public/status.json"));
   assert.deepEqual(status, publicStatus);
-  assert.equal(status.release, "V35 ALL TENS");
-  assert.equal(status.revised, "2026-08-28");
-  assert.equal(status.verified, "2026-08-28");
-  assert.equal(status.expires, "2026-09-27");
-  assert.deepEqual(status.containers, { running: 18, documented: 19, stopped: 1, zeus: 12, apollo: 6 });
-  assert.equal(status.routingVerified, "2026-08-21");
+  assert.equal(status.release, "V36 FRESH FIX");
+  assert.equal(status.revised, "2026-09-02");
+  assert.equal(status.verified, "2026-09-02");
+  assert.equal(status.expires, "2026-10-02");
+  assert.deepEqual(status.containers, { running: 19, documented: 19, stopped: 0, zeus: 13, apollo: 6 });
+  assert.equal(status.routingVerified, "2026-09-02");
 });
 
 test("the responsive command poster assets meet their exact dimensions and byte budgets", async () => {
@@ -225,13 +225,13 @@ test("the built document contains one real prerendered command deck with a criti
 });
 
 test("public metadata and redirect fallback keep fleet and routing provenance distinct", async () => {
-  const fleetExpected = ["28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT"];
-  const routingExpected = "ROUTING INVENTORY 21 AUGUST 2026";
+  const fleetExpected = ["2 September 2026", "19/19 AT 2 SEP PROBE", "DATED EXPORT"];
+  const routingExpected = "ROUTING INVENTORY 2 SEPTEMBER 2026";
   for (const path of ["index.html", "public/lab.html"]) {
     const text = await read(path);
     for (const marker of fleetExpected) assert.match(text, new RegExp(marker), `${path} must include ${marker}`);
-    assert.match(text, new RegExp(routingExpected), `${path} must date 10/36 as routing inventory`);
-    assert.doesNotMatch(text, /19(?:\/| of )19|\bCURRENT\b|\bonline\b/i, path);
+    assert.match(text, new RegExp(routingExpected), `${path} must date 10/22 as routing inventory`);
+    assert.doesNotMatch(text, /18(?:\/| of )19 AT 28 AUG|\bCURRENT\b|\bonline\b/i, path);
   }
 });
 
@@ -239,16 +239,16 @@ test("release checklist separates the fresh fleet export from routing provenance
   const template = await read(".github/pull_request_template.md");
   assert.match(
     template,
-    /^- \[ \] The 28 August 2026 fleet export remains 18\/19 containers \(Zeus 12\/13; Apollo 6\/6\), with 2 hosts online and the cluster quorate\.$/m,
+    /^- \[ \] The 2 September 2026 fleet export remains 19\/19 containers \(Zeus 13\/13; Apollo 6\/6\), with 2 hosts online and the cluster quorate\.$/m,
   );
   assert.match(
     template,
-    /^- \[ \] The routing inventory remains separately dated 21 August 2026, with 10 public lanes and 36 private catalog entries; unmeasured figures remain withheld\.$/m,
+    /^- \[ \] The routing inventory is dated 2 September 2026, with 10 public lanes and 22 private catalog entries; unmeasured figures remain withheld\.$/m,
   );
-  assert.doesNotMatch(template, /21 August 2026[^\r\n]*(?:19\/19|containers)/);
+  assert.doesNotMatch(template, /routing inventory[^\r\n]*containers/i);
 
   const workflow = await read(".github/workflows/public-safety.yml");
-  assert.match(workflow, /- name: Install V35 dependencies/);
+  assert.match(workflow, /- name: Install V36 dependencies/);
   assert.doesNotMatch(workflow, /- name: Install V33 dependencies/);
 });
 

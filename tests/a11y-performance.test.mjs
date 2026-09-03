@@ -630,7 +630,7 @@ test("footer VALID THRU provenance reserves the longest live state without hidin
       element.textContent?.includes("ZERO INFRASTRUCTURE CALLS"),
     );
     assert.ok(provenance, "the real VALID THRU sibling must expose its semantic geometry hook");
-    assert.equal(provenance?.textContent, "VALID THRU 09-27-2026");
+    assert.equal(provenance?.textContent, "VALID THRU 10-02-2026");
     assert.ok(zeroCalls, "the adjacent ZERO INFRASTRUCTURE CALLS status must remain rendered");
     assert.match(
       stylesheet,
@@ -645,7 +645,7 @@ test("the validity clock crosses a day and exact expiry without remounting or du
   const view = mountCommandDeck({
     captureValidityTimers: true,
     controlledTimers: true,
-    now: Date.parse("2026-09-27T04:59:59.000Z"),
+    now: Date.parse("2026-10-02T04:59:59.000Z"),
     strictMode: true,
   });
   try {
@@ -802,8 +802,8 @@ test("glyph controls preserve each visible audio label in their accessible names
 
 test("command chrome frames aggregate evidence as a dated export at valid and expired boundaries", async (t) => {
   for (const [name, now, expected] of [
-    ["valid", Date.parse("2026-09-27T12:00:00Z"), /EXPORT VALID/],
-    ["expired", Date.parse("2026-09-28T05:00:00Z"), /EXPORT EXPIRED/],
+    ["valid", Date.parse("2026-10-02T12:00:00Z"), /EXPORT VALID/],
+    ["expired", Date.parse("2026-10-03T05:00:00Z"), /EXPORT EXPIRED/],
   ]) {
     await t.test(name, async () => {
       const view = mountCommandDeck({ controlledTimers: true, now });
@@ -814,9 +814,9 @@ test("command chrome frames aggregate evidence as a dated export at valid and ex
         // the hero, rather than repeated across the chrome.
         assert.match(header?.textContent ?? "", expected);
         assert.doesNotMatch(header?.textContent ?? "", /18\/19 AT 28 AUG PROBE/);
-        assert.match(view.document.body.textContent, /MEASURED 28 AUGUST 2026 · 18 OF 19 SERVICES UP/);
+        assert.match(view.document.body.textContent, /MEASURED 2 SEPTEMBER 2026 · 19 OF 19 SERVICES UP/);
         assert.doesNotMatch(header?.textContent ?? "", /NOMINAL|CURRENT/);
-        assert.match(view.document.body.textContent, /APOLLO6\/6 · AT 28 AUG PROBE/);
+        assert.match(view.document.body.textContent, /APOLLO6\/6 · AT 2 SEP PROBE/);
       } finally {
         await view.cleanup();
       }
@@ -1499,8 +1499,8 @@ test("Snapshot prose separates the verification date from the preceding word", a
   try {
     await view.render();
     const snapshot = view.document.querySelector('section[data-deck="0"]');
-    assert.match(snapshot?.textContent ?? "", /MEASURED 28 AUGUST 2026 · 18 OF 19 SERVICES UP/);
-    assert.match(snapshot?.textContent ?? "", /VERIFIED 28 August 2026/);
+    assert.match(snapshot?.textContent ?? "", /MEASURED 2 SEPTEMBER 2026 · 19 OF 19 SERVICES UP/);
+    assert.match(snapshot?.textContent ?? "", /VERIFIED 2 September 2026/);
   } finally {
     await view.cleanup();
   }

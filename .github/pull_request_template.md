@@ -27,8 +27,8 @@ Describe the public-facing outcome and why this is the smallest safe change that
 ## Release consistency
 
 - [ ] `public/status.json`, root `status.json`, `CHANGELOG.md`, `RELEASE_BODY.md`, and the in-page release panel agree.
-- [ ] The 28 August 2026 fleet export remains 18/19 containers (Zeus 12/13; Apollo 6/6), with 2 hosts online and the cluster quorate.
-- [ ] The routing inventory remains separately dated 21 August 2026, with 10 public lanes and 36 private catalog entries; unmeasured figures remain withheld.
+- [ ] The 2 September 2026 fleet export remains 19/19 containers (Zeus 13/13; Apollo 6/6), with 2 hosts online and the cluster quorate.
+- [ ] The routing inventory is dated 2 September 2026, with 10 public lanes and 22 private catalog entries; unmeasured figures remain withheld.
 - [ ] A release tag is created only after the safety workflow passes on `main`.
 
 ## Verification

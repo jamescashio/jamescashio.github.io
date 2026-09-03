@@ -452,7 +452,7 @@ const FULL_VALIDITY_STATES = [
     source: "ssr-fixture",
     headerLabel: "EXPORT STATUS · DATED",
     footerLabel: "DATED EXPORT STATUS",
-    validThroughText: "VALID THRU 09-27-2026",
+    validThroughText: "VALID THRU 10-02-2026",
   },
   {
     id: "live-longest",
@@ -460,7 +460,7 @@ const FULL_VALIDITY_STATES = [
     source: "react-live",
     headerLabel: "EXPORT VALID · 29D LEFT",
     footerLabel: "DATED EXPORT VALID",
-    validThroughText: "VALID THRU 09-27-2026",
+    validThroughText: "VALID THRU 10-02-2026",
   },
   {
     id: "live-1d",
@@ -468,7 +468,7 @@ const FULL_VALIDITY_STATES = [
     source: "react-live",
     headerLabel: "EXPORT VALID · 1D LEFT",
     footerLabel: "DATED EXPORT VALID",
-    validThroughText: "VALID THRU 09-27-2026",
+    validThroughText: "VALID THRU 10-02-2026",
   },
   {
     id: "live-expired",

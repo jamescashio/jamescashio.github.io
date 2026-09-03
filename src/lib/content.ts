@@ -1,18 +1,18 @@
-export const VERIFIED = "08-28-2026";
-export const VERIFIED_LONG = "28 August 2026";
-export const ROUTING_VERIFIED_LONG = "21 August 2026";
-export const EXPIRES = "2026-09-27";
-export const EXPIRES_SHORT = "09-27-2026";
-export const EXPIRES_AT = "2026-09-28T05:00:00Z";
-export const REVISED = "08-28-2026";
-export const RELEASE = 'V35 "ALL TENS"';
+export const VERIFIED = "09-02-2026";
+export const VERIFIED_LONG = "2 September 2026";
+export const ROUTING_VERIFIED_LONG = "2 September 2026";
+export const EXPIRES = "2026-10-02";
+export const EXPIRES_SHORT = "10-02-2026";
+export const EXPIRES_AT = "2026-10-03T05:00:00Z";
+export const REVISED = "09-02-2026";
+export const RELEASE = 'V36 "FRESH FIX"';
 export const PVE = "9.2.11";
 
 export const BOOT = [
   "E.V.E. EVALUATION VERIFICATION ENGINE · ONLINE",
   "PROXMOX VE 9.2.11 · 2 HOSTS · CLUSTER QUORATE",
-  "18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6",
-  "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG",
+  "19/19 AT 2 SEP PROBE · ZEUS 13/13 · APOLLO 6/6",
+  "ROUTING INVENTORY 2 SEPTEMBER 2026 · 10 PUBLIC LANES · 22 PRIVATE CATALOG",
   `DATED EXPORT · PUBLIC-SAFE · VERIFIED ${VERIFIED_LONG}`,
 ];
 
@@ -46,12 +46,12 @@ export const DECK_SHORT: Record<(typeof DECKS)[number]["id"], string> = {
 };
 
 export const TELEMETRY = [
-  "ZEUS · 12/13 RUNNING AT 28 AUG PROBE",
-  "APOLLO · 6/6 RUNNING AT 28 AUG PROBE",
-  "FLEET · 18/19 AT 28 AUG PROBE",
+  "ZEUS · 13/13 RUNNING AT 2 SEP PROBE",
+  "APOLLO · 6/6 RUNNING AT 2 SEP PROBE",
+  "FLEET · 19/19 AT 2 SEP PROBE",
   "PROXMOX VE 9.2.11 · 2 HOSTS · CLUSTER QUORATE",
-  "18/19 AT 28 AUG PROBE",
-  "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG",
+  "19/19 AT 2 SEP PROBE",
+  "ROUTING INVENTORY 2 SEPTEMBER 2026 · 10 PUBLIC LANES · 22 PRIVATE CATALOG",
   "LAW · QUALITY PICKS THE MODEL",
   "DATED EXPORT · READ-ONLY · PUBLIC-SAFE SNAPSHOT",
   `VERIFIED ${VERIFIED_LONG} · VALID THRU ${EXPIRES_SHORT}`,
@@ -172,26 +172,41 @@ export const NAMED_ROLES = [
 ];
 
 export const SERVICE_FAMILIES =
-  "Observed public-safe role families at the 28 August 2026 probe: Technitium DNS primary, Technitium DNS secondary, Wazuh, monitoring stack, n8n, PBS, and media services. The stopped guest remains unnamed.";
+  "Observed public-safe role families at the 2 September 2026 probe: Technitium DNS primary, Technitium DNS secondary, Wazuh, monitoring stack, n8n, PBS, and media services. The remaining twelve roles stay unnamed on purpose.";
 
-export const WITHHELD = [
-  "AI operating cost per day and month",
-  "Automation job counts",
-  "DNS query sample figures",
-  "Backup verification figures",
-  "Security update counts",
-];
+export const STOPPED_GUESTS = 0;
+
+/** Figures the 2 September 2026 probe measured fresh. Label, value, and how it was measured. */
+export const FRESH_FIGURES = [
+  ["DNS QUERIES · 24H", "226,783", "Resolver log entries answered by the primary resolver in the trailing 24 hours"],
+  [
+    "BACKUPS INSIDE 24H",
+    "18 of 19",
+    "Documented guests with a backup snapshot newer than 24 hours; the backup server itself is the exception",
+  ],
+  ["AI COST · 30 DAYS", "$25.07", "Sum of per-provider trailing 30 day spend from the owner-run cost ledger"],
+] as const;
+
+/** Figures withheld from this export, with the measured reason. */
+export const WITHHELD = ["AI operating cost per day", "Automation job counts", "Security update counts"];
+export const WITHHELD_REASONS: Record<string, string> = {
+  "AI operating cost per day":
+    "The ledger has no trailing 24 hour total, so the daily figure is not derived from the monthly one.",
+  "Automation job counts":
+    "The automation engine's execution ledger was empty at the probe and a second store was unreadable.",
+  "Security update counts": "Measured, but not published while a pending update is still open. Published once applied.",
+};
 
 export const HOSTS = [
   {
     name: "ZEUS",
     tag: "DATED HOST",
-    blurb: "12 of 13 documented guests were running at the 28 August probe.",
+    blurb: "All 13 documented guests were running at the 2 September probe.",
   },
   {
     name: "APOLLO",
     tag: "DATED HOST",
-    blurb: "All 6 documented guests were running at the 28 August probe.",
+    blurb: "All 6 documented guests were running at the 2 September probe.",
   },
 ] as const;
 

@@ -15,6 +15,8 @@ import {
   SERVICE_FAMILIES,
   VERIFIED_LONG,
   WITHHELD,
+  WITHHELD_REASONS,
+  FRESH_FIGURES,
   DECK_CRAFT,
 } from "@/lib/content";
 import { getSound } from "@/lib/sound";
@@ -118,7 +120,7 @@ export function DeckSnapshot({
           routing layer picks the best model for each job rather than the cheapest.
         </p>
         <p className="za-critical-telemetry za-mono mt-5 text-[11px] text-dim">
-          MEASURED 28 AUGUST 2026 · 18 OF 19 SERVICES UP · BOTH MACHINES HEALTHY
+          MEASURED 2 SEPTEMBER 2026 · 19 OF 19 SERVICES UP · HOSTS HEALTHY
         </p>
 
         <div
@@ -184,9 +186,9 @@ export function DeckSnapshot({
 
         <div data-hud-clear className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {[
-            ["ZEUS", "12/13", "AT 28 AUG PROBE"],
-            ["APOLLO", "6/6", "AT 28 AUG PROBE"],
-            ["FLEET", "18/19", "AT 28 AUG PROBE"],
+            ["ZEUS", "13/13", "AT 2 SEP PROBE"],
+            ["APOLLO", "6/6", "AT 2 SEP PROBE"],
+            ["FLEET", "19/19", "AT 2 SEP PROBE"],
             ["HOSTS", "2", "CLUSTER QUORATE"],
             ["PVE", PVE, "VERSION AT PROBE"],
           ].map(([name, value, detail]) => (
@@ -222,15 +224,15 @@ export function DeckBrief({ sBrief }: { sBrief: SecRef }) {
                 <CountUp to={10} />
               </div>
               <p className="mt-3 text-sm leading-relaxed text-muted">
-                Ten public capability lanes are recorded in the 21 August 2026 routing inventory. Thirty-six private
+                Ten public capability lanes are recorded in the 2 September 2026 routing inventory. Twenty-two private
                 catalog entries are a separate count.
               </p>
             </article>
             <article className="za-panel p-5">
               <div className="za-mono text-[10px] text-accent">02 · EVIDENCE BOUNDARY</div>
-              <div className="za-display mt-3 text-5xl text-cyan">18/19</div>
+              <div className="za-display mt-3 text-5xl text-cyan">19/19</div>
               <p className="mt-3 text-sm leading-relaxed text-muted">
-                18 of 19 documented guests were running at the 28 August probe. Two Proxmox hosts were online and
+                All 19 documented guests were running at the 2 September probe. Two Proxmox hosts were online and
                 quorate. The dated export is evidence, never telemetry.
               </p>
             </article>
@@ -279,9 +281,9 @@ export function DeckGrid({ s1 }: { s1: SecRef }) {
         <Kicker>02 · THE GRID</Kicker>
         <Title>WHAT IS ACTUALLY RUNNING</Title>
         <p className="mt-5 max-w-[62ch] text-[1.05rem] leading-relaxed text-muted">
-          Nineteen documented roles on two hosts. At the 28 August probe Zeus ran 12 of 13 and Apollo ran 6 of 6. Seven
-          observed role families are named on the map; the stopped guest stays unnamed and the remaining roles stay
-          public-safe. Select a role family to trace its route.
+          Nineteen documented roles on two hosts. At the 2 September probe Zeus ran 13 of 13 and Apollo ran 6 of 6.
+          Seven observed role families are named on the map; the remaining twelve stay public-safe on purpose. Select a
+          role family to trace its route.
         </p>
 
         <div data-hud-clear className="mt-8">
@@ -309,7 +311,7 @@ export function DeckGrid({ s1 }: { s1: SecRef }) {
         </div>
         <p className="mt-6 max-w-[70ch] text-sm leading-relaxed text-muted">{SERVICE_FAMILIES}</p>
         <div className="mt-6 flex flex-wrap gap-3 text-[11px]">
-          <span className="za-chip">18/19 AT 28 AUG PROBE</span>
+          <span className="za-chip">19/19 AT 2 SEP PROBE</span>
           <span className="za-chip">2 HOSTS ONLINE · QUORATE</span>
           <span className="za-chip">READ-ONLY · DATED EXPORT</span>
         </div>
@@ -329,7 +331,7 @@ export function DeckRouting({ s2 }: { s2: SecRef }) {
         <p className="mt-2 za-display text-[clamp(1.2rem,2.4vw,2rem)] text-accent">COST ONLY BREAKS A TIE.</p>
         <p className="mt-5 max-w-[62ch] text-[1.05rem] leading-relaxed text-muted">
           Every job is classified first, then sent to the lane that does that kind of work best. Ten public capability
-          lanes and 36 private catalog entries are separate counts, both confirmed in the {ROUTING_VERIFIED_LONG}{" "}
+          lanes and 22 private catalog entries are separate counts, both confirmed in the {ROUTING_VERIFIED_LONG}{" "}
           routing inventory. Select a lane to see what it is for and how the five stage routing computer commits to it.
         </p>
 
@@ -389,7 +391,7 @@ export function DeckRouting({ s2 }: { s2: SecRef }) {
               />
             </div>
             <p className="za-mono mt-4 text-[10px] leading-relaxed text-dim">
-              ROUTING INVENTORY {ROUTING_VERIFIED_LONG.toUpperCase()} · TEN PUBLIC CAPABILITY LANES AND 36 PRIVATE
+              ROUTING INVENTORY {ROUTING_VERIFIED_LONG.toUpperCase()} · TEN PUBLIC CAPABILITY LANES AND 22 PRIVATE
               CATALOG ENTRIES COUNT DIFFERENT OBJECTS. DATED POLICY, NOT LIVE PROVIDER STATUS.
             </p>
           </div>
@@ -437,18 +439,33 @@ export function DeckIron({ s3 }: { s3: SecRef }) {
               </button>
             ))}
           </div>
-          <div className="za-withheld mt-6 za-panel p-5">
+          <div data-hud-clear className="za-fresh mt-6 za-panel p-5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="za-kicker">MEASURED FRESH · {VERIFIED_LONG.toUpperCase()} PROBE</div>
+              <span className="za-chip">{FRESH_FIGURES.length} FIGURES PUBLISHED</span>
+            </div>
+            <dl className="za-fresh-grid mt-4">
+              {FRESH_FIGURES.map(([label, value, method]) => (
+                <div key={label} className="za-fresh-cell">
+                  <dt className="za-mono text-[9px] tracking-[0.2em] text-dim">{label}</dt>
+                  <dd className="za-display mt-1 text-[1.5rem] text-cyan">{value}</dd>
+                  <dd className="mt-1 text-[12px] leading-snug text-muted">{method}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+          <div className="za-withheld mt-4 za-panel p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="za-kicker">EVIDENCE RULE · WITHHELD UNTIL RE-MEASURED</div>
               <span className="za-chip">{WITHHELD.length} FIGURES HELD</span>
             </div>
             <p className="mt-3 text-sm leading-relaxed text-muted">
-              A figure with no fresh measurement is left out rather than published stale. These five wait for the next
+              A figure with no fresh measurement is left out rather than published stale. These wait for the next
               owner-run probe:
             </p>
             <ul className="mt-3 flex flex-wrap gap-2">
               {WITHHELD.map((w) => (
-                <li key={w} className="za-withheld-item za-mono text-[10px] text-dim">
+                <li key={w} className="za-withheld-item za-mono text-[10px] text-dim" title={WITHHELD_REASONS[w]}>
                   {w.toUpperCase()}
                 </li>
               ))}
@@ -797,8 +814,8 @@ export function DeckEve({
         </div>
         <p className="za-critical-telemetry za-mono mt-5 text-[10px] text-dim">
           EVERY ANSWER COMES FROM THE READ ONLY {VERIFIED_LONG} DATED EXPORT · VALID THROUGH {EXPIRES_SHORT}. AFTER THAT
-          THE CONSOLE REPORTS HISTORY, NOT STATUS. 18/19 AT 28 AUG PROBE · 2 PROXMOX HOSTS ONLINE · QUORATE · ROUTING
-          INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES.
+          THE CONSOLE REPORTS HISTORY, NOT STATUS. 19/19 AT 2 SEP PROBE · 2 PROXMOX HOSTS ONLINE · QUORATE · ROUTING
+          INVENTORY 2 SEPTEMBER 2026 · 10 PUBLIC LANES · 22 PRIVATE CATALOG ENTRIES.
         </p>
       </div>
     </DeckShell>

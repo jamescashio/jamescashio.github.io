@@ -174,7 +174,7 @@ test("DeckSnapshot renders V34's dated aggregate and Executive outcome hierarchy
         onEve: () => {},
       }),
     );
-    assert.match(view.document.body.textContent, /18\/19 AT 28 AUG PROBE/);
+    assert.match(view.document.body.textContent, /19\/19 AT 2 SEP PROBE/);
     assert.match(view.document.body.textContent, /Detailed evidence, build proof, and operational context\./);
     assert.match(view.document.body.textContent, /Route control, evidence boundary, human authority\./);
     const executive = [...view.document.querySelectorAll(".za-snapshot-modes button")].find((control) =>
@@ -245,7 +245,7 @@ test("current fleet decks expose only verified aggregate evidence without topolo
     for (const host of map.querySelectorAll(".za-fleet-host")) {
       assert.match(
         host.textContent,
-        /^(ZEUS|APOLLO)\s*(12 OF 13|6 OF 6) AT PROBE$/,
+        /^(ZEUS|APOLLO)\s*(13 OF 13|6 OF 6) AT PROBE$/,
         "host rings carry only published tallies",
       );
       assert.equal(
@@ -301,12 +301,20 @@ test("current status and release surfaces omit raw route identifiers and unprobe
     "containers",
     "lanes",
     "routingVerified",
+    "fresh",
+    "withheld",
     "law",
     "note",
   ]);
   assert.deepEqual(status.proxmox, { version: "9.2.11", hostsOnline: 2, quorate: true });
-  assert.deepEqual(status.containers, { running: 18, documented: 19, stopped: 1, zeus: 12, apollo: 6 });
-  assert.deepEqual(status.lanes, { public: 10, privateCatalog: 36 });
+  assert.deepEqual(status.containers, { running: 19, documented: 19, stopped: 0, zeus: 13, apollo: 6 });
+  assert.deepEqual(status.lanes, { public: 10, privateCatalog: 22 });
+  assert.deepEqual(status.fresh, {
+    dnsQueriesSampled24h: 226783,
+    backupsVerifiedInside24h: { verified: 18, documented: 19 },
+    aiCostPerMonthUsd: 25.07,
+  });
+  assert.deepEqual(status.withheld, ["AI operating cost per day", "Automation job counts", "Security update counts"]);
   for (const surface of [JSON.stringify(status), releaseBody]) {
     assert.doesNotMatch(surface, /deepseek-v4-(?:flash|pro)/i, "raw DeepSeek route identifiers must remain private");
     assert.doesNotMatch(
@@ -342,13 +350,13 @@ test("Executive cards keep routing, fleet evidence, and human accountability as 
     assert.equal(cards[0].querySelector(".za-display")?.textContent, "10");
     assert.equal(
       cards[0].querySelector("p")?.textContent,
-      "Ten public capability lanes are recorded in the 21 August 2026 routing inventory. Thirty-six private catalog entries are a separate count.",
+      "Ten public capability lanes are recorded in the 2 September 2026 routing inventory. Twenty-two private catalog entries are a separate count.",
     );
     assert.doesNotMatch(cards[0].textContent, /18\/19/);
-    assert.equal(cards[1].querySelector(".za-display")?.textContent, "18/19");
+    assert.equal(cards[1].querySelector(".za-display")?.textContent, "19/19");
     assert.equal(
       cards[1].querySelector("p")?.textContent,
-      "18 of 19 documented guests were running at the 28 August probe. Two Proxmox hosts were online and quorate. The dated export is evidence, never telemetry.",
+      "All 19 documented guests were running at the 2 September probe. Two Proxmox hosts were online and quorate. The dated export is evidence, never telemetry.",
     );
     assert.equal(cards[2].querySelector(".za-display")?.textContent, "1");
     assert.match(cards[2].textContent, /OWNER ACCOUNTABLE/);
@@ -497,9 +505,9 @@ test("CommandHeader craft pips expose exactly one current craft and update it on
   }
 });
 
-test("E.V.E. status keeps routing counts on the separate 21 August 2026 inventory", () => {
+test("E.V.E. status keeps routing counts on the 2 September 2026 inventory", () => {
   const lines = runEve("status").out;
-  assert.ok(lines.includes("ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES"));
+  assert.ok(lines.includes("ROUTING INVENTORY 2 SEPTEMBER 2026 · 10 PUBLIC LANES · 22 PRIVATE CATALOG ENTRIES"));
   assert.equal(
     lines.some((line) => /28 AUG(?:UST)? 2026.*10 PUBLIC/i.test(line)),
     false,
@@ -523,9 +531,9 @@ test("BlackBoxReceipt renders only the exact dated claim set beneath its exact h
     assert.deepEqual(
       [...receipt.querySelectorAll("li")].map((claim) => claim.textContent),
       [
-        "08-28-2026 · 18/19 DOCUMENTED GUESTS RUNNING AT PROBE",
-        "08-28-2026 · 2 PROXMOX HOSTS QUORATE",
-        "08-21-2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG",
+        "09-02-2026 · 19/19 DOCUMENTED GUESTS RUNNING AT PROBE",
+        "09-02-2026 · 2 PROXMOX HOSTS QUORATE",
+        "09-02-2026 · 10 PUBLIC LANES · 22 PRIVATE CATALOG",
       ],
     );
   } finally {
