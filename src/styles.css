@@ -2854,7 +2854,16 @@
 .za-hail .za-kicker::after {
   content: " · INCOMING";
   color: var(--color-accent);
-  animation: za-lock-pulse 1.6s ease-in-out infinite;
+  animation: za-incoming 1.6s ease-in-out infinite;
+}
+@keyframes za-incoming {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 @media (max-width: 767px) {
@@ -3804,4 +3813,24 @@
   border: 1px dashed rgba(255, 149, 0, 0.4);
   border-radius: 6px;
   letter-spacing: 0.12em;
+}
+
+/* —— Contact · the black box receipt as one slim evidence strip —— */
+.za-receipt-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem 1rem;
+}
+.za-receipt-claims {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.za-receipt-claims .za-receipt-claim {
+  padding: 4px 8px;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  line-height: 1.4;
 }

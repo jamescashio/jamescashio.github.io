@@ -132,6 +132,7 @@ function mountCommandDeck({
         measureText: () => ({ width: 36 }),
         createLinearGradient: () => ({ addColorStop: () => {} }),
         createRadialGradient: () => ({ addColorStop: () => {} }),
+        createConicGradient: () => ({ addColorStop: () => {} }),
       },
       {
         get: (target, key) => (key in target ? target[key] : () => {}),
