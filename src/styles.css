@@ -2462,6 +2462,36 @@
 .za-vs-hud.is-online {
   opacity: 1;
 }
+/* Off the hero deck the targeting frame stands down: only the readout stays,
+   so headlines, tiles and lane lists are never drawn over by the tape,
+   the scope or the corner brackets. */
+.za-vs-hud .za-vs-bracket,
+.za-vs-hud .za-vs-elbow,
+.za-vs-hud .za-vs-scan,
+.za-vs-hud .za-vs-horizon,
+.za-vs-hud .za-heading-tape,
+.za-vs-hud .za-vs-scope,
+.za-vs-hud .za-vs-core,
+.za-vs-hud .za-vs-banner {
+  transition: opacity 520ms var(--ease-out);
+}
+.za-vs-hud.is-compact.is-compact .za-vs-bracket,
+.za-vs-hud.is-compact.is-compact .za-vs-elbow,
+.za-vs-hud.is-compact.is-compact .za-vs-scan,
+.za-vs-hud.is-compact.is-compact .za-vs-horizon,
+.za-vs-hud.is-compact.is-compact .za-heading-tape,
+.za-vs-hud.is-compact.is-compact .za-vs-scope,
+.za-vs-hud.is-compact.is-compact .za-vs-core,
+.za-vs-hud.is-compact.is-compact .za-vs-banner {
+  opacity: 0;
+}
+.za-vs-hud.is-compact .za-heading-track,
+.za-vs-hud.is-compact .za-vs-scope-ticks,
+.za-vs-hud.is-compact .za-vs-scan,
+.za-vs-hud.is-compact .za-vs-core-ring,
+.za-vs-hud.is-compact .za-vs-core-heart {
+  animation-play-state: paused;
+}
 .za-vs-bracket {
   position: absolute;
   width: 54px;
@@ -2604,7 +2634,7 @@
 .za-vs-banner {
   position: absolute;
   left: 52%;
-  bottom: 11%;
+  bottom: 21%;
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.22em;
@@ -2824,7 +2854,16 @@
 .za-hail .za-kicker::after {
   content: " · INCOMING";
   color: var(--color-accent);
-  animation: za-lock-pulse 1.6s ease-in-out infinite;
+  animation: za-incoming 1.6s ease-in-out infinite;
+}
+@keyframes za-incoming {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 @media (max-width: 767px) {
@@ -2917,9 +2956,8 @@
   .za-vs-horizon {
     display: none;
   }
-  .za-vs-bracket.tl,
-  .za-vs-bracket.bl {
-    left: 4%;
+  .za-vs-bracket {
+    display: none;
   }
   .za-vs-hud.is-online {
     opacity: 0.4;
@@ -3258,6 +3296,19 @@
     color: var(--color-cyan);
     -webkit-text-fill-color: var(--color-cyan);
   }
+  .za-fleet-packet {
+    display: none;
+  }
+  .za-fleet-trunks > path,
+  .za-fleet-hub-ring,
+  .za-fleet-slot-halo,
+  .za-fleet-core-heart,
+  .za-fleet-ping {
+    animation: none !important;
+  }
+  .za-fleet-ping {
+    opacity: 0.35;
+  }
 }
 
 /* ---------------------------------------------------------------------------
@@ -3455,4 +3506,331 @@
   .za-corner-hud {
     bottom: 4.75rem;
   }
+}
+
+/* —— Deck 02 · The Grid fleet map —— */
+.za-fleet-grid {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background: radial-gradient(ellipse at 50% 50%, rgba(0, 249, 255, 0.05), transparent 62%), rgba(9, 12, 20, 0.72);
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 249, 255, 0.05),
+    0 0 48px rgba(0, 249, 255, 0.06);
+}
+.za-fleet-grid > svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.za-fleet-floor line {
+  stroke: rgba(0, 249, 255, 0.06);
+  stroke-width: 1;
+}
+.za-fleet-trunks > path {
+  fill: none;
+  stroke: rgba(0, 249, 255, 0.34);
+  stroke-width: 2;
+  stroke-dasharray: 6 8;
+  animation: za-fleet-dash 2.4s linear infinite;
+}
+@keyframes za-fleet-dash {
+  to {
+    stroke-dashoffset: -28;
+  }
+}
+.za-fleet-packet {
+  fill: var(--color-cyan);
+  filter: drop-shadow(0 0 6px rgba(0, 249, 255, 0.9));
+}
+.za-fleet-packet.is-trunk {
+  fill: var(--color-accent);
+  filter: drop-shadow(0 0 7px rgba(255, 149, 0, 0.95));
+}
+.za-fleet-packet.is-return {
+  fill: var(--color-cyan);
+  filter: drop-shadow(0 0 6px rgba(0, 249, 255, 0.9));
+}
+.za-fleet-orbit {
+  fill: none;
+  stroke: rgba(0, 249, 255, 0.28);
+  stroke-width: 1;
+  stroke-dasharray: 2 5;
+}
+.za-fleet-spokes line {
+  stroke: rgba(0, 249, 255, 0.12);
+  stroke-width: 1;
+}
+.za-fleet-hub {
+  fill: rgba(5, 6, 10, 0.92);
+  stroke: rgba(0, 249, 255, 0.55);
+  stroke-width: 1.4;
+}
+.za-fleet-hub-ring {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 1.2;
+  stroke-dasharray: 40 150;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: za-fleet-spin 9s linear infinite;
+}
+@keyframes za-fleet-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.za-fleet-hub-name,
+.za-fleet-core-name {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  fill: var(--color-cyan);
+}
+.za-fleet-core-name {
+  fill: var(--color-accent);
+}
+.za-fleet-tally,
+.za-fleet-core-sub {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  fill: var(--color-dim);
+}
+.za-fleet-slot circle {
+  fill: var(--color-green);
+  opacity: 0.95;
+}
+.za-fleet-slot.is-stopped circle {
+  fill: rgba(255, 92, 92, 0.85);
+}
+.za-fleet-slot-halo {
+  fill: none !important;
+  stroke: rgba(255, 92, 92, 0.7);
+  stroke-width: 1;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: za-fleet-halo 1.8s ease-out infinite;
+}
+@keyframes za-fleet-halo {
+  from {
+    transform: scale(0.6);
+    opacity: 1;
+  }
+  to {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+.za-fleet-route {
+  fill: none;
+  stroke: rgba(0, 249, 255, 0.22);
+  stroke-width: 1.2;
+  transition:
+    stroke 260ms var(--ease-out),
+    stroke-width 260ms var(--ease-out),
+    opacity 260ms var(--ease-out);
+}
+.za-fleet-role.is-focus .za-fleet-route {
+  stroke: var(--color-accent);
+  stroke-width: 2.2;
+  filter: drop-shadow(0 0 6px rgba(255, 149, 0, 0.6));
+}
+.za-fleet-role.is-focus .za-fleet-packet {
+  fill: var(--color-accent);
+  filter: drop-shadow(0 0 8px rgba(255, 149, 0, 1));
+}
+.za-fleet-role.is-dim {
+  opacity: 0.35;
+}
+.za-fleet-core-ring {
+  fill: rgba(5, 6, 10, 0.9);
+  stroke: var(--color-accent);
+  stroke-width: 1.6;
+}
+.za-fleet-core-heart {
+  fill: var(--color-accent);
+  filter: drop-shadow(0 0 10px rgba(255, 149, 0, 1));
+  animation: za-lock-pulse 1.6s ease-in-out infinite;
+}
+.za-fleet-ping {
+  fill: none;
+  stroke: rgba(255, 149, 0, 0.55);
+  stroke-width: 1;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: za-fleet-ping 2.8s ease-out infinite;
+}
+.za-fleet-ping.delay {
+  animation-delay: 1.4s;
+}
+@keyframes za-fleet-ping {
+  from {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+}
+.za-fleet-markers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.za-fleet-marker {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  border-radius: 999px;
+  pointer-events: auto;
+  cursor: pointer;
+  background: transparent;
+}
+.za-fleet-marker:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 2px;
+}
+.za-fleet-marker-dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 999px;
+  background: var(--color-cyan);
+  box-shadow: 0 0 12px rgba(0, 249, 255, 0.9);
+  transition:
+    transform 220ms var(--ease-out),
+    background 220ms var(--ease-out);
+}
+.za-fleet-marker.is-focus .za-fleet-marker-dot,
+.za-fleet-marker.is-lock .za-fleet-marker-dot {
+  background: var(--color-accent);
+  box-shadow: 0 0 16px rgba(255, 149, 0, 1);
+  transform: scale(1.35);
+}
+.za-fleet-marker-label {
+  position: absolute;
+  left: 50%;
+  bottom: calc(50% + 12px);
+  transform: translateX(-50%);
+  white-space: nowrap;
+  padding: 3px 7px;
+  border: 1px solid rgba(0, 249, 255, 0.28);
+  border-radius: 6px;
+  background: rgba(5, 6, 10, 0.86);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  color: var(--color-ink);
+  transition:
+    border-color 220ms var(--ease-out),
+    color 220ms var(--ease-out);
+}
+.za-fleet-marker-label b {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+.za-fleet-marker.is-below .za-fleet-marker-label {
+  bottom: auto;
+  top: calc(50% + 12px);
+}
+.za-fleet-marker.is-focus .za-fleet-marker-label,
+.za-fleet-marker.is-lock .za-fleet-marker-label {
+  border-color: var(--color-accent);
+  color: var(--color-cyan);
+}
+.za-fleet-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.4rem;
+  padding: 0.7rem 1rem;
+  border-top: 1px solid var(--color-line);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--color-muted);
+}
+.za-fleet-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.za-fleet-legend i {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--color-green);
+}
+.za-fleet-legend i.is-stopped {
+  background: rgba(255, 92, 92, 0.9);
+}
+.za-fleet-legend i.is-route {
+  width: 18px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--color-cyan);
+}
+@media (max-width: 767px) {
+  .za-fleet-marker-label {
+    font-size: 8px;
+    padding: 2px 5px;
+    letter-spacing: 0.08em;
+  }
+  .za-fleet-hub-name,
+  .za-fleet-core-name {
+    font-size: 17px;
+  }
+  .za-fleet-tally,
+  .za-fleet-core-sub {
+    font-size: 12px;
+  }
+  .za-fleet-legend {
+    gap: 0.4rem 0.9rem;
+  }
+}
+/* —— Wide displays: keep the decks readable instead of pinning them to the far left —— */
+@media (min-width: 1920px) {
+  main.za-scroll > section,
+  main.za-scroll > footer {
+    max-width: 1760px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* —— Deck 04 · withheld figures read as a rule, not an alarm —— */
+.za-withheld {
+  border-color: rgba(255, 149, 0, 0.28);
+}
+.za-withheld-item {
+  padding: 5px 9px;
+  border: 1px dashed rgba(255, 149, 0, 0.4);
+  border-radius: 6px;
+  letter-spacing: 0.12em;
+}
+
+/* —— Contact · the black box receipt as one slim evidence strip —— */
+.za-receipt-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem 1rem;
+}
+.za-receipt-claims {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.za-receipt-claims .za-receipt-claim {
+  padding: 4px 8px;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  line-height: 1.4;
 }
