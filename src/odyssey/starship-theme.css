@@ -1,0 +1,87 @@
+/* Sovereign edition: champagne metal, midnight atmosphere, and squared flight typography. */
+@font-face {
+  font-family: Oxanium;
+  src: url("/fonts/oxanium-latin-variable.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+}
+.event-horizon.aurora {
+  --a-gold: #edc991;
+  --a-paper: #f1eee6;
+  --a-abyss: #050d17;
+}
+.event-horizon.aurora h1,
+.event-horizon.aurora h2,
+.event-horizon.aurora h3,
+.event-horizon.aurora h4,
+.event-horizon.aurora .o-brand,
+.event-horizon.aurora .o-button,
+.event-horizon.aurora .o-header > nav {
+  font-family: Oxanium, Exo, Arial, sans-serif;
+}
+.event-horizon.aurora em {
+  font-family: Oxanium, Exo, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+}
+.event-horizon.aurora .o-hero h1 {
+  letter-spacing: -0.055em;
+  line-height: 1.04;
+}
+.event-horizon.aurora .o-hero h1 em {
+  font-size: 1.04em;
+  letter-spacing: -0.045em;
+  line-height: 1.06;
+  color: #edc991;
+}
+.event-horizon.aurora h2 {
+  letter-spacing: -0.035em;
+  line-height: 1.12;
+}
+.event-horizon.aurora h2 em {
+  font-size: 1em;
+  letter-spacing: -0.035em;
+}
+.event-horizon.aurora .o-header {
+  border-bottom-color: #d3af7040;
+  background: linear-gradient(#050e19fc, #091521f5);
+}
+.event-horizon.aurora .o-header > nav a:after,
+.event-horizon.aurora .o-scroll-progress {
+  background: #edc991;
+}
+.event-horizon.aurora .o-scroll-progress {
+  box-shadow: none;
+}
+.event-horizon.aurora .eh-world-section {
+  background: radial-gradient(ellipse at 80% 0%, #243040 0, #0b1724 44%, #07111d 85%);
+}
+.event-horizon.aurora .eh-world-section .o-kicker,
+.event-horizon.aurora .eh-world-section h2 em {
+  color: #edc991;
+}
+.event-horizon.aurora .eh-world-section .o-section-heading {
+  grid-template-columns: 1.1fr 0.9fr;
+}
+.event-horizon.aurora .eh-world-section h2 {
+  font-size: clamp(38px, 4.4vw, 70px);
+}
+@media (max-width: 700px) {
+  .event-horizon.aurora .eh-world-section .o-section-heading {
+    grid-template-columns: 1fr;
+  }
+  .event-horizon.aurora .eh-world-section h2 {
+    font-size: clamp(34px, 8vw, 52px);
+  }
+  .event-horizon.aurora .o-hero h1 {
+    letter-spacing: -0.05em;
+  }
+  .event-horizon.aurora .o-contact h2 {
+    font-size: clamp(34px, 9vw, 56px);
+    letter-spacing: -0.045em;
+  }
+  .event-horizon.aurora .o-contact h2 em {
+    letter-spacing: -0.045em;
+  }
+}

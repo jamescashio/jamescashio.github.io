@@ -86,7 +86,7 @@ test("Snapshot marks every decision-carrying fleet value and date as critical te
   assert.ok(fleetSummary, "Snapshot must retain its dated fleet summary");
   assert.ok(fleetSummary.classList.contains("za-critical-telemetry"));
 
-  const evidenceCards = [...document.querySelectorAll(".za-panel")];
+  const evidenceCards = [...document.querySelectorAll(".za-snapshot-facts > div")];
   assert.equal(evidenceCards.length, 5, "Snapshot must retain its five evidence cards");
   for (const card of evidenceCards) {
     const detail = card.querySelector(".za-mono");

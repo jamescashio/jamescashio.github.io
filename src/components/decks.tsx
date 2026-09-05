@@ -23,14 +23,17 @@ import { useDeck, type CopyEmailState } from "@/lib/store";
 import { BlackBoxReceipt } from "./black-box-receipt";
 import { BitMascot } from "./bit-mascot";
 import { BuildEnvelope } from "./build-envelope";
-import { CountUp, DeckShell, Kicker, Plate, Ticker, Title } from "./deck-primitives";
+import { CountUp, DeckShell, Kicker, Plate, Title } from "./deck-primitives";
 import { EveConsole } from "./eve-console";
 import { FleetGrid } from "./fleet-grid";
-import { HermesProof } from "./hermes-proof";
+import { RouteDemonstration } from "./route-demonstration";
+import { ProofCard } from "./proof-card";
+import { BitBriefing } from "./bit-briefing";
+import { BUILD_STORIES } from "@/lib/build-stories";
 
 type SecRef = RefObject<HTMLElement | null>;
 
-export const IDENTITY_LINE = "DOUG CASHIO · ENTERPRISE AI + SECURITY SYSTEMS · OWNER-OPERATOR";
+export { DeckSnapshot, IDENTITY_LINE } from "./deck-snapshot";
 
 const SUPPORTING_PLATE_SIZES = "(min-width: 1024px) 50vw, 100vw";
 const BUILD_ARTICLE_ANCHOR_IDS = ARTICLES.map((_, index) => `deck=builds&article=${index + 1}`);
@@ -78,135 +81,6 @@ const SUPPORTING_PLATE_SOURCES = {
     },
   ],
 } as const;
-
-export function DeckSnapshot({
-  s0,
-  copyCol,
-  onEngage,
-  onEve,
-  onStill,
-}: {
-  s0: SecRef;
-  copyCol: RefObject<HTMLDivElement | null>;
-  onEngage: () => void;
-  onEve: () => void;
-  onFlight?: () => void;
-  onStill?: () => void;
-}) {
-  const mode = useDeck((s) => s.mode);
-  const set = useDeck((s) => s.set);
-  return (
-    <section
-      ref={s0}
-      data-deck={0}
-      tabIndex={-1}
-      aria-label="SNAPSHOT deck"
-      className="za-mobile-rail-clearance relative min-h-[100dvh] px-5 pb-32 pt-24 md:px-10 lg:px-14"
-    >
-      <span id="deck=snapshot" aria-hidden="true" className="pointer-events-none absolute left-0 top-0" />
-      <div ref={copyCol} className="za-bracket max-w-[38rem] p-2">
-        <Kicker>ZEUSAPOLLO · SOVEREIGN AI UNDER HUMAN COMMAND</Kicker>
-        <p className="za-mono mt-3 text-[11px] tracking-[0.12em] text-cyan">{IDENTITY_LINE}</p>
-        <h1 tabIndex={-1} className="za-display text-[clamp(2rem,4.8vw,4.4rem)] leading-[0.92]">
-          OWN THE IRON AND THE <span className="za-shimmer-text">ROUTE</span>.
-        </h1>
-        <p className="za-snapshot-lede mt-5 max-w-[44ch] text-[1.2rem] leading-snug text-ink">
-          I run AI and security systems on servers I own, and I publish the evidence that they work.
-        </p>
-        <p className="za-snapshot-copy mt-5 max-w-[46ch] text-[1.05rem] leading-relaxed text-muted">
-          Every claim here is measured and dated. Nineteen services run on two machines in a room I can walk into, and a
-          routing layer picks the best model for each job rather than the cheapest.
-        </p>
-        <p className="za-critical-telemetry za-mono mt-5 text-[11px] text-dim">
-          MEASURED 28 AUGUST 2026 · 18 OF 19 SERVICES UP · BOTH MACHINES HEALTHY
-        </p>
-
-        <div
-          data-hud-clear
-          className="za-snapshot-modes mt-8 grid max-w-lg grid-cols-2 gap-2 rounded-[var(--radius-lg)] border border-line bg-void-2/70 p-1.5"
-        >
-          <button
-            type="button"
-            aria-pressed={mode === "technical"}
-            onClick={() => {
-              set({ mode: "technical", shown: [0] });
-              getSound().prompt();
-            }}
-            className={`min-h-11 rounded-[10px] px-3 py-3 text-left ${mode === "technical" ? "bg-accent text-on-accent" : "text-dim"}`}
-          >
-            <div className="za-mono text-[10px] tracking-[0.2em]">TECHNICAL</div>
-            <div className="mt-1 font-sans text-[13px] leading-snug">
-              Detailed evidence, build proof, and operational context.
-            </div>
-          </button>
-          <button
-            type="button"
-            aria-pressed={mode === "executive"}
-            onClick={() => {
-              set({ mode: "executive", shown: [0, 8] });
-              getSound().prompt();
-            }}
-            className={`min-h-11 rounded-[10px] px-3 py-3 text-left ${mode === "executive" ? "bg-accent text-on-accent" : "text-dim"}`}
-          >
-            <div className="za-mono text-[10px] tracking-[0.2em]">EXECUTIVE</div>
-            <div className="mt-1 font-sans text-[13px] leading-snug">
-              Route control, evidence boundary, human authority.
-            </div>
-          </button>
-        </div>
-
-        <div data-hud-clear className="za-snapshot-actions mt-8 flex flex-wrap items-center gap-3">
-          {mode === "executive" ? (
-            <>
-              <button type="button" className="za-btn px-7 py-3.5 text-[13px]" onClick={() => onStill?.()}>
-                ARM THE STILL
-              </button>
-              <button type="button" className="za-btn-ghost px-5 py-3 text-[11px]" onClick={onEngage}>
-                READ THE BRIEF
-              </button>
-            </>
-          ) : (
-            <>
-              <button type="button" className="za-btn px-7 py-3.5 text-[13px]" onClick={onEngage}>
-                DESCEND THE DECKS
-              </button>
-              <button type="button" className="za-btn-ghost px-5 py-3 text-[11px]" onClick={onEve}>
-                OPEN E.V.E. CONSOLE
-              </button>
-            </>
-          )}
-        </div>
-
-        <div data-hud-clear className="za-chip za-critical-telemetry mt-8">
-          <span className="h-1.5 w-1.5 rounded-full bg-green shadow-[0_0_8px_var(--color-green)]" />
-          E.V.E. ONLINE · READ-ONLY · DATED EXPORT · VERIFIED {VERIFIED_LONG} · VALID THRU {EXPIRES_SHORT}
-        </div>
-
-        <div data-hud-clear className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          {[
-            ["ZEUS", "12/13", "AT 28 AUG PROBE"],
-            ["APOLLO", "6/6", "AT 28 AUG PROBE"],
-            ["FLEET", "18/19", "AT 28 AUG PROBE"],
-            ["HOSTS", "2", "CLUSTER QUORATE"],
-            ["PVE", PVE, "VERSION AT PROBE"],
-          ].map(([name, value, detail]) => (
-            <div key={name} className="za-panel px-3 py-3">
-              <div className="flex items-center justify-between gap-2">
-                <div className="za-display text-[15px] text-cyan">{name}</div>
-                <span className="h-1.5 w-1.5 rounded-full bg-green shadow-[0_0_8px_var(--color-green)]" />
-              </div>
-              <div className="za-critical-telemetry za-mono mt-1 text-[9px] text-dim">
-                {value} · {detail}
-              </div>
-              <div className="za-heartbeat mt-2" aria-hidden />
-            </div>
-          ))}
-        </div>
-        <Ticker />
-      </div>
-    </section>
-  );
-}
 
 export function DeckBrief({ sBrief }: { sBrief: SecRef }) {
   return (
@@ -325,6 +199,7 @@ export function DeckRouting({ s2 }: { s2: SecRef }) {
     <DeckShell index={2} sRef={s2}>
       <div className="max-w-5xl">
         <Kicker>03 · ROUTING</Kicker>
+        <BitBriefing index={2} />
         <Title>QUALITY PICKS THE MODEL.</Title>
         <p className="mt-2 za-display text-[clamp(1.2rem,2.4vw,2rem)] text-accent">COST ONLY BREAKS A TIE.</p>
         <p className="mt-5 max-w-[62ch] text-[1.05rem] leading-relaxed text-muted">
@@ -575,6 +450,7 @@ export function DeckLineage({ s4 }: { s4: SecRef }) {
 export function DeckBuilds({ s5, onSelect }: { s5: SecRef; onSelect: (article: number) => void }) {
   const sel = useDeck((s) => s.sel);
   const article = ARTICLES[sel];
+  const story = BUILD_STORIES[sel];
   const lock = useCallback(
     (i: number) => {
       onSelect(i);
@@ -587,30 +463,12 @@ export function DeckBuilds({ s5, onSelect }: { s5: SecRef; onSelect: (article: n
         <Kicker>06 · BUILDS</Kicker>
         <Title>SEVEN TEST ARTICLES.</Title>
         <p className="mt-5 max-w-[58ch] text-[1.05rem] leading-relaxed text-muted">
-          Owner-built evidence, not universal status claims. Seven documented builds on the same fabric. Select a marker
-          or article to acquire its proof vector; focused selector arrow keys fly the range.
+          Seven systems built on the same fabric. Choose a build to see the problem it solves, how it works, and what a
+          useful result looks like.
         </p>
+        <BitBriefing index={5} />
         <div className="mt-8 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
           <div data-hud-clear className="za-build-details">
-            <div key={article.name} className="za-panel za-article-card p-6">
-              <div className="flex items-center justify-between gap-3">
-                <div className="za-mono text-[10px] text-accent">
-                  {String(sel + 1).padStart(2, "0")} · {article.tag}
-                </div>
-                <span className="za-chip text-[9px]">
-                  <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--color-accent)]" />
-                  TARGET LOCK
-                </span>
-              </div>
-              <h3 className="za-display mt-3 text-3xl">{article.name}</h3>
-              <p className="mt-4 text-[1.02rem] leading-relaxed text-muted">{article.note}</p>
-              {sel === 0 ? <HermesProof /> : null}
-              <div className="za-article-telemetry mt-6 grid grid-cols-3 gap-px overflow-hidden rounded-[var(--radius-sm)] border border-line">
-                <span>ARTICLE · {String(sel + 1).padStart(2, "0")}/07</span>
-                <span>BUILD PROOF · OWNER-BUILT</span>
-                <span>CONTROL · MANUAL</span>
-              </div>
-            </div>
             <div
               className="za-build-selector mt-3 flex flex-col"
               role="group"
@@ -645,6 +503,54 @@ export function DeckBuilds({ s5, onSelect }: { s5: SecRef; onSelect: (article: n
                   <span className="za-mono text-[9px] text-dim">{a.tag}</span>
                 </button>
               ))}
+            </div>
+            <div key={article.name} className="za-panel za-article-card p-6">
+              <div className="flex items-center justify-between gap-3">
+                <div className="za-mono text-[10px] text-accent">
+                  {String(sel + 1).padStart(2, "0")} · {article.tag}
+                </div>
+                <span className="za-chip text-[9px]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_var(--color-accent)]" />
+                  TARGET LOCK
+                </span>
+              </div>
+              <h3 className="za-display mt-3 text-3xl">{article.name}</h3>
+              <p className="za-build-outcome">{story.outcome}</p>
+              <p className="mt-4 text-[1.02rem] leading-relaxed text-muted">{article.note}</p>
+              <details className="za-story-disclosure">
+                <summary>
+                  HOW THIS BUILD WORKS <span aria-hidden>+</span>
+                </summary>
+                <div className="za-build-story">
+                  {[
+                    ["THE REQUEST", story.input],
+                    ["THE WORK", story.action],
+                    ["THE PAYOFF", story.result],
+                  ].map(([label, detail]) => (
+                    <div key={label}>
+                      <span className="za-mono">{label}</span>
+                      <p>{detail}</p>
+                    </div>
+                  ))}
+                </div>
+              </details>
+              {sel === 0 ? (
+                <RouteDemonstration />
+              ) : (
+                <details className="za-build-example">
+                  <summary>
+                    EXPLORE AN EXAMPLE <span aria-hidden>+</span>
+                  </summary>
+                  <p>{story.example}</p>
+                  <small>Illustrative workflow based on the published build description.</small>
+                </details>
+              )}
+              <ProofCard article={sel} />
+              <div className="za-article-telemetry mt-6 grid grid-cols-3 gap-px overflow-hidden rounded-[var(--radius-sm)] border border-line">
+                <span>ARTICLE · {String(sel + 1).padStart(2, "0")}/07</span>
+                <span>BUILD PROOF · OWNER-BUILT</span>
+                <span>CONTROL · MANUAL</span>
+              </div>
             </div>
           </div>
           <div data-hud-clear className="za-build-map">
@@ -795,6 +701,7 @@ export function DeckEve({
             </button>
           ))}
         </div>
+        <BitBriefing index={7} />
         <p className="za-critical-telemetry za-mono mt-5 text-[10px] text-dim">
           EVERY ANSWER COMES FROM THE READ ONLY {VERIFIED_LONG} DATED EXPORT · VALID THROUGH {EXPIRES_SHORT}. AFTER THAT
           THE CONSOLE REPORTS HISTORY, NOT STATUS. 18/19 AT 28 AUG PROBE · 2 PROXMOX HOSTS ONLINE · QUORATE · ROUTING
@@ -839,6 +746,7 @@ export function DeckContact({
               PENSACOLA, FLORIDA · PUBLIC-SAFE SNAPSHOT · VERIFIED {VERIFIED_LONG}
             </p>
           </div>
+          <BitBriefing index={8} />
           <BlackBoxReceipt />
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <a href="mailto:doug@cashio.us" className="za-btn px-6 py-3 text-[12px]">

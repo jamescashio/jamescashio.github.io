@@ -439,7 +439,7 @@ for (const intent of ["pointerdown", "keydown", "touchstart", "hashchange", "pop
 
 test("the prerendered route has a readable inline shell while the full stylesheet waits for activation", async () => {
   const [documentHtml, bootstrap, main] = await Promise.all([
-    readFile(new URL("../index.html", import.meta.url), "utf8"),
+    readFile(new URL("../command-deck.html", import.meta.url), "utf8"),
     readFile(new URL("../src/bootstrap.ts", import.meta.url), "utf8"),
     readFile(new URL("../src/main.tsx", import.meta.url), "utf8"),
   ]);
@@ -517,7 +517,7 @@ test("the prerendered route has a readable inline shell while the full styleshee
 });
 
 test("the hashed pre-paint route helper aligns a direct deck before the app markup can render", async () => {
-  const documentHtml = await readFile(new URL("../index.html", import.meta.url), "utf8");
+  const documentHtml = await readFile(new URL("../command-deck.html", import.meta.url), "utf8");
   const sourceDocument = new JSDOM(documentHtml).window.document;
   const helper = sourceDocument.querySelector("script[data-critical-route]");
   const bootstrap = sourceDocument.querySelector('script[type="module"][src="/src/bootstrap.ts"]');

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { BLACK_BOX_RECEIPT_CLAIMS, canonicalReceiptUrl } from "@/lib/black-box-receipt";
+import { useDeck } from "@/lib/store";
+import { ProofCard } from "./proof-card";
 
 function isShareCancellation(error: unknown) {
   return typeof error === "object" && error != null && "name" in error && error.name === "AbortError";
@@ -7,6 +9,7 @@ function isShareCancellation(error: unknown) {
 
 export function BlackBoxReceipt() {
   const [status, setStatus] = useState("");
+  const article = useDeck((state) => state.sel);
 
   const copyOrShare = async () => {
     const url = canonicalReceiptUrl(window.location);
@@ -60,6 +63,7 @@ export function BlackBoxReceipt() {
       <p className="za-receipt-status za-mono mt-2 min-h-4 text-dim" role="status" aria-live="polite">
         {status}
       </p>
+      <ProofCard article={article} label="MAKE A PROOF CARD" />
     </section>
   );
 }

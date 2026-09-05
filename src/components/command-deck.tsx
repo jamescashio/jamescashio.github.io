@@ -525,7 +525,7 @@ export function CommandDeck() {
     const start = prepareFlightStart(Date.now());
     flightRun.current = start.flight;
     setFlightElapsed(0);
-    set({ mode: start.mode, tour: true });
+    set({ mode: start.mode, tour: true, flightCompleted: false });
   }, [set, stopFlight]);
 
   const openPalette = useCallback(
@@ -773,7 +773,7 @@ export function CommandDeck() {
           flightTimer.current = null;
           flightRun.current = null;
           setFlightElapsed(30_000);
-          set({ tour: false });
+          set({ tour: false, flightCompleted: true });
           return;
         }
 
@@ -791,7 +791,7 @@ export function CommandDeck() {
   useEffect(() => {
     const restoreHash = (source: "hash" | "restore") => {
       const target = parseDeckHash(window.location.hash);
-      gotoRef.current?.(target.deck, source, undefined, target.article);
+      gotoRef.current?.(target.deck, source, undefined, target.deck === 5 ? target.article : undefined);
     };
     if (window.location.hash) restoreHash("restore");
     else syncHash(useDeck.getState().deck, useDeck.getState().sel, "replace");
@@ -1279,6 +1279,7 @@ export function CommandDeck() {
             onEve={() => goto(7)}
             onFlight={toggleTour}
             onStill={openStill}
+            onNavigate={goto}
           />
           {mode === "executive" && <DeckBrief sBrief={sBrief} />}
           {mode === "technical" && (

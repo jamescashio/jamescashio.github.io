@@ -37,8 +37,14 @@ jobs:
       - run: npm run lint
       - run: npm run format:check
       - run: npm run test:node
+      - run: npm run test:odyssey
       - run: npm run build
+      - run: npm run test:artifact
       - run: npm run check:layout:runtime:pinned
+        env:
+          CHROME_PATH: ${{ steps.setup_chrome.outputs.chrome-path }}
+          CHROME_DEVEL_SANDBOX: /opt/google/chrome/chrome-sandbox
+      - run: npm run check:v36:runtime:pinned
         env:
           CHROME_PATH: ${{ steps.setup_chrome.outputs.chrome-path }}
           CHROME_DEVEL_SANDBOX: /opt/google/chrome/chrome-sandbox

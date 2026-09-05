@@ -118,7 +118,7 @@ test("DeckSnapshot renders the exact identity immediately before the unchanged h
   }
 });
 
-test("DeckSnapshot states the exact bounded 45-word introduction without changing identity or hero", async () => {
+test("DeckSnapshot states a concise introduction without changing identity or hero", async () => {
   const view = mount(
     createElement(DeckSnapshot, {
       s0: { current: null },
@@ -146,7 +146,7 @@ test("DeckSnapshot states the exact bounded 45-word introduction without changin
     const introduction = view.document.querySelector(".za-snapshot-copy")?.textContent;
     assert.equal(
       introduction,
-      "Every claim here is measured and dated. Nineteen services run on two machines in a room I can walk into, and a routing layer picks the best model for each job rather than the cheapest.",
+      "Owned hardware. Observable decisions. Published evidence. Every claim here is measured and dated.",
     );
     assert.ok(introduction.split(/\s+/u).length <= 60, "the introduction must stay within the clarity gate");
     assert.match(view.document.body.textContent, /DOUG CASHIO · ENTERPRISE AI \+ SECURITY SYSTEMS · OWNER-OPERATOR/);
@@ -174,9 +174,9 @@ test("DeckSnapshot renders V34's dated aggregate and Executive outcome hierarchy
         onEve: () => {},
       }),
     );
-    assert.match(view.document.body.textContent, /18\/19 AT 28 AUG PROBE/);
-    assert.match(view.document.body.textContent, /Detailed evidence, build proof, and operational context\./);
-    assert.match(view.document.body.textContent, /Route control, evidence boundary, human authority\./);
+    assert.match(view.document.body.textContent, /18\/19 · AT 28 AUG PROBE/);
+    assert.match(view.document.body.textContent, /Explore the systems/);
+    assert.match(view.document.body.textContent, /Read the business brief/);
     const executive = [...view.document.querySelectorAll(".za-snapshot-modes button")].find((control) =>
       control.textContent?.startsWith("EXECUTIVE"),
     );
@@ -207,10 +207,10 @@ test("current fleet decks expose only verified aggregate evidence without topolo
         onEve: () => {},
       }),
     );
-    const cards = [...snapshot.document.querySelectorAll(".za-panel")];
-    assert.equal(cards.length, 5, "Snapshot must retain its five-card evidence rhythm");
+    const cards = [...snapshot.document.querySelectorAll(".za-snapshot-facts > div")];
+    assert.equal(cards.length, 5, "Snapshot must retain its five dated fleet facts");
     assert.deepEqual(
-      cards.map((card) => card.querySelector(".za-display")?.textContent),
+      cards.map((card) => card.querySelector(".za-fact-label")?.textContent),
       ["ZEUS", "APOLLO", "FLEET", "HOSTS", "PVE"],
     );
     assert.doesNotMatch(
@@ -396,7 +396,9 @@ test("interactive evidence choices expose and update their real selected state",
     const view = mount(createElement(DeckRouting, { s2: ref }));
     try {
       await view.render(createElement(DeckRouting, { s2: ref }));
-      const controls = [...view.document.querySelectorAll("section[data-deck='2'] button")];
+      const controls = [
+        ...view.document.querySelectorAll("section[data-deck='2'] button[aria-controls='routing-lane-detail']"),
+      ];
       const detail = view.document.getElementById("routing-lane-detail");
       assert.ok(detail, "expected the controlled routing detail region");
       assert.equal(detail.getAttribute("aria-live"), "polite");
@@ -623,7 +625,7 @@ test("compact FlightControl fits the collapsed rail while retaining full names a
         onStop: () => stops++,
       }),
     );
-    const stop = button(view.document, "30S");
+    const stop = button(view.document, "STOP");
     assert.equal(stop.getAttribute("aria-label"), "Stop the 30-second flight");
     await view.click(stop);
     assert.equal(stops, 1);

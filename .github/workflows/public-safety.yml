@@ -16,7 +16,7 @@ concurrency:
 jobs:
   public-safety:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -34,7 +34,19 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install V35 dependencies
+      - name: Set up pinned Chrome
+        uses: browser-actions/setup-chrome@v2
+        id: setup_chrome
+        with:
+          chrome-version: 147.0.7727.57
+
+      - name: Configure the pinned Chrome sandbox
+        run: |
+          sudo chown root:root /opt/google/chrome/chrome-sandbox
+          sudo chmod 4755 /opt/google/chrome/chrome-sandbox
+          test "$(stat -c '%U:%G %a' /opt/google/chrome/chrome-sandbox)" = "root:root 4755"
+
+      - name: Install dependencies
         id: install
         continue-on-error: true
         run: npm ci
@@ -54,10 +66,36 @@ jobs:
         continue-on-error: true
         run: npm run test:node
 
+      - name: Run interactive model tests
+        id: odyssey_tests
+        continue-on-error: true
+        run: npm run test:odyssey
+
       - name: Build the Pages artifact
         id: build
         continue-on-error: true
         run: npm run build
+
+      - name: Verify the built site
+        id: artifact_tests
+        continue-on-error: true
+        run: npm run test:artifact
+
+      - name: Verify legacy layout in pinned Chrome
+        id: layout_runtime
+        continue-on-error: true
+        run: npm run check:layout:runtime:pinned
+        env:
+          CHROME_PATH: ${{ steps.setup_chrome.outputs.chrome-path }}
+          CHROME_DEVEL_SANDBOX: /opt/google/chrome/chrome-sandbox
+
+      - name: Verify V36 in pinned Chrome
+        id: v36_runtime
+        continue-on-error: true
+        run: npm run check:v36:runtime:pinned
+        env:
+          CHROME_PATH: ${{ steps.setup_chrome.outputs.chrome-path }}
+          CHROME_DEVEL_SANDBOX: /opt/google/chrome/chrome-sandbox
 
       - name: Run release artifact tests
         id: release_tests
@@ -100,5 +138,5 @@ jobs:
           retention-days: 14
 
       - name: Enforce validation results
-        if: steps.install.outcome != 'success' || steps.lint.outcome != 'success' || steps.format.outcome != 'success' || steps.node_tests.outcome != 'success' || steps.build.outcome != 'success' || steps.release_tests.outcome != 'success' || steps.safety_scan.outcome != 'success' || steps.release_consistency.outcome != 'success' || steps.python_syntax.outcome != 'success' || steps.whitespace.outcome != 'success'
+        if: steps.install.outcome != 'success' || steps.lint.outcome != 'success' || steps.format.outcome != 'success' || steps.node_tests.outcome != 'success' || steps.odyssey_tests.outcome != 'success' || steps.build.outcome != 'success' || steps.artifact_tests.outcome != 'success' || steps.layout_runtime.outcome != 'success' || steps.v36_runtime.outcome != 'success' || steps.release_tests.outcome != 'success' || steps.safety_scan.outcome != 'success' || steps.release_consistency.outcome != 'success' || steps.python_syntax.outcome != 'success' || steps.whitespace.outcome != 'success'
         run: exit 1

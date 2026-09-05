@@ -1,5 +1,13 @@
 # Changelog
 
+## V36 — THE HUMAN RECKONING · 4 September 2026
+
+- Promote the approved Sovereign Starship experience to the main homepage, preserving the V35 command deck and existing deck bookmarks.
+- Add original orbital artwork, a real interactive 3D ship, seven explanatory studies, animated Cashio branding, and accessible motion controls.
+- Separate V36 software identity from the unchanged, dated V35 public evidence.
+- Add production entrypoint, redirect, prerender, and V36 browser checks to the release gates.
+- Original release name inspired by the Butlerian Jihad in Frank Herbert’s _Dune_ and the principle of human command.
+
 This file records the canonical public release line for cashio.us. Visible dates use MM-DD-YYYY. Unpublished prototype numbering is intentionally omitted; Git history retains those experiments without presenting them as releases.
 
 ## [v35] — 08-30-2026

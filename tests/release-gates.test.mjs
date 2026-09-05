@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFile, stat } from "node:fs/promises";
 import test from "node:test";
+import vm from "node:vm";
 import { JSDOM } from "jsdom";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
@@ -40,14 +41,21 @@ const requiredWorkflowCommands = [
   "npm run lint",
   "npm run format:check",
   "npm run test:node",
+  "npm run test:odyssey",
   "npm run build",
+  "npm run test:artifact",
   "npm run test:release",
   "python scripts/public_repo_guard.py",
   "python scripts/check_release_consistency.py",
   "python -m py_compile",
   "python scripts/check_committed_whitespace.py",
 ];
-const requiredPagesCommands = requiredWorkflowCommands.toSpliced(5, 0, "npm run check:layout:runtime:pinned");
+const requiredPagesCommands = requiredWorkflowCommands.toSpliced(
+  7,
+  0,
+  "npm run check:layout:runtime:pinned",
+  "npm run check:v36:runtime:pinned",
+);
 
 function assertOrdered(text, markers, boundary, label) {
   let position = -1;
@@ -68,9 +76,12 @@ function expandScript(scripts, name, seen = new Set()) {
   });
 }
 
-test("package metadata and deterministic local gates define the V35 release", async () => {
+test("V36 software gates preserve the independent V35 dated evidence", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "35.0.0");
+  assert.equal(packageJson.version, "36.0.0");
+  const lock = JSON.parse(await read("package-lock.json"));
+  assert.equal(lock.version, packageJson.version);
+  assert.equal(lock.packages[""].version, packageJson.version);
   for (const dependency of [
     "@eslint/js",
     "eslint",
@@ -84,15 +95,17 @@ test("package metadata and deterministic local gates define the V35 release", as
   }
   assert.equal(packageJson.scripts.lint, "eslint . --max-warnings 0");
   const formattingScope =
-    '"src/**/*.{ts,tsx}" "tests/**/*.mjs" "scripts/**/*.{mjs,mts}" "*.{js,json,md,ts}" "docs/**/*.md" ".github/**/*.{md,yml,yaml}" "public/**/*.json"';
+    '"src/**/*.{ts,tsx,css}" "tests/**/*.mjs" "scripts/**/*.{mjs,mts}" "*.{js,json,md,ts}" "docs/**/*.md" ".github/**/*.{md,yml,yaml}" "public/**/*.json"';
   assert.equal(packageJson.scripts.format, `prettier --write ${formattingScope}`);
   assert.equal(packageJson.scripts["format:check"], `prettier --check ${formattingScope}`);
   const expandedTest = expandScript(packageJson.scripts, "test");
   assert.deepEqual(expandedTest, [
     packageJson.scripts["test:node"],
+    packageJson.scripts["test:odyssey"],
     "tsc --noEmit",
     "vite build",
     "node --import tsx scripts/prerender.mts",
+    "node --import tsx scripts/prerender-odyssey.mts",
     packageJson.scripts["test:artifact"],
     packageJson.scripts["test:release"],
   ]);
@@ -100,17 +113,20 @@ test("package metadata and deterministic local gates define the V35 release", as
   assert.match(expandedTest[0], /tests\/prerender\.test\.mjs/);
   assert.doesNotMatch(expandedTest[0], /tests\/release-gates\.test\.mjs/);
   assert.equal(packageJson.scripts["test:artifact"], "node --import tsx --test tests/release-gates.test.mjs");
-  assert.match(expandedTest[4], /tests\/release-gates\.test\.mjs/);
-  assert.match(expandedTest[5], /^python -m unittest /);
+  assert.match(expandedTest[6], /tests\/release-gates\.test\.mjs/);
+  assert.match(expandedTest[7], /^python -m unittest /);
   assert.deepEqual(expandScript(packageJson.scripts, "verify"), [
     packageJson.scripts.lint,
     packageJson.scripts["format:check"],
     packageJson.scripts["test:node"],
+    packageJson.scripts["test:odyssey"],
     "tsc --noEmit",
     "vite build",
     "node --import tsx scripts/prerender.mts",
+    "node --import tsx scripts/prerender-odyssey.mts",
     packageJson.scripts["test:artifact"],
     "node scripts/check_layout_runtime.mjs",
+    "node scripts/check_v36_runtime.mjs",
     packageJson.scripts["test:release"],
     "python scripts/public_repo_guard.py",
     "python scripts/check_release_consistency.py",
@@ -155,8 +171,8 @@ test("the responsive command poster assets meet their exact dimensions and byte 
   );
 });
 
-test("the document preloads only the critical fonts and one responsive AVIF poster", async () => {
-  const dom = new JSDOM(await read("index.html"));
+test("the V35 archive preloads only its critical font and responsive AVIF poster", async () => {
+  const dom = new JSDOM(await read("command-deck.html"));
   const preloads = [...dom.window.document.querySelectorAll('link[rel="preload"]')];
   const fonts = preloads.filter((link) => link.getAttribute("as") === "font");
   const images = preloads.filter((link) => link.getAttribute("as") === "image");
@@ -190,8 +206,8 @@ test("the document preloads only the critical fonts and one responsive AVIF post
   assert.equal(preloads.length, 2, "WebP, JPEG, and noncritical fonts must not be preloaded");
 });
 
-test("the built document contains one real prerendered command deck with a critical shell and deferred hashed assets", async () => {
-  const dom = new JSDOM(await read("dist/index.html"));
+test("the built V35 archive retains its real command deck, critical shell and deferred assets", async () => {
+  const dom = new JSDOM(await read("dist/command-deck.html"));
   const document = dom.window.document;
   const roots = [...document.querySelectorAll("#root")];
 
@@ -207,7 +223,8 @@ test("the built document contains one real prerendered command deck with a criti
   assert.equal(scripts.length, 1);
   assert.equal(styles.length, 0, "the complete stylesheet must wait for intent-aware client activation");
   assert.equal(document.querySelectorAll("style[data-critical-shell]").length, 1);
-  assert.match(scripts[0].getAttribute("src") ?? "", /^\/assets\/index-[\w-]+\.js$/);
+  assert.match(scripts[0].getAttribute("src") ?? "", /^\/assets\/[\w-]+\.js$/);
+  assert.equal(document.querySelector('script[src="/legacy-route.js"]'), null, "archive must not redirect to itself");
   const criticalRoute = document.querySelector("script[data-critical-route]");
   assert.ok(criticalRoute, "the built document must retain the synchronous pre-paint route helper");
   const criticalRouteHash = createHash("sha256")
@@ -224,10 +241,115 @@ test("the built document contains one real prerendered command deck with a criti
   assert.equal(entry.match(/assets\/main-[\w-]+\.css/g)?.length, 1);
 });
 
+test("the homepage and Odyssey alias ship the same complete V36 story with a usable V35 archive", async () => {
+  let homeMarkup;
+  for (const entry of ["index.html", "odyssey.html"]) {
+    const document = new JSDOM(await read(`dist/${entry}`)).window.document;
+    const root = document.querySelector('#odyssey-root[data-prerendered="odyssey"]');
+    assert.ok(root, `${entry} must contain the real server-rendered story`);
+    assert.equal(document.querySelectorAll("#odyssey-root").length, 1);
+    assert.equal(document.querySelector("#root"), null);
+    assert.equal(root.querySelectorAll("h1").length, 1);
+    assert.equal(root.querySelectorAll('[role="tab"]').length, 7);
+    assert.equal(root.querySelectorAll('[role="tab"][aria-selected="true"]').length, 1);
+    assert.match(root.textContent, /THE HUMAN RECKONING/);
+    assert.doesNotMatch(root.textContent, /DESIGN PREVIEW/);
+    assert.match(root.textContent, /28 August 2026/);
+    assert.match(root.textContent, /21 August 2026/);
+    assert.ok(root.querySelector('a[href="mailto:doug@cashio.us"]'));
+    assert.ok(root.querySelector('input[id="eve-command"]'));
+    assert.ok(root.querySelector('a[href="/command-deck.html"]'));
+    assert.equal(root.querySelectorAll("img:not([width]):not([height])").length, 0);
+    assert.equal(root.querySelectorAll("audio[autoplay]").length, 0);
+    assert.equal(document.querySelector('link[rel="canonical"]')?.href, "https://cashio.us/");
+    const robots = document.querySelector('meta[name="robots"]')?.content ?? "";
+    if (entry === "index.html") assert.doesNotMatch(robots, /noindex|nofollow/i);
+    else assert.match(robots, /noindex/i);
+    const compatibility = document.querySelector('head script[src="/legacy-route.js"]');
+    assert.ok(compatibility, "legacy fragments must be handled before the page activates");
+    for (const attr of ["type", "async", "defer"]) assert.equal(compatibility.hasAttribute(attr), false);
+    const csp = document.querySelector('meta[http-equiv="Content-Security-Policy"]')?.content ?? "";
+    assert.match(csp, /script-src 'self'/);
+    assert.doesNotMatch(csp, /unsafe-eval/);
+    const modules = [...document.querySelectorAll('script[type="module"][src]')];
+    assert.ok(modules.length >= 1, "Vite must emit the entrypoint and its shared modules");
+    assert.equal(
+      new Set(modules.map((script) => script.src)).size,
+      modules.length,
+      "module scripts must not be duplicated",
+    );
+    for (const element of [...modules, ...document.querySelectorAll('link[rel="stylesheet"][href]')]) {
+      const path = element.getAttribute("src") ?? element.getAttribute("href");
+      assert.match(path, /^\/assets\/[\w.-]+\.(?:js|css)$/);
+      assert.ok((await stat(asset(`dist${path}`))).size > 0, `${path} must exist in the promoted artifact`);
+    }
+    if (homeMarkup === undefined) homeMarkup = root.innerHTML;
+    else assert.equal(root.innerHTML, homeMarkup, "the alias must render the same approved experience");
+  }
+});
+
+test("V36 release manifests agree without redating the independent evidence archive", async () => {
+  const manifest = JSON.parse(await read("public/site-release.json"));
+  assert.equal(manifest.experienceVersion, "36.0.0");
+  assert.equal(manifest.releaseName, "THE HUMAN RECKONING");
+  assert.equal(manifest.status, "released");
+  assert.equal(manifest.published, true);
+  assert.equal(manifest.entry, "/");
+  assert.equal(manifest.legacyEntry, "/command-deck.html");
+  assert.deepEqual(manifest.evidenceArchive, {
+    release: "V35 ALL TENS",
+    fleetObserved: "2026-08-28",
+    routingObserved: "2026-08-21",
+  });
+  assert.deepEqual(JSON.parse(await read("public/event-horizon-release.json")), manifest);
+  for (const name of ["site-release.json", "event-horizon-release.json", "status.json", "legacy-route.js"])
+    assert.equal(await read(`dist/${name}`), await read(`public/${name}`));
+});
+
+test("legacy deck links preserve their exact query and fragment while V36 study links remain on the homepage", async () => {
+  const script = await read("public/legacy-route.js");
+  const search = "?source=shared&return=%2Fproof";
+  for (const hash of [
+    "#deck=snapshot",
+    "#deck=grid",
+    "#deck=routing",
+    "#deck=iron",
+    "#deck=lineage",
+    "#deck=builds&article=7",
+    "#deck=operator",
+    "#deck=eve",
+    "#deck=contact",
+    "",
+    "#top",
+    "#build=signal",
+    "#observatory",
+    "#operator",
+  ]) {
+    const redirects = [];
+    const location = { hash, search, replace: (target) => redirects.push(target) };
+    vm.runInNewContext(script, { window: { location } });
+    assert.deepEqual(redirects, hash.startsWith("#deck=") ? [`/command-deck.html${search}${hash}`] : [], hash);
+  }
+});
+
+test("original Odyssey artwork meets responsive dimensions and transfer budgets", async () => {
+  for (const name of ["orbit", "sanctuary"]) {
+    for (const [width, height, cap] of [
+      [800, 450, 25_000],
+      [1672, 941, 65_000],
+    ]) {
+      const path = `public/odyssey/${name}-${width}.avif`;
+      const buffer = await readFile(asset(path));
+      assert.deepEqual(imageDimensions(buffer, "avif"), { width, height });
+      assert.ok(buffer.length <= cap, `${path} exceeds its transfer budget`);
+    }
+  }
+});
+
 test("public metadata and redirect fallback keep fleet and routing provenance distinct", async () => {
   const fleetExpected = ["28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT"];
   const routingExpected = "ROUTING INVENTORY 21 AUGUST 2026";
-  for (const path of ["index.html", "public/lab.html"]) {
+  for (const path of ["command-deck.html", "public/lab.html"]) {
     const text = await read(path);
     for (const marker of fleetExpected) assert.match(text, new RegExp(marker), `${path} must include ${marker}`);
     assert.match(text, new RegExp(routingExpected), `${path} must date 10/36 as routing inventory`);
@@ -248,7 +370,7 @@ test("release checklist separates the fresh fleet export from routing provenance
   assert.doesNotMatch(template, /21 August 2026[^\r\n]*(?:19\/19|containers)/);
 
   const workflow = await read(".github/workflows/public-safety.yml");
-  assert.match(workflow, /- name: Install V35 dependencies/);
+  assert.match(workflow, /- name: Install dependencies/);
   assert.doesNotMatch(workflow, /- name: Install V33 dependencies/);
 });
 
@@ -266,6 +388,11 @@ test("Pages refuses artifact upload unless GitHub Actions owns the Pages source 
   assert.match(workflow, /chrome-version:\s*["']?147\.0\.7727\.57["']?/);
   assert.match(workflow, /CHROME_PATH:\s*\$\{\{\s*steps\.setup_chrome\.outputs\.chrome-path\s*\}\}/);
   assert.match(workflow, /npm run check:layout:runtime:pinned/);
+  assert.equal(
+    packageJson.scripts["check:v36:runtime:pinned"],
+    "node scripts/check_v36_runtime.mjs --expected-browser-major=147",
+  );
+  assert.match(workflow, /npm run check:v36:runtime:pinned/);
 
   const workflowOnlySourceGuard = 'test "$(gh api repos/${GITHUB_REPOSITORY}/pages --jq .build_type)" = "workflow"';
   const buildJob = workflow.slice(workflow.indexOf("  build:"), workflow.indexOf("  deploy:"));
@@ -300,7 +427,8 @@ test("Public Site Safety preserves report upload and enforcement after every gat
   assert.match(workflow, /node-version:\s*22/);
   assert.match(workflow, /python-version:\s*["']3\.12["']/);
   assert.match(workflow, /fetch-depth:\s*0/);
-  assertOrdered(workflow, requiredWorkflowCommands, "Upload safety report", "Public Site Safety");
+  assertOrdered(workflow, requiredPagesCommands, "Upload safety report", "Public Site Safety");
+  assert.match(workflow, /chrome-version:\s*["']?147\.0\.7727\.57["']?/);
   const upload = workflow.indexOf("Upload safety report");
   const enforcement = workflow.indexOf("Enforce validation results");
   assert.ok(upload >= 0 && enforcement > upload, "report upload must precede fail-closed enforcement");
@@ -312,7 +440,11 @@ test("Public Site Safety preserves report upload and enforcement after every gat
     "lint",
     "format",
     "node_tests",
+    "odyssey_tests",
     "build",
+    "artifact_tests",
+    "layout_runtime",
+    "v36_runtime",
     "release_tests",
     "safety_scan",
     "release_consistency",
@@ -321,4 +453,13 @@ test("Public Site Safety preserves report upload and enforcement after every gat
   ]) {
     assert.match(enforcementBlock, new RegExp(`steps\\.${step}\\.outcome != 'success'`));
   }
+});
+
+test("tag publication derives V36 from software metadata and validates one built artifact before publishing", async () => {
+  const workflow = await read(".github/workflows/release.yml");
+  assert.match(workflow, /require\('\.\/package\.json'\)\.version\.split\('\.'\)\[0\]/);
+  assert.doesNotMatch(workflow, /EXPECTED_TAG[^\n]*status\.json/);
+  assert.match(workflow, /node-version:\s*22/);
+  assertOrdered(workflow, requiredWorkflowCommands, "softprops/action-gh-release@v3", "GitHub Release");
+  assert.equal((workflow.match(/run: npm run build/g) ?? []).length, 1);
 });

@@ -29,6 +29,67 @@ def read(relative: str) -> str:
     return (ROOT / relative).read_text(encoding="utf-8")
 
 
+class V36PromotionValidationTests(unittest.TestCase):
+    def test_release_manifest_separates_software_identity_from_dated_evidence(self) -> None:
+        manifest = {
+            "experienceVersion": "36.0.0",
+            "releaseName": "THE HUMAN RECKONING",
+            "status": "released",
+            "published": True,
+            "entry": "/",
+            "legacyEntry": "/command-deck.html",
+            "evidenceArchive": {
+                "release": "V35 ALL TENS",
+                "fleetObserved": "2026-08-28",
+                "routingObserved": "2026-08-21",
+            },
+        }
+        failures: list[str] = []
+        release_consistency.check_site_release(manifest, failures)
+        self.assertEqual(failures, [])
+        for key, value in (
+            ("experienceVersion", "35.0.0"),
+            ("published", False),
+            ("published", 1),
+            ("entry", "/odyssey.html"),
+            ("legacyEntry", "/"),
+            ("evidenceArchive", {**manifest["evidenceArchive"], "fleetObserved": "2026-09-04"}),
+        ):
+            with self.subTest(key=key, value=value):
+                failures = []
+                release_consistency.check_site_release({**manifest, key: value}, failures)
+                self.assertTrue(failures)
+
+    def test_promoted_document_rejects_preview_noindex_missing_archive_and_incomplete_render(self) -> None:
+        csp = "default-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
+        document = (
+            '<html><head><link rel="canonical" href="https://cashio.us/">'
+            f'<meta http-equiv="Content-Security-Policy" content="{csp}">'
+            '<script src="/legacy-route.js"></script></head><body>'
+            '<div id="odyssey-root" data-prerendered="odyssey"><h1>V36 THE HUMAN RECKONING</h1>'
+            '<p>28 August 2026 / 21 August 2026</p><a href="/command-deck.html">V35 archive</a>'
+            + '<button role="tab">Study</button>' * 7
+            + '</div></body></html>'
+        )
+        failures: list[str] = []
+        release_consistency.check_v36_document(document, failures, "fixture", built=True, indexable=True)
+        self.assertEqual(failures, [])
+        invalid = {
+            "preview indexing": document.replace('</head>', '<meta name="robots" content="noindex"></head>'),
+            "wrong canonical": document.replace('href="https://cashio.us/"', 'href="https://cashio.us/odyssey.html"'),
+            "missing archive": document.replace('href="/command-deck.html"', 'href="/"'),
+            "empty root": document.replace('data-prerendered="odyssey"', ''),
+            "missing study": document.replace('<button role="tab">Study</button>', '', 1),
+            "late compatibility": document.replace('<script src=', '<script defer src='),
+            "missing provenance": document.replace('21 August 2026', ''),
+        }
+        for label, candidate in invalid.items():
+            with self.subTest(label=label):
+                failures = []
+                release_consistency.check_v36_document(candidate, failures, label, built=True, indexable=True)
+                self.assertTrue(failures)
+
+
 class V34ReleaseContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
@@ -45,7 +106,7 @@ class V34ReleaseContractTests(unittest.TestCase):
         cls.stage_flat = re.sub(r"\s+", "", cls.stage)
         cls.sound = read("src/lib/sound.ts")
         cls.css = read("src/styles.css")
-        cls.index = read("index.html")
+        cls.index = read("command-deck.html")
         cls.live = "\n".join(
             path.read_text(encoding="utf-8")
             for path in sorted(DIST.rglob("*"))
@@ -87,7 +148,7 @@ class V34ReleaseContractTests(unittest.TestCase):
         }
         for label, (text, expected_valid) in fixtures.items():
             failures: list[str] = []
-            release_consistency.check_v34_public_surface("index.html", text, failures, "test")
+            release_consistency.check_v34_public_surface("command-deck.html", text, failures, "test")
             with self.subTest(label=label):
                 if expected_valid:
                     self.assertEqual(failures, [])
@@ -109,7 +170,7 @@ class V34ReleaseContractTests(unittest.TestCase):
             "Try sitrep, current, or help."
         )
         failures: list[str] = []
-        release_consistency.check_v34_public_surface("index.html", text, failures, "test")
+        release_consistency.check_v34_public_surface("command-deck.html", text, failures, "test")
         self.assertEqual(failures, [])
 
     def test_public_surface_guard_rejects_stale_or_current_claim_variants(self) -> None:
@@ -128,7 +189,7 @@ class V34ReleaseContractTests(unittest.TestCase):
         }
         for label, claim in fixtures.items():
             failures: list[str] = []
-            release_consistency.check_v34_public_surface("index.html", f"{dated_surface} · {claim}", failures, "test")
+            release_consistency.check_v34_public_surface("command-deck.html", f"{dated_surface} · {claim}", failures, "test")
             with self.subTest(label=label):
                 self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
 
@@ -140,7 +201,7 @@ class V34ReleaseContractTests(unittest.TestCase):
             '<button data-cmd="current">CURRENT</button><button data-cmd="fleet">FLEET</button>'
         )
         failures: list[str] = []
-        release_consistency.check_v34_public_surface("index.html", text, failures, "test")
+        release_consistency.check_v34_public_surface("command-deck.html", text, failures, "test")
         self.assertEqual(failures, [])
 
     def test_public_surface_guard_rejects_approved_phrase_and_structural_bypasses(self) -> None:
@@ -165,7 +226,7 @@ class V34ReleaseContractTests(unittest.TestCase):
         }
         for label, bypass in fixtures.items():
             failures: list[str] = []
-            release_consistency.check_v34_public_surface("index.html", f"{dated_surface} · {bypass}", failures, "test")
+            release_consistency.check_v34_public_surface("command-deck.html", f"{dated_surface} · {bypass}", failures, "test")
             with self.subTest(label=label):
                 self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
 
@@ -187,7 +248,7 @@ class V34ReleaseContractTests(unittest.TestCase):
         }
         for label, bypass in fixtures.items():
             failures: list[str] = []
-            release_consistency.check_v34_public_surface("index.html", f"{dated_surface} · {bypass}", failures, "test")
+            release_consistency.check_v34_public_surface("command-deck.html", f"{dated_surface} · {bypass}", failures, "test")
             with self.subTest(label=label):
                 self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
 
@@ -198,7 +259,7 @@ class V34ReleaseContractTests(unittest.TestCase):
             "Host a party. Later, go online with friends."
         )
         failures: list[str] = []
-        release_consistency.check_v34_public_surface("index.html", text, failures, "test")
+        release_consistency.check_v34_public_surface("command-deck.html", text, failures, "test")
         self.assertEqual(failures, [])
 
     def test_public_surface_guard_rejects_shipped_source_and_bundle_literals(self) -> None:
@@ -255,7 +316,7 @@ class V34ReleaseContractTests(unittest.TestCase):
         }
         for label, bypass in fixtures.items():
             failures: list[str] = []
-            release_consistency.check_v34_public_surface("index.html", f"{dated_surface} · {bypass}", failures, "test")
+            release_consistency.check_v34_public_surface("command-deck.html", f"{dated_surface} · {bypass}", failures, "test")
             with self.subTest(label=label):
                 self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
 
@@ -270,7 +331,7 @@ class V34ReleaseContractTests(unittest.TestCase):
         }
         for label, markup in fixtures.items():
             failures: list[str] = []
-            release_consistency.check_v34_public_surface("index.html", f"{dated_surface} · {markup}", failures, "test")
+            release_consistency.check_v34_public_surface("command-deck.html", f"{dated_surface} · {markup}", failures, "test")
             with self.subTest(label=label):
                 self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
 
@@ -288,7 +349,7 @@ class V34ReleaseContractTests(unittest.TestCase):
         }
         for label, markup in fixtures.items():
             failures: list[str] = []
-            release_consistency.check_v34_public_surface("index.html", f"{dated_surface} · {markup}", failures, "test")
+            release_consistency.check_v34_public_surface("command-deck.html", f"{dated_surface} · {markup}", failures, "test")
             with self.subTest(label=label):
                 self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
 
@@ -304,7 +365,7 @@ class V34ReleaseContractTests(unittest.TestCase):
         }
         for label, markup in fixtures.items():
             failures: list[str] = []
-            release_consistency.check_v34_public_surface("index.html", f"{dated_surface} · {markup}", failures, "test")
+            release_consistency.check_v34_public_surface("command-deck.html", f"{dated_surface} · {markup}", failures, "test")
             with self.subTest(label=label):
                 self.assertTrue(any("stale/current public claim" in failure for failure in failures), failures)
 
@@ -522,13 +583,13 @@ class V34ReleaseContractTests(unittest.TestCase):
         }
         for label, text in fixtures.items():
             failures: list[str] = []
-            release_consistency.check_v34_public_surface("index.html", text, failures, "test")
+            release_consistency.check_v34_public_surface("command-deck.html", text, failures, "test")
             with self.subTest(label=label):
                 self.assertTrue(any("private current-fleet detail" in failure for failure in failures), failures)
 
-    def test_release_identity_is_canonical_v35(self) -> None:
+    def test_v36_software_preserves_v35_archive_identity(self) -> None:
         package = json.loads(read("package.json"))
-        self.assertEqual(package["version"], "35.0.0")
+        self.assertEqual(package["version"], "36.0.0")
         self.assertIn('V35 "ALL TENS"', self.content)
         retired_candidate = "V" + "47"
         for relative in (
@@ -549,7 +610,8 @@ class V34ReleaseContractTests(unittest.TestCase):
         self.assertNotIn(">ENGAGE<", self.live.upper())
         self.assertIn("AUDIO OFF", self.live)
         self.assertIn("ARM AUDIO", self.live)
-        self.assertIn("DESCEND THE DECKS", self.live)
+        self.assertIn("EXPLORE THE DECKS", self.live)
+        self.assertIn("TAKE THE 30-SECOND FLIGHT", self.live)
 
     def test_owner_confirmed_model_lane_labels_are_current(self) -> None:
         self.assertIn('model: "Gemini 3.7 Flash"', self.content)
@@ -680,24 +742,24 @@ class V34ReleaseContractTests(unittest.TestCase):
         match = re.search(r"\bbase\s*:\s*([^,\n]+)", vite)
         if match:
             self.assertEqual(match.group(1).strip().strip("\"'"), "/")
-        built = read("dist/index.html")
-        entry_match = re.search(r'src="(/assets/index-[\w-]+\.js)"', built)
+        built = read("dist/command-deck.html")
+        entry_match = re.search(r'src="(/assets/[\w-]+\.js)"', built)
         self.assertIsNotNone(entry_match)
         entry = read(f"dist/{entry_match.group(1).lstrip('/')}")
         self.assertIsNotNone(re.search(r'assets/main-[\w-]+\.css', entry))
         self.assertIsNone(re.search(r"/v\d+/", built, flags=re.IGNORECASE))
 
-    def test_built_root_is_the_single_prerendered_react_command_deck(self) -> None:
-        built = read("dist/index.html")
+    def test_built_archive_is_the_single_prerendered_react_command_deck(self) -> None:
+        built = read("dist/command-deck.html")
         roots = re.findall(r'<div\b[^>]*\bid="root"[^>]*>', built)
         self.assertEqual(len(roots), 1)
         self.assertIn('data-prerendered="v35"', roots[0])
         self.assertIn("OWN THE IRON", built)
         self.assertEqual(len(re.findall(r'<section\b[^>]*\bdata-deck="\d"', built)), 9)
         self.assertIn('aria-label="CONTACT deck"', built)
-        self.assertEqual(len(re.findall(r'<script\b[^>]*\bsrc="/assets/index-[\w-]+\.js"', built)), 1)
+        self.assertEqual(len(re.findall(r'<script\b[^>]*\bsrc="/assets/[\w-]+\.js"', built)), 1)
         self.assertEqual(len(re.findall(r'<link\b[^>]*\brel="stylesheet"', built)), 0)
-        entry_path = re.search(r'<script\b[^>]*\bsrc="(/assets/index-[\w-]+\.js)"', built)
+        entry_path = re.search(r'<script\b[^>]*\bsrc="(/assets/[\w-]+\.js)"', built)
         self.assertIsNotNone(entry_path)
         entry = read(f"dist/{entry_path.group(1).lstrip('/')}")
         self.assertEqual(len(re.findall(r'assets/main-[\w-]+\.css', entry)), 1)
@@ -738,7 +800,7 @@ class V34ReleaseContractTests(unittest.TestCase):
         for marker in ("Historical archive only", "May 2026", "This page does not describe the current fleet."):
             self.assertIn(marker, command)
         self.assertIn('<meta name="robots" content="noindex" />', command)
-        self.assertIn('<meta http-equiv="refresh" content="0; url=/" />', read("dist/lab.html"))
+        self.assertIn('<meta http-equiv="refresh" content="0; url=/command-deck.html" />', read("dist/lab.html"))
 
     def test_stale_and_private_tokens_are_absent_from_the_live_artifact(self) -> None:
         for marker in (

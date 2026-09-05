@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail closed when the V35 source and GitHub Pages artifact disagree."""
+"""Validate the V36 homepage and the preserved, dated V35 command archive."""
 
 from __future__ import annotations
 
@@ -21,7 +21,7 @@ DIST = ROOT / "dist"
 
 TEXT_SUFFIXES = {".html", ".js", ".css", ".json", ".txt", ".xml", ".svg"}
 V34_PUBLIC_SURFACES = {
-    "index.html": ("28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT", "ROUTING INVENTORY 21 AUGUST 2026"),
+    "command-deck.html": ("28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT", "ROUTING INVENTORY 21 AUGUST 2026"),
     "lab.html": ("28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT", "ROUTING INVENTORY 21 AUGUST 2026"),
 }
 ROUTING_COUNT_CLAIM = re.compile(
@@ -299,6 +299,7 @@ def collect_public_code_literals(paths: list[Path]) -> list[dict[str, str]]:
         capture_output=True,
         check=True,
         text=True,
+        encoding="utf-8",
     )
     return json.loads(result.stdout)
 
@@ -375,6 +376,83 @@ def check_v34_motion_contract(failures: list[str]) -> None:
                 failures.append(f"inactive deck {deck_index} does not pause {pseudo} animation work")
 
 
+def check_site_release(release: dict, failures: list[str]) -> None:
+    """Software release identity must never rewrite the archive's observation dates."""
+    if not isinstance(release, dict):
+        failures.append("site-release.json must be an object")
+        return
+    expected = {
+        "experienceVersion": "36.0.0",
+        "releaseName": "THE HUMAN RECKONING",
+        "status": "released",
+        "published": True,
+        "entry": "/",
+        "legacyEntry": "/command-deck.html",
+    }
+    for key, value in expected.items():
+        if release.get(key) != value or (key == "published" and release.get(key) is not True):
+            failures.append(f"site-release.json {key!r}: expected {value!r}")
+    archive = release.get("evidenceArchive", {})
+    for key, value in {
+        "release": "V35 ALL TENS",
+        "fleetObserved": "2026-08-28",
+        "routingObserved": "2026-08-21",
+    }.items():
+        if not isinstance(archive, dict) or archive.get(key) != value:
+            failures.append(f"site-release.json evidenceArchive.{key} must remain {value!r}")
+
+
+class ReleaseDocumentParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.elements: list[tuple[str, dict[str, str | None]]] = []
+        self.text: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        self.elements.append((tag, dict(attrs)))
+
+    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        self.handle_starttag(tag, attrs)
+
+    def handle_data(self, data: str) -> None:
+        self.text.append(data)
+
+
+def check_v36_document(text: str, failures: list[str], label: str, *, built: bool, indexable: bool) -> None:
+    parser = ReleaseDocumentParser()
+    parser.feed(text)
+    parser.close()
+    roots = [attrs for tag, attrs in parser.elements if tag == "div" and attrs.get("id") == "odyssey-root"]
+    if len(roots) != 1 or (built and roots[0].get("data-prerendered") != "odyssey"):
+        failures.append(f"{label} must contain exactly one {'prerendered ' if built else ''}Odyssey root")
+    if any(attrs.get("id") == "root" for _, attrs in parser.elements):
+        failures.append(f"{label} must not mount the legacy command deck at the V36 entry")
+    canonical = [attrs.get("href") for tag, attrs in parser.elements if tag == "link" and attrs.get("rel") == "canonical"]
+    if canonical != ["https://cashio.us/"]:
+        failures.append(f"{label} must canonicalize to https://cashio.us/")
+    robots = " ".join(str(attrs.get("content", "")) for tag, attrs in parser.elements if tag == "meta" and attrs.get("name") == "robots").lower()
+    if indexable and ("noindex" in robots or "nofollow" in robots):
+        failures.append(f"{label} must permit indexing and link following")
+    compat = [attrs for tag, attrs in parser.elements if tag == "script" and attrs.get("src") == "/legacy-route.js"]
+    if len(compat) != 1 or any(key in compat[0] for key in ("async", "defer")) or compat[0].get("type") == "module":
+        failures.append(f"{label} must retain one synchronous same-origin legacy hash compatibility script")
+    csp = " ".join(str(attrs.get("content", "")) for tag, attrs in parser.elements if tag == "meta" and str(attrs.get("http-equiv", "")).lower() == "content-security-policy")
+    for directive in ("default-src 'self'", "script-src 'self'", "connect-src 'self'", "object-src 'none'", "base-uri 'none'", "form-action 'none'"):
+        if directive not in csp:
+            failures.append(f"{label} CSP is missing {directive!r}")
+    if built:
+        visible = " ".join(parser.text)
+        for marker in ("V36", "THE HUMAN RECKONING", "28 August 2026", "21 August 2026"):
+            if marker not in visible:
+                failures.append(f"{label} must retain {marker!r}")
+        if sum(tag == "h1" for tag, _ in parser.elements) != 1:
+            failures.append(f"{label} must contain one real primary heading")
+        if sum(attrs.get("role") == "tab" for _, attrs in parser.elements) != 7:
+            failures.append(f"{label} must contain all seven server-rendered study tabs")
+        if not any(tag == "a" and attrs.get("href") == "/command-deck.html" for tag, attrs in parser.elements):
+            failures.append(f"{label} must link to the usable V35 command archive")
+
+
 def main() -> int:
     failures: list[str] = []
 
@@ -430,9 +508,21 @@ def main() -> int:
             failures.append(f"{cname} must contain only cashio.us")
 
     package = json.loads(read("package.json"))
-    if package.get("version") != "35.0.0":
-        failures.append("package.json version must be 35.0.0")
-    if package.get("scripts", {}).get("build") != "tsc --noEmit && vite build && node --import tsx scripts/prerender.mts":
+    if package.get("version") != "36.0.0":
+        failures.append("package.json version must be 36.0.0")
+    lock = json.loads(read("package-lock.json"))
+    if lock.get("version") != "36.0.0" or lock.get("packages", {}).get("", {}).get("version") != "36.0.0":
+        failures.append("package-lock.json root versions must match 36.0.0")
+    try:
+        site_release = json.loads(read("public/site-release.json"))
+        compatibility_release = json.loads(read("public/event-horizon-release.json"))
+    except (OSError, json.JSONDecodeError) as exc:
+        failures.append(f"V36 site release metadata is missing or invalid: {exc}")
+    else:
+        check_site_release(site_release, failures)
+        if site_release != compatibility_release:
+            failures.append("event-horizon-release.json must match the canonical site-release.json")
+    if package.get("scripts", {}).get("build") != "tsc --noEmit && vite build && node --import tsx scripts/prerender.mts && node --import tsx scripts/prerender-odyssey.mts":
         failures.append("package.json build script changed from the supplied TypeScript + Vite + prerender gate")
 
     vite = read("vite.config.ts")
@@ -447,7 +537,10 @@ def main() -> int:
         "npm run lint",
         "npm run format:check",
         "npm run test:node",
+        "npm run test:odyssey",
         "npm run build",
+        "npm run test:artifact",
+        "npm run check:v36:runtime:pinned",
         "npm run test:release",
         "python scripts/public_repo_guard.py",
         "python scripts/check_release_consistency.py",
@@ -547,6 +640,9 @@ def main() -> int:
         "public/command.html",
         "public/lab.html",
         "public/status.json",
+        "public/site-release.json",
+        "public/event-horizon-release.json",
+        "public/legacy-route.js",
         "public/CNAME",
         "public/favicon.svg",
         "public/og.jpg",
@@ -566,8 +662,10 @@ def main() -> int:
         if not (ROOT / relative).is_file():
             failures.append(f"required public asset is missing: {relative}")
 
-    for relative, source_relative in (("index.html", "index.html"), ("lab.html", "public/lab.html")):
+    for relative, source_relative in (("command-deck.html", "command-deck.html"), ("lab.html", "public/lab.html")):
         check_v34_public_surface(relative, read(source_relative), failures, "source")
+    for relative in ("index.html", "odyssey.html"):
+        check_v36_document(read(relative), failures, f"source/{relative}", built=False, indexable=relative == "index.html")
 
     proteus_image = ROOT / "public" / "plates" / "proteus-nasa.webp"
     if proteus_image.is_file() and proteus_image.stat().st_size <= 50_000:
@@ -639,18 +737,23 @@ def main() -> int:
         if marker not in command:
             failures.append(f"public/command.html is missing {marker!r}")
     lab = read("public/lab.html")
-    if '<meta http-equiv="refresh" content="0; url=/" />' not in lab:
-        failures.append("public/lab.html must redirect to /")
+    if '<meta http-equiv="refresh" content="0; url=/command-deck.html" />' not in lab:
+        failures.append("public/lab.html must preserve the command experience at /command-deck.html")
 
     if not DIST.is_dir():
         failures.append("dist/ is missing; run npm run build before the release check")
     else:
         required_dist = (
             "index.html",
+            "odyssey.html",
+            "command-deck.html",
             "CNAME",
             "command.html",
             "lab.html",
             "status.json",
+            "site-release.json",
+            "event-horizon-release.json",
+            "legacy-route.js",
             "robots.txt",
             "sitemap.xml",
             ".well-known/security.txt",
@@ -664,6 +767,14 @@ def main() -> int:
             path = DIST / relative
             if path.is_file():
                 check_v34_public_surface(relative, path.read_text(encoding="utf-8"), failures, "dist")
+        for relative in ("index.html", "odyssey.html"):
+            page = DIST / relative
+            if page.is_file():
+                check_v36_document(page.read_text(encoding="utf-8"), failures, f"dist/{relative}", built=True, indexable=relative == "index.html")
+        for relative in ("status.json", "site-release.json", "event-horizon-release.json", "legacy-route.js"):
+            artifact = DIST / relative
+            if artifact.is_file() and artifact.read_bytes() != (ROOT / "public" / relative).read_bytes():
+                failures.append(f"dist/{relative} must match the validated public source byte-for-byte")
 
         live = collect_text(DIST)
         check_current_public_privacy(live, failures, "built Pages artifact")
@@ -689,8 +800,14 @@ def main() -> int:
         built_index = (DIST / "index.html").read_text(encoding="utf-8")
         if 'src="/assets/' not in built_index:
             failures.append("built index does not use root-relative /assets/ URLs; Vite base may not be '/'")
-        if len(list((DIST / "assets").glob("main-*.css"))) != 1:
-            failures.append("built artifact must contain exactly one deferred hashed main stylesheet")
+        home_document = ReleaseDocumentParser()
+        home_document.feed(built_index)
+        home_styles = [attrs.get("href", "") for tag, attrs in home_document.elements
+                       if tag == "link" and attrs.get("rel") == "stylesheet"]
+        if len(home_styles) != 1 or not re.fullmatch(r"/assets/[\w.-]+\.css", home_styles[0]):
+            failures.append("built homepage must reference exactly one root-relative hashed stylesheet")
+        elif not (DIST / home_styles[0].lstrip("/")).is_file():
+            failures.append("built homepage stylesheet must exist in the artifact")
         if re.search(r"/v\d+/", built_index, flags=re.IGNORECASE):
             failures.append("built index is incorrectly nested under a version directory")
         for csp in ("connect-src 'self'", "object-src 'none'", "form-action 'none'"):
@@ -733,13 +850,13 @@ def main() -> int:
             failures.append(f"non-audio fetch target found in source: {target!r}")
 
     if failures:
-        print("V35 release consistency check failed:\n")
+        print("V36 release consistency check failed:\n")
         for failure in failures:
             print(f"- {failure}")
         return 1
 
     print(
-        "V35 release consistency passed: 28 August 2026 dated export; "
+        "V36 THE HUMAN RECKONING release consistency passed: promoted homepage and V35 archive; 28 August 2026 dated export; "
         "18/19 containers; 2 Proxmox hosts quorate; 10 public lanes; "
         "36 private catalog entries; root Pages base; archive, privacy, "
         "motion, opt-in audio, and forbidden-token gates satisfied."
