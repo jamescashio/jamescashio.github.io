@@ -1,0 +1,207 @@
+/* Final Aurora pass: one personal insignia and quieter, more legible finishing details. */
+.event-horizon.aurora .eh-world-section {
+  padding: 96px var(--o-space);
+  background: #082238;
+  scroll-margin-top: 100px;
+}
+.eh-world-section > .o-section-top {
+  color: #a2c5d6;
+}
+.eh-world-section > .o-section-top .o-kicker,
+.eh-world-section .o-section-heading h2 em {
+  color: #77e7e7;
+}
+.eh-world-section .o-section-heading {
+  margin-bottom: 44px;
+}
+.eh-world-section .o-section-heading p {
+  color: #cfdee7;
+}
+.eh-world-section .o-section-heading .o-muted {
+  color: #adc6d5;
+}
+.event-horizon.aurora .ah-insignia {
+  color: #d8edf4;
+  background: radial-gradient(ellipse at 65% 20%, #21495d, #0c2335 66%);
+  border: 1px solid #426779;
+  padding: 24px;
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  box-shadow: 12px 14px 0 #cbdde6;
+}
+.ah-insignia-cap,
+.ah-insignia-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: Jet, monospace;
+  font-size: 10px;
+  letter-spacing: 1.4px;
+  line-height: 1.7;
+}
+.ah-insignia-cap {
+  border-bottom: 1px solid #87b7c744;
+  padding-bottom: 13px;
+}
+.ah-insignia-cap > svg {
+  color: #ffc77f;
+  width: 23px;
+  height: 28px;
+}
+.ah-insignia-drawing {
+  width: 100%;
+  display: block;
+  margin: 8px 0;
+}
+.ah-insignia-grid {
+  stroke: #7eafc1;
+  opacity: 0.19;
+  stroke-width: 0.8;
+}
+.ah-insignia-ticks {
+  stroke: #90c4d2;
+  opacity: 0.5;
+}
+.ah-insignia-orbit {
+  stroke: #77e7e7;
+  stroke-width: 1.4;
+  opacity: 0.7;
+}
+.ah-insignia-gold {
+  stroke: #ffc77f;
+  opacity: 0.65;
+}
+.ah-insignia-plate {
+  fill: #102d40;
+  stroke: #568597;
+}
+.ah-insignia-letter-shadow {
+  fill: #031522;
+}
+.ah-insignia-letter {
+  fill: #dcebf0;
+  stroke: #ecf8fa;
+  stroke-width: 0.4;
+}
+.ah-insignia-corners {
+  stroke: #9dc7d4;
+  opacity: 0.65;
+}
+.ah-insignia-stars {
+  fill: #ffc77f;
+}
+.ah-insignia-foot {
+  border-top: 1px solid #87b7c744;
+  padding-top: 17px;
+  display: grid;
+  gap: 4px;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+.ah-insignia-foot > span:last-child {
+  color: #aac6d4;
+  font-size: 8px;
+}
+.event-horizon.aurora .o-contact > .o-text-button {
+  min-height: 44px;
+  font-size: 12px;
+}
+.event-horizon.aurora .o-contact-email {
+  padding: 5px 4px;
+  transition:
+    border-color 180ms,
+    color 180ms;
+}
+.event-horizon.aurora .o-contact-email:hover {
+  color: #ffe0b4;
+  border-color: #ffc77f;
+}
+.event-horizon.aurora .o-contact-email > svg {
+  transition: transform 220ms ease;
+}
+.event-horizon.aurora .o-contact-email:is(:hover, :focus-visible) > svg {
+  transform: translate(3px, -3px);
+}
+.event-horizon.aurora .o-footer > span {
+  font-size: 10px;
+}
+.event-horizon.aurora .o-footer > span > small {
+  font-size: 11px;
+}
+.event-horizon.aurora .o-footer > div > a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+}
+.event-horizon.aurora[data-motion="off"] .o-contact-email,
+.event-horizon.aurora[data-motion="off"] .o-contact-email > svg {
+  transition: none;
+}
+@media (max-width: 600px) {
+  .event-horizon.aurora .ah-contact-first {
+    white-space: nowrap;
+    font-size: clamp(36px, 12vw, 58px);
+  }
+  .event-horizon.aurora .eh-world-section {
+    padding: 64px var(--o-space);
+    scroll-margin-top: 82px;
+  }
+  .eh-world-section > .o-section-top > .o-micro {
+    display: none;
+  }
+  .event-horizon.aurora .ah-insignia {
+    max-width: 340px;
+    margin: 0 auto 7px;
+    padding: 17px;
+    box-shadow: 7px 8px 0 #cbdde6;
+  }
+  .ah-insignia-drawing {
+    max-height: 225px;
+    margin: 4px auto;
+  }
+  .ah-insignia-cap {
+    font-size: 10px;
+    padding-bottom: 10px;
+  }
+  .ah-insignia-foot {
+    padding-top: 12px;
+    font-size: 9px;
+  }
+  .event-horizon.aurora .o-footer > span {
+    font-size: 9px;
+    max-width: none;
+    text-align: left;
+  }
+  .event-horizon.aurora .o-footer > span > small {
+    font-size: 11px;
+  }
+  .event-horizon.aurora .o-footer > div {
+    flex-wrap: wrap;
+    gap: 6px 20px;
+  }
+  .event-horizon.aurora .o-footer > div > a {
+    font-size: 11px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .event-horizon.aurora .o-contact-email,
+  .event-horizon.aurora .o-contact-email > svg {
+    transition: none;
+  }
+}
+@media (max-width: 360px) {
+  .event-horizon.aurora .o-contact h2 {
+    font-size: 43px;
+    letter-spacing: -2px;
+  }
+  .event-horizon.aurora .o-contact h2 em {
+    letter-spacing: -2px;
+  }
+}
+@media (forced-colors: active) {
+  .event-horizon.aurora .ah-insignia {
+    border-color: CanvasText;
+  }
+}

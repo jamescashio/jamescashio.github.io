@@ -1,0 +1,893 @@
+/*
+ * V36 Event Horizon / Aurora
+ * Material roles: abyss = space; cyan = systems; solar = action and human
+ * authority; coral = escalation. Cool paper keeps the editorial light/dark rhythm.
+ * No animated properties or filters are introduced by this palette layer.
+ * Text stays opaque; the only gradients describe atmosphere or surface lighting.
+ * Parent imports this last and adds `aurora` to `.event-horizon`.
+ * Optional html.aurora-root colors the document canvas outside the app.
+ */
+:root.aurora-root {
+  background: #061321;
+  color-scheme: dark;
+}
+.event-horizon.aurora {
+  --a-abyss: #061321;
+  --a-surface: #0b2032;
+  --a-raised: #102d42;
+  --a-cyan: #77e7e7;
+  --a-gold: #ffc77f;
+  --a-coral: #fa927a;
+  --a-paper: #eaf2f5;
+  --a-ink: #10263a;
+  --a-muted: #adc4d2;
+  --a-rule: #6d9caf57;
+  --a-light-muted: #496375;
+  --a-teal-ink: #11636b;
+  --o-ink: var(--a-abyss);
+  --o-paper: var(--a-paper);
+  --o-gold: var(--a-gold);
+  --o-muted: var(--a-muted);
+  background: var(--a-abyss);
+  color: var(--a-paper);
+  color-scheme: dark;
+}
+.event-horizon.aurora ::selection {
+  background: var(--a-cyan);
+  color: var(--a-ink);
+}
+.event-horizon.aurora :is(a, button, input, summary, [tabindex]):focus-visible {
+  outline-color: var(--a-cyan);
+}
+.event-horizon.aurora .o-scroll-progress {
+  background: var(--a-cyan);
+  box-shadow: 0 0 12px #77e7e744;
+}
+.event-horizon.aurora .o-header {
+  background: linear-gradient(#061321fc, #081a2af2);
+  border-bottom-color: #77e7e731;
+}
+.event-horizon.aurora .o-brand {
+  color: var(--a-paper);
+}
+.event-horizon.aurora .o-brand > svg,
+.event-horizon.aurora .o-brand-dot {
+  color: var(--a-gold);
+}
+.event-horizon.aurora .o-header > nav a {
+  color: #bfd3df;
+}
+.event-horizon.aurora .o-header > nav a:after {
+  background: var(--a-cyan);
+}
+.event-horizon.aurora .o-header > nav a:hover,
+.event-horizon.aurora .o-header > nav a[aria-current] {
+  color: var(--a-cyan);
+}
+.event-horizon.aurora .o-quiet-control {
+  color: #bcd0dd;
+}
+.event-horizon.aurora .o-quiet-control > span:first-child {
+  color: var(--a-cyan);
+}
+.event-horizon.aurora .o-header-hail {
+  color: var(--a-gold);
+  border-color: #ffc77f85;
+}
+.event-horizon.aurora .o-header-hail:hover {
+  background: #ffc77f16;
+}
+.event-horizon.aurora .o-menu-button span {
+  background: var(--a-paper);
+}
+.event-horizon.aurora .o-menu,
+.event-horizon.aurora .o-art-dialog {
+  background: var(--a-surface);
+  color: var(--a-paper);
+  border-color: #77e7e767;
+}
+.event-horizon.aurora .o-menu::backdrop,
+.event-horizon.aurora .o-art-dialog::backdrop {
+  background: #020c18ed;
+}
+.event-horizon.aurora .o-menu nav a {
+  border-top-color: var(--a-rule);
+}
+.event-horizon.aurora .o-menu nav a span {
+  color: var(--a-cyan);
+}
+.event-horizon.aurora .o-close {
+  color: var(--a-paper);
+  background: var(--a-abyss);
+  border-color: #77e7e75c;
+}
+
+/* The copy occupies an ink field; cyan light belongs to the artwork and metal. */
+.event-horizon.aurora .o-hero {
+  background: var(--a-abyss);
+}
+.event-horizon.aurora .o-hero-shade {
+  background:
+    linear-gradient(90deg, #061321fa 0%, #061321e3 24%, #06132165 48%, #0613210a 75%),
+    linear-gradient(0deg, #061321f2, #06132100 24%);
+}
+.event-horizon.aurora .eh-hero-light {
+  background: radial-gradient(ellipse 420px 330px at var(--eh-aim-x) var(--eh-aim-y), #77e7e71c, transparent 80%);
+}
+.event-horizon.aurora .eh-release-mark {
+  color: #adc7d8;
+}
+.event-horizon.aurora .eh-release-mark > b {
+  color: var(--a-cyan);
+  border-color: #77e7e76b;
+  background: #77e7e70a;
+}
+.event-horizon.aurora .o-hero-content > .o-kicker {
+  color: #c1d8e3;
+}
+.event-horizon.aurora .o-kicker > i {
+  background: var(--a-cyan);
+  box-shadow: 0 0 12px #77e7e766;
+}
+.event-horizon.aurora .o-hero h1 {
+  color: #f0f7fa;
+}
+.event-horizon.aurora .o-hero h1 em {
+  color: var(--a-gold);
+}
+.event-horizon.aurora .o-hero-content > p {
+  color: #c0d3df;
+}
+.event-horizon.aurora .o-hero-work {
+  color: var(--a-paper);
+}
+.event-horizon.aurora .o-hero-work > span {
+  color: #adc5d5;
+}
+.event-horizon.aurora .o-hero-work:hover {
+  color: var(--a-cyan);
+}
+.event-horizon.aurora .o-button-gold,
+.event-horizon.aurora .o-run {
+  background: var(--a-gold);
+  color: var(--a-ink);
+}
+.event-horizon.aurora .o-button-gold:hover,
+.event-horizon.aurora .o-run:hover {
+  background: #ffdaa8;
+  box-shadow: 0 8px 30px #ffc77f24;
+}
+.event-horizon.aurora .o-button-light {
+  background: var(--a-paper);
+  color: var(--a-ink);
+}
+.event-horizon.aurora .o-core-ring {
+  border-color: #77e7e7ac;
+}
+.event-horizon.aurora .o-core-ring:before,
+.event-horizon.aurora .o-core-ring:after {
+  background: var(--a-cyan);
+}
+.event-horizon.aurora .o-core-ring:before {
+  box-shadow:
+    -7px 4px 0 -0.2px #77e7e7,
+    7px 4px 0 -0.2px #77e7e7;
+}
+.event-horizon.aurora .o-core-hotspot:hover .o-core-ring {
+  border-color: var(--a-cyan);
+}
+.event-horizon.aurora .o-core-label {
+  color: #b7d7df;
+}
+.event-horizon.aurora .o-core-label b {
+  color: var(--a-gold);
+}
+.event-horizon.aurora .o-hero-bottom {
+  border-top-color: #77e7e742;
+}
+.event-horizon.aurora .o-hero-bottom .o-micro,
+.event-horizon.aurora .o-art-link,
+.event-horizon.aurora .o-scroll-cue {
+  color: #bdd0db;
+}
+.event-horizon.aurora .o-hero-bottom .o-micro b,
+.event-horizon.aurora .o-scroll-cue > span {
+  color: var(--a-cyan);
+}
+.event-horizon.aurora .o-principles {
+  background: #0c263a;
+  color: #d0e0e7;
+  border-bottom-color: #77e7e72e;
+}
+.event-horizon.aurora .o-principles svg {
+  color: var(--a-gold);
+}
+
+/* Cool paper atlas: saturated dark inks, never pale cyan text on white. */
+.event-horizon.aurora .o-universe,
+.event-horizon.aurora .o-operator {
+  background: var(--a-paper);
+  color: var(--a-ink);
+  --o-muted: var(--a-light-muted);
+  --o-gold: #81501f;
+  color-scheme: light;
+}
+.event-horizon.aurora :is(.o-universe, .o-operator) :is(a, button, input, summary, [tabindex]):focus-visible {
+  outline-color: var(--a-teal-ink);
+}
+.event-horizon.aurora .o-universe .o-kicker,
+.event-horizon.aurora .o-universe .o-section-heading h2 em {
+  color: var(--a-teal-ink);
+}
+.event-horizon.aurora .o-atlas-path {
+  stroke: #29617348;
+}
+.event-horizon.aurora .o-atlas-flow {
+  stroke: #117b83;
+}
+.event-horizon.aurora .o-atlas-orbit {
+  border-color: #2d687320;
+}
+.event-horizon.aurora .o-atlas-node {
+  color: #32556b;
+}
+.event-horizon.aurora .o-node-icon {
+  color: #315c72;
+  background: #f3fafc;
+  border-color: #709aaab0;
+}
+.event-horizon.aurora .o-atlas-node.selected .o-node-icon {
+  color: #0d5861;
+  background: #b8e9e9;
+  border-color: #137980;
+  box-shadow: 0 0 0 5px #55c8cc26;
+}
+.event-horizon.aurora .o-atlas-node.operator.selected .o-node-icon {
+  color: #764616;
+  background: #ffe0b2;
+  border-color: #9a5b21;
+  box-shadow: 0 0 0 5px #dba46b26;
+}
+.event-horizon.aurora .o-atlas-caption {
+  color: #496779;
+}
+.event-horizon.aurora .o-atlas-readout {
+  border-left-color: #427d943c;
+}
+.event-horizon.aurora .o-atlas-readout > .o-micro,
+.event-horizon.aurora .o-atlas-value {
+  color: var(--a-teal-ink);
+}
+.event-horizon.aurora .o-atlas-value > span,
+.event-horizon.aurora .o-atlas-readout > p {
+  color: #496375;
+}
+.event-horizon.aurora .o-evidence-stamp {
+  color: #775124;
+}
+.event-horizon.aurora .o-fact-rail,
+.event-horizon.aurora .o-fact-rail > p {
+  border-color: #38677b47;
+}
+.event-horizon.aurora .o-fact-rail > div > strong {
+  color: var(--a-ink);
+}
+.event-horizon.aurora .o-fact-rail > div > strong > span,
+.event-horizon.aurora .o-fact-rail > div > span,
+.event-horizon.aurora .o-fact-rail > p {
+  color: #496375;
+}
+.event-horizon.aurora .o-fact-rail > p > a {
+  color: var(--a-teal-ink);
+}
+
+/* An illuminated photographic interlude retains its own material palette. */
+.event-horizon.aurora .o-sanctuary:after {
+  background:
+    linear-gradient(90deg, transparent 25%, #10263a72 52%, #061321f0), linear-gradient(0deg, #061321b8, transparent 30%);
+}
+.event-horizon.aurora .o-sanctuary-copy {
+  color: #f2f7fa;
+}
+.event-horizon.aurora .o-sanctuary-copy > .o-kicker {
+  color: #cae2ea;
+}
+.event-horizon.aurora .o-sanctuary-copy > h2 em {
+  color: var(--a-gold);
+}
+.event-horizon.aurora .o-sanctuary-copy > .o-button {
+  background: var(--a-paper);
+  color: var(--a-ink);
+}
+.event-horizon.aurora .o-art-caption {
+  color: #e4edf2;
+}
+
+/* Surrounding observatory architecture only; the instrument owns its colors. */
+.event-horizon.aurora .eh-observatory {
+  background: #061522;
+  color: var(--a-paper);
+}
+.event-horizon.aurora .eh-observatory:before {
+  background: radial-gradient(ellipse at 33% 42%, #0d637224, transparent 68%);
+}
+.event-horizon.aurora .eh-observatory .o-section-top > .o-kicker,
+.event-horizon.aurora .eh-observatory h2 em,
+.event-horizon.aurora .eh-observatory-link {
+  color: var(--a-cyan);
+}
+.event-horizon.aurora .eh-observatory .o-section-heading > p {
+  color: var(--a-muted);
+}
+.event-horizon.aurora .eh-fold {
+  color: var(--a-cyan);
+  background: radial-gradient(ellipse at 65% 44%, #174c5cb8, #030d1af7 75%);
+}
+.event-horizon.aurora .eh-fold-aperture > i:nth-child(2n) {
+  border-color: #77e7e765;
+}
+.event-horizon.aurora .eh-fold-message > strong {
+  color: var(--a-paper);
+}
+.event-horizon.aurora .eh-fold-message > strong > em {
+  color: var(--a-gold);
+}
+.event-horizon.aurora .eh-fold-message > div > i {
+  background: var(--a-gold);
+}
+.event-horizon.aurora .eh-fold-foot {
+  color: var(--a-muted);
+}
+
+/* A blue laboratory with project accents contained inside each instrument. */
+.event-horizon.aurora .o-work {
+  background: var(--a-surface);
+}
+.event-horizon.aurora .o-work > .o-section-top .o-kicker,
+.event-horizon.aurora .o-work .o-section-heading h2 em {
+  color: var(--a-cyan);
+}
+.event-horizon.aurora .o-projects,
+.event-horizon.aurora .o-project-panel,
+.event-horizon.aurora .o-project-index [role="tab"],
+.event-horizon.aurora .o-field-notes summary {
+  border-color: var(--a-rule);
+}
+.event-horizon.aurora .o-index-label,
+.event-horizon.aurora .o-index-note,
+.event-horizon.aurora .o-project-index [role="tab"] > span,
+.event-horizon.aurora .o-project-index [role="tab"] small {
+  color: #adc4d2;
+}
+.event-horizon.aurora .o-project-index [role="tab"] {
+  color: #d0e0e9;
+}
+.event-horizon.aurora .o-project-index [role="tab"][aria-selected="true"],
+.event-horizon.aurora .o-project-index [role="tab"][aria-selected="true"] > span {
+  color: var(--a-cyan);
+}
+.event-horizon.aurora .o-project-index :is(#tab-cascade, #tab-exposure)[aria-selected="true"],
+.event-horizon.aurora .o-project-index :is(#tab-cascade, #tab-exposure)[aria-selected="true"] > span {
+  color: var(--a-coral);
+}
+.event-horizon.aurora .o-project-index :is(#tab-briefing, #tab-signal)[aria-selected="true"],
+.event-horizon.aurora .o-project-index :is(#tab-briefing, #tab-signal)[aria-selected="true"] > span {
+  color: var(--a-gold);
+}
+.event-horizon.aurora .o-project-panel {
+  --project: var(--a-cyan);
+  --o-gold: var(--a-gold);
+}
+.event-horizon.aurora .o-project-panel:is([aria-labelledby="tab-cascade"], [aria-labelledby="tab-exposure"]) {
+  --project: var(--a-coral);
+}
+.event-horizon.aurora .o-project-panel:is([aria-labelledby="tab-briefing"], [aria-labelledby="tab-signal"]) {
+  --project: var(--a-gold);
+}
+.event-horizon.aurora .o-project-heading p,
+.event-horizon.aurora .o-lab-invitation {
+  color: #bdd1df;
+}
+.event-horizon.aurora .o-project-number {
+  color: #719ab2;
+}
+.event-horizon.aurora .o-lab {
+  background: #0e2a40;
+  border-color: #5e9ab066;
+}
+.event-horizon.aurora .o-route-visual > svg {
+  filter: drop-shadow(0 0 15px #77e7e730);
+}
+.event-horizon.aurora .o-route-visual > i,
+.event-horizon.aurora .o-boundary > i,
+.event-horizon.aurora .o-escalation:before {
+  background: #7cabb95c;
+}
+.event-horizon.aurora .o-route-visual > i.active {
+  background: var(--project);
+  box-shadow: 0 0 8px #77e7e742;
+}
+.event-horizon.aurora .o-route-visual > i:after {
+  background: #0e2a40;
+}
+.event-horizon.aurora .o-segment > legend,
+.event-horizon.aurora .o-toggle > span:first-child {
+  color: #d3e4eb;
+}
+.event-horizon.aurora .o-segment > button {
+  color: #c6dae5;
+  border-color: #6f9fb275;
+}
+.event-horizon.aurora .o-segment > button[aria-pressed="true"] {
+  color: var(--project);
+  border-color: var(--project);
+  background: #061321;
+}
+.event-horizon.aurora .o-segment > button:hover {
+  background: #17384e;
+}
+.event-horizon.aurora .o-toggle {
+  border-color: #7ca3b430;
+}
+.event-horizon.aurora .o-switch {
+  background: #0a1724;
+  border-color: #8aacbf;
+}
+.event-horizon.aurora .o-switch:after {
+  background: #adc4d2;
+}
+.event-horizon.aurora .o-toggle input:checked + .o-switch {
+  background: var(--a-cyan);
+  border-color: var(--a-cyan);
+}
+.event-horizon.aurora .o-toggle input:checked + .o-switch:after {
+  background: #10263a;
+}
+.event-horizon.aurora .o-steps > li,
+.event-horizon.aurora .o-escalation > div,
+.event-horizon.aurora .o-boundary > div span,
+.event-horizon.aurora .o-brief-header > span:last-child {
+  color: #adc4d2;
+}
+.event-horizon.aurora .o-steps > li > span {
+  border-color: #729caf90;
+}
+.event-horizon.aurora .o-steps > li.complete {
+  color: #daedf3;
+}
+.event-horizon.aurora .o-steps > li.complete > span {
+  background: #061321;
+  color: var(--project);
+  border-color: var(--project);
+}
+.event-horizon.aurora .o-result,
+.event-horizon.aurora .o-brief-output {
+  background: #071b2d;
+}
+.event-horizon.aurora .o-result p,
+.event-horizon.aurora .o-brief-output p,
+.event-horizon.aurora .o-field-notes dd {
+  color: #bed2df;
+}
+.event-horizon.aurora .o-lab-note,
+.event-horizon.aurora .o-field-notes > p,
+.event-horizon.aurora .o-project-footer > span,
+.event-horizon.aurora .o-brief-output > div .o-muted,
+.event-horizon.aurora .o-brief-output > div .o-micro,
+.event-horizon.aurora .o-freshness p,
+.event-horizon.aurora .o-signal > .o-micro,
+.event-horizon.aurora .o-graph-legend {
+  color: #adc4d2;
+}
+.event-horizon.aurora .o-escalation i {
+  background: #0e2a40;
+  border-color: #789cad;
+}
+.event-horizon.aurora .o-escalation > div.selected {
+  color: var(--project);
+}
+.event-horizon.aurora .o-escalation > div.selected i {
+  background: var(--project);
+  border-color: #183c50;
+  box-shadow:
+    0 0 0 1px var(--project),
+    0 0 30px #fa927a20;
+}
+.event-horizon.aurora .o-boundary > div.protected > svg {
+  fill: #77e7e716;
+}
+.event-horizon.aurora .o-brief-header,
+.event-horizon.aurora .o-brief-output,
+.event-horizon.aurora .o-brief-output > div {
+  border-color: #709fb450;
+}
+.event-horizon.aurora .o-gauge {
+  background: conic-gradient(var(--project) var(--gauge), #739bb64a 0);
+}
+.event-horizon.aurora .o-gauge > span {
+  background: #0e2a40;
+}
+.event-horizon.aurora .o-freshness.stale .o-gauge {
+  background: conic-gradient(var(--a-coral) var(--gauge), #739bb64a 0);
+}
+.event-horizon.aurora .o-freshness.stale .o-gauge > span {
+  color: var(--a-coral);
+}
+.event-horizon.aurora .o-code-graph line {
+  stroke: #7fa6b875;
+}
+.event-horizon.aurora .o-code-graph line.affected {
+  stroke: var(--project);
+}
+.event-horizon.aurora .o-code-graph > button {
+  color: #bdd1df;
+}
+.event-horizon.aurora .o-code-graph > button > i {
+  background: #0e2a40;
+  border-color: #8aacbf;
+}
+.event-horizon.aurora .o-code-graph > button.affected,
+.event-horizon.aurora .o-code-graph > button.selected {
+  color: var(--project);
+}
+.event-horizon.aurora .o-code-graph > button.affected > i {
+  background: #173b4e;
+  border-color: var(--project);
+}
+.event-horizon.aurora .o-code-graph > button.selected > i {
+  background: var(--project);
+  border-color: var(--project);
+}
+
+/* E.V.E. becomes a cool instrument bay; gold remains the operator's command. */
+.event-horizon.aurora .o-evidence {
+  background: #103149;
+  border-color: #77e7e739;
+}
+.event-horizon.aurora .o-evidence-copy > .o-kicker,
+.event-horizon.aurora .o-evidence-copy h2 em,
+.event-horizon.aurora .o-evidence-copy > .o-text-button {
+  color: var(--a-cyan);
+}
+.event-horizon.aurora .o-evidence-copy > .o-muted,
+.event-horizon.aurora .o-archive-dates span {
+  color: #bad2df;
+}
+.event-horizon.aurora .o-archive-dates strong {
+  color: var(--a-paper);
+}
+.event-horizon.aurora .o-terminal {
+  background: #051727;
+  border-color: #77e7e773;
+  box-shadow: 0 20px 55px #020c1955;
+}
+.event-horizon.aurora .o-terminal-bar {
+  background: #0b253a;
+  border-color: #77e7e737;
+}
+.event-horizon.aurora .o-terminal-bar > span:first-child {
+  color: var(--a-cyan);
+}
+.event-horizon.aurora .o-terminal-bar > span:last-child {
+  color: #adc8d8;
+}
+.event-horizon.aurora .o-console-output {
+  color: #b4d8e3;
+  scrollbar-color: #427c92 transparent;
+}
+.event-horizon.aurora .o-console-output > .command,
+.event-horizon.aurora .o-terminal form > label {
+  color: var(--a-gold);
+}
+.event-horizon.aurora .o-terminal form {
+  border-color: #7cbbcb7a;
+}
+.event-horizon.aurora .o-terminal input {
+  color: var(--a-paper);
+}
+.event-horizon.aurora .o-terminal input::placeholder {
+  color: #9bb9cb;
+}
+.event-horizon.aurora .o-terminal input:focus-visible {
+  outline: 0;
+  box-shadow: inset 0 -2px var(--a-cyan);
+}
+.event-horizon.aurora .o-terminal form > button {
+  background: #183750;
+  border-color: #77e7e786;
+  color: var(--a-cyan);
+}
+.event-horizon.aurora .o-command-shortcuts button {
+  border-color: #699db16e;
+  color: #b9d3df;
+}
+.event-horizon.aurora .o-command-shortcuts button > span {
+  color: #98c2d3;
+}
+.event-horizon.aurora .o-command-shortcuts button:hover {
+  border-color: var(--a-cyan);
+  color: var(--a-cyan);
+}
+.event-horizon.aurora .o-terminal-foot {
+  color: #adc7d7;
+}
+.event-horizon.aurora .o-terminal-link {
+  color: var(--a-cyan);
+}
+
+/* Aviation stays photographic. The operator returns to daylight. */
+.event-horizon.aurora .o-lineage {
+  background: #071b2b;
+}
+.event-horizon.aurora .o-lineage > .o-section-top,
+.event-horizon.aurora .o-lineage-copy h2 em,
+.event-horizon.aurora .o-flight-principle > .o-micro {
+  color: var(--a-gold);
+}
+.event-horizon.aurora .o-section-intro,
+.event-horizon.aurora .o-flight-principle > p,
+.event-horizon.aurora .o-flight-principle > .o-lab-note {
+  color: #b4cad8;
+}
+.event-horizon.aurora .o-pilots button {
+  color: #b8d0de;
+  border-color: #759db271;
+}
+.event-horizon.aurora .o-pilots button[aria-pressed="true"] {
+  color: var(--a-gold);
+  border-color: #ffc77faf;
+  background: #ffc77f12;
+}
+.event-horizon.aurora .o-aircraft > div {
+  background: #14374b;
+}
+.event-horizon.aurora .o-aircraft img {
+  filter: saturate(0.9) contrast(1.03);
+}
+.event-horizon.aurora .o-aircraft figcaption {
+  color: #b2c9d7;
+}
+.event-horizon.aurora .o-aircraft figcaption > a {
+  color: var(--a-cyan);
+}
+.event-horizon.aurora .o-operator {
+  background: #e4eef3;
+}
+.event-horizon.aurora .o-operator > .o-section-top,
+.event-horizon.aurora .o-operator-copy > .o-kicker {
+  color: #3b627a;
+}
+.event-horizon.aurora .o-operator-monogram {
+  background: radial-gradient(ellipse at 67% 28%, #fcfdfe, #c4dbe6);
+  border-color: #557f945c;
+}
+.event-horizon.aurora .o-operator-monogram:before {
+  border-color: #2e879b55;
+}
+.event-horizon.aurora .o-operator-monogram:after {
+  border-color: #95623347;
+}
+.event-horizon.aurora .o-operator-monogram > span {
+  color: #2055742e;
+}
+.event-horizon.aurora .o-operator-monogram > svg {
+  color: #8a551e;
+}
+.event-horizon.aurora .o-operator-monogram > div {
+  color: #3e6074;
+}
+.event-horizon.aurora .o-operator-copy h2 em {
+  color: #11636b;
+}
+.event-horizon.aurora .o-operator-copy .o-operator-lead {
+  color: #25475f;
+}
+.event-horizon.aurora .o-operator-copy > p {
+  color: #405f72;
+}
+.event-horizon.aurora .o-operator-links > a {
+  color: #11636b;
+  border-color: #11636b8c;
+}
+.event-horizon.aurora .o-contact {
+  background: #082238;
+}
+.event-horizon.aurora .o-contact:before {
+  background: radial-gradient(ellipse at center 100%, #18768937, transparent 68%);
+}
+.event-horizon.aurora .o-contact-orbit,
+.event-horizon.aurora .o-contact-orbit:before {
+  border-color: #77e7e72c;
+}
+.event-horizon.aurora .o-contact > .o-kicker {
+  color: var(--a-cyan);
+}
+.event-horizon.aurora .o-contact h2 em {
+  color: var(--a-gold);
+}
+.event-horizon.aurora .o-contact > p,
+.event-horizon.aurora .o-contact > .o-text-button {
+  color: #b6cfdc;
+}
+.event-horizon.aurora .o-contact-email {
+  color: var(--a-paper);
+  border-color: #77e7e795;
+}
+.event-horizon.aurora .o-contact-email > svg {
+  color: var(--a-cyan);
+}
+.event-horizon.aurora .o-contact-signoff {
+  color: var(--a-gold);
+}
+.event-horizon.aurora .o-footer {
+  background: #04111f;
+  border-color: #77e7e731;
+}
+.event-horizon.aurora .o-footer > .o-brand {
+  color: #d4e4eb;
+}
+.event-horizon.aurora .o-footer > span,
+.event-horizon.aurora .o-footer > span > small,
+.event-horizon.aurora .o-footer > div > a {
+  color: #adc5d5;
+}
+.event-horizon.aurora .o-art-dialog .o-kicker {
+  color: var(--a-cyan);
+}
+.event-horizon.aurora .o-art-dialog p {
+  color: #d2e3ed;
+}
+.event-horizon.aurora .o-art-dialog small {
+  color: #adc5d5;
+}
+
+/* Mission Control: cyan navigation; gold route numbers and human decisions. */
+.event-horizon.aurora .mc-trigger {
+  background: #0b2539;
+  color: var(--a-paper);
+  border-color: #6bb7c68c;
+}
+.event-horizon.aurora .mc-trigger:hover {
+  background: #16394d;
+  border-color: var(--a-cyan);
+}
+.event-horizon.aurora .mc-trigger kbd {
+  color: #abc7d7;
+}
+.event-horizon.aurora .mc-glyph {
+  color: var(--a-cyan);
+}
+.event-horizon.aurora .mc-dialog {
+  background: #0a2033;
+  color: var(--a-paper);
+  border-color: #77e7e785;
+  box-shadow:
+    0 32px 100px #020a18bf,
+    0 0 0 7px #77e7e70b;
+}
+.event-horizon.aurora .mc-dialog::backdrop {
+  background: #020d1aeb;
+}
+.event-horizon.aurora .mc-cap {
+  background: #071b2b;
+  color: #b4cfdd;
+  border-color: #77e7e737;
+}
+.event-horizon.aurora .mc-cap > span:nth-child(2),
+.event-horizon.aurora .mc-heading h2 > span {
+  color: var(--a-cyan);
+}
+.event-horizon.aurora .mc-close {
+  color: var(--a-paper);
+}
+.event-horizon.aurora .mc-close span {
+  color: var(--a-gold);
+}
+.event-horizon.aurora .mc-eyebrow,
+.event-horizon.aurora .mc-description {
+  color: #b3cfdd;
+}
+.event-horizon.aurora .mc-search-wrap {
+  background: #041524;
+  border-color: #79a6bc;
+}
+.event-horizon.aurora .mc-search-wrap:focus-within {
+  border-color: var(--a-cyan);
+  box-shadow: 0 0 0 1px #77e7e738;
+}
+.event-horizon.aurora .mc-search-wrap > svg,
+.event-horizon.aurora .mc-clear {
+  color: var(--a-cyan);
+}
+.event-horizon.aurora .mc-search-wrap input {
+  color: #ecf5f8;
+}
+.event-horizon.aurora .mc-search-wrap input::placeholder {
+  color: #b0cbd9;
+}
+.event-horizon.aurora .mc-body,
+.event-horizon.aurora .mc-missions,
+.event-horizon.aurora .mc-mission,
+.event-horizon.aurora .mc-footer {
+  border-color: #6da8bd4d;
+}
+.event-horizon.aurora .mc-missions {
+  background: #0d2a3e;
+}
+.event-horizon.aurora .mc-mission {
+  color: #e2eff5;
+}
+.event-horizon.aurora .mc-mission-number {
+  color: var(--a-gold);
+}
+.event-horizon.aurora .mc-mission-copy > span,
+.event-horizon.aurora .mc-mission small,
+.event-horizon.aurora .mc-mission-note {
+  color: #b3cddd;
+}
+.event-horizon.aurora .mc-arrow,
+.event-horizon.aurora .mc-mission:hover strong {
+  color: var(--a-cyan);
+}
+.event-horizon.aurora .mc-results {
+  scrollbar-color: #588fa6 #0a2033;
+}
+.event-horizon.aurora .mc-result {
+  color: #e2eff5;
+}
+.event-horizon.aurora .mc-result-marker {
+  color: var(--a-cyan);
+}
+.event-horizon.aurora .mc-result-description,
+.event-horizon.aurora .mc-result-kind {
+  color: #b7cfdd;
+}
+.event-horizon.aurora .mc-selected {
+  background: #143e51;
+  border-color: #77e7e7ac;
+}
+.event-horizon.aurora .mc-selected strong,
+.event-horizon.aurora .mc-selected .mc-result-kind {
+  color: #92f1ed;
+}
+.event-horizon.aurora .mc-empty > span {
+  color: var(--a-coral);
+}
+.event-horizon.aurora .mc-empty p {
+  color: #b7cfdd;
+}
+.event-horizon.aurora .mc-empty button {
+  color: var(--a-cyan);
+  border-color: #77e7e77d;
+}
+.event-horizon.aurora .mc-footer {
+  background: #051827;
+  color: #b6cfdd;
+}
+.event-horizon.aurora .mc-key-help kbd {
+  color: #d7e9f1;
+  border-color: #6896ab9c;
+}
+.event-horizon.aurora :is(.mc-clear, .mc-close, .mc-trigger, .mc-mission, .mc-result) {
+  min-height: 44px;
+}
+
+@media (max-width: 600px) {
+  .event-horizon.aurora .o-hero-shade {
+    background: linear-gradient(180deg, #061321 0%, #061321 28%, #061321ba 40%, #06132108 68%, #061321ed 100%);
+  }
+  .event-horizon.aurora .o-sanctuary:after {
+    background: linear-gradient(180deg, #06132108 10%, #061321bf 53%, #061321f5 100%);
+  }
+}
+@media (forced-colors: active) {
+  .event-horizon.aurora :is(.mc-dialog, .mc-search-wrap, .mc-selected, .o-lab, .o-terminal, .o-result) {
+    border-color: CanvasText;
+  }
+  .event-horizon.aurora :is(a, button, input, summary, [tabindex]):focus-visible {
+    outline-color: Highlight;
+  }
+  .event-horizon.aurora .o-atlas-node.selected .o-node-icon {
+    border: 2px solid Highlight;
+  }
+}

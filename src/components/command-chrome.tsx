@@ -223,8 +223,11 @@ export function MobileCommandNavigation({
   const activeChip = useRef<HTMLButtonElement | null>(null);
   useEffect(() => {
     const node = activeChip.current;
-    if (typeof node?.scrollIntoView !== "function") return;
-    node.scrollIntoView({ block: "nearest", inline: "center" });
+    const rail = node?.parentElement;
+    if (!node || !rail || typeof rail.scrollTo !== "function") return;
+    // Move this strip only. scrollIntoView can also scroll the page's ancestors
+    // while a deep link is settling, pulling the destination away from its deck.
+    rail.scrollTo({ left: node.offsetLeft - (rail.clientWidth - node.clientWidth) / 2, behavior: "auto" });
   }, [deck]);
   // Every deck is reachable from the phone rail. The strip scrolls sideways and
   // keeps the current deck in view, rather than hiding decks 07 to 09 behind GO.
@@ -275,10 +278,11 @@ export function MobileFlightControl({ active, elapsedMs, onStart, onStop }: Mobi
   return (
     <FlightControl
       active={active}
+      compact={!active}
       elapsedMs={elapsedMs}
       onStart={onStart}
       onStop={onStop}
-      className="za-mobile-flight-control fixed bottom-[calc(env(safe-area-inset-bottom,0px)+4.25rem)] left-3 z-40 w-[min(18rem,calc(100vw-1.5rem))] md:hidden"
+      className="za-mobile-flight-control md:hidden"
     />
   );
 }

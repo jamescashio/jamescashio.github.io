@@ -30,7 +30,7 @@ export function FlightControl({
         className={`za-btn-ghost min-h-11 w-[52px] px-1 py-2 text-[10px] leading-tight ${className}`}
         onClick={active ? onStop : onStart}
       >
-        30S
+        {active ? "STOP" : "30S"}
       </button>
     );
   }

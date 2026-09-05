@@ -26,9 +26,14 @@ export function injectPrerenderedApp(documentHtml: string, appHtml: string) {
   );
 }
 
-export async function prerenderDist(distIndex = resolve("dist/index.html")) {
+export async function prerenderDist(distIndex = resolve("dist/command-deck.html")) {
   const documentHtml = await readFile(distIndex, "utf8");
-  const prerenderedHtml = injectPrerenderedApp(documentHtml, renderCashioApp());
+  const shell = await readFile(new URL("../src/experience-shell.css", import.meta.url), "utf8");
+  const sharedShell = documentHtml.replace(
+    /(<style data-critical-shell>)([\s\S]*?)(<\/style>)/,
+    (_match, open: string, legacy: string, close: string) => `${open}${legacy}\n${shell}\n${close}`,
+  );
+  const prerenderedHtml = injectPrerenderedApp(sharedShell, renderCashioApp());
   await writeFile(distIndex, prerenderedHtml, "utf8");
   return prerenderedHtml;
 }

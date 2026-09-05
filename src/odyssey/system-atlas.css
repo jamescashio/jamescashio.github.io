@@ -1,0 +1,401 @@
+/* System Atlas: decorative geometry, native controls, one selection trace. */
+.sa-system-atlas {
+  --sa-active: #11636b;
+  --sa-highlight: #b8e9e9;
+  --sa-rim: #397c88;
+}
+.sa-system-atlas[data-selected="operator"] {
+  --sa-active: #81501f;
+  --sa-highlight: #ffe0b2;
+  --sa-rim: #a67334;
+}
+.event-horizon .sa-system-atlas .sa-chart {
+  height: 510px;
+  isolation: isolate;
+  min-width: 0;
+  border: 1px solid #6b9aad66;
+  box-shadow:
+    0 16px 38px #234d6511,
+    inset 0 0 0 5px #f5fafc;
+  background: #e3eff4;
+}
+.sa-chart-label {
+  position: absolute;
+  top: 20px;
+  left: 23px;
+  right: 23px;
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  font:
+    8px/1.5 Jet,
+    monospace;
+  letter-spacing: 0.13em;
+  color: #4a6b7e;
+  pointer-events: none;
+  z-index: 1;
+}
+.sa-system-atlas .sa-engraving,
+.sa-system-atlas .sa-routes {
+  pointer-events: none;
+}
+.event-horizon .sa-system-atlas .sa-engraving {
+  z-index: -1;
+  overflow: hidden;
+}
+.sa-engraving path,
+.sa-engraving ellipse,
+.sa-engraving circle {
+  vector-effect: non-scaling-stroke;
+}
+.sa-engraved-fine {
+  stroke: #749dad;
+  stroke-width: 0.8;
+  opacity: 0.47;
+}
+.sa-engraved-outer {
+  stroke-width: 2.3;
+}
+.sa-construction {
+  stroke-dasharray: 2 5;
+  opacity: 0.28;
+}
+.sa-scale-major {
+  stroke: #376d85;
+  stroke-width: 1.2;
+  opacity: 0.65;
+}
+.sa-scale-minor {
+  stroke: #6797aa;
+  stroke-width: 0.7;
+  opacity: 0.52;
+}
+.sa-core-orbit {
+  stroke: #428196;
+  stroke-width: 1;
+  stroke-dasharray: 62 18 3 18;
+  opacity: 0.55;
+}
+.sa-orbital-accent {
+  stroke: #296c85;
+  stroke-width: 2.2;
+  opacity: 0.55;
+}
+.sa-fasteners {
+  stroke: #7399ab;
+  stroke-width: 0.7;
+  opacity: 0.75;
+}
+.sa-routes {
+  z-index: 0;
+}
+.sa-system-atlas .sa-node > strong,
+.sa-system-atlas .sa-node > small {
+  position: relative;
+  background: #e7f1f5;
+  padding: 0 4px;
+}
+.sa-route-bed {
+  stroke: #f4fafc;
+  stroke-width: 1.3;
+}
+.sa-route-wire {
+  stroke: #658f9e;
+  stroke-width: 0.25;
+}
+.sa-route-active {
+  stroke: var(--sa-active);
+  stroke-width: 0.43;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+}
+.sa-route-junction {
+  fill: #f2fafb;
+  stroke: #3e788e;
+  stroke-width: 0.24;
+}
+.sa-system-atlas[data-atlas-motion="on"] .sa-route-active {
+  animation: sa-route-arrive 560ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.event-horizon .sa-system-atlas .sa-chart .sa-node {
+  transform: translate(-50%, -32px);
+  min-width: 112px;
+  min-height: 106px;
+  padding: 0 7px;
+  gap: 5px;
+  color: #31566c;
+  border-radius: 0;
+}
+.event-horizon .sa-system-atlas .sa-chart .sa-node.hermes {
+  transform: translate(-50%, -40px);
+}
+.event-horizon .sa-system-atlas .sa-chart .sa-node .sa-node-face {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  border: 1px solid #6b95a8;
+  color: #315c72;
+  background: linear-gradient(135deg, #fbfeff 0%, #dcecf3 58%, #c1d8e4);
+  box-shadow:
+    0 5px 0 #a9c4d24d,
+    0 8px 18px #173e5215,
+    inset 0 0 0 3px #f7fcfbbd;
+  transition:
+    border-color 240ms ease,
+    box-shadow 240ms ease,
+    background-color 240ms ease;
+  transform: none;
+}
+.event-horizon .sa-system-atlas .sa-chart .sa-node.hermes .sa-node-face {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+.sa-node-bezel {
+  position: absolute;
+  inset: 6px;
+  border: 1px solid #709aab66;
+  border-radius: 9px;
+  pointer-events: none;
+}
+.sa-node.hermes .sa-node-bezel {
+  border-radius: 50%;
+  inset: 6px;
+}
+.event-horizon .sa-system-atlas .sa-chart .sa-node .sa-node-glyph {
+  width: 48px;
+  height: 48px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.event-horizon .sa-system-atlas .sa-chart .sa-node.hermes .sa-node-glyph {
+  width: 53px;
+  height: 57px;
+}
+.sa-glyph-surface {
+  fill: #d1e7f0;
+  stroke: #477f99;
+  stroke-width: 1;
+}
+.sa-glyph-shade {
+  fill: #85b0c5;
+  fill-opacity: 0.48;
+}
+.sa-glyph-main {
+  stroke: #326d88;
+  stroke-width: 1.2;
+}
+.sa-glyph-fine {
+  stroke: #4f8198;
+  stroke-width: 0.8;
+}
+.sa-glyph-bright {
+  fill: #b2e8e9;
+  stroke: #2c7687;
+  stroke-width: 1;
+}
+.sa-node.operator .sa-glyph-surface {
+  fill: #f2e7d5;
+  stroke: #9c774b;
+}
+.sa-node.operator .sa-glyph-bright {
+  fill: #efcc91;
+  stroke: #95662d;
+}
+.sa-node.operator .sa-glyph-main {
+  stroke: #95662d;
+}
+.sa-node.operator .sa-glyph-fine {
+  stroke: #ab8759;
+}
+.event-horizon .sa-system-atlas .sa-chart .sa-node.selected .sa-node-face {
+  border-color: var(--sa-rim);
+  background: var(--sa-highlight);
+  box-shadow:
+    0 5px 0 #8db4c34d,
+    0 9px 20px #1745561a,
+    inset 0 0 0 3px #f7fcfbba,
+    0 0 0 4px #80c6ca29;
+  color: var(--sa-active);
+}
+.event-horizon .sa-system-atlas .sa-chart .sa-node.operator.selected .sa-node-face {
+  border-color: #a67334;
+  background: #ffe0b2;
+  box-shadow:
+    0 5px 0 #c5a4773d,
+    0 9px 20px #714c1515,
+    inset 0 0 0 3px #fff8e8d9,
+    0 0 0 4px #d9b27b25;
+  color: #81501f;
+}
+.event-horizon .sa-system-atlas .sa-chart .sa-node:hover .sa-node-face {
+  border-color: #245e79;
+}
+.event-horizon .sa-system-atlas .sa-chart .sa-node > strong {
+  color: #173e55;
+  font-size: 13px;
+}
+.event-horizon .sa-system-atlas .sa-chart .sa-node > small {
+  color: #44677b;
+  font-size: 9px;
+}
+.event-horizon .sa-system-atlas .sa-chart .sa-node.selected > strong {
+  color: var(--sa-active);
+}
+.event-horizon .sa-system-atlas .sa-chart .o-atlas-caption {
+  bottom: 15px;
+  left: 20px;
+  right: 20px;
+  max-width: none;
+  text-align: center;
+  color: #486a7e;
+  font-size: 8px;
+  letter-spacing: 0.09em;
+  line-height: 1.7;
+}
+.event-horizon.aurora .sa-system-atlas .sa-readout {
+  position: relative;
+  border-left-color: #4b8b9e57;
+}
+.event-horizon.aurora .sa-system-atlas .sa-readout:before {
+  content: "";
+  position: absolute;
+  top: 33px;
+  left: -2px;
+  width: 3px;
+  height: 48px;
+  background: var(--sa-active);
+}
+.event-horizon.aurora .sa-system-atlas .sa-readout > .o-micro,
+.event-horizon.aurora .sa-system-atlas .sa-readout .o-atlas-value {
+  color: var(--sa-active);
+}
+@keyframes sa-route-arrive {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@media (max-width: 1190px) {
+  .event-horizon .sa-system-atlas .sa-chart {
+    height: 470px;
+  }
+  .sa-chart-label {
+    font-size: 7px;
+    left: 18px;
+    right: 18px;
+  }
+}
+@media (max-width: 900px) and (min-width: 601px) {
+  .event-horizon .sa-system-atlas .sa-chart {
+    height: 490px;
+  }
+}
+@media (max-width: 600px) {
+  .event-horizon .sa-system-atlas {
+    gap: 30px;
+  }
+  .event-horizon .sa-system-atlas .sa-chart {
+    height: 396px;
+  }
+  .event-horizon .sa-system-atlas .sa-chart .sa-node {
+    min-width: 94px;
+    min-height: 91px;
+    transform: translate(-50%, -28px);
+    padding: 0 3px;
+    gap: 4px;
+  }
+  .event-horizon .sa-system-atlas .sa-chart .sa-node.hermes {
+    transform: translate(-50%, -34px);
+  }
+  .event-horizon .sa-system-atlas .sa-chart .sa-node .sa-node-face {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+  }
+  .event-horizon .sa-system-atlas .sa-chart .sa-node.hermes .sa-node-face {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+  }
+  .event-horizon .sa-system-atlas .sa-chart .sa-node .sa-node-glyph {
+    width: 42px;
+    height: 42px;
+  }
+  .event-horizon .sa-system-atlas .sa-chart .sa-node.hermes .sa-node-glyph {
+    width: 46px;
+    height: 49px;
+  }
+  .event-horizon .sa-system-atlas .sa-chart .sa-node > strong {
+    font-size: 12px;
+  }
+  .event-horizon .sa-system-atlas .sa-chart .sa-node > small {
+    font-size: 8px;
+  }
+  .event-horizon .sa-system-atlas .sa-chart .o-atlas-caption {
+    font-size: 7px;
+    left: 15px;
+    right: 15px;
+    bottom: 13px;
+  }
+  .sa-chart-label {
+    top: 15px;
+    left: 14px;
+    right: 14px;
+    font-size: 6px;
+    letter-spacing: 0.07em;
+  }
+  .event-horizon.aurora .sa-system-atlas .sa-readout:before {
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 48px;
+  }
+}
+@media (max-width: 360px) {
+  .event-horizon .sa-system-atlas .sa-chart {
+    height: 376px;
+  }
+  .event-horizon .sa-system-atlas .sa-chart .sa-node {
+    min-width: 90px;
+  }
+  .event-horizon .sa-system-atlas .sa-chart .o-atlas-caption {
+    max-width: 225px;
+    margin: 0 auto;
+  }
+  .sa-chart-label {
+    font-size: 6px;
+    letter-spacing: 0;
+  }
+}
+.sa-system-atlas[data-atlas-motion="off"] *,
+.sa-system-atlas[data-atlas-motion="off"] *:before,
+.sa-system-atlas[data-atlas-motion="off"] *:after {
+  animation: none !important;
+  transition: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sa-system-atlas *,
+  .sa-system-atlas *:before,
+  .sa-system-atlas *:after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+@media (forced-colors: active) {
+  .sa-system-atlas .sa-engraving {
+    display: none;
+  }
+  .event-horizon .sa-system-atlas .sa-chart .sa-node .sa-node-face {
+    border: 1px solid ButtonText;
+  }
+  .event-horizon .sa-system-atlas .sa-chart .sa-node.selected .sa-node-face {
+    border: 3px solid Highlight;
+  }
+  .sa-route-active {
+    stroke: Highlight;
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "experienceVersion": "36.0.0",
+  "releaseName": "THE HUMAN RECKONING",
+  "visualEdition": "Sovereign",
+  "featuredExperience": "Sovereign Starship",
+  "status": "released",
+  "published": true,
+  "entry": "/",
+  "evidenceArchive": {
+    "release": "V35 ALL TENS",
+    "fleetObserved": "2026-08-28",
+    "routingObserved": "2026-08-21"
+  },
+  "statement": "A new interactive experience over the existing dated public archive; this release does not establish current infrastructure state.",
+  "legacyEntry": "/command-deck.html"
+}

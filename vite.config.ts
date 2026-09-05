@@ -11,5 +11,12 @@ export default defineConfig({
   build: {
     target: "es2022",
     sourcemap: false,
+    rollupOptions: {
+      input: {
+        index: path.resolve(__dirname, "index.html"),
+        odyssey: path.resolve(__dirname, "odyssey.html"),
+        commandDeck: path.resolve(__dirname, "command-deck.html"),
+      },
+    },
   },
 });

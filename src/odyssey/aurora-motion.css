@@ -1,0 +1,130 @@
+/* Light, acquisition, and a shared origin connect each motion to the object it describes. */
+.event-horizon.aurora .eh-hero-light {
+  inset: auto;
+  top: 0;
+  left: 0;
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, #62d9e81b, #37a9d007 42%, transparent 70%);
+  transform: translate3d(var(--eh-light-x, -480px), var(--eh-light-y, -480px), 0);
+  transition: opacity 0.6s;
+}
+.ah-signal {
+  position: absolute;
+  width: 172%;
+  height: 172%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  color: #77e7e7;
+  opacity: 0.48;
+  transition: opacity 0.3s;
+}
+.ah-signal svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.ah-signal-tracker {
+  color: #ffc77f;
+  animation: ah-tracking 26s linear infinite;
+  animation-play-state: var(--play-state, paused);
+  transform-origin: center;
+}
+.ah-signal-charge {
+  position: absolute;
+  inset: 7%;
+  border: 1px solid transparent;
+  border-top-color: #77e7e7;
+  border-bottom-color: #ffc77f60;
+  border-radius: 50%;
+  opacity: 0;
+  transform: rotate(-25deg);
+  transition:
+    transform 0.7s,
+    opacity 0.3s;
+}
+.event-horizon.aurora .o-core-hotspot:hover .ah-signal,
+.event-horizon.aurora .o-core-hotspot:focus-visible .ah-signal {
+  opacity: 1;
+}
+.event-horizon.aurora .o-core-hotspot:hover .ah-signal-charge,
+.event-horizon.aurora .o-core-hotspot:focus-visible .ah-signal-charge {
+  opacity: 0.8;
+  transform: rotate(65deg);
+}
+.event-horizon.aurora .o-core-hotspot:focus-visible {
+  outline-color: #77e7e7;
+  outline-offset: 15px;
+}
+.event-horizon.aurora .o-core-ring {
+  border-color: #77e7e75c;
+}
+.event-horizon.aurora .o-core-hotspot:hover .o-core-ring,
+.event-horizon.aurora .o-core-hotspot:focus-visible .o-core-ring {
+  border-color: #b4f5f0;
+}
+.event-horizon.aurora .o-core-label {
+  color: #d1e7ee;
+  text-shadow:
+    0 1px 5px #020b16,
+    0 0 15px #020b16;
+}
+.event-horizon.aurora.is-folding .ah-signal {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(1.4);
+  transition:
+    opacity 0.6s,
+    transform 0.9s;
+}
+.event-horizon.aurora .eh-fold {
+  background: radial-gradient(ellipse at var(--eh-fold-x, 70%) var(--eh-fold-y, 45%), #17485a90, #040d1cf5 68%);
+}
+.event-horizon.aurora .eh-fold-aperture,
+.event-horizon.aurora .eh-fold-crosshair {
+  left: var(--eh-fold-x, 70%);
+  top: var(--eh-fold-y, 45%);
+}
+.event-horizon.aurora .eh-fold-aperture > i {
+  border-color: #9bededb3;
+  box-shadow:
+    0 0 20px #77e7e71a,
+    inset 0 0 16px #77e7e70b;
+}
+.event-horizon.aurora .eh-fold-aperture > i:nth-child(2n) {
+  border-color: #ffbd8270;
+}
+.event-horizon.aurora .eh-fold-crosshair {
+  color: #ffc77f;
+}
+.event-horizon.aurora .eh-fold-message > strong > em {
+  color: #a5f2ec;
+}
+.event-horizon.aurora .eh-fold-message > div > i {
+  background: linear-gradient(90deg, #77e7e7, #ffc77f);
+}
+.event-horizon.aurora .eh-fold-grid {
+  background-image:
+    linear-gradient(#77e7e71a 1px, transparent 1px), linear-gradient(90deg, #77e7e71a 1px, transparent 1px);
+}
+@keyframes ah-tracking {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.aurora[data-motion="off"] .ah-signal-tracker {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ah-signal-tracker {
+    animation: none;
+  }
+}
+@media (forced-colors: active) {
+  .ah-signal,
+  .eh-hero-light {
+    display: none;
+  }
+}

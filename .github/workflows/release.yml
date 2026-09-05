@@ -15,12 +15,18 @@ concurrency:
 jobs:
   release:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - name: Checkout release tag
         uses: actions/checkout@v7
         with:
-          fetch-depth: 1
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
 
       - name: Set up Python
         uses: actions/setup-python@v7
@@ -30,9 +36,50 @@ jobs:
       - name: Verify curated release baseline
         run: |
           test -s RELEASE_BODY.md
-          EXPECTED_TAG="$(python -c 'import json; print(json.load(open("status.json"))["release"].split()[0].lower())')"
+          EXPECTED_TAG="$(node -p "'v' + require('./package.json').version.split('.')[0]")"
           test "$GITHUB_REF_NAME" = "$EXPECTED_TAG"
-          python scripts/check_release_consistency.py
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint maintained source
+        run: npm run lint
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Run Node test suite
+        run: npm run test:node
+
+      - name: Run interactive model tests
+        run: npm run test:odyssey
+
+      - name: Build the release artifact
+        run: npm run build
+
+      - name: Verify the built site
+        run: npm run test:artifact
+
+      - name: Run release artifact tests
+        run: npm run test:release
+
+      - name: Scan for PII, secrets, private topology, and backups
+        run: python scripts/public_repo_guard.py
+
+      - name: Verify release consistency
+        run: python scripts/check_release_consistency.py
+
+      - name: Check Python syntax
+        run: |
+          python -m py_compile \
+            scripts/public_repo_guard.py \
+            scripts/check_release_consistency.py \
+            scripts/check_committed_whitespace.py
+
+      - name: Check whitespace
+        run: python scripts/check_committed_whitespace.py
+        env:
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v3

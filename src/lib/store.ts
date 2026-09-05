@@ -16,6 +16,7 @@ interface DeckStore {
   still: boolean;
   palette: boolean;
   tour: boolean;
+  flightCompleted: boolean;
   railOpen: boolean;
   sel: number;
   prog: number;
@@ -41,6 +42,7 @@ export const useDeck = create<DeckStore>((set) => ({
   still: false,
   palette: false,
   tour: false,
+  flightCompleted: false,
   railOpen: false,
   sel: 0,
   prog: 0,

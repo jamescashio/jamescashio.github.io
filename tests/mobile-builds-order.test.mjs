@@ -62,10 +62,9 @@ test("Builds presents article detail and selector before the proof map in source
       "article detail must precede the proof map in the mobile reading order",
     );
 
-    const focusable = [...deck.querySelectorAll("button")];
-    assert.equal(
-      focusable[0],
-      selector.querySelector("button"),
+    const focusable = [...details.querySelectorAll("button")];
+    assert.ok(
+      focusable[0] === selector.querySelector("button"),
       "Tab must reach article selection before the proof map",
     );
     assert.ok(

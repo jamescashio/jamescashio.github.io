@@ -25,7 +25,7 @@ try {
 }
 
 const stylesheet = await readFile(new URL("../src/styles.css", import.meta.url), "utf8");
-const documentMarkup = await readFile(new URL("../index.html", import.meta.url), "utf8");
+const documentMarkup = await readFile(new URL("../command-deck.html", import.meta.url), "utf8");
 
 function responsiveSources(picture) {
   return [...picture.querySelectorAll(":scope > source")].map((source) => ({
@@ -3179,5 +3179,24 @@ test("Builds canvas owns its frame work across visibility and inactive-deck tran
     assert.equal(ownership.disconnected, true, "unmount must disconnect canvas ownership observation");
   } finally {
     if (view.document.defaultView) await view.cleanup();
+  }
+});
+
+test("hash navigation away from Builds preserves the selected article and its layout", async () => {
+  const view = mountCommandDeck({ url: "https://cashio.us/#deck=builds&article=7", controlledTimers: true });
+  try {
+    await view.render();
+    assert.equal(useDeck.getState().sel, 6);
+    view.window.history.replaceState(null, "", "#deck=eve");
+    await act(async () => view.window.dispatchEvent(new view.window.HashChangeEvent("hashchange")));
+    assert.equal(useDeck.getState().deck, 7);
+    assert.equal(
+      useDeck.getState().sel,
+      6,
+      "leaving Builds must not expand HERMES midway through the destination scroll",
+    );
+    assert.equal(view.window.location.hash, "#deck=eve");
+  } finally {
+    await view.cleanup();
   }
 });

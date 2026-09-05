@@ -99,7 +99,7 @@ function contentType(file) {
 }
 
 async function serveDist() {
-  await stat(path.join(DIST, "index.html"));
+  await stat(path.join(DIST, "command-deck.html"));
   const server = createServer(async (request, response) => {
     try {
       const pathname = decodeURIComponent(new URL(request.url ?? "/", "http://127.0.0.1").pathname);
@@ -189,8 +189,10 @@ async function captureCriticalGeometry(send) {
         "section[data-deck=\\"0\\"] .za-critical-telemetry",
         ".za-snapshot-modes",
         ".za-snapshot-actions",
+        ".za-flight-launch",
+        ".za-snapshot-secondary button",
         ".za-bracket > .za-chip",
-        "section[data-deck=\\"0\\"] .za-panel",
+        "section[data-deck=\\"0\\"] .za-snapshot-facts > div",
         ".za-command-header",
         ".za-command-header > .pointer-events-auto:last-child",
         ".za-validity-chip",
@@ -408,7 +410,8 @@ async function runEarlyActivationAcceptance(send, targetUrl) {
       await send("Runtime.evaluate", {
         expression: `(() => {
         const resources = performance.getEntriesByType("resource");
-        const bootstrap = resources.find((entry) => /\\/assets\\/index-[^/]+\\.js$/.test(entry.name));
+        const bootstrapUrl = document.querySelector('script[type="module"][src]')?.src;
+        const bootstrap = resources.find((entry) => entry.name === bootstrapUrl);
         const main = resources.find((entry) => /\\/assets\\/main-[^/]+\\.js$/.test(entry.name));
         const scroller = document.querySelector("#main-content");
         const scrollerTop = scroller?.getBoundingClientRect().top ?? 0;
@@ -484,7 +487,7 @@ async function runEarlyActivationAcceptance(send, targetUrl) {
     expression: `(() => {
       const button = [...document.querySelectorAll(".za-snapshot-modes button")]
         .find((candidate) => candidate.textContent?.includes("EXECUTIVE"));
-      const descendant = button?.querySelector("div");
+      const descendant = button?.querySelector("b");
       if (!button || !descendant) throw new Error("the prerendered Executive control is missing");
       descendant.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true, cancelable: true, pointerId: 7 }));
       button.click();
@@ -1698,7 +1701,7 @@ async function main() {
   const runGateWithCleanup = (operation) => runWithLayoutCleanup(operation, resources, { browserExitTimeoutMs: 5_000 });
   await runGateWithCleanup(async () => {
     const server = (resources.server = await serveDist());
-    const targetUrl = `http://127.0.0.1:${server.address().port}/`;
+    const targetUrl = `http://127.0.0.1:${server.address().port}/command-deck.html`;
     const profile = (resources.profile = await mkdtemp(path.join(tmpdir(), "cashio-layout-")));
     const browser = (resources.browser = spawn(
       browserExecutable(),
@@ -2033,7 +2036,7 @@ async function main() {
         const actionRow = document.querySelector('section[data-deck="0"] .za-snapshot-actions');
         const actionButtons = [...(actionRow?.querySelectorAll("button") ?? [])];
         const actionStyle = actionRow && getComputedStyle(actionRow);
-        const expectedControls = ["TECHNICAL", "EXECUTIVE", "DESCEND THE DECKS", "OPEN E.V.E. CONSOLE"];
+        const expectedControls = ["TECHNICAL", "EXECUTIVE", "TAKE THE 30-SECOND FLIGHT", "EXPLORE THE DECKS", "OPEN E.V.E. CONSOLE"];
         const eveInput = document.querySelector("#eve-command");
         const eveRun = eveInput?.closest("form")?.querySelector('button[type="submit"]');
         const eveTargetRect = (element) => {
@@ -2049,10 +2052,10 @@ async function main() {
           lede: '.za-snapshot-lede',
           body: '.za-snapshot-copy',
           telemetry: 'section[data-deck="0"] .za-critical-telemetry',
-          technical: '.za-snapshot-modes > button:first-child',
-          executive: '.za-snapshot-modes > button:last-child',
+          technical: '.za-mode-options > button:first-child',
+          executive: '.za-mode-options > button:last-child',
           descend: '.za-snapshot-actions > button:first-child',
-          eve: '.za-snapshot-actions > button:last-child',
+          eve: '.za-snapshot-secondary > button:last-child',
           activeRail: 'nav[aria-label="Mobile command decks"] button[aria-current="page"]',
         };
         const readability = Object.entries(readabilityTargets).map(([name, selector]) => {
@@ -2107,14 +2110,14 @@ async function main() {
         clearance.forEach((item) => {
           if (item.paddingBottom < 176) failures.push(item.tag + " deck=" + item.deck + " padding " + item.paddingBottom + "px is below 6rem + 60px + 20px");
         });
-        if (controls.length !== expectedControls.length) failures.push("expected exactly four Snapshot controls, found " + controls.length);
+        if (controls.length !== expectedControls.length) failures.push("expected exactly five Snapshot controls, found " + controls.length);
         const controlRects = controls.map((control) => {
           const rect = control.getBoundingClientRect();
           const style = getComputedStyle(control);
           return { label: control.textContent.trim().replace(/\\s+/g, " "), top: rect.top, bottom: rect.bottom, left: rect.left, right: rect.right, width: rect.width, height: rect.height, disabled: control.disabled, displayed: style.display !== "none" && style.visibility !== "hidden" && style.opacity !== "0" };
         });
         expectedControls.forEach((expected) => {
-          if (!controlRects.some((control) => control.label.startsWith(expected))) failures.push("missing Snapshot control " + expected);
+          if (!controlRects.some((control) => control.label.includes(expected))) failures.push("missing Snapshot control " + expected);
         });
         controlRects.forEach((control) => {
           if (!control.displayed || control.disabled || control.width <= 0 || control.height <= 0) failures.push("Snapshot control " + control.label + " is not displayed, enabled, and nonzero");
@@ -2128,8 +2131,8 @@ async function main() {
         }
         const actionRects = actionButtons.map((button) => button.getBoundingClientRect());
         const gridColumns = actionStyle?.gridTemplateColumns.trim().split(/\\s+/).filter(Boolean) ?? [];
-        if (actionStyle?.display !== "grid" || gridColumns.length !== 2 || actionButtons.length !== 2) failures.push("Snapshot actions must render as one two-column grid");
-        if (actionRects.length === 2 && Math.abs(actionRects[0].top - actionRects[1].top) > 0.5) failures.push("Snapshot action buttons must share one row");
+        if (actionStyle?.display !== "flex" || actionButtons.length !== 3) failures.push("Snapshot must show a prominent flight with two secondary actions");
+        if (actionRects.length === 3 && (actionRects[0].bottom > actionRects[1].top || Math.abs(actionRects[1].top - actionRects[2].top) > 0.5)) failures.push("Snapshot secondary actions must share a row below the flight");
         if (document.documentElement.scrollWidth > innerWidth) failures.push("document width " + document.documentElement.scrollWidth + "px exceeds viewport " + innerWidth + "px");
         return { ok: failures.length === 0, failures, viewport: [innerWidth, innerHeight], pips, rail: { height: railRect.height, top: railRect.top, bottom: railRect.bottom, paddingBottom: railPadding }, clearance, controls: controlRects, readability, eveControls: { input: eveTargetRect(eveInput), run: eveTargetRect(eveRun), criticalTelemetryFontSizesPx: eveCriticalTelemetryFontSizesPx }, actionGrid: { display: actionStyle?.display, columns: gridColumns, buttons: actionRects.map((rect) => ({ top: rect.top, width: rect.width, height: rect.height })) } };
       })()`,
