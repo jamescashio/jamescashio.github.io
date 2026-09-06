@@ -82,6 +82,39 @@
   background: #162a39;
   border-color: #92b4c7;
 }
+.lensing-film-choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  padding: 4px 28px;
+  border-bottom: 1px solid #f2d3a026;
+}
+.lensing-film .lensing-film-choice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  color: #a3b8c8;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  text-align: left;
+}
+.lensing-film-choice small {
+  flex-shrink: 0;
+  font:
+    400 10px Jet,
+    monospace;
+  letter-spacing: 0.08em;
+}
+.lensing-film .lensing-film-choice:hover {
+  color: #eef3f6;
+}
+.lensing-film .lensing-film-choice[aria-pressed="true"] {
+  color: #f2d3a0;
+  border-bottom-color: #f2d3a0;
+}
 .lensing-film-frame {
   margin: 0;
 }
@@ -89,7 +122,7 @@
   display: block;
   width: 100%;
   aspect-ratio: 16 / 9;
-  max-height: calc(100dvh - 240px);
+  max-height: max(180px, calc(100dvh - 455px));
   object-fit: contain;
   background: #02060c;
 }
@@ -167,6 +200,45 @@
 .lensing-film progress::-moz-progress-bar {
   background: #65e9ff;
 }
+.lensing-film-handoff {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px 28px;
+  border-top: 1px solid #f2d3a026;
+  background: #091521;
+}
+.lensing-film-handoff p {
+  margin: 0;
+  color: #c2cfda;
+  font:
+    400 14px/1.5 Oxanium,
+    Arial,
+    sans-serif;
+}
+.lensing-film .lensing-film-explore {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 12px 18px;
+  border-color: #c5a777;
+  color: #f2d3a0;
+  background: #0b1b29;
+}
+.lensing-film .lensing-film-explore:hover {
+  background: #182d3c;
+}
+.lensing-film[data-playback="ended"] .lensing-film-explore {
+  color: #08111c;
+  background: #f2d3a0;
+  border-color: #f2d3a0;
+}
+.lensing-film[data-playback="ended"] .lensing-film-explore:hover {
+  background: #ffe5be;
+}
 @media (max-width: 600px) {
   .lensing-film {
     width: calc(100vw - 16px);
@@ -187,6 +259,14 @@
   .lensing-film-frame figcaption {
     padding-inline: 16px;
   }
+  .lensing-film-choices {
+    gap: 18px;
+    padding-inline: 16px;
+  }
+  .lensing-film .lensing-film-choice {
+    gap: 6px;
+    font-size: 12px;
+  }
   .lensing-film-controls {
     flex-direction: column;
     align-items: stretch;
@@ -195,6 +275,12 @@
   }
   .lensing-film-status {
     gap: 12px;
+  }
+  .lensing-film-handoff {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px 16px;
   }
 }
 @media (max-height: 540px) and (orientation: landscape) {

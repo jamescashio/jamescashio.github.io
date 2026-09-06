@@ -1,4 +1,22 @@
-# Current release — V37.3 Lensing
+# Current release — V37.4 Lensing: Gatewake
+
+Gatewake (`37.4.0`) promotes the approved cinema and Resonance graphics from preview commit `911b7ca`. It adds one original six-second Higgsfield film based on the existing Cashio orbital artwork. Keep the established palette, logo, typography, layout, observatory, and human command identity.
+
+The hero features The gate awakens. A compact cinema selector preserves Orbital arrival, including its existing `#film` link; `#film=awakening` opens the new film. Both films are silent, explicitly played, poster-first, and never loop. Switching films invalidates departing playback. The new film offers an explicit Enter this world action, which opens the actual interactive observatory at the gate in eclipse light with resonance enabled. No automatic handoff. Standard observatory entry keeps its existing defaults.
+
+The owner explicitly approved final polish and public release on September 6, 2026. Publish through the existing guarded GitHub Pages path after the complete production checks pass. The current production baseline and rollback target is `75c084e4b2de3e93407c091bbcf819b35ac0e255` (V37.3 Lensing). Keep software version `37.4.0` separate from the unchanged dated public evidence; preserve the canonical homepage, Odyssey alias, V35 Command Deck and shared links. The homepage is indexable and the compatibility alias remains noindex. Below is the earlier design history.
+
+# Earlier preview — Lensing: Resonance
+
+Resonance is an unpublished graphics preview, version `37.4.0-preview.resonance`, based on the published V37.3 Lensing source at `75c084`. Keep `Lensing` as the visual edition and `THE HUMAN RECKONING` as the release name. The featured experience remains the Lensing Observatory. This pass prepares a review of the next visual direction; the earlier V37.3 publication approval is retained below as release history.
+
+Give the orbital world more convincing depth: resolve the gate's machined surfaces, sharpen the relationship between illuminated edges and deep shadow, and let a restrained aurora describe the planet's atmosphere. Preserve the original gate, planet and courier identities. Keep the established deep ink, champagne gold and electric cyan palette, Cashio circuit logo, Oxanium headlines, Exo reading text and Jet instrument labels. Clear text and quiet reading areas frame the spectacle.
+
+Motion must explain the visitor's action or the existing guided journey. Keep camera, lighting and chapter controls usable while paused; honor reduced motion and hidden-page suspension. Refine material and atmospheric presence inside the existing rendering budget. The world remains original illustrative artwork and does not represent measured infrastructure or scientific simulation. Keep all seven study models, the optional finite Orbital arrival film, the original starship, dated evidence, legacy routes and shared bookmarks intact.
+
+Acceptance for this preview: inspect desktop, tablet, 390 px and 320 px layouts; compare real rendered gate, atmosphere and lighting changes; verify readable contrast, clear focus, touch controls, stable pause and immediate reduced-motion outcomes. Confirm the build and preview metadata agree, both homepage documents are noindex/nofollow, and the canonical and compatibility receipts are identical. Review the preview before any later production promotion.
+
+# Prior release — V37.3 Lensing
 
 Final approach adds one approved Higgsfield film, Orbital arrival, as an optional five-second cinematic interlude. Keep the interactive observatory as the primary action. The film opens on a locally optimized poster, plays only on deliberate input, never loops, and pauses when hidden or closed. Preserve a usable still for reduced motion and loading failure. Its silent, original orbital artwork shares the titanium, champagne and cyan palette. Keep captions legible over the interactive scene at tablet widths. The owner approved this final review for Cashio.us publication on September 6, 2026. Publish through the existing GitHub Pages release path after the production checks pass.
 

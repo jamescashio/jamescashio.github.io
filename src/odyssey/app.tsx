@@ -14,6 +14,7 @@ import { Art } from "./artwork";
 import { ProjectExplorer } from "./project-explorer";
 import { EvidenceConsole } from "./evidence-console";
 import { Lineage } from "./flight-heritage";
+import type { LensingClip } from "./lensing-film";
 const FirstFlight = lazy(() => import("./first-flight"));
 const BrandStudio = lazy(() => import("./brand-studio"));
 const LensingObservatory = lazy(() => import("./lensing-observatory"));
@@ -26,16 +27,29 @@ export function OdysseyApp() {
   const [signature, setSignature] = useState(false);
   const [lensing, setLensing] = useState(false);
   const [film, setFilm] = useState(false);
+  const [filmClip, setFilmClip] = useState<LensingClip>("awakening");
+  const [filmRouteRevision, setFilmRouteRevision] = useState(0);
+  const [lensArrival, setLensArrival] = useState(false);
   const filmOpener = useRef<HTMLElement | null>(null);
   const lensOpener = useRef<HTMLElement | null>(null);
   const ambientMotion = motion && flight === null && !signature && !lensing && !film;
   function openFilm(opener: HTMLElement) {
     filmOpener.current = opener;
+    setFilmClip("awakening");
     setFilm(true);
   }
   function openLensing(opener: HTMLElement) {
     lensOpener.current = opener;
+    setLensArrival(false);
     setLensing(true);
+  }
+  function enterFilmWorld() {
+    lensOpener.current = filmOpener.current ?? document.querySelector<HTMLElement>(".lens-film-link");
+    setLensArrival(true);
+    setFilm(false);
+    setLensing(true);
+    if (/^#film(?:=awakening)?$/.test(location.hash))
+      history.replaceState(null, "", location.pathname + location.search);
   }
   const signatureOpener = useRef<HTMLElement | null>(null);
   function openSignature() {
@@ -53,7 +67,11 @@ export function OdysseyApp() {
       setFlight(value ?? null);
       setSignature(location.hash === "#signature");
       setLensing(location.hash === "#lensing");
-      setFilm(location.hash === "#film");
+      setLensArrival(false);
+      const filmRoute = /^#film(?:=awakening)?$/.test(location.hash);
+      setFilm(filmRoute);
+      if (filmRoute) setFilmRouteRevision((revision) => revision + 1);
+      setFilmClip(location.hash === "#film" ? "arrival" : "awakening");
     };
     readFlight();
     window.addEventListener("hashchange", readFlight);
@@ -277,7 +295,7 @@ export function OdysseyApp() {
             </a>
           ))}
         </nav>
-        <p>V37 / LENSING / A HUMAN IN COMMAND</p>
+        <p>V37.4 / LENSING: GATEWAKE / A HUMAN IN COMMAND</p>
       </dialog>
       <main id="o-main">
         <section className="o-hero o-scene" id="top" aria-labelledby="hero-title">
@@ -287,8 +305,8 @@ export function OdysseyApp() {
           <Starfield motion={ambientMotion} folding={folding} />
           <div className="o-hero-content">
             <div className="eh-release-mark">
-              <b>V37.3</b>
-              <span>LENSING / THE HUMAN RECKONING</span>
+              <b>V37.4</b>
+              <span>LENSING: GATEWAKE</span>
             </div>
             <span className="o-kicker">
               <i />
@@ -315,7 +333,7 @@ export function OdysseyApp() {
                   ◉
                 </span>
                 <span>
-                  Enter the observatory<small>A WORLD TO EXPLORE. A JOURNEY TO TAKE.</small>
+                  Enter the observatory<small>IGNITE THE GATE. AWAKEN A WORLD.</small>
                 </span>
                 <Arrow />
               </button>
@@ -328,11 +346,11 @@ export function OdysseyApp() {
               <i />
               <span>Take the journey.</span>
               <i />
-              <span>Take command.</span>
+              <span>Ignite the gate.</span>
             </div>
             <div className="lens-discover-links">
               <button className="lens-film-link" type="button" onClick={(event) => openFilm(event.currentTarget)}>
-                <span aria-hidden="true">▷</span> Watch Orbital arrival <small>5 SEC</small>
+                <span aria-hidden="true">▷</span> Watch The gate awakens <small>6 SEC</small>
               </button>
               <button className="o-signature-link" type="button" onClick={openSignature}>
                 <span aria-hidden="true">⌘</span> Meet the living circuit <Arrow diagonal />
@@ -354,7 +372,7 @@ export function OdysseyApp() {
             </span>
           </button>
           <div className="lens-scene-caption" aria-hidden="true">
-            <span>THE ART OF WHAT COMES NEXT</span>
+            <span>THE ART OF WHAT COMES NEXT / GATEWAKE</span>
             <strong>LENSING</strong>
             <div>
               <i /> ORIGINAL WORLDS. HUMAN INTENT.
@@ -647,15 +665,19 @@ export function OdysseyApp() {
         <Suspense
           fallback={
             <div className="ff-loading" role="status">
-              Opening Orbital arrival…
+              Opening the cinema…
             </div>
           }
         >
           <LensingFilm
+            key={`${filmClip}-${filmRouteRevision}`}
             motion={motion}
+            initialClip={filmClip}
+            onExplore={enterFilmWorld}
             onClose={() => {
               setFilm(false);
-              if (location.hash === "#film") history.replaceState(null, "", location.pathname + location.search);
+              if (/^#film(?:=awakening)?$/.test(location.hash))
+                history.replaceState(null, "", location.pathname + location.search);
               requestAnimationFrame(() =>
                 (filmOpener.current ?? document.querySelector<HTMLElement>(".lens-film-link"))?.focus({
                   preventScroll: true,
@@ -676,6 +698,7 @@ export function OdysseyApp() {
           <LensingObservatory
             motion={motion}
             reduced={reduced}
+            initialPreset={lensArrival ? { light: "eclipse", view: "gate", resonance: true } : undefined}
             onClose={() => {
               setLensing(false);
               if (location.hash === "#lensing") history.replaceState(null, "", location.pathname + location.search);
@@ -751,7 +774,7 @@ export function OdysseyApp() {
           <BrandMark motion={motion} />
         </a>
         <span>
-          V37.3 / LENSING
+          V37.4 / LENSING: GATEWAKE
           <br />
           <small>Crafted with GPT-6 Astra · Directed by Doug Cashio</small>
         </span>

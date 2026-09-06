@@ -1,5 +1,13 @@
 # Changelog
 
+## V37.4 — LENSING: GATEWAKE · 09-06-2026
+
+- Add The gate awakens, an original six-second Higgsfield shot with gold-core activation and planetary auroras, optimized to a 1.65 MB silent 1080p film.
+- Connect the optional cinema to the actual interactive world through Enter this world, preserving the original film and its shared link.
+- Refine gate materials and geometry, add deliberate gate ignition and polar auroras, and introduce a finite observatory entrance.
+- Preserve poster-first playback, keyboard and touch controls, immediate reduced-motion views, hidden-page suspension, and strict rendering budgets.
+- Publish consistent 37.4.0 metadata while retaining the original starship, animated Cashio identity, all seven studies, dated evidence and legacy routes.
+
 ## V37.3 — LENSING · 09-06-2026
 
 - Open an interactive orbital observatory with machined titanium, champagne inlays, cyan courier engines, and three light treatments and camera views.
