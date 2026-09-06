@@ -189,7 +189,7 @@ export function OperatorInsignia({ motion, onExplore }: { motion: boolean; onExp
         </span>
       </div>
       <button className="hc-identity-explore" type="button" onClick={onExplore}>
-        Explore the living circuit <span aria-hidden="true">↗</span>
+        Explore the celestial signature <span aria-hidden="true">↗</span>
       </button>
       <div className="ah-insignia-foot hc-identity-foot">
         <span>OWNER · BUILDER · OPERATOR</span>

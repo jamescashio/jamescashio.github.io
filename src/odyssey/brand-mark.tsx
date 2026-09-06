@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { BrandCircuit, type CircuitMode } from "./brand-circuit";
+import { CelestialCircuit, type CircuitMode, type CelestialLight } from "./celestial-circuit";
 
 /** The owner's circuit identity, animated only while visible and motion is enabled. */
 export function BrandMark({
@@ -11,6 +11,7 @@ export function BrandMark({
   charged = false,
   signal = 0,
   focusLetter,
+  light = "balanced",
 }: {
   motion: boolean;
   large?: boolean;
@@ -20,14 +21,16 @@ export function BrandMark({
   charged?: boolean;
   signal?: number;
   focusLetter?: number;
+  light?: CelestialLight;
 }) {
   const frame = useRef<HTMLSpanElement>(null);
   const [visible, setVisible] = useState(false);
   const [pageVisible, setPageVisible] = useState(true);
   const [reduced, setReduced] = useState(true);
+  const animated = motion && visible && pageVisible && !reduced;
   useEffect(() => {
     for (const animation of frame.current?.getAnimations({ subtree: true }) ?? []) {
-      if (animation.effect?.getTiming().iterations === Infinity) animation.updatePlaybackRate(charged ? 2.4 : 1);
+      if (animation.effect?.getTiming().iterations === Infinity) animation.updatePlaybackRate(charged ? 1.7 : 1);
     }
   }, [charged]);
   useEffect(() => {
@@ -53,14 +56,15 @@ export function BrandMark({
     <span
       ref={frame}
       className="cashio-brand-mark"
-      data-animated={motion && visible && pageVisible && !reduced ? "true" : "false"}
+      data-animated={animated ? "true" : "false"}
       data-mode={mode}
+      data-light={light}
       data-charged={charged ? "true" : "false"}
       data-detail={studio ? "studio" : large ? "large" : "compact"}
     >
       <img
-        src="/brand/cashio-v37-420.webp"
-        srcSet="/brand/cashio-v37-420.webp 420w, /brand/cashio-v37-840.webp 840w, /brand/cashio-v37-1680.webp 1680w, /brand/cashio-v37-2172.webp 2172w"
+        src="/brand/celestial-420.webp"
+        srcSet="/brand/celestial-420.webp 420w, /brand/celestial-840.webp 840w, /brand/celestial-1680.webp 1680w"
         sizes={
           studio
             ? magnified
@@ -70,12 +74,12 @@ export function BrandMark({
               ? "(max-width: 600px) 190px, 420px"
               : "(max-width: 360px) 110px, (max-width: 600px) 138px, (max-width: 1100px) 170px, 210px"
         }
-        width="840"
-        height="280"
+        width="2055"
+        height="765"
         alt="Cashio AI"
         decoding="async"
       />
-      <BrandCircuit detailed={large || studio} signal={signal} focusLetter={focusLetter} />
+      <CelestialCircuit detailed={large || studio} animated={animated} signal={signal} focusLetter={focusLetter} />
     </span>
   );
 }

@@ -210,7 +210,7 @@ export function OdysseyApp() {
       </span>
       <header className="o-header">
         <a href="#top" className="o-brand" aria-label="Cashio, back to the beginning">
-          <BrandMark motion={motion} />
+          <BrandMark motion={ambientMotion} />
         </a>
         <nav aria-label="Primary navigation">
           {nav.map((link) => (
@@ -273,7 +273,7 @@ export function OdysseyApp() {
       <dialog ref={menu} className="o-menu" aria-label="Site navigation" onClose={() => menuOpener.current?.focus()}>
         <div>
           <a href="#top" className="o-brand" onClick={() => menu.current?.close()}>
-            <BrandMark motion={motion} />
+            <BrandMark motion={ambientMotion} />
           </a>
           <button className="o-close" onClick={() => menu.current?.close()} aria-label="Close navigation">
             ×
@@ -295,7 +295,7 @@ export function OdysseyApp() {
             </a>
           ))}
         </nav>
-        <p>V37.4 / LENSING: GATEWAKE / A HUMAN IN COMMAND</p>
+        <p>V37.5 PREVIEW / CELESTIAL SIGNATURE / A HUMAN IN COMMAND</p>
       </dialog>
       <main id="o-main">
         <section className="o-hero o-scene" id="top" aria-labelledby="hero-title">
@@ -305,8 +305,8 @@ export function OdysseyApp() {
           <Starfield motion={ambientMotion} folding={folding} />
           <div className="o-hero-content">
             <div className="eh-release-mark">
-              <b>V37.4</b>
-              <span>LENSING: GATEWAKE</span>
+              <b>V37.5</b>
+              <span>CELESTIAL SIGNATURE / PREVIEW</span>
             </div>
             <span className="o-kicker">
               <i />
@@ -353,7 +353,7 @@ export function OdysseyApp() {
                 <span aria-hidden="true">▷</span> Watch The gate awakens <small>6 SEC</small>
               </button>
               <button className="o-signature-link" type="button" onClick={openSignature}>
-                <span aria-hidden="true">⌘</span> Meet the living circuit <Arrow diagonal />
+                <span aria-hidden="true">⌘</span> Explore the celestial signature <Arrow diagonal />
               </button>
             </div>
           </div>
@@ -715,7 +715,7 @@ export function OdysseyApp() {
         <Suspense
           fallback={
             <div className="ff-loading" role="status">
-              Opening the living circuit…
+              Opening the celestial signature…
             </div>
           }
         >
@@ -771,10 +771,10 @@ export function OdysseyApp() {
       )}
       <footer className="o-footer">
         <a href="#top" className="o-brand" aria-label="Cashio, back to the beginning">
-          <BrandMark motion={motion} />
+          <BrandMark motion={ambientMotion} />
         </a>
         <span>
-          V37.4 / LENSING: GATEWAKE
+          V37.5 PREVIEW / CELESTIAL SIGNATURE
           <br />
           <small>Crafted with GPT-6 Astra · Directed by Doug Cashio</small>
         </span>

@@ -1,18 +1,25 @@
 .cashio-brand-mark {
+  --celestial-ion: #8ceaff;
+  --celestial-gold: #ffe0a1;
   position: relative;
   display: block;
   width: 210px;
   max-width: 100%;
   height: auto;
   flex-shrink: 0;
-  mix-blend-mode: screen;
+}
+.cashio-brand-mark[data-light="gold"] {
+  --celestial-ion: #ffe0a1;
+}
+.cashio-brand-mark[data-light="ion"] {
+  --celestial-gold: #8ceaff;
 }
 .cashio-brand-mark img {
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 3;
-  transition: opacity 0.35s ease;
+  aspect-ratio: 2055 / 765;
+  mix-blend-mode: screen;
 }
 .cashio-circuit {
   position: absolute;
@@ -21,274 +28,143 @@
   height: 100%;
   pointer-events: none;
 }
-.cashio-trace {
-  stroke: #76f5ff;
+.celestial-circuit {
   stroke-linecap: round;
   stroke-linejoin: round;
+  color: var(--celestial-ion);
 }
-.cashio-trace-1 {
-  stroke: #ffcc75;
+.celestial-gold {
+  color: var(--celestial-gold);
 }
-.cashio-trace-2 {
-  stroke: #b78cff;
-}
-.cashio-trace-rail {
-  stroke-width: 0.65;
-  opacity: 0.25;
-}
-.cashio-trace-tail {
-  stroke-width: 2.5;
-  stroke-dasharray: 6 94;
-  opacity: 0.7;
-}
-.cashio-trace-head {
-  stroke: #efffff;
-  stroke-width: 2.7;
-  stroke-dasharray: 0.45 99.55;
-  stroke-dashoffset: -5.5;
-}
-.cashio-trace-tail,
-.cashio-trace-head {
-  animation: cashio-trace-run var(--duration) linear infinite;
-  animation-delay: var(--delay);
+.celestial-motion {
+  animation: celestial-flow var(--duration, 13s) linear infinite;
+  animation-delay: var(--delay, 0s);
   animation-play-state: paused;
 }
-.cashio-trace-head {
-  animation-name: cashio-head-run;
-}
-.cashio-code {
-  opacity: 0.62;
-}
-.cashio-code-column {
-  font:
-    500 9.4px/1 Jet,
-    monospace;
-  writing-mode: vertical-rl;
-  text-orientation: upright;
-  letter-spacing: 2.1px;
-  stroke: #042323;
-  stroke-width: 0.45px;
-  paint-order: stroke fill;
-  animation: cashio-code-fall var(--duration) linear infinite;
-  animation-delay: var(--delay);
-  animation-play-state: paused;
-}
-.cashio-chip-signal {
-  stroke: #ffd889;
-  stroke-width: 0.8;
-  opacity: 0.5;
-}
-.cashio-core-wave {
-  opacity: 0;
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: cashio-core-wave 5.6s ease-out infinite;
-  animation-play-state: paused;
-}
-.cashio-brand-mark[data-animated="true"]
-  :is(
-    .cashio-trace-tail,
-    .cashio-trace-head,
-    .cashio-code-column,
-    .cashio-core-wave,
-    .cashio-burst,
-    .cashio-burst-ring,
-    .cashio-origin-signal,
-    .cashio-ignition-ring
-  ) {
+.cashio-brand-mark[data-animated="true"] .celestial-motion {
   animation-play-state: running;
 }
-.cashio-burst {
-  stroke: #bcffff;
+.celestial-tail,
+.celestial-head {
+  stroke: currentColor;
+}
+.celestial-tail {
+  stroke-width: 5;
+  stroke-dasharray: 5.5 94.5;
+  opacity: 0.66;
+}
+.celestial-head {
+  stroke: #edfbff;
+  stroke-width: 6;
+  stroke-dasharray: 0.3 99.7;
+  stroke-dashoffset: -5.2;
+  animation-name: celestial-head;
+  filter: drop-shadow(0 0 5px currentColor);
+}
+.celestial-orbit-rail {
+  stroke: var(--celestial-gold);
+  stroke-width: 1.2;
+  opacity: 0.3;
+}
+.celestial-orbit-tail {
+  stroke: var(--celestial-ion);
   stroke-width: 4;
-  stroke-linecap: round;
-  stroke-dasharray: 13 87;
-  filter: drop-shadow(0 0 3px #4bdaed);
-  animation: cashio-command-run 1.9s cubic-bezier(0.2, 0.65, 0.4, 1) var(--burst-delay) both;
-  animation-play-state: paused;
+  stroke-dasharray: 2.6 97.4;
+  opacity: 0.6;
 }
-.cashio-burst.cashio-trace-1 {
-  stroke: #ffdb91;
-}
-.cashio-burst.cashio-trace-2 {
-  stroke: #d2b2ff;
-}
-.cashio-burst-ring {
-  stroke: #ffe4a6;
-  stroke-width: 1.2;
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: cashio-command-ring 2.7s ease-out both;
-  animation-play-state: paused;
-}
-.cashio-selected-circuit {
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.cashio-selection-halo {
-  stroke: #eac280;
-  stroke-width: 11;
-  opacity: 0.09;
-}
-.cashio-selection-edge {
-  stroke: #ffe7b4;
-  stroke-width: 1.5;
-  opacity: 0.76;
-}
-.cashio-selection-conduit {
-  stroke: #e8bc72;
-  stroke-width: 0.7;
-  stroke-dasharray: 3 6;
-  opacity: 0.38;
-}
-.cashio-selection-contact {
-  stroke: #a0f6ff;
-  stroke-width: 1.4;
-}
-.cashio-origin-signal {
-  stroke: #eaffff;
-  stroke-width: 3.1;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 11 89;
-  animation: cashio-origin-transmit 0.95s cubic-bezier(0.22, 0.6, 0.3, 1) both;
-  animation-play-state: paused;
-}
-.cashio-origin-glow {
-  stroke: #ffce83;
+.celestial-orbit-point {
+  stroke: var(--celestial-gold);
   stroke-width: 9;
-  opacity: 0.36;
-  filter: drop-shadow(0 0 5px #ffd288);
+  stroke-dasharray: 0.08 99.92;
+  stroke-dashoffset: -2.5;
+  animation-name: celestial-orbital-point;
+  filter: drop-shadow(0 0 7px #c8ecff);
 }
-.cashio-ignition-ring {
-  stroke: #fff0b8;
-  stroke-width: 2.2;
+.celestial-crown {
+  --duration: 10s;
+  stroke: var(--celestial-gold);
+  stroke-width: 4;
+  stroke-dasharray: 9 39 2 50;
+  filter: drop-shadow(0 0 4px #c5e9ff);
+}
+.celestial-crown-inner {
+  --duration: 15s;
+  stroke: var(--celestial-ion);
+  stroke-width: 2.5;
+  animation-direction: reverse;
+  opacity: 0.8;
+}
+.celestial-glint {
+  stroke: #e5faff;
+  stroke-width: 3.5;
+  opacity: 0.5;
   transform-box: fill-box;
   transform-origin: center;
-  animation: cashio-ignite 1.6s ease-out 0.58s both;
-  animation-play-state: paused;
+  animation-name: celestial-glint;
+  animation-timing-function: ease-in-out;
+  filter: drop-shadow(0 0 7px var(--celestial-ion));
 }
-.cashio-ignition-echo {
-  stroke: #89f3fc;
-  stroke-width: 1.2;
-  animation-delay: 0.79s;
-}
-@keyframes cashio-origin-transmit {
-  0% {
-    stroke-dashoffset: 12;
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  80% {
-    opacity: 1;
-  }
-  100% {
-    stroke-dashoffset: -100;
-    opacity: 0;
-  }
-}
-@keyframes cashio-ignite {
-  0% {
-    transform: scale(0.45);
-    opacity: 0;
-  }
-  14% {
-    opacity: 0.88;
-  }
-  100% {
-    transform: scale(2.8);
-    opacity: 0;
-  }
-}
-@keyframes cashio-command-run {
-  0% {
-    stroke-dashoffset: 18;
-    opacity: 0;
-  }
-  12% {
-    opacity: 1;
-  }
-  70% {
-    opacity: 0.8;
-  }
-  100% {
-    stroke-dashoffset: -100;
-    opacity: 0;
-  }
-}
-@keyframes cashio-command-ring {
-  0% {
-    transform: scale(0.6);
-    opacity: 0;
-  }
-  12% {
-    opacity: 0.8;
-  }
-  100% {
-    transform: scale(2.6);
-    opacity: 0;
-  }
-}
-.cashio-brand-mark[data-detail="compact"] .cashio-code {
-  display: none;
-}
-.cashio-brand-mark[data-mode="runners"] .cashio-code {
-  display: none;
-}
-.cashio-brand-mark[data-mode="code"] .cashio-runners {
+.celestial-selection-halo {
+  stroke: var(--celestial-gold);
+  stroke-width: 21;
   opacity: 0.12;
 }
-.cashio-brand-mark[data-mode="code"] img {
-  opacity: 0.48;
+.celestial-selection-edge {
+  stroke: var(--celestial-gold);
+  stroke-width: 2.5;
+  opacity: 0.7;
 }
-.cashio-brand-mark[data-mode="code"] .cashio-code {
-  opacity: 0.95;
+.celestial-flare {
+  stroke: #ecfbff;
+  stroke-width: 8;
+  stroke-dasharray: 13 87;
+  opacity: 0;
+  filter: drop-shadow(0 0 7px var(--celestial-gold));
 }
-.cashio-brand-mark[data-charged="true"] .cashio-trace-tail {
-  stroke-width: 3.5;
+.cashio-brand-mark[data-mode="runners"] .celestial-orbits,
+.cashio-brand-mark[data-mode="code"] .celestial-runners {
+  display: none;
+}
+.cashio-brand-mark[data-charged="true"] .celestial-tail {
+  stroke-width: 7;
   opacity: 1;
-  filter: drop-shadow(0 0 3px currentColor);
 }
-.cashio-brand-mark[data-charged="true"] .cashio-chip-signal {
-  opacity: 1;
-  stroke-width: 1.8;
-}
-.cashio-brand-mark[data-charged="true"] .cashio-code {
+.cashio-brand-mark[data-charged="true"] .celestial-selection-edge {
+  stroke-width: 5;
   opacity: 1;
 }
-@keyframes cashio-trace-run {
+@keyframes celestial-flow {
   to {
     stroke-dashoffset: -100;
   }
 }
-@keyframes cashio-head-run {
+@keyframes celestial-head {
   to {
-    stroke-dashoffset: -105.5;
+    stroke-dashoffset: -105.2;
   }
 }
-@keyframes cashio-code-fall {
-  from {
-    transform: translateY(-205px);
-  }
+@keyframes celestial-orbital-point {
   to {
-    transform: translateY(-22px);
+    stroke-dashoffset: -102.5;
   }
 }
-@keyframes cashio-core-wave {
+@keyframes celestial-glint {
   0%,
-  20% {
-    transform: scale(0.55);
-    opacity: 0;
-  }
-  28% {
-    opacity: 0.6;
-  }
-  70%,
   100% {
-    transform: scale(1.5);
-    opacity: 0;
+    opacity: 0.24;
+    transform: scale(0.78);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.12);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cashio-circuit .celestial-motion {
+    animation: none !important;
+  }
+  .celestial-pulse {
+    display: none;
   }
 }
 .event-horizon.aurora .o-header > .o-brand,
@@ -296,7 +172,7 @@
   min-height: 44px;
   letter-spacing: 0;
   flex-shrink: 0;
-  mix-blend-mode: screen;
+  mix-blend-mode: normal;
 }
 .event-horizon.aurora .o-header {
   /* Keep the signature on one opaque surface when light sections pass behind it. */
@@ -386,22 +262,5 @@
     padding-left: 10px;
     padding-right: 10px;
     gap: 4px;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .cashio-brand-mark img {
-    transition: none;
-  }
-  .cashio-circuit * {
-    animation: none !important;
-  }
-  .cashio-code {
-    opacity: 0.25;
-  }
-  .cashio-core-wave {
-    display: none;
-  }
-  .cashio-command-pulse {
-    display: none;
   }
 }
