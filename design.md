@@ -1,4 +1,18 @@
-# Cashio.us V37 — Lightfold / First Flight
+# Current design preview — Lensing
+
+An architectural observatory in deep ink, champagne gold and electric cyan: the visitor sculpts the light and discovers their own perspective in an original orbital world.
+
+This September 6 preview starts from the published V37 Lightfold source. The current request authorizes a preview only. Keep Cashio.us production unchanged; prepare a separate private review and a local preview. The previous release approval recorded below applies to V37, not this new experiment.
+
+Keep the Cashio circuit identity, Oxanium headlines, Exo reading text, Jet instrument labels, real study models and dated evidence. The opening gives the artwork an earlier place on phones and presents one primary action: Enter the observatory. First Flight and the seven working studies remain directly available.
+
+The observatory is original procedural 3D artwork: a planet, atmosphere, machined orbital gate and small Bit satellite. Three light treatments and three camera compositions make it explorable. It is explicitly an imagined scene, not a scientific simulation. Load Three.js only after entry; bound pixels, frame rate and geometry; stop rendering when hidden or paused. User actions work while paused and settle immediately with reduced motion. All controls have keyboard and touch equivalents. Audio remains opt-in.
+
+Study navigation gains distinct vector thumbnails and a clearer index. Champagne edges and open instrument surfaces replace redundant nested frames. Warm paper provides reading contrast in the atlas and operator sections. Motion follows interaction and never moves reading text.
+
+Acceptance: inspect 1440, 390 and 320 widths, confirm real canvas output and visibly different lights/views, pause stability, keyboard focus restoration, reduced motion, model outputs, original starship and no application exceptions. Keep public release facts and preview identity separate. Scores must come from measurements.
+
+# Prior V37 visual contract — retained release history
 
 V37 is a preservation pass: the existing midnight orbital world gains a precise, colorful circuit signature and a short visitor-operated flight that makes human command tangible. The hero artwork, Bit, gold/cyan palette, font family, existing studies, dated evidence and V35 archive remain the visual and factual anchors.
 

@@ -1,0 +1,494 @@
+/* Lensing: an editorial index of working instruments, framed in champagne metal. */
+.event-horizon.aurora.lensing {
+  --ln-gold: #f2d3a0;
+  --ln-gold-ink: #745025;
+  --ln-paper: #f2ebdd;
+  --ln-rule: #c8ac7952;
+}
+
+/* Seven identifiable drawings give each study a place in the collection. */
+.ln-project-thumb {
+  display: none;
+}
+.event-horizon.aurora.lensing .o-work {
+  background:
+    radial-gradient(ellipse at 100% 0, #39414a38, transparent 55%), linear-gradient(155deg, #0d1722, #070e18 70%);
+}
+.event-horizon.aurora.lensing .o-work > .o-section-heading {
+  grid-template-columns: 1.2fr 0.8fr;
+  align-items: end;
+  gap: 6vw;
+  margin-bottom: 64px;
+}
+.event-horizon.aurora.lensing .o-work .o-section-heading h2 {
+  font-size: clamp(42px, 4.8vw, 76px);
+  max-width: 840px;
+  letter-spacing: -0.05em;
+}
+.event-horizon.aurora.lensing .o-work .o-section-heading h2 em,
+.event-horizon.aurora.lensing .o-work > .o-section-top .o-kicker {
+  color: var(--ln-gold);
+}
+.event-horizon.aurora.lensing .o-work .o-section-heading > p {
+  color: #c5ced5;
+  max-width: 36ch;
+  padding-bottom: 4px;
+}
+.event-horizon.aurora.lensing .o-projects {
+  grid-template-columns: minmax(275px, 0.78fr) minmax(0, 2fr);
+  border-top: 1px solid var(--ln-rule);
+  gap: clamp(24px, 3vw, 56px);
+}
+.event-horizon.aurora.lensing .o-project-index {
+  padding: 27px 0 0;
+}
+.event-horizon.aurora.lensing .o-index-label {
+  color: #d5c4a7;
+  letter-spacing: 0.12em;
+  padding-left: 12px;
+  margin-bottom: 22px;
+}
+.event-horizon.aurora.lensing .o-project-index [role="tab"] {
+  display: grid;
+  grid-template-columns: 28px 60px minmax(0, 1fr);
+  column-gap: 12px;
+  min-height: 108px;
+  width: 100%;
+  padding: 16px 14px 16px 12px;
+  color: #c9d3da;
+  border: 0;
+  border-bottom: 1px solid #8798a128;
+  background: transparent;
+  isolation: isolate;
+}
+.event-horizon.aurora.lensing .o-project-index [role="tab"]::before {
+  content: "";
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  left: 0;
+  width: 2px;
+  background: var(--ln-gold);
+  opacity: 0;
+}
+.event-horizon.aurora.lensing .o-project-index [role="tab"] .ln-project-index {
+  color: #98a9b8;
+  width: auto;
+  font:
+    500 23px/1 Oxanium,
+    sans-serif;
+  letter-spacing: -0.06em;
+  align-self: start;
+  padding-top: 4px;
+}
+.event-horizon.aurora.lensing .o-project-index [role="tab"] strong {
+  font:
+    500 15px/1.35 Oxanium,
+    sans-serif;
+  letter-spacing: -0.02em;
+  color: inherit;
+}
+.event-horizon.aurora.lensing .o-project-index [role="tab"] small {
+  color: #a8b8c5;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.event-horizon.aurora.lensing .o-project-index [role="tab"] > svg {
+  display: none;
+}
+.event-horizon.aurora.lensing .o-project-index [role="tab"][aria-selected="true"] {
+  background: linear-gradient(90deg, #b58c4021, #b58c4005);
+  border-bottom-color: #e8be7770;
+  box-shadow: inset 0 1px #f4e1bb0d;
+}
+.event-horizon.aurora.lensing .o-project-index [role="tab"][aria-selected="true"]::before {
+  opacity: 1;
+}
+.event-horizon.aurora.lensing .o-project-index [role="tab"][aria-selected="true"] .ln-project-index {
+  color: var(--ln-gold);
+}
+.event-horizon.aurora.lensing .o-project-index [role="tab"][aria-selected="true"] strong {
+  color: #fff0d4;
+}
+.event-horizon.aurora.lensing .o-project-index [role="tab"]:hover {
+  background-color: #adc7d208;
+}
+.event-horizon.aurora.lensing .ln-project-thumb {
+  display: block;
+  width: 60px;
+  height: 49px;
+  align-self: center;
+  padding: 4px;
+  border: 1px solid #57717e70;
+  background: linear-gradient(140deg, #213540, #0a1723);
+  box-shadow:
+    inset 0 1px #d7e9ed1c,
+    0 3px 0 #030a12;
+  color: #9cbbc7;
+}
+.event-horizon.aurora.lensing .ln-project-thumb > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.lensing .ln-thumb-grid {
+  stroke: #89b9c318;
+  stroke-width: 0.8;
+}
+.lensing .ln-thumb-frame {
+  stroke: #99c0ce59;
+  stroke-width: 0.9;
+}
+.lensing .ln-thumb-trace {
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.lensing .ln-thumb-response {
+  stroke: #fff1d7;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-dasharray: 0.16 0.84;
+  opacity: 0;
+}
+.event-horizon.aurora.lensing [aria-selected="true"] .ln-project-thumb {
+  color: var(--ln-gold);
+  background: linear-gradient(140deg, #50442d, #182027 75%);
+  border-color: #dcb879b3;
+}
+.lensing[data-motion="on"] .o-scene.is-visible [aria-selected="true"] .ln-thumb-response {
+  animation: ln-study-trace 850ms ease-out both;
+  animation-play-state: var(--play-state, paused);
+}
+@keyframes ln-study-trace {
+  from {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  18%,
+  78% {
+    opacity: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+/* The active study is an open workbench, with one frame around its actual instrument. */
+.event-horizon.aurora.lensing .o-project-panel {
+  border-left: 0;
+  padding: 30px 0 0;
+}
+.event-horizon.aurora.lensing .o-project-heading {
+  gap: 20px;
+  padding-bottom: 25px;
+  border-bottom: 1px solid #c3a97138;
+}
+.event-horizon.aurora.lensing .o-project-heading h3 {
+  font-size: clamp(32px, 3.45vw, 54px);
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+  color: #f9f0de;
+  margin: 19px 0 13px;
+  text-wrap: balance;
+}
+.event-horizon.aurora.lensing .o-project-heading .o-micro {
+  color: var(--ln-gold);
+  letter-spacing: 0.09em;
+}
+.event-horizon.aurora.lensing .o-project-heading p {
+  color: #bdcbd4;
+  font-size: 16px;
+  line-height: 1.55;
+}
+.event-horizon.aurora.lensing .o-project-number {
+  font:
+    400 clamp(68px, 7vw, 112px)/0.92 Oxanium,
+    sans-serif;
+  letter-spacing: -0.08em;
+  color: #b18d57;
+  padding-top: 2px;
+  flex: 0 0 auto;
+}
+.event-horizon.aurora.lensing .o-lab-invitation {
+  color: #e1d3bb;
+  font-size: 15px;
+  border-left: 2px solid #e4ba73;
+  padding-left: 15px;
+  margin: 25px 0;
+}
+.event-horizon.aurora.lensing .o-lab.lv-lab {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+.event-horizon.aurora.lensing .o-lab.lv-lab::before {
+  display: none;
+}
+.event-horizon.aurora.lensing .lv-instrument {
+  border-color: #8a785a;
+  box-shadow:
+    inset 0 1px #f7ddb431,
+    inset 0 0 0 4px #050b1573,
+    0 16px 36px #01071055;
+  margin-bottom: 28px;
+}
+.event-horizon.aurora.lensing .lv-instrument-caption {
+  padding: 14px 16px;
+  color: #efd1a2;
+  background: linear-gradient(90deg, #b88c3220, #1d36452b);
+  border-bottom-color: #d5b17938;
+}
+.event-horizon.aurora.lensing .o-result {
+  background: linear-gradient(110deg, #18313d, #0d1d2b);
+  border-left-width: 2px;
+  padding: 23px 25px;
+}
+.event-horizon.aurora.lensing .o-result h4 {
+  font-size: clamp(22px, 2vw, 30px);
+  letter-spacing: -0.03em;
+  color: #f7e8d0;
+}
+.event-horizon.aurora.lensing .o-field-notes {
+  margin-top: 30px;
+}
+.event-horizon.aurora.lensing .o-field-notes summary {
+  border-color: var(--ln-rule);
+  color: #e9cfaa;
+}
+.event-horizon.aurora.lensing .o-project-footer {
+  padding-top: 24px;
+  color: #a3b2c0;
+}
+
+/* Warm archival paper gives the systems and their operator room to breathe. */
+.event-horizon.aurora.lensing .o-universe,
+.event-horizon.aurora.lensing .o-operator {
+  background: var(--ln-paper);
+}
+.event-horizon.aurora.lensing .o-universe .o-section-heading h2,
+.event-horizon.aurora.lensing .o-operator-copy h2 {
+  color: #152c3b;
+  letter-spacing: -0.045em;
+}
+.event-horizon.aurora.lensing .o-universe .o-section-heading h2 em,
+.event-horizon.aurora.lensing .o-operator-copy h2 em {
+  color: #77572f;
+}
+.event-horizon.aurora.lensing .o-universe .o-section-heading {
+  margin-bottom: 50px;
+}
+.event-horizon.aurora.lensing .sa-system-atlas .sa-chart {
+  border-color: #9f8e7178;
+  background: #eee8db;
+  box-shadow:
+    0 20px 42px #5b492018,
+    inset 0 0 0 5px #fff9ee;
+}
+.event-horizon.aurora.lensing .sa-engraving > rect {
+  fill: #f4efe4;
+}
+.event-horizon.aurora.lensing .sa-system-atlas .sa-node > strong,
+.event-horizon.aurora.lensing .sa-system-atlas .sa-node > small {
+  background: #f4efe4;
+}
+.event-horizon.aurora.lensing .sa-readout {
+  border-left-color: #8f785745;
+  padding-left: clamp(24px, 3vw, 48px);
+}
+.event-horizon.aurora.lensing .sa-readout h3 {
+  font-size: clamp(32px, 3.6vw, 56px);
+  letter-spacing: -0.05em;
+}
+.event-horizon.aurora.lensing .o-fact-rail {
+  border-top-color: #8f78574d;
+  margin-top: 50px;
+}
+.event-horizon.aurora.lensing .o-operator-layout {
+  gap: clamp(38px, 6vw, 96px);
+  align-items: center;
+}
+.event-horizon.aurora.lensing .ah-insignia.hc-identity {
+  box-shadow:
+    9px 11px 0 #d7c7ad,
+    0 24px 45px #56401c22,
+    inset 0 0 0 5px #ffc77f05;
+}
+.event-horizon.aurora.lensing .o-operator-copy .o-operator-lead {
+  color: #654d30;
+  padding-left: 20px;
+  border-left: 2px solid #ab8854;
+}
+
+/* Evidence remains plain and dated, with the terminal as the single dark focal point. */
+.event-horizon.aurora.lensing .o-evidence {
+  background: #0b1622;
+  border-top-color: #c4a16d3b;
+  border-bottom-color: #c4a16d3b;
+  gap: clamp(35px, 5vw, 80px);
+}
+.event-horizon.aurora.lensing .o-evidence-copy h2 {
+  font-size: clamp(42px, 4.6vw, 72px);
+  color: #f6ead4;
+  letter-spacing: -0.05em;
+}
+.event-horizon.aurora.lensing .o-evidence-copy h2 em,
+.event-horizon.aurora.lensing .o-evidence-copy > .o-kicker {
+  color: var(--ln-gold);
+}
+.event-horizon.aurora.lensing .o-terminal {
+  border-color: #a68b606e;
+  box-shadow:
+    0 25px 60px #01061099,
+    inset 0 1px #edc99126;
+}
+.event-horizon.aurora.lensing .o-terminal-bar {
+  background: linear-gradient(100deg, #242d32, #132334);
+  border-bottom-color: #ac915e4d;
+}
+.event-horizon.aurora.lensing .o-archive-dates {
+  border-top: 1px solid #b59a6838;
+  padding-top: 22px;
+}
+
+@media (max-width: 1000px) and (min-width: 601px) {
+  .event-horizon.aurora.lensing .o-projects {
+    grid-template-columns: 225px minmax(0, 1fr);
+    gap: 25px;
+  }
+  .event-horizon.aurora.lensing .o-project-index [role="tab"] {
+    grid-template-columns: 28px minmax(0, 1fr);
+    column-gap: 10px;
+    padding-right: 10px;
+    min-height: 96px;
+  }
+  .event-horizon.aurora.lensing .ln-project-thumb {
+    display: none;
+  }
+  .event-horizon.aurora.lensing .o-project-number {
+    font-size: 61px;
+  }
+}
+@media (max-width: 700px) {
+  .event-horizon.aurora.lensing .o-work > .o-section-heading {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-bottom: 36px;
+  }
+  .event-horizon.aurora.lensing .o-work .o-section-heading h2 {
+    font-size: clamp(36px, 8vw, 54px);
+  }
+  .event-horizon.aurora.lensing .sa-readout {
+    padding-left: 0;
+    border-left: 0;
+    padding-top: 24px;
+    border-top: 1px solid #8f785745;
+  }
+  .event-horizon.aurora.lensing .o-operator-copy .o-operator-lead {
+    padding-left: 15px;
+  }
+}
+@media (max-width: 600px) {
+  .event-horizon.aurora.lensing .o-projects {
+    grid-template-columns: 1fr;
+    gap: 0;
+    border-top: 0;
+  }
+  .event-horizon.aurora.lensing .o-project-index {
+    padding-top: 0;
+  }
+  .event-horizon.aurora.lensing .o-index-label {
+    padding-left: 0;
+    margin-bottom: 12px;
+  }
+  .event-horizon.aurora.lensing .o-project-index [role="tablist"] {
+    gap: 10px;
+    padding: 4px 3px 18px;
+    scrollbar-color: #c9a671 #152331;
+  }
+  .event-horizon.aurora.lensing .o-project-index [role="tab"] {
+    grid-template-columns: 30px minmax(0, 1fr);
+    grid-template-rows: 52px auto;
+    min-width: 206px;
+    max-width: 206px;
+    min-height: 139px;
+    padding: 15px 15px 14px;
+    border: 1px solid #a4a58e47;
+    align-items: start;
+    gap: 12px;
+  }
+  .event-horizon.aurora.lensing .o-project-index [role="tab"]::before {
+    top: 0;
+    bottom: auto;
+    width: 100%;
+    height: 2px;
+  }
+  .event-horizon.aurora.lensing .ln-project-thumb {
+    display: block;
+    width: 74px;
+    height: 52px;
+    justify-self: end;
+  }
+  .event-horizon.aurora.lensing .o-project-index [role="tab"] .ln-project-label {
+    grid-column: 1 / -1;
+    gap: 5px;
+  }
+  .event-horizon.aurora.lensing .o-project-index [role="tab"] strong {
+    max-width: none;
+    font-size: 15px;
+  }
+  .event-horizon.aurora.lensing .o-project-index [role="tab"][aria-selected="true"] {
+    border-color: #dfba7f;
+  }
+  .event-horizon.aurora.lensing .o-project-panel {
+    padding-top: 26px;
+  }
+  .event-horizon.aurora.lensing .o-project-heading {
+    gap: 14px;
+    padding-bottom: 22px;
+  }
+  .event-horizon.aurora.lensing .o-project-heading h3 {
+    font-size: clamp(29px, 7.4vw, 40px);
+    margin-top: 15px;
+  }
+  .event-horizon.aurora.lensing .o-project-number {
+    font-size: 52px;
+    padding-top: 1px;
+  }
+  .event-horizon.aurora.lensing .o-project-heading p {
+    font-size: 15px;
+  }
+  .event-horizon.aurora.lensing .o-lab-invitation {
+    font-size: 14px;
+    margin: 22px 0;
+  }
+  .event-horizon.aurora.lensing .o-result {
+    padding: 20px 18px;
+  }
+  .event-horizon.aurora.lensing .lv-instrument-caption {
+    padding: 12px;
+  }
+  .event-horizon.aurora.lensing .o-fact-rail {
+    margin-top: 35px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lensing .ln-thumb-response {
+    animation: none !important;
+  }
+}
+@media (forced-colors: active) {
+  .event-horizon.aurora.lensing .o-project-index [role="tab"] {
+    border: 1px solid ButtonText;
+  }
+  .event-horizon.aurora.lensing .o-project-index [role="tab"][aria-selected="true"] {
+    outline: 2px solid Highlight;
+    outline-offset: -3px;
+  }
+  .event-horizon.aurora.lensing .ln-project-thumb {
+    color: ButtonText;
+    box-shadow: none;
+  }
+}
