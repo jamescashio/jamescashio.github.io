@@ -295,7 +295,7 @@ export function OdysseyApp() {
             </a>
           ))}
         </nav>
-        <p>V37.4 PREVIEW / LENSING: RESONANCE / A HUMAN IN COMMAND</p>
+        <p>V37.4 PREVIEW / LENSING: GATEWAKE / A HUMAN IN COMMAND</p>
       </dialog>
       <main id="o-main">
         <section className="o-hero o-scene" id="top" aria-labelledby="hero-title">
@@ -306,7 +306,7 @@ export function OdysseyApp() {
           <div className="o-hero-content">
             <div className="eh-release-mark">
               <b>V37.4 PREVIEW</b>
-              <span>LENSING: RESONANCE</span>
+              <span>LENSING: GATEWAKE</span>
             </div>
             <span className="o-kicker">
               <i />
@@ -372,7 +372,7 @@ export function OdysseyApp() {
             </span>
           </button>
           <div className="lens-scene-caption" aria-hidden="true">
-            <span>THE ART OF WHAT COMES NEXT / RESONANCE</span>
+            <span>THE ART OF WHAT COMES NEXT / GATEWAKE</span>
             <strong>LENSING</strong>
             <div>
               <i /> ORIGINAL WORLDS. HUMAN INTENT.
@@ -774,7 +774,7 @@ export function OdysseyApp() {
           <BrandMark motion={motion} />
         </a>
         <span>
-          V37.4 PREVIEW / LENSING: RESONANCE
+          V37.4 PREVIEW / LENSING: GATEWAKE
           <br />
           <small>Crafted with GPT-6 Astra · Directed by Doug Cashio</small>
         </span>
