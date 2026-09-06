@@ -1,7 +1,8 @@
 {
-  "experienceVersion": "37.1.0-preview.lensing",
+  "experienceVersion": "37.2.0-preview.lensing",
   "releaseName": "THE HUMAN RECKONING",
   "visualEdition": "Lensing",
+  "previewEdition": "Expedition 02",
   "featuredExperience": "Lensing Observatory",
   "status": "preview",
   "published": false,

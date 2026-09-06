@@ -1,5 +1,7 @@
 # Current design preview — Lensing
 
+Expedition 02 evolves the observatory into a cinematic journey: purposeful courier traffic traces a fine orbit, inlaid metals catch the light, and three optional eight-second chapters compose arrival, horizon and gateway. Visitors can interrupt the journey with any camera or scene input, pause it, or step through at their own pace. Hidden pages preserve chapter time. Quiet reading text remains still; instrument graphics gain precise material engraving and finite responses. Keep the existing gold/cyan identity and real study behavior. Publish only to the same owner-only review Site; Cashio.us stays on V37.
+
 An architectural observatory in deep ink, champagne gold and electric cyan: the visitor sculpts the light and discovers their own perspective in an original orbital world.
 
 This September 6 preview starts from the published V37 Lightfold source. The current request authorizes a preview only. Keep Cashio.us production unchanged; prepare a separate private review and a local preview. The previous release approval recorded below applies to V37, not this new experiment.

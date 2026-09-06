@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { LensingLight, LensingView } from "./lensing-renderer";
+import { JOURNEY, useLensingJourney } from "./lensing-journey";
 import "./lensing-observatory.css";
 
 const LIGHTS: { id: LensingLight; label: string; note: string }[] = [
@@ -29,25 +30,44 @@ const VIEWS: { id: LensingView; label: string; title: string; description: strin
 ];
 type Scene = ReturnType<typeof import("./lensing-renderer").createLensingScene>;
 
-export default function LensingObservatory({ motion, onClose }: { motion: boolean; onClose: () => void }) {
+export default function LensingObservatory({
+  motion,
+  reduced,
+  onClose,
+}: {
+  motion: boolean;
+  reduced: boolean;
+  onClose: () => void;
+}) {
   const dialog = useRef<HTMLDialogElement>(null);
   const close = useRef<HTMLButtonElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const scene = useRef<Scene | null>(null);
-  const settings = useRef({ motion, playing: true });
-  const [light, setLight] = useState<LensingLight>("dawn");
-  const [view, setView] = useState<LensingView>("orbit");
+  const [freeLight, setFreeLight] = useState<LensingLight>("dawn");
+  const [freeView, setFreeView] = useState<LensingView>("orbit");
   const [playing, setPlaying] = useState(true);
   const [ready, setReady] = useState(false);
   const [unavailable, setUnavailable] = useState(false);
+  const journey = useLensingJourney(motion && playing && ready && !unavailable);
+  const chapter = journey.step ? JOURNEY[journey.step.index] : null;
+  const light = chapter?.light ?? freeLight;
+  const view = chapter?.view ?? freeView;
+  const settings = useRef({ motion, playing, light, view });
   const activeView = VIEWS.find((item) => item.id === view)!;
   const activeLight = LIGHTS.find((item) => item.id === light)!;
 
   useEffect(() => {
-    settings.current = { motion, playing };
+    settings.current = { motion, playing, light, view };
     scene.current?.setMotion(motion);
     scene.current?.setPlaying(playing && motion);
-  }, [motion, playing]);
+  }, [motion, playing, light, view]);
+
+  useEffect(() => {
+    scene.current?.setLight(light);
+  }, [light]);
+  useEffect(() => {
+    scene.current?.setView(view);
+  }, [view]);
 
   useEffect(() => {
     const panel = dialog.current;
@@ -72,6 +92,8 @@ export default function LensingObservatory({ motion, onClose }: { motion: boolea
         });
         scene.current.setMotion(settings.current.motion);
         scene.current.setPlaying(settings.current.playing && settings.current.motion);
+        scene.current.setLight(settings.current.light);
+        scene.current.setView(settings.current.view);
       })
       .catch(() => active && setUnavailable(true));
     return () => {
@@ -82,12 +104,24 @@ export default function LensingObservatory({ motion, onClose }: { motion: boolea
   }, []);
 
   function chooseLight(value: LensingLight) {
-    setLight(value);
-    scene.current?.setLight(value);
+    takeControl();
+    setFreeLight(value);
   }
   function chooseView(value: LensingView) {
-    setView(value);
-    scene.current?.setView(value);
+    takeControl();
+    setFreeView(value);
+    // Selecting the current preset also restores an independently orbited camera.
+    if (value === view) scene.current?.setView(value);
+  }
+  function takeControl() {
+    if (!journey.step) return;
+    setFreeLight(light);
+    setFreeView(view);
+    journey.stop();
+  }
+  function cameraControl(action: () => void) {
+    takeControl();
+    action();
   }
   return (
     <dialog
@@ -97,6 +131,18 @@ export default function LensingObservatory({ motion, onClose }: { motion: boolea
       data-view={view}
       data-ready={ready && !unavailable ? "true" : "false"}
       data-motion={motion && playing ? "on" : "off"}
+      data-journey={
+        !journey.step
+          ? "off"
+          : journey.complete
+            ? "complete"
+            : !motion
+              ? "manual"
+              : journey.running
+                ? "running"
+                : "paused"
+      }
+      data-chapter={journey.step?.index ?? -1}
       aria-labelledby="lens-title"
       onCancel={(event) => {
         event.preventDefault();
@@ -107,7 +153,7 @@ export default function LensingObservatory({ motion, onClose }: { motion: boolea
         <div className="lens-wordmark">
           <span aria-hidden="true">◉</span>
           <div>
-            <p>HOUSE CASHIO / EXPERIMENT 01</p>
+            <p>HOUSE CASHIO / EXPEDITION 02</p>
             <h2 id="lens-title">
               Lensing<span>Observatory</span>
             </h2>
@@ -117,6 +163,57 @@ export default function LensingObservatory({ motion, onClose }: { motion: boolea
           Close <span aria-hidden="true">×</span>
         </button>
       </header>
+      {journey.step && (
+        <div className="lens-journey" aria-label="Guided journey controls">
+          <div className="lens-journey-label">
+            <span className="lens-eyebrow">
+              {journey.complete
+                ? "JOURNEY COMPLETE"
+                : !motion
+                  ? "AT YOUR PACE"
+                  : journey.running
+                    ? "THE 24-SECOND JOURNEY"
+                    : "JOURNEY PAUSED"}
+            </span>
+            <strong>
+              0{journey.step.index + 1} <span>/ 03</span> · {chapter?.note}
+            </strong>
+          </div>
+          <div className="lens-journey-track" aria-hidden="true">
+            {JOURNEY.map((item, index) => (
+              <span
+                key={item.note}
+                data-state={
+                  index < journey.step!.index || journey.complete
+                    ? "done"
+                    : index === journey.step!.index
+                      ? "active"
+                      : "next"
+                }
+              >
+                {index === journey.step!.index && (
+                  <i key={journey.step!.id} style={{ animationPlayState: journey.running ? "running" : "paused" }} />
+                )}
+              </span>
+            ))}
+          </div>
+          <div className="lens-journey-steps">
+            <button
+              aria-label="Previous chapter"
+              disabled={journey.step.index === 0}
+              onClick={() => journey.jump(journey.step!.index - 1)}
+            >
+              ←
+            </button>
+            <button
+              aria-label={journey.step.index === 2 ? "Finish journey" : "Next chapter"}
+              onClick={() => (journey.step!.index === 2 ? takeControl() : journey.jump(journey.step!.index + 1))}
+            >
+              {journey.step.index === 2 ? "✓" : "→"}
+            </button>
+          </div>
+        </div>
+      )}
       <div className="lens-stage">
         <canvas
           ref={canvas}
@@ -124,10 +221,13 @@ export default function LensingObservatory({ motion, onClose }: { motion: boolea
           tabIndex={ready && !unavailable ? 0 : -1}
           role="img"
           aria-label="Interactive three-dimensional planet and orbital gate. Drag to orbit. Arrow keys rotate; plus and minus zoom. The same controls are available below."
+          onPointerDown={takeControl}
+          onWheel={takeControl}
           onKeyDown={(event) => {
             const keys = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "+", "=", "-", "Home"];
             if (!keys.includes(event.key)) return;
             event.preventDefault();
+            takeControl();
             if (event.key === "ArrowLeft") scene.current?.rotate(-0.16, 0);
             if (event.key === "ArrowRight") scene.current?.rotate(0.16, 0);
             if (event.key === "ArrowUp") scene.current?.rotate(0, -0.12);
@@ -136,7 +236,7 @@ export default function LensingObservatory({ motion, onClose }: { motion: boolea
             if (event.key === "-") scene.current?.zoom(1.14);
             if (event.key === "Home") {
               scene.current?.reset();
-              setView("orbit");
+              setFreeView("orbit");
             }
           }}
         />
@@ -161,37 +261,48 @@ export default function LensingObservatory({ motion, onClose }: { motion: boolea
         <div className="lens-reticle lens-reticle-b" aria-hidden="true" />
         <div className="lens-caption">
           <span className="lens-eyebrow">
-            0{VIEWS.findIndex((item) => item.id === view) + 1} / CHANGE YOUR POINT OF VIEW
+            {chapter
+              ? `0${journey.step!.index + 1} / ${chapter.note.toUpperCase()}`
+              : "FREE EXPLORATION / THE WORLD IS YOURS"}
           </span>
-          <h3>{activeView.title}</h3>
-          <p>{activeView.description}</p>
+          <h3>{chapter?.title ?? activeView.title}</h3>
+          <p>{chapter?.description ?? activeView.description}</p>
         </div>
         <div className="lens-orbit-tools" aria-label="Camera controls">
           <button
             disabled={!ready || unavailable}
-            onClick={() => scene.current?.rotate(-0.2, 0)}
+            onClick={() => cameraControl(() => scene.current?.rotate(-0.2, 0))}
             aria-label="Rotate left"
           >
             ←
           </button>
           <button
             disabled={!ready || unavailable}
-            onClick={() => scene.current?.rotate(0.2, 0)}
+            onClick={() => cameraControl(() => scene.current?.rotate(0.2, 0))}
             aria-label="Rotate right"
           >
             →
           </button>
-          <button disabled={!ready || unavailable} onClick={() => scene.current?.zoom(0.86)} aria-label="Zoom in">
+          <button
+            disabled={!ready || unavailable}
+            onClick={() => cameraControl(() => scene.current?.zoom(0.86))}
+            aria-label="Zoom in"
+          >
             +
           </button>
-          <button disabled={!ready || unavailable} onClick={() => scene.current?.zoom(1.14)} aria-label="Zoom out">
+          <button
+            disabled={!ready || unavailable}
+            onClick={() => cameraControl(() => scene.current?.zoom(1.14))}
+            aria-label="Zoom out"
+          >
             −
           </button>
           <button
             disabled={!ready || unavailable}
             onClick={() => {
+              takeControl();
               scene.current?.reset();
-              setView("orbit");
+              setFreeView("orbit");
             }}
             aria-label="Reset camera"
           >
@@ -237,33 +348,56 @@ export default function LensingObservatory({ motion, onClose }: { motion: boolea
             ))}
           </div>
         </div>
-        <button
-          className="lens-pause"
-          disabled={!motion || !ready || unavailable}
-          aria-pressed={!playing || !motion}
-          aria-label={
-            !motion
-              ? "Observatory motion follows your reduced-motion preference"
-              : playing
-                ? "Pause observatory motion"
-                : "Resume observatory motion"
-          }
-          onClick={() => setPlaying(!playing)}
-        >
-          <span aria-hidden="true">{motion && playing ? "Ⅱ" : "▷"}</span>
-          {motion && playing ? "Pause motion" : "Motion paused"}
-        </button>
+        <div className="lens-session-controls">
+          <button
+            className="lens-journey-toggle"
+            disabled={!ready || unavailable}
+            aria-pressed={Boolean(journey.step)}
+            onClick={() => {
+              if (journey.step) takeControl();
+              else {
+                setPlaying(true);
+                journey.jump(0);
+              }
+            }}
+          >
+            <span aria-hidden="true">{journey.step ? "↗" : "▷"}</span>
+            {journey.step ? "Explore freely" : "Take the journey"}
+          </button>
+          <button
+            className="lens-pause"
+            disabled={!motion || !ready || unavailable}
+            aria-pressed={!playing || !motion}
+            aria-label={
+              !motion
+                ? reduced
+                  ? "Observatory motion follows your reduced-motion preference"
+                  : "Observatory motion is off in the site controls"
+                : playing
+                  ? "Pause observatory motion"
+                  : "Resume observatory motion"
+            }
+            onClick={() => setPlaying(!playing)}
+          >
+            <span aria-hidden="true">{motion && playing ? "Ⅱ" : "▷"}</span>
+            {motion && playing ? "Pause motion" : "Motion paused"}
+          </button>
+        </div>
       </div>
       <footer className="lens-footer">
         <span>
           {!motion
-            ? "Reduced motion · change light and viewpoint at your own pace."
-            : "Drag to orbit · scroll or use + / − to explore."}
+            ? `${reduced ? "Reduced motion" : "Motion is off"} · explore each chapter at your own pace.`
+            : journey.step
+              ? "You have the controls. Drag or choose any light or view to explore freely."
+              : "Drag to orbit · scroll or use + / − to explore."}
         </span>
         <span>Original 3D artwork · an imagined world, not a scientific simulation.</span>
       </footer>
       <span className="lens-sr-only" role="status">
-        {ready ? `${activeLight.note} ${activeView.description}` : ""}
+        {ready
+          ? `${journey.complete ? "Journey complete. Explore freely whenever you like. " : ""}${activeLight.note} ${chapter?.description ?? activeView.description}`
+          : ""}
       </span>
     </dialog>
   );

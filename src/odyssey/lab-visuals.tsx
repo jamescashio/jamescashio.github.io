@@ -1,4 +1,5 @@
 import { useId } from "react";
+import { InstrumentMaterials, MachinedBezel } from "./study-engravings";
 
 export function RouteInstrument({ step, code }: { step: number; code: string }) {
   const id = useId();
@@ -9,16 +10,12 @@ export function RouteInstrument({ step, code }: { step: number; code: string }) 
         <span>{String(step).padStart(2, "0")} / 05</span>
       </div>
       <svg viewBox="0 0 560 164" fill="none">
+        <InstrumentMaterials id={id} />
         <defs>
           <radialGradient id={`${id}-core-light`}>
             <stop stopColor="#77e7e7" stopOpacity=".22" />
             <stop offset="1" stopColor="#77e7e7" stopOpacity="0" />
           </radialGradient>
-          <linearGradient id={`${id}-core-metal`} x1="0" y1="0" x2="1" y2="1">
-            <stop stopColor="#758f98" />
-            <stop offset=".48" stopColor="#253e4a" />
-            <stop offset="1" stopColor="#0c1725" />
-          </linearGradient>
         </defs>
         <ellipse cx="280" cy="94" rx="134" ry="94" fill={`url(#${id}-core-light)`} />
         <path
@@ -51,20 +48,39 @@ export function RouteInstrument({ step, code }: { step: number; code: string }) 
         />
         <circle className="lv-machine-rule" cx="280" cy="94" r="63" />
         <circle className="lv-fine-ring" cx="280" cy="94" r="54" />
+        <MachinedBezel x={280} y={94} radius={68} />
         <g className="lv-core-orbit lv-continuous">
           <path className="lv-orbit-bright" d="M234 51a63 63 0 0 1 89-3m3 91a63 63 0 0 1-88 0" />
           <circle className="lv-reading-point" cx="326" cy="51" r="2.5" />
         </g>
         <ellipse className="lv-core-platform" cx="280" cy="139" rx="43" ry="9" />
+        <path
+          d="M242 137v5c12 11 64 11 76 0v-5c-13 10-63 10-76 0Z"
+          fill={`url(#${id}-titanium)`}
+          stroke="#729397"
+          strokeWidth=".7"
+        />
         <g className="lv-core-prism">
           <path
             className="lv-core-face"
-            style={{ fill: `url(#${id}-core-metal)` }}
+            style={{ fill: `url(#${id}-titanium)` }}
             d="m280 49 35 23-7 45-28 21-28-21-7-45Z"
           />
           <path className="lv-core-lit-facet" d="m280 49 0 40 35-17Z" />
           <path className="lv-core-dark-facet" d="m280 89 28 28-28 21Z" />
           <path className="lv-core-fold" d="m280 49 0 40 35-17m-35 17-28 28m28-28 28 28m-28-28v49m-35-66 35 17" />
+          <path
+            d="m275 58-24 16 24 11Zm11 3v21l20-10Zm-33 22 4 26 16-17Zm35 36-4 9v-25l17 15Z"
+            fill="#05132166"
+            stroke="#bcd9d168"
+            strokeWidth=".65"
+          />
+          <path
+            key={`core-${step}`}
+            className="ln-etch-response lv-draw"
+            pathLength="1"
+            d="m280 55 28 19-7 38-21 18-21-18-7-38Z"
+          />
           <circle className="lv-core-pin" cx="280" cy="89" r="4" />
         </g>
         {step > 0 && (
@@ -132,6 +148,7 @@ export function CascadeInstrument({
   severity: number;
   confidence: number;
 }) {
+  const id = useId();
   const stages = ["Bounded check", "More evidence", "Human decision"];
   return (
     <div className="lv-cascade lv-instrument">
@@ -140,6 +157,7 @@ export function CascadeInstrument({
         <span>ILLUSTRATIVE POLICY</span>
       </div>
       <svg className="lv-cascade-deck" viewBox="0 0 560 214" fill="none" aria-hidden="true">
+        <InstrumentMaterials id={id} />
         <path
           className="lv-grid-line"
           d="m20 154 260-125 260 125-260 57ZM80 126l260 125M152 93l260 125M208 57l260 125M480 126 220 251M408 93 148 218M352 57 92 182"
@@ -163,7 +181,16 @@ export function CascadeInstrument({
           >
             <ellipse className="lv-station-projection" cy="13" rx="57" ry="20" />
             <path className="lv-station-side" d="m-44 0 44 21 44-21v14L0 35-44 14Z" />
-            <path className="lv-station-top" d="m-44 0 44-21L44 0 0 21Z" />
+            <path
+              className="lv-station-top"
+              style={{ fill: `url(#${id}-${i === level ? "champagne" : "titanium"})` }}
+              d="m-44 0 44-21L44 0 0 21Z"
+            />
+            <path
+              d="m-34 0 34-16L34 0 0 16Zm-2 9 0 9m7-6v9m7-6v9m7-6v9m7-6v9m12-3 27-13"
+              stroke={i === level ? "#e9d2a0" : "#789cab"}
+              strokeWidth=".7"
+            />
             <path className="lv-station-edge" d="m-44 8 44 21 44-21" />
             <path className="lv-station-beam" d="M-23-49-37-4 0 14 37-4 23-49Z" />
             <g className="lv-station-symbol" transform="translate(-23 -71)">
@@ -171,6 +198,12 @@ export function CascadeInstrument({
                 <StageSymbol stage={i} />
               </svg>
             </g>
+            <path
+              key={`station-${i}-${level}`}
+              className={`ln-etch-response ${i === level ? "lv-draw" : ""}`}
+              pathLength="1"
+              d="m-21-51 21-12 21 12v25L0-14-21-26Z"
+            />
             {i === level && <ellipse className="lv-station-pulse lv-continuous" cy="3" rx="49" ry="22" />}
           </g>
         ))}
@@ -239,6 +272,7 @@ export function ExposureInstrument({
         <path className="lv-machine-rule" d="M89 108h101m180 0h101" />
         <circle className="lv-machine-rule" cx="280" cy="103" r="81" />
         <circle className="lv-fine-ring" cx="280" cy="103" r="70" />
+        <MachinedBezel x={280} y={103} radius={87} />
         <g className="lv-boundary-sweep lv-continuous">
           <path className="lv-boundary-sector" d="M280 103V27a76 76 0 0 1 54 22Z" />
           <path className="lv-boundary-scan" d="M280 103V27" />
@@ -253,6 +287,11 @@ export function ExposureInstrument({
           d="m280 49 38 14v33c0 30-25 47-38 55-13-8-38-25-38-55V63Z"
         />
         <path className="lv-shield-inset" d="m280 57 30 11v27c0 26-20 41-30 48-10-7-30-22-30-48V68Z" />
+        <path
+          d="m246 66 34-13 34 13-7 2-27-10-27 10Zm34 75v7c-15-10-30-24-35-41l6-2c6 17 15 26 29 36Z"
+          fill={review ? "#e6a08065" : "#b0dcd45c"}
+        />
+        <path d="M257 72v11m6-14v10m34-10v10m6-7v11m-42 40 9 7m20 0 9-7" stroke="#c4ded075" strokeWidth=".85" />
         <path
           key={`${auth}-${reachable}`}
           className="lv-shield-mark lv-draw"
@@ -294,6 +333,7 @@ export function ExposureInstrument({
 }
 
 export function EvidencePillars({ chosen, composed }: { chosen: string[]; composed: boolean }) {
+  const id = useId();
   const sources = [
     { id: "fleet", label: "FLEET" },
     { id: "routing", label: "ROUTING" },
@@ -313,6 +353,7 @@ export function EvidencePillars({ chosen, composed }: { chosen: string[]; compos
         ))}
       </div>
       <svg viewBox="0 20 560 195" fill="none">
+        <InstrumentMaterials id={id} />
         <path className="lv-grid-line" d="M25 47h510M25 99h510M25 151h510" />
         <ellipse className="lv-assembly-orbit" cx="280" cy="170" rx="211" ry="28" />
         <path className="lv-assembly-bed" d="M109 126v24l141 39m209-63v24l-141 39M284 126v52" />
@@ -322,9 +363,26 @@ export function EvidencePillars({ chosen, composed }: { chosen: string[]; compos
           return (
             <g key={source.id} className={active ? "lv-source-selected" : "lv-source-idle"}>
               <ellipse className="lv-source-dock" cx={x + 4} cy="115" rx="48" ry="11" />
+              <path
+                d={`m${x - 43} 114 47-11 47 11v6l-47 12-47-12Z`}
+                fill={`url(#${id}-${active ? "champagne" : "titanium"})`}
+                stroke={active ? "#edc991" : "#5e8393"}
+                strokeWidth=".65"
+              />
               <path className="lv-source-shadow" d={`M${x - 36} 45h60v73h-60Z`} />
               <path className="lv-source-middle" d={`M${x - 31} 40h57l14 14v59h-71Z`} />
-              <path className="lv-source-sheet" d={`M${x - 27} 36h50l14 14v59h-64Z`} />
+              <path
+                className="lv-source-sheet"
+                style={{ fill: `url(#${id}-${active ? "champagne" : "titanium"})` }}
+                d={`M${x - 27} 36h50l14 14v59h-64Z`}
+              />
+              <path d={`M${x - 21} 42h39m-39 1v59h51M${x + 24} 38v11h11`} stroke="#d5e6da80" strokeWidth=".7" />
+              <path
+                key={`doc-${source.id}-${active}`}
+                className={`ln-etch-response ${active ? "lv-draw" : ""}`}
+                pathLength="1"
+                d={`M${x - 28} 49v46m2-43v8m0 3v8m0 3v8m0 3v8`}
+              />
               <path
                 className="lv-source-fold"
                 d={`M${x + 23} 36v14h14M${x - 13} 61h32m-32 11h32m-32 11h23M${x - 13} 94h14`}

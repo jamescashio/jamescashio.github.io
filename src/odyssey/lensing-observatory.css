@@ -112,6 +112,9 @@
   overflow: hidden;
   background: #03070d;
 }
+.lens-observatory:not([data-journey="off"]) .lens-stage {
+  flex-basis: 340px;
+}
 .lens-canvas {
   display: block;
   width: 100%;
@@ -292,6 +295,96 @@
   font-size: 14px !important;
   white-space: nowrap;
 }
+.lens-session-controls {
+  display: grid;
+  gap: 8px;
+}
+.lens-journey-toggle {
+  min-height: 44px;
+  padding: 9px 18px;
+  border: 1px solid #c9aa76;
+  background: #e8c998;
+  color: #171713 !important;
+  font-size: 14px !important;
+  white-space: nowrap;
+}
+.lens-journey-toggle:hover {
+  background: #ffe2b3;
+}
+.lens-journey-toggle > span {
+  padding-right: 10px;
+}
+.lens-journey {
+  position: relative;
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: 220px 1fr auto;
+  align-items: center;
+  gap: 30px;
+  padding: 9px 4%;
+  border-bottom: 1px solid #a6baca36;
+  background: linear-gradient(90deg, #17232c, #08111a 65%);
+}
+.lens-journey-label .lens-eyebrow {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: #ccbd9f;
+}
+.lens-journey-label strong {
+  display: block;
+  margin-top: 3px;
+  font:
+    500 14px/1.4 Oxanium,
+    sans-serif;
+}
+.lens-journey-label strong > span {
+  color: #96a8b3;
+}
+.lens-journey-track {
+  display: flex;
+  gap: 8px;
+}
+.lens-journey-track > span {
+  position: relative;
+  flex: 1;
+  height: 2px;
+  background: #71869955;
+  overflow: hidden;
+}
+.lens-journey-track > span[data-state="done"] {
+  background: #eaca95;
+}
+.lens-journey-track i {
+  position: absolute;
+  inset: 0;
+  background: #eaca95;
+  transform-origin: left;
+  animation: lens-chapter 8s linear both;
+}
+@keyframes lens-chapter {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.lens-journey-steps {
+  display: flex;
+  gap: 6px;
+}
+.lens-journey-steps button {
+  width: 44px;
+  height: 44px;
+  border: 1px solid #596d7a;
+  background: #09131c;
+  font-size: 20px;
+}
+.lens-journey-steps button:not(:disabled):hover {
+  border-color: #f5cf96;
+  color: #f5cf96;
+}
 .lens-pause > span {
   padding-right: 12px;
   color: #a7eff1;
@@ -358,9 +451,12 @@
     gap: 20px;
     grid-template-columns: 1fr 1fr;
   }
-  .lens-pause {
+  .lens-session-controls {
     grid-column: 1 / -1;
     justify-self: end;
+    grid-template-columns: 1fr 1fr;
+  }
+  .lens-pause {
     min-height: 44px;
   }
   .lens-orbit-tools {
@@ -397,11 +493,20 @@
     padding: 6px 10px;
   }
   .lens-stage {
-    flex: 0 0 445px;
-    min-height: 445px;
+    flex: 0 0 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-rows: 280px auto auto;
+  }
+  .lens-observatory:not([data-journey="off"]) .lens-stage {
+    flex-basis: auto;
+    grid-template-rows: 210px auto auto;
+  }
+  .lens-observatory:not([data-journey="off"]) .lens-canvas {
+    height: 210px;
   }
   .lens-canvas {
-    height: 300px;
+    height: 280px;
     bottom: auto;
   }
   .lens-stage-top {
@@ -419,14 +524,16 @@
     height: 24px;
   }
   .lens-caption {
-    bottom: 77px;
-    left: 20px;
-    right: 20px;
+    position: relative;
+    grid-row: 2;
+    inset: auto;
+    padding: 0 20px;
+    max-width: none;
   }
   .lens-caption h3 {
-    font-size: 25px;
-    max-width: 300px;
-    margin-top: 6px;
+    font-size: 23px;
+    max-width: 360px;
+    margin: 6px 0;
   }
   .lens-observatory .lens-caption p {
     font-size: 12px;
@@ -437,17 +544,18 @@
     letter-spacing: 0.07em;
   }
   .lens-orbit-tools {
-    left: 20px;
-    right: auto;
-    bottom: 17px;
+    position: relative;
+    grid-row: 3;
+    inset: auto;
+    margin: 14px 20px 16px;
   }
   .lens-orbit-tools button {
     width: 44px;
     height: 44px;
   }
   .lens-console {
-    padding: 20px;
-    gap: 19px;
+    padding: 14px 20px;
+    gap: 13px;
     grid-template-columns: 1fr;
   }
   .lens-light-options button,
@@ -457,7 +565,7 @@
   }
   .lens-control-block > .lens-eyebrow {
     font-size: 9px;
-    margin-bottom: 9px;
+    margin-bottom: 6px;
   }
   .lens-light-options i {
     width: 11px;
@@ -468,8 +576,34 @@
     margin-right: 6px;
     font-size: 9px;
   }
-  .lens-pause {
+  .lens-session-controls {
     justify-self: stretch;
+  }
+  .lens-pause,
+  .lens-journey-toggle {
+    padding: 9px 5px;
+    font-size: 11px !important;
+    min-height: 44px;
+  }
+  .lens-pause > span,
+  .lens-journey-toggle > span {
+    padding-right: 6px;
+  }
+  .lens-journey {
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    padding: 8px 20px 12px;
+  }
+  .lens-journey-label .lens-eyebrow {
+    font-size: 8px;
+    letter-spacing: 0.04em;
+  }
+  .lens-journey-label strong {
+    font-size: 12px;
+  }
+  .lens-journey-track {
+    position: absolute;
+    inset: auto 20px 0;
   }
   .lens-footer {
     padding: 14px 20px 20px;

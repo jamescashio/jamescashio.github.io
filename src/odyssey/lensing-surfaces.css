@@ -228,12 +228,37 @@
   display: none;
 }
 .event-horizon.aurora.lensing .lv-instrument {
+  background:
+    radial-gradient(ellipse at 50% 30%, #28506a47, transparent 65%), linear-gradient(145deg, #102331, #050d18 80%);
   border-color: #8a785a;
   box-shadow:
     inset 0 1px #f7ddb431,
     inset 0 0 0 4px #050b1573,
     0 16px 36px #01071055;
   margin-bottom: 28px;
+}
+.lensing .ln-etch-response {
+  fill: none;
+  stroke: #819caa;
+  stroke-width: 0.75;
+  opacity: 0.5;
+}
+.lensing .ln-etch-response.lv-draw {
+  stroke: #fff0c4;
+  opacity: 0.95;
+}
+.lensing .ln-machining {
+  pointer-events: none;
+}
+.lensing .lv-source-fold {
+  stroke: #d0e5eb;
+}
+.lensing .lv-source-selected .lv-source-fold {
+  stroke: #ffebbd;
+}
+.lensing .lv-core-prism,
+.lensing .lv-shield-depth {
+  filter: drop-shadow(0 4px 3px #010914ad);
 }
 .event-horizon.aurora.lensing .lv-instrument-caption {
   padding: 14px 16px;

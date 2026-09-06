@@ -168,12 +168,15 @@ const planetFragment = `
     float diffuse = max(dot(terrainNormal,light),0.0);
     vec3 sunlight = mix(vec3(1.15,0.97,0.78),vec3(0.70,1.03,1.22),ion);
     vec3 color = albedo * (vec3(0.018,0.032,0.052) + sunlight * diffuse * 1.35);
-    color *= 1.0 - clouds * 0.19;
+    float cloudShadow = texture2D(surfaceAtlas,vUv + vec2(phase * 0.00065 - 0.0018,0.0012)).b;
+    color *= 1.0 - cloudShadow * day * 0.23;
     vec3 cloudColor = mix(vec3(0.47,0.59,0.67),vec3(0.87,0.88,0.79),day);
     color = mix(color,cloudColor * (0.018 + max(incidence,0.0) * 1.3),clouds * 0.78);
     float specular = pow(max(dot(reflect(-light,normal),view),0.0),64.0);
     color += vec3(0.65,0.85,1.0) * specular * (1.0-land) * (1.0-clouds) * day * 0.34;
     float rim = pow(1.0-max(dot(normal,view),0.0),5.4);
+    float airMass = pow(1.0-max(dot(normal,view),0.0),2.4) * day;
+    color = mix(color,atmosphereColor * (0.12 + max(incidence,0.0) * 0.24),airMass * 0.19);
     color += atmosphereColor * rim * (0.035 + day * 0.4 + eclipse * 0.09);
     float dusk = exp(-abs(incidence) * 14.0) * (1.0-eclipse);
     color += vec3(0.56,0.18,0.055) * dusk * rim * 0.2;
@@ -189,15 +192,81 @@ const atmosphereFragment = `
   void main() {
     vec3 normal=normalize(vNormal), view=normalize(cameraPosition-vWorld);
     float incidence=dot(normal,normalize(sunDirection));
-    float rim=pow(1.0-abs(dot(normal,view)),5.8);
+    float grazing=1.0-abs(dot(normal,view));
+    float rim=pow(grazing,5.8);
     float day=smoothstep(-0.12,0.55,incidence);
     float twilight=exp(-abs(incidence)*9.0);
     vec3 color=mix(atmosphereColor,vec3(1.0,0.44,0.13),twilight*(0.4+eclipse*0.25));
-    gl_FragColor=vec4(color,rim*(0.035+day*0.38+eclipse*0.12));
+    float highAir=pow(grazing,12.0)*(0.055+day*0.17);
+    gl_FragColor=vec4(color,rim*(0.035+day*0.34+eclipse*0.12)+highAir);
     #include <tonemapping_fragment>
     #include <colorspace_fragment>
   }
 `;
+
+const propulsionVertex = `
+  varying vec2 vUv;
+  void main() {
+    vUv=uv;
+    gl_Position=projectionMatrix*modelViewMatrix*instanceMatrix*vec4(position,1.0);
+  }
+`;
+const propulsionFragment = `
+  uniform float phase; uniform float ion; varying vec2 vUv;
+  void main() {
+    float throat=pow(vUv.y,1.6);
+    float compression=0.84+0.16*cos(vUv.y*24.0-phase*2.8);
+    vec3 color=mix(vec3(0.04,0.42,1.0),vec3(0.13,0.97,1.0),vUv.y+ion*0.14);
+    color=mix(color,vec3(0.87,0.98,1.0),pow(vUv.y,7.0));
+    gl_FragColor=vec4(color,throat*compression*0.72);
+    #include <colorspace_fragment>
+  }
+`;
+
+/** Facets are deliberately sparse and readable at the phone composition's scale. */
+function createCourierHull() {
+  const points = [
+    [0, 0.025, 0.42],
+    [-0.1, 0.08, 0.11],
+    [0.1, 0.08, 0.11],
+    [-0.15, 0.025, -0.27],
+    [0.15, 0.025, -0.27],
+    [0, -0.075, -0.09],
+    [-0.34, -0.015, -0.2],
+    [0.34, -0.015, -0.2],
+    [0, 0.12, -0.13],
+  ];
+  const faces = [
+    [0, 1, 2, 0],
+    [1, 8, 2, 1],
+    [1, 3, 8, 0],
+    [2, 8, 4, 0],
+    [3, 4, 8, 2],
+    [0, 6, 1, 3],
+    [0, 2, 7, 3],
+    [1, 6, 3, 2],
+    [2, 4, 7, 2],
+    [0, 5, 6, 1],
+    [0, 7, 5, 1],
+    [6, 5, 3, 1],
+    [7, 4, 5, 1],
+    [3, 5, 4, 1],
+  ];
+  const palette = [0xa9b8bd, 0x283a4d, 0xb99458, 0x506c82].map((color) => new THREE.Color(color));
+  const position: number[] = [],
+    colors: number[] = [];
+  for (const [a, b, c, color] of faces)
+    for (const index of [a, c, b]) {
+      position.push(...points[index]);
+      const tint = palette[color];
+      colors.push(tint.r, tint.g, tint.b);
+    }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(position, 3));
+  geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+  geometry.computeVertexNormals();
+  return geometry;
+}
 
 type Pose = { yaw: number; pitch: number; distance: number; focus: THREE.Vector3; roll: number };
 const ease = (value: number) => value * value * (3 - 2 * value);
@@ -295,6 +364,9 @@ export function createLensingScene(
   scene.add(planet, atmosphere);
 
   const titanium = new THREE.MeshStandardMaterial({ color: 0x455e72, metalness: 0.82, roughness: 0.26 });
+  const gateSkin = titanium.clone();
+  gateSkin.vertexColors = true;
+  gateSkin.roughness = 0.31;
   const midnight = new THREE.MeshStandardMaterial({ color: 0x0c1724, metalness: 0.7, roughness: 0.36 });
   const silver = new THREE.MeshStandardMaterial({ color: 0xb3c0c5, metalness: 0.86, roughness: 0.22 });
   const gold = new THREE.MeshStandardMaterial({ color: 0xd7ac6e, metalness: 0.83, roughness: 0.25 });
@@ -326,9 +398,25 @@ export function createLensingScene(
       .map(([radius, axial]) => new THREE.Vector2(radius, axial));
     const geometry = new THREE.LatheGeometry(profile, 144);
     geometry.rotateX(Math.PI / 2);
+    if (material === gateSkin) {
+      const positions = geometry.getAttribute("position");
+      const colors = new Float32Array(positions.count * 3);
+      for (let index = 0; index < positions.count; index++) {
+        const x = positions.getX(index),
+          y = positions.getY(index),
+          z = positions.getZ(index);
+        const angle = (Math.atan2(y, x) + TAU) % TAU;
+        const sector = Math.floor((angle / TAU) * 48);
+        const radial = Math.hypot(x, y);
+        const plate = (sector % 3 === 0 ? 0.78 : sector % 3 === 1 ? 1.0 : 0.9) * (z < 0 ? 0.75 : 1);
+        const channel = radial > 4.85 ? 1.04 : 0.87;
+        colors.set([plate * channel, plate * channel * 0.98, plate * channel * 0.95], index * 3);
+      }
+      geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    }
     return add(geometry, material);
   };
-  annulus(4.52, 4.96, 0.26, titanium);
+  annulus(4.52, 4.96, 0.26, gateSkin);
   annulus(4.98, 5.13, 0.16, midnight);
   annulus(5.19, 5.31, 0.11, gold);
   annulus(4.25, 4.34, 0.085, silver);
@@ -403,6 +491,137 @@ export function createLensingScene(
     circuit.position.set(side * 0.92, 0.023, 0);
   }
 
+  // A single inclined orbital lane gives the couriers a visible destination and
+  // scale reference. Its rear half is naturally occluded by the real planet.
+  const traffic = new THREE.Group();
+  traffic.name = "Orbital courier lane";
+  traffic.rotation.copy(gate.rotation);
+  traffic.rotateX(0.5);
+  traffic.rotateY(-0.4);
+  scene.add(traffic);
+  const laneRadius = 3.58;
+  const routePoints = Array.from({ length: 160 }, (_, index) => {
+    const angle = (index / 160) * TAU;
+    return new THREE.Vector3(Math.cos(angle) * laneRadius, Math.sin(angle) * laneRadius, 0);
+  });
+  const route = new THREE.LineLoop(
+    new THREE.BufferGeometry().setFromPoints(routePoints),
+    new THREE.LineBasicMaterial({ color: 0x477d95, transparent: true, opacity: 0.46, depthWrite: false }),
+  );
+  traffic.add(route);
+  const courierMaterial = new THREE.MeshStandardMaterial({
+    color: 0xffffff,
+    vertexColors: true,
+    metalness: 0.74,
+    roughness: 0.28,
+    emissive: 0x041018,
+    emissiveIntensity: 0.45,
+  });
+  const couriers = new THREE.InstancedMesh(createCourierHull(), courierMaterial, 3);
+  couriers.name = "Three faceted orbital couriers";
+  const canopies = new THREE.InstancedMesh(
+    new THREE.OctahedronGeometry(1, 0).scale(0.055, 0.025, 0.11).translate(0, 0.106, 0.04),
+    new THREE.MeshStandardMaterial({
+      color: 0x0c5264,
+      metalness: 0.6,
+      roughness: 0.13,
+      emissive: 0x136479,
+      emissiveIntensity: 0.45,
+    }),
+    3,
+  );
+  const nozzles = new THREE.InstancedMesh(
+    new THREE.CylinderGeometry(0.063, 0.08, 0.15, 8, 1, true).rotateX(Math.PI / 2),
+    silver,
+    6,
+  );
+  const throats = new THREE.InstancedMesh(new THREE.SphereGeometry(0.039, 8, 4), cyan, 6);
+  const exhaustMaterial = new THREE.ShaderMaterial({
+    uniforms: { phase: uniforms.phase, ion: uniforms.ion },
+    vertexShader: propulsionVertex,
+    fragmentShader: propulsionFragment,
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    side: THREE.DoubleSide,
+  });
+  const exhaust = new THREE.InstancedMesh(
+    new THREE.CylinderGeometry(0.041, 0, 0.66, 8, 4, true).rotateX(Math.PI / 2).translate(0, 0, -0.33),
+    exhaustMaterial,
+    6,
+  );
+  exhaust.name = "Tapered ion propulsion";
+  const routeLights = new THREE.InstancedMesh(
+    new THREE.TorusGeometry(laneRadius, 0.012, 4, 20, 0.23),
+    new THREE.MeshBasicMaterial({
+      color: 0x8be7ed,
+      transparent: true,
+      opacity: 0.69,
+      toneMapped: false,
+      depthWrite: false,
+    }),
+    3,
+  );
+  const trafficMeshes = [couriers, canopies, nozzles, throats, exhaust, routeLights];
+  for (const mesh of trafficMeshes) {
+    mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    mesh.frustumCulled = false;
+    traffic.add(mesh);
+  }
+  const courierPose = new THREE.Object3D(),
+    partPose = new THREE.Object3D();
+  const basis = new THREE.Matrix4(),
+    forward = new THREE.Vector3(),
+    right = new THREE.Vector3();
+  const laneUp = new THREE.Vector3(0, 0, 1);
+  // The leading courier starts against the night-side globe, clearly separate
+  // from Bit and the gate. Their complete hull/exhaust sweep stays within 3.9.
+  const courierAngles = [5.65, 0.95, 3.95];
+  const courierScales = [0.9, 0.8, 0.86];
+  const paintTraffic = (elapsed: number) => {
+    for (let index = 0; index < 3; index++) {
+      const angle = courierAngles[index] + elapsed * (0.078 + index * 0.004);
+      const scale = courierScales[index];
+      const cosine = Math.cos(angle),
+        sine = Math.sin(angle);
+      courierPose.position.set(cosine * laneRadius, sine * laneRadius, 0);
+      forward.set(-sine, cosine, 0);
+      right.set(-cosine, -sine, 0);
+      basis.makeBasis(right, laneUp, forward);
+      courierPose.quaternion.setFromRotationMatrix(basis);
+      courierPose.scale.setScalar(scale);
+      courierPose.updateMatrix();
+      couriers.setMatrixAt(index, courierPose.matrix);
+      canopies.setMatrixAt(index, courierPose.matrix);
+      for (let engine = 0; engine < 2; engine++) {
+        const number = index * 2 + engine;
+        partPose.quaternion.copy(courierPose.quaternion);
+        partPose.scale.setScalar(scale);
+        partPose.position
+          .set((engine ? 1 : -1) * 0.095, -0.009, -0.29)
+          .applyQuaternion(courierPose.quaternion)
+          .multiplyScalar(scale)
+          .add(courierPose.position);
+        partPose.updateMatrix();
+        nozzles.setMatrixAt(number, partPose.matrix);
+        partPose.position
+          .set((engine ? 1 : -1) * 0.095, -0.009, -0.367)
+          .applyQuaternion(courierPose.quaternion)
+          .multiplyScalar(scale)
+          .add(courierPose.position);
+        partPose.updateMatrix();
+        throats.setMatrixAt(number, partPose.matrix);
+        exhaust.setMatrixAt(number, partPose.matrix);
+      }
+      partPose.position.set(0, 0, 0.006);
+      partPose.rotation.set(0, 0, angle - 0.3);
+      partPose.scale.set(1, 1, 1);
+      partPose.updateMatrix();
+      routeLights.setMatrixAt(index, partPose.matrix);
+    }
+    for (const mesh of trafficMeshes) mesh.instanceMatrix.needsUpdate = true;
+  };
+
   let seed = 38173;
   const random = () => {
     seed = (seed * 1664525 + 1013904223) >>> 0;
@@ -444,10 +663,12 @@ export function createLensingScene(
 
   // Framing uses the real gate plane and planet rather than a giant starfield box.
   gate.updateMatrixWorld(true);
+  traffic.updateMatrixWorld(true);
   const framing: THREE.Vector3[] = [];
   for (let index = 0; index < 96; index++) {
     const angle = (index / 96) * TAU;
     framing.push(new THREE.Vector3(Math.cos(angle) * 5.4, Math.sin(angle) * 5.4, 0).applyMatrix4(gate.matrixWorld));
+    framing.push(new THREE.Vector3(Math.cos(angle) * 3.9, Math.sin(angle) * 3.9, 0).applyMatrix4(traffic.matrixWorld));
   }
   for (let latitude = -4; latitude <= 4; latitude++)
     for (let index = 0; index < 16; index++) {
@@ -644,6 +865,7 @@ export function createLensingScene(
         carriers.setMatrixAt(index, matrix.matrix);
       }
       carriers.instanceMatrix.needsUpdate = true;
+      paintTraffic(phase);
       applyPose();
       renderer.render(scene, camera);
       lastPaint = time;

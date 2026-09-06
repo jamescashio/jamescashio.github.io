@@ -280,7 +280,7 @@ export function OdysseyApp() {
           <div className="o-hero-content">
             <div className="eh-release-mark">
               <b>PREVIEW</b>
-              <span>LENSING / THE NEXT PERSPECTIVE</span>
+              <span>LENSING / EXPEDITION 02</span>
             </div>
             <span className="o-kicker">
               <i />
@@ -307,7 +307,7 @@ export function OdysseyApp() {
                   ◉
                 </span>
                 <span>
-                  Enter the observatory<small>AN ORIGINAL INTERACTIVE 3D WORLD</small>
+                  Enter the observatory<small>A WORLD TO EXPLORE. A JOURNEY TO TAKE.</small>
                 </span>
                 <Arrow />
               </button>
@@ -318,7 +318,7 @@ export function OdysseyApp() {
             <div className="lens-hero-notes">
               <span>Change the light.</span>
               <i />
-              <span>Find your perspective.</span>
+              <span>Take the journey.</span>
               <i />
               <span>Take command.</span>
             </div>
@@ -349,7 +349,7 @@ export function OdysseyApp() {
           </div>
           <div className="o-hero-bottom">
             <span className="o-micro">
-              <b>DESIGN EXPERIMENT</b> / 01
+              <b>DESIGN EXPEDITION</b> / 02
             </span>
             <button onClick={viewArt} className="o-art-link">
               Original artwork
@@ -640,6 +640,7 @@ export function OdysseyApp() {
         >
           <LensingObservatory
             motion={motion}
+            reduced={reduced}
             onClose={() => {
               setLensing(false);
               if (location.hash === "#lensing") history.replaceState(null, "", location.pathname + location.search);
@@ -715,7 +716,7 @@ export function OdysseyApp() {
           <BrandMark motion={motion} />
         </a>
         <span>
-          LENSING / DESIGN PREVIEW
+          LENSING / EXPEDITION 02 PREVIEW
           <br />
           <small>Crafted with GPT-6 Astra · Directed by Doug Cashio</small>
         </span>
