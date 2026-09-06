@@ -1,4 +1,4 @@
-# The gate awakens
+# V37.4 Lensing: Gatewake — The gate awakens
 
 Original cinematic artwork created with Higgsfield Seedance 2.5 from the existing Cashio orbital hero artwork. The six-second shot animates a quiet approach, gold core activation and a late teal aurora. It is an imagined environment, not operational footage or a physical simulation.
 
@@ -8,4 +8,4 @@ The cinema is loaded only on request. Neither film autoplays or loops; video use
 
 `#film` preserves Orbital arrival; `#film=awakening` opens The gate awakens. The new film's Enter this world action is available before and after playback. It opens the interactive observatory at the gate in eclipse lighting with resonance enabled. Closing the observatory returns focus to the original cinema launcher. Entering through the usual observatory button retains Dawn, Orbit and unlit resonance.
 
-This enhancement is an owner-only Gatewake preview. It does not change the published release or establish new infrastructure evidence.
+The owner approved this enhancement for the V37.4 Gatewake public release on September 6, 2026. Production promotion uses the existing release checks and GitHub Pages workflow. The earlier Gatewake review was version `37.4.0-preview.gatewake`; the released software identity is `37.4.0`, with Lensing retained as the visual edition and THE HUMAN RECKONING as the release name. This visual release does not establish new infrastructure evidence or change the dated archive.

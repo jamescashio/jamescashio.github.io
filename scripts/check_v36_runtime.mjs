@@ -17,7 +17,7 @@ import {
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = path.join(ROOT, "dist");
 const RELEASE_NAME = "THE HUMAN RECKONING";
-const PAGE_TITLE = "Cashio V37 — Lensing | Doug Cashio";
+const PAGE_TITLE = "Cashio V37.4 — Lensing: Gatewake | Doug Cashio";
 const report = { passed: false, checks: [], failures: [], errors: [], warnings: [] };
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const argument = (name) =>
@@ -141,7 +141,7 @@ async function run() {
       const receipt = await receiptResponse.json();
       const packageJson = JSON.parse(await readFile(path.join(ROOT, "package.json"), "utf8"));
       assert.equal(receipt.experienceVersion, packageJson.version, "receipt and package versions must match");
-      assert.equal(receipt.experienceVersion, "37.3.0", "current receipt must be the V37 release");
+      assert.equal(receipt.experienceVersion, "37.4.0", "current receipt must be the V37 release");
       assert.equal(receipt.published, true, "release must be explicitly published");
       assert.equal(receipt.releaseName, RELEASE_NAME);
       assert.equal(receipt.visualEdition, "Lensing");

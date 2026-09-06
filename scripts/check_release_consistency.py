@@ -379,7 +379,7 @@ def check_v34_motion_contract(failures: list[str]) -> None:
                 failures.append(f"inactive deck {deck_index} does not pause {pseudo} animation work")
 
 
-def check_site_release(release: dict, failures: list[str], *, preview: bool = False, version: str = "37.3.0") -> None:
+def check_site_release(release: dict, failures: list[str], *, preview: bool = False, version: str = "37.4.0") -> None:
     """Software release identity must never rewrite the archive's observation dates."""
     if not isinstance(release, dict):
         failures.append("site-release.json must be an object")
@@ -477,7 +477,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--preview", action="store_true", help="Validate an explicitly unpublished local preview; never a deployment approval")
     preview = parser.parse_args().preview
-    version = "37.4.0-preview.gatewake" if preview else "37.3.0"
+    version = "37.4.0-preview.gatewake" if preview else "37.4.0"
     failures: list[str] = []
 
     try:
@@ -683,6 +683,8 @@ def main() -> int:
         "public/sfx/provenance.json",
         "public/assets/lensing/orbital-arrival.mp4",
         "public/assets/lensing/orbital-arrival-poster.webp",
+        "public/assets/lensing/gate-awakens.mp4",
+        "public/assets/lensing/gate-awakens-poster.webp",
     )
     for relative in required_public:
         if not (ROOT / relative).is_file():
@@ -804,6 +806,8 @@ def main() -> int:
             "legacy-route.js",
             "assets/lensing/orbital-arrival.mp4",
             "assets/lensing/orbital-arrival-poster.webp",
+            "assets/lensing/gate-awakens.mp4",
+            "assets/lensing/gate-awakens-poster.webp",
         ):
             artifact = DIST / relative
             if not artifact.is_file():

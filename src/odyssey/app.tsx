@@ -295,7 +295,7 @@ export function OdysseyApp() {
             </a>
           ))}
         </nav>
-        <p>V37.4 PREVIEW / LENSING: GATEWAKE / A HUMAN IN COMMAND</p>
+        <p>V37.4 / LENSING: GATEWAKE / A HUMAN IN COMMAND</p>
       </dialog>
       <main id="o-main">
         <section className="o-hero o-scene" id="top" aria-labelledby="hero-title">
@@ -305,7 +305,7 @@ export function OdysseyApp() {
           <Starfield motion={ambientMotion} folding={folding} />
           <div className="o-hero-content">
             <div className="eh-release-mark">
-              <b>V37.4 PREVIEW</b>
+              <b>V37.4</b>
               <span>LENSING: GATEWAKE</span>
             </div>
             <span className="o-kicker">
@@ -774,7 +774,7 @@ export function OdysseyApp() {
           <BrandMark motion={motion} />
         </a>
         <span>
-          V37.4 PREVIEW / LENSING: GATEWAKE
+          V37.4 / LENSING: GATEWAKE
           <br />
           <small>Crafted with GPT-6 Astra · Directed by Doug Cashio</small>
         </span>

@@ -78,7 +78,7 @@ function expandScript(scripts, name, seen = new Set()) {
 
 test("V37 software gates preserve the independent V35 dated evidence", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "37.3.0");
+  assert.equal(packageJson.version, "37.4.0");
   const lock = JSON.parse(await read("package-lock.json"));
   assert.equal(lock.version, packageJson.version);
   assert.equal(lock.packages[""].version, packageJson.version);
@@ -268,7 +268,7 @@ test("the homepage and Odyssey alias ship the same complete V37 story with a usa
     } else {
       assert.match(robots, /noindex/i, "the compatibility alias must not compete with the canonical homepage");
     }
-    assert.equal(document.title, "Cashio V37 — Lensing | Doug Cashio");
+    assert.equal(document.title, "Cashio V37.4 — Lensing: Gatewake | Doug Cashio");
     const compatibility = document.querySelector("head script#legacy-bookmark-route");
     assert.ok(compatibility, "legacy fragments must be handled before the page activates");
     for (const attr of ["src", "type", "async", "defer"]) assert.equal(compatibility.hasAttribute(attr), false);
@@ -305,7 +305,7 @@ test("the homepage and Odyssey alias ship the same complete V37 story with a usa
 
 test("V37 release manifests agree without redating the independent evidence archive", async () => {
   const manifest = JSON.parse(await read("public/site-release.json"));
-  assert.equal(manifest.experienceVersion, "37.3.0");
+  assert.equal(manifest.experienceVersion, "37.4.0");
   assert.equal(manifest.releaseName, "THE HUMAN RECKONING");
   assert.equal(manifest.visualEdition, "Lensing");
   assert.equal(manifest.featuredExperience, "Lensing Observatory");
@@ -325,31 +325,39 @@ test("V37 release manifests agree without redating the independent evidence arch
     assert.equal(await read(`dist/${name}`), await read(`public/${name}`));
 });
 
-test("Lensing film stays optional and ships its approved local media intact", async () => {
-  const film = "assets/lensing/orbital-arrival.mp4";
-  const poster = "assets/lensing/orbital-arrival-poster.webp";
-  for (const [name, cap] of [
-    [film, 2_000_000],
-    [poster, 100_000],
-  ]) {
-    const original = await readFile(asset(`public/${name}`));
-    assert.ok(original.length > 0 && original.length <= cap, `${name} exceeds its optional media budget`);
-    assert.deepEqual(original, await readFile(asset(`dist/${name}`)), `${name} must retain its approved bytes`);
+test("both Lensing films stay optional and ship their approved local media intact", async () => {
+  for (const name of ["orbital-arrival", "gate-awakens"]) {
+    const film = `assets/lensing/${name}.mp4`;
+    const poster = `assets/lensing/${name}-poster.webp`;
+    for (const [path, cap] of [
+      [film, 2_000_000],
+      [poster, 100_000],
+    ]) {
+      const original = await readFile(asset(`public/${path}`));
+      assert.ok(original.length > 0 && original.length <= cap, `${path} exceeds its optional media budget`);
+      assert.deepEqual(original, await readFile(asset(`dist/${path}`)), `${path} must retain its approved bytes`);
+    }
+    const video = await readFile(asset(`public/${film}`));
+    const boxes = [];
+    for (let offset = 0; offset < video.length;) {
+      assert.ok(offset + 8 <= video.length, `${name} must contain complete MP4 box headers`);
+      const size = video.readUInt32BE(offset);
+      assert.ok(size >= 8 && offset + size <= video.length, `${name} must contain bounded MP4 boxes`);
+      boxes.push(video.toString("ascii", offset + 4, offset + 8));
+      offset += size;
+    }
+    assert.equal(boxes[0], "ftyp");
+    assert.ok(boxes.includes("moov") && boxes.includes("mdat"));
+    assert.ok(
+      boxes.indexOf("moov") < boxes.indexOf("mdat"),
+      `${name} metadata must precede media for immediate playback`,
+    );
+    const dimensions = imageDimensions(await readFile(asset(`public/${poster}`)), "webp");
+    assert.ok(
+      dimensions.width >= 1280 && dimensions.height >= 720,
+      `${name} poster must retain a clear full-size still`,
+    );
   }
-  const video = await readFile(asset(`public/${film}`));
-  const boxes = [];
-  for (let offset = 0; offset < video.length;) {
-    assert.ok(offset + 8 <= video.length, "film must contain complete MP4 box headers");
-    const size = video.readUInt32BE(offset);
-    assert.ok(size >= 8 && offset + size <= video.length, "film must contain bounded MP4 boxes");
-    boxes.push(video.toString("ascii", offset + 4, offset + 8));
-    offset += size;
-  }
-  assert.equal(boxes[0], "ftyp");
-  assert.ok(boxes.includes("moov") && boxes.includes("mdat"));
-  assert.ok(boxes.indexOf("moov") < boxes.indexOf("mdat"), "film metadata must precede media for immediate playback");
-  const dimensions = imageDimensions(await readFile(asset(`public/${poster}`)), "webp");
-  assert.ok(dimensions.width >= 1280 && dimensions.height >= 720, "poster must retain a clear full-size still");
   for (const entry of ["index.html", "odyssey.html"]) {
     const document = new JSDOM(await read(`dist/${entry}`)).window.document;
     const root = document.querySelector("#odyssey-root");
