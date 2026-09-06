@@ -1,4 +1,20 @@
-# Current release — V37.4 Lensing: Gatewake
+# Current release — V37.5 Celestial Forge
+
+An instrument of gold and light: the owner's Cashio signature floats within a projected depth field that responds directly to the visitor, while a Higgsfield film reveals its cinematic identity.
+
+Preserve the finished cAshIo artwork, champagne gold, electric cyan, deep ink, Oxanium headings, Exo reading copy, and Jet instrument labels. The stronger visual move is the visitor's influence over luminous orbital particles: move to bend them, drag to turn the signature, tap to send light, and adjust field strength. Keep the logo readable and preserve the existing light, six-letter, camera, pause, and reset controls. No new dependencies or fonts.
+
+The six-second Higgsfield film has explicit playback, a keyboard/touch timeline, three frame landmarks, and a deliberate handoff back to the light instrument. Preserve both earlier films and their deep links. Film bytes load only after Play or an explicit seek. No autoplay, loops, or audio. Native ambient motion suspends offscreen, in hidden pages, when paused, and under reduced motion. Static manual changes remain available.
+
+Frame seeking must work on progressive hosts without byte-range responses. An explicit seek therefore uses a bounded same-origin, in-memory media copy, released when the film changes or closes. Initial Play remains progressive. Keep the approved same-origin and local-blob media policy. Zoomed artwork is clipped inside its own viewing window so labels stay clear at tablet sizes. Fit the complete Orbit composition to the art window's actual height; preserve the phone proportions. After manual zoom, await the higher-resolution image's decode before judging whether a reduced-motion frame changes.
+
+The owner approved Celestial Forge for public publication on September 6, 2026. Promote the completed, approved composition to software version `37.5.0` through the existing guarded GitHub Pages workflow. Keep `THE HUMAN RECKONING` as the release name, `Lensing` as the visual edition, and `Lensing Observatory` as the featured experience. The page title is `Cashio V37.5 — Celestial Forge | Doug Cashio`; only the canonical homepage permits indexing. The production baseline and rollback target is `d32ebb59bb7805acc7a4ac35a02a75d3e0496359` (V37.4 Gatewake).
+
+Preserve the new responsive wordmark and its optional eight-second GIF, original observatory and starship, seven studies, contact links, V35 Command Deck, and every existing shared route. `#signature` opens the interactive instrument; `#film=signature` opens its film. The original `#film`, `#film=awakening`, `#lensing`, `#flight=…`, and `#deck=…` behavior remains intact. Cinema and signature handoffs preserve the original launcher, including pointer clicks that do not move browser focus.
+
+The dated public archive and operational claims are unchanged. Validate the actual rendered layouts, decoded video, touch/keyboard gestures, scrubbing, focus, freeze/resume, no eager film or GIF requests, and bounded rendering cost against the production build. Complete repository gates, then verify deployed receipt and asset parity and representative public browser behavior. Release documentation must distinguish verified results from checks still to run; do not claim perfect scores.
+
+# Prior release — V37.4 Lensing: Gatewake
 
 Gatewake (`37.4.0`) promotes the approved cinema and Resonance graphics from preview commit `911b7ca`. It adds one original six-second Higgsfield film based on the existing Cashio orbital artwork. Keep the established palette, logo, typography, layout, observatory, and human command identity.
 

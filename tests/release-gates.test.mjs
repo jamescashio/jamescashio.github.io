@@ -78,7 +78,7 @@ function expandScript(scripts, name, seen = new Set()) {
 
 test("V37 software gates preserve the independent V35 dated evidence", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "37.4.0");
+  assert.equal(packageJson.version, "37.5.0");
   const lock = JSON.parse(await read("package-lock.json"));
   assert.equal(lock.version, packageJson.version);
   assert.equal(lock.packages[""].version, packageJson.version);
@@ -268,7 +268,7 @@ test("the homepage and Odyssey alias ship the same complete V37 story with a usa
     } else {
       assert.match(robots, /noindex/i, "the compatibility alias must not compete with the canonical homepage");
     }
-    assert.equal(document.title, "Cashio V37.4 — Lensing: Gatewake | Doug Cashio");
+    assert.equal(document.title, "Cashio V37.5 — Celestial Forge | Doug Cashio");
     const compatibility = document.querySelector("head script#legacy-bookmark-route");
     assert.ok(compatibility, "legacy fragments must be handled before the page activates");
     for (const attr of ["src", "type", "async", "defer"]) assert.equal(compatibility.hasAttribute(attr), false);
@@ -305,7 +305,7 @@ test("the homepage and Odyssey alias ship the same complete V37 story with a usa
 
 test("V37 release manifests agree without redating the independent evidence archive", async () => {
   const manifest = JSON.parse(await read("public/site-release.json"));
-  assert.equal(manifest.experienceVersion, "37.4.0");
+  assert.equal(manifest.experienceVersion, "37.5.0");
   assert.equal(manifest.releaseName, "THE HUMAN RECKONING");
   assert.equal(manifest.visualEdition, "Lensing");
   assert.equal(manifest.featuredExperience, "Lensing Observatory");
@@ -325,12 +325,16 @@ test("V37 release manifests agree without redating the independent evidence arch
     assert.equal(await read(`dist/${name}`), await read(`public/${name}`));
 });
 
-test("both Lensing films stay optional and ship their approved local media intact", async () => {
-  for (const name of ["orbital-arrival", "gate-awakens"]) {
-    const film = `assets/lensing/${name}.mp4`;
-    const poster = `assets/lensing/${name}-poster.webp`;
+test("all three cinematic films stay optional and ship their approved local media intact", async () => {
+  for (const [name, folder, filmCap, minimumHeight] of [
+    ["orbital-arrival", "lensing", 2_000_000, 720],
+    ["gate-awakens", "lensing", 2_000_000, 720],
+    ["signature-awakens", "celestial", 3_000_000, 700],
+  ]) {
+    const film = `assets/${folder}/${name}.mp4`;
+    const poster = `assets/${folder}/${name}-poster.webp`;
     for (const [path, cap] of [
-      [film, 2_000_000],
+      [film, filmCap],
       [poster, 100_000],
     ]) {
       const original = await readFile(asset(`public/${path}`));
@@ -354,7 +358,7 @@ test("both Lensing films stay optional and ship their approved local media intac
     );
     const dimensions = imageDimensions(await readFile(asset(`public/${poster}`)), "webp");
     assert.ok(
-      dimensions.width >= 1280 && dimensions.height >= 720,
+      dimensions.width >= 1280 && dimensions.height >= minimumHeight,
       `${name} poster must retain a clear full-size still`,
     );
   }
@@ -374,12 +378,37 @@ test("both Lensing films stay optional and ship their approved local media intac
       return urls.map((url) => new URL(url, "https://cashio.us/").pathname);
     });
     assert.ok(
-      earlyAssets.every((path) => !path.includes("lensing-film") && !path.endsWith(".mp4")),
+      earlyAssets.every((path) => !path.includes("lensing-film") && !path.endsWith(".mp4") && !path.endsWith(".gif")),
       "the film remains a lazy, visitor-requested download",
     );
     const csp = document.querySelector('meta[http-equiv="Content-Security-Policy"]').content;
-    assert.match(csp, /(?:^|;)\s*media-src 'self'(?:;|$)/, "cinematic media must remain on the site's origin");
+    assert.match(
+      csp,
+      /(?:^|;)\s*media-src 'self' blob:(?:;|$)/,
+      "cinematic media permits same-origin files and local seekable blobs, with no external media origins",
+    );
   }
+});
+
+test("responsive Celestial identity assets retain their approved bytes within delivery budgets", async () => {
+  for (const [name, cap] of [
+    ["celestial-420.webp", 20_000],
+    ["celestial-840.webp", 60_000],
+    ["celestial-1680.webp", 150_000],
+    ["celestial-signature.gif", 1_600_000],
+  ]) {
+    const original = await readFile(asset(`public/brand/${name}`));
+    assert.ok(original.length > 0 && original.length <= cap, `${name} exceeds its delivery budget`);
+    assert.deepEqual(original, await readFile(asset(`dist/brand/${name}`)));
+  }
+  const document = new JSDOM(await read("dist/index.html")).window.document;
+  const logo = document.querySelector(".cashio-brand-mark img");
+  assert.ok(logo?.getAttribute("srcset").includes("celestial-1680.webp"));
+  assert.equal(
+    document.querySelectorAll('img[src$=".gif"]').length,
+    0,
+    "GIF export must not override motion preferences",
+  );
 });
 
 test("legacy deck links preserve their exact query and fragment while V37 study links remain on the homepage", async () => {

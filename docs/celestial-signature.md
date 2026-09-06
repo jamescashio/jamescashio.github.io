@@ -1,0 +1,17 @@
+# V37.5 — Celestial Forge
+
+Celestial Forge is the approved 37.5.0 release of the interactive Cashio identity. Preserve the triangular A, crowned I, orbital ellipse, metallic detail, champagne gold, and electric cyan. The existing Lensing world remains the featured experience; the release name remains THE HUMAN RECKONING.
+
+The logo uses responsive artwork composited onto the dark interface, with registered vector light runners, satellites, and gentle glints. Its projected orbital field responds to pointer movement. Drag to turn the artwork through CSS perspective; tap, press Enter or Space on the artwork, or choose Ignite signature to send light. Balanced, Gold, and Ion treatments, Orbit and Inspect views, six letter details, and a field-strength range from 0 to 100 keep the visual response under visitor control. Reset returns the strength to 45 and clears the ignition. This is an interactive composition of artwork and projected light, not a volumetric model of the lettering.
+
+Ambient and finite motion pause when hidden, offscreen, or paused. Reduced motion keeps manual light, camera, and letter changes immediate and static. The art window contains zoomed details so tablet labels remain clear. Touch targets are at least 44 pixels, the viewer supports keyboard focus wrapping, and cinema round trips return focus to the original launcher, including pointer clicks that do not move focus in Safari.
+
+The signature awakens is a six-second Higgsfield film available through `/#film=signature`. The cinema starts with a poster; explicit Play or a frame request loads media. A keyboard/touch timeline and Spark, Orbit, and Radiance landmarks select a paused frame. Sculpt this light opens `#signature`'s interactive experience; Watch the signature awaken opens the cinema from that experience. The original `#film` and `#film=awakening` links still open Orbital arrival and The gate awakens. No film autoplays, loops, or adds sound.
+
+Frame requests prepare a bounded same-origin media copy in memory, enabling reliable seeking on progressive hosts without HTTP byte ranges. Ordinary first Play remains progressive. Changing or closing a film aborts the pending copy and revokes its object URL. The media policy allows same-origin files and local blobs, without adding an external media origin.
+
+Acceptance: inspect 320, 390, 1024, and 1440 pixel layouts, the seamless wordmark, actual moving frames, pause and reduced-motion stability, touch and keyboard controls, frame seeking, focus restoration, and no eager film or GIF requests. After zooming, await the selected responsive image's decode before comparing static frames: a sharper image arriving is not animation. Retain the existing rendering budgets and all legacy routes.
+
+The image-generation source and prompt evidence are held with the local review artifacts. Delivery includes three WebP resolutions; animated behavior is rendered by the website and respects the visitor's motion preference. A separate 840 by 313 pixel GIF contains 96 distinct frames over an eight-second loop. It is available at `/brand/celestial-signature.gif` and is not an initial page request.
+
+The owner approved publication on September 6, 2026. Promote through the existing GitHub Pages checks, using production baseline `d32ebb59bb7805acc7a4ac35a02a75d3e0496359` for rollback. Software identity is separate from the unchanged public fleet observation of August 28 and routing observation of August 21, 2026.

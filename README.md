@@ -1,12 +1,16 @@
-# cashio.us V37.4 — Lensing: Gatewake
+# cashio.us V37.5 — Celestial Forge
 
-Doug Cashio’s interactive universe of AI, security, and owned infrastructure. Gatewake extends the Lensing edition of **THE HUMAN RECKONING**, crafted with GPT-6 Astra under Doug’s direction.
+Doug Cashio’s interactive universe of AI, security, and owned infrastructure. Celestial Forge extends the Lensing edition of **THE HUMAN RECKONING**, crafted with GPT-6 Astra under Doug’s direction.
 
-Enter the Lensing Observatory to explore an original 3D planet, machined orbital gate, and courier traffic. Choose three light treatments and camera views, or take a finite 24-second journey with pause and manual chapter controls. Ignite the gate to reveal its recessed circuits and planetary aurora. The six-second Higgsfield film The gate awakens leads into the interactive world through an optional Enter this world action. Orbital arrival remains available in the same cinema. Both optimized local 1080p films open on still posters, play only on request, never loop, and pause when hidden.
+The Cashio signature becomes an instrument of gold and light. Move across its orbital field to bend the light, drag to turn the artwork, or tap to send a finite ignition pulse. Balanced, Gold, and Ion treatments, a 0–100 field-strength control, Orbit and Inspect views, and six letter details keep exploration deliberate. The artwork retains its triangular A, crowned I, metallic finish, and orbital ellipse. Responsive WebP images and registered vector animation create the interactive logo; an eight-second animated GIF is also available at `/brand/celestial-signature.gif` without an initial-page download.
+
+The signature awakens is an optional six-second Higgsfield film. Play, pause, replay, scrub the timeline, or inspect the Spark, Orbit, and Radiance frames. Sculpt this light returns to the interactive signature, which also offers Watch the signature awaken. Switching or closing a film stops the departing player; round trips preserve the original launcher. Film bytes load only after explicit Play or a frame request. Frame seeking uses a bounded, same-origin in-memory media copy so it also works on hosts without byte-range support; the copy is released when the clip changes or closes.
+
+Enter the Lensing Observatory to explore the original 3D planet, machined orbital gate, and courier traffic. Choose three light treatments and camera views, or take a finite 24-second journey with pause and manual chapter controls. Ignite the gate to reveal its recessed circuits and planetary aurora. The gate awakens and Orbital arrival remain available in the three-film cinema with their original links. All films open on still posters, play only on request, never loop, and pause when hidden.
 
 First Flight is an optional guided starship journey. Four chapters move from arrival to the onboard core, connection loss, and a human permission decision. Visitors can change the illustrative scenario, follow the same twelve requests between routing bays, and share the exact settings. Flight controls adapt to phone and tablet screens; exploration remains available without taking the tour.
 
-The Living Circuit viewer preserves the owner’s animated Cashio artwork. Explore six letters with touch or keyboard, change the presentation, or send a circuit pulse from the selected letter. The operator insignia responds with a finite orbital sequence. A cyan section plane reveals the ship’s onboard modules, armor, and service bays; selecting Onboard AI frames the exposed hardware. The opening orbital instrument aligns before a visitor-triggered lightfold transition.
+The operator insignia shares the animated Cashio identity and opens Celestial Forge. A cyan section plane reveals the ship’s onboard modules, armor, and service bays; selecting Onboard AI frames the exposed hardware. The opening orbital instrument aligns before a visitor-triggered lightfold transition.
 
 Motion follows the visitor’s system preference and global pause control. Effects suspend offscreen and in hidden tabs, and audio requires explicit opt-in. Original orbital artwork, responsive ship stills, and a prerendered first view keep the experience useful while interactive modules load.
 
@@ -18,10 +22,11 @@ The release name is original, inspired by the Butlerian Jihad in Frank Herbert�
 - `/odyssey.html` remains a compatible alias, canonicalized to `/`.
 - `/command-deck.html` preserves the V35 command deck. Existing `/#deck=…` bookmarks redirect there with their query and selected deck intact.
 - `/command.html` remains the explicitly marked May 2026 historical archive.
-- `/site-release.json` describes the software release; `/event-horizon-release.json` is an identical compatibility alias.
+- `/site-release.json` describes software version **37.5.0**, visual edition **Lensing**, and featured experience **Lensing Observatory**; `/event-horizon-release.json` is an identical compatibility alias.
 - `/#flight=board`, `hull`, `blackout`, or `permission` opens a flight chapter.
 - `/#mission=hybrid.mixed.offline.held` restores a bounded routing scenario.
-- `/#signature` opens the interactive Living Circuit viewer; it is also reachable from the hero and operator insignia.
+- `/#signature` opens Celestial Forge; it is also reachable from the hero, operator insignia, and signature film.
+- `/#film=signature` opens The signature awakens on a still poster. Sculpt this light opens the interactive signature.
 - `/#lensing` opens the interactive observatory; `/#film` opens Orbital arrival on its still poster.
 - `/#film=awakening` opens The gate awakens. Its explicit handoff opens the observatory at the illuminated gate in eclipse light.
 

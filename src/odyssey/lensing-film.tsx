@@ -1,10 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./lensing-film.css";
 
-type Playback = "still" | "loading" | "playing" | "paused" | "ended" | "error";
-export type LensingClip = "awakening" | "arrival";
+type Playback = "still" | "loading" | "seeking" | "playing" | "paused" | "ended" | "error";
+export type LensingClip = "signature" | "awakening" | "arrival";
 
 const CLIPS = {
+  signature: {
+    title: "The signature awakens",
+    duration: 6,
+    durationLabel: "A SIX-SECOND FILM",
+    film: "/assets/celestial/signature-awakens.mp4",
+    poster: "/assets/celestial/signature-awakens-poster.webp",
+    description: "Gold takes form. Blue light finds its orbit. A signature comes alive.",
+  },
   awakening: {
     title: "The gate awakens",
     duration: 6,
@@ -24,7 +32,7 @@ const CLIPS = {
 } as const;
 
 function timecode(seconds: number) {
-  return `0:${String(Math.floor(seconds)).padStart(2, "0")}`;
+  return `0:${seconds.toFixed(1).padStart(4, "0")}`;
 }
 
 export default function LensingFilm({
@@ -32,11 +40,13 @@ export default function LensingFilm({
   onClose,
   initialClip = "awakening",
   onExplore,
+  onSignature,
 }: {
   motion: boolean;
   onClose: () => void;
   initialClip?: LensingClip;
   onExplore: () => void;
+  onSignature?: () => void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const video = useRef<HTMLVideoElement>(null);
@@ -44,6 +54,13 @@ export default function LensingFilm({
   const request = useRef(0);
   const playbackIntent = useRef<HTMLVideoElement | null>(null);
   const mounted = useRef(false);
+  const pendingSeek = useRef<number | null>(null);
+  const seekMedia = useRef<{
+    player: HTMLVideoElement;
+    controller: AbortController;
+    url: string | null;
+    loading: Promise<void> | null;
+  } | null>(null);
   const [clipId, setClipId] = useState<LensingClip>(initialClip);
   const [playback, setPlayback] = useState<Playback>("still");
   const [elapsed, setElapsed] = useState(0);
@@ -51,14 +68,26 @@ export default function LensingFilm({
   const clip = CLIPS[clipId];
   const active = playback === "playing" || playback === "loading";
 
-  const attachPlayer = useCallback((player: HTMLVideoElement | null) => {
-    if (video.current !== player) {
-      request.current += 1;
-      playbackIntent.current = null;
-      video.current?.pause();
-      video.current = player;
-    }
+  const releaseSeekMedia = useCallback(() => {
+    const previous = seekMedia.current;
+    seekMedia.current = null;
+    previous?.controller.abort();
+    if (previous?.url) URL.revokeObjectURL(previous.url);
   }, []);
+
+  const attachPlayer = useCallback(
+    (player: HTMLVideoElement | null) => {
+      if (video.current !== player) {
+        request.current += 1;
+        playbackIntent.current = null;
+        video.current?.pause();
+        releaseSeekMedia();
+        video.current = player;
+        pendingSeek.current = null;
+      }
+    },
+    [releaseSeekMedia],
+  );
 
   const pauseFilm = useCallback(() => {
     request.current += 1;
@@ -66,6 +95,65 @@ export default function LensingFilm({
     video.current?.pause();
     setPlayback((current) => (current === "playing" || current === "loading" ? "paused" : current));
   }, []);
+
+  const isCurrentPlayer = useCallback((player: HTMLVideoElement) => {
+    return mounted.current && player === video.current && dialog.current?.open;
+  }, []);
+
+  const playRequested = useCallback(
+    async (player: HTMLVideoElement, generation: number) => {
+      try {
+        await player.play();
+        if (!isCurrentPlayer(player) || document.hidden || playbackIntent.current !== player) player.pause();
+      } catch {
+        if (isCurrentPlayer(player) && generation === request.current) {
+          playbackIntent.current = null;
+          setPlayback("error");
+        }
+      }
+    },
+    [isCurrentPlayer],
+  );
+
+  // Stable ref-reading callbacks let visibility resume a manual frame request
+  // without restarting the modal or reviving a cancelled playback request.
+  const finishPendingSeek = useCallback(
+    (player: HTMLVideoElement) => {
+      const target = pendingSeek.current;
+      const prepared = seekMedia.current;
+      if (
+        target === null ||
+        !isCurrentPlayer(player) ||
+        document.hidden ||
+        !prepared?.url ||
+        prepared.player !== player ||
+        player.currentSrc !== prepared.url ||
+        player.readyState < 1 ||
+        !Number.isFinite(player.duration) ||
+        player.seeking
+      )
+        return;
+      const seconds = Math.max(0, Math.min(target, player.duration - 0.04));
+      if (Math.abs(player.currentTime - seconds) > 0.06) {
+        // A fully downloaded Blob supplies random access even when the host
+        // serves HTTP200 and the native URL reports an empty seekable range.
+        const ranges = player.seekable;
+        const available = Array.from({ length: ranges.length }, (_, index) => index).some(
+          (index) => ranges.start(index) <= seconds && ranges.end(index) >= seconds,
+        );
+        if (available) player.currentTime = seconds;
+        return;
+      }
+      if (player.readyState < 2) return;
+      pendingSeek.current = null;
+      setElapsed(player.currentTime);
+      if (playbackIntent.current === player) {
+        setPlayback("loading");
+        void playRequested(player, request.current);
+      } else setPlayback("paused");
+    },
+    [isCurrentPlayer, playRequested],
+  );
 
   useEffect(() => {
     mounted.current = true;
@@ -76,6 +164,7 @@ export default function LensingFilm({
     close.current?.focus({ preventScroll: true });
     const visibility = () => {
       if (document.hidden) pauseFilm();
+      else if (video.current) finishPendingSeek(video.current);
     };
     document.addEventListener("visibilitychange", visibility);
     return () => {
@@ -83,11 +172,13 @@ export default function LensingFilm({
       request.current += 1;
       playbackIntent.current = null;
       video.current?.pause();
+      pendingSeek.current = null;
+      releaseSeekMedia();
       panel?.close();
       document.body.style.overflow = overflow;
       document.removeEventListener("visibilitychange", visibility);
     };
-  }, [pauseFilm]);
+  }, [pauseFilm, releaseSeekMedia, finishPendingSeek]);
 
   useEffect(() => {
     // A later explicit Play is allowed; ambient motion never starts the film.
@@ -108,8 +199,63 @@ export default function LensingFilm({
     setDuration(CLIPS[next].duration);
   }
 
-  function isCurrentPlayer(player: HTMLVideoElement) {
-    return mounted.current && player === video.current && dialog.current?.open;
+  function prepareSeekMedia(player: HTMLVideoElement): Promise<void> {
+    const previous = seekMedia.current;
+    if (previous?.player === player) {
+      if (previous.loading) return previous.loading;
+      if (previous.url) return Promise.resolve();
+    }
+    releaseSeekMedia();
+    const prepared = {
+      player,
+      controller: new AbortController(),
+      url: null as string | null,
+      loading: null as Promise<void> | null,
+    };
+    seekMedia.current = prepared;
+    prepared.loading = (async () => {
+      try {
+        const source = new URL(clip.film, location.href);
+        if (source.origin !== location.origin) throw new Error("Film must remain same-origin");
+        const response = await fetch(source, {
+          signal: prepared.controller.signal,
+          credentials: "same-origin",
+          cache: "force-cache",
+        });
+        if (!response.ok) throw new Error("Film download failed");
+        const maximum = 8 * 1024 * 1024;
+        if (Number(response.headers.get("content-length")) > maximum) throw new Error("Film exceeds seek budget");
+        const blob = await response.blob();
+        if (!blob.size || blob.size > maximum) throw new Error("Invalid film size");
+        if (seekMedia.current !== prepared || prepared.controller.signal.aborted || !isCurrentPlayer(player)) return;
+        prepared.url = URL.createObjectURL(new Blob([blob], { type: "video/mp4" }));
+        // This element is keyed to its clip. Keep ordinary first Play on the
+        // progressive URL; replace it only after an explicit frame request.
+        player.src = prepared.url;
+        player.preload = "auto";
+        player.load();
+      } catch {
+        if (seekMedia.current === prepared && !prepared.controller.signal.aborted && isCurrentPlayer(player)) {
+          pendingSeek.current = null;
+          playbackIntent.current = null;
+          setPlayback("error");
+        }
+      } finally {
+        prepared.loading = null;
+      }
+    })();
+    return prepared.loading;
+  }
+
+  function seekFilm(seconds: number) {
+    const player = video.current;
+    if (!player || document.hidden || !dialog.current?.open) return;
+    pauseFilm();
+    const target = Math.max(0, Math.min(duration - 0.04, seconds));
+    pendingSeek.current = target;
+    setElapsed(target);
+    setPlayback("seeking");
+    void prepareSeekMedia(player).then(() => finishPendingSeek(player));
   }
 
   async function togglePlayback() {
@@ -120,19 +266,15 @@ export default function LensingFilm({
       return;
     }
     const generation = ++request.current;
-    if (player.error) player.load();
-    if (player.ended) player.currentTime = 0;
     playbackIntent.current = player;
     setPlayback("loading");
-    try {
-      await player.play();
-      if (!isCurrentPlayer(player) || document.hidden || playbackIntent.current !== player) player.pause();
-    } catch {
-      if (isCurrentPlayer(player) && generation === request.current) {
-        playbackIntent.current = null;
-        setPlayback("error");
-      }
+    if (pendingSeek.current !== null) {
+      void prepareSeekMedia(player).then(() => finishPendingSeek(player));
+      return;
     }
+    if (player.error) player.load();
+    if (player.ended) player.currentTime = 0;
+    await playRequested(player, generation);
   }
 
   const label = active
@@ -145,15 +287,17 @@ export default function LensingFilm({
   const status =
     playback === "error"
       ? "The film could not load. Please try again."
-      : playback === "loading"
-        ? "Loading the film…"
-        : playback === "playing"
-          ? "Playing. No sound."
-          : playback === "paused"
-            ? "Paused. Continue when you choose."
-            : playback === "ended"
-              ? "End of film. Replay when you choose."
-              : "A still frame until you press Play. No sound.";
+      : playback === "seeking"
+        ? "Finding your frame…"
+        : playback === "loading"
+          ? "Loading the film…"
+          : playback === "playing"
+            ? "Playing. No sound."
+            : playback === "paused"
+              ? "Paused. Continue when you choose."
+              : playback === "ended"
+                ? "End of film. Replay when you choose."
+                : "A still frame until you press Play. No sound.";
 
   return (
     <dialog
@@ -167,10 +311,27 @@ export default function LensingFilm({
         event.preventDefault();
         dismiss();
       }}
+      onKeyDown={(event) => {
+        if (event.key !== "Tab") return;
+        const controls = [
+          ...event.currentTarget.querySelectorAll<HTMLElement>(
+            'button:not([disabled]), input:not([disabled]), a[href], [tabindex="0"]',
+          ),
+        ].filter((element) => element.getClientRects().length > 0);
+        if (event.shiftKey && document.activeElement === controls[0]) {
+          event.preventDefault();
+          controls.at(-1)?.focus();
+        } else if (!event.shiftKey && document.activeElement === controls.at(-1)) {
+          event.preventDefault();
+          controls[0]?.focus();
+        }
+      }}
     >
       <header className="lensing-film-header">
         <div>
-          <span className="lensing-film-eyebrow">LENSING / {clip.durationLabel}</span>
+          <span className="lensing-film-eyebrow">
+            {clipId === "signature" ? "CELESTIAL FORGE" : "LENSING"} / {clip.durationLabel}
+          </span>
           <h2 id="lensing-film-title">{clip.title}</h2>
         </div>
         <button
@@ -187,7 +348,7 @@ export default function LensingFilm({
         </button>
       </header>
       <div className="lensing-film-choices" role="group" aria-label="Choose a film">
-        {(["awakening", "arrival"] as const).map((id) => (
+        {(["signature", "awakening", "arrival"] as const).map((id) => (
           <button
             key={id}
             type="button"
@@ -214,34 +375,62 @@ export default function LensingFilm({
           aria-describedby="lensing-film-description"
           onPlaying={(event) => {
             const player = event.currentTarget;
-            if (!isCurrentPlayer(player) || playbackIntent.current !== player || document.hidden) player.pause();
+            if (
+              !isCurrentPlayer(player) ||
+              playbackIntent.current !== player ||
+              pendingSeek.current !== null ||
+              document.hidden
+            )
+              player.pause();
             else if (!player.paused) setPlayback("playing");
           }}
           onPause={(event) => {
-            if (isCurrentPlayer(event.currentTarget) && event.currentTarget.paused)
+            if (isCurrentPlayer(event.currentTarget) && event.currentTarget.paused && pendingSeek.current === null)
               setPlayback((current) => (current === "playing" || current === "loading" ? "paused" : current));
           }}
           onWaiting={(event) => {
             if (isCurrentPlayer(event.currentTarget) && !event.currentTarget.paused) setPlayback("loading");
           }}
           onEnded={(event) => {
-            if (isCurrentPlayer(event.currentTarget) && event.currentTarget.ended) {
+            if (isCurrentPlayer(event.currentTarget) && event.currentTarget.ended && pendingSeek.current === null) {
               playbackIntent.current = null;
               setPlayback("ended");
             }
           }}
           onError={(event) => {
-            if (isCurrentPlayer(event.currentTarget) && event.currentTarget.error) {
+            if (isCurrentPlayer(event.currentTarget) && event.currentTarget.error && !seekMedia.current?.loading) {
+              pendingSeek.current = null;
               playbackIntent.current = null;
               setPlayback("error");
             }
           }}
           onTimeUpdate={(event) => {
-            if (isCurrentPlayer(event.currentTarget)) setElapsed(event.currentTarget.currentTime);
+            if (isCurrentPlayer(event.currentTarget)) {
+              if (pendingSeek.current !== null) finishPendingSeek(event.currentTarget);
+              else setElapsed(event.currentTarget.currentTime);
+            }
           }}
+          onSeeked={(event) => {
+            const player = event.currentTarget;
+            if (isCurrentPlayer(player)) {
+              if (pendingSeek.current !== null) finishPendingSeek(player);
+              else if (player.paused && playbackIntent.current !== player) {
+                setElapsed(player.currentTime);
+                setPlayback("paused");
+              }
+            }
+          }}
+          onLoadedData={(event) => finishPendingSeek(event.currentTarget)}
+          onCanPlay={(event) => finishPendingSeek(event.currentTarget)}
+          onProgress={(event) => finishPendingSeek(event.currentTarget)}
+          onSuspend={(event) => finishPendingSeek(event.currentTarget)}
           onLoadedMetadata={(event) => {
-            const seconds = event.currentTarget.duration;
-            if (isCurrentPlayer(event.currentTarget) && Number.isFinite(seconds) && seconds > 0) setDuration(seconds);
+            const player = event.currentTarget;
+            const seconds = player.duration;
+            if (isCurrentPlayer(player) && Number.isFinite(seconds) && seconds > 0) {
+              setDuration(seconds);
+              finishPendingSeek(player);
+            }
           }}
         >
           Your browser cannot play this film.
@@ -251,6 +440,24 @@ export default function LensingFilm({
           <span>Original cinematic artwork created with Higgsfield.</span>
         </figcaption>
       </figure>
+      {clipId === "signature" && (
+        <div className="lensing-film-chapters" role="group" aria-label="Explore the awakening">
+          {[
+            { name: "Spark", time: 0 },
+            { name: "Orbit", time: 2 },
+            { name: "Radiance", time: 4.8 },
+          ].map((chapter, index) => (
+            <button
+              key={chapter.name}
+              type="button"
+              onClick={() => seekFilm(chapter.time)}
+              aria-label={`Seek to ${chapter.name}`}
+            >
+              <span>0{index + 1}</span> {chapter.name}
+            </button>
+          ))}
+        </div>
+      )}
       <div className="lensing-film-controls">
         <button className="lensing-film-play" type="button" onClick={() => void togglePlayback()}>
           <svg viewBox="0 0 20 20" aria-hidden="true">
@@ -271,11 +478,16 @@ export default function LensingFilm({
               {timecode(elapsed)} / {timecode(duration)}
             </span>
           </div>
-          <progress
+          <input
+            type="range"
+            className="lensing-film-scrubber"
+            min={0}
+            step={0.01}
             value={Math.min(elapsed, duration)}
             max={duration}
-            aria-label="Film progress"
-            aria-valuetext={`${Math.floor(elapsed)} of ${Math.round(duration)} seconds`}
+            onChange={(event) => seekFilm(Number(event.currentTarget.value))}
+            aria-label="Seek film"
+            aria-valuetext={`${elapsed.toFixed(1)} of ${duration.toFixed(1)} seconds`}
           />
         </div>
       </div>
@@ -291,6 +503,24 @@ export default function LensingFilm({
             }}
           >
             Enter this world
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M3 10h14m-5-5 5 5-5 5" />
+            </svg>
+          </button>
+        </div>
+      )}
+      {clipId === "signature" && onSignature && (
+        <div className="lensing-film-handoff">
+          <p>Now put the light in your hands.</p>
+          <button
+            type="button"
+            className="lensing-film-explore"
+            onClick={() => {
+              pauseFilm();
+              onSignature();
+            }}
+          >
+            Sculpt this light
             <svg viewBox="0 0 20 20" aria-hidden="true">
               <path d="M3 10h14m-5-5 5 5-5 5" />
             </svg>
