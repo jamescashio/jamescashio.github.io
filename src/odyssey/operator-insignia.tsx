@@ -1,9 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { BrandMark } from "./brand-mark";
 import { Core } from "./effects";
 
 /** The owner's mark inside an original orbital frame. All motion follows the page's controls. */
-export function OperatorInsignia({ motion, onExplore }: { motion: boolean; onExplore: () => void }) {
+export function OperatorInsignia({
+  motion,
+  onExplore,
+}: {
+  motion: boolean;
+  onExplore: (event: MouseEvent<HTMLButtonElement>) => void;
+}) {
   const panel = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [pageVisible, setPageVisible] = useState(true);

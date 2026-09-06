@@ -43,6 +43,7 @@
   cursor: default;
 }
 .brand-studio button:focus-visible,
+.bs-field-strength:focus-visible,
 .bs-art-window:focus-visible {
   outline: 2px solid var(--bs-ion);
   outline-offset: 4px;
@@ -193,12 +194,22 @@
 .bs-stage[data-dragging="true"] .bs-art-window {
   cursor: grabbing;
 }
+.bs-field-layer {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+}
 .bs-parallax {
   position: relative;
+  z-index: 1;
   width: min(100%, 1240px, calc(max(190px, 100dvh - 450px) * 2.68));
   transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
   transform-style: preserve-3d;
   transition: transform 280ms ease-out;
+  /* Blend the full transformed artwork into the field beneath it as well as
+     the stage, so the raster's black ground cannot mask the moving light. */
+  mix-blend-mode: screen;
 }
 .bs-mark-plane {
   position: relative;
@@ -431,6 +442,73 @@
 .bs-lights i[data-light="ion"] {
   background: #8ee6f4;
 }
+.bs-field-control {
+  display: grid;
+  grid-template-columns: auto minmax(64px, 1fr) 34px;
+  align-items: center;
+  gap: 12px;
+  margin-top: 3px;
+  color: #b3c7d3;
+  font-size: 11px;
+}
+.bs-field-control label {
+  cursor: pointer;
+}
+.bs-field-strength {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  accent-color: var(--bs-gold);
+  cursor: ew-resize;
+}
+.bs-field-strength::-webkit-slider-runnable-track {
+  height: 2px;
+  border-radius: 1px;
+  background: #506979;
+}
+.bs-field-strength::-moz-range-track {
+  height: 2px;
+  border-radius: 1px;
+  background: #506979;
+}
+.bs-field-strength::-webkit-slider-thumb {
+  width: 18px;
+  height: 18px;
+  margin-top: -8px;
+  border: 3px solid #142536;
+  border-radius: 50%;
+  -webkit-appearance: none;
+  background: var(--bs-gold);
+  box-shadow: 0 0 0 1px #b1966e;
+}
+.bs-field-strength::-moz-range-thumb {
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  border: 3px solid #142536;
+  border-radius: 50%;
+  background: var(--bs-gold);
+  box-shadow: 0 0 0 1px #b1966e;
+}
+.bs-field-control output {
+  text-align: right;
+  color: #efce9b;
+  font:
+    500 11px/1.5 Jet,
+    monospace;
+  font-variant-numeric: tabular-nums;
+}
+.bs-field-control output span {
+  margin-left: 1px;
+  color: #95adba;
+  font-size: 9px;
+}
 .bs-playback {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -461,15 +539,37 @@
 .bs-transport button span {
   margin-left: 10px;
 }
-.bs-description {
+.bs-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   flex-shrink: 0;
-  margin: 0;
-  min-height: 38px;
-  padding: 0 max(28px, 4vw) 18px;
-  color: #a9beca;
+  padding: 0 max(28px, 4vw) 16px;
   background: #050d17;
+}
+.bs-description {
+  margin: 0;
+  color: #a9beca;
   font-size: 12px;
   line-height: 1.6;
+}
+.brand-studio .bs-watch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  gap: 12px;
+  border-color: #526775;
+  padding-inline: 14px;
+  color: #d8e7ee;
+  background: #0a1722;
+  font-size: 12px;
+}
+.bs-watch-icon {
+  color: var(--bs-gold);
+  font-size: 20px;
+  line-height: 1;
 }
 @media (min-width: 1400px) {
   .bs-stage {
@@ -605,9 +705,16 @@
     grid-column: 1 / -1;
   }
   .bs-description {
-    min-height: 51px;
-    padding: 0 16px 16px;
     font-size: 11px;
+  }
+  .bs-footer {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 16px 16px;
+  }
+  .brand-studio .bs-watch {
+    align-self: stretch;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -626,7 +733,12 @@
     border: 3px solid Highlight;
   }
   .bs-orbit-plane,
-  .bs-pulse-wave {
+  .bs-pulse-wave,
+  .bs-field-layer {
     display: none;
+  }
+  .bs-field-strength {
+    appearance: auto;
+    -webkit-appearance: auto;
   }
 }

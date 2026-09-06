@@ -1,7 +1,7 @@
 {
   "name": "cashio-us",
   "private": true,
-  "version": "37.5.0-preview.celestial",
+  "version": "37.5.0-preview.forge",
   "type": "module",
   "scripts": {
     "dev": "vite",

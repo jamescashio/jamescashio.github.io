@@ -1,3 +1,13 @@
+# Current preview — Celestial Forge
+
+An instrument of gold and light: the owner's Cashio signature floats within a projected depth field that responds directly to the visitor, while a Higgsfield film reveals its cinematic identity.
+
+Preserve the finished cAshIo artwork, champagne gold, electric cyan, deep ink, Oxanium headings, Exo reading copy, and Jet instrument labels. The stronger visual move is the visitor's influence over luminous orbital particles: move to bend them, drag to turn the signature, tap to send light, and adjust field strength. Keep the logo readable and preserve the existing light, six-letter, camera, pause, and reset controls. No new dependencies or fonts.
+
+The six-second Higgsfield film has explicit playback, a keyboard/touch timeline, three frame landmarks, and a deliberate handoff back to the light instrument. Preserve both earlier films and their deep links. Film bytes load only after Play or an explicit seek. No autoplay, loops, or audio. Native ambient motion suspends offscreen, in hidden pages, when paused, and under reduced motion. Static manual changes remain available.
+
+This is the next owner-only review, version 37.5.0-preview.forge, based on the completed Celestial Signature preview. Public Gatewake remains a separate release. The dated public archive and operational claims are unchanged. Validate the actual rendered layouts, decoded video, touch/keyboard gestures, scrubbing, focus, freeze/resume, no eager media requests, and bounded rendering cost before the online preview.
+
 # Current release — V37.4 Lensing: Gatewake
 
 Gatewake (`37.4.0`) promotes the approved cinema and Resonance graphics from preview commit `911b7ca`. It adds one original six-second Higgsfield film based on the existing Cashio orbital artwork. Keep the established palette, logo, typography, layout, observatory, and human command identity.

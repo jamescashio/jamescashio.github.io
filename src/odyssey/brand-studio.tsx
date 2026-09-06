@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { BrandMark } from "./brand-mark";
+import CelestialField from "./celestial-field";
 import "./brand-studio.css";
 
 const LIGHTS = [
@@ -18,13 +19,31 @@ const LETTERS = [
 const PULSE_MS = 3400;
 const clamp = (value: number, low: number, high: number) => Math.max(low, Math.min(high, value));
 
-export default function BrandStudio({ motion, onClose }: { motion: boolean; onClose: () => void }) {
+export default function BrandStudio({
+  motion,
+  onClose,
+  onWatch,
+}: {
+  motion: boolean;
+  onClose: () => void;
+  onWatch?: () => void;
+}) {
   const dialog = useRef<HTMLDialogElement>(null);
   const close = useRef<HTMLButtonElement>(null);
   const stage = useRef<HTMLDivElement>(null);
+  const fieldPointer = useRef({ x: 0.5, y: 0.5, active: false });
   const pose = useRef({ x: 0, y: 0 });
-  const drag = useRef<{ id: number; x: number; y: number; tiltX: number; tiltY: number; letter: number } | null>(null);
+  const drag = useRef<{
+    id: number;
+    x: number;
+    y: number;
+    tiltX: number;
+    tiltY: number;
+    letter: number;
+    distance: number;
+  } | null>(null);
   const [light, setLight] = useState<(typeof LIGHTS)[number]["id"]>("balanced");
+  const [fieldStrength, setFieldStrength] = useState(45);
   const [detail, setDetail] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(1);
   const [paused, setPaused] = useState(false);
@@ -97,7 +116,16 @@ export default function BrandStudio({ motion, onClose }: { motion: boolean; onCl
   }
   function finishDrag() {
     drag.current = null;
+    fieldPointer.current.active = false;
     setDragging(false);
+  }
+  function updatePointer(element: HTMLDivElement, clientX: number, clientY: number) {
+    const rect = element.getBoundingClientRect();
+    const x = (clientX - rect.left) / Math.max(1, rect.width);
+    const y = (clientY - rect.top) / Math.max(1, rect.height);
+    fieldPointer.current.x = clamp(x, 0, 1);
+    fieldPointer.current.y = clamp(y, 0, 1);
+    fieldPointer.current.active = x >= 0 && x <= 1 && y >= 0 && y <= 1;
   }
   function chooseCamera(inspect: boolean) {
     finishDrag();
@@ -118,6 +146,8 @@ export default function BrandStudio({ motion, onClose }: { motion: boolean; onCl
     setCharged(false);
     setSignal(0);
     setLight("balanced");
+    setFieldStrength(45);
+    fieldPointer.current = { x: 0.5, y: 0.5, active: false };
     setSelectedIndex(1);
     chooseCamera(false);
   }
@@ -172,8 +202,8 @@ export default function BrandStudio({ motion, onClose }: { motion: boolean; onCl
             <i />
           </span>
           <div>
-            <span className="bs-eyebrow">HOUSE CASHIO / AN INTERACTIVE IDENTITY</span>
-            <h2 id="brand-studio-title">Celestial signature</h2>
+            <span className="bs-eyebrow">HOUSE CASHIO / LIGHT, UNDER YOUR COMMAND</span>
+            <h2 id="brand-studio-title">Celestial Forge</h2>
           </div>
         </div>
         <button ref={close} type="button" onClick={onClose} aria-label="Close celestial signature" className="bs-close">
@@ -202,11 +232,16 @@ export default function BrandStudio({ motion, onClose }: { motion: boolean; onCl
           role="group"
           aria-label={
             detail
-              ? "Signature detail. Use left and right arrows to explore its six letters."
-              : "Signature perspective. Use arrow keys or drag to turn the artwork."
+              ? "Signature detail. Use left and right arrows to explore its six letters. Press Enter to send light."
+              : "Signature perspective. Use arrow keys or drag to turn the artwork. Press Enter to send light."
           }
           aria-describedby="bs-view-help"
           onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              if (!event.repeat) ignite();
+              return;
+            }
             if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home"].includes(event.key)) return;
             event.preventDefault();
             if (event.key === "Home") {
@@ -223,7 +258,8 @@ export default function BrandStudio({ motion, onClose }: { motion: boolean; onCl
               );
           }}
           onPointerDown={(event) => {
-            if (event.button !== 0) return;
+            if (event.button !== 0 || !event.isPrimary) return;
+            updatePointer(event.currentTarget, event.clientX, event.clientY);
             drag.current = {
               id: event.pointerId,
               x: event.clientX,
@@ -231,13 +267,17 @@ export default function BrandStudio({ motion, onClose }: { motion: boolean; onCl
               tiltX: pose.current.x,
               tiltY: pose.current.y,
               letter: selectedIndex,
+              distance: 0,
             };
             event.currentTarget.setPointerCapture(event.pointerId);
             setDragging(true);
           }}
           onPointerMove={(event) => {
             const start = drag.current;
+            if (event.isPrimary && (event.pointerType !== "touch" || start?.id === event.pointerId))
+              updatePointer(event.currentTarget, event.clientX, event.clientY);
             if (!start || start.id !== event.pointerId) return;
+            start.distance = Math.max(start.distance, Math.hypot(event.clientX - start.x, event.clientY - start.y));
             if (detail)
               setSelectedIndex(clamp(start.letter - Math.round((event.clientX - start.x) / 60), 0, LETTERS.length - 1));
             else
@@ -246,10 +286,29 @@ export default function BrandStudio({ motion, onClose }: { motion: boolean; onCl
                 start.tiltY + (event.clientX - start.x) / 20,
               );
           }}
-          onPointerUp={finishDrag}
+          onPointerUp={(event) => {
+            const start = drag.current;
+            if (!start || start.id !== event.pointerId) return;
+            const distance = Math.max(start.distance, Math.hypot(event.clientX - start.x, event.clientY - start.y));
+            finishDrag();
+            if (distance < 8) ignite();
+          }}
+          onPointerLeave={() => {
+            fieldPointer.current.active = false;
+          }}
           onPointerCancel={finishDrag}
           onLostPointerCapture={finishDrag}
         >
+          <div className="bs-field-layer" aria-hidden="true">
+            <CelestialField
+              motion={animated}
+              light={light}
+              signal={signal}
+              focusLetter={selectedIndex}
+              strength={fieldStrength}
+              pointer={fieldPointer}
+            />
+          </div>
           <div className="bs-parallax">
             <div className="bs-orbit-plane" aria-hidden="true">
               <div className="bs-orbit-track">
@@ -280,9 +339,7 @@ export default function BrandStudio({ motion, onClose }: { motion: boolean; onCl
           </div>
         </div>
         <div className="bs-stage-baseline">
-          <p id="bs-view-help">
-            {detail ? "Choose a letter. Drag to explore." : "Drag to turn. Arrow keys work, too."}
-          </p>
+          <p id="bs-view-help">{detail ? "Drag to explore. Tap to send light." : "Drag to turn. Tap to send light."}</p>
           <span aria-hidden="true">IMAGINATION, WITH INTENTION.</span>
         </div>
       </div>
@@ -317,6 +374,24 @@ export default function BrandStudio({ motion, onClose }: { motion: boolean; onCl
                 {item.label}
               </button>
             ))}
+          </div>
+          <div className="bs-field-control">
+            <label htmlFor="bs-field-strength">Field strength</label>
+            <input
+              id="bs-field-strength"
+              className="bs-field-strength"
+              type="range"
+              min={0}
+              max={100}
+              step={1}
+              value={fieldStrength}
+              aria-valuetext={`${fieldStrength} percent`}
+              onChange={(event) => setFieldStrength(Number(event.currentTarget.value))}
+            />
+            <output htmlFor="bs-field-strength" aria-hidden="true">
+              {fieldStrength}
+              <span>%</span>
+            </output>
           </div>
         </div>
         <div className="bs-control-group">
@@ -355,9 +430,20 @@ export default function BrandStudio({ motion, onClose }: { motion: boolean; onCl
           </div>
         </div>
       </div>
-      <p className="bs-description" role="status">
-        {status}
-      </p>
+      <footer className="bs-footer">
+        <p className="bs-description" role="status">
+          {status}
+        </p>
+        {onWatch && (
+          <button type="button" className="bs-watch" onClick={onWatch}>
+            <span className="bs-watch-icon" aria-hidden="true">
+              ▷
+            </span>
+            Watch the signature awaken
+            <span aria-hidden="true">↗</span>
+          </button>
+        )}
+      </footer>
     </dialog>
   );
 }

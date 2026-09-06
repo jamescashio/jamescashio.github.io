@@ -1,10 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./lensing-film.css";
 
-type Playback = "still" | "loading" | "playing" | "paused" | "ended" | "error";
-export type LensingClip = "awakening" | "arrival";
+type Playback = "still" | "loading" | "seeking" | "playing" | "paused" | "ended" | "error";
+export type LensingClip = "signature" | "awakening" | "arrival";
 
 const CLIPS = {
+  signature: {
+    title: "The signature awakens",
+    duration: 6,
+    durationLabel: "A SIX-SECOND FILM",
+    film: "/assets/celestial/signature-awakens.mp4",
+    poster: "/assets/celestial/signature-awakens-poster.webp",
+    description: "Gold takes form. Blue light finds its orbit. A signature comes alive.",
+  },
   awakening: {
     title: "The gate awakens",
     duration: 6,
@@ -24,7 +32,7 @@ const CLIPS = {
 } as const;
 
 function timecode(seconds: number) {
-  return `0:${String(Math.floor(seconds)).padStart(2, "0")}`;
+  return `0:${seconds.toFixed(1).padStart(4, "0")}`;
 }
 
 export default function LensingFilm({
@@ -32,11 +40,13 @@ export default function LensingFilm({
   onClose,
   initialClip = "awakening",
   onExplore,
+  onSignature,
 }: {
   motion: boolean;
   onClose: () => void;
   initialClip?: LensingClip;
   onExplore: () => void;
+  onSignature?: () => void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const video = useRef<HTMLVideoElement>(null);
@@ -44,6 +54,8 @@ export default function LensingFilm({
   const request = useRef(0);
   const playbackIntent = useRef<HTMLVideoElement | null>(null);
   const mounted = useRef(false);
+  const pendingSeek = useRef<number | null>(null);
+  const mediaRequested = useRef(false);
   const [clipId, setClipId] = useState<LensingClip>(initialClip);
   const [playback, setPlayback] = useState<Playback>("still");
   const [elapsed, setElapsed] = useState(0);
@@ -57,6 +69,8 @@ export default function LensingFilm({
       playbackIntent.current = null;
       video.current?.pause();
       video.current = player;
+      pendingSeek.current = null;
+      mediaRequested.current = false;
     }
   }, []);
 
@@ -112,6 +126,27 @@ export default function LensingFilm({
     return mounted.current && player === video.current && dialog.current?.open;
   }
 
+  function seekFilm(seconds: number) {
+    const player = video.current;
+    if (!player || document.hidden || !dialog.current?.open) return;
+    pauseFilm();
+    const target = Math.max(0, Math.min(duration - 0.04, seconds));
+    setElapsed(target);
+    setPlayback("seeking");
+    if (player.readyState >= 1 && Number.isFinite(player.duration)) {
+      pendingSeek.current = null;
+      player.currentTime = Math.min(target, player.duration - 0.04);
+      if (!player.seeking) setPlayback("paused");
+    } else {
+      pendingSeek.current = target;
+      if (!mediaRequested.current) {
+        mediaRequested.current = true;
+        player.preload = "auto";
+        player.load();
+      }
+    }
+  }
+
   async function togglePlayback() {
     const player = video.current;
     if (!player || document.hidden || !dialog.current?.open) return;
@@ -120,6 +155,7 @@ export default function LensingFilm({
       return;
     }
     const generation = ++request.current;
+    mediaRequested.current = true;
     if (player.error) player.load();
     if (player.ended) player.currentTime = 0;
     playbackIntent.current = player;
@@ -145,15 +181,17 @@ export default function LensingFilm({
   const status =
     playback === "error"
       ? "The film could not load. Please try again."
-      : playback === "loading"
-        ? "Loading the film…"
-        : playback === "playing"
-          ? "Playing. No sound."
-          : playback === "paused"
-            ? "Paused. Continue when you choose."
-            : playback === "ended"
-              ? "End of film. Replay when you choose."
-              : "A still frame until you press Play. No sound.";
+      : playback === "seeking"
+        ? "Finding your frame…"
+        : playback === "loading"
+          ? "Loading the film…"
+          : playback === "playing"
+            ? "Playing. No sound."
+            : playback === "paused"
+              ? "Paused. Continue when you choose."
+              : playback === "ended"
+                ? "End of film. Replay when you choose."
+                : "A still frame until you press Play. No sound.";
 
   return (
     <dialog
@@ -167,10 +205,27 @@ export default function LensingFilm({
         event.preventDefault();
         dismiss();
       }}
+      onKeyDown={(event) => {
+        if (event.key !== "Tab") return;
+        const controls = [
+          ...event.currentTarget.querySelectorAll<HTMLElement>(
+            'button:not([disabled]), input:not([disabled]), a[href], [tabindex="0"]',
+          ),
+        ].filter((element) => element.getClientRects().length > 0);
+        if (event.shiftKey && document.activeElement === controls[0]) {
+          event.preventDefault();
+          controls.at(-1)?.focus();
+        } else if (!event.shiftKey && document.activeElement === controls.at(-1)) {
+          event.preventDefault();
+          controls[0]?.focus();
+        }
+      }}
     >
       <header className="lensing-film-header">
         <div>
-          <span className="lensing-film-eyebrow">LENSING / {clip.durationLabel}</span>
+          <span className="lensing-film-eyebrow">
+            {clipId === "signature" ? "CELESTIAL FORGE" : "LENSING"} / {clip.durationLabel}
+          </span>
           <h2 id="lensing-film-title">{clip.title}</h2>
         </div>
         <button
@@ -187,7 +242,7 @@ export default function LensingFilm({
         </button>
       </header>
       <div className="lensing-film-choices" role="group" aria-label="Choose a film">
-        {(["awakening", "arrival"] as const).map((id) => (
+        {(["signature", "awakening", "arrival"] as const).map((id) => (
           <button
             key={id}
             type="button"
@@ -237,11 +292,27 @@ export default function LensingFilm({
             }
           }}
           onTimeUpdate={(event) => {
-            if (isCurrentPlayer(event.currentTarget)) setElapsed(event.currentTarget.currentTime);
+            if (isCurrentPlayer(event.currentTarget) && pendingSeek.current === null)
+              setElapsed(event.currentTarget.currentTime);
+          }}
+          onSeeked={(event) => {
+            if (isCurrentPlayer(event.currentTarget) && event.currentTarget.paused) {
+              setElapsed(event.currentTarget.currentTime);
+              setPlayback("paused");
+            }
           }}
           onLoadedMetadata={(event) => {
-            const seconds = event.currentTarget.duration;
-            if (isCurrentPlayer(event.currentTarget) && Number.isFinite(seconds) && seconds > 0) setDuration(seconds);
+            const player = event.currentTarget;
+            const seconds = player.duration;
+            if (isCurrentPlayer(player) && Number.isFinite(seconds) && seconds > 0) {
+              setDuration(seconds);
+              if (pendingSeek.current !== null) {
+                const target = pendingSeek.current;
+                pendingSeek.current = null;
+                player.currentTime = Math.min(target, seconds - 0.04);
+                if (!player.seeking && playbackIntent.current !== player) setPlayback("paused");
+              }
+            }
           }}
         >
           Your browser cannot play this film.
@@ -251,6 +322,24 @@ export default function LensingFilm({
           <span>Original cinematic artwork created with Higgsfield.</span>
         </figcaption>
       </figure>
+      {clipId === "signature" && (
+        <div className="lensing-film-chapters" role="group" aria-label="Explore the awakening">
+          {[
+            { name: "Spark", time: 0 },
+            { name: "Orbit", time: 2 },
+            { name: "Radiance", time: 4.8 },
+          ].map((chapter, index) => (
+            <button
+              key={chapter.name}
+              type="button"
+              onClick={() => seekFilm(chapter.time)}
+              aria-label={`Seek to ${chapter.name}`}
+            >
+              <span>0{index + 1}</span> {chapter.name}
+            </button>
+          ))}
+        </div>
+      )}
       <div className="lensing-film-controls">
         <button className="lensing-film-play" type="button" onClick={() => void togglePlayback()}>
           <svg viewBox="0 0 20 20" aria-hidden="true">
@@ -271,11 +360,16 @@ export default function LensingFilm({
               {timecode(elapsed)} / {timecode(duration)}
             </span>
           </div>
-          <progress
+          <input
+            type="range"
+            className="lensing-film-scrubber"
+            min={0}
+            step={0.01}
             value={Math.min(elapsed, duration)}
             max={duration}
-            aria-label="Film progress"
-            aria-valuetext={`${Math.floor(elapsed)} of ${Math.round(duration)} seconds`}
+            onChange={(event) => seekFilm(Number(event.currentTarget.value))}
+            aria-label="Seek film"
+            aria-valuetext={`${elapsed.toFixed(1)} of ${duration.toFixed(1)} seconds`}
           />
         </div>
       </div>
@@ -291,6 +385,24 @@ export default function LensingFilm({
             }}
           >
             Enter this world
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M3 10h14m-5-5 5 5-5 5" />
+            </svg>
+          </button>
+        </div>
+      )}
+      {clipId === "signature" && onSignature && (
+        <div className="lensing-film-handoff">
+          <p>Now put the light in your hands.</p>
+          <button
+            type="button"
+            className="lensing-film-explore"
+            onClick={() => {
+              pauseFilm();
+              onSignature();
+            }}
+          >
+            Sculpt this light
             <svg viewBox="0 0 20 20" aria-hidden="true">
               <path d="M3 10h14m-5-5 5 5-5 5" />
             </svg>

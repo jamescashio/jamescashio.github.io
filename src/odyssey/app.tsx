@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState, type MouseEvent } from "react";
 import { Arrow, Core, Starfield } from "./effects";
 import { useInteractionSound, useMotionPreference, useSectionVisibility } from "./hooks";
 import { FoldTransition } from "./event-horizon";
@@ -20,6 +20,12 @@ const BrandStudio = lazy(() => import("./brand-studio"));
 const LensingObservatory = lazy(() => import("./lensing-observatory"));
 const LensingFilm = lazy(() => import("./lensing-film"));
 
+function resolveLauncher(opener: HTMLElement | null, fallback: string) {
+  return opener?.isConnected && opener !== document.body && opener !== document.documentElement
+    ? opener
+    : document.querySelector<HTMLElement>(fallback);
+}
+
 export function OdysseyApp() {
   const { motion, reduced, paused, setPaused } = useMotionPreference();
   const { sound, toggle, play } = useInteractionSound();
@@ -27,7 +33,7 @@ export function OdysseyApp() {
   const [signature, setSignature] = useState(false);
   const [lensing, setLensing] = useState(false);
   const [film, setFilm] = useState(false);
-  const [filmClip, setFilmClip] = useState<LensingClip>("awakening");
+  const [filmClip, setFilmClip] = useState<LensingClip>("signature");
   const [filmRouteRevision, setFilmRouteRevision] = useState(0);
   const [lensArrival, setLensArrival] = useState(false);
   const filmOpener = useRef<HTMLElement | null>(null);
@@ -35,7 +41,7 @@ export function OdysseyApp() {
   const ambientMotion = motion && flight === null && !signature && !lensing && !film;
   function openFilm(opener: HTMLElement) {
     filmOpener.current = opener;
-    setFilmClip("awakening");
+    setFilmClip("signature");
     setFilm(true);
   }
   function openLensing(opener: HTMLElement) {
@@ -44,16 +50,30 @@ export function OdysseyApp() {
     setLensing(true);
   }
   function enterFilmWorld() {
-    lensOpener.current = filmOpener.current ?? document.querySelector<HTMLElement>(".lens-film-link");
+    lensOpener.current = resolveLauncher(filmOpener.current, ".lens-film-link");
     setLensArrival(true);
     setFilm(false);
     setLensing(true);
-    if (/^#film(?:=awakening)?$/.test(location.hash))
+    if (/^#film(?:=(?:awakening|signature))?$/.test(location.hash))
       history.replaceState(null, "", location.pathname + location.search);
   }
   const signatureOpener = useRef<HTMLElement | null>(null);
-  function openSignature() {
-    signatureOpener.current = document.activeElement as HTMLElement;
+  function watchSignature() {
+    filmOpener.current = resolveLauncher(signatureOpener.current, ".o-signature-link");
+    setSignature(false);
+    setFilmClip("signature");
+    setFilm(true);
+    if (location.hash === "#signature") history.replaceState(null, "", location.pathname + location.search);
+  }
+  function sculptFilmLight() {
+    signatureOpener.current = resolveLauncher(filmOpener.current, ".lens-film-link");
+    setFilm(false);
+    setSignature(true);
+    if (/^#film(?:=(?:awakening|signature))?$/.test(location.hash))
+      history.replaceState(null, "", location.pathname + location.search);
+  }
+  function openSignature(event: MouseEvent<HTMLButtonElement>) {
+    signatureOpener.current = event.currentTarget;
     setSignature(true);
   }
   const flightOpener = useRef<HTMLElement | null>(null);
@@ -68,10 +88,12 @@ export function OdysseyApp() {
       setSignature(location.hash === "#signature");
       setLensing(location.hash === "#lensing");
       setLensArrival(false);
-      const filmRoute = /^#film(?:=awakening)?$/.test(location.hash);
+      const filmRoute = /^#film(?:=(?:awakening|signature))?$/.test(location.hash);
       setFilm(filmRoute);
       if (filmRoute) setFilmRouteRevision((revision) => revision + 1);
-      setFilmClip(location.hash === "#film" ? "arrival" : "awakening");
+      setFilmClip(
+        location.hash === "#film" ? "arrival" : location.hash === "#film=awakening" ? "awakening" : "signature",
+      );
     };
     readFlight();
     window.addEventListener("hashchange", readFlight);
@@ -295,7 +317,7 @@ export function OdysseyApp() {
             </a>
           ))}
         </nav>
-        <p>V37.5 PREVIEW / CELESTIAL SIGNATURE / A HUMAN IN COMMAND</p>
+        <p>V37.5 PREVIEW / CELESTIAL FORGE / A HUMAN IN COMMAND</p>
       </dialog>
       <main id="o-main">
         <section className="o-hero o-scene" id="top" aria-labelledby="hero-title">
@@ -306,7 +328,7 @@ export function OdysseyApp() {
           <div className="o-hero-content">
             <div className="eh-release-mark">
               <b>V37.5</b>
-              <span>CELESTIAL SIGNATURE / PREVIEW</span>
+              <span>CELESTIAL FORGE / PREVIEW</span>
             </div>
             <span className="o-kicker">
               <i />
@@ -350,10 +372,10 @@ export function OdysseyApp() {
             </div>
             <div className="lens-discover-links">
               <button className="lens-film-link" type="button" onClick={(event) => openFilm(event.currentTarget)}>
-                <span aria-hidden="true">▷</span> Watch The gate awakens <small>6 SEC</small>
+                <span aria-hidden="true">▷</span> Watch the signature awaken <small>6 SEC</small>
               </button>
               <button className="o-signature-link" type="button" onClick={openSignature}>
-                <span aria-hidden="true">⌘</span> Explore the celestial signature <Arrow diagonal />
+                <span aria-hidden="true">⌘</span> Play with the light <Arrow diagonal />
               </button>
             </div>
           </div>
@@ -674,12 +696,13 @@ export function OdysseyApp() {
             motion={motion}
             initialClip={filmClip}
             onExplore={enterFilmWorld}
+            onSignature={sculptFilmLight}
             onClose={() => {
               setFilm(false);
-              if (/^#film(?:=awakening)?$/.test(location.hash))
+              if (/^#film(?:=(?:awakening|signature))?$/.test(location.hash))
                 history.replaceState(null, "", location.pathname + location.search);
               requestAnimationFrame(() =>
-                (filmOpener.current ?? document.querySelector<HTMLElement>(".lens-film-link"))?.focus({
+                resolveLauncher(filmOpener.current, ".lens-film-link")?.focus({
                   preventScroll: true,
                 }),
               );
@@ -703,7 +726,7 @@ export function OdysseyApp() {
               setLensing(false);
               if (location.hash === "#lensing") history.replaceState(null, "", location.pathname + location.search);
               requestAnimationFrame(() =>
-                (lensOpener.current ?? document.querySelector<HTMLElement>(".lens-enter"))?.focus({
+                resolveLauncher(lensOpener.current, ".lens-enter")?.focus({
                   preventScroll: true,
                 }),
               );
@@ -721,11 +744,12 @@ export function OdysseyApp() {
         >
           <BrandStudio
             motion={motion}
+            onWatch={watchSignature}
             onClose={() => {
               setSignature(false);
               if (location.hash === "#signature") history.replaceState(null, "", location.pathname + location.search);
               requestAnimationFrame(() =>
-                (signatureOpener.current ?? document.querySelector<HTMLElement>(".o-signature-link"))?.focus({
+                resolveLauncher(signatureOpener.current, ".o-signature-link")?.focus({
                   preventScroll: true,
                 }),
               );
@@ -774,7 +798,7 @@ export function OdysseyApp() {
           <BrandMark motion={ambientMotion} />
         </a>
         <span>
-          V37.5 PREVIEW / CELESTIAL SIGNATURE
+          V37.5 PREVIEW / CELESTIAL FORGE
           <br />
           <small>Crafted with GPT-6 Astra · Directed by Doug Cashio</small>
         </span>
