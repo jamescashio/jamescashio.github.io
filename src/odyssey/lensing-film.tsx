@@ -2,27 +2,67 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import "./lensing-film.css";
 
 type Playback = "still" | "loading" | "playing" | "paused" | "ended" | "error";
+export type LensingClip = "awakening" | "arrival";
 
-const FILM = "/assets/lensing/orbital-arrival.mp4";
-const POSTER = "/assets/lensing/orbital-arrival-poster.webp";
+const CLIPS = {
+  awakening: {
+    title: "The gate awakens",
+    duration: 6,
+    durationLabel: "A SIX-SECOND FILM",
+    film: "/assets/lensing/gate-awakens.mp4",
+    poster: "/assets/lensing/gate-awakens-poster.webp",
+    description: "An imagined orbital gate gathers light above a distant planet.",
+  },
+  arrival: {
+    title: "Orbital arrival",
+    duration: 5,
+    durationLabel: "A FIVE-SECOND FILM",
+    film: "/assets/lensing/orbital-arrival.mp4",
+    poster: "/assets/lensing/orbital-arrival-poster.webp",
+    description: "An imagined orbital gate, a distant planet, a quiet approach.",
+  },
+} as const;
 
 function timecode(seconds: number) {
   return `0:${String(Math.floor(seconds)).padStart(2, "0")}`;
 }
 
-export default function LensingFilm({ motion, onClose }: { motion: boolean; onClose: () => void }) {
+export default function LensingFilm({
+  motion,
+  onClose,
+  initialClip = "awakening",
+  onExplore,
+}: {
+  motion: boolean;
+  onClose: () => void;
+  initialClip?: LensingClip;
+  onExplore: () => void;
+}) {
   const dialog = useRef<HTMLDialogElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const close = useRef<HTMLButtonElement>(null);
   const request = useRef(0);
+  const playbackIntent = useRef<HTMLVideoElement | null>(null);
   const mounted = useRef(false);
+  const [clipId, setClipId] = useState<LensingClip>(initialClip);
   const [playback, setPlayback] = useState<Playback>("still");
   const [elapsed, setElapsed] = useState(0);
-  const [duration, setDuration] = useState(5);
+  const [duration, setDuration] = useState<number>(CLIPS[initialClip].duration);
+  const clip = CLIPS[clipId];
   const active = playback === "playing" || playback === "loading";
+
+  const attachPlayer = useCallback((player: HTMLVideoElement | null) => {
+    if (video.current !== player) {
+      request.current += 1;
+      playbackIntent.current = null;
+      video.current?.pause();
+      video.current = player;
+    }
+  }, []);
 
   const pauseFilm = useCallback(() => {
     request.current += 1;
+    playbackIntent.current = null;
     video.current?.pause();
     setPlayback((current) => (current === "playing" || current === "loading" ? "paused" : current));
   }, []);
@@ -30,7 +70,6 @@ export default function LensingFilm({ motion, onClose }: { motion: boolean; onCl
   useEffect(() => {
     mounted.current = true;
     const panel = dialog.current;
-    const player = video.current;
     const overflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     if (panel && !panel.open) panel.showModal();
@@ -42,7 +81,8 @@ export default function LensingFilm({ motion, onClose }: { motion: boolean; onCl
     return () => {
       mounted.current = false;
       request.current += 1;
-      player?.pause();
+      playbackIntent.current = null;
+      video.current?.pause();
       panel?.close();
       document.body.style.overflow = overflow;
       document.removeEventListener("visibilitychange", visibility);
@@ -59,6 +99,19 @@ export default function LensingFilm({ motion, onClose }: { motion: boolean; onCl
     onClose();
   }
 
+  function selectClip(next: LensingClip) {
+    if (next === clipId) return;
+    pauseFilm();
+    setClipId(next);
+    setPlayback("still");
+    setElapsed(0);
+    setDuration(CLIPS[next].duration);
+  }
+
+  function isCurrentPlayer(player: HTMLVideoElement) {
+    return mounted.current && player === video.current && dialog.current?.open;
+  }
+
   async function togglePlayback() {
     const player = video.current;
     if (!player || document.hidden || !dialog.current?.open) return;
@@ -69,12 +122,16 @@ export default function LensingFilm({ motion, onClose }: { motion: boolean; onCl
     const generation = ++request.current;
     if (player.error) player.load();
     if (player.ended) player.currentTime = 0;
+    playbackIntent.current = player;
     setPlayback("loading");
     try {
       await player.play();
-      if (!mounted.current || document.hidden || !dialog.current?.open) player.pause();
+      if (!isCurrentPlayer(player) || document.hidden || playbackIntent.current !== player) player.pause();
     } catch {
-      if (mounted.current && generation === request.current) setPlayback("error");
+      if (isCurrentPlayer(player) && generation === request.current) {
+        playbackIntent.current = null;
+        setPlayback("error");
+      }
     }
   }
 
@@ -102,6 +159,8 @@ export default function LensingFilm({ motion, onClose }: { motion: boolean; onCl
     <dialog
       ref={dialog}
       className="lensing-film"
+      data-clip={clipId}
+      data-playback={playback}
       aria-labelledby="lensing-film-title"
       aria-describedby="lensing-film-description"
       onCancel={(event) => {
@@ -111,15 +170,15 @@ export default function LensingFilm({ motion, onClose }: { motion: boolean; onCl
     >
       <header className="lensing-film-header">
         <div>
-          <span className="lensing-film-eyebrow">LENSING / A FIVE-SECOND FILM</span>
-          <h2 id="lensing-film-title">Orbital arrival</h2>
+          <span className="lensing-film-eyebrow">LENSING / {clip.durationLabel}</span>
+          <h2 id="lensing-film-title">{clip.title}</h2>
         </div>
         <button
           ref={close}
           type="button"
           className="lensing-film-close"
           onClick={dismiss}
-          aria-label="Close Orbital arrival"
+          aria-label={`Close ${clip.title}`}
         >
           <span>Close</span>
           <svg viewBox="0 0 20 20" aria-hidden="true">
@@ -127,35 +186,68 @@ export default function LensingFilm({ motion, onClose }: { motion: boolean; onCl
           </svg>
         </button>
       </header>
+      <div className="lensing-film-choices" role="group" aria-label="Choose a film">
+        {(["awakening", "arrival"] as const).map((id) => (
+          <button
+            key={id}
+            type="button"
+            className="lensing-film-choice"
+            aria-pressed={clipId === id}
+            aria-label={`${CLIPS[id].title}, ${CLIPS[id].duration}-second film`}
+            onClick={() => selectClip(id)}
+          >
+            <span>{CLIPS[id].title}</span>
+            <small aria-hidden="true">0{CLIPS[id].duration}S</small>
+          </button>
+        ))}
+      </div>
       <figure className="lensing-film-frame">
         <video
-          ref={video}
-          src={FILM}
-          poster={POSTER}
+          key={clipId}
+          ref={attachPlayer}
+          src={clip.film}
+          poster={clip.poster}
           preload="none"
           muted
           playsInline
-          aria-label="Orbital arrival, a silent cinematic artwork"
+          aria-label={`${clip.title}, a silent cinematic artwork`}
           aria-describedby="lensing-film-description"
-          onPlaying={() => setPlayback("playing")}
-          onPause={() =>
-            setPlayback((current) => (current === "playing" || current === "loading" ? "paused" : current))
-          }
-          onWaiting={(event) => {
-            if (!event.currentTarget.paused) setPlayback("loading");
+          onPlaying={(event) => {
+            const player = event.currentTarget;
+            if (!isCurrentPlayer(player) || playbackIntent.current !== player || document.hidden) player.pause();
+            else if (!player.paused) setPlayback("playing");
           }}
-          onEnded={() => setPlayback("ended")}
-          onError={() => setPlayback("error")}
-          onTimeUpdate={(event) => setElapsed(event.currentTarget.currentTime)}
+          onPause={(event) => {
+            if (isCurrentPlayer(event.currentTarget) && event.currentTarget.paused)
+              setPlayback((current) => (current === "playing" || current === "loading" ? "paused" : current));
+          }}
+          onWaiting={(event) => {
+            if (isCurrentPlayer(event.currentTarget) && !event.currentTarget.paused) setPlayback("loading");
+          }}
+          onEnded={(event) => {
+            if (isCurrentPlayer(event.currentTarget) && event.currentTarget.ended) {
+              playbackIntent.current = null;
+              setPlayback("ended");
+            }
+          }}
+          onError={(event) => {
+            if (isCurrentPlayer(event.currentTarget) && event.currentTarget.error) {
+              playbackIntent.current = null;
+              setPlayback("error");
+            }
+          }}
+          onTimeUpdate={(event) => {
+            if (isCurrentPlayer(event.currentTarget)) setElapsed(event.currentTarget.currentTime);
+          }}
           onLoadedMetadata={(event) => {
             const seconds = event.currentTarget.duration;
-            if (Number.isFinite(seconds) && seconds > 0) setDuration(seconds);
+            if (isCurrentPlayer(event.currentTarget) && Number.isFinite(seconds) && seconds > 0) setDuration(seconds);
           }}
         >
           Your browser cannot play this film.
         </video>
         <figcaption id="lensing-film-description">
-          An imagined orbital gate, a distant planet, a quiet approach.
+          {clip.description}
           <span>Original cinematic artwork created with Higgsfield.</span>
         </figcaption>
       </figure>
@@ -187,6 +279,24 @@ export default function LensingFilm({ motion, onClose }: { motion: boolean; onCl
           />
         </div>
       </div>
+      {clipId === "awakening" && (
+        <div className="lensing-film-handoff">
+          <p>The next perspective is yours.</p>
+          <button
+            type="button"
+            className="lensing-film-explore"
+            onClick={() => {
+              pauseFilm();
+              onExplore();
+            }}
+          >
+            Enter this world
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M3 10h14m-5-5 5 5-5 5" />
+            </svg>
+          </button>
+        </div>
+      )}
     </dialog>
   );
 }

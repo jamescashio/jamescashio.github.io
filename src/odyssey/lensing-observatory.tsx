@@ -35,19 +35,21 @@ export default function LensingObservatory({
   motion,
   reduced,
   onClose,
+  initialPreset,
 }: {
   motion: boolean;
   reduced: boolean;
   onClose: () => void;
+  initialPreset?: { light: LensingLight; view: LensingView; resonance: boolean };
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const close = useRef<HTMLButtonElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const scene = useRef<Scene | null>(null);
-  const [freeLight, setFreeLight] = useState<LensingLight>("dawn");
-  const [freeView, setFreeView] = useState<LensingView>("orbit");
+  const [freeLight, setFreeLight] = useState<LensingLight>(initialPreset?.light ?? "dawn");
+  const [freeView, setFreeView] = useState<LensingView>(initialPreset?.view ?? "orbit");
   const [playing, setPlaying] = useState(true);
-  const [resonance, setResonance] = useState(false);
+  const [resonance, setResonance] = useState(initialPreset?.resonance ?? false);
   const [ready, setReady] = useState(false);
   const [arriving, setArriving] = useState(true);
   const [unavailable, setUnavailable] = useState(false);

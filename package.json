@@ -1,7 +1,7 @@
 {
   "name": "cashio-us",
   "private": true,
-  "version": "37.4.0-preview.resonance",
+  "version": "37.4.0-preview.gatewake",
   "type": "module",
   "scripts": {
     "dev": "vite",

@@ -1,5 +1,5 @@
 {
-  "experienceVersion": "37.4.0-preview.resonance",
+  "experienceVersion": "37.4.0-preview.gatewake",
   "releaseName": "THE HUMAN RECKONING",
   "visualEdition": "Lensing",
   "featuredExperience": "Lensing Observatory",
@@ -14,5 +14,5 @@
   "statement": "A new interactive experience over the existing dated public archive; this release does not establish current infrastructure state.",
   "legacyEntry": "/command-deck.html",
   "previewOf": "37.3.0",
-  "previewEdition": "Resonance"
+  "previewEdition": "Gatewake"
 }

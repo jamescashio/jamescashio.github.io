@@ -1,4 +1,12 @@
-# Current preview — Lensing: Resonance
+# Gatewake cinema preview
+
+Gatewake (`37.4.0-preview.gatewake`) continues the accepted Resonance graphics preview. It adds one original six-second Higgsfield film based on the existing Cashio orbital artwork. Keep the established palette, logo, typography, layout, observatory, and human command identity.
+
+The hero features The gate awakens. A compact cinema selector preserves Orbital arrival, including its existing `#film` link; `#film=awakening` opens the new film. Both films are silent, explicitly played, poster-first, and never loop. Switching films invalidates departing playback. The new film offers an explicit Enter this world action, which opens the actual interactive observatory at the gate in eclipse light with resonance enabled. No automatic handoff. Standard observatory entry keeps its existing defaults.
+
+This is an owner-only review. Public Cashio.us stays on the established release until approval of this enhancement. Below is the earlier design history.
+
+# Earlier preview — Lensing: Resonance
 
 Resonance is an unpublished graphics preview, version `37.4.0-preview.resonance`, based on the published V37.3 Lensing source at `75c084`. Keep `Lensing` as the visual edition and `THE HUMAN RECKONING` as the release name. The featured experience remains the Lensing Observatory. This pass prepares a review of the next visual direction; the earlier V37.3 publication approval is retained below as release history.
 
