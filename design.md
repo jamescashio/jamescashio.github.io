@@ -1,4 +1,14 @@
-# Current release — V37.3 Lensing
+# Current preview — Lensing: Resonance
+
+Resonance is an unpublished graphics preview, version `37.4.0-preview.resonance`, based on the published V37.3 Lensing source at `75c084`. Keep `Lensing` as the visual edition and `THE HUMAN RECKONING` as the release name. The featured experience remains the Lensing Observatory. This pass prepares a review of the next visual direction; the earlier V37.3 publication approval is retained below as release history.
+
+Give the orbital world more convincing depth: resolve the gate's machined surfaces, sharpen the relationship between illuminated edges and deep shadow, and let a restrained aurora describe the planet's atmosphere. Preserve the original gate, planet and courier identities. Keep the established deep ink, champagne gold and electric cyan palette, Cashio circuit logo, Oxanium headlines, Exo reading text and Jet instrument labels. Clear text and quiet reading areas frame the spectacle.
+
+Motion must explain the visitor's action or the existing guided journey. Keep camera, lighting and chapter controls usable while paused; honor reduced motion and hidden-page suspension. Refine material and atmospheric presence inside the existing rendering budget. The world remains original illustrative artwork and does not represent measured infrastructure or scientific simulation. Keep all seven study models, the optional finite Orbital arrival film, the original starship, dated evidence, legacy routes and shared bookmarks intact.
+
+Acceptance for this preview: inspect desktop, tablet, 390 px and 320 px layouts; compare real rendered gate, atmosphere and lighting changes; verify readable contrast, clear focus, touch controls, stable pause and immediate reduced-motion outcomes. Confirm the build and preview metadata agree, both homepage documents are noindex/nofollow, and the canonical and compatibility receipts are identical. Review the preview before any later production promotion.
+
+# Prior release — V37.3 Lensing
 
 Final approach adds one approved Higgsfield film, Orbital arrival, as an optional five-second cinematic interlude. Keep the interactive observatory as the primary action. The film opens on a locally optimized poster, plays only on deliberate input, never loops, and pauses when hidden or closed. Preserve a usable still for reduced motion and loading failure. Its silent, original orbital artwork shares the titanium, champagne and cyan palette. Keep captions legible over the interactive scene at tablet widths. The owner approved this final review for Cashio.us publication on September 6, 2026. Publish through the existing GitHub Pages release path after the production checks pass.
 

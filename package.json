@@ -1,7 +1,7 @@
 {
   "name": "cashio-us",
   "private": true,
-  "version": "37.3.0",
+  "version": "37.4.0-preview.resonance",
   "type": "module",
   "scripts": {
     "dev": "vite",

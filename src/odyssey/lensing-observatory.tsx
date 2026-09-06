@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { LensingLight, LensingView } from "./lensing-renderer";
 import { JOURNEY, useLensingJourney } from "./lensing-journey";
 import "./lensing-observatory.css";
+import "./lensing-resonance.css";
 
 const LIGHTS: { id: LensingLight; label: string; note: string }[] = [
   { id: "dawn", label: "Dawn", note: "Warm light. A world coming into view." },
@@ -46,21 +47,27 @@ export default function LensingObservatory({
   const [freeLight, setFreeLight] = useState<LensingLight>("dawn");
   const [freeView, setFreeView] = useState<LensingView>("orbit");
   const [playing, setPlaying] = useState(true);
+  const [resonance, setResonance] = useState(false);
   const [ready, setReady] = useState(false);
+  const [arriving, setArriving] = useState(true);
   const [unavailable, setUnavailable] = useState(false);
   const journey = useLensingJourney(motion && playing && ready && !unavailable);
   const chapter = journey.step ? JOURNEY[journey.step.index] : null;
   const light = chapter?.light ?? freeLight;
   const view = chapter?.view ?? freeView;
-  const settings = useRef({ motion, playing, light, view });
+  const settings = useRef({ motion, playing, light, view, resonance });
   const activeView = VIEWS.find((item) => item.id === view)!;
   const activeLight = LIGHTS.find((item) => item.id === light)!;
 
   useEffect(() => {
-    settings.current = { motion, playing, light, view };
+    settings.current = { motion, playing, light, view, resonance };
     scene.current?.setMotion(motion);
     scene.current?.setPlaying(playing && motion);
-  }, [motion, playing, light, view]);
+  }, [motion, playing, light, view, resonance]);
+
+  useEffect(() => {
+    scene.current?.setResonance(resonance);
+  }, [resonance]);
 
   useEffect(() => {
     scene.current?.setLight(light);
@@ -87,13 +94,18 @@ export default function LensingObservatory({
       .then(({ createLensingScene }) => {
         if (!active || !canvas.current) return;
         scene.current = createLensingScene(canvas.current, {
-          onReady: () => active && setReady(true),
+          onReady: () => {
+            if (!active) return;
+            setArriving(settings.current.motion && settings.current.playing);
+            setReady(true);
+          },
           onUnavailable: () => active && setUnavailable(true),
         });
         scene.current.setMotion(settings.current.motion);
         scene.current.setPlaying(settings.current.playing && settings.current.motion);
         scene.current.setLight(settings.current.light);
         scene.current.setView(settings.current.view);
+        scene.current.setResonance(settings.current.resonance);
       })
       .catch(() => active && setUnavailable(true));
     return () => {
@@ -131,6 +143,7 @@ export default function LensingObservatory({
       data-view={view}
       data-ready={ready && !unavailable ? "true" : "false"}
       data-motion={motion && playing ? "on" : "off"}
+      data-resonance={resonance ? "on" : "off"}
       data-journey={
         !journey.step
           ? "off"
@@ -215,6 +228,18 @@ export default function LensingObservatory({
         </div>
       )}
       <div className="lens-stage">
+        <div
+          className="lens-arrival"
+          data-complete={!arriving}
+          aria-hidden="true"
+          onAnimationEnd={() => setArriving(false)}
+        >
+          <svg viewBox="0 0 600 600" fill="none">
+            <circle cx="300" cy="300" r="224" stroke="#e4c38d" strokeWidth="1" strokeDasharray="340 24 8 24" />
+            <circle cx="300" cy="300" r="208" stroke="#75e7f2" strokeWidth="2" strokeDasharray="140 118" />
+            <path d="M300 54v30m216 216h30M300 516v30M54 300h30" stroke="#aeeef0" strokeWidth="1" />
+          </svg>
+        </div>
         <canvas
           ref={canvas}
           className="lens-canvas"
@@ -251,11 +276,32 @@ export default function LensingObservatory({
             {unavailable && <button onClick={onClose}>Return to Cashio ↗</button>}
           </div>
         )}
-        <div className="lens-stage-top" aria-hidden="true">
-          <span>
+        <div className="lens-stage-top">
+          <span aria-hidden="true">
             <i /> {activeLight.label.toUpperCase()} / {activeView.label.toUpperCase()}
           </span>
-          <span>IMAGINATION, WITH INTENTION.</span>
+          <button
+            type="button"
+            className="lens-resonance"
+            aria-pressed={resonance}
+            aria-label="Ignite the gate"
+            disabled={!ready || unavailable}
+            onClick={() => {
+              takeControl();
+              setResonance(!resonance);
+            }}
+          >
+            <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+              <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth=".8" strokeDasharray="18 4" />
+              <circle cx="16" cy="16" r="8" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M16 1v7m0 16v7M1 16h7m16 0h7" stroke="currentColor" />
+              <circle cx="16" cy="16" r="2" fill="currentColor" />
+            </svg>
+            <span>{resonance ? "Gate ignited" : "Ignite the gate"}</span>
+            <span className="lens-resonance-state" aria-hidden="true">
+              {resonance ? "ON" : "↗"}
+            </span>
+          </button>
         </div>
         <div className="lens-reticle lens-reticle-a" aria-hidden="true" />
         <div className="lens-reticle lens-reticle-b" aria-hidden="true" />
@@ -263,10 +309,15 @@ export default function LensingObservatory({
           <span className="lens-eyebrow">
             {chapter
               ? `0${journey.step!.index + 1} / ${chapter.note.toUpperCase()}`
-              : "FREE EXPLORATION / THE WORLD IS YOURS"}
+              : resonance
+                ? "RESONANCE / A WORLD ANSWERS"
+                : "FREE EXPLORATION / THE WORLD IS YOURS"}
           </span>
-          <h3>{chapter?.title ?? activeView.title}</h3>
-          <p>{chapter?.description ?? activeView.description}</p>
+          <h3>{chapter?.title ?? (resonance ? "The horizon answers." : activeView.title)}</h3>
+          <p>
+            {chapter?.description ??
+              (resonance ? "Light finds the circuit. The horizon comes alive." : activeView.description)}
+          </p>
         </div>
         <div className="lens-orbit-tools" aria-label="Camera controls">
           <button
@@ -396,7 +447,7 @@ export default function LensingObservatory({
       </footer>
       <span className="lens-sr-only" role="status">
         {ready
-          ? `${journey.complete ? "Journey complete. Explore freely whenever you like. " : ""}${activeLight.note} ${chapter?.description ?? activeView.description}`
+          ? `${resonance ? "Gate ignited. Select Ignite the gate again to return to the quiet world. " : ""}${journey.complete ? "Journey complete. Explore freely whenever you like. " : ""}${activeLight.note} ${chapter?.description ?? activeView.description}`
           : ""}
       </span>
     </dialog>

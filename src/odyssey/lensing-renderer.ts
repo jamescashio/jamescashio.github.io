@@ -7,6 +7,8 @@ export type LensingController = {
   setView: (view: LensingView) => void;
   setMotion: (enabled: boolean) => void;
   setPlaying: (enabled: boolean) => void;
+  /** Four-second gate ignition, latched until disabled. Static when motion is off. */
+  setResonance: (enabled: boolean) => void;
   rotate: (dx: number, dy: number) => void;
   /** Distance multiplier: 0.85 moves closer; 1.15 moves farther away. */
   zoom: (amount: number) => void;
@@ -187,7 +189,7 @@ const planetFragment = `
   }
 `;
 const atmosphereFragment = `
-  uniform vec3 sunDirection; uniform vec3 atmosphereColor; uniform float eclipse;
+  uniform vec3 sunDirection; uniform vec3 atmosphereColor; uniform float eclipse; uniform float resonance;
   varying vec3 vWorld; varying vec3 vNormal;
   void main() {
     vec3 normal=normalize(vNormal), view=normalize(cameraPosition-vWorld);
@@ -198,11 +200,109 @@ const atmosphereFragment = `
     float twilight=exp(-abs(incidence)*9.0);
     vec3 color=mix(atmosphereColor,vec3(1.0,0.44,0.13),twilight*(0.4+eclipse*0.25));
     float highAir=pow(grazing,12.0)*(0.055+day*0.17);
-    gl_FragColor=vec4(color,rim*(0.035+day*0.34+eclipse*0.12)+highAir);
+    float energized=smoothstep(0.4,0.95,resonance)*smoothstep(0.54,0.9,abs(normal.y));
+    color=mix(color,vec3(0.20,1.0,0.79),energized*0.42);
+    gl_FragColor=vec4(color,rim*(0.035+day*0.34+eclipse*0.12+energized*0.24)+highAir);
     #include <tonemapping_fragment>
     #include <colorspace_fragment>
   }
 `;
+
+// Two tracks share one instanced draw. Their charged arc stays lit, while a
+// narrow champagne leader makes the finite circumferential ignition legible.
+const resonanceTrackFragment = `
+  uniform float resonance; uniform float phase; uniform float ion;
+  varying vec2 vUv;
+  void main() {
+    float charge=smoothstep(0.0,0.46,resonance);
+    float angle=fract(vUv.x+0.25);
+    float filled=1.0-smoothstep(charge-0.012,charge+0.005,angle);
+    filled*=smoothstep(0.0,0.035,charge);
+    float leader=exp(-abs(angle-charge)*160.0)*(1.0-smoothstep(0.93,1.0,charge));
+    float inlay=0.68+0.32*pow(0.5+0.5*cos(angle*301.5929),3.0);
+    float current=0.94+0.06*sin(angle*31.4159-phase*0.7);
+    vec3 color=mix(vec3(0.16,0.78,1.0),vec3(0.31,1.0,0.83),ion);
+    color=mix(color,vec3(1.0,0.84,0.53),leader*0.9);
+    gl_FragColor=vec4(color*(1.0+leader*0.65),filled*inlay*current*0.93+leader*0.7);
+    #include <colorspace_fragment>
+  }
+`;
+const auroraVertex = `
+  uniform float phase;
+  varying vec2 vUv; varying vec3 vWorld; varying vec3 vNormal;
+  void main() {
+    vUv=uv;
+    vec3 normal=normalize(position);
+    float drift=sin(uv.x*37.6991+phase*0.24)*0.028+sin(uv.x*81.6814-phase*0.17)*0.013;
+    vec3 displaced=position+normal*drift*uv.y;
+    vec4 world=modelMatrix*vec4(displaced,1.0);
+    vWorld=world.xyz;
+    vNormal=normalize(mat3(modelMatrix)*normal);
+    gl_Position=projectionMatrix*viewMatrix*world;
+  }
+`;
+const auroraFragment = `
+  uniform float resonance; uniform float phase; uniform float ion; uniform float eclipse;
+  uniform vec3 sunDirection;
+  varying vec2 vUv; varying vec3 vWorld; varying vec3 vNormal;
+  void main() {
+    float reveal=smoothstep(0.34,0.98,resonance);
+    float longitude=vUv.x*6.283185;
+    float fold=longitude+sin(longitude*5.0+phase*0.14)*0.06+vUv.y*0.06;
+    float broad=0.5+0.5*sin(fold*13.0+sin(fold*7.0)*1.4-phase*0.16);
+    float fine=0.5+0.5*sin(fold*137.0+sin(fold*31.0)*2.0+vUv.y*1.6);
+    float filaments=0.26+pow(broad,1.7)*0.42+pow(fine,4.0)*0.32;
+    float edge=pow(1.0-vUv.y,1.45)*smoothstep(0.0,0.035,vUv.y);
+    float crown=exp(-abs(vUv.y-0.075)*34.0);
+    float light=dot(normalize(vNormal),normalize(sunDirection));
+    float night=1.0-smoothstep(-0.35,0.7,light);
+    vec3 base=mix(vec3(0.09,0.92,0.76),vec3(0.12,0.71,1.0),ion);
+    vec3 color=mix(base,vec3(0.51,0.42,0.94),smoothstep(0.2,1.0,vUv.y)*0.6);
+    color+=vec3(0.72,0.52,0.20)*crown*0.55;
+    float alpha=(filaments*edge*(0.48+night*0.28+eclipse*0.08)+crown*0.20)*reveal;
+    gl_FragColor=vec4(color,alpha);
+    #include <colorspace_fragment>
+  }
+`;
+
+/** Two continuous polar curtains: true radial height above the globe, with a
+ * broken authored crest. The shader adds slow folds without per-frame geometry. */
+function createPolarCurtains() {
+  const azimuths = 144,
+    levels = 10;
+  const positions: number[] = [],
+    uvs: number[] = [],
+    indices: number[] = [];
+  for (const hemisphere of [-1, 1]) {
+    const offset = positions.length / 3;
+    for (let level = 0; level <= levels; level++) {
+      const height = level / levels;
+      for (let index = 0; index <= azimuths; index++) {
+        const longitude = (index / azimuths) * TAU;
+        const latitude = (1.015 + Math.sin(longitude * 3) * 0.045 + Math.sin(longitude * 7) * 0.018) * hemisphere;
+        const crest = 0.5 + Math.sin(longitude * 5) * 0.075 + Math.sin(longitude * 13) * 0.024;
+        const radius = 3.032 + height * crest;
+        positions.push(
+          Math.cos(longitude) * Math.cos(latitude) * radius,
+          Math.sin(latitude) * radius,
+          Math.sin(longitude) * Math.cos(latitude) * radius,
+        );
+        uvs.push(index / azimuths, height);
+        if (level < levels && index < azimuths) {
+          const a = offset + level * (azimuths + 1) + index,
+            b = a + azimuths + 1;
+          indices.push(a, b, a + 1, b, b + 1, a + 1);
+        }
+      }
+    }
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+  geometry.setIndex(indices);
+  geometry.computeBoundingSphere();
+  return geometry;
+}
 
 const propulsionVertex = `
   varying vec2 vUv;
@@ -268,7 +368,7 @@ function createCourierHull() {
   return geometry;
 }
 
-type Pose = { yaw: number; pitch: number; distance: number; focus: THREE.Vector3; roll: number };
+type Pose = { yaw: number; pitch: number; distance: number; focus: THREE.Vector3; roll: number; fov: number };
 const ease = (value: number) => value * value * (3 - 2 * value);
 const shortest = (from: number, to: number) => Math.atan2(Math.sin(to - from), Math.cos(to - from));
 
@@ -288,6 +388,7 @@ export function createLensingScene(
       setView: noop,
       setMotion: noop,
       setPlaying: noop,
+      setResonance: noop,
       rotate: noop,
       zoom: noop,
       reset: noop,
@@ -340,6 +441,7 @@ export function createLensingScene(
     eclipse: { value: 0 },
     ion: { value: 0 },
     phase: { value: 0 },
+    resonance: { value: 0 },
     surfaceAtlas: { value: surfaceAtlas },
   };
   const planet = new THREE.Mesh(
@@ -362,11 +464,28 @@ export function createLensingScene(
   );
   atmosphere.name = "Atmospheric limb";
   scene.add(planet, atmosphere);
+  const aurora = new THREE.Mesh(
+    createPolarCurtains(),
+    new THREE.ShaderMaterial({
+      uniforms,
+      vertexShader: auroraVertex,
+      fragmentShader: auroraFragment,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      side: THREE.DoubleSide,
+      forceSinglePass: true,
+    }),
+  );
+  aurora.name = "Resonant polar curtains";
+  aurora.visible = false;
+  scene.add(aurora);
 
   const titanium = new THREE.MeshStandardMaterial({ color: 0x455e72, metalness: 0.82, roughness: 0.26 });
   const gateSkin = titanium.clone();
   gateSkin.vertexColors = true;
   gateSkin.roughness = 0.31;
+  gateSkin.emissive.set(0x0d6580);
   const midnight = new THREE.MeshStandardMaterial({ color: 0x0c1724, metalness: 0.7, roughness: 0.36 });
   const silver = new THREE.MeshStandardMaterial({ color: 0xb3c0c5, metalness: 0.86, roughness: 0.22 });
   const gold = new THREE.MeshStandardMaterial({ color: 0xd7ac6e, metalness: 0.83, roughness: 0.25 });
@@ -416,14 +535,14 @@ export function createLensingScene(
     }
     return add(geometry, material);
   };
-  annulus(4.52, 4.96, 0.26, gateSkin);
-  annulus(4.98, 5.13, 0.16, midnight);
-  annulus(5.19, 5.31, 0.11, gold);
-  annulus(4.25, 4.34, 0.085, silver);
+  annulus(4.52, 4.96, 0.48, gateSkin);
+  annulus(4.98, 5.13, 0.32, midnight);
+  annulus(5.19, 5.31, 0.18, gold);
+  annulus(4.25, 4.34, 0.12, silver);
   const lip = add(new THREE.TorusGeometry(4.55, 0.031, 6, 144), gold);
-  lip.position.z = 0.17;
+  lip.position.z = 0.275;
   const outerLip = add(new THREE.TorusGeometry(4.93, 0.018, 5, 144), silver);
-  outerLip.position.z = 0.157;
+  outerLip.position.z = 0.267;
   const innerTrack = add(new THREE.TorusGeometry(4.37, 0.012, 4, 128), cyan);
   innerTrack.position.z = 0.025;
 
@@ -448,14 +567,41 @@ export function createLensingScene(
     gate.add(instances);
     return instances;
   };
-  instanceRing(new THREE.BoxGeometry(0.36, 0.055, 0.035), midnight, 96, 4.74, 0.15);
-  instanceRing(new THREE.BoxGeometry(0.13, 0.032, 0.022), champagne, 24, 4.77, 0.179);
-  instanceRing(new THREE.BoxGeometry(0.042, 0.16, 0.035), silver, 48, 5.05, 0.12);
-  instanceRing(new THREE.BoxGeometry(0.045, 0.032, 0.019), cyan, 96, 4.6, 0.183);
-  instanceRing(new THREE.BoxGeometry(0.74, 0.12, 0.23), titanium, 8, 4.64, -0.19, Math.PI / 8);
+  instanceRing(new THREE.BoxGeometry(0.36, 0.055, 0.035), midnight, 96, 4.74, 0.268);
+  instanceRing(new THREE.BoxGeometry(0.13, 0.032, 0.022), champagne, 24, 4.77, 0.295);
+  instanceRing(new THREE.BoxGeometry(0.042, 0.16, 0.035), silver, 48, 5.05, 0.183);
+  instanceRing(new THREE.BoxGeometry(0.045, 0.032, 0.019), cyan, 96, 4.6, 0.297);
+  instanceRing(new THREE.BoxGeometry(0.74, 0.12, 0.23), titanium, 8, 4.64, -0.32, Math.PI / 8);
+  // Broad transverse ribs bridge the recessed channels. Their thick side walls
+  // are readable in the approach view without another layer of particle effects.
+  const ribs = instanceRing(new THREE.BoxGeometry(0.78, 0.105, 0.55), silver, 12, 4.85, -0.026, Math.PI / 12);
+  ribs.name = "Transverse gate pressure ribs";
+  const resonanceTracks = new THREE.InstancedMesh(
+    new THREE.TorusGeometry(1, 0.0065, 4, 192),
+    new THREE.ShaderMaterial({
+      uniforms,
+      vertexShader: propulsionVertex,
+      fragmentShader: resonanceTrackFragment,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    }),
+    2,
+  );
+  resonanceTracks.name = "Circumferential gate ignition";
+  for (const [index, radius] of [4.48, 5.155].entries()) {
+    matrix.position.set(0, 0, 0.31);
+    matrix.rotation.set(0, 0, 0);
+    matrix.scale.set(radius, radius, 1);
+    matrix.updateMatrix();
+    resonanceTracks.setMatrixAt(index, matrix.matrix);
+  }
+  resonanceTracks.visible = false;
+  gate.add(resonanceTracks);
   const segments = new THREE.InstancedMesh(new THREE.TorusGeometry(4.425, 0.024, 5, 12, 0.18), cyan, 20);
+  matrix.scale.set(1, 1, 1);
   for (let index = 0; index < 20; index++) {
-    matrix.position.set(0, 0, 0.1);
+    matrix.position.set(0, 0, 0.2);
     matrix.rotation.set(0, 0, (index * TAU) / 20);
     matrix.updateMatrix();
     segments.setMatrixAt(index, matrix.matrix);
@@ -713,8 +859,10 @@ export function createLensingScene(
     selectedLight: LensingLight = "dawn",
     authored = true;
   let zoomScale = 1;
+  let resonanceEnabled = false;
+  let resonanceTravel: { from: number; to: number; elapsed: number; duration: number } | null = null;
   const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const pose: Pose = { yaw: 0.73, pitch: -0.25, distance: 20, focus: new THREE.Vector3(), roll: 0 };
+  const pose: Pose = { yaw: 0.73, pitch: -0.25, distance: 20, focus: new THREE.Vector3(), roll: 0, fov: 39 };
   let travel: { from: Pose; to: Pose; elapsed: number } | null = null;
   let lightTravel: {
     sun: THREE.Vector3;
@@ -746,6 +894,10 @@ export function createLensingScene(
   const canAnimate = () => motion && playing && !media.matches;
   const clonePose = (value: Pose): Pose => ({ ...value, focus: value.focus.clone() });
   const applyPose = () => {
+    if (camera.fov !== pose.fov) {
+      camera.fov = pose.fov;
+      camera.updateProjectionMatrix();
+    }
     camera.position
       .set(Math.sin(pose.yaw) * Math.cos(pose.pitch), Math.sin(pose.pitch), Math.cos(pose.yaw) * Math.cos(pose.pitch))
       .multiplyScalar(pose.distance * zoomScale)
@@ -757,16 +909,20 @@ export function createLensingScene(
   const targetPose = (view: LensingView): Pose => {
     const portrait = width / height < 0.82;
     const phone = width <= 600;
-    const yaw = view === "orbit" ? (phone || portrait ? 0.88 : 0.73) : view === "surface" ? -0.36 : 0.72;
-    const pitch = view === "orbit" ? (phone || portrait ? -0.32 : -0.25) : view === "surface" ? 0.16 : -0.06;
+    const yaw = view === "orbit" ? (phone || portrait ? 0.88 : 0.73) : view === "surface" ? -0.36 : 1.05;
+    const pitch = view === "orbit" ? (phone || portrait ? -0.32 : -0.25) : 0.16;
     const focus =
       view === "orbit"
         ? new THREE.Vector3()
         : view === "surface"
           ? new THREE.Vector3(-0.35, 0.25, 0.35)
-          : new THREE.Vector3(2.0, 1.1, 0.15);
-    const roll = view === "orbit" ? (phone || portrait ? -0.2 : -0.12) : portrait ? -0.14 : -0.025;
-    const probe = new THREE.PerspectiveCamera(39, width / height, 0.1, 240);
+          : new THREE.Vector3(0.6, 0.25, 0.0);
+    const roll =
+      view === "orbit" ? (phone || portrait ? -0.2 : -0.12) : view === "gate" ? -0.16 : portrait ? -0.14 : -0.025;
+    // A wider approach lens moves the gate's near edge into the foreground,
+    // keeping the distant world smaller. Orbit and Surface retain their lenses.
+    const fov = view === "gate" ? 54 : 39;
+    const probe = new THREE.PerspectiveCamera(fov, width / height, 0.1, 240);
     probe.position.set(Math.sin(yaw) * Math.cos(pitch), Math.sin(pitch), Math.cos(yaw) * Math.cos(pitch));
     probe.lookAt(0, 0, 0);
     probe.rotateZ(roll);
@@ -774,9 +930,9 @@ export function createLensingScene(
     const right = new THREE.Vector3().setFromMatrixColumn(probe.matrixWorld, 0),
       up = new THREE.Vector3().setFromMatrixColumn(probe.matrixWorld, 1),
       back = new THREE.Vector3().setFromMatrixColumn(probe.matrixWorld, 2);
-    const tangent = Math.tan(THREE.MathUtils.degToRad(39 / 2));
+    const tangent = Math.tan(THREE.MathUtils.degToRad(fov / 2));
     let distance = 7;
-    if (view === "orbit")
+    if (view !== "surface")
       for (const point of framing) {
         const relative = point.clone().sub(focus),
           depth = relative.dot(back);
@@ -786,8 +942,12 @@ export function createLensingScene(
           Math.abs(relative.dot(up)) / (tangent * 0.86) + depth,
         );
       }
-    else distance = (view === "surface" ? 3.48 : 3.7) / Math.sin(Math.atan(tangent * Math.min(1, probe.aspect)));
-    return { yaw, pitch, distance, focus, roll };
+    else distance = 3.48 / Math.sin(Math.atan(tangent * Math.min(1, probe.aspect)));
+    if (view === "gate" && width > 600) {
+      distance *= 0.86;
+      focus.addScaledVector(right, -(probe.aspect > 2.2 ? 1.65 : 0.75));
+    }
+    return { yaw, pitch, distance, focus, roll, fov };
   };
   const copyPose = (target: Pose) => {
     pose.yaw = target.yaw;
@@ -795,6 +955,11 @@ export function createLensingScene(
     pose.distance = target.distance;
     pose.focus.copy(target.focus);
     pose.roll = target.roll;
+    pose.fov = target.fov;
+  };
+  const finishResonance = () => {
+    uniforms.resonance.value = resonanceEnabled ? 1 : 0;
+    resonanceTravel = null;
   };
   const paintLight = () => {
     sun.position.copy(uniforms.sunDirection.value).multiplyScalar(12);
@@ -837,6 +1002,7 @@ export function createLensingScene(
         pose.pitch = THREE.MathUtils.lerp(travel.from.pitch, travel.to.pitch, amount);
         pose.distance = THREE.MathUtils.lerp(travel.from.distance, travel.to.distance, amount);
         pose.roll = THREE.MathUtils.lerp(travel.from.roll, travel.to.roll, amount);
+        pose.fov = THREE.MathUtils.lerp(travel.from.fov, travel.to.fov, amount);
         pose.focus.lerpVectors(travel.from.focus, travel.to.focus, amount);
         if (amount === 1) travel = null;
       }
@@ -851,14 +1017,24 @@ export function createLensingScene(
         paintLight();
         if (amount === 1) lightTravel = null;
       }
+      if (resonanceTravel) {
+        resonanceTravel.elapsed += delta;
+        const amount = Math.min(1, resonanceTravel.elapsed / resonanceTravel.duration);
+        uniforms.resonance.value = THREE.MathUtils.lerp(resonanceTravel.from, resonanceTravel.to, amount);
+        if (amount === 1) resonanceTravel = null;
+      }
     }
     if (dirty || time - lastPaint >= FRAME_MS - 0.5) {
       uniforms.phase.value = phase;
       planet.rotation.y = -0.4 + phase * 0.018;
+      aurora.rotation.copy(planet.rotation);
+      aurora.visible = uniforms.resonance.value > 0.34;
+      resonanceTracks.visible = uniforms.resonance.value > 0;
+      gateSkin.emissiveIntensity = uniforms.resonance.value * (0.14 + uniforms.ion.value * 0.045);
       satellite.rotation.y = -0.4 + phase * 0.035;
       for (let index = 0; index < 8; index++) {
         const angle = (index * TAU) / 8 + phase * 0.12;
-        matrix.position.set(Math.cos(angle) * 4.37, Math.sin(angle) * 4.37, 0.09);
+        matrix.position.set(Math.cos(angle) * 4.37, Math.sin(angle) * 4.37, 0.2);
         matrix.rotation.set(0, 0, angle);
         matrix.scale.set(1, 1, 1);
         matrix.updateMatrix();
@@ -868,12 +1044,14 @@ export function createLensingScene(
       paintTraffic(phase);
       applyPose();
       renderer.render(scene, camera);
+      canvas.dataset.lensingResonance = resonanceEnabled ? "on" : "off";
+      canvas.dataset.lensingResonanceProgress = uniforms.resonance.value.toFixed(3);
+      canvas.dataset.lensingDrawCalls = String(renderer.info.render.calls);
+      canvas.dataset.lensingTriangles = String(renderer.info.render.triangles);
       lastPaint = time;
       dirty = false;
       if (!ready) {
         ready = true;
-        canvas.dataset.lensingDrawCalls = String(renderer.info.render.calls);
-        canvas.dataset.lensingTriangles = String(renderer.info.render.triangles);
         callbacks.onReady?.();
       }
     }
@@ -928,6 +1106,20 @@ export function createLensingScene(
     dirty = true;
     queue();
   };
+  const setResonance = (enabled: boolean) => {
+    if (enabled === resonanceEnabled) return;
+    resonanceEnabled = enabled;
+    if (canAnimate()) {
+      resonanceTravel = {
+        from: uniforms.resonance.value,
+        to: enabled ? 1 : 0,
+        elapsed: 0,
+        duration: enabled ? 4 : 1.2,
+      };
+    } else finishResonance();
+    dirty = true;
+    queue();
+  };
   const rotate = (dx: number, dy: number) => {
     if (!Number.isFinite(dx) || !Number.isFinite(dy)) return;
     authored = false;
@@ -949,6 +1141,7 @@ export function createLensingScene(
       if (travel) copyPose(travel.to);
       travel = null;
       finishLight();
+      finishResonance();
     }
     dirty = true;
     queue();
@@ -1019,6 +1212,7 @@ export function createLensingScene(
   return {
     setLight,
     setView,
+    setResonance,
     rotate,
     zoom,
     setMotion(enabled) {
@@ -1027,6 +1221,7 @@ export function createLensingScene(
         if (travel) copyPose(travel.to);
         travel = null;
         finishLight();
+        finishResonance();
       }
       dirty = true;
       queue();

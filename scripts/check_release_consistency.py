@@ -477,7 +477,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--preview", action="store_true", help="Validate an explicitly unpublished local preview; never a deployment approval")
     preview = parser.parse_args().preview
-    version = "37.3.0-preview.lensing" if preview else "37.3.0"
+    version = "37.4.0-preview.resonance" if preview else "37.3.0"
     failures: list[str] = []
 
     try:

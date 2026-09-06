@@ -277,7 +277,7 @@ export function OdysseyApp() {
             </a>
           ))}
         </nav>
-        <p>V37 / LENSING / A HUMAN IN COMMAND</p>
+        <p>V37.4 PREVIEW / LENSING: RESONANCE / A HUMAN IN COMMAND</p>
       </dialog>
       <main id="o-main">
         <section className="o-hero o-scene" id="top" aria-labelledby="hero-title">
@@ -287,8 +287,8 @@ export function OdysseyApp() {
           <Starfield motion={ambientMotion} folding={folding} />
           <div className="o-hero-content">
             <div className="eh-release-mark">
-              <b>V37.3</b>
-              <span>LENSING / THE HUMAN RECKONING</span>
+              <b>V37.4 PREVIEW</b>
+              <span>LENSING: RESONANCE</span>
             </div>
             <span className="o-kicker">
               <i />
@@ -315,7 +315,7 @@ export function OdysseyApp() {
                   ◉
                 </span>
                 <span>
-                  Enter the observatory<small>A WORLD TO EXPLORE. A JOURNEY TO TAKE.</small>
+                  Enter the observatory<small>IGNITE THE GATE. AWAKEN A WORLD.</small>
                 </span>
                 <Arrow />
               </button>
@@ -328,7 +328,7 @@ export function OdysseyApp() {
               <i />
               <span>Take the journey.</span>
               <i />
-              <span>Take command.</span>
+              <span>Ignite the gate.</span>
             </div>
             <div className="lens-discover-links">
               <button className="lens-film-link" type="button" onClick={(event) => openFilm(event.currentTarget)}>
@@ -354,7 +354,7 @@ export function OdysseyApp() {
             </span>
           </button>
           <div className="lens-scene-caption" aria-hidden="true">
-            <span>THE ART OF WHAT COMES NEXT</span>
+            <span>THE ART OF WHAT COMES NEXT / RESONANCE</span>
             <strong>LENSING</strong>
             <div>
               <i /> ORIGINAL WORLDS. HUMAN INTENT.
@@ -751,7 +751,7 @@ export function OdysseyApp() {
           <BrandMark motion={motion} />
         </a>
         <span>
-          V37.3 / LENSING
+          V37.4 PREVIEW / LENSING: RESONANCE
           <br />
           <small>Crafted with GPT-6 Astra · Directed by Doug Cashio</small>
         </span>
