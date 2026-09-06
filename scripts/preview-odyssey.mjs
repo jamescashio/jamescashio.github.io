@@ -19,6 +19,7 @@ const types = {
   ".webp": "image/webp",
   ".woff2": "font/woff2",
   ".wav": "audio/wav",
+  ".mp4": "video/mp4",
 };
 const server = http.createServer(async (request, response) => {
   try {

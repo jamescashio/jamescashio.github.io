@@ -78,7 +78,7 @@ function expandScript(scripts, name, seen = new Set()) {
 
 test("V37 software gates preserve the independent V35 dated evidence", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "37.0.0");
+  assert.equal(packageJson.version, "37.3.0");
   const lock = JSON.parse(await read("package-lock.json"));
   assert.equal(lock.version, packageJson.version);
   assert.equal(lock.packages[""].version, packageJson.version);
@@ -268,7 +268,7 @@ test("the homepage and Odyssey alias ship the same complete V37 story with a usa
     } else {
       assert.match(robots, /noindex/i, "the compatibility alias must not compete with the canonical homepage");
     }
-    assert.equal(document.title, "Cashio V37 — Lightfold | Doug Cashio");
+    assert.equal(document.title, "Cashio V37 — Lensing | Doug Cashio");
     const compatibility = document.querySelector("head script#legacy-bookmark-route");
     assert.ok(compatibility, "legacy fragments must be handled before the page activates");
     for (const attr of ["src", "type", "async", "defer"]) assert.equal(compatibility.hasAttribute(attr), false);
@@ -305,12 +305,14 @@ test("the homepage and Odyssey alias ship the same complete V37 story with a usa
 
 test("V37 release manifests agree without redating the independent evidence archive", async () => {
   const manifest = JSON.parse(await read("public/site-release.json"));
-  assert.equal(manifest.experienceVersion, "37.0.0");
+  assert.equal(manifest.experienceVersion, "37.3.0");
   assert.equal(manifest.releaseName, "THE HUMAN RECKONING");
-  assert.equal(manifest.visualEdition, "Lightfold");
-  assert.equal(manifest.featuredExperience, "First Flight");
+  assert.equal(manifest.visualEdition, "Lensing");
+  assert.equal(manifest.featuredExperience, "Lensing Observatory");
   assert.equal(manifest.status, "released");
   assert.equal(manifest.published, true);
+  assert.equal(Object.hasOwn(manifest, "previewOf"), false);
+  assert.equal(Object.hasOwn(manifest, "previewEdition"), false);
   assert.equal(manifest.entry, "/");
   assert.equal(manifest.legacyEntry, "/command-deck.html");
   assert.deepEqual(manifest.evidenceArchive, {
@@ -321,6 +323,55 @@ test("V37 release manifests agree without redating the independent evidence arch
   assert.deepEqual(JSON.parse(await read("public/event-horizon-release.json")), manifest);
   for (const name of ["site-release.json", "event-horizon-release.json", "status.json", "legacy-route.js"])
     assert.equal(await read(`dist/${name}`), await read(`public/${name}`));
+});
+
+test("Lensing film stays optional and ships its approved local media intact", async () => {
+  const film = "assets/lensing/orbital-arrival.mp4";
+  const poster = "assets/lensing/orbital-arrival-poster.webp";
+  for (const [name, cap] of [
+    [film, 2_000_000],
+    [poster, 100_000],
+  ]) {
+    const original = await readFile(asset(`public/${name}`));
+    assert.ok(original.length > 0 && original.length <= cap, `${name} exceeds its optional media budget`);
+    assert.deepEqual(original, await readFile(asset(`dist/${name}`)), `${name} must retain its approved bytes`);
+  }
+  const video = await readFile(asset(`public/${film}`));
+  const boxes = [];
+  for (let offset = 0; offset < video.length;) {
+    assert.ok(offset + 8 <= video.length, "film must contain complete MP4 box headers");
+    const size = video.readUInt32BE(offset);
+    assert.ok(size >= 8 && offset + size <= video.length, "film must contain bounded MP4 boxes");
+    boxes.push(video.toString("ascii", offset + 4, offset + 8));
+    offset += size;
+  }
+  assert.equal(boxes[0], "ftyp");
+  assert.ok(boxes.includes("moov") && boxes.includes("mdat"));
+  assert.ok(boxes.indexOf("moov") < boxes.indexOf("mdat"), "film metadata must precede media for immediate playback");
+  const dimensions = imageDimensions(await readFile(asset(`public/${poster}`)), "webp");
+  assert.ok(dimensions.width >= 1280 && dimensions.height >= 720, "poster must retain a clear full-size still");
+  for (const entry of ["index.html", "odyssey.html"]) {
+    const document = new JSDOM(await read(`dist/${entry}`)).window.document;
+    const root = document.querySelector("#odyssey-root");
+    assert.equal(root.querySelectorAll("video").length, 0, "film must mount only after the visitor opens it");
+    assert.equal(root.querySelectorAll("button.lens-film-link").length, 1, "the optional film needs a real launcher");
+    assert.equal(document.querySelectorAll('link[rel="preload"][as="video"]').length, 0);
+    const earlyAssets = [
+      ...document.querySelectorAll('script[src], link[rel="modulepreload"], link[rel="preload"]'),
+    ].flatMap((element) => {
+      const urls = [element.getAttribute("src"), element.getAttribute("href")].filter(Boolean);
+      const responsive = element.getAttribute("imagesrcset");
+      if (responsive) urls.push(...responsive.split(",").map((candidate) => candidate.trim().split(/\s+/)[0]));
+      assert.ok(urls.length > 0, "every early asset must identify its actual resource candidates");
+      return urls.map((url) => new URL(url, "https://cashio.us/").pathname);
+    });
+    assert.ok(
+      earlyAssets.every((path) => !path.includes("lensing-film") && !path.endsWith(".mp4")),
+      "the film remains a lazy, visitor-requested download",
+    );
+    const csp = document.querySelector('meta[http-equiv="Content-Security-Policy"]').content;
+    assert.match(csp, /(?:^|;)\s*media-src 'self'(?:;|$)/, "cinematic media must remain on the site's origin");
+  }
 });
 
 test("legacy deck links preserve their exact query and fragment while V37 study links remain on the homepage", async () => {

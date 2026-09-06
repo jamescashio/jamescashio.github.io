@@ -16,13 +16,27 @@ import { EvidenceConsole } from "./evidence-console";
 import { Lineage } from "./flight-heritage";
 const FirstFlight = lazy(() => import("./first-flight"));
 const BrandStudio = lazy(() => import("./brand-studio"));
+const LensingObservatory = lazy(() => import("./lensing-observatory"));
+const LensingFilm = lazy(() => import("./lensing-film"));
 
 export function OdysseyApp() {
   const { motion, reduced, paused, setPaused } = useMotionPreference();
   const { sound, toggle, play } = useInteractionSound();
   const [flight, setFlight] = useState<string | null>(null);
   const [signature, setSignature] = useState(false);
-  const ambientMotion = motion && flight === null && !signature;
+  const [lensing, setLensing] = useState(false);
+  const [film, setFilm] = useState(false);
+  const filmOpener = useRef<HTMLElement | null>(null);
+  const lensOpener = useRef<HTMLElement | null>(null);
+  const ambientMotion = motion && flight === null && !signature && !lensing && !film;
+  function openFilm(opener: HTMLElement) {
+    filmOpener.current = opener;
+    setFilm(true);
+  }
+  function openLensing(opener: HTMLElement) {
+    lensOpener.current = opener;
+    setLensing(true);
+  }
   const signatureOpener = useRef<HTMLElement | null>(null);
   function openSignature() {
     signatureOpener.current = document.activeElement as HTMLElement;
@@ -38,6 +52,8 @@ export function OdysseyApp() {
       const value = location.hash.match(/^#flight=(board|hull|blackout|permission)$/)?.[1];
       setFlight(value ?? null);
       setSignature(location.hash === "#signature");
+      setLensing(location.hash === "#lensing");
+      setFilm(location.hash === "#film");
     };
     readFlight();
     window.addEventListener("hashchange", readFlight);
@@ -162,9 +178,9 @@ export function OdysseyApp() {
   ];
   return (
     <div
-      className={`odyssey event-horizon aurora lightfold ${folding ? "is-folding" : ""}`}
+      className={`odyssey event-horizon aurora lightfold lensing ${folding ? "is-folding" : ""}`}
       data-motion={motion ? "on" : "off"}
-      data-overlay={flight || signature ? "open" : "closed"}
+      data-overlay={flight || signature || lensing || film ? "open" : "closed"}
     >
       <a className="o-skip" href="#o-main">
         Skip to content
@@ -261,7 +277,7 @@ export function OdysseyApp() {
             </a>
           ))}
         </nav>
-        <p>V37 / LIGHTFOLD / A HUMAN IN COMMAND</p>
+        <p>V37 / LENSING / A HUMAN IN COMMAND</p>
       </dialog>
       <main id="o-main">
         <section className="o-hero o-scene" id="top" aria-labelledby="hero-title">
@@ -271,12 +287,12 @@ export function OdysseyApp() {
           <Starfield motion={ambientMotion} folding={folding} />
           <div className="o-hero-content">
             <div className="eh-release-mark">
-              <b>V37</b>
-              <span>THE HUMAN RECKONING / LIGHTFOLD</span>
+              <b>V37.3</b>
+              <span>LENSING / THE HUMAN RECKONING</span>
             </div>
             <span className="o-kicker">
               <i />
-              DOUG CASHIO / INDEPENDENT SYSTEMS BUILDER
+              DOUG CASHIO / AI · SECURITY · IMAGINATION
             </span>
             <h1 id="hero-title">
               Own the iron.
@@ -290,17 +306,38 @@ export function OdysseyApp() {
               <br className="o-desktop-br" /> With a human in command.
             </p>
             <div className="o-hero-actions">
-              <button className="o-button o-button-gold" onClick={startFlight}>
-                Take the 30-second flight
+              <button
+                className="o-button o-button-gold lens-enter"
+                onClick={(event) => openLensing(event.currentTarget)}
+                aria-label="Enter the observatory"
+              >
+                <span className="lens-enter-glyph" aria-hidden="true">
+                  ◉
+                </span>
+                <span>
+                  Enter the observatory<small>A WORLD TO EXPLORE. A JOURNEY TO TAKE.</small>
+                </span>
                 <Arrow />
               </button>
-              <a className="o-hero-work" href="#work">
-                Explore the work<span>Seven ideas you can operate</span>
-              </a>
+              <button className="o-hero-work lens-flight-link" onClick={startFlight}>
+                Take the 30-second flight<span>Board the Sovereign ↗</span>
+              </button>
             </div>
-            <button className="o-signature-link" type="button" onClick={openSignature}>
-              <span aria-hidden="true">⌘</span> Meet the living circuit <Arrow diagonal />
-            </button>
+            <div className="lens-hero-notes">
+              <span>Change the light.</span>
+              <i />
+              <span>Take the journey.</span>
+              <i />
+              <span>Take command.</span>
+            </div>
+            <div className="lens-discover-links">
+              <button className="lens-film-link" type="button" onClick={(event) => openFilm(event.currentTarget)}>
+                <span aria-hidden="true">▷</span> Watch Orbital arrival <small>5 SEC</small>
+              </button>
+              <button className="o-signature-link" type="button" onClick={openSignature}>
+                <span aria-hidden="true">⌘</span> Meet the living circuit <Arrow diagonal />
+              </button>
+            </div>
           </div>
           <button
             className="o-core-hotspot"
@@ -316,9 +353,16 @@ export function OdysseyApp() {
               <b>{folding ? "FOLD INITIATED" : "INITIATE FOLD ↗"}</b>
             </span>
           </button>
+          <div className="lens-scene-caption" aria-hidden="true">
+            <span>THE ART OF WHAT COMES NEXT</span>
+            <strong>LENSING</strong>
+            <div>
+              <i /> ORIGINAL WORLDS. HUMAN INTENT.
+            </div>
+          </div>
           <div className="o-hero-bottom">
             <span className="o-micro">
-              <b>THE HUMAN RECKONING</b> / V37
+              <b>AN ORIGINAL ORBITAL WORLD</b> / 03
             </span>
             <button onClick={viewArt} className="o-art-link">
               Original artwork
@@ -599,6 +643,51 @@ export function OdysseyApp() {
           </div>
         </section>
       </main>
+      {film && (
+        <Suspense
+          fallback={
+            <div className="ff-loading" role="status">
+              Opening Orbital arrival…
+            </div>
+          }
+        >
+          <LensingFilm
+            motion={motion}
+            onClose={() => {
+              setFilm(false);
+              if (location.hash === "#film") history.replaceState(null, "", location.pathname + location.search);
+              requestAnimationFrame(() =>
+                (filmOpener.current ?? document.querySelector<HTMLElement>(".lens-film-link"))?.focus({
+                  preventScroll: true,
+                }),
+              );
+            }}
+          />
+        </Suspense>
+      )}
+      {lensing && (
+        <Suspense
+          fallback={
+            <div className="ff-loading" role="status">
+              Opening the observatory…
+            </div>
+          }
+        >
+          <LensingObservatory
+            motion={motion}
+            reduced={reduced}
+            onClose={() => {
+              setLensing(false);
+              if (location.hash === "#lensing") history.replaceState(null, "", location.pathname + location.search);
+              requestAnimationFrame(() =>
+                (lensOpener.current ?? document.querySelector<HTMLElement>(".lens-enter"))?.focus({
+                  preventScroll: true,
+                }),
+              );
+            }}
+          />
+        </Suspense>
+      )}
       {signature && (
         <Suspense
           fallback={
@@ -662,7 +751,7 @@ export function OdysseyApp() {
           <BrandMark motion={motion} />
         </a>
         <span>
-          V37 THE HUMAN RECKONING / LIGHTFOLD
+          V37.3 / LENSING
           <br />
           <small>Crafted with GPT-6 Astra · Directed by Doug Cashio</small>
         </span>

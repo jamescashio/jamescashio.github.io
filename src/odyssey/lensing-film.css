@@ -1,0 +1,208 @@
+.lensing-film {
+  width: min(1160px, calc(100vw - 32px));
+  max-width: none;
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 0;
+  overflow: auto;
+  color: #eef3f6;
+  color-scheme: dark;
+  background: #040a12;
+  border: 1px solid #a78b6166;
+  box-shadow:
+    0 36px 120px #000c,
+    inset 0 1px #f2d3a02b;
+  font-family: Exo, Arial, sans-serif;
+}
+.lensing-film::backdrop {
+  background: #010711e8;
+  backdrop-filter: blur(12px);
+}
+.lensing-film-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 22px 28px;
+  background: #040a12;
+  border-bottom: 1px solid #f2d3a026;
+}
+.lensing-film-eyebrow {
+  color: #c2cfda;
+  font:
+    500 10px/1.6 Jet,
+    monospace;
+  letter-spacing: 0.14em;
+}
+.lensing-film-header h2 {
+  margin: 6px 0 0;
+  color: #f2d3a0;
+  font:
+    500 clamp(24px, 3.5vw, 34px)/1.12 Oxanium,
+    Arial,
+    sans-serif;
+  letter-spacing: -0.025em;
+}
+.lensing-film button {
+  min-height: 48px;
+  border: 1px solid #455e72;
+  font:
+    500 14px/1.2 Oxanium,
+    Arial,
+    sans-serif;
+  cursor: pointer;
+}
+.lensing-film button:focus-visible {
+  outline: 2px solid #9df9ff;
+  outline-offset: 4px;
+}
+.lensing-film button svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.lensing-film-close {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  color: #eef3f6;
+  background: #0b1723;
+}
+.lensing-film-close:hover {
+  background: #162a39;
+  border-color: #92b4c7;
+}
+.lensing-film-frame {
+  margin: 0;
+}
+.lensing-film-frame video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: calc(100dvh - 240px);
+  object-fit: contain;
+  background: #02060c;
+}
+.lensing-film-frame figcaption {
+  padding: 17px 28px 0;
+  color: #c2cfda;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.lensing-film-frame figcaption span {
+  display: block;
+  color: #a3b8c8;
+  font-size: 11px;
+}
+.lensing-film-controls {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 28px 26px;
+}
+.lensing-film .lensing-film-play {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-width: 146px;
+  padding: 13px 18px;
+  border-color: #f2d3a0;
+  color: #08111c;
+  background: #f2d3a0;
+  box-shadow: inset 0 1px #fff9;
+}
+.lensing-film .lensing-film-play:hover {
+  background: #ffe5be;
+}
+.lensing-film-timeline {
+  flex: 1;
+  min-width: 0;
+}
+.lensing-film-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 10px;
+  color: #c2cfda;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.lensing-film-time {
+  flex-shrink: 0;
+  color: #f2d3a0;
+  font:
+    400 11px/1.5 Jet,
+    monospace;
+  font-variant-numeric: tabular-nums;
+}
+.lensing-film progress {
+  display: block;
+  width: 100%;
+  height: 3px;
+  overflow: hidden;
+  appearance: none;
+  border: 0;
+  border-radius: 0;
+  background: #253544;
+  color: #65e9ff;
+}
+.lensing-film progress::-webkit-progress-bar {
+  background: #253544;
+}
+.lensing-film progress::-webkit-progress-value {
+  background: linear-gradient(90deg, #f2d3a0, #65e9ff);
+}
+.lensing-film progress::-moz-progress-bar {
+  background: #65e9ff;
+}
+@media (max-width: 600px) {
+  .lensing-film {
+    width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+  }
+  .lensing-film-header {
+    gap: 12px;
+    padding: 18px 16px;
+  }
+  .lensing-film-eyebrow {
+    font-size: 8px;
+    letter-spacing: 0.1em;
+  }
+  .lensing-film-close {
+    gap: 6px;
+    padding: 12px;
+  }
+  .lensing-film-frame figcaption {
+    padding-inline: 16px;
+  }
+  .lensing-film-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 18px;
+    padding: 20px 16px;
+  }
+  .lensing-film-status {
+    gap: 12px;
+  }
+}
+@media (max-height: 540px) and (orientation: landscape) {
+  .lensing-film-header {
+    padding-block: 12px;
+  }
+  .lensing-film-frame video {
+    max-height: none;
+    height: max(180px, 58dvh);
+  }
+}

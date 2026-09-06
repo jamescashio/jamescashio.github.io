@@ -1,0 +1,434 @@
+/* Lensing: architectural gold, deep ink, and a cinematic scene with room to breathe. */
+.event-horizon.aurora.lensing {
+  --o-gold: #f2d3a0;
+  --o-ink: #040a12;
+}
+.event-horizon.aurora.lensing .o-header {
+  background: #060d16f5;
+  border-bottom-color: #a6b9c32e;
+}
+.event-horizon.aurora.lensing .o-header-hail {
+  border-color: #c2a37675;
+}
+.event-horizon.aurora.lensing .o-hero {
+  min-height: 820px;
+  height: calc(100svh + 20px);
+  max-height: 1140px;
+  padding-top: 155px;
+  padding-bottom: 135px;
+  background: #040a12;
+}
+.event-horizon.aurora.lensing .o-hero-content {
+  max-width: 730px;
+}
+.event-horizon.aurora.lensing .eh-release-mark {
+  gap: 12px;
+  margin-bottom: 27px;
+  color: #d5c4a6;
+}
+.event-horizon.aurora.lensing .eh-release-mark > b {
+  border: 1px solid #cdb07c75;
+  background: #342a1b77;
+  color: #f4d6a6;
+  font-size: 10px;
+  padding: 5px 8px;
+  letter-spacing: 0.09em;
+}
+.event-horizon.aurora.lensing .eh-release-mark > span {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+}
+.event-horizon.aurora.lensing .o-hero-content > .o-kicker {
+  color: #abbfcd;
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  margin-bottom: 22px;
+}
+.event-horizon.aurora.lensing .o-hero h1 {
+  font-size: clamp(73px, 6.95vw, 110px);
+  font-weight: 500;
+  line-height: 0.99;
+  letter-spacing: -0.067em;
+}
+.event-horizon.aurora.lensing .o-hero h1 em {
+  color: #f6d5a3;
+  font-size: 1.03em;
+  line-height: 1.05;
+  letter-spacing: -0.065em;
+}
+.event-horizon.aurora.lensing .o-hero-content > p {
+  color: #c2cfda;
+  font-size: 16px;
+  line-height: 1.75;
+  margin-top: 27px;
+  max-width: 450px;
+}
+.event-horizon.aurora.lensing .o-hero-art img {
+  filter: saturate(0.84) contrast(1.07);
+  object-position: 62% 50%;
+}
+.event-horizon.aurora.lensing .o-hero-shade {
+  background:
+    linear-gradient(90deg, #040b14f5 0%, #040b14b5 27%, #040b141c 64%),
+    linear-gradient(0deg, #040b14 0%, #040b1410 26%, #040b1400 77%, #040b1455);
+}
+.event-horizon.aurora.lensing .o-hero-actions {
+  align-items: center;
+  gap: 24px;
+  margin-top: 30px;
+}
+.event-horizon.aurora.lensing .lens-enter {
+  position: relative;
+  overflow: hidden;
+  padding: 16px 20px;
+  min-height: 72px;
+  gap: 16px;
+  color: #181713;
+  background: linear-gradient(115deg, #f2d9b0, #d6af72);
+  border: 1px solid #f7dcb2;
+  box-shadow:
+    inset 0 1px 0 #fff0d3,
+    0 5px 28px #0005;
+  border-radius: 0;
+  text-align: left;
+}
+.lens-enter > span:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 16px;
+  line-height: 1.2;
+}
+.lens-enter small {
+  color: #4d402d;
+  font:
+    8px/1.4 Jet,
+    monospace;
+  letter-spacing: 0.065em;
+}
+.lens-enter-glyph {
+  font-size: 27px;
+  font-weight: 400;
+  line-height: 1;
+}
+.event-horizon.aurora.lensing .lens-enter:hover {
+  background: #ffe5bf;
+  box-shadow:
+    inset 0 1px 0 #fff7e9,
+    0 6px 26px #d9b07020;
+}
+.lens-enter::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  bottom: -50%;
+  width: 40%;
+  left: -60%;
+  background: linear-gradient(90deg, transparent, #ffffff60, transparent);
+  transform: skewX(-22deg);
+  pointer-events: none;
+}
+.lensing[data-motion="on"] .lens-enter:is(:hover, :focus-visible)::after {
+  animation: lens-button-light 0.75s ease-out both;
+}
+@keyframes lens-button-light {
+  to {
+    left: 140%;
+  }
+}
+.event-horizon.aurora.lensing .lens-flight-link {
+  background: transparent;
+  text-align: left;
+  padding: 8px 0;
+  color: #e1eaf0;
+  font-size: 13px;
+  border-bottom: 1px solid #b6c6d23b;
+}
+.event-horizon.aurora.lensing .lens-flight-link > span {
+  font:
+    10px/1.5 Jet,
+    monospace;
+  color: #a8bdcb;
+}
+.lens-hero-notes {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 19px 0 4px;
+  color: #b6c4ce;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.lens-hero-notes i {
+  width: 2px;
+  height: 2px;
+  background: #d7bd8f;
+}
+.lens-discover-links {
+  display: flex;
+  align-items: center;
+  gap: 8px 22px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.lens-film-link {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid #b3c0c559;
+  background: transparent;
+  color: #f2d3a0;
+  font:
+    13px Exo,
+    sans-serif;
+  cursor: pointer;
+}
+.lens-film-link small {
+  font:
+    9px Jet,
+    monospace;
+  color: #b3c0c5;
+}
+.lens-film-link:hover {
+  color: #fff1d9;
+  border-color: currentColor;
+}
+.event-horizon.aurora.lensing .o-signature-link {
+  margin-top: 0;
+  font-size: 12px;
+}
+.lens-scene-caption {
+  position: absolute;
+  right: 6%;
+  bottom: 120px;
+  text-align: right;
+  color: #d9e6eb;
+  pointer-events: none;
+  z-index: 1;
+}
+.lens-scene-caption > span {
+  font:
+    9px/2 Jet,
+    monospace;
+  letter-spacing: 0.17em;
+  color: #d0c3ab;
+}
+.lens-scene-caption strong {
+  display: block;
+  font:
+    300 clamp(36px, 4.5vw, 70px)/1.15 Oxanium,
+    sans-serif;
+  letter-spacing: 0.13em;
+  color: #eef2ef;
+}
+.lens-scene-caption > div {
+  font:
+    9px/2 Jet,
+    monospace;
+  letter-spacing: 0.1em;
+  color: #a5c5d3;
+}
+.lens-scene-caption i {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  margin-right: 7px;
+  background: #cdb689;
+}
+.event-horizon.aurora.lensing .o-core-label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+.event-horizon.aurora.lensing .o-core-label b {
+  font-size: 10px;
+}
+.event-horizon.aurora.lensing .o-principles {
+  background: #101921;
+  border-block: 1px solid #8996a233;
+  color: #ced7db;
+}
+.event-horizon.aurora.lensing .o-principles > svg {
+  color: #d3b786;
+}
+@media (min-width: 1600px) {
+  .event-horizon.aurora.lensing .o-hero {
+    padding-top: 160px;
+  }
+}
+@media (min-width: 601px) and (max-width: 1100px) {
+  .event-horizon.aurora.lensing .o-hero-content {
+    max-width: 650px;
+  }
+  .event-horizon.aurora.lensing .o-hero h1 {
+    font-size: 82px;
+  }
+  .event-horizon.aurora.lensing .o-hero-art img {
+    object-position: 55% 50%;
+  }
+  .lens-scene-caption {
+    display: none;
+  }
+}
+@media (max-width: 600px) {
+  .event-horizon.aurora.lensing .o-hero {
+    display: block;
+    min-height: 0;
+    height: auto;
+    max-height: none;
+    padding: 100px 24px 90px;
+  }
+  .event-horizon.aurora.lensing .o-hero-art {
+    top: 146px;
+    left: 0;
+    right: 0;
+    bottom: auto;
+    height: 340px;
+  }
+  .event-horizon.aurora.lensing .o-hero-art img {
+    object-position: 74% 50%;
+  }
+  .event-horizon.aurora.lensing .o-hero-shade {
+    background: linear-gradient(
+      180deg,
+      #040b14 0,
+      #040b14 136px,
+      #040b1400 195px,
+      #040b1400 350px,
+      #040b14 473px,
+      #040b14 100%
+    );
+  }
+  .event-horizon.aurora.lensing .o-hero-content {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    max-width: none;
+  }
+  .event-horizon.aurora.lensing .eh-release-mark {
+    order: -3;
+    margin-bottom: 12px;
+    gap: 8px;
+  }
+  .event-horizon.aurora.lensing .eh-release-mark > b {
+    font-size: 8px;
+    padding: 4px 6px;
+  }
+  .event-horizon.aurora.lensing .eh-release-mark > span {
+    font-size: 8px;
+    letter-spacing: 0.08em;
+  }
+  .event-horizon.aurora.lensing .o-hero-content > .o-kicker {
+    order: -2;
+    font-size: 8px;
+    letter-spacing: 0.065em;
+    margin: 0 0 260px;
+    gap: 7px;
+  }
+  .event-horizon.aurora.lensing .o-hero h1 {
+    font-size: clamp(47px, 13.2vw, 70px);
+    letter-spacing: -0.06em;
+    line-height: 0.98;
+  }
+  .event-horizon.aurora.lensing .o-hero h1 br:nth-of-type(2) {
+    display: none;
+  }
+  .event-horizon.aurora.lensing .o-hero h1 em {
+    display: block;
+    line-height: 1.03;
+  }
+  .event-horizon.aurora.lensing .o-hero-content > p {
+    margin-top: 20px;
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  .event-horizon.aurora.lensing .o-hero-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 11px;
+    margin-top: 22px;
+  }
+  .event-horizon.aurora.lensing .lens-enter {
+    justify-content: flex-start;
+    min-height: 66px;
+    padding: 13px 15px;
+    gap: 13px;
+    width: 100%;
+  }
+  .lens-enter > span:nth-child(2) {
+    font-size: 15px;
+    flex: 1;
+  }
+  .lens-enter small {
+    font-size: 7px;
+  }
+  .lens-enter-glyph {
+    font-size: 23px;
+  }
+  .event-horizon.aurora.lensing .lens-flight-link {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    min-height: 45px;
+    font-size: 12px;
+  }
+  .event-horizon.aurora.lensing .lens-flight-link > span {
+    font-size: 9px;
+  }
+  .lens-hero-notes {
+    font-size: 9px;
+    gap: 7px;
+    margin: 15px 0 0;
+    flex-wrap: wrap;
+  }
+  .event-horizon.aurora.lensing .o-signature-link {
+    margin: 0;
+    align-self: flex-start;
+    min-height: 44px;
+    font-size: 12px;
+  }
+  .event-horizon.aurora.lensing .o-core-hotspot {
+    width: 72px;
+    height: 72px;
+  }
+  .event-horizon.aurora.lensing .o-core-label {
+    top: 146%;
+    font-size: 8px;
+    line-height: 1.8;
+    letter-spacing: 0.08em;
+    max-width: 230px;
+    white-space: nowrap;
+  }
+  .event-horizon.aurora.lensing .o-core-label b {
+    font-size: 8px;
+  }
+  .lens-scene-caption {
+    display: none;
+  }
+  .event-horizon.aurora.lensing .o-hero-bottom {
+    bottom: 24px;
+    left: 24px;
+    right: 24px;
+    padding-top: 15px;
+  }
+  .event-horizon.aurora.lensing .o-hero-bottom .o-micro {
+    font-size: 8px;
+    letter-spacing: 0.04em;
+  }
+  .event-horizon.aurora.lensing .o-hero-bottom .o-art-link {
+    display: none;
+  }
+  .event-horizon.aurora.lensing .o-scroll-cue {
+    font-size: 8px;
+    letter-spacing: 0.03em;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lens-enter::after {
+    display: none;
+  }
+}

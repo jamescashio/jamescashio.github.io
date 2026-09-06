@@ -1,5 +1,13 @@
 # Changelog
 
+## V37.3 — LENSING · 09-06-2026
+
+- Open an interactive orbital observatory with machined titanium, champagne inlays, cyan courier engines, and three light treatments and camera views.
+- Add a finite, visitor-controlled 24-second journey with pause, manual chapters, hidden-tab suspension, and immediate reduced-motion views.
+- Include Orbital arrival, an optional five-second Higgsfield film with a poster-first viewer, explicit playback, and an optimized local 1080p asset.
+- Refine project navigation, study illustrations, scene captions, and responsive hero composition while preserving the animated Cashio identity.
+- Publish consistent 37.3.0 metadata and preserve the original starship, all seven studies, V35 evidence, and Command Deck bookmarks.
+
 ## V37 — LIGHTFOLD · 09-05-2026
 
 - Add First Flight: four guided starship chapters with cinematic camera framing, controllable routing scenarios, and exact shared links.

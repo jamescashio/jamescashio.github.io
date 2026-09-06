@@ -15,6 +15,8 @@ import "./brand-mark.css";
 import "./lab-visuals.css";
 import "./operator-insignia.css";
 import "./lightfold.css";
+import "./lensing-preview.css";
+import "./lensing-surfaces.css";
 
 const root = document.getElementById("odyssey-root")!;
 const app = (

@@ -379,7 +379,7 @@ def check_v34_motion_contract(failures: list[str]) -> None:
                 failures.append(f"inactive deck {deck_index} does not pause {pseudo} animation work")
 
 
-def check_site_release(release: dict, failures: list[str], *, preview: bool = False, version: str = "37.0.0") -> None:
+def check_site_release(release: dict, failures: list[str], *, preview: bool = False, version: str = "37.3.0") -> None:
     """Software release identity must never rewrite the archive's observation dates."""
     if not isinstance(release, dict):
         failures.append("site-release.json must be an object")
@@ -387,8 +387,8 @@ def check_site_release(release: dict, failures: list[str], *, preview: bool = Fa
     expected = {
         "experienceVersion": version,
         "releaseName": "THE HUMAN RECKONING",
-        "visualEdition": "Lightfold",
-        "featuredExperience": "First Flight",
+        "visualEdition": "Lensing",
+        "featuredExperience": "Lensing Observatory",
         "status": "preview" if preview else "released",
         "published": not preview,
         "entry": "/",
@@ -397,6 +397,10 @@ def check_site_release(release: dict, failures: list[str], *, preview: bool = Fa
     for key, value in expected.items():
         if release.get(key) != value or (key == "published" and release.get(key) is not (not preview)):
             failures.append(f"site-release.json {key!r}: expected {value!r}")
+    if not preview:
+        for key in ("previewOf", "previewEdition"):
+            if key in release:
+                failures.append(f"released site-release.json must not retain preview field {key!r}")
     archive = release.get("evidenceArchive", {})
     for key, value in {
         "release": "V35 ALL TENS",
@@ -473,7 +477,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--preview", action="store_true", help="Validate an explicitly unpublished local preview; never a deployment approval")
     preview = parser.parse_args().preview
-    version = "37.0.0-preview.5" if preview else "37.0.0"
+    version = "37.3.0-preview.lensing" if preview else "37.3.0"
     failures: list[str] = []
 
     try:
@@ -677,6 +681,8 @@ def main() -> int:
         "public/robots.txt",
         "public/sitemap.xml",
         "public/sfx/provenance.json",
+        "public/assets/lensing/orbital-arrival.mp4",
+        "public/assets/lensing/orbital-arrival-poster.webp",
     )
     for relative in required_public:
         if not (ROOT / relative).is_file():
@@ -791,9 +797,18 @@ def main() -> int:
             page = DIST / relative
             if page.is_file():
                 check_v36_document(page.read_text(encoding="utf-8"), failures, f"dist/{relative}", built=True, indexable=relative == "index.html" and not preview, preview=preview, version_label="V37")
-        for relative in ("status.json", "site-release.json", "event-horizon-release.json", "legacy-route.js"):
+        for relative in (
+            "status.json",
+            "site-release.json",
+            "event-horizon-release.json",
+            "legacy-route.js",
+            "assets/lensing/orbital-arrival.mp4",
+            "assets/lensing/orbital-arrival-poster.webp",
+        ):
             artifact = DIST / relative
-            if artifact.is_file() and artifact.read_bytes() != (ROOT / "public" / relative).read_bytes():
+            if not artifact.is_file():
+                failures.append(f"built Pages artifact is missing {relative}")
+            elif (ROOT / "public" / relative).is_file() and artifact.read_bytes() != (ROOT / "public" / relative).read_bytes():
                 failures.append(f"dist/{relative} must match the validated public source byte-for-byte")
 
         live = collect_text(DIST)

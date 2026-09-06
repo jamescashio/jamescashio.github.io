@@ -1,29 +1,24 @@
-# V37 — LIGHTFOLD · THE HUMAN RECKONING
+# V37.3 — LENSING · THE HUMAN RECKONING
 
-Lightfold turns the Cashio.us homepage into an interactive journey through Doug Cashio’s work in AI, security, and human command. The orbital instrument aligns before a visitor-triggered transition; First Flight brings visitors inside the starship, then lets them change a routing decision and see where the same twelve illustrative requests go. Cyan, champagne gold, original orbital artwork, and the owner’s animated Cashio identity carry the design.
-
-The original release name nods to the Butlerian Jihad in Frank Herbert’s _Dune_. Powerful tools. Human judgment in command.
+Lensing gives Cashio.us an original interactive orbital world. Visitors can sculpt the light, choose a camera composition, follow a short journey around a machined gate, and watch Orbital arrival, a five-second film created with Higgsfield. The midnight, champagne, and cyan design retains the owner's animated Cashio identity, the original starship, and all seven working studies.
 
 ## Release behavior
 
-- Prerendered V37 homepage at `/`, with `/odyssey.html` as a compatible alias.
-- Four First Flight chapters with cinematic camera framing, a responsive primary decision control, and exact scenario sharing.
-- Detailed ship armor and service bays, a progressive hull reveal, and animated routing bays that preserve each request’s identity.
-- Living Circuit logo exploration with six selectable letters, touch and keyboard panning, selectable styles, and an explicit energize action.
-- Seven working interactive studies, a responsive orbital operator identity, and a first view delivered directly in the HTML.
-- V35 command deck preserved at `/command-deck.html`; old `/#deck=…` bookmarks keep their selected deck.
-- Keyboard and touch controls, reduced-motion support, a global motion switch, and offscreen/hidden animation suspension.
-- The 3D simulation is local and illustrative. No infrastructure mutation or AI-service request is performed.
-- Audio remains optional. Existing Cloudflare policy and deployment settings are preserved.
+- The prerendered homepage remains at `/`; `/odyssey.html` stays a compatible canonical alias.
+- `/#lensing` opens the 3D observatory with three light treatments, three views, and an optional 24-second journey. Pause, manual chapter controls, and reduced motion keep the visitor in command.
+- `/#film` opens a still poster. Explicit Play loads the local 1080p film; playback is silent, finite, and suspended when hidden or closed.
+- Project navigation and instrument illustrations gain clearer hierarchy and precise material detail. The phone hero gives the artwork its own space above the headline.
+- The original First Flight, Living Circuit, routing scenarios, and V35 Command Deck remain available. Existing `/#deck=…` bookmarks preserve their selected deck.
+- Reading text stays still. Keyboard, touch, reduced motion, global pause, and opt-in audio remain supported.
 
-## Dated public evidence
+## Dated evidence
 
-**Fleet export:** 28 August 2026. **Routing inventory:** 21 August 2026. **Validity window:** through 27 September 2026 in America/Chicago, or until the next owner-verified architecture change.
+Fleet export: **28 August 2026**. Routing inventory: **21 August 2026**. The existing validity window remains unchanged. Both `status.json` snapshots retain their original bytes; this design release makes no new claims about current infrastructure. The 3D scenes and request models are illustrative and send nothing to an AI service.
 
-Both existing `status.json` files retain their V35 evidence identity and bytes. `/site-release.json` independently records website version 37.0.0, visual edition Lightfold, and the First Flight experience. No fleet counts, routing observations, or current infrastructure claims are refreshed by this release.
+`/site-release.json` records software version **37.3.0**, visual edition **Lensing**, and **Lensing Observatory**. `/event-horizon-release.json` remains its identical compatibility alias.
 
-## Verification and deployment
+## Verification and release
 
-`npm run verify` checks source, models, the production artifact, legacy and V37 browser behavior, release metadata, and repository safety. The retained `check:v36:runtime` command now validates V37. Protected pull-request checks must pass before merge; GitHub Pages deploys the verified `dist` artifact. Completion requires verification against the public HTTPS site and the authoritative Pages deployment.
+Run the existing lint, format, source/model, artifact, browser, release consistency, whitespace, and public-repository safety gates. Verify the built homepage, film, observatory, reduced motion, small screens, and legacy links. Merge through the protected GitHub pull-request workflow, wait for Pages, and verify the exact public assets and release receipt on Cashio.us.
 
-Rollback: revert the V37 release merge through a reviewed pull request and redeploy the resulting V36 artifact. The pre-release production commit is `92fbb9e35621587deb95098b8ff9c83d3737cc23`. Confirm `/site-release.json` reports 36.0.0 and verify the homepage plus preserved command-deck bookmarks after rollback.
+Rollback: revert the Lensing release merge through the same reviewed workflow and redeploy. The pre-release production baseline is `84821a6874f77a32144bbf82b3ce0f31a10d783e`, reporting **37.0.0 / Lightfold**. Domain and infrastructure settings are unchanged.
