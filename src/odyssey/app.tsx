@@ -11,6 +11,7 @@ import { SystemAtlas } from "./system-atlas";
 import { SovereignWorld } from "./sovereign-world";
 import { BrandMark } from "./brand-mark";
 import { Art } from "./artwork";
+import { ExperienceGlyph, LightwakeAtmosphere, LightwakeControls } from "./lightwake-scene";
 import { ProjectExplorer } from "./project-explorer";
 import { EvidenceConsole } from "./evidence-console";
 import { Lineage } from "./flight-heritage";
@@ -33,7 +34,7 @@ export function OdysseyApp() {
   const [signature, setSignature] = useState(false);
   const [lensing, setLensing] = useState(false);
   const [film, setFilm] = useState(false);
-  const [filmClip, setFilmClip] = useState<LensingClip>("signature");
+  const [filmClip, setFilmClip] = useState<LensingClip>("lightwake");
   const [filmRouteRevision, setFilmRouteRevision] = useState(0);
   const [lensArrival, setLensArrival] = useState(false);
   const filmOpener = useRef<HTMLElement | null>(null);
@@ -41,7 +42,7 @@ export function OdysseyApp() {
   const ambientMotion = motion && flight === null && !signature && !lensing && !film;
   function openFilm(opener: HTMLElement) {
     filmOpener.current = opener;
-    setFilmClip("signature");
+    setFilmClip("lightwake");
     setFilm(true);
   }
   function openLensing(opener: HTMLElement) {
@@ -54,7 +55,7 @@ export function OdysseyApp() {
     setLensArrival(true);
     setFilm(false);
     setLensing(true);
-    if (/^#film(?:=(?:awakening|signature))?$/.test(location.hash))
+    if (/^#film(?:=(?:awakening|signature|lightwake))?$/.test(location.hash))
       history.replaceState(null, "", location.pathname + location.search);
   }
   const signatureOpener = useRef<HTMLElement | null>(null);
@@ -69,7 +70,7 @@ export function OdysseyApp() {
     signatureOpener.current = resolveLauncher(filmOpener.current, ".lens-film-link");
     setFilm(false);
     setSignature(true);
-    if (/^#film(?:=(?:awakening|signature))?$/.test(location.hash))
+    if (/^#film(?:=(?:awakening|signature|lightwake))?$/.test(location.hash))
       history.replaceState(null, "", location.pathname + location.search);
   }
   function openSignature(event: MouseEvent<HTMLButtonElement>) {
@@ -77,8 +78,8 @@ export function OdysseyApp() {
     setSignature(true);
   }
   const flightOpener = useRef<HTMLElement | null>(null);
-  function startFlight() {
-    flightOpener.current = document.activeElement as HTMLElement;
+  function startFlight(event?: MouseEvent<HTMLButtonElement>) {
+    flightOpener.current = event?.currentTarget ?? (document.activeElement as HTMLElement);
     setFlight("board");
   }
   useEffect(() => {
@@ -88,11 +89,17 @@ export function OdysseyApp() {
       setSignature(location.hash === "#signature");
       setLensing(location.hash === "#lensing");
       setLensArrival(false);
-      const filmRoute = /^#film(?:=(?:awakening|signature))?$/.test(location.hash);
+      const filmRoute = /^#film(?:=(?:awakening|signature|lightwake))?$/.test(location.hash);
       setFilm(filmRoute);
       if (filmRoute) setFilmRouteRevision((revision) => revision + 1);
       setFilmClip(
-        location.hash === "#film" ? "arrival" : location.hash === "#film=awakening" ? "awakening" : "signature",
+        location.hash === "#film"
+          ? "arrival"
+          : location.hash === "#film=awakening"
+            ? "awakening"
+            : location.hash === "#film=signature"
+              ? "signature"
+              : "lightwake",
       );
     };
     readFlight();
@@ -218,7 +225,7 @@ export function OdysseyApp() {
   ];
   return (
     <div
-      className={`odyssey event-horizon aurora lightfold lensing ${folding ? "is-folding" : ""}`}
+      className={`odyssey event-horizon aurora lightfold lensing lightwake ${folding ? "is-folding" : ""}`}
       data-motion={motion ? "on" : "off"}
       data-overlay={flight || signature || lensing || film ? "open" : "closed"}
     >
@@ -317,18 +324,19 @@ export function OdysseyApp() {
             </a>
           ))}
         </nav>
-        <p>V37.5 / CELESTIAL FORGE / A HUMAN IN COMMAND</p>
+        <p>V37.6 / LIGHTWAKE / A HUMAN IN COMMAND</p>
       </dialog>
       <main id="o-main">
-        <section className="o-hero o-scene" id="top" aria-labelledby="hero-title">
+        <section className="o-hero o-scene" id="top" aria-labelledby="hero-title" data-lightwake-light="dawn">
           <Art name="orbit" eager className="o-hero-art" />
           <div className="o-hero-shade" />
           <div className="eh-hero-light" aria-hidden="true" />
           <Starfield motion={ambientMotion} folding={folding} />
+          <LightwakeAtmosphere />
           <div className="o-hero-content">
             <div className="eh-release-mark">
-              <b>V37.5</b>
-              <span>CELESTIAL FORGE</span>
+              <b>V37.6</b>
+              <span>LIGHTWAKE</span>
             </div>
             <span className="o-kicker">
               <i />
@@ -359,9 +367,6 @@ export function OdysseyApp() {
                 </span>
                 <Arrow />
               </button>
-              <button className="o-hero-work lens-flight-link" onClick={startFlight}>
-                Take the 30-second flight<span>Board the Sovereign ↗</span>
-              </button>
             </div>
             <div className="lens-hero-notes">
               <span>Change the light.</span>
@@ -372,13 +377,23 @@ export function OdysseyApp() {
             </div>
             <div className="lens-discover-links">
               <button className="lens-film-link" type="button" onClick={(event) => openFilm(event.currentTarget)}>
-                <span aria-hidden="true">▷</span> Watch the signature awaken <small>6 SEC</small>
+                <ExperienceGlyph kind="film" />
+                <span>Watch Lightwake</span>
+                <small>8-SECOND FILM</small>
               </button>
               <button className="o-signature-link" type="button" onClick={openSignature}>
-                <span aria-hidden="true">⌘</span> Play with the light <Arrow diagonal />
+                <ExperienceGlyph kind="signature" />
+                <span>Sculpt the logo</span>
+                <small>TURN & IGNITE</small>
+              </button>
+              <button className="o-hero-work lens-flight-link" onClick={startFlight}>
+                <ExperienceGlyph kind="flight" />
+                <span>First flight</span>
+                <small>BOARD THE SHIP</small>
               </button>
             </div>
           </div>
+          <LightwakeControls />
           <button
             className="o-core-hotspot"
             onClick={fold}
@@ -393,13 +408,6 @@ export function OdysseyApp() {
               <b>{folding ? "FOLD INITIATED" : "INITIATE FOLD ↗"}</b>
             </span>
           </button>
-          <div className="lens-scene-caption" aria-hidden="true">
-            <span>THE ART OF WHAT COMES NEXT / CELESTIAL FORGE</span>
-            <strong>LENSING</strong>
-            <div>
-              <i /> ORIGINAL WORLDS. HUMAN INTENT.
-            </div>
-          </div>
           <div className="o-hero-bottom">
             <span className="o-micro">
               <b>AN ORIGINAL ORBITAL WORLD</b> / 03
@@ -540,14 +548,14 @@ export function OdysseyApp() {
         </section>
         <section className="eh-observatory o-scene" id="observatory" aria-labelledby="observatory-title">
           <div className="o-section-top">
-            <span className="o-kicker">V37 / THE OBSERVATORY</span>
+            <span className="o-kicker">V37 / THE PRINCIPLES ENGINE</span>
             <span className="o-micro">A VISITOR-OPERATED INSTRUMENT</span>
           </div>
           <div className="o-section-heading">
             <h2 id="observatory-title">
-              A universe you can
+              Put the principles
               <br />
-              <em>put your hands on.</em>
+              <em>in motion.</em>
             </h2>
             <p>
               Turn the orbit. Change the perspective.
@@ -699,7 +707,7 @@ export function OdysseyApp() {
             onSignature={sculptFilmLight}
             onClose={() => {
               setFilm(false);
-              if (/^#film(?:=(?:awakening|signature))?$/.test(location.hash))
+              if (/^#film(?:=(?:awakening|signature|lightwake))?$/.test(location.hash))
                 history.replaceState(null, "", location.pathname + location.search);
               requestAnimationFrame(() =>
                 resolveLauncher(filmOpener.current, ".lens-film-link")?.focus({
@@ -798,7 +806,7 @@ export function OdysseyApp() {
           <BrandMark motion={ambientMotion} />
         </a>
         <span>
-          V37.5 / CELESTIAL FORGE
+          V37.6 / LIGHTWAKE
           <br />
           <small>Crafted with GPT-6 Astra · Directed by Doug Cashio</small>
         </span>

@@ -212,9 +212,6 @@ section {
   width: 30px;
   color: var(--o-gold);
 }
-.o-brand-dot {
-  color: var(--o-gold);
-}
 .o-header > nav {
   display: flex;
   gap: 32px;
@@ -699,38 +696,10 @@ h2 {
   overflow: visible;
   pointer-events: none;
 }
-.o-atlas-path {
-  fill: none;
-  stroke: #424e4733;
-  stroke-width: 0.2;
-}
-.o-atlas-flow {
-  fill: none;
-  stroke: #8e692f;
-  stroke-width: 0.3;
-  stroke-dasharray: 1 1.5;
-  animation: o-flow 14s linear infinite;
-  animation-play-state: var(--play-state);
-}
 @keyframes o-flow {
   to {
     stroke-dashoffset: -30;
   }
-}
-.o-atlas-orbit {
-  position: absolute;
-  width: 320px;
-  height: 320px;
-  top: 50%;
-  left: 50%;
-  border: 1px solid #303c3011;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
-.o-orbit-two {
-  width: 440px;
-  height: 440px;
-  border-style: dashed;
 }
 .o-atlas-node {
   position: absolute;
@@ -1106,50 +1075,6 @@ h2 {
   height: 2px;
   background: var(--project);
 }
-.o-route-visual {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 15px;
-  max-width: 510px;
-  margin: 0 auto 24px;
-  height: 83px;
-  color: var(--project);
-}
-.o-route-visual > span {
-  font-family: Jet;
-  font-size: 12px;
-  letter-spacing: 1px;
-  width: 82px;
-  text-align: center;
-}
-.o-route-visual > svg {
-  width: 55px;
-  height: 66px;
-  flex-shrink: 0;
-  filter: drop-shadow(0 0 15px #e8bb7830);
-}
-.o-route-visual > i {
-  height: 1px;
-  flex: 1;
-  background: #aab6a633;
-  position: relative;
-}
-.o-route-visual > i.active {
-  background: var(--project);
-  box-shadow: 0 0 5px #e8bb7844;
-}
-.o-route-visual > i:after {
-  content: "";
-  position: absolute;
-  right: 0;
-  top: -2px;
-  width: 5px;
-  height: 5px;
-  border: 1px solid currentColor;
-  transform: rotate(45deg);
-  background: #151c16;
-}
 .o-segment {
   display: flex;
   gap: 8px;
@@ -1335,91 +1260,6 @@ h2 {
   margin: 6px 0 -13px;
   background: transparent;
 }
-.o-escalation {
-  display: flex;
-  gap: 12px;
-  position: relative;
-  min-height: 150px;
-  padding: 25px 0 10px;
-  margin-bottom: 16px;
-}
-.o-escalation:before {
-  content: "";
-  position: absolute;
-  top: 80px;
-  left: 17%;
-  right: 17%;
-  height: 1px;
-  background: #8d9b8333;
-}
-.o-escalation > div {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
-  text-align: center;
-  color: #788773;
-  font-size: 12px;
-  z-index: 1;
-}
-.o-escalation > div > span {
-  font-family: Jet;
-  font-size: 12px;
-}
-.o-escalation i {
-  width: 21px;
-  height: 21px;
-  background: #171f18;
-  border: 1px solid #687a5e;
-  border-radius: 50%;
-  margin: 3px;
-}
-.o-escalation strong {
-  font-size: 12px;
-  font-weight: 500;
-}
-.o-escalation > div.selected {
-  color: var(--project);
-}
-.o-escalation > div.selected i {
-  background: var(--project);
-  border: 6px solid #2c332a;
-  box-shadow:
-    0 0 0 1px var(--project),
-    0 0 30px #e8bb7822;
-}
-.o-boundary {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  height: 150px;
-  color: var(--project);
-}
-.o-boundary > div {
-  font-family: Jet;
-  font-size: 12px;
-  text-align: center;
-  line-height: 1.9;
-  min-width: 62px;
-}
-.o-boundary > div span {
-  color: #929e8d;
-  font-family: Exo;
-  font-size: 12px;
-}
-.o-boundary > i {
-  flex: 1;
-  height: 1px;
-  background: #a4b79d44;
-}
-.o-boundary > div > svg {
-  width: 64px;
-  height: 74px;
-}
-.o-boundary > div.protected > svg {
-  fill: #b8d5a715;
-}
 .o-brief-header {
   display: flex;
   justify-content: space-between;
@@ -1499,41 +1339,6 @@ h2 {
   align-items: center;
   gap: 27px;
   padding: 16px 0 10px;
-}
-.o-gauge {
-  flex-shrink: 0;
-  border-radius: 50%;
-  width: 140px;
-  height: 140px;
-  padding: 2px;
-  background: conic-gradient(var(--project) var(--gauge), #63725b44 0);
-  transform: rotate(-90deg);
-}
-.o-gauge > span {
-  width: 100%;
-  height: 100%;
-  background: #18211a;
-  border-radius: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  transform: rotate(90deg);
-  font-size: 46px;
-  line-height: 1.1;
-  color: var(--project);
-}
-.o-gauge small {
-  font-family: Jet;
-  font-size: 12px;
-  letter-spacing: 2px;
-  margin-top: 8px;
-}
-.o-freshness.stale .o-gauge {
-  background: conic-gradient(#e8bb78 var(--gauge), #63725b44 0);
-}
-.o-freshness.stale .o-gauge > span {
-  color: #e8bb78;
 }
 .o-freshness > div:last-child > .o-micro {
   font-size: 12px;
@@ -2033,62 +1838,6 @@ h2 {
   align-items: center;
   padding: 30px 0 35px;
 }
-.o-operator-monogram {
-  aspect-ratio: 1/1.13;
-  max-height: 440px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #685b4433;
-  background: radial-gradient(ellipse at 65% 35%, #f0e9d9, #ccc5b670);
-  overflow: hidden;
-}
-.o-operator-monogram:before {
-  content: "";
-  position: absolute;
-  width: 90%;
-  height: 90%;
-  border: 1px solid #806d4c33;
-  border-radius: 50%;
-  transform: rotate(45deg) scaleY(0.45);
-}
-.o-operator-monogram:after {
-  content: "";
-  position: absolute;
-  width: 67%;
-  height: 90%;
-  border: 1px solid #806d4c33;
-  border-radius: 50%;
-  transform: rotate(-40deg) scaleY(0.55);
-}
-.o-operator-monogram > span {
-  font-size: clamp(90px, 14vw, 210px);
-  letter-spacing: -15px;
-  color: #5456482b;
-  font-weight: 700;
-  line-height: 1;
-  position: relative;
-  left: -8px;
-}
-.o-operator-monogram > svg {
-  position: absolute;
-  right: 32px;
-  top: 30px;
-  width: 34px;
-  height: 40px;
-  color: #957449;
-}
-.o-operator-monogram > div {
-  position: absolute;
-  left: 28px;
-  bottom: 24px;
-  font-family: Jet;
-  font-size: 12px;
-  letter-spacing: 1px;
-  line-height: 2;
-  color: #716347;
-}
 .o-operator-copy > .o-kicker {
   color: #715529;
 }
@@ -2383,13 +2132,6 @@ h2 {
   .o-freshness {
     gap: 20px;
   }
-  .o-gauge {
-    width: 110px;
-    height: 110px;
-  }
-  .o-gauge > span {
-    font-size: 39px;
-  }
   .o-evidence {
     gap: 45px;
   }
@@ -2516,14 +2258,6 @@ h2 {
   }
   .o-atlas {
     height: 370px;
-  }
-  .o-atlas-orbit {
-    width: 220px;
-    height: 220px;
-  }
-  .o-orbit-two {
-    width: 320px;
-    height: 320px;
   }
   .o-atlas-readout {
     padding: 16px 0 16px 24px;
@@ -2654,20 +2388,6 @@ h2 {
   .o-steps > li {
     font-size: 12px;
   }
-  .o-route-visual {
-    gap: 9px;
-    height: 65px;
-  }
-  .o-route-visual > span {
-    font-size: 12px;
-    min-width: 53px;
-    width: auto;
-    letter-spacing: 0;
-  }
-  .o-route-visual > svg {
-    width: 39px;
-    height: 49px;
-  }
   .o-project-footer {
     align-items: flex-start;
     gap: 13px;
@@ -2686,10 +2406,6 @@ h2 {
     flex-direction: column;
     align-items: flex-start;
     gap: 18px;
-  }
-  .o-gauge {
-    align-self: center;
-    margin-bottom: 6px;
   }
   .o-freshness h4 {
     font-size: 22px;
@@ -2762,21 +2478,6 @@ h2 {
   }
   .o-operator-copy > p {
     font-size: 13px;
-  }
-  .o-operator-monogram > div {
-    left: 20px;
-    bottom: 20px;
-    font-size: 12px;
-  }
-  .o-operator-monogram > svg {
-    right: 20px;
-    top: 20px;
-    width: 24px;
-    height: 28px;
-  }
-  .o-operator-monogram > span {
-    font-size: 125px;
-    letter-spacing: -13px;
   }
   .o-operator-links {
     gap: 18px;
@@ -3041,15 +2742,6 @@ h2 {
     height: 335px;
     margin: 0 0 12px;
   }
-  .o-atlas-orbit {
-    width: 230px;
-    height: 230px;
-  }
-  .o-orbit-two {
-    width: 310px;
-    height: 310px;
-    max-width: 100%;
-  }
   .o-atlas-node {
     min-width: 88px;
     padding: 0 4px;
@@ -3247,18 +2939,6 @@ h2 {
   .o-lab {
     padding: 20px 17px;
   }
-  .o-route-visual {
-    height: 73px;
-    margin-bottom: 21px;
-    gap: 11px;
-  }
-  .o-route-visual > span {
-    font-size: 12px;
-  }
-  .o-route-visual > svg {
-    width: 43px;
-    height: 53px;
-  }
   .o-segment {
     gap: 7px;
     margin-bottom: 15px;
@@ -3332,38 +3012,6 @@ h2 {
   .o-range output {
     font-size: 12px;
   }
-  .o-escalation {
-    gap: 6px;
-    padding-top: 12px;
-    min-height: 128px;
-  }
-  .o-escalation:before {
-    top: 68px;
-    left: 16%;
-    right: 16%;
-  }
-  .o-escalation > div {
-    gap: 15px;
-  }
-  .o-escalation strong {
-    font-size: 12px;
-    line-height: 1.6;
-  }
-  .o-boundary {
-    gap: 10px;
-    height: 135px;
-  }
-  .o-boundary > div {
-    font-size: 12px;
-    min-width: 55px;
-  }
-  .o-boundary > div > svg {
-    width: 53px;
-    height: 64px;
-  }
-  .o-boundary > div span {
-    font-size: 12px;
-  }
   .o-brief-header {
     gap: 10px;
   }
@@ -3398,10 +3046,6 @@ h2 {
     padding: 10px 0 7px;
     gap: 20px;
     align-items: flex-start;
-  }
-  .o-gauge {
-    width: 120px;
-    height: 120px;
   }
   .o-freshness h4 {
     font-size: 23px;
@@ -3593,21 +3237,6 @@ h2 {
     gap: 37px;
     padding: 7px 0 0;
   }
-  .o-operator-monogram {
-    aspect-ratio: 1.5;
-    max-height: 270px;
-  }
-  .o-operator-monogram > span {
-    font-size: 170px;
-    letter-spacing: -17px;
-  }
-  .o-operator-monogram > svg {
-    width: 27px;
-    height: 33px;
-  }
-  .o-operator-monogram > div {
-    font-size: 12px;
-  }
   .o-operator-copy > .o-kicker {
     font-size: 12px;
   }
@@ -3788,14 +3417,6 @@ h2 {
     padding-left: 20px;
     padding-right: 20px;
   }
-  .o-atlas-orbit {
-    width: 215px;
-    height: 215px;
-  }
-  .o-orbit-two {
-    width: 275px;
-    height: 275px;
-  }
   .o-sanctuary {
     padding-left: 20px;
     padding-right: 20px;
@@ -3893,9 +3514,6 @@ h2 {
   }
   .o-core-hotspot {
     border: 1px solid ButtonText;
-  }
-  .o-gauge {
-    border: 2px solid ButtonText;
   }
   .o-result,
   .o-lab {

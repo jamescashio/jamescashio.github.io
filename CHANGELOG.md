@@ -1,5 +1,13 @@
 # Changelog
 
+## V37.6 — Lightwake
+
+- Direct Dawn, Eclipse, and Ion atmosphere controls in the opening, with illustrated entry points for film, signature, and flight.
+- An original eight-second Higgsfield film with three frame landmarks, deliberate playback, and a handoff into the interactive world. All earlier films and links remain available.
+- Richer machined orbital surfaces, inset fasteners, atmospheric scattering, and coherent resonance fronts within the existing rendering budget.
+- Seven distinct study illustrations, clearer selection, and Previous/Next controls; a deeper principles engine with state-specific lighting and usable narrow-phone controls.
+- Preserve animated Cashio identity, keyboard and touch interaction, global pause, reduced motion, hidden-page suspension, and the dated public archive.
+
 ## V37.5 — CELESTIAL FORGE · 09-06-2026
 
 - Introduce the Cashio signature in champagne gold and electric cyan, with responsive WebP artwork, registered vector motion, and an optional eight-second animated GIF.

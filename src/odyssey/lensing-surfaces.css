@@ -131,51 +131,11 @@
   width: 100%;
   height: 100%;
 }
-.lensing .ln-thumb-grid {
-  stroke: #89b9c318;
-  stroke-width: 0.8;
-}
-.lensing .ln-thumb-frame {
-  stroke: #99c0ce59;
-  stroke-width: 0.9;
-}
-.lensing .ln-thumb-trace {
-  stroke: currentColor;
-  stroke-width: 1.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.lensing .ln-thumb-response {
-  stroke: #fff1d7;
-  stroke-width: 2;
-  stroke-linejoin: round;
-  stroke-dasharray: 0.16 0.84;
-  opacity: 0;
-}
 .event-horizon.aurora.lensing [aria-selected="true"] .ln-project-thumb {
   color: var(--ln-gold);
   background: linear-gradient(140deg, #50442d, #182027 75%);
   border-color: #dcb879b3;
 }
-.lensing[data-motion="on"] .o-scene.is-visible [aria-selected="true"] .ln-thumb-response {
-  animation: ln-study-trace 850ms ease-out both;
-  animation-play-state: var(--play-state, paused);
-}
-@keyframes ln-study-trace {
-  from {
-    stroke-dashoffset: 1;
-    opacity: 0;
-  }
-  18%,
-  78% {
-    opacity: 1;
-  }
-  to {
-    stroke-dashoffset: 0;
-    opacity: 0;
-  }
-}
-
 /* The active study is an open workbench, with one frame around its actual instrument. */
 .event-horizon.aurora.lensing .o-project-panel {
   border-left: 0;
@@ -500,9 +460,6 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .lensing .ln-thumb-response {
-    animation: none !important;
-  }
 }
 @media (forced-colors: active) {
   .event-horizon.aurora.lensing .o-project-index [role="tab"] {

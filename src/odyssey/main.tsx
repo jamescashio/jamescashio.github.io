@@ -17,6 +17,8 @@ import "./operator-insignia.css";
 import "./lightfold.css";
 import "./lensing-preview.css";
 import "./lensing-surfaces.css";
+import "./lightwake.css";
+import "./project-explorer-lightwake.css";
 
 const root = document.getElementById("odyssey-root")!;
 const app = (
