@@ -1674,7 +1674,8 @@ test("deck navigator waits for the commanded smooth landing before focusing its 
 });
 
 test("Executive navigator selection focuses its technical destination after the remount landing", async () => {
-  const view = mountCommandDeck({ controlledTimers: true });
+  // Hold the smooth landing instead of racing the live 240 ms scroll observer.
+  const view = mountCommandDeck({ controlledTimers: true, reducedMotion: false, deferredSmoothScroll: true });
   try {
     await view.render();
     await act(async () => useDeck.setState({ mode: "executive", shown: [0, 8] }));
