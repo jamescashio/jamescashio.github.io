@@ -133,10 +133,12 @@ export function MissionControl({
   motion = true,
   triggerClassName = "",
   onNavigate,
+  onFirstFlight,
 }: {
   motion?: boolean;
   triggerClassName?: string;
   onNavigate?: (href: string) => void;
+  onFirstFlight?: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -292,7 +294,7 @@ export function MissionControl({
         }}
       >
         <div className="mc-cap">
-          <span>CASHIO / V36</span>
+          <span>CASHIO / V37</span>
           <span>THE HUMAN RECKONING</span>
           <button type="button" className="mc-close" onClick={close}>
             Close <span aria-hidden="true">×</span>
@@ -352,7 +354,26 @@ export function MissionControl({
         </div>
         <div className="mc-body">
           <aside className="mc-missions" aria-label="Choose a starting point">
-            <h3 className="mc-eyebrow">THREE WAYS IN</h3>
+            <h3 className="mc-eyebrow">START HERE</h3>
+            {onFirstFlight && (
+              <button
+                className="mc-mission mc-first-flight"
+                type="button"
+                onClick={() => {
+                  navigating.current = true;
+                  close();
+                  onFirstFlight();
+                }}
+              >
+                <span className="mc-mission-number" aria-hidden="true">
+                  ↗
+                </span>
+                <span className="mc-mission-copy">
+                  <strong>The 30-second flight</strong>
+                  <span>Open the hull. Cut the cloud. Keep command.</span>
+                </span>
+              </button>
+            )}
             {MISSIONS.map((mission) => (
               <button type="button" className="mc-mission" key={mission.number} onClick={() => navigate(mission.href)}>
                 <span className="mc-mission-number" aria-hidden="true">

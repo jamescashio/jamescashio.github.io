@@ -35,7 +35,7 @@
   line-height: 1.4;
 }
 .eh-orbit-cinema-title p {
-  font-size: 11px;
+  font-size: 12px;
   color: #a9c5d4;
   line-height: 1.6;
   margin: 3px 0 0;
@@ -149,7 +149,7 @@
   }
   .eh-orbit-dialog:modal .eh-orbit-cinema-title p {
     max-width: 165px;
-    font-size: 8px;
+    font-size: 12px;
     letter-spacing: 0.06em;
   }
 }
@@ -164,13 +164,13 @@
     font-size: 14px;
   }
   .eh-orbit-cinema-title p {
-    font-size: 10px;
+    font-size: 12px;
     max-width: 145px;
   }
   .eh-orbit-cinema-button {
     padding: 10px;
     gap: 7px;
-    font-size: 11px;
+    font-size: 12px;
   }
   .eh-orbit-cinema-button svg {
     width: 16px;
@@ -413,13 +413,13 @@
   cursor: default;
 }
 .eh-orbit-help {
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.75;
   color: #b5c8d5;
   margin: 18px 0 12px;
 }
 .eh-orbit-boundary {
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.7;
   color: #a5bed0;
   margin: 0;
@@ -427,7 +427,7 @@
 .eh-orbit-status {
   min-height: 18px;
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.5;
   color: #ffce98;
   margin-top: 10px;
@@ -451,7 +451,7 @@
   .eh-orbit-stage-footer {
     padding-left: 18px;
     padding-right: 18px;
-    font-size: 9px;
+    font-size: 12px;
   }
   .eh-orbit-stage-label span:last-child {
     display: none;
@@ -506,7 +506,7 @@
     display: none;
   }
   .eh-orbit-stage-footer > span:last-child {
-    font-size: 8px;
+    font-size: 12px;
   }
   .eh-orbit-orientation {
     gap: 4px;
@@ -515,7 +515,7 @@
   .eh-orbit-orientation .eh-orbit-reset {
     margin-left: 3px;
     padding: 0 10px;
-    font-size: 11px;
+    font-size: 12px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

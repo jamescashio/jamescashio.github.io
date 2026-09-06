@@ -89,7 +89,7 @@ jobs:
           CHROME_PATH: ${{ steps.setup_chrome.outputs.chrome-path }}
           CHROME_DEVEL_SANDBOX: /opt/google/chrome/chrome-sandbox
 
-      - name: Verify V36 in pinned Chrome
+      - name: Verify V37 and preserved routes in pinned Chrome
         id: v36_runtime
         continue-on-error: true
         run: npm run check:v36:runtime:pinned

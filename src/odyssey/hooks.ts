@@ -60,11 +60,27 @@ export function useInteractionSound() {
 
 export function useSectionVisibility() {
   useEffect(() => {
+    const visible = new Set<Element>();
+    const syncVisibility = () => {
+      document.querySelectorAll(".o-scene").forEach((element) => {
+        element.classList.toggle("is-visible", visible.has(element) && !document.hidden);
+      });
+    };
     const observer = new IntersectionObserver(
-      (entries) => entries.forEach((entry) => entry.target.classList.toggle("is-visible", entry.isIntersecting)),
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) visible.add(entry.target);
+          else visible.delete(entry.target);
+        });
+        syncVisibility();
+      },
       { threshold: 0.06 },
     );
     document.querySelectorAll(".o-scene").forEach((element) => observer.observe(element));
-    return () => observer.disconnect();
+    document.addEventListener("visibilitychange", syncVisibility);
+    return () => {
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", syncVisibility);
+    };
   }, []);
 }

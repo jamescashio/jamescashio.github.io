@@ -1,6 +1,15 @@
 import * as THREE from "three";
 import { createExplorationCarrier, type ShipZone } from "./ship-geometry";
 import type { WorldInput, computeWorldOutcome } from "./sovereign-model";
+import {
+  FLIGHT_SHOT_MS,
+  flightComposition,
+  easeFlightShot,
+  flightShotDistance,
+  flightCarrierDistance,
+  shortestFlightTurn,
+  type FlightShot,
+} from "./flight-shots";
 
 type Outcome = ReturnType<typeof computeWorldOutcome>;
 export type ShipView = "hero" | "top" | "aft";
@@ -12,6 +21,7 @@ export type WorldController = {
   zoom: (amount: number) => void;
   resetView: () => void;
   setView: (view: ShipView) => void;
+  setFlightShot: (shot: FlightShot) => void;
   setCutaway: (enabled: boolean) => void;
   select: (zone: ShipZone) => void;
   dispose: () => void;
@@ -36,7 +46,6 @@ export function createSovereignWorld(
   },
 ): WorldController {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "low-power" });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
   renderer.setClearColor(COLORS.navy);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -44,14 +53,31 @@ export function createSovereignWorld(
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.shadowMap.autoUpdate = false;
+  renderer.localClippingEnabled = true;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 260);
-  const view = { ...VIEWS.hero };
+  const view = {
+    ...VIEWS.hero,
+    focusX: 0,
+    focusY: 0,
+    focusZ: 0,
+    radius: 1,
+    framing: 0,
+    carrier: 0,
+    roll: 0,
+    screenShift: 0,
+  };
+  let flightMode = false;
+  let activeFlightShot: FlightShot | null = null;
+  let flightLayout = "";
+  let projectionLayout = "";
   let transition: {
     from: typeof view;
     to: typeof view;
     yawDelta: number;
     elapsed: number;
+    duration: number;
+    cinematic: boolean;
   } | null = null;
   let width = 1,
     height = 1,
@@ -65,10 +91,12 @@ export function createSovereignWorld(
     phase = 0,
     outcome = initialOutcome;
   let pointer: { x: number; y: number; yaw: number; pitch: number; id: number; moved: boolean } | null = null;
+  let hullProgress = 0,
+    hullTarget = 0;
   const raycaster = new THREE.Raycaster();
 
-  scene.add(new THREE.HemisphereLight(0xe2d8c6, 0x15202f, 1.2));
-  const sun = new THREE.DirectionalLight(0xffdfab, 3.4);
+  scene.add(new THREE.HemisphereLight(0xc5dae7, 0x081221, 0.65));
+  const sun = new THREE.DirectionalLight(0xffe1b8, 2.7);
   sun.position.set(-9, 11, 7);
   sun.castShadow = true;
   sun.shadow.mapSize.set(1024, 1024);
@@ -79,7 +107,7 @@ export function createSovereignWorld(
   sun.shadow.normalBias = 0.035;
   sun.shadow.bias = -0.0002;
   scene.add(sun);
-  const rim = new THREE.DirectionalLight(0x7bbddd, 2.6);
+  const rim = new THREE.DirectionalLight(0x80d6ff, 3.1);
   rim.position.set(3, 7, -12);
   scene.add(rim);
   const fill = new THREE.DirectionalLight(0xb8d4e6, 0.65);
@@ -105,8 +133,12 @@ export function createSovereignWorld(
     context.fillRect(0, 0, 512, 256);
     context.fillStyle = "#f2e8cf";
     context.fillRect(72, 32, 112, 68);
-    context.fillStyle = "#88b8cf";
+    context.fillStyle = "#a8e2fa";
     context.fillRect(350, 43, 40, 92);
+    context.fillStyle = "#faf7ed";
+    context.fillRect(206, 62, 5, 102);
+    context.fillStyle = "#d09a4c";
+    context.fillRect(435, 70, 18, 54);
     const texture = new THREE.CanvasTexture(environmentCanvas);
     texture.colorSpace = THREE.SRGBColorSpace;
     texture.mapping = THREE.EquirectangularReflectionMapping;
@@ -152,18 +184,27 @@ export function createSovereignWorld(
     ),
   );
   const planet = new THREE.Mesh(
-    new THREE.SphereGeometry(12.5, 48, 32),
+    new THREE.SphereGeometry(12.5, 80, 48),
     new THREE.ShaderMaterial({
       vertexShader:
-        "varying vec3 vNormal;void main(){vNormal=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}",
-      fragmentShader:
-        "varying vec3 vNormal;void main(){float light=pow(max(0.0,dot(normalize(vNormal),normalize(vec3(-0.94,0.24,0.12)))),3.0);gl_FragColor=vec4(vec3(0.004,0.009,0.016)+vec3(0.025,0.085,0.13)*light,1.0);}",
+        "varying vec3 vNormal;varying vec3 vSurface;void main(){vSurface=normal;vNormal=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}",
+      fragmentShader: `varying vec3 vNormal;varying vec3 vSurface;
+        void main(){
+          vec3 n=normalize(vNormal);vec3 p=normalize(vSurface);
+          float sun=dot(n,normalize(vec3(-0.78,0.35,0.46)));
+          float light=smoothstep(-0.14,0.8,sun);
+          float bands=0.5+0.5*sin(p.y*42.0+sin(p.x*13.0+p.z*9.0)*0.8);
+          float fine=0.5+0.5*sin(p.y*138.0+sin(p.z*21.0)*1.1);
+          vec3 ocean=mix(vec3(0.011,0.043,0.083),vec3(0.04,0.135,0.22),bands*0.7+fine*0.12);
+          float limb=pow(1.0-max(0.0,n.z),3.0)*smoothstep(-0.12,0.35,sun);
+          gl_FragColor=vec4(vec3(0.003,0.008,0.015)+ocean*light+vec3(0.05,0.22,0.32)*limb,1.0);
+        }`,
     }),
   );
   planet.position.set(-25, -8, -60);
   scene.add(planet);
   const atmosphere = new THREE.Mesh(
-    new THREE.SphereGeometry(12.59, 48, 32),
+    new THREE.SphereGeometry(12.59, 80, 48),
     new THREE.ShaderMaterial({
       transparent: true,
       depthWrite: false,
@@ -263,6 +304,7 @@ export function createSovereignWorld(
     });
   };
   const applyOutcome = () => {
+    ship.setFlow(outcome);
     packetRoutes.length = 0;
     for (let i = 0; i < 12; i++)
       packetRoutes.push(i < outcome.local ? "local" : i < outcome.local + outcome.cloud ? "cloud" : "held");
@@ -283,7 +325,7 @@ export function createSovereignWorld(
   const framingPoints: THREE.Vector3[] = [];
   ship.group.traverse((object) => {
     const mesh = object as THREE.Mesh;
-    if (!mesh.geometry) return;
+    if (!mesh.geometry || mesh.userData.excludeFromFraming) return;
     mesh.geometry.computeBoundingBox();
     const bounds = mesh.geometry.boundingBox!;
     for (const x of [bounds.min.x, bounds.max.x])
@@ -295,7 +337,23 @@ export function createSovereignWorld(
     upAxis = new THREE.Vector3(),
     back = new THREE.Vector3();
   const center = new THREE.Vector3();
+  const shotFocus = new THREE.Vector3();
+  const authoredDistance = () => {
+    const distance = flightShotDistance(view.radius, camera.aspect, camera.fov);
+    if (view.carrier === 0) return distance;
+    // Establishing shots fill the available shape rather than shrinking a long ship
+    // inside a circle. The cache includes the detached relay, so it also stays in frame.
+    shotFocus.set(view.focusX, view.focusY, view.focusZ);
+    const fitted = flightCarrierDistance(framingPoints, shotFocus, right, upAxis, back, camera.aspect, camera.fov);
+    return THREE.MathUtils.lerp(distance, fitted, view.carrier);
+  };
   const cameraPosition = () => {
+    const projectionKey = `${width}:${height}:${view.screenShift}`;
+    if (projectionKey !== projectionLayout) {
+      if (view.screenShift) camera.setViewOffset(width, height, 0, height * view.screenShift, width, height);
+      else camera.clearViewOffset();
+      projectionLayout = projectionKey;
+    }
     camera.position.set(
       Math.sin(view.yaw) * Math.cos(view.pitch),
       Math.sin(view.pitch),
@@ -303,12 +361,21 @@ export function createSovereignWorld(
     );
     camera.up.set(0, 1, 0);
     camera.lookAt(0, 0, 0);
-    // Roll the long silhouette into portrait space instead of shrinking it to a horizontal thumbnail.
-    if (width < 600) camera.rotateZ(-0.62);
+    // Inspectors retain their portrait roll; the phone arrival uses its authored broadside.
+    camera.rotateZ(THREE.MathUtils.lerp(width < 600 ? -0.62 : 0, view.roll, view.framing));
     camera.updateMatrixWorld();
     right.setFromMatrixColumn(camera.matrixWorld, 0);
     upAxis.setFromMatrixColumn(camera.matrixWorld, 1);
     back.setFromMatrixColumn(camera.matrixWorld, 2);
+    // Wide inspector views continue fitting every part. Authored closeups use a bounded
+    // focus sphere instead, making the actual hardware visible without extra GPU work.
+    if (view.framing === 1) {
+      center.set(view.focusX, view.focusY, view.focusZ);
+      const distance = authoredDistance();
+      camera.position.copy(center).addScaledVector(back, distance * view.zoom);
+      camera.updateMatrixWorld();
+      return;
+    }
     let minX = Infinity,
       maxX = -Infinity,
       minY = Infinity,
@@ -340,6 +407,12 @@ export function createSovereignWorld(
         Math.abs(p.dot(upAxis) - cy) / (tangent * 0.76) + z,
       );
     }
+    if (view.framing > 0) {
+      center.x = THREE.MathUtils.lerp(center.x, view.focusX, view.framing);
+      center.y = THREE.MathUtils.lerp(center.y, view.focusY, view.framing);
+      center.z = THREE.MathUtils.lerp(center.z, view.focusZ, view.framing);
+      radius = THREE.MathUtils.lerp(radius, authoredDistance(), view.framing);
+    }
     camera.position.copy(center).addScaledVector(back, radius * view.zoom);
     camera.updateMatrixWorld();
   };
@@ -351,13 +424,21 @@ export function createSovereignWorld(
       return;
     }
     const dt = last ? Math.min(0.07, (now - last) / 1000) : 0;
-    if (transition && motion) {
-      transition.elapsed = Math.min(550, transition.elapsed + dt * 1000);
-      const progress = transition.elapsed / 550;
-      const eased = progress * progress * (3 - 2 * progress);
+    if (transition && motion && (!transition.cinematic || playing)) {
+      transition.elapsed = Math.min(transition.duration, transition.elapsed + dt * 1000);
+      const progress = transition.elapsed / transition.duration;
+      const eased = transition.cinematic ? easeFlightShot(progress) : progress * progress * (3 - 2 * progress);
       view.yaw = transition.from.yaw + transition.yawDelta * eased;
       view.pitch = THREE.MathUtils.lerp(transition.from.pitch, transition.to.pitch, eased);
       view.zoom = THREE.MathUtils.lerp(transition.from.zoom, transition.to.zoom, eased);
+      view.focusX = THREE.MathUtils.lerp(transition.from.focusX, transition.to.focusX, eased);
+      view.focusY = THREE.MathUtils.lerp(transition.from.focusY, transition.to.focusY, eased);
+      view.focusZ = THREE.MathUtils.lerp(transition.from.focusZ, transition.to.focusZ, eased);
+      view.radius = THREE.MathUtils.lerp(transition.from.radius, transition.to.radius, eased);
+      view.framing = THREE.MathUtils.lerp(transition.from.framing, transition.to.framing, eased);
+      view.carrier = THREE.MathUtils.lerp(transition.from.carrier, transition.to.carrier, eased);
+      view.roll = THREE.MathUtils.lerp(transition.from.roll, transition.to.roll, eased);
+      view.screenShift = THREE.MathUtils.lerp(transition.from.screenShift, transition.to.screenShift, eased);
       if (progress === 1) {
         Object.assign(view, transition.to);
         transition = null;
@@ -368,11 +449,18 @@ export function createSovereignWorld(
       ship.animate(phase);
       updatePackets();
     }
+    if (hullProgress !== hullTarget && motion && (!flightMode || playing)) {
+      const direction = Math.sign(hullTarget - hullProgress);
+      hullProgress = THREE.MathUtils.clamp(hullProgress + (direction * dt) / 1.45, 0, 1);
+      ship.setCutawayProgress(hullProgress);
+      renderer.shadowMap.needsUpdate = true;
+    }
     cameraPosition();
     renderer.render(scene, camera);
     last = now;
     lastPaint = now;
-    if (motion && (playing || transition)) frame = requestAnimationFrame(tick);
+    if (motion && (playing || (transition && !transition.cinematic) || (hullProgress !== hullTarget && !flightMode)))
+      frame = requestAnimationFrame(tick);
   };
   const render = () => {
     if (frame) cancelAnimationFrame(frame);
@@ -381,13 +469,54 @@ export function createSovereignWorld(
     if (!disposed && visible && !document.hidden) frame = requestAnimationFrame(tick);
   };
   const changeView = (name: ShipView) => {
-    const to = VIEWS[name];
-    const yawDelta = Math.atan2(Math.sin(to.yaw - view.yaw), Math.cos(to.yaw - view.yaw));
-    if (!motion || Math.abs(yawDelta) + Math.abs(to.pitch - view.pitch) + Math.abs(to.zoom - view.zoom) < 0.000001) {
+    flightMode = false;
+    activeFlightShot = null;
+    const to = { ...view, ...VIEWS[name], framing: 0, screenShift: 0 };
+    const yawDelta = shortestFlightTurn(view.yaw, to.yaw);
+    if (
+      !motion ||
+      Math.abs(yawDelta) + Math.abs(to.pitch - view.pitch) + Math.abs(to.zoom - view.zoom) + view.framing < 0.000001
+    ) {
       Object.assign(view, to);
       transition = null;
     } else {
-      transition = { from: { ...view }, to: { ...to }, yawDelta, elapsed: 0 };
+      transition = { from: { ...view }, to, yawDelta, elapsed: 0, duration: 550, cinematic: false };
+    }
+    render();
+  };
+  const changeFlightShot = (name: FlightShot) => {
+    const shot = flightComposition(name, width, window.innerWidth);
+    flightMode = true;
+    activeFlightShot = name;
+    flightLayout = `${width < 600}:${window.innerWidth <= 600}:${width < 340}`;
+    const to = {
+      yaw: shot.yaw,
+      pitch: shot.pitch,
+      zoom: 1,
+      focusX: shot.focus[0],
+      focusY: shot.focus[1],
+      focusZ: shot.focus[2],
+      radius: shot.radius,
+      framing: 1,
+      carrier: shot.frame === "carrier" ? 1 : 0,
+      roll: shot.roll,
+      screenShift: shot.screenShift,
+    };
+    if (!motion || !playing) {
+      Object.assign(view, to);
+      transition = null;
+      hullProgress = hullTarget;
+      ship.setCutawayProgress(hullProgress);
+      renderer.shadowMap.needsUpdate = true;
+    } else {
+      transition = {
+        from: { ...view },
+        to,
+        yawDelta: shortestFlightTurn(view.yaw, to.yaw),
+        elapsed: 0,
+        duration: FLIGHT_SHOT_MS,
+        cinematic: true,
+      };
     }
     render();
   };
@@ -399,9 +528,22 @@ export function createSovereignWorld(
   const resize = new ResizeObserver(([entry]) => {
     width = Math.max(1, entry.contentRect.width);
     height = Math.max(1, entry.contentRect.height);
+    // Retina detail with a bounded pixel count; no unbounded mobile GPU allocation.
+    renderer.setPixelRatio(
+      Math.min(Math.max(window.devicePixelRatio || 1, 1.5), 2, Math.sqrt(2_400_000 / (width * height))),
+    );
+    const shadowSize = width >= 700 ? 2048 : 1024;
+    if (sun.shadow.mapSize.x !== shadowSize) {
+      sun.shadow.mapSize.set(shadowSize, shadowSize);
+      sun.shadow.map?.dispose();
+      sun.shadow.map = null;
+      renderer.shadowMap.needsUpdate = true;
+    }
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
+    if (activeFlightShot && flightLayout !== `${width < 600}:${window.innerWidth <= 600}:${width < 340}`)
+      changeFlightShot(activeFlightShot);
     render();
   });
   const intersection = new IntersectionObserver(
@@ -439,7 +581,10 @@ export function createSovereignWorld(
     const dx = event.clientX - pointer.x,
       dy = event.clientY - pointer.y;
     if (Math.abs(dx) + Math.abs(dy) > 5) {
-      if (!pointer.moved) callbacks.viewChanged?.();
+      if (!pointer.moved) {
+        activeFlightShot = null;
+        callbacks.viewChanged?.();
+      }
       pointer.moved = true;
     }
     if (!pointer.moved) return;
@@ -458,6 +603,7 @@ export function createSovereignWorld(
         camera,
       );
       const hit = raycaster.intersectObjects(ship.inspected, false).find((intersection) => {
+        if (!ship.isSurfaceVisible(intersection.object, intersection.point)) return false;
         let object: THREE.Object3D | null = intersection.object;
         while (object) {
           if (!object.visible) return false;
@@ -500,14 +646,29 @@ export function createSovereignWorld(
         Object.assign(view, transition.to);
         transition = null;
       }
+      if (!motion && hullProgress !== hullTarget) {
+        hullProgress = hullTarget;
+        ship.setCutawayProgress(hullProgress);
+        renderer.shadowMap.needsUpdate = true;
+      }
       render();
     },
     setPlaying(value) {
       playing = value;
+      // A manually selected chapter must be fully readable while paused. An existing
+      // in-progress shot instead remains exactly where the visitor paused it.
+      if (!playing && transition?.cinematic && transition.elapsed === 0) {
+        Object.assign(view, transition.to);
+        transition = null;
+        hullProgress = hullTarget;
+        ship.setCutawayProgress(hullProgress);
+        renderer.shadowMap.needsUpdate = true;
+      }
       render();
     },
     rotate(horizontal, vertical = 0) {
       transition = null;
+      activeFlightShot = null;
       view.yaw += horizontal;
       view.pitch = THREE.MathUtils.clamp(view.pitch + vertical, 0.15, 1.48);
       callbacks.viewChanged?.();
@@ -515,6 +676,7 @@ export function createSovereignWorld(
     },
     zoom(amount) {
       transition = null;
+      activeFlightShot = null;
       view.zoom = THREE.MathUtils.clamp(view.zoom + amount, 0.7, 1.4);
       callbacks.viewChanged?.();
       render();
@@ -525,9 +687,14 @@ export function createSovereignWorld(
     setView(name) {
       changeView(name);
     },
+    setFlightShot: changeFlightShot,
     setCutaway(enabled) {
-      ship.setCutaway(enabled);
-      renderer.shadowMap.needsUpdate = true;
+      hullTarget = enabled ? 1 : 0;
+      if (!motion) {
+        hullProgress = hullTarget;
+        ship.setCutawayProgress(hullProgress);
+        renderer.shadowMap.needsUpdate = true;
+      }
       render();
     },
     select,

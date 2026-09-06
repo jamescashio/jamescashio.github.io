@@ -14,6 +14,7 @@ import "./starship-theme.css";
 import "./brand-mark.css";
 import "./lab-visuals.css";
 import "./operator-insignia.css";
+import "./lightfold.css";
 
 const root = document.getElementById("odyssey-root")!;
 const app = (

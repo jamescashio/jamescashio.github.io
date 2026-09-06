@@ -40,10 +40,12 @@ export function Starfield({ motion, folding }: { motion: boolean; folding: boole
       frame = 0,
       last = 0,
       visible = true;
-    const stars = Array.from({ length: 66 }, (_, i) => ({
+    let elapsed = 0;
+    const stars = Array.from({ length: 96 }, (_, i) => ({
       x: ((i * 137.508) % 997) / 997,
       y: ((i * 293.11) % 991) / 991,
       z: 0.25 + (i % 9) / 12,
+      gold: i % 13 === 0,
     }));
     function resize() {
       const box = canvas!.getBoundingClientRect();
@@ -63,20 +65,54 @@ export function Starfield({ motion, folding }: { motion: boolean; folding: boole
       if (time - last < 32) return;
       const delta = Math.min(time - last, 64);
       last = time;
+      elapsed += delta;
       context!.clearRect(0, 0, width, height);
       const originX = parseFloat(hero?.style.getPropertyValue("--eh-core-x") || "") || width * 0.74;
       const originY = parseFloat(hero?.style.getPropertyValue("--eh-core-y") || "") || height * 0.44;
-      for (const star of stars) {
+      for (const [index, star] of stars.entries()) {
         star.x += delta * 0.000003 * star.z;
         if (star.x > 1) star.x = 0;
         const x = star.x * width,
           y = star.y * height;
-        context!.strokeStyle = `rgba(163,223,239,${0.1 + star.z * 0.35})`;
-        context!.lineWidth = star.z;
+        const shimmer = 0.8 + Math.sin(elapsed * 0.0007 + index * 2.1) * 0.2;
+        context!.strokeStyle = `rgba(${star.gold ? "255,211,144" : "163,223,239"},${(0.12 + star.z * 0.4) * shimmer})`;
+        context!.lineWidth = star.z * 1.2;
         context!.beginPath();
         context!.moveTo(x, y);
         context!.lineTo(x + (fold.current ? (x - originX) * 0.15 : 0.6), y + (fold.current ? (y - originY) * 0.15 : 0));
         context!.stroke();
+        if (star.gold && !fold.current) {
+          context!.globalAlpha = shimmer * 0.45;
+          context!.beginPath();
+          context!.moveTo(x - 3, y);
+          context!.lineTo(x + 3, y);
+          context!.moveTo(x, y - 3);
+          context!.lineTo(x, y + 3);
+          context!.stroke();
+          context!.globalAlpha = 1;
+        }
+      }
+      // Two slow navigation wakes live beside the artwork, away from the headline.
+      if (!fold.current) {
+        for (let lane = 0; lane < 2; lane++) {
+          const phase = (elapsed / 17000 + lane * 0.52) % 1;
+          if (phase > 0.24) continue;
+          const travel = phase / 0.24;
+          const x = width * (0.5 + travel * 0.45);
+          const y = height * (0.12 + lane * 0.16 + travel * 0.2);
+          const tail = Math.min(70, width * 0.065);
+          const beam = context!.createLinearGradient(x - tail, y - tail * 0.32, x, y);
+          beam.addColorStop(0, "rgba(115,225,241,0)");
+          beam.addColorStop(1, lane ? "rgba(255,209,147,.75)" : "rgba(158,241,250,.7)");
+          context!.globalAlpha = Math.sin(travel * Math.PI);
+          context!.strokeStyle = beam;
+          context!.lineWidth = 1.2;
+          context!.beginPath();
+          context!.moveTo(x - tail, y - tail * 0.32);
+          context!.lineTo(x, y);
+          context!.stroke();
+          context!.globalAlpha = 1;
+        }
       }
     }
     function resume() {

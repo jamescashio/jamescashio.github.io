@@ -1,0 +1,381 @@
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { FIRST_FLIGHT, FLIGHT_STEP_MS, flightStepIndex, missionHash } from "./flight-plan";
+import { RequestConstellation } from "./request-constellation";
+import { computeWorldOutcome } from "./sovereign-model";
+import type { WorldController } from "./world-renderer";
+import { StarshipPoster } from "./starship-poster";
+import "./first-flight.css";
+
+export default function FirstFlight({
+  motion,
+  initialStep,
+  onClose,
+}: {
+  motion: boolean;
+  initialStep: string;
+  onClose: (destination?: string) => void;
+}) {
+  const [visit, setVisit] = useState(0);
+  const remainingMs = useRef(FLIGHT_STEP_MS);
+  const timerChapter = useRef("");
+  const [step, setStep] = useState(() => flightStepIndex(initialStep));
+  const [paused, setPaused] = useState(!motion || initialStep !== "board");
+  const [phase, setPhase] = useState<"loading" | "ready" | "fallback">("loading");
+  const [complete, setComplete] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [copyError, setCopyError] = useState(false);
+  const [choice, setChoice] = useState<{ step: number; connected?: boolean; permitted?: boolean } | null>(null);
+  const [pageVisible, setPageVisible] = useState(true);
+  const [compact, setCompact] = useState(() => window.matchMedia("(max-width: 700px)").matches);
+  const panel = useRef<HTMLDialogElement>(null);
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const controller = useRef<WorldController | null>(null);
+  const initial = useRef(flightStepIndex(initialStep));
+  const firstFocus = useRef<HTMLButtonElement>(null);
+  const decisionFocus = useRef<HTMLButtonElement>(null);
+  const restoreDecisionFocus = useRef(false);
+  const scene = FIRST_FLIGHT[step];
+  const changed = choice?.step === step;
+  const input = useMemo(
+    () => ({
+      ...scene.input,
+      connected: changed ? (choice.connected ?? scene.input.connected) : scene.input.connected,
+      allowPrivateEgress: changed
+        ? (choice.permitted ?? scene.input.allowPrivateEgress)
+        : scene.input.allowPrivateEgress,
+    }),
+    [scene, changed, choice],
+  );
+  const outcome = computeWorldOutcome(input);
+  const flightHash = changed ? missionHash(input) : `#flight=${scene.id}`;
+  const playing = motion && !paused && !complete && pageVisible && phase !== "loading";
+
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 700px)");
+    const update = () => {
+      restoreDecisionFocus.current = document.activeElement === decisionFocus.current;
+      setCompact(query.matches);
+    };
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+
+  useLayoutEffect(() => {
+    if (restoreDecisionFocus.current) {
+      decisionFocus.current?.focus({ preventScroll: true });
+      restoreDecisionFocus.current = false;
+    }
+  }, [compact]);
+
+  useEffect(() => {
+    const dialog = panel.current;
+    dialog?.showModal();
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    firstFocus.current?.focus();
+    const visibility = () => setPageVisible(!document.hidden);
+    document.addEventListener("visibilitychange", visibility);
+    let cancelled = false;
+    void import("./world-renderer")
+      .then(({ createSovereignWorld }) => {
+        if (cancelled || !canvas.current) return;
+        const first = FIRST_FLIGHT[initial.current];
+        controller.current = createSovereignWorld(canvas.current, first.input, computeWorldOutcome(first.input), {
+          inspect: () => {},
+          unavailable: () => {
+            if (!cancelled) setPhase("fallback");
+          },
+          viewChanged: () => setPaused(true),
+        });
+        setPhase("ready");
+      })
+      .catch(() => {
+        if (!cancelled) setPhase("fallback");
+      });
+    return () => {
+      cancelled = true;
+      controller.current?.dispose();
+      controller.current = null;
+      document.body.style.overflow = overflow;
+      document.removeEventListener("visibilitychange", visibility);
+      dialog?.close();
+    };
+  }, []);
+
+  useEffect(() => {
+    controller.current?.setMotion(motion);
+    controller.current?.setCutaway(scene.hull);
+    controller.current?.setFlightShot(scene.shot);
+    controller.current?.select(scene.zone);
+  }, [scene, motion, phase]);
+  useEffect(() => {
+    controller.current?.update(input, computeWorldOutcome(input));
+  }, [input, phase]);
+  useEffect(() => {
+    controller.current?.setPlaying(playing);
+  }, [playing, phase]);
+  useEffect(() => {
+    const chapter = `${step}-${visit}`;
+    if (timerChapter.current !== chapter) {
+      timerChapter.current = chapter;
+      remainingMs.current = FLIGHT_STEP_MS;
+    }
+    if (!playing) return;
+    const started = performance.now();
+    const timer = setTimeout(() => {
+      if (step < FIRST_FLIGHT.length - 1) {
+        setCopied(false);
+        setCopyError(false);
+        setStep(step + 1);
+      } else setComplete(true);
+    }, remainingMs.current);
+    return () => {
+      clearTimeout(timer);
+      remainingMs.current = Math.max(0, remainingMs.current - (performance.now() - started));
+    };
+  }, [playing, step, visit]);
+
+  function select(next: number) {
+    setVisit((value) => value + 1);
+    setChoice(null);
+    setStep(next);
+    setPaused(true);
+    setComplete(false);
+    setCopied(false);
+    setCopyError(false);
+  }
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(`${location.origin}${location.pathname}${flightHash}`);
+      setCopied(true);
+      setCopyError(false);
+    } catch {
+      setCopyError(true);
+    }
+  }
+
+  const decisionButton = (
+    <button
+      ref={decisionFocus}
+      className="ff-boundary-toggle"
+      type="button"
+      data-active={step === 3 ? input.allowPrivateEgress : !input.connected}
+      onClick={() => {
+        setPaused(true);
+        setCopied(false);
+        setCopyError(false);
+        setChoice(step === 3 ? { step, permitted: !input.allowPrivateEgress } : { step, connected: !input.connected });
+      }}
+    >
+      <span aria-hidden="true">{step === 3 ? "◇" : "⌁"}</span>
+      {step === 3
+        ? input.allowPrivateEgress
+          ? "Withdraw cloud permission"
+          : "Permit these private requests"
+        : input.connected
+          ? "Cut the cloud link"
+          : "Restore the cloud link"}
+      <span aria-hidden="true">↗</span>
+    </button>
+  );
+
+  return (
+    <dialog
+      ref={panel}
+      className="first-flight ff-cinematic"
+      data-shot={scene.shot}
+      data-motion={motion ? "on" : "off"}
+      aria-labelledby="ff-title"
+      aria-describedby="ff-boundary"
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
+      }}
+      onKeyDown={(event) => {
+        if (event.key !== "Tab") return;
+        const buttons = [...event.currentTarget.querySelectorAll<HTMLButtonElement>("button:not([disabled])")];
+        if (event.shiftKey && document.activeElement === buttons[0]) {
+          event.preventDefault();
+          buttons.at(-1)?.focus();
+        } else if (!event.shiftKey && document.activeElement === buttons.at(-1)) {
+          event.preventDefault();
+          buttons[0]?.focus();
+        }
+      }}
+    >
+      <header className="ff-header">
+        <div>
+          <span className="ff-eyebrow">V37 / LIGHTFOLD</span>
+          <h2 id="ff-title">
+            First contact. <em>Human command.</em>
+          </h2>
+        </div>
+        <button ref={firstFocus} type="button" className="ff-close" onClick={() => onClose()} aria-label="Close flight">
+          Close <span aria-hidden="true">×</span>
+        </button>
+      </header>
+      <div className="ff-body">
+        <div className={`ff-stage ff-stage-${phase}`}>
+          <StarshipPoster imageClassName="ff-fallback" eager />
+          <canvas ref={canvas} aria-hidden="true" />
+          <div className="ff-stage-cap">
+            <span>CSV SOVEREIGN</span>
+            <span>{input.connected ? "RELAY CONNECTED" : "RELAY OFFLINE"}</span>
+          </div>
+          <div className="ff-shot-reticle" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+            <i />
+          </div>
+          <span className="ff-shot-label" aria-hidden="true">
+            {
+              [
+                "01 / ORBITAL APPROACH",
+                "02 / ONBOARD INTELLIGENCE",
+                "03 / THE INDEPENDENT SHIP",
+                "04 / THE HUMAN CORE",
+              ][step]
+            }
+          </span>
+          <div className="ff-telemetry" aria-label="Illustrated routing outcome">
+            <div>
+              <strong>{outcome.local.toString().padStart(2, "0")}</strong>
+              <span>Onboard</span>
+            </div>
+            <div>
+              <strong>{outcome.cloud.toString().padStart(2, "0")}</strong>
+              <span>Cloud</span>
+            </div>
+            <div>
+              <strong>{outcome.held.toString().padStart(2, "0")}</strong>
+              <span>Held</span>
+            </div>
+          </div>
+        </div>
+        <section className="ff-story" aria-labelledby="ff-scene-title" aria-live="polite" aria-atomic="true">
+          <span className="ff-eyebrow">
+            0{step + 1} / 04 ·{" "}
+            {complete ? "FLIGHT COMPLETE" : phase === "loading" ? "PREPARING THE SHIP" : "THE HUMAN BOUNDARY"}
+          </span>
+          <h3 id="ff-scene-title">{scene.title}</h3>
+          <div className="ff-command-lab">
+            <div className="ff-lab-heading">
+              <span>TAKE COMMAND</span>
+              <span>LOCAL ILLUSTRATION</span>
+            </div>
+            {!compact && decisionButton}
+            <p className="ff-scene-copy">{changed ? outcome.summary : scene.copy}</p>
+            <RequestConstellation input={input} motion={motion && pageVisible} />
+            <p className="ff-decision-result" role="status">
+              {outcome.local} onboard · {outcome.cloud} in cloud · {outcome.held} held
+              {step === 3 && (
+                <small>
+                  {input.allowPrivateEgress
+                    ? "Permission granted in this illustration. Private data can leave the ship."
+                    : "Permission is off. Private requests wait for your decision."}
+                </small>
+              )}
+            </p>
+            {changed && (
+              <button
+                className="ff-restore-scene"
+                type="button"
+                onClick={() => {
+                  setChoice(null);
+                  setCopied(false);
+                  setCopyError(false);
+                }}
+              >
+                Reset this chapter ↺
+              </button>
+            )}
+          </div>
+          <strong className="ff-takeaway">{scene.takeaway}</strong>
+          {complete && (
+            <div className="ff-next">
+              <button type="button" onClick={() => onClose("build=hermes")}>
+                Try HERMES →
+              </button>
+              <button type="button" onClick={() => onClose("evidence")}>
+                Inspect the evidence →
+              </button>
+            </div>
+          )}
+        </section>
+      </div>
+      {compact && <div className="ff-mobile-command">{decisionButton}</div>}
+      <nav className="ff-chapters" aria-label="Flight chapters">
+        {FIRST_FLIGHT.map((item, index) => (
+          <button
+            key={item.id}
+            type="button"
+            aria-current={step === index ? "step" : undefined}
+            onClick={() => select(index)}
+          >
+            <span>0{index + 1}</span>
+            {["Board", "Open the hull", "Cut the cloud", "Human command"][index]}
+            <i
+              key={`${step}-${visit}`}
+              style={{ animationPlayState: playing ? "running" : "paused" }}
+              className={step === index && motion && !complete ? "ff-progress" : ""}
+            />
+          </button>
+        ))}
+      </nav>
+      <footer className="ff-footer">
+        <div className="ff-playback">
+          <button
+            type="button"
+            aria-label="Previous chapter"
+            onClick={() => select(Math.max(0, step - 1))}
+            disabled={step === 0}
+          >
+            ← <span>Previous</span>
+          </button>
+          <button
+            type="button"
+            disabled={!motion || phase === "loading"}
+            onClick={() => {
+              if (complete) {
+                setVisit((value) => value + 1);
+                setCopied(false);
+                setCopyError(false);
+                setChoice(null);
+                setStep(0);
+                setComplete(false);
+              }
+              setPaused(complete ? false : !paused);
+            }}
+          >
+            {complete ? "Replay flight" : playing ? "Pause flight" : motion ? "Resume flight" : "Manual flight"}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              if (step === 3) {
+                setComplete(true);
+                setPaused(true);
+              } else select(step + 1);
+            }}
+          >
+            {step === 3 ? "Finish" : "Next"} →
+          </button>
+        </div>
+        <button className="ff-share" type="button" onClick={copy}>
+          {copied ? "Link copied ✓" : changed ? "Copy this scenario" : "Copy this flight"}
+        </button>
+      </footer>
+      <p className="ff-boundary" id="ff-boundary">
+        A local routing illustration, not a live AI service or speed test.{" "}
+        {phase === "fallback" ? "The 3D view is unavailable; the illustrated outcomes still work. " : ""}
+        {!motion ? "Motion is off. Advance with Next." : "Pause or explore at your own pace."}
+      </p>
+      {copyError && (
+        <p className="ff-copy-error" role="status">
+          Clipboard unavailable. Reopen this scene with {flightHash}.
+        </p>
+      )}
+    </dialog>
+  );
+}

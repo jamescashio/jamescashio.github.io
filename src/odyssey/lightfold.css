@@ -1,0 +1,246 @@
+/* Lightfold: readable instruments, quiet anticipation, strong responses to intent. */
+.lightfold .sa-system-atlas .sa-chart {
+  min-height: 510px;
+}
+@media (max-width: 600px) {
+  .lightfold .sa-system-atlas .sa-chart {
+    min-height: 460px;
+  }
+}
+.lightfold .ah-signal {
+  opacity: 0.7;
+}
+.lf-core-orbits {
+  opacity: 0.78;
+  filter: drop-shadow(0 0 4px #65dce34d);
+}
+.lf-core-orbit-a,
+.lf-core-orbit-b {
+  transform-origin: 130px 130px;
+  animation: lf-orbit-a 32s linear infinite;
+  animation-play-state: var(--play-state, paused);
+}
+.lf-core-orbit-b {
+  animation-name: lf-orbit-b;
+  animation-duration: 43s;
+}
+.lf-core-wave {
+  position: absolute;
+  inset: 21%;
+  border: 1px solid #96eff069;
+  border-radius: 50%;
+  opacity: 0;
+  animation: lf-core-wave 6s ease-out infinite;
+  animation-play-state: var(--play-state, paused);
+}
+.lf-core-wave-b {
+  border-color: #e9c18265;
+  animation-delay: 3s;
+}
+.lightfold .o-core-hotspot:is(:hover, :focus-visible) .lf-core-orbits {
+  opacity: 1;
+  filter: drop-shadow(0 0 5px #7ef7ef80);
+}
+.lf-fold-ribbons {
+  position: absolute;
+  left: var(--eh-fold-x, 70%);
+  top: var(--eh-fold-y, 45%);
+  width: 0;
+  height: 0;
+}
+.lf-fold-ribbons i {
+  position: absolute;
+  left: 0;
+  top: -1px;
+  width: max(100vw, 100vh);
+  height: 1px;
+  transform-origin: 0 50%;
+  transform: rotate(var(--lf-angle));
+  background: linear-gradient(90deg, transparent 4%, #81ecea00 10%, #8af0ed9c 34%, #f1d3a594 52%, transparent 86%);
+  animation: lf-ribbon-arrive 1.55s var(--lf-delay) cubic-bezier(0.2, 0.75, 0.2, 1) both;
+}
+.lf-fold-ribbons i:nth-child(3n) {
+  height: 2px;
+  opacity: 0.55;
+}
+.lightfold .eh-fold-aperture > i {
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 36%;
+  animation-duration: 1s;
+  animation-delay: calc(0.34s + var(--lf-ring-delay, 0ms));
+}
+.lightfold .eh-fold {
+  animation-duration: 1.31s;
+  animation-delay: 0.34s;
+}
+.lightfold .lf-fold-ribbons i {
+  animation-duration: 1.1s;
+  animation-delay: calc(0.34s + var(--lf-delay, 0ms));
+}
+.lf-lock-brackets {
+  opacity: 0;
+  transform-origin: center;
+}
+.event-horizon.aurora.lightfold.is-folding .ah-signal {
+  animation: lf-core-commit 0.7s ease-out both;
+  transition: none;
+}
+.lightfold.is-folding :is(.lf-core-orbit-a, .lf-core-orbit-b, .ah-signal-tracker) {
+  animation: lf-orbit-lock 0.34s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-play-state: running;
+}
+.lightfold.is-folding .lf-core-orbit-a {
+  --lf-lock-angle: -14deg;
+}
+.lightfold.is-folding .lf-core-orbit-b {
+  --lf-lock-angle: 14deg;
+}
+.lightfold.is-folding .lf-lock-brackets {
+  animation: lf-lock-confirm 0.55s ease-out both;
+}
+@keyframes lf-orbit-lock {
+  from {
+    transform: var(--lf-lock-from, rotate(0deg));
+  }
+  to {
+    transform: rotate(var(--lf-lock-angle, 0deg));
+  }
+}
+@keyframes lf-lock-confirm {
+  0% {
+    opacity: 0;
+    transform: scale(1.2);
+  }
+  60%,
+  85% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+@keyframes lf-core-commit {
+  0%,
+  45% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.4);
+  }
+}
+.lightfold .o-section-top {
+  position: relative;
+}
+.lightfold .o-section-top::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  display: block;
+  width: 80px;
+  height: 2px;
+  background: linear-gradient(90deg, currentColor, transparent);
+  opacity: 0.65;
+  transform-origin: left;
+}
+.lightfold[data-motion="on"] .o-scene.is-visible .o-section-top::after {
+  animation: lf-draw-rule 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.lightfold[data-overlay="open"] > main *,
+.lightfold[data-overlay="open"] > main *::before,
+.lightfold[data-overlay="open"] > main *::after,
+.lightfold[data-overlay="open"] > header *,
+.lightfold[data-overlay="open"] > header *::before,
+.lightfold[data-overlay="open"] > header *::after {
+  animation-play-state: paused !important;
+}
+.lightfold[data-motion="off"] :is(.lf-core-orbit-a, .lf-core-orbit-b, .lf-core-wave) {
+  animation: none;
+}
+@keyframes lf-orbit-a {
+  from {
+    transform: rotate(-36deg);
+  }
+  to {
+    transform: rotate(324deg);
+  }
+}
+@keyframes lf-orbit-b {
+  from {
+    transform: rotate(47deg);
+  }
+  to {
+    transform: rotate(-313deg);
+  }
+}
+@keyframes lf-core-wave {
+  0%,
+  20% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  30% {
+    opacity: 0.6;
+  }
+  78%,
+  100% {
+    opacity: 0;
+    transform: scale(1.9);
+  }
+}
+@keyframes lf-ribbon-arrive {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--lf-angle)) scaleX(0.06);
+  }
+  25% {
+    opacity: 0.8;
+  }
+  90%,
+  100% {
+    opacity: 0;
+    transform: rotate(var(--lf-angle)) scaleX(1.2);
+  }
+}
+@keyframes lf-draw-rule {
+  from {
+    transform: scaleX(0.05);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@media (max-width: 700px) {
+  .lightfold .ah-signal {
+    opacity: 0.65;
+  }
+  .lightfold .o-section-top::after {
+    width: 34px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lightfold.is-folding :is(.ah-signal, .lf-core-orbit-a, .lf-core-orbit-b, .ah-signal-tracker, .lf-lock-brackets) {
+    animation: none;
+  }
+  .lf-core-orbit-a,
+  .lf-core-orbit-b,
+  .lf-core-wave {
+    animation: none;
+  }
+  .lightfold .o-section-top::after {
+    animation: none;
+  }
+}
+@media (forced-colors: active) {
+  .lf-core-wave,
+  .lf-core-orbits,
+  .lf-lock-brackets,
+  .lf-fold-ribbons {
+    display: none;
+  }
+}

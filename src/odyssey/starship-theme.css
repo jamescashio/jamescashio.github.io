@@ -85,3 +85,183 @@
     letter-spacing: -0.045em;
   }
 }
+
+/* V37 reading rhythm: preserve the scene while making its decisions easy to read. */
+.event-horizon.aurora p {
+  font-size: 16px;
+  line-height: 1.7;
+}
+.event-horizon.aurora :is(button, label, select, input, summary) {
+  font-size: 14px;
+}
+.event-horizon.aurora
+  :is(
+    .o-micro,
+    .o-kicker,
+    .o-art-caption,
+    .o-core-label,
+    .o-scroll-cue,
+    .o-lab-note,
+    .o-terminal-foot,
+    .o-project-footer,
+    .o-footer,
+    .sw-world-boundary,
+    .sw-world-key,
+    .o-release-note
+  ) {
+  font-size: 12px;
+  line-height: 1.6;
+}
+.event-horizon.aurora
+  :is(
+    .o-button,
+    .o-text-button,
+    .o-header nav a,
+    .o-hail,
+    [role="tab"] strong,
+    .sw-pilot-controls button,
+    .sw-shortcuts button
+  ) {
+  font-size: 14px;
+}
+.event-horizon.aurora [role="tab"] small {
+  font-size: 12px;
+}
+.event-horizon.aurora [role="tab"] {
+  min-height: 84px;
+}
+.event-horizon.aurora .o-field-notes dd {
+  font-size: 16px;
+  line-height: 1.7;
+}
+.event-horizon.aurora .o-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+}
+.event-horizon.aurora .o-hero-work {
+  font-size: 14px;
+}
+.event-horizon.aurora .o-hero-work > span {
+  font-size: 12px;
+}
+.event-horizon.aurora .o-header {
+  gap: 10px;
+}
+.event-horizon.aurora .o-header nav {
+  gap: 18px;
+}
+.event-horizon.aurora .o-section-heading > p {
+  max-width: 40ch;
+}
+.event-horizon.aurora .o-footer > span {
+  max-width: 420px;
+  text-align: left;
+}
+.event-horizon.aurora .o-footer > div {
+  display: flex;
+  flex-wrap: wrap;
+}
+.event-horizon.aurora .o-core-label {
+  width: 210px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+.sw-share-mission {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px 28px;
+  border-top: 1px solid #86cee32b;
+}
+.event-horizon.aurora .sw-share-mission p {
+  margin: 5px 0 0;
+  font-size: 14px;
+}
+.sw-share-mission button {
+  min-height: 44px;
+}
+@media (max-width: 1100px) {
+  .event-horizon.aurora .o-header {
+    gap: 6px;
+  }
+  .event-horizon.aurora .o-header nav {
+    gap: 14px;
+  }
+  .event-horizon.aurora .o-header kbd {
+    display: none;
+  }
+}
+@media (max-width: 600px) {
+  .event-horizon.aurora .o-hero-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .event-horizon.aurora .o-hero-actions > .o-button {
+    width: max-content;
+    max-width: 100%;
+    padding: 16px 20px;
+  }
+  .event-horizon.aurora .o-hero-work {
+    min-height: 44px;
+  }
+  .event-horizon.aurora .o-header {
+    gap: 0;
+  }
+  .event-horizon.aurora .o-section-top {
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .event-horizon.aurora .o-section-top .o-micro {
+    max-width: 50%;
+    text-align: right;
+  }
+  .event-horizon.aurora .o-hero-content {
+    max-width: 100%;
+    width: 100%;
+  }
+  .event-horizon.aurora .o-core-label {
+    width: 200px;
+  }
+  .event-horizon.aurora .o-hero-bottom {
+    padding-top: 18px;
+  }
+  .sw-share-mission {
+    padding: 20px;
+  }
+  .event-horizon.aurora [role="tab"] {
+    min-width: 195px;
+    max-width: 220px;
+  }
+  .event-horizon.aurora .o-project-heading {
+    grid-template-columns: 1fr 50px;
+  }
+  .event-horizon.aurora .o-project-heading h3 {
+    overflow-wrap: anywhere;
+  }
+  .event-horizon.aurora .o-project-number {
+    font-size: 42px;
+  }
+}
+
+@media (max-width: 600px) {
+  .event-horizon.aurora .o-hero {
+    height: auto;
+    max-height: none;
+    min-height: 940px;
+    padding-bottom: 452px;
+  }
+  .event-horizon.aurora .o-hero-art {
+    top: auto;
+    bottom: 115px;
+    height: 360px;
+  }
+  .event-horizon.aurora .o-hero-shade {
+    background: linear-gradient(180deg, #061321 0%, #061321 49%, #061321bd 57%, #06132108 72%, #061321ed 100%);
+  }
+}
