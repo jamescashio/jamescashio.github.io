@@ -3,6 +3,15 @@ import "./lensing-film.css";
 
 type Playback = "still" | "loading" | "seeking" | "playing" | "paused" | "ended" | "error";
 export type LensingClip = "signature" | "awakening" | "arrival";
+type SeekMedia = {
+  player: HTMLVideoElement;
+  source: string;
+  controller: AbortController;
+  kind: "native" | "blob";
+  ranges: "unknown" | "supported" | "unavailable";
+  url: string | null;
+  loading: Promise<void> | null;
+};
 
 const CLIPS = {
   signature: {
@@ -35,6 +44,13 @@ function timecode(seconds: number) {
   return `0:${seconds.toFixed(1).padStart(4, "0")}`;
 }
 
+function canSeekTo(player: HTMLVideoElement, seconds: number) {
+  const ranges = player.seekable;
+  return Array.from({ length: ranges.length }, (_, index) => index).some(
+    (index) => ranges.start(index) <= seconds && ranges.end(index) >= seconds,
+  );
+}
+
 export default function LensingFilm({
   motion,
   onClose,
@@ -55,12 +71,7 @@ export default function LensingFilm({
   const playbackIntent = useRef<HTMLVideoElement | null>(null);
   const mounted = useRef(false);
   const pendingSeek = useRef<number | null>(null);
-  const seekMedia = useRef<{
-    player: HTMLVideoElement;
-    controller: AbortController;
-    url: string | null;
-    loading: Promise<void> | null;
-  } | null>(null);
+  const seekMedia = useRef<SeekMedia | null>(null);
   const [clipId, setClipId] = useState<LensingClip>(initialClip);
   const [playback, setPlayback] = useState<Playback>("still");
   const [elapsed, setElapsed] = useState(0);
@@ -100,6 +111,19 @@ export default function LensingFilm({
     return mounted.current && player === video.current && dialog.current?.open;
   }, []);
 
+  const failMedia = useCallback(
+    (player: HTMLVideoElement) => {
+      if (!isCurrentPlayer(player)) return;
+      request.current += 1;
+      pendingSeek.current = null;
+      playbackIntent.current = null;
+      seekMedia.current?.controller.abort();
+      player.pause();
+      setPlayback("error");
+    },
+    [isCurrentPlayer],
+  );
+
   const playRequested = useCallback(
     async (player: HTMLVideoElement, generation: number) => {
       try {
@@ -115,19 +139,85 @@ export default function LensingFilm({
     [isCurrentPlayer],
   );
 
+  const prepareSeekFallback = useCallback(
+    (player: HTMLVideoElement, prepared: SeekMedia): Promise<void> => {
+      if (prepared.loading) return prepared.loading;
+      prepared.loading = (async () => {
+        try {
+          // Probe only after an explicit seek has loaded native metadata. A
+          // byte-range host must keep its native URL, including under a CSP
+          // that permits same-origin media but intentionally excludes Blobs.
+          const response = await fetch(prepared.source, {
+            signal: prepared.controller.signal,
+            credentials: "same-origin",
+            // A cached full response can synthesize206 locally even when the
+            // server ignores ranges. Probe the host, not that browser cache.
+            cache: "no-store",
+            headers: { Range: "bytes=0-0" },
+          });
+          if (!response.ok) throw new Error("Film download failed");
+          if (response.status === 206 || /\bbytes\b/i.test(response.headers.get("accept-ranges") ?? "")) {
+            prepared.ranges = "supported";
+            await response.body?.cancel();
+            return;
+          }
+          if (response.status !== 200) throw new Error("Unknown film range response");
+          prepared.ranges = "unavailable";
+          const maximum = 8 * 1024 * 1024;
+          if (Number(response.headers.get("content-length")) > maximum) throw new Error("Film exceeds seek budget");
+          const blob = await response.blob();
+          if (!blob.size || blob.size > maximum) throw new Error("Invalid film size");
+          if (
+            seekMedia.current !== prepared ||
+            prepared.controller.signal.aborted ||
+            !isCurrentPlayer(player) ||
+            pendingSeek.current === null
+          )
+            return;
+          // Native ranges can become available while the probe is in flight.
+          // Keep that functioning timeline instead of replacing its source.
+          if (canSeekTo(player, pendingSeek.current)) {
+            prepared.ranges = "supported";
+            return;
+          }
+          prepared.url = URL.createObjectURL(new Blob([blob], { type: "video/mp4" }));
+          prepared.kind = "blob";
+          player.src = prepared.url;
+          player.preload = "auto";
+          player.load();
+        } catch {
+          if (
+            seekMedia.current === prepared &&
+            !prepared.controller.signal.aborted &&
+            isCurrentPlayer(player) &&
+            pendingSeek.current !== null
+          )
+            failMedia(player);
+        } finally {
+          prepared.loading = null;
+        }
+      })();
+      return prepared.loading;
+    },
+    [isCurrentPlayer, failMedia],
+  );
+
   // Stable ref-reading callbacks let visibility resume a manual frame request
   // without restarting the modal or reviving a cancelled playback request.
   const finishPendingSeek = useCallback(
-    (player: HTMLVideoElement) => {
+    function finish(player: HTMLVideoElement) {
       const target = pendingSeek.current;
       const prepared = seekMedia.current;
+      if (target === null || !isCurrentPlayer(player) || !prepared || prepared.player !== player) return;
+      // A successful range probe does not repair a native decoding/network
+      // failure. Surface it even if the player has no metadata to finish with.
+      if (player.error) {
+        failMedia(player);
+        return;
+      }
       if (
-        target === null ||
-        !isCurrentPlayer(player) ||
         document.hidden ||
-        !prepared?.url ||
-        prepared.player !== player ||
-        player.currentSrc !== prepared.url ||
+        player.currentSrc !== (prepared.url ?? prepared.source) ||
         player.readyState < 1 ||
         !Number.isFinite(player.duration) ||
         player.seeking
@@ -135,13 +225,12 @@ export default function LensingFilm({
         return;
       const seconds = Math.max(0, Math.min(target, player.duration - 0.04));
       if (Math.abs(player.currentTime - seconds) > 0.06) {
-        // A fully downloaded Blob supplies random access even when the host
-        // serves HTTP200 and the native URL reports an empty seekable range.
-        const ranges = player.seekable;
-        const available = Array.from({ length: ranges.length }, (_, index) => index).some(
-          (index) => ranges.start(index) <= seconds && ranges.end(index) >= seconds,
-        );
-        if (available) player.currentTime = seconds;
+        if (canSeekTo(player, seconds)) {
+          if (prepared.kind === "native") prepared.ranges = "supported";
+          player.currentTime = seconds;
+        } else if (prepared.kind === "native" && prepared.ranges !== "supported" && !prepared.loading) {
+          void prepareSeekFallback(player, prepared).then(() => finish(player));
+        }
         return;
       }
       if (player.readyState < 2) return;
@@ -152,7 +241,7 @@ export default function LensingFilm({
         void playRequested(player, request.current);
       } else setPlayback("paused");
     },
-    [isCurrentPlayer, playRequested],
+    [isCurrentPlayer, playRequested, prepareSeekFallback, failMedia],
   );
 
   useEffect(() => {
@@ -199,52 +288,27 @@ export default function LensingFilm({
     setDuration(CLIPS[next].duration);
   }
 
-  function prepareSeekMedia(player: HTMLVideoElement): Promise<void> {
+  function prepareSeekMedia(player: HTMLVideoElement) {
     const previous = seekMedia.current;
-    if (previous?.player === player) {
-      if (previous.loading) return previous.loading;
-      if (previous.url) return Promise.resolve();
-    }
+    if (previous?.player === player && !player.error && !previous.controller.signal.aborted) return;
+    const restoreSource = Boolean(player.error || previous?.url);
     releaseSeekMedia();
-    const prepared = {
+    const source = new URL(clip.film, location.href);
+    if (source.origin !== location.origin) return;
+    seekMedia.current = {
       player,
+      source: source.href,
       controller: new AbortController(),
-      url: null as string | null,
-      loading: null as Promise<void> | null,
+      kind: "native",
+      ranges: "unknown",
+      url: null,
+      loading: null,
     };
-    seekMedia.current = prepared;
-    prepared.loading = (async () => {
-      try {
-        const source = new URL(clip.film, location.href);
-        if (source.origin !== location.origin) throw new Error("Film must remain same-origin");
-        const response = await fetch(source, {
-          signal: prepared.controller.signal,
-          credentials: "same-origin",
-          cache: "force-cache",
-        });
-        if (!response.ok) throw new Error("Film download failed");
-        const maximum = 8 * 1024 * 1024;
-        if (Number(response.headers.get("content-length")) > maximum) throw new Error("Film exceeds seek budget");
-        const blob = await response.blob();
-        if (!blob.size || blob.size > maximum) throw new Error("Invalid film size");
-        if (seekMedia.current !== prepared || prepared.controller.signal.aborted || !isCurrentPlayer(player)) return;
-        prepared.url = URL.createObjectURL(new Blob([blob], { type: "video/mp4" }));
-        // This element is keyed to its clip. Keep ordinary first Play on the
-        // progressive URL; replace it only after an explicit frame request.
-        player.src = prepared.url;
-        player.preload = "auto";
-        player.load();
-      } catch {
-        if (seekMedia.current === prepared && !prepared.controller.signal.aborted && isCurrentPlayer(player)) {
-          pendingSeek.current = null;
-          playbackIntent.current = null;
-          setPlayback("error");
-        }
-      } finally {
-        prepared.loading = null;
-      }
-    })();
-    return prepared.loading;
+    // Explicit seeking opts into native loading once. Subsequent chapter or
+    // scrub requests reuse a healthy load; a failed preparation starts fresh.
+    if (restoreSource) player.src = source.href;
+    player.preload = "auto";
+    if (restoreSource || player.readyState === 0) player.load();
   }
 
   function seekFilm(seconds: number) {
@@ -255,7 +319,8 @@ export default function LensingFilm({
     pendingSeek.current = target;
     setElapsed(target);
     setPlayback("seeking");
-    void prepareSeekMedia(player).then(() => finishPendingSeek(player));
+    prepareSeekMedia(player);
+    finishPendingSeek(player);
   }
 
   async function togglePlayback() {
@@ -269,7 +334,8 @@ export default function LensingFilm({
     playbackIntent.current = player;
     setPlayback("loading");
     if (pendingSeek.current !== null) {
-      void prepareSeekMedia(player).then(() => finishPendingSeek(player));
+      prepareSeekMedia(player);
+      finishPendingSeek(player);
       return;
     }
     if (player.error) player.load();
@@ -398,11 +464,9 @@ export default function LensingFilm({
             }
           }}
           onError={(event) => {
-            if (isCurrentPlayer(event.currentTarget) && event.currentTarget.error && !seekMedia.current?.loading) {
-              pendingSeek.current = null;
-              playbackIntent.current = null;
-              setPlayback("error");
-            }
+            // load() clears the previous MediaError when changing sources;
+            // a current error is real even while a range probe is pending.
+            if (event.currentTarget.error) failMedia(event.currentTarget);
           }}
           onTimeUpdate={(event) => {
             if (isCurrentPlayer(event.currentTarget)) {
