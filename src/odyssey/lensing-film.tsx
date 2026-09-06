@@ -156,7 +156,7 @@ export default function LensingFilm({
             headers: { Range: "bytes=0-0" },
           });
           if (!response.ok) throw new Error("Film download failed");
-          if (response.status === 206 || /\bbytes\b/i.test(response.headers.get("accept-ranges") ?? "")) {
+          if (response.status === 206) {
             prepared.ranges = "supported";
             await response.body?.cancel();
             return;
