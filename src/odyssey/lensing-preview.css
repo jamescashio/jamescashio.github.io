@@ -164,8 +164,40 @@
   height: 2px;
   background: #d7bd8f;
 }
+.lens-discover-links {
+  display: flex;
+  align-items: center;
+  gap: 8px 22px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.lens-film-link {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid #b3c0c559;
+  background: transparent;
+  color: #f2d3a0;
+  font:
+    13px Exo,
+    sans-serif;
+  cursor: pointer;
+}
+.lens-film-link small {
+  font:
+    9px Jet,
+    monospace;
+  color: #b3c0c5;
+}
+.lens-film-link:hover {
+  color: #fff1d9;
+  border-color: currentColor;
+}
 .event-horizon.aurora.lensing .o-signature-link {
-  margin-top: 15px;
+  margin-top: 0;
   font-size: 12px;
 }
 .lens-scene-caption {
@@ -354,7 +386,7 @@
     flex-wrap: wrap;
   }
   .event-horizon.aurora.lensing .o-signature-link {
-    margin: 12px 0 0;
+    margin: 0;
     align-self: flex-start;
     min-height: 44px;
     font-size: 12px;

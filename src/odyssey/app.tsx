@@ -17,6 +17,7 @@ import { Lineage } from "./flight-heritage";
 const FirstFlight = lazy(() => import("./first-flight"));
 const BrandStudio = lazy(() => import("./brand-studio"));
 const LensingObservatory = lazy(() => import("./lensing-observatory"));
+const LensingFilm = lazy(() => import("./lensing-film"));
 
 export function OdysseyApp() {
   const { motion, reduced, paused, setPaused } = useMotionPreference();
@@ -24,8 +25,14 @@ export function OdysseyApp() {
   const [flight, setFlight] = useState<string | null>(null);
   const [signature, setSignature] = useState(false);
   const [lensing, setLensing] = useState(false);
+  const [film, setFilm] = useState(false);
+  const filmOpener = useRef<HTMLElement | null>(null);
   const lensOpener = useRef<HTMLElement | null>(null);
-  const ambientMotion = motion && flight === null && !signature && !lensing;
+  const ambientMotion = motion && flight === null && !signature && !lensing && !film;
+  function openFilm(opener: HTMLElement) {
+    filmOpener.current = opener;
+    setFilm(true);
+  }
   function openLensing() {
     lensOpener.current = document.activeElement as HTMLElement;
     setLensing(true);
@@ -46,6 +53,7 @@ export function OdysseyApp() {
       setFlight(value ?? null);
       setSignature(location.hash === "#signature");
       setLensing(location.hash === "#lensing");
+      setFilm(location.hash === "#film");
     };
     readFlight();
     window.addEventListener("hashchange", readFlight);
@@ -172,7 +180,7 @@ export function OdysseyApp() {
     <div
       className={`odyssey event-horizon aurora lightfold lensing ${folding ? "is-folding" : ""}`}
       data-motion={motion ? "on" : "off"}
-      data-overlay={flight || signature || lensing ? "open" : "closed"}
+      data-overlay={flight || signature || lensing || film ? "open" : "closed"}
     >
       <a className="o-skip" href="#o-main">
         Skip to content
@@ -280,7 +288,7 @@ export function OdysseyApp() {
           <div className="o-hero-content">
             <div className="eh-release-mark">
               <b>PREVIEW</b>
-              <span>LENSING / EXPEDITION 02</span>
+              <span>LENSING / FINAL APPROACH</span>
             </div>
             <span className="o-kicker">
               <i />
@@ -322,9 +330,14 @@ export function OdysseyApp() {
               <i />
               <span>Take command.</span>
             </div>
-            <button className="o-signature-link" type="button" onClick={openSignature}>
-              <span aria-hidden="true">⌘</span> Meet the living circuit <Arrow diagonal />
-            </button>
+            <div className="lens-discover-links">
+              <button className="lens-film-link" type="button" onClick={(event) => openFilm(event.currentTarget)}>
+                <span aria-hidden="true">▷</span> Watch Orbital arrival <small>5 SEC</small>
+              </button>
+              <button className="o-signature-link" type="button" onClick={openSignature}>
+                <span aria-hidden="true">⌘</span> Meet the living circuit <Arrow diagonal />
+              </button>
+            </div>
           </div>
           <button
             className="o-core-hotspot"
@@ -349,7 +362,7 @@ export function OdysseyApp() {
           </div>
           <div className="o-hero-bottom">
             <span className="o-micro">
-              <b>DESIGN EXPEDITION</b> / 02
+              <b>FINAL DESIGN PREVIEW</b> / 03
             </span>
             <button onClick={viewArt} className="o-art-link">
               Original artwork
@@ -630,6 +643,28 @@ export function OdysseyApp() {
           </div>
         </section>
       </main>
+      {film && (
+        <Suspense
+          fallback={
+            <div className="ff-loading" role="status">
+              Opening Orbital arrival…
+            </div>
+          }
+        >
+          <LensingFilm
+            motion={motion}
+            onClose={() => {
+              setFilm(false);
+              if (location.hash === "#film") history.replaceState(null, "", location.pathname + location.search);
+              requestAnimationFrame(() =>
+                (filmOpener.current ?? document.querySelector<HTMLElement>(".lens-film-link"))?.focus({
+                  preventScroll: true,
+                }),
+              );
+            }}
+          />
+        </Suspense>
+      )}
       {lensing && (
         <Suspense
           fallback={
@@ -716,7 +751,7 @@ export function OdysseyApp() {
           <BrandMark motion={motion} />
         </a>
         <span>
-          LENSING / EXPEDITION 02 PREVIEW
+          LENSING / FINAL APPROACH PREVIEW
           <br />
           <small>Crafted with GPT-6 Astra · Directed by Doug Cashio</small>
         </span>

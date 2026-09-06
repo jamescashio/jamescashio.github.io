@@ -441,6 +441,21 @@
   clip-path: inset(50%);
   white-space: nowrap;
 }
+@media (min-width: 601px) {
+  .lens-caption {
+    text-shadow:
+      0 1px 3px #02070d,
+      0 0 10px #02070de6;
+  }
+  .lens-caption::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: -28px -58px -30px -48px;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 38% 52%, #030810d9 0, #030810a6 42%, #03081000 78%);
+  }
+}
 @media (min-width: 1100px) and (min-height: 780px) {
   .lens-stage {
     flex-basis: 520px;

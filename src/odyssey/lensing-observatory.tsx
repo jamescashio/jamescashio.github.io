@@ -153,7 +153,7 @@ export default function LensingObservatory({
         <div className="lens-wordmark">
           <span aria-hidden="true">◉</span>
           <div>
-            <p>HOUSE CASHIO / EXPEDITION 02</p>
+            <p>HOUSE CASHIO / LENSING</p>
             <h2 id="lens-title">
               Lensing<span>Observatory</span>
             </h2>
