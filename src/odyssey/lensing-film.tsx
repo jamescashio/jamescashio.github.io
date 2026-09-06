@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import "./lensing-film.css";
 
 type Playback = "still" | "loading" | "seeking" | "playing" | "paused" | "ended" | "error";
-export type LensingClip = "signature" | "awakening" | "arrival";
+export type LensingClip = "lightwake" | "signature" | "awakening" | "arrival";
 type SeekMedia = {
   player: HTMLVideoElement;
   source: string;
@@ -14,6 +14,14 @@ type SeekMedia = {
 };
 
 const CLIPS = {
+  lightwake: {
+    title: "Lightwake",
+    duration: 8,
+    durationLabel: "AN EIGHT-SECOND FILM",
+    film: "/assets/lightwake/lightwake-awakens.mp4",
+    poster: "/assets/lightwake/lightwake-poster.webp",
+    description: "A signal travels. An atmosphere answers. A world wakes in light.",
+  },
   signature: {
     title: "The signature awakens",
     duration: 6,
@@ -396,7 +404,8 @@ export default function LensingFilm({
       <header className="lensing-film-header">
         <div>
           <span className="lensing-film-eyebrow">
-            {clipId === "signature" ? "CELESTIAL FORGE" : "LENSING"} / {clip.durationLabel}
+            {clipId === "signature" ? "CELESTIAL FORGE" : clipId === "lightwake" ? "LIGHTWAKE" : "LENSING"} /{" "}
+            {clip.durationLabel}
           </span>
           <h2 id="lensing-film-title">{clip.title}</h2>
         </div>
@@ -414,7 +423,7 @@ export default function LensingFilm({
         </button>
       </header>
       <div className="lensing-film-choices" role="group" aria-label="Choose a film">
-        {(["signature", "awakening", "arrival"] as const).map((id) => (
+        {(["lightwake", "signature", "awakening", "arrival"] as const).map((id) => (
           <button
             key={id}
             type="button"
@@ -423,6 +432,15 @@ export default function LensingFilm({
             aria-label={`${CLIPS[id].title}, ${CLIPS[id].duration}-second film`}
             onClick={() => selectClip(id)}
           >
+            <img
+              className="lensing-film-thumbnail"
+              src={CLIPS[id].poster}
+              alt=""
+              width="64"
+              height="40"
+              loading="lazy"
+              decoding="async"
+            />
             <span>{CLIPS[id].title}</span>
             <small aria-hidden="true">0{CLIPS[id].duration}S</small>
           </button>
@@ -504,13 +522,24 @@ export default function LensingFilm({
           <span>Original cinematic artwork created with Higgsfield.</span>
         </figcaption>
       </figure>
-      {clipId === "signature" && (
-        <div className="lensing-film-chapters" role="group" aria-label="Explore the awakening">
-          {[
-            { name: "Spark", time: 0 },
-            { name: "Orbit", time: 2 },
-            { name: "Radiance", time: 4.8 },
-          ].map((chapter, index) => (
+      {(clipId === "signature" || clipId === "lightwake") && (
+        <div
+          className="lensing-film-chapters"
+          role="group"
+          aria-label={clipId === "lightwake" ? "Explore Lightwake" : "Explore the awakening"}
+        >
+          {(clipId === "lightwake"
+            ? [
+                { name: "First light", time: 0 },
+                { name: "Signal", time: 3 },
+                { name: "Awakening", time: 6.4 },
+              ]
+            : [
+                { name: "Spark", time: 0 },
+                { name: "Orbit", time: 2 },
+                { name: "Radiance", time: 4.8 },
+              ]
+          ).map((chapter, index) => (
             <button
               key={chapter.name}
               type="button"
@@ -555,7 +584,7 @@ export default function LensingFilm({
           />
         </div>
       </div>
-      {clipId === "awakening" && (
+      {(clipId === "awakening" || clipId === "lightwake") && (
         <div className="lensing-film-handoff">
           <p>The next perspective is yours.</p>
           <button

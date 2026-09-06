@@ -208,6 +208,30 @@ const atmosphereFragment = `
   }
 `;
 
+// The inner limb and this low-density outer layer occupy different real radii.
+// Their separate silhouettes resolve a thin cyan horizon without a bloom pass.
+const exosphereFragment = `
+  uniform vec3 sunDirection; uniform vec3 atmosphereColor;
+  uniform float eclipse; uniform float ion; uniform float resonance;
+  varying vec3 vWorld; varying vec3 vNormal;
+  void main() {
+    vec3 normal=normalize(vNormal), view=normalize(cameraPosition-vWorld);
+    float incidence=dot(normal,normalize(sunDirection));
+    float grazing=1.0-abs(dot(normal,view));
+    float day=smoothstep(-0.18,0.65,incidence);
+    float sunset=exp(-abs(incidence+0.07)*10.0);
+    float thinAir=pow(grazing,9.0);
+    float polar=smoothstep(0.57,0.94,abs(normal.y));
+    float charged=smoothstep(0.48,1.0,resonance);
+    vec3 color=mix(atmosphereColor,vec3(0.30,0.48,1.0),0.32);
+    color=mix(color,vec3(0.98,0.51,0.20),sunset*(0.35+eclipse*0.25));
+    color=mix(color,mix(vec3(0.10,0.90,0.76),vec3(0.13,0.70,1.0),ion),polar*charged*0.5);
+    gl_FragColor=vec4(color,thinAir*(0.012+day*0.13+eclipse*0.07+polar*charged*0.13));
+    #include <tonemapping_fragment>
+    #include <colorspace_fragment>
+  }
+`;
+
 // Two tracks share one instanced draw. Their charged arc stays lit, while a
 // narrow champagne leader makes the finite circumferential ignition legible.
 const resonanceTrackFragment = `
@@ -220,10 +244,15 @@ const resonanceTrackFragment = `
     filled*=smoothstep(0.0,0.035,charge);
     float leader=exp(-abs(angle-charge)*160.0)*(1.0-smoothstep(0.93,1.0,charge));
     float inlay=0.68+0.32*pow(0.5+0.5*cos(angle*301.5929),3.0);
-    float current=0.94+0.06*sin(angle*31.4159-phase*0.7);
+    // Once the finite charge closes, two separated currents circulate along
+    // the actual inlay. Time is the renderer's existing pause-aware clock.
+    float settled=smoothstep(0.48,0.9,resonance);
+    float wave=fract(angle*2.0-phase*0.045);
+    float current=pow(1.0-wave,12.0)*settled;
+    float wake=pow(1.0-wave,2.5)*settled;
     vec3 color=mix(vec3(0.16,0.78,1.0),vec3(0.31,1.0,0.83),ion);
-    color=mix(color,vec3(1.0,0.84,0.53),leader*0.9);
-    gl_FragColor=vec4(color*(1.0+leader*0.65),filled*inlay*current*0.93+leader*0.7);
+    color=mix(color,vec3(1.0,0.84,0.53),min(1.0,leader*0.9+current*0.7));
+    gl_FragColor=vec4(color*(0.78+leader*0.65+current*0.42),filled*inlay*(0.47+wake*0.28+current*0.24)+leader*0.7);
     #include <colorspace_fragment>
   }
 `;
@@ -251,15 +280,17 @@ const auroraFragment = `
     float fold=longitude+sin(longitude*5.0+phase*0.14)*0.06+vUv.y*0.06;
     float broad=0.5+0.5*sin(fold*13.0+sin(fold*7.0)*1.4-phase*0.16);
     float fine=0.5+0.5*sin(fold*137.0+sin(fold*31.0)*2.0+vUv.y*1.6);
-    float filaments=0.26+pow(broad,1.7)*0.42+pow(fine,4.0)*0.32;
-    float edge=pow(1.0-vUv.y,1.45)*smoothstep(0.0,0.035,vUv.y);
+    float foldedHeight=clamp(vUv.y/(0.6+broad*0.4),0.0,1.0);
+    float filaments=0.12+pow(broad,1.7)*0.39+pow(fine,5.0)*0.49;
+    float edge=pow(1.0-foldedHeight,1.25)*smoothstep(0.0,0.035,vUv.y);
     float crown=exp(-abs(vUv.y-0.075)*34.0);
+    float traveling=pow(0.5+0.5*cos(longitude*2.0-phase*0.28-vUv.y*1.2),6.0);
     float light=dot(normalize(vNormal),normalize(sunDirection));
     float night=1.0-smoothstep(-0.35,0.7,light);
     vec3 base=mix(vec3(0.09,0.92,0.76),vec3(0.12,0.71,1.0),ion);
-    vec3 color=mix(base,vec3(0.51,0.42,0.94),smoothstep(0.2,1.0,vUv.y)*0.6);
-    color+=vec3(0.72,0.52,0.20)*crown*0.55;
-    float alpha=(filaments*edge*(0.48+night*0.28+eclipse*0.08)+crown*0.20)*reveal;
+    vec3 color=mix(base,vec3(0.37,0.46,0.95),smoothstep(0.18,0.85,foldedHeight)*0.72);
+    color+=vec3(0.72,0.52,0.20)*crown*(0.34+traveling*0.32);
+    float alpha=(filaments*edge*(0.46+night*0.25+eclipse*0.06+traveling*0.18)+crown*0.18)*reveal;
     gl_FragColor=vec4(color,alpha);
     #include <colorspace_fragment>
   }
@@ -463,7 +494,20 @@ export function createLensingScene(
     }),
   );
   atmosphere.name = "Atmospheric limb";
-  scene.add(planet, atmosphere);
+  const exosphere = new THREE.Mesh(
+    new THREE.SphereGeometry(3.11, 32, 20),
+    new THREE.ShaderMaterial({
+      uniforms,
+      vertexShader: planetVertex,
+      fragmentShader: exosphereFragment,
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      side: THREE.BackSide,
+    }),
+  );
+  exosphere.name = "Thin outer scattering layer";
+  scene.add(planet, atmosphere, exosphere);
   const aurora = new THREE.Mesh(
     createPolarCurtains(),
     new THREE.ShaderMaterial({
@@ -481,11 +525,59 @@ export function createLensingScene(
   aurora.visible = false;
   scene.add(aurora);
 
-  const titanium = new THREE.MeshStandardMaterial({ color: 0x455e72, metalness: 0.82, roughness: 0.26 });
+  const titanium = new THREE.MeshStandardMaterial({ color: 0x60778a, metalness: 0.86, roughness: 0.28 });
   const gateSkin = titanium.clone();
   gateSkin.vertexColors = true;
   gateSkin.roughness = 0.31;
   gateSkin.emissive.set(0x0d6580);
+  // Actual object-space machining reacts to the existing physical lights and
+  // reflections. Derivative filtering keeps its fine rulings quiet on phones.
+  gateSkin.onBeforeCompile = (shader) => {
+    shader.uniforms.lightwakeCharge = uniforms.resonance;
+    shader.uniforms.lightwakePhase = uniforms.phase;
+    shader.uniforms.lightwakeIon = uniforms.ion;
+    shader.vertexShader = shader.vertexShader
+      .replace("#include <common>", "#include <common>\nvarying vec3 vGateSurface;")
+      .replace("#include <begin_vertex>", "#include <begin_vertex>\nvGateSurface = position;");
+    shader.fragmentShader = shader.fragmentShader
+      .replace(
+        "#include <common>",
+        `#include <common>
+        varying vec3 vGateSurface;
+        uniform float lightwakeCharge; uniform float lightwakePhase; uniform float lightwakeIon;`,
+      )
+      .replace(
+        "#include <color_fragment>",
+        `#include <color_fragment>
+        float lwRadius=length(vGateSurface.xy);
+        float lwAngle=fract(atan(vGateSurface.y,vGateSurface.x)/6.283185+1.0);
+        float lwSector=fract(lwAngle*48.0);
+        float lwEdge=min(lwSector,1.0-lwSector);
+        float lwAA=max(fwidth(lwSector),0.002);
+        float lwSeam=1.0-smoothstep(0.018,0.036+lwAA,lwEdge);
+        float lwFace=smoothstep(0.17,0.22,abs(vGateSurface.z));
+        float lwPitch=lwRadius*148.0;
+        float lwRuling=(0.5+0.5*sin(lwPitch*6.283185))/(1.0+fwidth(lwPitch)*3.0);
+        float lwBevel=1.0-smoothstep(0.003,0.045,min(abs(lwRadius-4.52),abs(lwRadius-4.96)));
+        diffuseColor.rgb*=1.0-lwSeam*lwFace*0.48-lwRuling*lwFace*0.10;
+        diffuseColor.rgb=mix(diffuseColor.rgb,diffuseColor.rgb*vec3(1.20,1.15,1.08),lwBevel*0.65);`,
+      )
+      .replace(
+        "#include <roughnessmap_fragment>",
+        `#include <roughnessmap_fragment>
+        roughnessFactor=clamp(roughnessFactor+lwRuling*0.09+lwSeam*0.08-lwBevel*0.08,0.16,0.5);`,
+      )
+      .replace(
+        "#include <emissivemap_fragment>",
+        `#include <emissivemap_fragment>
+        float lwCharge=smoothstep(0.0,0.46,lightwakeCharge);
+        float lwFilled=(1.0-smoothstep(lwCharge-0.012,lwCharge+0.006,fract(lwAngle+0.25)))*smoothstep(0.0,0.04,lwCharge);
+        float lwCurrent=pow(1.0-fract(lwAngle*2.0-lightwakePhase*0.045),10.0);
+        vec3 lwEnergy=mix(vec3(0.035,0.30,0.48),vec3(0.025,0.42,0.34),lightwakeIon);
+        totalEmissiveRadiance+=lwEnergy*lwSeam*lwFace*lwFilled*(0.14+lwCurrent*0.75);`,
+      );
+  };
+  gateSkin.customProgramCacheKey = () => "lightwake-machined-titanium-v1";
   const midnight = new THREE.MeshStandardMaterial({ color: 0x0c1724, metalness: 0.7, roughness: 0.36 });
   const silver = new THREE.MeshStandardMaterial({ color: 0xb3c0c5, metalness: 0.86, roughness: 0.22 });
   const gold = new THREE.MeshStandardMaterial({ color: 0xd7ac6e, metalness: 0.83, roughness: 0.25 });
@@ -576,6 +668,15 @@ export function createLensingScene(
   // are readable in the approach view without another layer of particle effects.
   const ribs = instanceRing(new THREE.BoxGeometry(0.78, 0.105, 0.55), silver, 12, 4.85, -0.026, Math.PI / 12);
   ribs.name = "Transverse gate pressure ribs";
+  const fasteners = instanceRing(
+    new THREE.CylinderGeometry(0.034, 0.038, 0.018, 6).rotateX(Math.PI / 2),
+    midnight,
+    48,
+    4.88,
+    0.259,
+    Math.PI / 48,
+  );
+  fasteners.name = "Inset hexagonal titanium fasteners";
   const resonanceTracks = new THREE.InstancedMesh(
     new THREE.TorusGeometry(1, 0.0065, 4, 192),
     new THREE.ShaderMaterial({
@@ -1030,7 +1131,7 @@ export function createLensingScene(
       aurora.rotation.copy(planet.rotation);
       aurora.visible = uniforms.resonance.value > 0.34;
       resonanceTracks.visible = uniforms.resonance.value > 0;
-      gateSkin.emissiveIntensity = uniforms.resonance.value * (0.14 + uniforms.ion.value * 0.045);
+      gateSkin.emissiveIntensity = uniforms.resonance.value * (0.045 + uniforms.ion.value * 0.015);
       satellite.rotation.y = -0.4 + phase * 0.035;
       for (let index = 0; index < 8; index++) {
         const angle = (index * TAU) / 8 + phase * 0.12;

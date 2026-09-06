@@ -17,7 +17,7 @@ import {
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = path.join(ROOT, "dist");
 const RELEASE_NAME = "THE HUMAN RECKONING";
-const PAGE_TITLE = "Cashio V37.5 — Celestial Forge | Doug Cashio";
+const PAGE_TITLE = "Cashio V37.6 — Lightwake | Doug Cashio";
 const report = { passed: false, checks: [], failures: [], errors: [], warnings: [] };
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const argument = (name) =>
@@ -129,7 +129,7 @@ async function run() {
       const base = `http://127.0.0.1:${resources.server.address().port}`;
       const rootHtml = await fetch(`${base}/`).then((response) => response.text());
       assert.match(rootHtml, /data-prerendered="odyssey"/, "root must contain the prerendered V37 page");
-      assert.ok(rootHtml.includes(`<title>${PAGE_TITLE}</title>`), "root title must identify V37.5 Celestial Forge");
+      assert.ok(rootHtml.includes(`<title>${PAGE_TITLE}</title>`), "root title must identify V37.6 Lightwake");
       assert.match(rootHtml, /Own the iron/, "hero heading must exist before JavaScript");
       assert.doesNotMatch(
         rootHtml,
@@ -141,7 +141,7 @@ async function run() {
       const receipt = await receiptResponse.json();
       const packageJson = JSON.parse(await readFile(path.join(ROOT, "package.json"), "utf8"));
       assert.equal(receipt.experienceVersion, packageJson.version, "receipt and package versions must match");
-      assert.equal(receipt.experienceVersion, "37.5.0", "current receipt must be the V37.5 release");
+      assert.equal(receipt.experienceVersion, "37.6.0", "current receipt must be the V37.6 release");
       assert.equal(receipt.published, true, "release must be explicitly published");
       assert.equal(receipt.releaseName, RELEASE_NAME);
       assert.equal(receipt.visualEdition, "Lensing");
@@ -400,7 +400,7 @@ async function run() {
       );
       report.checks.push({ name: "Legacy deck bookmark preserves query and hash", passed: true });
       await navigate("/odyssey.html?runtime=v36-alias");
-      assert.equal(await evaluate("document.title"), PAGE_TITLE, "Odyssey alias must retain V37.5 Celestial Forge");
+      assert.equal(await evaluate("document.title"), PAGE_TITLE, "Odyssey alias must retain V37.6 Lightwake");
       report.checks.push({ name: "Odyssey alias remains available", passed: true });
       assert.deepEqual(report.errors, [], "no runtime exceptions or console errors");
       report.checks.push({ name: "No runtime errors", passed: true });

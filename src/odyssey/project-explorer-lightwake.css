@@ -1,0 +1,319 @@
+/* Lightwake: seven small architectural studies, one clear place to explore. */
+.event-horizon.aurora.lensing .lw-projects .o-project-index [role="tab"] {
+  grid-template-columns: 26px 72px minmax(0, 1fr);
+  column-gap: 11px;
+  min-height: 112px;
+  padding-block: 14px;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+.event-horizon.aurora.lensing .lw-projects .o-project-index [role="tab"][aria-selected="true"] {
+  background: linear-gradient(115deg, #a8792e24, #1226358c 65%, #0a152400);
+  border-bottom-color: #f2d3a080;
+  box-shadow:
+    inset 0 1px #f2d3a01a,
+    inset 3px 0 #f2d3a0;
+}
+.event-horizon.aurora.lensing .lw-projects .o-project-index [role="tab"]::before {
+  display: none;
+}
+.event-horizon.aurora.lensing .lw-projects .o-project-index [role="tab"]:focus-visible,
+.lw-projects .lw-study-step:focus-visible {
+  outline: 2px solid #87e7ef;
+  outline-offset: -3px;
+}
+.event-horizon.aurora.lensing .lw-projects .lw-study-art {
+  display: block;
+  width: 72px;
+  height: 58px;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  color: #e1c398;
+}
+.lw-study-art svg {
+  overflow: visible;
+}
+.event-horizon.aurora.lensing .lw-projects [aria-selected="true"] .lw-study-art {
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+.lw-art-ground {
+  stroke: #91c8dc;
+  stroke-width: 0.65;
+  opacity: 0.12;
+}
+.lw-art-shadow {
+  fill: #020814;
+  stroke: #020814;
+  stroke-width: 2;
+}
+.lw-art-body {
+  stroke: #b5c3bd;
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+.lw-art-etch {
+  stroke: #85afbf;
+  stroke-width: 0.85;
+  stroke-linejoin: round;
+  opacity: 0.75;
+}
+.lw-art-route {
+  stroke: #e6c48f;
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.lw-art-node-halo {
+  fill: #87e7ef;
+  opacity: 0.1;
+}
+.lw-art-node {
+  fill: #a2edf2;
+}
+.lw-art-light {
+  stroke: #f7ecd9;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 12 88;
+  opacity: 0;
+}
+.lw-projects [aria-selected="true"] .lw-art-light,
+.lw-projects .lw-study-art-hero .lw-art-light {
+  animation: lw-study-light 1100ms cubic-bezier(0.18, 0.65, 0.3, 1) both;
+  animation-play-state: paused;
+}
+.o-scene.is-visible .lw-projects[data-motion="on"] :is([aria-selected="true"], .lw-study-art-hero) .lw-art-light {
+  animation-play-state: var(--play-state, running);
+}
+.lw-projects .lw-study-navigation {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 14px;
+  margin: -3px 0 27px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #b7c1c324;
+}
+.lw-projects .lw-study-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  width: max-content;
+  min-width: 104px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid #6c85944d;
+  background: #10202a;
+  color: #d9e5e9;
+  font:
+    500 13px/1.3 Oxanium,
+    Arial,
+    sans-serif;
+  cursor: pointer;
+}
+.lw-projects .lw-study-next {
+  justify-self: end;
+  border-color: #d7b7806b;
+  color: #f2d3a0;
+}
+.lw-projects .lw-study-step:hover {
+  background: #1d3441;
+  border-color: #b9d5d7;
+}
+.lw-study-step svg {
+  width: 14px;
+  height: 14px;
+}
+.lw-study-previous svg {
+  transform: rotate(180deg);
+}
+.lw-study-position {
+  display: flex;
+  position: relative;
+  gap: 9px;
+  padding-bottom: 9px;
+  color: #94acb8;
+  font:
+    400 12px/1 Jet,
+    monospace;
+  font-variant-numeric: tabular-nums;
+}
+.lw-study-position b {
+  color: #f2d3a0;
+  font-weight: 500;
+}
+.lw-study-position i {
+  position: absolute;
+  display: flex;
+  gap: 3px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.lw-study-position i span {
+  flex: 1;
+  height: 2px;
+  background: #496575;
+}
+.lw-study-position i [data-current="true"] {
+  background: #f2d3a0;
+  box-shadow: 0 0 5px #f2d3a03d;
+}
+.lw-projects .lw-heading-art {
+  position: relative;
+  width: 160px;
+  flex: 0 0 160px;
+  margin: 0 0 0 4px;
+}
+.event-horizon.aurora.lensing .lw-projects .lw-study-art-hero {
+  width: 160px;
+  height: 112px;
+}
+.event-horizon.aurora.lensing .lw-projects .lw-heading-art .o-project-number {
+  position: absolute;
+  right: 0;
+  top: -4px;
+  color: #c9a978;
+  font:
+    400 20px/1 Oxanium,
+    sans-serif;
+  letter-spacing: -0.04em;
+}
+@keyframes lw-study-light {
+  0% {
+    stroke-dashoffset: 14;
+    opacity: 0;
+  }
+  16%,
+  65% {
+    opacity: 0.95;
+  }
+  100% {
+    stroke-dashoffset: -100;
+    opacity: 0;
+  }
+}
+@media (min-width: 901px) and (max-width: 1100px) {
+  .event-horizon.aurora.lensing .lw-projects .o-project-index [role="tab"] {
+    grid-template-columns: 23px 42px minmax(0, 1fr);
+    column-gap: 7px;
+    padding-right: 7px;
+  }
+  .event-horizon.aurora.lensing .lw-projects .o-project-index .lw-study-art {
+    width: 42px;
+    height: 39px;
+  }
+  .lw-projects .lw-heading-art {
+    display: none;
+  }
+  .lw-projects .lw-study-navigation {
+    gap: 9px;
+  }
+  .lw-projects .lw-study-step {
+    min-width: 84px;
+    padding: 10px;
+    gap: 7px;
+    font-size: 12px;
+  }
+  .lw-study-position {
+    gap: 6px;
+    font-size: 11px;
+  }
+}
+@media (max-width: 900px) {
+  .event-horizon.aurora.lensing .lw-projects {
+    grid-template-columns: 1fr;
+    gap: 0;
+    border-top: 0;
+  }
+  .event-horizon.aurora.lensing .lw-projects .o-project-index {
+    padding: 0;
+    min-width: 0;
+  }
+  .event-horizon.aurora.lensing .lw-projects .o-index-label {
+    padding-left: 0;
+    margin-bottom: 12px;
+  }
+  .lw-projects .o-index-note {
+    display: none;
+  }
+  .event-horizon.aurora.lensing .lw-projects .o-project-index [role="tablist"] {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 4px 3px 18px;
+    scrollbar-width: thin;
+    scrollbar-color: #c9a671 #152331;
+  }
+  .event-horizon.aurora.lensing .lw-projects .o-project-index [role="tab"] {
+    grid-template-columns: 30px minmax(0, 1fr);
+    grid-template-rows: 68px auto;
+    min-width: 220px;
+    max-width: 220px;
+    min-height: 154px;
+    padding: 13px 15px;
+    flex-shrink: 0;
+    border: 1px solid #a4a58e47;
+    align-items: start;
+  }
+  .event-horizon.aurora.lensing .lw-projects .o-project-index [role="tab"] .ln-project-label {
+    grid-column: 1 / -1;
+    gap: 5px;
+  }
+  .event-horizon.aurora.lensing .lw-projects .o-project-index [role="tab"] strong {
+    max-width: none;
+    font-size: 15px;
+  }
+  .event-horizon.aurora.lensing .lw-projects .o-project-index .lw-study-art {
+    width: 104px;
+    height: 72px;
+    justify-self: end;
+  }
+  .event-horizon.aurora.lensing .lw-projects .o-project-index [role="tab"][aria-selected="true"] {
+    box-shadow: inset 0 2px #f2d3a0;
+    border-color: #dfba7f;
+  }
+  .event-horizon.aurora.lensing .lw-projects .o-project-panel {
+    padding: 26px 0 0;
+    border-left: 0;
+  }
+  .lw-projects .lw-heading-art {
+    display: none;
+  }
+  .lw-projects .lw-study-navigation {
+    gap: 9px;
+    margin-bottom: 21px;
+    padding-bottom: 16px;
+  }
+  .lw-projects .lw-study-step {
+    min-width: 84px;
+    padding: 10px;
+    gap: 7px;
+    font-size: 12px;
+  }
+  .lw-study-position {
+    gap: 6px;
+    font-size: 11px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lw-projects .lw-art-light {
+    animation: none !important;
+  }
+  .event-horizon.aurora.lensing .lw-projects .o-project-index [role="tab"] {
+    transition: none;
+  }
+}
+.event-horizon[data-motion="off"] .lw-projects .lw-art-light {
+  animation-play-state: paused !important;
+}
+.event-horizon.aurora.lensing .lw-projects[data-motion="off"] .o-project-index [role="tab"] {
+  transition: none;
+}

@@ -50,8 +50,7 @@
 .event-horizon.aurora .o-brand {
   color: var(--a-paper);
 }
-.event-horizon.aurora .o-brand > svg,
-.event-horizon.aurora .o-brand-dot {
+.event-horizon.aurora .o-brand > svg {
   color: var(--a-gold);
 }
 .event-horizon.aurora .o-header > nav a {
@@ -218,15 +217,6 @@
 .event-horizon.aurora .o-universe .o-kicker,
 .event-horizon.aurora .o-universe .o-section-heading h2 em {
   color: var(--a-teal-ink);
-}
-.event-horizon.aurora .o-atlas-path {
-  stroke: #29617348;
-}
-.event-horizon.aurora .o-atlas-flow {
-  stroke: #117b83;
-}
-.event-horizon.aurora .o-atlas-orbit {
-  border-color: #2d687320;
 }
 .event-horizon.aurora .o-atlas-node {
   color: #32556b;
@@ -395,21 +385,6 @@
   background: #0e2a40;
   border-color: #5e9ab066;
 }
-.event-horizon.aurora .o-route-visual > svg {
-  filter: drop-shadow(0 0 15px #77e7e730);
-}
-.event-horizon.aurora .o-route-visual > i,
-.event-horizon.aurora .o-boundary > i,
-.event-horizon.aurora .o-escalation:before {
-  background: #7cabb95c;
-}
-.event-horizon.aurora .o-route-visual > i.active {
-  background: var(--project);
-  box-shadow: 0 0 8px #77e7e742;
-}
-.event-horizon.aurora .o-route-visual > i:after {
-  background: #0e2a40;
-}
 .event-horizon.aurora .o-segment > legend,
 .event-horizon.aurora .o-toggle > span:first-child {
   color: #d3e4eb;
@@ -444,8 +419,6 @@
   background: #10263a;
 }
 .event-horizon.aurora .o-steps > li,
-.event-horizon.aurora .o-escalation > div,
-.event-horizon.aurora .o-boundary > div span,
 .event-horizon.aurora .o-brief-header > span:last-child {
   color: #adc4d2;
 }
@@ -479,39 +452,10 @@
 .event-horizon.aurora .o-graph-legend {
   color: #adc4d2;
 }
-.event-horizon.aurora .o-escalation i {
-  background: #0e2a40;
-  border-color: #789cad;
-}
-.event-horizon.aurora .o-escalation > div.selected {
-  color: var(--project);
-}
-.event-horizon.aurora .o-escalation > div.selected i {
-  background: var(--project);
-  border-color: #183c50;
-  box-shadow:
-    0 0 0 1px var(--project),
-    0 0 30px #fa927a20;
-}
-.event-horizon.aurora .o-boundary > div.protected > svg {
-  fill: #77e7e716;
-}
 .event-horizon.aurora .o-brief-header,
 .event-horizon.aurora .o-brief-output,
 .event-horizon.aurora .o-brief-output > div {
   border-color: #709fb450;
-}
-.event-horizon.aurora .o-gauge {
-  background: conic-gradient(var(--project) var(--gauge), #739bb64a 0);
-}
-.event-horizon.aurora .o-gauge > span {
-  background: #0e2a40;
-}
-.event-horizon.aurora .o-freshness.stale .o-gauge {
-  background: conic-gradient(var(--a-coral) var(--gauge), #739bb64a 0);
-}
-.event-horizon.aurora .o-freshness.stale .o-gauge > span {
-  color: var(--a-coral);
 }
 .event-horizon.aurora .o-code-graph line {
   stroke: #7fa6b875;
@@ -656,25 +600,6 @@
 .event-horizon.aurora .o-operator > .o-section-top,
 .event-horizon.aurora .o-operator-copy > .o-kicker {
   color: #3b627a;
-}
-.event-horizon.aurora .o-operator-monogram {
-  background: radial-gradient(ellipse at 67% 28%, #fcfdfe, #c4dbe6);
-  border-color: #557f945c;
-}
-.event-horizon.aurora .o-operator-monogram:before {
-  border-color: #2e879b55;
-}
-.event-horizon.aurora .o-operator-monogram:after {
-  border-color: #95623347;
-}
-.event-horizon.aurora .o-operator-monogram > span {
-  color: #2055742e;
-}
-.event-horizon.aurora .o-operator-monogram > svg {
-  color: #8a551e;
-}
-.event-horizon.aurora .o-operator-monogram > div {
-  color: #3e6074;
 }
 .event-horizon.aurora .o-operator-copy h2 em {
   color: #11636b;

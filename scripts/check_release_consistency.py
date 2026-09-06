@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import base64
 import hashlib
+import gzip
 import json
 import html
 import math
@@ -379,7 +380,7 @@ def check_v34_motion_contract(failures: list[str]) -> None:
                 failures.append(f"inactive deck {deck_index} does not pause {pseudo} animation work")
 
 
-def check_site_release(release: dict, failures: list[str], *, preview: bool = False, version: str = "37.5.0") -> None:
+def check_site_release(release: dict, failures: list[str], *, preview: bool = False, version: str = "37.6.0") -> None:
     """Software release identity must never rewrite the archive's observation dates."""
     if not isinstance(release, dict):
         failures.append("site-release.json must be an object")
@@ -477,7 +478,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--preview", action="store_true", help="Validate an explicitly unpublished local preview; never a deployment approval")
     preview = parser.parse_args().preview
-    version = "37.5.0-preview.forge" if preview else "37.5.0"
+    version = "37.6.0-preview.lightwake" if preview else "37.6.0"
     failures: list[str] = []
 
     try:
@@ -856,7 +857,7 @@ def main() -> int:
             style_asset = DIST / style_path.lstrip("/")
             if not style_asset.is_file() or styles != style_asset.read_text(encoding="utf-8"):
                 failures.append("inlined homepage styles must match the compiled stylesheet exactly")
-            if len(styles.encode("utf-8")) > 190_000:
+            if len(styles.encode("utf-8")) > 195_000 or len(gzip.compress(styles.encode("utf-8"), compresslevel=6, mtime=0)) > 42_000:
                 failures.append("inlined homepage styles exceed the delivery budget")
         if re.search(r"/v\d+/", built_index, flags=re.IGNORECASE):
             failures.append("built index is incorrectly nested under a version directory")

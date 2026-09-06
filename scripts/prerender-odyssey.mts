@@ -1,5 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
+import { gzipSync } from "node:zlib";
 import { createElement } from "react";
 import { renderToString } from "react-dom/server";
 import { OdysseyApp } from "../src/odyssey/app";
@@ -21,7 +22,8 @@ for (const target of ["dist/index.html", "dist/odyssey.html"]) {
   if (styleLinks.length !== 1) throw new Error(`Expected one initial Odyssey stylesheet in ${target}`);
   const [styleLink, stylePath] = styleLinks[0];
   const styles = await readFile(`dist${stylePath}`, "utf8");
-  if (Buffer.byteLength(styles) > 190_000 || /<\/style/i.test(styles))
+  // Lightwake trades obsolete rules for new controls; cap both parsed and compressed bytes.
+  if (Buffer.byteLength(styles) > 195_000 || gzipSync(styles).byteLength > 42_000 || /<\/style/i.test(styles))
     throw new Error(`Initial Odyssey styles exceed the inline delivery contract in ${target}`);
   document = document.replace(styleLink, `<style data-odyssey-styles="${stylePath}">${styles}</style>`);
   await writeFile(

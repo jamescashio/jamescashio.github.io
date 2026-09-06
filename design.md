@@ -1,4 +1,18 @@
-# Current release — V37.5 Celestial Forge
+# Current release — V37.6 Lightwake
+
+A living observatory: visitors set the atmosphere, follow a wave of light, and discover how the work responds to their decisions. Preserve the Cashio artwork, champagne gold, electric cyan, deep ink, Oxanium headings, Exo body copy, and Jet labels. Quiet reading surfaces frame the interactive scenes.
+
+The opening offers one primary action, Enter the observatory, with compact illustrated choices for Lightwake, the Cashio signature, and First Flight. Dawn, Eclipse, and Ion change the actual scene; desktop intensity shapes its glow. Phones place the artwork and direct lighting control before the headline without burying the primary action. New aurora paths obey the existing motion, visibility, and overlay state; they create no additional rendering loop.
+
+The original 3D world gains fine metal grooves, inset fasteners, polished seams, and atmospheric scattering. Resonance travels through circuits and two coherent energy fronts. Keep camera, light, pause, journey, and reduced-motion behavior. Bound geometry, pixel count, and rendering rate. The smaller principles engine gains machined collars, recessed core lenses, and meaningful boundary, route, and core emphasis.
+
+Seven distinct study illustrations support a clearer active state and Previous/Next navigation. Preserve all real models, keyboard tab behavior, hashes, controls, and dated evidence. Motion should explain a state or action, while text stays still.
+
+One original eight-second 1080p Higgsfield film uses the existing orbital artwork. It is silent, poster-first, explicit-play, finite, and locally delivered at approximately 3.2 MB. Frame landmarks and a timeline remain useful before Play. Keep all three older films, existing deep links, native-first seeking, bounded no-range fallback, and focus restoration. No media preloads, policy changes, or external runtime media origins.
+
+The owner's standing publication approval applies to this completed refinement. Software version is `37.6.0`, title `Cashio V37.6 — Lightwake | Doug Cashio`; preserve `THE HUMAN RECKONING`, `Lensing`, and `Lensing Observatory` in the release receipt. Baseline and rollback target: `12d4de347ff829cb4ae3b54c1b55f07e7deb7075`. Publish through protected-main PR checks, then verify the actual public release and assets. Desktop, tablet, 390 px and 320 px checks cover layout, readable controls, decoded media, rendered animation, reduced motion, keyboard, and application errors. Report measured evidence without assigning perfect scores.
+
+# Prior release — V37.5 Celestial Forge
 
 An instrument of gold and light: the owner's Cashio signature floats within a projected depth field that responds directly to the visitor, while a Higgsfield film reveals its cinematic identity.
 

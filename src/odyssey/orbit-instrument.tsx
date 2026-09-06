@@ -1,9 +1,17 @@
 import { useEffect, useId, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 
 type Vector = [number, number, number];
-type Material = "titanium" | "carbon" | "copper" | "core" | "light" | "solar" | "ember";
-type Face = { points: Vector[]; material: Material; edge?: boolean; alpha?: number };
-type InstrumentState = { yaw: number; pitch: number; roll: number; phase: number; preset: number; flow: boolean };
+type Material = "titanium" | "carbon" | "copper" | "core" | "light" | "solar" | "ember" | "gold" | "glass";
+type Face = { points: Vector[]; material: Material; edge?: boolean; alpha?: number; group?: number };
+type InstrumentState = {
+  yaw: number;
+  pitch: number;
+  roll: number;
+  phase: number;
+  preset: number;
+  flow: boolean;
+  emphasis: Vector;
+};
 type Controls = {
   render: () => void;
   setOrbit: (playing: boolean) => void;
@@ -76,15 +84,15 @@ function annulus(
   phase = 0,
 ): Face[] {
   const faces: Face[] = [];
-  const count = 100;
+  const count = 72;
   const point = (r: number, a: number, z: number) => rotate([Math.cos(a) * r, Math.sin(a) * r, z], ...turns);
   for (let i = 0; i < count; i++) {
     const a = (i / count) * TAU + phase;
     if (i > count * (1 - gap)) continue;
-    const b = ((i + 1) / count) * TAU + phase - 0.002;
+    const b = ((i + 1) / count) * TAU + phase - 0.0012;
     const front = [point(outer, a, depth), point(outer, b, depth), point(inner, b, depth), point(inner, a, depth)];
     const back = [point(outer, a, -depth), point(inner, a, -depth), point(inner, b, -depth), point(outer, b, -depth)];
-    faces.push({ points: front, material, edge: i % 5 === 0 });
+    faces.push({ points: front, material, edge: i % 6 === 0 });
     faces.push({ points: back, material: "carbon" });
     faces.push({ points: [front[0], back[0], back[3], front[1]], material: "carbon", edge: true });
     faces.push({
@@ -107,7 +115,7 @@ function annulus(
           point(lip, b, depth + 0.007),
           point(lip, a, depth + 0.007),
         ],
-        material: "titanium",
+        material: "gold",
       });
       faces.push({
         points: [
@@ -125,11 +133,10 @@ function annulus(
           point(inner + 0.045, b, depth + 0.009),
           point(inner + 0.045, a, depth + 0.009),
         ],
-        material: "light",
-        alpha: 0.75,
+        material: "glass",
       });
     }
-    if (outer > 1.6 && i % 10 === 0) {
+    if (outer > 1.6 && i % 6 === 0) {
       const ra = a + 0.006,
         rb = a + 0.019;
       faces.push({
@@ -139,9 +146,54 @@ function annulus(
           point(inner + 0.025, rb, depth + 0.007),
           point(inner + 0.025, ra, depth + 0.007),
         ],
-        material: "solar",
+        material: "gold",
       });
     }
+  }
+  return faces;
+}
+
+// Raised, beveled collars interrupt the silhouette without adding another renderer.
+function dockingCollars(): Face[] {
+  const faces: Face[] = [];
+  for (let index = 0; index < 12; index++) {
+    const angle = -0.7 + (index * TAU * 0.915) / 12 + 0.055;
+    const point = (radius: number, offset: number, depth: number): Vector => [
+      Math.cos(angle + offset) * radius,
+      Math.sin(angle + offset) * radius,
+      depth,
+    ];
+    const base = [
+      point(1.94, -0.022, 0.088),
+      point(1.94, 0.022, 0.088),
+      point(1.72, 0.027, 0.088),
+      point(1.72, -0.027, 0.088),
+    ];
+    const cap = [
+      point(1.921, -0.014, 0.15),
+      point(1.921, 0.014, 0.15),
+      point(1.74, 0.016, 0.15),
+      point(1.74, -0.016, 0.15),
+    ];
+    faces.push({ points: cap, material: "carbon", group: 0 });
+    for (let edge = 0; edge < 4; edge++) {
+      const next = (edge + 1) % 4;
+      faces.push({
+        points: [base[edge], base[next], cap[next], cap[edge]],
+        material: edge % 2 ? "gold" : "titanium",
+        group: 0,
+      });
+    }
+    faces.push({
+      points: [
+        point(1.902, -0.005, 0.153),
+        point(1.902, 0.005, 0.153),
+        point(1.835, 0.005, 0.153),
+        point(1.835, -0.005, 0.153),
+      ],
+      material: "light",
+      group: 0,
+    });
   }
   return faces;
 }
@@ -184,17 +236,38 @@ function coreGeometry(phase: number): Face[] {
     [8, 6, 7],
     [9, 8, 1],
   ];
-  return indices.map((indices) => ({
-    points: indices.map((index) =>
-      rotate(vertices[index].map((value) => value * 0.29) as Vector, 0.3, phase * 0.7 + 0.24, 0.14),
-    ),
-    material: "core",
-    edge: true,
-  }));
+  const faces: Face[] = [];
+  for (const triangle of indices) {
+    const points = triangle.map((index) =>
+      rotate(vertices[index].map((value) => value * 0.32) as Vector, 0.3, phase * 0.35 + 0.24, 0.14),
+    );
+    const center = points.reduce<Vector>(
+      (sum, point) => [sum[0] + point[0] / 3, sum[1] + point[1] / 3, sum[2] + point[2] / 3],
+      [0, 0, 0],
+    );
+    const inset = points.map(
+      (point) => point.map((value, axis) => center[axis] * 1.055 + (value - center[axis]) * 0.81) as Vector,
+    );
+    faces.push({ points: inset, material: "core", group: 2 });
+    for (let edge = 0; edge < 3; edge++) {
+      const next = (edge + 1) % 3;
+      faces.push({
+        points: [points[edge], points[next], inset[next], inset[edge]],
+        material: "gold",
+        edge: true,
+        group: 2,
+      });
+    }
+    const jewel = inset.map(
+      (point) => point.map((value, axis) => center[axis] * 1.065 + (value - center[axis] * 1.055) * 0.25) as Vector,
+    );
+    faces.push({ points: jewel, material: "glass", group: 2 });
+  }
+  return faces;
 }
 
-function materialColor(material: Material, n: Vector, preset: number, position: Vector): string {
-  const key: Vector = [-3.4 - position[0], -4.6 - position[1], 5.2 - position[2]];
+function materialColor(material: Material, n: Vector, emphasis: number, position: Vector): string {
+  const key: Vector = [-3.4 - position[0] * 0.3, -4.6 - position[1] * 0.3, 5.2 - position[2] * 0.3];
   const length = Math.hypot(...key);
   const light = Math.max(
     0,
@@ -202,30 +275,51 @@ function materialColor(material: Material, n: Vector, preset: number, position: 
   );
   const cool = Math.max(0, n[0] * 0.68 + n[1] * -0.2 + n[2] * 0.7);
   const rim = Math.pow(Math.max(0, n[0] * -0.28 + n[1] * -0.35 + n[2] * 0.88), 22);
-  const reflection = (0.5 + 0.5 * Math.cos(position[0] * 1.8 + position[1] * 0.8)) * light;
+  const viewLength = Math.hypot(position[0], position[1], 7.5 - position[2]);
+  const half: Vector = [
+    key[0] / length - position[0] / viewLength,
+    key[1] / length - position[1] / viewLength,
+    key[2] / length + (7.5 - position[2]) / viewLength,
+  ];
+  const halfLength = Math.hypot(...half);
+  const reflection = Math.pow(
+    Math.max(
+      0,
+      n.reduce((sum, value, index) => sum + (value * half[index]) / halfLength, 0),
+    ),
+    42,
+  );
   const colors: Record<Material, Vector> = {
-    titanium: [101, 145, 173],
-    carbon: [23, 45, 63],
-    copper: [184, 111, 81],
-    core: [255, 191, 99],
+    titanium: [87, 114, 127],
+    carbon: [15, 31, 43],
+    copper: [176, 132, 75],
+    core: [192, 135, 61],
     light: [119, 231, 231],
     solar: [255, 199, 127],
     ember: [250, 146, 122],
+    gold: [225, 179, 106],
+    glass: [26, 88, 102],
   };
   const base = colors[material];
-  if (material === "light") return "#77e7e7";
+  if (material === "light")
+    return `rgb(${Math.round(65 + emphasis * 65)},${Math.round(156 + emphasis * 75)},${Math.round(177 + emphasis * 60)})`;
   if (material === "solar") return "#ffd7a0";
   if (material === "ember") return "#fa927a";
-  const brightness =
-    material === "core" ? 0.27 + light * 0.83 + (preset === 2 ? 0.12 : 0) : 0.27 + light * 0.68 + reflection * 0.3;
-  return `rgb(${base.map((value, index) => Math.min(255, Math.round(value * brightness + rim * (material === "carbon" ? 28 : 82) + cool * [8, 20, 27][index]))).join(",")})`;
+  const brightness = 0.22 + light * 0.78 + emphasis * 0.18;
+  const specular = material === "carbon" ? 24 : material === "glass" ? 155 : 135;
+  return `rgb(${base.map((value, index) => Math.min(255, Math.round(value * brightness + reflection * specular + rim * 45 + cool * [4, 17, 24][index]))).join(",")})`;
 }
 
-function energyTrail(radius: number, turns: Vector, phase: number, material: Material): Face[] {
+const OUTER_SHELL = [
+  ...annulus(1.89, 1.62, 0.095, [0, 0, 0], "titanium", 0.085, -0.7).map((face) => ({ ...face, group: 0 })),
+  ...dockingCollars(),
+];
+
+function energyTrail(radius: number, turns: Vector, phase: number, material: Material, depth = 0.043): Face[] {
   return Array.from({ length: 20 }, (_, index) => {
     const a = phase + index * 0.025,
       b = a + 0.026;
-    const point = (r: number, angle: number) => rotate([Math.cos(angle) * r, Math.sin(angle) * r, 0.043], ...turns);
+    const point = (r: number, angle: number) => rotate([Math.cos(angle) * r, Math.sin(angle) * r, depth], ...turns);
     return {
       points: [point(radius, a), point(radius, b), point(radius - 0.026, b), point(radius - 0.026, a)],
       material,
@@ -239,7 +333,7 @@ function paint(canvas: HTMLCanvasElement, state: InstrumentState, width: number,
   if (!ctx || width < 1 || height < 1) return;
   const dpr = canvas.width / width;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  ctx.fillStyle = "#061321";
+  ctx.fillStyle = "#050e17";
   ctx.fillRect(0, 0, width, height);
   const centerX = width * 0.5,
     centerY = height * 0.46;
@@ -249,10 +343,10 @@ function paint(canvas: HTMLCanvasElement, state: InstrumentState, width: number,
     return [centerX + point[0] * scale * perspective, centerY + point[1] * scale * perspective];
   };
   const ambient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, scale * 2.4);
-  ambient.addColorStop(0, "#193133");
-  ambient.addColorStop(0.28, "#102735");
-  ambient.addColorStop(0.68, "#081c2b");
-  ambient.addColorStop(1, "#061321");
+  ambient.addColorStop(0, "#162a30");
+  ambient.addColorStop(0.28, "#0e222c");
+  ambient.addColorStop(0.68, "#071723");
+  ambient.addColorStop(1, "#050e17");
   ctx.fillStyle = ambient;
   ctx.fillRect(0, 0, width, height);
   // Fixed stars never reroll or shimmer when the instrument moves.
@@ -313,22 +407,30 @@ function paint(canvas: HTMLCanvasElement, state: InstrumentState, width: number,
     }
   }
   const geometry = [
-    ...annulus(1.89, 1.62, 0.095, [0, 0, 0], "titanium", 0.085, -0.7),
-    ...annulus(
-      1.51,
-      1.463,
-      0.023,
-      [0.85, 0.33, state.phase * 0.12],
-      state.preset === 1 ? "copper" : "titanium",
-      0.15,
-      0.42,
-    ),
-    ...annulus(1.17, 1.143, 0.012, [-0.6, 0.76, 0.3], "copper", 0.12, state.phase * 0.16),
+    ...OUTER_SHELL,
+    ...annulus(1.51, 1.463, 0.023, [0.85, 0.33, state.phase * 0.12], "gold", 0.15, 0.42).map((face) => ({
+      ...face,
+      group: 1,
+    })),
+    ...annulus(1.17, 1.126, 0.019, [-0.6, 0.76, 0.3], "titanium", 0.12, state.phase * 0.16).map((face) => ({
+      ...face,
+      group: 1,
+    })),
     ...coreGeometry(state.phase),
+    ...energyTrail(1.674, [0, 0, 0], -1.05 + state.phase * 0.4, "light", 0.11).map((face) => ({
+      ...face,
+      group: 0,
+      alpha: (face.alpha ?? 1) * (0.3 + state.emphasis[0] * 0.7),
+    })),
+    ...energyTrail(1.182, [-0.6, 0.76, 0.3], -0.1 - state.phase * 0.5, "light").map((face) => ({
+      ...face,
+      group: 1,
+      alpha: (face.alpha ?? 1) * (0.35 + state.emphasis[1] * 0.65),
+    })),
     ...(state.flow
       ? [
           ...energyTrail(1.517, [0.85, 0.33, state.phase * 0.12], state.phase * 1.5, "light"),
-          ...energyTrail(1.18, [-0.6, 0.76, 0.3], -state.phase * 1.1 + 2, "ember"),
+          ...energyTrail(1.18, [-0.6, 0.76, 0.3], -state.phase * 1.1 + 2, "solar"),
         ]
       : []),
   ];
@@ -344,7 +446,7 @@ function paint(canvas: HTMLCanvasElement, state: InstrumentState, width: number,
   for (const face of transformed) {
     const n = normal(face.points);
     // All closed surfaces are depth-sorted; back-facing triangles do not bleed through the core.
-    if (face.material === "core" && n[2] < 0) continue;
+    if (face.group === 2 && n[2] < 0) continue;
     const points = face.points.map(project);
     ctx.beginPath();
     ctx.moveTo(...points[0]);
@@ -358,17 +460,25 @@ function paint(canvas: HTMLCanvasElement, state: InstrumentState, width: number,
       ],
       [0, 0, 0],
     );
-    ctx.fillStyle = materialColor(face.material, n, state.preset, position);
+    const emphasis = state.emphasis[face.group ?? 1];
+    ctx.fillStyle = materialColor(face.material, n, emphasis, position);
+    if (face.material === "core") {
+      const highlight = ctx.createLinearGradient(points[0][0], points[0][1], points[1][0], points[1][1]);
+      highlight.addColorStop(0, materialColor("core", n, emphasis, position));
+      highlight.addColorStop(0.45, materialColor("gold", n, emphasis * 0.6, position));
+      highlight.addColorStop(1, materialColor("core", n, emphasis * 0.25, position));
+      ctx.fillStyle = highlight;
+    }
     ctx.globalAlpha = face.alpha ?? 1;
     if (face.material === "light" || face.material === "ember") {
       ctx.shadowColor = face.material === "light" ? "#57e1ef" : "#fa927a";
-      ctx.shadowBlur = face.alpha === 0.75 ? 4 : 8;
+      ctx.shadowBlur = 3 + emphasis * 3;
     }
     ctx.fill();
     ctx.shadowBlur = 0;
     ctx.globalAlpha = 1;
     if (face.edge || face.material === "core") {
-      ctx.strokeStyle = face.material === "core" ? "rgba(255,224,174,.5)" : "rgba(152,206,225,.14)";
+      ctx.strokeStyle = face.group === 2 ? "rgba(255,224,174,.4)" : "rgba(152,206,225,.16)";
       ctx.lineWidth = face.material === "core" ? 0.65 : 0.45;
       ctx.stroke();
     }
@@ -427,7 +537,7 @@ export function OrbitInstrument({ motion, onSelect }: { motion: boolean; onSelec
   const cinemaButtonRef = useRef<HTMLButtonElement>(null);
   const cinemaLock = useRef<{ bodyOverflow: string; rootOverflow: string; opener: HTMLElement | null } | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const scene = useRef<InstrumentState>({ ...HOME, phase: 0, preset: 0, flow: false });
+  const scene = useRef<InstrumentState>({ ...HOME, phase: 0, preset: 0, flow: false, emphasis: [1, 0, 0] });
   const controls = useRef<Controls | null>(null);
   const drag = useRef<{ x: number; y: number; yaw: number; pitch: number; pointer: number } | null>(null);
   const [selected, setSelected] = useState(0);
@@ -529,6 +639,7 @@ export function OrbitInstrument({ motion, onSelect }: { motion: boolean; onSelec
             pitch: from.pitch + (to.pitch - from.pitch) * eased,
             roll: from.roll + (to.roll - from.roll) * eased,
             phase: from.phase + (to.phase - from.phase) * eased,
+            emphasis: from.emphasis.map((value, index) => value + (to.emphasis[index] - value) * eased) as Vector,
           };
           if (progress === 1) transition = null;
         } else if (playing) {
@@ -637,7 +748,16 @@ export function OrbitInstrument({ motion, onSelect }: { motion: boolean; onSelec
     stopOrbit();
     setSelected(index);
     setStatus("");
-    controls.current?.moveTo({ ...MISSIONS[index].angles, phase: 0, preset: index, flow: false }, motion);
+    controls.current?.moveTo(
+      {
+        ...MISSIONS[index].angles,
+        phase: 0,
+        preset: index,
+        flow: false,
+        emphasis: [Number(index === 0), Number(index === 1), Number(index === 2)],
+      },
+      motion,
+    );
     onSelect?.(MISSIONS[index].id);
   };
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -774,7 +894,7 @@ export function OrbitInstrument({ motion, onSelect }: { motion: boolean; onSelec
             {cinema ? "Close cinema" : "Cinema view"}
           </button>
         </div>
-        <div className="eh-orbit-instrument">
+        <div className="eh-orbit-instrument" data-mission={mission.id} data-orbit-motion={motion ? "on" : "off"}>
           <div className="eh-orbit-stage">
             <div className="eh-orbit-stage-label" aria-hidden="true">
               <span>LIGHTFOLD / ORBITAL INSTRUMENT</span>
