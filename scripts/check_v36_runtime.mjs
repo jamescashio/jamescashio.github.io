@@ -17,6 +17,7 @@ import {
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = path.join(ROOT, "dist");
 const RELEASE_NAME = "THE HUMAN RECKONING";
+const PAGE_TITLE = "Cashio V37 — Lightfold | Doug Cashio";
 const report = { passed: false, checks: [], failures: [], errors: [], warnings: [] };
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const argument = (name) =>
@@ -127,23 +128,25 @@ async function run() {
       resources.server = await serveDist();
       const base = `http://127.0.0.1:${resources.server.address().port}`;
       const rootHtml = await fetch(`${base}/`).then((response) => response.text());
-      assert.match(rootHtml, /data-prerendered="odyssey"/, "root must contain the prerendered V36 page");
-      assert.match(
-        rootHtml,
-        /<title>[^<]*THE HUMAN RECKONING[^<]*<\/title>/,
-        "root title must identify the approved release",
-      );
+      assert.match(rootHtml, /data-prerendered="odyssey"/, "root must contain the prerendered V37 page");
+      assert.ok(rootHtml.includes(`<title>${PAGE_TITLE}</title>`), "root title must identify V37 Lightfold");
       assert.match(rootHtml, /Own the iron/, "hero heading must exist before JavaScript");
-      assert.doesNotMatch(rootHtml, /<meta\b[^>]*\bcontent=["'][^"']*noindex/i, "live root must be indexable");
+      assert.doesNotMatch(
+        rootHtml,
+        /<meta\b[^>]*\bcontent=["'][^"']*(?:noindex|nofollow)/i,
+        "released homepage must permit indexing",
+      );
       const receiptResponse = await fetch(`${base}/site-release.json`);
       assert.equal(receiptResponse.status, 200, "current release receipt must exist");
       const receipt = await receiptResponse.json();
       const packageJson = JSON.parse(await readFile(path.join(ROOT, "package.json"), "utf8"));
       assert.equal(receipt.experienceVersion, packageJson.version, "receipt and package versions must match");
-      assert.equal(receipt.experienceVersion, "36.0.0", "current receipt must be the approved V36 release");
+      assert.equal(receipt.experienceVersion, "37.0.0", "current receipt must be the V37 release");
+      assert.equal(receipt.published, true, "release must be explicitly published");
       assert.equal(receipt.releaseName, RELEASE_NAME);
+      assert.equal(receipt.visualEdition, "Lightfold");
+      assert.equal(receipt.featuredExperience, "First Flight");
       assert.equal(receipt.status, "released");
-      assert.equal(receipt.published, true);
       assert.equal(receipt.entry, "/");
       assert.equal(receipt.legacyEntry, "/command-deck.html");
       assert.deepEqual(receipt.evidenceArchive, {
@@ -242,7 +245,7 @@ async function run() {
         await navigate(`/?runtime=v36-${width}`, width, width === 1440 ? 1000 : 844);
         const result = await layout();
         assert.match(result.heading, /Own the iron\..*Shape the possible\./);
-        assert.ok(result.title.includes(RELEASE_NAME));
+        assert.equal(result.title, PAGE_TITLE);
         assert.ok(
           result.scrollWidth <= width + 1 && result.bodyWidth <= width + 1,
           `${width}px root must not overflow`,
@@ -258,11 +261,11 @@ async function run() {
           `performance.getEntriesByType('resource').map(entry=>entry.name).filter(name=>/world-renderer-|three(?:\\.module)?-/.test(name))`,
         );
         assert.deepEqual(initialAssets, [], "3D must remain unloaded before the visitor boards");
-        await click('[aria-label="Pause ambient motion"]');
+        await click('[aria-label="Motion on — pause ambient motion"]');
         await waitFor(`document.querySelector('.event-horizon')?.dataset.motion === 'off'`, "manual motion pause");
         assert.equal(
           await evaluate(
-            `document.querySelector('[aria-label="Resume ambient motion"]')?.getAttribute('aria-pressed')`,
+            `document.querySelector('[aria-label="Motion off — resume ambient motion"]')?.getAttribute('aria-pressed')`,
           ),
           "true",
         );
@@ -365,7 +368,7 @@ async function run() {
       );
       assert.equal(
         await evaluate(
-          `document.querySelector('[aria-label="Reduced motion follows your system preference"]')?.disabled`,
+          `document.querySelector('[aria-label="Motion off — follows your system preference"]')?.disabled`,
         ),
         true,
       );
@@ -382,7 +385,7 @@ async function run() {
       await waitFor(`document.querySelector('.sw-world-fallback img')?.naturalWidth > 0`, "no-JavaScript ship poster");
       assert.ok(
         await evaluate(
-          `document.querySelector('#operator')?.textContent.includes('DOUG CASHIO') && document.querySelector('#work')?.textContent.includes('Seven projects')`,
+          `document.querySelector('#operator')?.textContent.includes('DOUG CASHIO') && document.querySelectorAll('#work [role="tab"]').length === 7`,
         ),
         "no-JavaScript root must retain content",
       );
@@ -397,7 +400,7 @@ async function run() {
       );
       report.checks.push({ name: "Legacy deck bookmark preserves query and hash", passed: true });
       await navigate("/odyssey.html?runtime=v36-alias");
-      assert.ok((await evaluate("document.title")).includes(RELEASE_NAME), "Odyssey alias must retain V36");
+      assert.equal(await evaluate("document.title"), PAGE_TITLE, "Odyssey alias must retain V37 Lightfold");
       report.checks.push({ name: "Odyssey alias remains available", passed: true });
       assert.deepEqual(report.errors, [], "no runtime exceptions or console errors");
       report.checks.push({ name: "No runtime errors", passed: true });

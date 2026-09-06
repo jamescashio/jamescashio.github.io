@@ -6,7 +6,9 @@ import {
   type WorldInput,
   type WorldSensitivity,
 } from "./sovereign-model";
+import { missionHash, parseMissionHash } from "./flight-plan";
 import type { WorldController } from "./world-renderer";
+import { StarshipPoster } from "./starship-poster";
 
 const ARCHITECTURES: { id: WorldArchitecture; name: string; detail: string }[] = [
   { id: "sovereign", name: "Sovereign / local", detail: "Your hardware. Your boundary." },
@@ -29,19 +31,7 @@ const INSPECTIONS = {
 } as const;
 
 function WorldFallback() {
-  return (
-    <picture className="sw-world-fallback">
-      <source media="(max-width: 700px)" srcSet="/assets/sovereign-starship-mobile.webp" />
-      <img
-        src="/assets/sovereign-starship.webp"
-        alt="An original pearl-titanium exploration starship with swept wings, cyan engines, a gold command core, and a separate orbital cloud relay."
-        width="1600"
-        height="900"
-        loading="lazy"
-        decoding="async"
-      />
-    </picture>
-  );
+  return <StarshipPoster className="sw-world-fallback" />;
 }
 
 const MISSIONS: { name: string; detail: string; settings: WorldInput }[] = [
@@ -88,6 +78,33 @@ export function SovereignWorld({ motion }: { motion: boolean }) {
   const mounted = useRef(true);
   const latest = useRef({ input, motion, playing });
   const outcome = computeWorldOutcome(input);
+  const [shared, setShared] = useState(false);
+  const [shareError, setShareError] = useState(false);
+  useEffect(() => {
+    const restore = () => {
+      const scenario = parseMissionHash(location.hash);
+      if (!scenario) return;
+      setInput(scenario);
+      requestAnimationFrame(() => document.getElementById("sovereign-world")?.scrollIntoView({ behavior: "instant" }));
+    };
+    restore();
+    window.addEventListener("hashchange", restore);
+    return () => window.removeEventListener("hashchange", restore);
+  }, []);
+  useEffect(() => {
+    setShared(false);
+    setShareError(false);
+  }, [input]);
+  async function shareMission() {
+    const hash = missionHash(input);
+    history.replaceState(null, "", hash);
+    try {
+      await navigator.clipboard.writeText(location.href);
+      setShared(true);
+    } catch {
+      setShareError(true);
+    }
+  }
 
   useEffect(() => {
     latest.current = { input, motion, playing };
@@ -145,6 +162,14 @@ export function SovereignWorld({ motion }: { motion: boolean }) {
   const inspect = (zone: keyof typeof INSPECTIONS) => {
     setInspection(zone);
     controller.current?.select(zone);
+    if (controller.current) {
+      const open = zone === "local";
+      setCutaway(open);
+      controller.current.setCutaway(open);
+      const view = open ? "top" : "hero";
+      setCameraView(view);
+      controller.current.setView(view);
+    }
   };
   const frameView = (view: (typeof CAMERA_VIEWS)[number]["id"]) => {
     setCameraView(view);
@@ -478,11 +503,24 @@ export function SovereignWorld({ motion }: { motion: boolean }) {
           </p>
         </div>
       </div>
+      <div className="sw-share-mission">
+        <div>
+          <strong>A scenario worth sharing.</strong>
+          <p>Send someone these exact choices. Let them try the next move.</p>
+        </div>
+        <button type="button" className="o-button" onClick={shareMission}>
+          {shared ? "Mission link copied ✓" : "Copy this mission ↗"}
+        </button>
+        <span className="o-sr-only" role="status">
+          {shared ? "Mission link copied to your clipboard." : ""}
+        </span>
+        {shareError && <p role="status">Copy the address in your browser to share these choices.</p>}
+      </div>
       <p className="sw-world-boundary">
         Here, Sovereign means a fully local deployment. This is a routing illustration, not a vendor ranking or
         performance benchmark. It assumes both local and cloud models can handle this workload. No actual AI or
         infrastructure services are contacted.
-        {!motion && " Reduced motion is on: camera controls work; automatic packet flow stays off."}
+        {!motion && " Motion is off. Camera controls still work; automatic request flow stays paused."}
       </p>
       <noscript>
         <p className="sw-world-boundary">

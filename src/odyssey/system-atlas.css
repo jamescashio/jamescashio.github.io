@@ -1,4 +1,59 @@
 /* System Atlas: decorative geometry, native controls, one selection trace. */
+.sa-route-carrier {
+  stroke: var(--sa-active);
+  stroke-width: 0.9;
+  stroke-linecap: round;
+  stroke-dasharray: 2 98;
+  opacity: 0;
+  pointer-events: none;
+}
+.sa-system-atlas[data-atlas-motion="on"] .sa-route-carrier {
+  opacity: 0.85;
+  animation: sa-carrier-travel 3.2s linear infinite;
+  animation-play-state: var(--play-state, paused);
+}
+.sa-system-atlas[data-atlas-motion="on"] .sa-route-carrier-tail {
+  stroke-width: 1.5;
+  opacity: 0.16;
+  stroke-dasharray: 8 92;
+  animation-delay: -0.12s;
+}
+.sa-node-acquisition {
+  position: absolute;
+  inset: -8px;
+  border: 1px solid var(--sa-active);
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+}
+.sa-system-atlas[data-atlas-motion="on"] .sa-node-acquisition {
+  animation: sa-acquire 1.2s ease-out 2;
+  animation-play-state: var(--play-state, paused);
+}
+@keyframes sa-carrier-travel {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+@keyframes sa-acquire {
+  0% {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+  25% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.3);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sa-route-carrier,
+  .sa-node-acquisition {
+    display: none;
+  }
+}
 .sa-system-atlas {
   --sa-active: #11636b;
   --sa-highlight: #b8e9e9;
@@ -238,7 +293,7 @@
 }
 .event-horizon .sa-system-atlas .sa-chart .sa-node > small {
   color: #44677b;
-  font-size: 9px;
+  font-size: 12px;
 }
 .event-horizon .sa-system-atlas .sa-chart .sa-node.selected > strong {
   color: var(--sa-active);
@@ -247,10 +302,11 @@
   bottom: 15px;
   left: 20px;
   right: 20px;
+  transform: none;
   max-width: none;
   text-align: center;
   color: #486a7e;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.09em;
   line-height: 1.7;
 }
@@ -284,7 +340,7 @@
     height: 470px;
   }
   .sa-chart-label {
-    font-size: 7px;
+    font-size: 12px;
     left: 18px;
     right: 18px;
   }
@@ -333,10 +389,10 @@
     font-size: 12px;
   }
   .event-horizon .sa-system-atlas .sa-chart .sa-node > small {
-    font-size: 8px;
+    font-size: 12px;
   }
   .event-horizon .sa-system-atlas .sa-chart .o-atlas-caption {
-    font-size: 7px;
+    font-size: 12px;
     left: 15px;
     right: 15px;
     bottom: 13px;
@@ -345,7 +401,7 @@
     top: 15px;
     left: 14px;
     right: 14px;
-    font-size: 6px;
+    font-size: 12px;
     letter-spacing: 0.07em;
   }
   .event-horizon.aurora .sa-system-atlas .sa-readout:before {
@@ -367,7 +423,7 @@
     margin: 0 auto;
   }
   .sa-chart-label {
-    font-size: 6px;
+    font-size: 12px;
     letter-spacing: 0;
   }
 }

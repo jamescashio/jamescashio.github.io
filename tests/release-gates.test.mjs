@@ -76,9 +76,9 @@ function expandScript(scripts, name, seen = new Set()) {
   });
 }
 
-test("V36 software gates preserve the independent V35 dated evidence", async () => {
+test("V37 software gates preserve the independent V35 dated evidence", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "36.0.0");
+  assert.equal(packageJson.version, "37.0.0");
   const lock = JSON.parse(await read("package-lock.json"));
   assert.equal(lock.version, packageJson.version);
   assert.equal(lock.packages[""].version, packageJson.version);
@@ -241,7 +241,7 @@ test("the built V35 archive retains its real command deck, critical shell and de
   assert.equal(entry.match(/assets\/main-[\w-]+\.css/g)?.length, 1);
 });
 
-test("the homepage and Odyssey alias ship the same complete V36 story with a usable V35 archive", async () => {
+test("the homepage and Odyssey alias ship the same complete V37 story with a usable V35 archive", async () => {
   let homeMarkup;
   for (const entry of ["index.html", "odyssey.html"]) {
     const document = new JSDOM(await read(`dist/${entry}`)).window.document;
@@ -263,15 +263,30 @@ test("the homepage and Odyssey alias ship the same complete V36 story with a usa
     assert.equal(root.querySelectorAll("audio[autoplay]").length, 0);
     assert.equal(document.querySelector('link[rel="canonical"]')?.href, "https://cashio.us/");
     const robots = document.querySelector('meta[name="robots"]')?.content ?? "";
-    if (entry === "index.html") assert.doesNotMatch(robots, /noindex|nofollow/i);
-    else assert.match(robots, /noindex/i);
-    const compatibility = document.querySelector('head script[src="/legacy-route.js"]');
+    if (entry === "index.html") {
+      assert.doesNotMatch(robots, /noindex|nofollow/i, "the released homepage must permit indexing and following");
+    } else {
+      assert.match(robots, /noindex/i, "the compatibility alias must not compete with the canonical homepage");
+    }
+    assert.equal(document.title, "Cashio V37 — Lightfold | Doug Cashio");
+    const compatibility = document.querySelector("head script#legacy-bookmark-route");
     assert.ok(compatibility, "legacy fragments must be handled before the page activates");
-    for (const attr of ["type", "async", "defer"]) assert.equal(compatibility.hasAttribute(attr), false);
+    for (const attr of ["src", "type", "async", "defer"]) assert.equal(compatibility.hasAttribute(attr), false);
+    assert.equal(compatibility.textContent, (await read("public/legacy-route.js")).replace(/\r\n?/g, "\n").trim());
     const csp = document.querySelector('meta[http-equiv="Content-Security-Policy"]')?.content ?? "";
     assert.match(csp, /script-src 'self'/);
+    const routeHash = createHash("sha256").update(compatibility.textContent).digest("base64");
+    assert.ok(csp.includes(`'sha256-${routeHash}'`), "CSP must authorize only the exact early redirect bytes");
+    assert.doesNotMatch(csp.split("script-src ")[1].split(";")[0], /unsafe-inline/);
     assert.doesNotMatch(csp, /unsafe-eval/);
     const modules = [...document.querySelectorAll('script[type="module"][src]')];
+    const initialStyles = document.querySelector("head style[data-odyssey-styles]");
+    assert.ok(initialStyles, "the first view must paint without a blocking stylesheet request");
+    const stylePath = initialStyles.getAttribute("data-odyssey-styles");
+    assert.match(stylePath, /^\/assets\/[\w.-]+\.css$/);
+    assert.equal(initialStyles.textContent, await read(`dist${stylePath}`));
+    assert.ok(Buffer.byteLength(initialStyles.textContent) <= 190_000);
+    assert.equal(document.querySelectorAll('head link[rel="stylesheet"]').length, 0);
     assert.ok(modules.length >= 1, "Vite must emit the entrypoint and its shared modules");
     assert.equal(
       new Set(modules.map((script) => script.src)).size,
@@ -288,10 +303,12 @@ test("the homepage and Odyssey alias ship the same complete V36 story with a usa
   }
 });
 
-test("V36 release manifests agree without redating the independent evidence archive", async () => {
+test("V37 release manifests agree without redating the independent evidence archive", async () => {
   const manifest = JSON.parse(await read("public/site-release.json"));
-  assert.equal(manifest.experienceVersion, "36.0.0");
+  assert.equal(manifest.experienceVersion, "37.0.0");
   assert.equal(manifest.releaseName, "THE HUMAN RECKONING");
+  assert.equal(manifest.visualEdition, "Lightfold");
+  assert.equal(manifest.featuredExperience, "First Flight");
   assert.equal(manifest.status, "released");
   assert.equal(manifest.published, true);
   assert.equal(manifest.entry, "/");
@@ -306,7 +323,7 @@ test("V36 release manifests agree without redating the independent evidence arch
     assert.equal(await read(`dist/${name}`), await read(`public/${name}`));
 });
 
-test("legacy deck links preserve their exact query and fragment while V36 study links remain on the homepage", async () => {
+test("legacy deck links preserve their exact query and fragment while V37 study links remain on the homepage", async () => {
   const script = await read("public/legacy-route.js");
   const search = "?source=shared&return=%2Fproof";
   for (const hash of [
@@ -342,6 +359,27 @@ test("original Odyssey artwork meets responsive dimensions and transfer budgets"
       const buffer = await readFile(asset(path));
       assert.deepEqual(imageDimensions(buffer, "avif"), { width, height });
       assert.ok(buffer.length <= cap, `${path} exceeds its transfer budget`);
+    }
+  }
+});
+
+test("V37 artwork preload matches its real responsive picture and remains bounded", async () => {
+  const dom = new JSDOM(await read("dist/index.html"));
+  const preload = dom.window.document.querySelector('link[rel="preload"][as="image"]');
+  const source = dom.window.document.querySelector('.o-hero-art source[type="image/avif"]');
+  assert.equal(preload.getAttribute("imagesrcset"), source.getAttribute("srcset"));
+  assert.equal(preload.getAttribute("imagesizes"), source.getAttribute("sizes"));
+  for (const name of ["orbit-aurora", "sanctuary"]) {
+    for (const [width, height, budget] of [
+      [800, 450, 30_000],
+      [1200, 675, 55_000],
+      [1672, 941, 85_000],
+    ]) {
+      const path = `public/odyssey/${name}-v37-${width}.avif`;
+      const buffer = await readFile(asset(path));
+      assert.deepEqual(imageDimensions(buffer, "avif"), { width, height });
+      assert.ok(buffer.length <= budget, `${path} exceeds the high-fidelity artwork budget`);
+      assert.deepEqual(buffer, await readFile(asset(path.replace("public/", "dist/"))));
     }
   }
 });
@@ -455,7 +493,7 @@ test("Public Site Safety preserves report upload and enforcement after every gat
   }
 });
 
-test("tag publication derives V36 from software metadata and validates one built artifact before publishing", async () => {
+test("tag publication derives V37 from software metadata and validates one built artifact before publishing", async () => {
   const workflow = await read(".github/workflows/release.yml");
   assert.match(workflow, /require\('\.\/package\.json'\)\.version\.split\('\.'\)\[0\]/);
   assert.doesNotMatch(workflow, /EXPECTED_TAG[^\n]*status\.json/);

@@ -1,0 +1,925 @@
+.first-flight {
+  --ff-cyan: #77e7e7;
+  --ff-gold: #edc991;
+  color: #eff7fb;
+  background: #07131f;
+  border: 1px solid #68808d;
+  padding: 0;
+  width: min(1380px, calc(100vw - 32px));
+  max-width: none;
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  margin: auto;
+  box-shadow: 0 30px 140px #000a;
+  font-family: Exo, Arial, sans-serif;
+  color-scheme: dark;
+}
+.first-flight::backdrop {
+  background: #010710df;
+  backdrop-filter: blur(12px);
+}
+.first-flight button {
+  font:
+    600 14px Oxanium,
+    Arial,
+    sans-serif;
+  color: #e6f1f6;
+  border: 1px solid #486170;
+  background: #102635;
+  min-height: 44px;
+  cursor: pointer;
+  padding: 10px 16px;
+  transition:
+    background 0.18s,
+    color 0.18s;
+}
+.first-flight button:hover {
+  background: #173849;
+  color: #fff;
+}
+.first-flight button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.first-flight button:focus-visible {
+  outline: 2px solid var(--ff-cyan);
+  outline-offset: 3px;
+}
+.ff-header {
+  padding: 22px 28px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  border-bottom: 1px solid #47616f60;
+}
+.ff-eyebrow {
+  font:
+    500 12px Jet,
+    monospace;
+  letter-spacing: 1.5px;
+  color: #9ac3d4;
+}
+.ff-header h2 {
+  font:
+    500 clamp(20px, 2.6vw, 30px)/1.25 Oxanium,
+    Arial,
+    sans-serif;
+  margin: 8px 0 0;
+}
+.ff-header em {
+  font-style: normal;
+  color: var(--ff-gold);
+}
+.ff-close {
+  flex-shrink: 0;
+}
+.ff-close span {
+  font-size: 22px;
+  vertical-align: middle;
+  margin-left: 12px;
+}
+.ff-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(330px, 1fr);
+}
+.ff-stage {
+  min-width: 0;
+  position: relative;
+  min-height: 490px;
+  aspect-ratio: auto;
+  overflow: hidden;
+  background: #030912;
+}
+.ff-stage canvas,
+.ff-fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.ff-fallback {
+  object-fit: cover;
+}
+.ff-stage-loading canvas,
+.ff-stage-fallback canvas {
+  opacity: 0;
+}
+.ff-stage-ready .ff-fallback {
+  visibility: hidden;
+}
+.ff-stage-cap {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  top: 18px;
+  display: flex;
+  justify-content: space-between;
+  font:
+    500 11px Jet,
+    monospace;
+  color: #9fc1d0;
+  gap: 15px;
+  pointer-events: none;
+}
+.ff-stage-cap span:last-child {
+  color: var(--ff-gold);
+}
+.ff-telemetry {
+  position: absolute;
+  inset: auto 0 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  background: linear-gradient(transparent, #04131f 28%);
+  padding: 35px 22px 22px;
+  pointer-events: none;
+}
+.ff-telemetry div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.ff-telemetry strong {
+  font:
+    500 clamp(28px, 4vw, 46px)/1 Oxanium,
+    Arial,
+    sans-serif;
+  color: var(--ff-cyan);
+}
+.ff-telemetry div:nth-child(2) strong {
+  color: var(--ff-gold);
+}
+.ff-telemetry div:nth-child(3) strong {
+  color: #ffb39e;
+}
+.ff-telemetry span {
+  font-size: 12px;
+  line-height: 1.4;
+  color: #c5d6e0;
+}
+.ff-story {
+  padding: 28px 30px;
+  background: radial-gradient(ellipse at 100% 0, #173346, #091a29 65%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  min-width: 0;
+}
+.ff-story h3 {
+  font:
+    500 clamp(26px, 3.4vw, 43px)/1.13 Oxanium,
+    Arial,
+    sans-serif;
+  margin: 0;
+  color: #f2f7fa;
+  letter-spacing: -1px;
+}
+.ff-story p {
+  font-size: 16px;
+  line-height: 1.75;
+  color: #c5d8e3;
+  margin: 0;
+}
+.ff-takeaway {
+  font:
+    500 16px/1.5 Oxanium,
+    Arial,
+    sans-serif;
+  color: var(--ff-gold);
+  border-top: 1px solid #7ea1b233;
+  padding-top: 17px;
+}
+.ff-next {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.ff-next button {
+  color: var(--ff-gold);
+}
+.ff-chapters {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid #48616f;
+}
+.ff-chapters button {
+  position: relative;
+  border: 0;
+  border-right: 1px solid #48616f;
+  padding: 17px 12px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  overflow: hidden;
+}
+.ff-chapters button span {
+  font:
+    12px Jet,
+    monospace;
+  color: #98bacb;
+}
+.ff-chapters button[aria-current] {
+  background: #214052;
+  color: #ffe0ac;
+}
+.ff-chapters i {
+  position: absolute;
+  height: 2px;
+  inset: auto 100% 0 0;
+  background: var(--ff-gold);
+}
+.ff-progress {
+  animation: ff-progress 7.5s linear forwards;
+}
+@keyframes ff-progress {
+  to {
+    right: 0;
+  }
+}
+.ff-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 24px 8px;
+  align-items: center;
+}
+.ff-playback {
+  display: flex;
+  gap: 8px;
+}
+.ff-share {
+  color: var(--ff-gold) !important;
+  background: transparent !important;
+}
+.ff-boundary,
+.ff-copy-error {
+  font:
+    12px/1.6 Exo,
+    Arial,
+    sans-serif;
+  color: #a8c3d4;
+  margin: 0;
+  padding: 12px 24px 20px;
+}
+.ff-copy-error {
+  color: #ffc9a2;
+}
+.ff-loading {
+  position: fixed;
+  inset: auto 24px 24px auto;
+  padding: 20px;
+  background: #0c2435;
+  border: 1px solid #77e7e7;
+  z-index: 100;
+  color: #fff;
+}
+@media (max-width: 700px) {
+  .first-flight {
+    width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+  }
+  .ff-header {
+    padding: 14px 16px;
+    gap: 10px;
+  }
+  .ff-header h2 {
+    font-size: 20px;
+  }
+  .ff-header h2 em {
+    display: block;
+  }
+  .ff-header .ff-eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.6px;
+  }
+  .ff-close {
+    padding: 8px 10px !important;
+  }
+  .ff-body {
+    grid-template-columns: 1fr;
+  }
+  .ff-stage {
+    min-height: 230px;
+    height: clamp(230px, 33dvh, 340px);
+    aspect-ratio: auto;
+  }
+  .ff-stage-cap {
+    font-size: 12px;
+    left: 14px;
+    right: 14px;
+    gap: 8px;
+  }
+  .ff-telemetry {
+    padding: 28px 16px 14px;
+  }
+  .ff-telemetry strong {
+    font-size: 32px;
+  }
+  .ff-story {
+    padding: 22px 18px;
+    gap: 13px;
+  }
+  .ff-story h3 {
+    font-size: 29px;
+  }
+  .ff-story p {
+    font-size: 15px;
+    line-height: 1.65;
+  }
+  .ff-story .ff-eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+  .ff-takeaway {
+    font-size: 14px;
+    padding-top: 12px;
+  }
+  .ff-chapters {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .ff-chapters button {
+    font-size: 12px;
+    padding: 12px 8px;
+    gap: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.4;
+  }
+  .ff-footer {
+    padding: 14px 14px 0;
+    flex-wrap: wrap;
+  }
+  .ff-playback {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 0.85fr 1.35fr 0.8fr;
+  }
+  .ff-playback button {
+    font-size: 12px;
+    padding: 9px 6px;
+  }
+  .ff-playback button:first-child span {
+    display: none;
+  }
+  .ff-share {
+    width: 100%;
+  }
+  .ff-boundary {
+    padding: 12px 16px 18px;
+  }
+  .ff-next {
+    gap: 6px;
+  }
+  .ff-next button {
+    font-size: 12px;
+    padding: 10px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .first-flight * {
+    animation: none !important;
+    transition: none !important;
+  }
+  .first-flight::backdrop {
+    backdrop-filter: none;
+  }
+}
+@media (forced-colors: active) {
+  .first-flight button {
+    border: 1px solid ButtonText;
+  }
+  .ff-stage {
+    border: 1px solid CanvasText;
+  }
+  .ff-telemetry {
+    background: Canvas;
+  }
+  .ff-telemetry strong {
+    color: CanvasText;
+  }
+}
+
+@media (max-width: 700px) {
+  .ff-header {
+    position: sticky;
+    top: 0;
+    background: #07131ff5;
+    z-index: 2;
+  }
+  .ff-footer {
+    position: sticky;
+    bottom: 0;
+    background: #07131ffa;
+    border-top: 1px solid #48616f;
+    padding-bottom: 12px;
+    z-index: 2;
+  }
+  .event-horizon.aurora .ff-boundary {
+    font-size: 12px;
+  }
+  .ff-stage-cap {
+    font-size: 12px;
+  }
+}
+
+/* Inside the Sovereign: large authored compositions and a visitor-operated boundary. */
+.ff-cinematic .ff-header {
+  background: #07121d;
+}
+.ff-cinematic .ff-stage {
+  isolation: isolate;
+}
+.ff-cinematic .ff-stage-cap {
+  z-index: 1;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+.ff-cinematic .ff-stage-cap span:last-child {
+  border-bottom: 1px solid #edc99180;
+  padding-bottom: 8px;
+}
+.ff-shot-reticle {
+  position: absolute;
+  inset: 17% 9% 23%;
+  pointer-events: none;
+  opacity: 0.45;
+}
+.ff-shot-reticle i {
+  width: 22px;
+  height: 22px;
+  border: 1px solid #81b0c2;
+  position: absolute;
+}
+.ff-shot-reticle i:nth-child(1) {
+  top: 0;
+  left: 0;
+  border-right: 0;
+  border-bottom: 0;
+}
+.ff-shot-reticle i:nth-child(2) {
+  top: 0;
+  right: 0;
+  border-left: 0;
+  border-bottom: 0;
+}
+.ff-shot-reticle i:nth-child(3) {
+  bottom: 0;
+  right: 0;
+  border-left: 0;
+  border-top: 0;
+}
+.ff-shot-reticle i:nth-child(4) {
+  bottom: 0;
+  left: 0;
+  border-right: 0;
+  border-top: 0;
+}
+.ff-shot-label {
+  position: absolute;
+  inset: auto auto 135px 24px;
+  color: #a8c9d9;
+  font:
+    12px Jet,
+    monospace;
+  letter-spacing: 1.2px;
+  pointer-events: none;
+}
+.ff-cinematic .ff-telemetry {
+  padding-top: 55px;
+  padding-bottom: 25px;
+}
+.ff-cinematic .ff-telemetry strong {
+  font-size: clamp(32px, 4vw, 52px);
+}
+.ff-cinematic .ff-story h3 {
+  font-size: clamp(28px, 3vw, 42px);
+}
+.ff-command-lab {
+  padding: 17px 0 0;
+  border-top: 1px solid #678c9e50;
+}
+.ff-lab-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #a6c5d6;
+  font:
+    11px/1.5 Jet,
+    monospace;
+  letter-spacing: 0.65px;
+  margin-bottom: 12px;
+}
+.ff-lab-heading span:last-child {
+  font-family: Exo, Arial, sans-serif;
+  font-size: 12px;
+  letter-spacing: 0;
+}
+.first-flight .ff-boundary-toggle {
+  transition: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  background: #ecc995;
+  color: #091827;
+  border-color: #ecc995;
+  padding: 13px 15px;
+  line-height: 1.5;
+  min-height: 52px;
+}
+.first-flight .ff-boundary-toggle:hover {
+  background: #ffe3b9;
+  color: #07121d;
+}
+.first-flight .ff-boundary-toggle[data-active="true"] {
+  background: #103442;
+  color: #b4ffff;
+  border-color: #63c4cc;
+}
+.ff-boundary-toggle span:first-child {
+  font-size: 25px;
+  line-height: 1;
+}
+.ff-boundary-toggle span:last-child {
+  margin-left: auto;
+}
+.ff-constellation {
+  margin: 14px 0 0;
+}
+.ff-story .ff-scene-copy {
+  margin-top: 16px;
+}
+.ff-constellation figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: #d9e7ee;
+  font:
+    13px/1.6 Exo,
+    Arial,
+    sans-serif;
+}
+.ff-constellation small {
+  color: #afc8d5;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.ff-constellation svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+  margin-top: 6px;
+}
+.ff-route-bay {
+  fill: #061520;
+  stroke: #385769;
+  stroke-width: 1;
+}
+.ff-route-track {
+  fill: none;
+  stroke: #476576;
+  stroke-dasharray: 3 5;
+}
+.ff-constellation text {
+  fill: #b9d0dc;
+  font:
+    12px Jet,
+    monospace;
+  letter-spacing: 0.5px;
+}
+.ff-request {
+  transition:
+    transform 0.9s cubic-bezier(0.22, 0.7, 0.22, 1),
+    fill 0.45s;
+  transition-delay: var(--packet-delay, 0ms);
+}
+.ff-request-local {
+  fill: #82efeb;
+  color: #82efeb;
+}
+.ff-request-cloud {
+  fill: #ffd499;
+  color: #ffd499;
+}
+.ff-request-held {
+  fill: #ffb59f;
+  color: #ffb59f;
+}
+.ff-request-halo {
+  opacity: 0.09;
+}
+.ff-constellation[data-motion="off"] .ff-request {
+  transition: none;
+}
+.ff-dock-surface {
+  stroke: #64818b;
+  stroke-width: 0.65;
+}
+.ff-dock-etch,
+.ff-dock-grid {
+  fill: none;
+  stroke: #718f9b;
+  stroke-width: 0.45;
+  opacity: 0.5;
+}
+.ff-dock-grid {
+  opacity: 0.13;
+}
+.ff-dock-terminal {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+.ff-routing-dock[data-occupied="false"] .ff-dock-terminal {
+  opacity: 0.22;
+}
+.ff-dock-arrival {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.1;
+  opacity: 0;
+}
+.ff-constellation[data-motion="on"] .ff-dock-arrival {
+  animation: ff-dock-arrive 1.2s ease-out both;
+}
+.ff-constellation[data-motion="on"] .ff-packet-arrival {
+  animation: ff-packet-settle 0.42s calc(0.5s + var(--packet-delay, 0ms)) ease-out both;
+  transform-origin: 0 0;
+}
+@keyframes ff-dock-arrive {
+  0% {
+    stroke-dasharray: 0 1;
+    opacity: 0.9;
+  }
+  65% {
+    stroke-dasharray: 1 0;
+    opacity: 0.8;
+  }
+  100% {
+    stroke-dasharray: 1 0;
+    opacity: 0;
+  }
+}
+@keyframes ff-packet-settle {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.2);
+  }
+}
+.ff-story .ff-decision-result {
+  font:
+    600 14px/1.6 Exo,
+    Arial,
+    sans-serif;
+  color: #d8ecf5;
+  margin: 10px 0 0;
+}
+.ff-decision-result small {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: #b8cfdc;
+  line-height: 1.5;
+  margin-top: 4px;
+}
+.first-flight .ff-restore-scene {
+  display: block;
+  border: 0;
+  background: transparent;
+  color: #a8d9de;
+  padding: 8px 0;
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.ff-cinematic .ff-takeaway {
+  padding-top: 12px;
+  font-size: 15px;
+}
+.ff-cinematic .ff-chapters button[aria-current] {
+  background: #123345;
+  box-shadow: inset 0 2px #edc991;
+}
+@media (max-width: 700px) {
+  .ff-cinematic .ff-body {
+    grid-template-columns: 1fr;
+  }
+  .ff-cinematic .ff-stage {
+    height: clamp(280px, 37dvh, 360px);
+    min-height: 280px;
+  }
+  .ff-cinematic .ff-story {
+    padding: 22px 18px;
+    gap: 14px;
+  }
+  .ff-cinematic .ff-stage-cap {
+    font-size: 11px;
+    letter-spacing: 0.4px;
+  }
+  .ff-shot-label {
+    bottom: 112px;
+    left: 16px;
+    font-size: 10px;
+    letter-spacing: 0.6px;
+  }
+  .ff-shot-reticle {
+    inset: 19% 7% 31%;
+  }
+  .ff-cinematic .ff-telemetry {
+    padding: 35px 16px 15px;
+  }
+  .ff-cinematic .ff-telemetry strong {
+    font-size: 33px;
+  }
+  .ff-cinematic .ff-header h2 {
+    font-size: 22px;
+  }
+  .ff-cinematic .ff-header .ff-eyebrow {
+    font-size: 11px;
+  }
+  .ff-cinematic .ff-header em {
+    display: block;
+  }
+  .ff-constellation figcaption {
+    flex-wrap: wrap;
+    gap: 2px 10px;
+  }
+  .ff-lab-heading {
+    font-size: 12px;
+    letter-spacing: 0;
+  }
+  .ff-lab-heading span:last-child {
+    font-size: 11px;
+  }
+  .first-flight .ff-boundary-toggle {
+    font-size: 14px;
+    padding: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ff-request {
+    transition: none;
+  }
+  .ff-dock-arrival,
+  .ff-packet-arrival {
+    animation: none !important;
+  }
+}
+@media (forced-colors: active) {
+  .first-flight .ff-boundary-toggle {
+    background: ButtonFace;
+    color: ButtonText;
+    border-color: ButtonText;
+  }
+  .ff-request {
+    fill: CanvasText;
+  }
+  .ff-route-bay {
+    fill: Canvas;
+    stroke: CanvasText;
+  }
+  .ff-dock-surface {
+    fill: Canvas;
+    stroke: CanvasText;
+  }
+  .ff-dock-etch,
+  .ff-dock-terminal,
+  .ff-dock-arrival {
+    stroke: CanvasText;
+  }
+  .ff-constellation text {
+    fill: CanvasText;
+  }
+  .ff-shot-reticle {
+    display: none;
+  }
+}
+
+/* Keep the tour controls in view; only the narrative pane scrolls on wide screens. */
+.ff-cinematic .ff-stage-cap span,
+.ff-cinematic .ff-shot-label {
+  background: rgb(3 12 20 / 88%);
+  padding: 5px 7px;
+  border-radius: 2px;
+}
+.first-flight.ff-cinematic[open] {
+  display: flex;
+  flex-direction: column;
+  height: min(940px, calc(100dvh - 32px));
+  overflow: hidden;
+}
+.ff-cinematic > .ff-header,
+.ff-cinematic > .ff-mobile-command,
+.ff-cinematic > .ff-chapters,
+.ff-cinematic > .ff-footer,
+.ff-cinematic > .ff-boundary,
+.ff-cinematic > .ff-copy-error {
+  flex-shrink: 0;
+}
+.ff-cinematic > .ff-body {
+  flex: 1;
+  min-height: 0;
+  grid-template-rows: minmax(0, 1fr);
+}
+.ff-cinematic .ff-stage {
+  min-height: 0;
+}
+.ff-cinematic .ff-story {
+  min-height: 0;
+  overflow-y: auto;
+  justify-content: flex-start;
+  scrollbar-color: #557484 #0b1e2c;
+}
+.ff-cinematic .ff-boundary {
+  padding-top: 8px;
+  padding-bottom: 12px;
+}
+@media (max-width: 700px) {
+  .first-flight.ff-cinematic[open] {
+    height: calc(100dvh - 16px);
+  }
+  .ff-cinematic > .ff-body {
+    display: block;
+    overflow-y: auto;
+    scrollbar-color: #557484 #0b1e2c;
+  }
+  .ff-cinematic .ff-stage {
+    min-height: 140px;
+    height: 31dvh;
+    max-height: calc(100% - 74px);
+  }
+  .ff-mobile-command {
+    padding: 8px 12px;
+    border-top: 1px solid #294756;
+    background: #0b1e2c;
+  }
+  .ff-cinematic .ff-telemetry {
+    padding: 20px 12px 12px;
+  }
+  .ff-cinematic .ff-telemetry div {
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+  }
+  .ff-cinematic .ff-telemetry strong {
+    font-size: 24px;
+  }
+  .ff-cinematic .ff-telemetry span {
+    font-size: 12px;
+  }
+  .ff-cinematic .ff-shot-label {
+    bottom: 60px;
+  }
+  .ff-cinematic .ff-story .ff-scene-copy {
+    margin-top: 0;
+  }
+  .ff-cinematic .ff-story {
+    overflow: visible;
+    padding: 16px 18px;
+    gap: 10px;
+  }
+  .ff-cinematic .ff-story > .ff-eyebrow,
+  .ff-cinematic .ff-lab-heading {
+    display: none;
+  }
+  .ff-cinematic .ff-story h3 {
+    font-size: 26px;
+  }
+  .ff-cinematic .ff-command-lab {
+    padding-top: 0;
+    border-top: 0;
+  }
+  .ff-cinematic .ff-header {
+    padding: 12px 14px;
+  }
+  .ff-cinematic .ff-header h2 {
+    font-size: 20px;
+  }
+  .ff-cinematic .ff-boundary {
+    font-size: 11px;
+    line-height: 1.4;
+    padding: 6px 14px 10px;
+  }
+  .ff-cinematic .ff-footer {
+    padding: 10px 12px 0;
+    gap: 6px;
+    border-top: 0;
+  }
+  .ff-cinematic .ff-share {
+    min-height: 44px;
+    padding: 6px 8px;
+  }
+  .ff-cinematic .ff-chapters button {
+    min-height: 58px;
+    padding: 10px 8px;
+  }
+}

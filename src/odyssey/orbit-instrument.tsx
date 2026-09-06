@@ -282,6 +282,36 @@ function paint(canvas: HTMLCanvasElement, state: InstrumentState, width: number,
     ctx.lineTo(centerX + Math.cos(angle) * outer, centerY + Math.sin(angle) * outer);
     ctx.stroke();
   }
+  // A small orbital escort shares the instrument clock and its Energy control.
+  // Draw it behind the physical rings so the core stays sharply resolved.
+  if (state.flow) {
+    for (let lane = 0; lane < 3; lane++) {
+      const angle = state.phase * (lane === 1 ? -0.34 : 0.27) + (lane * TAU) / 3;
+      const point = (a: number) =>
+        project(rotate([Math.cos(a) * 2.035, Math.sin(a) * 2.035, 0], state.pitch, state.yaw, state.roll));
+      const color = lane === 1 ? "255,211,150" : "125,235,238";
+      for (let segment = 0; segment < 14; segment++) {
+        const from = point(angle - segment * 0.017);
+        const to = point(angle - (segment + 1) * 0.017);
+        ctx.strokeStyle = `rgba(${color},${0.58 * (1 - segment / 14)})`;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(...from);
+        ctx.lineTo(...to);
+        ctx.stroke();
+      }
+      const head = point(angle);
+      const glow = ctx.createRadialGradient(...head, 0, ...head, 9);
+      glow.addColorStop(0, `rgba(${color},.6)`);
+      glow.addColorStop(1, `rgba(${color},0)`);
+      ctx.fillStyle = glow;
+      ctx.fillRect(head[0] - 9, head[1] - 9, 18, 18);
+      ctx.fillStyle = `rgb(${color})`;
+      ctx.beginPath();
+      ctx.arc(...head, 1.6, 0, TAU);
+      ctx.fill();
+    }
+  }
   const geometry = [
     ...annulus(1.89, 1.62, 0.095, [0, 0, 0], "titanium", 0.085, -0.7),
     ...annulus(
@@ -521,7 +551,7 @@ export function OrbitInstrument({ motion, onSelect }: { motion: boolean; onSelec
     const resize = new ResizeObserver(([entry]) => {
       width = Math.round(entry.contentRect.width);
       height = Math.round(entry.contentRect.height);
-      const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
+      const ratio = Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(1_800_000 / Math.max(1, width * height)));
       canvas.width = Math.round(width * ratio);
       canvas.height = Math.round(height * ratio);
       schedule();
@@ -664,10 +694,10 @@ export function OrbitInstrument({ motion, onSelect }: { motion: boolean; onSelec
       paint(card, { ...scene.current }, 1600, 1000);
       ctx.fillStyle = "#edf7fa";
       ctx.font = "500 24px Arial, sans-serif";
-      ctx.fillText("CASHIO / THE HUMAN RECKONING · AURORA", 52, 70);
+      ctx.fillText("CASHIO / THE HUMAN RECKONING · LIGHTFOLD", 52, 70);
       ctx.font = "18px Arial, sans-serif";
       ctx.fillStyle = "#77e7e7";
-      ctx.fillText(`V36 · ${mission.title.toUpperCase()} · ${mission.principle}`, 52, 920);
+      ctx.fillText(`V37 · ${mission.title.toUpperCase()} · ${mission.principle}`, 52, 920);
       ctx.fillStyle = "#adc6d5";
       ctx.font = "16px Arial, sans-serif";
       ctx.fillText("A conceptual orbital instrument. Created at cashio.us.", 52, 955);
@@ -679,7 +709,7 @@ export function OrbitInstrument({ motion, onSelect }: { motion: boolean; onSelec
         const url = URL.createObjectURL(blob),
           link = document.createElement("a");
         link.href = url;
-        link.download = `cashio-v36-${mission.id}-orbit.png`;
+        link.download = `cashio-v37-lightfold-${mission.id}-orbit.png`;
         (dialogRef.current ?? document.body).appendChild(link);
         link.click();
         link.remove();
@@ -728,7 +758,7 @@ export function OrbitInstrument({ motion, onSelect }: { motion: boolean; onSelec
             </span>
             <div>
               <span id={`${id}-cinema-title`}>The observatory</span>
-              <p>{cinema ? "AURORA / YOUR VIEW OF THE UNIVERSE" : "One instrument. A world to explore."}</p>
+              <p>{cinema ? "LIGHTFOLD / YOUR VIEW OF THE UNIVERSE" : "One instrument. A world to explore."}</p>
             </div>
           </div>
           <button
@@ -747,7 +777,7 @@ export function OrbitInstrument({ motion, onSelect }: { motion: boolean; onSelec
         <div className="eh-orbit-instrument">
           <div className="eh-orbit-stage">
             <div className="eh-orbit-stage-label" aria-hidden="true">
-              <span>V36 / ORBITAL INSTRUMENT</span>
+              <span>LIGHTFOLD / ORBITAL INSTRUMENT</span>
               <span>CONCEPT STUDY</span>
             </div>
             <div
@@ -830,7 +860,7 @@ export function OrbitInstrument({ motion, onSelect }: { motion: boolean; onSelec
             </div>
             <p id={`${id}-help`} className="eh-orbit-help">
               Drag the instrument or use the arrow controls. With the instrument focused, arrow keys turn the view; Home
-              resets it.{!motion && " Automatic orbit is off while reduced motion is enabled."}
+              resets it.{!motion && " Motion is off. You can still explore with the controls."}
             </p>
             <p className="eh-orbit-boundary">
               A hands-on concept study. These orbital relationships illustrate a design philosophy; they are not live

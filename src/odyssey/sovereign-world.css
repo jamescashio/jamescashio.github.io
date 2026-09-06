@@ -71,7 +71,7 @@
 .sw-architectures small {
   display: block;
   color: #b1c8d5;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.6;
   margin-top: 5px;
 }
@@ -84,7 +84,7 @@
 .sw-sensitivity > span {
   display: block;
   color: #b8d3df;
-  font-size: 11px;
+  font-size: 12px;
   margin-bottom: 8px;
 }
 .sw-sensitivity select {
@@ -115,7 +115,7 @@
 }
 .sw-check-setting small {
   display: block;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.6;
   color: #b1c8d5;
   margin-top: 5px;
@@ -212,7 +212,7 @@
 }
 .sw-world-launch p {
   max-width: 420px;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.7;
   color: #b9d0df;
   margin: 12px 0 0;
@@ -253,7 +253,7 @@
 .sw-camera-controls .sw-reset-camera {
   width: auto;
   padding: 0 14px;
-  font-size: 11px;
+  font-size: 12px;
 }
 .sw-world button:disabled {
   opacity: 0.45;
@@ -274,7 +274,7 @@
   flex-wrap: wrap;
   gap: 12px 24px;
   padding: 0 24px 22px;
-  font-size: 10px;
+  font-size: 12px;
   color: #b2cbd9;
 }
 .sw-world-key > span {
@@ -299,7 +299,7 @@
 }
 .sw-world-key small {
   margin-left: auto;
-  font-size: 10px;
+  font-size: 12px;
   color: #9cbcca;
 }
 .sw-world-results {
@@ -345,7 +345,7 @@
 }
 .sw-outcome-counts span {
   display: block;
-  font-size: 10px;
+  font-size: 12px;
   color: #d2e6ee;
   line-height: 1.6;
   margin-top: 5px;
@@ -365,7 +365,7 @@
   margin-top: 15px;
 }
 .sw-outcome dt {
-  font-size: 10px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: #90bdce;
@@ -404,7 +404,7 @@
   padding-left: 0;
 }
 .sw-comparison thead th {
-  font-size: 10px;
+  font-size: 12px;
   color: #abcbd9;
 }
 .sw-comparison-selected {
@@ -412,7 +412,7 @@
   background: #153b4b73;
 }
 .sw-comparison-note {
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.75;
   color: #a9c7d6;
   margin: 16px 0 24px;
@@ -429,7 +429,7 @@
   background: transparent;
   border: 1px solid #47697d;
   color: #c5e0eb;
-  font-size: 10px;
+  font-size: 12px;
 }
 .sw-inspect-controls button[aria-pressed="true"] {
   background: #214353;
@@ -455,7 +455,7 @@
 .sw-world-boundary {
   margin: 0;
   padding: 20px 28px;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.85;
   color: #afc8d7;
   border-top: 1px solid #7de8e72e;
@@ -513,7 +513,7 @@
   .sw-architectures small {
     max-width: 145px;
     margin: 0;
-    font-size: 10px;
+    font-size: 12px;
   }
   .sw-world-settings {
     grid-template-columns: minmax(0, 1fr);
@@ -527,7 +527,7 @@
   }
   .sw-stage-caption {
     padding: 18px 16px;
-    font-size: 8px;
+    font-size: 12px;
     letter-spacing: 0.02em;
   }
   .sw-stage-caption span:last-child {
@@ -575,7 +575,7 @@
     gap: 20px;
   }
   .sw-world-launch p {
-    font-size: 10px;
+    font-size: 12px;
   }
 }
 @media (max-width: 360px) {
@@ -596,7 +596,7 @@
   .sw-comparison th,
   .sw-comparison td {
     padding: 12px 6px;
-    font-size: 11px;
+    font-size: 12px;
   }
   .sw-comparison th:first-child {
     max-width: 105px;
@@ -668,7 +668,7 @@
 }
 .sw-inspect-controls button {
   font-family: Oxanium, Exo, sans-serif;
-  font-size: 11px;
+  font-size: 12px;
 }
 .sw-inspect-controls button[aria-pressed="true"] {
   background: #bfa2751c;
@@ -724,7 +724,7 @@
 .sw-mission-presets small {
   display: block;
   color: #b7c7d0;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.7;
   margin-top: 5px;
 }
@@ -771,7 +771,7 @@
   }
   .sw-view-presets button {
     padding: 9px 4px;
-    font-size: 11px;
+    font-size: 12px;
   }
   .sw-cutaway {
     flex: 1;
@@ -785,7 +785,7 @@
   }
   .sw-ship-inspector .sw-inspect-controls button {
     padding: 9px 4px;
-    font-size: 10px;
+    font-size: 12px;
   }
   .sw-mission-heading {
     display: block;

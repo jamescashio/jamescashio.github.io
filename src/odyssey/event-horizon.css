@@ -12,14 +12,14 @@
   align-items: center;
   gap: 11px;
   font-family: Jet, monospace;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 1.6px;
   color: #c6b699;
   line-height: 1.7;
   margin-bottom: 25px;
 }
 .eh-release-mark > b {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 1px;
   font-weight: 400;
   border: 1px solid #dfbf875c;
@@ -102,7 +102,7 @@
   gap: 16px;
   min-height: 44px;
   color: #d3ba94;
-  font-size: 11px;
+  font-size: 12px;
   border-bottom: 1px solid #d3ba944f;
   margin-top: 16px;
 }
@@ -302,7 +302,7 @@
 }
 .eh-command-trigger {
   margin-left: 14px;
-  font-size: 11px;
+  font-size: 12px;
   padding: 10px 12px;
 }
 .eh-command-trigger > span {
@@ -336,7 +336,7 @@
     height: 350px;
   }
   .eh-fold-foot {
-    font-size: 7px;
+    font-size: 12px;
   }
 }
 @media (max-width: 900px) {
@@ -364,13 +364,13 @@
 }
 @media (max-width: 600px) {
   .eh-release-mark {
-    font-size: 8px;
+    font-size: 12px;
     letter-spacing: 1px;
     gap: 10px;
     margin-bottom: 20px;
   }
   .eh-release-mark > b {
-    font-size: 9px;
+    font-size: 12px;
     padding: 3px 6px;
   }
   .event-horizon .o-hero-content {
@@ -404,7 +404,7 @@
     letter-spacing: -1.5px;
   }
   .eh-observatory-link {
-    font-size: 11px;
+    font-size: 12px;
   }
   .eh-fold-aperture {
     left: 62%;
@@ -422,18 +422,18 @@
     margin: 20px 0 26px;
   }
   .eh-fold-message > span {
-    font-size: 9px;
+    font-size: 12px;
     letter-spacing: 1.5px;
   }
   .eh-fold-message > div {
-    font-size: 7px;
+    font-size: 12px;
     gap: 12px;
   }
   .eh-fold-foot {
     bottom: 38px;
     flex-direction: column;
     gap: 12px;
-    font-size: 7px;
+    font-size: 12px;
     line-height: 1.8;
   }
   .eh-command-trigger {
@@ -464,7 +464,7 @@
 }
 @media (max-width: 360px) {
   .eh-release-mark {
-    font-size: 7px;
+    font-size: 12px;
     letter-spacing: 0.7px;
     gap: 9px;
   }
@@ -472,7 +472,7 @@
     padding-top: 103px;
   }
   .event-horizon .o-hero-content > .o-kicker {
-    font-size: 7px;
+    font-size: 12px;
   }
   .eh-observatory {
     padding-left: 20px;

@@ -36,7 +36,7 @@
   align-items: center;
   justify-content: space-between;
   font-family: Jet, monospace;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 1.4px;
   line-height: 1.7;
 }
@@ -96,12 +96,12 @@
   padding-top: 17px;
   display: grid;
   gap: 4px;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 1px;
 }
 .ah-insignia-foot > span:last-child {
   color: #aac6d4;
-  font-size: 8px;
+  font-size: 12px;
 }
 .event-horizon.aurora .o-contact > .o-text-button {
   min-height: 44px;
@@ -124,16 +124,16 @@
   transform: translate(3px, -3px);
 }
 .event-horizon.aurora .o-footer > span {
-  font-size: 10px;
+  font-size: 12px;
 }
 .event-horizon.aurora .o-footer > span > small {
-  font-size: 11px;
+  font-size: 12px;
 }
 .event-horizon.aurora .o-footer > div > a {
   min-height: 44px;
   display: inline-flex;
   align-items: center;
-  font-size: 11px;
+  font-size: 12px;
 }
 .event-horizon.aurora[data-motion="off"] .o-contact-email,
 .event-horizon.aurora[data-motion="off"] .o-contact-email > svg {
@@ -162,27 +162,27 @@
     margin: 4px auto;
   }
   .ah-insignia-cap {
-    font-size: 10px;
+    font-size: 12px;
     padding-bottom: 10px;
   }
   .ah-insignia-foot {
     padding-top: 12px;
-    font-size: 9px;
+    font-size: 12px;
   }
   .event-horizon.aurora .o-footer > span {
-    font-size: 9px;
+    font-size: 12px;
     max-width: none;
     text-align: left;
   }
   .event-horizon.aurora .o-footer > span > small {
-    font-size: 11px;
+    font-size: 12px;
   }
   .event-horizon.aurora .o-footer > div {
     flex-wrap: wrap;
     gap: 6px 20px;
   }
   .event-horizon.aurora .o-footer > div > a {
-    font-size: 11px;
+    font-size: 12px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

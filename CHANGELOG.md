@@ -1,5 +1,15 @@
 # Changelog
 
+## V37 — LIGHTFOLD · 09-05-2026
+
+- Add First Flight: four guided starship chapters with cinematic camera framing, controllable routing scenarios, and exact shared links.
+- Animate twelve persistent request tokens between detailed routing bays, showing the consequences of connection and permission decisions.
+- Reveal onboard AI through layered ship armor, service bays, and a progressive section plane, with matching responsive fallback art.
+- Preserve the owner’s Cashio artwork in the Living Circuit viewer with six-letter exploration, touch and keyboard controls, and deliberate circuit pulses.
+- Align the orbital instrument before the lightfold transition; refine the operator insignia and seven interactive studies.
+- Deliver the first view directly in prerendered HTML and preserve system reduced motion, global pause, opt-in audio, and offscreen suspension.
+- Promote software metadata to 37.0.0 while retaining the V35 archive, its original observation dates, and legacy command-deck bookmarks.
+
 ## V36 — THE HUMAN RECKONING · 4 September 2026
 
 - Promote the approved Sovereign Starship experience to the main homepage, preserving the V35 command deck and existing deck bookmarks.

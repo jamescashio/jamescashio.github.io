@@ -10,9 +10,17 @@ export function FoldTransition({ active, origin }: { active: boolean; origin?: {
       style={origin ? ({ "--eh-fold-x": `${origin.x}px`, "--eh-fold-y": `${origin.y}px` } as CSSProperties) : undefined}
     >
       <div className="eh-fold-grid" />
+      <div className="lf-fold-ribbons">
+        {Array.from({ length: 16 }, (_, index) => (
+          <i
+            key={index}
+            style={{ "--lf-angle": `${index * 22.5}deg`, "--lf-delay": `${(index % 4) * 55}ms` } as CSSProperties}
+          />
+        ))}
+      </div>
       <div className="eh-fold-aperture">
         {[0, 1, 2, 3, 4].map((index) => (
-          <i key={index} style={{ animationDelay: `${index * 90}ms` }} />
+          <i key={index} style={{ "--lf-ring-delay": `${index * 65}ms` } as CSSProperties} />
         ))}
       </div>
       <div className="eh-fold-crosshair">
@@ -20,7 +28,7 @@ export function FoldTransition({ active, origin }: { active: boolean; origin?: {
         <span />
       </div>
       <div className="eh-fold-message">
-        <span>V36 / THE HUMAN RECKONING</span>
+        <span>V37 / LIGHTFOLD</span>
         <strong>
           Human command.
           <br />

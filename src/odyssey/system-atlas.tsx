@@ -126,6 +126,13 @@ export function SystemAtlas({
           <path className="sa-route-bed" d="M50 13V42M50 42C50 58 25 55 25 73M50 42C50 58 75 55 75 73" />
           <path className="sa-route-wire" d="M50 13V42M50 42C50 58 25 55 25 73M50 42C50 58 75 55 75 73" />
           <path className="sa-route-active" key={node.id} pathLength="1" d={ROUTES[index]} />
+          <path className="sa-route-carrier" key={`${node.id}-carrier`} pathLength="100" d={ROUTES[index]} />
+          <path
+            className="sa-route-carrier sa-route-carrier-tail"
+            key={`${node.id}-tail`}
+            pathLength="100"
+            d={ROUTES[index]}
+          />
           <path className="sa-route-junction" d="m50 49-1.5 1.5L50 52l1.5-1.5Z" />
         </svg>
         {ATLAS.map((item, i) => (
@@ -139,13 +146,14 @@ export function SystemAtlas({
           >
             <span className="o-node-icon sa-node-face">
               <span className="sa-node-bezel" aria-hidden="true" />
+              {index === i && <span className="sa-node-acquisition" key={node.id} aria-hidden="true" />}
               <AtlasGlyph kind={i} />
             </span>
             <strong>{item.name}</strong>
             <small>{item.role}</small>
           </button>
         ))}
-        <span className="o-atlas-caption o-micro">CONCEPTUAL RELATIONSHIPS / SELECT A NODE</span>
+        <span className="o-atlas-caption o-micro">SELECT A NODE TO EXPLORE</span>
       </div>
       <div className="o-atlas-readout sa-readout" aria-live="polite" aria-atomic="true">
         <span className="o-micro">

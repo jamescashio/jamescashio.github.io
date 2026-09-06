@@ -1,7 +1,8 @@
 .cashio-brand-mark {
   position: relative;
   display: block;
-  width: 190px;
+  width: 210px;
+  max-width: 100%;
   height: auto;
   flex-shrink: 0;
   mix-blend-mode: screen;
@@ -10,38 +11,284 @@
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 520 / 169;
-  filter: contrast(1.28);
+  aspect-ratio: 3;
+  transition: opacity 0.35s ease;
 }
-.cashio-brand-mark[data-animated="true"]::after {
-  content: "";
+.cashio-circuit {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
-  background: url("/brand/cashio-logo-animated.gif") center / 100% 100% no-repeat;
-  filter: contrast(1.28) brightness(1.9) saturate(0.7);
-  clip-path: polygon(-40% 0, -20% 0, -35% 100%, -55% 100%);
-  animation: cashio-brand-sweep 4.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
-@keyframes cashio-brand-sweep {
-  0%,
-  8% {
-    clip-path: polygon(-40% 0, -20% 0, -35% 100%, -55% 100%);
+.cashio-trace {
+  stroke: #76f5ff;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.cashio-trace-1 {
+  stroke: #ffcc75;
+}
+.cashio-trace-2 {
+  stroke: #b78cff;
+}
+.cashio-trace-rail {
+  stroke-width: 0.65;
+  opacity: 0.25;
+}
+.cashio-trace-tail {
+  stroke-width: 2.5;
+  stroke-dasharray: 6 94;
+  opacity: 0.7;
+}
+.cashio-trace-head {
+  stroke: #efffff;
+  stroke-width: 2.7;
+  stroke-dasharray: 0.45 99.55;
+  stroke-dashoffset: -5.5;
+}
+.cashio-trace-tail,
+.cashio-trace-head {
+  animation: cashio-trace-run var(--duration) linear infinite;
+  animation-delay: var(--delay);
+  animation-play-state: paused;
+}
+.cashio-trace-head {
+  animation-name: cashio-head-run;
+}
+.cashio-code {
+  opacity: 0.62;
+}
+.cashio-code-column {
+  font:
+    500 9.4px/1 Jet,
+    monospace;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  letter-spacing: 2.1px;
+  stroke: #042323;
+  stroke-width: 0.45px;
+  paint-order: stroke fill;
+  animation: cashio-code-fall var(--duration) linear infinite;
+  animation-delay: var(--delay);
+  animation-play-state: paused;
+}
+.cashio-chip-signal {
+  stroke: #ffd889;
+  stroke-width: 0.8;
+  opacity: 0.5;
+}
+.cashio-core-wave {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cashio-core-wave 5.6s ease-out infinite;
+  animation-play-state: paused;
+}
+.cashio-brand-mark[data-animated="true"]
+  :is(
+    .cashio-trace-tail,
+    .cashio-trace-head,
+    .cashio-code-column,
+    .cashio-core-wave,
+    .cashio-burst,
+    .cashio-burst-ring,
+    .cashio-origin-signal,
+    .cashio-ignition-ring
+  ) {
+  animation-play-state: running;
+}
+.cashio-burst {
+  stroke: #bcffff;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 13 87;
+  filter: drop-shadow(0 0 3px #4bdaed);
+  animation: cashio-command-run 1.9s cubic-bezier(0.2, 0.65, 0.4, 1) var(--burst-delay) both;
+  animation-play-state: paused;
+}
+.cashio-burst.cashio-trace-1 {
+  stroke: #ffdb91;
+}
+.cashio-burst.cashio-trace-2 {
+  stroke: #d2b2ff;
+}
+.cashio-burst-ring {
+  stroke: #ffe4a6;
+  stroke-width: 1.2;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cashio-command-ring 2.7s ease-out both;
+  animation-play-state: paused;
+}
+.cashio-selected-circuit {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.cashio-selection-halo {
+  stroke: #eac280;
+  stroke-width: 11;
+  opacity: 0.09;
+}
+.cashio-selection-edge {
+  stroke: #ffe7b4;
+  stroke-width: 1.5;
+  opacity: 0.76;
+}
+.cashio-selection-conduit {
+  stroke: #e8bc72;
+  stroke-width: 0.7;
+  stroke-dasharray: 3 6;
+  opacity: 0.38;
+}
+.cashio-selection-contact {
+  stroke: #a0f6ff;
+  stroke-width: 1.4;
+}
+.cashio-origin-signal {
+  stroke: #eaffff;
+  stroke-width: 3.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 11 89;
+  animation: cashio-origin-transmit 0.95s cubic-bezier(0.22, 0.6, 0.3, 1) both;
+  animation-play-state: paused;
+}
+.cashio-origin-glow {
+  stroke: #ffce83;
+  stroke-width: 9;
+  opacity: 0.36;
+  filter: drop-shadow(0 0 5px #ffd288);
+}
+.cashio-ignition-ring {
+  stroke: #fff0b8;
+  stroke-width: 2.2;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cashio-ignite 1.6s ease-out 0.58s both;
+  animation-play-state: paused;
+}
+.cashio-ignition-echo {
+  stroke: #89f3fc;
+  stroke-width: 1.2;
+  animation-delay: 0.79s;
+}
+@keyframes cashio-origin-transmit {
+  0% {
+    stroke-dashoffset: 12;
     opacity: 0;
   }
-  18% {
+  15% {
     opacity: 1;
   }
-  68%,
+  80% {
+    opacity: 1;
+  }
   100% {
-    clip-path: polygon(155% 0, 175% 0, 160% 100%, 140% 100%);
+    stroke-dashoffset: -100;
     opacity: 0;
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .cashio-brand-mark[data-animated="true"]::after {
-    content: none;
-    animation: none;
+@keyframes cashio-ignite {
+  0% {
+    transform: scale(0.45);
+    opacity: 0;
+  }
+  14% {
+    opacity: 0.88;
+  }
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+@keyframes cashio-command-run {
+  0% {
+    stroke-dashoffset: 18;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 0.8;
+  }
+  100% {
+    stroke-dashoffset: -100;
+    opacity: 0;
+  }
+}
+@keyframes cashio-command-ring {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+.cashio-brand-mark[data-detail="compact"] .cashio-code {
+  display: none;
+}
+.cashio-brand-mark[data-mode="runners"] .cashio-code {
+  display: none;
+}
+.cashio-brand-mark[data-mode="code"] .cashio-runners {
+  opacity: 0.12;
+}
+.cashio-brand-mark[data-mode="code"] img {
+  opacity: 0.48;
+}
+.cashio-brand-mark[data-mode="code"] .cashio-code {
+  opacity: 0.95;
+}
+.cashio-brand-mark[data-charged="true"] .cashio-trace-tail {
+  stroke-width: 3.5;
+  opacity: 1;
+  filter: drop-shadow(0 0 3px currentColor);
+}
+.cashio-brand-mark[data-charged="true"] .cashio-chip-signal {
+  opacity: 1;
+  stroke-width: 1.8;
+}
+.cashio-brand-mark[data-charged="true"] .cashio-code {
+  opacity: 1;
+}
+@keyframes cashio-trace-run {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+@keyframes cashio-head-run {
+  to {
+    stroke-dashoffset: -105.5;
+  }
+}
+@keyframes cashio-code-fall {
+  from {
+    transform: translateY(-205px);
+  }
+  to {
+    transform: translateY(-22px);
+  }
+}
+@keyframes cashio-core-wave {
+  0%,
+  20% {
+    transform: scale(0.55);
+    opacity: 0;
+  }
+  28% {
+    opacity: 0.6;
+  }
+  70%,
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
   }
 }
 .event-horizon.aurora .o-header > .o-brand,
@@ -49,8 +296,74 @@
   min-height: 44px;
   letter-spacing: 0;
   flex-shrink: 0;
+  mix-blend-mode: screen;
 }
-@media (max-width: 1000px) {
+.event-horizon.aurora .o-header {
+  /* Keep the signature on one opaque surface when light sections pass behind it. */
+  background: linear-gradient(#050e19, #091521);
+  backdrop-filter: none;
+}
+.o-operator-copy {
+  min-width: 0;
+}
+.event-horizon.aurora .o-signature-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+  min-height: 44px;
+  padding: 8px 0;
+  border: 0;
+  border-bottom: 1px solid #77c5d14d;
+  border-radius: 0;
+  background: transparent;
+  color: #9de9ed;
+  font:
+    500 14px Oxanium,
+    Arial,
+    sans-serif;
+  cursor: pointer;
+}
+.o-signature-link > span {
+  font-size: 20px;
+  color: #dab478;
+}
+.o-signature-link > svg {
+  width: 17px;
+  height: 17px;
+}
+.o-signature-link:hover {
+  color: #fff;
+}
+.o-signature-link:focus-visible {
+  outline: 2px solid #b3f7ff;
+  outline-offset: 5px;
+}
+.hc-identity .hc-identity-explore {
+  margin: 0 18px 18px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #153246;
+  border: 1px solid #7094a4;
+  color: #d6f5fc;
+  font:
+    500 14px Oxanium,
+    Arial,
+    sans-serif;
+  min-height: 44px;
+  cursor: pointer;
+}
+.hc-identity .hc-identity-explore:hover {
+  background: #20485e;
+}
+.hc-identity .hc-identity-explore:focus-visible {
+  outline: 2px solid #9df9ff;
+  outline-offset: 3px;
+}
+@media (max-width: 1100px) {
   .o-header .cashio-brand-mark {
     width: 170px;
   }
@@ -73,5 +386,22 @@
     padding-left: 10px;
     padding-right: 10px;
     gap: 4px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cashio-brand-mark img {
+    transition: none;
+  }
+  .cashio-circuit * {
+    animation: none !important;
+  }
+  .cashio-code {
+    opacity: 0.25;
+  }
+  .cashio-core-wave {
+    display: none;
+  }
+  .cashio-command-pulse {
+    display: none;
   }
 }

@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-"""Validate the V36 homepage and the preserved, dated V35 command archive."""
+"""Validate the V37 preview or approved homepage and the preserved, dated V35 command archive."""
 
 from __future__ import annotations
 
+import argparse
+import base64
+import hashlib
 import json
 import html
 import math
@@ -376,21 +379,23 @@ def check_v34_motion_contract(failures: list[str]) -> None:
                 failures.append(f"inactive deck {deck_index} does not pause {pseudo} animation work")
 
 
-def check_site_release(release: dict, failures: list[str]) -> None:
+def check_site_release(release: dict, failures: list[str], *, preview: bool = False, version: str = "37.0.0") -> None:
     """Software release identity must never rewrite the archive's observation dates."""
     if not isinstance(release, dict):
         failures.append("site-release.json must be an object")
         return
     expected = {
-        "experienceVersion": "36.0.0",
+        "experienceVersion": version,
         "releaseName": "THE HUMAN RECKONING",
-        "status": "released",
-        "published": True,
+        "visualEdition": "Lightfold",
+        "featuredExperience": "First Flight",
+        "status": "preview" if preview else "released",
+        "published": not preview,
         "entry": "/",
         "legacyEntry": "/command-deck.html",
     }
     for key, value in expected.items():
-        if release.get(key) != value or (key == "published" and release.get(key) is not True):
+        if release.get(key) != value or (key == "published" and release.get(key) is not (not preview)):
             failures.append(f"site-release.json {key!r}: expected {value!r}")
     archive = release.get("evidenceArchive", {})
     for key, value in {
@@ -418,7 +423,7 @@ class ReleaseDocumentParser(HTMLParser):
         self.text.append(data)
 
 
-def check_v36_document(text: str, failures: list[str], label: str, *, built: bool, indexable: bool) -> None:
+def check_v36_document(text: str, failures: list[str], label: str, *, built: bool, indexable: bool, preview: bool = False, version_label: str = "V36") -> None:
     parser = ReleaseDocumentParser()
     parser.feed(text)
     parser.close()
@@ -431,18 +436,29 @@ def check_v36_document(text: str, failures: list[str], label: str, *, built: boo
     if canonical != ["https://cashio.us/"]:
         failures.append(f"{label} must canonicalize to https://cashio.us/")
     robots = " ".join(str(attrs.get("content", "")) for tag, attrs in parser.elements if tag == "meta" and attrs.get("name") == "robots").lower()
+    if preview and ("noindex" not in robots or "nofollow" not in robots):
+        failures.append(f"{label} preview must explicitly disable indexing and following")
     if indexable and ("noindex" in robots or "nofollow" in robots):
         failures.append(f"{label} must permit indexing and link following")
-    compat = [attrs for tag, attrs in parser.elements if tag == "script" and attrs.get("src") == "/legacy-route.js"]
+    compat = [attrs for tag, attrs in parser.elements if tag == "script" and (attrs.get("src") == "/legacy-route.js" or (built and attrs.get("id") == "legacy-bookmark-route"))]
     if len(compat) != 1 or any(key in compat[0] for key in ("async", "defer")) or compat[0].get("type") == "module":
         failures.append(f"{label} must retain one synchronous same-origin legacy hash compatibility script")
     csp = " ".join(str(attrs.get("content", "")) for tag, attrs in parser.elements if tag == "meta" and str(attrs.get("http-equiv", "")).lower() == "content-security-policy")
+    if any(attrs.get("id") == "legacy-bookmark-route" for attrs in compat):
+        inline = re.search(r'<script id="legacy-bookmark-route">([\s\S]*?)</script>', text)
+        expected = (ROOT / "public" / "legacy-route.js").read_text(encoding="utf-8").strip()
+        if inline is None or inline.group(1) != expected:
+            failures.append(f"{label} inline bookmark route must match the owned legacy route exactly")
+        else:
+            digest = base64.b64encode(hashlib.sha256(expected.encode("utf-8")).digest()).decode("ascii")
+            if f"'sha256-{digest}'" not in csp:
+                failures.append(f"{label} CSP must authorize the exact owned bookmark route")
     for directive in ("default-src 'self'", "script-src 'self'", "connect-src 'self'", "object-src 'none'", "base-uri 'none'", "form-action 'none'"):
         if directive not in csp:
             failures.append(f"{label} CSP is missing {directive!r}")
     if built:
         visible = " ".join(parser.text)
-        for marker in ("V36", "THE HUMAN RECKONING", "28 August 2026", "21 August 2026"):
+        for marker in (version_label, "THE HUMAN RECKONING", "28 August 2026", "21 August 2026"):
             if marker not in visible:
                 failures.append(f"{label} must retain {marker!r}")
         if sum(tag == "h1" for tag, _ in parser.elements) != 1:
@@ -454,6 +470,10 @@ def check_v36_document(text: str, failures: list[str], label: str, *, built: boo
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--preview", action="store_true", help="Validate an explicitly unpublished local preview; never a deployment approval")
+    preview = parser.parse_args().preview
+    version = "37.0.0-preview.5" if preview else "37.0.0"
     failures: list[str] = []
 
     try:
@@ -508,18 +528,18 @@ def main() -> int:
             failures.append(f"{cname} must contain only cashio.us")
 
     package = json.loads(read("package.json"))
-    if package.get("version") != "36.0.0":
-        failures.append("package.json version must be 36.0.0")
+    if package.get("version") != version:
+        failures.append(f"package.json version must be {version}")
     lock = json.loads(read("package-lock.json"))
-    if lock.get("version") != "36.0.0" or lock.get("packages", {}).get("", {}).get("version") != "36.0.0":
-        failures.append("package-lock.json root versions must match 36.0.0")
+    if lock.get("version") != version or lock.get("packages", {}).get("", {}).get("version") != version:
+        failures.append(f"package-lock.json root versions must match {version}")
     try:
         site_release = json.loads(read("public/site-release.json"))
         compatibility_release = json.loads(read("public/event-horizon-release.json"))
     except (OSError, json.JSONDecodeError) as exc:
-        failures.append(f"V36 site release metadata is missing or invalid: {exc}")
+        failures.append(f"V37 site release metadata is missing or invalid: {exc}")
     else:
-        check_site_release(site_release, failures)
+        check_site_release(site_release, failures, preview=preview, version=version)
         if site_release != compatibility_release:
             failures.append("event-horizon-release.json must match the canonical site-release.json")
     if package.get("scripts", {}).get("build") != "tsc --noEmit && vite build && node --import tsx scripts/prerender.mts && node --import tsx scripts/prerender-odyssey.mts":
@@ -665,7 +685,7 @@ def main() -> int:
     for relative, source_relative in (("command-deck.html", "command-deck.html"), ("lab.html", "public/lab.html")):
         check_v34_public_surface(relative, read(source_relative), failures, "source")
     for relative in ("index.html", "odyssey.html"):
-        check_v36_document(read(relative), failures, f"source/{relative}", built=False, indexable=relative == "index.html")
+        check_v36_document(read(relative), failures, f"source/{relative}", built=False, indexable=relative == "index.html" and not preview, preview=preview, version_label="V37")
 
     proteus_image = ROOT / "public" / "plates" / "proteus-nasa.webp"
     if proteus_image.is_file() and proteus_image.stat().st_size <= 50_000:
@@ -770,7 +790,7 @@ def main() -> int:
         for relative in ("index.html", "odyssey.html"):
             page = DIST / relative
             if page.is_file():
-                check_v36_document(page.read_text(encoding="utf-8"), failures, f"dist/{relative}", built=True, indexable=relative == "index.html")
+                check_v36_document(page.read_text(encoding="utf-8"), failures, f"dist/{relative}", built=True, indexable=relative == "index.html" and not preview, preview=preview, version_label="V37")
         for relative in ("status.json", "site-release.json", "event-horizon-release.json", "legacy-route.js"):
             artifact = DIST / relative
             if artifact.is_file() and artifact.read_bytes() != (ROOT / "public" / relative).read_bytes():
@@ -804,10 +824,21 @@ def main() -> int:
         home_document.feed(built_index)
         home_styles = [attrs.get("href", "") for tag, attrs in home_document.elements
                        if tag == "link" and attrs.get("rel") == "stylesheet"]
+        home_styles.extend(attrs["data-odyssey-styles"] for tag, attrs in home_document.elements
+                           if tag == "style" and attrs.get("data-odyssey-styles"))
         if len(home_styles) != 1 or not re.fullmatch(r"/assets/[\w.-]+\.css", home_styles[0]):
             failures.append("built homepage must reference exactly one root-relative hashed stylesheet")
         elif not (DIST / home_styles[0].lstrip("/")).is_file():
             failures.append("built homepage stylesheet must exist in the artifact")
+        for style_path, styles in re.findall(r'<style data-odyssey-styles="([^"]+)">([\s\S]*?)</style>', built_index):
+            if not re.fullmatch(r"/assets/[\w.-]+\.css", style_path):
+                failures.append("inlined homepage stylesheet must reference a root-relative hashed asset")
+                continue
+            style_asset = DIST / style_path.lstrip("/")
+            if not style_asset.is_file() or styles != style_asset.read_text(encoding="utf-8"):
+                failures.append("inlined homepage styles must match the compiled stylesheet exactly")
+            if len(styles.encode("utf-8")) > 190_000:
+                failures.append("inlined homepage styles exceed the delivery budget")
         if re.search(r"/v\d+/", built_index, flags=re.IGNORECASE):
             failures.append("built index is incorrectly nested under a version directory")
         for csp in ("connect-src 'self'", "object-src 'none'", "form-action 'none'"):
@@ -850,13 +881,13 @@ def main() -> int:
             failures.append(f"non-audio fetch target found in source: {target!r}")
 
     if failures:
-        print("V36 release consistency check failed:\n")
+        print("V37 release consistency check failed:\n")
         for failure in failures:
             print(f"- {failure}")
         return 1
 
     print(
-        "V36 THE HUMAN RECKONING release consistency passed: promoted homepage and V35 archive; 28 August 2026 dated export; "
+        f"V37 {'unpublished preview' if preview else 'release'} consistency passed: homepage and V35 archive; 28 August 2026 dated export; "
         "18/19 containers; 2 Proxmox hosts quorate; 10 public lanes; "
         "36 private catalog entries; root Pages base; archive, privacy, "
         "motion, opt-in audio, and forbidden-token gates satisfied."

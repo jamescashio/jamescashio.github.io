@@ -1,4 +1,4 @@
-/* The seven studies share a calibrated instrument language. Every animation is finite. */
+/* Seven calibrated instruments: deliberate responses, bounded visible-only signal motion. */
 .event-horizon.aurora .lv-lab {
   --lv-ink: #08131f;
   --lv-face: #0b1b2b;
@@ -55,7 +55,7 @@
   padding: 10px 14px;
   border-bottom: 1px solid var(--lv-rule);
   font:
-    500 10px/1.4 Oxanium,
+    500 12px/1.4 Oxanium,
     sans-serif;
   letter-spacing: 0.1em;
   color: var(--lv-muted);
@@ -459,8 +459,34 @@
   padding: 0 9px;
 }
 .lv-scope-bed {
-  fill: #040d17;
   stroke: #3a5365;
+}
+.lv-scope-housing {
+  fill: #091523;
+  stroke: #456578;
+  stroke-width: 0.7;
+}
+.lv-scope-bevel {
+  stroke: #a3b6bf70;
+  stroke-width: 1;
+}
+.lv-scope-glass-edge {
+  stroke: #8adfdf7a;
+  stroke-width: 1.2;
+}
+.lv-scope-contact {
+  stroke: #ab9572;
+  stroke-width: 2;
+}
+.lv-signal-sample > path {
+  stroke: #77e7e727;
+  stroke-width: 0.8;
+  stroke-dasharray: 2 3;
+}
+.lv-signal-sample > circle {
+  fill: #102b38;
+  stroke: #bcf7f2;
+  stroke-width: 1;
 }
 .lv-scope-grid {
   stroke: #183242;
@@ -539,7 +565,7 @@
   margin-top: 6px;
   padding: 13px 18px 16px;
   color: var(--lv-muted);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.5;
 }
 .lv-signal-footer > span {
@@ -578,7 +604,7 @@
 /* Graphify: the same five accessible module buttons on an engraved dependency map. */
 .event-horizon.aurora .lv-lab .lv-code-graph {
   margin: 12px 24px 20px;
-  height: 258px;
+  height: 294px;
 }
 .lv-graph-grid {
   stroke: #8da9bd14;
@@ -603,7 +629,7 @@
 .event-horizon.aurora .lv-lab .lv-code-graph > button {
   color: #c6d7e1;
   gap: 6px;
-  font-size: 11px;
+  font-size: 12px;
   min-width: 62px;
   min-height: 65px;
   text-shadow: 0 1px 5px #050d17;
@@ -691,7 +717,7 @@
 @media (max-width: 700px) {
   .lv-instrument-caption {
     padding: 10px 12px;
-    font-size: 9px;
+    font-size: 12px;
     letter-spacing: 0.06em;
   }
   .lv-signal-reading {
@@ -702,11 +728,11 @@
     font-size: 42px;
   }
   .lv-signal-reading > div:first-child > span {
-    font-size: 9px;
+    font-size: 12px;
     letter-spacing: 0.05em;
   }
   .lv-signal-state {
-    font-size: 9px;
+    font-size: 12px;
     max-width: 120px;
   }
   .lv-signal-footer {
@@ -734,7 +760,7 @@
     gap: 5px 12px;
   }
   .lv-instrument-caption span:last-child {
-    font-size: 8px;
+    font-size: 12px;
   }
   .lv-exposure-states {
     grid-template-columns: 1fr;
@@ -764,11 +790,11 @@
     height: 48px;
   }
   .event-horizon.aurora .lv-lab .lv-escalation strong {
-    font-size: 10px;
+    font-size: 12px;
     max-width: 75px;
   }
   .lv-cascade-readout {
-    font-size: 9px;
+    font-size: 12px;
   }
   .lv-signal-reading {
     align-items: flex-start;
@@ -776,21 +802,21 @@
   .lv-signal-state {
     max-width: 100px;
     letter-spacing: 0;
-    font-size: 10px;
+    font-size: 12px;
     padding-top: 1px;
   }
   .lv-signal-reading strong {
     font-size: 40px;
   }
   .lv-signal-reading > div:first-child > span {
-    font-size: 9px;
+    font-size: 12px;
   }
   .event-horizon.aurora .lv-lab .lv-signal > svg {
     padding: 0 3px;
   }
   .lv-signal-footer {
     gap: 9px;
-    font-size: 11px;
+    font-size: 12px;
   }
   .lv-observation-clock {
     width: 124px;
@@ -801,14 +827,14 @@
     font-size: 36px;
   }
   .lv-freshness-timeline {
-    font-size: 8px;
+    font-size: 12px;
   }
   .event-horizon.aurora .lv-lab .lv-code-graph {
     margin: 12px 12px 13px;
     height: 220px;
   }
   .event-horizon.aurora .lv-lab .lv-code-graph > button {
-    font-size: 10px;
+    font-size: 12px;
     min-width: 53px;
     min-height: 65px;
   }
@@ -835,5 +861,705 @@
   .lv-step-lit {
     fill: Highlight;
     background: Highlight;
+  }
+}
+
+/* V37.5 — physical layers, projected boundaries, and light following the data. */
+.lv-instrument {
+  background:
+    radial-gradient(ellipse at 50% 34%, #18374970, transparent 68%), linear-gradient(140deg, #102130, #060f1c 78%);
+  border-color: #4a6273;
+  box-shadow:
+    inset 0 1px #d5e8ee21,
+    inset 0 0 0 4px #0309124d,
+    0 14px 35px #02070f26;
+}
+.lv-instrument-caption {
+  background: linear-gradient(90deg, #ebc68b0c, transparent 58%);
+  border-bottom-color: #5d78823b;
+}
+.lv-circuit-engraving {
+  stroke: #3d71817a;
+  stroke-width: 0.9;
+}
+.lv-terminal {
+  fill: #0c1b2b;
+  stroke: #5c889a;
+  stroke-width: 1;
+}
+.lv-orbit-bright {
+  stroke: var(--lv-cyan);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+.lv-core-orbit {
+  transform-origin: 280px 94px;
+}
+.lv-core-platform {
+  stroke: #cbb58266;
+  fill: #b98d4210;
+}
+.lv-core-lit-facet {
+  fill: #dfbf7970;
+}
+.lv-core-dark-facet {
+  fill: #071221a6;
+}
+.lv-core-pin {
+  fill: #fff2ca;
+  stroke: #edc9914d;
+  stroke-width: 5;
+}
+.lv-route-packet {
+  stroke: #eaffff;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 0.11 0.89;
+}
+.lv-route-packet.lv-packet-complete {
+  stroke: var(--lv-gold);
+}
+.lv-object-labels {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 0 12px 17px;
+  color: var(--lv-muted);
+  text-align: center;
+  font:
+    500 12px/1.4 Oxanium,
+    sans-serif;
+  letter-spacing: 0.04em;
+  overflow-wrap: anywhere;
+}
+.lv-evidence-names {
+  padding: 17px 12px 0;
+}
+.lv-source-name-selected {
+  color: var(--lv-gold);
+}
+.lv-lab[data-lab-motion="on"] .lv-core-orbit {
+  animation: lv-orbital-drift 14s linear infinite;
+}
+.lv-lab[data-lab-motion="on"] .lv-route-packet {
+  animation: lv-signal-travel 2.6s linear infinite;
+}
+
+/* The cascade rises in authority, not in an invented numerical score. */
+.lv-cascade {
+  overflow: hidden;
+}
+.lv-cascade-deck {
+  margin-top: 15px;
+}
+.lv-cascade-channel {
+  stroke: #54778866;
+  stroke-width: 3;
+  stroke-dasharray: 3 5;
+}
+.lv-cascade-current {
+  stroke: var(--lv-gold);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.lv-station-projection {
+  fill: #5bbed70a;
+  stroke: #7aa7ba26;
+  stroke-width: 0.8;
+}
+.lv-station-side {
+  fill: #0c1728;
+  stroke: #5e8496;
+}
+.lv-station-top {
+  fill: #1b3345;
+  stroke: #7b99a9;
+}
+.lv-station-edge {
+  stroke: #35596b;
+  stroke-width: 1.1;
+}
+.lv-station-beam {
+  fill: #77e7e707;
+  stroke: #77e7e718;
+  stroke-width: 0.75;
+}
+.lv-station-symbol {
+  color: var(--lv-muted);
+  stroke: #95bbcc;
+  stroke-width: 1.4;
+}
+.lv-station-selected .lv-station-top {
+  fill: #463e2d;
+  stroke: var(--lv-gold);
+}
+.lv-station-selected .lv-station-edge {
+  stroke: var(--lv-gold);
+}
+.lv-station-selected .lv-station-beam {
+  fill: #edc99114;
+  stroke: #edc99140;
+}
+.lv-station-selected .lv-station-symbol {
+  stroke: var(--lv-gold);
+}
+.lv-station-selected .lv-stage-hull {
+  fill: #2b2924;
+}
+.lv-station-pulse {
+  stroke: var(--lv-gold);
+  stroke-width: 0.75;
+  opacity: 0.65;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.lv-lab[data-lab-motion="on"] .lv-station-pulse {
+  animation: lv-projection-pulse 3.8s ease-out infinite;
+}
+.lv-decision-labels {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 0 10px 18px;
+}
+.lv-decision-labels > span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  color: #afc2cf;
+}
+.lv-decision-labels small {
+  font:
+    500 12px Oxanium,
+    sans-serif;
+  color: #afc2cf;
+}
+.lv-decision-labels strong {
+  font:
+    500 14px/1.4 Oxanium,
+    sans-serif;
+}
+.lv-decision-labels b {
+  font:
+    500 12px Oxanium,
+    sans-serif;
+  letter-spacing: 0.06em;
+}
+.lv-decision-labels .lv-decision-selected {
+  color: var(--lv-gold);
+}
+.lv-cascade-readout {
+  font-size: 12px;
+}
+.lv-cascade-readout > span {
+  flex: 1 1 180px;
+}
+.lv-cascade-readout i {
+  display: block;
+  margin-top: 10px;
+  height: 3px;
+  background: #7798b126;
+}
+.lv-cascade-readout em {
+  display: block;
+  height: 100%;
+  background: var(--lv-gold);
+  transition: width 250ms ease-out;
+}
+.lv-cascade-readout > span:last-child em {
+  background: var(--lv-cyan);
+}
+
+/* Scan the boundary while preserving observed / unconfirmed distinctions. */
+.lv-boundary-sweep {
+  transform-origin: 280px 103px;
+}
+.lv-boundary-sector {
+  fill: #77e7e70c;
+}
+.lv-boundary-scan {
+  stroke: #77e7e737;
+  stroke-width: 0.8;
+}
+.lv-shield-depth {
+  fill: #07121e;
+  stroke: #7496a362;
+  stroke-width: 1.1;
+}
+.lv-shield-inset {
+  stroke: #d2e4e133;
+  stroke-width: 0.8;
+}
+.lv-boundary-probe {
+  stroke: var(--lv-cyan);
+  stroke-width: 2.4;
+  stroke-dasharray: 0.12 0.88;
+  stroke-linecap: round;
+}
+.lv-asset-boundary {
+  stroke: #5f7c8e;
+  stroke-width: 0.8;
+  stroke-dasharray: 3 4;
+}
+.lv-asset-critical {
+  stroke: var(--lv-gold);
+  stroke-dasharray: none;
+  stroke-width: 1.2;
+}
+.lv-exposure-states b {
+  font-size: 12px;
+}
+.lv-lab[data-lab-motion="on"] .lv-boundary-sweep {
+  animation: lv-orbital-drift 12s linear infinite;
+}
+.lv-lab[data-lab-motion="on"] .lv-boundary-probe {
+  animation: lv-signal-travel 3.4s linear infinite;
+}
+
+/* Equal evidence documents feed only the brief that was actually composed. */
+.lv-source-middle {
+  fill: #112438;
+  stroke: #38566d;
+}
+.lv-source-dock {
+  fill: #5a93ad10;
+  stroke: #52768b80;
+  stroke-width: 0.7;
+}
+.lv-source-selected .lv-source-dock {
+  fill: #edc9910c;
+  stroke: #edc99194;
+}
+.lv-source-shadow,
+.lv-source-sheet,
+.lv-source-middle {
+  transition:
+    fill 240ms,
+    stroke 240ms;
+}
+.lv-source-selected .lv-source-sheet {
+  fill: #293e43;
+  stroke: #eed4a9;
+}
+.lv-assembly-orbit {
+  stroke: #64889b3d;
+  stroke-width: 0.8;
+  stroke-dasharray: 3 6;
+}
+.lv-assembly-bed {
+  stroke: #3b5e7166;
+  stroke-width: 3;
+}
+.lv-source-packet {
+  stroke: #efffff;
+  stroke-width: 2.8;
+  stroke-dasharray: 0.1 0.9;
+  stroke-linecap: round;
+}
+.lv-brief-core > path:first-child {
+  fill: #172c3c;
+  stroke: #688292;
+}
+.lv-brief-core-depth {
+  fill: #0c1727;
+  stroke: #577286;
+}
+.lv-brief-core-mark {
+  stroke: #a3bccb;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.lv-brief-composed > path:first-child {
+  fill: #483d2c;
+  stroke: var(--lv-gold);
+}
+.lv-brief-composed .lv-brief-core-mark {
+  stroke: #ffe2a9;
+  stroke-width: 2;
+}
+.lv-lab[data-lab-motion="on"] .lv-source-packet {
+  animation: lv-signal-travel 3s linear infinite;
+}
+
+/* The dial is driven by the selected age; it never pretends to be live telemetry. */
+.lv-clock-inner {
+  stroke: #a3c8d132;
+  stroke-width: 0.8;
+  stroke-dasharray: 1 4;
+}
+.lv-clock-tick-passed {
+  stroke-width: 1.8;
+  stroke: #b6fafa;
+}
+.lv-clock-stale .lv-clock-tick-passed {
+  stroke: #ffc1a9;
+}
+.lv-clock-needle {
+  transform-origin: 80px 80px;
+  transition: transform 320ms cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.lv-clock-needle path:first-child {
+  fill: var(--lv-gold);
+}
+.lv-clock-needle path:last-child {
+  stroke: var(--lv-gold);
+  stroke-width: 1.5;
+}
+.lv-clock-elapsed {
+  transition:
+    stroke-dasharray 320ms,
+    stroke 240ms;
+}
+.lv-clock-value {
+  text-shadow: 0 0 20px #77e7e728;
+}
+.lv-clock-value small {
+  font-size: 12px;
+}
+.lv-freshness-timeline {
+  font-size: 12px;
+}
+.lv-freshness-timeline i {
+  transition: left 320ms cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+/* One illuminated replay per input, never changing the synthetic samples. */
+.lv-signal-echo {
+  stroke: #77e7e71a;
+  stroke-width: 7;
+}
+.lv-signal-runner {
+  stroke: #e7ffff;
+  stroke-width: 2.6;
+  stroke-dasharray: 0.055 0.945;
+  stroke-linecap: round;
+}
+.lv-scope-scan > path {
+  stroke: #88eded60;
+  stroke-width: 0.8;
+}
+.lv-reading-halo {
+  stroke: #77e7e750;
+  stroke-width: 0.8;
+  opacity: 0.5;
+}
+.lv-signal-exception .lv-reading-halo {
+  stroke: #fa927a66;
+}
+.lv-signal-state,
+.lv-signal-reading > div:first-child > span {
+  font-size: 12px;
+}
+.lv-lab[data-lab-motion="on"] .lv-signal-runner {
+  animation: lv-sample-replay 1.35s 100ms linear both;
+}
+.lv-lab[data-lab-motion="on"] .lv-scope-scan {
+  animation: lv-scope-pass 1.35s 100ms linear both;
+}
+.lv-lab[data-lab-motion="on"] .lv-reading-halo {
+  animation: lv-reading-arrival 850ms 1.1s ease-out both;
+}
+
+/* Dependency traces retain the original arrow direction and the same five buttons. */
+.lv-graph-inner-orbit {
+  stroke: #415a713b;
+  stroke-dasharray: 0.3 1;
+}
+.lv-graph-link-bed {
+  stroke: #03101a;
+  stroke-width: 1.5;
+  fill: none;
+}
+.lv-graph-platform > path:first-child {
+  fill: #172d3b;
+  stroke: #5d829177;
+  stroke-width: 0.25;
+}
+.lv-graph-platform > path:nth-child(2) {
+  fill: #091826;
+  stroke: #3c586b;
+  stroke-width: 0.25;
+}
+.lv-graph-platform-selected > path:first-child {
+  fill: #423a2a;
+  stroke: var(--lv-gold);
+}
+.lv-graph-platform-affected > path:first-child {
+  fill: #153c43;
+  stroke: #77e7e790;
+}
+.lv-graph-activation {
+  stroke: #edc9918c;
+  stroke-width: 0.3;
+  fill: none;
+}
+.lv-graph-runner {
+  fill: none;
+  stroke: #e0ffff;
+  stroke-width: 0.65;
+  stroke-linecap: round;
+  stroke-dasharray: 0.07 0.93;
+}
+.lv-lab[data-lab-motion="on"] .lv-graph-runner {
+  animation: lv-sample-replay 1.2s 280ms cubic-bezier(0.25, 0.5, 0.5, 1) both;
+}
+.lv-lab[data-lab-motion="on"] .lv-graph-activation {
+  animation: lv-reading-arrival 1.2s ease-out both;
+}
+.event-horizon.aurora .lv-lab .lv-code-graph > button > i {
+  --lv-module-edge: #7c9cac;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 3px 10px 3px 3px;
+  border-color: var(--lv-module-edge);
+  background: linear-gradient(135deg, #456171, #152b3b 43%, #0b1b28);
+  box-shadow:
+    inset 2px 2px #ddfaff28,
+    inset -3px -3px #030a1180,
+    0 6px 0 #07111d,
+    0 7px 0 var(--lv-module-edge),
+    0 14px 15px #020710b3;
+  transition:
+    transform 260ms,
+    background 260ms;
+}
+.event-horizon.aurora .lv-lab .lv-code-graph > button > i::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid var(--lv-module-edge);
+  border-radius: 1px 5px 1px 1px;
+  opacity: 0.4;
+  pointer-events: none;
+}
+.event-horizon.aurora .lv-lab .lv-code-graph > button > i::after {
+  content: "";
+  position: absolute;
+  width: 15px;
+  height: 2px;
+  bottom: -4px;
+  background: repeating-linear-gradient(90deg, var(--lv-module-edge) 0 3px, transparent 3px 5px);
+  pointer-events: none;
+}
+.event-horizon.aurora .lv-lab .lv-code-graph > button > i > svg {
+  width: 31px;
+  height: 31px;
+  filter: drop-shadow(0 2px 2px #020810);
+}
+.event-horizon.aurora .lv-lab .lv-code-graph > button:is(:hover, :focus-visible) > i {
+  transform: translateY(-4px);
+}
+.event-horizon.aurora .lv-lab .lv-code-graph > button.selected > i {
+  --lv-module-edge: var(--lv-gold);
+  background: linear-gradient(135deg, #97794d, #443721 48%, #231e1a);
+  box-shadow:
+    inset 2px 2px #fff3cd59,
+    inset -3px -3px #050d1673,
+    0 6px 0 #14120e,
+    0 7px 0 var(--lv-gold),
+    0 12px 25px #d69a4626;
+}
+.event-horizon.aurora .lv-lab .lv-code-graph > button.affected > i {
+  --lv-module-edge: var(--lv-cyan);
+  background: linear-gradient(135deg, #42868c, #163c45 48%, #0a202d);
+}
+.lv-lab[data-lab-motion="on"] .lv-code-graph > button.selected > i::before {
+  animation: lv-module-lock 700ms ease-out both;
+}
+.lv-lab[data-lab-active="off"] .lv-code-graph > button.selected > i::before {
+  animation-play-state: paused;
+}
+@keyframes lv-module-lock {
+  from {
+    transform: scale(1.45);
+    opacity: 0;
+  }
+  55% {
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+}
+
+@keyframes lv-orbital-drift {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes lv-signal-travel {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes lv-projection-pulse {
+  0% {
+    transform: scale(0.87);
+    opacity: 0.15;
+  }
+  45% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.12);
+    opacity: 0.08;
+  }
+}
+@keyframes lv-scope-pass {
+  from {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  8%,
+  85% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(496px);
+    opacity: 0;
+  }
+}
+@keyframes lv-sample-replay {
+  from {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  8%,
+  85% {
+    opacity: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+@keyframes lv-reading-arrival {
+  from {
+    opacity: 0.1;
+    stroke-width: 2;
+  }
+  45% {
+    opacity: 0.9;
+  }
+  to {
+    opacity: 0.35;
+    stroke-width: 0.8;
+  }
+}
+@keyframes lv-reading-breathe {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.lv-lab[data-lab-active="off"] .lv-continuous,
+.lv-lab[data-lab-active="off"] .lv-draw,
+.lv-lab[data-lab-active="off"] .lv-acquire {
+  animation-play-state: paused !important;
+}
+.lv-lab[data-lab-motion="off"] .lv-continuous {
+  animation: none !important;
+}
+.lv-lab[data-lab-motion="off"] .lv-code-graph > button.selected > i::before {
+  animation: none !important;
+}
+.lv-lab[data-lab-motion="off"]
+  :is(
+    .lv-clock-needle,
+    .lv-clock-elapsed,
+    .lv-freshness-timeline i,
+    .lv-cascade-readout em,
+    .lv-source-shadow,
+    .lv-source-sheet,
+    .lv-source-middle,
+    .lv-code-graph > button > i
+  ) {
+  transition: none !important;
+}
+.lv-lab[data-lab-motion="off"]
+  :is(.lv-scope-scan, .lv-graph-runner, .lv-source-packet, .lv-route-packet, .lv-boundary-probe, .lv-signal-runner) {
+  opacity: 0;
+}
+@media (max-width: 420px) {
+  .event-horizon.aurora .lv-lab .lv-code-graph > button > i {
+    width: 39px;
+    height: 39px;
+  }
+  .event-horizon.aurora .lv-lab .lv-code-graph > button > i > svg {
+    width: 27px;
+    height: 27px;
+  }
+  .lv-decision-labels {
+    gap: 6px;
+    padding: 0 7px 16px;
+  }
+  .lv-decision-labels strong {
+    font-size: 12px;
+  }
+  .lv-decision-labels b {
+    font-size: 11px;
+    letter-spacing: 0;
+  }
+  .lv-cascade-deck {
+    margin-top: 8px;
+  }
+  .lv-cascade-readout > span {
+    flex-basis: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lv-lab .lv-continuous {
+    animation: none !important;
+  }
+  .lv-lab .lv-code-graph > button.selected > i::before {
+    animation: none !important;
+  }
+  .lv-lab
+    :is(
+      .lv-clock-needle,
+      .lv-clock-elapsed,
+      .lv-freshness-timeline i,
+      .lv-cascade-readout em,
+      .lv-source-shadow,
+      .lv-source-sheet,
+      .lv-source-middle,
+      .lv-code-graph > button > i
+    ) {
+    transition: none !important;
+  }
+  .lv-lab
+    :is(.lv-scope-scan, .lv-graph-runner, .lv-source-packet, .lv-route-packet, .lv-boundary-probe, .lv-signal-runner) {
+    opacity: 0;
+  }
+}
+
+@media (forced-colors: active) {
+  .lv-scope-housing,
+  .lv-scope-bed,
+  .lv-signal-sample > circle {
+    fill: Canvas;
+    stroke: CanvasText;
+  }
+  .event-horizon.aurora .lv-lab .lv-code-graph > button > i {
+    box-shadow: none;
+    border-color: ButtonText;
+  }
+  .event-horizon.aurora .lv-lab .lv-code-graph > button.selected > i {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
   }
 }

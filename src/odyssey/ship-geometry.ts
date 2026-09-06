@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { createShipEnergy } from "./ship-effects";
 
 export type ShipZone = "local" | "cloud" | "human";
 
@@ -6,22 +7,67 @@ export type ShipZone = "local" | "cloud" | "human";
 export function createExplorationCarrier() {
   const group = new THREE.Group();
   const armor = new THREE.Group();
+  armor.name = "Dorsal armor";
   group.add(armor);
+  const serviceBays = new THREE.Group();
+  serviceBays.name = "Wing service bays";
+  serviceBays.visible = false;
+  group.add(serviceBays);
   const inspected: THREE.Object3D[] = [];
   const standard = (color: number, metalness = 0.7, roughness = 0.3) =>
     new THREE.MeshStandardMaterial({ color, metalness, roughness });
-  const ivory = standard(0xb5ad9d, 0.78, 0.28);
-  const pearl = standard(0xd7cfc0, 0.7, 0.24);
+  const ivory = standard(0xb8b6b0, 0.64, 0.29);
+  const pearl = new THREE.MeshPhysicalMaterial({
+    color: 0xd7dcde,
+    metalness: 0.68,
+    roughness: 0.24,
+    clearcoat: 0.32,
+    clearcoatRoughness: 0.25,
+  });
   const titanium = standard(0x596572, 0.84, 0.3);
   const graphite = standard(0x101b26, 0.65, 0.37);
   const gold = standard(0xc2934f, 0.8, 0.25);
+  const blueSteel = standard(0x3f6076, 0.74, 0.32);
+  blueSteel.name = "Blue titanium wing armor";
+  const facetedArmor = pearl.clone();
+  facetedArmor.color.set(0xffffff);
+  facetedArmor.vertexColors = true;
+  facetedArmor.name = "Ceramic deck with titanium shoulders";
+  const nozzleInterior = standard(0x101c25, 0.83, 0.4);
+  nozzleInterior.side = THREE.DoubleSide;
+  nozzleInterior.name = "Recessed engine liner";
+  const glazingSweepZ = { value: 9.2 };
+  const glazingSweepActive = { value: 0 };
   const glass = new THREE.MeshPhysicalMaterial({
-    color: 0x071723,
-    metalness: 0.6,
-    roughness: 0.13,
+    color: 0x123e52,
+    metalness: 0.38,
+    roughness: 0.1,
     clearcoat: 1,
-    clearcoatRoughness: 0.05,
+    clearcoatRoughness: 0.035,
+    envMapIntensity: 1.5,
+    emissive: 0x062331,
+    emissiveIntensity: 0.2,
   });
+  glass.name = "Smoked panoramic command glazing";
+  // The same finite inspection plane is reflected in the glass. No extra clock,
+  // transmission pass or texture is needed; a paused inspection freezes its reflection.
+  glass.onBeforeCompile = (shader) => {
+    shader.uniforms.glazingSweepZ = glazingSweepZ;
+    shader.uniforms.glazingSweepActive = glazingSweepActive;
+    shader.vertexShader =
+      "varying float vGlazingZ;\n" +
+      shader.vertexShader.replace(
+        "#include <begin_vertex>",
+        "#include <begin_vertex>\nvGlazingZ = (modelMatrix * vec4(position, 1.0)).z;",
+      );
+    shader.fragmentShader =
+      "varying float vGlazingZ; uniform float glazingSweepZ; uniform float glazingSweepActive;\n" +
+      shader.fragmentShader.replace(
+        "#include <opaque_fragment>",
+        "float glassSweep = 1.0 - smoothstep(0.02, 0.2, abs(vGlazingZ - glazingSweepZ));\noutgoingLight += vec3(0.06, 0.7, 0.95) * glassSweep * glazingSweepActive;\n#include <opaque_fragment>",
+      );
+  };
+  glass.customProgramCacheKey = () => "cashio-command-glazing-037-5";
   const cyan = new THREE.MeshBasicMaterial({ color: 0x77e7e7, toneMapped: false });
   const warm = new THREE.MeshBasicMaterial({ color: 0xffd59a, toneMapped: false });
   const unit = new THREE.BoxGeometry(1, 1, 1);
@@ -109,9 +155,17 @@ export function createExplorationCarrier() {
     zone?: ShipZone,
   ) => {
     const shape = new THREE.Shape(points.map(([x, z]) => new THREE.Vector2(x, -z)));
-    const geometry = new THREE.ExtrudeGeometry(shape, { depth: thickness, bevelEnabled: false });
+    const bevel = Math.min(0.045, thickness * 0.18);
+    const geometry = new THREE.ExtrudeGeometry(shape, {
+      depth: thickness - bevel * 2,
+      bevelEnabled: true,
+      bevelThickness: bevel,
+      bevelSize: bevel,
+      bevelSegments: 2,
+      steps: 1,
+    });
     geometry.rotateX(-Math.PI / 2);
-    return add(geometry, material, [0, y, 0], parent, zone);
+    return add(geometry, material, [0, y + bevel, 0], parent, zone);
   };
   const ring = (
     radius: number,
@@ -119,10 +173,26 @@ export function createExplorationCarrier() {
     material: THREE.Material,
     position: [number, number, number],
     parent = group,
-  ) => add(new THREE.TorusGeometry(radius, tube, 8, 64), material, position, parent);
+  ) => add(new THREE.TorusGeometry(radius, tube, 12, 80), material, position, parent);
   const seam = (points: number[][], material: THREE.Material, parent = armor, radius = 0.023) => {
     const curve = new THREE.CatmullRomCurve3(points.map((p) => new THREE.Vector3(...(p as [number, number, number]))));
     return add(new THREE.TubeGeometry(curve, points.length * 8, radius, 4, false), material, [0, 0, 0], parent);
+  };
+  // Existing facets carry the finish: pale ceramic decks, cooler chamfers and dark
+  // titanium shoulders. Vertex colors add surface separation without extra panels or draws.
+  const finishArmor = (geometry: THREE.BufferGeometry) => {
+    const normals = geometry.getAttribute("normal");
+    const colors = new Float32Array(normals.count * 3);
+    const deck = new THREE.Color(0xd7dcde);
+    const chamfer = new THREE.Color(0x8499a7);
+    const shoulder = new THREE.Color(0x39566a);
+    for (let vertex = 0; vertex < normals.count; vertex++) {
+      const up = normals.getY(vertex);
+      const color = up > 0.88 ? deck : up > 0.35 ? chamfer : shoulder;
+      color.toArray(colors, vertex * 3);
+    }
+    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    return geometry;
   };
 
   // A nine-facet continuous keel, with genuinely removable dorsal armor.
@@ -140,7 +210,7 @@ export function createExplorationCarrier() {
     section[2] *= 1.5;
   });
   add(loft(hull, [5, 6, 7, 8]), titanium);
-  add(loft(hull, [0, 1, 2, 3, 4]), ivory, [0, 0, 0], armor, "local");
+  add(finishArmor(loft(hull, [0, 1, 2, 3, 4])), facetedArmor, [0, 0, 0], armor, "local").name = "Faceted hull armor";
   add(loft(hull.map(([z, w, h]) => [z, w * 0.62, h * 0.6, -0.32])), graphite);
   plate(
     [
@@ -165,7 +235,7 @@ export function createExplorationCarrier() {
     [-3.3, 1.34, 0.45, 0.9],
     [-5.7, 0.67, 0.24, 0.65],
   ];
-  add(loft(dorsal), pearl, [0, 0, 0], armor, "local");
+  add(finishArmor(loft(dorsal)), facetedArmor, [0, 0, 0], armor, "local").name = "Faceted dorsal armor";
   for (const side of [-1, 1]) {
     seam(
       dorsal.slice(1).map(([z, w, h, y]) => [side * w * 0.74, (y || 0) + h * 0.74 + 0.018, z]),
@@ -230,7 +300,7 @@ export function createExplorationCarrier() {
       ]),
       0.015,
       0.13,
-      ivory,
+      blueSteel,
     );
     plate(
       mirror([
@@ -344,14 +414,69 @@ export function createExplorationCarrier() {
     }
     // Physical inner AI drawers stay present when the armor lifts away.
     for (let row = 0; row < 9; row++) {
+      const x = side * (2.75 + row * 0.32),
+        z = 0.95 - row * 0.59;
+      detail([0.43, 0.055, 0.3], [x, 0.065, z], graphite, serviceBays, [0, side * 0.4, 0]);
+      detail([0.35, 0.015, 0.025], [x, 0.1, z + 0.12], cyan, serviceBays, [0, side * 0.4, 0]);
+      detail([0.04, 0.025, 0.2], [x + side * 0.17, 0.11, z], gold, serviceBays, [0, side * 0.4, 0]);
+      detail([0.08, 0.03, 0.08], [x - side * 0.22, 0.095, z + 0.05], warm, serviceBays);
+      detail([0.022, 0.02, 0.3], [x + side * 0.65, 0.075, z - 0.22], titanium, serviceBays, [0, side * 0.4, 0]);
+    }
+    seam(
+      [
+        [side * 2.15, 0.05, 2.5],
+        [side * 4.48, 0.05, 0.2],
+        [side * 6.82, 0.05, -4.98],
+      ],
+      cyan,
+      serviceBays,
+      0.017,
+    );
+    seam(
+      [
+        [side * 2.2, 0.055, 1.75],
+        [side * 4.12, 0.055, -0.15],
+        [side * 6.35, 0.055, -4.7],
+      ],
+      gold,
+      serviceBays,
+      0.024,
+    );
+    seam(
+      [
+        [side * 2.27, 0.04, -0.55],
+        [side * 3.65, 0.04, -2.2],
+        [side * 4.68, 0.04, -4.35],
+      ],
+      titanium,
+      serviceBays,
+      0.045,
+    );
+    for (let row = 0; row < 9; row++) {
       detail([0.49, 0.24, 0.3], [side * 0.97, 0.02, 1.45 - row * 0.47], graphite);
       detail([0.46, 0.035, 0.025], [side * 0.97, 0.16, 1.59 - row * 0.47], cyan);
       detail([0.07, 0.17, 0.29], [side * 1.21, 0.07, 1.45 - row * 0.47], gold);
+      // Machined sockets and branching light buses remain visible beneath the skin.
+      detail([0.08, 0.045, 0.08], [side * 0.73, 0.17, 1.45 - row * 0.47], warm);
+      detail([0.31, 0.018, 0.018], [side * 0.52, 0.1, 1.45 - row * 0.47], cyan);
+      for (let rib = 0; rib < 4; rib++)
+        detail([0.028, 0.02, 0.2], [side * (0.85 + rib * 0.065), 0.155, 1.42 - row * 0.47], titanium);
     }
+    seam(
+      [
+        [side * 0.37, 0.1, 1.8],
+        [side * 0.37, 0.1, -2.6],
+        [side * 0.6, 0.1, -2.88],
+      ],
+      gold,
+      group,
+      0.025,
+    );
   }
 
   // Recessed, sloping command canopy, a separate forward authority zone.
   const bridge = new THREE.Group();
+  bridge.name = "Command canopy";
   bridge.position.y = 0.8;
   group.add(bridge);
   const bridgeHull: Section[] = [
@@ -361,9 +486,9 @@ export function createExplorationCarrier() {
     [1.95, 0.62, 0.17, 0.65],
   ];
   add(loft(bridgeHull), graphite, [0, 0, 0], bridge, "human");
-  add(
+  const canopy = add(
     loft(
-      bridgeHull.map(([z, w, h, y]) => [z - 0.05, w * 0.83, h * 0.87, (y || 0) + 0.042]),
+      bridgeHull.map(([z, w, h, y]) => [z, w * 1.005, h * 1.005, (y || 0) + 0.018]),
       [0, 1, 2, 3, 4],
     ),
     glass,
@@ -371,6 +496,51 @@ export function createExplorationCarrier() {
     bridge,
     "human",
   );
+  canopy.name = "Panoramic bridge glazing";
+  // Keep closeup detail out of the silhouette-fit cache: the underlying structural
+  // canopy already owns the same envelope and all established camera compositions.
+  canopy.userData.excludeFromFraming = true;
+  const canopyDetails = new THREE.Group();
+  canopyDetails.name = "Machined canopy mullions";
+  bridge.add(canopyDetails);
+  const canopySection = (z: number) => {
+    const start = bridgeHull[1],
+      end = bridgeHull[2];
+    const amount = (start[0] - z) / (start[0] - end[0]);
+    return {
+      width: THREE.MathUtils.lerp(start[1], end[1], amount),
+      height: THREE.MathUtils.lerp(start[2], end[2], amount),
+      center: THREE.MathUtils.lerp(start[3]!, end[3]!, amount),
+    };
+  };
+  for (const z of [4.35, 3.7, 3.05]) {
+    const section = canopySection(z);
+    const points = [
+      [-0.73 * section.width, section.center + 0.72 * section.height + 0.036, z],
+      [-0.38 * section.width, section.center + section.height + 0.035, z],
+      [0.38 * section.width, section.center + section.height + 0.035, z],
+      [0.73 * section.width, section.center + 0.72 * section.height + 0.036, z],
+    ];
+    seam(points, titanium, canopyDetails, 0.017);
+    for (const side of [-1, 1]) {
+      // Fine powered edges make the pane divisions legible without lighting the glass flat.
+      seam(
+        [
+          [side * 0.71 * section.width, section.center + 0.77 * section.height + 0.035, z + 0.03],
+          [side * 0.42 * section.width, section.center + section.height + 0.037, z + 0.03],
+        ],
+        cyan,
+        canopyDetails,
+        0.006,
+      );
+      detail(
+        [0.047, 0.035, 0.065],
+        [side * 0.73 * section.width, section.center + 0.72 * section.height + 0.052, z],
+        gold,
+        canopyDetails,
+      );
+    }
+  }
   for (const side of [-1, 1]) {
     seam(
       [
@@ -476,6 +646,7 @@ export function createExplorationCarrier() {
     [5.8, 0.82],
   ]) {
     const nozzle = new THREE.Group();
+    nozzle.name = "Recessed ion engine";
     nozzle.position.set(x, -0.14, -7.17);
     group.add(nozzle);
     const casing = add(
@@ -486,9 +657,19 @@ export function createExplorationCarrier() {
     );
     casing.rotation.x = Math.PI / 2;
     ring(0.51 * scale, 0.085 * scale, gold, [0, 0, -0.31], nozzle);
-    ring(0.36 * scale, 0.052 * scale, cyan, [0, 0, -0.325], nozzle);
-    add(new THREE.CircleGeometry(0.365 * scale, 32), graphite, [0, 0, -0.28], nozzle).rotation.y = Math.PI;
-    const throat = add(new THREE.CircleGeometry(0.265 * scale, 32), cyan, [0, 0, -0.34], nozzle);
+    ring(0.36 * scale, 0.028 * scale, cyan, [0, 0, -0.325], nozzle);
+    // A tapered, dark liner makes the luminous throat visibly recessed behind the lip.
+    const liner = add(
+      new THREE.CylinderGeometry(0.39 * scale, 0.245 * scale, 0.44, 24, 1, true),
+      nozzleInterior,
+      [0, 0, -0.08],
+      nozzle,
+    );
+    liner.rotation.x = -Math.PI / 2;
+    liner.name = "Tapered engine cavity";
+    add(new THREE.CircleGeometry(0.255 * scale, 24), graphite, [0, 0, 0.15], nozzle).rotation.y = Math.PI;
+    const throat = add(new THREE.CircleGeometry(0.205 * scale, 24), cyan, [0, 0, 0.135], nozzle);
+    throat.name = "Recessed luminous throat";
     throat.rotation.y = Math.PI;
     for (let rib = 0; rib < 8; rib++) {
       const angle = (rib * Math.PI) / 4;
@@ -509,6 +690,24 @@ export function createExplorationCarrier() {
       side: THREE.DoubleSide,
       toneMapped: false,
     });
+    // Fade the actual gas surface toward its tip; the existing compression diamonds
+    // remain readable inside it. This is spatial shading, with no additional clock.
+    plumeMaterial.onBeforeCompile = (shader) => {
+      shader.uniforms.plumeLength = { value: 2.8 * scale };
+      shader.vertexShader =
+        "varying float vPlumeProgress; uniform float plumeLength;\n" +
+        shader.vertexShader.replace(
+          "#include <begin_vertex>",
+          "#include <begin_vertex>\nvPlumeProgress = clamp(position.y / plumeLength + 0.5, 0.0, 1.0);",
+        );
+      shader.fragmentShader =
+        "varying float vPlumeProgress;\n" +
+        shader.fragmentShader.replace(
+          "#include <color_fragment>",
+          "#include <color_fragment>\ndiffuseColor.rgb *= mix(vec3(1.0), vec3(0.18, 0.48, 1.0), vPlumeProgress);\ndiffuseColor.a *= 1.0 - smoothstep(0.12, 1.0, vPlumeProgress);",
+        );
+    };
+    plumeMaterial.customProgramCacheKey = () => "cashio-ion-plume-falloff";
     const plume = add(
       new THREE.ConeGeometry(0.33 * scale, 2.8 * scale, 24, 1, true),
       plumeMaterial,
@@ -516,6 +715,7 @@ export function createExplorationCarrier() {
       nozzle,
     );
     plume.rotation.x = -Math.PI / 2;
+    plume.name = "Fading ion plume";
     plumes.push(plume);
     const inner = add(
       new THREE.ConeGeometry(0.18 * scale, 1.85 * scale, 16, 1, true),
@@ -593,6 +793,9 @@ export function createExplorationCarrier() {
     }
   }
   unit.dispose();
+  canopyDetails.traverse((object) => {
+    object.userData.excludeFromFraming = true;
+  });
   group.traverse((object) => {
     if (!(object instanceof THREE.Mesh)) return;
     const material = object.material;
@@ -605,12 +808,102 @@ export function createExplorationCarrier() {
   coreRings.forEach((mesh) => {
     mesh.castShadow = false;
   });
+  // A moving section plane reveals real inner geometry. Only armor materials are clipped;
+  // bridge, reactor, engine pods and their shared source materials remain intact.
+  const hullPlane = new THREE.Plane(new THREE.Vector3(0, 0, -1), 9.2);
+  const cutZ = { value: 9.2 },
+    cutActive = { value: 0 };
+  const sectionMaterials = new Map<THREE.Material, THREE.Material>();
+  armor.traverse((object) => {
+    if (!(object instanceof THREE.Mesh)) return;
+    object.userData.sectionedArmor = true;
+    const source = object.material as THREE.Material;
+    if (!sectionMaterials.has(source)) {
+      const material = source.clone();
+      material.clippingPlanes = [hullPlane];
+      material.clipShadows = true;
+      material.onBeforeCompile = (shader) => {
+        shader.uniforms.hullCutZ = cutZ;
+        shader.uniforms.hullCutActive = cutActive;
+        shader.vertexShader =
+          "varying vec3 vHullPosition;\n" +
+          shader.vertexShader.replace(
+            "#include <begin_vertex>",
+            "#include <begin_vertex>\nvHullPosition = (modelMatrix * vec4(position, 1.0)).xyz;",
+          );
+        shader.fragmentShader =
+          "varying vec3 vHullPosition; uniform float hullCutZ; uniform float hullCutActive;\n" +
+          shader.fragmentShader.replace(
+            "#include <opaque_fragment>",
+            "float cutEdge = 1.0 - smoothstep(0.015, 0.16, abs(vHullPosition.z - hullCutZ));\noutgoingLight += vec3(0.12, 1.5, 1.9) * cutEdge * hullCutActive;\n#include <opaque_fragment>",
+          );
+      };
+      material.customProgramCacheKey = () => "cashio-section-037-3";
+      sectionMaterials.set(source, material);
+    }
+    object.material = sectionMaterials.get(source)!;
+  });
+  // Armor-only finishes are replaced by their section-aware clones. Dispose the
+  // unattached originals now; all live materials remain owned by scene traversal.
+  const attachedMaterials = new Set<THREE.Material>();
+  group.traverse((object) => {
+    if (object instanceof THREE.Mesh) {
+      const materials = Array.isArray(object.material) ? object.material : [object.material];
+      materials.forEach((material) => attachedMaterials.add(material));
+    }
+  });
+  for (const source of sectionMaterials.keys()) if (!attachedMaterials.has(source)) source.dispose();
+  const guideHull = loft(hull, [0, 1, 2, 3, 4]);
+  const guideMaterial = new THREE.LineBasicMaterial({
+    color: 0x76e6e9,
+    transparent: true,
+    opacity: 0,
+    depthWrite: false,
+    toneMapped: false,
+  });
+  const guide = new THREE.LineSegments(new THREE.EdgesGeometry(guideHull, 22), guideMaterial);
+  guide.name = "Owned boundary outline";
+  guide.visible = false;
+  group.add(guide);
+  guideHull.dispose();
+  const scannerMaterial = new THREE.MeshBasicMaterial({
+    color: 0x80ffff,
+    transparent: true,
+    opacity: 0.55,
+    depthWrite: false,
+    toneMapped: false,
+  });
+  const scanner = add(new THREE.BoxGeometry(15.1, 0.012, 0.032), scannerMaterial, [0, -0.4, 9.2]);
+  scanner.name = "Hull inspection sweep";
+  scanner.userData.excludeFromFraming = true;
+  scanner.visible = false;
+  const energy = createShipEnergy();
+  group.add(energy.group);
+  const setCutawayProgress = (amount: number) => {
+    const progress = THREE.MathUtils.clamp(amount, 0, 1);
+    const eased = progress * progress * (3 - 2 * progress);
+    cutZ.value = THREE.MathUtils.lerp(9.2, -7.8, eased);
+    cutActive.value = progress > 0 && progress < 1 ? 1 : 0;
+    glazingSweepZ.value = cutZ.value;
+    glazingSweepActive.value = cutActive.value;
+    hullPlane.constant = cutZ.value;
+    armor.visible = progress < 1;
+    serviceBays.visible = progress > 0;
+    guide.visible = progress > 0;
+    guideMaterial.opacity = eased * 0.15;
+    scanner.visible = progress > 0 && progress < 1;
+    scanner.position.z = cutZ.value;
+    scannerMaterial.opacity = Math.sin(Math.PI * progress) * 0.5;
+    energy.setSection(cutZ.value, progress);
+  };
   // Every material is attached to a scene object, allowing one traversal to own disposal.
   return {
     group,
     inspected,
-    setCutaway(enabled: boolean) {
-      armor.visible = !enabled;
+    setCutawayProgress,
+    setFlow: energy.setFlow,
+    isSurfaceVisible(object: THREE.Object3D, point: THREE.Vector3) {
+      return !object.userData.sectionedArmor || (armor.visible && point.z <= cutZ.value);
     },
     select(zone: ShipZone) {
       Object.entries(selections).forEach(([name, mesh]) => {
@@ -618,6 +911,7 @@ export function createExplorationCarrier() {
       });
     },
     animate(phase: number) {
+      energy.animate(phase);
       core.rotation.y = 0.32 + phase * 0.12;
       coreRings[0].rotation.z = 0.12 + phase * 0.06;
       plumes.forEach((plume, index) => {
