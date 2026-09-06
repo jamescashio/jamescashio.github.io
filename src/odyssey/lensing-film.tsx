@@ -55,7 +55,12 @@ export default function LensingFilm({
   const playbackIntent = useRef<HTMLVideoElement | null>(null);
   const mounted = useRef(false);
   const pendingSeek = useRef<number | null>(null);
-  const mediaRequested = useRef(false);
+  const seekMedia = useRef<{
+    player: HTMLVideoElement;
+    controller: AbortController;
+    url: string | null;
+    loading: Promise<void> | null;
+  } | null>(null);
   const [clipId, setClipId] = useState<LensingClip>(initialClip);
   const [playback, setPlayback] = useState<Playback>("still");
   const [elapsed, setElapsed] = useState(0);
@@ -63,16 +68,26 @@ export default function LensingFilm({
   const clip = CLIPS[clipId];
   const active = playback === "playing" || playback === "loading";
 
-  const attachPlayer = useCallback((player: HTMLVideoElement | null) => {
-    if (video.current !== player) {
-      request.current += 1;
-      playbackIntent.current = null;
-      video.current?.pause();
-      video.current = player;
-      pendingSeek.current = null;
-      mediaRequested.current = false;
-    }
+  const releaseSeekMedia = useCallback(() => {
+    const previous = seekMedia.current;
+    seekMedia.current = null;
+    previous?.controller.abort();
+    if (previous?.url) URL.revokeObjectURL(previous.url);
   }, []);
+
+  const attachPlayer = useCallback(
+    (player: HTMLVideoElement | null) => {
+      if (video.current !== player) {
+        request.current += 1;
+        playbackIntent.current = null;
+        video.current?.pause();
+        releaseSeekMedia();
+        video.current = player;
+        pendingSeek.current = null;
+      }
+    },
+    [releaseSeekMedia],
+  );
 
   const pauseFilm = useCallback(() => {
     request.current += 1;
@@ -80,6 +95,65 @@ export default function LensingFilm({
     video.current?.pause();
     setPlayback((current) => (current === "playing" || current === "loading" ? "paused" : current));
   }, []);
+
+  const isCurrentPlayer = useCallback((player: HTMLVideoElement) => {
+    return mounted.current && player === video.current && dialog.current?.open;
+  }, []);
+
+  const playRequested = useCallback(
+    async (player: HTMLVideoElement, generation: number) => {
+      try {
+        await player.play();
+        if (!isCurrentPlayer(player) || document.hidden || playbackIntent.current !== player) player.pause();
+      } catch {
+        if (isCurrentPlayer(player) && generation === request.current) {
+          playbackIntent.current = null;
+          setPlayback("error");
+        }
+      }
+    },
+    [isCurrentPlayer],
+  );
+
+  // Stable ref-reading callbacks let visibility resume a manual frame request
+  // without restarting the modal or reviving a cancelled playback request.
+  const finishPendingSeek = useCallback(
+    (player: HTMLVideoElement) => {
+      const target = pendingSeek.current;
+      const prepared = seekMedia.current;
+      if (
+        target === null ||
+        !isCurrentPlayer(player) ||
+        document.hidden ||
+        !prepared?.url ||
+        prepared.player !== player ||
+        player.currentSrc !== prepared.url ||
+        player.readyState < 1 ||
+        !Number.isFinite(player.duration) ||
+        player.seeking
+      )
+        return;
+      const seconds = Math.max(0, Math.min(target, player.duration - 0.04));
+      if (Math.abs(player.currentTime - seconds) > 0.06) {
+        // A fully downloaded Blob supplies random access even when the host
+        // serves HTTP200 and the native URL reports an empty seekable range.
+        const ranges = player.seekable;
+        const available = Array.from({ length: ranges.length }, (_, index) => index).some(
+          (index) => ranges.start(index) <= seconds && ranges.end(index) >= seconds,
+        );
+        if (available) player.currentTime = seconds;
+        return;
+      }
+      if (player.readyState < 2) return;
+      pendingSeek.current = null;
+      setElapsed(player.currentTime);
+      if (playbackIntent.current === player) {
+        setPlayback("loading");
+        void playRequested(player, request.current);
+      } else setPlayback("paused");
+    },
+    [isCurrentPlayer, playRequested],
+  );
 
   useEffect(() => {
     mounted.current = true;
@@ -90,6 +164,7 @@ export default function LensingFilm({
     close.current?.focus({ preventScroll: true });
     const visibility = () => {
       if (document.hidden) pauseFilm();
+      else if (video.current) finishPendingSeek(video.current);
     };
     document.addEventListener("visibilitychange", visibility);
     return () => {
@@ -97,11 +172,13 @@ export default function LensingFilm({
       request.current += 1;
       playbackIntent.current = null;
       video.current?.pause();
+      pendingSeek.current = null;
+      releaseSeekMedia();
       panel?.close();
       document.body.style.overflow = overflow;
       document.removeEventListener("visibilitychange", visibility);
     };
-  }, [pauseFilm]);
+  }, [pauseFilm, releaseSeekMedia, finishPendingSeek]);
 
   useEffect(() => {
     // A later explicit Play is allowed; ambient motion never starts the film.
@@ -122,8 +199,52 @@ export default function LensingFilm({
     setDuration(CLIPS[next].duration);
   }
 
-  function isCurrentPlayer(player: HTMLVideoElement) {
-    return mounted.current && player === video.current && dialog.current?.open;
+  function prepareSeekMedia(player: HTMLVideoElement): Promise<void> {
+    const previous = seekMedia.current;
+    if (previous?.player === player) {
+      if (previous.loading) return previous.loading;
+      if (previous.url) return Promise.resolve();
+    }
+    releaseSeekMedia();
+    const prepared = {
+      player,
+      controller: new AbortController(),
+      url: null as string | null,
+      loading: null as Promise<void> | null,
+    };
+    seekMedia.current = prepared;
+    prepared.loading = (async () => {
+      try {
+        const source = new URL(clip.film, location.href);
+        if (source.origin !== location.origin) throw new Error("Film must remain same-origin");
+        const response = await fetch(source, {
+          signal: prepared.controller.signal,
+          credentials: "same-origin",
+          cache: "force-cache",
+        });
+        if (!response.ok) throw new Error("Film download failed");
+        const maximum = 8 * 1024 * 1024;
+        if (Number(response.headers.get("content-length")) > maximum) throw new Error("Film exceeds seek budget");
+        const blob = await response.blob();
+        if (!blob.size || blob.size > maximum) throw new Error("Invalid film size");
+        if (seekMedia.current !== prepared || prepared.controller.signal.aborted || !isCurrentPlayer(player)) return;
+        prepared.url = URL.createObjectURL(new Blob([blob], { type: "video/mp4" }));
+        // This element is keyed to its clip. Keep ordinary first Play on the
+        // progressive URL; replace it only after an explicit frame request.
+        player.src = prepared.url;
+        player.preload = "auto";
+        player.load();
+      } catch {
+        if (seekMedia.current === prepared && !prepared.controller.signal.aborted && isCurrentPlayer(player)) {
+          pendingSeek.current = null;
+          playbackIntent.current = null;
+          setPlayback("error");
+        }
+      } finally {
+        prepared.loading = null;
+      }
+    })();
+    return prepared.loading;
   }
 
   function seekFilm(seconds: number) {
@@ -131,20 +252,10 @@ export default function LensingFilm({
     if (!player || document.hidden || !dialog.current?.open) return;
     pauseFilm();
     const target = Math.max(0, Math.min(duration - 0.04, seconds));
+    pendingSeek.current = target;
     setElapsed(target);
     setPlayback("seeking");
-    if (player.readyState >= 1 && Number.isFinite(player.duration)) {
-      pendingSeek.current = null;
-      player.currentTime = Math.min(target, player.duration - 0.04);
-      if (!player.seeking) setPlayback("paused");
-    } else {
-      pendingSeek.current = target;
-      if (!mediaRequested.current) {
-        mediaRequested.current = true;
-        player.preload = "auto";
-        player.load();
-      }
-    }
+    void prepareSeekMedia(player).then(() => finishPendingSeek(player));
   }
 
   async function togglePlayback() {
@@ -155,20 +266,15 @@ export default function LensingFilm({
       return;
     }
     const generation = ++request.current;
-    mediaRequested.current = true;
-    if (player.error) player.load();
-    if (player.ended) player.currentTime = 0;
     playbackIntent.current = player;
     setPlayback("loading");
-    try {
-      await player.play();
-      if (!isCurrentPlayer(player) || document.hidden || playbackIntent.current !== player) player.pause();
-    } catch {
-      if (isCurrentPlayer(player) && generation === request.current) {
-        playbackIntent.current = null;
-        setPlayback("error");
-      }
+    if (pendingSeek.current !== null) {
+      void prepareSeekMedia(player).then(() => finishPendingSeek(player));
+      return;
     }
+    if (player.error) player.load();
+    if (player.ended) player.currentTime = 0;
+    await playRequested(player, generation);
   }
 
   const label = active
@@ -269,49 +375,61 @@ export default function LensingFilm({
           aria-describedby="lensing-film-description"
           onPlaying={(event) => {
             const player = event.currentTarget;
-            if (!isCurrentPlayer(player) || playbackIntent.current !== player || document.hidden) player.pause();
+            if (
+              !isCurrentPlayer(player) ||
+              playbackIntent.current !== player ||
+              pendingSeek.current !== null ||
+              document.hidden
+            )
+              player.pause();
             else if (!player.paused) setPlayback("playing");
           }}
           onPause={(event) => {
-            if (isCurrentPlayer(event.currentTarget) && event.currentTarget.paused)
+            if (isCurrentPlayer(event.currentTarget) && event.currentTarget.paused && pendingSeek.current === null)
               setPlayback((current) => (current === "playing" || current === "loading" ? "paused" : current));
           }}
           onWaiting={(event) => {
             if (isCurrentPlayer(event.currentTarget) && !event.currentTarget.paused) setPlayback("loading");
           }}
           onEnded={(event) => {
-            if (isCurrentPlayer(event.currentTarget) && event.currentTarget.ended) {
+            if (isCurrentPlayer(event.currentTarget) && event.currentTarget.ended && pendingSeek.current === null) {
               playbackIntent.current = null;
               setPlayback("ended");
             }
           }}
           onError={(event) => {
-            if (isCurrentPlayer(event.currentTarget) && event.currentTarget.error) {
+            if (isCurrentPlayer(event.currentTarget) && event.currentTarget.error && !seekMedia.current?.loading) {
+              pendingSeek.current = null;
               playbackIntent.current = null;
               setPlayback("error");
             }
           }}
           onTimeUpdate={(event) => {
-            if (isCurrentPlayer(event.currentTarget) && pendingSeek.current === null)
-              setElapsed(event.currentTarget.currentTime);
-          }}
-          onSeeked={(event) => {
-            if (isCurrentPlayer(event.currentTarget) && event.currentTarget.paused) {
-              setElapsed(event.currentTarget.currentTime);
-              setPlayback("paused");
+            if (isCurrentPlayer(event.currentTarget)) {
+              if (pendingSeek.current !== null) finishPendingSeek(event.currentTarget);
+              else setElapsed(event.currentTarget.currentTime);
             }
           }}
+          onSeeked={(event) => {
+            const player = event.currentTarget;
+            if (isCurrentPlayer(player)) {
+              if (pendingSeek.current !== null) finishPendingSeek(player);
+              else if (player.paused && playbackIntent.current !== player) {
+                setElapsed(player.currentTime);
+                setPlayback("paused");
+              }
+            }
+          }}
+          onLoadedData={(event) => finishPendingSeek(event.currentTarget)}
+          onCanPlay={(event) => finishPendingSeek(event.currentTarget)}
+          onProgress={(event) => finishPendingSeek(event.currentTarget)}
+          onSuspend={(event) => finishPendingSeek(event.currentTarget)}
           onLoadedMetadata={(event) => {
             const player = event.currentTarget;
             const seconds = player.duration;
             if (isCurrentPlayer(player) && Number.isFinite(seconds) && seconds > 0) {
               setDuration(seconds);
-              if (pendingSeek.current !== null) {
-                const target = pendingSeek.current;
-                pendingSeek.current = null;
-                player.currentTime = Math.min(target, seconds - 0.04);
-                if (!player.seeking && playbackIntent.current !== player) setPlayback("paused");
-              }
+              finishPendingSeek(player);
             }
           }}
         >

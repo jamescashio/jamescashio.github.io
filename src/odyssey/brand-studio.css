@@ -179,6 +179,8 @@
   place-items: center;
   flex: 1;
   min-height: 270px;
+  container-type: size;
+  overflow: clip;
   perspective: 1100px;
   /* Perspective isolates the raster from the stage. Blend the completed art
      layer against the stage too, while retaining the inner depth transforms. */
@@ -203,7 +205,9 @@
 .bs-parallax {
   position: relative;
   z-index: 1;
-  width: min(100%, 1240px, calc(max(190px, 100dvh - 450px) * 2.68));
+  /* Fit the complete orbit to this window's real height. The 2.5 ratio leaves
+     room for the artwork's depth projection inside its 2.686 aspect ratio. */
+  width: min(100%, 1240px, 250cqh);
   transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
   transform-style: preserve-3d;
   transition: transform 280ms ease-out;

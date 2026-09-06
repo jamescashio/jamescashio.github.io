@@ -6,6 +6,8 @@ Preserve the finished cAshIo artwork, champagne gold, electric cyan, deep ink, O
 
 The six-second Higgsfield film has explicit playback, a keyboard/touch timeline, three frame landmarks, and a deliberate handoff back to the light instrument. Preserve both earlier films and their deep links. Film bytes load only after Play or an explicit seek. No autoplay, loops, or audio. Native ambient motion suspends offscreen, in hidden pages, when paused, and under reduced motion. Static manual changes remain available.
 
+The private host serves complete HTTP 200 video responses without byte ranges; Chrome exposes a zero-length seekable range even after all bytes are buffered. An explicit seek therefore uses a same-origin, in-memory media copy, released when the film changes or closes. Initial Play remains progressive. Zoomed artwork is clipped inside its own viewing window so labels stay clear at tablet sizes.
+
 This is the next owner-only review, version 37.5.0-preview.forge, based on the completed Celestial Signature preview. Public Gatewake remains a separate release. The dated public archive and operational claims are unchanged. Validate the actual rendered layouts, decoded video, touch/keyboard gestures, scrubbing, focus, freeze/resume, no eager media requests, and bounded rendering cost before the online preview.
 
 # Current release — V37.4 Lensing: Gatewake

@@ -378,7 +378,11 @@ test("both Lensing films stay optional and ship their approved local media intac
       "the film remains a lazy, visitor-requested download",
     );
     const csp = document.querySelector('meta[http-equiv="Content-Security-Policy"]').content;
-    assert.match(csp, /(?:^|;)\s*media-src 'self'(?:;|$)/, "cinematic media must remain on the site's origin");
+    assert.match(
+      csp,
+      /(?:^|;)\s*media-src 'self' blob:(?:;|$)/,
+      "cinematic media permits same-origin files and local seekable blobs, with no external media origins",
+    );
   }
 });
 
