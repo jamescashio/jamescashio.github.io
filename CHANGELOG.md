@@ -1,5 +1,14 @@
 # Changelog
 
+## V37.5 — CELESTIAL FORGE · 09-06-2026
+
+- Introduce the Cashio signature in champagne gold and electric cyan, with responsive WebP artwork, registered vector motion, and an optional eight-second animated GIF.
+- Turn the signature viewer into Celestial Forge: a projected orbital light field responds to pointer movement, touch drag, tap ignition, six letter selections, three light treatments, and adjustable field strength.
+- Add The signature awakens, an original six-second Higgsfield film, with a scrubbable timeline, three frame landmarks, and an explicit handoff between cinema and interactive artwork.
+- Preserve both earlier films and shared links; keep all playback silent, finite, and visitor initiated. Support frame seeking on progressive hosts through a bounded same-origin media copy that is released when the film changes or closes.
+- Contain zoomed artwork within its viewing window, preserve original launchers across cinema round trips, and retain keyboard, touch, pause, hidden-page suspension, and static reduced-motion controls.
+- Promote software identity to 37.5.0 while preserving the Lensing Observatory, First Flight, all seven studies, dated evidence, and legacy Command Deck routes.
+
 ## V37.4 — LENSING: GATEWAKE · 09-06-2026
 
 - Add The gate awakens, an original six-second Higgsfield shot with gold-core activation and planetary auroras, optimized to a 1.65 MB silent 1080p film.

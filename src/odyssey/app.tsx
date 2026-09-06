@@ -317,7 +317,7 @@ export function OdysseyApp() {
             </a>
           ))}
         </nav>
-        <p>V37.5 PREVIEW / CELESTIAL FORGE / A HUMAN IN COMMAND</p>
+        <p>V37.5 / CELESTIAL FORGE / A HUMAN IN COMMAND</p>
       </dialog>
       <main id="o-main">
         <section className="o-hero o-scene" id="top" aria-labelledby="hero-title">
@@ -328,7 +328,7 @@ export function OdysseyApp() {
           <div className="o-hero-content">
             <div className="eh-release-mark">
               <b>V37.5</b>
-              <span>CELESTIAL FORGE / PREVIEW</span>
+              <span>CELESTIAL FORGE</span>
             </div>
             <span className="o-kicker">
               <i />
@@ -394,7 +394,7 @@ export function OdysseyApp() {
             </span>
           </button>
           <div className="lens-scene-caption" aria-hidden="true">
-            <span>THE ART OF WHAT COMES NEXT / GATEWAKE</span>
+            <span>THE ART OF WHAT COMES NEXT / CELESTIAL FORGE</span>
             <strong>LENSING</strong>
             <div>
               <i /> ORIGINAL WORLDS. HUMAN INTENT.
@@ -798,7 +798,7 @@ export function OdysseyApp() {
           <BrandMark motion={ambientMotion} />
         </a>
         <span>
-          V37.5 PREVIEW / CELESTIAL FORGE
+          V37.5 / CELESTIAL FORGE
           <br />
           <small>Crafted with GPT-6 Astra · Directed by Doug Cashio</small>
         </span>

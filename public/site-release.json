@@ -1,10 +1,10 @@
 {
-  "experienceVersion": "37.5.0-preview.forge",
+  "experienceVersion": "37.5.0",
   "releaseName": "THE HUMAN RECKONING",
   "visualEdition": "Lensing",
   "featuredExperience": "Lensing Observatory",
-  "status": "preview",
-  "published": false,
+  "status": "released",
+  "published": true,
   "entry": "/",
   "evidenceArchive": {
     "release": "V35 ALL TENS",
@@ -12,7 +12,5 @@
     "routingObserved": "2026-08-21"
   },
   "statement": "A new interactive experience over the existing dated public archive; this release does not establish current infrastructure state.",
-  "legacyEntry": "/command-deck.html",
-  "previewOf": "37.4.0",
-  "previewEdition": "Celestial Forge"
+  "legacyEntry": "/command-deck.html"
 }
