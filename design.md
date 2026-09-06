@@ -1,12 +1,12 @@
-# Current design preview — Lensing
+# Current release — V37.3 Lensing
 
-Final approach adds one approved Higgsfield film, Orbital arrival, as an optional five-second cinematic interlude. Keep the interactive observatory as the primary action. The film opens on a locally optimized poster, plays only on deliberate input, never loops, and pauses when hidden or closed. Preserve a usable still for reduced motion and loading failure. Its silent, original orbital artwork shares the titanium, champagne and cyan palette. Keep captions legible over the interactive scene at tablet widths. This remains a final private review; production publication follows the user's approval of that review.
+Final approach adds one approved Higgsfield film, Orbital arrival, as an optional five-second cinematic interlude. Keep the interactive observatory as the primary action. The film opens on a locally optimized poster, plays only on deliberate input, never loops, and pauses when hidden or closed. Preserve a usable still for reduced motion and loading failure. Its silent, original orbital artwork shares the titanium, champagne and cyan palette. Keep captions legible over the interactive scene at tablet widths. The owner approved this final review for Cashio.us publication on September 6, 2026. Publish through the existing GitHub Pages release path after the production checks pass.
 
-Expedition 02 evolves the observatory into a cinematic journey: purposeful courier traffic traces a fine orbit, inlaid metals catch the light, and three optional eight-second chapters compose arrival, horizon and gateway. Visitors can interrupt the journey with any camera or scene input, pause it, or step through at their own pace. Hidden pages preserve chapter time. Quiet reading text remains still; instrument graphics gain precise material engraving and finite responses. Keep the existing gold/cyan identity and real study behavior. Publish only to the same owner-only review Site; Cashio.us stays on V37.
+Expedition 02 evolves the observatory into a cinematic journey: purposeful courier traffic traces a fine orbit, inlaid metals catch the light, and three optional eight-second chapters compose arrival, horizon and gateway. Visitors can interrupt the journey with any camera or scene input, pause it, or step through at their own pace. Hidden pages preserve chapter time. Quiet reading text remains still; instrument graphics gain precise material engraving and finite responses. Keep the existing gold/cyan identity and real study behavior. Preserve the accepted private review as the visual reference for the public release.
 
 An architectural observatory in deep ink, champagne gold and electric cyan: the visitor sculpts the light and discovers their own perspective in an original orbital world.
 
-This September 6 preview starts from the published V37 Lightfold source. The current request authorizes a preview only. Keep Cashio.us production unchanged; prepare a separate private review and a local preview. The previous release approval recorded below applies to V37, not this new experiment.
+This September 6 release promotes the approved Lensing Final Approach preview from V37 Lightfold. The production baseline and rollback target is commit 84821a6874f77a32144bbf82b3ce0f31a10d783e. Preserve the original Command Deck, bookmarks, dated public evidence, domain, and infrastructure settings.
 
 Keep the Cashio circuit identity, Oxanium headlines, Exo reading text, Jet instrument labels, real study models and dated evidence. The opening gives the artwork an earlier place on phones and presents one primary action: Enter the observatory. First Flight and the seven working studies remain directly available.
 
@@ -14,7 +14,7 @@ The observatory is original procedural 3D artwork: a planet, atmosphere, machine
 
 Study navigation gains distinct vector thumbnails and a clearer index. Champagne edges and open instrument surfaces replace redundant nested frames. Warm paper provides reading contrast in the atlas and operator sections. Motion follows interaction and never moves reading text.
 
-Acceptance: inspect 1440, 390 and 320 widths, confirm real canvas output and visibly different lights/views, pause stability, keyboard focus restoration, reduced motion, model outputs, original starship and no application exceptions. Keep public release facts and preview identity separate. Scores must come from measurements.
+Acceptance: inspect 1440, 390 and 320 widths, confirm real canvas output and visibly different lights/views, pause stability, keyboard focus restoration, reduced motion, model outputs, original starship and no application exceptions. Keep public release identity consistent and separate from dated operational evidence. Scores must come from measurements.
 
 # Prior V37 visual contract — retained release history
 

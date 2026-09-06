@@ -1,6 +1,8 @@
-# cashio.us V37 — Lightfold
+# cashio.us V37.3 — Lensing
 
-Doug Cashio’s interactive universe of AI, security, and owned infrastructure. Lightfold is the V37 edition of **THE HUMAN RECKONING**, crafted with GPT-6 Astra under Doug’s direction.
+Doug Cashio’s interactive universe of AI, security, and owned infrastructure. Lensing is the V37.3 edition of **THE HUMAN RECKONING**, crafted with GPT-6 Astra under Doug’s direction.
+
+Enter the Lensing Observatory to explore an original 3D planet, machined orbital gate, and courier traffic. Choose three light treatments and camera views, or take a finite 24-second journey with pause and manual chapter controls. Orbital arrival adds an optional five-second Higgsfield film, delivered as a locally hosted 1080p clip. It opens on a still poster, plays only on request, never loops, and pauses when hidden.
 
 First Flight is an optional guided starship journey. Four chapters move from arrival to the onboard core, connection loss, and a human permission decision. Visitors can change the illustrative scenario, follow the same twelve requests between routing bays, and share the exact settings. Flight controls adapt to phone and tablet screens; exploration remains available without taking the tour.
 
@@ -20,6 +22,7 @@ The release name is original, inspired by the Butlerian Jihad in Frank Herbert�
 - `/#flight=board`, `hull`, `blackout`, or `permission` opens a flight chapter.
 - `/#mission=hybrid.mixed.offline.held` restores a bounded routing scenario.
 - `/#signature` opens the interactive Living Circuit viewer; it is also reachable from the hero and operator insignia.
+- `/#lensing` opens the interactive observatory; `/#film` opens Orbital arrival on its still poster.
 
 The public fleet export remains dated **28 August 2026**, valid through **27 September 2026** in America/Chicago. Routing inventory remains separately dated **21 August 2026**. Both `status.json` snapshots are unchanged; a new website release does not establish current infrastructure state. Simulations are illustrative and send nothing to an AI service.
 

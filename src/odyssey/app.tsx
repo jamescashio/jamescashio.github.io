@@ -33,8 +33,8 @@ export function OdysseyApp() {
     filmOpener.current = opener;
     setFilm(true);
   }
-  function openLensing() {
-    lensOpener.current = document.activeElement as HTMLElement;
+  function openLensing(opener: HTMLElement) {
+    lensOpener.current = opener;
     setLensing(true);
   }
   const signatureOpener = useRef<HTMLElement | null>(null);
@@ -277,7 +277,7 @@ export function OdysseyApp() {
             </a>
           ))}
         </nav>
-        <p>V37 / LIGHTFOLD / A HUMAN IN COMMAND</p>
+        <p>V37 / LENSING / A HUMAN IN COMMAND</p>
       </dialog>
       <main id="o-main">
         <section className="o-hero o-scene" id="top" aria-labelledby="hero-title">
@@ -287,8 +287,8 @@ export function OdysseyApp() {
           <Starfield motion={ambientMotion} folding={folding} />
           <div className="o-hero-content">
             <div className="eh-release-mark">
-              <b>PREVIEW</b>
-              <span>LENSING / FINAL APPROACH</span>
+              <b>V37.3</b>
+              <span>LENSING / THE HUMAN RECKONING</span>
             </div>
             <span className="o-kicker">
               <i />
@@ -308,7 +308,7 @@ export function OdysseyApp() {
             <div className="o-hero-actions">
               <button
                 className="o-button o-button-gold lens-enter"
-                onClick={openLensing}
+                onClick={(event) => openLensing(event.currentTarget)}
                 aria-label="Enter the observatory"
               >
                 <span className="lens-enter-glyph" aria-hidden="true">
@@ -362,7 +362,7 @@ export function OdysseyApp() {
           </div>
           <div className="o-hero-bottom">
             <span className="o-micro">
-              <b>FINAL DESIGN PREVIEW</b> / 03
+              <b>AN ORIGINAL ORBITAL WORLD</b> / 03
             </span>
             <button onClick={viewArt} className="o-art-link">
               Original artwork
@@ -751,7 +751,7 @@ export function OdysseyApp() {
           <BrandMark motion={motion} />
         </a>
         <span>
-          LENSING / FINAL APPROACH PREVIEW
+          V37.3 / LENSING
           <br />
           <small>Crafted with GPT-6 Astra · Directed by Doug Cashio</small>
         </span>

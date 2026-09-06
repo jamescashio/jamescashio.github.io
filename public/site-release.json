@@ -1,11 +1,10 @@
 {
-  "experienceVersion": "37.3.0-preview.lensing",
+  "experienceVersion": "37.3.0",
   "releaseName": "THE HUMAN RECKONING",
   "visualEdition": "Lensing",
-  "previewEdition": "Final approach",
   "featuredExperience": "Lensing Observatory",
-  "status": "preview",
-  "published": false,
+  "status": "released",
+  "published": true,
   "entry": "/",
   "evidenceArchive": {
     "release": "V35 ALL TENS",
@@ -13,6 +12,5 @@
     "routingObserved": "2026-08-21"
   },
   "statement": "A new interactive experience over the existing dated public archive; this release does not establish current infrastructure state.",
-  "legacyEntry": "/command-deck.html",
-  "previewOf": "37.0.0 Lightfold"
+  "legacyEntry": "/command-deck.html"
 }
