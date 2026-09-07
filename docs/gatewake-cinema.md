@@ -1,6 +1,6 @@
 # V37.4 Lensing: Gatewake — The gate awakens
 
-Original cinematic artwork created with Higgsfield Seedance 2.5 from the existing Cashio orbital hero artwork. The six-second shot animates a quiet approach, gold core activation and a late teal aurora. It is an imagined environment, not operational footage or a physical simulation.
+Original cinematic artwork based on the existing Cashio orbital hero artwork. The six-second shot animates a quiet approach, gold core activation and a late teal aurora. It is an imagined environment, not operational footage or a physical simulation.
 
 The web film is silent H.264 at 1920 × 1080, 24 fps, 145 frames (6.04 seconds), with faststart metadata. Its size is 1,645,726 bytes. The 1600 × 900 WebP poster is 87,202 bytes. The film's SHA-256 is `d3a834e3231c2e8c455e4b34e225844ed0e333ee39dc23ebd5c0bd7e6b00e1d6`; the poster's SHA-256 is `92f9249471bf095cf1e4fcfdc8a511c741741daa8ea84a9dc9f682ce729dddf7`.
 

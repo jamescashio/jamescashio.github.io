@@ -16,7 +16,9 @@ Study navigation consolidates repeated labels and controls on phones. Seven illu
 
 ## Within the light
 
-An original Higgsfield Seedance 2.5 film begins from the existing sanctuary artwork. A deliberate forward camera move and slight arc reveal the twin fluted monoliths and turning amber core. Cyan circuits answer along the machined platform. The film contains no live infrastructure footage.
+This section documents the original Parallax film. The current `/#film=sanctuary` experience is the longer [The inner light](sanctuary.md); the original media files below remain archived.
+
+An original film begins from the existing sanctuary artwork. A deliberate forward camera move and slight arc reveal the twin fluted monoliths and turning amber core. Cyan circuits answer along the machined platform. The film contains no live infrastructure footage.
 
 - Video: `public/assets/parallax/sanctuary-awakens.mp4`, 1920 × 1080, 24 fps, 8 seconds, silent H.264, 3,836,845 bytes.
 - Poster: `public/assets/parallax/sanctuary-awakens-poster.webp`, 1280 × 720 WebP, under 100 KB.

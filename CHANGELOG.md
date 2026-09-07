@@ -1,10 +1,17 @@
 # Changelog
 
+## V37.9 — Sanctuary
+
+- Replace the eight-second sanctuary approach with The inner light, a new fifteen-second film with a deliberate cinematic arc.
+- Add actual film-frame chapter thumbnails, timestamps and current-chapter feedback while retaining paused seeking and explicit playback.
+- Fix small native keyboard timeline steps being discarded, and protect Home, End and arrow-key scrubbing with a persistent browser regression.
+- Preserve the other four films, Vector opening and ship, motion controls, reduced-motion behavior, navigation and dated public evidence.
+
 ## V37.8 — Vector
 
 - Strengthen the carrier's machined hull, recessed machinery, material contrast and directional lighting within bounded geometry and rendering costs.
 - Add a real propulsion throttle and continuous hull inspection, with immediate manual responses under paused and reduced motion. Preserve the twelve-request model and existing flight controls.
-- Bring the original Higgsfield Lightwake film into the opening on explicit request, with finite silent playback, pause, replay, still restoration, and visibility/overlay suspension.
+- Bring the original Lightwake film into the opening on explicit request, with finite silent playback, pause, replay, still restoration, and visibility/overlay suspension.
 - Tighten the phone cockpit around its scene, essential controls and outcomes; disclose precision camera controls and secondary explanations.
 - Refresh ship stills from the final rendered geometry. Preserve the animated Cashio identity, five-film cinema, world workshop, seven studies, dated evidence and legacy routes.
 
@@ -12,14 +19,14 @@
 
 - Shape the real observatory atmosphere with cloud, aurora, and sun controls; save the current rendered perspective as a PNG, including while motion is paused.
 - Trace a finite illustrative request through human intent, orchestration, owned compute, and human review, with manual steps and explicit pause.
-- Enter the computing sanctuary through Within the light, an original eight-second Higgsfield film. Five film choices, frame landmarks, and a focused handoff to the studies connect cinema to interaction.
+- Enter the computing sanctuary through Within the light, an original eight-second film. Five film choices, frame landmarks, and a focused handoff to the studies connect cinema to interaction.
 - Compress repeated study-gallery navigation on phones, retain illustrated keyboard-accessible choices, and give the animated navbar logo a seamless opaque backdrop across page sections.
 - Keep the 195 KB raw / 42 KB gzip initial stylesheet limits, existing rendering budget, lazy media, reduced motion, legacy routes, and dated evidence.
 
 ## V37.6 — Lightwake
 
 - Direct Dawn, Eclipse, and Ion atmosphere controls in the opening, with illustrated entry points for film, signature, and flight.
-- An original eight-second Higgsfield film with three frame landmarks, deliberate playback, and a handoff into the interactive world. All earlier films and links remain available.
+- An original eight-second film with three frame landmarks, deliberate playback, and a handoff into the interactive world. All earlier films and links remain available.
 - Richer machined orbital surfaces, inset fasteners, atmospheric scattering, and coherent resonance fronts within the existing rendering budget.
 - Seven distinct study illustrations, clearer selection, and Previous/Next controls; a deeper principles engine with state-specific lighting and usable narrow-phone controls.
 - Preserve animated Cashio identity, keyboard and touch interaction, global pause, reduced motion, hidden-page suspension, and the dated public archive.
@@ -28,14 +35,14 @@
 
 - Introduce the Cashio signature in champagne gold and electric cyan, with responsive WebP artwork, registered vector motion, and an optional eight-second animated GIF.
 - Turn the signature viewer into Celestial Forge: a projected orbital light field responds to pointer movement, touch drag, tap ignition, six letter selections, three light treatments, and adjustable field strength.
-- Add The signature awakens, an original six-second Higgsfield film, with a scrubbable timeline, three frame landmarks, and an explicit handoff between cinema and interactive artwork.
+- Add The signature awakens, an original six-second film, with a scrubbable timeline, three frame landmarks, and an explicit handoff between cinema and interactive artwork.
 - Preserve both earlier films and shared links; keep all playback silent, finite, and visitor initiated. Support frame seeking on progressive hosts through a bounded same-origin media copy that is released when the film changes or closes.
 - Contain zoomed artwork within its viewing window, preserve original launchers across cinema round trips, and retain keyboard, touch, pause, hidden-page suspension, and static reduced-motion controls.
 - Promote software identity to 37.5.0 while preserving the Lensing Observatory, First Flight, all seven studies, dated evidence, and legacy Command Deck routes.
 
 ## V37.4 — LENSING: GATEWAKE · 09-06-2026
 
-- Add The gate awakens, an original six-second Higgsfield shot with gold-core activation and planetary auroras, optimized to a 1.65 MB silent 1080p film.
+- Add The gate awakens, an original six-second shot with gold-core activation and planetary auroras, optimized to a 1.65 MB silent 1080p film.
 - Connect the optional cinema to the actual interactive world through Enter this world, preserving the original film and its shared link.
 - Refine gate materials and geometry, add deliberate gate ignition and polar auroras, and introduce a finite observatory entrance.
 - Preserve poster-first playback, keyboard and touch controls, immediate reduced-motion views, hidden-page suspension, and strict rendering budgets.
@@ -45,7 +52,7 @@
 
 - Open an interactive orbital observatory with machined titanium, champagne inlays, cyan courier engines, and three light treatments and camera views.
 - Add a finite, visitor-controlled 24-second journey with pause, manual chapters, hidden-tab suspension, and immediate reduced-motion views.
-- Include Orbital arrival, an optional five-second Higgsfield film with a poster-first viewer, explicit playback, and an optimized local 1080p asset.
+- Include Orbital arrival, an optional five-second film with a poster-first viewer, explicit playback, and an optimized local 1080p asset.
 - Refine project navigation, study illustrations, scene captions, and responsive hero composition while preserving the animated Cashio identity.
 - Publish consistent 37.3.0 metadata and preserve the original starship, all seven studies, V35 evidence, and Command Deck bookmarks.
 
