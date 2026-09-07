@@ -15,12 +15,12 @@ type SeekMedia = {
 
 const CLIPS = {
   sanctuary: {
-    title: "Within the light",
-    duration: 8,
-    durationLabel: "AN EIGHT-SECOND FILM",
-    film: "/assets/parallax/sanctuary-awakens.mp4",
-    poster: "/assets/parallax/sanctuary-awakens-poster.webp",
-    description: "Two monoliths. One quiet signal. A closer perspective on an imagined computing sanctuary.",
+    title: "The inner light",
+    duration: 15,
+    durationLabel: "A FIFTEEN-SECOND FILM",
+    film: "/assets/sanctuary/inner-light.mp4",
+    poster: "/assets/sanctuary/inner-light-poster.webp",
+    description: "Cross the threshold. Follow the awakening. Discover the light at the heart of an imagined sanctuary.",
   },
   lightwake: {
     title: "Lightwake",
@@ -55,6 +55,12 @@ const CLIPS = {
     description: "An imagined orbital gate, a distant planet, a quiet approach.",
   },
 } as const;
+
+const SANCTUARY_CHAPTERS = [
+  { name: "Threshold", time: 0, thumbnail: "/assets/sanctuary/threshold.webp" },
+  { name: "Awakening", time: 5, thumbnail: "/assets/sanctuary/awakening.webp" },
+  { name: "Revelation", time: 10.125, thumbnail: "/assets/sanctuary/revelation.webp" },
+] as const;
 
 function timecode(seconds: number) {
   return `0:${seconds.toFixed(1).padStart(4, "0")}`;
@@ -249,7 +255,9 @@ export default function LensingFilm({
       )
         return;
       const seconds = Math.max(0, Math.min(target, player.duration - 0.04));
-      if (Math.abs(player.currentTime - seconds) > 0.06) {
+      // Converge more finely than the timeline's 0.01-second keyboard step.
+      // A larger tolerance discards each ArrowRight before it can accumulate.
+      if (Math.abs(player.currentTime - seconds) > 0.001) {
         if (canSeekTo(player, seconds)) {
           if (prepared.kind === "native") prepared.ranges = "supported";
           player.currentTime = seconds;
@@ -422,7 +430,7 @@ export default function LensingFilm({
         <div>
           <span className="lensing-film-eyebrow">
             {clipId === "sanctuary"
-              ? "PARALLAX"
+              ? "SANCTUARY"
               : clipId === "signature"
                 ? "CELESTIAL FORGE"
                 : clipId === "lightwake"
@@ -469,7 +477,7 @@ export default function LensingFilm({
               decoding="async"
             />
             <span>{CLIPS[id].title}</span>
-            <small aria-hidden="true">0{CLIPS[id].duration}S</small>
+            <small aria-hidden="true">{String(CLIPS[id].duration).padStart(2, "0")}S</small>
           </button>
         ))}
       </div>
@@ -546,38 +554,50 @@ export default function LensingFilm({
         </video>
         <figcaption id="lensing-film-description">
           {clip.description}
-          <span>Original cinematic artwork created with Higgsfield.</span>
+          <span>Original cinematic artwork. An imagined world.</span>
         </figcaption>
       </figure>
-      {(clipId === "signature" || clipId === "lightwake" || clipId === "sanctuary") && (
+      {clipId === "sanctuary" && (
+        <div className="lensing-film-scenes" role="group" aria-label="Explore the sanctuary">
+          {SANCTUARY_CHAPTERS.map((chapter, index) => {
+            const current = elapsed >= chapter.time && elapsed < (SANCTUARY_CHAPTERS[index + 1]?.time ?? Infinity);
+            return (
+              <button
+                key={chapter.name}
+                type="button"
+                onClick={() => seekFilm(chapter.time)}
+                aria-label={`Seek to ${chapter.name}`}
+                aria-current={current ? "step" : undefined}
+              >
+                <img src={chapter.thumbnail} alt="" width="112" height="64" loading="lazy" decoding="async" />
+                <span>
+                  <strong>{chapter.name}</strong>
+                  <small>
+                    0{index + 1} <span aria-hidden="true">/</span> 0:{String(Math.floor(chapter.time)).padStart(2, "0")}
+                  </small>
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+      {(clipId === "signature" || clipId === "lightwake") && (
         <div
           className="lensing-film-chapters"
           role="group"
-          aria-label={
-            clipId === "sanctuary"
-              ? "Explore the sanctuary"
-              : clipId === "lightwake"
-                ? "Explore Lightwake"
-                : "Explore the awakening"
-          }
+          aria-label={clipId === "lightwake" ? "Explore Lightwake" : "Explore the awakening"}
         >
-          {(clipId === "sanctuary"
+          {(clipId === "lightwake"
             ? [
-                { name: "Threshold", time: 0 },
-                { name: "Approach", time: 3 },
-                { name: "Within", time: 6.4 },
+                { name: "First light", time: 0 },
+                { name: "Signal", time: 3 },
+                { name: "Awakening", time: 6.4 },
               ]
-            : clipId === "lightwake"
-              ? [
-                  { name: "First light", time: 0 },
-                  { name: "Signal", time: 3 },
-                  { name: "Awakening", time: 6.4 },
-                ]
-              : [
-                  { name: "Spark", time: 0 },
-                  { name: "Orbit", time: 2 },
-                  { name: "Radiance", time: 4.8 },
-                ]
+            : [
+                { name: "Spark", time: 0 },
+                { name: "Orbit", time: 2 },
+                { name: "Radiance", time: 4.8 },
+              ]
           ).map((chapter, index) => (
             <button
               key={chapter.name}

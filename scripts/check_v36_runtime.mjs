@@ -17,7 +17,7 @@ import {
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = path.join(ROOT, "dist");
 const RELEASE_NAME = "THE HUMAN RECKONING";
-const PAGE_TITLE = "Cashio V37.8 — Vector | Doug Cashio";
+const PAGE_TITLE = "Cashio V37.9 — Sanctuary | Doug Cashio";
 const report = { passed: false, checks: [], failures: [], errors: [], warnings: [] };
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const argument = (name) =>
@@ -60,6 +60,7 @@ async function serveDist() {
     ".png": "image/png",
     ".gif": "image/gif",
     ".jpg": "image/jpeg",
+    ".mp4": "video/mp4",
     ".woff2": "font/woff2",
   };
   const server = createServer(async (request, response) => {
@@ -129,7 +130,7 @@ async function run() {
       const base = `http://127.0.0.1:${resources.server.address().port}`;
       const rootHtml = await fetch(`${base}/`).then((response) => response.text());
       assert.match(rootHtml, /data-prerendered="odyssey"/, "root must contain the prerendered V37 page");
-      assert.ok(rootHtml.includes(`<title>${PAGE_TITLE}</title>`), "root title must identify V37.8 Vector");
+      assert.ok(rootHtml.includes(`<title>${PAGE_TITLE}</title>`), "root title must identify V37.9 Sanctuary");
       assert.match(rootHtml, /Own the iron/, "hero heading must exist before JavaScript");
       assert.doesNotMatch(
         rootHtml,
@@ -141,7 +142,7 @@ async function run() {
       const receipt = await receiptResponse.json();
       const packageJson = JSON.parse(await readFile(path.join(ROOT, "package.json"), "utf8"));
       assert.equal(receipt.experienceVersion, packageJson.version, "receipt and package versions must match");
-      assert.equal(receipt.experienceVersion, "37.8.0", "current receipt must be the V37.8 release");
+      assert.equal(receipt.experienceVersion, "37.9.0", "current receipt must be the V37.9 release");
       assert.equal(receipt.published, true, "release must be explicitly published");
       assert.equal(receipt.releaseName, RELEASE_NAME);
       assert.equal(receipt.visualEdition, "Lensing");
@@ -230,6 +231,10 @@ async function run() {
         assert.ok(point, `click target must be visible, enabled, and unobscured: ${selector}`);
         await send("Input.dispatchMouseEvent", { type: "mousePressed", ...point, button: "left", clickCount: 1 });
         await send("Input.dispatchMouseEvent", { type: "mouseReleased", ...point, button: "left", clickCount: 1 });
+      };
+      const pressKey = async (key, windowsVirtualKeyCode) => {
+        await send("Input.dispatchKeyEvent", { type: "rawKeyDown", key, code: key, windowsVirtualKeyCode });
+        await send("Input.dispatchKeyEvent", { type: "keyUp", key, code: key, windowsVirtualKeyCode });
       };
       const layout = () =>
         evaluate(`(() => {
@@ -374,6 +379,76 @@ async function run() {
       );
       report.checks.push({ name: "System reduced motion stops ambient and request-flow controls", passed: true });
 
+      await navigate("/?runtime=v37-sanctuary-keyboard#film=sanctuary");
+      await waitFor(`document.querySelector('.lensing-film[data-clip="sanctuary"]')?.open`, "Sanctuary dialog");
+      assert.equal(await evaluate(`document.querySelector('.lensing-film video')?.paused`), true);
+      // A chapter selection explicitly loads a paused frame. All subsequent
+      // timeline changes must come from native keyboard input, not JS seeks.
+      await click('[aria-label="Seek to Awakening"]');
+      const pausedSeek = `(() => {
+        const panel = document.querySelector('.lensing-film');
+        const video = panel?.querySelector('video');
+        const range = panel?.querySelector('[aria-label="Seek film"]');
+        return panel?.dataset.playback === 'paused' && video?.readyState >= 2 && video.paused && !video.seeking
+          && Math.abs(video.currentTime - Number(range?.value)) <= 0.015;
+      })()`;
+      await waitFor(pausedSeek, "Sanctuary chapter frame", 30_000);
+      assert.ok(await evaluate(`document.querySelector('.lensing-film video').currentTime >= 4.9`));
+      await evaluate(`document.querySelector('.lensing-film-scrubber').focus()`);
+      assert.equal(await evaluate(`document.activeElement?.matches('.lensing-film-scrubber')`), true);
+      await pressKey("Home", 36);
+      await waitFor(
+        `${pausedSeek} && document.querySelector('.lensing-film video').currentTime < 0.015`,
+        "keyboard Home selects the paused opening frame",
+      );
+      for (let index = 0; index < 15; index++) {
+        await pressKey("ArrowRight", 39);
+        await waitFor(pausedSeek, `paused keyboard step ${index + 1}`);
+      }
+      const keyboardForward = await evaluate(`(() => {
+        const video = document.querySelector('.lensing-film video');
+        const range = document.querySelector('.lensing-film-scrubber');
+        return {time: video.currentTime, range: Number(range.value), paused: video.paused};
+      })()`);
+      assert.ok(
+        keyboardForward.time >= 0.1,
+        `small keyboard steps must accumulate: ${JSON.stringify(keyboardForward)}`,
+      );
+      assert.ok(Math.abs(keyboardForward.time - keyboardForward.range) <= 0.015);
+      for (let index = 0; index < 5; index++) {
+        await pressKey("ArrowLeft", 37);
+        await waitFor(pausedSeek, `paused reverse keyboard step ${index + 1}`);
+      }
+      const keyboardReverse = await evaluate(`document.querySelector('.lensing-film video').currentTime`);
+      assert.ok(keyboardReverse < keyboardForward.time - 0.03, "ArrowLeft must select earlier paused frames");
+      await pressKey("End", 35);
+      await waitFor(
+        `${pausedSeek} && (() => {const v = document.querySelector('.lensing-film video'); return v.duration - v.currentTime < 0.08;})()`,
+        "keyboard End selects the paused final frame",
+      );
+      const keyboardEnd = await evaluate(`(() => {
+        const video = document.querySelector('.lensing-film video');
+        return {time: video.currentTime, duration: video.duration, paused: video.paused};
+      })()`);
+      await delay(200);
+      assert.ok(
+        await evaluate(`(() => {
+          const v = document.querySelector('.lensing-film video');
+          return v.paused && Math.abs(v.currentTime - ${keyboardEnd.time}) <= 0.001;
+        })()`),
+        "keyboard seeking must never start playback",
+      );
+      await pressKey("Escape", 27);
+      await waitFor(
+        `!document.querySelector('.lensing-film') && !location.hash && document.body.style.overflow !== 'hidden' && document.activeElement?.matches('.lens-film-link')`,
+        "film Escape restores the page and launcher focus",
+      );
+      report.checks.push({
+        name: "Sanctuary native keyboard scrubbing advances decoded media without autoplay",
+        passed: true,
+        evidence: { forward: keyboardForward, reverse: keyboardReverse, end: keyboardEnd },
+      });
+
       await send("Emulation.setScriptExecutionDisabled", { value: true });
       await navigate("/?runtime=v36-no-js", 320, 844);
       const noJs = await layout();
@@ -400,7 +475,7 @@ async function run() {
       );
       report.checks.push({ name: "Legacy deck bookmark preserves query and hash", passed: true });
       await navigate("/odyssey.html?runtime=v36-alias");
-      assert.equal(await evaluate("document.title"), PAGE_TITLE, "Odyssey alias must retain V37.8 Vector");
+      assert.equal(await evaluate("document.title"), PAGE_TITLE, "Odyssey alias must retain V37.9 Sanctuary");
       report.checks.push({ name: "Odyssey alias remains available", passed: true });
       assert.deepEqual(report.errors, [], "no runtime exceptions or console errors");
       report.checks.push({ name: "No runtime errors", passed: true });

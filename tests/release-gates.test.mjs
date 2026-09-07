@@ -96,7 +96,7 @@ function expandScript(scripts, name, seen = new Set()) {
 
 test("V37 software gates preserve the independent V35 dated evidence", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "37.8.0");
+  assert.equal(packageJson.version, "37.9.0");
   const lock = JSON.parse(await read("package-lock.json"));
   assert.equal(lock.version, packageJson.version);
   assert.equal(lock.packages[""].version, packageJson.version);
@@ -286,7 +286,7 @@ test("the homepage and Odyssey alias ship the same complete V37 story with a usa
     } else {
       assert.match(robots, /noindex/i, "the compatibility alias must not compete with the canonical homepage");
     }
-    assert.equal(document.title, "Cashio V37.8 — Vector | Doug Cashio");
+    assert.equal(document.title, "Cashio V37.9 — Sanctuary | Doug Cashio");
     const compatibility = document.querySelector("head script#legacy-bookmark-route");
     assert.ok(compatibility, "legacy fragments must be handled before the page activates");
     for (const attr of ["src", "type", "async", "defer"]) assert.equal(compatibility.hasAttribute(attr), false);
@@ -324,7 +324,7 @@ test("the homepage and Odyssey alias ship the same complete V37 story with a usa
 
 test("V37 release manifests agree without redating the independent evidence archive", async () => {
   const manifest = JSON.parse(await read("public/site-release.json"));
-  assert.equal(manifest.experienceVersion, "37.8.0");
+  assert.equal(manifest.experienceVersion, "37.9.0");
   assert.equal(manifest.releaseName, "THE HUMAN RECKONING");
   assert.equal(manifest.visualEdition, "Lensing");
   assert.equal(manifest.featuredExperience, "Lensing Observatory");
@@ -350,7 +350,7 @@ test("all five cinematic films stay optional and ship their approved local media
     ["gate-awakens", "lensing", 2_000_000, 720],
     ["signature-awakens", "celestial", 3_000_000, 700],
     ["lightwake-awakens", "lightwake", 4_000_000, 720],
-    ["sanctuary-awakens", "parallax", 4_000_000, 720],
+    ["inner-light", "sanctuary", 6_000_000, 720],
   ]) {
     const film = `assets/${folder}/${name}.mp4`;
     const poster = `assets/${folder}/${name === "lightwake-awakens" ? "lightwake" : name}-poster.webp`;
@@ -408,6 +408,18 @@ test("all five cinematic films stay optional and ship their approved local media
       /(?:^|;)\s*media-src 'self' blob:(?:;|$)/,
       "cinematic media permits same-origin files and local seekable blobs, with no external media origins",
     );
+  }
+});
+
+test("Sanctuary chapter stills preserve clear frames without eager media delivery", async () => {
+  for (const name of ["threshold", "awakening", "revelation"]) {
+    const relative = `assets/sanctuary/${name}.webp`;
+    const source = await readFile(asset(`public/${relative}`));
+    assert.deepEqual(imageDimensions(source, "webp"), { width: 320, height: 180 });
+    assert.ok(source.length <= 25000, `${name} chapter preview exceeds its delivery budget`);
+    assert.deepEqual(source, await readFile(asset(`dist/${relative}`)));
+    for (const entry of ["dist/index.html", "dist/odyssey.html"])
+      assert.ok(!(await read(entry)).includes(relative), "chapter stills must remain inside the lazy cinema");
   }
 });
 

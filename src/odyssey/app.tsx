@@ -327,7 +327,7 @@ export function OdysseyApp() {
             </a>
           ))}
         </nav>
-        <p>V37.8 / VECTOR / A HUMAN IN COMMAND</p>
+        <p>V37.9 / SANCTUARY / A HUMAN IN COMMAND</p>
       </dialog>
       <main id="o-main">
         <section className="o-hero o-scene" id="top" aria-labelledby="hero-title" data-lightwake-light="dawn">
@@ -339,8 +339,8 @@ export function OdysseyApp() {
           <LightwakeAtmosphere />
           <div className="o-hero-content">
             <div className="eh-release-mark">
-              <b>V37.8</b>
-              <span>VECTOR</span>
+              <b>V37.9</b>
+              <span>SANCTUARY</span>
             </div>
             <span className="o-kicker">
               <i />
@@ -527,7 +527,7 @@ export function OdysseyApp() {
                 Enter the sanctuary
                 <Arrow />
               </button>
-              <span>AN EIGHT-SECOND HIGGSFIELD FILM</span>
+              <span>A FIFTEEN-SECOND FILM</span>
               <a href="#work">
                 See the philosophy at work <Arrow diagonal />
               </a>
@@ -829,7 +829,7 @@ export function OdysseyApp() {
           <BrandMark motion={ambientMotion} />
         </a>
         <span>
-          V37.8 / VECTOR
+          V37.9 / SANCTUARY
           <br />
           <small>Crafted with GPT-6 Astra · Directed by Doug Cashio</small>
         </span>

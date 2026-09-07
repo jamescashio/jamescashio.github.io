@@ -283,6 +283,64 @@
   background: #1b3040;
   border-color: #d8bc8c;
 }
+.lensing-film-scenes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 16px 28px 0;
+}
+.lensing-film .lensing-film-scenes button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 8px;
+  color: #dcebf3;
+  background: #0a1824;
+  border-color: #304656;
+  border-bottom: 2px solid #304656;
+  text-align: left;
+}
+.lensing-film-scenes img {
+  width: 80px;
+  height: 46px;
+  object-fit: cover;
+}
+.lensing-film-scenes strong {
+  display: block;
+  font-weight: 500;
+}
+.lensing-film-scenes small {
+  display: block;
+  margin-top: 7px;
+  color: #a3b8c8;
+  font:
+    10px/1.4 Jet,
+    monospace;
+  font-variant-numeric: tabular-nums;
+}
+.lensing-film-scenes small span {
+  padding-inline: 6px;
+  color: #6f899c;
+}
+.lensing-film .lensing-film-scenes button:hover {
+  background: #152734;
+  border-color: #91b1bf;
+}
+.lensing-film .lensing-film-scenes button[aria-current="step"] {
+  color: #ffe2b5;
+  background: #1b242a;
+  border-color: #867254;
+  border-bottom-color: #f2d3a0;
+}
+.lensing-film-scenes button[aria-current="step"] small {
+  color: #ddcba9;
+}
+@media (min-width: 601px) and (min-height: 541px) {
+  .lensing-film[data-clip="sanctuary"] video {
+    max-height: max(180px, calc(100dvh - 510px));
+  }
+}
 .lensing-film-handoff {
   display: flex;
   align-items: center;
@@ -323,6 +381,29 @@
   background: #ffe5be;
 }
 @media (max-width: 600px) {
+  .lensing-film-scenes {
+    gap: 8px;
+    padding: 14px 16px 0;
+  }
+  .lensing-film .lensing-film-scenes button {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 5px 5px 8px;
+    font-size: 11px;
+    text-align: center;
+  }
+  .lensing-film-scenes img {
+    width: 100%;
+    height: 40px;
+  }
+  .lensing-film-scenes small {
+    margin-top: 5px;
+    font-size: 9px;
+  }
+  .lensing-film-scenes small span {
+    padding-inline: 3px;
+  }
   .lensing-film-chapters {
     gap: 6px;
     padding-inline: 16px;
