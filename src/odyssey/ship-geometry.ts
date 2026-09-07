@@ -18,9 +18,9 @@ export function createExplorationCarrier() {
     new THREE.MeshStandardMaterial({ color, metalness, roughness });
   const ivory = standard(0xb8b6b0, 0.64, 0.29);
   const pearl = new THREE.MeshPhysicalMaterial({
-    color: 0xd7dcde,
-    metalness: 0.68,
-    roughness: 0.24,
+    color: 0xaebbc2,
+    metalness: 0.74,
+    roughness: 0.28,
     clearcoat: 0.32,
     clearcoatRoughness: 0.25,
   });
@@ -70,6 +70,46 @@ export function createExplorationCarrier() {
   glass.customProgramCacheKey = () => "cashio-command-glazing-037-5";
   const cyan = new THREE.MeshBasicMaterial({ color: 0x77e7e7, toneMapped: false });
   const warm = new THREE.MeshBasicMaterial({ color: 0xffd59a, toneMapped: false });
+  const engineLight = new THREE.MeshBasicMaterial({ color: 0x77e7ff, toneMapped: false });
+  engineLight.name = "Variable ion throat light";
+  const enginePhase = { value: 0 };
+  const enginePower = { value: 0.5 };
+  // Surface-scale engraving, not an image texture. Derivative filtering fades
+  // subpixel rulings so distant hull plates remain clean on a phone.
+  const machineFinish = (shader: Parameters<THREE.Material["onBeforeCompile"]>[0], swept: boolean) => {
+    shader.uniforms.vectorSwept = { value: swept ? 1 : 0 };
+    shader.vertexShader =
+      "varying vec3 vVectorFinish;\n" +
+      shader.vertexShader.replace(
+        "#include <begin_vertex>",
+        "#include <begin_vertex>\nvVectorFinish = (modelMatrix * vec4(position, 1.0)).xyz;",
+      );
+    shader.fragmentShader =
+      "varying vec3 vVectorFinish; uniform float vectorSwept;\n" +
+      shader.fragmentShader
+        .replace(
+          "#include <color_fragment>",
+          `#include <color_fragment>
+        vec2 panel = vec2(abs(vVectorFinish.x) + vVectorFinish.z * vectorSwept * 0.42, vVectorFinish.z) * vec2(1.15,0.68);
+        vec2 aa = max(fwidth(panel),vec2(0.001));
+        vec2 joint = min(fract(panel),1.0-fract(panel));
+        vec2 seam = 1.0-smoothstep(aa,aa+vec2(0.014),joint);
+        float panelVariation = fract(sin(dot(floor(panel),vec2(17.13,43.71)))*1493.71);
+        float engraving = max(seam.x,seam.y) * (1.0-smoothstep(0.08,0.4,max(aa.x,aa.y)));
+        diffuseColor.rgb *= (0.86+panelVariation*0.14)*(1.0-engraving*0.34);`,
+        )
+        .replace(
+          "#include <roughnessmap_fragment>",
+          `#include <roughnessmap_fragment>
+        float ruling = 0.5+0.5*sin(vVectorFinish.z*164.0+vVectorFinish.x*7.0);
+        float resolved = 1.0-smoothstep(0.012,0.045,fwidth(vVectorFinish.z));
+        roughnessFactor *= 0.91+resolved*ruling*0.16;`,
+        );
+  };
+  titanium.onBeforeCompile = (shader) => machineFinish(shader, false);
+  titanium.customProgramCacheKey = () => "vector-machined-titanium-v1";
+  gold.onBeforeCompile = (shader) => machineFinish(shader, true);
+  gold.customProgramCacheKey = () => "vector-machined-champagne-v1";
   const unit = new THREE.BoxGeometry(1, 1, 1);
   const detailBatches = new Map<THREE.Group, Map<THREE.Material, THREE.BufferGeometry[]>>();
   const transform = new THREE.Object3D();
@@ -173,7 +213,8 @@ export function createExplorationCarrier() {
     material: THREE.Material,
     position: [number, number, number],
     parent = group,
-  ) => add(new THREE.TorusGeometry(radius, tube, 12, 80), material, position, parent);
+    compact = false,
+  ) => add(new THREE.TorusGeometry(radius, tube, compact ? 8 : 12, compact ? 48 : 80), material, position, parent);
   const seam = (points: number[][], material: THREE.Material, parent = armor, radius = 0.023) => {
     const curve = new THREE.CatmullRomCurve3(points.map((p) => new THREE.Vector3(...(p as [number, number, number]))));
     return add(new THREE.TubeGeometry(curve, points.length * 8, radius, 4, false), material, [0, 0, 0], parent);
@@ -183,9 +224,9 @@ export function createExplorationCarrier() {
   const finishArmor = (geometry: THREE.BufferGeometry) => {
     const normals = geometry.getAttribute("normal");
     const colors = new Float32Array(normals.count * 3);
-    const deck = new THREE.Color(0xd7dcde);
-    const chamfer = new THREE.Color(0x8499a7);
-    const shoulder = new THREE.Color(0x39566a);
+    const deck = new THREE.Color(0xacbbc4);
+    const chamfer = new THREE.Color(0x58798e);
+    const shoulder = new THREE.Color(0x243f53);
     for (let vertex = 0; vertex < normals.count; vertex++) {
       const up = normals.getY(vertex);
       const color = up > 0.88 ? deck : up > 0.35 ? chamfer : shoulder;
@@ -236,6 +277,30 @@ export function createExplorationCarrier() {
     [-5.7, 0.67, 0.24, 0.65],
   ];
   add(finishArmor(loft(dorsal)), facetedArmor, [0, 0, 0], armor, "local").name = "Faceted dorsal armor";
+  // Recessed service cassettes follow the crown's actual slope. Existing batches
+  // carry the dark joints, raised ribs and thin gold center spine in two draws.
+  for (let row = 1; row < dorsal.length - 1; row++) {
+    const [frontZ, frontW, frontH, frontY = 0] = dorsal[row];
+    const [backZ, backW, backH, backY = 0] = dorsal[row + 1];
+    const length = frontZ - backZ;
+    const slope = Math.atan((backH + backY - frontH - frontY) / length);
+    const z = (frontZ + backZ) / 2;
+    const y = (frontH + frontY + backH + backY) / 2;
+    const width = (frontW + backW) * 0.29;
+    detail([width, 0.045, length * 0.73], [0, y + 0.024, z], graphite, armor, [slope, 0, 0]);
+    detail([0.035, 0.02, length * 0.61], [0, y + 0.061, z], gold, armor, [slope, 0, 0]);
+    for (const direction of [-1, 1])
+      for (let rib = 0; rib < 3; rib++) {
+        const offset = (rib - 1) * length * 0.2;
+        detail(
+          [width * 0.31, 0.045, 0.055],
+          [direction * width * 0.3, y + 0.065 - offset * Math.tan(slope), z + offset],
+          gold,
+          armor,
+          [slope, 0, 0],
+        );
+      }
+  }
   for (const side of [-1, 1]) {
     seam(
       dorsal.slice(1).map(([z, w, h, y]) => [side * w * 0.74, (y || 0) + h * 0.74 + 0.018, z]),
@@ -314,6 +379,28 @@ export function createExplorationCarrier() {
       0.045,
       gold,
     );
+    // A raised, tapered heat exchanger gives the broad gold insert a real
+    // shoulder and shadow. Its skins are batched by finish, never by rib.
+    for (const cap of [false, true]) {
+      const ridge = loft([
+        [1.87, 0.025, 0.018],
+        [1.22, cap ? 0.075 : 0.19, cap ? 0.06 : 0.13],
+        [0, cap ? 0.105 : 0.29, cap ? 0.09 : 0.21],
+        [-1.31, cap ? 0.07 : 0.2, cap ? 0.055 : 0.12],
+        [-1.82, 0.025, 0.018],
+      ]);
+      ridge.rotateY(-side * 0.51);
+      ridge.translate(side * 4.36, cap ? 0.37 : 0.25, -1.3);
+      const material = cap ? gold : titanium;
+      const batch = detailBatches.get(armor)!;
+      if (!batch.has(material)) batch.set(material, []);
+      batch.get(material)!.push(ridge);
+    }
+    for (let rib = 0; rib < 7; rib++) {
+      const z = 0.1 - rib * 0.38;
+      const x = side * (3.6 + rib * 0.21);
+      detail([0.29, 0.05, 0.055], [x, 0.235, z], graphite, armor, [0, -side * 0.51, 0]);
+    }
     plate(
       mirror([
         [2.22, -0.1],
@@ -638,7 +725,12 @@ export function createExplorationCarrier() {
     );
   }
 
-  const plumes: THREE.Mesh[] = [];
+  const plumes: {
+    mesh: THREE.Mesh<THREE.ConeGeometry, THREE.MeshBasicMaterial>;
+    length: number;
+    root: number;
+    outer: boolean;
+  }[] = [];
   for (const [x, scale] of [
     [-5.8, 0.82],
     [-0.82, 1.05],
@@ -656,8 +748,10 @@ export function createExplorationCarrier() {
       nozzle,
     );
     casing.rotation.x = Math.PI / 2;
-    ring(0.51 * scale, 0.085 * scale, gold, [0, 0, -0.31], nozzle);
-    ring(0.36 * scale, 0.028 * scale, cyan, [0, 0, -0.325], nozzle);
+    // These small lips do not need the tessellation of the large command rings.
+    // Reallocated triangles pay for the physical clamps and internal stator vanes.
+    ring(0.51 * scale, 0.085 * scale, gold, [0, 0, -0.31], nozzle, true).name = "Machined engine lip";
+    ring(0.36 * scale, 0.028 * scale, engineLight, [0, 0, -0.325], nozzle, true);
     // A tapered, dark liner makes the luminous throat visibly recessed behind the lip.
     const liner = add(
       new THREE.CylinderGeometry(0.39 * scale, 0.245 * scale, 0.44, 24, 1, true),
@@ -668,9 +762,26 @@ export function createExplorationCarrier() {
     liner.rotation.x = -Math.PI / 2;
     liner.name = "Tapered engine cavity";
     add(new THREE.CircleGeometry(0.255 * scale, 24), graphite, [0, 0, 0.15], nozzle).rotation.y = Math.PI;
-    const throat = add(new THREE.CircleGeometry(0.205 * scale, 24), cyan, [0, 0, 0.135], nozzle);
+    const throat = add(new THREE.CircleGeometry(0.205 * scale, 24), engineLight, [0, 0, 0.135], nozzle);
     throat.name = "Recessed luminous throat";
     throat.rotation.y = Math.PI;
+    for (let blade = 0; blade < 12; blade++) {
+      const angle = (blade / 12) * Math.PI * 2;
+      detail(
+        [0.055 * scale, 0.15 * scale, 0.28],
+        [x + Math.sin(angle) * 0.325 * scale, -0.14 + Math.cos(angle) * 0.325 * scale, -7.13],
+        titanium,
+        group,
+        [0, 0, -angle + 0.18],
+      );
+      detail(
+        [0.09 * scale, 0.085 * scale, 0.21],
+        [x + Math.sin(angle) * 0.555 * scale, -0.14 + Math.cos(angle) * 0.555 * scale, -7.09],
+        graphite,
+        group,
+        [0, 0, -angle],
+      );
+    }
     for (let rib = 0; rib < 8; rib++) {
       const angle = (rib * Math.PI) / 4;
       detail(
@@ -694,6 +805,8 @@ export function createExplorationCarrier() {
     // remain readable inside it. This is spatial shading, with no additional clock.
     plumeMaterial.onBeforeCompile = (shader) => {
       shader.uniforms.plumeLength = { value: 2.8 * scale };
+      shader.uniforms.enginePhase = enginePhase;
+      shader.uniforms.enginePower = enginePower;
       shader.vertexShader =
         "varying float vPlumeProgress; uniform float plumeLength;\n" +
         shader.vertexShader.replace(
@@ -701,13 +814,17 @@ export function createExplorationCarrier() {
           "#include <begin_vertex>\nvPlumeProgress = clamp(position.y / plumeLength + 0.5, 0.0, 1.0);",
         );
       shader.fragmentShader =
-        "varying float vPlumeProgress;\n" +
+        "varying float vPlumeProgress; uniform float enginePhase; uniform float enginePower;\n" +
         shader.fragmentShader.replace(
           "#include <color_fragment>",
-          "#include <color_fragment>\ndiffuseColor.rgb *= mix(vec3(1.0), vec3(0.18, 0.48, 1.0), vPlumeProgress);\ndiffuseColor.a *= 1.0 - smoothstep(0.12, 1.0, vPlumeProgress);",
+          `#include <color_fragment>
+          float compression = pow(0.5+0.5*cos(vPlumeProgress*25.13-enginePhase*(1.3+enginePower)),8.0);
+          diffuseColor.rgb *= mix(vec3(0.78,1.0,1.0),vec3(0.10,0.36,1.0),vPlumeProgress);
+          diffuseColor.rgb += vec3(0.18,0.40,0.52)*compression*enginePower;
+          diffuseColor.a *= (1.0-smoothstep(0.08,1.0,vPlumeProgress))*(0.64+compression*0.36);`,
         );
     };
-    plumeMaterial.customProgramCacheKey = () => "cashio-ion-plume-falloff";
+    plumeMaterial.customProgramCacheKey = () => "vector-ion-compression-v1";
     const plume = add(
       new THREE.ConeGeometry(0.33 * scale, 2.8 * scale, 24, 1, true),
       plumeMaterial,
@@ -716,7 +833,12 @@ export function createExplorationCarrier() {
     );
     plume.rotation.x = -Math.PI / 2;
     plume.name = "Fading ion plume";
-    plumes.push(plume);
+    plumes.push({
+      mesh: plume as THREE.Mesh<THREE.ConeGeometry, THREE.MeshBasicMaterial>,
+      length: 2.8 * scale,
+      root: -0.26 * scale,
+      outer: true,
+    });
     const inner = add(
       new THREE.ConeGeometry(0.18 * scale, 1.85 * scale, 16, 1, true),
       new THREE.MeshBasicMaterial({
@@ -732,6 +854,13 @@ export function createExplorationCarrier() {
       nozzle,
     );
     inner.rotation.x = -Math.PI / 2;
+    inner.name = "Contained ion core";
+    plumes.push({
+      mesh: inner as THREE.Mesh<THREE.ConeGeometry, THREE.MeshBasicMaterial>,
+      length: 1.85 * scale,
+      root: -0.245 * scale,
+      outer: false,
+    });
   }
 
   // A physically separate gold relay, deliberately outside the ship's owned boundary.
@@ -823,6 +952,8 @@ export function createExplorationCarrier() {
       material.clippingPlanes = [hullPlane];
       material.clipShadows = true;
       material.onBeforeCompile = (shader) => {
+        if (material instanceof THREE.MeshStandardMaterial)
+          machineFinish(shader, source === blueSteel || source === gold);
         shader.uniforms.hullCutZ = cutZ;
         shader.uniforms.hullCutActive = cutActive;
         shader.vertexShader =
@@ -838,7 +969,7 @@ export function createExplorationCarrier() {
             "float cutEdge = 1.0 - smoothstep(0.015, 0.16, abs(vHullPosition.z - hullCutZ));\noutgoingLight += vec3(0.12, 1.5, 1.9) * cutEdge * hullCutActive;\n#include <opaque_fragment>",
           );
       };
-      material.customProgramCacheKey = () => "cashio-section-037-3";
+      material.customProgramCacheKey = () => "vector-machined-section-v1";
       sectionMaterials.set(source, material);
     }
     object.material = sectionMaterials.get(source)!;
@@ -879,6 +1010,27 @@ export function createExplorationCarrier() {
   scanner.visible = false;
   const energy = createShipEnergy();
   group.add(energy.group);
+  const paintPropulsion = () => {
+    const power = enginePower.value;
+    const reach = Math.min(1, 0.2 + 0.8 * Math.sqrt(power * 2));
+    const width = power >= 0.5 ? 1 - (power - 0.5) * 0.35 : 0.55 + 0.45 * Math.sqrt(power * 2);
+    engineLight.color.setRGB(0.008 + power * 0.39, 0.026 + power * 1.5, 0.038 + power * 1.92);
+    for (const plume of plumes) {
+      plume.mesh.visible = power > 0;
+      const length = reach * (1 + Math.sin(enginePhase.value * 1.5) * 0.035 * power);
+      plume.mesh.scale.set(width, length, width);
+      // Keep the nozzle attachment fixed as the actual gas column grows.
+      plume.mesh.position.z = plume.root - (plume.length * length) / 2;
+      plume.mesh.material.opacity = plume.outer ? 0.18 + power * 0.22 : 0.18 + power * 0.48;
+    }
+  };
+  const setPropulsion = (amount: number) => {
+    if (!Number.isFinite(amount)) return;
+    enginePower.value = THREE.MathUtils.clamp(amount / 100, 0, 1);
+    energy.setPropulsion(amount);
+    paintPropulsion();
+  };
+  setPropulsion(50);
   const setCutawayProgress = (amount: number) => {
     const progress = THREE.MathUtils.clamp(amount, 0, 1);
     const eased = progress * progress * (3 - 2 * progress);
@@ -901,6 +1053,7 @@ export function createExplorationCarrier() {
     group,
     inspected,
     setCutawayProgress,
+    setPropulsion,
     setFlow: energy.setFlow,
     isSurfaceVisible(object: THREE.Object3D, point: THREE.Vector3) {
       return !object.userData.sectionedArmor || (armor.visible && point.z <= cutZ.value);
@@ -912,11 +1065,10 @@ export function createExplorationCarrier() {
     },
     animate(phase: number) {
       energy.animate(phase);
+      enginePhase.value = phase;
+      paintPropulsion();
       core.rotation.y = 0.32 + phase * 0.12;
       coreRings[0].rotation.z = 0.12 + phase * 0.06;
-      plumes.forEach((plume, index) => {
-        plume.scale.y = 1 + Math.sin(phase * 1.5 + index) * 0.065;
-      });
     },
   };
 }

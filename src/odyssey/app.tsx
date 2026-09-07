@@ -11,6 +11,7 @@ import { SystemAtlas } from "./system-atlas";
 import { SovereignWorld } from "./sovereign-world";
 import { BrandMark } from "./brand-mark";
 import { Art } from "./artwork";
+import { HeroCinema } from "./hero-cinema";
 import { ExperienceGlyph, LightwakeAtmosphere, LightwakeControls } from "./lightwake-scene";
 import { ProjectExplorer } from "./project-explorer";
 import { EvidenceConsole } from "./evidence-console";
@@ -326,19 +327,20 @@ export function OdysseyApp() {
             </a>
           ))}
         </nav>
-        <p>V37.7 / PARALLAX / A HUMAN IN COMMAND</p>
+        <p>V37.8 / VECTOR / A HUMAN IN COMMAND</p>
       </dialog>
       <main id="o-main">
         <section className="o-hero o-scene" id="top" aria-labelledby="hero-title" data-lightwake-light="dawn">
           <Art name="orbit" eager className="o-hero-art" />
+          <HeroCinema blocked={paused || flight !== null || signature || lensing || film} />
           <div className="o-hero-shade" />
           <div className="eh-hero-light" aria-hidden="true" />
           <Starfield motion={ambientMotion} folding={folding} />
           <LightwakeAtmosphere />
           <div className="o-hero-content">
             <div className="eh-release-mark">
-              <b>V37.7</b>
-              <span>PARALLAX</span>
+              <b>V37.8</b>
+              <span>VECTOR</span>
             </div>
             <span className="o-kicker">
               <i />
@@ -827,7 +829,7 @@ export function OdysseyApp() {
           <BrandMark motion={ambientMotion} />
         </a>
         <span>
-          V37.7 / PARALLAX
+          V37.8 / VECTOR
           <br />
           <small>Crafted with GPT-6 Astra · Directed by Doug Cashio</small>
         </span>

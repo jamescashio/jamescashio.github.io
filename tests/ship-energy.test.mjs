@@ -45,9 +45,31 @@ test("relay energy appears only for requests with an available and permitted clo
           const input = { architecture, sensitivity, connected, allowPrivateEgress };
           const outcome = computeWorldOutcome(input);
           energy.setFlow(outcome);
-          energy.animate(3.2);
-          assert.equal(relay.visible, outcome.cloud > 0, JSON.stringify(input));
+          for (const power of [0, 50, 100]) {
+            energy.setPropulsion(power);
+            energy.animate(3.2);
+            assert.equal(relay.visible, outcome.cloud > 0, JSON.stringify({ ...input, power }));
+          }
         }
+});
+
+test("propulsion extinguishes and restores the same compression and wake geometry without changing the routing instruments", () => {
+  const energy = createShipEnergy();
+  const diamonds = energy.group.getObjectByName("Engine compression diamonds");
+  const wake = energy.group.getObjectByName("Four ion wakes");
+  energy.setPropulsion(50);
+  const cruise = [...diamonds.instanceMatrix.array];
+  energy.setPropulsion(0);
+  assert.equal(diamonds.visible, false);
+  assert.equal(wake.visible, false);
+  energy.setPropulsion(25);
+  assert.equal(diamonds.visible, true);
+  assert.equal(wake.visible, true);
+  assert.notDeepEqual([...diamonds.instanceMatrix.array], cruise);
+  energy.setPropulsion(50);
+  assert.deepEqual([...diamonds.instanceMatrix.array], cruise, "manual inputs reproduce the same paused frame");
+  energy.setPropulsion(Infinity);
+  assert.deepEqual([...diamonds.instanceMatrix.array], cruise);
 });
 
 test("reactor inspection response follows section progress once and settles without changing routing", () => {

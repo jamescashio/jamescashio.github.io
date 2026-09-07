@@ -68,7 +68,8 @@
   font-size: 16px;
   font-weight: 500;
 }
-.sw-architectures small {
+.sw-architectures small,
+.sw-check-setting small {
   display: block;
   color: #b1c8d5;
   font-size: 12px;
@@ -112,13 +113,6 @@
   font-size: 12px;
   font-weight: 500;
   display: block;
-}
-.sw-check-setting small {
-  display: block;
-  font-size: 12px;
-  line-height: 1.6;
-  color: #b1c8d5;
-  margin-top: 5px;
 }
 .sw-not-applicable {
   opacity: 0.65;
@@ -166,9 +160,6 @@
 .sw-world-ready .sw-world-canvas {
   visibility: visible;
 }
-.sw-world-fallback {
-  opacity: 1;
-}
 .sw-world-fallback img {
   display: block;
   width: 100%;
@@ -205,7 +196,6 @@
   background: linear-gradient(115deg, #f5e2bf, #d6ae70);
   color: #15120e;
   border: 1px solid #fff0d0;
-  font-size: 14px;
   box-shadow: 0 5px 28px #d6ae7020;
   font-family: Oxanium, Exo, sans-serif;
   font-weight: 600;
@@ -234,7 +224,6 @@
   background: #143b4c;
   color: #baf9f2;
   padding: 10px 15px;
-  font-size: 12px;
 }
 .sw-camera-controls {
   display: flex;
@@ -264,7 +253,8 @@
 }
 .sw-world button:focus-visible,
 .sw-world input:focus-visible,
-.sw-world select:focus-visible {
+.sw-world select:focus-visible,
+.sw-world summary:focus-visible {
   outline: 2px solid #77e7e7;
   outline-offset: 4px;
 }
@@ -336,6 +326,8 @@
   letter-spacing: -0.05em;
   color: #77e7e7;
   line-height: 1.2;
+  font-family: Oxanium, Exo, sans-serif;
+  font-variant-numeric: tabular-nums;
 }
 .sw-outcome-counts div:nth-child(2) strong {
   color: #ffc77f;
@@ -380,7 +372,6 @@
 .sw-comparison table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: auto;
   font-size: 12px;
 }
 .sw-comparison caption {
@@ -404,7 +395,6 @@
   padding-left: 0;
 }
 .sw-comparison thead th {
-  font-size: 12px;
   color: #abcbd9;
 }
 .sw-comparison-selected {
@@ -429,22 +419,7 @@
   background: transparent;
   border: 1px solid #47697d;
   color: #c5e0eb;
-  font-size: 12px;
-}
-.sw-inspect-controls button[aria-pressed="true"] {
-  background: #214353;
-  border-color: #ffc77f;
-  color: #ffdaa9;
-}
-.sw-inspection {
-  margin-top: 0;
-}
-.sw-inspection h3 {
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.4;
-  margin: 0 0 8px;
-  color: #ffc77f;
+  font-family: Oxanium, Exo, sans-serif;
 }
 .sw-inspection p {
   font-size: 12px;
@@ -492,41 +467,34 @@
 }
 @media (max-width: 700px) {
   .sw-world-control-head {
-    padding: 22px 18px;
+    padding: 16px;
   }
   .sw-architectures {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 8px;
-    margin-bottom: 20px;
+    gap: 6px;
+    margin-bottom: 14px;
   }
   .sw-architectures label {
-    min-height: 64px;
-    padding: 12px 14px;
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: 76px;
+    padding: 10px 8px;
+    gap: 6px;
   }
   .sw-architectures span {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
     width: 100%;
   }
   .sw-architectures small {
-    max-width: 145px;
-    margin: 0;
-    font-size: 12px;
+    display: none;
   }
   .sw-world-settings {
     grid-template-columns: minmax(0, 1fr);
     gap: 12px;
   }
-  .sw-sensitivity {
-    grid-column: auto;
-  }
   .sw-world-viewport {
-    height: 380px;
+    height: 340px;
   }
   .sw-stage-caption {
-    padding: 18px 16px;
+    padding: 12px 16px;
     font-size: 12px;
     letter-spacing: 0.02em;
   }
@@ -535,7 +503,10 @@
     text-align: right;
   }
   .sw-world-toolbar {
-    padding: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 10px 14px;
+    gap: 10px;
   }
   .sw-camera-controls {
     justify-content: center;
@@ -543,8 +514,8 @@
     flex-wrap: wrap;
   }
   .sw-world-key {
-    padding: 0 18px 20px;
-    gap: 12px 15px;
+    padding: 0 16px 12px;
+    gap: 6px 12px;
   }
   .sw-world-results {
     grid-template-columns: minmax(0, 1fr);
@@ -555,40 +526,20 @@
   }
   .sw-outcome,
   .sw-comparison {
-    padding: 25px 20px;
+    padding: 16px;
   }
   .sw-world-boundary {
     padding: 20px;
-  }
-  .sw-inspect-controls {
-    gap: 5px;
-  }
-  .sw-inspect-controls button {
-    padding: 8px 9px;
   }
   .sw-world-launch {
     padding: 45px 17px 18px;
   }
   .sw-world-launch button {
-    font-size: 12px;
     padding: 13px 17px;
     gap: 20px;
   }
-  .sw-world-launch p {
-    font-size: 12px;
-  }
 }
 @media (max-width: 360px) {
-  .sw-architectures span {
-    display: block;
-  }
-  .sw-architectures small {
-    max-width: none;
-    margin-top: 4px;
-  }
-  .sw-world-viewport {
-    height: 340px;
-  }
   .sw-camera-controls .sw-reset-camera {
     flex: 1 0 100%;
     margin-top: 4px;
@@ -596,24 +547,14 @@
   .sw-comparison th,
   .sw-comparison td {
     padding: 12px 6px;
-    font-size: 12px;
   }
   .sw-comparison th:first-child {
     max-width: 105px;
-  }
-  .sw-inspect-controls button {
-    flex: 1 0 100%;
   }
   .sw-outcome-counts {
     gap: 6px;
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .sw-world label {
-    transition: none;
-  }
-}
-
 /* Flight-deck controls use gold for commands; cyan remains the local-data signal. */
 .sw-ship-views {
   display: flex;
@@ -666,17 +607,10 @@
   background: #0c1723;
   border-top: 1px solid #d2ad7224;
 }
-.sw-inspect-controls button {
-  font-family: Oxanium, Exo, sans-serif;
-  font-size: 12px;
-}
 .sw-inspect-controls button[aria-pressed="true"] {
   background: #bfa2751c;
   color: #f5d7a9;
   border-color: #c8aa7a;
-}
-.sw-inspection h3 {
-  color: #f0d4a8;
 }
 .sw-mission-heading {
   display: flex;
@@ -738,10 +672,6 @@
   margin-left: auto;
   color: #d7b98b;
 }
-.sw-outcome-counts strong {
-  font-family: Oxanium, Exo, sans-serif;
-  font-variant-numeric: tabular-nums;
-}
 @media (max-width: 1000px) {
   .sw-ship-inspector {
     grid-template-columns: 1fr;
@@ -760,24 +690,25 @@
 }
 @media (max-width: 700px) {
   .sw-ship-views {
-    align-items: stretch;
-    padding: 16px;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    padding: 10px 14px;
   }
   .sw-view-presets {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    flex: 1 0 100%;
+    display: contents;
   }
-  .sw-view-presets button {
-    padding: 9px 4px;
-    font-size: 12px;
+  .sw-world .sw-ship-views button {
+    padding: 8px 4px;
+    min-width: 0;
+    height: 100%;
   }
-  .sw-cutaway {
-    flex: 1;
+  .sw-cutaway > span {
+    display: none;
   }
   .sw-ship-inspector {
-    padding: 22px 18px;
+    padding: 10px 14px;
+    gap: 0;
   }
   .sw-ship-inspector .sw-inspect-controls {
     display: grid;
@@ -785,24 +716,82 @@
   }
   .sw-ship-inspector .sw-inspect-controls button {
     padding: 9px 4px;
-    font-size: 12px;
   }
   .sw-mission-heading {
     display: block;
   }
   .sw-mission-heading p {
-    margin-top: 8px;
+    display: none;
   }
   .sw-mission-presets {
-    grid-template-columns: 1fr;
-    gap: 8px;
+    gap: 6px;
+    padding-bottom: 14px;
+    margin-bottom: 14px;
   }
   .sw-mission-presets button {
-    padding: 13px;
-    min-height: 66px;
-    gap: 14px;
+    display: block;
+    padding: 10px 8px;
+    min-height: 64px;
   }
-  .sw-mission-arrow {
-    display: inline;
+  .sw-mission-number,
+  .sw-mission-presets small {
+    display: none;
+  }
+}
+.sw-engineering {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr;
+  align-items: center;
+  gap: 12px 28px;
+  padding: 12px 24px 4px;
+  border-top: 1px solid #d2ad7233;
+}
+.sw-engineering label,
+.sw-camera-details {
+  min-width: 0;
+}
+.sw-engineering label > span {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: #d1e5ec;
+}
+.sw-engineering output {
+  color: #edce9e;
+  font:
+    12px Jet,
+    monospace;
+}
+.sw-engineering input {
+  display: block;
+  width: 100%;
+  height: 44px;
+  margin: 0;
+  accent-color: #edce9e;
+}
+.sw-world summary {
+  min-height: 44px;
+  padding: 10px 0;
+  color: #edce9e;
+  cursor: pointer;
+}
+.sw-camera-details > summary {
+  display: none;
+}
+@media (max-width: 700px) {
+  .sw-engineering {
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+    gap: 6px 18px;
+    padding: 10px 16px 0;
+  }
+  .sw-engineering > span {
+    grid-column: 1 / -1;
+  }
+  .sw-camera-details > summary {
+    display: list-item;
+  }
+  .sw-outcome-counts {
+    margin: 14px 0;
   }
 }

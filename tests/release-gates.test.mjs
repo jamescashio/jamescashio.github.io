@@ -37,6 +37,23 @@ function imageDimensions(buffer, extension) {
   };
 }
 
+test("Vector ship posters retain responsive dimensions, delivery parity and bounded weight", async () => {
+  for (const [name, width, height, budget] of [
+    ["desktop", 1600, 900, 90000],
+    ["mobile", 800, 800, 50000],
+  ]) {
+    const relative = `assets/vector/carrier-${name}.webp`;
+    const source = await readFile(asset(`public/${relative}`));
+    const built = await readFile(asset(`dist/${relative}`));
+    assert.deepEqual(imageDimensions(source, "webp"), { width, height });
+    assert.ok(source.length <= budget, `${name} poster exceeds its delivery budget`);
+    assert.deepEqual(built, source, `${name} poster must be delivered without divergence`);
+    for (const entry of ["dist/index.html", "dist/odyssey.html"]) {
+      assert.ok((await read(entry)).includes(`/${relative}`), `${entry} must retain the ${name} ship fallback`);
+    }
+  }
+});
+
 const requiredWorkflowCommands = [
   "npm ci",
   "npm run lint",
@@ -79,7 +96,7 @@ function expandScript(scripts, name, seen = new Set()) {
 
 test("V37 software gates preserve the independent V35 dated evidence", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "37.7.0");
+  assert.equal(packageJson.version, "37.8.0");
   const lock = JSON.parse(await read("package-lock.json"));
   assert.equal(lock.version, packageJson.version);
   assert.equal(lock.packages[""].version, packageJson.version);
@@ -269,7 +286,7 @@ test("the homepage and Odyssey alias ship the same complete V37 story with a usa
     } else {
       assert.match(robots, /noindex/i, "the compatibility alias must not compete with the canonical homepage");
     }
-    assert.equal(document.title, "Cashio V37.7 — Parallax | Doug Cashio");
+    assert.equal(document.title, "Cashio V37.8 — Vector | Doug Cashio");
     const compatibility = document.querySelector("head script#legacy-bookmark-route");
     assert.ok(compatibility, "legacy fragments must be handled before the page activates");
     for (const attr of ["src", "type", "async", "defer"]) assert.equal(compatibility.hasAttribute(attr), false);
@@ -307,7 +324,7 @@ test("the homepage and Odyssey alias ship the same complete V37 story with a usa
 
 test("V37 release manifests agree without redating the independent evidence archive", async () => {
   const manifest = JSON.parse(await read("public/site-release.json"));
-  assert.equal(manifest.experienceVersion, "37.7.0");
+  assert.equal(manifest.experienceVersion, "37.8.0");
   assert.equal(manifest.releaseName, "THE HUMAN RECKONING");
   assert.equal(manifest.visualEdition, "Lensing");
   assert.equal(manifest.featuredExperience, "Lensing Observatory");

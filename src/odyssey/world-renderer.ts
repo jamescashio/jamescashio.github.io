@@ -23,6 +23,10 @@ export type WorldController = {
   setView: (view: ShipView) => void;
   setFlightShot: (shot: FlightShot) => void;
   setCutaway: (enabled: boolean) => void;
+  /** Visual engine output only; never changes routing, motion state or framing. */
+  setPropulsion: (percent: number) => void;
+  /** Direct, settled partial hull inspection. Existing boolean endpoints remain supported. */
+  setHullProgress: (percent: number) => void;
   select: (zone: ShipZone) => void;
   dispose: () => void;
 };
@@ -93,6 +97,7 @@ export function createSovereignWorld(
   let pointer: { x: number; y: number; yaw: number; pitch: number; id: number; moved: boolean } | null = null;
   let hullProgress = 0,
     hullTarget = 0;
+  let propulsion = 50;
   const raycaster = new THREE.Raycaster();
 
   scene.add(new THREE.HemisphereLight(0xc5dae7, 0x081221, 0.65));
@@ -225,6 +230,7 @@ export function createSovereignWorld(
   glowCanvas.width = glowCanvas.height = 64;
   const glowContext = glowCanvas.getContext("2d");
   let engineGlow: THREE.CanvasTexture | undefined;
+  let engineGlowMaterial: THREE.SpriteMaterial | undefined;
   if (glowContext) {
     const gradient = glowContext.createRadialGradient(32, 32, 0, 32, 32, 32);
     gradient.addColorStop(0, "rgba(200,250,255,.9)");
@@ -243,6 +249,7 @@ export function createSovereignWorld(
       toneMapped: false,
       opacity: 0.75,
     });
+    engineGlowMaterial = glowMaterial;
     for (const x of [-5.8, -0.82, 0.82, 5.8]) {
       const sprite = new THREE.Sprite(glowMaterial);
       sprite.position.set(x, -0.14, -7.64);
@@ -451,12 +458,19 @@ export function createSovereignWorld(
     }
     if (hullProgress !== hullTarget && motion && (!flightMode || playing)) {
       const direction = Math.sign(hullTarget - hullProgress);
-      hullProgress = THREE.MathUtils.clamp(hullProgress + (direction * dt) / 1.45, 0, 1);
+      const step = Math.min(Math.abs(hullTarget - hullProgress), dt / 1.45);
+      hullProgress += direction * step;
       ship.setCutawayProgress(hullProgress);
       renderer.shadowMap.needsUpdate = true;
     }
     cameraPosition();
     renderer.render(scene, camera);
+    canvas.dataset.shipFrameCount = String(Number(canvas.dataset.shipFrameCount || 0) + 1);
+    canvas.dataset.shipPropulsion = String(propulsion);
+    canvas.dataset.shipHullProgress = (hullProgress * 100).toFixed(1);
+    canvas.dataset.shipDrawCalls = String(renderer.info.render.calls);
+    canvas.dataset.shipTriangles = String(renderer.info.render.triangles);
+    canvas.dataset.shipPixels = String(canvas.width * canvas.height);
     last = now;
     lastPaint = now;
     if (motion && (playing || (transition && !transition.cinematic) || (hullProgress !== hullTarget && !flightMode)))
@@ -695,6 +709,20 @@ export function createSovereignWorld(
         ship.setCutawayProgress(hullProgress);
         renderer.shadowMap.needsUpdate = true;
       }
+      render();
+    },
+    setPropulsion(percent) {
+      if (!Number.isFinite(percent)) return;
+      propulsion = THREE.MathUtils.clamp(percent, 0, 100);
+      ship.setPropulsion(propulsion);
+      if (engineGlowMaterial) engineGlowMaterial.opacity = Math.min(1, 0.75 * Math.sqrt(propulsion / 50));
+      render();
+    },
+    setHullProgress(percent) {
+      if (!Number.isFinite(percent)) return;
+      hullTarget = hullProgress = THREE.MathUtils.clamp(percent / 100, 0, 1);
+      ship.setCutawayProgress(hullProgress);
+      renderer.shadowMap.needsUpdate = true;
       render();
     },
     select,

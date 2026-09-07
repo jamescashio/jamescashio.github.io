@@ -138,8 +138,15 @@ export function createShipEnergy() {
   let phase = 0;
   let sectionZ = 9.2;
   let sectionProgress = 0;
+  let propulsion = 0.5;
   let flow: EnergyFlow = { local: 12, cloud: 0, held: 0 };
   const paint = () => {
+    const reach = Math.min(1, 0.2 + 0.8 * Math.sqrt(propulsion * 2));
+    const thrust = Math.sqrt(propulsion * 2);
+    diamonds.visible = propulsion > 0;
+    wake.visible = propulsion > 0;
+    ion.opacity = 0.52 * thrust;
+    wakeMaterial.opacity = 0.46 * thrust;
     // A single restrained aperture response follows the inspection edge, then settles.
     // Endpoint-only updates under reduced motion show the same quiet finished state.
     const inspection = Math.sin(Math.PI * THREE.MathUtils.clamp((sectionProgress - 0.55) / 0.45, 0, 1));
@@ -150,10 +157,10 @@ export function createShipEnergy() {
       const order = index % 4;
       const size = engineScale[engine];
       const breathing = 1 + Math.sin(phase * 2.2 - order * 0.9 + engine) * 0.08;
-      const radius = (0.19 - order * 0.032) * size * breathing;
-      matrix.position.set(engineX[engine], -0.14, -7.8 - order * 0.49 * size);
+      const radius = (0.19 - order * 0.032) * size * breathing * Math.min(1, thrust);
+      matrix.position.set(engineX[engine], -0.14, -7.8 - order * 0.49 * size * reach);
       matrix.rotation.set(0, 0, phase * 0.16 + order * 0.4);
-      matrix.scale.set(radius, radius, (0.29 - order * 0.03) * size);
+      matrix.scale.set(radius, radius, (0.29 - order * 0.03) * size * reach);
       matrix.updateMatrix();
       diamonds.setMatrixAt(index, matrix.matrix);
     }
@@ -161,14 +168,14 @@ export function createShipEnergy() {
     for (let index = 0; index < wake.count; index++) {
       const engine = Math.floor(index / 16);
       const order = index % 16;
-      const travel = (((order / 16 + phase * 0.32) % 1) + 1) % 1;
+      const travel = (((order / 16 + phase * (0.16 + propulsion * 0.32)) % 1) + 1) % 1;
       const angle = order * 2.39996 + engine;
       const radius = (0.055 + travel * 0.19) * engineScale[engine];
       const fade = Math.sin(travel * Math.PI);
       matrix.position.set(
         engineX[engine] + Math.sin(angle) * radius,
         -0.14 + Math.cos(angle) * radius,
-        -7.7 - travel * 3.15 * engineScale[engine],
+        -7.7 - travel * 3.15 * engineScale[engine] * reach,
       );
       matrix.rotation.set(0, 0, 0);
       matrix.scale.set(0.014 * fade, 0.014 * fade, (0.09 + travel * 0.26) * fade);
@@ -235,6 +242,11 @@ export function createShipEnergy() {
       flow = next;
       bayMaterial.opacity = 0.28 + (flow.local / 12) * 0.56;
       relayMaterial.opacity = 0.16 + (flow.cloud / 12) * 0.24;
+      paint();
+    },
+    setPropulsion(amount: number) {
+      if (!Number.isFinite(amount)) return;
+      propulsion = THREE.MathUtils.clamp(amount / 100, 0, 1);
       paint();
     },
   };

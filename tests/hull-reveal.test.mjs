@@ -109,3 +109,67 @@ test("engine throats remain physically recessed and replaced armor finishes leav
     "active material references must never be disposed",
   );
 });
+
+test("propulsion changes the physical exhaust immediately, preserves nozzle roots and bounds, and reuses its resources", () => {
+  const ship = createExplorationCarrier();
+  const plumes = [];
+  const resources = new Set();
+  let triangles = 0;
+  let renderables = 0;
+  ship.group.traverse((object) => {
+    if (!object.geometry) return;
+    resources.add(object.geometry);
+    resources.add(object.material);
+    renderables++;
+    if (object.isMesh)
+      triangles +=
+        ((object.geometry.index?.count ?? object.geometry.attributes.position.count) / 3) *
+        (object.isInstancedMesh ? object.count : 1);
+    if (["Fading ion plume", "Contained ion core"].includes(object.name)) plumes.push(object);
+  });
+  assert.equal(plumes.length, 8);
+  assert.ok(triangles <= 55_902, `the new hardware must fit the existing triangle allocation: ${triangles}`);
+  assert.ok(renderables <= 162, `at most one new batched draw object: ${renderables}`);
+  const root = (mesh) => mesh.position.z + (mesh.geometry.parameters.height * mesh.scale.y) / 2;
+  const initial = plumes.map((mesh) => ({ root: root(mesh), reach: mesh.scale.y, width: mesh.scale.x }));
+  const throat = ship.group.getObjectByName("Recessed luminous throat");
+  const cruiseBrightness = throat.material.color.g;
+  for (const power of [0, 25, 100, 50]) {
+    ship.setPropulsion(power);
+    plumes.forEach((mesh, index) => {
+      assert.equal(mesh.visible, power > 0);
+      assert.ok(Math.abs(root(mesh) - initial[index].root) < 1e-7, "the exhaust stays attached to its nozzle");
+      assert.ok(mesh.scale.y <= initial[index].reach, "manual power cannot extend the authored framing envelope");
+      assert.ok(mesh.scale.x <= initial[index].width);
+    });
+    if (power === 0) assert.ok(throat.material.color.g < cruiseBrightness * 0.05);
+    if (power === 100) assert.ok(throat.material.color.g > cruiseBrightness * 1.8);
+  }
+  const stable = plumes.map((mesh) => [mesh.scale.x, mesh.scale.y, mesh.position.z]);
+  ship.setPropulsion(NaN);
+  assert.deepEqual(
+    plumes.map((mesh) => [mesh.scale.x, mesh.scale.y, mesh.position.z]),
+    stable,
+  );
+  ship.group.traverse((object) => {
+    if (!object.geometry) return;
+    assert.ok(resources.has(object.geometry));
+    assert.ok(resources.has(object.material));
+  });
+});
+
+test("machined hull finish composes with the section shader without adding a render pass", () => {
+  const ship = createExplorationCarrier();
+  const hull = ship.group.getObjectByName("Faceted hull armor");
+  const shader = {
+    uniforms: {},
+    vertexShader: "#include <begin_vertex>",
+    fragmentShader: "#include <color_fragment>\n#include <roughnessmap_fragment>\n#include <opaque_fragment>",
+  };
+  hull.material.onBeforeCompile(shader);
+  assert.match(shader.fragmentShader, /panelVariation/);
+  assert.match(shader.fragmentShader, /hullCut/);
+  assert.match(shader.fragmentShader, /roughnessFactor/);
+  assert.equal(hull.material.transmission, 0);
+  assert.equal(hull.material.clippingPlanes.length, 1);
+});

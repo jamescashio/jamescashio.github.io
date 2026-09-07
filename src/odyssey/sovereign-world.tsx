@@ -67,7 +67,10 @@ export function SovereignWorld({ motion }: { motion: boolean }) {
   });
   const [phase, setPhase] = useState<"idle" | "loading" | "ready" | "unavailable">("idle");
   const [playing, setPlaying] = useState(false);
-  const [cutaway, setCutaway] = useState(false);
+  const [propulsion, setPropulsion] = useState(50);
+  const [hullProgress, setHullProgress] = useState(0);
+  const [compact, setCompact] = useState(false);
+  const cutaway = hullProgress > 0;
   const [cameraView, setCameraView] = useState<string>("hero");
   const [inspection, setInspection] = useState<keyof typeof INSPECTIONS>("human");
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -76,10 +79,20 @@ export function SovereignWorld({ motion }: { motion: boolean }) {
   const launchHadFocus = useRef(false);
   const controller = useRef<WorldController | null>(null);
   const mounted = useRef(true);
-  const latest = useRef({ input, motion, playing });
+  const latest = useRef({ input, motion, playing, propulsion });
   const outcome = computeWorldOutcome(input);
   const [shared, setShared] = useState(false);
   const [shareError, setShareError] = useState(false);
+  useEffect(() => {
+    const query = matchMedia("(max-width: 700px)");
+    const update = () => setCompact(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+  useEffect(() => {
+    latest.current.propulsion = propulsion;
+  }, [propulsion]);
   useEffect(() => {
     const restore = () => {
       const scenario = parseMissionHash(location.hash);
@@ -107,7 +120,7 @@ export function SovereignWorld({ motion }: { motion: boolean }) {
   }
 
   useEffect(() => {
-    latest.current = { input, motion, playing };
+    latest.current = { ...latest.current, input, motion, playing };
     controller.current?.update(input, computeWorldOutcome(input));
     controller.current?.setMotion(motion);
     controller.current?.setPlaying(playing && motion);
@@ -147,8 +160,10 @@ export function SovereignWorld({ motion }: { motion: boolean }) {
       });
       controller.current.setMotion(settings.motion);
       controller.current.setPlaying(false);
+      controller.current.setPropulsion(settings.propulsion);
+      controller.current.setHullProgress(0);
       setPlaying(false);
-      setCutaway(false);
+      setHullProgress(0);
       setCameraView("hero");
       controller.current.select(inspection);
       setPhase("ready");
@@ -159,13 +174,17 @@ export function SovereignWorld({ motion }: { motion: boolean }) {
   const change = <K extends keyof WorldInput>(key: K, value: WorldInput[K]) =>
     setInput((previous) => ({ ...previous, [key]: value }));
   const inspectionContent = INSPECTIONS[inspection];
+  const updateHull = (value: number, animate = false) => {
+    setHullProgress(value);
+    if (animate) controller.current?.setCutaway(value > 0);
+    else controller.current?.setHullProgress(value);
+  };
   const inspect = (zone: keyof typeof INSPECTIONS) => {
     setInspection(zone);
     controller.current?.select(zone);
     if (controller.current) {
       const open = zone === "local";
-      setCutaway(open);
-      controller.current.setCutaway(open);
+      updateHull(open ? 100 : 0, true);
       const view = open ? "top" : "hero";
       setCameraView(view);
       controller.current.setView(view);
@@ -210,11 +229,53 @@ export function SovereignWorld({ motion }: { motion: boolean }) {
             </div>
           )}
         </div>
+        <div className="sw-engineering" role="group" aria-label="Starship engineering">
+          <span className="sw-results-kicker">ENGINEERING</span>
+          <label htmlFor={`${id}-propulsion`}>
+            <span>
+              Propulsion <output htmlFor={`${id}-propulsion`}>{propulsion}%</output>
+            </span>
+            <input
+              id={`${id}-propulsion`}
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              value={propulsion}
+              disabled={phase !== "ready"}
+              aria-label="Starship propulsion"
+              aria-valuetext={`${propulsion} percent`}
+              onChange={(event) => {
+                const value = Number(event.currentTarget.value);
+                setPropulsion(value);
+                controller.current?.setPropulsion(value);
+              }}
+            />
+          </label>
+          <label htmlFor={`${id}-hull`}>
+            <span>
+              Hull inspection <output htmlFor={`${id}-hull`}>{hullProgress}%</output>
+            </span>
+            <input
+              id={`${id}-hull`}
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              value={hullProgress}
+              disabled={phase !== "ready"}
+              aria-label="Hull inspection progress"
+              aria-valuetext={`${hullProgress} percent open`}
+              onChange={(event) => updateHull(Number(event.currentTarget.value))}
+            />
+          </label>
+        </div>
         <div className="sw-ship-views">
           <div className="sw-view-presets" role="group" aria-label="Starship camera views">
             {CAMERA_VIEWS.map((view) => (
               <button
                 key={view.id}
+                ref={view.id === "hero" ? firstCameraControl : undefined}
                 type="button"
                 disabled={phase !== "ready"}
                 aria-pressed={cameraView === view.id}
@@ -231,8 +292,7 @@ export function SovereignWorld({ motion }: { motion: boolean }) {
             aria-pressed={cutaway}
             onClick={() => {
               const next = !cutaway;
-              setCutaway(next);
-              controller.current?.setCutaway(next);
+              updateHull(next ? 100 : 0, true);
             }}
           >
             <span aria-hidden="true">◇</span> {cutaway ? "Close the hull" : "Open the hull"}
@@ -250,68 +310,70 @@ export function SovereignWorld({ motion }: { motion: boolean }) {
               {playing && motion ? "Pause request flow" : "Animate request flow"}
             </button>
           </div>
-          <div className="sw-camera-controls" role="group" aria-label="World camera controls">
-            <button
-              type="button"
-              ref={firstCameraControl}
-              disabled={phase !== "ready"}
-              onClick={() => manualCamera(() => controller.current?.rotate(-0.19))}
-              aria-label="Rotate world left"
-            >
-              ←
-            </button>
-            <button
-              type="button"
-              disabled={phase !== "ready"}
-              onClick={() => manualCamera(() => controller.current?.rotate(0.19))}
-              aria-label="Rotate world right"
-            >
-              →
-            </button>
-            <button
-              type="button"
-              disabled={phase !== "ready"}
-              onClick={() => manualCamera(() => controller.current?.rotate(0, -0.12))}
-              aria-label="Lower world camera"
-            >
-              ↓
-            </button>
-            <button
-              type="button"
-              disabled={phase !== "ready"}
-              onClick={() => manualCamera(() => controller.current?.rotate(0, 0.12))}
-              aria-label="Raise world camera"
-            >
-              ↑
-            </button>
-            <button
-              type="button"
-              disabled={phase !== "ready"}
-              onClick={() => manualCamera(() => controller.current?.zoom(-0.1))}
-              aria-label="Zoom into world"
-            >
-              +
-            </button>
-            <button
-              type="button"
-              disabled={phase !== "ready"}
-              onClick={() => manualCamera(() => controller.current?.zoom(0.1))}
-              aria-label="Zoom out of world"
-            >
-              −
-            </button>
-            <button
-              type="button"
-              className="sw-reset-camera"
-              disabled={phase !== "ready"}
-              onClick={() => {
-                setCameraView("hero");
-                controller.current?.resetView();
-              }}
-            >
-              Reset view
-            </button>
-          </div>
+          <details className="sw-camera-details" open={!compact}>
+            <summary>Adjust camera</summary>
+            <div className="sw-camera-controls" role="group" aria-label="World camera controls">
+              <button
+                type="button"
+                disabled={phase !== "ready"}
+                onClick={() => manualCamera(() => controller.current?.rotate(-0.19))}
+                aria-label="Rotate world left"
+              >
+                ←
+              </button>
+              <button
+                type="button"
+                disabled={phase !== "ready"}
+                onClick={() => manualCamera(() => controller.current?.rotate(0.19))}
+                aria-label="Rotate world right"
+              >
+                →
+              </button>
+              <button
+                type="button"
+                disabled={phase !== "ready"}
+                onClick={() => manualCamera(() => controller.current?.rotate(0, -0.12))}
+                aria-label="Lower world camera"
+              >
+                ↓
+              </button>
+              <button
+                type="button"
+                disabled={phase !== "ready"}
+                onClick={() => manualCamera(() => controller.current?.rotate(0, 0.12))}
+                aria-label="Raise world camera"
+              >
+                ↑
+              </button>
+              <button
+                type="button"
+                disabled={phase !== "ready"}
+                onClick={() => manualCamera(() => controller.current?.zoom(-0.1))}
+                aria-label="Zoom into world"
+              >
+                +
+              </button>
+              <button
+                type="button"
+                disabled={phase !== "ready"}
+                onClick={() => manualCamera(() => controller.current?.zoom(0.1))}
+                aria-label="Zoom out of world"
+              >
+                −
+              </button>
+              <button
+                type="button"
+                className="sw-reset-camera"
+                disabled={phase !== "ready"}
+                onClick={() => {
+                  setCameraView("hero");
+                  controller.current?.resetView();
+                }}
+              >
+                Reset view
+              </button>
+            </div>
+          </details>
         </div>
         <div className="sw-world-key">
           <span>
@@ -337,10 +399,12 @@ export function SovereignWorld({ motion }: { motion: boolean }) {
               </button>
             ))}
           </div>
-          <div className="sw-inspection" aria-live="polite">
-            <h3>{inspectionContent.title}</h3>
-            <p>{inspectionContent.copy}</p>
-          </div>
+          <details className="sw-inspection" open={!compact}>
+            <summary>About {inspectionContent.title.toLowerCase()}</summary>
+            <div aria-live="polite">
+              <p>{inspectionContent.copy}</p>
+            </div>
+          </details>
         </div>
       </div>
       <p className="sw-world-status" role="status" aria-live="polite">
@@ -458,18 +522,22 @@ export function SovereignWorld({ motion }: { motion: boolean }) {
             </div>
           </div>
           <p className="sw-outcome-summary">{outcome.summary}</p>
-          <dl>
-            <div>
-              <dt>Data boundary</dt>
-              <dd>{outcome.dataHandling}</dd>
-            </div>
-            <div>
-              <dt>Connection dependency</dt>
-              <dd>{outcome.internetDependency}</dd>
-            </div>
-          </dl>
+          <details className="sw-outcome-notes" open={!compact}>
+            <summary>Data boundary & connection</summary>
+            <dl>
+              <div>
+                <dt>Data boundary</dt>
+                <dd>{outcome.dataHandling}</dd>
+              </div>
+              <div>
+                <dt>Connection dependency</dt>
+                <dd>{outcome.internetDependency}</dd>
+              </div>
+            </dl>
+          </details>
         </div>
-        <div className="sw-comparison">
+        <details className="sw-comparison" open={!compact}>
+          <summary>Compare all three architectures</summary>
           <table>
             <caption>Compare all three with these same settings</caption>
             <thead>
@@ -501,7 +569,7 @@ export function SovereignWorld({ motion }: { motion: boolean }) {
             “Held” means the model has no permitted route. Moving packets show routing, not measured speed or
             throughput.
           </p>
-        </div>
+        </details>
       </div>
       <div className="sw-share-mission">
         <div>

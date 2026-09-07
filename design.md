@@ -1,4 +1,14 @@
-# Current release — V37.7 Parallax
+# Current release — V37.8 Vector
+
+A convincing machine, alive under your control. Strengthen the carrier's physical form with deeper bevels, recessed machinery, graphite undersides, brushed titanium and restrained champagne trim. The human core and cyan propulsion remain the visual anchors. Preserve the existing Cashio signature, original cinematic artwork, Oxanium/Exo/Jet hierarchy, and quiet reading surfaces.
+
+The starship gains a real 0–100 propulsion control and a continuous hull inspection plane. Both controls change rendered geometry or energy immediately, including with motion paused; they never change the illustrative twelve-request model. Reallocate fine nozzle-ring geometry into visible structure rather than simply increasing complexity. Keep the renderer's lifecycle and First Flight interfaces intact. On phones, put the essential scene, controls, choices and outcomes closer together, with precision camera and secondary explanations in native disclosures.
+
+An explicit Awaken the scene control brings the existing Higgsfield Lightwake film into the actual opening. Keep a prerendered still and zero initial video requests; play eight silent seconds only on request. Pause, resume, replay, restore-still and error recovery remain under visitor control. Suspend for global pause, dialogs, offscreen and hidden pages. Hide the registered Bit overlay while the moving camera would make its alignment inaccurate. Preserve the full cinema, all five film links, observatory workshop, seven studies, and legacy archive.
+
+Software identity: `37.8.0`, `Cashio V37.8 — Vector | Doug Cashio`. Retain `THE HUMAN RECKONING`, `Lensing`, and `Lensing Observatory` in the release receipt. Initial styles remain bounded at 195,000 raw and 42,000 gzip bytes; prefer removing redundant rules to expanding budgets. Refresh ship stills from the actual final geometry. Baseline and rollback: `f4d317c5bc5e0a26ced25bc85746f451137435a8`. Standing publication approval applies. Verify actual desktop, tablet, 390 px and 320 px rendered interactions, keyboard/touch, reduced motion, media lifecycle, all existing release gates, then protected PR/Pages and public asset parity. Preserve evidence dates and label simulation as illustrative.
+
+# Prior release — V37.7 Parallax
 
 Change your perspective. Visitors shape the atmosphere of the Cashio world, save their own rendered view, and follow a request through its human-led architecture. Preserve the approved Cashio signature, original artwork, champagne gold, electric cyan, deep ink, Oxanium headings, Exo body copy, and Jet labels. Keep reading surfaces quiet and make each interaction visibly meaningful.
 
