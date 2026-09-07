@@ -1,5 +1,13 @@
 # Changelog
 
+## V37.10 — Continuum
+
+- Connect the Sanctuary film to an original 3D chamber with selectable monoliths and core, camera and light controls, and a finite six-second awakening.
+- Refine ship reflections, armor seams, gold edges, and cyan engine light without increasing geometry or rendering costs; refresh its responsive stills.
+- Prioritize First Flight on phones and disclose Atmosphere controls, preserving the existing film, signature, and observatory entries.
+- Add a source-backed build story, distinguish Lensing Observatory from Principles Engine, and offer a clearer contact draft.
+- Load Mission Control panel styles on request, with cancellation and retry, while preserving the initial CSS limits, motion preferences, dated evidence, and legacy routes.
+
 ## V37.9 — Sanctuary
 
 - Replace the eight-second sanctuary approach with The inner light, a new fifteen-second film with a deliberate cinematic arc.

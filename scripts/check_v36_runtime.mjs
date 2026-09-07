@@ -17,7 +17,7 @@ import {
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = path.join(ROOT, "dist");
 const RELEASE_NAME = "THE HUMAN RECKONING";
-const PAGE_TITLE = "Cashio V37.9 — Sanctuary | Doug Cashio";
+const PAGE_TITLE = "Cashio V37.10 — Continuum | Doug Cashio";
 const report = { passed: false, checks: [], failures: [], errors: [], warnings: [] };
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const argument = (name) =>
@@ -130,7 +130,7 @@ async function run() {
       const base = `http://127.0.0.1:${resources.server.address().port}`;
       const rootHtml = await fetch(`${base}/`).then((response) => response.text());
       assert.match(rootHtml, /data-prerendered="odyssey"/, "root must contain the prerendered V37 page");
-      assert.ok(rootHtml.includes(`<title>${PAGE_TITLE}</title>`), "root title must identify V37.9 Sanctuary");
+      assert.ok(rootHtml.includes(`<title>${PAGE_TITLE}</title>`), "root title must identify V37.10 Continuum");
       assert.match(rootHtml, /Own the iron/, "hero heading must exist before JavaScript");
       assert.doesNotMatch(
         rootHtml,
@@ -142,7 +142,7 @@ async function run() {
       const receipt = await receiptResponse.json();
       const packageJson = JSON.parse(await readFile(path.join(ROOT, "package.json"), "utf8"));
       assert.equal(receipt.experienceVersion, packageJson.version, "receipt and package versions must match");
-      assert.equal(receipt.experienceVersion, "37.9.0", "current receipt must be the V37.9 release");
+      assert.equal(receipt.experienceVersion, "37.10.0", "current receipt must be the V37.10 release");
       assert.equal(receipt.published, true, "release must be explicitly published");
       assert.equal(receipt.releaseName, RELEASE_NAME);
       assert.equal(receipt.visualEdition, "Lensing");
@@ -449,6 +449,87 @@ async function run() {
         evidence: { forward: keyboardForward, reverse: keyboardReverse, end: keyboardEnd },
       });
 
+      await navigate("/?runtime=v37-continuum#film=sanctuary", 390, 844);
+      await waitFor(`document.querySelector('.lensing-film[data-clip="sanctuary"]')?.open`, "Continuum film");
+      assert.equal(
+        await evaluate(
+          `performance.getEntriesByType('resource').some(entry => /sanctuary-(world|renderer)/.test(entry.name))`,
+        ),
+        false,
+        "the chamber must not load before its explicit entry",
+      );
+      await click(".lensing-film-enter-world");
+      await waitFor(
+        `document.querySelector('.sanctuary-world canvas')?.dataset.ready === 'true'`,
+        "Sanctuary 3D chamber",
+        30_000,
+      );
+      const chamber = await evaluate(`(() => {
+        const world = document.querySelector('.sanctuary-world');
+        const canvas = world.querySelector('canvas');
+        return { ...canvas.dataset, modals: document.querySelectorAll('dialog:modal').length,
+          video: !!document.querySelector('.lensing-film video'), focused: document.activeElement?.matches('.sanctuary-world-return'),
+          overflow: world.scrollWidth > world.clientWidth + 1 || document.documentElement.scrollWidth > innerWidth + 1 };
+      })()`);
+      assert.equal(chamber.modals, 1);
+      assert.equal(chamber.video, false, "entering the chamber releases the film player");
+      assert.equal(chamber.focused, true);
+      assert.equal(chamber.overflow, false);
+      assert.ok(Number(chamber.pixels) <= 2_000_000 && Number(chamber.triangles) > 1000);
+      assert.equal(chamber.running, "false", "reduced motion never starts the awakening");
+      assert.equal(await evaluate(`document.querySelector('.sanctuary-world-awaken').disabled`), true);
+      await delay(200);
+      const stillFrame = await evaluate(`document.querySelector('.sanctuary-world canvas').dataset.frame`);
+      await delay(300);
+      assert.equal(await evaluate(`document.querySelector('.sanctuary-world canvas').dataset.frame`), stillFrame);
+      await click(".sanctuary-world-elements button:nth-child(2)");
+      await waitFor(
+        `document.querySelector('.sanctuary-world canvas').dataset.selection === 'left'`,
+        "select owned intelligence",
+      );
+      await evaluate(`document.querySelector('.sanctuary-world canvas').focus()`);
+      await pressKey("ArrowRight", 39);
+      await waitFor(
+        `document.querySelector('.sanctuary-world canvas').dataset.yaw !== ${JSON.stringify(chamber.yaw)}`,
+        "manual camera works under reduced motion",
+      );
+      await pressKey("Home", 36);
+      await waitFor(
+        `document.querySelector('.sanctuary-world canvas').dataset.yaw === ${JSON.stringify(chamber.yaw)}`,
+        "reset chamber camera",
+      );
+      await evaluate(`document.querySelector('.sanctuary-world-light input').focus()`);
+      await pressKey("End", 35);
+      await waitFor(
+        `document.querySelector('.sanctuary-world canvas').dataset.light === '100'`,
+        "manual chamber light",
+      );
+      await click(".sanctuary-world-return");
+      await waitFor(
+        `document.querySelector('.lensing-film')?.dataset.view === 'film' && !!document.querySelector('.lensing-film video')`,
+        "return to the film",
+      );
+      assert.equal(await evaluate(`document.querySelector('.lensing-film video').preload`), "none");
+      assert.equal(await evaluate(`document.querySelector('.lensing-film video').currentTime`), 0);
+      assert.equal(
+        await evaluate(
+          `performance.getEntriesByType('resource').some(entry => entry.name.includes('inner-light.mp4'))`,
+        ),
+        false,
+        "returning to the still poster must not request film bytes",
+      );
+      assert.equal(await evaluate(`document.querySelector('.lensing-film video').paused`), true);
+      await pressKey("Escape", 27);
+      await waitFor(
+        `!document.querySelector('.lensing-film') && document.body.style.overflow !== 'hidden'`,
+        "close Continuum",
+      );
+      report.checks.push({
+        name: "Continuum chamber loads on request, supports still controls, and releases cleanly",
+        passed: true,
+        evidence: chamber,
+      });
+
       await send("Emulation.setScriptExecutionDisabled", { value: true });
       await navigate("/?runtime=v36-no-js", 320, 844);
       const noJs = await layout();
@@ -475,7 +556,7 @@ async function run() {
       );
       report.checks.push({ name: "Legacy deck bookmark preserves query and hash", passed: true });
       await navigate("/odyssey.html?runtime=v36-alias");
-      assert.equal(await evaluate("document.title"), PAGE_TITLE, "Odyssey alias must retain V37.9 Sanctuary");
+      assert.equal(await evaluate("document.title"), PAGE_TITLE, "Odyssey alias must retain V37.10 Continuum");
       report.checks.push({ name: "Odyssey alias remains available", passed: true });
       assert.deepEqual(report.errors, [], "no runtime exceptions or console errors");
       report.checks.push({ name: "No runtime errors", passed: true });

@@ -17,8 +17,8 @@ export function createShipEnergy() {
       toneMapped: false,
       side: THREE.DoubleSide,
     });
-  const ion = light(0x7edfff, 0.52);
-  const wakeMaterial = light(0x6fd5f2, 0.46);
+  const ion = light(0x65caff, 0.42);
+  const wakeMaterial = light(0x54bfee, 0.4);
   const circuitMaterial = light(0xc0fbff, 0.9);
   const bayMaterial = light(0x75f9e2, 0.84);
   const coreMaterial = light(0x75e6ef, 0.42);
@@ -43,8 +43,8 @@ export function createShipEnergy() {
     "Engine compression diamonds",
   );
   const wake = add(new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), wakeMaterial, 64), "Four ion wakes");
-  const wakeColor = new THREE.Color(0x78dfff);
-  const brightWake = new THREE.Color(0xd5ffff);
+  const wakeColor = new THREE.Color(0x56bfee);
+  const brightWake = new THREE.Color(0xb2e9ff);
   for (let index = 0; index < 64; index++) {
     wake.setColorAt(index, color.copy(wakeColor).lerp(brightWake, (index % 7) / 10));
   }
@@ -145,8 +145,8 @@ export function createShipEnergy() {
     const thrust = Math.sqrt(propulsion * 2);
     diamonds.visible = propulsion > 0;
     wake.visible = propulsion > 0;
-    ion.opacity = 0.52 * thrust;
-    wakeMaterial.opacity = 0.46 * thrust;
+    ion.opacity = 0.42 * thrust;
+    wakeMaterial.opacity = 0.4 * thrust;
     // A single restrained aperture response follows the inspection edge, then settles.
     // Endpoint-only updates under reduced motion show the same quiet finished state.
     const inspection = Math.sin(Math.PI * THREE.MathUtils.clamp((sectionProgress - 0.55) / 0.45, 0, 1));

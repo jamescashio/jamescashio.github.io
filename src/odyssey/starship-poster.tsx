@@ -10,10 +10,10 @@ export function StarshipPoster({
 }) {
   return (
     <picture className={className}>
-      <source media="(max-width: 700px)" srcSet="/assets/vector/carrier-mobile.webp" />
+      <source media="(max-width: 700px)" srcSet="/assets/continuum/carrier-mobile.webp" />
       <img
         className={imageClassName}
-        src="/assets/vector/carrier-desktop.webp"
+        src="/assets/continuum/carrier-desktop.webp"
         width="1600"
         height="900"
         alt="An original titanium and graphite exploration starship with recessed machinery, swept wings, cyan engines, a gold command core, and a separate orbital cloud relay."

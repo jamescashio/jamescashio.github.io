@@ -1,5 +1,25 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Component, lazy, Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import "./lensing-film.css";
+const SanctuaryWorld = lazy(() => import("./sanctuary-world"));
+
+class ChamberBoundary extends Component<{ children: ReactNode; onReturn: () => void }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  render() {
+    return this.state.failed ? (
+      <div className="lensing-film-world-loading" role="status">
+        The chamber could not open. Your film is still available.
+        <button type="button" onClick={this.props.onReturn}>
+          Return to film
+        </button>
+      </div>
+    ) : (
+      this.props.children
+    );
+  }
+}
 
 type Playback = "still" | "loading" | "seeking" | "playing" | "paused" | "ended" | "error";
 export type LensingClip = "sanctuary" | "lightwake" | "signature" | "awakening" | "arrival";
@@ -97,6 +117,7 @@ export default function LensingFilm({
   const pendingSeek = useRef<number | null>(null);
   const seekMedia = useRef<SeekMedia | null>(null);
   const [clipId, setClipId] = useState<LensingClip>(initialClip);
+  const [inside, setInside] = useState(false);
   const [playback, setPlayback] = useState<Playback>("still");
   const [elapsed, setElapsed] = useState(0);
   const [duration, setDuration] = useState<number>(CLIPS[initialClip].duration);
@@ -312,6 +333,26 @@ export default function LensingFilm({
     onClose();
   }
 
+  function enterChamber() {
+    pauseFilm();
+    pendingSeek.current = null;
+    releaseSeekMedia();
+    setInside(true);
+    close.current?.focus({ preventScroll: true });
+    if (dialog.current) dialog.current.scrollTop = 0;
+  }
+
+  function returnToFilm() {
+    setInside(false);
+    setPlayback("still");
+    setElapsed(0);
+    setDuration(clip.duration);
+    requestAnimationFrame(() => {
+      if (dialog.current) dialog.current.scrollTop = 0;
+      close.current?.focus({ preventScroll: true });
+    });
+  }
+
   function selectClip(next: LensingClip) {
     if (next === clipId) return;
     pauseFilm();
@@ -404,8 +445,9 @@ export default function LensingFilm({
       className="lensing-film"
       data-clip={clipId}
       data-playback={playback}
+      data-view={inside ? "world" : "film"}
       aria-labelledby="lensing-film-title"
-      aria-describedby="lensing-film-description"
+      aria-describedby={inside ? undefined : "lensing-film-description"}
       onCancel={(event) => {
         event.preventDefault();
         dismiss();
@@ -436,16 +478,16 @@ export default function LensingFilm({
                 : clipId === "lightwake"
                   ? "LIGHTWAKE"
                   : "LENSING"}{" "}
-            / {clip.durationLabel}
+            / {inside ? "THE SCENE IS YOURS" : clip.durationLabel}
           </span>
-          <h2 id="lensing-film-title">{clip.title}</h2>
+          <h2 id="lensing-film-title">{inside ? "The living Sanctuary" : clip.title}</h2>
         </div>
         <button
           ref={close}
           type="button"
           className="lensing-film-close"
           onClick={dismiss}
-          aria-label={`Close ${clip.title}`}
+          aria-label={inside ? "Close Sanctuary" : `Close ${clip.title}`}
         >
           <span>Close</span>
           <svg viewBox="0 0 20 20" aria-hidden="true">
@@ -453,249 +495,277 @@ export default function LensingFilm({
           </svg>
         </button>
       </header>
-      <div className="lensing-film-collection">
-        <span>CHOOSE YOUR PERSPECTIVE</span>
-        <span>05 FILMS</span>
-      </div>
-      <div ref={choices} className="lensing-film-choices" role="group" aria-label="Choose a film">
-        {(["sanctuary", "lightwake", "signature", "awakening", "arrival"] as const).map((id) => (
-          <button
-            key={id}
-            type="button"
-            className="lensing-film-choice"
-            aria-pressed={clipId === id}
-            aria-label={`${CLIPS[id].title}, ${CLIPS[id].duration}-second film`}
-            onClick={() => selectClip(id)}
+      {inside ? (
+        <ChamberBoundary onReturn={returnToFilm}>
+          <Suspense
+            fallback={
+              <div className="lensing-film-world-loading" role="status">
+                Opening the chamber…{" "}
+                <button type="button" onClick={returnToFilm}>
+                  Return to film
+                </button>
+              </div>
+            }
           >
-            <img
-              className="lensing-film-thumbnail"
-              src={CLIPS[id].poster}
-              alt=""
-              width="64"
-              height="40"
-              loading="lazy"
-              decoding="async"
-            />
-            <span>{CLIPS[id].title}</span>
-            <small aria-hidden="true">{String(CLIPS[id].duration).padStart(2, "0")}S</small>
-          </button>
-        ))}
-      </div>
-      <figure className="lensing-film-frame">
-        <video
-          key={clipId}
-          ref={attachPlayer}
-          src={clip.film}
-          poster={clip.poster}
-          preload="none"
-          muted
-          playsInline
-          aria-label={`${clip.title}, a silent cinematic artwork`}
-          aria-describedby="lensing-film-description"
-          onPlaying={(event) => {
-            const player = event.currentTarget;
-            if (
-              !isCurrentPlayer(player) ||
-              playbackIntent.current !== player ||
-              pendingSeek.current !== null ||
-              document.hidden
-            )
-              player.pause();
-            else if (!player.paused) setPlayback("playing");
-          }}
-          onPause={(event) => {
-            if (isCurrentPlayer(event.currentTarget) && event.currentTarget.paused && pendingSeek.current === null)
-              setPlayback((current) => (current === "playing" || current === "loading" ? "paused" : current));
-          }}
-          onWaiting={(event) => {
-            if (isCurrentPlayer(event.currentTarget) && !event.currentTarget.paused) setPlayback("loading");
-          }}
-          onEnded={(event) => {
-            if (isCurrentPlayer(event.currentTarget) && event.currentTarget.ended && pendingSeek.current === null) {
-              playbackIntent.current = null;
-              setPlayback("ended");
-            }
-          }}
-          onError={(event) => {
-            // load() clears the previous MediaError when changing sources;
-            // a current error is real even while a range probe is pending.
-            if (event.currentTarget.error) failMedia(event.currentTarget);
-          }}
-          onTimeUpdate={(event) => {
-            if (isCurrentPlayer(event.currentTarget)) {
-              if (pendingSeek.current !== null) finishPendingSeek(event.currentTarget);
-              else setElapsed(event.currentTarget.currentTime);
-            }
-          }}
-          onSeeked={(event) => {
-            const player = event.currentTarget;
-            if (isCurrentPlayer(player)) {
-              if (pendingSeek.current !== null) finishPendingSeek(player);
-              else if (player.paused && playbackIntent.current !== player) {
-                setElapsed(player.currentTime);
-                setPlayback("paused");
-              }
-            }
-          }}
-          onLoadedData={(event) => finishPendingSeek(event.currentTarget)}
-          onCanPlay={(event) => finishPendingSeek(event.currentTarget)}
-          onProgress={(event) => finishPendingSeek(event.currentTarget)}
-          onSuspend={(event) => finishPendingSeek(event.currentTarget)}
-          onLoadedMetadata={(event) => {
-            const player = event.currentTarget;
-            const seconds = player.duration;
-            if (isCurrentPlayer(player) && Number.isFinite(seconds) && seconds > 0) {
-              setDuration(seconds);
-              finishPendingSeek(player);
-            }
-          }}
-        >
-          Your browser cannot play this film.
-        </video>
-        <figcaption id="lensing-film-description">
-          {clip.description}
-          <span>Original cinematic artwork. An imagined world.</span>
-        </figcaption>
-      </figure>
-      {clipId === "sanctuary" && (
-        <div className="lensing-film-scenes" role="group" aria-label="Explore the sanctuary">
-          {SANCTUARY_CHAPTERS.map((chapter, index) => {
-            const current = elapsed >= chapter.time && elapsed < (SANCTUARY_CHAPTERS[index + 1]?.time ?? Infinity);
-            return (
-              <button
-                key={chapter.name}
-                type="button"
-                onClick={() => seekFilm(chapter.time)}
-                aria-label={`Seek to ${chapter.name}`}
-                aria-current={current ? "step" : undefined}
-              >
-                <img src={chapter.thumbnail} alt="" width="112" height="64" loading="lazy" decoding="async" />
-                <span>
-                  <strong>{chapter.name}</strong>
-                  <small>
-                    0{index + 1} <span aria-hidden="true">/</span> 0:{String(Math.floor(chapter.time)).padStart(2, "0")}
-                  </small>
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      )}
-      {(clipId === "signature" || clipId === "lightwake") && (
-        <div
-          className="lensing-film-chapters"
-          role="group"
-          aria-label={clipId === "lightwake" ? "Explore Lightwake" : "Explore the awakening"}
-        >
-          {(clipId === "lightwake"
-            ? [
-                { name: "First light", time: 0 },
-                { name: "Signal", time: 3 },
-                { name: "Awakening", time: 6.4 },
-              ]
-            : [
-                { name: "Spark", time: 0 },
-                { name: "Orbit", time: 2 },
-                { name: "Radiance", time: 4.8 },
-              ]
-          ).map((chapter, index) => (
-            <button
-              key={chapter.name}
-              type="button"
-              onClick={() => seekFilm(chapter.time)}
-              aria-label={`Seek to ${chapter.name}`}
-            >
-              <span>0{index + 1}</span> {chapter.name}
-            </button>
-          ))}
-        </div>
-      )}
-      <div className="lensing-film-controls">
-        <button className="lensing-film-play" type="button" onClick={() => void togglePlayback()}>
-          <svg viewBox="0 0 20 20" aria-hidden="true">
-            {active ? (
-              <path d="M6 4v12M14 4v12" />
-            ) : playback === "ended" ? (
-              <path d="M5 5a7 7 0 1 1-1.7 7M5 1v5H1" />
-            ) : (
-              <path d="m6 3 10 7-10 7Z" />
-            )}
-          </svg>
-          {label}
-        </button>
-        <div className="lensing-film-timeline">
-          <div className="lensing-film-status">
-            <span role="status">{status}</span>
-            <span className="lensing-film-time" aria-hidden="true">
-              {timecode(elapsed)} / {timecode(duration)}
-            </span>
+            <SanctuaryWorld motion={motion} onReturn={returnToFilm} onWork={onWork} />
+          </Suspense>
+        </ChamberBoundary>
+      ) : (
+        <>
+          <div className="lensing-film-collection">
+            <span>CHOOSE YOUR PERSPECTIVE</span>
+            <span>05 FILMS</span>
           </div>
-          <input
-            type="range"
-            className="lensing-film-scrubber"
-            min={0}
-            step={0.01}
-            value={Math.min(elapsed, duration)}
-            max={duration}
-            onChange={(event) => seekFilm(Number(event.currentTarget.value))}
-            aria-label="Seek film"
-            aria-valuetext={`${elapsed.toFixed(1)} of ${duration.toFixed(1)} seconds`}
-          />
-        </div>
-      </div>
-      {(clipId === "awakening" || clipId === "lightwake") && (
-        <div className="lensing-film-handoff">
-          <p>The next perspective is yours.</p>
-          <button
-            type="button"
-            className="lensing-film-explore"
-            onClick={() => {
-              pauseFilm();
-              onExplore();
-            }}
-          >
-            Enter this world
-            <svg viewBox="0 0 20 20" aria-hidden="true">
-              <path d="M3 10h14m-5-5 5 5-5 5" />
-            </svg>
-          </button>
-        </div>
-      )}
-      {clipId === "sanctuary" && onWork && (
-        <div className="lensing-film-handoff">
-          <p>From imagined worlds to working ideas.</p>
-          <button
-            type="button"
-            className="lensing-film-explore"
-            onClick={() => {
-              pauseFilm();
-              onWork();
-            }}
-          >
-            Explore the working studies
-            <svg viewBox="0 0 20 20" aria-hidden="true">
-              <path d="M3 10h14m-5-5 5 5-5 5" />
-            </svg>
-          </button>
-        </div>
-      )}
-      {clipId === "signature" && onSignature && (
-        <div className="lensing-film-handoff">
-          <p>Now put the light in your hands.</p>
-          <button
-            type="button"
-            className="lensing-film-explore"
-            onClick={() => {
-              pauseFilm();
-              onSignature();
-            }}
-          >
-            Sculpt this light
-            <svg viewBox="0 0 20 20" aria-hidden="true">
-              <path d="M3 10h14m-5-5 5 5-5 5" />
-            </svg>
-          </button>
-        </div>
+          <div ref={choices} className="lensing-film-choices" role="group" aria-label="Choose a film">
+            {(["sanctuary", "lightwake", "signature", "awakening", "arrival"] as const).map((id) => (
+              <button
+                key={id}
+                type="button"
+                className="lensing-film-choice"
+                aria-pressed={clipId === id}
+                aria-label={`${CLIPS[id].title}, ${CLIPS[id].duration}-second film`}
+                onClick={() => selectClip(id)}
+              >
+                <img
+                  className="lensing-film-thumbnail"
+                  src={CLIPS[id].poster}
+                  alt=""
+                  width="64"
+                  height="40"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span>{CLIPS[id].title}</span>
+                <small aria-hidden="true">{String(CLIPS[id].duration).padStart(2, "0")}S</small>
+              </button>
+            ))}
+          </div>
+          <figure className="lensing-film-frame">
+            <video
+              key={clipId}
+              ref={attachPlayer}
+              src={clip.film}
+              poster={clip.poster}
+              preload="none"
+              muted
+              playsInline
+              aria-label={`${clip.title}, a silent cinematic artwork`}
+              aria-describedby="lensing-film-description"
+              onPlaying={(event) => {
+                const player = event.currentTarget;
+                if (
+                  !isCurrentPlayer(player) ||
+                  playbackIntent.current !== player ||
+                  pendingSeek.current !== null ||
+                  document.hidden
+                )
+                  player.pause();
+                else if (!player.paused) setPlayback("playing");
+              }}
+              onPause={(event) => {
+                if (isCurrentPlayer(event.currentTarget) && event.currentTarget.paused && pendingSeek.current === null)
+                  setPlayback((current) => (current === "playing" || current === "loading" ? "paused" : current));
+              }}
+              onWaiting={(event) => {
+                if (isCurrentPlayer(event.currentTarget) && !event.currentTarget.paused) setPlayback("loading");
+              }}
+              onEnded={(event) => {
+                if (isCurrentPlayer(event.currentTarget) && event.currentTarget.ended && pendingSeek.current === null) {
+                  playbackIntent.current = null;
+                  setPlayback("ended");
+                }
+              }}
+              onError={(event) => {
+                // load() clears the previous MediaError when changing sources;
+                // a current error is real even while a range probe is pending.
+                if (event.currentTarget.error) failMedia(event.currentTarget);
+              }}
+              onTimeUpdate={(event) => {
+                if (isCurrentPlayer(event.currentTarget)) {
+                  if (pendingSeek.current !== null) finishPendingSeek(event.currentTarget);
+                  else setElapsed(event.currentTarget.currentTime);
+                }
+              }}
+              onSeeked={(event) => {
+                const player = event.currentTarget;
+                if (isCurrentPlayer(player)) {
+                  if (pendingSeek.current !== null) finishPendingSeek(player);
+                  else if (player.paused && playbackIntent.current !== player) {
+                    setElapsed(player.currentTime);
+                    setPlayback("paused");
+                  }
+                }
+              }}
+              onLoadedData={(event) => finishPendingSeek(event.currentTarget)}
+              onCanPlay={(event) => finishPendingSeek(event.currentTarget)}
+              onProgress={(event) => finishPendingSeek(event.currentTarget)}
+              onSuspend={(event) => finishPendingSeek(event.currentTarget)}
+              onLoadedMetadata={(event) => {
+                const player = event.currentTarget;
+                const seconds = player.duration;
+                if (isCurrentPlayer(player) && Number.isFinite(seconds) && seconds > 0) {
+                  setDuration(seconds);
+                  finishPendingSeek(player);
+                }
+              }}
+            >
+              Your browser cannot play this film.
+            </video>
+            <figcaption id="lensing-film-description">
+              {clip.description}
+              <span>Original cinematic artwork. An imagined world.</span>
+            </figcaption>
+          </figure>
+          {clipId === "sanctuary" && (
+            <div className="lensing-film-scenes" role="group" aria-label="Explore the sanctuary">
+              {SANCTUARY_CHAPTERS.map((chapter, index) => {
+                const current = elapsed >= chapter.time && elapsed < (SANCTUARY_CHAPTERS[index + 1]?.time ?? Infinity);
+                return (
+                  <button
+                    key={chapter.name}
+                    type="button"
+                    onClick={() => seekFilm(chapter.time)}
+                    aria-label={`Seek to ${chapter.name}`}
+                    aria-current={current ? "step" : undefined}
+                  >
+                    <img src={chapter.thumbnail} alt="" width="112" height="64" loading="lazy" decoding="async" />
+                    <span>
+                      <strong>{chapter.name}</strong>
+                      <small>
+                        0{index + 1} <span aria-hidden="true">/</span> 0:
+                        {String(Math.floor(chapter.time)).padStart(2, "0")}
+                      </small>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          {(clipId === "signature" || clipId === "lightwake") && (
+            <div
+              className="lensing-film-chapters"
+              role="group"
+              aria-label={clipId === "lightwake" ? "Explore Lightwake" : "Explore the awakening"}
+            >
+              {(clipId === "lightwake"
+                ? [
+                    { name: "First light", time: 0 },
+                    { name: "Signal", time: 3 },
+                    { name: "Awakening", time: 6.4 },
+                  ]
+                : [
+                    { name: "Spark", time: 0 },
+                    { name: "Orbit", time: 2 },
+                    { name: "Radiance", time: 4.8 },
+                  ]
+              ).map((chapter, index) => (
+                <button
+                  key={chapter.name}
+                  type="button"
+                  onClick={() => seekFilm(chapter.time)}
+                  aria-label={`Seek to ${chapter.name}`}
+                >
+                  <span>0{index + 1}</span> {chapter.name}
+                </button>
+              ))}
+            </div>
+          )}
+          <div className="lensing-film-controls">
+            <button className="lensing-film-play" type="button" onClick={() => void togglePlayback()}>
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                {active ? (
+                  <path d="M6 4v12M14 4v12" />
+                ) : playback === "ended" ? (
+                  <path d="M5 5a7 7 0 1 1-1.7 7M5 1v5H1" />
+                ) : (
+                  <path d="m6 3 10 7-10 7Z" />
+                )}
+              </svg>
+              {label}
+            </button>
+            <div className="lensing-film-timeline">
+              <div className="lensing-film-status">
+                <span role="status">{status}</span>
+                <span className="lensing-film-time" aria-hidden="true">
+                  {timecode(elapsed)} / {timecode(duration)}
+                </span>
+              </div>
+              <input
+                type="range"
+                className="lensing-film-scrubber"
+                min={0}
+                step={0.01}
+                value={Math.min(elapsed, duration)}
+                max={duration}
+                onChange={(event) => seekFilm(Number(event.currentTarget.value))}
+                aria-label="Seek film"
+                aria-valuetext={`${elapsed.toFixed(1)} of ${duration.toFixed(1)} seconds`}
+              />
+            </div>
+          </div>
+          {(clipId === "awakening" || clipId === "lightwake") && (
+            <div className="lensing-film-handoff">
+              <p>The next perspective is yours.</p>
+              <button
+                type="button"
+                className="lensing-film-explore"
+                onClick={() => {
+                  pauseFilm();
+                  onExplore();
+                }}
+              >
+                Enter this world
+                <svg viewBox="0 0 20 20" aria-hidden="true">
+                  <path d="M3 10h14m-5-5 5 5-5 5" />
+                </svg>
+              </button>
+            </div>
+          )}
+          {clipId === "sanctuary" && (
+            <div className="lensing-film-handoff">
+              <p>The film ends. Your exploration begins.</p>
+              <button type="button" className="lensing-film-explore lensing-film-enter-world" onClick={enterChamber}>
+                Step inside the scene{" "}
+                <svg viewBox="0 0 20 20" aria-hidden="true">
+                  <path d="M3 10h14m-5-5 5 5-5 5" />
+                </svg>
+              </button>
+              {onWork && (
+                <button
+                  type="button"
+                  className="lensing-film-explore"
+                  onClick={() => {
+                    pauseFilm();
+                    onWork();
+                  }}
+                >
+                  Explore the working studies
+                  <svg viewBox="0 0 20 20" aria-hidden="true">
+                    <path d="M3 10h14m-5-5 5 5-5 5" />
+                  </svg>
+                </button>
+              )}
+            </div>
+          )}
+          {clipId === "signature" && onSignature && (
+            <div className="lensing-film-handoff">
+              <p>Now put the light in your hands.</p>
+              <button
+                type="button"
+                className="lensing-film-explore"
+                onClick={() => {
+                  pauseFilm();
+                  onSignature();
+                }}
+              >
+                Sculpt this light
+                <svg viewBox="0 0 20 20" aria-hidden="true">
+                  <path d="M3 10h14m-5-5 5 5-5 5" />
+                </svg>
+              </button>
+            </div>
+          )}
+        </>
       )}
     </dialog>
   );

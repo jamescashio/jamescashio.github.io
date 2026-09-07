@@ -14,6 +14,7 @@ import { Art } from "./artwork";
 import { HeroCinema } from "./hero-cinema";
 import { ExperienceGlyph, LightwakeAtmosphere, LightwakeControls } from "./lightwake-scene";
 import { ProjectExplorer } from "./project-explorer";
+import { BuildStory } from "./build-story";
 import { EvidenceConsole } from "./evidence-console";
 import { Lineage } from "./flight-heritage";
 import type { LensingClip } from "./lensing-film";
@@ -23,9 +24,13 @@ const LensingObservatory = lazy(() => import("./lensing-observatory"));
 const LensingFilm = lazy(() => import("./lensing-film"));
 
 function resolveLauncher(opener: HTMLElement | null, fallback: string) {
-  return opener?.isConnected && opener !== document.body && opener !== document.documentElement
+  return opener?.isConnected &&
+    opener !== document.body &&
+    opener !== document.documentElement &&
+    opener.getClientRects().length
     ? opener
-    : document.querySelector<HTMLElement>(fallback);
+    : ([...document.querySelectorAll<HTMLElement>(fallback)].find((element) => element.getClientRects().length) ??
+        null);
 }
 
 export function OdysseyApp() {
@@ -314,7 +319,8 @@ export function OdysseyApp() {
         <nav>
           {[
             ...nav,
-            { id: "observatory", label: "The observatory" },
+            { id: "lensing", label: "Lensing Observatory" },
+            { id: "observatory", label: "Principles Engine" },
             { id: "evidence", label: "Evidence archive" },
             { id: "lineage", label: "Flight heritage" },
             { id: "operator", label: "The operator" },
@@ -327,7 +333,7 @@ export function OdysseyApp() {
             </a>
           ))}
         </nav>
-        <p>V37.9 / SANCTUARY / A HUMAN IN COMMAND</p>
+        <p>V37.10 / CONTINUUM / A HUMAN IN COMMAND</p>
       </dialog>
       <main id="o-main">
         <section className="o-hero o-scene" id="top" aria-labelledby="hero-title" data-lightwake-light="dawn">
@@ -339,8 +345,8 @@ export function OdysseyApp() {
           <LightwakeAtmosphere />
           <div className="o-hero-content">
             <div className="eh-release-mark">
-              <b>V37.9</b>
-              <span>SANCTUARY</span>
+              <b>V37.10</b>
+              <span>CONTINUUM</span>
             </div>
             <span className="o-kicker">
               <i />
@@ -361,13 +367,19 @@ export function OdysseyApp() {
               <button
                 className="o-button o-button-gold lens-enter"
                 onClick={(event) => openLensing(event.currentTarget)}
-                aria-label="Enter the observatory"
+                aria-label="Enter Lensing Observatory"
               >
                 <span className="lens-enter-glyph" aria-hidden="true">
                   ◉
                 </span>
                 <span>
-                  Enter the observatory<small>IGNITE THE GATE. AWAKEN A WORLD.</small>
+                  Lensing Observatory<small>IGNITE THE GATE. AWAKEN A WORLD.</small>
+                </span>
+                <Arrow />
+              </button>
+              <button className="o-button o-button-gold continuum-first-flight" type="button" onClick={startFlight}>
+                <span>
+                  Take the 30-second flight<small>OPEN THE HULL. KEEP COMMAND.</small>
                 </span>
                 <Arrow />
               </button>
@@ -394,6 +406,15 @@ export function OdysseyApp() {
                 <ExperienceGlyph kind="flight" />
                 <span>First flight</span>
                 <small>BOARD THE SHIP</small>
+              </button>
+              <button
+                className="lens-observatory-link"
+                type="button"
+                onClick={(event) => openLensing(event.currentTarget)}
+              >
+                <ExperienceGlyph kind="orbit" />
+                <span>Lensing Observatory</span>
+                <small>EXPLORE THE ORBIT</small>
               </button>
             </div>
           </div>
@@ -452,6 +473,7 @@ export function OdysseyApp() {
             </p>
           </div>
           <ProjectExplorer motion={ambientMotion} play={play} />
+          <BuildStory />
         </section>
         <section className="o-universe o-scene" id="universe" aria-labelledby="universe-title">
           <div className="o-section-top">
@@ -527,7 +549,7 @@ export function OdysseyApp() {
                 Enter the sanctuary
                 <Arrow />
               </button>
-              <span>A FIFTEEN-SECOND FILM</span>
+              <span>A FIFTEEN-SECOND FILM · THEN STEP INSIDE</span>
               <a href="#work">
                 See the philosophy at work <Arrow diagonal />
               </a>
@@ -556,7 +578,7 @@ export function OdysseyApp() {
           </div>
           <SovereignWorld motion={ambientMotion} />
           <a href="#observatory" className="eh-observatory-link">
-            Explore the orbital instrument
+            Explore the Principles Engine
             <Arrow />
           </a>
         </section>
@@ -668,10 +690,14 @@ export function OdysseyApp() {
             <em>build next?</em>
           </h2>
           <p>
-            A difficult problem. An ambitious idea.
-            <br />A conversation worth having.
+            Tell me what you want to build and your hardest constraint.
+            <br />
+            If a study sparked an idea, start there.
           </p>
-          <a className="o-contact-email" href="mailto:doug@cashio.us">
+          <a
+            className="o-contact-email"
+            href="mailto:doug@cashio.us?subject=An%20idea%20from%20Cashio&amp;body=What%20I%20want%20to%20build%3A%0A%0AMy%20hardest%20constraint%3A%0A%0AThe%20study%20or%20idea%20that%20caught%20my%20attention%3A%0A"
+          >
             doug@cashio.us
             <Arrow diagonal />
           </a>
@@ -745,7 +771,7 @@ export function OdysseyApp() {
         <Suspense
           fallback={
             <div className="ff-loading" role="status">
-              Opening the observatory…
+              Opening Lensing Observatory…
             </div>
           }
         >
@@ -757,7 +783,7 @@ export function OdysseyApp() {
               setLensing(false);
               if (location.hash === "#lensing") history.replaceState(null, "", location.pathname + location.search);
               requestAnimationFrame(() =>
-                resolveLauncher(lensOpener.current, ".lens-enter")?.focus({
+                resolveLauncher(lensOpener.current, ".lens-enter, .lens-observatory-link")?.focus({
                   preventScroll: true,
                 }),
               );
@@ -815,8 +841,10 @@ export function OdysseyApp() {
                 if (location.hash.startsWith("#flight="))
                   history.replaceState(null, "", location.pathname + location.search);
                 requestAnimationFrame(() => {
-                  const opener =
-                    flightOpener.current ?? document.querySelector<HTMLElement>(".o-hero-actions > button");
+                  const opener = resolveLauncher(
+                    flightOpener.current,
+                    ".continuum-first-flight, .lens-flight-link, .lens-enter",
+                  );
                   opener?.focus({ preventScroll: true });
                 });
               }
@@ -829,7 +857,7 @@ export function OdysseyApp() {
           <BrandMark motion={ambientMotion} />
         </a>
         <span>
-          V37.9 / SANCTUARY
+          V37.10 / CONTINUUM
           <br />
           <small>Crafted with GPT-6 Astra · Directed by Doug Cashio</small>
         </span>

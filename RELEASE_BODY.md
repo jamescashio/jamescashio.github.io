@@ -1,15 +1,17 @@
-# V37.9 — Sanctuary: The inner light
+# V37.10 — Continuum
 
-The sanctuary previously offered a quiet eight-second approach. The inner light expands it into a fifteen-second film: an approach between the monoliths, a close orbit of the awakening amber core, and a wide reveal of the illuminated chamber. Three thumbnail chapters use actual frames and seek to paused moments at 0, 5 and 10.125 seconds.
+The Sanctuary film now leads into an original 3D chamber. Visitors can orbit the monoliths and amber core, select their meaning, adjust the light, and trigger a finite six-second awakening. Camera and light controls remain usable with motion paused; a still fallback preserves the scene when WebGL is unavailable. Returning to the film releases the renderer and restores its poster without autoplay.
 
-The silent 1080p film is optimized to 5.24 MB and remains optional. Desktop controls fit below the picture, mobile chapter tiles keep clear touch targets, and the other four films, Vector opening, animated identity, interactive ship, world workshop and legacy routes remain available. Production-tool credits are removed from visitor copy and public documentation.
+The carrier gains more defined metal reflections, fine matte seams, champagne edges, and richer cyan engine illumination at unchanged geometry and rendering costs. Fresh responsive stills match the final interactive model.
 
-Fix a keyboard timeline defect where a 60 ms seek tolerance swallowed every 10 ms arrow-key step. The 1 ms tolerance preserves native seeking, paused chapter selection, bounded no-range recovery, cancellation and hidden-tab pause. A persistent browser regression now exercises actual Home, End and repeated arrow-key input.
+On phones, First Flight becomes the primary action and Atmosphere expands without covering the headline. A source-backed build story explains the preserved archive, Lensing Observatory and Principles Engine have distinct names, and contact opens a structured draft. Mission Control loads its panel styles only when requested, with cancellation and retry, keeping the existing initial CSS budgets.
+
+All five films, seven studies, animated identity, dated evidence, legacy routes, and motion controls remain available.
 
 ## Verification
 
-- 394 automated tests, 15 required V37 runtime groups, legacy layout verification, lint, formatting, artifact and public-safety gates.
-- 10 source-browser groups covering desktop/mobile layout, real decoded chapter frames, keyboard input, accessibility, reduced motion and player lifecycle.
-- Built-asset hashes and canonical/legacy route checks; production-policy and no-range acceptance checks before merge, followed by public playback and asset verification after deployment.
+- Source and model tests, production build, artifact contracts, lint, formatting, and public-repository release gates.
+- Browser checks cover desktop, tablet, narrow phones, real media frames, keyboard and touch controls, reduced motion, hidden-page suspension, loading failures, focus return, and 3D cleanup.
+- Protected publication verifies the exact tested commit, followed by the public receipt, canonical and legacy routes, live interaction, and delivered asset hashes.
 
-Rollback: `f4c0707089ed5e31666dcb2b2774d0679d41f5d0`.
+Rollback: `4de877e57e1035866f79c2f47c6a0299ae4a6e70`.

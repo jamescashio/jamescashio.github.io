@@ -1,6 +1,8 @@
-# cashio.us V37.9 — Sanctuary
+# cashio.us V37.10 — Continuum
 
-Doug Cashio’s interactive universe of AI, security, and owned infrastructure. The inner light expands the Sanctuary into a fifteen-second, three-part film, with a stronger approach, an awakening core and an expansive final reveal. Thumbnail chapter controls provide direct, paused access to each sequence. The film stays silent and downloads only when requested.
+Doug Cashio’s interactive universe of AI, security, and owned infrastructure. Continuum connects the fifteen-second Sanctuary film to an original, explorable 3D chamber. Orbit its twin monoliths, select the amber core, shape the light, and trigger a finite six-second awakening. The film and chamber load only when requested; returning to the film restores its still poster.
+
+Refined ship materials, recessed seams, and cyan engine light carry into fresh responsive stills. On phones, First Flight becomes the primary opening action and a compact Atmosphere disclosure keeps lighting within reach. An evidence-backed build story explains the preserved public archive. Lensing Observatory and Principles Engine have distinct names throughout navigation, and the contact invitation opens a structured email draft. Mission Control loads its panel styles on request, keeping the initial stylesheet within the existing budget.
 
 Vector extends the Lensing edition of **THE HUMAN RECKONING**, crafted with GPT-6 Astra under Doug’s direction.
 
@@ -30,11 +32,11 @@ The release name is original, inspired by the Butlerian Jihad in Frank Herbert�
 - `/odyssey.html` remains a compatible alias, canonicalized to `/`.
 - `/command-deck.html` preserves the V35 command deck. Existing `/#deck=…` bookmarks redirect there with their query and selected deck intact.
 - `/command.html` remains the explicitly marked May 2026 historical archive.
-- `/site-release.json` describes software version **37.9.0**, visual edition **Lensing**, and featured experience **Lensing Observatory**; `/event-horizon-release.json` is an identical compatibility alias.
+- `/site-release.json` describes software version **37.10.0**, visual edition **Lensing**, and featured experience **Lensing Observatory**; `/event-horizon-release.json` is an identical compatibility alias.
 - `/#flight=board`, `hull`, `blackout`, or `permission` opens a flight chapter.
 - `/#mission=hybrid.mixed.offline.held` restores a bounded routing scenario.
 - `/#signature` opens Celestial Forge; it is also reachable from the hero, operator insignia, and signature film.
-- `/#film=sanctuary` opens Within the light, with Threshold, Approach, and Within frame landmarks; Explore the working studies closes the cinema and focuses the study heading.
+- `/#film=sanctuary` opens The inner light, with Threshold, Awakening, and Revelation frame landmarks. Step inside the scene opens the interactive chamber; Explore the working studies closes the cinema and focuses the study heading.
 - `/#film=lightwake` opens Lightwake; Enter this world hands off to the interactive observatory.
 - `/#film=signature` opens The signature awakens on a still poster. Sculpt this light opens the interactive signature.
 - `/#lensing` opens the interactive observatory; `/#film` opens Orbital arrival on its still poster.

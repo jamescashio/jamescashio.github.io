@@ -20,6 +20,7 @@ import "./lensing-surfaces.css";
 import "./lightwake.css";
 import "./project-explorer-lightwake.css";
 import "./hero-cinema.css";
+import "./build-story.css";
 
 const root = document.getElementById("odyssey-root")!;
 const app = (

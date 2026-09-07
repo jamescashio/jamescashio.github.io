@@ -1,3 +1,15 @@
+# V37.10 — Continuum
+
+**Creative thesis:** The cinematic world becomes a place you can operate, and every spectacle leads to a clear human decision.
+
+Carry the Sanctuary film into a lazy, genuinely three-dimensional chamber: the same twin graphite monoliths, amber core, warm limestone, concentric platform and desert horizon. Keep its ending composition as the starting visual reference. Enter only on request; the film remains available. Orbit, select an architectural element, awaken its light or adjust the illumination. A still fallback, direct camera controls, reduced motion, hidden-page suspension and complete GPU cleanup are required.
+
+Refine the existing starship's metal response and engine illumination without changing its geometry budget, routing model, controls or performance caps. Simplify the mobile hero around the existing thirty-second flight; put atmosphere controls in a native disclosure. Distinguish Lensing Observatory from Principles Engine everywhere. Add one real build story supported by dated public artifacts, then ask visitors for a concrete goal and constraint at contact.
+
+Preserve Oxanium headings, Exo reading text, Jet labels, champagne gold, electric cyan, graphite and warm paper. No extra typefaces or competing palettes. Reading stays calm; motion belongs to the scene and visitor actions. New chamber CSS and renderer load only after entry. Reclaim optional dialog styles to stay under the existing 195,000-byte raw and 42,000-byte gzip initial CSS limits. No production-tool branding.
+
+Publish only after source, built, public-policy, fallback and actual live verification. User explicitly approved this implementation and release. Baseline and rollback: `4de877e57e1035866f79c2f47c6a0299ae4a6e70` (V37.9 Sanctuary). Evidence dates and legacy links stay intact.
+
 # V37.9 — Sanctuary
 
 **Creative thesis:** Enter a place, witness its intelligence awaken, leave with a sense of its scale.
@@ -6,7 +18,7 @@ The original sanctuary identity remains: two fluted graphite monoliths, an amber
 
 Three compact film-frame chapter tiles identify the story and seek to a paused frame. Actual edit boundaries determine chapter timings after media review. Preserve every existing pause, hidden-tab, error recovery, native range and fallback path. The original still paints first; there is no eager video request or audio. Changes are confined to the sanctuary film and its presentation. Initial CSS budgets stay unchanged.
 
-# Current release — V37.8 Vector
+# Prior release — V37.8 Vector
 
 A convincing machine, alive under your control. Strengthen the carrier's physical form with deeper bevels, recessed machinery, graphite undersides, brushed titanium and restrained champagne trim. The human core and cyan propulsion remain the visual anchors. Preserve the existing Cashio signature, original cinematic artwork, Oxanium/Exo/Jet hierarchy, and quiet reading surfaces.
 
