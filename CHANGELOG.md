@@ -1,5 +1,13 @@
 # Changelog
 
+## V37.7 — Parallax
+
+- Shape the real observatory atmosphere with cloud, aurora, and sun controls; save the current rendered perspective as a PNG, including while motion is paused.
+- Trace a finite illustrative request through human intent, orchestration, owned compute, and human review, with manual steps and explicit pause.
+- Enter the computing sanctuary through Within the light, an original eight-second Higgsfield film. Five film choices, frame landmarks, and a focused handoff to the studies connect cinema to interaction.
+- Compress repeated study-gallery navigation on phones, retain illustrated keyboard-accessible choices, and give the animated navbar logo a seamless opaque backdrop across page sections.
+- Keep the 195 KB raw / 42 KB gzip initial stylesheet limits, existing rendering budget, lazy media, reduced motion, legacy routes, and dated evidence.
+
 ## V37.6 — Lightwake
 
 - Direct Dawn, Eclipse, and Ion atmosphere controls in the opening, with illustrated entry points for film, signature, and flight.

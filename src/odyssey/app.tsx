@@ -40,9 +40,9 @@ export function OdysseyApp() {
   const filmOpener = useRef<HTMLElement | null>(null);
   const lensOpener = useRef<HTMLElement | null>(null);
   const ambientMotion = motion && flight === null && !signature && !lensing && !film;
-  function openFilm(opener: HTMLElement) {
+  function openFilm(opener: HTMLElement, clip: LensingClip = "lightwake") {
     filmOpener.current = opener;
-    setFilmClip("lightwake");
+    setFilmClip(clip);
     setFilm(true);
   }
   function openLensing(opener: HTMLElement) {
@@ -55,7 +55,7 @@ export function OdysseyApp() {
     setLensArrival(true);
     setFilm(false);
     setLensing(true);
-    if (/^#film(?:=(?:awakening|signature|lightwake))?$/.test(location.hash))
+    if (/^#film(?:=(?:awakening|signature|lightwake|sanctuary))?$/.test(location.hash))
       history.replaceState(null, "", location.pathname + location.search);
   }
   const signatureOpener = useRef<HTMLElement | null>(null);
@@ -70,7 +70,7 @@ export function OdysseyApp() {
     signatureOpener.current = resolveLauncher(filmOpener.current, ".lens-film-link");
     setFilm(false);
     setSignature(true);
-    if (/^#film(?:=(?:awakening|signature|lightwake))?$/.test(location.hash))
+    if (/^#film(?:=(?:awakening|signature|lightwake|sanctuary))?$/.test(location.hash))
       history.replaceState(null, "", location.pathname + location.search);
   }
   function openSignature(event: MouseEvent<HTMLButtonElement>) {
@@ -89,7 +89,7 @@ export function OdysseyApp() {
       setSignature(location.hash === "#signature");
       setLensing(location.hash === "#lensing");
       setLensArrival(false);
-      const filmRoute = /^#film(?:=(?:awakening|signature|lightwake))?$/.test(location.hash);
+      const filmRoute = /^#film(?:=(?:awakening|signature|lightwake|sanctuary))?$/.test(location.hash);
       setFilm(filmRoute);
       if (filmRoute) setFilmRouteRevision((revision) => revision + 1);
       setFilmClip(
@@ -99,7 +99,9 @@ export function OdysseyApp() {
             ? "awakening"
             : location.hash === "#film=signature"
               ? "signature"
-              : "lightwake",
+              : location.hash === "#film=sanctuary"
+                ? "sanctuary"
+                : "lightwake",
       );
     };
     readFlight();
@@ -324,7 +326,7 @@ export function OdysseyApp() {
             </a>
           ))}
         </nav>
-        <p>V37.6 / LIGHTWAKE / A HUMAN IN COMMAND</p>
+        <p>V37.7 / PARALLAX / A HUMAN IN COMMAND</p>
       </dialog>
       <main id="o-main">
         <section className="o-hero o-scene" id="top" aria-labelledby="hero-title" data-lightwake-light="dawn">
@@ -335,8 +337,8 @@ export function OdysseyApp() {
           <LightwakeAtmosphere />
           <div className="o-hero-content">
             <div className="eh-release-mark">
-              <b>V37.6</b>
-              <span>LIGHTWAKE</span>
+              <b>V37.7</b>
+              <span>PARALLAX</span>
             </div>
             <span className="o-kicker">
               <i />
@@ -434,7 +436,7 @@ export function OdysseyApp() {
             <span className="o-micro">BUILT. OPERATED. EXPLAINED.</span>
           </div>
           <div className="o-section-heading">
-            <h2 id="work-title">
+            <h2 id="work-title" tabIndex={-1}>
               Don’t just read it.
               <br />
               <em>Put it to work.</em>
@@ -469,7 +471,7 @@ export function OdysseyApp() {
             </p>
           </div>
           <SystemAtlas
-            motion={motion}
+            motion={ambientMotion}
             selected={atlasNode}
             onSelect={(index) => {
               setAtlasNode(index);
@@ -503,7 +505,7 @@ export function OdysseyApp() {
             </p>
           </div>
         </section>
-        <section className="o-sanctuary o-scene" aria-labelledby="sanctuary-title">
+        <section className="o-sanctuary o-scene" id="sanctuary" aria-labelledby="sanctuary-title">
           <Art name="sanctuary" />
           <div className="o-sanctuary-copy">
             <span className="o-kicker">THE PHILOSOPHY</span>
@@ -514,10 +516,20 @@ export function OdysseyApp() {
               <br />
               <em>Not replace our judgment.</em>
             </h2>
-            <a className="o-button o-button-light" href="#work">
-              See the philosophy at work
-              <Arrow />
-            </a>
+            <div className="parallax-sanctuary-actions">
+              <button
+                className="o-button o-button-light parallax-sanctuary-film"
+                type="button"
+                onClick={(event) => openFilm(event.currentTarget, "sanctuary")}
+              >
+                Enter the sanctuary
+                <Arrow />
+              </button>
+              <span>AN EIGHT-SECOND HIGGSFIELD FILM</span>
+              <a href="#work">
+                See the philosophy at work <Arrow diagonal />
+              </a>
+            </div>
           </div>
           <span className="o-art-caption">ORIGINAL CONCEPT ART / AN IMAGINED COMPUTING SANCTUARY</span>
         </section>
@@ -705,9 +717,18 @@ export function OdysseyApp() {
             initialClip={filmClip}
             onExplore={enterFilmWorld}
             onSignature={sculptFilmLight}
+            onWork={() => {
+              setFilm(false);
+              history.replaceState(null, "", location.pathname + location.search + "#work");
+              requestAnimationFrame(() => {
+                const heading = document.getElementById("work-title");
+                heading?.focus({ preventScroll: true });
+                heading?.scrollIntoView({ block: "start", behavior: "instant" });
+              });
+            }}
             onClose={() => {
               setFilm(false);
-              if (/^#film(?:=(?:awakening|signature|lightwake))?$/.test(location.hash))
+              if (/^#film(?:=(?:awakening|signature|lightwake|sanctuary))?$/.test(location.hash))
                 history.replaceState(null, "", location.pathname + location.search);
               requestAnimationFrame(() =>
                 resolveLauncher(filmOpener.current, ".lens-film-link")?.focus({
@@ -806,7 +827,7 @@ export function OdysseyApp() {
           <BrandMark motion={ambientMotion} />
         </a>
         <span>
-          V37.6 / LIGHTWAKE
+          V37.7 / PARALLAX
           <br />
           <small>Crafted with GPT-6 Astra · Directed by Doug Cashio</small>
         </span>

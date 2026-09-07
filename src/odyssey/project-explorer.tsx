@@ -247,47 +247,43 @@ export function ProjectExplorer({ motion, play }: { motion: boolean; play: () =>
         tabIndex={0}
         className="o-project-panel"
       >
-        <nav className="lw-study-navigation" aria-label="Explore project demonstrations">
-          <button
-            type="button"
-            className="lw-study-step lw-study-previous"
-            aria-label={`Previous study: ${PROJECTS[(selected + PROJECTS.length - 1) % PROJECTS.length].title}`}
-            onClick={() => choose((selected + PROJECTS.length - 1) % PROJECTS.length)}
-          >
-            <Arrow />
-            <span>Previous</span>
-          </button>
+        <div className="lw-study-context">
           <div className="lw-study-position" role="status" aria-live="polite" aria-atomic="true">
-            <span className="o-sr-only">{project.title}. Study </span>
+            <span className="o-sr-only">{project.title}. </span>
+            <span>Study</span>
             <b>0{selected + 1}</b>
             <span aria-hidden="true">/</span>
             <span className="o-sr-only"> of </span>
             <span>0{PROJECTS.length}</span>
-            <i aria-hidden="true">
-              {PROJECTS.map((item, i) => (
-                <span key={item.id} data-current={selected === i ? "true" : "false"} />
-              ))}
-            </i>
           </div>
-          <button
-            type="button"
-            className="lw-study-step lw-study-next"
-            aria-label={`Next study: ${PROJECTS[(selected + 1) % PROJECTS.length].title}`}
-            onClick={() => choose((selected + 1) % PROJECTS.length)}
-          >
-            <span>Next</span>
-            <Arrow />
-          </button>
-        </nav>
+          <nav className="lw-study-navigation" aria-label="Explore project demonstrations">
+            <button
+              type="button"
+              className="lw-study-step lw-study-previous"
+              aria-label={`Previous study: ${PROJECTS[(selected + PROJECTS.length - 1) % PROJECTS.length].title}`}
+              onClick={() => choose((selected + PROJECTS.length - 1) % PROJECTS.length)}
+            >
+              <Arrow />
+              <span className="o-sr-only">Previous</span>
+            </button>
+            <button
+              type="button"
+              className="lw-study-step lw-study-next"
+              aria-label={`Next study: ${PROJECTS[(selected + 1) % PROJECTS.length].title}`}
+              onClick={() => choose((selected + 1) % PROJECTS.length)}
+            >
+              <span className="o-sr-only">Next</span>
+              <Arrow />
+            </button>
+          </nav>
+        </div>
         <div className="o-project-heading">
           <div>
-            <span className="o-micro">INTERACTIVE STUDY / 0{selected + 1}</span>
             <h3>{project.title}</h3>
             <p>{project.subtitle}</p>
           </div>
           <div className="lw-heading-art" key={project.id} aria-hidden="true">
             <StudyThumbnail index={selected} hero />
-            <span className="o-project-number">0{selected + 1}</span>
           </div>
         </div>
         <p className="o-lab-invitation">{project.cue}</p>

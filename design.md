@@ -1,4 +1,14 @@
-# Current release — V37.6 Lightwake
+# Current release — V37.7 Parallax
+
+Change your perspective. Visitors shape the atmosphere of the Cashio world, save their own rendered view, and follow a request through its human-led architecture. Preserve the approved Cashio signature, original artwork, champagne gold, electric cyan, deep ink, Oxanium headings, Exo body copy, and Jet labels. Keep reading surfaces quiet and make each interaction visibly meaningful.
+
+The lazy observatory gains cloud, aurora, and sun controls with immediate rendered feedback and an explicit PNG capture. Preserve its bounded pixel count, geometry, frame rate, manual views, finite journeys, and pause lifecycle. The system atlas gains a finite four-step request trace with clear manual navigation and reduced-motion behavior. Compact repeated study navigation on phones so the instrument arrives sooner, without shrinking readable text or touch targets. Fix the header surface so the animated signature remains seamless over every section.
+
+One original eight-second 1080p Higgsfield film takes a deliberate journey into the existing computing sanctuary. It is silent, poster-first, explicit-play, finite, and locally served; the cinema offers five legible film choices and useful chapter navigation. Preserve every existing film deep link, native byte-range seeking, bounded fallback, and focus restoration. Keep media out of the initial load. Initial stylesheet budgets stay at 195,000 raw bytes and 42,000 gzip bytes.
+
+Standing publication approval applies. Software version is `37.7.0`, title `Cashio V37.7 — Parallax | Doug Cashio`; preserve `THE HUMAN RECKONING`, `Lensing`, and `Lensing Observatory` in release metadata. Baseline and rollback: `ef7a8fe3bbb11f79abfb12e9f031d7ed49674eb6`. Publish through protected-main PR checks, then verify the actual public release, media, rendered interactions, mobile layouts, keyboard access, reduced motion, and runtime behavior. Retain original evidence dates and distinguish conceptual animations from live operational data.
+
+# Prior release — V37.6 Lightwake
 
 A living observatory: visitors set the atmosphere, follow a wave of light, and discover how the work responds to their decisions. Preserve the Cashio artwork, champagne gold, electric cyan, deep ink, Oxanium headings, Exo body copy, and Jet labels. Quiet reading surfaces frame the interactive scenes.
 

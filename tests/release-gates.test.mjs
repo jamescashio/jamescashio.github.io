@@ -79,7 +79,7 @@ function expandScript(scripts, name, seen = new Set()) {
 
 test("V37 software gates preserve the independent V35 dated evidence", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "37.6.0");
+  assert.equal(packageJson.version, "37.7.0");
   const lock = JSON.parse(await read("package-lock.json"));
   assert.equal(lock.version, packageJson.version);
   assert.equal(lock.packages[""].version, packageJson.version);
@@ -269,7 +269,7 @@ test("the homepage and Odyssey alias ship the same complete V37 story with a usa
     } else {
       assert.match(robots, /noindex/i, "the compatibility alias must not compete with the canonical homepage");
     }
-    assert.equal(document.title, "Cashio V37.6 — Lightwake | Doug Cashio");
+    assert.equal(document.title, "Cashio V37.7 — Parallax | Doug Cashio");
     const compatibility = document.querySelector("head script#legacy-bookmark-route");
     assert.ok(compatibility, "legacy fragments must be handled before the page activates");
     for (const attr of ["src", "type", "async", "defer"]) assert.equal(compatibility.hasAttribute(attr), false);
@@ -307,7 +307,7 @@ test("the homepage and Odyssey alias ship the same complete V37 story with a usa
 
 test("V37 release manifests agree without redating the independent evidence archive", async () => {
   const manifest = JSON.parse(await read("public/site-release.json"));
-  assert.equal(manifest.experienceVersion, "37.6.0");
+  assert.equal(manifest.experienceVersion, "37.7.0");
   assert.equal(manifest.releaseName, "THE HUMAN RECKONING");
   assert.equal(manifest.visualEdition, "Lensing");
   assert.equal(manifest.featuredExperience, "Lensing Observatory");
@@ -327,12 +327,13 @@ test("V37 release manifests agree without redating the independent evidence arch
     assert.equal(await read(`dist/${name}`), await read(`public/${name}`));
 });
 
-test("all four cinematic films stay optional and ship their approved local media intact", async () => {
+test("all five cinematic films stay optional and ship their approved local media intact", async () => {
   for (const [name, folder, filmCap, minimumHeight] of [
     ["orbital-arrival", "lensing", 2_000_000, 720],
     ["gate-awakens", "lensing", 2_000_000, 720],
     ["signature-awakens", "celestial", 3_000_000, 700],
     ["lightwake-awakens", "lightwake", 4_000_000, 720],
+    ["sanctuary-awakens", "parallax", 4_000_000, 720],
   ]) {
     const film = `assets/${folder}/${name}.mp4`;
     const poster = `assets/${folder}/${name === "lightwake-awakens" ? "lightwake" : name}-poster.webp`;
