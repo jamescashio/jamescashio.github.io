@@ -1,7 +1,10 @@
-import { useId } from "react";
+import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
 import { ATLAS } from "./data";
 
 const ROUTES = ["M50 42V13", "M50 13V42", "M50 42C50 58 25 55 25 73", "M50 42C50 58 75 55 75 73"] as const;
+const RETURN_ROUTES = ["M25 73C25 55 50 58 50 42V13", "M75 73C75 55 50 58 50 42V13"] as const;
+type Trace = { step: number; destination: 2 | 3; playing: boolean; complete: boolean };
+const STEP_MS = 2000;
 
 function AtlasGlyph({ kind }: { kind: number }) {
   return (
@@ -12,6 +15,7 @@ function AtlasGlyph({ kind }: { kind: number }) {
           <path className="sa-glyph-fine" d="M32 9 51 20v24L32 55 13 44V20Z" />
           <circle className="sa-glyph-bright" cx="32" cy="24" r="7" />
           <path className="sa-glyph-main" d="M20 44v-3c0-11 24-11 24 0v3M24 47h16" />
+          <path className="sa-glyph-shade" d="m32 5 23 13v28L32 59v-5l18-11V21L32 10Z" />
           <path className="sa-glyph-fine" d="M5 23v18M59 23v18M28 2h8M28 62h8" />
         </>
       ) : kind === 1 ? (
@@ -21,6 +25,7 @@ function AtlasGlyph({ kind }: { kind: number }) {
           <path className="sa-glyph-main" d="M32 3v24m0 34V27M9 18l23 9 23-9M13 48l19-21 19 21" />
           <path className="sa-glyph-bright" d="m32 17 11 13-11 16-11-16Z" />
           <path className="sa-glyph-fine" d="m32 23 6 7-6 9-6-9Z" />
+          <path className="sa-glyph-fine" d="m17 20 15-9 15 9M18 46l14 10 14-10M27 30h10m-5-5v11" />
         </>
       ) : (
         <>
@@ -41,6 +46,7 @@ function AtlasGlyph({ kind }: { kind: number }) {
             </>
           )}
           <path className="sa-glyph-fine" d="M8 19v32l22 10M57 20v32l-17 7" />
+          <path className="sa-glyph-fine" d="m17 12 16 7 16-5M36 54l13-5M17 48l12 5" />
         </>
       )}
     </svg>
@@ -56,11 +62,165 @@ export function SystemAtlas({
   onSelect: (index: number) => void;
   motion?: boolean;
 }) {
-  const index = Number.isInteger(selected) && selected >= 0 && selected < ATLAS.length ? selected : 0;
+  const selectedIndex = Number.isInteger(selected) && selected >= 0 && selected < ATLAS.length ? selected : 0;
+  const [trace, setTrace] = useState<Trace | null>(null);
+  const [visible, setVisible] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const [reduced, setReduced] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  const elapsed = useRef(0);
+  const lastSelection = useRef(selectedIndex);
+  const index = trace ? [0, 1, trace.destination, 0][trace.step] : selectedIndex;
   const node = ATLAS[index];
   const uid = useId();
+  const enabled = motion && visible && !hidden && !reduced;
+  const running = enabled && Boolean(trace?.playing);
+  const visualRunning = enabled && (!trace || trace.playing);
+  const route = trace
+    ? [ROUTES[1], ROUTES[trace.destination], RETURN_ROUTES[trace.destination - 2], ROUTES[0]][trace.step]
+    : ROUTES[index];
+  const routeKey = trace ? `trace-${trace.step}-${trace.destination}` : node.id;
+  const compute = ATLAS[trace?.destination ?? (selectedIndex === 3 ? 3 : 2)].name;
+  const steps = [
+    ["Human intent", "A person defines the request and its boundaries."],
+    ["HERMES qualifies", `The conceptual route passes through qualification toward ${compute}.`],
+    [`${compute} · example compute`, "This chosen host illustrates execution, not a published service location."],
+    ["Human review", "The example returns evidence to a person for the consequential decision."],
+  ];
+
+  useEffect(() => {
+    const element = root.current;
+    const query = matchMedia("(prefers-reduced-motion: reduce)");
+    const preferences = () => setReduced(query.matches);
+    const visibility = () => setHidden(document.hidden);
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { threshold: 0.06 });
+    preferences();
+    visibility();
+    if (element) observer.observe(element);
+    query.addEventListener("change", preferences);
+    document.addEventListener("visibilitychange", visibility);
+    return () => {
+      observer.disconnect();
+      query.removeEventListener("change", preferences);
+      document.removeEventListener("visibilitychange", visibility);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (lastSelection.current !== selectedIndex) {
+      lastSelection.current = selectedIndex;
+      elapsed.current = 0;
+      setTrace(null);
+    }
+  }, [selectedIndex]);
+
+  useEffect(() => {
+    if (!running) return;
+    let frame = 0;
+    let previous = performance.now();
+    const carriers = root.current?.querySelectorAll<SVGPathElement>(".sa-route-carrier");
+    const advance = (now: number) => {
+      // Visibility events stop scheduling; this guard also rejects a queued
+      // frame before React has applied the hidden-page state.
+      if (document.hidden) return;
+      elapsed.current += now - previous;
+      previous = now;
+      carriers?.forEach((carrier) => {
+        carrier.style.strokeDashoffset = String((-Math.min(elapsed.current, STEP_MS) / STEP_MS) * 100);
+      });
+      if (root.current) root.current.dataset.traceElapsed = String(Math.round(elapsed.current));
+      if (elapsed.current >= STEP_MS) {
+        elapsed.current = 0;
+        setTrace((current) =>
+          current && current.playing
+            ? current.step === 3
+              ? { ...current, playing: false, complete: true }
+              : { ...current, step: current.step + 1 }
+            : current,
+        );
+      } else frame = requestAnimationFrame(advance);
+    };
+    frame = requestAnimationFrame(advance);
+    return () => cancelAnimationFrame(frame);
+  }, [running, trace?.step]);
+
+  function controlTrace() {
+    if (!trace || trace.complete || reduced) {
+      elapsed.current = 0;
+      setTrace({ step: 0, destination: selectedIndex === 3 ? 3 : 2, playing: !reduced, complete: false });
+    } else setTrace({ ...trace, playing: !trace.playing && !reduced });
+  }
+  function stepTrace(delta: number) {
+    if (!trace) return;
+    const step = Math.max(0, Math.min(3, trace.step + delta));
+    elapsed.current = 0;
+    setTrace({ ...trace, step, playing: false, complete: step === 3 });
+  }
   return (
-    <div className="o-atlas-layout sa-system-atlas" data-selected={node.id} data-atlas-motion={motion ? "on" : "off"}>
+    <div
+      ref={root}
+      className="o-atlas-layout sa-system-atlas"
+      data-selected={node.id}
+      data-atlas-motion={motion && !reduced ? "on" : "off"}
+      data-trace-step={trace?.step}
+      data-trace-state={trace ? (trace.complete ? "complete" : running ? "playing" : "paused") : "idle"}
+      data-trace-elapsed={Math.round(elapsed.current)}
+      style={{ "--play-state": visualRunning ? "running" : "paused" } as CSSProperties}
+    >
+      <div className="sa-trace">
+        <span className="o-micro">CONCEPTUAL REQUEST / {compute.toUpperCase()}</span>
+        <p role="status" aria-atomic="true">
+          {trace ? (
+            <>
+              <strong>
+                0{trace.step + 1} / 04 · {steps[trace.step][0]}
+              </strong>
+              <br />
+              {steps[trace.step][1]}
+            </>
+          ) : (
+            "Follow one example from human intent to human review. No request is sent."
+          )}
+        </p>
+        <div className="sa-trace-controls" role="group" aria-label="Explore the conceptual request">
+          <button type="button" onClick={controlTrace}>
+            {!trace
+              ? "Trace a request"
+              : trace.complete
+                ? "Replay trace"
+                : reduced
+                  ? "Restart trace"
+                  : trace.playing
+                    ? "Pause trace"
+                    : "Resume trace"}
+          </button>
+          <button
+            type="button"
+            onClick={() => stepTrace(-1)}
+            disabled={!trace || trace.step === 0}
+            aria-label="Previous trace step"
+          >
+            ←
+          </button>
+          <button
+            type="button"
+            onClick={() => stepTrace(1)}
+            disabled={!trace || trace.step === 3}
+            aria-label="Next trace step"
+          >
+            →
+          </button>
+        </div>
+        <small>
+          {reduced
+            ? "Step through at your own pace."
+            : trace?.playing && !enabled
+              ? "Motion suspended. You can still step manually."
+              : trace?.complete
+                ? "Trace complete. Choose a node or replay."
+                : "About 8 seconds · conceptual, not live routing"}
+        </small>
+      </div>
       <div className="o-atlas sa-chart" aria-label="Explore the public system architecture">
         <div className="sa-chart-label" aria-hidden="true">
           <span>SYSTEM ATLAS</span>
@@ -125,13 +285,20 @@ export function SystemAtlas({
         <svg className="sa-routes" viewBox="0 0 100 100" preserveAspectRatio="none" fill="none" aria-hidden="true">
           <path className="sa-route-bed" d="M50 13V42M50 42C50 58 25 55 25 73M50 42C50 58 75 55 75 73" />
           <path className="sa-route-wire" d="M50 13V42M50 42C50 58 25 55 25 73M50 42C50 58 75 55 75 73" />
-          <path className="sa-route-active" key={node.id} pathLength="1" d={ROUTES[index]} />
-          <path className="sa-route-carrier" key={`${node.id}-carrier`} pathLength="100" d={ROUTES[index]} />
+          <path className="sa-route-active" key={routeKey} pathLength="1" d={route} />
+          <path
+            className="sa-route-carrier"
+            key={`${routeKey}-carrier`}
+            pathLength="100"
+            d={route}
+            style={trace ? { strokeDashoffset: (-elapsed.current / STEP_MS) * 100 } : undefined}
+          />
           <path
             className="sa-route-carrier sa-route-carrier-tail"
-            key={`${node.id}-tail`}
+            key={`${routeKey}-tail`}
             pathLength="100"
-            d={ROUTES[index]}
+            d={route}
+            style={trace ? { strokeDashoffset: (-elapsed.current / STEP_MS) * 100 } : undefined}
           />
           <path className="sa-route-junction" d="m50 49-1.5 1.5L50 52l1.5-1.5Z" />
         </svg>
@@ -141,12 +308,16 @@ export function SystemAtlas({
             style={{ left: `${item.x}%`, top: `${item.y}%` }}
             className={`o-atlas-node sa-node ${index === i ? "selected" : ""} ${item.id}`}
             aria-pressed={index === i}
-            onClick={() => onSelect(i)}
+            onClick={() => {
+              elapsed.current = 0;
+              setTrace(null);
+              onSelect(i);
+            }}
             type="button"
           >
             <span className="o-node-icon sa-node-face">
               <span className="sa-node-bezel" aria-hidden="true" />
-              {index === i && <span className="sa-node-acquisition" key={node.id} aria-hidden="true" />}
+              {index === i && <span className="sa-node-acquisition" key={routeKey} aria-hidden="true" />}
               <AtlasGlyph kind={i} />
             </span>
             <strong>{item.name}</strong>
@@ -155,7 +326,7 @@ export function SystemAtlas({
         ))}
         <span className="o-atlas-caption o-micro">SELECT A NODE TO EXPLORE</span>
       </div>
-      <div className="o-atlas-readout sa-readout" aria-live="polite" aria-atomic="true">
+      <div className="o-atlas-readout sa-readout" aria-live={trace ? "off" : "polite"} aria-atomic="true">
         <span className="o-micro">
           0{index + 1} / {node.role}
         </span>

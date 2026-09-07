@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import "./lensing-film.css";
 
 type Playback = "still" | "loading" | "seeking" | "playing" | "paused" | "ended" | "error";
-export type LensingClip = "lightwake" | "signature" | "awakening" | "arrival";
+export type LensingClip = "sanctuary" | "lightwake" | "signature" | "awakening" | "arrival";
 type SeekMedia = {
   player: HTMLVideoElement;
   source: string;
@@ -14,6 +14,14 @@ type SeekMedia = {
 };
 
 const CLIPS = {
+  sanctuary: {
+    title: "Within the light",
+    duration: 8,
+    durationLabel: "AN EIGHT-SECOND FILM",
+    film: "/assets/parallax/sanctuary-awakens.mp4",
+    poster: "/assets/parallax/sanctuary-awakens-poster.webp",
+    description: "Two monoliths. One quiet signal. A closer perspective on an imagined computing sanctuary.",
+  },
   lightwake: {
     title: "Lightwake",
     duration: 8,
@@ -65,12 +73,14 @@ export default function LensingFilm({
   initialClip = "awakening",
   onExplore,
   onSignature,
+  onWork,
 }: {
   motion: boolean;
   onClose: () => void;
   initialClip?: LensingClip;
   onExplore: () => void;
   onSignature?: () => void;
+  onWork?: () => void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const video = useRef<HTMLVideoElement>(null);
@@ -86,6 +96,13 @@ export default function LensingFilm({
   const [duration, setDuration] = useState<number>(CLIPS[initialClip].duration);
   const clip = CLIPS[clipId];
   const active = playback === "playing" || playback === "loading";
+  const choices = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const strip = choices.current;
+    const selected = strip?.querySelector<HTMLElement>('[aria-pressed="true"]');
+    if (strip && selected)
+      strip.scrollLeft = selected.offsetLeft - strip.offsetLeft - (strip.clientWidth - selected.clientWidth) / 2;
+  }, [clipId]);
 
   const releaseSeekMedia = useCallback(() => {
     const previous = seekMedia.current;
@@ -404,8 +421,14 @@ export default function LensingFilm({
       <header className="lensing-film-header">
         <div>
           <span className="lensing-film-eyebrow">
-            {clipId === "signature" ? "CELESTIAL FORGE" : clipId === "lightwake" ? "LIGHTWAKE" : "LENSING"} /{" "}
-            {clip.durationLabel}
+            {clipId === "sanctuary"
+              ? "PARALLAX"
+              : clipId === "signature"
+                ? "CELESTIAL FORGE"
+                : clipId === "lightwake"
+                  ? "LIGHTWAKE"
+                  : "LENSING"}{" "}
+            / {clip.durationLabel}
           </span>
           <h2 id="lensing-film-title">{clip.title}</h2>
         </div>
@@ -422,8 +445,12 @@ export default function LensingFilm({
           </svg>
         </button>
       </header>
-      <div className="lensing-film-choices" role="group" aria-label="Choose a film">
-        {(["lightwake", "signature", "awakening", "arrival"] as const).map((id) => (
+      <div className="lensing-film-collection">
+        <span>CHOOSE YOUR PERSPECTIVE</span>
+        <span>05 FILMS</span>
+      </div>
+      <div ref={choices} className="lensing-film-choices" role="group" aria-label="Choose a film">
+        {(["sanctuary", "lightwake", "signature", "awakening", "arrival"] as const).map((id) => (
           <button
             key={id}
             type="button"
@@ -522,23 +549,35 @@ export default function LensingFilm({
           <span>Original cinematic artwork created with Higgsfield.</span>
         </figcaption>
       </figure>
-      {(clipId === "signature" || clipId === "lightwake") && (
+      {(clipId === "signature" || clipId === "lightwake" || clipId === "sanctuary") && (
         <div
           className="lensing-film-chapters"
           role="group"
-          aria-label={clipId === "lightwake" ? "Explore Lightwake" : "Explore the awakening"}
+          aria-label={
+            clipId === "sanctuary"
+              ? "Explore the sanctuary"
+              : clipId === "lightwake"
+                ? "Explore Lightwake"
+                : "Explore the awakening"
+          }
         >
-          {(clipId === "lightwake"
+          {(clipId === "sanctuary"
             ? [
-                { name: "First light", time: 0 },
-                { name: "Signal", time: 3 },
-                { name: "Awakening", time: 6.4 },
+                { name: "Threshold", time: 0 },
+                { name: "Approach", time: 3 },
+                { name: "Within", time: 6.4 },
               ]
-            : [
-                { name: "Spark", time: 0 },
-                { name: "Orbit", time: 2 },
-                { name: "Radiance", time: 4.8 },
-              ]
+            : clipId === "lightwake"
+              ? [
+                  { name: "First light", time: 0 },
+                  { name: "Signal", time: 3 },
+                  { name: "Awakening", time: 6.4 },
+                ]
+              : [
+                  { name: "Spark", time: 0 },
+                  { name: "Orbit", time: 2 },
+                  { name: "Radiance", time: 4.8 },
+                ]
           ).map((chapter, index) => (
             <button
               key={chapter.name}
@@ -596,6 +635,24 @@ export default function LensingFilm({
             }}
           >
             Enter this world
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M3 10h14m-5-5 5 5-5 5" />
+            </svg>
+          </button>
+        </div>
+      )}
+      {clipId === "sanctuary" && onWork && (
+        <div className="lensing-film-handoff">
+          <p>From imagined worlds to working ideas.</p>
+          <button
+            type="button"
+            className="lensing-film-explore"
+            onClick={() => {
+              pauseFilm();
+              onWork();
+            }}
+          >
+            Explore the working studies
             <svg viewBox="0 0 20 20" aria-hidden="true">
               <path d="M3 10h14m-5-5 5 5-5 5" />
             </svg>

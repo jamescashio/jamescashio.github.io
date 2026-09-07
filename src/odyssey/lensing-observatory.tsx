@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import type { LensingLight, LensingView } from "./lensing-renderer";
+import type { LensingLight, LensingView, LensingWorld } from "./lensing-renderer";
 import { JOURNEY, useLensingJourney } from "./lensing-journey";
 import "./lensing-observatory.css";
 import "./lensing-resonance.css";
+import "./observatory-controls.css";
 
 const LIGHTS: { id: LensingLight; label: string; note: string }[] = [
   { id: "dawn", label: "Dawn", note: "Warm light. A world coming into view." },
@@ -53,19 +54,41 @@ export default function LensingObservatory({
   const [ready, setReady] = useState(false);
   const [arriving, setArriving] = useState(true);
   const [unavailable, setUnavailable] = useState(false);
+  const [workshop, setWorkshop] = useState(false);
+  const [world, setWorld] = useState<LensingWorld>({ clouds: 50, aurora: 50, sun: 0 });
+  const [saving, setSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState("");
+  const saveGeneration = useRef(0);
+  const downloads = useRef(new Map<string, ReturnType<typeof setTimeout>>());
   const journey = useLensingJourney(motion && playing && ready && !unavailable);
   const chapter = journey.step ? JOURNEY[journey.step.index] : null;
   const light = chapter?.light ?? freeLight;
   const view = chapter?.view ?? freeView;
-  const settings = useRef({ motion, playing, light, view, resonance });
+  const settings = useRef({ motion, playing, light, view, resonance, world });
   const activeView = VIEWS.find((item) => item.id === view)!;
   const activeLight = LIGHTS.find((item) => item.id === light)!;
 
   useEffect(() => {
-    settings.current = { motion, playing, light, view, resonance };
+    settings.current = { motion, playing, light, view, resonance, world };
     scene.current?.setMotion(motion);
     scene.current?.setPlaying(playing && motion);
-  }, [motion, playing, light, view, resonance]);
+  }, [motion, playing, light, view, resonance, world]);
+
+  useEffect(() => {
+    scene.current?.setWorld(world);
+  }, [world]);
+
+  useEffect(() => {
+    const pending = downloads.current;
+    return () => {
+      saveGeneration.current += 1;
+      for (const [url, timer] of pending) {
+        clearTimeout(timer);
+        URL.revokeObjectURL(url);
+      }
+      pending.clear();
+    };
+  }, []);
 
   useEffect(() => {
     scene.current?.setResonance(resonance);
@@ -108,6 +131,7 @@ export default function LensingObservatory({
         scene.current.setLight(settings.current.light);
         scene.current.setView(settings.current.view);
         scene.current.setResonance(settings.current.resonance);
+        scene.current.setWorld(settings.current.world);
       })
       .catch(() => active && setUnavailable(true));
     return () => {
@@ -137,6 +161,43 @@ export default function LensingObservatory({
     takeControl();
     action();
   }
+  function shapeWorld(key: keyof LensingWorld, value: number) {
+    takeControl();
+    if (key === "aurora") setResonance(true);
+    setWorld((previous) => ({ ...previous, [key]: value }));
+  }
+  async function saveView() {
+    const current = scene.current;
+    if (!current || saving) return;
+    takeControl();
+    const generation = ++saveGeneration.current;
+    setSaving(true);
+    setSaveStatus("Preparing your view…");
+    try {
+      const blob = await current.capture();
+      if (generation !== saveGeneration.current) return;
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `cashio-parallax-${light}-${view}.png`;
+      document.body.append(link);
+      link.click();
+      link.remove();
+      // Give the browser time to take ownership of the download. Closing the
+      // observatory also revokes every outstanding URL and invalidates capture.
+      const timer = setTimeout(() => {
+        URL.revokeObjectURL(url);
+        downloads.current.delete(url);
+      }, 1000);
+      downloads.current.set(url, timer);
+      setSaveStatus("PNG ready. Your browser will save or open the image.");
+    } catch {
+      if (generation === saveGeneration.current)
+        setSaveStatus("The view could not be saved. Please try again, or reopen the observatory.");
+    } finally {
+      if (generation === saveGeneration.current) setSaving(false);
+    }
+  }
   return (
     <dialog
       ref={dialog}
@@ -146,6 +207,7 @@ export default function LensingObservatory({
       data-ready={ready && !unavailable ? "true" : "false"}
       data-motion={motion && playing ? "on" : "off"}
       data-resonance={resonance ? "on" : "off"}
+      data-workshop={workshop ? "open" : "closed"}
       data-journey={
         !journey.step
           ? "off"
@@ -363,6 +425,101 @@ export default function LensingObservatory({
           </button>
         </div>
       </div>
+      <section className="lens-workshop" aria-label="World workshop">
+        <div className="lens-workshop-bar">
+          <button
+            className="lens-workshop-toggle"
+            type="button"
+            aria-expanded={workshop}
+            aria-controls="lens-world-controls"
+            disabled={!ready || unavailable}
+            onClick={() => setWorkshop(!workshop)}
+          >
+            <span className="lens-workshop-glyph" aria-hidden="true">
+              ◌
+            </span>
+            <span>
+              Shape this world<small>Your light. Your atmosphere.</small>
+            </span>
+            <span aria-hidden="true">{workshop ? "−" : "+"}</span>
+          </button>
+          <button
+            className="lens-save-view"
+            type="button"
+            disabled={!ready || unavailable || saving}
+            onClick={() => void saveView()}
+          >
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M3 8h4l2-3h6l2 3h4v12H3Z" stroke="currentColor" strokeWidth="1.3" />
+              <circle cx="12" cy="13" r="3.5" stroke="currentColor" strokeWidth="1.3" />
+            </svg>
+            {saving ? "Preparing PNG…" : "Save this view"}
+          </button>
+        </div>
+        <div id="lens-world-controls" className="lens-world-controls" hidden={!workshop}>
+          <p className="lens-workshop-note">Sculpt the atmosphere. The world responds as you move.</p>
+          <div className="lens-world-sliders">
+            {(
+              [
+                {
+                  key: "clouds",
+                  label: "Cloud amount",
+                  max: 100,
+                  unit: "%",
+                  note: "Clear oceans → sweeping cloud bands",
+                },
+                {
+                  key: "aurora",
+                  label: "Aurora strength",
+                  max: 100,
+                  unit: "%",
+                  note: "Adjust to ignite the gate and polar lights",
+                },
+                { key: "sun", label: "Sun direction", max: 360, unit: "°", note: "Rotate the light around the world" },
+              ] as const
+            ).map((control) => (
+              <label key={control.key} className="lens-world-slider" htmlFor={`lens-world-${control.key}`}>
+                <span>
+                  {control.label}
+                  <output htmlFor={`lens-world-${control.key}`}>
+                    {world[control.key]}
+                    {control.unit}
+                  </output>
+                </span>
+                <input
+                  id={`lens-world-${control.key}`}
+                  type="range"
+                  min={0}
+                  max={control.max}
+                  step={1}
+                  value={world[control.key]}
+                  disabled={!ready || unavailable}
+                  aria-label={control.label}
+                  aria-valuetext={`${world[control.key]}${control.unit === "°" ? " degrees" : " percent"}`}
+                  aria-describedby={`lens-world-${control.key}-note`}
+                  onChange={(event) => shapeWorld(control.key, Number(event.currentTarget.value))}
+                />
+                <small id={`lens-world-${control.key}-note`}>{control.note}</small>
+              </label>
+            ))}
+          </div>
+          <button
+            className="lens-world-reset"
+            type="button"
+            disabled={!ready || unavailable}
+            onClick={() => {
+              takeControl();
+              setWorld({ clouds: 50, aurora: 50, sun: 0 });
+              setResonance(false);
+            }}
+          >
+            Restore original atmosphere <span aria-hidden="true">↺</span>
+          </button>
+        </div>
+        <p className="lens-save-status" role="status" aria-live="polite">
+          {saveStatus}
+        </p>
+      </section>
       <div className="lens-console">
         <div className="lens-control-block">
           <span className="lens-eyebrow" id="lens-light-label">

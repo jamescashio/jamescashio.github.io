@@ -82,11 +82,28 @@
   background: #162a39;
   border-color: #92b4c7;
 }
+.lensing-film-collection {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 28px 0;
+  color: #a3b8c8;
+  font:
+    10px/1.6 Jet,
+    monospace;
+  letter-spacing: 0.1em;
+}
 .lensing-film-choices {
+  position: relative;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(184px, 1fr);
   gap: 16px;
-  padding: 4px 28px;
+  padding: 4px 28px 8px;
+  overflow-x: auto;
+  scroll-padding-inline: 28px;
+  scrollbar-width: thin;
+  scrollbar-color: #8c795c #0b1723;
   border-bottom: 1px solid #f2d3a026;
 }
 .lensing-film .lensing-film-choice {
@@ -120,16 +137,11 @@
 }
 @media (max-width: 800px) {
   .lensing-film-choices {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-columns: 184px;
   }
   .lensing-film-thumbnail {
     width: 42px;
     height: 30px;
-  }
-}
-@media (max-width: 420px) {
-  .lensing-film-thumbnail {
-    display: none;
   }
 }
 .lensing-film .lensing-film-choice:hover {
@@ -338,12 +350,17 @@
     padding-inline: 16px;
   }
   .lensing-film-choices {
-    gap: 18px;
+    gap: 16px;
     padding-inline: 16px;
+    scroll-padding-inline: 16px;
+  }
+  .lensing-film-collection {
+    padding-inline: 16px;
+    font-size: 9px;
   }
   .lensing-film .lensing-film-choice {
-    gap: 6px;
-    font-size: 12px;
+    gap: 10px;
+    font-size: 14px;
   }
   .lensing-film-controls {
     flex-direction: column;

@@ -2,6 +2,7 @@ import * as THREE from "three";
 
 export type LensingLight = "dawn" | "ion" | "eclipse";
 export type LensingView = "orbit" | "surface" | "gate";
+export type LensingWorld = { clouds: number; aurora: number; sun: number };
 export type LensingController = {
   setLight: (light: LensingLight) => void;
   setView: (view: LensingView) => void;
@@ -9,6 +10,10 @@ export type LensingController = {
   setPlaying: (enabled: boolean) => void;
   /** Four-second gate ignition, latched until disabled. Static when motion is off. */
   setResonance: (enabled: boolean) => void;
+  /** 0–100 cloud/aurora strength; 0–360 degree offset from the chosen light. Defaults: 50, 50, 0. */
+  setWorld: (world: LensingWorld) => void;
+  /** A fresh PNG of the actual scene, bounded to 2M pixels and 2048 pixels per edge. */
+  capture: () => Promise<Blob>;
   rotate: (dx: number, dy: number) => void;
   /** Distance multiplier: 0.85 moves closer; 1.15 moves farther away. */
   zoom: (amount: number) => void;
@@ -137,9 +142,12 @@ const planetVertex = `
 `;
 const planetFragment = `
   uniform vec3 sunDirection; uniform vec3 atmosphereColor;
-  uniform float eclipse; uniform float ion; uniform float phase;
+  uniform float eclipse; uniform float ion; uniform float phase; uniform float cloudAmount;
   uniform sampler2D surfaceAtlas;
   varying vec3 vSurface; varying vec3 vWorld; varying vec3 vNormal; varying vec2 vUv;
+  float cloudCover(float value) {
+    return pow(value,1.5-cloudAmount*0.5)*min(cloudAmount,1.0);
+  }
   void main() {
     vec3 p = normalize(vSurface), normal = normalize(vNormal);
     vec3 view = normalize(cameraPosition - vWorld);
@@ -155,7 +163,7 @@ const planetFragment = `
     float ice = smoothstep(0.88,0.985,latitude + (altitude - 0.5) * 0.08);
     ground = mix(ground, vec3(0.46,0.53,0.55), ice * 0.82);
     vec3 albedo = mix(ocean, ground, land);
-    float clouds = texture2D(surfaceAtlas, vUv + vec2(phase * 0.00065,0.0)).b;
+    float clouds = cloudCover(texture2D(surfaceAtlas, vUv + vec2(phase * 0.00065,0.0)).b);
     // Derivative relief responds to the actual light and camera. The ocean stays
     // smooth while mountain ranges break the terminator into minute lit ridges.
     float relief = (max(altitude - 0.512,0.0) * 0.10 + surface.g * 0.004) * land;
@@ -170,7 +178,7 @@ const planetFragment = `
     float diffuse = max(dot(terrainNormal,light),0.0);
     vec3 sunlight = mix(vec3(1.15,0.97,0.78),vec3(0.70,1.03,1.22),ion);
     vec3 color = albedo * (vec3(0.018,0.032,0.052) + sunlight * diffuse * 1.35);
-    float cloudShadow = texture2D(surfaceAtlas,vUv + vec2(phase * 0.00065 - 0.0018,0.0012)).b;
+    float cloudShadow = cloudCover(texture2D(surfaceAtlas,vUv + vec2(phase * 0.00065 - 0.0018,0.0012)).b);
     color *= 1.0 - cloudShadow * day * 0.23;
     vec3 cloudColor = mix(vec3(0.47,0.59,0.67),vec3(0.87,0.88,0.79),day);
     color = mix(color,cloudColor * (0.018 + max(incidence,0.0) * 1.3),clouds * 0.78);
@@ -272,6 +280,7 @@ const auroraVertex = `
 `;
 const auroraFragment = `
   uniform float resonance; uniform float phase; uniform float ion; uniform float eclipse;
+  uniform float auroraStrength;
   uniform vec3 sunDirection;
   varying vec2 vUv; varying vec3 vWorld; varying vec3 vNormal;
   void main() {
@@ -291,7 +300,7 @@ const auroraFragment = `
     vec3 color=mix(base,vec3(0.37,0.46,0.95),smoothstep(0.18,0.85,foldedHeight)*0.72);
     color+=vec3(0.72,0.52,0.20)*crown*(0.34+traveling*0.32);
     float alpha=(filaments*edge*(0.46+night*0.25+eclipse*0.06+traveling*0.18)+crown*0.18)*reveal;
-    gl_FragColor=vec4(color,alpha);
+    gl_FragColor=vec4(color,clamp(alpha*auroraStrength,0.0,0.95));
     #include <colorspace_fragment>
   }
 `;
@@ -420,6 +429,8 @@ export function createLensingScene(
       setMotion: noop,
       setPlaying: noop,
       setResonance: noop,
+      setWorld: noop,
+      capture: () => Promise.reject(new Error("The 3D view is unavailable.")),
       rotate: noop,
       zoom: noop,
       reset: noop,
@@ -473,6 +484,8 @@ export function createLensingScene(
     ion: { value: 0 },
     phase: { value: 0 },
     resonance: { value: 0 },
+    cloudAmount: { value: 1 },
+    auroraStrength: { value: 1 },
     surfaceAtlas: { value: surfaceAtlas },
   };
   const planet = new THREE.Mesh(
@@ -961,6 +974,9 @@ export function createLensingScene(
     authored = true;
   let zoomScale = 1;
   let resonanceEnabled = false;
+  const world: LensingWorld = { clouds: 50, aurora: 50, sun: 0 };
+  const lightDirection = uniforms.sunDirection.value.clone();
+  const polarAxis = new THREE.Vector3(0, 1, 0);
   let resonanceTravel: { from: number; to: number; elapsed: number; duration: number } | null = null;
   const media = window.matchMedia("(prefers-reduced-motion: reduce)");
   const pose: Pose = { yaw: 0.73, pitch: -0.25, distance: 20, focus: new THREE.Vector3(), roll: 0, fov: 39 };
@@ -1063,6 +1079,7 @@ export function createLensingScene(
     resonanceTravel = null;
   };
   const paintLight = () => {
+    uniforms.sunDirection.value.copy(lightDirection).applyAxisAngle(polarAxis, (world.sun / 180) * Math.PI);
     sun.position.copy(uniforms.sunDirection.value).multiplyScalar(12);
     sun.color.set(0xffdfb1).lerp(new THREE.Color(0xa5eaff), uniforms.ion.value);
     sun.intensity = 3.2 - uniforms.eclipse.value * 0.6;
@@ -1070,7 +1087,7 @@ export function createLensingScene(
   };
   const finishLight = () => {
     const target = lightTargets[selectedLight];
-    uniforms.sunDirection.value.copy(target.sun);
+    lightDirection.copy(target.sun);
     uniforms.atmosphereColor.value.copy(target.atmosphere);
     uniforms.eclipse.value = target.eclipse;
     uniforms.ion.value = target.ion;
@@ -1111,7 +1128,7 @@ export function createLensingScene(
         lightTravel.elapsed += delta;
         const amount = ease(Math.min(1, lightTravel.elapsed / 0.9)),
           target = lightTargets[selectedLight];
-        uniforms.sunDirection.value.lerpVectors(lightTravel.sun, target.sun, amount).normalize();
+        lightDirection.lerpVectors(lightTravel.sun, target.sun, amount).normalize();
         uniforms.atmosphereColor.value.copy(lightTravel.atmosphere).lerp(target.atmosphere, amount);
         uniforms.eclipse.value = THREE.MathUtils.lerp(lightTravel.eclipse, target.eclipse, amount);
         uniforms.ion.value = THREE.MathUtils.lerp(lightTravel.ion, target.ion, amount);
@@ -1125,39 +1142,45 @@ export function createLensingScene(
         if (amount === 1) resonanceTravel = null;
       }
     }
-    if (dirty || time - lastPaint >= FRAME_MS - 0.5) {
-      uniforms.phase.value = phase;
-      planet.rotation.y = -0.4 + phase * 0.018;
-      aurora.rotation.copy(planet.rotation);
-      aurora.visible = uniforms.resonance.value > 0.34;
-      resonanceTracks.visible = uniforms.resonance.value > 0;
-      gateSkin.emissiveIntensity = uniforms.resonance.value * (0.045 + uniforms.ion.value * 0.015);
-      satellite.rotation.y = -0.4 + phase * 0.035;
-      for (let index = 0; index < 8; index++) {
-        const angle = (index * TAU) / 8 + phase * 0.12;
-        matrix.position.set(Math.cos(angle) * 4.37, Math.sin(angle) * 4.37, 0.2);
-        matrix.rotation.set(0, 0, angle);
-        matrix.scale.set(1, 1, 1);
-        matrix.updateMatrix();
-        carriers.setMatrixAt(index, matrix.matrix);
-      }
-      carriers.instanceMatrix.needsUpdate = true;
-      paintTraffic(phase);
-      applyPose();
-      renderer.render(scene, camera);
-      canvas.dataset.lensingResonance = resonanceEnabled ? "on" : "off";
-      canvas.dataset.lensingResonanceProgress = uniforms.resonance.value.toFixed(3);
-      canvas.dataset.lensingDrawCalls = String(renderer.info.render.calls);
-      canvas.dataset.lensingTriangles = String(renderer.info.render.triangles);
-      lastPaint = time;
-      dirty = false;
-      if (!ready) {
-        ready = true;
-        callbacks.onReady?.();
-      }
-    }
+    if (dirty || time - lastPaint >= FRAME_MS - 0.5) paint(time);
     if (animate) queue();
     else lastTime = 0;
+  }
+  // Shared by the normal bounded clock and a single explicit export. Capturing
+  // never advances scene time or enables preserveDrawingBuffer on idle frames.
+  function paint(time: number) {
+    uniforms.phase.value = phase;
+    planet.rotation.y = -0.4 + phase * 0.018;
+    aurora.rotation.copy(planet.rotation);
+    aurora.visible = uniforms.resonance.value > 0.34 && uniforms.auroraStrength.value > 0;
+    resonanceTracks.visible = uniforms.resonance.value > 0;
+    gateSkin.emissiveIntensity = uniforms.resonance.value * (0.045 + uniforms.ion.value * 0.015);
+    satellite.rotation.y = -0.4 + phase * 0.035;
+    for (let index = 0; index < 8; index++) {
+      const angle = (index * TAU) / 8 + phase * 0.12;
+      matrix.position.set(Math.cos(angle) * 4.37, Math.sin(angle) * 4.37, 0.2);
+      matrix.rotation.set(0, 0, angle);
+      matrix.scale.set(1, 1, 1);
+      matrix.updateMatrix();
+      carriers.setMatrixAt(index, matrix.matrix);
+    }
+    carriers.instanceMatrix.needsUpdate = true;
+    paintTraffic(phase);
+    applyPose();
+    renderer.render(scene, camera);
+    canvas.dataset.lensingResonance = resonanceEnabled ? "on" : "off";
+    canvas.dataset.lensingResonanceProgress = uniforms.resonance.value.toFixed(3);
+    canvas.dataset.lensingDrawCalls = String(renderer.info.render.calls);
+    canvas.dataset.lensingTriangles = String(renderer.info.render.triangles);
+    canvas.dataset.lensingClouds = String(world.clouds);
+    canvas.dataset.lensingAurora = String(world.aurora);
+    canvas.dataset.lensingSun = String(world.sun);
+    lastPaint = time;
+    dirty = false;
+    if (!ready) {
+      ready = true;
+      callbacks.onReady?.();
+    }
   }
   const resize = () => {
     if (disposed || lost) return;
@@ -1196,7 +1219,7 @@ export function createLensingScene(
     selectedLight = light;
     if (canAnimate())
       lightTravel = {
-        sun: uniforms.sunDirection.value.clone(),
+        sun: lightDirection.clone(),
         atmosphere: uniforms.atmosphereColor.value.clone(),
         eclipse: uniforms.eclipse.value,
         ion: uniforms.ion.value,
@@ -1220,6 +1243,44 @@ export function createLensingScene(
     } else finishResonance();
     dirty = true;
     queue();
+  };
+  const setWorld = (value: LensingWorld) => {
+    if (![value.clouds, value.aurora, value.sun].every(Number.isFinite)) return;
+    const adjustedAurora = value.aurora !== world.aurora;
+    world.clouds = THREE.MathUtils.clamp(value.clouds, 0, 100);
+    world.aurora = THREE.MathUtils.clamp(value.aurora, 0, 100);
+    world.sun = THREE.MathUtils.clamp(value.sun, 0, 360);
+    uniforms.cloudAmount.value = world.clouds / 50;
+    uniforms.auroraStrength.value = world.aurora / 50;
+    // A paused ignition may be mid-charge, before the curtains become visible.
+    // An explicit aurora adjustment still shows its final strength immediately.
+    if (adjustedAurora && resonanceEnabled && !canAnimate()) finishResonance();
+    // Direct manipulation takes effect immediately, including a partially
+    // completed light transition. A subsequent preset keeps these offsets.
+    finishLight();
+    dirty = true;
+    queue();
+  };
+  const capture = (): Promise<Blob> => {
+    if (disposed || lost || !ready || renderer.getContext().isContextLost())
+      return Promise.reject(new Error("The 3D view is unavailable. Reopen the observatory and try again."));
+    const image = document.createElement("canvas");
+    const scale = Math.min(1, 2048 / Math.max(canvas.width, canvas.height));
+    image.width = Math.max(1, Math.floor(canvas.width * scale));
+    image.height = Math.max(1, Math.floor(canvas.height * scale));
+    const context = image.getContext("2d");
+    if (!context) return Promise.reject(new Error("This browser could not prepare the PNG."));
+    // Copy synchronously before WebGL is allowed to discard its drawing buffer.
+    // The temporary 2D surface exists only for this explicit save operation.
+    paint(performance.now());
+    context.drawImage(canvas, 0, 0, image.width, image.height);
+    return new Promise((resolve, reject) => {
+      image.toBlob((blob) => {
+        image.width = image.height = 1;
+        if (blob) resolve(blob);
+        else reject(new Error("This browser could not save the PNG. Please try again."));
+      }, "image/png");
+    });
   };
   const rotate = (dx: number, dy: number) => {
     if (!Number.isFinite(dx) || !Number.isFinite(dy)) return;
@@ -1314,6 +1375,8 @@ export function createLensingScene(
     setLight,
     setView,
     setResonance,
+    setWorld,
+    capture,
     rotate,
     zoom,
     setMotion(enabled) {

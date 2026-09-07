@@ -7,12 +7,12 @@
   opacity: 0;
   pointer-events: none;
 }
-.sa-system-atlas[data-atlas-motion="on"] .sa-route-carrier {
+.sa-system-atlas .sa-route-carrier {
   opacity: 0.85;
-  animation: sa-carrier-travel 3.2s linear infinite;
+  animation: sa-carrier-travel 3.2s linear 1 both;
   animation-play-state: var(--play-state, paused);
 }
-.sa-system-atlas[data-atlas-motion="on"] .sa-route-carrier-tail {
+.sa-system-atlas .sa-route-carrier-tail {
   stroke-width: 1.5;
   opacity: 0.16;
   stroke-dasharray: 8 92;
@@ -26,13 +26,14 @@
   opacity: 0;
   pointer-events: none;
 }
-.sa-system-atlas[data-atlas-motion="on"] .sa-node-acquisition {
+.sa-system-atlas .sa-node-acquisition {
   animation: sa-acquire 1.2s ease-out 2;
   animation-play-state: var(--play-state, paused);
 }
 @keyframes sa-carrier-travel {
   to {
     stroke-dashoffset: -100;
+    opacity: 0;
   }
 }
 @keyframes sa-acquire {
@@ -58,6 +59,8 @@
   --sa-active: #11636b;
   --sa-highlight: #b8e9e9;
   --sa-rim: #397c88;
+  grid-template-areas: "chart readout" "chart trace";
+  row-gap: 0;
 }
 .sa-system-atlas[data-selected="operator"] {
   --sa-active: #81501f;
@@ -65,6 +68,8 @@
   --sa-rim: #a67334;
 }
 .event-horizon .sa-system-atlas .sa-chart {
+  grid-area: chart;
+  align-self: start;
   height: 510px;
   isolation: isolate;
   min-width: 0;
@@ -169,8 +174,9 @@
   stroke: #3e788e;
   stroke-width: 0.24;
 }
-.sa-system-atlas[data-atlas-motion="on"] .sa-route-active {
+.sa-system-atlas .sa-route-active {
   animation: sa-route-arrive 560ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-play-state: var(--play-state, paused);
 }
 .event-horizon .sa-system-atlas .sa-chart .sa-node {
   transform: translate(-50%, -32px);
@@ -311,6 +317,7 @@
   line-height: 1.7;
 }
 .event-horizon.aurora .sa-system-atlas .sa-readout {
+  grid-area: readout;
   position: relative;
   border-left-color: #4b8b9e57;
 }
@@ -353,6 +360,7 @@
 @media (max-width: 600px) {
   .event-horizon .sa-system-atlas {
     gap: 30px;
+    grid-template-areas: "trace" "chart" "readout";
   }
   .event-horizon .sa-system-atlas .sa-chart {
     height: 396px;
@@ -430,8 +438,63 @@
 .sa-system-atlas[data-atlas-motion="off"] *,
 .sa-system-atlas[data-atlas-motion="off"] *:before,
 .sa-system-atlas[data-atlas-motion="off"] *:after {
-  animation: none !important;
+  animation-play-state: paused !important;
   transition: none !important;
+}
+.sa-system-atlas[data-trace-step] .sa-route-active,
+.sa-system-atlas[data-trace-step] .sa-route-carrier {
+  animation: none;
+}
+.sa-system-atlas[data-trace-step="3"] .sa-route-carrier,
+.sa-system-atlas[data-trace-step] .sa-node-acquisition {
+  display: none;
+}
+.sa-system-atlas .sa-trace {
+  grid-area: trace;
+  border-top: 1px solid #8f78574d;
+  margin-top: 0;
+  padding-top: 18px;
+}
+.sa-trace p {
+  margin: 10px 0 14px;
+  font-size: 14px;
+}
+.sa-trace strong {
+  color: #174d60;
+}
+.sa-trace small {
+  display: block;
+  margin-top: 10px;
+  color: #48606a;
+  font-size: 12px;
+}
+.sa-trace-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.sa-trace-controls button {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 12px;
+  color: #174d60;
+  background: #f9f6ed;
+  border: 1px solid #6b8790;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.sa-trace-controls button:first-child {
+  color: #f9f6ed;
+  background: #174d60;
+}
+.sa-trace-controls button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.sa-trace-controls button:focus-visible {
+  outline: 2px solid #174d60;
+  outline-offset: 3px;
 }
 @media (prefers-reduced-motion: reduce) {
   .sa-system-atlas *,
