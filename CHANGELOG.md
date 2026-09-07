@@ -1,5 +1,13 @@
 # Changelog
 
+## V37.8 — Vector
+
+- Strengthen the carrier's machined hull, recessed machinery, material contrast and directional lighting within bounded geometry and rendering costs.
+- Add a real propulsion throttle and continuous hull inspection, with immediate manual responses under paused and reduced motion. Preserve the twelve-request model and existing flight controls.
+- Bring the original Higgsfield Lightwake film into the opening on explicit request, with finite silent playback, pause, replay, still restoration, and visibility/overlay suspension.
+- Tighten the phone cockpit around its scene, essential controls and outcomes; disclose precision camera controls and secondary explanations.
+- Refresh ship stills from the final rendered geometry. Preserve the animated Cashio identity, five-film cinema, world workshop, seven studies, dated evidence and legacy routes.
+
 ## V37.7 — Parallax
 
 - Shape the real observatory atmosphere with cloud, aurora, and sun controls; save the current rendered perspective as a PNG, including while motion is paused.

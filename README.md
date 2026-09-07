@@ -1,6 +1,8 @@
-# cashio.us V37.7 — Parallax
+# cashio.us V37.8 — Vector
 
-Doug Cashio’s interactive universe of AI, security, and owned infrastructure. Parallax extends the Lensing edition of **THE HUMAN RECKONING**, crafted with GPT-6 Astra under Doug’s direction.
+Doug Cashio’s interactive universe of AI, security, and owned infrastructure. Vector extends the Lensing edition of **THE HUMAN RECKONING**, crafted with GPT-6 Astra under Doug’s direction.
+
+Vector gives the carrier a more convincing physical presence: stronger hull form, recessed machinery, differentiated titanium and graphite, and controllable propulsion. A real throttle shapes the engine field, while a continuous inspection control reveals the actual internal geometry. Both work while motion is paused and leave the illustrative request model unchanged. The phone cockpit places essential controls closer to the scene and discloses precision camera controls and secondary explanation. The opening can play the existing eight-second Higgsfield Lightwake film directly behind its unchanged copy, with explicit pause, resume, replay and return to the original still. No video is requested before the visitor activates it.
 
 Shape this world opens an atmosphere workshop inside the observatory. Change cloud cover, aurora strength, and sun direction, then save the current rendered view as a PNG. The system atlas traces an illustrative request from human intent through HERMES and owned compute, back to human review. Within the light, a new eight-second Higgsfield film, moves through the original computing sanctuary with architectural parallax and illuminated platform circuits. A horizontal five-film collection preserves every perspective. Compact study navigation brings the instrument closer on phones, and the header gives the animated logo a seamless surface across light and dark sections.
 
@@ -26,7 +28,7 @@ The release name is original, inspired by the Butlerian Jihad in Frank Herbert�
 - `/odyssey.html` remains a compatible alias, canonicalized to `/`.
 - `/command-deck.html` preserves the V35 command deck. Existing `/#deck=…` bookmarks redirect there with their query and selected deck intact.
 - `/command.html` remains the explicitly marked May 2026 historical archive.
-- `/site-release.json` describes software version **37.7.0**, visual edition **Lensing**, and featured experience **Lensing Observatory**; `/event-horizon-release.json` is an identical compatibility alias.
+- `/site-release.json` describes software version **37.8.0**, visual edition **Lensing**, and featured experience **Lensing Observatory**; `/event-horizon-release.json` is an identical compatibility alias.
 - `/#flight=board`, `hull`, `blackout`, or `permission` opens a flight chapter.
 - `/#mission=hybrid.mixed.offline.held` restores a bounded routing scenario.
 - `/#signature` opens Celestial Forge; it is also reachable from the hero, operator insignia, and signature film.
