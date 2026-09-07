@@ -478,7 +478,25 @@ async function run() {
       assert.ok(Number(chamber.pixels) <= 2_000_000 && Number(chamber.triangles) > 1000);
       assert.equal(chamber.running, "false", "reduced motion never starts the awakening");
       assert.equal(await evaluate(`document.querySelector('.sanctuary-world-awaken').disabled`), true);
-      await delay(200);
+      await evaluate(`document.fonts.ready.then(() => true)`);
+      await waitFor(
+        `document.querySelector('.sanctuary-world')?.dataset.ready === 'true' && getComputedStyle(document.querySelector('.sanctuary-world canvas')).opacity === '1'`,
+        "completed poster-to-chamber reveal",
+      );
+      // Readiness can precede the first ResizeObserver delivery on a busy GPU.
+      // Let that initial work settle, then independently verify an idle window.
+      let previousFrame = "";
+      let quietSince = Date.now();
+      const settleDeadline = Date.now() + 5000;
+      while (Date.now() - quietSince < 400) {
+        assert.ok(Date.now() < settleDeadline, "the chamber must settle without continuous painting");
+        const currentFrame = await evaluate(`document.querySelector('.sanctuary-world canvas').dataset.frame`);
+        if (currentFrame !== previousFrame) {
+          previousFrame = currentFrame;
+          quietSince = Date.now();
+        }
+        await delay(100);
+      }
       const stillFrame = await evaluate(`document.querySelector('.sanctuary-world canvas').dataset.frame`);
       await delay(300);
       assert.equal(await evaluate(`document.querySelector('.sanctuary-world canvas').dataset.frame`), stillFrame);
