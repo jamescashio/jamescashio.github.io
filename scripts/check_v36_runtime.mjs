@@ -512,7 +512,9 @@ async function run() {
       assert.equal(await evaluate(`document.querySelector('.lensing-film video').preload`), "none");
       assert.equal(await evaluate(`document.querySelector('.lensing-film video').currentTime`), 0);
       assert.equal(
-        await evaluate(`performance.getEntriesByType('resource').some(entry => /inner-light\.mp4/.test(entry.name))`),
+        await evaluate(
+          `performance.getEntriesByType('resource').some(entry => entry.name.includes('inner-light.mp4'))`,
+        ),
         false,
         "returning to the still poster must not request film bytes",
       );
