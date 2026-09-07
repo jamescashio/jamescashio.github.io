@@ -37,12 +37,12 @@ function imageDimensions(buffer, extension) {
   };
 }
 
-test("Vector ship posters retain responsive dimensions, delivery parity and bounded weight", async () => {
+test("Continuum ship posters retain responsive dimensions, delivery parity and bounded weight", async () => {
   for (const [name, width, height, budget] of [
     ["desktop", 1600, 900, 90000],
     ["mobile", 800, 800, 50000],
   ]) {
-    const relative = `assets/vector/carrier-${name}.webp`;
+    const relative = `assets/continuum/carrier-${name}.webp`;
     const source = await readFile(asset(`public/${relative}`));
     const built = await readFile(asset(`dist/${relative}`));
     assert.deepEqual(imageDimensions(source, "webp"), { width, height });
@@ -96,7 +96,7 @@ function expandScript(scripts, name, seen = new Set()) {
 
 test("V37 software gates preserve the independent V35 dated evidence", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "37.9.0");
+  assert.equal(packageJson.version, "37.10.0");
   const lock = JSON.parse(await read("package-lock.json"));
   assert.equal(lock.version, packageJson.version);
   assert.equal(lock.packages[""].version, packageJson.version);
@@ -274,7 +274,12 @@ test("the homepage and Odyssey alias ship the same complete V37 story with a usa
     assert.doesNotMatch(root.textContent, /DESIGN PREVIEW/);
     assert.match(root.textContent, /28 August 2026/);
     assert.match(root.textContent, /21 August 2026/);
-    assert.ok(root.querySelector('a[href="mailto:doug@cashio.us"]'));
+    const contact = root.querySelector('a[href^="mailto:doug@cashio.us?"]');
+    assert.ok(contact, "the contact invitation must open a draft for Doug");
+    const draft = new URL(contact.href);
+    assert.equal(draft.pathname, "doug@cashio.us");
+    assert.equal(draft.searchParams.get("subject"), "An idea from Cashio");
+    assert.match(draft.searchParams.get("body"), /What I want to build:\n\nMy hardest constraint:/);
     assert.ok(root.querySelector('input[id="eve-command"]'));
     assert.ok(root.querySelector('a[href="/command-deck.html"]'));
     assert.equal(root.querySelectorAll("img:not([width]):not([height])").length, 0);
@@ -286,7 +291,7 @@ test("the homepage and Odyssey alias ship the same complete V37 story with a usa
     } else {
       assert.match(robots, /noindex/i, "the compatibility alias must not compete with the canonical homepage");
     }
-    assert.equal(document.title, "Cashio V37.9 — Sanctuary | Doug Cashio");
+    assert.equal(document.title, "Cashio V37.10 — Continuum | Doug Cashio");
     const compatibility = document.querySelector("head script#legacy-bookmark-route");
     assert.ok(compatibility, "legacy fragments must be handled before the page activates");
     for (const attr of ["src", "type", "async", "defer"]) assert.equal(compatibility.hasAttribute(attr), false);
@@ -324,7 +329,7 @@ test("the homepage and Odyssey alias ship the same complete V37 story with a usa
 
 test("V37 release manifests agree without redating the independent evidence archive", async () => {
   const manifest = JSON.parse(await read("public/site-release.json"));
-  assert.equal(manifest.experienceVersion, "37.9.0");
+  assert.equal(manifest.experienceVersion, "37.10.0");
   assert.equal(manifest.releaseName, "THE HUMAN RECKONING");
   assert.equal(manifest.visualEdition, "Lensing");
   assert.equal(manifest.featuredExperience, "Lensing Observatory");

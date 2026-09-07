@@ -1,0 +1,41 @@
+.o-build-story {
+  --project: var(--o-gold);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 24px 48px;
+  margin-top: 56px;
+  padding-top: 28px;
+  border-top: 1px solid #bda77b60;
+}
+.o-build-story h3 {
+  max-width: 20ch;
+  margin: 14px 0;
+  font:
+    500 clamp(26px, 3vw, 38px) / 1.2 Oxanium,
+    sans-serif;
+}
+.o-build-story header p {
+  color: var(--o-muted);
+  font-size: 14px;
+}
+.o-build-story > .o-field-notes {
+  margin: 0;
+}
+.o-build-story > details {
+  grid-column: 1 / -1;
+}
+.o-build-story summary > span {
+  flex: 0 0 24px;
+  width: 24px;
+  line-height: 24px;
+  text-align: center;
+  margin-right: 6px;
+}
+.o-build-story .o-field-notes dl > div {
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+.o-build-story .o-text-button {
+  display: inline-flex;
+  min-height: 44px;
+}

@@ -16,24 +16,26 @@ export function createExplorationCarrier() {
   const inspected: THREE.Object3D[] = [];
   const standard = (color: number, metalness = 0.7, roughness = 0.3) =>
     new THREE.MeshStandardMaterial({ color, metalness, roughness });
-  const ivory = standard(0xb8b6b0, 0.64, 0.29);
+  const ivory = standard(0xb7c0c5, 0.56, 0.26);
   const pearl = new THREE.MeshPhysicalMaterial({
     color: 0xaebbc2,
-    metalness: 0.74,
-    roughness: 0.28,
-    clearcoat: 0.32,
-    clearcoatRoughness: 0.25,
+    metalness: 0.68,
+    roughness: 0.23,
+    clearcoat: 0.48,
+    clearcoatRoughness: 0.21,
   });
-  const titanium = standard(0x596572, 0.84, 0.3);
-  const graphite = standard(0x101b26, 0.65, 0.37);
-  const gold = standard(0xc2934f, 0.8, 0.25);
-  const blueSteel = standard(0x3f6076, 0.74, 0.32);
+  const titanium = standard(0x526374, 0.88, 0.24);
+  const graphite = standard(0x09131e, 0.38, 0.49);
+  const gold = standard(0xc5a166, 0.88, 0.21);
+  const blueSteel = standard(0x36576d, 0.82, 0.27);
   blueSteel.name = "Blue titanium wing armor";
   const facetedArmor = pearl.clone();
   facetedArmor.color.set(0xffffff);
   facetedArmor.vertexColors = true;
   facetedArmor.name = "Ceramic deck with titanium shoulders";
-  const nozzleInterior = standard(0x101c25, 0.83, 0.4);
+  const nozzleInterior = standard(0x091725, 0.62, 0.43);
+  nozzleInterior.emissive.set(0x087da6);
+  nozzleInterior.emissiveIntensity = 0.12;
   nozzleInterior.side = THREE.DoubleSide;
   nozzleInterior.name = "Recessed engine liner";
   const glazingSweepZ = { value: 9.2 };
@@ -93,23 +95,29 @@ export function createExplorationCarrier() {
         vec2 panel = vec2(abs(vVectorFinish.x) + vVectorFinish.z * vectorSwept * 0.42, vVectorFinish.z) * vec2(1.15,0.68);
         vec2 aa = max(fwidth(panel),vec2(0.001));
         vec2 joint = min(fract(panel),1.0-fract(panel));
-        vec2 seam = 1.0-smoothstep(aa,aa+vec2(0.014),joint);
+        vec2 seam = 1.0-smoothstep(vec2(0.002),aa+vec2(0.009),joint);
         float panelVariation = fract(sin(dot(floor(panel),vec2(17.13,43.71)))*1493.71);
         float engraving = max(seam.x,seam.y) * (1.0-smoothstep(0.08,0.4,max(aa.x,aa.y)));
-        diffuseColor.rgb *= (0.86+panelVariation*0.14)*(1.0-engraving*0.34);`,
+        diffuseColor.rgb *= (0.92+panelVariation*0.08)*(1.0-engraving*0.58);`,
         )
         .replace(
           "#include <roughnessmap_fragment>",
           `#include <roughnessmap_fragment>
         float ruling = 0.5+0.5*sin(vVectorFinish.z*164.0+vVectorFinish.x*7.0);
         float resolved = 1.0-smoothstep(0.012,0.045,fwidth(vVectorFinish.z));
-        roughnessFactor *= 0.91+resolved*ruling*0.16;`,
+        roughnessFactor *= 0.92+resolved*ruling*0.12;
+        roughnessFactor = mix(roughnessFactor,0.62,engraving*0.72);`,
+        )
+        .replace(
+          "#include <metalnessmap_fragment>",
+          `#include <metalnessmap_fragment>
+        metalnessFactor *= 1.0-engraving*0.48;`,
         );
   };
   titanium.onBeforeCompile = (shader) => machineFinish(shader, false);
-  titanium.customProgramCacheKey = () => "vector-machined-titanium-v1";
+  titanium.customProgramCacheKey = () => "continuum-machined-titanium-v2";
   gold.onBeforeCompile = (shader) => machineFinish(shader, true);
-  gold.customProgramCacheKey = () => "vector-machined-champagne-v1";
+  gold.customProgramCacheKey = () => "continuum-machined-champagne-v2";
   const unit = new THREE.BoxGeometry(1, 1, 1);
   const detailBatches = new Map<THREE.Group, Map<THREE.Material, THREE.BufferGeometry[]>>();
   const transform = new THREE.Object3D();
@@ -793,7 +801,7 @@ export function createExplorationCarrier() {
       );
     }
     const plumeMaterial = new THREE.MeshBasicMaterial({
-      color: 0x60dff4,
+      color: 0x40c6f2,
       transparent: true,
       opacity: 0.29,
       blending: THREE.AdditiveBlending,
@@ -819,12 +827,12 @@ export function createExplorationCarrier() {
           "#include <color_fragment>",
           `#include <color_fragment>
           float compression = pow(0.5+0.5*cos(vPlumeProgress*25.13-enginePhase*(1.3+enginePower)),8.0);
-          diffuseColor.rgb *= mix(vec3(0.78,1.0,1.0),vec3(0.10,0.36,1.0),vPlumeProgress);
-          diffuseColor.rgb += vec3(0.18,0.40,0.52)*compression*enginePower;
+          diffuseColor.rgb *= mix(vec3(0.92,1.0,1.0),vec3(0.08,0.28,0.92),vPlumeProgress);
+          diffuseColor.rgb += vec3(0.08,0.25,0.4)*compression*enginePower;
           diffuseColor.a *= (1.0-smoothstep(0.08,1.0,vPlumeProgress))*(0.64+compression*0.36);`,
         );
     };
-    plumeMaterial.customProgramCacheKey = () => "vector-ion-compression-v1";
+    plumeMaterial.customProgramCacheKey = () => "continuum-ion-compression-v2";
     const plume = add(
       new THREE.ConeGeometry(0.33 * scale, 2.8 * scale, 24, 1, true),
       plumeMaterial,
@@ -842,7 +850,7 @@ export function createExplorationCarrier() {
     const inner = add(
       new THREE.ConeGeometry(0.18 * scale, 1.85 * scale, 16, 1, true),
       new THREE.MeshBasicMaterial({
-        color: 0xb9f9ff,
+        color: 0x91ddff,
         transparent: true,
         opacity: 0.42,
         blending: THREE.AdditiveBlending,
@@ -969,7 +977,7 @@ export function createExplorationCarrier() {
             "float cutEdge = 1.0 - smoothstep(0.015, 0.16, abs(vHullPosition.z - hullCutZ));\noutgoingLight += vec3(0.12, 1.5, 1.9) * cutEdge * hullCutActive;\n#include <opaque_fragment>",
           );
       };
-      material.customProgramCacheKey = () => "vector-machined-section-v1";
+      material.customProgramCacheKey = () => "continuum-machined-section-v2";
       sectionMaterials.set(source, material);
     }
     object.material = sectionMaterials.get(source)!;
@@ -1014,14 +1022,15 @@ export function createExplorationCarrier() {
     const power = enginePower.value;
     const reach = Math.min(1, 0.2 + 0.8 * Math.sqrt(power * 2));
     const width = power >= 0.5 ? 1 - (power - 0.5) * 0.35 : 0.55 + 0.45 * Math.sqrt(power * 2);
-    engineLight.color.setRGB(0.008 + power * 0.39, 0.026 + power * 1.5, 0.038 + power * 1.92);
+    engineLight.color.setRGB(0.008 + power * 0.24, 0.026 + power * 1.18, 0.038 + power * 1.65);
+    nozzleInterior.emissiveIntensity = power * 0.24;
     for (const plume of plumes) {
       plume.mesh.visible = power > 0;
       const length = reach * (1 + Math.sin(enginePhase.value * 1.5) * 0.035 * power);
       plume.mesh.scale.set(width, length, width);
       // Keep the nozzle attachment fixed as the actual gas column grows.
       plume.mesh.position.z = plume.root - (plume.length * length) / 2;
-      plume.mesh.material.opacity = plume.outer ? 0.18 + power * 0.22 : 0.18 + power * 0.48;
+      plume.mesh.material.opacity = plume.outer ? 0.15 + power * 0.22 : 0.13 + power * 0.38;
     }
   };
   const setPropulsion = (amount: number) => {

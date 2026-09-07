@@ -877,7 +877,7 @@ export function OrbitInstrument({ motion, onSelect }: { motion: boolean; onSelec
               ◈
             </span>
             <div>
-              <span id={`${id}-cinema-title`}>The observatory</span>
+              <span id={`${id}-cinema-title`}>Principles Engine</span>
               <p>{cinema ? "LIGHTFOLD / YOUR VIEW OF THE UNIVERSE" : "One instrument. A world to explore."}</p>
             </div>
           </div>

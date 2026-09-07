@@ -9,8 +9,21 @@ const LIGHTS = [
 export function LightwakeControls() {
   const [light, setLight] = useState<(typeof LIGHTS)[number]["id"]>("dawn");
   const [intensity, setIntensity] = useState(60);
-  const panel = useRef<HTMLDivElement>(null);
+  const panel = useRef<HTMLDetailsElement>(null);
   const id = useId();
+  useEffect(() => {
+    const element = panel.current;
+    const hero = element?.closest<HTMLElement>(".o-hero");
+    if (!element || !hero) return;
+    const measure = () => hero.style.setProperty("--lw-panel-height", `${element.getBoundingClientRect().height}px`);
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    measure();
+    return () => {
+      observer.disconnect();
+      hero.style.removeProperty("--lw-panel-height");
+    };
+  }, []);
   useEffect(() => {
     const hero = panel.current?.closest<HTMLElement>(".o-hero");
     if (!hero) return;
@@ -18,41 +31,45 @@ export function LightwakeControls() {
     hero.style.setProperty("--lw-intensity", String(intensity / 100));
   }, [light, intensity]);
   return (
-    <div className="lw-light-controls" ref={panel}>
-      <div className="lw-light-heading">
-        <span>SET THE ATMOSPHERE</span>
-        <span aria-hidden="true">LIGHT / 0{LIGHTS.findIndex((item) => item.id === light) + 1}</span>
+    <details className="lw-light-controls" ref={panel}>
+      <summary className="lw-light-heading">
+        <span>Atmosphere</span>
+        <span>
+          {LIGHTS.find((item) => item.id === light)?.label} <b aria-hidden="true">+</b>
+        </span>
+      </summary>
+      <div className="lw-light-options">
+        <div className="lw-light-choices" role="group" aria-label="Orbital scene lighting">
+          {LIGHTS.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              aria-pressed={light === item.id}
+              aria-label={`${item.label} scene lighting`}
+              onClick={() => setLight(item.id)}
+            >
+              <span className={`lw-light-symbol lw-light-symbol-${item.id}`} aria-hidden="true" />
+              {item.label}
+            </button>
+          ))}
+        </div>
+        <label className="lw-light-intensity" htmlFor={id}>
+          <span>Light intensity</span>
+          <input
+            id={id}
+            type="range"
+            min="0"
+            max="100"
+            value={intensity}
+            onChange={(event) => setIntensity(Number(event.currentTarget.value))}
+          />
+          <output>{intensity}%</output>
+        </label>
+        <p className="lw-light-description" role="status">
+          {LIGHTS.find((item) => item.id === light)?.detail}
+        </p>
       </div>
-      <div className="lw-light-choices" role="group" aria-label="Orbital scene lighting">
-        {LIGHTS.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            aria-pressed={light === item.id}
-            aria-label={`${item.label} scene lighting`}
-            onClick={() => setLight(item.id)}
-          >
-            <span className={`lw-light-symbol lw-light-symbol-${item.id}`} aria-hidden="true" />
-            {item.label}
-          </button>
-        ))}
-      </div>
-      <label className="lw-light-intensity" htmlFor={id}>
-        <span>Light intensity</span>
-        <input
-          id={id}
-          type="range"
-          min="0"
-          max="100"
-          value={intensity}
-          onChange={(event) => setIntensity(Number(event.currentTarget.value))}
-        />
-        <output>{intensity}%</output>
-      </label>
-      <p className="lw-light-description" role="status">
-        {LIGHTS.find((item) => item.id === light)?.detail}
-      </p>
-    </div>
+    </details>
   );
 }
 
@@ -76,7 +93,7 @@ export function LightwakeAtmosphere() {
   );
 }
 
-export function ExperienceGlyph({ kind }: { kind: "film" | "signature" | "flight" }) {
+export function ExperienceGlyph({ kind }: { kind: "film" | "signature" | "flight" | "orbit" }) {
   return (
     <svg className="lw-experience-glyph" viewBox="0 0 56 32" fill="none" aria-hidden="true" focusable="false">
       <path className="lw-glyph-rule" d="M2 25h52M10 3v26m36-26v26" />
@@ -90,6 +107,12 @@ export function ExperienceGlyph({ kind }: { kind: "film" | "signature" | "flight
           <ellipse cx="28" cy="16" rx="22" ry="9" transform="rotate(-14 28 16)" />
           <path className="lw-glyph-gold" d="m28 4 9 23-9-6-9 6Z" />
           <circle cx="45" cy="10" r="2" />
+        </>
+      ) : kind === "orbit" ? (
+        <>
+          <circle cx="28" cy="16" r="9" />
+          <ellipse className="lw-glyph-gold" cx="28" cy="16" rx="22" ry="7" transform="rotate(-24 28 16)" />
+          <circle cx="47" cy="8" r="2" fill="currentColor" />
         </>
       ) : (
         <>

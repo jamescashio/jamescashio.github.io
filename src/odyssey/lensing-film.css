@@ -380,6 +380,24 @@
 .lensing-film[data-playback="ended"] .lensing-film-explore:hover {
   background: #ffe5be;
 }
+.lensing-film[data-clip="sanctuary"] .lensing-film-handoff {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.lensing-film[data-clip="sanctuary"] .lensing-film-handoff p {
+  flex-basis: 100%;
+}
+.lensing-film-world-loading {
+  display: grid;
+  gap: 24px;
+  padding: 48px 28px;
+  min-height: 300px;
+}
+.lensing-film-world-loading button {
+  color: #f2d3a0;
+  background: #0b1b29;
+  padding: 12px;
+}
 @media (max-width: 600px) {
   .lensing-film-scenes {
     gap: 8px;

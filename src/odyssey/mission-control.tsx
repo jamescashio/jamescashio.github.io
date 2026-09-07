@@ -10,6 +10,33 @@ type Destination = {
   keywords: string;
 };
 
+let panelStyles: Promise<void> | null = null;
+function loadPanelStyles() {
+  if (!panelStyles) {
+    panelStyles = import("./mission-control-panel.css?url")
+      .then(
+        ({ default: href }) =>
+          new Promise<void>((resolve, reject) => {
+            const link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.href = href;
+            link.dataset.missionControlPanel = "";
+            link.onload = () => resolve();
+            link.onerror = () => {
+              link.remove();
+              reject(new Error("Mission Control styles could not load"));
+            };
+            document.head.append(link);
+          }),
+      )
+      .catch((error: unknown) => {
+        panelStyles = null;
+        throw error;
+      });
+  }
+  return panelStyles;
+}
+
 const DESTINATIONS: Destination[] = [
   {
     id: "sovereign-world",
@@ -30,11 +57,19 @@ const DESTINATIONS: Destination[] = [
   },
   {
     id: "observatory",
-    label: "The observatory",
-    description: "Rotate the rings. Change your viewpoint.",
+    label: "Principles Engine",
+    description: "Put the operating principles in motion.",
     href: "#observatory",
     kind: "Destination",
-    keywords: "orbit rings rotate space interactive instrument",
+    keywords: "principles orbit rings rotate space interactive instrument observatory",
+  },
+  {
+    id: "lensing",
+    label: "Lensing Observatory",
+    description: "Explore the orbital world, change its light, and ignite the gate.",
+    href: "#lensing",
+    kind: "Destination",
+    keywords: "observatory planet world journey gate dawn eclipse ion 3d",
   },
   {
     id: "universe",
@@ -143,6 +178,10 @@ export function MissionControl({
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
+  const [loading, setLoading] = useState<"idle" | "loading" | "failed">("idle");
+  const mounted = useRef(false);
+  const pendingLaunch = useRef(false);
+  const launchGeneration = useRef(0);
   const dialog = useRef<HTMLDialogElement>(null);
   const search = useRef<HTMLInputElement>(null);
   const returnFocus = useRef<HTMLElement | null>(null);
@@ -155,39 +194,91 @@ export function MissionControl({
   });
   const current = Math.min(active, Math.max(results.length - 1, 0));
 
-  const launch = useCallback(() => {
-    if (dialog.current?.open) {
-      search.current?.focus();
-      return;
-    }
-    returnFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    navigating.current = false;
-    setQuery("");
-    setActive(0);
-    setOpen(true);
+  const cancelLaunch = useCallback(() => {
+    launchGeneration.current += 1;
+    pendingLaunch.current = false;
+    if (mounted.current) setLoading("idle");
   }, []);
 
+  const launch = useCallback(
+    async (opener?: HTMLElement) => {
+      if (dialog.current?.open) {
+        search.current?.focus();
+        return;
+      }
+      if (pendingLaunch.current || document.querySelector("dialog:modal")) return;
+      returnFocus.current = opener ?? (document.activeElement instanceof HTMLElement ? document.activeElement : null);
+      navigating.current = false;
+      const generation = ++launchGeneration.current;
+      pendingLaunch.current = true;
+      setLoading("loading");
+      try {
+        await loadPanelStyles();
+        if (!mounted.current || generation !== launchGeneration.current) return;
+        if (document.querySelector("dialog:modal")) {
+          cancelLaunch();
+          return;
+        }
+      } catch {
+        if (mounted.current && generation === launchGeneration.current) {
+          pendingLaunch.current = false;
+          setLoading("failed");
+        }
+        return;
+      }
+      pendingLaunch.current = false;
+      setLoading("idle");
+      setQuery("");
+      setActive(0);
+      setOpen(true);
+    },
+    [cancelLaunch],
+  );
+
   const close = useCallback(() => {
+    cancelLaunch();
     dialog.current?.close();
     setOpen(false);
-  }, []);
+  }, [cancelLaunch]);
+
+  useEffect(() => {
+    mounted.current = true;
+    const observer = new MutationObserver(() => {
+      if (pendingLaunch.current && document.querySelector("dialog:modal")) cancelLaunch();
+    });
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["open"] });
+    return () => {
+      mounted.current = false;
+      launchGeneration.current += 1;
+      pendingLaunch.current = false;
+      observer.disconnect();
+    };
+  }, [cancelLaunch]);
 
   useEffect(() => {
     const shortcut = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape" && pendingLaunch.current) {
+        cancelLaunch();
+        return;
+      }
       if (!(event.ctrlKey || event.metaKey) || event.altKey || event.key.toLowerCase() !== "k") return;
       // A modal already on screen keeps control of its own keyboard context.
       if (document.querySelector("dialog:modal") && !dialog.current?.open) return;
       event.preventDefault();
-      launch();
+      void launch();
     };
     window.addEventListener("keydown", shortcut);
     return () => window.removeEventListener("keydown", shortcut);
-  }, [launch]);
+  }, [launch, cancelLaunch]);
 
   useEffect(() => {
     if (!open) return;
     const panel = dialog.current;
     if (!panel) return;
+    if (document.querySelector("dialog:modal")) {
+      setOpen(false);
+      return;
+    }
     panel.showModal();
     const priorOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -260,13 +351,27 @@ export function MissionControl({
       <button
         className={`mc-trigger ${motion ? "" : "mc-still"} ${triggerClassName}`}
         type="button"
-        onClick={launch}
+        onClick={(event) => void launch(event.currentTarget)}
         aria-haspopup="dialog"
+        aria-busy={loading === "loading" || undefined}
       >
         <MissionGlyph small />
-        <span>Launch Mission Control</span>
+        <span>
+          {loading === "loading"
+            ? "Loading Mission Control…"
+            : loading === "failed"
+              ? "Retry Mission Control"
+              : "Launch Mission Control"}
+        </span>
         <kbd aria-hidden="true">⌘ / Ctrl K</kbd>
       </button>
+      <span className="mc-sr-only" role="status">
+        {loading === "failed"
+          ? "Mission Control could not load. Select Retry Mission Control to try again."
+          : loading === "loading"
+            ? "Loading Mission Control. Escape cancels."
+            : ""}
+      </span>
       <dialog
         ref={dialog}
         className={`mc-dialog ${motion ? "mc-motion" : "mc-still"}`}

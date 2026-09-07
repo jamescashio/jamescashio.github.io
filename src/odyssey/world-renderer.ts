@@ -100,8 +100,8 @@ export function createSovereignWorld(
   let propulsion = 50;
   const raycaster = new THREE.Raycaster();
 
-  scene.add(new THREE.HemisphereLight(0xc5dae7, 0x081221, 0.65));
-  const sun = new THREE.DirectionalLight(0xffe1b8, 2.7);
+  scene.add(new THREE.HemisphereLight(0xb9d5e8, 0x060d18, 0.48));
+  const sun = new THREE.DirectionalLight(0xffe4c4, 2.9);
   sun.position.set(-9, 11, 7);
   sun.castShadow = true;
   sun.shadow.mapSize.set(1024, 1024);
@@ -112,10 +112,10 @@ export function createSovereignWorld(
   sun.shadow.normalBias = 0.035;
   sun.shadow.bias = -0.0002;
   scene.add(sun);
-  const rim = new THREE.DirectionalLight(0x80d6ff, 3.1);
+  const rim = new THREE.DirectionalLight(0x8bd9ff, 3.35);
   rim.position.set(3, 7, -12);
   scene.add(rim);
-  const fill = new THREE.DirectionalLight(0xb8d4e6, 0.65);
+  const fill = new THREE.DirectionalLight(0xb8d4e6, 0.72);
   fill.position.set(12, 1, 5);
   scene.add(fill);
 
@@ -129,28 +129,31 @@ export function createSovereignWorld(
     context.fillStyle = "#263141";
     context.fillRect(0, 0, 512, 256);
     const upper = context.createLinearGradient(0, 0, 0, 256);
-    upper.addColorStop(0, "#7c817d");
-    upper.addColorStop(0.27, "#d5c6a7");
-    upper.addColorStop(0.49, "#2a3644");
-    upper.addColorStop(0.72, "#101a28");
-    upper.addColorStop(1, "#111720");
+    upper.addColorStop(0, "#596674");
+    upper.addColorStop(0.24, "#8395a4");
+    upper.addColorStop(0.45, "#1b2b3c");
+    upper.addColorStop(0.68, "#080e18");
+    upper.addColorStop(1, "#121e2b");
     context.fillStyle = upper;
     context.fillRect(0, 0, 512, 256);
-    context.fillStyle = "#f2e8cf";
-    context.fillRect(72, 32, 112, 68);
-    context.fillStyle = "#a8e2fa";
-    context.fillRect(350, 43, 40, 92);
-    context.fillStyle = "#faf7ed";
-    context.fillRect(206, 62, 5, 102);
-    context.fillStyle = "#d09a4c";
-    context.fillRect(435, 70, 18, 54);
+    // Narrow studio strips trace existing bevels while the dark gaps separate
+    // metal facets. These are baked into the same small, once-created PMREM.
+    context.fillStyle = "#f4e4c4";
+    context.fillRect(78, 30, 74, 57);
+    context.fillStyle = "#b8e7ff";
+    context.fillRect(342, 38, 22, 106);
+    context.fillStyle = "#f8f4e7";
+    context.fillRect(198, 52, 7, 109);
+    context.fillRect(224, 58, 3, 92);
+    context.fillStyle = "#d5a366";
+    context.fillRect(425, 62, 12, 67);
     const texture = new THREE.CanvasTexture(environmentCanvas);
     texture.colorSpace = THREE.SRGBColorSpace;
     texture.mapping = THREE.EquirectangularReflectionMapping;
     const generator = new THREE.PMREMGenerator(renderer);
     environmentTarget = generator.fromEquirectangular(texture);
     scene.environment = environmentTarget.texture;
-    scene.environmentIntensity = 0.74;
+    scene.environmentIntensity = 0.88;
     texture.dispose();
     generator.dispose();
   }
@@ -233,9 +236,9 @@ export function createSovereignWorld(
   let engineGlowMaterial: THREE.SpriteMaterial | undefined;
   if (glowContext) {
     const gradient = glowContext.createRadialGradient(32, 32, 0, 32, 32, 32);
-    gradient.addColorStop(0, "rgba(200,250,255,.9)");
-    gradient.addColorStop(0.18, "rgba(107,233,255,.65)");
-    gradient.addColorStop(0.45, "rgba(68,194,235,.17)");
+    gradient.addColorStop(0, "rgba(184,239,255,.72)");
+    gradient.addColorStop(0.18, "rgba(79,204,255,.48)");
+    gradient.addColorStop(0.45, "rgba(46,144,231,.15)");
     gradient.addColorStop(1, "rgba(68,194,235,0)");
     glowContext.fillStyle = gradient;
     glowContext.fillRect(0, 0, 64, 64);
