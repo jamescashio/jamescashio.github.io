@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import { PROJECTS } from "./data";
+import { STUDY_BROWSER_ID } from "./study-navigation";
 
 type Destination = {
   id: string;
@@ -305,7 +306,7 @@ export function MissionControl({
     const build = href.match(/^#build=([a-z]+)$/)?.[1];
     if (window.location.hash !== href) window.location.hash = href;
     else if (build) window.dispatchEvent(new HashChangeEvent("hashchange"));
-    const target = document.getElementById(build ? "work" : href.slice(1));
+    const target = document.getElementById(build ? STUDY_BROWSER_ID : href.slice(1));
     target?.scrollIntoView({ behavior: motion && !build ? "smooth" : "instant", block: "start" });
     // Move keyboard users into the destination after the dialog releases focus.
     requestAnimationFrame(() => {
@@ -457,7 +458,7 @@ export function MissionControl({
             </button>
           )}
         </div>
-        <div className="mc-body">
+        <div className="mc-body" data-searching={query ? "true" : "false"}>
           <aside className="mc-missions" aria-label="Choose a starting point">
             <h3 className="mc-eyebrow">START HERE</h3>
             {onFirstFlight && (

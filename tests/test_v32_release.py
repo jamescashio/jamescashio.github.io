@@ -33,24 +33,24 @@ class V37PromotionValidationTests(unittest.TestCase):
     def test_preview_is_explicit_and_cannot_pass_the_public_release_contract(self) -> None:
         manifest = {
             **json.loads(read("public/site-release.json")),
-            "experienceVersion": "37.12.0-preview.sanctuary",
+            "experienceVersion": "37.13.0-preview.sanctuary",
             "status": "preview",
             "published": False,
         }
         failures: list[str] = []
-        release_consistency.check_site_release(manifest, failures, preview=True, version="37.12.0-preview.sanctuary")
+        release_consistency.check_site_release(manifest, failures, preview=True, version="37.13.0-preview.sanctuary")
         self.assertEqual(failures, [])
         for changes in ({"published": True}, {"published": 0}, {"status": "released"}):
             failures = []
-            release_consistency.check_site_release({**manifest, **changes}, failures, preview=True, version="37.12.0-preview.sanctuary")
+            release_consistency.check_site_release({**manifest, **changes}, failures, preview=True, version="37.13.0-preview.sanctuary")
             self.assertTrue(failures)
         failures = []
-        release_consistency.check_site_release(manifest, failures, version="37.12.0")
+        release_consistency.check_site_release(manifest, failures, version="37.13.0")
         self.assertTrue(failures)
 
     def test_release_manifest_separates_software_identity_from_dated_evidence(self) -> None:
         manifest = {
-            "experienceVersion": "37.12.0",
+            "experienceVersion": "37.13.0",
             "releaseName": "THE HUMAN RECKONING",
             "visualEdition": "Lensing",
             "featuredExperience": "Lensing Observatory",
@@ -632,7 +632,7 @@ class V34ReleaseContractTests(unittest.TestCase):
 
     def test_v37_software_preserves_v35_archive_identity(self) -> None:
         package = json.loads(read("package.json"))
-        self.assertEqual(package["version"], "37.12.0")
+        self.assertEqual(package["version"], "37.13.0")
         self.assertIn('V35 "ALL TENS"', self.content)
         retired_candidate = "V" + "47"
         for relative in (

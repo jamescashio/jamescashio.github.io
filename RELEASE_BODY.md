@@ -1,17 +1,9 @@
-# V37.12 — Continuum
+# V37.13 — Perspective
 
-The reviewed polish preserves Cashio's original orbital identity while making its opening, demonstrations and finale clearer. First Flight comes before optional phone atmosphere controls. Richer ship materials and lighting carry through to a downloadable mission card containing the visitor's scene, decision and actual twelve-request demonstration outcome.
+Visitors now meet one privacy decision before the seven-study browser, and each study leads to a specific next question. The opening keeps First Flight primary and groups optional scenes without losing launchers or bookmarks. Observatory links preserve the visitor's lighting, atmosphere and viewpoint as a paused scene; refined lighting adds depth within the existing rendering budget.
 
-The smart-routing story restores V31's historical $0.26/day AI provider-usage observation, measured 21–22 July 2026 and published 26 July. Original sources and exclusions sit beside the result. One evidence record serves the story and both E.V.E. consoles; it is not presented as current spending or an audited savings comparison.
+Focused source modules separate page content, modal coordination, studies and planet rendering. Optional study code, artwork and styles load on selection. Loading recovery preserves the chosen experiment, while keyboard focus follows reveals, scene closures and study navigation. The original artwork, palette, typography, Bit, films, sound policy, legacy routes and dated evidence remain intact.
 
-All seven studies have practical takeaways. Tablet shading, graph labels, signature instructions and utility text are refined. Optional scenes now provide accessible loading cancellation and recoverable failures, preserving the portfolio and launcher focus. Correct phone image sizing reduces the selected hero image by 48.2% at 390px/DPR2 while retaining lazy 3D and existing asset budgets.
+Validation: the reviewed preview passed 413 automated tests, 32 modern browser checks and command-deck compatibility checks. Release promotion repeats the full local gates and pinned-browser GitHub checks before deployment. Public verification must confirm V37.13 receipts, matching assets and actual desktop/phone interactions. See [release details and rollback](docs/perspective-release.md).
 
-The artwork, Bit, fonts, palette, films, Sanctuary, Observatory, motion controls, optional audio, legacy routes and frozen evidence remain intact. The privacy notice documents browser-local mission cards and the separately authorized analytics disable. See [the release evidence and rollback](docs/polished-release.md).
-
-## Verification
-
-- Reviewed preview: 408 automated tests, 25 modern browser checks, the legacy runtime suite, and 108 rendered states with no sampled text-contrast failure.
-- Promotion: repeat local lint, formatting, source/model tests, build, artifact, browser, public-safety, release-consistency and whitespace gates. GitHub runs the pinned Chrome 147 browser checks before publication.
-- Completion: confirm successful Pages deployment, V37.12 public receipts, delivered asset hashes, current and legacy routes, live interaction, keyboard, phone layouts and reduced motion.
-
-Rollback: revert this release's squash commit through a checked pull request to restore baseline `0c509286ed9329b897741e1afe505376deb443ce`, then verify the resulting Pages deployment.
+Rollback baseline: `c3983eb4cc2b44420138419daa7d11fb3688fb30`. Revert the release squash commit through a checked pull request and verify the resulting Pages deployment.

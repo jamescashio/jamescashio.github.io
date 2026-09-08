@@ -30,7 +30,7 @@ Cloudflare Web Analytics automatic script injection was disabled for cashio.us o
 
 ## Interactive scenes and downloads
 
-The flight, mission outcomes, and public studies run in your browser with illustrative sample data. They do not send AI requests or connect to the private infrastructure described in the portfolio. Saving a mission card creates an image in your browser and downloads it to your device; the site does not upload that image. A shared scene link contains the selected demonstration settings.
+The flight, mission outcomes, and public studies run in your browser with illustrative sample data. They do not send AI requests or connect to the private infrastructure described in the portfolio. Saving a mission card creates an image in your browser and downloads it to your device; the site does not upload that image. A shared scene link contains the selected demonstration settings. Observatory links also preserve lighting, atmosphere and camera framing in the fragment after `#`; the recipient opens a paused scene. No screenshot or scene image is uploaded when creating that link.
 
 ## Security and retention
 

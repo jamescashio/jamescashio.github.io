@@ -6,6 +6,7 @@ import { createServer } from "node:http";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { checkPerspective } from "./perspective-runtime.mjs";
 
 import {
   browserExitDiagnostic,
@@ -17,7 +18,7 @@ import {
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = path.join(ROOT, "dist");
 const RELEASE_NAME = "THE HUMAN RECKONING";
-const PAGE_TITLE = "Cashio V37.12 — Continuum | Doug Cashio";
+const PAGE_TITLE = "Cashio V37.13 — Continuum | Doug Cashio";
 const report = { passed: false, checks: [], failures: [], errors: [], warnings: [] };
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const argument = (name) =>
@@ -130,7 +131,7 @@ async function run() {
       const base = `http://127.0.0.1:${resources.server.address().port}`;
       const rootHtml = await fetch(`${base}/`).then((response) => response.text());
       assert.match(rootHtml, /data-prerendered="odyssey"/, "root must contain the prerendered V37 page");
-      assert.ok(rootHtml.includes(`<title>${PAGE_TITLE}</title>`), "root title must identify V37.12 Continuum");
+      assert.ok(rootHtml.includes(`<title>${PAGE_TITLE}</title>`), "root title must identify V37.13 Continuum");
       assert.match(rootHtml, /Own the iron/, "hero heading must exist before JavaScript");
       assert.doesNotMatch(
         rootHtml,
@@ -142,7 +143,7 @@ async function run() {
       const receipt = await receiptResponse.json();
       const packageJson = JSON.parse(await readFile(path.join(ROOT, "package.json"), "utf8"));
       assert.equal(receipt.experienceVersion, packageJson.version, "receipt and package versions must match");
-      assert.equal(receipt.experienceVersion, "37.12.0", "current receipt must be the V37.12 release");
+      assert.equal(receipt.experienceVersion, "37.13.0", "current receipt must be the V37.13 release");
       assert.equal(receipt.published, true, "release must be explicitly published");
       assert.equal(receipt.releaseName, RELEASE_NAME);
       assert.equal(receipt.visualEdition, "Lensing");
@@ -612,8 +613,8 @@ async function run() {
 
       await navigate("/?runtime=v37-current-brief#build=briefing", 320, 844);
       await waitFor(
-        `document.querySelector('#tab-briefing')?.getAttribute('aria-selected') === 'true'`,
-        "briefing deep link",
+        `document.querySelector('#tab-briefing')?.getAttribute('aria-selected') === 'true' && !!document.querySelector('.o-lab[data-lab="3"] .o-run:not(:disabled)')`,
+        "briefing deep link and deferred instrument controls",
       );
       await click(".o-run");
       await waitFor(
@@ -999,6 +1000,8 @@ async function run() {
         evidence: comparison,
       });
 
+      await checkPerspective({ navigate, evaluate, click, pressKey, waitFor, report, send });
+
       await send("Emulation.setScriptExecutionDisabled", { value: true });
       await navigate("/?runtime=v36-no-js", 320, 844);
       const noJs = await layout();
@@ -1025,7 +1028,7 @@ async function run() {
       );
       report.checks.push({ name: "Legacy deck bookmark preserves query and hash", passed: true });
       await navigate("/odyssey.html?runtime=v36-alias");
-      assert.equal(await evaluate("document.title"), PAGE_TITLE, "Odyssey alias must retain V37.12 Continuum");
+      assert.equal(await evaluate("document.title"), PAGE_TITLE, "Odyssey alias must retain V37.13 Continuum");
       report.checks.push({ name: "Odyssey alias remains available", passed: true });
       assert.deepEqual(report.errors, [], "no runtime exceptions or console errors");
       report.checks.push({ name: "No runtime errors", passed: true });

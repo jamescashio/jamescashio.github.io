@@ -211,3 +211,77 @@
     border-color: CanvasText;
   }
 }
+
+.lens-world-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.lens-share-world {
+  color: #08131d !important;
+  background: #edc991;
+  border-color: #edc991;
+  font-weight: 700;
+}
+.lens-share-world:hover:enabled {
+  background: #ffe1ad;
+  border-color: #ffe1ad;
+}
+.lens-observatory .lens-shared-arrival {
+  margin: 0 0 16px;
+  color: #bce9e5;
+  font-size: 14px;
+}
+.lens-share-result {
+  padding: 0 0 20px;
+  color: #c9e3ea;
+}
+.lens-share-result p {
+  margin: 0 0 10px;
+  font-size: 14px;
+}
+.lens-share-result label {
+  display: block;
+  font-size: 13px;
+}
+.lens-share-result input {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  margin: 8px 0;
+  padding: 10px;
+  background: #071019;
+  color: #d8edf5;
+  border: 1px solid #668393;
+  font:
+    13px/1.4 Jet,
+    monospace;
+}
+.lens-share-result small {
+  display: block;
+  max-width: 70ch;
+  font:
+    12px/1.5 Exo,
+    sans-serif;
+  color: #b5cbd7;
+}
+@media (max-width: 600px) {
+  .lens-workshop-bar {
+    flex-wrap: wrap;
+    gap: 0;
+    padding: 8px 0 12px;
+  }
+  .lens-workshop-toggle {
+    min-height: 44px;
+  }
+  .lens-world-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+  }
+  .lens-world-actions .lens-save-view {
+    justify-content: center;
+    font-size: 13px !important;
+  }
+}

@@ -16,13 +16,13 @@ export function createExplorationCarrier() {
   const inspected: THREE.Object3D[] = [];
   const standard = (color: number, metalness = 0.7, roughness = 0.3) =>
     new THREE.MeshStandardMaterial({ color, metalness, roughness });
-  const ivory = standard(0x9caeb8, 0.66, 0.32);
+  const ivory = standard(0xaabdc8, 0.72, 0.29);
   const pearl = new THREE.MeshPhysicalMaterial({
     color: 0x8fa6b3,
     metalness: 0.76,
-    roughness: 0.3,
-    clearcoat: 0.3,
-    clearcoatRoughness: 0.25,
+    roughness: 0.26,
+    clearcoat: 0.42,
+    clearcoatRoughness: 0.18,
   });
   const titanium = standard(0x526374, 0.88, 0.24);
   const graphite = standard(0x09131e, 0.38, 0.49);
@@ -109,6 +109,17 @@ export function createExplorationCarrier() {
         roughnessFactor = mix(roughnessFactor,0.62,engraving*0.72);`,
         )
         .replace(
+          "#include <normal_fragment_maps>",
+          `#include <normal_fragment_maps>
+        // A shallow machined joint catches light without extra geometry or passes.
+        float jointDepth = -engraving * 0.008;
+        vec3 surfaceX = dFdx(-vViewPosition), surfaceY = dFdy(-vViewPosition);
+        vec3 jointX = cross(surfaceY, normal), jointY = cross(normal, surfaceX);
+        float jointDet = dot(surfaceX, jointX);
+        vec3 jointGradient = sign(jointDet) * (dFdx(jointDepth) * jointX + dFdy(jointDepth) * jointY);
+        normal = normalize(abs(jointDet) * normal - jointGradient);`,
+        )
+        .replace(
           "#include <metalnessmap_fragment>",
           `#include <metalnessmap_fragment>
         metalnessFactor *= 1.0-engraving*0.48;`,
@@ -118,6 +129,8 @@ export function createExplorationCarrier() {
   titanium.customProgramCacheKey = () => "continuum-machined-titanium-v2";
   gold.onBeforeCompile = (shader) => machineFinish(shader, true);
   gold.customProgramCacheKey = () => "continuum-machined-champagne-v2";
+  facetedArmor.onBeforeCompile = (shader) => machineFinish(shader, true);
+  facetedArmor.customProgramCacheKey = () => "perspective-armored-ceramic-v1";
   const unit = new THREE.BoxGeometry(1, 1, 1);
   const detailBatches = new Map<THREE.Group, Map<THREE.Material, THREE.BufferGeometry[]>>();
   const transform = new THREE.Object3D();

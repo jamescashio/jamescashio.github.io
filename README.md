@@ -1,8 +1,8 @@
-# cashio.us V37.12 — Continuum
+# cashio.us V37.13 — Continuum
 
 Doug Cashio’s interactive universe of AI, security, and owned infrastructure. Built for technical peers and AI enthusiasts, with Bit, orbital artwork, midnight blue, cyan, gold, and human judgment at its center.
 
-**V37.12 publishes the reviewed mission cards, historical cost story, and experience polish.** The software version is 37.12.0. The original orbital identity is preserved, with clearer phone entry, richer ship lighting, readable tablet copy, and recoverable scene loading. Software and operational evidence retain separate dates. See [the release notes and rollback](docs/polished-release.md).
+**V37.13 publishes Perspective: a clearer first visit and a world you can share.** The software version is 37.13.0. One privacy decision introduces the seven studies, each study leads to the next question, and Observatory links restore the visitor's own composition. Optional study code and artwork load on selection. The original identity, motion controls and dated evidence remain intact. See [release validation and rollback](docs/perspective-release.md).
 
 ## Experience
 
@@ -42,7 +42,7 @@ All request-routing studies execute locally in the browser and send nothing to a
 
 | Concern                                               | Source                                                                                             |
 | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| Page composition, overlay handoffs, focus restoration | `src/odyssey/app.tsx`                                                                              |
+| Page composition, overlay handoffs, focus restoration | `app.tsx`, `experience-controller.ts`, `experience-overlays.tsx` in `src/odyssey/`                 |
 | Study interface and rules                             | `labs.tsx`, `data.ts`, `study-experiment.ts`, `study-notes.ts` in `src/odyssey/`                   |
 | Shared dated evidence and audit explanation           | `fleet-evidence.ts`, `audit-story.tsx`, `build-story.tsx` in `src/odyssey/`                        |
 | Modern E.V.E. replies and destinations                | `src/odyssey/public-console.ts` and `evidence-console.tsx`                                         |
