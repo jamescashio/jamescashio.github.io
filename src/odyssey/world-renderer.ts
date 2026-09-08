@@ -28,6 +28,8 @@ export type WorldController = {
   /** Direct, settled partial hull inspection. Existing boolean endpoints remain supported. */
   setHullProgress: (percent: number) => void;
   select: (zone: ShipZone) => void;
+  /** Copy a freshly rendered frame without retaining the WebGL drawing buffer. */
+  captureFrame: () => HTMLCanvasElement;
   dispose: () => void;
 };
 
@@ -53,7 +55,7 @@ export function createSovereignWorld(
   renderer.setClearColor(COLORS.navy);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.04;
+  renderer.toneMappingExposure = 1;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.shadowMap.autoUpdate = false;
@@ -100,9 +102,9 @@ export function createSovereignWorld(
   let propulsion = 50;
   const raycaster = new THREE.Raycaster();
 
-  scene.add(new THREE.HemisphereLight(0xb9d5e8, 0x060d18, 0.48));
-  const sun = new THREE.DirectionalLight(0xffe4c4, 2.9);
-  sun.position.set(-9, 11, 7);
+  scene.add(new THREE.HemisphereLight(0x91bfdb, 0x040a12, 0.38));
+  const sun = new THREE.DirectionalLight(0xffd6a1, 3.1);
+  sun.position.set(-11, 7, 9);
   sun.castShadow = true;
   sun.shadow.mapSize.set(1024, 1024);
   sun.shadow.camera.left = -15;
@@ -112,10 +114,10 @@ export function createSovereignWorld(
   sun.shadow.normalBias = 0.035;
   sun.shadow.bias = -0.0002;
   scene.add(sun);
-  const rim = new THREE.DirectionalLight(0x8bd9ff, 3.35);
-  rim.position.set(3, 7, -12);
+  const rim = new THREE.DirectionalLight(0x79ddec, 3);
+  rim.position.set(5, 5, -12);
   scene.add(rim);
-  const fill = new THREE.DirectionalLight(0xb8d4e6, 0.72);
+  const fill = new THREE.DirectionalLight(0xa6c5de, 0.65);
   fill.position.set(12, 1, 5);
   scene.add(fill);
 
@@ -130,8 +132,8 @@ export function createSovereignWorld(
     context.fillRect(0, 0, 512, 256);
     const upper = context.createLinearGradient(0, 0, 0, 256);
     upper.addColorStop(0, "#596674");
-    upper.addColorStop(0.24, "#8395a4");
-    upper.addColorStop(0.45, "#1b2b3c");
+    upper.addColorStop(0.24, "#536a80");
+    upper.addColorStop(0.45, "#101d2c");
     upper.addColorStop(0.68, "#080e18");
     upper.addColorStop(1, "#121e2b");
     context.fillStyle = upper;
@@ -153,7 +155,7 @@ export function createSovereignWorld(
     const generator = new THREE.PMREMGenerator(renderer);
     environmentTarget = generator.fromEquirectangular(texture);
     scene.environment = environmentTarget.texture;
-    scene.environmentIntensity = 0.88;
+    scene.environmentIntensity = 0.82;
     texture.dispose();
     generator.dispose();
   }
@@ -729,6 +731,18 @@ export function createSovereignWorld(
       render();
     },
     select,
+    captureFrame() {
+      if (disposed || renderer.getContext().isContextLost()) throw new Error("The ship view is unavailable.");
+      cameraPosition();
+      renderer.render(scene, camera);
+      const still = document.createElement("canvas");
+      still.width = canvas.width;
+      still.height = canvas.height;
+      const paint = still.getContext("2d");
+      if (!paint) throw new Error("The mission image is unavailable.");
+      paint.drawImage(canvas, 0, 0);
+      return still;
+    },
     dispose() {
       disposed = true;
       transition = null;

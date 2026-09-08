@@ -30,17 +30,17 @@
   border: 1px solid #cdb07c75;
   background: #342a1b77;
   color: #f4d6a6;
-  font-size: 10px;
+  font-size: 12px;
   padding: 5px 8px;
   letter-spacing: 0.09em;
 }
 .event-horizon.aurora.lensing .eh-release-mark > span {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.16em;
 }
 .event-horizon.aurora.lensing .o-hero-content > .o-kicker {
   color: #abbfcd;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.13em;
   margin-bottom: 22px;
 }
@@ -102,7 +102,7 @@
 .lens-enter small {
   color: #4d402d;
   font:
-    8px/1.4 Jet,
+    12px/1.4 Jet,
     monospace;
   letter-spacing: 0.065em;
 }
@@ -146,7 +146,7 @@
 }
 .event-horizon.aurora.lensing .lens-flight-link > span {
   font:
-    10px/1.5 Jet,
+    12px/1.5 Jet,
     monospace;
   color: #a8bdcb;
 }
@@ -156,7 +156,7 @@
   gap: 10px;
   margin: 19px 0 4px;
   color: #b6c4ce;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.6;
 }
 .lens-hero-notes i {
@@ -188,7 +188,7 @@
 }
 .lens-film-link small {
   font:
-    9px Jet,
+    12px Jet,
     monospace;
   color: #b3c0c5;
 }
@@ -201,11 +201,11 @@
   font-size: 12px;
 }
 .event-horizon.aurora.lensing .o-core-label {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.12em;
 }
 .event-horizon.aurora.lensing .o-core-label b {
-  font-size: 10px;
+  font-size: 12px;
 }
 .event-horizon.aurora.lensing .o-principles {
   background: #101921;
@@ -272,16 +272,16 @@
     gap: 8px;
   }
   .event-horizon.aurora.lensing .eh-release-mark > b {
-    font-size: 8px;
+    font-size: 12px;
     padding: 4px 6px;
   }
   .event-horizon.aurora.lensing .eh-release-mark > span {
-    font-size: 8px;
+    font-size: 12px;
     letter-spacing: 0.08em;
   }
   .event-horizon.aurora.lensing .o-hero-content > .o-kicker {
     order: -2;
-    font-size: 8px;
+    font-size: 12px;
     letter-spacing: 0.065em;
     margin: 0 0 260px;
     gap: 7px;
@@ -336,10 +336,10 @@
     font-size: 12px;
   }
   .event-horizon.aurora.lensing .lens-flight-link > span {
-    font-size: 9px;
+    font-size: 12px;
   }
   .lens-hero-notes {
-    font-size: 9px;
+    font-size: 12px;
     gap: 7px;
     margin: 15px 0 0;
     flex-wrap: wrap;
@@ -356,14 +356,14 @@
   }
   .event-horizon.aurora.lensing .o-core-label {
     top: 146%;
-    font-size: 8px;
+    font-size: 12px;
     line-height: 1.8;
     letter-spacing: 0.08em;
     max-width: 230px;
     white-space: nowrap;
   }
   .event-horizon.aurora.lensing .o-core-label b {
-    font-size: 8px;
+    font-size: 12px;
   }
   .event-horizon.aurora.lensing .o-hero-bottom {
     bottom: 24px;
@@ -372,14 +372,14 @@
     padding-top: 15px;
   }
   .event-horizon.aurora.lensing .o-hero-bottom .o-micro {
-    font-size: 8px;
+    font-size: 12px;
     letter-spacing: 0.04em;
   }
   .event-horizon.aurora.lensing .o-hero-bottom .o-art-link {
     display: none;
   }
   .event-horizon.aurora.lensing .o-scroll-cue {
-    font-size: 8px;
+    font-size: 12px;
     letter-spacing: 0.03em;
   }
 }

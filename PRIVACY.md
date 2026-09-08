@@ -1,6 +1,6 @@
 # Privacy Notice for cashio.us
 
-**Last updated:** 07-14-2026
+**Last updated:** 2026-09-08
 
 cashio.us is a public professional portfolio operated by Doug Cashio.
 
@@ -25,6 +25,12 @@ Some portfolio pages may request fonts, styles, or other static assets from thir
 ## Cookies and analytics
 
 No first-party advertising cookies are intentionally set, and no first-party behavioral analytics are intentionally operated. If analytics are added later, this notice should be updated before deployment and the implementation should minimize collection, retention, and third-party sharing.
+
+Cloudflare Web Analytics automatic script injection was disabled for cashio.us on 8 September 2026. Ordinary hosting and security request metadata remains subject to the hosting providers' practices.
+
+## Interactive scenes and downloads
+
+The flight, mission outcomes, and public studies run in your browser with illustrative sample data. They do not send AI requests or connect to the private infrastructure described in the portfolio. Saving a mission card creates an image in your browser and downloads it to your device; the site does not upload that image. A shared scene link contains the selected demonstration settings.
 
 ## Security and retention
 

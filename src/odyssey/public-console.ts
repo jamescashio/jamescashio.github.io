@@ -40,6 +40,12 @@ export function runPublicEve(raw: string, history: string[] = []): PublicEveResu
       destination: DESTINATIONS.lineage,
     };
   }
+  if (command === "cost") {
+    return {
+      ...runCommonEve(command)!,
+      destination: { href: "#smart-routing", label: "Read the historical cost story and its sources" },
+    };
+  }
   const common = runCommonEve(command, history);
   if (common) {
     const { contact, ...reply } = common;

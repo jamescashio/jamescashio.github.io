@@ -1,5 +1,15 @@
 # Changelog
 
+## V37.12 — Continuum
+
+- Bring the mobile flight invitation forward and preserve the original artwork, Bit, palette, fonts, films, and legacy routes.
+- Refine ship materials and lighting; export an illustrated mission card with the selected settings and actual demonstration outcome.
+- Restore the July V31 provider-usage observation of $0.26/day with its 21–22 July sample dates, exclusions and original source links; share that record between the story and both E.V.E. consoles.
+- Explain all seven study takeaways and distinguish requests held for privacy permission from requests waiting for a connection.
+- Improve tablet shading, utility text, graph labels, signature instruction space and Mission Control readability; serve the correct smaller phone artwork candidate.
+- Add accessible scene-loading cancellation and recoverable failures with launcher focus restoration.
+- Document the separately authorized Cloudflare analytics disable and browser-local mission-card downloads.
+
 ## V37.11 — Continuum
 
 - Make First Flight the primary invitation, extend its blackout chapter, and keep essential phone controls reachable with manual motion-off chapters.

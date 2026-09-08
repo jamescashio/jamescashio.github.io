@@ -106,7 +106,7 @@
 }
 .eh-orbit-dialog:modal .eh-orbit-cinema-title p {
   font:
-    9px/1.7 Jet,
+    12px/1.7 Jet,
     monospace;
   letter-spacing: 0.14em;
 }
@@ -211,7 +211,7 @@
   gap: 16px;
   padding: 22px 24px;
   font:
-    10px/1.5 Jet,
+    12px/1.5 Jet,
     monospace;
   letter-spacing: 0.1em;
   color: #b1c8d5;
@@ -325,7 +325,7 @@
 .eh-orbit-presets button span {
   display: block;
   font:
-    9px/1.4 Jet,
+    12px/1.4 Jet,
     monospace;
   color: #aac4d1;
   margin-bottom: 7px;
@@ -344,7 +344,7 @@
 }
 .eh-orbit-eyebrow {
   font:
-    10px/1.6 Jet,
+    12px/1.6 Jet,
     monospace;
   letter-spacing: 0.12em;
   color: #ffc77f;

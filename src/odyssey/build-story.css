@@ -1,7 +1,7 @@
 .o-build-story {
   --project: var(--o-gold);
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 24px 48px;
   margin-top: 56px;
   padding-top: 28px;
@@ -52,4 +52,98 @@
 }
 .o-build-story .o-field-notes dt {
   font-size: 13px;
+}
+.o-build-proof {
+  scroll-margin-top: 110px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.5fr);
+  column-gap: 36px;
+  grid-column: 1 / -1;
+  padding: clamp(20px, 4vw, 40px);
+  background: #07131f;
+  border: 1px solid #526575;
+  border-left: 3px solid #edc991;
+  color: #c5d8e3;
+}
+.o-build-proof > :not(header, .o-proof-result) {
+  grid-column: 1 / -1;
+}
+.o-build-proof > header {
+  align-self: center;
+}
+.o-build-proof h3 {
+  max-width: 28ch;
+  color: #f6eedf;
+}
+.o-build-proof header p {
+  color: #c5d8e3;
+}
+.o-proof-result {
+  margin: 24px 0;
+  align-self: center;
+}
+.o-proof-result > p:first-child {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 32px;
+  margin: 0;
+}
+.o-proof-result strong {
+  color: #edc991;
+  font:
+    500 clamp(52px, 6vw, 76px)/1 Oxanium,
+    sans-serif;
+  white-space: nowrap;
+}
+.o-proof-result small {
+  margin-left: 8px;
+  color: #c5d8e3;
+  font-size: 20px;
+}
+.o-proof-result span {
+  max-width: 23ch;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.o-build-records summary,
+.o-cost-evidence summary {
+  font-size: 14px;
+  line-height: 1.5;
+}
+.o-build-proof .o-proof-date {
+  font-size: 13px;
+  color: #a9c7d8;
+}
+.o-build-proof .o-field-notes {
+  margin: 24px 0;
+  border-top: 1px solid #526575;
+}
+.o-build-proof .o-field-notes dd {
+  color: #c5d8e3;
+}
+.o-build-proof .o-field-notes dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 24px;
+}
+.o-build-proof .o-field-notes dl > div {
+  display: block;
+  border: 0;
+  padding: 0;
+}
+.o-build-proof .o-field-notes dt {
+  margin: 16px 0 8px;
+}
+.o-proof-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 28px;
+}
+@media (max-width: 700px) {
+  .o-build-story,
+  .o-build-proof {
+    scroll-margin-top: 110px;
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

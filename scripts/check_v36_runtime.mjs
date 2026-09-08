@@ -17,7 +17,7 @@ import {
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = path.join(ROOT, "dist");
 const RELEASE_NAME = "THE HUMAN RECKONING";
-const PAGE_TITLE = "Cashio V37.11 — Continuum | Doug Cashio";
+const PAGE_TITLE = "Cashio V37.12 — Continuum | Doug Cashio";
 const report = { passed: false, checks: [], failures: [], errors: [], warnings: [] };
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const argument = (name) =>
@@ -130,7 +130,7 @@ async function run() {
       const base = `http://127.0.0.1:${resources.server.address().port}`;
       const rootHtml = await fetch(`${base}/`).then((response) => response.text());
       assert.match(rootHtml, /data-prerendered="odyssey"/, "root must contain the prerendered V37 page");
-      assert.ok(rootHtml.includes(`<title>${PAGE_TITLE}</title>`), "root title must identify V37.11 Continuum");
+      assert.ok(rootHtml.includes(`<title>${PAGE_TITLE}</title>`), "root title must identify V37.12 Continuum");
       assert.match(rootHtml, /Own the iron/, "hero heading must exist before JavaScript");
       assert.doesNotMatch(
         rootHtml,
@@ -142,7 +142,7 @@ async function run() {
       const receipt = await receiptResponse.json();
       const packageJson = JSON.parse(await readFile(path.join(ROOT, "package.json"), "utf8"));
       assert.equal(receipt.experienceVersion, packageJson.version, "receipt and package versions must match");
-      assert.equal(receipt.experienceVersion, "37.11.0", "current receipt must be the V37.11 release");
+      assert.equal(receipt.experienceVersion, "37.12.0", "current receipt must be the V37.12 release");
       assert.equal(receipt.published, true, "release must be explicitly published");
       assert.equal(receipt.releaseName, RELEASE_NAME);
       assert.equal(receipt.visualEdition, "Lensing");
@@ -937,7 +937,11 @@ async function run() {
         assert.ok(desktopNames.includes(name), `desktop speech input must match the visible label: ${name}`);
       await pressKey("Escape", 27);
       await waitFor(`!document.querySelector('.first-flight')`, "close First Flight");
-      assert.equal(await evaluate(`document.activeElement?.classList.contains('continuum-first-flight')`), true);
+      // Closing the dialog and restoring its opener happen on separate frames.
+      await waitFor(
+        `document.activeElement?.classList.contains('continuum-first-flight')`,
+        "First Flight focus returns to its invitation",
+      );
       report.checks.push({
         name: "First Flight speech labels, phone text spacing, outcome, resize, and focus restoration",
         passed: true,
@@ -1021,7 +1025,7 @@ async function run() {
       );
       report.checks.push({ name: "Legacy deck bookmark preserves query and hash", passed: true });
       await navigate("/odyssey.html?runtime=v36-alias");
-      assert.equal(await evaluate("document.title"), PAGE_TITLE, "Odyssey alias must retain V37.11 Continuum");
+      assert.equal(await evaluate("document.title"), PAGE_TITLE, "Odyssey alias must retain V37.12 Continuum");
       report.checks.push({ name: "Odyssey alias remains available", passed: true });
       assert.deepEqual(report.errors, [], "no runtime exceptions or console errors");
       report.checks.push({ name: "No runtime errors", passed: true });

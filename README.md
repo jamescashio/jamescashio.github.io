@@ -1,8 +1,8 @@
-# cashio.us V37.11 — Continuum
+# cashio.us V37.12 — Continuum
 
 Doug Cashio’s interactive universe of AI, security, and owned infrastructure. Built for technical peers and AI enthusiasts, with Bit, orbital artwork, midnight blue, cyan, gold, and human judgment at its center.
 
-**V37.11 publishes the reviewed First Flight, experiment, accessibility, and dated-evidence refinements.** The software version is 37.11.0. It identifies this website release; infrastructure observations retain their own timestamps. See [the release notes and rollback](docs/peer-refinement.md).
+**V37.12 publishes the reviewed mission cards, historical cost story, and experience polish.** The software version is 37.12.0. The original orbital identity is preserved, with clearer phone entry, richer ship lighting, readable tablet copy, and recoverable scene loading. Software and operational evidence retain separate dates. See [the release notes and rollback](docs/polished-release.md).
 
 ## Experience
 

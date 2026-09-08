@@ -61,7 +61,7 @@
 }
 .lens-resonance-state {
   font:
-    10px/1 Jet,
+    12px/1 Jet,
     monospace;
   min-width: 16px;
   color: #b8d4d9;
@@ -99,7 +99,7 @@
     gap: 8px;
     min-height: 44px;
     padding: 7px 9px;
-    font-size: 11px !important;
+    font-size: 12px !important;
   }
   .lens-resonance > svg {
     width: 22px;
@@ -107,7 +107,7 @@
     flex-basis: 22px;
   }
   .lens-resonance-state {
-    font-size: 9px;
+    font-size: 12px;
     min-width: 12px;
   }
   .lens-reticle {

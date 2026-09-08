@@ -24,6 +24,10 @@ export default function FirstFlight({
   const [complete, setComplete] = useState(false);
   const [copied, setCopied] = useState(false);
   const [copyError, setCopyError] = useState(false);
+  const [cardStatus, setCardStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const captureGeneration = useRef(0);
+  const captureBusy = useRef(false);
+  const downloads = useRef(new Map<string, ReturnType<typeof setTimeout>>());
   const [choice, setChoice] = useState<{ step: number; connected?: boolean; permitted?: boolean } | null>(null);
   const [pageVisible, setPageVisible] = useState(true);
   const [compact, setCompact] = useState(() => window.matchMedia("(max-width: 700px)").matches);
@@ -50,6 +54,18 @@ export default function FirstFlight({
   const independent = input.architecture === "hybrid" && !input.connected;
   const flightHash = changed ? missionHash(input) : `#flight=${scene.id}`;
   const playing = motion && !paused && !complete && pageVisible && phase !== "loading";
+
+  useEffect(() => {
+    const pending = downloads.current;
+    return () => {
+      captureGeneration.current += 1;
+      pending.forEach((timer, url) => {
+        clearTimeout(timer);
+        URL.revokeObjectURL(url);
+      });
+      pending.clear();
+    };
+  }, []);
 
   useEffect(() => {
     const query = window.matchMedia("(max-width: 700px)");
@@ -137,6 +153,7 @@ export default function FirstFlight({
   }, [playing, step, visit, scene.durationMs]);
 
   function select(next: number) {
+    captureGeneration.current += 1;
     setVisit((value) => value + 1);
     setChoice(null);
     setStep(next);
@@ -144,6 +161,52 @@ export default function FirstFlight({
     setComplete(false);
     setCopied(false);
     setCopyError(false);
+    setCardStatus("idle");
+  }
+  async function saveCard() {
+    if (captureBusy.current || phase === "loading") return;
+    captureBusy.current = true;
+    setPaused(true);
+    setCardStatus("saving");
+    const generation = captureGeneration.current;
+    const selectedInput = { ...input };
+    const selectedChapter = scene.title;
+    try {
+      controller.current?.setPlaying(false);
+      let still: HTMLCanvasElement;
+      if (phase === "ready" && controller.current) still = controller.current.captureFrame();
+      else {
+        const poster = panel.current?.querySelector<HTMLImageElement>(".ff-fallback");
+        if (!poster?.complete || !poster.naturalWidth) throw new Error("The ship image is still preparing.");
+        still = document.createElement("canvas");
+        still.width = poster.naturalWidth;
+        still.height = poster.naturalHeight;
+        const paint = still.getContext("2d");
+        if (!paint) throw new Error("Image export is unavailable.");
+        paint.drawImage(poster, 0, 0);
+      }
+      const { createMissionCard } = await import("./mission-card");
+      await document.fonts.ready;
+      const { blob, record } = await createMissionCard(still, selectedInput, selectedChapter);
+      if (generation !== captureGeneration.current) return;
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = record.filename;
+      document.body.append(link);
+      link.click();
+      link.remove();
+      const timer = setTimeout(() => {
+        URL.revokeObjectURL(url);
+        downloads.current.delete(url);
+      }, 60_000);
+      downloads.current.set(url, timer);
+      setCardStatus("saved");
+    } catch {
+      if (generation === captureGeneration.current) setCardStatus("error");
+    } finally {
+      captureBusy.current = false;
+    }
   }
   async function copy() {
     try {
@@ -162,6 +225,8 @@ export default function FirstFlight({
       type="button"
       data-active={step === 3 ? input.allowPrivateEgress : !input.connected}
       onClick={() => {
+        captureGeneration.current += 1;
+        setCardStatus("idle");
         setPaused(true);
         setCopied(false);
         setCopyError(false);
@@ -297,6 +362,8 @@ export default function FirstFlight({
                 className="ff-restore-scene"
                 type="button"
                 onClick={() => {
+                  captureGeneration.current += 1;
+                  setCardStatus("idle");
                   setChoice(null);
                   setCopied(false);
                   setCopyError(false);
@@ -306,7 +373,21 @@ export default function FirstFlight({
               </button>
             )}
           </div>
-          <strong className="ff-takeaway">{scene.takeaway}</strong>
+          <strong className="ff-takeaway">{changed ? outcome.takeaway : scene.takeaway}</strong>
+          {(complete || changed) && (
+            <p className="ff-memento">
+              Keep the moment you changed the outcome. Save your mission card, then share the experiment.
+            </p>
+          )}
+          <p className="ff-card-status" role="status">
+            {cardStatus === "saving"
+              ? "Preparing your mission card…"
+              : cardStatus === "saved"
+                ? "Mission card downloaded. Your settings are printed on the card."
+                : cardStatus === "error"
+                  ? "The card could not be saved. Try again, or copy the scenario link."
+                  : ""}
+          </p>
           {complete && (
             <div className="ff-next">
               <button type="button" onClick={() => onClose("build=hermes")}>
@@ -356,6 +437,7 @@ export default function FirstFlight({
             disabled={!motion || phase === "loading"}
             onClick={() => {
               if (complete) {
+                setCardStatus("idle");
                 setVisit((value) => value + 1);
                 setCopied(false);
                 setCopyError(false);
@@ -381,6 +463,21 @@ export default function FirstFlight({
           </button>
         </div>
         <button
+          className="ff-save"
+          type="button"
+          onClick={saveCard}
+          disabled={phase === "loading"}
+          aria-disabled={cardStatus === "saving" || undefined}
+          aria-busy={cardStatus === "saving" || undefined}
+          aria-label="Save mission card"
+          title="Save mission card"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4" />
+          </svg>
+          <span>Save mission card</span>
+        </button>
+        <button
           className="ff-share"
           type="button"
           onClick={copy}
@@ -399,9 +496,21 @@ export default function FirstFlight({
         {!motion ? "Motion is off. Advance with Next." : "Explore at your own pace."}
       </p>
       {copyError && (
-        <p className="ff-copy-error" role="status">
-          Clipboard unavailable. Reopen this scene with {flightHash}.
-        </p>
+        <label className="ff-copy-error">
+          <span role="status">Clipboard unavailable. Select and copy your scene link:</span>
+          <input
+            aria-label="Scene link"
+            readOnly
+            value={`${location.origin}${location.pathname}${flightHash}`}
+            onFocus={(event) => {
+              const field = event.currentTarget;
+              requestAnimationFrame(() => {
+                if (document.activeElement === field) field.select();
+              });
+            }}
+            onClick={(event) => event.currentTarget.select()}
+          />
+        </label>
       )}
     </dialog>
   );

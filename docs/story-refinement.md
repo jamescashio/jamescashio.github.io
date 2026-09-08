@@ -1,0 +1,17 @@
+# Cashio story and experience refinement
+
+This preview preserves the Cashio artwork, Bit, typography, palette, original headline and seven working studies. It clarifies the visitor benefit, gives each study a specific experiment and takeaway, and connects the operator's work to AI spending, privacy and human control.
+
+The featured smart-routing story uses the original July V31 operating observation: $0.26 per day in AI provider usage, measured 21–22 July 2026 and published on 26 July. The [original export](https://github.com/jamescashio/jamescashio.github.io/blob/fe68312aaac84ed57b9f122e26a8a14d87b6c542/status.json), [scope and exclusions](https://github.com/jamescashio/jamescashio.github.io/blob/fe68312aaac84ed57b9f122e26a8a14d87b6c542/index.html#L9529), and [release](https://github.com/jamescashio/jamescashio.github.io/pull/77) are linked beside the result. The figure excludes owned infrastructure, electricity and Doug's time. It is a published observation, not an audited invoice or current spending measurement. No before-and-after ledger supports a savings percentage. The older $6.49 monthly estimate is not reused: its derivation is unclear and it is not a 30-day extrapolation of $0.26/day.
+
+Two releases used V31. The July release, The Iron Ascendant, contained the cost observation; the August Grid release withheld cost pending fresh measurement. The story and both E.V.E. consoles now share one historical evidence record. Doug described the recurring-job workflow through Atlas on 8 September. Atlas routes work; it is not presented as an alternative to all models. More capable routes are reserved for tasks that need them. The browser study illustrates a policy; it does not execute Atlas or verify the production router.
+
+The source-backed release story compares V37.10 study-only links with V37.11 preserved settings. The 7 September inventory remains a separate frozen observation in an optional disclosure. Model citations point to the release they describe.
+
+A changed flight decision now changes its takeaway. Exported mission cards distinguish work held for permission from work waiting for connectivity. A regression check covers identical held counts caused by those different conditions. The browser check waits for focus restoration on the next animation frame instead of assuming dialog removal and focus restoration are synchronous.
+
+Further polish raises the signature studio and Mission Control utility text to 12px, gives phone instructions room to wrap, strengthens tablet shading behind text, and corrects the phone artwork sizing hint to its actual 210px cover height. Optional scenes now have a keyboard-accessible loading notice, a cancel action, and a recoverable error state that keeps the portfolio available. Shared dismissal restores the launcher and clears only the corresponding scene route. No dependency was added; rendering and delivery budgets remain in force.
+
+The packaged verification report records the final test counts, rendered contrast samples, loading-failure checks and comparative performance measurements. This is bounded laboratory verification, not full accessibility certification, a physical-device test or field performance evidence.
+
+The reviewed preview was based on 0c509286ed9329b897741e1afe505376deb443ce and is preserved separately. The owner approved publication on 8 September 2026. V37.12 promotes that experience through the existing Pages review and deployment workflow. See [release validation and rollback](polished-release.md).

@@ -45,7 +45,6 @@ test("the public console keeps current evidence separate from historical replies
 test("shared personality, history, and local controls preserve the original console replies", () => {
   for (const command of [
     "whoami",
-    "cost",
     "withheld",
     "photo",
     "red alert",
@@ -63,6 +62,16 @@ test("shared personality, history, and local controls preserve the original cons
   assert.deepEqual(runEve("lineage"), { out: ["NAVIGATING · LINEAGE"], go: 4 });
   assert.match(runPublicEve("  BIT  ").out.join(" "), /HUMAN IS STILL IN COMMAND/);
   assert.equal(runPublicEve("rutan").destination.href, "#lineage");
+});
+
+test("cost replies distinguish the published July sample from current spending", () => {
+  const current = runPublicEve("cost");
+  const legacy = runEve("cost");
+  assert.deepEqual(current.out, legacy.out);
+  assert.match(current.out.join(" "), /HISTORICAL.*\$0\.26\/DAY.*21–22 JULY 2026/);
+  assert.match(current.out.join(" "), /EXCLUDES.*INFRASTRUCTURE.*ELECTRICITY/);
+  assert.match(current.out.join(" "), /CURRENT SPEND AND SAVINGS COMPARISON REMAIN UNVERIFIED/);
+  assert.equal(current.destination.href, "#smart-routing");
 });
 
 test("inherited object keys and arbitrary text always produce renderable command output", () => {

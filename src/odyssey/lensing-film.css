@@ -33,7 +33,7 @@
 .lensing-film-eyebrow {
   color: #c2cfda;
   font:
-    500 10px/1.6 Jet,
+    500 12px/1.6 Jet,
     monospace;
   letter-spacing: 0.14em;
 }
@@ -89,7 +89,7 @@
   padding: 14px 28px 0;
   color: #a3b8c8;
   font:
-    10px/1.6 Jet,
+    12px/1.6 Jet,
     monospace;
   letter-spacing: 0.1em;
 }
@@ -121,7 +121,7 @@
 .lensing-film-choice small {
   flex-shrink: 0;
   font:
-    400 10px Jet,
+    400 12px Jet,
     monospace;
   letter-spacing: 0.08em;
 }
@@ -171,7 +171,7 @@
 .lensing-film-frame figcaption span {
   display: block;
   color: #a3b8c8;
-  font-size: 11px;
+  font-size: 12px;
 }
 .lensing-film-controls {
   display: flex;
@@ -212,7 +212,7 @@
   flex-shrink: 0;
   color: #f2d3a0;
   font:
-    400 11px/1.5 Jet,
+    400 12px/1.5 Jet,
     monospace;
   font-variant-numeric: tabular-nums;
 }
@@ -275,7 +275,7 @@
 .lensing-film-chapters button span {
   margin-right: 7px;
   font:
-    10px Jet,
+    12px Jet,
     monospace;
   color: #f2d3a0;
 }
@@ -315,7 +315,7 @@
   margin-top: 7px;
   color: #a3b8c8;
   font:
-    10px/1.4 Jet,
+    12px/1.4 Jet,
     monospace;
   font-variant-numeric: tabular-nums;
 }
@@ -408,7 +408,7 @@
     align-items: stretch;
     gap: 8px;
     padding: 5px 5px 8px;
-    font-size: 11px;
+    font-size: 12px;
     text-align: center;
   }
   .lensing-film-scenes img {
@@ -417,7 +417,7 @@
   }
   .lensing-film-scenes small {
     margin-top: 5px;
-    font-size: 9px;
+    font-size: 12px;
   }
   .lensing-film-scenes small span {
     padding-inline: 3px;
@@ -438,7 +438,7 @@
     padding: 18px 16px;
   }
   .lensing-film-eyebrow {
-    font-size: 8px;
+    font-size: 12px;
     letter-spacing: 0.1em;
   }
   .lensing-film-close {
@@ -455,7 +455,7 @@
   }
   .lensing-film-collection {
     padding-inline: 16px;
-    font-size: 9px;
+    font-size: 12px;
   }
   .lensing-film .lensing-film-choice {
     gap: 10px;

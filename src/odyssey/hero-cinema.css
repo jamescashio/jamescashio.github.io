@@ -21,9 +21,8 @@
 .vc-controls {
   position: absolute;
   z-index: 5;
-  left: clamp(160px, var(--eh-core-x, 74%), calc(100% - 160px));
-  top: calc(var(--eh-core-y, 45%) + 132px);
-  transform: translateX(-50%);
+  right: 6%;
+  bottom: 76px;
   display: flex;
   gap: 6px;
 }
@@ -47,6 +46,7 @@
 @media (max-width: 760px) {
   .vc-controls {
     top: 120px;
+    bottom: auto;
     left: auto;
     right: 4%;
     transform: none;
@@ -55,10 +55,16 @@
 }
 @media (max-width: 600px) {
   .vc-controls {
-    top: 185px;
-    left: 20px;
-    right: auto;
-    width: 142px;
+    position: relative;
+    inset: auto;
+    width: 100%;
+    margin-top: 16px;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .vc-controls button {
+    flex: 1 1 140px;
+    font-size: 14px;
   }
   .vc-film {
     object-position: 74% 50%;

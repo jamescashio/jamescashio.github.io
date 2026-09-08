@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState, type MouseEvent } from "react";
+import { lazy, useEffect, useRef, useState, type MouseEvent } from "react";
 import { Arrow, Core, Starfield } from "./effects";
 import { useInteractionSound, useMotionPreference, useSectionVisibility } from "./hooks";
 import { FoldTransition } from "./event-horizon";
@@ -15,6 +15,7 @@ import { HeroCinema } from "./hero-cinema";
 import { ExperienceGlyph, LightwakeAtmosphere, LightwakeControls } from "./lightwake-scene";
 import { ProjectExplorer } from "./project-explorer";
 import { BuildStory } from "./build-story";
+import { SceneBoundary } from "./scene-boundary";
 import { FLEET_EVIDENCE } from "./fleet-evidence";
 import { EvidenceConsole } from "./evidence-console";
 import { AuditStory } from "./audit-story";
@@ -116,6 +117,37 @@ export function OdysseyApp() {
     window.addEventListener("hashchange", readFlight);
     return () => window.removeEventListener("hashchange", readFlight);
   }, []);
+  function dismissScene(kind: "film" | "lensing" | "signature" | "flight") {
+    const scene = {
+      film: {
+        close: () => setFilm(false),
+        opener: filmOpener.current,
+        fallback: ".lens-film-link",
+        route: /^#film(?:=(?:awakening|signature|lightwake|sanctuary))?$/,
+      },
+      lensing: {
+        close: () => setLensing(false),
+        opener: lensOpener.current,
+        fallback: ".lens-observatory-link",
+        route: /^#lensing$/,
+      },
+      signature: {
+        close: () => setSignature(false),
+        opener: signatureOpener.current,
+        fallback: ".o-signature-link",
+        route: /^#signature$/,
+      },
+      flight: {
+        close: () => setFlight(null),
+        opener: flightOpener.current,
+        fallback: ".continuum-first-flight, .lens-flight-link, .lens-enter",
+        route: /^#flight=/,
+      },
+    }[kind];
+    scene.close();
+    if (scene.route.test(location.hash)) history.replaceState(null, "", location.pathname + location.search);
+    requestAnimationFrame(() => resolveLauncher(scene.opener, scene.fallback)?.focus({ preventScroll: true }));
+  }
   const [folding, setFolding] = useState(false);
   const [foldOrigin, setFoldOrigin] = useState<{ x: number; y: number } | undefined>(undefined);
   const [atlasNode, setAtlasNode] = useState(1);
@@ -335,19 +367,18 @@ export function OdysseyApp() {
             </a>
           ))}
         </nav>
-        <p>V37.11 / CONTINUUM / A HUMAN IN COMMAND</p>
+        <p>V37.12 / CONTINUUM / A HUMAN IN COMMAND</p>
       </dialog>
       <main id="o-main">
         <section className="o-hero o-scene" id="top" aria-labelledby="hero-title" data-lightwake-light="dawn">
           <Art name="orbit" eager className="o-hero-art" />
-          <HeroCinema blocked={paused || flight !== null || signature || lensing || film} />
           <div className="o-hero-shade" />
           <div className="eh-hero-light" aria-hidden="true" />
           <Starfield motion={ambientMotion} folding={folding} />
           <LightwakeAtmosphere />
           <div className="o-hero-content">
             <div className="eh-release-mark">
-              <b>V37.11</b>
+              <b>V37.12</b>
               <span>CONTINUUM</span>
             </div>
             <span className="o-kicker">
@@ -362,8 +393,8 @@ export function OdysseyApp() {
               <em>possible.</em>
             </h1>
             <p>
-              I build AI systems and security tools on hardware I own.
-              <br className="o-desktop-br" /> With a human in command.
+              I build AI and security tools that make complex decisions clear.
+              <br className="o-desktop-br" /> Where data goes. What it costs. When a human takes over.
             </p>
             <div className="o-hero-actions">
               <button
@@ -384,11 +415,11 @@ export function OdysseyApp() {
               </a>
             </div>
             <div className="lens-hero-notes">
-              <span>See the system.</span>
+              <span>Privacy.</span>
               <i />
-              <span>Change a boundary.</span>
+              <span>Resilience.</span>
               <i />
-              <span>Keep command.</span>
+              <span>Human control.</span>
             </div>
             <div className="lens-discover-links">
               <button className="lens-film-link" type="button" onClick={(event) => openFilm(event.currentTarget)}>
@@ -412,6 +443,7 @@ export function OdysseyApp() {
               </button>
             </div>
           </div>
+          <HeroCinema blocked={paused || flight !== null || signature || lensing || film} />
           <LightwakeControls />
           <button
             className="o-core-hotspot"
@@ -422,7 +454,7 @@ export function OdysseyApp() {
             <HeroSignal />
             <span className="o-core-ring" />
             <span className="o-core-label">
-              BIT / THE HUMAN’S CO-PILOT
+              BIT / HUMAN CO-PILOT
               <br />
               <b>{folding ? "FOLD INITIATED" : "INITIATE FOLD ↗"}</b>
             </span>
@@ -454,16 +486,18 @@ export function OdysseyApp() {
           </div>
           <div className="o-section-heading">
             <h2 id="work-title" tabIndex={-1}>
-              Don’t just read it.
+              Try a decision.
               <br />
-              <em>Put it to work.</em>
+              <em>See what changes.</em>
             </h2>
             <p>
-              Seven small experiments. Inspect the rules. Share your exact settings.
+              Seven experiments in AI, security, and systems design.
               <br />
-              Start with HERMES: turn on private information, then route the request.
+              Start with HERMES: match the work to a route, then test the privacy boundary.
               <br />
-              <span className="o-muted">Every demonstration runs locally in your browser.</span>
+              <a className="o-text-button" href="#smart-routing">
+                Read the 26¢/day story and its dated evidence <Arrow diagonal />
+              </a>
             </p>
           </div>
           <ProjectExplorer motion={ambientMotion} play={play} />
@@ -481,11 +515,11 @@ export function OdysseyApp() {
               <em>One accountable human.</em>
             </h2>
             <p>
-              Owned compute below. Orchestration between.
+              Zeus and Apollo are the hardware I own and operate.
               <br />
-              Human judgment above.
+              HERMES is the orchestration layer. I remain accountable for the decisions.
               <br />
-              <span className="o-muted">Select a node and see how the pieces connect.</span>
+              <span className="o-muted">Select a node to see its role and the evidence behind it.</span>
             </p>
           </div>
           <SystemAtlas
@@ -586,11 +620,11 @@ export function OdysseyApp() {
               <em>in motion.</em>
             </h2>
             <p>
-              Turn the orbit. Change the perspective.
+              Ownership, evidence, and human authority shape the work.
               <br />
-              Keep the core in view.
+              Select a principle to see how it changes a design decision.
               <br />
-              <span className="o-muted">An interactive study of the principles behind the work.</span>
+              <span className="o-muted">The orbit is the metaphor. The decisions are the point.</span>
             </p>
           </div>
           <OrbitInstrument motion={ambientMotion} onSelect={() => play()} />
@@ -654,12 +688,12 @@ export function OdysseyApp() {
                 Independent systems builder.
               </p>
               <p>
-                I work where AI, security, and infrastructure meet. My approach is hands-on: own the system, understand
-                the decisions, publish the evidence, and keep learning.
+                I turn difficult system choices into something people can understand and test: where AI should run, what
+                information it can use, and which decisions need a person.
               </p>
               <p>
-                Science fiction supplies the imagination. Flight-test discipline keeps it honest. The result is this
-                small universe of useful, explainable work.
+                This is my independent workshop. I own and operate the hardware, build the tools, and publish what I can
+                verify. Science fiction supplies the imagination. Flight-test discipline keeps it honest.
               </p>
               <div className="o-operator-links">
                 <a href="https://www.linkedin.com/in/dougcashio" target="_blank" rel="noreferrer">
@@ -689,7 +723,7 @@ export function OdysseyApp() {
           <p>
             Tell me what you want to build and your hardest constraint.
             <br />
-            If a study sparked an idea, start there.
+            AI spending, private data, or a system that needs to be easier to understand—start there.
           </p>
           <a
             className="o-contact-email"
@@ -729,13 +763,7 @@ export function OdysseyApp() {
         </section>
       </main>
       {film && (
-        <Suspense
-          fallback={
-            <div className="ff-loading" role="status">
-              Opening the cinema…
-            </div>
-          }
-        >
+        <SceneBoundary name="Cinema" onClose={() => dismissScene("film")}>
           <LensingFilm
             key={`${filmClip}-${filmRouteRevision}`}
             motion={motion}
@@ -751,74 +779,27 @@ export function OdysseyApp() {
                 heading?.scrollIntoView({ block: "start", behavior: "instant" });
               });
             }}
-            onClose={() => {
-              setFilm(false);
-              if (/^#film(?:=(?:awakening|signature|lightwake|sanctuary))?$/.test(location.hash))
-                history.replaceState(null, "", location.pathname + location.search);
-              requestAnimationFrame(() =>
-                resolveLauncher(filmOpener.current, ".lens-film-link")?.focus({
-                  preventScroll: true,
-                }),
-              );
-            }}
+            onClose={() => dismissScene("film")}
           />
-        </Suspense>
+        </SceneBoundary>
       )}
       {lensing && (
-        <Suspense
-          fallback={
-            <div className="ff-loading" role="status">
-              Opening Lensing Observatory…
-            </div>
-          }
-        >
+        <SceneBoundary name="Lensing Observatory" onClose={() => dismissScene("lensing")}>
           <LensingObservatory
             motion={motion}
             reduced={reduced}
             initialPreset={lensArrival ? { light: "eclipse", view: "gate", resonance: true } : undefined}
-            onClose={() => {
-              setLensing(false);
-              if (location.hash === "#lensing") history.replaceState(null, "", location.pathname + location.search);
-              requestAnimationFrame(() =>
-                resolveLauncher(lensOpener.current, ".lens-observatory-link")?.focus({
-                  preventScroll: true,
-                }),
-              );
-            }}
+            onClose={() => dismissScene("lensing")}
           />
-        </Suspense>
+        </SceneBoundary>
       )}
       {signature && (
-        <Suspense
-          fallback={
-            <div className="ff-loading" role="status">
-              Opening the celestial signature…
-            </div>
-          }
-        >
-          <BrandStudio
-            motion={motion}
-            onWatch={watchSignature}
-            onClose={() => {
-              setSignature(false);
-              if (location.hash === "#signature") history.replaceState(null, "", location.pathname + location.search);
-              requestAnimationFrame(() =>
-                resolveLauncher(signatureOpener.current, ".o-signature-link")?.focus({
-                  preventScroll: true,
-                }),
-              );
-            }}
-          />
-        </Suspense>
+        <SceneBoundary name="Celestial signature" onClose={() => dismissScene("signature")}>
+          <BrandStudio motion={motion} onWatch={watchSignature} onClose={() => dismissScene("signature")} />
+        </SceneBoundary>
       )}
       {flight !== null && (
-        <Suspense
-          fallback={
-            <div className="ff-loading" role="status">
-              Preparing your flight…
-            </div>
-          }
-        >
+        <SceneBoundary name="First Flight" onClose={() => dismissScene("flight")}>
           <FirstFlight
             key={flight}
             motion={motion}
@@ -835,26 +816,18 @@ export function OdysseyApp() {
                   heading?.focus({ preventScroll: true });
                 });
               } else {
-                if (location.hash.startsWith("#flight="))
-                  history.replaceState(null, "", location.pathname + location.search);
-                requestAnimationFrame(() => {
-                  const opener = resolveLauncher(
-                    flightOpener.current,
-                    ".continuum-first-flight, .lens-flight-link, .lens-enter",
-                  );
-                  opener?.focus({ preventScroll: true });
-                });
+                dismissScene("flight");
               }
             }}
           />
-        </Suspense>
+        </SceneBoundary>
       )}
       <footer className="o-footer">
         <a href="#top" className="o-brand" aria-label="Cashio, back to the beginning">
           <BrandMark motion={ambientMotion} />
         </a>
         <span>
-          V37.11 / CONTINUUM
+          V37.12 / CONTINUUM
           <br />
           <small>Crafted with GPT-6 Astra · Directed by Doug Cashio</small>
         </span>
@@ -868,6 +841,13 @@ export function OdysseyApp() {
             <Arrow diagonal />
           </a>
           <a href="#top">Back to orbit ↑</a>
+          <a
+            href="https://github.com/jamescashio/jamescashio.github.io/blob/main/PRIVACY.md"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Privacy <Arrow diagonal />
+          </a>
         </div>
       </footer>
       <dialog

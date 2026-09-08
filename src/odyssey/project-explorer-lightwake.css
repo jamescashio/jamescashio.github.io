@@ -1,4 +1,26 @@
 /* Lightwake: seven small architectural studies, one clear place to explore. */
+.o-study-takeaway {
+  margin-top: 24px;
+  padding: 20px 0 0;
+  border-top: 1px solid #829ca85c;
+}
+.o-study-takeaway > span {
+  color: var(--project);
+}
+.o-study-takeaway h4 {
+  margin: 10px 0;
+  color: #eef4f6;
+  font:
+    500 21px/1.4 Oxanium,
+    sans-serif;
+}
+.o-study-takeaway p {
+  margin: 0;
+  max-width: 62ch;
+  color: #bdd0dd;
+  font-size: 15px;
+  line-height: 1.7;
+}
 .event-horizon.aurora.lensing .lw-projects .o-project-index [role="tab"] {
   grid-template-columns: 26px 72px minmax(0, 1fr);
   column-gap: 11px;
@@ -133,7 +155,7 @@
   gap: 8px;
   color: #a9b9c4;
   font:
-    400 11px/1.4 Jet,
+    400 12px/1.4 Jet,
     monospace;
   font-variant-numeric: tabular-nums;
   text-transform: uppercase;

@@ -1,19 +1,17 @@
-# V37.11 — Continuum
+# V37.12 — Continuum
 
-First Flight is the primary invitation into Cashio's existing orbital world. The thirty-second journey has clearer outcomes, an eleven-second blackout chapter, reachable phone controls, and manual chapters when motion is paused.
+The reviewed polish preserves Cashio's original orbital identity while making its opening, demonstrations and finale clearer. First Flight comes before optional phone atmosphere controls. Richer ship materials and lighting carry through to a downloadable mission card containing the visitor's scene, decision and actual twelve-request demonstration outcome.
 
-All seven studies now explain their executable rule, a boundary to test, supporting sources, and limits. Share links restore bounded settings without automatically running an example. The HERMES story compares the same public and private request, leading to Research or Human review when the visitor runs it.
+The smart-routing story restores V31's historical $0.26/day AI provider-usage observation, measured 21–22 July 2026 and published 26 July. Original sources and exclusions sit beside the result. One evidence record serves the story and both E.V.E. consoles; it is not presented as current spending or an audited savings comparison.
 
-A real audit story connects those models to the owner-run 7 September observation: 19 LXC containers and one QEMU VM. Observation and audit-completion timestamps remain separate, current routing stays unverified, and the August export is preserved unchanged. Publication does not establish live health, workload failover, or production AI routing.
+All seven studies have practical takeaways. Tablet shading, graph labels, signature instructions and utility text are refined. Optional scenes now provide accessible loading cancellation and recoverable failures, preserving the portfolio and launcher focus. Correct phone image sizing reduces the selected hero image by 48.2% at 390px/DPR2 while retaining lazy 3D and existing asset budgets.
 
-Text over artwork and graph traces has stronger contrast protection; keyboard focus, accessible names, phone labels, and a WebKit share-button surface are improved. Bit's alignment is stable. Shared evidence and console data have focused modules, E.V.E.'s styles have one owner, and its commands open their named destinations.
-
-The original artwork, palette, typefaces, five films, Sanctuary chamber, signature, starship, legacy routes, motion controls, and opt-in audio remain available. See [the detailed release notes](docs/peer-refinement.md).
+The artwork, Bit, fonts, palette, films, Sanctuary, Observatory, motion controls, optional audio, legacy routes and frozen evidence remain intact. The privacy notice documents browser-local mission cards and the separately authorized analytics disable. See [the release evidence and rollback](docs/polished-release.md).
 
 ## Verification
 
-- Source and model tests, production build, artifact contracts, lint, formatting, and public-repository release gates.
-- Browser checks cover desktop, tablet, narrow phones, real media frames, keyboard and touch controls, reduced motion, hidden-page suspension, loading failures, focus return, and 3D cleanup.
-- Protected publication verifies the exact tested commit, followed by the public receipt, canonical and legacy routes, live interaction, and delivered asset hashes.
+- Reviewed preview: 408 automated tests, 25 modern browser checks, the legacy runtime suite, and 108 rendered states with no sampled text-contrast failure.
+- Promotion: repeat local lint, formatting, source/model tests, build, artifact, browser, public-safety, release-consistency and whitespace gates. GitHub runs the pinned Chrome 147 browser checks before publication.
+- Completion: confirm successful Pages deployment, V37.12 public receipts, delivered asset hashes, current and legacy routes, live interaction, keyboard, phone layouts and reduced motion.
 
-Rollback: revert this release's squash commit through a checked pull request to restore baseline `8248189c073928a45f1da05dd6d06e62a21df2f8`, then verify the resulting Pages deployment.
+Rollback: revert this release's squash commit through a checked pull request to restore baseline `0c509286ed9329b897741e1afe505376deb443ce`, then verify the resulting Pages deployment.

@@ -66,7 +66,7 @@
 .lens-observatory .lens-wordmark p,
 .lens-eyebrow {
   font:
-    11px/1.6 Jet,
+    12px/1.6 Jet,
     monospace;
   letter-spacing: 0.13em;
   color: #b1c4d0;
@@ -145,7 +145,7 @@
   justify-content: space-between;
   gap: 20px;
   font:
-    11px/1.6 Jet,
+    12px/1.6 Jet,
     monospace;
   letter-spacing: 0.13em;
   color: #b5ced8;
@@ -282,7 +282,7 @@
 }
 .lens-view-options button > span {
   font:
-    10px Jet,
+    12px Jet,
     monospace;
   opacity: 0.65;
   margin-right: 9px;
@@ -327,7 +327,7 @@
 }
 .lens-journey-label .lens-eyebrow {
   display: block;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.12em;
   color: #ccbd9f;
 }
@@ -397,7 +397,7 @@
   padding: 12px 4%;
   background: #060c13;
   color: #a1b4c3;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.6;
 }
 .lens-fallback {
@@ -493,7 +493,7 @@
     font-size: 32px;
   }
   .lens-observatory .lens-wordmark p {
-    font-size: 9px;
+    font-size: 12px;
     line-height: 1.5;
     letter-spacing: 0.06em;
   }
@@ -528,7 +528,7 @@
     top: 18px;
     left: 20px;
     right: 20px;
-    font-size: 9px;
+    font-size: 12px;
   }
   .lens-stage-top > span:last-child {
     display: none;
@@ -555,7 +555,7 @@
     max-width: 310px;
   }
   .lens-caption .lens-eyebrow {
-    font-size: 8px;
+    font-size: 12px;
     letter-spacing: 0.07em;
   }
   .lens-orbit-tools {
@@ -579,7 +579,7 @@
     font-size: 12px;
   }
   .lens-control-block > .lens-eyebrow {
-    font-size: 9px;
+    font-size: 12px;
     margin-bottom: 6px;
   }
   .lens-light-options i {
@@ -589,7 +589,7 @@
   }
   .lens-view-options button > span {
     margin-right: 6px;
-    font-size: 9px;
+    font-size: 12px;
   }
   .lens-session-controls {
     justify-self: stretch;
@@ -597,7 +597,7 @@
   .lens-pause,
   .lens-journey-toggle {
     padding: 9px 5px;
-    font-size: 11px !important;
+    font-size: 12px !important;
     min-height: 44px;
   }
   .lens-pause > span,
@@ -610,7 +610,7 @@
     padding: 8px 20px 12px;
   }
   .lens-journey-label .lens-eyebrow {
-    font-size: 8px;
+    font-size: 12px;
     letter-spacing: 0.04em;
   }
   .lens-journey-label strong {
@@ -622,7 +622,7 @@
   }
   .lens-footer {
     padding: 14px 20px 20px;
-    font-size: 10px;
+    font-size: 12px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

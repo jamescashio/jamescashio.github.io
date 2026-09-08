@@ -1,3 +1,5 @@
+import { COST_EVIDENCE } from "./cost-evidence";
+
 /** Browser-local replies shared by the current evidence console and historical command deck. */
 export interface EveReply {
   out: string[];
@@ -8,7 +10,7 @@ export interface EveReply {
 }
 
 export const WITHHELD = [
-  "AI operating cost per day and month",
+  "Current AI operating cost per day and month (historical sample: type cost)",
   "Automation job counts",
   "DNS query sample figures",
   "Backup verification figures",
@@ -59,8 +61,10 @@ export function runCommonEve(command: string, history: string[] = []): EveReply 
   if (command === "cost") {
     return {
       out: [
-        "WITHHELD · NO FRESH PUBLIC COST MEASUREMENT",
-        "A FIGURE WITH NO FRESH MEASUREMENT IS OMITTED, NEVER PUBLISHED STALE",
+        `HISTORICAL PROVIDER USAGE · $${COST_EVIDENCE.usdPerDay.toFixed(2)}/DAY`,
+        `SAMPLE · ${COST_EVIDENCE.sampleLabel.toUpperCase()} · PUBLISHED 26 JULY IN V31`,
+        `EXCLUDES · ${COST_EVIDENCE.excludes.toUpperCase()}`,
+        "CURRENT SPEND AND SAVINGS COMPARISON REMAIN UNVERIFIED",
       ],
     };
   }
