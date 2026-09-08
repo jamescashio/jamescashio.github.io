@@ -290,23 +290,32 @@ test("current status and release surfaces omit raw route identifiers and unprobe
   const publicStatus = JSON.parse(await readFile(new URL("../public/status.json", import.meta.url), "utf8"));
   const releaseBody = await readFile(new URL("../RELEASE_BODY.md", import.meta.url), "utf8");
   assert.deepEqual(status, publicStatus, "root and public status exports must remain identical");
-  assert.deepEqual(Object.keys(status), [
-    "release",
-    "revised",
-    "status",
-    "verified",
-    "verifiedLong",
-    "expires",
-    "proxmox",
-    "containers",
-    "lanes",
-    "routingVerified",
-    "law",
-    "note",
-  ]);
+  assert.deepEqual(
+    Object.keys(status).sort(),
+    [
+      "release",
+      "revised",
+      "status",
+      "verified",
+      "verifiedLong",
+      "expires",
+      "proxmox",
+      "containers",
+      "lanes",
+      "routingVerified",
+      "law",
+      "note",
+      "withheldReasons",
+      "provenance",
+      "schemaVersion",
+      "virtualMachines",
+      "archive",
+    ].sort(),
+  );
   assert.deepEqual(status.proxmox, { version: "9.2.11", hostsOnline: 2, quorate: true });
-  assert.deepEqual(status.containers, { running: 18, documented: 19, stopped: 1, zeus: 12, apollo: 6 });
-  assert.deepEqual(status.lanes, { public: 10, privateCatalog: 36 });
+  assert.deepEqual(status.containers, { running: 19, documented: 19, stopped: 0, zeus: 14, apollo: 5 });
+  assert.deepEqual(status.virtualMachines, { running: 1, documented: 1, stopped: 0 });
+  assert.deepEqual(status.lanes, { public: null, privateCatalog: null });
   for (const surface of [JSON.stringify(status), releaseBody]) {
     assert.doesNotMatch(surface, /deepseek-v4-(?:flash|pro)/i, "raw DeepSeek route identifiers must remain private");
     assert.doesNotMatch(

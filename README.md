@@ -1,64 +1,75 @@
-# cashio.us V37.10 — Continuum
+# cashio.us V37.11 — Continuum
 
-Doug Cashio’s interactive universe of AI, security, and owned infrastructure. Continuum connects the fifteen-second Sanctuary film to an original, explorable 3D chamber. Orbit its twin monoliths, select the amber core, shape the light, and trigger a finite six-second awakening. The film and chamber load only when requested; returning to the film restores its still poster.
+Doug Cashio’s interactive universe of AI, security, and owned infrastructure. Built for technical peers and AI enthusiasts, with Bit, orbital artwork, midnight blue, cyan, gold, and human judgment at its center.
 
-Refined ship materials, recessed seams, and cyan engine light carry into fresh responsive stills. On phones, First Flight becomes the primary opening action and a compact Atmosphere disclosure keeps lighting within reach. An evidence-backed build story explains the preserved public archive. Lensing Observatory and Principles Engine have distinct names throughout navigation, and the contact invitation opens a structured email draft. Mission Control loads its panel styles on request, keeping the initial stylesheet within the existing budget.
+**V37.11 publishes the reviewed First Flight, experiment, accessibility, and dated-evidence refinements.** The software version is 37.11.0. It identifies this website release; infrastructure observations retain their own timestamps. See [the release notes and rollback](docs/peer-refinement.md).
 
-Vector extends the Lensing edition of **THE HUMAN RECKONING**, crafted with GPT-6 Astra under Doug’s direction.
+## Experience
 
-Vector gives the carrier a more convincing physical presence: stronger hull form, recessed machinery, differentiated titanium and graphite, and controllable propulsion. A real throttle shapes the engine field, while a continuous inspection control reveals the actual internal geometry. Both work while motion is paused and leave the illustrative request model unchanged. The phone cockpit places essential controls closer to the scene and discloses precision camera controls and secondary explanation. The opening can play the existing eight-second Lightwake film directly behind its unchanged copy, with explicit pause, resume, replay and return to the original still. No video is requested before the visitor activates it.
+Start with First Flight: a 30-second, four-chapter journey through arrival, onboard AI, a lost connection, and a human permission decision. Follow twelve illustrative requests, change the scenario, and share the exact choices. Manual chapter controls remain available with motion paused.
 
-Shape this world opens an atmosphere workshop inside the observatory. Change cloud cover, aurora strength, and sun direction, then save the current rendered view as a PNG. The system atlas traces an illustrative request from human intent through HERMES and owned compute, back to human review. The inner light now develops the computing sanctuary through three distinct cinematic chapters. A horizontal five-film collection preserves every perspective. Compact study navigation brings the instrument closer on phones, and the header gives the animated logo a seamless surface across light and dark sections.
+Seven working studies turn the ideas into experiments. Each explains its rules, suggests a boundary to try, links to its supporting source, and shares reproducible settings. The HERMES comparison loads the same request with public or private handling; the visitor explicitly runs each version.
 
-The opening world responds to Dawn, Eclipse, and Ion lighting, with a desktop intensity control. Lightwake, an optional eight-second film, carries a wave of gold through the orbital gate as the atmosphere answers. Its First light, Signal, and Awakening landmarks connect the film to the explorable world. Refined machined surfaces, inset fasteners, and a thin atmosphere enrich the 3D scene. All seven studies have distinct illustrated navigation, with Previous and Next controls. The principles engine pairs beveled metal and recessed lenses with its Observe, Route, and Verify states.
+The Evidence section connects those demonstrations to a real owner-run audit. “How the audit changed this record” compares two dated fleet observations, distinguishes an absent historical field from zero, and leaves unverified routing unknown. E.V.E. offers named links to the evidence, builds, operator, and preserved flight lineage.
 
-The Cashio signature becomes an instrument of gold and light. Move across its orbital field to bend the light, drag to turn the artwork, or tap to send a finite ignition pulse. Balanced, Gold, and Ion treatments, a 0–100 field-strength control, Orbit and Inspect views, and six letter details keep exploration deliberate. The artwork retains its triangular A, crowned I, metallic finish, and orbital ellipse. Responsive WebP images and registered vector animation create the interactive logo; an eight-second animated GIF is also available at `/brand/celestial-signature.gif` without an initial-page download.
+The existing cinematic world remains available: Lensing Observatory, the explorable Sanctuary chamber, Celestial Forge, five optional films, controllable ship materials and propulsion, and the original command deck. Films open on still posters and play on request. Motion follows system preferences and the global pause control; audio requires opt-in. Heavy scenes load when opened.
 
-The signature awakens is an optional six-second film. Play, pause, replay, scrub the timeline, or inspect the Spark, Orbit, and Radiance frames. Sculpt this light returns to the interactive signature, which also offers Watch the signature awaken. Switching or closing a film stops the departing player; round trips preserve the original launcher. Film bytes load only after explicit Play or a frame request. Frame seeking uses the native media URL on byte-range hosts. Hosts without byte-range support use a bounded, same-origin in-memory fallback; the copy is released when the clip changes or closes.
-
-Enter the Lensing Observatory to explore the original 3D planet, machined orbital gate, and courier traffic. Choose three light treatments and camera views, or take a finite 24-second journey with pause and manual chapter controls. Ignite the gate to reveal its recessed circuits and planetary aurora. The gate awakens and Orbital arrival remain available in the five-film cinema with their original links. All films open on still posters, play only on request, never loop, and pause when hidden.
-
-First Flight is an optional guided starship journey. Four chapters move from arrival to the onboard core, connection loss, and a human permission decision. Visitors can change the illustrative scenario, follow the same twelve requests between routing bays, and share the exact settings. Flight controls adapt to phone and tablet screens; exploration remains available without taking the tour.
-
-The operator insignia shares the animated Cashio identity and opens Celestial Forge. A cyan section plane reveals the ship’s onboard modules, armor, and service bays; selecting Onboard AI frames the exposed hardware. The opening orbital instrument aligns before a visitor-triggered lightfold transition.
-
-Motion follows the visitor’s system preference and global pause control. Effects suspend offscreen and in hidden tabs, and audio requires explicit opt-in. Original orbital artwork, responsive ship stills, and a prerendered first view keep the experience useful while interactive modules load.
-
-The release name is original, inspired by the Butlerian Jihad in Frank Herbert’s _Dune_: powerful tools, with human judgment in command. The reference is an inspiration, not a quoted or canonical book title.
+**THE HUMAN RECKONING** is an original release name inspired by the Butlerian Jihad in Frank Herbert’s _Dune_; it is not a quotation or canonical book title. The Lensing edition was crafted with GPT-6 Astra under Doug’s direction. The earlier visual releases are documented in [Continuum](docs/continuum.md), [Vector](docs/vector.md), [Lightwake](docs/lightwake.md), and [Sanctuary](docs/sanctuary.md).
 
 ## Routes and evidence
 
-- `/` is the prerendered, indexable V37 homepage.
-- `/odyssey.html` remains a compatible alias, canonicalized to `/`.
+- `/` is the prerendered V37 homepage. Release builds contain indexable metadata. Separately packaged local previews must disable indexing.
+- `/odyssey.html` remains an alias canonicalized to `/`.
 - `/command-deck.html` preserves the V35 command deck. Existing `/#deck=…` bookmarks redirect there with their query and selected deck intact.
-- `/command.html` remains the explicitly marked May 2026 historical archive.
-- `/site-release.json` describes software version **37.10.0**, visual edition **Lensing**, and featured experience **Lensing Observatory**; `/event-horizon-release.json` is an identical compatibility alias.
+- `/command.html` remains the explicitly marked May 2026 archive.
+- `/site-release.json` describes the software release, Lensing edition, and Lensing Observatory; `/event-horizon-release.json` is its identical compatibility alias. Software and evidence dates are separate.
 - `/#flight=board`, `hull`, `blackout`, or `permission` opens a flight chapter.
 - `/#mission=hybrid.mixed.offline.held` restores a bounded routing scenario.
-- `/#signature` opens Celestial Forge; it is also reachable from the hero, operator insignia, and signature film.
-- `/#film=sanctuary` opens The inner light, with Threshold, Awakening, and Revelation frame landmarks. Step inside the scene opens the interactive chamber; Explore the working studies closes the cinema and focuses the study heading.
-- `/#film=lightwake` opens Lightwake; Enter this world hands off to the interactive observatory.
-- `/#film=signature` opens The signature awakens on a still poster. Sculpt this light opens the interactive signature.
-- `/#lensing` opens the interactive observatory; `/#film` opens Orbital arrival on its still poster.
-- `/#film=awakening` opens The gate awakens. Its explicit handoff opens the observatory at the illuminated gate in eclipse light.
+- `/#build=hermes&intent=analyze&private=1&sources=1` restores a study without running it.
+- `/#signature` opens Celestial Forge.
+- `/#lensing` opens Lensing Observatory; `/#film` opens Orbital arrival.
+- `/#film=sanctuary`, `lightwake`, `signature`, or `awakening` opens that film on its still poster. The films retain their scene handoffs and frame controls.
 
-The public fleet export remains dated **28 August 2026**, valid through **27 September 2026** in America/Chicago. Routing inventory remains separately dated **21 August 2026**. Both `status.json` snapshots are unchanged; a new website release does not establish current infrastructure state. Simulations are illustrative and send nothing to an AI service.
+The published `status.json` and `public/status.json` contain the owner-run observation of **7 September 2026 at 23:14:58 UTC**, collected in the HERMES audit completed at **23:29:51 UTC**. It records 19 running LXC containers (Zeus 14, Apollo 5), one running QEMU virtual machine, and two online Proxmox hosts. These are observations from that time, not live telemetry or application-health guarantees.
 
-## Supported local commands
+Current lane counts, routing verification, and expiry remain `null`. The observation does not establish demonstrated recovery, storage redundancy, failover, or production AI routing.
+
+`public/evidence/status-2026-08-28.json` preserves the unchanged August export: its fleet observation is **28 August 2026**, its routing inventory is **21 August 2026**, and its original expiry is **27 September 2026**. That expiry does not extend the September observation. The audit case links to both records.
+
+All request-routing studies execute locally in the browser and send nothing to an AI service. Private operational findings and credentials are excluded from the public evidence.
+
+## Where to make changes
+
+| Concern                                               | Source                                                                                             |
+| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Page composition, overlay handoffs, focus restoration | `src/odyssey/app.tsx`                                                                              |
+| Study interface and rules                             | `labs.tsx`, `data.ts`, `study-experiment.ts`, `study-notes.ts` in `src/odyssey/`                   |
+| Shared dated evidence and audit explanation           | `fleet-evidence.ts`, `audit-story.tsx`, `build-story.tsx` in `src/odyssey/`                        |
+| Modern E.V.E. replies and destinations                | `src/odyssey/public-console.ts` and `evidence-console.tsx`                                         |
+| Shared safe replies, deck names, historical lineage   | `src/lib/eve-common.ts`, `deck-metadata.ts`, `flight-lineage.ts`                                   |
+| First Flight and request model                        | `first-flight.tsx`, `flight-plan.ts`, `flight-requests.ts`, `sovereign-model.ts` in `src/odyssey/` |
+| Motion, visibility, opt-in audio                      | `src/odyssey/hooks.ts`                                                                             |
+| Modern stylesheet order                               | `src/odyssey/main.tsx`                                                                             |
+
+The modern homepage and legacy command deck have separate entry points. Keep shared data in focused modules; importing a legacy component into the homepage can pull its unrelated content into the initial download. Preserve historical wording and dates when editing the legacy view.
+
+E.V.E.'s component-specific appearance lives in `src/odyssey/evidence-console.css`: structure, responsive controls, Aurora colors, and Lensing materials. Site-wide typography and forced-color rules stay in the shared themes. Its stylesheet follows the Lensing surface import so local maintenance preserves the established cascade.
+
+Styles retain the original layered theme. Fix a component in its existing stylesheet rather than adding another global override. Import order is intentional; verify affected desktop and phone states after changing it. Optional scenes keep their styles with their lazy-loaded modules.
+
+## Local development and verification
 
 ```powershell
 npm ci
 npm run build
 npm run preview -- --host 127.0.0.1 --port 4178 --strictPort
-npm run lint
-npm run format:check
-npm run test:node
-npm run test:odyssey
-npm run test:artifact
-npm run test:release
 npm run verify
 ```
 
-Verification covers lint, formatting, source and model tests, the production build, artifact contracts, both browser experiences, public-repository safety, released metadata, and committed whitespace. Browser gates use Chrome 147 in CI; local verification can use `CHROME_PATH`. The retained `check:v36:runtime` command checks V37 and the preserved V35 experience. The historical `check:preview` command deliberately rejects this released manifest; it is reserved for explicitly unpublished preview metadata.
+For focused checks, use `lint`, `format:check`, `test:node`, `test:odyssey`, `test:artifact`, and `test:release`. The full verification command runs those checks, builds both experiences, checks their browser behavior, and verifies public-repository safety, release consistency, and whitespace.
 
-GitHub Pages publishes only the verified `dist` artifact through `.github/workflows/pages.yml`. Pages must use GitHub Actions. Custom domain: `cashio.us`. Repository deployment does not alter DNS or Cloudflare zone policies. The reproducible audio tool remains available as `python scripts/build_audio_cues.py`.
+The retained `check:v36:runtime` name checks V37 and the preserved V35 experience. Browser gates use Chrome 147 in CI; local verification can use `CHROME_PATH`. The historical `check:preview` command validates explicitly unpublished metadata and intentionally rejects the released receipt in this source tree.
+
+A passing build or browser test does not establish live infrastructure health. Visual release review also covers desktop, phone, narrow-phone, keyboard, reduced motion, opt-in audio, legacy routes, and the actual target artifact.
+
+GitHub Pages publishes only the verified `dist` artifact through `.github/workflows/pages.yml`. The configured public domain is `cashio.us`. Publish through the protected pull-request workflow, then verify the deployment and live routes. This release does not change DNS or Cloudflare policies. The reproducible audio tool remains available as `python scripts/build_audio_cues.py`.

@@ -4,6 +4,7 @@ import { CelestialCircuit, type CircuitMode, type CelestialLight } from "./celes
 /** The owner's circuit identity, animated only while visible and motion is enabled. */
 export function BrandMark({
   motion,
+  eager = false,
   large = false,
   studio = false,
   magnified = false,
@@ -14,6 +15,7 @@ export function BrandMark({
   light = "balanced",
 }: {
   motion: boolean;
+  eager?: boolean;
   large?: boolean;
   studio?: boolean;
   magnified?: boolean;
@@ -25,6 +27,7 @@ export function BrandMark({
 }) {
   const frame = useRef<HTMLSpanElement>(null);
   const [visible, setVisible] = useState(false);
+  const [circuitReady, setCircuitReady] = useState(eager || studio);
   const [pageVisible, setPageVisible] = useState(true);
   const [reduced, setReduced] = useState(true);
   const animated = motion && visible && pageVisible && !reduced;
@@ -40,7 +43,10 @@ export function BrandMark({
     query.addEventListener("change", preference);
     const observer = new IntersectionObserver((entries) => {
       const entry = entries.at(-1);
-      if (entry) setVisible(entry.isIntersecting);
+      if (entry) {
+        setVisible(entry.isIntersecting);
+        if (entry.isIntersecting) setCircuitReady(true);
+      }
     });
     if (frame.current) observer.observe(frame.current);
     const change = () => setPageVisible(!document.hidden);
@@ -78,8 +84,11 @@ export function BrandMark({
         height="765"
         alt="Cashio AI"
         decoding="async"
+        loading={eager || studio ? "eager" : "lazy"}
       />
-      <CelestialCircuit detailed={large || studio} animated={animated} signal={signal} focusLetter={focusLetter} />
+      {circuitReady && (
+        <CelestialCircuit detailed={large || studio} animated={animated} signal={signal} focusLetter={focusLetter} />
+      )}
     </span>
   );
 }

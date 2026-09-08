@@ -57,11 +57,11 @@ export function useHeroCoreAlignment() {
       const pictureY = 424 * scale - ((941 * scale - rect.height) * position[1]) / 100;
       const x = rect.left - frame.left + pictureX;
       const y = rect.top - frame.top + pictureY;
-      target.style.left = `${x}px`;
-      target.style.top = `${y}px`;
-      target.style.bottom = "auto";
       hero.style.setProperty("--eh-core-x", `${x}px`);
       hero.style.setProperty("--eh-core-y", `${y}px`);
+      // Register the core and its light with transforms, without moving their layout boxes.
+      hero.style.setProperty("--eh-core-offset-x", `${x - hero.clientWidth * 0.74}px`);
+      hero.style.setProperty("--eh-core-offset-y", `${y - hero.clientHeight * 0.45}px`);
       picture.style.transformOrigin = `${pictureX}px ${pictureY}px`;
     };
     const observer = new ResizeObserver(align);

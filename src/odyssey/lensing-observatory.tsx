@@ -241,7 +241,7 @@ export default function LensingObservatory({
         </button>
       </header>
       {journey.step && (
-        <div className="lens-journey" aria-label="Guided journey controls">
+        <div className="lens-journey" role="group" aria-label="Guided journey controls">
           <div className="lens-journey-label">
             <span className="lens-eyebrow">
               {journey.complete
@@ -383,7 +383,7 @@ export default function LensingObservatory({
               (resonance ? "Light finds the circuit. The horizon comes alive." : activeView.description)}
           </p>
         </div>
-        <div className="lens-orbit-tools" aria-label="Camera controls">
+        <div className="lens-orbit-tools" role="group" aria-label="Camera controls">
           <button
             disabled={!ready || unavailable}
             onClick={() => cameraControl(() => scene.current?.rotate(-0.2, 0))}
@@ -549,10 +549,9 @@ export default function LensingObservatory({
                 key={item.id}
                 disabled={!ready || unavailable}
                 aria-pressed={view === item.id}
-                aria-label={item.label}
                 onClick={() => chooseView(item.id)}
               >
-                <span aria-hidden="true">0{index + 1}</span>
+                <span>0{index + 1}</span>
                 {item.label}
               </button>
             ))}
@@ -581,16 +580,16 @@ export default function LensingObservatory({
             aria-label={
               !motion
                 ? reduced
-                  ? "Observatory motion follows your reduced-motion preference"
-                  : "Observatory motion is off in the site controls"
+                  ? "Motion paused — follows your reduced-motion preference"
+                  : "Motion paused — motion is off in the site controls"
                 : playing
-                  ? "Pause observatory motion"
-                  : "Resume observatory motion"
+                  ? "Pause motion in the observatory"
+                  : "Resume motion in the observatory"
             }
             onClick={() => setPlaying(!playing)}
           >
             <span aria-hidden="true">{motion && playing ? "Ⅱ" : "▷"}</span>
-            {motion && playing ? "Pause motion" : "Motion paused"}
+            {motion ? (playing ? "Pause motion" : "Resume motion") : "Motion paused"}
           </button>
         </div>
       </div>

@@ -1,27 +1,20 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { EXPIRES_AT } from "../lib/content";
-import { runEve } from "../components/eve-console";
+import { FLEET_EVIDENCE } from "./fleet-evidence";
+import { runPublicEve, type EveDestination } from "./public-console";
 import { Arrow, Core } from "./effects";
 
 export function EvidenceConsole({ onArt }: { onArt: () => void }) {
   const [command, setCommand] = useState("");
   const [history, setHistory] = useState<string[]>([]);
   const [lines, setLines] = useState<string[]>([
-    "E.V.E. / PUBLIC EVIDENCE ARCHIVE",
-    "Fleet: 28 Aug 2026 · Routing: 21 Aug 2026",
+    "E.V.E. / PUBLIC EVIDENCE",
+    `Fleet: ${FLEET_EVIDENCE.verifiedLong} · Routing: not verified`,
     "Local commands. Dated facts. No connection to the estate.",
     "Type help to explore.",
   ]);
-  const [destination, setDestination] = useState<string | null>(null);
-  const [expired, setExpired] = useState(false);
+  const [destination, setDestination] = useState<EveDestination | null>(null);
   const log = useRef<HTMLDivElement>(null);
   const cursor = useRef(-1);
-  useEffect(() => {
-    const refresh = () => setExpired(Date.now() >= Date.parse(EXPIRES_AT));
-    refresh();
-    const timer = setInterval(refresh, 60_000);
-    return () => clearInterval(timer);
-  }, []);
   useEffect(() => {
     if (log.current) log.current.scrollTop = log.current.scrollHeight;
   }, [lines]);
@@ -34,29 +27,13 @@ export function EvidenceConsole({ onArt }: { onArt: () => void }) {
     setCommand("");
     setDestination(null);
     if (input.toLowerCase() === "clear") {
-      setLines(["Archive cleared. Type help to explore."]);
+      setLines(["Console cleared. Type help to explore."]);
       return;
     }
-    if (input.toLowerCase() === "bit") {
-      setLines((current) =>
-        [
-          ...current,
-          `> ${input}`,
-          "YES. A HUMAN IS STILL IN COMMAND.",
-          "I’m the faceted core in the orbital artwork. Try engage.",
-        ].slice(-120),
-      );
-      return;
-    }
-    const result = runEve(input, history);
+    const result = runPublicEve(input, history);
     setLines((current) => [...current, `> ${input}`, ...result.out].slice(-120));
     if (result.photo) onArt();
-    if (result.go !== undefined)
-      setDestination(
-        ["#top", "#universe", "#universe", "#evidence", "#universe", "#lineage", "#work", "#evidence", "#contact"][
-          result.go
-        ],
-      );
+    if (result.destination) setDestination(result.destination);
   }
   function submit(event: FormEvent) {
     event.preventDefault();
@@ -69,7 +46,7 @@ export function EvidenceConsole({ onArt }: { onArt: () => void }) {
           <Core />
           E.V.E.
         </span>
-        <span>PUBLIC ARCHIVE / LOCAL</span>
+        <span>DATED EVIDENCE / LOCAL</span>
       </div>
       <div
         className="o-console-output"
@@ -111,7 +88,7 @@ export function EvidenceConsole({ onArt }: { onArt: () => void }) {
         </button>
       </form>
       <div className="o-command-shortcuts">
-        {["fleet", "routes", "whoami", "help"].map((text) => (
+        {["fleet", "routes", "archive", "help"].map((text) => (
           <button key={text} onClick={() => execute(text)}>
             {text}
             <span aria-hidden="true">↵</span>
@@ -119,15 +96,13 @@ export function EvidenceConsole({ onArt }: { onArt: () => void }) {
         ))}
       </div>
       {destination && (
-        <a className="o-terminal-link" href={destination}>
-          Explore the corresponding section
+        <a className="o-terminal-link" href={destination.href}>
+          {destination.label}
           <Arrow />
         </a>
       )}
       <p className="o-terminal-foot">
-        {expired
-          ? "Export expired. Historical figures require a fresh owner-verified export."
-          : "Dated export · validity ends 27 Sep 2026 · not live telemetry"}
+        Observation: {FLEET_EVIDENCE.verifiedLong}. No live telemetry or future health guarantee.
       </p>
     </div>
   );

@@ -15,7 +15,9 @@ import { HeroCinema } from "./hero-cinema";
 import { ExperienceGlyph, LightwakeAtmosphere, LightwakeControls } from "./lightwake-scene";
 import { ProjectExplorer } from "./project-explorer";
 import { BuildStory } from "./build-story";
+import { FLEET_EVIDENCE } from "./fleet-evidence";
 import { EvidenceConsole } from "./evidence-console";
+import { AuditStory } from "./audit-story";
 import { Lineage } from "./flight-heritage";
 import type { LensingClip } from "./lensing-film";
 const FirstFlight = lazy(() => import("./first-flight"));
@@ -247,7 +249,7 @@ export function OdysseyApp() {
       </span>
       <header className="o-header">
         <a href="#top" className="o-brand" aria-label="Cashio, back to the beginning">
-          <BrandMark motion={ambientMotion} />
+          <BrandMark motion={ambientMotion} eager />
         </a>
         <nav aria-label="Primary navigation">
           {nav.map((link) => (
@@ -333,7 +335,7 @@ export function OdysseyApp() {
             </a>
           ))}
         </nav>
-        <p>V37.10 / CONTINUUM / A HUMAN IN COMMAND</p>
+        <p>V37.11 / CONTINUUM / A HUMAN IN COMMAND</p>
       </dialog>
       <main id="o-main">
         <section className="o-hero o-scene" id="top" aria-labelledby="hero-title" data-lightwake-light="dawn">
@@ -345,7 +347,7 @@ export function OdysseyApp() {
           <LightwakeAtmosphere />
           <div className="o-hero-content">
             <div className="eh-release-mark">
-              <b>V37.10</b>
+              <b>V37.11</b>
               <span>CONTINUUM</span>
             </div>
             <span className="o-kicker">
@@ -365,31 +367,28 @@ export function OdysseyApp() {
             </p>
             <div className="o-hero-actions">
               <button
-                className="o-button o-button-gold lens-enter"
-                onClick={(event) => openLensing(event.currentTarget)}
-                aria-label="Enter Lensing Observatory"
+                className="o-button o-button-gold lens-enter continuum-first-flight"
+                type="button"
+                onClick={startFlight}
               >
                 <span className="lens-enter-glyph" aria-hidden="true">
                   ◉
                 </span>
                 <span>
-                  Lensing Observatory<small>IGNITE THE GATE. AWAKEN A WORLD.</small>
+                  Take the 30-second flight<small>OPEN THE HULL. CUT THE CLOUD. KEEP COMMAND.</small>
                 </span>
                 <Arrow />
               </button>
-              <button className="o-button o-button-gold continuum-first-flight" type="button" onClick={startFlight}>
-                <span>
-                  Take the 30-second flight<small>OPEN THE HULL. KEEP COMMAND.</small>
-                </span>
-                <Arrow />
-              </button>
+              <a href="#work" className="o-text-button flight-work-link">
+                Explore the working studies <Arrow diagonal />
+              </a>
             </div>
             <div className="lens-hero-notes">
-              <span>Change the light.</span>
+              <span>See the system.</span>
               <i />
-              <span>Take the journey.</span>
+              <span>Change a boundary.</span>
               <i />
-              <span>Ignite the gate.</span>
+              <span>Keep command.</span>
             </div>
             <div className="lens-discover-links">
               <button className="lens-film-link" type="button" onClick={(event) => openFilm(event.currentTarget)}>
@@ -401,11 +400,6 @@ export function OdysseyApp() {
                 <ExperienceGlyph kind="signature" />
                 <span>Sculpt the logo</span>
                 <small>TURN & IGNITE</small>
-              </button>
-              <button className="o-hero-work lens-flight-link" onClick={startFlight}>
-                <ExperienceGlyph kind="flight" />
-                <span>First flight</span>
-                <small>BOARD THE SHIP</small>
               </button>
               <button
                 className="lens-observatory-link"
@@ -446,7 +440,7 @@ export function OdysseyApp() {
             </a>
           </div>
         </section>
-        <div className="o-principles" aria-label="Operating principles">
+        <div className="o-principles" role="group" aria-label="Operating principles">
           <span>Own the infrastructure.</span>
           <Core />
           <span>Make the reasoning visible.</span>
@@ -465,7 +459,7 @@ export function OdysseyApp() {
               <em>Put it to work.</em>
             </h2>
             <p>
-              AI routing. Security decisions. Explainable automation.
+              Seven small experiments. Inspect the rules. Share your exact settings.
               <br />
               Start with HERMES: turn on private information, then route the request.
               <br />
@@ -504,23 +498,21 @@ export function OdysseyApp() {
           />
           <div className="o-fact-rail">
             <div>
-              <strong>02</strong>
-              <span>documented hosts</span>
+              <strong>{FLEET_EVIDENCE.proxmox.hostsOnline.toString().padStart(2, "0")}</strong>
+              <span>hosts at observation</span>
             </div>
             <div>
-              <strong>
-                18<span>/19</span>
-              </strong>
-              <span>guests running at probe</span>
+              <strong>{FLEET_EVIDENCE.containers.running}</strong>
+              <span>LXC containers running</span>
             </div>
             <div>
-              <strong>10</strong>
-              <span>public routing lanes</span>
+              <strong>{FLEET_EVIDENCE.virtualMachines.running.toString().padStart(2, "0")}</strong>
+              <span>QEMU virtual machine running</span>
             </div>
             <p>
-              FLEET · 28 AUG 2026
+              FLEET · {FLEET_EVIDENCE.verifiedLong.toUpperCase()}
               <br />
-              ROUTING · 21 AUG 2026
+              ROUTING · NOT VERIFIED
               <br />
               <a href="#evidence">
                 Inspect the dated evidence
@@ -616,23 +608,28 @@ export function OdysseyApp() {
             </h2>
             <p>A beautiful dashboard is a beginning. Evidence needs a source, a date, and a clear boundary.</p>
             <p className="o-muted">
-              E.V.E. is the public archive. Ask for the fleet, inspect the routing inventory, or meet the operator. The
-              answers come from the site’s dated export.
+              E.V.E. reads the latest dated observation. Ask for the fleet, see what remains unverified, or compare the
+              historical archive. Guest runtime describes a process state; it does not establish application health,
+              successful recovery, or failover readiness.
             </p>
             <a href="/status.json" target="_blank" rel="noreferrer" className="o-text-button">
-              Read the source export
+              Read the latest dated export
               <Arrow diagonal />
             </a>
             <div className="o-archive-dates">
               <div>
                 <span>FLEET OBSERVATION</span>
-                <strong>28 August 2026</strong>
+                <strong>{FLEET_EVIDENCE.verifiedLong}</strong>
               </div>
               <div>
                 <span>ROUTING INVENTORY</span>
-                <strong>21 August 2026</strong>
+                <strong>Not verified</strong>
               </div>
             </div>
+            <a href={FLEET_EVIDENCE.archive.url} target="_blank" rel="noreferrer" className="o-text-button">
+              Compare the August archive <Arrow diagonal />
+            </a>
+            <AuditStory />
           </div>
           <EvidenceConsole onArt={viewArt} />
         </section>
@@ -783,7 +780,7 @@ export function OdysseyApp() {
               setLensing(false);
               if (location.hash === "#lensing") history.replaceState(null, "", location.pathname + location.search);
               requestAnimationFrame(() =>
-                resolveLauncher(lensOpener.current, ".lens-enter, .lens-observatory-link")?.focus({
+                resolveLauncher(lensOpener.current, ".lens-observatory-link")?.focus({
                   preventScroll: true,
                 }),
               );
@@ -857,7 +854,7 @@ export function OdysseyApp() {
           <BrandMark motion={ambientMotion} />
         </a>
         <span>
-          V37.10 / CONTINUUM
+          V37.11 / CONTINUUM
           <br />
           <small>Crafted with GPT-6 Astra · Directed by Doug Cashio</small>
         </span>

@@ -1,14 +1,17 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useImperativeHandle, useRef, useState, type Ref } from "react";
 import {
   affectedModules,
   escalationExample,
   exposureExample,
   GRAPH_EDGES,
   GRAPH_NODES,
+  PROJECTS,
   routeExample,
   type RouteInput,
 } from "./data";
 import { Arrow } from "./effects";
+import { BRIEF_FACTS, FLEET_EVIDENCE } from "./fleet-evidence";
+import { defaultExperiment, parseExperiment, shareExperiment, type ExperimentProps } from "./study-experiment";
 import {
   CascadeInstrument,
   EvidencePillars,
@@ -74,12 +77,16 @@ function Result({
   );
 }
 
-function HermesLab({ motion }: { motion: boolean }) {
-  const [input, setInput] = useState<RouteInput>({ intent: "draft", privateData: false, sources: false });
+function HermesLab({ motion, input, onChange }: ExperimentProps<"hermes"> & { motion: boolean }) {
   const [step, setStep] = useState(0);
   const [running, setRunning] = useState(false);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const output = routeExample(input);
+  useEffect(() => {
+    timers.current.forEach(clearTimeout);
+    setStep(0);
+    setRunning(false);
+  }, [input]);
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
   useEffect(() => {
     if (!motion && running) {
@@ -90,7 +97,7 @@ function HermesLab({ motion }: { motion: boolean }) {
   }, [motion, running]);
   function update(next: RouteInput) {
     timers.current.forEach(clearTimeout);
-    setInput(next);
+    onChange({ ...input, ...next });
     setStep(0);
     setRunning(false);
   }
@@ -162,15 +169,22 @@ function HermesLab({ motion }: { motion: boolean }) {
   );
 }
 
-function CascadeLab() {
-  const [severity, setSeverity] = useState(25);
-  const [confidence, setConfidence] = useState(90);
+function CascadeLab({ input, onChange }: ExperimentProps<"cascade">) {
+  const { severity, confidence } = input;
   const result = escalationExample(severity, confidence);
   return (
     <>
       <CascadeInstrument level={result.level} severity={severity} confidence={confidence} />
-      <Range label="Consequence of being wrong" value={severity} onChange={setSeverity} />
-      <Range label="Confidence in the evidence" value={confidence} onChange={setConfidence} />
+      <Range
+        label="Consequence of being wrong"
+        value={severity}
+        onChange={(severity) => onChange({ ...input, severity })}
+      />
+      <Range
+        label="Confidence in the evidence"
+        value={confidence}
+        onChange={(confidence) => onChange({ ...input, confidence })}
+      />
       <Result title={result.title}>{result.body}</Result>
       <p className="o-lab-note">
         Illustrative thresholds: human review at consequence ≥70% or confidence &lt;40%. These are demonstration rules,
@@ -180,17 +194,27 @@ function CascadeLab() {
   );
 }
 
-function ExposureLab() {
-  const [reachable, setReachable] = useState(true);
-  const [auth, setAuth] = useState(false);
-  const [critical, setCritical] = useState(true);
+function ExposureLab({ input, onChange }: ExperimentProps<"exposure">) {
+  const { reachable, auth, critical } = input;
   const result = exposureExample(reachable, auth, critical);
   return (
     <>
       <ExposureInstrument reachable={reachable} auth={auth} critical={critical} />
-      <Toggle label="Observed from the public internet" checked={reachable} onChange={setReachable} />
-      <Toggle label="Authentication boundary observed" checked={auth} onChange={setAuth} />
-      <Toggle label="Business-critical asset" checked={critical} onChange={setCritical} />
+      <Toggle
+        label="Observed from the public internet"
+        checked={reachable}
+        onChange={(reachable) => onChange({ ...input, reachable })}
+      />
+      <Toggle
+        label="Authentication boundary observed"
+        checked={auth}
+        onChange={(auth) => onChange({ ...input, auth })}
+      />
+      <Toggle
+        label="Business-critical asset"
+        checked={critical}
+        onChange={(critical) => onChange({ ...input, critical })}
+      />
       <Result title={result.level}>{result.body}</Result>
       <p className="o-lab-note">
         Synthetic scenario. This demonstrates triage logic; it does not scan a target or establish a real finding.
@@ -199,41 +223,22 @@ function ExposureLab() {
   );
 }
 
-const BRIEF_FACTS = [
-  {
-    id: "fleet",
-    label: "Fleet evidence",
-    fact: "18 of 19 documented guests were running at the 28 August 2026 probe.",
-    consequence: "The estate has a documented baseline; present availability needs a fresh observation.",
-    source: "Fleet export · 28 Aug 2026",
-  },
-  {
-    id: "routing",
-    label: "Routing inventory",
-    fact: "The 21 August 2026 public routing inventory describes 10 model lanes.",
-    consequence: "Lane purpose is documented; inventory alone does not prove current provider health.",
-    source: "Routing inventory · 21 Aug 2026",
-  },
-  {
-    id: "authority",
-    label: "Human authority",
-    fact: "The published operating model keeps consequential decisions with an accountable human.",
-    consequence: "Any expansion of automation should preserve that decision boundary.",
-    source: "Published operating philosophy",
-  },
-] as const;
-
-function BriefingLab() {
-  const [chosen, setChosen] = useState<string[]>(["fleet", "authority"]);
+function BriefingLab({ input, onChange }: ExperimentProps<"briefing">) {
+  const { chosen } = input;
   const [brief, setBrief] = useState<string[]>([]);
   const [copied, setCopied] = useState(false);
   const [copyError, setCopyError] = useState(false);
+  useEffect(() => {
+    setBrief([]);
+    setCopied(false);
+    setCopyError(false);
+  }, [input]);
   const text = BRIEF_FACTS.filter((fact) => brief.includes(fact.id));
   async function copy() {
     try {
       await navigator.clipboard.writeText(
         text.map((fact) => `${fact.fact}\nSo what: ${fact.consequence}\nSource: ${fact.source}`).join("\n\n") +
-          "\n\nNext decision: obtain a fresh read-only snapshot before changing the published baseline.",
+          "\n\nNext decision: verify the service or routing claim needed for the decision before expanding automation.",
       );
       setCopied(true);
       setCopyError(false);
@@ -254,7 +259,7 @@ function BriefingLab() {
           label={fact.label}
           checked={chosen.includes(fact.id)}
           onChange={(checked) => {
-            setChosen((current) => (checked ? [...current, fact.id] : current.filter((id) => id !== fact.id)));
+            onChange({ ...input, chosen: checked ? [...chosen, fact.id] : chosen.filter((id) => id !== fact.id) });
             setBrief([]);
             setCopied(false);
             setCopyError(false);
@@ -285,11 +290,11 @@ function BriefingLab() {
               </div>
             ))}
             <strong>Next decision</strong>
-            <p>Obtain a fresh read-only snapshot before changing the published baseline.</p>
+            <p>Verify the service or routing claim needed for the decision before expanding automation.</p>
           </>
         ) : (
           <p>
-            Select the published facts to include. The brief separates the observation, its implication, and the next
+            Select the dated evidence to include. The brief separates the observation, its implication, and the next
             decision.
           </p>
         )}
@@ -306,14 +311,15 @@ function BriefingLab() {
         </p>
       )}
       <p className="o-lab-note">
-        Assembled locally from published statements. This is a structured example, not a generated AI response.
+        Assembled locally from the dated export and operating philosophy. This is a structured example, not a generated
+        AI response.
       </p>
     </>
   );
 }
 
-function DashboardLab() {
-  const [age, setAge] = useState(0);
+function DashboardLab({ input, onChange }: ExperimentProps<"dashboards">) {
+  const { age } = input;
   const stale = age >= 24;
   return (
     <>
@@ -334,29 +340,42 @@ function DashboardLab() {
         <span>24H REVIEW WINDOW</span>
         <span>48H</span>
       </div>
-      <Range label="Time since the example observation" value={age} max={48} onChange={setAge} unit=" h" />
+      <Range
+        label="Time since the example observation"
+        value={age}
+        max={48}
+        onChange={(age) => onChange({ ...input, age })}
+        unit=" h"
+      />
       <Result title={stale ? "The evidence is stale." : "The evidence has a date."}>
         {stale
           ? "After this example’s 24-hour window, a fresh observation is required. A green historical result cannot stand in for current health."
           : "The example is inside a 24-hour freshness window. Display the collection time, source, and scope alongside the result."}
       </Result>
       <p className="o-lab-note">
-        This clock is simulated. Actual published fleet evidence is dated 28 August 2026; the example window does not
-        validate that export.
+        This clock is simulated. The fleet observation is dated {FLEET_EVIDENCE.verifiedLong}; the example’s 24-hour
+        window does not validate or extend that observation.
       </p>
     </>
   );
 }
 
-function SignalLab() {
-  const [deviation, setDeviation] = useState(15);
-  const [corroborated, setCorroborated] = useState(false);
+function SignalLab({ input, onChange }: ExperimentProps<"signal">) {
+  const { deviation, corroborated } = input;
   const title = deviation < 30 ? "Continue observation" : corroborated ? "Operator review" : "Corroborate the signal";
   return (
     <>
       <SignalInstrument deviation={deviation} corroborated={corroborated} />
-      <Range label="Deviation from the example baseline" value={deviation} onChange={setDeviation} />
-      <Toggle label="A second observation supports it" checked={corroborated} onChange={setCorroborated} />
+      <Range
+        label="Deviation from the example baseline"
+        value={deviation}
+        onChange={(deviation) => onChange({ ...input, deviation })}
+      />
+      <Toggle
+        label="A second observation supports it"
+        checked={corroborated}
+        onChange={(corroborated) => onChange({ ...input, corroborated })}
+      />
       <Result title={title}>
         {deviation < 30
           ? "The selected deviation stays below this example’s review threshold. Keep observing and preserve context."
@@ -372,8 +391,8 @@ function SignalLab() {
   );
 }
 
-function GraphLab() {
-  const [selected, setSelected] = useState("policy");
+function GraphLab({ input, onChange }: ExperimentProps<"graphify">) {
+  const { selected } = input;
   const arrowId = useId();
   const affected = affectedModules(selected);
   const current = GRAPH_NODES.find((node) => node.id === selected)!;
@@ -431,7 +450,7 @@ function GraphLab() {
               style={{ left: `${node.x}%`, top: `${node.y}%` }}
               aria-pressed={node.id === selected}
               className={node.id === selected ? "selected" : affected.includes(node.id) ? "affected" : ""}
-              onClick={() => setSelected(node.id)}
+              onClick={() => onChange({ ...input, selected: node.id })}
             >
               <i aria-hidden="true">
                 <svg viewBox="0 0 30 30" fill="none">
@@ -439,7 +458,7 @@ function GraphLab() {
                   <path d="m10 12 5-3 5 3-5 3Zm5 3v7m-5-6 5 3 5-3" />
                 </svg>
               </i>
-              {node.label}
+              <span className="lv-module-label">{node.label}</span>
             </button>
           ))}
         </div>
@@ -468,7 +487,32 @@ function GraphLab() {
   );
 }
 
-export function ProjectLab({ index, motion }: { index: number; motion: boolean }) {
+export type ProjectLabHandle = { getShareFragment: () => string };
+
+export function ProjectLab({
+  index,
+  motion,
+  shareRef,
+  onSettingsChange,
+}: {
+  index: number;
+  motion: boolean;
+  shareRef?: Ref<ProjectLabHandle>;
+  onSettingsChange?: () => void;
+}) {
+  const study = PROJECTS[index].id;
+  const [input, setInput] = useState(() => defaultExperiment(study));
+  useImperativeHandle(shareRef, () => ({ getShareFragment: () => shareExperiment(input) }), [input]);
+  useEffect(() => onSettingsChange?.(), [input, onSettingsChange]);
+  useEffect(() => {
+    const restore = () => {
+      const saved = parseExperiment(location.hash);
+      if (saved?.study === study) setInput(saved);
+    };
+    restore();
+    window.addEventListener("hashchange", restore);
+    return () => window.removeEventListener("hashchange", restore);
+  }, [study]);
   const root = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(false);
   useEffect(() => {
@@ -498,20 +542,20 @@ export function ProjectLab({ index, motion }: { index: number; motion: boolean }
       data-lab-motion={motion ? "on" : "off"}
       data-lab-active={active ? "on" : "off"}
     >
-      {index === 0 ? (
-        <HermesLab motion={motion} />
-      ) : index === 1 ? (
-        <CascadeLab />
-      ) : index === 2 ? (
-        <ExposureLab />
-      ) : index === 3 ? (
-        <BriefingLab />
-      ) : index === 4 ? (
-        <DashboardLab />
-      ) : index === 5 ? (
-        <SignalLab />
+      {input.study === "hermes" ? (
+        <HermesLab motion={motion} input={input} onChange={setInput} />
+      ) : input.study === "cascade" ? (
+        <CascadeLab input={input} onChange={setInput} />
+      ) : input.study === "exposure" ? (
+        <ExposureLab input={input} onChange={setInput} />
+      ) : input.study === "briefing" ? (
+        <BriefingLab input={input} onChange={setInput} />
+      ) : input.study === "dashboards" ? (
+        <DashboardLab input={input} onChange={setInput} />
+      ) : input.study === "signal" ? (
+        <SignalLab input={input} onChange={setInput} />
       ) : (
-        <GraphLab />
+        <GraphLab input={input} onChange={setInput} />
       )}
     </div>
   );

@@ -927,7 +927,7 @@ export function OrbitInstrument({ motion, onSelect }: { motion: boolean; onSelec
               </span>
               <span>DRAG TO EXPLORE ↗</span>
             </div>
-            <div className="eh-orbit-orientation" aria-label="Adjust instrument orientation">
+            <div className="eh-orbit-orientation" role="group" aria-label="Adjust instrument orientation">
               <button type="button" onClick={() => move(-0.2, 0)} aria-label="Rotate instrument left">
                 ←
               </button>
@@ -946,7 +946,7 @@ export function OrbitInstrument({ motion, onSelect }: { motion: boolean; onSelec
             </div>
           </div>
           <div className="eh-orbit-console">
-            <div className="eh-orbit-presets" aria-label="Choose an orbital mission">
+            <div className="eh-orbit-presets" role="group" aria-label="Choose an orbital mission">
               {MISSIONS.map((item, index) => (
                 <button type="button" key={item.id} onClick={() => select(index)} aria-pressed={selected === index}>
                   <span>{item.number}</span>

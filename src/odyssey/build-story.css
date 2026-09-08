@@ -16,7 +16,14 @@
 }
 .o-build-story header p {
   color: var(--o-muted);
-  font-size: 14px;
+  font-size: 16px;
+  line-height: 1.65;
+}
+.o-story-comparison {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
 }
 .o-build-story > .o-field-notes {
   margin: 0;
@@ -38,4 +45,11 @@
 .o-build-story .o-text-button {
   display: inline-flex;
   min-height: 44px;
+}
+.o-build-story .o-field-notes > p {
+  font-size: 15px;
+  line-height: 1.75;
+}
+.o-build-story .o-field-notes dt {
+  font-size: 13px;
 }

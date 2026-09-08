@@ -175,7 +175,7 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  background: linear-gradient(transparent, #030912ed 70%);
+  background: linear-gradient(transparent, #030912b0 27%, #030912ed 70%);
   text-align: center;
 }
 .sw-launch-kicker {

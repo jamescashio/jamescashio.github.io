@@ -1,9 +1,8 @@
-import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
-import { ARTICLES } from "../lib/content";
-import { BUILD_STORIES } from "../lib/build-stories";
+import { useCallback, useEffect, useId, useRef, useState, type CSSProperties } from "react";
 import { PROJECTS } from "./data";
 import { Arrow } from "./effects";
-import { ProjectLab } from "./labs";
+import { ProjectLab, type ProjectLabHandle } from "./labs";
+import { STUDY_NOTES } from "./study-notes";
 
 // Decorative studies of the instruments. The live models below own every result.
 const STUDY_ART = [
@@ -128,8 +127,15 @@ export function ProjectExplorer({ motion, play }: { motion: boolean; play: () =>
   const tablist = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
   const [copyError, setCopyError] = useState(false);
+  const [shareLink, setShareLink] = useState("");
   const project = PROJECTS[selected];
-  const story = BUILD_STORIES[selected];
+  const story = STUDY_NOTES[project.id];
+  const lab = useRef<ProjectLabHandle>(null);
+  const resetCopy = useCallback(() => {
+    setCopied(false);
+    setCopyError(false);
+    setShareLink("");
+  }, []);
   useEffect(() => {
     const query = matchMedia("(max-width: 900px)");
     const change = () => setHorizontal(query.matches);
@@ -172,19 +178,23 @@ export function ProjectExplorer({ motion, play }: { motion: boolean; play: () =>
     return () => window.removeEventListener("hashchange", applyHash);
   }, []);
   function choose(index: number) {
+    if (index === selected) return;
     setSelected(index);
-    setCopied(false);
-    setCopyError(false);
+    resetCopy();
     play();
     history.pushState(null, "", `#build=${PROJECTS[index].id}`);
   }
   async function copy() {
+    const fragment = lab.current?.getShareFragment() ?? `#build=${project.id}`;
+    const link = `${location.origin}${location.pathname}${fragment}`;
+    setShareLink(link);
+    setCopied(false);
+    setCopyError(false);
     try {
-      await navigator.clipboard.writeText(`${location.origin}${location.pathname}#build=${project.id}`);
-      setCopied(true);
-      setCopyError(false);
+      await navigator.clipboard.writeText(link);
+      if (lab.current?.getShareFragment() === fragment) setCopied(true);
     } catch {
-      setCopyError(true);
+      if (lab.current?.getShareFragment() === fragment) setCopyError(true);
     }
   }
   return (
@@ -235,9 +245,9 @@ export function ProjectExplorer({ motion, play }: { motion: boolean; play: () =>
           ))}
         </div>
         <p className="o-index-note">
-          Built with purpose.
+          Change a boundary.
           <br />
-          Explained through interaction.
+          Inspect what follows.
         </p>
       </div>
       <div
@@ -287,38 +297,50 @@ export function ProjectExplorer({ motion, play }: { motion: boolean; play: () =>
           </div>
         </div>
         <p className="o-lab-invitation">{project.cue}</p>
-        <ProjectLab key={project.id} index={selected} motion={motion} />
+        <ProjectLab key={project.id} index={selected} motion={motion} shareRef={lab} onSettingsChange={resetCopy} />
         <details className="o-field-notes" key={`notes-${project.id}`}>
           <summary>
-            Read the field notes<span aria-hidden="true">+</span>
+            How this experiment works<span aria-hidden="true">+</span>
           </summary>
-          <p>{ARTICLES[selected].note}</p>
+          <p>{story.question}</p>
           <dl>
             <div>
-              <dt>Input</dt>
-              <dd>{story.input}</dd>
+              <dt>Rule</dt>
+              <dd>{story.rule}</dd>
             </div>
             <div>
-              <dt>Method</dt>
-              <dd>{story.action}</dd>
+              <dt>Try this</dt>
+              <dd>{story.experiment}</dd>
             </div>
             <div>
-              <dt>Payoff</dt>
-              <dd>{story.result}</dd>
+              <dt>Boundary</dt>
+              <dd>{story.boundary}</dd>
             </div>
           </dl>
+          <a className="o-text-button" href={story.source} target="_blank" rel="noreferrer">
+            {story.sourceLabel} <Arrow diagonal />
+          </a>
         </details>
         <div className="o-project-footer">
           <span>LOCAL DEMONSTRATION / NO LIVE SYSTEM ACCESS</span>
           <button className="o-text-button" onClick={copy}>
-            {copied ? "Demo link copied ✓" : "Copy demo link"}
+            {copied ? "Settings link copied ✓" : "Copy these settings"}
             <Arrow diagonal />
           </button>
         </div>
         {copyError && (
-          <p role="status" className="o-lab-note">
-            Clipboard unavailable. Copy the address from your browser to return to this study.
-          </p>
+          <div className="o-share-fallback">
+            <p role="status" className="o-lab-note">
+              Clipboard unavailable. Select and copy your experiment link below.
+            </p>
+            <input
+              type="url"
+              readOnly
+              value={shareLink}
+              aria-label="Experiment link to copy manually"
+              onFocus={(event) => event.currentTarget.select()}
+            />
+          </div>
         )}
       </div>
     </div>

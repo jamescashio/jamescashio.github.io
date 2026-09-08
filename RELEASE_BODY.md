@@ -1,12 +1,14 @@
-# V37.10 — Continuum
+# V37.11 — Continuum
 
-The Sanctuary film now leads into an original 3D chamber. Visitors can orbit the monoliths and amber core, select their meaning, adjust the light, and trigger a finite six-second awakening. Camera and light controls remain usable with motion paused; a still fallback preserves the scene when WebGL is unavailable. Returning to the film releases the renderer and restores its poster without autoplay.
+First Flight is the primary invitation into Cashio's existing orbital world. The thirty-second journey has clearer outcomes, an eleven-second blackout chapter, reachable phone controls, and manual chapters when motion is paused.
 
-The carrier gains more defined metal reflections, fine matte seams, champagne edges, and richer cyan engine illumination at unchanged geometry and rendering costs. Fresh responsive stills match the final interactive model.
+All seven studies now explain their executable rule, a boundary to test, supporting sources, and limits. Share links restore bounded settings without automatically running an example. The HERMES story compares the same public and private request, leading to Research or Human review when the visitor runs it.
 
-On phones, First Flight becomes the primary action and Atmosphere expands without covering the headline. A source-backed build story explains the preserved archive, Lensing Observatory and Principles Engine have distinct names, and contact opens a structured draft. Mission Control loads its panel styles only when requested, with cancellation and retry, keeping the existing initial CSS budgets.
+A real audit story connects those models to the owner-run 7 September observation: 19 LXC containers and one QEMU VM. Observation and audit-completion timestamps remain separate, current routing stays unverified, and the August export is preserved unchanged. Publication does not establish live health, workload failover, or production AI routing.
 
-All five films, seven studies, animated identity, dated evidence, legacy routes, and motion controls remain available.
+Text over artwork and graph traces has stronger contrast protection; keyboard focus, accessible names, phone labels, and a WebKit share-button surface are improved. Bit's alignment is stable. Shared evidence and console data have focused modules, E.V.E.'s styles have one owner, and its commands open their named destinations.
+
+The original artwork, palette, typefaces, five films, Sanctuary chamber, signature, starship, legacy routes, motion controls, and opt-in audio remain available. See [the detailed release notes](docs/peer-refinement.md).
 
 ## Verification
 
@@ -14,4 +16,4 @@ All five films, seven studies, animated identity, dated evidence, legacy routes,
 - Browser checks cover desktop, tablet, narrow phones, real media frames, keyboard and touch controls, reduced motion, hidden-page suspension, loading failures, focus return, and 3D cleanup.
 - Protected publication verifies the exact tested commit, followed by the public receipt, canonical and legacy routes, live interaction, and delivered asset hashes.
 
-Rollback: `4de877e57e1035866f79c2f47c6a0299ae4a6e70`.
+Rollback: revert this release's squash commit through a checked pull request to restore baseline `8248189c073928a45f1da05dd6d06e62a21df2f8`, then verify the resulting Pages deployment.

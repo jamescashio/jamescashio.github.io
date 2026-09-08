@@ -208,7 +208,7 @@ export function CascadeInstrument({
           </g>
         ))}
       </svg>
-      <div className="lv-decision-labels" aria-label={`Current stage: ${stages[level]}`}>
+      <div className="lv-decision-labels" role="group" aria-label={`Current stage: ${stages[level]}`}>
         {stages.map((label, i) => (
           <span key={label} className={level === i ? "lv-decision-selected" : ""}>
             <small>0{i + 1}</small>

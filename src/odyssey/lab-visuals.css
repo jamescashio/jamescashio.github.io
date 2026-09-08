@@ -585,6 +585,11 @@
   min-height: 65px;
   text-shadow: 0 1px 5px #050d17;
 }
+.lv-module-label {
+  padding: 0 3px;
+  background: #07131f;
+  text-shadow: none;
+}
 .event-horizon.aurora .lv-lab .lv-code-graph > button > i {
   width: 36px;
   height: 36px;

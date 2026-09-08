@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { FIRST_FLIGHT, FLIGHT_STEP_MS, flightStepIndex, missionHash } from "./flight-plan";
+import { FIRST_FLIGHT, flightStepIndex, missionHash } from "./flight-plan";
 import { RequestConstellation } from "./request-constellation";
 import { computeWorldOutcome } from "./sovereign-model";
 import type { WorldController } from "./world-renderer";
@@ -16,7 +16,7 @@ export default function FirstFlight({
   onClose: (destination?: string) => void;
 }) {
   const [visit, setVisit] = useState(0);
-  const remainingMs = useRef(FLIGHT_STEP_MS);
+  const remainingMs = useRef(FIRST_FLIGHT[flightStepIndex(initialStep)].durationMs);
   const timerChapter = useRef("");
   const [step, setStep] = useState(() => flightStepIndex(initialStep));
   const [paused, setPaused] = useState(!motion || initialStep !== "board");
@@ -47,6 +47,7 @@ export default function FirstFlight({
     [scene, changed, choice],
   );
   const outcome = computeWorldOutcome(input);
+  const independent = input.architecture === "hybrid" && !input.connected;
   const flightHash = changed ? missionHash(input) : `#flight=${scene.id}`;
   const playing = motion && !paused && !complete && pageVisible && phase !== "loading";
 
@@ -118,7 +119,7 @@ export default function FirstFlight({
     const chapter = `${step}-${visit}`;
     if (timerChapter.current !== chapter) {
       timerChapter.current = chapter;
-      remainingMs.current = FLIGHT_STEP_MS;
+      remainingMs.current = scene.durationMs;
     }
     if (!playing) return;
     const started = performance.now();
@@ -133,7 +134,7 @@ export default function FirstFlight({
       clearTimeout(timer);
       remainingMs.current = Math.max(0, remainingMs.current - (performance.now() - started));
     };
-  }, [playing, step, visit]);
+  }, [playing, step, visit, scene.durationMs]);
 
   function select(next: number) {
     setVisit((value) => value + 1);
@@ -193,13 +194,17 @@ export default function FirstFlight({
       }}
       onKeyDown={(event) => {
         if (event.key !== "Tab") return;
-        const buttons = [...event.currentTarget.querySelectorAll<HTMLButtonElement>("button:not([disabled])")];
-        if (event.shiftKey && document.activeElement === buttons[0]) {
+        const controls = [
+          ...event.currentTarget.querySelectorAll<HTMLElement>(
+            "button:not([disabled]), summary, a[href], input:not([disabled]), [tabindex='0']",
+          ),
+        ].filter((control) => control.getClientRects().length > 0);
+        if (event.shiftKey && document.activeElement === controls[0]) {
           event.preventDefault();
-          buttons.at(-1)?.focus();
-        } else if (!event.shiftKey && document.activeElement === buttons.at(-1)) {
+          controls.at(-1)?.focus();
+        } else if (!event.shiftKey && document.activeElement === controls.at(-1)) {
           event.preventDefault();
-          buttons[0]?.focus();
+          controls[0]?.focus();
         }
       }}
     >
@@ -215,7 +220,7 @@ export default function FirstFlight({
         </button>
       </header>
       <div className="ff-body">
-        <div className={`ff-stage ff-stage-${phase}`}>
+        <div className={`ff-stage ff-stage-${phase}`} data-independent={independent}>
           <StarshipPoster imageClassName="ff-fallback" eager />
           <canvas ref={canvas} aria-hidden="true" />
           <div className="ff-stage-cap">
@@ -229,16 +234,21 @@ export default function FirstFlight({
             <i />
           </div>
           <span className="ff-shot-label" aria-hidden="true">
-            {
-              [
-                "01 / ORBITAL APPROACH",
-                "02 / ONBOARD INTELLIGENCE",
-                "03 / THE INDEPENDENT SHIP",
-                "04 / THE HUMAN CORE",
-              ][step]
-            }
+            {independent
+              ? "LINK LOST. WORK STAYS ABOARD."
+              : [
+                  "01 / ORBITAL APPROACH",
+                  "02 / ONBOARD INTELLIGENCE",
+                  "03 / THE INDEPENDENT SHIP",
+                  "04 / THE HUMAN CORE",
+                ][step]}
           </span>
-          <div className="ff-telemetry" aria-label="Illustrated routing outcome">
+          <div
+            key={`${step}-${input.connected}-${input.allowPrivateEgress}`}
+            className="ff-telemetry"
+            role="group"
+            aria-label="Illustrated routing outcome"
+          >
             <div>
               <strong>{outcome.local.toString().padStart(2, "0")}</strong>
               <span>Onboard</span>
@@ -266,7 +276,12 @@ export default function FirstFlight({
             </div>
             {!compact && decisionButton}
             <p className="ff-scene-copy">{changed ? outcome.summary : scene.copy}</p>
-            <RequestConstellation input={input} motion={motion && pageVisible} />
+            <details className="ff-request-detail" open={!compact}>
+              <summary>
+                Follow the twelve requests <span aria-hidden="true">+</span>
+              </summary>
+              <RequestConstellation input={input} motion={motion && pageVisible} />
+            </details>
             <p className="ff-decision-result" role="status">
               {outcome.local} onboard · {outcome.cloud} in cloud · {outcome.held} held
               {step === 3 && (
@@ -313,11 +328,14 @@ export default function FirstFlight({
             aria-current={step === index ? "step" : undefined}
             onClick={() => select(index)}
           >
-            <span>0{index + 1}</span>
-            {["Board", "Open the hull", "Cut the cloud", "Human command"][index]}
+            <span className="ff-chapter-number">0{index + 1}</span>
+            <span className="ff-chapter-name">
+              {["Board", "Open the hull", "Cut the cloud", "Human command"][index]}
+            </span>
+            <span className="ff-chapter-short">{["Board", "Hull", "Blackout", "Command"][index]}</span>
             <i
               key={`${step}-${visit}`}
-              style={{ animationPlayState: playing ? "running" : "paused" }}
+              style={{ animationPlayState: playing ? "running" : "paused", animationDuration: `${scene.durationMs}ms` }}
               className={step === index && motion && !complete ? "ff-progress" : ""}
             />
           </button>
@@ -362,14 +380,23 @@ export default function FirstFlight({
             {step === 3 ? "Finish" : "Next"} →
           </button>
         </div>
-        <button className="ff-share" type="button" onClick={copy}>
-          {copied ? "Link copied ✓" : changed ? "Copy this scenario" : "Copy this flight"}
+        <button
+          className="ff-share"
+          type="button"
+          onClick={copy}
+          aria-label={copied ? "Link copied" : changed ? "Copy this scenario" : "Copy this flight"}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="8" y="8" width="12" height="12" rx="1" />
+            <path d="M15 5V3H3v12h2" />
+          </svg>
+          <span>{copied ? "Link copied ✓" : changed ? "Copy this scenario" : "Copy this flight"}</span>
         </button>
       </footer>
       <p className="ff-boundary" id="ff-boundary">
-        A local routing illustration, not a live AI service or speed test.{" "}
+        Browser-only illustration. No AI requests are sent.{" "}
         {phase === "fallback" ? "The 3D view is unavailable; the illustrated outcomes still work. " : ""}
-        {!motion ? "Motion is off. Advance with Next." : "Pause or explore at your own pace."}
+        {!motion ? "Motion is off. Advance with Next." : "Explore at your own pace."}
       </p>
       {copyError && (
         <p className="ff-copy-error" role="status">

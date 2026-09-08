@@ -16,11 +16,13 @@ import struct
 import sys
 import unicodedata
 import wave
+from datetime import datetime
 from html.parser import HTMLParser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC_STATUS = ROOT / "public" / "status.json"
+ARCHIVE_STATUS = ROOT / "public" / "evidence" / "status-2026-08-28.json"
 DIST = ROOT / "dist"
 
 TEXT_SUFFIXES = {".html", ".js", ".css", ".json", ".txt", ".xml", ".svg"}
@@ -137,6 +139,48 @@ def check_current_public_privacy(text: str, failures: list[str], label: str) -> 
         match = pattern.search(text)
         if match:
             failures.append(f"{label} contains private current-fleet detail {match.group(0)!r}")
+
+
+def check_latest_public_evidence(status: dict, failures: list[str]) -> None:
+    """Validate the latest observation without borrowing the archived routing counts."""
+    if status.get("schemaVersion") != 2 or status.get("status") != "dated-export":
+        failures.append("latest evidence must declare schema 2 and a dated-export scope")
+    if status.get("expires") is not None:
+        failures.append("latest observation cannot invent a future health window")
+    for group, host_split in (("containers", True), ("virtualMachines", False)):
+        values = status.get(group, {})
+        keys = ["running", "documented", "stopped"] + (["zeus", "apollo"] if host_split else [])
+        if not all(type(values.get(key)) is int and values[key] >= 0 for key in keys):
+            failures.append(f"latest evidence {group} must contain explicit nonnegative integer counts")
+            continue
+        if values["running"] + values["stopped"] != values["documented"]:
+            failures.append(f"latest evidence {group} runtime states do not reconcile")
+        if host_split and values["zeus"] + values["apollo"] != values["running"]:
+            failures.append("latest evidence container host counts do not reconcile")
+    provenance = status.get("provenance", {})
+    try:
+        observed = datetime.fromisoformat(provenance["observedAtUtc"].replace("Z", "+00:00"))
+        local = datetime.fromisoformat(provenance["observedAtAmericaChicago"])
+        collected = datetime.fromisoformat(provenance["auditCollectedAtUtc"].replace("Z", "+00:00"))
+        if observed.tzinfo is None or local.tzinfo is None or collected.tzinfo is None:
+            raise ValueError("timestamps need offsets")
+        if observed != local or observed > collected or local.date().isoformat() != status.get("verified"):
+            failures.append("latest evidence observation and collection timestamps do not reconcile")
+    except (KeyError, TypeError, ValueError):
+        failures.append("latest evidence requires valid observation and collection timestamps")
+    lanes = status.get("lanes", {})
+    if status.get("routingVerified") is None:
+        if lanes != {"public": None, "privateCatalog": None}:
+            failures.append("unverified routing must withhold both lane counts; null is not zero")
+    else:
+        failures.append("a new routing claim requires a separately reviewed evidence contract")
+    if status.get("archive", {}).get("url") != "/evidence/status-2026-08-28.json":
+        failures.append("latest evidence must link to the preserved archive")
+    if not re.fullmatch(r"[0-9a-f]{64}", provenance.get("sourceProposalSha256", "")):
+        failures.append("latest evidence must identify the source proposal by SHA-256")
+    if "static" not in str(status.get("note", "")).lower():
+        failures.append("latest evidence must disclose static delivery")
+    check_current_public_privacy(json.dumps(status), failures, "latest evidence")
 
 
 class PublicSurfaceParser(HTMLParser):
@@ -380,7 +424,7 @@ def check_v34_motion_contract(failures: list[str]) -> None:
                 failures.append(f"inactive deck {deck_index} does not pause {pseudo} animation work")
 
 
-def check_site_release(release: dict, failures: list[str], *, preview: bool = False, version: str = "37.10.0") -> None:
+def check_site_release(release: dict, failures: list[str], *, preview: bool = False, version: str = "37.11.0") -> None:
     """Software release identity must never rewrite the archive's observation dates."""
     if not isinstance(release, dict):
         failures.append("site-release.json must be an object")
@@ -478,14 +522,17 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--preview", action="store_true", help="Validate an explicitly unpublished local preview; never a deployment approval")
     preview = parser.parse_args().preview
-    version = "37.10.0-preview.sanctuary" if preview else "37.10.0"
+    version = "37.11.0-preview.sanctuary" if preview else "37.11.0"
     failures: list[str] = []
 
     try:
-        status = json.loads(PUBLIC_STATUS.read_text(encoding="utf-8"))
+        status = json.loads(ARCHIVE_STATUS.read_text(encoding="utf-8"))
+        latest = json.loads(PUBLIC_STATUS.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        print(f"Release consistency check failed: public/status.json: {exc}")
+        print(f"Release consistency check failed: current or archived status export: {exc}")
         return 1
+
+    check_latest_public_evidence(latest, failures)
 
     expected = {
         "release": "V35 ALL TENS",
@@ -497,7 +544,7 @@ def main() -> int:
     }
     for key, value in expected.items():
         if status.get(key) != value:
-            failures.append(f"public/status.json {key!r}: expected {value!r}, got {status.get(key)!r}")
+            failures.append(f"August archive {key!r}: expected {value!r}, got {status.get(key)!r}")
 
     exact_nested = {
         ("proxmox", "version"): "9.2.11",
@@ -514,17 +561,17 @@ def main() -> int:
     for (group, key), value in exact_nested.items():
         actual = status.get(group, {}).get(key)
         if actual != value:
-            failures.append(f"public/status.json {group}.{key}: expected {value!r}, got {actual!r}")
+            failures.append(f"August archive {group}.{key}: expected {value!r}, got {actual!r}")
 
     if status.get("routingVerified") != "2026-08-21":
-        failures.append("public/status.json routingVerified must remain the separate 2026-08-21 inventory date")
+        failures.append("August archive routingVerified must remain the separate 2026-08-21 inventory date")
 
     for private_key in ("deepseek", "atlas"):
         if private_key in status:
-            failures.append(f"public/status.json must not publish private field {private_key!r}")
-    check_current_public_privacy(json.dumps(status), failures, "public/status.json")
+            failures.append(f"August archive must not publish private field {private_key!r}")
+    check_current_public_privacy(json.dumps(status), failures, "August archive")
     if "static" not in str(status.get("note", "")).lower():
-        failures.append("public/status.json must identify itself as a static snapshot")
+        failures.append("August archive must identify itself as a static snapshot")
 
     if read("status.json") != read("public/status.json"):
         failures.append("root status.json and public/status.json are not byte-identical")
@@ -533,6 +580,8 @@ def main() -> int:
             failures.append(f"{cname} must contain only cashio.us")
 
     package = json.loads(read("package.json"))
+    if latest.get("release") != "V" + ".".join(package["version"].split(".")[:2]):
+        failures.append("latest evidence release context must match the website software version")
     if package.get("version") != version:
         failures.append(f"package.json version must be {version}")
     lock = json.loads(read("package-lock.json"))
@@ -545,6 +594,14 @@ def main() -> int:
         failures.append(f"V37 site release metadata is missing or invalid: {exc}")
     else:
         check_site_release(site_release, failures, preview=preview, version=version)
+        expected_snapshot = {
+            "url": "/status.json",
+            "fleetObserved": latest.get("verified"),
+            "observedAtUtc": latest.get("provenance", {}).get("observedAtUtc"),
+            "routingObserved": latest.get("routingVerified"),
+        }
+        if site_release.get("evidenceSnapshot") != expected_snapshot:
+            failures.append("release receipt must match the latest observation without redating the archive")
         if site_release != compatibility_release:
             failures.append("event-horizon-release.json must match the canonical site-release.json")
     if package.get("scripts", {}).get("build") != "tsc --noEmit && vite build && node --import tsx scripts/prerender.mts && node --import tsx scripts/prerender-odyssey.mts":
@@ -613,8 +670,12 @@ def main() -> int:
             'command === "sitrep"',
             'command === "current"',
             'command === "help"',
-            'command === "whoami"',
             "NO NETWORK CALLS",
+        ),
+        "src/lib/eve-common.ts": (
+            'command === "whoami"',
+            'command === "talk"',
+            "OWNER · OPERATOR · HUMAN ACCOUNTABLE",
         ),
         "src/lib/stage": (
             'this.warpT = Math.max(0, this.warpT - dt * (1000 / motionDurationMs("stage-warp")))',
@@ -907,9 +968,9 @@ def main() -> int:
         return 1
 
     print(
-        f"V37 {'unpublished preview' if preview else 'release'} consistency passed: homepage and V35 archive; 28 August 2026 dated export; "
-        "18/19 containers; 2 Proxmox hosts quorate; 10 public lanes; "
-        "36 private catalog entries; root Pages base; archive, privacy, "
+        f"V37 {'unpublished preview' if preview else 'release'} consistency passed: latest dated observation "
+        f"{latest['verified']}, {latest['containers']['running']} LXC and {latest['virtualMachines']['running']} QEMU; "
+        "routing unverified; V35 August archive preserved; root Pages base; archive, privacy, "
         "motion, opt-in audio, and forbidden-token gates satisfied."
     )
     return 0
