@@ -36,7 +36,7 @@
   border-bottom: 1px solid #32362f;
   color: #bcb8aa;
   font:
-    9px Jet,
+    12px Jet,
     monospace;
   letter-spacing: 0.09em;
 }
@@ -56,7 +56,7 @@
   background: transparent;
   color: #eae4d7;
   font:
-    11px Exo,
+    12px Exo,
     Arial,
     sans-serif;
 }
@@ -75,7 +75,7 @@
   margin: 0;
   color: #b1b4a9;
   font:
-    9px/1.5 Jet,
+    12px/1.5 Jet,
     monospace;
   letter-spacing: 0.13em;
 }
@@ -179,7 +179,7 @@
   padding-top: 4px;
   color: #c3a575;
   font:
-    9px Jet,
+    12px Jet,
     monospace;
 }
 .mc-mission-copy {
@@ -202,7 +202,7 @@
 .mc-mission small {
   color: #bfb6a2;
   font:
-    9px/1.7 Jet,
+    12px/1.7 Jet,
     monospace;
   max-width: 225px;
 }
@@ -221,7 +221,7 @@
   margin: 18px 0 0;
   color: #a5ad9d;
   font:
-    11px/1.65 Exo,
+    12px/1.65 Exo,
     Arial,
     sans-serif;
 }
@@ -279,7 +279,7 @@
   margin-top: 4px;
   color: #aab4a3;
   font:
-    11px/1.4 Exo,
+    12px/1.4 Exo,
     Arial,
     sans-serif;
 }
@@ -287,7 +287,7 @@
   padding-left: 5px;
   color: #bfb9a6;
   font:
-    8px Jet,
+    12px Jet,
     monospace;
   letter-spacing: 0.08em;
 }
@@ -338,7 +338,7 @@
   border-top: 1px solid #30382b;
   color: #b6bfae;
   font:
-    9px/1.5 Jet,
+    12px/1.5 Jet,
     monospace;
 }
 .mc-key-help {
@@ -356,7 +356,7 @@
   border: 1px solid #48533c;
   color: #d4dcc9;
   font:
-    9px Jet,
+    12px Jet,
     monospace;
 }
 

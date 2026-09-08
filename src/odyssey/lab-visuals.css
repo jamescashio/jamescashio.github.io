@@ -586,6 +586,8 @@
   text-shadow: 0 1px 5px #050d17;
 }
 .lv-module-label {
+  display: inline-block;
+  line-height: 1.5;
   padding: 0 3px;
   background: #07131f;
   text-shadow: none;

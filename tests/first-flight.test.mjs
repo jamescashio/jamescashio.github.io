@@ -8,6 +8,38 @@ import {
   parseMissionHash,
 } from "../src/odyssey/flight-plan.ts";
 import { computeWorldOutcome } from "../src/odyssey/sovereign-model.ts";
+import { missionRecord } from "../src/odyssey/mission-card.ts";
+
+test("saved flight records reproduce decisions, including offline and private-cloud boundaries", () => {
+  const scenarios = [
+    [{ architecture: "hybrid", sensitivity: "mixed", connected: false, allowPrivateEgress: false }, [12, 0, 0]],
+    [{ architecture: "cloud", sensitivity: "private", connected: true, allowPrivateEgress: false }, [0, 0, 12]],
+    [{ architecture: "cloud", sensitivity: "private", connected: true, allowPrivateEgress: true }, [0, 12, 0]],
+    [{ architecture: "cloud", sensitivity: "private", connected: false, allowPrivateEgress: true }, [0, 0, 12]],
+    [{ architecture: "hybrid", sensitivity: "mixed", connected: true, allowPrivateEgress: false }, [6, 6, 0]],
+  ];
+  for (const [input, counts] of scenarios) {
+    const record = missionRecord(input);
+    assert.deepEqual([record.outcome.local, record.outcome.cloud, record.outcome.held], counts);
+    const link = new URL(record.url);
+    assert.equal(link.origin, "https://cashio.us");
+    assert.deepEqual(parseMissionHash(link.hash), input);
+    assert.ok(record.filename.endsWith(".png"));
+    assert.equal(record.connection.includes("OFFLINE"), !input.connected);
+  }
+});
+
+test("saved cards distinguish missing connectivity from missing permission", () => {
+  const input = { architecture: "cloud", sensitivity: "private", connected: true, allowPrivateEgress: false };
+  const waitingForPermission = missionRecord(input);
+  const waitingForConnection = missionRecord({ ...input, connected: false, allowPrivateEgress: true });
+  assert.equal(waitingForPermission.outcome.held, waitingForConnection.outcome.held);
+  assert.match(waitingForPermission.heldLabel, /PERMISSION/);
+  assert.match(waitingForConnection.heldLabel, /CONNECTION/);
+  assert.match(waitingForPermission.outcome.takeaway, /permission/);
+  assert.match(waitingForConnection.outcome.takeaway, /lost connection/);
+  assert.notEqual(waitingForPermission.title, waitingForConnection.title);
+});
 
 test("the thirty-second narrative agrees with the routing model at every chapter", () => {
   assert.equal(

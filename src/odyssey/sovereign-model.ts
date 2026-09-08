@@ -55,5 +55,20 @@ export function computeWorldOutcome(input: WorldInput) {
         : "Sensitive requests wait unless you explicitly permit them to leave your hardware.";
   }
 
-  return { local, cloud, held, privateCount, publicCount, summary, internetDependency, dataHandling };
+  const takeaway =
+    input.architecture === "cloud" && !input.connected
+      ? "Without local fallback, a lost connection stops the work."
+      : held > 0
+        ? "The system waits when permission is missing."
+        : input.architecture === "hybrid" && !input.connected
+          ? "Local fallback depends on capable hardware and models."
+          : input.architecture === "cloud" && privateCount > 0
+            ? "Your permission changes where private information can go."
+            : local === TOTAL_REQUESTS
+              ? "Keeping the work local also means operating the compute."
+              : cloud === TOTAL_REQUESTS
+                ? "Cloud processing depends on an available connection."
+                : "Private work stays local. Public work has another route.";
+
+  return { local, cloud, held, privateCount, publicCount, summary, internetDependency, dataHandling, takeaway };
 }

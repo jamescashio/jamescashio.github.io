@@ -43,11 +43,12 @@
   background: #173849;
   color: #fff;
 }
-.first-flight button:disabled {
+.first-flight button:disabled,
+.first-flight button[aria-disabled="true"] {
   opacity: 0.5;
   cursor: default;
 }
-.first-flight :is(button, summary):focus-visible {
+.first-flight :is(button, summary, input):focus-visible {
   outline: 2px solid var(--ff-cyan);
   outline-offset: 3px;
 }
@@ -402,8 +403,9 @@
 .ff-playback {
   display: flex;
   gap: 8px;
+  margin-right: auto;
 }
-.first-flight .ff-share {
+.first-flight :is(.ff-share, .ff-save) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -411,12 +413,26 @@
   color: var(--ff-gold);
   background: transparent;
 }
-.ff-share svg {
+.ff-share svg,
+.ff-save svg {
   width: 18px;
   height: 18px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.4;
+}
+.ff-story .ff-memento {
+  padding-top: 14px;
+  border-top: 1px solid #466272;
+  color: #efcf9e;
+  font-size: 14px;
+}
+.ff-card-status:empty {
+  display: none;
+}
+.ff-story .ff-card-status {
+  color: #bcece8;
+  font-size: 13px;
 }
 .ff-boundary,
 .ff-copy-error {
@@ -431,16 +447,19 @@
 .ff-copy-error {
   color: #ffc9a2;
 }
-.ff-loading {
-  position: fixed;
-  inset: auto 24px 24px auto;
-  padding: 20px;
-  background: #0c2435;
-  border: 1px solid #77e7e7;
-  z-index: 100;
-  color: #fff;
+.ff-copy-error input {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  margin-top: 6px;
+  padding: 8px;
+  color: #e6f1f6;
+  background: #07131f;
+  border: 1px solid #68808d;
+  font:
+    13px/1.5 Exo,
+    sans-serif;
 }
-
 /* The twelve-request diagram keeps its original geometry and motion. */
 .ff-constellation figcaption {
   display: flex;
@@ -740,7 +759,7 @@
   }
   .ff-footer {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 44px;
+    grid-template-columns: minmax(0, 1fr) 44px 44px;
     gap: 6px;
     padding: 8px 10px 0;
   }
@@ -748,6 +767,7 @@
     display: grid;
     grid-template-columns: 44px minmax(72px, 1fr) 54px;
     gap: 5px;
+    margin-right: 0;
   }
   .first-flight .ff-playback button {
     padding: 6px 3px;
@@ -756,11 +776,12 @@
   .ff-playback button:first-child span {
     display: none;
   }
-  .first-flight .ff-share {
+  .first-flight :is(.ff-share, .ff-save) {
     width: 44px;
     padding: 8px;
   }
-  .ff-share span {
+  .ff-share span,
+  .ff-save span {
     position: absolute;
     width: 1px;
     height: 1px;

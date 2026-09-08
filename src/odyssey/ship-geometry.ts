@@ -16,13 +16,13 @@ export function createExplorationCarrier() {
   const inspected: THREE.Object3D[] = [];
   const standard = (color: number, metalness = 0.7, roughness = 0.3) =>
     new THREE.MeshStandardMaterial({ color, metalness, roughness });
-  const ivory = standard(0xb7c0c5, 0.56, 0.26);
+  const ivory = standard(0x9caeb8, 0.66, 0.32);
   const pearl = new THREE.MeshPhysicalMaterial({
-    color: 0xaebbc2,
-    metalness: 0.68,
-    roughness: 0.23,
-    clearcoat: 0.48,
-    clearcoatRoughness: 0.21,
+    color: 0x8fa6b3,
+    metalness: 0.76,
+    roughness: 0.3,
+    clearcoat: 0.3,
+    clearcoatRoughness: 0.25,
   });
   const titanium = standard(0x526374, 0.88, 0.24);
   const graphite = standard(0x09131e, 0.38, 0.49);

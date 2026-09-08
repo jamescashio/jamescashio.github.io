@@ -1,4 +1,14 @@
-# Unpublished refinement preview — First Flight
+# Unpublished refinement preview — Mission card
+
+Creative thesis: the same orbital Cashio world, with a faster mobile invitation, champagne-lit metal, and a visitor-owned flight record.
+
+Baseline: `0c509286ed9329b897741e1afe505376deb443ce` (V37.11 Continuum). Preserve the original art, typography, colors, routing model, evidence dates, film links and legacy routes. At 600px and below, shorten the artwork interval and place scene controls after the headline and primary invitation in natural flow. Desktop composition stays established.
+
+Refine the existing directional lights, environment and surface response within current rendering caps. The mission card captures the current camera synchronously and includes model-derived counters, the current privacy and connection settings, and a canonical scenario link. It is a local PNG with an explicit illustration label. No external capture service, new dependency, new animation loop or permanent drawing buffer is required.
+
+Validate desktop, 390px and 320px layouts, expanded controls, keyboard, reduced motion, fallback, actual PNG content, scenario roundtrip, source checks and existing release gates. Deliver a local unpublished preview with noindex and a separate preview receipt. Publication is a separate final step after this preview is reviewable. Rollback is removal of this isolated checkout or restoration from the baseline above.
+
+# Prior refinement — First Flight
 
 Primary audience: technical peers and AI enthusiasts. Each of the seven studies exposes its executable rule, a boundary to test, the model's limits, and the supporting source. Shared links restore exact synthetic inputs; run and composition actions remain under visitor control. Keep the existing study identifiers and reject unsupported link fields.
 
@@ -166,8 +176,20 @@ Final polish keeps Lightfold consistent in the browser title, navigation and exp
 
 ## Instrument and material refinement
 
+The September mission refinement preserves the orbital artwork, Bit, palette, typography and original routes. Bring the mobile headline and First Flight invitation ahead of optional scene controls. Give the existing ship cooler metallic surfaces, warm key light and cyan rim light. Make its local twelve-request outcome downloadable as an illustrated mission card. Keep export lazy and preserve keyboard focus while it prepares.
+
+Add a substantial operating note beside the HERMES study, using a frozen copy of the reviewed 7 September observation and links to its published change. Keep that historical case independent of future fleet updates. Raise utility labels to at least 12px on the opening, ship and Observatory; check the rendered backgrounds at each atmosphere. Separate the silent-scene controls from Bit's caption. Preserve opt-in sound and reduced motion.
+
 Make the next graphic pass feel like precise machinery answering the visitor. The ship's command canopy gains reflective smoked glazing and a finite inspection reflection. The twelve-request instrument becomes three machined docking bays with faceted private tokens, ringed public tokens, staggered transfers and a short receiving-edge trace. Keep all twelve identities and outcomes intact. Bit's existing orbital rings briefly align from their current poses before releasing the fold ribbons; the total transition remains 1.65 seconds, and reduced motion navigates immediately. These are finite responses to existing actions. Keep the established art, typography, quiet opening, and dated evidence boundary.
 
 ## Final release polish
 
 Publish the mature Lightfold experience as V37. Refine the spacecraft with deeper physical panel separation and engineered propulsion detail, while retaining its original silhouette and fixed rendering budget. Give the signal scope and code graph precise instrument depth and finite input-triggered responses. Preserve quiet reading areas, persistent request identities, immediate reduced-motion outcomes, opt-in audio, and the original owner-supplied Cashio mark. Final acceptance includes the actual built site at desktop and phone widths, the public-release guards, and the deployed Cashio.us surface.
+
+## Content and consequence refinement — 8 September 2026
+
+Keep the recognizable orbital opening, Bit, palette, headline, and typefaces. Make the supporting copy explain the visitor benefit before asking them to learn the universe. Each study has a precise experiment and an explicit takeaway. The operator section connects those demonstrations to real system choices.
+
+The smart-routing story centers a dated result: the July V31 export recorded 26 cents per day in AI provider usage during 21–22 July, published 26 July. Link the original record, scope and release. Exclude infrastructure, electricity and Doug's time; do not imply today's spend, audited billing or a measured savings percentage. Doug's September account explains recurring work through Atlas and escalation for greater capability. The story and E.V.E. share the same evidence record. Browser models do not execute Atlas or verify production routing. Preserve the separate pinned inventory and source-backed before/after story for reproducible links as optional evidence.
+
+Use typography and open space for the result and takeaways; avoid another layer of ornamental cards. Keep the opening invitation visible on phones. A changed flight scenario must change its takeaway. Saved cards must distinguish work held for permission from work waiting for connectivity. Retain lazy rendering, asset budgets, reduced motion, and opt-in audio.

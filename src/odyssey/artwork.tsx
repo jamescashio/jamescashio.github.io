@@ -8,8 +8,8 @@ export function Art({
   eager?: boolean;
 }) {
   const asset = name === "orbit" ? "orbit-aurora-v37" : "sanctuary-v37";
-  // The 285px phone cover needs 507px of the 1672:941 artwork. Match the preload.
-  const sizes = name === "orbit" ? "(max-width: 600px) max(100vw, 507px), 100vw" : "100vw";
+  // The 210px phone cover needs 374px of the 1672:941 artwork. Match the preload.
+  const sizes = name === "orbit" ? "(max-width: 600px) max(100vw, 374px), 100vw" : "100vw";
   return (
     <picture className={className}>
       <source

@@ -96,7 +96,7 @@
 .bs-eyebrow {
   color: #9fbbc9;
   font:
-    500 11px/1.5 Jet,
+    500 12px/1.5 Jet,
     monospace;
   letter-spacing: 0.13em;
 }
@@ -156,7 +156,7 @@
   gap: 24px;
   color: #8faebb;
   font:
-    500 10px/1.6 Jet,
+    500 12px/1.6 Jet,
     monospace;
   letter-spacing: 0.14em;
   pointer-events: none;
@@ -166,7 +166,7 @@
 }
 .bs-stage-baseline {
   letter-spacing: 0.03em;
-  font-size: 11px;
+  font-size: 12px;
   align-items: center;
 }
 .bs-stage-baseline p {
@@ -407,7 +407,7 @@
 .bs-control-group > .bs-eyebrow {
   display: block;
   margin-bottom: 10px;
-  font-size: 10px;
+  font-size: 12px;
 }
 .bs-lights,
 .bs-cameras {
@@ -453,7 +453,7 @@
   gap: 12px;
   margin-top: 3px;
   color: #b3c7d3;
-  font-size: 11px;
+  font-size: 12px;
 }
 .bs-field-control label {
   cursor: pointer;
@@ -504,14 +504,14 @@
   text-align: right;
   color: #efce9b;
   font:
-    500 11px/1.5 Jet,
+    500 12px/1.5 Jet,
     monospace;
   font-variant-numeric: tabular-nums;
 }
 .bs-field-control output span {
   margin-left: 1px;
   color: #95adba;
-  font-size: 9px;
+  font-size: 12px;
 }
 .bs-playback {
   display: grid;
@@ -624,7 +624,7 @@
     display: none;
   }
   .bs-header .bs-eyebrow {
-    font-size: 8px;
+    font-size: 12px;
     letter-spacing: 0.08em;
   }
   .bs-header h2 {
@@ -637,15 +637,15 @@
   }
   .bs-stage {
     --detail-scale: 2.7;
-    min-height: 275px;
-    flex-basis: 275px;
+    min-height: 320px;
+    flex-basis: 320px;
     padding: 19px 16px 14px;
   }
   .bs-stage::before {
     inset: 52px 16px 44px;
   }
   .bs-stage-label {
-    font-size: 8px;
+    font-size: 12px;
     letter-spacing: 0.09em;
     gap: 12px;
   }
@@ -662,7 +662,7 @@
     left: -4%;
   }
   .bs-stage-baseline {
-    font-size: 10px;
+    font-size: 12px;
     letter-spacing: 0;
   }
   .bs-stage-baseline > span {
@@ -675,7 +675,7 @@
     padding: 16px;
   }
   .bs-focus-copy .bs-eyebrow {
-    font-size: 10px;
+    font-size: 12px;
   }
   .bs-focus-copy p {
     margin-top: 5px;
@@ -695,7 +695,7 @@
     gap: 16px;
   }
   .bs-control-group > .bs-eyebrow {
-    font-size: 9px;
+    font-size: 12px;
     margin-bottom: 7px;
   }
   .bs-lights button {
@@ -709,7 +709,7 @@
     grid-column: 1 / -1;
   }
   .bs-description {
-    font-size: 11px;
+    font-size: 12px;
   }
   .bs-footer {
     align-items: stretch;

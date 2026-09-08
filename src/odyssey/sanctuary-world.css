@@ -13,7 +13,7 @@
 .sanctuary-world-toolbar > span,
 .sanctuary-world-caption {
   font:
-    10px/1.5 Jet,
+    12px/1.5 Jet,
     monospace;
   letter-spacing: 0.12em;
   color: #c7d5db;
@@ -147,7 +147,7 @@
 .sanctuary-world-light output {
   color: #f2d3a0;
   font:
-    11px/1.5 Jet,
+    12px/1.5 Jet,
     monospace;
 }
 .sanctuary-world-light input {
@@ -176,7 +176,7 @@
 .sanctuary-world-elements small {
   color: #adbdc7;
   font:
-    10px Jet,
+    12px Jet,
     monospace;
 }
 .sanctuary-world-elements button[aria-pressed="true"] {
@@ -250,7 +250,7 @@
   max-width: 58ch;
   margin: 0;
   color: #a8bdca;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.7;
 }
 .sanctuary-world-footer button {
@@ -268,7 +268,7 @@
   }
   .sanctuary-world-toolbar > span {
     max-width: 80px;
-    font-size: 8px;
+    font-size: 12px;
     text-align: right;
   }
   .sanctuary-world-stage {
@@ -276,7 +276,7 @@
   }
   .sanctuary-world-caption {
     padding: 25px 14px 12px;
-    font-size: 8px;
+    font-size: 12px;
     gap: 8px;
   }
   .sanctuary-world-command {
@@ -285,7 +285,7 @@
     padding: 18px 16px;
   }
   .sanctuary-world-awakening > span {
-    font-size: 11px;
+    font-size: 12px;
   }
   .sanctuary-world-inspection {
     grid-template-columns: 1fr;
@@ -301,7 +301,7 @@
     justify-content: center;
     gap: 6px;
     padding: 9px 4px;
-    font-size: 11px;
+    font-size: 12px;
     text-align: center;
   }
   .sanctuary-world-detail p {

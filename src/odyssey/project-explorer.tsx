@@ -298,6 +298,11 @@ export function ProjectExplorer({ motion, play }: { motion: boolean; play: () =>
         </div>
         <p className="o-lab-invitation">{project.cue}</p>
         <ProjectLab key={project.id} index={selected} motion={motion} shareRef={lab} onSettingsChange={resetCopy} />
+        <aside className="o-study-takeaway" aria-label="What this experiment teaches">
+          <span className="o-micro">THE TAKEAWAY</span>
+          <h4>{story.takeaway}</h4>
+          <p>{story.relevance}</p>
+        </aside>
         <details className="o-field-notes" key={`notes-${project.id}`}>
           <summary>
             How this experiment works<span aria-hidden="true">+</span>
