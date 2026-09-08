@@ -383,14 +383,16 @@ async function run() {
             `${study.id} toggle settings restored`,
           );
         if (study.intent)
-          assert.equal(
-            await evaluate(`document.querySelector('.o-segment [aria-pressed="true"]').textContent.trim()`),
-            study.intent,
+          await waitFor(
+            `document.querySelector('.o-segment [aria-pressed="true"]')?.textContent.trim() === ${JSON.stringify(study.intent)}`,
+            `${study.id} intent setting restored`,
           );
+        // Selecting the tab and restoring its saved controls are separate effects.
+        // Wait for each requested setting, as above for range and toggle controls.
         if (study.module)
-          assert.equal(
-            await evaluate(`document.querySelector('.o-code-graph [aria-pressed="true"]').textContent.trim()`),
-            study.module,
+          await waitFor(
+            `document.querySelector('.o-code-graph [aria-pressed="true"]')?.textContent.trim() === ${JSON.stringify(study.module)}`,
+            `${study.id} module setting restored`,
           );
         if (study.run) await click(".o-run");
         await waitFor(
