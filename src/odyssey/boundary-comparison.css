@@ -1,0 +1,278 @@
+.o-boundary-comparison {
+  grid-column: 1/-1;
+  scroll-margin-top: 20px;
+  margin-bottom: 48px;
+  padding: 28px clamp(20px, 3vw, 40px);
+  background: #081722;
+  border: 1px solid #435766;
+  border-top: 2px solid #edc991;
+}
+.o-boundary-comparison h3 {
+  max-width: 36ch;
+  margin: 12px 0;
+  font:
+    500 clamp(24px, 3vw, 34px)/1.2 Oxanium,
+    sans-serif;
+}
+.o-boundary-comparison header p {
+  color: #c3d4e0;
+  font-size: 16px;
+  line-height: 1.65;
+}
+.o-boundary-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-block: 1px solid #435766;
+  margin: 28px 0 0;
+}
+.o-boundary-route {
+  min-width: 0;
+  padding: 24px 28px 24px 0;
+}
+.o-boundary-route + .o-boundary-route {
+  border-left: 1px solid #435766;
+  padding-left: 28px;
+  padding-right: 0;
+}
+.o-boundary-label {
+  color: #a8cbd9;
+  font:
+    12px/1.5 Jet,
+    monospace;
+  letter-spacing: 0.08em;
+}
+.o-boundary-route svg {
+  display: block;
+  width: 100%;
+  margin: 12px 0;
+  max-height: 104px;
+  overflow: visible;
+  fill: none;
+  stroke-width: 1.3;
+}
+.o-boundary-track {
+  stroke: #35515f;
+  stroke-dasharray: 3 7;
+}
+.o-boundary-signal {
+  stroke: #89e5e8;
+  stroke-width: 2;
+}
+.o-boundary-document,
+.o-boundary-destination {
+  stroke: #90c9d4;
+  fill: #0b1e2a;
+}
+.o-boundary-core {
+  stroke: #edc991;
+  stroke-width: 1;
+}
+.o-boundary-pulse {
+  fill: #c4faff;
+  stroke: #89e5e8;
+}
+.o-boundary-route strong {
+  display: block;
+  color: #a2eef0;
+  font:
+    500 28px/1.3 Oxanium,
+    sans-serif;
+}
+.o-boundary-route p {
+  color: #c3d4e0;
+  margin: 10px 0 0;
+  max-width: 46ch;
+  font-size: 15px;
+  line-height: 1.65;
+}
+.o-boundary-route[data-private="true"] strong {
+  color: #f3d5a4;
+}
+.o-boundary-comparison[data-revealed="false"] .o-boundary-route[data-private="true"] .o-boundary-signal,
+.o-boundary-comparison[data-revealed="false"] .o-boundary-route[data-private="true"] .o-boundary-pulse {
+  opacity: 0;
+}
+.o-boundary-decision {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px 0;
+}
+.o-boundary-decision fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+.o-boundary-decision legend {
+  color: #d6e5ec;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+.o-boundary-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+}
+.o-boundary-choices label {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-height: 44px;
+  cursor: pointer;
+  font-size: 15px;
+  color: #d6e5ec;
+}
+.o-boundary-choices input {
+  width: 20px;
+  height: 20px;
+  accent-color: #f3d5a4;
+}
+.o-boundary-verdict {
+  border-left: 2px solid #edc991;
+  padding: 0 0 0 24px;
+}
+.o-boundary-verdict strong {
+  display: block;
+  margin: 12px 0 8px;
+  color: #f3d5a4;
+  font:
+    500 28px/1.3 Oxanium,
+    sans-serif;
+}
+.o-boundary-verdict p {
+  max-width: 64ch;
+  color: #c3d4e0;
+  font-size: 15px;
+  line-height: 1.65;
+}
+.o-boundary-comparison .o-boundary-note {
+  color: #a8cbd9;
+  font:
+    12px/1.6 Exo,
+    sans-serif;
+  margin: 16px 0 0;
+}
+@media (max-width: 600px) {
+  .o-boundary-decision > button {
+    width: 100%;
+    justify-content: center;
+  }
+  .o-boundary-comparison {
+    padding: 24px 18px;
+    margin-bottom: 36px;
+  }
+  .o-boundary-verdict {
+    padding-left: 16px;
+  }
+  .o-boundary-pair {
+    grid-template-columns: 1fr 1fr;
+    margin-top: 20px;
+  }
+  .o-boundary-route,
+  .o-boundary-route + .o-boundary-route {
+    padding: 16px 10px 16px 0;
+  }
+  .o-boundary-route + .o-boundary-route {
+    padding: 16px 0 16px 10px;
+    border-top: 0;
+    border-left: 1px solid #435766;
+  }
+  .o-boundary-route strong {
+    font-size: 21px;
+  }
+  .o-boundary-route svg {
+    margin: 8px 0;
+    height: 54px;
+  }
+  .o-boundary-route p {
+    display: none;
+  }
+  .o-boundary-label {
+    display: block;
+    min-height: 36px;
+    font-size: 12px;
+  }
+}
+
+/* The traveling signal answers a single click; the result never waits for it. */
+.o-boundary-grid {
+  stroke: #7ea0b3;
+  opacity: 0.1;
+}
+.o-boundary-bed {
+  stroke: #020a12;
+  stroke-width: 8;
+}
+.o-boundary-halo {
+  stroke: #b69b6566;
+  stroke-width: 0.7;
+  fill: #edc99108;
+}
+.o-boundary-facet {
+  fill: #f5d69a;
+  fill-opacity: 0.38;
+}
+.o-boundary-facet-dark {
+  fill: #060d16;
+  fill-opacity: 0.55;
+}
+.o-boundary-stop {
+  stroke: #f3d5a4;
+  stroke-width: 2;
+  opacity: 0;
+}
+.o-boundary-comparison[data-revealed="true"] .o-boundary-stop {
+  opacity: 1;
+}
+.o-boundary-route[data-private="true"] .o-boundary-signal {
+  stroke: #f3d5a4;
+}
+.odyssey[data-motion="on"]
+  .o-boundary-comparison[data-revealed="true"]
+  .o-boundary-route[data-private="true"]
+  .o-boundary-signal {
+  stroke-dasharray: 1;
+  animation: boundary-draw 700ms ease-out both;
+  animation-play-state: var(--play-state, running);
+}
+.odyssey[data-motion="on"]
+  .o-boundary-comparison[data-revealed="true"]
+  .o-boundary-route[data-private="true"]
+  .o-boundary-pulse {
+  animation: boundary-arrival 900ms cubic-bezier(0.2, 0.65, 0.3, 1) both;
+  animation-play-state: var(--play-state, running);
+}
+@keyframes boundary-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes boundary-arrival {
+  from {
+    transform: translateX(-120px);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .odyssey .o-boundary-comparison * {
+    animation: none !important;
+  }
+}
+.o-story-comparison {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 4px 28px;
+}

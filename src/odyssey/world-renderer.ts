@@ -102,8 +102,8 @@ export function createSovereignWorld(
   let propulsion = 50;
   const raycaster = new THREE.Raycaster();
 
-  scene.add(new THREE.HemisphereLight(0x91bfdb, 0x040a12, 0.38));
-  const sun = new THREE.DirectionalLight(0xffd6a1, 3.1);
+  scene.add(new THREE.HemisphereLight(0x91bfdb, 0x040a12, 0.28));
+  const sun = new THREE.DirectionalLight(0xffe0b9, 3.1);
   sun.position.set(-11, 7, 9);
   sun.castShadow = true;
   sun.shadow.mapSize.set(1024, 1024);
@@ -140,8 +140,14 @@ export function createSovereignWorld(
     context.fillRect(0, 0, 512, 256);
     // Narrow studio strips trace existing bevels while the dark gaps separate
     // metal facets. These are baked into the same small, once-created PMREM.
-    context.fillStyle = "#f4e4c4";
-    context.fillRect(78, 30, 74, 57);
+    const softbox = context.createLinearGradient(72, 0, 165, 0);
+    softbox.addColorStop(0, "#34414f");
+    softbox.addColorStop(0.2, "#d3c5ad");
+    softbox.addColorStop(0.55, "#fff2d7");
+    softbox.addColorStop(0.8, "#d3c5ad");
+    softbox.addColorStop(1, "#34414f");
+    context.fillStyle = softbox;
+    context.fillRect(72, 25, 93, 70);
     context.fillStyle = "#b8e7ff";
     context.fillRect(342, 38, 22, 106);
     context.fillStyle = "#f8f4e7";

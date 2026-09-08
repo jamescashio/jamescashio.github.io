@@ -1,7 +1,7 @@
 .o-build-story {
   --project: var(--o-gold);
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 24px 48px;
   margin-top: 56px;
   padding-top: 28px;
@@ -18,12 +18,6 @@
   color: var(--o-muted);
   font-size: 16px;
   line-height: 1.65;
-}
-.o-story-comparison {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
 }
 .o-build-story > .o-field-notes {
   margin: 0;

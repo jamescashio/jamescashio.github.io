@@ -1,4 +1,18 @@
+import { createSurfaceAtlas } from "./planet-surface";
+import {
+  planetVertex,
+  planetFragment,
+  atmosphereFragment,
+  exosphereFragment,
+  resonanceTrackFragment,
+  auroraVertex,
+  auroraFragment,
+  propulsionVertex,
+  propulsionFragment,
+} from "./planet-shaders";
+import { applyPlanetShadow } from "./planet-shadow";
 import * as THREE from "three";
+import type { ObservatoryCamera } from "./observatory-state";
 
 export type LensingLight = "dawn" | "ion" | "eclipse";
 export type LensingView = "orbit" | "surface" | "gate";
@@ -14,6 +28,8 @@ export type LensingController = {
   setWorld: (world: LensingWorld) => void;
   /** A fresh PNG of the actual scene, bounded to 2M pixels and 2048 pixels per edge. */
   capture: () => Promise<Blob>;
+  readCamera: () => ObservatoryCamera | null;
+  restoreCamera: (camera: ObservatoryCamera) => void;
   rotate: (dx: number, dy: number) => void;
   /** Distance multiplier: 0.85 moves closer; 1.15 moves farther away. */
   zoom: (amount: number) => void;
@@ -25,285 +41,11 @@ const TAU = Math.PI * 2;
 const PIXEL_BUDGET = 2_000_000;
 const FRAME_MS = 1000 / 30;
 
-/** A seamless spherical atlas replaces repeated per-pixel noise with two texture
- * reads. Its channels hold coast elevation, mineral relief, clouds and night light.
- * Everything is authored locally; no imagery, downloads or render passes. */
-function createSurfaceAtlas() {
-  const size = 1024,
-    height = 512;
-  const permutation = new Uint8Array(512);
-  const shuffled = Array.from({ length: 256 }, (_, index) => index);
-  let seed = 38193;
-  for (let index = 255; index > 0; index--) {
-    seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
-    const other = seed % (index + 1);
-    [shuffled[index], shuffled[other]] = [shuffled[other], shuffled[index]];
-  }
-  for (let index = 0; index < 512; index++) permutation[index] = shuffled[index & 255];
-  const fade = (value: number) => value * value * value * (value * (value * 6 - 15) + 10);
-  const lerp = (a: number, b: number, amount: number) => a + (b - a) * amount;
-  const smooth = (a: number, b: number, value: number) => {
-    const t = Math.max(0, Math.min(1, (value - a) / (b - a)));
-    return t * t * (3 - 2 * t);
-  };
-  const noise = (x: number, y: number, z: number) => {
-    const ix = Math.floor(x),
-      iy = Math.floor(y),
-      iz = Math.floor(z);
-    const fx = fade(x - ix),
-      fy = fade(y - iy),
-      fz = fade(z - iz);
-    const x0 = ix & 255,
-      y0 = iy & 255,
-      z0 = iz & 255;
-    const a = permutation[x0] + y0,
-      b = permutation[x0 + 1] + y0;
-    const aa = permutation[a] + z0,
-      ab = permutation[a + 1] + z0;
-    const ba = permutation[b] + z0,
-      bb = permutation[b + 1] + z0;
-    return (
-      lerp(
-        lerp(lerp(permutation[aa], permutation[ba], fx), lerp(permutation[ab], permutation[bb], fx), fy),
-        lerp(
-          lerp(permutation[aa + 1], permutation[ba + 1], fx),
-          lerp(permutation[ab + 1], permutation[bb + 1], fx),
-          fy,
-        ),
-        fz,
-      ) / 255
-    );
-  };
-  const data = new Uint8Array(size * height * 4);
-  for (let row = 0; row < height; row++) {
-    // DataTexture starts at v=0; Three's sphere UV has its south pole there.
-    const latitude = ((row + 0.5) / height - 0.5) * Math.PI;
-    const py = Math.sin(latitude),
-      radius = Math.cos(latitude);
-    for (let column = 0; column < size; column++) {
-      const longitude = ((column + 0.5) / size) * TAU;
-      const px = -Math.cos(longitude) * radius,
-        pz = Math.sin(longitude) * radius;
-      const warp = noise(px * 3.1 + 7, py * 3.1 - 4, pz * 3.1 + 11) - 0.5;
-      const x = px * 2.45 + warp * 0.62 + 2.9;
-      const y = py * 2.45 + warp * 0.38 - 5.2;
-      const z = pz * 2.45 - warp * 0.51 + 8.3;
-      const elevation =
-        noise(x, y, z) * 0.52 +
-        noise(x * 2.03 + 5, y * 2.03, z * 2.03) * 0.25 +
-        noise(x * 4.17, y * 4.17 - 7, z * 4.17) * 0.12 +
-        noise(x * 8.37, y * 8.37, z * 8.37 + 13) * 0.064 +
-        noise(x * 17.1, y * 17.1, z * 17.1) * 0.031 +
-        noise(x * 35.3, y * 35.3, z * 35.3) * 0.015;
-      const ridge = 1 - Math.abs(noise(px * 68 + 3, py * 68, pz * 68) * 2 - 1);
-      const grain = noise(px * 173, py * 173, pz * 173);
-      const relief = ridge * 0.7 + grain * 0.3;
-      // Latitude-sheared, broken streams: high-frequency filaments survive in
-      // the close view without filling the entire globe with opaque cloud cover.
-      const wind = noise(px * 4.7 + 19, py * 4.7, pz * 4.7) - 0.5;
-      const cx = px * 8.3 + wind * 1.8,
-        cy = py * 15.6 + wind * 0.9,
-        cz = pz * 8.3 - wind * 1.4;
-      const vapor =
-        noise(cx, cy, cz) * 0.43 +
-        noise(cx * 2.1 + 11, cy * 2.1, cz * 2.1) * 0.28 +
-        noise(cx * 4.3, cy * 4.3 - 3, cz * 4.3) * 0.17 +
-        noise(cx * 8.7, cy * 8.7, cz * 8.7) * 0.08 +
-        noise(cx * 17.5, cy * 17.5, cz * 17.5) * 0.04;
-      const humidity = smooth(0.26, 0.68, noise(px * 3.4 - 8, py * 3.4, pz * 3.4));
-      const clouds = smooth(0.49, 0.7, vapor) * humidity;
-      const coast = smooth(0.509, 0.524, elevation) * (1 - smooth(0.54, 0.61, elevation));
-      const cities = smooth(0.76, 0.92, grain) * coast;
-      const offset = (row * size + column) * 4;
-      data[offset] = Math.round(elevation * 255);
-      data[offset + 1] = Math.round(relief * 255);
-      data[offset + 2] = Math.round(clouds * 255);
-      data[offset + 3] = Math.round(cities * 255);
-    }
-  }
-  const texture = new THREE.DataTexture(data, size, height);
-  texture.wrapS = THREE.RepeatWrapping;
-  texture.wrapT = THREE.ClampToEdgeWrapping;
-  texture.magFilter = THREE.LinearFilter;
-  texture.minFilter = THREE.LinearMipmapLinearFilter;
-  texture.generateMipmaps = true;
-  texture.needsUpdate = true;
-  return texture;
-}
-const planetVertex = `
-  varying vec3 vSurface; varying vec3 vWorld; varying vec3 vNormal; varying vec2 vUv;
-  void main() {
-    vUv = uv;
-    vSurface = normalize(position);
-    vWorld = (modelMatrix * vec4(position, 1.0)).xyz;
-    vNormal = normalize(mat3(modelMatrix) * normal);
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-  }
-`;
-const planetFragment = `
-  uniform vec3 sunDirection; uniform vec3 atmosphereColor;
-  uniform float eclipse; uniform float ion; uniform float phase; uniform float cloudAmount;
-  uniform sampler2D surfaceAtlas;
-  varying vec3 vSurface; varying vec3 vWorld; varying vec3 vNormal; varying vec2 vUv;
-  float cloudCover(float value) {
-    return pow(value,1.5-cloudAmount*0.5)*min(cloudAmount,1.0);
-  }
-  void main() {
-    vec3 p = normalize(vSurface), normal = normalize(vNormal);
-    vec3 view = normalize(cameraPosition - vWorld);
-    vec4 surface = texture2D(surfaceAtlas, vUv);
-    float altitude = surface.r;
-    float land = smoothstep(0.509, 0.517, altitude);
-    float coast = smoothstep(0.488, 0.514, altitude);
-    float latitude = abs(p.y);
-    vec3 ocean = mix(vec3(0.003,0.011,0.027), vec3(0.009,0.078,0.095), coast);
-    vec3 ground = mix(vec3(0.088,0.108,0.071), vec3(0.36,0.23,0.105), smoothstep(0.514,0.67,altitude));
-    ground = mix(ground, vec3(0.42,0.31,0.17), smoothstep(0.65,0.78,altitude));
-    ground *= 0.69 + surface.g * 0.49;
-    float ice = smoothstep(0.88,0.985,latitude + (altitude - 0.5) * 0.08);
-    ground = mix(ground, vec3(0.46,0.53,0.55), ice * 0.82);
-    vec3 albedo = mix(ocean, ground, land);
-    float clouds = cloudCover(texture2D(surfaceAtlas, vUv + vec2(phase * 0.00065,0.0)).b);
-    // Derivative relief responds to the actual light and camera. The ocean stays
-    // smooth while mountain ranges break the terminator into minute lit ridges.
-    float relief = (max(altitude - 0.512,0.0) * 0.10 + surface.g * 0.004) * land;
-    vec3 dx = dFdx(vWorld), dy = dFdy(vWorld);
-    vec3 rx = cross(dy,normal), ry = cross(normal,dx);
-    float determinant = dot(dx,rx);
-    vec3 gradient = sign(determinant) * (dFdx(relief) * rx + dFdy(relief) * ry);
-    vec3 terrainNormal = normalize(abs(determinant) * normal - gradient);
-    vec3 light = normalize(sunDirection);
-    float incidence = dot(normal,light);
-    float day = smoothstep(-0.085,0.14,incidence);
-    float diffuse = max(dot(terrainNormal,light),0.0);
-    vec3 sunlight = mix(vec3(1.15,0.97,0.78),vec3(0.70,1.03,1.22),ion);
-    vec3 color = albedo * (vec3(0.018,0.032,0.052) + sunlight * diffuse * 1.35);
-    float cloudShadow = cloudCover(texture2D(surfaceAtlas,vUv + vec2(phase * 0.00065 - 0.0018,0.0012)).b);
-    color *= 1.0 - cloudShadow * day * 0.23;
-    vec3 cloudColor = mix(vec3(0.47,0.59,0.67),vec3(0.87,0.88,0.79),day);
-    color = mix(color,cloudColor * (0.018 + max(incidence,0.0) * 1.3),clouds * 0.78);
-    float specular = pow(max(dot(reflect(-light,normal),view),0.0),64.0);
-    color += vec3(0.65,0.85,1.0) * specular * (1.0-land) * (1.0-clouds) * day * 0.34;
-    float rim = pow(1.0-max(dot(normal,view),0.0),5.4);
-    float airMass = pow(1.0-max(dot(normal,view),0.0),2.4) * day;
-    color = mix(color,atmosphereColor * (0.12 + max(incidence,0.0) * 0.24),airMass * 0.19);
-    color += atmosphereColor * rim * (0.035 + day * 0.4 + eclipse * 0.09);
-    float dusk = exp(-abs(incidence) * 14.0) * (1.0-eclipse);
-    color += vec3(0.56,0.18,0.055) * dusk * rim * 0.2;
-    color += mix(vec3(0.9,0.43,0.11),vec3(0.1,0.74,1.0),ion) * surface.a * land * (1.0-day) * (1.0-clouds) * 0.7;
-    gl_FragColor = vec4(color,1.0);
-    #include <tonemapping_fragment>
-    #include <colorspace_fragment>
-  }
-`;
-const atmosphereFragment = `
-  uniform vec3 sunDirection; uniform vec3 atmosphereColor; uniform float eclipse; uniform float resonance;
-  varying vec3 vWorld; varying vec3 vNormal;
-  void main() {
-    vec3 normal=normalize(vNormal), view=normalize(cameraPosition-vWorld);
-    float incidence=dot(normal,normalize(sunDirection));
-    float grazing=1.0-abs(dot(normal,view));
-    float rim=pow(grazing,5.8);
-    float day=smoothstep(-0.12,0.55,incidence);
-    float twilight=exp(-abs(incidence)*9.0);
-    vec3 color=mix(atmosphereColor,vec3(1.0,0.44,0.13),twilight*(0.4+eclipse*0.25));
-    float highAir=pow(grazing,12.0)*(0.055+day*0.17);
-    float energized=smoothstep(0.4,0.95,resonance)*smoothstep(0.54,0.9,abs(normal.y));
-    color=mix(color,vec3(0.20,1.0,0.79),energized*0.42);
-    gl_FragColor=vec4(color,rim*(0.035+day*0.34+eclipse*0.12+energized*0.24)+highAir);
-    #include <tonemapping_fragment>
-    #include <colorspace_fragment>
-  }
-`;
-
 // The inner limb and this low-density outer layer occupy different real radii.
 // Their separate silhouettes resolve a thin cyan horizon without a bloom pass.
-const exosphereFragment = `
-  uniform vec3 sunDirection; uniform vec3 atmosphereColor;
-  uniform float eclipse; uniform float ion; uniform float resonance;
-  varying vec3 vWorld; varying vec3 vNormal;
-  void main() {
-    vec3 normal=normalize(vNormal), view=normalize(cameraPosition-vWorld);
-    float incidence=dot(normal,normalize(sunDirection));
-    float grazing=1.0-abs(dot(normal,view));
-    float day=smoothstep(-0.18,0.65,incidence);
-    float sunset=exp(-abs(incidence+0.07)*10.0);
-    float thinAir=pow(grazing,9.0);
-    float polar=smoothstep(0.57,0.94,abs(normal.y));
-    float charged=smoothstep(0.48,1.0,resonance);
-    vec3 color=mix(atmosphereColor,vec3(0.30,0.48,1.0),0.32);
-    color=mix(color,vec3(0.98,0.51,0.20),sunset*(0.35+eclipse*0.25));
-    color=mix(color,mix(vec3(0.10,0.90,0.76),vec3(0.13,0.70,1.0),ion),polar*charged*0.5);
-    gl_FragColor=vec4(color,thinAir*(0.012+day*0.13+eclipse*0.07+polar*charged*0.13));
-    #include <tonemapping_fragment>
-    #include <colorspace_fragment>
-  }
-`;
 
 // Two tracks share one instanced draw. Their charged arc stays lit, while a
 // narrow champagne leader makes the finite circumferential ignition legible.
-const resonanceTrackFragment = `
-  uniform float resonance; uniform float phase; uniform float ion;
-  varying vec2 vUv;
-  void main() {
-    float charge=smoothstep(0.0,0.46,resonance);
-    float angle=fract(vUv.x+0.25);
-    float filled=1.0-smoothstep(charge-0.012,charge+0.005,angle);
-    filled*=smoothstep(0.0,0.035,charge);
-    float leader=exp(-abs(angle-charge)*160.0)*(1.0-smoothstep(0.93,1.0,charge));
-    float inlay=0.68+0.32*pow(0.5+0.5*cos(angle*301.5929),3.0);
-    // Once the finite charge closes, two separated currents circulate along
-    // the actual inlay. Time is the renderer's existing pause-aware clock.
-    float settled=smoothstep(0.48,0.9,resonance);
-    float wave=fract(angle*2.0-phase*0.045);
-    float current=pow(1.0-wave,12.0)*settled;
-    float wake=pow(1.0-wave,2.5)*settled;
-    vec3 color=mix(vec3(0.16,0.78,1.0),vec3(0.31,1.0,0.83),ion);
-    color=mix(color,vec3(1.0,0.84,0.53),min(1.0,leader*0.9+current*0.7));
-    gl_FragColor=vec4(color*(0.78+leader*0.65+current*0.42),filled*inlay*(0.47+wake*0.28+current*0.24)+leader*0.7);
-    #include <colorspace_fragment>
-  }
-`;
-const auroraVertex = `
-  uniform float phase;
-  varying vec2 vUv; varying vec3 vWorld; varying vec3 vNormal;
-  void main() {
-    vUv=uv;
-    vec3 normal=normalize(position);
-    float drift=sin(uv.x*37.6991+phase*0.24)*0.028+sin(uv.x*81.6814-phase*0.17)*0.013;
-    vec3 displaced=position+normal*drift*uv.y;
-    vec4 world=modelMatrix*vec4(displaced,1.0);
-    vWorld=world.xyz;
-    vNormal=normalize(mat3(modelMatrix)*normal);
-    gl_Position=projectionMatrix*viewMatrix*world;
-  }
-`;
-const auroraFragment = `
-  uniform float resonance; uniform float phase; uniform float ion; uniform float eclipse;
-  uniform float auroraStrength;
-  uniform vec3 sunDirection;
-  varying vec2 vUv; varying vec3 vWorld; varying vec3 vNormal;
-  void main() {
-    float reveal=smoothstep(0.34,0.98,resonance);
-    float longitude=vUv.x*6.283185;
-    float fold=longitude+sin(longitude*5.0+phase*0.14)*0.06+vUv.y*0.06;
-    float broad=0.5+0.5*sin(fold*13.0+sin(fold*7.0)*1.4-phase*0.16);
-    float fine=0.5+0.5*sin(fold*137.0+sin(fold*31.0)*2.0+vUv.y*1.6);
-    float foldedHeight=clamp(vUv.y/(0.6+broad*0.4),0.0,1.0);
-    float filaments=0.12+pow(broad,1.7)*0.39+pow(fine,5.0)*0.49;
-    float edge=pow(1.0-foldedHeight,1.25)*smoothstep(0.0,0.035,vUv.y);
-    float crown=exp(-abs(vUv.y-0.075)*34.0);
-    float traveling=pow(0.5+0.5*cos(longitude*2.0-phase*0.28-vUv.y*1.2),6.0);
-    float light=dot(normalize(vNormal),normalize(sunDirection));
-    float night=1.0-smoothstep(-0.35,0.7,light);
-    vec3 base=mix(vec3(0.09,0.92,0.76),vec3(0.12,0.71,1.0),ion);
-    vec3 color=mix(base,vec3(0.37,0.46,0.95),smoothstep(0.18,0.85,foldedHeight)*0.72);
-    color+=vec3(0.72,0.52,0.20)*crown*(0.34+traveling*0.32);
-    float alpha=(filaments*edge*(0.46+night*0.25+eclipse*0.06+traveling*0.18)+crown*0.18)*reveal;
-    gl_FragColor=vec4(color,clamp(alpha*auroraStrength,0.0,0.95));
-    #include <colorspace_fragment>
-  }
-`;
 
 /** Two continuous polar curtains: true radial height above the globe, with a
  * broken authored crest. The shader adds slow folds without per-frame geometry. */
@@ -343,25 +85,6 @@ function createPolarCurtains() {
   geometry.computeBoundingSphere();
   return geometry;
 }
-
-const propulsionVertex = `
-  varying vec2 vUv;
-  void main() {
-    vUv=uv;
-    gl_Position=projectionMatrix*modelViewMatrix*instanceMatrix*vec4(position,1.0);
-  }
-`;
-const propulsionFragment = `
-  uniform float phase; uniform float ion; varying vec2 vUv;
-  void main() {
-    float throat=pow(vUv.y,1.6);
-    float compression=0.84+0.16*cos(vUv.y*24.0-phase*2.8);
-    vec3 color=mix(vec3(0.04,0.42,1.0),vec3(0.13,0.97,1.0),vUv.y+ion*0.14);
-    color=mix(color,vec3(0.87,0.98,1.0),pow(vUv.y,7.0));
-    gl_FragColor=vec4(color,throat*compression*0.72);
-    #include <colorspace_fragment>
-  }
-`;
 
 /** Facets are deliberately sparse and readable at the phone composition's scale. */
 function createCourierHull() {
@@ -424,6 +147,8 @@ export function createLensingScene(
     callbacks.onUnavailable?.();
     const noop = () => {};
     return {
+      readCamera: () => null,
+      restoreCamera: noop,
       setLight: noop,
       setView: noop,
       setMotion: noop,
@@ -445,7 +170,7 @@ export function createLensingScene(
   const camera = new THREE.PerspectiveCamera(39, 1, 0.1, 240);
   const sun = new THREE.DirectionalLight(0xffdfb1, 3.2);
   const rimLight = new THREE.DirectionalLight(0x68dfff, 2.6);
-  const fill = new THREE.HemisphereLight(0x9fc7df, 0x050811, 0.7);
+  const fill = new THREE.HemisphereLight(0x9fc7df, 0x050811, 0.42);
   sun.position.set(-7, 5, 8);
   rimLight.position.set(5, 1, -7);
   scene.add(sun, rimLight, fill);
@@ -457,10 +182,12 @@ export function createLensingScene(
     for (let x = 0; x < 256; x++) {
       const offset = (y * 256 + x) * 4;
       const sky = Math.max(0, 1 - y / 85);
-      const panel = y > 16 && y < 54 && ((x > 24 && x < 78) || (x > 162 && x < 181));
-      environmentData[offset] = panel ? 225 : 12 + sky * 72;
-      environmentData[offset + 1] = panel ? 222 : 22 + sky * 91;
-      environmentData[offset + 2] = panel ? 215 : 34 + sky * 108;
+      const softbox = Math.exp(-(((x - 49) / 24) ** 4 + ((y - 34) / 19) ** 4));
+      const strip = Math.exp(-(((x - 174) / 9) ** 4 + ((y - 33) / 24) ** 4));
+      const panel = Math.min(1, softbox + strip * 0.8);
+      environmentData[offset] = 8 + sky * 38 + panel * 192;
+      environmentData[offset + 1] = 15 + sky * 52 + panel * 185;
+      environmentData[offset + 2] = 25 + sky * 68 + panel * 175;
       environmentData[offset + 3] = 255;
     }
   const environment = new THREE.DataTexture(environmentData, 256, 128);
@@ -594,6 +321,10 @@ export function createLensingScene(
   const midnight = new THREE.MeshStandardMaterial({ color: 0x0c1724, metalness: 0.7, roughness: 0.36 });
   const silver = new THREE.MeshStandardMaterial({ color: 0xb3c0c5, metalness: 0.86, roughness: 0.22 });
   const gold = new THREE.MeshStandardMaterial({ color: 0xd7ac6e, metalness: 0.83, roughness: 0.25 });
+  // The planet occludes sunlight on the surrounding architecture. Analytical
+  // soft edges add contact and scale without allocating a shadow map.
+  for (const material of [titanium, gateSkin, midnight, silver, gold])
+    applyPlanetShadow(material, uniforms.sunDirection);
   const cyan = new THREE.MeshBasicMaterial({ color: 0x65e9ff, toneMapped: false });
   const champagne = new THREE.MeshBasicMaterial({ color: 0xffd69a, toneMapped: false });
   const gate = new THREE.Group();
@@ -1172,6 +903,7 @@ export function createLensingScene(
     canvas.dataset.lensingResonanceProgress = uniforms.resonance.value.toFixed(3);
     canvas.dataset.lensingDrawCalls = String(renderer.info.render.calls);
     canvas.dataset.lensingTriangles = String(renderer.info.render.triangles);
+    canvas.dataset.lensingCamera = JSON.stringify({ yaw: pose.yaw, pitch: pose.pitch, zoom: zoomScale, phase });
     canvas.dataset.lensingClouds = String(world.clouds);
     canvas.dataset.lensingAurora = String(world.aurora);
     canvas.dataset.lensingSun = String(world.sun);
@@ -1184,6 +916,7 @@ export function createLensingScene(
   }
   const resize = () => {
     if (disposed || lost) return;
+    const distanceRatio = authored ? 1 : pose.distance / targetPose(selectedView).distance;
     const bounds = canvas.getBoundingClientRect();
     width = Math.max(1, bounds.width);
     height = Math.max(1, bounds.height);
@@ -1197,7 +930,7 @@ export function createLensingScene(
     if (authored) {
       copyPose(targetPose(selectedView));
       travel = null;
-    }
+    } else pose.distance = targetPose(selectedView).distance * distanceRatio;
     dirty = true;
     queue();
   };
@@ -1372,6 +1105,34 @@ export function createLensingScene(
   canvas.dataset.lensingView = selectedView;
   canvas.dataset.lensingLight = selectedLight;
   return {
+    readCamera() {
+      return {
+        yaw: pose.yaw,
+        pitch: pose.pitch,
+        distanceRatio: pose.distance / targetPose(selectedView).distance,
+        zoom: zoomScale,
+        focus: [pose.focus.x, pose.focus.y, pose.focus.z],
+        roll: pose.roll,
+        fov: pose.fov,
+        phase,
+      };
+    },
+    restoreCamera(saved) {
+      authored = false;
+      travel = null;
+      copyPose({
+        yaw: saved.yaw,
+        pitch: saved.pitch,
+        distance: targetPose(selectedView).distance * saved.distanceRatio,
+        focus: new THREE.Vector3(...saved.focus),
+        roll: saved.roll,
+        fov: saved.fov,
+      });
+      zoomScale = saved.zoom;
+      phase = saved.phase;
+      dirty = true;
+      queue();
+    },
     setLight,
     setView,
     setResonance,

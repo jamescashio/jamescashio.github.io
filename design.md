@@ -1,3 +1,15 @@
+# Current release — V37.13 Perspective
+
+Creative thesis: the original Cashio universe opens with one invitation, teaches one decision before its deeper studies, and gains depth through light that responds to its surfaces.
+
+The owner approved final polish and publication on 8 September 2026. The approved Perspective III preview is preserved separately. Release baseline: V37.12 at `c3983eb4cc2b44420138419daa7d11fb3688fb30`. Publish the reviewed experience through a release branch, checked pull request and verified Pages deployment. Historical authorization notes below describe earlier candidates.
+
+Preserve Bit, the artwork and ship silhouette, Oxanium/Exo/Jet typography, midnight/cyan/champagne palette, legacy URLs, films, opt-in sound, reduced motion and dated evidence. The compact privacy comparison leads to seven studies, each with a named next question. Optional hero experiences remain in a native disclosure. Shared Observatory links restore bounded lighting, atmosphere and camera settings as a paused scene.
+
+Keep the eager HERMES instrument and prerendered content. Load secondary study code, artwork and styling only on selection; offer recovery with saved settings if loading fails. Component style files are collected in the established cascade. Cloud relief, analytical planet shadows and finite decision responses remain within existing rendering budgets.
+
+Final polish removes preview labels, explains public sharing and synchronizes V37.13 identity. Verify desktop, tablet, 390px and 320px layouts, keyboard, reduced motion, hash round trips, clipboard fallback, loading recovery and release checks. Completion requires the public receipt, delivered asset parity and live interaction evidence. Rollback is a checked revert of this release's squash commit, followed by a verified Pages deployment.
+
 # Unpublished refinement preview — Mission card
 
 Creative thesis: the same orbital Cashio world, with a faster mobile invitation, champagne-lit metal, and a visitor-owned flight record.
@@ -193,3 +205,7 @@ Keep the recognizable orbital opening, Bit, palette, headline, and typefaces. Ma
 The smart-routing story centers a dated result: the July V31 export recorded 26 cents per day in AI provider usage during 21–22 July, published 26 July. Link the original record, scope and release. Exclude infrastructure, electricity and Doug's time; do not imply today's spend, audited billing or a measured savings percentage. Doug's September account explains recurring work through Atlas and escalation for greater capability. The story and E.V.E. share the same evidence record. Browser models do not execute Atlas or verify production routing. Preserve the separate pinned inventory and source-backed before/after story for reproducible links as optional evidence.
 
 Use typography and open space for the result and takeaways; avoid another layer of ornamental cards. Keep the opening invitation visible on phones. A changed flight scenario must change its takeaway. Saved cards must distinguish work held for permission from work waiting for connectivity. Retain lazy rendering, asset budgets, reduced motion, and opt-in audio.
+
+## Perspective III — decision, consequence, next question
+
+This pass remains a local unpublished preview. Preserve the complete Perspective II art direction and original artwork. Give the privacy reveal a finite signal that visibly stops at human authority, with an immediate semantic result for reduced motion. Reduce the interpretation needed after a study through a specific next-question link. Keep the opening quiet. Load secondary instrument code and styling together only when selected; retain the eager HERMES illustration and retry on load failure. Styles belong to their content component, with one phone rule for the comparison instead of overlapping overrides. Measure delivered entry bytes and exercise keyboard, narrow screens, saved routes and all seven instruments.

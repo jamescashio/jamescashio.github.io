@@ -416,7 +416,7 @@
     grid-template-columns: 1fr;
   }
   .mc-directory {
-    grid-row: 1;
+    grid-row: 2;
     padding: 16px 10px 13px;
   }
   .mc-results {
@@ -425,7 +425,7 @@
   .mc-missions {
     padding: 18px 22px 14px;
     border-right: 0;
-    border-top: 1px solid #33392f;
+    border-bottom: 1px solid #33392f;
   }
   .mc-mission {
     padding: 13px 0;
@@ -473,5 +473,18 @@
   .mc-arrow {
     animation: none !important;
     transition: none !important;
+  }
+}
+
+@media (max-width: 660px) {
+  .mc-body[data-searching="true"] .mc-missions {
+    display: none;
+  }
+  .mc-body[data-searching="true"] .mc-directory {
+    grid-row: 1;
+  }
+  .mc-description,
+  .mc-search-wrap input {
+    font-size: 14px;
   }
 }

@@ -21,7 +21,7 @@ import "./evidence-console.css";
 import "./lightwake.css";
 import "./project-explorer-lightwake.css";
 import "./hero-cinema.css";
-import "./build-story.css";
+import "./page-sections.css";
 import "./audit-story.css";
 
 const root = document.getElementById("odyssey-root")!;

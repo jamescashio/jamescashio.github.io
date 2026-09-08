@@ -1,0 +1,29 @@
+.perspective-discover {
+  margin-top: 22px;
+  max-width: 580px;
+}
+.perspective-discover > summary {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  min-height: 44px;
+  width: fit-content;
+  cursor: pointer;
+  list-style: none;
+  color: #a4dce3;
+  font-size: 14px;
+}
+.perspective-discover > summary::-webkit-details-marker {
+  display: none;
+}
+.perspective-discover > summary span {
+  display: inline-block;
+  color: #edc991;
+  font-size: 20px;
+}
+.perspective-discover[open] > summary span {
+  transform: rotate(45deg);
+}
+.perspective-discover .lens-discover-links {
+  margin-top: 12px;
+}

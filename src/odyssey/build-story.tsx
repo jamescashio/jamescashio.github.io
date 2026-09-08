@@ -1,4 +1,4 @@
-import type { MouseEvent } from "react";
+import { loadStudyExample as loadExample } from "./study-navigation";
 import { Arrow } from "./effects";
 import operatingRecord from "../../public/evidence/status-2026-09-07.json";
 import { shareExperiment } from "./study-experiment";
@@ -8,55 +8,9 @@ import { COST_EVIDENCE } from "../lib/cost-evidence";
 const STUDY = "https://github.com/jamescashio/jamescashio.github.io/blob/0c509286ed9329b897741e1afe505376deb443ce/";
 const PREVIOUS = "https://github.com/jamescashio/jamescashio.github.io/blob/8248189c073928a45f1da05dd6d06e62a21df2f8/";
 
-function loadExample(event: MouseEvent<HTMLAnchorElement>) {
-  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-  event.preventDefault();
-  const oldURL = location.href;
-  const newURL = event.currentTarget.href;
-  if (newURL !== oldURL) history.pushState(null, "", newURL);
-  // Reapply an unchanged link too, so visitors can reset controls they edited.
-  window.dispatchEvent(new HashChangeEvent("hashchange", { oldURL, newURL }));
-  requestAnimationFrame(() => document.querySelector<HTMLButtonElement>("#project-panel .o-run")?.focus());
-}
-
 export function BuildStory() {
   return (
-    <article className="o-build-story" aria-labelledby="build-story-title">
-      <header>
-        <span className="o-kicker">INSIDE THE HERMES STUDY</span>
-        <h3 id="build-story-title">Same request. One changed boundary.</h3>
-        <p>Compare a public request with its private version. The privacy decision changes the route.</p>
-        <nav className="o-story-comparison" aria-label="Compare HERMES privacy decisions">
-          {[false, true].map((privateData) => (
-            <a
-              key={String(privateData)}
-              className="o-text-button"
-              href={shareExperiment({ study: "hermes", intent: "analyze", sources: true, privateData })}
-              onClick={loadExample}
-            >
-              {privateData ? "2. Load the private version" : "1. Load a public request"} <Arrow />
-            </a>
-          ))}
-        </nav>
-      </header>
-      <div className="o-field-notes">
-        <dl>
-          <div>
-            <dt>Try it</dt>
-            <dd>Load the public example and choose Route this request. Requiring sources selects Research.</dd>
-          </div>
-          <div>
-            <dt>Change it</dt>
-            <dd>
-              Load the private version and run it again. Human review now takes priority; the external route is held.
-            </dd>
-          </div>
-          <div>
-            <dt>Keep it</dt>
-            <dd>Copy these settings to let someone else reproduce the decision. These examples send no AI requests.</dd>
-          </div>
-        </dl>
-      </div>
+    <article className="o-build-story" aria-labelledby="operating-story-title">
       <section className="o-build-proof" id="smart-routing" aria-labelledby="operating-story-title">
         <header>
           <span className="o-kicker">FROM MY WORKSHOP / SMART ROUTING</span>
@@ -80,23 +34,22 @@ export function BuildStory() {
             <div>
               <dt>The problem</dt>
               <dd>
-                Recurring jobs and difficult decisions have different needs. Sending both through the same expensive
-                route makes spending a default instead of a deliberate choice.
+                Routine work and hard decisions need different capabilities. A single expensive default wastes that
+                distinction.
               </dd>
             </div>
             <div>
               <dt>My decision</dt>
               <dd>
-                I route recurring work through Atlas and escalate when a task needs more capability. The policy puts
-                quality, privacy, and reliability first; cost decides between routes that meet those requirements.
+                Atlas handles recurring work; harder tasks can escalate. Quality, privacy and reliability qualify the
+                route. Cost breaks the tie.
               </dd>
             </div>
             <div>
               <dt>The recorded result</dt>
               <dd>
-                The {COST_EVIDENCE.sampleLabel} sample recorded ${COST_EVIDENCE.usdPerDay.toFixed(2)} per day in AI
-                provider usage. V31 published that observation on 26 July. More capable routes remained available for
-                work that justified them.
+                V31 published this provider-usage observation on 26 July 2026. It is a historical sample, not today’s
+                bill or a measured savings percentage.
               </dd>
             </div>
           </dl>

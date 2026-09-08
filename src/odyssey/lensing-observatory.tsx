@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { LensingLight, LensingView, LensingWorld } from "./lensing-renderer";
+import { shareObservatoryState, type ObservatoryState } from "./observatory-state";
 import { JOURNEY, useLensingJourney } from "./lensing-journey";
 import "./lensing-observatory.css";
 import "./lensing-resonance.css";
@@ -37,25 +38,32 @@ export default function LensingObservatory({
   reduced,
   onClose,
   initialPreset,
+  sharedState,
 }: {
   motion: boolean;
   reduced: boolean;
   onClose: () => void;
+  sharedState?: ObservatoryState | null;
   initialPreset?: { light: LensingLight; view: LensingView; resonance: boolean };
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const close = useRef<HTMLButtonElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const scene = useRef<Scene | null>(null);
-  const [freeLight, setFreeLight] = useState<LensingLight>(initialPreset?.light ?? "dawn");
-  const [freeView, setFreeView] = useState<LensingView>(initialPreset?.view ?? "orbit");
-  const [playing, setPlaying] = useState(true);
-  const [resonance, setResonance] = useState(initialPreset?.resonance ?? false);
+  const [freeLight, setFreeLight] = useState<LensingLight>(sharedState?.light ?? initialPreset?.light ?? "dawn");
+  const [freeView, setFreeView] = useState<LensingView>(sharedState?.view ?? initialPreset?.view ?? "orbit");
+  const [playing, setPlaying] = useState(!sharedState);
+  const [resonance, setResonance] = useState(sharedState?.resonance ?? initialPreset?.resonance ?? false);
   const [ready, setReady] = useState(false);
   const [arriving, setArriving] = useState(true);
   const [unavailable, setUnavailable] = useState(false);
   const [workshop, setWorkshop] = useState(false);
-  const [world, setWorld] = useState<LensingWorld>({ clouds: 50, aurora: 50, sun: 0 });
+  const [world, setWorld] = useState<LensingWorld>(sharedState?.world ?? { clouds: 50, aurora: 50, sun: 0 });
+  const initialCamera = useRef(sharedState?.camera);
+  const [sharedLink, setSharedLink] = useState("");
+  const [shareStatus, setShareStatus] = useState("");
+  const sharing = useRef(false);
+  const mounted = useRef(false);
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState("");
   const saveGeneration = useRef(0);
@@ -80,7 +88,9 @@ export default function LensingObservatory({
 
   useEffect(() => {
     const pending = downloads.current;
+    mounted.current = true;
     return () => {
+      mounted.current = false;
       saveGeneration.current += 1;
       for (const [url, timer] of pending) {
         clearTimeout(timer);
@@ -132,6 +142,7 @@ export default function LensingObservatory({
         scene.current.setView(settings.current.view);
         scene.current.setResonance(settings.current.resonance);
         scene.current.setWorld(settings.current.world);
+        if (initialCamera.current) scene.current.restoreCamera(initialCamera.current);
       })
       .catch(() => active && setUnavailable(true));
     return () => {
@@ -165,6 +176,29 @@ export default function LensingObservatory({
     takeControl();
     if (key === "aurora") setResonance(true);
     setWorld((previous) => ({ ...previous, [key]: value }));
+  }
+  async function shareWorld() {
+    const current = scene.current;
+    if (!current || !ready || unavailable || sharing.current) return;
+    sharing.current = true;
+    takeControl();
+    // Settle finite transitions and stop the existing clock before recording the view.
+    // This exact still becomes the recipient's starting point; motion remains opt-in.
+    current.setMotion(false);
+    current.setPlaying(false);
+    setPlaying(false);
+    const state = { light, view, world, resonance, camera: current.readCamera() ?? undefined };
+    const link = `${location.origin}${location.pathname}${shareObservatoryState(state)}`;
+    setSharedLink(link);
+    try {
+      await navigator.clipboard.writeText(link);
+      if (mounted.current)
+        setShareStatus("World link copied. Your light, atmosphere and viewpoint are ready to explore.");
+    } catch {
+      if (mounted.current) setShareStatus("Your world is ready. Select and copy the link below.");
+    } finally {
+      sharing.current = false;
+    }
   }
   async function saveView() {
     const current = scene.current;
@@ -443,19 +477,48 @@ export default function LensingObservatory({
             </span>
             <span aria-hidden="true">{workshop ? "−" : "+"}</span>
           </button>
-          <button
-            className="lens-save-view"
-            type="button"
-            disabled={!ready || unavailable || saving}
-            onClick={() => void saveView()}
-          >
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M3 8h4l2-3h6l2 3h4v12H3Z" stroke="currentColor" strokeWidth="1.3" />
-              <circle cx="12" cy="13" r="3.5" stroke="currentColor" strokeWidth="1.3" />
-            </svg>
-            {saving ? "Preparing PNG…" : "Save this view"}
-          </button>
+          <div className="lens-world-actions">
+            <button
+              className="lens-save-view lens-share-world"
+              type="button"
+              disabled={!ready || unavailable}
+              onClick={() => void shareWorld()}
+            >
+              Share my universe <span aria-hidden="true">↗</span>
+            </button>
+            <button
+              className="lens-save-view"
+              type="button"
+              disabled={!ready || unavailable || saving}
+              onClick={() => void saveView()}
+            >
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M3 8h4l2-3h6l2 3h4v12H3Z" stroke="currentColor" strokeWidth="1.3" />
+                <circle cx="12" cy="13" r="3.5" stroke="currentColor" strokeWidth="1.3" />
+              </svg>
+              {saving ? "Preparing PNG…" : "Save this view"}
+            </button>
+          </div>
         </div>
+        {sharedState && !sharedLink && (
+          <p className="lens-shared-arrival">A world someone shaped for you. Explore it at your pace.</p>
+        )}
+        {sharedLink && (
+          <div className="lens-share-result">
+            <p role="status">{shareStatus}</p>
+            <label>
+              Link to this world
+              <input
+                type="url"
+                spellCheck={false}
+                readOnly
+                value={sharedLink}
+                onFocus={(event) => event.currentTarget.select()}
+              />
+            </label>
+            <small>Opens with your lighting and camera position, paused and ready to explore.</small>
+          </div>
+        )}
         <div id="lens-world-controls" className="lens-world-controls" hidden={!workshop}>
           <p className="lens-workshop-note">Sculpt the atmosphere. The world responds as you move.</p>
           <div className="lens-world-sliders">

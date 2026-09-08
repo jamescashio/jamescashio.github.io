@@ -3,6 +3,7 @@ import { PROJECTS } from "./data";
 import { Arrow } from "./effects";
 import { ProjectLab, type ProjectLabHandle } from "./labs";
 import { STUDY_NOTES } from "./study-notes";
+import { STUDY_BROWSER_ID } from "./study-navigation";
 
 // Decorative studies of the instruments. The live models below own every result.
 const STUDY_ART = [
@@ -131,6 +132,15 @@ export function ProjectExplorer({ motion, play }: { motion: boolean; play: () =>
   const project = PROJECTS[selected];
   const story = STUDY_NOTES[project.id];
   const lab = useRef<ProjectLabHandle>(null);
+  const heading = useRef<HTMLHeadingElement>(null);
+  const focusNext = useRef(false);
+  const nextProject = PROJECTS[selected + 1];
+  useEffect(() => {
+    if (!focusNext.current) return;
+    focusNext.current = false;
+    heading.current?.focus({ preventScroll: true });
+    heading.current?.scrollIntoView({ behavior: motion ? "smooth" : "instant", block: "start" });
+  }, [selected, motion]);
   const resetCopy = useCallback(() => {
     setCopied(false);
     setCopyError(false);
@@ -169,7 +179,7 @@ export function ProjectExplorer({ motion, play }: { motion: boolean; play: () =>
           setSelected(index);
           setCopied(false);
           setCopyError(false);
-          document.getElementById("work")?.scrollIntoView({ behavior: "instant" });
+          document.getElementById(STUDY_BROWSER_ID)?.scrollIntoView({ behavior: "instant" });
         }
       }
     };
@@ -177,8 +187,9 @@ export function ProjectExplorer({ motion, play }: { motion: boolean; play: () =>
     window.addEventListener("hashchange", applyHash);
     return () => window.removeEventListener("hashchange", applyHash);
   }, []);
-  function choose(index: number) {
+  function choose(index: number, moveToHeading = false) {
     if (index === selected) return;
+    focusNext.current = moveToHeading;
     setSelected(index);
     resetCopy();
     play();
@@ -199,6 +210,7 @@ export function ProjectExplorer({ motion, play }: { motion: boolean; play: () =>
   }
   return (
     <div
+      id={STUDY_BROWSER_ID}
       className="o-projects lw-projects"
       data-study={project.id}
       data-motion={motion ? "on" : "off"}
@@ -289,7 +301,9 @@ export function ProjectExplorer({ motion, play }: { motion: boolean; play: () =>
         </div>
         <div className="o-project-heading">
           <div>
-            <h3>{project.title}</h3>
+            <h3 ref={heading} tabIndex={-1}>
+              {project.title}
+            </h3>
             <p>{project.subtitle}</p>
           </div>
           <div className="lw-heading-art" key={project.id} aria-hidden="true">
@@ -347,6 +361,22 @@ export function ProjectExplorer({ motion, play }: { motion: boolean; play: () =>
             />
           </div>
         )}
+        <a
+          className="o-study-continue"
+          href={nextProject ? `#build=${nextProject.id}` : "#universe"}
+          onClick={(event) => {
+            if (!nextProject || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
+              return;
+            event.preventDefault();
+            choose(selected + 1, true);
+          }}
+        >
+          <span>
+            <small>{nextProject ? `NEXT / ${nextProject.title}` : "STEP INTO THE UNIVERSE"}</small>
+            <strong>{nextProject ? STUDY_NOTES[nextProject.id].question : "See how these ideas connect."}</strong>
+          </span>
+          <Arrow />
+        </a>
       </div>
     </div>
   );

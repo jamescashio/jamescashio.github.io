@@ -1,153 +1,29 @@
-import { lazy, useEffect, useRef, useState, type MouseEvent } from "react";
-import { Arrow, Core, Starfield } from "./effects";
+import { useExperienceController } from "./experience-controller";
+import { ExperienceOverlays } from "./experience-overlays";
+import { HeroSection } from "./hero-section";
+import { BoundaryComparison } from "./boundary-comparison";
+import { useEffect, useRef, useState } from "react";
+import { Arrow, Core } from "./effects";
 import { useInteractionSound, useMotionPreference, useSectionVisibility } from "./hooks";
 import { FoldTransition } from "./event-horizon";
 import { useHeroAtmosphere, useHeroCoreAlignment } from "./horizon-hooks";
-import { HeroSignal } from "./hero-signal";
 import { OrbitInstrument } from "./orbit-instrument";
 import { MissionControl } from "./mission-control";
-import { OperatorInsignia } from "./operator-insignia";
+import { OperatorSection } from "./operator-section";
 import { SystemAtlas } from "./system-atlas";
 import { SovereignWorld } from "./sovereign-world";
 import { BrandMark } from "./brand-mark";
 import { Art } from "./artwork";
-import { HeroCinema } from "./hero-cinema";
-import { ExperienceGlyph, LightwakeAtmosphere, LightwakeControls } from "./lightwake-scene";
 import { ProjectExplorer } from "./project-explorer";
 import { BuildStory } from "./build-story";
-import { SceneBoundary } from "./scene-boundary";
 import { FLEET_EVIDENCE } from "./fleet-evidence";
-import { EvidenceConsole } from "./evidence-console";
-import { AuditStory } from "./audit-story";
+import { EvidenceSection } from "./evidence-section";
 import { Lineage } from "./flight-heritage";
-import type { LensingClip } from "./lensing-film";
-const FirstFlight = lazy(() => import("./first-flight"));
-const BrandStudio = lazy(() => import("./brand-studio"));
-const LensingObservatory = lazy(() => import("./lensing-observatory"));
-const LensingFilm = lazy(() => import("./lensing-film"));
-
-function resolveLauncher(opener: HTMLElement | null, fallback: string) {
-  return opener?.isConnected &&
-    opener !== document.body &&
-    opener !== document.documentElement &&
-    opener.getClientRects().length
-    ? opener
-    : ([...document.querySelectorAll<HTMLElement>(fallback)].find((element) => element.getClientRects().length) ??
-        null);
-}
-
 export function OdysseyApp() {
   const { motion, reduced, paused, setPaused } = useMotionPreference();
   const { sound, toggle, play } = useInteractionSound();
-  const [flight, setFlight] = useState<string | null>(null);
-  const [signature, setSignature] = useState(false);
-  const [lensing, setLensing] = useState(false);
-  const [film, setFilm] = useState(false);
-  const [filmClip, setFilmClip] = useState<LensingClip>("lightwake");
-  const [filmRouteRevision, setFilmRouteRevision] = useState(0);
-  const [lensArrival, setLensArrival] = useState(false);
-  const filmOpener = useRef<HTMLElement | null>(null);
-  const lensOpener = useRef<HTMLElement | null>(null);
-  const ambientMotion = motion && flight === null && !signature && !lensing && !film;
-  function openFilm(opener: HTMLElement, clip: LensingClip = "lightwake") {
-    filmOpener.current = opener;
-    setFilmClip(clip);
-    setFilm(true);
-  }
-  function openLensing(opener: HTMLElement) {
-    lensOpener.current = opener;
-    setLensArrival(false);
-    setLensing(true);
-  }
-  function enterFilmWorld() {
-    lensOpener.current = resolveLauncher(filmOpener.current, ".lens-film-link");
-    setLensArrival(true);
-    setFilm(false);
-    setLensing(true);
-    if (/^#film(?:=(?:awakening|signature|lightwake|sanctuary))?$/.test(location.hash))
-      history.replaceState(null, "", location.pathname + location.search);
-  }
-  const signatureOpener = useRef<HTMLElement | null>(null);
-  function watchSignature() {
-    filmOpener.current = resolveLauncher(signatureOpener.current, ".o-signature-link");
-    setSignature(false);
-    setFilmClip("signature");
-    setFilm(true);
-    if (location.hash === "#signature") history.replaceState(null, "", location.pathname + location.search);
-  }
-  function sculptFilmLight() {
-    signatureOpener.current = resolveLauncher(filmOpener.current, ".lens-film-link");
-    setFilm(false);
-    setSignature(true);
-    if (/^#film(?:=(?:awakening|signature|lightwake|sanctuary))?$/.test(location.hash))
-      history.replaceState(null, "", location.pathname + location.search);
-  }
-  function openSignature(event: MouseEvent<HTMLButtonElement>) {
-    signatureOpener.current = event.currentTarget;
-    setSignature(true);
-  }
-  const flightOpener = useRef<HTMLElement | null>(null);
-  function startFlight(event?: MouseEvent<HTMLButtonElement>) {
-    flightOpener.current = event?.currentTarget ?? (document.activeElement as HTMLElement);
-    setFlight("board");
-  }
-  useEffect(() => {
-    const readFlight = () => {
-      const value = location.hash.match(/^#flight=(board|hull|blackout|permission)$/)?.[1];
-      setFlight(value ?? null);
-      setSignature(location.hash === "#signature");
-      setLensing(location.hash === "#lensing");
-      setLensArrival(false);
-      const filmRoute = /^#film(?:=(?:awakening|signature|lightwake|sanctuary))?$/.test(location.hash);
-      setFilm(filmRoute);
-      if (filmRoute) setFilmRouteRevision((revision) => revision + 1);
-      setFilmClip(
-        location.hash === "#film"
-          ? "arrival"
-          : location.hash === "#film=awakening"
-            ? "awakening"
-            : location.hash === "#film=signature"
-              ? "signature"
-              : location.hash === "#film=sanctuary"
-                ? "sanctuary"
-                : "lightwake",
-      );
-    };
-    readFlight();
-    window.addEventListener("hashchange", readFlight);
-    return () => window.removeEventListener("hashchange", readFlight);
-  }, []);
-  function dismissScene(kind: "film" | "lensing" | "signature" | "flight") {
-    const scene = {
-      film: {
-        close: () => setFilm(false),
-        opener: filmOpener.current,
-        fallback: ".lens-film-link",
-        route: /^#film(?:=(?:awakening|signature|lightwake|sanctuary))?$/,
-      },
-      lensing: {
-        close: () => setLensing(false),
-        opener: lensOpener.current,
-        fallback: ".lens-observatory-link",
-        route: /^#lensing$/,
-      },
-      signature: {
-        close: () => setSignature(false),
-        opener: signatureOpener.current,
-        fallback: ".o-signature-link",
-        route: /^#signature$/,
-      },
-      flight: {
-        close: () => setFlight(null),
-        opener: flightOpener.current,
-        fallback: ".continuum-first-flight, .lens-flight-link, .lens-enter",
-        route: /^#flight=/,
-      },
-    }[kind];
-    scene.close();
-    if (scene.route.test(location.hash)) history.replaceState(null, "", location.pathname + location.search);
-    requestAnimationFrame(() => resolveLauncher(scene.opener, scene.fallback)?.focus({ preventScroll: true }));
-  }
+  const scenes = useExperienceController(motion);
+  const { flight, signature, lensing, film, ambientMotion, startFlight, openFilm, openSignature } = scenes;
   const [folding, setFolding] = useState(false);
   const [foldOrigin, setFoldOrigin] = useState<{ x: number; y: number } | undefined>(undefined);
   const [atlasNode, setAtlasNode] = useState(1);
@@ -367,111 +243,10 @@ export function OdysseyApp() {
             </a>
           ))}
         </nav>
-        <p>V37.12 / CONTINUUM / A HUMAN IN COMMAND</p>
+        <p>V37.13 / CONTINUUM / A HUMAN IN COMMAND</p>
       </dialog>
       <main id="o-main">
-        <section className="o-hero o-scene" id="top" aria-labelledby="hero-title" data-lightwake-light="dawn">
-          <Art name="orbit" eager className="o-hero-art" />
-          <div className="o-hero-shade" />
-          <div className="eh-hero-light" aria-hidden="true" />
-          <Starfield motion={ambientMotion} folding={folding} />
-          <LightwakeAtmosphere />
-          <div className="o-hero-content">
-            <div className="eh-release-mark">
-              <b>V37.12</b>
-              <span>CONTINUUM</span>
-            </div>
-            <span className="o-kicker">
-              <i />
-              DOUG CASHIO / AI · SECURITY · IMAGINATION
-            </span>
-            <h1 id="hero-title">
-              Own the iron.
-              <br />
-              Shape the
-              <br />
-              <em>possible.</em>
-            </h1>
-            <p>
-              I build AI and security tools that make complex decisions clear.
-              <br className="o-desktop-br" /> Where data goes. What it costs. When a human takes over.
-            </p>
-            <div className="o-hero-actions">
-              <button
-                className="o-button o-button-gold lens-enter continuum-first-flight"
-                type="button"
-                onClick={startFlight}
-              >
-                <span className="lens-enter-glyph" aria-hidden="true">
-                  ◉
-                </span>
-                <span>
-                  Take the 30-second flight<small>OPEN THE HULL. CUT THE CLOUD. KEEP COMMAND.</small>
-                </span>
-                <Arrow />
-              </button>
-              <a href="#work" className="o-text-button flight-work-link">
-                Explore the working studies <Arrow diagonal />
-              </a>
-            </div>
-            <div className="lens-hero-notes">
-              <span>Privacy.</span>
-              <i />
-              <span>Resilience.</span>
-              <i />
-              <span>Human control.</span>
-            </div>
-            <div className="lens-discover-links">
-              <button className="lens-film-link" type="button" onClick={(event) => openFilm(event.currentTarget)}>
-                <ExperienceGlyph kind="film" />
-                <span>Watch Lightwake</span>
-                <small>8-SECOND FILM</small>
-              </button>
-              <button className="o-signature-link" type="button" onClick={openSignature}>
-                <ExperienceGlyph kind="signature" />
-                <span>Sculpt the logo</span>
-                <small>TURN & IGNITE</small>
-              </button>
-              <button
-                className="lens-observatory-link"
-                type="button"
-                onClick={(event) => openLensing(event.currentTarget)}
-              >
-                <ExperienceGlyph kind="orbit" />
-                <span>Lensing Observatory</span>
-                <small>EXPLORE THE ORBIT</small>
-              </button>
-            </div>
-          </div>
-          <HeroCinema blocked={paused || flight !== null || signature || lensing || film} />
-          <LightwakeControls />
-          <button
-            className="o-core-hotspot"
-            onClick={fold}
-            disabled={folding}
-            aria-label="Bit, the human’s co-pilot. Initiate fold and explore ZeusApollo"
-          >
-            <HeroSignal />
-            <span className="o-core-ring" />
-            <span className="o-core-label">
-              BIT / HUMAN CO-PILOT
-              <br />
-              <b>{folding ? "FOLD INITIATED" : "INITIATE FOLD ↗"}</b>
-            </span>
-          </button>
-          <div className="o-hero-bottom">
-            <span className="o-micro">
-              <b>AN ORIGINAL ORBITAL WORLD</b> / 03
-            </span>
-            <button onClick={viewArt} className="o-art-link">
-              Original artwork
-              <Arrow diagonal />
-            </button>
-            <a href="#work" className="o-scroll-cue">
-              SCROLL TO DISCOVER<span>↓</span>
-            </a>
-          </div>
-        </section>
+        <HeroSection scenes={scenes} folding={folding} fold={fold} paused={paused} viewArt={viewArt} />
         <div className="o-principles" role="group" aria-label="Operating principles">
           <span>Own the infrastructure.</span>
           <Core />
@@ -491,14 +266,15 @@ export function OdysseyApp() {
               <em>See what changes.</em>
             </h2>
             <p>
-              Seven experiments in AI, security, and systems design.
+              One document. The same task. Now change its privacy boundary.
               <br />
-              Start with HERMES: match the work to a route, then test the privacy boundary.
-              <br />
-              <a className="o-text-button" href="#smart-routing">
-                Read the 26¢/day story and its dated evidence <Arrow diagonal />
-              </a>
+              Predict the route, then test the rule yourself.
             </p>
+          </div>
+          <BoundaryComparison />
+          <div className="perspective-study-intro">
+            <span className="o-kicker">GO DEEPER / SEVEN WORKING STUDIES</span>
+            <p>Change the inputs. Inspect the rule. Follow the evidence.</p>
           </div>
           <ProjectExplorer motion={ambientMotion} play={play} />
           <BuildStory />
@@ -598,8 +374,6 @@ export function OdysseyApp() {
               Step aboard. Open the hull. Trace twelve AI requests.
               <br />
               Cut the cloud link. See what stays with you.
-              <br />
-              <span className="o-muted">A spacecraft you can explore. An AI boundary you control.</span>
             </p>
           </div>
           <SovereignWorld motion={ambientMotion} />
@@ -620,11 +394,9 @@ export function OdysseyApp() {
               <em>in motion.</em>
             </h2>
             <p>
-              Ownership, evidence, and human authority shape the work.
+              Turn the instrument. Choose a principle.
               <br />
-              Select a principle to see how it changes a design decision.
-              <br />
-              <span className="o-muted">The orbit is the metaphor. The decisions are the point.</span>
+              See the design decision behind it.
             </p>
           </div>
           <OrbitInstrument motion={ambientMotion} onSelect={() => play()} />
@@ -633,85 +405,9 @@ export function OdysseyApp() {
             <Arrow />
           </a>
         </section>
-        <section className="o-evidence o-scene" id="evidence" aria-labelledby="evidence-title">
-          <div className="o-evidence-copy">
-            <span className="o-kicker">03 / THE EVIDENCE</span>
-            <h2 id="evidence-title">
-              Trust has
-              <br />a <em>timestamp.</em>
-            </h2>
-            <p>A beautiful dashboard is a beginning. Evidence needs a source, a date, and a clear boundary.</p>
-            <p className="o-muted">
-              E.V.E. reads the latest dated observation. Ask for the fleet, see what remains unverified, or compare the
-              historical archive. Guest runtime describes a process state; it does not establish application health,
-              successful recovery, or failover readiness.
-            </p>
-            <a href="/status.json" target="_blank" rel="noreferrer" className="o-text-button">
-              Read the latest dated export
-              <Arrow diagonal />
-            </a>
-            <div className="o-archive-dates">
-              <div>
-                <span>FLEET OBSERVATION</span>
-                <strong>{FLEET_EVIDENCE.verifiedLong}</strong>
-              </div>
-              <div>
-                <span>ROUTING INVENTORY</span>
-                <strong>Not verified</strong>
-              </div>
-            </div>
-            <a href={FLEET_EVIDENCE.archive.url} target="_blank" rel="noreferrer" className="o-text-button">
-              Compare the August archive <Arrow diagonal />
-            </a>
-            <AuditStory />
-          </div>
-          <EvidenceConsole onArt={viewArt} />
-        </section>
+        <EvidenceSection onArt={viewArt} />
         <Lineage />
-        <section className="o-operator o-scene" id="operator" aria-labelledby="operator-title">
-          <div className="o-section-top">
-            <span className="o-kicker">05 / THE OPERATOR</span>
-            <span className="o-micro">PENSACOLA, FLORIDA</span>
-          </div>
-          <div className="o-operator-layout">
-            <OperatorInsignia motion={ambientMotion} onExplore={openSignature} />
-            <div className="o-operator-copy">
-              <span className="o-kicker">DOUG CASHIO</span>
-              <h2 id="operator-title">
-                Endlessly curious.
-                <br />
-                <em>Personally accountable.</em>
-              </h2>
-              <p className="o-operator-lead">
-                Principal Solutions Consultant.
-                <br />
-                Independent systems builder.
-              </p>
-              <p>
-                I turn difficult system choices into something people can understand and test: where AI should run, what
-                information it can use, and which decisions need a person.
-              </p>
-              <p>
-                This is my independent workshop. I own and operate the hardware, build the tools, and publish what I can
-                verify. Science fiction supplies the imagination. Flight-test discipline keeps it honest.
-              </p>
-              <div className="o-operator-links">
-                <a href="https://www.linkedin.com/in/dougcashio" target="_blank" rel="noreferrer">
-                  LinkedIn
-                  <Arrow diagonal />
-                </a>
-                <a href="https://github.com/jamescashio" target="_blank" rel="noreferrer">
-                  GitHub
-                  <Arrow diagonal />
-                </a>
-                <a href="https://www.credly.com/users/james-cashio/badges/credly" target="_blank" rel="noreferrer">
-                  Credentials
-                  <Arrow diagonal />
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
+        <OperatorSection motion={ambientMotion} onExplore={openSignature} />
         <section className="o-contact o-scene" id="contact" aria-labelledby="contact-title">
           <div className="o-contact-orbit" aria-hidden="true" />
           <span className="o-kicker">06 / OPEN A CHANNEL</span>
@@ -762,72 +458,13 @@ export function OdysseyApp() {
           </div>
         </section>
       </main>
-      {film && (
-        <SceneBoundary name="Cinema" onClose={() => dismissScene("film")}>
-          <LensingFilm
-            key={`${filmClip}-${filmRouteRevision}`}
-            motion={motion}
-            initialClip={filmClip}
-            onExplore={enterFilmWorld}
-            onSignature={sculptFilmLight}
-            onWork={() => {
-              setFilm(false);
-              history.replaceState(null, "", location.pathname + location.search + "#work");
-              requestAnimationFrame(() => {
-                const heading = document.getElementById("work-title");
-                heading?.focus({ preventScroll: true });
-                heading?.scrollIntoView({ block: "start", behavior: "instant" });
-              });
-            }}
-            onClose={() => dismissScene("film")}
-          />
-        </SceneBoundary>
-      )}
-      {lensing && (
-        <SceneBoundary name="Lensing Observatory" onClose={() => dismissScene("lensing")}>
-          <LensingObservatory
-            motion={motion}
-            reduced={reduced}
-            initialPreset={lensArrival ? { light: "eclipse", view: "gate", resonance: true } : undefined}
-            onClose={() => dismissScene("lensing")}
-          />
-        </SceneBoundary>
-      )}
-      {signature && (
-        <SceneBoundary name="Celestial signature" onClose={() => dismissScene("signature")}>
-          <BrandStudio motion={motion} onWatch={watchSignature} onClose={() => dismissScene("signature")} />
-        </SceneBoundary>
-      )}
-      {flight !== null && (
-        <SceneBoundary name="First Flight" onClose={() => dismissScene("flight")}>
-          <FirstFlight
-            key={flight}
-            motion={motion}
-            initialStep={flight}
-            onClose={(destination) => {
-              setFlight(null);
-              if (destination) {
-                location.hash = destination;
-                requestAnimationFrame(() => {
-                  const target = document.getElementById(destination.startsWith("build=") ? "work" : destination);
-                  target?.scrollIntoView({ behavior: "instant" });
-                  const heading = target?.querySelector<HTMLElement>("h2");
-                  heading?.setAttribute("tabindex", "-1");
-                  heading?.focus({ preventScroll: true });
-                });
-              } else {
-                dismissScene("flight");
-              }
-            }}
-          />
-        </SceneBoundary>
-      )}
+      <ExperienceOverlays scenes={scenes} motion={motion} reduced={reduced} />
       <footer className="o-footer">
         <a href="#top" className="o-brand" aria-label="Cashio, back to the beginning">
           <BrandMark motion={ambientMotion} />
         </a>
         <span>
-          V37.12 / CONTINUUM
+          V37.13 / CONTINUUM
           <br />
           <small>Crafted with GPT-6 Astra · Directed by Doug Cashio</small>
         </span>
