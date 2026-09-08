@@ -33,24 +33,24 @@ class V37PromotionValidationTests(unittest.TestCase):
     def test_preview_is_explicit_and_cannot_pass_the_public_release_contract(self) -> None:
         manifest = {
             **json.loads(read("public/site-release.json")),
-            "experienceVersion": "37.10.0-preview.sanctuary",
+            "experienceVersion": "37.11.0-preview.sanctuary",
             "status": "preview",
             "published": False,
         }
         failures: list[str] = []
-        release_consistency.check_site_release(manifest, failures, preview=True, version="37.10.0-preview.sanctuary")
+        release_consistency.check_site_release(manifest, failures, preview=True, version="37.11.0-preview.sanctuary")
         self.assertEqual(failures, [])
         for changes in ({"published": True}, {"published": 0}, {"status": "released"}):
             failures = []
-            release_consistency.check_site_release({**manifest, **changes}, failures, preview=True, version="37.10.0-preview.sanctuary")
+            release_consistency.check_site_release({**manifest, **changes}, failures, preview=True, version="37.11.0-preview.sanctuary")
             self.assertTrue(failures)
         failures = []
-        release_consistency.check_site_release(manifest, failures, version="37.10.0")
+        release_consistency.check_site_release(manifest, failures, version="37.11.0")
         self.assertTrue(failures)
 
     def test_release_manifest_separates_software_identity_from_dated_evidence(self) -> None:
         manifest = {
-            "experienceVersion": "37.10.0",
+            "experienceVersion": "37.11.0",
             "releaseName": "THE HUMAN RECKONING",
             "visualEdition": "Lensing",
             "featuredExperience": "Lensing Observatory",
@@ -115,9 +115,28 @@ class V37PromotionValidationTests(unittest.TestCase):
 
 
 class V34ReleaseContractTests(unittest.TestCase):
+    def test_latest_evidence_rejects_scope_drift_and_borrowed_routing(self) -> None:
+        snapshot = json.loads(read("public/status.json"))
+        failures: list[str] = []
+        release_consistency.check_latest_public_evidence(snapshot, failures)
+        self.assertEqual(failures, [])
+        candidates = [
+            {**snapshot, "lanes": {"public": 10, "privateCatalog": 36}},
+            {**snapshot, "lanes": {"public": 0, "privateCatalog": None}},
+            {**snapshot, "containers": {**snapshot["containers"], "running": 20}},
+            {**snapshot, "virtualMachines": {"running": True, "documented": 1, "stopped": 0}},
+            {**snapshot, "expires": "2026-10-07"},
+            {**snapshot, "provenance": {**snapshot["provenance"], "observedAtUtc": "2026-09-08T00:00:00Z"}},
+        ]
+        for candidate in candidates:
+            with self.subTest(candidate=candidate):
+                failures = []
+                release_consistency.check_latest_public_evidence(candidate, failures)
+                self.assertTrue(failures)
+
     @classmethod
     def setUpClass(cls) -> None:
-        cls.status = json.loads(read("public/status.json"))
+        cls.status = json.loads(read("public/evidence/status-2026-08-28.json"))
         cls.store = read("src/lib/store.ts")
         cls.content = read("src/lib/content.ts")
         cls.deck = read("src/components/command-deck.tsx")
@@ -613,7 +632,7 @@ class V34ReleaseContractTests(unittest.TestCase):
 
     def test_v37_software_preserves_v35_archive_identity(self) -> None:
         package = json.loads(read("package.json"))
-        self.assertEqual(package["version"], "37.10.0")
+        self.assertEqual(package["version"], "37.11.0")
         self.assertIn('V35 "ALL TENS"', self.content)
         retired_candidate = "V" + "47"
         for relative in (
@@ -749,13 +768,14 @@ class V34ReleaseContractTests(unittest.TestCase):
     def test_eve_is_local_read_only_and_has_every_required_command(self) -> None:
         self.assertIn("LOCAL · READ ONLY · NO NETWORK CALLS", self.decks)
         self.assertIn("NO EGRESS", self.eve)
+        replies = self.eve + read("src/lib/eve-common.ts")
         for command in ("help", "status", "sitrep", "current", "fleet", "lanes", "whoami", "talk", "photo"):
-            self.assertIn(f'command === "{command}"', self.eve)
-        whoami = self.eve[self.eve.index('if (command === "whoami")') : self.eve.index('if (command === "talk"')]
+            self.assertIn(f'command === "{command}"', replies)
+        whoami = replies[replies.index('if (command === "whoami")') : replies.index('if (command === "talk"')]
         self.assertIn("OWNER · OPERATOR · HUMAN ACCOUNTABLE", whoami)
         self.assertNotIn("go:", whoami)
-        self.assertNotIn("dangerouslySetInnerHTML", self.eve)
-        fetches = re.findall(r"fetch\(\s*([\x60'\"])(.+?)\1", self.eve)
+        self.assertNotIn("dangerouslySetInnerHTML", replies)
+        fetches = re.findall(r"fetch\(\s*([\x60'\"])(.+?)\1", replies)
         self.assertEqual(fetches, [])
 
     def test_pages_workflow_and_root_base_are_locked(self) -> None:

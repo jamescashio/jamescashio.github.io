@@ -274,7 +274,7 @@
 /* An illuminated photographic interlude retains its own material palette. */
 .event-horizon.aurora .o-sanctuary:after {
   background:
-    linear-gradient(90deg, transparent 25%, #10263a72 52%, #061321f0), linear-gradient(0deg, #061321b8, transparent 30%);
+    linear-gradient(90deg, transparent 25%, #07131fbd 52%, #061321f0), linear-gradient(0deg, #061321b8, transparent 30%);
 }
 .event-horizon.aurora .o-sanctuary-copy {
   color: #f2f7fa;
@@ -499,64 +499,6 @@
 }
 .event-horizon.aurora .o-archive-dates strong {
   color: var(--a-paper);
-}
-.event-horizon.aurora .o-terminal {
-  background: #051727;
-  border-color: #77e7e773;
-  box-shadow: 0 20px 55px #020c1955;
-}
-.event-horizon.aurora .o-terminal-bar {
-  background: #0b253a;
-  border-color: #77e7e737;
-}
-.event-horizon.aurora .o-terminal-bar > span:first-child {
-  color: var(--a-cyan);
-}
-.event-horizon.aurora .o-terminal-bar > span:last-child {
-  color: #adc8d8;
-}
-.event-horizon.aurora .o-console-output {
-  color: #b4d8e3;
-  scrollbar-color: #427c92 transparent;
-}
-.event-horizon.aurora .o-console-output > .command,
-.event-horizon.aurora .o-terminal form > label {
-  color: var(--a-gold);
-}
-.event-horizon.aurora .o-terminal form {
-  border-color: #7cbbcb7a;
-}
-.event-horizon.aurora .o-terminal input {
-  color: var(--a-paper);
-}
-.event-horizon.aurora .o-terminal input::placeholder {
-  color: #9bb9cb;
-}
-.event-horizon.aurora .o-terminal input:focus-visible {
-  outline: 0;
-  box-shadow: inset 0 -2px var(--a-cyan);
-}
-.event-horizon.aurora .o-terminal form > button {
-  background: #183750;
-  border-color: #77e7e786;
-  color: var(--a-cyan);
-}
-.event-horizon.aurora .o-command-shortcuts button {
-  border-color: #699db16e;
-  color: #b9d3df;
-}
-.event-horizon.aurora .o-command-shortcuts button > span {
-  color: #98c2d3;
-}
-.event-horizon.aurora .o-command-shortcuts button:hover {
-  border-color: var(--a-cyan);
-  color: var(--a-cyan);
-}
-.event-horizon.aurora .o-terminal-foot {
-  color: #adc7d7;
-}
-.event-horizon.aurora .o-terminal-link {
-  color: var(--a-cyan);
 }
 
 /* Aviation stays photographic. The operator returns to daylight. */

@@ -2,10 +2,11 @@ import type { WorldInput } from "./sovereign-model";
 import type { FlightShot } from "./flight-shots";
 import type { ShipView } from "./world-renderer";
 
-export const FLIGHT_STEP_MS = 7500;
+export const FLIGHT_DURATION_MS = 30_000;
 export const FIRST_FLIGHT = [
   {
     id: "board",
+    durationMs: 5_000,
     shot: "arrival",
     title: "Your ship. Your boundary.",
     copy: "Twelve requests. Six contain private information. In this hybrid model, the private six stay aboard; the public six can use the cloud.",
@@ -17,6 +18,7 @@ export const FIRST_FLIGHT = [
   },
   {
     id: "hull",
+    durationMs: 6_500,
     shot: "inside",
     title: "Open it. Understand it.",
     copy: "The hull opens to reveal the onboard AI bay. Owned compute is a capability you can inspect, operate, and keep within your boundary.",
@@ -28,6 +30,7 @@ export const FIRST_FLIGHT = [
   },
   {
     id: "blackout",
+    durationMs: 11_000,
     shot: "isolation",
     title: "Cut the cloud. Keep going.",
     copy: "The relay is disconnected. All twelve requests now stay aboard. This illustration assumes the local models and hardware can handle the workload.",
@@ -39,6 +42,7 @@ export const FIRST_FLIGHT = [
   },
   {
     id: "permission",
+    durationMs: 7_500,
     shot: "command",
     title: "The final say is yours.",
     copy: "Now choose cloud-only processing for twelve private requests. With permission off, all twelve wait. A system should explain its boundary—and honor it.",
@@ -50,6 +54,7 @@ export const FIRST_FLIGHT = [
   },
 ] satisfies Array<{
   id: string;
+  durationMs: number;
   title: string;
   copy: string;
   takeaway: string;

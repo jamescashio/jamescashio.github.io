@@ -1,3 +1,19 @@
+# Unpublished refinement preview — First Flight
+
+Primary audience: technical peers and AI enthusiasts. Each of the seven studies exposes its executable rule, a boundary to test, the model's limits, and the supporting source. Shared links restore exact synthetic inputs; run and composition actions remain under visitor control. Keep the existing study identifiers and reject unsupported link fields.
+
+On phones, stack the study-note labels above their explanations. Use supported named groups for related controls. Keep every signature image in the initial HTML, and add offscreen decorative circuit detail when it becomes visible. No new dependency or media is required.
+
+Evidence refresh: the owner-run 7 September HERMES audit and its saved cluster resource record support 19 running LXC containers (Zeus 14, Apollo 5), one running QEMU virtual machine, two Proxmox hosts, and observed quorum. The fleet record was captured at 23:14:58 UTC; audit completion was 23:29:51 UTC. Publish no service-health, recovery, storage, cost, or routing guarantee from these counts. Routing values remain null. No future validity window is inferred. The latest export, homepage, atlas, and E.V.E. share one source; the 28 August V35 export is preserved at a versioned archive path. The preview remains unpublished.
+
+Make the existing Cashio world easier to enter, read, and operate. Preserve the original artwork, Bit, champagne gold, electric cyan, graphite, Oxanium, Exo, and Jet. Keep every study, film, observatory, and legacy route reachable.
+
+Use one primary thirty-second flight on desktop and phone. Give its blackout decision eleven seconds, make onboard continuity visible, and keep essential controls within reach while secondary request details expand on demand. All reading surfaces remain still, audio remains opt-in, and reduced motion keeps manual interaction available.
+
+Explain the HERMES study through its problem, decision, and observable result, supported by pinned public source. Keep infrastructure evidence on its original dates until a new authoritative report is supplied. Align the hero light with transforms to avoid a layout shift after hydration. Consolidate flight styles without raising delivery budgets or adding dependencies.
+
+This task authorizes a tested local preview only. Historical publication approvals below describe previous releases. Current baseline and rollback: `8248189c073928a45f1da05dd6d06e62a21df2f8` (V37.10 Continuum). Package the candidate with an explicit unpublished receipt and indexing disabled; production publication requires approval of the finished preview.
+
 # V37.10 — Continuum
 
 **Creative thesis:** The cinematic world becomes a place you can operate, and every spectacle leads to a clear human decision.

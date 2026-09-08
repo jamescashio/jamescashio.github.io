@@ -17,7 +17,7 @@ import {
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = path.join(ROOT, "dist");
 const RELEASE_NAME = "THE HUMAN RECKONING";
-const PAGE_TITLE = "Cashio V37.10 — Continuum | Doug Cashio";
+const PAGE_TITLE = "Cashio V37.11 — Continuum | Doug Cashio";
 const report = { passed: false, checks: [], failures: [], errors: [], warnings: [] };
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const argument = (name) =>
@@ -130,7 +130,7 @@ async function run() {
       const base = `http://127.0.0.1:${resources.server.address().port}`;
       const rootHtml = await fetch(`${base}/`).then((response) => response.text());
       assert.match(rootHtml, /data-prerendered="odyssey"/, "root must contain the prerendered V37 page");
-      assert.ok(rootHtml.includes(`<title>${PAGE_TITLE}</title>`), "root title must identify V37.10 Continuum");
+      assert.ok(rootHtml.includes(`<title>${PAGE_TITLE}</title>`), "root title must identify V37.11 Continuum");
       assert.match(rootHtml, /Own the iron/, "hero heading must exist before JavaScript");
       assert.doesNotMatch(
         rootHtml,
@@ -142,7 +142,7 @@ async function run() {
       const receipt = await receiptResponse.json();
       const packageJson = JSON.parse(await readFile(path.join(ROOT, "package.json"), "utf8"));
       assert.equal(receipt.experienceVersion, packageJson.version, "receipt and package versions must match");
-      assert.equal(receipt.experienceVersion, "37.10.0", "current receipt must be the V37.10 release");
+      assert.equal(receipt.experienceVersion, "37.11.0", "current receipt must be the V37.11 release");
       assert.equal(receipt.published, true, "release must be explicitly published");
       assert.equal(receipt.releaseName, RELEASE_NAME);
       assert.equal(receipt.visualEdition, "Lensing");
@@ -157,6 +157,30 @@ async function run() {
       });
       report.release = receipt;
       report.checks.push({ name: "Root prerender, release identity, and indexing", passed: true });
+
+      const evidenceResponse = await fetch(`${base}/status.json`);
+      assert.equal(evidenceResponse.status, 200);
+      const evidence = await evidenceResponse.json();
+      assert.deepEqual(evidence.containers, { running: 19, documented: 19, stopped: 0, zeus: 14, apollo: 5 });
+      assert.deepEqual(evidence.virtualMachines, { running: 1, documented: 1, stopped: 0 });
+      assert.deepEqual(evidence.lanes, { public: null, privateCatalog: null });
+      assert.equal(evidence.routingVerified, null);
+      assert.equal(evidence.expires, null);
+      assert.deepEqual(receipt.evidenceSnapshot, {
+        url: "/status.json",
+        fleetObserved: evidence.verified,
+        observedAtUtc: evidence.provenance.observedAtUtc,
+        routingObserved: null,
+      });
+      const archiveResponse = await fetch(`${base}${evidence.archive.url}`);
+      assert.equal(archiveResponse.status, 200);
+      const archiveText = await archiveResponse.text();
+      assert.equal(archiveText, await readFile(path.join(ROOT, "public", evidence.archive.url), "utf8"));
+      assert.equal(JSON.parse(archiveText).verified, "2026-08-28");
+      report.checks.push({
+        name: "Latest fleet export, unknown routing, and unchanged historical download",
+        passed: true,
+      });
 
       resources.profile = await mkdtemp(path.join(tmpdir(), "cashio-v36-"));
       resources.browser = spawn(
@@ -233,7 +257,13 @@ async function run() {
         await send("Input.dispatchMouseEvent", { type: "mouseReleased", ...point, button: "left", clickCount: 1 });
       };
       const pressKey = async (key, windowsVirtualKeyCode) => {
-        await send("Input.dispatchKeyEvent", { type: "rawKeyDown", key, code: key, windowsVirtualKeyCode });
+        await send("Input.dispatchKeyEvent", {
+          type: key === "Enter" ? "keyDown" : "rawKeyDown",
+          key,
+          code: key,
+          windowsVirtualKeyCode,
+          ...(key === "Enter" ? { text: "\r", unmodifiedText: "\r" } : {}),
+        });
         await send("Input.dispatchKeyEvent", { type: "keyUp", key, code: key, windowsVirtualKeyCode });
       };
       const layout = () =>
@@ -293,6 +323,282 @@ async function run() {
       );
       report.checks.push({ name: "Study deep link and native tab interaction", passed: true });
 
+      const studyCases = [
+        {
+          id: "hermes",
+          fragment: "#build=hermes&intent=analyze&private=1&sources=1",
+          toggles: [true, true],
+          intent: "Analyze",
+          run: true,
+          result: "Human review",
+        },
+        {
+          id: "cascade",
+          fragment: "#build=cascade&severity=25&confidence=74",
+          ranges: ["25", "74"],
+          result: "Gather evidence",
+        },
+        {
+          id: "exposure",
+          fragment: "#build=exposure&reachable=1&auth=1&critical=1",
+          toggles: [true, true, true],
+          result: "Review the boundary",
+        },
+        {
+          id: "briefing",
+          fragment: "#build=briefing&facts=routing",
+          toggles: [false, true, false],
+          run: true,
+          result: "Evidence before expansion.",
+        },
+        { id: "dashboards", fragment: "#build=dashboards&age=24", ranges: ["24"], result: "The evidence is stale." },
+        {
+          id: "signal",
+          fragment: "#build=signal&deviation=30&corroborated=1",
+          ranges: ["30"],
+          toggles: [true],
+          result: "Operator review",
+        },
+        {
+          id: "graphify",
+          fragment: "#build=graphify&module=adapter",
+          module: "Adapter",
+          result: "Adapter: 2 dependent modules",
+        },
+      ];
+      for (const study of studyCases) {
+        await navigate(`/?runtime=v37-settings-${study.id}${study.fragment}`, 320, 844);
+        await waitFor(
+          `document.querySelector('#tab-${study.id}')?.getAttribute('aria-selected') === 'true'`,
+          `${study.id} selected`,
+        );
+        if (study.ranges)
+          await waitFor(
+            `JSON.stringify([...document.querySelectorAll('.o-lab input[type="range"]')].map(input=>input.value)) === ${JSON.stringify(JSON.stringify(study.ranges))}`,
+            `${study.id} range settings restored`,
+          );
+        if (study.toggles)
+          await waitFor(
+            `JSON.stringify([...document.querySelectorAll('.o-lab input[type="checkbox"]')].map(input=>input.checked)) === ${JSON.stringify(JSON.stringify(study.toggles))}`,
+            `${study.id} toggle settings restored`,
+          );
+        if (study.intent)
+          assert.equal(
+            await evaluate(`document.querySelector('.o-segment [aria-pressed="true"]').textContent.trim()`),
+            study.intent,
+          );
+        if (study.module)
+          assert.equal(
+            await evaluate(`document.querySelector('.o-code-graph [aria-pressed="true"]').textContent.trim()`),
+            study.module,
+          );
+        if (study.run) await click(".o-run");
+        await waitFor(
+          `document.querySelector('.o-lab').textContent.includes(${JSON.stringify(study.result)})`,
+          `${study.id} reproduced outcome`,
+        );
+        if (study.id === "briefing") {
+          const result = await evaluate(`document.querySelector('.o-brief-output').textContent`);
+          assert.match(result, /did not establish a current routing inventory/);
+          assert.doesNotMatch(result, /19 LXC|10 model lanes/);
+        }
+        await click(".o-field-notes summary");
+        assert.ok(await evaluate(`document.querySelector('.o-field-notes').open`));
+        const note = await evaluate(`document.querySelector('.o-field-notes').textContent`);
+        for (const label of ["Rule", "Try this", "Boundary"]) assert.ok(note.includes(label));
+        const result = await layout();
+        assert.ok(result.scrollWidth <= 321 && result.bodyWidth <= 321, `${study.id} notes and output fit 320px`);
+        // Replace only the clipboard in this isolated test page; never touch the user's clipboard.
+        await evaluate(
+          `Object.defineProperty(navigator, 'clipboard', {configurable:true,value:{writeText:async(text)=>{window.__copiedStudy=text}}})`,
+        );
+        await click(".o-project-footer button");
+        await waitFor(
+          `document.querySelector('.o-project-footer button').textContent.includes('Settings link copied')`,
+          "settings copy confirmation",
+        );
+        assert.equal(await evaluate(`window.__copiedStudy`), `${base}/${study.fragment}`);
+      }
+      report.checks.push({
+        name: "Seven reproducible experiments, inspectable notes, and 320px settings sharing",
+        passed: true,
+      });
+
+      await navigate("/?runtime=v37-share-history#build=cascade&severity=25&confidence=74", 390, 844);
+      await waitFor(
+        `document.querySelector('.o-lab input[type="range"]')?.value === '25' && document.querySelectorAll('.o-lab input[type="range"]')[1]?.value === '74'`,
+        "initial saved cascade settings",
+      );
+      await send("Page.navigate", {
+        url: `${base}/?runtime=v37-share-history#build=cascade&severity=70&confidence=39`,
+      });
+      await waitFor(
+        `document.querySelector('.o-lab input[type="range"]')?.value === '70'`,
+        "same-study hash restores settings",
+      );
+      await evaluate("history.back()");
+      await waitFor(
+        `document.querySelector('.o-lab input[type="range"]')?.value === '25'`,
+        "back restores earlier settings",
+      );
+      await evaluate("history.forward()");
+      await waitFor(
+        `document.querySelector('.o-lab input[type="range"]')?.value === '70'`,
+        "forward restores later settings",
+      );
+      await evaluate(
+        `Object.defineProperty(navigator, 'clipboard', {configurable:true,value:{writeText:async()=>{throw new Error('Test clipboard denied')}}})`,
+      );
+      await click(".o-project-footer button");
+      await waitFor(`!!document.querySelector('.o-share-fallback input')`, "manual copy fallback");
+      assert.equal(
+        await evaluate(`document.querySelector('.o-share-fallback input').value`),
+        `${base}/#build=cascade&severity=70&confidence=39`,
+      );
+      await click(".o-share-fallback input");
+      assert.ok(
+        await evaluate(
+          `(() => {const input=document.querySelector('.o-share-fallback input');return input.selectionStart===0&&input.selectionEnd===input.value.length})()`,
+        ),
+        "fallback link selects completely",
+      );
+      assert.ok((await layout()).scrollWidth <= 391, "manual copy fallback fits a phone");
+      await click('.o-lab input[type="range"]');
+      await pressKey("Home", 36);
+      await waitFor(
+        `document.querySelector('.o-lab input[type="range"]').value === '0' && !document.querySelector('.o-share-fallback')`,
+        "editing settings clears stale copy feedback",
+      );
+      report.checks.push({
+        name: "Same-study restore, back/forward, manual copy fallback, and stale feedback reset",
+        passed: true,
+      });
+
+      await navigate("/?runtime=v37-current-evidence#evidence", 390, 844);
+      const factValues = await evaluate(
+        `[...document.querySelectorAll('.o-fact-rail strong')].map(item => item.textContent)`,
+      );
+      assert.deepEqual(factValues, ["02", "19", "01"]);
+      assert.match(await evaluate(`document.querySelector('.o-archive-dates').textContent`), /7 September 2026/);
+      assert.equal(await evaluate(`document.querySelector('.o-audit-story').open`), false);
+      await click(".o-audit-story summary");
+      await waitFor(`document.querySelector('.o-audit-story').open`, "real audit case expands");
+      assert.deepEqual(
+        await evaluate(
+          `[...document.querySelectorAll('.o-audit-story tbody tr')].map(row => [...row.children].map(cell => cell.textContent.trim()))`,
+        ),
+        [
+          ["LXC running", "18", "19"],
+          ["QEMU running", "Not recorded", "1"],
+          ["Public lanes", "10", "Not verified"],
+        ],
+      );
+      assert.deepEqual(
+        await evaluate(`[...document.querySelectorAll('.o-audit-story time')].map(time => time.dateTime)`),
+        ["2026-08-28", "2026-09-07", "2026-08-21"],
+      );
+      assert.match(
+        await evaluate(`document.querySelector('.o-audit-story').textContent`),
+        /does not mean no VM existed[\s\S]*not a demonstration of live AI routing/,
+      );
+      assert.ok((await layout()).scrollWidth <= 391, "expanded audit comparison fits a phone");
+      await pressKey("Enter", 13);
+      await waitFor(`!document.querySelector('.o-audit-story').open`, "keyboard closes the audit case");
+      report.checks.push({
+        name: "Real audit case preserves record scopes, independent dates, unknown routing, and keyboard disclosure",
+        passed: true,
+      });
+      await click(".o-command-shortcuts button:nth-child(1)");
+      await waitFor(
+        `document.querySelector('.o-console-output').textContent.includes('19 LXC CONTAINERS')`,
+        "current fleet response",
+      );
+      await click(".o-command-shortcuts button:nth-child(2)");
+      await waitFor(
+        `document.querySelector('.o-console-output').textContent.includes('Public lanes: Not verified')`,
+        "unverified routing response",
+      );
+      const responses = await evaluate(`document.querySelector('.o-console-output').textContent`);
+      assert.match(responses, /1 QEMU VIRTUAL MACHINE/);
+      assert.match(responses, /ZEUS · 14 CONTAINERS · APOLLO · 5 CONTAINERS/);
+      assert.doesNotMatch(responses, /18\/19|10 PUBLIC LANES|36 PRIVATE CATALOG|Public lanes: 0|VALID THROUGH/);
+      await click(".o-command-shortcuts button:nth-child(3)");
+      await waitFor(
+        `document.querySelector('.o-console-output').textContent.includes('V35 HISTORICAL ARCHIVE')`,
+        "explicit archive response",
+      );
+      assert.match(
+        await evaluate(`document.querySelector('.o-console-output').textContent`),
+        /28 August 2026 · Routing: 21 August 2026/,
+      );
+      report.checks.push({
+        name: "Visible fleet, current console aliases, and explicit archive comparison",
+        passed: true,
+      });
+
+      for (const [command, href, target] of [
+        ["lineage", "#lineage", "#lineage"],
+        ["builds", "#work", "#work"],
+        ["operator", "#operator", "#operator"],
+        ["routing", "#build=hermes", "#project-panel"],
+      ]) {
+        await click("#eve-command");
+        await send("Input.insertText", { text: command });
+        await pressKey("Enter", 13);
+        await waitFor(
+          `document.querySelector('.o-terminal-link')?.getAttribute('href') === ${JSON.stringify(href)}`,
+          `${command} names its real destination`,
+        );
+        await click(".o-terminal-link");
+        await waitFor(
+          `location.hash === ${JSON.stringify(href)} && (() => { const r = document.querySelector(${JSON.stringify(target)}).getBoundingClientRect(); return r.top < innerHeight && r.bottom > 100; })()`,
+          `${command} opens the corresponding visible section`,
+        );
+        if (command === "routing")
+          await waitFor(
+            `document.querySelector('#tab-hermes')?.getAttribute('aria-selected') === 'true'`,
+            "routing opens the HERMES study",
+          );
+      }
+      for (const command of ["constructor", "__proto__"]) {
+        await click("#eve-command");
+        await send("Input.insertText", { text: command });
+        await pressKey("Enter", 13);
+        await waitFor(
+          `document.querySelector('.o-console-output')?.textContent.includes(${JSON.stringify(`UNKNOWN COMMAND · ${command.toUpperCase()}`)}) && !document.querySelector('.o-terminal-link')`,
+          "unknown object keys produce text without breaking the console",
+        );
+      }
+      await click(".o-command-shortcuts button:nth-child(1)");
+      await waitFor(
+        `document.querySelector('.o-console-output')?.lastElementChild.textContent === 'DATED EXPORT · NO LIVE SYSTEM ACCESS'`,
+        "normal commands remain usable after unusual input",
+      );
+      report.checks.push({
+        name: "E.V.E. section links, HERMES model destination, and resilient unknown-command handling",
+        passed: true,
+      });
+
+      await navigate("/?runtime=v37-current-brief#build=briefing", 320, 844);
+      await waitFor(
+        `document.querySelector('#tab-briefing')?.getAttribute('aria-selected') === 'true'`,
+        "briefing deep link",
+      );
+      await click(".o-run");
+      await waitFor(
+        `document.querySelector('.o-brief-output').textContent.includes('19 LXC containers and 1 QEMU virtual machine')`,
+        "brief uses current container and VM scopes",
+      );
+      const brief = await evaluate(`document.querySelector('.o-brief-output').textContent`);
+      assert.match(brief, /7 September 2026/);
+      assert.doesNotMatch(brief, /18 of 19|10 model lanes|28 August/);
+      const briefLayout = await layout();
+      assert.ok(
+        briefLayout.scrollWidth <= 321 && briefLayout.bodyWidth <= 321,
+        "composed brief must fit a narrow phone",
+      );
+      report.checks.push({ name: "320px composed briefing uses the current dated export", passed: true });
+
       await navigate("/?runtime=v36-operator#operator");
       await waitFor(
         `(() => {const r = document.querySelector('#operator').getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0})()`,
@@ -302,6 +608,10 @@ async function run() {
         await evaluate(
           `!!document.querySelector('#operator .hc-identity') && !!document.querySelector('#operator .o-operator-copy')`,
         ),
+      );
+      await waitFor(
+        `!!document.querySelector('#operator .cashio-brand-mark svg')`,
+        "visible signature receives its circuit detail",
       );
       report.checks.push({ name: "Operator native anchor and readable biography", passed: true });
 
@@ -548,6 +858,112 @@ async function run() {
         evidence: chamber,
       });
 
+      await navigate("/?runtime=v37-flight-labels", 320, 844);
+      await click(".continuum-first-flight");
+      await waitFor(`document.querySelector('.first-flight')?.open`, "First Flight dialog");
+      const accessibleButtons = async () =>
+        (await send("Accessibility.getFullAXTree")).nodes
+          .filter((node) => !node.ignored && node.role?.value === "button")
+          .map((node) => node.name?.value.replace(/\s+/g, " ").trim());
+      const phoneNames = await accessibleButtons();
+      for (const name of ["01 Board", "02 Hull", "03 Blackout", "04 Command"])
+        assert.ok(phoneNames.includes(name), `phone speech input must match the visible label: ${name}`);
+      await click(".ff-chapters button:nth-child(3)");
+      await waitFor(
+        `document.querySelector('.ff-chapters button:nth-child(3)')?.getAttribute('aria-current') === 'step'`,
+        "Blackout chapter selection",
+      );
+      assert.deepEqual(
+        await evaluate(
+          `[...document.querySelectorAll('.ff-telemetry strong')].map(element => Number(element.textContent))`,
+        ),
+        [12, 0, 0],
+        "the named Blackout chapter must show the local continuity outcome",
+      );
+      await evaluate(`(() => {
+        const style = document.createElement('style'); style.id = 'runtime-text-spacing';
+        style.textContent = '* { line-height:1.5 !important; letter-spacing:.12em !important; word-spacing:.16em !important; } p { margin-bottom:2em !important; }';
+        document.head.append(style);
+      })()`);
+      const chapterSpacing = await evaluate(`[...document.querySelectorAll('.ff-chapters button')].map(button => {
+        const rect = button.getBoundingClientRect();
+        return {width:rect.width, height:rect.height, clipped:button.scrollWidth > button.clientWidth + 1};
+      })`);
+      assert.ok(chapterSpacing.every((button) => button.width >= 44 && button.height >= 44 && !button.clipped));
+      await evaluate(`document.getElementById('runtime-text-spacing').remove()`);
+      await send("Emulation.setDeviceMetricsOverride", {
+        width: 1440,
+        height: 1000,
+        deviceScaleFactor: 1,
+        mobile: false,
+      });
+      await waitFor(
+        `getComputedStyle(document.querySelector('.ff-chapter-name')).display !== 'none'`,
+        "full chapter names after desktop resize",
+      );
+      const desktopNames = await accessibleButtons();
+      for (const name of ["01 Board", "02 Open the hull", "03 Cut the cloud", "04 Human command"])
+        assert.ok(desktopNames.includes(name), `desktop speech input must match the visible label: ${name}`);
+      await pressKey("Escape", 27);
+      await waitFor(`!document.querySelector('.first-flight')`, "close First Flight");
+      assert.equal(await evaluate(`document.activeElement?.classList.contains('continuum-first-flight')`), true);
+      report.checks.push({
+        name: "First Flight speech labels, phone text spacing, outcome, resize, and focus restoration",
+        passed: true,
+        evidence: {
+          phoneNames: phoneNames.filter((name) => /^0[1-4] /.test(name)),
+          desktopNames: desktopNames.filter((name) => /^0[1-4] /.test(name)),
+          chapterSpacing,
+        },
+      });
+
+      await navigate("/?runtime=v37-case-study#build=graphify", 320, 844);
+      await waitFor(
+        `document.querySelector('#tab-graphify')?.getAttribute('aria-selected') === 'true'`,
+        "Graphify before comparison",
+      );
+      const comparison = [];
+      for (const privateData of [false, true]) {
+        await click(`.o-story-comparison a:nth-child(${privateData ? 2 : 1})`);
+        await waitFor(
+          `document.activeElement?.classList.contains('o-run') && document.querySelector('.o-toggle input')?.checked === ${privateData}`,
+          "comparison controls and keyboard focus",
+        );
+        const state = await evaluate(`(() => {
+          const button = document.querySelector('.o-run'); const rect = button.getBoundingClientRect();
+          return {intent:document.querySelector('.o-segment [aria-pressed="true"]').textContent,
+            sources:document.querySelectorAll('.o-toggle input')[1].checked,
+            result:document.querySelector('.o-result h4').textContent,
+            visible:rect.top >= document.querySelector('.o-header').getBoundingClientRect().bottom && rect.bottom <= innerHeight};
+        })()`);
+        assert.deepEqual(state, {
+          intent: "Analyze",
+          sources: true,
+          result: "Your intent. A reasoned route.",
+          visible: true,
+        });
+        await click(".o-run");
+        const outcome = privateData ? "Human review" : "Research";
+        await waitFor(
+          `document.querySelector('.o-result h4')?.textContent === ${JSON.stringify(outcome)}`,
+          "comparison result",
+        );
+        comparison.push({ privateData, outcome, ...state });
+        if (!privateData) {
+          await click(".o-toggle");
+          await click(".o-story-comparison a:first-child");
+          await waitFor(
+            `!document.querySelector('.o-toggle input').checked && document.querySelector('.o-result h4').textContent === 'Your intent. A reasoned route.' && document.activeElement?.classList.contains('o-run')`,
+            "same comparison link resets edited inputs without running",
+          );
+        }
+      }
+      report.checks.push({
+        name: "HERMES comparison presets, visible keyboard entry, explicit execution, and repeat reset",
+        passed: true,
+        evidence: comparison,
+      });
+
       await send("Emulation.setScriptExecutionDisabled", { value: true });
       await navigate("/?runtime=v36-no-js", 320, 844);
       const noJs = await layout();
@@ -574,7 +990,7 @@ async function run() {
       );
       report.checks.push({ name: "Legacy deck bookmark preserves query and hash", passed: true });
       await navigate("/odyssey.html?runtime=v36-alias");
-      assert.equal(await evaluate("document.title"), PAGE_TITLE, "Odyssey alias must retain V37.10 Continuum");
+      assert.equal(await evaluate("document.title"), PAGE_TITLE, "Odyssey alias must retain V37.11 Continuum");
       report.checks.push({ name: "Odyssey alias remains available", passed: true });
       assert.deepEqual(report.errors, [], "no runtime exceptions or console errors");
       report.checks.push({ name: "No runtime errors", passed: true });

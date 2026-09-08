@@ -221,7 +221,7 @@ export function SystemAtlas({
                 : "About 8 seconds · conceptual, not live routing"}
         </small>
       </div>
-      <div className="o-atlas sa-chart" aria-label="Explore the public system architecture">
+      <div className="o-atlas sa-chart" role="group" aria-label="Explore the public system architecture">
         <div className="sa-chart-label" aria-hidden="true">
           <span>SYSTEM ATLAS</span>
           <span>CONCEPTUAL VIEW</span>

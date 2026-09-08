@@ -1,14 +1,57 @@
 {
-  "release": "V35 ALL TENS",
-  "revised": "2026-08-28",
+  "release": "V37.11",
+  "revised": "2026-09-08",
   "status": "dated-export",
-  "verified": "2026-08-28",
-  "verifiedLong": "28 August 2026",
-  "expires": "2026-09-27",
-  "proxmox": { "version": "9.2.11", "hostsOnline": 2, "quorate": true },
-  "containers": { "running": 18, "documented": 19, "stopped": 1, "zeus": 12, "apollo": 6 },
-  "lanes": { "public": 10, "privateCatalog": 36 },
-  "routingVerified": "2026-08-21",
+  "verified": "2026-09-07",
+  "verifiedLong": "7 September 2026",
+  "expires": null,
+  "proxmox": {
+    "version": "9.2.11",
+    "hostsOnline": 2,
+    "quorate": true
+  },
+  "containers": {
+    "running": 19,
+    "documented": 19,
+    "stopped": 0,
+    "zeus": 14,
+    "apollo": 5
+  },
+  "lanes": {
+    "public": null,
+    "privateCatalog": null
+  },
+  "routingVerified": null,
   "law": "Quality picks the model. Cost only breaks a tie.",
-  "note": "Read-only, dated public-safe export from an owner-run aggregate probe on 28 August 2026. Valid through 27 September 2026 in America/Chicago. This static file makes no production network calls."
+  "note": "Owner-run read-only observation of 7 September 2026. Counts describe LXC containers and QEMU virtual machines, not application health. This static export makes no production network calls and establishes no future health window. It does not establish backup coverage, demonstrated recovery, storage redundancy, failover readiness, or model-routing behavior.",
+  "withheldReasons": {
+    "lanes.public": "The current page and older status export say 10 public lanes, but this audit did not produce a current public-lane inventory or execution record.",
+    "lanes.privateCatalog": "The private model catalog is not a public-safe infrastructure fact and was not refreshed for publication.",
+    "routingVerified": "Current configuration and historical session metadata are not a current end-to-end routing verification."
+  },
+  "provenance": {
+    "observedAtUtc": "2026-09-07T23:14:58.5008542Z",
+    "observedAtAmericaChicago": "2026-09-07T18:14:58.5008542-05:00",
+    "methods": {
+      "proxmox": "Live Proxmox cluster quorum/status and guest inventory checks; both nodes reported pve-manager 9.2.11.",
+      "containers": "Counted LXC guests from the live cluster resources endpoint and cross-checked with direct pct/qm lists.",
+      "lanes": "Withheld because no current public-lane inventory and execution record were established.",
+      "publication": "The owner-run audit produced an unpublished proposal. Its reviewed public subset was subsequently approved for publication with Cashio.us V37.11; the observation timestamps remain those of the original audit.",
+      "virtualMachines": "One running QEMU guest in the cluster resource record, cross-checked with the direct owning-node list."
+    },
+    "auditCollectedAtUtc": "2026-09-07T23:29:51.3400781Z",
+    "sourceProposalSha256": "8b0b042822f052ff72a4b9429ea5c1664f27b34ea5a39860b63a7f9f05a1ab88"
+  },
+  "schemaVersion": 2,
+  "virtualMachines": {
+    "running": 1,
+    "documented": 1,
+    "stopped": 0
+  },
+  "archive": {
+    "url": "/evidence/status-2026-08-28.json",
+    "release": "V35 ALL TENS",
+    "fleetObserved": "2026-08-28",
+    "routingObserved": "2026-08-21"
+  }
 }

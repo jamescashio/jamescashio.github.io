@@ -96,7 +96,7 @@ function expandScript(scripts, name, seen = new Set()) {
 
 test("V37 software gates preserve the independent V35 dated evidence", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "37.10.0");
+  assert.equal(packageJson.version, "37.11.0");
   const lock = JSON.parse(await read("package-lock.json"));
   assert.equal(lock.version, packageJson.version);
   assert.equal(lock.packages[""].version, packageJson.version);
@@ -159,12 +159,25 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
   const status = JSON.parse(await read("status.json"));
   const publicStatus = JSON.parse(await read("public/status.json"));
   assert.deepEqual(status, publicStatus);
-  assert.equal(status.release, "V35 ALL TENS");
-  assert.equal(status.revised, "2026-08-28");
-  assert.equal(status.verified, "2026-08-28");
-  assert.equal(status.expires, "2026-09-27");
-  assert.deepEqual(status.containers, { running: 18, documented: 19, stopped: 1, zeus: 12, apollo: 6 });
-  assert.equal(status.routingVerified, "2026-08-21");
+  const archive = JSON.parse(await read("public/evidence/status-2026-08-28.json"));
+  assert.equal(archive.release, "V35 ALL TENS");
+  assert.equal(archive.revised, "2026-08-28");
+  assert.equal(archive.verified, "2026-08-28");
+  assert.equal(archive.expires, "2026-09-27");
+  assert.deepEqual(archive.containers, { running: 18, documented: 19, stopped: 1, zeus: 12, apollo: 6 });
+  assert.equal(archive.routingVerified, "2026-08-21");
+  assert.equal(status.verified, "2026-09-07");
+  assert.equal(status.routingVerified, null);
+  assert.deepEqual(status.lanes, { public: null, privateCatalog: null });
+  assert.equal(await read("dist/status.json"), await read("public/status.json"));
+  assert.equal(await read(`dist${status.archive.url}`), await read(`public${status.archive.url}`));
+  const receipt = JSON.parse(await read("dist/site-release.json"));
+  assert.deepEqual(receipt.evidenceSnapshot, {
+    url: "/status.json",
+    fleetObserved: status.verified,
+    observedAtUtc: status.provenance.observedAtUtc,
+    routingObserved: null,
+  });
 });
 
 test("the responsive command poster assets meet their exact dimensions and byte budgets", async () => {
@@ -291,7 +304,7 @@ test("the homepage and Odyssey alias ship the same complete V37 story with a usa
     } else {
       assert.match(robots, /noindex/i, "the compatibility alias must not compete with the canonical homepage");
     }
-    assert.equal(document.title, "Cashio V37.10 — Continuum | Doug Cashio");
+    assert.equal(document.title, "Cashio V37.11 — Continuum | Doug Cashio");
     const compatibility = document.querySelector("head script#legacy-bookmark-route");
     assert.ok(compatibility, "legacy fragments must be handled before the page activates");
     for (const attr of ["src", "type", "async", "defer"]) assert.equal(compatibility.hasAttribute(attr), false);
@@ -329,7 +342,7 @@ test("the homepage and Odyssey alias ship the same complete V37 story with a usa
 
 test("V37 release manifests agree without redating the independent evidence archive", async () => {
   const manifest = JSON.parse(await read("public/site-release.json"));
-  assert.equal(manifest.experienceVersion, "37.10.0");
+  assert.equal(manifest.experienceVersion, "37.11.0");
   assert.equal(manifest.releaseName, "THE HUMAN RECKONING");
   assert.equal(manifest.visualEdition, "Lensing");
   assert.equal(manifest.featuredExperience, "Lensing Observatory");

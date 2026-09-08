@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LINEAGE, LINEAGE_EVIDENCE } from "../lib/content";
+import { LINEAGE, LINEAGE_EVIDENCE } from "../lib/flight-lineage";
 import { Arrow } from "./effects";
 
 export function Lineage() {
@@ -19,7 +19,7 @@ export function Lineage() {
             <em>test pilot’s mind.</em>
           </h2>
           <p className="o-section-intro">The future rewards imagination. Flight teaches you to prove it.</p>
-          <div className="o-pilots" aria-label="Flight inspirations">
+          <div className="o-pilots" role="group" aria-label="Flight inspirations">
             {LINEAGE.map((pilot, i) => (
               <button key={pilot.name} aria-pressed={selected === i} onClick={() => setSelected(i)}>
                 {pilot.name === "K. JOHNSON" ? "Johnson" : pilot.name.charAt(0) + pilot.name.slice(1).toLowerCase()}

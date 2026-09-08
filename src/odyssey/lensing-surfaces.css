@@ -323,16 +323,6 @@
 .event-horizon.aurora.lensing .o-evidence-copy > .o-kicker {
   color: var(--ln-gold);
 }
-.event-horizon.aurora.lensing .o-terminal {
-  border-color: #a68b606e;
-  box-shadow:
-    0 25px 60px #01061099,
-    inset 0 1px #edc99126;
-}
-.event-horizon.aurora.lensing .o-terminal-bar {
-  background: linear-gradient(100deg, #242d32, #132334);
-  border-bottom-color: #ac915e4d;
-}
 .event-horizon.aurora.lensing .o-archive-dates {
   border-top: 1px solid #b59a6838;
   padding-top: 22px;
@@ -458,8 +448,6 @@
   .event-horizon.aurora.lensing .o-fact-rail {
     margin-top: 35px;
   }
-}
-@media (prefers-reduced-motion: reduce) {
 }
 @media (forced-colors: active) {
   .event-horizon.aurora.lensing .o-project-index [role="tab"] {

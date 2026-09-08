@@ -1,7 +1,7 @@
 {
   "name": "cashio-us",
   "private": true,
-  "version": "37.10.0",
+  "version": "37.11.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -15,7 +15,7 @@
     "preview": "vite preview",
     "test:node": "node --import tsx --test tests/a11y-performance.test.mjs tests/animation-timing.test.mjs tests/audio-policy.test.mjs tests/client-activation.test.mjs tests/craft-lineage.test.mjs tests/deck-navigation.test.mjs tests/flight-experience.test.mjs tests/flight-plan.test.mjs tests/guided-experience.test.mjs tests/hud-layout.test.mjs tests/layout-verifier.test.mjs tests/mobile-builds-order.test.mjs tests/module-boundaries.test.mjs tests/plate-optimization.test.mjs tests/power-on.test.mjs tests/prerender.test.mjs tests/release-validity.test.mjs tests/stage-textures.test.mjs tests/viewscreen-visibility.test.mjs",
     "test:artifact": "node --import tsx --test tests/release-gates.test.mjs",
-    "test:odyssey": "node --import tsx --test tests/odyssey-models.test.mjs tests/sovereign-model.test.mjs tests/first-flight.test.mjs tests/hull-reveal.test.mjs tests/flight-shots.test.mjs tests/flight-requests.test.mjs tests/ship-energy.test.mjs",
+    "test:odyssey": "node --import tsx --test tests/odyssey-models.test.mjs tests/public-console.test.mjs tests/sovereign-model.test.mjs tests/first-flight.test.mjs tests/hull-reveal.test.mjs tests/flight-shots.test.mjs tests/flight-requests.test.mjs tests/ship-energy.test.mjs",
     "test:release": "python -m unittest tests.test_v32_release tests.test_public_repo_guard tests.test_committed_whitespace",
     "test": "npm run test:node && npm run test:odyssey && npm run build && npm run test:artifact && npm run test:release",
     "verify": "npm run lint && npm run format:check && npm run test:node && npm run test:odyssey && npm run build && npm run test:artifact && npm run check:layout:runtime && npm run check:v36:runtime && npm run test:release && python scripts/public_repo_guard.py && python scripts/check_release_consistency.py && python scripts/check_committed_whitespace.py",

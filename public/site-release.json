@@ -1,5 +1,5 @@
 {
-  "experienceVersion": "37.10.0",
+  "experienceVersion": "37.11.0",
   "releaseName": "THE HUMAN RECKONING",
   "visualEdition": "Lensing",
   "featuredExperience": "Lensing Observatory",
@@ -11,6 +11,12 @@
     "fleetObserved": "2026-08-28",
     "routingObserved": "2026-08-21"
   },
-  "statement": "A new interactive experience over the existing dated public archive; this release does not establish current infrastructure state.",
-  "legacyEntry": "/command-deck.html"
+  "statement": "The website experience, latest dated infrastructure observation, and preserved V35 archive have separate identities. Neither the website nor its demonstrations establish live service health or model-routing behavior.",
+  "legacyEntry": "/command-deck.html",
+  "evidenceSnapshot": {
+    "url": "/status.json",
+    "fleetObserved": "2026-09-07",
+    "observedAtUtc": "2026-09-07T23:14:58.5008542Z",
+    "routingObserved": null
+  }
 }

@@ -279,3 +279,29 @@
 .event-horizon.aurora.lensing .lw-projects[data-motion="off"] .o-project-index [role="tab"] {
   transition: none;
 }
+.o-share-fallback {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+.o-share-fallback input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #668b98;
+  border-radius: 0;
+  color: #dbedf0;
+  background: #071923;
+  font:
+    400 12px/1.5 Jet,
+    monospace;
+}
+@media (max-width: 600px) {
+  .lw-projects .o-field-notes dl > div {
+    flex-direction: column;
+    gap: 4px;
+    margin: 18px 0;
+  }
+}

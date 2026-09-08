@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   FIRST_FLIGHT,
-  FLIGHT_STEP_MS,
+  FLIGHT_DURATION_MS,
   flightStepIndex,
   missionHash,
   parseMissionHash,
@@ -10,7 +10,13 @@ import {
 import { computeWorldOutcome } from "../src/odyssey/sovereign-model.ts";
 
 test("the thirty-second narrative agrees with the routing model at every chapter", () => {
-  assert.equal(FLIGHT_STEP_MS * FIRST_FLIGHT.length, 30000);
+  assert.equal(
+    FIRST_FLIGHT.reduce((total, scene) => total + scene.durationMs, 0),
+    FLIGHT_DURATION_MS,
+  );
+  assert.equal(FLIGHT_DURATION_MS, 30000);
+  assert.ok(FIRST_FLIGHT.every((scene) => scene.durationMs >= 5000));
+  assert.ok(FIRST_FLIGHT[2].durationMs > FIRST_FLIGHT[0].durationMs, "connection loss needs time to read and compare");
   assert.deepEqual(
     FIRST_FLIGHT.map((s) => {
       const o = computeWorldOutcome(s.input);

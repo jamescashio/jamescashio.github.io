@@ -17,10 +17,12 @@ import "./operator-insignia.css";
 import "./lightfold.css";
 import "./lensing-preview.css";
 import "./lensing-surfaces.css";
+import "./evidence-console.css";
 import "./lightwake.css";
 import "./project-explorer-lightwake.css";
 import "./hero-cinema.css";
 import "./build-story.css";
+import "./audit-story.css";
 
 const root = document.getElementById("odyssey-root")!;
 const app = (

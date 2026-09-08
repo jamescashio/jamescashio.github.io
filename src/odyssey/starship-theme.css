@@ -183,7 +183,15 @@
   font-size: 14px;
 }
 .sw-share-mission button {
+  appearance: none;
   min-height: 44px;
+  border: 1px solid #82cce5;
+  background: #102d42;
+  color: #eaf5fa;
+}
+.sw-share-mission button:hover {
+  border-color: #b8eafb;
+  background: #173b52;
 }
 @media (max-width: 1100px) {
   .event-horizon.aurora .o-header {
