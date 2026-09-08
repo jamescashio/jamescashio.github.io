@@ -224,10 +224,30 @@ async function run() {
           throw new Error(result.exceptionDetails.exception?.description ?? result.exceptionDetails.text);
         return result.result.value;
       };
+      // Send values as protocol arguments instead of constructing JavaScript from them.
+      const evaluateFunction = async (functionDeclaration, values) => {
+        const context = await send("Runtime.evaluate", { expression: "globalThis" });
+        const objectId = context.result.objectId;
+        assert.ok(objectId, "the current page must expose its execution context");
+        try {
+          const result = await send("Runtime.callFunctionOn", {
+            objectId,
+            functionDeclaration,
+            arguments: values.map((value) => ({ value })),
+            returnByValue: true,
+            awaitPromise: true,
+          });
+          if (result.exceptionDetails)
+            throw new Error(result.exceptionDetails.exception?.description ?? result.exceptionDetails.text);
+          return result.result.value;
+        } finally {
+          await send("Runtime.releaseObject", { objectId });
+        }
+      };
       const waitFor = async (expression, description, timeout = 15_000) => {
         const end = Date.now() + timeout;
         while (Date.now() < end) {
-          if (await evaluate(expression)) return;
+          if (await (typeof expression === "function" ? expression() : evaluate(expression))) return;
           await delay(80);
         }
         throw new Error(`timed out waiting for ${description}`);
@@ -553,7 +573,16 @@ async function run() {
         );
         await click(".o-terminal-link");
         await waitFor(
-          `location.hash === ${JSON.stringify(href)} && (() => { const r = document.querySelector(${JSON.stringify(target)}).getBoundingClientRect(); return r.top < innerHeight && r.bottom > 100; })()`,
+          () =>
+            evaluateFunction(
+              `function(expectedHash, selector) {
+                const element = document.querySelector(selector);
+                if (!element || location.hash !== expectedHash) return false;
+                const rect = element.getBoundingClientRect();
+                return rect.top < innerHeight && rect.bottom > 100;
+              }`,
+              [href, target],
+            ),
           `${command} opens the corresponding visible section`,
         );
         if (command === "routing")

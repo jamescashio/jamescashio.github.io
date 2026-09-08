@@ -1,5 +1,14 @@
 # Changelog
 
+## V37.11 — Continuum
+
+- Make First Flight the primary invitation, extend its blackout chapter, and keep essential phone controls reachable with manual motion-off chapters.
+- Explain all seven study rules and boundaries, support reproducible settings links, and compare HERMES public and private request handling through explicit visitor actions.
+- Publish the reviewed 7 September fleet observation and a real audit comparison while preserving its timestamps, unverified routing, and unchanged August archive.
+- Improve artwork contrast, accessible names, keyboard focus, phone labels, and WebKit mission-share contrast while stabilizing Bit's alignment.
+- Consolidate shared evidence, console data, and E.V.E. styles; fix command destinations and unusual-input recovery without changing the established artwork, films, or legacy routes.
+- Synchronize browser checks with restored study settings and pass destination values as structured browser-protocol arguments.
+
 ## V37.10 — Continuum
 
 - Connect the Sanctuary film to an original 3D chamber with selectable monoliths and core, camera and light controls, and a finite six-second awakening.
