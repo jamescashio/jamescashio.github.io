@@ -228,6 +228,10 @@ export async function checkJourney({ navigate, evaluate, click, pressKey, waitFo
   );
   await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
   await navigate("/?runtime=journey-reduced#build=hermes&intent=analyze&private=1&sources=1", 320, 844);
+  await waitFor(
+    "document.querySelector('.o-segment [aria-pressed=true]')?.textContent === 'Analyze' && document.querySelectorAll('.o-toggle input')[0]?.checked && document.querySelectorAll('.o-toggle input')[1]?.checked && document.querySelector('[aria-label=\"Motion off — follows your system preference\"]')?.disabled",
+    "hydrated deep-link inputs and system motion preference",
+  );
   await click(".o-run");
   await waitFor("!!document.querySelector('.o-human-review')", "reduced-motion human signal");
   assert.equal(
