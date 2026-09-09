@@ -28,7 +28,7 @@ export function FlightRecap({ decision, visitorChoice }: { decision: FlightDecis
         ))}
       </div>
       <p>{recap.after.summary}</p>
-      <small>{recap.after.takeaway} Same twelve requests; only the selected boundary changes.</small>
+      <small>Same twelve requests. One boundary changed.</small>
     </section>
   );
 }

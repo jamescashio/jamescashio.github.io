@@ -236,13 +236,6 @@
   letter-spacing: -0.03em;
   color: #f7e8d0;
 }
-.event-horizon.aurora.lensing .o-field-notes {
-  margin-top: 30px;
-}
-.event-horizon.aurora.lensing .o-field-notes summary {
-  border-color: var(--ln-rule);
-  color: #e9cfaa;
-}
 .event-horizon.aurora.lensing .o-project-footer {
   padding-top: 24px;
   color: #a3b2c0;

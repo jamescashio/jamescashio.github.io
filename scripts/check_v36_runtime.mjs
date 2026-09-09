@@ -7,7 +7,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { checkPerspective } from "./perspective-runtime.mjs";
-import { captureWorkshop, checkJourney, measureJourney } from "./journey-runtime.mjs";
+import { captureWorkshop, checkJourney, checkFlightEnding, measureJourney } from "./journey-runtime.mjs";
 
 import {
   browserExitDiagnostic,
@@ -304,6 +304,7 @@ async function run() {
       }
       if (argument("journey-only") === "true") {
         await checkJourney({ navigate, evaluate, click, pressKey, waitFor, send, report });
+        await checkFlightEnding({ navigate, evaluate, click, pressKey, waitFor, send, report });
         return;
       }
       if (argument("measure-journey") === "true") {
@@ -1015,6 +1016,7 @@ async function run() {
 
       await checkPerspective({ navigate, evaluate, click, pressKey, waitFor, report, send });
       await checkJourney({ navigate, evaluate, click, pressKey, waitFor, report, send });
+      await checkFlightEnding({ navigate, evaluate, click, pressKey, waitFor, report, send });
 
       await send("Emulation.setScriptExecutionDisabled", { value: true });
       await navigate("/?runtime=v36-no-js", 320, 844);

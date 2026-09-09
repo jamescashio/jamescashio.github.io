@@ -121,6 +121,20 @@ export async function captureWorkshop({ navigate, evaluate, click, waitFor, send
 }
 
 export async function checkJourney({ navigate, evaluate, click, pressKey, waitFor, send, report }) {
+  const audit = async (state) => {
+    if (!process.env.JOURNEY_AXE_PATH) return;
+    const scan =
+      await evaluate(`axe.run(document, {runOnly:{type:'tag', values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}}).then(r => ({
+      violations:r.violations.map(v=>({id:v.id,impact:v.impact,help:v.help,nodes:v.nodes.map(n=>({target:n.target,summary:n.failureSummary}))})),
+      passedRules:r.passes.length,manualReviewRules:r.incomplete.map(v=>v.id)
+    }))`);
+    (report.accessibility ??= []).push({ state, ...scan });
+  };
+  if (process.env.JOURNEY_AXE_PATH) {
+    await send("Page.addScriptToEvaluateOnNewDocument", {
+      source: await readFile(process.env.JOURNEY_AXE_PATH, "utf8"),
+    });
+  }
   await send("Emulation.setEmulatedMedia", { features: [] });
   for (const width of [320, 390]) {
     await navigate("/?runtime=journey-menu", width, 740);
@@ -135,6 +149,7 @@ export async function checkJourney({ navigate, evaluate, click, pressKey, waitFo
     await evaluate("document.querySelector('.mc-dialog').scrollTop = 10000");
     assert.equal(await evaluate(closeVisible), true, "Close must stay available after panel scrolling");
     await screenshot(send, "mission-control-" + width + ".png");
+    await audit("Mission Control " + width);
     await pressKey("Escape", 27);
     await waitFor("document.activeElement?.matches('.mc-trigger')", "menu focus restoration");
   }
@@ -161,6 +176,7 @@ export async function checkJourney({ navigate, evaluate, click, pressKey, waitFo
     [12, 0, 0],
   );
   await screenshot(send, "first-flight-recap-desktop.png");
+  await audit("Completed flight desktop");
   await click(".ff-next-primary");
   await waitFor(
     "!document.querySelector('.first-flight') && document.querySelector('.o-toggle input')?.checked",
@@ -204,6 +220,7 @@ export async function checkJourney({ navigate, evaluate, click, pressKey, waitFo
   );
   await evaluate("document.querySelector('.ff-story').scrollIntoView({block:'start',behavior:'instant'})");
   await screenshot(send, "first-flight-recap-phone.png");
+  await audit("Completed flight phone");
   await click(".ff-mobile-command button");
   await waitFor(
     "!document.querySelector('.first-flight') && document.querySelector('.o-toggle input')?.checked",
@@ -239,6 +256,7 @@ export async function checkJourney({ navigate, evaluate, click, pressKey, waitFo
     "none",
   );
   await send("Emulation.setEmulatedMedia", { features: [] });
+  await audit("Private request with system reduced motion");
   report.checks.push({
     name: "Bit response finishes once and remains still under system reduced motion",
     passed: true,
@@ -248,10 +266,104 @@ export async function checkJourney({ navigate, evaluate, click, pressKey, waitFo
   await waitFor("document.querySelector('.o-workshop-capture img')?.naturalWidth > 0", "real interface capture");
   await evaluate("document.querySelector('.o-workshop-capture').scrollIntoView({block:'center',behavior:'instant'})");
   await screenshot(send, "workshop-story-desktop.png");
+  await audit("Workshop and full page");
+  if (report.accessibility) {
+    assert.deepEqual(
+      report.accessibility.flatMap((scan) => scan.violations),
+      [],
+      "No automated WCAG violations in the journey",
+    );
+  }
   assert.match(await evaluate("document.querySelector('.o-workshop-capture').textContent"), /public demonstration/i);
   assert.match(await evaluate("document.querySelector('.o-proof-date').textContent"), /July 2026/);
   report.checks.push({
     name: "Real shipped interface image loads beside unchanged historical cost evidence",
     passed: true,
   });
+}
+
+export async function checkFlightEnding({ navigate, evaluate, click, pressKey, waitFor, send, report }) {
+  for (const [width, height] of [
+    [1280, 712],
+    [1024, 768],
+  ]) {
+    await navigate("/?runtime=hero-spacing", width, height);
+    if (width === 1280) {
+      assert.ok(
+        await evaluate(
+          'document.querySelector(".continuum-first-flight").getBoundingClientRect().bottom <= innerHeight',
+        ),
+        "Laptop flight invitation fits the opening viewport",
+      );
+    }
+    const clearance = () =>
+      evaluate(`(() => {
+      const content=document.querySelector('.o-hero-content').getBoundingClientRect();
+      const footer=document.querySelector('.o-hero-bottom').getBoundingClientRect();
+      const hero=document.querySelector('.o-hero').getBoundingClientRect();
+      return {gap:footer.top-content.bottom,contained:hero.bottom>=footer.bottom};
+    })()`);
+    for (const expanded of [false, true]) {
+      if (expanded) await click(".perspective-discover summary");
+      const rects = await clearance();
+      assert.ok(
+        rects.gap >= 24 && rects.contained,
+        `${width}px hero content and credits remain separate (${rects.gap}px gap)`,
+      );
+    }
+    if (width === 1280) await screenshot(send, "hero-expanded-laptop.png");
+    report.checks.push({
+      name: `${width}×${height}: hero credits clear the closed and expanded experience menu`,
+      passed: true,
+    });
+  }
+  await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
+  for (const [width, height] of [
+    [1440, 1000],
+    [390, 844],
+    [320, 568],
+    [640, 360],
+  ]) {
+    await navigate("/?runtime=flight-ending", width, height);
+    await waitFor(
+      "!!document.querySelector('[aria-label=\"Motion off — follows your system preference\"]')?.disabled",
+      "system motion setting",
+    );
+    await click(".continuum-first-flight");
+    await waitFor('!!document.querySelector(".ff-stage-ready,.ff-stage-fallback")', "ready flight");
+    await click(".ff-chapters button:nth-child(4)");
+    await click(".ff-playback button:last-child");
+    await waitFor('document.activeElement?.id === "ff-scene-title"', "completion heading focus");
+    const ending = await evaluate(`({
+      playback:[...document.querySelectorAll('.ff-playback button')].map(e=>({text:e.textContent,disabled:e.disabled})),
+      chaptersHidden:!document.querySelector('.ff-chapters').getClientRects().length,
+      announcement:document.querySelector('.first-flight > [role="status"]').textContent,
+      entireStoryLive:document.querySelector('.ff-story').hasAttribute('aria-live'),
+      copyLabel:document.querySelector('.ff-share').getAttribute('aria-label'),
+      overflow:document.querySelector('.first-flight').scrollWidth-document.querySelector('.first-flight').clientWidth
+    })`);
+    assert.deepEqual(ending.playback, [{ text: "Replay flight", disabled: false }]);
+    assert.equal(ending.chaptersHidden, true);
+    assert.equal(ending.entireStoryLive, false);
+    assert.match(ending.announcement, /Flight complete.*12 onboard, 0 in cloud, 0 held/s);
+    assert.equal(ending.copyLabel, "Copy this scenario");
+    assert.ok(ending.overflow <= 1, "No horizontal dialog overflow");
+    if (width === 320) await screenshot(send, "first-flight-recap-320.png");
+    await click(".ff-playback button");
+    assert.equal(await evaluate('!!document.querySelector(".ff-recap")'), false);
+    assert.equal(
+      await evaluate('document.querySelector(".ff-chapters [aria-current]").textContent.includes("Board")'),
+      true,
+    );
+    assert.equal(await evaluate('document.activeElement?.matches(".ff-close")'), true);
+    assert.equal(await evaluate('document.querySelector(".ff-body").scrollTop'), 0);
+    assert.equal(await evaluate('document.querySelector(".first-flight").dataset.motion'), "off");
+    await pressKey("Escape", 27);
+    await waitFor('document.activeElement?.matches(".continuum-first-flight")', "flight trigger focus restoration");
+    report.checks.push({
+      name: `${width}×${height}: completed controls, keyboard focus, reduced-motion replay and restored start`,
+      passed: true,
+    });
+  }
+  await send("Emulation.setEmulatedMedia", { features: [] });
 }

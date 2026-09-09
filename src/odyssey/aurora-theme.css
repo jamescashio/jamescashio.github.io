@@ -339,8 +339,7 @@
 }
 .event-horizon.aurora .o-projects,
 .event-horizon.aurora .o-project-panel,
-.event-horizon.aurora .o-project-index [role="tab"],
-.event-horizon.aurora .o-field-notes summary {
+.event-horizon.aurora .o-project-index [role="tab"] {
   border-color: var(--a-rule);
 }
 .event-horizon.aurora .o-index-label,
@@ -438,12 +437,10 @@
   background: #071b2d;
 }
 .event-horizon.aurora .o-result p,
-.event-horizon.aurora .o-brief-output p,
-.event-horizon.aurora .o-field-notes dd {
+.event-horizon.aurora .o-brief-output p {
   color: #bed2df;
 }
 .event-horizon.aurora .o-lab-note,
-.event-horizon.aurora .o-field-notes > p,
 .event-horizon.aurora .o-project-footer > span,
 .event-horizon.aurora .o-brief-output > div .o-muted,
 .event-horizon.aurora .o-brief-output > div .o-micro,

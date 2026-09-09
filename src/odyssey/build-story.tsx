@@ -15,7 +15,7 @@ export function BuildStory() {
         <header>
           <span className="o-kicker">FROM MY WORKSHOP / SMART ROUTING</span>
           <h3 id="operating-story-title">Spend the AI budget where it matters.</h3>
-          <p>Routine jobs have a route. Complex work earns a more capable one.</p>
+          <p>I reserve the more capable route for work that needs it.</p>
         </header>
         <div className="o-proof-result">
           <p>
@@ -51,11 +51,11 @@ export function BuildStory() {
             <ol>
               <li>
                 <strong>Routine work has a general lane.</strong>
-                <p>This capture shows a public draft routed to Workhorse. The five steps expose the decision.</p>
+                <p>A public draft reaches Workhorse. Each of the five steps explains why.</p>
               </li>
               <li>
                 <strong>The boundary gets the final say.</strong>
-                <p>Require sources to select Research. Add private information to hold the route for human review.</p>
+                <p>Sources select Research. Private information calls for a person.</p>
               </li>
             </ol>
             <a
@@ -67,8 +67,7 @@ export function BuildStory() {
             </a>
           </div>
           <figcaption>
-            Actual V37.13 interface · public demonstration. This capture shows the shipped teaching tool; it does not
-            show the private Atlas service or establish live routing behavior.
+            Actual V37.13 interface · public demonstration, not live Atlas routing.
             <a href="/evidence/workshop/provenance.json">
               Capture source and settings <Arrow diagonal />
             </a>
@@ -78,24 +77,18 @@ export function BuildStory() {
           <dl>
             <div>
               <dt>The problem</dt>
-              <dd>
-                Routine work and hard decisions need different capabilities. A single expensive default wastes that
-                distinction.
-              </dd>
+              <dd>One expensive default treats routine work and hard decisions alike.</dd>
             </div>
             <div>
               <dt>My decision</dt>
               <dd>
-                Atlas handles recurring work; harder tasks can escalate. Quality, privacy and reliability qualify the
-                route. Cost breaks the tie.
+                Atlas handles recurring work; harder tasks can escalate. I check quality, privacy and reliability before
+                considering cost.
               </dd>
             </div>
             <div>
               <dt>The recorded result</dt>
-              <dd>
-                V31 published this provider-usage observation on 26 July 2026. It is a historical sample, not today’s
-                bill or a measured savings percentage.
-              </dd>
+              <dd>V31 published this sample on 26 July 2026. It measures provider usage, not a savings percentage.</dd>
             </div>
           </dl>
         </div>
@@ -127,13 +120,6 @@ export function BuildStory() {
           </nav>
         </details>
         <nav className="o-proof-sources" aria-label="Explore the smart-routing idea">
-          <a
-            className="o-text-button"
-            href={shareExperiment({ study: "hermes", intent: "draft", sources: false, privateData: false })}
-            onClick={loadExample}
-          >
-            Try a routine request <Arrow />
-          </a>
           <a className="o-text-button" href={COST_EVIDENCE.source} target="_blank" rel="noreferrer">
             Inspect the original cost record <Arrow diagonal />
           </a>
