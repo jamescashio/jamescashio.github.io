@@ -28,6 +28,37 @@ export function BuildStory() {
             <time dateTime={COST_EVIDENCE.sampleEnd}>22 July 2026</time>
           </p>
         </div>
+        <div className="o-field-notes">
+          <dl>
+            <div>
+              <dt>The problem</dt>
+              <dd>One expensive default treats routine work and hard decisions alike.</dd>
+            </div>
+            <div>
+              <dt>My decision</dt>
+              <dd>
+                Atlas handles recurring work; harder tasks can escalate. I check quality, privacy and reliability before
+                considering cost.
+              </dd>
+            </div>
+            <div>
+              <dt>The recorded result</dt>
+              <dd>A two-day record of provider usage. The sample scope and exclusions are available below.</dd>
+            </div>
+          </dl>
+        </div>
+        <nav className="o-story-actions" aria-label="Try the smart-routing idea">
+          <a
+            className="o-button o-button-gold o-story-demo"
+            href={shareExperiment({ study: "hermes", intent: "draft", sources: false, privateData: false })}
+            onClick={loadExample}
+          >
+            Try the routing demo <Arrow />
+          </a>
+          <a className="o-text-button" href="#study-browser">
+            Explore the seven studies <Arrow />
+          </a>
+        </nav>
         <details className="o-field-notes o-interface-notes">
           <summary>
             Inspect the shipped interface<span aria-hidden="true">+</span>
@@ -77,25 +108,6 @@ export function BuildStory() {
             </figcaption>
           </figure>
         </details>
-        <div className="o-field-notes">
-          <dl>
-            <div>
-              <dt>The problem</dt>
-              <dd>One expensive default treats routine work and hard decisions alike.</dd>
-            </div>
-            <div>
-              <dt>My decision</dt>
-              <dd>
-                Atlas handles recurring work; harder tasks can escalate. I check quality, privacy and reliability before
-                considering cost.
-              </dd>
-            </div>
-            <div>
-              <dt>The recorded result</dt>
-              <dd>V31 published this sample on 26 July 2026. It measures provider usage, not a savings percentage.</dd>
-            </div>
-          </dl>
-        </div>
         <details className="o-field-notes o-cost-evidence">
           <summary>
             About the cost figure and the public demo<span aria-hidden="true">+</span>
@@ -123,14 +135,6 @@ export function BuildStory() {
             </a>
           </nav>
         </details>
-        <nav className="o-proof-sources" aria-label="Explore the smart-routing idea">
-          <a className="o-text-button" href="#operator-process">
-            See how I build <Arrow />
-          </a>
-          <a className="o-text-button" href={COST_EVIDENCE.source} target="_blank" rel="noreferrer">
-            Inspect the original cost record <Arrow diagonal />
-          </a>
-        </nav>
       </section>
       <details className="o-field-notes o-build-records">
         <summary>

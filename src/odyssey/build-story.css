@@ -134,6 +134,18 @@
   flex-wrap: wrap;
   gap: 4px 28px;
 }
+.o-story-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin: 8px 0 16px;
+}
+.o-story-actions > .o-button {
+  gap: 12px;
+  max-width: 100%;
+  white-space: normal;
+}
 .o-workshop-capture {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
@@ -194,12 +206,14 @@
     sans-serif;
 }
 .o-workshop-capture figcaption a {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  width: fit-content;
+  max-width: 100%;
   min-height: 44px;
   gap: 8px;
   color: #a5e6e6;
-  margin-left: 8px;
+  margin-top: 6px;
 }
 .o-workshop-capture figcaption svg {
   width: 16px;
@@ -214,8 +228,5 @@
   .o-workshop-capture {
     grid-template-columns: minmax(0, 1fr);
     gap: 22px;
-  }
-  .o-workshop-capture figcaption a {
-    margin-left: 0;
   }
 }

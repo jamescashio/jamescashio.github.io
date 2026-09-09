@@ -1,4 +1,10 @@
-# Current release — V37.15 Orbital refinement
+# Current release — V37.16 Editorial refinement
+
+Remove the minor settings-link process block at the owner's request while preserving the personal introduction. Give the stronger project story a direct invitation to its working demo, present the explanation before optional evidence, and separate the screenshot caption from its source link. Keep the established visual identity and dated evidence intact.
+
+Production baseline: `515e9eaf765ca13873ba8877709624ab09f3cd2b` (V37.15). Publish through the existing checked workflow and verify the public artifact. See [validation and rollback](docs/editorial-refinement-release.md). Earlier sections retain their original release context.
+
+# Prior release — V37.15 Orbital refinement
 
 The owner approved going live with the reviewed refinement on 9 September 2026. Preserve the artwork, Bit, colors, typography, seven studies, opt-in audio and reduced motion. Publish the short-phone entrance, readable mission sharing, shared studio reflections, reordered build story and factual operator process as reviewed.
 
