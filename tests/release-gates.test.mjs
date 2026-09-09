@@ -96,7 +96,7 @@ function expandScript(scripts, name, seen = new Set()) {
 
 test("V37 software gates preserve the independent V35 dated evidence", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "37.14.0");
+  assert.equal(packageJson.version, "37.15.0");
   const lock = JSON.parse(await read("package-lock.json"));
   assert.equal(lock.version, packageJson.version);
   assert.equal(lock.packages[""].version, packageJson.version);
@@ -285,7 +285,7 @@ test("the homepage and Odyssey alias ship the same complete V37 story with a usa
     assert.equal(root.querySelectorAll('[role="tab"][aria-selected="true"]').length, 1);
     assert.match(root.textContent, /THE HUMAN RECKONING/);
     assert.doesNotMatch(root.textContent, /DESIGN PREVIEW|PERSPECTIVE III PREVIEW/);
-    assert.match(root.querySelector(".eh-release-mark").textContent, /V37.14.*PERSPECTIVE/);
+    assert.match(root.querySelector(".eh-release-mark").textContent, /V37.15.*PERSPECTIVE/);
     assert.match(root.textContent, /28 August 2026/);
     assert.match(root.textContent, /21 August 2026/);
     const contact = root.querySelector('a[href^="mailto:doug@cashio.us?"]');
@@ -305,7 +305,7 @@ test("the homepage and Odyssey alias ship the same complete V37 story with a usa
     } else {
       assert.match(robots, /noindex/i, "the compatibility alias must not compete with the canonical homepage");
     }
-    assert.equal(document.title, "Cashio V37.14 — Continuum | Doug Cashio");
+    assert.equal(document.title, "Cashio V37.15 — Continuum | Doug Cashio");
     const compatibility = document.querySelector("head script#legacy-bookmark-route");
     assert.ok(compatibility, "legacy fragments must be handled before the page activates");
     for (const attr of ["src", "type", "async", "defer"]) assert.equal(compatibility.hasAttribute(attr), false);
@@ -343,7 +343,7 @@ test("the homepage and Odyssey alias ship the same complete V37 story with a usa
 
 test("V37 release manifests agree without redating the independent evidence archive", async () => {
   const manifest = JSON.parse(await read("public/site-release.json"));
-  assert.equal(manifest.experienceVersion, "37.14.0");
+  assert.equal(manifest.experienceVersion, "37.15.0");
   assert.equal(manifest.releaseName, "THE HUMAN RECKONING");
   assert.equal(manifest.visualEdition, "Lensing");
   assert.equal(manifest.featuredExperience, "Lensing Observatory");
