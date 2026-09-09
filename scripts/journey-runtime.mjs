@@ -68,6 +68,12 @@ const outputDir = process.env.JOURNEY_OUTPUT_DIR;
 async function screenshot(send, name, clip) {
   if (!outputDir) return;
   await mkdir(outputDir, { recursive: true });
+  await send("Runtime.evaluate", {
+    expression:
+      "Promise.all([...document.querySelectorAll('.mc-dialog')].flatMap(e=>e.getAnimations()).map(a=>a.finished.catch(()=>null))).then(()=>true)",
+    awaitPromise: true,
+    returnByValue: true,
+  });
   const result = await send("Page.captureScreenshot", {
     format: name.endsWith(".webp") ? "webp" : "png",
     ...(name.endsWith(".webp") ? { quality: 88 } : {}),
