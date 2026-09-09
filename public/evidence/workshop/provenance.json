@@ -1,0 +1,20 @@
+{
+  "source": "https://github.com/jamescashio/jamescashio.github.io/tree/1f35f59363040a13fae309eb44116a2e8d94429a",
+  "capturedAtUtc": "2026-09-09T02:11:34.231Z",
+  "subject": "Actual rendered V37.13 public HERMES browser demonstration",
+  "settings": {
+    "intent": "draft",
+    "privateData": false,
+    "sources": false
+  },
+  "result": "Workhorse",
+  "boundary": "This is a capture of shipped public software, not the private Atlas service or live routing telemetry.",
+  "image": {
+    "file": "hermes-public-interface.webp",
+    "x": 473,
+    "y": 2612.703125,
+    "width": 880.609375,
+    "height": 903.6875
+  },
+  "transform": "Native browser element screenshot encoded as WebP, quality 88. No visual content edited."
+}

@@ -1,9 +1,9 @@
-# V37.13 — Perspective
+# V37.14 — Visitor journey
 
-Visitors now meet one privacy decision before the seven-study browser, and each study leads to a specific next question. The opening keeps First Flight primary and groups optional scenes without losing launchers or bookmarks. Observatory links preserve the visitor's lighting, atmosphere and viewpoint as a paused scene; refined lighting adds depth within the existing rendering budget.
+First Flight now explains the visitor's actual decision and leads to one clear next action: test a private request. Completion feedback, motion-off replay, narrow phone controls and laptop spacing are refined. A sourced capture of the shipped HERMES demonstration makes the workshop story tangible, while a brief Bit response marks human review.
 
-Focused source modules separate page content, modal coordination, studies and planet rendering. Optional study code, artwork and styles load on selection. Loading recovery preserves the chosen experiment, while keyboard focus follows reveals, scene closures and study navigation. The original artwork, palette, typography, Bit, films, sound policy, legacy routes and dated evidence remain intact.
+Shared menu and evidence-panel styles are consolidated. The artwork, palette, typography, Bit, films, legacy routes, opt-in audio and dated evidence remain intact. No production dependency or analytics was added.
 
-Validation: the reviewed preview passed 413 automated tests, 32 modern browser checks and command-deck compatibility checks. Release promotion repeats the full local gates and pinned-browser GitHub checks before deployment. Public verification must confirm V37.13 receipts, matching assets and actual desktop/phone interactions. See [release details and rollback](docs/perspective-release.md).
+The reviewed candidate passed 416 automated tests, 43 modern browser groups and legacy compatibility checks. Six supplemental axe states reported zero automated violations; three simulated-mobile Lighthouse runs scored 95/100 with zero loading CLS. Release promotion repeats local and pinned-browser GitHub gates. Public verification requires V37.14 receipts, matching delivered assets and live desktop/phone interactions. See [release details and rollback](docs/visitor-journey-release.md).
 
-Rollback baseline: `c3983eb4cc2b44420138419daa7d11fb3688fb30`. Revert the release squash commit through a checked pull request and verify the resulting Pages deployment.
+Rollback baseline: `1f35f59363040a13fae309eb44116a2e8d94429a`. Revert the release squash commit through a checked pull request and verify the resulting Pages deployment.

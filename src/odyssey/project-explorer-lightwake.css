@@ -320,13 +320,6 @@
     400 12px/1.5 Jet,
     monospace;
 }
-@media (max-width: 600px) {
-  .lw-projects .o-field-notes dl > div {
-    flex-direction: column;
-    gap: 4px;
-    margin: 18px 0;
-  }
-}
 
 .perspective-study-intro {
   display: flex;

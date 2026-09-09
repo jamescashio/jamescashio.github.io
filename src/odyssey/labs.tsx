@@ -113,7 +113,7 @@ export function ProjectLab({
           )}
         </div>
       ) : (
-        <studies.SecondaryStudy input={input} onChange={setInput} />
+        <studies.SecondaryStudy input={input} onChange={setInput} motion={motion && active} />
       )}
     </div>
   );

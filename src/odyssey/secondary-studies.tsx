@@ -9,10 +9,14 @@ import { GraphLab } from "./studies/graphify";
 type SecondaryExperiment = Exclude<Experiment, { study: "hermes" }>;
 
 /** This boundary keeps optional instruments and their artwork out of the entry bundle. */
-export function SecondaryStudy({ input, onChange }: ExperimentProps<SecondaryExperiment["study"]>) {
+export function SecondaryStudy({
+  input,
+  onChange,
+  motion = false,
+}: ExperimentProps<SecondaryExperiment["study"]> & { motion?: boolean }) {
   switch (input.study) {
     case "cascade":
-      return <CascadeLab input={input} onChange={onChange} />;
+      return <CascadeLab input={input} onChange={onChange} motion={motion} />;
     case "exposure":
       return <ExposureLab input={input} onChange={onChange} />;
     case "briefing":

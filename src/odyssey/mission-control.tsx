@@ -283,7 +283,7 @@ export function MissionControl({
     panel.showModal();
     const priorOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const frame = requestAnimationFrame(() => search.current?.focus());
+    const frame = requestAnimationFrame(() => search.current?.focus({ preventScroll: true }));
     return () => {
       cancelAnimationFrame(frame);
       document.body.style.overflow = priorOverflow;
@@ -293,7 +293,15 @@ export function MissionControl({
 
   useEffect(() => {
     if (!open) return;
-    document.getElementById(`${uid}-option-${current}`)?.scrollIntoView({ block: "nearest" });
+    // Scroll the results list only. Scrolling the document also hides the dialog's close control.
+    const option = document.getElementById(`${uid}-option-${current}`);
+    const list = option?.closest<HTMLElement>(".mc-results");
+    if (option && list) {
+      const item = option.getBoundingClientRect(),
+        bounds = list.getBoundingClientRect();
+      if (item.top < bounds.top) list.scrollTop += item.top - bounds.top;
+      else if (item.bottom > bounds.bottom) list.scrollTop += item.bottom - bounds.bottom;
+    }
   }, [current, open, query, uid]);
 
   function navigate(href: string) {
@@ -416,7 +424,7 @@ export function MissionControl({
           </div>
         </div>
         <p className="mc-description" id={`${uid}-description`}>
-          One universe. Your way through it. Search a destination or choose a starting point.
+          Choose a starting point, or search the universe.
         </p>
         <div className="mc-search-wrap">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">

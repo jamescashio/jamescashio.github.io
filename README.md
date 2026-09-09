@@ -1,8 +1,8 @@
-# cashio.us V37.13 — Continuum
+# cashio.us V37.14 — Continuum
 
 Doug Cashio’s interactive universe of AI, security, and owned infrastructure. Built for technical peers and AI enthusiasts, with Bit, orbital artwork, midnight blue, cyan, gold, and human judgment at its center.
 
-**V37.13 publishes Perspective: a clearer first visit and a world you can share.** The software version is 37.13.0. One privacy decision introduces the seven studies, each study leads to the next question, and Observatory links restore the visitor's own composition. Optional study code and artwork load on selection. The original identity, motion controls and dated evidence remain intact. See [release validation and rollback](docs/perspective-release.md).
+**V37.14 refines the visitor journey from First Flight to a private request and a documented work story.** The software version is 37.14.0. The flight recap reflects the visitor's actual decision, completed controls give way to one clear next action, and Replay works with motion off. Phone menus keep Close within reach; laptop spacing and shared panel styles are refined. The original artwork, identity, studies, motion controls and dated evidence remain intact. See [release validation and rollback](docs/visitor-journey-release.md).
 
 ## Experience
 

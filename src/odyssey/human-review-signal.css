@@ -1,0 +1,76 @@
+.o-human-review {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  margin: 12px 0;
+  border: 1px solid #edc99170;
+  background: #edc99108;
+  color: #edc991;
+}
+.o-human-review-core {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 40px;
+}
+.o-human-review-core svg {
+  width: 30px;
+  height: 34px;
+}
+.o-human-review strong {
+  display: block;
+  font:
+    600 14px/1.5 Exo,
+    Arial,
+    sans-serif;
+}
+.o-human-review strong + span {
+  display: block;
+  color: #c5d8e3;
+  font:
+    14px/1.5 Exo,
+    Arial,
+    sans-serif;
+}
+.o-human-review[data-motion="on"] .o-human-review-core::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  animation: human-review-arrival 900ms ease-out both;
+}
+@keyframes human-review-arrival {
+  from {
+    transform: scale(0.75);
+    opacity: 0.8;
+  }
+  to {
+    transform: scale(1.45);
+    opacity: 0;
+  }
+}
+.odyssey[data-motion="off"] .o-human-review-core::after,
+.o-lab[data-lab-motion="off"] .o-human-review-core::after,
+.o-lab[data-lab-active="off"] .o-human-review-core::after {
+  animation: none;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .o-human-review-core::after {
+    animation: none !important;
+    opacity: 0;
+  }
+}
+@media (forced-colors: active) {
+  .o-human-review {
+    border-color: CanvasText;
+    color: CanvasText;
+  }
+  .o-human-review strong + span {
+    color: CanvasText;
+  }
+}

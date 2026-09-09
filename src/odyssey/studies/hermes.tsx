@@ -4,6 +4,7 @@ import { Arrow } from "../effects";
 import { RouteInstrument } from "../lab-visuals";
 import { Toggle, Result } from "./controls";
 import type { ExperimentProps } from "../study-experiment";
+import { HumanReviewSignal } from "../human-review-signal";
 
 export function HermesLab({ motion, input, onChange }: ExperimentProps<"hermes"> & { motion: boolean }) {
   const [step, setStep] = useState(0);
@@ -88,6 +89,7 @@ export function HermesLab({ motion, input, onChange }: ExperimentProps<"hermes">
           </li>
         ))}
       </ol>
+      {step === 5 && output.code === "HOLD" && <HumanReviewSignal motion={motion} />}
       <Result title={step === 5 ? output.lane : running ? "Decision in progress" : "Your intent. A reasoned route."}>
         {step === 5
           ? output.detail

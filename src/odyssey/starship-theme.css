@@ -130,10 +130,6 @@
 .event-horizon.aurora [role="tab"] {
   min-height: 84px;
 }
-.event-horizon.aurora .o-field-notes dd {
-  font-size: 16px;
-  line-height: 1.7;
-}
 .event-horizon.aurora .o-hero-actions {
   display: flex;
   flex-wrap: wrap;

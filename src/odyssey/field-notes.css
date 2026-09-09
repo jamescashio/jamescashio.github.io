@@ -1,0 +1,88 @@
+/* Shared evidence disclosures. Preserve the established theme cascade in one owner. */
+.o-field-notes {
+  margin-top: 18px;
+}
+.o-field-notes summary {
+  min-height: 54px;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #c5c8b526;
+}
+.o-field-notes summary::-webkit-details-marker {
+  display: none;
+}
+.o-field-notes summary > span {
+  font-size: 20px;
+  color: var(--project);
+  transition: transform 0.2s;
+}
+.o-field-notes[open] summary > span {
+  transform: rotate(45deg);
+}
+.o-field-notes > p {
+  font-size: 13px;
+  line-height: 1.9;
+  color: #a5b29b;
+  margin-top: 22px;
+}
+.o-field-notes dl {
+  font-size: 12px;
+}
+.o-field-notes dl > div {
+  display: flex;
+  gap: 22px;
+  margin: 12px 0;
+  line-height: 1.8;
+}
+.o-field-notes dt {
+  color: var(--project);
+  min-width: 48px;
+}
+.o-field-notes dd {
+  margin: 0;
+  color: #b6bfae;
+}
+@media (max-width: 600px) {
+  .o-field-notes dl > div {
+    gap: 14px;
+  }
+  .o-field-notes dt {
+    min-width: 44px;
+  }
+}
+.event-horizon.aurora .o-field-notes summary {
+  border-color: var(--a-rule);
+}
+.event-horizon.aurora .o-field-notes dd {
+  color: #bed2df;
+  font-size: 16px;
+  line-height: 1.7;
+}
+.event-horizon.aurora .o-field-notes > p {
+  color: #adc4d2;
+}
+.event-horizon.aurora.lensing .o-field-notes {
+  margin-top: 30px;
+}
+.event-horizon.aurora.lensing .o-field-notes summary {
+  border-color: var(--ln-rule);
+  color: #e9cfaa;
+}
+.lightwake .o-field-notes summary {
+  transition: color 150ms ease;
+}
+.lightwake .o-field-notes summary:hover {
+  color: #f4d7a5;
+}
+@media (max-width: 600px) {
+  .lw-projects .o-field-notes dl > div {
+    flex-direction: column;
+    gap: 4px;
+    margin: 18px 0;
+  }
+}
