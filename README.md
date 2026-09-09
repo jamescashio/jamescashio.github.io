@@ -1,8 +1,8 @@
-# cashio.us V37.15 — Continuum
+# cashio.us V37.16 — Continuum
 
 Doug Cashio’s interactive universe of AI, security, and owned infrastructure. Built for technical peers and AI enthusiasts, with Bit, orbital artwork, midnight blue, cyan, gold, and human judgment at its center.
 
-**V37.15 polishes the orbital presentation and makes the visitor journey easier to enter.** The software version is 37.15.0. The full boarding action fits short phone screens, completed flights show readable sharing labels, and locally generated reflection lighting adds depth to the ship and observatory. The real build story appears before the study library; a factual three-step account of a shipped improvement adds a personal view of the process. Bit, the artwork, identity, seven studies, motion controls and dated evidence remain intact. See [release validation and rollback](docs/orbital-refinement-release.md).
+**V37.16 gives the work a clearer path and the personal introduction more focus.** The software version is 37.16.0. The release-note-style process block is removed. The smart-routing story explains the problem and decision before its optional evidence, with a direct action that loads the public draft demo and leaves execution to the visitor. Historical evidence remains available. Bit, the original artwork, lighting, seven studies, motion controls and personal introduction retain their identity. See [release validation and rollback](docs/editorial-refinement-release.md).
 
 ## Experience
 

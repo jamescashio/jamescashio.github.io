@@ -298,6 +298,22 @@ export async function checkJourney({ navigate, evaluate, click, pressKey, waitFo
     name: "Real shipped interface image loads beside unchanged historical cost evidence",
     passed: true,
   });
+  await click(".o-story-demo");
+  await waitFor(
+    "document.querySelector('.o-segment [aria-pressed=true]')?.textContent === 'Draft' && document.activeElement?.matches('.o-run')",
+    "story-to-demo handoff with keyboard focus",
+  );
+  assert.deepEqual(await evaluate("[...document.querySelectorAll('.o-toggle input')].map(e => e.checked)"), [
+    false,
+    false,
+  ]);
+  assert.equal(await evaluate("document.querySelector('.o-result h4').textContent"), "Your intent. A reasoned route.");
+  await pressKey("Enter", 13);
+  await waitFor("document.querySelector('.o-result h4')?.textContent === 'Workhorse'", "explicit public draft result");
+  report.checks.push({
+    name: "Build story opens the public draft demo with keyboard focus and explicit execution",
+    passed: true,
+  });
 }
 
 export async function checkFlightEnding({ navigate, evaluate, click, pressKey, waitFor, send, report }) {
