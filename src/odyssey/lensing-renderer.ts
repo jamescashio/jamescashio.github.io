@@ -12,6 +12,7 @@ import {
 } from "./planet-shaders";
 import { applyPlanetShadow } from "./planet-shadow";
 import * as THREE from "three";
+import { createStudioEnvironment } from "./studio-environment";
 import type { ObservatoryCamera } from "./observatory-state";
 
 export type LensingLight = "dawn" | "ion" | "eclipse";
@@ -175,31 +176,9 @@ export function createLensingScene(
   rimLight.position.set(5, 1, -7);
   scene.add(sun, rimLight, fill);
 
-  // A tiny procedural reflection field provides metal highlights; it is generated
-  // locally once and never downloads an environment map or requests a second pass.
-  const environmentData = new Uint8Array(256 * 128 * 4);
-  for (let y = 0; y < 128; y++)
-    for (let x = 0; x < 256; x++) {
-      const offset = (y * 256 + x) * 4;
-      const sky = Math.max(0, 1 - y / 85);
-      const softbox = Math.exp(-(((x - 49) / 24) ** 4 + ((y - 34) / 19) ** 4));
-      const strip = Math.exp(-(((x - 174) / 9) ** 4 + ((y - 33) / 24) ** 4));
-      const panel = Math.min(1, softbox + strip * 0.8);
-      environmentData[offset] = 8 + sky * 38 + panel * 192;
-      environmentData[offset + 1] = 15 + sky * 52 + panel * 185;
-      environmentData[offset + 2] = 25 + sky * 68 + panel * 175;
-      environmentData[offset + 3] = 255;
-    }
-  const environment = new THREE.DataTexture(environmentData, 256, 128);
-  environment.colorSpace = THREE.SRGBColorSpace;
-  environment.mapping = THREE.EquirectangularReflectionMapping;
-  environment.needsUpdate = true;
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  const reflection = pmrem.fromEquirectangular(environment);
+  const reflection = createStudioEnvironment(renderer);
   scene.environment = reflection.texture;
-  scene.environmentIntensity = 0.65;
-  environment.dispose();
-  pmrem.dispose();
+  scene.environmentIntensity = 0.8;
 
   const atlasStarted = performance.now();
   const surfaceAtlas = createSurfaceAtlas();
@@ -265,10 +244,10 @@ export function createLensingScene(
   aurora.visible = false;
   scene.add(aurora);
 
-  const titanium = new THREE.MeshStandardMaterial({ color: 0x60778a, metalness: 0.86, roughness: 0.28 });
+  const titanium = new THREE.MeshStandardMaterial({ color: 0x60778a, metalness: 0.86, roughness: 0.32 });
   const gateSkin = titanium.clone();
   gateSkin.vertexColors = true;
-  gateSkin.roughness = 0.31;
+  gateSkin.roughness = 0.35;
   gateSkin.emissive.set(0x0d6580);
   // Actual object-space machining reacts to the existing physical lights and
   // reflections. Derivative filtering keeps its fine rulings quiet on phones.

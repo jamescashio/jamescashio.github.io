@@ -877,6 +877,28 @@
     clip-path: inset(50%);
     white-space: nowrap;
   }
+  /* Completed missions deserve readable save/share actions, not unlabeled icons. */
+  .first-flight[data-complete="true"] .ff-footer {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .first-flight[data-complete="true"] .ff-playback {
+    grid-column: 1 / -1;
+  }
+  .first-flight[data-complete="true"] :is(.ff-save, .ff-share) {
+    width: auto;
+    min-height: 44px;
+    padding: 8px 6px;
+    gap: 6px;
+    font-size: 13px;
+  }
+  .first-flight[data-complete="true"] :is(.ff-save, .ff-share) span {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    white-space: normal;
+  }
   .ff-boundary,
   .ff-copy-error {
     font-size: 12px;

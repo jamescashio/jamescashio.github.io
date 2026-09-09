@@ -40,3 +40,38 @@
     padding-top: 105px;
   }
 }
+/* On short phones, preserve the orbital entrance while keeping boarding in view. */
+@media (max-width: 600px) and (max-height: 700px) {
+  .event-horizon.aurora.lensing.lightwake .o-hero {
+    padding-top: 86px;
+  }
+  .event-horizon.aurora.lensing.lightwake .o-hero-art,
+  .lightwake .lw-aurora {
+    top: 118px;
+    height: 120px;
+  }
+  .event-horizon.aurora.lensing.lightwake .o-hero-shade {
+    background: linear-gradient(180deg, #040b14 108px, #040b1400 143px, #040b1400 193px, #040b14 240px);
+  }
+  .event-horizon.aurora.lensing.lightwake .o-hero-content > .o-kicker {
+    margin-bottom: 64px;
+  }
+  .event-horizon.aurora.lensing.lightwake .o-hero h1 {
+    font-size: clamp(38px, 11.6vw, 48px);
+  }
+  .event-horizon.aurora.lensing.lightwake .o-hero-content > p {
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+  .event-horizon.aurora.lensing.lightwake .o-hero-actions {
+    margin-top: 12px;
+  }
+  .event-horizon.aurora.lensing.lightwake .o-core-label {
+    top: 66%;
+    font-size: 11px;
+  }
+  .lightwake .lw-horizon-glow {
+    top: 118px;
+    height: 120px;
+  }
+}

@@ -424,7 +424,7 @@ def check_v34_motion_contract(failures: list[str]) -> None:
                 failures.append(f"inactive deck {deck_index} does not pause {pseudo} animation work")
 
 
-def check_site_release(release: dict, failures: list[str], *, preview: bool = False, version: str = "37.14.0") -> None:
+def check_site_release(release: dict, failures: list[str], *, preview: bool = False, version: str = "37.15.0") -> None:
     """Software release identity must never rewrite the archive's observation dates."""
     if not isinstance(release, dict):
         failures.append("site-release.json must be an object")
@@ -522,7 +522,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--preview", action="store_true", help="Validate an explicitly unpublished local preview; never a deployment approval")
     preview = parser.parse_args().preview
-    version = "37.14.0-preview.sanctuary" if preview else "37.14.0"
+    version = "37.15.0-preview.sanctuary" if preview else "37.15.0"
     failures: list[str] = []
 
     try:

@@ -243,7 +243,7 @@ export function OdysseyApp() {
             </a>
           ))}
         </nav>
-        <p>V37.14 / CONTINUUM / A HUMAN IN COMMAND</p>
+        <p>V37.15 / CONTINUUM / A HUMAN IN COMMAND</p>
       </dialog>
       <main id="o-main">
         <HeroSection scenes={scenes} folding={folding} fold={fold} paused={paused} viewArt={viewArt} />
@@ -272,12 +272,12 @@ export function OdysseyApp() {
             </p>
           </div>
           <BoundaryComparison motion={ambientMotion} />
+          <BuildStory />
           <div className="perspective-study-intro">
             <span className="o-kicker">GO DEEPER / SEVEN WORKING STUDIES</span>
             <p>Change the inputs. Inspect the rule. Follow the evidence.</p>
           </div>
           <ProjectExplorer motion={ambientMotion} play={play} />
-          <BuildStory />
         </section>
         <section className="o-universe o-scene" id="universe" aria-labelledby="universe-title">
           <div className="o-section-top">
@@ -464,7 +464,7 @@ export function OdysseyApp() {
           <BrandMark motion={ambientMotion} />
         </a>
         <span>
-          V37.14 / CONTINUUM
+          V37.15 / CONTINUUM
           <br />
           <small>Crafted with GPT-6 Astra · Directed by Doug Cashio</small>
         </span>

@@ -6,7 +6,7 @@ The real build story precedes the study library, with its detailed interface cap
 
 The Cashio identity, original artwork, palette, typography, seven studies, legacy command deck, opt-in audio and reduced-motion behavior remain intact. No production dependencies or analytics were added. Software release labels advance to V37.15; historical screenshot versions, infrastructure observation dates and routing uncertainty retain their original meaning.
 
-## Validation and release
+## Validation
 
 The reviewed implementation passed 416 automated tests, 46 modern browser groups and legacy browser checks. Following the final button-name changes, the affected 16-check journey and six axe scans passed, with zero automated violations. Local simulated-mobile Lighthouse scored performance 96, accessibility 100, best practices 100 and SEO 100; LCP was 2.54 seconds, total blocking time 41 ms and CLS zero. These are local laboratory results, not visitor field measurements or complete accessibility certification.
 

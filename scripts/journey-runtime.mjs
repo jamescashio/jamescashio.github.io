@@ -124,7 +124,7 @@ export async function checkJourney({ navigate, evaluate, click, pressKey, waitFo
   const audit = async (state) => {
     if (!process.env.JOURNEY_AXE_PATH) return;
     const scan =
-      await evaluate(`axe.run(document, {runOnly:{type:'tag', values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}}).then(r => ({
+      await evaluate(`axe.run(document, {runOnly:{type:'tag', values:['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22a','wcag22aa']},rules:{'label-content-name-mismatch':{enabled:true}}}).then(r => ({
       violations:r.violations.map(v=>({id:v.id,impact:v.impact,help:v.help,nodes:v.nodes.map(n=>({target:n.target,summary:n.failureSummary}))})),
       passedRules:r.passes.length,manualReviewRules:r.incomplete.map(v=>v.id)
     }))`);
@@ -273,6 +273,14 @@ export async function checkJourney({ navigate, evaluate, click, pressKey, waitFo
   });
 
   await navigate("/?runtime=journey-story#smart-routing", 1440, 1000);
+  assert.equal(await evaluate("document.querySelector('.o-interface-notes').open"), false);
+  assert.ok(
+    await evaluate(
+      "document.querySelector('.o-build-story').compareDocumentPosition(document.querySelector('#study-browser')) & Node.DOCUMENT_POSITION_FOLLOWING",
+    ),
+    "The real build story follows the first decision, before the study library",
+  );
+  await click(".o-interface-notes > summary");
   await waitFor("document.querySelector('.o-workshop-capture img')?.naturalWidth > 0", "real interface capture");
   await evaluate("document.querySelector('.o-workshop-capture').scrollIntoView({block:'center',behavior:'instant'})");
   await screenshot(send, "workshop-story-desktop.png");
@@ -293,6 +301,26 @@ export async function checkJourney({ navigate, evaluate, click, pressKey, waitFo
 }
 
 export async function checkFlightEnding({ navigate, evaluate, click, pressKey, waitFor, send, report }) {
+  for (const [width, height] of [
+    [320, 568],
+    [390, 667],
+    [390, 844],
+  ]) {
+    await navigate("/?runtime=phone-entrance", width, height);
+    await waitFor("document.fonts.status === 'loaded'", "phone fonts settled");
+    const entrance = await evaluate(`(() => {
+      const button = document.querySelector('.continuum-first-flight').getBoundingClientRect();
+      const title = document.querySelector('#hero-title').getBoundingClientRect();
+      const bit = document.querySelector('.o-core-label').getBoundingClientRect();
+      return {bottom:button.bottom,top:button.top,titleBottom:title.bottom,bitGap:title.top-bit.bottom,width:document.documentElement.scrollWidth};
+    })()`);
+    assert.ok(entrance.bottom <= height - 8, `${width}x${height}: boarding button fits the first screen`);
+    assert.ok(
+      entrance.titleBottom < entrance.top && entrance.bitGap >= 4 && entrance.width === width,
+      "Clear headline, separated Bit label and no horizontal overflow",
+    );
+    report.checks.push({ name: `${width}x${height}: complete boarding action visible on entry`, passed: true });
+  }
   for (const [width, height] of [
     [1280, 712],
     [1024, 768],
@@ -358,6 +386,19 @@ export async function checkFlightEnding({ navigate, evaluate, click, pressKey, w
     assert.match(ending.announcement, /Flight complete.*12 onboard, 0 in cloud, 0 held/s);
     assert.equal(ending.copyLabel, "Copy this scenario");
     assert.ok(ending.overflow <= 1, "No horizontal dialog overflow");
+    if (width <= 700) {
+      const actions = await evaluate(`['.ff-save','.ff-share'].map(selector => {
+        const button=document.querySelector(selector), label=button.querySelector('span');
+        const box=button.getBoundingClientRect(), text=label.getBoundingClientRect();
+        return {height:box.height,bottom:box.bottom,textWidth:text.width,textHeight:text.height,clip:getComputedStyle(label).clipPath};
+      })`);
+      assert.ok(
+        actions.every(
+          (a) => a.height >= 44 && a.bottom <= height && a.textWidth > 30 && a.textHeight > 12 && a.clip === "none",
+        ),
+        "Completed phone missions have visible text labels and reachable save/share actions",
+      );
+    }
     if (width === 320) await screenshot(send, "first-flight-recap-320.png");
     await click(".ff-playback button");
     assert.equal(await evaluate('!!document.querySelector(".ff-recap")'), false);

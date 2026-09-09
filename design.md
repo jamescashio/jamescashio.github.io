@@ -1,4 +1,10 @@
-# Current release — V37.14 Visitor journey
+# Current release — V37.15 Orbital refinement
+
+The owner approved going live with the reviewed refinement on 9 September 2026. Preserve the artwork, Bit, colors, typography, seven studies, opt-in audio and reduced motion. Publish the short-phone entrance, readable mission sharing, shared studio reflections, reordered build story and factual operator process as reviewed.
+
+Production baseline: `617344a00e3a20a5d48c91077cd4b7283e67a490` (V37.14). Use the checked pull request and existing Pages workflow. Verify V37.15 receipts, delivered asset parity and live desktop/phone interactions. See [validation and rollback](docs/orbital-refinement-release.md). Historical sections below retain their original release identity.
+
+# Prior release — V37.14 Visitor journey
 
 The owner approved publication of the reviewed refinement on 9 September 2026. Preserve the Cashio artwork, palette, typefaces, Bit, films and legacy routes. The final flight decision leads to a concise recap, one private-request action and a sourced workshop example. Completion feedback, replay, narrow phone controls and short laptop layouts are refined without adding production dependencies or analytics. Shared panel and menu styles retain the existing rendered appearance.
 

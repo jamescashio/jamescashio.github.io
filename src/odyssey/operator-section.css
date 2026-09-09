@@ -1,0 +1,111 @@
+.operator-process {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.65fr) minmax(0, 1.35fr);
+  gap: 28px 48px;
+  margin-top: 64px;
+  padding-top: 32px;
+  border-top: 1px solid #62727d;
+  scroll-margin-top: 112px;
+}
+.operator-process > header {
+  grid-column: 1 / -1;
+}
+.operator-process h3 {
+  margin: 12px 0;
+  color: #77572f;
+  font:
+    500 clamp(26px, 3vw, 36px)/1.2 Oxanium,
+    sans-serif;
+}
+.operator-process p,
+.operator-process figcaption {
+  color: #405f72;
+  font:
+    16px/1.65 Exo,
+    sans-serif;
+}
+.operator-process figure {
+  margin: 0;
+  max-width: 340px;
+}
+.operator-process img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid #62727d;
+}
+.operator-process figcaption {
+  margin-top: 12px;
+  font-size: 14px;
+}
+.operator-process ol {
+  padding-left: 32px;
+  margin: 0;
+  list-style: decimal-leading-zero;
+}
+.operator-process li {
+  padding: 0 0 18px 10px;
+}
+.operator-process li::marker {
+  color: #77572f;
+  font:
+    13px Jet,
+    monospace;
+}
+.operator-process strong {
+  color: #152c3b;
+  font:
+    500 20px/1.4 Oxanium,
+    sans-serif;
+}
+.operator-process li p {
+  margin: 8px 0 0;
+}
+.operator-process .operator-process-date {
+  font-size: 14px;
+  color: #77572f;
+}
+.operator-process nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+}
+.operator-process a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: #11636b;
+}
+.operator-process a:focus-visible {
+  outline: 2px solid #11636b;
+  outline-offset: 4px;
+}
+.operator-process figure > a {
+  display: block;
+}
+.operator-process a svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+@media (max-width: 700px) {
+  .operator-process {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+  .operator-process figure {
+    max-width: 240px;
+  }
+  .operator-process > div {
+    grid-row: 2;
+  }
+}
+@media (forced-colors: active) {
+  .operator-process a {
+    color: LinkText;
+  }
+  .operator-process :is(h3, strong, li::marker) {
+    color: CanvasText;
+  }
+}

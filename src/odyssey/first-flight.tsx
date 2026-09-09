@@ -325,7 +325,7 @@ export default function FirstFlight({
             First contact. <em>Human command.</em>
           </h2>
         </div>
-        <button ref={firstFocus} type="button" className="ff-close" onClick={() => onClose()} aria-label="Close flight">
+        <button ref={firstFocus} type="button" className="ff-close" onClick={() => onClose()}>
           Close <span aria-hidden="true">×</span>
         </button>
       </header>

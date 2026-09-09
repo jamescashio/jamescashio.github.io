@@ -29,7 +29,7 @@ export function HeroSection({
       <LightwakeAtmosphere />
       <div className="o-hero-content">
         <div className="eh-release-mark">
-          <b>V37.14</b>
+          <b>V37.15</b>
           <span>CONTINUUM · PERSPECTIVE</span>
         </div>
         <span className="o-kicker">
@@ -44,8 +44,8 @@ export function HeroSection({
           <em>possible.</em>
         </h1>
         <p>
-          I build AI and security tools that make complex decisions clear.
-          <br className="o-desktop-br" /> Where data goes. What it costs. When a human takes over.
+          I build AI and security tools that make difficult decisions clear.
+          <br className="o-desktop-br" /> Your data. Your budget. Your call.
         </p>
         <div className="o-hero-actions">
           <button
@@ -101,12 +101,7 @@ export function HeroSection({
       </div>
       <HeroCinema blocked={paused || flight !== null || signature || lensing || film} />
       <LightwakeControls />
-      <button
-        className="o-core-hotspot"
-        onClick={fold}
-        disabled={folding}
-        aria-label="Bit, the human’s co-pilot. Initiate fold and explore ZeusApollo"
-      >
+      <button className="o-core-hotspot" onClick={fold} disabled={folding}>
         <HeroSignal />
         <span className="o-core-ring" />
         <span className="o-core-label">
