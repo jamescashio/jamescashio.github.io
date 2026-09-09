@@ -134,10 +134,88 @@
   flex-wrap: wrap;
   gap: 4px 28px;
 }
+.o-workshop-capture {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  gap: 24px 32px;
+  margin: 16px 0 0;
+  padding-top: 28px;
+  border-top: 1px solid #526575;
+  align-items: center;
+}
+.o-workshop-capture > a {
+  display: block;
+  border: 1px solid #71909f;
+}
+.o-workshop-capture img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.o-workshop-annotations h4 {
+  margin: 12px 0 20px;
+  color: #f6eedf;
+  font:
+    500 28px/1.25 Oxanium,
+    sans-serif;
+}
+.o-workshop-annotations ol {
+  list-style: decimal-leading-zero;
+  padding-left: 30px;
+  margin: 0;
+}
+.o-workshop-annotations li {
+  padding-left: 7px;
+  margin-bottom: 22px;
+  color: #edc991;
+}
+.o-workshop-annotations li::marker {
+  font:
+    12px Jet,
+    monospace;
+}
+.o-workshop-annotations strong {
+  font:
+    500 17px/1.5 Exo,
+    sans-serif;
+}
+.o-workshop-annotations p {
+  margin: 8px 0 0;
+  color: #c5d8e3;
+  font:
+    16px/1.65 Exo,
+    sans-serif;
+}
+.o-workshop-capture figcaption {
+  grid-column: 1 / -1;
+  color: #b8cfda;
+  font:
+    14px/1.6 Exo,
+    sans-serif;
+}
+.o-workshop-capture figcaption a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  gap: 8px;
+  color: #a5e6e6;
+  margin-left: 8px;
+}
+.o-workshop-capture figcaption svg {
+  width: 16px;
+  height: 16px;
+}
 @media (max-width: 700px) {
   .o-build-story,
   .o-build-proof {
     scroll-margin-top: 110px;
     grid-template-columns: minmax(0, 1fr);
+  }
+  .o-workshop-capture {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+  }
+  .o-workshop-capture figcaption a {
+    margin-left: 0;
   }
 }

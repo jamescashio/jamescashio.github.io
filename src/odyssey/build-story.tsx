@@ -29,6 +29,51 @@ export function BuildStory() {
             <time dateTime={COST_EVIDENCE.sampleEnd}>22 July 2026</time>
           </p>
         </div>
+        <figure className="o-workshop-capture">
+          <a
+            href="/evidence/workshop/hermes-public-interface.webp"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="View the full HERMES interface capture"
+          >
+            <img
+              src="/evidence/workshop/hermes-public-interface.webp"
+              width="881"
+              height="904"
+              loading="lazy"
+              decoding="async"
+              alt="Actual public HERMES interface: Draft selected, private information and source requirements off; the completed result is Workhorse."
+            />
+          </a>
+          <div className="o-workshop-annotations">
+            <span className="o-kicker">THE SHIPPED INTERFACE</span>
+            <h4>A decision you can inspect.</h4>
+            <ol>
+              <li>
+                <strong>Routine work has a general lane.</strong>
+                <p>This capture shows a public draft routed to Workhorse. The five steps expose the decision.</p>
+              </li>
+              <li>
+                <strong>The boundary gets the final say.</strong>
+                <p>Require sources to select Research. Add private information to hold the route for human review.</p>
+              </li>
+            </ol>
+            <a
+              className="o-text-button"
+              href={shareExperiment({ study: "hermes", intent: "draft", sources: false, privateData: false })}
+              onClick={loadExample}
+            >
+              Try these exact inputs <Arrow />
+            </a>
+          </div>
+          <figcaption>
+            Actual V37.13 interface · public demonstration. This capture shows the shipped teaching tool; it does not
+            show the private Atlas service or establish live routing behavior.
+            <a href="/evidence/workshop/provenance.json">
+              Capture source and settings <Arrow diagonal />
+            </a>
+          </figcaption>
+        </figure>
         <div className="o-field-notes">
           <dl>
             <div>

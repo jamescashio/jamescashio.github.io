@@ -271,7 +271,7 @@ export function OdysseyApp() {
               Predict the route, then test the rule yourself.
             </p>
           </div>
-          <BoundaryComparison />
+          <BoundaryComparison motion={ambientMotion} />
           <div className="perspective-study-intro">
             <span className="o-kicker">GO DEEPER / SEVEN WORKING STUDIES</span>
             <p>Change the inputs. Inspect the rule. Follow the evidence.</p>

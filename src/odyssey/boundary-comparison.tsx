@@ -3,12 +3,13 @@ import { routeExample } from "./data";
 import { shareExperiment } from "./study-experiment";
 import { loadStudyExample } from "./study-navigation";
 import { InstrumentMaterials } from "./study-engravings";
+import { HumanReviewSignal } from "./human-review-signal";
 
 const publicRequest = { study: "hermes", intent: "analyze", sources: true, privateData: false } as const;
 const privateRequest = { ...publicRequest, privateData: true };
 
 /** A paired view of the existing model, with a prediction before the second result. */
-export function BoundaryComparison() {
+export function BoundaryComparison({ motion = false }: { motion?: boolean }) {
   const id = useId();
   const [prediction, setPrediction] = useState<"research" | "human" | null>(null);
   const [revealed, setRevealed] = useState(false);
@@ -130,6 +131,7 @@ export function BoundaryComparison() {
               {prediction === "human" ? "YOU FOUND THE BOUNDARY" : "PRIVACY CHANGES THE ANSWER"}
             </span>
             <strong>Privacy takes priority.</strong>
+            <HumanReviewSignal motion={motion} />
             <p>
               The document stays behind the boundary. A person must authorize an external route—even when the task
               requires sources. Try changing the inputs in HERMES below.

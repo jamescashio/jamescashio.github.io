@@ -7,6 +7,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { checkPerspective } from "./perspective-runtime.mjs";
+import { captureWorkshop, checkJourney, measureJourney } from "./journey-runtime.mjs";
 
 import {
   browserExitDiagnostic,
@@ -16,7 +17,7 @@ import {
 } from "./layout-runtime-support.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const DIST = path.join(ROOT, "dist");
+const DIST = path.resolve(ROOT, process.env.CASHIO_TEST_DIST || "dist");
 const RELEASE_NAME = "THE HUMAN RECKONING";
 const PAGE_TITLE = "Cashio V37.13 — Continuum | Doug Cashio";
 const report = { passed: false, checks: [], failures: [], errors: [], warnings: [] };
@@ -297,6 +298,18 @@ async function run() {
         audioOff:document.querySelector('[aria-label="Turn interaction sound on"]')?.getAttribute('aria-pressed') === 'false'};
     })()`);
 
+      if (argument("capture-workshop") === "true") {
+        await captureWorkshop({ navigate, evaluate, click, waitFor, send, report });
+        return;
+      }
+      if (argument("journey-only") === "true") {
+        await checkJourney({ navigate, evaluate, click, pressKey, waitFor, send, report });
+        return;
+      }
+      if (argument("measure-journey") === "true") {
+        await measureJourney({ navigate, evaluate, click, pressKey, waitFor, send, report });
+        return;
+      }
       for (const width of [1440, 390, 320]) {
         await navigate(`/?runtime=v36-${width}`, width, width === 1440 ? 1000 : 844);
         const result = await layout();
@@ -1001,6 +1014,7 @@ async function run() {
       });
 
       await checkPerspective({ navigate, evaluate, click, pressKey, waitFor, report, send });
+      await checkJourney({ navigate, evaluate, click, pressKey, waitFor, report, send });
 
       await send("Emulation.setScriptExecutionDisabled", { value: true });
       await navigate("/?runtime=v36-no-js", 320, 844);

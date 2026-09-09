@@ -133,7 +133,7 @@
   border-left: 2px solid #edc991;
   padding: 0 0 0 24px;
 }
-.o-boundary-verdict strong {
+.o-boundary-verdict > strong {
   display: block;
   margin: 12px 0 8px;
   color: #f3d5a4;

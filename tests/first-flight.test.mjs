@@ -9,6 +9,39 @@ import {
 } from "../src/odyssey/flight-plan.ts";
 import { computeWorldOutcome } from "../src/odyssey/sovereign-model.ts";
 import { missionRecord } from "../src/odyssey/mission-card.ts";
+import { flightRecap } from "../src/odyssey/flight-recap-model.ts";
+
+test("a flight recap compares the same workload before and after cloud loss", () => {
+  const before = { architecture: "hybrid", sensitivity: "mixed", connected: true, allowPrivateEgress: false };
+  const recap = flightRecap({ before, after: { ...before, connected: false } });
+  assert.deepEqual([recap.before.local, recap.before.cloud, recap.before.held], [6, 6, 0]);
+  assert.deepEqual([recap.after.local, recap.after.cloud, recap.after.held], [12, 0, 0]);
+  assert.equal(recap.before.privateCount, recap.after.privateCount);
+  assert.equal(recap.beforeLabel, "Cloud connected");
+  assert.equal(recap.afterLabel, "Cloud disconnected");
+  assert.equal(before.connected, true);
+});
+
+test("granting and withdrawing private-cloud permission produce opposite, honest recaps", () => {
+  const before = { architecture: "cloud", sensitivity: "private", connected: true, allowPrivateEgress: false };
+  const after = { ...before, allowPrivateEgress: true };
+  const granted = flightRecap({ before, after }),
+    withdrawn = flightRecap({ before: after, after: before });
+  assert.equal(granted.before.held, 12);
+  assert.equal(granted.after.cloud, 12);
+  assert.equal(granted.beforeLabel, "Permission off");
+  assert.equal(granted.afterLabel, "Permission on");
+  assert.deepEqual(withdrawn.after, granted.before);
+  assert.equal(withdrawn.afterLabel, "Permission off");
+});
+
+test("a disconnected cloud-only recap never invents local fallback or completed work", () => {
+  const before = { architecture: "cloud", sensitivity: "public", connected: true, allowPrivateEgress: false };
+  const recap = flightRecap({ before, after: { ...before, connected: false } });
+  assert.equal(recap.before.cloud, 12);
+  assert.deepEqual([recap.after.local, recap.after.cloud, recap.after.held], [0, 0, 12]);
+  assert.match(recap.after.summary, /wait/);
+});
 
 test("saved flight records reproduce decisions, including offline and private-cloud boundaries", () => {
   const scenarios = [
