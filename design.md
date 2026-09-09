@@ -1,4 +1,10 @@
-# Current release — V37.13 Perspective
+# Current release — V37.14 Visitor journey
+
+The owner approved publication of the reviewed refinement on 9 September 2026. Preserve the Cashio artwork, palette, typefaces, Bit, films and legacy routes. The final flight decision leads to a concise recap, one private-request action and a sourced workshop example. Completion feedback, replay, narrow phone controls and short laptop layouts are refined without adding production dependencies or analytics. Shared panel and menu styles retain the existing rendered appearance.
+
+Release baseline: `1f35f59363040a13fae309eb44116a2e8d94429a` (V37.13). Publish through the checked pull request and existing Pages workflow. Confirm V37.14 receipts, matching delivered assets and live desktop/phone behavior. Historical evidence and screenshot provenance retain their original versions and dates. See [validation and rollback](docs/visitor-journey-release.md). Earlier authorization notes below describe prior releases and candidates.
+
+# Prior release — V37.13 Perspective
 
 Creative thesis: the original Cashio universe opens with one invitation, teaches one decision before its deeper studies, and gains depth through light that responds to its surfaces.
 
