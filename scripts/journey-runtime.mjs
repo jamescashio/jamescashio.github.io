@@ -233,8 +233,15 @@ export async function checkJourney({ navigate, evaluate, click, pressKey, waitFo
 
   await navigate("/?runtime=journey-bit", 1440, 1000);
   await click(".o-story-comparison a:nth-child(2)");
+  await waitFor(
+    "document.querySelector('.o-segment [aria-pressed=true]')?.textContent === 'Analyze' && document.querySelectorAll('.o-toggle input')[0]?.checked && document.querySelectorAll('.o-toggle input')[1]?.checked && document.querySelector('.o-lab')?.dataset.labMotion === 'on'",
+    "hydrated private request with motion enabled",
+  );
   await click(".o-run");
-  await waitFor("!!document.querySelector('.o-lab .o-human-review')", "human review signal");
+  await waitFor(
+    "document.querySelector('.o-lab')?.dataset.labActive === 'on' && !!document.querySelector('.o-lab .o-human-review')",
+    "visible human review signal",
+  );
   const pulse = await evaluate(
     "(() => {const e=document.querySelector('.o-human-review-core');const s=getComputedStyle(e,'::after');return {name:s.animationName,iterations:s.animationIterationCount,duration:s.animationDuration};})()",
   );
