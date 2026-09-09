@@ -24,9 +24,9 @@ export function createExplorationCarrier() {
     clearcoat: 0.42,
     clearcoatRoughness: 0.18,
   });
-  const titanium = standard(0x526374, 0.88, 0.24);
+  const titanium = standard(0x526374, 0.88, 0.31);
   const graphite = standard(0x09131e, 0.38, 0.49);
-  const gold = standard(0xc5a166, 0.88, 0.21);
+  const gold = standard(0xc5a166, 0.88, 0.29);
   const blueSteel = standard(0x36576d, 0.82, 0.27);
   blueSteel.name = "Blue titanium wing armor";
   const facetedArmor = pearl.clone();

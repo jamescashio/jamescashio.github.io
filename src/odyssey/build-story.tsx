@@ -6,7 +6,6 @@ import { COST_EVIDENCE } from "../lib/cost-evidence";
 
 // Pin the public model and observation. A website edit does not refresh either.
 const STUDY = "https://github.com/jamescashio/jamescashio.github.io/blob/0c509286ed9329b897741e1afe505376deb443ce/";
-const PREVIOUS = "https://github.com/jamescashio/jamescashio.github.io/blob/8248189c073928a45f1da05dd6d06e62a21df2f8/";
 
 export function BuildStory() {
   return (
@@ -29,50 +28,55 @@ export function BuildStory() {
             <time dateTime={COST_EVIDENCE.sampleEnd}>22 July 2026</time>
           </p>
         </div>
-        <figure className="o-workshop-capture">
-          <a
-            href="/evidence/workshop/hermes-public-interface.webp"
-            target="_blank"
-            rel="noreferrer"
-            aria-label="View the full HERMES interface capture"
-          >
-            <img
-              src="/evidence/workshop/hermes-public-interface.webp"
-              width="881"
-              height="904"
-              loading="lazy"
-              decoding="async"
-              alt="Actual public HERMES interface: Draft selected, private information and source requirements off; the completed result is Workhorse."
-            />
-          </a>
-          <div className="o-workshop-annotations">
-            <span className="o-kicker">THE SHIPPED INTERFACE</span>
-            <h4>A decision you can inspect.</h4>
-            <ol>
-              <li>
-                <strong>Routine work has a general lane.</strong>
-                <p>A public draft reaches Workhorse. Each of the five steps explains why.</p>
-              </li>
-              <li>
-                <strong>The boundary gets the final say.</strong>
-                <p>Sources select Research. Private information calls for a person.</p>
-              </li>
-            </ol>
+        <details className="o-field-notes o-interface-notes">
+          <summary>
+            Inspect the shipped interface<span aria-hidden="true">+</span>
+          </summary>
+          <figure className="o-workshop-capture">
             <a
-              className="o-text-button"
-              href={shareExperiment({ study: "hermes", intent: "draft", sources: false, privateData: false })}
-              onClick={loadExample}
+              href="/evidence/workshop/hermes-public-interface.webp"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="View the full HERMES interface capture"
             >
-              Try these exact inputs <Arrow />
+              <img
+                src="/evidence/workshop/hermes-public-interface.webp"
+                width="881"
+                height="904"
+                loading="lazy"
+                decoding="async"
+                alt="Actual public HERMES interface: Draft selected, private information and source requirements off; the completed result is Workhorse."
+              />
             </a>
-          </div>
-          <figcaption>
-            Actual V37.13 interface · public demonstration, not live Atlas routing.
-            <a href="/evidence/workshop/provenance.json">
-              Capture source and settings <Arrow diagonal />
-            </a>
-          </figcaption>
-        </figure>
+            <div className="o-workshop-annotations">
+              <span className="o-kicker">THE SHIPPED INTERFACE</span>
+              <h4>A decision you can inspect.</h4>
+              <ol>
+                <li>
+                  <strong>Routine work has a general lane.</strong>
+                  <p>A public draft reaches Workhorse. Each of the five steps explains why.</p>
+                </li>
+                <li>
+                  <strong>The boundary gets the final say.</strong>
+                  <p>Sources select Research. Private information calls for a person.</p>
+                </li>
+              </ol>
+              <a
+                className="o-text-button"
+                href={shareExperiment({ study: "hermes", intent: "draft", sources: false, privateData: false })}
+                onClick={loadExample}
+              >
+                Try these exact inputs <Arrow />
+              </a>
+            </div>
+            <figcaption>
+              Actual V37.13 interface · public demonstration, not live Atlas routing.
+              <a href="/evidence/workshop/provenance.json">
+                Capture source and settings <Arrow diagonal />
+              </a>
+            </figcaption>
+          </figure>
+        </details>
         <div className="o-field-notes">
           <dl>
             <div>
@@ -120,50 +124,14 @@ export function BuildStory() {
           </nav>
         </details>
         <nav className="o-proof-sources" aria-label="Explore the smart-routing idea">
+          <a className="o-text-button" href="#operator-process">
+            See how I build <Arrow />
+          </a>
           <a className="o-text-button" href={COST_EVIDENCE.source} target="_blank" rel="noreferrer">
             Inspect the original cost record <Arrow diagonal />
           </a>
         </nav>
       </section>
-      <details className="o-field-notes o-build-records">
-        <summary>
-          One shipped improvement you can verify: a reproducible experiment<span aria-hidden="true">+</span>
-        </summary>
-        <p>
-          Previously, a copied link opened a study without preserving its controls. I added settings links for all seven
-          studies in V37.11, published on 8 September 2026. A recipient can now reopen the same inputs and inspect the
-          same decision. Opening a HERMES link restores the controls; running it remains their choice.
-        </p>
-        <nav className="o-proof-sources" aria-label="Verify the reproducible experiment release">
-          <a
-            className="o-text-button"
-            href={PREVIOUS + "src/odyssey/project-explorer.tsx"}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Before: study-only links <Arrow diagonal />
-          </a>
-          <a
-            className="o-text-button"
-            href={STUDY + "src/odyssey/study-experiment.ts"}
-            target="_blank"
-            rel="noreferrer"
-          >
-            After: preserved settings <Arrow diagonal />
-          </a>
-          <a className="o-text-button" href={STUDY + "tests/odyssey-models.test.mjs"} target="_blank" rel="noreferrer">
-            Read the model checks <Arrow diagonal />
-          </a>
-          <a
-            className="o-text-button"
-            href="https://github.com/jamescashio/jamescashio.github.io/pull/118"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Read the published change <Arrow diagonal />
-          </a>
-        </nav>
-      </details>
       <details className="o-field-notes o-build-records">
         <summary>
           Dated operating record: what the infrastructure observation establishes<span aria-hidden="true">+</span>

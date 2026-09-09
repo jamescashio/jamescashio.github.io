@@ -51,13 +51,13 @@ export const planetFragment = `
     color *= 1.0 - cloudShadow * day * 0.23;
     // Cloud relief uses the already sampled cloud field. No new texture lookup
     // or rendering pass: the illuminated folds now follow the sun direction.
-    vec3 cloudGradient = sign(determinant) * (dFdx(clouds) * rx + dFdy(clouds) * ry) * 0.024;
+    vec3 cloudGradient = sign(determinant) * (dFdx(clouds) * rx + dFdy(clouds) * ry) * 0.016;
     vec3 cloudNormal = normalize(normal - cloudGradient / max(abs(determinant), 0.000001));
     float cloudLight = max(dot(cloudNormal,light),0.0);
     vec3 cloudColor = mix(vec3(0.35,0.48,0.61),vec3(0.86,0.88,0.83),day);
-    color = mix(color,cloudColor * (0.018 + cloudLight * 1.2),clouds * 0.82);
-    float specular = pow(max(dot(reflect(-light,normal),view),0.0),64.0);
-    color += vec3(0.65,0.85,1.0) * specular * (1.0-land) * (1.0-clouds) * day * 0.34;
+    color = mix(color,cloudColor * (0.018 + cloudLight * 1.2),clouds * 0.76);
+    float specular = pow(max(dot(reflect(-light,normal),view),0.0),92.0);
+    color += vec3(0.65,0.85,1.0) * specular * (1.0-land) * (1.0-clouds) * day * 0.48;
     float rim = pow(1.0-max(dot(normal,view),0.0),5.4);
     float airMass = pow(1.0-max(dot(normal,view),0.0),2.4) * day;
     color = mix(color,atmosphereColor * (0.12 + max(incidence,0.0) * 0.24),airMass * 0.19);

@@ -11,7 +11,7 @@ export type FlightComposition = {
 /** Authored around the carrier's physical AI bay, bridge and separate relay. */
 export const FLIGHT_SHOTS: Record<FlightShot, FlightComposition> = {
   arrival: { yaw: 0.82, pitch: 0.4, focus: [2.1, 0.6, -0.8], radius: 10.6, frame: "carrier" },
-  inside: { yaw: 0.32, pitch: 1.03, focus: [0, 0.9, -1.15], radius: 4.25, frame: "focus" },
+  inside: { yaw: 0.32, pitch: 0.87, focus: [0, 0.9, -1.15], radius: 4.65, frame: "focus" },
   isolation: { yaw: 0.25, pitch: 0.72, focus: [3.8, 1, -0.8], radius: 11.4, frame: "carrier" },
   command: { yaw: -0.6, pitch: 0.51, focus: [0, 1.45, 3.65], radius: 2.7, frame: "focus" },
 };

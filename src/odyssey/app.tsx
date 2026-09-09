@@ -272,12 +272,12 @@ export function OdysseyApp() {
             </p>
           </div>
           <BoundaryComparison motion={ambientMotion} />
+          <BuildStory />
           <div className="perspective-study-intro">
             <span className="o-kicker">GO DEEPER / SEVEN WORKING STUDIES</span>
             <p>Change the inputs. Inspect the rule. Follow the evidence.</p>
           </div>
           <ProjectExplorer motion={ambientMotion} play={play} />
-          <BuildStory />
         </section>
         <section className="o-universe o-scene" id="universe" aria-labelledby="universe-title">
           <div className="o-section-top">

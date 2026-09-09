@@ -439,9 +439,9 @@ async function run() {
           assert.match(result, /did not establish a current routing inventory/);
           assert.doesNotMatch(result, /19 LXC|10 model lanes/);
         }
-        await click(".o-field-notes summary");
-        assert.ok(await evaluate(`document.querySelector('.o-field-notes').open`));
-        const note = await evaluate(`document.querySelector('.o-field-notes').textContent`);
+        await click("#project-panel .o-field-notes summary");
+        assert.ok(await evaluate(`document.querySelector('#project-panel .o-field-notes').open`));
+        const note = await evaluate(`document.querySelector('#project-panel .o-field-notes').textContent`);
         for (const label of ["Rule", "Try this", "Boundary"]) assert.ok(note.includes(label));
         const result = await layout();
         assert.ok(result.scrollWidth <= 321 && result.bodyWidth <= 321, `${study.id} notes and output fit 320px`);
