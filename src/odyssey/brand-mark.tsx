@@ -82,7 +82,7 @@ export function BrandMark({
         }
         width="2055"
         height="765"
-        alt="Cashio AI"
+        alt="cAshIo"
         decoding="async"
         loading={eager || studio ? "eager" : "lazy"}
       />

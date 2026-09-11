@@ -66,6 +66,10 @@ export function HeroSection({
           </a>
         </div>
         <div className="lens-hero-notes">
+          <a href="/cashio.html" className="cashio-intro-link">
+            Meet cAshIo ↗
+          </a>
+          <i />
           <span>Privacy.</span>
           <i />
           <span>Resilience.</span>

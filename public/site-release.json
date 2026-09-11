@@ -18,5 +18,12 @@
     "fleetObserved": "2026-09-07",
     "observedAtUtc": "2026-09-07T23:14:58.5008542Z",
     "routingObserved": null
+  },
+  "branding": {
+    "name": "cAshIo",
+    "kit": "05",
+    "updated": "2026-09-10",
+    "introduction": "/cashio.html",
+    "family": "A House Cashio workspace"
   }
 }

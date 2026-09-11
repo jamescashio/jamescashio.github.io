@@ -156,8 +156,13 @@ export function OdysseyApp() {
         {folding ? "Crossing the threshold. Opening the system atlas." : ""}
       </span>
       <header className="o-header">
-        <a href="#top" className="o-brand" aria-label="Cashio, back to the beginning">
-          <BrandMark motion={ambientMotion} eager />
+        <a href="#top" className="o-brand" aria-label="cAshIo, back to the beginning">
+          <span className="cashio-wordmark">
+            <img src="/cashio/icon.svg" width="29" height="29" alt="" />
+            <span>
+              c<b>A</b>sh<i>I</i>o
+            </span>
+          </span>
         </a>
         <nav aria-label="Primary navigation">
           {nav.map((link) => (
@@ -460,7 +465,7 @@ export function OdysseyApp() {
       </main>
       <ExperienceOverlays scenes={scenes} motion={motion} reduced={reduced} />
       <footer className="o-footer">
-        <a href="#top" className="o-brand" aria-label="Cashio, back to the beginning">
+        <a href="#top" className="o-brand" aria-label="cAshIo, back to the beginning">
           <BrandMark motion={ambientMotion} />
         </a>
         <span>
@@ -477,6 +482,7 @@ export function OdysseyApp() {
             View source
             <Arrow diagonal />
           </a>
+          <a href="/cashio.html">Meet cAshIo ↗</a>
           <a href="#top">Back to orbit ↑</a>
           <a
             href="https://github.com/jamescashio/jamescashio.github.io/blob/main/PRIVACY.md"

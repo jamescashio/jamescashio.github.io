@@ -12,15 +12,15 @@
   color-scheme: dark;
 }
 .event-horizon.aurora {
-  --a-abyss: #061321;
-  --a-surface: #0b2032;
-  --a-raised: #102d42;
-  --a-cyan: #77e7e7;
-  --a-gold: #ffc77f;
+  --a-abyss: #080f1b;
+  --a-surface: #101d2d;
+  --a-raised: #192a3c;
+  --a-cyan: #22d3ee;
+  --a-gold: #e9b65c;
   --a-coral: #fa927a;
-  --a-paper: #eaf2f5;
+  --a-paper: #e5eef8;
   --a-ink: #10263a;
-  --a-muted: #adc4d2;
+  --a-muted: #9aafc4;
   --a-rule: #6d9caf57;
   --a-light-muted: #496375;
   --a-teal-ink: #11636b;
