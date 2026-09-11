@@ -5,6 +5,7 @@ import { computeWorldOutcome } from "./sovereign-model";
 import type { WorldController } from "./world-renderer";
 import { StarshipPoster } from "./starship-poster";
 import { FlightRecap } from "./flight-recap";
+import { DecisionDelta } from "./decision-delta";
 import type { FlightDecision } from "./flight-recap-model";
 import { HumanReviewSignal } from "./human-review-signal";
 import { shareExperiment } from "./study-experiment";
@@ -71,6 +72,17 @@ export default function FirstFlight({
   const independent = input.architecture === "hybrid" && !input.connected;
   const flightHash = changed || complete ? missionHash(input) : `#flight=${scene.id}`;
   const playing = motion && !paused && !complete && pageVisible && phase !== "loading";
+  const sceneTitle = complete
+    ? "One boundary. A different outcome."
+    : changed
+      ? step === 3
+        ? input.allowPrivateEgress
+          ? "Permission changes the route."
+          : "Your boundary holds."
+        : input.connected
+          ? "The relay is back."
+          : "Connection lost. Work stays."
+      : scene.title;
 
   useEffect(() => {
     const pending = downloads.current;
@@ -199,6 +211,11 @@ export default function FirstFlight({
     // Replay removes the completed controls; return focus to a stable control.
     firstFocus.current?.focus({ preventScroll: true });
   }
+  function reviewDecision() {
+    focusCompletion.current = true;
+    setComplete(true);
+    setPaused(true);
+  }
   async function saveCard() {
     if (captureBusy.current || phase === "loading") return;
     captureBusy.current = true;
@@ -296,6 +313,7 @@ export default function FirstFlight({
       data-shot={displayScene.shot}
       data-motion={motion ? "on" : "off"}
       data-complete={complete}
+      data-changed={changed}
       aria-labelledby="ff-title"
       aria-describedby="ff-boundary"
       onCancel={(event) => {
@@ -379,7 +397,7 @@ export default function FirstFlight({
             {complete ? "FLIGHT COMPLETE" : phase === "loading" ? "PREPARING THE SHIP" : "THE HUMAN BOUNDARY"}
           </span>
           <h3 id="ff-scene-title" ref={completionFocus} tabIndex={-1}>
-            {complete ? "One boundary. A different outcome." : scene.title}
+            {sceneTitle}
           </h3>
           {complete ? (
             <>
@@ -399,13 +417,14 @@ export default function FirstFlight({
           ) : (
             <>
               <div className="ff-command-lab">
+                {changed && lastDecision && <DecisionDelta decision={lastDecision} />}
                 <div className="ff-lab-heading">
                   <span>TAKE COMMAND</span>
                   <span>LOCAL ILLUSTRATION</span>
                 </div>
                 {!compact && decisionButton}
                 <p className="ff-scene-copy">{changed ? outcome.summary : scene.copy}</p>
-                <details className="ff-request-detail" open={!compact}>
+                <details className="ff-request-detail" open={!compact && !changed}>
                   <summary>
                     Follow the twelve requests <span aria-hidden="true">+</span>
                   </summary>
@@ -440,6 +459,11 @@ export default function FirstFlight({
                 )}
               </div>
               <strong className="ff-takeaway">{changed ? outcome.takeaway : scene.takeaway}</strong>
+              {changed && !compact && (
+                <button className="ff-review-decision" type="button" onClick={reviewDecision}>
+                  See my decision →
+                </button>
+              )}
             </>
           )}
           {(complete || changed) && (
@@ -461,6 +485,15 @@ export default function FirstFlight({
           {complete ? (
             <button className="ff-boundary-toggle" type="button" onClick={() => onClose(privateRequest)}>
               Test a private request →
+            </button>
+          ) : changed ? (
+            <button
+              ref={decisionFocus}
+              className="ff-boundary-toggle ff-review-decision"
+              type="button"
+              onClick={reviewDecision}
+            >
+              See my decision <span aria-hidden="true">→</span>
             </button>
           ) : (
             decisionButton
@@ -554,16 +587,12 @@ export default function FirstFlight({
         </button>
       </footer>
       <p className="ff-boundary" id="ff-boundary">
-        Browser-only illustration. No AI requests are sent.{" "}
+        Browser-only demo. No AI requests sent.{" "}
         {phase === "fallback" ? "The 3D view is unavailable; the illustrated outcomes still work. " : ""}
-        {!motion
-          ? complete
-            ? "Motion stays off on replay."
-            : "Motion is off. Advance with Next."
-          : "Explore at your own pace."}
+        {!motion ? (complete ? "Motion stays off on replay." : "Motion off. Use Next.") : "Explore at your own pace."}
       </p>
       <span className="o-sr-only" role="status" aria-atomic="true">
-        {complete ? "Flight complete." : scene.title} {outcome.local} onboard, {outcome.cloud} in cloud, {outcome.held}{" "}
+        {complete ? "Flight complete." : sceneTitle} {outcome.local} onboard, {outcome.cloud} in cloud, {outcome.held}{" "}
         held.
         {outcome.held > 0 ? " A person must approve the next route." : ""}
       </span>

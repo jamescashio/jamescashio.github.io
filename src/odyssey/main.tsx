@@ -24,6 +24,7 @@ import "./hero-cinema.css";
 import "./field-notes.css";
 import "./page-sections.css";
 import "./audit-story.css";
+import "./visitor-polish.css";
 
 const root = document.getElementById("odyssey-root")!;
 const app = (

@@ -1,4 +1,12 @@
-# Current release — V37.16 Editorial refinement
+# Current release — V37.17 Precision polish
+
+The owner approved publication of the polished preview on 09-11-2026. Preserve Bit, original artwork and films, Oxanium/Exo/Jet typography, midnight/cyan/champagne palette, all seven studies, source dates and legacy routes.
+
+Lead with the local AI and security purpose, then give visitors a short path from the flight to an explicit before-and-after outcome and visible shipped evidence. Promote the decision recap into the phone's primary action after a route changes; use the existing twelve-request model and preserve keyboard focus. Refine the short-screen recap and expanded-text chapter labels. Stable callbacks and memoized instruments retain scene state during navigation updates. Keep sound opt-in and respect reduced motion.
+
+Production baseline: `25a379a33b58a75e74f3f5577481a7f5ceece93a`. Publish through the existing checked pull request and Pages workflow; verify the deployed version, assets and live browser journey. See [validation and rollback](docs/precision-preview-release.md). The sections below describe prior releases.
+
+# Prior release — V37.16 Editorial refinement
 
 Remove the minor settings-link process block at the owner's request while preserving the personal introduction. Give the stronger project story a direct invitation to its working demo, present the explanation before optional evidence, and separate the screenshot caption from its source link. Keep the established visual identity and dated evidence intact.
 

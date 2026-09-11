@@ -145,6 +145,15 @@ export function HeroCinema({ blocked }: { blocked: boolean }) {
       pause();
       return;
     }
+    // On a phone the optional controls can sit below the artwork. Bring the
+    // requested scene into view before checking visibility; playback remains opt-in.
+    if (!blockedNow.current && !document.hidden && !visible.current) {
+      hero.current?.scrollIntoView({ block: "start", behavior: "instant" });
+      const artwork = hero.current?.querySelector<HTMLElement>(".o-hero-art:not(video)");
+      const bounds = artwork?.getBoundingClientRect();
+      const header = document.querySelector(".o-header")?.getBoundingClientRect().height ?? 0;
+      visible.current = Boolean(bounds && bounds.bottom > header && bounds.top < innerHeight);
+    }
     if (prohibited()) return;
     generation.current += 1;
     intent.current = true;

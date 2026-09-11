@@ -273,14 +273,21 @@ export async function checkJourney({ navigate, evaluate, click, pressKey, waitFo
   });
 
   await navigate("/?runtime=journey-story#smart-routing", 1440, 1000);
-  assert.equal(await evaluate("document.querySelector('.o-interface-notes').open"), false);
+  assert.equal(
+    await evaluate("document.querySelector('.o-interface-notes').tagName"),
+    "SECTION",
+    "The shipped interface is a visible section, with no disclosure required",
+  );
+  assert.ok(
+    await evaluate("document.querySelector('.o-interface-notes').checkVisibility()"),
+    "The real interface evidence is visible on entry",
+  );
   assert.ok(
     await evaluate(
       "document.querySelector('.o-build-story').compareDocumentPosition(document.querySelector('#study-browser')) & Node.DOCUMENT_POSITION_FOLLOWING",
     ),
     "The real build story follows the first decision, before the study library",
   );
-  await click(".o-interface-notes > summary");
   await waitFor("document.querySelector('.o-workshop-capture img')?.naturalWidth > 0", "real interface capture");
   await evaluate("document.querySelector('.o-workshop-capture').scrollIntoView({block:'center',behavior:'instant'})");
   await screenshot(send, "workshop-story-desktop.png");

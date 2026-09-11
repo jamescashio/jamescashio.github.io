@@ -59,10 +59,7 @@ export function BuildStory() {
             Explore the seven studies <Arrow />
           </a>
         </nav>
-        <details className="o-field-notes o-interface-notes">
-          <summary>
-            Inspect the shipped interface<span aria-hidden="true">+</span>
-          </summary>
+        <section className="o-field-notes o-interface-notes" aria-label="Inspect the shipped interface">
           <figure className="o-workshop-capture">
             <a
               href="/evidence/workshop/hermes-public-interface.webp"
@@ -107,7 +104,7 @@ export function BuildStory() {
               </a>
             </figcaption>
           </figure>
-        </details>
+        </section>
         <details className="o-field-notes o-cost-evidence">
           <summary>
             About the cost figure and the public demo<span aria-hidden="true">+</span>
