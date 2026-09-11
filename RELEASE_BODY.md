@@ -1,15 +1,19 @@
-# V37.16 — Editorial refinement
+# V37.17 — Precision polish
 
-The owner requested removal of the minor settings-link process block and further improvements on 9 September 2026, following approval to publish the ongoing website refinements. The main personal introduction remains. The removed block's duplicate screenshot, navigation link and unused stylesheet are removed with it.
+The owner approved publication of the reviewed preview on 09-11-2026. The release keeps the cAshIo orbital identity and gives visitors a clearer first minute: an introduction to local AI and security work, a short exploration path, an explicit routing consequence, and the shipped interface shown without an extra disclosure.
 
-The smart-routing story now puts its problem, decision and historical result before optional technical evidence. A gold Try the routing demo action loads the public draft example, moves keyboard focus to Run, and leaves execution explicit. A secondary link leads to all seven studies. The screenshot's provenance link has its own line for clearer wrapping. Published sources, cost scope and infrastructure dates remain available in the expandable notes.
+After a phone visitor changes the cloud or permission boundary, the primary action becomes **See my decision**. Focus stays on that action, the recap focuses its heading, and **Test a private request** restores the private HERMES example without executing it. Before/after counts and bars use the same twelve-request routing model. The short-phone recap shows all three totals together, while chapter labels can wrap under increased text spacing.
 
-The original artwork, Bit, typography, colors, lighting, seven studies, legacy command deck, reduced-motion behavior and opt-in audio are preserved. No production dependency, remote asset or new animation is introduced.
+Stable interaction callbacks and memoized instruments avoid recreating unchanged scene content when the active navigation section changes. Sound stays opt-in. Existing scene pauses, reduced-motion behavior, artwork, media, seven studies, archived command deck and evidence dates remain intact. No production dependency or analytics is added.
 
 ## Validation
 
-Run lint, formatting, build, release artifact tests, public-safety and consistency guards, and the affected browser journey. The journey verifies the new story-to-demo action with keyboard focus, unchanged public draft inputs and explicit execution. Inspect desktop, 390 px and 320 px layouts, retained contact links, caption wrapping, and the absence of references to the removed block. The pull request and Pages workflows repeat the complete source and pinned-browser checks. Completion requires a successful Pages deployment, matching V37.16 receipts and compiled assets, and public browser verification.
+The approved preview passed 416 automated tests, 47 browser verification groups, and the separate legacy layout suite. Lighthouse measured 94 mobile performance and 100 desktop performance, with 100 accessibility and best practices on both profiles. Those are local lab observations, not guarantees for production visitors or comprehensive accessibility certification.
+
+The release synchronizes package metadata, visible version labels, both release receipts and the software label in the current dated export. Observation timestamps, counts and the August archive are unchanged. Run formatting, lint, build/type checking, artifact/release tests and consistency/safety checks. The pull request and Pages workflows repeat the complete source suites and browser checks on the pinned Chrome version before deployment.
+
+Completion requires a successful Pages deployment of the merged release, V37.17 receipts from cashio.us, matching built assets, and live verification at desktop, 390px and 320px widths. Exercise the phone decision/recap/private-study journey, a representative deep link, keyboard dismissal, muted startup and motion controls. Existing scores remain labeled as preview measurements unless measured again on production.
 
 ## Rollback
 
-Production baseline: `515e9eaf765ca13873ba8877709624ab09f3cd2b` (V37.15). Revert the V37.16 squash commit through a checked pull request and verify the resulting Pages deployment. Do not force-push main or redate historical evidence.
+Production baseline: `25a379a33b58a75e74f3f5577481a7f5ceece93a` (V37.16, including cAshIo kit 05). Revert the V37.17 squash commit through a checked pull request, allow Pages to redeploy, and verify the restored version and principal routes. Do not force-push main or redate the infrastructure evidence.
