@@ -267,7 +267,7 @@ export function OdysseyApp() {
             </a>
           ))}
         </nav>
-        <p>V37.16 / CONTINUUM / A HUMAN IN COMMAND</p>
+        <p>V37.17 / CONTINUUM / A HUMAN IN COMMAND</p>
       </dialog>
       <main id="o-main">
         <HeroSection scenes={scenes} folding={folding} fold={fold} paused={paused} viewArt={viewArt} />
@@ -482,7 +482,7 @@ export function OdysseyApp() {
           <BrandMark motion={ambientMotion} />
         </a>
         <span>
-          V37.16 / CONTINUUM
+          V37.17 / CONTINUUM
           <br />
           <small>Crafted with GPT-6 Astra · Directed by Doug Cashio</small>
         </span>

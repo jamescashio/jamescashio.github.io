@@ -1,14 +1,12 @@
-# Unpublished precision preview — 09-11-2026
+# Current release — V37.17 Precision polish
 
-Creative thesis: the preserved orbital world responds with a clear consequence, a calm reading surface, and one obvious next action.
+The owner approved publication of the polished preview on 09-11-2026. Preserve Bit, original artwork and films, Oxanium/Exo/Jet typography, midnight/cyan/champagne palette, all seven studies, source dates and legacy routes.
 
-Preserve Bit, the original artwork and films, Oxanium/Exo/Jet typography, midnight/cyan/champagne palette, all seven studies, source dates, and legacy routes. Build on the saved Continuum preview at commit `25a379a33b58a75e74f3f5577481a7f5ceece93a`; the older publication instructions below describe past releases.
+Lead with the local AI and security purpose, then give visitors a short path from the flight to an explicit before-and-after outcome and visible shipped evidence. Promote the decision recap into the phone's primary action after a route changes; use the existing twelve-request model and preserve keyboard focus. Refine the short-screen recap and expanded-text chapter labels. Stable callbacks and memoized instruments retain scene state during navigation updates. Keep sound opt-in and respect reduced motion.
 
-This pass promotes the decision recap into the phone's primary action after a visitor changes the route. Before/after instruments use the existing twelve-request model, precise labels, and restrained finite feedback. Explain the studio's local-AI/privacy focus without adding claims of current production health or savings. Keep optional worlds and scene controls secondary.
+Production baseline: `25a379a33b58a75e74f3f5577481a7f5ceece93a`. Publish through the existing checked pull request and Pages workflow; verify the deployed version, assets and live browser journey. See [validation and rollback](docs/precision-preview-release.md). The sections below describe prior releases.
 
-Keep scene rendering stable when navigation highlighting changes. Preserve real section geometry, prerendered content, keyboard navigation, deep links and browser search. Verify measured mobile/desktop loading, keyboard/focus, contrast, reduced motion, narrow layouts and the full flight-to-study journey. Scores must identify their scope and evidence; a lab 100 is not proof of a perfect visitor experience. This preview is not approved for publication.
-
-# Current release — V37.16 Editorial refinement
+# Prior release — V37.16 Editorial refinement
 
 Remove the minor settings-link process block at the owner's request while preserving the personal introduction. Give the stronger project story a direct invitation to its working demo, present the explanation before optional evidence, and separate the screenshot caption from its source link. Keep the established visual identity and dated evidence intact.
 

@@ -30,7 +30,7 @@ export function HeroSection({
       <LightwakeAtmosphere />
       <div className="o-hero-content">
         <div className="eh-release-mark">
-          <b>V37.16</b>
+          <b>V37.17</b>
           <span>CONTINUUM · PERSPECTIVE</span>
         </div>
         <span className="o-kicker">
