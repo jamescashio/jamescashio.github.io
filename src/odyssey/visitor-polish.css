@@ -105,6 +105,7 @@
 }
 .polish-scene-tools .vc-controls {
   top: auto;
+  flex-direction: row;
   bottom: 132px;
   right: 6%;
 }
