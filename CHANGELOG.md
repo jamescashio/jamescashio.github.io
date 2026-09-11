@@ -1,5 +1,39 @@
 # Changelog
 
+## V37.17 — Continuum
+
+- Polish the first minute: introduce local AI and security work, a short exploration path, an explicit routing consequence, and the shipped interface without an extra disclosure.
+- After a phone visitor changes the cloud or permission boundary, the primary action becomes See my decision; Test a private request restores the private HERMES example without executing it.
+- Keep the twelve-request routing model; show all three short-phone recap totals together; let chapter labels wrap under increased text spacing.
+- Stabilize interaction callbacks and memoize instruments so unchanged scene content is not recreated when navigation changes.
+- Preserve cAshIo orbital identity, opt-in sound, scene pauses, reduced motion, artwork, media, seven studies, archived command deck, and evidence dates. Commit `3511a0f` (#126).
+
+## V37.16 — Continuum
+
+- Editorial refinement: remove the minor settings-link process block (duplicate screenshot, navigation link, unused stylesheet) while keeping the main personal introduction.
+- Lead the smart-routing story with problem, decision, and historical result; gold Try the routing demo loads the public draft example and focuses Run, leaving execution explicit.
+- Preserve original artwork, Bit, typography, colors, lighting, seven studies, legacy command deck, reduced motion, and opt-in audio. Commit `62df475` (#124).
+
+## V37.15 — Continuum
+
+- Fit the full boarding action on a 320×568 phone; completed flights show readable Save mission card and Copy this scenario controls.
+- Shared locally generated HDR reflection lighting, tuned materials, and camera framing refine the ship and Lensing Observatory without new remote assets.
+- Put the real build story before the study library; operator section adds a factual three-step account of the published V37.11 settings-link improvement.
+- Software labels advance to V37.15; historical screenshot versions and infrastructure observation dates retain their original meaning. Commit `515e9ea` (#123).
+
+## V37.14 — Continuum
+
+- First Flight explains the visitor's actual decision and leads to one next action: test a private request.
+- Refine completion feedback, motion-off replay, narrow phone controls, and laptop spacing; sourced HERMES demonstration capture plus a brief Bit response for human review.
+- Consolidate shared menu and evidence-panel styles. Preserve artwork, palette, typography, Bit, films, legacy routes, opt-in audio, and dated evidence. Commit `a8aff1e` (#121).
+
+## V37.13 — Perspective
+
+- Meet one privacy decision before the seven-study browser; each study leads to a specific next question.
+- Keep First Flight primary; observatory links preserve lighting, atmosphere, and viewpoint as a paused scene.
+- Split page content, modal coordination, studies, and planet rendering into focused modules; optional study code loads on selection.
+- Preserve original artwork, palette, typography, Bit, films, sound policy, legacy routes, and dated evidence. Commit `1f35f59` (#120).
+
 ## V37.12 — Continuum
 
 - Bring the mobile flight invitation forward and preserve the original artwork, Bit, palette, fonts, films, and legacy routes.
