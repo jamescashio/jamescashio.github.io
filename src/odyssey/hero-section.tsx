@@ -1,4 +1,4 @@
-import type { MouseEvent } from "react";
+import { useState, type MouseEvent } from "react";
 import { Arrow, Starfield } from "./effects";
 import { Art } from "./artwork";
 import { HeroCinema } from "./hero-cinema";
@@ -20,6 +20,7 @@ export function HeroSection({
   viewArt: (event: MouseEvent<HTMLButtonElement>) => void;
 }) {
   const { ambientMotion, flight, signature, lensing, film, startFlight, openFilm, openSignature, openLensing } = scenes;
+  const [sceneControlsOpen, setSceneControlsOpen] = useState(false);
   return (
     <section className="o-hero o-scene" id="top" aria-labelledby="hero-title" data-lightwake-light="dawn">
       <Art name="orbit" eager className="o-hero-art" />
@@ -44,7 +45,7 @@ export function HeroSection({
           <em>possible.</em>
         </h1>
         <p>
-          I build AI and security tools that make difficult decisions clear.
+          I build local AI and security tools that put privacy and human judgment first.
           <br className="o-desktop-br" /> Your data. Your budget. Your call.
         </p>
         <div className="o-hero-actions">
@@ -64,22 +65,25 @@ export function HeroSection({
           <a href="#boundary-comparison" className="o-text-button flight-work-link">
             Try one decision <Arrow diagonal />
           </a>
-          <a href="/cashio.html" className="cashio-intro-link">
-            Meet cAshIo ↗
+          <a href="#smart-routing" className="cashio-intro-link">
+            See what I built ↗
           </a>
         </div>
         <div className="lens-hero-notes">
-          <span>Privacy.</span>
+          <span>30 seconds.</span>
           <i />
-          <span>Resilience.</span>
+          <span>Sound off.</span>
           <i />
-          <span>Human control.</span>
+          <span>Your pace.</span>
         </div>
         <details className="perspective-discover" id="hero-experiences">
           <summary>
             Explore more of the universe <span aria-hidden="true">＋</span>
           </summary>
           <div className="lens-discover-links">
+            <a className="polish-meet" href="/cashio.html">
+              Meet cAshIo <span>THE PERSONAL WORKSPACE ↗</span>
+            </a>
             <button className="lens-film-link" type="button" onClick={(event) => openFilm(event.currentTarget)}>
               <ExperienceGlyph kind="film" />
               <span>Watch Lightwake</span>
@@ -102,8 +106,13 @@ export function HeroSection({
           </div>
         </details>
       </div>
-      <HeroCinema blocked={paused || flight !== null || signature || lensing || film} />
-      <LightwakeControls />
+      <details className="polish-scene-tools" onToggle={(event) => setSceneControlsOpen(event.currentTarget.open)}>
+        <summary>
+          Scene controls <span aria-hidden="true">+</span>
+        </summary>
+        {sceneControlsOpen && <HeroCinema blocked={paused || flight !== null || signature || lensing || film} />}
+        <LightwakeControls />
+      </details>
       <button className="o-core-hotspot" onClick={fold} disabled={folding}>
         <HeroSignal />
         <span className="o-core-ring" />

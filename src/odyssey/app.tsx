@@ -1,24 +1,35 @@
 import { useExperienceController } from "./experience-controller";
 import { ExperienceOverlays } from "./experience-overlays";
 import { HeroSection } from "./hero-section";
-import { BoundaryComparison } from "./boundary-comparison";
-import { useEffect, useRef, useState } from "react";
+import { BoundaryComparison as BoundaryContent } from "./boundary-comparison";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { Arrow, Core } from "./effects";
 import { useInteractionSound, useMotionPreference, useSectionVisibility } from "./hooks";
 import { FoldTransition } from "./event-horizon";
 import { useHeroAtmosphere, useHeroCoreAlignment } from "./horizon-hooks";
-import { OrbitInstrument } from "./orbit-instrument";
+import { OrbitInstrument as OrbitContent } from "./orbit-instrument";
 import { MissionControl } from "./mission-control";
 import { OperatorSection } from "./operator-section";
-import { SystemAtlas } from "./system-atlas";
-import { SovereignWorld } from "./sovereign-world";
+import { SystemAtlas as AtlasContent } from "./system-atlas";
+import { SovereignWorld as WorldContent } from "./sovereign-world";
 import { BrandMark } from "./brand-mark";
+import { VisitorPath } from "./visitor-path";
 import { Art } from "./artwork";
-import { ProjectExplorer } from "./project-explorer";
-import { BuildStory } from "./build-story";
+import { ProjectExplorer as ExplorerContent } from "./project-explorer";
+import { BuildStory as BuildContent } from "./build-story";
 import { FLEET_EVIDENCE } from "./fleet-evidence";
 import { EvidenceSection } from "./evidence-section";
-import { Lineage } from "./flight-heritage";
+import { Lineage as LineageContent } from "./flight-heritage";
+
+// Navigation highlighting must not reconcile every instrument's SVG tree.
+// Each scene still updates for its own controls or a changed motion preference.
+const BoundaryComparison = memo(BoundaryContent);
+const OrbitInstrument = memo(OrbitContent);
+const SystemAtlas = memo(AtlasContent);
+const SovereignWorld = memo(WorldContent);
+const ProjectExplorer = memo(ExplorerContent);
+const BuildStory = memo(BuildContent);
+const Lineage = memo(LineageContent);
 export function OdysseyApp() {
   const { motion, reduced, paused, setPaused } = useMotionPreference();
   const { sound, toggle, play } = useInteractionSound();
@@ -27,6 +38,14 @@ export function OdysseyApp() {
   const [folding, setFolding] = useState(false);
   const [foldOrigin, setFoldOrigin] = useState<{ x: number; y: number } | undefined>(undefined);
   const [atlasNode, setAtlasNode] = useState(1);
+  const selectMission = useCallback(() => play(), [play]);
+  const selectAtlas = useCallback(
+    (index: number) => {
+      setAtlasNode(index);
+      play();
+    },
+    [play],
+  );
   const [active, setActive] = useState("top");
   const progress = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
@@ -259,6 +278,7 @@ export function OdysseyApp() {
           <Core />
           <span>Keep a human in command.</span>
         </div>
+        <VisitorPath onFlight={startFlight} />
         <section className="o-work o-scene" id="work" aria-labelledby="work-title">
           <div className="o-section-top">
             <span className="o-kicker">01 / SELECTED WORK</span>
@@ -303,14 +323,7 @@ export function OdysseyApp() {
               <span className="o-muted">Select a node to see its role and the evidence behind it.</span>
             </p>
           </div>
-          <SystemAtlas
-            motion={ambientMotion}
-            selected={atlasNode}
-            onSelect={(index) => {
-              setAtlasNode(index);
-              play();
-            }}
-          />
+          <SystemAtlas motion={ambientMotion} selected={atlasNode} onSelect={selectAtlas} />
           <div className="o-fact-rail">
             <div>
               <strong>{FLEET_EVIDENCE.proxmox.hostsOnline.toString().padStart(2, "0")}</strong>
@@ -404,7 +417,7 @@ export function OdysseyApp() {
               See the design decision behind it.
             </p>
           </div>
-          <OrbitInstrument motion={ambientMotion} onSelect={() => play()} />
+          <OrbitInstrument motion={ambientMotion} onSelect={selectMission} />
           <a href="#work" className="eh-observatory-link">
             Now put the thinking to work
             <Arrow />

@@ -1,3 +1,13 @@
+# Unpublished precision preview — 09-11-2026
+
+Creative thesis: the preserved orbital world responds with a clear consequence, a calm reading surface, and one obvious next action.
+
+Preserve Bit, the original artwork and films, Oxanium/Exo/Jet typography, midnight/cyan/champagne palette, all seven studies, source dates, and legacy routes. Build on the saved Continuum preview at commit `25a379a33b58a75e74f3f5577481a7f5ceece93a`; the older publication instructions below describe past releases.
+
+This pass promotes the decision recap into the phone's primary action after a visitor changes the route. Before/after instruments use the existing twelve-request model, precise labels, and restrained finite feedback. Explain the studio's local-AI/privacy focus without adding claims of current production health or savings. Keep optional worlds and scene controls secondary.
+
+Keep scene rendering stable when navigation highlighting changes. Preserve real section geometry, prerendered content, keyboard navigation, deep links and browser search. Verify measured mobile/desktop loading, keyboard/focus, contrast, reduced motion, narrow layouts and the full flight-to-study journey. Scores must identify their scope and evidence; a lab 100 is not proof of a perfect visitor experience. This preview is not approved for publication.
+
 # Current release — V37.16 Editorial refinement
 
 Remove the minor settings-link process block at the owner's request while preserving the personal introduction. Give the stronger project story a direct invitation to its working demo, present the explanation before optional evidence, and separate the screenshot caption from its source link. Keep the established visual identity and dated evidence intact.
