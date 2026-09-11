@@ -64,12 +64,11 @@ export function HeroSection({
           <a href="#boundary-comparison" className="o-text-button flight-work-link">
             Try one decision <Arrow diagonal />
           </a>
-        </div>
-        <div className="lens-hero-notes">
           <a href="/cashio.html" className="cashio-intro-link">
             Meet cAshIo ↗
           </a>
-          <i />
+        </div>
+        <div className="lens-hero-notes">
           <span>Privacy.</span>
           <i />
           <span>Resilience.</span>
