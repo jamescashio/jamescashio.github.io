@@ -64,6 +64,9 @@ export function HeroSection({
           <a href="#boundary-comparison" className="o-text-button flight-work-link">
             Try one decision <Arrow diagonal />
           </a>
+          <a href="/cashio.html" className="cashio-intro-link">
+            Meet cAshIo ↗
+          </a>
         </div>
         <div className="lens-hero-notes">
           <span>Privacy.</span>

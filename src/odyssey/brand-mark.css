@@ -264,3 +264,30 @@
     gap: 4px;
   }
 }
+
+/* Kit 05: crisp navigation lockup; dimensional artwork remains in the studio. */
+.cashio-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #e5eef8;
+  font:
+    600 28px/1 "Segoe UI",
+    Arial,
+    sans-serif;
+  text-transform: none;
+  letter-spacing: -0.04em;
+}
+.cashio-wordmark b {
+  color: #e9b65c;
+  font-weight: inherit;
+}
+.cashio-wordmark i {
+  color: #22d3ee;
+  font-style: normal;
+}
+.cashio-intro-link {
+  color: #e9b65c;
+  text-underline-offset: 5px;
+  padding-block: 12px;
+}
