@@ -28,7 +28,7 @@ const server = await preview({
 const reports = [];
 let browser;
 try {
-  browser = await chromium.launch({ executablePath, headless: true });
+  browser = await chromium.launch({ executablePath, headless: true, chromiumSandbox: true });
   for (const width of [1440, 390, 320]) {
     const context = await browser.newContext({ viewport: { width, height: 1000 }, reducedMotion: "reduce" });
     try {
