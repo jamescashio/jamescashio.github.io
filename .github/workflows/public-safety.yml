@@ -16,7 +16,7 @@ concurrency:
 jobs:
   public-safety:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -97,6 +97,22 @@ jobs:
           CHROME_PATH: ${{ steps.setup_chrome.outputs.chrome-path }}
           CHROME_DEVEL_SANDBOX: /opt/google/chrome/chrome-sandbox
 
+      - name: Check accessibility and quiet mobile startup
+        id: accessibility_quality
+        continue-on-error: true
+        run: npm run check:accessibility
+        env:
+          CHROME_PATH: ${{ steps.setup_chrome.outputs.chrome-path }}
+          CHROME_DEVEL_SANDBOX: /opt/google/chrome/chrome-sandbox
+
+      - name: Collect and assert Lighthouse lab results
+        id: lighthouse_quality
+        continue-on-error: true
+        run: npm run check:lighthouse
+        env:
+          CHROME_PATH: ${{ steps.setup_chrome.outputs.chrome-path }}
+          CHROME_DEVEL_SANDBOX: /opt/google/chrome/chrome-sandbox
+
       - name: Run release artifact tests
         id: release_tests
         continue-on-error: true
@@ -137,6 +153,15 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+      - name: Upload local quality reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: website-quality-report
+          path: artifacts/quality/
+          if-no-files-found: warn
+          retention-days: 14
+
       - name: Enforce validation results
-        if: steps.install.outcome != 'success' || steps.lint.outcome != 'success' || steps.format.outcome != 'success' || steps.node_tests.outcome != 'success' || steps.odyssey_tests.outcome != 'success' || steps.build.outcome != 'success' || steps.artifact_tests.outcome != 'success' || steps.layout_runtime.outcome != 'success' || steps.v36_runtime.outcome != 'success' || steps.release_tests.outcome != 'success' || steps.safety_scan.outcome != 'success' || steps.release_consistency.outcome != 'success' || steps.python_syntax.outcome != 'success' || steps.whitespace.outcome != 'success'
+        if: steps.accessibility_quality.outcome != 'success' || steps.lighthouse_quality.outcome != 'success' || steps.install.outcome != 'success' || steps.lint.outcome != 'success' || steps.format.outcome != 'success' || steps.node_tests.outcome != 'success' || steps.odyssey_tests.outcome != 'success' || steps.build.outcome != 'success' || steps.artifact_tests.outcome != 'success' || steps.layout_runtime.outcome != 'success' || steps.v36_runtime.outcome != 'success' || steps.release_tests.outcome != 'success' || steps.safety_scan.outcome != 'success' || steps.release_consistency.outcome != 'success' || steps.python_syntax.outcome != 'success' || steps.whitespace.outcome != 'success'
         run: exit 1

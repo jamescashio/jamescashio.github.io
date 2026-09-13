@@ -1,0 +1,13 @@
+# Website quality and dependency maintenance
+
+Run `npm ci` and `npm run build`, then `npm run check:accessibility` and `npm run check:lighthouse`. Both commands use an already installed Chrome browser; set `CHROME_PATH` if it is outside the standard locations. They serve the built site on loopback and never upload reports to a public report service.
+
+The accessibility check covers the homepage and cAshIo introduction at 1440, 390, and 320 pixels. It fails on serious/critical axe findings, horizontal overflow, JavaScript runtime errors, or audible startup media. Moderate/minor findings and rules needing human review remain visible in the JSON report. Reduced motion is enabled for these scans. Existing runtime checks and manual keyboard, screen-reader, visual, and device reviews remain necessary.
+
+Lighthouse CI runs three mobile lab measurements per route. Accessibility and best-practice thresholds block failures; performance and SEO thresholds initially warn because lab results vary by runner and private previews can intentionally discourage indexing. Reports and screenshots are written to `artifacts/quality/`. These are lab measurements, not real-user Core Web Vitals.
+
+Lighthouse uses explicit browser flags so Chrome can use the Linux runner's configured sandbox helper. Keep that sandbox enabled. The report-collection steps continue after a failure so artifacts can be saved; the final validation gate checks their raw outcomes and rejects any failure.
+
+Renovate proposes updates with manual dashboard approval and automerge disabled. Regular updates are grouped and scheduled before 7:00 AM on Mondays in America/Chicago, with a seven-day release age and at most two concurrent regular PRs. Security update handling can bypass ordinary limits. Review update notes and the quality results before merging.
+
+The pinned Lighthouse CI release retains upstream advisories in its unused browser-archive download dependency. The checks use installed Chrome and do not call the browser downloader or accept archives. Compatible patches are pinned for `tmp`, `qs`, and `uuid`; remove overrides only after verifying the upstream dependency tree is patched. Recheck `npm audit` when updating these tools.
