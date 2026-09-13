@@ -6,7 +6,17 @@ module.exports = {
       url: ["http://127.0.0.1:4190/", "http://127.0.0.1:4190/cashio.html"],
       numberOfRuns: 3,
       settings: {
-        chromeFlags: "--headless=new",
+        // Keep the configured Linux sandbox: chrome-launcher defaults disable its helper.
+        chromeIgnoreDefaultFlags: true,
+        chromeFlags: [
+          "--headless=new",
+          "--no-first-run",
+          "--no-default-browser-check",
+          "--disable-extensions",
+          "--disable-background-networking",
+          "--disable-sync",
+          "--mute-audio",
+        ].join(" "),
         onlyCategories: ["performance", "accessibility", "best-practices", "seo"],
       },
     },
