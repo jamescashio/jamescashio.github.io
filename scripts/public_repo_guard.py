@@ -29,7 +29,7 @@ ALLOWED_EMAIL_DOMAINS = {"cashio.us", "users.noreply.github.com"}
 # a vendor contact address. Those are not operator PII and must not be stripped —
 # the license requires the notice to stay intact. Scan them for secrets and
 # private addresses as usual; exempt them only from the email-domain rule.
-VENDOR_DIRS = ("assets/js/vendor/", "public/v38/vendor/")
+VENDOR_DIRS = ("assets/js/vendor/", "public/v38/vendor/", "dist/v38/vendor/")
 
 PATTERNS = {
     "private network address": re.compile(
