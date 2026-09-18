@@ -1,0 +1,1201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>cAshIo V38 Helios</title>
+<meta name="description" content="Doug Cashio builds local AI and security systems that keep a human in command. Seven working studies, a 3D starship, and dated evidence you can inspect.">
+<link rel="icon" href="/cashio/icon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://cashio.us/v38/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500;12..96,75..100,700;12..96,75..100,800&family=Orbitron:wght@600;700;900&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"Doug Cashio","alternateName":"James Douglas Cashio","jobTitle":"Principal Solutions Consultant","url":"https://cashio.us/","sameAs":["https://www.linkedin.com/in/dougcashio/","https://github.com/jamescashio","https://www.credly.com/users/james-cashio/badges"],"address":{"@type":"PostalAddress","addressLocality":"Pensacola","addressRegion":"FL","addressCountry":"US"},"knowsAbout":["Local AI","AI orchestration","Cybersecurity","MSP channel","Proxmox","Zero Trust"]}
+</script>
+<style>
+/* ---------- tokens ---------- */
+:root{
+  --void:#04070E; --deep:#0A1220; --panel:#101A2C; --panel2:#152239;
+  --ink:#EAF0F8; --ink2:#C6D0DE; --muted:#9AA9BF;
+  --cyan:#38E1FF; --gold:#F2C87A; --gold2:#D9A94F;
+  --local:#0F9BB8; --cloud:#B5883A; --held:#D04F5F; --heldtext:#F08A96;
+  --line:rgba(56,225,255,.14); --line2:rgba(234,240,248,.09);
+  --display:'Unbounded',sans-serif; --sans:'Instrument Sans',system-ui,-apple-system,sans-serif; --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  --gutter:clamp(16px,5vw,72px);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:auto}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+body{margin:0;background:var(--void);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:var(--cyan);text-decoration:none}
+a:hover{color:var(--gold)}
+button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:fixed;left:16px;top:-60px;z-index:100;background:var(--gold);color:#1A1204;padding:10px 14px;border-radius:8px;font-weight:600}
+.skip:focus{top:16px}
+
+/* ---------- type ---------- */
+.syne{font-family:var(--display)}
+html[data-face=bricolage]{--display:'Bricolage Grotesque',sans-serif}
+html[data-face=orbitron]{--display:'Orbitron',sans-serif}
+html[data-face=orbitron] h1,html[data-face=orbitron] h2{letter-spacing:-.01em}
+html[data-face=bricolage] h1,html[data-face=bricolage] h2{font-stretch:87%;letter-spacing:-.03em}
+.mono{font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase}
+.kick{font-family:var(--mono);letter-spacing:.18em;text-transform:uppercase;font-size:12px;color:var(--cyan)}
+.kick.gold{color:var(--gold)}
+.kick.dim{color:var(--muted)}
+h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.035em;line-height:.96;margin:0;text-wrap:balance}
+h2{font-size:clamp(30px,3.9vw,54px)}
+h3{font-size:clamp(26px,2.6vw,36px);font-weight:700;letter-spacing:-.02em;line-height:1.05}
+.lede{font-size:clamp(17px,1.4vw,21px);line-height:1.5;color:var(--ink2);max-width:60ch}
+.muted{color:var(--muted)}
+.num{font-family:var(--display);font-weight:800;letter-spacing:-.04em;line-height:.9;font-variant-numeric:tabular-nums}
+.em{color:var(--gold)}
+.cy{color:var(--cyan)}
+
+/* ---------- layout ---------- */
+.wrap{padding-inline:var(--gutter);max-width:1520px;margin-inline:auto}
+section.block{padding-block:clamp(56px,7vw,104px);position:relative;background:linear-gradient(180deg,rgba(4,7,14,.55),rgba(7,12,24,.7))}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:clamp(16px,2vw,32px);row-gap:32px}
+.c5{grid-column:span 5}.c6{grid-column:span 6}.c7{grid-column:span 7}.c4{grid-column:span 4}.c8{grid-column:span 8}.c12{grid-column:span 12}
+@media (max-width:900px){.c5,.c6,.c7,.c4,.c8{grid-column:span 12}}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;margin-bottom:clamp(32px,4vw,56px);flex-wrap:wrap}
+.head .r{max-width:480px;text-align:right}
+@media (max-width:900px){.head .r{text-align:left}}
+.hair{height:1px;background:linear-gradient(90deg,rgba(56,225,255,0),rgba(56,225,255,.4),rgba(56,225,255,0))}
+
+/* ---------- components ---------- */
+.panel{background:linear-gradient(180deg,rgba(21,34,57,.9),rgba(16,26,44,.92));border:1px solid var(--line);border-radius:22px;box-shadow:0 30px 80px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.04)}
+.soft{background:rgba(10,18,32,.72);border:1px solid var(--line2);border-radius:16px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:52px;padding:0 24px;border-radius:14px;font-weight:600;font-size:16px;border:1px solid transparent;transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s;will-change:transform}
+.btn:hover{transform:translateY(-2px)}
+.btn.gold{background:linear-gradient(135deg,#F7D48C,#D9A94F);color:#1A1204;box-shadow:0 14px 44px rgba(242,200,122,.28)}
+.btn.ghost{background:rgba(56,225,255,.06);border-color:rgba(56,225,255,.3);color:var(--ink)}
+.btn.line{border-color:rgba(234,240,248,.18);color:var(--ink)}
+.btn.sm{min-height:44px;padding:0 16px;font-size:14px}
+.pill{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:999px;border:1px solid rgba(234,240,248,.16);background:rgba(10,18,32,.8);color:var(--ink);font-size:14px;font-weight:500;transition:border-color .2s,box-shadow .2s,background .2s}
+.pill:hover{border-color:rgba(56,225,255,.5)}
+.pill[aria-pressed="true"]{border-color:var(--cyan);background:rgba(56,225,255,.12);box-shadow:0 0 24px rgba(56,225,255,.25)}
+.pill.gold[aria-pressed="true"]{border-color:var(--gold);background:rgba(242,200,122,.14);box-shadow:0 0 24px rgba(242,200,122,.25)}
+.toggle{display:inline-flex;align-items:center;gap:12px;min-height:44px;padding:0 6px 0 16px;border-radius:999px;border:1px solid rgba(234,240,248,.16);background:rgba(10,18,32,.8);font-size:14px;font-weight:500}
+.toggle .knob{width:40px;height:24px;border-radius:999px;background:rgba(234,240,248,.14);position:relative;transition:background .2s}
+.toggle .knob::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--ink);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.toggle[aria-pressed="true"] .knob{background:var(--cyan)}
+.toggle.gold[aria-pressed="true"] .knob{background:var(--gold)}
+.toggle[aria-pressed="true"] .knob::after{transform:translateX(16px);background:var(--void)}
+.stat{display:flex;flex-direction:column;gap:6px;padding:22px 24px;border-radius:16px;border:1px solid var(--line2);background:rgba(4,7,14,.55)}
+.tile{display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:14px;border:1px solid var(--line2);background:rgba(10,18,32,.7);text-align:left;transition:border-color .2s,transform .2s;color:var(--ink)}
+.tile:hover{border-color:rgba(242,200,122,.5);transform:translateY(-2px)}
+.tile .ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;flex-shrink:0}
+.step{display:flex;align-items:center;gap:14px;padding:13px 16px;border-radius:12px;border:1px solid var(--line2);background:rgba(4,7,14,.6)}
+.step .dot{width:10px;height:10px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan);flex-shrink:0}
+.bar{height:22px;border-radius:0 6px 6px 0;transform-origin:left;width:100%}
+.barwrap{height:22px;background:rgba(234,240,248,.05);border-radius:0 6px 6px 0;overflow:hidden}
+.ic-svg{width:18px;height:18px}
+
+/* ---------- cursor + rail ---------- */
+.cursor{position:fixed;left:0;top:0;width:12px;height:12px;border-radius:50%;background:var(--gold);pointer-events:none;z-index:200;mix-blend-mode:difference;transform:translate(-50%,-50%);opacity:0}
+.cursor-ring{position:fixed;left:0;top:0;width:44px;height:44px;border-radius:50%;border:1px solid rgba(56,225,255,.6);pointer-events:none;z-index:200;transform:translate(-50%,-50%);opacity:0}
+@media (hover:none){.cursor,.cursor-ring{display:none}}
+.rail{position:fixed;left:0;top:0;width:100%;height:2px;z-index:90;background:rgba(56,225,255,.08);pointer-events:none}
+.rail i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--gold),var(--cyan));transform:scaleX(0);transform-origin:left}
+.sections{position:fixed;right:22px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:14px;z-index:80}
+.sections a{width:10px;height:10px;border-radius:50%;border:1px solid rgba(234,240,248,.35);display:block;transition:background .2s,transform .2s}
+.sections a.on{background:var(--gold);border-color:var(--gold);transform:scale(1.3)}
+@media (max-width:900px){.sections{display:none}}
+
+/* ---------- nav ---------- */
+.nav{position:fixed;top:0;left:0;right:0;z-index:95;padding-top:env(safe-area-inset-top,0px);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:rgba(4,7,14,.55);border-bottom:1px solid rgba(56,225,255,.1);transform:translateY(-100%);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.nav.show{transform:translateY(0)}
+.nav .in{display:flex;align-items:center;justify-content:space-between;gap:16px;height:70px;padding-inline:var(--gutter)}
+.brand{display:flex;align-items:center;gap:12px;color:var(--ink);font-family:var(--display);font-size:22px;font-weight:800;letter-spacing:-.02em}
+.nav nav{display:flex;gap:32px;font-size:15px;font-weight:500}
+.nav nav a{color:var(--ink)}
+.nav .acts{display:flex;gap:10px;align-items:center}
+@media (max-width:900px){.nav nav,.nav .acts .hide-m{display:none}}
+
+/* ---------- hero ---------- */
+.hero{position:relative;height:100svh;min-height:640px;overflow:hidden;background:var(--void)}
+.hero canvas.gl{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;pointer-events:none}
+section,footer,.thesis{position:relative;z-index:1}
+.flash{position:fixed;inset:0;background:radial-gradient(circle at 62% 45%,rgba(255,244,214,1),rgba(242,200,122,.6) 30%,rgba(4,7,14,0) 70%);opacity:0;pointer-events:none;z-index:2}
+.hero .fallback{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s}
+.hero .vignette{position:absolute;inset:0;background:radial-gradient(ellipse at 62% 48%,rgba(4,7,14,0) 20%,rgba(4,7,14,.55) 62%,rgba(4,7,14,.95) 100%);pointer-events:none}
+.hero .grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(56,225,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(56,225,255,.045) 1px,transparent 1px);background-size:72px 72px;mask-image:radial-gradient(ellipse at 50% 50%,#000 30%,transparent 75%);pointer-events:none}
+.hero .content{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding-inline:var(--gutter);padding-top:80px;pointer-events:none}
+.hero .content > *{pointer-events:auto}
+.hero h1{font-size:clamp(40px,7.6vw,120px);line-height:.95}
+@media (max-width:700px){.hero h1{font-size:clamp(40px,12.5vw,60px)}}
+.hero h1 .line{display:block;overflow:hidden}
+.hero .sub{margin-top:28px;max-width:560px;font-size:clamp(17px,1.5vw,22px);line-height:1.5;color:var(--ink2)}
+.hero .cta{margin-top:32px;display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.hero .meta{position:absolute;left:calc(var(--gutter) + 120px);bottom:34px;display:flex;gap:26px;align-items:center;flex-wrap:wrap}
+.hero .bit{position:absolute;right:var(--gutter);bottom:34px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:14px 18px;border-radius:12px;background:rgba(4,7,14,.75);border:1px solid rgba(242,200,122,.4);backdrop-filter:blur(8px);color:var(--ink);transition:border-color .2s}
+.hero .bit:hover{border-color:var(--gold)}
+.hero .status{position:absolute;right:var(--gutter);top:calc(90px + env(safe-area-inset-top,0px));display:flex;flex-direction:column;align-items:flex-end;gap:6px;text-align:right;padding:10px 12px;border-radius:10px;background:rgba(4,7,14,.7);backdrop-filter:blur(6px)}
+.hero .scroll{position:absolute;left:50%;bottom:32px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--muted)}
+.hero .scroll i{display:block;width:1px;height:44px;background:linear-gradient(180deg,var(--cyan),transparent);animation:drop 2s ease-in-out infinite}
+@keyframes drop{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+@media (max-width:900px){.hero .bit,.hero .status{display:none}.hero .scroll{display:none}.hero .meta{display:none}}
+.ignite{position:fixed;inset:0;z-index:150;background:var(--void);display:grid;place-items:center;pointer-events:none}
+.ignite .spark{width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 30px 6px rgba(242,200,122,.8)}
+.ignite .word{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:11px;letter-spacing:.3em;color:var(--muted);text-transform:uppercase}
+
+/* ---------- thesis band ---------- */
+.thesis{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:linear-gradient(90deg,rgba(10,18,32,.85),rgba(4,7,14,.55))}
+.thesis .lines{font-family:var(--display);font-weight:700;font-size:clamp(26px,3vw,40px);line-height:1.15;letter-spacing:-.02em}
+.thesis .lines span{display:block}
+.minute{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:700px){.minute{grid-template-columns:1fr}}
+.minute .step{flex-direction:column;align-items:flex-start;gap:8px;padding:20px}
+
+/* ---------- studies rail ---------- */
+.studies-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-content:start}
+@media (max-width:600px){.studies-list{grid-template-columns:1fr}}
+.study{position:relative;overflow:hidden;border-radius:18px;border:1px solid var(--line2);background:rgba(10,18,32,.7);padding:24px;display:flex;flex-direction:column;justify-content:space-between;gap:20px;min-height:150px;text-align:left;color:var(--ink);transition:border-color .2s,transform .25s cubic-bezier(.2,.8,.2,1)}
+.study:hover{border-color:rgba(56,225,255,.5);transform:translateY(-3px)}
+.study[aria-pressed="true"]{border-color:var(--cyan);box-shadow:inset 0 0 0 1px var(--cyan),0 20px 60px rgba(56,225,255,.12)}
+.study .glyph{position:absolute;right:-10px;bottom:-14px;width:120px;height:120px;opacity:.12;pointer-events:none}
+.instrument{padding:clamp(22px,2.6vw,36px);display:flex;flex-direction:column;gap:22px;position:relative;overflow:hidden;min-height:100%}
+.instrument .ctrl{display:grid;grid-template-columns:300px 1fr;gap:28px}
+@media (max-width:1100px){.instrument .ctrl{grid-template-columns:1fr}}
+.lane{font-family:var(--display);font-weight:800;font-size:clamp(32px,3vw,44px);letter-spacing:-.03em;line-height:1}
+.ring-progress{position:absolute;right:28px;top:28px;width:84px;height:84px}
+.ring-progress circle{fill:none;stroke-width:3}
+.ring-progress .bg{stroke:rgba(234,240,248,.1)}
+.ring-progress .fg{stroke:var(--cyan);stroke-linecap:round;stroke-dasharray:226;stroke-dashoffset:226;transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset .8s cubic-bezier(.2,.8,.2,1)}
+.ring-progress text{fill:var(--ink);font-family:var(--mono);font-size:13px;text-anchor:middle;dominant-baseline:middle}
+.howit{display:grid;grid-template-columns:76px 1fr;gap:8px 14px;font-size:13px;line-height:1.5}
+
+/* ---------- atlas ---------- */
+.atlas{position:relative;min-height:560px;overflow:hidden}
+.atlas svg.wires{position:absolute;inset:0;width:100%;height:100%}
+.node{position:absolute;display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--ink);transform:translate(-50%,-50%)}
+.node .core{position:relative;width:88px;height:88px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(56,225,255,.3);background:radial-gradient(circle at 40% 35%,#152239,#04070E);box-shadow:0 0 0 8px rgba(56,225,255,.05),0 0 40px rgba(56,225,255,.15);transition:box-shadow .25s,border-color .25s,transform .25s}
+.node:hover .core{transform:scale(1.05)}
+.node[aria-pressed="true"] .core{border-color:var(--gold);box-shadow:0 0 0 8px rgba(242,200,122,.12),0 0 60px rgba(242,200,122,.35)}
+.node.big .core{width:110px;height:110px}
+.node .core::before{content:"";position:absolute;inset:-6px;border-radius:50%;border:1px dashed rgba(56,225,255,.35);animation:spin 20s linear infinite}
+.node[aria-pressed="true"] .core::before{border-color:rgba(242,200,122,.6);animation-duration:9s}
+#sel-halo{transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+@media (prefers-reduced-motion:reduce){.node .core::before{animation:none}.atlas-amb{display:none}}
+.flow{stroke-dasharray:8 14;animation:dash 1.6s linear infinite}
+.flow.gold{animation-duration:2.2s}
+@keyframes dash{to{stroke-dashoffset:-44}}
+.spin{animation:spin 48s linear infinite;transform-origin:center}
+.spinr{animation:spinr 32s linear infinite;transform-origin:center}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes spinr{to{transform:rotate(-360deg)}}
+.pulse{animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.55}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.flow,.spin,.spinr,.pulse,.hero .scroll i{animation:none}}
+
+/* ---------- media plates ---------- */
+.plate{position:relative;border-radius:26px;overflow:hidden;border:1px solid var(--line);isolation:isolate}
+.plate img{width:100%;height:100%;object-fit:cover;transform:scale(1.12);will-change:transform}
+.plate.sig img{will-change:auto}
+.plate .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,7,14,.1),rgba(4,7,14,.78))}
+.plate .cap{position:absolute;left:20px;bottom:18px;right:20px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.reveal{clip-path:inset(0 0 100% 0)}
+.philo{position:relative;min-height:72svh;display:flex;align-items:center;overflow:hidden}
+.philo img{position:absolute;inset:0;width:100%;height:120%;object-fit:cover;object-position:30% 50%;top:-10%;will-change:transform}
+.philo .shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(4,7,14,.15) 0%,rgba(4,7,14,.35) 45%,rgba(4,7,14,.94) 72%)}
+@media (max-width:900px){.philo .shade{background:linear-gradient(0deg,rgba(4,7,14,.96) 45%,rgba(4,7,14,.2))}}
+.philo .txt{position:relative;margin-left:auto;max-width:640px;display:flex;flex-direction:column;gap:22px}
+.philo h2{font-size:clamp(34px,4.2vw,58px)}
+
+/* ---------- console ---------- */
+.console{font-family:var(--mono);font-size:13px;line-height:1.7;color:#BFE9F5;letter-spacing:0;text-transform:none}
+.console .p{color:var(--gold)}
+.console .d{color:var(--muted)}
+.console .w{color:var(--gold)}
+.eve{display:flex;flex-direction:column;overflow:hidden;background:var(--void);padding:0}
+.eve .top{display:flex;justify-content:space-between;align-items:center;padding:16px 22px;border-bottom:1px solid var(--line);background:rgba(10,18,32,.9);gap:12px;flex-wrap:wrap}
+.eve .out{padding:22px;display:flex;flex-direction:column;gap:4px;flex-grow:1;min-height:320px;max-height:420px;overflow:auto;position:relative}
+.eve form{display:flex;gap:8px;padding:14px 22px;border-top:1px solid var(--line);background:rgba(10,18,32,.9);align-items:center}
+.eve input{flex-grow:1;min-width:0;height:44px;border-radius:10px;border:1px solid rgba(56,225,255,.25);background:var(--void);color:var(--ink);padding:0 14px;font-family:var(--mono);font-size:13px}
+.scan{position:absolute;left:0;right:0;height:80px;background:linear-gradient(180deg,rgba(56,225,255,0),rgba(56,225,255,.07),rgba(56,225,255,0));animation:scan 7s linear infinite;pointer-events:none}
+@keyframes scan{from{top:-80px}to{top:100%}}
+@media (prefers-reduced-motion:reduce){.scan{display:none}}
+
+/* ---------- compare table ---------- */
+.cmp{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:6px;font-size:14px;padding:8px 0;border-top:1px solid var(--line2)}
+.cmp.hd{border-top:0;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.cmp.on{color:#fff;background:rgba(56,225,255,.06);border-radius:8px;padding-inline:8px;margin-inline:-8px}
+
+/* ---------- principles ---------- */
+.engine{position:relative;width:min(100%,520px);aspect-ratio:1;margin-inline:auto;touch-action:none;cursor:grab}
+.engine:active{cursor:grabbing}
+.engine svg{width:100%;height:100%;display:block}
+
+/* ---------- Bit dock ---------- */
+.bitdock{position:fixed;left:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:96;display:flex;align-items:flex-end;gap:10px;pointer-events:none;transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .3s}
+.bitdock.scrolling{transform:scale(.72);opacity:.7}
+.bitdock.right{flex-direction:row-reverse}
+.bitdock.right .bitsay{border-radius:14px 14px 4px 14px;transform-origin:right bottom}
+.bitdock.top{align-items:flex-start}
+.bitdock.top .bitsay{margin-bottom:0;margin-top:14px;border-radius:4px 14px 14px 14px}
+.bitdock.top.right .bitsay{border-radius:14px 4px 14px 14px}
+.bitbtn{touch-action:none;cursor:grab}
+.bitbtn.dragging{cursor:grabbing;animation:none}
+.bitbtn{width:84px;height:84px;border-radius:50%;pointer-events:auto;display:grid;place-items:center;filter:drop-shadow(0 8px 24px rgba(0,0,0,.6));transition:transform .3s cubic-bezier(.2,.8,.2,1);animation:bitfloat 4.2s ease-in-out infinite}
+@keyframes bitfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@media (prefers-reduced-motion:reduce){.bitbtn{animation:none}}
+.bitbtn.pop{animation:bitpop .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes bitpop{0%{transform:scale(1)}40%{transform:scale(1.22)}100%{transform:scale(1)}}
+.bitbtn:hover{transform:translateY(-4px) scale(1.06)}
+.bitbtn canvas{width:96px;height:96px}
+.bitsay{pointer-events:auto;position:relative;max-width:min(320px,70vw);padding:12px 34px 12px 14px;border-radius:14px 14px 14px 4px;background:rgba(10,18,32,.92);border:1px solid rgba(242,200,122,.35);backdrop-filter:blur(10px);display:flex;flex-direction:column;gap:4px;font-size:13px;line-height:1.4;color:var(--ink);box-shadow:0 20px 50px rgba(0,0,0,.5);transform-origin:left bottom;margin-bottom:14px}
+.bitsay.hide{display:none}
+.bitx{position:absolute;right:8px;top:6px;width:24px;height:24px;border-radius:50%;color:var(--muted);font-size:16px;line-height:1}
+.bitx:hover{color:var(--ink);background:rgba(255,255,255,.08)}
+@media (max-width:700px){.bitdock{left:12px}.bitbtn{width:64px;height:64px}.bitbtn canvas{width:72px;height:72px}.bitsay{max-width:62vw;font-size:12px}}
+/* ---------- starship schematic ---------- */
+.schem{width:100%;height:auto;display:block}
+.schem .lbl{font-family:var(--mono);font-size:9px;letter-spacing:.12em;fill:#9AA9BF;text-transform:uppercase}
+
+/* ---------- signature plate ---------- */
+.sig .sig-ring{position:absolute;left:50%;top:44%;width:120%;aspect-ratio:2.4;transform:translate(-50%,-50%) rotate(-6deg);border-radius:50%;border:1px solid rgba(56,225,255,.22);box-shadow:0 0 60px rgba(56,225,255,.08) inset;animation:spinr 60s linear infinite;pointer-events:none}
+.sig .shade{background:linear-gradient(0deg,rgba(4,7,14,.92) 0%,rgba(4,7,14,.2) 35%,rgba(4,7,14,0) 60%)!important}
+.sig.on img{animation:sigglow 1.6s ease-out 1;transform:translateY(-58%)}
+.sig .sheen{position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,rgba(255,244,214,.18) 50%,transparent 60%);transform:translateX(-120%);pointer-events:none}
+.sig.on .sheen{animation:sheen 1.4s cubic-bezier(.2,.8,.2,1) 1}
+@keyframes sheen{to{transform:translateX(120%)}}
+.sig .burst{position:absolute;inset:0;pointer-events:none}
+.sig .burst i{position:absolute;left:50%;top:48%;width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold);opacity:0}
+@keyframes sigglow{0%{filter:brightness(1)}30%{filter:brightness(1.6) saturate(1.3)}100%{filter:brightness(1)}}
+@media (prefers-reduced-motion:reduce){.sig.on .sheen,.sig.on img{animation:none}}
+
+/* ---------- hangar ---------- */
+.hangar img.hp{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.08);transition:opacity .9s cubic-bezier(.2,.8,.2,1),transform 1.4s cubic-bezier(.2,.8,.2,1)}
+.hangar img.hp.on{opacity:1;transform:scale(1)}
+.hangar .hud{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hud-sweep{animation:hudsweep 6s linear infinite}
+@keyframes hudsweep{from{transform:translateY(-45%)}to{transform:translateY(45%)}}
+@media (prefers-reduced-motion:reduce){.hud-sweep{animation:none}}
+
+/* ---------- footer ---------- */
+footer{padding:36px var(--gutter) calc(36px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line2);display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:center}
+footer nav{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;font-weight:600;align-items:center}
+.vh{position:relative}
+.vh summary{cursor:pointer;color:var(--cyan);list-style:none}
+.vh summary::-webkit-details-marker{display:none}
+.vh summary::after{content:' ▾';color:var(--muted)}
+.vh-menu{position:absolute;bottom:calc(100% + 10px);left:0;min-width:300px;display:flex;flex-direction:column;gap:2px;padding:10px;border-radius:14px;background:rgba(10,18,32,.96);border:1px solid var(--line);box-shadow:0 20px 60px rgba(0,0,0,.6);backdrop-filter:blur(10px)}
+.vh-menu a{padding:10px 12px;border-radius:8px;color:var(--ink);font-weight:500}
+.vh-menu a:hover{background:rgba(56,225,255,.08);color:var(--gold)}
+
+/* motion resting states: CSS keeps everything visible; GSAP animates toward these */
+[data-rise]{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<a class="skip" href="#work">Skip to content</a>
+<div class="flash" id="flash" aria-hidden="true"></div>
+<div class="ignite" id="ignite" aria-hidden="true"><div class="spark"></div><div class="word">Igniting · House Cashio · V38</div></div>
+<div class="cursor" aria-hidden="true"></div><div class="cursor-ring" aria-hidden="true"></div>
+<div class="rail" aria-hidden="true"><i id="railbar"></i></div>
+<nav class="sections" aria-label="Sections">
+  <a href="#top" title="Orbit"></a><a href="#work" title="Selected work"></a><a href="#studies" title="Studies"></a><a href="#universe" title="The universe"></a><a href="#starship" title="Starship"></a><a href="#evidence" title="Evidence"></a><a href="#operator" title="Operator"></a><a href="#contact" title="Contact"></a>
+</nav>
+
+<header class="nav" id="nav">
+  <div class="in">
+    <a class="brand" href="#top" aria-label="cAshIo home">
+      <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect x=".5" y=".5" width="31" height="31" rx="9" fill="#0b1524" stroke="#294052"/><path d="M22.5 8.8a10 10 0 1 0 0 14.4" fill="none" stroke="#efb85f" stroke-width="4" stroke-linecap="round"/><path d="m23 11 1.8 3.2L28 16l-3.2 1.8L23 21l-1.8-3.2L18 16l3.2-1.8Z" fill="#66e2ee"/></svg>
+      <span>c<span class="em">A</span>sh<span class="cy">I</span>o</span>
+    </a>
+    <nav aria-label="Primary"><a href="#work">Selected work</a><a href="#starship">Starship</a><a href="#universe">The universe</a><a href="#evidence">Evidence</a></nav>
+    <div class="acts">
+      <button class="btn ghost sm hide-m" id="mc-btn" type="button"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>Mission Control <span class="mono" style="font-size:11px;color:var(--muted);letter-spacing:.08em">⌘K</span></button>
+      <button class="btn line sm" id="face-btn" type="button" title="Switch display typeface" aria-label="Switch display typeface"><span class="syne" style="font-weight:800">Aa</span><span class="hide-m mono" id="face-name" style="font-size:10px;letter-spacing:.08em;color:var(--muted)">Unbounded</span></button>
+      <button class="btn line sm" id="motion-btn" type="button" aria-pressed="true"><svg class="ic-svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="4" width="4" height="16"/><rect x="15" y="4" width="4" height="16"/></svg><span class="hide-m">Motion on</span></button>
+      <a class="btn gold sm" href="#contact">Let’s talk</a>
+    </div>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="top" aria-label="Introduction">
+  <canvas class="gl" id="gl" aria-hidden="true"></canvas>
+  <img class="fallback" id="fallback" src="assets/orbit.jpg" alt="" aria-hidden="true">
+  <div class="grid-bg"></div>
+  <div class="vignette"></div>
+  <div class="status">
+    <span class="mono" style="font-size:11px;color:var(--gold);border:1px solid rgba(242,200,122,.6);padding:6px 10px;border-radius:6px">V38 · HELIOS</span>
+    <span class="mono" style="font-size:10px;color:var(--muted)">THE HUMAN RECKONING · A HUMAN IN COMMAND</span>
+  </div>
+  <div class="content">
+    <div class="kick" data-hero style="display:flex;align-items:center;gap:10px"><span style="width:8px;height:8px;background:var(--cyan);box-shadow:0 0 12px var(--cyan)"></span>DOUG CASHIO / PRINCIPAL SOLUTIONS CONSULTANT / PENSACOLA</div>
+    <h1 style="margin-top:20px"><span class="line"><span class="w">Own the iron.</span></span><span class="line"><span class="w">Shape the</span></span><span class="line"><span class="w em">possible.</span></span></h1>
+    <p class="sub" data-hero>I build local AI and security systems that put privacy and human judgment first. Your data. Your budget. Your call.</p>
+    <div class="cta" data-hero>
+      <a href="#starship" class="btn gold" style="min-height:66px;padding:0 26px;gap:16px" data-magnet>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1A1204" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5" fill="#1A1204"/></svg>
+        <span style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.15"><span style="font-size:18px">Take the 30-second flight</span><span class="mono" style="font-size:10px;letter-spacing:.12em;opacity:.8">Open the hull. Cut the cloud. Keep command.</span></span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1204" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a href="#work" style="color:var(--ink);font-weight:600;border-bottom:1px solid rgba(234,240,248,.3);padding-bottom:3px">Try one decision ↗</a>
+      <a href="#studies" style="color:var(--gold);font-weight:600">See what I built ↗</a>
+    </div>
+  </div>
+  <div class="meta" data-hero>
+    <span class="mono" style="font-size:11px;color:var(--muted)">30 seconds · Sound off · Your pace</span>
+    <span class="mono" style="font-size:11px;color:var(--cyan)">An original orbital world · rendered live</span>
+  </div>
+  <button class="bit" type="button" id="fold-btn" data-hero data-magnet><span class="mono" style="font-size:11px;color:var(--muted)">BIT / HUMAN CO-PILOT</span><span class="mono" style="font-size:12px;color:var(--gold)">INITIATE FOLD ↗</span></button>
+  <div class="scroll" aria-hidden="true"><span class="mono" style="font-size:10px">Scroll</span><i></i></div>
+</section>
+
+<!-- ================= THESIS ================= -->
+<section class="block thesis" aria-label="Thesis" style="padding-block:clamp(48px,6vw,80px)">
+  <div class="wrap grid" style="align-items:center">
+    <div class="c5 lines" data-split><span>Own the infrastructure.</span><span>Make the reasoning visible.</span><span class="cy">Keep a human in command.</span></div>
+    <div class="c7" style="display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap"><span class="kick gold">YOUR FIRST MINUTE</span><span class="muted">See it. Change it. Understand it.</span></div>
+      <div class="minute" data-stagger>
+        <div class="step"><span class="mono" style="font-size:11px;color:var(--gold)">01</span><strong>Take the flight</strong><span class="muted" style="font-size:14px">Open the hull. See inside.</span></div>
+        <div class="step"><span class="mono" style="font-size:11px;color:var(--gold)">02</span><strong>Change one decision</strong><span class="muted" style="font-size:14px">Watch the boundary respond.</span></div>
+        <div class="step"><span class="mono" style="font-size:11px;color:var(--gold)">03</span><strong>Inspect the work</strong><span class="muted" style="font-size:14px">A real build. Its dated evidence.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 01 SELECTED WORK ================= -->
+<section class="block" id="work" aria-labelledby="work-h">
+  <div class="wrap">
+    <div class="head">
+      <div><div class="kick" style="margin-bottom:14px">01 / SELECTED WORK</div><h2 id="work-h" data-split>Try a decision.<br>See what changes.</h2></div>
+      <div class="r"><div class="mono" style="font-size:11px;color:var(--muted);margin-bottom:6px">BUILT. OPERATED. EXPLAINED.</div><p class="muted" style="margin:0;font-size:17px">One document. The same task. Now change its privacy boundary. Predict the route, then test the rule yourself.</p></div>
+    </div>
+    <div class="grid" data-stagger>
+      <div class="panel c7" style="padding:clamp(22px,2.6vw,34px);display:flex;flex-direction:column;gap:22px">
+        <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span class="kick gold">THE PRIVACY TEST / ABOUT 20 SECONDS</span><span class="mono" style="font-size:11px;color:var(--muted)">BROWSER-ONLY</span></div>
+        <h3>One change. Who decides?</h3>
+        <p class="muted" style="margin:0">Analyze a document and require sources. Now make that document private.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
+          <div class="soft" style="padding:22px;border-color:rgba(56,225,255,.3);display:flex;flex-direction:column;gap:8px"><span class="mono" style="font-size:11px;color:var(--cyan)">01 / PUBLIC DOCUMENT</span><span class="syne" style="font-size:28px;font-weight:700">Research</span><span class="muted" style="font-size:14px">Attributable sources select the research route.</span></div>
+          <div class="soft" style="padding:22px;border-color:rgba(242,200,122,.4);display:flex;flex-direction:column;gap:8px"><span class="mono" style="font-size:11px;color:var(--gold)">02 / PRIVATE DOCUMENT</span><span class="syne" id="pv-answer" style="font-size:28px;font-weight:700">Your call.</span><span class="muted" style="font-size:14px">The work and source requirement stay the same. Only privacy changes.</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <strong>Predict the private document’s route</strong>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <button class="pill" type="button" data-pv="keep" aria-pressed="false">Keep Research</button>
+            <button class="pill gold" type="button" data-pv="human" aria-pressed="false">Human review</button>
+            <button class="btn ghost sm" type="button" id="pv-reveal">Reveal the private route ↗</button>
+          </div>
+          <div class="step" id="pv-result" hidden style="border-color:rgba(242,200,122,.4)"><span class="dot" style="background:var(--gold);box-shadow:0 0 12px var(--gold)"></span><span id="pv-text"></span></div>
+        </div>
+        <div style="display:flex;gap:22px;font-size:14px;font-weight:600;flex-wrap:wrap;margin-top:auto"><a href="#studies" data-load="public">1. Load a public request ↗</a><a href="#studies" data-load="private">2. Load the private version ↗</a></div>
+        <span class="mono" style="font-size:10px;color:var(--muted)">Browser-only illustration. No document is uploaded and no AI request is sent.</span>
+      </div>
+      <div class="panel c5" style="padding:clamp(22px,2.6vw,34px);display:flex;flex-direction:column;gap:16px;background:linear-gradient(160deg,rgba(242,200,122,.12),rgba(16,26,44,.95) 42%)">
+        <span class="kick gold">FROM MY WORKSHOP / SMART ROUTING</span>
+        <h3>Spend the AI budget where it matters.</h3>
+        <p class="muted" style="margin:0;font-size:15px">I reserve the more capable route for work that needs it.</p>
+        <div style="display:flex;align-items:flex-end;gap:10px;margin-top:4px">
+          <span class="num em" id="cents" data-count="26" style="font-size:clamp(96px,9vw,136px);text-shadow:0 0 40px rgba(242,200,122,.35)">0</span>
+          <span class="syne em" style="font-size:48px;font-weight:700;padding-bottom:12px">¢</span>
+          <span class="mono" style="font-size:13px;color:var(--muted);padding-bottom:20px">/day</span>
+        </div>
+        <div><strong style="font-size:14px">Observed AI provider usage · historical sample</strong><br><span class="mono" style="font-size:11px;color:var(--muted)">Sample · July 21 to 22, 2026</span></div>
+        <dl style="margin:0;display:grid;grid-template-columns:120px 1fr;gap:10px 12px;font-size:14px">
+          <dt class="mono" style="font-size:11px;color:var(--cyan);padding-top:3px">The problem</dt><dd class="muted" style="margin:0">One expensive default treats routine work and hard decisions alike.</dd>
+          <dt class="mono" style="font-size:11px;color:var(--cyan);padding-top:3px">My decision</dt><dd class="muted" style="margin:0">Atlas handles recurring work; harder tasks can escalate. I check quality, privacy and reliability before considering cost.</dd>
+          <dt class="mono" style="font-size:11px;color:var(--cyan);padding-top:3px">The result</dt><dd class="muted" style="margin:0">A two-day record of provider usage. Scope and exclusions are in the evidence boundary below.</dd>
+        </dl>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:auto"><a href="#studies" class="btn gold sm" data-load="public">Try the routing demo</a><a href="#evidence" class="btn line sm">Read the evidence boundary</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ================= SEVEN STUDIES ================= -->
+<section class="block" id="studies" aria-labelledby="studies-h" style="background:linear-gradient(180deg,rgba(4,7,14,.5),rgba(7,13,26,.72))">
+  <div class="wrap">
+    <div class="head">
+      <div><div class="kick gold" style="margin-bottom:14px">GO DEEPER / SEVEN WORKING STUDIES</div><h2 id="studies-h" data-split>Change the inputs.<br>Inspect the rule.<br>Follow the evidence.</h2></div>
+      <div class="r"><span class="mono" style="font-size:12px;color:var(--muted)">SELECT A BUILD / 07</span></div>
+    </div>
+    <div class="grid">
+      <div class="c5 studies-list" id="studies-list" role="tablist" aria-label="Studies" data-stagger></div>
+      <div class="panel c7 instrument" id="instrument" role="tabpanel">
+        <svg class="ring-progress" viewBox="0 0 84 84" aria-hidden="true"><circle class="bg" cx="42" cy="42" r="36"/><circle class="fg" id="ringfg" cx="42" cy="42" r="36"/><text x="42" y="43" id="ringtxt">00/05</text></svg>
+        <div>
+          <span class="mono" style="font-size:11px;color:var(--muted)">STUDY <span id="st-n">01</span> / OF 07</span>
+          <div class="syne" id="st-name" style="font-size:clamp(28px,3vw,36px);font-weight:800;margin-top:4px">HERMES</div>
+          <div class="muted" id="st-sub" style="font-size:16px">Match the work to the route.</div>
+        </div>
+        <p id="st-cue" style="margin:0;font-size:15px;color:var(--ink2);padding:14px 18px;border-left:2px solid var(--cyan);background:rgba(56,225,255,.05);border-radius:0 10px 10px 0">Route a draft. Require sources. Then add private information.</p>
+        <div class="ctrl">
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><span class="kick" style="font-size:11px">ROUTE QUALIFICATION</span><span class="mono" style="font-size:10px;color:var(--muted)">INTENT · POLICY CORE · DECISION</span></div>
+            <strong style="font-size:14px">Choose the work</strong>
+            <div style="display:flex;gap:8px;flex-wrap:wrap" id="intent-group"><button class="pill" type="button" data-intent="draft" aria-pressed="true">Draft</button><button class="pill" type="button" data-intent="research" aria-pressed="false">Research</button><button class="pill" type="button" data-intent="analyze" aria-pressed="false">Analyze</button></div>
+            <button class="toggle gold" type="button" id="tg-private" aria-pressed="false"><span>Contains private information</span><span class="knob"></span></button>
+            <button class="toggle" type="button" id="tg-sources" aria-pressed="false"><span>Requires attributable sources</span><span class="knob"></span></button>
+            <button class="btn gold" type="button" id="route-btn" data-magnet>Route this request</button>
+            <span class="mono" style="font-size:10px;color:var(--muted)">LOCAL DEMONSTRATION / NO LIVE SYSTEM ACCESS</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+            <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="mono" style="font-size:11px;color:var(--muted)">EXAMPLE OUTPUT</span><span class="mono" id="st-code" style="font-size:11px;color:var(--cyan)">QUALIFIED</span></div>
+            <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap"><span class="lane cy" id="st-lane">Workhorse</span><span class="muted" style="font-size:13px">lane</span></div>
+            <div id="st-steps" style="display:flex;flex-direction:column;gap:8px"></div>
+            <p class="muted" id="st-detail" style="margin:4px 0 0;font-size:14px">Choose a task and its boundaries, then run the five-step demonstration. No request leaves this page.</p>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:20px;padding-top:16px;border-top:1px solid var(--line2)" class="takeaway">
+          <div style="display:flex;flex-direction:column;gap:6px"><span class="mono" style="font-size:10px;color:var(--muted)">THE TAKEAWAY</span><strong style="font-size:16px" id="st-take">Give each request the route it needs.</strong><span class="muted" id="st-takebody" style="font-size:13px">Routine work gets a general lane. Evidence requirements change the route. Private information puts a person in the decision. This is the policy behind the cost-control idea.</span><a href="https://github.com/jamescashio/jamescashio.github.io/blob/main/src/odyssey/data.ts" style="font-size:13px;font-weight:600">Inspect routeExample in the released model ↗</a><button class="btn line sm" type="button" id="copy-settings" style="align-self:flex-start">Copy these settings</button></div>
+          <div class="soft" style="padding:16px;display:flex;flex-direction:column;gap:8px">
+            <strong style="font-size:14px">How this experiment works</strong>
+            <span class="muted" style="font-size:12px;font-style:italic" id="st-q">What wins when intent, evidence requirements, and privacy disagree?</span>
+            <div class="howit"><span class="mono" style="font-size:10px;color:var(--cyan)">Rule</span><span class="muted" id="st-rule">Private input always holds the external route for human review. Otherwise, Research intent or a source requirement selects Research. Analyze selects Synthesis; Draft selects Workhorse.</span><span class="mono" style="font-size:10px;color:var(--cyan)">Try this</span><span class="muted" id="st-try">Choose Analyze and require sources: Research wins. Now turn on private information: Human review wins. Change the intent again; the privacy boundary holds.</span><span class="mono" style="font-size:10px;color:var(--cyan)">Boundary</span><span class="muted" id="st-bound">A deterministic routing model with four outcomes. It calls no model, measures no provider, and does not establish the current HERMES deployment’s behavior.</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding-top:6px;border-top:1px solid var(--line2);flex-wrap:wrap"><span class="mono" style="font-size:10px;color:var(--gold)">NEXT / <span id="st-nextname">Escalation Cascade</span></span><button type="button" id="st-next" style="font-size:13px;font-weight:600;color:var(--ink)"><span id="st-nextq">When should automation stop and ask a person?</span> →</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 02 THE UNIVERSE ================= -->
+<section class="block" id="universe" aria-labelledby="uni-h" style="border-top:1px solid var(--line)">
+  <div class="wrap grid">
+    <div class="c5" style="display:flex;flex-direction:column;gap:22px">
+      <div class="kick">02 / THE UNIVERSE</div>
+      <span class="mono" style="font-size:12px;color:var(--gold)">ZEUSAPOLLO × HERMES × DSH</span>
+      <h2 id="uni-h" data-split>A world of systems.<br>One accountable human.</h2>
+      <p class="lede">Zeus and Apollo are the hardware I own and operate. HERMES runs the scheduled work; the DeepSeek Harness is my operator console. I remain accountable for the decisions.</p>
+      <p class="muted" style="margin:0;font-size:14px">Select a node to see its role and the evidence behind it.</p>
+      <div class="panel" style="padding:24px;display:flex;flex-direction:column;gap:10px" aria-live="polite">
+        <div style="display:flex;justify-content:space-between"><span class="mono" id="nd-role" style="font-size:11px;color:var(--muted)">Orchestration</span><span class="mono" style="font-size:11px;color:var(--cyan)">SELECTED</span></div>
+        <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap"><span class="syne" id="nd-name" style="font-size:32px;font-weight:800">HERMES</span><span class="num em" id="nd-value" style="font-size:32px">—</span><span class="mono" id="nd-unit" style="font-size:10px;color:var(--muted)">routing not verified</span></div>
+        <strong id="nd-summary">Intent becomes a qualified route.</strong>
+        <p class="muted" id="nd-body" style="margin:0;font-size:14px">The latest audit did not establish a current lane inventory or execution record. This atlas illustrates the design relationships; the HERMES study lets you explore a browser-only routing model.</p>
+        <span class="mono" id="nd-evidence" style="font-size:10px;color:var(--gold)">Audit · <span data-fleet="observedLong">September 7, 2026</span> · routing withheld</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px" data-stagger>
+        <div class="stat"><span class="num cy" data-count="2" data-pad="2" style="font-size:44px">00</span><span class="mono" style="font-size:10px;color:var(--muted)">hosts at observation</span></div>
+        <div class="stat"><span class="num cy" data-count="20" data-fleet-count="lxc" style="font-size:44px">0</span><span class="mono" style="font-size:10px;color:var(--muted)">LXC containers running</span></div>
+        <div class="stat"><span class="num cy" data-count="1" data-pad="2" style="font-size:44px">00</span><span class="mono" style="font-size:10px;color:var(--muted)">QEMU virtual machine running</span></div>
+      </div>
+      <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap"><span class="mono" style="font-size:11px;color:var(--muted)">FLEET · <span data-fleet="observedLong">September 7, 2026</span></span><span class="mono" style="font-size:11px;color:var(--gold)">ROUTING · NOT VERIFIED</span><a href="#evidence" style="font-size:14px;font-weight:600">Inspect the dated evidence ↗</a></div>
+    </div>
+    <div class="c7" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><span class="mono" style="font-size:11px;color:var(--muted)">SYSTEM ATLAS · CONCEPTUAL VIEW</span><button class="btn ghost sm" type="button" id="trace-btn">▷ Trace a request <span class="mono" style="font-size:10px;color:var(--muted)">about 8 seconds · not live routing</span></button></div>
+      <div class="panel atlas" id="atlas">
+        <svg class="wires" viewBox="0 0 800 640" preserveAspectRatio="none" aria-hidden="true">
+          <defs><radialGradient id="glow" cx="50%" cy="50%"><stop offset="0" stop-color="#38E1FF" stop-opacity=".22"/><stop offset="1" stop-color="#38E1FF" stop-opacity="0"/></radialGradient></defs>
+          <circle cx="400" cy="320" r="300" fill="url(#glow)"/>
+          <g class="spin" style="transform-origin:400px 320px"><circle cx="400" cy="320" r="270" fill="none" stroke="rgba(56,225,255,.16)" stroke-dasharray="3 9"/></g>
+          <circle cx="400" cy="320" r="190" fill="none" stroke="rgba(242,200,122,.18)"/>
+          <path id="w1" d="M400 96 L400 262" stroke="#38E1FF" stroke-width="2" class="flow" fill="none"/>
+          <path d="M400 96 L150 300" stroke="rgba(56,225,255,.45)" stroke-width="1.5" stroke-dasharray="6 8" fill="none"/>
+          <path d="M150 300 L340 320" stroke="rgba(242,200,122,.4)" stroke-width="1.5" stroke-dasharray="6 8" fill="none"/>
+          <text x="196" y="188" fill="#9AA9BF" font-family="JetBrains Mono" font-size="10" letter-spacing="1.5">CONSOLE</text>
+          <path id="w2" d="M400 378 L226 486" stroke="#F2C87A" stroke-width="2" class="flow gold" fill="none"/>
+          <path id="w3" d="M400 378 L574 486" stroke="#F2C87A" stroke-width="2" class="flow gold" fill="none"/>
+          <path d="M226 486 Q400 560 574 486" stroke="rgba(56,225,255,.35)" stroke-width="1" stroke-dasharray="4 8" fill="none"/>
+          <circle id="packet" r="7" fill="#F2C87A" opacity="0"/>
+          <g class="atlas-amb"><circle r="3" fill="#38E1FF"><animateMotion dur="4s" repeatCount="indefinite" path="M400 96 L400 262"/></circle><circle r="3" fill="#F2C87A"><animateMotion dur="5s" begin="1s" repeatCount="indefinite" path="M400 378 L226 486"/></circle><circle r="3" fill="#F2C87A"><animateMotion dur="5s" begin="2.5s" repeatCount="indefinite" path="M400 378 L574 486"/></circle><circle r="2.5" fill="#38E1FF" opacity=".7"><animateMotion dur="7s" repeatCount="indefinite" path="M226 486 Q400 560 574 486"/></circle></g>
+          <g id="sel-halo" style="transform:translate(400px,320px)"><circle r="70" fill="none" stroke="#F2C87A" stroke-opacity=".5" stroke-width="1.5"><animate attributeName="r" values="62;92" dur="2.4s" repeatCount="indefinite"/><animate attributeName="stroke-opacity" values=".5;0" dur="2.4s" repeatCount="indefinite"/></circle><circle r="70" fill="none" stroke="#F2C87A" stroke-opacity=".5" stroke-width="1.5"><animate attributeName="r" values="62;92" dur="2.4s" begin="1.2s" repeatCount="indefinite"/><animate attributeName="stroke-opacity" values=".5;0" dur="2.4s" begin="1.2s" repeatCount="indefinite"/></circle></g>
+          <text x="412" y="190" fill="#9AA9BF" font-family="JetBrains Mono" font-size="10" letter-spacing="1.5">INTENT</text>
+          <text x="256" y="430" fill="#9AA9BF" font-family="JetBrains Mono" font-size="10" letter-spacing="1.5">QUALIFIED ROUTE</text>
+          <text x="470" y="430" fill="#9AA9BF" font-family="JetBrains Mono" font-size="10" letter-spacing="1.5">QUALIFIED ROUTE</text>
+          <text x="352" y="586" fill="#9AA9BF" font-family="JetBrains Mono" font-size="10" letter-spacing="1.5">OWNED ESTATE</text>
+        </svg>
+        <button class="node" type="button" data-node="dsh" aria-pressed="false" style="left:18.5%;top:47%"><span class="core"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#F2C87A" stroke-width="1.8" aria-hidden="true"><path d="M4 6h16v10H4zM8 20h8M12 16v4"/><path d="M8 10h3M8 12h6"/></svg></span><span class="syne" style="font-size:15px;font-weight:700">DSH</span><span class="mono" style="font-size:10px;color:var(--muted)">Operator console</span></button>
+        <button class="node" type="button" data-node="operator" aria-pressed="false" style="left:50%;top:14%"><span class="core"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#F2C87A" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></span><span class="syne" style="font-size:15px;font-weight:700">The operator</span><span class="mono" style="font-size:10px;color:var(--muted)">Authority</span></button>
+        <button class="node big" type="button" data-node="hermes" aria-pressed="true" style="left:50%;top:50%"><span class="core"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#38E1FF" stroke-width="1.8" aria-hidden="true"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg></span><span class="syne" style="font-size:16px;font-weight:800">HERMES</span><span class="mono" style="font-size:10px;color:var(--muted)">Orchestration</span></button>
+        <button class="node" type="button" data-node="zeus" aria-pressed="false" style="left:28%;top:78%"><span class="core"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#38E1FF" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4" width="18" height="6" rx="1"/><rect x="3" y="14" width="18" height="6" rx="1"/><circle cx="7" cy="7" r="1" fill="#38E1FF"/><circle cx="7" cy="17" r="1" fill="#38E1FF"/></svg></span><span class="syne" style="font-size:15px;font-weight:700">Zeus</span><span class="mono" style="font-size:10px;color:var(--muted)">Owned compute</span></button>
+        <button class="node" type="button" data-node="apollo" aria-pressed="false" style="left:72%;top:78%"><span class="core"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#38E1FF" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4" width="18" height="6" rx="1"/><rect x="3" y="14" width="18" height="6" rx="1"/><circle cx="7" cy="7" r="1" fill="#38E1FF"/><circle cx="7" cy="17" r="1" fill="#38E1FF"/></svg></span><span class="syne" style="font-size:15px;font-weight:700">Apollo</span><span class="mono" style="font-size:10px;color:var(--muted)">Owned compute</span></button>
+        <div style="position:absolute;left:20px;top:20px;display:flex;gap:10px;flex-wrap:wrap;max-width:70%"><span class="mono" style="font-size:10px;color:var(--cyan);padding:6px 10px;border:1px solid rgba(56,225,255,.3);border-radius:6px">CONCEPTUAL REQUEST / ZEUS</span><span class="mono" id="trace-label" style="font-size:10px;color:var(--muted);padding:6px 0">Follow one example from human intent to human review. No request is sent.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PHILOSOPHY ================= -->
+<section class="philo" aria-label="Philosophy">
+  <img src="assets/sanctuary.jpg" id="philo-img" alt="Original concept art: twin graphite computing monoliths in a sunlit stone sanctuary with a faceted amber core between them">
+  <div class="shade"></div>
+  <div class="wrap" style="width:100%;position:relative"><div class="txt">
+    <span class="kick">THE PHILOSOPHY</span>
+    <h2 data-split>Technology should extend our reach.<br><span class="em" style="font-weight:500">Not replace our judgment.</span></h2>
+    <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap"><a class="btn ghost" href="https://cashio.us/#film=sanctuary" data-magnet>Enter the sanctuary →</a><span class="mono" style="font-size:11px;color:var(--muted)">A FIFTEEN-SECOND FILM · THEN STEP INSIDE</span></div>
+    <a href="#studies" style="font-weight:600;color:var(--ink)">See the philosophy at work ↗</a>
+  </div></div>
+  <span class="mono" style="position:absolute;left:var(--gutter);bottom:22px;font-size:11px;color:var(--muted)">ORIGINAL CONCEPT ART / AN IMAGINED COMPUTING SANCTUARY</span>
+</section>
+
+<!-- ================= SOVEREIGN STARSHIP ================= -->
+<section class="block" id="starship" aria-labelledby="ship-h" style="background:linear-gradient(180deg,rgba(4,7,14,.5),rgba(7,12,24,.72))">
+  <div class="wrap">
+    <div class="head">
+      <div><div class="kick" style="margin-bottom:14px">V38 / SOVEREIGN STARSHIP</div><h2 id="ship-h" data-split>Your ship.<br>Your intelligence.</h2></div>
+      <div class="r"><div class="mono" style="font-size:11px;color:var(--muted);margin-bottom:6px">ONE SHIP. THREE WAYS TO THINK.</div><p class="muted" style="margin:0;font-size:16px">Step aboard. Open the hull. Trace twelve AI requests. Cut the cloud link. See what stays with you.</p></div>
+    </div>
+    <div class="grid">
+      <div class="c7" style="display:flex;flex-direction:column;gap:16px">
+        <div class="plate" style="height:clamp(280px,40vw,440px)">
+          <img src="assets/starship.jpg" data-parallax alt="An original titanium and graphite exploration starship with swept wings and cyan engines beside an orbital relay">
+          <div class="shade"></div>
+          <div style="position:absolute;left:20px;top:20px;display:flex;gap:8px;flex-wrap:wrap"><span class="mono" style="font-size:10px;color:var(--cyan);padding:6px 10px;border:1px solid rgba(56,225,255,.3);border-radius:6px;background:rgba(4,7,14,.6)">CSV SOVEREIGN / EXPLORER 01</span><span class="mono pulse" id="relay-chip" style="font-size:10px;color:var(--gold);padding:6px 10px;border:1px solid rgba(242,200,122,.4);border-radius:6px;background:rgba(4,7,14,.6)">CLOUD RELAY CONNECTED</span></div>
+          <div class="cap">
+            <div style="display:flex;flex-direction:column;gap:10px"><span class="mono" style="font-size:11px;color:var(--muted)">YOUR SHIP. YOUR INTELLIGENCE.</span><a class="btn gold" href="https://cashio.us/#flight=board" data-magnet>Board the starship ↗</a><span class="muted" style="font-size:13px">Explore the ship. Open its hull. Follow the intelligence.</span></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="pill" style="min-height:36px;font-size:12px">Hero view</span><span class="pill" style="min-height:36px;font-size:12px">Deck plan</span><span class="pill" style="min-height:36px;font-size:12px">Engine view</span></div>
+          </div>
+        </div>
+        <div class="soft" style="padding:20px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px">
+          <div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between"><span class="mono" style="font-size:10px;color:var(--muted)">ENGINEERING · Propulsion</span><span class="mono" style="font-size:11px;color:var(--cyan)">50%</span></div><div class="barwrap" style="height:6px;border-radius:3px"><div style="width:50%;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--local),var(--cyan));box-shadow:0 0 12px var(--cyan)"></div></div></div>
+          <div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between"><span class="mono" style="font-size:10px;color:var(--muted)">Hull inspection</span><span class="mono" style="font-size:11px;color:var(--gold)">0%</span></div><div class="barwrap" style="height:6px;border-radius:3px"><div style="width:0%;height:100%;border-radius:3px;background:var(--gold)"></div></div></div>
+          <div style="display:flex;gap:16px;grid-column:1/-1;align-items:center;flex-wrap:wrap"><span style="display:flex;align-items:center;gap:6px;font-size:12px"><i style="width:10px;height:10px;border-radius:50%;background:var(--local)"></i>Local route</span><span style="display:flex;align-items:center;gap:6px;font-size:12px"><i style="width:10px;height:10px;border-radius:50%;background:var(--cloud)"></i>Cloud route</span><span style="display:flex;align-items:center;gap:6px;font-size:12px"><i style="width:10px;height:10px;border-radius:50%;background:var(--held)"></i>Waiting for a permitted route</span><span class="muted" style="font-size:12px;margin-left:auto">Drag to orbit · select the ship or relay</span></div>
+        </div>
+        <div class="soft" style="padding:18px 20px 10px;display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><span class="mono" style="font-size:10px;color:var(--muted)">REQUEST FLOW · LIVE FROM THE FLIGHT PLAN</span><span class="mono" id="schem-label" style="font-size:10px;color:var(--cyan)">HYBRID · 6 LOCAL · 6 CLOUD · 0 HELD</span></div>
+          <svg class="schem" id="schem" viewBox="0 0 640 250" aria-label="Animated schematic of twelve requests moving between the onboard AI, the command bridge and the cloud relay">
+            <defs><filter id="pg"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+            <path d="M110 150 L300 110" stroke="rgba(56,225,255,.25)" stroke-width="1" fill="none"/>
+            <path d="M300 110 L520 60" stroke="rgba(242,200,122,.25)" stroke-width="1" stroke-dasharray="4 6" fill="none" id="relay-line" class="flow gold"/>
+            <ellipse cx="110" cy="150" rx="70" ry="30" fill="rgba(56,225,255,.06)"/>
+            <path d="M300 110 L110 150" stroke="rgba(56,225,255,.25)" stroke-width="1" fill="none"/>
+            <g transform="translate(110 150)"><path d="M-46 0 L-10 -22 L46 -8 L34 10 L-12 22 Z" fill="#101A2C" stroke="#38E1FF" stroke-width="1.2"/><path d="M-46 0 L-58 -6 M-46 0 L-58 6" stroke="#38E1FF" stroke-width="2" class="pulse"/><circle cx="6" cy="0" r="9" fill="rgba(56,225,255,.15)" stroke="#38E1FF"><animate attributeName="r" values="8;11;8" dur="2.6s" repeatCount="indefinite"/></circle><text class="lbl" x="0" y="44" text-anchor="middle">Onboard AI · the ship</text></g>
+            <g transform="translate(300 110)"><circle r="26" fill="#101A2C" stroke="#F2C87A" stroke-width="1.2"/><path d="M0 -14 L10 0 L0 14 L-10 0 Z" fill="#F2C87A" class="pulse"/><text class="lbl" x="0" y="50" text-anchor="middle">Command bridge · Bit</text></g>
+            <g transform="translate(520 60)"><rect x="-22" y="-14" width="44" height="28" rx="6" fill="#101A2C" stroke="#F2C87A" stroke-width="1.2"/><path d="M-34 0 H-22 M22 0 H34 M0 -14 V-30 M-10 -30 H10" stroke="#F2C87A" stroke-width="1.2"/><text class="lbl" x="0" y="44" text-anchor="middle">Cloud relay · external</text><text class="lbl" id="relay-state" x="0" y="-40" text-anchor="middle" fill="#F2C87A">CONNECTED</text></g>
+            <g id="packets"></g>
+            <text class="lbl" x="12" y="238">Moving packets show routing, not measured speed</text>
+          </svg>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px" data-stagger>
+          <div class="soft" style="padding:16px"><span class="mono" style="font-size:10px;color:var(--cyan)">Onboard AI</span><p class="muted" style="margin:6px 0 0;font-size:12px">Owned compute lives inside the ship. Its AI bay represents hardware you operate. In this model, it can handle all twelve requests onboard, even without a cloud connection.</p></div>
+          <div class="soft" style="padding:16px"><span class="mono" style="font-size:10px;color:var(--gold)">Cloud relay</span><p class="muted" style="margin:6px 0 0;font-size:12px">The separate orbital relay represents an external cloud provider. A request must leave the ship to reach it. Private requests also need explicit permission in Cloud mode.</p></div>
+          <div class="soft" style="padding:16px"><span class="mono" style="font-size:10px;color:var(--gold)">Command bridge</span><p class="muted" style="margin:6px 0 0;font-size:12px">Bit, the gold core, marks human authority. You choose the architecture and grant permission. A held request waits here for an approved route; it never leaves silently.</p></div>
+        </div>
+      </div>
+      <div class="panel c5" style="padding:clamp(20px,2.4vw,30px);display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><span class="kick gold">THE FLIGHT PLAN</span><span class="mono" style="font-size:10px;color:var(--muted)">Choose a mission. Then change the architecture.</span></div>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px" id="missions">
+          <button class="tile" type="button" data-mission="routine" style="flex-direction:column;align-items:flex-start;gap:4px;padding:12px 14px"><span class="mono" style="font-size:10px;color:var(--gold)">01</span><strong style="font-size:13px">Routine flight</strong><span class="mono" style="font-size:9px;color:var(--muted)">6 private + 6 public · hybrid</span></button>
+          <button class="tile" type="button" data-mission="blackout" style="flex-direction:column;align-items:flex-start;gap:4px;padding:12px 14px"><span class="mono" style="font-size:10px;color:var(--gold)">02</span><strong style="font-size:13px">Deep-space blackout</strong><span class="mono" style="font-size:9px;color:var(--muted)">Same work · cloud link offline</span></button>
+          <button class="tile" type="button" data-mission="classified" style="flex-direction:column;align-items:flex-start;gap:4px;padding:12px 14px"><span class="mono" style="font-size:10px;color:var(--gold)">03</span><strong style="font-size:13px">Classified mission</strong><span class="mono" style="font-size:9px;color:var(--muted)">12 private · cloud permission off</span></button>
+        </div>
+        <strong style="font-size:14px">Choose the architecture</strong>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px" id="arch-group">
+          <button class="pill" type="button" data-arch="sovereign" aria-pressed="false" style="min-height:60px;flex-direction:column;align-items:flex-start;gap:2px;border-radius:14px;padding:8px 14px"><span>Sovereign / local</span><span class="mono" style="font-size:9px;color:var(--muted);text-transform:none;letter-spacing:.06em">Your hardware. Your boundary.</span></button>
+          <button class="pill" type="button" data-arch="hybrid" aria-pressed="true" style="min-height:60px;flex-direction:column;align-items:flex-start;gap:2px;border-radius:14px;padding:8px 14px"><span>Hybrid</span><span class="mono" style="font-size:9px;color:var(--muted);text-transform:none;letter-spacing:.06em">Local privacy. Cloud options.</span></button>
+          <button class="pill" type="button" data-arch="cloud" aria-pressed="false" style="min-height:60px;flex-direction:column;align-items:flex-start;gap:2px;border-radius:14px;padding:8px 14px"><span>Cloud</span><span class="mono" style="font-size:9px;color:var(--muted);text-transform:none;letter-spacing:.06em">External compute. Explicit permission.</span></button>
+        </div>
+        <strong style="font-size:14px">Workload sensitivity</strong>
+        <div style="display:flex;gap:8px;flex-wrap:wrap" id="sens-group"><button class="pill gold" type="button" data-sens="mixed" aria-pressed="true" style="font-size:13px">Mixed · 6 private + 6 public</button><button class="pill gold" type="button" data-sens="private" aria-pressed="false" style="font-size:13px">All private · 12</button><button class="pill gold" type="button" data-sens="public" aria-pressed="false" style="font-size:13px">All public · 12</button></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="toggle" type="button" id="tg-net" aria-pressed="true"><span>Internet available · <span id="net-label">Connected</span></span><span class="knob"></span></button><button class="toggle gold" type="button" id="tg-permit" aria-pressed="false"><span>Permit private cloud requests</span><span class="knob"></span></button></div>
+        <span class="mono" style="font-size:9px;color:var(--muted)">Only applies to private requests in Cloud mode</span>
+        <div class="hair"></div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="mono" style="font-size:11px;color:var(--muted)">THE SAME 12-REQUEST WORKLOAD</span><span class="mono" style="font-size:10px;color:var(--muted)">requests</span></div>
+        <div style="display:flex;flex-direction:column;gap:8px" aria-live="polite">
+          <div style="display:grid;grid-template-columns:118px 1fr 34px;gap:12px;align-items:center"><span style="font-size:13px">Handled locally</span><div class="barwrap"><div class="bar" id="b-local" style="background:var(--local)"></div></div><span class="num cy" id="n-local" style="font-size:22px;text-align:right">6</span></div>
+          <div style="display:grid;grid-template-columns:118px 1fr 34px;gap:12px;align-items:center"><span style="font-size:13px">Sent to cloud</span><div class="barwrap"><div class="bar" id="b-cloud" style="background:var(--cloud)"></div></div><span class="num em" id="n-cloud" style="font-size:22px;text-align:right">6</span></div>
+          <div style="display:grid;grid-template-columns:118px 1fr 34px;gap:12px;align-items:center"><span style="font-size:13px">Held for review</span><div class="barwrap"><div class="bar" id="b-held" style="background:var(--held)"></div></div><span class="num" id="n-held" style="font-size:22px;text-align:right;color:var(--heldtext)">0</span></div>
+        </div>
+        <p id="w-summary" style="margin:0;font-size:14px;color:var(--ink2)">6 requests stay local; 6 public requests use the cloud. Sensitive data stays on your hardware.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">
+          <div class="soft" style="padding:12px"><span class="mono" style="font-size:10px;color:var(--cyan)">Data boundary</span><p class="muted" id="w-data" style="margin:4px 0 0;font-size:12px">Sensitive requests always stay local. Only public requests may use the cloud.</p></div>
+          <div class="soft" style="padding:12px"><span class="mono" style="font-size:10px;color:var(--gold)">Connection dependency</span><p class="muted" id="w-net" style="margin:4px 0 0;font-size:12px">Cloud routing needs a connection; this model also supports local fallback.</p></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap"><strong style="font-size:14px">Compare all three architectures</strong><span class="mono" style="font-size:10px;color:var(--muted)">same settings</span></div>
+          <div class="cmp hd"><span>Architecture</span><span style="color:var(--cyan)">Local</span><span style="color:var(--gold)">Cloud</span><span style="color:var(--heldtext)">Held</span></div>
+          <div id="cmp-rows"></div>
+        </div>
+        <span class="mono" style="font-size:9px;color:var(--muted);line-height:1.5">“Held” means the model has no permitted route. Moving packets show routing, not measured speed or throughput.</span>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div><strong style="font-size:14px">A scenario worth sharing.</strong><br><span class="muted" style="font-size:12px">Send someone these exact choices. Let them try the next move.</span></div><button class="btn line sm" type="button" id="copy-mission">Copy this mission ↗</button></div>
+        <span class="muted" style="font-size:11px">Here, Sovereign means a fully local deployment. This is a routing illustration, not a vendor ranking or performance benchmark. It assumes both local and cloud models can handle this workload. No actual AI or infrastructure services are contacted.</span>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ================= PRINCIPLES ENGINE ================= -->
+<section class="block" id="principles" aria-labelledby="pr-h" style="border-top:1px solid var(--line)">
+  <div class="wrap grid" style="align-items:center">
+    <div class="c5" style="display:flex;flex-direction:column;gap:18px">
+      <div class="kick">V38 / THE PRINCIPLES ENGINE</div>
+      <span class="mono" style="font-size:11px;color:var(--muted)">A VISITOR-OPERATED INSTRUMENT</span>
+      <h2 id="pr-h" data-split>Put the principles<br>in motion.</h2>
+      <p class="muted" style="margin:0;font-size:16px">Turn the instrument. Choose a principle. See the design decision behind it.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="pr-group"><button class="pill" type="button" data-pr="0" aria-pressed="true"><span class="mono" style="font-size:10px;color:var(--gold)">01</span>Observe</button><button class="pill" type="button" data-pr="1" aria-pressed="false"><span class="mono" style="font-size:10px;color:var(--gold)">02</span>Route</button><button class="pill" type="button" data-pr="2" aria-pressed="false"><span class="mono" style="font-size:10px;color:var(--gold)">03</span>Verify</button></div>
+      <div class="panel" style="padding:24px;display:flex;flex-direction:column;gap:10px" aria-live="polite">
+        <span class="mono" style="font-size:10px;color:var(--muted)">MISSION <span id="pr-n">01</span> / DESIGN PRINCIPLE</span>
+        <span class="syne" id="pr-title" style="font-size:26px;font-weight:700">Begin with a clear signal.</span>
+        <p class="muted" id="pr-body" style="margin:0;font-size:14px">Separate what is known from what is assumed. A useful system makes its evidence visible before it asks for trust.</p>
+        <div style="display:flex;align-items:center;gap:10px"><span class="cy">◇</span><strong id="pr-tag" style="font-size:14px">Evidence before inference</strong></div>
+        <span class="mono" id="pr-ring" style="font-size:10px;color:var(--muted)">The outer ring represents the boundary of what can be observed.</span>
+      </div>
+      <span class="muted" style="font-size:12px">Drag the instrument or use the arrow keys with it focused. Home resets it.</span>
+      <span class="mono" style="font-size:10px;color:var(--muted)">A hands-on concept study. These orbital relationships illustrate a design philosophy; they are not live infrastructure telemetry.</span>
+    </div>
+    <div class="c7">
+      <div class="engine" id="engine" tabindex="0" role="img" aria-label="Orbital instrument with three rings: observe, route, verify">
+        <svg viewBox="0 0 520 520" aria-hidden="true">
+          <g id="eng-rot" style="transform-origin:260px 260px">
+            <g class="spin" style="transform-origin:260px 260px"><circle id="r1" cx="260" cy="260" r="246" fill="none" stroke="rgba(56,225,255,.5)" stroke-width="1.5" stroke-dasharray="130 40"/><circle cx="506" cy="260" r="6" fill="#38E1FF"/></g>
+            <circle cx="260" cy="260" r="216" fill="none" stroke="rgba(56,225,255,.12)"/>
+            <g class="spinr" style="transform-origin:260px 260px"><circle id="r2" cx="260" cy="260" r="164" fill="none" stroke="rgba(242,200,122,.6)" stroke-width="1.5" stroke-dasharray="44 26"/><circle cx="424" cy="260" r="6" fill="#F2C87A"/></g>
+            <circle cx="260" cy="260" r="104" fill="none" stroke="rgba(234,240,248,.18)" stroke-dasharray="2 6"/>
+            <circle id="r3" cx="260" cy="260" r="56" fill="rgba(242,200,122,.08)" stroke="#F2C87A" stroke-width="1.5"/>
+            <path d="M260 216l22 44-22 44-22-44z" fill="#F2C87A" class="pulse"/>
+          </g>
+          <text x="260" y="28" text-anchor="middle" fill="#38E1FF" font-family="JetBrains Mono" font-size="10" letter-spacing="2">01 OBSERVE</text>
+          <text x="260" y="108" text-anchor="middle" fill="#F2C87A" font-family="JetBrains Mono" font-size="10" letter-spacing="2">02 ROUTE</text>
+          <text x="260" y="336" text-anchor="middle" fill="#EAF0F8" font-family="JetBrains Mono" font-size="10" letter-spacing="2">03 VERIFY</text>
+        </svg>
+      </div>
+      <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:14px"><span class="mono" style="font-size:10px;color:var(--muted)">LIGHTFOLD / ORBITAL INSTRUMENT · CONCEPT STUDY · DRAG TO EXPLORE ↗</span><div style="display:flex;gap:6px"><button class="btn line sm" type="button" id="eng-reset">Reset view</button><a class="btn line sm" href="https://cashio.us/#lensing">Cinema view</a></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 03 THE EVIDENCE ================= -->
+<section class="block" id="evidence" aria-labelledby="ev-h" style="background:linear-gradient(180deg,rgba(4,7,14,.5),rgba(7,12,24,.72))">
+  <div class="wrap">
+    <div class="grid" style="align-items:end;margin-bottom:clamp(28px,4vw,48px)">
+      <div class="c6"><div class="kick" style="margin-bottom:14px">03 / THE EVIDENCE</div><h2 id="ev-h" data-split>Trust has<br>a <span class="cy">timestamp.</span></h2></div>
+      <div class="c6" style="display:flex;flex-direction:column;gap:10px">
+        <strong style="font-size:18px">A source. A date. A clear boundary.</strong>
+        <p class="muted" style="margin:0;font-size:15px">Ask E.V.E. what was observed and what remains unknown. Running guests do not establish application health, recovery or failover readiness.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap"><div class="stat" style="flex:1 1 200px"><span class="mono" style="font-size:10px;color:var(--muted)">FLEET OBSERVATION</span><span class="syne cy" style="font-size:22px;font-weight:700" data-fleet="observedLong">September 7, 2026</span></div><div class="stat" style="flex:1 1 200px"><span class="mono" style="font-size:10px;color:var(--muted)">ROUTING INVENTORY</span><span class="syne em" style="font-size:22px;font-weight:700" data-fleet="routing">Not verified</span></div></div>
+      </div>
+    </div>
+    <div class="grid" data-stagger>
+      <div class="panel c7" style="padding:clamp(22px,2.6vw,30px);display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><span class="kick gold">READ-ONLY OBSERVATIONS / THREE DATED RECORDS</span><span class="mono" style="font-size:10px;color:var(--muted)">HOW EACH RECORD CHANGED THIS PAGE</span></div>
+        <h3>Three records. Three rules.</h3>
+        <p class="muted" style="margin:0;font-size:14px">The question was simple: what is running, and what can this page prove? Three owner-run, read-only observations answer it: August 28, 2026 (archived export), September 7, 2026 (HERMES audit) and September 18, 2026 (DeepSeek Harness, direct reads on both nodes). The archived routing inventory has its own date: August 21, 2026.</p>
+        <div style="display:grid;grid-template-columns:104px 1fr 1fr 1fr;gap:10px 14px;align-items:center" id="ev-chart">
+          <span class="mono" style="font-size:10px;color:var(--muted)">Record</span><span class="mono" style="font-size:10px;color:var(--muted)">Archive · <span data-fleet="archive.fleetShort">Aug 28</span></span><span class="mono" style="font-size:10px;color:var(--muted)">Audit · <span data-fleet="prior.fleetShort">Sep 7</span></span><span class="mono" style="font-size:10px;color:var(--cyan)">Latest · <span data-fleet="observedShort">Sep 18</span></span>
+          <strong style="font-size:14px">LXC running</strong>
+          <div style="display:flex;align-items:center;gap:8px"><div class="barwrap" style="flex:1"><div class="bar" data-w=".9" style="background:rgba(154,169,191,.35)"></div></div><span class="num" style="font-size:18px;width:30px" data-fleet="archive.lxc">18</span></div>
+          <div style="display:flex;align-items:center;gap:8px"><div class="barwrap" style="flex:1"><div class="bar" data-w=".95" style="background:rgba(15,155,184,.55)"></div></div><span class="num" style="font-size:18px;width:30px" data-fleet="prior.lxc">19</span></div>
+          <div style="display:flex;align-items:center;gap:8px"><div class="barwrap" style="flex:1"><div class="bar" data-w="1" style="background:var(--local)"></div></div><span class="num cy" style="font-size:18px;width:30px" data-fleet="lxc">20</span></div>
+          <strong style="font-size:14px">QEMU running</strong>
+          <div style="display:flex;align-items:center;gap:8px"><div style="height:22px;flex:1;max-width:50%;border:1px dashed rgba(154,169,191,.5);border-radius:0 6px 6px 0"></div><span class="mono" style="font-size:9px;color:var(--muted)">Not recorded</span></div>
+          <div style="display:flex;align-items:center;gap:8px"><div class="barwrap" style="flex:1"><div class="bar" data-w=".12" style="background:rgba(15,155,184,.55)"></div></div><span class="num" style="font-size:18px;width:30px">1</span></div>
+          <div style="display:flex;align-items:center;gap:8px"><div class="barwrap" style="flex:1"><div class="bar" data-w=".12" style="background:var(--local)"></div></div><span class="num cy" style="font-size:18px;width:30px" data-fleet="qemu">1</span></div>
+          <strong style="font-size:14px">Proxmox</strong>
+          <div class="mono" style="font-size:11px;color:var(--muted)">Not recorded</div>
+          <div class="mono" style="font-size:11px" data-fleet="prior.pve">9.2.11</div>
+          <div class="mono" style="font-size:11px;color:var(--cyan)" data-fleet="pve">9.2.20</div>
+          <strong style="font-size:14px">Public lanes</strong>
+          <div style="display:flex;align-items:center;gap:8px"><div class="barwrap" style="flex:1"><div class="bar" data-w=".55" style="background:rgba(154,169,191,.35)"></div></div><span class="num" style="font-size:18px;width:30px">10</span></div>
+          <div style="display:flex;align-items:center;gap:8px"><div style="height:22px;flex:1;max-width:50%;border:1px dashed rgba(242,200,122,.6);border-radius:0 6px 6px 0"></div><span class="mono" style="font-size:9px;color:var(--gold)">Not verified</span></div>
+          <div style="display:flex;align-items:center;gap:8px"><div style="height:22px;flex:1;max-width:50%;border:1px dashed rgba(242,200,122,.6);border-radius:0 6px 6px 0"></div><span class="mono" style="font-size:9px;color:var(--gold)">Not verified</span></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px">
+          <div class="stat" style="padding:14px 16px"><span class="mono" style="font-size:9px;color:var(--muted)">KERNEL BOOTED · STAGED</span><span class="mono" style="font-size:12px;color:var(--ink)"><span data-fleet="kernel.booted">7.0.14-14-pve</span> · <span class="em" data-fleet="kernel.staged">7.0.14-17-pve</span></span></div>
+          <div class="stat" style="padding:14px 16px"><span class="mono" style="font-size:9px;color:var(--muted)">BACKUP FRESHNESS</span><span class="mono" style="font-size:12px;color:var(--ink)"><span data-fleet="backups.guestsOk">20</span> of <span data-fleet="backups.guestsTotal">20</span> guests · restore drill not in this record</span></div>
+          <div class="stat" style="padding:14px 16px"><span class="mono" style="font-size:9px;color:var(--muted)">ATLAS MODEL</span><span class="mono" style="font-size:12px;color:var(--ink)"><span data-fleet="atlas.tag">qwen3.8:27b-atlas</span> · ctx <span data-fleet="atlas.context">16384</span></span></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
+          <div class="soft" style="padding:16px;display:flex;flex-direction:column;gap:6px"><strong style="font-size:14px">Count the same thing.</strong><span class="muted" style="font-size:12px">Keep LXC containers and QEMU virtual machines separate. “Not recorded” in the older export does not mean no VM existed. The one extra guest on September 18 is a new container, not a recount.</span></div>
+          <div class="soft" style="padding:16px;display:flex;flex-direction:column;gap:6px"><strong style="font-size:14px">Let unknown stay unknown.</strong><span class="muted" style="font-size:12px">The earlier lane count stays in its archive. Without a current inventory and execution record, this observation leaves it unverified.</span></div>
+          <div class="soft" style="padding:16px;display:flex;flex-direction:column;gap:6px"><strong style="font-size:14px">Keep the claim inside the evidence.</strong><span class="muted" style="font-size:12px">A running guest does not prove application health, successful recovery, or failover readiness. Those need their own checks.</span></div>
+        </div>
+        <div class="soft" style="padding:16px;display:flex;flex-direction:column;gap:8px;border-color:rgba(242,200,122,.3)">
+          <strong style="font-size:14px">The evidence boundary, in one place</strong>
+          <span class="muted" style="font-size:12px">The 26¢ figure comes from the V31 export of July 21 to 22, 2026. It covers AI provider usage in that sample and excludes owned infrastructure, electricity, and Doug’s time. It is a published operating observation, not an audited bill, and it does not establish today’s spend or a percentage saving. The fleet counts are guest inventory from read-only observations; they do not establish application health, recovery readiness, current AI routing, or the cost figure. Backup freshness is a file age check, not a restore test. Private addresses, service names, spending and the private model catalog are withheld on purpose. The browser studies use synthetic inputs and never execute Atlas, HERMES or the harness.</span>
+          <div style="display:flex;gap:14px;font-size:13px;font-weight:600;flex-wrap:wrap"><a href="status.json">Read the September 18 export</a><a href="https://cashio.us/status.json">Read the September 7 export</a><a href="https://cashio.us/evidence/status-2026-08-28.json">Compare the August archive</a><a href="https://github.com/jamescashio/jamescashio.github.io">Read the V31 cost record</a></div>
+        </div>
+      </div>
+      <div class="panel eve c5">
+        <div class="top"><div style="display:flex;align-items:center;gap:10px"><span class="pulse" style="width:10px;height:10px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan)"></span><span class="syne" style="font-size:18px;font-weight:800">E.V.E.</span><span class="mono" style="font-size:10px;color:var(--muted)">DATED EVIDENCE / LOCAL</span></div><span class="mono" style="font-size:10px;color:var(--gold)">PUBLIC EVIDENCE</span></div>
+        <div class="out console" id="eve-out" aria-live="polite"><div class="scan"></div><span class="d">Fleet: <span data-fleet="observedLong">September 7, 2026</span> · Routing: <span data-fleet="routing">Not verified</span> · Page revised <span data-fleet="pageRevised">September 18, 2026</span></span><span class="d">Local commands. Dated facts. No connection to the estate.</span><span class="d">Type help to explore.</span></div>
+        <form id="eve-form"><label for="eve-in" class="mono" style="font-size:10px;color:var(--cyan)">E.V.E.</label><input id="eve-in" type="text" autocomplete="off" placeholder="fleet · kernel · backups · atlas · dsh · help"><button class="btn ghost sm" type="submit" aria-label="Run command">↵</button></form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 04 FLIGHT HERITAGE ================= -->
+<section class="block" id="heritage" aria-labelledby="he-h" style="border-top:1px solid var(--line)">
+  <div class="wrap grid" style="align-items:center">
+    <div class="c5 plate hangar" id="hangar" style="height:clamp(280px,36vw,440px)">
+      <img class="hp on" data-pilot="yeager" src="assets/x1.jpg" alt="Bell X-1 in flight, NASA and USAF photo by Lt. Robert A. Hoover">
+      <img class="hp" data-pilot="johnson" src="assets/sr71.jpg" alt="NASA SR-71A at takeoff, NASA photo by Jim Ross">
+      <img class="hp" data-pilot="rutan" src="assets/proteus.jpg" alt="Scaled Composites Proteus in flight, NASA and ESPO photo">
+      <img class="hp" data-pilot="hoover" src="assets/p51.jpg" alt="P-51 Mustang over Luke Air Force Base, U.S. Air National Guard photo by Tech. Sgt. Hampton Stramler">
+      <div class="shade" style="background:linear-gradient(0deg,rgba(4,7,14,.92),rgba(4,7,14,0) 60%)"></div>
+      <svg class="hud" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true"><path d="M14 40 V14 H40 M360 14 H386 V40 M14 260 V286 H40 M360 286 H386 V260" fill="none" stroke="rgba(56,225,255,.55)" stroke-width="1.5"/><path class="hud-sweep" d="M0 150 H400" stroke="rgba(56,225,255,.25)" stroke-dasharray="6 10"/></svg>
+      <div class="cap"><div style="display:flex;flex-direction:column;gap:4px"><span class="mono" id="hg-title" style="font-size:11px;color:var(--gold)">YEAGER · BELL X-1 · 1947</span><span class="mono" id="hg-credit" style="font-size:10px;color:var(--muted)">NASA / USAF photo by Lt. Robert A. Hoover</span></div><span class="mono" id="hg-idx" style="font-size:10px;color:var(--cyan)">01 / 04</span></div>
+    </div>
+    <div class="c7" style="display:flex;flex-direction:column;gap:16px">
+      <div class="kick">04 / FLIGHT HERITAGE</div>
+      <span class="mono" style="font-size:11px;color:var(--muted)">THE DISCIPLINE BEHIND THE DESIGN</span>
+      <h2 id="he-h" data-split>Built with a<br>test pilot’s mind.</h2>
+      <p class="lede">The future rewards imagination. Flight teaches you to prove it.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="pilots" role="tablist" aria-label="Flight test pioneers" data-stagger><button class="pill" type="button" data-pilot="yeager" aria-pressed="true" style="min-height:40px;font-size:13px">Yeager</button><button class="pill" type="button" data-pilot="johnson" aria-pressed="false" style="min-height:40px;font-size:13px">Johnson</button><button class="pill" type="button" data-pilot="rutan" aria-pressed="false" style="min-height:40px;font-size:13px">Rutan</button><button class="pill" type="button" data-pilot="hoover" aria-pressed="false" style="min-height:40px;font-size:13px">Hoover</button></div>
+      <div class="soft" id="hg-card" style="padding:20px 24px;display:flex;flex-direction:column;gap:8px" aria-live="polite"><span class="mono" id="hg-kick" style="font-size:10px;color:var(--cyan)">CHUCK YEAGER · BELL X-1 · OCTOBER 14, 1947</span><span class="syne" id="hg-head" style="font-size:20px;font-weight:700">Fly the card. Report what the machine did.</span><p class="muted" id="hg-body" style="margin:0;font-size:14px">The first supersonic flight was a test card flown to the letter and a report that said exactly what happened, cracked ribs and all. Doug Cashio applies the same discipline: run the check, record the result, and never let the story get ahead of the data.</p><span class="mono" style="font-size:10px;color:var(--muted)">A working principle inspired by this lineage, not a historical quotation.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 05 THE OPERATOR ================= -->
+<section class="block" id="operator" aria-labelledby="op-h" style="background:linear-gradient(180deg,rgba(7,12,24,.72),rgba(4,7,14,.5));border-top:1px solid var(--line)">
+  <div class="wrap grid" style="align-items:center">
+    <div class="c6" style="display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap"><span class="kick">05 / THE OPERATOR</span><span class="mono" style="font-size:11px;color:var(--muted)">PENSACOLA, FLORIDA · HOUSE CASHIO · A HUMAN IN COMMAND</span></div>
+      <span class="mono" style="font-size:11px;color:var(--gold)">OWNER · BUILDER · OPERATOR · IMAGINATION, WITH INTENTION.</span>
+      <h2 id="op-h" data-split>Doug Cashio</h2>
+      <p class="syne" style="margin:0;font-size:clamp(20px,2vw,26px);line-height:1.2;font-weight:500;color:var(--ink2)">Endlessly curious. Personally accountable.<br>Principal Solutions Consultant.<br>Independent systems builder.</p>
+      <p class="lede" style="font-size:16px">I make difficult system choices understandable: where AI runs, what it can use, and when a person takes over. This is my independent workshop: hardware I operate, tools I build, and evidence you can inspect. Science fiction supplies the imagination. Flight-test discipline keeps it honest.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap" data-stagger><a href="https://www.linkedin.com/in/dougcashio/" class="btn line sm">LinkedIn</a><a href="https://github.com/jamescashio" class="btn line sm">GitHub</a><a href="https://www.credly.com/users/james-cashio/badges/credly" class="btn line sm">Credly wallet</a></div>
+    </div>
+    <div class="c6 plate sig" id="sigplate" style="aspect-ratio:1.55;border-color:rgba(242,200,122,.25);background:radial-gradient(ellipse at 50% 55%,rgba(242,200,122,.16),rgba(4,7,14,0) 60%),#04070E">
+      <div class="sig-ring" aria-hidden="true"></div>
+      <img src="assets/celestial.jpg" alt="The cAshIo celestial signature: a gold and titanium wordmark inside an orbital ring" style="position:absolute;left:0;top:50%;transform:translateY(-58%);width:100%;height:auto;object-fit:contain">
+      <div class="sheen" aria-hidden="true"></div>
+      <div class="burst" id="sigburst" aria-hidden="true"></div>
+      <div class="shade" style="background:linear-gradient(0deg,rgba(4,7,14,.9),rgba(4,7,14,0) 50%)"></div>
+      <svg class="hud" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true"><path d="M14 40 V14 H40 M360 14 H386 V40 M14 260 V286 H40 M360 286 H386 V260" fill="none" stroke="rgba(242,200,122,.55)" stroke-width="1.5"/></svg>
+      <div style="position:absolute;left:20px;top:18px;display:flex;flex-direction:column;gap:4px"><span class="mono" style="font-size:10px;color:var(--gold)">HOUSE CASHIO · CELESTIAL SIGNATURE</span><span class="mono" id="sig-state" style="font-size:10px;color:var(--muted)">DORMANT · GOLD INTENT</span></div>
+      <div class="cap"><div style="display:flex;flex-direction:column;gap:8px"><button class="btn gold sm" type="button" id="sig-btn" data-magnet>◇ Energize the signature</button><a href="https://cashio.us/#signature" style="font-size:14px;font-weight:600;color:var(--ink)">Explore the celestial signature in 3D ↗</a></div><span class="mono" style="font-size:10px;color:var(--muted)">IMAGINATION, WITH INTENTION.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 06 CONTACT ================= -->
+<section class="block" id="contact" aria-labelledby="ct-h" style="border-top:1px solid var(--line);overflow:hidden;padding-bottom:48px">
+  <div style="position:absolute;right:-120px;top:-160px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(242,200,122,.16),rgba(242,200,122,0) 65%);pointer-events:none"></div>
+  <div class="wrap grid" style="align-items:center">
+    <div class="c6"><div class="kick" style="margin-bottom:14px">06 / OPEN A CHANNEL</div><h2 id="ct-h" data-split>What could we<br>build next?</h2></div>
+    <div class="c6" style="display:flex;flex-direction:column;gap:14px">
+      <p class="lede">Tell me what you want to build and your hardest constraint. AI spending, private data, or a system that needs to be easier to understand: start there.</p>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><a href="mailto:doug@cashio.us?subject=An%20idea%20from%20Cashio&body=What%20I%20want%20to%20build%3A%0A%0AMy%20hardest%20constraint%3A%0A%0AThe%20study%20or%20idea%20that%20caught%20my%20attention%3A%0A" class="btn gold" data-magnet>doug@cashio.us</a><button class="btn line" type="button" id="copy-email">Copy email address</button></div>
+    </div>
+  </div>
+</section>
+<footer>
+  <div style="display:flex;flex-direction:column;gap:4px;max-width:720px"><span class="mono" style="font-size:10px;color:var(--muted)">The Human Reckoning. Inspired by the Butlerian Jihad in Frank Herbert’s <em>Dune</em>. Powerful tools. Human judgment in command.</span><span class="mono" style="font-size:10px;color:var(--gold)">A HUMAN IN COMMAND · V38 / HELIOS · Directed by Doug Cashio · Page revised <span data-fleet="pageRevised">September 18, 2026</span></span></div>
+  <nav aria-label="Footer"><details class="vh"><summary>Version history</summary><div class="vh-menu"><a href="https://cashio.us/">V37.17 Continuum · the previous front door</a><a href="https://cashio.us/command-deck.html">V35 All Tens · command deck</a><a href="https://cashio.us/command.html">May 2026 · command center archive</a><a href="https://github.com/jamescashio/jamescashio.github.io/blob/main/CHANGELOG.md">Every release, V30 to V38 · changelog</a><a href="https://github.com/jamescashio/jamescashio.github.io/releases">Tagged releases on GitHub</a></div></details><a href="https://github.com/jamescashio/jamescashio.github.io">View source</a><a href="https://cashio.us/cashio.html">Meet cAshIo ↗</a><a href="https://github.com/jamescashio/jamescashio.github.io/blob/main/PRIVACY.md">Privacy</a><a href="#top" style="color:var(--ink)">Back to orbit ↑</a></nav>
+</footer>
+
+<!-- ================= MISSION CONTROL ================= -->
+<dialog id="mc" style="border:1px solid rgba(56,225,255,.3);border-radius:22px;background:linear-gradient(180deg,#152239,#0A1220);color:var(--ink);padding:0;width:min(92vw,880px);max-height:86vh;box-shadow:0 60px 160px rgba(0,0,0,.7)">
+  <div style="padding:24px 28px;display:flex;flex-direction:column;gap:14px;max-height:86vh;overflow:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><span class="mono" style="font-size:11px;color:var(--gold)">CASHIO / V38 · THE HUMAN RECKONING</span><button class="btn line sm" type="button" id="mc-close">Close ×</button></div>
+    <div><span class="kick">CHOOSE YOUR TRAJECTORY</span><h3 style="margin-top:6px">Mission Control<span class="em">.</span></h3><span class="muted">Choose a starting point, or search the universe.</span></div>
+    <input id="mc-search" type="search" placeholder="Search destinations and studies" style="height:48px;border-radius:12px;border:1px solid rgba(56,225,255,.25);background:var(--void);color:var(--ink);padding:0 16px;font-family:var(--sans);font-size:15px">
+    <div id="mc-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px"></div>
+    <div style="display:flex;gap:20px;padding-top:10px;border-top:1px solid var(--line2)"><span class="mono" style="font-size:10px;color:var(--muted)">↑ ↓ navigate</span><span class="mono" style="font-size:10px;color:var(--muted)">↵ enter</span><span class="mono" style="font-size:10px;color:var(--muted)">esc close</span></div>
+  </div>
+</dialog>
+<aside class="bitdock" id="bitdock" aria-label="Bit, your co-pilot">
+  <button type="button" class="bitbtn" id="bit-btn" aria-label="Bit: open Mission Control"><canvas id="bitcv" width="96" height="96" aria-hidden="true"></canvas></button>
+  <div class="bitsay" id="bitsay" role="status" aria-live="polite"><span class="mono" id="bit-tag" style="font-size:9px;color:var(--gold)">BIT / WELCOME ABOARD</span><span id="bit-line">I’m Bit. Take the flight; I’ll point out what matters.</span><button type="button" class="bitx" id="bit-x" aria-label="Dismiss Bit’s note">×</button></div>
+</aside>
+<div id="toast" role="status" style="position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;background:var(--gold);color:#1A1204;padding:12px 18px;border-radius:12px;font-weight:600;z-index:120;pointer-events:none;transition:opacity .3s,transform .3s"></div>
+
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/ScrollTrigger.min.js"></script>
+<script src="vendor/SplitText.min.js"></script>
+<script src="vendor/lenis.min.js"></script>
+<script>
+/* =========================================================
+   V38 HELIOS · instruments, then motion. Everything below works
+   without GSAP or WebGL; those only add the layer on top.
+   ========================================================= */
+(function(){
+'use strict';
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let motionOn = !reduced;
+const hasGsap = typeof gsap !== 'undefined';
+
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.style.opacity=1; t.style.transform='translate(-50%,0)'; clearTimeout(toast.t); toast.t=setTimeout(()=>{t.style.opacity=0;t.style.transform='translate(-50%,20px)';},1800); }
+function copy(text, msg){ (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(()=>toast(msg||'Copied')).catch(()=>{ prompt('Copy this', text); }); }
+function press(group, attr, val){ $$('['+attr+']', group).forEach(b=>b.setAttribute('aria-pressed', String(b.dataset[attr.slice(5)]===val))); }
+
+/* ---------- 0. Fleet facts: the ONLY place dated evidence lives. Update from the DSH output. ---------- */
+const FLEET={ observedLong:'September 18, 2026', observedShort:'Sep 18', observedUtc:'2026-09-18T22:53:54Z', observedCentral:'5:53 PM Central', method:'DeepSeek Harness, read only', hosts:2, lxc:20, zeus:15, apollo:5, qemu:1, pve:'9.2.20', quorate:true, routing:'Not verified', pageRevised:'September 18, 2026',
+  kernel:{ booted:'7.0.14-14-pve', staged:'7.0.14-17-pve' }, backups:{ guestsOk:20, guestsTotal:20, freshnessLong:'September 18, 2026', restoreTested:false }, atlas:{ tag:'qwen3.8:27b-atlas', context:16384 }, hermes:{ jobs:58, records:60, budgetPeriod:'September 2026' }, dsh:{ skills:156, providers:11, agentsDate:'September 8, 2026' },
+  prior:{ release:'V37.11', fleetLong:'September 7, 2026', fleetShort:'Sep 7', lxc:19, zeus:14, apollo:5, qemu:1, pve:'9.2.11', lanes:'Not verified', method:'HERMES audit' },
+  archive:{ release:'V35 ALL TENS', fleetLong:'August 28, 2026', fleetShort:'Aug 28', routingLong:'August 21, 2026', lxc:18, qemu:'Not recorded', lanes:10, expiry:'September 27, 2026' },
+  cost:{ cents:26, sampleLong:'July 21 to 22, 2026', release:'V31' } };
+window.FLEET=FLEET;
+document.addEventListener('DOMContentLoaded',()=>{ $$('[data-fleet]').forEach(el=>{ const v=el.dataset.fleet.split('.').reduce((o,k)=>o&&o[k],FLEET); if(v!==undefined) el.textContent=String(v); }); });
+
+/* ---------- 1. HERMES routing model (deterministic teaching model) ---------- */
+function routeExample(intent, priv, src){
+  if (priv) return { lane:'Human review', code:'HOLD', color:'var(--gold)', detail:'The privacy boundary comes first. Confirm an authorized processing route before any external execution.', steps:['Intent identified','Private input detected','External route held','Reason preserved','Operator decision required'] };
+  if (intent==='research' || src) return { lane:'Research', code:'EVIDENCE', color:'var(--cyan)', detail:'Attributable evidence is part of the request. Route to research, then review the sources and their limits.', steps:['Evidence requirement found','Public input accepted','Research lane selected','Sources requested','Operator reviews evidence'] };
+  const a = intent==='analyze';
+  return { lane: a?'Synthesis':'Workhorse', code:'QUALIFIED', color:'var(--cyan)', detail: a?'A synthesis task needs connected reasoning. Preserve the assumptions and send the result for review.':'Routine drafting fits a general work lane. Greater expense needs a reason.', steps:['Intent identified','Public input accepted', a?'Synthesis lane selected':'Workhorse lane selected','Decision recorded','Operator reviews the draft'] };
+}
+const STUDIES = [
+  { n:'01', name:'HERMES', cat:'AI orchestration', sub:'Match the work to the route.', cue:'Route a draft. Require sources. Then add private information.', take:'Give each request the route it needs.', takebody:'Routine work gets a general lane. Evidence requirements change the route. Private information puts a person in the decision. This is the policy behind the cost-control idea.', q:'What wins when intent, evidence requirements, and privacy disagree?', rule:'Private input always holds the external route for human review. Otherwise, Research intent or a source requirement selects Research. Analyze selects Synthesis; Draft selects Workhorse.', tr:'Choose Analyze and require sources: Research wins. Now turn on private information: Human review wins. Change the intent again; the privacy boundary holds.', bound:'A deterministic routing model with four outcomes. It calls no model, measures no provider, and does not establish the current HERMES deployment’s behavior.', nextq:'When should automation stop and ask a person?' },
+  { n:'02', name:'Escalation Cascade', cat:'Bounded autonomy', sub:'Know when automation should stop.', cue:'Raise the consequence or lower the confidence. Watch the handoff.', take:'Automation stops where the consequence starts.', takebody:'A low consequence, well supported signal stays inside a predefined check. Rising consequence or falling confidence hands the decision to a person with the evidence preserved.', q:'When should automation stop and ask a person?', rule:'Severity at or above 70, or confidence below 40, hands the decision to the operator. Severity at or above 35, or confidence below 75, gathers evidence first. Otherwise the check stays bounded.', tr:'Raise severity to 70. The handoff appears. Now lower it and drop confidence below 40 instead. The same handoff appears for a different reason.', bound:'A three level teaching model. It does not measure a live alert pipeline.', nextq:'What needs investigation first?' },
+  { n:'03', name:'Exposure Assessment', cat:'Security intelligence', sub:'From finding to next action.', cue:'Change reachability and authentication. See what needs investigation.', take:'A finding is a question, not a verdict.', takebody:'Reachable without authentication is investigated first. Reachable and critical gets its boundary reviewed. Everything else is recorded with its owner.', q:'What needs investigation first?', rule:'Reachable and unauthenticated: investigate first. Reachable and critical: review the boundary. Otherwise: record and assign an owner.', tr:'Make the asset reachable and remove authentication. Now restore authentication and mark it critical. The next action changes with the boundary.', bound:'An illustration of triage order. It scans nothing and reports no real asset.', nextq:'How does a brief handle missing evidence?' },
+  { n:'04', name:'Sovereign Briefing', cat:'Decision intelligence', sub:'A useful brief keeps the unknowns.', cue:'Include the routing record. See how the brief handles missing evidence.', take:'A brief that hides its gaps is not a brief.', takebody:'Each claim carries its source and date. A missing record is shown as unknown, never filled in.', q:'How does a brief handle missing evidence?', rule:'Every line in the brief cites a dated record. When the routing record is absent, the brief says unverified and stops there.', tr:'Include the routing record, then remove it. Watch the routing line change from a fact to an explicit unknown.', bound:'A formatting model for briefs. It reads no live data.', nextq:'When does an observation need review?' },
+  { n:'05', name:'ZeusApollo', cat:'Operations', sub:'Know when an observation needs review.', cue:'Advance the clock from 23 to 24 hours. The review state changes.', take:'Freshness is a rule, not a feeling.', takebody:'An observation older than its window is flagged for review even when nothing else changed. The clock is part of the evidence.', q:'When does an observation need review?', rule:'An observation is current for 24 hours. At 24 hours it is flagged for review. Nothing about the counts changes; only their standing does.', tr:'Advance the clock from 23 to 24 hours and watch the status flip from current to review.', bound:'A freshness rule on a dated export. It does not poll the estate.', nextq:'Which signal is worth acting on?' },
+  { n:'06', name:'The Shop Floor Signal', cat:'Industrial intelligence', sub:'Find the signal worth acting on.', cue:'Set deviation to 30%. Add corroboration. Compare the next action.', take:'One reading is a rumor. Two are a signal.', takebody:'A large deviation without corroboration asks for a second measurement. With corroboration it asks for an action.', q:'Which signal is worth acting on?', rule:'Deviation above 25% with corroboration proposes an action. Above 25% without corroboration requests a second reading. Below 25% is logged.', tr:'Set deviation to 30% with corroboration off, then on. The next action changes from measure again to intervene.', bound:'A threshold illustration with synthetic readings.', nextq:'What does a change touch?' },
+  { n:'07', name:'Graphify', cat:'Developer tooling', sub:'See what a change touches.', cue:'Select Policy, then Adapter. Compare the modules a change could affect.', take:'Know the blast radius before you ship.', takebody:'Selecting a module lights every module that depends on it. Policy touches more than Adapter, and that is the point.', q:'What does a change touch?', rule:'A module change marks every dependent module as affected. The count is the review scope.', tr:'Select Policy, then Adapter. Compare the number of affected modules.', bound:'A static dependency illustration, not a scan of any repository.', nextq:'What wins when intent, evidence requirements, and privacy disagree?' }
+];
+const GLYPHS = ['M12 2l3 7h7l-5.5 4.5 2 7.5L12 16.5 5.5 21l2-7.5L2 9h7z','M4 4h16v16H4zM4 12h16M12 4v16','M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm0 5v4l3 3','M5 4h14v16H5zM8 9h8M8 13h6','M4 6h16M4 12h16M4 18h10','M3 17l5-6 4 4 5-8 4 5','M6 6h4v4H6zM14 6h4v4h-4zM6 14h4v4H6zM14 14h4v4h-4zM10 8h4M8 10v4M16 10v4M10 16h4'];
+const st = { i:0, intent:'draft', priv:false, src:false };
+function renderStudies(){
+  const list = $('#studies-list');
+  list.innerHTML = STUDIES.map((s,i)=>`<button class="study" type="button" role="tab" data-study="${i}" aria-pressed="${i===st.i}" aria-selected="${i===st.i}"><div style="display:flex;justify-content:space-between;align-items:center"><span class="mono" style="font-size:11px;color:var(--gold)">${s.n}</span><span class="cy">◇</span></div><div style="display:flex;flex-direction:column;gap:4px"><span class="syne" style="font-size:20px;font-weight:700">${s.name}</span><span class="mono" style="font-size:10px;color:var(--muted)">${s.cat}</span></div><svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="#38E1FF" stroke-width="1.2"><path d="${GLYPHS[i]}"/></svg></button>`).join('');
+  list.addEventListener('click', e=>{ const b=e.target.closest('[data-study]'); if(!b) return; selectStudy(+b.dataset.study); });
+}
+function selectStudy(i){
+  st.i = i; const s = STUDIES[i];
+  $$('#studies-list [data-study]').forEach(b=>{ const on=+b.dataset.study===i; b.setAttribute('aria-pressed',on); b.setAttribute('aria-selected',on); });
+  $('#st-n').textContent=s.n; $('#st-name').textContent=s.name; $('#st-sub').textContent=s.sub; $('#st-cue').textContent=s.cue;
+  $('#st-take').textContent=s.take; $('#st-takebody').textContent=s.takebody; $('#st-q').textContent=s.q; $('#st-rule').textContent=s.rule; $('#st-try').textContent=s.tr; $('#st-bound').textContent=s.bound;
+  const nx = STUDIES[(i+1)%7]; $('#st-nextname').textContent=nx.name; $('#st-nextq').textContent=s.nextq;
+  if (hasGsap && motionOn) gsap.fromTo('#instrument > *:not(.ring-progress)', {y:14, opacity:0}, {y:0, opacity:1, duration:.5, stagger:.05, ease:'expo.out', overwrite:true});
+}
+function renderRoute(run){
+  const r = routeExample(st.intent, st.priv, st.src);
+  $('#st-lane').textContent=r.lane; $('#st-lane').style.color=r.color; $('#st-code').textContent=r.code; $('#st-code').style.color=r.color;
+  $('#st-detail').textContent = run ? r.detail : 'Choose a task and its boundaries, then run the five-step demonstration. No request leaves this page.';
+  const box=$('#st-steps');
+  box.innerHTML = r.steps.map((t,i)=>`<div class="step" data-step><span class="mono" style="font-size:11px;color:var(--gold);width:22px">0${i+1}</span><span class="dot" style="background:${r.code==='HOLD'?'var(--gold)':'var(--cyan)'};box-shadow:0 0 12px ${r.code==='HOLD'?'var(--gold)':'var(--cyan)'}"></span><span style="font-size:14px">${t}</span></div>`).join('');
+  const fg=$('#ringfg'), tx=$('#ringtxt');
+  if (run){
+    const steps=$$('[data-step]', box);
+    if (hasGsap && motionOn){
+      gsap.set(steps,{opacity:.25,x:-8});
+      gsap.to(steps,{opacity:1,x:0,duration:.45,stagger:.28,ease:'expo.out',onUpdate:()=>{},onStart:()=>{}});
+      let k={v:0}; gsap.to(k,{v:5,duration:1.6,ease:'none',onUpdate:()=>{ const n=Math.round(k.v); fg.style.strokeDashoffset=226-226*(n/5); tx.textContent=`0${n}/05`; }});
+    } else { fg.style.strokeDashoffset=0; tx.textContent='05/05'; }
+  } else { fg.style.strokeDashoffset=226; tx.textContent='00/05'; if (hasGsap) gsap.set($$('[data-step]',box),{opacity:.55}); else $$('[data-step]',box).forEach(s=>s.style.opacity=.55); }
+}
+$('#intent-group').addEventListener('click', e=>{ const b=e.target.closest('[data-intent]'); if(!b) return; st.intent=b.dataset.intent; press($('#intent-group'),'data-intent',st.intent); renderRoute(false); });
+$('#tg-private').addEventListener('click', e=>{ st.priv=!st.priv; e.currentTarget.setAttribute('aria-pressed',st.priv); renderRoute(false); });
+$('#tg-sources').addEventListener('click', e=>{ st.src=!st.src; e.currentTarget.setAttribute('aria-pressed',st.src); renderRoute(false); });
+$('#route-btn').addEventListener('click', ()=>renderRoute(true));
+$('#st-next').addEventListener('click', ()=>selectStudy((st.i+1)%7));
+$('#copy-settings').addEventListener('click', ()=>copy(`https://cashio.us/#build=hermes&intent=${st.intent}&private=${st.priv?1:0}&sources=${st.src?1:0}`, 'Settings link copied'));
+$$('[data-load]').forEach(a=>a.addEventListener('click', ()=>{ const priv=a.dataset.load==='private'; st.intent='analyze'; st.src=true; st.priv=priv; press($('#intent-group'),'data-intent','analyze'); $('#tg-sources').setAttribute('aria-pressed','true'); $('#tg-private').setAttribute('aria-pressed',String(priv)); selectStudy(0); renderRoute(false); setTimeout(()=>$('#route-btn').focus(),600); }));
+renderStudies(); renderRoute(false);
+
+/* ---------- 2. Privacy test ---------- */
+const pv={pick:null};
+$$('[data-pv]').forEach(b=>b.addEventListener('click',()=>{ pv.pick=b.dataset.pv; $$('[data-pv]').forEach(x=>x.setAttribute('aria-pressed',String(x===b))); }));
+$('#pv-reveal').addEventListener('click',()=>{
+  $('#pv-answer').textContent='Human review';
+  const res=$('#pv-result'); res.hidden=false;
+  $('#pv-text').innerHTML = `<strong>${pv.pick==='human'?'Correct.':pv.pick==='keep'?'Not this time.':'Revealed.'}</strong> Private input always holds the external route for human review. Your prediction: ${pv.pick==='human'?'Human review':pv.pick==='keep'?'Keep Research':'none yet'}.`;
+  if (hasGsap && motionOn) gsap.from(res,{y:10,opacity:0,duration:.5,ease:'expo.out'});
+});
+
+/* ---------- 3. Sovereign world model (twelve request illustration) ---------- */
+const w = { arch:'hybrid', sens:'mixed', net:true, permit:false };
+function world(arch,sens,net,permit){
+  const T=12, priv = sens==='mixed'?6:sens==='private'?12:0, pub=T-priv; let local=0,cloud=0,held=0,summary='',data='',netd='';
+  if (arch==='sovereign'){ local=T; summary='All 12 requests are handled on your hardware. Local processing does not need a cloud connection.'; data='Every request, private or public, stays inside your boundary.'; netd= net?'Local processing does not need this cloud connection.':'The connection is down and nothing changes. All 12 requests stay aboard.'; }
+  else if (arch==='hybrid'){ local= net?priv:T; cloud= net?pub:0; summary= net?`${local} requests stay local; ${cloud} public requests use the cloud. Sensitive data stays on your hardware.`:'The cloud connection is down. All 12 requests fall back to your hardware in this model.'; data='Sensitive requests always stay local. Only public requests may use the cloud.'; netd='Cloud routing needs a connection; this model also supports local fallback.'; }
+  else { if (net){ cloud= permit?T:pub; held=T-cloud; summary= held?`${cloud} public requests use the cloud. ${held} sensitive requests wait because permission to send them is off.`:'All 12 requests use an external cloud provider. Your data crosses the local boundary.'; } else { held=T; summary='The cloud connection is down. All 12 requests wait; this cloud-only model has no local fallback.'; } data= permit?'Private requests may leave the ship because you granted permission.':'Private requests never leave without explicit permission; they wait at the bridge.'; netd='An available cloud connection is required for every request.'; }
+  return {local,cloud,held,summary,data,netd};
+}
+function renderWorld(){
+  const r=world(w.arch,w.sens,w.net,w.permit);
+  const set=(id,v)=>{$(id).textContent=v;};
+  set('#n-local',r.local); set('#n-cloud',r.cloud); set('#n-held',r.held); set('#w-summary',r.summary); set('#w-data',r.data); set('#w-net',r.netd);
+  set('#net-label', w.net?'Connected':'Offline'); $('#relay-chip').textContent = w.net?'CLOUD RELAY CONNECTED':'CLOUD RELAY OFFLINE'; $('#relay-chip').style.color = w.net?'var(--gold)':'var(--heldtext)';
+  const sc={'#b-local':r.local/12,'#b-cloud':r.cloud/12,'#b-held':r.held/12};
+  Object.entries(sc).forEach(([id,v])=>{ const el=$(id); if(hasGsap&&motionOn) gsap.to(el,{scaleX:v,duration:.7,ease:'expo.out',overwrite:true}); else el.style.transform=`scaleX(${v})`; });
+  renderSchematic(r);
+  $('#cmp-rows').innerHTML=['sovereign','hybrid','cloud'].map(a=>{ const x=world(a,w.sens,w.net,w.permit); const nm=a==='sovereign'?'Sovereign / local':a==='hybrid'?'Hybrid':'Cloud'; return `<div class="cmp${a===w.arch?' on':''}"><strong>${nm}</strong><span>${x.local}</span><span>${x.cloud}</span><span>${x.held}</span></div>`; }).join('');
+}
+let schemTl=null;
+function renderSchematic(r){
+  const g=$('#packets'); if(!g) return; g.innerHTML='';
+  const archName= w.arch==='sovereign'?'SOVEREIGN':w.arch==='hybrid'?'HYBRID':'CLOUD';
+  $('#schem-label').textContent=`${archName} · ${r.local} LOCAL · ${r.cloud} CLOUD · ${r.held} HELD`;
+  $('#relay-state').textContent= w.net?'CONNECTED':'OFFLINE'; $('#relay-state').setAttribute('fill', w.net?'#F2C87A':'#F08A96'); $('#relay-line').setAttribute('stroke', w.net?'rgba(242,200,122,.35)':'rgba(208,79,95,.35)'); $('#relay-line').style.animationPlayState= w.net?'running':'paused';
+  const kinds=[].concat(Array(r.local).fill('local'),Array(r.cloud).fill('cloud'),Array(r.held).fill('held'));
+  if(schemTl){ schemTl.kill(); schemTl=null; }
+  const dots=kinds.map((k,i)=>{ const col= k==='local'?'#38E1FF':k==='cloud'?'#F2C87A':'#F08A96'; const t1=document.createElementNS('http://www.w3.org/2000/svg','circle'); t1.setAttribute('r','7'); t1.setAttribute('fill',col); t1.setAttribute('opacity','.18'); t1.setAttribute('cx','300'); t1.setAttribute('cy','110'); g.appendChild(t1); const c=document.createElementNS('http://www.w3.org/2000/svg','circle'); c.setAttribute('r','4'); c.setAttribute('fill',col); c.setAttribute('filter','url(#pg)'); c.setAttribute('cx','300'); c.setAttribute('cy','110'); g.appendChild(c); return {c:[c,t1],k,i}; });
+  if(!(hasGsap&&motionOn)){ dots.forEach(({c,k,i})=>c.forEach(el=>{ const o=(i%6)*10-25; if(k==='local'){el.setAttribute('cx',110+o);el.setAttribute('cy',150);} else if(k==='cloud'){el.setAttribute('cx',520+o);el.setAttribute('cy',60);} else {el.setAttribute('cx',300+o);el.setAttribute('cy',110);} })); return; }
+  schemTl=gsap.timeline({repeat:-1});
+  dots.forEach(({c,k,i})=>{
+    const t=gsap.timeline({repeat:-1,delay:i*.28});
+    if(k==='local'){ t.fromTo(c,{attr:{cx:300,cy:110}},{attr:{cx:110,cy:150},duration:1.6,ease:'power1.inOut',stagger:.08}).to(c,{attr:{cx:300,cy:110},duration:1.6,ease:'power1.inOut',stagger:.08}); }
+    else if(k==='cloud'){ t.fromTo(c,{attr:{cx:110,cy:150}},{attr:{cx:300,cy:110},duration:1.2,ease:'power1.inOut',stagger:.08}).to(c,{attr:{cx:520,cy:60},duration:1.6,ease:'power1.inOut',stagger:.08}).to(c,{attr:{cx:300,cy:110},duration:1.6,ease:'power1.inOut',stagger:.08}).to(c,{attr:{cx:110,cy:150},duration:1.2,ease:'power1.inOut',stagger:.08}); }
+    else { const a=(i/12)*Math.PI*2; t.set(c,{attr:{cx:300+Math.cos(a)*34,cy:110+Math.sin(a)*34}}).to(c[0],{attr:{r:6},duration:.8,yoyo:true,repeat:-1,ease:'sine.inOut'}); }
+    schemTl.add(t,0);
+  });
+}
+$('#arch-group').addEventListener('click',e=>{ const b=e.target.closest('[data-arch]'); if(!b) return; w.arch=b.dataset.arch; press($('#arch-group'),'data-arch',w.arch); renderWorld(); });
+$('#sens-group').addEventListener('click',e=>{ const b=e.target.closest('[data-sens]'); if(!b) return; w.sens=b.dataset.sens; press($('#sens-group'),'data-sens',w.sens); renderWorld(); });
+$('#tg-net').addEventListener('click',e=>{ w.net=!w.net; e.currentTarget.setAttribute('aria-pressed',w.net); renderWorld(); });
+$('#tg-permit').addEventListener('click',e=>{ w.permit=!w.permit; e.currentTarget.setAttribute('aria-pressed',w.permit); renderWorld(); });
+const MISSIONS={ routine:{arch:'hybrid',sens:'mixed',net:true,permit:false}, blackout:{arch:'hybrid',sens:'mixed',net:false,permit:false}, classified:{arch:'cloud',sens:'private',net:true,permit:false} };
+$('#missions').addEventListener('click',e=>{ const b=e.target.closest('[data-mission]'); if(!b) return; Object.assign(w,MISSIONS[b.dataset.mission]); press($('#arch-group'),'data-arch',w.arch); press($('#sens-group'),'data-sens',w.sens); $('#tg-net').setAttribute('aria-pressed',w.net); $('#tg-permit').setAttribute('aria-pressed',w.permit); renderWorld(); });
+$('#copy-mission').addEventListener('click',()=>copy(`https://cashio.us/#mission=${w.arch}.${w.sens}.${w.net?'online':'offline'}.${w.permit?'permitted':'held'}`,'Mission link copied'));
+renderWorld();
+
+/* ---------- 4. System atlas ---------- */
+const NODES={
+  operator:{name:'The operator',role:'Authority',value:'Human',unit:'in command',summary:'A person owns the consequential decision.',body:'Policy defines what automation may do. Escalation preserves the evidence and returns decisions beyond that boundary to an accountable person.',evidence:'Published operating philosophy'},
+  dsh:{name:'DSH',role:'Operator console',value:String(FLEET.dsh.skills),unit:'skills · '+FLEET.dsh.providers+' providers',summary:'The DeepSeek Harness is where I sit.',body:'A locally installed agent runtime with '+FLEET.dsh.skills+' skills and '+FLEET.dsh.providers+' configured providers, placed beside HERMES rather than replacing it yet. It collected the '+FLEET.observedLong+' record on this page through a read-only bridge. Its operating brief is dated '+FLEET.dsh.agentsDate+'.',evidence:'Local metadata probe · '+FLEET.observedLong},
+  hermes:{name:'HERMES',role:'Orchestration',value:String(FLEET.hermes.jobs),unit:'enabled scheduled jobs',summary:'Intent becomes a qualified route.',body:FLEET.hermes.jobs+' of '+FLEET.hermes.records+' scheduled jobs were enabled on the orchestration host at the '+FLEET.observedLong+' observation, budget period '+FLEET.hermes.budgetPeriod+'. No live end to end route verification was established, so routing stays unverified. The HERMES study lets you explore a browser-only routing model.',evidence:'Audit · '+FLEET.observedLong+' · routing withheld'},
+  zeus:{name:'Zeus',role:'Owned compute',value:String(FLEET.zeus),unit:'LXC containers at observation',summary:'Physical ownership. Visible evidence.',body:FLEET.zeus+' LXC containers were running at this dated observation. Guest runtime does not establish application availability or failover readiness.',evidence:'Fleet observation · '+FLEET.observedLong},
+  apollo:{name:'Apollo',role:'Owned compute',value:String(FLEET.apollo),unit:'LXC containers at observation',summary:'A second host in the same estate.',body:FLEET.apollo+' LXC containers were running at this dated observation. The two-host cluster was quorate; quorum alone does not establish workload failover. Private service locations are withheld.',evidence:'Fleet observation · '+FLEET.observedLong}
+};
+const NODEPOS={operator:[400,96],dsh:[150,300],hermes:[400,320],zeus:[226,498],apollo:[574,498]};
+$$('[data-node]').forEach(b=>b.addEventListener('click',()=>{ const n=NODES[b.dataset.node]; const pos=NODEPOS[b.dataset.node]; $('#sel-halo').style.transform=`translate(${pos[0]}px,${pos[1]}px)`; if(hasGsap&&motionOn) gsap.fromTo('#nd-name, #nd-value, #nd-summary, #nd-body',{y:10,opacity:0},{y:0,opacity:1,duration:.5,stagger:.06,ease:'expo.out',overwrite:true}); Bit.say(n.role.toUpperCase(), n.summary,'think',1400); $$('[data-node]').forEach(x=>x.setAttribute('aria-pressed',String(x===b))); $('#nd-role').textContent=n.role; $('#nd-name').textContent=n.name; $('#nd-value').textContent=n.value; $('#nd-unit').textContent=n.unit; $('#nd-summary').textContent=n.summary; $('#nd-body').textContent=n.body; $('#nd-evidence').textContent=n.evidence; }));
+$('#trace-btn').addEventListener('click',()=>{
+  const labels=['Human intent leaves the operator','HERMES qualifies the route','Zeus receives the work','Result returns for human review'];
+  const pts=[[400,96],[400,262],[400,378],[226,486],[400,378],[400,262],[400,96]]; const pk=$('#packet'); const lab=$('#trace-label');
+  if(!(hasGsap&&motionOn)){ lab.textContent=labels.join(' → '); return; }
+  const tl=gsap.timeline({onComplete:()=>{gsap.set(pk,{opacity:0}); lab.textContent='Follow one example from human intent to human review. No request is sent.';}});
+  tl.set(pk,{attr:{cx:400,cy:96},opacity:1}).call(()=>lab.textContent=labels[0]);
+  tl.to(pk,{attr:{cx:400,cy:262},duration:1.4,ease:'power2.inOut'}).call(()=>lab.textContent=labels[1]);
+  tl.to(pk,{attr:{cx:400,cy:378},duration:1,ease:'power2.inOut'}).to(pk,{attr:{cx:226,cy:486},duration:1.4,ease:'power2.inOut'}).call(()=>lab.textContent=labels[2]);
+  tl.to(pk,{attr:{cx:400,cy:378},duration:1.4,ease:'power2.inOut'}).to(pk,{attr:{cx:400,cy:96},duration:1.8,ease:'power2.inOut'}).call(()=>lab.textContent=labels[3]);
+});
+
+/* ---------- 5. Principles engine (draggable) ---------- */
+const PR=[
+  {n:'01',title:'Begin with a clear signal.',body:'Separate what is known from what is assumed. A useful system makes its evidence visible before it asks for trust.',tag:'Evidence before inference',ring:'The outer ring represents the boundary of what can be observed.'},
+  {n:'02',title:'Give each request the route it needs.',body:'Routine work gets a general lane. Evidence requirements change the route. Private information puts a person in the decision.',tag:'The boundary gets the final say',ring:'The middle ring represents the qualified route a request receives.'},
+  {n:'03',title:'Trust has a timestamp.',body:'A source. A date. A clear boundary. Running guests do not establish application health, recovery or failover readiness.',tag:'Keep the claim inside the evidence',ring:'The core represents the human who verifies before acting.'}
+];
+$('#pr-group').addEventListener('click',e=>{ const b=e.target.closest('[data-pr]'); if(!b) return; const p=PR[+b.dataset.pr]; press($('#pr-group'),'data-pr',b.dataset.pr); $('#pr-n').textContent=p.n; $('#pr-title').textContent=p.title; $('#pr-body').textContent=p.body; $('#pr-tag').textContent=p.tag; $('#pr-ring').textContent=p.ring; ['#r1','#r2','#r3'].forEach((id,i)=>{ $(id).style.strokeWidth = i===+b.dataset.pr?'4':'1.5'; $(id).style.filter = i===+b.dataset.pr?'drop-shadow(0 0 8px currentColor)':''; }); });
+(function(){ const eng=$('#engine'), rot=$('#eng-rot'); let rx=0, drag=null; const apply=()=>{ rot.style.transform=`rotate(${rx}deg)`; };
+  eng.addEventListener('pointerdown',e=>{ drag={x:e.clientX,r:rx}; eng.setPointerCapture(e.pointerId); });
+  eng.addEventListener('pointermove',e=>{ if(!drag) return; rx=drag.r+(e.clientX-drag.x)*.5; apply(); });
+  eng.addEventListener('pointerup',()=>drag=null); eng.addEventListener('pointercancel',()=>drag=null);
+  eng.addEventListener('keydown',e=>{ if(e.key==='ArrowLeft'){rx-=10;apply();} if(e.key==='ArrowRight'){rx+=10;apply();} if(e.key==='Home'){rx=0;apply();} });
+  $('#eng-reset').addEventListener('click',()=>{rx=0;apply();});
+})();
+
+/* ---------- 6. E.V.E. console ---------- */
+const EVE={
+  help:['Commands: fleet · hosts · kernel · backups · atlas · dsh · hermes · routes · archive · cost · help',`Every reply is a dated fact from the published export. No live telemetry. Page revised ${FLEET.pageRevised}.`],
+  fleet:[`observation: ${FLEET.observedLong} at ${FLEET.observedCentral} (${FLEET.observedUtc})`,`hosts: ${FLEET.hosts} online, ${FLEET.quorate?'quorate with an Athena QDevice':'quorum not observed'} · pve-manager ${FLEET.pve}`,`lxc_running: ${FLEET.lxc} (zeus ${FLEET.zeus}, apollo ${FLEET.apollo}) · qemu_running: ${FLEET.qemu}`,`method: ${FLEET.method} · owner-run`],
+  kernel:[`booted: ${FLEET.kernel.booted} on both hosts`,`staged: ${FLEET.kernel.staged} on both hosts, reboot pending`],
+  backups:[`freshness: ${FLEET.backups.guestsOk} of ${FLEET.backups.guestsTotal} guests ok on ${FLEET.backups.freshnessLong}`,`restore_tested: ${FLEET.backups.restoreTested} · freshness is a file age check, not a restore drill`],
+  atlas:[`primary model: ${FLEET.atlas.tag} · active context ${FLEET.atlas.context}`,'inference host for recurring work · private catalog withheld'],
+  dsh:[`DeepSeek Harness: ${FLEET.dsh.skills} skills · ${FLEET.dsh.providers} providers · operator console`,`operating brief dated ${FLEET.dsh.agentsDate} · coexists with HERMES`],
+  hermes:[`scheduled jobs: ${FLEET.hermes.jobs} enabled of ${FLEET.hermes.records} records · budget period ${FLEET.hermes.budgetPeriod}`,'verified route count: withheld as unknown'],
+  routes:['routingVerified: null','lanes.public: null · lanes.privateCatalog: null','withheld: no authoritative live end to end route verification was established','the HERMES study on this page is a browser-only model, not this record'],
+  archive:[`${FLEET.prior.release} · fleet observed ${FLEET.prior.fleetLong} · ${FLEET.prior.method} · lxc ${FLEET.prior.lxc} (zeus ${FLEET.prior.zeus}, apollo ${FLEET.prior.apollo}) · qemu ${FLEET.prior.qemu} · pve ${FLEET.prior.pve}`,`${FLEET.archive.release} · fleet observed ${FLEET.archive.fleetLong} · routing observed ${FLEET.archive.routingLong}`,`lxc_running: ${FLEET.archive.lxc} · qemu: ${FLEET.archive.qemu.toLowerCase()} · public lanes: ${FLEET.archive.lanes}`,`original expiry ${FLEET.archive.expiry}; that expiry does not extend the later observation`],
+  cost:['V31 export · sample July 21 to 22, 2026 · observed AI provider usage 26¢ per day','scope: ai provider usage in the dated sample','excludes: owned infrastructure, electricity, and Doug’s time','not an audited bill · does not establish today’s spend or a percentage saving'],
+  hosts:[`zeus: ${FLEET.zeus} LXC at observation · apollo: ${FLEET.apollo} LXC at observation · ${FLEET.qemu} QEMU VM in the cluster`,'quorum observed; quorum alone does not establish workload failover','private service locations are withheld from the public record']
+};
+$('#eve-form').addEventListener('submit',e=>{ e.preventDefault(); const inp=$('#eve-in'); const cmd=inp.value.trim().toLowerCase(); if(!cmd) return; const out=$('#eve-out'); const add=(h)=>{ const s=document.createElement('span'); s.innerHTML=h; out.appendChild(s); }; add(`<span class="p">↳</span> ${cmd.replace(/</g,'&lt;')}`); const lines=(EVE[cmd]||[`unknown command: ${cmd.replace(/</g,'&lt;')}. Try help.`]); lines.forEach((l,i)=>setTimeout(()=>{ add(cmd==='routes'?`<span class="w">${l}</span>`:l); out.scrollTop=out.scrollHeight; if(i===lines.length-1){ add('&nbsp;'); } }, (hasGsap&&motionOn)? 140*(i+1):0)); inp.value=''; });
+
+/* ---------- 7. Mission Control ---------- */
+const DEST=[['Sovereign Starship','Board a 3D starship and compare local, hybrid, and cloud AI.','#starship'],['The event horizon','Return to the beginning.','#top'],['Principles Engine','Put the operating principles in motion.','#principles'],['Lensing Observatory','Explore the orbital world, change its light, and ignite the gate.','https://cashio.us/#lensing'],['The system atlas','Explore Zeus, Apollo, and human authority.','#universe'],['Selected work','Seven ideas you can operate.','#work'],['E.V.E. evidence console','Ask what the published evidence supports.','#evidence'],['Flight lineage','The engineering principles behind the work.','#heritage'],['Meet the operator','Doug Cashio. Curiosity with accountability.','#operator'],['Open a conversation','Find Doug’s contact and professional links.','#contact']].concat(STUDIES.map(s=>[s.name,s.cue,'#studies']));
+const mc=$('#mc');
+function renderMC(q){ const list=$('#mc-list'); const items=DEST.filter(d=>!q||(d[0]+' '+d[1]).toLowerCase().includes(q)); list.innerHTML=items.map(d=>`<a class="tile" href="${d[2]}" style="flex-direction:column;align-items:flex-start;gap:4px"><strong style="font-size:14px">${d[0]}</strong><span class="muted" style="font-size:12px">${d[1]}</span></a>`).join('')||'<span class="muted">No destination matches.</span>'; }
+function openMC(){ renderMC(''); mc.showModal(); $('#mc-search').value=''; $('#mc-search').focus(); }
+$('#mc-btn').addEventListener('click',openMC); $('#mc-close').addEventListener('click',()=>mc.close()); $('#mc-search').addEventListener('input',e=>renderMC(e.target.value.trim().toLowerCase()));
+mc.addEventListener('click',e=>{ if(e.target.tagName==='A'){ mc.close(); } });
+window.addEventListener('keydown',e=>{ if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){ e.preventDefault(); mc.open?mc.close():openMC(); } });
+$('#copy-email').addEventListener('click',()=>copy('doug@cashio.us','Email address copied'));
+
+/* ---------- 7b. Bit, the co-pilot (ported from the V36/V37 mascot: faceted polyhedron, four moods) ---------- */
+const Bit=(function(){
+  const PHI=(1+Math.sqrt(5))/2; const norm=v=>{const l=Math.hypot(v[0],v[1],v[2])||1; return [v[0]/l,v[1]/l,v[2]/l];};
+  const V=[[-1,PHI,0],[1,PHI,0],[-1,-PHI,0],[1,-PHI,0],[0,-1,PHI],[0,1,PHI],[0,-1,-PHI],[0,1,-PHI],[PHI,0,-1],[PHI,0,1],[-PHI,0,-1],[-PHI,0,1]].map(norm);
+  const F=[[0,11,5],[0,5,1],[0,1,7],[0,7,10],[0,10,11],[1,5,9],[5,11,4],[11,10,2],[10,7,6],[7,1,8],[3,9,4],[3,4,2],[3,2,6],[3,6,8],[3,8,9],[4,9,5],[2,4,11],[6,2,10],[8,6,7],[9,8,1]];
+  const YES={vertices:[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]],faces:[[0,2,4],[2,1,4],[1,3,4],[3,0,4],[2,0,5],[1,2,5],[3,1,5],[0,3,5]]};
+  function stell(spike){ const vertices=V.map(v=>v.slice()), faces=[]; F.forEach(f=>{ const a=V[f[0]],b=V[f[1]],c=V[f[2]]; const apex=norm([(a[0]+b[0]+c[0])/3,(a[1]+b[1]+c[1])/3,(a[2]+b[2]+c[2])/3]); const ai=vertices.length; vertices.push([apex[0]*spike,apex[1]*spike,apex[2]*spike]); faces.push([f[0],f[1],ai],[f[1],f[2],ai],[f[2],f[0],ai]); }); return {vertices,faces}; }
+  const NO=stell(1.78);
+  const pal=m=> m==='yes'?{base:[255,204,24],edge:[255,248,176],glow:'rgba(255,204,0,0.5)'}: (m==='no'||m==='alert')?{base:[255,24,58],edge:[255,154,170],glow:'rgba(255,0,51,0.52)'}: m==='think'?{base:[255,149,0],edge:[255,214,150],glow:'rgba(255,149,0,0.46)'}:{base:[38,205,236],edge:[200,252,255],glow:'rgba(0,249,255,0.46)'};
+  const rot=(v,rx,ry)=>{ const cy=Math.cos(ry),sy=Math.sin(ry),cx=Math.cos(rx),sx=Math.sin(rx); const x=v[0]*cy+v[2]*sy, z1=v[2]*cy-v[0]*sy; return [x, v[1]*cx-z1*sx, v[1]*sx+z1*cx]; };
+  const cv=$('#bitcv'); const ctx=cv.getContext('2d'); let mood='idle', angle=0, last=0, raf=0, moodTimer=0, look=0, lookT=0, blink=1, nextBlink=performance.now()+3000;
+  window.addEventListener('pointermove',e=>{ const r=cv.getBoundingClientRect(); lookT=Math.max(-.6,Math.min(.6,(e.clientX-(r.left+r.width/2))/window.innerWidth*2)); },{passive:true});
+  function draw(now){ const dpr=Math.min(2,window.devicePixelRatio||1); const css=cv.clientWidth||96; const want=Math.round(css*dpr); if(cv.width!==want){cv.width=want;cv.height=want;ctx.setTransform(dpr,0,0,dpr,0,0);} const center=css/2, baseR=css*.24; const el=last?Math.min(80,Math.max(0,now-last)):42; last=now; if(!reduced&&motionOn) angle+=el*((mood==='no'||mood==='alert')?.0027:mood==='yes'?.0014:.00105); look+=(lookT-look)*.06; if(now>nextBlink){ blink=.72; nextBlink=now+2600+Math.random()*4000; } blink+=(1-blink)*.18; const pulse=.5+.5*Math.sin(now*.0022); const P=pal(mood); const geo= mood==='yes'?YES:(mood==='no'||mood==='alert')?NO:stell(1.08+pulse*.24); let rx=-.52+Math.sin(angle*.72)*.13; if(mood==='no'||mood==='alert') rx+=Math.sin(angle*9)*.1; const radius=baseR*(mood==='yes'?1.3:(mood==='no'||mood==='alert')?.96:1); const focal=5.2; const pts=geo.vertices.map(v=>rot(v,rx,angle+look)); const proj=p=>{const sc=focal/(focal+p[2]); return [center+p[0]*radius*sc, center+p[1]*radius*sc*blink];};
+    ctx.clearRect(0,0,css,css); const halo=ctx.createRadialGradient(center,center,1,center,center,css*.5); halo.addColorStop(0,P.glow); halo.addColorStop(.3,`rgba(${P.edge[0]},${P.edge[1]},${P.edge[2]},${(.1+pulse*.07).toFixed(3)})`); halo.addColorStop(1,'rgba(0,0,0,0)'); ctx.fillStyle=halo; ctx.fillRect(0,0,css,css);
+    const L=[.42,-.5,.76]; geo.faces.map((f,i)=>[i,(pts[f[0]][2]+pts[f[1]][2]+pts[f[2]][2])/3]).sort((a,b)=>a[1]-b[1]).forEach(([i])=>{ const f=geo.faces[i]; const a=pts[f[0]],b=pts[f[1]],c=pts[f[2]]; const u=[b[0]-a[0],b[1]-a[1],b[2]-a[2]], v=[c[0]-a[0],c[1]-a[1],c[2]-a[2]]; const n=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]]; const nl=Math.hypot(n[0],n[1],n[2])||1; const light=(n[0]/nl)*L[0]+(n[1]/nl)*L[1]+(n[2]/nl)*L[2]; const sh=.2+.8*Math.max(0,light); const A=proj(a),B=proj(b),C=proj(c); ctx.beginPath(); ctx.moveTo(A[0],A[1]); ctx.lineTo(B[0],B[1]); ctx.lineTo(C[0],C[1]); ctx.closePath(); ctx.fillStyle=`rgba(${Math.round(P.base[0]*sh)},${Math.round(P.base[1]*sh)},${Math.round(P.base[2]*sh)},0.94)`; ctx.fill(); ctx.strokeStyle=`rgba(${P.edge[0]},${P.edge[1]},${P.edge[2]},${mood==='yes'?'0.82':'0.54'})`; ctx.lineWidth=mood==='yes'?.9:.62; ctx.stroke(); }); }
+  function loop(now){ draw(now); raf=requestAnimationFrame(loop); }
+  if(reduced){ draw(0); } else raf=requestAnimationFrame(loop);
+  document.addEventListener('visibilitychange',()=>{ if(document.hidden){cancelAnimationFrame(raf);raf=0;} else if(!raf&&!reduced) raf=requestAnimationFrame(loop); });
+  let say=function(tag,line,m,hold){ $('#bit-tag').textContent='BIT / '+tag; $('#bit-line').textContent=line; const box=$('#bitsay'); box.classList.remove('hide'); if(hasGsap&&motionOn) gsap.fromTo(box,{scale:.85,opacity:0},{scale:1,opacity:1,duration:.5,ease:'back.out(1.6)',overwrite:true}); if(m) setMood(m,hold); }
+  function setMood(m,hold){ if(m!==mood){ const b=$('#bit-btn'); b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); } mood=m; clearTimeout(moodTimer); if(m!=='idle') moodTimer=setTimeout(()=>{mood='idle';}, hold||2600); }
+  $('#bit-x').addEventListener('click',()=>$('#bitsay').classList.add('hide'));
+  // bubble clears itself; Bit shrinks while the page scrolls; Bit can be dragged to any corner
+  let sayTimer=0; const origSay=say; say=function(tag,line,m,hold){ origSay(tag,line,m,hold); clearTimeout(sayTimer); sayTimer=setTimeout(()=>$('#bitsay').classList.add('hide'), 6500); };
+  let scrollT=0; window.addEventListener('scroll',()=>{ $('#bitdock').classList.add('scrolling'); clearTimeout(scrollT); scrollT=setTimeout(()=>$('#bitdock').classList.remove('scrolling'),700); },{passive:true});
+  (function(){ const dock=$('#bitdock'), btn=$('#bit-btn'); let d=null;
+    function place(x,y){ const W=window.innerWidth,H=window.innerHeight; const right=x>W/2, top=y<H/2; dock.classList.toggle('right',right); dock.classList.toggle('top',top); dock.style.left=right?'auto':'18px'; dock.style.right=right?'18px':'auto'; dock.style.top=top?'calc(88px + env(safe-area-inset-top,0px))':'auto'; dock.style.bottom=top?'auto':'calc(18px + env(safe-area-inset-bottom,0px))'; try{ localStorage.setItem('v38bit',(right?'r':'l')+(top?'t':'b')); }catch(e){} }
+    try{ const sv=localStorage.getItem('v38bit'); if(sv){ place(sv[0]==='r'?window.innerWidth:0, sv[1]==='t'?0:window.innerHeight); } }catch(e){}
+    btn.addEventListener('pointerdown',e=>{ d={x:e.clientX,y:e.clientY,moved:false}; btn.setPointerCapture(e.pointerId); });
+    btn.addEventListener('pointermove',e=>{ if(!d) return; const dx=e.clientX-d.x, dy=e.clientY-d.y; if(!d.moved && Math.hypot(dx,dy)>6){ d.moved=true; btn.classList.add('dragging'); dock.style.transition='none'; } if(d.moved){ dock.style.transform=`translate(${dx}px,${dy}px)`; } });
+    const end=e=>{ if(!d) return; if(d.moved){ btn.classList.remove('dragging'); dock.style.transform=''; dock.style.transition=''; place(e.clientX,e.clientY); origSay('PARKED','I will stay in this corner. Drag me again any time.','yes',1500); d=null; e.preventDefault(); btn.dataset.skip='1'; setTimeout(()=>delete btn.dataset.skip,50); } d=null; };
+    btn.addEventListener('pointerup',end); btn.addEventListener('pointercancel',()=>{d=null;});
+    btn.addEventListener('click',e=>{ if(btn.dataset.skip){ e.stopImmediatePropagation(); } },true);
+  })();
+  $('#bit-btn').addEventListener('click',()=>{ say('MISSION CONTROL','Choose a starting point, or search the universe. Press Esc when you are done.','yes',2000); openMC(); });
+  return {say:(...a)=>say(...a),setMood};
+})();
+window.Bit=Bit;
+// Bit reacts to the instruments
+$('#route-btn').addEventListener('click',()=>{ const r=routeExample(st.intent,st.priv,st.src); Bit.say('THINKING','Qualifying the route…','think',900); setTimeout(()=>{ if(r.code==='HOLD') Bit.say('HELD FOR A HUMAN','Private input. I will not send this anywhere. The decision is yours.','alert',2600); else Bit.say('ROUTED',`${r.lane} lane. Every step is on the panel; nothing left this page.`,'yes',2400); },900); });
+$('#pv-reveal').addEventListener('click',()=>{ if(pv.pick==='human') Bit.say('CALLED IT','Correct. Private input always waits for a person.','yes'); else if(pv.pick==='keep') Bit.say('NOT THIS TIME','The privacy boundary outranks the source requirement.','no'); else Bit.say('THE RULE','Private input always holds the external route for human review.','think'); });
+$('#tg-net').addEventListener('click',()=>{ if(!w.net) Bit.say('BLACKOUT','Cloud link is down. Watch what stays aboard.','alert',2200); else Bit.say('RELAY UP','Connection restored. Public work may leave the ship again.','yes',1800); });
+$('#trace-btn').addEventListener('click',()=>Bit.say('TRACE','Following one request from intent to review. Conceptual, not live.','think',3000));
+$('#eve-form').addEventListener('submit',()=>Bit.say('ASK THE EVIDENCE','Every answer has a date and a boundary.','think',1600));
+
+/* ---------- 7e. Flight heritage hangar ---------- */
+const PILOTS={
+  yeager:{title:'YEAGER · BELL X-1 · 1947',credit:'NASA / USAF photo by Lt. Robert A. Hoover',kick:'CHUCK YEAGER · BELL X-1 · OCTOBER 14, 1947',head:'Fly the card. Report what the machine did.',body:'The first supersonic flight was a test card flown to the letter and a report that said exactly what happened, cracked ribs and all. Doug Cashio applies the same discipline: run the check, record the result, and never let the story get ahead of the data.',idx:'01 / 04',line:'Yeager flew the card and reported what the machine did. So do I.'},
+  johnson:{title:'JOHNSON · SR-71 · 1964',credit:'NASA photo by Jim Ross',kick:'KELLY JOHNSON · SKUNK WORKS · SR-71 · 1964',head:'Small team, few parts, short runway.',body:'Kelly Johnson\'s team made sustained Mach 3 flight practical through small teams, direct authority, and ruthless control of complexity. Doug Cashio applies the same discipline: shorten the path between the person who sees the problem and the person who can change the machine.',idx:'02 / 04',line:'Fourteen rules, one small team, Mach 3. Complexity is the enemy.'},
+  rutan:{title:'RUTAN · PROTEUS · 1998',credit:'NASA / ESPO photo',kick:'BURT RUTAN · SCALED COMPOSITES · PROTEUS · 1998',head:'Build the strange thing. Then prove it in the air.',body:'Rutan\'s aircraft look wrong until they fly, and then they set records. Doug Cashio applies the same discipline: an unusual architecture earns its place by working under load, not by looking conventional in a slide.',idx:'03 / 04',line:'Rutan built the strange thing and proved it in the air. Local AI is that kind of strange.'},
+  hoover:{title:'HOOVER · P-51 MUSTANG',credit:'U.S. Air National Guard photo by Tech. Sgt. Hampton Stramler',kick:'BOB HOOVER · P-51 · ENERGY MANAGEMENT',head:'Smooth is fast. Manage the energy you have.',body:'Hoover could pour tea during a barrel roll because he never wasted energy. Doug Cashio applies the same discipline: spend the capable route only where it matters, and keep the whole system smooth under a human hand.',idx:'04 / 04',line:'Hoover managed energy so well he poured tea in a roll. Budget the same way.'}
+};
+$('#pilots').addEventListener('click',e=>{ const b=e.target.closest('[data-pilot]'); if(!b) return; const k=b.dataset.pilot, P=PILOTS[k]; press($('#pilots'),'data-pilot',k); $$('#hangar img.hp').forEach(im=>im.classList.toggle('on',im.dataset.pilot===k)); $('#hg-title').textContent=P.title; $('#hg-credit').textContent=P.credit; $('#hg-idx').textContent=P.idx; $('#hg-kick').textContent=P.kick; $('#hg-head').textContent=P.head; $('#hg-body').textContent=P.body; if(hasGsap&&motionOn) gsap.fromTo('#hg-card > *',{y:10,opacity:0},{y:0,opacity:1,duration:.5,stagger:.06,ease:'expo.out',overwrite:true}); Bit.say('FLIGHT HERITAGE',P.line,'think',1800); });
+
+/* ---------- 7f. Signature energize ---------- */
+$('#sig-btn').addEventListener('click',()=>{ const pl=$('#sigplate'); pl.classList.remove('on'); void pl.offsetWidth; pl.classList.add('on'); $('#sig-state').textContent='ENERGIZED · GOLD INTENT'; $('#sig-state').style.color='var(--gold)'; const b=$('#sigburst'); b.innerHTML=''; for(let i=0;i<26;i++){ const d=document.createElement('i'); b.appendChild(d); if(hasGsap&&motionOn){ const a=Math.random()*Math.PI*2, r=120+Math.random()*220; gsap.fromTo(d,{x:0,y:0,opacity:1,scale:.6+Math.random()},{x:Math.cos(a)*r,y:Math.sin(a)*r*.6,opacity:0,scale:.2,duration:1.2+Math.random()*.8,ease:'expo.out',delay:Math.random()*.15}); } } Bit.say('SIGNATURE','Energized. Gold intent, blue possibility.','yes',2200); setTimeout(()=>{ $('#sig-state').textContent='DORMANT · GOLD INTENT'; $('#sig-state').style.color=''; },4000); });
+
+/* ---------- 7g. Departure wipe for the 3D scenes on cashio.us ---------- */
+$$('a[href^="https://cashio.us/#"]').forEach(a=>a.addEventListener('click',e=>{ if(!(hasGsap&&motionOn)) return; e.preventDefault(); const href=a.getAttribute('href'); Bit.say('DEPARTING','Opening the 3D scene. Back arrow brings you home.','think',1200); gsap.timeline({onComplete:()=>{ window.location.href=href; }}).to('#flash',{opacity:1,duration:.5,ease:'power2.in'}); }));
+
+/* ---------- 7h. Active nav link ---------- */
+(function(){ const links=$$('.nav nav a'); const map={'#work':'#work','#starship':'#starship','#universe':'#universe','#evidence':'#evidence'}; window.addEventListener('scroll',()=>{ let cur=null; Object.keys(map).forEach(id=>{ const el=$(id); if(el && el.getBoundingClientRect().top<window.innerHeight*.45) cur=id; }); links.forEach(l=>l.style.color= l.getAttribute('href')===cur?'var(--gold)':''); },{passive:true}); })();
+
+/* ---------- 7c. Type switcher (Unbounded · Bricolage · Orbitron) ---------- */
+const FACES=[['unbounded','Unbounded'],['bricolage','Bricolage'],['orbitron','Orbitron']];
+let faceIdx=0; try{ const saved=localStorage.getItem('v38face'); const i=FACES.findIndex(f=>f[0]===saved); if(i>=0) faceIdx=i; }catch(e){}
+function applyFace(){ const f=FACES[faceIdx]; document.documentElement.setAttribute('data-face',f[0]); $('#face-name').textContent=f[1]; try{ localStorage.setItem('v38face',f[0]); }catch(e){} }
+applyFace();
+$('#face-btn').addEventListener('click',()=>{ faceIdx=(faceIdx+1)%FACES.length; applyFace(); toast('Display face: '+FACES[faceIdx][1]); Bit.say('TYPE',`Now set in ${FACES[faceIdx][1]}. Cycle again to compare.`,'think',1500); });
+
+/* ---------- 7d. The fold ---------- */
+$('#fold-btn').addEventListener('click',()=>{ if(window.__fold){ Bit.say('FOLD','Initiating fold. Hold on to something.','alert',2400); window.__fold(); } else Bit.say('FOLD','The fold needs WebGL. This device is showing the still.','think'); });
+
+/* ---------- 8. Motion layer (GSAP + Lenis) ---------- */
+function stillState(){ $$('[data-hero],[data-split],[data-stagger] > *,.reveal').forEach(el=>{ el.style.opacity=1; el.style.transform='none'; el.classList.remove('reveal'); }); $$('.bar[data-w]').forEach(b=>b.style.transform=`scaleX(${b.dataset.w})`); $$('[data-count]').forEach(n=>{ n.textContent = n.dataset.pad? String(n.dataset.count).padStart(+n.dataset.pad,'0') : n.dataset.count; }); $('#ignite')?.remove(); $('#nav').classList.add('show'); $('#fallback').style.opacity=1; }
+if (!hasGsap){ stillState(); return; }
+gsap.registerPlugin(ScrollTrigger, SplitText);
+let lenis;
+if (motionOn && typeof Lenis!=='undefined'){ lenis=new Lenis({autoRaf:false,lerp:.1}); lenis.on('scroll',ScrollTrigger.update); gsap.ticker.add(t=>lenis.raf(t*1000)); gsap.ticker.lagSmoothing(0); }
+// progress rail + section dots
+ScrollTrigger.create({ start:0, end:'max', onUpdate:s=>{ $('#railbar').style.transform=`scaleX(${s.progress})`; } });
+$$('.sections a').forEach(a=>{ const id=a.getAttribute('href'); ScrollTrigger.create({ trigger:id, start:'top 50%', end:'bottom 50%', onToggle:s=>a.classList.toggle('on',s.isActive) }); });
+setTimeout(()=>$('#nav').classList.add('show'), motionOn?2600:0);
+const BITLINES={'#work':['THE ROUTING LAW','Start with the job. Check the boundary. Then choose the lane.'],'#studies':['THE PROOF','Try HERMES here. Change the request and watch the decision change.'],'#universe':['THE ESTATE','Two hosts I own, one layer that routes, one human who decides. Select a node.'],'#starship':['YOUR SHIP','Cut the cloud link and watch what stays aboard.'],'#principles':['THE INSTRUMENT','Drag me. Three rings, three principles.'],'#evidence':['ASK THE EVIDENCE','Type fleet, kernel, backups or dsh. Every answer has a boundary.'],'#operator':['THE OPERATOR','That is Doug. I just point at things.'],'#contact':['FLIGHT COMPLETE','You have seen the system. Tell Doug what you want to build.']};
+Object.entries(BITLINES).forEach(([id,[tag,line]])=>ScrollTrigger.create({ trigger:id, start:'top 60%', once:true, onEnter:()=>Bit.say(tag,line,'think',1200) }));
+$$('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{ const t=$(a.getAttribute('href')); if(!t) return; e.preventDefault(); if(lenis) lenis.scrollTo(t,{offset:-60,duration:1.4}); else t.scrollIntoView({behavior:'smooth'}); }));
+
+const mm=gsap.matchMedia();
+mm.add({ motion:'(prefers-reduced-motion: no-preference)', still:'(prefers-reduced-motion: reduce)', fine:'(hover: hover)' }, ctx=>{
+  const {motion,fine}=ctx.conditions;
+  if(!motion||!motionOn){ stillState(); return; }
+  // ignition sequence
+  const ig=$('#ignite');
+  const intro=gsap.timeline({defaults:{ease:'expo.out'}});
+  intro.fromTo('.ignite .spark',{scale:0,opacity:0},{scale:1,opacity:1,duration:.6})
+       .to('.ignite .spark',{scale:60,opacity:0,duration:1.1,ease:'power4.in'},'+=.3')
+       .to(ig,{opacity:0,duration:.5,onComplete:()=>ig.remove()},'-=.45')
+       .from('.hero h1 .w',{yPercent:110,duration:1.2,stagger:.12},'-=.7')
+       .from('[data-hero]',{y:24,opacity:0,duration:.9,stagger:.08},'-=.8')
+       .from('.hero .scroll',{opacity:0,duration:.8},'-=.4');
+  window.__heroReadyCalled=true; window.__heroReady && window.__heroReady();
+  // hero scroll: content lifts and fades as the ring takes over
+  gsap.to('.hero .content, .hero .meta, .hero .bit',{ y:-120, opacity:0, ease:'none', scrollTrigger:{ trigger:'.hero', start:'top top', end:'bottom top', scrub:1 } });
+  // split headlines
+  $$('[data-split]').forEach(h=>{ const split=new SplitText(h,{type:'lines,words',linesClass:'sl'}); gsap.set(h.querySelectorAll('.sl'),{overflow:'hidden'}); gsap.from(split.words,{yPercent:110,opacity:0,duration:1,ease:'expo.out',stagger:.04,scrollTrigger:{trigger:h,start:'top 85%',once:true}}); });
+  // stagger groups
+  $$('[data-stagger]').forEach(g=>gsap.from(g.children,{y:28,opacity:0,duration:.9,ease:'expo.out',stagger:{each:.07,from:'start'},scrollTrigger:{trigger:g,start:'top 85%',once:true}}));
+  // bars and counters
+  $$('.bar[data-w]').forEach(b=>gsap.fromTo(b,{scaleX:0},{scaleX:+b.dataset.w,duration:1.2,ease:'expo.out',scrollTrigger:{trigger:b,start:'top 90%',once:true}}));
+  $$('[data-count]').forEach(n=>{ const target=+n.dataset.count, pad=+n.dataset.pad||0; const o={v:0}; gsap.to(o,{v:target,duration:1.6,ease:'power3.out',scrollTrigger:{trigger:n,start:'top 90%',once:true},onUpdate:()=>{ n.textContent=String(Math.round(o.v)).padStart(pad,'0'); }}); });
+  // parallax plates + philosophy
+  $$('[data-parallax]').forEach(img=>gsap.fromTo(img,{yPercent:-8},{yPercent:8,ease:'none',scrollTrigger:{trigger:img.parentElement,start:'top bottom',end:'bottom top',scrub:1}}));
+  gsap.fromTo('#philo-img',{yPercent:-6},{yPercent:6,ease:'none',scrollTrigger:{trigger:'.philo',start:'top bottom',end:'bottom top',scrub:1}});
+  // magnetic buttons + custom cursor (pointer devices only)
+  if(fine){
+    const c=$('.cursor'), r=$('.cursor-ring'); gsap.set([c,r],{opacity:1});
+    const qx=gsap.quickTo(c,'x',{duration:.15}), qy=gsap.quickTo(c,'y',{duration:.15}), rx=gsap.quickTo(r,'x',{duration:.45,ease:'power3'}), ry=gsap.quickTo(r,'y',{duration:.45,ease:'power3'});
+    window.addEventListener('pointermove',e=>{qx(e.clientX);qy(e.clientY);rx(e.clientX);ry(e.clientY);});
+    $$('a,button').forEach(el=>{ el.addEventListener('pointerenter',()=>gsap.to(r,{scale:1.8,duration:.3})); el.addEventListener('pointerleave',()=>gsap.to(r,{scale:1,duration:.3})); });
+    $$('[data-magnet]').forEach(el=>{ el.addEventListener('pointermove',e=>{ const b=el.getBoundingClientRect(); gsap.to(el,{x:(e.clientX-b.left-b.width/2)*.18,y:(e.clientY-b.top-b.height/2)*.18,duration:.4,ease:'power3.out'}); }); el.addEventListener('pointerleave',()=>gsap.to(el,{x:0,y:0,duration:.6,ease:'elastic.out(1,.5)'})); });
+  }
+});
+$('#motion-btn').addEventListener('click',e=>{ motionOn=!motionOn; e.currentTarget.setAttribute('aria-pressed',motionOn); e.currentTarget.querySelector('span').textContent= motionOn?'Motion on':'Motion off'; document.documentElement.classList.toggle('motion-off',!motionOn); if(!motionOn){ gsap.globalTimeline.pause(); if(lenis) lenis.destroy(); window.__heroPause&&window.__heroPause(true); } else { gsap.globalTimeline.resume(); window.__heroPause&&window.__heroPause(false); } });
+})();
+</script>
+<style>.motion-off .flow,.motion-off .spin,.motion-off .spinr,.motion-off .pulse,.motion-off .scan,.motion-off .hero .scroll i{animation-play-state:paused}</style>
+<script type="module">
+/* =========================================================
+   Hero: the ignition ring. 28,000 particles assemble from a scattered
+   cloud into an orbital ring and a faceted gold core. Scroll tilts the
+   ring; the pointer tips it. Falls back to the still if WebGL fails.
+   ========================================================= */
+import * as THREE from './vendor/three.module.min.js';
+const canvas=document.getElementById('gl'); const fallback=document.getElementById('fallback');
+const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let renderer;
+try{ renderer=new THREE.WebGLRenderer({canvas,antialias:false,alpha:true,powerPreference:'high-performance'}); }catch(e){ fallback.style.opacity=1; canvas.remove(); }
+if(renderer){
+  const dpr=Math.min(window.devicePixelRatio||1, 1.75); renderer.setPixelRatio(dpr);
+  const scene=new THREE.Scene(); const cam=new THREE.PerspectiveCamera(38,1,.1,100); cam.position.set(0,0,9);
+  const N = Math.min(28000, window.innerWidth<700? 12000 : 28000);
+  const start=new Float32Array(N*3), ring=new Float32Array(N*3), col=new Float32Array(N*3), size=new Float32Array(N), seed=new Float32Array(N);
+  const gold=new THREE.Color('#F2C87A'), cyan=new THREE.Color('#38E1FF'), ice=new THREE.Color('#BFE9F5');
+  for(let i=0;i<N;i++){
+    const i3=i*3; const r=6+Math.random()*10; const th=Math.random()*Math.PI*2, ph=Math.acos(2*Math.random()-1);
+    start[i3]=r*Math.sin(ph)*Math.cos(th); start[i3+1]=r*Math.sin(ph)*Math.sin(th); start[i3+2]=r*Math.cos(ph)-4;
+    const kind=Math.random();
+    let c;
+    if(kind<.78){ // main ring, slight thickness, a titanium structure
+      const a=Math.random()*Math.PI*2; const R=2.9+ (Math.random()-.5)*.28; const z=(Math.random()-.5)*.22;
+      ring[i3]=Math.cos(a)*R; ring[i3+1]=Math.sin(a)*R; ring[i3+2]=z; c=Math.random()<.85?ice.clone().lerp(cyan,Math.random()*.9):gold; size[i]=.9+Math.random()*1.6;
+    } else if(kind<.9){ // outer thin cyan orbit
+      const a=Math.random()*Math.PI*2; const R=3.9+(Math.random()-.5)*.06; ring[i3]=Math.cos(a)*R; ring[i3+1]=Math.sin(a)*R*.55; ring[i3+2]=Math.sin(a)*R*.5; c=cyan; size[i]=.6+Math.random();
+    } else { // faceted gold core
+      const th2=Math.random()*Math.PI*2, ph2=Math.acos(2*Math.random()-1); const R=.55*(0.6+0.4*Math.pow(Math.random(),.3));
+      ring[i3]=R*Math.sin(ph2)*Math.cos(th2); ring[i3+1]=R*Math.sin(ph2)*Math.sin(th2); ring[i3+2]=R*Math.cos(ph2); c=gold.clone().lerp(new THREE.Color('#fff2cc'),Math.random()*.5); size[i]=1.4+Math.random()*2.2;
+    }
+    col[i3]=c.r; col[i3+1]=c.g; col[i3+2]=c.b; seed[i]=Math.random();
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('aStart',new THREE.BufferAttribute(start,3)); g.setAttribute('aRing',new THREE.BufferAttribute(ring,3)); g.setAttribute('position',new THREE.BufferAttribute(ring.slice(),3)); g.setAttribute('aColor',new THREE.BufferAttribute(col,3)); g.setAttribute('aSize',new THREE.BufferAttribute(size,1)); g.setAttribute('aSeed',new THREE.BufferAttribute(seed,1));
+  const mat=new THREE.ShaderMaterial({ transparent:true, depthWrite:false, blending:THREE.AdditiveBlending,
+    uniforms:{ uT:{value:0}, uMix:{value:0}, uPix:{value:dpr}, uGlow:{value:0} },
+    vertexShader:`attribute vec3 aStart; attribute vec3 aRing; attribute vec3 aColor; attribute float aSize; attribute float aSeed; uniform float uT; uniform float uMix; uniform float uPix; varying vec3 vC; varying float vA;
+      void main(){ float e = uMix; e = 1.0 - pow(1.0 - e, 3.0); vec3 p = mix(aStart, aRing, clamp(e + aSeed*0.15*e, 0.0, 1.0));
+        p.x += sin(uT*0.8 + aSeed*6.28)*0.02; p.y += cos(uT*0.7 + aSeed*6.28)*0.02;
+        vec4 mv = modelViewMatrix * vec4(p,1.0); gl_Position = projectionMatrix * mv; gl_PointSize = aSize * uPix * (14.0 / -mv.z) * (0.6 + 0.4*e);
+        vC = aColor; vA = 0.35 + 0.65*e; }`,
+    fragmentShader:`varying vec3 vC; varying float vA; uniform float uGlow; void main(){ vec2 q = gl_PointCoord - 0.5; float d = length(q); if(d>0.5) discard; float a = smoothstep(0.5,0.05,d); gl_FragColor = vec4(vC*(1.0+uGlow*0.6), a*vA); }`
+  });
+  const pts=new THREE.Points(g,mat); scene.add(pts);
+  // halo behind the core
+  const halo=new THREE.Mesh(new THREE.PlaneGeometry(2.6,2.6), new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{uA:{value:0}},vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);} `,fragmentShader:`varying vec2 vUv; uniform float uA; void main(){ float d=length(vUv-0.5); float a=smoothstep(0.5,0.0,d); gl_FragColor=vec4(0.95,0.78,0.48,a*a*uA);} `}));
+  scene.add(halo);
+  const group=new THREE.Group(); group.add(pts); group.add(halo); scene.add(group); group.rotation.x=.9; group.rotation.z=-.35;
+  let w=0,h=0; function resize(){ w=canvas.clientWidth; h=canvas.clientHeight; renderer.setSize(w,h,false); cam.aspect=w/h; cam.updateProjectionMatrix(); const mob=w<700; group.position.x= mob?0:2.3; group.position.y= mob?2.1:.3; group.scale.setScalar(mob?.62:1); } resize(); window.addEventListener('resize',resize);
+  const state={mix: reduced?1:0, glow: reduced?1:0, px:0, py:0, scroll:0, spin:0, fold:0}; let paused=false, visible=true;
+  window.__heroReady=()=>{ if(typeof gsap!=='undefined'){ gsap.to(state,{mix:1,duration:2.6,ease:'expo.out',delay:.9}); gsap.to(state,{glow:1,duration:1.2,delay:1.6}); } else { state.mix=1; state.glow=1; } };
+  if(reduced||typeof gsap==='undefined'){ state.mix=1; state.glow=1; } else if(window.__heroReadyCalled){ window.__heroReady(); }
+  window.addEventListener('pointermove',e=>{ state.px=(e.clientX/window.innerWidth-.5); state.py=(e.clientY/window.innerHeight-.5); },{passive:true});
+  window.addEventListener('scroll',()=>{ state.scroll=Math.min(1, window.scrollY/Math.max(1,window.innerHeight)); },{passive:true});
+  // canvas is fixed, so keep drawing while the page is on screen; dim with scroll instead
+  document.addEventListener('visibilitychange',()=>{ paused=document.hidden; });
+  window.__heroPause=(p)=>{ paused=p; };
+  const clock=new THREE.Clock();
+  window.__fold=()=>{ if(typeof gsap==='undefined') return; const tl=gsap.timeline(); tl.to(state,{fold:1,duration:.55,ease:'power4.in'}).to('#flash',{opacity:1,duration:.12},'-=.1').to('#flash',{opacity:0,duration:.9,ease:'power2.out'}).to(state,{fold:0,spin:state.spin+Math.PI*2,duration:2.2,ease:'expo.out'},'-=.95'); };
+  function frame(){ requestAnimationFrame(frame); if(paused) return; const t=clock.getElapsedTime(); const sc=window.scrollY/Math.max(1,window.innerHeight); const dispersed=Math.min(1,Math.max(0,(sc-.15)/1.2)); const mixEff=state.mix*(1-dispersed*.72)*(1-state.fold); mat.uniforms.uT.value=t; mat.uniforms.uMix.value=mixEff; mat.uniforms.uGlow.value=state.glow*(1-dispersed*.5); halo.material.uniforms.uA.value=state.glow*.9*(1-dispersed)*(1-state.fold); canvas.style.opacity= String(1-dispersed*.45);
+    const tx=.9 + state.py*.25 + state.scroll*.9, tz=-.35 + state.px*.35 + state.scroll*.6; group.rotation.x += (tx-group.rotation.x)*.04; group.rotation.z += (tz-group.rotation.z)*.04; group.rotation.y = (reduced?0:t*.08) + state.scroll*1.2 + state.spin; halo.lookAt(cam.position); cam.position.z = 9 - state.scroll*2.2 - state.fold*3.5;
+    renderer.render(scene,cam); }
+  frame();
+}
+</script>
+</script>
+
+
+</body>
+</html>
