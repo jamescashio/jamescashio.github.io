@@ -9,7 +9,7 @@
 <link rel="canonical" href="https://cashio.us/v38/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500;12..96,75..100,700;12..96,75..100,800&family=Orbitron:wght@600;700;900&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Person","name":"Doug Cashio","alternateName":"James Douglas Cashio","jobTitle":"Principal Solutions Consultant","url":"https://cashio.us/","sameAs":["https://www.linkedin.com/in/dougcashio/","https://github.com/jamescashio","https://www.credly.com/users/james-cashio/badges"],"address":{"@type":"PostalAddress","addressLocality":"Pensacola","addressRegion":"FL","addressCountry":"US"},"knowsAbout":["Local AI","AI orchestration","Cybersecurity","MSP channel","Proxmox","Zero Trust"]}
 </script>
@@ -42,10 +42,6 @@ button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer
 
 /* ---------- type ---------- */
 .syne{font-family:var(--display)}
-html[data-face=bricolage]{--display:'Bricolage Grotesque',sans-serif}
-html[data-face=orbitron]{--display:'Orbitron',sans-serif}
-html[data-face=orbitron] h1,html[data-face=orbitron] h2{letter-spacing:-.01em}
-html[data-face=bricolage] h1,html[data-face=bricolage] h2{font-stretch:87%;letter-spacing:-.03em}
 .mono{font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase}
 .kick{font-family:var(--mono);letter-spacing:.18em;text-transform:uppercase;font-size:12px;color:var(--cyan)}
 .kick.gold{color:var(--gold)}
@@ -314,7 +310,6 @@ footer nav{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;font-weight:600;a
     <nav aria-label="Primary"><a href="#work">Selected work</a><a href="#starship">Starship</a><a href="#universe">The universe</a><a href="#evidence">Evidence</a></nav>
     <div class="acts">
       <button class="btn ghost sm hide-m" id="mc-btn" type="button"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>Mission Control <span class="mono" style="font-size:11px;color:var(--muted);letter-spacing:.08em">⌘K</span></button>
-      <button class="btn line sm" id="face-btn" type="button" title="Switch display typeface" aria-label="Switch display typeface"><span class="syne" style="font-weight:800">Aa</span><span class="hide-m mono" id="face-name" style="font-size:10px;letter-spacing:.08em;color:var(--muted)">Unbounded</span></button>
       <button class="btn line sm" id="motion-btn" type="button" aria-pressed="true"><svg class="ic-svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="4" width="4" height="16"/><rect x="15" y="4" width="4" height="16"/></svg><span class="hide-m">Motion on</span></button>
       <a class="btn gold sm" href="#contact">Let’s talk</a>
     </div>
@@ -1064,13 +1059,6 @@ $$('a[href^="https://cashio.us/#"]').forEach(a=>a.addEventListener('click',e=>{ 
 
 /* ---------- 7h. Active nav link ---------- */
 (function(){ const links=$$('.nav nav a'); const map={'#work':'#work','#starship':'#starship','#universe':'#universe','#evidence':'#evidence'}; window.addEventListener('scroll',()=>{ let cur=null; Object.keys(map).forEach(id=>{ const el=$(id); if(el && el.getBoundingClientRect().top<window.innerHeight*.45) cur=id; }); links.forEach(l=>l.style.color= l.getAttribute('href')===cur?'var(--gold)':''); },{passive:true}); })();
-
-/* ---------- 7c. Type switcher (Unbounded · Bricolage · Orbitron) ---------- */
-const FACES=[['unbounded','Unbounded'],['bricolage','Bricolage'],['orbitron','Orbitron']];
-let faceIdx=0; try{ const saved=localStorage.getItem('v38face'); const i=FACES.findIndex(f=>f[0]===saved); if(i>=0) faceIdx=i; }catch(e){}
-function applyFace(){ const f=FACES[faceIdx]; document.documentElement.setAttribute('data-face',f[0]); $('#face-name').textContent=f[1]; try{ localStorage.setItem('v38face',f[0]); }catch(e){} }
-applyFace();
-$('#face-btn').addEventListener('click',()=>{ faceIdx=(faceIdx+1)%FACES.length; applyFace(); toast('Display face: '+FACES[faceIdx][1]); Bit.say('TYPE',`Now set in ${FACES[faceIdx][1]}. Cycle again to compare.`,'think',1500); });
 
 /* ---------- 7d. The fold ---------- */
 $('#fold-btn').addEventListener('click',()=>{ if(window.__fold){ Bit.say('FOLD','Initiating fold. Hold on to something.','alert',2400); window.__fold(); } else Bit.say('FOLD','The fold needs WebGL. This device is showing the still.','think'); });
