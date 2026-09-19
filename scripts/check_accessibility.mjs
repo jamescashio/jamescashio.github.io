@@ -26,13 +26,18 @@ const server = await preview({
   preview: { host: "127.0.0.1", port: 4189, strictPort: true, open: false },
 });
 const reports = [];
+const routes = [
+  { path: "/", name: "home-v38" },
+  { path: "/?runtime=quality", name: "home-v37" },
+  { path: "/cashio.html", name: "cashio" },
+];
 let browser;
 try {
   browser = await chromium.launch({ executablePath, headless: true, chromiumSandbox: true });
   for (const width of [1440, 390, 320]) {
     const context = await browser.newContext({ viewport: { width, height: 1000 }, reducedMotion: "reduce" });
     try {
-      for (const route of ["/", "/cashio.html"]) {
+      for (const { path: route, name } of routes) {
         const page = await context.newPage();
         const errors = [];
         page.on("pageerror", (error) => errors.push(error.message));
@@ -55,6 +60,7 @@ try {
           layout.audibleMedia === 0;
         reports.push({
           route,
+          finalUrl: page.url(),
           width,
           status: response?.status(),
           passed,
@@ -68,7 +74,7 @@ try {
           `${passed ? "PASS" : "FAIL"} ${route} at ${width}px: ${blocking.length} serious/critical accessibility rules, ${errors.length} runtime errors`,
         );
         await page.screenshot({
-          path: path.join(output, `${route === "/" ? "home" : "cashio"}-${width}.png`),
+          path: path.join(output, `${name}-${width}.png`),
           fullPage: true,
         });
         await page.close();
@@ -96,6 +102,6 @@ try {
   );
 }
 assert.ok(
-  reports.length === 6 && reports.every((report) => report.passed),
+  reports.length === routes.length * 3 && reports.every((report) => report.passed),
   "Quality checks failed; inspect artifacts/quality/accessibility.json.",
 );

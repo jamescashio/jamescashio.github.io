@@ -3,7 +3,7 @@ module.exports = {
     collect: {
       startServerCommand: "node node_modules/vite/bin/vite.js preview --host 127.0.0.1 --port 4190 --strictPort",
       startServerReadyPattern: "Local:",
-      url: ["http://127.0.0.1:4190/", "http://127.0.0.1:4190/cashio.html"],
+      url: ["http://127.0.0.1:4190/", "http://127.0.0.1:4190/?runtime=quality", "http://127.0.0.1:4190/cashio.html"],
       numberOfRuns: 3,
       settings: {
         // Keep the configured Linux sandbox: chrome-launcher defaults disable its helper.

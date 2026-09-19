@@ -630,14 +630,15 @@ def main() -> int:
         "python scripts/check_committed_whitespace.py",
         "GH_TOKEN: ${{ github.token }}",
         'test "$(gh api repos/${GITHUB_REPOSITORY}/pages --jq .build_type)" = "workflow"',
-        "actions/configure-pages@v5",
-        "actions/upload-pages-artifact@v5",
         "path: dist",
         "include-hidden-files: true",
-        "actions/deploy-pages@v4",
     ):
         if marker not in pages:
             failures.append(f"Pages workflow is missing {marker!r}")
+
+    for action in ("actions/configure-pages", "actions/upload-pages-artifact", "actions/deploy-pages"):
+        if not re.search(r"uses:\s*" + re.escape(action) + r"@[0-9a-f]{40}(?:\s|$)", pages):
+            failures.append(f"Pages workflow must pin {action} to a full commit digest")
 
     required_source = {
         "src/lib/store.ts": ("gate: false", "audio: DEFAULT_AUDIO_ENABLED", "deck: 0"),

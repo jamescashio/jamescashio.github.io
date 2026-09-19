@@ -19,23 +19,24 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
 
       - name: Set up Python
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
 
       - name: Set up pinned Chrome
-        uses: browser-actions/setup-chrome@v2
+        uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # v2.2.0
         id: setup_chrome
         with:
           chrome-version: 147.0.7727.57
@@ -50,6 +51,13 @@ jobs:
         id: install
         continue-on-error: true
         run: npm ci
+
+      - name: Check workflow security
+        id: workflow_security
+        continue-on-error: true
+        run: |
+          python -m pip install --disable-pip-version-check --no-deps --require-hashes -r requirements-workflow-security.txt
+          npm run check:workflow-security
 
       - name: Lint maintained source
         id: lint
@@ -146,7 +154,7 @@ jobs:
 
       - name: Upload safety report
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: public-safety-report
           path: public-safety-report.txt
@@ -155,7 +163,7 @@ jobs:
 
       - name: Upload local quality reports
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: website-quality-report
           path: artifacts/quality/
@@ -163,5 +171,5 @@ jobs:
           retention-days: 14
 
       - name: Enforce validation results
-        if: steps.accessibility_quality.outcome != 'success' || steps.lighthouse_quality.outcome != 'success' || steps.install.outcome != 'success' || steps.lint.outcome != 'success' || steps.format.outcome != 'success' || steps.node_tests.outcome != 'success' || steps.odyssey_tests.outcome != 'success' || steps.build.outcome != 'success' || steps.artifact_tests.outcome != 'success' || steps.layout_runtime.outcome != 'success' || steps.v36_runtime.outcome != 'success' || steps.release_tests.outcome != 'success' || steps.safety_scan.outcome != 'success' || steps.release_consistency.outcome != 'success' || steps.python_syntax.outcome != 'success' || steps.whitespace.outcome != 'success'
+        if: steps.workflow_security.outcome != 'success' || steps.accessibility_quality.outcome != 'success' || steps.lighthouse_quality.outcome != 'success' || steps.install.outcome != 'success' || steps.lint.outcome != 'success' || steps.format.outcome != 'success' || steps.node_tests.outcome != 'success' || steps.odyssey_tests.outcome != 'success' || steps.build.outcome != 'success' || steps.artifact_tests.outcome != 'success' || steps.layout_runtime.outcome != 'success' || steps.v36_runtime.outcome != 'success' || steps.release_tests.outcome != 'success' || steps.safety_scan.outcome != 'success' || steps.release_consistency.outcome != 'success' || steps.python_syntax.outcome != 'success' || steps.whitespace.outcome != 'success'
         run: exit 1

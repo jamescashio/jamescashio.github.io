@@ -555,14 +555,14 @@ test("release checklist separates the fresh fleet export from routing provenance
 test("Pages refuses artifact upload unless GitHub Actions owns the Pages source after every release gate", async () => {
   const packageJson = JSON.parse(await read("package.json"));
   const workflow = await read(".github/workflows/pages.yml");
-  assert.match(workflow, /node-version:\s*22/);
+  assert.match(workflow, /node-version:\s*24/);
   assert.match(workflow, /python-version:\s*["']3\.12["']/);
   assert.match(workflow, /fetch-depth:\s*0/);
   assert.equal(
     packageJson.scripts["check:layout:runtime:pinned"],
     "node scripts/check_layout_runtime.mjs --expected-browser-major=147",
   );
-  assert.match(workflow, /browser-actions\/setup-chrome@v2/);
+  assert.match(workflow, /browser-actions\/setup-chrome@[0-9a-f]{40} # v2/);
   assert.match(workflow, /chrome-version:\s*["']?147\.0\.7727\.57["']?/);
   assert.match(workflow, /CHROME_PATH:\s*\$\{\{\s*steps\.setup_chrome\.outputs\.chrome-path\s*\}\}/);
   assert.match(workflow, /npm run check:layout:runtime:pinned/);
@@ -583,9 +583,9 @@ test("Pages refuses artifact upload unless GitHub Actions owns the Pages source 
       : "least-sufficient job permissions",
     workflow.includes("GH_TOKEN: ${{ github.token }}") ? null : "job token",
     workflow.includes(workflowOnlySourceGuard) ? null : "workflow-only Pages source guard",
-    workflow.includes("actions/configure-pages@v5") ? null : "configure-pages v5",
-    workflow.includes("actions/upload-pages-artifact@v5") ? null : "upload-pages-artifact v5",
-    /actions\/upload-pages-artifact@v5[\s\S]{0,280}include-hidden-files:\s*true/.test(workflow)
+    /actions\/configure-pages@[0-9a-f]{40} # v6/.test(workflow) ? null : "configure-pages v6 pinned commit",
+    /actions\/upload-pages-artifact@[0-9a-f]{40} # v5/.test(workflow) ? null : "upload-pages-artifact v5",
+    /actions\/upload-pages-artifact@[0-9a-f]{40} # v5[\s\S]{0,280}include-hidden-files:\s*true/.test(workflow)
       ? null
       : "hidden Pages artifact inclusion",
   ].filter(Boolean);
@@ -594,15 +594,15 @@ test("Pages refuses artifact upload unless GitHub Actions owns the Pages source 
   assert.doesNotMatch(workflow, /jekyll/i);
   assertOrdered(
     workflow,
-    [...requiredPagesCommands, workflowOnlySourceGuard, "actions/configure-pages@v5"],
-    "actions/upload-pages-artifact@v5",
+    [...requiredPagesCommands, workflowOnlySourceGuard, "actions/configure-pages@"],
+    "actions/upload-pages-artifact@",
     "Pages",
   );
 });
 
 test("Public Site Safety preserves report upload and enforcement after every gate", async () => {
   const workflow = await read(".github/workflows/public-safety.yml");
-  assert.match(workflow, /node-version:\s*22/);
+  assert.match(workflow, /node-version:\s*24/);
   assert.match(workflow, /python-version:\s*["']3\.12["']/);
   assert.match(workflow, /fetch-depth:\s*0/);
   assertOrdered(workflow, requiredPagesCommands, "Upload safety report", "Public Site Safety");
@@ -615,6 +615,7 @@ test("Public Site Safety preserves report upload and enforcement after every gat
   const enforcementBlock = workflow.slice(enforcement);
   for (const step of [
     "install",
+    "workflow_security",
     "lint",
     "format",
     "node_tests",
@@ -637,7 +638,7 @@ test("tag publication derives V37 from software metadata and validates one built
   const workflow = await read(".github/workflows/release.yml");
   assert.match(workflow, /require\('\.\/package\.json'\)\.version\.split\('\.'\)\[0\]/);
   assert.doesNotMatch(workflow, /EXPECTED_TAG[^\n]*status\.json/);
-  assert.match(workflow, /node-version:\s*22/);
-  assertOrdered(workflow, requiredWorkflowCommands, "softprops/action-gh-release@v3", "GitHub Release");
+  assert.match(workflow, /node-version:\s*24/);
+  assertOrdered(workflow, requiredWorkflowCommands, "gh release create", "GitHub Release");
   assert.equal((workflow.match(/run: npm run build/g) ?? []).length, 1);
 });
