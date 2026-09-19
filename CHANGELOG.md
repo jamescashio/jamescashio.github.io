@@ -1,5 +1,12 @@
 # Changelog
 
+## V38 — Helios
+
+- Publish the V38 Helios homepage at `/v38/` as a standalone single file page: WebGL ignition ring, GSAP and Lenis motion, Bit the co-pilot, the seven study switchboard with the routing instrument, the system atlas with DSH beside HERMES, the starship request schematic, the flight heritage hangar, and E.V.E. with fleet, kernel, backups, atlas, dsh, hermes, routes, archive and cost.
+- Make `/v38/` the front door: a plain visit to the root moves there from the legacy route script. Fragments and queries keep the V37.17 experience at the root, so every 3D scene deep link and `/?v=37.17` still work.
+- Ship `public/v38/status.json`, the September 18, 2026 read only observation collected through the DeepSeek Harness: 20 LXC guests (Zeus 15, Apollo 5), 1 QEMU guest, Proxmox 9.2.20, quorate, routing withheld as unknown.
+- Vendor gsap 3.15.0, lenis 1.3.25 and three 0.185.1 under `public/v38/vendor/` for the same origin script policy; the public repository guard exempts those files from the email domain rule so their license banners stay intact. Commit `d64249a` (#130).
+
 ## V37.17 — Continuum
 
 - Polish the first minute: introduce local AI and security work, a short exploration path, an explicit routing consequence, and the shipped interface without an extra disclosure.
