@@ -780,8 +780,9 @@ class V34ReleaseContractTests(unittest.TestCase):
 
     def test_pages_workflow_and_root_base_are_locked(self) -> None:
         workflow = read(".github/workflows/pages.yml")
-        for marker in ("npm ci", "npm run build", "path: dist", "actions/deploy-pages@v4"):
+        for marker in ("npm ci", "npm run build", "path: dist"):
             self.assertIn(marker, workflow)
+        self.assertRegex(workflow, r"uses:\s*actions/deploy-pages@[0-9a-f]{40}(?:\s|$)")
         vite = read("vite.config.ts")
         match = re.search(r"\bbase\s*:\s*([^,\n]+)", vite)
         if match:

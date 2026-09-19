@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 import stat
 import subprocess
@@ -547,6 +548,22 @@ class PublicRepoGuardTests(unittest.TestCase):
         private = public_repo_guard.scan_text(Path("src/example.ts"), f"http://{PRIVATE_ADDRESS}")
         self.assertNotIn("private network address", loopback)
         self.assertIn("private network address", private)
+
+
+class NpmMaintainerMetadataTests(unittest.TestCase):
+    def test_known_public_maintainer_is_allowed_only_in_dependency_notice(self):
+        address = "i" + "@" + "izs.me"
+        lock = {"packages": {"node_modules/glob": {"deprecated": "Contact " + address}}}
+        self.assertEqual(public_repo_guard.scan_text(Path("package-lock.json"), json.dumps(lock)), [])
+        self.assertTrue(public_repo_guard.scan_text(Path("other.json"), json.dumps(lock)))
+        lock["email"] = address
+        self.assertTrue(public_repo_guard.scan_text(Path("package-lock.json"), json.dumps(lock)))
+
+    def test_dependency_notices_still_fail_for_private_data(self):
+        lock = {"packages": {"node_modules/glob": {"deprecated": PRIVATE_ADDRESS}}}
+        self.assertIn("private network address", public_repo_guard.scan_text(Path("package-lock.json"), json.dumps(lock)))
+        lock["packages"]["node_modules/glob"]["deprecated"] = "person" + "@" + "example.test"
+        self.assertTrue(public_repo_guard.scan_text(Path("package-lock.json"), json.dumps(lock)))
 
 
 if __name__ == "__main__":

@@ -156,7 +156,7 @@ section,footer,.thesis{position:relative;z-index:1}
 @media (max-width:600px){.studies-list{grid-template-columns:1fr}}
 .study{position:relative;overflow:hidden;border-radius:18px;border:1px solid var(--line2);background:rgba(10,18,32,.7);padding:24px;display:flex;flex-direction:column;justify-content:space-between;gap:20px;min-height:150px;text-align:left;color:var(--ink);transition:border-color .2s,transform .25s cubic-bezier(.2,.8,.2,1)}
 .study:hover{border-color:rgba(56,225,255,.5);transform:translateY(-3px)}
-.study[aria-pressed="true"]{border-color:var(--cyan);box-shadow:inset 0 0 0 1px var(--cyan),0 20px 60px rgba(56,225,255,.12)}
+.study[aria-selected="true"]{border-color:var(--cyan);box-shadow:inset 0 0 0 1px var(--cyan),0 20px 60px rgba(56,225,255,.12)}
 .study .glyph{position:absolute;right:-10px;bottom:-14px;width:120px;height:120px;opacity:.12;pointer-events:none}
 .instrument{padding:clamp(22px,2.6vw,36px);display:flex;flex-direction:column;gap:22px;position:relative;overflow:hidden;min-height:100%}
 .instrument .ctrl{display:grid;grid-template-columns:300px 1fr;gap:28px}
@@ -287,6 +287,13 @@ footer nav{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;font-weight:600;a
 .vh-menu a{padding:10px 12px;border-radius:8px;color:var(--ink);font-weight:500}
 .vh-menu a:hover{background:rgba(56,225,255,.08);color:var(--gold)}
 
+
+/* Keep study details and dated evidence readable on narrow screens. */
+.takeaway{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr)}
+#ev-chart{grid-template-columns:104px repeat(3,minmax(0,1fr));gap:10px 14px}
+#ev-chart > *{min-width:0;overflow-wrap:anywhere}
+@media (max-width:600px){.takeaway{grid-template-columns:minmax(0,1fr)}#ev-chart{grid-template-columns:70px repeat(3,minmax(0,1fr));gap:10px 6px}#ev-chart .mono{letter-spacing:.05em}}
+
 /* motion resting states: CSS keeps everything visible; GSAP animates toward these */
 [data-rise]{opacity:1;transform:none}
 </style>
@@ -310,7 +317,7 @@ footer nav{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;font-weight:600;a
     <nav aria-label="Primary"><a href="#work">Selected work</a><a href="#starship">Starship</a><a href="#universe">The universe</a><a href="#evidence">Evidence</a></nav>
     <div class="acts">
       <button class="btn ghost sm hide-m" id="mc-btn" type="button"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>Mission Control <span class="mono" style="font-size:11px;color:var(--muted);letter-spacing:.08em">⌘K</span></button>
-      <button class="btn line sm" id="motion-btn" type="button" aria-pressed="true"><svg class="ic-svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="4" width="4" height="16"/><rect x="15" y="4" width="4" height="16"/></svg><span class="hide-m">Motion on</span></button>
+      <button class="btn line sm" id="motion-btn" type="button" aria-label="Motion" aria-pressed="true"><svg class="ic-svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="4" width="4" height="16"/><rect x="15" y="4" width="4" height="16"/></svg><span class="hide-m">Motion on</span></button>
       <a class="btn gold sm" href="#contact">Let’s talk</a>
     </div>
   </div>
@@ -351,7 +358,7 @@ footer nav{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;font-weight:600;a
 <!-- ================= THESIS ================= -->
 <section class="block thesis" aria-label="Thesis" style="padding-block:clamp(48px,6vw,80px)">
   <div class="wrap grid" style="align-items:center">
-    <div class="c5 lines" data-split><span>Own the infrastructure.</span><span>Make the reasoning visible.</span><span class="cy">Keep a human in command.</span></div>
+    <div class="c5 lines" role="group" data-split><span>Own the infrastructure.</span><span>Make the reasoning visible.</span><span class="cy">Keep a human in command.</span></div>
     <div class="c7" style="display:flex;flex-direction:column;gap:16px">
       <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap"><span class="kick gold">YOUR FIRST MINUTE</span><span class="muted">See it. Change it. Understand it.</span></div>
       <div class="minute" data-stagger>
@@ -420,7 +427,7 @@ footer nav{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;font-weight:600;a
     </div>
     <div class="grid">
       <div class="c5 studies-list" id="studies-list" role="tablist" aria-label="Studies" data-stagger></div>
-      <div class="panel c7 instrument" id="instrument" role="tabpanel">
+      <div class="panel c7 instrument" id="instrument" role="tabpanel" aria-labelledby="study-0" tabindex="0">
         <svg class="ring-progress" viewBox="0 0 84 84" aria-hidden="true"><circle class="bg" cx="42" cy="42" r="36"/><circle class="fg" id="ringfg" cx="42" cy="42" r="36"/><text x="42" y="43" id="ringtxt">00/05</text></svg>
         <div>
           <span class="mono" style="font-size:11px;color:var(--muted)">STUDY <span id="st-n">01</span> / OF 07</span>
@@ -445,7 +452,7 @@ footer nav{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;font-weight:600;a
             <p class="muted" id="st-detail" style="margin:4px 0 0;font-size:14px">Choose a task and its boundaries, then run the five-step demonstration. No request leaves this page.</p>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:20px;padding-top:16px;border-top:1px solid var(--line2)" class="takeaway">
+        <div style="display:grid;gap:20px;padding-top:16px;border-top:1px solid var(--line2)" class="takeaway">
           <div style="display:flex;flex-direction:column;gap:6px"><span class="mono" style="font-size:10px;color:var(--muted)">THE TAKEAWAY</span><strong style="font-size:16px" id="st-take">Give each request the route it needs.</strong><span class="muted" id="st-takebody" style="font-size:13px">Routine work gets a general lane. Evidence requirements change the route. Private information puts a person in the decision. This is the policy behind the cost-control idea.</span><a href="https://github.com/jamescashio/jamescashio.github.io/blob/main/src/odyssey/data.ts" style="font-size:13px;font-weight:600">Inspect routeExample in the released model ↗</a><button class="btn line sm" type="button" id="copy-settings" style="align-self:flex-start">Copy these settings</button></div>
           <div class="soft" style="padding:16px;display:flex;flex-direction:column;gap:8px">
             <strong style="font-size:14px">How this experiment works</strong>
@@ -670,7 +677,7 @@ footer nav{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;font-weight:600;a
         <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><span class="kick gold">READ-ONLY OBSERVATIONS / THREE DATED RECORDS</span><span class="mono" style="font-size:10px;color:var(--muted)">HOW EACH RECORD CHANGED THIS PAGE</span></div>
         <h3>Three records. Three rules.</h3>
         <p class="muted" style="margin:0;font-size:14px">The question was simple: what is running, and what can this page prove? Three owner-run, read-only observations answer it: August 28, 2026 (archived export), September 7, 2026 (HERMES audit) and September 18, 2026 (DeepSeek Harness, direct reads on both nodes). The archived routing inventory has its own date: August 21, 2026.</p>
-        <div style="display:grid;grid-template-columns:104px 1fr 1fr 1fr;gap:10px 14px;align-items:center" id="ev-chart">
+        <div style="display:grid;align-items:center" id="ev-chart">
           <span class="mono" style="font-size:10px;color:var(--muted)">Record</span><span class="mono" style="font-size:10px;color:var(--muted)">Archive · <span data-fleet="archive.fleetShort">Aug 28</span></span><span class="mono" style="font-size:10px;color:var(--muted)">Audit · <span data-fleet="prior.fleetShort">Sep 7</span></span><span class="mono" style="font-size:10px;color:var(--cyan)">Latest · <span data-fleet="observedShort">Sep 18</span></span>
           <strong style="font-size:14px">LXC running</strong>
           <div style="display:flex;align-items:center;gap:8px"><div class="barwrap" style="flex:1"><div class="bar" data-w=".9" style="background:rgba(154,169,191,.35)"></div></div><span class="num" style="font-size:18px;width:30px" data-fleet="archive.lxc">18</span></div>
@@ -731,7 +738,7 @@ footer nav{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;font-weight:600;a
       <span class="mono" style="font-size:11px;color:var(--muted)">THE DISCIPLINE BEHIND THE DESIGN</span>
       <h2 id="he-h" data-split>Built with a<br>test pilot’s mind.</h2>
       <p class="lede">The future rewards imagination. Flight teaches you to prove it.</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap" id="pilots" role="tablist" aria-label="Flight test pioneers" data-stagger><button class="pill" type="button" data-pilot="yeager" aria-pressed="true" style="min-height:40px;font-size:13px">Yeager</button><button class="pill" type="button" data-pilot="johnson" aria-pressed="false" style="min-height:40px;font-size:13px">Johnson</button><button class="pill" type="button" data-pilot="rutan" aria-pressed="false" style="min-height:40px;font-size:13px">Rutan</button><button class="pill" type="button" data-pilot="hoover" aria-pressed="false" style="min-height:40px;font-size:13px">Hoover</button></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="pilots" role="group" aria-label="Flight test pioneers" data-stagger><button class="pill" type="button" data-pilot="yeager" aria-pressed="true" style="min-height:40px;font-size:13px">Yeager</button><button class="pill" type="button" data-pilot="johnson" aria-pressed="false" style="min-height:40px;font-size:13px">Johnson</button><button class="pill" type="button" data-pilot="rutan" aria-pressed="false" style="min-height:40px;font-size:13px">Rutan</button><button class="pill" type="button" data-pilot="hoover" aria-pressed="false" style="min-height:40px;font-size:13px">Hoover</button></div>
       <div class="soft" id="hg-card" style="padding:20px 24px;display:flex;flex-direction:column;gap:8px" aria-live="polite"><span class="mono" id="hg-kick" style="font-size:10px;color:var(--cyan)">CHUCK YEAGER · BELL X-1 · OCTOBER 14, 1947</span><span class="syne" id="hg-head" style="font-size:20px;font-weight:700">Fly the card. Report what the machine did.</span><p class="muted" id="hg-body" style="margin:0;font-size:14px">The first supersonic flight was a test card flown to the letter and a report that said exactly what happened, cracked ribs and all. Doug Cashio applies the same discipline: run the check, record the result, and never let the story get ahead of the data.</p><span class="mono" style="font-size:10px;color:var(--muted)">A working principle inspired by this lineage, not a historical quotation.</span></div>
     </div>
   </div>
@@ -809,6 +816,9 @@ const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let motionOn = !reduced;
 const hasGsap = typeof gsap !== 'undefined';
+$('#motion-btn').setAttribute('aria-pressed',String(motionOn));
+$('#motion-btn span').textContent=motionOn?'Motion on':'Motion off';
+document.documentElement.classList.toggle('motion-off',!motionOn);
 
 function toast(msg){ const t=$('#toast'); t.textContent=msg; t.style.opacity=1; t.style.transform='translate(-50%,0)'; clearTimeout(toast.t); toast.t=setTimeout(()=>{t.style.opacity=0;t.style.transform='translate(-50%,20px)';},1800); }
 function copy(text, msg){ (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(()=>toast(msg||'Copied')).catch(()=>{ prompt('Copy this', text); }); }
@@ -843,12 +853,12 @@ const GLYPHS = ['M12 2l3 7h7l-5.5 4.5 2 7.5L12 16.5 5.5 21l2-7.5L2 9h7z','M4 4h1
 const st = { i:0, intent:'draft', priv:false, src:false };
 function renderStudies(){
   const list = $('#studies-list');
-  list.innerHTML = STUDIES.map((s,i)=>`<button class="study" type="button" role="tab" data-study="${i}" aria-pressed="${i===st.i}" aria-selected="${i===st.i}"><div style="display:flex;justify-content:space-between;align-items:center"><span class="mono" style="font-size:11px;color:var(--gold)">${s.n}</span><span class="cy">◇</span></div><div style="display:flex;flex-direction:column;gap:4px"><span class="syne" style="font-size:20px;font-weight:700">${s.name}</span><span class="mono" style="font-size:10px;color:var(--muted)">${s.cat}</span></div><svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="#38E1FF" stroke-width="1.2"><path d="${GLYPHS[i]}"/></svg></button>`).join('');
+  list.innerHTML = STUDIES.map((s,i)=>`<button class="study" type="button" role="tab" id="study-${i}" data-study="${i}" aria-controls="instrument" tabindex="${i===st.i?0:-1}" aria-selected="${i===st.i}"><div style="display:flex;justify-content:space-between;align-items:center"><span class="mono" style="font-size:11px;color:var(--gold)">${s.n}</span><span class="cy">◇</span></div><div style="display:flex;flex-direction:column;gap:4px"><span class="syne" style="font-size:20px;font-weight:700">${s.name}</span><span class="mono" style="font-size:10px;color:var(--muted)">${s.cat}</span></div><svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="#38E1FF" stroke-width="1.2"><path d="${GLYPHS[i]}"/></svg></button>`).join('');
   list.addEventListener('click', e=>{ const b=e.target.closest('[data-study]'); if(!b) return; selectStudy(+b.dataset.study); });
 }
 function selectStudy(i){
-  st.i = i; const s = STUDIES[i];
-  $$('#studies-list [data-study]').forEach(b=>{ const on=+b.dataset.study===i; b.setAttribute('aria-pressed',on); b.setAttribute('aria-selected',on); });
+  st.i = i; const s = STUDIES[i]; $('#instrument').setAttribute('aria-labelledby', 'study-'+i);
+  $$('#studies-list [data-study]').forEach(b=>{ const on=+b.dataset.study===i; b.setAttribute('aria-selected',on); b.tabIndex=on?0:-1; });
   $('#st-n').textContent=s.n; $('#st-name').textContent=s.name; $('#st-sub').textContent=s.sub; $('#st-cue').textContent=s.cue;
   $('#st-take').textContent=s.take; $('#st-takebody').textContent=s.takebody; $('#st-q').textContent=s.q; $('#st-rule').textContent=s.rule; $('#st-try').textContent=s.tr; $('#st-bound').textContent=s.bound;
   const nx = STUDIES[(i+1)%7]; $('#st-nextname').textContent=nx.name; $('#st-nextq').textContent=s.nextq;
@@ -878,6 +888,7 @@ $('#st-next').addEventListener('click', ()=>selectStudy((st.i+1)%7));
 $('#copy-settings').addEventListener('click', ()=>copy(`https://cashio.us/#build=hermes&intent=${st.intent}&private=${st.priv?1:0}&sources=${st.src?1:0}`, 'Settings link copied'));
 $$('[data-load]').forEach(a=>a.addEventListener('click', ()=>{ const priv=a.dataset.load==='private'; st.intent='analyze'; st.src=true; st.priv=priv; press($('#intent-group'),'data-intent','analyze'); $('#tg-sources').setAttribute('aria-pressed','true'); $('#tg-private').setAttribute('aria-pressed',String(priv)); selectStudy(0); renderRoute(false); setTimeout(()=>$('#route-btn').focus(),600); }));
 renderStudies(); renderRoute(false);
+$('#studies-list').addEventListener('keydown',e=>{ const tab=e.target.closest('[data-study]'); if(!tab) return; let next=+tab.dataset.study; if(e.key==='Home') next=0; else if(e.key==='End') next=STUDIES.length-1; else if(['ArrowRight','ArrowDown'].includes(e.key)) next=(next+1)%STUDIES.length; else if(['ArrowLeft','ArrowUp'].includes(e.key)) next=(next+STUDIES.length-1)%STUDIES.length; else return; e.preventDefault(); selectStudy(next); $('#study-'+next).focus(); });
 
 /* ---------- 2. Privacy test ---------- */
 const pv={pick:null};

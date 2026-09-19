@@ -18,18 +18,19 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout release tag
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: 22
-          cache: npm
+          node-version: 24
+          package-manager-cache: false
 
       - name: Set up Python
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
 
@@ -82,10 +83,15 @@ jobs:
           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
 
       - name: Publish GitHub Release
-        uses: softprops/action-gh-release@v3
-        with:
-          name: ${{ github.ref_name }} — ZeusApollo Sovereign AI Infrastructure
-          body_path: RELEASE_BODY.md
-          draft: false
-          prerelease: false
-          make_latest: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          RELEASE_TITLE="$GITHUB_REF_NAME — ZeusApollo Sovereign AI Infrastructure"
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release edit "$GITHUB_REF_NAME" --title "$RELEASE_TITLE" \
+              --notes-file RELEASE_BODY.md --draft=false --prerelease=false --latest
+          else
+            gh release create "$GITHUB_REF_NAME" --verify-tag --title "$RELEASE_TITLE" \
+              --notes-file RELEASE_BODY.md --latest
+          fi

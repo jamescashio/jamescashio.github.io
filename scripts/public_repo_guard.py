@@ -594,9 +594,27 @@ def scan_text(relative: Path, text: str) -> list[str]:
         if pattern.search(text):
             findings.append(label)
 
+    email_text = text
+    if relative.as_posix() == "package-lock.json":
+        try:
+            lock = json.loads(text)
+            packages = lock.get("packages", {})
+            if isinstance(packages, dict):
+                for name, metadata in packages.items():
+                    if not name.startswith("node_modules/") or not isinstance(metadata, dict):
+                        continue
+                    notice = metadata.get("deprecated")
+                    if isinstance(notice, str):
+                        # Public npm maintainer contact in registry deprecation metadata.
+                        # All secret/private-address checks above still inspect the original.
+                        public_contact = "@".join(("i", "izs.me"))
+                        metadata["deprecated"] = notice.replace(public_contact, "[public npm maintainer]")
+                email_text = json.dumps(lock)
+        except (ValueError, AttributeError):
+            pass
     is_vendor = relative.as_posix().startswith(VENDOR_DIRS)
     if not is_vendor:
-        for match in EMAIL.finditer(text):
+        for match in EMAIL.finditer(email_text):
             domain = match.group(1).lower()
             if domain not in ALLOWED_EMAIL_DOMAINS:
                 findings.append(f"non-approved email domain: {domain}")
