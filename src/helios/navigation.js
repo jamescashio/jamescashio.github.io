@@ -6,6 +6,8 @@ export function setupNavigation({ studies, select, mission, motion, toast }) {
   const dialog = document.querySelector("#mc");
   const search = document.querySelector("#mc-search");
   const list = document.querySelector("#mc-list");
+  const shortcut = document.querySelector("#mc-btn .mono");
+  shortcut.textContent = /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘K" : "Ctrl K";
   let previousFocus = null;
   let navigating = false;
   let flight = null;

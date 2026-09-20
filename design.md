@@ -1,3 +1,11 @@
+# V38.3 journey refinement — 09-20-2026
+
+A precision orbital workshop with a clearer path from wonder to action. Preserve the original navy, gold and cyan world, artwork, Bit, three dimensional instruments and locally hosted type families. Improve how the visitor chooses, understands and continues.
+
+Give every study a readable title and purpose. A compact horizontal study deck on small screens brings the controls into view sooner while retaining all seven tabs, keyboard navigation and shared settings. Let the first-minute cards open their destinations. Complete the desktop chapter rail with visible labels on hover and focus, including Principles and Flight Heritage. Make mission presets visibly selected only when their exact settings match, and show the actual count changes from the visitor's previous settings. Turn each principle into a link to its working study or dated evidence. Motion follows these decisions, stays finite, and respects the established quiet and reduced-motion controls.
+
+No new dependency, font or external asset. Keep every model and observation date. Test responsive layouts, strip keyboard behavior, preset/custom state, truthful before-and-after counts, deep links and repeated animation actions. A repeatable legacy first-frame failure also requires an explicit render after the host reveals a paused canvas; preserve static mode and offscreen suspension. The owner explicitly requested this polish and public release. Baseline and rollback: 5f336f9e56b9dc30f9d989db620503b8605486a6.
+
 # V38.2 instrument refinement — 09-20-2026
 
 A precision orbital instrument bay: sculpted dark metal, a faceted gold core, cyan energy paths, and deliberate motion that makes a decision legible.

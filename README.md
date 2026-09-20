@@ -1,10 +1,10 @@
-# cAshIo V38.2 — Helios
+# cAshIo V38.3 — Helios
 
 The public front door is `/v38/`: the original orbital artwork, typefaces and Bit with a direct integrated flight, seven working studies, responsive navigation, complete motion-off content and a working House Cashio signature. V38 is built from `v38/index.html` and `src/helios/`, reusing the maintained teaching models and flight components.
 
-V38.2 gives the system atlas sculpted node emblems and a finite request trace, the twelve-request flow a dimensional ship and relay, and the principles instrument a lazy-loaded 3D armillary with a complete vector fallback. Headlines have a more open rhythm; small labels and reading text are larger. All scenes honor motion controls and pause offscreen.
+V38.3 makes the orbital workshop easier to explore: readable study cards become a compact swipeable deck on phones, the first-minute cards open their destinations, and the chapter rail includes labeled links for every section. Mission presets show their exact selected or custom state and explain changes in request counts. Each principle leads to its working study or dated evidence. The existing sculpted atlas, ship and relay, 3D armillary, original artwork and self-hosted fonts stay intact. Motion remains quiet, optional and bounded.
 
-The release receipt is `/v38/site-release.json`. `/` redirects plain visits to V38; legacy fragments and query links retain the V37.17 experience. The shared package and compatibility receipts keep that historical version; their `frontDoor` record points to V38.2. Interface revisions do not renew evidence observations. See [Helios validation and rollback](docs/helios-release.md).
+The release receipt is `/v38/site-release.json`. `/` redirects plain visits to V38; legacy fragments and query links retain the V37.17 experience. The shared package and compatibility receipts keep that historical version; their `frontDoor` record points to V38.3. Interface revisions do not renew evidence observations. See [Helios validation and rollback](docs/helios-release.md).
 
 ## Preserved V37.17 compatibility experience
 

@@ -683,7 +683,8 @@ async function run() {
       const pixels=context.getImageData(0,0,64,32).data;
       let minimum=255,maximum=0,bright=0,colors=new Set();
       for(let i=0;i<pixels.length;i+=4){const level=Math.max(pixels[i],pixels[i+1],pixels[i+2]);minimum=Math.min(minimum,level);maximum=Math.max(maximum,level);if(level>80)bright++;colors.add([pixels[i]>>3,pixels[i+1]>>3,pixels[i+2]>>3].join(','));}
-      return {minimum,maximum,bright,samples:pixels.length/4,colors:colors.size,posterAbsent:!document.querySelector('.sw-world-fallback'),canvasVisible:getComputedStyle(document.querySelector('.sw-world-canvas')).visibility==='visible'};
+      const canvas=document.querySelector('.sw-world-canvas');
+      return {minimum,maximum,bright,samples:pixels.length/4,colors:colors.size,posterAbsent:!document.querySelector('.sw-world-fallback'),canvasVisible:getComputedStyle(canvas).visibility==='visible',frames:canvas.dataset.shipFrameCount,drawCalls:canvas.dataset.shipDrawCalls,triangles:canvas.dataset.shipTriangles,pixels:canvas.dataset.shipPixels,canvasRect:canvas.getBoundingClientRect().toJSON()};
     })()`);
       assert.ok(paint.posterAbsent && paint.canvasVisible, "paint must come from the live canvas, not its poster");
       assert.ok(

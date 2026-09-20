@@ -15,6 +15,8 @@ import {
 type Outcome = ReturnType<typeof computeWorldOutcome>;
 export type ShipView = "hero" | "top" | "aft";
 export type WorldController = {
+  /** Request a settled frame after the host reveals or moves the canvas. */
+  refresh: () => void;
   update: (input: WorldInput, outcome: Outcome) => void;
   setMotion: (enabled: boolean) => void;
   setPlaying: (playing: boolean) => void;
@@ -451,6 +453,17 @@ export function createSovereignWorld(
     if (frame) cancelAnimationFrame(frame);
     frame = 0;
     last = 0;
+    // Observer deliveries can describe the canvas before its host has revealed it
+    // or completed an anchor jump. Resolve visibility from the current layout.
+    const bounds = canvas.getBoundingClientRect();
+    visible =
+      bounds.width > 0 &&
+      bounds.height > 0 &&
+      bounds.bottom > 0 &&
+      bounds.top < innerHeight &&
+      bounds.right > 0 &&
+      bounds.left < innerWidth &&
+      getComputedStyle(canvas).visibility !== "hidden";
     if (!disposed && visible && !document.hidden) frame = requestAnimationFrame(tick);
   };
   const changeView = (name: ShipView) => {
@@ -531,17 +544,7 @@ export function createSovereignWorld(
       changeFlightShot(activeFlightShot);
     render();
   });
-  const intersection = new IntersectionObserver(
-    (entries) => {
-      // Smooth scrolling can queue both exit and re-entry in one delivery.
-      // The final entry represents the canvas's current visibility.
-      const entry = entries[entries.length - 1];
-      if (!entry) return;
-      visible = entry.isIntersecting;
-      render();
-    },
-    { threshold: 0.01 },
-  );
+  const intersection = new IntersectionObserver(render, { threshold: 0.01 });
   resize.observe(canvas);
   intersection.observe(canvas);
   const down = (event: PointerEvent) => {
@@ -620,6 +623,7 @@ export function createSovereignWorld(
   document.addEventListener("visibilitychange", render);
   renderer.shadowMap.needsUpdate = true;
   return {
+    refresh: render,
     update(_next, nextOutcome) {
       outcome = nextOutcome;
       applyOutcome();

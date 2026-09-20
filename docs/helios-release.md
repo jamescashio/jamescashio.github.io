@@ -1,4 +1,10 @@
-# V38.2 Helios release
+# V38.3 Helios release
+
+The 09-20-2026 continuation refines the visitor journey. Seven studies have readable purpose statements and a horizontal selector on narrow screens, bringing their controls closer to the heading. Keyboard selection reveals the active card without moving the page. First-minute cards are actionable links. The desktop chapter rail includes Principles and Flight Heritage, with readable labels on hover and focus. Mission Control shows the appropriate platform shortcut.
+
+The flight-plan presets reflect exact model settings; a modified plan is labeled custom. A compact comparison reports the actual local, cloud and held counts before and after the latest setting change. Reapplying the same settings or toggling animation does not erase that comparison. Each design principle links to the related working study or dated evidence. The HERMES progress animation now cancels its previous counter when the visitor starts again or changes inputs. No model, evidence date, dependency, font or external asset changes.
+
+The owner explicitly requested this further polish and public release. Added browser checks cover the mobile selector, preset/custom state and truthful count changes, principle journeys, chapter links and interrupted route animations. The V38.2 graphic improvements below remain in place. The preserved starship also receives an explicit settled-frame request after its host reveals the canvas. Its on-demand renderer resolves current geometry and CSS visibility when scheduling work, so a queued observation from before an anchor jump cannot leave the revealed, paused scene blank. The existing geometry-paint gate is retained and now reports frame and draw diagnostics on failure.
 
 The 09-20-2026 refinement deepens three existing instruments and improves typography without changing their models. The atlas has faceted node emblems, responsive route geometry and a restartable eight-second trace. The request flow has a dimensional ship, command core, external relay and an always-visible twelve-request manifest. The principles instrument has a metallic 3D armillary, capped at 30 fps, and a complete authored SVG fallback. Keyboard rotation, reset and principle selection work in either rendering mode. Existing self-hosted fonts gain more open headlines, larger small labels and a clearer reading rhythm.
 
@@ -12,10 +18,10 @@ The owner approved publication on 09-19-2026 and requested a thorough polish pas
 
 ## Identity and release gates
 
-- Public entry: `/v38/`, receipt `/v38/site-release.json`, experience `38.2.0`, release ID `helios-38.2.0-20260920`.
-- Plain-root navigation retains the established V38 redirect. Existing fragments and query links retain V37.17. The shared package and compatibility receipts keep that version, with a matching `frontDoor` reference to V38.2.
+- Public entry: `/v38/`, receipt `/v38/site-release.json`, experience `38.3.0`, release ID `helios-38.3.0-20260920`.
+- Plain-root navigation retains the established V38 redirect. Existing fragments and query links retain V37.17. The shared package and compatibility receipts keep that version, with a matching `frontDoor` reference to V38.3.
 - Evidence remains the inherited September 18, 2026 record for V38 and the corresponding earlier observations for legacy views. No UI test verifies infrastructure or routing health.
-- Rollback baseline: `24234b0fe2cd54910f1fc491c09ab7b2c2efa4f6`. Roll back by reverting this release through the checked pull-request and Pages path, then verify the resulting public artifact.
+- Rollback baseline: `5f336f9e56b9dc30f9d989db620503b8605486a6`. Roll back by reverting this release through the checked pull-request and Pages path, then verify the resulting public artifact.
 
 Build and run lint, formatting, model and artifact tests, Python release tests, public-data and consistency checks, legacy browser checks and `npm run test:helios`. The Helios runner starts and closes a loopback server unless `HELIOS_URL` supplies another target. `CHROME_PATH` selects the workflow's pinned browser. Pages and Public Site Safety run these interactions before accepting a deployment artifact.
 

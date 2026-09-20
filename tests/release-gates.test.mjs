@@ -661,7 +661,7 @@ test("tag publication derives V37 from software metadata and validates one built
 
 test("Helios release identity, signature assets and compatibility receipts agree", async () => {
   const release = JSON.parse(await read("public/v38/site-release.json"));
-  assert.equal(release.experienceVersion, "38.2.0");
+  assert.equal(release.experienceVersion, "38.3.0");
   assert.equal(release.entry, "/v38/");
   assert.equal(release.published, true);
   assert.equal(await read("dist/v38/site-release.json"), await read("public/v38/site-release.json"));
@@ -679,7 +679,7 @@ test("Helios release identity, signature assets and compatibility receipts agree
   const doc = new JSDOM(await read("dist/v38/index.html")).window.document;
   assert.doesNotMatch(doc.querySelector('meta[name="robots"]').content, /noindex|nofollow/);
   assert.doesNotMatch(doc.body.textContent, /Unpublished refinement/);
-  assert.match(doc.body.textContent, /V38\.2 \/ HELIOS/);
+  assert.match(doc.body.textContent, /V38\.3 \/ HELIOS/);
   assert.equal(doc.querySelector("#sig-art").getAttribute("src"), "/v38/assets/celestial.webp");
   assert.equal(
     doc.querySelector('#sigplate a[href="/#signature"]').textContent.trim(),
