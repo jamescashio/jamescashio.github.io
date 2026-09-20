@@ -1,4 +1,14 @@
-# Approved V38.1 Helios release — 09-19-2026
+# V38.2 instrument refinement — 09-20-2026
+
+A precision orbital instrument bay: sculpted dark metal, a faceted gold core, cyan energy paths, and deliberate motion that makes a decision legible.
+
+Refine the three instruments the owner selected: the system atlas, the twelve-request flow and the principles engine. Keep their existing meaning, controls, teaching models and navy/gold/cyan identity. Give the atlas nodes machined depth and a finite, restartable request trace. Give the flow a recognizable dimensional ship, command core and orbital relay; every packet and held indicator must agree with the existing scenario model. Give the principles engine a luminous metal armillary with a real 3D enhancement and a complete authored vector fallback.
+
+Typography is part of this pass: retain Unbounded for the recognizable display voice, use lighter intermediate weights and more open line spacing, keep Instrument Sans for reading and controls, and reserve JetBrains Mono for short instrument labels. Increase small labels, reduce excessive tracking and keep long copy out of all-caps diagram labels. Self-host the existing fonts; add no font requests.
+
+Ambient movement is slow, quiet, capped and paused offscreen or in hidden tabs. Selection and trace feedback are finite. Respect both system reduced motion and the existing Motion control, including preference changes while a scene is open. Keep usable static content without WebGL. No simulated scene implies measured infrastructure health or speed. Preserve the signature, previous experiences and dated evidence. Verify at 1440, 768, 390 and 320px and publish through the same previously authorized release workflow after validation. Baseline and rollback: 24234b0fe2cd54910f1fc491c09ab7b2c2efa4f6.
+
+# Prior release — Approved V38.1 Helios — 09-19-2026
 
 An orbital workshop visitors can operate: the original cAshIo world becomes a clear, responsive journey from curiosity to a consequential decision.
 

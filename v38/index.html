@@ -635,109 +635,64 @@
               <div class="atlas" id="atlas">
                 <svg class="wires" viewBox="0 0 800 640" preserveAspectRatio="none" aria-hidden="true">
                   <defs>
-                    <radialGradient id="glow" cx="50%" cy="50%">
-                      <stop offset="0" stop-color="#38E1FF" stop-opacity=".22" />
-                      <stop offset="1" stop-color="#38E1FF" stop-opacity="0" />
+                    <radialGradient id="atlas-light">
+                      <stop stop-color="#38e1ff" stop-opacity=".16" />
+                      <stop offset="1" stop-color="#38e1ff" stop-opacity="0" />
                     </radialGradient>
+                    <linearGradient id="atlas-metal" x2=".7" y2="1">
+                      <stop stop-color="#7a9ca9" stop-opacity=".6" />
+                      <stop offset=".4" stop-color="#284451" stop-opacity=".2" />
+                      <stop offset=".75" stop-color="#f2c87a" stop-opacity=".35" />
+                      <stop offset="1" stop-color="#38e1ff" stop-opacity=".1" />
+                    </linearGradient>
+                    <filter id="atlas-bloom" x="-100%" y="-100%" width="300%" height="300%">
+                      <feGaussianBlur stdDeviation="4" />
+                    </filter>
                   </defs>
-                  <circle cx="400" cy="320" r="300" fill="url(#glow)" />
-                  <g class="spin" style="transform-origin: 400px 320px">
-                    <circle
-                      cx="400"
-                      cy="320"
-                      r="270"
-                      fill="none"
-                      stroke="rgba(56,225,255,.16)"
-                      stroke-dasharray="3 9"
-                    />
+                  <ellipse cx="400" cy="325" rx="370" ry="300" fill="url(#atlas-light)" />
+                  <g fill="none" stroke="url(#atlas-metal)">
+                    <ellipse cx="400" cy="338" rx="288" ry="263" />
+                    <ellipse cx="400" cy="338" rx="278" ry="253" />
+                    <ellipse cx="400" cy="346" rx="236" ry="194" stroke-dasharray="1 10" />
+                    <ellipse cx="400" cy="367" rx="184" ry="103" />
+                    <ellipse cx="400" cy="373" rx="184" ry="103" opacity=".35" />
+                    <path d="M38 338h34m656 0h34M400 30v26m0 545v24" stroke-width="2" />
                   </g>
-                  <circle cx="400" cy="320" r="190" fill="none" stroke="rgba(242,200,122,.18)" />
-                  <path id="w1" d="M400 96 L400 262" stroke="#38E1FF" stroke-width="2" class="flow" fill="none" />
-                  <path
-                    d="M400 96 L150 300"
-                    stroke="rgba(56,225,255,.45)"
-                    stroke-width="1.5"
-                    stroke-dasharray="6 8"
-                    fill="none"
-                  />
-                  <path
-                    d="M150 300 L340 320"
-                    stroke="rgba(242,200,122,.4)"
-                    stroke-width="1.5"
-                    stroke-dasharray="6 8"
-                    fill="none"
-                  />
-                  <text x="196" y="188" fill="#9AA9BF" font-family="JetBrains Mono" font-size="10" letter-spacing="1.5">
-                    CONSOLE
-                  </text>
-                  <path id="w2" d="M400 378 L226 486" stroke="#F2C87A" stroke-width="2" class="flow gold" fill="none" />
-                  <path id="w3" d="M400 378 L574 486" stroke="#F2C87A" stroke-width="2" class="flow gold" fill="none" />
-                  <path
-                    d="M226 486 Q400 560 574 486"
-                    stroke="rgba(56,225,255,.35)"
-                    stroke-width="1"
-                    stroke-dasharray="4 8"
-                    fill="none"
-                  />
-                  <circle id="packet" r="7" fill="#F2C87A" opacity="0" />
-                  <g class="atlas-amb">
-                    <circle r="3" fill="#38E1FF">
-                      <animateMotion dur="4s" repeatCount="indefinite" path="M400 96 L400 262" />
-                    </circle>
-                    <circle r="3" fill="#F2C87A">
-                      <animateMotion dur="5s" begin="1s" repeatCount="indefinite" path="M400 378 L226 486" />
-                    </circle>
-                    <circle r="3" fill="#F2C87A">
-                      <animateMotion dur="5s" begin="2.5s" repeatCount="indefinite" path="M400 378 L574 486" />
-                    </circle>
-                    <circle r="2.5" fill="#38E1FF" opacity=".7">
-                      <animateMotion dur="7s" repeatCount="indefinite" path="M226 486 Q400 560 574 486" />
-                    </circle>
+                  <g class="atlas-links" fill="none" stroke-linecap="round">
+                    <path data-link="operator:dsh" class="atlas-wire secondary" />
+                    <path data-link="dsh:hermes" class="atlas-wire secondary" />
+                    <path data-link="operator:hermes" id="w1" class="atlas-wire intent" />
+                    <path data-link="hermes:zeus" id="w2" class="atlas-wire route" />
+                    <path data-link="hermes:apollo" id="w3" class="atlas-wire route" />
                   </g>
-                  <g id="sel-halo" style="transform: translate(400px, 320px)">
-                    <circle r="70" fill="none" stroke="#F2C87A" stroke-opacity=".5" stroke-width="1.5">
-                      <animate attributeName="r" values="62;92" dur="2.4s" repeatCount="indefinite" />
-                      <animate attributeName="stroke-opacity" values=".5;0" dur="2.4s" repeatCount="indefinite" />
-                    </circle>
-                    <circle r="70" fill="none" stroke="#F2C87A" stroke-opacity=".5" stroke-width="1.5">
-                      <animate attributeName="r" values="62;92" dur="2.4s" begin="1.2s" repeatCount="indefinite" />
-                      <animate
-                        attributeName="stroke-opacity"
-                        values=".5;0"
-                        dur="2.4s"
-                        begin="1.2s"
-                        repeatCount="indefinite"
-                      />
-                    </circle>
+                  <g id="packet" opacity="0">
+                    <circle r="16" fill="#f2c87a" opacity=".55" filter="url(#atlas-bloom)" />
+                    <circle r="5" fill="#fff1c9" />
+                    <circle r="9" fill="none" stroke="#f2c87a" opacity=".55" />
                   </g>
-                  <text x="412" y="190" fill="#9AA9BF" font-family="JetBrains Mono" font-size="10" letter-spacing="1.5">
-                    INTENT
-                  </text>
-                  <text x="256" y="430" fill="#9AA9BF" font-family="JetBrains Mono" font-size="10" letter-spacing="1.5">
-                    QUALIFIED ROUTE
-                  </text>
-                  <text x="470" y="430" fill="#9AA9BF" font-family="JetBrains Mono" font-size="10" letter-spacing="1.5">
-                    QUALIFIED ROUTE
-                  </text>
-                  <text x="352" y="586" fill="#9AA9BF" font-family="JetBrains Mono" font-size="10" letter-spacing="1.5">
-                    OWNED ESTATE
-                  </text>
                 </svg>
                 <button class="node" type="button" data-node="dsh" aria-pressed="false" style="left: 18.5%; top: 47%">
                   <span class="core"
-                    ><svg
-                      width="30"
-                      height="30"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#F2C87A"
-                      stroke-width="1.8"
-                      aria-hidden="true"
-                    >
-                      <path d="M4 6h16v10H4zM8 20h8M12 16v4" />
-                      <path d="M8 10h3M8 12h6" /></svg></span
+                    ><svg class="node-glyph" viewBox="0 0 80 80" aria-hidden="true">
+                      <defs>
+                        <linearGradient id="node-dsh-metal" x2=".7" y2="1">
+                          <stop stop-color="#fff0bd" />
+                          <stop offset=".45" stop-color="#e9bb65" />
+                          <stop offset="1" stop-color="#95612e" />
+                        </linearGradient>
+                        <linearGradient id="node-dsh-navy" x2=".8" y2="1">
+                          <stop stop-color="#365967" />
+                          <stop offset="1" stop-color="#0a1828" />
+                        </linearGradient>
+                      </defs>
+                      <path d="M12 21l43-7 15 8-43 8z" fill="#567484" />
+                      <path d="M12 21l15 9v31l-15-9z" fill="#162e40" />
+                      <path d="M27 30l43-8v31l-43 8z" fill="url(#node-dsh-navy)" stroke="#7d9daf" />
+                      <path d="M32 34l33-6v21l-33 6z" fill="#061320" stroke="#38e1ff" />
+                      <path d="M37 40l5 3-5 5m10-3 9-2" fill="none" stroke="#8febff" stroke-width="2" />
+                      <path d="M47 58v8l-11 3 14 4 13-4-11-4v-8" fill="url(#node-dsh-metal)" /></svg></span
                   ><span class="syne" style="font-size: 15px; font-weight: 700">DSH</span
-                  ><span class="mono" style="font-size: 10px; color: var(--muted)">Operator console</span>
+                  ><span class="node-detail" style="font-size: 10px; color: var(--muted)">Console</span>
                 </button>
                 <button
                   class="node"
@@ -747,19 +702,25 @@
                   style="left: 50%; top: 14%"
                 >
                   <span class="core"
-                    ><svg
-                      width="30"
-                      height="30"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#F2C87A"
-                      stroke-width="1.8"
-                      aria-hidden="true"
-                    >
-                      <circle cx="12" cy="8" r="4" />
-                      <path d="M4 21c0-4 4-6 8-6s8 2 8 6" /></svg></span
+                    ><svg class="node-glyph" viewBox="0 0 80 80" aria-hidden="true">
+                      <defs>
+                        <linearGradient id="node-operator-metal" x2=".7" y2="1">
+                          <stop stop-color="#fff0bd" />
+                          <stop offset=".45" stop-color="#e9bb65" />
+                          <stop offset="1" stop-color="#95612e" />
+                        </linearGradient>
+                        <linearGradient id="node-operator-navy" x2=".8" y2="1">
+                          <stop stop-color="#365967" />
+                          <stop offset="1" stop-color="#0a1828" />
+                        </linearGradient>
+                      </defs>
+                      <path d="M40 12l11 6v15l-11 7-11-7V18z" fill="url(#node-operator-metal)" />
+                      <path d="M40 12v28l11-7V18z" fill="#bd8744" />
+                      <path d="M16 62l5-13 19-8 19 8 5 13-24 8z" fill="url(#node-operator-metal)" />
+                      <path d="M40 41v29l24-8-5-13z" fill="#a4773c" />
+                      <path d="M21 49l19 9 19-9M40 58v12" fill="none" stroke="#fff1bd" opacity=".6" /></svg></span
                   ><span class="syne" style="font-size: 15px; font-weight: 700">The operator</span
-                  ><span class="mono" style="font-size: 10px; color: var(--muted)">Authority</span>
+                  ><span class="node-detail" style="font-size: 10px; color: var(--muted)">Authority</span>
                 </button>
                 <button
                   class="node big"
@@ -769,54 +730,83 @@
                   style="left: 50%; top: 50%"
                 >
                   <span class="core"
-                    ><svg
-                      width="40"
-                      height="40"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#38E1FF"
-                      stroke-width="1.8"
-                      aria-hidden="true"
-                    >
-                      <path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z" /></svg></span
+                    ><svg class="node-glyph" viewBox="0 0 80 80" aria-hidden="true">
+                      <defs>
+                        <linearGradient id="node-hermes-metal" x2=".7" y2="1">
+                          <stop stop-color="#fff0bd" />
+                          <stop offset=".45" stop-color="#e9bb65" />
+                          <stop offset="1" stop-color="#95612e" />
+                        </linearGradient>
+                        <linearGradient id="node-hermes-navy" x2=".8" y2="1">
+                          <stop stop-color="#365967" />
+                          <stop offset="1" stop-color="#0a1828" />
+                        </linearGradient>
+                      </defs>
+                      <path d="M40 7l9 22 24 3-18 16 5 25-20-13-20 13 5-25L7 32l24-3z" fill="url(#node-hermes-metal)" />
+                      <path d="M40 7v34L7 32l24-3zM40 41l20 32-5-25 18-16z" fill="#ffebad" />
+                      <path d="M40 41v19L20 73l5-25z" fill="#a97836" />
+                      <path d="M40 41l9-12 24 3z" fill="#c18a3e" />
+                      <circle cx="40" cy="41" r="3" fill="#fff7df" /></svg></span
                   ><span class="syne" style="font-size: 16px; font-weight: 800">HERMES</span
-                  ><span class="mono" style="font-size: 10px; color: var(--muted)">Orchestration</span>
+                  ><span class="node-detail" style="font-size: 10px; color: var(--muted)">Orchestration</span>
                 </button>
                 <button class="node" type="button" data-node="zeus" aria-pressed="false" style="left: 28%; top: 78%">
                   <span class="core"
-                    ><svg
-                      width="30"
-                      height="30"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#38E1FF"
-                      stroke-width="1.8"
-                      aria-hidden="true"
-                    >
-                      <rect x="3" y="4" width="18" height="6" rx="1" />
-                      <rect x="3" y="14" width="18" height="6" rx="1" />
-                      <circle cx="7" cy="7" r="1" fill="#38E1FF" />
-                      <circle cx="7" cy="17" r="1" fill="#38E1FF" /></svg></span
+                    ><svg class="node-glyph" viewBox="0 0 80 80" aria-hidden="true">
+                      <defs>
+                        <linearGradient id="node-zeus-metal" x2=".7" y2="1">
+                          <stop stop-color="#fff0bd" />
+                          <stop offset=".45" stop-color="#e9bb65" />
+                          <stop offset="1" stop-color="#95612e" />
+                        </linearGradient>
+                        <linearGradient id="node-zeus-navy" x2=".8" y2="1">
+                          <stop stop-color="#365967" />
+                          <stop offset="1" stop-color="#0a1828" />
+                        </linearGradient>
+                      </defs>
+                      <path d="M16 19l33-8 17 10-34 9z" fill="#69929f" />
+                      <path d="M16 19l16 11v42L16 61z" fill="#182c3e" />
+                      <path d="M32 30l34-9v42l-34 9z" fill="url(#node-zeus-navy)" stroke="#6e9bab" />
+                      <path
+                        d="M35 35l27-7v9l-27 7zm0 14 27-7v9l-27 7zm0 14 27-7v4l-27 7z"
+                        fill="#081721"
+                        stroke="#29a9be"
+                        stroke-width=".7"
+                      />
+                      <path d="M19 25l9 6m-9 8 9 6m-9 8 9 6" stroke="#3a5e71" />
+                      <path d="M39 36v4m0 10v4m0 10v2" stroke="#9cf6ff" stroke-width="2" />
+                      <path d="M46 36l11-3m-11 17 11-3" stroke="#38e1ff" stroke-width="1.5" /></svg></span
                   ><span class="syne" style="font-size: 15px; font-weight: 700">Zeus</span
-                  ><span class="mono" style="font-size: 10px; color: var(--muted)">Owned compute</span>
+                  ><span class="node-detail" style="font-size: 10px; color: var(--muted)">Owned compute</span>
                 </button>
                 <button class="node" type="button" data-node="apollo" aria-pressed="false" style="left: 72%; top: 78%">
                   <span class="core"
-                    ><svg
-                      width="30"
-                      height="30"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#38E1FF"
-                      stroke-width="1.8"
-                      aria-hidden="true"
-                    >
-                      <rect x="3" y="4" width="18" height="6" rx="1" />
-                      <rect x="3" y="14" width="18" height="6" rx="1" />
-                      <circle cx="7" cy="7" r="1" fill="#38E1FF" />
-                      <circle cx="7" cy="17" r="1" fill="#38E1FF" /></svg></span
+                    ><svg class="node-glyph" viewBox="0 0 80 80" aria-hidden="true">
+                      <defs>
+                        <linearGradient id="node-apollo-metal" x2=".7" y2="1">
+                          <stop stop-color="#fff0bd" />
+                          <stop offset=".45" stop-color="#e9bb65" />
+                          <stop offset="1" stop-color="#95612e" />
+                        </linearGradient>
+                        <linearGradient id="node-apollo-navy" x2=".8" y2="1">
+                          <stop stop-color="#365967" />
+                          <stop offset="1" stop-color="#0a1828" />
+                        </linearGradient>
+                      </defs>
+                      <path d="M16 19l33-8 17 10-34 9z" fill="#69929f" />
+                      <path d="M16 19l16 11v42L16 61z" fill="#182c3e" />
+                      <path d="M32 30l34-9v42l-34 9z" fill="url(#node-apollo-navy)" stroke="#6e9bab" />
+                      <path
+                        d="M35 35l27-7v9l-27 7zm0 14 27-7v9l-27 7zm0 14 27-7v4l-27 7z"
+                        fill="#081721"
+                        stroke="#29a9be"
+                        stroke-width=".7"
+                      />
+                      <path d="M19 25l9 6m-9 8 9 6m-9 8 9 6" stroke="#3a5e71" />
+                      <path d="M39 36v4m0 10v4m0 10v2" stroke="#9cf6ff" stroke-width="2" />
+                      <path d="M46 36l11-3m-11 17 11-3" stroke="#38e1ff" stroke-width="1.5" /></svg></span
                   ><span class="syne" style="font-size: 15px; font-weight: 700">Apollo</span
-                  ><span class="mono" style="font-size: 10px; color: var(--muted)">Owned compute</span>
+                  ><span class="node-detail" style="font-size: 10px; color: var(--muted)">Owned compute</span>
                 </button>
               </div>
             </div>
@@ -986,79 +976,155 @@
                   >
                 </div>
               </div>
-              <div class="soft" style="padding: 18px 20px 10px; display: flex; flex-direction: column; gap: 6px">
-                <div style="display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap">
-                  <span class="mono" style="font-size: 10px; color: var(--muted)"
-                    >REQUEST FLOW · YOUR SELECTED SCENARIO</span
-                  ><span class="mono" id="schem-label" style="font-size: 10px; color: var(--cyan)"
-                    >HYBRID · 6 LOCAL · 6 CLOUD · 0 HELD</span
-                  >
+              <div class="soft flow-scene" id="flow-scene" data-connected="true">
+                <div class="scene-heading">
+                  <span class="mono">Request flow / scenario model</span
+                  ><span class="mono" id="schem-label">HYBRID · 6 LOCAL · 6 CLOUD · 0 HELD</span>
                 </div>
                 <svg
                   class="schem"
                   id="schem"
-                  viewBox="0 0 640 250"
-                  aria-label="Animated schematic of twelve requests moving between the onboard AI, the command bridge and the cloud relay"
+                  viewBox="0 0 800 340"
+                  role="img"
+                  aria-label="Twelve illustrative requests: cyan stays onboard, gold uses the external relay, and rose waits for human review."
                 >
                   <defs>
-                    <filter id="pg">
-                      <feGaussianBlur stdDeviation="2" result="b" />
-                      <feMerge>
-                        <feMergeNode in="b" />
-                        <feMergeNode in="SourceGraphic" />
-                      </feMerge>
-                    </filter>
+                    <linearGradient id="hull" x1="0" y1="0" x2=".6" y2="1">
+                      <stop stop-color="#7696a8" />
+                      <stop offset=".35" stop-color="#304c64" />
+                      <stop offset="1" stop-color="#0b1726" />
+                    </linearGradient>
+                    <linearGradient id="hull-edge" x2=".8" y2="1">
+                      <stop stop-color="#91d7e4" />
+                      <stop offset=".3" stop-color="#203f54" />
+                      <stop offset="1" stop-color="#07121f" />
+                    </linearGradient>
+                    <linearGradient id="flow-gold" x2=".9" y2="1">
+                      <stop stop-color="#ffedac" />
+                      <stop offset=".42" stop-color="#dfad53" />
+                      <stop offset="1" stop-color="#72522d" />
+                    </linearGradient>
+                    <radialGradient id="flow-aura">
+                      <stop stop-color="#38e1ff" stop-opacity=".2" />
+                      <stop offset="1" stop-color="#38e1ff" stop-opacity="0" />
+                    </radialGradient>
+                    <radialGradient id="flow-amber">
+                      <stop stop-color="#f2c87a" stop-opacity=".22" />
+                      <stop offset="1" stop-color="#f2c87a" stop-opacity="0" />
+                    </radialGradient>
+                    <linearGradient id="thrust">
+                      <stop stop-color="#38e1ff" stop-opacity="0" />
+                      <stop offset="1" stop-color="#9af7ff" />
+                    </linearGradient>
                   </defs>
-                  <path d="M110 150 L300 110" stroke="rgba(56,225,255,.25)" stroke-width="1" fill="none" />
                   <path
-                    d="M300 110 L520 60"
-                    stroke="rgba(242,200,122,.25)"
-                    stroke-width="1"
-                    stroke-dasharray="4 6"
+                    d="M20 244Q400 346 780 214M20 266Q400 368 780 236M64 316l77-42m103 66 37-47m370 19-58-43m141 11-88-44"
                     fill="none"
-                    id="relay-line"
-                    class="flow gold"
+                    stroke="#284052"
+                    stroke-opacity=".45"
                   />
-                  <ellipse cx="110" cy="150" rx="70" ry="30" fill="rgba(56,225,255,.06)" />
-                  <path d="M300 110 L110 150" stroke="rgba(56,225,255,.25)" stroke-width="1" fill="none" />
-                  <g transform="translate(110 150)">
+                  <ellipse cx="151" cy="201" rx="144" ry="111" fill="url(#flow-aura)" />
+                  <ellipse cx="400" cy="165" rx="130" ry="125" fill="url(#flow-amber)" />
+                  <ellipse class="relay-glow" cx="656" cy="126" rx="126" ry="116" fill="url(#flow-amber)" />
+                  <path d="M151 204Q266 170 400 165" class="route-track local-track" />
+                  <path d="M151 217Q266 183 400 178" class="route-track track-return" />
+                  <path d="M400 165Q530 165 656 126" id="relay-line" class="route-track relay-track" />
+                  <path d="M400 178Q530 178 656 139" class="route-track relay-track track-return" />
+                  <g class="ship-model">
+                    <ellipse cx="143" cy="264" rx="93" ry="18" fill="#000" opacity=".35" />
                     <path
-                      d="M-46 0 L-10 -22 L46 -8 L34 10 L-12 22 Z"
-                      fill="#101A2C"
-                      stroke="#38E1FF"
+                      class="ship-exhaust"
+                      d="M11 208l63-13 12 16-68 8zM17 244l67-17 9 11-65 19z"
+                      fill="url(#thrust)"
+                      opacity=".7"
+                    />
+                    <path d="M71 206l42-71 132 62-41 39-103 33-33-21 36-26z" fill="url(#hull-edge)" stroke="#427085" />
+                    <path
+                      d="M71 198l42-71 132 62-41 39-103 33-33-21 36-26z"
+                      fill="url(#hull)"
+                      stroke="#8aacbb"
                       stroke-width="1.2"
                     />
-                    <path d="M-46 0 L-58 -6 M-46 0 L-58 6" stroke="#38E1FF" stroke-width="2" class="pulse" />
-                    <circle cx="6" cy="0" r="9" fill="rgba(56,225,255,.15)" stroke="#38E1FF">
-                      <animate attributeName="r" values="8;11;8" dur="2.6s" repeatCount="indefinite" />
-                    </circle>
-                    <text class="lbl" x="0" y="44" text-anchor="middle">Onboard AI · the ship</text>
-                  </g>
-                  <g transform="translate(300 110)">
-                    <circle r="26" fill="#101A2C" stroke="#F2C87A" stroke-width="1.2" />
-                    <path d="M0 -14 L10 0 L0 14 L-10 0 Z" fill="#F2C87A" class="pulse" />
-                    <text class="lbl" x="0" y="50" text-anchor="middle">Command bridge · Bit</text>
-                  </g>
-                  <g transform="translate(520 60)">
-                    <rect
-                      x="-22"
-                      y="-14"
-                      width="44"
-                      height="28"
-                      rx="6"
-                      fill="#101A2C"
-                      stroke="#F2C87A"
-                      stroke-width="1.2"
+                    <path d="M113 127l35 62 97 0-132-62z" fill="#3b6075" />
+                    <path d="M148 189l-47 72 103-33 41-39z" fill="#132e43" />
+                    <path
+                      d="M68 240l67-39-22-74m22 74 110-12M148 189l-13 12"
+                      stroke="#abd1d7"
+                      stroke-opacity=".6"
+                      fill="none"
                     />
-                    <path d="M-34 0 H-22 M22 0 H34 M0 -14 V-30 M-10 -30 H10" stroke="#F2C87A" stroke-width="1.2" />
-                    <text class="lbl" x="0" y="44" text-anchor="middle">Cloud relay · external</text>
-                    <text class="lbl" id="relay-state" x="0" y="-40" text-anchor="middle" fill="#F2C87A">
-                      CONNECTED
-                    </text>
+                    <path d="M121 181l22-17 40 19-33 15z" fill="#051724" stroke="#38e1ff" />
+                    <path d="M127 183l18-11 26 11-24 8z" fill="#38e1ff" opacity=".35" />
+                    <path d="M110 242l62-20m-42-4 30-11M99 155l-11 27" fill="none" stroke="#38e1ff" stroke-width="2" />
+                    <path d="M78 198l12 8m-13 29 14 8" stroke="#ccfcff" stroke-width="4" />
+                    <circle cx="202" cy="198" r="2" fill="#f2c87a" />
+                  </g>
+                  <g class="command-model">
+                    <ellipse cx="400" cy="229" rx="64" ry="16" fill="#000" opacity=".45" />
+                    <path d="M338 208v11c0 27 124 27 124 0v-11" fill="url(#hull)" stroke="#587180" />
+                    <ellipse cx="400" cy="208" rx="62" ry="21" fill="#0b1b2a" stroke="url(#flow-gold)" />
+                    <ellipse
+                      cx="400"
+                      cy="208"
+                      rx="48"
+                      ry="14"
+                      fill="none"
+                      stroke="#f2c87a"
+                      stroke-opacity=".6"
+                      stroke-dasharray="5 5"
+                    />
+                    <path d="M400 101l27 51-27 51-27-51z" fill="url(#flow-gold)" />
+                    <path d="M400 101v102l27-51z" fill="#a57432" />
+                    <path d="M400 101l-27 51 27-13 27 13z" fill="#ffe7a4" />
+                    <path d="M373 152l27 51v-64z" fill="#e7b957" />
+                    <ellipse
+                      class="command-orbit"
+                      cx="400"
+                      cy="157"
+                      rx="55"
+                      ry="12"
+                      fill="none"
+                      stroke="#f2c87a"
+                      stroke-opacity=".5"
+                      transform="rotate(-28 400 157)"
+                    />
+                  </g>
+                  <g class="relay-model">
+                    <path d="M575 117l39-23 4 48-39 23zM692 90l39-23 4 48-39 23z" fill="#142d43" stroke="#6093a7" />
+                    <path
+                      d="M588 110l4 47m9-55 4 47m-28-17 40-23m-39 36 40-23M705 82l4 47m9-55 4 47m-28-16 40-23m-39 36 40-23"
+                      fill="none"
+                      stroke="#38e1ff"
+                      stroke-opacity=".4"
+                    />
+                    <path d="M614 121l25-8m43-8 12-4" stroke="#c8ab74" stroke-width="4" />
+                    <path d="M634 93l32-11 21 13v47l-32 12-21-13z" fill="url(#hull)" stroke="#9aadad" />
+                    <path d="M655 105l32-10v47l-32 12z" fill="#233b4e" />
+                    <path d="M634 93l21 12 32-10-21-13z" fill="url(#flow-gold)" />
+                    <path d="M662 116l17-5v22l-17 6z" fill="#081726" stroke="#f2c87a" />
+                    <path d="M643 84l-4-25m-13-12q22-15 33 2-10 18-33-2z" fill="url(#flow-gold)" stroke="#ecd08f" />
+                    <path
+                      class="relay-signal"
+                      d="M623 35q23-14 40 3m-49-15q32-23 59 5"
+                      fill="none"
+                      stroke="#f2c87a"
+                      stroke-opacity=".6"
+                      stroke-width="2"
+                    />
+                    <path d="M662 122l10-3" stroke="#ffecac" stroke-width="2" />
                   </g>
                   <g id="packets"></g>
-                  <text class="lbl" x="12" y="238">Moving packets show routing, not measured speed</text>
                 </svg>
+                <div class="flow-stations" aria-hidden="true">
+                  <span><b>Onboard AI</b><small>Your ship</small></span
+                  ><span><b>Command bridge</b><small>Bit / human authority</small></span
+                  ><span><b>Cloud relay</b><small id="relay-state">Connected</small></span>
+                </div>
+                <div class="flow-manifest">
+                  <div id="request-slots" aria-hidden="true"></div>
+                  <span id="manifest-label">12 requests / illustrated</span>
+                </div>
+                <p class="scene-note">Packet movement illustrates the route, not measured speed.</p>
               </div>
               <div
                 style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px"
@@ -1374,81 +1440,145 @@
               role="group"
               aria-label="Orbital instrument with three rings: observe, route, verify"
             >
-              <svg viewBox="0 0 520 520" aria-hidden="true">
-                <g id="eng-rot" style="transform-origin: 260px 260px">
-                  <g class="spin" style="transform-origin: 260px 260px">
-                    <circle
+              <svg class="engine-fallback" viewBox="0 0 640 640" aria-hidden="true">
+                <defs>
+                  <linearGradient id="eng-metal" x1=".1" y1="0" x2=".9" y2="1">
+                    <stop stop-color="#d5e5df" />
+                    <stop offset=".2" stop-color="#3e6171" />
+                    <stop offset=".45" stop-color="#182b3c" />
+                    <stop offset=".68" stop-color="#8ba9af" />
+                    <stop offset="1" stop-color="#172c3a" />
+                  </linearGradient>
+                  <linearGradient id="eng-gold" x2=".85" y2="1">
+                    <stop stop-color="#fff0b8" />
+                    <stop offset=".3" stop-color="#d7a453" />
+                    <stop offset=".5" stop-color="#684525" />
+                    <stop offset=".75" stop-color="#f0c878" />
+                    <stop offset="1" stop-color="#886431" />
+                  </linearGradient>
+                  <radialGradient id="eng-light">
+                    <stop stop-color="#38e1ff" stop-opacity=".16" />
+                    <stop offset=".6" stop-color="#38e1ff" stop-opacity=".04" />
+                    <stop offset="1" stop-color="#38e1ff" stop-opacity="0" />
+                  </radialGradient>
+                  <radialGradient id="eng-core-aura">
+                    <stop stop-color="#f2c87a" stop-opacity=".25" />
+                    <stop offset="1" stop-color="#f2c87a" stop-opacity="0" />
+                  </radialGradient>
+                </defs>
+                <circle cx="320" cy="306" r="302" fill="url(#eng-light)" />
+                <ellipse cx="320" cy="553" rx="197" ry="27" fill="#000" opacity=".4" />
+                <g id="eng-rot" style="transform-origin: 320px 310px">
+                  <g transform="translate(0 -10)">
+                    <circle cx="320" cy="320" r="266" fill="none" stroke="#24404e" />
+                    <g fill="none" stroke="#476471">
+                      <circle cx="320" cy="320" r="279" stroke-width="4" stroke-dasharray="1 17.26" />
+                      <circle cx="320" cy="320" r="282" stroke-width="10" stroke-dasharray="1 146.65" />
+                    </g>
+                    <ellipse
+                      cx="320"
+                      cy="325"
+                      rx="252"
+                      ry="161"
+                      fill="none"
+                      stroke="#040b11"
+                      stroke-width="17"
+                      transform="rotate(-29 320 320)"
+                    />
+                    <ellipse
+                      cx="320"
+                      cy="320"
+                      rx="252"
+                      ry="161"
+                      fill="none"
+                      stroke="url(#eng-metal)"
+                      stroke-width="13"
+                      transform="rotate(-29 320 320)"
+                    />
+                    <ellipse
                       id="r1"
-                      cx="260"
-                      cy="260"
-                      r="246"
+                      cx="320"
+                      cy="319"
+                      rx="253"
+                      ry="161"
                       fill="none"
-                      stroke="rgba(56,225,255,.5)"
-                      stroke-width="1.5"
-                      stroke-dasharray="130 40"
+                      stroke="#38e1ff"
+                      stroke-width="2"
+                      transform="rotate(-29 320 320)"
                     />
-                    <circle cx="506" cy="260" r="6" fill="#38E1FF" />
-                  </g>
-                  <circle cx="260" cy="260" r="216" fill="none" stroke="rgba(56,225,255,.12)" />
-                  <g class="spinr" style="transform-origin: 260px 260px">
-                    <circle
+                    <ellipse
+                      cx="320"
+                      cy="325"
+                      rx="173"
+                      ry="237"
+                      fill="none"
+                      stroke="#050b10"
+                      stroke-width="16"
+                      transform="rotate(30 320 320)"
+                    />
+                    <ellipse
+                      cx="320"
+                      cy="320"
+                      rx="173"
+                      ry="237"
+                      fill="none"
+                      stroke="url(#eng-gold)"
+                      stroke-width="10"
+                      transform="rotate(30 320 320)"
+                    />
+                    <ellipse
                       id="r2"
-                      cx="260"
-                      cy="260"
-                      r="164"
+                      cx="320"
+                      cy="320"
+                      rx="174"
+                      ry="237"
                       fill="none"
-                      stroke="rgba(242,200,122,.6)"
+                      stroke="#f2c87a"
                       stroke-width="1.5"
-                      stroke-dasharray="44 26"
+                      stroke-dasharray="60 38"
+                      transform="rotate(30 320 320)"
                     />
-                    <circle cx="424" cy="260" r="6" fill="#F2C87A" />
+                    <ellipse
+                      cx="320"
+                      cy="321"
+                      rx="217"
+                      ry="78"
+                      fill="none"
+                      stroke="url(#eng-metal)"
+                      stroke-width="6"
+                      transform="rotate(8 320 320)"
+                    />
+                    <circle cx="320" cy="320" r="124" fill="url(#eng-core-aura)" />
+                    <circle
+                      id="r3"
+                      cx="320"
+                      cy="320"
+                      r="112"
+                      fill="none"
+                      stroke="#f2c87a"
+                      stroke-opacity=".5"
+                      stroke-width="1.5"
+                      stroke-dasharray="2 9"
+                    />
+                    <g class="engine-crystal">
+                      <path d="M320 211l54 98-54 118-54-118z" fill="#e0ab53" />
+                      <path d="M320 211l-54 98 54-28 54 28z" fill="#ffe9ab" />
+                      <path d="M320 281v146l54-118z" fill="#956329" />
+                      <path d="M320 281l-54 28 54 118z" fill="#e9b65c" />
+                      <path d="M320 211v70l54 28z" fill="#f7d88c" />
+                      <path d="M320 211v70l-54 28" fill="none" stroke="#fff5d6" stroke-width="1.2" />
+                    </g>
+                    <path d="M137 415Q317 535 527 366" fill="none" stroke="url(#eng-metal)" stroke-width="6" />
+                    <circle cx="108" cy="336" r="8" fill="#a9f7ff" />
+                    <circle cx="467" cy="145" r="7" fill="#ffe2a0" />
                   </g>
-                  <circle cx="260" cy="260" r="104" fill="none" stroke="rgba(234,240,248,.18)" stroke-dasharray="2 6" />
-                  <circle
-                    id="r3"
-                    cx="260"
-                    cy="260"
-                    r="56"
-                    fill="rgba(242,200,122,.08)"
-                    stroke="#F2C87A"
-                    stroke-width="1.5"
-                  />
-                  <path d="M260 216l22 44-22 44-22-44z" fill="#F2C87A" class="pulse" />
                 </g>
-                <text
-                  x="260"
-                  y="28"
-                  text-anchor="middle"
-                  fill="#38E1FF"
-                  font-family="JetBrains Mono"
-                  font-size="10"
-                  letter-spacing="2"
-                >
-                  01 OBSERVE
-                </text>
-                <text
-                  x="260"
-                  y="108"
-                  text-anchor="middle"
-                  fill="#F2C87A"
-                  font-family="JetBrains Mono"
-                  font-size="10"
-                  letter-spacing="2"
-                >
-                  02 ROUTE
-                </text>
-                <text
-                  x="260"
-                  y="336"
-                  text-anchor="middle"
-                  fill="#EAF0F8"
-                  font-family="JetBrains Mono"
-                  font-size="10"
-                  letter-spacing="2"
-                >
-                  03 VERIFY
-                </text>
               </svg>
+              <div class="engine-viewport" aria-hidden="true"></div>
+              <div class="engine-index" aria-hidden="true">
+                <span data-ring-label="0" class="active"><i>01</i> Observe</span
+                ><span data-ring-label="1"><i>02</i> Route</span><span data-ring-label="2"><i>03</i> Verify</span>
+              </div>
             </div>
             <div style="display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-top: 14px">
               <span class="mono" style="font-size: 10px; color: var(--muted)"
@@ -2020,7 +2150,7 @@
           >The Human Reckoning. Inspired by the Butlerian Jihad in Frank Herbert’s <em>Dune</em>. Powerful tools. Human
           judgment in command.</span
         ><span class="mono" style="font-size: 10px; color: var(--gold)"
-          >A HUMAN IN COMMAND · V38.1 / HELIOS · Directed by Doug Cashio · 09-19-2026</span
+          >A HUMAN IN COMMAND · V38.2 / HELIOS · Directed by Doug Cashio · 09-20-2026</span
         >
       </div>
       <nav aria-label="Footer">

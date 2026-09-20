@@ -1,0 +1,426 @@
+/* The instruments share one material language; their content remains ordinary HTML. */
+.atlas-panel {
+  background: linear-gradient(145deg, #111f30, #08111d 72%);
+}
+.atlas {
+  position: relative;
+  min-height: 560px;
+  overflow: hidden;
+  isolation: isolate;
+  background: radial-gradient(ellipse at 50% 50%, #142c3b66, transparent 66%);
+}
+.atlas svg.wires {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.atlas::after {
+  content: "SELECT A NODE TO EXPLORE";
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font: 10px var(--mono);
+  letter-spacing: 0.13em;
+  color: var(--muted);
+  pointer-events: none;
+}
+.atlas-wire {
+  stroke: #38e1ff66;
+  stroke-width: 1.6;
+}
+.atlas-wire.secondary {
+  stroke: #72919d55;
+  stroke-dasharray: 3 8;
+}
+.atlas-wire.route {
+  stroke: #f2c87a77;
+  stroke-dasharray: 5 9;
+}
+.atlas-wire.tracing {
+  stroke: #ffe6a1;
+  stroke-width: 3;
+  filter: drop-shadow(0 0 5px #f2c87a99);
+}
+.node {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--ink);
+  transform: translate(-50%, -50%);
+  gap: 7px;
+  z-index: 1;
+}
+.node .core {
+  position: relative;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  transition:
+    box-shadow 0.25s,
+    border-color 0.25s,
+    transform 0.25s;
+  width: 92px;
+  height: 92px;
+  border: 1px solid #7595a866;
+  background: radial-gradient(circle at 40% 24%, #315065 0, #132838 34%, #08111d 70%);
+  box-shadow:
+    inset 0 2px 2px #b0d3db44,
+    inset 0 -6px 10px #000a,
+    0 8px 12px #0006,
+    0 0 0 5px #091521,
+    0 0 0 6px #466a7977;
+}
+.node.big .core {
+  width: 116px;
+  height: 116px;
+}
+.node .core::before {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  animation: spin 36s linear infinite;
+  inset: -10px;
+  border: 1px solid #38e1ff66;
+  border-inline-color: transparent;
+  animation-duration: 36s;
+}
+.node .core::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  border: 1px solid #6e9baa33;
+  border-top-color: #b3e4eb66;
+  pointer-events: none;
+}
+.node .node-glyph {
+  width: 64%;
+  height: 64%;
+  filter: drop-shadow(0 4px 3px #0009);
+}
+.node .syne {
+  font-size: 16px !important;
+  font-weight: 650 !important;
+  letter-spacing: -0.035em;
+}
+.node > span:last-child {
+  font-family: var(--sans);
+  text-transform: none;
+  letter-spacing: 0.015em;
+  font-size: 12px !important;
+}
+.node:hover .core,
+.node:focus-visible .core {
+  transform: translateY(-3px);
+  border-color: #a2efff;
+}
+.node[aria-pressed="true"] .core,
+.node.trace-active .core {
+  border-color: #f2c87a;
+  box-shadow:
+    inset 0 2px 2px #fce3a477,
+    inset 0 -6px 12px #0009,
+    0 8px 18px #0009,
+    0 0 0 5px #332c1c,
+    0 0 0 6px #ac8a4766,
+    0 0 46px #f2c87a33;
+}
+.node[aria-pressed="true"] .core::before {
+  border-color: #f2c87a99 transparent;
+  animation-duration: 24s;
+}
+.node.trace-active .core::after {
+  border-color: #ffe5a7;
+}
+.atlas-caption {
+  min-height: 110px;
+  font-size: 11px;
+}
+#trace-label {
+  font: 14px/1.5 var(--sans);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.flow-scene {
+  position: relative;
+  padding: 20px;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 55% 45%, #10253688, transparent 65%), #08111c;
+}
+.scene-heading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--muted);
+}
+#schem-label {
+  color: var(--cyan);
+}
+.flow-scene .schem {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+}
+.route-track {
+  fill: none;
+  stroke: #38e1ff88;
+  stroke-width: 2;
+}
+.track-return {
+  stroke-width: 1;
+  opacity: 0.35;
+}
+.relay-track {
+  stroke: #f2c87a99;
+  stroke-dasharray: 5 7;
+}
+.ship-exhaust {
+  animation: thrust-breathe 3s ease-in-out infinite;
+  transform-origin: 78px 218px;
+}
+.relay-signal {
+  animation: signal-breathe 4s ease-in-out infinite;
+}
+.flow-scene[data-connected="false"] .relay-model {
+  opacity: 0.4;
+}
+.flow-scene[data-connected="false"] .relay-signal,
+.flow-scene[data-connected="false"] .relay-glow {
+  opacity: 0;
+  animation: none;
+}
+.flow-scene[data-connected="false"] .relay-track {
+  stroke: #f08a96;
+  opacity: 0.35;
+  stroke-dasharray: 2 14;
+}
+.flow-scene[data-connected="false"] #relay-state {
+  color: var(--heldtext);
+}
+.flow-stations {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  text-align: center;
+  gap: 8px;
+  margin: -3px -8px 22px;
+}
+.flow-stations span {
+  display: grid;
+  gap: 4px;
+}
+.flow-stations b {
+  font: 600 clamp(12px, 1vw, 15px)/1.3 var(--sans);
+}
+.flow-stations small {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+.flow-stations span:first-child b {
+  color: #8beaff;
+}
+.flow-stations span:nth-child(2) b {
+  color: #f5d391;
+}
+.flow-manifest {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #769aaa26;
+  padding-top: 16px;
+}
+#request-slots {
+  display: flex;
+  flex: 1;
+  max-width: 240px;
+  gap: 5px;
+}
+#request-slots i {
+  height: 6px;
+  flex: 1;
+  border-radius: 1px;
+  background: var(--packet-color);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--packet-color) 20%, transparent);
+}
+#manifest-label {
+  font: 10px/1.4 var(--mono);
+  color: var(--muted);
+}
+.scene-note {
+  font: 12px/1.5 var(--sans);
+  color: var(--muted);
+  margin: 10px 0 0;
+}
+.engine {
+  position: relative;
+  aspect-ratio: 1;
+  margin-inline: auto;
+  cursor: grab;
+  width: min(100%, 640px);
+  isolation: isolate;
+  touch-action: pan-y;
+  background: radial-gradient(ellipse at 50% 47%, #10233077, transparent 64%);
+  border-radius: 50%;
+}
+.engine:active {
+  cursor: grabbing;
+}
+.engine svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.engine::after {
+  content: "";
+  position: absolute;
+  inset: 5%;
+  border: 1px solid #38e1ff0d;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.engine-viewport {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+.engine-viewport canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.engine-fallback {
+  transition: opacity 0.6s;
+}
+.engine[data-renderer="webgl"] .engine-viewport {
+  opacity: 1;
+}
+.engine[data-renderer="webgl"] .engine-fallback {
+  opacity: 0;
+}
+.engine-index {
+  position: absolute;
+  inset: auto 8% 0;
+  display: flex;
+  justify-content: center;
+  gap: clamp(12px, 3vw, 26px);
+  pointer-events: none;
+}
+.engine-index span {
+  color: var(--muted);
+  font: 600 12px/1.4 var(--sans);
+  display: grid;
+  gap: 3px;
+  text-align: center;
+}
+.engine-index i {
+  font: 10px var(--mono);
+  color: #6e899a;
+  font-style: normal;
+}
+.engine-index .active {
+  color: #fff0c9;
+}
+.engine-index .active i {
+  color: #f2c87a;
+}
+.engine[data-principle="0"] #r1,
+.engine[data-principle="1"] #r2,
+.engine[data-principle="2"] #r3 {
+  stroke-width: 3;
+  filter: drop-shadow(0 0 5px #f2c87a88);
+}
+@keyframes thrust-breathe {
+  50% {
+    opacity: 0.35;
+    transform: scaleX(0.84);
+  }
+}
+@keyframes signal-breathe {
+  50% {
+    opacity: 0.3;
+  }
+}
+@media (max-width: 600px) {
+  .atlas {
+    min-height: 480px;
+  }
+  .node .core {
+    width: 64px;
+    height: 64px;
+  }
+  .node.big .core {
+    width: 84px;
+    height: 84px;
+  }
+  .node .syne {
+    font-size: 14px !important;
+  }
+  .node > span:last-child {
+    font-size: 11px !important;
+    max-width: 100px;
+    line-height: 1.35;
+  }
+  .node .core::before {
+    inset: -8px;
+  }
+  .atlas .node {
+    width: 114px;
+    max-width: 114px;
+  }
+  .atlas [data-node="dsh"] {
+    width: 96px;
+  }
+  .atlas-caption {
+    padding: 16px;
+  }
+  .flow-scene {
+    padding: 16px 12px;
+  }
+  .flow-stations {
+    margin: 0 -4px 18px;
+    gap: 3px;
+  }
+  .flow-stations small {
+    font-size: 10px;
+  }
+  .flow-manifest {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  #request-slots {
+    min-width: 140px;
+  }
+  #manifest-label {
+    font-size: 9px;
+  }
+  .scene-note {
+    font-size: 11px;
+  }
+  .engine-index {
+    bottom: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .node .core::before {
+    animation: none;
+  }
+  .ship-exhaust,
+  .relay-signal {
+    animation: none;
+  }
+  .engine-viewport,
+  .engine-fallback {
+    transition: none;
+  }
+}

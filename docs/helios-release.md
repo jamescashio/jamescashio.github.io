@@ -1,4 +1,10 @@
-# V38.1 Helios release
+# V38.2 Helios release
+
+The 09-20-2026 refinement deepens three existing instruments and improves typography without changing their models. The atlas has faceted node emblems, responsive route geometry and a restartable eight-second trace. The request flow has a dimensional ship, command core, external relay and an always-visible twelve-request manifest. The principles instrument has a metallic 3D armillary, capped at 30 fps, and a complete authored SVG fallback. Keyboard rotation, reset and principle selection work in either rendering mode. Existing self-hosted fonts gain more open headlines, larger small labels and a clearer reading rhythm.
+
+The three scenes stop when offscreen or the document is hidden, honor manual and system motion settings, and preserve a static explanation. The engine shares the existing lazy Three.js dependency. Its lighting is procedural, and the graphic pass adds no external image or font request. Context loss reveals the vector fallback. Static request dots and manifest colors match the same twelve-request model. None of the graphics imply live routing or measured speed.
+
+The owner requested this continuation through Gloves Off Website and added typography to the same scope. Publication follows the ongoing, previously authorized release workflow. The V38.1 signature, flight and studies below are preserved.
 
 The approved refinement makes the existing orbital world fully operable: the first invitation opens the flight inside V38, seven studies expose their promised controls, shared scenarios retain exact inputs, and mobile navigation and motion-off content remain available. Original artwork, Unbounded and Instrument Sans typography, Bit, quiet startup and evidence dates are preserved.
 
@@ -6,10 +12,10 @@ The owner approved publication on 09-19-2026 and requested a thorough polish pas
 
 ## Identity and release gates
 
-- Public entry: `/v38/`, receipt `/v38/site-release.json`, experience `38.1.0`, release ID `helios-38.1.0-20260919`.
-- Plain-root navigation retains the established V38 redirect. Existing fragments and query links retain V37.17. The shared package and compatibility receipts keep that version, with a matching `frontDoor` reference to V38.1.
+- Public entry: `/v38/`, receipt `/v38/site-release.json`, experience `38.2.0`, release ID `helios-38.2.0-20260920`.
+- Plain-root navigation retains the established V38 redirect. Existing fragments and query links retain V37.17. The shared package and compatibility receipts keep that version, with a matching `frontDoor` reference to V38.2.
 - Evidence remains the inherited September 18, 2026 record for V38 and the corresponding earlier observations for legacy views. No UI test verifies infrastructure or routing health.
-- Rollback baseline: `82425d30fb0e6d2c7891281ded0423b854d6f23d`. Roll back by reverting this release through the checked pull-request and Pages path, then verify the resulting public artifact.
+- Rollback baseline: `24234b0fe2cd54910f1fc491c09ab7b2c2efa4f6`. Roll back by reverting this release through the checked pull-request and Pages path, then verify the resulting public artifact.
 
 Build and run lint, formatting, model and artifact tests, Python release tests, public-data and consistency checks, legacy browser checks and `npm run test:helios`. The Helios runner starts and closes a loopback server unless `HELIOS_URL` supplies another target. `CHROME_PATH` selects the workflow's pinned browser. Pages and Public Site Safety run these interactions before accepting a deployment artifact.
 

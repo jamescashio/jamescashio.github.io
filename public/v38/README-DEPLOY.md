@@ -1,6 +1,6 @@
-# cAshIo V38.1 Helios — approved release
+# cAshIo V38.2 Helios — approved release
 
-Prepared 09-19-2026 against GitHub main at `82425d30fb0e6d2c7891281ded0423b854d6f23d`.
+Prepared 09-20-2026 against GitHub main at `24234b0fe2cd54910f1fc491c09ab7b2c2efa4f6`.
 
 ## Build and preview
 
@@ -12,7 +12,7 @@ The preview server binds only to this computer, compresses text and sends noinde
 
 ## Preserved identity and evidence
 
-Keep the Unbounded, Instrument Sans and JetBrains Mono typography, navy/gold/cyan palette, original artwork, Bit, ship and quiet startup. The original image files remain alongside the efficient WebP derivatives. The fonts are served locally with their licenses. GSAP is a pinned dependency with its license retained in a vendor chunk; the optional hero uses the existing Three.js vendor module.
+Keep the Unbounded, Instrument Sans and JetBrains Mono typography, navy/gold/cyan palette, original artwork, Bit, ship and quiet startup. The original image files remain alongside the efficient WebP derivatives. The fonts are served locally with their licenses. GSAP is a pinned dependency with its license retained in a vendor chunk; the optional hero and orbital engine share the existing Three.js module. The engine loads on approach, caps rendering at 30 frames per second and retains an authored vector fallback. Atlas and request-flow graphics are inline vectors with readable HTML labels. No new font, image, or library dependency is needed.
 
 Seven studies reuse the existing bounded teaching models. Every simulated result stays labeled. The latest evidence displayed by V38 is the inherited September 18, 2026 observation; this interface work does not refresh or independently verify infrastructure, routing or backups. Legacy views preserve their own historical records.
 

@@ -56,6 +56,91 @@ async function choose(page, id) {
   await expect(page.locator(`#study-${id}`)).toHaveAttribute("aria-selected", "true");
 }
 
+test("The illustrated request manifest agrees with each scenario and motion stops outside the scene", async (t) => {
+  const page = await visit(t, { width: 390, height: 844, motion: "no-preference" });
+  for (const mission of ["routine", "blackout", "classified"]) {
+    await page.locator(`[data-mission=${mission}]`).click();
+    const counts = await page.locator("#n-local, #n-cloud, #n-held").allTextContents();
+    for (const [i, kind] of ["local", "cloud", "held"].entries())
+      await expect(page.locator(`#packets [data-kind=${kind}]`)).toHaveCount(Number(counts[i]));
+    await expect(page.locator("#request-slots i")).toHaveCount(12);
+    await expect(page.locator("#schem")).toHaveAttribute(
+      "aria-label",
+      new RegExp(`${counts[2]} held for human review`),
+    );
+    await page.locator("#flow-scene").scrollIntoViewIfNeeded();
+    await page.screenshot({ path: path.join(output, `flow-${mission}-390.png`) });
+  }
+  await page.locator('[data-mission="routine"]').click();
+  await page.locator("#flow-scene").scrollIntoViewIfNeeded();
+  await expect(page.locator("#flow-scene")).toHaveAttribute("data-scene-active", "true");
+  const packet = page.locator("#packets > g").first();
+  const before = await packet.getAttribute("transform");
+  await expect.poll(() => packet.getAttribute("transform")).not.toBe(before);
+  await page.locator("h1").scrollIntoViewIfNeeded();
+  await expect(page.locator("#flow-scene")).toHaveAttribute("data-scene-active", "false");
+  const paused = await packet.getAttribute("transform");
+  await page.waitForTimeout(200);
+  assert.equal(await packet.getAttribute("transform"), paused, "offscreen packets do not keep animating");
+  await page.locator("#motion-btn").click();
+  await page.locator("#flow-scene").scrollIntoViewIfNeeded();
+  const still = await packet.getAttribute("transform");
+  await page.waitForTimeout(200);
+  assert.equal(await packet.getAttribute("transform"), still, "manual motion off produces a stable illustration");
+  await audit(page, "instruments-motion-off-390");
+});
+
+test("Atlas traces restart once, pause offscreen, and become a complete static explanation with reduced motion", async (t) => {
+  const page = await visit(t, { motion: "no-preference" });
+  await page.locator("#trace-btn").click();
+  await expect(page.locator("#atlas")).toHaveAttribute("data-tracing", "true");
+  await expect(page.locator("#trace-label")).toHaveText("Human intent leaves the operator");
+  await page.waitForTimeout(400);
+  await page.locator("#trace-btn").click();
+  await expect(page.locator("#trace-label")).toHaveText("Human intent leaves the operator");
+  await page.locator("h1").scrollIntoViewIfNeeded();
+  await expect(page.locator("#atlas")).toHaveAttribute("data-scene-active", "false");
+  const packet = page.locator("#packet");
+  const paused = await packet.getAttribute("transform");
+  await page.waitForTimeout(200);
+  assert.equal(await packet.getAttribute("transform"), paused);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(page.locator("#atlas")).toHaveAttribute("data-tracing", "false");
+  await expect(packet).toHaveAttribute("opacity", "0");
+  await expect(page.locator("#trace-label")).toContainText("Zeus receives the work → Result returns for human review");
+});
+
+test("The 3D orbital engine pauses, preserves keyboard control, and recovers to its vector instrument", async (t) => {
+  const page = await visit(t, { motion: "no-preference" });
+  const engine = page.locator("#engine");
+  await engine.scrollIntoViewIfNeeded();
+  await expect(engine).toHaveAttribute("data-renderer", "webgl", { timeout: 15000 });
+  await expect(engine).toHaveAttribute("data-animating", "true");
+  await engine.press("ArrowRight");
+  await expect(page.locator("#eng-rot")).toHaveAttribute("style", /rotate\(10deg\)/);
+  await page.locator('[data-pr="2"]').click();
+  await expect(page.locator('[data-ring-label="2"]')).toHaveClass("active");
+  await engine.scrollIntoViewIfNeeded();
+  await page.screenshot({ path: path.join(output, "orbital-engine-3d.png") });
+  await page.locator("h1").scrollIntoViewIfNeeded();
+  await expect(engine).toHaveAttribute("data-animating", "false");
+  await engine.scrollIntoViewIfNeeded();
+  await expect(engine).toHaveAttribute("data-animating", "true");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(engine).toHaveAttribute("data-animating", "false");
+  await engine.press("Home");
+  await expect(page.locator("#eng-rot")).toHaveAttribute("style", /rotate\(0deg\)/);
+  // A real context loss must expose the complete fallback, without losing controls.
+  await engine
+    .locator("canvas")
+    .evaluate((canvas) => canvas.getContext("webgl2").getExtension("WEBGL_lose_context").loseContext());
+  await expect(engine).not.toHaveAttribute("data-renderer", "webgl");
+  await expect(page.locator(".engine-fallback")).toHaveCSS("opacity", "1");
+  await engine.press("ArrowLeft");
+  await expect(page.locator("#eng-rot")).toHaveAttribute("style", /rotate\(-10deg\)/);
+  await audit(page, "orbital-engine-fallback");
+});
+
 for (const width of [1440, 768, 390, 320])
   test(`Helios at ${width}px: content, menu, all studies and flight remain accessible`, async (t) => {
     const page = await visit(t, { width, height: width > 700 ? 1000 : 844 });
