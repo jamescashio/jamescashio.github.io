@@ -1,21 +1,29 @@
-# cashio.us V38 Helios · deploy notes
-Doug Cashio, Principal Solutions Consultant at OpenText · September 18, 2026
+# cAshIo V38.1 Helios — approved release
 
-## What this folder is
-A single page site with vendored libraries. No build step. Drop the whole `v38/` folder into `public/` of jamescashio/jamescashio.github.io. Vite copies `public/` verbatim into `dist/`, so the existing Pages workflow publishes it at https://cashio.us/v38/ with no change to the React app, the prerender, or the tests.
+Prepared 09-19-2026 against GitHub main at `82425d30fb0e6d2c7891281ded0423b854d6f23d`.
 
-## Why the libraries are vendored
-The live edge CSP is `script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com`. A CDN script would be blocked silently. Everything loads from `vendor/` under the same origin. Fonts come from fonts.googleapis.com and fonts.gstatic.com, both already allowed by the live style-src and font-src.
+## Build and preview
 
-Pinned: gsap 3.15.0 (core, ScrollTrigger, SplitText), lenis 1.3.25, three 0.185.1 (module plus core chunk).
+V38 now has a maintained Vite entry at `v38/index.html`. Its styles and behavior live in `src/helios/`, with shared teaching models and flight components in `src/odyssey/`. `public/v38/` contains assets, font licenses and the preserved vendor files; it is no longer a standalone website source folder.
 
-## Go live in three steps
-1. Branch `release/v38-helios`, copy this folder to `public/v38/`, commit, open the PR. The public repo guard and whitespace checks will run; this folder has no secrets, no absolute paths, no analytics.
-2. Merge, wait for Pages, verify https://cashio.us/v38/ in a private window: ignition runs, Bit greets, fold works, hangar swaps aircraft, E.V.E. answers `fleet`.
-3. To make V38 the front door, add one line to `public/legacy-route.js` redirecting `/` to `/v38/` (or swap the prerendered index). Do this only after the /v38/ route has been reviewed live. Rollback is deleting the redirect line.
+Run `npm ci`, then `npm run build`. The build compiles all existing entries, preserves the legacy prerender and creates `dist/v38/index.html`. The Helios post-build step inlines the small first-paint stylesheet. Run `npm run preview:helios` and open `http://127.0.0.1:4388/v38/`.
 
-## Slots that still need the owner
-- `[DEGREE AND YEAR]` on the Embry-Riddle card in the credentials section.
-- Release name (Helios is a placeholder) in the hero status chip and footer.
-- The DSH fleet facts (atlas, evidence, E.V.E.) when the harness output is pasted back.
-- Higgsfield renders per `Higgsfield-Asset-Pack-V38.md`.
+The preview server binds only to this computer, compresses text and sends noindex headers. The approved V38 HTML permits indexing. The loopback server remains a local review tool; production is served by GitHub Pages.
+
+## Preserved identity and evidence
+
+Keep the Unbounded, Instrument Sans and JetBrains Mono typography, navy/gold/cyan palette, original artwork, Bit, ship and quiet startup. The original image files remain alongside the efficient WebP derivatives. The fonts are served locally with their licenses. GSAP is a pinned dependency with its license retained in a vendor chunk; the optional hero uses the existing Three.js vendor module.
+
+Seven studies reuse the existing bounded teaching models. Every simulated result stays labeled. The latest evidence displayed by V38 is the inherited September 18, 2026 observation; this interface work does not refresh or independently verify infrastructure, routing or backups. Legacy views preserve their own historical records.
+
+## Verification
+
+Run `npm run lint`, `npm run format:check`, `npm run test:node`, `npm run test:odyssey`, `npm run test:artifact`, `npm run test:release`, `npm run test:helios`, the existing layout/experience browser checks, the public repository guard and release-consistency check. The Helios test runner starts and closes its own loopback server, unless HELIOS_URL selects an existing local or live target. The existing consistency flag `--preview` refers to an older V37 preview identity and is not the flag for this nested V38 candidate.
+
+`node scripts/measure-helios.mjs 3` measures three mobile Lighthouse runs against the compressed loopback build. `node scripts/measure-helios.mjs 1 desktop` measures desktop. Run timing checks without concurrent browser tests. These are laboratory results, not production visitor metrics.
+
+## Publication and rollback
+
+The owner authorized this release on 09-19-2026. Its indexing/footer markers and release records are prepared for production. Workflow actions retain their selected versions and now use immutable commits; checkout credentials are not persisted, and the privileged tag-release job no longer uses the dependency cache. Run the required checks and publish through the established pull-request and Pages workflow. The plain-root redirect already leads to V38; preserve legacy hash/query entry behavior.
+
+After publication, verify the delivered HTML and asset hashes, mobile/desktop navigation, flight, all studies, keyboard, reduced motion and a fresh public PageSpeed sample. Revert the eventual release commit through the normal checked workflow to roll back. Record the actual merge and Pages deployment before calling the release live.

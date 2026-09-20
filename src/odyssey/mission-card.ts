@@ -2,7 +2,7 @@ import { missionHash } from "./flight-plan";
 import { computeWorldOutcome, type WorldInput } from "./sovereign-model";
 
 /** The same bounded scenario powers the live counters, saved card, and reopen link. */
-export function missionRecord(input: WorldInput) {
+export function missionRecord(input: WorldInput, baseUrl = "https://cashio.us/") {
   const outcome = computeWorldOutcome(input);
   const title =
     outcome.held === 12 && !input.connected
@@ -22,7 +22,7 @@ export function missionRecord(input: WorldInput) {
     sensitivity: `${outcome.privateCount} PRIVATE / ${outcome.publicCount} PUBLIC`,
     permission: input.allowPrivateEgress ? "PRIVATE CLOUD PERMISSION ON" : "PRIVATE CLOUD PERMISSION OFF",
     heldLabel: input.architecture === "cloud" && !input.connected ? "WAITING FOR CONNECTION" : "HELD FOR PERMISSION",
-    url: `https://cashio.us/${missionHash(input)}`,
+    url: `${baseUrl}${missionHash(input)}`,
     filename: `cashio-mission-${input.architecture}-${input.connected ? "connected" : "offline"}-${outcome.local}-${outcome.cloud}-${outcome.held}.png`,
   };
 }
@@ -42,8 +42,16 @@ function lines(context: CanvasRenderingContext2D, text: string, x: number, y: nu
 }
 
 /** A local, bounded PNG. The scene was frozen synchronously before any asynchronous work. */
-export async function createMissionCard(still: HTMLCanvasElement, input: WorldInput, chapter: string) {
-  const record = missionRecord(input);
+export async function createMissionCard(
+  still: HTMLCanvasElement,
+  input: WorldInput,
+  chapter: string,
+  options: { baseUrl?: string; helios?: boolean } = {},
+) {
+  const record = missionRecord(input, options.baseUrl);
+  const display = options.helios ? "Unbounded" : "Oxanium";
+  const body = options.helios ? '"Instrument Sans"' : "Exo";
+  const mono = options.helios ? '"JetBrains Mono"' : "Jet";
   const card = document.createElement("canvas");
   card.width = 1200;
   card.height = 800;
@@ -59,13 +67,13 @@ export async function createMissionCard(still: HTMLCanvasElement, input: WorldIn
   ctx.strokeStyle = "#6b7e86";
   ctx.strokeRect(24.5, 24.5, 1151, 751);
   ctx.fillStyle = "#efd0a0";
-  ctx.font = "600 30px Oxanium, sans-serif";
+  ctx.font = `600 30px ${display}, sans-serif`;
   const signature = document.querySelector<HTMLImageElement>(".o-header img");
   if (signature?.complete && signature.naturalWidth) {
     const height = (148 * signature.naturalHeight) / signature.naturalWidth;
     ctx.drawImage(signature, 56, 60 - height / 2, 148, height);
-  } else ctx.fillText("CASHIO", 56, 78);
-  ctx.font = "14px Jet, monospace";
+  } else ctx.fillText("cAshIo", 56, 78);
+  ctx.font = `14px ${mono}, monospace`;
   ctx.fillStyle = "#bdd6e2";
   ctx.fillText("YOUR FLIGHT RECORD", 220, 75);
   ctx.textAlign = "right";
@@ -83,19 +91,19 @@ export async function createMissionCard(still: HTMLCanvasElement, input: WorldIn
     height = still.height * scale;
   ctx.drawImage(still, 42 + (714 - width) / 2, 122 + (446 - height) / 2, width, height);
   ctx.fillStyle = "#a6ccd7";
-  ctx.font = "13px Jet, monospace";
+  ctx.font = `13px ${mono}, monospace`;
   ctx.fillText(chapter.toUpperCase(), 56, 590);
 
   ctx.fillStyle = "#efd0a0";
-  ctx.font = "13px Jet, monospace";
+  ctx.font = `13px ${mono}, monospace`;
   ctx.fillText(record.architecture, 788, 150);
   ctx.fillStyle = "#eef7fa";
-  ctx.font = "500 38px Oxanium, sans-serif";
+  ctx.font = `500 ${options.helios ? 29 : 38}px ${display}, sans-serif`;
   const bottom = lines(ctx, record.title, 786, 198, 345, 45);
-  ctx.font = "500 17px Exo, sans-serif";
+  ctx.font = `500 17px ${body}, sans-serif`;
   ctx.fillStyle = "#bed1dc";
   lines(ctx, record.outcome.summary, 788, bottom + 18, 344, 26);
-  ctx.font = "12px Jet, monospace";
+  ctx.font = `12px ${mono}, monospace`;
   [record.connection, record.sensitivity, record.permission].forEach((label, i) => {
     ctx.fillStyle = i === 0 ? "#91eded" : "#c4d4df";
     ctx.fillText(label, 788, 491 + i * 25);
@@ -110,16 +118,16 @@ export async function createMissionCard(still: HTMLCanvasElement, input: WorldIn
     const x = 56 + i * 365;
     ctx.fillStyle = measure.color;
     ctx.fillRect(x, 612, 332, 2);
-    ctx.font = "500 49px Oxanium, sans-serif";
+    ctx.font = `500 ${options.helios ? 43 : 49}px ${display}, sans-serif`;
     ctx.fillText(String(measure.value).padStart(2, "0"), x, 674);
-    ctx.font = "12px Jet, monospace";
-    ctx.fillText(measure.label, x + 83, 660);
+    ctx.font = `12px ${mono}, monospace`;
+    ctx.fillText(measure.label, x + (options.helios ? 110 : 83), 660);
   });
   ctx.fillStyle = "#c7d9e1";
-  ctx.font = "13px Jet, monospace";
+  ctx.font = `13px ${mono}, monospace`;
   ctx.fillText(record.url, 56, 723);
   ctx.fillStyle = "#abc0cd";
-  ctx.font = "14px Exo, sans-serif";
+  ctx.font = `14px ${body}, sans-serif`;
   ctx.fillText(
     "Browser illustration · 12 synthetic requests · No AI requests sent · Reopen the link to try these settings.",
     56,

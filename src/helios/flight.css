@@ -1,0 +1,66 @@
+#helios-flight .first-flight {
+  border-radius: 22px;
+  font-family: var(--sans);
+  --ff-cyan: var(--cyan);
+  --ff-gold: var(--gold);
+}
+#helios-flight .first-flight button {
+  font-family: var(--sans);
+  border-radius: 10px;
+}
+#helios-flight .ff-header h2,
+#helios-flight .ff-story h3 {
+  font-family: var(--display);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.18;
+}
+#helios-flight .ff-header h2 {
+  font-size: clamp(17px, 2.3vw, 28px);
+}
+#helios-flight .ff-story h3 {
+  font-size: clamp(23px, 2.5vw, 35px);
+}
+#helios-flight .ff-eyebrow,
+#helios-flight .ff-stage-cap,
+#helios-flight .ff-shot-label {
+  font-family: var(--mono);
+}
+#helios-flight .o-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+#helios-flight .first-flight picture {
+  display: contents;
+}
+#helios-flight .first-flight .ff-fallback {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+#helios-flight .o-human-review strong,
+#helios-flight .o-human-review strong + span {
+  font-family: var(--sans);
+}
+#helios-flight .ff-delta dd {
+  font-family: var(--display);
+  font-size: clamp(20px, 2.1vw, 28px);
+}
+@media (max-width: 700px) {
+  #helios-flight .first-flight {
+    border-radius: 0;
+  }
+  #helios-flight .ff-header {
+    padding: 12px 16px;
+  }
+  #helios-flight .ff-header h2 {
+    max-width: 24ch;
+  }
+  #helios-flight .ff-close {
+    padding: 8px 10px;
+  }
+}

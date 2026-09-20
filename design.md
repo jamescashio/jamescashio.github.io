@@ -1,3 +1,15 @@
+# Approved V38.1 Helios release — 09-19-2026
+
+An orbital workshop visitors can operate: the original cAshIo world becomes a clear, responsive journey from curiosity to a consequential decision.
+
+Preserve the Unbounded headings, Instrument Sans reading text, JetBrains Mono labels, navy/gold/cyan palette, Bit, original artwork, sovereign ship and historical evidence. Use gold for a completed decision and cyan for exploration. Keep the large desktop composition; on phones reserve quiet space for text and make Menu visible. Content and buttons paint immediately. Motion enhances already-visible content; manual motion-off and system reduced motion reveal a complete static experience. Sound remains off.
+
+The opening flight launches directly in V38. Reuse the existing flight and tested routing models. Each of seven studies must supply the controls it describes, display the resulting decision, expose its rule, and retain a useful next question. Dated records stay dated, unknown routing stays unknown, and fictional demonstrations are labeled.
+
+Use the existing grid and panels, refining spacing and safe touch zones at 320, 390, 768 and 1440px. Dynamic scene code loads after the useful first paint or on request; pause offscreen and hidden scenes. Separate behavior, styles and illustrations into maintained modules. Verify keyboard, menus, exact shared settings, native dialogs, readable output, reduced motion, accessibility and mobile performance against the production build.
+
+The owner approved public publication of the reviewed refinement and requested a complete polish pass, including the House Cashio signature. Baseline/rollback: 82425d30fb0e6d2c7891281ded0423b854d6f23d. V38.1 has its own receipt at /v38/site-release.json; the V37.17 and V35 compatibility experiences retain their identities and evidence. See docs/helios-release.md for validation and rollback. Earlier release notes below are historical.
+
 # Current release — V37.17 Precision polish
 
 The owner approved publication of the polished preview on 09-11-2026. Preserve Bit, original artwork and films, Oxanium/Exo/Jet typography, midnight/cyan/champagne palette, all seven studies, source dates and legacy routes.

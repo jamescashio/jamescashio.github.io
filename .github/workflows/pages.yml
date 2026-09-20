@@ -14,17 +14,18 @@ jobs:
       contents: read
       pages: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          persist-credentials: false
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: npm
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: "3.12"
-      - uses: browser-actions/setup-chrome@v2
+      - uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # v2
         id: setup_chrome
         with:
           chrome-version: 147.0.7727.57
@@ -48,6 +49,10 @@ jobs:
         env:
           CHROME_PATH: ${{ steps.setup_chrome.outputs.chrome-path }}
           CHROME_DEVEL_SANDBOX: /opt/google/chrome/chrome-sandbox
+      - run: npm run test:helios
+        env:
+          CHROME_PATH: ${{ steps.setup_chrome.outputs.chrome-path }}
+          CHROME_DEVEL_SANDBOX: /opt/google/chrome/chrome-sandbox
       - run: npm run test:release
       - run: python scripts/public_repo_guard.py
       - run: python scripts/check_release_consistency.py
@@ -65,8 +70,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           test "$(gh api repos/${GITHUB_REPOSITORY}/pages --jq .build_type)" = "workflow"
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v5
+      - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
         with:
           path: dist
           # Pages must receive the validated security-discovery file as well.
@@ -82,4 +87,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4

@@ -15,7 +15,9 @@ export default function FirstFlight({
   motion,
   initialStep,
   onClose,
+  edition = "V37 / LIGHTFOLD",
 }: {
+  edition?: string;
   motion: boolean;
   initialStep: string;
   onClose: (destination?: string) => void;
@@ -240,7 +242,10 @@ export default function FirstFlight({
       }
       const { createMissionCard } = await import("./mission-card");
       await document.fonts.ready;
-      const { blob, record } = await createMissionCard(still, selectedInput, selectedChapter);
+      const { blob, record } = await createMissionCard(still, selectedInput, selectedChapter, {
+        baseUrl: `${location.origin}${location.pathname}`,
+        helios: edition === "V38 / HELIOS",
+      });
       if (generation !== captureGeneration.current) return;
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -338,7 +343,7 @@ export default function FirstFlight({
     >
       <header className="ff-header">
         <div>
-          <span className="ff-eyebrow">V37 / LIGHTFOLD</span>
+          <span className="ff-eyebrow">{edition}</span>
           <h2 id="ff-title">
             First contact. <em>Human command.</em>
           </h2>

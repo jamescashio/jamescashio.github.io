@@ -73,6 +73,7 @@ const requiredPagesCommands = requiredWorkflowCommands.toSpliced(
   0,
   "npm run check:layout:runtime:pinned",
   "npm run check:v36:runtime:pinned",
+  "npm run test:helios",
 );
 
 function assertOrdered(text, markers, boundary, label) {
@@ -113,7 +114,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
   }
   assert.equal(packageJson.scripts.lint, "eslint . --max-warnings 0");
   const formattingScope =
-    '"src/**/*.{ts,tsx,css}" "tests/**/*.mjs" "scripts/**/*.{mjs,mts}" "*.{js,json,md,ts}" "docs/**/*.md" ".github/**/*.{md,yml,yaml}" "public/**/*.json"';
+    '"src/**/*.{ts,tsx,js,css}" "tests/**/*.mjs" "scripts/**/*.{mjs,mts}" "*.{js,json,md,ts}" "docs/**/*.md" ".github/**/*.{md,yml,yaml}" "public/**/*.json" "v38/**/*.html"';
   assert.equal(packageJson.scripts.format, `prettier --write ${formattingScope}`);
   assert.equal(packageJson.scripts["format:check"], `prettier --check ${formattingScope}`);
   const expandedTest = expandScript(packageJson.scripts, "test");
@@ -124,6 +125,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
     "vite build",
     "node --import tsx scripts/prerender.mts",
     "node --import tsx scripts/prerender-odyssey.mts",
+    "node --import tsx scripts/prerender-helios.mts",
     packageJson.scripts["test:artifact"],
     packageJson.scripts["test:release"],
   ]);
@@ -131,8 +133,8 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
   assert.match(expandedTest[0], /tests\/prerender\.test\.mjs/);
   assert.doesNotMatch(expandedTest[0], /tests\/release-gates\.test\.mjs/);
   assert.equal(packageJson.scripts["test:artifact"], "node --import tsx --test tests/release-gates.test.mjs");
-  assert.match(expandedTest[6], /tests\/release-gates\.test\.mjs/);
-  assert.match(expandedTest[7], /^python -m unittest /);
+  assert.match(expandedTest[7], /tests\/release-gates\.test\.mjs/);
+  assert.match(expandedTest[8], /^python -m unittest /);
   assert.deepEqual(expandScript(packageJson.scripts, "verify"), [
     packageJson.scripts.lint,
     packageJson.scripts["format:check"],
@@ -142,6 +144,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
     "vite build",
     "node --import tsx scripts/prerender.mts",
     "node --import tsx scripts/prerender-odyssey.mts",
+    "node --import tsx scripts/prerender-helios.mts",
     packageJson.scripts["test:artifact"],
     "node scripts/check_layout_runtime.mjs",
     "node scripts/check_v36_runtime.mjs",
@@ -562,7 +565,7 @@ test("Pages refuses artifact upload unless GitHub Actions owns the Pages source 
     packageJson.scripts["check:layout:runtime:pinned"],
     "node scripts/check_layout_runtime.mjs --expected-browser-major=147",
   );
-  assert.match(workflow, /browser-actions\/setup-chrome@v2/);
+  assert.match(workflow, /browser-actions\/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4/);
   assert.match(workflow, /chrome-version:\s*["']?147\.0\.7727\.57["']?/);
   assert.match(workflow, /CHROME_PATH:\s*\$\{\{\s*steps\.setup_chrome\.outputs\.chrome-path\s*\}\}/);
   assert.match(workflow, /npm run check:layout:runtime:pinned/);
@@ -583,9 +586,13 @@ test("Pages refuses artifact upload unless GitHub Actions owns the Pages source 
       : "least-sufficient job permissions",
     workflow.includes("GH_TOKEN: ${{ github.token }}") ? null : "job token",
     workflow.includes(workflowOnlySourceGuard) ? null : "workflow-only Pages source guard",
-    workflow.includes("actions/configure-pages@v5") ? null : "configure-pages v5",
-    workflow.includes("actions/upload-pages-artifact@v5") ? null : "upload-pages-artifact v5",
-    /actions\/upload-pages-artifact@v5[\s\S]{0,280}include-hidden-files:\s*true/.test(workflow)
+    workflow.includes("actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b") ? null : "configure-pages v5",
+    workflow.includes("actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9")
+      ? null
+      : "upload-pages-artifact v5",
+    /actions\/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9[\s\S]{0,280}include-hidden-files:\s*true/.test(
+      workflow,
+    )
       ? null
       : "hidden Pages artifact inclusion",
   ].filter(Boolean);
@@ -594,8 +601,12 @@ test("Pages refuses artifact upload unless GitHub Actions owns the Pages source 
   assert.doesNotMatch(workflow, /jekyll/i);
   assertOrdered(
     workflow,
-    [...requiredPagesCommands, workflowOnlySourceGuard, "actions/configure-pages@v5"],
-    "actions/upload-pages-artifact@v5",
+    [
+      ...requiredPagesCommands,
+      workflowOnlySourceGuard,
+      "actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b",
+    ],
+    "actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9",
     "Pages",
   );
 });
@@ -623,6 +634,7 @@ test("Public Site Safety preserves report upload and enforcement after every gat
     "artifact_tests",
     "layout_runtime",
     "v36_runtime",
+    "helios_runtime",
     "release_tests",
     "safety_scan",
     "release_consistency",
@@ -638,6 +650,43 @@ test("tag publication derives V37 from software metadata and validates one built
   assert.match(workflow, /require\('\.\/package\.json'\)\.version\.split\('\.'\)\[0\]/);
   assert.doesNotMatch(workflow, /EXPECTED_TAG[^\n]*status\.json/);
   assert.match(workflow, /node-version:\s*22/);
-  assertOrdered(workflow, requiredWorkflowCommands, "softprops/action-gh-release@v3", "GitHub Release");
+  assertOrdered(
+    workflow,
+    requiredWorkflowCommands,
+    "softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64",
+    "GitHub Release",
+  );
   assert.equal((workflow.match(/run: npm run build/g) ?? []).length, 1);
+});
+
+test("Helios release identity, signature assets and compatibility receipts agree", async () => {
+  const release = JSON.parse(await read("public/v38/site-release.json"));
+  assert.equal(release.experienceVersion, "38.1.0");
+  assert.equal(release.entry, "/v38/");
+  assert.equal(release.published, true);
+  assert.equal(await read("dist/v38/site-release.json"), await read("public/v38/site-release.json"));
+  for (const name of ["site-release.json", "event-horizon-release.json"]) {
+    const compatibility = JSON.parse(await read(`dist/${name}`));
+    assert.deepEqual(compatibility.frontDoor, {
+      entry: release.entry,
+      experienceVersion: release.experienceVersion,
+      visualEdition: release.visualEdition,
+      receipt: "/v38/site-release.json",
+    });
+  }
+  const evidence = JSON.parse(await read("public/v38/status.json"));
+  assert.equal(release.evidenceSnapshot.observedAtUtc, evidence.provenance.observedAtUtc);
+  const doc = new JSDOM(await read("dist/v38/index.html")).window.document;
+  assert.doesNotMatch(doc.querySelector('meta[name="robots"]').content, /noindex|nofollow/);
+  assert.doesNotMatch(doc.body.textContent, /Unpublished refinement/);
+  assert.match(doc.body.textContent, /V38\.1 \/ HELIOS/);
+  assert.equal(doc.querySelector("#sig-art").getAttribute("src"), "/v38/assets/celestial.webp");
+  assert.equal(
+    doc.querySelector('#sigplate a[href="/#signature"]').textContent.trim(),
+    "Explore the celestial signature in 3D ↗",
+  );
+  for (const ext of ["webp", "jpg"]) {
+    const relative = `v38/assets/celestial.${ext}`;
+    assert.deepEqual(await readFile(asset(`dist/${relative}`)), await readFile(asset(`public/${relative}`)));
+  }
 });
