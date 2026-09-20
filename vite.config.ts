@@ -12,7 +12,17 @@ export default defineConfig({
     target: "es2022",
     sourcemap: false,
     rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.replaceAll("\\", "/").includes("/node_modules/gsap/")) return "gsap";
+        },
+        // Keep third-party code and its intact license in the existing vendor boundary.
+        chunkFileNames(chunk) {
+          return chunk.name === "gsap" ? "v38/vendor/[name]-[hash].js" : "assets/[name]-[hash].js";
+        },
+      },
       input: {
+        helios: path.resolve(__dirname, "v38/index.html"),
         index: path.resolve(__dirname, "index.html"),
         odyssey: path.resolve(__dirname, "odyssey.html"),
         commandDeck: path.resolve(__dirname, "command-deck.html"),

@@ -1,0 +1,2133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>cAshIo · Helios — a human in command</title>
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content="cAshIo · A human in command" />
+    <meta property="og:description" content="Step into an orbital workshop. Change a decision. See why it matters." />
+    <meta property="og:image" content="https://cashio.us/v38/assets/orbit.jpg" />
+    <link rel="preload" href="/v38/fonts/unbounded-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/v38/fonts/instrument-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <meta
+      name="description"
+      content="Doug Cashio builds local AI and security systems that keep a human in command. Seven working studies, a 3D starship, and dated evidence you can inspect."
+    />
+    <link rel="icon" href="/cashio/icon.svg" type="image/svg+xml" />
+    <link rel="canonical" href="https://cashio.us/v38/" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Doug Cashio",
+        "alternateName": "James Douglas Cashio",
+        "jobTitle": "Principal Solutions Consultant",
+        "url": "https://cashio.us/",
+        "sameAs": [
+          "https://www.linkedin.com/in/dougcashio/",
+          "https://github.com/jamescashio",
+          "https://www.credly.com/users/james-cashio/badges"
+        ],
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Pensacola",
+          "addressRegion": "FL",
+          "addressCountry": "US"
+        },
+        "knowsAbout": ["Local AI", "AI orchestration", "Cybersecurity", "MSP channel", "Proxmox", "Zero Trust"]
+      }
+    </script>
+    <link rel="stylesheet" href="/src/helios/styles.css" />
+  </head>
+  <body>
+    <a class="skip" href="#main-content">Skip to content</a>
+    <div class="flash" id="flash" aria-hidden="true"></div>
+    <div class="cursor" aria-hidden="true"></div>
+    <div class="cursor-ring" aria-hidden="true"></div>
+    <div class="rail" aria-hidden="true"><i id="railbar"></i></div>
+    <nav class="sections" aria-label="Sections">
+      <a href="#top" title="Orbit"></a><a href="#work" title="Selected work"></a><a href="#studies" title="Studies"></a
+      ><a href="#universe" title="The universe"></a><a href="#starship" title="Starship"></a
+      ><a href="#evidence" title="Evidence"></a><a href="#operator" title="Operator"></a
+      ><a href="#contact" title="Contact"></a>
+    </nav>
+
+    <header class="nav show" id="nav">
+      <div class="in">
+        <a class="brand" href="#top" aria-label="cAshIo home">
+          <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+            <rect x=".5" y=".5" width="31" height="31" rx="9" fill="#0b1524" stroke="#294052" />
+            <path
+              d="M22.5 8.8a10 10 0 1 0 0 14.4"
+              fill="none"
+              stroke="#efb85f"
+              stroke-width="4"
+              stroke-linecap="round"
+            />
+            <path d="m23 11 1.8 3.2L28 16l-3.2 1.8L23 21l-1.8-3.2L18 16l3.2-1.8Z" fill="#66e2ee" />
+          </svg>
+          <span>c<span class="em">A</span>sh<span class="cy">I</span>o</span>
+        </a>
+        <nav aria-label="Primary">
+          <a href="#work">Selected work</a><a href="#starship">Starship</a><a href="#universe">The universe</a
+          ><a href="#evidence">Evidence</a>
+        </nav>
+        <div class="acts">
+          <button class="btn ghost sm" id="mc-btn" aria-haspopup="dialog" aria-controls="mc" type="button">
+            <svg
+              class="ic-svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="9" />
+              <circle cx="12" cy="12" r="3" />
+              <path d="M12 3v3M12 18v3M3 12h3M18 12h3" /></svg
+            ><span class="menu-desktop">Mission Control</span><span class="menu-mobile">Menu</span>
+            <span class="mono menu-desktop" style="font-size: 11px; color: var(--muted); letter-spacing: 0.08em"
+              >⌘K</span
+            >
+          </button>
+          <button class="btn line sm" id="motion-btn" type="button" aria-label="Motion" aria-pressed="true">
+            <svg class="ic-svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <rect x="5" y="4" width="4" height="16" />
+              <rect x="15" y="4" width="4" height="16" /></svg
+            ><span class="hide-m">Motion on</span>
+          </button>
+          <a class="btn gold sm nav-contact" href="#contact">Let’s talk</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="main-content" tabindex="-1">
+      <!-- ================= HERO ================= -->
+      <section class="hero" id="top" aria-label="Introduction">
+        <canvas class="gl" id="gl" aria-hidden="true"></canvas>
+        <img
+          class="fallback"
+          id="fallback"
+          src="assets/orbit.webp"
+          width="1200"
+          height="675"
+          decoding="async"
+          fetchpriority="high"
+          alt=""
+          aria-hidden="true"
+        />
+        <div class="grid-bg"></div>
+        <div class="vignette"></div>
+        <div class="status">
+          <span
+            class="mono"
+            style="
+              font-size: 11px;
+              color: var(--gold);
+              border: 1px solid rgba(242, 200, 122, 0.6);
+              padding: 6px 10px;
+              border-radius: 6px;
+            "
+            >V38 · HELIOS</span
+          >
+          <span class="mono" style="font-size: 10px; color: var(--muted)"
+            >THE HUMAN RECKONING · A HUMAN IN COMMAND</span
+          >
+        </div>
+        <div class="content">
+          <div class="kick" data-hero style="display: flex; align-items: center; gap: 10px">
+            <span style="width: 8px; height: 8px; background: var(--cyan); box-shadow: 0 0 12px var(--cyan)"></span>DOUG
+            CASHIO / PRINCIPAL SOLUTIONS CONSULTANT / PENSACOLA
+          </div>
+          <h1 style="margin-top: 20px">
+            <span class="line"><span class="w">Own the iron.</span></span
+            ><span class="line"><span class="w">Shape the</span></span
+            ><span class="line"><span class="w em">possible.</span></span>
+          </h1>
+          <p class="sub" data-hero>
+            I build local AI and security systems that keep people in command. Step inside. Change a decision. See why
+            it matters.
+          </p>
+          <div class="cta" data-hero>
+            <a
+              href="#flight=board"
+              class="btn gold"
+              data-flight
+              style="min-height: 66px; padding: 0 26px; gap: 16px"
+              data-magnet
+            >
+              <svg
+                width="26"
+                height="26"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#1A1204"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="9" />
+                <circle cx="12" cy="12" r="3.5" fill="#1A1204" />
+              </svg>
+              <span style="display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15"
+                ><span style="font-size: 18px">Take the 30-second flight</span
+                ><span class="mono" style="font-size: 10px; letter-spacing: 0.12em; opacity: 0.8"
+                  >Open the hull. Cut the cloud. Keep command.</span
+                ></span
+              >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#1A1204"
+                stroke-width="2.4"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </a>
+            <a
+              href="#work"
+              style="
+                color: var(--ink);
+                font-weight: 600;
+                border-bottom: 1px solid rgba(234, 240, 248, 0.3);
+                padding-bottom: 3px;
+              "
+              >Try one decision ↗</a
+            >
+            <a href="#studies" style="color: var(--gold); font-weight: 600">Explore the workshop ↗</a>
+          </div>
+        </div>
+        <div class="meta" data-hero>
+          <span class="mono" style="font-size: 11px; color: var(--muted)">30 seconds · Sound off · Your pace</span>
+          <span class="mono" style="font-size: 11px; color: var(--cyan)"
+            >An original orbital world · yours to explore</span
+          >
+        </div>
+        <button class="bit" type="button" id="fold-btn" data-hero data-magnet>
+          <span class="mono" style="font-size: 11px; color: var(--muted)">BIT / HUMAN CO-PILOT</span
+          ><span class="mono" style="font-size: 12px; color: var(--gold)">INITIATE FOLD ↗</span>
+        </button>
+        <div class="scroll" aria-hidden="true"><span class="mono" style="font-size: 10px">Scroll</span><i></i></div>
+      </section>
+
+      <!-- ================= THESIS ================= -->
+      <section class="block thesis" aria-label="Thesis" style="padding-block: clamp(48px, 6vw, 80px)">
+        <div class="wrap grid" style="align-items: center">
+          <p class="c5 lines">
+            <span>Own the infrastructure.</span><span>Make the reasoning visible.</span
+            ><span class="cy">Keep a human in command.</span>
+          </p>
+          <div class="c7" style="display: flex; flex-direction: column; gap: 16px">
+            <div
+              style="display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap"
+            >
+              <span class="kick gold">YOUR FIRST MINUTE</span
+              ><span class="muted">See it. Change it. Understand it.</span>
+            </div>
+            <div class="minute" data-stagger>
+              <div class="step">
+                <span class="mono" style="font-size: 11px; color: var(--gold)">01</span><strong>Take the flight</strong
+                ><span class="muted" style="font-size: 14px">Open the hull. See inside.</span>
+              </div>
+              <div class="step">
+                <span class="mono" style="font-size: 11px; color: var(--gold)">02</span
+                ><strong>Change one decision</strong
+                ><span class="muted" style="font-size: 14px">Watch the boundary respond.</span>
+              </div>
+              <div class="step">
+                <span class="mono" style="font-size: 11px; color: var(--gold)">03</span><strong>Inspect the work</strong
+                ><span class="muted" style="font-size: 14px">A real build. Its dated evidence.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 01 SELECTED WORK ================= -->
+      <section class="block" id="work" aria-labelledby="work-h">
+        <div class="wrap">
+          <div class="head">
+            <div>
+              <div class="kick" style="margin-bottom: 14px">01 / SELECTED WORK</div>
+              <h2 id="work-h" data-split>Try a decision.<br />See what changes.</h2>
+            </div>
+            <div class="r">
+              <div class="mono" style="font-size: 11px; color: var(--muted); margin-bottom: 6px">
+                BUILT. OPERATED. EXPLAINED.
+              </div>
+              <p class="muted" style="margin: 0; font-size: 17px">
+                One document. The same task. Now change its privacy boundary. Predict the route, then test the rule
+                yourself.
+              </p>
+            </div>
+          </div>
+          <div class="grid" data-stagger>
+            <div
+              class="panel c7"
+              style="padding: clamp(22px, 2.6vw, 34px); display: flex; flex-direction: column; gap: 22px"
+            >
+              <div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap">
+                <span class="kick gold">THE PRIVACY TEST / ABOUT 20 SECONDS</span
+                ><span class="mono" style="font-size: 11px; color: var(--muted)">BROWSER-ONLY</span>
+              </div>
+              <h3>One change. Who decides?</h3>
+              <p class="muted" style="margin: 0">
+                Analyze a document and require sources. Now make that document private.
+              </p>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px">
+                <div
+                  class="soft"
+                  style="
+                    padding: 22px;
+                    border-color: rgba(56, 225, 255, 0.3);
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                  "
+                >
+                  <span class="mono" style="font-size: 11px; color: var(--cyan)">01 / PUBLIC DOCUMENT</span
+                  ><span class="syne" style="font-size: 28px; font-weight: 700">Research</span
+                  ><span class="muted" style="font-size: 14px">Attributable sources select the research route.</span>
+                </div>
+                <div
+                  class="soft"
+                  style="
+                    padding: 22px;
+                    border-color: rgba(242, 200, 122, 0.4);
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                  "
+                >
+                  <span class="mono" style="font-size: 11px; color: var(--gold)">02 / PRIVATE DOCUMENT</span
+                  ><span class="syne" id="pv-answer" style="font-size: 28px; font-weight: 700">Your call.</span
+                  ><span class="muted" style="font-size: 14px"
+                    >The work and source requirement stay the same. Only privacy changes.</span
+                  >
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 12px">
+                <strong>Predict the private document’s route</strong>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center">
+                  <button class="pill" type="button" data-pv="keep" aria-pressed="false">Keep Research</button>
+                  <button class="pill gold" type="button" data-pv="human" aria-pressed="false">Human review</button>
+                  <button class="btn ghost sm" type="button" id="pv-reveal">Reveal the private route ↗</button>
+                </div>
+                <div class="step" id="pv-result" hidden style="border-color: rgba(242, 200, 122, 0.4)">
+                  <span class="dot" style="background: var(--gold); box-shadow: 0 0 12px var(--gold)"></span
+                  ><span id="pv-text"></span>
+                </div>
+              </div>
+              <div
+                style="display: flex; gap: 22px; font-size: 14px; font-weight: 600; flex-wrap: wrap; margin-top: auto"
+              >
+                <a href="#studies" data-load="public">1. Load a public request ↗</a
+                ><a href="#studies" data-load="private">2. Load the private version ↗</a>
+              </div>
+              <span class="mono" style="font-size: 10px; color: var(--muted)"
+                >Browser-only illustration. No document is uploaded and no AI request is sent.</span
+              >
+            </div>
+            <div
+              class="panel c5"
+              style="
+                padding: clamp(22px, 2.6vw, 34px);
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                background: linear-gradient(160deg, rgba(242, 200, 122, 0.12), rgba(16, 26, 44, 0.95) 42%);
+              "
+            >
+              <span class="kick gold">FROM MY WORKSHOP / SMART ROUTING</span>
+              <h3>Spend the AI budget where it matters.</h3>
+              <p class="muted" style="margin: 0; font-size: 15px">
+                I reserve the more capable route for work that needs it.
+              </p>
+              <div style="display: flex; align-items: flex-end; gap: 10px; margin-top: 4px">
+                <span
+                  class="num em"
+                  id="cents"
+                  data-count="26"
+                  style="font-size: clamp(96px, 9vw, 136px); text-shadow: 0 0 40px rgba(242, 200, 122, 0.35)"
+                  >26</span
+                >
+                <span class="syne em" style="font-size: 48px; font-weight: 700; padding-bottom: 12px">¢</span>
+                <span class="mono" style="font-size: 13px; color: var(--muted); padding-bottom: 20px">/day</span>
+              </div>
+              <div>
+                <strong style="font-size: 14px">Observed AI provider usage · historical sample</strong><br /><span
+                  class="mono"
+                  style="font-size: 11px; color: var(--muted)"
+                  >Sample · July 21 to 22, 2026</span
+                >
+              </div>
+              <dl style="margin: 0; display: grid; grid-template-columns: 120px 1fr; gap: 10px 12px; font-size: 14px">
+                <dt class="mono" style="font-size: 11px; color: var(--cyan); padding-top: 3px">The problem</dt>
+                <dd class="muted" style="margin: 0">
+                  One expensive default treats routine work and hard decisions alike.
+                </dd>
+                <dt class="mono" style="font-size: 11px; color: var(--cyan); padding-top: 3px">My decision</dt>
+                <dd class="muted" style="margin: 0">
+                  Atlas handles recurring work; harder tasks can escalate. I check quality, privacy and reliability
+                  before considering cost.
+                </dd>
+                <dt class="mono" style="font-size: 11px; color: var(--cyan); padding-top: 3px">The result</dt>
+                <dd class="muted" style="margin: 0">
+                  A two-day record of provider usage. Scope and exclusions are in the evidence boundary below.
+                </dd>
+              </dl>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: auto">
+                <a href="#studies" class="btn gold sm" data-load="public">Try the routing demo</a
+                ><a href="#evidence" class="btn line sm">Read the evidence boundary</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- ================= SEVEN STUDIES ================= -->
+      <section
+        class="block"
+        id="studies"
+        aria-labelledby="studies-h"
+        style="background: linear-gradient(180deg, rgba(4, 7, 14, 0.5), rgba(7, 13, 26, 0.72))"
+      >
+        <div class="wrap">
+          <div class="head">
+            <div>
+              <div class="kick gold" style="margin-bottom: 14px">GO DEEPER / SEVEN WORKING STUDIES</div>
+              <h2 id="studies-h" data-split>Seven questions.<br />Your hands on<br />the controls.</h2>
+            </div>
+            <div class="r">
+              <span class="mono" style="font-size: 12px; color: var(--muted)">SELECT A BUILD / 07</span>
+            </div>
+          </div>
+          <div class="grid">
+            <div class="c5 studies-list" id="studies-list" role="tablist" aria-label="Studies" data-stagger></div>
+            <div
+              class="panel c7 instrument"
+              id="instrument"
+              role="tabpanel"
+              tabindex="0"
+              aria-labelledby="study-hermes"
+            >
+              <svg class="ring-progress" viewBox="0 0 84 84" aria-hidden="true">
+                <circle class="bg" cx="42" cy="42" r="36" />
+                <circle class="fg" id="ringfg" cx="42" cy="42" r="36" />
+                <text x="42" y="43" id="ringtxt">00/05</text>
+              </svg>
+              <div>
+                <span class="mono" style="font-size: 11px; color: var(--muted)"
+                  >STUDY <span id="st-n">01</span> / OF 07</span
+                >
+                <h3
+                  class="syne"
+                  id="st-name"
+                  style="font-size: clamp(28px, 3vw, 36px); font-weight: 800; margin-top: 4px"
+                >
+                  HERMES
+                </h3>
+                <div class="muted" id="st-sub" style="font-size: 16px">Match the work to the route.</div>
+              </div>
+              <p
+                id="st-cue"
+                style="
+                  margin: 0;
+                  font-size: 15px;
+                  color: var(--ink2);
+                  padding: 14px 18px;
+                  border-left: 2px solid var(--cyan);
+                  background: rgba(56, 225, 255, 0.05);
+                  border-radius: 0 10px 10px 0;
+                "
+              >
+                Route a draft. Require sources. Then add private information.
+              </p>
+              <div class="ctrl" id="hermes-controls">
+                <div style="display: flex; flex-direction: column; gap: 14px">
+                  <div style="display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap">
+                    <span class="kick" style="font-size: 11px">ROUTE QUALIFICATION</span
+                    ><span class="mono" style="font-size: 10px; color: var(--muted)"
+                      >INTENT · POLICY CORE · DECISION</span
+                    >
+                  </div>
+                  <strong style="font-size: 14px">Choose the work</strong>
+                  <div style="display: flex; gap: 8px; flex-wrap: wrap" id="intent-group">
+                    <button class="pill" type="button" data-intent="draft" aria-pressed="true">Draft</button
+                    ><button class="pill" type="button" data-intent="research" aria-pressed="false">Research</button
+                    ><button class="pill" type="button" data-intent="analyze" aria-pressed="false">Analyze</button>
+                  </div>
+                  <button class="toggle gold" type="button" id="tg-private" aria-pressed="false">
+                    <span>Contains private information</span><span class="knob"></span>
+                  </button>
+                  <button class="toggle" type="button" id="tg-sources" aria-pressed="false">
+                    <span>Requires attributable sources</span><span class="knob"></span>
+                  </button>
+                  <button class="btn gold" type="button" id="route-btn" data-magnet>Route this request</button>
+                  <span class="mono" style="font-size: 10px; color: var(--muted)"
+                    >LOCAL DEMONSTRATION / NO LIVE SYSTEM ACCESS</span
+                  >
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 10px; min-width: 0">
+                  <div style="display: flex; justify-content: space-between; align-items: baseline">
+                    <span class="mono" style="font-size: 11px; color: var(--muted)">EXAMPLE OUTPUT</span
+                    ><span class="mono" id="st-code" style="font-size: 11px; color: var(--cyan)">QUALIFIED</span>
+                  </div>
+                  <div style="display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap">
+                    <span class="lane cy" id="st-lane">Workhorse</span
+                    ><span class="muted" style="font-size: 13px">lane</span>
+                  </div>
+                  <div id="st-steps" style="display: flex; flex-direction: column; gap: 8px"></div>
+                  <p class="muted" id="st-detail" style="margin: 4px 0 0; font-size: 14px">
+                    Choose a task and its boundaries, then run the five-step demonstration. No request leaves this page.
+                  </p>
+                </div>
+              </div>
+              <div id="secondary-instrument" hidden></div>
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: 1fr 1.3fr;
+                  gap: 20px;
+                  padding-top: 16px;
+                  border-top: 1px solid var(--line2);
+                "
+                class="takeaway"
+              >
+                <div style="display: flex; flex-direction: column; gap: 6px">
+                  <span class="mono" style="font-size: 10px; color: var(--muted)">THE TAKEAWAY</span
+                  ><strong style="font-size: 16px" id="st-take">Give each request the route it needs.</strong
+                  ><span class="muted" id="st-takebody" style="font-size: 13px"
+                    >Routine work gets a general lane. Evidence requirements change the route. Private information puts
+                    a person in the decision. This is the policy behind the cost-control idea.</span
+                  ><a
+                    id="study-source"
+                    href="https://github.com/jamescashio/jamescashio.github.io/blob/82425d30fb0e6d2c7891281ded0423b854d6f23d/src/odyssey/data.ts"
+                    style="font-size: 13px; font-weight: 600"
+                    >Inspect routeExample in the released model ↗</a
+                  ><button class="btn line sm" type="button" id="copy-settings" style="align-self: flex-start">
+                    Copy these settings
+                  </button>
+                </div>
+                <div class="soft" style="padding: 16px; display: flex; flex-direction: column; gap: 8px">
+                  <strong style="font-size: 14px">How this experiment works</strong>
+                  <span class="muted" style="font-size: 12px; font-style: italic" id="st-q"
+                    >What wins when intent, evidence requirements, and privacy disagree?</span
+                  >
+                  <div class="howit">
+                    <span class="mono" style="font-size: 10px; color: var(--cyan)">Rule</span
+                    ><span class="muted" id="st-rule"
+                      >Private input always holds the external route for human review. Otherwise, Research intent or a
+                      source requirement selects Research. Analyze selects Synthesis; Draft selects Workhorse.</span
+                    ><span class="mono" style="font-size: 10px; color: var(--cyan)">Try this</span
+                    ><span class="muted" id="st-try"
+                      >Choose Analyze and require sources: Research wins. Now turn on private information: Human review
+                      wins. Change the intent again; the privacy boundary holds.</span
+                    ><span class="mono" style="font-size: 10px; color: var(--cyan)">Boundary</span
+                    ><span class="muted" id="st-bound"
+                      >A deterministic routing model with four outcomes. It calls no model, measures no provider, and
+                      does not establish the current HERMES deployment’s behavior.</span
+                    >
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      gap: 8px;
+                      padding-top: 6px;
+                      border-top: 1px solid var(--line2);
+                      flex-wrap: wrap;
+                    "
+                  >
+                    <span class="mono" style="font-size: 10px; color: var(--gold)"
+                      >NEXT / <span id="st-nextname">Escalation Cascade</span></span
+                    ><button type="button" id="st-next" style="font-size: 13px; font-weight: 600; color: var(--ink)">
+                      <span id="st-nextq">When should automation stop and ask a person?</span> →
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 02 THE UNIVERSE ================= -->
+      <section class="block" id="universe" aria-labelledby="uni-h" style="border-top: 1px solid var(--line)">
+        <div class="wrap grid">
+          <div class="c5" style="display: flex; flex-direction: column; gap: 22px">
+            <div class="kick">02 / THE UNIVERSE</div>
+            <span class="mono" style="font-size: 12px; color: var(--gold)">ZEUSAPOLLO × HERMES × DSH</span>
+            <h2 id="uni-h" data-split>A world of systems.<br />One accountable human.</h2>
+            <p class="lede">
+              Zeus and Apollo are the hardware I own and operate. HERMES runs the scheduled work; the DeepSeek Harness
+              is my operator console. I remain accountable for the decisions.
+            </p>
+            <p class="muted" style="margin: 0; font-size: 14px">
+              Select a node to see its role and the evidence behind it.
+            </p>
+            <div
+              class="panel"
+              style="padding: 24px; display: flex; flex-direction: column; gap: 10px"
+              aria-live="polite"
+            >
+              <div style="display: flex; justify-content: space-between">
+                <span class="mono" id="nd-role" style="font-size: 11px; color: var(--muted)">Orchestration</span
+                ><span class="mono" style="font-size: 11px; color: var(--cyan)">SELECTED</span>
+              </div>
+              <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap">
+                <span class="syne" id="nd-name" style="font-size: 32px; font-weight: 800">HERMES</span
+                ><span class="num em" id="nd-value" style="font-size: 32px">—</span
+                ><span class="mono" id="nd-unit" style="font-size: 10px; color: var(--muted)"
+                  >routing not verified</span
+                >
+              </div>
+              <strong id="nd-summary">Intent becomes a qualified route.</strong>
+              <p class="muted" id="nd-body" style="margin: 0; font-size: 14px">
+                The latest audit did not establish a current lane inventory or execution record. This atlas illustrates
+                the design relationships; the HERMES study lets you explore a browser-only routing model.
+              </p>
+              <span class="mono" id="nd-evidence" style="font-size: 10px; color: var(--gold)"
+                >Audit · <span data-fleet="observedLong">September 18, 2026</span> · routing withheld</span
+              >
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px" data-stagger>
+              <div class="stat">
+                <span class="num cy" data-count="2" data-pad="2" style="font-size: 44px">00</span
+                ><span class="mono" style="font-size: 10px; color: var(--muted)">hosts at observation</span>
+              </div>
+              <div class="stat">
+                <span class="num cy" data-count="20" data-fleet-count="lxc" style="font-size: 44px">0</span
+                ><span class="mono" style="font-size: 10px; color: var(--muted)">LXC containers running</span>
+              </div>
+              <div class="stat">
+                <span class="num cy" data-count="1" data-pad="2" style="font-size: 44px">00</span
+                ><span class="mono" style="font-size: 10px; color: var(--muted)">QEMU virtual machine running</span>
+              </div>
+            </div>
+            <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap">
+              <span class="mono" style="font-size: 11px; color: var(--muted)"
+                >FLEET · <span data-fleet="observedLong">September 18, 2026</span></span
+              ><span class="mono" style="font-size: 11px; color: var(--gold)">ROUTING · NOT VERIFIED</span
+              ><a href="#evidence" style="font-size: 14px; font-weight: 600">Inspect the dated evidence ↗</a>
+            </div>
+          </div>
+          <div class="c7" style="display: flex; flex-direction: column; gap: 14px">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+              <span class="mono" style="font-size: 11px; color: var(--muted)">SYSTEM ATLAS · CONCEPTUAL VIEW</span
+              ><button class="btn ghost sm" type="button" id="trace-btn">
+                ▷ Trace a request
+                <span class="mono" style="font-size: 10px; color: var(--muted)"
+                  >about 8 seconds · not live routing</span
+                >
+              </button>
+            </div>
+            <div class="panel atlas-panel">
+              <div class="atlas-caption">
+                <span class="mono atlas-caption-tag">CONCEPTUAL REQUEST / ZEUS</span>
+                <span class="mono" id="trace-label" role="status"
+                  >Follow one example from human intent to human review. No request is sent.</span
+                >
+              </div>
+              <div class="atlas" id="atlas">
+                <svg class="wires" viewBox="0 0 800 640" preserveAspectRatio="none" aria-hidden="true">
+                  <defs>
+                    <radialGradient id="glow" cx="50%" cy="50%">
+                      <stop offset="0" stop-color="#38E1FF" stop-opacity=".22" />
+                      <stop offset="1" stop-color="#38E1FF" stop-opacity="0" />
+                    </radialGradient>
+                  </defs>
+                  <circle cx="400" cy="320" r="300" fill="url(#glow)" />
+                  <g class="spin" style="transform-origin: 400px 320px">
+                    <circle
+                      cx="400"
+                      cy="320"
+                      r="270"
+                      fill="none"
+                      stroke="rgba(56,225,255,.16)"
+                      stroke-dasharray="3 9"
+                    />
+                  </g>
+                  <circle cx="400" cy="320" r="190" fill="none" stroke="rgba(242,200,122,.18)" />
+                  <path id="w1" d="M400 96 L400 262" stroke="#38E1FF" stroke-width="2" class="flow" fill="none" />
+                  <path
+                    d="M400 96 L150 300"
+                    stroke="rgba(56,225,255,.45)"
+                    stroke-width="1.5"
+                    stroke-dasharray="6 8"
+                    fill="none"
+                  />
+                  <path
+                    d="M150 300 L340 320"
+                    stroke="rgba(242,200,122,.4)"
+                    stroke-width="1.5"
+                    stroke-dasharray="6 8"
+                    fill="none"
+                  />
+                  <text x="196" y="188" fill="#9AA9BF" font-family="JetBrains Mono" font-size="10" letter-spacing="1.5">
+                    CONSOLE
+                  </text>
+                  <path id="w2" d="M400 378 L226 486" stroke="#F2C87A" stroke-width="2" class="flow gold" fill="none" />
+                  <path id="w3" d="M400 378 L574 486" stroke="#F2C87A" stroke-width="2" class="flow gold" fill="none" />
+                  <path
+                    d="M226 486 Q400 560 574 486"
+                    stroke="rgba(56,225,255,.35)"
+                    stroke-width="1"
+                    stroke-dasharray="4 8"
+                    fill="none"
+                  />
+                  <circle id="packet" r="7" fill="#F2C87A" opacity="0" />
+                  <g class="atlas-amb">
+                    <circle r="3" fill="#38E1FF">
+                      <animateMotion dur="4s" repeatCount="indefinite" path="M400 96 L400 262" />
+                    </circle>
+                    <circle r="3" fill="#F2C87A">
+                      <animateMotion dur="5s" begin="1s" repeatCount="indefinite" path="M400 378 L226 486" />
+                    </circle>
+                    <circle r="3" fill="#F2C87A">
+                      <animateMotion dur="5s" begin="2.5s" repeatCount="indefinite" path="M400 378 L574 486" />
+                    </circle>
+                    <circle r="2.5" fill="#38E1FF" opacity=".7">
+                      <animateMotion dur="7s" repeatCount="indefinite" path="M226 486 Q400 560 574 486" />
+                    </circle>
+                  </g>
+                  <g id="sel-halo" style="transform: translate(400px, 320px)">
+                    <circle r="70" fill="none" stroke="#F2C87A" stroke-opacity=".5" stroke-width="1.5">
+                      <animate attributeName="r" values="62;92" dur="2.4s" repeatCount="indefinite" />
+                      <animate attributeName="stroke-opacity" values=".5;0" dur="2.4s" repeatCount="indefinite" />
+                    </circle>
+                    <circle r="70" fill="none" stroke="#F2C87A" stroke-opacity=".5" stroke-width="1.5">
+                      <animate attributeName="r" values="62;92" dur="2.4s" begin="1.2s" repeatCount="indefinite" />
+                      <animate
+                        attributeName="stroke-opacity"
+                        values=".5;0"
+                        dur="2.4s"
+                        begin="1.2s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                  </g>
+                  <text x="412" y="190" fill="#9AA9BF" font-family="JetBrains Mono" font-size="10" letter-spacing="1.5">
+                    INTENT
+                  </text>
+                  <text x="256" y="430" fill="#9AA9BF" font-family="JetBrains Mono" font-size="10" letter-spacing="1.5">
+                    QUALIFIED ROUTE
+                  </text>
+                  <text x="470" y="430" fill="#9AA9BF" font-family="JetBrains Mono" font-size="10" letter-spacing="1.5">
+                    QUALIFIED ROUTE
+                  </text>
+                  <text x="352" y="586" fill="#9AA9BF" font-family="JetBrains Mono" font-size="10" letter-spacing="1.5">
+                    OWNED ESTATE
+                  </text>
+                </svg>
+                <button class="node" type="button" data-node="dsh" aria-pressed="false" style="left: 18.5%; top: 47%">
+                  <span class="core"
+                    ><svg
+                      width="30"
+                      height="30"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#F2C87A"
+                      stroke-width="1.8"
+                      aria-hidden="true"
+                    >
+                      <path d="M4 6h16v10H4zM8 20h8M12 16v4" />
+                      <path d="M8 10h3M8 12h6" /></svg></span
+                  ><span class="syne" style="font-size: 15px; font-weight: 700">DSH</span
+                  ><span class="mono" style="font-size: 10px; color: var(--muted)">Operator console</span>
+                </button>
+                <button
+                  class="node"
+                  type="button"
+                  data-node="operator"
+                  aria-pressed="false"
+                  style="left: 50%; top: 14%"
+                >
+                  <span class="core"
+                    ><svg
+                      width="30"
+                      height="30"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#F2C87A"
+                      stroke-width="1.8"
+                      aria-hidden="true"
+                    >
+                      <circle cx="12" cy="8" r="4" />
+                      <path d="M4 21c0-4 4-6 8-6s8 2 8 6" /></svg></span
+                  ><span class="syne" style="font-size: 15px; font-weight: 700">The operator</span
+                  ><span class="mono" style="font-size: 10px; color: var(--muted)">Authority</span>
+                </button>
+                <button
+                  class="node big"
+                  type="button"
+                  data-node="hermes"
+                  aria-pressed="true"
+                  style="left: 50%; top: 50%"
+                >
+                  <span class="core"
+                    ><svg
+                      width="40"
+                      height="40"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#38E1FF"
+                      stroke-width="1.8"
+                      aria-hidden="true"
+                    >
+                      <path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z" /></svg></span
+                  ><span class="syne" style="font-size: 16px; font-weight: 800">HERMES</span
+                  ><span class="mono" style="font-size: 10px; color: var(--muted)">Orchestration</span>
+                </button>
+                <button class="node" type="button" data-node="zeus" aria-pressed="false" style="left: 28%; top: 78%">
+                  <span class="core"
+                    ><svg
+                      width="30"
+                      height="30"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#38E1FF"
+                      stroke-width="1.8"
+                      aria-hidden="true"
+                    >
+                      <rect x="3" y="4" width="18" height="6" rx="1" />
+                      <rect x="3" y="14" width="18" height="6" rx="1" />
+                      <circle cx="7" cy="7" r="1" fill="#38E1FF" />
+                      <circle cx="7" cy="17" r="1" fill="#38E1FF" /></svg></span
+                  ><span class="syne" style="font-size: 15px; font-weight: 700">Zeus</span
+                  ><span class="mono" style="font-size: 10px; color: var(--muted)">Owned compute</span>
+                </button>
+                <button class="node" type="button" data-node="apollo" aria-pressed="false" style="left: 72%; top: 78%">
+                  <span class="core"
+                    ><svg
+                      width="30"
+                      height="30"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#38E1FF"
+                      stroke-width="1.8"
+                      aria-hidden="true"
+                    >
+                      <rect x="3" y="4" width="18" height="6" rx="1" />
+                      <rect x="3" y="14" width="18" height="6" rx="1" />
+                      <circle cx="7" cy="7" r="1" fill="#38E1FF" />
+                      <circle cx="7" cy="17" r="1" fill="#38E1FF" /></svg></span
+                  ><span class="syne" style="font-size: 15px; font-weight: 700">Apollo</span
+                  ><span class="mono" style="font-size: 10px; color: var(--muted)">Owned compute</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PHILOSOPHY ================= -->
+      <section class="philo" aria-label="Philosophy">
+        <img
+          src="assets/sanctuary.webp"
+          width="1200"
+          height="675"
+          decoding="async"
+          loading="lazy"
+          id="philo-img"
+          alt="Original concept art: twin graphite computing monoliths in a sunlit stone sanctuary with a faceted amber core between them"
+        />
+        <div class="shade"></div>
+        <div class="wrap" style="width: 100%; position: relative">
+          <div class="txt">
+            <span class="kick">THE PHILOSOPHY</span>
+            <h2 data-split>
+              Technology should extend our reach.<br /><span class="em" style="font-weight: 500"
+                >Not replace our judgment.</span
+              >
+            </h2>
+            <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap">
+              <a class="btn ghost" href="https://cashio.us/#film=sanctuary" data-magnet>Enter the sanctuary →</a
+              ><span class="mono" style="font-size: 11px; color: var(--muted)"
+                >A FIFTEEN-SECOND FILM · THEN STEP INSIDE</span
+              >
+            </div>
+            <a href="#studies" style="font-weight: 600; color: var(--ink)">See the philosophy at work ↗</a>
+          </div>
+        </div>
+        <span
+          class="mono"
+          style="position: absolute; left: var(--gutter); bottom: 22px; font-size: 11px; color: var(--muted)"
+          >ORIGINAL CONCEPT ART / AN IMAGINED COMPUTING SANCTUARY</span
+        >
+      </section>
+
+      <!-- ================= SOVEREIGN STARSHIP ================= -->
+      <section
+        class="block"
+        id="starship"
+        aria-labelledby="ship-h"
+        style="background: linear-gradient(180deg, rgba(4, 7, 14, 0.5), rgba(7, 12, 24, 0.72))"
+      >
+        <div class="wrap">
+          <div class="head">
+            <div>
+              <div class="kick" style="margin-bottom: 14px">V38 / SOVEREIGN STARSHIP</div>
+              <h2 id="ship-h" data-split>Your ship.<br />Your intelligence.</h2>
+            </div>
+            <div class="r">
+              <div class="mono" style="font-size: 11px; color: var(--muted); margin-bottom: 6px">
+                ONE SHIP. THREE WAYS TO THINK.
+              </div>
+              <p class="muted" style="margin: 0; font-size: 16px">
+                Step aboard. Open the hull. Trace twelve AI requests. Cut the cloud link. See what stays with you.
+              </p>
+            </div>
+          </div>
+          <div class="grid">
+            <div class="c7" style="display: flex; flex-direction: column; gap: 16px">
+              <div class="plate" style="height: clamp(280px, 40vw, 440px)">
+                <img
+                  src="assets/starship.webp"
+                  width="1600"
+                  height="900"
+                  decoding="async"
+                  loading="lazy"
+                  data-parallax
+                  alt="An original titanium and graphite exploration starship with swept wings and cyan engines beside an orbital relay"
+                />
+                <div class="shade"></div>
+                <div style="position: absolute; left: 20px; top: 20px; display: flex; gap: 8px; flex-wrap: wrap">
+                  <span
+                    class="mono"
+                    style="
+                      font-size: 10px;
+                      color: var(--cyan);
+                      padding: 6px 10px;
+                      border: 1px solid rgba(56, 225, 255, 0.3);
+                      border-radius: 6px;
+                      background: rgba(4, 7, 14, 0.6);
+                    "
+                    >CSV SOVEREIGN / EXPLORER 01</span
+                  ><span
+                    class="mono pulse"
+                    id="relay-chip"
+                    style="
+                      font-size: 10px;
+                      color: var(--gold);
+                      padding: 6px 10px;
+                      border: 1px solid rgba(242, 200, 122, 0.4);
+                      border-radius: 6px;
+                      background: rgba(4, 7, 14, 0.6);
+                    "
+                    >CLOUD RELAY CONNECTED</span
+                  >
+                </div>
+                <div class="cap">
+                  <div style="display: flex; flex-direction: column; gap: 10px">
+                    <span class="mono" style="font-size: 11px; color: var(--muted)">YOUR SHIP. YOUR INTELLIGENCE.</span
+                    ><a class="btn gold" href="#flight=board" data-flight data-magnet>Board the starship ↗</a
+                    ><span class="muted" style="font-size: 13px"
+                      >Explore the ship. Open its hull. Follow the intelligence.</span
+                    >
+                  </div>
+                  <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                    <span class="pill" style="min-height: 36px; font-size: 12px">Hero view</span
+                    ><span class="pill" style="min-height: 36px; font-size: 12px">Deck plan</span
+                    ><span class="pill" style="min-height: 36px; font-size: 12px">Engine view</span>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="soft"
+                style="
+                  padding: 20px 24px;
+                  display: grid;
+                  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                  gap: 20px;
+                "
+              >
+                <div style="display: flex; flex-direction: column; gap: 8px">
+                  <div style="display: flex; justify-content: space-between">
+                    <span class="mono" style="font-size: 10px; color: var(--muted)">ENGINEERING · Propulsion</span
+                    ><span class="mono" style="font-size: 11px; color: var(--cyan)">50%</span>
+                  </div>
+                  <div class="barwrap" style="height: 6px; border-radius: 3px">
+                    <div
+                      style="
+                        width: 50%;
+                        height: 100%;
+                        border-radius: 3px;
+                        background: linear-gradient(90deg, var(--local), var(--cyan));
+                        box-shadow: 0 0 12px var(--cyan);
+                      "
+                    ></div>
+                  </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px">
+                  <div style="display: flex; justify-content: space-between">
+                    <span class="mono" style="font-size: 10px; color: var(--muted)">Hull inspection</span
+                    ><span class="mono" style="font-size: 11px; color: var(--gold)">0%</span>
+                  </div>
+                  <div class="barwrap" style="height: 6px; border-radius: 3px">
+                    <div style="width: 0%; height: 100%; border-radius: 3px; background: var(--gold)"></div>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 16px; grid-column: 1/-1; align-items: center; flex-wrap: wrap">
+                  <span style="display: flex; align-items: center; gap: 6px; font-size: 12px"
+                    ><i style="width: 10px; height: 10px; border-radius: 50%; background: var(--local)"></i>Local
+                    route</span
+                  ><span style="display: flex; align-items: center; gap: 6px; font-size: 12px"
+                    ><i style="width: 10px; height: 10px; border-radius: 50%; background: var(--cloud)"></i>Cloud
+                    route</span
+                  ><span style="display: flex; align-items: center; gap: 6px; font-size: 12px"
+                    ><i style="width: 10px; height: 10px; border-radius: 50%; background: var(--held)"></i>Waiting for a
+                    permitted route</span
+                  ><span class="muted" style="font-size: 12px; margin-left: auto"
+                    >Launch the flight to open the hull and explore in 3D</span
+                  >
+                </div>
+              </div>
+              <div class="soft" style="padding: 18px 20px 10px; display: flex; flex-direction: column; gap: 6px">
+                <div style="display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap">
+                  <span class="mono" style="font-size: 10px; color: var(--muted)"
+                    >REQUEST FLOW · YOUR SELECTED SCENARIO</span
+                  ><span class="mono" id="schem-label" style="font-size: 10px; color: var(--cyan)"
+                    >HYBRID · 6 LOCAL · 6 CLOUD · 0 HELD</span
+                  >
+                </div>
+                <svg
+                  class="schem"
+                  id="schem"
+                  viewBox="0 0 640 250"
+                  aria-label="Animated schematic of twelve requests moving between the onboard AI, the command bridge and the cloud relay"
+                >
+                  <defs>
+                    <filter id="pg">
+                      <feGaussianBlur stdDeviation="2" result="b" />
+                      <feMerge>
+                        <feMergeNode in="b" />
+                        <feMergeNode in="SourceGraphic" />
+                      </feMerge>
+                    </filter>
+                  </defs>
+                  <path d="M110 150 L300 110" stroke="rgba(56,225,255,.25)" stroke-width="1" fill="none" />
+                  <path
+                    d="M300 110 L520 60"
+                    stroke="rgba(242,200,122,.25)"
+                    stroke-width="1"
+                    stroke-dasharray="4 6"
+                    fill="none"
+                    id="relay-line"
+                    class="flow gold"
+                  />
+                  <ellipse cx="110" cy="150" rx="70" ry="30" fill="rgba(56,225,255,.06)" />
+                  <path d="M300 110 L110 150" stroke="rgba(56,225,255,.25)" stroke-width="1" fill="none" />
+                  <g transform="translate(110 150)">
+                    <path
+                      d="M-46 0 L-10 -22 L46 -8 L34 10 L-12 22 Z"
+                      fill="#101A2C"
+                      stroke="#38E1FF"
+                      stroke-width="1.2"
+                    />
+                    <path d="M-46 0 L-58 -6 M-46 0 L-58 6" stroke="#38E1FF" stroke-width="2" class="pulse" />
+                    <circle cx="6" cy="0" r="9" fill="rgba(56,225,255,.15)" stroke="#38E1FF">
+                      <animate attributeName="r" values="8;11;8" dur="2.6s" repeatCount="indefinite" />
+                    </circle>
+                    <text class="lbl" x="0" y="44" text-anchor="middle">Onboard AI · the ship</text>
+                  </g>
+                  <g transform="translate(300 110)">
+                    <circle r="26" fill="#101A2C" stroke="#F2C87A" stroke-width="1.2" />
+                    <path d="M0 -14 L10 0 L0 14 L-10 0 Z" fill="#F2C87A" class="pulse" />
+                    <text class="lbl" x="0" y="50" text-anchor="middle">Command bridge · Bit</text>
+                  </g>
+                  <g transform="translate(520 60)">
+                    <rect
+                      x="-22"
+                      y="-14"
+                      width="44"
+                      height="28"
+                      rx="6"
+                      fill="#101A2C"
+                      stroke="#F2C87A"
+                      stroke-width="1.2"
+                    />
+                    <path d="M-34 0 H-22 M22 0 H34 M0 -14 V-30 M-10 -30 H10" stroke="#F2C87A" stroke-width="1.2" />
+                    <text class="lbl" x="0" y="44" text-anchor="middle">Cloud relay · external</text>
+                    <text class="lbl" id="relay-state" x="0" y="-40" text-anchor="middle" fill="#F2C87A">
+                      CONNECTED
+                    </text>
+                  </g>
+                  <g id="packets"></g>
+                  <text class="lbl" x="12" y="238">Moving packets show routing, not measured speed</text>
+                </svg>
+              </div>
+              <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px"
+                data-stagger
+              >
+                <div class="soft" style="padding: 16px">
+                  <span class="mono" style="font-size: 10px; color: var(--cyan)">Onboard AI</span>
+                  <p class="muted" style="margin: 6px 0 0; font-size: 12px">
+                    Owned compute lives inside the ship. Its AI bay represents hardware you operate. In this model, it
+                    can handle all twelve requests onboard, even without a cloud connection.
+                  </p>
+                </div>
+                <div class="soft" style="padding: 16px">
+                  <span class="mono" style="font-size: 10px; color: var(--gold)">Cloud relay</span>
+                  <p class="muted" style="margin: 6px 0 0; font-size: 12px">
+                    The separate orbital relay represents an external cloud provider. A request must leave the ship to
+                    reach it. Private requests also need explicit permission in Cloud mode.
+                  </p>
+                </div>
+                <div class="soft" style="padding: 16px">
+                  <span class="mono" style="font-size: 10px; color: var(--gold)">Command bridge</span>
+                  <p class="muted" style="margin: 6px 0 0; font-size: 12px">
+                    Bit, the gold core, marks human authority. You choose the architecture and grant permission. A held
+                    request waits here for an approved route; it never leaves silently.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="panel c5"
+              style="padding: clamp(20px, 2.4vw, 30px); display: flex; flex-direction: column; gap: 16px"
+            >
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap"
+              >
+                <span class="kick gold">THE FLIGHT PLAN</span
+                ><span class="mono" style="font-size: 10px; color: var(--muted)"
+                  >Choose a mission. Then change the architecture.</span
+                >
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px" id="missions">
+                <button
+                  class="tile"
+                  type="button"
+                  data-mission="routine"
+                  style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px 14px"
+                >
+                  <span class="mono" style="font-size: 10px; color: var(--gold)">01</span
+                  ><strong style="font-size: 13px">Routine flight</strong
+                  ><span class="mono" style="font-size: 9px; color: var(--muted)">6 private + 6 public · hybrid</span>
+                </button>
+                <button
+                  class="tile"
+                  type="button"
+                  data-mission="blackout"
+                  style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px 14px"
+                >
+                  <span class="mono" style="font-size: 10px; color: var(--gold)">02</span
+                  ><strong style="font-size: 13px">Deep-space blackout</strong
+                  ><span class="mono" style="font-size: 9px; color: var(--muted)">Same work · cloud link offline</span>
+                </button>
+                <button
+                  class="tile"
+                  type="button"
+                  data-mission="classified"
+                  style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px 14px"
+                >
+                  <span class="mono" style="font-size: 10px; color: var(--gold)">03</span
+                  ><strong style="font-size: 13px">Classified mission</strong
+                  ><span class="mono" style="font-size: 9px; color: var(--muted)"
+                    >12 private · cloud permission off</span
+                  >
+                </button>
+              </div>
+              <strong style="font-size: 14px">Choose the architecture</strong>
+              <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px" id="arch-group">
+                <button
+                  class="pill"
+                  type="button"
+                  data-arch="sovereign"
+                  aria-pressed="false"
+                  style="
+                    min-height: 60px;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 2px;
+                    border-radius: 14px;
+                    padding: 8px 14px;
+                  "
+                >
+                  <span>Sovereign / local</span
+                  ><span
+                    class="mono"
+                    style="font-size: 9px; color: var(--muted); text-transform: none; letter-spacing: 0.06em"
+                    >Your hardware. Your boundary.</span
+                  >
+                </button>
+                <button
+                  class="pill"
+                  type="button"
+                  data-arch="hybrid"
+                  aria-pressed="true"
+                  style="
+                    min-height: 60px;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 2px;
+                    border-radius: 14px;
+                    padding: 8px 14px;
+                  "
+                >
+                  <span>Hybrid</span
+                  ><span
+                    class="mono"
+                    style="font-size: 9px; color: var(--muted); text-transform: none; letter-spacing: 0.06em"
+                    >Local privacy. Cloud options.</span
+                  >
+                </button>
+                <button
+                  class="pill"
+                  type="button"
+                  data-arch="cloud"
+                  aria-pressed="false"
+                  style="
+                    min-height: 60px;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 2px;
+                    border-radius: 14px;
+                    padding: 8px 14px;
+                  "
+                >
+                  <span>Cloud</span
+                  ><span
+                    class="mono"
+                    style="font-size: 9px; color: var(--muted); text-transform: none; letter-spacing: 0.06em"
+                    >External compute. Explicit permission.</span
+                  >
+                </button>
+              </div>
+              <strong style="font-size: 14px">Workload sensitivity</strong>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap" id="sens-group">
+                <button class="pill gold" type="button" data-sens="mixed" aria-pressed="true" style="font-size: 13px">
+                  Mixed · 6 private + 6 public</button
+                ><button
+                  class="pill gold"
+                  type="button"
+                  data-sens="private"
+                  aria-pressed="false"
+                  style="font-size: 13px"
+                >
+                  All private · 12</button
+                ><button
+                  class="pill gold"
+                  type="button"
+                  data-sens="public"
+                  aria-pressed="false"
+                  style="font-size: 13px"
+                >
+                  All public · 12
+                </button>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                <button class="toggle" type="button" id="tg-net" aria-pressed="true">
+                  <span>Internet available · <span id="net-label">Connected</span></span
+                  ><span class="knob"></span></button
+                ><button class="toggle gold" type="button" id="tg-permit" aria-pressed="false">
+                  <span>Permit private cloud requests</span><span class="knob"></span>
+                </button>
+              </div>
+              <span class="mono" style="font-size: 9px; color: var(--muted)"
+                >Only applies to private requests in Cloud mode</span
+              >
+              <div class="hair"></div>
+              <div style="display: flex; justify-content: space-between; align-items: baseline">
+                <span class="mono" style="font-size: 11px; color: var(--muted)">THE SAME 12-REQUEST WORKLOAD</span
+                ><span class="mono" style="font-size: 10px; color: var(--muted)">requests</span>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 8px" aria-live="polite">
+                <div style="display: grid; grid-template-columns: 118px 1fr 34px; gap: 12px; align-items: center">
+                  <span style="font-size: 13px">Handled locally</span>
+                  <div class="barwrap"><div class="bar" id="b-local" style="background: var(--local)"></div></div>
+                  <span class="num cy" id="n-local" style="font-size: 22px; text-align: right">6</span>
+                </div>
+                <div style="display: grid; grid-template-columns: 118px 1fr 34px; gap: 12px; align-items: center">
+                  <span style="font-size: 13px">Sent to cloud</span>
+                  <div class="barwrap"><div class="bar" id="b-cloud" style="background: var(--cloud)"></div></div>
+                  <span class="num em" id="n-cloud" style="font-size: 22px; text-align: right">6</span>
+                </div>
+                <div style="display: grid; grid-template-columns: 118px 1fr 34px; gap: 12px; align-items: center">
+                  <span style="font-size: 13px">Held for review</span>
+                  <div class="barwrap"><div class="bar" id="b-held" style="background: var(--held)"></div></div>
+                  <span class="num" id="n-held" style="font-size: 22px; text-align: right; color: var(--heldtext)"
+                    >0</span
+                  >
+                </div>
+              </div>
+              <p id="w-summary" style="margin: 0; font-size: 14px; color: var(--ink2)">
+                6 requests stay local; 6 public requests use the cloud. Sensitive data stays on your hardware.
+              </p>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px">
+                <div class="soft" style="padding: 12px">
+                  <span class="mono" style="font-size: 10px; color: var(--cyan)">Data boundary</span>
+                  <p class="muted" id="w-data" style="margin: 4px 0 0; font-size: 12px">
+                    Sensitive requests always stay local. Only public requests may use the cloud.
+                  </p>
+                </div>
+                <div class="soft" style="padding: 12px">
+                  <span class="mono" style="font-size: 10px; color: var(--gold)">Connection dependency</span>
+                  <p class="muted" id="w-net" style="margin: 4px 0 0; font-size: 12px">
+                    Cloud routing needs a connection; this model also supports local fallback.
+                  </p>
+                </div>
+              </div>
+              <div>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: baseline;
+                    gap: 8px;
+                    flex-wrap: wrap;
+                  "
+                >
+                  <strong style="font-size: 14px">Compare all three architectures</strong
+                  ><span class="mono" style="font-size: 10px; color: var(--muted)">same settings</span>
+                </div>
+                <div class="cmp hd">
+                  <span>Architecture</span><span style="color: var(--cyan)">Local</span
+                  ><span style="color: var(--gold)">Cloud</span><span style="color: var(--heldtext)">Held</span>
+                </div>
+                <div id="cmp-rows"></div>
+              </div>
+              <span class="mono" style="font-size: 9px; color: var(--muted); line-height: 1.5"
+                >“Held” means the model has no permitted route. Moving packets show routing, not measured speed or
+                throughput.</span
+              >
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap"
+              >
+                <div>
+                  <strong style="font-size: 14px">Your decision. Their next move.</strong><br /><span
+                    class="muted"
+                    style="font-size: 12px"
+                    >Share these settings. Let someone else test the boundary.</span
+                  >
+                </div>
+                <button class="btn line sm" type="button" id="copy-mission">Copy this mission ↗</button>
+              </div>
+              <span class="muted" style="font-size: 11px"
+                >Here, Sovereign means a fully local deployment. This is a routing illustration, not a vendor ranking or
+                performance benchmark. It assumes both local and cloud models can handle this workload. No actual AI or
+                infrastructure services are contacted.</span
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- ================= PRINCIPLES ENGINE ================= -->
+      <section class="block" id="principles" aria-labelledby="pr-h" style="border-top: 1px solid var(--line)">
+        <div class="wrap grid" style="align-items: center">
+          <div class="c5" style="display: flex; flex-direction: column; gap: 18px">
+            <div class="kick">V38 / THE PRINCIPLES ENGINE</div>
+            <span class="mono" style="font-size: 11px; color: var(--muted)">A VISITOR-OPERATED INSTRUMENT</span>
+            <h2 id="pr-h" data-split>Put the principles<br />in motion.</h2>
+            <p class="muted" style="margin: 0; font-size: 16px">
+              Turn the instrument. Choose a principle. See the design decision behind it.
+            </p>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap" id="pr-group">
+              <button class="pill" type="button" data-pr="0" aria-pressed="true">
+                <span class="mono" style="font-size: 10px; color: var(--gold)">01</span>Observe</button
+              ><button class="pill" type="button" data-pr="1" aria-pressed="false">
+                <span class="mono" style="font-size: 10px; color: var(--gold)">02</span>Route</button
+              ><button class="pill" type="button" data-pr="2" aria-pressed="false">
+                <span class="mono" style="font-size: 10px; color: var(--gold)">03</span>Verify
+              </button>
+            </div>
+            <div
+              class="panel"
+              style="padding: 24px; display: flex; flex-direction: column; gap: 10px"
+              aria-live="polite"
+            >
+              <span class="mono" style="font-size: 10px; color: var(--muted)"
+                >MISSION <span id="pr-n">01</span> / DESIGN PRINCIPLE</span
+              >
+              <span class="syne" id="pr-title" style="font-size: 26px; font-weight: 700"
+                >Begin with a clear signal.</span
+              >
+              <p class="muted" id="pr-body" style="margin: 0; font-size: 14px">
+                Separate what is known from what is assumed. A useful system makes its evidence visible before it asks
+                for trust.
+              </p>
+              <div style="display: flex; align-items: center; gap: 10px">
+                <span class="cy">◇</span><strong id="pr-tag" style="font-size: 14px">Evidence before inference</strong>
+              </div>
+              <span class="mono" id="pr-ring" style="font-size: 10px; color: var(--muted)"
+                >The outer ring represents the boundary of what can be observed.</span
+              >
+            </div>
+            <span class="muted" style="font-size: 12px"
+              >Drag the instrument or use the arrow keys with it focused. Home resets it.</span
+            >
+            <span class="mono" style="font-size: 10px; color: var(--muted)"
+              >A hands-on concept study. These orbital relationships illustrate a design philosophy; they are not live
+              infrastructure telemetry.</span
+            >
+          </div>
+          <div class="c7">
+            <div
+              class="engine"
+              id="engine"
+              tabindex="0"
+              role="group"
+              aria-label="Orbital instrument with three rings: observe, route, verify"
+            >
+              <svg viewBox="0 0 520 520" aria-hidden="true">
+                <g id="eng-rot" style="transform-origin: 260px 260px">
+                  <g class="spin" style="transform-origin: 260px 260px">
+                    <circle
+                      id="r1"
+                      cx="260"
+                      cy="260"
+                      r="246"
+                      fill="none"
+                      stroke="rgba(56,225,255,.5)"
+                      stroke-width="1.5"
+                      stroke-dasharray="130 40"
+                    />
+                    <circle cx="506" cy="260" r="6" fill="#38E1FF" />
+                  </g>
+                  <circle cx="260" cy="260" r="216" fill="none" stroke="rgba(56,225,255,.12)" />
+                  <g class="spinr" style="transform-origin: 260px 260px">
+                    <circle
+                      id="r2"
+                      cx="260"
+                      cy="260"
+                      r="164"
+                      fill="none"
+                      stroke="rgba(242,200,122,.6)"
+                      stroke-width="1.5"
+                      stroke-dasharray="44 26"
+                    />
+                    <circle cx="424" cy="260" r="6" fill="#F2C87A" />
+                  </g>
+                  <circle cx="260" cy="260" r="104" fill="none" stroke="rgba(234,240,248,.18)" stroke-dasharray="2 6" />
+                  <circle
+                    id="r3"
+                    cx="260"
+                    cy="260"
+                    r="56"
+                    fill="rgba(242,200,122,.08)"
+                    stroke="#F2C87A"
+                    stroke-width="1.5"
+                  />
+                  <path d="M260 216l22 44-22 44-22-44z" fill="#F2C87A" class="pulse" />
+                </g>
+                <text
+                  x="260"
+                  y="28"
+                  text-anchor="middle"
+                  fill="#38E1FF"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  letter-spacing="2"
+                >
+                  01 OBSERVE
+                </text>
+                <text
+                  x="260"
+                  y="108"
+                  text-anchor="middle"
+                  fill="#F2C87A"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  letter-spacing="2"
+                >
+                  02 ROUTE
+                </text>
+                <text
+                  x="260"
+                  y="336"
+                  text-anchor="middle"
+                  fill="#EAF0F8"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  letter-spacing="2"
+                >
+                  03 VERIFY
+                </text>
+              </svg>
+            </div>
+            <div style="display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-top: 14px">
+              <span class="mono" style="font-size: 10px; color: var(--muted)"
+                >LIGHTFOLD / ORBITAL INSTRUMENT · CONCEPT STUDY · DRAG TO EXPLORE ↗</span
+              >
+              <div style="display: flex; gap: 6px">
+                <button class="btn line sm" type="button" id="eng-reset">Reset view</button
+                ><a class="btn line sm" href="/#lensing">Cinema view</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 03 THE EVIDENCE ================= -->
+      <section
+        class="block"
+        id="evidence"
+        aria-labelledby="ev-h"
+        style="background: linear-gradient(180deg, rgba(4, 7, 14, 0.5), rgba(7, 12, 24, 0.72))"
+      >
+        <div class="wrap">
+          <div class="grid" style="align-items: end; margin-bottom: clamp(28px, 4vw, 48px)">
+            <div class="c6">
+              <div class="kick" style="margin-bottom: 14px">03 / THE EVIDENCE</div>
+              <h2 id="ev-h" data-split>Trust has<br />a <span class="cy">timestamp.</span></h2>
+            </div>
+            <div class="c6" style="display: flex; flex-direction: column; gap: 10px">
+              <strong style="font-size: 18px">A source. A date. A clear boundary.</strong>
+              <p class="muted" style="margin: 0; font-size: 15px">
+                Ask E.V.E. what was observed and what remains unknown. Running guests do not establish application
+                health, recovery or failover readiness.
+              </p>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap">
+                <div class="stat" style="flex: 1 1 200px">
+                  <span class="mono" style="font-size: 10px; color: var(--muted)">FLEET OBSERVATION</span
+                  ><span class="syne cy" style="font-size: 22px; font-weight: 700" data-fleet="observedLong"
+                    >September 18, 2026</span
+                  >
+                </div>
+                <div class="stat" style="flex: 1 1 200px">
+                  <span class="mono" style="font-size: 10px; color: var(--muted)">ROUTING INVENTORY</span
+                  ><span class="syne em" style="font-size: 22px; font-weight: 700" data-fleet="routing"
+                    >Not verified</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid" data-stagger>
+            <div
+              class="panel c7"
+              style="padding: clamp(22px, 2.6vw, 30px); display: flex; flex-direction: column; gap: 18px"
+            >
+              <div style="display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap">
+                <span class="kick gold">READ-ONLY OBSERVATIONS / THREE DATED RECORDS</span
+                ><span class="mono" style="font-size: 10px; color: var(--muted)"
+                  >HOW EACH RECORD CHANGED THIS PAGE</span
+                >
+              </div>
+              <h3>Three records. Three rules.</h3>
+              <p class="muted" style="margin: 0; font-size: 14px">
+                The question was simple: what is running, and what can this page prove? Three owner-run, read-only
+                observations answer it: August 28, 2026 (archived export), September 7, 2026 (HERMES audit) and
+                September 18, 2026 (DeepSeek Harness, direct reads on both nodes). The archived routing inventory has
+                its own date: August 21, 2026.
+              </p>
+              <div
+                class="evidence-scroll"
+                role="region"
+                aria-label="Compare the three dated evidence records"
+                tabindex="0"
+              >
+                <div
+                  style="display: grid; grid-template-columns: 104px 1fr 1fr 1fr; gap: 10px 14px; align-items: center"
+                  id="ev-chart"
+                >
+                  <span class="mono" style="font-size: 10px; color: var(--muted)">Record</span
+                  ><span class="mono" style="font-size: 10px; color: var(--muted)"
+                    >Archive · <span data-fleet="archive.fleetShort">Aug 28</span></span
+                  ><span class="mono" style="font-size: 10px; color: var(--muted)"
+                    >Audit · <span data-fleet="prior.fleetShort">Sep 7</span></span
+                  ><span class="mono" style="font-size: 10px; color: var(--cyan)"
+                    >Latest · <span data-fleet="observedShort">Sep 18</span></span
+                  >
+                  <strong style="font-size: 14px">LXC running</strong>
+                  <div style="display: flex; align-items: center; gap: 8px">
+                    <div class="barwrap" style="flex: 1">
+                      <div class="bar" data-w=".9" style="background: rgba(154, 169, 191, 0.35)"></div>
+                    </div>
+                    <span class="num" style="font-size: 18px; width: 30px" data-fleet="archive.lxc">18</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 8px">
+                    <div class="barwrap" style="flex: 1">
+                      <div class="bar" data-w=".95" style="background: rgba(15, 155, 184, 0.55)"></div>
+                    </div>
+                    <span class="num" style="font-size: 18px; width: 30px" data-fleet="prior.lxc">19</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 8px">
+                    <div class="barwrap" style="flex: 1">
+                      <div class="bar" data-w="1" style="background: var(--local)"></div>
+                    </div>
+                    <span class="num cy" style="font-size: 18px; width: 30px" data-fleet="lxc">20</span>
+                  </div>
+                  <strong style="font-size: 14px">QEMU running</strong>
+                  <div style="display: flex; align-items: center; gap: 8px">
+                    <div
+                      style="
+                        height: 22px;
+                        flex: 1;
+                        max-width: 50%;
+                        border: 1px dashed rgba(154, 169, 191, 0.5);
+                        border-radius: 0 6px 6px 0;
+                      "
+                    ></div>
+                    <span class="mono" style="font-size: 9px; color: var(--muted)">Not recorded</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 8px">
+                    <div class="barwrap" style="flex: 1">
+                      <div class="bar" data-w=".12" style="background: rgba(15, 155, 184, 0.55)"></div>
+                    </div>
+                    <span class="num" style="font-size: 18px; width: 30px">1</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 8px">
+                    <div class="barwrap" style="flex: 1">
+                      <div class="bar" data-w=".12" style="background: var(--local)"></div>
+                    </div>
+                    <span class="num cy" style="font-size: 18px; width: 30px" data-fleet="qemu">1</span>
+                  </div>
+                  <strong style="font-size: 14px">Proxmox</strong>
+                  <div class="mono" style="font-size: 11px; color: var(--muted)">Not recorded</div>
+                  <div class="mono" style="font-size: 11px" data-fleet="prior.pve">9.2.11</div>
+                  <div class="mono" style="font-size: 11px; color: var(--cyan)" data-fleet="pve">9.2.20</div>
+                  <strong style="font-size: 14px">Public lanes</strong>
+                  <div style="display: flex; align-items: center; gap: 8px">
+                    <div class="barwrap" style="flex: 1">
+                      <div class="bar" data-w=".55" style="background: rgba(154, 169, 191, 0.35)"></div>
+                    </div>
+                    <span class="num" style="font-size: 18px; width: 30px">10</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 8px">
+                    <div
+                      style="
+                        height: 22px;
+                        flex: 1;
+                        max-width: 50%;
+                        border: 1px dashed rgba(242, 200, 122, 0.6);
+                        border-radius: 0 6px 6px 0;
+                      "
+                    ></div>
+                    <span class="mono" style="font-size: 9px; color: var(--gold)">Not verified</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 8px">
+                    <div
+                      style="
+                        height: 22px;
+                        flex: 1;
+                        max-width: 50%;
+                        border: 1px dashed rgba(242, 200, 122, 0.6);
+                        border-radius: 0 6px 6px 0;
+                      "
+                    ></div>
+                    <span class="mono" style="font-size: 9px; color: var(--gold)">Not verified</span>
+                  </div>
+                </div>
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px">
+                <div class="stat" style="padding: 14px 16px">
+                  <span class="mono" style="font-size: 9px; color: var(--muted)">KERNEL BOOTED · STAGED</span
+                  ><span class="mono" style="font-size: 12px; color: var(--ink)"
+                    ><span data-fleet="kernel.booted">7.0.14-14-pve</span> ·
+                    <span class="em" data-fleet="kernel.staged">7.0.14-17-pve</span></span
+                  >
+                </div>
+                <div class="stat" style="padding: 14px 16px">
+                  <span class="mono" style="font-size: 9px; color: var(--muted)">BACKUP FRESHNESS</span
+                  ><span class="mono" style="font-size: 12px; color: var(--ink)"
+                    ><span data-fleet="backups.guestsOk">20</span> of
+                    <span data-fleet="backups.guestsTotal">20</span> guests · restore drill not in this record</span
+                  >
+                </div>
+                <div class="stat" style="padding: 14px 16px">
+                  <span class="mono" style="font-size: 9px; color: var(--muted)">ATLAS MODEL</span
+                  ><span class="mono" style="font-size: 12px; color: var(--ink)"
+                    ><span data-fleet="atlas.tag">qwen3.8:27b-atlas</span> · ctx
+                    <span data-fleet="atlas.context">16384</span></span
+                  >
+                </div>
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px">
+                <div class="soft" style="padding: 16px; display: flex; flex-direction: column; gap: 6px">
+                  <strong style="font-size: 14px">Count the same thing.</strong
+                  ><span class="muted" style="font-size: 12px"
+                    >Keep LXC containers and QEMU virtual machines separate. “Not recorded” in the older export does not
+                    mean no VM existed. The one extra guest on September 18 is a new container, not a recount.</span
+                  >
+                </div>
+                <div class="soft" style="padding: 16px; display: flex; flex-direction: column; gap: 6px">
+                  <strong style="font-size: 14px">Let unknown stay unknown.</strong
+                  ><span class="muted" style="font-size: 12px"
+                    >The earlier lane count stays in its archive. Without a current inventory and execution record, this
+                    observation leaves it unverified.</span
+                  >
+                </div>
+                <div class="soft" style="padding: 16px; display: flex; flex-direction: column; gap: 6px">
+                  <strong style="font-size: 14px">Keep the claim inside the evidence.</strong
+                  ><span class="muted" style="font-size: 12px"
+                    >A running guest does not prove application health, successful recovery, or failover readiness.
+                    Those need their own checks.</span
+                  >
+                </div>
+              </div>
+              <div
+                class="soft"
+                style="
+                  padding: 16px;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 8px;
+                  border-color: rgba(242, 200, 122, 0.3);
+                "
+              >
+                <strong style="font-size: 14px">The evidence boundary, in one place</strong>
+                <span class="muted" style="font-size: 12px"
+                  >The 26¢ figure comes from the V31 export of July 21 to 22, 2026. It covers AI provider usage in that
+                  sample and excludes owned infrastructure, electricity, and Doug’s time. It is a published operating
+                  observation, not an audited bill, and it does not establish today’s spend or a percentage saving. The
+                  fleet counts are guest inventory from read-only observations; they do not establish application
+                  health, recovery readiness, current AI routing, or the cost figure. Backup freshness is a file age
+                  check, not a restore test. Private addresses, service names, spending and the private model catalog
+                  are withheld on purpose. The browser studies use synthetic inputs and never execute Atlas, HERMES or
+                  the harness.</span
+                >
+                <div style="display: flex; gap: 14px; font-size: 13px; font-weight: 600; flex-wrap: wrap">
+                  <a href="status.json">Read the September 18 export</a
+                  ><a href="https://cashio.us/status.json">Read the September 7 export</a
+                  ><a href="https://cashio.us/evidence/status-2026-08-28.json">Compare the August archive</a
+                  ><a href="https://github.com/jamescashio/jamescashio.github.io">Read the V31 cost record</a>
+                </div>
+              </div>
+            </div>
+            <div class="panel eve c5">
+              <div class="top">
+                <div style="display: flex; align-items: center; gap: 10px">
+                  <span
+                    class="pulse"
+                    style="
+                      width: 10px;
+                      height: 10px;
+                      border-radius: 50%;
+                      background: var(--cyan);
+                      box-shadow: 0 0 10px var(--cyan);
+                    "
+                  ></span
+                  ><span class="syne" style="font-size: 18px; font-weight: 800">E.V.E.</span
+                  ><span class="mono" style="font-size: 10px; color: var(--muted)">DATED EVIDENCE / LOCAL</span>
+                </div>
+                <span class="mono" style="font-size: 10px; color: var(--gold)">PUBLIC EVIDENCE</span>
+              </div>
+              <div
+                class="out console"
+                id="eve-out"
+                role="log"
+                aria-label="Evidence replies"
+                aria-live="polite"
+                tabindex="0"
+              >
+                <div class="scan"></div>
+                <span class="d"
+                  >Fleet: <span data-fleet="observedLong">September 18, 2026</span> · Routing:
+                  <span data-fleet="routing">Not verified</span> · Interface revised 09-19-2026</span
+                ><span class="d">Local commands. Dated facts. No connection to the estate.</span
+                ><span class="d">Type help to explore.</span>
+              </div>
+              <form id="eve-form">
+                <label for="eve-in" class="mono" style="font-size: 10px; color: var(--cyan)">E.V.E.</label
+                ><input
+                  id="eve-in"
+                  type="text"
+                  autocomplete="off"
+                  placeholder="fleet · kernel · backups · atlas · dsh · help"
+                /><button class="btn ghost sm" type="submit" aria-label="Run command">↵</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 04 FLIGHT HERITAGE ================= -->
+      <section class="block" id="heritage" aria-labelledby="he-h" style="border-top: 1px solid var(--line)">
+        <div class="wrap grid" style="align-items: center">
+          <div class="c5 plate hangar" id="hangar" style="height: clamp(280px, 36vw, 440px)">
+            <img
+              class="hp on"
+              data-pilot="yeager"
+              src="assets/x1.webp"
+              width="1041"
+              height="816"
+              decoding="async"
+              loading="lazy"
+              alt="Bell X-1 in flight, NASA and USAF photo by Lt. Robert A. Hoover"
+            />
+            <img
+              class="hp"
+              data-pilot="johnson"
+              src="assets/sr71.webp"
+              width="1041"
+              height="780"
+              decoding="async"
+              loading="lazy"
+              alt="NASA SR-71A at takeoff, NASA photo by Jim Ross"
+            />
+            <img
+              class="hp"
+              data-pilot="rutan"
+              src="assets/proteus.webp"
+              width="1400"
+              height="892"
+              decoding="async"
+              loading="lazy"
+              alt="Scaled Composites Proteus in flight, NASA and ESPO photo"
+            />
+            <img
+              class="hp"
+              data-pilot="hoover"
+              src="assets/p51.webp"
+              width="1600"
+              height="1067"
+              decoding="async"
+              loading="lazy"
+              alt="P-51 Mustang over Luke Air Force Base, U.S. Air National Guard photo by Tech. Sgt. Hampton Stramler"
+            />
+            <div
+              class="shade"
+              style="background: linear-gradient(0deg, rgba(4, 7, 14, 0.92), rgba(4, 7, 14, 0) 60%)"
+            ></div>
+            <svg class="hud" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+              <path
+                d="M14 40 V14 H40 M360 14 H386 V40 M14 260 V286 H40 M360 286 H386 V260"
+                fill="none"
+                stroke="rgba(56,225,255,.55)"
+                stroke-width="1.5"
+              />
+              <path class="hud-sweep" d="M0 150 H400" stroke="rgba(56,225,255,.25)" stroke-dasharray="6 10" />
+            </svg>
+            <div class="cap">
+              <div style="display: flex; flex-direction: column; gap: 4px">
+                <span class="mono" id="hg-title" style="font-size: 11px; color: var(--gold)"
+                  >YEAGER · BELL X-1 · 1947</span
+                ><span class="mono" id="hg-credit" style="font-size: 10px; color: var(--muted)"
+                  >NASA / USAF photo by Lt. Robert A. Hoover</span
+                >
+              </div>
+              <span class="mono" id="hg-idx" style="font-size: 10px; color: var(--cyan)">01 / 04</span>
+            </div>
+          </div>
+          <div class="c7" style="display: flex; flex-direction: column; gap: 16px">
+            <div class="kick">04 / FLIGHT HERITAGE</div>
+            <span class="mono" style="font-size: 11px; color: var(--muted)">THE DISCIPLINE BEHIND THE DESIGN</span>
+            <h2 id="he-h" data-split>Built with a<br />test pilot’s mind.</h2>
+            <p class="lede">The future rewards imagination. Flight teaches you to prove it.</p>
+            <div
+              style="display: flex; gap: 8px; flex-wrap: wrap"
+              id="pilots"
+              role="group"
+              aria-label="Flight test pioneers"
+              data-stagger
+            >
+              <button
+                class="pill"
+                type="button"
+                data-pilot="yeager"
+                aria-pressed="true"
+                style="min-height: 40px; font-size: 13px"
+              >
+                Yeager</button
+              ><button
+                class="pill"
+                type="button"
+                data-pilot="johnson"
+                aria-pressed="false"
+                style="min-height: 40px; font-size: 13px"
+              >
+                Johnson</button
+              ><button
+                class="pill"
+                type="button"
+                data-pilot="rutan"
+                aria-pressed="false"
+                style="min-height: 40px; font-size: 13px"
+              >
+                Rutan</button
+              ><button
+                class="pill"
+                type="button"
+                data-pilot="hoover"
+                aria-pressed="false"
+                style="min-height: 40px; font-size: 13px"
+              >
+                Hoover
+              </button>
+            </div>
+            <div
+              class="soft"
+              id="hg-card"
+              style="padding: 20px 24px; display: flex; flex-direction: column; gap: 8px"
+              aria-live="polite"
+            >
+              <span class="mono" id="hg-kick" style="font-size: 10px; color: var(--cyan)"
+                >CHUCK YEAGER · BELL X-1 · OCTOBER 14, 1947</span
+              ><span class="syne" id="hg-head" style="font-size: 20px; font-weight: 700"
+                >Fly the card. Report what the machine did.</span
+              >
+              <p class="muted" id="hg-body" style="margin: 0; font-size: 14px">
+                The first supersonic flight was a test card flown to the letter and a report that said exactly what
+                happened, cracked ribs and all. Doug Cashio applies the same discipline: run the check, record the
+                result, and never let the story get ahead of the data.
+              </p>
+              <span class="mono" style="font-size: 10px; color: var(--muted)"
+                >A working principle inspired by this lineage, not a historical quotation.</span
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 05 THE OPERATOR ================= -->
+      <section
+        class="block"
+        id="operator"
+        aria-labelledby="op-h"
+        style="
+          background: linear-gradient(180deg, rgba(7, 12, 24, 0.72), rgba(4, 7, 14, 0.5));
+          border-top: 1px solid var(--line);
+        "
+      >
+        <div class="wrap grid" style="align-items: center">
+          <div class="c6" style="display: flex; flex-direction: column; gap: 16px">
+            <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap">
+              <span class="kick">05 / THE OPERATOR</span
+              ><span class="mono" style="font-size: 11px; color: var(--muted)"
+                >PENSACOLA, FLORIDA · HOUSE CASHIO · A HUMAN IN COMMAND</span
+              >
+            </div>
+            <span class="mono" style="font-size: 11px; color: var(--gold)"
+              >OWNER · BUILDER · OPERATOR · IMAGINATION, WITH INTENTION.</span
+            >
+            <h2 id="op-h" data-split>Doug Cashio</h2>
+            <p
+              class="syne"
+              style="
+                margin: 0;
+                font-size: clamp(20px, 2vw, 26px);
+                line-height: 1.2;
+                font-weight: 500;
+                color: var(--ink2);
+              "
+            >
+              Endlessly curious. Personally accountable.<br />Principal Solutions Consultant.<br />Independent systems
+              builder.
+            </p>
+            <p class="lede" style="font-size: 16px">
+              I make difficult system choices understandable: where AI runs, what it can use, and when a person takes
+              over. This is my independent workshop: hardware I operate, tools I build, and evidence you can inspect.
+              Science fiction supplies the imagination. Flight-test discipline keeps it honest.
+            </p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap" data-stagger>
+              <a href="https://www.linkedin.com/in/dougcashio/" class="btn line sm">LinkedIn</a
+              ><a href="https://github.com/jamescashio" class="btn line sm">GitHub</a
+              ><a href="https://www.credly.com/users/james-cashio/badges/credly" class="btn line sm">Credly wallet</a>
+            </div>
+          </div>
+          <div
+            class="c6 plate sig"
+            id="sigplate"
+            style="
+              border-color: rgba(242, 200, 122, 0.25);
+              background:
+                radial-gradient(ellipse at 50% 55%, rgba(242, 200, 122, 0.16), rgba(4, 7, 14, 0) 60%), #04070e;
+            "
+          >
+            <div class="sig-ring" aria-hidden="true"></div>
+            <img
+              id="sig-art"
+              src="/v38/assets/celestial.webp"
+              width="1680"
+              height="625"
+              decoding="async"
+              loading="lazy"
+              alt="The cAshIo celestial signature: a gold and titanium wordmark inside an orbital ring"
+            />
+            <div class="sheen" aria-hidden="true"></div>
+            <div class="burst" id="sigburst" aria-hidden="true"></div>
+            <div
+              class="shade"
+              style="background: linear-gradient(0deg, rgba(4, 7, 14, 0.9), rgba(4, 7, 14, 0) 50%)"
+            ></div>
+            <svg class="hud" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+              <path
+                d="M14 40 V14 H40 M360 14 H386 V40 M14 260 V286 H40 M360 286 H386 V260"
+                fill="none"
+                stroke="rgba(242,200,122,.55)"
+                stroke-width="1.5"
+              />
+            </svg>
+            <div class="sig-heading">
+              <span class="mono" style="font-size: 10px; color: var(--gold)">HOUSE CASHIO · CELESTIAL SIGNATURE</span
+              ><span class="mono" id="sig-state" role="status" style="font-size: 10px; color: var(--muted)"
+                >DORMANT · GOLD INTENT</span
+              >
+            </div>
+            <div class="cap">
+              <div style="display: flex; flex-direction: column; gap: 8px">
+                <button class="btn gold sm" type="button" id="sig-btn" data-magnet>◇ Energize the signature</button
+                ><a href="/#signature" style="font-size: 14px; font-weight: 600; color: var(--ink)"
+                  >Explore the celestial signature in 3D ↗</a
+                >
+              </div>
+              <span class="mono" style="font-size: 10px; color: var(--muted)">IMAGINATION, WITH INTENTION.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 06 CONTACT ================= -->
+      <section
+        class="block"
+        id="contact"
+        aria-labelledby="ct-h"
+        style="border-top: 1px solid var(--line); overflow: hidden; padding-bottom: 48px"
+      >
+        <div
+          style="
+            position: absolute;
+            right: -120px;
+            top: -160px;
+            width: 520px;
+            height: 520px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(242, 200, 122, 0.16), rgba(242, 200, 122, 0) 65%);
+            pointer-events: none;
+          "
+        ></div>
+        <div class="wrap grid" style="align-items: center">
+          <div class="c6">
+            <div class="kick" style="margin-bottom: 14px">06 / OPEN A CHANNEL</div>
+            <h2 id="ct-h" data-split>What could we<br />build next?</h2>
+          </div>
+          <div class="c6" style="display: flex; flex-direction: column; gap: 14px">
+            <p class="lede">
+              Tell me what you want to build and your hardest constraint. AI spending, private data, or a system that
+              needs to be easier to understand: start there.
+            </p>
+            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap">
+              <a
+                href="mailto:doug@cashio.us?subject=An%20idea%20from%20Cashio&body=What%20I%20want%20to%20build%3A%0A%0AMy%20hardest%20constraint%3A%0A%0AThe%20study%20or%20idea%20that%20caught%20my%20attention%3A%0A"
+                class="btn gold"
+                data-magnet
+                >doug@cashio.us</a
+              ><button class="btn line" type="button" id="copy-email">Copy email address</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <div style="display: flex; flex-direction: column; gap: 4px; max-width: 720px">
+        <span class="mono" style="font-size: 10px; color: var(--muted)"
+          >The Human Reckoning. Inspired by the Butlerian Jihad in Frank Herbert’s <em>Dune</em>. Powerful tools. Human
+          judgment in command.</span
+        ><span class="mono" style="font-size: 10px; color: var(--gold)"
+          >A HUMAN IN COMMAND · V38.1 / HELIOS · Directed by Doug Cashio · 09-19-2026</span
+        >
+      </div>
+      <nav aria-label="Footer">
+        <details class="vh">
+          <summary>Version history</summary>
+          <div class="vh-menu">
+            <a href="https://cashio.us/?v=37.17">V37.17 Continuum · the previous front door</a
+            ><a href="https://cashio.us/command-deck.html">V35 All Tens · command deck</a
+            ><a href="https://cashio.us/command.html">May 2026 · command center archive</a
+            ><a href="https://github.com/jamescashio/jamescashio.github.io/blob/main/CHANGELOG.md"
+              >Every release, V30 to V38 · changelog</a
+            ><a href="https://github.com/jamescashio/jamescashio.github.io/releases">Tagged releases on GitHub</a>
+          </div>
+        </details>
+        <a href="https://github.com/jamescashio/jamescashio.github.io">View source</a
+        ><a href="https://cashio.us/cashio.html">Meet cAshIo ↗</a
+        ><a href="https://github.com/jamescashio/jamescashio.github.io/blob/main/PRIVACY.md">Privacy</a
+        ><a href="#top" style="color: var(--ink)">Back to orbit ↑</a>
+      </nav>
+    </footer>
+
+    <!-- ================= MISSION CONTROL ================= -->
+    <dialog
+      id="mc"
+      aria-labelledby="mc-title"
+      style="
+        border: 1px solid rgba(56, 225, 255, 0.3);
+        border-radius: 22px;
+        background: linear-gradient(180deg, #152239, #0a1220);
+        color: var(--ink);
+        padding: 0;
+        width: min(92vw, 880px);
+        max-height: 86vh;
+        box-shadow: 0 60px 160px rgba(0, 0, 0, 0.7);
+      "
+    >
+      <div
+        style="padding: 24px 28px; display: flex; flex-direction: column; gap: 14px; max-height: 86vh; overflow: auto"
+      >
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px">
+          <span class="mono" style="font-size: 11px; color: var(--gold)">CASHIO / V38 · THE HUMAN RECKONING</span
+          ><button class="btn line sm" type="button" id="mc-close">Close ×</button>
+        </div>
+        <div>
+          <span class="kick">CHOOSE YOUR TRAJECTORY</span>
+          <h2 id="mc-title" style="margin-top: 6px; font-size: 32px">Mission Control<span class="em">.</span></h2>
+          <span class="muted">Choose a starting point, or search the universe.</span>
+        </div>
+        <label class="sr" for="mc-search">Search destinations and studies</label
+        ><input
+          id="mc-search"
+          type="search"
+          placeholder="Search destinations and studies"
+          style="
+            height: 48px;
+            border-radius: 12px;
+            border: 1px solid rgba(56, 225, 255, 0.25);
+            background: var(--void);
+            color: var(--ink);
+            padding: 0 16px;
+            font-family: var(--sans);
+            font-size: 15px;
+          "
+        />
+        <div
+          id="mc-list"
+          style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px"
+        ></div>
+        <div style="display: flex; gap: 20px; padding-top: 10px; border-top: 1px solid var(--line2)">
+          <span class="mono" style="font-size: 10px; color: var(--muted)">↑ ↓ navigate</span
+          ><span class="mono" style="font-size: 10px; color: var(--muted)">↵ enter</span
+          ><span class="mono" style="font-size: 10px; color: var(--muted)">esc close</span>
+        </div>
+      </div>
+    </dialog>
+    <aside class="bitdock" id="bitdock" aria-label="Bit, your co-pilot">
+      <button type="button" class="bitbtn" id="bit-btn" aria-label="Bit: open Mission Control">
+        <canvas id="bitcv" width="96" height="96" aria-hidden="true"></canvas>
+      </button>
+      <div class="bitsay hide" id="bitsay" role="status" aria-live="polite">
+        <span class="mono" id="bit-tag" style="font-size: 9px; color: var(--gold)">BIT / WELCOME ABOARD</span
+        ><span id="bit-line">I’m Bit. Take the flight; I’ll point out what matters.</span
+        ><button type="button" class="bitx" id="bit-x" aria-label="Dismiss Bit’s note">×</button>
+      </div>
+    </aside>
+    <div
+      id="toast"
+      role="status"
+      style="
+        position: fixed;
+        left: 50%;
+        bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+        transform: translate(-50%, 20px);
+        opacity: 0;
+        background: var(--gold);
+        color: #1a1204;
+        padding: 12px 18px;
+        border-radius: 12px;
+        font-weight: 600;
+        z-index: 120;
+        pointer-events: none;
+        transition:
+          opacity 0.3s,
+          transform 0.3s;
+      "
+    ></div>
+
+    <script type="module" src="/src/helios/main.js"></script>
+  </body>
+</html>

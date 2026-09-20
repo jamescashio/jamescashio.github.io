@@ -604,7 +604,7 @@ def main() -> int:
             failures.append("release receipt must match the latest observation without redating the archive")
         if site_release != compatibility_release:
             failures.append("event-horizon-release.json must match the canonical site-release.json")
-    if package.get("scripts", {}).get("build") != "tsc --noEmit && vite build && node --import tsx scripts/prerender.mts && node --import tsx scripts/prerender-odyssey.mts":
+    if package.get("scripts", {}).get("build") != "tsc --noEmit && vite build && node --import tsx scripts/prerender.mts && node --import tsx scripts/prerender-odyssey.mts && node --import tsx scripts/prerender-helios.mts":
         failures.append("package.json build script changed from the supplied TypeScript + Vite + prerender gate")
 
     vite = read("vite.config.ts")
@@ -630,11 +630,11 @@ def main() -> int:
         "python scripts/check_committed_whitespace.py",
         "GH_TOKEN: ${{ github.token }}",
         'test "$(gh api repos/${GITHUB_REPOSITORY}/pages --jq .build_type)" = "workflow"',
-        "actions/configure-pages@v5",
-        "actions/upload-pages-artifact@v5",
+        "actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b",
+        "actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9",
         "path: dist",
         "include-hidden-files: true",
-        "actions/deploy-pages@v4",
+        "actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e",
     ):
         if marker not in pages:
             failures.append(f"Pages workflow is missing {marker!r}")

@@ -1,0 +1,20 @@
+{
+  "experienceVersion": "38.1.0",
+  "releaseId": "helios-38.1.0-20260919",
+  "releaseName": "THE HUMAN RECKONING",
+  "visualEdition": "Helios",
+  "entry": "/v38/",
+  "status": "released",
+  "published": true,
+  "releaseDate": "2026-09-19",
+  "compatibilityExperienceVersion": "37.17.0",
+  "compatibilityEntry": "/?v=37.17",
+  "rollbackCommit": "82425d30fb0e6d2c7891281ded0423b854d6f23d",
+  "evidenceSnapshot": {
+    "url": "/v38/status.json",
+    "fleetObserved": "2026-09-18",
+    "observedAtUtc": "2026-09-18T22:53:54Z",
+    "routingObserved": null
+  },
+  "statement": "The interface release does not refresh the dated infrastructure observation. Interactive examples are browser-only illustrations, and no AI requests are sent."
+}

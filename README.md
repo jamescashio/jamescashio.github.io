@@ -1,4 +1,10 @@
-# cashio.us V37.17 — Continuum
+# cAshIo V38.1 — Helios
+
+The public front door is `/v38/`: the original orbital artwork, typefaces and Bit with a direct integrated flight, seven working studies, responsive navigation, complete motion-off content and a working House Cashio signature. V38 is built from `v38/index.html` and `src/helios/`, reusing the maintained teaching models and flight components.
+
+The release receipt is `/v38/site-release.json`. `/` redirects plain visits to V38; legacy fragments and query links retain the V37.17 experience. The shared package and compatibility receipts keep that historical version; their `frontDoor` record points to V38.1. Interface revisions do not renew evidence observations. See [Helios validation and rollback](docs/helios-release.md).
+
+## Preserved V37.17 compatibility experience
 
 Doug Cashio’s interactive universe of AI, security, and owned infrastructure. Built for technical peers and AI enthusiasts, with Bit, orbital artwork, midnight blue, cyan, gold, and human judgment at its center.
 
