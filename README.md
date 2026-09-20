@@ -1,10 +1,10 @@
-# cAshIo V38.3 — Helios
+# cAshIo V38.4 — Helios
 
 The public front door is `/v38/`: the original orbital artwork, typefaces and Bit with a direct integrated flight, seven working studies, responsive navigation, complete motion-off content and a working House Cashio signature. V38 is built from `v38/index.html` and `src/helios/`, reusing the maintained teaching models and flight components.
 
-V38.3 makes the orbital workshop easier to explore: readable study cards become a compact swipeable deck on phones, the first-minute cards open their destinations, and the chapter rail includes labeled links for every section. Mission presets show their exact selected or custom state and explain changes in request counts. Each principle leads to its working study or dated evidence. The existing sculpted atlas, ship and relay, 3D armillary, original artwork and self-hosted fonts stay intact. Motion remains quiet, optional and bounded.
+V38.4 connects the privacy test, system atlas and HERMES around the same request and existing routing policy. Private input visibly stops for human review, and continuation links preserve the exact settings. Bit docks inside Menu on phones, important labels use shared readable sizes, and the evidence leads with what its records establish. A second build story links the published paused-starship fix. Focused mascot, trace and evidence modules simplify maintenance. Original artwork, fonts, motion controls and dated observations are preserved.
 
-The release receipt is `/v38/site-release.json`. `/` redirects plain visits to V38; legacy fragments and query links retain the V37.17 experience. The shared package and compatibility receipts keep that historical version; their `frontDoor` record points to V38.3. Interface revisions do not renew evidence observations. See [Helios validation and rollback](docs/helios-release.md).
+The release receipt is `/v38/site-release.json`. `/` redirects plain visits to V38; legacy fragments and query links retain the V37.17 experience. The shared package and compatibility receipts keep that historical version; their `frontDoor` record points to V38.4. Interface revisions do not renew evidence observations. See [Helios validation and rollback](docs/helios-release.md).
 
 ## Preserved V37.17 compatibility experience
 

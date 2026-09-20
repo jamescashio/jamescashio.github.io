@@ -22,7 +22,7 @@
   left: 0;
   right: 0;
   text-align: center;
-  font: 10px var(--mono);
+  font: var(--text-label) var(--mono);
   letter-spacing: 0.13em;
   color: var(--muted);
   pointer-events: none;
@@ -138,7 +138,7 @@
 }
 .atlas-caption {
   min-height: 110px;
-  font-size: 11px;
+  font-size: var(--text-label);
 }
 #trace-label {
   font: 14px/1.5 var(--sans);
@@ -156,7 +156,7 @@
   flex-wrap: wrap;
   gap: 8px 18px;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: var(--text-label);
   color: var(--muted);
 }
 #schem-label {
@@ -221,7 +221,7 @@
 }
 .flow-stations small {
   color: var(--muted);
-  font-size: 11px;
+  font-size: var(--text-label);
   line-height: 1.4;
 }
 .flow-stations span:first-child b {
@@ -252,7 +252,7 @@
   box-shadow: 0 0 8px color-mix(in srgb, var(--packet-color) 20%, transparent);
 }
 #manifest-label {
-  font: 10px/1.4 var(--mono);
+  font: var(--text-label)/1.4 var(--mono);
   color: var(--muted);
 }
 .scene-note {
@@ -324,7 +324,7 @@
   text-align: center;
 }
 .engine-index i {
-  font: 10px var(--mono);
+  font: var(--text-label) var(--mono);
   color: #6e899a;
   font-style: normal;
 }
@@ -367,7 +367,7 @@
     font-size: 14px !important;
   }
   .node > span:last-child {
-    font-size: 11px !important;
+    font-size: var(--text-label) !important;
     max-width: 100px;
     line-height: 1.35;
   }
@@ -392,7 +392,7 @@
     gap: 3px;
   }
   .flow-stations small {
-    font-size: 10px;
+    font-size: var(--text-label);
   }
   .flow-manifest {
     flex-wrap: wrap;
@@ -402,10 +402,10 @@
     min-width: 140px;
   }
   #manifest-label {
-    font-size: 9px;
+    font-size: var(--text-label);
   }
   .scene-note {
-    font-size: 11px;
+    font-size: var(--text-label);
   }
   .engine-index {
     bottom: 0;

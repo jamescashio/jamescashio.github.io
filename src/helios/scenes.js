@@ -1,22 +1,14 @@
+import { createAtlasTrace } from "./atlas-trace.js";
+
 /* Three illustrative instruments, one visibility/motion contract. No network requests are sent by the models. */
 const SVG = "http://www.w3.org/2000/svg";
 const COLORS = { local: "#38e1ff", cloud: "#f2c87a", held: "#f08a96" };
-const TRACE_LABELS = [
-  "Human intent leaves the operator",
-  "HERMES qualifies the route",
-  "Zeus receives the work",
-  "Result returns for human review",
-];
 const smooth = (t) => t * t * (3 - 2 * t);
 
 export function setupScenes({ motion }) {
   const atlas = document.querySelector("#atlas");
   const flow = document.querySelector("#flow-scene");
   const engine = document.querySelector("#engine");
-  const packet = document.querySelector("#packet");
-  const traceLabel = document.querySelector("#trace-label");
-  const nodes = [...atlas.querySelectorAll("[data-node]")];
-  const positions = {};
   const visible = new Map([
     [atlas, false],
     [flow, false],
@@ -26,95 +18,13 @@ export function setupScenes({ motion }) {
     frame = 0,
     previous = 0,
     elapsed = 0,
-    particles = [],
-    trace = null;
+    particles = [];
   let engineScene = null,
     engineLoading = false,
     angle = 0,
     principle = 0;
 
-  function layoutAtlas() {
-    const box = atlas.getBoundingClientRect();
-    if (!box.width || !box.height) return;
-    nodes.forEach((node) => {
-      const core = node.querySelector(".core").getBoundingClientRect();
-      positions[node.dataset.node] = [
-        ((core.x + core.width / 2 - box.x) * 800) / box.width,
-        ((core.y + core.height / 2 - box.y) * 640) / box.height,
-      ];
-    });
-    atlas.querySelectorAll("[data-link]").forEach((wire) => {
-      const [from, to] = wire.dataset.link.split(":").map((id) => positions[id]);
-      wire.setAttribute("d", `M${from.join(" ")}L${to.join(" ")}`);
-    });
-  }
-  new ResizeObserver(layoutAtlas).observe(atlas);
-  document.fonts.ready.then(layoutAtlas);
-
-  function traceStage(stage) {
-    const active = ["operator", "hermes", "zeus", "operator"][stage];
-    nodes.forEach((node) => node.classList.toggle("trace-active", node.dataset.node === active));
-    traceLabel.textContent = TRACE_LABELS[stage];
-    atlas
-      .querySelectorAll("[data-link]")
-      .forEach((wire) =>
-        wire.classList.toggle(
-          "tracing",
-          stage < 2 ? wire.id === "w1" : wire.id === "w2" || (stage === 3 && wire.id === "w1"),
-        ),
-      );
-  }
-  function finishTrace(staticView = false) {
-    trace = null;
-    packet.setAttribute("opacity", "0");
-    nodes.forEach((node) => node.classList.remove("trace-active"));
-    atlas.querySelectorAll(".tracing").forEach((wire) => wire.classList.remove("tracing"));
-    traceLabel.textContent = staticView
-      ? TRACE_LABELS.join(" → ")
-      : "Trace complete: the result returns for human review. No request was sent.";
-    atlas.dataset.tracing = "false";
-  }
-  document.querySelector("#trace-btn").addEventListener("click", () => {
-    layoutAtlas();
-    if (!enabled) {
-      finishTrace(true);
-      return;
-    }
-    trace = { time: 0, stage: -1 };
-    atlas.dataset.tracing = "true";
-    packet.setAttribute("opacity", "1");
-    updateTrace(0);
-    sync();
-  });
-  function updateTrace(delta) {
-    trace.time += delta;
-    const time = trace.time;
-    if (time >= 8) {
-      finishTrace();
-      return;
-    }
-    const segments = [
-      [0, 1.8, "operator", "hermes", 0],
-      [1.8, 2.5, "hermes", "hermes", 1],
-      [2.5, 4.1, "hermes", "zeus", 1],
-      [4.1, 4.8, "zeus", "zeus", 2],
-      [4.8, 6.2, "zeus", "hermes", 3],
-      [6.2, 8, "hermes", "operator", 3],
-    ];
-    const [start, end, from, to, stage] = segments.find((segment) => time < segment[1]);
-    const a = positions[from],
-      b = positions[to];
-    if (!a || !b) return;
-    const progress = smooth((time - start) / (end - start));
-    packet.setAttribute(
-      "transform",
-      `translate(${a[0] + (b[0] - a[0]) * progress} ${a[1] + (b[1] - a[1]) * progress})`,
-    );
-    if (trace.stage !== stage) {
-      trace.stage = stage;
-      traceStage(stage);
-    }
-  }
+  const trace = createAtlasTrace({ isMotionEnabled: () => enabled, onSchedule: sync });
 
   // The 12 outcomes remain visible as a static manifest while their paths animate above.
   function renderFlow(result, state) {
@@ -190,9 +100,9 @@ export function setupScenes({ motion }) {
       previous = now;
       elapsed += delta;
       if (visible.get(flow)) paintFlow();
-      if (trace && visible.get(atlas)) updateTrace(delta);
+      if (trace.active && visible.get(atlas)) trace.advance(delta);
     }
-    if (enabled && !document.hidden && (visible.get(flow) || (trace && visible.get(atlas))))
+    if (enabled && !document.hidden && (visible.get(flow) || (trace.active && visible.get(atlas))))
       frame = requestAnimationFrame(run);
   }
   async function loadEngine() {
@@ -208,7 +118,7 @@ export function setupScenes({ motion }) {
   }
   function sync() {
     const active = enabled && !document.hidden;
-    if (active && (visible.get(flow) || (trace && visible.get(atlas)))) {
+    if (active && (visible.get(flow) || (trace.active && visible.get(atlas)))) {
       if (!frame) {
         previous = 0;
         frame = requestAnimationFrame(run);
@@ -234,7 +144,7 @@ export function setupScenes({ motion }) {
   [atlas, flow, engine].forEach((element) => observer.observe(element));
   window.addEventListener("helios-motion", (event) => {
     enabled = event.detail;
-    if (!enabled && trace) finishTrace(true);
+    if (!enabled && trace.active) trace.finish(true);
     paintFlow(!enabled);
     sync();
   });
@@ -247,12 +157,9 @@ export function setupScenes({ motion }) {
   return {
     renderFlow,
     flowVisible: () => visible.get(flow),
-    selectAtlas: () => {
-      if (trace) {
-        finishTrace();
-        traceLabel.textContent = "Trace stopped. Select Trace a request to follow the example again.";
-      }
-    },
+    updateRequest: trace.update,
+    traceRequest: trace.start,
+    selectAtlas: trace.stop,
     rotateEngine(next) {
       angle = next;
       engineScene?.setAngle(next);

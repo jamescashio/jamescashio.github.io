@@ -91,10 +91,11 @@ export function setupNavigation({ studies, select, mission, motion, toast }) {
   function focusSection(id, shouldScroll = true) {
     const target = document.getElementById(id);
     if (!target) return;
-    if (shouldScroll) target.scrollIntoView({ behavior: motion() ? "smooth" : "instant", block: "start" });
     const heading = target.querySelector("h2,h3") || target;
     heading.setAttribute("tabindex", "-1");
     heading.focus({ preventScroll: true });
+    // Focus realizes content-visibility sections before calculating the destination.
+    if (shouldScroll) target.scrollIntoView({ behavior: motion() ? "smooth" : "instant", block: "start" });
   }
   async function launch(step = "board") {
     if (flight || launchPending) return;

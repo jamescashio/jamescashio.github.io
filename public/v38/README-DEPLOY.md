@@ -1,6 +1,6 @@
-# cAshIo V38.3 Helios — approved release
+# cAshIo V38.4 Helios — approved release
 
-Prepared 09-20-2026 against GitHub main at `5f336f9e56b9dc30f9d989db620503b8605486a6`.
+Prepared 09-20-2026 against GitHub main at `0e284480f68cc78721ea3e1a90719fb7bacc0075`.
 
 ## Build and preview
 
