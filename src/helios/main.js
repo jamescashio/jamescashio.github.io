@@ -140,7 +140,7 @@ function renderStudies() {
   const list = $("#studies-list");
   list.innerHTML = STUDIES.map(
     (s, i) =>
-      `<button class="study" type="button" role="tab" id="study-${s.id}" aria-controls="instrument" tabindex="${i === st.i ? 0 : -1}" data-study="${i}" aria-selected="${i === st.i}"><div style="display:flex;justify-content:space-between;align-items:center"><span class="mono" style="font-size:11px;color:var(--gold)">${s.n}</span><span class="cy">◇</span></div><div style="display:flex;flex-direction:column;gap:4px"><span class="syne" style="font-size:20px;font-weight:700">${s.name}</span><span class="mono" style="font-size:10px;color:var(--muted)">${s.cat}</span></div><svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="#38E1FF" stroke-width="1.2"><path d="${GLYPHS[i]}"/></svg></button>`,
+      `<button class="study" type="button" role="tab" id="study-${s.id}" aria-controls="instrument" tabindex="${i === st.i ? 0 : -1}" data-study="${i}" aria-selected="${i === st.i}"><span class="study-index">${s.n} / 07</span><strong class="study-title">${s.name}</strong><span class="study-purpose">${s.sub}</span><svg class="glyph" viewBox="-5 -5 34 34" fill="none" stroke="currentColor" stroke-width=".8" aria-hidden="true"><circle cx="12" cy="12" r="15" stroke-dasharray="2 3"/><circle cx="12" cy="12" r="12.5" stroke-width=".3"/><path d="${GLYPHS[i]}"/></svg></button>`,
   ).join("");
   list.addEventListener("click", (e) => {
     const b = e.target.closest("[data-study]");
@@ -168,6 +168,14 @@ function selectStudy(i, updateUrl = true) {
     b.setAttribute("aria-selected", on);
     b.tabIndex = on ? 0 : -1;
   });
+  const studyStrip = $("#studies-list");
+  const activeStudy = $("#study-" + s.id);
+  if (studyStrip.scrollWidth > studyStrip.clientWidth) {
+    const stripBox = studyStrip.getBoundingClientRect();
+    const tabBox = activeStudy.getBoundingClientRect();
+    if (tabBox.left < stripBox.left || tabBox.right > stripBox.right)
+      studyStrip.scrollTo({ left: studyStrip.scrollLeft + tabBox.left - stripBox.left - 6, behavior: "instant" });
+  }
   $("#st-n").textContent = s.n;
   $("#st-name").textContent = s.name;
   $("#st-sub").textContent = s.sub;
@@ -188,7 +196,9 @@ function selectStudy(i, updateUrl = true) {
       { y: 0, duration: 0.3, stagger: 0.05, ease: "expo.out", overwrite: true },
     );
 }
+let routeCounterTween;
 function renderRoute(run) {
+  routeCounterTween?.kill();
   const r = routeExample(st.intent, st.priv, st.src);
   const experiment = { study: "hermes", intent: st.intent, privateData: st.priv, sources: st.src };
   studyState.set("hermes", experiment);
@@ -223,7 +233,7 @@ function renderRoute(run) {
         onStart: () => {},
       });
       let k = { v: 0 };
-      gsap.to(k, {
+      routeCounterTween = gsap.to(k, {
         v: 5,
         duration: 1.6,
         ease: "none",
@@ -313,12 +323,35 @@ $("#pv-reveal").addEventListener("click", () => {
 
 /* ---------- 3. Sovereign world model (twelve request illustration) ---------- */
 const w = { arch: "hybrid", sens: "mixed", net: true, permit: false };
+let lastWorld = null;
 function world(arch, sens, net, permit) {
   const r = computeWorldOutcome({ architecture: arch, sensitivity: sens, connected: net, allowPrivateEgress: permit });
   return { ...r, data: r.dataHandling, netd: r.internetDependency };
 }
 function renderWorld() {
   const r = world(w.arch, w.sens, w.net, w.permit);
+  const settings = JSON.stringify(w);
+  const preset = Object.entries(MISSIONS).find(([, values]) =>
+    Object.keys(values).every((key) => values[key] === w[key]),
+  );
+  $$("[data-mission]").forEach((button) =>
+    button.setAttribute("aria-pressed", String(button.dataset.mission === preset?.[0])),
+  );
+  $("#mission-state").textContent = preset
+    ? `${$("[data-mission=" + preset[0] + "] strong").textContent} · selected`
+    : "Custom flight plan · your settings";
+  if (lastWorld && lastWorld.settings !== settings) {
+    const changes = ["local", "cloud", "held"].filter((key) => lastWorld[key] !== r[key]);
+    $("#w-change").textContent = changes.length
+      ? changes.map((key) => `${key[0].toUpperCase() + key.slice(1)}: ${lastWorld[key]} → ${r[key]}`).join(" · ")
+      : "Settings changed; the request counts stay the same.";
+    const feedback = $("#decision-change");
+    feedback.dataset.held = String(r.held > 0);
+    const rect = feedback.getBoundingClientRect();
+    if (motionOn && rect.bottom > 0 && rect.top < innerHeight)
+      gsap.fromTo(feedback, { y: 5 }, { y: 0, duration: 0.35, ease: "power2.out", overwrite: true });
+  }
+  lastWorld = { settings, local: r.local, cloud: r.cloud, held: r.held };
   const set = (id, v) => {
     $(id).textContent = v;
   };
@@ -488,6 +521,7 @@ $$("[data-node]").forEach((b) =>
 const PR = [
   {
     n: "01",
+    action: ["Inspect the dated evidence", "#evidence"],
     title: "Begin with a clear signal.",
     body: "Separate what is known from what is assumed. A useful system makes its evidence visible before it asks for trust.",
     tag: "Evidence before inference",
@@ -495,6 +529,7 @@ const PR = [
   },
   {
     n: "02",
+    action: ["Try this routing rule", "#build=hermes"],
     title: "Give each request the route it needs.",
     body: "Routine work gets a general lane. Evidence requirements change the route. Private information puts a person in the decision.",
     tag: "The boundary gets the final say",
@@ -502,6 +537,7 @@ const PR = [
   },
   {
     n: "03",
+    action: ["Test when evidence needs review", "#build=dashboards"],
     title: "Trust has a timestamp.",
     body: "A source. A date. A clear boundary. Running guests do not establish application health, recovery or failover readiness.",
     tag: "Keep the claim inside the evidence",
@@ -518,6 +554,10 @@ $("#pr-group").addEventListener("click", (e) => {
   $("#pr-body").textContent = p.body;
   $("#pr-tag").textContent = p.tag;
   $("#pr-ring").textContent = p.ring;
+  $("#pr-action").textContent = p.action[0];
+  $("#pr-action").href = p.action[1];
+  if (motionOn)
+    gsap.fromTo($("#pr-title").parentElement, { y: 6 }, { y: 0, duration: 0.35, ease: "power2.out", overwrite: true });
   scenes.selectPrinciple(+b.dataset.pr);
 });
 (function () {

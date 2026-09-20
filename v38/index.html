@@ -47,10 +47,16 @@
     <div class="cursor-ring" aria-hidden="true"></div>
     <div class="rail" aria-hidden="true"><i id="railbar"></i></div>
     <nav class="sections" aria-label="Sections">
-      <a href="#top" title="Orbit"></a><a href="#work" title="Selected work"></a><a href="#studies" title="Studies"></a
-      ><a href="#universe" title="The universe"></a><a href="#starship" title="Starship"></a
-      ><a href="#evidence" title="Evidence"></a><a href="#operator" title="Operator"></a
-      ><a href="#contact" title="Contact"></a>
+      <a href="#top" aria-label="Orbit"><span>Orbit</span></a>
+      <a href="#work" aria-label="Try a decision"><span>Try a decision</span></a>
+      <a href="#studies" aria-label="Seven studies"><span>Seven studies</span></a>
+      <a href="#universe" aria-label="System atlas"><span>System atlas</span></a>
+      <a href="#starship" aria-label="Starship"><span>Starship</span></a>
+      <a href="#principles" aria-label="Principles Engine"><span>Principles Engine</span></a>
+      <a href="#evidence" aria-label="Dated evidence"><span>Dated evidence</span></a>
+      <a href="#heritage" aria-label="Flight heritage"><span>Flight heritage</span></a>
+      <a href="#operator" aria-label="Meet Doug"><span>Meet Doug</span></a>
+      <a href="#contact" aria-label="Open a channel"><span>Open a channel</span></a>
     </nav>
 
     <header class="nav show" id="nav">
@@ -228,19 +234,19 @@
               ><span class="muted">See it. Change it. Understand it.</span>
             </div>
             <div class="minute" data-stagger>
-              <div class="step">
+              <a class="step" href="#flight=board">
                 <span class="mono" style="font-size: 11px; color: var(--gold)">01</span><strong>Take the flight</strong
                 ><span class="muted" style="font-size: 14px">Open the hull. See inside.</span>
-              </div>
-              <div class="step">
+              </a>
+              <a class="step" href="#work">
                 <span class="mono" style="font-size: 11px; color: var(--gold)">02</span
                 ><strong>Change one decision</strong
                 ><span class="muted" style="font-size: 14px">Watch the boundary respond.</span>
-              </div>
-              <div class="step">
+              </a>
+              <a class="step" href="#evidence">
                 <span class="mono" style="font-size: 11px; color: var(--gold)">03</span><strong>Inspect the work</strong
                 ><span class="muted" style="font-size: 14px">A real build. Its dated evidence.</span>
-              </div>
+              </a>
             </div>
           </div>
         </div>
@@ -398,14 +404,23 @@
           <div class="head">
             <div>
               <div class="kick gold" style="margin-bottom: 14px">GO DEEPER / SEVEN WORKING STUDIES</div>
-              <h2 id="studies-h" data-split>Seven questions.<br />Your hands on<br />the controls.</h2>
+              <h2 id="studies-h" data-split>Seven questions.<br />Take the controls.</h2>
             </div>
             <div class="r">
-              <span class="mono" style="font-size: 12px; color: var(--muted)">SELECT A BUILD / 07</span>
+              <span class="mono" style="font-size: 12px; color: var(--muted)">SEVEN WORKING STUDIES</span>
+              <p class="study-intro">Choose a question. Change the inputs. See the rule at work.</p>
+              <span class="study-mobile-hint">Swipe to explore all seven →</span>
             </div>
           </div>
           <div class="grid">
-            <div class="c5 studies-list" id="studies-list" role="tablist" aria-label="Studies" data-stagger></div>
+            <div
+              class="c5 studies-list"
+              id="studies-list"
+              role="tablist"
+              aria-label="Studies"
+              aria-orientation="horizontal"
+              data-stagger
+            ></div>
             <div
               class="panel c7 instrument"
               id="instrument"
@@ -1157,19 +1172,16 @@
               class="panel c5"
               style="padding: clamp(20px, 2.4vw, 30px); display: flex; flex-direction: column; gap: 16px"
             >
-              <div
-                style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap"
-              >
-                <span class="kick gold">THE FLIGHT PLAN</span
-                ><span class="mono" style="font-size: 10px; color: var(--muted)"
-                  >Choose a mission. Then change the architecture.</span
-                >
+              <div class="flight-plan-heading">
+                <span class="kick gold">THE FLIGHT PLAN</span>
+                <p>Choose a starting point. Then test its boundaries.</p>
               </div>
               <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px" id="missions">
                 <button
                   class="tile"
                   type="button"
                   data-mission="routine"
+                  aria-pressed="true"
                   style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px 14px"
                 >
                   <span class="mono" style="font-size: 10px; color: var(--gold)">01</span
@@ -1180,6 +1192,7 @@
                   class="tile"
                   type="button"
                   data-mission="blackout"
+                  aria-pressed="false"
                   style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px 14px"
                 >
                   <span class="mono" style="font-size: 10px; color: var(--gold)">02</span
@@ -1190,6 +1203,7 @@
                   class="tile"
                   type="button"
                   data-mission="classified"
+                  aria-pressed="false"
                   style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px 14px"
                 >
                   <span class="mono" style="font-size: 10px; color: var(--gold)">03</span
@@ -1199,6 +1213,7 @@
                   >
                 </button>
               </div>
+              <p id="mission-state">Routine flight · selected</p>
               <strong style="font-size: 14px">Choose the architecture</strong>
               <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px" id="arch-group">
                 <button
@@ -1295,9 +1310,7 @@
                   <span>Permit private cloud requests</span><span class="knob"></span>
                 </button>
               </div>
-              <span class="mono" style="font-size: 9px; color: var(--muted)"
-                >Only applies to private requests in Cloud mode</span
-              >
+              <span class="flight-plan-note">Permission applies to private requests in Cloud mode.</span>
               <div class="hair"></div>
               <div style="display: flex; justify-content: space-between; align-items: baseline">
                 <span class="mono" style="font-size: 11px; color: var(--muted)">THE SAME 12-REQUEST WORKLOAD</span
@@ -1321,6 +1334,12 @@
                     >0</span
                   >
                 </div>
+              </div>
+              <div class="decision-change" id="decision-change" data-held="false">
+                <span class="kick">YOUR LAST CHANGE</span>
+                <p id="w-change" role="status" aria-live="polite" aria-atomic="true">
+                  Change a setting to compare the request counts.
+                </p>
               </div>
               <p id="w-summary" style="margin: 0; font-size: 14px; color: var(--ink2)">
                 6 requests stay local; 6 public requests use the cloud. Sensitive data stays on your hardware.
@@ -1423,6 +1442,7 @@
               <span class="mono" id="pr-ring" style="font-size: 10px; color: var(--muted)"
                 >The outer ring represents the boundary of what can be observed.</span
               >
+              <a class="principle-action" id="pr-action" href="#evidence">Inspect the dated evidence</a>
             </div>
             <span class="muted" style="font-size: 12px"
               >Drag the instrument or use the arrow keys with it focused. Home resets it.</span
@@ -2150,7 +2170,7 @@
           >The Human Reckoning. Inspired by the Butlerian Jihad in Frank Herbert’s <em>Dune</em>. Powerful tools. Human
           judgment in command.</span
         ><span class="mono" style="font-size: 10px; color: var(--gold)"
-          >A HUMAN IN COMMAND · V38.2 / HELIOS · Directed by Doug Cashio · 09-20-2026</span
+          >A HUMAN IN COMMAND · V38.3 / HELIOS · Directed by Doug Cashio · 09-20-2026</span
         >
       </div>
       <nav aria-label="Footer">

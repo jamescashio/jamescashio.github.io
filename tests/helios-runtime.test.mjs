@@ -56,6 +56,95 @@ async function choose(page, id) {
   await expect(page.locator(`#study-${id}`)).toHaveAttribute("aria-selected", "true");
 }
 
+test("The compact study deck keeps readable tabs, keyboard selection and nearby controls on small screens", async (t) => {
+  for (const width of [320, 390, 768]) {
+    const page = await visit(t, { width, height: 844 });
+    await page.locator("#study-hermes").focus();
+    for (const key of ["End", "Home", "ArrowRight"]) {
+      await page.keyboard.press(key);
+      const active = page.locator('[role="tab"][aria-selected="true"]');
+      await expect(active).toBeFocused();
+      const bounds = await page.locator("#studies-list").evaluate((strip) => {
+        const tab = strip.querySelector('[aria-selected="true"]');
+        const tabBox = tab.getBoundingClientRect();
+        const box = strip.getBoundingClientRect();
+        return {
+          left: tabBox.left - box.left,
+          right: tabBox.right - box.right,
+          height: box.height,
+          title: parseFloat(getComputedStyle(tab.querySelector(".study-title")).fontSize),
+          gap: document.querySelector("#instrument").getBoundingClientRect().top - box.bottom,
+        };
+      });
+      assert.ok(bounds.left >= -1 && bounds.right <= 1, "the entire selected card is visible");
+      assert.ok(bounds.height < 240, "the selector does not consume a screen of scrolling");
+      assert.ok(bounds.title >= 16, "study titles remain readable at every phone width");
+      assert.ok(bounds.gap >= 0 && bounds.gap < 55, "the controls immediately follow the selector");
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+    }
+    await expect(page.locator("#st-name")).toHaveText("Escalation Cascade");
+    await page.locator("#studies-h").scrollIntoViewIfNeeded();
+    await page.screenshot({ path: path.join(output, `study-deck-${width}.png`) });
+  }
+});
+
+test("Mission presets and the last change match the model, including custom settings and unchanged counts", async (t) => {
+  const page = await visit(t, { width: 390 });
+  await expect(page.locator('[data-mission="routine"]')).toHaveAttribute("aria-pressed", "true");
+  await page.locator('[data-mission="blackout"]').click();
+  await expect(page.locator("#mission-state")).toHaveText("Deep-space blackout · selected");
+  await expect(page.locator("#w-change")).toHaveText("Local: 6 → 12 · Cloud: 6 → 0");
+  await page.locator('[data-mission="blackout"]').click();
+  await expect(page.locator("#w-change")).toHaveText("Local: 6 → 12 · Cloud: 6 → 0");
+  await page.locator("#tg-permit").click();
+  await expect(page.locator("#mission-state")).toHaveText("Custom flight plan · your settings");
+  await expect(page.locator('[data-mission][aria-pressed="true"]')).toHaveCount(0);
+  await expect(page.locator("#w-change")).toHaveText("Settings changed; the request counts stay the same.");
+  await page.locator('[data-mission="classified"]').click();
+  await expect(page.locator("#w-change")).toHaveText("Local: 12 → 0 · Held: 0 → 12");
+  await page.locator("#tg-permit").click();
+  await expect(page.locator("#w-change")).toHaveText("Cloud: 0 → 12 · Held: 12 → 0");
+  await expect(page.locator("#decision-change")).toHaveAttribute("data-held", "false");
+  await page.locator("#motion-btn").click();
+  await expect(page.locator("#w-change")).toHaveText("Cloud: 0 → 12 · Held: 12 → 0");
+});
+
+test("The first-minute path, chapter labels and principles lead to their working destinations", async (t) => {
+  const page = await visit(t);
+  await page.locator('.minute a[href="#work"]').click();
+  await expect(page.locator("#work-h")).toBeFocused();
+  await page.locator('.minute a[href="#evidence"]').click();
+  await expect(page.locator("#ev-h")).toBeFocused();
+  const chapter = page.locator('.sections a[href="#principles"]');
+  await chapter.focus();
+  await expect(chapter.locator("span")).toBeVisible();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#pr-h")).toBeFocused();
+  await expect(chapter).toHaveAttribute("aria-current", "location");
+  await page.locator('[data-pr="1"]').click();
+  await page.locator("#pr-action").click();
+  await expect(page.locator("#study-hermes")).toHaveAttribute("aria-selected", "true");
+  await page.locator('.sections a[href="#principles"]').click();
+  await page.locator('[data-pr="2"]').click();
+  await page.locator("#pr-action").click();
+  await expect(page.locator("#study-dashboards")).toHaveAttribute("aria-selected", "true");
+  await expect(page.locator("#lab-age")).toBeVisible();
+  await page.locator('.sections a[href="#heritage"]').click();
+  await expect(page.locator("#he-h")).toBeFocused();
+});
+
+test("Changing a routing input interrupts the old progress counter cleanly", async (t) => {
+  const page = await visit(t, { motion: "no-preference" });
+  await page.locator("#route-btn").click();
+  await page.waitForTimeout(350);
+  await page.locator("#tg-private").click();
+  await page.waitForTimeout(1800);
+  await expect(page.locator("#ringtxt")).toHaveText("00/05");
+  await page.locator("#route-btn").click();
+  await expect(page.locator("#ringtxt")).toHaveText("05/05");
+  await expect(page.locator("#st-code")).toHaveText("HOLD");
+});
+
 test("The illustrated request manifest agrees with each scenario and motion stops outside the scene", async (t) => {
   const page = await visit(t, { width: 390, height: 844, motion: "no-preference" });
   for (const mission of ["routine", "blackout", "classified"]) {
