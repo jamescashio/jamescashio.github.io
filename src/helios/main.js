@@ -6,6 +6,7 @@ import { computeWorldOutcome } from "../odyssey/sovereign-model";
 import { mountInstrument } from "./instruments.js";
 import { setupNavigation } from "./navigation.js";
 import { setupMotion } from "./motion.js";
+import { setupScenes } from "./scenes.js";
 
 /* =========================================================
    V38 HELIOS · shared teaching models and optional motion.
@@ -17,6 +18,7 @@ const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 let motionOn = !reduced;
 const hasGsap = true;
+const scenes = setupScenes({ motion: motionOn });
 const studyState = new Map(PROJECTS.map((p) => [p.id, defaultExperiment(p.id)]));
 
 function toast(msg) {
@@ -311,7 +313,6 @@ $("#pv-reveal").addEventListener("click", () => {
 
 /* ---------- 3. Sovereign world model (twelve request illustration) ---------- */
 const w = { arch: "hybrid", sens: "mixed", net: true, permit: false };
-let schemVisible = false;
 function world(arch, sens, net, permit) {
   const r = computeWorldOutcome({ architecture: arch, sensitivity: sens, connected: net, allowPrivateEgress: permit });
   return { ...r, data: r.dataHandling, netd: r.internetDependency };
@@ -333,11 +334,11 @@ function renderWorld() {
   const sc = { "#b-local": r.local / 12, "#b-cloud": r.cloud / 12, "#b-held": r.held / 12 };
   Object.entries(sc).forEach(([id, v]) => {
     const el = $(id);
-    if (hasGsap && motionOn && schemVisible)
+    if (hasGsap && motionOn && scenes.flowVisible())
       gsap.to(el, { scaleX: v, duration: 0.7, ease: "expo.out", overwrite: true });
     else el.style.transform = `scaleX(${v})`;
   });
-  renderSchematic(r);
+  scenes.renderFlow(r, w);
   $("#cmp-rows").innerHTML = ["sovereign", "hybrid", "cloud"]
     .map((a) => {
       const x = world(a, w.sens, w.net, w.permit);
@@ -345,89 +346,6 @@ function renderWorld() {
       return `<div class="cmp${a === w.arch ? " on" : ""}"><strong>${nm}</strong><span>${x.local}</span><span>${x.cloud}</span><span>${x.held}</span></div>`;
     })
     .join("");
-}
-let schemTl = null;
-function renderSchematic(r) {
-  const g = $("#packets");
-  if (!g) return;
-  g.innerHTML = "";
-  const archName = w.arch === "sovereign" ? "SOVEREIGN" : w.arch === "hybrid" ? "HYBRID" : "CLOUD";
-  $("#schem-label").textContent = `${archName} · ${r.local} LOCAL · ${r.cloud} CLOUD · ${r.held} HELD`;
-  $("#relay-state").textContent = w.net ? "CONNECTED" : "OFFLINE";
-  $("#relay-state").setAttribute("fill", w.net ? "#F2C87A" : "#F08A96");
-  $("#relay-line").setAttribute("stroke", w.net ? "rgba(242,200,122,.35)" : "rgba(208,79,95,.35)");
-  $("#relay-line").style.animationPlayState = w.net ? "running" : "paused";
-  const kinds = [].concat(Array(r.local).fill("local"), Array(r.cloud).fill("cloud"), Array(r.held).fill("held"));
-  if (schemTl) {
-    schemTl.kill();
-    schemTl = null;
-  }
-  const dots = kinds.map((k, i) => {
-    const col = k === "local" ? "#38E1FF" : k === "cloud" ? "#F2C87A" : "#F08A96";
-    const t1 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    t1.setAttribute("r", "7");
-    t1.setAttribute("fill", col);
-    t1.setAttribute("opacity", ".18");
-    t1.setAttribute("cx", "300");
-    t1.setAttribute("cy", "110");
-    g.appendChild(t1);
-    const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    c.setAttribute("r", "4");
-    c.setAttribute("fill", col);
-    c.setAttribute("filter", "url(#pg)");
-    c.setAttribute("cx", "300");
-    c.setAttribute("cy", "110");
-    g.appendChild(c);
-    return { c: [c, t1], k, i };
-  });
-  if (!(hasGsap && motionOn && schemVisible)) {
-    dots.forEach(({ c, k, i }) =>
-      c.forEach((el) => {
-        const o = (i % 6) * 10 - 25;
-        if (k === "local") {
-          el.setAttribute("cx", 110 + o);
-          el.setAttribute("cy", 150);
-        } else if (k === "cloud") {
-          el.setAttribute("cx", 520 + o);
-          el.setAttribute("cy", 60);
-        } else {
-          el.setAttribute("cx", 300 + o);
-          el.setAttribute("cy", 110);
-        }
-      }),
-    );
-    return;
-  }
-  schemTl = gsap.timeline({ repeat: -1 });
-  dots.forEach(({ c, k, i }) => {
-    const t = gsap.timeline({ repeat: -1, delay: i * 0.28 });
-    if (k === "local") {
-      t.fromTo(
-        c,
-        { attr: { cx: 300, cy: 110 } },
-        { attr: { cx: 110, cy: 150 }, duration: 1.6, ease: "power1.inOut", stagger: 0.08 },
-      ).to(c, { attr: { cx: 300, cy: 110 }, duration: 1.6, ease: "power1.inOut", stagger: 0.08 });
-    } else if (k === "cloud") {
-      t.fromTo(
-        c,
-        { attr: { cx: 110, cy: 150 } },
-        { attr: { cx: 300, cy: 110 }, duration: 1.2, ease: "power1.inOut", stagger: 0.08 },
-      )
-        .to(c, { attr: { cx: 520, cy: 60 }, duration: 1.6, ease: "power1.inOut", stagger: 0.08 })
-        .to(c, { attr: { cx: 300, cy: 110 }, duration: 1.6, ease: "power1.inOut", stagger: 0.08 })
-        .to(c, { attr: { cx: 110, cy: 150 }, duration: 1.2, ease: "power1.inOut", stagger: 0.08 });
-    } else {
-      const a = (i / 12) * Math.PI * 2;
-      t.set(c, { attr: { cx: 300 + Math.cos(a) * 34, cy: 110 + Math.sin(a) * 34 } }).to(c[0], {
-        attr: { r: 6 },
-        duration: 0.8,
-        yoyo: true,
-        repeat: -1,
-        ease: "sine.inOut",
-      });
-    }
-    schemTl.add(t, 0);
-  });
 }
 $("#arch-group").addEventListener("click", (e) => {
   const b = e.target.closest("[data-arch]");
@@ -545,12 +463,10 @@ const NODES = {
     evidence: "Fleet observation · " + FLEET.observedLong,
   },
 };
-const NODEPOS = { operator: [400, 96], dsh: [150, 300], hermes: [400, 320], zeus: [226, 498], apollo: [574, 498] };
 $$("[data-node]").forEach((b) =>
   b.addEventListener("click", () => {
     const n = NODES[b.dataset.node];
-    const pos = NODEPOS[b.dataset.node];
-    $("#sel-halo").style.transform = `translate(${pos[0]}px,${pos[1]}px)`;
+    scenes.selectAtlas(b.dataset.node);
     if (hasGsap && motionOn)
       gsap.fromTo(
         "#nd-name, #nd-value, #nd-summary, #nd-body",
@@ -568,37 +484,6 @@ $$("[data-node]").forEach((b) =>
     $("#nd-evidence").textContent = n.evidence;
   }),
 );
-$("#trace-btn").addEventListener("click", () => {
-  const labels = [
-    "Human intent leaves the operator",
-    "HERMES qualifies the route",
-    "Zeus receives the work",
-    "Result returns for human review",
-  ];
-  const pk = $("#packet");
-  const lab = $("#trace-label");
-  if (!(hasGsap && motionOn)) {
-    lab.textContent = labels.join(" → ");
-    return;
-  }
-  const tl = gsap.timeline({
-    onComplete: () => {
-      gsap.set(pk, { opacity: 0 });
-      lab.textContent = "Follow one example from human intent to human review. No request is sent.";
-    },
-  });
-  tl.set(pk, { attr: { cx: 400, cy: 96 }, opacity: 1 }).call(() => (lab.textContent = labels[0]));
-  tl.to(pk, { attr: { cx: 400, cy: 262 }, duration: 1.4, ease: "power2.inOut" }).call(
-    () => (lab.textContent = labels[1]),
-  );
-  tl.to(pk, { attr: { cx: 400, cy: 378 }, duration: 1, ease: "power2.inOut" })
-    .to(pk, { attr: { cx: 226, cy: 486 }, duration: 1.4, ease: "power2.inOut" })
-    .call(() => (lab.textContent = labels[2]));
-  tl.to(pk, { attr: { cx: 400, cy: 378 }, duration: 1.4, ease: "power2.inOut" })
-    .to(pk, { attr: { cx: 400, cy: 96 }, duration: 1.8, ease: "power2.inOut" })
-    .call(() => (lab.textContent = labels[3]));
-});
-
 /* ---------- 5. Principles engine (draggable) ---------- */
 const PR = [
   {
@@ -633,10 +518,7 @@ $("#pr-group").addEventListener("click", (e) => {
   $("#pr-body").textContent = p.body;
   $("#pr-tag").textContent = p.tag;
   $("#pr-ring").textContent = p.ring;
-  ["#r1", "#r2", "#r3"].forEach((id, i) => {
-    $(id).style.strokeWidth = i === +b.dataset.pr ? "4" : "1.5";
-    $(id).style.filter = i === +b.dataset.pr ? "drop-shadow(0 0 8px currentColor)" : "";
-  });
+  scenes.selectPrinciple(+b.dataset.pr);
 });
 (function () {
   const eng = $("#engine"),
@@ -645,6 +527,7 @@ $("#pr-group").addEventListener("click", (e) => {
     drag = null;
   const apply = () => {
     rot.style.transform = `rotate(${rx}deg)`;
+    scenes.rotateEngine(rx);
   };
   eng.addEventListener("pointerdown", (e) => {
     drag = { x: e.clientX, r: rx };
@@ -1300,20 +1183,4 @@ setupMotion({
     renderWorld();
   },
   onSceneReady: () => Bit.setMood("yes", 1400),
-});
-const schemObserver = new IntersectionObserver(
-  ([entry]) => {
-    schemVisible = entry.isIntersecting;
-    if (schemVisible && !schemTl && motionOn) renderWorld();
-    if (schemTl) {
-      if (entry.isIntersecting && motionOn) schemTl.resume();
-      else schemTl.pause();
-    }
-  },
-  { threshold: 0.05 },
-);
-schemObserver.observe($("#packets").closest("svg"));
-document.addEventListener("visibilitychange", () => {
-  if (!document.hidden && schemVisible && motionOn) schemTl?.resume();
-  else schemTl?.pause();
 });

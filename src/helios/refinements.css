@@ -1017,31 +1017,6 @@ section[data-ambient="off"] *:after,
   #work div[style*="minmax(220px"] {
     grid-template-columns: minmax(0, 1fr) !important;
   }
-  .atlas {
-    min-height: 460px;
-  }
-  .node .core {
-    width: 58px;
-    height: 58px;
-  }
-  .node.big .core {
-    width: 78px;
-    height: 78px;
-  }
-  .node .mono {
-    font-size: 9px !important;
-    letter-spacing: 0.06em;
-  }
-  .node > span:last-child {
-    font-size: 10px !important;
-  }
-  .atlas .node {
-    max-width: 100px;
-    text-align: center;
-  }
-  .engine .labels {
-    font-size: 9px;
-  }
   #mc > div {
     padding: 24px 20px !important;
   }

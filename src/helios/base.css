@@ -926,80 +926,6 @@ footer,
   line-height: 1.5;
 }
 
-/* ---------- atlas ---------- */
-.atlas {
-  position: relative;
-  min-height: 560px;
-  overflow: hidden;
-}
-.atlas svg.wires {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-.node {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  color: var(--ink);
-  transform: translate(-50%, -50%);
-}
-.node .core {
-  position: relative;
-  width: 88px;
-  height: 88px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(56, 225, 255, 0.3);
-  background: radial-gradient(circle at 40% 35%, #152239, #04070e);
-  box-shadow:
-    0 0 0 8px rgba(56, 225, 255, 0.05),
-    0 0 40px rgba(56, 225, 255, 0.15);
-  transition:
-    box-shadow 0.25s,
-    border-color 0.25s,
-    transform 0.25s;
-}
-.node:hover .core {
-  transform: scale(1.05);
-}
-.node[aria-pressed="true"] .core {
-  border-color: var(--gold);
-  box-shadow:
-    0 0 0 8px rgba(242, 200, 122, 0.12),
-    0 0 60px rgba(242, 200, 122, 0.35);
-}
-.node.big .core {
-  width: 110px;
-  height: 110px;
-}
-.node .core::before {
-  content: "";
-  position: absolute;
-  inset: -6px;
-  border-radius: 50%;
-  border: 1px dashed rgba(56, 225, 255, 0.35);
-  animation: spin 20s linear infinite;
-}
-.node[aria-pressed="true"] .core::before {
-  border-color: rgba(242, 200, 122, 0.6);
-  animation-duration: 9s;
-}
-#sel-halo {
-  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-@media (prefers-reduced-motion: reduce) {
-  .node .core::before {
-    animation: none;
-  }
-  .atlas-amb {
-    display: none;
-  }
-}
 .flow {
   stroke-dasharray: 8 14;
   animation: dash 1.6s linear infinite;
@@ -1243,23 +1169,6 @@ footer,
 }
 
 /* ---------- principles ---------- */
-.engine {
-  position: relative;
-  width: min(100%, 520px);
-  aspect-ratio: 1;
-  margin-inline: auto;
-  touch-action: none;
-  cursor: grab;
-}
-.engine:active {
-  cursor: grabbing;
-}
-.engine svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
 /* ---------- Bit dock ---------- */
 .bitdock {
   position: fixed;
@@ -1403,19 +1312,6 @@ footer,
     max-width: 62vw;
     font-size: 12px;
   }
-}
-/* ---------- starship schematic ---------- */
-.schem {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-.schem .lbl {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.12em;
-  fill: #9aa9bf;
-  text-transform: uppercase;
 }
 
 /* ---------- signature plate ---------- */

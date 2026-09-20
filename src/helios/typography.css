@@ -1,0 +1,63 @@
+/* Keep the House Cashio voice; open up its reading rhythm. All fonts are local. */
+body {
+  font-size: 17px;
+  line-height: 1.6;
+}
+h1,
+h2 {
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.07;
+}
+h3 {
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+.lede {
+  line-height: 1.6;
+}
+.mono {
+  letter-spacing: 0.095em;
+}
+.kick {
+  letter-spacing: 0.14em;
+}
+.btn {
+  letter-spacing: -0.015em;
+}
+main .mono[style*="font-size: 10px"] {
+  font-size: 11px !important;
+}
+main p[style*="font-size: 12px"],
+main .muted[style*="font-size: 12px"] {
+  font-size: 13px !important;
+  line-height: 1.6;
+}
+#pr-title {
+  font-size: clamp(22px, 2.1vw, 28px) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.035em;
+  line-height: 1.25;
+}
+#pr-ring {
+  font-family: var(--sans);
+  font-size: 13px !important;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1.6;
+}
+.atlas-caption-tag {
+  letter-spacing: 0.09em;
+}
+@media (max-width: 600px) {
+  h2 {
+    line-height: 1.1;
+  }
+  .kick {
+    letter-spacing: 0.11em;
+  }
+  main .mono[style*="font-size: 10px"] {
+    letter-spacing: 0.07em;
+  }
+}
