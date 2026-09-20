@@ -710,7 +710,7 @@ test("The root ships Helios directly, with bounded compatibility routing and a c
   const locations = [...sitemap.querySelectorAll("loc")].map((element) => element.textContent);
   assert.equal(new Set(locations).size, locations.length, "canonical sitemap entries must be unique");
   assert.equal(locations[0], "https://cashio.us/");
-  assert.ok(!locations.includes("https://cashio.us/v38/"));
+  assert.ok(locations.every((location) => location !== "https://cashio.us/v38/"));
   const alias = new JSDOM(await read("dist/v38/index.html")).window.document;
   assert.match(alias.querySelector('meta[name="robots"]').content, /noindex/);
   assert.ok(alias.querySelector('script[src="/helios-entry.js"]'));

@@ -84,7 +84,7 @@ async function screenshot(send, name, clip) {
 }
 
 export async function captureWorkshop({ navigate, evaluate, click, waitFor, send, report }) {
-  await navigate("/?capture=workshop#build=hermes&intent=draft&private=0&sources=0", 1440, 1200);
+  await navigate("/odyssey.html?capture=workshop#build=hermes&intent=draft&private=0&sources=0", 1440, 1200);
   await click('[aria-label="Motion on — pause ambient motion"]');
   await click(".o-run");
   await waitFor("document.querySelector('.o-result h4')?.textContent === 'Workhorse'", "routine request result");

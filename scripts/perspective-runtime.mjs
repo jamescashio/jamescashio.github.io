@@ -147,7 +147,7 @@ export async function checkPerspective({ navigate, evaluate, click, pressKey, wa
   );
   assert.equal(new URL(link).search, "", "preview/testing query flags do not enter shared views");
   assert.ok(new URL(link).hash.includes("camera="));
-  await navigate(`/${new URL(link).hash}`, 1440, 1000);
+  await navigate(`${new URL(link).pathname}${new URL(link).hash}`, 1440, 1000);
   await waitFor(`document.querySelector('.lens-observatory')?.dataset.ready === 'true'`, "shared view arrival", 30000);
   const restored = JSON.parse(
     await evaluate(`document.querySelector('.lens-observatory canvas').dataset.lensingCamera`),

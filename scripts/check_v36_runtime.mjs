@@ -131,9 +131,17 @@ async function run() {
       resources.server = await serveDist();
       const base = `http://127.0.0.1:${resources.server.address().port}`;
       const rootHtml = await fetch(`${base}/`).then((response) => response.text());
-      assert.match(rootHtml, /data-prerendered="odyssey"/, "root must contain the prerendered V37 page");
-      assert.ok(rootHtml.includes(`<title>${PAGE_TITLE}</title>`), "root title must identify V37.17 Continuum");
-      assert.match(rootHtml, /Own the iron/, "hero heading must exist before JavaScript");
+      assert.match(rootHtml, /cAshIo · Helios/, "root must serve the current Helios document");
+      assert.match(rootHtml, /id="studios"/, "the integrated studios must exist before JavaScript");
+      const archiveHtml = await fetch(`${base}/odyssey.html`).then((response) => response.text());
+      assert.match(archiveHtml, /data-prerendered="odyssey"/, "the archive must retain the prerendered V37 page");
+      assert.ok(archiveHtml.includes(`<title>${PAGE_TITLE}</title>`), "the archive must identify V37.17 Continuum");
+      assert.match(archiveHtml, /Own the iron/, "the preserved hero heading must exist before JavaScript");
+      assert.match(
+        archiveHtml,
+        /name="robots" content="noindex, nofollow"/,
+        "the archive must not compete with the canonical homepage",
+      );
       assert.doesNotMatch(
         rootHtml,
         /<meta\b[^>]*\bcontent=["'][^"']*(?:noindex|nofollow)/i,
@@ -158,7 +166,12 @@ async function run() {
         routingObserved: "2026-08-21",
       });
       report.release = receipt;
-      report.checks.push({ name: "Root prerender, release identity, and indexing", passed: true });
+      assert.equal(receipt.frontDoor.entry, "/");
+      assert.equal(receipt.frontDoor.experienceVersion, "38.5.0");
+      report.checks.push({
+        name: "Current root, preserved V37 prerender, release identities and indexing",
+        passed: true,
+      });
 
       const evidenceResponse = await fetch(`${base}/status.json`);
       assert.equal(evidenceResponse.status, 200);
@@ -454,7 +467,7 @@ async function run() {
           `document.querySelector('.o-project-footer button').textContent.includes('Settings link copied')`,
           "settings copy confirmation",
         );
-        assert.equal(await evaluate(`window.__copiedStudy`), `${base}/${study.fragment}`);
+        assert.equal(await evaluate(`window.__copiedStudy`), `${base}/odyssey.html${study.fragment}`);
       }
       report.checks.push({
         name: "Seven reproducible experiments, inspectable notes, and 320px settings sharing",
@@ -490,7 +503,7 @@ async function run() {
       await waitFor(`!!document.querySelector('.o-share-fallback input')`, "manual copy fallback");
       assert.equal(
         await evaluate(`document.querySelector('.o-share-fallback input').value`),
-        `${base}/#build=cascade&severity=70&confidence=39`,
+        `${base}/odyssey.html#build=cascade&severity=70&confidence=39`,
       );
       await click(".o-share-fallback input");
       assert.ok(
