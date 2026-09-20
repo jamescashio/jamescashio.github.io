@@ -1,4 +1,10 @@
-# V38.3 Helios release
+# V38.4 Helios release
+
+The connected-workshop refinement follows the owner's approval of all five review recommendations. A single synthetic request joins the privacy test, atlas and HERMES; the same policy controls both the explanation and the finite route animation. Private input skips the illustrated compute step and returns to human authority. Continuation links carry the current intent, source requirement and privacy choice.
+
+Bit's existing canvas moves into the mobile Menu control and stays inside the desktop gutter. Shared label and body-note styles replace scattered small text; recurring stacks use one layout class. The mascot, dated facts and trace have dedicated modules. Evidence begins with a plain-language result and limit; its detailed comparison expands on request. The real starship reveal fix is linked to published PR #135 as a second build story. Observation dates and model rules remain unchanged.
+
+## Earlier refinements
 
 The 09-20-2026 continuation refines the visitor journey. Seven studies have readable purpose statements and a horizontal selector on narrow screens, bringing their controls closer to the heading. Keyboard selection reveals the active card without moving the page. First-minute cards are actionable links. The desktop chapter rail includes Principles and Flight Heritage, with readable labels on hover and focus. Mission Control shows the appropriate platform shortcut.
 
@@ -18,10 +24,10 @@ The owner approved publication on 09-19-2026 and requested a thorough polish pas
 
 ## Identity and release gates
 
-- Public entry: `/v38/`, receipt `/v38/site-release.json`, experience `38.3.0`, release ID `helios-38.3.0-20260920`.
-- Plain-root navigation retains the established V38 redirect. Existing fragments and query links retain V37.17. The shared package and compatibility receipts keep that version, with a matching `frontDoor` reference to V38.3.
+- Public entry: `/v38/`, receipt `/v38/site-release.json`, experience `38.4.0`, release ID `helios-38.4.0-20260920`.
+- Plain-root navigation retains the established V38 redirect. Existing fragments and query links retain V37.17. The shared package and compatibility receipts keep that version, with a matching `frontDoor` reference to V38.4.
 - Evidence remains the inherited September 18, 2026 record for V38 and the corresponding earlier observations for legacy views. No UI test verifies infrastructure or routing health.
-- Rollback baseline: `5f336f9e56b9dc30f9d989db620503b8605486a6`. Roll back by reverting this release through the checked pull-request and Pages path, then verify the resulting public artifact.
+- Rollback baseline: `0e284480f68cc78721ea3e1a90719fb7bacc0075`. Roll back by reverting this release through the checked pull-request and Pages path, then verify the resulting public artifact.
 
 Build and run lint, formatting, model and artifact tests, Python release tests, public-data and consistency checks, legacy browser checks and `npm run test:helios`. The Helios runner starts and closes a loopback server unless `HELIOS_URL` supplies another target. `CHROME_PATH` selects the workflow's pinned browser. Pages and Public Site Safety run these interactions before accepting a deployment artifact.
 

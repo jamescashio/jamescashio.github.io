@@ -1,3 +1,13 @@
+# V38.4 connected workshop — 09-20-2026
+
+A precision orbital workshop in which one visitor decision connects the spectacle to its explanation. Preserve the original Unbounded / Instrument Sans / JetBrains Mono pairing, navy, gold, cyan, artwork and the human-command philosophy. Cyan marks a qualified path; gold marks an accountable decision. Keep the authored scenes as the visual anchors.
+
+The privacy test, atlas and HERMES share one synthetic request. Trace only the path allowed by the existing policy: private input returns for human review before compute. The illustration does not assign an actual host or provider. A native continuation link carries the exact experiment. A finite eight-second signal and four explicit steps make the causal change visible; reduced motion gives the complete explanation immediately.
+
+Dock the existing Bit canvas inside the Menu control on phones. Keep its desktop placement inside the page gutter. Use shared readable metadata and body-note sizes, and remove duplicate inline layout rules. Extract the mascot, dated facts and request trace into focused modules. Present the evidence's meaning before its optional detailed comparison. A second, source-linked build story describes the actual shipped paused-starship fix, without inventing outcomes or updating infrastructure observations.
+
+No new dependencies, font downloads or image requests. Reading text stays still; sound remains opt-in. Motion pauses offscreen and when hidden. Verify shared state, privacy boundaries, interrupted traces, keyboard, mobile overlays, expanded evidence, fallbacks, all existing studies and performance before the owner-authorized release. Rollback baseline: 0e284480f68cc78721ea3e1a90719fb7bacc0075.
+
 # V38.3 journey refinement — 09-20-2026
 
 A precision orbital workshop with a clearer path from wonder to action. Preserve the original navy, gold and cyan world, artwork, Bit, three dimensional instruments and locally hosted type families. Improve how the visitor chooses, understands and continues.

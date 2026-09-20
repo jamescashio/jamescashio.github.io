@@ -115,6 +115,9 @@ test("The first-minute path, chapter labels and principles lead to their working
   await expect(page.locator("#work-h")).toBeFocused();
   await page.locator('.minute a[href="#evidence"]').click();
   await expect(page.locator("#ev-h")).toBeFocused();
+  await expect
+    .poll(() => page.locator("#evidence").evaluate((element) => Math.abs(element.getBoundingClientRect().top - 100)))
+    .toBeLessThan(45);
   const chapter = page.locator('.sections a[href="#principles"]');
   await chapter.focus();
   await expect(chapter.locator("span")).toBeVisible();
@@ -541,4 +544,102 @@ test("Legacy hash entry, production evidence and unavailable WebGL remain usable
   await page.goto(new URL("/#build=hermes", url).href);
   await expect(page.locator("#odyssey-root")).toBeAttached();
   assert.equal(new URL(page.url()).pathname, "/");
+});
+
+test("Bit docks into the menu on compact screens without covering the study", async (t) => {
+  const page = await visit(t, { width: 390 });
+  for (const width of [390, 320, 768]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.locator("#studies").scrollIntoViewIfNeeded();
+    await expect(page.locator("#mc-btn #bitcv")).toBeVisible();
+    await expect(page.locator("#bit-btn")).not.toBeVisible();
+    const mascot = await page.locator("#bitcv").boundingBox();
+    const header = await page.locator("body > header").boundingBox();
+    assert.ok(
+      mascot.y >= header.y && mascot.y + mascot.height <= header.y + header.height,
+      "Bit stays inside navigation",
+    );
+    await page.locator("#mc-btn").focus();
+    await page.keyboard.press("Enter");
+    await expect(page.locator("#mc-search")).toBeFocused();
+    await page.keyboard.press("Escape");
+    await expect(page.locator("#mc-btn")).toBeFocused();
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+    const size = await page
+      .locator("#nd-evidence")
+      .evaluate((element) => parseFloat(getComputedStyle(element).fontSize));
+    assert.ok(size >= 12, "important evidence labels use readable shared typography");
+    await page.screenshot({ path: path.join(output, `connected-menu-${width}.png`) });
+  }
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await expect(page.locator("#bit-btn #bitcv")).toBeVisible();
+  await expect(page.locator("#bitcv")).toHaveCount(1);
+});
+
+test("A privacy decision travels through the atlas, exact HERMES settings and a reload", async (t) => {
+  const page = await visit(t);
+  await page.locator("#pv-reveal").click();
+  await page.locator("#pv-trace").click();
+  const traceButton = await page.locator("#trace-btn").boundingBox();
+  assert.ok(traceButton.y >= 80, "The atlas link leaves its trace control below the fixed header");
+  await expect(page.locator("#request-outcome")).toHaveText("Human review");
+  await expect(page.locator("#trace-label")).toContainText("The external route is held");
+  await expect(page.locator("#trace-stage-compute")).toHaveText("Hold");
+  await expect(page.locator("#w2")).not.toHaveClass(/tracing/);
+  const saved = await page.locator("#request-continue").getAttribute("href");
+  await page.locator("#request-continue").click();
+  await expect(page.locator("#tg-private")).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator("#tg-sources")).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator('[data-intent="analyze"]')).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator("#st-lane")).toHaveText("Human review");
+  await page.goto(url + saved);
+  await expect(page.locator("#st-lane")).toHaveText("Human review");
+  await page.locator("#st-trace").click();
+  await page.locator('[data-request-private="false"]').click();
+  await expect(page.locator("#request-outcome")).toHaveText("Research");
+  await expect(page.locator("#trace-stage-compute")).toHaveText("Compute");
+  await page.locator("#request-continue").click();
+  await expect(page.locator("#tg-private")).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator("#st-lane")).toHaveText("Research");
+  await page.locator("#tg-sources").click();
+  await page.locator('[data-intent="draft"]').click();
+  await page.locator("#st-trace").click();
+  await expect(page.locator("#request-outcome")).toHaveText("Workhorse");
+  await expect(page.locator("#request-source")).toContainText("Draft · sources optional");
+  await audit(page, "connected-request");
+});
+
+test("Changing privacy interrupts a trace and never animates the held request into compute", async (t) => {
+  const page = await visit(t, { motion: "no-preference", hash: "#universe" });
+  await page.locator("#trace-btn").click();
+  await page.locator("#atlas").scrollIntoViewIfNeeded();
+  await expect(page.locator("#atlas")).toHaveAttribute("data-tracing", "true");
+  await page.locator('[data-request-private="true"]').click();
+  await page.locator("#atlas").scrollIntoViewIfNeeded();
+  await expect(page.locator("#trace-label")).toHaveText("The external route is held", { timeout: 9000 });
+  await expect(page.locator('[data-node="zeus"]')).not.toHaveClass(/trace-active/);
+  await expect(page.locator("#w2")).not.toHaveClass(/tracing/);
+  await expect(page.locator("#atlas")).toHaveAttribute("data-tracing", "false", { timeout: 9000 });
+  await expect(page.locator("#trace-label")).toContainText("compute step is skipped");
+  await page.locator("#trace-btn").click();
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(page.locator("#atlas")).toHaveAttribute("data-tracing", "false");
+  await expect(page.locator("#packet")).toHaveAttribute("opacity", "0");
+  await expect(page.locator("#trace-label")).toContainText("The decision returns to the operator");
+});
+
+test("Evidence leads with meaning, expands by keyboard and links the shipped build", async (t) => {
+  const page = await visit(t, { width: 320, hash: "#evidence" });
+  await expect(page.locator(".evidence-summary")).toContainText("20 containers. One virtual machine.");
+  await expect(page.locator(".evidence-summary")).toContainText("not established here");
+  await expect(page.locator("#build-proof-title")).toHaveText("Reliable, even at rest.");
+  await expect(page.locator('.build-proof a[href*="pull/135"]')).toBeVisible();
+  await expect(page.locator("#evidence-records")).not.toHaveAttribute("open", "");
+  await page.locator("#evidence-records summary").focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#ev-chart")).toBeVisible();
+  await expect(page.locator("#ev-chart")).toContainText("Not verified");
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 320);
+  await audit(page, "expanded-evidence-320");
+  await page.screenshot({ path: path.join(output, "expanded-evidence-320.png") });
 });

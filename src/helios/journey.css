@@ -1,4 +1,230 @@
-/* Helios 38.3: a legible path through the orbital workshop. */
+/* A legible, connected path through the orbital workshop. */
+.request-journey {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px 20px;
+  border-left: 2px solid var(--cyan);
+  background: linear-gradient(100deg, #15334480, transparent);
+}
+#request-journey[data-outcome="held"] .request-journey {
+  border-color: var(--gold);
+  background: linear-gradient(100deg, #49391d70, transparent);
+}
+.request-heading {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+#request-source {
+  font-size: var(--text-note);
+  color: var(--ink2);
+}
+.request-choices {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+}
+.request-choices button {
+  min-height: 44px;
+  padding: 8px 18px;
+  border: 1px solid var(--line2);
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  background: var(--deep);
+}
+.request-choices button[aria-pressed="true"] {
+  border-color: var(--cyan);
+  background: #153f50;
+}
+.request-choices [data-request-private="true"][aria-pressed="true"] {
+  border-color: var(--gold);
+  background: #463921;
+}
+.request-decision {
+  text-align: right;
+  display: grid;
+  gap: 4px;
+}
+.request-decision .mono {
+  color: var(--muted);
+}
+#request-outcome {
+  font: 600 clamp(22px, 2vw, 28px)/1.2 var(--display);
+  color: var(--cyan);
+  letter-spacing: -0.025em;
+}
+[data-outcome="held"] #request-outcome {
+  color: var(--gold);
+}
+#request-summary {
+  margin: 10px 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink2);
+}
+#request-continue {
+  display: inline-block;
+  min-height: 44px;
+  padding-block: 10px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.trace-stages {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 0 20px;
+  margin: 0;
+  border-block: 1px solid var(--line);
+  background: #050d16;
+}
+.trace-stages li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  font-size: 14px;
+  color: var(--muted);
+  border-bottom: 2px solid transparent;
+}
+.trace-stages span {
+  font: 12px var(--mono);
+  color: var(--cyan);
+}
+.trace-stages b {
+  font-weight: 400;
+}
+.trace-stages [aria-current="step"] {
+  color: var(--ink);
+  border-color: var(--gold);
+}
+#atlas[data-outcome="held"] :is(#w2, #w3) {
+  opacity: 0.2;
+}
+#atlas[data-outcome="held"] [data-node="hermes"] .core::after {
+  border: 2px dashed var(--gold);
+  inset: 4px;
+}
+#atlas[data-outcome="held"][data-complete="true"] [data-node="operator"] .core {
+  border-color: var(--gold);
+}
+.evidence-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 60px;
+  padding-block: 0 32px;
+}
+.evidence-summary h3 {
+  margin: 12px 0;
+  font-size: clamp(20px, 2vw, 25px);
+}
+.evidence-summary p {
+  color: var(--ink2);
+  margin: 0;
+  max-width: 56ch;
+}
+.build-proof {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 32px 64px;
+  padding: 32px 0;
+  margin-bottom: 36px;
+  border-block: 1px solid var(--line);
+}
+.build-proof h3 {
+  font-size: clamp(25px, 2.4vw, 32px);
+  margin: 12px 0;
+}
+.build-proof p {
+  color: var(--ink2);
+  font-size: 16px;
+  line-height: 1.65;
+  max-width: 58ch;
+}
+.build-proof-record ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.build-proof-record li {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  min-height: 48px;
+  border-bottom: 1px solid var(--line2);
+}
+.build-proof-record li span {
+  font: 12px var(--mono);
+  color: var(--gold);
+}
+.build-proof-record a {
+  font-weight: 600;
+}
+.evidence-details {
+  border-block: 1px solid var(--line);
+}
+.evidence-details summary {
+  padding-block: 16px;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--ink);
+}
+.evidence-record-body {
+  display: grid;
+  gap: 20px;
+  padding-block: 8px 24px;
+}
+@media (max-width: 900px) {
+  #bitdock {
+    display: none;
+  }
+  #mc-btn > .ic-svg {
+    display: none;
+  }
+  #mc-btn #bitcv {
+    width: 28px;
+    height: 28px;
+    margin: -3px;
+    flex: 0 0 auto;
+  }
+}
+@media (max-width: 600px) {
+  .evidence-summary,
+  .build-proof {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .request-journey {
+    padding: 16px;
+    grid-template-columns: 1fr;
+  }
+  .request-heading {
+    grid-column: auto;
+  }
+  .request-decision {
+    text-align: left;
+  }
+  .request-choices button {
+    flex: 1;
+    padding-inline: 8px;
+  }
+  .trace-stages {
+    padding-inline: 12px;
+  }
+  .trace-stages li {
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    min-height: 60px;
+    font-size: 13px;
+  }
+}
 h2,
 h3,
 .lede {
@@ -146,7 +372,7 @@ h3,
   align-items: center;
   justify-content: space-between;
   color: var(--muted);
-  font: 11px var(--mono);
+  font: var(--text-label) var(--mono);
   letter-spacing: 0.06em;
 }
 .study-index:after {
@@ -258,7 +484,7 @@ h3,
   color: var(--ink2);
 }
 .decision-change .kick {
-  font-size: 10px;
+  font-size: var(--text-label);
 }
 .decision-change[data-held="true"] {
   border-color: var(--heldtext);
@@ -340,5 +566,59 @@ h3,
   }
   #studies-list .study {
     min-height: 170px;
+  }
+}
+
+.atlas-inspection {
+  scroll-margin-top: 100px;
+}
+#request-journey {
+  scroll-margin-top: 90px;
+}
+.atlas-intro {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px 64px;
+  align-items: end;
+  margin-bottom: 18px;
+}
+.atlas-intro h2 {
+  font-size: clamp(32px, 3.1vw, 44px);
+  text-wrap: pretty;
+}
+.atlas-intro .lede {
+  margin: 0;
+}
+.atlas-panel .atlas-caption {
+  min-height: 70px;
+  padding: 14px 20px;
+  border-bottom: 0;
+}
+.request-recap {
+  padding: 16px 20px 20px;
+  border-top: 1px solid var(--line);
+}
+.request-recap p {
+  margin-top: 0;
+}
+.request-inspection-link {
+  display: block;
+  color: var(--muted);
+  font-size: 14px;
+  min-height: 44px;
+  padding-top: 8px;
+}
+@media (max-width: 900px) {
+  .atlas-intro {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    margin-bottom: 4px;
+  }
+  .atlas-instrument {
+    order: 1;
+  }
+  .atlas-inspection {
+    order: 2;
   }
 }

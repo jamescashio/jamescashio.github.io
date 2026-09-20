@@ -1172,7 +1172,7 @@ footer,
 /* ---------- Bit dock ---------- */
 .bitdock {
   position: fixed;
-  left: 18px;
+  left: 6px;
   bottom: calc(18px + env(safe-area-inset-bottom, 0px));
   z-index: 96;
   display: flex;
@@ -1214,8 +1214,8 @@ footer,
   animation: none;
 }
 .bitbtn {
-  width: 84px;
-  height: 84px;
+  width: clamp(32px, calc(var(--gutter) - 12px), 60px);
+  height: clamp(32px, calc(var(--gutter) - 12px), 60px);
   border-radius: 50%;
   pointer-events: auto;
   display: grid;
@@ -1256,8 +1256,8 @@ footer,
   transform: translateY(-4px) scale(1.06);
 }
 .bitbtn canvas {
-  width: 96px;
-  height: 96px;
+  width: 100%;
+  height: 100%;
 }
 .bitsay {
   pointer-events: auto;
