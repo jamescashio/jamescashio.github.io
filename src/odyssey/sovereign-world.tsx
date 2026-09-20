@@ -134,6 +134,9 @@ export function SovereignWorld({ motion }: { motion: boolean }) {
     };
   }, []);
   useEffect(() => {
+    // React has now removed the poster and made the previously hidden canvas
+    // visible. A paused scene needs an explicit frame after that DOM commit.
+    if (phase === "ready") controller.current?.refresh();
     if (phase === "ready" && launchHadFocus.current && document.activeElement === document.body) {
       firstCameraControl.current?.focus({ preventScroll: true });
     }
