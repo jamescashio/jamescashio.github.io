@@ -3,6 +3,19 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
   const button = document.querySelector("#motion-btn");
   let enabled = !query.matches;
   let heroPromise = null;
+  const overlayOpen = () => !!document.querySelector("dialog[open],#helios-studio,#helios-flight");
+  function syncAmbient() {
+    const blocked = overlayOpen();
+    document.documentElement.classList.toggle("experience-open", blocked);
+    document.documentElement.classList.toggle("page-hidden", document.hidden);
+    document.querySelectorAll("main svg").forEach((svg) => {
+      if (!blocked && !document.hidden && enabled && svg.closest("section")?.dataset.ambient === "on")
+        svg.unpauseAnimations?.();
+      else svg.pauseAnimations?.();
+    });
+    window.__heroPause?.(blocked || !enabled);
+  }
+  window.addEventListener("helios-overlay", syncAmbient);
   function apply(on) {
     enabled = on && !query.matches;
     document.documentElement.classList.toggle("motion-off", !enabled);
@@ -32,11 +45,12 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
       el.style.transform = "none";
     });
     document.querySelectorAll("svg").forEach((svg) => {
-      if (enabled && svg.closest("section")?.dataset.ambient === "on") svg.unpauseAnimations?.();
+      if (enabled && !overlayOpen() && !document.hidden && svg.closest("section")?.dataset.ambient === "on")
+        svg.unpauseAnimations?.();
       else svg.pauseAnimations?.();
     });
     onChange(enabled);
-    window.__heroPause?.(!enabled);
+    syncAmbient();
     window.dispatchEvent(new CustomEvent("helios-motion", { detail: enabled }));
   }
   button.addEventListener("click", () => {
@@ -74,19 +88,13 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
     for (const entry of entries) {
       entry.target.dataset.ambient = entry.isIntersecting ? "on" : "off";
       entry.target.querySelectorAll("svg").forEach((svg) => {
-        if (entry.isIntersecting && enabled && !document.hidden) svg.unpauseAnimations?.();
+        if (entry.isIntersecting && enabled && !document.hidden && !overlayOpen()) svg.unpauseAnimations?.();
         else svg.pauseAnimations?.();
       });
     }
   });
   document.querySelectorAll("section.block").forEach((el) => ambient.observe(el));
-  document.addEventListener("visibilitychange", () => {
-    document.documentElement.classList.toggle("page-hidden", document.hidden);
-    document.querySelectorAll("section.block svg").forEach((svg) => {
-      if (!document.hidden && enabled && svg.closest("section")?.dataset.ambient === "on") svg.unpauseAnimations?.();
-      else svg.pauseAnimations?.();
-    });
-  });
+  document.addEventListener("visibilitychange", syncAmbient);
   const rail = document.querySelector("#railbar");
   let railFrame = 0;
   window.addEventListener(

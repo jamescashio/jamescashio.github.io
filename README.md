@@ -1,10 +1,10 @@
-# cAshIo V38.4 — Helios
+# cAshIo V38.5 — Helios
 
-The public front door is `/v38/`: the original orbital artwork, typefaces and Bit with a direct integrated flight, seven working studies, responsive navigation, complete motion-off content and a working House Cashio signature. V38 is built from `v38/index.html` and `src/helios/`, reusing the maintained teaching models and flight components.
+The public front door is **[cashio.us](https://cashio.us/)**. The root serves the current orbital workshop directly from `index.html` and `src/helios/`. Former `/v38/` addresses normalize to the root and retain their requested section or scene; release query markers are removed.
 
-V38.4 connects the privacy test, system atlas and HERMES around the same request and existing routing policy. Private input visibly stops for human review, and continuation links preserve the exact settings. Bit docks inside Menu on phones, important labels use shared readable sizes, and the evidence leads with what its records establish. A second build story links the published paused-starship fix. Focused mascot, trace and evidence modules simplify maintenance. Original artwork, fonts, motion controls and dated observations are preserved.
+Studios brings the original Celestial Forge, Lensing Observatory, five short films and interactive Sanctuary into Helios. These optional experiences load on request and share the current typography, motion controls, navigation and return path. A trace progress line and faceted request tokens refine the existing instruments without changing their models. Original artwork, quiet startup and dated observations are preserved.
 
-The release receipt is `/v38/site-release.json`. `/` redirects plain visits to V38; legacy fragments and query links retain the V37.17 experience. The shared package and compatibility receipts keep that historical version; their `frontDoor` record points to V38.4. Interface revisions do not renew evidence observations. See [Helios validation and rollback](docs/helios-release.md).
+The current receipt remains `/v38/site-release.json`. V37.17 is preserved at `/odyssey.html`, accessible through Version history, and `?v=37.17` links explicitly select it. The shared package and compatibility receipts keep their historical identity with a `frontDoor` record pointing to V38.5. Interface revisions do not renew evidence observations. See [Helios validation and rollback](docs/helios-release.md).
 
 ## Preserved V37.17 compatibility experience
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## V38.5 — Helios at home
+
+- Serve the current experience directly at cashio.us. Normalize older V38 addresses and release markers while keeping their section and scene; preserve the V37.17 archive explicitly in Version history.
+- Bring Celestial Forge, Lensing Observatory, all five films and the Sanctuary into Helios as optional studios, with original artwork, matching typography, shared links, cancellation and context restoration.
+- Add a Studios gallery, finite light reflections, a trace progress line and faceted request tokens. Pause the portfolio behind overlays and preserve reduced motion, quiet startup and all dated evidence.
+- Verify root and archive routing, Back/Forward, keyboard focus, studio loading failure/cancellation, narrow layouts, accessibility, model outcomes and the production artifact.
+
 ## V38 — Helios
 
 - Publish the V38 Helios homepage at `/v38/` as a standalone single file page: WebGL ignition ring, GSAP and Lenis motion, Bit the co-pilot, the seven study switchboard with the routing instrument, the system atlas with DSH beside HERMES, the starship request schematic, the flight heritage hangar, and E.V.E. with fleet, kernel, backups, atlas, dsh, hermes, routes, archive and cost.

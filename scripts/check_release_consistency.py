@@ -754,7 +754,7 @@ def main() -> int:
 
     for relative, source_relative in (("command-deck.html", "command-deck.html"), ("lab.html", "public/lab.html")):
         check_v34_public_surface(relative, read(source_relative), failures, "source")
-    for relative in ("index.html", "odyssey.html"):
+    for relative in ("odyssey.html",):
         check_v36_document(read(relative), failures, f"source/{relative}", built=False, indexable=relative == "index.html" and not preview, preview=preview, version_label="V37")
 
     proteus_image = ROOT / "public" / "plates" / "proteus-nasa.webp"
@@ -857,7 +857,7 @@ def main() -> int:
             path = DIST / relative
             if path.is_file():
                 check_v34_public_surface(relative, path.read_text(encoding="utf-8"), failures, "dist")
-        for relative in ("index.html", "odyssey.html"):
+        for relative in ("odyssey.html",):
             page = DIST / relative
             if page.is_file():
                 check_v36_document(page.read_text(encoding="utf-8"), failures, f"dist/{relative}", built=True, indexable=relative == "index.html" and not preview, preview=preview, version_label="V37")
@@ -898,7 +898,7 @@ def main() -> int:
         if PRIVATE_ADDRESS.search(live):
             failures.append("an RFC1918 address appears in the built Pages artifact")
 
-        built_index = (DIST / "index.html").read_text(encoding="utf-8")
+        built_index = (DIST / "odyssey.html").read_text(encoding="utf-8")
         if 'src="/assets/' not in built_index:
             failures.append("built index does not use root-relative /assets/ URLs; Vite base may not be '/'")
         home_document = ReleaseDocumentParser()

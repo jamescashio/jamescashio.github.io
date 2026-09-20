@@ -27,8 +27,8 @@
     "family": "A House Cashio workspace"
   },
   "frontDoor": {
-    "entry": "/v38/",
-    "experienceVersion": "38.4.0",
+    "entry": "/",
+    "experienceVersion": "38.5.0",
     "visualEdition": "Helios",
     "receipt": "/v38/site-release.json"
   }

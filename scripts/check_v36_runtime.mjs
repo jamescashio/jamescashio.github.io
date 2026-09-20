@@ -312,7 +312,7 @@ async function run() {
         return;
       }
       for (const width of [1440, 390, 320]) {
-        await navigate(`/?runtime=v36-${width}`, width, width === 1440 ? 1000 : 844);
+        await navigate(`/odyssey.html?runtime=v36-${width}`, width, width === 1440 ? 1000 : 844);
         const result = await layout();
         assert.match(result.heading, /Own the iron\..*Shape the possible\./);
         assert.equal(result.title, PAGE_TITLE);
@@ -346,7 +346,7 @@ async function run() {
         });
       }
 
-      await navigate("/?runtime=v36-route#build=signal");
+      await navigate("/odyssey.html?runtime=v36-route#build=signal");
       await waitFor(
         `document.querySelector('#tab-signal')?.getAttribute('aria-selected') === 'true' && !!document.querySelector('.lv-signal')`,
         "Signal deep link",
@@ -402,7 +402,7 @@ async function run() {
         },
       ];
       for (const study of studyCases) {
-        await navigate(`/?runtime=v37-settings-${study.id}${study.fragment}`, 320, 844);
+        await navigate(`/odyssey.html?runtime=v37-settings-${study.id}${study.fragment}`, 320, 844);
         await waitFor(
           `document.querySelector('#tab-${study.id}')?.getAttribute('aria-selected') === 'true'`,
           `${study.id} selected`,
@@ -461,13 +461,13 @@ async function run() {
         passed: true,
       });
 
-      await navigate("/?runtime=v37-share-history#build=cascade&severity=25&confidence=74", 390, 844);
+      await navigate("/odyssey.html?runtime=v37-share-history#build=cascade&severity=25&confidence=74", 390, 844);
       await waitFor(
         `document.querySelector('.o-lab input[type="range"]')?.value === '25' && document.querySelectorAll('.o-lab input[type="range"]')[1]?.value === '74'`,
         "initial saved cascade settings",
       );
       await send("Page.navigate", {
-        url: `${base}/?runtime=v37-share-history#build=cascade&severity=70&confidence=39`,
+        url: `${base}/odyssey.html?runtime=v37-share-history#build=cascade&severity=70&confidence=39`,
       });
       await waitFor(
         `document.querySelector('.o-lab input[type="range"]')?.value === '70'`,
@@ -511,7 +511,7 @@ async function run() {
         passed: true,
       });
 
-      await navigate("/?runtime=v37-current-evidence#evidence", 390, 844);
+      await navigate("/odyssey.html?runtime=v37-current-evidence#evidence", 390, 844);
       const factValues = await evaluate(
         `[...document.querySelectorAll('.o-fact-rail strong')].map(item => item.textContent)`,
       );
@@ -625,7 +625,7 @@ async function run() {
         passed: true,
       });
 
-      await navigate("/?runtime=v37-current-brief#build=briefing", 320, 844);
+      await navigate("/odyssey.html?runtime=v37-current-brief#build=briefing", 320, 844);
       await waitFor(
         `document.querySelector('#tab-briefing')?.getAttribute('aria-selected') === 'true' && !!document.querySelector('.o-lab[data-lab="3"] .o-run:not(:disabled)')`,
         "briefing deep link and deferred instrument controls",
@@ -645,7 +645,7 @@ async function run() {
       );
       report.checks.push({ name: "320px composed briefing uses the current dated export", passed: true });
 
-      await navigate("/?runtime=v36-operator#operator");
+      await navigate("/odyssey.html?runtime=v36-operator#operator");
       await waitFor(
         `(() => {const r = document.querySelector('#operator').getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0})()`,
         "operator anchor position",
@@ -736,7 +736,7 @@ async function run() {
       );
       report.checks.push({ name: "System reduced motion stops ambient and request-flow controls", passed: true });
 
-      await navigate("/?runtime=v37-sanctuary-keyboard#film=sanctuary");
+      await navigate("/odyssey.html?runtime=v37-sanctuary-keyboard#film=sanctuary");
       await waitFor(`document.querySelector('.lensing-film[data-clip="sanctuary"]')?.open`, "Sanctuary dialog");
       assert.equal(await evaluate(`document.querySelector('.lensing-film video')?.paused`), true);
       // A chapter selection explicitly loads a paused frame. All subsequent
@@ -806,7 +806,7 @@ async function run() {
         evidence: { forward: keyboardForward, reverse: keyboardReverse, end: keyboardEnd },
       });
 
-      await navigate("/?runtime=v37-continuum#film=sanctuary", 390, 844);
+      await navigate("/odyssey.html?runtime=v37-continuum#film=sanctuary", 390, 844);
       await waitFor(`document.querySelector('.lensing-film[data-clip="sanctuary"]')?.open`, "Continuum film");
       assert.equal(
         await evaluate(
@@ -905,7 +905,7 @@ async function run() {
         evidence: chamber,
       });
 
-      await navigate("/?runtime=v37-flight-labels", 320, 844);
+      await navigate("/odyssey.html?runtime=v37-flight-labels", 320, 844);
       await click(".continuum-first-flight");
       await waitFor(`document.querySelector('.first-flight')?.open`, "First Flight dialog");
       const accessibleButtons = async () =>
@@ -968,7 +968,7 @@ async function run() {
         },
       });
 
-      await navigate("/?runtime=v37-case-study#build=graphify", 320, 844);
+      await navigate("/odyssey.html?runtime=v37-case-study#build=graphify", 320, 844);
       await waitFor(
         `document.querySelector('#tab-graphify')?.getAttribute('aria-selected') === 'true'`,
         "Graphify before comparison",
@@ -1020,7 +1020,7 @@ async function run() {
       await checkFlightEnding({ navigate, evaluate, click, pressKey, waitFor, report, send });
 
       await send("Emulation.setScriptExecutionDisabled", { value: true });
-      await navigate("/?runtime=v36-no-js", 320, 844);
+      await navigate("/odyssey.html?runtime=v36-no-js", 320, 844);
       const noJs = await layout();
       assert.match(noJs.heading, /Own the iron\./);
       assert.ok(noJs.scrollWidth <= 321 && noJs.bodyWidth <= 321, "no-JavaScript root must remain responsive");

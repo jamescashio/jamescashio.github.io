@@ -48,7 +48,7 @@ test("Continuum ship posters retain responsive dimensions, delivery parity and b
     assert.deepEqual(imageDimensions(source, "webp"), { width, height });
     assert.ok(source.length <= budget, `${name} poster exceeds its delivery budget`);
     assert.deepEqual(built, source, `${name} poster must be delivered without divergence`);
-    for (const entry of ["dist/index.html", "dist/odyssey.html"]) {
+    for (const entry of ["dist/odyssey.html"]) {
       assert.ok((await read(entry)).includes(`/${relative}`), `${entry} must retain the ${name} ship fallback`);
     }
   }
@@ -114,7 +114,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
   }
   assert.equal(packageJson.scripts.lint, "eslint . --max-warnings 0");
   const formattingScope =
-    '"src/**/*.{ts,tsx,js,css}" "tests/**/*.mjs" "scripts/**/*.{mjs,mts}" "*.{js,json,md,ts}" "docs/**/*.md" ".github/**/*.{md,yml,yaml}" "public/**/*.json" "v38/**/*.html"';
+    '"src/**/*.{ts,tsx,js,css}" "tests/**/*.mjs" "scripts/**/*.{mjs,mts}" "*.{js,json,md,ts}" "docs/**/*.md" ".github/**/*.{md,yml,yaml}" "public/**/*.json" "v38/**/*.html" "index.html" "public/helios-entry.js"';
   assert.equal(packageJson.scripts.format, `prettier --write ${formattingScope}`);
   assert.equal(packageJson.scripts["format:check"], `prettier --check ${formattingScope}`);
   const expandedTest = expandScript(packageJson.scripts, "test");
@@ -275,9 +275,8 @@ test("the built V35 archive retains its real command deck, critical shell and de
   assert.equal(entry.match(/assets\/main-[\w-]+\.css/g)?.length, 1);
 });
 
-test("the homepage and Odyssey alias ship the same complete V37 story with a usable V35 archive", async () => {
-  let homeMarkup;
-  for (const entry of ["index.html", "odyssey.html"]) {
+test("the preserved Odyssey document ships the complete V37 story with a usable V35 archive", async () => {
+  for (const entry of ["odyssey.html"]) {
     const document = new JSDOM(await read(`dist/${entry}`)).window.document;
     const root = document.querySelector('#odyssey-root[data-prerendered="odyssey"]');
     assert.ok(root, `${entry} must contain the real server-rendered story`);
@@ -303,11 +302,7 @@ test("the homepage and Odyssey alias ship the same complete V37 story with a usa
     assert.equal(root.querySelectorAll("audio[autoplay]").length, 0);
     assert.equal(document.querySelector('link[rel="canonical"]')?.href, "https://cashio.us/");
     const robots = document.querySelector('meta[name="robots"]')?.content ?? "";
-    if (entry === "index.html") {
-      assert.doesNotMatch(robots, /noindex|nofollow/i, "the released homepage must permit indexing and following");
-    } else {
-      assert.match(robots, /noindex/i, "the compatibility alias must not compete with the canonical homepage");
-    }
+    assert.match(robots, /noindex/i, "the archive must not compete with the canonical homepage");
     assert.equal(document.title, "cAshIo V37.17 — Continuum | Doug Cashio");
     const compatibility = document.querySelector("head script#legacy-bookmark-route");
     assert.ok(compatibility, "legacy fragments must be handled before the page activates");
@@ -339,8 +334,6 @@ test("the homepage and Odyssey alias ship the same complete V37 story with a usa
       assert.match(path, /^\/assets\/[\w.-]+\.(?:js|css)$/);
       assert.ok((await stat(asset(`dist${path}`))).size > 0, `${path} must exist in the promoted artifact`);
     }
-    if (homeMarkup === undefined) homeMarkup = root.innerHTML;
-    else assert.equal(root.innerHTML, homeMarkup, "the alias must render the same approved experience");
   }
 });
 
@@ -405,7 +398,7 @@ test("all five cinematic films stay optional and ship their approved local media
       `${name} poster must retain a clear full-size still`,
     );
   }
-  for (const entry of ["index.html", "odyssey.html"]) {
+  for (const entry of ["odyssey.html"]) {
     const document = new JSDOM(await read(`dist/${entry}`)).window.document;
     const root = document.querySelector("#odyssey-root");
     assert.equal(root.querySelectorAll("video").length, 0, "film must mount only after the visitor opens it");
@@ -456,7 +449,7 @@ test("responsive Celestial identity assets retain their approved bytes within de
     assert.ok(original.length > 0 && original.length <= cap, `${name} exceeds its delivery budget`);
     assert.deepEqual(original, await readFile(asset(`dist/brand/${name}`)));
   }
-  const document = new JSDOM(await read("dist/index.html")).window.document;
+  const document = new JSDOM(await read("dist/odyssey.html")).window.document;
   const logo = document.querySelector(".cashio-brand-mark img");
   assert.ok(logo?.getAttribute("srcset").includes("celestial-1680.webp"));
   assert.equal(
@@ -507,7 +500,7 @@ test("original Odyssey artwork meets responsive dimensions and transfer budgets"
 });
 
 test("V37 artwork preload matches its real responsive picture and remains bounded", async () => {
-  const dom = new JSDOM(await read("dist/index.html"));
+  const dom = new JSDOM(await read("dist/odyssey.html"));
   const preload = dom.window.document.querySelector('link[rel="preload"][as="image"]');
   const source = dom.window.document.querySelector('.o-hero-art source[type="image/avif"]');
   assert.equal(preload.getAttribute("imagesrcset"), source.getAttribute("srcset"));
@@ -661,8 +654,8 @@ test("tag publication derives V37 from software metadata and validates one built
 
 test("Helios release identity, signature assets and compatibility receipts agree", async () => {
   const release = JSON.parse(await read("public/v38/site-release.json"));
-  assert.equal(release.experienceVersion, "38.4.0");
-  assert.equal(release.entry, "/v38/");
+  assert.equal(release.experienceVersion, "38.5.0");
+  assert.equal(release.entry, "/");
   assert.equal(release.published, true);
   assert.equal(await read("dist/v38/site-release.json"), await read("public/v38/site-release.json"));
   for (const name of ["site-release.json", "event-horizon-release.json"]) {
@@ -676,17 +669,54 @@ test("Helios release identity, signature assets and compatibility receipts agree
   }
   const evidence = JSON.parse(await read("public/v38/status.json"));
   assert.equal(release.evidenceSnapshot.observedAtUtc, evidence.provenance.observedAtUtc);
-  const doc = new JSDOM(await read("dist/v38/index.html")).window.document;
+  const doc = new JSDOM(await read("dist/index.html")).window.document;
   assert.doesNotMatch(doc.querySelector('meta[name="robots"]').content, /noindex|nofollow/);
   assert.doesNotMatch(doc.body.textContent, /Unpublished refinement/);
-  assert.match(doc.body.textContent, /V38\.4 \/ HELIOS/);
+  assert.match(doc.body.textContent, /V38\.5 \/ HELIOS/);
   assert.equal(doc.querySelector("#sig-art").getAttribute("src"), "/v38/assets/celestial.webp");
   assert.equal(
-    doc.querySelector('#sigplate a[href="/#signature"]').textContent.trim(),
+    doc.querySelector('#sigplate a[href="#signature"]').textContent.trim(),
     "Explore the celestial signature in 3D ↗",
   );
   for (const ext of ["webp", "jpg"]) {
     const relative = `v38/assets/celestial.${ext}`;
     assert.deepEqual(await readFile(asset(`dist/${relative}`)), await readFile(asset(`public/${relative}`)));
   }
+});
+
+test("The root ships Helios directly, with bounded compatibility routing and a complete static invitation", async () => {
+  const document = new JSDOM(await read("dist/index.html")).window.document;
+  assert.equal(document.querySelector('link[rel="canonical"]').href, "https://cashio.us/");
+  assert.equal(document.querySelectorAll("h1").length, 1);
+  assert.equal(document.querySelectorAll(".studio-card").length, 3);
+  assert.equal(document.querySelectorAll(".studio-library a").length, 5);
+  assert.equal(document.querySelector("#odyssey-root"), null);
+  assert.equal(document.querySelector('meta[http-equiv="refresh"]'), null);
+  for (const image of document.querySelectorAll("img")) {
+    assert.ok(image.getAttribute("src").startsWith("/"), "the new root cannot reinterpret asset paths");
+    assert.ok((await stat(asset(`dist${image.getAttribute("src")}`))).size > 0);
+  }
+  const styles = document.querySelector("style[data-helios-styles]");
+  assert.ok(styles);
+  assert.equal(styles.textContent, await read(`dist${styles.getAttribute("data-helios-styles")}`));
+  assert.ok(gzipSync(styles.textContent).byteLength <= 15000);
+  const csp = document.querySelector('meta[http-equiv="Content-Security-Policy"]').content;
+  assert.doesNotMatch(csp.split("script-src ")[1].split(";")[0], /unsafe-inline|unsafe-eval/);
+  for (const script of document.querySelectorAll("script:not([src])")) {
+    const hash = createHash("sha256").update(script.textContent).digest("base64");
+    assert.ok(csp.includes(`'sha256-${hash}'`));
+  }
+  const sitemap = new JSDOM(await read("dist/sitemap.xml"), { contentType: "application/xml" }).window.document;
+  const locations = [...sitemap.querySelectorAll("loc")].map((element) => element.textContent);
+  assert.equal(new Set(locations).size, locations.length, "canonical sitemap entries must be unique");
+  assert.equal(locations[0], "https://cashio.us/");
+  assert.ok(!locations.includes("https://cashio.us/v38/"));
+  const alias = new JSDOM(await read("dist/v38/index.html")).window.document;
+  assert.match(alias.querySelector('meta[name="robots"]').content, /noindex/);
+  assert.ok(alias.querySelector('script[src="/helios-entry.js"]'));
+  assert.ok(alias.querySelector('a[href="/"]'), "a no-JavaScript return remains available");
+  assert.equal(
+    document.querySelector('a[href="/odyssey.html"]').closest("details").querySelector("summary").textContent,
+    "Version history",
+  );
 });

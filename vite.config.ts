@@ -22,8 +22,8 @@ export default defineConfig({
         },
       },
       input: {
-        helios: path.resolve(__dirname, "v38/index.html"),
-        index: path.resolve(__dirname, "index.html"),
+        helios: path.resolve(__dirname, "index.html"),
+        heliosAlias: path.resolve(__dirname, "v38/index.html"),
         odyssey: path.resolve(__dirname, "odyssey.html"),
         commandDeck: path.resolve(__dirname, "command-deck.html"),
       },

@@ -1,0 +1,65 @@
+/* Scene styles load on entry; the portfolio does not download a film to show its invitation. */
+.studio-open {
+  overflow: hidden;
+}
+.studio-open #bitdock {
+  visibility: hidden;
+}
+#helios-studio :is(.brand-studio, .lens-observatory, .lensing-film, .o-scene-notice) {
+  font-family: var(--sans);
+  color: var(--ink);
+}
+#helios-studio :is(button, input, select, label) {
+  font-family: var(--sans);
+}
+#helios-studio :is(h2, h3) {
+  font-family: var(--display);
+  letter-spacing: -0.025em;
+  line-height: 1.22;
+}
+#helios-studio :is(.bs-kicker, .lens-eyebrow, .lensing-film-eyebrow, .lens-index, .bs-index) {
+  font-family: var(--mono);
+}
+#helios-studio button {
+  border-radius: 9px;
+}
+#helios-studio .lensing-film {
+  border-radius: 20px;
+}
+#helios-studio .bs-header h2 {
+  font-size: clamp(24px, 3vw, 38px);
+}
+#helios-studio .lens-wordmark strong {
+  font-family: var(--display);
+  font-size: clamp(15px, 1.8vw, 23px);
+}
+#helios-studio .o-scene-notice {
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+}
+#helios-studio .o-scene-notice button {
+  color: var(--ink);
+  padding: 12px 18px;
+  background: #16293b;
+}
+#helios-studio .o-scene-notice::backdrop {
+  background: #020710e8;
+}
+#helios-studio .lensing-film-header h2 {
+  font-size: clamp(23px, 3vw, 34px);
+}
+@media (max-width: 600px) {
+  #helios-studio .lensing-film {
+    width: 100%;
+    max-height: 100dvh;
+    border-radius: 0;
+  }
+  #helios-studio .bs-header {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+  #helios-studio .bs-header h2 {
+    font-size: 23px;
+  }
+}

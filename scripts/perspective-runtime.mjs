@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 
 /** Verify the new preview interactions through the existing browser harness. */
 export async function checkPerspective({ navigate, evaluate, click, pressKey, waitFor, report, send }) {
-  await navigate("/?runtime=perspective", 320, 844);
+  await navigate("/odyssey.html?runtime=perspective", 320, 844);
   assert.equal(await evaluate(`document.querySelector('#hero-experiences').open`), false);
   assert.equal(
     await evaluate(
@@ -116,7 +116,7 @@ export async function checkPerspective({ navigate, evaluate, click, pressKey, wa
     passed: true,
   });
 
-  await navigate("/?runtime=perspective-world#lensing", 1440, 1000);
+  await navigate("/odyssey.html?runtime=perspective-world#lensing", 1440, 1000);
   await waitFor(
     `document.querySelector('.lens-observatory')?.dataset.ready === 'true'`,
     "shareable world renderer",
@@ -180,7 +180,7 @@ export async function checkPerspective({ navigate, evaluate, click, pressKey, wa
   await send("Network.setCacheDisabled", { cacheDisabled: true });
   await send("Network.setBlockedURLs", { urls: ["*secondary-study-styles*.css"] });
   try {
-    await navigate("/?runtime=perspective-recovery#build=signal&deviation=62&corroborated=1", 390, 844);
+    await navigate("/odyssey.html?runtime=perspective-recovery#build=signal&deviation=62&corroborated=1", 390, 844);
     await waitFor(
       `document.querySelector('.o-study-loading button')?.textContent.includes('Reload')`,
       "unavailable instrument has a recovery action",

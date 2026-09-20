@@ -20,7 +20,7 @@ export async function measureJourney({ navigate, evaluate, click, pressKey, wait
   });
   report.measurements = [];
   for (const width of [1440, 390]) {
-    await navigate("/?runtime=journey-measure", width, width === 1440 ? 1000 : 844);
+    await navigate("/odyssey.html?runtime=journey-measure", width, width === 1440 ? 1000 : 844);
     await new Promise((resolve) => setTimeout(resolve, 1500));
     await click(".mc-trigger");
     await pressKey("Escape", 27);
@@ -137,7 +137,7 @@ export async function checkJourney({ navigate, evaluate, click, pressKey, waitFo
   }
   await send("Emulation.setEmulatedMedia", { features: [] });
   for (const width of [320, 390]) {
-    await navigate("/?runtime=journey-menu", width, 740);
+    await navigate("/odyssey.html?runtime=journey-menu", width, 740);
     await click(".mc-trigger");
     await waitFor(
       "document.querySelector('.mc-dialog')?.open && document.activeElement?.matches('.mc-search-wrap input')",
@@ -158,7 +158,7 @@ export async function checkJourney({ navigate, evaluate, click, pressKey, waitFo
     passed: true,
   });
 
-  await navigate("/?runtime=journey-flight", 1440, 1000);
+  await navigate("/odyssey.html?runtime=journey-flight", 1440, 1000);
   await click('[aria-label="Motion on — pause ambient motion"]');
   await click(".continuum-first-flight");
   await waitFor("!!document.querySelector('.ff-stage-ready,.ff-stage-fallback')", "manual flight");
@@ -197,7 +197,7 @@ export async function checkJourney({ navigate, evaluate, click, pressKey, waitFo
     passed: true,
   });
 
-  await navigate("/?runtime=journey-permission", 390, 844);
+  await navigate("/odyssey.html?runtime=journey-permission", 390, 844);
   await click('[aria-label="Motion on — pause ambient motion"]');
   await click(".continuum-first-flight");
   await waitFor("!!document.querySelector('.ff-stage-ready,.ff-stage-fallback')", "phone flight");
@@ -231,7 +231,7 @@ export async function checkJourney({ navigate, evaluate, click, pressKey, waitFo
     passed: true,
   });
 
-  await navigate("/?runtime=journey-bit", 1440, 1000);
+  await navigate("/odyssey.html?runtime=journey-bit", 1440, 1000);
   await click(".o-story-comparison a:nth-child(2)");
   await waitFor(
     "document.querySelector('.o-segment [aria-pressed=true]')?.textContent === 'Analyze' && document.querySelectorAll('.o-toggle input')[0]?.checked && document.querySelectorAll('.o-toggle input')[1]?.checked && document.querySelector('.o-lab')?.dataset.labMotion === 'on' && document.activeElement?.matches('.o-run')",
@@ -254,7 +254,7 @@ export async function checkJourney({ navigate, evaluate, click, pressKey, waitFo
     "finite gold response",
   );
   await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
-  await navigate("/?runtime=journey-reduced#build=hermes&intent=analyze&private=1&sources=1", 320, 844);
+  await navigate("/odyssey.html?runtime=journey-reduced#build=hermes&intent=analyze&private=1&sources=1", 320, 844);
   await waitFor(
     "document.querySelector('.o-segment [aria-pressed=true]')?.textContent === 'Analyze' && document.querySelectorAll('.o-toggle input')[0]?.checked && document.querySelectorAll('.o-toggle input')[1]?.checked && document.querySelector('[aria-label=\"Motion off — follows your system preference\"]')?.disabled",
     "hydrated deep-link inputs and system motion preference",
@@ -272,7 +272,7 @@ export async function checkJourney({ navigate, evaluate, click, pressKey, waitFo
     passed: true,
   });
 
-  await navigate("/?runtime=journey-story#smart-routing", 1440, 1000);
+  await navigate("/odyssey.html?runtime=journey-story#smart-routing", 1440, 1000);
   assert.equal(
     await evaluate("document.querySelector('.o-interface-notes').tagName"),
     "SECTION",
@@ -329,7 +329,7 @@ export async function checkFlightEnding({ navigate, evaluate, click, pressKey, w
     [390, 667],
     [390, 844],
   ]) {
-    await navigate("/?runtime=phone-entrance", width, height);
+    await navigate("/odyssey.html?runtime=phone-entrance", width, height);
     await waitFor("document.fonts.status === 'loaded'", "phone fonts settled");
     const entrance = await evaluate(`(() => {
       const button = document.querySelector('.continuum-first-flight').getBoundingClientRect();
@@ -348,7 +348,7 @@ export async function checkFlightEnding({ navigate, evaluate, click, pressKey, w
     [1280, 712],
     [1024, 768],
   ]) {
-    await navigate("/?runtime=hero-spacing", width, height);
+    await navigate("/odyssey.html?runtime=hero-spacing", width, height);
     if (width === 1280) {
       assert.ok(
         await evaluate(
@@ -385,7 +385,7 @@ export async function checkFlightEnding({ navigate, evaluate, click, pressKey, w
     [320, 568],
     [640, 360],
   ]) {
-    await navigate("/?runtime=flight-ending", width, height);
+    await navigate("/odyssey.html?runtime=flight-ending", width, height);
     await waitFor(
       "!!document.querySelector('[aria-label=\"Motion off — follows your system preference\"]')?.disabled",
       "system motion setting",

@@ -12,7 +12,7 @@ const legacyRoute = (await readFile("public/legacy-route.js", "utf8")).replace(/
 const legacyHash = createHash("sha256").update(legacyRoute).digest("base64");
 const legacyMarker = '<script src="/legacy-route.js"></script>';
 const content = `<div id="odyssey-root" data-prerendered="odyssey">${renderToString(createElement(OdysseyApp))}</div>`;
-for (const target of ["dist/index.html", "dist/odyssey.html"]) {
+for (const target of ["dist/odyssey.html"]) {
   let document = await readFile(target, "utf8");
   if (!document.includes(marker)) throw new Error(`Odyssey prerender root missing in ${target}`);
   if (!document.includes(legacyMarker) || !document.includes("script-src 'self';"))
