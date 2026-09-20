@@ -110,7 +110,7 @@ export function setupNavigation({ studies, select, mission, motion }) {
   function focusSection(id, shouldScroll = true) {
     const target = document.getElementById(id);
     if (!target) return;
-    const heading = target.querySelector("h2,h3") || target;
+    const heading = target.querySelector("h1,h2,h3") || target;
     heading.setAttribute("tabindex", "-1");
     heading.focus({ preventScroll: true });
     if (shouldScroll) target.scrollIntoView({ behavior: motion() ? "smooth" : "instant", block: "start" });
@@ -125,6 +125,7 @@ export function setupNavigation({ studies, select, mission, motion }) {
     notify();
   }
   function closeScene(destination) {
+    const fallback = sceneKind(location.hash) === "flight" ? "" : "#studios";
     if (destination) {
       const hash = destination.startsWith("build=")
         ? `#${destination}`
@@ -139,8 +140,8 @@ export function setupNavigation({ studies, select, mission, motion }) {
       history.back();
     } else {
       returnPoint = null;
-      history.replaceState(null, "", "#studios");
-      route("#studios");
+      history.replaceState(null, "", location.pathname + location.search + fallback);
+      route(fallback || "#top");
     }
   }
   loader.addEventListener("cancel", (event) => {

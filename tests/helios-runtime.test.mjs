@@ -543,6 +543,9 @@ test("Legacy hash entry, production evidence and unavailable WebGL remain usable
   await expect(fallback.locator(".ff-decision-result")).toContainText("12 onboard");
   await fallback.getByRole("button", { name: "Restore the cloud link" }).click();
   await expect(fallback.locator(".ff-decision-result")).toContainText("6 onboard · 6 in cloud");
+  await fallback.keyboard.press("Escape");
+  await expect(fallback.locator("h1")).toBeFocused();
+  assert.equal(new URL(fallback.url()).hash, "", "a directly opened flight returns to the clean homepage");
   await page.goto(new URL("/odyssey.html#build=hermes", url).href);
   await expect(page.locator("#odyssey-root")).toBeAttached();
   assert.equal(new URL(page.url()).pathname, "/odyssey.html");
