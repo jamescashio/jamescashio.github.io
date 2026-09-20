@@ -1,18 +1,36 @@
 import { parseExperiment } from "../odyssey/study-experiment";
 import { parseMissionHash } from "../odyssey/flight-plan";
 
-/** A single route handler owns native links, search, bookmarks and browser history. */
-export function setupNavigation({ studies, select, mission, motion, toast }) {
+const sceneKind = (hash) =>
+  /^#flight=(board|hull|blackout|permission)$/.test(hash)
+    ? "flight"
+    : /^#(?:signature|lensing(?:&.*)?|film(?:=(?:sanctuary|lightwake|signature|awakening|arrival))?)$/.test(hash)
+      ? "studio"
+      : null;
+const aliases = {
+  "#observatory": "#principles",
+  "#sovereign-world": "#starship",
+  "#smart-routing": "#work",
+  "#boundary-comparison": "#work",
+};
+
+/** Native links, shared scenes and browser history stay in one document. */
+export function setupNavigation({ studies, select, mission, motion }) {
   const dialog = document.querySelector("#mc");
   const search = document.querySelector("#mc-search");
   const list = document.querySelector("#mc-list");
-  const shortcut = document.querySelector("#mc-btn .mono");
-  shortcut.textContent = /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘K" : "Ctrl K";
-  let previousFocus = null;
-  let navigating = false;
-  let flight = null;
-  let launchPending = false;
-  let flightGeneration = 0;
+  const loader = document.querySelector("#scene-loader");
+  document.querySelector("#mc-btn .mono").textContent = /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘K" : "Ctrl K";
+  let previousFocus = null,
+    navigating = false,
+    scene = null,
+    activeKind = null,
+    pending = false,
+    generation = 0;
+  let returnPoint = null,
+    sequence = 0,
+    lastURL = "";
+  const returns = new Map();
   const destinations = [
     ["The 30-second flight", "Open the hull. Cut the cloud. Keep command.", "#flight=board"],
     ["The orbital world", "Return to the beginning.", "#top"],
@@ -20,6 +38,11 @@ export function setupNavigation({ studies, select, mission, motion, toast }) {
     ["The system atlas", "Owned compute, orchestration, human authority.", "#universe"],
     ["Compare architectures", "Change a mission. Inspect all twelve requests.", "#starship"],
     ["Principles Engine", "Turn the rings. Explore the operating philosophy.", "#principles"],
+    ["The Studios", "Enter the original worlds, signature and film collection.", "#studios"],
+    ["Lensing Observatory", "Sculpt the light. Find your own perspective.", "#lensing"],
+    ["Celestial Forge", "Explore the signature in three dimensions.", "#signature"],
+    ["The Cinema", "Five original short films. Play at your own pace.", "#film=lightwake"],
+    ["The Sanctuary", "A quiet film and an explorable inner world.", "#film=sanctuary"],
     ["Inspect the evidence", "A source, a date, and a clear boundary.", "#evidence"],
     ["Flight heritage", "The discipline behind the design.", "#heritage"],
     ["Meet Doug", "Builder. Operator. Accountable human.", "#operator"],
@@ -33,9 +56,9 @@ export function setupNavigation({ studies, select, mission, motion, toast }) {
       const a = document.createElement("a");
       a.className = "tile mc-destination";
       a.href = href;
-      const title = document.createElement("strong");
+      const title = document.createElement("strong"),
+        description = document.createElement("span");
       title.textContent = name;
-      const description = document.createElement("span");
       description.textContent = body;
       a.append(title, description);
       list.append(a);
@@ -43,31 +66,27 @@ export function setupNavigation({ studies, select, mission, motion, toast }) {
     if (!matches.length) {
       const empty = document.createElement("p");
       empty.setAttribute("role", "status");
-      empty.textContent = "No destination found. Try ‘flight’, ‘privacy’ or ‘Graphify’.";
+      empty.textContent = "No destination found. Try ‘flight’, ‘signature’ or ‘Graphify’.";
       list.append(empty);
     }
   }
+  const notify = () => window.dispatchEvent(new Event("helios-overlay"));
   function open() {
-    if (dialog.open) return;
+    if (dialog.open || loader.open || scene || pending) return;
     previousFocus = document.activeElement;
     navigating = false;
     render();
     search.value = "";
     dialog.showModal();
-    window.dispatchEvent(new Event("helios-overlay"));
+    notify();
     search.focus();
-    window.__heroPause?.(true);
-  }
-  function close() {
-    dialog.close();
   }
   dialog.addEventListener("close", () => {
-    window.dispatchEvent(new Event("helios-overlay"));
-    window.__heroPause?.(!motion());
+    notify();
     if (!navigating && previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
   });
   document.querySelector("#mc-btn").addEventListener("click", open);
-  document.querySelector("#mc-close").addEventListener("click", close);
+  document.querySelector("#mc-close").addEventListener("click", () => dialog.close());
   search.addEventListener("input", () => render(search.value.trim().toLowerCase()));
   dialog.addEventListener("keydown", (event) => {
     const links = [...list.querySelectorAll("a")];
@@ -85,68 +104,127 @@ export function setupNavigation({ studies, select, mission, motion, toast }) {
   window.addEventListener("keydown", (event) => {
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
       event.preventDefault();
-      if (!flight && !launchPending) dialog.open ? close() : open();
+      if (!scene && !pending) dialog.open ? dialog.close() : open();
     }
   });
   function focusSection(id, shouldScroll = true) {
     const target = document.getElementById(id);
     if (!target) return;
-    const heading = target.querySelector("h2,h3") || target;
+    const heading = target.querySelector("h1,h2,h3") || target;
     heading.setAttribute("tabindex", "-1");
     heading.focus({ preventScroll: true });
-    // Focus realizes content-visibility sections before calculating the destination.
     if (shouldScroll) target.scrollIntoView({ behavior: motion() ? "smooth" : "instant", block: "start" });
   }
-  async function launch(step = "board") {
-    if (flight || launchPending) return;
-    launchPending = true;
-    const generation = ++flightGeneration;
-    const returnFocus = dialog.contains(document.activeElement) ? previousFocus : document.activeElement;
-    const restoreHash = "#top";
-    document.documentElement.classList.add("flight-loading");
-    toast("Preparing your ship…");
+  function dispose() {
+    generation++;
+    pending = false;
+    loader.close();
+    scene?.dispose();
+    scene = null;
+    activeKind = null;
+    notify();
+  }
+  function closeScene(destination) {
+    const fallback = sceneKind(location.hash) === "flight" ? "" : "#studios";
+    if (destination) {
+      const hash = destination.startsWith("build=")
+        ? `#${destination}`
+        : destination === "smart-routing"
+          ? "#work"
+          : `#${destination}`;
+      navigate(hash, null, true);
+      return;
+    }
+    dispose();
+    if (history.state?.heliosReturn) {
+      history.back();
+    } else {
+      returnPoint = null;
+      history.replaceState(null, "", location.pathname + location.search + fallback);
+      route(fallback || "#top");
+    }
+  }
+  loader.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    closeScene();
+  });
+  document.querySelector("#scene-cancel").addEventListener("click", () => closeScene());
+  document.querySelector("#scene-reload").addEventListener("click", () => location.reload());
+  async function launch(hash, kind) {
+    if (scene && activeKind === "studio" && kind === "studio") {
+      scene.update(hash);
+      return;
+    }
+    dispose();
+    pending = true;
+    const token = ++generation;
+    let failed = false;
+    loader.querySelector("h2").textContent = "Preparing your scene…";
+    loader.querySelector("p").textContent = "You can return to the site at any time.";
+    document.querySelector("#scene-cancel").textContent = "Cancel opening";
+    document.querySelector("#scene-reload").hidden = true;
+    loader.showModal();
+    notify();
     try {
-      const { openFlight } = await import("./flight-island");
-      if (generation !== flightGeneration) return;
-      flight = openFlight({
-        motion: motion(),
-        step,
-        onClose(destination) {
-          flight?.dispose();
-          flight = null;
-          window.__heroPause?.(!motion());
-          const hash = destination?.startsWith("build=")
-            ? `#${destination}`
-            : destination === "smart-routing"
-              ? "#work"
-              : restoreHash;
-          history.replaceState(null, "", hash);
-          if (destination) route(hash);
-          else returnFocus?.focus({ preventScroll: true });
-        },
-      });
-      window.__heroPause?.(true);
-      toast("");
+      const module = kind === "flight" ? await import("./flight-island") : await import("./studio-island");
+      if (token !== generation) return;
+      loader.close();
+      activeKind = kind;
+      scene =
+        kind === "flight"
+          ? module.openFlight({ motion: motion(), step: hash.slice(8), onClose: closeScene })
+          : module.openStudio({
+              motion: motion(),
+              hash,
+              onClose: () => closeScene(),
+              onNavigate: (next) => navigate(next, null, true),
+            });
     } catch {
-      toast("The flight could not load. Try again, or explore the comparison below.");
-      focusSection("starship");
+      if (token !== generation) return;
+      failed = true;
+      loader.querySelector("h2").textContent = "This scene couldn’t open.";
+      loader.querySelector("p").textContent =
+        "Your place is saved. Return to the site, or reload this scene to try again.";
+      document.querySelector("#scene-cancel").textContent = "Back to the site";
+      document.querySelector("#scene-reload").hidden = false;
     } finally {
-      launchPending = false;
-      document.documentElement.classList.remove("flight-loading");
+      if (token === generation) {
+        pending = failed;
+        if (!failed) loader.close();
+        notify();
+      }
     }
   }
   function route(hash, initial = false) {
+    lastURL = location.href;
+    hash = aliases[hash] || hash;
+    const kind = sceneKind(hash);
+    if (kind) {
+      const saved = history.state?.heliosReturn;
+      if (saved) returnPoint = returns.get(saved.id) || saved;
+      void launch(hash, kind);
+      return;
+    }
+    dispose();
+    if (returnPoint && hash === returnPoint.hash) {
+      const point = returnPoint;
+      returnPoint = null;
+      // Native dialog and history focus restoration finish before we restore the actual launcher.
+      requestAnimationFrame(() => {
+        if (sceneKind(location.hash)) return;
+        if (point.focus?.isConnected) point.focus.focus({ preventScroll: true });
+        else focusSection(hash.slice(1) || "top", false);
+        window.scrollTo({ top: point.y, behavior: "instant" });
+      });
+      return;
+    }
+    returnPoint = null;
     const experiment = parseExperiment(hash);
     if (experiment) {
       select(experiment);
       focusSection("studies");
       return;
     }
-    if (/^#flight=(board|hull|blackout|permission)$/.test(hash)) {
-      void launch(hash.slice(8));
-      return;
-    }
-    // Accept the original V38 URL token while sharing the canonical, bounded model contract.
     const scenario = parseMissionHash(hash.replace(/\.online\./, ".connected."));
     if (scenario) {
       mission({
@@ -160,26 +238,42 @@ export function setupNavigation({ studies, select, mission, motion, toast }) {
     }
     if (/^#[a-z-]+$/.test(hash)) focusSection(hash.slice(1), !initial);
   }
+  function navigate(hash, opener = null, replace = false) {
+    hash = aliases[hash] || hash;
+    if (hash === "#top") hash = "";
+    let state = null;
+    if (sceneKind(hash)) {
+      if (!sceneKind(location.hash)) {
+        const id = ++sequence;
+        returnPoint = { id, hash: location.hash, y: window.scrollY, focus: opener || document.activeElement };
+        returns.set(id, returnPoint);
+        state = { heliosReturn: { id, hash: returnPoint.hash, y: returnPoint.y } };
+      } else {
+        state = history.state;
+        replace = true;
+      }
+    } else {
+      returnPoint = null;
+    }
+    if (dialog.open) {
+      navigating = true;
+      dialog.close();
+    }
+    if (location.hash !== hash)
+      history[replace ? "replaceState" : "pushState"](state, "", location.pathname + location.search + hash);
+    route(hash || "#top");
+  }
   document.addEventListener("click", (event) => {
     const link = event.target.closest("a[href^='#']");
     if (!link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button) return;
-    const hash = link.getAttribute("href");
     event.preventDefault();
-    if (dialog.open) {
-      navigating = true;
-      close();
-    }
-    if (location.hash !== hash) history.pushState(null, "", hash);
-    route(hash);
+    navigate(link.getAttribute("href"), dialog.contains(link) ? previousFocus : link);
   });
-  window.addEventListener("hashchange", () => {
-    if (flight && !location.hash.startsWith("#flight=")) {
-      flight.dispose();
-      flight = null;
-    }
-    if (launchPending && !location.hash.startsWith("#flight=")) flightGeneration++;
-    route(location.hash);
-  });
+  function restoreHistory() {
+    if (lastURL !== location.href) route(location.hash);
+  }
+  window.addEventListener("popstate", restoreHistory);
+  window.addEventListener("hashchange", restoreHistory);
   queueMicrotask(() => route(location.hash, true));
   return { open, route };
 }

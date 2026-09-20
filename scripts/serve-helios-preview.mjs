@@ -18,6 +18,7 @@ const mime = {
   ".avif": "image/avif",
   ".woff2": "font/woff2",
   ".mp3": "audio/mpeg",
+  ".mp4": "video/mp4",
   ".webm": "video/webm",
   ".ico": "image/x-icon",
 };

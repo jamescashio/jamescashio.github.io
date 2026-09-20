@@ -11,7 +11,7 @@ try {
     await once(probe, "listening");
     const port = probe.address().port;
     await new Promise((resolve) => probe.close(resolve));
-    url = `http://127.0.0.1:${port}/v38/`;
+    url = `http://127.0.0.1:${port}/`;
     server = spawn(process.execPath, ["scripts/serve-helios-preview.mjs", "dist", String(port)], {
       stdio: ["ignore", "pipe", "inherit"],
     });

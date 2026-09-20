@@ -5,7 +5,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 const output = path.resolve(process.env.HELIOS_PERF_DIR || "../qa/performance");
-const url = process.env.HELIOS_URL || "http://127.0.0.1:4388/v38/";
+const url = process.env.HELIOS_URL || "http://127.0.0.1:4388/";
 await fs.mkdir(output, { recursive: true });
 const runs = Number(process.argv[2] || 1);
 const mode = process.argv[3] === "desktop" ? "desktop" : "mobile";

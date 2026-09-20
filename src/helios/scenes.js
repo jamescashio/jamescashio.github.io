@@ -6,6 +6,7 @@ const COLORS = { local: "#38e1ff", cloud: "#f2c87a", held: "#f08a96" };
 const smooth = (t) => t * t * (3 - 2 * t);
 
 export function setupScenes({ motion }) {
+  const blocked = () => !!document.querySelector("dialog[open],#helios-studio,#helios-flight");
   const atlas = document.querySelector("#atlas");
   const flow = document.querySelector("#flow-scene");
   const engine = document.querySelector("#engine");
@@ -52,13 +53,17 @@ export function setupScenes({ motion }) {
       const node = document.createElementNS(SVG, "g");
       node.dataset.kind = kind;
       const glow = document.createElementNS(SVG, "circle"),
-        dot = document.createElementNS(SVG, "circle");
+        dot = document.createElementNS(SVG, "path"),
+        facet = document.createElementNS(SVG, "path");
       glow.setAttribute("r", "9");
       glow.setAttribute("opacity", ".16");
       glow.setAttribute("fill", COLORS[kind]);
-      dot.setAttribute("r", "3.6");
+      dot.setAttribute("d", "M-5 0 0-5 5 0 0 5Z");
+      facet.setAttribute("d", "M-5 0 0-5 0 5Z");
+      facet.setAttribute("fill", "#ffffff");
+      facet.setAttribute("opacity", ".6");
       dot.setAttribute("fill", COLORS[kind]);
-      node.append(glow, dot);
+      node.append(glow, dot, facet);
       group.append(node);
       const slot = document.createElement("i");
       slot.style.setProperty("--packet-color", COLORS[kind]);
@@ -102,7 +107,7 @@ export function setupScenes({ motion }) {
       if (visible.get(flow)) paintFlow();
       if (trace.active && visible.get(atlas)) trace.advance(delta);
     }
-    if (enabled && !document.hidden && (visible.get(flow) || (trace.active && visible.get(atlas))))
+    if (enabled && !document.hidden && !blocked() && (visible.get(flow) || (trace.active && visible.get(atlas))))
       frame = requestAnimationFrame(run);
   }
   async function loadEngine() {
@@ -111,13 +116,13 @@ export function setupScenes({ motion }) {
     try {
       const { createEngineScene } = await import("./engine-scene.js");
       engineScene = createEngineScene(engine, { angle, principle });
-      engineScene?.setActive(enabled && visible.get(engine) && !document.hidden);
+      engineScene?.setActive(enabled && visible.get(engine) && !document.hidden && !blocked());
     } catch {
       /* The complete authored vector instrument remains available. */
     }
   }
   function sync() {
-    const active = enabled && !document.hidden;
+    const active = enabled && !document.hidden && !blocked();
     if (active && (visible.get(flow) || (trace.active && visible.get(atlas)))) {
       if (!frame) {
         previous = 0;
@@ -150,6 +155,7 @@ export function setupScenes({ motion }) {
   });
   document.addEventListener("visibilitychange", sync);
   window.addEventListener("pageshow", sync);
+  window.addEventListener("helios-overlay", sync);
   engine.addEventListener("pointerdown", () => {
     if (enabled) void loadEngine();
   });

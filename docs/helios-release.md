@@ -1,4 +1,10 @@
-# V38.4 Helios release
+# V38.5 Helios release
+
+The current homepage is now served directly at `/`. Old `/v38/` bookmarks preserve their destination and normalize to that address without a release query. The original signature, Observatory, cinema collection and Sanctuary load inside Helios, with shared navigation and context restoration. V37.17 remains explicit in Version history at `/odyssey.html`. No infrastructure observation is updated.
+
+The new Studios invitations reuse original artwork and self-hosted typography. Finite reflections and faceted request tokens refine the graphics; a progress line tracks the existing eight-second atlas explanation. Hidden, offscreen and overlaid portfolio scenes pause. Cancelled scene imports cannot reopen later; Close, Back, Forward and saved scene links are covered by browser checks.
+
+## Preserved V38.4 refinement
 
 The connected-workshop refinement follows the owner's approval of all five review recommendations. A single synthetic request joins the privacy test, atlas and HERMES; the same policy controls both the explanation and the finite route animation. Private input skips the illustrated compute step and returns to human authority. Continuation links carry the current intent, source requirement and privacy choice.
 
@@ -24,10 +30,10 @@ The owner approved publication on 09-19-2026 and requested a thorough polish pas
 
 ## Identity and release gates
 
-- Public entry: `/v38/`, receipt `/v38/site-release.json`, experience `38.4.0`, release ID `helios-38.4.0-20260920`.
-- Plain-root navigation retains the established V38 redirect. Existing fragments and query links retain V37.17. The shared package and compatibility receipts keep that version, with a matching `frontDoor` reference to V38.4.
+- Public entry: `/`, receipt `/v38/site-release.json`, experience `38.5.0`, release ID `helios-38.5.0-20260920`.
+- The root serves Helios without a redirect. Shared resources open within this document. `/v38/` links normalize to `/`; explicit `?v=37.17` links normalize to `/odyssey.html`. The preserved package and compatibility receipts retain V37.17, with a matching `frontDoor` reference to V38.5.
 - Evidence remains the inherited September 18, 2026 record for V38 and the corresponding earlier observations for legacy views. No UI test verifies infrastructure or routing health.
-- Rollback baseline: `0e284480f68cc78721ea3e1a90719fb7bacc0075`. Roll back by reverting this release through the checked pull-request and Pages path, then verify the resulting public artifact.
+- Rollback baseline: `37e7460dfe196518b013c4a30584a107bc4ce4bf`. Roll back by reverting this release through the checked pull-request and Pages path, then verify the resulting public artifact.
 
 Build and run lint, formatting, model and artifact tests, Python release tests, public-data and consistency checks, legacy browser checks and `npm run test:helios`. The Helios runner starts and closes a loopback server unless `HELIOS_URL` supplies another target. `CHROME_PATH` selects the workflow's pinned browser. Pages and Public Site Safety run these interactions before accepting a deployment artifact.
 

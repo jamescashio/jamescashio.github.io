@@ -1,3 +1,11 @@
+# V38.5 one address, an open studio — 09-20-2026
+
+The current cAshIo workshop belongs at cashio.us. Serve the authored Helios homepage directly at `/`, with its canonical address and absolute asset paths. Normalize former `/v38/` and release-tagged links to the root while retaining their requested scene. Keep V37.17 intact at `/odyssey.html` and explicitly available through Version history. Preserve Command Deck bookmarks and dated evidence exports.
+
+Bring the original Celestial Forge, Lensing Observatory, five films and Sanctuary into the current document as lazy studios. Frame their existing artwork with three clear invitations, restrained reflective hover responses, the same self-hosted type, and an accessible cancel/return path. Navigation, reload, browser history and shared Observatory settings must preserve context. Sound starts off; films never autoplay. Pause the portfolio's instruments behind menus and scenes, and honor changing system motion preferences.
+
+Polish the atlas with a finite trace progress line and faceted request tokens. Keep twelve outcomes, the human-review boundary, explanatory labels and existing model semantics intact. Add no dependency or generated replacement for canonical artwork. The owner has authorized continued polish and publication; validate the root and compatibility journeys, visible desktop/phone scenes, failure/cancellation, motion, accessibility and build/release gates before publication. Rollback: 37e7460dfe196518b013c4a30584a107bc4ce4bf.
+
 # V38.4 connected workshop — 09-20-2026
 
 A precision orbital workshop in which one visitor decision connects the spectacle to its explanation. Preserve the original Unbounded / Instrument Sans / JetBrains Mono pairing, navy, gold, cyan, artwork and the human-command philosophy. Cyan marks a qualified path; gold marks an accountable decision. Keep the authored scenes as the visual anchors.

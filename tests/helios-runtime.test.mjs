@@ -5,7 +5,7 @@ import AxeBuilder from "@axe-core/playwright";
 import fs from "node:fs/promises";
 import path from "node:path";
 
-const url = process.env.HELIOS_URL || "http://127.0.0.1:4388/v38/";
+const url = process.env.HELIOS_URL || "http://127.0.0.1:4388/";
 const output = path.resolve(process.env.HELIOS_QA_DIR || "../qa/final");
 let browser;
 before(async () => {
@@ -297,6 +297,7 @@ test("House Cashio signature loads, energizes, falls back to its original artwor
   await expect(page.locator("#brand-studio-title")).toHaveCount(0);
   await page.route("**/v38/assets/celestial.webp", (route) => route.abort());
   await page.goto(url + "#operator");
+  await page.reload();
   await page.locator("#sigplate").scrollIntoViewIfNeeded();
   await expect(page.locator("#sig-art")).toHaveAttribute("src", "/v38/assets/celestial.jpg");
   await page.locator("#sig-art").evaluate((image) => image.decode());
@@ -334,6 +335,7 @@ test("The full page, atlas, principles, evidence console, hangar and contact sta
       "universe",
       "starship",
       "principles",
+      "studios",
       "evidence",
       "heritage",
       "operator",
@@ -524,7 +526,7 @@ test("Motion off leaves future sections visible and a system preference change r
 
 test("Legacy hash entry, production evidence and unavailable WebGL remain usable", async (t) => {
   const page = await visit(t);
-  const data = await page.request.get(url + "status.json");
+  const data = await page.request.get(new URL("/v38/status.json", url).href);
   assert.equal((await data.json()).provenance.observedAtUtc, "2026-09-18T22:53:54Z");
   const context = await browser.newContext({ reducedMotion: "reduce" });
   t.after(() => context.close());
@@ -541,9 +543,12 @@ test("Legacy hash entry, production evidence and unavailable WebGL remain usable
   await expect(fallback.locator(".ff-decision-result")).toContainText("12 onboard");
   await fallback.getByRole("button", { name: "Restore the cloud link" }).click();
   await expect(fallback.locator(".ff-decision-result")).toContainText("6 onboard · 6 in cloud");
-  await page.goto(new URL("/#build=hermes", url).href);
+  await fallback.keyboard.press("Escape");
+  await expect(fallback.locator("h1")).toBeFocused();
+  assert.equal(new URL(fallback.url()).hash, "", "a directly opened flight returns to the clean homepage");
+  await page.goto(new URL("/odyssey.html#build=hermes", url).href);
   await expect(page.locator("#odyssey-root")).toBeAttached();
-  assert.equal(new URL(page.url()).pathname, "/");
+  assert.equal(new URL(page.url()).pathname, "/odyssey.html");
 });
 
 test("Bit docks into the menu on compact screens without covering the study", async (t) => {
@@ -642,4 +647,181 @@ test("Evidence leads with meaning, expands by keyboard and links the shipped bui
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 320);
   await audit(page, "expanded-evidence-320");
   await page.screenshot({ path: path.join(output, "expanded-evidence-320.png") });
+});
+
+test("A plain visit stays at cashio.us, old V38 addresses normalize and deliberate archives remain available", async (t) => {
+  const page = await visit(t);
+  assert.equal(new URL(page.url()).pathname, "/");
+  assert.equal(new URL(page.url()).search, "");
+  const navigation = await page.evaluate(() => performance.getEntriesByType("navigation")[0].name);
+  assert.equal(new URL(navigation).pathname, "/", "the root responds with the current document directly");
+  for (const suffix of [
+    "/v38/?release=38.4#studios",
+    "/v38/index.html?release=38.4#operator",
+    "/?release=38.4#studies",
+  ]) {
+    await page.goto(new URL(suffix, url).href);
+    await expect(page.locator("#study-hermes")).toBeAttached();
+    assert.equal(new URL(page.url()).pathname, "/");
+    assert.equal(new URL(page.url()).search, "");
+    assert.equal(new URL(page.url()).hash, new URL(suffix, url).hash);
+  }
+  await page.goto(new URL("/?v=37.17#build=hermes", url).href);
+  await expect(page.locator("#odyssey-root")).toBeAttached();
+  assert.equal(new URL(page.url()).pathname, "/odyssey.html");
+  await page.goto(new URL("/#deck=builds", url).href);
+  await expect.poll(() => new URL(page.url()).pathname).toBe("/command-deck.html");
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  t.after(() => context.close());
+  const staticPage = await context.newPage();
+  await staticPage.goto(url);
+  await expect(staticPage.locator("h1")).toBeVisible();
+  await expect(staticPage.locator(".studio-card")).toHaveCount(3);
+  assert.equal(new URL(staticPage.url()).pathname, "/");
+});
+
+test("Studios preserve the current page, return focus, Back/Forward and exact signature context", async (t) => {
+  const page = await visit(t, { hash: "#operator" });
+  const stamp = await page.evaluate(() => performance.timeOrigin);
+  const opener = page.locator('#sigplate a[href="#signature"]');
+  await opener.scrollIntoViewIfNeeded();
+  const startY = await page.evaluate(() => scrollY);
+  await opener.click();
+  await expect(page.locator("#brand-studio-title")).toHaveText("Celestial Forge");
+  assert.equal(new URL(page.url()).pathname, "/");
+  await expect(page.locator("html")).toHaveClass(/experience-open/);
+  await page.keyboard.press("Escape");
+  await expect(opener).toBeFocused();
+  assert.equal(new URL(page.url()).hash, "#operator");
+  assert.ok(Math.abs((await page.evaluate(() => scrollY)) - startY) < 5);
+  await page.goForward();
+  await expect(page.locator("#brand-studio-title")).toBeVisible();
+  await page.goBack();
+  await expect(page.locator("#helios-studio")).toHaveCount(0);
+  await expect(opener).toBeFocused();
+  await opener.click();
+  await page.getByRole("button", { name: "Watch the signature awaken" }).click();
+  await expect(page.locator("#lensing-film-title")).toContainText("signature");
+  await page.keyboard.press("Escape");
+  await expect(opener).toBeFocused();
+  assert.equal(new URL(page.url()).hash, "#operator");
+  assert.equal(await page.evaluate(() => performance.timeOrigin), stamp, "no full-page handoff to V37 occurred");
+});
+
+test("The original studios fit desktop and narrow phones, share Helios type and pass accessibility checks", async (t) => {
+  for (const width of [1440, 390, 320]) {
+    const page = await visit(t, { width, height: width === 1440 ? 1000 : 844, hash: "#studios" });
+    await page.screenshot({ path: path.join(output, `studios-${width}.png`) });
+    await audit(page, `studios-${width}`);
+    for (const [hash, dialog] of [
+      ["#signature", ".brand-studio"],
+      ["#lensing", ".lens-observatory"],
+      ["#film=sanctuary", ".lensing-film"],
+    ]) {
+      const link = page.locator(`.studio-card[href="${hash}"]`);
+      await link.click();
+      await expect(page.locator(dialog)).toBeVisible({ timeout: 20000 });
+      const box = await page
+        .locator(dialog)
+        .evaluate((el) => ({ width: el.clientWidth, scroll: el.scrollWidth, font: getComputedStyle(el).fontFamily }));
+      assert.ok(box.scroll <= box.width + 1, `${hash} fits ${width}px`);
+      assert.match(box.font, /Instrument Sans/);
+      if (hash === "#signature") {
+        await expect(page.locator(".cashio-brand-mark img")).toHaveJSProperty("complete", true);
+        const artwork = await page.locator(".cashio-brand-mark img").boundingBox();
+        const viewport = await page.locator(".bs-art-window").boundingBox();
+        assert.ok(artwork.height <= viewport.height + 2, "the full signature fits before entering detail mode");
+      }
+      if (hash === "#lensing")
+        await expect(page.locator(".lens-observatory")).toHaveAttribute("data-ready", "true", { timeout: 20000 });
+      if (hash.startsWith("#film")) {
+        await expect(page.locator(".lensing-film-choice")).toHaveCount(5);
+        assert.equal(await page.locator("video").evaluate((el) => el.paused && el.muted && !el.autoplay), true);
+      }
+      await audit(page, `studio-${hash.slice(1)}-${width}`);
+      await page.screenshot({ path: path.join(output, `studio-${hash.slice(1).replace("=", "-")}-${width}.png`) });
+      await page.keyboard.press("Escape");
+      await expect(page.locator("#helios-studio")).toHaveCount(0);
+      await expect(link).toBeFocused();
+    }
+  }
+});
+
+test("Cancelling a slow studio import prevents a late scene from replacing the page", async (t) => {
+  const page = await visit(t, { width: 390, hash: "#studios" });
+  let release;
+  const gate = new Promise((resolve) => {
+    release = resolve;
+  });
+  await page.route("**/assets/studio-island-*.js", async (route) => {
+    await gate;
+    await route.continue();
+  });
+  const link = page.locator('.studio-card[href="#signature"]');
+  await link.click();
+  await expect(page.locator("#scene-loader")).toBeVisible();
+  await page.getByRole("button", { name: "Cancel opening", exact: true }).click();
+  await expect(link).toBeFocused();
+  release();
+  await page.waitForLoadState("networkidle");
+  await expect(page.locator("#helios-studio")).toHaveCount(0);
+  await expect(page.locator("dialog[open]")).toHaveCount(0);
+  await link.click();
+  await expect(page.locator("#brand-studio-title")).toBeVisible();
+});
+
+test("Opening the menu freezes the visible request instrument and resume preserves its progress", async (t) => {
+  const page = await visit(t, { motion: "no-preference", hash: "#universe" });
+  await page.locator("#trace-btn").click();
+  await page.locator("#atlas").scrollIntoViewIfNeeded();
+  await expect.poll(() => page.locator("#trace-progress").getAttribute("style")).not.toContain("scaleX(0)");
+  await page.locator("#mc-btn").click();
+  const stopped = await page.locator("#trace-progress").getAttribute("style");
+  await page.waitForTimeout(400);
+  assert.equal(await page.locator("#trace-progress").getAttribute("style"), stopped);
+  await page.keyboard.press("Escape");
+  await expect.poll(() => page.locator("#trace-progress").getAttribute("style")).not.toBe(stopped);
+});
+
+test("Shared Observatory settings reload at the root, and reduced motion reaches each open studio", async (t) => {
+  const hash = "#lensing&v=1&light=eclipse&view=gate&clouds=23&aurora=61&sun=105&gate=1";
+  const page = await visit(t, { width: 390, hash, motion: "no-preference" });
+  const observatory = page.locator(".lens-observatory");
+  await expect(observatory).toHaveAttribute("data-ready", "true", { timeout: 20000 });
+  await expect(observatory).toHaveAttribute("data-light", "eclipse");
+  await expect(observatory).toHaveAttribute("data-view", "gate");
+  await page.getByRole("button", { name: "Share my universe" }).click();
+  const shared = await page.evaluate(() => navigator.clipboard.readText());
+  assert.equal(new URL(shared).pathname, "/");
+  assert.match(new URL(shared).hash, /light=eclipse&view=gate&clouds=23&aurora=61&sun=105/);
+  await page.goto(shared);
+  await page.reload();
+  await expect(observatory).toHaveAttribute("data-view", "gate");
+  await expect(observatory).toHaveAttribute("data-light", "eclipse");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(observatory).toHaveAttribute("data-motion", "off");
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#studios-h")).toBeFocused();
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.locator('.studio-card[href="#signature"]').click();
+  await expect(page.locator(".brand-studio")).toHaveAttribute("data-motion", "on");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(page.locator(".brand-studio")).toHaveAttribute("data-motion", "off");
+});
+
+test("A failed optional studio keeps a clear return and a real reload recovery", async (t) => {
+  const page = await visit(t, { width: 390, hash: "#studios" });
+  await page.route("**/assets/studio-island-*.js", (route) => route.abort());
+  const link = page.locator('.studio-card[href="#signature"]');
+  await link.click();
+  await expect(page.locator("#scene-loader-title")).toHaveText("This scene couldn’t open.");
+  await expect(page.getByRole("button", { name: "Reload scene" })).toBeVisible();
+  await page.getByRole("button", { name: "Back to the site", exact: true }).click();
+  await expect(link).toBeFocused();
+  await expect(page.locator("dialog[open]")).toHaveCount(0);
+  assert.equal(new URL(page.url()).pathname, "/");
+  await page.unroute("**/assets/studio-island-*.js");
+  await page.reload();
+  await link.click();
+  await expect(page.locator("#brand-studio-title")).toBeVisible();
 });

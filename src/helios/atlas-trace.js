@@ -48,6 +48,7 @@ export function createAtlasTrace({ isMotionEnabled, onSchedule }) {
   const $ = (selector) => document.querySelector(selector);
   const atlas = $("#atlas");
   const packet = $("#packet");
+  const progressBar = $("#trace-progress");
   const label = $("#trace-label");
   const nodes = [...atlas.querySelectorAll("[data-node]")];
   const steps = [...document.querySelectorAll("[data-trace-step]")];
@@ -76,6 +77,7 @@ export function createAtlasTrace({ isMotionEnabled, onSchedule }) {
 
   function clear() {
     trace = null;
+    progressBar.style.transform = "scaleX(0)";
     packet.setAttribute("opacity", "0");
     nodes.forEach((node) => node.classList.remove("trace-active"));
     atlas.querySelectorAll(".tracing").forEach((wire) => wire.classList.remove("tracing"));
@@ -85,6 +87,7 @@ export function createAtlasTrace({ isMotionEnabled, onSchedule }) {
   function finish(staticView = false) {
     clear();
     atlas.dataset.complete = "true";
+    progressBar.style.transform = "scaleX(1)";
     label.textContent = staticView
       ? `${request.labels.join(" → ")}. No request was sent.`
       : `Trace complete. ${request.summary} No request was sent.`;
@@ -120,6 +123,7 @@ export function createAtlasTrace({ isMotionEnabled, onSchedule }) {
   function advance(delta) {
     if (!trace) return;
     trace.time += delta;
+    progressBar.style.transform = `scaleX(${Math.min(1, trace.time / 8)})`;
     if (trace.time >= 8) return finish();
     const [start, end, from, to, stage] = request.segments.find((s) => trace.time < s[1]);
     const a = positions[from],
