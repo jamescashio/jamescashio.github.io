@@ -217,19 +217,6 @@ p {
 .text-action:hover {
   color: var(--gold);
 }
-.mc-destination {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-}
-.mc-destination strong {
-  font: 600 16px var(--sans);
-}
-.mc-destination > span {
-  font-size: 13px;
-  line-height: 1.45;
-  color: var(--ink2);
-}
 section[data-ambient="off"] *,
 section[data-ambient="off"] *:before,
 section[data-ambient="off"] *:after,
@@ -657,29 +644,6 @@ section[data-ambient="off"] *:after,
 #ev-chart {
   min-width: 430px;
 }
-#mc::backdrop {
-  background: rgba(2, 5, 12, 0.84);
-  backdrop-filter: blur(9px);
-}
-#mc-search {
-  font-size: 16px !important;
-}
-#mc-list {
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)) !important;
-}
-#mc-list a {
-  min-width: 0;
-}
-#mc-list a > span {
-  min-width: 0;
-}
-#mc-list a strong {
-  overflow-wrap: break-word;
-}
-#mc-title {
-  line-height: 1.1;
-  overflow-wrap: break-word;
-}
 .bitbtn,
 .bitbtn.pop {
   animation: none;
@@ -1016,15 +980,6 @@ section[data-ambient="off"] *:after,
   #starship div[style*="minmax(240px"],
   #work div[style*="minmax(220px"] {
     grid-template-columns: minmax(0, 1fr) !important;
-  }
-  #mc > div {
-    padding: 24px 20px !important;
-  }
-  #mc-title {
-    font-size: 25px !important;
-  }
-  #mc-list .tile {
-    padding: 14px 12px;
   }
   .vh-menu {
     min-width: min(280px, 80vw);

@@ -1,6 +1,6 @@
 {
-  "experienceVersion": "38.6.0",
-  "releaseId": "helios-38.6.0-20260920",
+  "experienceVersion": "38.7.0",
+  "releaseId": "helios-38.7.0-20260920",
   "releaseName": "THE HUMAN RECKONING",
   "visualEdition": "Helios",
   "entry": "/",
@@ -9,7 +9,7 @@
   "releaseDate": "2026-09-20",
   "compatibilityExperienceVersion": "37.17.0",
   "compatibilityEntry": "/odyssey.html",
-  "rollbackCommit": "8175beb8cfbfc7fac5c25626787907f56e06a3c7",
+  "rollbackCommit": "9548a14697384c4b5a6148988c7b1dca50d22ce4",
   "evidenceSnapshot": {
     "url": "/v38/status.json",
     "fleetObserved": "2026-09-18",

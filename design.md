@@ -1,3 +1,11 @@
+# V38.7 final navigation polish — 09-20-2026
+
+Keep the original orbital workshop, artwork, typography, quiet opening and visitor-paced scenes. Make Mission Control feel like an integrated instrument: a calm fixed heading, readable search, honest result count and a destination list that scrolls independently. Close and search must remain within reach on a 320px short phone. Use existing navy, gold and cyan, with restrained hover and focus feedback.
+
+Search words in any order, provide a clear control and useful empty state, and expose the existing Starship build story directly. The compact motion control must distinguish running, manually paused and device-reduced states. Preserve its actual preference behavior and all archive/resource paths. No new dependency, font, artwork or infrastructure claim.
+
+Test keyboard scrolling and focus restoration, search recovery, short phone layouts, accessible controls, motion state changes and the established browser/release gates. The owner explicitly requested this finishing pass and public release. Rollback baseline: 9548a14697384c4b5a6148988c7b1dca50d22ce4.
+
 # V38.6 a world at your pace — 09-20-2026
 
 A cinematic orbital workshop with a composed first frame, a clear invitation, and motion that answers the visitor. Preserve the original art, navy/gold/cyan palette and Unbounded / Instrument Sans / JetBrains Mono system. Keep the orbital image dominant; a single short lighting accent settles into a still composition. Pointer movement must not replace the artwork with a continuous particle scene. The explicit orbit action can play a finite effect confined to the artwork, then return to rest.

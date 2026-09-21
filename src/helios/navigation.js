@@ -19,6 +19,8 @@ export function setupNavigation({ studies, select, mission, motion }) {
   const dialog = document.querySelector("#mc");
   const search = document.querySelector("#mc-search");
   const list = document.querySelector("#mc-list");
+  const results = document.querySelector("#mc-results");
+  const clear = document.querySelector("#mc-clear");
   const loader = document.querySelector("#scene-loader");
   document.querySelector("#mc-btn .mono").textContent = /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘K" : "Ctrl K";
   let previousFocus = null,
@@ -37,6 +39,7 @@ export function setupNavigation({ studies, select, mission, motion }) {
     ["Try one decision", "Predict the route. Test the privacy boundary.", "#work"],
     ["The system atlas", "Owned compute, orchestration, human authority.", "#universe"],
     ["Compare architectures", "Change a mission. Inspect all twelve requests.", "#starship"],
+    ["Starship build story", "The question, the design, and the shared rule behind the ship.", "#build-story"],
     ["Principles Engine", "Turn the rings. Explore the operating philosophy.", "#principles"],
     ["The Studios", "Enter the original worlds, signature and film collection.", "#studios"],
     ["Lensing Observatory", "Sculpt the light. Find your own perspective.", "#lensing"],
@@ -51,7 +54,13 @@ export function setupNavigation({ studies, select, mission, motion }) {
   ];
   function render(query = "") {
     list.replaceChildren();
-    const matches = destinations.filter(([name, body]) => `${name} ${body}`.toLowerCase().includes(query));
+    const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    const matches = destinations.filter(([name, body]) =>
+      terms.every((term) => `${name} ${body}`.toLowerCase().includes(term)),
+    );
+    clear.hidden = search.value.length === 0;
+    results.textContent = `${matches.length} ${matches.length === 1 ? "destination" : "destinations"}${terms.length ? " found" : " to explore"}`;
+    list.scrollTop = 0;
     for (const [name, body, href] of matches) {
       const a = document.createElement("a");
       a.className = "tile mc-destination";
@@ -65,8 +74,9 @@ export function setupNavigation({ studies, select, mission, motion }) {
     }
     if (!matches.length) {
       const empty = document.createElement("p");
-      empty.setAttribute("role", "status");
-      empty.textContent = "No destination found. Try ‘flight’, ‘signature’ or ‘Graphify’.";
+      empty.className = "mc-empty";
+      empty.textContent =
+        "No match yet. Try ‘flight’, ‘signature’ or ‘Graphify’, or clear the search to see every destination.";
       list.append(empty);
     }
   }
@@ -75,8 +85,8 @@ export function setupNavigation({ studies, select, mission, motion }) {
     if (dialog.open || loader.open || scene || pending) return;
     previousFocus = document.activeElement;
     navigating = false;
-    render();
     search.value = "";
+    render();
     dialog.showModal();
     notify();
     search.focus();
@@ -88,6 +98,11 @@ export function setupNavigation({ studies, select, mission, motion }) {
   document.querySelector("#mc-btn").addEventListener("click", open);
   document.querySelector("#mc-close").addEventListener("click", () => dialog.close());
   search.addEventListener("input", () => render(search.value.trim().toLowerCase()));
+  clear.addEventListener("click", () => {
+    search.value = "";
+    render();
+    search.focus();
+  });
   dialog.addEventListener("keydown", (event) => {
     const links = [...list.querySelectorAll("a")];
     if (!links.length) return;
