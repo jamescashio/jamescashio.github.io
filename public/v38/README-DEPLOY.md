@@ -1,12 +1,12 @@
-# cAshIo V38.4 Helios — approved release
+# cAshIo V38.8 Helios — approved release
 
-Prepared 09-20-2026 against GitHub main at `0e284480f68cc78721ea3e1a90719fb7bacc0075`.
+Prepared 09-21-2026 against GitHub main at `d34d058090b0bff48b1765885accb7223599b677`.
 
 ## Build and preview
 
-V38 now has a maintained Vite entry at `v38/index.html`. Its styles and behavior live in `src/helios/`, with shared teaching models and flight components in `src/odyssey/`. `public/v38/` contains assets, font licenses and the preserved vendor files; it is no longer a standalone website source folder.
+V38 has a maintained Vite entry at `index.html`; `v38/index.html` preserves old bookmarks. Its styles and behavior live in `src/helios/`, with shared teaching models and flight components in `src/odyssey/`. `public/v38/` contains assets, font licenses and the preserved vendor files; it is no longer a standalone website source folder.
 
-Run `npm ci`, then `npm run build`. The build compiles all existing entries, preserves the legacy prerender and creates `dist/v38/index.html`. The Helios post-build step inlines the small first-paint stylesheet. Run `npm run preview:helios` and open `http://127.0.0.1:4388/v38/`.
+Run `npm ci`, then `npm run build`. The build compiles all existing entries, preserves the legacy prerender and creates `dist/index.html`. The Helios post-build step inlines the small first-paint stylesheet. Content-derived URLs for V38 artwork and fonts are recorded in `dist/v38/asset-versions.json`, while original asset paths remain available. Run `npm run preview:helios` and open `http://127.0.0.1:4388/`.
 
 The preview server binds only to this computer, compresses text and sends noindex headers. The approved V38 HTML permits indexing. The loopback server remains a local review tool; production is served by GitHub Pages.
 
@@ -24,6 +24,6 @@ Run `npm run lint`, `npm run format:check`, `npm run test:node`, `npm run test:o
 
 ## Publication and rollback
 
-The owner authorized this release on 09-19-2026. Its indexing/footer markers and release records are prepared for production. Workflow actions retain their selected versions and now use immutable commits; checkout credentials are not persisted, and the privileged tag-release job no longer uses the dependency cache. Run the required checks and publish through the established pull-request and Pages workflow. The plain-root redirect already leads to V38; preserve legacy hash/query entry behavior.
+The owner approved this preview for publication on 09-21-2026. Its indexing/footer markers and release records are prepared for production. Workflow actions retain their selected versions and immutable commits; checkout credentials are not persisted, and the privileged tag-release job does not use the dependency cache. Run the required checks and publish through the established pull-request and Pages workflow. The root serves V38 directly; preserve legacy hash/query entry behavior.
 
 After publication, verify the delivered HTML and asset hashes, mobile/desktop navigation, flight, all studies, keyboard, reduced motion and a fresh public PageSpeed sample. Revert the eventual release commit through the normal checked workflow to roll back. Record the actual merge and Pages deployment before calling the release live.
