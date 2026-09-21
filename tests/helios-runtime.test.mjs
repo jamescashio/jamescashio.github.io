@@ -56,6 +56,73 @@ async function choose(page, id) {
   await expect(page.locator(`#study-${id}`)).toHaveAttribute("aria-selected", "true");
 }
 
+test("Privacy feedback resets with a new prediction and stays complete when motion is interrupted", async (t) => {
+  for (const motion of ["reduce", "no-preference"]) {
+    const page = await visit(t, { width: 320, height: 700, motion, hash: "#work" });
+    await expect(page.locator("#pv-live")).toBeEmpty();
+    await page.locator('[data-pv="keep"]').click();
+    await page.locator("#pv-reveal").click();
+    await expect(page.locator("#pv-text")).toContainText("Privacy takes priority.");
+    await expect(page.locator("#pv-answer")).toHaveText("Human review");
+    await expect(page.locator("#pv-live")).toContainText("Your prediction: Research.");
+    await page.locator('[data-pv="human"]').click();
+    await expect(page.locator("#pv-result")).toBeHidden();
+    await expect(page.locator("#pv-trace")).toBeHidden();
+    await expect(page.locator("#pv-live")).toBeEmpty();
+    await expect(page.locator("#pv-answer")).toHaveText("Your call.");
+    await expect(page.locator('[data-pv="human"]')).toBeFocused();
+    await expect(page.locator('[data-pv="keep"]')).toHaveAttribute("aria-pressed", "false");
+    for (let i = 0; i < 3; i++) await page.locator("#pv-reveal").click();
+    if (motion === "no-preference") await page.locator("#motion-btn").click();
+    await expect(page.locator("#pv-answer")).toHaveText("Human review");
+    await expect(page.locator("#pv-route .pv-command")).toBeVisible();
+    await expect(page.locator("#pv-route .pv-question")).toBeHidden();
+    await expect(page.locator("#pv-live")).toContainText("You called it.");
+    await expect(page.locator("#pv-signal")).toHaveCSS("opacity", "0");
+    await expect(page.locator("#pv-result")).toHaveCSS("opacity", "1");
+    const choices = await page
+      .locator("[data-pv]")
+      .evaluateAll((buttons) => buttons.map((b) => b.getBoundingClientRect().top));
+    assert.ok(Math.abs(choices[0] - choices[1]) < 1, "both predictions share one row on the narrow phone");
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 320);
+    await page.locator("#pv-prompt").scrollIntoViewIfNeeded();
+    await page.screenshot({ path: path.join(output, `privacy-polish-${motion}.png`) });
+    await audit(page, `privacy-polish-${motion}`);
+  }
+});
+
+test("Flight heritage keeps the displayed photograph, lesson and history source in sync", async (t) => {
+  const page = await visit(t, { width: 390, hash: "#heritage" });
+  for (const [pilot, source] of [
+    ["rutan", "airbornescience.nasa.gov"],
+    ["johnson", "www.lockheedmartin.com"],
+    ["hoover", "airandspace.si.edu"],
+    ["yeager", "www.nasa.gov"],
+  ]) {
+    await page.locator(`#pilots [data-pilot="${pilot}"]`).click();
+    await expect(page.locator(`#hangar img[data-pilot="${pilot}"]`)).toHaveClass(/\bon\b/);
+    assert.equal(new URL(await page.locator("#hg-source").getAttribute("href")).hostname, source);
+    assert.ok((await page.locator("#hg-body").textContent()).length > 80);
+    await expect(page.locator("#hg-source")).toBeVisible();
+  }
+  await page.locator("#hg-card").screenshot({ path: path.join(output, "heritage-polish.png") });
+});
+
+test("Repeated signature ignition stays bounded and motion-off keeps a complete still response", async (t) => {
+  const page = await visit(t, { width: 390, motion: "no-preference", hash: "#operator" });
+  await expect(page.locator("#sigplate .sig-ring")).toHaveCSS("animation-name", "none");
+  for (let i = 0; i < 3; i++) {
+    await page.locator("#sig-btn").click();
+    await expect(page.locator("#sigburst i")).toHaveCount(16);
+  }
+  await page.locator("#motion-btn").click();
+  await page.locator("#sig-btn").click();
+  await expect(page.locator("#sigburst i")).toHaveCount(0);
+  await expect(page.locator("#sig-state")).toHaveText("ENERGIZED · GOLD INTENT");
+  await expect(page.locator("#sig-art")).toHaveCSS("animation-name", "none");
+  await expect(page.locator("#sig-state")).toHaveText("DORMANT · GOLD INTENT", { timeout: 6000 });
+});
+
 test("The compact study deck keeps readable tabs, keyboard selection and nearby controls on small screens", async (t) => {
   for (const width of [320, 390, 768]) {
     const page = await visit(t, { width, height: 844 });
@@ -396,7 +463,7 @@ test("The invitation and three starting routes work by keyboard, keep sound opt-
     await expect(page.locator("#hero-primary")).toBeFocused();
     await page.locator(".hero-next").click();
     await expect(page.locator("#workshop-title")).toBeFocused();
-    await expect(page.locator(".workshop-link")).toHaveAttribute(
+    await expect(page.locator(".workshop-note .workshop-link")).toHaveAttribute(
       "href",
       "https://github.com/jamescashio/jamescashio.github.io/pull/135",
     );

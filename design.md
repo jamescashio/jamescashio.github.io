@@ -1,4 +1,12 @@
-# V38.8 guided invitation — 09-21-2026
+# V38.9 a decision you can see — 09-21-2026
+
+Polish the existing orbital workshop in two passes. First, turn the privacy comparison into a small authored instrument: a cyan research path beside a gold decision boundary, with one finite signal when the visitor reveals the result. Keep the complete explanation visible without motion. Reset stale feedback when a prediction changes, announce the result politely, and let the same decision continue into the atlas.
+
+Make the flight heritage more personal and precise: separate source-linked aviation history from the lesson Doug brings to his workshop. Refine the signature into a bounded orbital response, with clean interruption and a complete still state. Preserve all original artwork, typography, navy/gold/cyan colors, routing rules, evidence dates, opt-in audio and quiet controls.
+
+The second pass follows desktop and phone inspection: refine the diagrams, reading rhythm, focus, touch spacing and interrupted animation states. Consolidate superseded styles and keep the existing asset budgets. Validate the complete production build before the explicitly authorized public release. Rollback: fec321c1f80303e99006658fef041fc1979378b4.
+
+# Prior release — V38.8 guided invitation — 09-21-2026
 
 Keep the original cinematic orbital world and make its strongest experiences easier to discover. Board the starship is the primary invitation, with Try the privacy test alongside it and a real engineering story immediately below. Mission Control offers Explore, Try and Understand before its complete searchable directory. Reframe the same artwork for narrow phones and keep both actions readable and reachable.
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## V38.9 — A decision you can see
+
+- Illustrate the public research route and private decision boundary with authored vectors and a finite, interruptible signal. Keep a complete still explanation.
+- Reset stale prediction feedback, announce new results, shorten phone copy and keep both prediction choices on one row at 320 pixels.
+- Refine aviation lessons in the first person and link the selected aircraft to its historical source.
+- Give the signature a bounded orbital response, clean up interrupted animations and retire superseded style declarations while retaining the existing stylesheet budget.
+- Preserve original artwork, typography, studios, quiet startup, routing rules, evidence dates and compatibility entries. Verify both polish passes before the owner-authorized public release.
+
 ## V38.8 — A guided invitation
 
 - Make Board the starship the primary invitation, retain the privacy test beside it, and bring the documented engineering story immediately after the opening.

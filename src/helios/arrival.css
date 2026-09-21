@@ -62,6 +62,7 @@
 }
 .hero canvas.gl,
 .hero.scene-ready canvas.gl {
+  position: absolute;
   inset: 0 0 0 auto;
   width: 58%;
   opacity: 0;

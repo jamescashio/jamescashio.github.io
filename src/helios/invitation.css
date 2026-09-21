@@ -1,4 +1,35 @@
 /* A clearer invitation inside the original Helios world. */
+.privacy-pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+.privacy-route {
+  padding: 20px;
+  border-color: #38e1ff4d;
+  --stack-gap: 8px;
+}
+.privacy-route .syne {
+  font-size: clamp(22px, 2vw, 28px);
+  font-weight: 600;
+  line-height: 1.35;
+}
+.privacy-diagram {
+  width: 100%;
+  height: 64px;
+  color: var(--cyan);
+  margin: 4px 0;
+}
+#pv-route {
+  border-color: #f2c87a66;
+}
+#pv-route .privacy-diagram {
+  color: var(--gold);
+}
+#pv-route[data-revealed="false"] .pv-command,
+#pv-route[data-revealed="true"] .pv-question {
+  display: none;
+}
 .hero-next {
   position: absolute;
   left: calc(var(--gutter) + 120px);

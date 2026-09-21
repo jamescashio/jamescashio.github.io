@@ -9,7 +9,6 @@
   padding: 20px;
   border-bottom: 1px solid var(--line);
   color: var(--muted);
-  font-size: 10px;
 }
 .atlas-caption-tag {
   color: var(--cyan);
@@ -132,20 +131,6 @@ p {
 }
 .nav .acts {
   flex-shrink: 0;
-}
-.hero canvas.gl {
-  position: absolute;
-  opacity: 0;
-  transition: opacity 1.2s;
-}
-.hero.scene-ready canvas.gl {
-  opacity: 1;
-}
-.hero .fallback {
-  transition: opacity 1.2s;
-}
-.hero.scene-ready .fallback {
-  opacity: 0.12;
 }
 .hero .content {
   z-index: 2;
@@ -661,7 +646,6 @@ section[data-ambient="off"] *:after,
   position: relative;
 }
 .sections a:after {
-  content: "";
   position: absolute;
   inset: -7px;
 }
