@@ -1,5 +1,12 @@
 # Changelog
 
+## V38.7 — A clearer way through the workshop
+
+- Keep Mission Control search and Close visible as destinations scroll, including on narrow phones. Refine spacing, search affordances and focus feedback with the existing visual identity.
+- Match search words in any order, announce the result count, provide a clear-search action and add the Starship build story as a destination.
+- Give enabled, manually paused and device-reduced motion distinct icons so the compact phone control accurately reflects its state.
+- Verify keyboard scrolling, search recovery, heading focus, short-screen layouts, motion preferences and existing scenes before the authorized public release.
+
 ## V38.6 — An opening at your pace
 
 - Keep the original orbital artwork visible. Let the opening light settle, and reserve the finite particle animation for an explicit request.

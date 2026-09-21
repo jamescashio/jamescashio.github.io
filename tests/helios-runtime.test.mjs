@@ -306,6 +306,53 @@ test("House Cashio signature loads, energizes, falls back to its original artwor
   assert.equal(await page.locator("#sig-art").evaluate((image) => image.naturalWidth), 1680);
 });
 
+test("Mission Control keeps search and Close in reach, recovers from empty results and finds the build story", async (t) => {
+  for (const width of [1440, 390, 320]) {
+    const page = await visit(t, { width, height: width === 320 ? 568 : 844 });
+    await page.locator("#mc-btn").click();
+    await expect(page.locator("#mc-search")).toBeFocused();
+    await expect(page.locator("#mc-results")).toHaveText("23 destinations to explore");
+    await expect(page.locator("#mc-clear")).toBeHidden();
+    const searchBefore = await page.locator("#mc-search").boundingBox();
+    const closeBefore = await page.locator("#mc-close").boundingBox();
+    await page.screenshot({ path: path.join(output, `mission-control-${width}.png`) });
+    await page.keyboard.press("ArrowUp");
+    await expect(page.locator("#mc-list a").last()).toBeFocused();
+    await expect(page.locator("#mc-list a").last()).toBeInViewport();
+    assert.ok(await page.locator("#mc-list").evaluate((list) => list.scrollTop > 0));
+    for (const [selector, before] of [
+      ["#mc-search", searchBefore],
+      ["#mc-close", closeBefore],
+    ]) {
+      await expect(page.locator(selector)).toBeInViewport();
+      const after = await page.locator(selector).boundingBox();
+      assert.ok(Math.abs(after.y - before.y) < 1, `${selector} stays stationary when destinations scroll`);
+    }
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+    await audit(page, `mission-control-${width}`);
+    await page.locator("#mc-search").fill("no-such-destination");
+    await expect(page.locator("#mc-results")).toHaveText("0 destinations found");
+    await expect(page.locator(".mc-empty")).toContainText("clear the search");
+    const clear = await page.locator("#mc-clear").boundingBox();
+    assert.ok(clear.width >= 44 && clear.height >= 44, "clear search has a touch-sized target");
+    await page.locator("#mc-clear").focus();
+    await page.keyboard.press("Enter");
+    await expect(page.locator("#mc-search")).toBeFocused();
+    await expect(page.locator("#mc-results")).toHaveText("23 destinations to explore");
+    for (const query of ["build ship", "ship build"]) {
+      await page.locator("#mc-search").fill(query);
+      await expect(page.locator("#mc-results")).toHaveText("1 destination found");
+      await expect(page.locator("#mc-list strong")).toHaveText("Starship build story");
+    }
+    await page.keyboard.press("Enter");
+    await expect(page.locator("#build-proof-title")).toBeFocused();
+    assert.equal(new URL(page.url()).hash, "#build-story");
+    await page.locator("#mc-btn").click();
+    await page.keyboard.press("Escape");
+    await expect(page.locator("#mc-btn")).toBeFocused();
+  }
+});
+
 test("Mission Control follows nested text and keyboard selection to the exact study", async (t) => {
   const page = await visit(t);
   await page.keyboard.press("Control+k");
@@ -686,16 +733,24 @@ test("The composed opening keeps its artwork, visible first action and a finite 
 });
 
 test("Manual quiet mode survives reload and device changes, while blocked storage leaves controls usable", async (t) => {
-  const page = await visit(t, { motion: "no-preference" });
+  const page = await visit(t, { width: 390, motion: "no-preference" });
+  await expect(page.locator(".motion-pause")).toBeVisible();
+  await expect(page.locator(".motion-resume")).toBeHidden();
   await page.locator("#motion-btn").click();
   await page.reload();
   await expect(page.locator("#motion-btn")).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator(".motion-resume")).toBeVisible();
+  await expect(page.locator(".motion-pause")).toBeHidden();
   await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(page.locator(".motion-device")).toBeVisible();
+  await expect(page.locator(".motion-resume")).toBeHidden();
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await expect(page.locator("#motion-btn")).toHaveAttribute("aria-pressed", "false");
   await page.locator("#motion-btn").click();
   await page.reload();
   await expect(page.locator("#motion-btn")).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".motion-pause")).toBeVisible();
+  await expect(page.locator(".motion-device")).toBeHidden();
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(page.locator("#motion-btn")).toHaveAttribute("aria-pressed", "false");
   await page.emulateMedia({ reducedMotion: "no-preference" });

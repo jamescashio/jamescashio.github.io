@@ -23,6 +23,7 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
     enabled = preference !== "off" && !query.matches;
     document.documentElement.classList.toggle("motion-off", !enabled);
     button.setAttribute("aria-pressed", String(enabled));
+    button.dataset.motionSource = query.matches ? "device" : "visitor";
     button.setAttribute(
       "aria-label",
       enabled

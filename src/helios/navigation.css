@@ -1,0 +1,180 @@
+/* Keep navigation controls in view while the destination list scrolls. */
+#mc {
+  width: min(94vw, 880px);
+  max-height: min(calc(100dvh - 32px), 760px);
+  padding: 0;
+  color: var(--ink);
+  border: 1px solid rgba(56, 225, 255, 0.3);
+  border-radius: 22px;
+  background: linear-gradient(160deg, #142237, #0a1220 68%);
+  overflow: hidden;
+}
+#mc::backdrop {
+  background: rgba(2, 5, 12, 0.84);
+  backdrop-filter: blur(9px);
+}
+.mc-shell {
+  display: flex;
+  flex-direction: column;
+  max-height: inherit;
+  padding: 24px;
+  gap: 14px;
+}
+.mc-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  flex-shrink: 0;
+}
+.mc-heading .kick {
+  color: var(--gold);
+  font-size: 11px;
+}
+#mc-title {
+  font-size: clamp(25px, 3vw, 32px);
+  line-height: 1.15;
+  margin: 8px 0;
+  overflow-wrap: break-word;
+}
+.mc-heading p {
+  color: var(--ink2);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+#mc-close {
+  flex-shrink: 0;
+}
+.mc-search {
+  position: relative;
+  flex-shrink: 0;
+}
+.mc-search > svg {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 18px;
+  height: 18px;
+  color: var(--cyan);
+  pointer-events: none;
+}
+#mc-search {
+  width: 100%;
+  height: 50px;
+  border: 1px solid rgba(56, 225, 255, 0.3);
+  border-radius: 10px;
+  background: var(--void);
+  color: var(--ink);
+  padding: 0 50px 0 44px;
+  font: 16px var(--sans);
+}
+#mc-search::-webkit-search-cancel-button {
+  appearance: none;
+}
+#mc-search::placeholder {
+  color: var(--muted);
+}
+#mc-clear {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink2);
+  font: 24px var(--sans);
+  cursor: pointer;
+}
+#mc-clear:hover {
+  color: var(--gold);
+  background: #f2c87a14;
+}
+#mc-results {
+  flex-shrink: 0;
+  margin: 0;
+  color: var(--muted);
+  font: 12px var(--mono);
+}
+#mc-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  gap: 8px;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  padding: 4px 6px 4px 4px;
+  margin: -4px;
+}
+#mc-list .mc-destination {
+  position: relative;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+  padding: 16px 36px 16px 16px;
+  border-radius: 12px;
+}
+.mc-destination::after {
+  content: "↗";
+  position: absolute;
+  top: 16px;
+  right: 14px;
+  color: var(--gold);
+}
+.mc-destination strong {
+  font: 600 16px var(--sans);
+  overflow-wrap: break-word;
+}
+.mc-destination > span {
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink2);
+}
+.mc-empty {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 20px 16px;
+  border-left: 2px solid var(--gold);
+  color: var(--ink2);
+}
+.mc-keymap {
+  display: flex;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  gap: 6px 18px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line2);
+  color: var(--muted);
+  font: 11px var(--mono);
+}
+.motion-resume,
+.motion-device,
+#motion-btn[aria-pressed="false"] .motion-pause {
+  display: none;
+}
+#motion-btn[aria-pressed="false"] .motion-resume {
+  display: block;
+}
+#motion-btn[data-motion-source="device"] .motion-resume {
+  display: none;
+}
+#motion-btn[data-motion-source="device"] .motion-device {
+  display: block;
+}
+@media (max-width: 600px) {
+  .mc-shell {
+    padding: 18px 14px;
+    gap: 12px;
+  }
+  #mc-close {
+    padding-inline: 12px;
+  }
+  #mc-list .mc-destination {
+    padding-block: 14px;
+  }
+}

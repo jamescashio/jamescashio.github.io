@@ -105,8 +105,15 @@
           </button>
           <button class="btn line sm" id="motion-btn" type="button" aria-label="Motion" aria-pressed="true">
             <svg class="ic-svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <rect x="5" y="4" width="4" height="16" />
-              <rect x="15" y="4" width="4" height="16" /></svg
+              <g class="motion-pause">
+                <rect x="5" y="4" width="4" height="16" />
+                <rect x="15" y="4" width="4" height="16" />
+              </g>
+              <path class="motion-resume" d="M7 4v16l13-8z" />
+              <g class="motion-device" fill="none" stroke="currentColor" stroke-width="1.7">
+                <circle cx="12" cy="12" r="8.5" />
+                <path d="M6 18 18 6" />
+              </g></svg
             ><span class="hide-m">Motion on</span>
           </button>
           <a class="btn gold sm nav-contact" href="#contact">Let’s talk</a>
@@ -2263,7 +2270,7 @@
           >The Human Reckoning. Inspired by the Butlerian Jihad in Frank Herbert’s <em>Dune</em>. Powerful tools. Human
           judgment in command.</span
         ><span class="mono" style="color: var(--gold)"
-          >A HUMAN IN COMMAND · V38.6 / HELIOS · Directed by Doug Cashio · 09-20-2026</span
+          >A HUMAN IN COMMAND · V38.7 / HELIOS · Directed by Doug Cashio · 09-20-2026</span
         >
       </div>
       <nav aria-label="Footer">
@@ -2293,55 +2300,34 @@
       <button class="btn line" id="scene-reload" type="button" hidden>Reload scene</button>
     </dialog>
     <!-- ================= MISSION CONTROL ================= -->
-    <dialog
-      id="mc"
-      aria-labelledby="mc-title"
-      style="
-        border: 1px solid rgba(56, 225, 255, 0.3);
-        border-radius: 22px;
-        background: linear-gradient(180deg, #152239, #0a1220);
-        color: var(--ink);
-        padding: 0;
-        width: min(92vw, 880px);
-        max-height: 86vh;
-        box-shadow: 0 60px 160px rgba(0, 0, 0, 0.7);
-      "
-    >
-      <div class="stack" style="padding: 24px 28px; max-height: 86vh; overflow: auto; --stack-gap: 14px">
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px">
-          <span class="mono" style="color: var(--gold)">CASHIO / V38 · THE HUMAN RECKONING</span
-          ><button class="btn line sm" type="button" id="mc-close">Close ×</button>
+    <dialog id="mc" aria-labelledby="mc-title">
+      <div class="mc-shell">
+        <div class="mc-heading">
+          <div>
+            <span class="kick">CASHIO / EXPLORE</span>
+            <h2 id="mc-title">Mission Control<span class="em">.</span></h2>
+            <p>Choose a starting point, or search the workshop.</p>
+          </div>
+          <button class="btn line sm" type="button" id="mc-close">Close ×</button>
         </div>
-        <div>
-          <span class="kick">CHOOSE YOUR TRAJECTORY</span>
-          <h2 id="mc-title" style="margin-top: 6px; font-size: 32px">Mission Control<span class="em">.</span></h2>
-          <span class="muted">Choose a starting point, or search the universe.</span>
+        <label class="sr" for="mc-search">Search destinations and studies</label>
+        <div class="mc-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+            <circle cx="10.5" cy="10.5" r="6.5" />
+            <path d="m16 16 5 5" />
+          </svg>
+          <input
+            id="mc-search"
+            type="search"
+            placeholder="Find your way"
+            autocomplete="off"
+            aria-describedby="mc-results"
+          />
+          <button id="mc-clear" type="button" aria-label="Clear search" hidden>×</button>
         </div>
-        <label class="sr" for="mc-search">Search destinations and studies</label
-        ><input
-          id="mc-search"
-          type="search"
-          placeholder="Search destinations and studies"
-          style="
-            height: 48px;
-            border-radius: 12px;
-            border: 1px solid rgba(56, 225, 255, 0.25);
-            background: var(--void);
-            color: var(--ink);
-            padding: 0 16px;
-            font-family: var(--sans);
-            font-size: 15px;
-          "
-        />
-        <div
-          id="mc-list"
-          style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px"
-        ></div>
-        <div style="display: flex; gap: 20px; padding-top: 10px; border-top: 1px solid var(--line2)">
-          <span class="mono" style="color: var(--muted)">↑ ↓ navigate</span
-          ><span class="mono" style="color: var(--muted)">↵ enter</span
-          ><span class="mono" style="color: var(--muted)">esc close</span>
-        </div>
+        <p id="mc-results" role="status" aria-live="polite" aria-atomic="true"></p>
+        <div id="mc-list" role="region" aria-label="Destinations"></div>
+        <div class="mc-keymap"><span>↑ ↓ navigate</span><span>↵ enter</span><span>esc close</span></div>
       </div>
     </dialog>
     <aside class="bitdock" id="bitdock" aria-label="Bit, your co-pilot">
