@@ -1175,9 +1175,9 @@ footer,
 .sig .sig-ring {
   position: absolute;
   left: 50%;
-  top: 44%;
-  width: 120%;
-  aspect-ratio: 2.4;
+  top: 48%;
+  width: 88%;
+  aspect-ratio: 2.5;
   transform: translate(-50%, -50%) rotate(-6deg);
   border-radius: 50%;
   border: 1px solid rgba(56, 225, 255, 0.22);
