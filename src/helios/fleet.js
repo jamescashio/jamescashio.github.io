@@ -13,7 +13,7 @@ export const FLEET = {
   pve: "9.2.20",
   quorate: true,
   routing: "Not verified",
-  pageRevised: "September 20, 2026",
+  pageRevised: "September 21, 2026",
   kernel: { booted: "7.0.14-14-pve", staged: "7.0.14-17-pve" },
   backups: { guestsOk: 20, guestsTotal: 20, freshnessLong: "September 18, 2026", restoreTested: false },
   atlas: { tag: "qwen3.8:27b-atlas", context: 16384 },

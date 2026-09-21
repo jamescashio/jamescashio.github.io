@@ -115,7 +115,7 @@ test("The first-minute path, chapter labels and principles lead to their working
   await expect(page.locator("#work-h")).toBeFocused();
   await page.locator('.minute a[href="#build-story"]').click();
   await expect(page.locator("#build-proof-title")).toBeFocused();
-  await page.locator('.minute a[href="#evidence"]').click();
+  await page.locator('.sections a[href="#evidence"]').click();
   await expect(page.locator("#ev-h")).toBeFocused();
   await expect
     .poll(() => page.locator("#evidence").evaluate((element) => Math.abs(element.getBoundingClientRect().top - 100)))
@@ -297,7 +297,7 @@ test("House Cashio signature loads, energizes, falls back to its original artwor
   await expect(page.getByRole("button", { name: "Close celestial signature" })).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page.locator("#brand-studio-title")).toHaveCount(0);
-  await page.route("**/v38/assets/celestial.webp", (route) => route.abort());
+  await page.route(/\/v38\/(?:assets\/celestial|immutable\/celestial-[a-f0-9]+)\.webp$/, (route) => route.abort());
   await page.goto(url + "#operator");
   await page.reload();
   await page.locator("#sigplate").scrollIntoViewIfNeeded();
@@ -319,7 +319,7 @@ test("Mission Control keeps search and Close in reach, recovers from empty resul
     await page.keyboard.press("ArrowUp");
     await expect(page.locator("#mc-list a").last()).toBeFocused();
     await expect(page.locator("#mc-list a").last()).toBeInViewport();
-    assert.ok(await page.locator("#mc-list").evaluate((list) => list.scrollTop > 0));
+    assert.ok(await page.locator(".mc-content").evaluate((list) => list.scrollTop > 0));
     for (const [selector, before] of [
       ["#mc-search", searchBefore],
       ["#mc-close", closeBefore],
@@ -372,6 +372,53 @@ test("Mission Control follows nested text and keyboard selection to the exact st
   await expect(page.locator("#study-graphify")).toBeFocused();
   await page.keyboard.press("Home");
   await expect(page.locator("#study-hermes")).toBeFocused();
+});
+
+test("The invitation and three starting routes work by keyboard, keep sound opt-in and restore focus", async (t) => {
+  for (const width of [1440, 390, 320]) {
+    const page = await visit(t, { width, height: width === 320 ? 740 : 1000 });
+    await expect(page.locator("#hero-primary")).toBeInViewport();
+    assert.equal(
+      await page.evaluate(() =>
+        performance.getEntriesByType("resource").some((resource) => /three\.module-/.test(resource.name)),
+      ),
+      false,
+      "the optional 3D engine stays unloaded until requested",
+    );
+    await page.locator("#hero-primary").focus();
+    await page.keyboard.press("Enter");
+    await expect(page.locator(".first-flight")).toHaveAttribute("data-playback", "manual");
+    assert.equal(
+      await page.evaluate(() => [...document.querySelectorAll("audio,video")].every((media) => media.paused)),
+      true,
+    );
+    await page.keyboard.press("Escape");
+    await expect(page.locator("#hero-primary")).toBeFocused();
+    await page.locator(".hero-next").click();
+    await expect(page.locator("#workshop-title")).toBeFocused();
+    await expect(page.locator(".workshop-link")).toHaveAttribute(
+      "href",
+      "https://github.com/jamescashio/jamescashio.github.io/pull/135",
+    );
+    await page.locator("#mc-btn").click();
+    await expect(page.locator("#mc-start a")).toHaveCount(3);
+    await page.keyboard.press("ArrowDown");
+    await expect(page.locator('#mc-start a[href="#flight=board"]')).toBeFocused();
+    await page.keyboard.press("ArrowDown");
+    await page.keyboard.press("Enter");
+    await expect(page.locator("#work-h")).toBeFocused();
+    await page.locator("#mc-btn").click();
+    await page.locator("#mc-search").fill("Graphify");
+    await expect(page.locator("#mc-start")).toBeHidden();
+    await page.locator("#mc-clear").click();
+    await expect(page.locator("#mc-start")).toBeVisible();
+    await page.keyboard.press("ArrowDown");
+    await page.keyboard.press("ArrowDown");
+    await page.keyboard.press("ArrowDown");
+    await page.keyboard.press("Enter");
+    await expect(page.locator("#build-proof-title")).toBeFocused();
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+  }
 });
 
 test("The full page, atlas, principles, evidence console, hangar and contact stay usable", async (t) => {
@@ -766,7 +813,7 @@ test("Manual quiet mode survives reload and device changes, while blocked storag
   await page.reload();
   await page.locator("#motion-btn").click();
   await expect(page.locator("#motion-btn")).toHaveAttribute("aria-pressed", "false");
-  await page.locator("#hero-primary").click();
+  await page.locator(".hero-secondary").click();
   await expect(page.locator("#work-h")).toBeFocused();
 });
 

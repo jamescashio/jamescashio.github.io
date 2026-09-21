@@ -6,6 +6,7 @@ import { gzipSync } from "node:zlib";
 // Loopback only. This is an unpublished review surface, not a deployment service.
 const root = path.resolve(process.argv[2] || "dist");
 const port = Number(process.argv[3] || 4388);
+const review = process.argv.includes("--review");
 const mime = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
@@ -42,6 +43,17 @@ http
       let data = cache.get(key);
       if (!data) {
         data = await fs.readFile(target);
+        if (review && target === path.join(root, "index.html")) {
+          data = Buffer.from(
+            data
+              .toString("utf8")
+              .replace('content="index, follow"', 'content="noindex, nofollow"')
+              .replace(
+                "<body>",
+                `<body><aside aria-label="Preview status" style="position:fixed;bottom:8px;left:50%;transform:translateX(-50%);z-index:1000;max-width:95vw;padding:6px 12px;border:1px solid #e9b65c66;border-radius:20px;background:#080f1bf2;color:#e9b65c;font:11px/1.4 system-ui;white-space:nowrap;pointer-events:none">UNPUBLISHED PREVIEW · FOR DOUG’S REVIEW</aside>`,
+              ),
+          );
+        }
         if (compressed) data = gzipSync(data);
         cache.set(key, data);
       }
@@ -58,4 +70,4 @@ http
       response.writeHead(404, { "Content-Type": "text/plain" }).end("Not found");
     }
   })
-  .listen(port, "127.0.0.1", () => process.stdout.write(`Unpublished Helios preview: http://127.0.0.1:${port}/v38/\n`));
+  .listen(port, "127.0.0.1", () => process.stdout.write(`Unpublished Helios preview: http://127.0.0.1:${port}/\n`));

@@ -103,11 +103,9 @@
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
   gap: 8px;
   min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
-  padding: 4px 6px 4px 4px;
-  margin: -4px;
+  overflow: visible;
+  padding: 0;
+  margin: 0;
 }
 #mc-list .mc-destination {
   position: relative;

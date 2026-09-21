@@ -1,5 +1,13 @@
 # Changelog
 
+## V38.8 — A guided invitation
+
+- Make Board the starship the primary invitation, retain the privacy test beside it, and bring the documented engineering story immediately after the opening.
+- Offer Explore, Try and Understand starting routes in Mission Control while preserving its complete searchable directory, keyboard navigation and fixed search/Close controls.
+- Reframe the original orbital artwork for phones and bring both opening actions and the next section into reach.
+- Separate studies, privacy, atlas and evidence-console behavior into focused modules; version existing artwork and fonts with byte-preserving content-derived URLs.
+- Preserve the palette, typography, original studios, quiet startup, motion controls, bounded models, dated evidence and V37.17 compatibility experience. Align the interface date and publication records for 09-21-2026.
+
 ## V38.7 — A clearer way through the workshop
 
 - Keep Mission Control search and Close visible as destinations scroll, including on narrow phones. Refine spacing, search affordances and focus feedback with the existing visual identity.

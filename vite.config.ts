@@ -2,9 +2,13 @@ import path from "node:path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import { heliosAssetDelivery } from "./scripts/helios-assets.mjs";
+
+const assetDelivery = heliosAssetDelivery();
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), assetDelivery.plugin],
+  experimental: { renderBuiltUrl: assetDelivery.renderBuiltUrl },
   resolve: {
     alias: { "@": path.resolve(__dirname, "src") },
   },

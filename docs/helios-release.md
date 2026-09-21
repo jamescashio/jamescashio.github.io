@@ -1,4 +1,12 @@
-# V38.7 Helios release
+# V38.8 Helios release
+
+The guided invitation makes the existing starship the primary opening action and places the real engineering story immediately after the hero. A second action opens the privacy test. Mission Control offers three starting routes before its complete destination list, and the original orbital artwork is reframed for narrow phones. Existing typography, colors, studies, archives, silent startup and motion controls remain in place.
+
+The studies, privacy test, atlas and evidence presentation have focused modules. Content-derived filenames let unchanged V38 artwork and fonts keep stable URLs between builds; the original public paths remain available. The release adds no dependency, image, font, model or evidence observation. Local comparison pages and preview-only indexing markers are not included in the production artifact.
+
+Validate both hero invitations at 390 and 320 pixels, the featured Mission Control routes and search recovery, the build-story anchor, asset-byte preservation, and the existing complete browser matrix. The owner approved this preview for publication on 09-21-2026.
+
+## Preserved V38.7 refinement
 
 The final navigation pass keeps Mission Control search, result count and Close stationary while only its destination list scrolls. Multi-word search is order independent, an explicit clear control restores all destinations, and the Starship build story has a direct entry. Refined card spacing, focus feedback and search affordances use the existing palette and type. The motion icon now distinguishes running, manually paused and device-reduced states, including on phones where the text label is hidden.
 
@@ -42,10 +50,10 @@ The owner approved publication on 09-19-2026 and requested a thorough polish pas
 
 ## Identity and release gates
 
-- Public entry: `/`, receipt `/v38/site-release.json`, experience `38.7.0`, release ID `helios-38.7.0-20260920`.
-- The root serves Helios without a redirect. Shared resources open within this document. `/v38/` links normalize to `/`; explicit `?v=37.17` links normalize to `/odyssey.html`. The preserved package and compatibility receipts retain V37.17, with a matching `frontDoor` reference to V38.7.
+- Public entry: `/`, receipt `/v38/site-release.json`, experience `38.8.0`, release ID `helios-38.8.0-20260921`.
+- The root serves Helios without a redirect. Shared resources open within this document. `/v38/` links normalize to `/`; explicit `?v=37.17` links normalize to `/odyssey.html`. The preserved package and compatibility receipts retain V37.17, with a matching `frontDoor` reference to V38.8.
 - Evidence remains the inherited September 18, 2026 record for V38 and the corresponding earlier observations for legacy views. No UI test verifies infrastructure or routing health.
-- Rollback baseline: `9548a14697384c4b5a6148988c7b1dca50d22ce4`. Roll back by reverting this release through the checked pull-request and Pages path, then verify the resulting public artifact.
+- Rollback baseline: `d34d058090b0bff48b1765885accb7223599b677`. Roll back by reverting this release through the checked pull-request and Pages path, then verify the resulting public artifact.
 
 Build and run lint, formatting, model and artifact tests, Python release tests, public-data and consistency checks, legacy browser checks and `npm run test:helios`. The Helios runner starts and closes a loopback server unless `HELIOS_URL` supplies another target. `CHROME_PATH` selects the workflow's pinned browser. Pages and Public Site Safety run these interactions before accepting a deployment artifact.
 

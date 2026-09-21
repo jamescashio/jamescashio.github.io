@@ -19,6 +19,8 @@ export function setupNavigation({ studies, select, mission, motion }) {
   const dialog = document.querySelector("#mc");
   const search = document.querySelector("#mc-search");
   const list = document.querySelector("#mc-list");
+  const content = document.querySelector(".mc-content");
+  const start = document.querySelector("#mc-start");
   const results = document.querySelector("#mc-results");
   const clear = document.querySelector("#mc-clear");
   const loader = document.querySelector("#scene-loader");
@@ -60,7 +62,8 @@ export function setupNavigation({ studies, select, mission, motion }) {
     );
     clear.hidden = search.value.length === 0;
     results.textContent = `${matches.length} ${matches.length === 1 ? "destination" : "destinations"}${terms.length ? " found" : " to explore"}`;
-    list.scrollTop = 0;
+    start.hidden = terms.length > 0;
+    content.scrollTop = 0;
     for (const [name, body, href] of matches) {
       const a = document.createElement("a");
       a.className = "tile mc-destination";
@@ -104,7 +107,7 @@ export function setupNavigation({ studies, select, mission, motion }) {
     search.focus();
   });
   dialog.addEventListener("keydown", (event) => {
-    const links = [...list.querySelectorAll("a")];
+    const links = [...(start.hidden ? [] : start.querySelectorAll("a")), ...list.querySelectorAll("a")];
     if (!links.length) return;
     const index = links.indexOf(document.activeElement);
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {

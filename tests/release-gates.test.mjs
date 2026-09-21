@@ -5,6 +5,7 @@ import { readFile, stat } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
 import { JSDOM } from "jsdom";
+import { FLEET } from "../src/helios/fleet.js";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const asset = (path) => new URL(`../${path}`, import.meta.url);
@@ -654,7 +655,7 @@ test("tag publication derives V37 from software metadata and validates one built
 
 test("Helios release identity, signature assets and compatibility receipts agree", async () => {
   const release = JSON.parse(await read("public/v38/site-release.json"));
-  assert.equal(release.experienceVersion, "38.7.0");
+  assert.equal(release.experienceVersion, "38.8.0");
   assert.equal(release.entry, "/");
   assert.equal(release.published, true);
   assert.equal(await read("dist/v38/site-release.json"), await read("public/v38/site-release.json"));
@@ -672,8 +673,27 @@ test("Helios release identity, signature assets and compatibility receipts agree
   const doc = new JSDOM(await read("dist/index.html")).window.document;
   assert.doesNotMatch(doc.querySelector('meta[name="robots"]').content, /noindex|nofollow/);
   assert.doesNotMatch(doc.body.textContent, /Unpublished refinement/);
-  assert.match(doc.body.textContent, /V38\.7 \/ HELIOS/);
-  assert.equal(doc.querySelector("#sig-art").getAttribute("src"), "/v38/assets/celestial.webp");
+  assert.match(doc.body.textContent, /V38\.8 \/ HELIOS/);
+  const releaseDay = new Date(`${release.releaseDate}T00:00:00Z`);
+  const longDate = new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(releaseDay);
+  assert.equal(FLEET.pageRevised, longDate, "console help and release receipt share the interface date");
+  const [year, month, day] = release.releaseDate.split("-");
+  assert.ok(doc.body.textContent.includes(`Interface revised ${month}-${day}-${year}`));
+  const shortVersion = release.experienceVersion.split(".").slice(0, 2).join(".");
+  assert.ok((await read("README.md")).startsWith(`# cAshIo V${shortVersion} — Helios`));
+  assert.equal((await read("CHANGELOG.md")).match(/^## (V[\d.]+)/m)?.[1], `V${shortVersion}`);
+  const sitemap = new JSDOM(await read("dist/sitemap.xml"), { contentType: "application/xml" }).window.document;
+  const home = [...sitemap.querySelectorAll("url")].find(
+    (entry) => entry.querySelector("loc")?.textContent === "https://cashio.us/",
+  );
+  assert.equal(home?.querySelector("lastmod")?.textContent, release.releaseDate);
+  const versions = JSON.parse(await read("dist/v38/asset-versions.json"));
+  assert.equal(doc.querySelector("#sig-art").getAttribute("src"), versions["/v38/assets/celestial.webp"].url);
   assert.equal(
     doc.querySelector('#sigplate a[href="#signature"]').textContent.trim(),
     "Explore the celestial signature in 3D ↗",
@@ -719,4 +739,26 @@ test("The root ships Helios directly, with bounded compatibility routing and a c
     document.querySelector('a[href="/odyssey.html"]').closest("details").querySelector("summary").textContent,
     "Version history",
   );
+});
+
+test("Versioned Helios artwork and fonts preserve their bytes and share one cache identity", async () => {
+  const versions = JSON.parse(await read("dist/v38/asset-versions.json"));
+  const doc = new JSDOM(await read("dist/index.html")).window.document;
+  for (const [source, entry] of Object.entries(versions)) {
+    const original = await readFile(asset(`public${source}`));
+    const shipped = await readFile(asset(`dist${entry.url}`));
+    assert.deepEqual(shipped, original, "fingerprinting cannot alter canonical artwork");
+    assert.equal(entry.sha256, createHash("sha256").update(shipped).digest("hex"));
+    assert.ok(entry.url.includes(entry.sha256.slice(0, 16)), "cache identity must match delivered bytes");
+  }
+  assert.equal(doc.querySelector("#fallback").getAttribute("src"), versions["/v38/assets/orbit.webp"].url);
+  for (const font of ["unbounded-latin", "instrument-latin"]) {
+    const version = versions[`/v38/fonts/${font}.woff2`].url;
+    assert.ok(doc.querySelector(`link[rel="preload"][href="${version}"]`));
+    assert.ok(
+      doc.querySelector("style[data-helios-styles]").textContent.includes(version),
+      "preload and font-face request the same version",
+    );
+  }
+  assert.ok(!Object.keys(versions).some((source) => source.endsWith(".json")), "dated evidence remains refreshable");
 });
