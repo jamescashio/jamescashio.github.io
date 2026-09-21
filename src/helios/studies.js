@@ -120,6 +120,7 @@ export function setupStudies({ scenes, motion, copy }) {
       ? r.detail
       : "Choose a task and its boundaries, then run the five-step demonstration. No request leaves this page.";
     const box = $("#st-steps");
+    gsap.killTweensOf(Array.from(box.children));
     box.innerHTML = r.steps
       .map(
         (t, i) =>
@@ -138,8 +139,6 @@ export function setupStudies({ scenes, motion, copy }) {
           duration: 0.45,
           stagger: 0.28,
           ease: "expo.out",
-          onUpdate: () => {},
-          onStart: () => {},
         });
         let k = { v: 0 };
         routeCounterTween = gsap.to(k, {

@@ -249,30 +249,71 @@
               <p class="muted" style="margin: 0">
                 Analyze a document and require sources. Now make that document private.
               </p>
-              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px">
-                <div class="soft stack" style="padding: 22px; border-color: rgba(56, 225, 255, 0.3); --stack-gap: 8px">
-                  <span class="mono" style="color: var(--cyan)">01 / PUBLIC DOCUMENT</span
-                  ><span class="syne" style="font-size: 28px; font-weight: 700">Research</span
+              <div class="privacy-pair">
+                <div class="soft stack privacy-route">
+                  <span class="mono" style="color: var(--cyan)">01 / PUBLIC DOCUMENT</span>
+                  <svg
+                    class="privacy-diagram"
+                    viewBox="0 0 240 68"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    aria-hidden="true"
+                  >
+                    <path d="M14 13h25l10 10v32H14zM39 13v10h10M23 32h16M23 40h12" />
+                    <path d="M58 34h116" stroke-dasharray="3 5" opacity=".6" />
+                    <path d="m165 29 9 5-9 5" />
+                    <circle cx="205" cy="34" r="27" opacity=".3" />
+                    <path
+                      d="M187 21h11q7 0 7 5 0-5 7-5h11v25h-11q-7 0-7 4-0-4-7-4h-11zM205 26v24M192 29h8M211 29h7M192 35h8M211 35h7"
+                    />
+                  </svg>
+                  <span class="syne">Research</span
                   ><span class="muted copy-note">Attributable sources select the research route.</span>
                 </div>
-                <div class="soft stack" style="padding: 22px; border-color: rgba(242, 200, 122, 0.4); --stack-gap: 8px">
-                  <span class="mono" style="color: var(--gold)">02 / PRIVATE DOCUMENT</span
-                  ><span class="syne" id="pv-answer" style="font-size: 28px; font-weight: 700">Your call.</span
-                  ><span class="muted copy-note"
-                    >The work and source requirement stay the same. Only privacy changes.</span
+                <div class="soft stack privacy-route" id="pv-route" data-revealed="false">
+                  <span class="mono" style="color: var(--gold)">02 / PRIVATE DOCUMENT</span>
+                  <svg
+                    class="privacy-diagram"
+                    viewBox="0 0 240 68"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    aria-hidden="true"
                   >
+                    <path d="M14 13h25l10 10v32H14zM39 13v10h10M23 32h16M23 40h12" />
+                    <path d="M58 34h116" stroke-dasharray="3 5" opacity=".6" />
+                    <circle cx="205" cy="34" r="27" opacity=".3" />
+                    <g class="pv-question">
+                      <path d="M198 26a7 7 0 1 1 10 6c-3 2-3 3-3 6" />
+                      <circle cx="205" cy="45" r="1" />
+                    </g>
+                    <g class="pv-command">
+                      <path d="M120 25v-5a7 7 0 0 1 14 0v5M116 25h22v20h-22zM127 33v5" fill="var(--panel)" />
+                      <circle cx="205" cy="27" r="7" />
+                      <path d="M192 48v-4a13 10 0 0 1 26 0v4" />
+                    </g>
+                    <circle id="pv-signal" cx="59" cy="34" r="3" fill="currentColor" stroke="none" opacity="0" />
+                  </svg>
+                  <span class="syne" id="pv-answer">Your call.</span
+                  ><span class="muted copy-note" id="pv-boundary">Same task. Same sources. A different boundary.</span>
                 </div>
               </div>
               <div class="stack" style="--stack-gap: 12px">
-                <strong>Predict the private document’s route</strong>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center">
-                  <button class="pill" type="button" data-pv="keep" aria-pressed="false">Keep Research</button>
+                <strong id="pv-prompt">Predict the private document’s route</strong>
+                <div
+                  style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center"
+                  role="group"
+                  aria-labelledby="pv-prompt"
+                >
+                  <button class="pill" type="button" data-pv="keep" aria-pressed="false">Research</button>
                   <button class="pill gold" type="button" data-pv="human" aria-pressed="false">Human review</button>
                   <button class="btn ghost sm" type="button" id="pv-reveal">Reveal the private route ↗</button>
                 </div>
+                <div class="sr" id="pv-live" role="status" aria-atomic="true"></div>
                 <div class="step" id="pv-result" hidden style="border-color: rgba(242, 200, 122, 0.4)">
                   <span class="dot" style="background: var(--gold); box-shadow: 0 0 12px var(--gold)"></span
-                  ><span id="pv-text"></span>
+                  ><span class="copy-note" id="pv-text"></span>
                 </div>
               </div>
               <div
@@ -1669,7 +1710,7 @@
               </div>
             </div>
           </div>
-          <div class="evidence-summary" aria-label="What the evidence establishes">
+          <div class="evidence-summary" role="group" aria-label="What the evidence establishes">
             <div>
               <span class="mono cy">OBSERVED / SEP 18, 2026</span>
               <h3>20 containers. One virtual machine.</h3>
@@ -2121,12 +2162,19 @@
                 >Fly the card. Report what the machine did.</span
               >
               <p class="muted copy-note" id="hg-body">
-                The first supersonic flight was a test card flown to the letter and a report that said exactly what
-                happened, cracked ribs and all. Doug Cashio applies the same discipline: run the check, record the
-                result, and never let the story get ahead of the data.
+                Yeager flew the X-1 past the speed of sound in 1947. The lesson I bring to my workshop: define the test,
+                record what happened, and keep the story within the evidence.
               </p>
               <span class="mono" style="color: var(--muted)"
                 >A working principle inspired by this lineage, not a historical quotation.</span
+              >
+              <a
+                class="workshop-link"
+                id="hg-source"
+                href="https://www.nasa.gov/history/x1/"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Explore the X-1 history at NASA ↗</a
               >
             </div>
           </div>
@@ -2276,7 +2324,7 @@
           >The Human Reckoning. Inspired by the Butlerian Jihad in Frank Herbert’s <em>Dune</em>. Powerful tools. Human
           judgment in command.</span
         ><span class="mono" style="color: var(--gold)"
-          >A HUMAN IN COMMAND · V38.8 / HELIOS · Directed by Doug Cashio · 09-21-2026</span
+          >A HUMAN IN COMMAND · V38.9 / HELIOS · Directed by Doug Cashio · 09-21-2026</span
         >
       </div>
       <nav aria-label="Footer">

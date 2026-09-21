@@ -303,36 +303,44 @@ const PILOTS = {
     credit: "NASA / USAF photo by Lt. Robert A. Hoover",
     kick: "CHUCK YEAGER · BELL X-1 · OCTOBER 14, 1947",
     head: "Fly the card. Report what the machine did.",
-    body: "The first supersonic flight was a test card flown to the letter and a report that said exactly what happened, cracked ribs and all. Doug Cashio applies the same discipline: run the check, record the result, and never let the story get ahead of the data.",
+    body: "Yeager flew the X-1 past the speed of sound in 1947. The lesson I bring to my workshop: define the test, record what happened, and keep the story within the evidence.",
+    source: "https://www.nasa.gov/history/x1/",
+    sourceLabel: "Explore the X-1 history at NASA",
     idx: "01 / 04",
-    line: "Yeager flew the card and reported what the machine did. So do I.",
+    line: "Define the test. Record what happened. Let the evidence set the limits.",
   },
   johnson: {
     title: "JOHNSON · SR-71 · 1964",
     credit: "NASA photo by Jim Ross",
     kick: "KELLY JOHNSON · SKUNK WORKS · SR-71 · 1964",
     head: "Small team, few parts, short runway.",
-    body: "Kelly Johnson's team made sustained Mach 3 flight practical through small teams, direct authority, and ruthless control of complexity. Doug Cashio applies the same discipline: shorten the path between the person who sees the problem and the person who can change the machine.",
+    body: "Johnson's fourteen rules emphasize small teams, direct responsibility and thorough records of important work. My takeaway: keep the path short between finding a problem and being able to fix it.",
+    source: "https://www.lockheedmartin.com/content/dam/lockheed-martin/aero/photo/skunkworks/kellys-14-rules.pdf",
+    sourceLabel: "Read Kelly's fourteen rules",
     idx: "02 / 04",
-    line: "Fourteen rules, one small team, Mach 3. Complexity is the enemy.",
+    line: "Give the person closest to the problem a clear path to solve it.",
   },
   rutan: {
     title: "RUTAN · PROTEUS · 1998",
     credit: "NASA / ESPO photo",
     kick: "BURT RUTAN · SCALED COMPOSITES · PROTEUS · 1998",
     head: "Build the strange thing. Then prove it in the air.",
-    body: "Rutan's aircraft look wrong until they fly, and then they set records. Doug Cashio applies the same discipline: an unusual architecture earns its place by working under load, not by looking conventional in a slide.",
+    body: "Proteus first flew in 1998, designed for high-altitude, long-duration work. Its unusual form reminds me to start with the job a system must do, then test whether the design serves it.",
+    source: "https://airbornescience.nasa.gov/aircraft/Proteus",
+    sourceLabel: "Explore Proteus at NASA",
     idx: "03 / 04",
-    line: "Rutan built the strange thing and proved it in the air. Local AI is that kind of strange.",
+    line: "Start with the job. Give an unusual design a fair test.",
   },
   hoover: {
     title: "HOOVER · P-51 MUSTANG",
     credit: "U.S. Air National Guard photo by Tech. Sgt. Hampton Stramler",
     kick: "BOB HOOVER · P-51 · ENERGY MANAGEMENT",
     head: "Smooth is fast. Manage the energy you have.",
-    body: "Hoover could pour tea during a barrel roll because he never wasted energy. Doug Cashio applies the same discipline: spend the capable route only where it matters, and keep the whole system smooth under a human hand.",
+    body: "Hoover's flying is my reminder to treat capacity as precious. In this workshop, that means choosing a capable route when the task calls for it and keeping the decision understandable to the person in command.",
+    source: "https://airandspace.si.edu/stories/editorial/remembering-robert-bob-hoover",
+    sourceLabel: "Remember Bob Hoover with the Smithsonian",
     idx: "04 / 04",
-    line: "Hoover managed energy so well he poured tea in a roll. Budget the same way.",
+    line: "Treat capacity as precious. Keep a human in command.",
   },
 };
 $("#pilots").addEventListener("click", (e) => {
@@ -348,6 +356,8 @@ $("#pilots").addEventListener("click", (e) => {
   $("#hg-kick").textContent = P.kick;
   $("#hg-head").textContent = P.head;
   $("#hg-body").textContent = P.body;
+  $("#hg-source").href = P.source;
+  $("#hg-source").textContent = P.sourceLabel + " ↗";
   if (hasGsap && motionOn)
     gsap.fromTo(
       "#hg-card > *",
@@ -376,30 +386,32 @@ $("#sig-btn").addEventListener("click", () => {
   $("#sig-state").textContent = "ENERGIZED · GOLD INTENT";
   $("#sig-state").style.color = "var(--gold)";
   const b = $("#sigburst");
-  b.innerHTML = "";
-  for (let i = 0; i < 26; i++) {
+  gsap.killTweensOf(Array.from(b.children));
+  b.replaceChildren();
+  const radius = Math.min(pl.clientWidth * 0.44, 270);
+  for (let i = 0; motionOn && i < 16; i++) {
     const d = document.createElement("i");
+    d.style.color = i % 4 === 0 ? "var(--cyan)" : "var(--gold)";
     b.appendChild(d);
-    if (hasGsap && motionOn) {
-      const a = Math.random() * Math.PI * 2,
-        r = 120 + Math.random() * 220;
-      gsap.fromTo(
-        d,
-        { x: 0, y: 0, opacity: 1, scale: 0.6 + Math.random() },
-        {
-          x: Math.cos(a) * r,
-          y: Math.sin(a) * r * 0.6,
-          opacity: 0,
-          scale: 0.2,
-          duration: 1.2 + Math.random() * 0.8,
-          ease: "expo.out",
-          delay: Math.random() * 0.15,
-        },
-      );
-    }
+    const a = (i / 16) * Math.PI * 2 - 0.1;
+    gsap.fromTo(
+      d,
+      { x: Math.cos(a) * radius * 0.5, y: Math.sin(a) * radius * 0.24, opacity: 0.8, scale: 0.7 },
+      {
+        x: Math.cos(a) * radius,
+        y: Math.sin(a) * radius * 0.48,
+        opacity: 0,
+        scale: 0.2,
+        duration: 1.4,
+        ease: "expo.out",
+        delay: (i % 4) * 0.04,
+      },
+    );
   }
   Bit.say("SIGNATURE", "Energized. Gold intent, blue possibility.", "yes", 2200);
   signatureTimer = setTimeout(() => {
+    gsap.killTweensOf(Array.from(b.children));
+    b.replaceChildren();
     pl.classList.remove("on");
     $("#sig-state").textContent = "DORMANT · GOLD INTENT";
     $("#sig-state").style.color = "";
