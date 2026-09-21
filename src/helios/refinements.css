@@ -142,8 +142,6 @@ p {
   opacity: 1;
 }
 .hero .fallback {
-  opacity: 0.58;
-  object-position: 65% 50%;
   transition: opacity 1.2s;
 }
 .hero.scene-ready .fallback {
@@ -153,15 +151,9 @@ p {
   z-index: 2;
 }
 .hero .sub {
-  max-width: 490px;
   text-shadow: 0 2px 20px var(--void);
 }
-.hero .cta {
-  gap: 14px;
-}
-.hero .status,
-.hero .meta,
-.hero .scroll {
+.hero .status {
   z-index: 3;
 }
 .flash {
@@ -178,9 +170,6 @@ p {
 }
 .plate.reveal {
   clip-path: none;
-}
-.thesis .lines {
-  margin: 0;
 }
 .study[aria-selected="true"] {
   border-color: var(--cyan);
@@ -694,20 +683,6 @@ section[data-ambient="off"] *:after,
 }
 
 @media (min-width: 901px) {
-  .hero h1 {
-    font-size: clamp(64px, 7.4vw, 114px);
-  }
-  .hero .content {
-    padding-top: 50px;
-  }
-  .hero .meta {
-    left: calc(var(--gutter) + 48px);
-    bottom: 30px;
-    font-size: 11px;
-  }
-  .hero .scroll {
-    left: 55%;
-  }
   .hero .status {
     font-size: 10px;
     max-width: 260px;
@@ -745,26 +720,11 @@ section[data-ambient="off"] *:after,
   .nav .acts {
     gap: 8px;
   }
-  .hero {
-    min-height: 780px;
-    height: max(780px, 100svh);
-  }
   .hero .content {
-    padding-top: 115px;
     justify-content: center;
-  }
-  .hero .fallback {
-    object-position: 67% 30%;
-    opacity: 0.33;
-  }
-  .hero .vignette {
-    background: linear-gradient(180deg, rgba(4, 7, 14, 0.1), rgba(4, 7, 14, 0.8) 48%, var(--void) 100%);
   }
   .hero h1 {
     max-width: 650px;
-  }
-  .hero .sub {
-    max-width: 480px;
   }
   .hero .cta {
     max-width: 500px;
@@ -829,27 +789,13 @@ section[data-ambient="off"] *:after,
   #motion-btn span {
     display: none;
   }
-  .hero {
-    height: max(780px, 100svh);
-    min-height: 780px;
-  }
   .hero .content {
-    padding-top: 145px;
-    padding-bottom: 32px;
     justify-content: center;
   }
-  .hero h1 {
-    font-size: clamp(36px, 11.1vw, 60px);
-    line-height: 1.04;
-  }
   .hero .sub {
-    font-size: 18px;
     margin-top: 24px;
-    line-height: 1.55;
   }
   .hero .cta {
-    gap: 10px;
-    margin-top: 26px;
     align-items: stretch;
   }
   .hero .cta .btn {
@@ -1007,18 +953,8 @@ section[data-ambient="off"] *:after,
   .nav .acts {
     gap: 5px;
   }
-  .hero h1 {
-    font-size: 35px;
-  }
-  .hero .sub {
-    font-size: 17px;
-  }
   .hero .cta .btn {
     flex-basis: 100%;
-  }
-  .hero {
-    min-height: 810px;
-    height: max(810px, 100svh);
   }
   .study {
     padding: 13px;
@@ -1046,8 +982,5 @@ section[data-ambient="off"] *:after,
     animation: none !important;
     transition: none !important;
     scroll-behavior: auto !important;
-  }
-  .hero .fallback {
-    opacity: 0.5;
   }
 }

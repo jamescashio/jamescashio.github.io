@@ -673,7 +673,8 @@ test("Helios release identity, signature assets and compatibility receipts agree
   assert.doesNotMatch(doc.querySelector('meta[name="robots"]').content, /noindex|nofollow/);
   assert.doesNotMatch(doc.body.textContent, /Unpublished refinement/);
   assert.match(doc.body.textContent, /V38\.7 \/ HELIOS/);
-  assert.equal(doc.querySelector("#sig-art").getAttribute("src"), "/v38/assets/celestial.webp");
+  const versions = JSON.parse(await read("dist/v38/asset-versions.json"));
+  assert.equal(doc.querySelector("#sig-art").getAttribute("src"), versions["/v38/assets/celestial.webp"].url);
   assert.equal(
     doc.querySelector('#sigplate a[href="#signature"]').textContent.trim(),
     "Explore the celestial signature in 3D ↗",
@@ -719,4 +720,26 @@ test("The root ships Helios directly, with bounded compatibility routing and a c
     document.querySelector('a[href="/odyssey.html"]').closest("details").querySelector("summary").textContent,
     "Version history",
   );
+});
+
+test("Versioned Helios artwork and fonts preserve their bytes and share one cache identity", async () => {
+  const versions = JSON.parse(await read("dist/v38/asset-versions.json"));
+  const doc = new JSDOM(await read("dist/index.html")).window.document;
+  for (const [source, entry] of Object.entries(versions)) {
+    const original = await readFile(asset(`public${source}`));
+    const shipped = await readFile(asset(`dist${entry.url}`));
+    assert.deepEqual(shipped, original, "fingerprinting cannot alter canonical artwork");
+    assert.equal(entry.sha256, createHash("sha256").update(shipped).digest("hex"));
+    assert.ok(entry.url.includes(entry.sha256.slice(0, 16)), "cache identity must match delivered bytes");
+  }
+  assert.equal(doc.querySelector("#fallback").getAttribute("src"), versions["/v38/assets/orbit.webp"].url);
+  for (const font of ["unbounded-latin", "instrument-latin"]) {
+    const version = versions[`/v38/fonts/${font}.woff2`].url;
+    assert.ok(doc.querySelector(`link[rel="preload"][href="${version}"]`));
+    assert.ok(
+      doc.querySelector("style[data-helios-styles]").textContent.includes(version),
+      "preload and font-face request the same version",
+    );
+  }
+  assert.ok(!Object.keys(versions).some((source) => source.endsWith(".json")), "dated evidence remains refreshable");
 });

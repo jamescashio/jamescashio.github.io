@@ -1,0 +1,123 @@
+/* A clearer invitation inside the original Helios world. */
+.hero-next {
+  position: absolute;
+  left: calc(var(--gutter) + 120px);
+  bottom: 34px;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  min-height: 44px;
+  color: var(--ink2);
+  font-size: 13px;
+}
+.hero-next span {
+  color: var(--gold);
+  font-size: 20px;
+}
+.workshop-note h2 {
+  font-size: clamp(24px, 2.3vw, 34px);
+  line-height: 1.25;
+  margin: 16px 0;
+  letter-spacing: -0.035em;
+}
+.workshop-note p {
+  color: var(--ink2);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+.workshop-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  gap: 14px;
+  color: var(--gold);
+  font-size: 14px;
+}
+.workshop-link:hover,
+.hero-next:hover {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.thesis .minute .mono {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+.thesis .minute .copy-note {
+  font-size: 14px;
+}
+.mc-content {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  padding: 4px 6px 4px 4px;
+  margin: -4px;
+}
+#mc-start h3 {
+  font: 500 13px var(--mono);
+  color: var(--ink2);
+  margin: 0 0 12px;
+}
+.mc-routes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.mc-route {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px;
+  border: 1px solid #f2c87a50;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #f2c87a12, #38e1ff05);
+}
+.mc-route .mono {
+  font-size: 12px;
+  color: var(--gold);
+  letter-spacing: 0.035em;
+}
+.mc-route strong {
+  font: 600 17px/1.4 var(--sans);
+  color: var(--ink);
+}
+.mc-route > span:last-child {
+  color: var(--ink2);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.mc-route:hover {
+  border-color: var(--gold);
+  background: #f2c87a16;
+}
+#mc-start .mc-all-title {
+  margin: 24px 0 12px;
+}
+@media (max-width: 700px) {
+  .hero-next {
+    position: relative;
+    inset: auto;
+    margin: 8px 6% 18px;
+    font-size: 13px;
+  }
+  .mc-routes {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .mc-route {
+    padding: 14px;
+    gap: 5px;
+  }
+  .mc-route strong {
+    font-size: 16px;
+  }
+}
+@media (max-width: 350px) {
+  .hero .content {
+    padding-top: 136px;
+  }
+  .hero .sub {
+    font-size: 16px;
+  }
+}
