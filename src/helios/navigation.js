@@ -32,7 +32,7 @@ export function setupNavigation({ studies, select, mission, motion }) {
     lastURL = "";
   const returns = new Map();
   const destinations = [
-    ["The 30-second flight", "Open the hull. Cut the cloud. Keep command.", "#flight=board"],
+    ["Explore the starship", "Your pace. A 30-second tour when you choose.", "#flight=board"],
     ["The orbital world", "Return to the beginning.", "#top"],
     ["Try one decision", "Predict the route. Test the privacy boundary.", "#work"],
     ["The system atlas", "Owned compute, orchestration, human authority.", "#universe"],

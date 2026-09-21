@@ -1,3 +1,13 @@
+# V38.6 a world at your pace — 09-20-2026
+
+A cinematic orbital workshop with a composed first frame, a clear invitation, and motion that answers the visitor. Preserve the original art, navy/gold/cyan palette and Unbounded / Instrument Sans / JetBrains Mono system. Keep the orbital image dominant; a single short lighting accent settles into a still composition. Pointer movement must not replace the artwork with a continuous particle scene. The explicit orbit action can play a finite effect confined to the artwork, then return to rest.
+
+Make Try one decision the primary action and Take the flight the secondary path. On phones, frame a compact piece of the artwork above readable copy and concise controls. The flight opens at rest in Helios; Next and visitor decisions control it, with an optional thirty-second tour. Preserve the legacy edition's playback behavior. Remember manual motion choices locally, let the device's reduced-motion setting take priority, and keep quiet mode on the original still.
+
+Deepen the actual Sovereign Starship build story using the shipped twelve-request model, its public source and tests. Explain the problem, design decision and observed model outcomes without turning synthetic examples into infrastructure or customer claims. Retain the rendering repair as supporting engineering detail. Apply restrained hover/focus feedback, readable labels and material depth; no new dependency, font, generated replacement artwork or background audio.
+
+Validate motion persistence and storage failure, first-paint content, optional tour/manual pacing, scene interruption, quiet-mode graphics, keyboard focus, 1440/768/390/320 layouts and existing interactions. Continue the already authorized release workflow after checks. Baseline and rollback: 8175beb8cfbfc7fac5c25626787907f56e06a3c7.
+
 # V38.5 one address, an open studio — 09-20-2026
 
 The current cAshIo workshop belongs at cashio.us. Serve the authored Helios homepage directly at `/`, with its canonical address and absolute asset paths. Normalize former `/v38/` and release-tagged links to the root while retaining their requested scene. Keep V37.17 intact at `/odyssey.html` and explicitly available through Version history. Preserve Command Deck bookmarks and dated evidence exports.

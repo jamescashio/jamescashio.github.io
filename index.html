@@ -130,6 +130,7 @@
           aria-hidden="true"
         />
         <div class="grid-bg"></div>
+        <div class="hero-light" aria-hidden="true"></div>
         <div class="vignette"></div>
         <div class="status">
           <span
@@ -147,7 +148,7 @@
         <div class="content">
           <div class="kick" data-hero style="display: flex; align-items: center; gap: 10px">
             <span style="width: 8px; height: 8px; background: var(--cyan); box-shadow: 0 0 12px var(--cyan)"></span>DOUG
-            CASHIO / PRINCIPAL SOLUTIONS CONSULTANT / PENSACOLA
+            CASHIO / AI &amp; SECURITY SYSTEMS
           </div>
           <h1 style="margin-top: 20px">
             <span class="line"><span class="w">Own the iron.</span></span
@@ -155,67 +156,24 @@
             ><span class="line"><span class="w em">possible.</span></span>
           </h1>
           <p class="sub" data-hero>
-            I build local AI and security systems that keep people in command. Step inside. Change a decision. See why
-            it matters.
+            I build local AI and security systems. Explore what stays private, how work is routed, and when a person
+            takes over.
           </p>
           <div class="cta" data-hero>
-            <a
-              href="#flight=board"
-              class="btn gold"
-              data-flight
-              style="min-height: 66px; padding: 0 26px; gap: 16px"
-              data-magnet
+            <a class="btn gold" id="hero-primary" href="#work">Try one decision <span aria-hidden="true">→</span></a>
+            <a class="btn ghost hero-secondary" href="#flight=board" data-flight
+              >Take the flight <span aria-hidden="true">↗</span></a
             >
-              <svg
-                width="26"
-                height="26"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#1A1204"
-                stroke-width="2"
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="12" r="9" />
-                <circle cx="12" cy="12" r="3.5" fill="#1A1204" />
-              </svg>
-              <span class="stack" style="align-items: flex-start; line-height: 1.15"
-                ><span style="font-size: 18px">Take the 30-second flight</span
-                ><span class="mono" style="letter-spacing: 0.12em; opacity: 0.8"
-                  >Open the hull. Cut the cloud. Keep command.</span
-                ></span
-              >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#1A1204"
-                stroke-width="2.4"
-                aria-hidden="true"
-              >
-                <path d="M5 12h14M13 6l6 6-6 6" />
-              </svg>
-            </a>
-            <a
-              href="#work"
-              style="
-                color: var(--ink);
-                font-weight: 600;
-                border-bottom: 1px solid rgba(234, 240, 248, 0.3);
-                padding-bottom: 3px;
-              "
-              >Try one decision ↗</a
-            >
-            <a href="#studies" style="color: var(--gold); font-weight: 600">Explore the workshop ↗</a>
           </div>
+          <p class="cta-note">Your pace. Sound off. Everything starts in your browser.</p>
         </div>
         <div class="meta" data-hero>
-          <span class="mono" style="color: var(--muted)">30 seconds · Sound off · Your pace</span>
+          <span class="mono" style="color: var(--muted)">Privacy · Purpose · Human judgment</span>
           <span class="mono" style="color: var(--cyan)">An original orbital world · yours to explore</span>
         </div>
         <button class="bit" type="button" id="fold-btn" data-hero data-magnet>
           <span class="mono" style="color: var(--muted)">BIT / HUMAN CO-PILOT</span
-          ><span class="mono" style="color: var(--gold)">INITIATE FOLD ↗</span>
+          ><span class="mono" style="color: var(--gold)">ILLUMINATE THE ORBIT ↗</span>
         </button>
         <div class="scroll" aria-hidden="true"><span class="mono">Scroll</span><i></i></div>
       </section>
@@ -231,21 +189,21 @@
             <div
               style="display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap"
             >
-              <span class="kick gold">YOUR FIRST MINUTE</span
-              ><span class="muted">See it. Change it. Understand it.</span>
+              <span class="kick gold">FROM A QUESTION TO THE EVIDENCE</span
+              ><span class="muted">A small decision. A visible consequence.</span>
             </div>
             <div class="minute" data-stagger>
-              <a class="step" href="#flight=board">
-                <span class="mono" style="color: var(--gold)">01</span><strong>Take the flight</strong
-                ><span class="muted copy-note">Open the hull. See inside.</span>
-              </a>
               <a class="step" href="#work">
-                <span class="mono" style="color: var(--gold)">02</span><strong>Change one decision</strong
-                ><span class="muted copy-note">Watch the boundary respond.</span>
+                <span class="mono gold">01</span><strong>Try a decision</strong>
+                <span class="muted copy-note">Make one document private.</span>
+              </a>
+              <a class="step" href="#build-story">
+                <span class="mono gold">02</span><strong>See how it was built</strong>
+                <span class="muted copy-note">The choices behind the ship.</span>
               </a>
               <a class="step" href="#evidence">
-                <span class="mono" style="color: var(--gold)">03</span><strong>Inspect the work</strong
-                ><span class="muted copy-note">A real build. Its dated evidence.</span>
+                <span class="mono gold">03</span><strong>Inspect the evidence</strong>
+                <span class="muted copy-note">A source, a date, and its limits.</span>
               </a>
             </div>
           </div>
@@ -1713,26 +1671,82 @@
               </p>
             </div>
           </div>
-          <article class="build-proof" aria-labelledby="build-proof-title">
-            <div class="build-proof-lede">
-              <span class="mono cy">SHIPPED BUILD / 09-20-2026</span>
-              <h3 id="build-proof-title">Reliable, even at rest.</h3>
-              <p>
-                The starship could open to a blank view while paused. Its canvas now requests a frame after becoming
-                visible, then returns to rest.
+          <article class="case-study" id="build-story" aria-labelledby="build-proof-title">
+            <div>
+              <span class="mono cy">BUILD STORY / SOVEREIGN STARSHIP</span>
+              <h3 id="build-proof-title">One boundary. Every request accounted for.</h3>
+              <p class="case-deck">
+                A ship you can explore. An AI decision you can see. I built this working model to make the trade-offs
+                between local computing, cloud access, and human permission tangible.
               </p>
-              <a class="btn ghost sm" href="#flight=board">Explore the working ship ↗</a>
+              <figure class="case-image">
+                <img
+                  src="/v38/assets/starship.webp"
+                  width="1200"
+                  height="675"
+                  loading="lazy"
+                  decoding="async"
+                  alt="Original Sovereign Starship artwork: an exploration ship with a visible gold command core and a separate cloud relay"
+                />
+                <figcaption>
+                  The imagined ship gives a real piece of software a visible boundary. Its routing outcomes come from
+                  one shared model.
+                </figcaption>
+              </figure>
             </div>
-            <div class="build-proof-record">
-              <ol aria-label="The implemented reveal sequence">
-                <li><span>01</span><strong>Reveal the canvas</strong></li>
-                <li><span>02</span><strong>Draw the ship</strong></li>
-                <li><span>03</span><strong>Rest until needed</strong></li>
-              </ol>
-              <p>The original geometry-paint check passed after the fix. Its assertion was kept intact.</p>
-              <a href="https://github.com/jamescashio/jamescashio.github.io/pull/135"
-                >Read the published change and validation ↗</a
-              >
+            <div>
+              <dl class="case-notes">
+                <div>
+                  <dt>The question</dt>
+                  <dd>What happens to private work when the cloud is available, disappears, or needs permission?</dd>
+                </div>
+                <div>
+                  <dt>My design decision</dt>
+                  <dd>
+                    Keep the workload fixed at twelve requests. Connect the ship, the counters and the explanation to
+                    the same rule. Let a visitor change the boundary and see the consequence.
+                  </dd>
+                </div>
+                <div>
+                  <dt>The working result</dt>
+                  <dd>
+                    In Hybrid, six private requests stay aboard and six public requests can use the cloud. Disconnect
+                    the relay and all twelve stay local. Choose cloud-only processing for private work without
+                    permission, and all twelve wait for human review.
+                  </dd>
+                </div>
+              </dl>
+              <div class="case-outcome">
+                <strong>6 → 12</strong
+                ><span>requests kept onboard<br />when the hybrid model loses its cloud link</span>
+              </div>
+              <div class="case-links">
+                <a class="btn gold sm" href="#flight=blackout">Test the boundary <span aria-hidden="true">↗</span></a>
+                <a
+                  class="case-source"
+                  href="https://github.com/jamescashio/jamescashio.github.io/blob/8175beb8cfbfc7fac5c25626787907f56e06a3c7/src/odyssey/sovereign-model.ts"
+                  >Read the shared rule ↗</a
+                >
+                <a
+                  class="case-source"
+                  href="https://github.com/jamescashio/jamescashio.github.io/blob/8175beb8cfbfc7fac5c25626787907f56e06a3c7/tests/sovereign-model.test.mjs"
+                  >Inspect the model tests ↗</a
+                >
+              </div>
+              <p class="case-boundary">
+                These are reproducible browser-model outcomes, not measurements of a deployed AI service. The model
+                assumes local hardware and models can handle this workload. No AI requests are sent.
+              </p>
+              <details class="case-engineering">
+                <summary>One engineering detail: reliable, even at rest.</summary>
+                <p>
+                  The starship once opened to a blank view while paused. Its canvas now requests a frame after becoming
+                  visible, then returns to rest. The original geometry-paint check passed after the fix.
+                </p>
+                <a href="https://github.com/jamescashio/jamescashio.github.io/pull/135"
+                  >Read the shipped repair and validation ↗</a
+                >
+              </details>
             </div>
           </article>
           <div class="grid" data-stagger>
@@ -2249,7 +2263,7 @@
           >The Human Reckoning. Inspired by the Butlerian Jihad in Frank Herbert’s <em>Dune</em>. Powerful tools. Human
           judgment in command.</span
         ><span class="mono" style="color: var(--gold)"
-          >A HUMAN IN COMMAND · V38.5 / HELIOS · Directed by Doug Cashio · 09-20-2026</span
+          >A HUMAN IN COMMAND · V38.6 / HELIOS · Directed by Doug Cashio · 09-20-2026</span
         >
       </div>
       <nav aria-label="Footer">
@@ -2336,7 +2350,7 @@
       </button>
       <div class="bitsay hide" id="bitsay" role="status" aria-live="polite">
         <span class="mono" id="bit-tag" style="color: var(--gold)">BIT / WELCOME ABOARD</span
-        ><span id="bit-line">I’m Bit. Take the flight; I’ll point out what matters.</span
+        ><span id="bit-line">I’m Bit. Try a decision; I’ll help you find your way.</span
         ><button type="button" class="bitx" id="bit-x" aria-label="Dismiss Bit’s note">×</button>
       </div>
     </aside>

@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { gsap } from "gsap";
 
-/** Original Helios orbit, loaded after first paint and paused outside the hero. */
+/** A finite, visitor-requested light orbit. The authored artwork remains the primary scene. */
 export function startHero({ getMotion, onReady }) {
   const canvas = document.getElementById("gl");
   const fallback = document.getElementById("fallback");
@@ -19,7 +19,7 @@ export function startHero({ getMotion, onReady }) {
     const scene = new THREE.Scene();
     const cam = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
     cam.position.set(0, 0, 9);
-    const N = window.innerWidth < 700 ? 6000 : 20000;
+    const N = window.innerWidth < 700 ? 3000 : 10000;
     const start = new Float32Array(N * 3),
       ring = new Float32Array(N * 3),
       col = new Float32Array(N * 3),
@@ -121,10 +121,8 @@ export function startHero({ getMotion, onReady }) {
       renderer.setSize(w, h, false);
       cam.aspect = w / h;
       cam.updateProjectionMatrix();
-      const mob = w < 700;
-      group.position.x = mob ? 0 : 2.3;
-      group.position.y = mob ? 2.6 : 0.3;
-      group.scale.setScalar(mob ? 0.58 : 1);
+      group.position.set(0, 0.1, 0);
+      group.scale.setScalar(0.76);
     }
     resize();
     window.addEventListener("resize", resize);
@@ -138,6 +136,7 @@ export function startHero({ getMotion, onReady }) {
     const hero = canvas.closest(".hero");
     const canRun = () =>
       getMotion() &&
+      hero.classList.contains("fold-active") &&
       !manualPause &&
       inView &&
       !document.hidden &&
@@ -191,6 +190,10 @@ export function startHero({ getMotion, onReady }) {
     );
     window.__heroPause = (pause) => {
       manualPause = pause;
+      if (pause) {
+        foldTimeline?.kill();
+        hero.classList.remove("fold-active");
+      }
       sync();
     };
     window.addEventListener("helios-motion", sync);
@@ -204,14 +207,20 @@ export function startHero({ getMotion, onReady }) {
     ).observe(hero);
     let foldTimeline;
     window.__fold = () => {
-      if (!canRun()) return;
+      if (!getMotion() || manualPause || !inView || document.hidden) return;
       foldTimeline?.kill();
+      state.fold = 0;
+      hero.classList.add("fold-active");
+      sync();
       foldTimeline = gsap
-        .timeline()
-        .to(state, { fold: 0.75, duration: 0.7, ease: "power3.inOut" })
-        .to("#flash", { opacity: 0.18, duration: 0.25 }, "-=.2")
-        .to("#flash", { opacity: 0, duration: 1.1 })
-        .to(state, { fold: 0, spin: state.spin + Math.PI * 2, duration: 2.7, ease: "expo.out" }, "-=1.2");
+        .timeline({
+          onComplete: () => {
+            hero.classList.remove("fold-active");
+            sync();
+          },
+        })
+        .to(state, { fold: 0.35, duration: 0.65, ease: "power2.inOut" })
+        .to(state, { fold: 0, spin: state.spin + Math.PI, duration: 2.1, ease: "power2.out" });
     };
     renderer.render(scene, cam);
     hero.classList.add("scene-ready");

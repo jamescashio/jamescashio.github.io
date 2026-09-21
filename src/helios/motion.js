@@ -1,7 +1,10 @@
+import { MOTION_KEY, readMotionPreference, saveMotionPreference } from "./motion-preference.js";
+
 export function setupMotion({ gsap, onChange, onSceneReady }) {
   const query = matchMedia("(prefers-reduced-motion: reduce)");
   const button = document.querySelector("#motion-btn");
-  let enabled = !query.matches;
+  let preference = readMotionPreference();
+  let enabled = preference !== "off" && !query.matches;
   let heroPromise = null;
   const overlayOpen = () => !!document.querySelector("dialog[open],#helios-studio,#helios-flight");
   function syncAmbient() {
@@ -16,8 +19,8 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
     window.__heroPause?.(blocked || !enabled);
   }
   window.addEventListener("helios-overlay", syncAmbient);
-  function apply(on) {
-    enabled = on && !query.matches;
+  function apply() {
+    enabled = preference !== "off" && !query.matches;
     document.documentElement.classList.toggle("motion-off", !enabled);
     button.setAttribute("aria-pressed", String(enabled));
     button.setAttribute(
@@ -35,6 +38,7 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
         ? "Pause ambient motion"
         : "Resume ambient motion";
     if (!enabled) {
+      document.querySelector(".hero").removeAttribute("data-arrival");
       gsap.globalTimeline.getChildren(false).forEach((animation) => {
         if (animation.repeat() === -1) animation.pause();
         else animation.progress(1).kill();
@@ -54,14 +58,18 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
     window.dispatchEvent(new CustomEvent("helios-motion", { detail: enabled }));
   }
   button.addEventListener("click", () => {
-    apply(!enabled);
-    if (enabled) void startHero();
+    if (query.matches) return;
+    preference = enabled ? "off" : "on";
+    saveMotionPreference(preference);
+    apply();
   });
-  query.addEventListener("change", () => {
-    apply(!query.matches);
-    if (enabled) void startHero();
+  query.addEventListener("change", apply);
+  window.addEventListener("storage", (event) => {
+    if (event.key !== MOTION_KEY && event.key !== null) return;
+    preference = readMotionPreference();
+    apply();
   });
-  apply(enabled);
+  apply();
   document.querySelectorAll("[data-count]").forEach((el) => {
     el.textContent = el.dataset.count;
   });
@@ -93,7 +101,7 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
       });
     }
   });
-  document.querySelectorAll("section.block").forEach((el) => ambient.observe(el));
+  document.querySelectorAll("section.block,.hero").forEach((el) => ambient.observe(el));
   document.addEventListener("visibilitychange", syncAmbient);
   const rail = document.querySelector("#railbar");
   let railFrame = 0;
@@ -122,10 +130,14 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
       });
     return heroPromise;
   }
-  // The complete authored scene arrives first; a visitor's engagement activates the live orbit.
-  document.querySelector(".hero").addEventListener("pointermove", startHero, { once: true, passive: true });
-  document.querySelector("#fold-btn").addEventListener("focus", startHero, { once: true });
-  document.querySelector("#fold-btn").addEventListener("pointerenter", startHero, { once: true });
+  // The authored image stays visible. Only the explicit orbit action loads the optional renderer.
+  const hero = document.querySelector(".hero");
+  const poster = document.querySelector("#fallback");
+  const arrive = () => {
+    if (enabled && !document.hidden) hero.dataset.arrival = "on";
+  };
+  if (poster.complete && poster.naturalWidth) arrive();
+  else poster.addEventListener("load", arrive, { once: true });
   window.__prepareHero = startHero;
   return { isEnabled: () => enabled };
 }
