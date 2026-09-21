@@ -16,8 +16,10 @@ export default function FirstFlight({
   initialStep,
   onClose,
   edition = "V37 / LIGHTFOLD",
+  visitorPaced = false,
 }: {
   edition?: string;
+  visitorPaced?: boolean;
   motion: boolean;
   initialStep: string;
   onClose: (destination?: string) => void;
@@ -26,7 +28,7 @@ export default function FirstFlight({
   const remainingMs = useRef(FIRST_FLIGHT[flightStepIndex(initialStep)].durationMs);
   const timerChapter = useRef("");
   const [step, setStep] = useState(() => flightStepIndex(initialStep));
-  const [paused, setPaused] = useState(!motion || initialStep !== "board");
+  const [paused, setPaused] = useState(visitorPaced || !motion || initialStep !== "board");
   const [phase, setPhase] = useState<"loading" | "ready" | "fallback">("loading");
   const [complete, setComplete] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -209,7 +211,7 @@ export default function FirstFlight({
   function replay() {
     select(0);
     setLastDecision(null);
-    setPaused(!motion);
+    setPaused(visitorPaced || !motion);
     // Replay removes the completed controls; return focus to a stable control.
     firstFocus.current?.focus({ preventScroll: true });
   }
@@ -319,6 +321,7 @@ export default function FirstFlight({
       data-motion={motion ? "on" : "off"}
       data-complete={complete}
       data-changed={changed}
+      data-playback={playing ? "tour" : "manual"}
       aria-labelledby="ff-title"
       aria-describedby="ff-boundary"
       onCancel={(event) => {
@@ -327,6 +330,7 @@ export default function FirstFlight({
       }}
       onKeyDown={(event) => {
         if (event.key !== "Tab") return;
+        if (visitorPaced && playing) setPaused(true);
         const controls = [
           ...event.currentTarget.querySelectorAll<HTMLElement>(
             "button:not([disabled]), summary, a[href], input:not([disabled]), [tabindex='0']",
@@ -546,7 +550,17 @@ export default function FirstFlight({
               else setPaused(!paused);
             }}
           >
-            {complete ? "Replay flight" : playing ? "Pause flight" : motion ? "Resume flight" : "Manual flight"}
+            {complete
+              ? "Replay flight"
+              : !motion
+                ? "Manual flight"
+                : playing
+                  ? visitorPaced
+                    ? "Pause tour"
+                    : "Pause flight"
+                  : visitorPaced
+                    ? "Play tour"
+                    : "Resume flight"}
           </button>
           {!complete && (
             <button
@@ -594,7 +608,15 @@ export default function FirstFlight({
       <p className="ff-boundary" id="ff-boundary">
         Browser-only demo. No AI requests sent.{" "}
         {phase === "fallback" ? "The 3D view is unavailable; the illustrated outcomes still work. " : ""}
-        {!motion ? (complete ? "Motion stays off on replay." : "Motion off. Use Next.") : "Explore at your own pace."}
+        {!motion
+          ? complete
+            ? "Motion stays off on replay."
+            : "Motion off. Use Next."
+          : visitorPaced
+            ? playing
+              ? "30-second tour. Any decision pauses it."
+              : "Your pace. Use Next, or play the 30-second tour."
+            : "Explore at your own pace."}
       </p>
       <span className="o-sr-only" role="status" aria-atomic="true">
         {complete ? "Flight complete." : sceneTitle} {outcome.local} onboard, {outcome.cloud} in cloud, {outcome.held}{" "}

@@ -113,6 +113,8 @@ test("The first-minute path, chapter labels and principles lead to their working
   const page = await visit(t);
   await page.locator('.minute a[href="#work"]').click();
   await expect(page.locator("#work-h")).toBeFocused();
+  await page.locator('.minute a[href="#build-story"]').click();
+  await expect(page.locator("#build-proof-title")).toBeFocused();
   await page.locator('.minute a[href="#evidence"]').click();
   await expect(page.locator("#ev-h")).toBeFocused();
   await expect
@@ -637,8 +639,10 @@ test("Evidence leads with meaning, expands by keyboard and links the shipped bui
   const page = await visit(t, { width: 320, hash: "#evidence" });
   await expect(page.locator(".evidence-summary")).toContainText("20 containers. One virtual machine.");
   await expect(page.locator(".evidence-summary")).toContainText("not established here");
-  await expect(page.locator("#build-proof-title")).toHaveText("Reliable, even at rest.");
-  await expect(page.locator('.build-proof a[href*="pull/135"]')).toBeVisible();
+  await expect(page.locator("#build-proof-title")).toHaveText("One boundary. Every request accounted for.");
+  await page.locator(".case-engineering summary").focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator('.case-engineering a[href*="pull/135"]')).toBeVisible();
   await expect(page.locator("#evidence-records")).not.toHaveAttribute("open", "");
   await page.locator("#evidence-records summary").focus();
   await page.keyboard.press("Enter");
@@ -647,6 +651,90 @@ test("Evidence leads with meaning, expands by keyboard and links the shipped bui
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 320);
   await audit(page, "expanded-evidence-320");
   await page.screenshot({ path: path.join(output, "expanded-evidence-320.png") });
+});
+
+test("The composed opening keeps its artwork, visible first action and a finite visitor-requested orbit", async (t) => {
+  const page = await visit(t, { motion: "no-preference", height: 900 });
+  await page.mouse.move(1000, 420);
+  await page.waitForTimeout(2200);
+  await expect(page.locator(".hero")).not.toHaveClass(/scene-ready/);
+  assert.equal(await page.locator(".hero-light").evaluate((el) => getComputedStyle(el).opacity), "0");
+  assert.equal(
+    await page.evaluate(() => performance.getEntriesByType("resource").some((r) => /\/hero-.*\.js/.test(r.name))),
+    false,
+  );
+  await expect(page.locator("#hero-primary")).toBeVisible();
+  await page.screenshot({ path: path.join(output, "composed-opening-1440.png") });
+  await page.locator("#fold-btn").click();
+  await expect(page.locator(".hero")).toHaveClass(/fold-active/);
+  await expect(page.locator(".hero")).not.toHaveClass(/fold-active/, { timeout: 5000 });
+  assert.ok(Number(await page.locator("#fallback").evaluate((el) => getComputedStyle(el).opacity)) >= 0.7);
+  await page.locator("#fold-btn").click();
+  await expect(page.locator(".hero")).toHaveClass(/fold-active/);
+  await page.locator("#motion-btn").click();
+  await expect(page.locator(".hero")).not.toHaveClass(/fold-active/);
+  await expect.poll(() => page.locator("#gl").evaluate((el) => getComputedStyle(el).opacity)).toBe("0");
+  for (const width of [768, 390, 320]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto(url);
+    const action = await page.locator("#hero-primary").boundingBox();
+    assert.ok(action.y > 66 && action.y + action.height < 844, `primary action is above the fold at ${width}px`);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+    await audit(page, `composed-opening-${width}`);
+    await page.screenshot({ path: path.join(output, `composed-opening-${width}.png`) });
+  }
+});
+
+test("Manual quiet mode survives reload and device changes, while blocked storage leaves controls usable", async (t) => {
+  const page = await visit(t, { motion: "no-preference" });
+  await page.locator("#motion-btn").click();
+  await page.reload();
+  await expect(page.locator("#motion-btn")).toHaveAttribute("aria-pressed", "false");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(page.locator("#motion-btn")).toHaveAttribute("aria-pressed", "false");
+  await page.locator("#motion-btn").click();
+  await page.reload();
+  await expect(page.locator("#motion-btn")).toHaveAttribute("aria-pressed", "true");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(page.locator("#motion-btn")).toHaveAttribute("aria-pressed", "false");
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(page.locator("#motion-btn")).toHaveAttribute("aria-pressed", "true");
+  await page.context().addInitScript(() => {
+    Storage.prototype.getItem = () => {
+      throw new Error("Storage unavailable");
+    };
+    Storage.prototype.setItem = () => {
+      throw new Error("Storage unavailable");
+    };
+  });
+  await page.reload();
+  await page.locator("#motion-btn").click();
+  await expect(page.locator("#motion-btn")).toHaveAttribute("aria-pressed", "false");
+  await page.locator("#hero-primary").click();
+  await expect(page.locator("#work-h")).toBeFocused();
+});
+
+test("Helios flight waits for its visitor, offers an optional tour and pauses that tour for a decision", async (t) => {
+  const page = await visit(t, { motion: "no-preference", hash: "#flight=board" });
+  await expect(page.locator(".ff-stage-ready,.ff-stage-fallback")).toBeVisible({ timeout: 45000 });
+  await expect(page.locator(".first-flight")).toHaveAttribute("data-playback", "manual");
+  await page.waitForTimeout(5500);
+  await expect(page.locator("#ff-scene-title")).toHaveText("Your ship. Your boundary.");
+  await page.getByRole("button", { name: "Play tour", exact: true }).click();
+  await expect(page.locator(".first-flight")).toHaveAttribute("data-playback", "tour");
+  await expect(page.locator("#ff-scene-title")).toHaveText("Open it. Understand it.", { timeout: 7500 });
+  await page.getByRole("button", { name: "Cut the cloud link", exact: false }).click();
+  await expect(page.locator(".first-flight")).toHaveAttribute("data-playback", "manual");
+  await expect(page.locator(".ff-decision-result")).toContainText("12 onboard · 0 in cloud · 0 held");
+  await page.getByRole("button", { name: "See my decision", exact: false }).click();
+  await expect(page.locator(".ff-recap")).toBeVisible();
+  await page.getByRole("button", { name: "Replay flight", exact: true }).click();
+  await expect(page.locator(".first-flight")).toHaveAttribute("data-playback", "manual");
+  await expect(page.locator("#ff-scene-title")).toHaveText("Your ship. Your boundary.");
+  await page.screenshot({ path: path.join(output, "visitor-paced-flight.png") });
+  await page.keyboard.press("Escape");
+  await expect(page.locator("h1")).toBeFocused();
 });
 
 test("A plain visit stays at cashio.us, old V38 addresses normalize and deliberate archives remain available", async (t) => {

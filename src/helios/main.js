@@ -8,6 +8,7 @@ import { computeWorldOutcome } from "../odyssey/sovereign-model";
 import { mountInstrument } from "./instruments.js";
 import { setupNavigation } from "./navigation.js";
 import { setupMotion } from "./motion.js";
+import { readMotionPreference } from "./motion-preference.js";
 import { setupScenes } from "./scenes.js";
 
 /* =========================================================
@@ -18,7 +19,7 @@ import { setupScenes } from "./scenes.js";
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-let motionOn = !reduced;
+let motionOn = !reduced && readMotionPreference() !== "off";
 const hasGsap = true;
 const scenes = setupScenes({ motion: motionOn });
 const studyState = new Map(PROJECTS.map((p) => [p.id, defaultExperiment(p.id)]));
@@ -823,9 +824,9 @@ $("#fold-btn").addEventListener("click", async () => {
   }
   await window.__prepareHero?.();
   if (window.__fold) {
-    Bit.say("FOLD", "Initiating fold. Hold on to something.", "alert", 2400);
+    Bit.say("ORBIT", "A little light. Then back to stillness.", "yes", 2400);
     window.__fold();
-  } else Bit.say("FOLD", "The fold needs WebGL. This device is showing the still.", "think");
+  } else Bit.say("ORBIT", "The original artwork is ready to explore on this device.", "think");
 });
 
 const navigation = setupNavigation({

@@ -1,5 +1,13 @@
 # Changelog
 
+## V38.6 — An opening at your pace
+
+- Keep the original orbital artwork visible. Let the opening light settle, and reserve the finite particle animation for an explicit request.
+- Make Try one decision the primary invitation; start the Helios flight at rest with optional Play tour. Keep the archived flight behavior unchanged.
+- Remember manual motion preferences in the browser while honoring system reduced motion. Retain usable controls when browser storage is unavailable.
+- Refine phone composition, headline sizing, concise controls and spacing. Connect the starship build story to the unchanged twelve-request model, immutable source and tests, with its assumptions visible.
+- Preserve root navigation, original studios, quiet startup and dated evidence. Verify motion preference changes, cancellation, narrow layouts, keyboard journeys and optional tour playback.
+
 ## V38.5 — Helios at home
 
 - Serve the current experience directly at cashio.us. Normalize older V38 addresses and release markers while keeping their section and scene; preserve the V37.17 archive explicitly in Version history.

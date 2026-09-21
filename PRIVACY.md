@@ -1,6 +1,6 @@
 # Privacy Notice for cashio.us
 
-**Last updated:** 2026-09-08
+**Last updated:** 2026-09-20
 
 cashio.us is a public professional portfolio operated by Doug Cashio.
 
@@ -29,6 +29,8 @@ No first-party advertising cookies are intentionally set, and no first-party beh
 Cloudflare Web Analytics automatic script injection was disabled for cashio.us on 8 September 2026. Ordinary hosting and security request metadata remains subject to the hosting providers' practices.
 
 ## Interactive scenes and downloads
+
+The homepage stores your manual motion preference in this browser under `cashio.helios.motion`. This preference is not transmitted to the site operator. Your device's reduced-motion setting takes priority. If browser storage is unavailable, the motion control still works for the current visit.
 
 The flight, mission outcomes, and public studies run in your browser with illustrative sample data. They do not send AI requests or connect to the private infrastructure described in the portfolio. Saving a mission card creates an image in your browser and downloads it to your device; the site does not upload that image. A shared scene link contains the selected demonstration settings. Observatory links also preserve lighting, atmosphere and camera framing in the fragment after `#`; the recipient opens a paused scene. No screenshot or scene image is uploaded when creating that link.
 
