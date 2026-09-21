@@ -5,6 +5,7 @@ import { readFile, stat } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
 import { JSDOM } from "jsdom";
+import { FLEET } from "../src/helios/fleet.js";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const asset = (path) => new URL(`../${path}`, import.meta.url);
@@ -673,6 +674,24 @@ test("Helios release identity, signature assets and compatibility receipts agree
   assert.doesNotMatch(doc.querySelector('meta[name="robots"]').content, /noindex|nofollow/);
   assert.doesNotMatch(doc.body.textContent, /Unpublished refinement/);
   assert.match(doc.body.textContent, /V38\.8 \/ HELIOS/);
+  const releaseDay = new Date(`${release.releaseDate}T00:00:00Z`);
+  const longDate = new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(releaseDay);
+  assert.equal(FLEET.pageRevised, longDate, "console help and release receipt share the interface date");
+  const [year, month, day] = release.releaseDate.split("-");
+  assert.ok(doc.body.textContent.includes(`Interface revised ${month}-${day}-${year}`));
+  const shortVersion = release.experienceVersion.split(".").slice(0, 2).join(".");
+  assert.ok((await read("README.md")).startsWith(`# cAshIo V${shortVersion} — Helios`));
+  assert.equal((await read("CHANGELOG.md")).match(/^## (V[\d.]+)/m)?.[1], `V${shortVersion}`);
+  const sitemap = new JSDOM(await read("dist/sitemap.xml"), { contentType: "application/xml" }).window.document;
+  const home = [...sitemap.querySelectorAll("url")].find(
+    (entry) => entry.querySelector("loc")?.textContent === "https://cashio.us/",
+  );
+  assert.equal(home?.querySelector("lastmod")?.textContent, release.releaseDate);
   const versions = JSON.parse(await read("dist/v38/asset-versions.json"));
   assert.equal(doc.querySelector("#sig-art").getAttribute("src"), versions["/v38/assets/celestial.webp"].url);
   assert.equal(

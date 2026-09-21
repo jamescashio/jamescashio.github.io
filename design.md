@@ -1,4 +1,10 @@
-# V38.7 final navigation polish — 09-20-2026
+# V38.8 guided invitation — 09-21-2026
+
+Keep the original cinematic orbital world and make its strongest experiences easier to discover. Board the starship is the primary invitation, with Try the privacy test alongside it and a real engineering story immediately below. Mission Control offers Explore, Try and Understand before its complete searchable directory. Reframe the same artwork for narrow phones and keep both actions readable and reachable.
+
+Preserve the navy/gold/cyan palette, Unbounded and Instrument Sans typography, Bit, original studios, quiet startup, reduced motion and dated evidence. Organize feature controllers and version existing artwork/font bytes without changing dependencies or production caching policy. The owner approved the working preview for publication on 09-21-2026. Rollback baseline: d34d058090b0bff48b1765885accb7223599b677. Release validation is documented in `docs/helios-release.md`.
+
+# Prior release — V38.7 final navigation polish — 09-20-2026
 
 Keep the original orbital workshop, artwork, typography, quiet opening and visitor-paced scenes. Make Mission Control feel like an integrated instrument: a calm fixed heading, readable search, honest result count and a destination list that scrolls independently. Close and search must remain within reach on a 320px short phone. Use existing navy, gold and cyan, with restrained hover and focus feedback.
 
