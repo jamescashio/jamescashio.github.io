@@ -17,6 +17,12 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
       else svg.pauseAnimations?.();
     });
     window.__heroPause?.(blocked || !enabled);
+    const filmNode = document.querySelector("#hero-film");
+    const heroNode = document.querySelector(".hero");
+    if (filmNode && heroNode) {
+      if (!enabled || blocked || document.hidden) filmNode.pause();
+      else if (heroNode.dataset.film === "playing") void filmNode.play()?.catch?.(() => {});
+    }
   }
   window.addEventListener("helios-overlay", syncAmbient);
   function apply() {
@@ -40,6 +46,8 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
         : "Resume ambient motion";
     if (!enabled) {
       document.querySelector(".hero").removeAttribute("data-arrival");
+      document.querySelector(".hero")?.removeAttribute("data-film");
+      document.querySelector("#hero-film")?.pause();
       gsap.globalTimeline.getChildren(false).forEach((animation) => {
         if (animation.repeat() === -1) animation.pause();
         else animation.progress(1).kill();
@@ -134,8 +142,44 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
   // The authored image stays visible. Only the explicit orbit action loads the optional renderer.
   const hero = document.querySelector(".hero");
   const poster = document.querySelector("#fallback");
+  const film = document.querySelector("#hero-film");
+  const deepLink = () => {
+    const hash = location.hash;
+    return Boolean(hash) && hash !== "#" && hash !== "#top";
+  };
+  function stopFilm() {
+    if (!film) return;
+    film.pause();
+    hero.removeAttribute("data-film");
+  }
+  function startFilm() {
+    if (!film || !enabled || query.matches || document.hidden || deepLink()) {
+      stopFilm();
+      return;
+    }
+    if (hero.dataset.film === "playing" || hero.dataset.film === "done") return;
+    const play = () => {
+      if (!enabled || query.matches || document.hidden) return;
+      hero.dataset.film = "playing";
+      const run = film.play();
+      if (run && typeof run.catch === "function") run.catch(() => hero.removeAttribute("data-film"));
+    };
+    film.addEventListener(
+      "ended",
+      () => {
+        hero.dataset.film = "done";
+        if (enabled && !document.hidden) hero.dataset.arrival = "on";
+      },
+      { once: true },
+    );
+    if (film.readyState >= 2) play();
+    else film.addEventListener("canplay", play, { once: true });
+    film.preload = "auto";
+    film.load();
+  }
   const arrive = () => {
     if (enabled && !document.hidden) hero.dataset.arrival = "on";
+    startFilm();
   };
   if (poster.complete && poster.naturalWidth) arrive();
   else poster.addEventListener("load", arrive, { once: true });
