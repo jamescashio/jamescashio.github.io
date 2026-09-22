@@ -84,72 +84,15 @@
   pointer-events: none;
   opacity: 0;
   z-index: 0;
-  transition: opacity 720ms var(--ease-ui);
+  transition: opacity 0.7s var(--ease-ui);
 }
 .hero[data-film="playing"] .hero-film {
   opacity: 1;
 }
 .hero[data-film="playing"] .vignette {
   background:
-    linear-gradient(90deg, rgba(4, 7, 14, 0.88), rgba(4, 7, 14, 0.58) 38%, rgba(4, 7, 14, 0.12) 72%),
-    linear-gradient(0deg, var(--void), transparent 32%, rgba(4, 7, 14, 0.2));
-}
-.hero[data-film="playing"]::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 3px;
-  z-index: 5;
-  background: linear-gradient(90deg, var(--gold), var(--cyan));
-  transform-origin: left;
-  animation: helios-film-meter 6.4s linear forwards;
-  pointer-events: none;
-}
-.hero .cta .btn.gold {
-  box-shadow: 0 0 28px rgba(242, 200, 122, 0.22);
-}
-.hero .bit {
-  box-shadow: 0 0 24px rgba(242, 200, 122, 0.08);
-}
-.hero .bit:hover {
-  box-shadow: 0 0 28px rgba(56, 225, 255, 0.16);
-}
-.minute a.step {
-  background: linear-gradient(180deg, rgba(242, 200, 122, 0.05), transparent 42%);
-}
-.minute a.step:hover {
-  border-color: rgba(242, 200, 122, 0.55);
-  background: linear-gradient(180deg, rgba(242, 200, 122, 0.12), rgba(16, 26, 44, 0.4));
-  box-shadow: 0 18px 40px rgba(4, 7, 14, 0.35);
-}
-.plate::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(105deg, transparent 40%, rgba(56, 225, 255, 0.14) 50%, transparent 60%);
-  transform: translateX(-120%);
-}
-.plate:hover::after {
-  animation: helios-plate-sweep 1.1s var(--ease-ui) forwards;
-}
-.philo .txt .btn.ghost {
-  box-shadow: 0 0 24px rgba(56, 225, 255, 0.12);
-}
-@keyframes helios-film-meter {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
-@keyframes helios-plate-sweep {
-  to {
-    transform: translateX(120%);
-  }
+    linear-gradient(90deg, rgba(4, 7, 14, 0.88), rgba(4, 7, 14, 0.55) 40%, transparent 76%),
+    linear-gradient(0deg, var(--void), transparent 30%, rgba(4, 7, 14, 0.16));
 }
 .motion-off .hero canvas.gl,
 .experience-open .hero canvas.gl {
@@ -185,13 +128,6 @@
 }
 .motion-off .hero-film,
 .experience-open .hero-film {
-  display: none;
-}
-.page-hidden .hero[data-film="playing"]::after,
-.motion-off .hero::after {
-  animation-play-state: paused;
-}
-.motion-off .plate::after {
   display: none;
 }
 .hero .bit {
@@ -419,10 +355,7 @@
     animation: none !important;
     opacity: 0;
   }
-  .hero-film,
-  .hero[data-film="playing"]::after,
-  .plate::after {
+  .hero-film {
     display: none !important;
-    animation: none !important;
   }
 }
