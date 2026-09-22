@@ -70,29 +70,7 @@
   transition: opacity 350ms ease-out;
 }
 .hero.fold-active canvas.gl {
-  opacity: 0.82;
-  width: 100%;
-  mask-image: linear-gradient(90deg, transparent, #000 16%);
-}
-.hero-film {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 67% 50%;
-  pointer-events: none;
-  opacity: 0;
-  z-index: 0;
-  transition: opacity 0.7s var(--ease-ui);
-}
-.hero[data-film="playing"] .hero-film {
-  opacity: 1;
-}
-.hero[data-film="playing"] .vignette {
-  background:
-    linear-gradient(90deg, rgba(4, 7, 14, 0.88), rgba(4, 7, 14, 0.55) 40%, transparent 76%),
-    linear-gradient(0deg, var(--void), transparent 30%, rgba(4, 7, 14, 0.16));
+  opacity: 0.65;
 }
 .motion-off .hero canvas.gl,
 .experience-open .hero canvas.gl {
@@ -125,10 +103,6 @@
 .motion-off .hero-light {
   animation: none;
   opacity: 0;
-}
-.motion-off .hero-film,
-.experience-open .hero-film {
-  display: none;
 }
 .hero .bit {
   background: rgba(4, 7, 14, 0.66);
@@ -328,10 +302,6 @@
     height: 330px;
     background: radial-gradient(ellipse at 70% 30%, rgba(233, 182, 92, 0.17), transparent 58%);
   }
-  .hero-film {
-    height: 350px;
-    object-position: 78% 20%;
-  }
   .case-study {
     grid-template-columns: 1fr;
     gap: 28px;
@@ -354,8 +324,5 @@
   .hero-light {
     animation: none !important;
     opacity: 0;
-  }
-  .hero-film {
-    display: none !important;
   }
 }
