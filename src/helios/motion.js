@@ -143,6 +143,13 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
   const hero = document.querySelector(".hero");
   const poster = document.querySelector("#fallback");
   const film = document.querySelector("#hero-film");
+  if (film && !document.getElementById("helios-film-style")) {
+    const style = document.createElement("style");
+    style.id = "helios-film-style";
+    style.textContent =
+      ".hero-film{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:67% 50%;pointer-events:none;opacity:0;z-index:0;transition:opacity .7s ease}.hero[data-film=playing] .hero-film{opacity:1}.hero[data-film=playing] .vignette{background:linear-gradient(90deg,rgba(4,7,14,.88),rgba(4,7,14,.5) 42%,transparent 76%),linear-gradient(0deg,var(--void),transparent 30%,rgba(4,7,14,.16))}.motion-off .hero-film,.experience-open .hero-film{display:none}@media (max-width:700px){.hero-film{height:350px;object-position:78% 20%}}@media (prefers-reduced-motion:reduce){.hero-film{display:none!important}}";
+    document.head.appendChild(style);
+  }
   const deepLink = () => {
     const hash = location.hash;
     return Boolean(hash) && hash !== "#" && hash !== "#top";
