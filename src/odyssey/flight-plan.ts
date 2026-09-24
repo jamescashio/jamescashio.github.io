@@ -45,7 +45,7 @@ export const FIRST_FLIGHT = [
     durationMs: 7_500,
     shot: "command",
     title: "The final say is yours.",
-    copy: "Now choose cloud-only processing for twelve private requests. With permission off, all twelve wait. A system should explain its boundary—and honor it.",
+    copy: "Now choose cloud only processing for twelve private requests. With permission off, all twelve wait. A system should explain its boundary, then honor it.",
     takeaway: "Powerful tools. A human in command.",
     view: "hero",
     hull: false,

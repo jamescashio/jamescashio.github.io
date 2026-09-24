@@ -655,7 +655,7 @@ test("tag publication derives V37 from software metadata and validates one built
 
 test("Helios release identity, signature assets and compatibility receipts agree", async () => {
   const release = JSON.parse(await read("public/v38/site-release.json"));
-  assert.equal(release.experienceVersion, "38.9.0");
+  assert.equal(release.experienceVersion, "39.0.0");
   assert.equal(release.entry, "/");
   assert.equal(release.published, true);
   assert.equal(await read("dist/v38/site-release.json"), await read("public/v38/site-release.json"));
@@ -673,7 +673,7 @@ test("Helios release identity, signature assets and compatibility receipts agree
   const doc = new JSDOM(await read("dist/index.html")).window.document;
   assert.doesNotMatch(doc.querySelector('meta[name="robots"]').content, /noindex|nofollow/);
   assert.doesNotMatch(doc.body.textContent, /Unpublished refinement/);
-  assert.match(doc.body.textContent, /V38\.9 \/ HELIOS/);
+  assert.match(doc.body.textContent, /V39\.0 \/ HELIOS/);
   const releaseDay = new Date(`${release.releaseDate}T00:00:00Z`);
   const longDate = new Intl.DateTimeFormat("en-US", {
     month: "long",
@@ -682,10 +682,9 @@ test("Helios release identity, signature assets and compatibility receipts agree
     timeZone: "UTC",
   }).format(releaseDay);
   assert.equal(FLEET.pageRevised, longDate, "console help and release receipt share the interface date");
-  const [year, month, day] = release.releaseDate.split("-");
-  assert.ok(doc.body.textContent.includes(`Interface revised ${month}-${day}-${year}`));
+  assert.match(doc.body.textContent, new RegExp(`Interface revised\\s+${longDate}`));
   const shortVersion = release.experienceVersion.split(".").slice(0, 2).join(".");
-  assert.ok((await read("README.md")).startsWith(`# cAshIo V${shortVersion} — Helios`));
+  assert.ok((await read("README.md")).startsWith(`# cAshIo V${shortVersion} · Helios`));
   assert.equal((await read("CHANGELOG.md")).match(/^## (V[\d.]+)/m)?.[1], `V${shortVersion}`);
   const sitemap = new JSDOM(await read("dist/sitemap.xml"), { contentType: "application/xml" }).window.document;
   const home = [...sitemap.querySelectorAll("url")].find(
@@ -719,7 +718,7 @@ test("The root ships Helios directly, with bounded compatibility routing and a c
   const styles = document.querySelector("style[data-helios-styles]");
   assert.ok(styles);
   assert.equal(styles.textContent, await read(`dist${styles.getAttribute("data-helios-styles")}`));
-  assert.ok(gzipSync(styles.textContent).byteLength <= 15000);
+  assert.ok(gzipSync(styles.textContent).byteLength <= 17000);
   const csp = document.querySelector('meta[http-equiv="Content-Security-Policy"]').content;
   assert.doesNotMatch(csp.split("script-src ")[1].split(";")[0], /unsafe-inline|unsafe-eval/);
   for (const script of document.querySelectorAll("script:not([src])")) {

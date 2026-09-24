@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>cAshIo · Helios — a human in command</title>
+    <title>Doug Cashio · cAshIo · A human in command</title>
     <meta name="robots" content="index, follow" />
     <meta
       http-equiv="Content-Security-Policy"
@@ -12,14 +12,27 @@
     <meta name="theme-color" content="#080F1B" />
     <meta property="og:url" content="https://cashio.us/" />
     <script src="/helios-entry.js"></script>
-    <meta property="og:title" content="cAshIo · A human in command" />
-    <meta property="og:description" content="Step into an orbital workshop. Change a decision. See why it matters." />
-    <meta property="og:image" content="https://cashio.us/v38/assets/orbit.jpg" />
+    <meta property="og:title" content="Doug Cashio · A human in command" />
+    <meta
+      property="og:description"
+      content="Local AI and security systems, built on hardware I own and open to inspect. Fly the starship, test the privacy boundary, read the dated evidence."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="cAshIo" />
+    <meta property="og:image" content="https://cashio.us/v38/assets/share-card.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Doug Cashio. Own the iron. Shape the possible. An orbital station ring above the Earth at sunrise."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://cashio.us/v38/assets/share-card.jpg" />
     <link rel="preload" href="/v38/fonts/unbounded-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/v38/fonts/instrument-latin.woff2" as="font" type="font/woff2" crossorigin />
     <meta
       name="description"
-      content="Doug Cashio builds local AI and security systems that keep a human in command. Seven working studies, a 3D starship, and dated evidence you can inspect."
+      content="Doug Cashio builds local AI and security systems on hardware he owns, and keeps a human in command. Fly a 3D starship, try seven working studies, and inspect dated evidence."
     />
     <link rel="icon" href="/cashio/icon.svg" type="image/svg+xml" />
     <link rel="canonical" href="https://cashio.us/" />
@@ -50,23 +63,7 @@
   <body>
     <a class="skip" href="#main-content">Skip to content</a>
     <div class="flash" id="flash" aria-hidden="true"></div>
-    <div class="cursor" aria-hidden="true"></div>
-    <div class="cursor-ring" aria-hidden="true"></div>
     <div class="rail" aria-hidden="true"><i id="railbar"></i></div>
-    <nav class="sections" aria-label="Sections">
-      <a href="#top" aria-label="Orbit"><span>Orbit</span></a>
-      <a href="#work" aria-label="Try a decision"><span>Try a decision</span></a>
-      <a href="#studies" aria-label="Seven studies"><span>Seven studies</span></a>
-      <a href="#universe" aria-label="System atlas"><span>System atlas</span></a>
-      <a href="#starship" aria-label="Starship"><span>Starship</span></a>
-      <a href="#principles" aria-label="Principles Engine"><span>Principles Engine</span></a>
-      <a href="#studios" aria-label="Studios"><span>Studios</span></a>
-      <a href="#evidence" aria-label="Dated evidence"><span>Dated evidence</span></a>
-      <a href="#heritage" aria-label="Flight heritage"><span>Flight heritage</span></a>
-      <a href="#operator" aria-label="Meet Doug"><span>Meet Doug</span></a>
-      <a href="#contact" aria-label="Open a channel"><span>Open a channel</span></a>
-    </nav>
-
     <header class="nav show" id="nav">
       <div class="in">
         <a class="brand" href="#top" aria-label="cAshIo home">
@@ -84,7 +81,7 @@
           <span>c<span class="em">A</span>sh<span class="cy">I</span>o</span>
         </a>
         <nav aria-label="Primary">
-          <a href="#work">Selected work</a><a href="#starship">Starship</a><a href="#universe">The universe</a
+          <a href="#work">Selected work</a><a href="#universe">The universe</a><a href="#starship">Starship</a
           ><a href="#studios">Studios</a>
         </nav>
         <div class="acts">
@@ -121,48 +118,62 @@
       </div>
     </header>
 
+    <nav class="sections" aria-label="Sections">
+      <a href="#top" aria-label="Orbit"><span>Orbit</span></a>
+      <a href="#work" aria-label="Try a decision"><span>Try a decision</span></a>
+      <a href="#studies" aria-label="Seven studies"><span>Seven studies</span></a>
+      <a href="#universe" aria-label="System atlas"><span>System atlas</span></a>
+      <a href="#starship" aria-label="Starship"><span>Starship</span></a>
+      <a href="#principles" aria-label="Principles Engine"><span>Principles Engine</span></a>
+      <a href="#studios" aria-label="Studios"><span>Studios</span></a>
+      <a href="#evidence" aria-label="Dated evidence"><span>Dated evidence</span></a>
+      <a href="#heritage" aria-label="Flight heritage"><span>Flight heritage</span></a>
+      <a href="#operator" aria-label="Meet Doug"><span>Meet Doug</span></a>
+      <a href="#contact" aria-label="Open a channel"><span>Open a channel</span></a>
+    </nav>
+
     <main id="main-content" tabindex="-1">
       <!-- ================= HERO ================= -->
       <section class="hero" id="top" aria-label="Introduction">
         <canvas class="gl" id="gl" aria-hidden="true"></canvas>
-        <img
-          class="fallback"
-          id="fallback"
-          src="/v38/assets/orbit.webp"
-          width="1200"
-          height="675"
-          decoding="async"
-          fetchpriority="high"
-          alt=""
-          aria-hidden="true"
-        />
-        <video
-          class="hero-film"
-          id="hero-film"
-          muted
-          playsinline
-          preload="none"
-          poster="/assets/celestial/helios-arrival-poster.jpg"
-          aria-hidden="true"
-          tabindex="-1"
-        >
+        <picture>
+          <source
+            type="image/avif"
+            srcset="
+              /odyssey/orbit-aurora-v37-800.avif   800w,
+              /odyssey/orbit-aurora-v37-1200.avif 1200w,
+              /odyssey/orbit-aurora-v37-1672.avif 1672w
+            "
+            sizes="100vw"
+          />
+          <img
+            class="fallback"
+            id="fallback"
+            src="/v38/assets/orbit.webp"
+            width="1200"
+            height="675"
+            decoding="async"
+            fetchpriority="high"
+            alt=""
+            aria-hidden="true"
+          />
+        </picture>
+        <video class="hero-film" id="hero-film" muted playsinline preload="none" aria-hidden="true" tabindex="-1">
           <source src="/assets/celestial/helios-arrival.mp4" type="video/mp4" />
         </video>
         <div class="grid-bg"></div>
         <div class="hero-light" aria-hidden="true"></div>
+        <div class="hero-sun" aria-hidden="true"></div>
+        <div class="hero-stars" aria-hidden="true"></div>
         <div class="vignette"></div>
         <div class="status">
-          <span
-            class="mono"
-            style="
-              color: var(--gold);
-              border: 1px solid rgba(242, 200, 122, 0.6);
-              padding: 6px 10px;
-              border-radius: 6px;
-            "
-            >V38 · HELIOS</span
+          <span class="mono status-live"
+            ><i aria-hidden="true"></i>Observed <span data-fleet="observedLong">September 18, 2026</span></span
           >
-          <span class="mono" style="color: var(--muted)">THE HUMAN RECKONING · A HUMAN IN COMMAND</span>
+          <span class="mono status-fleet"
+            ><span data-fleet="hosts">2</span> hosts · <span data-fleet="lxc">20</span> containers ·
+            <span data-fleet="qemu">1</span> VM</span
+          >
         </div>
         <div class="content">
           <div class="kick" data-hero style="display: flex; align-items: center; gap: 10px">
@@ -175,7 +186,8 @@
             ><span class="line"><span class="w em">possible.</span></span>
           </h1>
           <p class="sub" data-hero>
-            I build local AI and security systems. Come aboard. Test what stays private and where a human takes command.
+            I’m Doug Cashio, more than twenty years in cybersecurity. I build local AI and security systems on hardware
+            I own. Come aboard and see what stays private, and where a human takes command.
           </p>
           <div class="cta" data-hero>
             <a class="btn gold" id="hero-primary" href="#flight=board" data-flight
@@ -183,10 +195,10 @@
             >
             <a class="btn ghost hero-secondary" href="#work">Try the privacy test <span aria-hidden="true">→</span></a>
           </div>
-          <p class="cta-note">A 30-second flight, when you choose. Your pace. Sound off.</p>
+          <p class="cta-note">A 30 second flight at your pace. Sound stays off.</p>
         </div>
         <button class="bit" type="button" id="fold-btn" data-hero data-magnet>
-          <span class="mono" style="color: var(--muted)">BIT / HUMAN CO-PILOT</span
+          <span class="mono" style="color: var(--muted)">BIT / HUMAN COPILOT</span
           ><span class="mono" style="color: var(--gold)">ILLUMINATE THE ORBIT ↗</span>
         </button>
         <a class="hero-next" href="#workshop">Next: inside the workshop <span aria-hidden="true">↓</span></a>
@@ -202,33 +214,34 @@
         <div class="wrap grid" style="align-items: center">
           <div class="c5 workshop-note">
             <span class="kick gold">FROM DOUG’S WORKSHOP</span>
-            <h2 id="workshop-title">Even at rest,<br />the ship should tell its story.</h2>
+            <h2 id="workshop-title">Built at home.<br />Open to inspect.</h2>
             <p>
-              The starship once opened to a blank view while paused. The fix was small: draw its first visible frame,
-              then let it rest. A quiet experience still deserves a good first impression.
+              Everything here runs on one idea I use every day: let AI do the heavy lifting, and keep a person in charge
+              of the calls that matter. The hardware is mine. The rules are written down. The evidence is dated.
             </p>
-            <a class="workshop-link" href="https://github.com/jamescashio/jamescashio.github.io/pull/135"
-              >Read the repair and its checks <span aria-hidden="true">↗</span></a
+            <a class="workshop-link" href="https://github.com/jamescashio/jamescashio.github.io"
+              >Read the source for this site <span aria-hidden="true">↗</span></a
             >
           </div>
-          <div class="c7 stack" style="--stack-gap: 16px">
-            <div
-              style="display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap"
-            >
-              <span class="kick gold">CHOOSE YOUR FIRST MOVE</span><span class="muted">One world. Three ways in.</span>
+          <div class="c7 stack workshop-routes">
+            <div class="workshop-routes-head">
+              <span class="kick gold">START ANYWHERE</span
+              ><span class="muted">Three ways in. Each takes about a minute.</span>
             </div>
             <div class="minute" data-stagger>
-              <a class="step" href="#flight=board">
+              <a class="step" href="#flight=board" data-flight>
                 <span class="mono gold">01 / EXPLORE</span><strong>Board the starship</strong>
-                <span class="muted copy-note">A 30-second flight. Your call.</span>
+                <span class="muted copy-note"
+                  >Fly a ship with its own onboard AI. Cut the cloud link and see what stays aboard.</span
+                >
               </a>
               <a class="step" href="#work">
-                <span class="mono gold">02 / TRY</span><strong>Test the boundary</strong>
-                <span class="muted copy-note">One private document. Who decides?</span>
+                <span class="mono gold">02 / TRY</span><strong>Test the privacy boundary</strong>
+                <span class="muted copy-note">Mark one document private, then predict who decides.</span>
               </a>
               <a class="step" href="#build-story">
-                <span class="mono gold">03 / UNDERSTAND</span><strong>See how it was built</strong>
-                <span class="muted copy-note">The choices, the rule, the evidence.</span>
+                <span class="mono gold">03 / INSPECT</span><strong>Read the build story</strong>
+                <span class="muted copy-note">The question, the rule and the tests behind the starship.</span>
               </a>
             </div>
           </div>
@@ -246,8 +259,7 @@
             <div class="r">
               <div class="mono" style="color: var(--muted); margin-bottom: 6px">BUILT. OPERATED. EXPLAINED.</div>
               <p class="muted" style="margin: 0; font-size: 17px">
-                One document. The same task. Now change its privacy boundary. Predict the route, then test the rule
-                yourself.
+                One document, one task. Change its privacy and predict the route. Then test the rule yourself.
               </p>
             </div>
           </div>
@@ -255,7 +267,7 @@
             <div class="panel c7 stack" style="padding: clamp(22px, 2.6vw, 34px); --stack-gap: 22px">
               <div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap">
                 <span class="kick gold">THE PRIVACY TEST / ABOUT 20 SECONDS</span
-                ><span class="mono" style="color: var(--muted)">BROWSER-ONLY</span>
+                ><span class="mono" style="color: var(--muted)">RUNS IN YOUR BROWSER</span>
               </div>
               <h3>One change. Who decides?</h3>
               <p class="muted" style="margin: 0">
@@ -336,7 +348,7 @@
                 ><a href="#studies" data-load="private">Load the private version ↗</a>
               </div>
               <span class="mono" style="color: var(--muted)"
-                >Browser-only illustration. No document is uploaded and no AI request is sent.</span
+                >Nothing leaves this page. No document is uploaded and no AI request is sent.</span
               >
             </div>
             <div
@@ -350,39 +362,27 @@
               <span class="kick gold">FROM MY WORKSHOP / SMART ROUTING</span>
               <h3>Spend the AI budget where it matters.</h3>
               <p class="muted" style="margin: 0; font-size: 15px">
-                I reserve the more capable route for work that needs it.
+                I save the most capable model for the work that needs it.
               </p>
-              <div style="display: flex; align-items: flex-end; gap: 10px; margin-top: 4px">
-                <span
-                  class="num em"
-                  id="cents"
-                  data-count="26"
-                  style="font-size: clamp(96px, 9vw, 136px); text-shadow: 0 0 40px rgba(242, 200, 122, 0.35)"
-                  >26</span
-                >
-                <span class="syne em" style="font-size: 48px; font-weight: 700; padding-bottom: 12px">¢</span>
-                <span class="mono" style="font-size: 13px; color: var(--muted); padding-bottom: 20px">/day</span>
-              </div>
-              <div>
-                <strong style="font-size: 14px">Observed AI provider usage · historical sample</strong><br /><span
-                  class="mono"
-                  style="color: var(--muted)"
-                  >Sample · July 21 to 22, 2026</span
-                >
-              </div>
-              <dl style="margin: 0; display: grid; grid-template-columns: 120px 1fr; gap: 10px 12px; font-size: 14px">
-                <dt class="mono" style="color: var(--cyan); padding-top: 3px">The problem</dt>
-                <dd class="muted" style="margin: 0">
-                  One expensive default treats routine work and hard decisions alike.
+              <figure class="routing-law">
+                <blockquote>
+                  <p class="routing-law-lead">Quality picks the model.</p>
+                  <p class="routing-law-tie">Cost only breaks a tie.</p>
+                </blockquote>
+                <figcaption class="mono">My routing law · published in the dated export</figcaption>
+              </figure>
+              <dl class="routing-notes">
+                <dt class="mono">The problem</dt>
+                <dd class="muted">One expensive default treats routine work and hard decisions the same way.</dd>
+                <dt class="mono">My decision</dt>
+                <dd class="muted">
+                  A local model handles recurring work and harder tasks can escalate. I weigh quality, privacy and
+                  reliability first. Private work waits for a person.
                 </dd>
-                <dt class="mono" style="color: var(--cyan); padding-top: 3px">My decision</dt>
-                <dd class="muted" style="margin: 0">
-                  Atlas handles recurring work; harder tasks can escalate. I check quality, privacy and reliability
-                  before considering cost.
-                </dd>
-                <dt class="mono" style="color: var(--cyan); padding-top: 3px">The result</dt>
-                <dd class="muted" style="margin: 0">
-                  A two-day record of provider usage. Scope and exclusions are in the evidence boundary below.
+                <dt class="mono">The proof</dt>
+                <dd class="muted">
+                  The rule is public and you can test it in the demo. Live spend and routing figures stay withheld until
+                  they are measured again.
                 </dd>
               </dl>
               <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: auto">
@@ -407,7 +407,7 @@
               <h2 id="studies-h" data-split>Seven questions.<br />Take the controls.</h2>
             </div>
             <div class="r">
-              <span class="mono" style="color: var(--muted)">SEVEN WORKING STUDIES</span>
+              <span class="mono" style="color: var(--muted)">RUNS IN YOUR BROWSER</span>
               <p class="study-intro">Choose a question. Change the inputs. See the rule at work.</p>
               <span class="study-mobile-hint">Swipe to explore all seven →</span>
             </div>
@@ -461,7 +461,7 @@
               <div class="ctrl" id="hermes-controls">
                 <div class="stack" style="--stack-gap: 14px">
                   <div style="display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap">
-                    <span class="kick" style="font-size: 11px">ROUTE QUALIFICATION</span
+                    <span class="kick">ROUTE QUALIFICATION</span
                     ><span class="mono" style="color: var(--muted)">INTENT · POLICY CORE · DECISION</span>
                   </div>
                   <strong style="font-size: 14px">Choose the work</strong>
@@ -489,7 +489,7 @@
                   </div>
                   <div class="stack" id="st-steps" style="--stack-gap: 8px"></div>
                   <p class="muted copy-note" id="st-detail" style="margin: 4px 0 0">
-                    Choose a task and its boundaries, then run the five-step demonstration. No request leaves this page.
+                    Choose a task and its boundaries, then run the five step demonstration. No request leaves this page.
                   </p>
                 </div>
               </div>
@@ -509,7 +509,7 @@
                   ><strong style="font-size: 16px" id="st-take">Give each request the route it needs.</strong
                   ><span class="muted copy-note" id="st-takebody"
                     >Routine work gets a general lane. Evidence requirements change the route. Private information puts
-                    a person in the decision. This is the policy behind the cost-control idea.</span
+                    a person in the decision. This is the policy behind the cost control idea.</span
                   ><a
                     id="study-source"
                     href="https://github.com/jamescashio/jamescashio.github.io/blob/82425d30fb0e6d2c7891281ded0423b854d6f23d/src/odyssey/data.ts"
@@ -575,12 +575,12 @@
             </div>
             <div class="stack">
               <p class="lede">
-                Zeus and Apollo are the hardware I own and operate. HERMES runs the scheduled work; the DeepSeek Harness
-                is my operator console. I remain accountable for the decisions.
+                Zeus and Apollo are the two servers I own and run. HERMES schedules the work. DSH, my DeepSeek Harness,
+                is the console I operate it from. Every path ends with a person who is accountable.
               </p>
               <p class="muted copy-note">
-                Change the privacy of request R-01. Watch its path respond, then carry that same decision into HERMES.
-                Select any node to inspect its role.
+                Make request R-01 private and watch its path change. Carry the same decision into HERMES, or select any
+                node to see its role.
               </p>
             </div>
           </header>
@@ -592,16 +592,17 @@
               </div>
               <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap">
                 <span class="syne" id="nd-name" style="font-size: 32px; font-weight: 800">HERMES</span
-                ><span class="num em" id="nd-value" style="font-size: 32px">—</span
-                ><span class="mono" id="nd-unit" style="color: var(--muted)">routing not verified</span>
+                ><span class="num em" id="nd-value" style="font-size: 32px" data-fleet="hermes.jobs">58</span
+                ><span class="mono" id="nd-unit" style="color: var(--muted)">enabled scheduled jobs</span>
               </div>
               <strong id="nd-summary">Intent becomes a qualified route.</strong>
               <p class="muted copy-note" id="nd-body">
-                The latest audit did not establish a current lane inventory or execution record. This atlas illustrates
-                the design relationships; the HERMES study lets you explore a browser-only routing model.
+                58 of 60 scheduled jobs were enabled on the orchestration host at the September 18, 2026 observation. No
+                live end to end route verification was established, so routing stays unverified. The HERMES study lets
+                you explore a routing model that runs in your browser.
               </p>
               <span class="mono" id="nd-evidence" style="color: var(--gold)"
-                >Audit · <span data-fleet="observedLong">September 18, 2026</span> · routing withheld</span
+                >Audit · <span data-fleet="observedLong">September 18, 2026</span> · routing not verified</span
               >
             </div>
             <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px" data-stagger>
@@ -726,7 +727,7 @@
                       <path d="M37 40l5 3-5 5m10-3 9-2" fill="none" stroke="#8febff" stroke-width="2" />
                       <path d="M47 58v8l-11 3 14 4 13-4-11-4v-8" fill="url(#node-dsh-metal)" /></svg></span
                   ><span class="syne" style="font-size: 15px; font-weight: 700">DSH</span
-                  ><span class="node-detail" style="font-size: 10px; color: var(--muted)">Console</span>
+                  ><span class="node-detail" style="font-size: 12px; color: var(--muted)">Console</span>
                 </button>
                 <button
                   class="node"
@@ -754,7 +755,7 @@
                       <path d="M40 41v29l24-8-5-13z" fill="#a4773c" />
                       <path d="M21 49l19 9 19-9M40 58v12" fill="none" stroke="#fff1bd" opacity=".6" /></svg></span
                   ><span class="syne" style="font-size: 15px; font-weight: 700">The operator</span
-                  ><span class="node-detail" style="font-size: 10px; color: var(--muted)">Authority</span>
+                  ><span class="node-detail" style="font-size: 12px; color: var(--muted)">Authority</span>
                 </button>
                 <button
                   class="node big"
@@ -782,7 +783,7 @@
                       <path d="M40 41l9-12 24 3z" fill="#c18a3e" />
                       <circle cx="40" cy="41" r="3" fill="#fff7df" /></svg></span
                   ><span class="syne" style="font-size: 16px; font-weight: 800">HERMES</span
-                  ><span class="node-detail" style="font-size: 10px; color: var(--muted)">Orchestration</span>
+                  ><span class="node-detail" style="font-size: 12px; color: var(--muted)">Orchestration</span>
                 </button>
                 <button class="node" type="button" data-node="zeus" aria-pressed="false" style="left: 28%; top: 78%">
                   <span class="core"
@@ -811,7 +812,7 @@
                       <path d="M39 36v4m0 10v4m0 10v2" stroke="#9cf6ff" stroke-width="2" />
                       <path d="M46 36l11-3m-11 17 11-3" stroke="#38e1ff" stroke-width="1.5" /></svg></span
                   ><span class="syne" style="font-size: 15px; font-weight: 700">Zeus</span
-                  ><span class="node-detail" style="font-size: 10px; color: var(--muted)">Owned compute</span>
+                  ><span class="node-detail" style="font-size: 12px; color: var(--muted)">Owned compute</span>
                 </button>
                 <button class="node" type="button" data-node="apollo" aria-pressed="false" style="left: 72%; top: 78%">
                   <span class="core"
@@ -840,7 +841,7 @@
                       <path d="M39 36v4m0 10v4m0 10v2" stroke="#9cf6ff" stroke-width="2" />
                       <path d="M46 36l11-3m-11 17 11-3" stroke="#38e1ff" stroke-width="1.5" /></svg></span
                   ><span class="syne" style="font-size: 15px; font-weight: 700">Apollo</span
-                  ><span class="node-detail" style="font-size: 10px; color: var(--muted)">Owned compute</span>
+                  ><span class="node-detail" style="font-size: 12px; color: var(--muted)">Owned compute</span>
                 </button>
               </div>
               <div class="request-recap">
@@ -877,9 +878,11 @@
             </h2>
             <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap">
               <a class="btn ghost" href="#film=sanctuary" data-magnet>Enter the sanctuary →</a
-              ><span class="mono" style="color: var(--muted)">A FIFTEEN-SECOND FILM · THEN STEP INSIDE</span>
+              ><span class="mono" style="color: var(--muted)">A 15 SECOND FILM · THEN STEP INSIDE</span>
             </div>
-            <a href="#studies" style="font-weight: 600; color: var(--ink)">See the philosophy at work ↗</a>
+            <a class="inline-cta" href="#studies" style="font-weight: 600; color: var(--ink)"
+              >See the philosophy at work ↗</a
+            >
           </div>
         </div>
         <span class="mono" style="position: absolute; left: var(--gutter); bottom: 22px; color: var(--muted)"
@@ -897,7 +900,7 @@
         <div class="wrap">
           <div class="head">
             <div>
-              <div class="kick" style="margin-bottom: 14px">V38 / SOVEREIGN STARSHIP</div>
+              <div class="kick" style="margin-bottom: 14px">THE SOVEREIGN STARSHIP</div>
               <h2 id="ship-h" data-split>Your ship.<br />Your intelligence.</h2>
             </div>
             <div class="r">
@@ -920,92 +923,24 @@
                   alt="An original titanium and graphite exploration starship with swept wings and cyan engines beside an orbital relay"
                 />
                 <div class="shade"></div>
-                <div style="position: absolute; left: 20px; top: 20px; display: flex; gap: 8px; flex-wrap: wrap">
-                  <span
-                    class="mono"
-                    style="
-                      color: var(--cyan);
-                      padding: 6px 10px;
-                      border: 1px solid rgba(56, 225, 255, 0.3);
-                      border-radius: 6px;
-                      background: rgba(4, 7, 14, 0.6);
-                    "
-                    >CSV SOVEREIGN / EXPLORER 01</span
-                  ><span
-                    class="mono pulse"
-                    id="relay-chip"
-                    style="
-                      color: var(--gold);
-                      padding: 6px 10px;
-                      border: 1px solid rgba(242, 200, 122, 0.4);
-                      border-radius: 6px;
-                      background: rgba(4, 7, 14, 0.6);
-                    "
-                    >CLOUD RELAY CONNECTED</span
-                  >
+                <div class="plate-badges">
+                  <span class="mono plate-badge">CSV SOVEREIGN / EXPLORER 01</span
+                  ><span class="mono pulse plate-badge relay" id="relay-chip">CLOUD RELAY CONNECTED</span>
                 </div>
-                <div class="cap">
+                <div class="cap ship-cap">
                   <div class="stack" style="--stack-gap: 10px">
-                    <span class="mono" style="color: var(--muted)">YOUR SHIP. YOUR INTELLIGENCE.</span
+                    <span class="mono ship-cap-kick">YOUR SHIP. YOUR INTELLIGENCE.</span
                     ><a class="btn gold" href="#flight=board" data-flight data-magnet>Board the starship ↗</a
-                    ><span class="muted copy-note">Explore the ship. Open its hull. Follow the intelligence.</span>
+                    ><span class="muted copy-note">Four stops: board, open the hull, cut the cloud, take command.</span>
                   </div>
-                  <div style="display: flex; gap: 8px; flex-wrap: wrap">
-                    <span class="pill" style="min-height: 36px; font-size: 12px">Hero view</span
-                    ><span class="pill" style="min-height: 36px; font-size: 12px">Deck plan</span
-                    ><span class="pill" style="min-height: 36px; font-size: 12px">Engine view</span>
-                  </div>
+                  <span class="mono ship-views">Hero view · Deck plan · Engine view</span>
                 </div>
               </div>
-              <div
-                class="soft"
-                style="
-                  padding: 20px 24px;
-                  display: grid;
-                  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-                  gap: 20px;
-                "
-              >
-                <div class="stack" style="--stack-gap: 8px">
-                  <div style="display: flex; justify-content: space-between">
-                    <span class="mono" style="color: var(--muted)">ENGINEERING · Propulsion</span
-                    ><span class="mono" style="color: var(--cyan)">50%</span>
-                  </div>
-                  <div class="barwrap" style="height: 6px; border-radius: 3px">
-                    <div
-                      style="
-                        width: 50%;
-                        height: 100%;
-                        border-radius: 3px;
-                        background: linear-gradient(90deg, var(--local), var(--cyan));
-                        box-shadow: 0 0 12px var(--cyan);
-                      "
-                    ></div>
-                  </div>
-                </div>
-                <div class="stack" style="--stack-gap: 8px">
-                  <div style="display: flex; justify-content: space-between">
-                    <span class="mono" style="color: var(--muted)">Hull inspection</span
-                    ><span class="mono" style="color: var(--gold)">0%</span>
-                  </div>
-                  <div class="barwrap" style="height: 6px; border-radius: 3px">
-                    <div style="width: 0%; height: 100%; border-radius: 3px; background: var(--gold)"></div>
-                  </div>
-                </div>
-                <div style="display: flex; gap: 16px; grid-column: 1/-1; align-items: center; flex-wrap: wrap">
-                  <span style="display: flex; align-items: center; gap: 6px; font-size: 12px"
-                    ><i style="width: 10px; height: 10px; border-radius: 50%; background: var(--local)"></i>Local
-                    route</span
-                  ><span style="display: flex; align-items: center; gap: 6px; font-size: 12px"
-                    ><i style="width: 10px; height: 10px; border-radius: 50%; background: var(--cloud)"></i>Cloud
-                    route</span
-                  ><span style="display: flex; align-items: center; gap: 6px; font-size: 12px"
-                    ><i style="width: 10px; height: 10px; border-radius: 50%; background: var(--held)"></i>Waiting for a
-                    permitted route</span
-                  ><span class="muted copy-note" style="margin-left: auto"
-                    >Launch the flight to open the hull and explore in 3D</span
-                  >
-                </div>
+              <div class="soft route-legend">
+                <span class="legend-item"><i class="legend-dot local"></i>Local route</span
+                ><span class="legend-item"><i class="legend-dot cloud"></i>Cloud route</span
+                ><span class="legend-item"><i class="legend-dot held"></i>Waiting for a permitted route</span
+                ><span class="muted copy-note legend-note">Board the flight to open the hull and explore in 3D.</span>
               </div>
               <div class="soft flow-scene" id="flow-scene" data-connected="true">
                 <div class="scene-heading">
@@ -1209,7 +1144,7 @@
                   style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px 14px"
                 >
                   <span class="mono" style="color: var(--gold)">02</span
-                  ><strong style="font-size: 13px">Deep-space blackout</strong
+                  ><strong style="font-size: 13px">Deep space blackout</strong
                   ><span class="mono" style="color: var(--muted)">Same work · cloud link offline</span>
                 </button>
                 <button
@@ -1318,7 +1253,7 @@
               <span class="flight-plan-note">Permission applies to private requests in Cloud mode.</span>
               <div class="hair"></div>
               <div style="display: flex; justify-content: space-between; align-items: baseline">
-                <span class="mono" style="color: var(--muted)">THE SAME 12-REQUEST WORKLOAD</span
+                <span class="mono" style="color: var(--muted)">THE SAME 12 REQUEST WORKLOAD</span
                 ><span class="mono" style="color: var(--muted)">requests</span>
               </div>
               <div class="stack" style="--stack-gap: 8px" aria-live="polite">
@@ -1398,7 +1333,7 @@
                 </div>
                 <button class="btn line sm" type="button" id="copy-mission">Copy this mission ↗</button>
               </div>
-              <span class="muted" style="font-size: 11px"
+              <span class="muted" style="font-size: 12px"
                 >Here, Sovereign means a fully local deployment. This is a routing illustration, not a vendor ranking or
                 performance benchmark. It assumes both local and cloud models can handle this workload. No actual AI or
                 infrastructure services are contacted.</span
@@ -1411,8 +1346,8 @@
       <section class="block" id="principles" aria-labelledby="pr-h" style="border-top: 1px solid var(--line)">
         <div class="wrap grid" style="align-items: center">
           <div class="c5 stack" style="--stack-gap: 18px">
-            <div class="kick">V38 / THE PRINCIPLES ENGINE</div>
-            <span class="mono" style="color: var(--muted)">A VISITOR-OPERATED INSTRUMENT</span>
+            <div class="kick">THE PRINCIPLES ENGINE</div>
+            <span class="mono" style="color: var(--muted)">AN INSTRUMENT YOU OPERATE</span>
             <h2 id="pr-h" data-split>Put the principles<br />in motion.</h2>
             <p class="muted" style="margin: 0; font-size: 16px">
               Turn the instrument. Choose a principle. See the design decision behind it.
@@ -1447,8 +1382,8 @@
               >Drag the instrument or use the arrow keys with it focused. Home resets it.</span
             >
             <span class="mono" style="color: var(--muted)"
-              >A hands-on concept study. These orbital relationships illustrate a design philosophy; they are not live
-              infrastructure telemetry.</span
+              >A concept study you can handle. These orbital relationships illustrate a design philosophy; they are not
+              live infrastructure telemetry.</span
             >
           </div>
           <div class="c7">
@@ -1657,7 +1592,10 @@
               </div>
               <span class="studio-index mono"><span>02 / LIVING SIGNATURE</span><span aria-hidden="true">↗</span></span>
               <h3>Celestial Forge</h3>
-              <p>Gold, titanium, and a signal you control. Explore the cAshIo signature up close.</p>
+              <p>
+                Gold, titanium, and a signal you control. Explore the
+                <span class="wm">cAsh<span class="wm-i">I</span>o</span> signature up close.
+              </p>
               <span class="studio-enter">Energize the Forge →</span>
             </a>
             <a class="studio-card" href="#film=sanctuary">
@@ -1742,8 +1680,8 @@
               <span class="mono cy">BUILD STORY / SOVEREIGN STARSHIP</span>
               <h3 id="build-proof-title">One boundary. Every request accounted for.</h3>
               <p class="case-deck">
-                A ship you can explore. An AI decision you can see. I built this working model to make the trade-offs
-                between local computing, cloud access, and human permission tangible.
+                A ship you can explore. An AI decision you can see. I built this working model to make the tradeoffs
+                between local computing, cloud access and human permission tangible.
               </p>
               <figure class="case-image">
                 <img
@@ -1777,7 +1715,7 @@
                   <dt>The working result</dt>
                   <dd>
                     In Hybrid, six private requests stay aboard and six public requests can use the cloud. Disconnect
-                    the relay and all twelve stay local. Choose cloud-only processing for private work without
+                    the relay and all twelve stay local. Choose cloud only processing for private work without
                     permission, and all twelve wait for human review.
                   </dd>
                 </div>
@@ -1800,14 +1738,14 @@
                 >
               </div>
               <p class="case-boundary">
-                These are reproducible browser-model outcomes, not measurements of a deployed AI service. The model
+                These outcomes come from a browser model you can reproduce, not from a deployed AI service. The model
                 assumes local hardware and models can handle this workload. No AI requests are sent.
               </p>
               <details class="case-engineering">
                 <summary>One engineering detail: reliable, even at rest.</summary>
                 <p>
                   The starship once opened to a blank view while paused. Its canvas now requests a frame after becoming
-                  visible, then returns to rest. The original geometry-paint check passed after the fix.
+                  visible, then returns to rest. The original geometry paint check passed after the fix.
                 </p>
                 <a href="https://github.com/jamescashio/jamescashio.github.io/pull/135"
                   >Read the shipped repair and validation ↗</a
@@ -1818,7 +1756,7 @@
           <div class="grid" data-stagger>
             <div class="panel c7 stack" style="padding: clamp(22px, 2.6vw, 30px); --stack-gap: 18px">
               <div style="display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap">
-                <span class="kick gold">READ-ONLY OBSERVATIONS / THREE DATED RECORDS</span
+                <span class="kick gold">READ ONLY OBSERVATIONS / THREE DATED RECORDS</span
                 ><span class="mono" style="color: var(--muted)">HOW EACH RECORD CHANGED THIS PAGE</span>
               </div>
               <h3>Three records. Three rules.</h3>
@@ -1826,8 +1764,8 @@
                 <summary>Compare the three dated records</summary>
                 <div class="evidence-record-body">
                   <p class="muted copy-note">
-                    The question was simple: what is running, and what can this page prove? Three owner-run, read-only
-                    observations answer it: August 28, 2026 (archived export), September 7, 2026 (HERMES audit) and
+                    The question was simple: what is running, and what can this page prove? Three read only observations
+                    that I ran myself answer it: August 28, 2026 (archived export), September 7, 2026 (HERMES audit) and
                     September 18, 2026 (DeepSeek Harness, direct reads on both nodes). The archived routing inventory
                     has its own date: August 21, 2026.
                   </p>
@@ -1987,23 +1925,16 @@
               <div class="soft stack" style="padding: 16px; border-color: rgba(242, 200, 122, 0.3); --stack-gap: 8px">
                 <strong style="font-size: 14px">The evidence boundary, in one place</strong>
                 <span class="muted copy-note"
-                  >The 26¢ figure comes from the V31 export of July 21 to 22, 2026. It covers AI provider usage in that
-                  sample and excludes owned infrastructure, electricity, and Doug’s time. It is a published operating
-                  observation, not an audited bill, and it does not establish today’s spend or a percentage saving. The
-                  fleet counts are guest inventory from read-only observations; they do not establish application
-                  health, recovery readiness, current AI routing, or the cost figure. Backup freshness is a file age
-                  check, not a restore test. Private addresses, service names, spending and the private model catalog
-                  are withheld on purpose. The browser studies use synthetic inputs and never execute Atlas, HERMES or
-                  the harness.</span
+                  >The fleet counts come from read only observations of running guests. They do not establish
+                  application health, recovery readiness or current AI routing. Backup freshness is a file age check,
+                  not a restore test. Private addresses, service names, spending and the private model catalog are
+                  withheld on purpose, and cost figures stay off this page until they are measured again. The browser
+                  studies use synthetic inputs and never run Atlas, HERMES or the harness.</span
                 >
-                <div style="display: flex; gap: 14px; font-size: 13px; font-weight: 600; flex-wrap: wrap">
+                <div class="evidence-links">
                   <a href="/v38/status.json">Read the September 18 export</a
-                  ><a href="https://cashio.us/status.json">Read the September 7 export</a
-                  ><a href="https://cashio.us/evidence/status-2026-08-28.json">Compare the August archive</a
-                  ><a
-                    href="https://github.com/jamescashio/jamescashio.github.io/blob/fe68312aaac84ed57b9f122e26a8a14d87b6c542/status.json"
-                    >Read the V31 cost record</a
-                  >
+                  ><a href="/evidence/status-2026-09-07.json">Read the September 7 export</a
+                  ><a href="/evidence/status-2026-08-28.json">Compare the August archive</a>
                 </div>
               </div>
             </div>
@@ -2036,18 +1967,20 @@
                 <div class="scan"></div>
                 <span class="d"
                   >Fleet: <span data-fleet="observedLong">September 18, 2026</span> · Routing:
-                  <span data-fleet="routing">Not verified</span> · Interface revised 09-21-2026</span
+                  <span data-fleet="routing">Not verified</span> · Interface revised
+                  <span data-fleet="pageRevised">September 23, 2026</span></span
                 ><span class="d">Local commands. Dated facts. No connection to the estate.</span
                 ><span class="d">Type help to explore.</span>
               </div>
               <form id="eve-form">
                 <label for="eve-in" class="mono" style="color: var(--cyan)">E.V.E.</label
-                ><input
-                  id="eve-in"
-                  type="text"
-                  autocomplete="off"
-                  placeholder="fleet · kernel · backups · atlas · dsh · help"
-                /><button class="btn ghost sm" type="submit" aria-label="Run command">↵</button>
+                ><input id="eve-in" type="text" autocomplete="off" placeholder="Try help, fleet or cost" /><button
+                  class="btn ghost sm"
+                  type="submit"
+                  aria-label="Run command"
+                >
+                  ↵
+                </button>
               </form>
             </div>
           </div>
@@ -2138,7 +2071,7 @@
                 type="button"
                 data-pilot="yeager"
                 aria-pressed="true"
-                style="min-height: 40px; font-size: 13px"
+                style="min-height: 44px; font-size: 13px"
               >
                 Yeager</button
               ><button
@@ -2146,7 +2079,7 @@
                 type="button"
                 data-pilot="johnson"
                 aria-pressed="false"
-                style="min-height: 40px; font-size: 13px"
+                style="min-height: 44px; font-size: 13px"
               >
                 Johnson</button
               ><button
@@ -2154,7 +2087,7 @@
                 type="button"
                 data-pilot="rutan"
                 aria-pressed="false"
-                style="min-height: 40px; font-size: 13px"
+                style="min-height: 44px; font-size: 13px"
               >
                 Rutan</button
               ><button
@@ -2162,7 +2095,7 @@
                 type="button"
                 data-pilot="hoover"
                 aria-pressed="false"
-                style="min-height: 40px; font-size: 13px"
+                style="min-height: 44px; font-size: 13px"
               >
                 Hoover
               </button>
@@ -2208,7 +2141,7 @@
             <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap">
               <span class="kick">05 / THE OPERATOR</span
               ><span class="mono" style="color: var(--muted)"
-                >PENSACOLA, FLORIDA · HOUSE CASHIO · A HUMAN IN COMMAND</span
+                >PENSACOLA, FLORIDA · JAMES DOUGLAS CASHIO · DOUG TO EVERYONE</span
               >
             </div>
             <span class="mono" style="color: var(--gold)"
@@ -2225,18 +2158,18 @@
                 color: var(--ink2);
               "
             >
-              Endlessly curious. Personally accountable.<br />Principal Solutions Consultant.<br />Independent systems
-              builder.
+              Endlessly curious. Personally accountable.<br />Principal Solutions Consultant by day.<br />Systems
+              builder by night.
             </p>
             <p class="lede" style="font-size: 16px">
-              I make difficult system choices understandable: where AI runs, what it can use, and when a person takes
-              over. This is my independent workshop: hardware I operate, tools I build, and evidence you can inspect.
-              Science fiction supplies the imagination. Flight-test discipline keeps it honest.
+              I make hard system choices easy to see: where AI runs, what it can touch, and when a person takes over.
+              This is my personal workshop: hardware I run at home, tools I build, and evidence you can inspect. Science
+              fiction supplies the imagination. Flight test discipline keeps it honest.
             </p>
             <div style="display: flex; gap: 10px; flex-wrap: wrap" data-stagger>
               <a href="https://www.linkedin.com/in/dougcashio/" class="btn line sm">LinkedIn</a
               ><a href="https://github.com/jamescashio" class="btn line sm">GitHub</a
-              ><a href="https://www.credly.com/users/james-cashio/badges/credly" class="btn line sm">Credly wallet</a>
+              ><a href="https://www.credly.com/users/james-cashio/badges/credly" class="btn line sm">Credly badges</a>
             </div>
           </div>
           <div
@@ -2279,7 +2212,7 @@
             <div class="cap">
               <div class="stack" style="--stack-gap: 8px">
                 <button class="btn gold sm" type="button" id="sig-btn" data-magnet>◇ Energize the signature</button
-                ><a href="#signature" style="font-size: 14px; font-weight: 600; color: var(--ink)"
+                ><a class="inline-cta" href="#signature" style="font-size: 14px; font-weight: 600; color: var(--ink)"
                   >Explore the celestial signature in 3D ↗</a
                 >
               </div>
@@ -2311,16 +2244,16 @@
         <div class="wrap grid" style="align-items: center">
           <div class="c6">
             <div class="kick" style="margin-bottom: 14px">06 / OPEN A CHANNEL</div>
-            <h2 id="ct-h" data-split>What could we<br />build next?</h2>
+            <h2 id="ct-h" data-split>What are you<br />building?</h2>
           </div>
           <div class="c6 stack" style="--stack-gap: 14px">
             <p class="lede">
-              Tell me what you want to build and your hardest constraint. AI spending, private data, or a system that
-              needs to be easier to understand: start there.
+              Local AI, private data, or a system that needs a human in the loop: I am always glad to compare notes.
+              Tell me what you are working on and the hardest constraint in your way.
             </p>
             <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap">
               <a
-                href="mailto:doug@cashio.us?subject=An%20idea%20from%20Cashio&body=What%20I%20want%20to%20build%3A%0A%0AMy%20hardest%20constraint%3A%0A%0AThe%20study%20or%20idea%20that%20caught%20my%20attention%3A%0A"
+                href="mailto:doug@cashio.us?subject=Comparing%20notes%20from%20cashio.us&body=What%20I%20am%20working%20on%3A%0A%0AThe%20hardest%20constraint%3A%0A%0AThe%20study%20that%20caught%20my%20attention%3A%0A"
                 class="btn gold"
                 data-magnet
                 >doug@cashio.us</a
@@ -2336,7 +2269,9 @@
           >The Human Reckoning. Inspired by the Butlerian Jihad in Frank Herbert’s <em>Dune</em>. Powerful tools. Human
           judgment in command.</span
         ><span class="mono" style="color: var(--gold)"
-          >A HUMAN IN COMMAND · V38.9 / HELIOS · Directed by Doug Cashio · 09-21-2026</span
+          >A HUMAN IN COMMAND · V39.0 / HELIOS · Directed by Doug Cashio · September 23, 2026</span
+        ><span class="mono" style="color: var(--muted)"
+          >A personal site. The builds and views here are my own and do not speak for my employer.</span
         >
       </div>
       <nav aria-label="Footer">
@@ -2347,12 +2282,13 @@
             ><a href="https://cashio.us/command-deck.html">V35 All Tens · command deck</a
             ><a href="https://cashio.us/command.html">May 2026 · command center archive</a
             ><a href="https://github.com/jamescashio/jamescashio.github.io/blob/main/CHANGELOG.md"
-              >Every release, V30 to V38 · changelog</a
+              >Every release, V30 to V39 · changelog</a
             ><a href="https://github.com/jamescashio/jamescashio.github.io/releases">Tagged releases on GitHub</a>
           </div>
         </details>
         <a href="https://github.com/jamescashio/jamescashio.github.io">View source</a
-        ><a href="https://cashio.us/cashio.html">Meet cAshIo ↗</a
+        ><a href="https://cashio.us/cashio.html"
+          >Meet <span class="wm">cAsh<span class="wm-i">I</span>o</span> ↗</a
         ><a href="https://github.com/jamescashio/jamescashio.github.io/blob/main/PRIVACY.md">Privacy</a
         ><a href="#top" style="color: var(--ink)">Back to orbit ↑</a>
       </nav>
@@ -2398,7 +2334,7 @@
             <div class="mc-routes">
               <a class="mc-route" href="#flight=board"
                 ><span class="mono">01 / EXPLORE</span><strong>Board the starship ↗</strong
-                ><span>A 30-second flight. Your pace.</span></a
+                ><span>A 30 second flight. Your pace.</span></a
               >
               <a class="mc-route" href="#work"
                 ><span class="mono">02 / TRY</span><strong>Test the privacy boundary →</strong
@@ -2416,7 +2352,7 @@
         <div class="mc-keymap"><span>↑ ↓ navigate</span><span>↵ enter</span><span>esc close</span></div>
       </div>
     </dialog>
-    <aside class="bitdock" id="bitdock" aria-label="Bit, your co-pilot">
+    <aside class="bitdock" id="bitdock" aria-label="Bit, your copilot">
       <button type="button" class="bitbtn" id="bit-btn" aria-label="Bit: open Mission Control">
         <canvas id="bitcv" width="96" height="96" aria-hidden="true"></canvas>
       </button>

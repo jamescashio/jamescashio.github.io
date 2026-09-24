@@ -11,6 +11,7 @@ import { setupNavigation } from "./navigation.js";
 import { setupMotion } from "./motion.js";
 import { readMotionPreference } from "./motion-preference.js";
 import { setupScenes } from "./scenes.js";
+import { setupHeroDepth, setupChapterAnnounce, setupNavDepth } from "./zenith.js";
 
 /* =========================================================
    V38 HELIOS · shared teaching models and optional motion.
@@ -325,7 +326,7 @@ const PILOTS = {
     credit: "NASA / ESPO photo",
     kick: "BURT RUTAN · SCALED COMPOSITES · PROTEUS · 1998",
     head: "Build the strange thing. Then prove it in the air.",
-    body: "Proteus first flew in 1998, designed for high-altitude, long-duration work. Its unusual form reminds me to start with the job a system must do, then test whether the design serves it.",
+    body: "Proteus first flew in 1998, designed for high altitude, long duration work. Its unusual form reminds me to start with the job a system must do, then test whether the design serves it.",
     source: "https://airbornescience.nasa.gov/aircraft/Proteus",
     sourceLabel: "Explore Proteus at NASA",
     idx: "03 / 04",
@@ -453,3 +454,6 @@ setupMotion({
   },
   onSceneReady: () => Bit.setMood("yes", 1400),
 });
+setupHeroDepth({ motion: () => motionOn });
+setupChapterAnnounce();
+setupNavDepth();

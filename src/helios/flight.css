@@ -64,3 +64,40 @@
     padding: 8px 10px;
   }
 }
+@media (max-width: 700px) {
+  /* The phone flight scrolls; a soft fade says there is more above the command bar. */
+  #helios-flight .ff-body {
+    mask-image: linear-gradient(180deg, #000 calc(100% - 26px), transparent);
+    padding-bottom: 22px;
+  }
+}
+/* The shared flight names its original faces; inside Helios they resolve to the Helios type system. */
+@font-face {
+  font-family: Oxanium;
+  src: url("/v38/fonts/unbounded-latin.woff2") format("woff2");
+  font-weight: 200 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: Exo;
+  src: url("/v38/fonts/instrument-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: Jet;
+  src: url("/fonts/jetbrains-400.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: Jet;
+  src: url("/fonts/jetbrains-600.woff2") format("woff2");
+  font-weight: 500 800;
+  font-display: swap;
+}
+/* On shorter laptops the story panel scrolls; a fade says so. */
+#helios-flight .ff-story {
+  mask-image: linear-gradient(180deg, #000 calc(100% - 30px), transparent);
+  padding-bottom: 34px;
+}

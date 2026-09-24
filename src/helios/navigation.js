@@ -1,5 +1,6 @@
 import { parseExperiment } from "../odyssey/study-experiment";
 import { parseMissionHash } from "../odyssey/flight-plan";
+import { createWarp, setupFlightPrefetch } from "./zenith.js";
 
 const sceneKind = (hash) =>
   /^#flight=(board|hull|blackout|permission)$/.test(hash)
@@ -35,8 +36,17 @@ export function setupNavigation({ studies, select, mission, motion }) {
     sequence = 0,
     lastURL = "";
   const returns = new Map();
+  let loaderTimer = 0;
+  // If motion is switched off mid jump, the warp stops and the loader takes over at once.
+  const warp = createWarp({
+    onHalt: () => {
+      clearTimeout(loaderTimer);
+      if (pending && !loader.open) loader.showModal();
+    },
+  });
+  setupFlightPrefetch(() => import("./flight-island"));
   const destinations = [
-    ["Explore the starship", "Your pace. A 30-second tour when you choose.", "#flight=board"],
+    ["Explore the starship", "Your pace. A 30 second tour when you choose.", "#flight=board"],
     ["The orbital world", "Return to the beginning.", "#top"],
     ["Try one decision", "Predict the route. Test the privacy boundary.", "#work"],
     ["The system atlas", "Owned compute, orchestration, human authority.", "#universe"],
@@ -48,17 +58,27 @@ export function setupNavigation({ studies, select, mission, motion }) {
     ["Celestial Forge", "Explore the signature in three dimensions.", "#signature"],
     ["The Cinema", "Five original short films. Play at your own pace.", "#film=lightwake"],
     ["The Sanctuary", "A quiet film and an explorable inner world.", "#film=sanctuary"],
-    ["Inspect the evidence", "A source, a date, and a clear boundary.", "#evidence"],
+    [
+      "Inspect the evidence",
+      "A source, a date, and a clear boundary. Fleet facts and the E.V.E. console.",
+      "#evidence",
+      "eve fleet status proof",
+    ],
     ["Flight heritage", "The discipline behind the design.", "#heritage"],
     ["Meet Doug", "Builder. Operator. Accountable human.", "#operator"],
-    ["Start a conversation", "An ambitious idea and its hardest constraint.", "#contact"],
+    [
+      "Compare notes",
+      "Email Doug: what you are building and its hardest constraint.",
+      "#contact",
+      "contact email talk hire",
+    ],
     ...studies.map((s) => [s.name, s.cue, `#build=${s.id}`]),
   ];
   function render(query = "") {
     list.replaceChildren();
     const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
-    const matches = destinations.filter(([name, body]) =>
-      terms.every((term) => `${name} ${body}`.toLowerCase().includes(term)),
+    const matches = destinations.filter(([name, body, , keywords = ""]) =>
+      terms.every((term) => `${name} ${body} ${keywords}`.toLowerCase().includes(term)),
     );
     clear.hidden = search.value.length === 0;
     results.textContent = `${matches.length} ${matches.length === 1 ? "destination" : "destinations"}${terms.length ? " found" : " to explore"}`;
@@ -136,6 +156,8 @@ export function setupNavigation({ studies, select, mission, motion }) {
   function dispose() {
     generation++;
     pending = false;
+    clearTimeout(loaderTimer);
+    warp.end();
     loader.close();
     scene?.dispose();
     scene = null;
@@ -181,24 +203,42 @@ export function setupNavigation({ studies, select, mission, motion }) {
     loader.querySelector("p").textContent = "You can return to the site at any time.";
     document.querySelector("#scene-cancel").textContent = "Cancel opening";
     document.querySelector("#scene-reload").hidden = true;
-    loader.showModal();
+    // Boarding the starship is a jump, not a wait: the warp covers loading and the loader appears only if it is slow.
+    const jumping = kind === "flight" && motion() && warp.start();
+    if (jumping) {
+      loaderTimer = setTimeout(() => {
+        if (pending && token === generation && !loader.open) loader.showModal();
+      }, 1400);
+    } else loader.showModal();
     notify();
     try {
       const module = kind === "flight" ? await import("./flight-island") : await import("./studio-island");
       if (token !== generation) return;
+      if (jumping) await warp.settle();
+      if (token !== generation) return;
+      clearTimeout(loaderTimer);
       loader.close();
       activeKind = kind;
       scene =
         kind === "flight"
-          ? module.openFlight({ motion: motion(), step: hash.slice(8), onClose: closeScene })
+          ? module.openFlight({
+              motion: motion(),
+              step: hash.slice(8),
+              onClose: closeScene,
+              arrive: jumping && motion(),
+            })
           : module.openStudio({
               motion: motion(),
               hash,
               onClose: () => closeScene(),
               onNavigate: (next) => navigate(next, null, true),
             });
+      if (jumping) warp.end();
     } catch {
       if (token !== generation) return;
+      clearTimeout(loaderTimer);
+      warp.end();
+      if (!loader.open) loader.showModal();
       failed = true;
       loader.querySelector("h2").textContent = "This scene couldn’t open.";
       loader.querySelector("p").textContent =

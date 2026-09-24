@@ -108,7 +108,7 @@ export function createAtlasTrace({ isMotionEnabled, onSchedule }) {
     $("#request-summary").textContent = request.summary;
     $("#request-continue").href = request.href;
     $("#request-continue").textContent =
-      `Explore this ${request.held ? "human-review decision" : request.route.lane.toLowerCase() + " route"} in HERMES`;
+      `Explore this ${request.held ? "human review decision" : request.route.lane.toLowerCase() + " route"} in HERMES`;
     $("#trace-stage-compute").textContent = request.held ? "Hold" : "Compute";
     document
       .querySelectorAll("[data-request-private]")

@@ -246,7 +246,7 @@ export default function FirstFlight({
       await document.fonts.ready;
       const { blob, record } = await createMissionCard(still, selectedInput, selectedChapter, {
         baseUrl: `${location.origin}${location.pathname}`,
-        helios: edition === "V38 / HELIOS",
+        helios: edition.startsWith("HELIOS"),
       });
       if (generation !== captureGeneration.current) return;
       const url = URL.createObjectURL(blob);
@@ -606,7 +606,7 @@ export default function FirstFlight({
         </button>
       </footer>
       <p className="ff-boundary" id="ff-boundary">
-        Browser-only demo. No AI requests sent.{" "}
+        Demo runs in your browser. No AI requests sent.{" "}
         {phase === "fallback" ? "The 3D view is unavailable; the illustrated outcomes still work. " : ""}
         {!motion
           ? complete
@@ -614,8 +614,8 @@ export default function FirstFlight({
             : "Motion off. Use Next."
           : visitorPaced
             ? playing
-              ? "30-second tour. Any decision pauses it."
-              : "Your pace. Use Next, or play the 30-second tour."
+              ? "30 second tour. Any decision pauses it."
+              : "Your pace. Use Next, or play the 30 second tour."
             : "Explore at your own pace."}
       </p>
       <span className="o-sr-only" role="status" aria-atomic="true">

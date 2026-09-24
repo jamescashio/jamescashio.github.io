@@ -1,0 +1,645 @@
+/* V39 Zenith: the same Helios world, with a living first frame, a clearer story and a jump into the flight. */
+
+/* ---------- wordmark: the I keeps the serifs of the celestial signature ---------- */
+.brand .cy {
+  position: relative;
+  display: inline-block;
+  padding-inline: 0.07em;
+  line-height: 1;
+}
+.brand .cy::before,
+.brand .cy::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 0.5em;
+  height: 0.105em;
+  border-radius: 0.03em;
+  background: currentColor;
+  transform: translateX(-50%);
+}
+.brand .cy::before {
+  top: 0.09em;
+}
+.brand .cy::after {
+  bottom: 0.12em;
+}
+
+/* ---------- hero: dated proof chip ---------- */
+.hero .status {
+  gap: 4px;
+  max-width: none;
+  border: 1px solid rgba(56, 225, 255, 0.16);
+}
+.hero .status-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--cyan);
+}
+.hero .status-live i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 10px var(--cyan);
+  animation: zenith-beacon 2.8s ease-in-out infinite;
+}
+.hero .status-fleet {
+  color: var(--muted);
+}
+@keyframes zenith-beacon {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* The responsive art source must not add a line box to the phone hero flow. */
+.hero picture {
+  display: contents;
+}
+/* The arrival film is in the markup, so it is placed by the first stylesheet, not after scripts run. */
+.hero .hero-film {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+@media (max-width: 700px) {
+  .hero .hero-film {
+    height: 350px;
+  }
+}
+
+/* ---------- hero: a living still after the arrival film ---------- */
+.hero {
+  --px: 0;
+  --py: 0;
+}
+.hero .fallback {
+  transform: translate3d(calc(var(--px) * -14px), calc(var(--py) * -10px), 0) scale(1.035);
+  will-change: transform;
+}
+.hero-sun,
+.hero-stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.hero-sun {
+  z-index: 0;
+  opacity: 0.5;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(circle at 91% 45%, rgba(255, 206, 128, 0.42), rgba(255, 170, 80, 0.12) 7%, transparent 17%),
+    radial-gradient(ellipse 40% 9% at 86% 46%, rgba(255, 196, 120, 0.16), transparent 70%);
+  transform: translate3d(calc(var(--px) * -20px), calc(var(--py) * -14px), 0);
+  animation: zenith-sun 9s ease-in-out infinite;
+}
+.hero-stars {
+  z-index: 0;
+  opacity: 0.8;
+  background-image:
+    radial-gradient(1.4px 1.4px at 12% 18%, #dff7ff, transparent),
+    radial-gradient(1.2px 1.2px at 28% 64%, #c8f1ff, transparent),
+    radial-gradient(1.6px 1.6px at 47% 12%, #fff2d6, transparent),
+    radial-gradient(1.1px 1.1px at 58% 78%, #c8f1ff, transparent),
+    radial-gradient(1.5px 1.5px at 71% 22%, #dff7ff, transparent),
+    radial-gradient(1.2px 1.2px at 83% 71%, #fff2d6, transparent),
+    radial-gradient(1.3px 1.3px at 38% 36%, #dff7ff, transparent),
+    radial-gradient(1.1px 1.1px at 64% 44%, #c8f1ff, transparent);
+  transform: translate3d(calc(var(--px) * -6px), calc(var(--py) * -4px), 0);
+  animation: zenith-twinkle 5.5s ease-in-out infinite alternate;
+}
+@keyframes zenith-sun {
+  0%,
+  100% {
+    opacity: 0.42;
+  }
+  50% {
+    opacity: 0.78;
+  }
+}
+@keyframes zenith-twinkle {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 0.9;
+  }
+}
+.hero[data-film="playing"] .hero-sun,
+.hero[data-film="playing"] .hero-stars {
+  opacity: 0;
+  animation-play-state: paused;
+}
+.page-hidden .hero-sun,
+.page-hidden .hero-stars,
+.page-hidden .hero .status-live i,
+.experience-open .hero-sun,
+.experience-open .hero-stars,
+.hero[data-ambient="off"] .hero-sun,
+.hero[data-ambient="off"] .hero-stars {
+  animation-play-state: paused;
+}
+.motion-off .hero .fallback,
+.motion-off .hero-sun,
+.motion-off .hero-stars {
+  transform: none;
+}
+.motion-off .hero-sun {
+  opacity: 0.5;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero .fallback,
+  .hero-sun,
+  .hero-stars {
+    transform: none !important;
+    animation: none !important;
+  }
+}
+
+/* ---------- workshop ---------- */
+.workshop-routes {
+  --stack-gap: 16px;
+}
+.workshop-routes-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* ---------- routing law ---------- */
+.routing-law {
+  margin: 4px 0 0;
+  display: grid;
+  gap: 10px;
+}
+.routing-law blockquote {
+  margin: 0;
+}
+.routing-law-lead {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(30px, 3.1vw, 46px);
+  line-height: 1.06;
+  letter-spacing: -0.035em;
+  color: var(--gold);
+  text-shadow: 0 0 40px rgba(242, 200, 122, 0.3);
+  text-wrap: balance;
+}
+.routing-law-tie {
+  margin: 8px 0 0;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(19px, 1.7vw, 25px);
+  letter-spacing: -0.02em;
+  color: var(--ink2);
+}
+.routing-law figcaption {
+  color: var(--muted);
+}
+.routing-notes {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 10px 12px;
+  font-size: 14px;
+}
+.routing-notes dt {
+  color: var(--cyan);
+  padding-top: 3px;
+}
+.routing-notes dd {
+  margin: 0;
+}
+@media (max-width: 420px) {
+  .routing-notes {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+  .routing-notes dd {
+    margin-bottom: 10px;
+  }
+}
+
+/* ---------- starship plate ---------- */
+.plate-badges {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  right: 20px;
+  z-index: 1;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.plate-badge {
+  color: var(--cyan);
+  padding: 6px 10px;
+  border: 1px solid rgba(56, 225, 255, 0.3);
+  border-radius: 6px;
+  background: rgba(4, 7, 14, 0.6);
+}
+.plate-badge.relay {
+  color: var(--gold);
+  border-color: rgba(242, 200, 122, 0.4);
+}
+.ship-cap {
+  z-index: 1;
+}
+.ship-cap-kick,
+.ship-views {
+  color: var(--muted);
+}
+.route-legend {
+  padding: 16px 24px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.legend-dot.local {
+  background: var(--local);
+}
+.legend-dot.cloud {
+  background: var(--cloud);
+}
+.legend-dot.held {
+  background: var(--held);
+}
+.legend-note {
+  margin-left: auto;
+}
+@media (max-width: 600px) {
+  #starship .plate {
+    height: auto !important;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  #starship .plate > img {
+    position: absolute;
+    inset: 0;
+  }
+  #starship .plate-badges,
+  #starship .ship-cap {
+    position: relative;
+    inset: auto;
+    margin: 18px 18px 0;
+  }
+  #starship .ship-cap {
+    margin: 0 18px 18px;
+  }
+  .legend-note {
+    margin-left: 0;
+  }
+}
+
+/* ---------- evidence ---------- */
+.evidence-links {
+  display: flex;
+  gap: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  flex-wrap: wrap;
+}
+.console .lore {
+  color: var(--gold);
+}
+
+/* ---------- chapter rail: announce the chapter you arrive in ---------- */
+.sections a.zenith-announce span {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+/* ---------- touch: every inline link is a comfortable target ---------- */
+@media (pointer: coarse) {
+  main
+    :is(
+      .workshop-link,
+      .case-source,
+      [data-load],
+      #pv-trace,
+      #study-source,
+      #atlas-inspect-link,
+      #request-continue,
+      .principle-action,
+      .studio-library a,
+      .evidence-links a,
+      .request-inspection-link,
+      .studio-enter,
+      #hg-source,
+      .workshop-routes a,
+      .inline-cta
+    ) {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .brand {
+    min-height: 44px;
+  }
+}
+
+/* ---------- ultrawide: the world fills the glass ---------- */
+@media (min-width: 2200px) {
+  .hero h1 {
+    font-size: clamp(110px, 5.4vw, 190px);
+  }
+  .hero .sub {
+    max-width: 720px;
+    font-size: clamp(21px, 0.95vw, 30px);
+  }
+  /* One frame on the big glass: header, hero and chapters share the same edges. */
+  :root {
+    --frame: max(var(--gutter), calc((100vw - 1920px) / 2 + var(--gutter)));
+  }
+  .nav .in {
+    padding-inline: var(--frame);
+  }
+  .hero .content {
+    padding-left: var(--frame);
+  }
+  .hero .status,
+  .hero #fold-btn {
+    right: var(--frame);
+  }
+  .hero .cta .btn {
+    min-height: 64px;
+    font-size: 19px;
+  }
+  .hero .cta-note,
+  .hero .kick {
+    font-size: 15px;
+  }
+  .hero .fallback {
+    object-position: 60% 50%;
+  }
+  .hero .status {
+    font-size: 13px;
+  }
+  .hero .hero-next {
+    font-size: 15px;
+  }
+}
+
+/* ---------- the jump: a short warp into the flight ---------- */
+.zenith-warp {
+  position: fixed;
+  inset: 0;
+  z-index: 140;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(4, 7, 14, 0), rgba(4, 7, 14, 0.9) 70%);
+}
+.zenith-warp canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.zenith-warp.on {
+  opacity: 1;
+  transition: opacity 160ms ease-out;
+}
+.zenith-warp.off {
+  opacity: 0;
+  transition: opacity 420ms ease-in;
+}
+#helios-flight.zenith-arrive .first-flight {
+  animation: zenith-arrive 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes zenith-arrive {
+  from {
+    opacity: 0.25;
+    transform: scale(0.965);
+    filter: brightness(1.35);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zenith-warp {
+    display: none;
+  }
+  #helios-flight.zenith-arrive .first-flight {
+    animation: none;
+  }
+}
+
+/* ---------- polish from the blind critic pass ---------- */
+.minute a.step {
+  align-items: flex-start;
+  text-align: left;
+}
+@media (max-width: 900px) {
+  main
+    :is(
+      .workshop-link,
+      .case-source,
+      [data-load],
+      #pv-trace,
+      #study-source,
+      #atlas-inspect-link,
+      #request-continue,
+      .principle-action,
+      .studio-library a,
+      .evidence-links a,
+      .request-inspection-link,
+      #hg-source
+    ) {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
+@media (max-width: 700px) {
+  /* The caption gets its own band so it never prints across the aircraft. */
+  #hangar {
+    height: auto !important;
+    aspect-ratio: 4 / 3.6;
+  }
+  #hangar img.hp {
+    height: 72%;
+    object-position: 50% 40%;
+  }
+  #hangar .cap {
+    background: linear-gradient(0deg, rgba(4, 7, 14, 0.98), rgba(4, 7, 14, 0.9));
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 14px 18px 16px;
+  }
+  /* Ring numbers sit below the pedestal instead of on it. */
+  .engine {
+    margin-bottom: 30px;
+  }
+  .engine-index {
+    bottom: -30px;
+  }
+  .ship-cap-kick {
+    display: none;
+  }
+}
+
+/* ---------- second critic pass ---------- */
+/* Corner brackets frame the art; captions sit inside them, never under them. */
+.plate.sig {
+  padding: 30px 34px 28px;
+}
+.plate.sig img {
+  width: calc(100% + 68px);
+  margin-inline: -34px;
+}
+#hangar .cap {
+  left: 34px;
+  right: 34px;
+  bottom: 30px;
+}
+/* The atlas caption gets a quiet plate so a route line never cuts through it. */
+.atlas::after {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  width: max-content;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(4, 7, 14, 0.82);
+}
+/* Mission Control's list says there is more below. */
+#mc .mc-content {
+  mask-image: linear-gradient(180deg, #000 calc(100% - 28px), transparent);
+  padding-bottom: 24px;
+}
+@media (max-width: 900px) {
+  :is(#pilots .pill, #st-next, .case-engineering a, .atlas-inspection a, footer nav a, footer summary) {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+@media (max-width: 480px) {
+  #trace-btn .mono {
+    display: none;
+  }
+}
+@media (max-width: 380px) {
+  #atlas-inspection > div[data-stagger] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  #atlas-inspection > div[data-stagger] .stat {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 12px;
+  }
+}
+/* The brand name keeps a serifed I wherever it appears in running text. */
+.wm {
+  white-space: nowrap;
+}
+.wm-i {
+  position: relative;
+  display: inline-block;
+  padding-inline: 0.08em;
+  line-height: 1;
+}
+.wm-i::before,
+.wm-i::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 0.46em;
+  height: 0.08em;
+  background: currentColor;
+  transform: translateX(-50%);
+}
+.wm-i::before {
+  top: 0.1em;
+}
+.wm-i::after {
+  bottom: 0.12em;
+}
+/* Ultrawide: give the chapters more of the glass. */
+@media (min-width: 2200px) {
+  .wrap {
+    max-width: 1920px;
+  }
+}
+
+/* ---------- header: solid once the page leaves the hero ---------- */
+.nav {
+  transition:
+    transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
+    background-color 0.35s ease,
+    border-color 0.35s ease;
+}
+.nav.deep {
+  background: rgba(4, 7, 14, 0.9);
+  border-bottom-color: rgba(56, 225, 255, 0.16);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  backdrop-filter: blur(18px) saturate(1.2);
+}
+
+/* ---------- hero: the scroll cue sits on the centre line, clear of Bit ---------- */
+@media (min-width: 901px) {
+  .hero .hero-next {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+@media (max-width: 900px) {
+  .hero .hero-next {
+    margin-inline: var(--gutter);
+  }
+}
+/* ---------- phone: 12 px mono labels keep their rhythm without colliding ---------- */
+@media (max-width: 700px) {
+  .hero .kick,
+  .stat .mono,
+  .cmp.hd {
+    letter-spacing: 0.06em;
+  }
+}
+/* ---------- desktop: the atlas readout rides along beside the tall map ---------- */
+@media (min-width: 1101px) and (min-height: 760px) {
+  #atlas-inspection {
+    position: sticky;
+    top: 96px;
+    align-self: start;
+  }
+}
+
+@media (max-width: 380px) {
+  .hero .kick {
+    letter-spacing: 0.02em;
+  }
+}

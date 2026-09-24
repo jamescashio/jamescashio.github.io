@@ -79,7 +79,7 @@ export const ATLAS = [
     value: "—",
     unit: "routing not verified",
     summary: "Intent becomes a qualified route.",
-    body: "The latest audit did not establish a current lane inventory or execution record. This atlas illustrates the design relationships; the HERMES study lets you explore a browser-only routing model.",
+    body: "The latest audit did not establish a current lane inventory or execution record. This atlas illustrates the design relationships; the HERMES study lets you explore a routing model that runs in your browser.",
     evidence: `Audit · ${FLEET_EVIDENCE.verifiedLong} · routing withheld`,
     x: 50,
     y: 42,
@@ -103,7 +103,7 @@ export const ATLAS = [
     value: String(FLEET_EVIDENCE.containers.apollo),
     unit: "LXC containers at observation",
     summary: "A second host in the same estate.",
-    body: `${FLEET_EVIDENCE.containers.apollo} LXC containers were running at this dated observation. The two-host cluster was quorate; quorum alone does not establish workload failover. Private service locations are withheld.`,
+    body: `${FLEET_EVIDENCE.containers.apollo} LXC containers were running at this dated observation. The two host cluster was quorate; quorum alone does not establish workload failover. Private service locations are withheld.`,
     evidence: `Fleet observation · ${FLEET_EVIDENCE.verifiedLong}`,
     x: 75,
     y: 73,
@@ -174,7 +174,7 @@ export function escalationExample(severity: number, confidence: number) {
   return {
     level: 0,
     title: "Bounded check",
-    body: "A low-consequence, well-supported signal can remain inside a predefined check. Record the result and keep the boundary visible.",
+    body: "A low consequence, well supported signal can remain inside a predefined check. Record the result and keep the boundary visible.",
   };
 }
 

@@ -13,7 +13,7 @@ export const FLEET = {
   pve: "9.2.20",
   quorate: true,
   routing: "Not verified",
-  pageRevised: "September 21, 2026",
+  pageRevised: "September 23, 2026",
   kernel: { booted: "7.0.14-14-pve", staged: "7.0.14-17-pve" },
   backups: { guestsOk: 20, guestsTotal: 20, freshnessLong: "September 18, 2026", restoreTested: false },
   atlas: { tag: "qwen3.8:27b-atlas", context: 16384 },
@@ -41,5 +41,6 @@ export const FLEET = {
     lanes: 10,
     expiry: "September 27, 2026",
   },
-  cost: { cents: 26, sampleLong: "July 21 to 22, 2026", release: "V31" },
+  // Spend is withheld until a fresh measurement exists; the V31 sample stays in its archived export.
+  cost: { status: "withheld", archivedSample: "July 21 to 22, 2026", archivedRelease: "V31" },
 };

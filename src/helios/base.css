@@ -400,39 +400,6 @@ section.block {
 }
 
 /* ---------- cursor + rail ---------- */
-.cursor {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--gold);
-  pointer-events: none;
-  z-index: 200;
-  mix-blend-mode: difference;
-  transform: translate(-50%, -50%);
-  opacity: 0;
-}
-.cursor-ring {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1px solid rgba(56, 225, 255, 0.6);
-  pointer-events: none;
-  z-index: 200;
-  transform: translate(-50%, -50%);
-  opacity: 0;
-}
-@media (hover: none) {
-  .cursor,
-  .cursor-ring {
-    display: none;
-  }
-}
 .rail {
   position: fixed;
   left: 0;
@@ -639,33 +606,6 @@ footer,
     display: none;
   }
 }
-.ignite {
-  position: fixed;
-  inset: 0;
-  z-index: 150;
-  background: var(--void);
-  display: grid;
-  place-items: center;
-  pointer-events: none;
-}
-.ignite .spark {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--gold);
-  box-shadow: 0 0 30px 6px rgba(242, 200, 122, 0.8);
-}
-.ignite .word {
-  position: absolute;
-  bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.3em;
-  color: var(--muted);
-  text-transform: uppercase;
-}
 
 /* ---------- thesis band ---------- */
 .thesis {
@@ -807,10 +747,6 @@ footer,
   animation: spin 48s linear infinite;
   transform-origin: center;
 }
-.spinr {
-  animation: spinr 32s linear infinite;
-  transform-origin: center;
-}
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -836,7 +772,6 @@ footer,
 @media (prefers-reduced-motion: reduce) {
   .flow,
   .spin,
-  .spinr,
   .pulse {
     animation: none;
   }
@@ -1019,7 +954,7 @@ footer,
 .cmp.hd {
   border-top: 0;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);

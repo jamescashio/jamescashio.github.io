@@ -26,7 +26,7 @@ export function setupAtlas({ scenes, motion, say }) {
         FLEET.dsh.providers +
         " configured providers, placed beside HERMES rather than replacing it yet. It collected the " +
         FLEET.observedLong +
-        " record on this page through a read-only bridge. Its operating brief is dated " +
+        " record on this page through a read only bridge. Its operating brief is dated " +
         FLEET.dsh.agentsDate +
         ".",
       evidence: "Local metadata probe · " + FLEET.observedLong,
@@ -43,10 +43,8 @@ export function setupAtlas({ scenes, motion, say }) {
         FLEET.hermes.records +
         " scheduled jobs were enabled on the orchestration host at the " +
         FLEET.observedLong +
-        " observation, budget period " +
-        FLEET.hermes.budgetPeriod +
-        ". No live end to end route verification was established, so routing stays unverified. The HERMES study lets you explore a browser-only routing model.",
-      evidence: "Audit · " + FLEET.observedLong + " · routing withheld",
+        " observation. No live end to end route verification was established, so routing stays unverified. The HERMES study lets you explore a routing model that runs in your browser.",
+      evidence: "Audit · " + FLEET.observedLong + " · routing not verified",
     },
     zeus: {
       name: "Zeus",
@@ -67,7 +65,7 @@ export function setupAtlas({ scenes, motion, say }) {
       summary: "A second host in the same estate.",
       body:
         FLEET.apollo +
-        " LXC containers were running at this dated observation. The two-host cluster was quorate; quorum alone does not establish workload failover. Private service locations are withheld.",
+        " LXC containers were running at this dated observation. The two host cluster was quorate; quorum alone does not establish workload failover. Private service locations are withheld.",
       evidence: "Fleet observation · " + FLEET.observedLong,
     },
   };

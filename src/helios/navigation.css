@@ -29,7 +29,7 @@
 }
 .mc-heading .kick {
   color: var(--gold);
-  font-size: 11px;
+  font-size: 12px;
 }
 #mc-title {
   font-size: clamp(25px, 3vw, 32px);
@@ -148,7 +148,7 @@
   padding-top: 12px;
   border-top: 1px solid var(--line2);
   color: var(--muted);
-  font: 11px var(--mono);
+  font: 12px var(--mono);
 }
 .motion-resume,
 .motion-device,

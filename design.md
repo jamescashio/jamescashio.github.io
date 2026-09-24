@@ -1,3 +1,13 @@
+# V39.0 Zenith · September 23, 2026
+
+Keep the Helios world exactly: original artwork, Unbounded, Instrument Sans and JetBrains Mono, navy, gold and cyan, Bit, the arrival film, opt in sound and the visitor paced flight. Raise what a first visit understands and feels.
+
+Say the work plainly: local AI and security systems on hardware I own, with a human in command. Bind the hero proof chip to the dated observation. Replace process notes on the front page with a short statement and three ways in; keep engineering detail inside the build story. Publish the routing law rather than an old cost sample, and say that spend stays withheld until measured again.
+
+After the arrival film the artwork may answer the pointer with a few pixels of depth, a slow sun and a few stars. Boarding the starship plays one short warp that covers loading, then the flight settles in. Everything yields to the Motion control, reduced motion, hidden tabs and open scenes. No drones, no custom cursor, no autoplaying sound.
+
+Verify desktop, tablet, 390 and 320 pixel phones and ultrawide, keyboard, reduced motion, the flight, studios, E.V.E. and every release gate before the owner approves publication. Rollback: c3503c15552850ed10af455f86209970804c1fa8.
+
 # V38.9 a decision you can see — 09-21-2026
 
 Polish the existing orbital workshop in two passes. First, turn the privacy comparison into a small authored instrument: a cyan research path beside a gold decision boundary, with one finite signal when the visitor reveals the result. Keep the complete explanation visible without motion. Reset stale feedback when a prediction changes, announce the result politely, and let the same decision continue into the atlas.

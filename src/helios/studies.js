@@ -118,7 +118,7 @@ export function setupStudies({ scenes, motion, copy }) {
     $("#st-code").style.color = r.color;
     $("#st-detail").textContent = run
       ? r.detail
-      : "Choose a task and its boundaries, then run the five-step demonstration. No request leaves this page.";
+      : "Choose a task and its boundaries, then run the five step demonstration. No request leaves this page.";
     const box = $("#st-steps");
     gsap.killTweensOf(Array.from(box.children));
     box.innerHTML = r.steps

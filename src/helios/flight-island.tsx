@@ -6,13 +6,16 @@ export function openFlight({
   motion,
   step,
   onClose,
+  arrive = false,
 }: {
   motion: boolean;
   step: string;
   onClose: (destination?: string) => void;
+  arrive?: boolean;
 }) {
   const host = document.createElement("div");
   host.id = "helios-flight";
+  if (arrive) host.classList.add("zenith-arrive");
   document.documentElement.classList.add("flight-open");
   document.body.append(host);
   window.dispatchEvent(new Event("helios-overlay"));

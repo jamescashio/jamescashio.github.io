@@ -1,18 +1,16 @@
-# cAshIo V38.9 — Helios
+# cAshIo V39.0 · Helios
 
-The public front door is **[cashio.us](https://cashio.us/)**. The root serves the current orbital workshop directly from `index.html` and `src/helios/`. Former `/v38/` addresses normalize to the root and retain their requested section or scene; release query markers are removed.
+The public front door is **[cashio.us](https://cashio.us/)**. The root serves the current orbital workshop directly from `index.html` and `src/helios/`. Former `/v38/` addresses normalize to the root and keep their requested section or scene.
 
-The privacy test now pairs authored document-route diagrams with a finite signal that stops at the human-review boundary. Predictions reset cleanly, results have a persistent accessible announcement, and the narrow-phone choices stay side by side. Source-linked flight heritage separates aviation history from personal working principles. The signature responds with a bounded orbital accent and rests between interactions. Original images, fonts, models and observations are unchanged.
+**V39.0 Zenith** keeps the Helios world, palette, type, artwork, Bit and quiet sound, and sharpens what a first visit says and feels like:
 
-Mission Control offers Explore, Try and Understand starting routes before its complete searchable directory. Search and Close stay in view while destinations scroll. Search understands words in any order, reports matching destinations and offers a clear action and direct path to the Starship build story. The motion icon distinguishes enabled, visitor-paused and device-reduced motion.
+- **Clearer story.** The hero states the work plainly and carries a dated proof chip bound to the published observation. The engineering repair note that used to follow the hero now lives only inside the build story; its place is a short statement of how the workshop runs and three ways in. The AI budget panel publishes the routing law instead of a July cost sample, and the evidence boundary says spend stays withheld until it is measured again.
+- **A living first frame.** After the arrival film, the artwork answers the pointer with a few pixels of depth, the sun breathes and a few stars twinkle. All of it yields to the Motion control, reduced motion, hidden tabs and open scenes.
+- **A jump, not a wait.** Boarding the starship plays a short starfield warp that covers loading, and the flight arrives with a settle. The loader only appears when loading is slow. The flight module warms when a visitor hovers, focuses or touches a boarding link.
+- **E.V.E. lore.** Unlisted console commands carry labelled Dune, aviation and fleet lore. Listed commands still answer only from the dated export.
+- **Craft.** The wordmark I carries the serifs of the celestial signature. The phone starship card no longer collides with its caption, touch links have 44 pixel targets, ultrawide screens get a larger hero, and a designed share card replaces the plain orbit image for social previews. The hero art uses the existing AVIF set; the unseen 504 KB film poster is gone. The dead custom cursor markup and rules are removed.
 
-The opening keeps the original orbital artwork visible, with a brief light accent that settles. The primary invitation is Board the starship, alongside Try the privacy test; the flight starts at the visitor's pace with an optional Play tour control. A documented engineering story follows the hero, and the phone composition brings both invitations forward. Manual motion preferences persist in the browser, and system reduced motion takes priority. The full build story connects a privacy boundary to the existing twelve-request model, its source and its tests. No fonts or external assets are added.
-
-Focused study, privacy, atlas and evidence-console modules simplify the Helios controller. Content-derived URLs version existing artwork and fonts without changing their bytes or removing original paths. Production caching policy and dated evidence remain unchanged.
-
-Studios brings the original Celestial Forge, Lensing Observatory, five short films and interactive Sanctuary into Helios. These optional experiences load on request and share the current typography, motion controls, navigation and return path. Original artwork, quiet startup and dated observations are preserved.
-
-The current receipt remains `/v38/site-release.json`. V37.17 is preserved at `/odyssey.html`, accessible through Version history, and `?v=37.17` links explicitly select it. The shared package and compatibility receipts keep their historical identity with a `frontDoor` record pointing to V38.9. Interface revisions do not renew evidence observations. See [Helios validation and rollback](docs/helios-release.md).
+The current receipt remains `/v38/site-release.json`. V37.17 is preserved at `/odyssey.html`, accessible through Version history, and `?v=37.17` links explicitly select it. The shared package and compatibility receipts keep their historical identity with a `frontDoor` record pointing to V39.0. Interface revisions do not renew evidence observations. See [Helios validation and rollback](docs/helios-release.md).
 
 ## Preserved V37.17 compatibility experience
 
