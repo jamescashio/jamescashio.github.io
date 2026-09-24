@@ -36,8 +36,14 @@ export function setupNavigation({ studies, select, mission, motion }) {
     sequence = 0,
     lastURL = "";
   const returns = new Map();
-  const warp = createWarp();
   let loaderTimer = 0;
+  // If motion is switched off mid jump, the warp stops and the loader takes over at once.
+  const warp = createWarp({
+    onHalt: () => {
+      clearTimeout(loaderTimer);
+      if (pending && !loader.open) loader.showModal();
+    },
+  });
   setupFlightPrefetch(() => import("./flight-island"));
   const destinations = [
     ["Explore the starship", "Your pace. A 30 second tour when you choose.", "#flight=board"],
@@ -215,7 +221,12 @@ export function setupNavigation({ studies, select, mission, motion }) {
       activeKind = kind;
       scene =
         kind === "flight"
-          ? module.openFlight({ motion: motion(), step: hash.slice(8), onClose: closeScene, arrive: jumping })
+          ? module.openFlight({
+              motion: motion(),
+              step: hash.slice(8),
+              onClose: closeScene,
+              arrive: jumping && motion(),
+            })
           : module.openStudio({
               motion: motion(),
               hash,

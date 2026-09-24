@@ -109,11 +109,24 @@ export function setupFlightPrefetch(load) {
 }
 
 /** A short starfield jump that covers the flight's loading moment. */
-export function createWarp() {
+export function createWarp({ onHalt } = {}) {
   let host = null;
   let raf = 0;
   let started = 0;
   let safety = 0;
+  let release = null;
+  // A live Motion change or a new reduced motion preference stops the jump at once.
+  const halt = () => {
+    if (!host) return;
+    end();
+    onHalt?.();
+  };
+  window.addEventListener("helios-motion", (event) => {
+    if (!event.detail) halt();
+  });
+  reducedQuery.addEventListener?.("change", (event) => {
+    if (event.matches) halt();
+  });
   function start() {
     if (reducedQuery.matches || host) return false;
     host = document.createElement("div");
@@ -143,6 +156,10 @@ export function createWarp() {
     requestAnimationFrame(() => host?.classList.add("on"));
     const frame = (now) => {
       if (!host) return;
+      if (reducedQuery.matches) {
+        halt();
+        return;
+      }
       const t = (now - started) / 1000;
       const pull = Math.min(1, t / 0.7);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -177,10 +194,19 @@ export function createWarp() {
   function settle(minimum = 620) {
     if (!host) return Promise.resolve();
     const wait = Math.max(0, minimum - (performance.now() - started));
-    return new Promise((resolve) => setTimeout(resolve, wait));
+    return new Promise((resolve) => {
+      const timer = setTimeout(done, wait);
+      function done() {
+        clearTimeout(timer);
+        release = null;
+        resolve();
+      }
+      release = done;
+    });
   }
   function end() {
     clearTimeout(safety);
+    release?.();
     if (!host) return;
     const node = host;
     host = null;
