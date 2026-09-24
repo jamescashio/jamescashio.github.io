@@ -12,7 +12,7 @@ export const FLEET = {
   qemu: 1,
   quorate: true,
   routing: "Not verified",
-  pageRevised: "September 23, 2026",
+  pageRevised: "September 24, 2026",
   backups: { guestsOk: 20, guestsTotal: 20, freshnessLong: "September 18, 2026", restoreTested: false },
   // Exact software versions, kernels and the model tag stay out of the public record.
   atlas: { context: 16384 },

@@ -1,4 +1,4 @@
-# V39.0 Zenith · September 23, 2026
+# V39.0 Zenith · September 24, 2026
 
 Keep the Helios world exactly: original artwork, Unbounded, Instrument Sans and JetBrains Mono, navy, gold and cyan, Bit, the arrival film, opt in sound and the visitor paced flight. Raise what a first visit understands and feels.
 
