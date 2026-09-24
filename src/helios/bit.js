@@ -260,7 +260,7 @@ export function setupBit({ isMotionEnabled, openMissionControl }) {
     origSay(tag, line, m, hold);
     saidAt = Date.now();
     clearTimeout(sayTimer);
-    sayTimer = setTimeout(() => $("#bitsay").classList.add("hide"), 6500);
+    sayTimer = setTimeout(() => $("#bitsay").classList.add("hide"), 5000);
   };
   let scrollT = 0;
   window.addEventListener(
@@ -268,7 +268,7 @@ export function setupBit({ isMotionEnabled, openMissionControl }) {
     () => {
       $("#bitdock").classList.add("scrolling");
       // Once read, the bubble steps aside for the reader instead of riding over the page.
-      if (Date.now() - saidAt > 2200) $("#bitsay").classList.add("hide");
+      if (Date.now() - saidAt > 700) $("#bitsay").classList.add("hide");
       clearTimeout(scrollT);
       scrollT = setTimeout(() => $("#bitdock").classList.remove("scrolling"), 700);
     },

@@ -361,6 +361,7 @@
     ) {
     display: inline-flex;
     align-items: center;
+    column-gap: 0.3em;
     min-height: 44px;
   }
   .brand {
@@ -545,6 +546,7 @@
     min-height: 44px;
     display: inline-flex;
     align-items: center;
+    column-gap: 0.3em;
   }
 }
 @media (max-width: 480px) {
@@ -641,5 +643,56 @@
 @media (max-width: 380px) {
   .hero .kick {
     letter-spacing: 0.02em;
+  }
+}
+
+/* ---------- at a glance: who, how long, what, for a first time visitor ---------- */
+.profile-strip {
+  display: grid;
+  gap: 18px;
+  margin-bottom: clamp(36px, 5vw, 64px);
+  padding-bottom: clamp(28px, 4vw, 44px);
+  border-bottom: 1px solid var(--line2);
+}
+.profile-strip dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(16px, 3vw, 40px);
+  margin: 0;
+}
+.profile-strip dt {
+  font: 12px var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.profile-strip dd {
+  margin: 8px 0 0;
+  font-size: clamp(16px, 1.25vw, 19px);
+  line-height: 1.5;
+  color: var(--ink);
+}
+.profile-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 28px;
+  margin: 0;
+}
+.profile-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--cyan);
+  font-weight: 600;
+  font-size: 15px;
+}
+.profile-links a:hover {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+@media (max-width: 760px) {
+  .profile-strip dl {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
   }
 }

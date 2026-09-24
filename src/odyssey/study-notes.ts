@@ -26,7 +26,7 @@ export const STUDY_NOTES: Record<StudyId, StudyNote> = {
     boundary:
       "A deterministic routing model with four outcomes. It calls no model, measures no provider, and does not establish the current HERMES deployment’s behavior.",
     source: `${SOURCE}src/odyssey/data.ts`,
-    sourceLabel: "Inspect routeExample in the released model",
+    sourceLabel: "Inspect the routing rule in the released code",
   },
   cascade: {
     takeaway: "Uncertainty is a reason to change the next action.",
@@ -39,7 +39,7 @@ export const STUDY_NOTES: Record<StudyId, StudyNote> = {
     boundary:
       "Illustrative thresholds, chosen to make the transitions visible. They are not calibrated risk probabilities or production policy.",
     source: `${SOURCE}src/odyssey/data.ts`,
-    sourceLabel: "Inspect escalationExample in the released model",
+    sourceLabel: "Inspect the escalation rule in the released code",
   },
   exposure: {
     takeaway: "Reachable is the start of an investigation.",
@@ -52,7 +52,7 @@ export const STUDY_NOTES: Record<StudyId, StudyNote> = {
     boundary:
       "A synthetic triage exercise. No target is scanned, and these three inputs do not establish an exploit, vulnerability, or complete security assessment.",
     source: `${SOURCE}src/odyssey/data.ts`,
-    sourceLabel: "Inspect exposureExample in the released model",
+    sourceLabel: "Inspect the exposure rule in the released code",
   },
   briefing: {
     takeaway: "A short brief can still say “we don’t know.”",
@@ -91,7 +91,7 @@ export const STUDY_NOTES: Record<StudyId, StudyNote> = {
     boundary:
       "A fictional signal and threshold. No plant or customer data is used, and the exercise does not diagnose a physical process.",
     source: `${SOURCE}src/odyssey/labs.tsx`,
-    sourceLabel: "Inspect SignalLab in the released model",
+    sourceLabel: "Inspect the signal model in the released code",
   },
   graphify: {
     takeaway: "A small edit can have a larger reach.",
@@ -104,6 +104,6 @@ export const STUDY_NOTES: Record<StudyId, StudyNote> = {
     boundary:
       "A five module synthetic graph with a transitive traversal. It is not a repository scan or a claim that every dependency can be inferred automatically.",
     source: `${SOURCE}src/odyssey/data.ts`,
-    sourceLabel: "Inspect affectedModules and the graph edges",
+    sourceLabel: "Inspect the dependency graph in the released code",
   },
 };
