@@ -10,13 +10,12 @@ export const FLEET = {
   zeus: 15,
   apollo: 5,
   qemu: 1,
-  pve: "9.2.20",
   quorate: true,
   routing: "Not verified",
   pageRevised: "September 23, 2026",
-  kernel: { booted: "7.0.14-14-pve", staged: "7.0.14-17-pve" },
   backups: { guestsOk: 20, guestsTotal: 20, freshnessLong: "September 18, 2026", restoreTested: false },
-  atlas: { tag: "qwen3.8:27b-atlas", context: 16384 },
+  // Exact software versions, kernels and the model tag stay out of the public record.
+  atlas: { context: 16384 },
   hermes: { jobs: 58, records: 60, budgetPeriod: "September 2026" },
   dsh: { skills: 156, providers: 11, agentsDate: "September 8, 2026" },
   prior: {
@@ -27,7 +26,6 @@ export const FLEET = {
     zeus: 14,
     apollo: 5,
     qemu: 1,
-    pve: "9.2.11",
     lanes: "Not verified",
     method: "HERMES audit",
   },

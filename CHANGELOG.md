@@ -8,6 +8,7 @@
 - Board the starship with a short warp that covers loading; the flight settles in, the loader appears only when loading is slow, and the flight module warms on visitor intent.
 - Add labelled lore commands and clear to E.V.E. without changing any evidence reply.
 - Restore the serifed I in the wordmark, fix the phone starship card collision, give touch links 44 pixel targets, scale the hero on ultrawide screens and add a designed share card.
+- After launch: add an at a glance strip (role, career since 1996, what I build, career and certification links), withhold exact Proxmox, kernel and model versions from the page, E.V.E. and the September 18 export, restore word spacing in larger touch links, name study source links in plain words and let Bit's note step aside sooner.
 - Final polish: every label reaches 12 pixels outside the smallest diagram marks, the header turns solid once the page scrolls, the chapter rail follows the main navigation in tab order, Bit's note steps aside when the reader scrolls, the scroll cue sits on the centre line, the atlas readout stays beside the map on desktop and header, hero and chapters share one frame on ultrawide screens.
 - Serve the hero from the existing AVIF set, drop the unseen film poster and remove the dead custom cursor. The Helios inline style budget moves to 17 KB gzip.
 

@@ -5,10 +5,27 @@
   "verified": "2026-09-18",
   "verifiedLong": "18 September 2026",
   "expires": null,
-  "proxmox": { "version": "9.2.20", "hostsOnline": 2, "quorate": true },
-  "containers": { "running": 20, "documented": 20, "stopped": 0, "zeus": 15, "apollo": 5 },
-  "virtualMachines": { "running": 1, "documented": 1, "stopped": 0 },
-  "lanes": { "public": null, "privateCatalog": null },
+  "proxmox": {
+    "version": null,
+    "hostsOnline": 2,
+    "quorate": true
+  },
+  "containers": {
+    "running": 20,
+    "documented": 20,
+    "stopped": 0,
+    "zeus": 15,
+    "apollo": 5
+  },
+  "virtualMachines": {
+    "running": 1,
+    "documented": 1,
+    "stopped": 0
+  },
+  "lanes": {
+    "public": null,
+    "privateCatalog": null
+  },
   "routingVerified": null,
   "law": "Quality picks the model. Cost only breaks a tie.",
   "note": "Owner run read only observation of September 18 2026 collected through the DeepSeek Harness. Counts describe discovered LXC and QEMU guests, not application health. This public subset withholds private addresses, service names, credentials, spending, the private model catalog and unverified route claims.",
@@ -17,7 +34,10 @@
     "lanes.privateCatalog": "The private model catalog was intentionally withheld from the public fact sheet.",
     "routingVerified": "No authoritative live end to end route verification count was established.",
     "orchestration.hermesVerifiedRoutes": "The current orchestration receipt exposed provider metadata, not a verified route count.",
-    "orchestration.bridgeRevision": "The harness declares one bridge revision and the live adapter reports another; no single revision is asserted."
+    "orchestration.bridgeRevision": "The harness declares one bridge revision and the live adapter reports another; no single revision is asserted.",
+    "proxmox.version": "Exact software versions are withheld from the public record for security.",
+    "orchestration.atlasModel": "The model name is withheld with the private model catalog.",
+    "orchestration.kernels": "Kernel versions and reboot state are withheld from the public record for security."
   },
   "orchestration": {
     "operatorConsole": "DSH",
@@ -27,12 +47,8 @@
     "dshProviders": 11,
     "dshSkills": 156,
     "dshAgentsBriefDate": "2026-09-08",
-    "atlasModel": "qwen3.8:27b-atlas",
+    "atlasModel": null,
     "atlasActiveContext": 16384,
-    "kernels": {
-      "zeus": { "booted": "7.0.14-14-pve", "staged": "7.0.14-17-pve" },
-      "apollo": { "booted": "7.0.14-14-pve", "staged": "7.0.14-17-pve" }
-    },
     "backups": {
       "freshnessGuestsOk": 20,
       "freshnessGuestsTotal": 20,
@@ -46,8 +62,8 @@
     "observedAtAmericaChicago": "2026-09-18T17:53:54-05:00",
     "methods": {
       "proxmox": "Direct SSH reads of quorum, version, kernel, guest lists, pending package count and failed unit count on both nodes.",
-      "backupFreshness": "Direct CT119 service state and latest freshness journal receipt.",
-      "atlas": "Direct read only Ollama CLI probes through the existing Atlas SSH route.",
+      "backupFreshness": "Direct backup service state and latest freshness journal receipt.",
+      "atlas": "Direct read only probes on the local inference host.",
       "dsh": "Local filesystem and settings metadata probe.",
       "bridge": "Existing read only bridge receipt plus adapter provenance."
     },
@@ -55,7 +71,12 @@
   },
   "schemaVersion": 2,
   "archive": [
-    { "release": "V37.11", "url": "/status.json", "fleetObserved": "2026-09-07", "routingObserved": null },
+    {
+      "release": "V37.11",
+      "url": "/status.json",
+      "fleetObserved": "2026-09-07",
+      "routingObserved": null
+    },
     {
       "release": "V35 ALL TENS",
       "url": "/evidence/status-2026-08-28.json",

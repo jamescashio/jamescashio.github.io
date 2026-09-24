@@ -13,21 +13,21 @@ export const EVIDENCE = {
   ],
   fleet: [
     `observation: ${FLEET.observedLong} at ${FLEET.observedCentral} (${FLEET.observedUtc})`,
-    `hosts at the observation: ${FLEET.hosts} responded, ${FLEET.quorate ? "quorate with an Athena QDevice" : "quorum not observed"} · pve-manager ${FLEET.pve}`,
+    `hosts at the observation: ${FLEET.hosts} responded, ${FLEET.quorate ? "quorate" : "quorum not observed"}`,
     `lxc_running: ${FLEET.lxc} (zeus ${FLEET.zeus}, apollo ${FLEET.apollo}) · qemu_running: ${FLEET.qemu}`,
     `method: ${FLEET.method} · run by the owner`,
   ],
   kernel: [
-    `booted: ${FLEET.kernel.booted} on both hosts`,
-    `staged: ${FLEET.kernel.staged} on both hosts, reboot pending`,
+    "withheld: exact kernel and package versions stay out of the public record",
+    "a public security record shows what was observed, never a map for an attacker",
   ],
   backups: [
     `freshness: ${FLEET.backups.guestsOk} of ${FLEET.backups.guestsTotal} guests ok on ${FLEET.backups.freshnessLong}`,
     `restore_tested: ${FLEET.backups.restoreTested} · freshness is a file age check, not a restore drill`,
   ],
   atlas: [
-    `primary model: ${FLEET.atlas.tag} · active context ${FLEET.atlas.context}`,
-    "inference host for recurring work · private catalog withheld",
+    `primary model: runs locally · active context ${FLEET.atlas.context}`,
+    "inference host for recurring work · model name and private catalog withheld",
   ],
   dsh: [
     `DeepSeek Harness: ${FLEET.dsh.skills} skills · ${FLEET.dsh.providers} providers · operator console`,
@@ -44,7 +44,7 @@ export const EVIDENCE = {
     "the HERMES study on this page is a model that runs in your browser, not this record",
   ],
   archive: [
-    `${FLEET.prior.release} · fleet observed ${FLEET.prior.fleetLong} · ${FLEET.prior.method} · lxc ${FLEET.prior.lxc} (zeus ${FLEET.prior.zeus}, apollo ${FLEET.prior.apollo}) · qemu ${FLEET.prior.qemu} · pve ${FLEET.prior.pve}`,
+    `${FLEET.prior.release} · fleet observed ${FLEET.prior.fleetLong} · ${FLEET.prior.method} · lxc ${FLEET.prior.lxc} (zeus ${FLEET.prior.zeus}, apollo ${FLEET.prior.apollo}) · qemu ${FLEET.prior.qemu}`,
     `${FLEET.archive.release} · fleet observed ${FLEET.archive.fleetLong} · routing observed ${FLEET.archive.routingLong}`,
     `lxc_running: ${FLEET.archive.lxc} · qemu: ${FLEET.archive.qemu.toLowerCase()} · public lanes: ${FLEET.archive.lanes}`,
     `original expiry ${FLEET.archive.expiry}; that expiry does not extend the later observation`,
