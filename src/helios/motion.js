@@ -1,7 +1,6 @@
 import { MOTION_KEY, readMotionPreference, saveMotionPreference } from "./motion-preference.js";
 
 const FILM_SRC = "/assets/celestial/helios-arrival.mp4";
-const FILM_POSTER = "/assets/celestial/helios-arrival-poster.jpg";
 const FILM_STYLE = [
   ".hero-film{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:67% 50%;pointer-events:none;opacity:0;z-index:0;transform:scale(1.08);transform-origin:67% 50%}",
   ".hero[data-film=playing] .hero-film{opacity:1;animation:helios-film-push 6.4s cubic-bezier(.22,1,.36,1) forwards}",
@@ -218,14 +217,13 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
     film.setAttribute("playsinline", "");
     film.setAttribute("webkit-playsinline", "");
     film.preload = "auto";
-    film.poster = FILM_POSTER;
     film.setAttribute("aria-hidden", "true");
     film.tabIndex = -1;
     const source = document.createElement("source");
     source.src = FILM_SRC;
     source.type = "video/mp4";
     film.appendChild(source);
-    poster.after(film);
+    (poster.closest("picture") || poster).after(film);
     return film;
   }
   function startFilm() {

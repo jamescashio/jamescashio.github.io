@@ -81,7 +81,7 @@ export function mountInstrument(root, initial, fleet, onChange) {
         },
         routing: {
           title: "The unknown",
-          body: "Current routing counts and end-to-end route execution remain unverified. An older inventory cannot establish the present state.",
+          body: "Current routing counts and end to end route execution remain unverified. An older inventory cannot establish the present state.",
           source: "Latest public evidence · routing withheld",
         },
         authority: {

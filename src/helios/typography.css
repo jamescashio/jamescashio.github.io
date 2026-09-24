@@ -57,9 +57,6 @@ h3 {
   letter-spacing: 0;
   line-height: 1.6;
 }
-.atlas-caption-tag {
-  letter-spacing: 0.09em;
-}
 @media (max-width: 600px) {
   h2 {
     line-height: 1.1;

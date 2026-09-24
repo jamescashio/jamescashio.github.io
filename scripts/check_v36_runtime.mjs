@@ -131,7 +131,7 @@ async function run() {
       resources.server = await serveDist();
       const base = `http://127.0.0.1:${resources.server.address().port}`;
       const rootHtml = await fetch(`${base}/`).then((response) => response.text());
-      assert.match(rootHtml, /cAshIo · Helios/, "root must serve the current Helios document");
+      assert.match(rootHtml, /data-helios-styles=/, "root must serve the current Helios document");
       assert.match(rootHtml, /id="studios"/, "the integrated studios must exist before JavaScript");
       const archiveHtml = await fetch(`${base}/odyssey.html`).then((response) => response.text());
       assert.match(archiveHtml, /data-prerendered="odyssey"/, "the archive must retain the prerendered V37 page");
@@ -167,7 +167,7 @@ async function run() {
       });
       report.release = receipt;
       assert.equal(receipt.frontDoor.entry, "/");
-      assert.equal(receipt.frontDoor.experienceVersion, "38.9.0");
+      assert.equal(receipt.frontDoor.experienceVersion, "39.0.0");
       report.checks.push({
         name: "Current root, preserved V37 prerender, release identities and indexing",
         passed: true,

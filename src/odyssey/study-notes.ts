@@ -18,7 +18,7 @@ export const STUDY_NOTES: Record<StudyId, StudyNote> = {
   hermes: {
     takeaway: "Give each request the route it needs.",
     relevance:
-      "Routine work gets a general lane. Evidence requirements change the route. Private information puts a person in the decision. This is the policy behind the cost-control idea.",
+      "Routine work gets a general lane. Evidence requirements change the route. Private information puts a person in the decision. This is the policy behind the cost control idea.",
     question: "What wins when intent, evidence requirements, and privacy disagree?",
     rule: "Private input always holds the external route for human review. Otherwise, Research intent or a source requirement selects Research. Analyze selects Synthesis; Draft selects Workhorse.",
     experiment:
@@ -102,7 +102,7 @@ export const STUDY_NOTES: Record<StudyId, StudyNote> = {
     experiment:
       "Select Policy: Router, Adapter, and Interface are affected. Select Adapter: only Router and Interface remain. Select Interface: no other module depends on it.",
     boundary:
-      "A five-module synthetic graph with a transitive traversal. It is not a repository scan or a claim that every dependency can be inferred automatically.",
+      "A five module synthetic graph with a transitive traversal. It is not a repository scan or a claim that every dependency can be inferred automatically.",
     source: `${SOURCE}src/odyssey/data.ts`,
     sourceLabel: "Inspect affectedModules and the graph edges",
   },

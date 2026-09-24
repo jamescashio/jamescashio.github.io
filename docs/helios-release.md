@@ -1,4 +1,10 @@
-# V38.9 Helios release
+# V39.0 Helios Zenith release
+
+Zenith keeps every Helios asset, color, typeface and interaction model and changes what a first visit reads and feels. Copy leads with plain language and dated proof. The routing law replaces the July cost sample, and spend stays withheld until it is measured again. The first frame gains pointer depth, a breathing sun and stars after the arrival film; boarding the starship plays a short warp that covers loading. E.V.E. gains labelled lore commands and clear. The wordmark I regains its serifs, the phone starship card no longer collides, touch links meet 44 pixels, ultrawide screens get a larger hero, and a designed share card serves social previews.
+
+Validation: lint, format, node, odyssey, artifact, layout runtime, V36 runtime, Helios runtime, release tests, the public repository guard, release consistency and whitespace checks, plus Lighthouse and axe at 390, 834, 1440 and 3440 pixels and a real GPU and H.264 check on the owner's Windows machine. Publication waits for the owner's explicit approval of the preview. Rollback: revert the squash commit, or redeploy c3503c15552850ed10af455f86209970804c1fa8.
+
+## Preserved V38.9 release
 
 The first polish pass makes the privacy decision visible: inline document-route graphics, a finite signal stopping at the boundary, an explicit human-review result and exact continuation into the existing atlas. New predictions clear the previous answer, and a persistent live region announces results. Source-linked aviation history is separated from Doug's personal working principles. The original signature gains a deliberate orbital response with bounded particles and clean interruption.
 

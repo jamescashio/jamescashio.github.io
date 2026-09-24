@@ -344,7 +344,7 @@ h3,
 }
 .study[aria-selected="true"] .study-index:after {
   content: "●";
-  font-size: 9px;
+  font-size: 11px;
   text-shadow: 0 0 14px var(--cyan);
 }
 .study .study-title {

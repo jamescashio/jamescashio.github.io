@@ -159,7 +159,7 @@ test("Mission presets and the last change match the model, including custom sett
   const page = await visit(t, { width: 390 });
   await expect(page.locator('[data-mission="routine"]')).toHaveAttribute("aria-pressed", "true");
   await page.locator('[data-mission="blackout"]').click();
-  await expect(page.locator("#mission-state")).toHaveText("Deep-space blackout · selected");
+  await expect(page.locator("#mission-state")).toHaveText("Deep space blackout · selected");
   await expect(page.locator("#w-change")).toHaveText("Local: 6 → 12 · Cloud: 6 → 0");
   await page.locator('[data-mission="blackout"]').click();
   await expect(page.locator("#w-change")).toHaveText("Local: 6 → 12 · Cloud: 6 → 0");
@@ -465,7 +465,7 @@ test("The invitation and three starting routes work by keyboard, keep sound opt-
     await expect(page.locator("#workshop-title")).toBeFocused();
     await expect(page.locator(".workshop-note .workshop-link")).toHaveAttribute(
       "href",
-      "https://github.com/jamescashio/jamescashio.github.io/pull/135",
+      "https://github.com/jamescashio/jamescashio.github.io",
     );
     await page.locator("#mc-btn").click();
     await expect(page.locator("#mc-start a")).toHaveCount(3);

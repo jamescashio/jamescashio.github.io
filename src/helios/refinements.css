@@ -10,12 +10,6 @@
   border-bottom: 1px solid var(--line);
   color: var(--muted);
 }
-.atlas-caption-tag {
-  color: var(--cyan);
-  padding: 6px 10px;
-  border: 1px solid rgba(56, 225, 255, 0.3);
-  border-radius: 6px;
-}
 .plate.sig {
   display: grid;
   grid-template-rows: auto minmax(130px, 1fr) auto;
@@ -229,7 +223,7 @@ section[data-ambient="off"] *:after,
   display: flex;
   justify-content: space-between;
   color: var(--muted);
-  font: 11px var(--mono);
+  font: 12px var(--mono);
 }
 .lab-switch {
   position: relative;
@@ -348,7 +342,7 @@ section[data-ambient="off"] *:after,
   justify-items: center;
 }
 .cascade-node > span {
-  font: 11px var(--mono);
+  font: 12px var(--mono);
 }
 .cascade-node i {
   position: relative;
@@ -385,7 +379,7 @@ section[data-ambient="off"] *:after,
   text-align: center;
 }
 .exposure-path span {
-  font: 10px/1.8 var(--mono);
+  font: 12px/1.8 var(--mono);
   color: var(--muted);
 }
 .exposure-path b {
@@ -416,7 +410,7 @@ section[data-ambient="off"] *:after,
   display: grid;
   justify-items: center;
   gap: 15px;
-  font: 10px var(--mono);
+  font: 12px var(--mono);
   color: var(--muted);
 }
 .evidence-beams i {
@@ -471,7 +465,7 @@ section[data-ambient="off"] *:after,
 .brief-output small {
   display: block;
   color: var(--gold);
-  font: 10px/1.7 var(--mono);
+  font: 12px/1.7 var(--mono);
   margin-top: 12px;
 }
 .brief-output .brief-next {
@@ -511,7 +505,7 @@ section[data-ambient="off"] *:after,
   color: var(--gold);
 }
 .age-clock small {
-  font: 9px var(--mono);
+  font: 11px var(--mono);
   color: var(--muted);
 }
 .clock-boundary {
@@ -530,7 +524,7 @@ section[data-ambient="off"] *:after,
 }
 .signal-wave text {
   fill: var(--muted);
-  font: 9px var(--mono);
+  font: 11px var(--mono);
 }
 .dependency-map {
   width: 100%;
@@ -571,7 +565,7 @@ section[data-ambient="off"] *:after,
   color: var(--ink2);
 }
 .dependency-map button span {
-  font: 8px var(--mono);
+  font: 11px var(--mono);
   color: var(--muted);
 }
 .dependency-map button.affected {
@@ -668,7 +662,7 @@ section[data-ambient="off"] *:after,
 
 @media (min-width: 901px) {
   .hero .status {
-    font-size: 10px;
+    font-size: 12px;
     max-width: 260px;
   }
 }
@@ -788,7 +782,7 @@ section[data-ambient="off"] *:after,
     padding: 12px 18px;
   }
   .hero .kick {
-    font-size: 10px;
+    font-size: 12px;
     letter-spacing: 0.12em;
   }
   .instrument {
@@ -832,7 +826,7 @@ section[data-ambient="off"] *:after,
     font-size: 15px !important;
   }
   .study .mono {
-    font-size: 9px !important;
+    font-size: 11px !important;
   }
   .lab-result {
     padding: 18px;
@@ -854,34 +848,34 @@ section[data-ambient="off"] *:after,
   .dependency-map button {
     min-width: 66px;
     max-width: 80px;
-    font-size: 10px;
+    font-size: 12px;
     left: clamp(35px, var(--x), calc(100% - 35px));
   }
   .dependency-map button span {
-    font-size: 7px;
+    font-size: 10px;
   }
   .exposure-path {
     gap: 4px;
     padding: 16px 8px;
   }
   .exposure-path b {
-    font-size: 11px;
+    font-size: 12px;
   }
   .exposure-path span {
-    font-size: 9px;
+    font-size: 11px;
   }
   .evidence-beams {
     padding: 20px 12px;
     gap: 8px;
   }
   .evidence-beams > div {
-    font-size: 9px;
+    font-size: 11px;
   }
   .cascade-track {
     gap: 4px;
   }
   .cascade-node {
-    font-size: 11px;
+    font-size: 12px;
   }
   .evidence-scroll:after {
     content: "Swipe to compare all three records →";
@@ -956,7 +950,7 @@ section[data-ambient="off"] *:after,
     font-size: 19px;
   }
   .evidence-beams > div {
-    font-size: 8px;
+    font-size: 10px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

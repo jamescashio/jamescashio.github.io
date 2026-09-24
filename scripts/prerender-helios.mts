@@ -9,7 +9,10 @@ const styles = [...html.matchAll(/<link rel="stylesheet" crossorigin href="(\/as
 if (styles.length !== 1) throw new Error("Expected one Helios entry stylesheet");
 const [link, source] = styles[0];
 const css = await readFile("dist" + source, "utf8");
-if (gzipSync(css).byteLength > 15000 || /<\/style/i.test(css)) throw new Error("Helios style delivery budget exceeded");
+// V39 budget: 17 KB gzip covers the living hero and chapter styles; the dead custom cursor was removed to pay for it.
+const STYLE_BUDGET_GZIP = 17000;
+if (gzipSync(css).byteLength > STYLE_BUDGET_GZIP || /<\/style/i.test(css))
+  throw new Error("Helios style delivery budget exceeded");
 html = html.replace(link, `<style data-helios-styles="${source}">${css}</style>`);
 // The root serves the current experience directly; old shared addresses normalize before paint.
 const entry = (await readFile("public/helios-entry.js", "utf8")).replace(/\r\n?/g, "\n").trim();

@@ -1,5 +1,16 @@
 # Changelog
 
+## V39.0 · Zenith
+
+- Lead with plain language: hardware I own, a dated proof chip in the hero, and a workshop statement with three ways in. The repair note moves into the build story.
+- Publish the routing law in place of the July 21 to 22 cost sample. Spend stays withheld until it is measured again, in the page, the evidence boundary and E.V.E.
+- Give the first frame life after the arrival film: pointer depth on the artwork, a breathing sun and twinkling stars, all paused by the Motion control, reduced motion, hidden tabs and open scenes.
+- Board the starship with a short warp that covers loading; the flight settles in, the loader appears only when loading is slow, and the flight module warms on visitor intent.
+- Add labelled lore commands and clear to E.V.E. without changing any evidence reply.
+- Restore the serifed I in the wordmark, fix the phone starship card collision, give touch links 44 pixel targets, scale the hero on ultrawide screens and add a designed share card.
+- Final polish: every label reaches 12 pixels outside the smallest diagram marks, the header turns solid once the page scrolls, the chapter rail follows the main navigation in tab order, Bit's note steps aside when the reader scrolls, the scroll cue sits on the centre line, the atlas readout stays beside the map on desktop and header, hero and chapters share one frame on ultrawide screens.
+- Serve the hero from the existing AVIF set, drop the unseen film poster and remove the dead custom cursor. The Helios inline style budget moves to 17 KB gzip.
+
 ## V38.9 — A decision you can see
 
 - Illustrate the public research route and private decision boundary with authored vectors and a finite, interruptible signal. Keep a complete still explanation.

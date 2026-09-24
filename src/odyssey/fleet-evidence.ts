@@ -54,14 +54,14 @@ export function evidenceCommand(raw: string): string[] | null {
       `Public lanes: ${evidenceCount(FLEET_EVIDENCE.lanes.public)}`,
       `Private catalog: ${evidenceCount(FLEET_EVIDENCE.lanes.privateCatalog)}`,
       "No current routing inventory or execution record was established.",
-      "The HERMES study is a browser-only illustration. No AI request is sent.",
+      "The HERMES study is an illustration that runs in your browser. No AI request is sent.",
     ];
   }
   if (["verify", "evidence"].includes(command)) {
     return [
       ...fleetEvidenceLines(),
       "SOURCE · OWNER-RUN READ-ONLY HERMES AUDIT",
-      "Cluster resource counts were cross-checked with direct guest lists.",
+      "Cluster resource counts were checked against direct guest lists.",
       "Download the observation at /status.json. Routing remains unverified.",
       "The website version identifies the experience; the observation has its own timestamp.",
     ];

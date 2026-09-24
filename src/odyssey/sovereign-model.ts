@@ -46,7 +46,7 @@ export function computeWorldOutcome(input: WorldInput) {
         : "All 12 requests use an external cloud provider. Your data crosses the local boundary.";
     } else {
       held = TOTAL_REQUESTS;
-      summary = "The cloud connection is down. All 12 requests wait; this cloud-only model has no local fallback.";
+      summary = "The cloud connection is down. All 12 requests wait; this cloud only model has no local fallback.";
     }
     internetDependency = "An available cloud connection is required for every request.";
     dataHandling =

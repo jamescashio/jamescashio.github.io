@@ -22,7 +22,13 @@ export default function FlightBridge({
   return (
     <>
       <style>{reviewStyles + polishStyles}</style>
-      <FirstFlight motion={activeMotion} initialStep={step} onClose={onClose} edition="V38 / HELIOS" visitorPaced />
+      <FirstFlight
+        motion={activeMotion}
+        initialStep={step}
+        onClose={onClose}
+        edition="HELIOS · FIRST FLIGHT"
+        visitorPaced
+      />
     </>
   );
 }

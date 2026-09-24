@@ -254,9 +254,11 @@ export function setupBit({ isMotionEnabled, openMissionControl }) {
   $("#bit-x").addEventListener("click", () => $("#bitsay").classList.add("hide"));
   // bubble clears itself; Bit shrinks while the page scrolls; Bit can be dragged to any corner
   let sayTimer = 0;
+  let saidAt = 0;
   const origSay = say;
   say = function (tag, line, m, hold) {
     origSay(tag, line, m, hold);
+    saidAt = Date.now();
     clearTimeout(sayTimer);
     sayTimer = setTimeout(() => $("#bitsay").classList.add("hide"), 6500);
   };
@@ -265,6 +267,8 @@ export function setupBit({ isMotionEnabled, openMissionControl }) {
     "scroll",
     () => {
       $("#bitdock").classList.add("scrolling");
+      // Once read, the bubble steps aside for the reader instead of riding over the page.
+      if (Date.now() - saidAt > 2200) $("#bitsay").classList.add("hide");
       clearTimeout(scrollT);
       scrollT = setTimeout(() => $("#bitdock").classList.remove("scrolling"), 700);
     },
