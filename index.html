@@ -959,8 +959,8 @@
                 <summary>See how the record grew</summary>
                 <div class="evidence-record-body">
                   <p class="muted copy-note">
-                    The latest observation counts running guests on the two servers. Earlier columns keep their original
-                    dates and unknowns.
+                    The latest observation comes first and counts running guests on the two servers. Older columns keep
+                    their original dates and unknowns.
                   </p>
                   <div
                     class="evidence-scroll"
@@ -969,64 +969,52 @@
                     tabindex="0"
                   >
                     <div class="grid-box cols-record gap-10-14 items-center" id="ev-chart">
-                      <span class="mono c-mu">Record</span
-                      ><span class="mono c-mu"><span data-fleet="archive.fleetShort">Aug 28</span></span
-                      ><span class="mono c-mu"><span data-fleet="prior.fleetShort">Sep 7</span></span
-                      ><span class="mono c-cy">Latest · <span data-fleet="observedShort">Sep 24</span></span>
+                      <span class="mono c-mu">Record</span>
+                      <span class="mono c-cy">Latest · <span data-fleet="observedShort">Sep 24</span></span>
+                      <span class="mono c-mu"><span data-fleet="prior.fleetShort">Sep 7</span></span>
+                      <span class="mono c-mu"><span data-fleet="archive.fleetShort">Aug 28</span></span>
                       <strong class="fs-14">Containers running</strong>
                       <div class="flex items-center gap-8">
-                        <div class="barwrap flex-1">
-                          <div class="bar bg-archive" data-w=".9"></div>
-                        </div>
-                        <span class="num fs-18 w-30" data-fleet="archive.lxc">18</span>
+                        <div class="barwrap flex-1"><div class="bar bg-local" data-w="1"></div></div>
+                        <span class="num cy fs-18 w-30" data-fleet="lxc">20</span>
                       </div>
                       <div class="flex items-center gap-8">
-                        <div class="barwrap flex-1">
-                          <div class="bar bg-audit" data-w=".95"></div>
-                        </div>
+                        <div class="barwrap flex-1"><div class="bar bg-audit" data-w=".95"></div></div>
                         <span class="num fs-18 w-30" data-fleet="prior.lxc">19</span>
                       </div>
                       <div class="flex items-center gap-8">
-                        <div class="barwrap flex-1">
-                          <div class="bar bg-local" data-w="1"></div>
-                        </div>
-                        <span class="num cy fs-18 w-30" data-fleet="lxc">20</span>
+                        <div class="barwrap flex-1"><div class="bar bg-archive" data-w=".9"></div></div>
+                        <span class="num fs-18 w-30" data-fleet="archive.lxc">18</span>
                       </div>
                       <strong class="fs-14">Virtual machines</strong>
+                      <div class="flex items-center gap-8">
+                        <div class="barwrap flex-1"><div class="bar bg-local" data-w=".12"></div></div>
+                        <span class="num cy fs-18 w-30" data-fleet="qemu">1</span>
+                      </div>
+                      <div class="flex items-center gap-8">
+                        <div class="barwrap flex-1"><div class="bar bg-audit" data-w=".12"></div></div>
+                        <span class="num fs-18 w-30">1</span>
+                      </div>
                       <div class="flex items-center gap-8">
                         <div class="bar-unrecorded"></div>
                         <span class="mono c-mu">Not recorded</span>
                       </div>
-                      <div class="flex items-center gap-8">
-                        <div class="barwrap flex-1">
-                          <div class="bar bg-audit" data-w=".12"></div>
-                        </div>
-                        <span class="num fs-18 w-30">1</span>
-                      </div>
-                      <div class="flex items-center gap-8">
-                        <div class="barwrap flex-1">
-                          <div class="bar bg-local" data-w=".12"></div>
-                        </div>
-                        <span class="num cy fs-18 w-30" data-fleet="qemu">1</span>
-                      </div>
                       <strong class="fs-14">Hosts online</strong>
-                      <div class="mono c-mu">2 of 2</div>
-                      <div class="mono">2 of 2</div>
                       <div class="mono c-cy"><span data-fleet="hosts">2</span> of 2</div>
+                      <div class="mono">2 of 2</div>
+                      <div class="mono c-mu">2 of 2</div>
                       <strong class="fs-14">Public lanes</strong>
                       <div class="flex items-center gap-8">
-                        <div class="barwrap flex-1">
-                          <div class="bar bg-archive" data-w=".55"></div>
-                        </div>
+                        <div class="bar-unverified"></div>
+                        <span class="mono c-gd">Not verified</span>
+                      </div>
+                      <div class="flex items-center gap-8">
+                        <div class="bar-unverified"></div>
+                        <span class="mono c-gd">Not verified</span>
+                      </div>
+                      <div class="flex items-center gap-8">
+                        <div class="barwrap flex-1"><div class="bar bg-archive" data-w=".55"></div></div>
                         <span class="num fs-18 w-30">10</span>
-                      </div>
-                      <div class="flex items-center gap-8">
-                        <div class="bar-unverified"></div>
-                        <span class="mono c-gd">Not verified</span>
-                      </div>
-                      <div class="flex items-center gap-8">
-                        <div class="bar-unverified"></div>
-                        <span class="mono c-gd">Not verified</span>
                       </div>
                     </div>
                   </div>
@@ -1099,7 +1087,7 @@
               </div>
               <form id="eve-form">
                 <label for="eve-in" class="mono c-cy">E.V.E.</label
-                ><input id="eve-in" type="text" autocomplete="off" placeholder="Type a command" /><button
+                ><input id="eve-in" type="text" autocomplete="off" placeholder="Try help" /><button
                   class="btn ghost sm"
                   type="submit"
                   aria-label="Run command"

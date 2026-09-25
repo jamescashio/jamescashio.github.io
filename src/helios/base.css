@@ -406,11 +406,18 @@ section.block {
   display: flex;
   flex-direction: column;
   z-index: 80;
+  transition:
+    opacity 0.3s,
+    visibility 0.3s;
 }
 .sections a {
   transition:
     background 0.2s,
     transform 0.2s;
+}
+html.at-top:not([data-room]) .sections {
+  opacity: 0;
+  visibility: hidden;
 }
 .sections a.on {
   border-color: var(--gold);

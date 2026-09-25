@@ -66,7 +66,10 @@ export function setupNavDepth() {
   let deep = null;
   const update = () => {
     const next = window.scrollY > 120;
-    if (next !== deep) nav.classList.toggle("deep", (deep = next));
+    if (next === deep) return;
+    nav.classList.toggle("deep", (deep = next));
+    // The opening keeps two actions in view; the chapter rail arrives once the reader moves on.
+    document.documentElement.classList.toggle("at-top", !next);
   };
   window.addEventListener("scroll", update, { passive: true });
   update();
@@ -239,7 +242,8 @@ h1,h2,h3,.syne{letter-spacing:.01em}`,
     css: `:root{--display:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--mono:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 body{line-height:1.7}
 h1,h2,h3{letter-spacing:-.01em}
-.mono,.kick{letter-spacing:.04em!important;font-size:max(13px,1em)!important}`,
+main p,main dd,.copy-note{font-size:max(1em,16.5px)!important;line-height:1.7!important}
+.mono,.kick{letter-spacing:.02em!important;text-transform:none!important;font-size:max(14px,1em)!important}`,
   },
 };
 
