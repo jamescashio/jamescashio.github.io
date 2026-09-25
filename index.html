@@ -182,8 +182,8 @@
           </h1>
           <p class="sub" data-hero>
             I’m Doug Cashio. I got into IT when Pac-Man still ate quarters, and I’ve spent more than twenty years
-            keeping the bad guys out. These days my AI runs on hardware in my house, and it still has to ask me before
-            it does anything important.
+            keeping the bad guys out. This is my after-hours lab: AI on my own servers, with a human approving the
+            important decisions.
           </p>
           <div class="cta" data-hero>
             <a class="btn gold" id="hero-primary" href="#flight=board" data-flight
@@ -194,14 +194,15 @@
           <p class="cta-note">A 30 second flight at your pace. Sound stays off.</p>
         </div>
         <button class="bit" type="button" id="fold-btn" data-hero data-magnet>
-          <span class="mono c-mu">BIT / HUMAN COPILOT</span><span class="mono c-gd">ILLUMINATE THE ORBIT ↗</span>
+          <span class="mono c-mu">BIT / YOUR GOLD COPILOT</span><span class="mono c-gd">ILLUMINATE THE ORBIT ↗</span>
         </button>
         <a class="hero-next" href="#workshop">Next: inside the workshop <span aria-hidden="true">↓</span></a>
       </section>
 
       <!-- ================= THESIS ================= -->
       <section class="block thesis py-48-80" id="workshop" aria-labelledby="workshop-title">
-        <div class="wrap profile-strip">
+        <div class="wrap profile-strip workshop-note">
+          <h2 id="workshop-title">Built at home. Open to inspect.</h2>
           <p class="profile-lead">
             <span class="kick gold">AT A GLANCE</span>
             <span
@@ -224,10 +225,10 @@
             <div>
               <dt class="kick gold">By night</dt>
               <dd>
-                <strong>Private AI I can show you</strong>
+                <strong>My after-hours lab</strong>
                 <span
-                  >Two servers I own run 20 containers and a scheduler, and every call that matters ends with a
-                  person.</span
+                  >Two servers I own run 20 containers and a scheduler. Here I explore what AI should handle and what
+                  should wait for a person.</span
                 >
                 <a href="#evidence">See the dated record ↓</a>
               </dd>
@@ -237,10 +238,12 @@
               <dd>
                 <strong>Work you can inspect</strong>
                 <span
-                  >Seven working studies and a 3D starship make the tradeoffs visible. Every change to this site passes
-                  14 automated checks, from accessibility to a privacy scan.</span
+                  >Seven working studies and a 3D starship make the tradeoffs visible. The site includes automated
+                  checks for accessibility, routing behavior and publication privacy.</span
                 >
-                <a href="https://github.com/jamescashio/jamescashio.github.io" rel="noopener">Read the source ↗</a>
+                <a class="workshop-link" href="https://github.com/jamescashio/jamescashio.github.io" rel="noopener"
+                  >Read the source ↗</a
+                >
               </dd>
             </div>
           </dl>
@@ -265,7 +268,7 @@
                 </div>
                 <div>
                   <dt><strong>HERMES</strong></dt>
-                  <dd>My scheduler. It decides which route a request qualifies for.</dd>
+                  <dd>My job scheduler. The study below illustrates how a routing policy chooses where work goes.</dd>
                 </div>
                 <div>
                   <dt><strong>DSH</strong></dt>
@@ -281,7 +284,7 @@
                 </div>
                 <div>
                   <dt><strong>Workhorse, Research, Synthesis</strong></dt>
-                  <dd>The routes a request can qualify for.</dd>
+                  <dd>Routes for everyday drafting, sourced research and combining information.</dd>
                 </div>
                 <div>
                   <dt><strong>R-01</strong></dt>
@@ -289,42 +292,6 @@
                 </div>
               </dl>
             </details>
-          </div>
-        </div>
-        <div class="wrap grid items-center">
-          <div class="c5 workshop-note">
-            <span class="kick gold">FROM DOUG’S WORKSHOP</span>
-            <h2 id="workshop-title">Built at home.<br />Open to inspect.</h2>
-            <p>
-              This is my hobby and my proof of work. Everything here runs on one idea I use every day: let AI do the
-              heavy lifting, and keep a person in charge of the calls that matter. The hardware is mine. The rules are
-              written down. The evidence is dated.
-            </p>
-            <a class="workshop-link" href="https://github.com/jamescashio/jamescashio.github.io"
-              >Read the source for this site <span aria-hidden="true">↗</span></a
-            >
-          </div>
-          <div class="c7 stack workshop-routes">
-            <div class="workshop-routes-head">
-              <span class="kick gold">START ANYWHERE</span
-              ><span class="muted">Three ways in. Each takes about a minute.</span>
-            </div>
-            <div class="minute" data-stagger>
-              <a class="step" href="#flight=board" data-flight>
-                <span class="mono gold">01 / EXPLORE</span><strong>Board the starship</strong>
-                <span class="muted copy-note"
-                  >Fly a ship with its own onboard AI. Cut the cloud link and see what stays aboard.</span
-                >
-              </a>
-              <a class="step" href="#work">
-                <span class="mono gold">02 / TRY</span><strong>Test the privacy boundary</strong>
-                <span class="muted copy-note">Mark one document private, then predict who decides.</span>
-              </a>
-              <a class="step" href="#build-story">
-                <span class="mono gold">03 / INSPECT</span><strong>Read the build story</strong>
-                <span class="muted copy-note">The question, the rule and the tests behind the starship.</span>
-              </a>
-            </div>
           </div>
         </div>
       </section>
@@ -372,7 +339,9 @@
                     />
                   </svg>
                   <span class="syne">Research</span
-                  ><span class="muted copy-note">Attributable sources select the research route.</span>
+                  ><span class="muted copy-note"
+                    >A request for sources selects Research, the route for checking claims.</span
+                  >
                 </div>
                 <div class="soft stack privacy-route" id="pv-route" data-revealed="false">
                   <span class="mono c-gd">02 / PRIVATE DOCUMENT</span>
@@ -439,14 +408,11 @@
                 <dd class="muted">One expensive default treats routine work and hard decisions the same way.</dd>
                 <dt class="mono">My decision</dt>
                 <dd class="muted">
-                  A local model handles recurring work and harder tasks can escalate. I weigh quality, privacy and
-                  reliability first. Private work waits for a person.
+                  My rule: use Atlas, my local AI model, for recurring work; reserve stronger models for harder tasks.
+                  Weigh quality, privacy and reliability first. Hold private work for a person.
                 </dd>
                 <dt class="mono">The proof</dt>
-                <dd class="muted">
-                  The rule is public and you can test it in the demo. Live spend and routing figures stay withheld until
-                  they are measured again.
-                </dd>
+                <dd class="muted">Test the rule below, then inspect the dated record for what has been measured.</dd>
               </dl>
               <div class="flex gap-12 flex-wrap mt-auto">
                 <a href="#studies" class="btn gold sm" data-load="public">Try the routing demo</a
@@ -586,7 +552,7 @@
           <header class="atlas-intro">
             <div class="stack">
               <div class="kick">THE UNIVERSE</div>
-              <span class="mono c-gd">ZEUSAPOLLO × HERMES × DSH</span>
+              <span class="mono c-gd">MY SERVERS, SCHEDULER AND CONSOLE</span>
               <h2 id="uni-h" data-split>A world of systems.<br />One accountable human.</h2>
             </div>
             <div class="stack">
@@ -595,26 +561,25 @@
                 operate it from. Every path ends with a person who is accountable.
               </p>
               <p class="muted copy-note">
-                Make request R-01 private and watch its path change. Carry the same decision into HERMES, or select any
-                node to see its role.
+                Make the sample request, R-01, private and watch its path change. Carry the same decision into HERMES,
+                or select any node to see its role.
               </p>
             </div>
           </header>
           <div class="c5 stack atlas-inspection sg-22" id="atlas-inspection">
             <div class="panel stack p-24 sg-10" aria-live="polite">
               <div class="flex justify-between">
-                <span class="mono c-mu" id="nd-role">Orchestration</span><span class="mono c-cy">SELECTED</span>
+                <span class="mono c-mu" id="nd-role">Job scheduler</span><span class="mono c-cy">SELECTED</span>
               </div>
               <div class="flex items-baseline gap-14 flex-wrap">
                 <span class="syne fs-32 fw-800" id="nd-name">HERMES</span
                 ><span class="num em fs-32" id="nd-value" data-fleet="hermes.jobs">58</span
                 ><span class="mono c-mu" id="nd-unit">enabled scheduled jobs</span>
               </div>
-              <strong id="nd-summary">Intent becomes a qualified route.</strong>
+              <strong id="nd-summary">The scheduler turns a task into a job.</strong>
               <p class="muted copy-note" id="nd-body">
-                58 of 60 scheduled jobs were enabled on the orchestration host at the last audit. No live end to end
-                route verification was established, so routing stays unverified. The HERMES study lets you explore a
-                routing model that runs in your browser.
+                58 of 60 scheduled jobs were enabled at the last audit. The HERMES study explores the routing rule in
+                your browser.
               </p>
               <span class="mono c-gd" id="nd-evidence">Last audit · routing not verified</span>
             </div>
@@ -886,7 +851,7 @@
             <div class="c6 stack sg-10">
               <strong class="fs-18">Every claim here has a date and a source.</strong>
               <p class="muted m-0 fs-15">
-                Ask E.V.E. below, or open the raw record. If I have not measured something, I say so.
+                E.V.E. is the evidence console below. Ask it about the dated observations, or open the raw record.
               </p>
               <div class="flex gap-12 flex-wrap">
                 <div class="stat flex-200">
@@ -1108,10 +1073,10 @@
                 <strong class="fs-14">The evidence boundary, in one place</strong>
                 <span class="muted copy-note"
                   >The fleet counts come from read only observations of running guests. They do not establish
-                  application health, recovery readiness or current AI routing. Backup snapshots pass integrity checks,
-                  which is not the same as a restore test. Private addresses, service names, spending and the private
-                  model catalog are withheld on purpose, and cost figures stay off this page until they are measured
-                  again. The browser studies use synthetic inputs and never run Atlas, HERMES or the harness.</span
+                  application health, recovery readiness or current AI routing. Backup snapshots pass integrity checks;
+                  a successful restore still needs its own test. Private addresses, service names, spending and the
+                  model catalog are withheld. The browser studies use synthetic inputs and never run Atlas, HERMES or
+                  the harness.</span
                 >
                 <div class="evidence-links">
                   <a href="/v38/status.json">Read the latest export</a
@@ -1201,7 +1166,7 @@
           <div class="c6 stack sg-16">
             <div class="flex gap-16 items-center flex-wrap">
               <span class="kick">THE OPERATOR</span
-              ><span class="mono c-mu">PENSACOLA, FLORIDA · JAMES DOUGLAS CASHIO · DOUG TO EVERYONE</span>
+              ><span class="mono c-mu">TECHNOLOGY SINCE 1996 · CYBERSECURITY FOR MORE THAN TWENTY YEARS</span>
             </div>
             <span class="mono c-gd">OWNER · BUILDER · OPERATOR · IMAGINATION, WITH INTENTION.</span>
             <h2 id="op-h" data-split>Doug Cashio</h2>
@@ -1243,7 +1208,7 @@
               />
             </svg>
             <div class="sig-heading">
-              <span class="mono c-gd">HOUSE CASHIO · CELESTIAL SIGNATURE</span
+              <span class="mono c-gd">THE cAshIo SIGNATURE</span
               ><span class="mono c-mu" id="sig-state" role="status">DORMANT · GOLD INTENT</span>
             </div>
             <div class="cap">

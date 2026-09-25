@@ -68,7 +68,7 @@ test("cost replies distinguish the published July sample from current spending",
   const current = runPublicEve("cost");
   const legacy = runEve("cost");
   assert.deepEqual(current.out, legacy.out);
-  assert.match(current.out.join(" "), /HISTORICAL.*\$0\.26\/DAY.*21–22 JULY 2026/);
+  assert.match(current.out.join(" "), /HISTORICAL.*SPEND WITHHELD.*21–22 JULY 2026/);
   assert.match(current.out.join(" "), /EXCLUDES.*INFRASTRUCTURE.*ELECTRICITY/);
   assert.match(current.out.join(" "), /CURRENT SPEND AND SAVINGS COMPARISON REMAIN UNVERIFIED/);
   assert.equal(current.destination.href, "#smart-routing");

@@ -2,12 +2,16 @@
 
 ## V39.0 · Zenith
 
-- A shorter home page: the Starship lab, Principles Engine, The Studios and Flight heritage open as their own pages from a new "four more rooms" row, Mission Control and the chapter rail (Starship and Studios also stay in the header), each with its own title, a way back and links to the other two. Nothing was removed.
-- Say it plainly for recruiters: open to speaking, advising and comparing notes, beside the at a glance cards and in the contact section.
-- Tighter operational security: the page, E.V.E. and the current export no longer name the hypervisor, split guest counts by host or publish backup coverage counts. Integrity results and totals stay; archived records are unchanged.
-- Say what the site is: a hobby lab and proof of work, built after hours. The V35 command deck and V37 front door now carry an archive label that links to the latest site, and the May command center archive points straight home.
+- Unpublished candidate refinements: a shorter opening, system names explained at first use, and clearer separation between a routing rule, a browser demonstration and an observed result.
+- Relay choices persist through the first three flight chapters. The final chapter announces its separate permission scenario; Finish describes the visible outcome. The archived V37 recap keeps its original behavior.
+- E.V.E. keeps rapid replies grouped and clears pending reply timers. Surprise commands no longer mutate the stored response text.
+- The cAshIo introduction shares Zenith's local fonts and content width. The original artwork now has a 276 KB WebP derivative and the 20 second film has an 817 KB 720p derivative. Originals remain available; playback remains on demand and muted, with captions and offscreen pausing.
+- A shorter home page: the Starship lab, Principles Engine, The Studios and Flight heritage open as their own pages from a new "four more rooms" row, Mission Control and the chapter rail (Starship and Studios also stay in the header), each with its own title, a way back and links to the other three.
+- An open invitation: open to speaking, advising and comparing notes, beside the at a glance cards and in the contact section.
+- Tighter operational security: the page, E.V.E. and the current export no longer name the hypervisor, split guest counts by host or publish backup coverage counts. Integrity results and aggregate totals stay. Private provider assignments, catalog and per-host counts, service names and spending are also withheld in the archives; their original observation dates stay intact.
+- Say what the site is: a hobby lab and proof of work, built after hours. The V35 command deck and V37 front door carry archive labels. V37 links to the latest site, and the May command center archive points straight home. The V35 label adds no tab stop to cinema mode.
 - Operational security, round two: the search engine data drops the home city and legal name, the operator console is described by role with its provider and skill counts withheld, and the console archive line reads V35.
-- Labels move to 13 pixels.
+- Functional labels in Zenith use a 14 pixel minimum. The narrow flight footer wraps into readable rows, and the wide opening keeps its identity below navigation.
 - Review fixes: the last flight chapter fits beside the stage on short desktop screens, phone chapter tabs use the same names as desktop, the default recap sets "If you say yes" beside "If you say no" and keeps its exits in view, Mission Control keeps one height while you search, body notes move to 15 pixels, E.V.E. keeps its key hints in help, and five repeated disclaimers are cut to one plain line each. The current export names its release, V39.0 Zenith, and the sitemap drops the noindexed archive.
 - Lead with plain language: hardware I own, a dated proof chip in the hero, and a workshop statement with three ways in. The repair note moves into the build story.
 - Publish the routing law in place of the July 21 to 22 cost sample. Spend stays withheld until it is measured again, in the page, the evidence boundary and E.V.E.

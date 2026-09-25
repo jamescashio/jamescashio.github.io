@@ -326,7 +326,7 @@ export function OdysseyApp() {
           <SystemAtlas motion={ambientMotion} selected={atlasNode} onSelect={selectAtlas} />
           <div className="o-fact-rail">
             <div>
-              <strong>{FLEET_EVIDENCE.proxmox.hostsOnline.toString().padStart(2, "0")}</strong>
+              <strong>{FLEET_EVIDENCE.cluster.hostsOnline.toString().padStart(2, "0")}</strong>
               <span>hosts at observation</span>
             </div>
             <div>

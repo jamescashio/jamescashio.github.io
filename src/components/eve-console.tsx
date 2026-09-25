@@ -62,9 +62,9 @@ export function runEve(raw: string, history: string[] = []): EveResult {
     return {
       out: [
         ...currentLines(),
-        "18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6",
-        "2 PROXMOX HOSTS ONLINE · CLUSTER QUORATE",
-        "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES",
+        "18/19 AT 28 AUG PROBE · PER HOST COUNTS WITHHELD",
+        "2 CLUSTER HOSTS ONLINE · CLUSTER QUORATE",
+        "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · PRIVATE CATALOG COUNT WITHHELD",
       ],
     };
   }
@@ -73,19 +73,15 @@ export function runEve(raw: string, history: string[] = []): EveResult {
 
   if (command === "fleet") {
     return {
-      out: [
-        "ZEUS · 12/13 AT 28 AUG PROBE · PROXMOX HOST",
-        "APOLLO · 6/6 AT 28 AUG PROBE · PROXMOX HOST",
-        SERVICE_FAMILIES.toUpperCase(),
-      ],
+      out: ["ZEUS · PER HOST COUNT WITHHELD", "APOLLO · PER HOST COUNT WITHHELD", SERVICE_FAMILIES.toUpperCase()],
     };
   }
 
   if (command === "lanes" || command === "routes") {
     return {
       out: [
-        "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES",
-        "DEEPSEEK V4 FLASH · DEEPSEEK V4 PRO",
+        "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · PRIVATE CATALOG COUNT WITHHELD",
+        "PROVIDERS AND MODELS WITHHELD",
         "QUALITY PICKS THE MODEL · COST ONLY BREAKS A TIE",
       ],
       go: 2,
@@ -96,7 +92,7 @@ export function runEve(raw: string, history: string[] = []): EveResult {
     return {
       out: [
         `${RELEASE} · VERIFIED ${VERIFIED_LONG}`,
-        "PROXMOX VE · 2 HOSTS ONLINE · QUORATE",
+        "HYPERVISOR WITHHELD · 2 HOSTS ONLINE · QUORATE",
         "OWNER-RUN READ-ONLY PROBE · PUBLIC-SAFE DATED EXPORT",
         ...currentLines(),
       ],

@@ -168,7 +168,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
   assert.equal(archive.revised, "2026-08-28");
   assert.equal(archive.verified, "2026-08-28");
   assert.equal(archive.expires, "2026-09-27");
-  assert.deepEqual(archive.containers, { running: 18, documented: 19, stopped: 1, zeus: 12, apollo: 6 });
+  assert.deepEqual(archive.containers, { running: 18, documented: 19, stopped: 1, zeus: null, apollo: null });
   assert.equal(archive.routingVerified, "2026-08-21");
   assert.equal(status.verified, "2026-09-07");
   assert.equal(status.routingVerified, null);
@@ -525,10 +525,12 @@ test("public metadata and redirect fallback keep fleet and routing provenance di
   const fleetExpected = ["28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT"];
   const routingExpected = "ROUTING INVENTORY 21 AUGUST 2026";
   for (const path of ["command-deck.html", "public/lab.html"]) {
-    const text = await read(path);
+    const text = (await read(path)).replace(/\s+/g, " ");
     for (const marker of fleetExpected) assert.match(text, new RegExp(marker), `${path} must include ${marker}`);
-    assert.match(text, new RegExp(routingExpected), `${path} must date 10/36 as routing inventory`);
+    assert.match(text, new RegExp(routingExpected), `${path} must preserve the routing inventory date`);
     assert.doesNotMatch(text, /19(?:\/| of )19|\bCURRENT\b|\bonline\b/i, path);
+    assert.doesNotMatch(text, /Proxmox|36 private|Zeus 12\/13|Apollo 6\/6/i, path);
+    assert.match(text, /private catalog count.*withheld/i, path);
   }
 });
 

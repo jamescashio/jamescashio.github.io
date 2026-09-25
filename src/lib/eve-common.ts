@@ -61,7 +61,7 @@ export function runCommonEve(command: string, history: string[] = []): EveReply 
   if (command === "cost") {
     return {
       out: [
-        `HISTORICAL PROVIDER USAGE · $${COST_EVIDENCE.usdPerDay.toFixed(2)}/DAY`,
+        "HISTORICAL PROVIDER USAGE · SPEND WITHHELD",
         `SAMPLE · ${COST_EVIDENCE.sampleLabel.toUpperCase()} · PUBLISHED 26 JULY IN V31`,
         `EXCLUDES · ${COST_EVIDENCE.excludes.toUpperCase()}`,
         "CURRENT SPEND AND SAVINGS COMPARISON REMAIN UNVERIFIED",

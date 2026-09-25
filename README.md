@@ -4,7 +4,7 @@ The public front door is **[cashio.us](https://cashio.us/)**. The root serves th
 
 **V39.0 Zenith** keeps the Helios world, palette, type, artwork, Bit and quiet sound, and sharpens what a first visit says and feels like:
 
-- **Clearer story.** The hero states the work plainly and carries a dated proof chip bound to the published observation. The engineering repair note that used to follow the hero now lives only inside the build story; its place is a short statement of how the workshop runs and three ways in. The AI budget panel publishes the routing law instead of a July cost sample, and the evidence boundary says spend stays withheld until it is measured again.
+- **Clearer story.** The hero states the work plainly and carries a dated proof chip bound to the published observation. The engineering repair note that used to follow the hero now lives only inside the build story; its place is a concise profile and a glossary; the hero supplies the main entry points. The AI budget panel publishes the routing law instead of a July cost sample, and the evidence boundary says spend stays withheld until it is measured again.
 - **A living first frame.** After the arrival film, the artwork answers the pointer with a few pixels of depth, the sun breathes and a few stars twinkle. All of it yields to the Motion control, reduced motion, hidden tabs and open scenes.
 - **A jump, not a wait.** Boarding the starship plays a short starfield warp that covers loading, and the flight arrives with a settle. The loader only appears when loading is slow. The flight module warms when a visitor hovers, focuses or touches a boarding link.
 - **E.V.E. lore.** Unlisted console commands carry labelled Dune, aviation and fleet lore. Listed commands still answer only from the dated export.
@@ -44,11 +44,11 @@ The existing cinematic world remains available: Lensing Observatory, the explora
 - `/#lensing` opens Lensing Observatory; `/#film` opens Orbital arrival.
 - `/#film=sanctuary`, `lightwake`, `signature`, or `awakening` opens that film on its still poster. The films retain their scene handoffs and frame controls.
 
-The published `status.json` and `public/status.json` contain the owner-run observation of **7 September 2026 at 23:14:58 UTC**, collected in the HERMES audit completed at **23:29:51 UTC**. It records 19 running LXC containers (Zeus 14, Apollo 5), one running QEMU virtual machine, and two online Proxmox hosts. These are observations from that time, not live telemetry or application-health guarantees.
+The published `status.json` and `public/status.json` contain the owner-run observation of **7 September 2026 at 23:14:58 UTC**, collected in the HERMES audit completed at **23:29:51 UTC**. It records 19 running LXC containers, one running QEMU virtual machine, and two online hosts. Per host counts and the hypervisor identity are withheld. These are observations from that time, not live telemetry or application-health guarantees.
 
 Current lane counts, routing verification, and expiry remain `null`. The observation does not establish demonstrated recovery, storage redundancy, failover, or production AI routing.
 
-`public/evidence/status-2026-08-28.json` preserves the unchanged August export: its fleet observation is **28 August 2026**, its routing inventory is **21 August 2026**, and its original expiry is **27 September 2026**. That expiry does not extend the September observation. The audit case links to both records.
+`public/evidence/status-2026-08-28.json` preserves the dates and aggregate facts of the August export with explicit privacy redactions: its fleet observation is **28 August 2026**, its routing inventory is **21 August 2026**, and its original expiry is **27 September 2026**. That expiry does not extend the September observation. The audit case links to both records.
 
 All request-routing studies execute locally in the browser and send nothing to an AI service. Private operational findings and credentials are excluded from the public evidence.
 
@@ -87,3 +87,22 @@ The retained `check:v36:runtime` name checks V37 and the preserved V35 experienc
 A passing build or browser test does not establish live infrastructure health. Visual release review also covers desktop, phone, narrow-phone, keyboard, reduced motion, opt-in audio, legacy routes, and the actual target artifact.
 
 GitHub Pages publishes only the verified `dist` artifact through `.github/workflows/pages.yml`. The configured public domain is `cashio.us`. Publish through the protected pull-request workflow, then verify the deployment and live routes. This release does not change DNS or Cloudflare policies. The reproducible audio tool remains available as `python scripts/build_audio_cues.py`.
+
+## Public asset layout and archive redactions
+
+The current front door lives in `src/helios`; `src/odyssey` supplies shared optional scenes and the V37 archive. `src/components` supplies V35. Public archive dates remain historical. Per host counts, hypervisor identity, private service and model names, private catalog counts and spend are withheld in both the rendered archives and their shipped records. A redaction does not erase copies in previously published Git history.
+
+Asset directories preserve compatible URLs and existing cache coverage:
+
+| Path                               | Purpose                                                                      |
+| ---------------------------------- | ---------------------------------------------------------------------------- |
+| `/assets/*.js` and `/assets/*.css` | Vite content hashes, covered by the existing immutable cache rule            |
+| `/v38/immutable/`                  | Content-addressed current artwork covered by the same rule                   |
+| `/v38/vendor/`                     | Versioned build output for the animation library                             |
+| `/v38/fonts/` and `/fonts/`        | Local font families shared by current and archived pages                     |
+| `/odyssey/` and `/plates/`         | Preserved scene media and archive artwork                                    |
+| `/cashio/`                         | Personal workspace introduction, original identity artwork and optional film |
+
+The directory names remain unchanged. Consolidating them would require a separate cache compatibility review. No Cloudflare configuration is changed by this refinement.
+
+The cAshIo introduction uses a 1600px WebP derivative of the original logo and a 720p H.264 film derivative. The originals remain available for provenance; the page serves the lighter files, keeps the film on demand and muted, and uses the same local display/body fonts and content width as Zenith.

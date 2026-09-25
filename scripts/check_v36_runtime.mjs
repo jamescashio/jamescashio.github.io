@@ -176,7 +176,7 @@ async function run() {
       const evidenceResponse = await fetch(`${base}/status.json`);
       assert.equal(evidenceResponse.status, 200);
       const evidence = await evidenceResponse.json();
-      assert.deepEqual(evidence.containers, { running: 19, documented: 19, stopped: 0, zeus: 14, apollo: 5 });
+      assert.deepEqual(evidence.containers, { running: 19, documented: 19, stopped: 0, zeus: null, apollo: null });
       assert.deepEqual(evidence.virtualMachines, { running: 1, documented: 1, stopped: 0 });
       assert.deepEqual(evidence.lanes, { public: null, privateCatalog: null });
       assert.equal(evidence.routingVerified, null);
@@ -570,7 +570,7 @@ async function run() {
       );
       const responses = await evaluate(`document.querySelector('.o-console-output').textContent`);
       assert.match(responses, /1 QEMU VIRTUAL MACHINE/);
-      assert.match(responses, /ZEUS · 14 CONTAINERS · APOLLO · 5 CONTAINERS/);
+      assert.match(responses, /PER HOST COUNTS WITHHELD/);
       assert.doesNotMatch(responses, /18\/19|10 PUBLIC LANES|36 PRIVATE CATALOG|Public lanes: 0|VALID THROUGH/);
       await click(".o-command-shortcuts button:nth-child(3)");
       await waitFor(

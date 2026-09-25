@@ -68,7 +68,9 @@ test("unknown evidence stays unverified while an observed zero remains zero", ()
 
 test("the latest fleet reconciles container and virtual-machine scopes without renewing its timestamp", () => {
   assert.equal(FLEET_EVIDENCE.containers.running, 19);
-  assert.equal(FLEET_EVIDENCE.containers.zeus + FLEET_EVIDENCE.containers.apollo, FLEET_EVIDENCE.containers.running);
+  assert.equal(FLEET_EVIDENCE.containers.zeus, null);
+  assert.equal(FLEET_EVIDENCE.containers.apollo, null);
+  assert.match(FLEET_EVIDENCE.withheldReasons["containers.zeus"], /withheld/);
   assert.equal(FLEET_EVIDENCE.virtualMachines.running, 1);
   assert.equal(FLEET_EVIDENCE.provenance.observedAtUtc, "2026-09-07T23:14:58.5008542Z");
   assert.equal(FLEET_EVIDENCE.provenance.auditCollectedAtUtc, "2026-09-07T23:29:51.3400781Z");

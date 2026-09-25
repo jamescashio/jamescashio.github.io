@@ -31,7 +31,7 @@ V34_PUBLIC_SURFACES = {
     "lab.html": ("28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT", "ROUTING INVENTORY 21 AUGUST 2026"),
 }
 ROUTING_COUNT_CLAIM = re.compile(
-    r"\b10\s+PUBLIC(?:\s+CAPABILITY)?\s+LANES\b.*?\b36\s+PRIVATE\s+CATALOG(?:\s+ENTRIES)?\b",
+    r"\b10\s+PUBLIC(?:\s+CAPABILITY)?\s+LANES\b.*?\bPRIVATE\s+CATALOG\s+COUNT\s+WITHHELD\b",
     re.IGNORECASE | re.DOTALL,
 )
 ROUTING_PROVENANCE_PREFIX = re.compile(
@@ -41,11 +41,11 @@ ROUTING_PROVENANCE_PREFIX = re.compile(
 APPROVED_DATED_PUBLIC_CLAIMS = (
     "E.V.E. ONLINE · READ-ONLY · DATED EXPORT",
     "2 HOSTS ONLINE · QUORATE",
-    "2 PROXMOX HOSTS ONLINE · QUORATE",
-    "2 PROXMOX HOSTS ONLINE · CLUSTER QUORATE",
-    "Two Proxmox hosts were online and quorate.",
+    "2 CLUSTER HOSTS ONLINE · QUORATE",
+    "2 CLUSTER HOSTS ONLINE · CLUSTER QUORATE",
+    "Two Cluster hosts were online and quorate.",
     "two online, quorate hosts at the dated probe",
-    "08-21-2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG",
+    "08-21-2026 · 10 PUBLIC LANES · PRIVATE CATALOG COUNT WITHHELD",
 )
 APPROVED_PUBLIC_STATUS_LABELS = (
     "E.V.E. EVALUATION VERIFICATION ENGINE · ONLINE",
@@ -149,14 +149,14 @@ def check_latest_public_evidence(status: dict, failures: list[str]) -> None:
         failures.append("latest observation cannot invent a future health window")
     for group, host_split in (("containers", True), ("virtualMachines", False)):
         values = status.get(group, {})
-        keys = ["running", "documented", "stopped"] + (["zeus", "apollo"] if host_split else [])
+        keys = ["running", "documented", "stopped"]
         if not all(type(values.get(key)) is int and values[key] >= 0 for key in keys):
             failures.append(f"latest evidence {group} must contain explicit nonnegative integer counts")
             continue
         if values["running"] + values["stopped"] != values["documented"]:
             failures.append(f"latest evidence {group} runtime states do not reconcile")
-        if host_split and values["zeus"] + values["apollo"] != values["running"]:
-            failures.append("latest evidence container host counts do not reconcile")
+        if host_split and (values.get("zeus") is not None or values.get("apollo") is not None):
+            failures.append("latest evidence must withhold per host container counts")
     provenance = status.get("provenance", {})
     try:
         observed = datetime.fromisoformat(provenance["observedAtUtc"].replace("Z", "+00:00"))
@@ -369,7 +369,7 @@ def has_stale_current_code_literal(literal: dict[str, str]) -> bool:
 
 def check_v34_public_surface(relative: str, text: str, failures: list[str], label: str) -> None:
     for marker in V34_PUBLIC_SURFACES[relative]:
-        if marker not in text:
+        if marker not in " ".join(text.split()):
             failures.append(f"{label}/{relative} is missing V34 marker {marker!r}")
     if public_surface_has_stale_current_claim(text):
         failures.append(f"{label}/{relative} contains a stale/current public claim")
@@ -547,16 +547,16 @@ def main() -> int:
             failures.append(f"August archive {key!r}: expected {value!r}, got {status.get(key)!r}")
 
     exact_nested = {
-        ("proxmox", "version"): None,
-        ("proxmox", "hostsOnline"): 2,
-        ("proxmox", "quorate"): True,
+        ("cluster", "version"): None,
+        ("cluster", "hostsOnline"): 2,
+        ("cluster", "quorate"): True,
         ("containers", "running"): 18,
         ("containers", "documented"): 19,
         ("containers", "stopped"): 1,
-        ("containers", "zeus"): 12,
-        ("containers", "apollo"): 6,
+        ("containers", "zeus"): None,
+        ("containers", "apollo"): None,
         ("lanes", "public"): 10,
-        ("lanes", "privateCatalog"): 36,
+        ("lanes", "privateCatalog"): None,
     }
     for (group, key), value in exact_nested.items():
         actual = status.get(group, {}).get(key)
@@ -646,11 +646,8 @@ def main() -> int:
             'ROUTING_VERIFIED_LONG = "21 August 2026"',
             'REVISED = "08-28-2026"',
             'EXPIRES_AT = "2026-09-28T05:00:00Z"',
-            '"18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6"',
-            'model: "DeepSeek V4 Flash"',
-            'model: "DeepSeek V4 Pro"',
-            'model: "Gemini 3.7 Flash"',
-            'model: "Grok 4.6"',
+            '"18/19 AT 28 AUG PROBE · PER HOST COUNTS WITHHELD"',
+            'model: "Model withheld"',
         ),
         "src/components/decks.tsx": (
             "SIGNED · OWNER · {VERIFIED_LONG}",
@@ -884,7 +881,7 @@ def main() -> int:
             "18/19 AT 28 AUG PROBE",
             "QUORATE",
             "10 PUBLIC",
-            "36 PRIVATE",
+            "PRIVATE CATALOG COUNT WITHHELD",
             "AUDIO OFF",
             "AUDIO ARMED",
             "SIGNED · OWNER",

@@ -5,17 +5,12 @@
   "verified": "2026-09-07",
   "verifiedLong": "7 September 2026",
   "expires": null,
-  "proxmox": {
-    "version": null,
-    "hostsOnline": 2,
-    "quorate": true
-  },
   "containers": {
     "running": 19,
     "documented": 19,
     "stopped": 0,
-    "zeus": 14,
-    "apollo": 5
+    "zeus": null,
+    "apollo": null
   },
   "lanes": {
     "public": null,
@@ -23,22 +18,24 @@
   },
   "routingVerified": null,
   "law": "Quality picks the model. Cost only breaks a tie.",
-  "note": "Owner-run read-only observation of 7 September 2026. Counts describe LXC containers and QEMU virtual machines, not application health. This static export makes no production network calls and establishes no future health window. It does not establish backup coverage, demonstrated recovery, storage redundancy, failover readiness, or model-routing behavior.",
+  "note": "Owner-run read-only observation of 7 September 2026. Counts describe LXC containers and QEMU virtual machines, not application health. This static export makes no production network calls and establishes no future health window. It does not establish backup coverage, demonstrated recovery, storage redundancy, failover readiness, or model-routing behavior. Private operational details have been redacted; original observation dates are unchanged.",
   "withheldReasons": {
-    "proxmox.version": "Exact software versions are withheld from the public record for security.",
     "lanes.public": "The current page and older status export say 10 public lanes, but this audit did not produce a current public-lane inventory or execution record.",
-    "lanes.privateCatalog": "The private model catalog is not a public-safe infrastructure fact and was not refreshed for publication.",
-    "routingVerified": "Current configuration and historical session metadata are not a current end-to-end routing verification."
+    "lanes.privateCatalog": "Private catalog count and provider assignments are withheld.",
+    "routingVerified": "Current configuration and historical session metadata are not a current end-to-end routing verification.",
+    "cluster.version": "Hypervisor name and version are withheld.",
+    "containers.zeus": "Per host guest counts are withheld.",
+    "containers.apollo": "Per host guest counts are withheld."
   },
   "provenance": {
     "observedAtUtc": "2026-09-07T23:14:58.5008542Z",
     "observedAtAmericaChicago": "2026-09-07T18:14:58.5008542-05:00",
     "methods": {
-      "proxmox": "Live Proxmox cluster quorum/status and guest inventory checks.",
-      "containers": "Counted LXC guests from the live cluster resources endpoint and cross-checked with direct pct/qm lists.",
+      "containers": "Compared the cluster inventory with direct guest lists.",
       "lanes": "Withheld because no current public-lane inventory and execution record were established.",
       "publication": "The owner-run audit produced an unpublished proposal. Its reviewed public subset was subsequently approved for publication with Cashio.us V37.11; the observation timestamps remain those of the original audit.",
-      "virtualMachines": "One running QEMU guest in the cluster resource record, cross-checked with the direct owning-node list."
+      "virtualMachines": "Compared the running virtual machine count with the direct guest list.",
+      "cluster": "Read only cluster quorum and guest inventory checks."
     },
     "auditCollectedAtUtc": "2026-09-07T23:29:51.3400781Z",
     "sourceProposalSha256": "8b0b042822f052ff72a4b9429ea5c1664f27b34ea5a39860b63a7f9f05a1ab88"
@@ -54,5 +51,10 @@
     "release": "V35 ALL TENS",
     "fleetObserved": "2026-08-28",
     "routingObserved": "2026-08-21"
+  },
+  "cluster": {
+    "version": null,
+    "hostsOnline": 2,
+    "quorate": true
   }
 }

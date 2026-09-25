@@ -223,7 +223,7 @@ section[data-ambient="off"] *:after,
   display: flex;
   justify-content: space-between;
   color: var(--muted);
-  font: 12px var(--mono);
+  font: 14px var(--mono);
 }
 .lab-switch {
   position: relative;
@@ -322,7 +322,7 @@ section[data-ambient="off"] *:after,
   align-items: center;
   flex-wrap: wrap;
   margin-top: 14px;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
 }
 .cascade-track {
@@ -335,14 +335,14 @@ section[data-ambient="off"] *:after,
 .cascade-node {
   position: relative;
   text-align: center;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   display: grid;
   gap: 14px;
   justify-items: center;
 }
 .cascade-node > span {
-  font: 12px var(--mono);
+  font: 14px var(--mono);
 }
 .cascade-node i {
   position: relative;
@@ -379,12 +379,12 @@ section[data-ambient="off"] *:after,
   text-align: center;
 }
 .exposure-path span {
-  font: 12px/1.8 var(--mono);
+  font: 14px/1.8 var(--mono);
   color: var(--muted);
 }
 .exposure-path b {
   display: block;
-  font: 600 12px/1.4 var(--sans);
+  font: 600 14px/1.4 var(--sans);
   color: var(--ink2);
 }
 .exposure-path i {
@@ -410,7 +410,7 @@ section[data-ambient="off"] *:after,
   display: grid;
   justify-items: center;
   gap: 15px;
-  font: 12px var(--mono);
+  font: 14px var(--mono);
   color: var(--muted);
 }
 .evidence-beams i {
@@ -465,7 +465,7 @@ section[data-ambient="off"] *:after,
 .brief-output small {
   display: block;
   color: var(--gold);
-  font: 12px/1.7 var(--mono);
+  font: 14px/1.7 var(--mono);
   margin-top: 12px;
 }
 .brief-output .brief-next {
@@ -505,11 +505,11 @@ section[data-ambient="off"] *:after,
   color: var(--gold);
 }
 .age-clock small {
-  font: 11px var(--mono);
+  font: 14px var(--mono);
   color: var(--muted);
 }
 .clock-boundary {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   padding: 14px;
 }
@@ -524,7 +524,7 @@ section[data-ambient="off"] *:after,
 }
 .signal-wave text {
   fill: var(--muted);
-  font: 11px var(--mono);
+  font: 14px var(--mono);
 }
 .dependency-map {
   width: 100%;
@@ -561,11 +561,11 @@ section[data-ambient="off"] *:after,
   padding: 10px 6px;
   min-width: 84px;
   min-height: 54px;
-  font: 600 12px var(--sans);
+  font: 600 14px var(--sans);
   color: var(--ink2);
 }
 .dependency-map button span {
-  font: 11px var(--mono);
+  font: 14px var(--mono);
   color: var(--muted);
 }
 .dependency-map button.affected {
@@ -586,7 +586,7 @@ section[data-ambient="off"] *:after,
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--ink2);
 }
 .graph-key span {
@@ -600,7 +600,7 @@ section[data-ambient="off"] *:after,
   border-radius: 50%;
 }
 .lab-caption {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--muted);
   margin: 0;
 }
@@ -662,7 +662,7 @@ section[data-ambient="off"] *:after,
 
 @media (min-width: 901px) {
   .hero .status {
-    font-size: 12px;
+    font-size: 14px;
     max-width: 260px;
   }
 }
@@ -782,7 +782,7 @@ section[data-ambient="off"] *:after,
     padding: 12px 18px;
   }
   .hero .kick {
-    font-size: 12px;
+    font-size: 14px;
     letter-spacing: 0.12em;
   }
   .instrument {
@@ -809,7 +809,7 @@ section[data-ambient="off"] *:after,
   .instrument .toggle {
     padding-left: 12px;
     padding-right: 12px;
-    font-size: 13px;
+    font-size: 14px;
   }
   .instrument .ctrl {
     gap: 20px;
@@ -822,7 +822,7 @@ section[data-ambient="off"] *:after,
     font-size: 15px !important;
   }
   .study .mono {
-    font-size: 11px !important;
+    font-size: 14px !important;
   }
   .lab-result {
     padding: 18px;
@@ -844,40 +844,40 @@ section[data-ambient="off"] *:after,
   .dependency-map button {
     min-width: 66px;
     max-width: 80px;
-    font-size: 12px;
+    font-size: 14px;
     left: clamp(35px, var(--x), calc(100% - 35px));
   }
   .dependency-map button span {
-    font-size: 10px;
+    font-size: 14px;
   }
   .exposure-path {
     gap: 4px;
     padding: 16px 8px;
   }
   .exposure-path b {
-    font-size: 12px;
+    font-size: 14px;
   }
   .exposure-path span {
-    font-size: 11px;
+    font-size: 14px;
   }
   .evidence-beams {
     padding: 20px 12px;
     gap: 8px;
   }
   .evidence-beams > div {
-    font-size: 11px;
+    font-size: 14px;
   }
   .cascade-track {
     gap: 4px;
   }
   .cascade-node {
-    font-size: 12px;
+    font-size: 14px;
   }
   .evidence-scroll:after {
     content: "Swipe to compare all three records →";
     display: block;
     color: var(--muted);
-    font-size: 12px;
+    font-size: 14px;
     margin-top: 14px;
   }
   #missions {
@@ -891,7 +891,7 @@ section[data-ambient="off"] *:after,
     gap: 8px !important;
   }
   #starship .cmp {
-    font-size: 12px;
+    font-size: 14px;
     grid-template-columns: 1.3fr repeat(3, minmax(0, 1fr));
   }
   .vh-menu {
@@ -927,7 +927,7 @@ section[data-ambient="off"] *:after,
     padding: 13px;
   }
   .study .syne {
-    font-size: 13px !important;
+    font-size: 14px !important;
   }
   .instrument {
     padding: 18px;
@@ -939,7 +939,7 @@ section[data-ambient="off"] *:after,
     font-size: 19px;
   }
   .evidence-beams > div {
-    font-size: 10px;
+    font-size: 14px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

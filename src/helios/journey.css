@@ -94,7 +94,7 @@
   border-bottom: 2px solid transparent;
 }
 .trace-stages span {
-  font: 12px var(--mono);
+  font: 14px var(--mono);
   color: var(--cyan);
 }
 .trace-stages b {
@@ -165,7 +165,7 @@
     justify-content: center;
     gap: 2px;
     min-height: 60px;
-    font-size: 13px;
+    font-size: 14px;
   }
 }
 h2,
@@ -238,7 +238,7 @@ h3,
   border-radius: 8px;
   background: #080f1b;
   color: var(--ink);
-  font: 500 13px/1.4 var(--sans);
+  font: 500 14px/1.4 var(--sans);
   white-space: nowrap;
   opacity: 0;
   visibility: hidden;
@@ -254,28 +254,6 @@ h3,
   opacity: 1;
   visibility: visible;
   transform: none;
-}
-.minute a.step {
-  position: relative;
-  padding: 22px 20px;
-  transition:
-    border-color 0.2s,
-    background 0.2s;
-}
-.minute a.step:after {
-  content: "↗";
-  position: absolute;
-  top: 17px;
-  right: 18px;
-  color: var(--gold);
-  transition: transform 0.2s;
-}
-.minute a.step:hover {
-  border-color: #f2c87a70;
-  background: #f2c87a09;
-}
-.minute a.step:hover:after {
-  transform: translate(2px, -2px);
 }
 .study-intro {
   font-size: 15px;
@@ -325,7 +303,7 @@ h3,
 }
 .study[aria-selected="true"] .study-index:after {
   content: "●";
-  font-size: 11px;
+  font-size: 14px;
   text-shadow: 0 0 14px var(--cyan);
 }
 .study .study-title {
@@ -389,7 +367,7 @@ h3,
 #missions .tile > span:first-child {
   grid-row: 1 / 3;
   align-self: center;
-  font-size: 12px !important;
+  font-size: 14px !important;
 }
 #missions .tile strong {
   font-size: 15px !important;
@@ -399,7 +377,7 @@ h3,
 #missions .tile > span:last-child,
 #arch-group .mono,
 .flight-plan-note {
-  font: 400 13px/1.5 var(--sans) !important;
+  font: 400 14px/1.5 var(--sans) !important;
   letter-spacing: 0 !important;
   text-transform: none;
   color: var(--muted);
@@ -413,7 +391,7 @@ h3,
 }
 #mission-state {
   color: var(--gold);
-  font: 500 13px/1.5 var(--sans);
+  font: 500 14px/1.5 var(--sans);
   margin: 0;
 }
 .decision-change {
@@ -423,7 +401,7 @@ h3,
   border-left: 2px solid var(--cyan);
   border-radius: 0 12px 12px 0;
   background: linear-gradient(90deg, #38e1ff0c, #38e1ff02);
-  font-size: 13px;
+  font-size: 14px;
   color: var(--ink2);
 }
 .decision-change .kick {
@@ -467,7 +445,7 @@ h3,
   }
   .study-mobile-hint {
     display: block;
-    font-size: 12px;
+    font-size: 14px;
     color: var(--muted);
     margin-top: 8px;
   }
@@ -500,9 +478,6 @@ h3,
   }
 }
 @media (max-width: 600px) {
-  .minute a.step {
-    padding-right: 40px;
-  }
   #studies h2 {
     font-size: clamp(28px, 8.1vw, 42px);
     max-width: 17ch;

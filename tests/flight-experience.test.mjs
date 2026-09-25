@@ -146,7 +146,7 @@ test("DeckSnapshot states a concise introduction without changing identity or he
     const introduction = view.document.querySelector(".za-snapshot-copy")?.textContent;
     assert.equal(
       introduction,
-      "Owned hardware. Observable decisions. Published evidence. Every claim here is measured and dated.",
+      "Historical snapshot. Dates and countdown belong to August 2026. Private details are withheld.",
     );
     assert.ok(introduction.split(/\s+/u).length <= 60, "the introduction must stay within the clarity gate");
     assert.match(view.document.body.textContent, /DOUG CASHIO · ENTERPRISE AI \+ SECURITY SYSTEMS · OWNER-OPERATOR/);
@@ -243,11 +243,7 @@ test("current fleet decks expose only verified aggregate evidence without topolo
     assert.ok(map, "Grid renders the fleet map");
     assert.equal(map.querySelectorAll("[data-hub]").length, 0, "the fleet map must not expose host-mapping attributes");
     for (const host of map.querySelectorAll(".za-fleet-host")) {
-      assert.match(
-        host.textContent,
-        /^(ZEUS|APOLLO)\s*(12 OF 13|6 OF 6) AT PROBE$/,
-        "host rings carry only published tallies",
-      );
+      assert.match(host.textContent, /^(ZEUS|APOLLO)\s*COUNT WITHHELD$/, "host rings withhold private tallies");
       assert.equal(
         host.querySelectorAll(".za-fleet-role, .za-fleet-route").length,
         0,
@@ -273,7 +269,7 @@ test("current fleet decks expose only verified aggregate evidence without topolo
     const choices = [...iron.document.querySelectorAll("section[data-deck='3'] button .za-display")].map(
       (label) => label.textContent,
     );
-    assert.deepEqual(choices, ["ZEUS", "APOLLO"], "Iron may offer only the two freshly probed Proxmox hosts");
+    assert.deepEqual(choices, ["ZEUS", "APOLLO"], "Iron may offer only the two freshly probed Cluster hosts");
     assert.doesNotMatch(iron.document.body.textContent, /ATLAS|ATHENA|GENESIS|GATEWAY|QUORUM SUPPORT|PRIVATE STORAGE/i);
     assert.doesNotMatch(
       iron.document.body.textContent,
@@ -299,7 +295,7 @@ test("current status and release surfaces omit raw route identifiers and unprobe
       "verified",
       "verifiedLong",
       "expires",
-      "proxmox",
+      "cluster",
       "containers",
       "lanes",
       "routingVerified",
@@ -312,8 +308,8 @@ test("current status and release surfaces omit raw route identifiers and unprobe
       "archive",
     ].sort(),
   );
-  assert.deepEqual(status.proxmox, { version: null, hostsOnline: 2, quorate: true });
-  assert.deepEqual(status.containers, { running: 19, documented: 19, stopped: 0, zeus: 14, apollo: 5 });
+  assert.deepEqual(status.cluster, { version: null, hostsOnline: 2, quorate: true });
+  assert.deepEqual(status.containers, { running: 19, documented: 19, stopped: 0, zeus: null, apollo: null });
   assert.deepEqual(status.virtualMachines, { running: 1, documented: 1, stopped: 0 });
   assert.deepEqual(status.lanes, { public: null, privateCatalog: null });
   for (const surface of [JSON.stringify(status), releaseBody]) {
@@ -351,13 +347,13 @@ test("Executive cards keep routing, fleet evidence, and human accountability as 
     assert.equal(cards[0].querySelector(".za-display")?.textContent, "10");
     assert.equal(
       cards[0].querySelector("p")?.textContent,
-      "Ten public capability lanes are recorded in the 21 August 2026 routing inventory. Thirty-six private catalog entries are a separate count.",
+      "Ten public capability lanes are recorded in the 21 August 2026 routing inventory. The private catalog count is withheld.",
     );
     assert.doesNotMatch(cards[0].textContent, /18\/19/);
     assert.equal(cards[1].querySelector(".za-display")?.textContent, "18/19");
     assert.equal(
       cards[1].querySelector("p")?.textContent,
-      "18 of 19 documented guests were running at the 28 August probe. Two Proxmox hosts were online and quorate. The dated export is evidence, never telemetry.",
+      "18 of 19 documented guests were running at the 28 August probe. Two Cluster hosts were online and quorate. The dated export is evidence, never telemetry.",
     );
     assert.equal(cards[2].querySelector(".za-display")?.textContent, "1");
     assert.match(cards[2].textContent, /OWNER ACCOUNTABLE/);
@@ -510,7 +506,7 @@ test("CommandHeader craft pips expose exactly one current craft and update it on
 
 test("E.V.E. status keeps routing counts on the separate 21 August 2026 inventory", () => {
   const lines = runEve("status").out;
-  assert.ok(lines.includes("ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES"));
+  assert.ok(lines.includes("ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · PRIVATE CATALOG COUNT WITHHELD"));
   assert.equal(
     lines.some((line) => /28 AUG(?:UST)? 2026.*10 PUBLIC/i.test(line)),
     false,
@@ -521,7 +517,7 @@ test("fleet evidence keeps quorum at the verified cluster aggregate instead of a
   for (const line of [...BOOT, ...TELEMETRY, ...runEve("fleet").out]) {
     assert.doesNotMatch(line, /^(?:ZEUS|APOLLO).*QUORAT|QUORUM ZEUS/i);
   }
-  assert.ok(runEve("status").out.includes("2 PROXMOX HOSTS ONLINE · CLUSTER QUORATE"));
+  assert.ok(runEve("status").out.includes("2 CLUSTER HOSTS ONLINE · CLUSTER QUORATE"));
 });
 
 test("BlackBoxReceipt renders only the exact dated claim set beneath its exact heading", async () => {
@@ -535,8 +531,8 @@ test("BlackBoxReceipt renders only the exact dated claim set beneath its exact h
       [...receipt.querySelectorAll("li")].map((claim) => claim.textContent),
       [
         "08-28-2026 · 18/19 DOCUMENTED GUESTS RUNNING AT PROBE",
-        "08-28-2026 · 2 PROXMOX HOSTS QUORATE",
-        "08-21-2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG",
+        "08-28-2026 · 2 CLUSTER HOSTS QUORATE",
+        "08-21-2026 · 10 PUBLIC LANES · PRIVATE CATALOG COUNT WITHHELD",
       ],
     );
   } finally {

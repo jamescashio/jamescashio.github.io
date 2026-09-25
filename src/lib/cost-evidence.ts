@@ -1,6 +1,6 @@
 /** A historical published observation, never a current spend or savings claim. */
 export const COST_EVIDENCE = {
-  usdPerDay: 0.26,
+  usdPerDay: null,
   sampleStart: "2026-07-21",
   sampleEnd: "2026-07-22",
   sampleLabel: "21–22 July 2026",

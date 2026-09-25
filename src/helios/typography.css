@@ -1,5 +1,5 @@
 :root {
-  --text-label: 13px;
+  --text-label: 14px;
   --text-note: 15px;
   --text-body: 17px;
   --panel-padding: clamp(22px, 2.6vw, 34px);
@@ -52,7 +52,7 @@ h3 {
 }
 #pr-ring {
   font-family: var(--sans);
-  font-size: 13px !important;
+  font-size: 14px !important;
   text-transform: none;
   letter-spacing: 0;
   line-height: 1.6;
@@ -63,5 +63,30 @@ h3 {
   }
   .kick {
     letter-spacing: 0.11em;
+  }
+}
+
+/* Programmatic section focus is visible without drawing a box across the whole row. */
+main :is(h1, h2, h3)[tabindex="-1"]:focus-visible {
+  outline: none;
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.16em;
+}
+@media (max-width: 700px) {
+  .mono,
+  .kick,
+  .node-detail,
+  .legend-item,
+  .evidence-links,
+  .eve-chips button,
+  .study-index,
+  .study-purpose,
+  .mc-results,
+  .hero .status,
+  .philo-caption {
+    font-size: max(14px, 1em);
+    letter-spacing: 0.045em;
   }
 }

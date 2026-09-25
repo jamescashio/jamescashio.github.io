@@ -274,7 +274,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 14px;
 }
 .legend-dot {
   width: 10px;
@@ -324,7 +324,7 @@
 .evidence-links {
   display: flex;
   gap: 14px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   flex-wrap: wrap;
 }
@@ -371,8 +371,11 @@
 
 /* ---------- ultrawide: the world fills the glass ---------- */
 @media (min-width: 2200px) {
+  .hero {
+    min-height: max(800px, 100svh);
+  }
   .hero h1 {
-    font-size: clamp(110px, 5.4vw, 190px);
+    font-size: clamp(80px, min(5.4vw, 11svh), 190px);
   }
   .hero .sub {
     max-width: 720px;
@@ -404,7 +407,7 @@
     object-position: 60% 50%;
   }
   .hero .status {
-    font-size: 13px;
+    font-size: 14px;
   }
   .hero .hero-next {
     font-size: 15px;
@@ -458,10 +461,6 @@
 }
 
 /* ---------- polish from the blind critic pass ---------- */
-.minute a.step {
-  align-items: flex-start;
-  text-align: left;
-}
 @media (max-width: 900px) {
   main
     :is(
@@ -781,12 +780,12 @@
   padding: 12px 16px 0;
 }
 .eve-chips button {
-  min-height: 36px;
+  min-height: 44px;
   padding: 0 12px;
   border: 1px solid rgba(56, 225, 255, 0.28);
   border-radius: 999px;
   color: var(--cyan);
-  font: 13px var(--mono);
+  font: 14px var(--mono);
 }
 .eve-chips button:hover,
 .eve-chips button:focus-visible {

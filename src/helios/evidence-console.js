@@ -125,12 +125,15 @@ export function setupEvidenceConsole({ motion }) {
     if (className) line.className = className;
     out.appendChild(line);
   };
+  const pendingReplies = new Set();
   function run(raw) {
     let cmd = String(raw).trim().toLowerCase().replace(/\s+/g, " ");
     if (!cmd) return;
     history.push(cmd);
     cursor = history.length;
     if (cmd === "clear") {
+      pendingReplies.forEach(clearTimeout);
+      pendingReplies.clear();
       out.innerHTML = intro;
       return;
     }
@@ -140,19 +143,25 @@ export function setupEvidenceConsole({ motion }) {
       cmd = SURPRISES[Math.floor(Math.random() * SURPRISES.length)];
       hint = `hidden command found: ${cmd}. There are more.`;
     }
-    const lines = evidenceReply(cmd);
+    const lines = [...evidenceReply(cmd)];
+    const reply = document.createElement("div");
+    out.appendChild(reply);
     const lore = Object.hasOwn(LORE, cmd);
     if (hint) lines.push(hint);
-    lines.forEach((line, i) =>
-      setTimeout(
+    lines.forEach((line, i) => {
+      const timer = setTimeout(
         () => {
-          add(line, lore ? "lore" : "");
+          pendingReplies.delete(timer);
+          const item = document.createElement("span");
+          item.textContent = line;
+          if (lore) item.className = "lore";
+          reply.appendChild(item);
           out.scrollTop = out.scrollHeight;
-          if (i === lines.length - 1) add(" ");
         },
         motion() ? 140 * (i + 1) : 0,
-      ),
-    );
+      );
+      pendingReplies.add(timer);
+    });
   }
   $("#eve-form").addEventListener("submit", (e) => {
     e.preventDefault();

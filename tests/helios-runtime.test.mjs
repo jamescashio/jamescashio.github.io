@@ -178,9 +178,11 @@ test("Mission presets and the last change match the model, including custom sett
 
 test("The first-minute path, chapter labels and principles lead to their working destinations", async (t) => {
   const page = await visit(t);
-  await page.locator('.minute a[href="#work"]').click();
+  await page.locator('.hero a[href="#work"]').click();
   await expect(page.locator("#work-h")).toBeFocused();
-  await page.locator('.minute a[href="#build-story"]').click();
+  await page.locator("#mc-btn").click();
+  await page.locator("#mc-search").fill("Starship build story");
+  await page.locator('#mc-list a[href="#build-story"]').click();
   await expect(page.locator("#build-proof-title")).toBeFocused();
   await page.locator('.sections a[href="#evidence"]').click();
   await expect(page.locator("#ev-h")).toBeFocused();
@@ -1094,4 +1096,20 @@ test("A failed optional studio keeps a clear return and a real reload recovery",
   await page.reload();
   await link.click();
   await expect(page.locator("#brand-studio-title")).toBeVisible();
+});
+
+test("The wide opening keeps its identity below navigation and its first action in view", async (t) => {
+  for (const width of [1024, 1440, 2560]) {
+    const page = await visit(t, { width, height: 900 });
+    const geometry = await page.evaluate(() => ({
+      navigation: document.querySelector(".nav").getBoundingClientRect().bottom,
+      identity: document.querySelector(".hero .kick").getBoundingClientRect().top,
+      action: document.querySelector("#hero-primary").getBoundingClientRect().bottom,
+      pageWidth: document.documentElement.scrollWidth,
+      viewport: innerHeight,
+    }));
+    assert.ok(geometry.identity >= geometry.navigation + 8, `identity clears navigation at ${width}px`);
+    assert.ok(geometry.action <= geometry.viewport, `primary action is in view at ${width}px`);
+    assert.equal(geometry.pageWidth, width, `page fits at ${width}px`);
+  }
 });

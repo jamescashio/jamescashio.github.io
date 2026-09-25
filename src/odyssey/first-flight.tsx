@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { FIRST_FLIGHT, flightStepIndex, missionHash } from "./flight-plan";
+import { flightChapterInput, chapterRecap, type FlightChoices } from "./flight-state";
 import { RequestConstellation } from "./request-constellation";
 import { computeWorldOutcome } from "./sovereign-model";
 import type { WorldController } from "./world-renderer";
@@ -37,7 +38,7 @@ export default function FirstFlight({
   const captureGeneration = useRef(0);
   const captureBusy = useRef(false);
   const downloads = useRef(new Map<string, ReturnType<typeof setTimeout>>());
-  const [choice, setChoice] = useState<{ step: number; connected?: boolean; permitted?: boolean } | null>(null);
+  const [choice, setChoice] = useState<FlightChoices>({});
   const [lastDecision, setLastDecision] = useState<(FlightDecision & { step: number }) | null>(null);
   const [pageVisible, setPageVisible] = useState(true);
   const [compact, setCompact] = useState(() => window.matchMedia("(max-width: 700px)").matches);
@@ -51,33 +52,23 @@ export default function FirstFlight({
   const completionFocus = useRef<HTMLHeadingElement>(null);
   const focusCompletion = useRef(false);
   const scene = FIRST_FLIGHT[step];
-  const changed = choice?.step === step;
-  const currentInput = useMemo(
-    () => ({
-      ...scene.input,
-      connected: changed ? (choice.connected ?? scene.input.connected) : scene.input.connected,
-      allowPrivateEgress: changed
-        ? (choice.permitted ?? scene.input.allowPrivateEgress)
-        : scene.input.allowPrivateEgress,
-    }),
-    [scene, changed, choice],
-  );
+  const currentInput = useMemo(() => flightChapterInput(step, choice), [step, choice]);
+  const changed =
+    currentInput.connected !== scene.input.connected ||
+    currentInput.allowPrivateEgress !== scene.input.allowPrivateEgress;
+  const currentDecision = lastDecision?.step === step ? lastDecision : null;
   const privateRequest = shareExperiment({
     study: "hermes",
     intent: "analyze",
     sources: true,
     privateData: true,
   }).slice(1);
-  // Without a visitor choice, the recap tells the final chapter: permission off keeps all twelve waiting for a person.
-  // The archived V37 flight keeps its cloud loss recap.
   const zenith = /^(HELIOS|ZENITH)/.test(edition);
-  const recapDecision =
-    lastDecision ??
-    (zenith
-      ? { before: { ...FIRST_FLIGHT[3].input, allowPrivateEgress: true }, after: FIRST_FLIGHT[3].input }
-      : { before: FIRST_FLIGHT[1].input, after: FIRST_FLIGHT[2].input });
+  const recapDecision = zenith
+    ? chapterRecap(step, currentInput, lastDecision)
+    : (lastDecision ?? { before: FIRST_FLIGHT[1].input, after: FIRST_FLIGHT[2].input });
   const input = complete ? recapDecision.after : currentInput;
-  const displayStep = complete ? (lastDecision?.step ?? (zenith ? 3 : 2)) : step;
+  const displayStep = complete && !zenith ? (lastDecision?.step ?? 2) : step;
   const displayScene = FIRST_FLIGHT[displayStep];
   const outcome = computeWorldOutcome(input);
   const independent = input.architecture === "hybrid" && !input.connected;
@@ -207,7 +198,6 @@ export default function FirstFlight({
   function select(next: number) {
     captureGeneration.current += 1;
     setVisit((value) => value + 1);
-    setChoice(null);
     setStep(next);
     setPaused(true);
     setComplete(false);
@@ -217,6 +207,7 @@ export default function FirstFlight({
   }
   function replay() {
     select(0);
+    setChoice({});
     setLastDecision(null);
     setPaused(visitorPaced || !motion);
     // Replay removes the completed controls; return focus to a stable control.
@@ -305,7 +296,11 @@ export default function FirstFlight({
               ? { ...input, allowPrivateEgress: !input.allowPrivateEgress }
               : { ...input, connected: !input.connected },
         });
-        setChoice(step === 3 ? { step, permitted: !input.allowPrivateEgress } : { step, connected: !input.connected });
+        setChoice((previous) =>
+          step === 3
+            ? { ...previous, permitted: !input.allowPrivateEgress }
+            : { ...previous, connected: !input.connected },
+        );
       }}
     >
       <span aria-hidden="true">{step === 3 ? "◇" : "⌁"}</span>
@@ -423,9 +418,9 @@ export default function FirstFlight({
             <>
               <FlightRecap
                 decision={recapDecision}
-                visitorChoice={lastDecision !== null}
+                visitorChoice={zenith ? currentDecision !== null : lastDecision !== null}
                 wording={
-                  zenith && !lastDecision
+                  zenith && step === 3 && !currentDecision
                     ? {
                         eyebrow: "THE LAST CHAPTER, BOTH WAYS",
                         captions: ["If you say yes", "If you say no"],
@@ -456,13 +451,20 @@ export default function FirstFlight({
           ) : (
             <>
               <div className="ff-command-lab">
-                {changed && lastDecision && <DecisionDelta decision={lastDecision} />}
+                {changed && currentDecision && <DecisionDelta decision={currentDecision} />}
                 <div className="ff-lab-heading">
                   <span>TAKE COMMAND</span>
                   <span>LOCAL ILLUSTRATION</span>
                 </div>
                 {!compact && decisionButton}
-                <p className="ff-scene-copy">{changed ? outcome.summary : scene.copy}</p>
+                <p className="ff-scene-copy">{changed && step !== 1 ? outcome.summary : scene.copy}</p>
+                <p className="ff-state-note">
+                  {step === 3
+                    ? "New scenario: cloud connected, twelve private requests. Your permission choice is kept when you revisit this chapter."
+                    : choice.connected !== undefined
+                      ? `Your relay choice is kept in chapters 1 to 3: ${input.connected ? "connected" : "disconnected"}.`
+                      : "Chapters 1 to 3 share your relay choice. Chapter 4 starts a separate permission test."}
+                </p>
                 <details className="ff-request-detail" open={!compact && !changed}>
                   <summary>
                     Follow the twelve requests <span aria-hidden="true">+</span>
@@ -487,7 +489,9 @@ export default function FirstFlight({
                     onClick={() => {
                       captureGeneration.current += 1;
                       setCardStatus("idle");
-                      setChoice(null);
+                      setChoice((previous) =>
+                        step === 3 ? { connected: previous.connected } : { permitted: previous.permitted },
+                      );
                       if (lastDecision?.step === step) setLastDecision(null);
                       setCopied(false);
                       setCopyError(false);

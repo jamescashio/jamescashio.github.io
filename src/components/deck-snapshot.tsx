@@ -38,7 +38,7 @@ export function DeckSnapshot({
     >
       <span id="deck=snapshot" aria-hidden="true" className="pointer-events-none absolute left-0 top-0" />
       <div ref={copyCol} className="za-bracket za-snapshot-column max-w-[38rem] p-2">
-        <Kicker>ZEUSAPOLLO · SOVEREIGN AI UNDER HUMAN COMMAND</Kicker>
+        <Kicker>ARCHIVE · V35 · AUGUST 2026</Kicker>
         <p className="za-snapshot-identity za-mono">{IDENTITY_LINE}</p>
         <h1 tabIndex={-1} className="za-display za-snapshot-headline">
           OWN THE IRON AND THE <span className="za-shimmer-text">ROUTE</span>.
@@ -116,7 +116,7 @@ export function DeckSnapshot({
           </div>
         </div>
         <p className="za-snapshot-copy">
-          Owned hardware. Observable decisions. Published evidence. Every claim here is measured and dated.
+          Historical snapshot. Dates and countdown belong to August 2026. Private details are withheld.
         </p>
         <p className="za-critical-telemetry za-snapshot-measured za-mono">
           MEASURED 28 AUGUST 2026 · 18 OF 19 GUESTS RUNNING AT THE PROBE
@@ -127,8 +127,8 @@ export function DeckSnapshot({
         </div>
         <div data-hud-clear className="za-snapshot-facts">
           {[
-            ["ZEUS", "12/13", "AT 28 AUG PROBE"],
-            ["APOLLO", "6/6", "AT 28 AUG PROBE"],
+            ["ZEUS", "—", "COUNT WITHHELD"],
+            ["APOLLO", "—", "COUNT WITHHELD"],
             ["FLEET", "18/19", "AT 28 AUG PROBE"],
             ["HOSTS", "2", "CLUSTER QUORATE"],
             ["QUORUM", "YES", "AT 28 AUG PROBE"],

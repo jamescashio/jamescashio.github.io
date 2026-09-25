@@ -57,7 +57,7 @@
 .hero .cta-note {
   margin: 14px 0 0;
   color: #a9bbc9;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
 }
 .hero canvas.gl,
@@ -108,12 +108,6 @@
   background: rgba(4, 7, 14, 0.66);
   border-color: rgba(242, 200, 122, 0.26);
 }
-.minute .step {
-  box-shadow: none;
-  transition:
-    border-color 180ms var(--ease-ui),
-    background 180ms var(--ease-ui);
-}
 .case-study {
   display: grid;
   grid-template-columns: 1.08fr 1fr;
@@ -152,7 +146,7 @@
 .case-image figcaption {
   margin-top: 10px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
 }
 .case-notes {
@@ -167,7 +161,7 @@
 }
 .case-notes dt {
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 14px;
   color: var(--cyan);
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -207,7 +201,7 @@
 }
 .case-boundary {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.65;
   margin: 18px 0;
 }
@@ -274,7 +268,7 @@
   .hero .kick {
     max-width: 36ch;
     letter-spacing: 0.075em;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.5;
   }
   .hero .sub {
@@ -295,7 +289,7 @@
   }
   .hero .cta-note {
     margin-top: 12px;
-    font-size: 13px;
+    font-size: 14px;
     line-height: 1.5;
   }
   .hero-light {

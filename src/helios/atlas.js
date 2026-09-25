@@ -19,20 +19,20 @@ export function setupAtlas({ scenes, motion, say }) {
       value: "01",
       unit: "operator console",
       summary: "The console where I sit.",
-      body: "A locally installed agent runtime, placed beside HERMES rather than replacing it yet. It is the console I run read only checks from. Its provider and skill counts stay private.",
+      body: "A locally installed agent runtime, placed beside HERMES rather than replacing it yet. I use it to run read only checks and review their results.",
       evidence: "Local metadata probe · last audit",
     },
     hermes: {
       name: "HERMES",
-      role: "Orchestration",
+      role: "Job scheduler",
       value: String(FLEET.hermes.jobs),
       unit: "enabled scheduled jobs",
-      summary: "Intent becomes a qualified route.",
+      summary: "The scheduler turns a task into a job.",
       body:
         FLEET.hermes.jobs +
         " of " +
         FLEET.hermes.records +
-        " scheduled jobs were enabled at the last audit. Routing itself has not been verified end to end yet.",
+        " scheduled jobs were enabled at the last audit. The HERMES study explores the routing rule in your browser.",
       evidence: "Last audit · routing not verified",
     },
     zeus: {
@@ -44,7 +44,7 @@ export function setupAtlas({ scenes, motion, say }) {
       body:
         "The first of two servers in my house. Together they ran " +
         FLEET.lxc +
-        " containers at this dated observation; the split between them stays private. Guest runtime does not establish application availability or failover readiness.",
+        " containers at this dated observation; the split between them stays private. The dated record below explains what was measured.",
       evidence: "Fleet observation · " + FLEET.observedLong,
     },
     apollo: {
@@ -52,8 +52,8 @@ export function setupAtlas({ scenes, motion, say }) {
       role: "Owned compute",
       value: "2",
       unit: "of two servers I own",
-      summary: "A second host in the same estate.",
-      body: "The second server in the same cluster. The cluster was quorate at the dated observation; quorum alone does not establish workload failover. Private service locations are withheld.",
+      summary: "The second server in the cluster.",
+      body: "This server and Zeus could agree on cluster state at the dated observation. That is quorum; it does not establish whether workloads can fail over.",
       evidence: "Fleet observation · " + FLEET.observedLong,
     },
   };

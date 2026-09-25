@@ -98,8 +98,8 @@
 }
 /* On shorter laptops the story panel scrolls; a fade says so. */
 #helios-flight .ff-story {
-  mask-image: linear-gradient(180deg, #000 calc(100% - 30px), transparent);
-  padding-bottom: 34px;
+  padding-bottom: 44px;
+  scroll-padding-bottom: 24px;
 }
 
 /* Chapter controls keep their arrow on the same line as the word. */
@@ -169,5 +169,48 @@
   #helios-flight .first-flight .ff-recap > small,
   #helios-flight .first-flight .ff-recap-state > strong {
     display: none;
+  }
+}
+
+#helios-flight .ff-state-note {
+  margin: 10px 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+@media (max-width: 700px) {
+  #helios-flight
+    :is(
+      .ff-eyebrow,
+      .ff-stage-cap,
+      .ff-shot-label,
+      .ff-boundary,
+      .ff-chapter-number,
+      .ff-chapter-short,
+      .ff-playback button,
+      .ff-recap small
+    ) {
+    font-size: 14px;
+  }
+  #helios-flight .ff-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  #helios-flight .ff-playback {
+    flex: 1 1 100%;
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) minmax(72px, auto);
+    gap: 8px;
+  }
+  #helios-flight .ff-playback button {
+    min-width: 0;
+    width: auto;
+    white-space: normal;
+    line-height: 1.3;
+    padding-inline: 8px;
+  }
+  #helios-flight .ff-body {
+    mask-image: none;
   }
 }

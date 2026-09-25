@@ -4,7 +4,7 @@ export const PROJECTS = [
   {
     id: "hermes",
     title: "HERMES",
-    subtitle: "Match the work to the route.",
+    subtitle: "My job scheduler, explored through a routing demo.",
     category: "AI orchestration",
     cue: "Route a draft. Require sources. Then add private information.",
     color: "#e8bb78",
@@ -36,7 +36,7 @@ export const PROJECTS = [
   {
     id: "dashboards",
     title: "ZeusApollo",
-    subtitle: "Know when an observation needs review.",
+    subtitle: "My two servers, explored through a dated dashboard.",
     category: "Operations",
     cue: "Advance the clock from 23 to 24 hours. The review state changes.",
     color: "#a3d2c4",

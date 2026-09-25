@@ -111,7 +111,7 @@
   font-family: var(--sans);
   text-transform: none;
   letter-spacing: 0.015em;
-  font-size: 12px !important;
+  font-size: 14px !important;
 }
 .node:hover .core,
 .node:focus-visible .core {
@@ -217,7 +217,7 @@
   gap: 4px;
 }
 .flow-stations b {
-  font: 600 clamp(12px, 1vw, 15px)/1.3 var(--sans);
+  font: 600 clamp(14px, 1vw, 15px)/1.3 var(--sans);
 }
 .flow-stations small {
   color: var(--muted);
@@ -256,7 +256,7 @@
   color: var(--muted);
 }
 .scene-note {
-  font: 12px/1.5 var(--sans);
+  font: 14px/1.5 var(--sans);
   color: var(--muted);
   margin: 10px 0 0;
 }
@@ -318,7 +318,7 @@
 }
 .engine-index span {
   color: var(--muted);
-  font: 600 12px/1.4 var(--sans);
+  font: 600 14px/1.4 var(--sans);
   display: grid;
   gap: 3px;
   text-align: center;

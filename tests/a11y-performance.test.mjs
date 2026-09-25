@@ -816,7 +816,7 @@ test("command chrome frames aggregate evidence as a dated export at valid and ex
         assert.doesNotMatch(header?.textContent ?? "", /18\/19 AT 28 AUG PROBE/);
         assert.match(view.document.body.textContent, /MEASURED 28 AUGUST 2026 · 18 OF 19 GUESTS RUNNING/);
         assert.doesNotMatch(header?.textContent ?? "", /NOMINAL|CURRENT/);
-        assert.match(view.document.body.textContent, /APOLLO6\/6 · AT 28 AUG PROBE/);
+        assert.match(view.document.body.textContent, /APOLLO— · COUNT WITHHELD/);
       } finally {
         await view.cleanup();
       }
