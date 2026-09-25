@@ -1,5 +1,5 @@
 import type { RefObject } from "react";
-import { EXPIRES_SHORT, PVE, VERIFIED_LONG } from "@/lib/content";
+import { EXPIRES_SHORT, VERIFIED_LONG } from "@/lib/content";
 import { getSound } from "@/lib/sound";
 import { useDeck } from "@/lib/store";
 import { BitBriefing } from "./bit-briefing";
@@ -119,7 +119,7 @@ export function DeckSnapshot({
           Owned hardware. Observable decisions. Published evidence. Every claim here is measured and dated.
         </p>
         <p className="za-critical-telemetry za-snapshot-measured za-mono">
-          MEASURED 28 AUGUST 2026 · 18 OF 19 SERVICES UP · BOTH MACHINES HEALTHY
+          MEASURED 28 AUGUST 2026 · 18 OF 19 GUESTS RUNNING AT THE PROBE
         </p>
         <div data-hud-clear className="za-chip za-critical-telemetry za-snapshot-status">
           <span className="za-lock-pip" />
@@ -131,7 +131,7 @@ export function DeckSnapshot({
             ["APOLLO", "6/6", "AT 28 AUG PROBE"],
             ["FLEET", "18/19", "AT 28 AUG PROBE"],
             ["HOSTS", "2", "CLUSTER QUORATE"],
-            ["PVE", PVE, "VERSION AT PROBE"],
+            ["QUORUM", "YES", "AT 28 AUG PROBE"],
           ].map(([name, value, detail]) => (
             <div key={name}>
               <span className="za-critical-telemetry za-fact-label za-mono">{name}</span>

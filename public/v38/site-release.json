@@ -12,9 +12,9 @@
   "rollbackCommit": "c3503c15552850ed10af455f86209970804c1fa8",
   "evidenceSnapshot": {
     "url": "/v38/status.json",
-    "fleetObserved": "2026-09-18",
-    "observedAtUtc": "2026-09-18T22:53:54Z",
+    "fleetObserved": "2026-09-24",
+    "observedAtUtc": "2026-09-24T21:43:10Z",
     "routingObserved": null
   },
-  "statement": "The interface release does not refresh the dated infrastructure observation. Interactive examples are browser-only illustrations, and no AI requests are sent."
+  "statement": "The fleet observation and the interface share one date. Interactive examples are browser only illustrations, and no AI requests are sent."
 }

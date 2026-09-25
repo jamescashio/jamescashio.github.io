@@ -40,8 +40,52 @@
       imagesizes="(max-width: 600px) max(100vw, 374px), 100vw"
       fetchpriority="high"
     />
+    <style>
+      .archive-note {
+        position: absolute;
+        top: 100px;
+        left: 50%;
+        z-index: 2147483000;
+        width: max-content;
+        max-width: calc(100% - 32px);
+        margin: 0;
+        padding: 6px 14px;
+        border: 1px solid #294052;
+        border-radius: 999px;
+        background: rgba(11, 21, 36, 0.92);
+        color: #e8eef6;
+        font:
+          500 13px/1.45 system-ui,
+          sans-serif;
+        text-align: center;
+        transform: translateX(-50%);
+      }
+      .archive-short {
+        display: none;
+      }
+      .archive-note a {
+        color: #66e2ee;
+      }
+      @media (max-width: 700px) {
+        .archive-note {
+          top: 56px;
+          border-radius: 14px;
+        }
+        .archive-long {
+          display: none;
+        }
+        .archive-short {
+          display: inline;
+        }
+      }
+    </style>
   </head>
   <body>
+    <p class="archive-note" role="note">
+      <span class="archive-long">Archive · V37 Continuum, the previous front door, as it was in September 2026.</span
+      ><span class="archive-short">Archive · V37, September 2026.</span>
+      <a href="/">Latest site →</a>
+    </p>
     <div id="odyssey-root"></div>
     <script data-cfasync="false" type="module" src="/src/odyssey/main.tsx"></script>
   </body>

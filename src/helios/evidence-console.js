@@ -9,12 +9,12 @@ export const EVIDENCE = {
   help: [
     "Commands: fleet · hosts · kernel · backups · atlas · dsh · hermes · routes · archive · cost · clear · help",
     `Every reply is a dated fact from the published export. No live telemetry. Page revised ${FLEET.pageRevised}.`,
-    "Some commands are not listed. Pilots find them.",
+    "Keys: ↑ recalls a command · Tab completes one. Some commands are not listed. Pilots find them.",
   ],
   fleet: [
-    `observation: ${FLEET.observedLong} at ${FLEET.observedCentral} (${FLEET.observedUtc})`,
+    `observation: ${FLEET.observedLong}`,
     `hosts at the observation: ${FLEET.hosts} responded, ${FLEET.quorate ? "quorate" : "quorum not observed"}`,
-    `lxc_running: ${FLEET.lxc} (zeus ${FLEET.zeus}, apollo ${FLEET.apollo}) · qemu_running: ${FLEET.qemu}`,
+    `lxc_running: ${FLEET.lxc} · qemu_running: ${FLEET.qemu} · per host split withheld`,
     `method: ${FLEET.method} · run by the owner`,
   ],
   kernel: [
@@ -22,17 +22,14 @@ export const EVIDENCE = {
     "a public security record shows what was observed, never a map for an attacker",
   ],
   backups: [
-    `freshness: ${FLEET.backups.guestsOk} of ${FLEET.backups.guestsTotal} guests ok on ${FLEET.backups.freshnessLong}`,
-    `restore_tested: ${FLEET.backups.restoreTested} · freshness is a file age check, not a restore drill`,
+    `integrity: ${FLEET.backups.integrity} · checked ${FLEET.backups.checkedLong}`,
+    "coverage counts withheld · a restore drill is a separate test",
   ],
   atlas: [
     `primary model: runs locally · active context ${FLEET.atlas.context}`,
     "inference host for recurring work · model name and private catalog withheld",
   ],
-  dsh: [
-    `DeepSeek Harness: ${FLEET.dsh.skills} skills · ${FLEET.dsh.providers} providers · operator console`,
-    `operating brief dated ${FLEET.dsh.agentsDate} · coexists with HERMES`,
-  ],
+  dsh: ["DSH: operator console · provider and skill counts withheld", "operating brief on file · coexists with HERMES"],
   hermes: [
     `scheduled jobs: ${FLEET.hermes.jobs} enabled of ${FLEET.hermes.records} records · budget period ${FLEET.hermes.budgetPeriod}`,
     "verified route count: withheld as unknown",
@@ -44,7 +41,7 @@ export const EVIDENCE = {
     "the HERMES study on this page is a model that runs in your browser, not this record",
   ],
   archive: [
-    `${FLEET.prior.release} · fleet observed ${FLEET.prior.fleetLong} · ${FLEET.prior.method} · lxc ${FLEET.prior.lxc} (zeus ${FLEET.prior.zeus}, apollo ${FLEET.prior.apollo}) · qemu ${FLEET.prior.qemu}`,
+    `${FLEET.prior.release} · fleet observed ${FLEET.prior.fleetLong} · ${FLEET.prior.method} · lxc ${FLEET.prior.lxc} · qemu ${FLEET.prior.qemu}`,
     `${FLEET.archive.release} · fleet observed ${FLEET.archive.fleetLong} · routing observed ${FLEET.archive.routingLong}`,
     `lxc_running: ${FLEET.archive.lxc} · qemu: ${FLEET.archive.qemu.toLowerCase()} · public lanes: ${FLEET.archive.lanes}`,
     `original expiry ${FLEET.archive.expiry}; that expiry does not extend the later observation`,
@@ -55,7 +52,7 @@ export const EVIDENCE = {
     "rule in force: quality picks the model, cost only breaks a tie",
   ],
   hosts: [
-    `zeus: ${FLEET.zeus} LXC at observation · apollo: ${FLEET.apollo} LXC at observation · ${FLEET.qemu} QEMU VM in the cluster`,
+    `zeus and apollo: ${FLEET.hosts} hosts, one cluster · ${FLEET.lxc} containers and ${FLEET.qemu} VM between them`,
     "quorum observed; quorum alone does not establish workload failover",
     "private service locations are withheld from the public record",
   ],
@@ -97,6 +94,11 @@ export const LORE = {
   ],
   bit: ["lore · Bit here. I point the way. You make the call."],
   eve: ["lore · Evaluation Verification Engine. I only say what the evidence says, and I say when it is old."],
+  42: [
+    "lore · The answer is 42. The question is still being computed, somewhere in Zeus.",
+    "lore · Meanwhile the rule stands: quality picks the model, cost only breaks a tie.",
+  ],
+  towel: ["lore · Towel located. Human in command. Don't panic."],
   sudo: ["denied · A human is in command, and it is the one who built this. Try help."],
 };
 
@@ -107,39 +109,75 @@ export function evidenceReply(input) {
   return [`unknown command: ${cmd}. Try help.`];
 }
 
+/** Hidden commands a visitor can stumble into; surprise me picks one and names it. */
+const SURPRISES = ["yeager", "johnson", "rutan", "hoover", "butlerian", "ix", "spice", "epstein", "bit", "eve"];
+
 export function setupEvidenceConsole({ motion }) {
   const out = $("#eve-out");
+  const inp = $("#eve-in");
   const intro = out.innerHTML;
-  $("#eve-form").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const inp = $("#eve-in");
-    const cmd = inp.value.trim().toLowerCase();
+  const history = [];
+  let cursor = 0;
+  const known = [...Object.keys(EVIDENCE), "clear", "surprise me"];
+  const add = (text, className = "") => {
+    const line = document.createElement("span");
+    line.textContent = text;
+    if (className) line.className = className;
+    out.appendChild(line);
+  };
+  function run(raw) {
+    let cmd = String(raw).trim().toLowerCase().replace(/\s+/g, " ");
     if (!cmd) return;
-    inp.value = "";
+    history.push(cmd);
+    cursor = history.length;
     if (cmd === "clear") {
       out.innerHTML = intro;
       return;
     }
-    const add = (h, lore = false) => {
-      const s = document.createElement("span");
-      s.textContent = h;
-      if (lore) s.className = "lore";
-      out.appendChild(s);
-    };
     add("↳ " + cmd);
+    let hint = "";
+    if (cmd === "surprise me") {
+      cmd = SURPRISES[Math.floor(Math.random() * SURPRISES.length)];
+      hint = `hidden command found: ${cmd}. There are more.`;
+    }
     const lines = evidenceReply(cmd);
-    const lore = Object.hasOwn(LORE, cmd.replace(/\s+/g, " "));
-    lines.forEach((l, i) =>
+    const lore = Object.hasOwn(LORE, cmd);
+    if (hint) lines.push(hint);
+    lines.forEach((line, i) =>
       setTimeout(
         () => {
-          add(l, lore);
+          add(line, lore ? "lore" : "");
           out.scrollTop = out.scrollHeight;
-          if (i === lines.length - 1) {
-            add(" ");
-          }
+          if (i === lines.length - 1) add(" ");
         },
         motion() ? 140 * (i + 1) : 0,
       ),
     );
+  }
+  $("#eve-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const value = inp.value;
+    inp.value = "";
+    run(value);
+  });
+  document
+    .querySelectorAll("[data-eve]")
+    .forEach((chip) => chip.addEventListener("click", () => run(chip.dataset.eve)));
+  inp.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowUp" && history.length) {
+      e.preventDefault();
+      cursor = Math.max(0, cursor - 1);
+      inp.value = history[cursor];
+    } else if (e.key === "ArrowDown" && history.length) {
+      e.preventDefault();
+      cursor = Math.min(history.length, cursor + 1);
+      inp.value = history[cursor] ?? "";
+    } else if (e.key === "Tab" && inp.value.trim()) {
+      const match = known.find((command) => command.startsWith(inp.value.trim().toLowerCase()));
+      if (match) {
+        e.preventDefault();
+        inp.value = match;
+      }
+    }
   });
 }

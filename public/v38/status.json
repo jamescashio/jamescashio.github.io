@@ -1,11 +1,11 @@
 {
-  "release": "V38",
-  "revised": "2026-09-18",
+  "release": "V39.0 Zenith",
+  "revised": "2026-09-24",
   "status": "live-read-only-observation",
-  "verified": "2026-09-18",
-  "verifiedLong": "18 September 2026",
+  "verified": "2026-09-24",
+  "verifiedLong": "September 24, 2026",
   "expires": null,
-  "proxmox": {
+  "cluster": {
     "version": null,
     "hostsOnline": 2,
     "quorate": true
@@ -13,9 +13,7 @@
   "containers": {
     "running": 20,
     "documented": 20,
-    "stopped": 0,
-    "zeus": 15,
-    "apollo": 5
+    "stopped": 0
   },
   "virtualMachines": {
     "running": 1,
@@ -28,41 +26,44 @@
   },
   "routingVerified": null,
   "law": "Quality picks the model. Cost only breaks a tie.",
-  "note": "Owner run read only observation of September 18 2026 collected through the DeepSeek Harness. Counts describe discovered LXC and QEMU guests, not application health. This public subset withholds private addresses, service names, credentials, spending, the private model catalog and unverified route claims.",
+  "note": "Owner run read only observation of September 24 2026, read from the cluster guest API and the backup server. Counts describe discovered containers and virtual machines, not application health. This public subset withholds private addresses, service names, credentials, spending, the private model catalog, per host guest counts, backup coverage counts and unverified route claims. Orchestration figures come from the last audit, dated in provenance.",
   "withheldReasons": {
     "lanes.public": "No current public lane inventory and execution record were established.",
     "lanes.privateCatalog": "The private model catalog was intentionally withheld from the public fact sheet.",
     "routingVerified": "No authoritative live end to end route verification count was established.",
     "orchestration.hermesVerifiedRoutes": "The current orchestration receipt exposed provider metadata, not a verified route count.",
-    "orchestration.bridgeRevision": "The harness declares one bridge revision and the live adapter reports another; no single revision is asserted.",
-    "proxmox.version": "Exact software versions are withheld from the public record for security.",
+    "orchestration.bridgeRevision": "No single bridge revision is asserted in the public record.",
+    "cluster.version": "Exact software versions are withheld from the public record for security.",
     "orchestration.atlasModel": "The model name is withheld with the private model catalog.",
-    "orchestration.kernels": "Kernel versions and reboot state are withheld from the public record for security."
+    "orchestration.kernels": "Kernel versions and reboot state are withheld from the public record for security.",
+    "orchestration.backups.coverage": "Backup coverage counts are withheld from the public record for security.",
+    "containers.perHost": "Per host guest counts are withheld from the public record for security.",
+    "orchestration.dshInventory": "Operator console provider and skill counts are withheld from the public record."
   },
   "orchestration": {
     "operatorConsole": "DSH",
     "hermesJobsEnabled": 58,
     "hermesJobRecords": 60,
     "hermesVerifiedRoutes": null,
-    "dshProviders": 11,
-    "dshSkills": 156,
+    "dshProviders": null,
+    "dshSkills": null,
     "dshAgentsBriefDate": "2026-09-08",
     "atlasModel": null,
     "atlasActiveContext": 16384,
     "backups": {
-      "freshnessGuestsOk": 20,
-      "freshnessGuestsTotal": 20,
-      "freshnessObservedAtUtc": "2026-09-18T14:00:18Z",
+      "integrity": "every snapshot on record passed verification",
+      "checkedAtUtc": "2026-09-24T21:43:20Z",
+      "coverage": null,
       "restoreTested": false
     },
     "budgetPeriod": "2026-09"
   },
   "provenance": {
-    "observedAtUtc": "2026-09-18T22:53:54Z",
-    "observedAtAmericaChicago": "2026-09-18T17:53:54-05:00",
+    "observedAtUtc": "2026-09-24T21:43:10Z",
+    "observedAtAmericaChicago": "2026-09-24T16:43:10-05:00",
     "methods": {
-      "proxmox": "Direct SSH reads of quorum, version, kernel, guest lists, pending package count and failed unit count on both nodes.",
-      "backupFreshness": "Direct backup service state and latest freshness journal receipt.",
+      "cluster": "Read only cluster guest API: guest ownership, type and running state on both nodes.",
+      "backups": "Read only backup server snapshot listing, including each snapshot's verification state.",
       "atlas": "Direct read only probes on the local inference host.",
       "dsh": "Local filesystem and settings metadata probe.",
       "bridge": "Existing read only bridge receipt plus adapter provenance."

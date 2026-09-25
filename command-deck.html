@@ -688,8 +688,54 @@
         }
       }
     </style>
+    <style>
+      .archive-note {
+        position: absolute;
+        top: 64px;
+        left: 50%;
+        z-index: 2147483000;
+        width: max-content;
+        max-width: calc(100% - 32px);
+        margin: 0;
+        padding: 6px 14px;
+        border: 1px solid #294052;
+        border-radius: 999px;
+        background: rgba(11, 21, 36, 0.92);
+        color: #e8eef6;
+        font:
+          500 13px/1.45 system-ui,
+          sans-serif;
+        text-align: center;
+        transform: translateX(-50%);
+      }
+      .archive-short {
+        display: none;
+      }
+      .archive-note a {
+        color: #66e2ee;
+      }
+      @media (max-width: 700px) {
+        .archive-note {
+          top: 62px;
+          border-radius: 14px;
+        }
+        .archive-long {
+          display: none;
+        }
+        .archive-short {
+          display: inline;
+        }
+      }
+    </style>
   </head>
   <body>
+    <!-- No link here: cinema mode requires EXIT CINEMA to be the only tab stop. -->
+    <p class="archive-note" role="note">
+      <span class="archive-long"
+        >Archive · the V35 command deck from August 2026. Its dates and countdown are history. The latest site is
+        cashio.us.</span
+      ><span class="archive-short">Archive · V35, August 2026. Latest site: cashio.us</span>
+    </p>
     <div id="root"></div>
     <script type="module" src="/src/bootstrap.ts"></script>
   </body>

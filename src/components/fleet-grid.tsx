@@ -1,5 +1,5 @@
 import { useEffect, useId, useMemo, useState } from "react";
-import { NAMED_ROLES, PVE } from "@/lib/content";
+import { NAMED_ROLES } from "@/lib/content";
 
 type Point = { x: number; y: number };
 
@@ -260,7 +260,7 @@ export function FleetGrid({ hover, lock, onHover, onLock }: FleetGridProps) {
             QUORUM
           </text>
           <text className="za-fleet-core-sub" x={CORE.x} y={CORE.y + 66} textAnchor="middle">
-            {`2 HOSTS · PVE ${PVE}`}
+            {"2 HOSTS · QUORATE"}
           </text>
         </g>
       </svg>

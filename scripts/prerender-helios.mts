@@ -9,8 +9,9 @@ const styles = [...html.matchAll(/<link rel="stylesheet" crossorigin href="(\/as
 if (styles.length !== 1) throw new Error("Expected one Helios entry stylesheet");
 const [link, source] = styles[0];
 const css = await readFile("dist" + source, "utf8");
-// V39 budget: 17 KB gzip covers the living hero and chapter styles; the dead custom cursor was removed to pay for it.
-const STYLE_BUDGET_GZIP = 17000;
+// V39 budget: 19 KB gzip covers the living hero, chapter and room styles plus the former inline style attributes.
+// Moving those attributes into classes made the whole prerendered page smaller (45.7 to 45.2 KB gzip).
+const STYLE_BUDGET_GZIP = 19000;
 if (gzipSync(css).byteLength > STYLE_BUDGET_GZIP || /<\/style/i.test(css))
   throw new Error("Helios style delivery budget exceeded");
 html = html.replace(link, `<style data-helios-styles="${source}">${css}</style>`);

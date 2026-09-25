@@ -5,7 +5,7 @@
   "verified": "2026-08-28",
   "verifiedLong": "28 August 2026",
   "expires": "2026-09-27",
-  "proxmox": { "version": "9.2.11", "hostsOnline": 2, "quorate": true },
+  "proxmox": { "version": null, "hostsOnline": 2, "quorate": true },
   "containers": { "running": 18, "documented": 19, "stopped": 1, "zeus": 12, "apollo": 6 },
   "lanes": { "public": 10, "privateCatalog": 36 },
   "routingVerified": "2026-08-21",

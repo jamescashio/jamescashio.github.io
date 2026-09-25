@@ -6,7 +6,7 @@
   "verifiedLong": "7 September 2026",
   "expires": null,
   "proxmox": {
-    "version": "9.2.11",
+    "version": null,
     "hostsOnline": 2,
     "quorate": true
   },
@@ -25,6 +25,7 @@
   "law": "Quality picks the model. Cost only breaks a tie.",
   "note": "Owner-run read-only observation of 7 September 2026. Counts describe LXC containers and QEMU virtual machines, not application health. This static export makes no production network calls and establishes no future health window. It does not establish backup coverage, demonstrated recovery, storage redundancy, failover readiness, or model-routing behavior.",
   "withheldReasons": {
+    "proxmox.version": "Exact software versions are withheld from the public record for security.",
     "lanes.public": "The current page and older status export say 10 public lanes, but this audit did not produce a current public-lane inventory or execution record.",
     "lanes.privateCatalog": "The private model catalog is not a public-safe infrastructure fact and was not refreshed for publication.",
     "routingVerified": "Current configuration and historical session metadata are not a current end-to-end routing verification."
@@ -33,7 +34,7 @@
     "observedAtUtc": "2026-09-07T23:14:58.5008542Z",
     "observedAtAmericaChicago": "2026-09-07T18:14:58.5008542-05:00",
     "methods": {
-      "proxmox": "Live Proxmox cluster quorum/status and guest inventory checks; both nodes reported pve-manager 9.2.11.",
+      "proxmox": "Live Proxmox cluster quorum/status and guest inventory checks.",
       "containers": "Counted LXC guests from the live cluster resources endpoint and cross-checked with direct pct/qm lists.",
       "lanes": "Withheld because no current public-lane inventory and execution record were established.",
       "publication": "The owner-run audit produced an unpublished proposal. Its reviewed public subset was subsequently approved for publication with Cashio.us V37.11; the observation timestamps remain those of the original audit.",

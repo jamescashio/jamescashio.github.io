@@ -6,7 +6,7 @@
   --panel2: #152239;
   --ink: #eaf0f8;
   --ink2: #c6d0de;
-  --muted: #9aa9bf;
+  --muted: #a9b6c9;
   --cyan: #38e1ff;
   --gold: #f2c87a;
   --gold2: #d9a94f;
@@ -470,6 +470,7 @@ section.block {
   display: flex;
   align-items: center;
   gap: 12px;
+  white-space: nowrap;
   color: var(--ink);
   font-family: var(--display);
   font-size: 22px;

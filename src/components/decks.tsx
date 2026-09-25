@@ -9,7 +9,6 @@ import {
   LINEAGE_EVIDENCE,
   NAMED_ROLES,
   PILOT_CRAFT,
-  PVE,
   ROUTING_STAGES,
   ROUTING_VERIFIED_LONG,
   SERVICE_FAMILIES,
@@ -284,9 +283,9 @@ export function DeckIron({ s3 }: { s3: SecRef }) {
           <Kicker>04 · THE IRON</Kicker>
           <Title>HARDWARE IN A ROOM I CAN WALK INTO.</Title>
           <p className="mt-5 max-w-[52ch] text-[1.05rem] leading-relaxed text-muted">
-            ZeusApollo ran Proxmox VE {PVE} across two online, quorate hosts at the dated probe. Two machines, one
-            cluster, in a room I can walk into. The public export leaves out hardware implementation details on purpose.
-            Select a host to read its probe result.
+            ZeusApollo ran Proxmox VE across two online, quorate hosts at the dated probe. Two machines, one cluster, in
+            a room I can walk into. The public export leaves out hardware implementation details on purpose. Select a
+            host to read its probe result.
           </p>
           <div data-hud-clear className="mt-8 grid gap-3 sm:grid-cols-2">
             {HOSTS.map((h, i) => (

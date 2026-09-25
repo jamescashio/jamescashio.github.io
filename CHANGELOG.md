@@ -2,15 +2,24 @@
 
 ## V39.0 · Zenith
 
+- A shorter home page: the Starship lab, Principles Engine, The Studios and Flight heritage open as their own pages from a new "four more rooms" row, Mission Control and the chapter rail (Starship and Studios also stay in the header), each with its own title, a way back and links to the other two. Nothing was removed.
+- Say it plainly for recruiters: open to speaking, advising and comparing notes, beside the at a glance cards and in the contact section.
+- Tighter operational security: the page, E.V.E. and the current export no longer name the hypervisor, split guest counts by host or publish backup coverage counts. Integrity results and totals stay; archived records are unchanged.
+- Say what the site is: a hobby lab and proof of work, built after hours. The V35 command deck and V37 front door now carry an archive label that links to the latest site, and the May command center archive points straight home.
+- Operational security, round two: the search engine data drops the home city and legal name, the operator console is described by role with its provider and skill counts withheld, and the console archive line reads V35.
+- Labels move to 13 pixels.
+- Review fixes: the last flight chapter fits beside the stage on short desktop screens, phone chapter tabs use the same names as desktop, the default recap sets "If you say yes" beside "If you say no" and keeps its exits in view, Mission Control keeps one height while you search, body notes move to 15 pixels, E.V.E. keeps its key hints in help, and five repeated disclaimers are cut to one plain line each. The current export names its release, V39.0 Zenith, and the sitemap drops the noindexed archive.
 - Lead with plain language: hardware I own, a dated proof chip in the hero, and a workshop statement with three ways in. The repair note moves into the build story.
 - Publish the routing law in place of the July 21 to 22 cost sample. Spend stays withheld until it is measured again, in the page, the evidence boundary and E.V.E.
 - Give the first frame life after the arrival film: pointer depth on the artwork, a breathing sun and twinkling stars, all paused by the Motion control, reduced motion, hidden tabs and open scenes.
 - Board the starship with a short warp that covers loading; the flight settles in, the loader appears only when loading is slow, and the flight module warms on visitor intent.
 - Add labelled lore commands and clear to E.V.E. without changing any evidence reply.
 - Restore the serifed I in the wordmark, fix the phone starship card collision, give touch links 44 pixel targets, scale the hero on ultrawide screens and add a designed share card.
-- After launch: add an at a glance strip (role, career since 1996, what I build, career and certification links), withhold exact Proxmox, kernel and model versions from the page, E.V.E. and the September 18 export, restore word spacing in larger touch links, name study source links in plain words and let Bit's note step aside sooner.
+- Zenith refinements: a lighter Pac-Man era introduction, the Zenith name in the footer and flight, an Aa type switch (Signature, Cockpit, Readable), one date across the page from a fresh read only fleet observation on September 24, 2026, a simpler evidence introduction, E.V.E. command chips with history, completion and a surprise, a Douglas Adams contact and footer, a flight recap that tells the final chapter, a contact exit from the flight, and header fixes from 320 to 1100 pixels.
+- Proof over codenames: three at a glance cards (security for the MSP channel, private AI you can inspect, work in the open) with career, record and source links, a glossary of the names on the page, calmer routing labels, brighter secondary text, a wider final flight shot, archived exports and legacy decks that withhold the old hypervisor version, and 89 inline colour styles moved to utility classes.
+- After launch: add an at a glance strip (role, career since 1996, what I build, career and certification links), withhold exact hypervisor, kernel and model versions from the page, E.V.E. and the September 18 export, restore word spacing in larger touch links, name study source links in plain words and let Bit's note step aside sooner.
 - Final polish: every label reaches 12 pixels outside the smallest diagram marks, the header turns solid once the page scrolls, the chapter rail follows the main navigation in tab order, Bit's note steps aside when the reader scrolls, the scroll cue sits on the centre line, the atlas readout stays beside the map on desktop and header, hero and chapters share one frame on ultrawide screens.
-- Serve the hero from the existing AVIF set, drop the unseen film poster and remove the dead custom cursor. The Helios inline style budget moves to 17 KB gzip.
+- Serve the hero from the existing AVIF set, drop the unseen film poster and remove the dead custom cursor. The Helios inline style budget moves to 19 KB gzip as inline style attributes move into the stylesheet; the whole page still gets smaller.
 
 ## V38.9 — A decision you can see
 

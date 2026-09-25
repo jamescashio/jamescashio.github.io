@@ -219,3 +219,65 @@ export function createWarp({ onHalt } = {}) {
   }
   return { start, settle, end, active: () => Boolean(host) };
 }
+
+/**
+ * Visitor type styles. Signature is the shipped look and needs no extra CSS; the others load
+ * their fonts only when chosen, so first paint and the style budget are untouched.
+ */
+const TYPE_STYLES = {
+  signature: { name: "Signature", css: "" },
+  cockpit: {
+    name: "Cockpit",
+    css: `@font-face{font-family:"Oxanium Z";src:url("/fonts/oxanium-latin-variable.woff2") format("woff2");font-weight:200 800;font-display:swap}
+@font-face{font-family:"Exo Z";src:url("/fonts/exo2-500.woff2") format("woff2");font-weight:300 600;font-display:swap}
+@font-face{font-family:"Exo Z";src:url("/fonts/exo2-700.woff2") format("woff2");font-weight:700 900;font-display:swap}
+:root{--display:"Oxanium Z","Unbounded",sans-serif;--sans:"Exo Z","Instrument Sans",system-ui,sans-serif}
+h1,h2,h3,.syne{letter-spacing:.01em}`,
+  },
+  readable: {
+    name: "Readable",
+    css: `:root{--display:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--mono:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{line-height:1.7}
+h1,h2,h3{letter-spacing:-.01em}
+.mono,.kick{letter-spacing:.04em!important;font-size:max(13px,1em)!important}`,
+  },
+};
+
+export function setupTypeStyles() {
+  const button = document.getElementById("type-btn");
+  const label = document.getElementById("type-name");
+  const choices = [...document.querySelectorAll("[data-type-choice]")];
+  const order = Object.keys(TYPE_STYLES);
+  let style = null;
+  let current = "signature";
+  try {
+    const saved = localStorage.getItem("cashio-type");
+    if (saved && TYPE_STYLES[saved]) current = saved;
+  } catch {
+    /* A remembered type style is optional. */
+  }
+  const apply = (key, remember) => {
+    current = key;
+    const { name, css } = TYPE_STYLES[key];
+    if (css && !style) {
+      style = document.createElement("style");
+      style.id = "type-style";
+      document.head.append(style);
+    }
+    if (style) style.textContent = css;
+    document.documentElement.dataset.type = key;
+    if (label) label.textContent = name;
+    button?.setAttribute("aria-label", `Type style: ${name}. Select to change`);
+    choices.forEach((choice) => choice.setAttribute("aria-pressed", String(choice.dataset.typeChoice === key)));
+    if (remember) {
+      try {
+        localStorage.setItem("cashio-type", key);
+      } catch {
+        /* A remembered type style is optional. */
+      }
+    }
+  };
+  apply(current, false);
+  button?.addEventListener("click", () => apply(order[(order.indexOf(current) + 1) % order.length], true));
+  choices.forEach((choice) => choice.addEventListener("click", () => apply(choice.dataset.typeChoice, true)));
+}

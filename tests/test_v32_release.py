@@ -161,7 +161,7 @@ class V34ReleaseContractTests(unittest.TestCase):
         self.assertEqual(self.status["revised"], "2026-08-28")
         self.assertEqual(self.status["verifiedLong"], "28 August 2026")
         self.assertEqual(self.status["expires"], "2026-09-27")
-        self.assertEqual(self.status["proxmox"], {"version": "9.2.11", "hostsOnline": 2, "quorate": True})
+        self.assertEqual(self.status["proxmox"], {"version": None, "hostsOnline": 2, "quorate": True})
         self.assertEqual(
             self.status["containers"],
             {"running": 18, "documented": 19, "stopped": 1, "zeus": 12, "apollo": 6},

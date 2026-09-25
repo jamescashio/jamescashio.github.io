@@ -1,15 +1,27 @@
 import { flightRecap, type FlightDecision } from "./flight-recap-model";
 
-export function FlightRecap({ decision, visitorChoice }: { decision: FlightDecision; visitorChoice: boolean }) {
+type RecapWording = { eyebrow: string; captions: [string, string]; before: string; after: string; note: string };
+
+export function FlightRecap({
+  decision,
+  visitorChoice,
+  wording,
+}: {
+  decision: FlightDecision;
+  visitorChoice: boolean;
+  wording?: RecapWording;
+}) {
   const recap = flightRecap(decision);
   return (
     <section className="ff-recap" aria-label="Before and after the routing decision">
-      <span className="ff-eyebrow">{visitorChoice ? "YOUR LAST DECISION" : "THE FLIGHT IN REVIEW"}</span>
+      <span className="ff-eyebrow">
+        {wording?.eyebrow ?? (visitorChoice ? "YOUR LAST DECISION" : "THE FLIGHT IN REVIEW")}
+      </span>
       <div className="ff-recap-pair">
         {(["before", "after"] as const).map((side) => (
           <div className="ff-recap-state" key={side}>
-            <span>{side === "before" ? "Before" : "After"}</span>
-            <strong>{recap[`${side}Label`]}</strong>
+            <span>{wording?.captions[side === "before" ? 0 : 1] ?? (side === "before" ? "Before" : "After")}</span>
+            <strong>{wording?.[side] ?? recap[`${side}Label`]}</strong>
             <dl>
               {(
                 [
@@ -28,7 +40,7 @@ export function FlightRecap({ decision, visitorChoice }: { decision: FlightDecis
         ))}
       </div>
       <p>{recap.after.summary}</p>
-      <small>Same twelve requests. One boundary changed.</small>
+      <small>{wording?.note ?? "Same twelve requests. One boundary changed."}</small>
     </section>
   );
 }

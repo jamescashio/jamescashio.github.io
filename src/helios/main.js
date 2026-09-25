@@ -11,7 +11,7 @@ import { setupNavigation } from "./navigation.js";
 import { setupMotion } from "./motion.js";
 import { readMotionPreference } from "./motion-preference.js";
 import { setupScenes } from "./scenes.js";
-import { setupHeroDepth, setupChapterAnnounce, setupNavDepth } from "./zenith.js";
+import { setupHeroDepth, setupChapterAnnounce, setupNavDepth, setupTypeStyles } from "./zenith.js";
 
 /* =========================================================
    V38 HELIOS · shared teaching models and optional motion.
@@ -279,12 +279,10 @@ $("#route-btn").addEventListener("click", () => {
     else Bit.say("ROUTED", `${r.lane} lane. Every step is on the panel; nothing left this page.`, "yes", 2400);
   }, 900);
 });
+// The privacy card explains its own result; Bit only reacts with a mood, so it never covers the answer.
 $("#pv-reveal").addEventListener("click", () => {
-  if (privacy.getPrediction() === "human")
-    Bit.say("CALLED IT", "Correct. Private input always waits for a person.", "yes");
-  else if (privacy.getPrediction() === "keep")
-    Bit.say("NOT THIS TIME", "The privacy boundary outranks the source requirement.", "no");
-  else Bit.say("THE RULE", "Private input always holds the external route for human review.", "think");
+  const prediction = privacy.getPrediction();
+  Bit.setMood(prediction === "human" ? "yes" : prediction === "keep" ? "no" : "think", 2200);
 });
 $("#tg-net").addEventListener("click", () => {
   if (!w.net) Bit.say("BLACKOUT", "Cloud link is down. Watch what stays aboard.", "alert", 2200);
@@ -457,3 +455,4 @@ setupMotion({
 setupHeroDepth({ motion: () => motionOn });
 setupChapterAnnounce();
 setupNavDepth();
+setupTypeStyles();

@@ -68,9 +68,16 @@ export default function FirstFlight({
     sources: true,
     privateData: true,
   }).slice(1);
-  const recapDecision = lastDecision ?? { before: FIRST_FLIGHT[1].input, after: FIRST_FLIGHT[2].input };
+  // Without a visitor choice, the recap tells the final chapter: permission off keeps all twelve waiting for a person.
+  // The archived V37 flight keeps its cloud loss recap.
+  const zenith = /^(HELIOS|ZENITH)/.test(edition);
+  const recapDecision =
+    lastDecision ??
+    (zenith
+      ? { before: { ...FIRST_FLIGHT[3].input, allowPrivateEgress: true }, after: FIRST_FLIGHT[3].input }
+      : { before: FIRST_FLIGHT[1].input, after: FIRST_FLIGHT[2].input });
   const input = complete ? recapDecision.after : currentInput;
-  const displayStep = complete ? (lastDecision?.step ?? 2) : step;
+  const displayStep = complete ? (lastDecision?.step ?? (zenith ? 3 : 2)) : step;
   const displayScene = FIRST_FLIGHT[displayStep];
   const outcome = computeWorldOutcome(input);
   const independent = input.architecture === "hybrid" && !input.connected;
@@ -246,7 +253,7 @@ export default function FirstFlight({
       await document.fonts.ready;
       const { blob, record } = await createMissionCard(still, selectedInput, selectedChapter, {
         baseUrl: `${location.origin}${location.pathname}`,
-        helios: edition.startsWith("HELIOS"),
+        helios: /^(HELIOS|ZENITH)/.test(edition),
       });
       if (generation !== captureGeneration.current) return;
       const url = URL.createObjectURL(blob);
@@ -403,14 +410,32 @@ export default function FirstFlight({
         <section className="ff-story" aria-labelledby="ff-scene-title">
           <span className="ff-eyebrow">
             0{step + 1} / 04 ·{" "}
-            {complete ? "FLIGHT COMPLETE" : phase === "loading" ? "PREPARING THE SHIP" : "THE HUMAN BOUNDARY"}
+            {complete
+              ? "FLIGHT COMPLETE"
+              : phase === "loading"
+                ? "PREPARING THE SHIP"
+                : ["BOARD", "OPEN THE HULL", "CUT THE CLOUD", "HUMAN COMMAND"][step]}
           </span>
           <h3 id="ff-scene-title" ref={completionFocus} tabIndex={-1}>
             {sceneTitle}
           </h3>
           {complete ? (
             <>
-              <FlightRecap decision={recapDecision} visitorChoice={lastDecision !== null} />
+              <FlightRecap
+                decision={recapDecision}
+                visitorChoice={lastDecision !== null}
+                wording={
+                  zenith && !lastDecision
+                    ? {
+                        eyebrow: "THE LAST CHAPTER, BOTH WAYS",
+                        captions: ["If you say yes", "If you say no"],
+                        before: "Permission on",
+                        after: "Permission off",
+                        note: "Same twelve private requests. Only your permission changes the route.",
+                      }
+                    : undefined
+                }
+              />
               {outcome.held > 0 && <HumanReviewSignal motion={motion && pageVisible} />}
               <div className="ff-next">
                 {!compact && (
@@ -421,6 +446,11 @@ export default function FirstFlight({
                 <button type="button" onClick={() => onClose("smart-routing")}>
                   See the real build story →
                 </button>
+                {/^(HELIOS|ZENITH)/.test(edition) && (
+                  <button type="button" onClick={() => onClose("contact")}>
+                    Compare notes with Doug →
+                  </button>
+                )}
               </div>
             </>
           ) : (
@@ -521,7 +551,13 @@ export default function FirstFlight({
             <span className="ff-chapter-name">
               {["Board", "Open the hull", "Cut the cloud", "Human command"][index]}
             </span>
-            <span className="ff-chapter-short">{["Board", "Hull", "Blackout", "Command"][index]}</span>
+            <span className="ff-chapter-short">
+              {
+                (zenith
+                  ? ["Board", "Open the hull", "Cut the cloud", "Human command"]
+                  : ["Board", "Hull", "Blackout", "Command"])[index]
+              }
+            </span>
             <i
               key={`${step}-${visit}`}
               style={{ animationPlayState: playing ? "running" : "paused", animationDuration: `${scene.durationMs}ms` }}

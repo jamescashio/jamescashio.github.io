@@ -211,7 +211,7 @@ test("current fleet decks expose only verified aggregate evidence without topolo
     assert.equal(cards.length, 5, "Snapshot must retain its five dated fleet facts");
     assert.deepEqual(
       cards.map((card) => card.querySelector(".za-fact-label")?.textContent),
-      ["ZEUS", "APOLLO", "FLEET", "HOSTS", "PVE"],
+      ["ZEUS", "APOLLO", "FLEET", "HOSTS", "QUORUM"],
     );
     assert.doesNotMatch(
       snapshot.document.body.textContent,
@@ -312,7 +312,7 @@ test("current status and release surfaces omit raw route identifiers and unprobe
       "archive",
     ].sort(),
   );
-  assert.deepEqual(status.proxmox, { version: "9.2.11", hostsOnline: 2, quorate: true });
+  assert.deepEqual(status.proxmox, { version: null, hostsOnline: 2, quorate: true });
   assert.deepEqual(status.containers, { running: 19, documented: 19, stopped: 0, zeus: 14, apollo: 5 });
   assert.deepEqual(status.virtualMachines, { running: 1, documented: 1, stopped: 0 });
   assert.deepEqual(status.lanes, { public: null, privateCatalog: null });

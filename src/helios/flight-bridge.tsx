@@ -26,7 +26,7 @@ export default function FlightBridge({
         motion={activeMotion}
         initialStep={step}
         onClose={onClose}
-        edition="HELIOS · FIRST FLIGHT"
+        edition="ZENITH · FIRST FLIGHT"
         visitorPaced
       />
     </>

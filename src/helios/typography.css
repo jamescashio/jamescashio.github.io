@@ -1,6 +1,6 @@
 :root {
-  --text-label: 12px;
-  --text-note: 14px;
+  --text-label: 13px;
+  --text-note: 15px;
   --text-body: 17px;
   --panel-padding: clamp(22px, 2.6vw, 34px);
 }

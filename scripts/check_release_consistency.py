@@ -547,7 +547,7 @@ def main() -> int:
             failures.append(f"August archive {key!r}: expected {value!r}, got {status.get(key)!r}")
 
     exact_nested = {
-        ("proxmox", "version"): "9.2.11",
+        ("proxmox", "version"): None,
         ("proxmox", "hostsOnline"): 2,
         ("proxmox", "quorate"): True,
         ("containers", "running"): 18,

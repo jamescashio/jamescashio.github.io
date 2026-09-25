@@ -670,7 +670,7 @@ section[data-ambient="off"] *:after,
   .nav nav {
     gap: 18px;
   }
-  .instrument > div[style*="1fr 1.3fr"] {
+  .instrument > .cols-split {
     grid-template-columns: minmax(0, 1fr) !important;
   }
   .instrument .ctrl {
@@ -805,10 +805,6 @@ section[data-ambient="off"] *:after,
   .instrument .howit > .mono:not(:first-child) {
     margin-top: 10px;
   }
-  .instrument > div[style*="display:flex"] {
-    flex-wrap: wrap;
-    gap: 12px;
-  }
   .instrument .pill,
   .instrument .toggle {
     padding-left: 12px;
@@ -884,26 +880,19 @@ section[data-ambient="off"] *:after,
     font-size: 12px;
     margin-top: 14px;
   }
-  .panel[style*="padding:32px"] {
-    padding: 22px !important;
-  }
   #missions {
     grid-template-columns: minmax(0, 1fr) !important;
   }
   #arch-group {
     grid-template-columns: minmax(0, 1fr) !important;
   }
-  #starship div[style*="118px 1fr 34px"] {
+  #starship .cols-meter {
     grid-template-columns: 90px minmax(0, 1fr) 28px !important;
     gap: 8px !important;
   }
   #starship .cmp {
     font-size: 12px;
     grid-template-columns: 1.3fr repeat(3, minmax(0, 1fr));
-  }
-  #starship div[style*="minmax(240px"],
-  #work div[style*="minmax(220px"] {
-    grid-template-columns: minmax(0, 1fr) !important;
   }
   .vh-menu {
     min-width: min(280px, 80vw);

@@ -1,6 +1,7 @@
 import { parseExperiment } from "../odyssey/study-experiment";
 import { parseMissionHash } from "../odyssey/flight-plan";
 import { createWarp, setupFlightPrefetch } from "./zenith.js";
+import { setupRooms } from "./rooms.js";
 
 const sceneKind = (hash) =>
   /^#flight=(board|hull|blackout|permission)$/.test(hash)
@@ -25,6 +26,7 @@ export function setupNavigation({ studies, select, mission, motion }) {
   const results = document.querySelector("#mc-results");
   const clear = document.querySelector("#mc-clear");
   const loader = document.querySelector("#scene-loader");
+  const rooms = setupRooms();
   document.querySelector("#mc-btn .mono").textContent = /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘K" : "Ctrl K";
   let previousFocus = null,
     navigating = false,
@@ -48,12 +50,17 @@ export function setupNavigation({ studies, select, mission, motion }) {
   const destinations = [
     ["Explore the starship", "Your pace. A 30 second tour when you choose.", "#flight=board"],
     ["The orbital world", "Return to the beginning.", "#top"],
-    ["Try one decision", "Predict the route. Test the privacy boundary.", "#work"],
+    ["Try one decision", "Predict the route. Test the privacy boundary.", "#work", "privacy private data test"],
     ["The system atlas", "Owned compute, orchestration, human authority.", "#universe"],
-    ["Compare architectures", "Change a mission. Inspect all twelve requests.", "#starship"],
+    [
+      "Compare architectures",
+      "Its own page. Change a mission and inspect all twelve requests.",
+      "#starship",
+      "privacy cloud local boundary",
+    ],
     ["Starship build story", "The question, the design, and the shared rule behind the ship.", "#build-story"],
-    ["Principles Engine", "Turn the rings. Explore the operating philosophy.", "#principles"],
-    ["The Studios", "Enter the original worlds, signature and film collection.", "#studios"],
+    ["Principles Engine", "Its own page. Turn the rings and see the design decision behind each rule.", "#principles"],
+    ["The Studios", "Its own page. Original worlds, the 3D signature and five short films.", "#studios"],
     ["Lensing Observatory", "Sculpt the light. Find your own perspective.", "#lensing"],
     ["Celestial Forge", "Explore the signature in three dimensions.", "#signature"],
     ["The Cinema", "Five original short films. Play at your own pace.", "#film=lightwake"],
@@ -62,15 +69,21 @@ export function setupNavigation({ studies, select, mission, motion }) {
       "Inspect the evidence",
       "A source, a date, and a clear boundary. Fleet facts and the E.V.E. console.",
       "#evidence",
-      "eve fleet status proof",
+      "eve fleet status proof privacy boundary withheld",
     ],
-    ["Flight heritage", "The discipline behind the design.", "#heritage"],
-    ["Meet Doug", "Builder. Operator. Accountable human.", "#operator"],
+    ["Flight heritage", "Its own page. Four aviation pioneers and the discipline behind the design.", "#heritage"],
+    ["Meet Doug", "Builder. Operator. Accountable human.", "#operator", "about career resume linkedin"],
+    [
+      "Privacy",
+      "How this site handles data. Read the policy on GitHub.",
+      "https://github.com/jamescashio/jamescashio.github.io/blob/main/PRIVACY.md",
+      "privacy policy cookies",
+    ],
     [
       "Compare notes",
-      "Email Doug: what you are building and its hardest constraint.",
+      "Speaking, advising or comparing notes. Email Doug.",
       "#contact",
-      "contact email talk hire",
+      "contact email talk hire hello speaking advising recruiter",
     ],
     ...studies.map((s) => [s.name, s.cue, `#build=${s.id}`]),
   ];
@@ -106,7 +119,8 @@ export function setupNavigation({ studies, select, mission, motion }) {
   const notify = () => window.dispatchEvent(new Event("helios-overlay"));
   function open() {
     if (dialog.open || loader.open || scene || pending) return;
-    previousFocus = document.activeElement;
+    const active = document.activeElement;
+    previousFocus = active && active !== document.body ? active : document.getElementById("mc-btn");
     navigating = false;
     search.value = "";
     render();
@@ -145,13 +159,14 @@ export function setupNavigation({ studies, select, mission, motion }) {
       if (!scene && !pending) dialog.open ? dialog.close() : open();
     }
   });
-  function focusSection(id, shouldScroll = true) {
+  function focusSection(id, shouldScroll = true, jump = false) {
     const target = document.getElementById(id);
     if (!target) return;
     const heading = target.querySelector("h1,h2,h3") || target;
     heading.setAttribute("tabindex", "-1");
     heading.focus({ preventScroll: true });
-    if (shouldScroll) target.scrollIntoView({ behavior: motion() ? "smooth" : "instant", block: "start" });
+    // A page change jumps; smooth scrolling across a swapped page would travel through the wrong content.
+    if (shouldScroll) target.scrollIntoView({ behavior: motion() && !jump ? "smooth" : "instant", block: "start" });
   }
   function dispose() {
     generation++;
@@ -170,7 +185,7 @@ export function setupNavigation({ studies, select, mission, motion }) {
       const hash = destination.startsWith("build=")
         ? `#${destination}`
         : destination === "smart-routing"
-          ? "#work"
+          ? "#build-story"
           : `#${destination}`;
       navigate(hash, null, true);
       return;
@@ -264,6 +279,7 @@ export function setupNavigation({ studies, select, mission, motion }) {
       return;
     }
     dispose();
+    const pageChanged = rooms.sync(hash);
     if (returnPoint && hash === returnPoint.hash) {
       const point = returnPoint;
       returnPoint = null;
@@ -280,7 +296,7 @@ export function setupNavigation({ studies, select, mission, motion }) {
     const experiment = parseExperiment(hash);
     if (experiment) {
       select(experiment);
-      focusSection("studies");
+      focusSection("studies", true, pageChanged);
       return;
     }
     const scenario = parseMissionHash(hash.replace(/\.online\./, ".connected."));
@@ -291,10 +307,21 @@ export function setupNavigation({ studies, select, mission, motion }) {
         net: scenario.connected,
         permit: scenario.allowPrivateEgress,
       });
-      focusSection("starship");
+      const opened = rooms.sync("#starship");
+      if (opened) window.scrollTo({ top: 0, behavior: "instant" });
+      focusSection("starship", !opened, true);
       return;
     }
-    if (/^#[a-z-]+$/.test(hash)) focusSection(hash.slice(1), !initial);
+    if (/^#[a-z-]+$/.test(hash)) {
+      const opensRoom = pageChanged && document.getElementById(hash.slice(1))?.matches("section.room");
+      if (opensRoom) {
+        window.scrollTo({ top: 0, behavior: "instant" });
+        // The browser's own fragment jump lands after this; keep the page's back link in view.
+        if (initial)
+          addEventListener("load", () => scrollY < 200 && scrollTo({ top: 0, behavior: "instant" }), { once: true });
+      }
+      focusSection(hash.slice(1), !initial && !opensRoom, pageChanged);
+    } else if (pageChanged) window.scrollTo({ top: 0, behavior: "instant" });
   }
   function navigate(hash, opener = null, replace = false) {
     hash = aliases[hash] || hash;

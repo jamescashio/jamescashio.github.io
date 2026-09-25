@@ -114,21 +114,6 @@
 #atlas[data-outcome="held"][data-complete="true"] [data-node="operator"] .core {
   border-color: var(--gold);
 }
-.evidence-summary {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px 60px;
-  padding-block: 0 32px;
-}
-.evidence-summary h3 {
-  margin: 12px 0;
-  font-size: clamp(20px, 2vw, 25px);
-}
-.evidence-summary p {
-  color: var(--ink2);
-  margin: 0;
-  max-width: 56ch;
-}
 .evidence-details {
   border-block: 1px solid var(--line);
 }
@@ -158,10 +143,6 @@
   }
 }
 @media (max-width: 600px) {
-  .evidence-summary {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
   .request-journey {
     padding: 16px;
     grid-template-columns: 1fr;

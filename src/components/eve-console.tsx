@@ -3,7 +3,6 @@ import {
   BOOT,
   DECKS,
   EXPIRES_SHORT,
-  PVE,
   RELEASE,
   SERVICE_FAMILIES,
   VERIFIED_LONG,
@@ -97,7 +96,7 @@ export function runEve(raw: string, history: string[] = []): EveResult {
     return {
       out: [
         `${RELEASE} · VERIFIED ${VERIFIED_LONG}`,
-        `PROXMOX VE ${PVE} · 2 HOSTS ONLINE · QUORATE`,
+        "PROXMOX VE · 2 HOSTS ONLINE · QUORATE",
         "OWNER-RUN READ-ONLY PROBE · PUBLIC-SAFE DATED EXPORT",
         ...currentLines(),
       ],

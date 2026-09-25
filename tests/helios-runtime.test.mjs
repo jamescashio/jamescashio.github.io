@@ -156,7 +156,7 @@ test("The compact study deck keeps readable tabs, keyboard selection and nearby 
 });
 
 test("Mission presets and the last change match the model, including custom settings and unchanged counts", async (t) => {
-  const page = await visit(t, { width: 390 });
+  const page = await visit(t, { width: 390, hash: "#starship" });
   await expect(page.locator('[data-mission="routine"]')).toHaveAttribute("aria-pressed", "true");
   await page.locator('[data-mission="blackout"]').click();
   await expect(page.locator("#mission-state")).toHaveText("Deep space blackout · selected");
@@ -218,7 +218,7 @@ test("Changing a routing input interrupts the old progress counter cleanly", asy
 });
 
 test("The illustrated request manifest agrees with each scenario and motion stops outside the scene", async (t) => {
-  const page = await visit(t, { width: 390, height: 844, motion: "no-preference" });
+  const page = await visit(t, { width: 390, height: 844, motion: "no-preference", hash: "#starship" });
   for (const mission of ["routine", "blackout", "classified"]) {
     await page.locator(`[data-mission=${mission}]`).click();
     const counts = await page.locator("#n-local, #n-cloud, #n-held").allTextContents();
@@ -238,12 +238,14 @@ test("The illustrated request manifest agrees with each scenario and motion stop
   const packet = page.locator("#packets > g").first();
   const before = await packet.getAttribute("transform");
   await expect.poll(() => packet.getAttribute("transform")).not.toBe(before);
-  await page.locator("h1").scrollIntoViewIfNeeded();
+  // Leaving the Starship lab hides the scene, so its packets must stop.
+  await page.locator(".room-back").click();
   await expect(page.locator("#flow-scene")).toHaveAttribute("data-scene-active", "false");
   const paused = await packet.getAttribute("transform");
   await page.waitForTimeout(200);
   assert.equal(await packet.getAttribute("transform"), paused, "offscreen packets do not keep animating");
   await page.locator("#motion-btn").click();
+  await page.locator('.room-card[href="#starship"]').click();
   await page.locator("#flow-scene").scrollIntoViewIfNeeded();
   const still = await packet.getAttribute("transform");
   await page.waitForTimeout(200);
@@ -272,7 +274,7 @@ test("Atlas traces restart once, pause offscreen, and become a complete static e
 });
 
 test("The 3D orbital engine pauses, preserves keyboard control, and recovers to its vector instrument", async (t) => {
-  const page = await visit(t, { motion: "no-preference" });
+  const page = await visit(t, { motion: "no-preference", hash: "#principles" });
   const engine = page.locator("#engine");
   await engine.scrollIntoViewIfNeeded();
   await expect(engine).toHaveAttribute("data-renderer", "webgl", { timeout: 15000 });
@@ -283,8 +285,10 @@ test("The 3D orbital engine pauses, preserves keyboard control, and recovers to 
   await expect(page.locator('[data-ring-label="2"]')).toHaveClass("active");
   await engine.scrollIntoViewIfNeeded();
   await page.screenshot({ path: path.join(output, "orbital-engine-3d.png") });
-  await page.locator("h1").scrollIntoViewIfNeeded();
+  // Leaving the Principles page hides the engine, so it must stop drawing until the page opens again.
+  await page.locator(".room-back").click();
   await expect(engine).toHaveAttribute("data-animating", "false");
+  await page.locator('.room-card[href="#principles"]').click();
   await engine.scrollIntoViewIfNeeded();
   await expect(engine).toHaveAttribute("data-animating", "true");
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -378,7 +382,7 @@ test("Mission Control keeps search and Close in reach, recovers from empty resul
     const page = await visit(t, { width, height: width === 320 ? 568 : 844 });
     await page.locator("#mc-btn").click();
     await expect(page.locator("#mc-search")).toBeFocused();
-    await expect(page.locator("#mc-results")).toHaveText("23 destinations to explore");
+    await expect(page.locator("#mc-results")).toHaveText("24 destinations to explore");
     await expect(page.locator("#mc-clear")).toBeHidden();
     const searchBefore = await page.locator("#mc-search").boundingBox();
     const closeBefore = await page.locator("#mc-close").boundingBox();
@@ -405,7 +409,7 @@ test("Mission Control keeps search and Close in reach, recovers from empty resul
     await page.locator("#mc-clear").focus();
     await page.keyboard.press("Enter");
     await expect(page.locator("#mc-search")).toBeFocused();
-    await expect(page.locator("#mc-results")).toHaveText("23 destinations to explore");
+    await expect(page.locator("#mc-results")).toHaveText("24 destinations to explore");
     for (const query of ["build ship", "ship build"]) {
       await page.locator("#mc-search").fill(query);
       await expect(page.locator("#mc-results")).toHaveText("1 destination found");
@@ -491,22 +495,27 @@ test("The invitation and three starting routes work by keyboard, keep sound opt-
 test("The full page, atlas, principles, evidence console, hangar and contact stay usable", async (t) => {
   for (const width of [1440, 390, 320]) {
     const page = await visit(t, { width, height: width > 700 ? 1000 : 844 });
-    for (const id of [
-      "top",
-      "work",
-      "studies",
-      "universe",
-      "starship",
-      "principles",
-      "studios",
-      "evidence",
-      "heritage",
-      "operator",
-      "contact",
-    ]) {
+    for (const id of ["top", "work", "studies", "universe", "evidence", "rooms", "operator", "contact"]) {
       await page.locator(`#${id}`).scrollIntoViewIfNeeded();
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width, `${id} at ${width}px`);
       await page.screenshot({ path: path.join(output, `polish-${width}-${id}.png`) });
+    }
+    // Principles, Studios and Flight heritage open as their own pages and keep the home page short.
+    for (const id of ["starship", "principles", "studios", "heritage"]) {
+      await expect(page.locator(`#${id}`)).toBeHidden();
+      await page.locator(`.room-card[href="#${id}"]`).click();
+      await expect(page.locator(`#${id}`)).toBeVisible();
+      await expect(page.locator("#top")).toBeHidden();
+      await expect(page.locator(`.room-links a[href="#${id}"]`)).toHaveAttribute("aria-current", "page");
+      assert.equal(await page.evaluate(() => Math.round(scrollY)), 0, `${id} opens at the top of its page`);
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width, `${id} at ${width}px`);
+      await page.screenshot({ path: path.join(output, `polish-${width}-${id}.png`) });
+      await page.evaluate(() => scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" }));
+      await page
+        .locator(`#${id} img`)
+        .evaluateAll((images) => Promise.all(images.map((image) => image.decode().catch(() => {}))));
+      await page.locator(".room-back").click();
+      await expect(page.locator("#rooms-h")).toBeFocused();
     }
     for (const [node, name] of [
       ["dsh", "DSH"],
@@ -520,6 +529,7 @@ test("The full page, atlas, principles, evidence console, hangar and contact sta
     }
     await page.locator("#trace-btn").click();
     await expect(page.locator("#trace-label")).toContainText("human review");
+    await page.locator('.room-card[href="#principles"]').click();
     for (const [index, title] of [
       [0, "Begin with a clear signal."],
       [1, "Give each request the route it needs."],
@@ -532,6 +542,7 @@ test("The full page, atlas, principles, evidence console, hangar and contact sta
     await expect(page.locator("#eng-rot")).toHaveAttribute("style", /rotate\(10deg\)/);
     await page.locator("#engine").press("Home");
     await expect(page.locator("#eng-rot")).toHaveAttribute("style", /rotate\(0deg\)/);
+    await page.locator('.room-links a[href="#heritage"]').click();
     for (const [pilot, word] of [
       ["yeager", "BELL X-1"],
       ["johnson", "SR-71"],
@@ -542,9 +553,10 @@ test("The full page, atlas, principles, evidence console, hangar and contact sta
       await expect(page.locator("#hg-title")).toContainText(word);
       await page.locator("#hangar img.on").evaluate((image) => image.decode());
     }
+    await page.locator(".room-back").click();
     await page.locator("#eve-in").fill("fleet");
     await page.locator("#eve-in").press("Enter");
-    await expect(page.locator("#eve-out")).toContainText("September 18, 2026");
+    await expect(page.locator("#eve-out")).toContainText("September 24, 2026");
     await page.locator("#eve-in").fill("routes");
     await page.locator("#eve-in").press("Enter");
     await expect(page.locator("#eve-out")).toContainText("routingVerified: null");
@@ -587,7 +599,7 @@ test("Briefing preserves dated evidence and unknowns; empty selections cannot co
   const page = await visit(t, { hash: "#build=briefing" });
   for (const id of ["fleet", "routing", "authority"]) await page.locator(`[data-fact=${id}]`).check();
   await page.locator("[data-compose]").click();
-  await expect(page.locator(".brief-output")).toContainText("September 18, 2026");
+  await expect(page.locator(".brief-output")).toContainText("September 24, 2026");
   await expect(page.locator(".brief-output")).toContainText("remain unverified");
   await expect(page.locator(".brief-output")).toContainText("accountable person");
   for (const id of ["fleet", "routing", "authority"]) await page.locator(`[data-fact=${id}]`).uncheck();
@@ -690,7 +702,7 @@ test("Motion off leaves future sections visible and a system preference change r
 test("Legacy hash entry, production evidence and unavailable WebGL remain usable", async (t) => {
   const page = await visit(t);
   const data = await page.request.get(new URL("/v38/status.json", url).href);
-  assert.equal((await data.json()).provenance.observedAtUtc, "2026-09-18T22:53:54Z");
+  assert.equal((await data.json()).provenance.observedAtUtc, "2026-09-24T21:43:10Z");
   const context = await browser.newContext({ reducedMotion: "reduce" });
   t.after(() => context.close());
   await context.addInitScript(() => {
@@ -798,8 +810,9 @@ test("Changing privacy interrupts a trace and never animates the held request in
 
 test("Evidence leads with meaning, expands by keyboard and links the shipped build", async (t) => {
   const page = await visit(t, { width: 320, hash: "#evidence" });
-  await expect(page.locator(".evidence-summary")).toContainText("20 containers. One virtual machine.");
-  await expect(page.locator(".evidence-summary")).toContainText("not established here");
+  await expect(page.locator("#evidence")).toContainText("Every claim here has a date and a source.");
+  await page.locator('.eve-chips [data-eve="fleet"]').click();
+  await expect(page.locator("#eve-out")).toContainText("lxc_running: 20");
   await expect(page.locator("#build-proof-title")).toHaveText("One boundary. Every request accounted for.");
   await page.locator(".case-engineering summary").focus();
   await page.keyboard.press("Enter");

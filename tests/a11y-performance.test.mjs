@@ -814,7 +814,7 @@ test("command chrome frames aggregate evidence as a dated export at valid and ex
         // the hero, rather than repeated across the chrome.
         assert.match(header?.textContent ?? "", expected);
         assert.doesNotMatch(header?.textContent ?? "", /18\/19 AT 28 AUG PROBE/);
-        assert.match(view.document.body.textContent, /MEASURED 28 AUGUST 2026 · 18 OF 19 SERVICES UP/);
+        assert.match(view.document.body.textContent, /MEASURED 28 AUGUST 2026 · 18 OF 19 GUESTS RUNNING/);
         assert.doesNotMatch(header?.textContent ?? "", /NOMINAL|CURRENT/);
         assert.match(view.document.body.textContent, /APOLLO6\/6 · AT 28 AUG PROBE/);
       } finally {
@@ -1499,7 +1499,7 @@ test("Snapshot prose separates the verification date from the preceding word", a
   try {
     await view.render();
     const snapshot = view.document.querySelector('section[data-deck="0"]');
-    assert.match(snapshot?.textContent ?? "", /MEASURED 28 AUGUST 2026 · 18 OF 19 SERVICES UP/);
+    assert.match(snapshot?.textContent ?? "", /MEASURED 28 AUGUST 2026 · 18 OF 19 GUESTS RUNNING/);
     assert.match(snapshot?.textContent ?? "", /VERIFIED 28 August 2026/);
   } finally {
     await view.cleanup();
