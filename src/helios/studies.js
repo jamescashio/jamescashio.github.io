@@ -13,6 +13,15 @@ export function routeExample(intent, priv, src) {
 
 export function setupStudies({ scenes, motion, copy }) {
   const studyState = new Map(PROJECTS.map((p) => [p.id, defaultExperiment(p.id)]));
+  const outcomes = {
+    hermes: "Private information stops an automatic handoff.",
+    cascade: "Uncertainty changes the next action.",
+    exposure: "Check access and importance before escalating.",
+    briefing: "Unknowns belong in the brief.",
+    dashboards: "At 24 hours, this example asks for a fresh check.",
+    signal: "Corroboration changes what happens next.",
+    graphify: "A change to Policy reaches three other modules.",
+  };
   const STUDIES = PROJECTS.map((p, i) => {
     const n = STUDY_NOTES[p.id];
     return {
@@ -22,7 +31,7 @@ export function setupStudies({ scenes, motion, copy }) {
       cat: p.category,
       sub: p.subtitle,
       cue: p.cue,
-      take: n.takeaway,
+      take: outcomes[p.id],
       takebody: n.relevance,
       q: n.question,
       rule: n.rule,

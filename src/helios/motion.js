@@ -237,7 +237,10 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
     return film;
   }
   function startFilm() {
-    if (!enabled || query.matches || document.hidden || deepLink() || overlayOpen()) {
+    const connection = navigator.connection;
+    const constrained = connection?.saveData || /^(slow-2g|2g)$/.test(connection?.effectiveType || "");
+    const compact = matchMedia("(max-width: 700px), (pointer: coarse)").matches;
+    if (!enabled || query.matches || compact || constrained || document.hidden || deepLink() || overlayOpen()) {
       hero.removeAttribute("data-film");
       releaseFilmNode(document.querySelector("#hero-film"));
       return;

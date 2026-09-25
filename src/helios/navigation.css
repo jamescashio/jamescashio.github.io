@@ -164,6 +164,11 @@
 #motion-btn[data-motion-source="device"] .motion-device {
   display: block;
 }
+@media (max-width: 600px), (pointer: coarse) {
+  .mc-keymap {
+    display: none;
+  }
+}
 @media (max-width: 600px) {
   .mc-shell {
     padding: 18px 14px;

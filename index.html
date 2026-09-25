@@ -149,9 +149,6 @@
             aria-hidden="true"
           />
         </picture>
-        <video class="hero-film" id="hero-film" muted playsinline preload="none" aria-hidden="true" tabindex="-1">
-          <source src="/assets/celestial/helios-arrival.mp4" type="video/mp4" />
-        </video>
         <div class="grid-bg"></div>
         <div class="hero-light" aria-hidden="true"></div>
         <div class="hero-sun" aria-hidden="true"></div>
@@ -242,8 +239,8 @@
                 >Certifications on Credly ↗</a
               >
             </p>
-            <details class="glossary">
-              <summary>New here? The names you will meet ↓</summary>
+            <details class="glossary" id="glossary">
+              <summary>Glossary: the names used here ↓</summary>
               <dl>
                 <div>
                   <dt><strong>Bit</strong></dt>
@@ -387,8 +384,7 @@
                 <figcaption class="mono">My routing law · published in the dated export</figcaption>
               </figure>
               <p class="muted">
-                Atlas handles recurring work on my servers. Try a harder task to see when the rule chooses a different
-                route.
+                Recurring work runs on my own servers. Try a harder task to see when the rule chooses a different route.
               </p>
               <div class="flex gap-12 flex-wrap mt-auto">
                 <a href="#studies" class="btn gold sm" data-load="public">Try the routing demo</a
@@ -454,6 +450,7 @@
                   <h3 class="syne fs-28-36 fw-800 mt-4" id="st-name">HERMES</h3>
                   <div class="muted fs-16" id="st-sub">Match the work to the route.</div>
                 </div>
+                <p class="lede"><strong id="st-take">Private information stops an automatic handoff.</strong></p>
                 <p class="study-cue" id="st-cue">Route a draft. Require sources. Then add private information.</p>
                 <div class="ctrl" id="hermes-controls">
                   <div class="stack sg-14">
@@ -492,8 +489,7 @@
                 <div id="secondary-instrument" hidden></div>
                 <div class="takeaway grid-box cols-split gap-20 pt-16 bt-line2">
                   <div class="stack sg-6">
-                    <span class="mono c-mu">THE TAKEAWAY</span
-                    ><strong class="fs-16" id="st-take">Give each request the route it needs.</strong
+                    <span class="mono c-mu">WHY IT MATTERS</span
                     ><span class="muted copy-note" id="st-takebody"
                       >Routine work gets a general lane. Evidence requirements change the route. Private information
                       puts a person in the decision. This is the policy behind the cost control idea.</span
@@ -553,8 +549,8 @@
             </div>
             <div class="stack">
               <p class="lede">
-                Zeus and Apollo are the two servers I own and run. HERMES schedules the work. DSH is the console I
-                operate them from.
+                Two servers do the work. A scheduler assigns the jobs, and an operator console keeps the decisions
+                visible. Open the map to meet them.
               </p>
             </div>
           </header>
@@ -857,7 +853,7 @@
             </div>
             <div class="c6 stack sg-10">
               <strong class="fs-18">A dated look inside the lab.</strong>
-              <p class="muted m-0 fs-15">Ask E.V.E. what was observed, or inspect the raw record.</p>
+              <p class="muted m-0 fs-15">Ask the evidence console what was observed, or inspect the raw record.</p>
               <div class="flex gap-12 flex-wrap">
                 <div class="stat flex-200">
                   <span class="mono c-mu">LAST OBSERVED</span
@@ -1072,8 +1068,10 @@
             </p>
             <div class="flex gap-10 flex-wrap" data-stagger>
               <a href="https://www.linkedin.com/in/dougcashio/" class="btn line sm">LinkedIn</a
-              ><a href="https://github.com/jamescashio" class="btn line sm">GitHub</a
-              ><a href="https://www.credly.com/users/james-cashio/badges/credly" class="btn line sm">Credly badges</a>
+              ><a href="https://github.com/jamescashio" class="btn line sm">My GitHub · @jamescashio</a
+              ><a href="https://www.credly.com/users/james-cashio/badges/credly" class="btn line sm"
+                >My Credly badges · @james-cashio</a
+              >
             </div>
           </div>
           <div class="c6 plate sig sig-glow" id="sigplate">
@@ -1152,7 +1150,7 @@
           <p class="lede muted">
             Compare three designs on the same twelve requests, then explore the ship that carries them.
           </p>
-          <p class="room-load-status" role="status">The room opens when you choose it.</p>
+          <p class="room-load-status" role="status"></p>
           <a class="btn" href="/rooms/starship/">Read the text and artwork →</a>
         </div>
       </section>
@@ -1171,7 +1169,7 @@
           <p class="lede muted">
             Turn the orbital instrument and inspect the decisions behind three working principles.
           </p>
-          <p class="room-load-status" role="status">The room opens when you choose it.</p>
+          <p class="room-load-status" role="status"></p>
           <a class="btn" href="/rooms/principles/">Read the text and artwork →</a>
         </div>
       </section>
@@ -1188,7 +1186,7 @@
           <span class="kick">The Studios</span>
           <h2 id="studios-h">The Studios</h2>
           <p class="lede muted">Shape the light, explore the signature or settle into one of five original films.</p>
-          <p class="room-load-status" role="status">The room opens when you choose it.</p>
+          <p class="room-load-status" role="status"></p>
           <a class="btn" href="/rooms/studios/">Read the text and artwork →</a>
         </div>
       </section>
@@ -1207,7 +1205,7 @@
           <p class="lede muted">
             Four aviation pioneers, the aircraft they shaped and the lessons I carry into my work.
           </p>
-          <p class="room-load-status" role="status">The room opens when you choose it.</p>
+          <p class="room-load-status" role="status"></p>
           <a class="btn" href="/rooms/heritage/">Read the text and artwork →</a>
         </div>
       </section>
@@ -1251,7 +1249,7 @@
         </details>
         <a href="https://github.com/jamescashio/jamescashio.github.io">View source</a
         ><a href="/cashio.html"
-          >Meet <span class="wm">cAsh<span class="wm-i">I</span>o</span> ↗</a
+          >My AI workspace · <span class="wm">cAsh<span class="wm-i">I</span>o</span> ↗</a
         ><a href="https://github.com/jamescashio/jamescashio.github.io/blob/main/PRIVACY.md">Privacy</a
         ><a class="c-ink" href="#top">Back to orbit ↑</a>
       </nav>
@@ -1308,7 +1306,7 @@
                 ><span>The story, the rule, the evidence.</span></a
               >
             </div>
-            <h3 class="mc-all-title">Explore every destination</h3>
+            <h3 class="mc-all-title">Browse the workshop</h3>
           </div>
           <div id="mc-list" role="region" aria-label="Destinations"></div>
         </div>

@@ -396,7 +396,7 @@ test("Mission Control keeps search and Close in reach, recovers from empty resul
     const page = await visit(t, { width, height: width === 320 ? 568 : 844 });
     await page.locator("#mc-btn").click();
     await expect(page.locator("#mc-search")).toBeFocused();
-    await expect(page.locator("#mc-results")).toHaveText("24 destinations to explore");
+    await expect(page.locator("#mc-results")).toHaveText("Search the whole workshop");
     await expect(page.locator("#mc-clear")).toBeHidden();
     const searchBefore = await page.locator("#mc-search").boundingBox();
     const closeBefore = await page.locator("#mc-close").boundingBox();
@@ -404,7 +404,11 @@ test("Mission Control keeps search and Close in reach, recovers from empty resul
     await page.keyboard.press("ArrowUp");
     await expect(page.locator("#mc-list a").last()).toBeFocused();
     await expect(page.locator("#mc-list a").last()).toBeInViewport();
-    assert.ok(await page.locator(".mc-content").evaluate((list) => list.scrollTop > 0));
+    assert.ok(
+      await page
+        .locator(".mc-content")
+        .evaluate((list) => list.scrollHeight <= list.clientHeight || list.scrollTop > 0),
+    );
     for (const [selector, before] of [
       ["#mc-search", searchBefore],
       ["#mc-close", closeBefore],
@@ -423,7 +427,7 @@ test("Mission Control keeps search and Close in reach, recovers from empty resul
     await page.locator("#mc-clear").focus();
     await page.keyboard.press("Enter");
     await expect(page.locator("#mc-search")).toBeFocused();
-    await expect(page.locator("#mc-results")).toHaveText("24 destinations to explore");
+    await expect(page.locator("#mc-results")).toHaveText("Search the whole workshop");
     for (const query of ["build ship", "ship build"]) {
       await page.locator("#mc-search").fill(query);
       await expect(page.locator("#mc-results")).toHaveText("1 destination found");
@@ -1565,4 +1569,101 @@ test("Section navigation keeps its heading visible after a viewport change", asy
   await expect
     .poll(() => page.locator("#studies-h").evaluate((heading) => heading.getBoundingClientRect().top))
     .toBeGreaterThanOrEqual(70);
+});
+
+test("Enhanced room cards have native interactive destinations while static editions remain explicit", async (t) => {
+  const page = await visit(t, { width: 390, expandWorkbenches: false });
+  for (const id of ["starship", "principles", "studios", "heritage"]) {
+    const card = page.locator(`.room-card[data-room-route="#${id}"]`);
+    await expect(card).toHaveAttribute("href", `#${id}`);
+    // Follow the actual native address, as a copied or new-tab link would do.
+    const address = await card.evaluate((link) => link.href);
+    const other = await page.context().newPage();
+    await other.goto(address);
+    await expect(other.locator(`#${id}`)).toHaveAttribute("data-room-state", "ready");
+    assert.equal(new URL(other.url()).pathname, "/");
+    await other.close();
+    await card.press("Enter");
+    await expect(page.locator(`#${id}`)).toHaveAttribute("data-room-state", "ready");
+    await page.locator(".room-back").click();
+  }
+});
+
+test("Mission Control offers a compact index, relevant hints and a keyboard-accessible glossary", async (t) => {
+  for (const width of [320, 390, 1440]) {
+    const page = await visit(t, { width, height: 844, expandWorkbenches: false });
+    await page.locator("#mc-btn").click();
+    await expect(page.locator("#mc-list a")).toHaveCount(5);
+    if (width < 600) await expect(page.locator(".mc-keymap")).toBeHidden();
+    else await expect(page.locator(".mc-keymap")).toBeVisible();
+    await page.locator("#mc-search").fill("glossary");
+    await expect(page.locator('#mc-list a[href="#glossary"]')).toBeVisible();
+    await page.keyboard.press("Enter");
+    await expect(page.locator("#glossary")).toHaveAttribute("open", "");
+    await expect(page.locator("#glossary > summary")).toBeFocused();
+    await expect(page.locator("#glossary > summary")).toBeInViewport();
+    assert.equal(new URL(page.url()).hash, "#glossary");
+    await page.reload();
+    await expect(page.locator("#glossary")).toHaveAttribute("open", "");
+    await expect(page.locator("#glossary > summary")).toBeFocused();
+    await page.keyboard.press("Space");
+    await expect(page.locator("#glossary")).not.toHaveAttribute("open", "");
+    await page.keyboard.press("Space");
+    await expect(page.locator("#glossary")).toHaveAttribute("open", "");
+    await audit(page, `glossary-${width}`);
+  }
+});
+
+test("Reading editions explain inactive controls and contain no live regions", async (t) => {
+  const page = await visit(t, { expandWorkbenches: false });
+  for (const status of await page.locator(".room-load-status").all()) await expect(status).toBeEmpty();
+  for (const id of ["starship", "principles", "studios", "heritage"]) {
+    await page.goto(new URL(`/rooms/${id}/`, url).href);
+    await expect(page.locator("#reading-mode")).toContainText("Controls are inactive in this reading edition");
+    assert.equal(await page.locator('[aria-live],[role="status"],[role="log"]').count(), 0);
+    assert.equal(await page.locator("button:enabled,input:enabled,select:enabled,textarea:enabled").count(), 0);
+    for (const control of await page.locator("button,input,select,textarea").all())
+      await expect(control).toHaveAttribute("aria-describedby", "reading-mode");
+    await expect(page.getByRole("link", { name: "Open the interactive room", exact: false })).toBeVisible();
+  }
+});
+
+test("Phones and data-saving visits keep the hero artwork without downloading the decorative film", async (t) => {
+  for (const setting of ["phone", "save-data", "slow-connection", "desktop"]) {
+    const context = await browser.newContext({
+      viewport: { width: setting === "phone" ? 390 : 1440, height: 900 },
+      hasTouch: setting === "phone",
+      isMobile: setting === "phone",
+      reducedMotion: "no-preference",
+    });
+    t.after(() => context.close());
+    if (setting === "save-data" || setting === "slow-connection")
+      await context.addInitScript((value) => {
+        Object.defineProperty(navigator, "connection", {
+          configurable: true,
+          value: {
+            saveData: value === "save-data",
+            effectiveType: value === "slow-connection" ? "2g" : "4g",
+          },
+        });
+      }, setting);
+    const page = await context.newPage();
+    const media = [];
+    page.on("request", (request) => {
+      if (request.url().includes("helios-arrival.mp4")) media.push(request.url());
+    });
+    await page.goto(url, { waitUntil: "networkidle" });
+    await expect(page.locator("#study-hermes")).toBeAttached();
+    await expect(page.locator("#fallback")).toBeVisible();
+    if (setting === "desktop") {
+      await expect.poll(() => media.length).toBeGreaterThan(0);
+      assert.equal(await page.locator("#hero-film").evaluate((film) => film.muted), true);
+    } else {
+      assert.deepEqual(media, [], `${setting} does not fetch the decorative film`);
+      await expect(page.locator("#hero-film")).toHaveCount(0);
+      await page.locator("#mc-btn").click();
+      if (setting === "phone") await expect(page.locator(".mc-keymap")).toBeHidden();
+    }
+    await context.close();
+  }
 });

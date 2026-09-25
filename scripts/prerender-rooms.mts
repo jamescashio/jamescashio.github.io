@@ -28,7 +28,7 @@ for (const id of roomIds) {
   doc.head.append(canonical);
   const notice = doc.createElement("header");
   notice.className = "wrap stack p-22-30 sg-16";
-  notice.innerHTML = `<a href="/#rooms">← Back to the four rooms</a><h1 class="syne fs-32">${title}</h1><p>This is the reading edition. The artwork and starting state are available without JavaScript. Open the interactive room to use its controls.</p><a class="btn gold" href="/#${id}">Open the interactive room →</a>`;
+  notice.innerHTML = `<a href="/#rooms">← Back to the four rooms</a><h1 class="syne fs-32">${title}</h1><p id="reading-mode">Controls are inactive in this reading edition. It shows the artwork and one example state. Open the interactive room to change the inputs and explore the results.</p><a class="btn gold" href="/#${id}">Open the interactive room →</a>`;
   const main = doc.createElement("main");
   main.innerHTML = source;
   for (const image of main.querySelectorAll("img")) {
@@ -36,7 +36,16 @@ for (const id of roomIds) {
     if (version) image.setAttribute("src", version.url);
   }
   for (const link of main.querySelectorAll("a[href^='#']")) link.setAttribute("href", "/" + link.getAttribute("href"));
-  for (const control of main.querySelectorAll("button,input,select,textarea")) control.setAttribute("disabled", "");
+  for (const control of main.querySelectorAll("button,input,select,textarea")) {
+    control.setAttribute("disabled", "");
+    control.setAttribute("aria-describedby", "reading-mode");
+  }
+  // A reading page has no changing results to announce.
+  for (const node of main.querySelectorAll("[aria-live],[role='status'],[role='log']")) {
+    node.removeAttribute("aria-live");
+    node.removeAttribute("role");
+    node.removeAttribute("aria-atomic");
+  }
   for (const node of main.querySelectorAll("[tabindex],[role='button']")) {
     node.removeAttribute("tabindex");
     node.removeAttribute("role");

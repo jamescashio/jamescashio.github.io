@@ -1,3 +1,4 @@
+import { setupMissionControl } from "./mission-control.js";
 import { parseExperiment } from "../odyssey/study-experiment";
 import { parseMissionHash } from "../odyssey/flight-plan";
 import { createWarp, setupFlightPrefetch } from "./zenith.js";
@@ -17,19 +18,9 @@ const aliases = {
 
 /** Native links, shared scenes and browser history stay in one document. */
 export function setupNavigation({ studies, select, mission, motion, rooms }) {
-  const dialog = document.querySelector("#mc");
-  const search = document.querySelector("#mc-search");
-  const list = document.querySelector("#mc-list");
-  const content = document.querySelector(".mc-content");
-  const start = document.querySelector("#mc-start");
-  const results = document.querySelector("#mc-results");
-  const clear = document.querySelector("#mc-clear");
   const loader = document.querySelector("#scene-loader");
   let routeGeneration = 0;
-  document.querySelector("#mc-btn .mono").textContent = /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘K" : "Ctrl K";
-  let previousFocus = null,
-    navigating = false,
-    scene = null,
+  let scene = null,
     activeKind = null,
     pending = false,
     generation = 0;
@@ -38,7 +29,10 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
     lastURL = "";
   const returns = new Map();
   let loaderTimer = 0;
-  // If motion is switched off mid jump, the warp stops and the loader takes over at once.
+  const notify = () => window.dispatchEvent(new Event("helios-overlay"));
+  const menu = setupMissionControl({ studies, canOpen: () => !loader.open && !scene && !pending, onToggle: notify });
+  const dialog = menu.dialog;
+  for (const link of document.querySelectorAll("a[data-room-route]")) link.setAttribute("href", link.dataset.roomRoute);
   const warp = createWarp({
     onHalt: () => {
       clearTimeout(loaderTimer);
@@ -46,118 +40,6 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
     },
   });
   setupFlightPrefetch(() => import("./flight-island"));
-  const destinations = [
-    ["Explore the starship", "Your pace. A 30 second tour when you choose.", "#flight=board"],
-    ["The orbital world", "Return to the beginning.", "#top"],
-    ["Try one decision", "Predict the route. Test the privacy boundary.", "#work", "privacy private data test"],
-    ["The system atlas", "Meet the servers, scheduler and operator console.", "#request-journey"],
-    [
-      "Compare architectures",
-      "Its own page. Change a mission and inspect all twelve requests.",
-      "#starship",
-      "privacy cloud local boundary",
-    ],
-    ["Starship build story", "A blank quiet scene, the one-frame repair and its regression check.", "#build-story"],
-    ["Principles Engine", "Its own page. Turn the rings and see the design decision behind each rule.", "#principles"],
-    ["The Studios", "Its own page. Original worlds, the 3D signature and five short films.", "#studios"],
-    ["Lensing Observatory", "Sculpt the light. Find your own perspective.", "#lensing"],
-    ["Celestial Forge", "Explore the signature in three dimensions.", "#signature"],
-    ["The Cinema", "Five original short films. Play at your own pace.", "#film=lightwake"],
-    ["The Sanctuary", "A quiet film and an explorable inner world.", "#film=sanctuary"],
-    [
-      "Inspect the evidence",
-      "A source, a date, and a clear boundary. Fleet facts and the E.V.E. console.",
-      "#evidence",
-      "eve fleet status proof privacy boundary withheld",
-    ],
-    ["Flight heritage", "Its own page. Four aviation pioneers and the discipline behind the design.", "#heritage"],
-    ["Meet Doug", "Builder. Operator. Accountable human.", "#operator", "about career resume linkedin"],
-    [
-      "Privacy",
-      "How this site handles data. Read the policy on GitHub.",
-      "https://github.com/jamescashio/jamescashio.github.io/blob/main/PRIVACY.md",
-      "privacy policy cookies",
-    ],
-    [
-      "Compare notes",
-      "Speaking, advising or comparing notes. Email Doug.",
-      "#contact",
-      "contact email talk hire hello speaking advising recruiter",
-    ],
-    ...studies.map((s) => [s.name, s.cue, `#build=${s.id}`]),
-  ];
-  function render(query = "") {
-    list.replaceChildren();
-    const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
-    const matches = destinations.filter(([name, body, , keywords = ""]) =>
-      terms.every((term) => `${name} ${body} ${keywords}`.toLowerCase().includes(term)),
-    );
-    clear.hidden = search.value.length === 0;
-    results.textContent = `${matches.length} ${matches.length === 1 ? "destination" : "destinations"}${terms.length ? " found" : " to explore"}`;
-    start.hidden = terms.length > 0;
-    content.scrollTop = 0;
-    for (const [name, body, href] of matches) {
-      const a = document.createElement("a");
-      a.className = "tile mc-destination";
-      a.href = href;
-      const title = document.createElement("strong"),
-        description = document.createElement("span");
-      title.textContent = name;
-      description.textContent = body;
-      a.append(title, description);
-      list.append(a);
-    }
-    if (!matches.length) {
-      const empty = document.createElement("p");
-      empty.className = "mc-empty";
-      empty.textContent =
-        "No match yet. Try ‘flight’, ‘signature’ or ‘Graphify’, or clear the search to see every destination.";
-      list.append(empty);
-    }
-  }
-  const notify = () => window.dispatchEvent(new Event("helios-overlay"));
-  function open() {
-    if (dialog.open || loader.open || scene || pending) return;
-    const active = document.activeElement;
-    previousFocus = active && active !== document.body ? active : document.getElementById("mc-btn");
-    navigating = false;
-    search.value = "";
-    render();
-    dialog.showModal();
-    notify();
-    search.focus();
-  }
-  dialog.addEventListener("close", () => {
-    notify();
-    if (!navigating && previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
-  });
-  document.querySelector("#mc-btn").addEventListener("click", open);
-  document.querySelector("#mc-close").addEventListener("click", () => dialog.close());
-  search.addEventListener("input", () => render(search.value.trim().toLowerCase()));
-  clear.addEventListener("click", () => {
-    search.value = "";
-    render();
-    search.focus();
-  });
-  dialog.addEventListener("keydown", (event) => {
-    const links = [...(start.hidden ? [] : start.querySelectorAll("a")), ...list.querySelectorAll("a")];
-    if (!links.length) return;
-    const index = links.indexOf(document.activeElement);
-    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-      event.preventDefault();
-      const offset = event.key === "ArrowDown" ? 1 : -1;
-      links[index < 0 ? (offset === 1 ? 0 : links.length - 1) : (index + offset + links.length) % links.length].focus();
-    } else if (event.key === "Enter" && document.activeElement === search) {
-      event.preventDefault();
-      links[0].click();
-    }
-  });
-  window.addEventListener("keydown", (event) => {
-    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
-      event.preventDefault();
-      if (!scene && !pending) dialog.open ? dialog.close() : open();
-    }
-  });
   function focusSection(id, shouldScroll = true) {
     const target = document.getElementById(id);
     if (!target) return;
@@ -168,14 +50,15 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
       workbench.open = true;
       revealed = true;
     }
-    for (let parent = target.parentElement; parent; parent = parent.parentElement) {
+    for (let parent = target; parent; parent = parent.parentElement) {
       if (parent.tagName === "DETAILS" && !parent.open) {
         parent.open = true;
         revealed = true;
       }
     }
-    const heading = target.querySelector("h1,h2,h3") || target;
-    heading.setAttribute("tabindex", "-1");
+    const heading =
+      target.querySelector("h1,h2,h3") || (target.matches("details") ? target.querySelector("summary") : target);
+    if (!heading.matches("summary")) heading.setAttribute("tabindex", "-1");
     heading.focus({ preventScroll: true });
     // Move focus and its heading together. Smooth scrolling can drift as skipped sections lay out after resize.
     if (shouldScroll || revealed) target.scrollIntoView({ behavior: "instant", block: "start" });
@@ -390,25 +273,22 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
     } else {
       returnPoint = null;
     }
-    if (dialog.open) {
-      navigating = true;
-      dialog.close();
-    }
+    if (dialog.open) menu.closeForNavigation();
     if (location.hash !== hash)
       history[replace ? "replaceState" : "pushState"](state, "", location.pathname + location.search + hash);
     route(hash || "#top");
   }
   document.addEventListener("click", (event) => {
-    const link = event.target.closest("a[href^='#'],a[data-room-route]");
+    const link = event.target.closest("a[href^='#']");
     if (!link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button) return;
     event.preventDefault();
-    const hash = link.dataset.roomRoute || link.getAttribute("href");
+    const hash = link.getAttribute("href");
     if (hash === "#main-content") {
       // Skip past shared navigation without changing the open room or browser history.
       focusSection(document.documentElement.dataset.room || "top");
       return;
     }
-    navigate(hash, dialog.contains(link) ? previousFocus : link);
+    navigate(hash, menu.openerFor(link));
   });
   let historyFrame = 0;
   function restoreHistory() {
@@ -422,5 +302,5 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
   window.addEventListener("popstate", restoreHistory);
   window.addEventListener("hashchange", restoreHistory);
   queueMicrotask(() => route(location.hash, true));
-  return { open, route };
+  return { open: menu.open, route };
 }
