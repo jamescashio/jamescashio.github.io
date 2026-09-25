@@ -145,6 +145,7 @@ export function setupEvidenceConsole({ motion }) {
     }
     const lines = [...evidenceReply(cmd)];
     const reply = document.createElement("div");
+    reply.className = "eve-reply";
     out.appendChild(reply);
     const lore = Object.hasOwn(LORE, cmd);
     if (hint) lines.push(hint);

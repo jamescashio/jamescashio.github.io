@@ -810,6 +810,33 @@ test("Changing privacy interrupts a trace and never animates the held request in
   await expect(page.locator("#trace-label")).toContainText("The decision returns to the operator");
 });
 
+test("E.V.E. keeps each reply line visually separate at phone and desktop widths", async (t) => {
+  for (const width of [320, 1440]) {
+    const page = await visit(t, { width, motion: "no-preference", hash: "#evidence" });
+    for (const [command, lineCount] of [
+      ["help", 3],
+      ["fleet", 4],
+    ]) {
+      await page.locator("#eve-in").fill(command);
+      await page.locator("#eve-in").press("Enter");
+      const lines = page.locator("#eve-out .eve-reply").last().locator("span");
+      await expect(lines).toHaveCount(lineCount);
+      const bounds = await lines.evaluateAll((items) =>
+        items.map((item) => {
+          const rect = item.getBoundingClientRect();
+          return { top: rect.top, bottom: rect.bottom };
+        }),
+      );
+      for (let i = 1; i < bounds.length; i++) {
+        assert.ok(
+          bounds[i].top >= bounds[i - 1].bottom + 3,
+          `${command} line ${i + 1} starts below the preceding line at ${width}px`,
+        );
+      }
+    }
+  }
+});
+
 test("Evidence leads with meaning, expands by keyboard and links the shipped build", async (t) => {
   const page = await visit(t, { width: 320, hash: "#evidence" });
   await expect(page.locator("#evidence")).toContainText("Every claim here has a date and a source.");

@@ -884,6 +884,11 @@ footer,
   overflow: auto;
   position: relative;
 }
+.eve .eve-reply {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
 .eve form {
   display: flex;
   gap: 8px;
