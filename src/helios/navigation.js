@@ -164,7 +164,7 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
       }
     }
   }
-  async function route(hash, initial = false) {
+  async function route(hash, initial = false, fromHistory = false) {
     const routeToken = ++routeGeneration;
     lastURL = location.href;
     hash = aliases[hash] || hash;
@@ -206,6 +206,12 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
       return;
     }
     returnPoint = null;
+    const savedY = history.state?.heliosY;
+    if (fromHistory && !hash && typeof savedY === "number" && !document.documentElement.dataset.room) {
+      // Back to the home page from a room: return to the place the reader left, not the top.
+      requestAnimationFrame(() => window.scrollTo({ top: savedY, behavior: "instant" }));
+      return;
+    }
     // History uses an empty fragment for home. Scene returns above keep their original launcher.
     if (!hash && !initial) hash = "#top";
     const experiment = parseExperiment(hash);
@@ -272,6 +278,9 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
       }
     } else {
       returnPoint = null;
+      // Remember the reader's place on the home page, so Back from a room returns there.
+      if (!document.documentElement.dataset.room && !sceneKind(location.hash))
+        history.replaceState({ ...(history.state || {}), heliosY: window.scrollY }, "");
     }
     if (dialog.open) menu.closeForNavigation();
     if (location.hash !== hash)
@@ -296,7 +305,7 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
     cancelAnimationFrame(historyFrame);
     // Native history can restore focus and scroll after popstate. Route once it has finished.
     historyFrame = requestAnimationFrame(() => {
-      if (lastURL !== location.href) route(location.hash);
+      if (lastURL !== location.href) route(location.hash, false, true);
     });
   }
   window.addEventListener("popstate", restoreHistory);

@@ -20,10 +20,15 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
       "Glossary",
       "The names used here, in plain English.",
       "#glossary",
-      "names definitions acronyms hermes dsh zeus apollo atlas bit eve",
+      "names definitions acronyms hermes dsh zeus apollo atlas bit eve r-01 workhorse research synthesis lanes",
     ],
     ["Try one decision", "Predict the route. Test the privacy boundary.", "#work", "privacy private data test"],
-    ["The system atlas", "Meet the servers, scheduler and operator console.", "#request-journey"],
+    [
+      "The system atlas",
+      "Meet Zeus and Apollo, the scheduler and the operator console.",
+      "#request-journey",
+      "servers hosts hermes dsh",
+    ],
     [
       "Compare architectures",
       "Its own page. Change a mission and inspect all twelve requests.",
@@ -43,7 +48,12 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
       "#evidence",
       "eve fleet status proof privacy boundary withheld",
     ],
-    ["Flight heritage", "Its own page. Four aviation pioneers and the discipline behind the design.", "#heritage"],
+    [
+      "Flight heritage",
+      "Its own page. Four aviation pioneers and the discipline behind the design.",
+      "#heritage",
+      "yeager johnson rutan hoover aviation pilots x-1 sr-71",
+    ],
     ["Meet Doug", "Builder. Operator. Accountable human.", "#operator", "about career resume linkedin"],
     [
       "Privacy",
@@ -62,9 +72,25 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
   function render(query = "") {
     list.replaceChildren();
     const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
-    const available = destinations.filter(([name, body, , keywords = ""]) =>
-      terms.every((term) => `${name} ${body} ${keywords}`.toLowerCase().includes(term)),
-    );
+    // Short terms match at the start of a word, so "eve" finds E.V.E. rather than "Seven".
+    // Titles outrank descriptions, and descriptions outrank hidden keywords.
+    const matcher = (term) =>
+      term.length < 4
+        ? new RegExp(`(^|[^a-z0-9])${term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`)
+        : { test: (text) => text.includes(term) };
+    const ranked = [];
+    destinations.forEach(([name, body, , keywords = ""], order) => {
+      const fields = [name, body, keywords].map((field) => field.toLowerCase().replace(/\./g, ""));
+      let score = 0;
+      for (const term of terms) {
+        const test = matcher(term.replace(/\./g, ""));
+        const field = fields.findIndex((text) => test.test(text));
+        if (field < 0) return;
+        score += 3 - field;
+      }
+      ranked.push({ score, order, destination: destinations[order] });
+    });
+    const available = ranked.sort((a, b) => b.score - a.score || a.order - b.order).map((entry) => entry.destination);
     const matches = terms.length ? available : destinations.filter(([, , href]) => featured.has(href));
     clear.hidden = search.value.length === 0;
     results.textContent = terms.length

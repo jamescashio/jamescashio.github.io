@@ -114,13 +114,14 @@ export function setupStudies({ scenes, motion, copy }) {
       );
   }
   let routeCounterTween;
-  function renderRoute(run) {
+  function renderRoute(run, updateUrl = true) {
     routeCounterTween?.kill();
     const r = routeExample(st.intent, st.priv, st.src);
     const experiment = { study: "hermes", intent: st.intent, privateData: st.priv, sources: st.src };
     studyState.set("hermes", experiment);
     scenes.updateRequest(experiment);
-    if (location.hash.startsWith("#build=hermes")) history.replaceState(null, "", shareExperiment(experiment));
+    if (updateUrl && location.hash.startsWith("#build=hermes"))
+      history.replaceState(null, "", shareExperiment(experiment));
     $("#st-lane").textContent = r.lane;
     $("#st-lane").style.color = r.color;
     $("#st-code").textContent = r.code;
@@ -208,7 +209,8 @@ export function setupStudies({ scenes, motion, copy }) {
     }),
   );
   renderStudies();
-  renderRoute(false);
+  // The first render must not rewrite a shared study link before the router has read it.
+  renderRoute(false, false);
   $("#studies-list").addEventListener("keydown", (e) => {
     const keys = ["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp", "Home", "End"];
     if (!keys.includes(e.key)) return;

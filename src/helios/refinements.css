@@ -91,6 +91,13 @@ section.block {
 #starship {
   contain-intrinsic-size: auto 1500px;
 }
+/* Light sections that links jump to stay laid out, so fragment links and room returns land where they point. */
+#rooms,
+#evidence,
+#operator,
+#contact {
+  content-visibility: visible;
+}
 main:focus {
   outline: none;
 }

@@ -1451,6 +1451,24 @@ test("All four reading editions remain reachable and readable without JavaScript
       await expect(page.locator(`#${id}`)).toBeVisible();
       await expect(page.locator(".room-end a").first()).toBeVisible();
       assert.equal(await page.locator("script").count(), 0);
+      if (id === "starship") {
+        // The comparison and request bars show the default example, not empty headings or full bars.
+        const rows = await page
+          .locator("#cmp-rows .cmp")
+          .evaluateAll((nodes) => nodes.map((node) => [...node.children].map((cell) => cell.textContent.trim())));
+        assert.deepEqual(rows, [
+          ["Sovereign / local", "12", "0", "0"],
+          ["Hybrid", "6", "6", "0"],
+          ["Cloud", "0", "6", "6"],
+        ]);
+        await expect(page.locator("#cmp-rows .cmp.on strong")).toHaveText("Hybrid");
+        const fills = await page
+          .locator("#b-local, #b-cloud, #b-held")
+          .evaluateAll((bars) =>
+            bars.map((bar) => bar.getBoundingClientRect().width / bar.parentElement.getBoundingClientRect().width),
+          );
+        fills.forEach((fill, i) => assert.ok(Math.abs(fill - [0.5, 0.5, 0][i]) < 0.02, `bar ${i} fill ${fill}`));
+      }
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
       for (const link of await page.locator("a").evaluateAll((nodes) => nodes.map((a) => a.getAttribute("href"))))
         assert.ok(link.startsWith("/") || /^https?:/.test(link), link);
@@ -1621,6 +1639,7 @@ test("Reading editions explain inactive controls and contain no live regions", a
     await page.goto(new URL(`/rooms/${id}/`, url).href);
     await expect(page.locator("#reading-mode")).toContainText("Controls are inactive in this reading edition");
     assert.equal(await page.locator('[aria-live],[role="status"],[role="log"]').count(), 0);
+    assert.equal(await page.locator("div[aria-label]:not([role]),span[aria-label]:not([role])").count(), 0);
     assert.equal(await page.locator("button:enabled,input:enabled,select:enabled,textarea:enabled").count(), 0);
     for (const control of await page.locator("button,input,select,textarea").all())
       await expect(control).toHaveAttribute("aria-describedby", "reading-mode");
@@ -1666,4 +1685,46 @@ test("Phones and data-saving visits keep the hero artwork without downloading th
     }
     await context.close();
   }
+});
+
+test("A shared HERMES study link restores its settings on open and on reload", async (t) => {
+  const shared = "#build=hermes&intent=analyze&private=1&sources=1";
+  const page = await visit(t, { hash: shared, expandWorkbenches: false });
+  for (let pass = 0; pass < 2; pass++) {
+    await expect(page.locator('[data-intent="analyze"]')).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator("#tg-private")).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator("#tg-sources")).toHaveAttribute("aria-pressed", "true");
+    assert.equal(new URL(page.url()).hash, shared);
+    await page.reload();
+  }
+});
+
+test("Back from a room returns to the reader's place and search ranks titles first", async (t) => {
+  const page = await visit(t, { width: 1440, height: 900, expandWorkbenches: false });
+  await page.locator("#rooms").scrollIntoViewIfNeeded();
+  const card = page.locator('.room-card[data-room-route="#principles"]');
+  // Measure where the card sits on screen, which stays meaningful while lazily laid out sections settle.
+  const place = () => card.evaluate((el) => ({ top: el.getBoundingClientRect().top, y: scrollY }));
+  await card.hover();
+  const before = await place();
+  assert.ok(before.y > 1000, "the rooms row sits well below the opening");
+  await card.click();
+  await expect(page.locator("#pr-h")).toBeVisible();
+  await page.goBack();
+  await expect(card).toBeInViewport();
+  await expect.poll(async () => Math.abs((await place()).top - before.top)).toBeLessThan(120);
+  await page.locator("#mc-btn").click();
+  // A title match outranks a glossary keyword, and short words match whole words only.
+  await page.locator("#mc-search").fill("zeus");
+  await expect(page.locator("#mc-list a strong").first()).toContainText(/zeus/i);
+  await expect(page.locator("#mc-list a").first()).not.toHaveAttribute("href", "#glossary");
+  for (const [query, first] of [
+    ["eve", "#evidence"],
+    ["yeager", "#heritage"],
+  ]) {
+    await page.locator("#mc-search").fill(query);
+    await expect(page.locator("#mc-list a").first()).toHaveAttribute("href", first);
+  }
+  await page.locator("#mc-search").fill("bit");
+  await expect(page.locator('#mc-list a[href="#top"]')).toHaveCount(0);
 });
