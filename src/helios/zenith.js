@@ -235,7 +235,7 @@ const TYPE_STYLES = {
 @font-face{font-family:"Exo Z";src:url("/fonts/exo2-500.woff2") format("woff2");font-weight:300 600;font-display:swap}
 @font-face{font-family:"Exo Z";src:url("/fonts/exo2-700.woff2") format("woff2");font-weight:700 900;font-display:swap}
 :root{--display:"Oxanium Z","Unbounded",sans-serif;--sans:"Exo Z","Instrument Sans",system-ui,sans-serif}
-h1,h2,h3,.syne{letter-spacing:.01em}`,
+h1,h2,h3,.display{letter-spacing:.01em}`,
   },
   readable: {
     name: "Readable",

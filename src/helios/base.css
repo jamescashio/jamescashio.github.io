@@ -84,7 +84,7 @@ button {
 }
 
 /* ---------- type ---------- */
-.syne {
+.display {
   font-family: var(--display);
 }
 .mono {
@@ -1099,7 +1099,7 @@ footer,
   border-color: var(--gold);
 }
 .sig .shade {
-  background: linear-gradient(0deg, rgba(4, 7, 14, 0.92) 0%, rgba(4, 7, 14, 0.2) 35%, rgba(4, 7, 14, 0) 60%) !important;
+  background: linear-gradient(0deg, rgba(4, 7, 14, 0.92) 0%, rgba(4, 7, 14, 0.2) 35%, rgba(4, 7, 14, 0) 60%);
 }
 .sig.on img {
   animation: sigglow 1.6s ease-out 1;

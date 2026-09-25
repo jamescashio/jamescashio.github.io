@@ -663,7 +663,7 @@ section[data-ambient="off"] *:after,
     display: none;
   }
   .instrument > .cols-split {
-    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-columns: minmax(0, 1fr);
   }
   .instrument .ctrl {
     grid-template-columns: minmax(0, 1fr);
@@ -715,9 +715,6 @@ section[data-ambient="off"] *:after,
     min-height: 128px;
     padding: 18px;
     gap: 14px;
-  }
-  .study .syne {
-    font-size: 17px !important;
   }
   .study .mono {
     letter-spacing: 0.09em;
@@ -809,11 +806,8 @@ section[data-ambient="off"] *:after,
     padding: 15px;
     min-height: 128px;
   }
-  .study .syne {
-    font-size: 15px !important;
-  }
   .study .mono {
-    font-size: 14px !important;
+    font-size: 14px;
   }
   .lab-result {
     padding: 18px;
@@ -872,14 +866,14 @@ section[data-ambient="off"] *:after,
     margin-top: 14px;
   }
   #missions {
-    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-columns: minmax(0, 1fr);
   }
   #arch-group {
-    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-columns: minmax(0, 1fr);
   }
   #starship .cols-meter {
-    grid-template-columns: 90px minmax(0, 1fr) 28px !important;
-    gap: 8px !important;
+    grid-template-columns: 90px minmax(0, 1fr) 28px;
+    gap: 8px;
   }
   #starship .cmp {
     font-size: 14px;
@@ -917,14 +911,11 @@ section[data-ambient="off"] *:after,
   .study {
     padding: 13px;
   }
-  .study .syne {
-    font-size: 14px !important;
-  }
   .instrument {
     padding: 18px;
   }
   .instrument h3 {
-    font-size: 24px !important;
+    font-size: 24px;
   }
   .lab-result h4 {
     font-size: 19px;

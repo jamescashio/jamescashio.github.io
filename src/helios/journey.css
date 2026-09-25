@@ -335,7 +335,7 @@ h3,
   transform: rotate(-8deg) scale(1.08);
 }
 #st-name {
-  font-weight: 600 !important;
+  font-weight: 600;
   line-height: 1.2;
 }
 .flight-plan-heading {
@@ -348,15 +348,15 @@ h3,
   color: var(--ink2);
 }
 #missions {
-  grid-template-columns: 1fr !important;
+  grid-template-columns: 1fr;
 }
 #missions .tile {
   position: relative;
   display: grid;
   grid-template-columns: 30px minmax(0, 1fr);
-  column-gap: 12px !important;
-  row-gap: 3px !important;
-  padding: 14px 18px !important;
+  column-gap: 12px;
+  row-gap: 3px;
+  padding: 14px 18px;
   min-height: 72px;
   border-color: #899db333;
   background: linear-gradient(115deg, #182638, #0a1220 70%);
@@ -367,18 +367,18 @@ h3,
 #missions .tile > span:first-child {
   grid-row: 1 / 3;
   align-self: center;
-  font-size: 14px !important;
+  font-size: 14px;
 }
 #missions .tile strong {
-  font-size: 15px !important;
+  font-size: 15px;
   line-height: 1.3;
   font-weight: 600;
 }
 #missions .tile > span:last-child,
 #arch-group .mono,
 .flight-plan-note {
-  font: 400 14px/1.5 var(--sans) !important;
-  letter-spacing: 0 !important;
+  font: 400 14px/1.5 var(--sans);
+  letter-spacing: 0;
   text-transform: none;
   color: var(--muted);
 }

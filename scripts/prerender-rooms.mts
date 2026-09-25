@@ -31,7 +31,7 @@ for (const id of roomIds) {
   doc.head.append(canonical);
   const notice = doc.createElement("header");
   notice.className = "wrap stack p-22-30 sg-16";
-  notice.innerHTML = `<a href="/#rooms">← Back to the four rooms</a><h1 class="syne fs-32">${title}</h1><p id="reading-mode">Controls are inactive in this reading edition. It shows the artwork, one example state and all of the text. Open the interactive room to change the inputs and explore the results.</p><a class="btn gold" href="/#${id}">Open the interactive room →</a>`;
+  notice.innerHTML = `<a href="/#rooms">← Back to the four rooms</a><h1 class="display fs-32">${title}</h1><p id="reading-mode">Controls are inactive in this reading edition. It shows the artwork, one example state and all of the text. Open the interactive room to change the inputs and explore the results.</p><a class="btn gold" href="/#${id}">Open the interactive room →</a>`;
   const main = doc.createElement("main");
   main.innerHTML = source;
   for (const image of main.querySelectorAll("img")) {
@@ -92,7 +92,7 @@ function readingList(doc: Document, heading: string, items: string[][]) {
   const section = doc.createElement("section");
   section.className = "wrap stack sg-16 reading-all";
   const title = doc.createElement("h2");
-  title.className = "syne fs-28-36";
+  title.className = "display fs-28-36";
   title.textContent = heading;
   const grid = doc.createElement("div");
   grid.className = "grid-box cols-fit-200 gap-12";

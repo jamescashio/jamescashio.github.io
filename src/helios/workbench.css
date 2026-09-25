@@ -99,7 +99,7 @@ section.workbench-section {
   }
   .fleet-counts .stat .num {
     min-width: 2ch;
-    font-size: 32px !important;
+    font-size: 32px;
   }
   .atlas::after {
     bottom: 8px;
