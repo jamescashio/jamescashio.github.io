@@ -58,7 +58,7 @@ export function setupNavigation({ studies, select, mission, motion }) {
       "#starship",
       "privacy cloud local boundary",
     ],
-    ["Starship build story", "The question, the design, and the shared rule behind the ship.", "#build-story"],
+    ["Starship build story", "A blank quiet scene, the one-frame repair and its regression check.", "#build-story"],
     ["Principles Engine", "Its own page. Turn the rings and see the design decision behind each rule.", "#principles"],
     ["The Studios", "Its own page. Original worlds, the 3D signature and five short films.", "#studios"],
     ["Lensing Observatory", "Sculpt the light. Find your own perspective.", "#lensing"],
@@ -368,8 +368,14 @@ export function setupNavigation({ studies, select, mission, motion }) {
     event.preventDefault();
     navigate(link.getAttribute("href"), dialog.contains(link) ? previousFocus : link);
   });
+  let historyFrame = 0;
   function restoreHistory() {
-    if (lastURL !== location.href) route(location.hash);
+    if (lastURL === location.href) return;
+    cancelAnimationFrame(historyFrame);
+    // Native history can restore focus and scroll after popstate. Route once it has finished.
+    historyFrame = requestAnimationFrame(() => {
+      if (lastURL !== location.href) route(location.hash);
+    });
   }
   window.addEventListener("popstate", restoreHistory);
   window.addEventListener("hashchange", restoreHistory);

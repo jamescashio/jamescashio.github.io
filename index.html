@@ -107,7 +107,7 @@
             ><span class="hide-m">Motion on</span>
           </button>
           <button class="btn line sm type-btn" id="type-btn" type="button" aria-label="Aa Signature. Change type style">
-            <span class="type-aa" aria-hidden="true">Aa</span><span class="hide-m" id="type-name">Signature</span>
+            <span class="type-aa" aria-hidden="true">Aa</span> <span class="hide-m" id="type-name">Signature</span>
           </button>
           <a class="btn gold sm nav-contact" href="#contact">Let’s talk</a>
         </div>
@@ -812,31 +812,33 @@
       </section>
 
       <!-- ================= PHILOSOPHY ================= -->
-      <section class="philo" aria-label="Philosophy">
-        <img
-          src="/v38/assets/sanctuary.webp"
-          width="1200"
-          height="675"
-          decoding="async"
-          loading="lazy"
-          id="philo-img"
-          alt="Original concept art: twin graphite computing monoliths in a sunlit stone sanctuary with a faceted amber core between them"
-        />
-        <div class="shade"></div>
-        <div class="wrap w-full relative">
-          <div class="txt">
-            <span class="kick">THE PHILOSOPHY</span>
-            <h2 data-split>
-              Technology should extend our reach.<br /><span class="em fw-500">Not replace our judgment.</span>
-            </h2>
-            <div class="flex items-center gap-20 flex-wrap">
-              <a class="btn ghost" href="#film=sanctuary" data-magnet>Enter the sanctuary →</a
-              ><span class="mono c-mu">A 15 SECOND FILM · THEN STEP INSIDE</span>
-            </div>
-            <a class="inline-cta fw-600 c-ink" href="#studies">See the philosophy at work ↗</a>
+
+      <section class="block rooms-teaser" id="rooms" aria-labelledby="rooms-h">
+        <div class="wrap stack">
+          <span class="kick">FOUR MORE ROOMS</span>
+          <h2 id="rooms-h">When you have<br /><span class="cy">a little longer.</span></h2>
+          <p class="lede muted">Each one opens as its own page. The way back is always at the top.</p>
+          <div class="room-cards">
+            <a class="room-card" href="#starship"
+              ><span class="mono c-gd">STARSHIP LAB</span><strong>Your ship. Your intelligence.</strong
+              ><span class="muted"
+                >Pick a mission, cut the cloud link and compare three designs on the same twelve requests.</span
+              ><span class="room-go">Open the page →</span></a
+            ><a class="room-card" href="#principles"
+              ><span class="mono c-gd">PRINCIPLES ENGINE</span><strong>Put the principles in motion.</strong
+              ><span class="muted">Turn a small instrument and see the design decision behind each rule.</span
+              ><span class="room-go">Open the page →</span></a
+            ><a class="room-card" href="#studios"
+              ><span class="mono c-gd">THE STUDIOS</span><strong>A world worth getting lost in.</strong
+              ><span class="muted">Shape the light, ignite a 3D signature, or watch five short original films.</span
+              ><span class="room-go">Open the page →</span></a
+            ><a class="room-card" href="#heritage"
+              ><span class="mono c-gd">FLIGHT HERITAGE</span><strong>Built with a test pilot’s mind.</strong
+              ><span class="muted">Four aviation pioneers and the working lesson I take from each.</span
+              ><span class="room-go">Open the page →</span></a
+            >
           </div>
         </div>
-        <span class="mono philo-caption">ORIGINAL CONCEPT ART / AN IMAGINED COMPUTING SANCTUARY</span>
       </section>
 
       <!-- ================= THE EVIDENCE ================= -->
@@ -863,76 +865,7 @@
               </div>
             </div>
           </div>
-          <article class="case-study" id="build-story" aria-labelledby="build-proof-title">
-            <div>
-              <span class="mono cy">BUILD STORY / SOVEREIGN STARSHIP</span>
-              <h3 id="build-proof-title">One boundary. Every request accounted for.</h3>
-              <p class="case-deck">
-                Twelve requests. One ship. Change its connection or your permission and watch the work move.
-              </p>
-              <figure class="case-image">
-                <img
-                  src="/v38/assets/starship.webp"
-                  width="1200"
-                  height="675"
-                  loading="lazy"
-                  decoding="async"
-                  alt="Original Sovereign Starship artwork: an exploration ship with a visible gold command core and a separate cloud relay"
-                />
-                <figcaption>Original artwork. Working controls. One shared routing model.</figcaption>
-              </figure>
-            </div>
-            <div>
-              <dl class="case-notes">
-                <div>
-                  <dt>The question</dt>
-                  <dd>What happens to private work when the cloud is available, disappears, or needs permission?</dd>
-                </div>
-                <div>
-                  <dt>My design decision</dt>
-                  <dd>One rule drives the ship, counters and explanation, so every view tells the same story.</dd>
-                </div>
-                <div>
-                  <dt>The working result</dt>
-                  <dd>
-                    Hybrid sends six public requests to the cloud. Cut the relay and all twelve stay aboard. Private
-                    work without permission waits for a person.
-                  </dd>
-                </div>
-              </dl>
-              <div class="case-outcome">
-                <strong>6 → 12</strong
-                ><span>requests kept onboard<br />when the hybrid model loses its cloud link</span>
-              </div>
-              <div class="case-links">
-                <a class="btn gold sm" href="#flight=blackout">Test the boundary <span aria-hidden="true">↗</span></a>
-                <a
-                  class="case-source"
-                  href="https://github.com/jamescashio/jamescashio.github.io/blob/8175beb8cfbfc7fac5c25626787907f56e06a3c7/src/odyssey/sovereign-model.ts"
-                  >Read the shared rule ↗</a
-                >
-                <a
-                  class="case-source"
-                  href="https://github.com/jamescashio/jamescashio.github.io/blob/8175beb8cfbfc7fac5c25626787907f56e06a3c7/tests/sovereign-model.test.mjs"
-                  >Inspect the model tests ↗</a
-                >
-              </div>
-              <p class="case-boundary">
-                The outcomes come from a model in your browser that you can reproduce. No AI requests are sent.
-              </p>
-              <details class="case-engineering">
-                <summary>Build note: a quiet scene still needs its first frame.</summary>
-                <p>
-                  The routing math worked, but opening the ship with motion paused could leave a blank view. The repair
-                  draws one frame when the canvas becomes visible, then lets it rest. A geometry check now covers that
-                  quiet first impression.
-                </p>
-                <a href="https://github.com/jamescashio/jamescashio.github.io/pull/135"
-                  >Read the shipped repair and validation ↗</a
-                >
-              </details>
-            </div>
-          </article>
+
           <div class="grid" data-stagger>
             <div class="panel c7 stack p-22-30 sg-18">
               <div class="flex justify-between gap-8 flex-wrap">
@@ -1094,9 +1027,10 @@
                 tabindex="0"
               >
                 <div class="scan"></div>
-                <span class="d"
-                  >Updated <span data-fleet="pageRevised">September 24, 2026</span> · fleet observed the same day</span
-                ><span class="d">Listed commands read the dated record. Hidden commands are labeled lore.</span
+                <span class="d">Published record · <span data-fleet="pageRevised">September 24, 2026</span></span
+                ><span class="d"
+                  >Fleet and backups: September 24. Scheduler, Atlas and console audit: September 18.</span
+                ><span class="d">Each reply carries its own date. Hidden commands are labeled lore.</span
                 ><span class="d">Tap a command below or type your own. Try help.</span>
               </div>
               <div class="eve-chips" role="group" aria-label="Suggested E.V.E. commands">
@@ -1124,33 +1058,6 @@
       </section>
 
       <!-- ================= MORE ROOMS (each opens as its own page) ================= -->
-      <section class="block rooms-teaser" id="rooms" aria-labelledby="rooms-h">
-        <div class="wrap stack">
-          <span class="kick">FOUR MORE ROOMS</span>
-          <h2 id="rooms-h">When you have<br /><span class="cy">a little longer.</span></h2>
-          <p class="lede muted">Each one opens as its own page. The way back is always at the top.</p>
-          <div class="room-cards">
-            <a class="room-card" href="#starship"
-              ><span class="mono c-gd">STARSHIP LAB</span><strong>Your ship. Your intelligence.</strong
-              ><span class="muted"
-                >Pick a mission, cut the cloud link and compare three designs on the same twelve requests.</span
-              ><span class="room-go">Open the page →</span></a
-            ><a class="room-card" href="#principles"
-              ><span class="mono c-gd">PRINCIPLES ENGINE</span><strong>Put the principles in motion.</strong
-              ><span class="muted">Turn a small instrument and see the design decision behind each rule.</span
-              ><span class="room-go">Open the page →</span></a
-            ><a class="room-card" href="#studios"
-              ><span class="mono c-gd">THE STUDIOS</span><strong>A world worth getting lost in.</strong
-              ><span class="muted">Shape the light, ignite a 3D signature, or watch five short original films.</span
-              ><span class="room-go">Open the page →</span></a
-            ><a class="room-card" href="#heritage"
-              ><span class="mono c-gd">FLIGHT HERITAGE</span><strong>Built with a test pilot’s mind.</strong
-              ><span class="muted">Four aviation pioneers and the working lesson I take from each.</span
-              ><span class="room-go">Open the page →</span></a
-            >
-          </div>
-        </div>
-      </section>
 
       <!-- ================= THE OPERATOR ================= -->
       <section class="block bg-chapter-rise" id="operator" aria-labelledby="op-h">
@@ -1595,6 +1502,74 @@
             </div>
           </div>
         </div>
+        <div class="wrap">
+          <article class="case-study" id="build-story" aria-labelledby="build-proof-title">
+            <div>
+              <span class="mono cy">BUILD STORY / SOVEREIGN STARSHIP</span>
+              <h3 id="build-proof-title">The ship that vanished when motion stopped.</h3>
+              <p class="case-deck">
+                The routing math was right. The first impression was a blank canvas. Here is what the quiet view taught
+                me.
+              </p>
+              <figure class="case-image">
+                <img
+                  src="/v38/assets/starship.webp"
+                  width="1200"
+                  height="675"
+                  loading="lazy"
+                  decoding="async"
+                  alt="Original Sovereign Starship artwork: an exploration ship with a visible gold command core and a separate cloud relay"
+                />
+                <figcaption>Original artwork. Working controls. One shared routing model.</figcaption>
+              </figure>
+            </div>
+            <div>
+              <dl class="case-notes">
+                <div>
+                  <dt>The failure</dt>
+                  <dd>
+                    Opening a paused scene could leave the ship invisible, even though its controls and routing model
+                    worked.
+                  </dd>
+                </div>
+                <div>
+                  <dt>The repair</dt>
+                  <dd>
+                    Draw one frame when the canvas becomes visible, then let it rest. Pausing motion must not hide the
+                    work.
+                  </dd>
+                </div>
+                <div>
+                  <dt>The check</dt>
+                  <dd>
+                    A geometry check now covers the quiet first impression. The same routing model still drives the
+                    ship, counters and explanation.
+                  </dd>
+                </div>
+              </dl>
+              <div class="case-outcome"><strong>1 frame</strong><span>drawn before the quiet scene rests</span></div>
+              <div class="case-links">
+                <a class="btn gold sm" href="#flight=board">Open the flight <span aria-hidden="true">↗</span></a>
+                <a
+                  class="case-source"
+                  href="https://github.com/jamescashio/jamescashio.github.io/blob/8175beb8cfbfc7fac5c25626787907f56e06a3c7/src/odyssey/sovereign-model.ts"
+                  >Read the shared rule ↗</a
+                >
+                <a
+                  class="case-source"
+                  href="https://github.com/jamescashio/jamescashio.github.io/blob/8175beb8cfbfc7fac5c25626787907f56e06a3c7/tests/sovereign-model.test.mjs"
+                  >Inspect the model tests ↗</a
+                >
+              </div>
+              <p class="case-boundary">
+                The outcomes come from a model in your browser that you can reproduce. No AI requests are sent.
+              </p>
+              <a class="case-source" href="https://github.com/jamescashio/jamescashio.github.io/pull/135"
+                >Read the shipped repair and validation ↗</a
+              >
+            </div>
+          </article>
+        </div>
       </section>
 
       <!-- ================= PRINCIPLES ENGINE ================= -->
@@ -1794,6 +1769,32 @@
             </div>
           </div>
         </div>
+        <section class="philo" aria-label="Philosophy">
+          <img
+            src="/v38/assets/sanctuary.webp"
+            width="1200"
+            height="675"
+            decoding="async"
+            loading="lazy"
+            id="philo-img"
+            alt="Original concept art: twin graphite computing monoliths in a sunlit stone sanctuary with a faceted amber core between them"
+          />
+          <div class="shade"></div>
+          <div class="wrap w-full relative">
+            <div class="txt">
+              <span class="kick">THE PHILOSOPHY</span>
+              <h2 data-split>
+                Technology should extend our reach.<br /><span class="em fw-500">Not replace our judgment.</span>
+              </h2>
+              <div class="flex items-center gap-20 flex-wrap">
+                <a class="btn ghost" href="#film=sanctuary" data-magnet>Enter the sanctuary →</a
+                ><span class="mono c-mu">A 15 SECOND FILM · THEN STEP INSIDE</span>
+              </div>
+              <a class="inline-cta fw-600 c-ink" href="#studies">See the philosophy at work ↗</a>
+            </div>
+          </div>
+          <span class="mono philo-caption">ORIGINAL CONCEPT ART / AN IMAGINED COMPUTING SANCTUARY</span>
+        </section>
       </section>
 
       <!-- ================= THE STUDIOS ================= -->

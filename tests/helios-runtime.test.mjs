@@ -854,10 +854,7 @@ test("Evidence leads with meaning, expands by keyboard and links the shipped bui
   await expect(page.locator("#evidence")).toContainText("Every claim here has a date and a source.");
   await page.locator('.eve-chips [data-eve="fleet"]').click();
   await expect(page.locator("#eve-out")).toContainText("Running guests: 20 containers");
-  await expect(page.locator("#build-proof-title")).toHaveText("One boundary. Every request accounted for.");
-  await page.locator(".case-engineering summary").focus();
-  await page.keyboard.press("Enter");
-  await expect(page.locator('.case-engineering a[href*="pull/135"]')).toBeVisible();
+  await expect(page.locator("#build-story")).not.toBeVisible();
   await expect(page.locator("#evidence-records")).not.toHaveAttribute("open", "");
   await page.locator("#evidence-records summary").focus();
   await page.keyboard.press("Enter");
@@ -866,6 +863,11 @@ test("Evidence leads with meaning, expands by keyboard and links the shipped bui
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 320);
   await audit(page, "expanded-evidence-320");
   await page.screenshot({ path: path.join(output, "expanded-evidence-320.png") });
+  await page.locator("#mc-btn").click();
+  await page.locator("#mc-search").fill("Starship build story");
+  await page.locator('#mc-list a[href="#build-story"]').click();
+  await expect(page.locator("#build-proof-title")).toHaveText("The ship that vanished when motion stopped.");
+  await expect(page.locator('#build-story a[href*="pull/135"]')).toBeVisible();
 });
 
 test("The composed opening keeps its artwork, visible first action and a finite visitor-requested orbit", async (t) => {
@@ -1215,27 +1217,23 @@ test("Phone atlas captions, fleet labels and all flight chapter names fit at the
       "node captions clear the instruction strip",
     );
     await page.locator("#hero-primary").click();
-    await expect(page.locator("#helios-flight .ff-chapters")).toBeVisible();
-    const chapters = await page.locator("#helios-flight .ff-chapters button").evaluateAll((buttons) =>
-      buttons.map((button) => {
-        const label = button.querySelector(".ff-chapter-short");
-        const style = getComputedStyle(label);
-        return {
-          width: label.clientWidth,
-          overflow: label.scrollWidth > label.clientWidth + 1,
-          height: button.getBoundingClientRect().height,
-          wrapping: style.overflowWrap,
-          font: parseFloat(style.fontSize),
-        };
-      }),
-    );
-    assert.ok(
-      chapters.every(
-        (chapter) => !chapter.overflow && chapter.height >= 44 && chapter.font >= 14 && chapter.wrapping !== "anywhere",
-      ),
-    );
+    const picker = page.getByRole("combobox", { name: "Flight chapter", exact: true });
+    await expect(picker).toBeVisible();
+    await expect(picker.locator("option")).toHaveText([
+      "1 / 4 · Board",
+      "2 / 4 · Open the hull",
+      "3 / 4 · Cut the cloud",
+      "4 / 4 · Human command",
+    ]);
+    const geometry = await picker.evaluate((field) => ({
+      height: field.getBoundingClientRect().height,
+      font: parseFloat(getComputedStyle(field).fontSize),
+      body: document.querySelector("#helios-flight .ff-body").getBoundingClientRect().height,
+    }));
+    assert.ok(geometry.height >= 44 && geometry.font >= 14);
+    assert.ok(geometry.body >= 400, "The chapter content gets at least 400px of an 844px phone");
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
-    await page.locator("#helios-flight .ff-chapters button").nth(3).click();
+    await picker.selectOption("3");
     await page.getByRole("button", { name: "Finish →", exact: true }).click();
     const replay = page.getByRole("button", { name: "Replay flight", exact: true });
     await expect(replay).toBeVisible();
@@ -1248,4 +1246,56 @@ test("Phone atlas captions, fleet labels and all flight chapter names fit at the
     assert.ok(finish.height >= 44, "Replay keeps a full touch target");
     await audit(page, `phone-labels-${width}`);
   }
+});
+
+test("Aa labels match visible words in every style and a completed flight names available actions", async (t) => {
+  for (const width of [390, 1440]) {
+    const page = await visit(t, { width, height: 900, motion: "no-preference", expandWorkbenches: false });
+    for (const style of ["Signature", "Cockpit", "Readable"]) {
+      await expect(page.locator("#type-btn")).toHaveAccessibleName(`Aa ${style}. Change type style`);
+      const result = await new AxeBuilder({ page })
+        .include("#type-btn")
+        .withRules(["label-content-name-mismatch"])
+        .analyze();
+      assert.deepEqual(
+        result.violations.map((v) => v.id),
+        [],
+        `${width}px ${style} visible name`,
+      );
+      await page.locator("#type-btn").click();
+    }
+    if (width === 390) {
+      await page.goto(url + "#flight=permission");
+      await page.getByRole("button", { name: "Finish →", exact: true }).click();
+      await expect(page.locator("#helios-flight .first-flight")).toHaveAttribute("data-complete", "true");
+      await expect(page.locator("#helios-flight #ff-boundary")).not.toContainText("Use Next");
+      await expect(page.locator("#helios-flight #ff-boundary")).toContainText(/Replay.*save your card/);
+    }
+  }
+});
+
+test("The home path introduces creative rooms before evidence, while the build story keeps its address", async (t) => {
+  const page = await visit(t, { width: 1024, height: 900, expandWorkbenches: false });
+  await expect(page.locator(".nav nav")).not.toBeVisible();
+  await expect(page.locator("#mc-btn")).toBeVisible();
+  await expect(page.locator("#build-story")).not.toBeVisible();
+  await expect(page.locator(".philo")).not.toBeVisible();
+  assert.ok(
+    await page
+      .locator("#rooms")
+      .evaluate((rooms) =>
+        Boolean(rooms.compareDocumentPosition(document.querySelector("#evidence")) & Node.DOCUMENT_POSITION_FOLLOWING),
+      ),
+  );
+  await page.locator("#mc-btn").click();
+  await page.locator("#mc-search").fill("Starship build story");
+  await page.locator('#mc-list a[href="#build-story"]').click();
+  await expect(page.locator("html")).toHaveAttribute("data-room", "starship");
+  await expect(page.locator("#build-proof-title")).toBeFocused();
+  await expect(page.locator("#build-story")).toContainText("blank canvas");
+  await page.locator(".room-back").click();
+  await expect(page.locator("#rooms-h")).toBeFocused();
+  await page.goBack();
+  await expect(page.locator("#build-proof-title")).toBeFocused();
+  await expect(page.locator("#build-proof-title")).toBeInViewport();
 });

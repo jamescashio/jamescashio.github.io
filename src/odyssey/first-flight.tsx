@@ -335,7 +335,7 @@ export default function FirstFlight({
         if (visitorPaced && playing) setPaused(true);
         const controls = [
           ...event.currentTarget.querySelectorAll<HTMLElement>(
-            "button:not([disabled]), summary, a[href], input:not([disabled]), [tabindex='0']",
+            "button:not([disabled]), summary, a[href], input:not([disabled]), select:not([disabled]), [tabindex='0']",
           ),
         ].filter((control) => control.getClientRects().length > 0);
         if (event.shiftKey && document.activeElement === controls[0]) {
@@ -543,7 +543,21 @@ export default function FirstFlight({
           )}
         </div>
       )}
-      <nav className="ff-chapters" aria-label="Flight chapters" hidden={complete}>
+      {zenith && compact && !complete && (
+        <select
+          className="ff-chapter-picker"
+          aria-label="Flight chapter"
+          value={step}
+          onChange={(event) => select(Number(event.target.value))}
+        >
+          {FIRST_FLIGHT.map((item, index) => (
+            <option key={item.id} value={index}>
+              {index + 1} / 4 · {["Board", "Open the hull", "Cut the cloud", "Human command"][index]}
+            </option>
+          ))}
+        </select>
+      )}
+      <nav className="ff-chapters" aria-label="Flight chapters" hidden={complete || (zenith && compact)}>
         {FIRST_FLIGHT.map((item, index) => (
           <button
             key={item.id}
@@ -646,17 +660,23 @@ export default function FirstFlight({
         </button>
       </footer>
       <p className="ff-boundary" id="ff-boundary">
-        Demo runs in your browser. No AI requests sent.{" "}
+        {zenith && compact ? "Local demo · no requests sent." : "Demo runs in your browser. No AI requests sent."}{" "}
         {phase === "fallback" ? "The 3D view is unavailable; the illustrated outcomes still work. " : ""}
-        {!motion
+        {zenith && compact
           ? complete
-            ? "Motion stays off on replay."
-            : "Motion off. Use Next."
-          : visitorPaced
-            ? playing
-              ? "30 second tour. Any decision pauses it."
-              : "Your pace. Use Next, or play the 30 second tour."
-            : "Explore at your own pace."}
+            ? "Replay or save your card."
+            : ""
+          : !motion
+            ? complete
+              ? "Motion stays off on replay."
+              : "Motion off. Use Next."
+            : zenith && complete
+              ? "Replay, save your card or test a private request."
+              : visitorPaced
+                ? playing
+                  ? "30 second tour. Any decision pauses it."
+                  : "Your pace. Use Next, or play the 30 second tour."
+                : "Explore at your own pace."}
       </p>
       <span className="o-sr-only" role="status" aria-atomic="true">
         {complete ? "Flight complete." : sceneTitle} {outcome.local} onboard, {outcome.cloud} in cloud, {outcome.held}{" "}

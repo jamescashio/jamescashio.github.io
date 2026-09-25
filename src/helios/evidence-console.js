@@ -8,7 +8,7 @@ import { $ } from "./dom.js";
 export const EVIDENCE = {
   help: [
     "Commands: fleet · hosts · kernel · backups · atlas · dsh · hermes · routes · archive · cost · clear · help",
-    `Listed commands read the dated export. Hidden commands are labeled lore. Revised ${FLEET.pageRevised}.`,
+    `Listed commands read the dated export. Hidden commands are labeled lore. Record revised ${FLEET.pageRevised}.`,
     "Keys: ↑ recalls a command · Tab completes one. Some commands are not listed. Pilots find them.",
   ],
   fleet: [
@@ -18,6 +18,7 @@ export const EVIDENCE = {
     `method: ${FLEET.method} · run by the owner`,
   ],
   kernel: [
+    `Public record policy: ${FLEET.pageRevised}`,
     "withheld: exact kernel and package versions stay out of the public record",
     "a public security record shows what was observed, never a map for an attacker",
   ],
@@ -26,15 +27,22 @@ export const EVIDENCE = {
     "coverage counts withheld · a restore drill is a separate test",
   ],
   atlas: [
+    `Observation: ${FLEET.auditLong}`,
     `primary model: runs locally · active context ${FLEET.atlas.context}`,
     "inference host for recurring work · model name and private catalog withheld",
   ],
-  dsh: ["DSH: operator console · provider and skill counts withheld", "operating brief on file · coexists with HERMES"],
+  dsh: [
+    `Audit: ${FLEET.auditLong} · operating brief: ${FLEET.consoleBriefLong}`,
+    "DSH: operator console · provider and skill counts withheld",
+    "coexists with HERMES",
+  ],
   hermes: [
+    `Observation: ${FLEET.auditLong}`,
     `scheduled jobs: ${FLEET.hermes.jobs} enabled of ${FLEET.hermes.records} records · budget period ${FLEET.hermes.budgetPeriod}`,
     "verified route count: withheld as unknown",
   ],
   routes: [
+    `Observation: ${FLEET.auditLong}`,
     "Routing verification: not established at this observation.",
     "Route totals and the private catalog are not published.",
     "The raw export preserves these unknowns for inspection.",
@@ -47,11 +55,13 @@ export const EVIDENCE = {
     `original expiry ${FLEET.archive.expiry}; that expiry does not extend the later observation`,
   ],
   cost: [
+    `Public record: ${FLEET.pageRevised}`,
     `status: ${FLEET.cost.status} · no current spend measurement is published`,
     `the ${FLEET.cost.archivedRelease} sample from ${FLEET.cost.archivedSample} stays in its archived export`,
     "rule in force: quality picks the model, cost only breaks a tie",
   ],
   hosts: [
+    `Observation: ${FLEET.observedLong}`,
     `zeus and apollo: ${FLEET.hosts} hosts, one cluster · ${FLEET.lxc} containers and ${FLEET.qemu} VM between them`,
     "quorum observed; quorum alone does not establish workload failover",
     "private service locations are withheld from the public record",

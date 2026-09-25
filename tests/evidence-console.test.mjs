@@ -38,3 +38,14 @@ test("public copy in the console avoids dashes as punctuation", () => {
   for (const lines of [...Object.values(EVIDENCE), ...Object.values(LORE)])
     for (const line of lines) assert.doesNotMatch(line, /[–—]/);
 });
+
+test("Individual facts retain their audit date instead of inheriting the later fleet observation", () => {
+  for (const command of ["atlas", "dsh", "hermes", "routes"]) {
+    const reply = evidenceReply(command).join(" ");
+    assert.match(reply, /September 18, 2026/);
+    assert.doesNotMatch(reply, /September 24, 2026/);
+  }
+  for (const command of ["fleet", "hosts", "backups"])
+    assert.match(evidenceReply(command).join(" "), /September 24, 2026/);
+  assert.match(evidenceReply("dsh").join(" "), /September 8, 2026/);
+});

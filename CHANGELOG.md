@@ -2,6 +2,8 @@
 
 ## V39.0 · Zenith
 
+- Give the home page a shorter path to the creative rooms. The Starship lab holds its build story, the Principles room holds its philosophy, and each E.V.E. fact names its own observation date. Tablet navigation uses Mission Control before labels wrap. Phone flights use a chapter chooser and give more height to the scene and explanation.
+- Keep the Aa visible words and accessible name in agreement in every type style. After Finish, flight guidance names the controls that remain available.
 - Remove the home city from the preserved archive pages and their shared console replies; retain the original version labels and observation dates.
 - Further unpublished refinements: shorten the personal introduction, routing explanation and repeated caveats; keep the seven studies and system map behind native disclosures that shared links open automatically. Preserve every experiment and the complete evidence boundary.
 - Repair phone fleet captions, map labels and chapter names without reducing the 14 pixel label floor. Give the Aa control an accessible name that includes its visible label. Keep Replay flight on a full row after Finish.

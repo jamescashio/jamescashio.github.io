@@ -684,7 +684,13 @@ test("Helios release identity, signature assets and compatibility receipts agree
     timeZone: "UTC",
   }).format(releaseDay);
   assert.equal(FLEET.pageRevised, longDate, "console help and release receipt share the interface date");
-  assert.match(doc.body.textContent, new RegExp(`Updated\\s+${longDate}`));
+  assert.match(doc.body.textContent, new RegExp(`Published record\\s*·\\s*${longDate}`));
+  const observedDate = (value) =>
+    new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(
+      new Date(value),
+    );
+  assert.equal(FLEET.auditLong, observedDate(evidence.provenance.auditCollectedAtUtc));
+  assert.equal(FLEET.consoleBriefLong, observedDate(evidence.orchestration.dshAgentsBriefDate + "T00:00:00Z"));
   const shortVersion = release.experienceVersion.split(".").slice(0, 2).join(".");
   assert.ok((await read("README.md")).startsWith(`# cAshIo V${shortVersion} · Helios`));
   assert.equal((await read("CHANGELOG.md")).match(/^## (V[\d.]+)/m)?.[1], `V${shortVersion}`);

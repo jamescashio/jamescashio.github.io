@@ -668,7 +668,7 @@ section[data-ambient="off"] *:after,
 }
 @media (max-width: 1100px) {
   .nav nav {
-    gap: 18px;
+    display: none;
   }
   .instrument > .cols-split {
     grid-template-columns: minmax(0, 1fr) !important;
