@@ -1,7 +1,7 @@
 import { gsap } from "gsap";
 import { $, $$ } from "./dom.js";
 
-export function setupPrivacy({ loadRequest, traceRequest, motion }) {
+export function setupPrivacy({ loadRequest, traceRequest, motion, onReveal }) {
   $("#request-privacy").addEventListener("click", (event) => {
     const button = event.target.closest("[data-request-private]");
     if (!button) return;
@@ -25,14 +25,17 @@ export function setupPrivacy({ loadRequest, traceRequest, motion }) {
     $("#pv-live").textContent = "";
     $("#pv-trace").hidden = true;
   }
+  // A prediction is the whole question, so choosing one reveals the answer at once.
   $$("[data-pv]").forEach((b) =>
     b.addEventListener("click", () => {
       resetResult();
       pv.pick = b.dataset.pv;
       $$("[data-pv]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      reveal();
     }),
   );
-  $("#pv-reveal").addEventListener("click", () => {
+  $("#pv-reveal").addEventListener("click", () => reveal());
+  function reveal() {
     loadRequest({ intent: "analyze", privateData: true, sources: true });
     gsap.killTweensOf([result, signal]);
     $("#pv-trace").hidden = false;
@@ -61,7 +64,8 @@ export function setupPrivacy({ loadRequest, traceRequest, motion }) {
         { x: 49, opacity: 0, duration: 0.8, ease: "power2.inOut", clearProps: "transform,opacity" },
       );
     }
-  });
+    onReveal?.(pv.pick);
+  }
 
   return { getPrediction: () => pv.pick };
 }

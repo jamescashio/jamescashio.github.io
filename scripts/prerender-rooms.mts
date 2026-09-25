@@ -1,6 +1,8 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { JSDOM } from "jsdom";
 import { computeWorldOutcome } from "../src/odyssey/sovereign-model";
+import { PILOTS } from "../src/helios/heritage-data.js";
+import { PRINCIPLES } from "../src/helios/principles-data.js";
 
 /** Static reading pages share the exact authored content used by the deferred interactive rooms. */
 const root = new JSDOM(await readFile("dist/index.html", "utf8")).window.document;
@@ -29,7 +31,7 @@ for (const id of roomIds) {
   doc.head.append(canonical);
   const notice = doc.createElement("header");
   notice.className = "wrap stack p-22-30 sg-16";
-  notice.innerHTML = `<a href="/#rooms">← Back to the four rooms</a><h1 class="syne fs-32">${title}</h1><p id="reading-mode">Controls are inactive in this reading edition. It shows the artwork and one example state. Open the interactive room to change the inputs and explore the results.</p><a class="btn gold" href="/#${id}">Open the interactive room →</a>`;
+  notice.innerHTML = `<a href="/#rooms">← Back to the four rooms</a><h1 class="syne fs-32">${title}</h1><p id="reading-mode">Controls are inactive in this reading edition. It shows the artwork, one example state and all of the text. Open the interactive room to change the inputs and explore the results.</p><a class="btn gold" href="/#${id}">Open the interactive room →</a>`;
   const main = doc.createElement("main");
   main.innerHTML = source;
   for (const image of main.querySelectorAll("img")) {
@@ -64,11 +66,61 @@ for (const id of roomIds) {
   }
   for (const node of main.querySelectorAll("[data-count]")) node.textContent = node.getAttribute("data-count");
   if (id === "starship") renderStarshipExample(main);
+  if (id === "heritage")
+    main.querySelector(`#${id}`)!.append(
+      readingList(
+        doc,
+        "All four lessons",
+        Object.values(PILOTS).map((pilot) => [pilot.kick, pilot.head, pilot.body, pilot.source, pilot.sourceLabel]),
+      ),
+    );
+  if (id === "principles")
+    main.querySelector(`#${id}`)!.append(
+      readingList(
+        doc,
+        "All three principles",
+        PRINCIPLES.map((principle) => [`${principle.n} / ${principle.tag}`, principle.title, principle.body]),
+      ),
+    );
   for (const details of main.querySelectorAll("details")) details.open = true;
   doc.body.append(notice, main);
   await mkdir(`dist/rooms/${id}`, { recursive: true });
   await writeFile(`dist/rooms/${id}/index.html`, "<!doctype html>\n" + doc.documentElement.outerHTML + "\n");
 }
+/** Without JavaScript the picker shows one entry; the reading edition also lists every entry in full. */
+function readingList(doc: Document, heading: string, items: string[][]) {
+  const section = doc.createElement("section");
+  section.className = "wrap stack sg-16 reading-all";
+  const title = doc.createElement("h2");
+  title.className = "syne fs-28-36";
+  title.textContent = heading;
+  const grid = doc.createElement("div");
+  grid.className = "grid-box cols-fit-200 gap-12";
+  for (const [kicker, head, body, href, label] of items) {
+    const card = doc.createElement("article");
+    card.className = "soft stack p-16 sg-6";
+    for (const [tag, className, text] of [
+      ["span", "mono c-gd", kicker],
+      ["strong", "", head],
+      ["p", "muted copy-note m-0", body],
+    ]) {
+      const node = doc.createElement(tag);
+      if (className) node.className = className;
+      node.textContent = text;
+      card.append(node);
+    }
+    if (href) {
+      const link = doc.createElement("a");
+      link.href = href;
+      link.textContent = `${label} ↗`;
+      card.append(link);
+    }
+    grid.append(card);
+  }
+  section.append(title, grid);
+  return section;
+}
+
 /**
  * The reading edition shows the interactive room's default example: mixed sensitivity, connected, private egress off.
  * Counts come from the same shared model the interactive room uses, so the two can never disagree.

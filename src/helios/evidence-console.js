@@ -12,60 +12,60 @@ export const EVIDENCE = {
     "Keys: ↑ recalls a command · Tab completes one. Some commands are not listed. Pilots find them.",
   ],
   fleet: [
-    `observation: ${FLEET.observedLong}`,
-    `hosts at the observation: ${FLEET.hosts} responded, ${FLEET.quorate ? "enough cluster votes to make management decisions" : "enough cluster votes were not confirmed"}`,
+    `Observation: ${FLEET.observedLong}`,
+    `Hosts at the observation: ${FLEET.hosts} responded, ${FLEET.quorate ? "enough cluster votes to make management decisions" : "enough cluster votes were not confirmed"}`,
     `Running guests: ${FLEET.lxc} containers and ${FLEET.qemu} virtual machine · per host split withheld`,
-    `method: ${FLEET.method} · run by the owner`,
+    `Method: ${FLEET.method} · run by the owner`,
   ],
   kernel: [
     `Public record policy: ${FLEET.pageRevised}`,
-    "withheld: exact kernel and package versions stay out of the public record",
-    "a public security record shows what was observed, never a map for an attacker",
+    "Withheld: exact kernel and package versions stay out of the public record",
+    "A public security record shows what was observed, never a map for an attacker",
   ],
   backups: [
-    `integrity: ${FLEET.backups.integrity} · checked ${FLEET.backups.checkedLong}`,
-    "coverage counts withheld · a restore drill is a separate test",
+    `Integrity: ${FLEET.backups.integrity} · checked ${FLEET.backups.checkedLong}`,
+    "Coverage counts withheld · a restore drill is a separate test",
   ],
   atlas: [
     `Observation: ${FLEET.auditLong}`,
     `Local AI model · context window: ${FLEET.atlas.context.toLocaleString("en-US")} tokens`,
     "Tokens are pieces of text. This window holds the instructions, conversation and reply together.",
-    "inference host for recurring work · model name and private catalog withheld",
+    "Inference host for recurring work · model name and private catalog withheld",
   ],
   dsh: [
     `Audit: ${FLEET.auditLong} · operating brief: ${FLEET.consoleBriefLong}`,
     "DSH: operator console · provider and skill counts withheld",
-    "coexists with HERMES",
+    "Coexists with HERMES",
   ],
   hermes: [
     `Observation: ${FLEET.auditLong}`,
-    `scheduled jobs: ${FLEET.hermes.jobs} enabled of ${FLEET.hermes.records} records · budget period ${FLEET.hermes.budgetPeriod}`,
-    "verified route count: withheld as unknown",
+    `Scheduled jobs: ${FLEET.hermes.jobs} enabled of ${FLEET.hermes.records} records · budget period ${FLEET.hermes.budgetPeriod}`,
+    "Verified route count: withheld as unknown",
   ],
   routes: [
     `Observation: ${FLEET.auditLong}`,
     "Routing verification: not established at this observation.",
     "Route totals and the private catalog are not published.",
     "The raw export preserves these unknowns for inspection.",
-    "the HERMES study on this page is a model that runs in your browser, not this record",
+    "The HERMES study on this page is a model that runs in your browser, not this record",
   ],
   archive: [
     `${FLEET.prior.release} · fleet observed ${FLEET.prior.fleetLong} · ${FLEET.prior.method} · ${FLEET.prior.lxc} containers · ${FLEET.prior.qemu} virtual machine`,
     `${FLEET.archive.release} · fleet observed ${FLEET.archive.fleetLong} · routing observed ${FLEET.archive.routingLong}`,
     `${FLEET.archive.release} counts: ${FLEET.archive.lxc} containers running · virtual machines ${FLEET.archive.qemu.toLowerCase()} · public lanes: ${FLEET.archive.lanes}`,
-    `original expiry ${FLEET.archive.expiry}; that expiry does not extend the later observation`,
+    `Original expiry ${FLEET.archive.expiry}; that expiry does not extend the later observation`,
   ],
   cost: [
     `Public record: ${FLEET.pageRevised}`,
-    `status: ${FLEET.cost.status} · no current spend measurement is published`,
-    `the ${FLEET.cost.archivedRelease} sample from ${FLEET.cost.archivedSample} stays in its archived export`,
-    "rule in force: quality picks the model, cost only breaks a tie",
+    `Status: ${FLEET.cost.status} · no current spend measurement is published`,
+    `The ${FLEET.cost.archivedRelease} sample from ${FLEET.cost.archivedSample} stays in its archived export`,
+    "Rule in force: quality picks the model, cost only breaks a tie",
   ],
   hosts: [
     `Observation: ${FLEET.observedLong}`,
-    `zeus and apollo: ${FLEET.hosts} hosts, one cluster · ${FLEET.lxc} containers and ${FLEET.qemu} VM between them`,
+    `Zeus and Apollo: ${FLEET.hosts} hosts, one cluster · ${FLEET.lxc} containers and ${FLEET.qemu} VM between them`,
     "The cluster had enough votes to make management decisions. This does not prove that applications can survive a host failure.",
-    "private service locations are withheld from the public record",
+    "Private service locations are withheld from the public record",
   ],
 };
 
@@ -112,6 +112,13 @@ export const LORE = {
   towel: ["lore · Towel located. Human in command. Don't panic."],
   sudo: ["denied · A human is in command, and it is the one who built this. Try help."],
   cashio: ["lore · cAshIo. Look at the capitals."],
+  whoami: ["lore · You: a guest with read only access. Doug: the human in command."],
+  ls: ["lore · Everything public is already on this page. The rest stays home."],
+  exit: ["lore · A static page has no exit. Close the tab, or say hello on the way out."],
+  nmap: ["lore · Nothing to scan here but HTML. Private addresses stay out of the public record."],
+  "rm -rf /": ["denied · Nothing here to delete. A human is in command."],
+  hal: ["lore · This machine opens the doors when a person asks. That is the whole idea."],
+  "open the pod bay doors": ["lore · This machine opens the doors when a person asks. That is the whole idea."],
 };
 /** The two server names answer with the dated host record. */
 const ALIASES = { zeus: "hosts", apollo: "hosts" };
@@ -141,7 +148,8 @@ export function setupEvidenceConsole({ motion }) {
     out.appendChild(line);
   };
   const pendingReplies = new Set();
-  let lastSurprise = "";
+  // Surprises come from a shuffled deck, so every hidden command appears once before any repeats.
+  let deck = [];
   function run(raw) {
     let cmd = String(raw).trim().toLowerCase().replace(/\s+/g, " ");
     if (!cmd) return;
@@ -156,10 +164,9 @@ export function setupEvidenceConsole({ motion }) {
     add("↳ " + cmd);
     let hint = "";
     if (cmd === "surprise me") {
-      // Never the same hidden command twice in a row.
-      const options = SURPRISES.filter((name) => name !== lastSurprise);
-      cmd = lastSurprise = options[Math.floor(Math.random() * options.length)];
-      hint = `hidden command found: ${cmd}. There are more.`;
+      if (!deck.length) deck = [...SURPRISES].sort(() => Math.random() - 0.5);
+      cmd = deck.pop();
+      hint = `hidden command found: ${cmd} · ${SURPRISES.length - deck.length} of ${SURPRISES.length} surprises. There are more to find.`;
     }
     const lines = [...evidenceReply(cmd)];
     const reply = document.createElement("div");

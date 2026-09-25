@@ -68,20 +68,24 @@ async function choose(page, id) {
   await expect(page.locator(`#study-${id}`)).toHaveAttribute("aria-selected", "true");
 }
 
-test("Privacy feedback resets with a new prediction and stays complete when motion is interrupted", async (t) => {
+test("Privacy feedback answers each new prediction at once and stays complete when motion is interrupted", async (t) => {
   for (const motion of ["reduce", "no-preference"]) {
     const page = await visit(t, { width: 320, height: 700, motion, hash: "#work" });
     await expect(page.locator("#pv-live")).toBeEmpty();
+    await expect(page.locator("#pv-result")).toBeHidden();
+    await expect(page.locator("#pv-answer")).toHaveText("Your call.");
+    // Choosing a prediction reveals the answer in the same click.
     await page.locator('[data-pv="keep"]').click();
-    await page.locator("#pv-reveal").click();
+    await expect(page.locator("#pv-result")).toBeVisible();
     await expect(page.locator("#pv-text")).toContainText("Not quite. Privacy wins.");
     await expect(page.locator("#pv-answer")).toHaveText("Human review");
     await expect(page.locator("#pv-live")).toContainText("Your prediction: Research.");
+    await expect(page.locator("#pv-trace")).toBeVisible();
+    // A new prediction replaces the old feedback rather than adding to it.
     await page.locator('[data-pv="human"]').click();
-    await expect(page.locator("#pv-result")).toBeHidden();
-    await expect(page.locator("#pv-trace")).toBeHidden();
-    await expect(page.locator("#pv-live")).toBeEmpty();
-    await expect(page.locator("#pv-answer")).toHaveText("Your call.");
+    await expect(page.locator("#pv-text")).not.toContainText("Not quite");
+    await expect(page.locator("#pv-live")).toContainText("You called it.");
+    await expect(page.locator("#pv-live")).toContainText("Your prediction: Human review.");
     await expect(page.locator('[data-pv="human"]')).toBeFocused();
     await expect(page.locator('[data-pv="keep"]')).toHaveAttribute("aria-pressed", "false");
     for (let i = 0; i < 3; i++) await page.locator("#pv-reveal").click();
@@ -1449,6 +1453,9 @@ test("All four reading editions remain reachable and readable without JavaScript
     for (const id of ["starship", "principles", "studios", "heritage"]) {
       await page.goto(url);
       await page.locator(`.room-card[href="/rooms/${id}/"]`).click();
+      // Measure layout only once the reading page and its stylesheet have loaded.
+      await page.waitForURL(`**/rooms/${id}/`);
+      await page.waitForLoadState("load");
       await expect(page.locator("h1")).toBeVisible();
       await expect(page.locator(`#${id}`)).toBeVisible();
       await expect(page.locator(".room-end a").first()).toBeVisible();

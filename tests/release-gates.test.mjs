@@ -705,7 +705,7 @@ test("Helios release identity, signature assets and compatibility receipts agree
   assert.equal(doc.querySelector("#sig-art").getAttribute("src"), versions["/v38/assets/celestial.webp"].url);
   assert.equal(
     doc.querySelector('#sigplate a[href="#signature"]').textContent.trim(),
-    "Explore the celestial signature in 3D ↗",
+    "Explore the celestial signature in 3D →",
   );
   for (const ext of ["webp", "jpg"]) {
     const relative = `v38/assets/celestial.${ext}`;

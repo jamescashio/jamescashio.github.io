@@ -27,10 +27,10 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
       "names definitions acronyms hermes dsh zeus apollo atlas bit eve r-01 workhorse research synthesis lanes",
     ],
     [
-      "Start here: try one decision",
-      "Predict the route. Test the privacy boundary.",
+      "The privacy test",
+      "Start here. Predict where one private document goes.",
       "#work",
-      "privacy private data test",
+      "privacy private data test start decision",
     ],
     [
       "The system map",
@@ -122,11 +122,11 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
       const empty = document.createElement("p");
       empty.className = "mc-empty";
       empty.textContent =
-        "No match yet. Try ‘flight’, ‘signature’ or ‘Graphify’, or clear the search to return to the starting paths.";
+        "No match yet. Try ‘privacy’, ‘flight’ or ‘signature’, or clear the search to return to the starting paths.";
       list.append(empty);
     }
   }
-  function open() {
+  function open(event) {
     if (dialog.open || !canOpen()) return;
     const active = document.activeElement;
     previousFocus = active && active !== document.body ? active : document.getElementById("mc-btn");
@@ -140,7 +140,9 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
     history.pushState({ ...current, heliosMenu: true }, "");
     entry = true;
     onToggle();
-    search.focus();
+    // A tap should show the destinations, not raise the phone keyboard over them.
+    if (event?.pointerType === "touch") document.querySelector("#mc-title").focus();
+    else search.focus();
   }
   dialog.addEventListener("close", () => {
     onToggle();
@@ -170,6 +172,12 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
   document.querySelector("#mc-btn").addEventListener("click", open);
   document.querySelector("#mc-close").addEventListener("click", () => dialog.close());
   search.addEventListener("input", () => render(search.value.trim().toLowerCase()));
+  // Esc closes the menu at once, as its key hint says, instead of first clearing the search.
+  search.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    event.preventDefault();
+    dialog.close();
+  });
   clear.addEventListener("click", () => {
     search.value = "";
     render();

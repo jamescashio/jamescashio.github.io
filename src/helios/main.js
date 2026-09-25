@@ -73,10 +73,12 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 const studyDeck = setupStudies({ scenes, motion: () => motionOn, copy });
-const privacy = setupPrivacy({
+setupPrivacy({
   loadRequest: studyDeck.loadRequest,
   traceRequest: () => scenes.traceRequest(),
   motion: () => motionOn,
+  // The privacy card explains its own result; Bit only reacts with a mood, so it never covers the answer.
+  onReveal: (prediction) => Bit.setMood(prediction === "human" ? "yes" : prediction === "keep" ? "no" : "think", 2200),
 });
 
 setupAtlas({ scenes, motion: () => motionOn, say: (...args) => Bit.say(...args) });
@@ -105,11 +107,6 @@ $("#route-btn").addEventListener("click", () => {
       );
     else Bit.say("ROUTED", `${r.lane} lane. Every step is on the panel; nothing left this page.`, "yes", 2400);
   }, 900);
-});
-// The privacy card explains its own result; Bit only reacts with a mood, so it never covers the answer.
-$("#pv-reveal").addEventListener("click", () => {
-  const prediction = privacy.getPrediction();
-  Bit.setMood(prediction === "human" ? "yes" : prediction === "keep" ? "no" : "think", 2200);
 });
 $("#trace-btn").addEventListener("click", () =>
   Bit.say("TRACE", "Following one request from intent to review. Conceptual, not live.", "think", 3000),

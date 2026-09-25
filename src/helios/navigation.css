@@ -117,11 +117,14 @@
   border-radius: 12px;
 }
 .mc-destination::after {
-  content: "↗";
+  content: "→";
   position: absolute;
   top: 16px;
   right: 14px;
   color: var(--gold);
+}
+.mc-destination[href^="http"]::after {
+  content: "↗";
 }
 .mc-destination strong {
   font: 600 16px var(--sans);

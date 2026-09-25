@@ -388,6 +388,7 @@ section.bg-chapter-rise {
   min-height: 60px;
   flex-direction: column;
   align-items: flex-start;
+  text-align: left;
   gap: 2px;
   border-radius: 14px;
   padding: 8px 14px;

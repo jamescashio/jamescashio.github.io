@@ -73,7 +73,7 @@ export function setupAtlas({ scenes, motion, say }) {
       $$("[data-node]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
       $("#nd-role").textContent = n.role;
       $("#nd-name").textContent = n.name;
-      $("#atlas-inspect-link").textContent = `Inspect ${n.name}: role and evidence ↗`;
+      $("#atlas-inspect-link").textContent = `Inspect ${n.name}: role and evidence →`;
       $("#nd-value").textContent = n.value;
       $("#nd-unit").textContent = n.unit;
       $("#nd-summary").textContent = n.summary;

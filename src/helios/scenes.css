@@ -105,6 +105,12 @@
   font-weight: 650 !important;
   letter-spacing: -0.035em;
 }
+/* Labels sit on a quiet backing, so a route line never runs through their words. */
+.node > span:not(.core) {
+  padding: 0 6px;
+  border-radius: 6px;
+  background: #08111dd9;
+}
 .node > span:last-child {
   font-family: var(--sans);
   text-transform: none;
