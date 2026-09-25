@@ -54,7 +54,11 @@ export function setupHeritage({ motion, say }) {
     const k = b.dataset.pilot,
       P = PILOTS[k];
     press($("#pilots"), "data-pilot", k);
-    $$("#hangar img.hp").forEach((im) => im.classList.toggle("on", im.dataset.pilot === k));
+    $$("#hangar img.hp").forEach((image) => {
+      const active = image.dataset.pilot === k;
+      image.classList.toggle("on", active);
+      image.setAttribute("aria-hidden", String(!active));
+    });
     $("#hg-title").textContent = P.title;
     $("#hg-credit").textContent = P.credit;
     $("#hg-idx").textContent = P.idx;

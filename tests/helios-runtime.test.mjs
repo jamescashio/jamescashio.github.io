@@ -546,9 +546,9 @@ test("The full page, atlas, principles, evidence console, hangar and contact sta
     await expect(page.locator("#trace-label")).toContainText("human review");
     await page.locator('.room-card[data-room-route="#principles"]').click();
     for (const [index, title] of [
-      [0, "Begin with a clear signal."],
-      [1, "Give each request the route it needs."],
-      [2, "Trust has a timestamp."],
+      [0, "Show the age of a fact."],
+      [1, "Make the choice explainable."],
+      [2, "Make the claim testable."],
     ]) {
       await page.locator(`[data-pr='${index}']`).click();
       await expect(page.locator("#pr-title")).toHaveText(title);
@@ -1454,4 +1454,115 @@ test("All four reading editions remain reachable and readable without JavaScript
       await expect(page.locator("#rooms-h")).toBeVisible();
     }
   }
+});
+
+test("Skip to content keeps the current room and history while moving keyboard focus", async (t) => {
+  for (const width of [320, 1440]) {
+    for (const [hash, id, heading] of [
+      ["#evidence", "top", "#top h1"],
+      ["#starship", "starship", "#ship-h"],
+      ["#principles", "principles", "#pr-h"],
+      ["#studios", "studios", "#studios-h"],
+      ["#heritage", "heritage", "#he-h"],
+    ]) {
+      const page = await visit(t, { width, height: 844, hash, expandWorkbenches: false });
+      const address = page.url();
+      const title = await page.title();
+      const entries = await page.evaluate(() => history.length);
+      const skip = page.getByRole("link", { name: "Skip to content", exact: true });
+      await skip.focus();
+      await expect(skip).toBeInViewport();
+      await skip.press("Enter");
+      await expect(page.locator(heading)).toBeFocused();
+      await expect(page.locator(heading)).toBeInViewport();
+      await expect(page.locator(`#${id}`)).toBeVisible();
+      assert.equal(page.url(), address, "Skipping content does not navigate away");
+      assert.equal(await page.title(), title);
+      assert.equal(await page.evaluate(() => history.length), entries, "No extra history entry");
+    }
+  }
+});
+
+test("The V35 archive returns to the current site without adding a cinema tab stop", async (t) => {
+  for (const width of [320, 1440]) {
+    const context = await browser.newContext({ viewport: { width, height: 844 }, reducedMotion: "reduce" });
+    t.after(() => context.close());
+    const page = await context.newPage();
+    await page.goto(new URL("/command-deck.html#deck=eve", url).href);
+    await page.locator('button[data-cmd="photo"]').click();
+    const cinema = page.getByRole("dialog", { name: "Cinema view", exact: true });
+    await expect(cinema).toBeVisible();
+    const back = page.locator('a[href="/"]').filter({ hasText: "Back to current site" });
+    assert.equal(await back.evaluate((link) => Boolean(link.closest("[inert]"))), true);
+    const exit = cinema.getByRole("button", { name: "EXIT CINEMA", exact: true });
+    for (const key of ["Tab", "Shift+Tab"]) {
+      await page.keyboard.press(key);
+      await expect(exit).toBeFocused();
+    }
+    await page.keyboard.press("Escape");
+    await expect(cinema).not.toBeVisible();
+    assert.equal(await back.evaluate((link) => Boolean(link.closest("[inert]"))), false);
+    await page.goto(new URL("/command-deck.html", url).href);
+    await back.click();
+    await expect(page.locator("#hero-primary")).toBeVisible();
+    assert.equal(new URL(page.url()).pathname, "/");
+
+    const staticContext = await browser.newContext({ javaScriptEnabled: false, viewport: { width, height: 844 } });
+    t.after(() => staticContext.close());
+    const staticPage = await staticContext.newPage();
+    await staticPage.goto(new URL("/command-deck.html", url).href);
+    await staticPage.getByRole("link", { name: "Back to current site", exact: false }).click();
+    await expect(staticPage.locator("#hero-primary")).toBeVisible();
+    assert.equal(new URL(staticPage.url()).pathname, "/");
+  }
+});
+
+test("Study shortcuts reveal the chosen experiment and heritage credits never cover the photograph", async (t) => {
+  for (const width of [320, 390, 1440]) {
+    const page = await visit(t, { width, height: 844, expandWorkbenches: false });
+    const shortcuts = page.getByRole("navigation", { name: "Study shortcuts", exact: true });
+    await expect(shortcuts.getByRole("link")).toHaveCount(7);
+    await expect(page.locator("#study-lab")).not.toHaveAttribute("open", "");
+    for (const id of ["hermes", "cascade", "exposure", "briefing", "dashboards", "signal", "graphify"]) {
+      await shortcuts.locator(`a[href="#build=${id}"]`).click();
+      await expect(page.locator("#study-lab")).toHaveAttribute("open", "");
+      await expect(page.locator(`#study-${id}`)).toHaveAttribute("aria-selected", "true");
+      await expect(page.locator("#studies-h")).toBeFocused();
+    }
+    await page.locator('.room-card[data-room-route="#heritage"]').click();
+    for (const pilot of ["yeager", "johnson", "rutan", "hoover"]) {
+      await page.locator(`#pilots [data-pilot="${pilot}"]`).click();
+      await expect(page.locator("#hangar").getByRole("img")).toHaveCount(1);
+      const geometry = await page.locator("#hg-credit").evaluate((credit) => {
+        const photo = document.querySelector("#hangar").getBoundingClientRect();
+        const caption = credit.closest("figcaption").getBoundingClientRect();
+        return { imageBottom: photo.bottom, captionTop: caption.top, right: caption.right };
+      });
+      assert.ok(geometry.captionTop >= geometry.imageBottom, "Credits have a separate band below the image");
+      assert.ok(geometry.right <= width, "The caption stays within the page");
+    }
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+    await audit(page, `heritage-caption-${width}`);
+  }
+});
+
+test("Section navigation keeps its heading visible after a viewport change", async (t) => {
+  const page = await visit(t, {
+    width: 320,
+    height: 844,
+    motion: "no-preference",
+    hash: "#heritage",
+    expandWorkbenches: false,
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(url + "#studies");
+  await expect(page.locator("#studies-h")).toBeFocused();
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.locator("#st-next").scrollIntoViewIfNeeded();
+  await page.locator('.sections a[href="#studies"]').click();
+  await expect(page.locator("#studies-h")).toBeFocused();
+  await expect(page.locator("#studies-h")).toBeInViewport();
+  await expect
+    .poll(() => page.locator("#studies-h").evaluate((heading) => heading.getBoundingClientRect().top))
+    .toBeGreaterThanOrEqual(70);
 });

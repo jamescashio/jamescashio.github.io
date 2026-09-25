@@ -373,9 +373,7 @@
                 <a href="#studies" data-load="public">Load a public request ↗</a
                 ><a href="#studies" data-load="private">Load the private version ↗</a>
               </div>
-              <span class="mono c-mu"
-                >Nothing leaves this page. No document is uploaded and no AI request is sent.</span
-              >
+              <span class="mono c-mu">A browser simulation. No uploads or AI calls.</span>
             </div>
             <div class="panel c5 stack panel-gold-wash">
               <span class="kick gold">FROM MY WORKSHOP / SMART ROUTING</span>
@@ -389,8 +387,8 @@
                 <figcaption class="mono">My routing law · published in the dated export</figcaption>
               </figure>
               <p class="muted">
-                Atlas is my local AI model for recurring work. Harder tasks can earn a stronger model. The studies let
-                you try the policy; the dated record shows what has actually been observed.
+                Atlas handles recurring work on my servers. Try a harder task to see when the rule chooses a different
+                route.
               </p>
               <div class="flex gap-12 flex-wrap mt-auto">
                 <a href="#studies" class="btn gold sm" data-load="public">Try the routing demo</a
@@ -401,7 +399,7 @@
         </div>
       </section>
       <!-- ================= SEVEN STUDIES ================= -->
-      <section class="block bg-chapter-blue" id="studies" aria-labelledby="studies-h">
+      <section class="block bg-chapter-blue workbench-section" id="studies" aria-labelledby="studies-h">
         <div class="wrap">
           <div class="head">
             <div>
@@ -413,6 +411,15 @@
               <p class="study-intro">Choose a question. Change the inputs. See the rule at work.</p>
             </div>
           </div>
+          <nav class="flex gap-8 flex-wrap mb-14" aria-label="Study shortcuts">
+            <a class="pill" href="#build=hermes">Choose a route</a>
+            <a class="pill" href="#build=cascade">Know when to pause</a>
+            <a class="pill" href="#build=exposure">Triage an exposure</a>
+            <a class="pill" href="#build=briefing">Compose a brief</a>
+            <a class="pill" href="#build=dashboards">Age the evidence</a>
+            <a class="pill" href="#build=signal">Corroborate a signal</a>
+            <a class="pill" href="#build=graphify">Trace a dependency</a>
+          </nav>
           <details class="workbench-disclosure" id="study-lab">
             <summary>
               <span
@@ -478,8 +485,7 @@
                     </div>
                     <div class="stack sg-8" id="st-steps"></div>
                     <p class="muted copy-note m-top-4" id="st-detail">
-                      Choose a task and its boundaries, then run the five step demonstration. No request leaves this
-                      page.
+                      Choose a task, then follow its five-step route.
                     </p>
                   </div>
                 </div>
@@ -537,7 +543,7 @@
       </section>
 
       <!-- ================= THE UNIVERSE ================= -->
-      <section class="block bt-line" id="universe" aria-labelledby="uni-h">
+      <section class="block bt-line workbench-section" id="universe" aria-labelledby="uni-h">
         <div class="wrap">
           <header class="atlas-intro">
             <div class="stack">

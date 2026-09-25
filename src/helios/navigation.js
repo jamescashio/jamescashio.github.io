@@ -158,7 +158,7 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
       if (!scene && !pending) dialog.open ? dialog.close() : open();
     }
   });
-  function focusSection(id, shouldScroll = true, jump = false) {
+  function focusSection(id, shouldScroll = true) {
     const target = document.getElementById(id);
     if (!target) return;
     // A shared address opens the workbench before focus or the fragment can land inside hidden content.
@@ -177,9 +177,8 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
     const heading = target.querySelector("h1,h2,h3") || target;
     heading.setAttribute("tabindex", "-1");
     heading.focus({ preventScroll: true });
-    // A page change jumps; smooth scrolling across a swapped page would travel through the wrong content.
-    if (shouldScroll || revealed)
-      target.scrollIntoView({ behavior: motion() && !jump && !revealed ? "smooth" : "instant", block: "start" });
+    // Move focus and its heading together. Smooth scrolling can drift as skipped sections lay out after resize.
+    if (shouldScroll || revealed) target.scrollIntoView({ behavior: "instant", block: "start" });
     return heading;
   }
   function dispose() {
@@ -298,7 +297,7 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
     const pageChanged = rooms.sync(hash);
     if (rooms.needsLoad(hash)) {
       if (pageChanged) {
-        focusBeforeLoad = focusSection(document.documentElement.dataset.room, true, true);
+        focusBeforeLoad = focusSection(document.documentElement.dataset.room);
         window.scrollTo({ top: 0, behavior: "instant" });
       }
       const ready = await rooms.ensure(hash);
@@ -307,7 +306,7 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
       if (dialog.open || (document.activeElement !== document.body && document.activeElement !== focusBeforeLoad))
         return;
       if (!ready) {
-        focusSection(document.documentElement.dataset.room, true, true);
+        focusSection(document.documentElement.dataset.room);
         return;
       }
     }
@@ -329,7 +328,7 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
     const experiment = parseExperiment(hash);
     if (experiment) {
       select(experiment);
-      focusSection("studies", true, pageChanged);
+      focusSection("studies");
       return;
     }
     const scenario = parseMissionHash(hash.replace(/\.online\./, ".connected."));
@@ -342,7 +341,7 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
       });
       const opened = rooms.sync("#starship");
       if (opened) window.scrollTo({ top: 0, behavior: "instant" });
-      focusSection("starship", !opened, true);
+      focusSection("starship", !opened);
       return;
     }
     if (/^#[a-z-]+$/.test(hash)) {
@@ -353,7 +352,7 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
         if (initial)
           addEventListener("load", () => scrollY < 200 && scrollTo({ top: 0, behavior: "instant" }), { once: true });
       }
-      const heading = focusSection(hash.slice(1), !initial && !opensRoom, pageChanged);
+      const heading = focusSection(hash.slice(1), !initial && !opensRoom);
       if (initial) {
         const initialAddress = location.href;
         const restoreInitialFocus = () =>
@@ -367,7 +366,7 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
               !scene &&
               !pending
             )
-              focusSection(hash.slice(1), !opensRoom, true);
+              focusSection(hash.slice(1), !opensRoom);
           });
         if (document.readyState === "complete") restoreInitialFocus();
         else window.addEventListener("load", restoreInitialFocus, { once: true });
@@ -403,7 +402,13 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
     const link = event.target.closest("a[href^='#'],a[data-room-route]");
     if (!link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button) return;
     event.preventDefault();
-    navigate(link.dataset.roomRoute || link.getAttribute("href"), dialog.contains(link) ? previousFocus : link);
+    const hash = link.dataset.roomRoute || link.getAttribute("href");
+    if (hash === "#main-content") {
+      // Skip past shared navigation without changing the open room or browser history.
+      focusSection(document.documentElement.dataset.room || "top");
+      return;
+    }
+    navigate(hash, dialog.contains(link) ? previousFocus : link);
   });
   let historyFrame = 0;
   function restoreHistory() {

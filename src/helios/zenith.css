@@ -459,21 +459,9 @@
   }
 }
 @media (max-width: 700px) {
-  /* The caption gets its own band so it never prints across the aircraft. */
   #hangar {
     height: auto !important;
-    aspect-ratio: 4 / 3.6;
-  }
-  #hangar img.hp {
-    height: 72%;
-    object-position: 50% 40%;
-  }
-  #hangar .cap {
-    background: linear-gradient(0deg, rgba(4, 7, 14, 0.98), rgba(4, 7, 14, 0.9));
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: 14px 18px 16px;
+    aspect-ratio: 4 / 3;
   }
   /* Ring numbers sit below the pedestal instead of on it. */
   .engine {
@@ -495,11 +483,6 @@
 .plate.sig img {
   width: calc(100% + 68px);
   margin-inline: -34px;
-}
-#hangar .cap {
-  left: 34px;
-  right: 34px;
-  bottom: 30px;
 }
 /* The atlas caption gets a quiet plate so a route line never cuts through it. */
 .atlas::after {

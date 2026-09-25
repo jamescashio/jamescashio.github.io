@@ -727,3 +727,10 @@ section.za-snapshot .za-bracket > .za-snapshot-status {
 .za-snapshot .za-snapshot-secondary button {
   height: 44px;
 }
+
+.za-archive-return {
+  max-width: 100%;
+  padding: 0 12px;
+  font-size: 14px;
+  line-height: 20px;
+}

@@ -1,4 +1,7 @@
-/* Deeper experiments remain one native disclosure away; shared addresses reveal them. */
+/* Compact entrances lead to deeper experiments; shared addresses reveal their controls. */
+section.workbench-section {
+  padding-block: clamp(48px, 5vw, 72px);
+}
 .workbench-disclosure {
   border-block: 1px solid var(--line);
   background: var(--deep);

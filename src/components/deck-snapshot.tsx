@@ -118,6 +118,9 @@ export function DeckSnapshot({
         <p className="za-snapshot-copy">
           Historical snapshot. Dates and countdown belong to August 2026. Private details are withheld.
         </p>
+        <a href="/" className="za-btn-ghost za-archive-return">
+          ← Back to current site
+        </a>
         <p className="za-critical-telemetry za-snapshot-measured za-mono">
           MEASURED 28 AUGUST 2026 · 18 OF 19 GUESTS RUNNING AT THE PROBE
         </p>
