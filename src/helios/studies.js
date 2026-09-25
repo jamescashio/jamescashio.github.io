@@ -68,7 +68,7 @@ export function setupStudies({ scenes, motion, copy }) {
     const list = $("#studies-list");
     list.innerHTML = STUDIES.map(
       (s, i) =>
-        `<button class="study" type="button" role="tab" id="study-${s.id}" aria-controls="instrument" tabindex="${i === st.i ? 0 : -1}" data-study="${i}" aria-selected="${i === st.i}"><span class="study-index">${s.n} · ${s.code}</span><strong class="study-title">${s.name}</strong><span class="study-purpose">${s.q}</span><svg class="glyph" viewBox="-5 -5 34 34" fill="none" stroke="currentColor" stroke-width=".8" aria-hidden="true"><circle cx="12" cy="12" r="15" stroke-dasharray="2 3"/><circle cx="12" cy="12" r="12.5" stroke-width=".3"/><path d="${GLYPHS[i]}"/></svg></button>`,
+        `<button class="study" type="button" role="tab" id="study-${s.id}" aria-controls="instrument" tabindex="${i === st.i ? 0 : -1}" data-study="${i}" aria-selected="${i === st.i}"><span class="study-index">${s.n} / 07</span><strong class="study-title">${s.name}</strong><span class="study-purpose">${s.q}</span><svg class="glyph" viewBox="-5 -5 34 34" fill="none" stroke="currentColor" stroke-width=".8" aria-hidden="true"><circle cx="12" cy="12" r="15" stroke-dasharray="2 3"/><circle cx="12" cy="12" r="12.5" stroke-width=".3"/><path d="${GLYPHS[i]}"/></svg></button>`,
     ).join("");
     list.addEventListener("click", (e) => {
       const b = e.target.closest("[data-study]");

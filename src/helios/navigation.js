@@ -266,6 +266,9 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
     hash = aliases[hash] || hash;
     if (hash === "#top") hash = "";
     let state = null;
+    // A destination chosen in Mission Control takes the place of the menu's own history entry.
+    const fromMenu = Boolean(history.state?.heliosMenu);
+    if (fromMenu) replace = true;
     if (sceneKind(hash)) {
       if (!sceneKind(location.hash)) {
         const id = ++sequence;
@@ -285,6 +288,7 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
     if (dialog.open) menu.closeForNavigation();
     if (location.hash !== hash)
       history[replace ? "replaceState" : "pushState"](state, "", location.pathname + location.search + hash);
+    else if (fromMenu) history.replaceState({ ...history.state, heliosMenu: false }, "");
     route(hash || "#top");
   }
   document.addEventListener("click", (event) => {
@@ -301,6 +305,11 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
   });
   let historyFrame = 0;
   function restoreHistory() {
+    // Closing Mission Control steps back over its own entry; the page itself has not moved.
+    if (menu.ownsPop(location.href)) {
+      lastURL = location.href;
+      return;
+    }
     if (lastURL === location.href) return;
     cancelAnimationFrame(historyFrame);
     // Native history can restore focus and scroll after popstate. Route once it has finished.

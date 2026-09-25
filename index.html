@@ -191,7 +191,7 @@
         <a class="hero-next" href="#workshop">Next: inside the workshop <span aria-hidden="true">↓</span></a>
       </section>
 
-      <!-- ================= THESIS ================= -->
+      <!-- ================= AT A GLANCE (#workshop) ================= -->
       <section class="block thesis py-48-80" id="workshop" aria-labelledby="workshop-title">
         <div class="wrap profile-strip workshop-note">
           <h2 id="workshop-title">Built at home. Open to inspect.</h2>
@@ -235,16 +235,14 @@
           <div class="lab-brief">
             <h3 class="kick gold">What runs here</h3>
             <p>
-              Two servers I own, <b>Zeus</b> and <b>Apollo</b>, ran <span data-fleet="lxc">20</span> containers and
-              <span data-fleet="qemu">1</span> virtual machine at the last observation. <b>HERMES</b>, my job scheduler,
-              sends each task down a route: <b>Workhorse</b> for everyday drafting, <b>Research</b> for sourced answers,
-              <b>Synthesis</b> for combining information, or a person when the data is private. <b>Atlas</b> is the
-              local model for recurring work, and <b>DSH</b> is the console I run it all from.
+              Two servers I own, <b>Zeus</b> and <b>Apollo</b>, run the lab. <b>HERMES</b>, my job scheduler, sends each
+              task down the right route, or to a person when the data is private. A local model, <b>Atlas</b>, handles
+              the recurring work, and <b>DSH</b> is the console I run it all from.
             </p>
             <p>
               On this site, <b>E.V.E.</b>, my Evaluation Verification Engine, answers from the dated record, and
-              <b>Bit</b>, the gold copilot, marks where a person holds authority. Everything you can try here runs in
-              your browser. Nothing you do reaches my servers.
+              <b>Bit</b>, the gold copilot, marks where a person holds authority. Everything you try here runs in your
+              browser; nothing reaches my servers.
             </p>
           </div>
           <div class="profile-foot">
@@ -298,7 +296,7 @@
         </div>
       </section>
 
-      <!-- ================= SELECTED WORK ================= -->
+      <!-- ================= START HERE: THE PRIVACY TEST (#work) ================= -->
       <section class="block" id="work" aria-labelledby="work-h">
         <div class="wrap">
           <div class="head">
@@ -558,7 +556,7 @@
         </div>
       </section>
 
-      <!-- ================= THE UNIVERSE ================= -->
+      <!-- ================= THE SYSTEM MAP (#universe) ================= -->
       <section class="block bt-line workbench-section" id="universe" aria-labelledby="uni-h">
         <div class="wrap">
           <header class="atlas-intro">
@@ -578,7 +576,7 @@
             <summary>
               <span
                 ><strong>Explore the system map</strong
-                ><span>Follow sample request R-01, or inspect a machine’s role.</span></span
+                ><span>Follow one sample request, or inspect a machine’s role.</span></span
               ><span class="disclosure-mark" aria-hidden="true"></span>
             </summary>
             <div class="disclosure-body grid">
@@ -833,7 +831,7 @@
         </div>
       </section>
 
-      <!-- ================= PHILOSOPHY ================= -->
+      <!-- ================= FOUR MORE ROOMS ================= -->
 
       <section class="block rooms-teaser" id="rooms" aria-labelledby="rooms-h">
         <div class="wrap stack">
@@ -841,7 +839,11 @@
           <h2 id="rooms-h">When you have<br /><span class="cy">a little longer.</span></h2>
           <p class="lede muted">Each opens as its own page, with return links at both ends.</p>
           <div class="room-cards">
-            <a class="room-card" href="/rooms/starship/" data-room-route="#starship"
+            <a
+              class="room-card"
+              href="/rooms/starship/"
+              data-room-route="#starship"
+              aria-label="Starship lab: open the page"
               ><img
                 class="room-art"
                 src="/v38/assets/room-starship.webp"
@@ -854,7 +856,11 @@
               ><span class="muted"
                 >Pick a mission, cut the cloud link and compare three designs on the same twelve requests.</span
               ><span class="room-go">Open the page →</span></a
-            ><a class="room-card" href="/rooms/principles/" data-room-route="#principles"
+            ><a
+              class="room-card"
+              href="/rooms/principles/"
+              data-room-route="#principles"
+              aria-label="Principles Engine: open the page"
               ><img
                 class="room-art"
                 src="/v38/assets/room-principles.webp"
@@ -866,7 +872,11 @@
               /><span class="mono c-gd">PRINCIPLES ENGINE</span><strong>Put the principles in motion.</strong
               ><span class="muted">Turn a small instrument and see the design decision behind each rule.</span
               ><span class="room-go">Open the page →</span></a
-            ><a class="room-card" href="/rooms/studios/" data-room-route="#studios"
+            ><a
+              class="room-card"
+              href="/rooms/studios/"
+              data-room-route="#studios"
+              aria-label="The Studios: open the page"
               ><img
                 class="room-art"
                 src="/v38/assets/room-studios.webp"
@@ -878,7 +888,11 @@
               /><span class="mono c-gd">THE STUDIOS</span><strong>A world worth getting lost in.</strong
               ><span class="muted">Shape the light, ignite a 3D signature, or watch five short original films.</span
               ><span class="room-go">Open the page →</span></a
-            ><a class="room-card" href="/rooms/heritage/" data-room-route="#heritage"
+            ><a
+              class="room-card"
+              href="/rooms/heritage/"
+              data-room-route="#heritage"
+              aria-label="Flight heritage: open the page"
               ><img
                 class="room-art"
                 src="/v38/assets/room-heritage.webp"
@@ -913,7 +927,7 @@
                   ><span class="syne cy fs-22 fw-700" data-fleet="observedLong">September 24, 2026</span>
                 </div>
                 <div class="stat flex-200">
-                  <span class="mono c-mu">HOW</span><span class="syne cy fs-22 fw-700">Read only, run by me</span>
+                  <span class="mono c-mu">HOW · RUN BY ME</span><span class="syne cy fs-22 fw-700">Read only</span>
                 </div>
               </div>
             </div>
@@ -935,7 +949,7 @@
                 </div>
                 <div class="stat p-14-16">
                   <span class="mono c-mu">BACKUPS</span
-                  ><span class="c-ink fs-15">Snapshots pass integrity checks. No restore drill in this record.</span>
+                  ><span class="c-ink fs-15">Every snapshot on record passed its integrity check.</span>
                 </div>
                 <div class="stat p-14-16">
                   <span class="mono c-mu">LOCAL MODEL · ATLAS</span
@@ -1101,9 +1115,7 @@
         </div>
       </section>
 
-      <!-- ================= MORE ROOMS (each opens as its own page) ================= -->
-
-      <!-- ================= THE OPERATOR ================= -->
+      <!-- ================= MEET DOUG (#operator) ================= -->
       <section class="block bg-chapter-rise" id="operator" aria-labelledby="op-h">
         <div class="wrap grid items-center">
           <div class="c6 stack sg-16">
@@ -1175,7 +1187,7 @@
           <div class="c6 stack sg-14">
             <p class="lede">
               Bring me your trickiest question about local AI, private data or keeping a human in the loop. I am open to
-              speaking, advising and comparing notes. The answer is probably not 42. Towel optional.
+              speaking, advising and comparing notes. The answer is probably not 42.
             </p>
             <div class="flex gap-12 items-center flex-wrap">
               <a
@@ -1355,8 +1367,8 @@
                 ><span>One document. Your prediction.</span></a
               >
               <a class="mc-route" href="#build-story"
-                ><span class="mono">03 / UNDERSTAND</span><strong>Look inside the build →</strong
-                ><span>The story, the rule, the evidence.</span></a
+                ><span class="mono">03 / UNDERSTAND</span><strong>Read a build story →</strong
+                ><span>A ship that vanished, the fix and its test.</span></a
               >
             </div>
             <h3 class="mc-all-title">Browse the workshop</h3>

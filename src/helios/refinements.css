@@ -82,28 +82,13 @@ body {
 main {
   isolation: isolate;
 }
-/* Large below-fold SVG scenes need no layout or painting until they approach the viewport. */
-section.block {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 900px;
-}
-#studies {
-  contain-intrinsic-size: auto 1500px;
-}
-#starship {
-  contain-intrinsic-size: auto 1500px;
-}
-/* Light sections that links jump to stay laid out, so fragment links and room returns land where they point. */
-#rooms,
-#evidence,
-#operator,
-#contact {
-  content-visibility: visible;
-}
 main:focus {
   outline: none;
 }
-section[id],
+/* Sections land just under the header; the section's own padding gives the heading room. */
+section[id] {
+  scroll-margin-top: 70px;
+}
 #instrument,
 #glossary {
   scroll-margin-top: 100px;

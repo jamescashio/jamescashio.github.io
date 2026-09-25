@@ -10,6 +10,10 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
   document.querySelector("#mc-btn .mono").textContent = /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘K" : "Ctrl K";
   let previousFocus = null;
   let navigating = false;
+  // The open menu owns one history entry, so Back (or a phone's back gesture) closes it.
+  let entry = false;
+  // The page address the menu itself returns to; routing ignores that one history step.
+  let ownPop = null;
   const featured = new Set(["#studies", "#rooms", "#glossary", "#evidence", "#contact"]);
   const destinations = [
     ["Explore the starship", "Your pace. A 30 second tour when you choose.", "#flight=board"],
@@ -130,12 +134,38 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
     search.value = "";
     render();
     dialog.showModal();
+    // Keep the reader's place on the page entry, as a link would, before the menu adds its own.
+    const current = { ...(history.state || {}), heliosY: window.scrollY };
+    history.replaceState(current, "");
+    history.pushState({ ...current, heliosMenu: true }, "");
+    entry = true;
     onToggle();
     search.focus();
   }
   dialog.addEventListener("close", () => {
     onToggle();
+    if (entry) {
+      entry = false;
+      // A chosen destination replaces the menu entry; any other close removes it.
+      if (!navigating && history.state?.heliosMenu) {
+        ownPop = location.href;
+        history.back();
+      }
+    }
     if (!navigating && previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
+  });
+  window.addEventListener("popstate", () => {
+    if (entry && dialog.open) {
+      entry = false;
+      ownPop = location.href;
+      dialog.close();
+    }
+    if (ownPop !== location.href) return;
+    // Returning to an address with a fragment can clear focus. Put it back on the menu's opener.
+    setTimeout(() => {
+      if (!dialog.open && document.activeElement === document.body && previousFocus?.isConnected)
+        previousFocus.focus({ preventScroll: true });
+    });
   });
   document.querySelector("#mc-btn").addEventListener("click", open);
   document.querySelector("#mc-close").addEventListener("click", () => dialog.close());
@@ -168,6 +198,11 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
     dialog,
     open,
     openerFor: (link) => (dialog.contains(link) ? previousFocus : link),
+    ownsPop(href) {
+      const mine = ownPop === href;
+      ownPop = null;
+      return mine;
+    },
     closeForNavigation() {
       navigating = true;
       dialog.close();

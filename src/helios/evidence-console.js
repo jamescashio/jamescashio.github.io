@@ -111,10 +111,14 @@ export const LORE = {
   ],
   towel: ["lore · Towel located. Human in command. Don't panic."],
   sudo: ["denied · A human is in command, and it is the one who built this. Try help."],
+  cashio: ["lore · cAshIo. Look at the capitals."],
 };
+/** The two server names answer with the dated host record. */
+const ALIASES = { zeus: "hosts", apollo: "hosts" };
 
 export function evidenceReply(input) {
   const cmd = String(input).trim().toLowerCase().replace(/\s+/g, " ");
+  if (Object.hasOwn(ALIASES, cmd)) return EVIDENCE[ALIASES[cmd]];
   if (Object.hasOwn(EVIDENCE, cmd)) return EVIDENCE[cmd];
   if (Object.hasOwn(LORE, cmd)) return LORE[cmd];
   return [`unknown command: ${cmd}. Try help.`];
@@ -137,6 +141,7 @@ export function setupEvidenceConsole({ motion }) {
     out.appendChild(line);
   };
   const pendingReplies = new Set();
+  let lastSurprise = "";
   function run(raw) {
     let cmd = String(raw).trim().toLowerCase().replace(/\s+/g, " ");
     if (!cmd) return;
@@ -151,7 +156,9 @@ export function setupEvidenceConsole({ motion }) {
     add("↳ " + cmd);
     let hint = "";
     if (cmd === "surprise me") {
-      cmd = SURPRISES[Math.floor(Math.random() * SURPRISES.length)];
+      // Never the same hidden command twice in a row.
+      const options = SURPRISES.filter((name) => name !== lastSurprise);
+      cmd = lastSurprise = options[Math.floor(Math.random() * options.length)];
       hint = `hidden command found: ${cmd}. There are more.`;
     }
     const lines = [...evidenceReply(cmd)];
