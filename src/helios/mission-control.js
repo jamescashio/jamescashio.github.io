@@ -16,7 +16,12 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
   let ownPop = null;
   const featured = new Set(["#studies", "#rooms", "#glossary", "#evidence", "#contact"]);
   const destinations = [
-    ["Explore the starship", "Your pace. A 30 second tour when you choose.", "#flight=board"],
+    [
+      "Board the starship",
+      "A 30 second 3D flight. See where twelve AI requests go.",
+      "#flight=board",
+      "flight fly board ship 3d tour",
+    ],
     ["The orbital world", "Return to the beginning.", "#top"],
     ["Seven studies", "Choose a question and test its rule.", "#studies", "experiments workbench"],
     ["Four rooms", "Architecture, principles, creative studios and aviation.", "#rooms"],

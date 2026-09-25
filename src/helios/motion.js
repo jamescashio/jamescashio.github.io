@@ -236,6 +236,15 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
     (poster.closest("picture") || poster).after(film);
     return film;
   }
+  // The arrival film greets a first visit. Returning visitors start from the still artwork.
+  const ARRIVAL_KEY = "cashio-arrival-seen";
+  const seenArrival = () => {
+    try {
+      return localStorage.getItem(ARRIVAL_KEY) === "1";
+    } catch {
+      return false;
+    }
+  };
   function startFilm() {
     const connection = navigator.connection;
     const constrained = connection?.saveData || /^(slow-2g|2g)$/.test(connection?.effectiveType || "");
@@ -245,12 +254,21 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
       releaseFilmNode(document.querySelector("#hero-film"));
       return;
     }
+    if (seenArrival()) {
+      hero.dataset.arrival = "on";
+      return;
+    }
     if (hero.dataset.film === "playing" || hero.dataset.film === "done") return;
     const film = mountFilm();
     const play = () => {
       if (!enabled || query.matches || document.hidden || overlayOpen()) return;
       if (hero.dataset.film === "done") return;
       hero.dataset.film = "playing";
+      try {
+        localStorage.setItem(ARRIVAL_KEY, "1");
+      } catch {
+        /* Remembering the arrival is optional. */
+      }
       const run = film.play();
       if (run && typeof run.catch === "function") {
         run.catch(() => {

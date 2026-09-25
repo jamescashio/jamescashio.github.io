@@ -125,6 +125,11 @@ html[data-room] main > .room {
   }
 }
 @media (max-width: 600px) {
+  .room-links {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
   .room-art {
     aspect-ratio: 3;
     object-fit: cover;

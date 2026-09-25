@@ -74,9 +74,11 @@ export default function FirstFlight({
   const independent = input.architecture === "hybrid" && !input.connected;
   const flightHash = changed || complete ? missionHash(input) : `#flight=${scene.id}`;
   const playing = motion && !paused && !complete && pageVisible && phase !== "loading";
+  // In Zenith a relay choice carried from an earlier chapter keeps this chapter's own title.
+  const changedHere = changed && (!zenith || currentDecision !== null);
   const sceneTitle = complete
     ? "One boundary. A different outcome."
-    : changed
+    : changedHere
       ? step === 3
         ? input.allowPrivateEgress
           ? "Permission changes the route."
@@ -363,7 +365,7 @@ export default function FirstFlight({
           <StarshipPoster imageClassName="ff-fallback" eager />
           <canvas ref={canvas} aria-hidden="true" />
           <div className="ff-stage-cap">
-            <span>CSV SOVEREIGN</span>
+            <span>{zenith ? "EXPLORER 01" : "CSV SOVEREIGN"}</span>
             <span>{input.connected ? "RELAY CONNECTED" : "RELAY OFFLINE"}</span>
           </div>
           <div className="ff-shot-reticle" aria-hidden="true">

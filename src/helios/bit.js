@@ -260,7 +260,7 @@ export function setupBit({ isMotionEnabled, openMissionControl }) {
     origSay(tag, line, m, hold);
     saidAt = Date.now();
     clearTimeout(sayTimer);
-    sayTimer = setTimeout(() => $("#bitsay").classList.add("hide"), 5000);
+    sayTimer = setTimeout(() => $("#bitsay").classList.add("hide"), 3500);
   };
   let scrollT = 0;
   window.addEventListener(

@@ -67,7 +67,9 @@ for (const id of roomIds) {
   for (const node of main.querySelectorAll("[data-count]")) node.textContent = node.getAttribute("data-count");
   if (id === "starship") renderStarshipExample(main);
   if (id === "heritage")
-    main.querySelector(`#${id}`)!.append(
+    placeBeforeEnd(
+      main,
+      id,
       readingList(
         doc,
         "All four lessons",
@@ -75,7 +77,9 @@ for (const id of roomIds) {
       ),
     );
   if (id === "principles")
-    main.querySelector(`#${id}`)!.append(
+    placeBeforeEnd(
+      main,
+      id,
       readingList(
         doc,
         "All three principles",
@@ -87,6 +91,13 @@ for (const id of roomIds) {
   await mkdir(`dist/rooms/${id}`, { recursive: true });
   await writeFile(`dist/rooms/${id}/index.html`, "<!doctype html>\n" + doc.documentElement.outerHTML + "\n");
 }
+/** The full list sits before the room's closing links, so every page still ends with its way back. */
+function placeBeforeEnd(main: Element, id: string, section: Element) {
+  const end = main.querySelector(`#${id} .room-end`);
+  if (end) end.before(section);
+  else main.querySelector(`#${id}`)!.append(section);
+}
+
 /** Without JavaScript the picker shows one entry; the reading edition also lists every entry in full. */
 function readingList(doc: Document, heading: string, items: string[][]) {
   const section = doc.createElement("section");

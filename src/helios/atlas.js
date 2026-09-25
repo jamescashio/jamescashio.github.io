@@ -55,7 +55,7 @@ export function setupAtlas({ scenes, motion, say }) {
       value: "2",
       unit: "of two servers I own",
       summary: "The second server in the cluster.",
-      body: "This server and Zeus could agree on cluster state at the dated observation. That is quorum; it does not establish whether workloads can fail over.",
+      body: "This server and Zeus agreed on cluster state at the dated observation. That does not establish whether workloads can fail over.",
       evidence: "Fleet observation · " + FLEET.observedLong,
     },
   };

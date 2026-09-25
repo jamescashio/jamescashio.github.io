@@ -13,7 +13,7 @@ export const EVIDENCE = {
   ],
   fleet: [
     `Observation: ${FLEET.observedLong}`,
-    `Hosts at the observation: ${FLEET.hosts} responded, ${FLEET.quorate ? "enough cluster votes to make management decisions" : "enough cluster votes were not confirmed"}`,
+    `Hosts at the observation: ${FLEET.hosts} responded, ${FLEET.quorate ? "and they agreed on cluster state" : "but cluster agreement was not confirmed"}`,
     `Running guests: ${FLEET.lxc} containers and ${FLEET.qemu} virtual machine · per host split withheld`,
     `Method: ${FLEET.method} · run by the owner`,
   ],
@@ -53,7 +53,7 @@ export const EVIDENCE = {
     `${FLEET.prior.release} · fleet observed ${FLEET.prior.fleetLong} · ${FLEET.prior.method} · ${FLEET.prior.lxc} containers · ${FLEET.prior.qemu} virtual machine`,
     `${FLEET.archive.release} · fleet observed ${FLEET.archive.fleetLong} · routing observed ${FLEET.archive.routingLong}`,
     `${FLEET.archive.release} counts: ${FLEET.archive.lxc} containers running · virtual machines ${FLEET.archive.qemu.toLowerCase()} · public lanes: ${FLEET.archive.lanes}`,
-    `Original expiry ${FLEET.archive.expiry}; that expiry does not extend the later observation`,
+    `That record was valid until ${FLEET.archive.expiry}. Its expiry does not extend newer observations`,
   ],
   cost: [
     `Public record: ${FLEET.pageRevised}`,
@@ -64,7 +64,7 @@ export const EVIDENCE = {
   hosts: [
     `Observation: ${FLEET.observedLong}`,
     `Zeus and Apollo: ${FLEET.hosts} hosts, one cluster · ${FLEET.lxc} containers and ${FLEET.qemu} VM between them`,
-    "The cluster had enough votes to make management decisions. This does not prove that applications can survive a host failure.",
+    "The two hosts agreed on cluster state. That does not prove applications would survive a host failure.",
     "Private service locations are withheld from the public record",
   ],
 };
