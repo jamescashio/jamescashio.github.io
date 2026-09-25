@@ -21,6 +21,7 @@
     principles: 1,
     observatory: "principles",
     starship: 1,
+    "build-story": "starship",
     "sovereign-world": "starship",
     studios: 1,
     heritage: 1,

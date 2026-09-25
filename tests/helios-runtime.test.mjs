@@ -1299,3 +1299,37 @@ test("The home path introduces creative rooms before evidence, while the build s
   await expect(page.locator("#build-proof-title")).toBeFocused();
   await expect(page.locator("#build-proof-title")).toBeInViewport();
 });
+
+test("Direct section and room-story addresses keep visible heading focus after the initial fragment jump", async (t) => {
+  for (const width of [390, 1440]) {
+    for (const [hash, heading] of [
+      ["#build-story", "#build-proof-title"],
+      ["#evidence", "#ev-h"],
+    ]) {
+      const page = await visit(t, { width, height: 900, hash, expandWorkbenches: false });
+      await expect(page.locator(heading)).toBeFocused();
+      await expect(page.locator(heading)).toBeInViewport();
+      await page.reload({ waitUntil: "networkidle" });
+      await expect(page.locator(heading)).toBeFocused();
+      await expect(page.locator(heading)).toBeInViewport();
+    }
+  }
+});
+
+test("Forward to the fragment-free home restores visible hero focus after an evidence visit", async (t) => {
+  for (const width of [390, 1440]) {
+    const page = await visit(t, { width, height: 844, hash: "#evidence", expandWorkbenches: false });
+    await expect(page.locator("#ev-h")).toBeFocused();
+    await page.getByRole("link", { name: "cAshIo home", exact: true }).click();
+    await expect(page.locator("#top h1")).toBeFocused();
+    await expect(page.locator("#top h1")).toBeInViewport();
+    assert.equal(new URL(page.url()).hash, "");
+    await page.goBack();
+    await expect(page.locator("#ev-h")).toBeFocused();
+    await expect(page.locator("#ev-h")).toBeInViewport();
+    await page.goForward();
+    await expect(page.locator("#top h1")).toBeFocused();
+    await expect(page.locator("#top h1")).toBeInViewport();
+    assert.equal(new URL(page.url()).hash, "");
+  }
+});

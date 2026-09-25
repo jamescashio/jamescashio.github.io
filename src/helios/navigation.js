@@ -181,6 +181,7 @@ export function setupNavigation({ studies, select, mission, motion }) {
     // A page change jumps; smooth scrolling across a swapped page would travel through the wrong content.
     if (shouldScroll || revealed)
       target.scrollIntoView({ behavior: motion() && !jump && !revealed ? "smooth" : "instant", block: "start" });
+    return heading;
   }
   function dispose() {
     generation++;
@@ -307,6 +308,8 @@ export function setupNavigation({ studies, select, mission, motion }) {
       return;
     }
     returnPoint = null;
+    // History uses an empty fragment for home. Scene returns above keep their original launcher.
+    if (!hash && !initial) hash = "#top";
     const experiment = parseExperiment(hash);
     if (experiment) {
       select(experiment);
@@ -334,7 +337,25 @@ export function setupNavigation({ studies, select, mission, motion }) {
         if (initial)
           addEventListener("load", () => scrollY < 200 && scrollTo({ top: 0, behavior: "instant" }), { once: true });
       }
-      focusSection(hash.slice(1), !initial && !opensRoom, pageChanged);
+      const heading = focusSection(hash.slice(1), !initial && !opensRoom, pageChanged);
+      if (initial) {
+        const initialAddress = location.href;
+        const restoreInitialFocus = () =>
+          requestAnimationFrame(() => {
+            // Native fragment and reload restoration finish after the module starts. Keep the heading visible,
+            // while respecting any control the visitor has focused in the meantime.
+            if (
+              location.href === initialAddress &&
+              (document.activeElement === document.body || document.activeElement === heading) &&
+              !dialog.open &&
+              !scene &&
+              !pending
+            )
+              focusSection(hash.slice(1), !opensRoom, true);
+          });
+        if (document.readyState === "complete") restoreInitialFocus();
+        else window.addEventListener("load", restoreInitialFocus, { once: true });
+      }
     } else if (pageChanged) window.scrollTo({ top: 0, behavior: "instant" });
   }
   function navigate(hash, opener = null, replace = false) {

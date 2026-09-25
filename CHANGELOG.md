@@ -2,6 +2,7 @@
 
 ## V39.0 · Zenith
 
+- Direct section and room-story addresses retain visible heading focus after the browser’s initial fragment or reload restoration; an already focused control is respected. The build-story room is selected before its first paint. Forward to the fragment-free home also restores hero focus, while scene exits retain their original launcher.
 - Give the home page a shorter path to the creative rooms. The Starship lab holds its build story, the Principles room holds its philosophy, and each E.V.E. fact names its own observation date. Tablet navigation uses Mission Control before labels wrap. Phone flights use a chapter chooser and give more height to the scene and explanation.
 - Keep the Aa visible words and accessible name in agreement in every type style. After Finish, flight guidance names the controls that remain available.
 - Remove the home city from the preserved archive pages and their shared console replies; retain the original version labels and observation dates.
