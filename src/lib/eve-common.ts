@@ -76,7 +76,7 @@ export function runCommonEve(command: string, history: string[] = []): EveReply 
   if (command === "whoami") {
     return {
       out: [
-        "DOUG CASHIO · PENSACOLA",
+        "DOUG CASHIO",
         "PRINCIPAL SOLUTIONS CONSULTANT AND INDEPENDENT SYSTEMS BUILDER",
         "OWNER · OPERATOR · HUMAN ACCOUNTABLE",
       ],

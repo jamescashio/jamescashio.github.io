@@ -267,7 +267,7 @@ export function setupTypeStyles() {
     if (style) style.textContent = css;
     document.documentElement.dataset.type = key;
     if (label) label.textContent = name;
-    button?.setAttribute("aria-label", `Type style: ${name}. Select to change`);
+    button?.setAttribute("aria-label", `Aa ${name}. Change type style`);
     choices.forEach((choice) => choice.setAttribute("aria-pressed", String(choice.dataset.typeChoice === key)));
     if (remember) {
       try {

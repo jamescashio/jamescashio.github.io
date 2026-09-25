@@ -2,6 +2,10 @@
 
 ## V39.0 · Zenith
 
+- Remove the home city from the preserved archive pages and their shared console replies; retain the original version labels and observation dates.
+- Further unpublished refinements: shorten the personal introduction, routing explanation and repeated caveats; keep the seven studies and system map behind native disclosures that shared links open automatically. Preserve every experiment and the complete evidence boundary.
+- Repair phone fleet captions, map labels and chapter names without reducing the 14 pixel label floor. Give the Aa control an accessible name that includes its visible label. Keep Replay flight on a full row after Finish.
+- Serve the complete entry stylesheet as a fingerprinted asset under the existing 19 KB gzip budget, and split the lab, principles, heritage and signature controllers out of the entry module. Keep the existing asset paths and cache settings.
 - Unpublished candidate refinements: a shorter opening, system names explained at first use, and clearer separation between a routing rule, a browser demonstration and an observed result.
 - Relay choices persist through the first three flight chapters. The final chapter announces its separate permission scenario; Finish describes the visible outcome. The archived V37 recap keeps its original behavior.
 - E.V.E. keeps rapid replies grouped and clears pending reply timers. Surprise commands no longer mutate the stored response text.

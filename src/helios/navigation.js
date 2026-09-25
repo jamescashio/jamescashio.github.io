@@ -51,7 +51,7 @@ export function setupNavigation({ studies, select, mission, motion }) {
     ["Explore the starship", "Your pace. A 30 second tour when you choose.", "#flight=board"],
     ["The orbital world", "Return to the beginning.", "#top"],
     ["Try one decision", "Predict the route. Test the privacy boundary.", "#work", "privacy private data test"],
-    ["The system atlas", "Owned compute, orchestration, human authority.", "#universe"],
+    ["The system atlas", "Meet the servers, scheduler and operator console.", "#request-journey"],
     [
       "Compare architectures",
       "Its own page. Change a mission and inspect all twelve requests.",
@@ -162,11 +162,25 @@ export function setupNavigation({ studies, select, mission, motion }) {
   function focusSection(id, shouldScroll = true, jump = false) {
     const target = document.getElementById(id);
     if (!target) return;
+    // A shared address opens the workbench before focus or the fragment can land inside hidden content.
+    let revealed = false;
+    const workbench = target.querySelector(":scope > .wrap > details.workbench-disclosure");
+    if (workbench && !workbench.open) {
+      workbench.open = true;
+      revealed = true;
+    }
+    for (let parent = target.parentElement; parent; parent = parent.parentElement) {
+      if (parent.tagName === "DETAILS" && !parent.open) {
+        parent.open = true;
+        revealed = true;
+      }
+    }
     const heading = target.querySelector("h1,h2,h3") || target;
     heading.setAttribute("tabindex", "-1");
     heading.focus({ preventScroll: true });
     // A page change jumps; smooth scrolling across a swapped page would travel through the wrong content.
-    if (shouldScroll) target.scrollIntoView({ behavior: motion() && !jump ? "smooth" : "instant", block: "start" });
+    if (shouldScroll || revealed)
+      target.scrollIntoView({ behavior: motion() && !jump && !revealed ? "smooth" : "instant", block: "start" });
   }
   function dispose() {
     generation++;

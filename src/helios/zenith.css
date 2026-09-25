@@ -210,30 +210,6 @@
 .routing-law figcaption {
   color: var(--muted);
 }
-.routing-notes {
-  margin: 0;
-  display: grid;
-  grid-template-columns: 120px minmax(0, 1fr);
-  gap: 10px 12px;
-  font-size: 14px;
-}
-.routing-notes dt {
-  color: var(--cyan);
-  padding-top: 3px;
-}
-.routing-notes dd {
-  margin: 0;
-}
-@media (max-width: 420px) {
-  .routing-notes {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 2px;
-  }
-  .routing-notes dd {
-    margin-bottom: 10px;
-  }
-}
-
 /* ---------- starship plate ---------- */
 .plate-badges {
   position: absolute;
@@ -553,16 +529,6 @@
     display: none;
   }
 }
-@media (max-width: 380px) {
-  #atlas-inspection > div[data-stagger] {
-    grid-template-columns: minmax(0, 1fr) !important;
-  }
-  #atlas-inspection > div[data-stagger] .stat {
-    flex-direction: row;
-    align-items: baseline;
-    gap: 12px;
-  }
-}
 /* The brand name keeps a serifed I wherever it appears in running text. */
 .wm {
   white-space: nowrap;
@@ -622,7 +588,7 @@
     margin-inline: var(--gutter);
   }
 }
-/* ---------- phone: 12 px mono labels keep their rhythm without colliding ---------- */
+/* ---------- phone: 14 px mono labels keep their rhythm without colliding ---------- */
 @media (max-width: 700px) {
   .hero .kick,
   .stat .mono,
@@ -794,11 +760,6 @@
 .eve-chips .eve-wild {
   border-color: rgba(242, 200, 122, 0.4);
   color: var(--gold);
-}
-@media (pointer: coarse) {
-  .eve-chips button {
-    min-height: 44px;
-  }
 }
 @media (max-width: 1279px) {
   .type-btn .hide-m {

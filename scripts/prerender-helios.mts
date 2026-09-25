@@ -2,7 +2,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { gzipSync } from "node:zlib";
 
-// Helios is already authored HTML. Inline its small stylesheet to remove a blocking round trip.
+// Keep the fingerprinted stylesheet cacheable. The same unchanged byte budget covers its complete contents.
 const target = "dist/index.html";
 let html = await readFile(target, "utf8");
 const styles = [...html.matchAll(/<link rel="stylesheet" crossorigin href="(\/assets\/[\w.-]+\.css)">/g)];
@@ -14,7 +14,7 @@ const css = await readFile("dist" + source, "utf8");
 const STYLE_BUDGET_GZIP = 19000;
 if (gzipSync(css).byteLength > STYLE_BUDGET_GZIP || /<\/style/i.test(css))
   throw new Error("Helios style delivery budget exceeded");
-html = html.replace(link, `<style data-helios-styles="${source}">${css}</style>`);
+html = html.replace(link, `<link rel="stylesheet" crossorigin href="${source}" data-helios-styles="${source}">`);
 // The root serves the current experience directly; old shared addresses normalize before paint.
 const entry = (await readFile("public/helios-entry.js", "utf8")).replace(/\r\n?/g, "\n").trim();
 html = html.replace('<script src="/helios-entry.js"></script>', `<script id="helios-entry-route">${entry}</script>`);

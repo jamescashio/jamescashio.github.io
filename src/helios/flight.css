@@ -210,7 +210,37 @@
     line-height: 1.3;
     padding-inline: 8px;
   }
+  #helios-flight .first-flight[data-complete="true"] .ff-footer {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  #helios-flight .first-flight[data-complete="true"] .ff-playback {
+    grid-template-columns: minmax(0, 1fr);
+  }
   #helios-flight .ff-body {
     mask-image: none;
+  }
+}
+
+@media (max-width: 700px) {
+  #helios-flight .ff-chapters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  #helios-flight .ff-chapters button {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 8px;
+    min-height: 44px;
+    padding: 8px 12px;
+    border-bottom: 1px solid #48616f;
+  }
+  #helios-flight .ff-chapter-short {
+    overflow-wrap: normal;
+    word-break: normal;
+    text-align: left;
+    line-height: 1.3;
+  }
+  #helios-flight .ff-chapter-number {
+    font-size: 14px;
   }
 }

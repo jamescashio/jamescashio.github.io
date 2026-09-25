@@ -5,7 +5,7 @@ import { FLEET } from "../src/helios/fleet.js";
 
 test("listed E.V.E. commands answer only from the dated export", () => {
   assert.match(evidenceReply("fleet").join(" "), new RegExp(FLEET.observedLong));
-  assert.match(evidenceReply("routes").join(" "), /routingVerified: null/);
+  assert.match(evidenceReply("routes").join(" "), /Routing verification: not established/);
   for (const [command, lines] of Object.entries(EVIDENCE)) {
     for (const line of lines) assert.doesNotMatch(line, /^lore ·/, `${command} must not carry lore`);
   }

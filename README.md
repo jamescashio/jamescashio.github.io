@@ -4,7 +4,7 @@ The public front door is **[cashio.us](https://cashio.us/)**. The root serves th
 
 **V39.0 Zenith** keeps the Helios world, palette, type, artwork, Bit and quiet sound, and sharpens what a first visit says and feels like:
 
-- **Clearer story.** The hero states the work plainly and carries a dated proof chip bound to the published observation. The engineering repair note that used to follow the hero now lives only inside the build story; its place is a concise profile and a glossary; the hero supplies the main entry points. The AI budget panel publishes the routing law instead of a July cost sample, and the evidence boundary says spend stays withheld until it is measured again.
+- **Clearer story.** The hero introduces the after hours workshop, and the dated observation stays with its evidence. The engineering repair note that used to follow the hero now lives only inside the build story; its place is a concise profile and a glossary; the hero supplies the main entry points. The AI budget panel publishes the routing law instead of a July cost sample, and the evidence boundary says spend stays withheld until it is measured again.
 - **A living first frame.** After the arrival film, the artwork answers the pointer with a few pixels of depth, the sun breathes and a few stars twinkle. All of it yields to the Motion control, reduced motion, hidden tabs and open scenes.
 - **A jump, not a wait.** Boarding the starship plays a short starfield warp that covers loading, and the flight arrives with a settle. The loader only appears when loading is slow. The flight module warms when a visitor hovers, focuses or touches a boarding link.
 - **E.V.E. lore.** Unlisted console commands carry labelled Dune, aviation and fleet lore. Listed commands still answer only from the dated export.
@@ -22,7 +22,7 @@ Doug Cashio’s interactive universe of AI, security, and owned infrastructure. 
 
 Start with First Flight: a 30-second, four-chapter journey through arrival, onboard AI, a lost connection, and a human permission decision. Follow twelve illustrative requests, change the scenario, and share the exact choices. Manual chapter controls remain available with motion paused.
 
-Seven working studies turn the ideas into experiments. Each explains its rules, suggests a boundary to try, links to its supporting source, and shares reproducible settings. The HERMES comparison loads the same request with public or private handling; the visitor explicitly runs each version.
+The first visit keeps the seven studies and system map in native disclosures. Section navigation and shared experiment links open the relevant disclosure and restore keyboard focus. Seven working studies turn the ideas into experiments. Each explains its rules, suggests a boundary to try, links to its supporting source, and shares reproducible settings. The HERMES comparison loads the same request with public or private handling; the visitor explicitly runs each version.
 
 The Evidence section connects those demonstrations to a real owner-run audit. “How the audit changed this record” compares two dated fleet observations, distinguishes an absent historical field from zero, and leaves unverified routing unknown. E.V.E. offers named links to the evidence, builds, operator, and preserved flight lineage.
 
@@ -32,7 +32,7 @@ The existing cinematic world remains available: Lensing Observatory, the explora
 
 ## Routes and evidence
 
-- `/` serves the current V38 Helios homepage directly. Release builds contain indexable metadata. Separately packaged local previews must disable indexing.
+- `/` serves the current V39 Zenith homepage directly. Release builds contain indexable metadata. Separately packaged local previews must disable indexing.
 - `/odyssey.html` preserves V37.17; old `/v38/` addresses normalize to the current homepage.
 - `/command-deck.html` preserves the V35 command deck. Existing `/#deck=…` bookmarks redirect there with their query and selected deck intact.
 - `/command.html` remains the explicitly marked May 2026 archive.
@@ -53,6 +53,8 @@ Current lane counts, routing verification, and expiry remain `null`. The observa
 All request-routing studies execute locally in the browser and send nothing to an AI service. Private operational findings and credentials are excluded from the public evidence.
 
 ## Where to make changes
+
+The current homepage is composed in `index.html`. `src/helios/main.js` connects focused controllers for studies, privacy, the atlas, navigation, evidence, the sovereign lab, principles, flight heritage and the signature. `src/helios/styles.css` defines the stylesheet order. The build ships one fingerprinted, cacheable entry stylesheet with the existing 19,000 byte gzip budget; it does not embed the complete stylesheet in the HTML. The table below describes the preserved V37 experience and its shared models.
 
 | Concern                                               | Source                                                                                             |
 | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------- |

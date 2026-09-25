@@ -582,9 +582,7 @@ export function DeckOperator({ s6 }: { s6: SecRef }) {
         <div>
           <Kicker>07 · OPERATOR</Kicker>
           <Title>DOUG CASHIO</Title>
-          <p className="za-mono mt-3 text-[12px] text-cyan">
-            PENSACOLA, FLORIDA · SOVEREIGN AI · CYBERSECURITY · HUMAN COMMAND
-          </p>
+          <p className="za-mono mt-3 text-[12px] text-cyan">SOVEREIGN AI · CYBERSECURITY · HUMAN COMMAND</p>
           <p className="mt-5 max-w-[46ch] text-[1.05rem] leading-relaxed text-muted">
             Principal Solutions Consultant and independent systems builder. Doug owns the compute, runs the routing
             policy, and remains accountable for every automated decision. The chair is empty on purpose: human authority
@@ -742,9 +740,7 @@ export function DeckContact({
             <a href="mailto:doug@cashio.us" className="za-display mt-3 block text-[clamp(1.4rem,3vw,2.2rem)] text-cyan">
               doug@cashio.us
             </a>
-            <p className="za-contact-meta za-mono mt-3 text-dim">
-              PENSACOLA, FLORIDA · PUBLIC-SAFE SNAPSHOT · VERIFIED {VERIFIED_LONG}
-            </p>
+            <p className="za-contact-meta za-mono mt-3 text-dim">PUBLIC-SAFE SNAPSHOT · VERIFIED {VERIFIED_LONG}</p>
           </div>
           <BitBriefing index={8} />
           <BlackBoxReceipt />

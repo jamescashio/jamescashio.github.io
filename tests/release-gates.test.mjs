@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { gzipSync } from "node:zlib";
-import { readFile, stat } from "node:fs/promises";
+import { readFile, readdir, stat } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
 import { JSDOM } from "jsdom";
@@ -717,10 +717,12 @@ test("The root ships Helios directly, with bounded compatibility routing and a c
     assert.ok(image.getAttribute("src").startsWith("/"), "the new root cannot reinterpret asset paths");
     assert.ok((await stat(asset(`dist${image.getAttribute("src")}`))).size > 0);
   }
-  const styles = document.querySelector("style[data-helios-styles]");
-  assert.ok(styles);
-  assert.equal(styles.textContent, await read(`dist${styles.getAttribute("data-helios-styles")}`));
-  assert.ok(gzipSync(styles.textContent).byteLength <= 19000);
+  const styles = document.querySelector('link[rel="stylesheet"][data-helios-styles]');
+  assert.ok(styles, "the complete stylesheet is independently cacheable");
+  assert.equal(styles.getAttribute("href"), styles.getAttribute("data-helios-styles"));
+  assert.match(styles.getAttribute("href"), /^\/assets\/[\w.-]+\.css$/);
+  assert.equal(document.querySelector("style[data-helios-styles]"), null);
+  assert.ok(gzipSync(await read(`dist${styles.getAttribute("href")}`)).byteLength <= 19000);
   const csp = document.querySelector('meta[http-equiv="Content-Security-Policy"]').content;
   assert.doesNotMatch(csp.split("script-src ")[1].split(";")[0], /unsafe-inline|unsafe-eval/);
   for (const script of document.querySelectorAll("script:not([src])")) {
@@ -757,9 +759,22 @@ test("Versioned Helios artwork and fonts preserve their bytes and share one cach
     const version = versions[`/v38/fonts/${font}.woff2`].url;
     assert.ok(doc.querySelector(`link[rel="preload"][href="${version}"]`));
     assert.ok(
-      doc.querySelector("style[data-helios-styles]").textContent.includes(version),
+      (await read(`dist${doc.querySelector("link[data-helios-styles]").getAttribute("href")}`)).includes(version),
       "preload and font-face request the same version",
     );
   }
   assert.ok(!Object.keys(versions).some((source) => source.endsWith(".json")), "dated evidence remains refreshable");
+});
+
+test("current pages, archives and shipped controllers withhold the home city", async () => {
+  const bundles = (await readdir(asset("dist/assets"))).filter((name) => name.endsWith(".js"));
+  for (const path of [
+    "index.html",
+    "odyssey.html",
+    "command-deck.html",
+    "command.html",
+    ...bundles.map((name) => `assets/${name}`),
+  ]) {
+    assert.doesNotMatch(await read(`dist/${path}`), /pensacola/i, path);
+  }
 });

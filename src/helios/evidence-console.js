@@ -8,13 +8,13 @@ import { $ } from "./dom.js";
 export const EVIDENCE = {
   help: [
     "Commands: fleet · hosts · kernel · backups · atlas · dsh · hermes · routes · archive · cost · clear · help",
-    `Every reply is a dated fact from the published export. No live telemetry. Page revised ${FLEET.pageRevised}.`,
+    `Listed commands read the dated export. Hidden commands are labeled lore. Revised ${FLEET.pageRevised}.`,
     "Keys: ↑ recalls a command · Tab completes one. Some commands are not listed. Pilots find them.",
   ],
   fleet: [
     `observation: ${FLEET.observedLong}`,
     `hosts at the observation: ${FLEET.hosts} responded, ${FLEET.quorate ? "quorate" : "quorum not observed"}`,
-    `lxc_running: ${FLEET.lxc} · qemu_running: ${FLEET.qemu} · per host split withheld`,
+    `Running guests: ${FLEET.lxc} containers and ${FLEET.qemu} virtual machine · per host split withheld`,
     `method: ${FLEET.method} · run by the owner`,
   ],
   kernel: [
@@ -35,9 +35,9 @@ export const EVIDENCE = {
     "verified route count: withheld as unknown",
   ],
   routes: [
-    "routingVerified: null",
-    "lanes.public: null · lanes.privateCatalog: null",
-    "withheld: no authoritative live end to end route verification was established",
+    "Routing verification: not established at this observation.",
+    "Route totals and the private catalog are not published.",
+    "The raw export preserves these unknowns for inspection.",
     "the HERMES study on this page is a model that runs in your browser, not this record",
   ],
   archive: [

@@ -18,7 +18,7 @@ before(async () => {
 after(async () => {
   await browser?.close();
 });
-async function visit(t, { width = 1440, height = 1000, motion = "reduce", hash = "" } = {}) {
+async function visit(t, { width = 1440, height = 1000, motion = "reduce", hash = "", expandWorkbenches = true } = {}) {
   const context = await browser.newContext({
     viewport: { width, height },
     reducedMotion: motion,
@@ -38,6 +38,18 @@ async function visit(t, { width = 1440, height = 1000, motion = "reduce", hash =
   });
   await page.goto(url + hash, { waitUntil: "networkidle" });
   await expect(page.locator("#study-hermes")).toBeAttached();
+  // Feature checks begin with their controls open through the same disclosure a visitor uses.
+  // The dedicated first-visit test below checks the collapsed default and shared-link reveal.
+  if (expandWorkbenches && (!hash || /^#(?:work$|universe$|build=|studies$|request-journey$)/.test(hash))) {
+    for (const id of ["study-lab", "atlas-lab"]) {
+      const disclosure = page.locator(`#${id}`);
+      if (!(await disclosure.evaluate((element) => element.open))) {
+        await disclosure.locator("summary").first().click();
+        await expect(disclosure).toHaveAttribute("open", "");
+      }
+    }
+    if (!hash) await page.locator("#top").scrollIntoViewIfNeeded();
+  }
   return page;
 }
 async function audit(page, label) {
@@ -561,7 +573,7 @@ test("The full page, atlas, principles, evidence console, hangar and contact sta
     await expect(page.locator("#eve-out")).toContainText("September 24, 2026");
     await page.locator("#eve-in").fill("routes");
     await page.locator("#eve-in").press("Enter");
-    await expect(page.locator("#eve-out")).toContainText("routingVerified: null");
+    await expect(page.locator("#eve-out")).toContainText("Routing verification: not established");
     await page.locator("#copy-email").click();
     assert.equal(await page.evaluate(() => navigator.clipboard.readText()), "doug@cashio.us");
     const mail = await page.locator('#contact a[href^="mailto:"]').getAttribute("href");
@@ -841,7 +853,7 @@ test("Evidence leads with meaning, expands by keyboard and links the shipped bui
   const page = await visit(t, { width: 320, hash: "#evidence" });
   await expect(page.locator("#evidence")).toContainText("Every claim here has a date and a source.");
   await page.locator('.eve-chips [data-eve="fleet"]').click();
-  await expect(page.locator("#eve-out")).toContainText("lxc_running: 20");
+  await expect(page.locator("#eve-out")).toContainText("Running guests: 20 containers");
   await expect(page.locator("#build-proof-title")).toHaveText("One boundary. Every request accounted for.");
   await page.locator(".case-engineering summary").focus();
   await page.keyboard.press("Enter");
@@ -1138,5 +1150,102 @@ test("The wide opening keeps its identity below navigation and its first action 
     assert.ok(geometry.identity >= geometry.navigation + 8, `identity clears navigation at ${width}px`);
     assert.ok(geometry.action <= geometry.viewport, `primary action is in view at ${width}px`);
     assert.equal(geometry.pageWidth, width, `page fits at ${width}px`);
+  }
+});
+
+test("The first visit stays compact and shared links reveal the exact experiment", async (t) => {
+  const page = await visit(t, { width: 390, height: 844, expandWorkbenches: false });
+  await expect(page.locator("#study-lab")).not.toHaveAttribute("open", "");
+  await expect(page.locator("#atlas-lab")).not.toHaveAttribute("open", "");
+  await expect(page.locator("#pv-reveal")).toBeVisible();
+  const summary = page.locator("#study-lab > summary");
+  await summary.focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#study-hermes")).toBeVisible();
+  await choose(page, "cascade");
+  await expect(page.locator("#secondary-instrument")).toBeVisible();
+  await summary.focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#study-hermes")).not.toBeVisible();
+  await page.goto(url + "#request-journey");
+  await expect(page.locator("#atlas-lab")).toHaveAttribute("open", "");
+  await expect(page.locator("#request-journey")).toBeFocused();
+  await page.locator("#request-continue").click();
+  await expect(page.locator("#study-lab")).toHaveAttribute("open", "");
+  await expect(page.locator("#study-hermes")).toHaveAttribute("aria-selected", "true");
+  await page.goBack();
+  await expect(page.locator("#request-journey")).toBeFocused();
+  await page.goForward();
+  await expect(page.locator("#studies-h")).toBeFocused();
+  await audit(page, "workbench-disclosures-390");
+});
+
+test("Phone atlas captions, fleet labels and all flight chapter names fit at the readable label floor", async (t) => {
+  for (const width of [320, 390]) {
+    const page = await visit(t, { width, height: 844, hash: "#universe" });
+    const fleet = await page.locator(".fleet-counts .stat").evaluateAll((cards) =>
+      cards.map((card) => {
+        const label = card.querySelector(".mono");
+        const box = label.getBoundingClientRect();
+        const parent = card.getBoundingClientRect();
+        return {
+          inside: box.left >= parent.left && box.right <= parent.right,
+          clipped: label.scrollWidth > label.clientWidth + 1,
+          font: parseFloat(getComputedStyle(label).fontSize),
+        };
+      }),
+    );
+    assert.ok(fleet.every((label) => label.inside && !label.clipped && label.font >= 14));
+    const map = await page.locator("#atlas").evaluate((atlas) => {
+      const bottom = atlas.getBoundingClientRect().bottom;
+      const hint = getComputedStyle(atlas, "::after");
+      const hintTop =
+        bottom -
+        parseFloat(hint.bottom) -
+        parseFloat(hint.height) -
+        parseFloat(hint.paddingTop) -
+        parseFloat(hint.paddingBottom);
+      const captions = [
+        ...atlas.querySelectorAll('[data-node="zeus"] .node-detail, [data-node="apollo"] .node-detail'),
+      ];
+      return { hintTop, captions: captions.map((label) => label.getBoundingClientRect().bottom) };
+    });
+    assert.ok(
+      map.captions.every((bottom) => bottom + 8 <= map.hintTop),
+      "node captions clear the instruction strip",
+    );
+    await page.locator("#hero-primary").click();
+    await expect(page.locator("#helios-flight .ff-chapters")).toBeVisible();
+    const chapters = await page.locator("#helios-flight .ff-chapters button").evaluateAll((buttons) =>
+      buttons.map((button) => {
+        const label = button.querySelector(".ff-chapter-short");
+        const style = getComputedStyle(label);
+        return {
+          width: label.clientWidth,
+          overflow: label.scrollWidth > label.clientWidth + 1,
+          height: button.getBoundingClientRect().height,
+          wrapping: style.overflowWrap,
+          font: parseFloat(style.fontSize),
+        };
+      }),
+    );
+    assert.ok(
+      chapters.every(
+        (chapter) => !chapter.overflow && chapter.height >= 44 && chapter.font >= 14 && chapter.wrapping !== "anywhere",
+      ),
+    );
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+    await page.locator("#helios-flight .ff-chapters button").nth(3).click();
+    await page.getByRole("button", { name: "Finish →", exact: true }).click();
+    const replay = page.getByRole("button", { name: "Replay flight", exact: true });
+    await expect(replay).toBeVisible();
+    const finish = await replay.evaluate((button) => ({
+      replay: button.getBoundingClientRect().width,
+      group: button.parentElement.getBoundingClientRect().width,
+      height: button.getBoundingClientRect().height,
+    }));
+    assert.ok(finish.replay >= finish.group - 2, "Replay uses its full row after Finish");
+    assert.ok(finish.height >= 44, "Replay keeps a full touch target");
+    await audit(page, `phone-labels-${width}`);
   }
 });
