@@ -253,11 +253,6 @@
   font: var(--text-label)/1.4 var(--mono);
   color: var(--muted);
 }
-.scene-note {
-  font: 14px/1.5 var(--sans);
-  color: var(--muted);
-  margin: 10px 0 0;
-}
 .engine {
   position: relative;
   aspect-ratio: 1;
@@ -400,9 +395,6 @@
     min-width: 140px;
   }
   #manifest-label {
-    font-size: var(--text-label);
-  }
-  .scene-note {
     font-size: var(--text-label);
   }
   .engine-index {

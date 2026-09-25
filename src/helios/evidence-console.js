@@ -50,9 +50,9 @@ export const EVIDENCE = {
     "the HERMES study on this page is a model that runs in your browser, not this record",
   ],
   archive: [
-    `${FLEET.prior.release} · fleet observed ${FLEET.prior.fleetLong} · ${FLEET.prior.method} · lxc ${FLEET.prior.lxc} · qemu ${FLEET.prior.qemu}`,
+    `${FLEET.prior.release} · fleet observed ${FLEET.prior.fleetLong} · ${FLEET.prior.method} · ${FLEET.prior.lxc} containers · ${FLEET.prior.qemu} virtual machine`,
     `${FLEET.archive.release} · fleet observed ${FLEET.archive.fleetLong} · routing observed ${FLEET.archive.routingLong}`,
-    `lxc_running: ${FLEET.archive.lxc} · qemu: ${FLEET.archive.qemu.toLowerCase()} · public lanes: ${FLEET.archive.lanes}`,
+    `${FLEET.archive.release} counts: ${FLEET.archive.lxc} containers running · virtual machines ${FLEET.archive.qemu.toLowerCase()} · public lanes: ${FLEET.archive.lanes}`,
     `original expiry ${FLEET.archive.expiry}; that expiry does not extend the later observation`,
   ],
   cost: [

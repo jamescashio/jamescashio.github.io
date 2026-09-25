@@ -22,12 +22,17 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
       "#glossary",
       "names definitions acronyms hermes dsh zeus apollo atlas bit eve r-01 workhorse research synthesis lanes",
     ],
-    ["Try one decision", "Predict the route. Test the privacy boundary.", "#work", "privacy private data test"],
     [
-      "The system atlas",
+      "Start here: try one decision",
+      "Predict the route. Test the privacy boundary.",
+      "#work",
+      "privacy private data test",
+    ],
+    [
+      "The system map",
       "Meet Zeus and Apollo, the scheduler and the operator console.",
       "#request-journey",
-      "servers hosts hermes dsh",
+      "servers hosts hermes dsh atlas universe machines",
     ],
     [
       "Compare architectures",
@@ -67,7 +72,7 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
       "#contact",
       "contact email talk hire hello speaking advising recruiter",
     ],
-    ...studies.map((s) => [s.name, s.cue, `#build=${s.id}`]),
+    ...studies.map((s) => [`${s.name} · ${s.code}`, s.cue, `#build=${s.id}`, s.q]),
   ];
   function render(query = "") {
     list.replaceChildren();

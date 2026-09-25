@@ -69,10 +69,7 @@ h3 {
 /* Programmatic section focus is visible without drawing a box across the whole row. */
 main :is(h1, h2, h3)[tabindex="-1"]:focus-visible {
   outline: none;
-  text-decoration: underline;
-  text-decoration-color: var(--gold);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 0.16em;
+  background: linear-gradient(var(--gold), var(--gold)) 0 100% / 48px 2px no-repeat;
 }
 @media (max-width: 700px) {
   .mono,

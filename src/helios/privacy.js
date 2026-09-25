@@ -42,7 +42,11 @@ export function setupPrivacy({ loadRequest, traceRequest, motion }) {
     result.hidden = false;
     const lead = document.createElement("strong");
     lead.textContent =
-      pv.pick === "human" ? "You called it." : pv.pick === "keep" ? "Privacy takes priority." : "Human review.";
+      pv.pick === "human"
+        ? "You called it."
+        : pv.pick === "keep"
+          ? "Not quite. Privacy wins."
+          : "The answer: human review.";
     $("#pv-text").replaceChildren(
       lead,
       " This model holds private input for a person, even when sources are required. Your prediction: " +

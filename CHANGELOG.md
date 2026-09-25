@@ -2,6 +2,7 @@
 
 ## V39.0 · Zenith
 
+- Clarity pass: one name for each place (Start here, Studies, System map, Rooms, Evidence) across the header, chapter rail and Mission Control. A short "What runs here" paragraph introduces each system name once, in context. Studies lead with the task and keep their working names as a smaller label. The evidence record leads with three plain facts, dates the scheduler audit and labels its columns by release; observed dates show their age. Room cards carry derivative thumbnails of each room's existing artwork. The profile explains why two handles use the first name. A Zenith 404 page replaces the V35 one. Evidence dates and privacy withholdings are unchanged.
 - Direct section and room-story addresses retain visible heading focus after the browser’s initial fragment or reload restoration; an already focused control is respected. The build-story room is selected before its first paint. Forward to the fragment-free home also restores hero focus, while scene exits retain their original launcher.
 - Give the home page a shorter path to the creative rooms. The Starship lab holds its build story, the Principles room holds its philosophy, and each E.V.E. fact names its own observation date. Tablet navigation uses Mission Control before labels wrap. Phone flights use a chapter chooser and give more height to the scene and explanation.
 - Keep the Aa visible words and accessible name in agreement in every type style. After Finish, flight guidance names the controls that remain available.

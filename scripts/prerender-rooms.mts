@@ -106,11 +106,20 @@ function renderStarshipExample(main: Element) {
 }
 
 const sitemap = await readFile("dist/sitemap.xml", "utf8");
+// Reading editions share the home page's release date.
+const lastmod = sitemap.match(/<loc>https:\/\/cashio\.us\/<\/loc>\s*<lastmod>([\d-]+)<\/lastmod>/)?.[1];
 await writeFile(
   "dist/sitemap.xml",
   sitemap.replace(
     "</urlset>",
-    roomIds.map((id) => `<url><loc>https://cashio.us/rooms/${id}/</loc></url>`).join("\n") + "\n</urlset>",
+    roomIds
+      .map(
+        (id) =>
+          `  <url>\n    <loc>https://cashio.us/rooms/${id}/</loc>\n` +
+          (lastmod ? `    <lastmod>${lastmod}</lastmod>\n` : "") +
+          "  </url>\n",
+      )
+      .join("") + "</urlset>",
   ),
 );
 console.log("Prerendered four room reading editions from their shared authored content.");

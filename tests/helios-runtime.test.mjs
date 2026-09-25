@@ -74,7 +74,7 @@ test("Privacy feedback resets with a new prediction and stays complete when moti
     await expect(page.locator("#pv-live")).toBeEmpty();
     await page.locator('[data-pv="keep"]').click();
     await page.locator("#pv-reveal").click();
-    await expect(page.locator("#pv-text")).toContainText("Privacy takes priority.");
+    await expect(page.locator("#pv-text")).toContainText("Not quite. Privacy wins.");
     await expect(page.locator("#pv-answer")).toHaveText("Human review");
     await expect(page.locator("#pv-live")).toContainText("Your prediction: Research.");
     await page.locator('[data-pv="human"]').click();
@@ -161,7 +161,8 @@ test("The compact study deck keeps readable tabs, keyboard selection and nearby 
       assert.ok(bounds.gap >= 0 && bounds.gap < 55, "the controls immediately follow the selector");
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
     }
-    await expect(page.locator("#st-name")).toHaveText("Escalation Cascade");
+    await expect(page.locator("#st-name")).toHaveText("Know when to pause");
+    await expect(page.locator("#st-codename")).toHaveText("Escalation Cascade");
     await page.locator("#studies-h").scrollIntoViewIfNeeded();
     await page.screenshot({ path: path.join(output, `study-deck-${width}.png`) });
   }
@@ -448,7 +449,8 @@ test("Mission Control follows nested text and keyboard selection to the exact st
   await page.locator("#mc-search").fill("Graphify");
   await page.locator("#mc-list strong").click();
   await expect(page.locator("#mc")).not.toBeVisible();
-  await expect(page.locator("#st-name")).toHaveText("Graphify");
+  await expect(page.locator("#st-name")).toHaveText("Trace a dependency");
+  await expect(page.locator("#st-codename")).toHaveText("Graphify");
   await expect(page.locator("#instrument [data-module]")).toHaveCount(5);
   await page.keyboard.press("Control+k");
   await page.locator("#mc-search").fill("Escalation");

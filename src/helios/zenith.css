@@ -150,18 +150,6 @@
   }
 }
 
-/* ---------- workshop ---------- */
-.workshop-routes {
-  --stack-gap: 16px;
-}
-.workshop-routes-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
 /* ---------- routing law ---------- */
 .routing-law {
   margin: 4px 0 0;
@@ -218,7 +206,6 @@
 .ship-cap {
   z-index: 1;
 }
-.ship-cap-kick,
 .ship-views {
   color: var(--muted);
 }
@@ -315,7 +302,6 @@
       .request-inspection-link,
       .studio-enter,
       #hg-source,
-      .workshop-routes a,
       .inline-cta
     ) {
     display: inline-flex;
@@ -453,9 +439,6 @@
   .engine-index {
     bottom: -30px;
   }
-  .ship-cap-kick {
-    display: none;
-  }
 }
 
 /* ---------- second critic pass ---------- */
@@ -483,7 +466,7 @@
   padding-bottom: 24px;
 }
 @media (max-width: 900px) {
-  :is(#pilots .pill, #st-next, .case-engineering a, .atlas-inspection a, footer nav a, footer summary) {
+  :is(#pilots .pill, #st-next, .atlas-inspection a, footer nav a, footer summary) {
     min-height: 44px;
     display: inline-flex;
     align-items: center;
@@ -582,9 +565,18 @@
 .profile-strip {
   display: grid;
   gap: 22px;
-  margin-bottom: clamp(36px, 5vw, 64px);
-  padding-bottom: clamp(28px, 4vw, 44px);
-  border-bottom: 1px solid var(--line2);
+}
+.lab-brief {
+  display: grid;
+  gap: 10px;
+  max-width: 80ch;
+}
+.lab-brief > * {
+  margin: 0;
+}
+.lab-brief b {
+  color: var(--ink);
+  font-weight: 600;
 }
 .profile-lead {
   display: flex;

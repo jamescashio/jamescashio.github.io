@@ -199,28 +199,6 @@
   text-decoration: underline;
   font-size: 14px;
 }
-.case-boundary {
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.65;
-  margin: 18px 0;
-}
-.case-engineering {
-  margin-top: 20px;
-  color: var(--ink2);
-  font-size: 14px;
-  line-height: 1.7;
-}
-.case-engineering summary {
-  cursor: pointer;
-  min-height: 44px;
-  padding: 10px 0;
-  color: var(--ink);
-}
-.case-engineering a {
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
 @media (max-width: 1000px) {
   .hero {
     min-height: 760px;

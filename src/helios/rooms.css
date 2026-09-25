@@ -69,6 +69,14 @@ html[data-room="heritage"] #heritage {
     border-color 0.2s,
     transform 0.2s;
 }
+.room-art {
+  width: calc(100% + 44px);
+  max-width: none;
+  height: auto;
+  margin: -22px -22px 4px;
+  border-radius: 13px 13px 0 0;
+  border-bottom: 1px solid var(--line2);
+}
 .room-card strong {
   color: var(--ink);
   font-family: var(--display);
@@ -106,12 +114,20 @@ html[data-room="heritage"] #heritage {
     padding-top: 80px;
   }
 }
+/* A jump to the open room lands at the top, so its back link stays in view. */
+html[data-room] main > .room {
+  scroll-margin-top: 100vh;
+}
 @media (prefers-reduced-motion: reduce) {
   .room-card {
     transition: none;
   }
 }
 @media (max-width: 600px) {
+  .room-art {
+    aspect-ratio: 3;
+    object-fit: cover;
+  }
   #room-crumb {
     position: absolute;
     width: 1px;

@@ -1,4 +1,4 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { copyFile, readFile, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { gzipSync } from "node:zlib";
 
@@ -23,3 +23,5 @@ const hashes = [...html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/scrip
 );
 html = html.replace("script-src 'self';", `script-src 'self' ${hashes.join(" ")};`);
 await writeFile(target, html);
+// The current export also sits beside its archived records under one versionless path; /v38/ stays for old links.
+await copyFile("dist/v38/status.json", "dist/evidence/status.json");

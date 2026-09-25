@@ -23,6 +23,7 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  padding: 6px 14px 0;
 }
 .plate.sig img {
   grid-row: 2;
@@ -37,6 +38,7 @@
   inset: auto;
   grid-row: 3;
   gap: 14px;
+  padding: 0 14px 10px;
 }
 .sig .shade {
   pointer-events: none;
@@ -102,7 +104,8 @@ main:focus {
   outline: none;
 }
 section[id],
-#instrument {
+#instrument,
+#glossary {
   scroll-margin-top: 100px;
 }
 button,

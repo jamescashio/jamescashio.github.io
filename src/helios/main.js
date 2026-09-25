@@ -48,10 +48,27 @@ function copy(text, msg) {
 }
 /* Hydrate the authored dates and counts from the one public evidence record. */
 window.FLEET = FLEET;
+const fleetValue = (path) => path.split(".").reduce((o, k) => o && o[k], FLEET);
+/* A published date never changes; the visitor sees how old the observation is today. */
+function ageOf(value) {
+  const then = new Date(value);
+  if (Number.isNaN(then.getTime())) return "";
+  const now = new Date();
+  const day = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  const days = Math.round((day(now) - day(then)) / 86400000);
+  if (days < 0) return "";
+  return days === 0 ? "today" : days === 1 ? "1 day ago" : `${days} days ago`;
+}
 document.addEventListener("DOMContentLoaded", () => {
   $$("[data-fleet]").forEach((el) => {
-    const v = el.dataset.fleet.split(".").reduce((o, k) => o && o[k], FLEET);
-    if (v !== undefined) el.textContent = String(v);
+    const v = fleetValue(el.dataset.fleet);
+    if (v !== undefined) el.textContent = typeof v === "number" ? v.toLocaleString("en-US") : String(v);
+  });
+  $$("[data-age-of]").forEach((el) => {
+    const age = ageOf(fleetValue(el.dataset.ageOf));
+    if (!age) return;
+    el.textContent = ` · ${age}`;
+    el.hidden = false;
   });
 });
 

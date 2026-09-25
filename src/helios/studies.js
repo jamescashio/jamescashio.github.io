@@ -14,7 +14,7 @@ export function routeExample(intent, priv, src) {
 export function setupStudies({ scenes, motion, copy }) {
   const studyState = new Map(PROJECTS.map((p) => [p.id, defaultExperiment(p.id)]));
   const outcomes = {
-    hermes: "Private information stops an automatic handoff.",
+    hermes: "Intent and sources choose the route. Privacy can overrule both.",
     cascade: "Uncertainty changes the next action.",
     exposure: "Check access and importance before escalating.",
     briefing: "Unknowns belong in the brief.",
@@ -22,15 +22,27 @@ export function setupStudies({ scenes, motion, copy }) {
     signal: "Corroboration changes what happens next.",
     graphify: "A change to Policy reaches three other modules.",
   };
+  // Plain-language tasks lead. The working names stay visible, one step smaller.
+  const labels = {
+    hermes: "Choose a route",
+    cascade: "Know when to pause",
+    exposure: "Triage an exposure",
+    briefing: "Compose a brief",
+    dashboards: "Age the evidence",
+    signal: "Corroborate a signal",
+    graphify: "Trace a dependency",
+  };
+  const cues = { dashboards: "Drag the age past 24 hours. The review state changes." };
   const STUDIES = PROJECTS.map((p, i) => {
     const n = STUDY_NOTES[p.id];
     return {
       id: p.id,
       n: String(i + 1).padStart(2, "0"),
-      name: p.title,
+      name: labels[p.id],
+      code: p.title,
       cat: p.category,
       sub: p.subtitle,
-      cue: p.cue,
+      cue: cues[p.id] || p.cue,
       take: outcomes[p.id],
       takebody: n.relevance,
       q: n.question,
@@ -56,12 +68,18 @@ export function setupStudies({ scenes, motion, copy }) {
     const list = $("#studies-list");
     list.innerHTML = STUDIES.map(
       (s, i) =>
-        `<button class="study" type="button" role="tab" id="study-${s.id}" aria-controls="instrument" tabindex="${i === st.i ? 0 : -1}" data-study="${i}" aria-selected="${i === st.i}"><span class="study-index">${s.n} / 07</span><strong class="study-title">${s.name}</strong><span class="study-purpose">${s.sub}</span><svg class="glyph" viewBox="-5 -5 34 34" fill="none" stroke="currentColor" stroke-width=".8" aria-hidden="true"><circle cx="12" cy="12" r="15" stroke-dasharray="2 3"/><circle cx="12" cy="12" r="12.5" stroke-width=".3"/><path d="${GLYPHS[i]}"/></svg></button>`,
+        `<button class="study" type="button" role="tab" id="study-${s.id}" aria-controls="instrument" tabindex="${i === st.i ? 0 : -1}" data-study="${i}" aria-selected="${i === st.i}"><span class="study-index">${s.n} · ${s.code}</span><strong class="study-title">${s.name}</strong><span class="study-purpose">${s.q}</span><svg class="glyph" viewBox="-5 -5 34 34" fill="none" stroke="currentColor" stroke-width=".8" aria-hidden="true"><circle cx="12" cy="12" r="15" stroke-dasharray="2 3"/><circle cx="12" cy="12" r="12.5" stroke-width=".3"/><path d="${GLYPHS[i]}"/></svg></button>`,
     ).join("");
     list.addEventListener("click", (e) => {
       const b = e.target.closest("[data-study]");
       if (!b) return;
       selectStudy(+b.dataset.study);
+      // A pointer choice keeps its instrument in view; keyboard selection already moves with the tabs.
+      if (e.detail > 0) {
+        const top = $("#instrument").getBoundingClientRect().top;
+        if (top < 72 || top > innerHeight * 0.7)
+          $("#instrument").scrollIntoView({ block: "start", behavior: "instant" });
+      }
     });
   }
   function selectStudy(i, updateUrl = true) {
@@ -72,7 +90,7 @@ export function setupStudies({ scenes, motion, copy }) {
     $("#st-trace").hidden = i !== 0;
     $("#secondary-instrument").hidden = i === 0;
     $(".ring-progress").style.display = i === 0 ? "" : "none";
-    $("#study-source").href = i === 3 || i === 4 ? "/v38/status.json" : s.source;
+    $("#study-source").href = i === 3 || i === 4 ? "/evidence/status.json" : s.source;
     $("#study-source").textContent = s.sourceLabel + " ↗";
     if (i > 0)
       mountInstrument($("#secondary-instrument"), studyState.get(s.id), FLEET, (next) => {
@@ -94,6 +112,7 @@ export function setupStudies({ scenes, motion, copy }) {
         studyStrip.scrollTo({ left: studyStrip.scrollLeft + tabBox.left - stripBox.left - 6, behavior: "instant" });
     }
     $("#st-n").textContent = s.n;
+    $("#st-codename").textContent = s.code;
     $("#st-name").textContent = s.name;
     $("#st-sub").textContent = s.sub;
     $("#st-cue").textContent = s.cue;
