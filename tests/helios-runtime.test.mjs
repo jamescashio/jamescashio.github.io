@@ -259,7 +259,7 @@ test("The illustrated request manifest agrees with each scenario and motion stop
   await page.waitForTimeout(200);
   assert.equal(await packet.getAttribute("transform"), paused, "offscreen packets do not keep animating");
   await page.locator("#motion-btn").click();
-  await page.locator('.room-card[href="#starship"]').click();
+  await page.locator('.room-card[data-room-route="#starship"]').click();
   await page.locator("#flow-scene").scrollIntoViewIfNeeded();
   const still = await packet.getAttribute("transform");
   await page.waitForTimeout(200);
@@ -302,7 +302,7 @@ test("The 3D orbital engine pauses, preserves keyboard control, and recovers to 
   // Leaving the Principles page hides the engine, so it must stop drawing until the page opens again.
   await page.locator(".room-back").click();
   await expect(engine).toHaveAttribute("data-animating", "false");
-  await page.locator('.room-card[href="#principles"]').click();
+  await page.locator('.room-card[data-room-route="#principles"]').click();
   await engine.scrollIntoViewIfNeeded();
   await expect(engine).toHaveAttribute("data-animating", "true");
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -517,7 +517,8 @@ test("The full page, atlas, principles, evidence console, hangar and contact sta
     // Principles, Studios and Flight heritage open as their own pages and keep the home page short.
     for (const id of ["starship", "principles", "studios", "heritage"]) {
       await expect(page.locator(`#${id}`)).toBeHidden();
-      await page.locator(`.room-card[href="#${id}"]`).click();
+      await page.locator(`.room-card[data-room-route="#${id}"]`).click();
+      await expect(page.locator(`#${id}`)).toHaveAttribute("data-room-state", "ready");
       await expect(page.locator(`#${id}`)).toBeVisible();
       await expect(page.locator("#top")).toBeHidden();
       await expect(page.locator(`.room-links a[href="#${id}"]`)).toHaveAttribute("aria-current", "page");
@@ -543,7 +544,7 @@ test("The full page, atlas, principles, evidence console, hangar and contact sta
     }
     await page.locator("#trace-btn").click();
     await expect(page.locator("#trace-label")).toContainText("human review");
-    await page.locator('.room-card[href="#principles"]').click();
+    await page.locator('.room-card[data-room-route="#principles"]').click();
     for (const [index, title] of [
       [0, "Begin with a clear signal."],
       [1, "Give each request the route it needs."],
@@ -851,7 +852,7 @@ test("E.V.E. keeps each reply line visually separate at phone and desktop widths
 
 test("Evidence leads with meaning, expands by keyboard and links the shipped build", async (t) => {
   const page = await visit(t, { width: 320, hash: "#evidence" });
-  await expect(page.locator("#evidence")).toContainText("Every claim here has a date and a source.");
+  await expect(page.locator("#evidence")).toContainText("A dated look inside the lab.");
   await page.locator('.eve-chips [data-eve="fleet"]').click();
   await expect(page.locator("#eve-out")).toContainText("Running guests: 20 containers");
   await expect(page.locator("#build-story")).not.toBeVisible();
@@ -989,8 +990,11 @@ test("A plain visit stays at cashio.us, old V38 addresses normalize and delibera
   const staticPage = await context.newPage();
   await staticPage.goto(url);
   await expect(staticPage.locator("h1")).toBeVisible();
+  await expect(staticPage.locator(".room-card")).toHaveCount(4);
+  await staticPage.locator('.room-card[href="/rooms/studios/"]').click();
   await expect(staticPage.locator(".studio-card")).toHaveCount(3);
-  assert.equal(new URL(staticPage.url()).pathname, "/");
+  await expect(staticPage.locator(".studio-library a")).toHaveCount(5);
+  assert.equal(new URL(staticPage.url()).pathname, "/rooms/studios/");
 });
 
 test("Studios preserve the current page, return focus, Back/Forward and exact signature context", async (t) => {
@@ -1331,5 +1335,123 @@ test("Forward to the fragment-free home restores visible hero focus after an evi
     await expect(page.locator("#top h1")).toBeFocused();
     await expect(page.locator("#top h1")).toBeInViewport();
     assert.equal(new URL(page.url()).hash, "");
+  }
+});
+
+test("Rooms load only when opened and retain their controls between visits", async (t) => {
+  const page = await visit(t, { width: 390, height: 844, expandWorkbenches: false });
+  const roomRequests = [];
+  page.on("request", (request) => {
+    if (/\/room-(starship|principles|studios|heritage)-.*\.js$/.test(request.url())) roomRequests.push(request.url());
+  });
+  assert.equal(await page.locator("#tg-net,#engine,.studio-card,#he-img").count(), 0);
+  assert.equal(
+    await page.evaluate(() =>
+      performance
+        .getEntriesByType("resource")
+        .some((r) => /\/room-(starship|principles|studios|heritage)-/.test(r.name)),
+    ),
+    false,
+  );
+  await page.locator('.room-card[data-room-route="#starship"]').click();
+  await expect(page.locator("#starship")).toHaveAttribute("data-room-state", "ready");
+  await page.locator("#tg-net").click();
+  const state = await page.locator("#tg-net").getAttribute("aria-pressed");
+  await page.locator("#starship .room-end a").first().click();
+  await expect(page.locator("#rooms-h")).toBeFocused();
+  await page.locator('.room-card[data-room-route="#starship"]').click();
+  await expect(page.locator("#tg-net")).toHaveAttribute("aria-pressed", state);
+  assert.equal(roomRequests.length, 1, "only one room bundle, loaded once");
+});
+
+test("Every room supports a direct URL, reload, Back and Forward after deferred loading", async (t) => {
+  for (const width of [390, 1440]) {
+    for (const [hash, id, heading] of [
+      ["#starship", "starship", "ship-h"],
+      ["#principles", "principles", "pr-h"],
+      ["#studios", "studios", "studios-h"],
+      ["#heritage", "heritage", "he-h"],
+      ["#build-story", "starship", "build-proof-title"],
+      ["#mission=sovereign.private.offline.held", "starship", "ship-h"],
+    ]) {
+      const page = await visit(t, { width, height: 900, hash, expandWorkbenches: false });
+      await expect(page.locator(`#${id}`)).toHaveAttribute("data-room-state", "ready");
+      await expect(page.locator(`#${heading}`)).toBeFocused();
+      await expect(page.locator(`#${heading}`)).toBeInViewport();
+      await page.reload({ waitUntil: "networkidle" });
+      await expect(page.locator(`#${heading}`)).toBeFocused();
+      await page.locator(`#${id} .room-end a`).first().click();
+      await expect(page.locator("#rooms-h")).toBeFocused();
+      await page.goBack();
+      await expect(page.locator(`#${heading}`)).toBeFocused();
+      await page.goForward();
+      await expect(page.locator("#rooms-h")).toBeFocused();
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+    }
+  }
+});
+
+test("A late room response cannot steal focus after leaving or opening Mission Control", async (t) => {
+  for (const destination of ["home", "menu"]) {
+    const page = await visit(t, { width: 390, height: 844, expandWorkbenches: false });
+    let release;
+    const hold = new Promise((resolve) => {
+      release = resolve;
+    });
+    await page.route(/\/room-principles-.*\.js$/, async (route) => {
+      await hold;
+      await route.continue();
+    });
+    await page.locator('.room-card[data-room-route="#principles"]').click();
+    await expect(page.locator("#principles")).toHaveAttribute("data-room-state", "loading");
+    await expect(page.locator(".room-load-status").filter({ hasText: "Opening" })).toBeVisible();
+    if (destination === "home") await page.locator(".room-back").click();
+    else await page.locator("#mc-btn").click();
+    release();
+    await expect(page.locator("#principles")).toHaveAttribute("data-room-state", "ready");
+    await expect(page.locator(destination === "home" ? "#rooms-h" : "#mc-search")).toBeFocused();
+    if (destination === "home") await expect(page.locator("#principles")).not.toBeVisible();
+  }
+});
+
+test("A failed room load offers a static reading page and reload recovery", async (t) => {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+  t.after(() => context.close());
+  const page = await context.newPage();
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  const blocked = /\/room-heritage-.*\.js$/;
+  await page.route(blocked, (route) => route.abort());
+  await page.goto(url);
+  await page.locator('.room-card[data-room-route="#heritage"]').click();
+  await expect(page.locator("#heritage")).toHaveAttribute("data-room-state", "error");
+  await expect(page.locator("#he-h")).toBeFocused();
+  await expect(page.locator("#he-h")).toBeInViewport();
+  await expect(page.locator('#heritage a[href="/rooms/heritage/"]')).toBeVisible();
+  await page.unroute(blocked);
+  await page.getByRole("button", { name: "Reload this room", exact: true }).click();
+  await expect(page.locator("#heritage")).toHaveAttribute("data-room-state", "ready");
+  await expect(page.locator("#he-h")).toBeFocused();
+  assert.deepEqual(errors, []);
+});
+
+test("All four reading editions remain reachable and readable without JavaScript", async (t) => {
+  for (const width of [320, 1440]) {
+    const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width, height: 900 } });
+    t.after(() => context.close());
+    const page = await context.newPage();
+    for (const id of ["starship", "principles", "studios", "heritage"]) {
+      await page.goto(url);
+      await page.locator(`.room-card[href="/rooms/${id}/"]`).click();
+      await expect(page.locator("h1")).toBeVisible();
+      await expect(page.locator(`#${id}`)).toBeVisible();
+      await expect(page.locator(".room-end a").first()).toBeVisible();
+      assert.equal(await page.locator("script").count(), 0);
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+      for (const link of await page.locator("a").evaluateAll((nodes) => nodes.map((a) => a.getAttribute("href"))))
+        assert.ok(link.startsWith("/") || /^https?:/.test(link), link);
+      await page.locator(".room-end a").first().click();
+      await expect(page.locator("#rooms-h")).toBeVisible();
+    }
   }
 });

@@ -1,0 +1,427 @@
+<section class="block bg-chapter room" id="starship" data-room-title="Starship lab" aria-labelledby="ship-h">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <div class="kick mb-14">THE SOVEREIGN STARSHIP</div>
+        <h2 id="ship-h" data-split>Your ship.<br />Your intelligence.</h2>
+      </div>
+      <div class="r">
+        <div class="mono c-mu mb-6">ONE SHIP. THREE WAYS TO THINK.</div>
+        <p class="muted m-0 fs-16">
+          Step aboard. Open the hull. Trace twelve AI requests. Cut the cloud link. See what stays with you.
+        </p>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="c7 stack sg-16">
+        <div class="plate h-plate">
+          <img
+            src="/v38/assets/starship.webp"
+            width="1600"
+            height="900"
+            decoding="async"
+            loading="lazy"
+            data-parallax
+            alt="An original titanium and graphite exploration starship with swept wings and cyan engines beside an orbital relay"
+          />
+          <div class="shade"></div>
+          <div class="plate-badges">
+            <span class="mono plate-badge">CSV SOVEREIGN / EXPLORER 01</span
+            ><span class="mono pulse plate-badge relay" id="relay-chip">CLOUD RELAY CONNECTED</span>
+          </div>
+          <div class="cap ship-cap">
+            <div class="stack sg-10">
+              <span class="mono ship-cap-kick">YOUR SHIP. YOUR INTELLIGENCE.</span
+              ><a class="btn gold" href="#flight=board" data-flight data-magnet>Board the starship ↗</a
+              ><span class="muted copy-note">Four stops: board, open the hull, cut the cloud, take command.</span>
+            </div>
+            <span class="mono ship-views">Hero view · Deck plan · Engine view</span>
+          </div>
+        </div>
+        <div class="soft route-legend">
+          <span class="legend-item"><i class="legend-dot local"></i>Local route</span
+          ><span class="legend-item"><i class="legend-dot cloud"></i>Cloud route</span
+          ><span class="legend-item"><i class="legend-dot held"></i>Waiting for a permitted route</span
+          ><span class="muted copy-note legend-note">Board the flight to open the hull and explore in 3D.</span>
+        </div>
+        <div class="soft flow-scene" id="flow-scene" data-connected="true">
+          <div class="scene-heading">
+            <span class="mono">Request flow / scenario model</span
+            ><span class="mono" id="schem-label">HYBRID · 6 LOCAL · 6 CLOUD · 0 HELD</span>
+          </div>
+          <svg
+            class="schem"
+            id="schem"
+            viewBox="0 0 800 340"
+            role="img"
+            aria-label="Twelve illustrative requests: cyan stays onboard, gold uses the external relay, and rose waits for human review."
+          >
+            <defs>
+              <linearGradient id="hull" x1="0" y1="0" x2=".6" y2="1">
+                <stop stop-color="#7696a8" />
+                <stop offset=".35" stop-color="#304c64" />
+                <stop offset="1" stop-color="#0b1726" />
+              </linearGradient>
+              <linearGradient id="hull-edge" x2=".8" y2="1">
+                <stop stop-color="#91d7e4" />
+                <stop offset=".3" stop-color="#203f54" />
+                <stop offset="1" stop-color="#07121f" />
+              </linearGradient>
+              <linearGradient id="flow-gold" x2=".9" y2="1">
+                <stop stop-color="#ffedac" />
+                <stop offset=".42" stop-color="#dfad53" />
+                <stop offset="1" stop-color="#72522d" />
+              </linearGradient>
+              <radialGradient id="flow-aura">
+                <stop stop-color="#38e1ff" stop-opacity=".2" />
+                <stop offset="1" stop-color="#38e1ff" stop-opacity="0" />
+              </radialGradient>
+              <radialGradient id="flow-amber">
+                <stop stop-color="#f2c87a" stop-opacity=".22" />
+                <stop offset="1" stop-color="#f2c87a" stop-opacity="0" />
+              </radialGradient>
+              <linearGradient id="thrust">
+                <stop stop-color="#38e1ff" stop-opacity="0" />
+                <stop offset="1" stop-color="#9af7ff" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M20 244Q400 346 780 214M20 266Q400 368 780 236M64 316l77-42m103 66 37-47m370 19-58-43m141 11-88-44"
+              fill="none"
+              stroke="#284052"
+              stroke-opacity=".45"
+            />
+            <ellipse cx="151" cy="201" rx="144" ry="111" fill="url(#flow-aura)" />
+            <ellipse cx="400" cy="165" rx="130" ry="125" fill="url(#flow-amber)" />
+            <ellipse class="relay-glow" cx="656" cy="126" rx="126" ry="116" fill="url(#flow-amber)" />
+            <path d="M151 204Q266 170 400 165" class="route-track local-track" />
+            <path d="M151 217Q266 183 400 178" class="route-track track-return" />
+            <path d="M400 165Q530 165 656 126" id="relay-line" class="route-track relay-track" />
+            <path d="M400 178Q530 178 656 139" class="route-track relay-track track-return" />
+            <g class="ship-model">
+              <ellipse cx="143" cy="264" rx="93" ry="18" fill="#000" opacity=".35" />
+              <path
+                class="ship-exhaust"
+                d="M11 208l63-13 12 16-68 8zM17 244l67-17 9 11-65 19z"
+                fill="url(#thrust)"
+                opacity=".7"
+              />
+              <path d="M71 206l42-71 132 62-41 39-103 33-33-21 36-26z" fill="url(#hull-edge)" stroke="#427085" />
+              <path
+                d="M71 198l42-71 132 62-41 39-103 33-33-21 36-26z"
+                fill="url(#hull)"
+                stroke="#8aacbb"
+                stroke-width="1.2"
+              />
+              <path d="M113 127l35 62 97 0-132-62z" fill="#3b6075" />
+              <path d="M148 189l-47 72 103-33 41-39z" fill="#132e43" />
+              <path
+                d="M68 240l67-39-22-74m22 74 110-12M148 189l-13 12"
+                stroke="#abd1d7"
+                stroke-opacity=".6"
+                fill="none"
+              />
+              <path d="M121 181l22-17 40 19-33 15z" fill="#051724" stroke="#38e1ff" />
+              <path d="M127 183l18-11 26 11-24 8z" fill="#38e1ff" opacity=".35" />
+              <path d="M110 242l62-20m-42-4 30-11M99 155l-11 27" fill="none" stroke="#38e1ff" stroke-width="2" />
+              <path d="M78 198l12 8m-13 29 14 8" stroke="#ccfcff" stroke-width="4" />
+              <circle cx="202" cy="198" r="2" fill="#f2c87a" />
+            </g>
+            <g class="command-model">
+              <ellipse cx="400" cy="229" rx="64" ry="16" fill="#000" opacity=".45" />
+              <path d="M338 208v11c0 27 124 27 124 0v-11" fill="url(#hull)" stroke="#587180" />
+              <ellipse cx="400" cy="208" rx="62" ry="21" fill="#0b1b2a" stroke="url(#flow-gold)" />
+              <ellipse
+                cx="400"
+                cy="208"
+                rx="48"
+                ry="14"
+                fill="none"
+                stroke="#f2c87a"
+                stroke-opacity=".6"
+                stroke-dasharray="5 5"
+              />
+              <path d="M400 101l27 51-27 51-27-51z" fill="url(#flow-gold)" />
+              <path d="M400 101v102l27-51z" fill="#a57432" />
+              <path d="M400 101l-27 51 27-13 27 13z" fill="#ffe7a4" />
+              <path d="M373 152l27 51v-64z" fill="#e7b957" />
+              <ellipse
+                class="command-orbit"
+                cx="400"
+                cy="157"
+                rx="55"
+                ry="12"
+                fill="none"
+                stroke="#f2c87a"
+                stroke-opacity=".5"
+                transform="rotate(-28 400 157)"
+              />
+            </g>
+            <g class="relay-model">
+              <path d="M575 117l39-23 4 48-39 23zM692 90l39-23 4 48-39 23z" fill="#142d43" stroke="#6093a7" />
+              <path
+                d="M588 110l4 47m9-55 4 47m-28-17 40-23m-39 36 40-23M705 82l4 47m9-55 4 47m-28-16 40-23m-39 36 40-23"
+                fill="none"
+                stroke="#38e1ff"
+                stroke-opacity=".4"
+              />
+              <path d="M614 121l25-8m43-8 12-4" stroke="#c8ab74" stroke-width="4" />
+              <path d="M634 93l32-11 21 13v47l-32 12-21-13z" fill="url(#hull)" stroke="#9aadad" />
+              <path d="M655 105l32-10v47l-32 12z" fill="#233b4e" />
+              <path d="M634 93l21 12 32-10-21-13z" fill="url(#flow-gold)" />
+              <path d="M662 116l17-5v22l-17 6z" fill="#081726" stroke="#f2c87a" />
+              <path d="M643 84l-4-25m-13-12q22-15 33 2-10 18-33-2z" fill="url(#flow-gold)" stroke="#ecd08f" />
+              <path
+                class="relay-signal"
+                d="M623 35q23-14 40 3m-49-15q32-23 59 5"
+                fill="none"
+                stroke="#f2c87a"
+                stroke-opacity=".6"
+                stroke-width="2"
+              />
+              <path d="M662 122l10-3" stroke="#ffecac" stroke-width="2" />
+            </g>
+            <g id="packets"></g>
+          </svg>
+          <div class="flow-stations" aria-hidden="true">
+            <span><b>Onboard AI</b><small>Your ship</small></span
+            ><span><b>Command bridge</b><small>Bit / human authority</small></span
+            ><span><b>Cloud relay</b><small id="relay-state">Connected</small></span>
+          </div>
+          <div class="flow-manifest">
+            <div id="request-slots" aria-hidden="true"></div>
+            <span id="manifest-label">12 requests / illustrated</span>
+          </div>
+        </div>
+        <div class="grid-box cols-fit-200 gap-12" data-stagger>
+          <div class="soft p-16">
+            <span class="mono c-cy">Onboard AI</span>
+            <p class="muted copy-note m-top-6">
+              Owned compute lives inside the ship. Its AI bay represents hardware you operate. In this model, it can
+              handle all twelve requests onboard, even without a cloud connection.
+            </p>
+          </div>
+          <div class="soft p-16">
+            <span class="mono c-gd">Cloud relay</span>
+            <p class="muted copy-note m-top-6">
+              The separate orbital relay represents an external cloud provider. A request must leave the ship to reach
+              it. Private requests also need explicit permission in Cloud mode.
+            </p>
+          </div>
+          <div class="soft p-16">
+            <span class="mono c-gd">Command bridge</span>
+            <p class="muted copy-note m-top-6">
+              Bit, the gold core, marks human authority. You choose the architecture and grant permission. A held
+              request waits here for an approved route; it never leaves silently.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="panel c5 stack p-20-30 sg-16">
+        <div class="flight-plan-heading">
+          <span class="kick gold">THE FLIGHT PLAN</span>
+          <p>Choose a starting point. Then test its boundaries.</p>
+        </div>
+        <div class="grid-box cols-3 gap-8" id="missions">
+          <button
+            class="tile flex-col items-start gap-4 p-12-14"
+            type="button"
+            data-mission="routine"
+            aria-pressed="true"
+          >
+            <span class="mono c-gd">01</span><strong class="fs-13">Routine flight</strong
+            ><span class="mono c-mu">6 private + 6 public · hybrid</span>
+          </button>
+          <button
+            class="tile flex-col items-start gap-4 p-12-14"
+            type="button"
+            data-mission="blackout"
+            aria-pressed="false"
+          >
+            <span class="mono c-gd">02</span><strong class="fs-13">Deep space blackout</strong
+            ><span class="mono c-mu">Same work · cloud link offline</span>
+          </button>
+          <button
+            class="tile flex-col items-start gap-4 p-12-14"
+            type="button"
+            data-mission="classified"
+            aria-pressed="false"
+          >
+            <span class="mono c-gd">03</span><strong class="fs-13">Classified mission</strong
+            ><span class="mono c-mu">12 private · cloud permission off</span>
+          </button>
+        </div>
+        <p id="mission-state">Routine flight · selected</p>
+        <strong class="fs-14">Choose the architecture</strong>
+        <div class="grid-box cols-3 gap-8" id="arch-group">
+          <button class="pill pill-arch" type="button" data-arch="sovereign" aria-pressed="false">
+            <span>Sovereign / local</span><span class="mono c-mu case-none ls-06">Your hardware. Your boundary.</span>
+          </button>
+          <button class="pill pill-arch" type="button" data-arch="hybrid" aria-pressed="true">
+            <span>Hybrid</span><span class="mono c-mu case-none ls-06">Local privacy. Cloud options.</span>
+          </button>
+          <button class="pill pill-arch" type="button" data-arch="cloud" aria-pressed="false">
+            <span>Cloud</span><span class="mono c-mu case-none ls-06">External compute. Explicit permission.</span>
+          </button>
+        </div>
+        <strong class="fs-14">Workload sensitivity</strong>
+        <div class="flex gap-8 flex-wrap" id="sens-group">
+          <button class="pill gold fs-13" type="button" data-sens="mixed" aria-pressed="true">
+            Mixed · 6 private + 6 public</button
+          ><button class="pill gold fs-13" type="button" data-sens="private" aria-pressed="false">
+            All private · 12</button
+          ><button class="pill gold fs-13" type="button" data-sens="public" aria-pressed="false">
+            All public · 12
+          </button>
+        </div>
+        <div class="flex gap-8 flex-wrap">
+          <button class="toggle" type="button" id="tg-net" aria-pressed="true">
+            <span>Internet available · <span id="net-label">Connected</span></span
+            ><span class="knob"></span></button
+          ><button class="toggle gold" type="button" id="tg-permit" aria-pressed="false">
+            <span>Permit private cloud requests</span><span class="knob"></span>
+          </button>
+        </div>
+        <span class="flight-plan-note">Permission applies to private requests in Cloud mode.</span>
+        <div class="hair"></div>
+        <div class="flex justify-between items-baseline">
+          <span class="mono c-mu">THE SAME 12 REQUEST WORKLOAD</span><span class="mono c-mu">requests</span>
+        </div>
+        <div class="stack sg-8" aria-live="polite">
+          <div class="grid-box cols-meter gap-12 items-center">
+            <span class="fs-13">Handled locally</span>
+            <div class="barwrap"><div class="bar bg-local" id="b-local"></div></div>
+            <span class="num cy fs-22 text-right" id="n-local">6</span>
+          </div>
+          <div class="grid-box cols-meter gap-12 items-center">
+            <span class="fs-13">Sent to cloud</span>
+            <div class="barwrap"><div class="bar bg-cloud" id="b-cloud"></div></div>
+            <span class="num em fs-22 text-right" id="n-cloud">6</span>
+          </div>
+          <div class="grid-box cols-meter gap-12 items-center">
+            <span class="fs-13">Held for review</span>
+            <div class="barwrap"><div class="bar bg-held" id="b-held"></div></div>
+            <span class="num fs-22 text-right c-held" id="n-held">0</span>
+          </div>
+        </div>
+        <div class="decision-change" id="decision-change" data-held="false">
+          <span class="kick">YOUR LAST CHANGE</span>
+          <p id="w-change" role="status" aria-live="polite" aria-atomic="true">
+            Change a setting to compare the request counts.
+          </p>
+        </div>
+        <p class="m-0 fs-14 c-ink2" id="w-summary">
+          6 requests stay local; 6 public requests use the cloud. Sensitive data stays on your hardware.
+        </p>
+        <div class="grid-box cols-fit-180 gap-10">
+          <div class="soft p-12">
+            <span class="mono c-cy">Data boundary</span>
+            <p class="muted copy-note m-top-4" id="w-data">
+              Sensitive requests always stay local. Only public requests may use the cloud.
+            </p>
+          </div>
+          <div class="soft p-12">
+            <span class="mono c-gd">Connection dependency</span>
+            <p class="muted copy-note m-top-4" id="w-net">
+              Cloud routing needs a connection; this model also supports local fallback.
+            </p>
+          </div>
+        </div>
+        <div>
+          <div class="flex justify-between items-baseline gap-8 flex-wrap">
+            <strong class="fs-14">Compare all three architectures</strong><span class="mono c-mu">same settings</span>
+          </div>
+          <div class="cmp hd">
+            <span>Architecture</span><span class="c-cy">Local</span><span class="c-gd">Cloud</span
+            ><span class="c-held">Held</span>
+          </div>
+          <div id="cmp-rows"></div>
+        </div>
+        <span class="mono c-mu lh-15"
+          >“Held” means the model has no permitted route. Moving packets show routing, not measured speed or
+          throughput.</span
+        >
+        <div class="flex justify-between items-center gap-12 flex-wrap">
+          <div>
+            <strong class="fs-14">Your decision. Their next move.</strong><br /><span class="muted fs-12"
+              >Share these settings. Let someone else test the boundary.</span
+            >
+          </div>
+          <button class="btn line sm" type="button" id="copy-mission">Copy this mission ↗</button>
+        </div>
+        <span class="muted fs-12"
+          >Here, Sovereign means fully local. This compares routes, not vendors or speed, and contacts no real AI
+          service.</span
+        >
+      </div>
+    </div>
+  </div>
+  <div class="wrap">
+    <article class="case-study" id="build-story" aria-labelledby="build-proof-title">
+      <div>
+        <span class="mono cy">BUILD STORY / SOVEREIGN STARSHIP</span>
+        <h3 id="build-proof-title">The ship that vanished when motion stopped.</h3>
+        <p class="case-deck">
+          The routing math was right. The first impression was a blank canvas. Here is what the quiet view taught me.
+        </p>
+        <figure class="case-image">
+          <img
+            src="/v38/assets/starship.webp"
+            width="1200"
+            height="675"
+            loading="lazy"
+            decoding="async"
+            alt="Original Sovereign Starship artwork: an exploration ship with a visible gold command core and a separate cloud relay"
+          />
+          <figcaption>Original artwork. Working controls. One shared routing model.</figcaption>
+        </figure>
+      </div>
+      <div>
+        <dl class="case-notes">
+          <div>
+            <dt>The failure</dt>
+            <dd>
+              Opening a paused scene could leave the ship invisible, even though its controls and routing model worked.
+            </dd>
+          </div>
+          <div>
+            <dt>The repair</dt>
+            <dd>
+              Draw one frame when the canvas becomes visible, then let it rest. Pausing motion must not hide the work.
+            </dd>
+          </div>
+          <div>
+            <dt>The check</dt>
+            <dd>
+              A geometry check now covers the quiet first impression. The same routing model still drives the ship,
+              counters and explanation.
+            </dd>
+          </div>
+        </dl>
+        <div class="case-outcome"><strong>1 frame</strong><span>drawn before the quiet scene rests</span></div>
+        <div class="case-links">
+          <a class="btn gold sm" href="#flight=board">Open the flight <span aria-hidden="true">↗</span></a>
+          <a
+            class="case-source"
+            href="https://github.com/jamescashio/jamescashio.github.io/blob/8175beb8cfbfc7fac5c25626787907f56e06a3c7/src/odyssey/sovereign-model.ts"
+            >Read the shared rule ↗</a
+          >
+          <a
+            class="case-source"
+            href="https://github.com/jamescashio/jamescashio.github.io/blob/8175beb8cfbfc7fac5c25626787907f56e06a3c7/tests/sovereign-model.test.mjs"
+            >Inspect the model tests ↗</a
+          >
+        </div>
+        <p class="case-boundary">
+          The outcomes come from a model in your browser that you can reproduce. No AI requests are sent.
+        </p>
+        <a class="case-source" href="https://github.com/jamescashio/jamescashio.github.io/pull/135"
+          >Read the shipped repair and validation ↗</a
+        >
+      </div>
+    </article>
+  </div>
+  <div class="wrap room-end">
+    <a class="btn" href="#rooms">← Back to the four rooms</a><a href="#top">Back to the beginning ↑</a>
+  </div>
+</section>

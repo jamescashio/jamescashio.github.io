@@ -132,7 +132,14 @@ async function run() {
       const base = `http://127.0.0.1:${resources.server.address().port}`;
       const rootHtml = await fetch(`${base}/`).then((response) => response.text());
       assert.match(rootHtml, /data-helios-styles=/, "root must serve the current Helios document");
-      assert.match(rootHtml, /id="studios"/, "the integrated studios must exist before JavaScript");
+      assert.match(rootHtml, /href="\/rooms\/studios\/"/, "the studios must be reachable before JavaScript");
+      const studios = await fetch(`${base}/rooms/studios/index.html`).then((response) => response.text());
+      assert.equal(
+        (studios.match(/class="studio-card"/g) || []).length,
+        3,
+        "all studio destinations exist without JavaScript",
+      );
+      assert.match(studios, /class="studio-library"/, "the static film library is available");
       const archiveHtml = await fetch(`${base}/odyssey.html`).then((response) => response.text());
       assert.match(archiveHtml, /data-prerendered="odyssey"/, "the archive must retain the prerendered V37 page");
       assert.ok(archiveHtml.includes(`<title>${PAGE_TITLE}</title>`), "the archive must identify V37.17 Continuum");

@@ -47,7 +47,7 @@
   transition: transform 0.85s ease;
   pointer-events: none;
 }
-.studio-card[href="#signature"] .studio-portal img {
+.studio-card[href$="#signature"] .studio-portal img {
   object-fit: contain;
   background: #010408;
   mix-blend-mode: screen;

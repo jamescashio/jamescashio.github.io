@@ -1,6 +1,4 @@
-import { setupSovereignLab } from "./sovereign-lab.js";
-import { setupPrinciples } from "./principles.js";
-import { setupHeritage } from "./heritage.js";
+import { setupRooms } from "./rooms.js";
 import { setupSignature } from "./signature.js";
 import { $, $$ } from "./dom.js";
 import { setupStudies, routeExample } from "./studies.js";
@@ -64,11 +62,7 @@ const privacy = setupPrivacy({
   motion: () => motionOn,
 });
 
-const sovereignLab = setupSovereignLab({ scenes, motion: () => motionOn, copy });
-
 setupAtlas({ scenes, motion: () => motionOn, say: (...args) => Bit.say(...args) });
-
-setupPrinciples({ scenes, motion: () => motionOn });
 
 setupEvidenceConsole({ motion: () => motionOn });
 
@@ -100,18 +94,12 @@ $("#pv-reveal").addEventListener("click", () => {
   const prediction = privacy.getPrediction();
   Bit.setMood(prediction === "human" ? "yes" : prediction === "keep" ? "no" : "think", 2200);
 });
-$("#tg-net").addEventListener("click", () => {
-  if (!sovereignLab.getState().net) Bit.say("BLACKOUT", "Cloud link is down. Watch what stays aboard.", "alert", 2200);
-  else Bit.say("RELAY UP", "Connection restored. Public work may leave the ship again.", "yes", 1800);
-});
 $("#trace-btn").addEventListener("click", () =>
   Bit.say("TRACE", "Following one request from intent to review. Conceptual, not live.", "think", 3000),
 );
 $("#eve-form").addEventListener("submit", () =>
   Bit.say("ASK THE EVIDENCE", "Every answer has a date and a boundary.", "think", 1600),
 );
-
-setupHeritage({ motion: () => motionOn, say: (...args) => Bit.say(...args) });
 
 setupSignature({ motion: () => motionOn, say: (...args) => Bit.say(...args) });
 
@@ -128,10 +116,12 @@ $("#fold-btn").addEventListener("click", async () => {
   } else Bit.say("ORBIT", "The original artwork is ready to explore on this device.", "think");
 });
 
+const rooms = setupRooms({ scenes, motion: () => motionOn, copy, say: (...args) => Bit.say(...args) });
 const navigation = setupNavigation({
+  rooms,
   studies: studyDeck.studies,
   select: studyDeck.selectExperiment,
-  mission: sovereignLab.setMission,
+  mission: (value) => rooms.controller("starship").setMission(value),
   motion: () => motionOn,
   toast,
 });
@@ -139,7 +129,7 @@ setupMotion({
   gsap,
   onChange: (on) => {
     motionOn = on;
-    sovereignLab.render();
+    rooms.controller("starship")?.render();
   },
   onSceneReady: () => Bit.setMood("yes", 1400),
 });

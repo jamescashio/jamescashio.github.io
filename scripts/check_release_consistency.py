@@ -604,7 +604,7 @@ def main() -> int:
             failures.append("release receipt must match the latest observation without redating the archive")
         if site_release != compatibility_release:
             failures.append("event-horizon-release.json must match the canonical site-release.json")
-    if package.get("scripts", {}).get("build") != "tsc --noEmit && vite build && node --import tsx scripts/prerender.mts && node --import tsx scripts/prerender-odyssey.mts && node --import tsx scripts/prerender-helios.mts":
+    if package.get("scripts", {}).get("build") != "tsc --noEmit && vite build && node --import tsx scripts/prerender.mts && node --import tsx scripts/prerender-odyssey.mts && node --import tsx scripts/prerender-helios.mts && node --import tsx scripts/prerender-rooms.mts":
         failures.append("package.json build script changed from the supplied TypeScript + Vite + prerender gate")
 
     vite = read("vite.config.ts")

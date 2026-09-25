@@ -160,6 +160,16 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
     }
   });
   document.querySelectorAll("section.block,.hero").forEach((el) => ambient.observe(el));
+  window.addEventListener("helios-room-ready", ({ detail: room }) => {
+    room.querySelectorAll("[data-count]").forEach((el) => {
+      el.textContent = el.dataset.count;
+    });
+    room.querySelectorAll(".bar[data-w]").forEach((el) => {
+      el.style.transform = `scaleX(${el.dataset.w})`;
+    });
+    ambient.observe(room);
+    syncAmbient();
+  });
   document.addEventListener("visibilitychange", syncAmbient);
   const rail = document.querySelector("#railbar");
   let railFrame = 0;

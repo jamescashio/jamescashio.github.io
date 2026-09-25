@@ -1,19 +1,25 @@
-/**
- * Principles, Studios and Flight heritage open as their own pages inside the one document,
- * so the home page stays short and every instrument keeps its behavior.
- * The entry script sets html[data-room] before paint when a room is the first address.
- */
-export function setupRooms() {
+const loaders = {
+  starship: () => import("./room-starship.js"),
+  principles: () => import("./room-principles.js"),
+  studios: () => import("./room-studios.js"),
+  heritage: () => import("./room-heritage.js"),
+};
+
+/** One authored room becomes a static page at build time and an interactive island on demand. */
+export function setupRooms(context) {
   const root = document.documentElement;
   const crumb = document.getElementById("room-crumb");
   const links = [...document.querySelectorAll(".room-links a")];
   const homeTitle = document.title;
+  const pending = new Map();
+  const controllers = new Map();
   let current = null;
 
-  const roomOf = (hash) => {
+  function roomOf(hash) {
+    if (hash === "#build-story" || hash.startsWith("#mission=")) return document.getElementById("starship");
     if (!/^#[\w-]+$/.test(hash)) return null;
     return document.getElementById(hash.slice(1))?.closest("section.room") || null;
-  };
+  }
 
   function show(room) {
     if (room === current && (room ? root.dataset.room === room.id : !root.dataset.room)) return false;
@@ -35,8 +41,56 @@ export function setupRooms() {
     return true;
   }
 
+  async function ensure(hash) {
+    const room = roomOf(hash);
+    if (!room || room.dataset.roomState === "ready") return true;
+    if (pending.has(room.id)) return pending.get(room.id);
+    const placeholder = room.firstElementChild;
+    const status = placeholder.querySelector(".room-load-status");
+    status.textContent = `Opening ${room.dataset.roomTitle}…`;
+    room.dataset.roomState = "loading";
+    room.setAttribute("aria-busy", "true");
+    const loading = (async () => {
+      try {
+        const module = await loaders[room.id]();
+        const template = document.createElement("template");
+        // This is trusted, build-time authored HTML, never visitor or network-supplied text.
+        template.innerHTML = module.html;
+        const authored = template.content.querySelector("section.room");
+        if (authored?.id !== room.id) throw new Error("Room content does not match its address");
+        room.className = authored.className;
+        room.replaceChildren(...authored.childNodes);
+        context.scenes.attachRoom(room);
+        controllers.set(room.id, module.mount?.(context));
+        room.dataset.roomState = "ready";
+        window.dispatchEvent(new CustomEvent("helios-room-ready", { detail: room }));
+        return true;
+      } catch {
+        room.dataset.roomState = "error";
+        status.textContent = "This room couldn’t load. Read its text and artwork below, or reload to try again.";
+        const retry = document.createElement("button");
+        retry.className = "btn";
+        retry.textContent = "Reload this room";
+        retry.addEventListener("click", () => location.reload());
+        // Keep the heading, status and reading link even if mounting failed after replacing the placeholder.
+        room.replaceChildren(placeholder);
+        status.after(retry);
+        return false;
+      } finally {
+        room.removeAttribute("aria-busy");
+      }
+    })();
+    pending.set(room.id, loading);
+    return loading;
+  }
+
   return {
-    /** Shows the room that holds this address, or the home page. Returns true when the page changed. */
     sync: (hash) => show(roomOf(hash)),
+    needsLoad: (hash) => {
+      const room = roomOf(hash);
+      return room && room.dataset.roomState !== "ready";
+    },
+    ensure,
+    controller: (id) => controllers.get(id),
   };
 }

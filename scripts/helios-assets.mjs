@@ -9,17 +9,20 @@ export function heliosAssetDelivery() {
   const assets = new Map();
   let root;
   let output;
+  function versionAsset(filename) {
+    if (!assets.has(filename)) {
+      const bytes = readFileSync(path.join(root, filename));
+      const sha256 = createHash("sha256").update(bytes).digest("hex");
+      const ext = path.extname(filename);
+      const versioned = `v38/immutable/${path.basename(filename, ext)}-${sha256.slice(0, 16)}${ext}`;
+      assets.set(filename, { versioned, sha256, bytes });
+    }
+    return "/" + assets.get(filename).versioned;
+  }
   return {
     renderBuiltUrl(filename, { type }) {
       if (type !== "public" || !/^v38\/(assets|fonts)\/[\w-]+\.(webp|jpg|woff2)$/.test(filename)) return;
-      if (!assets.has(filename)) {
-        const bytes = readFileSync(path.join(root, filename));
-        const sha256 = createHash("sha256").update(bytes).digest("hex");
-        const ext = path.extname(filename);
-        const versioned = `v38/immutable/${path.basename(filename, ext)}-${sha256.slice(0, 16)}${ext}`;
-        assets.set(filename, { versioned, sha256, bytes });
-      }
-      return "/" + assets.get(filename).versioned;
+      return versionAsset(filename);
     },
     plugin: {
       name: "helios-asset-versions",
@@ -30,6 +33,15 @@ export function heliosAssetDelivery() {
       },
       buildStart() {
         assets.clear();
+      },
+      transform(code, id) {
+        if (!/src[\\/]helios[\\/]rooms[\\/].*\.html\?raw$/.test(id)) return;
+        return {
+          code: code.replace(/\/v38\/(assets|fonts)\/[\w-]+\.(webp|jpg|woff2)/g, (source) =>
+            versionAsset(source.slice(1)),
+          ),
+          map: null,
+        };
       },
       async writeBundle() {
         await mkdir(path.join(output, "v38/immutable"), { recursive: true });

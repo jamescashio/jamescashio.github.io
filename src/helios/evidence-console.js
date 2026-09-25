@@ -13,7 +13,7 @@ export const EVIDENCE = {
   ],
   fleet: [
     `observation: ${FLEET.observedLong}`,
-    `hosts at the observation: ${FLEET.hosts} responded, ${FLEET.quorate ? "quorate" : "quorum not observed"}`,
+    `hosts at the observation: ${FLEET.hosts} responded, ${FLEET.quorate ? "enough cluster votes to make management decisions" : "enough cluster votes were not confirmed"}`,
     `Running guests: ${FLEET.lxc} containers and ${FLEET.qemu} virtual machine · per host split withheld`,
     `method: ${FLEET.method} · run by the owner`,
   ],
@@ -28,7 +28,8 @@ export const EVIDENCE = {
   ],
   atlas: [
     `Observation: ${FLEET.auditLong}`,
-    `primary model: runs locally · active context ${FLEET.atlas.context}`,
+    `Local AI model · context window: ${FLEET.atlas.context.toLocaleString("en-US")} tokens`,
+    "Tokens are pieces of text. This window holds the instructions, conversation and reply together.",
     "inference host for recurring work · model name and private catalog withheld",
   ],
   dsh: [
@@ -63,7 +64,7 @@ export const EVIDENCE = {
   hosts: [
     `Observation: ${FLEET.observedLong}`,
     `zeus and apollo: ${FLEET.hosts} hosts, one cluster · ${FLEET.lxc} containers and ${FLEET.qemu} VM between them`,
-    "quorum observed; quorum alone does not establish workload failover",
+    "The cluster had enough votes to make management decisions. This does not prove that applications can survive a host failure.",
     "private service locations are withheld from the public record",
   ],
 };

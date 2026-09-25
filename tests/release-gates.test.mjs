@@ -115,7 +115,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
   }
   assert.equal(packageJson.scripts.lint, "eslint . --max-warnings 0");
   const formattingScope =
-    '"src/**/*.{ts,tsx,js,css}" "tests/**/*.mjs" "scripts/**/*.{mjs,mts}" "*.{js,json,md,ts}" "docs/**/*.md" ".github/**/*.{md,yml,yaml}" "public/**/*.json" "v38/**/*.html" "index.html" "public/helios-entry.js"';
+    '"src/**/*.{ts,tsx,js,css,html}" "tests/**/*.mjs" "scripts/**/*.{mjs,mts}" "*.{js,json,md,ts}" "docs/**/*.md" ".github/**/*.{md,yml,yaml}" "public/**/*.json" "v38/**/*.html" "index.html" "public/helios-entry.js"';
   assert.equal(packageJson.scripts.format, `prettier --write ${formattingScope}`);
   assert.equal(packageJson.scripts["format:check"], `prettier --check ${formattingScope}`);
   const expandedTest = expandScript(packageJson.scripts, "test");
@@ -127,6 +127,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
     "node --import tsx scripts/prerender.mts",
     "node --import tsx scripts/prerender-odyssey.mts",
     "node --import tsx scripts/prerender-helios.mts",
+    "node --import tsx scripts/prerender-rooms.mts",
     packageJson.scripts["test:artifact"],
     packageJson.scripts["test:release"],
   ]);
@@ -134,8 +135,8 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
   assert.match(expandedTest[0], /tests\/prerender\.test\.mjs/);
   assert.doesNotMatch(expandedTest[0], /tests\/release-gates\.test\.mjs/);
   assert.equal(packageJson.scripts["test:artifact"], "node --import tsx --test tests/release-gates.test.mjs");
-  assert.match(expandedTest[7], /tests\/release-gates\.test\.mjs/);
-  assert.match(expandedTest[8], /^python -m unittest /);
+  assert.match(expandedTest.at(-2), /tests\/release-gates\.test\.mjs/);
+  assert.match(expandedTest.at(-1), /^python -m unittest /);
   assert.deepEqual(expandScript(packageJson.scripts, "verify"), [
     packageJson.scripts.lint,
     packageJson.scripts["format:check"],
@@ -146,6 +147,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
     "node --import tsx scripts/prerender.mts",
     "node --import tsx scripts/prerender-odyssey.mts",
     "node --import tsx scripts/prerender-helios.mts",
+    "node --import tsx scripts/prerender-rooms.mts",
     packageJson.scripts["test:artifact"],
     "node scripts/check_layout_runtime.mjs",
     "node scripts/check_v36_runtime.mjs",
@@ -715,8 +717,22 @@ test("The root ships Helios directly, with bounded compatibility routing and a c
   const document = new JSDOM(await read("dist/index.html")).window.document;
   assert.equal(document.querySelector('link[rel="canonical"]').href, "https://cashio.us/");
   assert.equal(document.querySelectorAll("h1").length, 1);
-  assert.equal(document.querySelectorAll(".studio-card").length, 3);
-  assert.equal(document.querySelectorAll(".studio-library a").length, 5);
+  assert.equal(document.querySelectorAll(".studio-card").length, 0, "room payload is deferred");
+  for (const id of ["starship", "principles", "studios", "heritage"]) {
+    assert.ok(document.querySelector(`.room-card[href="/rooms/${id}/"][data-room-route="#${id}"]`));
+    assert.equal(document.querySelector(`#${id}`).getAttribute("data-room-state"), "idle");
+    const reading = new JSDOM(await read(`dist/rooms/${id}/index.html`)).window.document;
+    assert.equal(reading.querySelectorAll("script").length, 0, "reading edition needs no JavaScript");
+    assert.equal(reading.querySelectorAll("h1").length, 1);
+    assert.ok(reading.querySelector(`a[href="/#${id}"]`));
+    assert.ok(reading.querySelector('.room-end a[href="/#rooms"]'));
+    for (const image of reading.querySelectorAll("img"))
+      assert.ok((await stat(asset(`dist${image.getAttribute("src")}`))).size > 0);
+    if (id === "studios") {
+      assert.equal(reading.querySelectorAll(".studio-card").length, 3);
+      assert.equal(reading.querySelectorAll(".studio-library a").length, 5);
+    }
+  }
   assert.equal(document.querySelector("#odyssey-root"), null);
   assert.equal(document.querySelector('meta[http-equiv="refresh"]'), null);
   for (const image of document.querySelectorAll("img")) {

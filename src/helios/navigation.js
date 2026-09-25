@@ -1,7 +1,6 @@
 import { parseExperiment } from "../odyssey/study-experiment";
 import { parseMissionHash } from "../odyssey/flight-plan";
 import { createWarp, setupFlightPrefetch } from "./zenith.js";
-import { setupRooms } from "./rooms.js";
 
 const sceneKind = (hash) =>
   /^#flight=(board|hull|blackout|permission)$/.test(hash)
@@ -17,7 +16,7 @@ const aliases = {
 };
 
 /** Native links, shared scenes and browser history stay in one document. */
-export function setupNavigation({ studies, select, mission, motion }) {
+export function setupNavigation({ studies, select, mission, motion, rooms }) {
   const dialog = document.querySelector("#mc");
   const search = document.querySelector("#mc-search");
   const list = document.querySelector("#mc-list");
@@ -26,7 +25,7 @@ export function setupNavigation({ studies, select, mission, motion }) {
   const results = document.querySelector("#mc-results");
   const clear = document.querySelector("#mc-clear");
   const loader = document.querySelector("#scene-loader");
-  const rooms = setupRooms();
+  let routeGeneration = 0;
   document.querySelector("#mc-btn .mono").textContent = /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘K" : "Ctrl K";
   let previousFocus = null,
     navigating = false,
@@ -283,7 +282,8 @@ export function setupNavigation({ studies, select, mission, motion }) {
       }
     }
   }
-  function route(hash, initial = false) {
+  async function route(hash, initial = false) {
+    const routeToken = ++routeGeneration;
     lastURL = location.href;
     hash = aliases[hash] || hash;
     const kind = sceneKind(hash);
@@ -294,7 +294,23 @@ export function setupNavigation({ studies, select, mission, motion }) {
       return;
     }
     dispose();
+    let focusBeforeLoad = document.activeElement;
     const pageChanged = rooms.sync(hash);
+    if (rooms.needsLoad(hash)) {
+      if (pageChanged) {
+        focusBeforeLoad = focusSection(document.documentElement.dataset.room, true, true);
+        window.scrollTo({ top: 0, behavior: "instant" });
+      }
+      const ready = await rooms.ensure(hash);
+      if (routeToken !== routeGeneration) return;
+      // A visitor can leave or open the menu while a room loads. Never take focus from that action.
+      if (dialog.open || (document.activeElement !== document.body && document.activeElement !== focusBeforeLoad))
+        return;
+      if (!ready) {
+        focusSection(document.documentElement.dataset.room, true, true);
+        return;
+      }
+    }
     if (returnPoint && hash === returnPoint.hash) {
       const point = returnPoint;
       returnPoint = null;
@@ -384,10 +400,10 @@ export function setupNavigation({ studies, select, mission, motion }) {
     route(hash || "#top");
   }
   document.addEventListener("click", (event) => {
-    const link = event.target.closest("a[href^='#']");
+    const link = event.target.closest("a[href^='#'],a[data-room-route]");
     if (!link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button) return;
     event.preventDefault();
-    navigate(link.getAttribute("href"), dialog.contains(link) ? previousFocus : link);
+    navigate(link.dataset.roomRoute || link.getAttribute("href"), dialog.contains(link) ? previousFocus : link);
   });
   let historyFrame = 0;
   function restoreHistory() {
