@@ -62,7 +62,7 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
       "Inspect the evidence",
       "A source, a date, and a clear boundary. Fleet facts and the E.V.E. console.",
       "#evidence",
-      "eve fleet status proof privacy boundary withheld lore 42 dune",
+      "eve fleet status proof privacy boundary withheld lore 42 dune backup snapshot receipt build story",
     ],
     [
       "Flight heritage",

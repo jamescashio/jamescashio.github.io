@@ -26,12 +26,13 @@ export const EVIDENCE = {
   backups: [
     `Integrity: ${FLEET.backups.integrity} · checked ${FLEET.backups.checkedLong}`,
     "Coverage counts withheld · a restore drill is a separate test",
+    "Full fleet recovery is not established. A September 10, 2026 rehearsal covered one guest and excluded its datastore.",
   ],
   atlas: [
-    `Observation: ${FLEET.auditLong}`,
-    `Local AI model · context window: ${FLEET.atlas.context.toLocaleString("en-US")} tokens`,
+    `Configuration read: ${FLEET.atlas.observedLong}`,
+    `Primary local model configuration · token window: ${FLEET.atlas.context.toLocaleString("en-US")} tokens`,
     "Tokens are pieces of text. This window holds the instructions, conversation and reply together.",
-    "Inference host for recurring work · model name and private catalog withheld",
+    "A settings read, not an inference test. Other configurations may differ; model tags stay private.",
   ],
   dsh: [
     `Audit: ${FLEET.auditLong} · operating brief: ${FLEET.consoleBriefLong}`,
@@ -39,8 +40,8 @@ export const EVIDENCE = {
     "Coexists with HERMES",
   ],
   hermes: [
-    `Observation: ${FLEET.auditLong}`,
-    `Scheduled jobs: ${FLEET.hermes.jobs} enabled of ${FLEET.hermes.records} records · budget period ${FLEET.hermes.budgetPeriod}`,
+    `Observation: ${FLEET.hermes.observedLong}`,
+    `Scheduled jobs: ${FLEET.hermes.jobs} enabled of ${FLEET.hermes.records} retained definitions · budget period ${FLEET.hermes.budgetPeriod}`,
     "Verified route count: withheld as unknown",
   ],
   routes: [

@@ -12,9 +12,9 @@
   "rollbackCommit": "22a9645155bec379a805bd350e7bcf1a6c60522c",
   "evidenceSnapshot": {
     "url": "/v38/status.json",
-    "fleetObserved": "2026-09-24",
-    "observedAtUtc": "2026-09-24T21:43:10Z",
+    "fleetObserved": "2026-09-26",
+    "observedAtUtc": "2026-09-26T21:53:24.866694Z",
     "routingObserved": null
   },
-  "statement": "The fleet observation and the interface share one date. Interactive examples are browser only illustrations, and no AI requests are sent."
+  "statement": "The interface and each observation have their own dates. Interactive examples run in the browser and send no AI requests. The separate console snapshot story cites a redacted execution receipt."
 }

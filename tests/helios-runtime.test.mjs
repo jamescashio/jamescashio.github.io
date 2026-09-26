@@ -609,7 +609,7 @@ test("The full page, atlas, principles, evidence console, hangar and contact sta
     await page.locator(".room-back").click();
     await page.locator("#eve-in").fill("fleet");
     await page.locator("#eve-in").press("Enter");
-    await expect(page.locator("#eve-out")).toContainText("September 24, 2026");
+    await expect(page.locator("#eve-out")).toContainText("September 26, 2026");
     await page.locator("#eve-in").fill("routes");
     await page.locator("#eve-in").press("Enter");
     await expect(page.locator("#eve-out")).toContainText("Routing verification: not established");
@@ -652,7 +652,7 @@ test("Briefing preserves dated evidence and unknowns; empty selections cannot co
   const page = await visit(t, { hash: "#build=briefing" });
   for (const id of ["fleet", "routing", "authority"]) await page.locator(`[data-fact=${id}]`).check();
   await page.locator("[data-compose]").click();
-  await expect(page.locator(".brief-output")).toContainText("September 24, 2026");
+  await expect(page.locator(".brief-output")).toContainText("September 26, 2026");
   await expect(page.locator(".brief-output")).toContainText("remain unverified");
   await expect(page.locator(".brief-output")).toContainText("accountable person");
   for (const id of ["fleet", "routing", "authority"]) await page.locator(`[data-fact=${id}]`).uncheck();
@@ -757,7 +757,7 @@ test("Motion off leaves future sections visible and a system preference change r
 test("Legacy hash entry, production evidence and unavailable WebGL remain usable", async (t) => {
   const page = await visit(t);
   const data = await page.request.get(new URL("/v38/status.json", url).href);
-  assert.equal((await data.json()).provenance.observedAtUtc, "2026-09-24T21:43:10Z");
+  assert.equal((await data.json()).provenance.observedAtUtc, "2026-09-26T21:53:24.866694Z");
   const context = await browser.newContext({ reducedMotion: "reduce" });
   t.after(() => context.close());
   await context.addInitScript(() => {
@@ -920,6 +920,23 @@ test("Evidence leads with meaning, expands by keyboard and links the shipped bui
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 320);
   await audit(page, "expanded-evidence-320");
   await page.screenshot({ path: path.join(output, "expanded-evidence-320.png") });
+  const snapshot = page.locator("#snapshot-story");
+  await snapshot.locator("summary").focus();
+  await page.keyboard.press("Enter");
+  await expect(snapshot).toHaveAttribute("open", "");
+  await expect(snapshot).toContainText("DeepSeek Harness operations tooling");
+  await expect(snapshot).toContainText("not recovery of a running system");
+  const clipped = await snapshot.evaluate((element) => {
+    const bounds = element.getBoundingClientRect();
+    return [element, ...element.querySelectorAll("*")]
+      .filter((child) => child.clientWidth > 0)
+      .filter(
+        (child) => child.scrollWidth > child.clientWidth + 1 || child.getBoundingClientRect().right > bounds.right + 1,
+      )
+      .map((child) => child.tagName);
+  });
+  assert.deepEqual(clipped, [], "the open receipt fits inside its panel, even when the page clips overflow");
+  await audit(page, "snapshot-story-320");
   await page.locator("#mc-btn").click();
   await page.locator("#mc-search").fill("Starship build story");
   await page.locator('#mc-list a[href="#build-story"]').click();

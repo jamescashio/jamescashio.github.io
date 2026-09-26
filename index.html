@@ -156,7 +156,7 @@
         <div class="vignette"></div>
         <div class="status">
           <span class="mono status-live"
-            ><i aria-hidden="true"></i>My lab, observed <span data-fleet="observedLong">September 24, 2026</span></span
+            ><i aria-hidden="true"></i>My lab, observed <span data-fleet="observedLong">September 26, 2026</span></span
           >
           <span class="mono status-fleet"
             ><span data-fleet="hosts">2</span> hosts · <span data-fleet="lxc">20</span> containers ·
@@ -595,15 +595,17 @@
                   </div>
                   <div class="flex items-baseline gap-14 flex-wrap">
                     <span class="display fs-32 fw-800" id="nd-name">HERMES</span
-                    ><span class="num em fs-32" id="nd-value" data-fleet="hermes.jobs">58</span
+                    ><span class="num em fs-32" id="nd-value" data-fleet="hermes.jobs">49</span
                     ><span class="mono c-mu" id="nd-unit">enabled scheduled jobs</span>
                   </div>
                   <strong id="nd-summary">The scheduler turns a task into a job.</strong>
                   <p class="muted copy-note" id="nd-body">
-                    58 of 60 scheduled jobs were enabled at the September 18, 2026 audit. The HERMES experiment explores
-                    the routing rule in your browser.
+                    49 of 56 retained definitions were enabled at the September 26, 2026 observation. The HERMES
+                    experiment explores the routing rule in your browser.
                   </p>
-                  <span class="mono c-gd" id="nd-evidence">Audit · September 18, 2026 · routing not verified</span>
+                  <span class="mono c-gd" id="nd-evidence"
+                    >Scheduler observation · September 26, 2026 · routing not verified</span
+                  >
                 </div>
                 <div class="fleet-counts" data-stagger>
                   <div class="stat">
@@ -617,7 +619,7 @@
                   </div>
                 </div>
                 <div class="flex gap-20 items-center flex-wrap">
-                  <span class="mono c-mu">FLEET · <span data-fleet="observedLong">September 24, 2026</span></span
+                  <span class="mono c-mu">FLEET · <span data-fleet="observedLong">September 26, 2026</span></span
                   ><a class="fs-14 fw-600" href="#evidence">Inspect the dated evidence ↓</a>
                 </div>
               </div>
@@ -950,7 +952,7 @@
                 <div class="stat flex-200">
                   <span class="mono c-mu"
                     >LAST OBSERVED<span class="status-age" data-age-of="observedLong" hidden></span></span
-                  ><span class="display cy fs-22 fw-700" data-fleet="observedLong">September 24, 2026</span>
+                  ><span class="display cy fs-22 fw-700" data-fleet="observedLong">September 26, 2026</span>
                 </div>
                 <div class="stat flex-200">
                   <span class="mono c-mu">HOW · RUN BY ME</span><span class="display cy fs-22 fw-700">Read only</span>
@@ -978,7 +980,8 @@
                 <div class="stat p-14-16">
                   <span class="mono c-mu">LOCAL MODEL · ATLAS</span
                   ><span class="c-ink fs-15"
-                    >Runs on my hardware with a <span data-fleet="atlas.context">16,384</span> token window</span
+                    >Primary configuration: a <span data-fleet="atlas.context">16,384</span> token window, read
+                    September 26, 2026</span
                   >
                 </div>
               </div>
@@ -1066,15 +1069,48 @@
                   </div>
                 </div>
               </details>
+              <details class="evidence-details" id="snapshot-story">
+                <summary>A real run: the backup tool that refused to run</summary>
+                <div class="evidence-record-body stack sg-14">
+                  <span class="mono c-cy">DEEPSEEK HARNESS · EXECUTION RECEIPT</span>
+                  <h3>Keep the snapshot moving with the work.</h3>
+                  <p class="muted copy-note">
+                    The tool's notes describe a fixed revision check that blocked snapshots as the project advanced. The
+                    repair archives the current revision, checks that it stays stable, and includes the installed
+                    skills, agent presets and operations scripts.
+                  </p>
+                  <p class="muted copy-note">
+                    The September 26, 2026 receipt records 902 verified files and a matching archive hash from
+                    decryption on a second host. This was DeepSeek Harness operations tooling. The trigger was a daily
+                    schedule configured for 3:45 AM Central; the work was a backup script, with no AI routing claim.
+                  </p>
+                  <div class="soft stack p-16 sg-8">
+                    <strong class="fs-14">Three fields from the execution receipt</strong>
+                    <code class="fs-14"
+                      >"status": "verified",<br />"restored_files_verified": 902,<br />"live_restore_performed":
+                      false,</code
+                    >
+                  </div>
+                  <p class="muted copy-note">
+                    Receipt: September 26, 2026 at 3:45 AM Central Daylight Time. This checks readable console files,
+                    not recovery of a running system or the fleet. One missing snapshot date means uninterrupted daily
+                    success is not claimed. Storage paths and host identifiers remain private.
+                  </p>
+                  <a class="fs-14 fw-600" href="/evidence/console-snapshot-2026-09-26.json"
+                    >Inspect the redacted job receipt →</a
+                  >
+                </div>
+              </details>
               <div class="soft stack p-16 bc-gold-30 sg-8">
                 <strong class="fs-14">The evidence boundary, in one place</strong>
                 <span class="muted copy-note"
-                  >These observations count running guests and check backup integrity. They do not test application
-                  health, restores or current AI routing. Private addresses, service names, spending and the model
-                  catalog stay private. The browser experiments are simulations.</span
+                  >These fleet counts and integrity checks do not establish application health, full system recovery or
+                  current AI routing. Private addresses, service names, spending and the model catalog stay private. The
+                  browser experiments are simulations.</span
                 >
                 <div class="evidence-links">
                   <a href="/evidence/status.json">Read the latest export</a
+                  ><a href="/evidence/status-2026-09-24.json">Archived record, September 24</a
                   ><a href="/evidence/status-2026-09-07.json">Archived record, September 7</a
                   ><a href="/evidence/status-2026-08-28.json">Archived record, August 28</a>
                 </div>
@@ -1099,7 +1135,8 @@
                 <div class="scan"></div>
                 <span class="d">Published record · <span data-fleet="pageRevised">September 26, 2026</span></span
                 ><span class="d"
-                  >Fleet and backups: September 24. Scheduler, Atlas and console audit: September 18.</span
+                  >Fleet, scheduler and Atlas configuration: September 26. Backup integrity: September 24. Console and
+                  routing audit: September 18.</span
                 ><span class="d">Each reply carries its own date. Easter egg replies are marked lore.</span
                 ><span class="d">Tap a command below or type your own. Try help.</span>
               </div>

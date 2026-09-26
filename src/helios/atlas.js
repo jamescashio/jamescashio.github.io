@@ -32,10 +32,10 @@ export function setupAtlas({ scenes, motion, say }) {
         FLEET.hermes.jobs +
         " of " +
         FLEET.hermes.records +
-        " scheduled jobs were enabled at the " +
-        FLEET.auditLong +
-        " audit. The HERMES experiment explores the routing rule in your browser.",
-      evidence: "Audit · " + FLEET.auditLong + " · routing not verified",
+        " retained definitions were enabled at the " +
+        FLEET.hermes.observedLong +
+        " observation. The HERMES experiment explores the routing rule in your browser.",
+      evidence: "Scheduler observation · " + FLEET.hermes.observedLong + " · routing not verified",
     },
     zeus: {
       name: "Zeus",
