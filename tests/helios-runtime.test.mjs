@@ -1552,13 +1552,24 @@ test("Study shortcuts reveal the chosen experiment and heritage credits never co
   for (const width of [320, 390, 1440]) {
     const page = await visit(t, { width, height: 844, expandWorkbenches: false });
     const shortcuts = page.getByRole("navigation", { name: "Study shortcuts", exact: true });
-    await expect(shortcuts.getByRole("link")).toHaveCount(7);
-    await expect(page.locator("#study-lab")).not.toHaveAttribute("open", "");
-    for (const id of ["hermes", "cascade", "exposure", "briefing", "dashboards", "signal", "graphify"]) {
-      await shortcuts.locator(`a[href="#build=${id}"]`).click();
+    if (width < 1100) {
+      await expect(shortcuts.getByRole("link")).toHaveCount(7);
+      await expect(page.locator("#study-lab")).not.toHaveAttribute("open", "");
+      for (const id of ["hermes", "cascade", "exposure", "briefing", "dashboards", "signal", "graphify"]) {
+        await shortcuts.locator(`a[href="#build=${id}"]`).click();
+        await expect(page.locator("#study-lab")).toHaveAttribute("open", "");
+        await expect(page.locator(`#study-${id}`)).toHaveAttribute("aria-selected", "true");
+        await expect(page.locator("#studies-h")).toBeFocused();
+      }
+    } else {
+      // Wide screens start with the workbench and the system map open; the study cards replace the shortcut row.
       await expect(page.locator("#study-lab")).toHaveAttribute("open", "");
-      await expect(page.locator(`#study-${id}`)).toHaveAttribute("aria-selected", "true");
-      await expect(page.locator("#studies-h")).toBeFocused();
+      await expect(page.locator("#atlas-lab")).toHaveAttribute("open", "");
+      await expect(shortcuts).toBeHidden();
+      for (const id of ["hermes", "cascade", "exposure", "briefing", "dashboards", "signal", "graphify"]) {
+        await page.locator(`#study-${id}`).click();
+        await expect(page.locator(`#study-${id}`)).toHaveAttribute("aria-selected", "true");
+      }
     }
     await page.locator('.room-card[data-room-route="#heritage"]').click();
     for (const pilot of ["yeager", "johnson", "rutan", "hoover"]) {

@@ -111,3 +111,9 @@ section.workbench-section {
     top: 77%;
   }
 }
+/* Wide screens open the workbench, whose seven study cards replace the shortcut row. */
+@media (min-width: 1100px) {
+  .study-shortcuts {
+    display: none;
+  }
+}

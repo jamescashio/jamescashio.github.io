@@ -118,7 +118,7 @@ export function createAtlasTrace({ isMotionEnabled, onSchedule }) {
           String((button.dataset.requestPrivate === "true") === experiment.privateData),
         ),
       );
-    label.textContent = `R-01 · ${experiment.privateData ? "Private" : "Public"} input. Trace the decision, or continue with these exact settings.`;
+    label.textContent = `${experiment.privateData ? "Private" : "Public"} input. Trace the decision, or continue with these exact settings.`;
   }
   function advance(delta) {
     if (!trace) return;
