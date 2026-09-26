@@ -1,5 +1,5 @@
 import type { RefObject } from "react";
-import { EXPIRES_SHORT, PVE, VERIFIED_LONG } from "@/lib/content";
+import { EXPIRES_SHORT, VERIFIED_LONG } from "@/lib/content";
 import { getSound } from "@/lib/sound";
 import { useDeck } from "@/lib/store";
 import { BitBriefing } from "./bit-briefing";
@@ -38,7 +38,7 @@ export function DeckSnapshot({
     >
       <span id="deck=snapshot" aria-hidden="true" className="pointer-events-none absolute left-0 top-0" />
       <div ref={copyCol} className="za-bracket za-snapshot-column max-w-[38rem] p-2">
-        <Kicker>ZEUSAPOLLO · SOVEREIGN AI UNDER HUMAN COMMAND</Kicker>
+        <Kicker>ARCHIVE · V35 · AUGUST 2026</Kicker>
         <p className="za-snapshot-identity za-mono">{IDENTITY_LINE}</p>
         <h1 tabIndex={-1} className="za-display za-snapshot-headline">
           OWN THE IRON AND THE <span className="za-shimmer-text">ROUTE</span>.
@@ -116,10 +116,13 @@ export function DeckSnapshot({
           </div>
         </div>
         <p className="za-snapshot-copy">
-          Owned hardware. Observable decisions. Published evidence. Every claim here is measured and dated.
+          Historical snapshot. Dates and countdown belong to August 2026. Private details are withheld.
         </p>
+        <a href="/" className="za-btn-ghost za-archive-return">
+          ← Back to current site
+        </a>
         <p className="za-critical-telemetry za-snapshot-measured za-mono">
-          MEASURED 28 AUGUST 2026 · 18 OF 19 SERVICES UP · BOTH MACHINES HEALTHY
+          MEASURED 28 AUGUST 2026 · 18 OF 19 GUESTS RUNNING AT THE PROBE
         </p>
         <div data-hud-clear className="za-chip za-critical-telemetry za-snapshot-status">
           <span className="za-lock-pip" />
@@ -127,11 +130,11 @@ export function DeckSnapshot({
         </div>
         <div data-hud-clear className="za-snapshot-facts">
           {[
-            ["ZEUS", "12/13", "AT 28 AUG PROBE"],
-            ["APOLLO", "6/6", "AT 28 AUG PROBE"],
+            ["ZEUS", "—", "COUNT WITHHELD"],
+            ["APOLLO", "—", "COUNT WITHHELD"],
             ["FLEET", "18/19", "AT 28 AUG PROBE"],
             ["HOSTS", "2", "CLUSTER QUORATE"],
-            ["PVE", PVE, "VERSION AT PROBE"],
+            ["QUORUM", "YES", "AT 28 AUG PROBE"],
           ].map(([name, value, detail]) => (
             <div key={name}>
               <span className="za-critical-telemetry za-fact-label za-mono">{name}</span>

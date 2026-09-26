@@ -1,3 +1,4 @@
+import { setupMissionControl } from "./mission-control.js";
 import { parseExperiment } from "../odyssey/study-experiment";
 import { parseMissionHash } from "../odyssey/flight-plan";
 import { createWarp, setupFlightPrefetch } from "./zenith.js";
@@ -16,19 +17,10 @@ const aliases = {
 };
 
 /** Native links, shared scenes and browser history stay in one document. */
-export function setupNavigation({ studies, select, mission, motion }) {
-  const dialog = document.querySelector("#mc");
-  const search = document.querySelector("#mc-search");
-  const list = document.querySelector("#mc-list");
-  const content = document.querySelector(".mc-content");
-  const start = document.querySelector("#mc-start");
-  const results = document.querySelector("#mc-results");
-  const clear = document.querySelector("#mc-clear");
+export function setupNavigation({ studies, select, mission, motion, rooms }) {
   const loader = document.querySelector("#scene-loader");
-  document.querySelector("#mc-btn .mono").textContent = /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘K" : "Ctrl K";
-  let previousFocus = null,
-    navigating = false,
-    scene = null,
+  let routeGeneration = 0;
+  let scene = null,
     activeKind = null,
     pending = false,
     generation = 0;
@@ -37,7 +29,10 @@ export function setupNavigation({ studies, select, mission, motion }) {
     lastURL = "";
   const returns = new Map();
   let loaderTimer = 0;
-  // If motion is switched off mid jump, the warp stops and the loader takes over at once.
+  const notify = () => window.dispatchEvent(new Event("helios-overlay"));
+  const menu = setupMissionControl({ studies, canOpen: () => !loader.open && !scene && !pending, onToggle: notify });
+  const dialog = menu.dialog;
+  for (const link of document.querySelectorAll("a[data-room-route]")) link.setAttribute("href", link.dataset.roomRoute);
   const warp = createWarp({
     onHalt: () => {
       clearTimeout(loaderTimer);
@@ -45,113 +40,29 @@ export function setupNavigation({ studies, select, mission, motion }) {
     },
   });
   setupFlightPrefetch(() => import("./flight-island"));
-  const destinations = [
-    ["Explore the starship", "Your pace. A 30 second tour when you choose.", "#flight=board"],
-    ["The orbital world", "Return to the beginning.", "#top"],
-    ["Try one decision", "Predict the route. Test the privacy boundary.", "#work"],
-    ["The system atlas", "Owned compute, orchestration, human authority.", "#universe"],
-    ["Compare architectures", "Change a mission. Inspect all twelve requests.", "#starship"],
-    ["Starship build story", "The question, the design, and the shared rule behind the ship.", "#build-story"],
-    ["Principles Engine", "Turn the rings. Explore the operating philosophy.", "#principles"],
-    ["The Studios", "Enter the original worlds, signature and film collection.", "#studios"],
-    ["Lensing Observatory", "Sculpt the light. Find your own perspective.", "#lensing"],
-    ["Celestial Forge", "Explore the signature in three dimensions.", "#signature"],
-    ["The Cinema", "Five original short films. Play at your own pace.", "#film=lightwake"],
-    ["The Sanctuary", "A quiet film and an explorable inner world.", "#film=sanctuary"],
-    [
-      "Inspect the evidence",
-      "A source, a date, and a clear boundary. Fleet facts and the E.V.E. console.",
-      "#evidence",
-      "eve fleet status proof",
-    ],
-    ["Flight heritage", "The discipline behind the design.", "#heritage"],
-    ["Meet Doug", "Builder. Operator. Accountable human.", "#operator"],
-    [
-      "Compare notes",
-      "Email Doug: what you are building and its hardest constraint.",
-      "#contact",
-      "contact email talk hire",
-    ],
-    ...studies.map((s) => [s.name, s.cue, `#build=${s.id}`]),
-  ];
-  function render(query = "") {
-    list.replaceChildren();
-    const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
-    const matches = destinations.filter(([name, body, , keywords = ""]) =>
-      terms.every((term) => `${name} ${body} ${keywords}`.toLowerCase().includes(term)),
-    );
-    clear.hidden = search.value.length === 0;
-    results.textContent = `${matches.length} ${matches.length === 1 ? "destination" : "destinations"}${terms.length ? " found" : " to explore"}`;
-    start.hidden = terms.length > 0;
-    content.scrollTop = 0;
-    for (const [name, body, href] of matches) {
-      const a = document.createElement("a");
-      a.className = "tile mc-destination";
-      a.href = href;
-      const title = document.createElement("strong"),
-        description = document.createElement("span");
-      title.textContent = name;
-      description.textContent = body;
-      a.append(title, description);
-      list.append(a);
-    }
-    if (!matches.length) {
-      const empty = document.createElement("p");
-      empty.className = "mc-empty";
-      empty.textContent =
-        "No match yet. Try ‘flight’, ‘signature’ or ‘Graphify’, or clear the search to see every destination.";
-      list.append(empty);
-    }
-  }
-  const notify = () => window.dispatchEvent(new Event("helios-overlay"));
-  function open() {
-    if (dialog.open || loader.open || scene || pending) return;
-    previousFocus = document.activeElement;
-    navigating = false;
-    search.value = "";
-    render();
-    dialog.showModal();
-    notify();
-    search.focus();
-  }
-  dialog.addEventListener("close", () => {
-    notify();
-    if (!navigating && previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
-  });
-  document.querySelector("#mc-btn").addEventListener("click", open);
-  document.querySelector("#mc-close").addEventListener("click", () => dialog.close());
-  search.addEventListener("input", () => render(search.value.trim().toLowerCase()));
-  clear.addEventListener("click", () => {
-    search.value = "";
-    render();
-    search.focus();
-  });
-  dialog.addEventListener("keydown", (event) => {
-    const links = [...(start.hidden ? [] : start.querySelectorAll("a")), ...list.querySelectorAll("a")];
-    if (!links.length) return;
-    const index = links.indexOf(document.activeElement);
-    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-      event.preventDefault();
-      const offset = event.key === "ArrowDown" ? 1 : -1;
-      links[index < 0 ? (offset === 1 ? 0 : links.length - 1) : (index + offset + links.length) % links.length].focus();
-    } else if (event.key === "Enter" && document.activeElement === search) {
-      event.preventDefault();
-      links[0].click();
-    }
-  });
-  window.addEventListener("keydown", (event) => {
-    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
-      event.preventDefault();
-      if (!scene && !pending) dialog.open ? dialog.close() : open();
-    }
-  });
   function focusSection(id, shouldScroll = true) {
     const target = document.getElementById(id);
     if (!target) return;
-    const heading = target.querySelector("h1,h2,h3") || target;
-    heading.setAttribute("tabindex", "-1");
+    // A shared address opens the workbench before focus or the fragment can land inside hidden content.
+    let revealed = false;
+    const workbench = target.querySelector(":scope > .wrap > details.workbench-disclosure");
+    if (workbench && !workbench.open) {
+      workbench.open = true;
+      revealed = true;
+    }
+    for (let parent = target; parent; parent = parent.parentElement) {
+      if (parent.tagName === "DETAILS" && !parent.open) {
+        parent.open = true;
+        revealed = true;
+      }
+    }
+    const heading =
+      target.querySelector("h1,h2,h3") || (target.matches("details") ? target.querySelector("summary") : target);
+    if (!heading.matches("summary")) heading.setAttribute("tabindex", "-1");
     heading.focus({ preventScroll: true });
-    if (shouldScroll) target.scrollIntoView({ behavior: motion() ? "smooth" : "instant", block: "start" });
+    // Move focus and its heading together. Smooth scrolling can drift as skipped sections lay out after resize.
+    if (shouldScroll || revealed) target.scrollIntoView({ behavior: "instant", block: "start" });
+    return heading;
   }
   function dispose() {
     generation++;
@@ -170,7 +81,7 @@ export function setupNavigation({ studies, select, mission, motion }) {
       const hash = destination.startsWith("build=")
         ? `#${destination}`
         : destination === "smart-routing"
-          ? "#work"
+          ? "#build-story"
           : `#${destination}`;
       navigate(hash, null, true);
       return;
@@ -253,7 +164,8 @@ export function setupNavigation({ studies, select, mission, motion }) {
       }
     }
   }
-  function route(hash, initial = false) {
+  async function route(hash, initial = false, fromHistory = false) {
+    const routeToken = ++routeGeneration;
     lastURL = location.href;
     hash = aliases[hash] || hash;
     const kind = sceneKind(hash);
@@ -264,6 +176,24 @@ export function setupNavigation({ studies, select, mission, motion }) {
       return;
     }
     dispose();
+    let focusBeforeLoad = document.activeElement;
+    const leftRoom = document.documentElement.dataset.room;
+    const pageChanged = rooms.sync(hash);
+    if (rooms.needsLoad(hash)) {
+      if (pageChanged) {
+        focusBeforeLoad = focusSection(document.documentElement.dataset.room);
+        window.scrollTo({ top: 0, behavior: "instant" });
+      }
+      const ready = await rooms.ensure(hash);
+      if (routeToken !== routeGeneration) return;
+      // A visitor can leave or open the menu while a room loads. Never take focus from that action.
+      if (dialog.open || (document.activeElement !== document.body && document.activeElement !== focusBeforeLoad))
+        return;
+      if (!ready) {
+        focusSection(document.documentElement.dataset.room);
+        return;
+      }
+    }
     if (returnPoint && hash === returnPoint.hash) {
       const point = returnPoint;
       returnPoint = null;
@@ -277,10 +207,25 @@ export function setupNavigation({ studies, select, mission, motion }) {
       return;
     }
     returnPoint = null;
+    const savedY = history.state?.heliosY;
+    if (fromHistory && !hash && typeof savedY === "number" && !document.documentElement.dataset.room) {
+      // Back to the home page from a room: return to the place the reader left, not the top,
+      // and to the room's card when it is on screen, so keyboard and screen reader users keep their place.
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: savedY, behavior: "instant" });
+        const card = leftRoom && document.querySelector(`.room-card[data-room-route="#${leftRoom}"]`);
+        const box = card?.getBoundingClientRect();
+        if (box && box.top >= 0 && box.bottom <= innerHeight) card.focus({ preventScroll: true });
+      });
+      return;
+    }
+    // History uses an empty fragment for home. Scene returns above keep their original launcher.
+    if (!hash && !initial) hash = "#top";
     const experiment = parseExperiment(hash);
     if (experiment) {
       select(experiment);
-      focusSection("studies");
+      // A chosen or shared study lands on its own instrument and title, not the section introduction above.
+      focusSection("instrument");
       return;
     }
     const scenario = parseMissionHash(hash.replace(/\.online\./, ".connected."));
@@ -291,15 +236,48 @@ export function setupNavigation({ studies, select, mission, motion }) {
         net: scenario.connected,
         permit: scenario.allowPrivateEgress,
       });
-      focusSection("starship");
+      const opened = rooms.sync("#starship");
+      if (opened) window.scrollTo({ top: 0, behavior: "instant" });
+      focusSection("starship", !opened);
       return;
     }
-    if (/^#[a-z-]+$/.test(hash)) focusSection(hash.slice(1), !initial);
+    if (/^#[a-z-]+$/.test(hash)) {
+      const opensRoom = pageChanged && document.getElementById(hash.slice(1))?.matches("section.room");
+      if (opensRoom) {
+        window.scrollTo({ top: 0, behavior: "instant" });
+        // The browser's own fragment jump lands after this; keep the page's back link in view.
+        if (initial)
+          addEventListener("load", () => scrollY < 200 && scrollTo({ top: 0, behavior: "instant" }), { once: true });
+      }
+      const heading = focusSection(hash.slice(1), !initial && !opensRoom);
+      if (initial) {
+        const initialAddress = location.href;
+        const restoreInitialFocus = () =>
+          requestAnimationFrame(() => {
+            // Native fragment and reload restoration finish after the module starts. Keep the heading visible,
+            // while respecting any control the visitor has focused, or any disclosure they closed, in the meantime.
+            if (
+              location.href === initialAddress &&
+              (document.activeElement === document.body || document.activeElement === heading) &&
+              !document.getElementById(hash.slice(1))?.closest("details:not([open])") &&
+              !dialog.open &&
+              !scene &&
+              !pending
+            )
+              focusSection(hash.slice(1), !opensRoom);
+          });
+        if (document.readyState === "complete") restoreInitialFocus();
+        else window.addEventListener("load", restoreInitialFocus, { once: true });
+      }
+    } else if (pageChanged) window.scrollTo({ top: 0, behavior: "instant" });
   }
   function navigate(hash, opener = null, replace = false) {
     hash = aliases[hash] || hash;
     if (hash === "#top") hash = "";
     let state = null;
+    // A destination chosen in Mission Control takes the place of the menu's own history entry.
+    const fromMenu = Boolean(history.state?.heliosMenu);
+    if (fromMenu) replace = true;
     if (sceneKind(hash)) {
       if (!sceneKind(location.hash)) {
         const id = ++sequence;
@@ -312,26 +290,44 @@ export function setupNavigation({ studies, select, mission, motion }) {
       }
     } else {
       returnPoint = null;
+      // Remember the reader's place on the home page, so Back from a room returns there.
+      if (!document.documentElement.dataset.room && !sceneKind(location.hash))
+        history.replaceState({ ...(history.state || {}), heliosY: window.scrollY }, "");
     }
-    if (dialog.open) {
-      navigating = true;
-      dialog.close();
-    }
+    if (dialog.open) menu.closeForNavigation();
     if (location.hash !== hash)
       history[replace ? "replaceState" : "pushState"](state, "", location.pathname + location.search + hash);
+    else if (fromMenu) history.replaceState({ ...history.state, heliosMenu: false }, "");
     route(hash || "#top");
   }
   document.addEventListener("click", (event) => {
     const link = event.target.closest("a[href^='#']");
     if (!link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button) return;
     event.preventDefault();
-    navigate(link.getAttribute("href"), dialog.contains(link) ? previousFocus : link);
+    const hash = link.getAttribute("href");
+    if (hash === "#main-content") {
+      // Skip past shared navigation without changing the open room or browser history.
+      focusSection(document.documentElement.dataset.room || "top");
+      return;
+    }
+    navigate(hash, menu.openerFor(link));
   });
+  let historyFrame = 0;
   function restoreHistory() {
-    if (lastURL !== location.href) route(location.hash);
+    // Closing Mission Control steps back over its own entry; the page itself has not moved.
+    if (menu.ownsPop(location.href)) {
+      lastURL = location.href;
+      return;
+    }
+    if (lastURL === location.href) return;
+    cancelAnimationFrame(historyFrame);
+    // Native history can restore focus and scroll after popstate. Route once it has finished.
+    historyFrame = requestAnimationFrame(() => {
+      if (lastURL !== location.href) route(location.hash, false, true);
+    });
   }
   window.addEventListener("popstate", restoreHistory);
   window.addEventListener("hashchange", restoreHistory);
   queueMicrotask(() => route(location.hash, true));
-  return { open, route };
+  return { open: menu.open, route };
 }

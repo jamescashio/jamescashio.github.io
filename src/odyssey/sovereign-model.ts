@@ -41,9 +41,11 @@ export function computeWorldOutcome(input: WorldInput) {
     if (input.connected) {
       cloud = input.allowPrivateEgress ? TOTAL_REQUESTS : publicCount;
       held = TOTAL_REQUESTS - cloud;
-      summary = held
-        ? `${cloud} public requests use the cloud. ${held} sensitive requests wait because permission to send them is off.`
-        : "All 12 requests use an external cloud provider. Your data crosses the local boundary.";
+      summary = !held
+        ? "All 12 requests use an external cloud provider. Your data crosses the local boundary."
+        : cloud
+          ? `${cloud} public requests use the cloud. ${held} sensitive requests wait because permission to send them is off.`
+          : `All ${held} sensitive requests wait because permission to send them is off. Nothing leaves your hardware.`;
     } else {
       held = TOTAL_REQUESTS;
       summary = "The cloud connection is down. All 12 requests wait; this cloud only model has no local fallback.";

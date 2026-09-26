@@ -1,16 +1,9 @@
 import { useEffect, useId, useMemo, useState } from "react";
-import { NAMED_ROLES, PVE } from "@/lib/content";
+import { NAMED_ROLES } from "@/lib/content";
 
 type Point = { x: number; y: number };
 
-/**
- * The Grid starmap: the 28 August probe drawn as a fleet map.
- *
- * Two host rings hold the 19 documented guest slots (13 on Zeus, one of them the
- * stopped guest; 6 on Apollo). The seven observed role families orbit the quorum
- * core on curved routes with packets in flight. Roles are never attributed to a
- * host, because the public export withholds that mapping on purpose.
- */
+/** A conceptual relationship map. Decorative points do not encode a private host inventory. */
 
 type Layout = {
   width: number;
@@ -25,9 +18,8 @@ type Layout = {
   vertical: boolean;
 };
 
-const ZEUS_SLOTS = 13;
-const APOLLO_SLOTS = 6;
-const STOPPED_SLOT = 8; // the one documented guest that was stopped at the probe
+const ZEUS_SLOTS = 8;
+const APOLLO_SLOTS = 8;
 
 /** Wide map: hosts left and right of the quorum core. */
 const LANDSCAPE: Layout = {
@@ -196,8 +188,8 @@ export function FleetGrid({ hover, lock, onHover, onLock }: FleetGridProps) {
 
         {/* host rings */}
         {[
-          { host: ZEUS, slots: zeusSlots, name: "ZEUS", tally: "12 OF 13 AT PROBE" },
-          { host: APOLLO, slots: apolloSlots, name: "APOLLO", tally: "6 OF 6 AT PROBE" },
+          { host: ZEUS, slots: zeusSlots, name: "ZEUS", tally: "COUNT WITHHELD" },
+          { host: APOLLO, slots: apolloSlots, name: "APOLLO", tally: "COUNT WITHHELD" },
         ].map(({ host, slots, name, tally }) => (
           <g key={name} className="za-fleet-host">
             <circle cx={host.x} cy={host.y} r={host.ring + 30} fill={`url(#${uid}-host)`} />
@@ -213,7 +205,7 @@ export function FleetGrid({ hover, lock, onHover, onLock }: FleetGridProps) {
               {name}
             </text>
             {slots.map((p, i) => {
-              const stopped = name === "ZEUS" && i === STOPPED_SLOT;
+              const stopped = false;
               return (
                 <g key={i} className={`za-fleet-slot ${stopped ? "is-stopped" : ""}`}>
                   <circle cx={p.x} cy={p.y} r="6" filter={stopped ? undefined : `url(#${uid}-glow)`} />
@@ -260,7 +252,7 @@ export function FleetGrid({ hover, lock, onHover, onLock }: FleetGridProps) {
             QUORUM
           </text>
           <text className="za-fleet-core-sub" x={CORE.x} y={CORE.y + 66} textAnchor="middle">
-            {`2 HOSTS · PVE ${PVE}`}
+            {"2 HOSTS · QUORATE"}
           </text>
         </g>
       </svg>
@@ -293,15 +285,15 @@ export function FleetGrid({ hover, lock, onHover, onLock }: FleetGridProps) {
 
       <figcaption className="za-fleet-legend za-mono">
         <span>
-          <i className="is-lit" /> GUEST SLOT AT PROBE
+          <i className="is-lit" /> ILLUSTRATED CONNECTION
         </span>
         <span>
-          <i className="is-stopped" /> STOPPED GUEST
+          <i className="is-stopped" /> COUNTS WITHHELD
         </span>
         <span>
           <i className="is-route" /> OBSERVED ROLE FAMILY · SELECT TO TRACE
         </span>
-        <span className="text-dim">12 ROLES NOT ITEMIZED · PUBLIC-SAFE</span>
+        <span className="text-dim">CONCEPT DIAGRAM · NOT AN INVENTORY</span>
       </figcaption>
     </figure>
   );

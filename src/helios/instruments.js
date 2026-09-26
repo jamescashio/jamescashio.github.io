@@ -1,8 +1,10 @@
 import { escalationExample, exposureExample, GRAPH_NODES, GRAPH_EDGES, affectedModules } from "../odyssey/data";
 import { defaultExperiment } from "../odyssey/study-experiment";
 
+// Sliders are named by their label alone and speak their value with its unit.
+const spoken = (value, unit) => `${value} ${unit === " h" ? "hours" : "percent"}`;
 const range = (key, label, value, max = 100, unit = "%") =>
-  `<label class="lab-range" for="lab-${key}"><span>${label}<output id="value-${key}" for="lab-${key}">${value}${unit}</output></span><input id="lab-${key}" data-key="${key}" type="range" min="0" max="${max}" value="${value}" aria-describedby="st-bound"><span class="range-ends"><span>0${unit}</span><span>${max}${unit}</span></span></label>`;
+  `<label class="lab-range" for="lab-${key}"><span>${label}<output id="value-${key}" for="lab-${key}">${value}${unit}</output></span><input id="lab-${key}" data-key="${key}" type="range" min="0" max="${max}" value="${value}" aria-label="${label}" aria-valuetext="${spoken(value, unit)}" aria-describedby="st-bound"><span class="range-ends" aria-hidden="true"><span>0${unit}</span><span>${max}${unit}</span></span></label>`;
 const toggle = (key, label, checked) =>
   `<label class="lab-switch"><span>${label}</span><input data-key="${key}" type="checkbox" ${checked ? "checked" : ""}><span class="switch-track" aria-hidden="true"></span></label>`;
 const result = (tag, title, body, color = "cyan") =>
@@ -76,7 +78,7 @@ export function mountInstrument(root, initial, fleet, onChange) {
       const facts = {
         fleet: {
           title: "The observation",
-          body: `${fleet.lxc} LXC containers and ${fleet.qemu} virtual machine were running at the ${fleet.observedLong} observation. Guest runtime alone does not establish service health or recovery.`,
+          body: `${fleet.lxc} containers and ${fleet.qemu} virtual machine were running at the ${fleet.observedLong} observation. Guest runtime alone does not establish service health or recovery.`,
           source: `Dated export · ${fleet.observedLong}`,
         },
         routing: {
@@ -167,7 +169,9 @@ export function mountInstrument(root, initial, fleet, onChange) {
     if (input.dataset.key) {
       state[input.dataset.key] = input.type === "checkbox" ? input.checked : Number(input.value);
       const output = root.querySelector(`#value-${input.dataset.key}`);
-      if (output) output.textContent = `${input.value}${input.dataset.key === "age" ? " h" : "%"}`;
+      const unit = input.dataset.key === "age" ? " h" : "%";
+      if (output) output.textContent = `${input.value}${unit}`;
+      if (input.type === "range") input.setAttribute("aria-valuetext", spoken(input.value, unit));
       update();
     }
     if (input.dataset.fact) {

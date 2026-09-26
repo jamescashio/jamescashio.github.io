@@ -260,7 +260,7 @@ export function setupBit({ isMotionEnabled, openMissionControl }) {
     origSay(tag, line, m, hold);
     saidAt = Date.now();
     clearTimeout(sayTimer);
-    sayTimer = setTimeout(() => $("#bitsay").classList.add("hide"), 5000);
+    sayTimer = setTimeout(() => $("#bitsay").classList.add("hide"), 3500);
   };
   let scrollT = 0;
   window.addEventListener(
@@ -352,7 +352,7 @@ export function setupBit({ isMotionEnabled, openMissionControl }) {
   $("#bit-btn").addEventListener("click", () => {
     say(
       "MISSION CONTROL",
-      "Choose a starting point, or search the universe. Press Esc when you are done.",
+      "Choose a starting point, or search the workshop. Press Esc when you are done.",
       "yes",
       2000,
     );

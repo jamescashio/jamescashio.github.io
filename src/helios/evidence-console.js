@@ -8,56 +8,64 @@ import { $ } from "./dom.js";
 export const EVIDENCE = {
   help: [
     "Commands: fleet · hosts · kernel · backups · atlas · dsh · hermes · routes · archive · cost · clear · help",
-    `Every reply is a dated fact from the published export. No live telemetry. Page revised ${FLEET.pageRevised}.`,
-    "Some commands are not listed. Pilots find them.",
+    `Listed commands read the dated export. Easter egg replies are marked lore. Record revised ${FLEET.pageRevised}.`,
+    "Keys: ↑ recalls a command · Tab completes one. Some commands are not listed. Pilots find them.",
   ],
   fleet: [
-    `observation: ${FLEET.observedLong} at ${FLEET.observedCentral} (${FLEET.observedUtc})`,
-    `hosts at the observation: ${FLEET.hosts} responded, ${FLEET.quorate ? "quorate" : "quorum not observed"}`,
-    `lxc_running: ${FLEET.lxc} (zeus ${FLEET.zeus}, apollo ${FLEET.apollo}) · qemu_running: ${FLEET.qemu}`,
-    `method: ${FLEET.method} · run by the owner`,
+    `Observation: ${FLEET.observedLong}`,
+    `Hosts at the observation: ${FLEET.hosts} responded, ${FLEET.quorate ? "and they agreed on cluster state" : "but cluster agreement was not confirmed"}`,
+    `Running guests: ${FLEET.lxc} containers and ${FLEET.qemu} virtual machine · per host split withheld`,
+    `Method: ${FLEET.method} · run by the owner`,
   ],
   kernel: [
-    "withheld: exact kernel and package versions stay out of the public record",
-    "a public security record shows what was observed, never a map for an attacker",
+    `Public record policy: ${FLEET.pageRevised}`,
+    "Withheld: exact kernel and package versions stay out of the public record",
+    "A public security record shows what was observed, never a map for an attacker",
   ],
   backups: [
-    `freshness: ${FLEET.backups.guestsOk} of ${FLEET.backups.guestsTotal} guests ok on ${FLEET.backups.freshnessLong}`,
-    `restore_tested: ${FLEET.backups.restoreTested} · freshness is a file age check, not a restore drill`,
+    `Integrity: ${FLEET.backups.integrity} · checked ${FLEET.backups.checkedLong}`,
+    "Coverage counts withheld · a restore drill is a separate test",
   ],
   atlas: [
-    `primary model: runs locally · active context ${FLEET.atlas.context}`,
-    "inference host for recurring work · model name and private catalog withheld",
+    `Observation: ${FLEET.auditLong}`,
+    `Local AI model · context window: ${FLEET.atlas.context.toLocaleString("en-US")} tokens`,
+    "Tokens are pieces of text. This window holds the instructions, conversation and reply together.",
+    "Inference host for recurring work · model name and private catalog withheld",
   ],
   dsh: [
-    `DeepSeek Harness: ${FLEET.dsh.skills} skills · ${FLEET.dsh.providers} providers · operator console`,
-    `operating brief dated ${FLEET.dsh.agentsDate} · coexists with HERMES`,
+    `Audit: ${FLEET.auditLong} · operating brief: ${FLEET.consoleBriefLong}`,
+    "DSH: operator console · provider and skill counts withheld",
+    "Coexists with HERMES",
   ],
   hermes: [
-    `scheduled jobs: ${FLEET.hermes.jobs} enabled of ${FLEET.hermes.records} records · budget period ${FLEET.hermes.budgetPeriod}`,
-    "verified route count: withheld as unknown",
+    `Observation: ${FLEET.auditLong}`,
+    `Scheduled jobs: ${FLEET.hermes.jobs} enabled of ${FLEET.hermes.records} records · budget period ${FLEET.hermes.budgetPeriod}`,
+    "Verified route count: withheld as unknown",
   ],
   routes: [
-    "routingVerified: null",
-    "lanes.public: null · lanes.privateCatalog: null",
-    "withheld: no authoritative live end to end route verification was established",
-    "the HERMES study on this page is a model that runs in your browser, not this record",
+    `Observation: ${FLEET.auditLong}`,
+    "Routing verification: not established at this observation.",
+    "Route totals and the private catalog are not published.",
+    "The raw export preserves these unknowns for inspection.",
+    "The HERMES study on this page is a model that runs in your browser, not this record",
   ],
   archive: [
-    `${FLEET.prior.release} · fleet observed ${FLEET.prior.fleetLong} · ${FLEET.prior.method} · lxc ${FLEET.prior.lxc} (zeus ${FLEET.prior.zeus}, apollo ${FLEET.prior.apollo}) · qemu ${FLEET.prior.qemu}`,
+    `${FLEET.prior.release} · fleet observed ${FLEET.prior.fleetLong} · ${FLEET.prior.method} · ${FLEET.prior.lxc} containers · ${FLEET.prior.qemu} virtual machine`,
     `${FLEET.archive.release} · fleet observed ${FLEET.archive.fleetLong} · routing observed ${FLEET.archive.routingLong}`,
-    `lxc_running: ${FLEET.archive.lxc} · qemu: ${FLEET.archive.qemu.toLowerCase()} · public lanes: ${FLEET.archive.lanes}`,
-    `original expiry ${FLEET.archive.expiry}; that expiry does not extend the later observation`,
+    `${FLEET.archive.release} counts: ${FLEET.archive.lxc} containers running · virtual machines ${FLEET.archive.qemu.toLowerCase()} · public lanes: ${FLEET.archive.lanes}`,
+    `That record lists an expiry of ${FLEET.archive.expiry}. Newer observations replace it; its expiry does not extend them`,
   ],
   cost: [
-    `status: ${FLEET.cost.status} · no current spend measurement is published`,
-    `the ${FLEET.cost.archivedRelease} sample from ${FLEET.cost.archivedSample} stays in its archived export`,
-    "rule in force: quality picks the model, cost only breaks a tie",
+    `Public record: ${FLEET.pageRevised}`,
+    `Status: ${FLEET.cost.status} · no current spend measurement is published`,
+    `The ${FLEET.cost.archivedRelease} sample from ${FLEET.cost.archivedSample} stays in its archived export`,
+    "Rule in force: quality picks the model, cost only breaks a tie",
   ],
   hosts: [
-    `zeus: ${FLEET.zeus} LXC at observation · apollo: ${FLEET.apollo} LXC at observation · ${FLEET.qemu} QEMU VM in the cluster`,
-    "quorum observed; quorum alone does not establish workload failover",
-    "private service locations are withheld from the public record",
+    `Observation: ${FLEET.observedLong}`,
+    `Zeus and Apollo: ${FLEET.hosts} hosts, one cluster · ${FLEET.lxc} containers and ${FLEET.qemu} VM between them`,
+    "The two hosts agreed on cluster state. That does not prove applications would survive a host failure.",
+    "Private service locations are withheld from the public record",
   ],
 };
 
@@ -88,7 +96,7 @@ export const LORE = {
     "lore · Bob Hoover flew chase for Yeager on October 14, 1947.",
     "lore · Energy management over raw power. A good lesson for AI budgets, too.",
   ],
-  epstein: ["lore · The Expanse gave the Epstein drive. Local inference is this workshop's Epstein drive."],
+  expanse: ["lore · The Expanse gave us the Epstein drive. Local inference is this workshop's Epstein drive."],
   engage: ["lore · Order received. The human decided; the machine will do the work."],
   "make it so": ["lore · Order received. The human decided; the machine will do the work."],
   admiral: [
@@ -97,49 +105,137 @@ export const LORE = {
   ],
   bit: ["lore · Bit here. I point the way. You make the call."],
   eve: ["lore · Evaluation Verification Engine. I only say what the evidence says, and I say when it is old."],
+  42: [
+    "lore · The answer is 42. The question is still being computed, somewhere in Zeus.",
+    "lore · Meanwhile the rule stands: quality picks the model, cost only breaks a tie.",
+  ],
+  towel: ["lore · Towel located. Human in command. Don't panic."],
   sudo: ["denied · A human is in command, and it is the one who built this. Try help."],
+  cashio: ["lore · cAshIo. Look at the capitals."],
+  whoami: ["lore · You: a guest with read only access. Doug: the human in command."],
+  ls: ["lore · Everything public is already on this page. The rest stays home."],
+  exit: ["lore · A static page has no exit. Close the tab, or say hello on the way out."],
+  nmap: ["lore · Nothing to scan here but HTML. Private addresses stay out of the public record."],
+  "rm -rf /": ["denied · Nothing here to delete. A human is in command."],
+  hal: ["lore · This machine opens the doors when a person asks. That is the whole idea."],
+  "open the pod bay doors": ["lore · This machine opens the doors when a person asks. That is the whole idea."],
+  hello: ["lore · Hello, pilot. Type fleet for the dated record, or find Doug's email in the contact section below."],
 };
+/** Plain questions a visitor might type find the matching lore reply. */
+const ASKS = {
+  hi: "hello",
+  hey: "hello",
+  contact: "hello",
+  who: "whoami",
+  doug: "whoami",
+  "who are you": "eve",
+  "what is your name": "eve",
+  "what's your name": "eve",
+  "your name": "eve",
+  "what is the meaning of life": "42",
+};
+/** The two server names answer with the dated host record. */
+const ALIASES = { zeus: "hosts", apollo: "hosts" };
+
+/** Commands ignore case, extra spaces and a closing question mark. */
+const normalize = (input) =>
+  String(input)
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .replace(/\s*[?!]+$/, "");
+const loreKey = (cmd) => (Object.hasOwn(ASKS, cmd) ? ASKS[cmd] : cmd);
 
 export function evidenceReply(input) {
-  const cmd = String(input).trim().toLowerCase().replace(/\s+/g, " ");
+  const cmd = normalize(input);
+  if (Object.hasOwn(ALIASES, cmd)) return EVIDENCE[ALIASES[cmd]];
   if (Object.hasOwn(EVIDENCE, cmd)) return EVIDENCE[cmd];
-  if (Object.hasOwn(LORE, cmd)) return LORE[cmd];
+  if (Object.hasOwn(LORE, loreKey(cmd))) return LORE[loreKey(cmd)];
   return [`unknown command: ${cmd}. Try help.`];
 }
 
+/** Hidden commands a visitor can stumble into; surprise me picks one and names it. */
+const SURPRISES = ["yeager", "johnson", "rutan", "hoover", "butlerian", "ix", "spice", "expanse", "bit", "eve"];
+
 export function setupEvidenceConsole({ motion }) {
   const out = $("#eve-out");
+  const inp = $("#eve-in");
   const intro = out.innerHTML;
-  $("#eve-form").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const inp = $("#eve-in");
-    const cmd = inp.value.trim().toLowerCase();
+  const history = [];
+  let cursor = 0;
+  const known = [...Object.keys(EVIDENCE), "clear", "surprise me"];
+  const add = (text, className = "") => {
+    const line = document.createElement("span");
+    line.textContent = text;
+    if (className) line.className = className;
+    out.appendChild(line);
+  };
+  const pendingReplies = new Set();
+  // Surprises come from a shuffled deck, so every hidden command appears once before any repeats.
+  let deck = [];
+  function run(raw) {
+    let cmd = normalize(raw);
     if (!cmd) return;
-    inp.value = "";
+    history.push(cmd);
+    cursor = history.length;
     if (cmd === "clear") {
+      pendingReplies.forEach(clearTimeout);
+      pendingReplies.clear();
       out.innerHTML = intro;
       return;
     }
-    const add = (h, lore = false) => {
-      const s = document.createElement("span");
-      s.textContent = h;
-      if (lore) s.className = "lore";
-      out.appendChild(s);
-    };
     add("↳ " + cmd);
-    const lines = evidenceReply(cmd);
-    const lore = Object.hasOwn(LORE, cmd.replace(/\s+/g, " "));
-    lines.forEach((l, i) =>
-      setTimeout(
+    let hint = "";
+    if (cmd === "surprise me") {
+      if (!deck.length) deck = [...SURPRISES].sort(() => Math.random() - 0.5);
+      cmd = deck.pop();
+      hint = `hidden command found: ${cmd} · ${SURPRISES.length - deck.length} of ${SURPRISES.length} surprises. There are more to find.`;
+    }
+    const lines = [...evidenceReply(cmd)];
+    const reply = document.createElement("div");
+    reply.className = "eve-reply";
+    out.appendChild(reply);
+    const lore = Object.hasOwn(LORE, loreKey(cmd)) && !Object.hasOwn(EVIDENCE, cmd);
+    if (hint) lines.push(hint);
+    lines.forEach((line, i) => {
+      const timer = setTimeout(
         () => {
-          add(l, lore);
+          pendingReplies.delete(timer);
+          const item = document.createElement("span");
+          item.textContent = line;
+          if (lore) item.className = "lore";
+          reply.appendChild(item);
           out.scrollTop = out.scrollHeight;
-          if (i === lines.length - 1) {
-            add(" ");
-          }
         },
         motion() ? 140 * (i + 1) : 0,
-      ),
-    );
+      );
+      pendingReplies.add(timer);
+    });
+  }
+  $("#eve-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const value = inp.value;
+    inp.value = "";
+    run(value);
+  });
+  document
+    .querySelectorAll("[data-eve]")
+    .forEach((chip) => chip.addEventListener("click", () => run(chip.dataset.eve)));
+  inp.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowUp" && history.length) {
+      e.preventDefault();
+      cursor = Math.max(0, cursor - 1);
+      inp.value = history[cursor];
+    } else if (e.key === "ArrowDown" && history.length) {
+      e.preventDefault();
+      cursor = Math.min(history.length, cursor + 1);
+      inp.value = history[cursor] ?? "";
+    } else if (e.key === "Tab" && inp.value.trim()) {
+      const match = known.find((command) => command.startsWith(inp.value.trim().toLowerCase()));
+      if (match) {
+        e.preventDefault();
+        inp.value = match;
+      }
+    }
   });
 }

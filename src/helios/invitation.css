@@ -9,7 +9,7 @@
   border-color: #38e1ff4d;
   --stack-gap: 8px;
 }
-.privacy-route .syne {
+.privacy-route .display {
   font-size: clamp(22px, 2vw, 28px);
   font-weight: 600;
   line-height: 1.35;
@@ -40,7 +40,7 @@
   gap: 18px;
   min-height: 44px;
   color: var(--ink2);
-  font-size: 13px;
+  font-size: 14px;
 }
 .hero-next span {
   color: var(--gold);
@@ -70,23 +70,16 @@
   text-decoration: underline;
   text-underline-offset: 5px;
 }
-.thesis .minute .mono {
-  font-size: 12px;
-  letter-spacing: 0.04em;
-}
-.thesis .minute .copy-note {
-  font-size: 14px;
-}
 .mc-content {
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
-  padding: 4px 6px 4px 4px;
-  margin: -4px;
+  padding: 6px 8px 6px 6px;
+  margin: -6px;
 }
 #mc-start h3 {
-  font: 500 13px var(--mono);
+  font: 500 14px var(--mono);
   color: var(--ink2);
   margin: 0 0 12px;
 }
@@ -105,7 +98,7 @@
   background: linear-gradient(145deg, #f2c87a12, #38e1ff05);
 }
 .mc-route .mono {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--gold);
   letter-spacing: 0.035em;
 }
@@ -115,7 +108,7 @@
 }
 .mc-route > span:last-child {
   color: var(--ink2);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.5;
 }
 .mc-route:hover {
@@ -130,7 +123,7 @@
     position: relative;
     inset: auto;
     margin: 8px 6% 18px;
-    font-size: 13px;
+    font-size: 14px;
   }
   .mc-routes {
     grid-template-columns: 1fr;

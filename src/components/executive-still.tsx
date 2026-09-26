@@ -1,4 +1,4 @@
-import { EXPIRES_SHORT, PVE, VERIFIED_LONG } from "@/lib/content";
+import { EXPIRES_SHORT, VERIFIED_LONG } from "@/lib/content";
 import { IDENTITY_LINE } from "./decks";
 
 export function ExecutiveStill({ onClose }: { onClose: () => void }) {
@@ -45,7 +45,7 @@ export function ExecutiveStill({ onClose }: { onClose: () => void }) {
           </div>
         </div>
         <p className="za-mono za-still-meta">
-          PVE {PVE} · 2 HOSTS QUORATE · VALID THRU {EXPIRES_SHORT} · VERIFIED {VERIFIED_LONG}
+          2 HOSTS QUORATE · VALID THRU {EXPIRES_SHORT} · VERIFIED {VERIFIED_LONG}
         </p>
       </article>
       <button type="button" className="za-btn za-still-exit" onClick={onClose} autoFocus>

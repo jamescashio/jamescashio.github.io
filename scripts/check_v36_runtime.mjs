@@ -132,7 +132,14 @@ async function run() {
       const base = `http://127.0.0.1:${resources.server.address().port}`;
       const rootHtml = await fetch(`${base}/`).then((response) => response.text());
       assert.match(rootHtml, /data-helios-styles=/, "root must serve the current Helios document");
-      assert.match(rootHtml, /id="studios"/, "the integrated studios must exist before JavaScript");
+      assert.match(rootHtml, /href="\/rooms\/studios\/"/, "the studios must be reachable before JavaScript");
+      const studios = await fetch(`${base}/rooms/studios/index.html`).then((response) => response.text());
+      assert.equal(
+        (studios.match(/class="studio-card"/g) || []).length,
+        3,
+        "all studio destinations exist without JavaScript",
+      );
+      assert.match(studios, /class="studio-library"/, "the static film library is available");
       const archiveHtml = await fetch(`${base}/odyssey.html`).then((response) => response.text());
       assert.match(archiveHtml, /data-prerendered="odyssey"/, "the archive must retain the prerendered V37 page");
       assert.ok(archiveHtml.includes(`<title>${PAGE_TITLE}</title>`), "the archive must identify V37.17 Continuum");
@@ -176,7 +183,7 @@ async function run() {
       const evidenceResponse = await fetch(`${base}/status.json`);
       assert.equal(evidenceResponse.status, 200);
       const evidence = await evidenceResponse.json();
-      assert.deepEqual(evidence.containers, { running: 19, documented: 19, stopped: 0, zeus: 14, apollo: 5 });
+      assert.deepEqual(evidence.containers, { running: 19, documented: 19, stopped: 0, zeus: null, apollo: null });
       assert.deepEqual(evidence.virtualMachines, { running: 1, documented: 1, stopped: 0 });
       assert.deepEqual(evidence.lanes, { public: null, privateCatalog: null });
       assert.equal(evidence.routingVerified, null);
@@ -570,7 +577,7 @@ async function run() {
       );
       const responses = await evaluate(`document.querySelector('.o-console-output').textContent`);
       assert.match(responses, /1 QEMU VIRTUAL MACHINE/);
-      assert.match(responses, /ZEUS · 14 CONTAINERS · APOLLO · 5 CONTAINERS/);
+      assert.match(responses, /PER HOST COUNTS WITHHELD/);
       assert.doesNotMatch(responses, /18\/19|10 PUBLIC LANES|36 PRIVATE CATALOG|Public lanes: 0|VALID THROUGH/);
       await click(".o-command-shortcuts button:nth-child(3)");
       await waitFor(

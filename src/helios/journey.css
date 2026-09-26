@@ -94,7 +94,7 @@
   border-bottom: 2px solid transparent;
 }
 .trace-stages span {
-  font: 12px var(--mono);
+  font: 14px var(--mono);
   color: var(--cyan);
 }
 .trace-stages b {
@@ -113,21 +113,6 @@
 }
 #atlas[data-outcome="held"][data-complete="true"] [data-node="operator"] .core {
   border-color: var(--gold);
-}
-.evidence-summary {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px 60px;
-  padding-block: 0 32px;
-}
-.evidence-summary h3 {
-  margin: 12px 0;
-  font-size: clamp(20px, 2vw, 25px);
-}
-.evidence-summary p {
-  color: var(--ink2);
-  margin: 0;
-  max-width: 56ch;
 }
 .evidence-details {
   border-block: 1px solid var(--line);
@@ -158,10 +143,6 @@
   }
 }
 @media (max-width: 600px) {
-  .evidence-summary {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
   .request-journey {
     padding: 16px;
     grid-template-columns: 1fr;
@@ -184,7 +165,7 @@
     justify-content: center;
     gap: 2px;
     min-height: 60px;
-    font-size: 13px;
+    font-size: 14px;
   }
 }
 h2,
@@ -257,7 +238,7 @@ h3,
   border-radius: 8px;
   background: #080f1b;
   color: var(--ink);
-  font: 500 13px/1.4 var(--sans);
+  font: 500 14px/1.4 var(--sans);
   white-space: nowrap;
   opacity: 0;
   visibility: hidden;
@@ -273,28 +254,6 @@ h3,
   opacity: 1;
   visibility: visible;
   transform: none;
-}
-.minute a.step {
-  position: relative;
-  padding: 22px 20px;
-  transition:
-    border-color 0.2s,
-    background 0.2s;
-}
-.minute a.step:after {
-  content: "↗";
-  position: absolute;
-  top: 17px;
-  right: 18px;
-  color: var(--gold);
-  transition: transform 0.2s;
-}
-.minute a.step:hover {
-  border-color: #f2c87a70;
-  background: #f2c87a09;
-}
-.minute a.step:hover:after {
-  transform: translate(2px, -2px);
 }
 .study-intro {
   font-size: 15px;
@@ -344,7 +303,7 @@ h3,
 }
 .study[aria-selected="true"] .study-index:after {
   content: "●";
-  font-size: 11px;
+  font-size: 14px;
   text-shadow: 0 0 14px var(--cyan);
 }
 .study .study-title {
@@ -376,7 +335,7 @@ h3,
   transform: rotate(-8deg) scale(1.08);
 }
 #st-name {
-  font-weight: 600 !important;
+  font-weight: 600;
   line-height: 1.2;
 }
 .flight-plan-heading {
@@ -389,15 +348,15 @@ h3,
   color: var(--ink2);
 }
 #missions {
-  grid-template-columns: 1fr !important;
+  grid-template-columns: 1fr;
 }
 #missions .tile {
   position: relative;
   display: grid;
   grid-template-columns: 30px minmax(0, 1fr);
-  column-gap: 12px !important;
-  row-gap: 3px !important;
-  padding: 14px 18px !important;
+  column-gap: 12px;
+  row-gap: 3px;
+  padding: 14px 18px;
   min-height: 72px;
   border-color: #899db333;
   background: linear-gradient(115deg, #182638, #0a1220 70%);
@@ -408,18 +367,18 @@ h3,
 #missions .tile > span:first-child {
   grid-row: 1 / 3;
   align-self: center;
-  font-size: 12px !important;
+  font-size: 14px;
 }
 #missions .tile strong {
-  font-size: 15px !important;
+  font-size: 15px;
   line-height: 1.3;
   font-weight: 600;
 }
 #missions .tile > span:last-child,
 #arch-group .mono,
 .flight-plan-note {
-  font: 400 13px/1.5 var(--sans) !important;
-  letter-spacing: 0 !important;
+  font: 400 14px/1.5 var(--sans);
+  letter-spacing: 0;
   text-transform: none;
   color: var(--muted);
 }
@@ -432,7 +391,7 @@ h3,
 }
 #mission-state {
   color: var(--gold);
-  font: 500 13px/1.5 var(--sans);
+  font: 500 14px/1.5 var(--sans);
   margin: 0;
 }
 .decision-change {
@@ -442,7 +401,7 @@ h3,
   border-left: 2px solid var(--cyan);
   border-radius: 0 12px 12px 0;
   background: linear-gradient(90deg, #38e1ff0c, #38e1ff02);
-  font-size: 13px;
+  font-size: 14px;
   color: var(--ink2);
 }
 .decision-change .kick {
@@ -486,7 +445,7 @@ h3,
   }
   .study-mobile-hint {
     display: block;
-    font-size: 12px;
+    font-size: 14px;
     color: var(--muted);
     margin-top: 8px;
   }
@@ -519,9 +478,6 @@ h3,
   }
 }
 @media (max-width: 600px) {
-  .minute a.step {
-    padding-right: 40px;
-  }
   #studies h2 {
     font-size: clamp(28px, 8.1vw, 42px);
     max-width: 17ch;
@@ -532,10 +488,10 @@ h3,
 }
 
 .atlas-inspection {
-  scroll-margin-top: 100px;
+  scroll-margin-top: 28px;
 }
 #request-journey {
-  scroll-margin-top: 90px;
+  scroll-margin-top: 18px;
 }
 .atlas-intro {
   grid-column: 1 / -1;

@@ -72,7 +72,16 @@ export async function createMissionCard(
   if (signature?.complete && signature.naturalWidth) {
     const height = (148 * signature.naturalHeight) / signature.naturalWidth;
     ctx.drawImage(signature, 56, 60 - height / 2, 148, height);
-  } else ctx.fillText("cAshIo", 56, 78);
+  } else {
+    ctx.fillText("cAshIo", 56, 78);
+    // Serifs on the capital I, as in the site wordmark, so the name never reads as "cAshlo".
+    const glyph = ctx.measureText("I");
+    const centre = 56 + ctx.measureText("cAsh").width + glyph.width / 2;
+    const bar = 30 * 0.46;
+    const weight = 30 * 0.08;
+    ctx.fillRect(centre - bar / 2, 78 - glyph.actualBoundingBoxAscent, bar, weight);
+    ctx.fillRect(centre - bar / 2, 78 - weight, bar, weight);
+  }
   ctx.font = `14px ${mono}, monospace`;
   ctx.fillStyle = "#bdd6e2";
   ctx.fillText("YOUR FLIGHT RECORD", 220, 75);

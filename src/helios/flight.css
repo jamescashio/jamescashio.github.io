@@ -64,13 +64,6 @@
     padding: 8px 10px;
   }
 }
-@media (max-width: 700px) {
-  /* The phone flight scrolls; a soft fade says there is more above the command bar. */
-  #helios-flight .ff-body {
-    mask-image: linear-gradient(180deg, #000 calc(100% - 26px), transparent);
-    padding-bottom: 22px;
-  }
-}
 /* The shared flight names its original faces; inside Helios they resolve to the Helios type system. */
 @font-face {
   font-family: Oxanium;
@@ -98,6 +91,140 @@
 }
 /* On shorter laptops the story panel scrolls; a fade says so. */
 #helios-flight .ff-story {
-  mask-image: linear-gradient(180deg, #000 calc(100% - 30px), transparent);
-  padding-bottom: 34px;
+  padding-bottom: 44px;
+  scroll-padding-bottom: 24px;
+}
+
+/* Chapter controls keep their arrow on the same line as the word. */
+.ff-playback button {
+  white-space: nowrap;
+}
+
+/* Short desktop windows: the last chapter's story fits beside the stage without an inner scroll. */
+@media (min-width: 901px) and (max-height: 1200px) {
+  #helios-flight .first-flight .ff-story {
+    padding-block: 16px;
+    gap: 8px;
+  }
+  #helios-flight .first-flight .ff-story h3 {
+    font-size: clamp(26px, 3.4vh, 32px);
+  }
+  #helios-flight .first-flight .ff-scene-copy {
+    margin-top: 10px;
+    font-size: 15px;
+  }
+  #helios-flight .first-flight .ff-lab-heading {
+    margin-bottom: 8px;
+  }
+  #helios-flight .first-flight .ff-constellation svg {
+    max-height: clamp(72px, 11vh, 110px);
+  }
+  #helios-flight .first-flight .ff-decision-result small {
+    display: none;
+  }
+  #helios-flight .first-flight .o-human-review {
+    margin-block: 8px;
+  }
+  /* The finish recap: its exits stay in view. Permission off already says a person decides. */
+  #helios-flight .first-flight .ff-story:has(.ff-recap) .o-human-review {
+    display: none;
+  }
+  #helios-flight .first-flight .ff-recap-pair {
+    margin-block: 8px;
+  }
+  #helios-flight .first-flight .ff-recap-state > strong {
+    min-height: 0;
+  }
+  #helios-flight .first-flight .ff-recap-state dl {
+    margin-top: 6px;
+  }
+  #helios-flight .first-flight .ff-recap-state dl > div {
+    padding-block: 5px;
+  }
+}
+@media (min-width: 901px) and (max-height: 820px), (min-width: 901px) and (max-width: 1100px) {
+  /* The heading already says the final say is yours; Bit's matching note steps aside on short screens. */
+  #helios-flight .first-flight .ff-story .o-human-review {
+    display: none;
+  }
+  #helios-flight .first-flight .ff-constellation svg {
+    max-height: 80px;
+  }
+  #helios-flight .first-flight .ff-constellation figcaption {
+    display: none;
+  }
+  #helios-flight .first-flight .ff-recap > small,
+  #helios-flight .first-flight .ff-recap-state > strong {
+    display: none;
+  }
+}
+
+#helios-flight .ff-state-note {
+  margin: 10px 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+@media (max-width: 700px) {
+  #helios-flight
+    :is(
+      .ff-eyebrow,
+      .ff-stage-cap,
+      .ff-shot-label,
+      .ff-boundary,
+      .ff-chapter-number,
+      .ff-chapter-short,
+      .ff-playback button,
+      .ff-recap small
+    ) {
+    font-size: 14px;
+  }
+  #helios-flight .ff-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  #helios-flight .ff-playback {
+    flex: 1 1 100%;
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) minmax(72px, auto);
+    gap: 8px;
+  }
+  #helios-flight .ff-playback button {
+    min-width: 0;
+    width: auto;
+    white-space: normal;
+    line-height: 1.3;
+    padding-inline: 8px;
+  }
+  #helios-flight .first-flight[data-complete="true"] .ff-footer {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  #helios-flight .first-flight[data-complete="true"] .ff-playback {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* A soft fade at the bottom edge says the chapter text continues below. */
+  #helios-flight .ff-body {
+    mask-image: linear-gradient(#000 calc(100% - 28px), transparent);
+    padding-bottom: 24px;
+  }
+}
+
+@media (max-width: 700px) {
+  #helios-flight .ff-chapter-picker {
+    flex-shrink: 0;
+    min-height: 44px;
+    margin: 4px 10px;
+    padding: 8px 12px;
+    border: 1px solid #48616f;
+    border-radius: 8px;
+    background: #0b1e2c;
+    color: var(--ink);
+    font: 14px var(--sans);
+  }
+  /* Phones: give the ship a third of the screen; the chapter text scrolls beneath it. */
+  #helios-flight .first-flight .ff-stage {
+    height: clamp(200px, 32dvh, 300px);
+  }
 }

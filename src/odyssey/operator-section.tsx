@@ -12,7 +12,7 @@ export function OperatorSection({
     <section className="o-operator o-scene" id="operator" aria-labelledby="operator-title">
       <div className="o-section-top">
         <span className="o-kicker">05 / THE OPERATOR</span>
-        <span className="o-micro">PENSACOLA, FLORIDA</span>
+        <span className="o-micro">OWNER · BUILDER · OPERATOR</span>
       </div>
       <div className="o-operator-layout">
         <OperatorInsignia motion={motion} onExplore={onExplore} />

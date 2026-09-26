@@ -1,6 +1,6 @@
 :root {
-  --text-label: 12px;
-  --text-note: 14px;
+  --text-label: 14px;
+  --text-note: 15px;
   --text-body: 17px;
   --panel-padding: clamp(22px, 2.6vw, 34px);
 }
@@ -45,14 +45,14 @@ h3 {
   letter-spacing: -0.015em;
 }
 #pr-title {
-  font-size: clamp(22px, 2.1vw, 28px) !important;
-  font-weight: 600 !important;
+  font-size: clamp(22px, 2.1vw, 28px);
+  font-weight: 600;
   letter-spacing: -0.035em;
   line-height: 1.25;
 }
 #pr-ring {
   font-family: var(--sans);
-  font-size: 13px !important;
+  font-size: 14px;
   text-transform: none;
   letter-spacing: 0;
   line-height: 1.6;
@@ -63,5 +63,27 @@ h3 {
   }
   .kick {
     letter-spacing: 0.11em;
+  }
+}
+
+/* Programmatic section focus is visible without drawing a box across the whole row. */
+main :is(h1, h2, h3)[tabindex="-1"]:focus-visible {
+  outline: none;
+  background: linear-gradient(var(--gold), var(--gold)) 0 100% / 48px 2px no-repeat;
+}
+@media (max-width: 700px) {
+  .mono,
+  .kick,
+  .node-detail,
+  .legend-item,
+  .evidence-links,
+  .eve-chips button,
+  .study-index,
+  .study-purpose,
+  .mc-results,
+  .hero .status,
+  .philo-caption {
+    font-size: var(--text-label);
+    letter-spacing: 0.045em;
   }
 }

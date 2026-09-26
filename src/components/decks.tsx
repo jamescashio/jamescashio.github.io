@@ -9,7 +9,6 @@ import {
   LINEAGE_EVIDENCE,
   NAMED_ROLES,
   PILOT_CRAFT,
-  PVE,
   ROUTING_STAGES,
   ROUTING_VERIFIED_LONG,
   SERVICE_FAMILIES,
@@ -96,15 +95,15 @@ export function DeckBrief({ sBrief }: { sBrief: SecRef }) {
                 <CountUp to={10} />
               </div>
               <p className="mt-3 text-sm leading-relaxed text-muted">
-                Ten public capability lanes are recorded in the 21 August 2026 routing inventory. Thirty-six private
-                catalog entries are a separate count.
+                Ten public capability lanes are recorded in the 21 August 2026 routing inventory. The private catalog
+                count is withheld.
               </p>
             </article>
             <article className="za-panel p-5">
               <div className="za-mono text-[10px] text-accent">02 · EVIDENCE BOUNDARY</div>
               <div className="za-display mt-3 text-5xl text-cyan">18/19</div>
               <p className="mt-3 text-sm leading-relaxed text-muted">
-                18 of 19 documented guests were running at the 28 August probe. Two Proxmox hosts were online and
+                18 of 19 documented guests were running at the 28 August probe. Two Cluster hosts were online and
                 quorate. The dated export is evidence, never telemetry.
               </p>
             </article>
@@ -153,9 +152,9 @@ export function DeckGrid({ s1 }: { s1: SecRef }) {
         <Kicker>02 · THE GRID</Kicker>
         <Title>WHAT IS ACTUALLY RUNNING</Title>
         <p className="mt-5 max-w-[62ch] text-[1.05rem] leading-relaxed text-muted">
-          Nineteen documented roles on two hosts. At the 28 August probe Zeus ran 12 of 13 and Apollo ran 6 of 6. Seven
-          observed role families are named on the map; the stopped guest stays unnamed and the remaining roles stay
-          public-safe. Select a role family to trace its route.
+          Nineteen documented guests on two hosts at the 28 August probe. Per host counts and private service names are
+          withheld. The rings below are a conceptual diagram, not a guest inventory. Select a role family to trace its
+          relationship to the cluster.
         </p>
 
         <div data-hud-clear className="mt-8">
@@ -204,8 +203,9 @@ export function DeckRouting({ s2 }: { s2: SecRef }) {
         <p className="mt-2 za-display text-[clamp(1.2rem,2.4vw,2rem)] text-accent">COST ONLY BREAKS A TIE.</p>
         <p className="mt-5 max-w-[62ch] text-[1.05rem] leading-relaxed text-muted">
           Every job is classified first, then sent to the lane that does that kind of work best. Ten public capability
-          lanes and 36 private catalog entries are separate counts, both confirmed in the {ROUTING_VERIFIED_LONG}{" "}
-          routing inventory. Select a lane to see what it is for and how the five stage routing computer commits to it.
+          lanes were recorded in the {ROUTING_VERIFIED_LONG} routing inventory. The separate private catalog count and
+          provider assignments are withheld. Select a lane to see what it is for and how the five stage routing computer
+          commits to it.
         </p>
 
         <div data-hud-clear className="mt-10 grid gap-3 lg:grid-cols-[1fr_1.1fr]">
@@ -264,8 +264,8 @@ export function DeckRouting({ s2 }: { s2: SecRef }) {
               />
             </div>
             <p className="za-mono mt-4 text-[10px] leading-relaxed text-dim">
-              ROUTING INVENTORY {ROUTING_VERIFIED_LONG.toUpperCase()} · TEN PUBLIC CAPABILITY LANES AND 36 PRIVATE
-              CATALOG ENTRIES COUNT DIFFERENT OBJECTS. DATED POLICY, NOT LIVE PROVIDER STATUS.
+              ROUTING INVENTORY {ROUTING_VERIFIED_LONG.toUpperCase()} · TEN PUBLIC CAPABILITY LANES. PRIVATE CATALOG
+              COUNT WITHHELD. DATED POLICY, NOT LIVE PROVIDER STATUS.
             </p>
           </div>
         </div>
@@ -284,9 +284,9 @@ export function DeckIron({ s3 }: { s3: SecRef }) {
           <Kicker>04 · THE IRON</Kicker>
           <Title>HARDWARE IN A ROOM I CAN WALK INTO.</Title>
           <p className="mt-5 max-w-[52ch] text-[1.05rem] leading-relaxed text-muted">
-            ZeusApollo ran Proxmox VE {PVE} across two online, quorate hosts at the dated probe. Two machines, one
-            cluster, in a room I can walk into. The public export leaves out hardware implementation details on purpose.
-            Select a host to read its probe result.
+            ZeusApollo ran a hypervisor (withheld) across two online, quorate hosts at the dated probe. Two machines,
+            one cluster, in a room I can walk into. The public export leaves out hardware implementation details on
+            purpose. Select a host to read its probe result.
           </p>
           <div data-hud-clear className="mt-8 grid gap-3 sm:grid-cols-2">
             {HOSTS.map((h, i) => (
@@ -582,9 +582,7 @@ export function DeckOperator({ s6 }: { s6: SecRef }) {
         <div>
           <Kicker>07 · OPERATOR</Kicker>
           <Title>DOUG CASHIO</Title>
-          <p className="za-mono mt-3 text-[12px] text-cyan">
-            PENSACOLA, FLORIDA · SOVEREIGN AI · CYBERSECURITY · HUMAN COMMAND
-          </p>
+          <p className="za-mono mt-3 text-[12px] text-cyan">SOVEREIGN AI · CYBERSECURITY · HUMAN COMMAND</p>
           <p className="mt-5 max-w-[46ch] text-[1.05rem] leading-relaxed text-muted">
             Principal Solutions Consultant and independent systems builder. Doug owns the compute, runs the routing
             policy, and remains accountable for every automated decision. The chair is empty on purpose: human authority
@@ -704,8 +702,8 @@ export function DeckEve({
         <BitBriefing index={7} />
         <p className="za-critical-telemetry za-mono mt-5 text-[10px] text-dim">
           EVERY ANSWER COMES FROM THE READ ONLY {VERIFIED_LONG} DATED EXPORT · VALID THROUGH {EXPIRES_SHORT}. AFTER THAT
-          THE CONSOLE REPORTS HISTORY, NOT STATUS. 18/19 AT 28 AUG PROBE · 2 PROXMOX HOSTS ONLINE · QUORATE · ROUTING
-          INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG ENTRIES.
+          THE CONSOLE REPORTS HISTORY, NOT STATUS. 18/19 AT 28 AUG PROBE · 2 CLUSTER HOSTS ONLINE · QUORATE · ROUTING
+          INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · PRIVATE CATALOG COUNT WITHHELD.
         </p>
       </div>
     </DeckShell>
@@ -742,9 +740,7 @@ export function DeckContact({
             <a href="mailto:doug@cashio.us" className="za-display mt-3 block text-[clamp(1.4rem,3vw,2.2rem)] text-cyan">
               doug@cashio.us
             </a>
-            <p className="za-contact-meta za-mono mt-3 text-dim">
-              PENSACOLA, FLORIDA · PUBLIC-SAFE SNAPSHOT · VERIFIED {VERIFIED_LONG}
-            </p>
+            <p className="za-contact-meta za-mono mt-3 text-dim">PUBLIC-SAFE SNAPSHOT · VERIFIED {VERIFIED_LONG}</p>
           </div>
           <BitBriefing index={8} />
           <BlackBoxReceipt />

@@ -536,7 +536,7 @@ export default function LensingFilm({
                   decoding="async"
                 />
                 <span>{CLIPS[id].title}</span>
-                <small aria-hidden="true">{String(CLIPS[id].duration).padStart(2, "0")}S</small>
+                <small aria-hidden="true">0:{String(CLIPS[id].duration).padStart(2, "0")}</small>
               </button>
             ))}
           </div>

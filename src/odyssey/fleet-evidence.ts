@@ -36,8 +36,8 @@ export function fleetEvidenceLines() {
   return [
     `FLEET OBSERVATION · ${evidence.verifiedLong.toUpperCase()}`,
     `${evidence.containers.running} LXC CONTAINERS · ${evidence.virtualMachines.running} QEMU VIRTUAL MACHINE`,
-    `ZEUS · ${evidence.containers.zeus} CONTAINERS · APOLLO · ${evidence.containers.apollo} CONTAINERS`,
-    `${evidence.proxmox.hostsOnline} PROXMOX HOSTS · ${evidence.proxmox.version} · QUORUM OBSERVED`,
+    "PER HOST COUNTS WITHHELD",
+    `${evidence.cluster.hostsOnline} HOSTS · HYPERVISOR WITHHELD · QUORUM OBSERVED`,
     "Guest runtime does not establish application health or failover readiness.",
     `Observed: ${evidence.provenance.observedAtUtc}`,
     "DATED EXPORT · NO LIVE SYSTEM ACCESS",

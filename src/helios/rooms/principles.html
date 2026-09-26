@@ -1,0 +1,219 @@
+<section class="block room bt-line" id="principles" data-room-title="Principles Engine" aria-labelledby="pr-h">
+  <div class="wrap grid items-center">
+    <div class="c5 stack sg-18">
+      <div class="kick">THE PRINCIPLES ENGINE</div>
+      <span class="mono c-mu">AN INSTRUMENT YOU OPERATE</span>
+      <h2 id="pr-h" data-split>Put the principles<br />in motion.</h2>
+      <p class="muted m-0 fs-16">Turn the instrument. Choose a principle. See the design decision behind it.</p>
+      <div class="flex gap-8 flex-wrap" id="pr-group">
+        <button class="pill" type="button" data-pr="0" aria-pressed="true">
+          <span class="mono c-gd">01</span>Observe</button
+        ><button class="pill" type="button" data-pr="1" aria-pressed="false">
+          <span class="mono c-gd">02</span>Route</button
+        ><button class="pill" type="button" data-pr="2" aria-pressed="false">
+          <span class="mono c-gd">03</span>Verify
+        </button>
+      </div>
+      <div class="panel stack p-24 sg-10" aria-live="polite">
+        <span class="mono c-mu">MISSION <span id="pr-n">01</span> / DESIGN PRINCIPLE</span>
+        <span class="display fs-26 fw-700" id="pr-title">Show the age of a fact.</span>
+        <p class="muted copy-note" id="pr-body">
+          A dashboard can outlast its measurements. Every fleet answer here carries an observation date, so you can
+          judge whether it still answers your question.
+        </p>
+        <div class="flex items-center gap-10">
+          <span class="cy">◇</span><strong class="fs-14" id="pr-tag">Date the observation</strong>
+        </div>
+        <span class="mono c-mu" id="pr-ring">The outer ring represents the boundary of what can be observed.</span>
+        <a class="principle-action" id="pr-action" href="#evidence">Inspect the dated evidence</a>
+      </div>
+      <span class="muted copy-note">Drag the instrument or use the arrow keys with it focused. Home resets it.</span>
+      <span class="mono c-mu">A concept instrument: three rings for observation, choice and verification.</span>
+    </div>
+    <div class="c7">
+      <div
+        class="engine"
+        id="engine"
+        tabindex="0"
+        role="group"
+        aria-label="Orbital instrument with three rings: observe, route, verify"
+      >
+        <svg class="engine-fallback" viewBox="0 0 640 640" aria-hidden="true">
+          <defs>
+            <linearGradient id="eng-metal" x1=".1" y1="0" x2=".9" y2="1">
+              <stop stop-color="#d5e5df" />
+              <stop offset=".2" stop-color="#3e6171" />
+              <stop offset=".45" stop-color="#182b3c" />
+              <stop offset=".68" stop-color="#8ba9af" />
+              <stop offset="1" stop-color="#172c3a" />
+            </linearGradient>
+            <linearGradient id="eng-gold" x2=".85" y2="1">
+              <stop stop-color="#fff0b8" />
+              <stop offset=".3" stop-color="#d7a453" />
+              <stop offset=".5" stop-color="#684525" />
+              <stop offset=".75" stop-color="#f0c878" />
+              <stop offset="1" stop-color="#886431" />
+            </linearGradient>
+            <radialGradient id="eng-light">
+              <stop stop-color="#38e1ff" stop-opacity=".16" />
+              <stop offset=".6" stop-color="#38e1ff" stop-opacity=".04" />
+              <stop offset="1" stop-color="#38e1ff" stop-opacity="0" />
+            </radialGradient>
+            <radialGradient id="eng-core-aura">
+              <stop stop-color="#f2c87a" stop-opacity=".25" />
+              <stop offset="1" stop-color="#f2c87a" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+          <circle cx="320" cy="306" r="302" fill="url(#eng-light)" />
+          <ellipse cx="320" cy="553" rx="197" ry="27" fill="#000" opacity=".4" />
+          <g class="engine-origin" id="eng-rot">
+            <g transform="translate(0 -10)">
+              <circle cx="320" cy="320" r="266" fill="none" stroke="#24404e" />
+              <g fill="none" stroke="#476471">
+                <circle cx="320" cy="320" r="279" stroke-width="4" stroke-dasharray="1 17.26" />
+                <circle cx="320" cy="320" r="282" stroke-width="10" stroke-dasharray="1 146.65" />
+              </g>
+              <ellipse
+                cx="320"
+                cy="325"
+                rx="252"
+                ry="161"
+                fill="none"
+                stroke="#040b11"
+                stroke-width="17"
+                transform="rotate(-29 320 320)"
+              />
+              <ellipse
+                cx="320"
+                cy="320"
+                rx="252"
+                ry="161"
+                fill="none"
+                stroke="url(#eng-metal)"
+                stroke-width="13"
+                transform="rotate(-29 320 320)"
+              />
+              <ellipse
+                id="r1"
+                cx="320"
+                cy="319"
+                rx="253"
+                ry="161"
+                fill="none"
+                stroke="#38e1ff"
+                stroke-width="2"
+                transform="rotate(-29 320 320)"
+              />
+              <ellipse
+                cx="320"
+                cy="325"
+                rx="173"
+                ry="237"
+                fill="none"
+                stroke="#050b10"
+                stroke-width="16"
+                transform="rotate(30 320 320)"
+              />
+              <ellipse
+                cx="320"
+                cy="320"
+                rx="173"
+                ry="237"
+                fill="none"
+                stroke="url(#eng-gold)"
+                stroke-width="10"
+                transform="rotate(30 320 320)"
+              />
+              <ellipse
+                id="r2"
+                cx="320"
+                cy="320"
+                rx="174"
+                ry="237"
+                fill="none"
+                stroke="#f2c87a"
+                stroke-width="1.5"
+                stroke-dasharray="60 38"
+                transform="rotate(30 320 320)"
+              />
+              <ellipse
+                cx="320"
+                cy="321"
+                rx="217"
+                ry="78"
+                fill="none"
+                stroke="url(#eng-metal)"
+                stroke-width="6"
+                transform="rotate(8 320 320)"
+              />
+              <circle cx="320" cy="320" r="124" fill="url(#eng-core-aura)" />
+              <circle
+                id="r3"
+                cx="320"
+                cy="320"
+                r="112"
+                fill="none"
+                stroke="#f2c87a"
+                stroke-opacity=".5"
+                stroke-width="1.5"
+                stroke-dasharray="2 9"
+              />
+              <g class="engine-crystal">
+                <path d="M320 211l54 98-54 118-54-118z" fill="#e0ab53" />
+                <path d="M320 211l-54 98 54-28 54 28z" fill="#ffe9ab" />
+                <path d="M320 281v146l54-118z" fill="#956329" />
+                <path d="M320 281l-54 28 54 118z" fill="#e9b65c" />
+                <path d="M320 211v70l54 28z" fill="#f7d88c" />
+                <path d="M320 211v70l-54 28" fill="none" stroke="#fff5d6" stroke-width="1.2" />
+              </g>
+              <path d="M137 415Q317 535 527 366" fill="none" stroke="url(#eng-metal)" stroke-width="6" />
+              <circle cx="108" cy="336" r="8" fill="#a9f7ff" />
+              <circle cx="467" cy="145" r="7" fill="#ffe2a0" />
+            </g>
+          </g>
+        </svg>
+        <div class="engine-viewport" aria-hidden="true"></div>
+        <div class="engine-index" aria-hidden="true">
+          <span data-ring-label="0" class="active"><i>01</i> Observe</span
+          ><span data-ring-label="1"><i>02</i> Route</span><span data-ring-label="2"><i>03</i> Verify</span>
+        </div>
+      </div>
+      <div class="flex justify-between gap-8 flex-wrap mt-14">
+        <span class="mono c-mu">LIGHTFOLD / ORBITAL INSTRUMENT · CONCEPT STUDY · DRAG TO EXPLORE</span>
+        <div class="flex gap-6">
+          <button class="btn line sm" type="button" id="eng-reset">Reset view</button
+          ><a class="btn line sm" href="#lensing">Cinema view</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <section class="philo" aria-label="Philosophy">
+    <img
+      src="/v38/assets/sanctuary.webp"
+      width="1200"
+      height="675"
+      decoding="async"
+      loading="lazy"
+      id="philo-img"
+      alt="Original concept art: twin graphite computing monoliths in a sunlit stone sanctuary with a faceted amber core between them"
+    />
+    <div class="shade"></div>
+    <div class="wrap w-full relative">
+      <div class="txt">
+        <span class="kick">THE PHILOSOPHY</span>
+        <h2 data-split>
+          Technology should extend our reach.<br /><span class="em fw-500">Not replace our judgment.</span>
+        </h2>
+        <div class="flex items-center gap-20 flex-wrap">
+          <a class="btn ghost" href="#film=sanctuary" data-magnet>Enter the sanctuary →</a
+          ><span class="mono c-mu">A 15 SECOND FILM · THEN STEP INSIDE</span>
+        </div>
+        <a class="inline-cta fw-600 c-ink" href="#studies">See the philosophy at work →</a>
+      </div>
+    </div>
+    <span class="mono philo-caption">ORIGINAL CONCEPT ART / AN IMAGINED COMPUTING SANCTUARY</span>
+  </section>
+  <div class="wrap room-end">
+    <a class="btn" href="#rooms">← Back to the four rooms</a><a href="#top">Back to the beginning ↑</a>
+  </div>
+</section>

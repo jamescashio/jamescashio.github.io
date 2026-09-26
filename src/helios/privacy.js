@@ -1,7 +1,7 @@
 import { gsap } from "gsap";
 import { $, $$ } from "./dom.js";
 
-export function setupPrivacy({ loadRequest, traceRequest, motion }) {
+export function setupPrivacy({ loadRequest, traceRequest, motion, onReveal }) {
   $("#request-privacy").addEventListener("click", (event) => {
     const button = event.target.closest("[data-request-private]");
     if (!button) return;
@@ -11,7 +11,8 @@ export function setupPrivacy({ loadRequest, traceRequest, motion }) {
     loadRequest({ intent: "analyze", privateData: true, sources: true }, true),
   );
   $("#st-trace").addEventListener("click", () => traceRequest());
-  const pv = { pick: null };
+  // The first prediction is the one that counts; a later change is acknowledged, not scored as a call.
+  const pv = { pick: null, first: null };
   const result = $("#pv-result");
   const signal = $("#pv-signal");
   function resetResult() {
@@ -25,14 +26,18 @@ export function setupPrivacy({ loadRequest, traceRequest, motion }) {
     $("#pv-live").textContent = "";
     $("#pv-trace").hidden = true;
   }
+  // A prediction is the whole question, so choosing one reveals the answer at once.
   $$("[data-pv]").forEach((b) =>
     b.addEventListener("click", () => {
       resetResult();
       pv.pick = b.dataset.pv;
+      pv.first ??= pv.pick;
       $$("[data-pv]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      reveal();
     }),
   );
-  $("#pv-reveal").addEventListener("click", () => {
+  $("#pv-reveal").addEventListener("click", () => reveal());
+  function reveal() {
     loadRequest({ intent: "analyze", privateData: true, sources: true });
     gsap.killTweensOf([result, signal]);
     $("#pv-trace").hidden = false;
@@ -42,7 +47,13 @@ export function setupPrivacy({ loadRequest, traceRequest, motion }) {
     result.hidden = false;
     const lead = document.createElement("strong");
     lead.textContent =
-      pv.pick === "human" ? "You called it." : pv.pick === "keep" ? "Privacy takes priority." : "Human review.";
+      pv.pick === "human"
+        ? pv.first === "human"
+          ? "You called it."
+          : "Now you have it."
+        : pv.pick === "keep"
+          ? "Not quite. Privacy wins."
+          : "The answer: human review.";
     $("#pv-text").replaceChildren(
       lead,
       " This model holds private input for a person, even when sources are required. Your prediction: " +
@@ -57,7 +68,8 @@ export function setupPrivacy({ loadRequest, traceRequest, motion }) {
         { x: 49, opacity: 0, duration: 0.8, ease: "power2.inOut", clearProps: "transform,opacity" },
       );
     }
-  });
+    onReveal?.(pv.pick);
+  }
 
   return { getPrediction: () => pv.pick };
 }

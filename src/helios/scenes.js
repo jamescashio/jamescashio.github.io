@@ -8,13 +8,9 @@ const smooth = (t) => t * t * (3 - 2 * t);
 export function setupScenes({ motion }) {
   const blocked = () => !!document.querySelector("dialog[open],#helios-studio,#helios-flight");
   const atlas = document.querySelector("#atlas");
-  const flow = document.querySelector("#flow-scene");
-  const engine = document.querySelector("#engine");
-  const visible = new Map([
-    [atlas, false],
-    [flow, false],
-    [engine, false],
-  ]);
+  let flow = null,
+    engine = null;
+  const visible = new Map([[atlas, false]]);
   let enabled = motion,
     frame = 0,
     previous = 0,
@@ -111,7 +107,7 @@ export function setupScenes({ motion }) {
       frame = requestAnimationFrame(run);
   }
   async function loadEngine() {
-    if (engineScene || engineLoading) return;
+    if (!engine || engineScene || engineLoading) return;
     engineLoading = true;
     try {
       const { createEngineScene } = await import("./engine-scene.js");
@@ -146,7 +142,7 @@ export function setupScenes({ motion }) {
     },
     { threshold: 0.05 },
   );
-  [atlas, flow, engine].forEach((element) => observer.observe(element));
+  observer.observe(atlas);
   window.addEventListener("helios-motion", (event) => {
     enabled = event.detail;
     if (!enabled && trace.active) trace.finish(true);
@@ -156,11 +152,26 @@ export function setupScenes({ motion }) {
   document.addEventListener("visibilitychange", sync);
   window.addEventListener("pageshow", sync);
   window.addEventListener("helios-overlay", sync);
-  engine.addEventListener("pointerdown", () => {
-    if (enabled) void loadEngine();
-  });
+  function attachRoom(room) {
+    const nextFlow = room.querySelector("#flow-scene");
+    if (nextFlow && flow !== nextFlow) {
+      flow = nextFlow;
+      visible.set(flow, false);
+      observer.observe(flow);
+    }
+    const nextEngine = room.querySelector("#engine");
+    if (nextEngine && engine !== nextEngine) {
+      engine = nextEngine;
+      visible.set(engine, false);
+      observer.observe(engine);
+      engine.addEventListener("pointerdown", () => {
+        if (enabled) void loadEngine();
+      });
+    }
+  }
 
   return {
+    attachRoom,
     renderFlow,
     flowVisible: () => visible.get(flow),
     updateRequest: trace.update,

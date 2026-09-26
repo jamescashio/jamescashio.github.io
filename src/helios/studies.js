@@ -13,16 +13,39 @@ export function routeExample(intent, priv, src) {
 
 export function setupStudies({ scenes, motion, copy }) {
   const studyState = new Map(PROJECTS.map((p) => [p.id, defaultExperiment(p.id)]));
+  const outcomes = {
+    hermes: "Intent and sources choose the route. Privacy can overrule both.",
+    cascade: "Uncertainty changes the next action.",
+    exposure: "Check access and importance before escalating.",
+    briefing: "Unknowns belong in the brief.",
+    dashboards: "At 24 hours, this example asks for a fresh check.",
+    signal: "Corroboration changes what happens next.",
+    graphify: "A change to Policy reaches three other modules.",
+  };
+  // Plain-language tasks lead. The working names stay visible, one step smaller.
+  const labels = {
+    hermes: "Choose a route",
+    cascade: "Know when to pause",
+    exposure: "Triage an exposure",
+    briefing: "Compose a brief",
+    dashboards: "Age the evidence",
+    signal: "Corroborate a signal",
+    graphify: "Trace a dependency",
+  };
+  const cues = { dashboards: "Drag the age past 24 hours. The review state changes." };
+  // The study label names both servers the way the glossary does.
+  const codes = { dashboards: "Zeus and Apollo" };
   const STUDIES = PROJECTS.map((p, i) => {
     const n = STUDY_NOTES[p.id];
     return {
       id: p.id,
       n: String(i + 1).padStart(2, "0"),
-      name: p.title,
+      name: labels[p.id],
+      code: codes[p.id] || p.title,
       cat: p.category,
       sub: p.subtitle,
-      cue: p.cue,
-      take: n.takeaway,
+      cue: cues[p.id] || p.cue,
+      take: outcomes[p.id],
       takebody: n.relevance,
       q: n.question,
       rule: n.rule,
@@ -47,12 +70,18 @@ export function setupStudies({ scenes, motion, copy }) {
     const list = $("#studies-list");
     list.innerHTML = STUDIES.map(
       (s, i) =>
-        `<button class="study" type="button" role="tab" id="study-${s.id}" aria-controls="instrument" tabindex="${i === st.i ? 0 : -1}" data-study="${i}" aria-selected="${i === st.i}"><span class="study-index">${s.n} / 07</span><strong class="study-title">${s.name}</strong><span class="study-purpose">${s.sub}</span><svg class="glyph" viewBox="-5 -5 34 34" fill="none" stroke="currentColor" stroke-width=".8" aria-hidden="true"><circle cx="12" cy="12" r="15" stroke-dasharray="2 3"/><circle cx="12" cy="12" r="12.5" stroke-width=".3"/><path d="${GLYPHS[i]}"/></svg></button>`,
+        `<button class="study" type="button" role="tab" id="study-${s.id}" aria-controls="instrument" tabindex="${i === st.i ? 0 : -1}" data-study="${i}" aria-selected="${i === st.i}"><span class="study-index">${s.n} / 07</span><strong class="study-title">${s.name}</strong><span class="study-purpose">${s.q}</span><svg class="glyph" viewBox="-5 -5 34 34" fill="none" stroke="currentColor" stroke-width=".8" aria-hidden="true"><circle cx="12" cy="12" r="15" stroke-dasharray="2 3"/><circle cx="12" cy="12" r="12.5" stroke-width=".3"/><path d="${GLYPHS[i]}"/></svg></button>`,
     ).join("");
     list.addEventListener("click", (e) => {
       const b = e.target.closest("[data-study]");
       if (!b) return;
       selectStudy(+b.dataset.study);
+      // A pointer choice keeps its instrument in view; keyboard selection already moves with the tabs.
+      if (e.detail > 0) {
+        const top = $("#instrument").getBoundingClientRect().top;
+        if (top < 72 || top > innerHeight * 0.7)
+          $("#instrument").scrollIntoView({ block: "start", behavior: "instant" });
+      }
     });
   }
   function selectStudy(i, updateUrl = true) {
@@ -63,7 +92,7 @@ export function setupStudies({ scenes, motion, copy }) {
     $("#st-trace").hidden = i !== 0;
     $("#secondary-instrument").hidden = i === 0;
     $(".ring-progress").style.display = i === 0 ? "" : "none";
-    $("#study-source").href = i === 3 || i === 4 ? "/v38/status.json" : s.source;
+    $("#study-source").href = i === 3 || i === 4 ? "/evidence/status.json" : s.source;
     $("#study-source").textContent = s.sourceLabel + " ↗";
     if (i > 0)
       mountInstrument($("#secondary-instrument"), studyState.get(s.id), FLEET, (next) => {
@@ -85,6 +114,7 @@ export function setupStudies({ scenes, motion, copy }) {
         studyStrip.scrollTo({ left: studyStrip.scrollLeft + tabBox.left - stripBox.left - 6, behavior: "instant" });
     }
     $("#st-n").textContent = s.n;
+    $("#st-codename").textContent = s.code;
     $("#st-name").textContent = s.name;
     $("#st-sub").textContent = s.sub;
     $("#st-cue").textContent = s.cue;
@@ -105,26 +135,30 @@ export function setupStudies({ scenes, motion, copy }) {
       );
   }
   let routeCounterTween;
-  function renderRoute(run) {
+  function renderRoute(run, updateUrl = true) {
     routeCounterTween?.kill();
     const r = routeExample(st.intent, st.priv, st.src);
     const experiment = { study: "hermes", intent: st.intent, privateData: st.priv, sources: st.src };
     studyState.set("hermes", experiment);
     scenes.updateRequest(experiment);
-    if (location.hash.startsWith("#build=hermes")) history.replaceState(null, "", shareExperiment(experiment));
+    if (updateUrl && location.hash.startsWith("#build=hermes"))
+      history.replaceState(null, "", shareExperiment(experiment));
     $("#st-lane").textContent = r.lane;
     $("#st-lane").style.color = r.color;
     $("#st-code").textContent = r.code;
     $("#st-code").style.color = r.color;
-    $("#st-detail").textContent = run
-      ? r.detail
-      : "Choose a task and its boundaries, then run the five step demonstration. No request leaves this page.";
+    $("#st-detail").textContent = run ? r.detail : "Choose a task, then follow its five-step route.";
     const box = $("#st-steps");
     gsap.killTweensOf(Array.from(box.children));
+    // Until the request is routed, the five steps read as a quiet preview that matches the empty counter.
+    const tone = r.code === "HOLD" ? "var(--gold)" : "var(--cyan)";
+    const dot = run
+      ? `background:${tone};box-shadow:0 0 12px ${tone}`
+      : `background:none;box-shadow:inset 0 0 0 1.5px ${tone}`;
     box.innerHTML = r.steps
       .map(
         (t, i) =>
-          `<div class="step" data-step><span class="mono" style="font-size:var(--text-label);color:var(--gold);width:22px">0${i + 1}</span><span class="dot" style="background:${r.code === "HOLD" ? "var(--gold)" : "var(--cyan)"};box-shadow:0 0 12px ${r.code === "HOLD" ? "var(--gold)" : "var(--cyan)"}"></span><span style="font-size:14px">${t}</span></div>`,
+          `<div class="step" data-step><span class="mono" style="font-size:var(--text-label);color:var(--gold);width:22px">0${i + 1}</span><span class="dot" style="${dot}"></span><span style="font-size:14px${run ? "" : ";color:var(--muted)"}">${t}</span></div>`,
       )
       .join("");
     const fg = $("#ringfg"),
@@ -178,7 +212,14 @@ export function setupStudies({ scenes, motion, copy }) {
     renderRoute(false);
   });
   $("#route-btn").addEventListener("click", () => renderRoute(true));
-  $("#st-next").addEventListener("click", () => selectStudy((st.i + 1) % 7));
+  $("#st-next").addEventListener("click", () => {
+    selectStudy((st.i + 1) % 7);
+    // The next study opens where its title can be read, and focus moves to that title.
+    const title = $("#st-name");
+    title.tabIndex = -1;
+    title.focus({ preventScroll: true });
+    $("#instrument").scrollIntoView({ block: "start", behavior: "instant" });
+  });
   $("#copy-settings").addEventListener("click", () => {
     const ex =
       st.i === 0
@@ -201,7 +242,8 @@ export function setupStudies({ scenes, motion, copy }) {
     }),
   );
   renderStudies();
-  renderRoute(false);
+  // The first render must not rewrite a shared study link before the router has read it.
+  renderRoute(false, false);
   $("#studies-list").addEventListener("keydown", (e) => {
     const keys = ["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp", "Home", "End"];
     if (!keys.includes(e.key)) return;

@@ -5,7 +5,7 @@ import { FLEET } from "../src/helios/fleet.js";
 
 test("listed E.V.E. commands answer only from the dated export", () => {
   assert.match(evidenceReply("fleet").join(" "), new RegExp(FLEET.observedLong));
-  assert.match(evidenceReply("routes").join(" "), /routingVerified: null/);
+  assert.match(evidenceReply("routes").join(" "), /Routing verification: not established/);
   for (const [command, lines] of Object.entries(EVIDENCE)) {
     for (const line of lines) assert.doesNotMatch(line, /^lore ·/, `${command} must not carry lore`);
   }
@@ -27,6 +27,14 @@ test("unlisted lore replies are labelled and never pose as evidence", () => {
   assert.match(evidenceReply("nonsense")[0], /unknown command: nonsense\. Try help\./);
 });
 
+test("plain questions reach their labelled lore reply", () => {
+  assert.deepEqual(evidenceReply("What is your name?"), LORE.eve);
+  assert.deepEqual(evidenceReply("  Who  are you "), LORE.eve);
+  assert.deepEqual(evidenceReply("Doug"), LORE.whoami);
+  assert.deepEqual(evidenceReply("hi!"), LORE.hello);
+  assert.deepEqual(evidenceReply("fleet?"), EVIDENCE.fleet);
+});
+
 test("the help text lists every evidence command and hints at the hidden ones", () => {
   const help = evidenceReply("help").join(" ");
   for (const command of Object.keys(EVIDENCE)) assert.ok(help.includes(command), command);
@@ -37,4 +45,15 @@ test("the help text lists every evidence command and hints at the hidden ones", 
 test("public copy in the console avoids dashes as punctuation", () => {
   for (const lines of [...Object.values(EVIDENCE), ...Object.values(LORE)])
     for (const line of lines) assert.doesNotMatch(line, /[–—]/);
+});
+
+test("Individual facts retain their audit date instead of inheriting the later fleet observation", () => {
+  for (const command of ["atlas", "dsh", "hermes", "routes"]) {
+    const reply = evidenceReply(command).join(" ");
+    assert.match(reply, /September 18, 2026/);
+    assert.doesNotMatch(reply, /September 24, 2026/);
+  }
+  for (const command of ["fleet", "hosts", "backups"])
+    assert.match(evidenceReply(command).join(" "), /September 24, 2026/);
+  assert.match(evidenceReply("dsh").join(" "), /September 8, 2026/);
 });

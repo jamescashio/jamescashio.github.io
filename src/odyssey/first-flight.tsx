@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { FIRST_FLIGHT, flightStepIndex, missionHash } from "./flight-plan";
+import { flightChapterInput, chapterRecap, type FlightChoices } from "./flight-state";
 import { RequestConstellation } from "./request-constellation";
 import { computeWorldOutcome } from "./sovereign-model";
 import type { WorldController } from "./world-renderer";
@@ -37,7 +38,7 @@ export default function FirstFlight({
   const captureGeneration = useRef(0);
   const captureBusy = useRef(false);
   const downloads = useRef(new Map<string, ReturnType<typeof setTimeout>>());
-  const [choice, setChoice] = useState<{ step: number; connected?: boolean; permitted?: boolean } | null>(null);
+  const [choice, setChoice] = useState<FlightChoices>({});
   const [lastDecision, setLastDecision] = useState<(FlightDecision & { step: number }) | null>(null);
   const [pageVisible, setPageVisible] = useState(true);
   const [compact, setCompact] = useState(() => window.matchMedia("(max-width: 700px)").matches);
@@ -51,34 +52,33 @@ export default function FirstFlight({
   const completionFocus = useRef<HTMLHeadingElement>(null);
   const focusCompletion = useRef(false);
   const scene = FIRST_FLIGHT[step];
-  const changed = choice?.step === step;
-  const currentInput = useMemo(
-    () => ({
-      ...scene.input,
-      connected: changed ? (choice.connected ?? scene.input.connected) : scene.input.connected,
-      allowPrivateEgress: changed
-        ? (choice.permitted ?? scene.input.allowPrivateEgress)
-        : scene.input.allowPrivateEgress,
-    }),
-    [scene, changed, choice],
-  );
+  const currentInput = useMemo(() => flightChapterInput(step, choice), [step, choice]);
+  const changed =
+    currentInput.connected !== scene.input.connected ||
+    currentInput.allowPrivateEgress !== scene.input.allowPrivateEgress;
+  const currentDecision = lastDecision?.step === step ? lastDecision : null;
   const privateRequest = shareExperiment({
     study: "hermes",
     intent: "analyze",
     sources: true,
     privateData: true,
   }).slice(1);
-  const recapDecision = lastDecision ?? { before: FIRST_FLIGHT[1].input, after: FIRST_FLIGHT[2].input };
+  const zenith = /^(HELIOS|ZENITH)/.test(edition);
+  const recapDecision = zenith
+    ? chapterRecap(step, currentInput, lastDecision)
+    : (lastDecision ?? { before: FIRST_FLIGHT[1].input, after: FIRST_FLIGHT[2].input });
   const input = complete ? recapDecision.after : currentInput;
-  const displayStep = complete ? (lastDecision?.step ?? 2) : step;
+  const displayStep = complete && !zenith ? (lastDecision?.step ?? 2) : step;
   const displayScene = FIRST_FLIGHT[displayStep];
   const outcome = computeWorldOutcome(input);
   const independent = input.architecture === "hybrid" && !input.connected;
   const flightHash = changed || complete ? missionHash(input) : `#flight=${scene.id}`;
   const playing = motion && !paused && !complete && pageVisible && phase !== "loading";
+  // In Zenith a relay choice carried from an earlier chapter keeps this chapter's own title.
+  const changedHere = changed && (!zenith || currentDecision !== null);
   const sceneTitle = complete
     ? "One boundary. A different outcome."
-    : changed
+    : changedHere
       ? step === 3
         ? input.allowPrivateEgress
           ? "Permission changes the route."
@@ -200,7 +200,6 @@ export default function FirstFlight({
   function select(next: number) {
     captureGeneration.current += 1;
     setVisit((value) => value + 1);
-    setChoice(null);
     setStep(next);
     setPaused(true);
     setComplete(false);
@@ -210,6 +209,7 @@ export default function FirstFlight({
   }
   function replay() {
     select(0);
+    setChoice({});
     setLastDecision(null);
     setPaused(visitorPaced || !motion);
     // Replay removes the completed controls; return focus to a stable control.
@@ -246,7 +246,7 @@ export default function FirstFlight({
       await document.fonts.ready;
       const { blob, record } = await createMissionCard(still, selectedInput, selectedChapter, {
         baseUrl: `${location.origin}${location.pathname}`,
-        helios: edition.startsWith("HELIOS"),
+        helios: /^(HELIOS|ZENITH)/.test(edition),
       });
       if (generation !== captureGeneration.current) return;
       const url = URL.createObjectURL(blob);
@@ -298,7 +298,11 @@ export default function FirstFlight({
               ? { ...input, allowPrivateEgress: !input.allowPrivateEgress }
               : { ...input, connected: !input.connected },
         });
-        setChoice(step === 3 ? { step, permitted: !input.allowPrivateEgress } : { step, connected: !input.connected });
+        setChoice((previous) =>
+          step === 3
+            ? { ...previous, permitted: !input.allowPrivateEgress }
+            : { ...previous, connected: !input.connected },
+        );
       }}
     >
       <span aria-hidden="true">{step === 3 ? "◇" : "⌁"}</span>
@@ -333,7 +337,7 @@ export default function FirstFlight({
         if (visitorPaced && playing) setPaused(true);
         const controls = [
           ...event.currentTarget.querySelectorAll<HTMLElement>(
-            "button:not([disabled]), summary, a[href], input:not([disabled]), [tabindex='0']",
+            "button:not([disabled]), summary, a[href], input:not([disabled]), select:not([disabled]), [tabindex='0']",
           ),
         ].filter((control) => control.getClientRects().length > 0);
         if (event.shiftKey && document.activeElement === controls[0]) {
@@ -361,7 +365,7 @@ export default function FirstFlight({
           <StarshipPoster imageClassName="ff-fallback" eager />
           <canvas ref={canvas} aria-hidden="true" />
           <div className="ff-stage-cap">
-            <span>CSV SOVEREIGN</span>
+            <span>{zenith ? "EXPLORER 01" : "CSV SOVEREIGN"}</span>
             <span>{input.connected ? "RELAY CONNECTED" : "RELAY OFFLINE"}</span>
           </div>
           <div className="ff-shot-reticle" aria-hidden="true">
@@ -403,14 +407,32 @@ export default function FirstFlight({
         <section className="ff-story" aria-labelledby="ff-scene-title">
           <span className="ff-eyebrow">
             0{step + 1} / 04 ·{" "}
-            {complete ? "FLIGHT COMPLETE" : phase === "loading" ? "PREPARING THE SHIP" : "THE HUMAN BOUNDARY"}
+            {complete
+              ? "FLIGHT COMPLETE"
+              : phase === "loading"
+                ? "PREPARING THE SHIP"
+                : ["BOARD", "OPEN THE HULL", "CUT THE CLOUD", "HUMAN COMMAND"][step]}
           </span>
           <h3 id="ff-scene-title" ref={completionFocus} tabIndex={-1}>
             {sceneTitle}
           </h3>
           {complete ? (
             <>
-              <FlightRecap decision={recapDecision} visitorChoice={lastDecision !== null} />
+              <FlightRecap
+                decision={recapDecision}
+                visitorChoice={zenith ? currentDecision !== null : lastDecision !== null}
+                wording={
+                  zenith && step === 3 && !currentDecision
+                    ? {
+                        eyebrow: "THE LAST CHAPTER, BOTH WAYS",
+                        captions: ["If you say yes", "If you say no"],
+                        before: "Permission on",
+                        after: "Permission off",
+                        note: "Same twelve private requests. Only your permission changes the route.",
+                      }
+                    : undefined
+                }
+              />
               {outcome.held > 0 && <HumanReviewSignal motion={motion && pageVisible} />}
               <div className="ff-next">
                 {!compact && (
@@ -421,18 +443,30 @@ export default function FirstFlight({
                 <button type="button" onClick={() => onClose("smart-routing")}>
                   See the real build story →
                 </button>
+                {/^(HELIOS|ZENITH)/.test(edition) && (
+                  <button type="button" onClick={() => onClose("contact")}>
+                    Compare notes with Doug →
+                  </button>
+                )}
               </div>
             </>
           ) : (
             <>
               <div className="ff-command-lab">
-                {changed && lastDecision && <DecisionDelta decision={lastDecision} />}
+                {changed && currentDecision && <DecisionDelta decision={currentDecision} />}
                 <div className="ff-lab-heading">
                   <span>TAKE COMMAND</span>
                   <span>LOCAL ILLUSTRATION</span>
                 </div>
                 {!compact && decisionButton}
-                <p className="ff-scene-copy">{changed ? outcome.summary : scene.copy}</p>
+                <p className="ff-scene-copy">{changed && step !== 1 ? outcome.summary : scene.copy}</p>
+                <p className="ff-state-note">
+                  {step === 3
+                    ? "New scenario: cloud connected, twelve private requests. Your permission choice is kept when you revisit this chapter."
+                    : choice.connected !== undefined
+                      ? `Your relay choice is kept in chapters 1 to 3: ${input.connected ? "connected" : "disconnected"}.`
+                      : "Chapters 1 to 3 share your relay choice. Chapter 4 starts a separate permission test."}
+                </p>
                 <details className="ff-request-detail" open={!compact && !changed}>
                   <summary>
                     Follow the twelve requests <span aria-hidden="true">+</span>
@@ -457,7 +491,9 @@ export default function FirstFlight({
                     onClick={() => {
                       captureGeneration.current += 1;
                       setCardStatus("idle");
-                      setChoice(null);
+                      setChoice((previous) =>
+                        step === 3 ? { connected: previous.connected } : { permitted: previous.permitted },
+                      );
                       if (lastDecision?.step === step) setLastDecision(null);
                       setCopied(false);
                       setCopyError(false);
@@ -509,7 +545,21 @@ export default function FirstFlight({
           )}
         </div>
       )}
-      <nav className="ff-chapters" aria-label="Flight chapters" hidden={complete}>
+      {zenith && compact && !complete && (
+        <select
+          className="ff-chapter-picker"
+          aria-label="Flight chapter"
+          value={step}
+          onChange={(event) => select(Number(event.target.value))}
+        >
+          {FIRST_FLIGHT.map((item, index) => (
+            <option key={item.id} value={index}>
+              {index + 1} / 4 · {["Board", "Open the hull", "Cut the cloud", "Human command"][index]}
+            </option>
+          ))}
+        </select>
+      )}
+      <nav className="ff-chapters" aria-label="Flight chapters" hidden={complete || (zenith && compact)}>
         {FIRST_FLIGHT.map((item, index) => (
           <button
             key={item.id}
@@ -521,7 +571,13 @@ export default function FirstFlight({
             <span className="ff-chapter-name">
               {["Board", "Open the hull", "Cut the cloud", "Human command"][index]}
             </span>
-            <span className="ff-chapter-short">{["Board", "Hull", "Blackout", "Command"][index]}</span>
+            <span className="ff-chapter-short">
+              {
+                (zenith
+                  ? ["Board", "Open the hull", "Cut the cloud", "Human command"]
+                  : ["Board", "Hull", "Blackout", "Command"])[index]
+              }
+            </span>
             <i
               key={`${step}-${visit}`}
               style={{ animationPlayState: playing ? "running" : "paused", animationDuration: `${scene.durationMs}ms` }}
@@ -606,17 +662,23 @@ export default function FirstFlight({
         </button>
       </footer>
       <p className="ff-boundary" id="ff-boundary">
-        Demo runs in your browser. No AI requests sent.{" "}
+        {zenith && compact ? "Local demo · no requests sent." : "Demo runs in your browser. No AI requests sent."}{" "}
         {phase === "fallback" ? "The 3D view is unavailable; the illustrated outcomes still work. " : ""}
-        {!motion
+        {zenith && compact
           ? complete
-            ? "Motion stays off on replay."
-            : "Motion off. Use Next."
-          : visitorPaced
-            ? playing
-              ? "30 second tour. Any decision pauses it."
-              : "Your pace. Use Next, or play the 30 second tour."
-            : "Explore at your own pace."}
+            ? "Replay or save your card."
+            : ""
+          : !motion
+            ? complete
+              ? "Motion stays off on replay."
+              : "Motion off. Use Next."
+            : zenith && complete
+              ? "Replay, save your card or test a private request."
+              : visitorPaced
+                ? playing
+                  ? "30 second tour. Any decision pauses it."
+                  : "Your pace. Use Next, or play the 30 second tour."
+                : "Explore at your own pace."}
       </p>
       <span className="o-sr-only" role="status" aria-atomic="true">
         {complete ? "Flight complete." : sceneTitle} {outcome.local} onboard, {outcome.cloud} in cloud, {outcome.held}{" "}

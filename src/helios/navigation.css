@@ -29,7 +29,7 @@
 }
 .mc-heading .kick {
   color: var(--gold);
-  font-size: 12px;
+  font-size: 14px;
 }
 #mc-title {
   font-size: clamp(25px, 3vw, 32px);
@@ -96,7 +96,7 @@
   flex-shrink: 0;
   margin: 0;
   color: var(--muted);
-  font: 12px var(--mono);
+  font: 14px var(--mono);
 }
 #mc-list {
   display: grid;
@@ -117,11 +117,14 @@
   border-radius: 12px;
 }
 .mc-destination::after {
-  content: "↗";
+  content: "→";
   position: absolute;
   top: 16px;
   right: 14px;
   color: var(--gold);
+}
+.mc-destination[href^="http"]::after {
+  content: "↗";
 }
 .mc-destination strong {
   font: 600 16px var(--sans);
@@ -129,7 +132,7 @@
 }
 .mc-destination > span {
   min-width: 0;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.5;
   color: var(--ink2);
 }
@@ -148,7 +151,7 @@
   padding-top: 12px;
   border-top: 1px solid var(--line2);
   color: var(--muted);
-  font: 12px var(--mono);
+  font: 14px var(--mono);
 }
 .motion-resume,
 .motion-device,
@@ -163,6 +166,11 @@
 }
 #motion-btn[data-motion-source="device"] .motion-device {
   display: block;
+}
+@media (max-width: 600px), (pointer: coarse) {
+  .mc-keymap {
+    display: none;
+  }
 }
 @media (max-width: 600px) {
   .mc-shell {

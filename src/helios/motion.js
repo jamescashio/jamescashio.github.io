@@ -81,11 +81,8 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
     button.dataset.motionSource = query.matches ? "device" : "visitor";
     button.setAttribute(
       "aria-label",
-      enabled
-        ? "Motion on: pause animation"
-        : query.matches
-          ? "Motion off: follows your device setting"
-          : "Motion off: resume animation",
+      // A toggle keeps its state in aria-pressed, so the name states the setting rather than an action.
+      enabled ? "Motion on" : query.matches ? "Motion off, following your device setting" : "Motion off",
     );
     button.querySelector("span").textContent = enabled ? "Motion on" : "Motion off";
     button.title = query.matches
@@ -160,6 +157,16 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
     }
   });
   document.querySelectorAll("section.block,.hero").forEach((el) => ambient.observe(el));
+  window.addEventListener("helios-room-ready", ({ detail: room }) => {
+    room.querySelectorAll("[data-count]").forEach((el) => {
+      el.textContent = el.dataset.count;
+    });
+    room.querySelectorAll(".bar[data-w]").forEach((el) => {
+      el.style.transform = `scaleX(${el.dataset.w})`;
+    });
+    ambient.observe(room);
+    syncAmbient();
+  });
   document.addEventListener("visibilitychange", syncAmbient);
   const rail = document.querySelector("#railbar");
   let railFrame = 0;
@@ -226,10 +233,26 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
     (poster.closest("picture") || poster).after(film);
     return film;
   }
+  // The arrival film greets a first visit. Returning visitors start from the still artwork.
+  const ARRIVAL_KEY = "cashio-arrival-seen";
+  const seenArrival = () => {
+    try {
+      return localStorage.getItem(ARRIVAL_KEY) === "1";
+    } catch {
+      return false;
+    }
+  };
   function startFilm() {
-    if (!enabled || query.matches || document.hidden || deepLink() || overlayOpen()) {
+    const connection = navigator.connection;
+    const constrained = connection?.saveData || /^(slow-2g|2g)$/.test(connection?.effectiveType || "");
+    const compact = matchMedia("(max-width: 700px), (pointer: coarse)").matches;
+    if (!enabled || query.matches || compact || constrained || document.hidden || deepLink() || overlayOpen()) {
       hero.removeAttribute("data-film");
       releaseFilmNode(document.querySelector("#hero-film"));
+      return;
+    }
+    if (seenArrival()) {
+      hero.dataset.arrival = "on";
       return;
     }
     if (hero.dataset.film === "playing" || hero.dataset.film === "done") return;
@@ -238,6 +261,11 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
       if (!enabled || query.matches || document.hidden || overlayOpen()) return;
       if (hero.dataset.film === "done") return;
       hero.dataset.film = "playing";
+      try {
+        localStorage.setItem(ARRIVAL_KEY, "1");
+      } catch {
+        /* Remembering the arrival is optional. */
+      }
       const run = film.play();
       if (run && typeof run.catch === "function") {
         run.catch(() => {
@@ -262,8 +290,13 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
     injectFilmStyle();
     startFilm();
   };
-  if (poster.complete && poster.naturalWidth) arrive();
-  else poster.addEventListener("load", arrive, { once: true });
+  // The film waits for the page to finish loading and the browser to idle, so it never competes with first paint.
+  const whenIdle = () =>
+    window.requestIdleCallback ? requestIdleCallback(arrive, { timeout: 1500 }) : setTimeout(arrive, 200);
+  const afterLoad = () =>
+    document.readyState === "complete" ? whenIdle() : addEventListener("load", whenIdle, { once: true });
+  if (poster.complete && poster.naturalWidth) afterLoad();
+  else poster.addEventListener("load", afterLoad, { once: true });
   window.__prepareHero = startHero;
   return { isEnabled: () => enabled };
 }

@@ -10,6 +10,7 @@ import {
 import { computeWorldOutcome } from "../src/odyssey/sovereign-model.ts";
 import { missionRecord } from "../src/odyssey/mission-card.ts";
 import { flightRecap } from "../src/odyssey/flight-recap-model.ts";
+import { flightChapterInput, chapterRecap } from "../src/odyssey/flight-state.ts";
 
 test("a flight recap compares the same workload before and after cloud loss", () => {
   const before = { architecture: "hybrid", sensitivity: "mixed", connected: true, allowPrivateEgress: false };
@@ -121,4 +122,25 @@ test("partial, ambiguous and extra mission parameters cannot change the model", 
     "#flight=board",
   ])
     assert.equal(parseMissionHash(hash), null, hash);
+});
+
+test("a visitor relay choice survives every hybrid chapter and a return visit", () => {
+  for (const connected of [false, true]) {
+    for (const chapter of [0, 1, 2, 1, 0]) {
+      const outcome = computeWorldOutcome(flightChapterInput(chapter, { connected }));
+      assert.deepEqual([outcome.local, outcome.cloud, outcome.held], connected ? [6, 6, 0] : [12, 0, 0]);
+    }
+  }
+});
+
+test("the permission chapter and Finish agree after an earlier cloud disconnection", () => {
+  const earlier = { step: 0, before: flightChapterInput(0, {}), after: flightChapterInput(0, { connected: false }) };
+  for (const permitted of [false, true]) {
+    const current = flightChapterInput(3, { connected: false, permitted });
+    const recap = chapterRecap(3, current, earlier);
+    assert.equal(current.connected, true);
+    assert.deepEqual(recap.after, current);
+    const result = computeWorldOutcome(recap.after);
+    assert.deepEqual([result.local, result.cloud, result.held], permitted ? [0, 12, 0] : [0, 0, 12]);
+  }
 });

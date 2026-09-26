@@ -10,23 +10,22 @@ export const EXPIRES_SHORT = "09-27-2026";
 export const EXPIRES_AT = "2026-09-28T05:00:00Z";
 export const REVISED = "08-28-2026";
 export const RELEASE = 'V35 "ALL TENS"';
-export const PVE = "9.2.11";
 
 export const BOOT = [
   "E.V.E. EVALUATION VERIFICATION ENGINE · ONLINE",
-  "PROXMOX VE 9.2.11 · 2 HOSTS · CLUSTER QUORATE",
-  "18/19 AT 28 AUG PROBE · ZEUS 12/13 · APOLLO 6/6",
-  "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG",
+  "HYPERVISOR WITHHELD · 2 HOSTS · CLUSTER QUORATE",
+  "18/19 AT 28 AUG PROBE · PER HOST COUNTS WITHHELD",
+  "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · PRIVATE CATALOG COUNT WITHHELD",
   `DATED EXPORT · PUBLIC-SAFE · VERIFIED ${VERIFIED_LONG}`,
 ];
 
 export const TELEMETRY = [
-  "ZEUS · 12/13 RUNNING AT 28 AUG PROBE",
-  "APOLLO · 6/6 RUNNING AT 28 AUG PROBE",
+  "ZEUS · PER HOST COUNT WITHHELD",
+  "APOLLO · PER HOST COUNT WITHHELD",
   "FLEET · 18/19 AT 28 AUG PROBE",
-  "PROXMOX VE 9.2.11 · 2 HOSTS · CLUSTER QUORATE",
+  "HYPERVISOR WITHHELD · 2 HOSTS · CLUSTER QUORATE",
   "18/19 AT 28 AUG PROBE",
-  "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG",
+  "ROUTING INVENTORY 21 AUGUST 2026 · 10 PUBLIC LANES · PRIVATE CATALOG COUNT WITHHELD",
   "LAW · QUALITY PICKS THE MODEL",
   "DATED EXPORT · READ-ONLY · PUBLIC-SAFE SNAPSHOT",
   `VERIFIED ${VERIFIED_LONG} · VALID THRU ${EXPIRES_SHORT}`,
@@ -74,56 +73,56 @@ export const LANES = [
   {
     id: "00",
     name: "FREE CLASSIFY",
-    model: "Kimi K3",
+    model: "Model withheld",
     use: "Sort the mail. Tag the ticket. Cheap, fast, good enough.",
   },
   {
     id: "01",
     name: "WORKHORSE",
-    model: "DeepSeek V4 Flash",
+    model: "Model withheld",
     use: "The daily grind. Drafts, refactors, first-pass analysis.",
   },
   {
     id: "02",
     name: "EXCEPTION",
-    model: "DeepSeek V4 Pro",
+    model: "Model withheld",
     use: "When the workhorse hesitates. Harder reasoning, still owned-cost.",
   },
   {
     id: "03A",
     name: "MULTIMODAL",
-    model: "Gemini 3.7 Flash",
+    model: "Model withheld",
     use: "Images, screenshots, diagrams. Eyes on the problem.",
   },
   {
     id: "03B",
     name: "ADVERSARIAL",
-    model: "Grok 4.6",
+    model: "Model withheld",
     use: "Stress-test the answer. Argue with it until it holds.",
   },
   {
     id: "04A",
     name: "SYNTHESIS",
-    model: "Sol 5.6 Luna",
+    model: "Model withheld",
     use: "Pull threads into one brief a human can actually use.",
   },
-  { id: "04B", name: "RESEARCH", model: "Sonar Pro", use: "Ground it. Cite it. Do not invent a source." },
+  { id: "04B", name: "RESEARCH", model: "Model withheld", use: "Ground it. Cite it. Do not invent a source." },
   {
     id: "05",
     name: "ADJUDICATION",
-    model: "GPT-5.6 Sol",
+    model: "Model withheld",
     use: "Highest-consequence calls. Frontier only when the cost of being wrong is higher than the token bill.",
   },
   {
     id: "LOC",
     name: "LOCAL FALLBACK",
-    model: "Gemma 4 26B",
+    model: "Model withheld",
     use: "The lights stay on when the cloud does not. Owned local fallback keeps the route available.",
   },
   {
     id: "FAB",
     name: "GATEWAY FABRIC",
-    model: "Atlas LiteLLM · OpenRouter · ZenMux",
+    model: "Model withheld",
     use: "One door. No lock-in. No bridge tax.",
   },
 ] as const;
@@ -137,28 +136,28 @@ export const ROUTING_STAGES = [
 ] as const;
 
 export const NAMED_ROLES = [
-  { name: "TECHNITIUM DNS", role: "PRIMARY · RESOLUTION" },
-  { name: "TECHNITIUM DNS", role: "SECONDARY · FAILOVER" },
-  { name: "WAZUH", role: "SECURITY MONITORING" },
+  { name: "DNS SERVICE", role: "PRIMARY · RESOLUTION" },
+  { name: "DNS SERVICE", role: "SECONDARY · FAILOVER" },
+  { name: "SECURITY MONITOR", role: "SECURITY MONITORING" },
   { name: "MONITORING STACK", role: "OBSERVED ROLE FAMILY" },
-  { name: "N8N", role: "AUTOMATION" },
-  { name: "PBS", role: "BACKUP SERVICE" },
+  { name: "AUTOMATION SERVICE", role: "AUTOMATION" },
+  { name: "BACKUP SERVICE", role: "BACKUP SERVICE" },
   { name: "MEDIA SERVICES", role: "OBSERVED ROLE FAMILY" },
 ];
 
 export const SERVICE_FAMILIES =
-  "Observed public-safe role families at the 28 August 2026 probe: Technitium DNS primary, Technitium DNS secondary, Wazuh, monitoring stack, n8n, PBS, and media services. The stopped guest remains unnamed.";
+  "Observed role families at the 28 August 2026 probe: name resolution, security monitoring, automation, backup and media. Private service names and locations are withheld.";
 
 export const HOSTS = [
   {
     name: "ZEUS",
     tag: "DATED HOST",
-    blurb: "12 of 13 documented guests were running at the 28 August probe.",
+    blurb: "Present at the 28 August probe. Per host count withheld.",
   },
   {
     name: "APOLLO",
     tag: "DATED HOST",
-    blurb: "All 6 documented guests were running at the 28 August probe.",
+    blurb: "Present at the 28 August probe. Per host count withheld.",
   },
 ] as const;
 

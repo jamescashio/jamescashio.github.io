@@ -4,10 +4,10 @@ The public front door is **[cashio.us](https://cashio.us/)**. The root serves th
 
 **V39.0 Zenith** keeps the Helios world, palette, type, artwork, Bit and quiet sound, and sharpens what a first visit says and feels like:
 
-- **Clearer story.** The hero states the work plainly and carries a dated proof chip bound to the published observation. The engineering repair note that used to follow the hero now lives only inside the build story; its place is a short statement of how the workshop runs and three ways in. The AI budget panel publishes the routing law instead of a July cost sample, and the evidence boundary says spend stays withheld until it is measured again.
+- **Clearer story.** A profile, glossary and one complete privacy test introduce the workshop. Deeper studies and the system map open on demand, and the four creative rooms precede the dated evidence. The Starship lab holds the specific quiet-scene failure and repair story; the Principles room holds the philosophy artwork. Their shared addresses still work.
 - **A living first frame.** After the arrival film, the artwork answers the pointer with a few pixels of depth, the sun breathes and a few stars twinkle. All of it yields to the Motion control, reduced motion, hidden tabs and open scenes.
 - **A jump, not a wait.** Boarding the starship plays a short starfield warp that covers loading, and the flight arrives with a settle. The loader only appears when loading is slow. The flight module warms when a visitor hovers, focuses or touches a boarding link.
-- **E.V.E. lore.** Unlisted console commands carry labelled Dune, aviation and fleet lore. Listed commands still answer only from the dated export.
+- **E.V.E. lore.** Unlisted console commands carry labelled Dune, aviation and fleet lore. Listed commands answer from the dated export and name each fact’s observation date. The September 18 orchestration audit stays distinct from the September 24 fleet and backup observation.
 - **Craft.** The wordmark I carries the serifs of the celestial signature. The phone starship card no longer collides with its caption, touch links have 44 pixel targets, ultrawide screens get a larger hero, and a designed share card replaces the plain orbit image for social previews. The hero art uses the existing AVIF set; the unseen 504 KB film poster is gone. The dead custom cursor markup and rules are removed.
 
 The current receipt remains `/v38/site-release.json`. V37.17 is preserved at `/odyssey.html`, accessible through Version history, and `?v=37.17` links explicitly select it. The shared package and compatibility receipts keep their historical identity with a `frontDoor` record pointing to V39.0. Interface revisions do not renew evidence observations. See [Helios validation and rollback](docs/helios-release.md).
@@ -22,7 +22,7 @@ Doug Cashio’s interactive universe of AI, security, and owned infrastructure. 
 
 Start with First Flight: a 30-second, four-chapter journey through arrival, onboard AI, a lost connection, and a human permission decision. Follow twelve illustrative requests, change the scenario, and share the exact choices. Manual chapter controls remain available with motion paused.
 
-Seven working studies turn the ideas into experiments. Each explains its rules, suggests a boundary to try, links to its supporting source, and shares reproducible settings. The HERMES comparison loads the same request with public or private handling; the visitor explicitly runs each version.
+The first visit keeps the seven studies and system map in native disclosures. Section navigation and shared experiment links open the relevant disclosure and restore keyboard focus. Seven working studies turn the ideas into experiments. Each explains its rules, suggests a boundary to try, links to its supporting source, and shares reproducible settings. The HERMES comparison loads the same request with public or private handling; the visitor explicitly runs each version.
 
 The Evidence section connects those demonstrations to a real owner-run audit. “How the audit changed this record” compares two dated fleet observations, distinguishes an absent historical field from zero, and leaves unverified routing unknown. E.V.E. offers named links to the evidence, builds, operator, and preserved flight lineage.
 
@@ -32,7 +32,7 @@ The existing cinematic world remains available: Lensing Observatory, the explora
 
 ## Routes and evidence
 
-- `/` serves the current V38 Helios homepage directly. Release builds contain indexable metadata. Separately packaged local previews must disable indexing.
+- `/` serves the current V39 Zenith homepage directly. Release builds contain indexable metadata. Separately packaged local previews must disable indexing.
 - `/odyssey.html` preserves V37.17; old `/v38/` addresses normalize to the current homepage.
 - `/command-deck.html` preserves the V35 command deck. Existing `/#deck=…` bookmarks redirect there with their query and selected deck intact.
 - `/command.html` remains the explicitly marked May 2026 archive.
@@ -44,15 +44,17 @@ The existing cinematic world remains available: Lensing Observatory, the explora
 - `/#lensing` opens Lensing Observatory; `/#film` opens Orbital arrival.
 - `/#film=sanctuary`, `lightwake`, `signature`, or `awakening` opens that film on its still poster. The films retain their scene handoffs and frame controls.
 
-The published `status.json` and `public/status.json` contain the owner-run observation of **7 September 2026 at 23:14:58 UTC**, collected in the HERMES audit completed at **23:29:51 UTC**. It records 19 running LXC containers (Zeus 14, Apollo 5), one running QEMU virtual machine, and two online Proxmox hosts. These are observations from that time, not live telemetry or application-health guarantees.
+The published `status.json` and `public/status.json` contain the owner-run observation of **7 September 2026 at 23:14:58 UTC**, collected in the HERMES audit completed at **23:29:51 UTC**. It records 19 running LXC containers, one running QEMU virtual machine, and two online hosts. Per host counts and the hypervisor identity are withheld. These are observations from that time, not live telemetry or application-health guarantees.
 
 Current lane counts, routing verification, and expiry remain `null`. The observation does not establish demonstrated recovery, storage redundancy, failover, or production AI routing.
 
-`public/evidence/status-2026-08-28.json` preserves the unchanged August export: its fleet observation is **28 August 2026**, its routing inventory is **21 August 2026**, and its original expiry is **27 September 2026**. That expiry does not extend the September observation. The audit case links to both records.
+`public/evidence/status-2026-08-28.json` preserves the dates and aggregate facts of the August export with explicit privacy redactions: its fleet observation is **28 August 2026**, its routing inventory is **21 August 2026**, and its original expiry is **27 September 2026**. That expiry does not extend the September observation. The audit case links to both records.
 
 All request-routing studies execute locally in the browser and send nothing to an AI service. Private operational findings and credentials are excluded from the public evidence.
 
 ## Where to make changes
+
+The current homepage is composed in `index.html`. `src/helios/main.js` connects focused controllers for studies, privacy, the atlas, navigation, evidence and the signature. Each room is authored once in `src/helios/rooms/*.html`. `rooms.js` loads its markup and controller on demand, mounts it once and preserves its state between visits. `scripts/prerender-rooms.mts` produces a reading edition at `/rooms/<name>/` from that same content, so native links still work without JavaScript. Direct fragments, history, slow loads and recovery are covered by the Helios browser suite. Room layout lives in `src/helios/rooms.css`; `src/helios/styles.css` defines the stylesheet order. The build ships one fingerprinted, cacheable entry stylesheet with the existing 19,000 byte gzip budget; it does not embed the complete stylesheet in the HTML. The table below describes the preserved V37 experience and its shared models.
 
 | Concern                                               | Source                                                                                             |
 | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
@@ -87,3 +89,22 @@ The retained `check:v36:runtime` name checks V37 and the preserved V35 experienc
 A passing build or browser test does not establish live infrastructure health. Visual release review also covers desktop, phone, narrow-phone, keyboard, reduced motion, opt-in audio, legacy routes, and the actual target artifact.
 
 GitHub Pages publishes only the verified `dist` artifact through `.github/workflows/pages.yml`. The configured public domain is `cashio.us`. Publish through the protected pull-request workflow, then verify the deployment and live routes. This release does not change DNS or Cloudflare policies. The reproducible audio tool remains available as `python scripts/build_audio_cues.py`.
+
+## Public asset layout and archive redactions
+
+The current front door lives in `src/helios`; `src/odyssey` supplies shared optional scenes and the V37 archive. `src/components` supplies V35. Public archive dates remain historical. Per host counts, hypervisor identity, private service and model names, private catalog counts and spend are withheld in both the rendered archives and their shipped records. A redaction does not erase copies in previously published Git history.
+
+Asset directories preserve compatible URLs and existing cache coverage:
+
+| Path                               | Purpose                                                                      |
+| ---------------------------------- | ---------------------------------------------------------------------------- |
+| `/assets/*.js` and `/assets/*.css` | Vite content hashes, covered by the existing immutable cache rule            |
+| `/v38/immutable/`                  | Content-addressed current artwork covered by the same rule                   |
+| `/v38/vendor/`                     | Versioned build output for the animation library                             |
+| `/v38/fonts/` and `/fonts/`        | Local font families shared by current and archived pages                     |
+| `/odyssey/` and `/plates/`         | Preserved scene media and archive artwork                                    |
+| `/cashio/`                         | Personal workspace introduction, original identity artwork and optional film |
+
+The directory names remain unchanged. Consolidating them would require a separate cache compatibility review. No Cloudflare configuration is changed by this refinement.
+
+The cAshIo introduction uses a 1600px WebP derivative of the original logo and a 720p H.264 film derivative. The originals remain available for provenance; the page serves the lighter files, keeps the film on demand and muted, and uses the same local display/body fonts and content width as Zenith.

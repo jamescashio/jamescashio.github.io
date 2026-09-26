@@ -62,23 +62,6 @@
 .hero picture {
   display: contents;
 }
-/* The arrival film is in the markup, so it is placed by the first stylesheet, not after scripts run. */
-.hero .hero-film {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 0;
-}
-@media (max-width: 700px) {
-  .hero .hero-film {
-    height: 350px;
-  }
-}
-
 /* ---------- hero: a living still after the arrival film ---------- */
 .hero {
   --px: 0;
@@ -167,18 +150,6 @@
   }
 }
 
-/* ---------- workshop ---------- */
-.workshop-routes {
-  --stack-gap: 16px;
-}
-.workshop-routes-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
 /* ---------- routing law ---------- */
 .routing-law {
   margin: 4px 0 0;
@@ -210,30 +181,6 @@
 .routing-law figcaption {
   color: var(--muted);
 }
-.routing-notes {
-  margin: 0;
-  display: grid;
-  grid-template-columns: 120px minmax(0, 1fr);
-  gap: 10px 12px;
-  font-size: 14px;
-}
-.routing-notes dt {
-  color: var(--cyan);
-  padding-top: 3px;
-}
-.routing-notes dd {
-  margin: 0;
-}
-@media (max-width: 420px) {
-  .routing-notes {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 2px;
-  }
-  .routing-notes dd {
-    margin-bottom: 10px;
-  }
-}
-
 /* ---------- starship plate ---------- */
 .plate-badges {
   position: absolute;
@@ -259,7 +206,6 @@
 .ship-cap {
   z-index: 1;
 }
-.ship-cap-kick,
 .ship-views {
   color: var(--muted);
 }
@@ -274,7 +220,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 14px;
 }
 .legend-dot {
   width: 10px;
@@ -295,7 +241,7 @@
 }
 @media (max-width: 600px) {
   #starship .plate {
-    height: auto !important;
+    height: auto;
     min-height: 400px;
     display: flex;
     flex-direction: column;
@@ -324,7 +270,7 @@
 .evidence-links {
   display: flex;
   gap: 14px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   flex-wrap: wrap;
 }
@@ -356,7 +302,6 @@
       .request-inspection-link,
       .studio-enter,
       #hg-source,
-      .workshop-routes a,
       .inline-cta
     ) {
     display: inline-flex;
@@ -371,8 +316,11 @@
 
 /* ---------- ultrawide: the world fills the glass ---------- */
 @media (min-width: 2200px) {
+  .hero {
+    min-height: max(800px, 100svh);
+  }
   .hero h1 {
-    font-size: clamp(110px, 5.4vw, 190px);
+    font-size: clamp(80px, min(5.4vw, 11svh), 190px);
   }
   .hero .sub {
     max-width: 720px;
@@ -404,7 +352,7 @@
     object-position: 60% 50%;
   }
   .hero .status {
-    font-size: 13px;
+    font-size: 14px;
   }
   .hero .hero-next {
     font-size: 15px;
@@ -458,10 +406,6 @@
 }
 
 /* ---------- polish from the blind critic pass ---------- */
-.minute a.step {
-  align-items: flex-start;
-  text-align: left;
-}
 @media (max-width: 900px) {
   main
     :is(
@@ -484,21 +428,9 @@
   }
 }
 @media (max-width: 700px) {
-  /* The caption gets its own band so it never prints across the aircraft. */
   #hangar {
-    height: auto !important;
-    aspect-ratio: 4 / 3.6;
-  }
-  #hangar img.hp {
-    height: 72%;
-    object-position: 50% 40%;
-  }
-  #hangar .cap {
-    background: linear-gradient(0deg, rgba(4, 7, 14, 0.98), rgba(4, 7, 14, 0.9));
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: 14px 18px 16px;
+    height: auto;
+    aspect-ratio: 4 / 3;
   }
   /* Ring numbers sit below the pedestal instead of on it. */
   .engine {
@@ -506,9 +438,6 @@
   }
   .engine-index {
     bottom: -30px;
-  }
-  .ship-cap-kick {
-    display: none;
   }
 }
 
@@ -520,11 +449,6 @@
 .plate.sig img {
   width: calc(100% + 68px);
   margin-inline: -34px;
-}
-#hangar .cap {
-  left: 34px;
-  right: 34px;
-  bottom: 30px;
 }
 /* The atlas caption gets a quiet plate so a route line never cuts through it. */
 .atlas::after {
@@ -542,7 +466,7 @@
   padding-bottom: 24px;
 }
 @media (max-width: 900px) {
-  :is(#pilots .pill, #st-next, .case-engineering a, .atlas-inspection a, footer nav a, footer summary) {
+  :is(#pilots .pill, #st-next, .atlas-inspection a, footer nav a, footer summary) {
     min-height: 44px;
     display: inline-flex;
     align-items: center;
@@ -552,16 +476,6 @@
 @media (max-width: 480px) {
   #trace-btn .mono {
     display: none;
-  }
-}
-@media (max-width: 380px) {
-  #atlas-inspection > div[data-stagger] {
-    grid-template-columns: minmax(0, 1fr) !important;
-  }
-  #atlas-inspection > div[data-stagger] .stat {
-    flex-direction: row;
-    align-items: baseline;
-    gap: 12px;
   }
 }
 /* The brand name keeps a serifed I wherever it appears in running text. */
@@ -592,7 +506,8 @@
 }
 /* Ultrawide: give the chapters more of the glass. */
 @media (min-width: 2200px) {
-  .wrap {
+  .wrap,
+  html .room-bar {
     max-width: 1920px;
   }
 }
@@ -623,7 +538,7 @@
     margin-inline: var(--gutter);
   }
 }
-/* ---------- phone: 12 px mono labels keep their rhythm without colliding ---------- */
+/* ---------- phone: 14 px mono labels keep their rhythm without colliding ---------- */
 @media (max-width: 700px) {
   .hero .kick,
   .stat .mono,
@@ -633,7 +548,8 @@
 }
 /* ---------- desktop: the atlas readout rides along beside the tall map ---------- */
 @media (min-width: 1101px) and (min-height: 760px) {
-  #atlas-inspection {
+  #atlas-inspection,
+  #studies-list {
     position: sticky;
     top: 96px;
     align-self: start;
@@ -646,53 +562,194 @@
   }
 }
 
-/* ---------- at a glance: who, how long, what, for a first time visitor ---------- */
+/* ---------- at a glance: who, how long, what, with proof ---------- */
 .profile-strip {
   display: grid;
-  gap: 18px;
-  margin-bottom: clamp(36px, 5vw, 64px);
-  padding-bottom: clamp(28px, 4vw, 44px);
-  border-bottom: 1px solid var(--line2);
+  gap: 22px;
 }
-.profile-strip dl {
+.lab-brief {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(16px, 3vw, 40px);
+  gap: 10px;
+  max-width: 80ch;
+}
+.lab-brief > * {
   margin: 0;
 }
-.profile-strip dt {
-  font: 12px var(--mono);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-.profile-strip dd {
-  margin: 8px 0 0;
-  font-size: clamp(16px, 1.25vw, 19px);
-  line-height: 1.5;
+.lab-brief b {
   color: var(--ink);
+  font-weight: 600;
+}
+.profile-lead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(17px, 1.4vw, 21px);
+}
+.profile-strip > dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(14px, 2vw, 24px);
+  margin: 0;
+}
+.profile-strip > dl > div {
+  padding: 20px 22px;
+  border: 1px solid var(--line2);
+  border-radius: 14px;
+  background: rgba(10, 18, 32, 0.55);
+}
+.profile-strip > dl dd {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0 0;
+  color: var(--ink2);
+  font-size: 15px;
+  line-height: 1.55;
+}
+.profile-strip > dl strong {
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: clamp(18px, 1.4vw, 21px);
+  line-height: 1.25;
+}
+.profile-strip a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  justify-self: start;
+  color: var(--cyan);
+  text-underline-offset: 5px;
+  font-weight: 600;
+  font-size: 15px;
+}
+.profile-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 28px;
 }
 .profile-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 28px;
+  gap: 0 28px;
   margin: 0;
 }
-.profile-links a {
+.profile-open {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  color: var(--cyan);
-  font-weight: 600;
+  color: var(--ink);
+}
+.glossary {
+  flex-basis: 100%;
+  color: var(--ink2);
   font-size: 15px;
+  line-height: 1.55;
 }
-.profile-links a:hover {
-  text-decoration: underline;
-  text-underline-offset: 5px;
+.glossary summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 }
-@media (max-width: 760px) {
-  .profile-strip dl {
+.glossary dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px 28px;
+  margin: 8px 0 0;
+}
+.glossary dd {
+  margin: 4px 0 0;
+}
+@media (max-width: 900px) {
+  .profile-strip > dl {
     grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
   }
+}
+
+/* Colour utilities replace repeated inline colour styles; important keeps inline precedence. */
+.c-mu {
+  color: var(--muted) !important;
+}
+.c-gd {
+  color: var(--gold) !important;
+}
+.c-cy {
+  color: var(--cyan) !important;
+}
+.c-ink {
+  color: var(--ink) !important;
+}
+
+/* Type style controls */
+.type-aa {
+  font-family: Georgia, serif;
+  font-size: 16px;
+  font-weight: 700;
+}
+.mc-type {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  padding-top: 12px;
+}
+
+/* E.V.E. suggested commands */
+.eve-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px 0;
+}
+.eve-chips button {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid rgba(56, 225, 255, 0.28);
+  border-radius: 999px;
+  color: var(--cyan);
+  font: 14px var(--mono);
+}
+.eve-chips button:hover,
+.eve-chips button:focus-visible {
+  background: rgba(56, 225, 255, 0.1);
+}
+.eve-chips .eve-wild {
+  border-color: rgba(242, 200, 122, 0.4);
+  color: var(--gold);
+}
+@media (max-width: 1279px) {
+  .type-btn .hide-m {
+    display: none;
+  }
+}
+@media (max-width: 1100px) {
+  #motion-btn .hide-m,
+  #mc-btn .mono.menu-desktop {
+    display: none;
+  }
+}
+@media (min-width: 901px) and (max-width: 1100px) {
+  .hero .sub {
+    max-width: 36ch;
+  }
+}
+@media (max-width: 374px) {
+  .type-btn {
+    display: none;
+  }
+}
+
+/* Mission Control keeps one height while results change, so the search field never jumps. */
+#mc[open] {
+  height: min(calc(100dvh - 32px), 760px);
+}
+#mc .mc-shell {
+  height: 100%;
+  box-sizing: border-box;
+}
+#mc .mc-content {
+  flex: 1 1 auto;
 }

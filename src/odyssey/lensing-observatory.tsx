@@ -266,7 +266,7 @@ export default function LensingObservatory({
           <div>
             <p>HOUSE CASHIO / LENSING</p>
             <h2 id="lens-title">
-              Lensing<span>Observatory</span>
+              Lensing <span>Observatory</span>
             </h2>
           </div>
         </div>

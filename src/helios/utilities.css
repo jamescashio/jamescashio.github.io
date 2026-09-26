@@ -1,0 +1,462 @@
+/* V39 Zenith: every former inline style attribute on the Helios page, as named classes.
+   Loaded last so each class keeps the value its inline style had. Colour helpers mirror .c-mu.
+   A few selectors carry an element or a second class so they still outrank the rule the inline style used to beat. */
+
+/* Layout */
+.clip {
+  overflow: hidden;
+}
+.cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.cols-fit-150 {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+.cols-fit-180 {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+.cols-fit-200 {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+.cols-meter {
+  grid-template-columns: 118px 1fr 34px;
+}
+.cols-record {
+  grid-template-columns: 104px 1fr 1fr 1fr;
+}
+.cols-split {
+  grid-template-columns: 1fr 1.3fr;
+}
+.flex {
+  display: flex;
+}
+.flex-1 {
+  flex: 1;
+}
+.flex-200 {
+  flex: 1 1 200px;
+}
+.flex-col {
+  flex-direction: column;
+}
+.flex-wrap {
+  flex-wrap: wrap;
+}
+.gap-4 {
+  gap: 4px;
+}
+.gap-6 {
+  gap: 6px;
+}
+.gap-8 {
+  gap: 8px;
+}
+.gap-10 {
+  gap: 10px;
+}
+.gap-10-14 {
+  gap: 10px 14px;
+}
+.gap-12 {
+  gap: 12px;
+}
+.gap-14 {
+  gap: 14px;
+}
+.gap-16 {
+  gap: 16px;
+}
+.gap-20 {
+  gap: 20px;
+}
+.gap-22 {
+  gap: 22px;
+}
+.grid-box {
+  display: grid;
+}
+.items-baseline {
+  align-items: baseline;
+}
+.items-center {
+  align-items: center;
+}
+.items-end {
+  align-items: end;
+}
+.items-start {
+  align-items: flex-start;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.min-w-0 {
+  min-width: 0;
+}
+.relative {
+  position: relative;
+}
+.self-start {
+  align-self: flex-start;
+}
+.w-full {
+  width: 100%;
+}
+
+/* Stack rhythm */
+.sg-4 {
+  --stack-gap: 4px;
+}
+.sg-6 {
+  --stack-gap: 6px;
+}
+.sg-8 {
+  --stack-gap: 8px;
+}
+.sg-10 {
+  --stack-gap: 10px;
+}
+.sg-12 {
+  --stack-gap: 12px;
+}
+.sg-14 {
+  --stack-gap: 14px;
+}
+.sg-16 {
+  --stack-gap: 16px;
+}
+.sg-18 {
+  --stack-gap: 18px;
+}
+.sg-22 {
+  --stack-gap: 22px;
+}
+
+/* Spacing */
+.m-0 {
+  margin: 0;
+}
+.m-top-4 {
+  margin: 4px 0 0;
+}
+.m-top-6 {
+  margin: 6px 0 0;
+}
+.mb-6 {
+  margin-bottom: 6px;
+}
+.mb-14 {
+  margin-bottom: 14px;
+}
+.mb-28-48 {
+  margin-bottom: clamp(28px, 4vw, 48px);
+}
+.mt-4 {
+  margin-top: 4px;
+}
+.mt-14 {
+  margin-top: 14px;
+}
+.mt-auto {
+  margin-top: auto;
+}
+.p-12 {
+  padding: 12px;
+}
+.p-12-14 {
+  padding: 12px 14px;
+}
+.p-14-16 {
+  padding: 14px 16px;
+}
+.p-16 {
+  padding: 16px;
+}
+.p-20-24 {
+  padding: 20px 24px;
+}
+.p-20-30 {
+  padding: clamp(20px, 2.4vw, 30px);
+}
+.p-22-30 {
+  padding: clamp(22px, 2.6vw, 30px);
+}
+.p-22-34 {
+  padding: clamp(22px, 2.6vw, 34px);
+}
+.p-24 {
+  padding: 24px;
+}
+section.pb-48 {
+  padding-bottom: 48px;
+}
+.pt-6 {
+  padding-top: 6px;
+}
+.pt-16 {
+  padding-top: 16px;
+}
+section.py-48-80 {
+  padding-block: clamp(48px, 6vw, 80px);
+}
+
+/* Type */
+.case-none {
+  text-transform: none;
+}
+.fs-12 {
+  font-size: 14px;
+}
+.fs-13 {
+  font-size: 14px;
+}
+.fs-14 {
+  font-size: 14px;
+}
+.fs-15 {
+  font-size: 15px;
+}
+.fs-16 {
+  font-size: 16px;
+}
+.fs-17 {
+  font-size: 17px;
+}
+.fs-18 {
+  font-size: 18px;
+}
+.fs-20 {
+  font-size: 20px;
+}
+.fs-22 {
+  font-size: 22px;
+}
+.fs-26 {
+  font-size: 26px;
+}
+.fs-28-36 {
+  font-size: clamp(28px, 3vw, 36px);
+}
+.fs-32 {
+  font-size: 32px;
+}
+.fs-44 {
+  font-size: 44px;
+}
+.fw-500 {
+  font-weight: 500;
+}
+.fw-600 {
+  font-weight: 600;
+}
+.fw-700 {
+  font-weight: 700;
+}
+.fw-800 {
+  font-weight: 800;
+}
+.italic {
+  font-style: italic;
+}
+.lh-15 {
+  line-height: 1.5;
+}
+.ls-06 {
+  letter-spacing: 0.06em;
+}
+.ls-08 {
+  letter-spacing: 0.08em;
+}
+.text-right {
+  text-align: right;
+}
+
+/* Colour and surface */
+.bc-gold-30 {
+  border-color: rgba(242, 200, 122, 0.3);
+}
+.bc-gold-40 {
+  border-color: rgba(242, 200, 122, 0.4);
+}
+.bg-archive {
+  background: rgba(154, 169, 191, 0.35);
+}
+.bg-audit {
+  background: rgba(15, 155, 184, 0.55);
+}
+section.bg-chapter {
+  background: linear-gradient(180deg, rgba(4, 7, 14, 0.5), rgba(7, 12, 24, 0.72));
+}
+section.bg-chapter-blue {
+  background: linear-gradient(180deg, rgba(4, 7, 14, 0.5), rgba(7, 13, 26, 0.72));
+}
+section.bg-chapter-rise {
+  background: linear-gradient(180deg, rgba(7, 12, 24, 0.72), rgba(4, 7, 14, 0.5));
+  border-top: 1px solid var(--line);
+}
+.bg-cloud {
+  background: var(--cloud);
+}
+.bg-held {
+  background: var(--held);
+}
+.bg-local {
+  background: var(--local);
+}
+.bt-line2 {
+  border-top: 1px solid var(--line2);
+}
+.bt-line {
+  border-top: 1px solid var(--line);
+}
+.c-held {
+  color: var(--heldtext) !important;
+}
+.c-ink2 {
+  color: var(--ink2) !important;
+}
+
+/* Size */
+.h-plate {
+  height: clamp(280px, 40vw, 440px);
+}
+.h-plate-sm {
+  height: clamp(280px, 36vw, 440px);
+}
+.min-h-44 {
+  min-height: 44px;
+}
+.mw-720 {
+  max-width: 720px;
+}
+.w-30 {
+  width: 30px;
+}
+
+/* Components that used to carry their own inline styles */
+.hero-kick-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--cyan);
+  box-shadow: 0 0 12px var(--cyan);
+}
+.dot.dot-gold {
+  background: var(--gold);
+  box-shadow: 0 0 12px var(--gold);
+}
+.panel-gold-wash {
+  padding: clamp(22px, 2.6vw, 34px);
+  background: linear-gradient(160deg, rgba(242, 200, 122, 0.12), rgba(16, 26, 44, 0.95) 42%);
+  --stack-gap: 16px;
+}
+.study-cue {
+  margin: 0;
+  font-size: 15px;
+  color: var(--ink2);
+  padding: 14px 18px;
+  border-left: 2px solid var(--cyan);
+  background: rgba(56, 225, 255, 0.05);
+  border-radius: 0 10px 10px 0;
+}
+.node-at-dsh {
+  left: 18.5%;
+  top: 47%;
+}
+.node-at-operator {
+  left: 50%;
+  top: 14%;
+}
+.node-at-hermes {
+  left: 50%;
+  top: 50%;
+}
+.node-at-zeus {
+  left: 28%;
+  top: 78%;
+}
+.node-at-apollo {
+  left: 72%;
+  top: 78%;
+}
+.philo-caption {
+  position: absolute;
+  left: var(--gutter);
+  bottom: 22px;
+  color: var(--muted);
+}
+.pill-arch {
+  min-height: 60px;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 2px;
+  border-radius: 14px;
+  padding: 8px 14px;
+}
+.bar-unrecorded {
+  height: 22px;
+  flex: 1;
+  max-width: 50%;
+  border: 1px dashed rgba(154, 169, 191, 0.5);
+  border-radius: 0 6px 6px 0;
+}
+.bar-unverified {
+  height: 22px;
+  flex: 1;
+  max-width: 50%;
+  border: 1px dashed rgba(242, 200, 122, 0.6);
+  border-radius: 0 6px 6px 0;
+}
+.pulse-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 10px var(--cyan);
+}
+.sig-glow {
+  border-color: rgba(242, 200, 122, 0.25);
+  background: radial-gradient(ellipse at 50% 55%, rgba(242, 200, 122, 0.16), rgba(4, 7, 14, 0) 60%), #04070e;
+}
+.shade.shade-hangar {
+  background: linear-gradient(0deg, rgba(4, 7, 14, 0.92), rgba(4, 7, 14, 0) 60%);
+}
+.engine-origin {
+  transform-origin: 320px 310px;
+}
+.operator-quote {
+  margin: 0;
+  font-size: clamp(20px, 2vw, 26px);
+  line-height: 1.2;
+  font-weight: 500;
+  color: var(--ink2);
+}
+.contact-glow {
+  position: absolute;
+  right: -120px;
+  top: -160px;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(242, 200, 122, 0.16), rgba(242, 200, 122, 0) 65%);
+  pointer-events: none;
+}
+
+/* The toast: its resting state; main.js animates opacity and transform inline. */
+#toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  transform: translate(-50%, 20px);
+  opacity: 0;
+  background: var(--gold);
+  color: #1a1204;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+  z-index: 120;
+  pointer-events: none;
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
+}

@@ -14,7 +14,6 @@
   display: grid;
   grid-template-rows: auto minmax(130px, 1fr) auto;
   min-height: 360px;
-  padding: 20px;
   gap: 16px;
 }
 .sig-heading {
@@ -24,14 +23,13 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  padding: 6px 14px 0;
 }
 .plate.sig img {
   grid-row: 2;
   align-self: center;
-  width: calc(100% + 40px);
   max-width: none;
   height: auto;
-  margin-inline: -20px;
   object-fit: contain;
   transform: none;
 }
@@ -40,6 +38,7 @@
   inset: auto;
   grid-row: 3;
   gap: 14px;
+  padding: 0 22px 18px;
 }
 .sig .shade {
   pointer-events: none;
@@ -83,23 +82,16 @@ body {
 main {
   isolation: isolate;
 }
-/* Large below-fold SVG scenes need no layout or painting until they approach the viewport. */
-section.block {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 900px;
-}
-#studies {
-  contain-intrinsic-size: auto 1500px;
-}
-#starship {
-  contain-intrinsic-size: auto 1500px;
-}
 main:focus {
   outline: none;
 }
-section[id],
-#instrument {
-  scroll-margin-top: 100px;
+/* Anchors, scripted jumps and keyboard focus all stop below the fixed header. */
+html {
+  scroll-padding-top: 72px;
+}
+#instrument,
+#glossary {
+  scroll-margin-top: 28px;
 }
 button,
 a,
@@ -223,7 +215,7 @@ section[data-ambient="off"] *:after,
   display: flex;
   justify-content: space-between;
   color: var(--muted);
-  font: 12px var(--mono);
+  font: 14px var(--mono);
 }
 .lab-switch {
   position: relative;
@@ -322,7 +314,7 @@ section[data-ambient="off"] *:after,
   align-items: center;
   flex-wrap: wrap;
   margin-top: 14px;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
 }
 .cascade-track {
@@ -335,14 +327,14 @@ section[data-ambient="off"] *:after,
 .cascade-node {
   position: relative;
   text-align: center;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   display: grid;
   gap: 14px;
   justify-items: center;
 }
 .cascade-node > span {
-  font: 12px var(--mono);
+  font: 14px var(--mono);
 }
 .cascade-node i {
   position: relative;
@@ -379,12 +371,12 @@ section[data-ambient="off"] *:after,
   text-align: center;
 }
 .exposure-path span {
-  font: 12px/1.8 var(--mono);
+  font: 14px/1.8 var(--mono);
   color: var(--muted);
 }
 .exposure-path b {
   display: block;
-  font: 600 12px/1.4 var(--sans);
+  font: 600 14px/1.4 var(--sans);
   color: var(--ink2);
 }
 .exposure-path i {
@@ -410,7 +402,7 @@ section[data-ambient="off"] *:after,
   display: grid;
   justify-items: center;
   gap: 15px;
-  font: 12px var(--mono);
+  font: 14px var(--mono);
   color: var(--muted);
 }
 .evidence-beams i {
@@ -465,7 +457,7 @@ section[data-ambient="off"] *:after,
 .brief-output small {
   display: block;
   color: var(--gold);
-  font: 12px/1.7 var(--mono);
+  font: 14px/1.7 var(--mono);
   margin-top: 12px;
 }
 .brief-output .brief-next {
@@ -505,11 +497,11 @@ section[data-ambient="off"] *:after,
   color: var(--gold);
 }
 .age-clock small {
-  font: 11px var(--mono);
+  font: 14px var(--mono);
   color: var(--muted);
 }
 .clock-boundary {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   padding: 14px;
 }
@@ -524,7 +516,7 @@ section[data-ambient="off"] *:after,
 }
 .signal-wave text {
   fill: var(--muted);
-  font: 11px var(--mono);
+  font: 14px var(--mono);
 }
 .dependency-map {
   width: 100%;
@@ -561,11 +553,11 @@ section[data-ambient="off"] *:after,
   padding: 10px 6px;
   min-width: 84px;
   min-height: 54px;
-  font: 600 12px var(--sans);
+  font: 600 14px var(--sans);
   color: var(--ink2);
 }
 .dependency-map button span {
-  font: 11px var(--mono);
+  font: 14px var(--mono);
   color: var(--muted);
 }
 .dependency-map button.affected {
@@ -586,7 +578,7 @@ section[data-ambient="off"] *:after,
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--ink2);
 }
 .graph-key span {
@@ -600,7 +592,7 @@ section[data-ambient="off"] *:after,
   border-radius: 50%;
 }
 .lab-caption {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--muted);
   margin: 0;
 }
@@ -662,16 +654,16 @@ section[data-ambient="off"] *:after,
 
 @media (min-width: 901px) {
   .hero .status {
-    font-size: 12px;
+    font-size: 14px;
     max-width: 260px;
   }
 }
 @media (max-width: 1100px) {
   .nav nav {
-    gap: 18px;
+    display: none;
   }
-  .instrument > div[style*="1fr 1.3fr"] {
-    grid-template-columns: minmax(0, 1fr) !important;
+  .instrument > .cols-split {
+    grid-template-columns: minmax(0, 1fr);
   }
   .instrument .ctrl {
     grid-template-columns: minmax(0, 1fr);
@@ -718,15 +710,11 @@ section[data-ambient="off"] *:after,
   }
   #studies-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
   }
   .study {
     min-height: 128px;
     padding: 18px;
     gap: 14px;
-  }
-  .study .syne {
-    font-size: 17px !important;
   }
   .study .mono {
     letter-spacing: 0.09em;
@@ -782,7 +770,7 @@ section[data-ambient="off"] *:after,
     padding: 12px 18px;
   }
   .hero .kick {
-    font-size: 12px;
+    font-size: 14px;
     letter-spacing: 0.12em;
   }
   .instrument {
@@ -805,15 +793,11 @@ section[data-ambient="off"] *:after,
   .instrument .howit > .mono:not(:first-child) {
     margin-top: 10px;
   }
-  .instrument > div[style*="display:flex"] {
-    flex-wrap: wrap;
-    gap: 12px;
-  }
   .instrument .pill,
   .instrument .toggle {
     padding-left: 12px;
     padding-right: 12px;
-    font-size: 13px;
+    font-size: 14px;
   }
   .instrument .ctrl {
     gap: 20px;
@@ -822,11 +806,8 @@ section[data-ambient="off"] *:after,
     padding: 15px;
     min-height: 128px;
   }
-  .study .syne {
-    font-size: 15px !important;
-  }
   .study .mono {
-    font-size: 11px !important;
+    font-size: 14px;
   }
   .lab-result {
     padding: 18px;
@@ -848,65 +829,63 @@ section[data-ambient="off"] *:after,
   .dependency-map button {
     min-width: 66px;
     max-width: 80px;
-    font-size: 12px;
+    font-size: 14px;
     left: clamp(35px, var(--x), calc(100% - 35px));
   }
   .dependency-map button span {
-    font-size: 10px;
+    font-size: 14px;
   }
   .exposure-path {
     gap: 4px;
     padding: 16px 8px;
   }
   .exposure-path b {
-    font-size: 12px;
+    font-size: 14px;
   }
   .exposure-path span {
-    font-size: 11px;
+    font-size: 14px;
   }
   .evidence-beams {
     padding: 20px 12px;
     gap: 8px;
   }
   .evidence-beams > div {
-    font-size: 11px;
+    font-size: 14px;
   }
   .cascade-track {
     gap: 4px;
   }
   .cascade-node {
-    font-size: 12px;
+    font-size: 14px;
   }
   .evidence-scroll:after {
     content: "Swipe to compare all three records →";
     display: block;
     color: var(--muted);
-    font-size: 12px;
+    font-size: 14px;
     margin-top: 14px;
   }
-  .panel[style*="padding:32px"] {
-    padding: 22px !important;
-  }
   #missions {
-    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-columns: minmax(0, 1fr);
   }
   #arch-group {
-    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-columns: minmax(0, 1fr);
   }
-  #starship div[style*="118px 1fr 34px"] {
-    grid-template-columns: 90px minmax(0, 1fr) 28px !important;
-    gap: 8px !important;
+  #starship .cols-meter {
+    grid-template-columns: 90px minmax(0, 1fr) 28px;
+    gap: 8px;
   }
   #starship .cmp {
-    font-size: 12px;
+    font-size: 14px;
     grid-template-columns: 1.3fr repeat(3, minmax(0, 1fr));
   }
-  #starship div[style*="minmax(240px"],
-  #work div[style*="minmax(220px"] {
-    grid-template-columns: minmax(0, 1fr) !important;
+  .vh[open] {
+    flex-basis: 100%;
   }
   .vh-menu {
-    min-width: min(280px, 80vw);
+    position: static;
+    min-width: 0;
+    margin-top: 8px;
   }
   .bitsay {
     max-width: calc(100vw - 120px);
@@ -937,20 +916,17 @@ section[data-ambient="off"] *:after,
   .study {
     padding: 13px;
   }
-  .study .syne {
-    font-size: 13px !important;
-  }
   .instrument {
     padding: 18px;
   }
   .instrument h3 {
-    font-size: 24px !important;
+    font-size: 24px;
   }
   .lab-result h4 {
     font-size: 19px;
   }
   .evidence-beams > div {
-    font-size: 10px;
+    font-size: 14px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

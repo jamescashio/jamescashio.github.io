@@ -25,7 +25,7 @@ export function describeRequest(experiment) {
     nodes: held ? ["operator", "hermes", "hermes", "operator"] : ["operator", "hermes", "zeus", "operator"],
     summary: held
       ? "Privacy changed the decision. The external route is held for a person; the compute step is skipped."
-      : `${route.lane} is the qualified lane. Zeus illustrates the compute step; this model does not select a real host or provider.`,
+      : `${route.lane} is the qualified lane. Zeus stands in for the compute step.`,
     segments: held
       ? [
           [0, 1.8, "operator", "hermes", 0],
@@ -118,7 +118,7 @@ export function createAtlasTrace({ isMotionEnabled, onSchedule }) {
           String((button.dataset.requestPrivate === "true") === experiment.privateData),
         ),
       );
-    label.textContent = `R-01 · ${experiment.privateData ? "Private" : "Public"} input. Trace the decision, or continue with these exact settings.`;
+    label.textContent = `${experiment.privateData ? "Private" : "Public"} input. Trace the decision, or continue with these exact settings.`;
   }
   function advance(delta) {
     if (!trace) return;
@@ -160,6 +160,10 @@ export function createAtlasTrace({ isMotionEnabled, onSchedule }) {
     layout();
     atlas.dataset.complete = "false";
     if (!isMotionEnabled()) return finish(true);
+    // The trace plays only while the map is on screen, so a phone brings the map up to watch it.
+    const box = atlas.getBoundingClientRect();
+    if (Math.min(box.bottom, innerHeight) - Math.max(box.top, 0) < box.height / 2)
+      atlas.scrollIntoView({ block: "nearest", behavior: "smooth" });
     trace = { time: 0, stage: -1 };
     atlas.dataset.tracing = "true";
     packet.setAttribute("opacity", "1");

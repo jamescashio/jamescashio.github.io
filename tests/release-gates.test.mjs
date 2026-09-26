@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { gzipSync } from "node:zlib";
-import { readFile, stat } from "node:fs/promises";
+import { readFile, readdir, stat } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
 import { JSDOM } from "jsdom";
@@ -115,7 +115,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
   }
   assert.equal(packageJson.scripts.lint, "eslint . --max-warnings 0");
   const formattingScope =
-    '"src/**/*.{ts,tsx,js,css}" "tests/**/*.mjs" "scripts/**/*.{mjs,mts}" "*.{js,json,md,ts}" "docs/**/*.md" ".github/**/*.{md,yml,yaml}" "public/**/*.json" "v38/**/*.html" "index.html" "public/helios-entry.js"';
+    '"src/**/*.{ts,tsx,js,css,html}" "tests/**/*.mjs" "scripts/**/*.{mjs,mts}" "*.{js,json,md,ts}" "docs/**/*.md" ".github/**/*.{md,yml,yaml}" "public/**/*.json" "v38/**/*.html" "index.html" "public/helios-entry.js"';
   assert.equal(packageJson.scripts.format, `prettier --write ${formattingScope}`);
   assert.equal(packageJson.scripts["format:check"], `prettier --check ${formattingScope}`);
   const expandedTest = expandScript(packageJson.scripts, "test");
@@ -127,6 +127,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
     "node --import tsx scripts/prerender.mts",
     "node --import tsx scripts/prerender-odyssey.mts",
     "node --import tsx scripts/prerender-helios.mts",
+    "node --import tsx scripts/prerender-rooms.mts",
     packageJson.scripts["test:artifact"],
     packageJson.scripts["test:release"],
   ]);
@@ -134,8 +135,8 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
   assert.match(expandedTest[0], /tests\/prerender\.test\.mjs/);
   assert.doesNotMatch(expandedTest[0], /tests\/release-gates\.test\.mjs/);
   assert.equal(packageJson.scripts["test:artifact"], "node --import tsx --test tests/release-gates.test.mjs");
-  assert.match(expandedTest[7], /tests\/release-gates\.test\.mjs/);
-  assert.match(expandedTest[8], /^python -m unittest /);
+  assert.match(expandedTest.at(-2), /tests\/release-gates\.test\.mjs/);
+  assert.match(expandedTest.at(-1), /^python -m unittest /);
   assert.deepEqual(expandScript(packageJson.scripts, "verify"), [
     packageJson.scripts.lint,
     packageJson.scripts["format:check"],
@@ -146,6 +147,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
     "node --import tsx scripts/prerender.mts",
     "node --import tsx scripts/prerender-odyssey.mts",
     "node --import tsx scripts/prerender-helios.mts",
+    "node --import tsx scripts/prerender-rooms.mts",
     packageJson.scripts["test:artifact"],
     "node scripts/check_layout_runtime.mjs",
     "node scripts/check_v36_runtime.mjs",
@@ -168,7 +170,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
   assert.equal(archive.revised, "2026-08-28");
   assert.equal(archive.verified, "2026-08-28");
   assert.equal(archive.expires, "2026-09-27");
-  assert.deepEqual(archive.containers, { running: 18, documented: 19, stopped: 1, zeus: 12, apollo: 6 });
+  assert.deepEqual(archive.containers, { running: 18, documented: 19, stopped: 1, zeus: null, apollo: null });
   assert.equal(archive.routingVerified, "2026-08-21");
   assert.equal(status.verified, "2026-09-07");
   assert.equal(status.routingVerified, null);
@@ -525,10 +527,12 @@ test("public metadata and redirect fallback keep fleet and routing provenance di
   const fleetExpected = ["28 August 2026", "18/19 AT 28 AUG PROBE", "DATED EXPORT"];
   const routingExpected = "ROUTING INVENTORY 21 AUGUST 2026";
   for (const path of ["command-deck.html", "public/lab.html"]) {
-    const text = await read(path);
+    const text = (await read(path)).replace(/\s+/g, " ");
     for (const marker of fleetExpected) assert.match(text, new RegExp(marker), `${path} must include ${marker}`);
-    assert.match(text, new RegExp(routingExpected), `${path} must date 10/36 as routing inventory`);
+    assert.match(text, new RegExp(routingExpected), `${path} must preserve the routing inventory date`);
     assert.doesNotMatch(text, /19(?:\/| of )19|\bCURRENT\b|\bonline\b/i, path);
+    assert.doesNotMatch(text, /Proxmox|36 private|Zeus 12\/13|Apollo 6\/6/i, path);
+    assert.match(text, /private catalog count.*withheld/i, path);
   }
 });
 
@@ -673,7 +677,7 @@ test("Helios release identity, signature assets and compatibility receipts agree
   const doc = new JSDOM(await read("dist/index.html")).window.document;
   assert.doesNotMatch(doc.querySelector('meta[name="robots"]').content, /noindex|nofollow/);
   assert.doesNotMatch(doc.body.textContent, /Unpublished refinement/);
-  assert.match(doc.body.textContent, /V39\.0 \/ HELIOS/);
+  assert.match(doc.body.textContent, /V39\.0 \/ ZENITH/);
   const releaseDay = new Date(`${release.releaseDate}T00:00:00Z`);
   const longDate = new Intl.DateTimeFormat("en-US", {
     month: "long",
@@ -682,7 +686,13 @@ test("Helios release identity, signature assets and compatibility receipts agree
     timeZone: "UTC",
   }).format(releaseDay);
   assert.equal(FLEET.pageRevised, longDate, "console help and release receipt share the interface date");
-  assert.match(doc.body.textContent, new RegExp(`Interface revised\\s+${longDate}`));
+  assert.match(doc.body.textContent, new RegExp(`Published record\\s*·\\s*${longDate}`));
+  const observedDate = (value) =>
+    new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(
+      new Date(value),
+    );
+  assert.equal(FLEET.auditLong, observedDate(evidence.provenance.auditCollectedAtUtc));
+  assert.equal(FLEET.consoleBriefLong, observedDate(evidence.orchestration.dshAgentsBriefDate + "T00:00:00Z"));
   const shortVersion = release.experienceVersion.split(".").slice(0, 2).join(".");
   assert.ok((await read("README.md")).startsWith(`# cAshIo V${shortVersion} · Helios`));
   assert.equal((await read("CHANGELOG.md")).match(/^## (V[\d.]+)/m)?.[1], `V${shortVersion}`);
@@ -695,7 +705,7 @@ test("Helios release identity, signature assets and compatibility receipts agree
   assert.equal(doc.querySelector("#sig-art").getAttribute("src"), versions["/v38/assets/celestial.webp"].url);
   assert.equal(
     doc.querySelector('#sigplate a[href="#signature"]').textContent.trim(),
-    "Explore the celestial signature in 3D ↗",
+    "Explore the celestial signature in 3D →",
   );
   for (const ext of ["webp", "jpg"]) {
     const relative = `v38/assets/celestial.${ext}`;
@@ -707,18 +717,34 @@ test("The root ships Helios directly, with bounded compatibility routing and a c
   const document = new JSDOM(await read("dist/index.html")).window.document;
   assert.equal(document.querySelector('link[rel="canonical"]').href, "https://cashio.us/");
   assert.equal(document.querySelectorAll("h1").length, 1);
-  assert.equal(document.querySelectorAll(".studio-card").length, 3);
-  assert.equal(document.querySelectorAll(".studio-library a").length, 5);
+  assert.equal(document.querySelectorAll(".studio-card").length, 0, "room payload is deferred");
+  for (const id of ["starship", "principles", "studios", "heritage"]) {
+    assert.ok(document.querySelector(`.room-card[href="/rooms/${id}/"][data-room-route="#${id}"]`));
+    assert.equal(document.querySelector(`#${id}`).getAttribute("data-room-state"), "idle");
+    const reading = new JSDOM(await read(`dist/rooms/${id}/index.html`)).window.document;
+    assert.equal(reading.querySelectorAll("script").length, 0, "reading edition needs no JavaScript");
+    assert.equal(reading.querySelectorAll("h1").length, 1);
+    assert.ok(reading.querySelector(`a[href="/#${id}"]`));
+    assert.ok(reading.querySelector('.room-end a[href="/#rooms"]'));
+    for (const image of reading.querySelectorAll("img"))
+      assert.ok((await stat(asset(`dist${image.getAttribute("src")}`))).size > 0);
+    if (id === "studios") {
+      assert.equal(reading.querySelectorAll(".studio-card").length, 3);
+      assert.equal(reading.querySelectorAll(".studio-library a").length, 5);
+    }
+  }
   assert.equal(document.querySelector("#odyssey-root"), null);
   assert.equal(document.querySelector('meta[http-equiv="refresh"]'), null);
   for (const image of document.querySelectorAll("img")) {
     assert.ok(image.getAttribute("src").startsWith("/"), "the new root cannot reinterpret asset paths");
     assert.ok((await stat(asset(`dist${image.getAttribute("src")}`))).size > 0);
   }
-  const styles = document.querySelector("style[data-helios-styles]");
-  assert.ok(styles);
-  assert.equal(styles.textContent, await read(`dist${styles.getAttribute("data-helios-styles")}`));
-  assert.ok(gzipSync(styles.textContent).byteLength <= 17000);
+  const styles = document.querySelector('link[rel="stylesheet"][data-helios-styles]');
+  assert.ok(styles, "the complete stylesheet is independently cacheable");
+  assert.equal(styles.getAttribute("href"), styles.getAttribute("data-helios-styles"));
+  assert.match(styles.getAttribute("href"), /^\/assets\/[\w.-]+\.css$/);
+  assert.equal(document.querySelector("style[data-helios-styles]"), null);
+  assert.ok(gzipSync(await read(`dist${styles.getAttribute("href")}`)).byteLength <= 19000);
   const csp = document.querySelector('meta[http-equiv="Content-Security-Policy"]').content;
   assert.doesNotMatch(csp.split("script-src ")[1].split(";")[0], /unsafe-inline|unsafe-eval/);
   for (const script of document.querySelectorAll("script:not([src])")) {
@@ -755,9 +781,22 @@ test("Versioned Helios artwork and fonts preserve their bytes and share one cach
     const version = versions[`/v38/fonts/${font}.woff2`].url;
     assert.ok(doc.querySelector(`link[rel="preload"][href="${version}"]`));
     assert.ok(
-      doc.querySelector("style[data-helios-styles]").textContent.includes(version),
+      (await read(`dist${doc.querySelector("link[data-helios-styles]").getAttribute("href")}`)).includes(version),
       "preload and font-face request the same version",
     );
   }
   assert.ok(!Object.keys(versions).some((source) => source.endsWith(".json")), "dated evidence remains refreshable");
+});
+
+test("current pages, archives and shipped controllers withhold the home city", async () => {
+  const bundles = (await readdir(asset("dist/assets"))).filter((name) => name.endsWith(".js"));
+  for (const path of [
+    "index.html",
+    "odyssey.html",
+    "command-deck.html",
+    "command.html",
+    ...bundles.map((name) => `assets/${name}`),
+  ]) {
+    assert.doesNotMatch(await read(`dist/${path}`), /pensacola/i, path);
+  }
 });

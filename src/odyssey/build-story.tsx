@@ -18,10 +18,8 @@ export function BuildStory() {
         </header>
         <div className="o-proof-result">
           <p>
-            <strong>
-              {Math.round(COST_EVIDENCE.usdPerDay * 100)}¢<small>/day</small>
-            </strong>
-            <span>Observed AI provider usage · historical sample</span>
+            <strong>Withheld</strong>
+            <span>Historical spend redacted for publication</span>
           </p>
           <p className="o-proof-date">
             Sample · <time dateTime={COST_EVIDENCE.sampleStart}>21</time>–
@@ -42,8 +40,8 @@ export function BuildStory() {
               </dd>
             </div>
             <div>
-              <dt>The recorded result</dt>
-              <dd>A two-day record of provider usage. The sample scope and exclusions are available below.</dd>
+              <dt>The archived record</dt>
+              <dd>A two-day record of provider usage, now redacted. Its scope and dates remain available below.</dd>
             </div>
           </dl>
         </div>
@@ -110,7 +108,7 @@ export function BuildStory() {
             About the cost figure and the public demo<span aria-hidden="true">+</span>
           </summary>
           <p>
-            The original V31 export records the figure and dates. Its scope covers{" "}
+            The spend figure is withheld from this archive. Its original sample dates are retained. Its scope covers{" "}
             {COST_EVIDENCE.includes.toLowerCase()}; it excludes {COST_EVIDENCE.excludes.toLowerCase()}. The source is a
             published operating observation, not an independently audited bill. It does not establish today’s spend or a
             percentage saving.
@@ -141,7 +139,7 @@ export function BuildStory() {
           An owner-run, read-only HERMES audit compared the cluster inventory with direct guest lists. The observation
           records {operatingRecord.containers.running} running LXC containers and{" "}
           {operatingRecord.virtualMachines.running} running QEMU virtual machine across{" "}
-          {operatingRecord.proxmox.hostsOnline} hosts on {operatingRecord.verifiedLong}. The reviewed public subset
+          {operatingRecord.cluster.hostsOnline} hosts on {operatingRecord.verifiedLong}. The reviewed public subset
           shipped in V37.11 on 8 September.
         </p>
         <p>
