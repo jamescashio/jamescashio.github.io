@@ -79,6 +79,8 @@ export function setupAtlas({ scenes, motion, say }) {
       $("#nd-summary").textContent = n.summary;
       $("#nd-body").textContent = n.body;
       $("#nd-evidence").textContent = n.evidence;
+      // Announce the choice in one short line instead of the whole card.
+      $("#nd-live").textContent = `${n.name} selected. ${n.summary}`;
     }),
   );
 }

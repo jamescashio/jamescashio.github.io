@@ -53,7 +53,7 @@ export const EVIDENCE = {
     `${FLEET.prior.release} · fleet observed ${FLEET.prior.fleetLong} · ${FLEET.prior.method} · ${FLEET.prior.lxc} containers · ${FLEET.prior.qemu} virtual machine`,
     `${FLEET.archive.release} · fleet observed ${FLEET.archive.fleetLong} · routing observed ${FLEET.archive.routingLong}`,
     `${FLEET.archive.release} counts: ${FLEET.archive.lxc} containers running · virtual machines ${FLEET.archive.qemu.toLowerCase()} · public lanes: ${FLEET.archive.lanes}`,
-    `That record was valid until ${FLEET.archive.expiry}. Its expiry does not extend newer observations`,
+    `That record lists an expiry of ${FLEET.archive.expiry}. Newer observations replace it; its expiry does not extend them`,
   ],
   cost: [
     `Public record: ${FLEET.pageRevised}`,

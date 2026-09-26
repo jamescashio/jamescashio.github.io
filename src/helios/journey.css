@@ -488,10 +488,10 @@ h3,
 }
 
 .atlas-inspection {
-  scroll-margin-top: 100px;
+  scroll-margin-top: 28px;
 }
 #request-journey {
-  scroll-margin-top: 90px;
+  scroll-margin-top: 18px;
 }
 .atlas-intro {
   grid-column: 1 / -1;

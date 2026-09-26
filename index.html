@@ -575,7 +575,8 @@
             </summary>
             <div class="disclosure-body grid">
               <div class="c5 stack atlas-inspection sg-22" id="atlas-inspection">
-                <div class="panel stack p-24 sg-10" aria-live="polite">
+                <div class="panel stack p-24 sg-10">
+                  <span class="sr" id="nd-live" role="status"></span>
                   <div class="flex justify-between">
                     <span class="mono c-mu" id="nd-role">Job scheduler</span><span class="mono c-cy">SELECTED</span>
                   </div>
@@ -1083,13 +1084,13 @@
               </div>
               <form id="eve-form">
                 <label for="eve-in" class="mono c-cy">E.V.E.</label
-                ><input id="eve-in" type="text" autocomplete="off" placeholder="Try help" /><button
-                  class="btn ghost sm"
-                  type="submit"
-                  aria-label="Run command"
-                >
-                  ↵
-                </button>
+                ><input
+                  id="eve-in"
+                  type="text"
+                  autocomplete="off"
+                  placeholder="Try help"
+                  aria-label="E.V.E. command, for example help or fleet"
+                /><button class="btn ghost sm" type="submit" aria-label="Run command">↵</button>
               </form>
             </div>
           </div>

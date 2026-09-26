@@ -507,7 +507,7 @@
 /* Ultrawide: give the chapters more of the glass. */
 @media (min-width: 2200px) {
   .wrap,
-  .room-bar {
+  html .room-bar {
     max-width: 1920px;
   }
 }

@@ -11,7 +11,8 @@ export function setupPrivacy({ loadRequest, traceRequest, motion, onReveal }) {
     loadRequest({ intent: "analyze", privateData: true, sources: true }, true),
   );
   $("#st-trace").addEventListener("click", () => traceRequest());
-  const pv = { pick: null };
+  // The first prediction is the one that counts; a later change is acknowledged, not scored as a call.
+  const pv = { pick: null, first: null };
   const result = $("#pv-result");
   const signal = $("#pv-signal");
   function resetResult() {
@@ -30,6 +31,7 @@ export function setupPrivacy({ loadRequest, traceRequest, motion, onReveal }) {
     b.addEventListener("click", () => {
       resetResult();
       pv.pick = b.dataset.pv;
+      pv.first ??= pv.pick;
       $$("[data-pv]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
       reveal();
     }),
@@ -46,7 +48,9 @@ export function setupPrivacy({ loadRequest, traceRequest, motion, onReveal }) {
     const lead = document.createElement("strong");
     lead.textContent =
       pv.pick === "human"
-        ? "You called it."
+        ? pv.first === "human"
+          ? "You called it."
+          : "Now you have it."
         : pv.pick === "keep"
           ? "Not quite. Privacy wins."
           : "The answer: human review.";

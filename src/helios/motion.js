@@ -293,8 +293,13 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
     injectFilmStyle();
     startFilm();
   };
-  if (poster.complete && poster.naturalWidth) arrive();
-  else poster.addEventListener("load", arrive, { once: true });
+  // The film waits for the page to finish loading and the browser to idle, so it never competes with first paint.
+  const whenIdle = () =>
+    window.requestIdleCallback ? requestIdleCallback(arrive, { timeout: 1500 }) : setTimeout(arrive, 200);
+  const afterLoad = () =>
+    document.readyState === "complete" ? whenIdle() : addEventListener("load", whenIdle, { once: true });
+  if (poster.complete && poster.naturalWidth) afterLoad();
+  else poster.addEventListener("load", afterLoad, { once: true });
   window.__prepareHero = startHero;
   return { isEnabled: () => enabled };
 }

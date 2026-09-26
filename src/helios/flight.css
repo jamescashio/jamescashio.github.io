@@ -100,12 +100,6 @@
   white-space: nowrap;
 }
 
-/* Phones: give the ship more of the screen; the chapter text scrolls beneath it. */
-@media (max-width: 700px) {
-  #helios-flight .first-flight .ff-stage {
-    height: clamp(200px, 34dvh, 300px);
-  }
-}
 /* Short desktop windows: the last chapter's story fits beside the stage without an inner scroll. */
 @media (min-width: 901px) and (max-height: 1200px) {
   #helios-flight .first-flight .ff-story {
@@ -227,7 +221,8 @@
     color: var(--ink);
     font: 14px var(--sans);
   }
+  /* Phones: give the ship a third of the screen; the chapter text scrolls beneath it. */
   #helios-flight .first-flight .ff-stage {
-    height: clamp(180px, 26dvh, 240px);
+    height: clamp(200px, 32dvh, 300px);
   }
 }

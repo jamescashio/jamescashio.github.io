@@ -81,10 +81,11 @@ test("Privacy feedback answers each new prediction at once and stays complete wh
     await expect(page.locator("#pv-answer")).toHaveText("Human review");
     await expect(page.locator("#pv-live")).toContainText("Your prediction: Research.");
     await expect(page.locator("#pv-trace")).toBeVisible();
-    // A new prediction replaces the old feedback rather than adding to it.
+    // A new prediction replaces the old feedback rather than adding to it, and a changed answer is not scored as a call.
     await page.locator('[data-pv="human"]').click();
     await expect(page.locator("#pv-text")).not.toContainText("Not quite");
-    await expect(page.locator("#pv-live")).toContainText("You called it.");
+    await expect(page.locator("#pv-live")).toContainText("Now you have it.");
+    await expect(page.locator("#pv-live")).not.toContainText("You called it.");
     await expect(page.locator("#pv-live")).toContainText("Your prediction: Human review.");
     await expect(page.locator('[data-pv="human"]')).toBeFocused();
     await expect(page.locator('[data-pv="keep"]')).toHaveAttribute("aria-pressed", "false");
@@ -93,7 +94,7 @@ test("Privacy feedback answers each new prediction at once and stays complete wh
     await expect(page.locator("#pv-answer")).toHaveText("Human review");
     await expect(page.locator("#pv-route .pv-command")).toBeVisible();
     await expect(page.locator("#pv-route .pv-question")).toBeHidden();
-    await expect(page.locator("#pv-live")).toContainText("You called it.");
+    await expect(page.locator("#pv-live")).toContainText("Now you have it.");
     await expect(page.locator("#pv-signal")).toHaveCSS("opacity", "0");
     await expect(page.locator("#pv-result")).toHaveCSS("opacity", "1");
     const choices = await page
@@ -105,6 +106,11 @@ test("Privacy feedback answers each new prediction at once and stays complete wh
     await page.screenshot({ path: path.join(output, `privacy-polish-${motion}.png`) });
     await audit(page, `privacy-polish-${motion}`);
   }
+  // A correct first prediction is the call that counts.
+  const fresh = await visit(t, { width: 390, hash: "#work" });
+  await fresh.locator('[data-pv="human"]').click();
+  await expect(fresh.locator("#pv-live")).toContainText("You called it.");
+  await expect(fresh.locator("#pv-live")).toContainText("Your prediction: Human review.");
 });
 
 test("Flight heritage keeps the displayed photograph, lesson and history source in sync", async (t) => {

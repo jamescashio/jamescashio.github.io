@@ -11,8 +11,11 @@ export function setupSignature({ motion, say }) {
   signatureImage.addEventListener("error", restoreSignatureArtwork);
   if (signatureImage.complete && !signatureImage.naturalWidth) restoreSignatureArtwork();
   let signatureTimer;
-  $("#sig-btn").addEventListener("click", () => {
+  const button = $("#sig-btn");
+  const label = button.textContent;
+  button.addEventListener("click", () => {
     clearTimeout(signatureTimer);
+    button.textContent = "◇ Energize again";
     const pl = $("#sigplate");
     pl.classList.remove("on");
     void pl.offsetWidth;
@@ -47,6 +50,7 @@ export function setupSignature({ motion, say }) {
       gsap.killTweensOf(Array.from(b.children));
       b.replaceChildren();
       pl.classList.remove("on");
+      button.textContent = label;
       $("#sig-state").textContent = "DORMANT · GOLD INTENT";
       $("#sig-state").style.color = "";
     }, 4000);

@@ -85,13 +85,13 @@ main {
 main:focus {
   outline: none;
 }
-/* Sections land just under the header; the section's own padding gives the heading room. */
-section[id] {
-  scroll-margin-top: 70px;
+/* Anchors, scripted jumps and keyboard focus all stop below the fixed header. */
+html {
+  scroll-padding-top: 72px;
 }
 #instrument,
 #glossary {
-  scroll-margin-top: 100px;
+  scroll-margin-top: 28px;
 }
 button,
 a,
@@ -879,8 +879,13 @@ section[data-ambient="off"] *:after,
     font-size: 14px;
     grid-template-columns: 1.3fr repeat(3, minmax(0, 1fr));
   }
+  .vh[open] {
+    flex-basis: 100%;
+  }
   .vh-menu {
-    min-width: min(280px, 80vw);
+    position: static;
+    min-width: 0;
+    margin-top: 8px;
   }
   .bitsay {
     max-width: calc(100vw - 120px);
