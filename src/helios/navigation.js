@@ -177,6 +177,7 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
     }
     dispose();
     let focusBeforeLoad = document.activeElement;
+    const leftRoom = document.documentElement.dataset.room;
     const pageChanged = rooms.sync(hash);
     if (rooms.needsLoad(hash)) {
       if (pageChanged) {
@@ -208,8 +209,14 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
     returnPoint = null;
     const savedY = history.state?.heliosY;
     if (fromHistory && !hash && typeof savedY === "number" && !document.documentElement.dataset.room) {
-      // Back to the home page from a room: return to the place the reader left, not the top.
-      requestAnimationFrame(() => window.scrollTo({ top: savedY, behavior: "instant" }));
+      // Back to the home page from a room: return to the place the reader left, not the top,
+      // and to the room's card when it is on screen, so keyboard and screen reader users keep their place.
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: savedY, behavior: "instant" });
+        const card = leftRoom && document.querySelector(`.room-card[data-room-route="#${leftRoom}"]`);
+        const box = card?.getBoundingClientRect();
+        if (box && box.top >= 0 && box.bottom <= innerHeight) card.focus({ preventScroll: true });
+      });
       return;
     }
     // History uses an empty fragment for home. Scene returns above keep their original launcher.
@@ -217,7 +224,8 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
     const experiment = parseExperiment(hash);
     if (experiment) {
       select(experiment);
-      focusSection("studies");
+      // A chosen or shared study lands on its own instrument and title, not the section introduction above.
+      focusSection("instrument");
       return;
     }
     const scenario = parseMissionHash(hash.replace(/\.online\./, ".connected."));

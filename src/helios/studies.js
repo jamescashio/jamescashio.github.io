@@ -212,7 +212,14 @@ export function setupStudies({ scenes, motion, copy }) {
     renderRoute(false);
   });
   $("#route-btn").addEventListener("click", () => renderRoute(true));
-  $("#st-next").addEventListener("click", () => selectStudy((st.i + 1) % 7));
+  $("#st-next").addEventListener("click", () => {
+    selectStudy((st.i + 1) % 7);
+    // The next study opens where its title can be read, and focus moves to that title.
+    const title = $("#st-name");
+    title.tabIndex = -1;
+    title.focus({ preventScroll: true });
+    $("#instrument").scrollIntoView({ block: "start", behavior: "instant" });
+  });
   $("#copy-settings").addEventListener("click", () => {
     const ex =
       st.i === 0

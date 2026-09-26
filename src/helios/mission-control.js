@@ -29,7 +29,7 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
       "Glossary",
       "The names used here, in plain English.",
       "#glossary",
-      "names definitions acronyms hermes dsh zeus apollo atlas bit eve workhorse research synthesis lanes",
+      "names definitions acronyms hermes dsh zeus apollo atlas bit eve workhorse research synthesis lanes cashio house zenith",
     ],
     [
       "The privacy test",

@@ -1198,7 +1198,9 @@ test("The first visit stays compact and shared links reveal the exact experiment
   await page.goBack();
   await expect(page.locator("#request-journey")).toBeFocused();
   await page.goForward();
-  await expect(page.locator("#studies-h")).toBeFocused();
+  // A study link lands on the study itself, with its title focused and on screen.
+  await expect(page.locator("#st-name")).toBeFocused();
+  await expect(page.locator("#st-name")).toBeInViewport();
   await audit(page, "workbench-disclosures-390");
 });
 
@@ -1566,7 +1568,8 @@ test("Study shortcuts reveal the chosen experiment and heritage credits never co
         await shortcuts.locator(`a[href="#build=${id}"]`).click();
         await expect(page.locator("#study-lab")).toHaveAttribute("open", "");
         await expect(page.locator(`#study-${id}`)).toHaveAttribute("aria-selected", "true");
-        await expect(page.locator("#studies-h")).toBeFocused();
+        await expect(page.locator("#st-name")).toBeFocused();
+        await expect(page.locator("#st-name")).toBeInViewport();
       }
     } else {
       // Wide screens start with the glossary, the workbench and the system map open; the study cards replace the shortcut row.
@@ -1578,6 +1581,11 @@ test("Study shortcuts reveal the chosen experiment and heritage credits never co
         await page.locator(`#study-${id}`).click();
         await expect(page.locator(`#study-${id}`)).toHaveAttribute("aria-selected", "true");
       }
+      // Next opens the following study where its title can be read, with focus on that title.
+      await page.locator("#st-next").click();
+      await expect(page.locator("#study-hermes")).toHaveAttribute("aria-selected", "true");
+      await expect(page.locator("#st-name")).toBeFocused();
+      await expect(page.locator("#st-name")).toBeInViewport();
     }
     await page.locator('.room-card[data-room-route="#heritage"]').click();
     for (const pilot of ["yeager", "johnson", "rutan", "hoover"]) {
@@ -1715,6 +1723,14 @@ test("Phones and data-saving visits keep the hero artwork without downloading th
   }
 });
 
+test("A phone trace brings the system map into view so the request can be watched", async (t) => {
+  const page = await visit(t, { width: 390, height: 844, motion: "no-preference", hash: "#universe" });
+  await page.locator("#trace-btn").scrollIntoViewIfNeeded();
+  await page.locator("#trace-btn").click();
+  await expect(page.locator("#atlas")).toBeInViewport({ ratio: 0.5 });
+  await expect(page.locator("#atlas")).toHaveAttribute("data-complete", "true", { timeout: 15000 });
+});
+
 test("A shared HERMES study link restores its settings on open and on reload", async (t) => {
   const shared = "#build=hermes&intent=analyze&private=1&sources=1";
   const page = await visit(t, { hash: shared, expandWorkbenches: false });
@@ -1740,6 +1756,7 @@ test("Back from a room returns to the reader's place and search ranks titles fir
   await expect(page.locator("#pr-h")).toBeVisible();
   await page.goBack();
   await expect(card).toBeInViewport();
+  await expect(card).toBeFocused();
   await expect.poll(async () => Math.abs((await place()).top - before.top)).toBeLessThan(120);
   await page.locator("#mc-btn").click();
   // A title match outranks a glossary keyword, and short words match whole words only.

@@ -160,6 +160,10 @@ export function createAtlasTrace({ isMotionEnabled, onSchedule }) {
     layout();
     atlas.dataset.complete = "false";
     if (!isMotionEnabled()) return finish(true);
+    // The trace plays only while the map is on screen, so a phone brings the map up to watch it.
+    const box = atlas.getBoundingClientRect();
+    if (Math.min(box.bottom, innerHeight) - Math.max(box.top, 0) < box.height / 2)
+      atlas.scrollIntoView({ block: "nearest", behavior: "smooth" });
     trace = { time: 0, stage: -1 };
     atlas.dataset.tracing = "true";
     packet.setAttribute("opacity", "1");

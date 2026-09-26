@@ -81,11 +81,8 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
     button.dataset.motionSource = query.matches ? "device" : "visitor";
     button.setAttribute(
       "aria-label",
-      enabled
-        ? "Motion on: pause animation"
-        : query.matches
-          ? "Motion off: follows your device setting"
-          : "Motion off: resume animation",
+      // A toggle keeps its state in aria-pressed, so the name states the setting rather than an action.
+      enabled ? "Motion on" : query.matches ? "Motion off, following your device setting" : "Motion off",
     );
     button.querySelector("span").textContent = enabled ? "Motion on" : "Motion off";
     button.title = query.matches

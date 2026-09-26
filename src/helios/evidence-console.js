@@ -96,7 +96,7 @@ export const LORE = {
     "lore · Bob Hoover flew chase for Yeager on October 14, 1947.",
     "lore · Energy management over raw power. A good lesson for AI budgets, too.",
   ],
-  epstein: ["lore · The Expanse gave the Epstein drive. Local inference is this workshop's Epstein drive."],
+  expanse: ["lore · The Expanse gave us the Epstein drive. Local inference is this workshop's Epstein drive."],
   engage: ["lore · Order received. The human decided; the machine will do the work."],
   "make it so": ["lore · Order received. The human decided; the machine will do the work."],
   admiral: [
@@ -155,7 +155,7 @@ export function evidenceReply(input) {
 }
 
 /** Hidden commands a visitor can stumble into; surprise me picks one and names it. */
-const SURPRISES = ["yeager", "johnson", "rutan", "hoover", "butlerian", "ix", "spice", "epstein", "bit", "eve"];
+const SURPRISES = ["yeager", "johnson", "rutan", "hoover", "butlerian", "ix", "spice", "expanse", "bit", "eve"];
 
 export function setupEvidenceConsole({ motion }) {
   const out = $("#eve-out");

@@ -109,6 +109,38 @@ h2 span {
   color: var(--cyan);
   font-style: normal;
 }
+/* The capital I carries serifs, as on the home page, so the name never reads as "cAshlo". */
+.wordmark i,
+.wm-i {
+  position: relative;
+  display: inline-block;
+  padding-inline: 0.08em;
+  font-style: normal;
+  line-height: 1;
+}
+.wordmark i::before,
+.wordmark i::after,
+.wm-i::before,
+.wm-i::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 0.46em;
+  height: 0.08em;
+  background: currentColor;
+  transform: translateX(-50%);
+}
+.wordmark i::before,
+.wm-i::before {
+  top: 0.1em;
+}
+.wordmark i::after,
+.wm-i::after {
+  bottom: 0.12em;
+}
+.wm {
+  white-space: nowrap;
+}
 .hero {
   min-height: 680px;
   display: grid;
