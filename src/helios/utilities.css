@@ -275,6 +275,20 @@ section.py-48-80 {
 }
 
 /* Colour and surface */
+/* A named colour must beat any component colour rule, whatever its specificity, so the colour utilities are
+   the one intentional use of !important outside the motion and reduced motion kill switches. */
+.c-mu {
+  color: var(--muted) !important;
+}
+.c-gd {
+  color: var(--gold) !important;
+}
+.c-cy {
+  color: var(--cyan) !important;
+}
+.c-ink {
+  color: var(--ink) !important;
+}
 .bc-gold-30 {
   border-color: rgba(242, 200, 122, 0.3);
 }

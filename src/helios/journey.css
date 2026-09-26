@@ -168,8 +168,6 @@
     font-size: 14px;
   }
 }
-h2,
-h3,
 .lede {
   text-wrap: balance;
 }
@@ -490,14 +488,6 @@ h3,
 .atlas-inspection {
   scroll-margin-top: 28px;
 }
-/* On desktop the selected system's card stays beside the map while the map scrolls past. */
-@media (min-width: 1100px) {
-  .atlas-inspection {
-    position: sticky;
-    top: 88px;
-    align-self: start;
-  }
-}
 #request-journey {
   scroll-margin-top: 18px;
 }
@@ -546,5 +536,54 @@ h3,
   }
   .atlas-inspection {
     order: 2;
+  }
+}
+
+/* The chapter rail announces the chapter you arrive in. */
+.sections a.rail-announce span {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+/* Header: solid once the page leaves the hero. */
+.nav {
+  transition:
+    transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
+    background-color 0.35s ease,
+    border-color 0.35s ease;
+}
+.nav.deep {
+  background: rgba(4, 7, 14, 0.9);
+  border-bottom-color: rgba(56, 225, 255, 0.16);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  backdrop-filter: blur(18px) saturate(1.2);
+}
+
+/* Desktop: the atlas readout and the study list ride along beside their tall panels. */
+@media (min-width: 1101px) and (min-height: 760px) {
+  #atlas-inspection,
+  #studies-list {
+    position: sticky;
+    top: 96px;
+    align-self: start;
+  }
+}
+
+/* Header actions shed their labels as the width narrows. */
+@media (max-width: 1279px) {
+  .type-btn .hide-m {
+    display: none;
+  }
+}
+@media (max-width: 1100px) {
+  #motion-btn .hide-m,
+  #mc-btn .mono.menu-desktop {
+    display: none;
+  }
+}
+@media (max-width: 374px) {
+  .type-btn {
+    display: none;
   }
 }

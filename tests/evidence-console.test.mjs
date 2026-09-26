@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { EVIDENCE, LORE, evidenceReply } from "../src/helios/evidence-console.js";
+import { EVIDENCE, LORE, PAGE, evidenceReply, nearestCommand } from "../src/helios/evidence-console.js";
 import { FLEET } from "../src/helios/fleet.js";
 
 test("listed E.V.E. commands answer only from the dated export", () => {
@@ -25,6 +25,7 @@ test("unlisted lore replies are labelled and never pose as evidence", () => {
   assert.match(evidenceReply("  Make   It   So ").join(" "), /Order received/);
   assert.match(evidenceReply("admiral").join(" "), new RegExp(`${FLEET.lxc} containers`));
   assert.match(evidenceReply("nonsense")[0], /unknown command: nonsense\. Try help\./);
+  assert.doesNotMatch(evidenceReply("nonsense")[0], /Did you mean/);
 });
 
 test("plain questions reach their labelled lore reply", () => {
@@ -56,4 +57,27 @@ test("Individual facts retain their audit date instead of inheriting the later f
   for (const command of ["fleet", "hosts", "backups"])
     assert.match(evidenceReply(command).join(" "), /September 24, 2026/);
   assert.match(evidenceReply("dsh").join(" "), /September 8, 2026/);
+});
+
+test("a near miss names the closest listed command", () => {
+  assert.equal(nearestCommand("fleets"), "fleet");
+  assert.equal(nearestCommand("host"), "hosts");
+  assert.equal(nearestCommand("hermes jobs"), "hermes");
+  assert.equal(nearestCommand("kernal"), "kernel");
+  assert.equal(nearestCommand("xyzzy"), null);
+  assert.equal(nearestCommand("ls"), null);
+  assert.match(evidenceReply("Fleets")[0], /unknown command: fleets\. Did you mean fleet\? Try help\./);
+});
+
+test("about and contact repeat the page's own words and are neither evidence nor lore", () => {
+  assert.deepEqual(evidenceReply("about"), PAGE.about);
+  assert.deepEqual(evidenceReply("Who is Doug?"), PAGE.about);
+  assert.deepEqual(evidenceReply("contact"), PAGE.contact);
+  assert.deepEqual(evidenceReply("hire"), PAGE.contact);
+  for (const lines of Object.values(PAGE))
+    for (const line of lines) {
+      assert.doesNotMatch(line, /^lore/);
+      assert.doesNotMatch(line, /[–—]/);
+    }
+  assert.match(evidenceReply("help").join(" "), /about · contact/);
 });

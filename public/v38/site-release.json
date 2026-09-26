@@ -1,6 +1,6 @@
 {
-  "experienceVersion": "39.1.0",
-  "releaseId": "helios-39.1.0-20260926",
+  "experienceVersion": "39.2.0",
+  "releaseId": "helios-39.2.0-20260926",
   "releaseName": "ZENITH",
   "visualEdition": "Helios",
   "entry": "/",
@@ -9,7 +9,7 @@
   "releaseDate": "2026-09-26",
   "compatibilityExperienceVersion": "37.17.0",
   "compatibilityEntry": "/odyssey.html",
-  "rollbackCommit": "2a3411d52a3c453f18576b3e80c0ae1a4618d929",
+  "rollbackCommit": "22a9645155bec379a805bd350e7bcf1a6c60522c",
   "evidenceSnapshot": {
     "url": "/v38/status.json",
     "fleetObserved": "2026-09-24",

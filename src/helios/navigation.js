@@ -1,7 +1,8 @@
 import { setupMissionControl } from "./mission-control.js";
 import { parseExperiment } from "../odyssey/study-experiment";
 import { parseMissionHash } from "../odyssey/flight-plan";
-import { createWarp, setupFlightPrefetch } from "./zenith.js";
+import { createWarp, setupFlightPrefetch } from "./flight-jump.js";
+import { $, $$, closestTarget } from "./dom.js";
 
 const sceneKind = (hash) =>
   /^#flight=(board|hull|blackout|permission)$/.test(hash)
@@ -18,7 +19,7 @@ const aliases = {
 
 /** Native links, shared scenes and browser history stay in one document. */
 export function setupNavigation({ studies, select, mission, motion, rooms }) {
-  const loader = document.querySelector("#scene-loader");
+  const loader = /** @type {HTMLDialogElement} */ ($("#scene-loader"));
   let routeGeneration = 0;
   let scene = null,
     activeKind = null,
@@ -32,7 +33,7 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
   const notify = () => window.dispatchEvent(new Event("helios-overlay"));
   const menu = setupMissionControl({ studies, canOpen: () => !loader.open && !scene && !pending, onToggle: notify });
   const dialog = menu.dialog;
-  for (const link of document.querySelectorAll("a[data-room-route]")) link.setAttribute("href", link.dataset.roomRoute);
+  for (const link of $$("a[data-room-route]")) link.setAttribute("href", link.dataset.roomRoute);
   const warp = createWarp({
     onHalt: () => {
       clearTimeout(loaderTimer);
@@ -45,19 +46,22 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
     if (!target) return;
     // A shared address opens the workbench before focus or the fragment can land inside hidden content.
     let revealed = false;
-    const workbench = target.querySelector(":scope > .wrap > details.workbench-disclosure");
+    const workbench = /** @type {HTMLDetailsElement | null} */ (
+      target.querySelector(":scope > .wrap > details.workbench-disclosure")
+    );
     if (workbench && !workbench.open) {
       workbench.open = true;
       revealed = true;
     }
     for (let parent = target; parent; parent = parent.parentElement) {
-      if (parent.tagName === "DETAILS" && !parent.open) {
+      if (parent instanceof HTMLDetailsElement && !parent.open) {
         parent.open = true;
         revealed = true;
       }
     }
-    const heading =
-      target.querySelector("h1,h2,h3") || (target.matches("details") ? target.querySelector("summary") : target);
+    const heading = /** @type {HTMLElement} */ (
+      target.querySelector("h1,h2,h3") || (target.matches("details") ? target.querySelector("summary") : target)
+    );
     if (!heading.matches("summary")) heading.setAttribute("tabindex", "-1");
     heading.focus({ preventScroll: true });
     // Move focus and its heading together. Smooth scrolling can drift as skipped sections lay out after resize.
@@ -133,7 +137,7 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
     loader.querySelector("h2").textContent = "Preparing your scene…";
     loader.querySelector("p").textContent = "You can return to the site at any time.";
     document.querySelector("#scene-cancel").textContent = "Cancel opening";
-    document.querySelector("#scene-reload").hidden = true;
+    $("#scene-reload").hidden = true;
     // Boarding the starship is a jump, not a wait: the warp covers loading and the loader appears only if it is slow.
     const jumping = kind === "flight" && motion() && warp.start();
     if (jumping) {
@@ -143,7 +147,9 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
     } else loader.showModal();
     notify();
     try {
-      const module = kind === "flight" ? await import("./flight-island") : await import("./studio-island");
+      // Each island module is awaited on its own branch so the opener keeps that module's exports.
+      const opener =
+        kind === "flight" ? (await import("./flight-island")).openFlight : (await import("./studio-island")).openStudio;
       if (token !== generation) return;
       if (jumping) await warp.settle();
       if (token !== generation) return;
@@ -152,13 +158,13 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
       activeKind = kind;
       scene =
         kind === "flight"
-          ? module.openFlight({
+          ? /** @type {typeof import("./flight-island").openFlight} */ (opener)({
               motion: motion(),
               step: hash.slice(8),
               onClose: closeScene,
               arrive: jumping && motion(),
             })
-          : module.openStudio({
+          : /** @type {typeof import("./studio-island").openStudio} */ (opener)({
               motion: motion(),
               hash,
               onClose: () => closeScene(),
@@ -175,7 +181,7 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
       loader.querySelector("p").textContent =
         "Your place is saved. Return to the site, or reload this scene to try again.";
       document.querySelector("#scene-cancel").textContent = "Back to the site";
-      document.querySelector("#scene-reload").hidden = false;
+      $("#scene-reload").hidden = false;
     } finally {
       if (token === generation) {
         pending = failed;
@@ -233,7 +239,7 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
       // and to the room's card when it is on screen, so keyboard and screen reader users keep their place.
       requestAnimationFrame(() => {
         window.scrollTo({ top: savedY, behavior: "instant" });
-        const card = leftRoom && document.querySelector(`.room-card[data-room-route="#${leftRoom}"]`);
+        const card = leftRoom && $(`.room-card[data-room-route="#${leftRoom}"]`);
         const box = card?.getBoundingClientRect();
         if (box && box.top >= 0 && box.bottom <= innerHeight) card.focus({ preventScroll: true });
       });
@@ -321,7 +327,7 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
     route(hash || "#top");
   }
   document.addEventListener("click", (event) => {
-    const link = event.target.closest("a[href^='#']");
+    const link = closestTarget(event, "a[href^='#']");
     if (!link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button) return;
     event.preventDefault();
     const hash = link.getAttribute("href");

@@ -1,10 +1,10 @@
-import { $, press } from "./dom.js";
+import { $, press, closestTarget } from "./dom.js";
 import { gsap } from "gsap";
 import { PRINCIPLES as PR } from "./principles-data.js";
 
 export function setupPrinciples({ scenes, motion }) {
   $("#pr-group").addEventListener("click", (e) => {
-    const b = e.target.closest("[data-pr]");
+    const b = closestTarget(e, "[data-pr]");
     if (!b) return;
     const p = PR[+b.dataset.pr];
     press($("#pr-group"), "data-pr", b.dataset.pr);
@@ -14,7 +14,7 @@ export function setupPrinciples({ scenes, motion }) {
     $("#pr-tag").textContent = p.tag;
     $("#pr-ring").textContent = p.ring;
     $("#pr-action").textContent = p.action[0];
-    $("#pr-action").href = p.action[1];
+    $("#pr-action").setAttribute("href", p.action[1]);
     if (motion())
       gsap.fromTo(
         $("#pr-title").parentElement,

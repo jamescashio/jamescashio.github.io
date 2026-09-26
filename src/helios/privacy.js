@@ -1,9 +1,9 @@
 import { gsap } from "gsap";
-import { $, $$ } from "./dom.js";
+import { $, $$, closestTarget } from "./dom.js";
 
 export function setupPrivacy({ loadRequest, traceRequest, motion, onReveal }) {
   $("#request-privacy").addEventListener("click", (event) => {
-    const button = event.target.closest("[data-request-private]");
+    const button = closestTarget(event, "[data-request-private]");
     if (!button) return;
     loadRequest({ privateData: button.dataset.requestPrivate === "true" }, true);
   });
@@ -60,6 +60,9 @@ export function setupPrivacy({ loadRequest, traceRequest, motion, onReveal }) {
         (pv.pick === "human" ? "Human review." : pv.pick === "keep" ? "Research." : "none yet."),
     );
     $("#pv-live").textContent = $("#pv-text").textContent;
+    // Keep the answer visible on short screens without moving keyboard focus.
+    if (result.getBoundingClientRect().bottom > innerHeight)
+      result.scrollIntoView({ block: "nearest", behavior: motion() ? "smooth" : "instant" });
     if (motion()) {
       gsap.fromTo(result, { y: 6 }, { y: 0, duration: 0.35, ease: "power2.out", clearProps: "transform" });
       gsap.fromTo(

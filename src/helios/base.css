@@ -107,9 +107,6 @@ h1,
 h2,
 h3 {
   font-family: var(--display);
-  font-weight: 800;
-  letter-spacing: -0.035em;
-  line-height: 0.96;
   margin: 0;
   text-wrap: balance;
 }
@@ -502,9 +499,6 @@ html.at-top:not([data-room]) .sections {
   background: var(--void);
 }
 .hero canvas.gl {
-  position: fixed;
-  inset: 0;
-  width: 100%;
   height: 100%;
   display: block;
   z-index: 0;
@@ -850,7 +844,7 @@ footer,
   flex-direction: column;
   gap: 4px;
   flex-grow: 1;
-  min-height: 320px;
+  min-height: 190px;
   max-height: 420px;
   overflow: auto;
   position: relative;
@@ -978,35 +972,6 @@ footer,
   place-items: center;
   filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.6));
   transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-  animation: bitfloat 4.2s ease-in-out infinite;
-}
-@keyframes bitfloat {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-7px);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .bitbtn {
-    animation: none;
-  }
-}
-.bitbtn.pop {
-  animation: bitpop 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-@keyframes bitpop {
-  0% {
-    transform: scale(1);
-  }
-  40% {
-    transform: scale(1.22);
-  }
-  100% {
-    transform: scale(1);
-  }
 }
 .bitbtn canvas {
   width: 100%;
@@ -1242,4 +1207,454 @@ footer nav {
 [data-rise] {
   opacity: 1;
   transform: none;
+}
+
+/* Page frame, header, hero, signature plate and motion rules shared by every chapter. */
+.plate.sig {
+  display: grid;
+  grid-template-rows: auto minmax(130px, 1fr) auto;
+  min-height: 360px;
+  gap: 16px;
+}
+
+.sig-heading {
+  position: relative;
+  z-index: 1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 14px 0;
+}
+
+.plate.sig img {
+  grid-row: 2;
+  align-self: center;
+  max-width: none;
+  height: auto;
+  object-fit: contain;
+  transform: none;
+}
+
+.sig .cap {
+  position: relative;
+  inset: auto;
+  grid-row: 3;
+  gap: 14px;
+  padding: 0 22px 18px;
+}
+
+.sig .shade {
+  pointer-events: none;
+}
+
+.sig .hud {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+body {
+  overflow-x: clip;
+}
+
+main {
+  isolation: isolate;
+}
+
+main:focus {
+  outline: none;
+}
+
+/* Anchors, scripted jumps and keyboard focus all stop below the fixed header. */
+html {
+  scroll-padding-top: 72px;
+}
+
+#instrument,
+#glossary {
+  scroll-margin-top: 28px;
+}
+
+button,
+a,
+input,
+summary {
+  -webkit-tap-highlight-color: rgba(242, 200, 122, 0.18);
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 5px;
+}
+
+.grid > * {
+  min-width: 0;
+}
+
+p {
+  overflow-wrap: break-word;
+}
+
+.menu-mobile {
+  display: none;
+}
+
+.nav nav a[aria-current] {
+  color: var(--gold);
+}
+
+.nav .acts {
+  flex-shrink: 0;
+}
+
+.hero .content {
+  z-index: 2;
+}
+
+.hero .sub {
+  text-shadow: 0 2px 20px var(--void);
+}
+
+.hero .status {
+  z-index: 3;
+}
+
+.flash {
+  position: absolute;
+  background: radial-gradient(
+    ellipse at 65% 50%,
+    rgba(56, 225, 255, 0.8),
+    rgba(242, 200, 122, 0.35) 30%,
+    transparent 65%
+  );
+}
+
+.plate.reveal {
+  clip-path: none;
+}
+
+.text-action {
+  color: var(--cyan);
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  min-height: 44px;
+  font-weight: 600;
+}
+
+.text-action:hover {
+  color: var(--gold);
+}
+
+section[data-ambient="off"] *,
+section[data-ambient="off"] *:before,
+section[data-ambient="off"] *:after,
+.page-hidden *,
+.page-hidden *:before,
+.page-hidden *:after {
+  animation-play-state: paused !important;
+}
+
+#ev-chart {
+  min-width: 430px;
+}
+
+.bitbtn:hover {
+  transform: none;
+}
+
+.bitbtn:focus-visible {
+  outline-offset: -3px;
+}
+
+.bitdock.scrolling {
+  transform: none;
+  opacity: 0.7;
+}
+
+.bitx {
+  min-width: 28px;
+  min-height: 28px;
+}
+
+.flight-open {
+  overflow: hidden;
+}
+
+.flight-open #bitdock {
+  visibility: hidden;
+}
+
+.sections a {
+  position: relative;
+}
+
+.sections a:after {
+  position: absolute;
+  inset: -7px;
+}
+
+.motion-off *,
+.motion-off *:before,
+.motion-off *:after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+.motion-off .reveal {
+  clip-path: none !important;
+}
+
+.motion-off [data-split],
+.motion-off [data-rise],
+.motion-off [data-step] {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+@media (min-width: 901px) {
+  .hero .status {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .nav nav {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .menu-desktop {
+    display: none;
+  }
+  .menu-mobile {
+    display: inline;
+  }
+  .nav .in {
+    gap: 10px;
+  }
+  .nav .acts {
+    gap: 8px;
+  }
+  .hero .content {
+    justify-content: center;
+  }
+  .hero h1 {
+    max-width: 650px;
+  }
+  .hero .cta {
+    max-width: 500px;
+  }
+  .hero .cta .btn {
+    flex: 1 1 auto;
+  }
+  .plate img {
+    transform: none;
+  }
+  .head {
+    gap: 24px;
+  }
+}
+
+@media (max-width: 600px) {
+  :root {
+    --gutter: 20px;
+  }
+  .nav .in {
+    height: 66px;
+  }
+  .brand {
+    font-size: 19px;
+    gap: 7px;
+  }
+  .brand svg {
+    width: 24px;
+    height: 24px;
+  }
+  .nav-contact {
+    display: none;
+  }
+  #mc-btn {
+    padding: 0 12px;
+    gap: 6px;
+    min-height: 44px;
+  }
+  #motion-btn {
+    padding: 0 10px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  #motion-btn span {
+    display: none;
+  }
+  .hero .content {
+    justify-content: center;
+  }
+  .hero .sub {
+    margin-top: 24px;
+  }
+  .hero .cta {
+    align-items: stretch;
+  }
+  .hero .cta .btn {
+    min-height: 52px;
+    font-size: 15px;
+    padding: 12px 18px;
+  }
+  .hero .kick {
+    font-size: 14px;
+    letter-spacing: 0.12em;
+  }
+  #missions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  #arch-group {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  #starship .cols-meter {
+    grid-template-columns: 90px minmax(0, 1fr) 28px;
+    gap: 8px;
+  }
+  #starship .cmp {
+    font-size: 14px;
+    grid-template-columns: 1.3fr repeat(3, minmax(0, 1fr));
+  }
+  .vh[open] {
+    flex-basis: 100%;
+  }
+  .vh-menu {
+    position: static;
+    min-width: 0;
+    margin-top: 8px;
+  }
+  .bitsay {
+    max-width: calc(100vw - 120px);
+  }
+  .philo .txt {
+    padding-block: 50px;
+  }
+  footer {
+    padding-bottom: 100px;
+  }
+}
+
+@media (max-width: 350px) {
+  :root {
+    --gutter: 16px;
+  }
+  .brand {
+    font-size: 17px;
+  }
+  .brand svg {
+    width: 21px;
+  }
+  .nav .acts {
+    gap: 5px;
+  }
+  .hero .cta .btn {
+    flex-basis: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *:before,
+  *:after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Wordmark: the I keeps the serifs of the celestial signature. */
+.brand .cy {
+  position: relative;
+  display: inline-block;
+  padding-inline: 0.07em;
+  line-height: 1;
+}
+.brand .cy::before,
+.brand .cy::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 0.5em;
+  height: 0.105em;
+  border-radius: 0.03em;
+  background: currentColor;
+  transform: translateX(-50%);
+}
+.brand .cy::before {
+  top: 0.09em;
+}
+.brand .cy::after {
+  bottom: 0.12em;
+}
+
+/* Signature plate: corner brackets frame the art; captions sit inside them, never under them. */
+/* Corner brackets frame the art; captions sit inside them, never under them. */
+.plate.sig {
+  padding: 30px 34px 28px;
+}
+.plate.sig img {
+  width: calc(100% + 68px);
+  margin-inline: -34px;
+}
+
+/* Standalone links meet the desktop minimum; phones and touch use larger targets. */
+main
+  :is(
+    .workshop-link,
+    .case-source,
+    [data-load],
+    #pv-trace,
+    #study-source,
+    #atlas-inspect-link,
+    #request-continue,
+    .principle-action,
+    .studio-library a,
+    .evidence-links a,
+    .request-inspection-link,
+    .studio-enter,
+    #hg-source,
+    .inline-cta
+  ),
+:is(#pilots .pill, #st-next, .atlas-inspection a, footer nav a, footer summary) {
+  display: inline-flex;
+  align-items: center;
+  column-gap: 0.3em;
+  min-height: var(--link-target, 24px);
+}
+@media (max-width: 900px), (pointer: coarse) {
+  :root {
+    --link-target: 44px;
+  }
+  .brand {
+    min-height: 44px;
+  }
+}
+
+/* Phone: 14 px mono labels keep their rhythm without colliding. */
+@media (max-width: 700px) {
+  .cmp.hd {
+    letter-spacing: 0.06em;
+  }
+}
+
+/* Ultrawide: one frame on the big glass, so header, hero and chapters share the same edges. */
+@media (min-width: 2200px) {
+  :root {
+    --frame: max(var(--gutter), calc((100vw - 1920px) / 2 + var(--gutter)));
+  }
+  .nav .in {
+    padding-inline: var(--frame);
+  }
+  .wrap,
+  html .room-bar {
+    max-width: 1920px;
+  }
 }

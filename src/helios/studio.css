@@ -17,7 +17,7 @@
   letter-spacing: -0.025em;
   line-height: 1.22;
 }
-#helios-studio :is(.bs-kicker, .lens-eyebrow, .lensing-film-eyebrow, .lens-index, .bs-index) {
+#helios-studio :is(.lens-eyebrow, .lensing-film-eyebrow) {
   font-family: var(--mono);
 }
 #helios-studio button {

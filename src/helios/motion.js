@@ -1,6 +1,7 @@
 import { MOTION_KEY, readMotionPreference, saveMotionPreference } from "./motion-preference.js";
 import { adoptStyles } from "./adopted-styles";
 import FILM_STYLE from "./film.css?inline";
+import { $, $$ } from "./dom.js";
 
 const FILM_SRC = "/assets/celestial/helios-arrival.mp4";
 
@@ -10,6 +11,27 @@ function injectFilmStyle() {
   filmStyles ??= adoptStyles(FILM_STYLE);
 }
 
+/**
+ * Every SVG under a root, typed for the SMIL pause and unpause calls.
+ * @param {ParentNode} root
+ * @param {string} [selector]
+ * @returns {SVGSVGElement[]}
+ */
+const svgsIn = (root, selector = "svg") => /** @type {SVGSVGElement[]} */ (Array.from(root.querySelectorAll(selector)));
+/**
+ * Writes the authored counts and bar widths that the markup carries as data attributes.
+ * @param {ParentNode} root
+ */
+function hydrateFigures(root) {
+  $$("[data-count]", root).forEach((el) => {
+    el.textContent = el.dataset.count;
+  });
+  $$(".bar[data-w]", root).forEach((el) => {
+    el.style.transform = `scaleX(${el.dataset.w})`;
+  });
+}
+
+/** @param {HTMLVideoElement | null} node */
 function releaseFilmNode(node) {
   if (!node) return;
   node.pause();
@@ -25,7 +47,7 @@ function releaseFilmNode(node) {
 
 export function setupMotion({ gsap, onChange, onSceneReady }) {
   const query = matchMedia("(prefers-reduced-motion: reduce)");
-  const button = document.querySelector("#motion-btn");
+  const button = $("#motion-btn");
   let preference = readMotionPreference();
   let enabled = preference !== "off" && !query.matches;
   let heroPromise = null;
@@ -34,14 +56,14 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
     const blocked = overlayOpen();
     document.documentElement.classList.toggle("experience-open", blocked);
     document.documentElement.classList.toggle("page-hidden", document.hidden);
-    document.querySelectorAll("main svg").forEach((svg) => {
+    svgsIn(document, "main svg").forEach((svg) => {
       if (!blocked && !document.hidden && enabled && svg.closest("section")?.dataset.ambient === "on")
         svg.unpauseAnimations?.();
       else svg.pauseAnimations?.();
     });
     window.__heroPause?.(blocked || !enabled);
-    const heroNode = document.querySelector(".hero");
-    const filmNode = document.querySelector("#hero-film");
+    const heroNode = $(".hero");
+    const filmNode = /** @type {HTMLVideoElement} */ ($("#hero-film"));
     if (blocked) {
       if (heroNode?.dataset.film === "playing") {
         heroNode.dataset.film = "done";
@@ -59,12 +81,8 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
     document.documentElement.classList.toggle("motion-off", !enabled);
     button.setAttribute("aria-pressed", String(enabled));
     button.dataset.motionSource = query.matches ? "device" : "visitor";
-    button.setAttribute(
-      "aria-label",
-      // A toggle keeps its state in aria-pressed, so the name states the setting rather than an action.
-      enabled ? "Motion on" : query.matches ? "Motion off, following your device setting" : "Motion off",
-    );
-    button.querySelector("span").textContent = enabled ? "Motion on" : "Motion off";
+    // The name stays stable while aria-pressed and the icon carry the state.
+    button.setAttribute("aria-label", "Motion");
     button.title = query.matches
       ? "Reduced motion follows your device setting"
       : enabled
@@ -73,17 +91,17 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
     if (!enabled) {
       document.querySelector(".hero").removeAttribute("data-arrival");
       document.querySelector(".hero")?.removeAttribute("data-film");
-      releaseFilmNode(document.querySelector("#hero-film"));
+      releaseFilmNode(/** @type {HTMLVideoElement} */ ($("#hero-film")));
       gsap.globalTimeline.getChildren(false).forEach((animation) => {
         if (animation.repeat() === -1) animation.pause();
         else animation.progress(1).kill();
       });
     }
-    document.querySelectorAll("[data-hero],[data-split],[data-stagger]>*").forEach((el) => {
+    $$("[data-hero],[data-split],[data-stagger]>*").forEach((el) => {
       el.style.opacity = "1";
       el.style.transform = "none";
     });
-    document.querySelectorAll("svg").forEach((svg) => {
+    svgsIn(document).forEach((svg) => {
       if (enabled && !overlayOpen() && !document.hidden && svg.closest("section")?.dataset.ambient === "on")
         svg.unpauseAnimations?.();
       else svg.pauseAnimations?.();
@@ -105,12 +123,7 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
     apply();
   });
   apply();
-  document.querySelectorAll("[data-count]").forEach((el) => {
-    el.textContent = el.dataset.count;
-  });
-  document.querySelectorAll(".bar[data-w]").forEach((el) => {
-    el.style.transform = `scaleX(${el.dataset.w})`;
-  });
+  hydrateFigures(document);
   const observer = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
@@ -129,8 +142,8 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
   document.querySelectorAll("main>section[id]").forEach((el) => observer.observe(el));
   const ambient = new IntersectionObserver((entries) => {
     for (const entry of entries) {
-      entry.target.dataset.ambient = entry.isIntersecting ? "on" : "off";
-      entry.target.querySelectorAll("svg").forEach((svg) => {
+      /** @type {HTMLElement} */ (entry.target).dataset.ambient = entry.isIntersecting ? "on" : "off";
+      svgsIn(entry.target).forEach((svg) => {
         if (entry.isIntersecting && enabled && !document.hidden && !overlayOpen()) svg.unpauseAnimations?.();
         else svg.pauseAnimations?.();
       });
@@ -138,17 +151,12 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
   });
   document.querySelectorAll("section.block,.hero").forEach((el) => ambient.observe(el));
   window.addEventListener("helios-room-ready", ({ detail: room }) => {
-    room.querySelectorAll("[data-count]").forEach((el) => {
-      el.textContent = el.dataset.count;
-    });
-    room.querySelectorAll(".bar[data-w]").forEach((el) => {
-      el.style.transform = `scaleX(${el.dataset.w})`;
-    });
+    hydrateFigures(room);
     ambient.observe(room);
     syncAmbient();
   });
   document.addEventListener("visibilitychange", syncAmbient);
-  const rail = document.querySelector("#railbar");
+  const rail = $("#railbar");
   let railFrame = 0;
   window.addEventListener(
     "scroll",
@@ -171,26 +179,26 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
       })
       .catch(() => {
         heroPromise = null;
-        document.querySelector("#fallback").style.opacity = "1";
+        $("#fallback").style.opacity = "1";
       });
     return heroPromise;
   }
   // The authored image stays visible. Only the explicit orbit action loads the optional renderer.
-  const hero = document.querySelector(".hero");
-  const poster = document.querySelector("#fallback");
+  const hero = $(".hero");
+  const poster = /** @type {HTMLImageElement} */ ($("#fallback"));
   const deepLink = () => {
     const hash = location.hash;
     return Boolean(hash) && hash !== "#" && hash !== "#top";
   };
   function finishFilm() {
-    const node = document.querySelector("#hero-film");
+    const node = /** @type {HTMLVideoElement} */ ($("#hero-film"));
     if (hero.dataset.film === "playing") hero.dataset.film = "done";
     else hero.removeAttribute("data-film");
     if (enabled && !document.hidden && !query.matches) hero.dataset.arrival = "on";
     releaseFilmNode(node);
   }
   function mountFilm() {
-    const existing = document.querySelector("#hero-film");
+    const existing = /** @type {HTMLVideoElement} */ ($("#hero-film"));
     if (existing) return existing;
     injectFilmStyle();
     const film = document.createElement("video");
@@ -203,7 +211,7 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
     film.setAttribute("muted", "");
     film.setAttribute("playsinline", "");
     film.setAttribute("webkit-playsinline", "");
-    film.preload = "auto";
+    film.preload = "none";
     film.setAttribute("aria-hidden", "true");
     film.tabIndex = -1;
     const source = document.createElement("source");
@@ -224,11 +232,11 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
   };
   function startFilm() {
     const connection = navigator.connection;
-    const constrained = connection?.saveData || /^(slow-2g|2g)$/.test(connection?.effectiveType || "");
+    const constrained = connection?.saveData || /^(slow-2g|2g|3g)$/.test(connection?.effectiveType || "");
     const compact = matchMedia("(max-width: 700px), (pointer: coarse)").matches;
     if (!enabled || query.matches || compact || constrained || document.hidden || deepLink() || overlayOpen()) {
       hero.removeAttribute("data-film");
-      releaseFilmNode(document.querySelector("#hero-film"));
+      releaseFilmNode(/** @type {HTMLVideoElement} */ ($("#hero-film")));
       return;
     }
     if (seenArrival()) {
@@ -256,6 +264,7 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
     film.addEventListener("ended", finishFilm, { once: true });
     if (film.readyState >= 2) play();
     else film.addEventListener("canplay", play, { once: true });
+    film.preload = "auto";
     film.load();
   }
   window.addEventListener("keydown", (event) => {

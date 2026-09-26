@@ -1,5 +1,5 @@
 @import "./base.css";
-@import "./refinements.css";
+@import "./instruments.css";
 @import "./scenes.css";
 @import "./typography.css";
 @import "./journey.css";
@@ -7,7 +7,6 @@
 @import "./arrival.css";
 @import "./navigation.css";
 @import "./invitation.css";
-@import "./zenith.css";
 @import "./rooms.css";
 @import "./utilities.css";
 @import "./workbench.css";

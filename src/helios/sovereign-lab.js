@@ -1,4 +1,4 @@
-import { $, $$, press } from "./dom.js";
+import { $, $$, press, closestTarget } from "./dom.js";
 import { gsap } from "gsap";
 import { computeWorldOutcome } from "../odyssey/sovereign-model";
 
@@ -67,14 +67,14 @@ export function setupSovereignLab({ scenes, motion, copy }) {
       .join("");
   }
   $("#arch-group").addEventListener("click", (e) => {
-    const b = e.target.closest("[data-arch]");
+    const b = closestTarget(e, "[data-arch]");
     if (!b) return;
     w.arch = b.dataset.arch;
     press($("#arch-group"), "data-arch", w.arch);
     renderWorld();
   });
   $("#sens-group").addEventListener("click", (e) => {
-    const b = e.target.closest("[data-sens]");
+    const b = closestTarget(e, "[data-sens]");
     if (!b) return;
     w.sens = b.dataset.sens;
     press($("#sens-group"), "data-sens", w.sens);
@@ -82,12 +82,12 @@ export function setupSovereignLab({ scenes, motion, copy }) {
   });
   $("#tg-net").addEventListener("click", (e) => {
     w.net = !w.net;
-    e.currentTarget.setAttribute("aria-pressed", w.net);
+    /** @type {Element} */ (e.currentTarget).setAttribute("aria-pressed", String(w.net));
     renderWorld();
   });
   $("#tg-permit").addEventListener("click", (e) => {
     w.permit = !w.permit;
-    e.currentTarget.setAttribute("aria-pressed", w.permit);
+    /** @type {Element} */ (e.currentTarget).setAttribute("aria-pressed", String(w.permit));
     renderWorld();
   });
   const MISSIONS = {
@@ -96,13 +96,13 @@ export function setupSovereignLab({ scenes, motion, copy }) {
     classified: { arch: "cloud", sens: "private", net: true, permit: false },
   };
   $("#missions").addEventListener("click", (e) => {
-    const b = e.target.closest("[data-mission]");
+    const b = closestTarget(e, "[data-mission]");
     if (!b) return;
     Object.assign(w, MISSIONS[b.dataset.mission]);
     press($("#arch-group"), "data-arch", w.arch);
     press($("#sens-group"), "data-sens", w.sens);
-    $("#tg-net").setAttribute("aria-pressed", w.net);
-    $("#tg-permit").setAttribute("aria-pressed", w.permit);
+    $("#tg-net").setAttribute("aria-pressed", String(w.net));
+    $("#tg-permit").setAttribute("aria-pressed", String(w.permit));
     renderWorld();
   });
   $("#copy-mission").addEventListener("click", () =>
@@ -119,8 +119,8 @@ export function setupSovereignLab({ scenes, motion, copy }) {
       Object.assign(w, next);
       press($("#arch-group"), "data-arch", w.arch);
       press($("#sens-group"), "data-sens", w.sens);
-      $("#tg-net").setAttribute("aria-pressed", w.net);
-      $("#tg-permit").setAttribute("aria-pressed", w.permit);
+      $("#tg-net").setAttribute("aria-pressed", String(w.net));
+      $("#tg-permit").setAttribute("aria-pressed", String(w.permit));
       renderWorld();
     },
   };

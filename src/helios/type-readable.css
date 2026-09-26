@@ -1,4 +1,4 @@
-/* The Readable type style: system fonts, larger body text and no all caps. zenith.js applies it only when chosen. */
+/* The Readable type style: system fonts, larger body text and no all caps. type-styles.js applies it only when chosen. */
 :root {
   --display: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;

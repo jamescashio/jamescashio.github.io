@@ -1,10 +1,10 @@
-import { $, $$, press } from "./dom.js";
+import { $, $$, press, closestTarget } from "./dom.js";
 import { gsap } from "gsap";
 import { PILOTS } from "./heritage-data.js";
 
 export function setupHeritage({ motion, say }) {
   $("#pilots").addEventListener("click", (e) => {
-    const b = e.target.closest("[data-pilot]");
+    const b = closestTarget(e, "[data-pilot]");
     if (!b) return;
     const k = b.dataset.pilot,
       P = PILOTS[k];
@@ -20,7 +20,7 @@ export function setupHeritage({ motion, say }) {
     $("#hg-kick").textContent = P.kick;
     $("#hg-head").textContent = P.head;
     $("#hg-body").textContent = P.body;
-    $("#hg-source").href = P.source;
+    $("#hg-source").setAttribute("href", P.source);
     $("#hg-source").textContent = P.sourceLabel + " ↗";
     if (motion())
       gsap.fromTo(

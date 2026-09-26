@@ -1,4 +1,10 @@
-# V39.1 Helios Zenith release
+# V39.2 Helios Zenith release
+
+V39.2 type checks the front door during every build and gives each style rule one home. It also restores the useful changes from the saved review: the privacy invitation lands on its decision, the result stays visible while focus stays on the selected answer, Motion keeps its name, the glossary stays folded until requested, and desktop links retain a minimum target size. E.V.E. answers page questions, offers typo suggestions, and lets Tab leave a completed command. Reading editions are linked from the room directory and each room. An experiment action returns focus to its selected tab. 3G connections use the still arrival artwork. The arrival film waits until playback is eligible, the evidence console uses less empty space, the Principles action names the Lensing Observatory, and the saved mission card preserves the original signature without a dark rectangle.
+
+Validation covers all twelve release gates, two independent reviews of the same frozen build, responsive layouts from 320 through 2560 pixels, keyboard focus, reduced motion, automated accessibility, reading editions with JavaScript disabled, actual H.264 decoding for the arrival and five studio films, and a complete flight and card export on an NVIDIA RTX 3080. Spoken screen reader output, Safari, Firefox and physical phones were not verified. The entry stylesheet is 18,964 of 19,000 bytes gzip. No evidence observations or artwork changed. Rollback: revert the squash commit, or redeploy 22a9645155bec379a805bd350e7bcf1a6c60522c.
+
+## Preserved V39.1 release
 
 V39.1 keeps every Zenith asset, typeface, colour and interaction and makes the first visit easier to name. Studies become Experiments; Zeus, Apollo, HERMES, Atlas and DSH are defined where they first appear; release and house codenames leave the visitor copy. The first screen keeps two hero actions, an open room has a real h1, the Trace button shows when it runs, and the system map card stays beside the map on desktop. The home page's Content Security Policy refuses inline styles: script-owned styles are constructable stylesheets and experiment geometry uses classes and custom properties. The signature, Studios card and Celestial Forge share one celestial set.
 
