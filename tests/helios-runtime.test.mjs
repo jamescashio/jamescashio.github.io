@@ -1528,9 +1528,12 @@ test("The V35 archive returns to the current site without adding a cinema tab st
     t.after(() => context.close());
     const page = await context.newPage();
     await page.goto(new URL("/command-deck.html#deck=eve", url).href);
+    // The archived deck is prerendered; its commands answer once the client has activated.
+    await expect(page.locator("#root")).toHaveAttribute("data-client-activated", "true", { timeout: 15000 });
     await page.locator('button[data-cmd="photo"]').click();
     const cinema = page.getByRole("dialog", { name: "Cinema view", exact: true });
-    await expect(cinema).toBeVisible();
+    // Software rendered WebGL (CI and headless Linux) opens the archived cinema view in several seconds.
+    await expect(cinema).toBeVisible({ timeout: 15000 });
     const back = page.locator('a[href="/"]').filter({ hasText: "Back to current site" });
     assert.equal(await back.evaluate((link) => Boolean(link.closest("[inert]"))), true);
     const exit = cinema.getByRole("button", { name: "EXIT CINEMA", exact: true });
