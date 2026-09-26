@@ -81,12 +81,8 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
     document.documentElement.classList.toggle("motion-off", !enabled);
     button.setAttribute("aria-pressed", String(enabled));
     button.dataset.motionSource = query.matches ? "device" : "visitor";
-    button.setAttribute(
-      "aria-label",
-      // A toggle keeps its state in aria-pressed, so the name states the setting rather than an action.
-      enabled ? "Motion on" : query.matches ? "Motion off, following your device setting" : "Motion off",
-    );
-    button.querySelector("span").textContent = enabled ? "Motion on" : "Motion off";
+    // The name stays stable while aria-pressed and the icon carry the state.
+    button.setAttribute("aria-label", "Motion");
     button.title = query.matches
       ? "Reduced motion follows your device setting"
       : enabled
@@ -215,7 +211,7 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
     film.setAttribute("muted", "");
     film.setAttribute("playsinline", "");
     film.setAttribute("webkit-playsinline", "");
-    film.preload = "auto";
+    film.preload = "none";
     film.setAttribute("aria-hidden", "true");
     film.tabIndex = -1;
     const source = document.createElement("source");
@@ -236,7 +232,7 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
   };
   function startFilm() {
     const connection = navigator.connection;
-    const constrained = connection?.saveData || /^(slow-2g|2g)$/.test(connection?.effectiveType || "");
+    const constrained = connection?.saveData || /^(slow-2g|2g|3g)$/.test(connection?.effectiveType || "");
     const compact = matchMedia("(max-width: 700px), (pointer: coarse)").matches;
     if (!enabled || query.matches || compact || constrained || document.hidden || deepLink() || overlayOpen()) {
       hero.removeAttribute("data-film");
@@ -268,6 +264,7 @@ export function setupMotion({ gsap, onChange, onSceneReady }) {
     film.addEventListener("ended", finishFilm, { once: true });
     if (film.readyState >= 2) play();
     else film.addEventListener("canplay", play, { once: true });
+    film.preload = "auto";
     film.load();
   }
   window.addEventListener("keydown", (event) => {

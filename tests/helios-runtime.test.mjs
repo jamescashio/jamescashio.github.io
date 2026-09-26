@@ -77,6 +77,8 @@ test("Privacy feedback answers each new prediction at once and stays complete wh
     // Choosing a prediction reveals the answer in the same click.
     await page.locator('[data-pv="keep"]').click();
     await expect(page.locator("#pv-result")).toBeVisible();
+    await expect(page.locator("#pv-result")).toBeInViewport({ ratio: 1 });
+    await expect(page.locator('[data-pv="keep"]')).toBeFocused();
     await expect(page.locator("#pv-text")).toContainText("Not quite. Privacy wins.");
     await expect(page.locator("#pv-answer")).toHaveText("Human review");
     await expect(page.locator("#pv-live")).toContainText("Your prediction: Research.");
@@ -201,8 +203,9 @@ test("Mission presets and the last change match the model, including custom sett
 
 test("The first-minute path, chapter labels and principles lead to their working destinations", async (t) => {
   const page = await visit(t);
-  await page.locator('.hero a[href="#work"]').click();
-  await expect(page.locator("#work-h")).toBeFocused();
+  await page.locator('.hero a[href="#privacy-test"]').click();
+  await expect(page.locator("#pv-h")).toBeFocused();
+  await expect(page.locator('[data-pv="human"]')).toBeInViewport();
   await page.locator("#mc-btn").click();
   await page.locator("#mc-search").fill("Starship build story");
   await page.locator('#mc-list a[href="#build-story"]').click();
@@ -337,6 +340,13 @@ for (const width of [1440, 768, 390, 320])
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width, "no horizontal page overflow");
     await expect(page.locator("main")).toHaveCount(1);
     await expect(page.locator("h1")).toContainText("Own the iron.");
+    const targetFloor = width <= 900 ? 44 : 24;
+    for (const target of await page.locator("footer nav a, footer summary, #study-source").all()) {
+      if (await target.isVisible()) {
+        const bounds = await target.boundingBox();
+        assert.ok(bounds.height >= targetFloor, `${await target.textContent()} has a ${targetFloor}px target`);
+      }
+    }
     await audit(page, `home-${width}`);
     await page.screenshot({ path: path.join(output, `home-${width}.png`) });
     for (const id of ["cascade", "exposure", "briefing", "dashboards", "signal", "graphify", "hermes"]) {
@@ -518,7 +528,7 @@ test("The invitation and three starting routes work by keyboard, keep sound opt-
     await expect(page.locator('#mc-start a[href="#flight=board"]')).toBeFocused();
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("Enter");
-    await expect(page.locator("#work-h")).toBeFocused();
+    await expect(page.locator("#pv-h")).toBeFocused();
     await page.locator("#mc-btn").click();
     await page.locator("#mc-search").fill("Graphify");
     await expect(page.locator("#mc-start")).toBeHidden();
@@ -556,6 +566,7 @@ test("The full page, atlas, principles, evidence console, hangar and contact sta
       await page
         .locator(`#${id} img`)
         .evaluateAll((images) => Promise.all(images.map((image) => image.decode().catch(() => {}))));
+      await expect(page.locator(`#${id} .room-end a[href="/rooms/${id}/"]`)).toHaveText("Reading edition");
       await page.locator(".room-back").click();
       await expect(page.locator("#rooms-h")).toBeFocused();
     }
@@ -722,7 +733,9 @@ test("The integrated flight responds, shares its actual scenario, downloads a ca
 
 test("Motion off leaves future sections visible and a system preference change reaches the open flight", async (t) => {
   const page = await visit(t, { motion: "no-preference" });
+  await expect(page.locator("#motion-btn")).toHaveAccessibleName("Motion");
   await page.locator("#motion-btn").click();
+  await expect(page.locator("#motion-btn")).toHaveAccessibleName("Motion");
   await expect(page.locator("#motion-btn")).toHaveAttribute("aria-pressed", "false");
   const hidden = await page
     .locator("main h1,main h2,main h3,[data-rise]")
@@ -850,9 +863,25 @@ test("Changing privacy interrupts a trace and never animates the held request in
   await expect(page.locator("#trace-label")).toContainText("The decision returns to the operator");
 });
 
-test("E.V.E. keeps each reply line visually separate at phone and desktop widths", async (t) => {
+test("E.V.E. keeps replies separate and command completion leaves a keyboard exit", async (t) => {
   for (const width of [320, 1440]) {
     const page = await visit(t, { width, motion: "no-preference", hash: "#evidence" });
+    const input = page.locator("#eve-in");
+    await input.fill("fl");
+    await input.press("Shift+Tab");
+    await expect(input).not.toBeFocused();
+    await input.focus();
+    await input.press("Tab");
+    await expect(input).toHaveValue("fleet");
+    await expect(input).toBeFocused();
+    await input.press("Tab");
+    await expect(input).not.toBeFocused();
+    await input.focus();
+    await input.press("Shift+Tab");
+    await expect(input).not.toBeFocused();
+    await input.fill("no such command");
+    await input.press("Tab");
+    await expect(input).not.toBeFocused();
     for (const [command, lineCount] of [
       ["help", 4],
       ["fleet", 4],
@@ -965,7 +994,8 @@ test("Manual quiet mode survives reload and device changes, while blocked storag
   await page.locator("#motion-btn").click();
   await expect(page.locator("#motion-btn")).toHaveAttribute("aria-pressed", "false");
   await page.locator(".hero-secondary").click();
-  await expect(page.locator("#work-h")).toBeFocused();
+  await expect(page.locator("#pv-h")).toBeFocused();
+  await expect(page.locator('[data-pv="human"]')).toBeInViewport();
 });
 
 test("Helios flight waits for its visitor, offers an optional tour and pauses that tour for a decision", async (t) => {
@@ -1595,8 +1625,8 @@ test("Study shortcuts reveal the chosen experiment and heritage credits never co
         await expect(page.locator("#st-name")).toBeInViewport();
       }
     } else {
-      // Wide screens start with the glossary, the workbench and the system map open; the study cards replace the shortcut row.
-      await expect(page.locator("#glossary")).toHaveAttribute("open", "");
+      // Wide screens open the workbench and system map while the glossary stays optional.
+      await expect(page.locator("#glossary")).not.toHaveAttribute("open", "");
       await expect(page.locator("#study-lab")).toHaveAttribute("open", "");
       await expect(page.locator("#atlas-lab")).toHaveAttribute("open", "");
       await expect(shortcuts).toBeHidden();
@@ -1610,6 +1640,12 @@ test("Study shortcuts reveal the chosen experiment and heritage credits never co
       await expect(page.locator("#st-name")).toBeFocused();
       await expect(page.locator("#st-name")).toBeInViewport();
     }
+    const selectedStudy = page.locator("#studies-list [aria-selected='true']");
+    const selectedId = await selectedStudy.getAttribute("id");
+    await page.locator("#study-choose").click();
+    await expect(selectedStudy).toBeFocused();
+    await expect(selectedStudy).toBeInViewport();
+    await expect(selectedStudy).toHaveAttribute("id", selectedId);
     await page.locator('.room-card[data-room-route="#heritage"]').click();
     for (const pilot of ["yeager", "johnson", "rutan", "hoover"]) {
       await page.locator(`#pilots [data-pilot="${pilot}"]`).click();
@@ -1695,7 +1731,12 @@ test("Reading editions explain inactive controls and contain no live regions", a
   const page = await visit(t, { expandWorkbenches: false });
   for (const status of await page.locator(".room-load-status").all()) await expect(status).toBeEmpty();
   for (const id of ["starship", "principles", "studios", "heritage"]) {
-    await page.goto(new URL(`/rooms/${id}/`, url).href);
+    await page.goto(url);
+    await page
+      .getByRole("navigation", { name: "Room reading editions", exact: true })
+      .locator(`a[href="/rooms/${id}/"]`)
+      .click();
+    await page.waitForURL(`**/rooms/${id}/`);
     await expect(page.locator("#reading-mode")).toContainText("Controls are inactive in this reading edition");
     assert.equal(await page.locator('[aria-live],[role="status"],[role="log"]').count(), 0);
     assert.equal(await page.locator("div[aria-label]:not([role]),span[aria-label]:not([role])").count(), 0);
@@ -1707,7 +1748,7 @@ test("Reading editions explain inactive controls and contain no live regions", a
 });
 
 test("Phones and data-saving visits keep the hero artwork without downloading the decorative film", async (t) => {
-  for (const setting of ["phone", "save-data", "slow-connection", "desktop"]) {
+  for (const setting of ["phone", "save-data", "slow-connection", "3g", "desktop"]) {
     const context = await browser.newContext({
       viewport: { width: setting === "phone" ? 390 : 1440, height: 900 },
       hasTouch: setting === "phone",
@@ -1715,13 +1756,13 @@ test("Phones and data-saving visits keep the hero artwork without downloading th
       reducedMotion: "no-preference",
     });
     t.after(() => context.close());
-    if (setting === "save-data" || setting === "slow-connection")
+    if (setting === "save-data" || setting === "slow-connection" || setting === "3g")
       await context.addInitScript((value) => {
         Object.defineProperty(navigator, "connection", {
           configurable: true,
           value: {
             saveData: value === "save-data",
-            effectiveType: value === "slow-connection" ? "2g" : "4g",
+            effectiveType: value === "slow-connection" ? "2g" : value === "3g" ? "3g" : "4g",
           },
         });
       }, setting);

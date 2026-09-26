@@ -104,7 +104,7 @@
                 <circle cx="12" cy="12" r="8.5" />
                 <path d="M6 18 18 6" />
               </g></svg
-            ><span class="hide-m">Motion on</span>
+            ><span class="hide-m">Motion</span>
           </button>
           <button class="btn line sm type-btn" id="type-btn" type="button" aria-label="Aa Signature. Change type style">
             <span class="type-aa" aria-hidden="true">Aa</span> <span class="hide-m" id="type-name">Signature</span>
@@ -181,7 +181,9 @@
             <a class="btn gold" id="hero-primary" href="#flight=board" data-flight
               >Board the starship <span aria-hidden="true">→</span></a
             >
-            <a class="btn ghost hero-secondary" href="#work">Try the privacy test <span aria-hidden="true">→</span></a>
+            <a class="btn ghost hero-secondary" href="#privacy-test"
+              >Try the privacy test <span aria-hidden="true">→</span></a
+            >
           </div>
           <p class="cta-note">A 30 second 3D flight: see where twelve AI requests go. Sound stays off.</p>
           <button class="text-action hero-orbit" type="button" id="fold-btn" data-hero>
@@ -318,12 +320,12 @@
             </div>
           </div>
           <div class="grid" data-stagger>
-            <div class="panel c7 stack p-22-34 sg-22">
+            <div class="panel c7 stack p-22-34 sg-22" id="privacy-test">
               <div class="flex justify-between gap-12 flex-wrap">
                 <span class="kick gold">THE PRIVACY TEST</span
                 ><span class="mono c-mu">IN YOUR BROWSER · NO UPLOADS</span>
               </div>
-              <h3>One change. Who decides?</h3>
+              <h3 id="pv-h">One change. Who decides?</h3>
               <p class="muted m-0">Analyze a document and require sources. Now make that document private.</p>
               <div class="privacy-pair">
                 <div class="soft stack privacy-route">
@@ -498,10 +500,10 @@
                   </div>
                   <div class="stack min-w-0 sg-10">
                     <div class="flex justify-between items-baseline">
-                      <span class="mono c-mu">EXAMPLE OUTPUT</span><span class="mono c-cy" id="st-code">QUALIFIED</span>
+                      <span class="mono c-mu">EXAMPLE LANE</span><span class="mono c-cy" id="st-code">QUALIFIED</span>
                     </div>
                     <div class="flex items-baseline gap-12 flex-wrap">
-                      <span class="lane cy" id="st-lane">Workhorse</span><span class="muted copy-note">lane</span>
+                      <span class="lane cy" id="st-lane">Workhorse</span>
                     </div>
                     <div class="stack sg-8" id="st-steps"></div>
                     <p class="muted copy-note m-0 mt-4" id="st-detail">
@@ -553,6 +555,7 @@
                         <span id="st-nextq">When should automation stop and ask a person?</span> →
                       </button>
                     </div>
+                    <button class="text-action" type="button" id="study-choose">Choose another experiment ↑</button>
                   </div>
                 </div>
               </div>
@@ -922,6 +925,13 @@
               ><span class="room-go" id="room-go-heritage">Open the page <span aria-hidden="true">→</span></span></a
             >
           </div>
+          <nav class="flex flex-wrap items-center gap-12 pt-6" aria-label="Room reading editions">
+            <span class="muted">Reading editions:</span>
+            <a class="inline-cta" href="/rooms/starship/">Starship lab</a>
+            <a class="inline-cta" href="/rooms/principles/">Principles</a>
+            <a class="inline-cta" href="/rooms/studios/">Studios</a>
+            <a class="inline-cta" href="/rooms/heritage/">Flight heritage</a>
+          </nav>
         </div>
       </section>
 
@@ -1364,7 +1374,7 @@
                 ><span class="mono">01 / EXPLORE</span><strong>Board the starship →</strong
                 ><span>A 30 second flight. Your pace.</span></a
               >
-              <a class="mc-route" href="#work"
+              <a class="mc-route" href="#privacy-test"
                 ><span class="mono">02 / TRY</span><strong>Try the privacy test →</strong
                 ><span>One document. Your prediction.</span></a
               >

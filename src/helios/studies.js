@@ -217,6 +217,11 @@ export function setupStudies({ scenes, motion, copy }) {
     renderRoute(false);
   });
   $("#route-btn").addEventListener("click", () => renderRoute(true));
+  $("#study-choose").addEventListener("click", () => {
+    const selected = $("#studies-list [aria-selected='true']");
+    selected.focus({ preventScroll: true });
+    selected.scrollIntoView({ block: "center", behavior: "instant" });
+  });
   $("#st-next").addEventListener("click", () => {
     selectStudy((st.i + 1) % 7);
     // The next study opens where its title can be read, and focus moves to that title.

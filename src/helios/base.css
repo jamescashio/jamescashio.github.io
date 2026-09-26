@@ -844,7 +844,7 @@ footer,
   flex-direction: column;
   gap: 4px;
   flex-grow: 1;
-  min-height: 320px;
+  min-height: 190px;
   max-height: 420px;
   overflow: auto;
   position: relative;
@@ -1605,30 +1605,33 @@ section[data-ambient="off"] *:after,
   margin-inline: -34px;
 }
 
-/* Touch and phone targets: every inline link is a comfortable target. */
+/* Standalone links meet the desktop minimum; phones and touch use larger targets. */
+main
+  :is(
+    .workshop-link,
+    .case-source,
+    [data-load],
+    #pv-trace,
+    #study-source,
+    #atlas-inspect-link,
+    #request-continue,
+    .principle-action,
+    .studio-library a,
+    .evidence-links a,
+    .request-inspection-link,
+    .studio-enter,
+    #hg-source,
+    .inline-cta
+  ),
+:is(#pilots .pill, #st-next, .atlas-inspection a, footer nav a, footer summary) {
+  display: inline-flex;
+  align-items: center;
+  column-gap: 0.3em;
+  min-height: var(--link-target, 24px);
+}
 @media (max-width: 900px), (pointer: coarse) {
-  main
-    :is(
-      .workshop-link,
-      .case-source,
-      [data-load],
-      #pv-trace,
-      #study-source,
-      #atlas-inspect-link,
-      #request-continue,
-      .principle-action,
-      .studio-library a,
-      .evidence-links a,
-      .request-inspection-link,
-      .studio-enter,
-      #hg-source,
-      .inline-cta
-    ),
-  :is(#pilots .pill, #st-next, .atlas-inspection a, footer nav a, footer summary) {
-    display: inline-flex;
-    align-items: center;
-    column-gap: 0.3em;
-    min-height: 44px;
+  :root {
+    --link-target: 44px;
   }
   .brand {
     min-height: 44px;

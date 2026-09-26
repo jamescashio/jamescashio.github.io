@@ -295,9 +295,10 @@ export function setupEvidenceConsole({ motion }) {
       e.preventDefault();
       cursor = Math.min(history.length, cursor + 1);
       inp.value = history[cursor] ?? "";
-    } else if (e.key === "Tab" && inp.value.trim()) {
-      const match = KNOWN_COMMANDS.find((command) => command.startsWith(inp.value.trim().toLowerCase()));
-      if (match) {
+    } else if (e.key === "Tab" && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey && inp.value.trim()) {
+      const prefix = inp.value.trim().toLowerCase();
+      const match = KNOWN_COMMANDS.find((command) => command.startsWith(prefix));
+      if (match && match !== prefix) {
         e.preventDefault();
         inp.value = match;
       }

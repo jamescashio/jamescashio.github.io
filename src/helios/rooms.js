@@ -77,6 +77,10 @@ export function setupRooms(context) {
         if (authored?.id !== room.id) throw new Error("Room content does not match its address");
         room.className = authored.className;
         room.replaceChildren(...authored.childNodes);
+        const reading = document.createElement("a");
+        reading.href = `/rooms/${room.id}/`;
+        reading.textContent = "Reading edition";
+        room.querySelector(".room-end")?.append(reading);
         context.scenes.attachRoom(room);
         controllers.set(room.id, module.mount?.(context));
         room.dataset.roomState = "ready";

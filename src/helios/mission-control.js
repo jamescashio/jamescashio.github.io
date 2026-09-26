@@ -36,7 +36,7 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
     [
       "The privacy test",
       "Start here. Predict where one private document goes.",
-      "#work",
+      "#privacy-test",
       "privacy private data test start decision",
     ],
     [
