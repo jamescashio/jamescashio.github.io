@@ -1,6 +1,8 @@
-# cAshIo V39.0 · Helios
+# cAshIo V39.1 · Helios
 
 The public front door is **[cashio.us](https://cashio.us/)**. The root serves the current orbital workshop directly from `index.html` and `src/helios/`. Former `/v38/` addresses normalize to the root and keep their requested section or scene.
+
+**V39.1** is a clarity and code pass on Zenith. Studies are now called experiments, so they no longer sit beside the Studios room under a near twin name. Zeus, Apollo, HERMES, Atlas and DSH are defined in plain words where they first appear, and release and house codenames leave the visitor copy. The first screen keeps two hero actions: Bit's orbit becomes a small text action and the scroll cue gives way on wide screens. An open room is titled by a real h1, the Trace button shows when it is running, and the system map's inspection card stays beside the map on desktop. The home page now refuses inline styles: script-owned styles use constructable stylesheets, so its Content Security Policy no longer needs `'unsafe-inline'` for styles. The home signature, the Studios card and the Celestial Forge share one celestial artwork set, and the entry stylesheet no longer declares a bold mono face.
 
 **V39.0 Zenith** keeps the Helios world, palette, type, artwork, Bit and quiet sound, and sharpens what a first visit says and feels like:
 
@@ -10,7 +12,7 @@ The public front door is **[cashio.us](https://cashio.us/)**. The root serves th
 - **E.V.E. lore.** Unlisted console commands carry labelled Dune, aviation and fleet lore. Listed commands answer from the dated export and name each fact’s observation date. The September 18 orchestration audit stays distinct from the September 24 fleet and backup observation.
 - **Craft.** The wordmark I carries the serifs of the celestial signature. The phone starship card no longer collides with its caption, touch links have 44 pixel targets, ultrawide screens get a larger hero, and a designed share card replaces the plain orbit image for social previews. The hero art uses the existing AVIF set; the unseen 504 KB film poster is gone. The dead custom cursor markup and rules are removed.
 
-The current receipt remains `/v38/site-release.json`. V37.17 is preserved at `/odyssey.html`, accessible through Version history, and `?v=37.17` links explicitly select it. The shared package and compatibility receipts keep their historical identity with a `frontDoor` record pointing to V39.0. Interface revisions do not renew evidence observations. See [Helios validation and rollback](docs/helios-release.md).
+The current receipt remains `/v38/site-release.json`. V37.17 is preserved at `/odyssey.html`, accessible through Version history, and `?v=37.17` links explicitly select it. The shared package and compatibility receipts keep their historical identity with a `frontDoor` record pointing to V39.1. Interface revisions do not renew evidence observations. See [Helios validation and rollback](docs/helios-release.md).
 
 ## Preserved V37.17 compatibility experience
 
@@ -104,6 +106,7 @@ Asset directories preserve compatible URLs and existing cache coverage:
 | `/v38/fonts/` and `/fonts/`        | Local font families shared by current and archived pages                     |
 | `/odyssey/` and `/plates/`         | Preserved scene media and archive artwork                                    |
 | `/cashio/`                         | Personal workspace introduction, original identity artwork and optional film |
+| `/brand/`                          | Celestial signature set shared by the home signature, Studios and the Forge  |
 
 The directory names remain unchanged. Consolidating them would require a separate cache compatibility review. No Cloudflare configuration is changed by this refinement.
 

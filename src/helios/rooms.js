@@ -8,7 +8,7 @@ const loaders = {
 /** One authored room becomes a static page at build time and an interactive island on demand. */
 export function setupRooms(context) {
   const root = document.documentElement;
-  const crumb = document.getElementById("room-crumb");
+  let crumb = document.getElementById("room-crumb");
   const links = [...document.querySelectorAll(".room-links a")];
   const homeTitle = document.title;
   const pending = new Map();
@@ -21,9 +21,21 @@ export function setupRooms(context) {
     return document.getElementById(hash.slice(1))?.closest("section.room") || null;
   }
 
+  // An open room's title is the page's only visible h1; on the home page it returns to a paragraph,
+  // so the static document and the home page each keep one h1.
+  function titleAs(tag) {
+    if (crumb.localName === tag) return;
+    const next = document.createElement(tag);
+    next.id = crumb.id;
+    next.className = crumb.className;
+    crumb.replaceWith(next);
+    crumb = next;
+  }
+
   function show(room) {
     if (room === current && (room ? root.dataset.room === room.id : !root.dataset.room)) return false;
     current = room;
+    titleAs(room ? "h1" : "p");
     if (room) {
       const title = room.dataset.roomTitle;
       root.dataset.room = room.id;

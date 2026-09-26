@@ -360,7 +360,8 @@ for (const width of [1440, 768, 390, 320])
     await page.keyboard.press("Escape");
     await expect(page.locator("#mc-btn")).toBeFocused();
     await page.goto(url + "#flight=permission");
-    await expect(page.locator(".first-flight")).toBeVisible();
+    // A cold flight module and software WebGL can take several seconds on CI runners, as other scenes allow.
+    await expect(page.locator(".first-flight")).toBeVisible({ timeout: 15000 });
     await expect(page.locator(".ff-stage-ready,.ff-stage-fallback")).toBeVisible({ timeout: 45000 });
     await expect(page.locator("#ff-scene-title")).toHaveText("The final say is yours.");
     await expect(page.getByRole("button", { name: "Permit these private requests" })).toBeVisible();
@@ -393,7 +394,7 @@ test("House Cashio signature loads, energizes, falls back to its original artwor
   await expect(page.getByRole("button", { name: "Close celestial signature" })).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page.locator("#brand-studio-title")).toHaveCount(0);
-  await page.route(/\/v38\/(?:assets\/celestial|immutable\/celestial-[a-f0-9]+)\.webp$/, (route) => route.abort());
+  await page.route(/\/brand\/celestial-\d+\.webp$/, (route) => route.abort());
   await page.goto(url + "#operator");
   await page.reload();
   await page.locator("#sigplate").scrollIntoViewIfNeeded();
@@ -495,8 +496,15 @@ test("The invitation and three starting routes work by keyboard, keep sound opt-
     );
     await page.keyboard.press("Escape");
     await expect(page.locator("#hero-primary")).toBeFocused();
-    await page.locator(".hero-next").click();
-    await expect(page.locator("#workshop-title")).toBeFocused();
+    if (width < 1100) {
+      await page.locator(".hero-next").click();
+      await expect(page.locator("#workshop-title")).toBeFocused();
+    } else {
+      // Wide screens drop the scroll cue so the hero keeps two actions; the workshop still opens by address.
+      await expect(page.locator(".hero-next")).toBeHidden();
+      await page.goto(url + "#workshop");
+      await expect(page.locator("#workshop-title")).toBeFocused();
+    }
     await expect(page.locator(".workshop-note .workshop-link")).toHaveAttribute(
       "href",
       "https://github.com/jamescashio/jamescashio.github.io",
@@ -1201,6 +1209,15 @@ test("The first visit stays compact and shared links reveal the exact experiment
   // A study link lands on the study itself, with its title focused and on screen.
   await expect(page.locator("#st-name")).toBeFocused();
   await expect(page.locator("#st-name")).toBeInViewport();
+  // Back then Forward before the next frame still restores the study, even though the step back moved focus.
+  await page.evaluate(
+    () =>
+      new Promise((resolve) => {
+        addEventListener("popstate", () => (history.forward(), resolve()), { once: true });
+        history.back();
+      }),
+  );
+  await expect(page.locator("#st-name")).toBeFocused();
   await audit(page, "workbench-disclosures-390");
 });
 
@@ -1562,7 +1579,7 @@ test("The V35 archive returns to the current site without adding a cinema tab st
 test("Study shortcuts reveal the chosen experiment and heritage credits never cover the photograph", async (t) => {
   for (const width of [320, 390, 1440]) {
     const page = await visit(t, { width, height: 844, expandWorkbenches: false });
-    const shortcuts = page.getByRole("navigation", { name: "Study shortcuts", exact: true });
+    const shortcuts = page.getByRole("navigation", { name: "Experiment shortcuts", exact: true });
     if (width < 1100) {
       await expect(shortcuts.getByRole("link")).toHaveCount(7);
       await expect(page.locator("#study-lab")).not.toHaveAttribute("open", "");

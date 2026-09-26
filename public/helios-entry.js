@@ -1,15 +1,21 @@
+// Runs before first paint, inlined into the home page with a CSP hash by scripts/prerender-helios.mts.
+// GitHub Pages serves static files and cannot send HTTP redirects, so old shared addresses are
+// normalized here, in the browser, before the page draws.
 (function () {
   "use strict";
   var url = new URL(window.location.href);
+  // V35 command deck bookmarks (/#deck=…) keep their query and deck on the preserved archive page.
   if (url.hash.startsWith("#deck=")) {
     window.location.replace("/command-deck.html" + url.search + url.hash);
     return;
   }
+  // ?v=37.17 explicitly asks for the preserved V37.17 front door.
   if (url.searchParams.get("v") === "37.17") {
     url.searchParams.delete("v");
     window.location.replace("/odyssey.html" + url.search + url.hash);
     return;
   }
+  // Old ?release= preview markers and the /v38/ and /index.html paths all mean the current home page.
   url.searchParams.delete("release");
   if (url.pathname === "/v38/" || url.pathname === "/v38/index.html") {
     window.location.replace("/" + url.search + url.hash);

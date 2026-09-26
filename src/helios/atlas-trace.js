@@ -50,6 +50,17 @@ export function createAtlasTrace({ isMotionEnabled, onSchedule }) {
   const packet = $("#packet");
   const progressBar = $("#trace-progress");
   const label = $("#trace-label");
+  const button = $("#trace-btn");
+  const buttonGlyph = $("#trace-btn-glyph");
+  const buttonLabel = $("#trace-btn-label");
+  const buttonTime = $("#trace-btn-time");
+  // The button says whether a trace is running, so a visitor never wonders if the click took.
+  function showButton(state) {
+    button.setAttribute("aria-pressed", String(state === "running"));
+    buttonGlyph.textContent = state === "running" ? "" : state === "done" ? "↻" : "▷";
+    buttonLabel.textContent = state === "running" ? "Tracing…" : state === "done" ? "Trace again" : "Trace a request";
+    buttonTime.hidden = state !== "idle";
+  }
   const nodes = [...atlas.querySelectorAll("[data-node]")];
   const steps = [...document.querySelectorAll("[data-trace-step]")];
   const positions = {};
@@ -91,6 +102,7 @@ export function createAtlasTrace({ isMotionEnabled, onSchedule }) {
     label.textContent = staticView
       ? `${request.labels.join(" → ")}. No request was sent.`
       : `Trace complete. ${request.summary} No request was sent.`;
+    showButton("done");
   }
   function update(experiment) {
     const nextKey = JSON.stringify(experiment);
@@ -98,6 +110,7 @@ export function createAtlasTrace({ isMotionEnabled, onSchedule }) {
     key = nextKey;
     request = describeRequest(experiment);
     clear();
+    showButton("idle");
     atlas.dataset.complete = "false";
     atlas.dataset.outcome = request.held ? "held" : "qualified";
     $("#request-journey").dataset.outcome = atlas.dataset.outcome;
@@ -166,11 +179,12 @@ export function createAtlasTrace({ isMotionEnabled, onSchedule }) {
       atlas.scrollIntoView({ block: "nearest", behavior: "smooth" });
     trace = { time: 0, stage: -1 };
     atlas.dataset.tracing = "true";
+    showButton("running");
     packet.setAttribute("opacity", "1");
     advance(0);
     onSchedule();
   }
-  $("#trace-btn").addEventListener("click", start);
+  button.addEventListener("click", start);
   return {
     update,
     start,
@@ -182,7 +196,8 @@ export function createAtlasTrace({ isMotionEnabled, onSchedule }) {
     stop() {
       if (!trace) return;
       clear();
-      label.textContent = "Trace stopped. Select Trace a request to follow your decision again.";
+      showButton("done");
+      label.textContent = "Trace stopped. Select Trace again to follow your decision once more.";
     },
   };
 }

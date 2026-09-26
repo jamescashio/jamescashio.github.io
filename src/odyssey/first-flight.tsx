@@ -17,9 +17,12 @@ export default function FirstFlight({
   initialStep,
   onClose,
   edition = "V37 / LIGHTFOLD",
+  helios = false,
   visitorPaced = false,
 }: {
   edition?: string;
+  /** The current Helios front door: its recap, phone layout and contact exit. The V37 archive keeps the default. */
+  helios?: boolean;
   visitorPaced?: boolean;
   motion: boolean;
   initialStep: string;
@@ -63,19 +66,18 @@ export default function FirstFlight({
     sources: true,
     privateData: true,
   }).slice(1);
-  const zenith = /^(HELIOS|ZENITH)/.test(edition);
-  const recapDecision = zenith
+  const recapDecision = helios
     ? chapterRecap(step, currentInput, lastDecision)
     : (lastDecision ?? { before: FIRST_FLIGHT[1].input, after: FIRST_FLIGHT[2].input });
   const input = complete ? recapDecision.after : currentInput;
-  const displayStep = complete && !zenith ? (lastDecision?.step ?? 2) : step;
+  const displayStep = complete && !helios ? (lastDecision?.step ?? 2) : step;
   const displayScene = FIRST_FLIGHT[displayStep];
   const outcome = computeWorldOutcome(input);
   const independent = input.architecture === "hybrid" && !input.connected;
   const flightHash = changed || complete ? missionHash(input) : `#flight=${scene.id}`;
   const playing = motion && !paused && !complete && pageVisible && phase !== "loading";
-  // In Zenith a relay choice carried from an earlier chapter keeps this chapter's own title.
-  const changedHere = changed && (!zenith || currentDecision !== null);
+  // In the Helios flight a relay choice carried from an earlier chapter keeps this chapter's own title.
+  const changedHere = changed && (!helios || currentDecision !== null);
   const sceneTitle = complete
     ? "One boundary. A different outcome."
     : changedHere
@@ -246,7 +248,7 @@ export default function FirstFlight({
       await document.fonts.ready;
       const { blob, record } = await createMissionCard(still, selectedInput, selectedChapter, {
         baseUrl: `${location.origin}${location.pathname}`,
-        helios: /^(HELIOS|ZENITH)/.test(edition),
+        helios,
       });
       if (generation !== captureGeneration.current) return;
       const url = URL.createObjectURL(blob);
@@ -313,7 +315,8 @@ export default function FirstFlight({
         : input.connected
           ? "Cut the cloud link"
           : "Restore the cloud link"}
-      <span aria-hidden="true">↗</span>
+      {/* On the current site an up arrow marks only links that leave it; a toggle stays on the page. */}
+      {!helios && <span aria-hidden="true">↗</span>}
     </button>
   );
 
@@ -365,7 +368,7 @@ export default function FirstFlight({
           <StarshipPoster imageClassName="ff-fallback" eager />
           <canvas ref={canvas} aria-hidden="true" />
           <div className="ff-stage-cap">
-            <span>{zenith ? "EXPLORER 01" : "CSV SOVEREIGN"}</span>
+            <span>{helios ? "EXPLORER 01" : "CSV SOVEREIGN"}</span>
             <span>{input.connected ? "RELAY CONNECTED" : "RELAY OFFLINE"}</span>
           </div>
           <div className="ff-shot-reticle" aria-hidden="true">
@@ -420,9 +423,9 @@ export default function FirstFlight({
             <>
               <FlightRecap
                 decision={recapDecision}
-                visitorChoice={zenith ? currentDecision !== null : lastDecision !== null}
+                visitorChoice={helios ? currentDecision !== null : lastDecision !== null}
                 wording={
-                  zenith && step === 3 && !currentDecision
+                  helios && step === 3 && !currentDecision
                     ? {
                         eyebrow: "THE LAST CHAPTER, BOTH WAYS",
                         captions: ["If you say yes", "If you say no"],
@@ -443,7 +446,7 @@ export default function FirstFlight({
                 <button type="button" onClick={() => onClose("smart-routing")}>
                   See the real build story →
                 </button>
-                {/^(HELIOS|ZENITH)/.test(edition) && (
+                {helios && (
                   <button type="button" onClick={() => onClose("contact")}>
                     Compare notes with Doug →
                   </button>
@@ -545,7 +548,7 @@ export default function FirstFlight({
           )}
         </div>
       )}
-      {zenith && compact && !complete && (
+      {helios && compact && !complete && (
         <select
           className="ff-chapter-picker"
           aria-label="Flight chapter"
@@ -559,7 +562,7 @@ export default function FirstFlight({
           ))}
         </select>
       )}
-      <nav className="ff-chapters" aria-label="Flight chapters" hidden={complete || (zenith && compact)}>
+      <nav className="ff-chapters" aria-label="Flight chapters" hidden={complete || (helios && compact)}>
         {FIRST_FLIGHT.map((item, index) => (
           <button
             key={item.id}
@@ -573,7 +576,7 @@ export default function FirstFlight({
             </span>
             <span className="ff-chapter-short">
               {
-                (zenith
+                (helios
                   ? ["Board", "Open the hull", "Cut the cloud", "Human command"]
                   : ["Board", "Hull", "Blackout", "Command"])[index]
               }
@@ -662,9 +665,9 @@ export default function FirstFlight({
         </button>
       </footer>
       <p className="ff-boundary" id="ff-boundary">
-        {zenith && compact ? "Local demo · no requests sent." : "Demo runs in your browser. No AI requests sent."}{" "}
+        {helios && compact ? "Local demo · no requests sent." : "Demo runs in your browser. No AI requests sent."}{" "}
         {phase === "fallback" ? "The 3D view is unavailable; the illustrated outcomes still work. " : ""}
-        {zenith && compact
+        {helios && compact
           ? complete
             ? "Replay or save your card."
             : ""
@@ -672,7 +675,7 @@ export default function FirstFlight({
             ? complete
               ? "Motion stays off on replay."
               : "Motion off. Use Next."
-            : zenith && complete
+            : helios && complete
               ? "Replay, save your card or test a private request."
               : visitorPaced
                 ? playing

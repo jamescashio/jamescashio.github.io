@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client";
 import Studio, { type StudioOptions } from "./studio-bridge";
+import "./island-fonts.css";
 import "./studio.css";
 
 /** The original studio components share V38's route, type, motion and return path. */
