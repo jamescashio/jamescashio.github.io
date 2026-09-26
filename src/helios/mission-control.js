@@ -17,8 +17,8 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
   const featured = new Set(["#studies", "#rooms", "#glossary", "#evidence", "#contact"]);
   const destinations = [
     [
-      "Board the starship",
-      "A 30 second 3D flight. See where twelve AI requests go.",
+      "Board the starship · 3D flight",
+      "A 30 second flight. See where twelve AI requests go.",
       "#flight=board",
       "flight fly board ship 3d tour",
     ],
@@ -44,10 +44,10 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
       "servers hosts hermes dsh atlas universe machines",
     ],
     [
-      "Compare architectures",
-      "Its own page. Change a mission and inspect all twelve requests.",
+      "Starship lab",
+      "Its own page. Compare three designs on the same twelve requests.",
       "#starship",
-      "privacy cloud local boundary",
+      "privacy cloud local boundary architectures compare",
     ],
     ["Starship build story", "A blank quiet scene, the one-frame repair and its regression check.", "#build-story"],
     ["Principles Engine", "Its own page. Turn the rings and see the design decision behind each rule.", "#principles"],
@@ -60,7 +60,7 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
       "Inspect the evidence",
       "A source, a date, and a clear boundary. Fleet facts and the E.V.E. console.",
       "#evidence",
-      "eve fleet status proof privacy boundary withheld",
+      "eve fleet status proof privacy boundary withheld lore 42 dune",
     ],
     [
       "Flight heritage",

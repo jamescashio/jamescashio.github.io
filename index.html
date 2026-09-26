@@ -173,8 +173,9 @@
             ><span class="line"><span class="w em">possible.</span></span>
           </h1>
           <p class="sub" data-hero>
-            I’m Doug Cashio. I got into IT when Pac-Man still ate quarters. This is my after hours workshop: AI
-            experiments, original worlds and a few things that fly.
+            I’m Doug Cashio. I got into IT when Pac-Man still ate quarters, and by day I help managed service providers
+            deliver security. This is my after hours workshop: AI experiments, original worlds and a few things that
+            fly.
           </p>
           <div class="cta" data-hero>
             <a class="btn gold" id="hero-primary" href="#flight=board" data-flight
@@ -844,7 +845,7 @@
               class="room-card"
               href="/rooms/starship/"
               data-room-route="#starship"
-              aria-label="Starship lab: open the page"
+              aria-labelledby="room-name-starship room-go-starship"
               aria-describedby="room-desc-starship"
               ><img
                 class="room-art"
@@ -854,15 +855,16 @@
                 loading="lazy"
                 decoding="async"
                 alt=""
-              /><span class="mono c-gd">STARSHIP LAB</span><strong>Your ship. Your intelligence.</strong
+              /><span class="mono c-gd" id="room-name-starship">STARSHIP LAB</span
+              ><strong>Your ship. Your intelligence.</strong
               ><span class="muted" id="room-desc-starship"
                 >Pick a mission, cut the cloud link and compare three designs on the same twelve requests.</span
-              ><span class="room-go">Open the page →</span></a
+              ><span class="room-go" id="room-go-starship">Open the page <span aria-hidden="true">→</span></span></a
             ><a
               class="room-card"
               href="/rooms/principles/"
               data-room-route="#principles"
-              aria-label="Principles Engine: open the page"
+              aria-labelledby="room-name-principles room-go-principles"
               aria-describedby="room-desc-principles"
               ><img
                 class="room-art"
@@ -872,15 +874,16 @@
                 loading="lazy"
                 decoding="async"
                 alt=""
-              /><span class="mono c-gd">PRINCIPLES ENGINE</span><strong>Put the principles in motion.</strong
+              /><span class="mono c-gd" id="room-name-principles">PRINCIPLES ENGINE</span
+              ><strong>Put the principles in motion.</strong
               ><span class="muted" id="room-desc-principles"
                 >Turn a small instrument and see the design decision behind each rule.</span
-              ><span class="room-go">Open the page →</span></a
+              ><span class="room-go" id="room-go-principles">Open the page <span aria-hidden="true">→</span></span></a
             ><a
               class="room-card"
               href="/rooms/studios/"
               data-room-route="#studios"
-              aria-label="The Studios: open the page"
+              aria-labelledby="room-name-studios room-go-studios"
               aria-describedby="room-desc-studios"
               ><img
                 class="room-art"
@@ -890,15 +893,16 @@
                 loading="lazy"
                 decoding="async"
                 alt=""
-              /><span class="mono c-gd">THE STUDIOS</span><strong>A world worth getting lost in.</strong
+              /><span class="mono c-gd" id="room-name-studios">THE STUDIOS</span
+              ><strong>A world worth getting lost in.</strong
               ><span class="muted" id="room-desc-studios"
                 >Shape the light, ignite a 3D signature, or watch five short original films.</span
-              ><span class="room-go">Open the page →</span></a
+              ><span class="room-go" id="room-go-studios">Open the page <span aria-hidden="true">→</span></span></a
             ><a
               class="room-card"
               href="/rooms/heritage/"
               data-room-route="#heritage"
-              aria-label="Flight heritage: open the page"
+              aria-labelledby="room-name-heritage room-go-heritage"
               aria-describedby="room-desc-heritage"
               ><img
                 class="room-art"
@@ -908,10 +912,11 @@
                 loading="lazy"
                 decoding="async"
                 alt=""
-              /><span class="mono c-gd">FLIGHT HERITAGE</span><strong>Built with a test pilot’s mind.</strong
+              /><span class="mono c-gd" id="room-name-heritage">FLIGHT HERITAGE</span
+              ><strong>Built with a test pilot’s mind.</strong
               ><span class="muted" id="room-desc-heritage"
                 >Four aviation pioneers and the working lesson I take from each.</span
-              ><span class="room-go">Open the page →</span></a
+              ><span class="room-go" id="room-go-heritage">Open the page <span aria-hidden="true">→</span></span></a
             >
           </div>
         </div>
@@ -1100,7 +1105,7 @@
                   id="eve-in"
                   type="text"
                   autocomplete="off"
-                  placeholder="Try help, or 42"
+                  placeholder="help, or 42"
                   aria-label="E.V.E. command, for example help or fleet"
                 /><button class="btn ghost sm" type="submit" aria-label="Run command">↵</button>
               </form>
@@ -1274,6 +1279,7 @@
       <a href="#work" aria-label="Start here"><span>Start here</span></a>
       <a href="#studies" aria-label="Seven experiments"><span>Seven experiments</span></a>
       <a href="#universe" aria-label="System map"><span>System map</span></a>
+      <a href="#rooms" aria-label="Four more rooms"><span>Four more rooms</span></a>
       <a href="#evidence" aria-label="Dated evidence"><span>Dated evidence</span></a>
       <a href="#operator" aria-label="Meet Doug"><span>Meet Doug</span></a>
       <a href="#contact" aria-label="Open a channel"><span>Open a channel</span></a>
@@ -1388,6 +1394,7 @@
       </div>
     </aside>
     <div id="toast" role="status"></div>
+    <noscript><link rel="stylesheet" href="/no-script.css" /></noscript>
 
     <script type="module" src="/src/helios/main.js"></script>
   </body>

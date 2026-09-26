@@ -193,13 +193,13 @@ h3,
 }
 .sections {
   right: 10px;
-  gap: 2px;
 }
+/* Links touch, so the rail has no dead pixels between dots. */
 .sections a {
   display: grid;
   place-items: center;
   width: 30px;
-  height: 30px;
+  height: 32px;
   background: none;
   border: 0;
   border-radius: 6px;

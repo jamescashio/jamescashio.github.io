@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client";
 import FlightBridge from "./flight-bridge";
+import "./island-fonts.css";
 import "./flight.css";
 
 export function openFlight({

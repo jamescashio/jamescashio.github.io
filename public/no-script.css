@@ -1,0 +1,13 @@
+/* Loaded only inside <noscript> on the home page. Without JavaScript, controls that need it step aside,
+   and each room shows its introduction with a link to its reading edition, so /#heritage still leads somewhere. */
+#mc-btn,
+#motion-btn,
+#type-btn,
+#fold-btn,
+.bitdock,
+.sections {
+  display: none;
+}
+html:not([data-room]) main > .room {
+  display: block;
+}

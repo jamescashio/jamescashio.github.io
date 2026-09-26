@@ -62,6 +62,7 @@
 }
 /* Bit's optional orbit: a quiet text action under the note, so the first screen keeps two clear choices. */
 .hero .hero-orbit {
+  align-self: flex-start;
   margin-top: 4px;
   color: var(--gold);
   font-size: 14px;

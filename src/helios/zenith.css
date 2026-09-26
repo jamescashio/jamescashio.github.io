@@ -323,7 +323,7 @@
     font-size: clamp(80px, min(5.4vw, 11svh), 190px);
   }
   .hero .sub {
-    max-width: 720px;
+    max-width: 880px;
     font-size: clamp(21px, 0.95vw, 30px);
   }
   /* One frame on the big glass: header, hero and chapters share the same edges. */
@@ -734,6 +734,9 @@
   }
 }
 @media (min-width: 901px) and (max-width: 1100px) {
+  .hero h1 {
+    font-size: 6.2vw;
+  }
   .hero .sub {
     max-width: 36ch;
   }

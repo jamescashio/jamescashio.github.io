@@ -1,0 +1,97 @@
+/* The arrival film and the signature plate sweep. motion.js applies these rules as a constructable
+   stylesheet only when the film starts, so a visitor who never sees the film never parses them. */
+.hero-film {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 67% 50%;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 0;
+  transform: scale(1.08);
+  transform-origin: 67% 50%;
+}
+.hero[data-film="playing"] .hero-film {
+  opacity: 1;
+  animation: helios-film-push 6.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.hero[data-film="playing"] .vignette {
+  background:
+    linear-gradient(90deg, rgba(4, 7, 14, 0.9), rgba(4, 7, 14, 0.55) 38%, rgba(4, 7, 14, 0.08) 72%),
+    linear-gradient(0deg, var(--void), transparent 32%, rgba(4, 7, 14, 0.22));
+}
+.hero[data-film="playing"] h1 {
+  text-shadow: 0 10px 48px rgba(4, 7, 14, 0.9);
+}
+.hero[data-film="playing"]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #38e1ff, var(--gold));
+  transform-origin: left;
+  transform: scaleX(0);
+  animation: helios-film-meter 6.4s linear forwards;
+  pointer-events: none;
+  z-index: 4;
+}
+.hero[data-film="playing"] .cta .btn.gold,
+.hero[data-film="done"] .cta .btn.gold {
+  box-shadow: 0 0 34px rgba(242, 200, 122, 0.4);
+}
+.plate::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 40%, rgba(56, 225, 255, 0.14) 50%, transparent 60%);
+  transform: translateX(-120%);
+}
+.plate:hover::after {
+  animation: helios-plate-sweep 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes helios-film-push {
+  to {
+    transform: scale(1);
+  }
+}
+@keyframes helios-film-meter {
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes helios-plate-sweep {
+  to {
+    transform: translateX(120%);
+  }
+}
+.motion-off .hero-film,
+.experience-open .hero-film {
+  display: none;
+}
+.page-hidden .hero[data-film="playing"]::after,
+.motion-off .hero::after {
+  animation-play-state: paused;
+}
+.motion-off .plate::after {
+  display: none;
+}
+@media (max-width: 700px) {
+  .hero-film {
+    height: 350px;
+    object-position: 78% 20%;
+    transform-origin: 78% 20%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-film,
+  .hero[data-film="playing"]::after,
+  .plate::after {
+    display: none !important;
+    animation: none !important;
+  }
+}

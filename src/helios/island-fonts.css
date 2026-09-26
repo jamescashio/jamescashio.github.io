@@ -1,0 +1,26 @@
+/* The shared flight and studio scenes name their original faces; inside Helios they resolve to the
+   Helios type system. Both islands import this file, so a scene looks the same whichever opens first. */
+@font-face {
+  font-family: Oxanium;
+  src: url("/v38/fonts/unbounded-latin.woff2") format("woff2");
+  font-weight: 200 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: Exo;
+  src: url("/v38/fonts/instrument-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: Jet;
+  src: url("/fonts/jetbrains-400.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: Jet;
+  src: url("/fonts/jetbrains-600.woff2") format("woff2");
+  font-weight: 500 800;
+  font-display: swap;
+}

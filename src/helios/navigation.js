@@ -64,6 +64,22 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
     if (shouldScroll || revealed) target.scrollIntoView({ behavior: "instant", block: "start" });
     return heading;
   }
+  // An open scene names the browser tab; closing it restores the page or room title it opened from.
+  let titleBeforeScene = null;
+  function nameScene(hash, kind) {
+    const name =
+      kind === "flight"
+        ? "First flight"
+        : hash === "#signature"
+          ? "Celestial Forge"
+          : hash.startsWith("#lensing")
+            ? "Lensing Observatory"
+            : hash === "#film=sanctuary"
+              ? "The Sanctuary"
+              : "The Cinema";
+    titleBeforeScene ??= document.title;
+    document.title = `${name} · cAshIo`;
+  }
   function dispose() {
     generation++;
     pending = false;
@@ -73,6 +89,8 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
     scene?.dispose();
     scene = null;
     activeKind = null;
+    if (titleBeforeScene !== null) document.title = titleBeforeScene;
+    titleBeforeScene = null;
     notify();
   }
   function closeScene(destination) {
@@ -104,9 +122,11 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
   async function launch(hash, kind) {
     if (scene && activeKind === "studio" && kind === "studio") {
       scene.update(hash);
+      nameScene(hash, kind);
       return;
     }
     dispose();
+    nameScene(hash, kind);
     pending = true;
     const token = ++generation;
     let failed = false;
@@ -313,17 +333,24 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
     navigate(hash, menu.openerFor(link));
   });
   let historyFrame = 0;
+  let historyStale = false;
   function restoreHistory() {
     // Closing Mission Control steps back over its own entry; the page itself has not moved.
     if (menu.ownsPop(location.href)) {
       lastURL = location.href;
       return;
     }
-    if (lastURL === location.href) return;
+    // Back then Forward inside one frame returns to the routed address, but the step away may already have
+    // moved focus or scroll natively, so a traversal during a pending frame always routes.
+    if (historyFrame) historyStale = true;
+    else if (lastURL === location.href) return;
     cancelAnimationFrame(historyFrame);
     // Native history can restore focus and scroll after popstate. Route once it has finished.
     historyFrame = requestAnimationFrame(() => {
-      if (lastURL !== location.href) route(location.hash, false, true);
+      historyFrame = 0;
+      const stale = historyStale;
+      historyStale = false;
+      if (stale || lastURL !== location.href) route(location.hash, false, true);
     });
   }
   window.addEventListener("popstate", restoreHistory);

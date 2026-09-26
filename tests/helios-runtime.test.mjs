@@ -1209,6 +1209,15 @@ test("The first visit stays compact and shared links reveal the exact experiment
   // A study link lands on the study itself, with its title focused and on screen.
   await expect(page.locator("#st-name")).toBeFocused();
   await expect(page.locator("#st-name")).toBeInViewport();
+  // Back then Forward before the next frame still restores the study, even though the step back moved focus.
+  await page.evaluate(
+    () =>
+      new Promise((resolve) => {
+        addEventListener("popstate", () => (history.forward(), resolve()), { once: true });
+        history.back();
+      }),
+  );
+  await expect(page.locator("#st-name")).toBeFocused();
   await audit(page, "workbench-disclosures-390");
 });
 
