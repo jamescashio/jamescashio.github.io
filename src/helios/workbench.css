@@ -117,3 +117,47 @@ section.workbench-section {
     display: none;
   }
 }
+
+/* Evidence links and the console lore colour. */
+.evidence-links {
+  display: flex;
+  gap: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  flex-wrap: wrap;
+}
+.console .lore {
+  color: var(--gold);
+}
+
+/* Phone: the fleet count labels keep their rhythm. */
+@media (max-width: 700px) {
+  .stat .mono {
+    letter-spacing: 0.06em;
+  }
+}
+
+/* E.V.E. suggested commands. */
+/* E.V.E. suggested commands */
+.eve-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px 0;
+}
+.eve-chips button {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid rgba(56, 225, 255, 0.28);
+  border-radius: 999px;
+  color: var(--cyan);
+  font: 14px var(--mono);
+}
+.eve-chips button:hover,
+.eve-chips button:focus-visible {
+  background: rgba(56, 225, 255, 0.1);
+}
+.eve-chips .eve-wild {
+  border-color: rgba(242, 200, 122, 0.4);
+  color: var(--gold);
+}

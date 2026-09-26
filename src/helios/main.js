@@ -12,30 +12,30 @@ import { setupNavigation } from "./navigation.js";
 import { setupMotion } from "./motion.js";
 import { readMotionPreference } from "./motion-preference.js";
 import { setupScenes } from "./scenes.js";
-import { setupHeroDepth, setupChapterAnnounce, setupNavDepth, setupTypeStyles } from "./zenith.js";
+import { setupHeroDepth, setupChapterAnnounce, setupNavDepth } from "./page-motion.js";
+import { setupTypeStyles } from "./type-styles.js";
 
-/* =========================================================
-   V38 HELIOS · shared teaching models and optional motion.
-   Every instrument retains its complete behavior without WebGL.
-   ========================================================= */
+/* The front door: shared teaching models and optional motion.
+   Every instrument retains its complete behavior without WebGL. */
 
 const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 let motionOn = !reduced && readMotionPreference() !== "off";
 const scenes = setupScenes({ motion: motionOn });
 
+let toastTimer = 0;
 function toast(msg) {
   const t = $("#toast");
   t.textContent = msg;
   if (!msg) {
-    t.style.opacity = 0;
-    clearTimeout(toast.t);
+    t.style.opacity = "0";
+    clearTimeout(toastTimer);
     return;
   }
-  t.style.opacity = 1;
+  t.style.opacity = "1";
   t.style.transform = "translate(-50%,0)";
-  clearTimeout(toast.t);
-  toast.t = setTimeout(() => {
-    t.style.opacity = 0;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    t.style.opacity = "0";
     t.style.transform = "translate(-50%,20px)";
   }, 1800);
 }
@@ -73,9 +73,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 const studyDeck = setupStudies({ scenes, motion: () => motionOn, copy });
-// Wide screens have room for the glossary, the studies and the system map, so they start open; phones keep them folded.
+// Wide screens open the studies and system map. The glossary stays folded until requested.
 if (matchMedia("(min-width: 1100px)").matches)
-  for (const id of ["glossary", "study-lab", "atlas-lab"]) document.getElementById(id).open = true;
+  for (const id of ["study-lab", "atlas-lab"]) $(`#${id}`).setAttribute("open", "");
 setupPrivacy({
   loadRequest: studyDeck.loadRequest,
   traceRequest: () => scenes.traceRequest(),
@@ -120,8 +120,11 @@ $("#eve-form").addEventListener("submit", () =>
 
 setupSignature({ motion: () => motionOn, say: (...args) => Bit.say(...args) });
 
-/* The optional orbital effect ends at rest. */
+/* The optional orbital effect lives under Mission Control's extras; it closes the menu, returns to the opening and ends at rest. */
 $("#fold-btn").addEventListener("click", async () => {
+  // Use the same navigation as menu links, including leaving a room and restoring Back correctly.
+  navigation.navigate("#top");
+  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
   if (!motionOn) {
     Bit.say("AT REST", "Motion is off. The controls and stories are still yours to explore.", "think");
     return;
@@ -140,7 +143,6 @@ const navigation = setupNavigation({
   select: studyDeck.selectExperiment,
   mission: (value) => rooms.controller("starship").setMission(value),
   motion: () => motionOn,
-  toast,
 });
 setupMotion({
   gsap,

@@ -159,3 +159,88 @@ html[data-room] main > .room {
     column-gap: 20px;
   }
 }
+
+/* Starship plate. */
+.plate-badges {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  right: 20px;
+  z-index: 1;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.plate-badge {
+  color: var(--cyan);
+  padding: 6px 10px;
+  border: 1px solid rgba(56, 225, 255, 0.3);
+  border-radius: 6px;
+  background: rgba(4, 7, 14, 0.6);
+}
+.plate-badge.relay {
+  color: var(--gold);
+  border-color: rgba(242, 200, 122, 0.4);
+}
+.ship-cap {
+  z-index: 1;
+}
+.ship-views {
+  color: var(--muted);
+}
+.route-legend {
+  padding: 16px 24px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.legend-dot.local {
+  background: var(--local);
+}
+.legend-dot.cloud {
+  background: var(--cloud);
+}
+.legend-dot.held {
+  background: var(--held);
+}
+.legend-note {
+  margin-left: auto;
+}
+@media (max-width: 600px) {
+  #starship .plate {
+    height: auto;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  #starship .plate > img {
+    position: absolute;
+    inset: 0;
+  }
+  #starship .plate-badges,
+  #starship .ship-cap {
+    position: relative;
+    inset: auto;
+    margin: 18px 18px 0;
+  }
+  #starship .ship-cap {
+    margin: 0 18px 18px;
+  }
+  .legend-note {
+    margin-left: 0;
+  }
+}

@@ -29,6 +29,11 @@ export function createEngineScene(element, initial) {
   pmrem.dispose();
 
   scene.add(new THREE.HemisphereLight(0xc9e9ff, 0x182133, 0.65));
+  /**
+   * @param {number} color
+   * @param {number} intensity
+   * @param {[number, number, number]} position
+   */
   function light(color, intensity, position) {
     const source = new THREE.DirectionalLight(color, intensity);
     source.position.set(...position);

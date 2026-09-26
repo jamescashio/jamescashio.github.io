@@ -2,7 +2,7 @@ import { $ } from "./dom.js";
 import { gsap } from "gsap";
 
 export function setupSignature({ motion, say }) {
-  const signatureImage = $("#sig-art");
+  const signatureImage = /** @type {HTMLImageElement} */ ($("#sig-art"));
   function restoreSignatureArtwork() {
     if (signatureImage.dataset.fallback) return;
     signatureImage.dataset.fallback = "original";

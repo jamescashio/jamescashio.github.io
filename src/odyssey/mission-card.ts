@@ -98,7 +98,10 @@ export async function createMissionCard(
   const scale = Math.min(714 / still.width, 446 / still.height);
   const width = still.width * scale,
     height = still.height * scale;
+  // Keep the ship while blending its black background into the card.
+  ctx.globalCompositeOperation = "lighten";
   ctx.drawImage(still, 42 + (714 - width) / 2, 122 + (446 - height) / 2, width, height);
+  ctx.globalCompositeOperation = "source-over";
   ctx.fillStyle = "#a6ccd7";
   ctx.font = `13px ${mono}, monospace`;
   ctx.fillText(chapter.toUpperCase(), 56, 590);

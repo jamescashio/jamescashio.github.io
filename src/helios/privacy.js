@@ -1,9 +1,9 @@
 import { gsap } from "gsap";
-import { $, $$ } from "./dom.js";
+import { $, $$, closestTarget } from "./dom.js";
 
 export function setupPrivacy({ loadRequest, traceRequest, motion, onReveal }) {
   $("#request-privacy").addEventListener("click", (event) => {
-    const button = event.target.closest("[data-request-private]");
+    const button = closestTarget(event, "[data-request-private]");
     if (!button) return;
     loadRequest({ privateData: button.dataset.requestPrivate === "true" }, true);
   });
@@ -38,10 +38,10 @@ export function setupPrivacy({ loadRequest, traceRequest, motion, onReveal }) {
   );
   $("#pv-reveal").addEventListener("click", () => reveal());
   function reveal() {
-    loadRequest({ intent: "analyze", privateData: true, sources: true });
+    // Revealing the answer changes nothing else on the page; the links below load the experiment on request.
     gsap.killTweensOf([result, signal]);
     $("#pv-trace").hidden = false;
-    $("#pv-answer").textContent = "Human review";
+    $("#pv-answer").textContent = "A person first";
     $("#pv-boundary").textContent = "External processing waits for a person.";
     $("#pv-route").dataset.revealed = "true";
     result.hidden = false;
@@ -53,13 +53,20 @@ export function setupPrivacy({ loadRequest, traceRequest, motion, onReveal }) {
           : "Now you have it."
         : pv.pick === "keep"
           ? "Not quite. Privacy wins."
-          : "The answer: human review.";
+          : "The answer: a person first.";
     $("#pv-text").replaceChildren(
       lead,
-      " This model holds private input for a person, even when sources are required. Your prediction: " +
-        (pv.pick === "human" ? "Human review." : pv.pick === "keep" ? "Research." : "none yet."),
+      " This model holds private input for a person, even when sources are required. " +
+        (pv.pick === "human"
+          ? "Your prediction: to a person first."
+          : pv.pick === "keep"
+            ? "Your prediction: to the research tool."
+            : "You skipped the prediction."),
     );
     $("#pv-live").textContent = $("#pv-text").textContent;
+    // Keep the answer visible on short screens without moving keyboard focus.
+    if (result.getBoundingClientRect().bottom > innerHeight)
+      result.scrollIntoView({ block: "nearest", behavior: motion() ? "smooth" : "instant" });
     if (motion()) {
       gsap.fromTo(result, { y: 6 }, { y: 0, duration: 0.35, ease: "power2.out", clearProps: "transform" });
       gsap.fromTo(

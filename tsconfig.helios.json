@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "noUnusedLocals": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "types": ["vite/client"]
+  },
+  "include": ["src/helios", "src/vite-env.d.ts"]
+}

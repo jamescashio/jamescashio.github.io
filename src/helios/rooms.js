@@ -15,10 +15,15 @@ export function setupRooms(context) {
   const controllers = new Map();
   let current = null;
 
+  /**
+   * The room section a hash opens, or null for a home page address.
+   * @param {string} hash
+   * @returns {HTMLElement | null}
+   */
   function roomOf(hash) {
     if (hash === "#build-story" || hash.startsWith("#mission=")) return document.getElementById("starship");
     if (!/^#[\w-]+$/.test(hash)) return null;
-    return document.getElementById(hash.slice(1))?.closest("section.room") || null;
+    return /** @type {HTMLElement | null} */ (document.getElementById(hash.slice(1))?.closest("section.room")) || null;
   }
 
   // An open room's title is the page's only visible h1; on the home page it returns to a paragraph,
@@ -72,6 +77,10 @@ export function setupRooms(context) {
         if (authored?.id !== room.id) throw new Error("Room content does not match its address");
         room.className = authored.className;
         room.replaceChildren(...authored.childNodes);
+        const reading = document.createElement("a");
+        reading.href = `/rooms/${room.id}/`;
+        reading.textContent = "Reading edition";
+        room.querySelector(".room-end")?.append(reading);
         context.scenes.attachRoom(room);
         controllers.set(room.id, module.mount?.(context));
         room.dataset.roomState = "ready";

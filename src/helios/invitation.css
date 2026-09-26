@@ -145,3 +145,161 @@
     font-size: 16px;
   }
 }
+
+/* Routing law. */
+.routing-law {
+  margin: 4px 0 0;
+  display: grid;
+  gap: 10px;
+}
+.routing-law blockquote {
+  margin: 0;
+}
+.routing-law-lead {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(30px, 3.1vw, 46px);
+  line-height: 1.06;
+  letter-spacing: -0.035em;
+  color: var(--gold);
+  text-shadow: 0 0 40px rgba(242, 200, 122, 0.3);
+  text-wrap: balance;
+}
+.routing-law-tie {
+  margin: 8px 0 0;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(19px, 1.7vw, 25px);
+  letter-spacing: -0.02em;
+  color: var(--ink2);
+}
+.routing-law figcaption {
+  color: var(--muted);
+}
+
+/* The scroll cue sits on the centre line, clear of Bit; wide screens already show the next section, so the cue gives way to the two hero actions. */
+@media (min-width: 901px) {
+  .hero .hero-next {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+/* Wide screens already show the next section below the fold line, so the cue gives way to the two hero actions. */
+@media (min-width: 1100px) {
+  .hero .hero-next {
+    display: none;
+  }
+}
+@media (max-width: 900px) {
+  .hero .hero-next {
+    margin-inline: var(--gutter);
+  }
+}
+
+/* At a glance: who, how long, what, with proof. */
+.profile-strip {
+  display: grid;
+  gap: 22px;
+}
+.lab-brief {
+  display: grid;
+  gap: 10px;
+  max-width: 80ch;
+}
+.lab-brief > * {
+  margin: 0;
+}
+.lab-brief b {
+  color: var(--ink);
+  font-weight: 600;
+}
+.profile-lead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(17px, 1.4vw, 21px);
+}
+.profile-strip > dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(14px, 2vw, 24px);
+  margin: 0;
+}
+.profile-strip > dl > div {
+  padding: 20px 22px;
+  border: 1px solid var(--line2);
+  border-radius: 14px;
+  background: rgba(10, 18, 32, 0.55);
+}
+.profile-strip > dl dd {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0 0;
+  color: var(--ink2);
+  font-size: 15px;
+  line-height: 1.55;
+}
+.profile-strip > dl strong {
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: clamp(18px, 1.4vw, 21px);
+  line-height: 1.25;
+}
+.profile-strip a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  justify-self: start;
+  color: var(--cyan);
+  text-underline-offset: 5px;
+  font-weight: 600;
+  font-size: 15px;
+}
+.profile-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 28px;
+}
+.profile-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 28px;
+  margin: 0;
+}
+.profile-open {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--ink);
+}
+.glossary {
+  flex-basis: 100%;
+  color: var(--ink2);
+  font-size: 15px;
+  line-height: 1.55;
+}
+.glossary summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.glossary dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px 28px;
+  margin: 8px 0 0;
+}
+.glossary dd {
+  margin: 4px 0 0;
+}
+@media (max-width: 900px) {
+  .profile-strip > dl {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

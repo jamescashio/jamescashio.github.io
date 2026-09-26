@@ -1,15 +1,25 @@
 import { gsap } from "gsap";
-import { $, $$, press } from "./dom.js";
+import { $, $$, press, closestTarget } from "./dom.js";
 import { FLEET } from "./fleet.js";
 import { PROJECTS, routeExample as sharedRoute } from "../odyssey/data";
 import { STUDY_NOTES } from "../odyssey/study-notes";
 import { defaultExperiment, shareExperiment } from "../odyssey/study-experiment";
 import { mountInstrument } from "./instruments.js";
 
+/** @typedef {import("../odyssey/study-experiment").Experiment} Experiment */
+
 export function routeExample(intent, priv, src) {
   const r = sharedRoute({ intent, privateData: priv, sources: src });
   return { ...r, color: r.code === "HOLD" ? "var(--gold)" : "var(--cyan)" };
 }
+
+/** What each routing lane means, in the words a visitor already has. */
+const LANE_WORDS = {
+  Workhorse: "Everyday drafting",
+  Research: "Source checking",
+  Synthesis: "Combining information",
+  "Human review": "A person decides",
+};
 
 export function setupStudies({ scenes, motion, copy }) {
   const studyState = new Map(PROJECTS.map((p) => [p.id, defaultExperiment(p.id)]));
@@ -33,8 +43,15 @@ export function setupStudies({ scenes, motion, copy }) {
     graphify: "Trace a dependency",
   };
   const cues = { dashboards: "Drag the age past 24 hours. The review state changes." };
-  // The study label names both servers the way the glossary does.
-  const codes = { dashboards: "Zeus and Apollo" };
+  // Working names carry a plain description, so no experiment needs the glossary to be read.
+  const codes = {
+    hermes: "HERMES, my scheduler",
+    briefing: "A decision brief",
+    dashboards: "Zeus and Apollo, my servers",
+    signal: "A shop floor signal",
+  };
+  // The first experiment says how it relates to the decision above it.
+  const subs = { hermes: "The same rule as the privacy test, with every input in your hands." };
   const STUDIES = PROJECTS.map((p, i) => {
     const n = STUDY_NOTES[p.id];
     return {
@@ -43,7 +60,7 @@ export function setupStudies({ scenes, motion, copy }) {
       name: labels[p.id],
       code: codes[p.id] || p.title,
       cat: p.category,
-      sub: p.subtitle,
+      sub: subs[p.id] || p.subtitle,
       cue: cues[p.id] || p.cue,
       take: outcomes[p.id],
       takebody: n.relevance,
@@ -73,7 +90,7 @@ export function setupStudies({ scenes, motion, copy }) {
         `<button class="study" type="button" role="tab" id="study-${s.id}" aria-controls="instrument" tabindex="${i === st.i ? 0 : -1}" data-study="${i}" aria-selected="${i === st.i}"><span class="study-index">${s.n} / 07</span><strong class="study-title">${s.name}</strong><span class="study-purpose">${s.q}</span><svg class="glyph" viewBox="-5 -5 34 34" fill="none" stroke="currentColor" stroke-width=".8" aria-hidden="true"><circle cx="12" cy="12" r="15" stroke-dasharray="2 3"/><circle cx="12" cy="12" r="12.5" stroke-width=".3"/><path d="${GLYPHS[i]}"/></svg></button>`,
     ).join("");
     list.addEventListener("click", (e) => {
-      const b = e.target.closest("[data-study]");
+      const b = closestTarget(e, "[data-study]");
       if (!b) return;
       selectStudy(+b.dataset.study);
       // A pointer choice keeps its instrument in view; keyboard selection already moves with the tabs.
@@ -92,7 +109,7 @@ export function setupStudies({ scenes, motion, copy }) {
     $("#st-trace").hidden = i !== 0;
     $("#secondary-instrument").hidden = i === 0;
     $(".ring-progress").style.display = i === 0 ? "" : "none";
-    $("#study-source").href = i === 3 || i === 4 ? "/evidence/status.json" : s.source;
+    $("#study-source").setAttribute("href", i === 3 || i === 4 ? "/evidence/status.json" : s.source);
     $("#study-source").textContent = s.sourceLabel + " ↗";
     if (i > 0)
       mountInstrument($("#secondary-instrument"), studyState.get(s.id), FLEET, (next) => {
@@ -102,7 +119,7 @@ export function setupStudies({ scenes, motion, copy }) {
     if (updateUrl) history.replaceState(null, "", shareExperiment(studyState.get(s.id)));
     $$("#studies-list [data-study]").forEach((b) => {
       const on = +b.dataset.study === i;
-      b.setAttribute("aria-selected", on);
+      b.setAttribute("aria-selected", String(on));
       b.tabIndex = on ? 0 : -1;
     });
     const studyStrip = $("#studies-list");
@@ -138,13 +155,20 @@ export function setupStudies({ scenes, motion, copy }) {
   function renderRoute(run, updateUrl = true) {
     routeCounterTween?.kill();
     const r = routeExample(st.intent, st.priv, st.src);
-    const experiment = { study: "hermes", intent: st.intent, privateData: st.priv, sources: st.src };
+    const experiment = /** @type {Experiment} */ ({
+      study: "hermes",
+      intent: st.intent,
+      privateData: st.priv,
+      sources: st.src,
+    });
     studyState.set("hermes", experiment);
     scenes.updateRequest(experiment);
     if (updateUrl && location.hash.startsWith("#build=hermes"))
       history.replaceState(null, "", shareExperiment(experiment));
-    $("#st-lane").textContent = r.lane;
+    // Plain words lead; the lane's working name follows as a label, so the demo reads without the glossary.
+    $("#st-lane").textContent = LANE_WORDS[r.lane] || r.lane;
     $("#st-lane").style.color = r.color;
+    $("#st-lane-code").textContent = `${r.lane.toUpperCase()} LANE`;
     $("#st-code").textContent = r.code;
     $("#st-code").style.color = r.color;
     $("#st-detail").textContent = run ? r.detail : "Choose a task, then follow its five-step route.";
@@ -179,21 +203,21 @@ export function setupStudies({ scenes, motion, copy }) {
           ease: "none",
           onUpdate: () => {
             const n = Math.round(k.v);
-            fg.style.strokeDashoffset = 226 - 226 * (n / 5);
+            fg.style.strokeDashoffset = String(226 - 226 * (n / 5));
             tx.textContent = `0${n}/05`;
           },
         });
       } else {
-        fg.style.strokeDashoffset = 0;
+        fg.style.strokeDashoffset = "0";
         tx.textContent = "05/05";
       }
     } else {
-      fg.style.strokeDashoffset = 226;
+      fg.style.strokeDashoffset = "226";
       tx.textContent = "00/05";
     }
   }
   $("#intent-group").addEventListener("click", (e) => {
-    const b = e.target.closest("[data-intent]");
+    const b = closestTarget(e, "[data-intent]");
     if (!b) return;
     st.intent = b.dataset.intent;
     press($("#intent-group"), "data-intent", st.intent);
@@ -201,15 +225,20 @@ export function setupStudies({ scenes, motion, copy }) {
   });
   $("#tg-private").addEventListener("click", (e) => {
     st.priv = !st.priv;
-    e.currentTarget.setAttribute("aria-pressed", st.priv);
+    /** @type {Element} */ (e.currentTarget).setAttribute("aria-pressed", String(st.priv));
     renderRoute(false);
   });
   $("#tg-sources").addEventListener("click", (e) => {
     st.src = !st.src;
-    e.currentTarget.setAttribute("aria-pressed", st.src);
+    /** @type {Element} */ (e.currentTarget).setAttribute("aria-pressed", String(st.src));
     renderRoute(false);
   });
   $("#route-btn").addEventListener("click", () => renderRoute(true));
+  $("#study-choose").addEventListener("click", () => {
+    const selected = $("#studies-list [aria-selected='true']");
+    selected.focus({ preventScroll: true });
+    selected.scrollIntoView({ block: "center", behavior: "instant" });
+  });
   $("#st-next").addEventListener("click", () => {
     selectStudy((st.i + 1) % 7);
     // The next study opens where its title can be read, and focus moves to that title.
@@ -219,10 +248,11 @@ export function setupStudies({ scenes, motion, copy }) {
     $("#instrument").scrollIntoView({ block: "start", behavior: "instant" });
   });
   $("#copy-settings").addEventListener("click", () => {
-    const ex =
+    const ex = /** @type {Experiment} */ (
       st.i === 0
         ? { study: "hermes", intent: st.intent, privateData: st.priv, sources: st.src }
-        : studyState.get(STUDIES[st.i].id);
+        : studyState.get(STUDIES[st.i].id)
+    );
     copy(location.origin + location.pathname + shareExperiment(ex), "Your experiment link is copied");
   });
   $$("[data-load]").forEach((a) =>
@@ -257,8 +287,8 @@ export function setupStudies({ scenes, motion, copy }) {
     st.priv = privateData;
     st.src = sources;
     press($("#intent-group"), "data-intent", st.intent);
-    $("#tg-private").setAttribute("aria-pressed", st.priv);
-    $("#tg-sources").setAttribute("aria-pressed", st.src);
+    $("#tg-private").setAttribute("aria-pressed", String(st.priv));
+    $("#tg-sources").setAttribute("aria-pressed", String(st.src));
     renderRoute(false);
     if (trace) scenes.traceRequest();
   }

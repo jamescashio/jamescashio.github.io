@@ -238,12 +238,6 @@ export function setupBit({ isMotionEnabled, openMissionControl }) {
     if (m) setMood(m, hold);
   };
   function setMood(m, hold) {
-    if (m !== mood) {
-      const b = $("#bit-btn");
-      b.classList.remove("pop");
-      void b.offsetWidth;
-      b.classList.add("pop");
-    }
     mood = m;
     clearTimeout(moodTimer);
     if (m !== "idle")

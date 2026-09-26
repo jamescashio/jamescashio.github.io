@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build && node --import tsx scripts/prerender.mts && node --import tsx scripts/prerender-odyssey.mts && node --import tsx scripts/prerender-helios.mts && node --import tsx scripts/prerender-rooms.mts",
+    "build": "tsc --noEmit && tsc -p tsconfig.helios.json && vite build && node --import tsx scripts/prerender.mts && node --import tsx scripts/prerender-odyssey.mts && node --import tsx scripts/prerender-helios.mts && node --import tsx scripts/prerender-rooms.mts",
     "check:layout": "npm run build && npm run check:layout:runtime",
     "check:layout:runtime": "node scripts/check_layout_runtime.mjs",
     "check:layout:runtime:pinned": "node scripts/check_layout_runtime.mjs --expected-browser-major=147",

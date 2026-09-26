@@ -179,9 +179,9 @@
   #helios-flight .first-flight[data-complete="true"] .ff-playback {
     grid-template-columns: minmax(0, 1fr);
   }
-  /* A soft fade at the bottom edge says the chapter text continues below. */
+  /* Keep chapter text readable as it scrolls beside the fixed controls. */
   #helios-flight .ff-body {
-    mask-image: linear-gradient(#000 calc(100% - 28px), transparent);
+    scroll-padding-block: 16px;
     padding-bottom: 24px;
   }
 }

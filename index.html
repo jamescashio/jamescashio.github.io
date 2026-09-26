@@ -93,7 +93,14 @@
             ><span class="menu-desktop">Mission Control</span><span class="menu-mobile">Menu</span>
             <span class="mono menu-desktop c-mu ls-08">⌘K</span>
           </button>
-          <button class="btn line sm" id="motion-btn" type="button" aria-label="Motion" aria-pressed="true">
+          <button
+            class="btn line sm"
+            id="motion-btn"
+            type="button"
+            aria-label="Motion"
+            aria-pressed="true"
+            title="Pause or resume motion"
+          >
             <svg class="ic-svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <g class="motion-pause">
                 <rect x="5" y="4" width="4" height="16" />
@@ -104,12 +111,18 @@
                 <circle cx="12" cy="12" r="8.5" />
                 <path d="M6 18 18 6" />
               </g></svg
-            ><span class="hide-m">Motion on</span>
+            ><span class="hide-m">Motion</span>
           </button>
-          <button class="btn line sm type-btn" id="type-btn" type="button" aria-label="Aa Signature. Change type style">
+          <button
+            class="btn line sm type-btn"
+            id="type-btn"
+            type="button"
+            aria-label="Aa Signature. Change type style"
+            title="Type style"
+          >
             <span class="type-aa" aria-hidden="true">Aa</span> <span class="hide-m" id="type-name">Signature</span>
           </button>
-          <a class="btn line sm nav-contact" href="#contact">Let’s talk</a>
+          <a class="nav-contact" href="#contact">Let’s talk <span aria-hidden="true">→</span></a>
         </div>
       </div>
     </header>
@@ -156,7 +169,7 @@
         <div class="vignette"></div>
         <div class="status">
           <span class="mono status-live"
-            ><i aria-hidden="true"></i>My lab, observed <span data-fleet="observedLong">September 24, 2026</span></span
+            ><i aria-hidden="true"></i>My lab, observed <span data-fleet="observedLong">September 26, 2026</span></span
           >
           <span class="mono status-fleet"
             ><span data-fleet="hosts">2</span> hosts · <span data-fleet="lxc">20</span> containers ·
@@ -165,7 +178,7 @@
         </div>
         <div class="content">
           <div class="kick flex items-center gap-10" data-hero>
-            <span class="hero-kick-dot"></span>DOUG CASHIO / AI &amp; SECURITY SYSTEMS
+            <span class="hero-kick-dot"></span>A HOBBY LAB FOR LOCAL AI · A HUMAN IN COMMAND
           </div>
           <h1>
             <span class="line"><span class="w">Own the iron.</span></span
@@ -181,12 +194,11 @@
             <a class="btn gold" id="hero-primary" href="#flight=board" data-flight
               >Board the starship <span aria-hidden="true">→</span></a
             >
-            <a class="btn ghost hero-secondary" href="#work">Try the privacy test <span aria-hidden="true">→</span></a>
+            <a class="btn ghost hero-secondary" href="#privacy-test"
+              >Try the privacy test <span aria-hidden="true">→</span></a
+            >
           </div>
           <p class="cta-note">A 30 second 3D flight: see where twelve AI requests go. Sound stays off.</p>
-          <button class="text-action hero-orbit" type="button" id="fold-btn" data-hero>
-            Light up the orbit <span aria-hidden="true">✦</span>
-          </button>
         </div>
         <a class="hero-next" href="#workshop">Next: inside the workshop <span aria-hidden="true">↓</span></a>
       </section>
@@ -240,9 +252,8 @@
               route, or to me when the data is private. Atlas, a local model, handles the recurring work.
             </p>
             <p>
-              On this site, <b>E.V.E.</b>, my Evaluation Verification Engine, answers from the dated record, and
-              <b>Bit</b>, the gold copilot, marks where a person holds authority. Everything you try here runs in your
-              browser; nothing reaches my servers.
+              Everything you try here runs in your browser; nothing reaches my servers. The evidence section answers
+              from a dated record, and a small copilot marks where a person holds authority.
             </p>
           </div>
           <div class="profile-foot">
@@ -254,7 +265,7 @@
               >
             </p>
             <details class="glossary" id="glossary">
-              <summary>Glossary: every name, in plain English ↓</summary>
+              <summary>Every name on this page, in plain English</summary>
               <dl>
                 <div>
                   <dt><strong>Bit</strong></dt>
@@ -286,11 +297,14 @@
                 </div>
                 <div>
                   <dt><strong>cAshIo</strong></dt>
-                  <dd>My personal AI workspace, and the name on this site. Its page is linked in the footer.</dd>
+                  <dd>
+                    Cashio, with the AI in capitals. My personal AI workspace, and the name on this site. Its page is
+                    linked in the footer.
+                  </dd>
                 </div>
                 <div>
                   <dt><strong>Zenith</strong></dt>
-                  <dd>The release name of this site, V39.1, as the dated export records it.</dd>
+                  <dd>The release name of this site, V39.2, as the dated export records it.</dd>
                 </div>
                 <div>
                   <dt><strong>Workhorse, Research, Synthesis</strong></dt>
@@ -307,7 +321,7 @@
         <div class="wrap">
           <div class="head">
             <div>
-              <div class="kick mb-14">START HERE</div>
+              <div class="kick mb-14">ONE DECISION</div>
               <h2 id="work-h" data-split>Try a decision.<br />See what changes.</h2>
             </div>
             <div class="r">
@@ -315,12 +329,12 @@
             </div>
           </div>
           <div class="grid" data-stagger>
-            <div class="panel c7 stack p-22-34 sg-22">
+            <div class="panel c7 stack p-22-34 sg-22" id="privacy-test">
               <div class="flex justify-between gap-12 flex-wrap">
                 <span class="kick gold">THE PRIVACY TEST</span
                 ><span class="mono c-mu">IN YOUR BROWSER · NO UPLOADS</span>
               </div>
-              <h3>One change. Who decides?</h3>
+              <h3 id="pv-h">One change. Who decides?</h3>
               <p class="muted m-0">Analyze a document and require sources. Now make that document private.</p>
               <div class="privacy-pair">
                 <div class="soft stack privacy-route">
@@ -375,11 +389,11 @@
                 </div>
               </div>
               <div class="stack sg-12">
-                <strong id="pv-prompt">Predict the private document’s route</strong>
+                <strong id="pv-prompt">Where should the private document go?</strong>
                 <div class="flex gap-10 flex-wrap items-center" role="group" aria-labelledby="pv-prompt">
-                  <button class="pill" type="button" data-pv="keep" aria-pressed="false">Research</button>
-                  <button class="pill gold" type="button" data-pv="human" aria-pressed="false">Human review</button>
-                  <button class="text-action" type="button" id="pv-reveal">Just show me</button>
+                  <button class="pill" type="button" data-pv="keep" aria-pressed="false">Research tool</button>
+                  <button class="pill gold" type="button" data-pv="human" aria-pressed="false">A person</button>
+                  <button class="text-action" type="button" id="pv-reveal">Show the answer</button>
                 </div>
                 <div class="sr" id="pv-live" role="status" aria-atomic="true"></div>
                 <div class="step bc-gold-40" id="pv-result" hidden>
@@ -467,10 +481,13 @@
                 </svg>
                 <div>
                   <span class="mono c-mu"
-                    >EXPERIMENT <span id="st-n">01</span> / OF 07 · <span id="st-codename">HERMES</span></span
+                    >EXPERIMENT <span id="st-n">01</span> OF 07 ·
+                    <span id="st-codename">HERMES, my scheduler</span></span
                   >
                   <h3 class="display fs-28-36 fw-800 mt-4" id="st-name">Choose a route</h3>
-                  <div class="muted fs-16" id="st-sub">My job scheduler, explored through a routing demo.</div>
+                  <div class="muted fs-16" id="st-sub">
+                    The same rule as the privacy test, with every input in your hands.
+                  </div>
                 </div>
                 <p class="lede">
                   <strong id="st-take">Intent and sources choose the route. Privacy can overrule both.</strong>
@@ -495,10 +512,11 @@
                   </div>
                   <div class="stack min-w-0 sg-10">
                     <div class="flex justify-between items-baseline">
-                      <span class="mono c-mu">EXAMPLE OUTPUT</span><span class="mono c-cy" id="st-code">QUALIFIED</span>
+                      <span class="mono c-mu">EXAMPLE LANE</span><span class="mono c-cy" id="st-code">QUALIFIED</span>
                     </div>
                     <div class="flex items-baseline gap-12 flex-wrap">
-                      <span class="lane cy" id="st-lane">Workhorse</span><span class="muted copy-note">lane</span>
+                      <span class="lane cy" id="st-lane">Everyday drafting</span>
+                      <span class="mono c-mu" id="st-lane-code">WORKHORSE LANE</span>
                     </div>
                     <div class="stack sg-8" id="st-steps"></div>
                     <p class="muted copy-note m-0 mt-4" id="st-detail">
@@ -550,6 +568,7 @@
                         <span id="st-nextq">When should automation stop and ask a person?</span> →
                       </button>
                     </div>
+                    <button class="text-action" type="button" id="study-choose">Choose another experiment ↑</button>
                   </div>
                 </div>
               </div>
@@ -589,15 +608,17 @@
                   </div>
                   <div class="flex items-baseline gap-14 flex-wrap">
                     <span class="display fs-32 fw-800" id="nd-name">HERMES</span
-                    ><span class="num em fs-32" id="nd-value" data-fleet="hermes.jobs">58</span
+                    ><span class="num em fs-32" id="nd-value" data-fleet="hermes.jobs">49</span
                     ><span class="mono c-mu" id="nd-unit">enabled scheduled jobs</span>
                   </div>
                   <strong id="nd-summary">The scheduler turns a task into a job.</strong>
                   <p class="muted copy-note" id="nd-body">
-                    58 of 60 scheduled jobs were enabled at the September 18, 2026 audit. The HERMES experiment explores
-                    the routing rule in your browser.
+                    49 of 56 retained definitions were enabled at the September 26, 2026 observation. The HERMES
+                    experiment explores the routing rule in your browser.
                   </p>
-                  <span class="mono c-gd" id="nd-evidence">Audit · September 18, 2026 · routing not verified</span>
+                  <span class="mono c-gd" id="nd-evidence"
+                    >Scheduler observation · September 26, 2026 · routing not verified</span
+                  >
                 </div>
                 <div class="fleet-counts" data-stagger>
                   <div class="stat">
@@ -611,7 +632,7 @@
                   </div>
                 </div>
                 <div class="flex gap-20 items-center flex-wrap">
-                  <span class="mono c-mu">FLEET · <span data-fleet="observedLong">September 24, 2026</span></span
+                  <span class="mono c-mu">FLEET · <span data-fleet="observedLong">September 26, 2026</span></span
                   ><a class="fs-14 fw-600" href="#evidence">Inspect the dated evidence ↓</a>
                 </div>
               </div>
@@ -919,6 +940,13 @@
               ><span class="room-go" id="room-go-heritage">Open the page <span aria-hidden="true">→</span></span></a
             >
           </div>
+          <nav class="flex flex-wrap items-center gap-12 pt-6" aria-label="Room reading editions">
+            <span class="muted">Reading editions:</span>
+            <a class="inline-cta" href="/rooms/starship/">Starship lab</a>
+            <a class="inline-cta" href="/rooms/principles/">Principles</a>
+            <a class="inline-cta" href="/rooms/studios/">Studios</a>
+            <a class="inline-cta" href="/rooms/heritage/">Flight heritage</a>
+          </nav>
         </div>
       </section>
 
@@ -937,7 +965,7 @@
                 <div class="stat flex-200">
                   <span class="mono c-mu"
                     >LAST OBSERVED<span class="status-age" data-age-of="observedLong" hidden></span></span
-                  ><span class="display cy fs-22 fw-700" data-fleet="observedLong">September 24, 2026</span>
+                  ><span class="display cy fs-22 fw-700" data-fleet="observedLong">September 26, 2026</span>
                 </div>
                 <div class="stat flex-200">
                   <span class="mono c-mu">HOW · RUN BY ME</span><span class="display cy fs-22 fw-700">Read only</span>
@@ -965,7 +993,8 @@
                 <div class="stat p-14-16">
                   <span class="mono c-mu">LOCAL MODEL · ATLAS</span
                   ><span class="c-ink fs-15"
-                    >Runs on my hardware with a <span data-fleet="atlas.context">16,384</span> token window</span
+                    >Primary configuration: a <span data-fleet="atlas.context">16,384</span> token window, read
+                    September 26, 2026</span
                   >
                 </div>
               </div>
@@ -1053,15 +1082,48 @@
                   </div>
                 </div>
               </details>
+              <details class="evidence-details" id="snapshot-story">
+                <summary>A real run: the backup tool that refused to run</summary>
+                <div class="evidence-record-body stack sg-14">
+                  <span class="mono c-cy">DEEPSEEK HARNESS · EXECUTION RECEIPT</span>
+                  <h3>Keep the snapshot moving with the work.</h3>
+                  <p class="muted copy-note">
+                    The tool's notes describe a fixed revision check that blocked snapshots as the project advanced. The
+                    repair archives the current revision, checks that it stays stable, and includes the installed
+                    skills, agent presets and operations scripts.
+                  </p>
+                  <p class="muted copy-note">
+                    The September 26, 2026 receipt records 902 verified files and a matching archive hash from
+                    decryption on a second host. This was DeepSeek Harness operations tooling. The trigger was a daily
+                    schedule configured for 3:45 AM Central; the work was a backup script, with no AI routing claim.
+                  </p>
+                  <div class="soft stack p-16 sg-8">
+                    <strong class="fs-14">Three fields from the execution receipt</strong>
+                    <code class="fs-14"
+                      >"status": "verified",<br />"restored_files_verified": 902,<br />"live_restore_performed":
+                      false,</code
+                    >
+                  </div>
+                  <p class="muted copy-note">
+                    Receipt: September 26, 2026 at 3:45 AM Central Daylight Time. This checks readable console files,
+                    not recovery of a running system or the fleet. One missing snapshot date means uninterrupted daily
+                    success is not claimed. Storage paths and host identifiers remain private.
+                  </p>
+                  <a class="fs-14 fw-600" href="/evidence/console-snapshot-2026-09-26.json"
+                    >Inspect the redacted job receipt →</a
+                  >
+                </div>
+              </details>
               <div class="soft stack p-16 bc-gold-30 sg-8">
                 <strong class="fs-14">The evidence boundary, in one place</strong>
                 <span class="muted copy-note"
-                  >These observations count running guests and check backup integrity. They do not test application
-                  health, restores or current AI routing. Private addresses, service names, spending and the model
-                  catalog stay private. The browser experiments are simulations.</span
+                  >These fleet counts and integrity checks do not establish application health, full system recovery or
+                  current AI routing. Private addresses, service names, spending and the model catalog stay private. The
+                  browser experiments are simulations.</span
                 >
                 <div class="evidence-links">
                   <a href="/evidence/status.json">Read the latest export</a
+                  ><a href="/evidence/status-2026-09-24.json">Archived record, September 24</a
                   ><a href="/evidence/status-2026-09-07.json">Archived record, September 7</a
                   ><a href="/evidence/status-2026-08-28.json">Archived record, August 28</a>
                 </div>
@@ -1086,7 +1148,8 @@
                 <div class="scan"></div>
                 <span class="d">Published record · <span data-fleet="pageRevised">September 26, 2026</span></span
                 ><span class="d"
-                  >Fleet and backups: September 24. Scheduler, Atlas and console audit: September 18.</span
+                  >Fleet, scheduler and Atlas configuration: September 26. Backup integrity: September 24. Console and
+                  routing audit: September 18.</span
                 ><span class="d">Each reply carries its own date. Easter egg replies are marked lore.</span
                 ><span class="d">Tap a command below or type your own. Try help.</span>
               </div>
@@ -1276,7 +1339,7 @@
     </main>
     <nav class="sections" aria-label="Sections">
       <a href="#top" aria-label="Orbit"><span>Orbit</span></a>
-      <a href="#work" aria-label="Start here"><span>Start here</span></a>
+      <a href="#work" aria-label="One decision"><span>One decision</span></a>
       <a href="#studies" aria-label="Seven experiments"><span>Seven experiments</span></a>
       <a href="#universe" aria-label="System map"><span>System map</span></a>
       <a href="#rooms" aria-label="Four more rooms"><span>Four more rooms</span></a>
@@ -1294,7 +1357,7 @@
           >The Human Reckoning. Frank Herbert’s <em>Dune</em> taught caution about thinking machines; Douglas Adams’s
           <em>Hitchhiker’s Guide</em> taught the rest: keep a towel handy and don’t panic. Capable tools. Human judgment
           in command.</span
-        ><span class="mono c-gd">V39.1 · Directed by Doug Cashio · September 26, 2026</span
+        ><span class="mono c-gd">V39.2 · Directed by Doug Cashio · September 26, 2026</span
         ><span class="colophon fs-14 c-mu"
           >A personal site. The builds and views here are my own and do not speak for my employer.</span
         >
@@ -1361,7 +1424,7 @@
                 ><span class="mono">01 / EXPLORE</span><strong>Board the starship →</strong
                 ><span>A 30 second flight. Your pace.</span></a
               >
-              <a class="mc-route" href="#work"
+              <a class="mc-route" href="#privacy-test"
                 ><span class="mono">02 / TRY</span><strong>Try the privacy test →</strong
                 ><span>One document. Your prediction.</span></a
               >
@@ -1379,12 +1442,25 @@
             ><button class="pill" type="button" data-type-choice="cockpit" aria-pressed="false">Cockpit</button
             ><button class="pill" type="button" data-type-choice="readable" aria-pressed="false">Readable</button>
           </div>
+          <div class="mc-type" role="group" aria-label="Extras">
+            <span class="mono">EXTRAS</span
+            ><button class="pill" type="button" id="fold-btn">
+              Light up the orbit <span aria-hidden="true">✦</span>
+            </button>
+          </div>
         </div>
         <div class="mc-keymap"><span>↑ ↓ navigate</span><span>↵ enter</span><span>esc close</span></div>
       </div>
     </dialog>
     <aside class="bitdock" id="bitdock" aria-label="Bit, your copilot">
-      <button type="button" class="bitbtn" id="bit-btn" aria-label="Bit: open Mission Control">
+      <button
+        type="button"
+        class="bitbtn"
+        id="bit-btn"
+        aria-haspopup="dialog"
+        aria-controls="mc"
+        aria-label="Bit: open Mission Control"
+      >
         <canvas id="bitcv" width="96" height="96" aria-hidden="true"></canvas>
       </button>
       <div class="bitsay hide" id="bitsay" role="status" aria-live="polite">

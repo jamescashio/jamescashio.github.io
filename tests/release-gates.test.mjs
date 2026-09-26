@@ -123,6 +123,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
     packageJson.scripts["test:node"],
     packageJson.scripts["test:odyssey"],
     "tsc --noEmit",
+    "tsc -p tsconfig.helios.json",
     "vite build",
     "node --import tsx scripts/prerender.mts",
     "node --import tsx scripts/prerender-odyssey.mts",
@@ -143,6 +144,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
     packageJson.scripts["test:node"],
     packageJson.scripts["test:odyssey"],
     "tsc --noEmit",
+    "tsc -p tsconfig.helios.json",
     "vite build",
     "node --import tsx scripts/prerender.mts",
     "node --import tsx scripts/prerender-odyssey.mts",
@@ -659,7 +661,7 @@ test("tag publication derives V37 from software metadata and validates one built
 
 test("Helios release identity, signature assets and compatibility receipts agree", async () => {
   const release = JSON.parse(await read("public/v38/site-release.json"));
-  assert.equal(release.experienceVersion, "39.1.0");
+  assert.equal(release.experienceVersion, "39.2.0");
   assert.equal(release.entry, "/");
   assert.equal(release.published, true);
   assert.equal(await read("dist/v38/site-release.json"), await read("public/v38/site-release.json"));
@@ -677,7 +679,7 @@ test("Helios release identity, signature assets and compatibility receipts agree
   const doc = new JSDOM(await read("dist/index.html")).window.document;
   assert.doesNotMatch(doc.querySelector('meta[name="robots"]').content, /noindex|nofollow/);
   assert.doesNotMatch(doc.body.textContent, /Unpublished refinement/);
-  assert.match(doc.body.textContent, /V39\.1 · Directed by Doug Cashio · September 26, 2026/);
+  assert.match(doc.body.textContent, /V39\.2 · Directed by Doug Cashio · September 26, 2026/);
   const releaseDay = new Date(`${release.releaseDate}T00:00:00Z`);
   const longDate = new Intl.DateTimeFormat("en-US", {
     month: "long",
@@ -693,6 +695,27 @@ test("Helios release identity, signature assets and compatibility receipts agree
     );
   assert.equal(FLEET.auditLong, observedDate(evidence.provenance.auditCollectedAtUtc));
   assert.equal(FLEET.consoleBriefLong, observedDate(evidence.orchestration.dshAgentsBriefDate + "T00:00:00Z"));
+  const current = evidence.orchestration;
+  assert.equal(FLEET.hermes.jobs, current.hermesJobsEnabled);
+  assert.equal(FLEET.hermes.records, current.hermesJobRecords);
+  assert.equal(FLEET.hermes.observedLong, observedDate(current.hermesJobsObservedAtUtc));
+  assert.equal(FLEET.atlas.observedLong, observedDate(current.atlasConfigurationObservedAtUtc));
+  assert.equal(FLEET.atlas.context, current.atlasActiveContext);
+  assert.equal(FLEET.backups.checkedLong, observedDate(current.backups.checkedAtUtc));
+  const previous = JSON.parse(await read("public/evidence/status-2026-09-24.json"));
+  assert.equal(previous.verified, "2026-09-24");
+  assert.equal(previous.orchestration.hermesJobsEnabled, 58);
+  assert.equal(previous.orchestration.hermesJobRecords, 60);
+  assert.equal(previous.provenance.auditCollectedAtUtc, "2026-09-18T22:53:54Z");
+  const job = JSON.parse(await read("public/evidence/console-snapshot-2026-09-26.json"));
+  assert.equal(job.executingSystem, "DeepSeek Harness operations tooling");
+  assert.equal(job.liveRestorePerformed, false);
+  assert.equal(job.outputExcerpt.length, 3);
+  assert.match(job.encryptedSha256, /^[a-f0-9]{64}$/);
+  assert.equal(job.restoredFilesVerified, 902);
+  assert.match(doc.querySelector("#snapshot-story").textContent, /not recovery of a running system/);
+  assert.ok(doc.querySelector('#snapshot-story a[href="/evidence/console-snapshot-2026-09-26.json"]'));
+  assert.deepEqual(JSON.parse(await read("dist/evidence/status.json")), evidence);
   const shortVersion = release.experienceVersion.split(".").slice(0, 2).join(".");
   assert.ok((await read("README.md")).startsWith(`# cAshIo V${shortVersion} · Helios`));
   assert.equal((await read("CHANGELOG.md")).match(/^## (V[\d.]+)/m)?.[1], `V${shortVersion}`);
