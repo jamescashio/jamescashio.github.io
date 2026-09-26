@@ -1561,6 +1561,7 @@ test("Study shortcuts reveal the chosen experiment and heritage credits never co
     if (width < 1100) {
       await expect(shortcuts.getByRole("link")).toHaveCount(7);
       await expect(page.locator("#study-lab")).not.toHaveAttribute("open", "");
+      await expect(page.locator("#glossary")).not.toHaveAttribute("open", "");
       for (const id of ["hermes", "cascade", "exposure", "briefing", "dashboards", "signal", "graphify"]) {
         await shortcuts.locator(`a[href="#build=${id}"]`).click();
         await expect(page.locator("#study-lab")).toHaveAttribute("open", "");
@@ -1568,7 +1569,8 @@ test("Study shortcuts reveal the chosen experiment and heritage credits never co
         await expect(page.locator("#studies-h")).toBeFocused();
       }
     } else {
-      // Wide screens start with the workbench and the system map open; the study cards replace the shortcut row.
+      // Wide screens start with the glossary, the workbench and the system map open; the study cards replace the shortcut row.
+      await expect(page.locator("#glossary")).toHaveAttribute("open", "");
       await expect(page.locator("#study-lab")).toHaveAttribute("open", "");
       await expect(page.locator("#atlas-lab")).toHaveAttribute("open", "");
       await expect(shortcuts).toBeHidden();

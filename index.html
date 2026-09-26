@@ -156,7 +156,7 @@
         <div class="vignette"></div>
         <div class="status">
           <span class="mono status-live"
-            ><i aria-hidden="true"></i>Observed <span data-fleet="observedLong">September 24, 2026</span></span
+            ><i aria-hidden="true"></i>My lab, observed <span data-fleet="observedLong">September 24, 2026</span></span
           >
           <span class="mono status-fleet"
             ><span data-fleet="hosts">2</span> hosts · <span data-fleet="lxc">20</span> containers ·
@@ -369,7 +369,7 @@
                 <div class="flex gap-10 flex-wrap items-center" role="group" aria-labelledby="pv-prompt">
                   <button class="pill" type="button" data-pv="keep" aria-pressed="false">Research</button>
                   <button class="pill gold" type="button" data-pv="human" aria-pressed="false">Human review</button>
-                  <button class="btn ghost sm" type="button" id="pv-reveal">Just show me</button>
+                  <button class="text-action" type="button" id="pv-reveal">Just show me</button>
                 </div>
                 <div class="sr" id="pv-live" role="status" aria-atomic="true"></div>
                 <div class="step bc-gold-40" id="pv-result" hidden>
@@ -1070,7 +1070,7 @@
                 <span class="d">Published record · <span data-fleet="pageRevised">September 24, 2026</span></span
                 ><span class="d"
                   >Fleet and backups: September 24. Scheduler, Atlas and console audit: September 18.</span
-                ><span class="d">Each reply carries its own date. Hidden commands are labeled lore.</span
+                ><span class="d">Each reply carries its own date. Easter egg replies are marked lore.</span
                 ><span class="d">Tap a command below or type your own. Try help.</span>
               </div>
               <div class="eve-chips" role="group" aria-label="Suggested E.V.E. commands">
@@ -1088,7 +1088,7 @@
                   id="eve-in"
                   type="text"
                   autocomplete="off"
-                  placeholder="Try help"
+                  placeholder="Try help, or 42"
                   aria-label="E.V.E. command, for example help or fleet"
                 /><button class="btn ghost sm" type="submit" aria-label="Run command">↵</button>
               </form>
@@ -1355,12 +1355,12 @@
             <h3 class="mc-all-title">Browse the workshop</h3>
           </div>
           <div id="mc-list" role="region" aria-label="Destinations"></div>
-        </div>
-        <div class="mc-type" role="group" aria-label="Type style">
-          <span class="mono">TYPE STYLE</span
-          ><button class="pill" type="button" data-type-choice="signature" aria-pressed="true">Signature</button
-          ><button class="pill" type="button" data-type-choice="cockpit" aria-pressed="false">Cockpit</button
-          ><button class="pill" type="button" data-type-choice="readable" aria-pressed="false">Readable</button>
+          <div class="mc-type" role="group" aria-label="Type style">
+            <span class="mono">TYPE STYLE</span
+            ><button class="pill" type="button" data-type-choice="signature" aria-pressed="true">Signature</button
+            ><button class="pill" type="button" data-type-choice="cockpit" aria-pressed="false">Cockpit</button
+            ><button class="pill" type="button" data-type-choice="readable" aria-pressed="false">Readable</button>
+          </div>
         </div>
         <div class="mc-keymap"><span>↑ ↓ navigate</span><span>↵ enter</span><span>esc close</span></div>
       </div>

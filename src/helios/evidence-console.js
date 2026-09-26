@@ -8,7 +8,7 @@ import { $ } from "./dom.js";
 export const EVIDENCE = {
   help: [
     "Commands: fleet · hosts · kernel · backups · atlas · dsh · hermes · routes · archive · cost · clear · help",
-    `Listed commands read the dated export. Hidden commands are labeled lore. Record revised ${FLEET.pageRevised}.`,
+    `Listed commands read the dated export. Easter egg replies are marked lore. Record revised ${FLEET.pageRevised}.`,
     "Keys: ↑ recalls a command · Tab completes one. Some commands are not listed. Pilots find them.",
   ],
   fleet: [
@@ -119,15 +119,38 @@ export const LORE = {
   "rm -rf /": ["denied · Nothing here to delete. A human is in command."],
   hal: ["lore · This machine opens the doors when a person asks. That is the whole idea."],
   "open the pod bay doors": ["lore · This machine opens the doors when a person asks. That is the whole idea."],
+  hello: ["lore · Hello, pilot. Type fleet for the dated record, or find Doug's email in the contact section below."],
+};
+/** Plain questions a visitor might type find the matching lore reply. */
+const ASKS = {
+  hi: "hello",
+  hey: "hello",
+  contact: "hello",
+  who: "whoami",
+  doug: "whoami",
+  "who are you": "eve",
+  "what is your name": "eve",
+  "what's your name": "eve",
+  "your name": "eve",
+  "what is the meaning of life": "42",
 };
 /** The two server names answer with the dated host record. */
 const ALIASES = { zeus: "hosts", apollo: "hosts" };
 
+/** Commands ignore case, extra spaces and a closing question mark. */
+const normalize = (input) =>
+  String(input)
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .replace(/\s*[?!]+$/, "");
+const loreKey = (cmd) => (Object.hasOwn(ASKS, cmd) ? ASKS[cmd] : cmd);
+
 export function evidenceReply(input) {
-  const cmd = String(input).trim().toLowerCase().replace(/\s+/g, " ");
+  const cmd = normalize(input);
   if (Object.hasOwn(ALIASES, cmd)) return EVIDENCE[ALIASES[cmd]];
   if (Object.hasOwn(EVIDENCE, cmd)) return EVIDENCE[cmd];
-  if (Object.hasOwn(LORE, cmd)) return LORE[cmd];
+  if (Object.hasOwn(LORE, loreKey(cmd))) return LORE[loreKey(cmd)];
   return [`unknown command: ${cmd}. Try help.`];
 }
 
@@ -151,7 +174,7 @@ export function setupEvidenceConsole({ motion }) {
   // Surprises come from a shuffled deck, so every hidden command appears once before any repeats.
   let deck = [];
   function run(raw) {
-    let cmd = String(raw).trim().toLowerCase().replace(/\s+/g, " ");
+    let cmd = normalize(raw);
     if (!cmd) return;
     history.push(cmd);
     cursor = history.length;
@@ -172,7 +195,7 @@ export function setupEvidenceConsole({ motion }) {
     const reply = document.createElement("div");
     reply.className = "eve-reply";
     out.appendChild(reply);
-    const lore = Object.hasOwn(LORE, cmd);
+    const lore = Object.hasOwn(LORE, loreKey(cmd)) && !Object.hasOwn(EVIDENCE, cmd);
     if (hint) lines.push(hint);
     lines.forEach((line, i) => {
       const timer = setTimeout(

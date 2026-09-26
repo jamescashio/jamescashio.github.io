@@ -247,10 +247,11 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
         const restoreInitialFocus = () =>
           requestAnimationFrame(() => {
             // Native fragment and reload restoration finish after the module starts. Keep the heading visible,
-            // while respecting any control the visitor has focused in the meantime.
+            // while respecting any control the visitor has focused, or any disclosure they closed, in the meantime.
             if (
               location.href === initialAddress &&
               (document.activeElement === document.body || document.activeElement === heading) &&
+              !document.getElementById(hash.slice(1))?.closest("details:not([open])") &&
               !dialog.open &&
               !scene &&
               !pending

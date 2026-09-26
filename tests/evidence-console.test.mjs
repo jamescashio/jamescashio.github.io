@@ -27,6 +27,14 @@ test("unlisted lore replies are labelled and never pose as evidence", () => {
   assert.match(evidenceReply("nonsense")[0], /unknown command: nonsense\. Try help\./);
 });
 
+test("plain questions reach their labelled lore reply", () => {
+  assert.deepEqual(evidenceReply("What is your name?"), LORE.eve);
+  assert.deepEqual(evidenceReply("  Who  are you "), LORE.eve);
+  assert.deepEqual(evidenceReply("Doug"), LORE.whoami);
+  assert.deepEqual(evidenceReply("hi!"), LORE.hello);
+  assert.deepEqual(evidenceReply("fleet?"), EVIDENCE.fleet);
+});
+
 test("the help text lists every evidence command and hints at the hidden ones", () => {
   const help = evidenceReply("help").join(" ");
   for (const command of Object.keys(EVIDENCE)) assert.ok(help.includes(command), command);

@@ -33,13 +33,15 @@ export function setupStudies({ scenes, motion, copy }) {
     graphify: "Trace a dependency",
   };
   const cues = { dashboards: "Drag the age past 24 hours. The review state changes." };
+  // The study label names both servers the way the glossary does.
+  const codes = { dashboards: "Zeus and Apollo" };
   const STUDIES = PROJECTS.map((p, i) => {
     const n = STUDY_NOTES[p.id];
     return {
       id: p.id,
       n: String(i + 1).padStart(2, "0"),
       name: labels[p.id],
-      code: p.title,
+      code: codes[p.id] || p.title,
       cat: p.category,
       sub: p.subtitle,
       cue: cues[p.id] || p.cue,

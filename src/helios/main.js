@@ -73,9 +73,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 const studyDeck = setupStudies({ scenes, motion: () => motionOn, copy });
-// Wide screens have room for the studies and the system map, so they start open; phones keep them folded.
+// Wide screens have room for the glossary, the studies and the system map, so they start open; phones keep them folded.
 if (matchMedia("(min-width: 1100px)").matches)
-  for (const id of ["study-lab", "atlas-lab"]) document.getElementById(id).open = true;
+  for (const id of ["glossary", "study-lab", "atlas-lab"]) document.getElementById(id).open = true;
 setupPrivacy({
   loadRequest: studyDeck.loadRequest,
   traceRequest: () => scenes.traceRequest(),
