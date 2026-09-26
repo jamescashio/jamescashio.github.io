@@ -1,4 +1,6 @@
-/* The Cockpit type style. zenith.js applies it only when chosen, so its fonts never touch first paint. */
+/* The Cockpit type style, applied only when chosen, so its fonts never touch first paint.
+   Its families carry a Z suffix because the flight and studio islands register Oxanium and Exo as aliases
+   of the Helios faces (island-fonts.css); the suffix keeps the real Oxanium and Exo 2 files apart from those. */
 @font-face {
   font-family: "Oxanium Z";
   src: url("/fonts/oxanium-latin-variable.woff2") format("woff2");

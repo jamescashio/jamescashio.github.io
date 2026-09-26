@@ -15,10 +15,15 @@ export function setupRooms(context) {
   const controllers = new Map();
   let current = null;
 
+  /**
+   * The room section a hash opens, or null for a home page address.
+   * @param {string} hash
+   * @returns {HTMLElement | null}
+   */
   function roomOf(hash) {
     if (hash === "#build-story" || hash.startsWith("#mission=")) return document.getElementById("starship");
     if (!/^#[\w-]+$/.test(hash)) return null;
-    return document.getElementById(hash.slice(1))?.closest("section.room") || null;
+    return /** @type {HTMLElement | null} */ (document.getElementById(hash.slice(1))?.closest("section.room")) || null;
   }
 
   // An open room's title is the page's only visible h1; on the home page it returns to a paragraph,

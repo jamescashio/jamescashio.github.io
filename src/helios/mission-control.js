@@ -1,13 +1,15 @@
 /** Search and menu focus stay independent from room, scene and browser-history routing. */
+import { $, $$ } from "./dom.js";
+
 export function setupMissionControl({ studies, canOpen, onToggle }) {
-  const dialog = document.querySelector("#mc");
-  const search = document.querySelector("#mc-search");
-  const list = document.querySelector("#mc-list");
-  const content = document.querySelector(".mc-content");
-  const start = document.querySelector("#mc-start");
-  const results = document.querySelector("#mc-results");
-  const clear = document.querySelector("#mc-clear");
-  document.querySelector("#mc-btn .mono").textContent = /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘K" : "Ctrl K";
+  const dialog = /** @type {HTMLDialogElement} */ ($("#mc"));
+  const search = /** @type {HTMLInputElement} */ ($("#mc-search"));
+  const list = $("#mc-list");
+  const content = $(".mc-content");
+  const start = $("#mc-start");
+  const results = $("#mc-results");
+  const clear = $("#mc-clear");
+  $("#mc-btn .mono").textContent = /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘K" : "Ctrl K";
   let previousFocus = null;
   let navigating = false;
   // The open menu owns one history entry, so Back (or a phone's back gesture) closes it.
@@ -146,7 +148,7 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
     entry = true;
     onToggle();
     // A tap should show the destinations, not raise the phone keyboard over them.
-    if (event?.pointerType === "touch") document.querySelector("#mc-title").focus();
+    if (event?.pointerType === "touch") $("#mc-title").focus();
     else search.focus();
   }
   dialog.addEventListener("close", () => {
@@ -175,7 +177,7 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
     });
   });
   document.querySelector("#mc-btn").addEventListener("click", open);
-  document.querySelector("#mc-close").addEventListener("click", () => dialog.close());
+  $("#mc-close").addEventListener("click", () => dialog.close());
   search.addEventListener("input", () => render(search.value.trim().toLowerCase()));
   // Esc closes the menu at once, as its key hint says, instead of first clearing the search.
   search.addEventListener("keydown", (event) => {
@@ -189,9 +191,9 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
     search.focus();
   });
   dialog.addEventListener("keydown", (event) => {
-    const links = [...(start.hidden ? [] : start.querySelectorAll("a")), ...list.querySelectorAll("a")];
+    const links = [...(start.hidden ? [] : $$("a", start)), ...$$("a", list)];
     if (!links.length) return;
-    const index = links.indexOf(document.activeElement);
+    const index = links.indexOf(/** @type {HTMLElement} */ (document.activeElement));
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       event.preventDefault();
       const offset = event.key === "ArrowDown" ? 1 : -1;

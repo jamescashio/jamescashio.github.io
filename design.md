@@ -1,3 +1,11 @@
+# V39.2 Zenith · September 26, 2026
+
+Keep V39.1 as it reads and feels. Make the code easier to trust and to read.
+
+Type check the front door: a `checkJs` program for `src/helios` runs in the build, `dom.js` types its element queries, and `helios-globals.d.ts` declares the window hooks and custom events, so a wrong property or a dead argument fails the build instead of the visitor. Give each style rule one home: fold the `zenith.css` fix-up layer into the stylesheet that owns its component, split `refinements.css` into `instruments.css` and the page rules in `base.css`, remove declarations a later rule always overrode, and keep the entry stylesheet under its unchanged 19,000 byte gzip budget by removing CSS, never by raising it. Keep `!important` only where a named colour must beat any component rule, where motion is switched off, and where the Readable type style overrides component type. Retire the release codename from module and class names; the glossary entry keeps it for visitors. Let E.V.E. answer `about` and `contact` from published copy and name the closest listed command after a typo.
+
+Verify with pixel comparisons of the home page, the four rooms, Mission Control, both type styles and the reading editions at 1440, 1024, 2560, 390 and 320 pixels against the V39.1 build, then every release gate before publication. Rollback: 22a9645155bec379a805bd350e7bcf1a6c60522c.
+
 # V39.1 Zenith · September 26, 2026
 
 Keep Zenith's world, artwork, type, palette, Bit, E.V.E., quiet sound and dated evidence. Make the first visit easier to name and the code easier to trust.

@@ -10,7 +10,7 @@ export function startHero({ getMotion, onReady }) {
   try {
     renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: "low-power" });
   } catch {
-    fallback.style.opacity = 1;
+    fallback.style.opacity = "1";
     canvas.remove();
   }
   if (renderer) {

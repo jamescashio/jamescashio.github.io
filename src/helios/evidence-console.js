@@ -9,7 +9,8 @@ export const EVIDENCE = {
   help: [
     "Commands: fleet · hosts · kernel · backups · atlas · dsh · hermes · routes · archive · cost · clear · help",
     `Listed commands read the dated export. Easter egg replies are marked lore. Record revised ${FLEET.pageRevised}.`,
-    "Keys: ↑ recalls a command · Tab completes one. Some commands are not listed. Pilots find them.",
+    "About this site: about · contact. Keys: ↑ recalls a command · Tab completes one.",
+    "Some commands are not listed. Pilots find them.",
   ],
   fleet: [
     `Observation: ${FLEET.observedLong}`,
@@ -121,13 +122,31 @@ export const LORE = {
   "open the pod bay doors": ["lore · This machine opens the doors when a person asks. That is the whole idea."],
   hello: ["lore · Hello, pilot. Type fleet for the dated record, or find Doug's email in the contact section below."],
 };
-/** Plain questions a visitor might type find the matching lore reply. */
+/** Replies about the site itself. They repeat what the page already says, so they are neither evidence nor lore. */
+export const PAGE = {
+  about: [
+    "Doug Cashio: by day, helping managed service providers deliver security.",
+    "After hours, this workshop: AI experiments, original worlds and a few things that fly.",
+    "A human stays in command. Type help for the dated record, or fleet to start.",
+  ],
+  contact: [
+    "Open to speaking, advising and comparing notes.",
+    "The contact section below has Doug's email. Don't panic. Say hello.",
+  ],
+};
+
+/** Plain questions a visitor might type find the matching reply. */
 const ASKS = {
   hi: "hello",
   hey: "hello",
-  contact: "hello",
   who: "whoami",
   doug: "whoami",
+  "who is doug": "about",
+  "about doug": "about",
+  "what is this": "about",
+  hire: "contact",
+  email: "contact",
+  "say hello": "contact",
   "who are you": "eve",
   "what is your name": "eve",
   "what's your name": "eve",
@@ -146,12 +165,59 @@ const normalize = (input) =>
     .replace(/\s*[?!]+$/, "");
 const loreKey = (cmd) => (Object.hasOwn(ASKS, cmd) ? ASKS[cmd] : cmd);
 
+/** Commands a visitor can discover from help or Tab completion. */
+export const KNOWN_COMMANDS = [...Object.keys(EVIDENCE), ...Object.keys(PAGE), "clear", "surprise me"];
+
+/**
+ * Edit distance between two short strings.
+ * @param {string} a
+ * @param {string} b
+ * @returns {number}
+ */
+function distance(a, b) {
+  let previous = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const row = [i];
+    for (let j = 1; j <= b.length; j++)
+      row[j] = Math.min(previous[j] + 1, row[j - 1] + 1, previous[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    previous = row;
+  }
+  return previous[b.length];
+}
+
+/**
+ * The listed command closest to a typo, or null when nothing is close.
+ * A prefix either way counts, as does an edit distance within a third of the command.
+ * @param {string} cmd A normalized command.
+ * @returns {string | null}
+ */
+export function nearestCommand(cmd) {
+  if (cmd.length < 3) return null;
+  let best = null;
+  let bestScore = Infinity;
+  for (const known of KNOWN_COMMANDS) {
+    const prefix = known.startsWith(cmd) || cmd.startsWith(known + " ");
+    const score = prefix ? 0 : distance(cmd, known);
+    if (!prefix && score > Math.floor(known.length / 3)) continue;
+    if (score < bestScore) [best, bestScore] = [known, score];
+  }
+  return best;
+}
+
+/**
+ * Lines for one console input.
+ * @param {string} input Raw text from the visitor.
+ * @returns {string[]}
+ */
 export function evidenceReply(input) {
   const cmd = normalize(input);
   if (Object.hasOwn(ALIASES, cmd)) return EVIDENCE[ALIASES[cmd]];
   if (Object.hasOwn(EVIDENCE, cmd)) return EVIDENCE[cmd];
-  if (Object.hasOwn(LORE, loreKey(cmd))) return LORE[loreKey(cmd)];
-  return [`unknown command: ${cmd}. Try help.`];
+  const key = loreKey(cmd);
+  if (Object.hasOwn(PAGE, key)) return PAGE[key];
+  if (Object.hasOwn(LORE, key)) return LORE[key];
+  const near = nearestCommand(cmd);
+  return [`unknown command: ${cmd}.${near ? ` Did you mean ${near}?` : ""} Try help.`];
 }
 
 /** Hidden commands a visitor can stumble into; surprise me picks one and names it. */
@@ -159,11 +225,10 @@ const SURPRISES = ["yeager", "johnson", "rutan", "hoover", "butlerian", "ix", "s
 
 export function setupEvidenceConsole({ motion }) {
   const out = $("#eve-out");
-  const inp = $("#eve-in");
+  const inp = /** @type {HTMLInputElement} */ ($("#eve-in"));
   const intro = out.innerHTML;
   const history = [];
   let cursor = 0;
-  const known = [...Object.keys(EVIDENCE), "clear", "surprise me"];
   const add = (text, className = "") => {
     const line = document.createElement("span");
     line.textContent = text;
@@ -220,7 +285,7 @@ export function setupEvidenceConsole({ motion }) {
   });
   document
     .querySelectorAll("[data-eve]")
-    .forEach((chip) => chip.addEventListener("click", () => run(chip.dataset.eve)));
+    .forEach((chip) => chip.addEventListener("click", () => run(/** @type {HTMLElement} */ (chip).dataset.eve)));
   inp.addEventListener("keydown", (e) => {
     if (e.key === "ArrowUp" && history.length) {
       e.preventDefault();
@@ -231,7 +296,7 @@ export function setupEvidenceConsole({ motion }) {
       cursor = Math.min(history.length, cursor + 1);
       inp.value = history[cursor] ?? "";
     } else if (e.key === "Tab" && inp.value.trim()) {
-      const match = known.find((command) => command.startsWith(inp.value.trim().toLowerCase()));
+      const match = KNOWN_COMMANDS.find((command) => command.startsWith(inp.value.trim().toLowerCase()));
       if (match) {
         e.preventDefault();
         inp.value = match;

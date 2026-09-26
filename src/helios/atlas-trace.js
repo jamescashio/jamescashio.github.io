@@ -1,5 +1,6 @@
 import { routeExample } from "../odyssey/data";
 import { shareExperiment } from "../odyssey/study-experiment";
+import { $$ } from "./dom.js";
 
 /** The illustration reads the same policy as HERMES; it never chooses a real host. */
 export function describeRequest(experiment) {
@@ -123,14 +124,12 @@ export function createAtlasTrace({ isMotionEnabled, onSchedule }) {
     $("#request-continue").textContent =
       `Explore this ${request.held ? "human review decision" : request.route.lane.toLowerCase() + " route"} in HERMES`;
     $("#trace-stage-compute").textContent = request.held ? "Hold" : "Compute";
-    document
-      .querySelectorAll("[data-request-private]")
-      .forEach((button) =>
-        button.setAttribute(
-          "aria-pressed",
-          String((button.dataset.requestPrivate === "true") === experiment.privateData),
-        ),
-      );
+    $$("[data-request-private]").forEach((button) =>
+      button.setAttribute(
+        "aria-pressed",
+        String((button.dataset.requestPrivate === "true") === experiment.privateData),
+      ),
+    );
     label.textContent = `${experiment.privateData ? "Private" : "Public"} input. Trace the decision, or continue with these exact settings.`;
   }
   function advance(delta) {

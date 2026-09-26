@@ -123,6 +123,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
     packageJson.scripts["test:node"],
     packageJson.scripts["test:odyssey"],
     "tsc --noEmit",
+    "tsc -p tsconfig.helios.json",
     "vite build",
     "node --import tsx scripts/prerender.mts",
     "node --import tsx scripts/prerender-odyssey.mts",
@@ -143,6 +144,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
     packageJson.scripts["test:node"],
     packageJson.scripts["test:odyssey"],
     "tsc --noEmit",
+    "tsc -p tsconfig.helios.json",
     "vite build",
     "node --import tsx scripts/prerender.mts",
     "node --import tsx scripts/prerender-odyssey.mts",
@@ -659,7 +661,7 @@ test("tag publication derives V37 from software metadata and validates one built
 
 test("Helios release identity, signature assets and compatibility receipts agree", async () => {
   const release = JSON.parse(await read("public/v38/site-release.json"));
-  assert.equal(release.experienceVersion, "39.1.0");
+  assert.equal(release.experienceVersion, "39.2.0");
   assert.equal(release.entry, "/");
   assert.equal(release.published, true);
   assert.equal(await read("dist/v38/site-release.json"), await read("public/v38/site-release.json"));
@@ -677,7 +679,7 @@ test("Helios release identity, signature assets and compatibility receipts agree
   const doc = new JSDOM(await read("dist/index.html")).window.document;
   assert.doesNotMatch(doc.querySelector('meta[name="robots"]').content, /noindex|nofollow/);
   assert.doesNotMatch(doc.body.textContent, /Unpublished refinement/);
-  assert.match(doc.body.textContent, /V39\.1 · Directed by Doug Cashio · September 26, 2026/);
+  assert.match(doc.body.textContent, /V39\.2 · Directed by Doug Cashio · September 26, 2026/);
   const releaseDay = new Date(`${release.releaseDate}T00:00:00Z`);
   const longDate = new Intl.DateTimeFormat("en-US", {
     month: "long",

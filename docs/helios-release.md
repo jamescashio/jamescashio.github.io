@@ -1,4 +1,10 @@
-# V39.1 Helios Zenith release
+# V39.2 Helios Zenith release
+
+V39.2 keeps every V39.1 asset, word and interaction and changes the code beneath them. The front door's JavaScript is type checked in the build through `tsconfig.helios.json`; the `zenith.css` layer is folded into the component stylesheets and `refinements.css` becomes `instruments.css` plus base rules; overridden declarations and unused classes are removed so the entry stylesheet is 18,950 of 19,000 bytes gzip; the release codename leaves module and class names; E.V.E. gains `about`, `contact` and a closest command suggestion.
+
+Validation: pixel comparison against the V39.1 build of the home page at 1440, 1024, 2560, 390 and 320 pixels, the four rooms, Mission Control, both type styles and two reading editions, then lint, format, node, odyssey, build, artifact, layout runtime, V36 runtime, Helios runtime, release tests, the public repository guard and release consistency. Rollback: revert the squash commit, or redeploy 22a9645155bec379a805bd350e7bcf1a6c60522c.
+
+## Preserved V39.1 release
 
 V39.1 keeps every Zenith asset, typeface, colour and interaction and makes the first visit easier to name. Studies become Experiments; Zeus, Apollo, HERMES, Atlas and DSH are defined where they first appear; release and house codenames leave the visitor copy. The first screen keeps two hero actions, an open room has a real h1, the Trace button shows when it runs, and the system map card stays beside the map on desktop. The home page's Content Security Policy refuses inline styles: script-owned styles are constructable stylesheets and experiment geometry uses classes and custom properties. The signature, Studios card and Celestial Forge share one celestial set.
 

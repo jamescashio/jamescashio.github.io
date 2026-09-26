@@ -3,7 +3,7 @@ import Studio, { type StudioOptions } from "./studio-bridge";
 import "./island-fonts.css";
 import "./studio.css";
 
-/** The original studio components share V38's route, type, motion and return path. */
+/** The original studio components share the front door's route, type, motion and return path. */
 export function openStudio(options: StudioOptions) {
   const host = document.createElement("div");
   host.id = "helios-studio";

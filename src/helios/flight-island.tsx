@@ -16,7 +16,7 @@ export function openFlight({
 }) {
   const host = document.createElement("div");
   host.id = "helios-flight";
-  if (arrive) host.classList.add("zenith-arrive");
+  if (arrive) host.classList.add("flight-arrive");
   document.documentElement.classList.add("flight-open");
   document.body.append(host);
   window.dispatchEvent(new Event("helios-overlay"));

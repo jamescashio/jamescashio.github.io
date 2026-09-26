@@ -136,7 +136,7 @@ export function setupScenes({ motion }) {
     (entries) => {
       entries.forEach(({ target, isIntersecting }) => {
         visible.set(target, isIntersecting);
-        target.dataset.sceneActive = String(isIntersecting);
+        /** @type {HTMLElement} */ (target).dataset.sceneActive = String(isIntersecting);
       });
       sync();
     },

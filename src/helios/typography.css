@@ -1,3 +1,22 @@
+/* The three Helios faces. */
+@font-face {
+  font-family: Unbounded;
+  src: url("/v38/fonts/unbounded-latin.woff2") format("woff2");
+  font-weight: 500 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Instrument Sans";
+  src: url("/v38/fonts/instrument-latin.woff2") format("woff2");
+  font-weight: 400 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/jetbrains-400.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
 :root {
   --text-label: 14px;
   --text-note: 15px;
@@ -86,4 +105,32 @@ main :is(h1, h2, h3)[tabindex="-1"]:focus-visible {
     font-size: var(--text-label);
     letter-spacing: 0.045em;
   }
+}
+
+/* The brand name keeps a serifed I wherever it appears in running text. */
+/* The brand name keeps a serifed I wherever it appears in running text. */
+.wm {
+  white-space: nowrap;
+}
+.wm-i {
+  position: relative;
+  display: inline-block;
+  padding-inline: 0.08em;
+  line-height: 1;
+}
+.wm-i::before,
+.wm-i::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 0.46em;
+  height: 0.08em;
+  background: currentColor;
+  transform: translateX(-50%);
+}
+.wm-i::before {
+  top: 0.1em;
+}
+.wm-i::after {
+  bottom: 0.12em;
 }

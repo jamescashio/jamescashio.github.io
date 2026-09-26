@@ -1,9 +1,9 @@
 import { gsap } from "gsap";
-import { $, $$ } from "./dom.js";
+import { $, $$, closestTarget } from "./dom.js";
 
 export function setupPrivacy({ loadRequest, traceRequest, motion, onReveal }) {
   $("#request-privacy").addEventListener("click", (event) => {
-    const button = event.target.closest("[data-request-private]");
+    const button = closestTarget(event, "[data-request-private]");
     if (!button) return;
     loadRequest({ privateData: button.dataset.requestPrivate === "true" }, true);
   });

@@ -854,7 +854,7 @@ test("E.V.E. keeps each reply line visually separate at phone and desktop widths
   for (const width of [320, 1440]) {
     const page = await visit(t, { width, motion: "no-preference", hash: "#evidence" });
     for (const [command, lineCount] of [
-      ["help", 3],
+      ["help", 4],
       ["fleet", 4],
     ]) {
       await page.locator("#eve-in").fill(command);

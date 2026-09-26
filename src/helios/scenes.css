@@ -1,4 +1,16 @@
 /* The instruments share one material language; their content remains ordinary HTML. */
+/* Helios refinement: original type, colour, artwork and orbital vocabulary. */
+.atlas-panel {
+  overflow: hidden;
+}
+.atlas-caption {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  padding: 20px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+}
 .atlas-panel {
   background: linear-gradient(145deg, #111f30, #08111d 72%);
 }
@@ -418,5 +430,39 @@
   .engine-viewport,
   .engine-fallback {
     transition: none;
+  }
+}
+
+/* Phone: the hangar keeps its aspect and the ring numbers sit below the pedestal instead of on it. */
+@media (max-width: 700px) {
+  #hangar {
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+  /* Ring numbers sit below the pedestal instead of on it. */
+  .engine {
+    margin-bottom: 30px;
+  }
+  .engine-index {
+    bottom: -30px;
+  }
+}
+
+/* The atlas caption gets a quiet plate so a route line never cuts through it. */
+/* The atlas caption gets a quiet plate so a route line never cuts through it. */
+.atlas::after {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  width: max-content;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(4, 7, 14, 0.82);
+}
+
+/* Narrow phones drop the trace button timing label. */
+@media (max-width: 480px) {
+  #trace-btn .mono {
+    display: none;
   }
 }
