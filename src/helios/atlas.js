@@ -20,7 +20,7 @@ export function setupAtlas({ scenes, motion, say }) {
       unit: "operator console",
       summary: "The console where I sit.",
       body: "A locally installed agent runtime, placed beside HERMES rather than replacing it yet. I use it to run read only checks and review their results.",
-      evidence: "Local metadata probe · last audit",
+      evidence: `Audit · ${FLEET.auditLong} · operating brief ${FLEET.consoleBriefLong}`,
     },
     hermes: {
       name: "HERMES",
@@ -81,6 +81,9 @@ export function setupAtlas({ scenes, motion, say }) {
       $("#nd-evidence").textContent = n.evidence;
       // Announce the choice in one short line instead of the whole card.
       $("#nd-live").textContent = `${n.name} selected. ${n.summary}`;
+      // Scroll after the chosen card has its final height. Focus stays on the selected system.
+      if (matchMedia("(max-width: 900px)").matches)
+        $("#atlas-inspection").scrollIntoView({ block: "nearest", behavior: motion() ? "smooth" : "instant" });
     }),
   );
 }

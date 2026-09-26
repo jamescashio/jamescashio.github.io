@@ -442,6 +442,31 @@ html.at-top:not([data-room]) .sections {
   border-bottom: 1px solid rgba(56, 225, 255, 0.1);
   transform: translateY(-100%);
 }
+/* Phone headings scroll behind a shorter header; a denser backing keeps them from ghosting through. */
+@media (max-width: 700px) {
+  .nav {
+    background: rgba(4, 7, 14, 0.85);
+  }
+}
+/* The motion and type controls are icons with names at every width; their words live in Mission Control. */
+.nav .acts .hide-m {
+  display: none;
+}
+.nav-contact {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding-inline: 6px;
+  color: var(--ink2);
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.nav-contact:hover,
+.nav-contact:focus-visible {
+  color: var(--gold);
+}
 .nav.show {
   transform: translateY(0);
 }
@@ -481,11 +506,6 @@ html.at-top:not([data-room]) .sections {
 }
 @media (max-width: 1240px) {
   .nav nav {
-    display: none;
-  }
-}
-@media (max-width: 900px) {
-  .nav .acts .hide-m {
     display: none;
   }
 }
@@ -572,8 +592,7 @@ footer,
   backdrop-filter: blur(6px);
 }
 @media (max-width: 900px) {
-  .hero .status,
-  .hero .hero-orbit {
+  .hero .status {
     display: none;
   }
 }

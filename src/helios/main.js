@@ -120,8 +120,11 @@ $("#eve-form").addEventListener("submit", () =>
 
 setupSignature({ motion: () => motionOn, say: (...args) => Bit.say(...args) });
 
-/* The optional orbital effect ends at rest. */
+/* The optional orbital effect lives under Mission Control's extras; it closes the menu, returns to the opening and ends at rest. */
 $("#fold-btn").addEventListener("click", async () => {
+  // Use the same navigation as menu links, including leaving a room and restoring Back correctly.
+  navigation.navigate("#top");
+  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
   if (!motionOn) {
     Bit.say("AT REST", "Motion is off. The controls and stories are still yours to explore.", "think");
     return;

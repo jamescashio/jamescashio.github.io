@@ -34,6 +34,10 @@ test("plain questions reach their labelled lore reply", () => {
   assert.deepEqual(evidenceReply("Doug"), LORE.whoami);
   assert.deepEqual(evidenceReply("hi!"), LORE.hello);
   assert.deepEqual(evidenceReply("fleet?"), EVIDENCE.fleet);
+  assert.deepEqual(evidenceReply("What is HERMES?"), EVIDENCE.hermes);
+  assert.deepEqual(evidenceReply("show me zeus"), EVIDENCE.hosts);
+  assert.deepEqual(evidenceReply("show me the backups"), EVIDENCE.backups);
+  assert.match(evidenceReply("does HERMES control Zeus?")[0], /unknown command/);
 });
 
 test("the help text lists every evidence command and hints at the hidden ones", () => {

@@ -217,6 +217,10 @@ export function evidenceReply(input) {
   const key = loreKey(cmd);
   if (Object.hasOwn(PAGE, key)) return PAGE[key];
   if (Object.hasOwn(LORE, key)) return LORE[key];
+  // Recognize simple requests without treating every sentence containing a system name as a command.
+  const named = /^(?:what is|what are|tell me about|show me)(?: the)? (.+)$/.exec(cmd)?.[1];
+  if (named && Object.hasOwn(ALIASES, named)) return EVIDENCE[ALIASES[named]];
+  if (named && Object.hasOwn(EVIDENCE, named)) return EVIDENCE[named];
   const near = nearestCommand(cmd);
   return [`unknown command: ${cmd}.${near ? ` Did you mean ${near}?` : ""} Try help.`];
 }

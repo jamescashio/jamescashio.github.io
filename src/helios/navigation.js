@@ -362,5 +362,5 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
   window.addEventListener("popstate", restoreHistory);
   window.addEventListener("hashchange", restoreHistory);
   queueMicrotask(() => route(location.hash, true));
-  return { open: menu.open, route };
+  return { open: menu.open, route, navigate };
 }

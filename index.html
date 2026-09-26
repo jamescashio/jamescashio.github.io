@@ -93,7 +93,14 @@
             ><span class="menu-desktop">Mission Control</span><span class="menu-mobile">Menu</span>
             <span class="mono menu-desktop c-mu ls-08">⌘K</span>
           </button>
-          <button class="btn line sm" id="motion-btn" type="button" aria-label="Motion" aria-pressed="true">
+          <button
+            class="btn line sm"
+            id="motion-btn"
+            type="button"
+            aria-label="Motion"
+            aria-pressed="true"
+            title="Pause or resume motion"
+          >
             <svg class="ic-svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <g class="motion-pause">
                 <rect x="5" y="4" width="4" height="16" />
@@ -106,10 +113,16 @@
               </g></svg
             ><span class="hide-m">Motion</span>
           </button>
-          <button class="btn line sm type-btn" id="type-btn" type="button" aria-label="Aa Signature. Change type style">
+          <button
+            class="btn line sm type-btn"
+            id="type-btn"
+            type="button"
+            aria-label="Aa Signature. Change type style"
+            title="Type style"
+          >
             <span class="type-aa" aria-hidden="true">Aa</span> <span class="hide-m" id="type-name">Signature</span>
           </button>
-          <a class="btn line sm nav-contact" href="#contact">Let’s talk</a>
+          <a class="nav-contact" href="#contact">Let’s talk <span aria-hidden="true">→</span></a>
         </div>
       </div>
     </header>
@@ -165,7 +178,7 @@
         </div>
         <div class="content">
           <div class="kick flex items-center gap-10" data-hero>
-            <span class="hero-kick-dot"></span>DOUG CASHIO / AI &amp; SECURITY SYSTEMS
+            <span class="hero-kick-dot"></span>A HOBBY LAB FOR LOCAL AI · A HUMAN IN COMMAND
           </div>
           <h1>
             <span class="line"><span class="w">Own the iron.</span></span
@@ -186,9 +199,6 @@
             >
           </div>
           <p class="cta-note">A 30 second 3D flight: see where twelve AI requests go. Sound stays off.</p>
-          <button class="text-action hero-orbit" type="button" id="fold-btn" data-hero>
-            Light up the orbit <span aria-hidden="true">✦</span>
-          </button>
         </div>
         <a class="hero-next" href="#workshop">Next: inside the workshop <span aria-hidden="true">↓</span></a>
       </section>
@@ -242,9 +252,8 @@
               route, or to me when the data is private. Atlas, a local model, handles the recurring work.
             </p>
             <p>
-              On this site, <b>E.V.E.</b>, my Evaluation Verification Engine, answers from the dated record, and
-              <b>Bit</b>, the gold copilot, marks where a person holds authority. Everything you try here runs in your
-              browser; nothing reaches my servers.
+              Everything you try here runs in your browser; nothing reaches my servers. The evidence section answers
+              from a dated record, and a small copilot marks where a person holds authority.
             </p>
           </div>
           <div class="profile-foot">
@@ -256,7 +265,7 @@
               >
             </p>
             <details class="glossary" id="glossary">
-              <summary>Glossary: every name, in plain English ↓</summary>
+              <summary>Every name on this page, in plain English</summary>
               <dl>
                 <div>
                   <dt><strong>Bit</strong></dt>
@@ -312,7 +321,7 @@
         <div class="wrap">
           <div class="head">
             <div>
-              <div class="kick mb-14">START HERE</div>
+              <div class="kick mb-14">ONE DECISION</div>
               <h2 id="work-h" data-split>Try a decision.<br />See what changes.</h2>
             </div>
             <div class="r">
@@ -380,11 +389,11 @@
                 </div>
               </div>
               <div class="stack sg-12">
-                <strong id="pv-prompt">Predict the private document’s route</strong>
+                <strong id="pv-prompt">Where should the private document go?</strong>
                 <div class="flex gap-10 flex-wrap items-center" role="group" aria-labelledby="pv-prompt">
-                  <button class="pill" type="button" data-pv="keep" aria-pressed="false">Research</button>
-                  <button class="pill gold" type="button" data-pv="human" aria-pressed="false">Human review</button>
-                  <button class="text-action" type="button" id="pv-reveal">Just show me</button>
+                  <button class="pill" type="button" data-pv="keep" aria-pressed="false">Research tool</button>
+                  <button class="pill gold" type="button" data-pv="human" aria-pressed="false">A person</button>
+                  <button class="text-action" type="button" id="pv-reveal">Show the answer</button>
                 </div>
                 <div class="sr" id="pv-live" role="status" aria-atomic="true"></div>
                 <div class="step bc-gold-40" id="pv-result" hidden>
@@ -472,10 +481,13 @@
                 </svg>
                 <div>
                   <span class="mono c-mu"
-                    >EXPERIMENT <span id="st-n">01</span> / OF 07 · <span id="st-codename">HERMES</span></span
+                    >EXPERIMENT <span id="st-n">01</span> OF 07 ·
+                    <span id="st-codename">HERMES, my scheduler</span></span
                   >
                   <h3 class="display fs-28-36 fw-800 mt-4" id="st-name">Choose a route</h3>
-                  <div class="muted fs-16" id="st-sub">My job scheduler, explored through a routing demo.</div>
+                  <div class="muted fs-16" id="st-sub">
+                    The same rule as the privacy test, with every input in your hands.
+                  </div>
                 </div>
                 <p class="lede">
                   <strong id="st-take">Intent and sources choose the route. Privacy can overrule both.</strong>
@@ -503,7 +515,8 @@
                       <span class="mono c-mu">EXAMPLE LANE</span><span class="mono c-cy" id="st-code">QUALIFIED</span>
                     </div>
                     <div class="flex items-baseline gap-12 flex-wrap">
-                      <span class="lane cy" id="st-lane">Workhorse</span>
+                      <span class="lane cy" id="st-lane">Everyday drafting</span>
+                      <span class="mono c-mu" id="st-lane-code">WORKHORSE LANE</span>
                     </div>
                     <div class="stack sg-8" id="st-steps"></div>
                     <p class="muted copy-note m-0 mt-4" id="st-detail">
@@ -1326,7 +1339,7 @@
     </main>
     <nav class="sections" aria-label="Sections">
       <a href="#top" aria-label="Orbit"><span>Orbit</span></a>
-      <a href="#work" aria-label="Start here"><span>Start here</span></a>
+      <a href="#work" aria-label="One decision"><span>One decision</span></a>
       <a href="#studies" aria-label="Seven experiments"><span>Seven experiments</span></a>
       <a href="#universe" aria-label="System map"><span>System map</span></a>
       <a href="#rooms" aria-label="Four more rooms"><span>Four more rooms</span></a>
@@ -1429,12 +1442,25 @@
             ><button class="pill" type="button" data-type-choice="cockpit" aria-pressed="false">Cockpit</button
             ><button class="pill" type="button" data-type-choice="readable" aria-pressed="false">Readable</button>
           </div>
+          <div class="mc-type" role="group" aria-label="Extras">
+            <span class="mono">EXTRAS</span
+            ><button class="pill" type="button" id="fold-btn">
+              Light up the orbit <span aria-hidden="true">✦</span>
+            </button>
+          </div>
         </div>
         <div class="mc-keymap"><span>↑ ↓ navigate</span><span>↵ enter</span><span>esc close</span></div>
       </div>
     </dialog>
     <aside class="bitdock" id="bitdock" aria-label="Bit, your copilot">
-      <button type="button" class="bitbtn" id="bit-btn" aria-label="Bit: open Mission Control">
+      <button
+        type="button"
+        class="bitbtn"
+        id="bit-btn"
+        aria-haspopup="dialog"
+        aria-controls="mc"
+        aria-label="Bit: open Mission Control"
+      >
         <canvas id="bitcv" width="96" height="96" aria-hidden="true"></canvas>
       </button>
       <div class="bitsay hide" id="bitsay" role="status" aria-live="polite">

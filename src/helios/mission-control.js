@@ -35,7 +35,7 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
     ],
     [
       "The privacy test",
-      "Start here. Predict where one private document goes.",
+      "One decision. Predict where a private document goes.",
       "#privacy-test",
       "privacy private data test start decision",
     ],
@@ -191,6 +191,22 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
     search.focus();
   });
   dialog.addEventListener("keydown", (event) => {
+    // Tab cycles inside the dialog instead of leaving for the browser chrome.
+    if (event.key === "Tab") {
+      const stops = $$("a[href], button:not([disabled]), input:not([disabled])", dialog).filter(
+        (stop) => stop.offsetParent !== null && stop.tabIndex >= 0,
+      );
+      const first = stops[0];
+      const last = stops[stops.length - 1];
+      if (first && last && event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (first && last && !event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+      return;
+    }
     const links = [...(start.hidden ? [] : $$("a", start)), ...$$("a", list)];
     if (!links.length) return;
     const index = links.indexOf(/** @type {HTMLElement} */ (document.activeElement));

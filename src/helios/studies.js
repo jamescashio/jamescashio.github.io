@@ -13,6 +13,14 @@ export function routeExample(intent, priv, src) {
   return { ...r, color: r.code === "HOLD" ? "var(--gold)" : "var(--cyan)" };
 }
 
+/** What each routing lane means, in the words a visitor already has. */
+const LANE_WORDS = {
+  Workhorse: "Everyday drafting",
+  Research: "Source checking",
+  Synthesis: "Combining information",
+  "Human review": "A person decides",
+};
+
 export function setupStudies({ scenes, motion, copy }) {
   const studyState = new Map(PROJECTS.map((p) => [p.id, defaultExperiment(p.id)]));
   const outcomes = {
@@ -35,8 +43,15 @@ export function setupStudies({ scenes, motion, copy }) {
     graphify: "Trace a dependency",
   };
   const cues = { dashboards: "Drag the age past 24 hours. The review state changes." };
-  // The study label names both servers the way the glossary does.
-  const codes = { dashboards: "Zeus and Apollo" };
+  // Working names carry a plain description, so no experiment needs the glossary to be read.
+  const codes = {
+    hermes: "HERMES, my scheduler",
+    briefing: "A decision brief",
+    dashboards: "Zeus and Apollo, my servers",
+    signal: "A shop floor signal",
+  };
+  // The first experiment says how it relates to the decision above it.
+  const subs = { hermes: "The same rule as the privacy test, with every input in your hands." };
   const STUDIES = PROJECTS.map((p, i) => {
     const n = STUDY_NOTES[p.id];
     return {
@@ -45,7 +60,7 @@ export function setupStudies({ scenes, motion, copy }) {
       name: labels[p.id],
       code: codes[p.id] || p.title,
       cat: p.category,
-      sub: p.subtitle,
+      sub: subs[p.id] || p.subtitle,
       cue: cues[p.id] || p.cue,
       take: outcomes[p.id],
       takebody: n.relevance,
@@ -150,8 +165,10 @@ export function setupStudies({ scenes, motion, copy }) {
     scenes.updateRequest(experiment);
     if (updateUrl && location.hash.startsWith("#build=hermes"))
       history.replaceState(null, "", shareExperiment(experiment));
-    $("#st-lane").textContent = r.lane;
+    // Plain words lead; the lane's working name follows as a label, so the demo reads without the glossary.
+    $("#st-lane").textContent = LANE_WORDS[r.lane] || r.lane;
     $("#st-lane").style.color = r.color;
+    $("#st-lane-code").textContent = `${r.lane.toUpperCase()} LANE`;
     $("#st-code").textContent = r.code;
     $("#st-code").style.color = r.color;
     $("#st-detail").textContent = run ? r.detail : "Choose a task, then follow its five-step route.";

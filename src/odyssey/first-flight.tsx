@@ -509,7 +509,7 @@ export default function FirstFlight({
               <strong className="ff-takeaway">{changed ? outcome.takeaway : scene.takeaway}</strong>
               {changed && !compact && (
                 <button className="ff-review-decision" type="button" onClick={reviewDecision}>
-                  See my decision →
+                  Skip to the ending →
                 </button>
               )}
             </>
@@ -541,7 +541,7 @@ export default function FirstFlight({
               type="button"
               onClick={reviewDecision}
             >
-              See my decision <span aria-hidden="true">→</span>
+              Skip to the ending <span aria-hidden="true">→</span>
             </button>
           ) : (
             decisionButton

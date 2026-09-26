@@ -80,20 +80,24 @@ test("Privacy feedback answers each new prediction at once and stays complete wh
     await expect(page.locator("#pv-result")).toBeInViewport({ ratio: 1 });
     await expect(page.locator('[data-pv="keep"]')).toBeFocused();
     await expect(page.locator("#pv-text")).toContainText("Not quite. Privacy wins.");
-    await expect(page.locator("#pv-answer")).toHaveText("Human review");
-    await expect(page.locator("#pv-live")).toContainText("Your prediction: Research.");
+    await expect(page.locator("#pv-answer")).toHaveText("A person first");
+    await expect(page.locator("#pv-live")).toContainText("Your prediction: to the research tool.");
+    // A prediction does not silently replace the visitor's independent routing experiment.
+    await expect(page.locator('[data-intent="draft"]')).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator("#tg-private")).toHaveAttribute("aria-pressed", "false");
+    await expect(page.locator("#tg-sources")).toHaveAttribute("aria-pressed", "false");
     await expect(page.locator("#pv-trace")).toBeVisible();
     // A new prediction replaces the old feedback rather than adding to it, and a changed answer is not scored as a call.
     await page.locator('[data-pv="human"]').click();
     await expect(page.locator("#pv-text")).not.toContainText("Not quite");
     await expect(page.locator("#pv-live")).toContainText("Now you have it.");
     await expect(page.locator("#pv-live")).not.toContainText("You called it.");
-    await expect(page.locator("#pv-live")).toContainText("Your prediction: Human review.");
+    await expect(page.locator("#pv-live")).toContainText("Your prediction: to a person first.");
     await expect(page.locator('[data-pv="human"]')).toBeFocused();
     await expect(page.locator('[data-pv="keep"]')).toHaveAttribute("aria-pressed", "false");
     for (let i = 0; i < 3; i++) await page.locator("#pv-reveal").click();
     if (motion === "no-preference") await page.locator("#motion-btn").click();
-    await expect(page.locator("#pv-answer")).toHaveText("Human review");
+    await expect(page.locator("#pv-answer")).toHaveText("A person first");
     await expect(page.locator("#pv-route .pv-command")).toBeVisible();
     await expect(page.locator("#pv-route .pv-question")).toBeHidden();
     await expect(page.locator("#pv-live")).toContainText("Now you have it.");
@@ -110,9 +114,11 @@ test("Privacy feedback answers each new prediction at once and stays complete wh
   }
   // A correct first prediction is the call that counts.
   const fresh = await visit(t, { width: 390, hash: "#work" });
+  await fresh.locator("#pv-reveal").click();
+  await expect(fresh.locator("#pv-live")).toContainText("You skipped the prediction.");
   await fresh.locator('[data-pv="human"]').click();
   await expect(fresh.locator("#pv-live")).toContainText("You called it.");
-  await expect(fresh.locator("#pv-live")).toContainText("Your prediction: Human review.");
+  await expect(fresh.locator("#pv-live")).toContainText("Your prediction: to a person first.");
 });
 
 test("Flight heritage keeps the displayed photograph, lesson and history source in sync", async (t) => {
@@ -423,6 +429,12 @@ test("Mission Control keeps search and Close in reach, recovers from empty resul
     await expect(page.locator("#mc-search")).toBeFocused();
     await expect(page.locator("#mc-results")).toHaveText("Search the whole workshop");
     await expect(page.locator("#mc-clear")).toBeHidden();
+    await page.locator("#fold-btn").focus();
+    await page.keyboard.press("Tab");
+    await expect(page.locator("#mc-close")).toBeFocused();
+    await page.keyboard.press("Shift+Tab");
+    await expect(page.locator("#fold-btn")).toBeFocused();
+    await page.locator("#mc-search").focus();
     const searchBefore = await page.locator("#mc-search").boundingBox();
     const closeBefore = await page.locator("#mc-close").boundingBox();
     await page.screenshot({ path: path.join(output, `mission-control-${width}.png`) });
@@ -713,7 +725,7 @@ test("The integrated flight responds, shares its actual scenario, downloads a ca
   await expect(page.locator(".ff-stage-ready,.ff-stage-fallback")).toBeVisible({ timeout: 45000 });
   await page.getByRole("button", { name: "Cut the cloud link" }).click();
   await expect(page.locator(".ff-decision-result")).toContainText("12 onboard · 0 in cloud · 0 held");
-  await page.getByRole("button", { name: "See my decision" }).click();
+  await page.getByRole("button", { name: "Skip to the ending" }).click();
   await expect(page.locator(".ff-recap")).toBeVisible();
   await page.getByRole("button", { name: "Copy this scenario" }).click();
   const shared = await page.evaluate(() => navigator.clipboard.readText());
@@ -826,16 +838,16 @@ test("A privacy decision travels through the atlas, exact HERMES settings and a 
   await expect(page.locator("#tg-private")).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator("#tg-sources")).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator('[data-intent="analyze"]')).toHaveAttribute("aria-pressed", "true");
-  await expect(page.locator("#st-lane")).toHaveText("Human review");
+  await expect(page.locator("#st-lane")).toHaveText("A person decides");
   await page.goto(url + saved);
-  await expect(page.locator("#st-lane")).toHaveText("Human review");
+  await expect(page.locator("#st-lane")).toHaveText("A person decides");
   await page.locator("#st-trace").click();
   await page.locator('[data-request-private="false"]').click();
   await expect(page.locator("#request-outcome")).toHaveText("Research");
   await expect(page.locator("#trace-stage-compute")).toHaveText("Compute");
   await page.locator("#request-continue").click();
   await expect(page.locator("#tg-private")).toHaveAttribute("aria-pressed", "false");
-  await expect(page.locator("#st-lane")).toHaveText("Research");
+  await expect(page.locator("#st-lane")).toHaveText("Source checking");
   await page.locator("#tg-sources").click();
   await page.locator('[data-intent="draft"]').click();
   await page.locator("#st-trace").click();
@@ -926,6 +938,11 @@ test("Evidence leads with meaning, expands by keyboard and links the shipped bui
   await expect(snapshot).toHaveAttribute("open", "");
   await expect(snapshot).toContainText("DeepSeek Harness operations tooling");
   await expect(snapshot).toContainText("not recovery of a running system");
+  // Larger monospace metrics must wrap too, including the Linux browser used in CI.
+  await snapshot.locator("code").evaluate((code) => {
+    code.style.fontFamily = "monospace";
+    code.style.fontSize = "17px";
+  });
   const clipped = await snapshot.evaluate((element) => {
     const bounds = element.getBoundingClientRect();
     return [element, ...element.querySelectorAll("*")]
@@ -956,15 +973,31 @@ test("The composed opening keeps its artwork, visible first action and a finite 
   );
   await expect(page.locator("#hero-primary")).toBeVisible();
   await page.screenshot({ path: path.join(output, "composed-opening-1440.png") });
-  await page.locator("#fold-btn").click();
+  // The orbit effect is an extra inside Mission Control; choosing it closes the menu and plays in the opening.
+  const lightUp = async () => {
+    await page.locator("#mc-btn").click();
+    await page.locator("#fold-btn").click();
+    await expect(page.locator("#mc")).toBeHidden();
+  };
+  await lightUp();
   await expect(page.locator(".hero")).toHaveClass(/fold-active/);
   await expect(page.locator(".hero")).not.toHaveClass(/fold-active/, { timeout: 5000 });
   assert.ok(Number(await page.locator("#fallback").evaluate((el) => getComputedStyle(el).opacity)) >= 0.7);
-  await page.locator("#fold-btn").click();
+  await lightUp();
   await expect(page.locator(".hero")).toHaveClass(/fold-active/);
   await page.locator("#motion-btn").click();
   await expect(page.locator(".hero")).not.toHaveClass(/fold-active/);
   await expect.poll(() => page.locator("#gl").evaluate((el) => getComputedStyle(el).opacity)).toBe("0");
+  // Extras work from a room too: the destination and focus return home, and Back restores the room.
+  await page.goto(url + "#studios");
+  await expect(page.locator("#studios")).toHaveAttribute("data-room-state", "ready");
+  await lightUp();
+  await expect(page.locator("html")).not.toHaveAttribute("data-room", "studios");
+  await expect(page.locator(".hero h1")).toBeFocused();
+  await expect(page.locator(".hero")).not.toHaveClass(/fold-active/);
+  await page.goBack();
+  await expect(page.locator("#studios")).toHaveAttribute("data-room-state", "ready");
+  await expect(page.locator("#studios h2").first()).toBeFocused();
   for (const width of [768, 390, 320]) {
     await page.setViewportSize({ width, height: 844 });
     await page.goto(url);
@@ -1027,7 +1060,7 @@ test("Helios flight waits for its visitor, offers an optional tour and pauses th
   await page.getByRole("button", { name: "Cut the cloud link", exact: false }).click();
   await expect(page.locator(".first-flight")).toHaveAttribute("data-playback", "manual");
   await expect(page.locator(".ff-decision-result")).toContainText("12 onboard · 0 in cloud · 0 held");
-  await page.getByRole("button", { name: "See my decision", exact: false }).click();
+  await page.getByRole("button", { name: "Skip to the ending", exact: false }).click();
   await expect(page.locator(".ff-recap")).toBeVisible();
   await page.getByRole("button", { name: "Replay flight", exact: true }).click();
   await expect(page.locator(".first-flight")).toHaveAttribute("data-playback", "manual");
