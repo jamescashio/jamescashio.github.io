@@ -23,10 +23,13 @@ export default function BrandStudio({
   motion,
   onClose,
   onWatch,
+  eyebrow = "HOUSE CASHIO / LIGHT, UNDER YOUR COMMAND",
 }: {
   motion: boolean;
   onClose: () => void;
   onWatch?: () => void;
+  /** The small label above the title; the V37 archive keeps its original wording. */
+  eyebrow?: string;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const close = useRef<HTMLButtonElement>(null);
@@ -202,7 +205,7 @@ export default function BrandStudio({
             <i />
           </span>
           <div>
-            <span className="bs-eyebrow">HOUSE CASHIO / LIGHT, UNDER YOUR COMMAND</span>
+            <span className="bs-eyebrow">{eyebrow}</span>
             <h2 id="brand-studio-title">Celestial Forge</h2>
           </div>
         </div>

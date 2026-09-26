@@ -28,7 +28,7 @@
   },
   "frontDoor": {
     "entry": "/",
-    "experienceVersion": "39.0.0",
+    "experienceVersion": "39.1.0",
     "visualEdition": "Helios",
     "receipt": "/v38/site-release.json"
   }

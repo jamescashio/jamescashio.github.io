@@ -47,7 +47,7 @@ export const EVIDENCE = {
     "Routing verification: not established at this observation.",
     "Route totals and the private catalog are not published.",
     "The raw export preserves these unknowns for inspection.",
-    "The HERMES study on this page is a model that runs in your browser, not this record",
+    "The HERMES experiment on this page is a model that runs in your browser, not this record",
   ],
   archive: [
     `${FLEET.prior.release} · fleet observed ${FLEET.prior.fleetLong} · ${FLEET.prior.method} · ${FLEET.prior.lxc} containers · ${FLEET.prior.qemu} virtual machine`,

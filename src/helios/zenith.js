@@ -3,6 +3,7 @@
  * Everything here yields to the Motion control, the device's reduced motion setting,
  * hidden tabs and open scenes. Nothing here changes content or state.
  */
+import { adoptStyles } from "./adopted-styles";
 
 const reducedQuery = matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -263,12 +264,8 @@ export function setupTypeStyles() {
   const apply = (key, remember) => {
     current = key;
     const { name, css } = TYPE_STYLES[key];
-    if (css && !style) {
-      style = document.createElement("style");
-      style.id = "type-style";
-      document.head.append(style);
-    }
-    if (style) style.textContent = css;
+    if (css && !style) style = adoptStyles(css);
+    else style?.update(css);
     document.documentElement.dataset.type = key;
     if (label) label.textContent = name;
     button?.setAttribute("aria-label", `Aa ${name}. Change type style`);

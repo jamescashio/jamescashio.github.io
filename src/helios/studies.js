@@ -151,14 +151,12 @@ export function setupStudies({ scenes, motion, copy }) {
     const box = $("#st-steps");
     gsap.killTweensOf(Array.from(box.children));
     // Until the request is routed, the five steps read as a quiet preview that matches the empty counter.
-    const tone = r.code === "HOLD" ? "var(--gold)" : "var(--cyan)";
-    const dot = run
-      ? `background:${tone};box-shadow:0 0 12px ${tone}`
-      : `background:none;box-shadow:inset 0 0 0 1.5px ${tone}`;
+    box.dataset.run = String(run);
+    box.dataset.hold = String(r.code === "HOLD");
     box.innerHTML = r.steps
       .map(
         (t, i) =>
-          `<div class="step" data-step><span class="mono" style="font-size:var(--text-label);color:var(--gold);width:22px">0${i + 1}</span><span class="dot" style="${dot}"></span><span style="font-size:14px${run ? "" : ";color:var(--muted)"}">${t}</span></div>`,
+          `<div class="step" data-step><span class="mono step-n">0${i + 1}</span><span class="dot step-dot"></span><span class="step-text">${t}</span></div>`,
       )
       .join("");
     const fg = $("#ringfg"),

@@ -87,12 +87,15 @@ button {
 .display {
   font-family: var(--display);
 }
+/* Mono labels use the one regular JetBrains face; the page ships no bold mono. */
 .mono {
   font-family: var(--mono);
+  font-weight: 400;
   text-transform: uppercase;
 }
 .kick {
   font-family: var(--mono);
+  font-weight: 400;
   text-transform: uppercase;
   font-size: 14px;
   color: var(--cyan);
@@ -561,24 +564,6 @@ footer,
   align-items: center;
   flex-wrap: wrap;
 }
-.hero .bit {
-  position: absolute;
-  right: var(--gutter);
-  bottom: 34px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-  padding: 14px 18px;
-  border-radius: 12px;
-  border: 1px solid rgba(242, 200, 122, 0.4);
-  backdrop-filter: blur(8px);
-  color: var(--ink);
-  transition: border-color 0.2s;
-}
-.hero .bit:hover {
-  border-color: var(--gold);
-}
 .hero .status {
   position: absolute;
   right: var(--gutter);
@@ -593,8 +578,8 @@ footer,
   backdrop-filter: blur(6px);
 }
 @media (max-width: 900px) {
-  .hero .bit,
-  .hero .status {
+  .hero .status,
+  .hero .hero-orbit {
     display: none;
   }
 }

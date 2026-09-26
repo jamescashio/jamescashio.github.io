@@ -39,7 +39,10 @@ export default function LensingObservatory({
   onClose,
   initialPreset,
   sharedState,
+  eyebrow = "HOUSE CASHIO / LENSING",
 }: {
+  /** The small label above the title; the V37 archive keeps its original wording. */
+  eyebrow?: string;
   motion: boolean;
   reduced: boolean;
   onClose: () => void;
@@ -264,7 +267,7 @@ export default function LensingObservatory({
         <div className="lens-wordmark">
           <span aria-hidden="true">◉</span>
           <div>
-            <p>HOUSE CASHIO / LENSING</p>
+            <p>{eyebrow}</p>
             <h2 id="lens-title">
               Lensing <span>Observatory</span>
             </h2>

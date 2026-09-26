@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { JSDOM } from "jsdom";
 import { computeWorldOutcome } from "../src/odyssey/sovereign-model";
@@ -65,7 +66,7 @@ for (const id of roomIds) {
         node.removeAttribute(attribute);
   }
   for (const node of main.querySelectorAll("[data-count]")) node.textContent = node.getAttribute("data-count");
-  if (id === "starship") renderStarshipExample(main);
+  const exampleStyles = id === "starship" ? renderStarshipExample(main) : "";
   if (id === "heritage")
     placeBeforeEnd(
       main,
@@ -87,6 +88,18 @@ for (const id of roomIds) {
       ),
     );
   for (const details of main.querySelectorAll("details")) details.open = true;
+  if (exampleStyles) {
+    // A reading edition runs no script to draw its example bars, and its policy refuses style attributes,
+    // so one style block carries their widths and the policy admits exactly that block by its hash.
+    const style = doc.createElement("style");
+    style.textContent = exampleStyles;
+    doc.head.append(style);
+    const policy = doc.querySelector('meta[http-equiv="Content-Security-Policy"]')!;
+    const content = policy.getAttribute("content")!;
+    const hash = createHash("sha256").update(exampleStyles).digest("base64");
+    if (!content.includes("style-src 'self';")) throw new Error("Reading edition policy has an unexpected style-src");
+    policy.setAttribute("content", content.replace("style-src 'self';", `style-src 'self' 'sha256-${hash}';`));
+  }
   doc.body.append(notice, main);
   await mkdir(`dist/rooms/${id}`, { recursive: true });
   await writeFile(`dist/rooms/${id}/index.html`, "<!doctype html>\n" + doc.documentElement.outerHTML + "\n");
@@ -136,7 +149,7 @@ function readingList(doc: Document, heading: string, items: string[][]) {
  * The reading edition shows the interactive room's default example: mixed sensitivity, connected, private egress off.
  * Counts come from the same shared model the interactive room uses, so the two can never disagree.
  */
-function renderStarshipExample(main: Element) {
+function renderStarshipExample(main: Element): string {
   const example = { sensitivity: "mixed", connected: true, allowPrivateEgress: false } as const;
   const selected = "hybrid";
   const names = { sovereign: "Sovereign / local", hybrid: "Hybrid", cloud: "Cloud" } as const;
@@ -158,14 +171,16 @@ function renderStarshipExample(main: Element) {
   }
   // The request bars are drawn by script in the interactive room; give the reading edition the same proportions.
   const shown = computeWorldOutcome({ ...example, architecture: selected });
+  const rules = [];
   for (const [key, value] of [
     ["local", shown.local],
     ["cloud", shown.cloud],
     ["held", shown.held],
   ] as const) {
-    (main.querySelector(`#b-${key}`) as HTMLElement).style.transform = `scaleX(${value / 12})`;
+    rules.push(`#b-${key}{transform:scaleX(${value / 12})}`);
     main.querySelector(`#n-${key}`)!.textContent = String(value);
   }
+  return rules.join("");
 }
 
 const sitemap = await readFile("dist/sitemap.xml", "utf8");

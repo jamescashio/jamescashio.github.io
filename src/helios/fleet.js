@@ -8,7 +8,7 @@ export const FLEET = {
   qemu: 1,
   quorate: true,
   routing: "Not verified",
-  pageRevised: "September 24, 2026",
+  pageRevised: "September 26, 2026",
   auditLong: "September 18, 2026",
   consoleBriefLong: "September 8, 2026",
   // Backup coverage counts and per host guest counts stay out of the public record.

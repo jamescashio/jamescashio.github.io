@@ -36,6 +36,10 @@ html[data-room="heritage"] #heritage {
 }
 #room-crumb {
   margin: 0;
+  font-size: var(--text-body);
+  font-weight: 400;
+  letter-spacing: normal;
+  line-height: 1.6;
 }
 .room-links {
   display: flex;
@@ -146,4 +150,12 @@ html[data-room] main > .room {
   margin-top: 48px;
   padding-top: 24px;
   border-top: 1px solid var(--line);
+}
+/* Narrow phones: the four room links sit two by two, so no name wraps onto a line of its own. */
+@media (max-width: 430px) {
+  .room-links {
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
+    column-gap: 20px;
+  }
 }

@@ -42,7 +42,7 @@ export function mountInstrument(root, initial, fleet, onChange) {
       range("deviation", "Deviation from the example baseline", state.deviation) +
       toggle("corroborated", "A second observation supports the signal", state.corroborated);
   if (state.study === "graphify")
-    controls = `<div class="graph-key"><span><i class="dot" style="background:var(--gold)"></i>Selected</span><span><i class="dot" style="background:var(--cyan)"></i>Affected</span><span><i class="dot" style="background:var(--muted)"></i>Unchanged</span></div><p class="lab-caption">An arrow means “depends on”. Select a module.</p>`;
+    controls = `<div class="graph-key"><span><i class="dot key-selected"></i>Selected</span><span><i class="dot key-affected"></i>Affected</span><span><i class="dot key-unchanged"></i>Unchanged</span></div><p class="lab-caption">An arrow means “depends on”. Select a module.</p>`;
   root.querySelector(".lab-controls").innerHTML = controls;
   const visual = root.querySelector(".lab-visual");
   const answer = root.querySelector(".lab-answer");
@@ -102,7 +102,9 @@ export function mountInstrument(root, initial, fleet, onChange) {
     }
     if (state.study === "dashboards") {
       const stale = state.age >= 24;
-      visual.innerHTML = `<div class="age-clock ${stale ? "attention" : ""}" style="--age:${Math.min(1, state.age / 48) * 360}deg"><span>${state.age}<small>example hours</small></span></div><div class="clock-boundary">Review boundary <strong>24 hours</strong></div>`;
+      visual.innerHTML = `<div class="age-clock ${stale ? "attention" : ""}"><span>${state.age}<small>example hours</small></span></div><div class="clock-boundary">Review boundary <strong>24 hours</strong></div>`;
+      // Geometry travels as a custom property through the CSSOM; the page's style policy refuses style attributes.
+      visual.querySelector(".age-clock").style.setProperty("--age", `${Math.min(1, state.age / 48) * 360}deg`);
       answer.innerHTML = result(
         "SAME OBSERVATION · DIFFERENT REVIEW STATE",
         stale ? "Refresh required" : "Within the example window",
@@ -135,7 +137,12 @@ export function mountInstrument(root, initial, fleet, onChange) {
       const positions = Object.fromEntries(GRAPH_NODES.map((n) => [n.id, n]));
       // Buttons remain mounted while the result changes, preserving keyboard focus.
       if (!visual.querySelector(".dependency-map")) {
-        visual.innerHTML = `<div class="dependency-map"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="dependency-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="userSpaceOnUse" markerWidth="2.2" markerHeight="3" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#B6D1DE"/></marker></defs>${GRAPH_EDGES.map(([from, to]) => `<path data-edge="${from}:${to}" d="M${positions[from].x} ${positions[from].y}L${(positions[from].x + positions[to].x) / 2} ${(positions[from].y + positions[to].y) / 2}L${positions[to].x} ${positions[to].y}" vector-effect="non-scaling-stroke"/>`).join("")}</svg>${GRAPH_NODES.map((node) => `<button type="button" data-module="${node.id}" style="--x:${node.x}%;--y:${node.y}%">${node.label}<span></span></button>`).join("")}</div>`;
+        visual.innerHTML = `<div class="dependency-map"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="dependency-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="userSpaceOnUse" markerWidth="2.2" markerHeight="3" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#B6D1DE"/></marker></defs>${GRAPH_EDGES.map(([from, to]) => `<path data-edge="${from}:${to}" d="M${positions[from].x} ${positions[from].y}L${(positions[from].x + positions[to].x) / 2} ${(positions[from].y + positions[to].y) / 2}L${positions[to].x} ${positions[to].y}" vector-effect="non-scaling-stroke"/>`).join("")}</svg>${GRAPH_NODES.map((node) => `<button type="button" data-module="${node.id}">${node.label}<span></span></button>`).join("")}</div>`;
+        visual.querySelectorAll("[data-module]").forEach((button) => {
+          const node = positions[button.dataset.module];
+          button.style.setProperty("--x", `${node.x}%`);
+          button.style.setProperty("--y", `${node.y}%`);
+        });
       }
       visual.querySelectorAll("[data-module]").forEach((button) => {
         const id = button.dataset.module;

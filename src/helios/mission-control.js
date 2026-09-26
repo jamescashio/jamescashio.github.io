@@ -23,13 +23,13 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
       "flight fly board ship 3d tour",
     ],
     ["The orbital world", "Return to the beginning.", "#top"],
-    ["Seven studies", "Choose a question and test its rule.", "#studies", "experiments workbench"],
+    ["Seven experiments", "Choose a question and test its rule.", "#studies", "studies workbench"],
     ["Four rooms", "Architecture, principles, creative studios and aviation.", "#rooms"],
     [
       "Glossary",
       "The names used here, in plain English.",
       "#glossary",
-      "names definitions acronyms hermes dsh zeus apollo atlas bit eve workhorse research synthesis lanes cashio house zenith",
+      "names definitions acronyms hermes dsh zeus apollo atlas bit eve workhorse research synthesis lanes cashio zenith",
     ],
     [
       "The privacy test",

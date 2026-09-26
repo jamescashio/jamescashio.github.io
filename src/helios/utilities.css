@@ -1,6 +1,15 @@
-/* V39 Zenith: every former inline style attribute on the Helios page, as named classes.
+/* Utility classes for the Helios page: the former inline style attributes, as named classes.
+   The page's Content Security Policy refuses style attributes, so every one-off value lives here.
    Loaded last so each class keeps the value its inline style had. Colour helpers mirror .c-mu.
-   A few selectors carry an element or a second class so they still outrank the rule the inline style used to beat. */
+   A few selectors carry an element or a second class so they still outrank the rule the inline style used to beat.
+
+   Naming scale, in CSS pixels:
+     m-, mt-, mb-, p-, pt-, pb-, py-   margin and padding; one number is a fixed size (p-16 = 16px)
+     fs-, gap-, sg-                    font size, flex or grid gap, and the .stack gap (--stack-gap)
+     a-b suffix                        a fluid clamp from a to b (p-22-30 = clamp(22px, 2.6vw, 30px));
+                                       for gap-, p- and cols- pairs without a clamp it is two values (gap-10-14 = 10px 14px)
+     cols-                             grid templates: cols-fit-N fills columns of at least N pixels
+   fs-12 and fs-13 keep their names for history but render at the 14 pixel label floor. */
 
 /* Layout */
 .clip {
@@ -8,9 +17,6 @@
 }
 .cols-3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-.cols-fit-150 {
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 }
 .cols-fit-180 {
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -136,12 +142,6 @@
 .m-0 {
   margin: 0;
 }
-.m-top-4 {
-  margin: 4px 0 0;
-}
-.m-top-6 {
-  margin: 6px 0 0;
-}
 .mb-6 {
   margin-bottom: 6px;
 }
@@ -153,6 +153,9 @@
 }
 .mt-4 {
   margin-top: 4px;
+}
+.mt-6 {
+  margin-top: 6px;
 }
 .mt-14 {
   margin-top: 14px;

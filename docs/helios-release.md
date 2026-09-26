@@ -1,4 +1,10 @@
-# V39.0 Helios Zenith release
+# V39.1 Helios Zenith release
+
+V39.1 keeps every Zenith asset, typeface, colour and interaction and makes the first visit easier to name. Studies become Experiments; Zeus, Apollo, HERMES, Atlas and DSH are defined where they first appear; release and house codenames leave the visitor copy. The first screen keeps two hero actions, an open room has a real h1, the Trace button shows when it runs, and the system map card stays beside the map on desktop. The home page's Content Security Policy refuses inline styles: script-owned styles are constructable stylesheets and experiment geometry uses classes and custom properties. The signature, Studios card and Celestial Forge share one celestial set.
+
+Validation: lint, format, node, odyssey, build, artifact, layout runtime, V36 runtime, Helios runtime, release tests, the public repository guard and release consistency, plus a strict policy check that opens the flight, Lensing, the Forge, both film scenes and all four rooms with no style violation. Rollback: revert the squash commit, or redeploy 2a3411d52a3c453f18576b3e80c0ae1a4618d929.
+
+## Preserved V39.0 release
 
 Zenith keeps every Helios asset, color, typeface and interaction model and changes what a first visit reads and feels. Copy leads with plain language and dated proof. The routing law replaces the July cost sample, and spend stays withheld until it is measured again. The first frame gains pointer depth, a breathing sun and stars after the arrival film; boarding the starship plays a short warp that covers loading. E.V.E. gains labelled lore commands and clear. The wordmark I regains its serifs, the phone starship card no longer collides, touch links meet 44 pixels, ultrawide screens get a larger hero, and a designed share card serves social previews.
 

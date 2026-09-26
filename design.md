@@ -1,3 +1,13 @@
+# V39.1 Zenith · September 26, 2026
+
+Keep Zenith's world, artwork, type, palette, Bit, E.V.E., quiet sound and dated evidence. Make the first visit easier to name and the code easier to trust.
+
+Give each place one name that cannot be mistaken for another: Experiments for the seven browser studies, beside the Studios room. Define each system name in the sentence where it first appears (Zeus and Apollo, my two servers; HERMES, my scheduler; Atlas, a local model; DSH, my operator console) and remove release and house codenames from what a visitor reads. The first screen offers two actions; Bit's orbit is a small text action beneath them, and wide screens drop the scroll cue. Fewer uppercase labels, a real h1 for an open room, a Trace button that shows its running state, and a system map card that stays beside the map on desktop.
+
+Refuse inline styles on the home page. Script-owned styles become constructable stylesheets and style attributes become classes or CSSOM custom properties, so the Content Security Policy drops `'unsafe-inline'` from `style-src`. One celestial artwork set serves the signature, Studios and the Forge. The entry stylesheet stays within its unchanged 19,000 byte gzip budget.
+
+Verify desktop, 390 and 320 pixel phones, 1024 and 2560 pixels, keyboard, reduced motion, every overlay under the strict policy, and every release gate before publication. Rollback: 2a3411d52a3c453f18576b3e80c0ae1a4618d929.
+
 # V39.0 Zenith · September 24, 2026
 
 Keep the Helios world exactly: original artwork, Unbounded, Instrument Sans and JetBrains Mono, navy, gold and cyan, Bit, the arrival film, opt in sound and the visitor paced flight. Raise what a first visit understands and feels.

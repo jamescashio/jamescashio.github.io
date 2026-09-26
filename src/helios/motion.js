@@ -1,4 +1,5 @@
 import { MOTION_KEY, readMotionPreference, saveMotionPreference } from "./motion-preference.js";
+import { adoptStyles } from "./adopted-styles";
 
 const FILM_SRC = "/assets/celestial/helios-arrival.mp4";
 const FILM_STYLE = [
@@ -8,8 +9,6 @@ const FILM_STYLE = [
   ".hero[data-film=playing] h1{text-shadow:0 10px 48px rgba(4,7,14,.9)}",
   '.hero[data-film=playing]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,#38e1ff,var(--gold));transform-origin:left;transform:scaleX(0);animation:helios-film-meter 6.4s linear forwards;pointer-events:none;z-index:4}',
   ".hero[data-film=playing] .cta .btn.gold,.hero[data-film=done] .cta .btn.gold{box-shadow:0 0 34px rgba(242,200,122,.4)}",
-  ".hero.fold-active canvas.gl{opacity:.82}",
-  ".motion-off .hero canvas.gl,.experience-open .hero canvas.gl{opacity:0}",
   '.plate::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 40%,rgba(56,225,255,.14) 50%,transparent 60%);transform:translateX(-120%)}',
   ".plate:hover::after{animation:helios-plate-sweep 1.1s cubic-bezier(.22,1,.36,1) forwards}",
   "@keyframes helios-film-push{to{transform:scale(1)}}",
@@ -22,12 +21,10 @@ const FILM_STYLE = [
   "@media (prefers-reduced-motion:reduce){.hero-film,.hero[data-film=playing]::after,.plate::after{display:none!important;animation:none!important}}",
 ].join("");
 
+// The film rules load with the film, so a visitor who never sees it never parses them.
+let filmStyles = null;
 function injectFilmStyle() {
-  if (document.getElementById("helios-film-style")) return;
-  const style = document.createElement("style");
-  style.id = "helios-film-style";
-  style.textContent = FILM_STYLE;
-  document.head.appendChild(style);
+  filmStyles ??= adoptStyles(FILM_STYLE);
 }
 
 function releaseFilmNode(node) {
