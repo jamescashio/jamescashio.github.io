@@ -359,6 +359,9 @@ for (const width of [1440, 768, 390, 320])
     await audit(page, `menu-${width}`);
     await page.keyboard.press("Escape");
     await expect(page.locator("#mc-btn")).toBeFocused();
+    // Escape returns focus at once and removes the menu's own history entry a moment later. A navigation
+    // made before that step would be undone by it, so the flight address waits for it.
+    await expect.poll(() => page.evaluate(() => Boolean(history.state?.heliosMenu))).toBe(false);
     await page.goto(url + "#flight=permission");
     // A cold flight module and software WebGL can take several seconds on CI runners, as other scenes allow.
     await expect(page.locator(".first-flight")).toBeVisible({ timeout: 15000 });
