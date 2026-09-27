@@ -288,10 +288,13 @@
   margin-right: 9px;
 }
 .lens-pause {
+  pointer-events: auto;
+  font-family: Exo, sans-serif;
+  letter-spacing: normal;
   min-height: 49px;
   padding: 9px 18px;
   border: 1px solid #607180;
-  background: transparent;
+  background: #07131bdc;
   font-size: 14px !important;
   white-space: nowrap;
 }
@@ -525,12 +528,13 @@
     bottom: auto;
   }
   .lens-stage-top {
+    gap: 10px;
     top: 18px;
     left: 20px;
     right: 20px;
     font-size: 12px;
   }
-  .lens-stage-top > span:last-child {
+  .lens-stage-top > span {
     display: none;
   }
   .lens-reticle {

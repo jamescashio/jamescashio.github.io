@@ -209,7 +209,11 @@ test("Mission presets and the last change match the model, including custom sett
 
 test("The first-minute path, chapter labels and principles lead to their working destinations", async (t) => {
   const page = await visit(t);
-  await page.locator('.hero a[href="#privacy-test"]').click();
+  await page.locator(".hero-secondary").click();
+  await expect(page.locator("#st-name")).toBeFocused();
+  await expect(page.locator("#study-hermes")).toHaveAttribute("aria-selected", "true");
+  await page.locator("#mc-btn").click();
+  await page.locator('#mc .mc-route[href="#privacy-test"]').click();
   await expect(page.locator("#pv-h")).toBeFocused();
   await expect(page.locator('[data-pv="human"]')).toBeInViewport();
   await page.locator("#mc-btn").click();
@@ -1044,8 +1048,9 @@ test("Manual quiet mode survives reload and device changes, while blocked storag
   await page.locator("#motion-btn").click();
   await expect(page.locator("#motion-btn")).toHaveAttribute("aria-pressed", "false");
   await page.locator(".hero-secondary").click();
-  await expect(page.locator("#pv-h")).toBeFocused();
-  await expect(page.locator('[data-pv="human"]')).toBeInViewport();
+  await expect(page.locator("#st-name")).toBeFocused();
+  await expect(page.locator('[data-intent="draft"]')).toBeInViewport();
+  await expect(page.locator("#study-lab")).toHaveAttribute("open", "");
 });
 
 test("Helios flight waits for its visitor, offers an optional tour and pauses that tour for a decision", async (t) => {
@@ -1156,8 +1161,11 @@ test("The original studios fit desktop and narrow phones, share Helios type and 
         const viewport = await page.locator(".bs-art-window").boundingBox();
         assert.ok(artwork.height <= viewport.height + 2, "the full signature fits before entering detail mode");
       }
-      if (hash === "#lensing")
+      if (hash === "#lensing") {
         await expect(page.locator(".lens-observatory")).toHaveAttribute("data-ready", "true", { timeout: 20000 });
+        const pause = await page.locator(".lens-pause").boundingBox();
+        assert.ok(pause.y >= 0 && pause.y + pause.height <= 568, "scene pause stays visible on a short phone");
+      }
       if (hash.startsWith("#film")) {
         await expect(page.locator(".lensing-film-choice")).toHaveCount(5);
         assert.equal(await page.locator("video").evaluate((el) => el.paused && el.muted && !el.autoplay), true);
@@ -1819,7 +1827,7 @@ test("Phones and data-saving visits keep the hero artwork without downloading th
     const page = await context.newPage();
     const media = [];
     page.on("request", (request) => {
-      if (request.url().includes("helios-arrival.mp4")) media.push(request.url());
+      if (/\/helios-arrival(?:-960)?\.mp4(?:\?|$)/.test(request.url())) media.push(request.url());
     });
     await page.goto(url, { waitUntil: "networkidle" });
     await expect(page.locator("#study-hermes")).toBeAttached();

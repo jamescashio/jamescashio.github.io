@@ -3,7 +3,7 @@ import { adoptStyles } from "./adopted-styles";
 import FILM_STYLE from "./film.css?inline";
 import { $, $$ } from "./dom.js";
 
-const FILM_SRC = "/assets/celestial/helios-arrival.mp4";
+const FILM_SRC = "/assets/celestial/helios-arrival-960.mp4";
 
 // The film rules load with the film, so a visitor who never sees it never parses them.
 let filmStyles = null;

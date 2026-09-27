@@ -51,7 +51,7 @@ export function setupStudies({ scenes, motion, copy }) {
     signal: "A shop floor signal",
   };
   // The first experiment says how it relates to the decision above it.
-  const subs = { hermes: "The same rule as the privacy test, with every input in your hands." };
+  const subs = { hermes: "Change the inputs. See the rule choose a route." };
   const STUDIES = PROJECTS.map((p, i) => {
     const n = STUDY_NOTES[p.id];
     return {
