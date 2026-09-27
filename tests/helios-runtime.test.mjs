@@ -1165,6 +1165,11 @@ test("The original studios fit desktop and narrow phones, share Helios type and 
         await expect(page.locator(".lens-observatory")).toHaveAttribute("data-ready", "true", { timeout: 20000 });
         const pause = await page.locator(".lens-pause").boundingBox();
         assert.ok(pause.y >= 0 && pause.y + pause.height <= 568, "scene pause stays visible on a short phone");
+        if (width <= 600) {
+          const journey = await page.locator(".lens-journey-toggle").boundingBox();
+          const row = await page.locator(".lens-session-controls").boundingBox();
+          assert.ok(Math.abs(journey.width - row.width) <= 1, "the phone journey action fills its available row");
+        }
       }
       if (hash.startsWith("#film")) {
         await expect(page.locator(".lensing-film-choice")).toHaveCount(5);
