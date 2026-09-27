@@ -686,13 +686,25 @@ async function run() {
       await waitFor(`!!document.querySelector('.sw-world-ready')`, "starship ready", 30_000);
       await evaluate(`document.querySelector('.sw-world-canvas').scrollIntoView({block:'center',behavior:'instant'})`);
       await delay(1000);
+      const visibleCanvas = await evaluate(
+        `(() => {const r=document.querySelector('.sw-world-canvas').getBoundingClientRect();return {left:r.left,top:r.top,right:r.right,bottom:r.bottom,viewportWidth:innerWidth,viewportHeight:innerHeight}})()`,
+      );
+      assert.ok(
+        visibleCanvas.left >= 0 &&
+          visibleCanvas.top >= 0 &&
+          visibleCanvas.right <= visibleCanvas.viewportWidth &&
+          visibleCanvas.bottom <= visibleCanvas.viewportHeight,
+        `starship canvas must fit the visible viewport: ${JSON.stringify(visibleCanvas)}`,
+      );
       const canvas = await evaluate(
         `(() => {const c=document.querySelector('.sw-world-canvas'),r=c.getBoundingClientRect();return {x:r.left+scrollX,y:r.top+scrollY,width:r.width,height:r.height,scale:1}})()`,
       );
       assert.ok(canvas.width > 250 && canvas.height > 300);
       const capture = await send("Page.captureScreenshot", {
         format: "png",
-        captureBeyondViewport: true,
+        // The full canvas is visible. Avoid a beyond-viewport capture that can
+        // resize and repaint a paused WebGL surface while taking its screenshot.
+        captureBeyondViewport: false,
         clip: canvas,
       });
       // Read the composited screenshot; preserveDrawingBuffer=false makes delayed WebGL readPixels misleading.
