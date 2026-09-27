@@ -1,5 +1,13 @@
 # Changelog
 
+## V39.3 · Zenith
+
+- The opening leads directly to a working experiment, with a native section link when scripts are unavailable.
+- Lensing pause is visible beside the artwork and remains operable by keyboard.
+- The desktop arrival film is 54.9 percent smaller. Its original sequence, silent playback and archived source are preserved.
+- Short phone experiment copy and spacing bring the inputs closer to the title.
+- Preserved deck startup diagnostics now include font readiness and initial geometry. Its earlier intermittent CI failure remains unconfirmed; the original assertions stay in force.
+
 ## V39.2 · Zenith
 
 - Opening and decisions: the first screen names the hobby lab and human authority. The orbit effect lives in Mission Control Extras and returns home through the existing navigation, including from a room. Motion and type controls keep accessible names; contact becomes a text link. The privacy prediction uses plain words and leaves the separate experiment unchanged until the visitor follows its link. Routing results lead with a plain description and retain their working names. Mission Control wraps keyboard focus, the console answers simple questions about named systems, the DSH card carries its actual dates, and phone map choices bring their updated cards into view. The flight shortcut says "Skip to the ending". The glossary remains folded. Bit keeps its existing responses to visitor actions.

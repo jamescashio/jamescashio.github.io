@@ -629,7 +629,7 @@ def main() -> int:
         "python -m py_compile",
         "python scripts/check_committed_whitespace.py",
         "GH_TOKEN: ${{ github.token }}",
-        'test "$(gh api repos/${GITHUB_REPOSITORY}/pages --jq .build_type)" = "workflow"',
+        'test "$(gh api "repos/${GITHUB_REPOSITORY}/pages" --jq .build_type)" = "workflow"',
         "actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b",
         "actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9",
         "path: dist",

@@ -1832,6 +1832,9 @@ async function main() {
             }, { deck: -1, delta: Number.POSITIVE_INFINITY });
             frames.push({
               activated: root.dataset.clientActivated === "true",
+              fontStatus: document.fonts.status,
+              documentReadyState: document.readyState,
+              snapshotHeight: sections[0]?.getBoundingClientRect().height ?? null,
               present: true,
               nearestDeck: nearest.deck,
               visibility: getComputedStyle(root).visibility,

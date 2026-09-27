@@ -1,4 +1,14 @@
-# V39.2 Helios Zenith release
+# V39.3 Helios Zenith release
+
+V39.3 makes the first experiment one action from the opening and places the observatory pause beside its artwork. The front door arrival uses a 605,887 byte copy of the same six second film, 54.9 percent smaller; the original media remains available to the preserved command deck. Short phone experiment introductions use less space. The original artwork, silent startup, motion preferences, evidence dates and 19,000 byte entry CSS budget remain intact.
+
+The current assessment compares the live V39.2 baseline with the unpublished candidate using the same nine equally weighted categories: 8.91 and 9.08. These are the author’s assessments, not independent blind reviews. Chrome, Edge, Firefox and the Windows WebKit test engine cover desktop and narrow layouts. Automated accessibility and keyboard checks do not establish spoken screen reader behavior or physical phone coverage. WebKit testing does not establish Safari on Apple hardware.
+
+The original intermittent Linux deck alignment failure was not reproduced in 24 delayed resource starts or the complete pinned Chrome check. Diagnostic fields now preserve font readiness, document readiness and the first section height if it returns. No production alignment behavior or acceptance tolerance changed.
+
+The release path retains all twelve local gates, tracked source secret scanning, workflow validation, GitHub checks, and verification of the deployed artifact. The public observations remain the September 26, 2026 record, including its V39.2 provenance. Interface changes do not refresh infrastructure evidence. Rollback: redeploy `813ea5083585b7335ae58cf831a9e76cb8271624` through the existing checked release path.
+
+## Preserved V39.2 release
 
 V39.2 type checks the front door during every build and gives each style rule one home. It also restores the useful changes from the saved review: the privacy invitation lands on its decision, the result stays visible while focus stays on the selected answer, Motion keeps its name, the glossary stays folded until requested, and desktop links retain a minimum target size. E.V.E. answers page questions, offers typo suggestions, and lets Tab leave a completed command. Reading editions are linked from the room directory and each room. An experiment action returns focus to its selected tab. 3G connections use the still arrival artwork. The arrival film waits until playback is eligible, the evidence console uses less empty space, the Principles action names the Lensing Observatory, and the saved mission card preserves the original signature without a dark rectangle.
 

@@ -378,6 +378,24 @@ export default function LensingObservatory({
           </div>
         )}
         <div className="lens-stage-top">
+          <button
+            className="lens-pause"
+            disabled={!motion || !ready || unavailable}
+            aria-pressed={!playing || !motion}
+            aria-label={
+              !motion
+                ? reduced
+                  ? "Motion paused. Follows your reduced motion preference"
+                  : "Motion paused. Motion is off in the site controls"
+                : playing
+                  ? "Pause motion in the observatory"
+                  : "Resume motion in the observatory"
+            }
+            onClick={() => setPlaying(!playing)}
+          >
+            <span aria-hidden="true">{motion && playing ? "Ⅱ" : "▷"}</span>
+            {motion ? (playing ? "Pause motion" : "Resume motion") : "Motion paused"}
+          </button>
           <span aria-hidden="true">
             <i /> {activeLight.label.toUpperCase()} / {activeView.label.toUpperCase()}
           </span>
@@ -638,24 +656,6 @@ export default function LensingObservatory({
           >
             <span aria-hidden="true">{journey.step ? "↗" : "▷"}</span>
             {journey.step ? "Explore freely" : "Take the journey"}
-          </button>
-          <button
-            className="lens-pause"
-            disabled={!motion || !ready || unavailable}
-            aria-pressed={!playing || !motion}
-            aria-label={
-              !motion
-                ? reduced
-                  ? "Motion paused — follows your reduced-motion preference"
-                  : "Motion paused — motion is off in the site controls"
-                : playing
-                  ? "Pause motion in the observatory"
-                  : "Resume motion in the observatory"
-            }
-            onClick={() => setPlaying(!playing)}
-          >
-            <span aria-hidden="true">{motion && playing ? "Ⅱ" : "▷"}</span>
-            {motion ? (playing ? "Pause motion" : "Resume motion") : "Motion paused"}
           </button>
         </div>
       </div>
