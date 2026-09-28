@@ -158,7 +158,11 @@ async function run() {
       assert.equal(receiptResponse.status, 200, "current release receipt must exist");
       const receipt = await receiptResponse.json();
       const packageJson = JSON.parse(await readFile(path.join(ROOT, "package.json"), "utf8"));
-      assert.equal(receipt.experienceVersion, packageJson.version, "receipt and package versions must match");
+      assert.equal(
+        receipt.frontDoor.experienceVersion,
+        packageJson.version,
+        "front door and package versions must match",
+      );
       assert.equal(receipt.experienceVersion, "37.17.0", "current receipt must be the V37.17 release");
       assert.equal(receipt.published, true, "release must be explicitly published");
       assert.equal(receipt.releaseName, RELEASE_NAME);
