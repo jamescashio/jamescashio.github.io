@@ -27,6 +27,7 @@
 
 ## V39.1 · Zenith
 
+- Deploy fix: the page test waits for Mission Control's history step to finish before it opens `#flight=permission`, so a late step back no longer undoes that navigation. A replay went from 1 miss in 15 to none in 15. The site is unchanged.
 - Plain names: the seven browser studies are now Experiments in the header, chapter rail, Mission Control and section label, so they no longer sit beside the Studios room under a near twin name. The "What runs here" note and the system map introduce Zeus and Apollo, my two servers, HERMES, my scheduler, Atlas, a local model, and DSH, my operator console, in the sentence where each first appears. The footer reads "V39.1 · Directed by Doug Cashio · September 26, 2026"; the flight label reads First Flight; the Lensing and Forge labels read The Studios; the Principles instrument drops its old codename. The glossary drops House Cashio. The V37 archive keeps its original labels.
 - A calmer first screen: Bit's orbit becomes a small text action under the hero note, the scroll cue gives way on screens 1100 pixels and wider, and the header's Let's talk is an outline button beside the gold Board the starship. The orbit shows at one stronger opacity on every visit. Three uppercase labels are removed, and the system map's inspection card stays beside the map while it scrolls on desktop. Narrow phones set the four room links two by two.
 - Accessibility: an open room is titled by a real h1, and the home page keeps a single h1. The Trace button reads Tracing… with its pressed state while a trace runs, then Trace again. Flight toggles no longer end in the up arrow the site reserves for links that leave it. Back then Forward in quick succession restores the page and its focus; a step away and back inside one frame no longer leaves focus where the step away put it.
@@ -109,6 +110,16 @@
 - Bring Celestial Forge, Lensing Observatory, all five films and the Sanctuary into Helios as optional studios, with original artwork, matching typography, shared links, cancellation and context restoration.
 - Add a Studios gallery, finite light reflections, a trace progress line and faceted request tokens. Pause the portfolio behind overlays and preserve reduced motion, quiet startup and all dated evidence.
 - Verify root and archive routing, Back/Forward, keyboard focus, studio loading failure/cancellation, narrow layouts, accessibility, model outcomes and the production artifact.
+
+## V38.4 — Connect Helios requests and improve reading flow
+
+## V38.3 — Polish Helios navigation and harden starship startup
+
+- Render the paused starship after its canvas is revealed.
+
+## V38.2 — Refine Helios orbital instruments and typography
+
+## V38.1 — Polish Helios V38.1 and restore the House Cashio signature
 
 ## V38 — Helios
 

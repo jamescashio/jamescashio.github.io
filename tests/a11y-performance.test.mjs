@@ -6,6 +6,7 @@ import { act, createElement, StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 import { CommandDeck } from "../src/components/command-deck.tsx";
+import { EXPIRES_AT, EXPIRES_SHORT, daysLeft } from "../src/lib/content.ts";
 import { getSound } from "../src/lib/sound.ts";
 import { useDeck } from "../src/lib/store.ts";
 
@@ -621,8 +622,13 @@ test("validity surfaces reserve compact stable geometry for live boundary change
   );
 });
 
-test("footer VALID THRU provenance reserves the longest live state without hiding adjacent status", async () => {
-  const view = mountCommandDeck();
+function validThruLabel(now) {
+  return daysLeft(now) > 0 ? `VALID THRU ${EXPIRES_SHORT}` : "VALID THRU TREAT AS HISTORY";
+}
+
+async function readFooterValidity(options = {}) {
+  const now = options.now ?? Date.now();
+  const view = mountCommandDeck(options);
   try {
     await view.render();
     const provenance = view.document.querySelector("[data-validity-through]");
@@ -630,15 +636,22 @@ test("footer VALID THRU provenance reserves the longest live state without hidin
       element.textContent?.includes("ZERO INFRASTRUCTURE CALLS"),
     );
     assert.ok(provenance, "the real VALID THRU sibling must expose its semantic geometry hook");
-    assert.equal(provenance?.textContent, "VALID THRU 09-27-2026");
+    assert.equal(provenance.textContent, validThruLabel(now));
     assert.ok(zeroCalls, "the adjacent ZERO INFRASTRUCTURE CALLS status must remain rendered");
-    assert.match(
-      stylesheet,
-      /\.za-validity-through\s*\{[^}]*flex:\s*0 0 31ch\s*;[^}]*inline-size:\s*31ch\s*;[^}]*white-space:\s*nowrap\s*;/s,
-    );
   } finally {
     await view.cleanup();
   }
+}
+
+test("footer VALID THRU provenance reserves the longest live state without hiding adjacent status", async () => {
+  await readFooterValidity();
+  const expiry = new Date(EXPIRES_AT).getTime();
+  await readFooterValidity({ controlledTimers: true, now: expiry - 86_400_000 });
+  await readFooterValidity({ controlledTimers: true, now: expiry });
+  assert.match(
+    stylesheet,
+    /\.za-validity-through\s*\{[^}]*flex:\s*0 0 31ch\s*;[^}]*inline-size:\s*31ch\s*;[^}]*white-space:\s*nowrap\s*;/s,
+  );
 });
 
 test("the validity clock crosses a day and exact expiry without remounting or duplicate StrictMode timers", async () => {
