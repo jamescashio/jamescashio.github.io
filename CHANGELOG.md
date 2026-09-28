@@ -111,6 +111,16 @@
 - Add a Studios gallery, finite light reflections, a trace progress line and faceted request tokens. Pause the portfolio behind overlays and preserve reduced motion, quiet startup and all dated evidence.
 - Verify root and archive routing, Back/Forward, keyboard focus, studio loading failure/cancellation, narrow layouts, accessibility, model outcomes and the production artifact.
 
+## V38.4 — Connect Helios requests and improve reading flow
+
+## V38.3 — Polish Helios navigation and harden starship startup
+
+- Render the paused starship after its canvas is revealed.
+
+## V38.2 — Refine Helios orbital instruments and typography
+
+## V38.1 — Polish Helios V38.1 and restore the House Cashio signature
+
 ## V38 — Helios
 
 - Publish the V38 Helios homepage at `/v38/` as a standalone single file page: WebGL ignition ring, GSAP and Lenis motion, Bit the co-pilot, the seven study switchboard with the routing instrument, the system atlas with DSH beside HERMES, the starship request schematic, the flight heritage hangar, and E.V.E. with fleet, kernel, backups, atlas, dsh, hermes, routes, archive and cost.
