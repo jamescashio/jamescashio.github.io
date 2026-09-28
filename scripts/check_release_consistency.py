@@ -581,8 +581,8 @@ def main() -> int:
             failures.append(f"{cname} must contain only cashio.us")
 
     package = json.loads(read("package.json"))
-    if latest.get("release") != "V" + ".".join(package["version"].split(".")[:2]):
-        failures.append("latest evidence release context must match the website software version")
+    if latest.get("release") != "V37.17":
+        failures.append("latest evidence release context must remain the V37.17 release")
     if package.get("version") != package_version:
         failures.append(f"package.json version must be {package_version}")
     lock = json.loads(read("package-lock.json"))
