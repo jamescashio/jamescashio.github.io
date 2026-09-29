@@ -69,7 +69,7 @@ export function setupRooms(context) {
     room.setAttribute("aria-busy", "true");
     const loading = (async () => {
       try {
-        const module = await loaders[room.id]();
+        const [module] = await Promise.all([loaders[room.id](), import("./room-content.js")]);
         const template = document.createElement("template");
         // This is trusted, build-time authored HTML, never visitor or network-supplied text.
         template.innerHTML = module.html;

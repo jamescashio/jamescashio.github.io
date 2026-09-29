@@ -1,12 +1,13 @@
 import { setupRooms } from "./rooms.js";
 import { setupSignature } from "./signature.js";
 import { $, $$ } from "./dom.js";
-import { setupStudies, routeExample } from "./studies.js";
+import { setupStudies } from "./studies.js";
 import { setupPrivacy } from "./privacy.js";
 import { setupAtlas } from "./atlas.js";
 import { setupEvidenceConsole } from "./evidence-console.js";
 import { FLEET } from "./fleet.js";
 import { setupBit } from "./bit.js";
+import { setupCopilotFeedback } from "./copilot-feedback.js";
 import { gsap } from "gsap";
 import { setupNavigation } from "./navigation.js";
 import { setupMotion } from "./motion.js";
@@ -95,28 +96,7 @@ $("#copy-email").addEventListener("click", () => copy("doug@cashio.us", "Email a
 /* The copilot reacts to choices; it never makes them. */
 const Bit = setupBit({ isMotionEnabled: () => motionOn, openMissionControl: openMC });
 window.Bit = Bit;
-// Bit reacts to the instruments
-$("#route-btn").addEventListener("click", () => {
-  const request = studyDeck.getRequest();
-  const r = routeExample(request.intent, request.privateData, request.sources);
-  Bit.say("THINKING", "Qualifying the route…", "think", 900);
-  setTimeout(() => {
-    if (r.code === "HOLD")
-      Bit.say(
-        "HELD FOR A HUMAN",
-        "Private input. I will not send this anywhere. The decision is yours.",
-        "alert",
-        2600,
-      );
-    else Bit.say("ROUTED", `${r.lane} lane. Every step is on the panel; nothing left this page.`, "yes", 2400);
-  }, 900);
-});
-$("#trace-btn").addEventListener("click", () =>
-  Bit.say("TRACE", "Following one request from intent to review. Conceptual, not live.", "think", 3000),
-);
-$("#eve-form").addEventListener("submit", () =>
-  Bit.say("ASK THE EVIDENCE", "Every answer has a date and a boundary.", "think", 1600),
-);
+setupCopilotFeedback({ getRequest: () => studyDeck.getRequest(), say: (...args) => Bit.say(...args) });
 
 setupSignature({ motion: () => motionOn, say: (...args) => Bit.say(...args) });
 

@@ -1,5 +1,15 @@
 # Changelog
 
+## V39.4 · Heart of Gold
+
+Named for the starship in Douglas Adams’s *The Hitchhiker’s Guide to the Galaxy* novels. The workshop’s tagline is original: “Small lab. Big universe. No panic.”
+
+- Give the original orbital workshop a new, original tagline and make Bit visibly named on desktop and in the phone menu. His decision colors update as still frames with reduced motion; unavailable canvas drawing no longer interrupts navigation.
+- Feature the dated backup repair with an original archive illustration and distinguish its 902 verified files from a live system restore. Add a build note and generated receipt for the smaller entry stylesheet.
+- Simplify primary navigation, shorten the route to mobile experiment controls, announce results, return focus to the chosen inputs, and cancel obsolete copilot replies when inputs change.
+- Make flight pause/resume and phone scrolling cues visible. Load unchanged room styling only when needed, including the static reading editions.
+- Preserve original artwork, media, fonts, dated evidence, quiet startup, reduced motion, compatibility routes and the 19,000 byte entry stylesheet budget. Align package and front-door release metadata at 39.4.0 while retaining the historical V37.17 receipt.
+
 ## V39.3 · Zenith
 
 - The opening leads directly to a working experiment, with a native section link when scripts are unavailable.

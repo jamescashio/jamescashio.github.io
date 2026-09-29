@@ -1,6 +1,7 @@
 import { copyFile, readFile, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { gzipSync } from "node:zlib";
+import { measureDelivery } from "./delivery-measurement.mjs";
 
 // Keep the fingerprinted stylesheet cacheable. The same unchanged byte budget covers its complete contents.
 const target = "dist/index.html";
@@ -15,6 +16,9 @@ const STYLE_BUDGET_GZIP = 19000;
 if (gzipSync(css).byteLength > STYLE_BUDGET_GZIP || /<\/style/i.test(css))
   throw new Error("Helios style delivery budget exceeded");
 html = html.replace(link, `<link rel="stylesheet" crossorigin href="${source}" data-helios-styles="${source}">`);
+const delivery = measureDelivery(html, css, source);
+html = delivery.html;
+await writeFile("dist/evidence/site-delivery-2026-09-29.json", JSON.stringify(delivery.receipt, null, 2) + "\n");
 // The root serves the current experience directly; old shared addresses normalize before paint.
 const entry = (await readFile("public/helios-entry.js", "utf8")).replace(/\r\n?/g, "\n").trim();
 html = html.replace('<script src="/helios-entry.js"></script>', `<script id="helios-entry-route">${entry}</script>`);

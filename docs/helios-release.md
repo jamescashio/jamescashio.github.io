@@ -1,4 +1,14 @@
-# V39.3 Helios Zenith release
+# V39.4 · Heart of Gold
+
+The release is named for the starship in Douglas Adams’s *The Hitchhiker’s Guide to the Galaxy* novels.
+
+V39.4 keeps the original orbital workshop and adds “Small lab. Big universe. No panic.” as original copy. Bit is a named guide in the desktop dock and phone menu. His reduced-motion decision feedback stays still, and a missing drawing context no longer breaks the remaining page controls.
+
+The workshop leads with an illustrated, dated backup repair and adds a build-derived stylesheet delivery receipt. Navigation and phone controls take fewer steps, result focus can return to the selected inputs, and the flight exposes pause/resume and scrolling cues. Unchanged room styles are loaded on demand and remain available to the static reading editions. No dependencies, workflow permissions or budget limits changed. Original artwork, films, fonts and infrastructure observation dates are preserved.
+
+The owner authorized this release on September 29, 2026 if the final equal-weight nine-category self-review exceeds 9.5 and all release checks pass. Scores are editorial judgments, not independent measurements. Run the local gates, source secret/workflow checks and GitHub checks on the final candidate, then verify the public deployment and delivered hashes. Keep the final rating, test evidence and deployment receipt outside the public source. Rollback: redeploy `8575742d4755a4a2eafe72d033d708630b0a94ef` through the same checked release path.
+
+## Preserved V39.3 release
 
 V39.3 makes the first experiment one action from the opening and places the observatory pause beside its artwork. The front door arrival uses a 605,887 byte copy of the same six second film, 54.9 percent smaller; the original media remains available to the preserved command deck. Short phone experiment introductions use less space. The original artwork, silent startup, motion preferences, evidence dates and 19,000 byte entry CSS budget remain intact.
 

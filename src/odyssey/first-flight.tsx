@@ -13,7 +13,7 @@ import { shareExperiment } from "./study-experiment";
 import "./first-flight.css";
 
 export default function FirstFlight({
-  motion,
+  motion: globalMotion,
   initialStep,
   onClose,
   edition = "V37 / LIGHTFOLD",
@@ -28,6 +28,8 @@ export default function FirstFlight({
   initialStep: string;
   onClose: (destination?: string) => void;
 }) {
+  const [scenePaused, setScenePaused] = useState(false);
+  const motion = globalMotion && !scenePaused;
   const [visit, setVisit] = useState(0);
   const remainingMs = useRef(FIRST_FLIGHT[flightStepIndex(initialStep)].durationMs);
   const timerChapter = useRef("");
@@ -363,6 +365,21 @@ export default function FirstFlight({
           Close <span aria-hidden="true">×</span>
         </button>
       </header>
+      {helios && (
+        <div className="ff-scene-tools">
+          <p className="ff-scroll-cue">{compact ? "Scroll the scene ↓" : "3D flight · your pace"}</p>
+          <button
+            type="button"
+            disabled={!globalMotion}
+            onClick={() => {
+              setScenePaused((value) => !value);
+              setPaused(true);
+            }}
+          >
+            {!globalMotion ? "Motion off" : scenePaused ? "Resume motion" : "Pause motion"}
+          </button>
+        </div>
+      )}
       <div className="ff-body">
         <div className={`ff-stage ff-stage-${phase}`} data-independent={independent}>
           <StarshipPoster imageClassName="ff-fallback" eager />

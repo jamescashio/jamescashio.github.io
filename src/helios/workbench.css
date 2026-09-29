@@ -161,3 +161,36 @@ section.workbench-section {
   border-color: rgba(242, 200, 122, 0.4);
   color: var(--gold);
 }
+
+.route-edit {
+  display: none;
+}
+#route-result,
+#hermes-controls {
+  scroll-margin-top: 90px;
+}
+@media (max-width: 700px) {
+  .route-edit {
+    display: inline-flex;
+    align-self: flex-start;
+  }
+  .instrument {
+    gap: 16px;
+  }
+  #hermes-controls > .stack:first-child {
+    gap: 10px;
+  }
+  #intent-group {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+  #intent-group > button {
+    min-width: 0;
+    padding-inline: 6px;
+  }
+  #st-cue {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+}

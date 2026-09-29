@@ -25,6 +25,19 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
       "flight fly board ship 3d tour",
     ],
     ["The orbital world", "Return to the beginning.", "#top"],
+    ["Real work", "Dated repairs, build notes and inspectable receipts.", "#workshop", "proof projects portfolio"],
+    [
+      "A lighter front door",
+      "The CSS delivery repair and a measurement generated from this build.",
+      "#delivery-story",
+      "performance stylesheet size receipt build note",
+    ],
+    [
+      "Backup repair and receipt",
+      "902 files verified; no live system restore was performed.",
+      "#snapshot-story",
+      "backup snapshot archive decrypt verification",
+    ],
     ["Seven experiments", "Choose a question and test its rule.", "#studies", "studies workbench"],
     ["Four rooms", "Architecture, principles, creative studios and aviation.", "#rooms"],
     [

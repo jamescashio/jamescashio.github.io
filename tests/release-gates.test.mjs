@@ -10,6 +10,30 @@ import { FLEET } from "../src/helios/fleet.js";
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const asset = (path) => new URL(`../${path}`, import.meta.url);
 
+test("The public delivery receipt and chart describe the stylesheet actually shipped", async () => {
+  const receipt = JSON.parse(await read("dist/evidence/site-delivery-2026-09-29.json"));
+  const css = await readFile(asset(`dist${receipt.current.stylesheet}`));
+  const size = gzipSync(css).byteLength;
+  assert.equal(receipt.current.initialCssGzipBytes, size);
+  assert.equal(receipt.current.sha256, createHash("sha256").update(css).digest("hex"));
+  assert.equal(receipt.initialCssBudgetBytes, 19000);
+  assert.equal(receipt.headroomBytes, 19000 - size);
+  assert.ok(size <= 19000);
+  const dom = new JSDOM(await read("dist/index.html"));
+  const document = dom.window.document;
+  assert.equal(document.querySelector('[data-delivery="current"]').textContent, size.toLocaleString("en-US"));
+  assert.equal(
+    document.querySelector('[data-delivery="headroom"]').textContent,
+    (19000 - size).toLocaleString("en-US"),
+  );
+  assert.equal(
+    Number(document.querySelector('[data-delivery-bar="current"]').getAttribute("width")),
+    (size / 19000) * 420,
+  );
+  assert.match(receipt.classification, /not browser timing or field performance/);
+  dom.window.close();
+});
+
 function imageDimensions(buffer, extension) {
   if (extension === "avif") {
     const ispe = buffer.indexOf(Buffer.from("ispe"));
@@ -98,7 +122,7 @@ function expandScript(scripts, name, seen = new Set()) {
 
 test("V37 software gates preserve the independent V35 dated evidence", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "39.3.0");
+  assert.equal(packageJson.version, "39.4.0");
   const lock = JSON.parse(await read("package-lock.json"));
   assert.equal(lock.version, packageJson.version);
   assert.equal(lock.packages[""].version, packageJson.version);
@@ -661,7 +685,8 @@ test("tag publication derives V37 from software metadata and validates one built
 
 test("Helios release identity, signature assets and compatibility receipts agree", async () => {
   const release = JSON.parse(await read("public/v38/site-release.json"));
-  assert.equal(release.experienceVersion, "39.3.0");
+  assert.equal(release.experienceVersion, "39.4.0");
+  assert.equal(release.releaseName, "HEART OF GOLD");
   assert.equal(release.entry, "/");
   assert.equal(release.published, true);
   assert.equal(await read("dist/v38/site-release.json"), await read("public/v38/site-release.json"));
@@ -679,7 +704,7 @@ test("Helios release identity, signature assets and compatibility receipts agree
   const doc = new JSDOM(await read("dist/index.html")).window.document;
   assert.doesNotMatch(doc.querySelector('meta[name="robots"]').content, /noindex|nofollow/);
   assert.doesNotMatch(doc.body.textContent, /Unpublished refinement/);
-  assert.match(doc.body.textContent, /V39\.3 · Directed by Doug Cashio · September 26, 2026/);
+  assert.match(doc.body.textContent, /V39\.4 · Heart of Gold · Directed by Doug Cashio · September 29, 2026/);
   const releaseDay = new Date(`${release.releaseDate}T00:00:00Z`);
   const longDate = new Intl.DateTimeFormat("en-US", {
     month: "long",
@@ -688,7 +713,7 @@ test("Helios release identity, signature assets and compatibility receipts agree
     timeZone: "UTC",
   }).format(releaseDay);
   assert.equal(FLEET.pageRevised, longDate, "console help and release receipt share the interface date");
-  assert.match(doc.body.textContent, new RegExp(`Published record\\s*·\\s*${longDate}`));
+  assert.match(doc.body.textContent, new RegExp(`Page updated\\s*·\\s*${longDate}`));
   const observedDate = (value) =>
     new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(
       new Date(value),

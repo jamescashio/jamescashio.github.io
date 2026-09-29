@@ -117,6 +117,7 @@ export function setupBit({ isMotionEnabled, openMissionControl }) {
     { passive: true },
   );
   function draw(now) {
+    if (!ctx) return;
     const dpr = Math.min(2, window.devicePixelRatio || 1);
     const css = cv.clientWidth || 96;
     const want = Math.round(css * dpr);
@@ -126,7 +127,7 @@ export function setupBit({ isMotionEnabled, openMissionControl }) {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
     const center = css / 2,
-      baseR = css * 0.24;
+      baseR = css * 0.32;
     const el = last ? Math.min(80, Math.max(0, now - last)) : 42;
     last = now;
     if (isMotionEnabled())
@@ -194,7 +195,7 @@ export function setupBit({ isMotionEnabled, openMissionControl }) {
   }
   let engaged = false;
   const canAnimate = () =>
-    engaged && isMotionEnabled() && !document.hidden && !document.querySelector("dialog[open],#helios-flight");
+    ctx && engaged && isMotionEnabled() && !document.hidden && !document.querySelector("dialog[open],#helios-flight");
   function syncAnimation() {
     if (canAnimate()) {
       if (!raf) raf = requestAnimationFrame(loop);
@@ -243,7 +244,9 @@ export function setupBit({ isMotionEnabled, openMissionControl }) {
     if (m !== "idle")
       moodTimer = setTimeout(() => {
         mood = "idle";
+        if (!canAnimate()) draw(last);
       }, hold || 2600);
+    if (!canAnimate()) draw(last);
   }
   $("#bit-x").addEventListener("click", () => $("#bitsay").classList.add("hide"));
   // bubble clears itself; Bit shrinks while the page scrolls; Bit can be dragged to any corner

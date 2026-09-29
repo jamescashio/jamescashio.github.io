@@ -438,9 +438,6 @@ section.bg-chapter-rise {
 .shade.shade-hangar {
   background: linear-gradient(0deg, rgba(4, 7, 14, 0.92), rgba(4, 7, 14, 0) 60%);
 }
-.engine-origin {
-  transform-origin: 320px 310px;
-}
 .operator-quote {
   margin: 0;
   font-size: clamp(20px, 2vw, 26px);
