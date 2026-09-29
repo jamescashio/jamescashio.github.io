@@ -1,6 +1,6 @@
 # V39.4 · Heart of Gold
 
-The release is named for the starship in Douglas Adams’s *The Hitchhiker’s Guide to the Galaxy* novels.
+The release is named for the starship in Douglas Adams’s _The Hitchhiker’s Guide to the Galaxy_ novels.
 
 V39.4 keeps the original orbital workshop and adds “Small lab. Big universe. No panic.” as original copy. Bit is a named guide in the desktop dock and phone menu. His reduced-motion decision feedback stays still, and a missing drawing context no longer breaks the remaining page controls.
 

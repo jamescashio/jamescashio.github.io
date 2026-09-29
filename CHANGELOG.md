@@ -2,7 +2,7 @@
 
 ## V39.4 · Heart of Gold
 
-Named for the starship in Douglas Adams’s *The Hitchhiker’s Guide to the Galaxy* novels. The workshop’s tagline is original: “Small lab. Big universe. No panic.”
+Named for the starship in Douglas Adams’s _The Hitchhiker’s Guide to the Galaxy_ novels. The workshop’s tagline is original: “Small lab. Big universe. No panic.”
 
 - Give the original orbital workshop a new, original tagline and make Bit visibly named on desktop and in the phone menu. His decision colors update as still frames with reduced motion; unavailable canvas drawing no longer interrupts navigation.
 - Feature the dated backup repair with an original archive illustration and distinguish its 902 verified files from a live system restore. Add a build note and generated receipt for the smaller entry stylesheet.
