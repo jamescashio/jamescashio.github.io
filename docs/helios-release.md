@@ -4,6 +4,8 @@ The release is named for the starship in Douglas Adams’s _The Hitchhiker’s G
 
 V39.4 keeps the original orbital workshop and adds “Small lab. Big universe. No panic.” as original copy. Bit is a named guide in the desktop dock and phone menu. His reduced-motion decision feedback stays still, and a missing drawing context no longer breaks the remaining page controls.
 
+A rapid action after closing Mission Control waits for its browser-history return, preserving the chosen destination and keyboard focus. The regression check deliberately delays that return instead of relying on machine timing.
+
 The workshop leads with an illustrated, dated backup repair and adds a build-derived stylesheet delivery receipt. Navigation and phone controls take fewer steps, result focus can return to the selected inputs, and the flight exposes pause/resume and scrolling cues. Unchanged room styles are loaded on demand and remain available to the static reading editions. No dependencies, workflow permissions or budget limits changed. Original artwork, films, fonts and infrastructure observation dates are preserved.
 
 The owner authorized this release on September 29, 2026 if the final equal-weight nine-category self-review exceeds 9.5 and all release checks pass. Scores are editorial judgments, not independent measurements. Run the local gates, source secret/workflow checks and GitHub checks on the final candidate, then verify the public deployment and delivered hashes. Keep the final rating, test evidence and deployment receipt outside the public source. Rollback: redeploy `8575742d4755a4a2eafe72d033d708630b0a94ef` through the same checked release path.

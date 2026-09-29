@@ -956,13 +956,15 @@ test("Bit docks into the menu on compact screens without covering the study", as
   await expect(page.locator("#bitcv")).toHaveCount(1);
 });
 
-test("Bit keeps navigation working when drawing is unavailable", async (t) => {
+test("Bit keeps navigation working when drawing is unavailable and menu history is delayed", async (t) => {
   const page = await visit(t, { width: 390, expandWorkbenches: false });
   await page.addInitScript(() => {
     const getContext = HTMLCanvasElement.prototype.getContext;
     HTMLCanvasElement.prototype.getContext = function (type, ...args) {
       return this.id === "bitcv" ? null : getContext.call(this, type, ...args);
     };
+    const back = history.back.bind(history);
+    history.back = () => setTimeout(back, 250);
   });
   await page.reload({ waitUntil: "networkidle" });
   await page.getByRole("button", { name: "Bit · Menu", exact: true }).press("Enter");
@@ -972,6 +974,7 @@ test("Bit keeps navigation working when drawing is unavailable", async (t) => {
   await expect(page.locator("#mc-btn")).toBeFocused();
   await page.locator(".hero-secondary").press("Enter");
   await expect(page.locator("#st-name")).toBeFocused();
+  await expect(page).toHaveURL(/#build=hermes(?:&|$)/);
 });
 
 test("Bit shows decision feedback in reduced motion without animating", async (t) => {

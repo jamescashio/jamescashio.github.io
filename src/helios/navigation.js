@@ -273,6 +273,7 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
     } else if (pageChanged) window.scrollTo({ top: 0, behavior: "instant" });
   }
   function navigate(hash, opener = null, replace = false) {
+    if (menu.deferUntilClosed(() => navigate(hash, opener, replace))) return;
     hash = aliases[hash] || hash;
     if (hash === "#top") hash = "";
     let state = null;
