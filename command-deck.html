@@ -5,29 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'sha256-mG8+yzmRuTIc/6ooISWYV7Vep9IP0nCbq+acAhO5YRg='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
+      content="default-src 'self'; script-src 'self' 'sha256-WEvTtLTciacNLNFJEy63WLZngY3EKRXrgdGY5H9bznw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
     />
     <script data-critical-route>
       (() => {
         if (!location.hash.startsWith("#deck=")) return;
+        let stopped = false;
+        const watched = new WeakSet();
+        const intents = ["pointerdown", "keydown", "touchstart", "wheel", "hashchange"];
+        const stop = () => {
+          stopped = true;
+          observer.disconnect();
+          resizeObserver.disconnect();
+          document.fonts.removeEventListener("loadingdone", align);
+          for (const intent of intents) removeEventListener(intent, stop, true);
+          document.querySelector("#root")?.style.removeProperty("visibility");
+        };
         const align = () => {
+          if (stopped) return;
+          const root = document.getElementById("root");
+          if (root?.dataset.clientActivated === "true") return stop();
           const scroller = document.getElementById("main-content");
           const anchor = document.getElementById(location.hash.slice(1));
           const section = anchor?.closest("section[data-deck]");
-          if (!scroller || !section) return;
+          if (!scroller || !section) {
+            if (root) root.style.visibility = "hidden";
+            return;
+          }
+          for (const deck of scroller.querySelectorAll("section[data-deck]")) {
+            if (watched.has(deck)) continue;
+            watched.add(deck);
+            resizeObserver.observe(deck);
+          }
           const maximum = Math.max(0, scroller.scrollHeight - scroller.clientHeight);
           scroller.scrollTop = Math.min(Math.max(0, section.offsetTop - 8), maximum);
+          root?.style.removeProperty("visibility");
         };
+        const resizeObserver = new ResizeObserver(align);
         const observer = new MutationObserver(align);
-        observer.observe(document.documentElement, { childList: true, subtree: true });
+        observer.observe(document.documentElement, {
+          childList: true,
+          subtree: true,
+          attributes: true,
+          attributeFilter: ["data-client-activated"],
+        });
+        document.fonts.addEventListener("loadingdone", align);
         addEventListener(
           "DOMContentLoaded",
           () => {
             align();
-            observer.disconnect();
+            if (!document.getElementById(location.hash.slice(1))) stop();
           },
           { once: true },
         );
+        for (const intent of intents) addEventListener(intent, stop, { once: true, capture: true });
         align();
       })();
     </script>

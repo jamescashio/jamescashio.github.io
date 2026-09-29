@@ -6,6 +6,8 @@ V39.4 keeps the original orbital workshop and adds “Small lab. Big universe. N
 
 A rapid action after closing Mission Control waits for its browser-history return, preserving the chosen destination and keyboard focus. The regression check deliberately delays that return instead of relying on machine timing.
 
+Archived command-deck deep links keep the selected deck aligned through partial parsing and late font layout. Startup observers stop at app activation or visitor input. The critical-shell readiness wait uses the same five-second budget as app readiness and reports its last observed state; first-frame geometry, activation timing and all other acceptance assertions remain unchanged.
+
 The workshop leads with an illustrated, dated backup repair and adds a build-derived stylesheet delivery receipt. Navigation and phone controls take fewer steps, result focus can return to the selected inputs, and the flight exposes pause/resume and scrolling cues. Unchanged room styles are loaded on demand and remain available to the static reading editions. No dependencies, workflow permissions or budget limits changed. Original artwork, films, fonts and infrastructure observation dates are preserved.
 
 The owner authorized this release on September 29, 2026 if the final equal-weight nine-category self-review exceeds 9.5 and all release checks pass. Scores are editorial judgments, not independent measurements. Run the local gates, source secret/workflow checks and GitHub checks on the final candidate, then verify the public deployment and delivered hashes. Keep the final rating, test evidence and deployment receipt outside the public source. Rollback: redeploy `8575742d4755a4a2eafe72d033d708630b0a94ef` through the same checked release path.
