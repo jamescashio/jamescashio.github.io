@@ -21,7 +21,7 @@ export function setupRooms(context) {
    * @returns {HTMLElement | null}
    */
   function roomOf(hash) {
-    if (hash === "#build-story" || hash.startsWith("#mission=")) return document.getElementById("starship");
+    if (hash.startsWith("#mission=")) return document.getElementById("starship");
     if (!/^#[\w-]+$/.test(hash)) return null;
     return /** @type {HTMLElement | null} */ (document.getElementById(hash.slice(1))?.closest("section.room")) || null;
   }

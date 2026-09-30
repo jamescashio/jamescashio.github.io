@@ -12,6 +12,8 @@ const sceneKind = (hash) =>
       ? "studio"
       : null;
 const aliases = {
+  "#build-story": "#starship",
+  "#delivery-story": "#workshop",
   "#observatory": "#principles",
   "#sovereign-world": "#starship",
   "#smart-routing": "#work",
@@ -79,7 +81,7 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
       const hash = destination.startsWith("build=")
         ? `#${destination}`
         : destination === "smart-routing"
-          ? "#build-story"
+          ? "#starship"
           : `#${destination}`;
       navigate(hash, null, true);
       return;

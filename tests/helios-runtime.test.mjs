@@ -68,28 +68,6 @@ async function choose(page, id) {
   await expect(page.locator(`#study-${id}`)).toHaveAttribute("aria-selected", "true");
 }
 
-test("The new build story opens by keyboard, reports this artifact and remains readable without JavaScript", async (t) => {
-  const page = await visit(t, { width: 390, expandWorkbenches: false });
-  await page.locator('.workshop-stories a[href="#delivery-story"]').press("Enter");
-  await expect(page.locator("#delivery-story")).toHaveAttribute("open", "");
-  await expect(page.locator("#delivery-story h3")).toBeFocused();
-  const response = await page.request.get(new URL("/evidence/site-delivery-2026-09-29.json", url).href);
-  assert.equal(response.status(), 200);
-  const receipt = await response.json();
-  await expect(page.locator('[data-delivery="current"]')).toHaveText(
-    receipt.current.initialCssGzipBytes.toLocaleString("en-US"),
-  );
-  await expect(page.locator('[data-delivery="saved"]')).toHaveText(`${receipt.reductionPercent.toFixed(1)}%`);
-  await audit(page, "delivery-story");
-  const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 320, height: 700 } });
-  t.after(() => context.close());
-  const reading = await context.newPage();
-  await reading.goto(url + "#delivery-story");
-  await reading.locator("#delivery-story > summary").click();
-  await expect(reading.locator('[data-delivery="current"]')).toBeVisible();
-  assert.equal(await reading.evaluate(() => document.documentElement.scrollWidth), 320);
-});
-
 test("Flight scene pause stops motion and the tour without losing the visitor's choices", async (t) => {
   const page = await visit(t, { width: 320, height: 568, motion: "no-preference", hash: "#flight=board" });
   const flight = page.locator(".first-flight");
@@ -344,9 +322,9 @@ test("The first-minute path, chapter labels and principles lead to their working
   await expect(page.locator("#pv-h")).toBeFocused();
   await expect(page.locator('[data-pv="human"]')).toBeInViewport();
   await page.locator("#mc-btn").click();
-  await page.locator("#mc-search").fill("Starship build story");
-  await page.locator('#mc-list a[href="#build-story"]').click();
-  await expect(page.locator("#build-proof-title")).toBeFocused();
+  await page.locator("#mc-search").fill("Starship lab");
+  await page.locator('#mc-list a[href="#starship"]').click();
+  await expect(page.locator("#ship-h")).toBeFocused();
   await page.locator('.sections a[href="#evidence"]').click();
   await expect(page.locator("#ev-h")).toBeFocused();
   await expect
@@ -596,14 +574,14 @@ test("Mission Control keeps search and Close in reach, recovers from empty resul
     await page.keyboard.press("Enter");
     await expect(page.locator("#mc-search")).toBeFocused();
     await expect(page.locator("#mc-results")).toHaveText("Search the whole workshop");
-    for (const query of ["build ship", "ship build"]) {
+    for (const query of ["ship lab", "lab ship"]) {
       await page.locator("#mc-search").fill(query);
       await expect(page.locator("#mc-results")).toHaveText("1 destination found");
-      await expect(page.locator("#mc-list strong")).toHaveText("Starship build story");
+      await expect(page.locator("#mc-list strong")).toHaveText("Starship lab");
     }
     await page.keyboard.press("Enter");
-    await expect(page.locator("#build-proof-title")).toBeFocused();
-    assert.equal(new URL(page.url()).hash, "#build-story");
+    await expect(page.locator("#ship-h")).toBeFocused();
+    assert.equal(new URL(page.url()).hash, "#starship");
     await page.locator("#mc-btn").click();
     await page.keyboard.press("Escape");
     await expect(page.locator("#mc-btn")).toBeFocused();
@@ -681,7 +659,7 @@ test("The invitation and three starting routes work by keyboard, keep sound opt-
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("Enter");
-    await expect(page.locator("#build-proof-title")).toBeFocused();
+    await expect(page.locator("#ship-h")).toBeFocused();
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
   }
 });
@@ -1083,7 +1061,7 @@ test("E.V.E. keeps replies separate and command completion leaves a keyboard exi
   }
 });
 
-test("Evidence leads with meaning, expands by keyboard and links the shipped build", async (t) => {
+test("Evidence leads with meaning, expands by keyboard and connects to the starship lab", async (t) => {
   const page = await visit(t, { width: 320, hash: "#evidence" });
   await expect(page.locator("#evidence")).toContainText("A dated look inside the lab.");
   await page.locator('.eve-chips [data-eve="fleet"]').click();
@@ -1120,10 +1098,10 @@ test("Evidence leads with meaning, expands by keyboard and links the shipped bui
   assert.deepEqual(clipped, [], "the open receipt fits inside its panel, even when the page clips overflow");
   await audit(page, "snapshot-story-320");
   await page.locator("#mc-btn").click();
-  await page.locator("#mc-search").fill("Starship build story");
-  await page.locator('#mc-list a[href="#build-story"]').click();
-  await expect(page.locator("#build-proof-title")).toHaveText("The ship that vanished when motion stopped.");
-  await expect(page.locator('#build-story a[href*="pull/135"]')).toBeVisible();
+  await page.locator("#mc-search").fill("Starship lab");
+  await page.locator('#mc-list a[href="#starship"]').click();
+  await expect(page.locator("#ship-h")).toBeFocused();
+  await expect(page.locator("#tg-net")).toBeVisible();
 });
 
 test("The composed opening keeps its artwork, visible first action and a finite visitor-requested orbit", async (t) => {
@@ -1396,6 +1374,71 @@ test("The portal intro is available on return visits and phones, loads on Play a
     await expect(opener).toBeFocused();
     assert.equal(new URL(page.url()).hash, "");
     assert.deepEqual(errors, []);
+  }
+});
+
+test("Expanded films fit the browser, preserve playback and restore keyboard navigation", async (t) => {
+  for (const [width, height, clip] of [
+    [1440, 1000, "intro"],
+    [1920, 1080, "signature"],
+    [844, 390, "sanctuary"],
+    [320, 844, "lightwake"],
+  ]) {
+    const page = await visit(t, { width, height, hash: `#film=${clip}`, expandWorkbenches: false });
+    const film = page.locator(".lensing-film");
+    const player = film.locator("video");
+    const normalBox = await player.boundingBox();
+    await player.evaluate((video) => {
+      video.dataset.loadCount = "0";
+      video.addEventListener("loadstart", () => {
+        video.dataset.loadCount = String(Number(video.dataset.loadCount) + 1);
+      });
+    });
+    await page.getByRole("button", { name: "Play film", exact: true }).click();
+    await expect.poll(() => player.evaluate((video) => video.currentTime)).toBeGreaterThan(0.2);
+    const before = await player.evaluate((video) => ({ time: video.currentTime, loads: video.dataset.loadCount }));
+    await page.getByRole("button", { name: "Expand view", exact: true }).press("Enter");
+    const restore = page.getByRole("button", { name: "Restore view", exact: true });
+    await expect(restore).toBeFocused();
+    await expect(player).toHaveJSProperty("paused", false);
+    await expect.poll(() => player.evaluate((video) => video.currentTime)).toBeGreaterThan(before.time);
+    assert.equal(await player.getAttribute("data-load-count"), before.loads, "resizing must not reload the film");
+    assert.equal(await page.evaluate(() => document.fullscreenElement), null, "the browser keeps its normal window");
+    await page.getByRole("button", { name: "Pause film", exact: true }).click();
+    const enlargedBox = await player.boundingBox();
+    if (width >= 1440) assert.ok(enlargedBox.height > normalBox.height * 1.3, "desktop film gains meaningful space");
+    for (const control of [
+      restore,
+      film.locator(".lensing-film-close"),
+      film.locator(".lensing-film-play"),
+      page.getByRole("slider"),
+    ]) {
+      const bounds = await control.boundingBox();
+      assert.ok(
+        bounds.x >= 0 && bounds.y >= 0 && bounds.x + bounds.width <= width && bounds.y + bounds.height <= height,
+        "playback and exit controls stay within the window",
+      );
+    }
+    assert.equal(
+      await film.evaluate(
+        (element) => element.scrollWidth <= element.clientWidth + 1 && element.scrollHeight <= element.clientHeight + 1,
+      ),
+      true,
+      "expanded view needs no scrolling",
+    );
+    await page.getByRole("slider").fill("1");
+    await expect(film).toHaveAttribute("data-playback", "paused");
+    await audit(page, `expanded-film-${width}`);
+    await page.screenshot({ path: path.join(output, `expanded-film-${width}.png`) });
+    await restore.press("Enter");
+    await expect(page.getByRole("button", { name: "Expand view", exact: true })).toBeFocused();
+    await expect(page.getByRole("group", { name: "Choose a film", exact: true })).toBeVisible();
+    await expect(player).toHaveJSProperty("paused", true);
+    await expect.poll(() => player.evaluate((video) => video.currentTime)).toBeCloseTo(1, 1);
+    await page.getByRole("button", { name: "Expand view", exact: true }).press("Enter");
+    await page.keyboard.press("Escape");
+    await expect(film).toHaveCount(0);
+    await expect(page.locator("#studios-h")).toBeFocused();
   }
 });
 
@@ -1677,7 +1720,7 @@ test("Aa labels match visible words in every style and a completed flight names 
   }
 });
 
-test("The home path introduces creative rooms before evidence, while the build story keeps its address", async (t) => {
+test("The home path introduces creative rooms before evidence and connects directly to the starship lab", async (t) => {
   const page = await visit(t, { width: 1024, height: 900, expandWorkbenches: false });
   await expect(page.locator(".nav nav")).not.toBeVisible();
   await expect(page.locator("#mc-btn")).toBeVisible();
@@ -1691,22 +1734,22 @@ test("The home path introduces creative rooms before evidence, while the build s
       ),
   );
   await page.locator("#mc-btn").click();
-  await page.locator("#mc-search").fill("Starship build story");
-  await page.locator('#mc-list a[href="#build-story"]').click();
+  await page.locator("#mc-search").fill("Starship lab");
+  await page.locator('#mc-list a[href="#starship"]').click();
   await expect(page.locator("html")).toHaveAttribute("data-room", "starship");
-  await expect(page.locator("#build-proof-title")).toBeFocused();
-  await expect(page.locator("#build-story")).toContainText("blank canvas");
+  await expect(page.locator("#ship-h")).toBeFocused();
+  await expect(page.locator("#tg-net")).toBeVisible();
   await page.locator(".room-back").click();
   await expect(page.locator("#rooms-h")).toBeFocused();
   await page.goBack();
-  await expect(page.locator("#build-proof-title")).toBeFocused();
-  await expect(page.locator("#build-proof-title")).toBeInViewport();
+  await expect(page.locator("#ship-h")).toBeFocused();
+  await expect(page.locator("#ship-h")).toBeInViewport();
 });
 
 test("Direct section and room-story addresses keep visible heading focus after the initial fragment jump", async (t) => {
   for (const width of [390, 1440]) {
     for (const [hash, heading] of [
-      ["#build-story", "#build-proof-title"],
+      ["#build-story", "#ship-h"],
       ["#evidence", "#ev-h"],
     ]) {
       const page = await visit(t, { width, height: 900, hash, expandWorkbenches: false });
@@ -1770,7 +1813,7 @@ test("Every room supports a direct URL, reload, Back and Forward after deferred 
       ["#principles", "principles", "pr-h"],
       ["#studios", "studios", "studios-h"],
       ["#heritage", "heritage", "he-h"],
-      ["#build-story", "starship", "build-proof-title"],
+      ["#build-story", "starship", "ship-h"],
       ["#mission=sovereign.private.offline.held", "starship", "ship-h"],
     ]) {
       const page = await visit(t, { width, height: 900, hash, expandWorkbenches: false });

@@ -25,6 +25,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 24px;
   padding: 22px 28px;
   background: #040a12;
@@ -69,7 +70,13 @@
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.lensing-film-close {
+.lensing-film-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 8px;
+}
+.lensing-film-close,
+.lensing-film-size {
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
@@ -78,7 +85,8 @@
   color: #eef3f6;
   background: #0b1723;
 }
-.lensing-film-close:hover {
+.lensing-film-close:hover,
+.lensing-film-size:hover {
   background: #162a39;
   border-color: #92b4c7;
 }
@@ -484,5 +492,63 @@
   .lensing-film-frame video {
     max-height: none;
     height: max(180px, 58dvh);
+  }
+}
+
+/* Expand within the browser window without replacing the playing video. */
+.lensing-film[open][data-expanded="true"] {
+  display: flex;
+  flex-direction: column;
+  width: calc(100vw - 32px);
+  height: calc(100dvh - 32px);
+  overflow: hidden;
+}
+.lensing-film[data-expanded="true"] .lensing-film-header {
+  flex-shrink: 0;
+  gap: 8px 20px;
+  padding: 12px 16px;
+}
+.lensing-film[data-expanded="true"] .lensing-film-header h2 {
+  margin: 0;
+}
+.lensing-film[data-expanded="true"]
+  :is(
+    .lensing-film-eyebrow,
+    .lensing-film-collection,
+    .lensing-film-choices,
+    .lensing-film-scenes,
+    .lensing-film-chapters,
+    .lensing-film-handoff
+  ) {
+  display: none;
+}
+.lensing-film[data-expanded="true"] .lensing-film-frame {
+  flex: 1;
+  min-height: 0;
+}
+.lensing-film[data-expanded="true"] .lensing-film-frame video {
+  height: 100%;
+  max-height: none;
+  aspect-ratio: auto;
+}
+.lensing-film[data-expanded="true"] figcaption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  padding: 0;
+}
+.lensing-film[data-expanded="true"] .lensing-film-controls {
+  flex-shrink: 0;
+  gap: 12px;
+  padding: 12px 16px;
+  border-top: 1px solid #f2d3a026;
+}
+@media (max-width: 600px) {
+  .lensing-film[open][data-expanded="true"] {
+    width: calc(100vw - 16px);
+    height: calc(100dvh - 16px);
   }
 }

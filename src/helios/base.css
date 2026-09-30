@@ -1533,7 +1533,6 @@ section[data-ambient="off"] *:after,
 main
   :is(
     .workshop-link,
-    .case-source,
     [data-load],
     #pv-trace,
     #study-source,
