@@ -1411,7 +1411,9 @@ test("A completed film seek accepts the browser clock and keeps small keyboard s
     const clock = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, "currentTime");
     Object.defineProperty(v, "currentTime", {
       get: () => clock.get.call(v) + (v.seeking ? 0 : 0.004),
-      set: (seconds) => clock.set.call(v, seconds),
+      set: (seconds) => {
+        clock.set.call(v, seconds);
+      },
     });
   });
   const timeline = page.getByRole("slider", { name: "Seek film", exact: true });
