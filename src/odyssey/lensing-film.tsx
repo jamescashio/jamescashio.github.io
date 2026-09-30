@@ -31,6 +31,7 @@ type SeekMedia = {
   ranges: "unknown" | "supported" | "unavailable";
   url: string | null;
   loading: Promise<void> | null;
+  target: number | null;
 };
 
 const CLIPS = {
@@ -187,6 +188,7 @@ export default function LensingFilm({
   const playRequested = useCallback(
     async (player: HTMLVideoElement, generation: number) => {
       try {
+        if (seekMedia.current?.player === player) seekMedia.current.target = null;
         await player.play();
         if (!isCurrentPlayer(player) || document.hidden || playbackIntent.current !== player) player.pause();
       } catch {
@@ -284,11 +286,12 @@ export default function LensingFilm({
       )
         return;
       const seconds = Math.max(0, Math.min(target, player.duration - 0.04));
-      // Converge more finely than the timeline's 0.01-second keyboard step.
-      // A larger tolerance discards each ArrowRight before it can accumulate.
-      if (Math.abs(player.currentTime - seconds) > 0.001) {
+      // Once this native seek has completed, accept the browser's decoded clock.
+      // Reassigning currentTime to correct millisecond drift can seek forever.
+      if (prepared.target !== seconds && Math.abs(player.currentTime - seconds) > 0.001) {
         if (canSeekTo(player, seconds)) {
           if (prepared.kind === "native") prepared.ranges = "supported";
+          prepared.target = seconds;
           player.currentTime = seconds;
         } else if (prepared.kind === "native" && prepared.ranges !== "supported" && !prepared.loading) {
           void prepareSeekFallback(player, prepared).then(() => finish(player));
@@ -297,7 +300,7 @@ export default function LensingFilm({
       }
       if (player.readyState < 2) return;
       pendingSeek.current = null;
-      setElapsed(player.currentTime);
+      setElapsed(seconds);
       if (playbackIntent.current === player) {
         setPlayback("loading");
         void playRequested(player, request.current);
@@ -385,6 +388,7 @@ export default function LensingFilm({
       ranges: "unknown",
       url: null,
       loading: null,
+      target: null,
     };
     // Explicit seeking opts into native loading once. Subsequent chapter or
     // scrub requests reuse a healthy load; a failed preparation starts fresh.
@@ -402,7 +406,15 @@ export default function LensingFilm({
     setElapsed(target);
     setPlayback("seeking");
     prepareSeekMedia(player);
+    if (seekMedia.current) seekMedia.current.target = null;
     finishPendingSeek(player);
+  }
+
+  function displayTime(player: HTMLVideoElement) {
+    const prepared = seekMedia.current;
+    // Keep the requested position while paused so 0.01-second arrow steps
+    // accumulate independently of the decoder's clock precision.
+    return player.paused && prepared?.player === player ? (prepared.target ?? player.currentTime) : player.currentTime;
   }
 
   async function togglePlayback() {
@@ -593,7 +605,7 @@ export default function LensingFilm({
               onTimeUpdate={(event) => {
                 if (isCurrentPlayer(event.currentTarget)) {
                   if (pendingSeek.current !== null) finishPendingSeek(event.currentTarget);
-                  else setElapsed(event.currentTarget.currentTime);
+                  else setElapsed(displayTime(event.currentTarget));
                 }
               }}
               onSeeked={(event) => {
@@ -601,7 +613,7 @@ export default function LensingFilm({
                 if (isCurrentPlayer(player)) {
                   if (pendingSeek.current !== null) finishPendingSeek(player);
                   else if (player.paused && playbackIntent.current !== player) {
-                    setElapsed(player.currentTime);
+                    setElapsed(displayTime(player));
                     setPlayback("paused");
                   }
                 }

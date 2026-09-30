@@ -1399,6 +1399,34 @@ test("The portal intro is available on return visits and phones, loads on Play a
   }
 });
 
+test("A completed film seek accepts the browser clock and keeps small keyboard steps usable", async (t) => {
+  const page = await visit(t, { hash: "#film=intro", expandWorkbenches: false });
+  const film = page.locator(".lensing-film");
+  const player = film.locator("video");
+  await page.getByRole("button", { name: "Play film", exact: true }).click();
+  await expect.poll(() => player.evaluate((v) => v.currentTime)).toBeGreaterThan(0.2);
+  await page.getByRole("button", { name: "Pause film", exact: true }).click();
+  // WebKit can finish a native seek a few milliseconds beyond the requested time.
+  await player.evaluate((v) => {
+    const clock = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, "currentTime");
+    Object.defineProperty(v, "currentTime", {
+      get: () => clock.get.call(v) + (v.seeking ? 0 : 0.004),
+      set: (seconds) => clock.set.call(v, seconds),
+    });
+  });
+  const timeline = page.getByRole("slider", { name: "Seek film", exact: true });
+  await timeline.fill("1");
+  await expect(film).toHaveAttribute("data-playback", "paused");
+  for (const value of ["1.01", "1.02", "1.03", "1.04"]) {
+    await timeline.press("ArrowRight");
+    await expect(film).toHaveAttribute("data-playback", "paused");
+    await expect(timeline).toHaveValue(value);
+  }
+  await page.getByRole("button", { name: "Play film", exact: true }).click();
+  await expect.poll(() => player.evaluate((v) => v.currentTime)).toBeGreaterThan(1.3);
+  await expect(film).toHaveAttribute("data-playback", "playing");
+});
+
 test("The portal intro opens from Bit or a shared link and has a direct video fallback without JavaScript", async (t) => {
   const page = await visit(t, { width: 390, expandWorkbenches: false });
   await page.locator("#mc-btn").click();
