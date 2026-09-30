@@ -8,7 +8,7 @@ import { $ } from "./dom.js";
 export const EVIDENCE = {
   help: [
     "Commands: fleet · hosts · kernel · backups · atlas · dsh · hermes · routes · archive · cost · clear · help",
-    `Listed commands read the dated export. Easter egg replies are marked lore. Record revised ${FLEET.pageRevised}.`,
+    `Listed commands read the dated export. Easter egg replies are marked lore. Page updated ${FLEET.pageRevised}.`,
     "About this site: about · contact. Keys: ↑ recalls a command · Tab completes one.",
     "Some commands are not listed. Pilots find them.",
   ],
@@ -19,7 +19,7 @@ export const EVIDENCE = {
     `Method: ${FLEET.method} · run by the owner`,
   ],
   kernel: [
-    `Public record policy: ${FLEET.pageRevised}`,
+    `Page updated: ${FLEET.pageRevised}; observation dates remain separate`,
     "Withheld: exact kernel and package versions stay out of the public record",
     "A public security record shows what was observed, never a map for an attacker",
   ],
@@ -58,7 +58,7 @@ export const EVIDENCE = {
     `That record lists an expiry of ${FLEET.archive.expiry}. Newer observations replace it; its expiry does not extend them`,
   ],
   cost: [
-    `Public record: ${FLEET.pageRevised}`,
+    `Page updated: ${FLEET.pageRevised}; no new spend observation`,
     `Status: ${FLEET.cost.status} · no current spend measurement is published`,
     `The ${FLEET.cost.archivedRelease} sample from ${FLEET.cost.archivedSample} stays in its archived export`,
     "Rule in force: quality picks the model, cost only breaks a tie",

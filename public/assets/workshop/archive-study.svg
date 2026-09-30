@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="400" viewBox="0 0 720 400" fill="none">
+  <defs>
+    <linearGradient id="face" x1="120" y1="70" x2="470" y2="360" gradientUnits="userSpaceOnUse"><stop stop-color="#233e56"/><stop offset="1" stop-color="#0b1828"/></linearGradient>
+    <linearGradient id="edge" x1="90" y1="180" x2="460" y2="300" gradientUnits="userSpaceOnUse"><stop stop-color="#f2c87a"/><stop offset="1" stop-color="#537386"/></linearGradient>
+    <radialGradient id="halo"><stop stop-color="#22d3ee" stop-opacity=".13"/><stop offset="1" stop-color="#22d3ee" stop-opacity="0"/></radialGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" stroke="#7290a5" stroke-opacity=".1"/></pattern>
+  </defs>
+  <path fill="url(#grid)" d="M0 0h720v400H0z"/>
+  <ellipse cx="332" cy="228" rx="288" ry="174" fill="url(#halo)"/>
+  <ellipse cx="282" cy="302" rx="204" ry="47" stroke="#547386" stroke-opacity=".35"/>
+  <path d="M82 217 258 123 455 214 278 312Z" fill="#07121d" stroke="#345369"/>
+  <path d="m82 217 196 93v23L82 239z" fill="#0f2334" stroke="#345369"/>
+  <path d="m278 310 177-96v23l-177 96z" fill="#081725" stroke="#345369"/>
+  <path d="M82 172 258 78 455 169 278 267Z" fill="url(#face)" stroke="url(#edge)" stroke-width="2"/>
+  <path d="m82 172 196 95v24L82 195z" fill="#183047" stroke="#6d8794"/>
+  <path d="m278 267 177-98v25l-177 97z" fill="#0b1b2b" stroke="#6d8794"/>
+  <path d="m114 173 144-76 164 75-144 80z" stroke="#91b4c8" stroke-opacity=".4"/>
+  <path d="m134 197 58 28m-58-4 58 28m-58 18 58 28" stroke="#72c5d5" stroke-width="3" stroke-linecap="round"/>
+  <path d="m302 245 120-66" stroke="#efc779" stroke-width="3"/>
+  <circle cx="316" cy="265" r="3" fill="#70dbe8"/><circle cx="330" cy="257" r="3" fill="#70dbe8"/><circle cx="344" cy="249" r="3" fill="#70dbe8"/>
+  <g transform="translate(264 169)">
+    <path d="M-21-4v-17a21 21 0 0 1 42 0v17" stroke="#f2c87a" stroke-width="5"/>
+    <rect x="-32" y="-5" width="64" height="51" rx="8" fill="#e5b665" stroke="#ffe0a0" stroke-width="2"/>
+    <circle cy="15" r="6" fill="#142335"/><path d="M0 18v10" stroke="#142335" stroke-width="5" stroke-linecap="round"/>
+  </g>
+  <path d="M446 241h33q24 0 24-24v-24q0-24 24-24h14" stroke="#65d6e5" stroke-width="2" stroke-dasharray="4 7"/>
+  <path d="m533 163 8 6-8 6" stroke="#65d6e5" stroke-width="2"/>
+  <g transform="translate(549 80)">
+    <path d="M0 0h82l27 28v173H0z" fill="#102536" stroke="#6e98aa" stroke-width="1.5"/>
+    <path d="M82 0v28h27" stroke="#6e98aa" stroke-width="1.5"/>
+    <path d="M19 49h66M19 60h46" stroke="#94b3c3" stroke-width="3"/>
+    <g stroke="#61d8df" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m19 85 5 5 11-12m-16 38 5 5 11-12m-16 38 5 5 11-12"/></g>
+    <path d="M44 85h38M44 116h38M44 147h38" stroke="#607f94" stroke-width="3"/>
+    <path d="M19 177h65" stroke="#efc779" stroke-width="3"/>
+  </g>
+  <g fill="#adc4d4" font-family="monospace" font-size="12" letter-spacing="2"><text x="90" y="363">01 / ENCRYPTED ARCHIVE</text><text x="513" y="317">02 / FILE CHECK</text></g>
+  <path d="M31 72V40h32m602 0h24v32M31 326v32h32" stroke="#4c6a7e"/>
+  <circle cx="485" cy="64" r="3" fill="#efc779"/><circle cx="54" cy="276" r="2" fill="#72dbea"/>
+</svg>

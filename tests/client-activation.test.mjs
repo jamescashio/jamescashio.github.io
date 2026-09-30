@@ -541,7 +541,25 @@ test("the hashed pre-paint route helper aligns a direct deck before the app mark
     runScripts: "outside-only",
     url: "https://cashio.us/#deck=iron",
   });
+  let resize;
+  let disconnected = false;
+  dom.window.ResizeObserver = class {
+    constructor(callback) {
+      resize = callback;
+    }
+    observe() {}
+    disconnect() {
+      disconnected = true;
+    }
+  };
+  Object.defineProperty(dom.window.document, "fonts", { value: new dom.window.EventTarget() });
+  // Keep the parser incomplete while the target deck arrives in a later chunk.
+  Object.defineProperty(dom.window.document, "readyState", { configurable: true, value: "loading" });
+  const root = dom.window.document.createElement("div");
+  root.id = "root";
+  dom.window.document.body.append(root);
   dom.window.eval(helperSource);
+  assert.equal(root.style.visibility, "hidden", "an incomplete deep route must not reveal Snapshot");
 
   const main = dom.window.document.createElement("main");
   main.id = "main-content";
@@ -554,9 +572,19 @@ test("the hashed pre-paint route helper aligns a direct deck before the app mark
   anchor.id = "deck=iron";
   section.append(anchor);
   main.append(section);
-  dom.window.document.body.append(main);
+  root.append(main);
   await Promise.resolve();
 
   assert.equal(main.scrollTop, 3_592, "the direct Iron route must align at the canonical eight-pixel inset");
+  assert.equal(root.style.visibility, "", "the parsed target must become visible");
+  Object.defineProperty(section, "offsetTop", { configurable: true, value: 3_720 });
+  resize();
+  assert.equal(main.scrollTop, 3_712, "a late font/layout resize must retain the route inset");
+  root.dataset.clientActivated = "true";
+  await Promise.resolve();
+  assert.equal(disconnected, true, "React activation must retire startup observers");
+  main.scrollTop = 200;
+  resize();
+  assert.equal(main.scrollTop, 200, "startup alignment must not fight later navigation");
   dom.window.close();
 });

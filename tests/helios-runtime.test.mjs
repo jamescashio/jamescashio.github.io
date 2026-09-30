@@ -68,6 +68,133 @@ async function choose(page, id) {
   await expect(page.locator(`#study-${id}`)).toHaveAttribute("aria-selected", "true");
 }
 
+test("The new build story opens by keyboard, reports this artifact and remains readable without JavaScript", async (t) => {
+  const page = await visit(t, { width: 390, expandWorkbenches: false });
+  await page.locator('.workshop-stories a[href="#delivery-story"]').press("Enter");
+  await expect(page.locator("#delivery-story")).toHaveAttribute("open", "");
+  await expect(page.locator("#delivery-story h3")).toBeFocused();
+  const response = await page.request.get(new URL("/evidence/site-delivery-2026-09-29.json", url).href);
+  assert.equal(response.status(), 200);
+  const receipt = await response.json();
+  await expect(page.locator('[data-delivery="current"]')).toHaveText(
+    receipt.current.initialCssGzipBytes.toLocaleString("en-US"),
+  );
+  await expect(page.locator('[data-delivery="saved"]')).toHaveText(`${receipt.reductionPercent.toFixed(1)}%`);
+  await audit(page, "delivery-story");
+  const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 320, height: 700 } });
+  t.after(() => context.close());
+  const reading = await context.newPage();
+  await reading.goto(url + "#delivery-story");
+  await reading.locator("#delivery-story > summary").click();
+  await expect(reading.locator('[data-delivery="current"]')).toBeVisible();
+  assert.equal(await reading.evaluate(() => document.documentElement.scrollWidth), 320);
+});
+
+test("Flight scene pause stops motion and the tour without losing the visitor's choices", async (t) => {
+  const page = await visit(t, { width: 320, height: 568, motion: "no-preference", hash: "#flight=board" });
+  const flight = page.locator(".first-flight");
+  await expect(flight).toBeVisible({ timeout: 15000 });
+  await page.getByRole("button", { name: "Pause motion", exact: true }).click();
+  await expect(flight).toHaveAttribute("data-motion", "off");
+  await expect(flight).toHaveAttribute("data-playback", "manual");
+  const chapter = page.getByRole("combobox", { name: "Flight chapter", exact: true });
+  await chapter.selectOption("3");
+  await expect(chapter).toHaveValue("3");
+  await page.getByRole("button", { name: "Resume motion", exact: true }).click();
+  await expect(flight).toHaveAttribute("data-motion", "on");
+  await expect(flight).toHaveAttribute("data-playback", "manual");
+  await expect(chapter).toHaveValue("3");
+  await expect(page.getByRole("button", { name: "Finish →", exact: true })).toBeInViewport({ ratio: 1 });
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(page.getByRole("button", { name: "Motion off", exact: true })).toBeDisabled();
+  await expect(flight).toHaveAttribute("data-motion", "off");
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 320);
+  await audit(page, "flight-scene-pause");
+});
+
+test("Routing feedback announces the result and discards delayed replies after an input changes", async (t) => {
+  const page = await visit(t, { hash: "#build=hermes", expandWorkbenches: false });
+  await page.locator("#route-btn").click();
+  await expect(page.locator("#route-feedback")).toContainText("Everyday drafting");
+  await page.locator("#tg-private").click();
+  // Outwait the copilot delay: the old public-input reply must not arrive.
+  await page.waitForTimeout(1100);
+  await expect(page.locator("#bit-tag")).not.toHaveText("BIT / ROUTED");
+  await page.locator("#route-btn").click();
+  await expect(page.locator("#route-feedback")).toContainText("A person decides");
+  await expect(page.locator("#bit-tag")).toHaveText("BIT / HELD FOR A HUMAN");
+  await expect(page.locator("#st-lane")).toHaveRole("heading");
+});
+
+test("Mobile route controls arrive before the explanation and keep a keyboard path back from the result", async (t) => {
+  for (const [width, height] of [
+    [320, 568],
+    [390, 844],
+  ]) {
+    const page = await visit(t, { width, height, expandWorkbenches: false });
+    await page.locator(".hero-secondary").click();
+    await expect(page.locator("#st-name")).toBeFocused();
+    await expect(page.locator("#intent-group")).toBeInViewport({ ratio: 1 });
+    await expect(page.locator("#route-btn")).toBeInViewport({ ratio: 1 });
+    await expect(page.locator(".study-method")).not.toHaveAttribute("open", "");
+    await page.locator('[data-intent="research"]').click();
+    await page.locator("#tg-private").click();
+    await page.locator("#route-btn").press("Enter");
+    await expect(page.locator("#st-lane")).toBeFocused();
+    await expect(page.locator("#st-lane")).toHaveText("A person decides");
+    await expect(page.locator("#st-lane")).toBeInViewport({ ratio: 1 });
+    await page.locator("#route-edit").press("Enter");
+    await expect(page.locator('[data-intent="research"]')).toBeFocused();
+    await expect(page.locator("#intent-group")).toBeInViewport({ ratio: 1 });
+    await expect(page.locator("#tg-private")).toHaveAttribute("aria-pressed", "true");
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+    await audit(page, `shorter-route-${width}`);
+  }
+});
+
+test("Featured work leads by keyboard to the dated receipt and preserves the personal introduction", async (t) => {
+  const page = await visit(t, { expandWorkbenches: false });
+  await page
+    .getByRole("navigation", { name: "Primary", exact: true })
+    .getByRole("link", { name: "See real work" })
+    .click();
+  await expect(page.locator("#workshop-title")).toBeFocused();
+  await expect(page.locator(".proof-result")).toContainText("902");
+  await expect(page.locator(".proof-result")).toContainText("A live system restore was not performed.");
+  await page.locator('.proof-feature a[href="#snapshot-story"]').press("Enter");
+  await expect(page.locator("#snapshot-story")).toHaveAttribute("open", "");
+  await expect(page.locator("#snapshot-story h3")).toBeFocused();
+  await expect(page.locator('#snapshot-story a[href="/evidence/console-snapshot-2026-09-26.json"]')).toBeVisible();
+  await page
+    .getByRole("navigation", { name: "Primary", exact: true })
+    .getByRole("link", { name: "See real work" })
+    .click();
+  await page.locator(".workshop-about summary").press("Enter");
+  await expect(page.locator(".workshop-about .profile-lead")).toBeVisible();
+  await audit(page, "featured-work-expanded");
+});
+
+test("Room artwork styles wait for a room and also load on the reading edition without JavaScript", async (t) => {
+  const page = await visit(t, { expandWorkbenches: false });
+  const roomStyles = () => page.locator('link[rel="stylesheet"][href*="room-content-"]');
+  await expect(roomStyles()).toHaveCount(0);
+  await expect(page.locator("#sigplate")).toHaveCSS("display", "grid");
+  await expect(page.locator("#sigplate")).toHaveCSS("overflow", "hidden");
+  await page.locator('.room-card[data-room-route="#starship"]').click();
+  await expect(page.locator("#starship")).toHaveAttribute("data-room-state", "ready");
+  await expect(roomStyles()).toHaveCount(1);
+  await expect(page.locator("#flow-scene")).toBeVisible();
+  const sheet = await roomStyles().getAttribute("href");
+  const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
+  t.after(() => context.close());
+  const reading = await context.newPage();
+  await reading.goto(new URL("/rooms/starship/", url).href);
+  const readingSheet = await reading.locator('link[rel="stylesheet"][href*="room-content-"]').getAttribute("href");
+  assert.equal(new URL(readingSheet, url).href, new URL(sheet, url).href);
+  await expect(reading.locator("#flow-scene")).toBeVisible();
+  assert.equal(await reading.evaluate(() => document.documentElement.scrollWidth), 390);
+});
+
 test("Privacy feedback answers each new prediction at once and stays complete when motion is interrupted", async (t) => {
   for (const motion of ["reduce", "no-preference"]) {
     const page = await visit(t, { width: 320, height: 700, motion, hash: "#work" });
@@ -349,7 +476,7 @@ for (const width of [1440, 768, 390, 320])
     const page = await visit(t, { width, height: width > 700 ? 1000 : 844 });
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width, "no horizontal page overflow");
     await expect(page.locator("main")).toHaveCount(1);
-    await expect(page.locator("h1")).toContainText("Own the iron.");
+    await expect(page.locator("h1")).toContainText("Small lab.");
     const targetFloor = width <= 900 ? 44 : 24;
     for (const target of await page.locator("footer nav a, footer summary, #study-source").all()) {
       if (await target.isVisible()) {
@@ -803,6 +930,7 @@ test("Bit docks into the menu on compact screens without covering the study", as
     await page.setViewportSize({ width, height: 844 });
     await page.locator("#studies").scrollIntoViewIfNeeded();
     await expect(page.locator("#mc-btn #bitcv")).toBeVisible();
+    await expect(page.locator("#mc-btn")).toHaveAccessibleName("Bit · Menu");
     await expect(page.locator("#bit-btn")).not.toBeVisible();
     const mascot = await page.locator("#bitcv").boundingBox();
     const header = await page.locator("body > header").boundingBox();
@@ -824,7 +952,40 @@ test("Bit docks into the menu on compact screens without covering the study", as
   }
   await page.setViewportSize({ width: 1440, height: 1000 });
   await expect(page.locator("#bit-btn #bitcv")).toBeVisible();
+  await expect(page.locator("#bit-btn .bit-name")).toBeVisible();
   await expect(page.locator("#bitcv")).toHaveCount(1);
+});
+
+test("Bit keeps navigation working when drawing is unavailable and menu history is delayed", async (t) => {
+  const page = await visit(t, { width: 390, expandWorkbenches: false });
+  await page.addInitScript(() => {
+    const getContext = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function (type, ...args) {
+      return this.id === "bitcv" ? null : getContext.call(this, type, ...args);
+    };
+    const back = history.back.bind(history);
+    history.back = () => setTimeout(back, 250);
+  });
+  await page.reload({ waitUntil: "networkidle" });
+  await page.getByRole("button", { name: "Bit · Menu", exact: true }).press("Enter");
+  await expect(page.locator("#mc-search")).toBeFocused();
+  await expect(page.locator("#mc")).toContainText("I’m Bit. You choose. I point the way.");
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#mc-btn")).toBeFocused();
+  await page.locator(".hero-secondary").press("Enter");
+  await expect(page.locator("#st-name")).toBeFocused();
+  await expect(page).toHaveURL(/#build=hermes(?:&|$)/);
+});
+
+test("Bit shows decision feedback in reduced motion without animating", async (t) => {
+  const page = await visit(t, { expandWorkbenches: false });
+  const pixels = () => page.locator("#bitcv").evaluate((canvas) => canvas.toDataURL());
+  const idle = await pixels();
+  await page.locator('[data-pv="human"]').click();
+  await expect.poll(pixels).not.toBe(idle);
+  const answer = await pixels();
+  await page.waitForTimeout(200);
+  assert.equal(await pixels(), answer, "The answer is a still frame when motion is reduced");
 });
 
 test("A privacy decision travels through the atlas, exact HERMES settings and a reload", async (t) => {
@@ -1480,7 +1641,7 @@ test("Rooms load only when opened and retain their controls between visits", asy
     await page.evaluate(() =>
       performance
         .getEntriesByType("resource")
-        .some((r) => /\/room-(starship|principles|studios|heritage)-/.test(r.name)),
+        .some((r) => /\/room-(starship|principles|studios|heritage)-.*\.js$/.test(r.name)),
     ),
     false,
   );

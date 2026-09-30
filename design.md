@@ -1,3 +1,19 @@
+# V39.4 · Heart of Gold · September 29, 2026
+
+An orbital workshop with the clarity of a field journal: original worlds draw people in, and illustrated, dated build notes make the work inspectable.
+
+The final release pass adds the original tagline “Small lab. Big universe. No panic.” Its dry cosmic humor is an allusion, not a quotation attributed to Douglas Adams. Bit keeps his faceted geometry and becomes an explicitly named guide in the desktop dock, phone menu and Mission Control introduction. Preserve the complete original worlds while making their controls and evidence easier to reach. The owner authorized publication on September 29 if the final equal-weight self-review exceeds 9.5 and release checks pass.
+
+- **Audience and action:** curious builders, technical peers and collaborators. Board the existing starship, try a decision, or inspect a real result.
+- **Type and color:** retain Unbounded, Instrument Sans and JetBrains Mono. Navy is the canvas, silver is explanation, gold marks a human decision or a verified result, and cyan marks an available action. Keep body text at a readable scale and prose within 65 characters per line.
+- **Layout:** keep the original hero and responsive grid. Shorten its introduction; follow with one illustrated proof feature and a compact pair of build notes. Put long explanations behind explicit disclosures. At 320 pixels, primary controls must remain readable and the experiment action must fit its first view.
+- **Graphics:** preserve the original orbital, starship and studio artwork. Add a lightweight vector illustration of the documented archive verification and a data-derived delivery chart. Label illustrative graphics and distinguish measured file delivery from runtime speed.
+- **Motion:** quiet startup, opt-in audio and reduced motion remain contracts. A visible flight control can pause the scene without leaving it. No decorative loop is added to the proof feature.
+- **Content:** only supplied public evidence and work verified in this checkout may become a build claim. A new dated delivery story describes the actual stylesheet split and its generated measurement receipt. No invented projects, customers, benchmarks or recovery claims.
+- **Code:** use the existing stack and byte budget. Keep the new delivery measurement in the build, and keep copilot feedback consistent with the latest inputs. No new application dependency.
+- **Anti-goals:** no generic redesign, replacement logo, autoplay sound, inflated live-system claims, additional intro screens or meaningless animation.
+- **Acceptance:** inspect wide and narrow screens; exercise deep links, keyboard focus, history, quiet mode and reading editions. Run the existing checks, targeted cross-engine tests and local performance measurements. Publish through the existing checked release path only after the final self-review exceeds the owner’s 9.5 threshold.
+
 # V39.2 Zenith · September 26, 2026
 
 Keep V39.1's world and preserve its observations in the archive. Make the code easier to read and repair the controls found in review. Add separately dated, verified evidence for the current scheduler and primary local configuration, plus a redacted DeepSeek Harness build story. Keep file readability distinct from system recovery.

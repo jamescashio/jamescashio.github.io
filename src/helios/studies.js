@@ -42,7 +42,10 @@ export function setupStudies({ scenes, motion, copy }) {
     signal: "Corroborate a signal",
     graphify: "Trace a dependency",
   };
-  const cues = { dashboards: "Drag the age past 24 hours. The review state changes." };
+  const cues = {
+    hermes: "Choose the work. Add a boundary. See the route.",
+    dashboards: "Drag the age past 24 hours. The review state changes.",
+  };
   // Working names carry a plain description, so no experiment needs the glossary to be read.
   const codes = {
     hermes: "HERMES, my scheduler",
@@ -172,6 +175,7 @@ export function setupStudies({ scenes, motion, copy }) {
     $("#st-code").textContent = r.code;
     $("#st-code").style.color = r.color;
     $("#st-detail").textContent = run ? r.detail : "Choose a task, then follow its five-step route.";
+    $("#route-feedback").textContent = run ? `${LANE_WORDS[r.lane] || r.lane}. ${r.detail}` : "";
     const box = $("#st-steps");
     gsap.killTweensOf(Array.from(box.children));
     // Until the request is routed, the five steps read as a quiet preview that matches the empty counter.
@@ -233,7 +237,17 @@ export function setupStudies({ scenes, motion, copy }) {
     /** @type {Element} */ (e.currentTarget).setAttribute("aria-pressed", String(st.src));
     renderRoute(false);
   });
-  $("#route-btn").addEventListener("click", () => renderRoute(true));
+  $("#route-btn").addEventListener("click", () => {
+    renderRoute(true);
+    if (matchMedia("(max-width: 700px)").matches) {
+      $("#st-lane").focus({ preventScroll: true });
+      $("#route-result").scrollIntoView({ block: "start", behavior: "instant" });
+    }
+  });
+  $("#route-edit").addEventListener("click", () => {
+    $("#intent-group [aria-pressed='true']").focus({ preventScroll: true });
+    $("#hermes-controls").scrollIntoView({ block: "start", behavior: "instant" });
+  });
   $("#study-choose").addEventListener("click", () => {
     const selected = $("#studies-list [aria-selected='true']");
     selected.focus({ preventScroll: true });

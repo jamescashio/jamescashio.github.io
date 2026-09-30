@@ -166,16 +166,26 @@ async function waitForApp(send) {
 }
 
 async function waitForCriticalShell(send) {
+  let lastState;
   for (let attempt = 0; attempt < 100; attempt++) {
     const result = await send("Runtime.evaluate", {
       expression:
-        'document.readyState !== "loading" && Boolean(document.querySelector("#root[data-prerendered=\\"v35\\"]")) && !document.querySelector("#root")?.dataset.clientActivated && Boolean(document.querySelector("style[data-critical-shell]")) && window.__v35CriticalActivationHeld === true',
+        '({ ready: document.readyState, prerendered: Boolean(document.querySelector("#root[data-prerendered=\\"v35\\"]")), activated: document.querySelector("#root")?.dataset.clientActivated, criticalStyle: Boolean(document.querySelector("style[data-critical-shell]")), held: window.__v35CriticalActivationHeld === true, url: location.href, errors: window.__v35CriticalActivationErrors })',
       returnByValue: true,
     });
-    if (result.result.value) return;
-    await new Promise((resolve) => setTimeout(resolve, 5));
+    lastState = result.result.value;
+    if (
+      lastState?.ready !== "loading" &&
+      lastState?.prerendered &&
+      !lastState.activated &&
+      lastState.criticalStyle &&
+      lastState.held
+    )
+      return;
+    // Match the app-readiness budget: this waits for two scheduled frames, not a performance threshold.
+    await new Promise((resolve) => setTimeout(resolve, 50));
   }
-  throw new Error("timed out waiting for the prerendered critical shell");
+  throw new Error(`timed out waiting for the prerendered critical shell: ${JSON.stringify(lastState)}`);
 }
 
 async function captureCriticalGeometry(send) {

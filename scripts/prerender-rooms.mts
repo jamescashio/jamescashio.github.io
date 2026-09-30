@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { JSDOM } from "jsdom";
 import { computeWorldOutcome } from "../src/odyssey/sovereign-model";
 import { PILOTS } from "../src/helios/heritage-data.js";
@@ -8,6 +8,9 @@ import { PRINCIPLES } from "../src/helios/principles-data.js";
 /** Static reading pages share the exact authored content used by the deferred interactive rooms. */
 const root = new JSDOM(await readFile("dist/index.html", "utf8")).window.document;
 const versions = JSON.parse(await readFile("dist/v38/asset-versions.json", "utf8"));
+// Reading editions use the same room stylesheet, without needing JavaScript.
+const roomStyles = (await readdir("dist/assets")).filter((name) => /^room-content-[\w-]+\.css$/.test(name));
+if (roomStyles.length !== 1) throw new Error("Expected one deferred room stylesheet");
 const roomIds = ["starship", "principles", "studios", "heritage"];
 for (const id of roomIds) {
   const source = await readFile(`src/helios/rooms/${id}.html`, "utf8");
@@ -21,6 +24,10 @@ for (const id of roomIds) {
     if (/^(og:|twitter:)/.test(element.getAttribute("property") || element.getAttribute("name") || "")) continue;
     doc.head.append(element.cloneNode(true));
   }
+  const roomStyle = doc.createElement("link");
+  roomStyle.rel = "stylesheet";
+  roomStyle.href = "/assets/" + roomStyles[0];
+  doc.head.append(roomStyle);
   const title = root.querySelector(`#${id}`)!.getAttribute("data-room-title")!;
   doc.title = `${title} · cAshIo`;
   doc

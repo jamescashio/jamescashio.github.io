@@ -16,6 +16,23 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
   let entry = false;
   // The page address the menu itself returns to; routing ignores that one history step.
   let ownPop = null;
+  let afterClose = null;
+  let closeFrame = 0;
+  function deferUntilClosed(action) {
+    if (navigating || dialog.open || (!entry && ownPop === null && !closeFrame)) return false;
+    afterClose = action;
+    return true;
+  }
+  function finishClose() {
+    if (!afterClose || closeFrame) return;
+    // Native history restores focus after popstate. The visitor's next action must happen after it.
+    closeFrame = requestAnimationFrame(() => {
+      closeFrame = 0;
+      const action = afterClose;
+      afterClose = null;
+      action?.();
+    });
+  }
   const featured = new Set(["#studies", "#rooms", "#glossary", "#evidence", "#contact"]);
   const destinations = [
     [
@@ -25,6 +42,19 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
       "flight fly board ship 3d tour",
     ],
     ["The orbital world", "Return to the beginning.", "#top"],
+    ["Real work", "Dated repairs, build notes and inspectable receipts.", "#workshop", "proof projects portfolio"],
+    [
+      "A lighter front door",
+      "The CSS delivery repair and a measurement generated from this build.",
+      "#delivery-story",
+      "performance stylesheet size receipt build note",
+    ],
+    [
+      "Backup repair and receipt",
+      "902 files verified; no live system restore was performed.",
+      "#snapshot-story",
+      "backup snapshot archive decrypt verification",
+    ],
     ["Seven experiments", "Choose a question and test its rule.", "#studies", "studies workbench"],
     ["Four rooms", "Architecture, principles, creative studios and aviation.", "#rooms"],
     [
@@ -134,6 +164,7 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
     }
   }
   function open(event) {
+    if (deferUntilClosed(() => open(event))) return;
     if (dialog.open || !canOpen()) return;
     const active = document.activeElement;
     previousFocus = active && active !== document.body ? active : document.getElementById("mc-btn");
@@ -162,6 +193,7 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
       }
     }
     if (!navigating && previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
+    if (ownPop === null) finishClose();
   });
   window.addEventListener("popstate", () => {
     if (entry && dialog.open) {
@@ -229,9 +261,11 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
     dialog,
     open,
     openerFor: (link) => (dialog.contains(link) ? previousFocus : link),
+    deferUntilClosed,
     ownsPop(href) {
       const mine = ownPop === href;
       ownPop = null;
+      finishClose();
       return mine;
     },
     closeForNavigation() {
