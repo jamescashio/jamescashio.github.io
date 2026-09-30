@@ -42,13 +42,7 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
       "flight fly board ship 3d tour",
     ],
     ["The orbital world", "Return to the beginning.", "#top"],
-    ["Real work", "Dated repairs, build notes and inspectable receipts.", "#workshop", "proof projects portfolio"],
-    [
-      "A lighter front door",
-      "The CSS delivery repair and a measurement generated from this build.",
-      "#delivery-story",
-      "performance stylesheet size receipt build note",
-    ],
+    ["Real work", "Projects from the lab, with dated results.", "#workshop", "proof projects portfolio"],
     [
       "Backup repair and receipt",
       "902 files verified; no live system restore was performed.",
@@ -81,7 +75,6 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
       "#starship",
       "privacy cloud local boundary architectures compare",
     ],
-    ["Starship build story", "A blank quiet scene, the one-frame repair and its regression check.", "#build-story"],
     ["Principles Engine", "Its own page. Turn the rings and see the design decision behind each rule.", "#principles"],
     ["The Studios", "Its own page. Original worlds, the 3D signature and six short films.", "#studios"],
     ["Lensing Observatory", "Sculpt the light. Find your own perspective.", "#lensing"],

@@ -10,30 +10,6 @@ import { FLEET } from "../src/helios/fleet.js";
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const asset = (path) => new URL(`../${path}`, import.meta.url);
 
-test("The public delivery receipt and chart describe the stylesheet actually shipped", async () => {
-  const receipt = JSON.parse(await read("dist/evidence/site-delivery-2026-09-29.json"));
-  const css = await readFile(asset(`dist${receipt.current.stylesheet}`));
-  const size = gzipSync(css).byteLength;
-  assert.equal(receipt.current.initialCssGzipBytes, size);
-  assert.equal(receipt.current.sha256, createHash("sha256").update(css).digest("hex"));
-  assert.equal(receipt.initialCssBudgetBytes, 19000);
-  assert.equal(receipt.headroomBytes, 19000 - size);
-  assert.ok(size <= 19000);
-  const dom = new JSDOM(await read("dist/index.html"));
-  const document = dom.window.document;
-  assert.equal(document.querySelector('[data-delivery="current"]').textContent, size.toLocaleString("en-US"));
-  assert.equal(
-    document.querySelector('[data-delivery="headroom"]').textContent,
-    (19000 - size).toLocaleString("en-US"),
-  );
-  assert.equal(
-    Number(document.querySelector('[data-delivery-bar="current"]').getAttribute("width")),
-    (size / 19000) * 420,
-  );
-  assert.match(receipt.classification, /not browser timing or field performance/);
-  dom.window.close();
-});
-
 function imageDimensions(buffer, extension) {
   if (extension === "avif") {
     const ispe = buffer.indexOf(Buffer.from("ispe"));

@@ -127,6 +127,7 @@ export default function LensingFilm({
   const seekMedia = useRef<SeekMedia | null>(null);
   const [clipId, setClipId] = useState<LensingClip>(initialClip);
   const [inside, setInside] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [playback, setPlayback] = useState<Playback>("still");
   const [elapsed, setElapsed] = useState(0);
   const [duration, setDuration] = useState<number>(CLIPS[initialClip].duration);
@@ -466,6 +467,7 @@ export default function LensingFilm({
       data-clip={clipId}
       data-playback={playback}
       data-view={inside ? "world" : "film"}
+      data-expanded={expanded && !inside}
       aria-labelledby="lensing-film-title"
       aria-describedby={inside ? undefined : "lensing-film-description"}
       onCancel={(event) => {
@@ -504,18 +506,35 @@ export default function LensingFilm({
           </span>
           <h2 id="lensing-film-title">{inside ? "The living Sanctuary" : clip.title}</h2>
         </div>
-        <button
-          ref={close}
-          type="button"
-          className="lensing-film-close"
-          onClick={dismiss}
-          aria-label={inside ? "Close Sanctuary" : `Close ${clip.title}`}
-        >
-          <span>Close</span>
-          <svg viewBox="0 0 20 20" aria-hidden="true">
-            <path d="m5 5 10 10M15 5 5 15" />
-          </svg>
-        </button>
+        <div className="lensing-film-actions">
+          {!inside && (
+            <button
+              type="button"
+              className="lensing-film-size"
+              onClick={() => {
+                setExpanded((current) => !current);
+                if (dialog.current) dialog.current.scrollTop = 0;
+              }}
+            >
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                <path d={expanded ? "M3 7h4V3m6 0v4h4M3 13h4v4m6 0v-4h4" : "M7 3H3v4m10-4h4v4M3 13v4h4m6 0h4v-4"} />
+              </svg>
+              {expanded ? "Restore view" : "Expand view"}
+            </button>
+          )}
+          <button
+            ref={close}
+            type="button"
+            className="lensing-film-close"
+            onClick={dismiss}
+            aria-label={inside ? "Close Sanctuary" : `Close ${clip.title}`}
+          >
+            <span>Close</span>
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="m5 5 10 10M15 5 5 15" />
+            </svg>
+          </button>
+        </div>
       </header>
       {inside ? (
         <ChamberBoundary onReturn={returnToFilm}>
