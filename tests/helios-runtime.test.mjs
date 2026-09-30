@@ -1266,7 +1266,7 @@ test("A plain visit stays at cashio.us, old V38 addresses normalize and delibera
   await expect(staticPage.locator(".room-card")).toHaveCount(4);
   await staticPage.locator('.room-card[href="/rooms/studios/"]').click();
   await expect(staticPage.locator(".studio-card")).toHaveCount(3);
-  await expect(staticPage.locator(".studio-library a")).toHaveCount(5);
+  await expect(staticPage.locator(".studio-library a")).toHaveCount(6);
   assert.equal(new URL(staticPage.url()).pathname, "/rooms/studios/");
 });
 
@@ -1333,7 +1333,7 @@ test("The original studios fit desktop and narrow phones, share Helios type and 
         }
       }
       if (hash.startsWith("#film")) {
-        await expect(page.locator(".lensing-film-choice")).toHaveCount(5);
+        await expect(page.locator(".lensing-film-choice")).toHaveCount(6);
         assert.equal(await page.locator("video").evaluate((el) => el.paused && el.muted && !el.autoplay), true);
       }
       await audit(page, `studio-${hash.slice(1)}-${width}`);
@@ -1343,6 +1343,113 @@ test("The original studios fit desktop and narrow phones, share Helios type and 
       await expect(link).toBeFocused();
     }
   }
+});
+
+test("The portal intro is available on return visits and phones, loads on Play and restores keyboard focus", async (t) => {
+  for (const width of [1440, 390, 320]) {
+    const context = await browser.newContext({
+      viewport: { width, height: 844 },
+      reducedMotion: width === 1440 ? "no-preference" : "reduce",
+      isMobile: width < 700,
+      hasTouch: width < 700,
+    });
+    t.after(() => context.close());
+    await context.addInitScript(() => {
+      localStorage.setItem("cashio-arrival-seen", "1");
+      if (navigator.connection) Object.defineProperty(navigator.connection, "saveData", { value: true });
+    });
+    const page = await context.newPage();
+    const requests = [];
+    const errors = [];
+    page.on("request", (request) => {
+      if (/helios-arrival(?:-960)?\.mp4/.test(request.url())) requests.push(request.url());
+    });
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.goto(url, { waitUntil: "networkidle" });
+    const opener = page.getByRole("link", { name: "Watch the intro · 6 seconds", exact: true });
+    await expect(opener).toHaveAttribute("href", "#film=intro");
+    assert.ok((await opener.boundingBox()).height >= 44, "the intro has a full touch target");
+    await opener.press("Enter");
+    const film = page.locator('.lensing-film[data-clip="intro"]');
+    const player = film.locator("video");
+    await expect(film).toBeVisible();
+    await expect(player).toHaveAttribute("src", "/assets/celestial/helios-arrival.mp4");
+    assert.deepEqual(requests, [], "opening the player does not download the film");
+    assert.equal(await player.evaluate((v) => v.paused && v.muted && !v.autoplay), true);
+    await page.getByRole("button", { name: "Play film", exact: true }).press("Enter");
+    await expect.poll(() => player.evaluate((v) => v.currentTime)).toBeGreaterThan(0.2);
+    assert.ok(requests.length > 0, "explicit Play loads the original intro");
+    assert.equal(await player.evaluate((v) => v.videoWidth), 1280, "the original 720p artwork decodes");
+    await page.getByRole("button", { name: "Pause film", exact: true }).click();
+    await expect(player).toHaveJSProperty("paused", true);
+    await page.getByRole("slider").fill("5.6");
+    await expect.poll(() => player.evaluate((v) => v.currentTime)).toBeGreaterThan(5.5);
+    await page.getByRole("button", { name: "Play film", exact: true }).click();
+    await expect(page.getByRole("button", { name: "Replay film", exact: true })).toBeVisible();
+    await page.getByRole("button", { name: "Replay film", exact: true }).click();
+    await expect.poll(() => player.evaluate((v) => v.currentTime)).toBeLessThan(2);
+    await page.getByRole("button", { name: "Pause film", exact: true }).click();
+    await audit(page, `portal-intro-${width}`);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+    await page.keyboard.press("Escape");
+    await expect(film).toHaveCount(0);
+    await expect(opener).toBeFocused();
+    assert.equal(new URL(page.url()).hash, "");
+    assert.deepEqual(errors, []);
+  }
+});
+
+test("A completed film seek accepts the browser clock and keeps small keyboard steps usable", async (t) => {
+  const page = await visit(t, { hash: "#film=intro", expandWorkbenches: false });
+  const film = page.locator(".lensing-film");
+  const player = film.locator("video");
+  await page.getByRole("button", { name: "Play film", exact: true }).click();
+  await expect.poll(() => player.evaluate((v) => v.currentTime)).toBeGreaterThan(0.2);
+  await page.getByRole("button", { name: "Pause film", exact: true }).click();
+  // WebKit can finish a native seek a few milliseconds beyond the requested time.
+  await player.evaluate((v) => {
+    const clock = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, "currentTime");
+    Object.defineProperty(v, "currentTime", {
+      get: () => clock.get.call(v) + (v.seeking ? 0 : 0.004),
+      set: (seconds) => {
+        clock.set.call(v, seconds);
+      },
+    });
+  });
+  const timeline = page.getByRole("slider", { name: "Seek film", exact: true });
+  await timeline.fill("1");
+  await expect(film).toHaveAttribute("data-playback", "paused");
+  for (const value of ["1.01", "1.02", "1.03", "1.04"]) {
+    await timeline.press("ArrowRight");
+    await expect(film).toHaveAttribute("data-playback", "paused");
+    await expect(timeline).toHaveValue(value);
+  }
+  await page.getByRole("button", { name: "Play film", exact: true }).click();
+  await expect.poll(() => player.evaluate((v) => v.currentTime)).toBeGreaterThan(1.3);
+  await expect(film).toHaveAttribute("data-playback", "playing");
+});
+
+test("The portal intro opens from Bit or a shared link and has a direct video fallback without JavaScript", async (t) => {
+  const page = await visit(t, { width: 390, expandWorkbenches: false });
+  await page.locator("#mc-btn").click();
+  await page.locator("#mc-search").fill("Saturn");
+  await page.locator('#mc a[href="#film=intro"]').click();
+  await expect(page.locator('.lensing-film[data-clip="intro"]')).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#mc-btn")).toBeFocused();
+  await page.goto(url + "#film=intro");
+  await expect(page.locator('.lensing-film[data-clip="intro"]')).toBeVisible();
+  assert.equal(await page.locator(".lensing-film video").evaluate((v) => v.paused && !v.autoplay), true);
+  await page.keyboard.press("Escape");
+  await expect(page).toHaveURL(/#studios$/);
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  t.after(() => context.close());
+  const reading = await context.newPage();
+  await reading.goto(url);
+  await expect(reading.locator(".hero-intro")).toHaveAttribute("href", "/assets/celestial/helios-arrival.mp4");
+  const response = await reading.request.get(new URL("/assets/celestial/helios-arrival.mp4", url).href);
+  assert.equal(response.status(), 200);
+  assert.match(response.headers()["content-type"], /video\/mp4/);
 });
 
 test("Cancelling a slow studio import prevents a late scene from replacing the page", async (t) => {

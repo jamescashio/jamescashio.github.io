@@ -60,6 +60,22 @@
   font-size: 14px;
   line-height: 1.6;
 }
+.hero-intro {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--cyan);
+  font-size: 14px;
+  text-underline-offset: 4px;
+}
+.hero-intro:hover {
+  text-decoration: underline;
+}
+.hero-intro-time {
+  color: var(--ink2);
+}
 .hero canvas.gl,
 .hero.scene-ready canvas.gl {
   position: absolute;

@@ -22,7 +22,7 @@ class ChamberBoundary extends Component<{ children: ReactNode; onReturn: () => v
 }
 
 type Playback = "still" | "loading" | "seeking" | "playing" | "paused" | "ended" | "error";
-export type LensingClip = "sanctuary" | "lightwake" | "signature" | "awakening" | "arrival";
+export type LensingClip = "intro" | "sanctuary" | "lightwake" | "signature" | "awakening" | "arrival";
 type SeekMedia = {
   player: HTMLVideoElement;
   source: string;
@@ -31,9 +31,18 @@ type SeekMedia = {
   ranges: "unknown" | "supported" | "unavailable";
   url: string | null;
   loading: Promise<void> | null;
+  target: number | null;
 };
 
 const CLIPS = {
+  intro: {
+    title: "The portal intro",
+    duration: 6,
+    durationLabel: "A SIX-SECOND FILM",
+    film: "/assets/celestial/helios-arrival.mp4",
+    poster: "/assets/celestial/helios-arrival-poster.jpg",
+    description: "Fly through the portal. A ringed planet fills the view. The original arrival, whenever you choose.",
+  },
   sanctuary: {
     title: "The inner light",
     duration: 15,
@@ -179,6 +188,7 @@ export default function LensingFilm({
   const playRequested = useCallback(
     async (player: HTMLVideoElement, generation: number) => {
       try {
+        if (seekMedia.current?.player === player) seekMedia.current.target = null;
         await player.play();
         if (!isCurrentPlayer(player) || document.hidden || playbackIntent.current !== player) player.pause();
       } catch {
@@ -276,11 +286,12 @@ export default function LensingFilm({
       )
         return;
       const seconds = Math.max(0, Math.min(target, player.duration - 0.04));
-      // Converge more finely than the timeline's 0.01-second keyboard step.
-      // A larger tolerance discards each ArrowRight before it can accumulate.
-      if (Math.abs(player.currentTime - seconds) > 0.001) {
+      // Once this native seek has completed, accept the browser's decoded clock.
+      // Reassigning currentTime to correct millisecond drift can seek forever.
+      if (prepared.target !== seconds && Math.abs(player.currentTime - seconds) > 0.001) {
         if (canSeekTo(player, seconds)) {
           if (prepared.kind === "native") prepared.ranges = "supported";
+          prepared.target = seconds;
           player.currentTime = seconds;
         } else if (prepared.kind === "native" && prepared.ranges !== "supported" && !prepared.loading) {
           void prepareSeekFallback(player, prepared).then(() => finish(player));
@@ -289,7 +300,7 @@ export default function LensingFilm({
       }
       if (player.readyState < 2) return;
       pendingSeek.current = null;
-      setElapsed(player.currentTime);
+      setElapsed(seconds);
       if (playbackIntent.current === player) {
         setPlayback("loading");
         void playRequested(player, request.current);
@@ -377,6 +388,7 @@ export default function LensingFilm({
       ranges: "unknown",
       url: null,
       loading: null,
+      target: null,
     };
     // Explicit seeking opts into native loading once. Subsequent chapter or
     // scrub requests reuse a healthy load; a failed preparation starts fresh.
@@ -394,7 +406,15 @@ export default function LensingFilm({
     setElapsed(target);
     setPlayback("seeking");
     prepareSeekMedia(player);
+    if (seekMedia.current) seekMedia.current.target = null;
     finishPendingSeek(player);
+  }
+
+  function displayTime(player: HTMLVideoElement) {
+    const prepared = seekMedia.current;
+    // Keep the requested position while paused so 0.01-second arrow steps
+    // accumulate independently of the decoder's clock precision.
+    return player.paused && prepared?.player === player ? (prepared.target ?? player.currentTime) : player.currentTime;
   }
 
   async function togglePlayback() {
@@ -471,13 +491,15 @@ export default function LensingFilm({
       <header className="lensing-film-header">
         <div>
           <span className="lensing-film-eyebrow">
-            {clipId === "sanctuary"
-              ? "SANCTUARY"
-              : clipId === "signature"
-                ? "CELESTIAL FORGE"
-                : clipId === "lightwake"
-                  ? "LIGHTWAKE"
-                  : "LENSING"}{" "}
+            {clipId === "intro"
+              ? "ARRIVAL"
+              : clipId === "sanctuary"
+                ? "SANCTUARY"
+                : clipId === "signature"
+                  ? "CELESTIAL FORGE"
+                  : clipId === "lightwake"
+                    ? "LIGHTWAKE"
+                    : "LENSING"}{" "}
             / {inside ? "THE SCENE IS YOURS" : clip.durationLabel}
           </span>
           <h2 id="lensing-film-title">{inside ? "The living Sanctuary" : clip.title}</h2>
@@ -514,10 +536,10 @@ export default function LensingFilm({
         <>
           <div className="lensing-film-collection">
             <span>CHOOSE YOUR PERSPECTIVE</span>
-            <span>05 FILMS</span>
+            <span>06 FILMS</span>
           </div>
           <div ref={choices} className="lensing-film-choices" role="group" aria-label="Choose a film">
-            {(["sanctuary", "lightwake", "signature", "awakening", "arrival"] as const).map((id) => (
+            {(["intro", "sanctuary", "lightwake", "signature", "awakening", "arrival"] as const).map((id) => (
               <button
                 key={id}
                 type="button"
@@ -583,7 +605,7 @@ export default function LensingFilm({
               onTimeUpdate={(event) => {
                 if (isCurrentPlayer(event.currentTarget)) {
                   if (pendingSeek.current !== null) finishPendingSeek(event.currentTarget);
-                  else setElapsed(event.currentTarget.currentTime);
+                  else setElapsed(displayTime(event.currentTarget));
                 }
               }}
               onSeeked={(event) => {
@@ -591,7 +613,7 @@ export default function LensingFilm({
                 if (isCurrentPlayer(player)) {
                   if (pendingSeek.current !== null) finishPendingSeek(player);
                   else if (player.paused && playbackIntent.current !== player) {
-                    setElapsed(player.currentTime);
+                    setElapsed(displayTime(player));
                     setPlayback("paused");
                   }
                 }

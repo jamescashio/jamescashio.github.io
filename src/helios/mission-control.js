@@ -83,10 +83,16 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
     ],
     ["Starship build story", "A blank quiet scene, the one-frame repair and its regression check.", "#build-story"],
     ["Principles Engine", "Its own page. Turn the rings and see the design decision behind each rule.", "#principles"],
-    ["The Studios", "Its own page. Original worlds, the 3D signature and five short films.", "#studios"],
+    ["The Studios", "Its own page. Original worlds, the 3D signature and six short films.", "#studios"],
     ["Lensing Observatory", "Sculpt the light. Find your own perspective.", "#lensing"],
     ["Celestial Forge", "Explore the signature in three dimensions.", "#signature"],
-    ["The Cinema", "Five original short films. Play at your own pace.", "#film=lightwake"],
+    ["The Cinema", "Six original short films. Play at your own pace.", "#film=lightwake"],
+    [
+      "Watch the intro",
+      "Through the portal to a ringed planet. Six seconds, on request.",
+      "#film=intro",
+      "replay arrival Saturn animation",
+    ],
     ["The Sanctuary", "A quiet film and an explorable inner world.", "#film=sanctuary"],
     [
       "Inspect the evidence",
