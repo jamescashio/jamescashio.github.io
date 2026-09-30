@@ -779,7 +779,8 @@ test("The root ships Helios directly, with bounded compatibility routing and a c
       assert.ok((await stat(asset(`dist${image.getAttribute("src")}`))).size > 0);
     if (id === "studios") {
       assert.equal(reading.querySelectorAll(".studio-card").length, 3);
-      assert.equal(reading.querySelectorAll(".studio-library a").length, 5);
+      assert.equal(reading.querySelectorAll(".studio-library a").length, 6);
+      assert.ok(reading.querySelector('.studio-library a[href="/#film=intro"]'));
     }
   }
   assert.equal(document.querySelector("#odyssey-root"), null);

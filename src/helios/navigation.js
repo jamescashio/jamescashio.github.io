@@ -8,7 +8,7 @@ import { $, $$, closestTarget } from "./dom.js";
 const sceneKind = (hash) =>
   /^#flight=(board|hull|blackout|permission)$/.test(hash)
     ? "flight"
-    : /^#(?:signature|lensing(?:&.*)?|film(?:=(?:sanctuary|lightwake|signature|awakening|arrival))?)$/.test(hash)
+    : /^#(?:signature|lensing(?:&.*)?|film(?:=(?:intro|sanctuary|lightwake|signature|awakening|arrival))?)$/.test(hash)
       ? "studio"
       : null;
 const aliases = {
@@ -35,6 +35,7 @@ export function setupNavigation({ studies, select, mission, motion, rooms }) {
   const menu = setupMissionControl({ studies, canOpen: () => !loader.open && !scene && !pending, onToggle: notify });
   const dialog = menu.dialog;
   for (const link of $$("a[data-room-route]")) link.setAttribute("href", link.dataset.roomRoute);
+  for (const link of $$("a[data-scene-route]")) link.setAttribute("href", link.dataset.sceneRoute);
   for (const link of $$("a[data-experiment-route]")) link.setAttribute("href", link.dataset.experimentRoute);
   const warp = createWarp({
     onHalt: () => {

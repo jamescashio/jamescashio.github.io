@@ -22,7 +22,7 @@ class ChamberBoundary extends Component<{ children: ReactNode; onReturn: () => v
 }
 
 type Playback = "still" | "loading" | "seeking" | "playing" | "paused" | "ended" | "error";
-export type LensingClip = "sanctuary" | "lightwake" | "signature" | "awakening" | "arrival";
+export type LensingClip = "intro" | "sanctuary" | "lightwake" | "signature" | "awakening" | "arrival";
 type SeekMedia = {
   player: HTMLVideoElement;
   source: string;
@@ -34,6 +34,14 @@ type SeekMedia = {
 };
 
 const CLIPS = {
+  intro: {
+    title: "The portal intro",
+    duration: 6,
+    durationLabel: "A SIX-SECOND FILM",
+    film: "/assets/celestial/helios-arrival.mp4",
+    poster: "/assets/celestial/helios-arrival-poster.jpg",
+    description: "Fly through the portal. A ringed planet fills the view. The original arrival, whenever you choose.",
+  },
   sanctuary: {
     title: "The inner light",
     duration: 15,
@@ -471,13 +479,15 @@ export default function LensingFilm({
       <header className="lensing-film-header">
         <div>
           <span className="lensing-film-eyebrow">
-            {clipId === "sanctuary"
-              ? "SANCTUARY"
-              : clipId === "signature"
-                ? "CELESTIAL FORGE"
-                : clipId === "lightwake"
-                  ? "LIGHTWAKE"
-                  : "LENSING"}{" "}
+            {clipId === "intro"
+              ? "ARRIVAL"
+              : clipId === "sanctuary"
+                ? "SANCTUARY"
+                : clipId === "signature"
+                  ? "CELESTIAL FORGE"
+                  : clipId === "lightwake"
+                    ? "LIGHTWAKE"
+                    : "LENSING"}{" "}
             / {inside ? "THE SCENE IS YOURS" : clip.durationLabel}
           </span>
           <h2 id="lensing-film-title">{inside ? "The living Sanctuary" : clip.title}</h2>
@@ -514,10 +524,10 @@ export default function LensingFilm({
         <>
           <div className="lensing-film-collection">
             <span>CHOOSE YOUR PERSPECTIVE</span>
-            <span>05 FILMS</span>
+            <span>06 FILMS</span>
           </div>
           <div ref={choices} className="lensing-film-choices" role="group" aria-label="Choose a film">
-            {(["sanctuary", "lightwake", "signature", "awakening", "arrival"] as const).map((id) => (
+            {(["intro", "sanctuary", "lightwake", "signature", "awakening", "arrival"] as const).map((id) => (
               <button
                 key={id}
                 type="button"
