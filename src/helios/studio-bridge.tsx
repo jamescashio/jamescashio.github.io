@@ -1,7 +1,7 @@
 import { lazy, useEffect, useLayoutEffect, useState } from "react";
 import { SceneBoundary } from "../odyssey/scene-boundary";
 import { readObservatoryState } from "../odyssey/observatory-state";
-import type { LensingClip } from "../odyssey/lensing-film";
+import { ZENITH_COLLECTIONS } from "./zenith-films";
 import brandMarkStyles from "../odyssey/brand-mark.css?inline";
 import { adoptStyles } from "./adopted-styles";
 
@@ -44,7 +44,8 @@ export default function Studio({ motion, hash, onClose, onNavigate }: StudioOpti
       ) : (
         <Cinema
           motion={activeMotion}
-          initialClip={(hash.split("=")[1] || "lightwake") as LensingClip}
+          initialClip={hash.split("=")[1] || "lightwake"}
+          additionalCollections={ZENITH_COLLECTIONS}
           onClose={onClose}
           onExplore={() => onNavigate("#lensing")}
           onSignature={() => onNavigate("#signature")}

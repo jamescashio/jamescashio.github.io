@@ -4,6 +4,7 @@ import { chromium, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import fs from "node:fs/promises";
 import path from "node:path";
+import { ZENITH_FILM_IDS } from "../src/helios/zenith-routes.js";
 
 const url = process.env.HELIOS_URL || "http://127.0.0.1:4388/";
 const output = path.resolve(process.env.HELIOS_QA_DIR || "../qa/final");
@@ -1243,7 +1244,7 @@ test("A plain visit stays at cashio.us, old V38 addresses normalize and delibera
   await expect(staticPage.locator("h1")).toBeVisible();
   await expect(staticPage.locator(".room-card")).toHaveCount(4);
   await staticPage.locator('.room-card[href="/rooms/studios/"]').click();
-  await expect(staticPage.locator(".studio-card")).toHaveCount(3);
+  await expect(staticPage.locator(".studio-card")).toHaveCount(6);
   await expect(staticPage.locator(".studio-library a")).toHaveCount(6);
   assert.equal(new URL(staticPage.url()).pathname, "/rooms/studios/");
 });
@@ -1440,6 +1441,125 @@ test("Expanded films fit the browser, preserve playback and restore keyboard nav
     await expect(film).toHaveCount(0);
     await expect(page.locator("#studios-h")).toBeFocused();
   }
+});
+
+test("Zenith stays deferred, fits small screens and returns to its room invitation", async (t) => {
+  for (const [width, height] of [
+    [1440, 1000],
+    [390, 844],
+    [320, 568],
+  ]) {
+    const page = await visit(t, { width, height, hash: "#studios", expandWorkbenches: false });
+    const requests = await page.evaluate(() => performance.getEntriesByType("resource").map((entry) => entry.name));
+    assert.equal(
+      requests.some((name) => /\/assets\/zenith\/.*\.mp4/.test(name)),
+      false,
+    );
+    const opener = page.locator('.zenith-shelf .studio-card[href="#film=zenith-starship-blue-hour"]');
+    await opener.press("Enter");
+    const film = page.locator('.lensing-film[data-clip="zenith-starship-blue-hour"]');
+    const player = film.locator("video");
+    await expect(film).toBeVisible();
+    assert.equal(await player.evaluate((video) => video.paused && video.muted && !video.autoplay && !video.loop), true);
+    await expect(page.getByRole("combobox", { name: "FILM COLLECTION" })).toHaveValue("1");
+    await audit(page, `zenith-film-${width}`);
+    await page.getByRole("button", { name: "Expand view", exact: true }).click();
+    for (const control of [
+      film.locator(".lensing-film-close"),
+      film.locator(".lensing-film-play"),
+      page.getByRole("slider"),
+      page.getByRole("button", { name: "Repeat film", exact: true }),
+    ]) {
+      await expect(control).toBeInViewport({ ratio: 1 });
+    }
+    assert.equal(
+      await film.evaluate(
+        (panel) => panel.scrollHeight <= panel.clientHeight + 1 && panel.scrollWidth <= panel.clientWidth + 1,
+      ),
+      true,
+    );
+    await page.keyboard.press("Escape");
+    await expect(opener).toBeFocused();
+    await page.locator(".zenith-library summary").click();
+    await expect(page.locator(".zenith-index a")).toHaveCount(15);
+    await expect(page.locator(".zenith-index a").last()).toBeVisible();
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+    await audit(page, `zenith-room-${width}`);
+    await page.locator(".zenith-shelf").screenshot({ path: path.join(output, `zenith-shelf-${width}.png`) });
+  }
+});
+
+test("Every Zenith film opens from its own link and decodes only after Play", async (t) => {
+  const page = await visit(t, { hash: "#studios", expandWorkbenches: false });
+  for (const id of ZENITH_FILM_IDS) {
+    const requested = [];
+    const listener = (request) => {
+      if (request.url().endsWith(`${id}.mp4`)) requested.push(request.url());
+    };
+    page.on("request", listener);
+    await page.goto(url + `#film=zenith-${id}`);
+    const film = page.locator(`.lensing-film[data-clip="zenith-${id}"]`);
+    await expect(film).toBeVisible();
+    const player = film.locator("video");
+    assert.deepEqual(requested, [], `${id} is not fetched just by opening its player`);
+    await page.getByRole("button", { name: "Play film", exact: true }).click();
+    await expect.poll(() => player.evaluate((video) => video.currentTime)).toBeGreaterThan(0.1);
+    assert.equal(
+      await player.evaluate(
+        (video) =>
+          video.videoWidth === 1920 &&
+          video.videoHeight === 1080 &&
+          Math.abs(video.duration - 5) < 0.05 &&
+          video.muted &&
+          !video.error,
+      ),
+      true,
+      `${id} decodes at its authored dimensions`,
+    );
+    assert.ok(requested.length);
+    await page.keyboard.press("Escape");
+    await expect(film).toHaveCount(0);
+    page.off("request", listener);
+  }
+});
+
+test("Zenith repeat is opt-in, pauses when hidden and resets when a collection changes", async (t) => {
+  const page = await visit(t, {
+    width: 390,
+    height: 844,
+    hash: "#film=zenith-armillary-nocturne",
+    expandWorkbenches: false,
+  });
+  const film = page.locator(".lensing-film");
+  const player = film.locator("video");
+  await page.getByRole("button", { name: "Repeat film", exact: true }).click();
+  await expect(player).toHaveJSProperty("loop", true);
+  await page.getByRole("slider", { name: "Seek film" }).fill("4.6");
+  await expect(film).toHaveAttribute("data-playback", "paused");
+  await page.getByRole("button", { name: "Play film", exact: true }).click();
+  await expect.poll(() => player.evaluate((video) => video.currentTime)).toBeLessThan(2);
+  await expect(player).toHaveJSProperty("paused", false);
+  await page.evaluate(() => {
+    Object.defineProperty(document, "hidden", { configurable: true, value: true });
+    document.dispatchEvent(new Event("visibilitychange"));
+  });
+  await expect(player).toHaveJSProperty("paused", true);
+  await page.evaluate(() => {
+    delete document.hidden;
+    document.dispatchEvent(new Event("visibilitychange"));
+  });
+  await expect(player).toHaveJSProperty("paused", true);
+  await page.getByRole("combobox", { name: "FILM COLLECTION" }).selectOption({ label: "Zenith · Beyond the doorway" });
+  await expect(film).toHaveAttribute("data-clip", "zenith-threshold");
+  await expect(player).toHaveJSProperty("loop", false);
+  await expect(page.getByRole("button", { name: "Repeat film", exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: "Ringed Horizon, 5-second film", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Repeat film", exact: true })).toHaveAttribute("aria-pressed", "false");
+  await page.getByRole("combobox", { name: "FILM COLLECTION" }).selectOption({ label: "The original films" });
+  await expect(film).toHaveAttribute("data-clip", "intro");
+  await expect(page.getByRole("group", { name: "Choose a film", exact: true }).getByRole("button")).toHaveCount(6);
+  await expect(player).toHaveAttribute("src", "/assets/celestial/helios-arrival.mp4");
+  await expect(player).toHaveJSProperty("paused", true);
 });
 
 test("A completed film seek accepts the browser clock and keeps small keyboard steps usable", async (t) => {

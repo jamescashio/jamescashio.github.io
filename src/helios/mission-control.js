@@ -76,10 +76,16 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
       "privacy cloud local boundary architectures compare",
     ],
     ["Principles Engine", "Its own page. Turn the rings and see the design decision behind each rule.", "#principles"],
-    ["The Studios", "Its own page. Original worlds, the 3D signature and six short films.", "#studios"],
+    ["The Studios", "Its own page. Original worlds, the 3D signature and short films.", "#studios"],
     ["Lensing Observatory", "Sculpt the light. Find your own perspective.", "#lensing"],
     ["Celestial Forge", "Explore the signature in three dimensions.", "#signature"],
-    ["The Cinema", "Six original short films. Play at your own pace.", "#film=lightwake"],
+    ["The Cinema", "Original short films. Play at your own pace.", "#film=lightwake"],
+    [
+      "The Zenith collection",
+      "Fifteen quiet films: workshops, golden orbits and distant worlds.",
+      "#film=zenith-starship-blue-hour",
+      "cinema video loop starship armillary portal",
+    ],
     [
       "Watch the intro",
       "Through the portal to a ringed planet. Six seconds, on request.",

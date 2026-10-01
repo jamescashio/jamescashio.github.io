@@ -4,11 +4,15 @@ import { parseExperiment } from "../odyssey/study-experiment";
 import { parseMissionHash } from "../odyssey/flight-plan";
 import { createWarp, setupFlightPrefetch } from "./flight-jump.js";
 import { $, $$, closestTarget } from "./dom.js";
+import { isZenithFilm } from "./zenith-routes.js";
 
 const sceneKind = (hash) =>
   /^#flight=(board|hull|blackout|permission)$/.test(hash)
     ? "flight"
-    : /^#(?:signature|lensing(?:&.*)?|film(?:=(?:intro|sanctuary|lightwake|signature|awakening|arrival))?)$/.test(hash)
+    : isZenithFilm(hash) ||
+        /^#(?:signature|lensing(?:&.*)?|film(?:=(?:intro|sanctuary|lightwake|signature|awakening|arrival))?)$/.test(
+          hash,
+        )
       ? "studio"
       : null;
 const aliases = {

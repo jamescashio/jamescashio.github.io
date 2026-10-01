@@ -1,4 +1,4 @@
-import { Component, lazy, Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { Component, lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import "./lensing-film.css";
 const SanctuaryWorld = lazy(() => import("./sanctuary-world"));
 
@@ -23,6 +23,18 @@ class ChamberBoundary extends Component<{ children: ReactNode; onReturn: () => v
 
 type Playback = "still" | "loading" | "seeking" | "playing" | "paused" | "ended" | "error";
 export type LensingClip = "intro" | "sanctuary" | "lightwake" | "signature" | "awakening" | "arrival";
+export type FilmDefinition = {
+  title: string;
+  duration: number;
+  durationLabel: string;
+  film: string;
+  poster: string;
+  description: string;
+  eyebrow?: string;
+  loopable?: boolean;
+};
+export type FilmCollection = { label: string; clips: Record<string, FilmDefinition> };
+const NO_COLLECTIONS: FilmCollection[] = [];
 type SeekMedia = {
   player: HTMLVideoElement;
   source: string;
@@ -109,14 +121,25 @@ export default function LensingFilm({
   onExplore,
   onSignature,
   onWork,
+  additionalCollections = NO_COLLECTIONS,
 }: {
   motion: boolean;
   onClose: () => void;
-  initialClip?: LensingClip;
+  initialClip?: string;
   onExplore: () => void;
   onSignature?: () => void;
   onWork?: () => void;
+  additionalCollections?: FilmCollection[];
 }) {
+  const collections = useMemo(
+    () => [{ label: "The original films", clips: CLIPS }, ...additionalCollections],
+    [additionalCollections],
+  );
+  const clips = useMemo<Record<string, FilmDefinition>>(
+    () => Object.assign({}, ...collections.map((collection) => collection.clips)),
+    [collections],
+  );
+  const firstClip = Object.hasOwn(clips, initialClip) ? initialClip : "awakening";
   const dialog = useRef<HTMLDialogElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const close = useRef<HTMLButtonElement>(null);
@@ -125,13 +148,16 @@ export default function LensingFilm({
   const mounted = useRef(false);
   const pendingSeek = useRef<number | null>(null);
   const seekMedia = useRef<SeekMedia | null>(null);
-  const [clipId, setClipId] = useState<LensingClip>(initialClip);
+  const [clipId, setClipId] = useState(firstClip);
+  const [repeat, setRepeat] = useState(false);
   const [inside, setInside] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [playback, setPlayback] = useState<Playback>("still");
   const [elapsed, setElapsed] = useState(0);
-  const [duration, setDuration] = useState<number>(CLIPS[initialClip].duration);
-  const clip = CLIPS[clipId];
+  const [duration, setDuration] = useState<number>(clips[firstClip].duration);
+  const clip = clips[clipId];
+  const collectionIndex = collections.findIndex((collection) => Object.hasOwn(collection.clips, clipId));
+  const currentCollection = collections[collectionIndex];
   const active = playback === "playing" || playback === "loading";
   const choices = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -365,13 +391,14 @@ export default function LensingFilm({
     });
   }
 
-  function selectClip(next: LensingClip) {
+  function selectClip(next: string) {
     if (next === clipId) return;
     pauseFilm();
     setClipId(next);
+    setRepeat(false);
     setPlayback("still");
     setElapsed(0);
-    setDuration(CLIPS[next].duration);
+    setDuration(clips[next].duration);
   }
 
   function prepareSeekMedia(player: HTMLVideoElement) {
@@ -478,7 +505,7 @@ export default function LensingFilm({
         if (event.key !== "Tab") return;
         const controls = [
           ...event.currentTarget.querySelectorAll<HTMLElement>(
-            'button:not([disabled]), input:not([disabled]), a[href], [tabindex="0"]',
+            'button:not([disabled]), input:not([disabled]), select:not([disabled]), a[href], [tabindex="0"]',
           ),
         ].filter((element) => element.getClientRects().length > 0);
         if (event.shiftKey && document.activeElement === controls[0]) {
@@ -493,15 +520,16 @@ export default function LensingFilm({
       <header className="lensing-film-header">
         <div>
           <span className="lensing-film-eyebrow">
-            {clipId === "intro"
-              ? "ARRIVAL"
-              : clipId === "sanctuary"
-                ? "SANCTUARY"
-                : clipId === "signature"
-                  ? "CELESTIAL FORGE"
-                  : clipId === "lightwake"
-                    ? "LIGHTWAKE"
-                    : "LENSING"}{" "}
+            {clip.eyebrow ||
+              (clipId === "intro"
+                ? "ARRIVAL"
+                : clipId === "sanctuary"
+                  ? "SANCTUARY"
+                  : clipId === "signature"
+                    ? "CELESTIAL FORGE"
+                    : clipId === "lightwake"
+                      ? "LIGHTWAKE"
+                      : "LENSING")}{" "}
             / {inside ? "THE SCENE IS YOURS" : clip.durationLabel}
           </span>
           <h2 id="lensing-film-title">{inside ? "The living Sanctuary" : clip.title}</h2>
@@ -554,30 +582,46 @@ export default function LensingFilm({
       ) : (
         <>
           <div className="lensing-film-collection">
-            <span>CHOOSE YOUR PERSPECTIVE</span>
-            <span>06 FILMS</span>
+            {additionalCollections.length ? (
+              <label className="lensing-film-library">
+                <span>FILM COLLECTION</span>
+                <select
+                  value={collectionIndex}
+                  onChange={(event) => selectClip(Object.keys(collections[Number(event.currentTarget.value)].clips)[0])}
+                >
+                  {collections.map((collection, index) => (
+                    <option key={collection.label} value={index}>
+                      {collection.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ) : (
+              <span>CHOOSE YOUR PERSPECTIVE</span>
+            )}
+            <span>{String(Object.keys(currentCollection.clips).length).padStart(2, "0")} FILMS</span>
           </div>
           <div ref={choices} className="lensing-film-choices" role="group" aria-label="Choose a film">
-            {(["intro", "sanctuary", "lightwake", "signature", "awakening", "arrival"] as const).map((id) => (
+            {Object.keys(currentCollection.clips).map((id) => (
               <button
                 key={id}
                 type="button"
                 className="lensing-film-choice"
                 aria-pressed={clipId === id}
-                aria-label={`${CLIPS[id].title}, ${CLIPS[id].duration}-second film`}
+                aria-label={`${clips[id].title}, ${clips[id].duration}-second film`}
                 onClick={() => selectClip(id)}
               >
                 <img
                   className="lensing-film-thumbnail"
-                  src={CLIPS[id].poster}
+                  src={clips[id].poster}
                   alt=""
                   width="64"
                   height="40"
                   loading="lazy"
                   decoding="async"
                 />
-                <span>{CLIPS[id].title}</span>
-                <small aria-hidden="true">0:{String(CLIPS[id].duration).padStart(2, "0")}</small>
+                <span>{clips[id].title}</span>
+                <small aria-hidden="true">0:{String(clips[id].duration).padStart(2, "0")}</small>
               </button>
             ))}
           </div>
@@ -589,6 +633,7 @@ export default function LensingFilm({
               poster={clip.poster}
               preload="none"
               muted
+              loop={Boolean(clip.loopable && repeat)}
               playsInline
               aria-label={`${clip.title}, a silent cinematic artwork`}
               aria-describedby="lensing-film-description"
@@ -724,6 +769,16 @@ export default function LensingFilm({
               </svg>
               {label}
             </button>
+            {clip.loopable && (
+              <button
+                type="button"
+                className="lensing-film-repeat"
+                aria-pressed={repeat}
+                onClick={() => setRepeat((value) => !value)}
+              >
+                Repeat film
+              </button>
+            )}
             <div className="lensing-film-timeline">
               <div className="lensing-film-status">
                 <span role="status">{status}</span>

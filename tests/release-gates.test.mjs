@@ -6,6 +6,8 @@ import test from "node:test";
 import vm from "node:vm";
 import { JSDOM } from "jsdom";
 import { FLEET } from "../src/helios/fleet.js";
+import { ZENITH_COLLECTIONS } from "../src/helios/zenith-films.ts";
+import { ZENITH_FILM_IDS, isZenithFilm } from "../src/helios/zenith-routes.js";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const asset = (path) => new URL(`../${path}`, import.meta.url);
@@ -754,7 +756,7 @@ test("The root ships Helios directly, with bounded compatibility routing and a c
     for (const image of reading.querySelectorAll("img"))
       assert.ok((await stat(asset(`dist${image.getAttribute("src")}`))).size > 0);
     if (id === "studios") {
-      assert.equal(reading.querySelectorAll(".studio-card").length, 3);
+      assert.equal(reading.querySelectorAll(".studio-card").length, 6);
       assert.equal(reading.querySelectorAll(".studio-library a").length, 6);
       assert.ok(reading.querySelector('.studio-library a[href="/#film=intro"]'));
     }
@@ -790,6 +792,34 @@ test("The root ships Helios directly, with bounded compatibility routing and a c
     document.querySelector('a[href="/odyssey.html"]').closest("details").querySelector("summary").textContent,
     "Version history",
   );
+});
+
+test("Zenith ships only the fifteen web films, with complete routes and reading-edition links", async () => {
+  const clips = Object.assign({}, ...ZENITH_COLLECTIONS.map((collection) => collection.clips));
+  assert.equal(Object.keys(clips).length, 15);
+  assert.deepEqual(Object.keys(clips).sort(), ZENITH_FILM_IDS.map((id) => `zenith-${id}`).sort());
+  assert.equal(isZenithFilm("#film=zenith-missing"), false);
+  const reading = new JSDOM(await read("dist/rooms/studios/index.html")).window.document;
+  const links = [...reading.querySelectorAll(".zenith-index a")].map((link) => link.getAttribute("href"));
+  assert.deepEqual(
+    links.sort(),
+    Object.keys(clips)
+      .map((id) => `/#film=${id}`)
+      .sort(),
+  );
+  const files = await readdir(asset("dist/assets/zenith"));
+  assert.equal(files.length, 30, "only fifteen films and their fifteen stills are published");
+  for (const [id, clip] of Object.entries(clips)) {
+    assert.equal(isZenithFilm(`#film=${id}`), true);
+    const video = await readFile(asset(`dist${clip.film}`));
+    assert.ok(video.length < 4 * 1024 * 1024, "each web film stays below four MiB");
+    assert.ok(video.indexOf(Buffer.from("moov")) < video.indexOf(Buffer.from("mdat")), "MP4 metadata comes first");
+    const poster = await readFile(asset(`dist${clip.poster}`));
+    assert.ok(poster.length < 60 * 1024, "still invitation stays small");
+    assert.deepEqual(imageDimensions(poster, "webp"), { width: 1280, height: 720 });
+  }
+  assert.equal(clips["zenith-threshold"].loopable, false, "portal journeys play once");
+  assert.equal(clips["zenith-portal-arrival"].loopable, false);
 });
 
 test("Versioned Helios artwork and fonts preserve their bytes and share one cache identity", async () => {
