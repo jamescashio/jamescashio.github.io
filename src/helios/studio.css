@@ -49,6 +49,41 @@
 #helios-studio .lensing-film-header h2 {
   font-size: clamp(23px, 3vw, 34px);
 }
+#helios-studio .lensing-film-collection {
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+}
+.lensing-film-library {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  max-width: 100%;
+}
+.lensing-film-library select {
+  max-width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #455e72;
+  border-radius: 8px;
+  color: var(--ink);
+  background: #0b1723;
+  font-size: 14px;
+}
+.lensing-film-library select:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+.lensing-film .lensing-film-repeat {
+  padding: 12px;
+  color: var(--ink);
+  background: #0b1723;
+}
+.lensing-film .lensing-film-repeat[aria-pressed="true"] {
+  border-color: var(--gold);
+  color: var(--gold);
+}
 @media (max-width: 600px) {
   /* The film strip scrolls sideways; its edge fades so a clipped title reads as more to come. */
   #helios-studio .lensing-film-choices {

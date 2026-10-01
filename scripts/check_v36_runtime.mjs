@@ -136,9 +136,11 @@ async function run() {
       const studios = await fetch(`${base}/rooms/studios/index.html`).then((response) => response.text());
       assert.equal(
         (studios.match(/class="studio-card"/g) || []).length,
-        3,
-        "all studio destinations exist without JavaScript",
+        6,
+        "three original studios and three Zenith features exist without JavaScript",
       );
+      for (const hash of ["#lensing", "#signature", "#film=sanctuary"])
+        assert.ok(studios.includes(`class="studio-card" href="/${hash}"`), "each original studio remains available");
       assert.match(studios, /class="studio-library"/, "the static film library is available");
       const archiveHtml = await fetch(`${base}/odyssey.html`).then((response) => response.text());
       assert.match(archiveHtml, /data-prerendered="odyssey"/, "the archive must retain the prerendered V37 page");
