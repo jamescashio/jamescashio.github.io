@@ -68,7 +68,13 @@ export function registerGoldenPathChecks({ visit, audit, output }) {
       await expect(reading.locator(`#${id}`)).toBeInViewport();
       assert.equal(new URL(reading.url()).pathname, "/rooms/studios/");
     }
-    await audit(reading, "golden-path-reading-shortcuts");
+    // Audit the script-free reading artifact with axe available to the test runner.
+    // The preceding keyboard and route checks run with JavaScript disabled.
+    await context.close();
+    const accessible = await page.context().newPage();
+    await accessible.goto(new URL("/rooms/studios/", page.url()).href, { waitUntil: "networkidle" });
+    assert.equal(await accessible.locator("script").count(), 0);
+    await audit(accessible, "golden-path-reading-shortcuts");
   });
 
   test("Next film preserves expanded view, waits for Play and retains the original return", async (t) => {

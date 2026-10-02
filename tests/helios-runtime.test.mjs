@@ -2033,8 +2033,16 @@ test("All four reading editions remain reachable and readable without JavaScript
         fills.forEach((fill, i) => assert.ok(Math.abs(fill - [0.5, 0.5, 0][i]) < 0.02, `bar ${i} fill ${fill}`));
       }
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
-      for (const link of await page.locator("a").evaluateAll((nodes) => nodes.map((a) => a.getAttribute("href"))))
-        assert.ok(link.startsWith("/") || /^https?:/.test(link), link);
+      for (const link of await page.locator("a").evaluateAll((nodes) =>
+        nodes.map((a) => ({
+          href: a.getAttribute("href"),
+          local: Boolean(a.hash && document.getElementById(a.hash.slice(1))),
+        })),
+      ))
+        assert.ok(
+          link.href.startsWith("/") || /^https?:/.test(link.href) || (link.href.startsWith("#") && link.local),
+          link.href,
+        );
       await page.locator(".room-end a").first().click();
       await expect(page.locator("#rooms-h")).toBeVisible();
     }

@@ -194,7 +194,8 @@ function renderStarshipExample(main: Element): string {
   return rules.join("");
 }
 
-const sitemap = await readFile("dist/sitemap.xml", "utf8");
+// Start from the authored index so regenerating a reading edition stays idempotent.
+const sitemap = await readFile("public/sitemap.xml", "utf8");
 // Reading editions share the home page's release date.
 const lastmod = sitemap.match(/<loc>https:\/\/cashio\.us\/<\/loc>\s*<lastmod>([\d-]+)<\/lastmod>/)?.[1];
 await writeFile(
