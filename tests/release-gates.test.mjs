@@ -759,6 +759,8 @@ test("The root ships Helios directly, with bounded compatibility routing and a c
       assert.equal(reading.querySelectorAll(".studio-card").length, 6);
       assert.equal(reading.querySelectorAll(".studio-library a").length, 6);
       assert.ok(reading.querySelector('.studio-library a[href="/#film=intro"]'));
+      assert.ok(reading.querySelector('.studio-paths a[href="#zenith-heading"]'));
+      assert.ok(reading.querySelector('.studio-paths a[href="#studio-worlds"]'));
     }
   }
   assert.equal(document.querySelector("#odyssey-root"), null);

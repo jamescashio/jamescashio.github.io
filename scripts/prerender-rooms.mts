@@ -46,7 +46,11 @@ for (const id of roomIds) {
     const version = versions[image.getAttribute("src") || ""];
     if (version) image.setAttribute("src", version.url);
   }
-  for (const link of main.querySelectorAll("a[href^='#']")) link.setAttribute("href", "/" + link.getAttribute("href"));
+  const localAnchors = new Set([...main.querySelectorAll("[id]")].map((node) => node.id));
+  for (const link of main.querySelectorAll("a[href^='#']")) {
+    const href = link.getAttribute("href")!;
+    if (!localAnchors.has(href.slice(1))) link.setAttribute("href", "/" + href);
+  }
   for (const control of main.querySelectorAll("button,input,select,textarea")) {
     control.setAttribute("disabled", "");
     control.setAttribute("aria-describedby", "reading-mode");

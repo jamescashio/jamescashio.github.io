@@ -51,6 +51,26 @@ export function registerGoldenPathChecks({ visit, audit, output }) {
     await expect(page.locator("#mc-btn")).toBeFocused();
   });
 
+  test("reading edition shortcuts stay on the Studios page without JavaScript", async (t) => {
+    const page = await visit(t, { width: 390, height: 844, expandWorkbenches: false });
+    const context = await page
+      .context()
+      .browser()
+      .newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
+    t.after(() => context.close());
+    const reading = await context.newPage();
+    await reading.goto(new URL("/rooms/studios/", page.url()).href, { waitUntil: "networkidle" });
+    for (const [name, id] of [
+      ["Watch a film", "zenith-heading"],
+      ["Explore a world", "studio-worlds"],
+    ]) {
+      await reading.getByRole("link", { name, exact: false }).first().press("Enter");
+      await expect(reading.locator(`#${id}`)).toBeInViewport();
+      assert.equal(new URL(reading.url()).pathname, "/rooms/studios/");
+    }
+    await audit(reading, "golden-path-reading-shortcuts");
+  });
+
   test("Next film preserves expanded view, waits for Play and retains the original return", async (t) => {
     for (const [width, height] of [
       [1440, 900],
