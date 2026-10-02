@@ -1,0 +1,31 @@
+/* Below the fold refinements, adopted after first paint so the entry stylesheet keeps its budget. */
+.room-card {
+  overflow: hidden;
+}
+.room-art {
+  transition:
+    transform 0.6s var(--ease-ui),
+    filter 0.6s;
+}
+.room-card:hover .room-art,
+.room-card:focus-visible .room-art {
+  transform: scale(1.05);
+  filter: brightness(1.12) saturate(1.1);
+}
+/* The signature ring frames the art, never the controls under it. */
+.sig .sig-ring {
+  top: 44%;
+  width: 80%;
+}
+.sig .cap {
+  z-index: 2;
+}
+/* The verified count settles in tabular figures so its width never jumps. */
+.proof-facts strong {
+  font-variant-numeric: tabular-nums;
+}
+@media (prefers-reduced-motion: reduce) {
+  .room-art {
+    transition: none;
+  }
+}

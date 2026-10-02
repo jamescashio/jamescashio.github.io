@@ -632,7 +632,7 @@ class V34ReleaseContractTests(unittest.TestCase):
 
     def test_v37_software_preserves_v35_archive_identity(self) -> None:
         package = json.loads(read("package.json"))
-        self.assertEqual(package["version"], "39.5.0")
+        self.assertEqual(package["version"], "39.6.0")
         self.assertIn('V35 "ALL TENS"', self.content)
         retired_candidate = "V" + "47"
         for relative in (

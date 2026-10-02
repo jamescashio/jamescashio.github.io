@@ -11,7 +11,7 @@ export const DECKS = [
   { id: "lineage", num: "05", name: "LINEAGE", tag: "Four flight-test minds. Four rules. One program." },
   { id: "builds", num: "06", name: "BUILDS", tag: "Seven systems that shipped on one fabric." },
   { id: "operator", num: "07", name: "OPERATOR", tag: "One human, accountable for every automation." },
-  { id: "eve", num: "08", name: "E.V.E.", tag: "Read-only. Browser-local. Zero network calls." },
+  { id: "eve", num: "08", name: "E.V.E.", tag: "Read only. Runs in your browser. Zero network calls." },
   { id: "contact", num: "09", name: "CONTACT", tag: "Hail: doug@cashio.us" },
 ] as const;
 

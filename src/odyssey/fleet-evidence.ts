@@ -14,7 +14,7 @@ export const BRIEF_FACTS = [
   {
     id: "routing",
     label: "Routing evidence",
-    fact: "The latest audit did not establish a current routing inventory or an end-to-end execution record.",
+    fact: "The latest audit did not establish a current routing inventory or an end to end execution record.",
     consequence: "Current lane counts remain unverified. A past inventory cannot fill that gap.",
     source: `Audit scope · ${snapshot.verifiedLong} · /status.json`,
   },

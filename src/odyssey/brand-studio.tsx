@@ -419,7 +419,7 @@ export default function BrandStudio({
               onClick={() => setPaused(!paused)}
               aria-label={
                 !canMove
-                  ? "Motion off — signature follows your page or device preference"
+                  ? "Motion off · signature follows your page or device preference"
                   : paused
                     ? "Resume signature motion"
                     : "Pause signature motion"

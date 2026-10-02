@@ -1,7 +1,7 @@
 {
   "name": "cashio-us",
   "private": true,
-  "version": "39.5.0",
+  "version": "39.6.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

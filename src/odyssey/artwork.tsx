@@ -25,7 +25,7 @@ export function Art({
         height="941"
         alt={
           name === "orbit"
-            ? "Original concept art: a cyan-lit titanium orbital ring holds a faceted gold core above a blue planet and warm sunrise."
+            ? "Original concept art: a titanium orbital ring lit in cyan holds a faceted gold core above a blue planet and warm sunrise."
             : "Original concept art: twin graphite computing monoliths in a sunlit stone sanctuary, with a faceted amber core between them."
         }
         loading={eager ? "eager" : "lazy"}

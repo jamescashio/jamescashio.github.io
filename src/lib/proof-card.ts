@@ -36,7 +36,7 @@ export function createProofCardSvg(index: number) {
     .map((line, i) => `<tspan x="66" y="${title.length > 2 ? 405 + i * 33 : 364 + i * 33}">${xml(line)}</tspan>`)
     .join("");
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
-<title id="title">Cashio.us — ${xml(article.name)}</title><desc id="desc">${xml(story.outcome)} Owner-described build. ${xml(publicBuildUrl(selected))}</desc>
+<title id="title">Cashio.us · ${xml(article.name)}</title><desc id="desc">${xml(story.outcome)} Build described by its owner. ${xml(publicBuildUrl(selected))}</desc>
 <defs><radialGradient id="glow"><stop stop-color="#00f9ff" stop-opacity=".16"/><stop offset="1" stop-color="#00f9ff" stop-opacity="0"/></radialGradient><linearGradient id="edge"><stop stop-color="#ff9500"/><stop offset="1" stop-color="#00f9ff"/></linearGradient></defs>
 <rect width="1200" height="630" fill="#05080e"/><ellipse cx="1000" cy="280" rx="430" ry="340" fill="url(#glow)"/>
 <path d="M64 99H1136M64 522H1136" stroke="#173441"/><path d="M64 100V62H156M1136 524V568H1044" fill="none" stroke="url(#edge)" stroke-width="5"/>

@@ -335,7 +335,7 @@ export function DeckIron({ s3 }: { s3: SecRef }) {
         </div>
         <Plate
           src="/plates/rack.jpg?v=48"
-          alt="Conceptual server-rack visualization with cyan and amber status lights"
+          alt="Conceptual server rack visualization with cyan and amber status lights"
           sources={SUPPORTING_PLATE_SOURCES.rack}
           width={1680}
           height={1120}

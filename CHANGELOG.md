@@ -1,5 +1,21 @@
 # Changelog
 
+## V39.6 · The Long View
+
+Named for one of the original short films in the Studios collection.
+
+- Place the start of my IT career in 1996, the year Quake went truly 3D after Wolfenstein and Doom faked it with 2.5D engines.
+- Move the four worlds directly under the workshop, retitled "Pick a world. Stay a while." The chapter rail follows the new order.
+- Give the Studios card its own still from the Threshold film instead of repeating the hero art. Remove the unused card image.
+- Wake the cAshIo signature once, quietly, when it is mostly on screen. Reduced motion keeps the still artwork and the button still works on request. Keep its ring clear of the controls.
+- Count up the 902 verified backup files when the card comes into view. The authored figure stays in the markup.
+- Room card art brightens and eases forward on hover and keyboard focus.
+- Fold the system map on wide screens so the page stays shorter; the studies stay open.
+- Room cards name every visible line, so speech input matches what is on screen.
+- Refresh the page date, release receipt and workshop stamps to October 2, 2026. The backup card keeps its true September 26, 2026 verification date and every archived observation keeps its own.
+- Remove hyphens and dashes from visitor copy. Aircraft designations and the Credly handle keep their real spelling.
+- New refinements ship as a deferred constructable stylesheet, so the entry stylesheet stays inside its 19,000 byte budget.
+
 ## V39.5 · The Golden Path
 
 Named for the Golden Path in Frank Herbert’s _God Emperor of Dune_. [Publisher reference](https://www.penguinrandomhouse.com/books/301811/god-emperor-of-dune-by-frank-herbert/).

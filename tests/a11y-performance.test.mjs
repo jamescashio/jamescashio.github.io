@@ -1181,6 +1181,13 @@ test("restore-protected intrinsic settlement keeps the viewscreen on the request
     await view.runControlledTimeout(12_000);
     await flushPromises();
     await view.settle();
+    // The stage module is a real dynamic import; give a slow machine a bounded real wait for it to resolve.
+    for (let tries = 0; tries < 100 && !view.document.querySelector("viewscreen-stage"); tries++) {
+      await new Promise((resolve) => setImmediate(resolve));
+      await new Promise((resolve) => globalThis.setTimeout(resolve, 100));
+      await flushPromises();
+      await view.settle();
+    }
     const stage = view.document.querySelector("viewscreen-stage");
     const scroller = view.document.querySelector("main.za-scroll");
     assert.ok(stage, "expected the normally deferred viewscreen after its no-input fallback");

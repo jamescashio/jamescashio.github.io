@@ -32,7 +32,7 @@ for (const id of roomIds) {
   doc.title = `${title} · cAshIo`;
   doc
     .querySelector('meta[name="description"]')!
-    .setAttribute("content", `Read ${title}, from Doug Cashio's after-hours hobby lab.`);
+    .setAttribute("content", `Read ${title}, from Doug Cashio's hobby lab.`);
   const canonical = doc.createElement("link");
   canonical.rel = "canonical";
   canonical.href = `https://cashio.us/rooms/${id}/`;

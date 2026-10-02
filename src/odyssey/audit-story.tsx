@@ -10,7 +10,7 @@ export function AuditStory() {
         <span className="o-audit-kicker">HERMES / READ-ONLY AUDIT</span>
         <h3>One audit. Three decisions.</h3>
         <p>
-          The question was simple: what is running, and what can this page prove? The owner-run HERMES audit checked the
+          The question was simple: what is running, and what can this page prove? The HERMES audit I ran checked the
           cluster inventory against direct guest lists.
         </p>
         <table>

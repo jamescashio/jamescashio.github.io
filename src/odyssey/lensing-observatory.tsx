@@ -346,7 +346,7 @@ export default function LensingObservatory({
           className="lens-canvas"
           tabIndex={ready && !unavailable ? 0 : -1}
           role="img"
-          aria-label="Interactive three-dimensional planet and orbital gate. Drag to orbit. Arrow keys rotate; plus and minus zoom. The same controls are available below."
+          aria-label="Interactive 3D planet and orbital gate. Drag to orbit. Arrow keys rotate; plus and minus zoom. The same controls are available below."
           onPointerDown={takeControl}
           onWheel={takeControl}
           onKeyDown={(event) => {

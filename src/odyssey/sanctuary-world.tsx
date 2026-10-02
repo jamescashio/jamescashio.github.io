@@ -167,7 +167,7 @@ export default function SanctuaryWorld({
             {!motion
               ? "Motion is paused. Camera and light controls still work."
               : !state.paused
-                ? "A six-second awakening. Silent by design."
+                ? "A six second awakening. Silent by design."
                 : state.awake
                   ? "The chamber is awake. Explore at your own pace."
                   : "Choose a perspective. Bring the chamber to life."}
