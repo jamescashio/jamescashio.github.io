@@ -33,6 +33,7 @@ export function registerGoldenPathChecks({ visit, audit, output }) {
   test("film title search reaches the exact silent film and restores the menu opener", async (t) => {
     const page = await visit(t, { width: 390, height: 844, hash: "#studios", expandWorkbenches: false });
     await page.locator("#mc-btn").press("Enter");
+    await expect(page.getByRole("group", { name: "Three places to start", exact: true })).toBeVisible();
     for (const [title, id] of [
       ["Threshold", "zenith-threshold"],
       ["Armillary Nocturne", "zenith-armillary-nocturne"],
