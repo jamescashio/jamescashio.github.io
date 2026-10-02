@@ -2129,10 +2129,10 @@ test("Study shortcuts reveal the chosen experiment and heritage credits never co
         await expect(page.locator("#st-name")).toBeInViewport();
       }
     } else {
-      // Wide screens open the workbench and system map while the glossary stays optional.
+      // Wide screens open the workbench; the system map and glossary stay folded until requested.
       await expect(page.locator("#glossary")).not.toHaveAttribute("open", "");
       await expect(page.locator("#study-lab")).toHaveAttribute("open", "");
-      await expect(page.locator("#atlas-lab")).toHaveAttribute("open", "");
+      await expect(page.locator("#atlas-lab")).not.toHaveAttribute("open", "");
       await expect(shortcuts).toBeHidden();
       for (const id of ["hermes", "cascade", "exposure", "briefing", "dashboards", "signal", "graphify"]) {
         await page.locator(`#study-${id}`).click();

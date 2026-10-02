@@ -56,7 +56,7 @@ export const LINEAGE_EVIDENCE = [
   },
   {
     src: "/plates/proteus-nasa.webp?v=32",
-    alt: "Scaled Composites Proteus in flight, showing its forward canard, gull main wing, twin booms, and two rear-mounted turbofans",
+    alt: "Scaled Composites Proteus in flight, showing its forward canard, gull main wing, twin booms, and two rear mounted turbofans",
     label: "FLIGHT-TEST EVIDENCE · MODEL 281",
     credit: "NASA / ESPO",
     sourceUrl: "https://espo.nasa.gov/aircraft/Proteus",
@@ -70,7 +70,7 @@ export const LINEAGE_EVIDENCE = [
   },
   {
     src: "/plates/p51d-usaf.webp?v=32",
-    alt: "A polished P-51D Mustang banking in flight, showing its laminar-flow wing and red tail",
+    alt: "A polished P-51D Mustang banking in flight, showing its laminar flow wing and red tail",
     label: "FLIGHT DISCIPLINE · P-51D MUSTANG",
     credit: "USAF / AIR NATIONAL GUARD · TSGT HAMPTON STRAMLER",
     sourceUrl: "https://www.dvidshub.net/image/9595085/p-51-mustang-over-luke-air-force-base",

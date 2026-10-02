@@ -133,7 +133,7 @@ export function BoundaryComparison({ motion = false }: { motion?: boolean }) {
             <strong>Privacy takes priority.</strong>
             <HumanReviewSignal motion={motion} />
             <p>
-              The document stays behind the boundary. A person must authorize an external route—even when the task
+              The document stays behind the boundary. A person must authorize an external route, even when the task
               requires sources. Try changing the inputs in HERMES below.
             </p>
             <button
@@ -157,7 +157,9 @@ export function BoundaryComparison({ motion = false }: { motion?: boolean }) {
           2. Load the private version ↗
         </a>
       </nav>
-      <p className="o-boundary-note">Browser-only illustration. No document is uploaded and no AI request is sent.</p>
+      <p className="o-boundary-note">
+        Illustration in your browser only. No document is uploaded and no AI request is sent.
+      </p>
     </section>
   );
 }

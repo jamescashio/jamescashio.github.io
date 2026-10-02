@@ -80,13 +80,13 @@ export const LANES = [
     id: "01",
     name: "WORKHORSE",
     model: "Model withheld",
-    use: "The daily grind. Drafts, refactors, first-pass analysis.",
+    use: "The daily grind. Drafts, refactors, first pass analysis.",
   },
   {
     id: "02",
     name: "EXCEPTION",
     model: "Model withheld",
-    use: "When the workhorse hesitates. Harder reasoning, still owned-cost.",
+    use: "When the workhorse hesitates. Harder reasoning, still on hardware I own.",
   },
   {
     id: "03A",
@@ -98,7 +98,7 @@ export const LANES = [
     id: "03B",
     name: "ADVERSARIAL",
     model: "Model withheld",
-    use: "Stress-test the answer. Argue with it until it holds.",
+    use: "Stress test the answer. Argue with it until it holds.",
   },
   {
     id: "04A",
@@ -111,7 +111,7 @@ export const LANES = [
     id: "05",
     name: "ADJUDICATION",
     model: "Model withheld",
-    use: "Highest-consequence calls. Frontier only when the cost of being wrong is higher than the token bill.",
+    use: "Calls with the highest consequence. Frontier only when the cost of being wrong is higher than the token bill.",
   },
   {
     id: "LOC",
@@ -123,7 +123,7 @@ export const LANES = [
     id: "FAB",
     name: "GATEWAY FABRIC",
     model: "Model withheld",
-    use: "One door. No lock-in. No bridge tax.",
+    use: "One door. No lock in. No bridge tax.",
   },
 ] as const;
 
@@ -165,7 +165,7 @@ export const ARTICLES = [
   {
     name: "HERMES ORCHESTRATOR",
     tag: "GATEWAY",
-    note: "A policy-driven orchestration layer in front of the model lanes, with health checks, routing rules, verification, and human escalation boundaries. Intent, qualification, execution, observation, and translation stay separate so an expensive model is a decision, not a default.",
+    note: "A policy driven orchestration layer in front of the model lanes, with health checks, routing rules, verification, and human escalation boundaries. Intent, qualification, execution, observation, and translation stay separate so an expensive model is a decision, not a default.",
   },
   {
     name: "ESCALATION CASCADE",
@@ -180,7 +180,7 @@ export const ARTICLES = [
   {
     name: "SOVEREIGN INTELLIGENCE BRIEFING",
     tag: "ANALYSIS",
-    note: "Executive-facing analysis of AI, security, and infrastructure, produced on the same fabric it describes. Claims stay tied to sources, uncertainty stays visible, and technical consequence becomes a decision a leader can act on.",
+    note: "Analysis for executives of AI, security, and infrastructure, produced on the same fabric it describes. Claims stay tied to sources, uncertainty stays visible, and technical consequence becomes a decision a leader can act on.",
   },
   {
     name: "ZEUSAPOLLO DASHBOARD SUITE",
@@ -195,7 +195,7 @@ export const ARTICLES = [
   {
     name: "GRAPHIFY",
     tag: "TOOLING",
-    note: "A navigable code graph with community-driven documentation. Ownership, coupling, and change paths become visible before a refactor turns into an outage.",
+    note: "A navigable code graph with documentation driven by its community. Ownership, coupling, and change paths become visible before a refactor turns into an outage.",
   },
 ];
 

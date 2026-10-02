@@ -239,10 +239,10 @@ export function HeroCinema({ blocked }: { blocked: boolean }) {
             : playback === "error"
               ? "The scene could not load. Retry or restore the original artwork."
               : playback === "loading"
-                ? "Preparing the eight-second silent scene."
+                ? "Preparing the eight second silent scene."
                 : playback === "ended"
                   ? "Scene complete. Replay or restore the original artwork."
-                  : "An eight-second silent scene. Plays only when you choose."}
+                  : "An eight second silent scene. Plays only when you choose."}
         </span>
       </div>
     </>

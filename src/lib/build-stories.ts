@@ -27,12 +27,12 @@ export const BUILD_STORIES = [
     outcome: "A technical development becomes a decision you can make.",
     input: "A development in AI, security, or infrastructure needs a business interpretation.",
     action: "The briefing separates supported claims, uncertain details, and practical consequences.",
-    result: "A source-backed brief with a decision, its rationale, and what still needs checking.",
+    result: "A brief backed by sources with a decision, its rationale, and what still needs checking.",
     example:
       "Example brief: what changed; why it matters; the evidence; the open question; the next decision. A clear structure for a leader who has minutes, not hours.",
   },
   {
-    outcome: "Know what was measured—and when to check again.",
+    outcome: "Know what was measured, and when to check again.",
     input: "An operator needs to understand fleet, routing, and service state.",
     action: "The dashboards present evidence with provenance, timestamps, and visible stale states.",
     result: "A dated observation that can be distinguished from a fresh measurement.",

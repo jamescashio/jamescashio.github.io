@@ -13,7 +13,8 @@ export function setupSignature({ motion, say }) {
   let signatureTimer;
   const button = $("#sig-btn");
   const label = button.textContent;
-  button.addEventListener("click", () => {
+  /** @param {{ announce?: boolean, settle?: boolean }} [options] */
+  function energize({ announce = true, settle = true } = {}) {
     clearTimeout(signatureTimer);
     button.textContent = "◇ Energize again";
     const pl = $("#sigplate");
@@ -45,7 +46,8 @@ export function setupSignature({ motion, say }) {
         },
       );
     }
-    say("SIGNATURE", "Energized. Gold intent, blue possibility.", "yes", 2200);
+    if (announce) say("SIGNATURE", "Energized. Gold intent, blue possibility.", "yes", 2200);
+    if (!settle) return;
     signatureTimer = setTimeout(() => {
       gsap.killTweensOf(Array.from(b.children));
       b.replaceChildren();
@@ -54,5 +56,21 @@ export function setupSignature({ motion, say }) {
       $("#sig-state").textContent = "DORMANT · GOLD INTENT";
       $("#sig-state").style.color = "";
     }, 4000);
-  });
+  }
+  button.addEventListener("click", () => energize());
+
+  // The signature wakes once, quietly, the first time it is mostly on screen.
+  // Reduced motion keeps the still artwork; the button still energizes on request.
+  const plate = $("#sigplate");
+  if ("IntersectionObserver" in window) {
+    const watcher = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        watcher.disconnect();
+        if (motion() && !plate.classList.contains("on")) energize({ announce: false, settle: false });
+      },
+      { threshold: 0.6 },
+    );
+    watcher.observe(plate);
+  }
 }

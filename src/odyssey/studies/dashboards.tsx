@@ -34,11 +34,11 @@ export function DashboardLab({ input, onChange }: ExperimentProps<"dashboards">)
       />
       <Result title={stale ? "The evidence is stale." : "The evidence has a date."}>
         {stale
-          ? "After this example’s 24-hour window, a fresh observation is required. A green historical result cannot stand in for current health."
-          : "The example is inside a 24-hour freshness window. Display the collection time, source, and scope alongside the result."}
+          ? "After this example’s 24 hour window, a fresh observation is required. A green historical result cannot stand in for current health."
+          : "The example is inside a 24 hour freshness window. Display the collection time, source, and scope alongside the result."}
       </Result>
       <p className="o-lab-note">
-        This clock is simulated. The fleet observation is dated {FLEET_EVIDENCE.verifiedLong}; the example’s 24-hour
+        This clock is simulated. The fleet observation is dated {FLEET_EVIDENCE.verifiedLong}; the example’s 24 hour
         window does not validate or extend that observation.
       </p>
     </>

@@ -93,7 +93,7 @@ export function HermesLab({ motion, input, onChange }: ExperimentProps<"hermes">
       <Result title={step === 5 ? output.lane : running ? "Decision in progress" : "Your intent. A reasoned route."}>
         {step === 5
           ? output.detail
-          : "Choose a task and its boundaries, then run the five-step demonstration. No request leaves this page."}
+          : "Choose a task and its boundaries, then run the five step demonstration. No request leaves this page."}
       </Result>
     </>
   );

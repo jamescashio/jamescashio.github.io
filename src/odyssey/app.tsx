@@ -437,7 +437,7 @@ export function OdysseyApp() {
           <p>
             Tell me what you want to build and your hardest constraint.
             <br />
-            AI spending, private data, or a system that needs to be easier to understand—start there.
+            AI spending, private data, or a system that needs to be easier to understand? Start there.
           </p>
           <a
             className="o-contact-email"
@@ -518,7 +518,7 @@ export function OdysseyApp() {
         <Art name="orbit" />
         <div>
           <span className="o-kicker">ODYSSEY / ORIGINAL CONCEPT ART</span>
-          <p>An engineered orbit. A faceted co-pilot. A human at the center.</p>
+          <p>An engineered orbit. A faceted copilot. A human at the center.</p>
           <small>
             Created with OpenAI image generation for this design. This is an imagined scene, not a photograph of the
             estate.

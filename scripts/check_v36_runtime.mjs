@@ -180,7 +180,7 @@ async function run() {
       });
       report.release = receipt;
       assert.equal(receipt.frontDoor.entry, "/");
-      assert.equal(receipt.frontDoor.experienceVersion, "39.5.0");
+      assert.equal(receipt.frontDoor.experienceVersion, "39.6.0");
       report.checks.push({
         name: "Current root, preserved V37 prerender, release identities and indexing",
         passed: true,

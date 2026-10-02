@@ -93,7 +93,7 @@ export function mountInstrument(root, initial, fleet, onChange) {
       answer.innerHTML = result(
         "SAME OBSERVATION · DIFFERENT REVIEW STATE",
         stale ? "Refresh required" : "Within the example window",
-        `The recorded count stays ${fleet.lxc}. ${stale ? "The hypothetical 24-hour boundary has been reached. Ask for a new observation before relying on its current state." : "The hypothetical clock is inside its 24-hour review window. It does not renew the real export."}`,
+        `The recorded count stays ${fleet.lxc}. ${stale ? "The hypothetical 24 hour boundary has been reached. Ask for a new observation before relying on its current state." : "The hypothetical clock is inside its 24 hour review window. It does not renew the real export."}`,
         stale ? "gold" : "cyan",
       );
     }

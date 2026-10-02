@@ -1,5 +1,7 @@
 import { setupRooms } from "./rooms.js";
 import { setupSignature } from "./signature.js";
+import { setupProofCount } from "./proof-count.js";
+import { adoptEnhancements } from "./enhance.js";
 import { $, $$ } from "./dom.js";
 import { setupStudies } from "./studies.js";
 import { setupPrivacy } from "./privacy.js";
@@ -74,9 +76,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 const studyDeck = setupStudies({ scenes, motion: () => motionOn, copy });
-// Wide screens open the studies and system map. The glossary stays folded until requested.
-if (matchMedia("(min-width: 1100px)").matches)
-  for (const id of ["study-lab", "atlas-lab"]) $(`#${id}`).setAttribute("open", "");
+// Wide screens open the studies; the system map and glossary stay folded until requested, so the page stays short.
+if (matchMedia("(min-width: 1100px)").matches) $("#study-lab").setAttribute("open", "");
 setupPrivacy({
   loadRequest: studyDeck.loadRequest,
   traceRequest: () => scenes.traceRequest(),
@@ -88,6 +89,8 @@ setupPrivacy({
 setupAtlas({ scenes, motion: () => motionOn, say: (...args) => Bit.say(...args) });
 
 setupEvidenceConsole({ motion: () => motionOn });
+setupProofCount({ motion: () => motionOn });
+adoptEnhancements();
 
 function openMC() {
   navigation.open();

@@ -847,7 +847,7 @@ export const CRAFT: CraftSpec[] = [
     mag: 1.42,
   },
   {
-    // 7 — North American P-51D Mustang. The laminar-flow wing, bubble canopy,
+    // 7 — North American P-51D Mustang. The laminar flow wing, bubble canopy,
     // ventral radiator scoop, four-blade propeller and tall fin must read first.
     name: "P-51D MUSTANG",
     era: "1944 · HOOVER",

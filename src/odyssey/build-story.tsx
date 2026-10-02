@@ -41,11 +41,11 @@ export function BuildStory() {
             </div>
             <div>
               <dt>The archived record</dt>
-              <dd>A two-day record of provider usage, now redacted. Its scope and dates remain available below.</dd>
+              <dd>A two day record of provider usage, now redacted. Its scope and dates remain available below.</dd>
             </div>
           </dl>
         </div>
-        <nav className="o-story-actions" aria-label="Try the smart-routing idea">
+        <nav className="o-story-actions" aria-label="Try the smart routing idea">
           <a
             className="o-button o-button-gold o-story-demo"
             href={shareExperiment({ study: "hermes", intent: "draft", sources: false, privateData: false })}
@@ -136,7 +136,7 @@ export function BuildStory() {
           Dated operating record: what the infrastructure observation establishes<span aria-hidden="true">+</span>
         </summary>
         <p>
-          An owner-run, read-only HERMES audit compared the cluster inventory with direct guest lists. The observation
+          A read only HERMES audit that I ran compared the cluster inventory with direct guest lists. The observation
           records {operatingRecord.containers.running} running LXC containers and{" "}
           {operatingRecord.virtualMachines.running} running QEMU virtual machine across{" "}
           {operatingRecord.cluster.hostsOnline} hosts on {operatingRecord.verifiedLong}. The reviewed public subset

@@ -70,9 +70,9 @@ export const STUDY_NOTES: Record<StudyId, StudyNote> = {
   dashboards: {
     takeaway: "The fact stays the same. Its usefulness has a clock.",
     relevance:
-      "A timestamp tells an operator when to look again. In this example, the 24-hour boundary changes the review state without inventing a fresh observation.",
+      "A timestamp tells an operator when to look again. In this example, the 24 hour boundary changes the review state without inventing a fresh observation.",
     question: "What changes when a valid observation gets older?",
-    rule: "This example uses a 24-hour review boundary. At 24 hours, its state changes to Refresh required. The observed fact itself is unchanged.",
+    rule: "This example uses a 24 hour review boundary. At 24 hours, its state changes to Refresh required. The observed fact itself is unchanged.",
     experiment:
       "Move the clock from 23 to 24 hours. The same observation now needs review. Moving it back demonstrates the model; it does not refresh a real system.",
     boundary:

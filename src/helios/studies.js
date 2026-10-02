@@ -174,7 +174,7 @@ export function setupStudies({ scenes, motion, copy }) {
     $("#st-lane-code").textContent = `${r.lane.toUpperCase()} LANE`;
     $("#st-code").textContent = r.code;
     $("#st-code").style.color = r.color;
-    $("#st-detail").textContent = run ? r.detail : "Choose a task, then follow its five-step route.";
+    $("#st-detail").textContent = run ? r.detail : "Choose a task, then follow its five step route.";
     $("#route-feedback").textContent = run ? `${LANE_WORDS[r.lane] || r.lane}. ${r.detail}` : "";
     const box = $("#st-steps");
     gsap.killTweensOf(Array.from(box.children));
