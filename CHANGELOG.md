@@ -1,5 +1,16 @@
 # Changelog
 
+## V39.5 · The Golden Path
+
+Named for the Golden Path in Frank Herbert’s _God Emperor of Dune_. [Publisher reference](https://www.penguinrandomhouse.com/books/301811/god-emperor-of-dune-by-frank-herbert/).
+
+- Reach films or interactive worlds directly from the Studios opening, including shared addresses and reading editions.
+- Search all twenty-one original and Zenith films by title. Continue the three featured moments at your own pace; every new film waits for Play, preserves expanded view and keeps a shareable address.
+- Assemble and save a decision brief from the published workbench records. The downloadable example and chosen brief keep their observation dates, sources, unknowns and human decision boundary.
+- Keep the original film catalog, playback and seeking controller separate from the cinema presentation. Preserve seek fallback, cancellation, muted startup, visibility pausing and quiet-mode behavior.
+- Preserve all original artwork, media and historical observations. Align the interface date and release receipt without refreshing the underlying evidence.
+- Keep reading-page shortcuts on their own page and regenerate its sitemap without duplicate entries. Patch the build-time brace expansion dependency to 5.0.12.
+
 ## V39.4 · Heart of Gold
 
 Named for the starship in Douglas Adams’s _The Hitchhiker’s Guide to the Galaxy_ novels. The workshop’s tagline is original: “Small lab. Big universe. No panic.”

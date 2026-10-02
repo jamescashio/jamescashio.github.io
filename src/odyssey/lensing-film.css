@@ -206,6 +206,33 @@
   flex: 1;
   min-width: 0;
 }
+.lensing-film .lensing-film-next {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 16px;
+  color: #f2d3a0;
+  background: #0b1b29;
+  white-space: nowrap;
+}
+.lensing-film-next:hover {
+  background: #182d3c;
+}
+@media (max-width: 600px) {
+  .lensing-film-controls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .lensing-film .lensing-film-play,
+  .lensing-film-timeline {
+    grid-column: 1 / -1;
+  }
+  .lensing-film .lensing-film-next {
+    white-space: normal;
+  }
+}
 .lensing-film-status {
   display: flex;
   justify-content: space-between;

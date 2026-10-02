@@ -1,5 +1,6 @@
 import { escalationExample, exposureExample, GRAPH_NODES, GRAPH_EDGES, affectedModules } from "../odyssey/data";
 import { defaultExperiment } from "../odyssey/study-experiment";
+import { briefRecords, briefText, BRIEF_NEXT } from "./decision-brief.js";
 
 // Sliders are named by their label alone and speak their value with its unit.
 const spoken = (value, unit) => `${value} ${unit === " h" ? "hours" : "percent"}`;
@@ -75,25 +76,9 @@ export function mountInstrument(root, initial, fleet, onChange) {
         )
         .join("")}</div>`;
       root.querySelector("[data-compose]").disabled = state.chosen.length === 0;
-      const facts = {
-        fleet: {
-          title: "The observation",
-          body: `${fleet.lxc} containers and ${fleet.qemu} virtual machine were running at the ${fleet.observedLong} observation. Guest runtime alone does not establish service health or recovery.`,
-          source: `Dated export · ${fleet.observedLong}`,
-        },
-        routing: {
-          title: "The unknown",
-          body: "Current routing counts and end to end route execution remain unverified. An older inventory cannot establish the present state.",
-          source: "Latest public evidence · routing withheld",
-        },
-        authority: {
-          title: "The boundary",
-          body: "Consequential decisions remain with an accountable person. The example does not authorize changes to a real system.",
-          source: "Published operating philosophy",
-        },
-      };
+      const facts = briefRecords(fleet, state.chosen);
       answer.innerHTML = composed
-        ? `<div class="brief-output"><span class="kick gold">YOUR DECISION BRIEF</span>${state.chosen.map((id) => `<article><h4>${facts[id].title}</h4><p>${facts[id].body}</p><small>${facts[id].source}</small></article>`).join("")}<p class="brief-next"><strong>Next decision</strong><br>Verify the evidence needed for the proposed action before expanding automation.</p></div>`
+        ? `<div class="brief-output"><span class="kick gold">YOUR DECISION BRIEF</span>${facts.map((record) => `<article><h4>${record.title}</h4><p>${record.body}</p><small>${record.source}</small></article>`).join("")}<p class="brief-next"><strong>Next decision</strong><br>${BRIEF_NEXT}</p><button type="button" class="btn gold" data-save-brief>Save your brief ↓</button><p data-brief-status role="status"></p></div>`
         : result(
             "ASSEMBLE A BRIEF",
             "Keep the unknowns visible.",
@@ -196,6 +181,19 @@ export function mountInstrument(root, initial, fleet, onChange) {
     if (button.hasAttribute("data-compose")) {
       composed = true;
       paint();
+    }
+    if (button.hasAttribute("data-save-brief")) {
+      const text = briefText(fleet, state.chosen);
+      if (!composed || text === null) return;
+      const url = URL.createObjectURL(new Blob([text], { type: "text/plain;charset=utf-8" }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "cAshIo-decision-brief.txt";
+      document.body.append(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      root.querySelector("[data-brief-status]").textContent = "Your brief is ready to keep.";
     }
     if (button.hasAttribute("data-reset")) {
       const reset = defaultExperiment(state.study);

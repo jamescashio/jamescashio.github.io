@@ -1,5 +1,6 @@
 /** Search and menu focus stay independent from room, scene and browser-history routing. */
 import { $, $$ } from "./dom.js";
+import { FILM_DESTINATIONS } from "./film-destinations.js";
 
 export function setupMissionControl({ studies, canOpen, onToggle }) {
   const dialog = /** @type {HTMLDialogElement} */ ($("#mc"));
@@ -43,6 +44,12 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
     ],
     ["The orbital world", "Return to the beginning.", "#top"],
     ["Real work", "Projects from the lab, with dated results.", "#workshop", "proof projects portfolio"],
+    [
+      "Make a decision brief",
+      "Choose the evidence. Keep the unknowns. Save a brief you can use.",
+      "#build=briefing",
+      "download artifact example",
+    ],
     [
       "Backup repair and receipt",
       "902 files verified; no live system restore was performed.",
@@ -119,6 +126,7 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
       "contact email talk hire hello speaking advising recruiter",
     ],
     ...studies.map((s) => [`${s.name} · ${s.code}`, s.cue, `#build=${s.id}`, s.q]),
+    ...FILM_DESTINATIONS,
   ];
   function render(query = "") {
     list.replaceChildren();
