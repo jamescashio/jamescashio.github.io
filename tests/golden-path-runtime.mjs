@@ -122,6 +122,9 @@ export function registerGoldenPathChecks({ visit, audit, output }) {
 
   test("the downloaded brief matches selected records and disappears when those records change", async (t) => {
     const page = await visit(t, { width: 390, height: 844, hash: "#workshop", expandWorkbenches: false });
+    await expect(
+      page.getByRole("group", { name: "The three parts of the example decision brief", exact: true }),
+    ).toBeVisible();
     const example = await page.request.get(new URL("/artifacts/decision-brief.txt", page.url()).href);
     assert.equal(example.status(), 200);
     const exampleText = await example.text();
