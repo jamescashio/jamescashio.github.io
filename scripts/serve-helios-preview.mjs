@@ -14,6 +14,7 @@ const mime = {
   ".js": "text/javascript; charset=utf-8",
   ".css": "text/css; charset=utf-8",
   ".json": "application/json",
+  ".txt": "text/plain; charset=utf-8",
   ".svg": "image/svg+xml",
   ".png": "image/png",
   ".jpg": "image/jpeg",
@@ -58,7 +59,7 @@ http
               .replace("</head>", '<link rel="stylesheet" href="/review-status.css"></head>')
               .replace(
                 /<body([^>]*)>/,
-                `<body$1><aside class="review-status" aria-label="Preview status">V39.4 REVIEW · UNPUBLISHED</aside>`,
+                `<body$1><aside class="review-status" aria-label="Preview status">V39.5 REVIEW · UNPUBLISHED</aside>`,
               ),
           );
         }

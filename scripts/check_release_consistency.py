@@ -523,7 +523,7 @@ def main() -> int:
     parser.add_argument("--preview", action="store_true", help="Validate an explicitly unpublished local preview; never a deployment approval")
     preview = parser.parse_args().preview
     version = "37.17.0-preview.sanctuary" if preview else "37.17.0"
-    package_version = "39.4.0-preview.sanctuary" if preview else "39.4.0"
+    package_version = "39.5.0-preview.sanctuary" if preview else "39.5.0"
     failures: list[str] = []
 
     try:

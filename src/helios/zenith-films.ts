@@ -1,4 +1,4 @@
-import type { FilmCollection, FilmDefinition } from "../odyssey/lensing-film";
+import type { FilmCollection, FilmDefinition } from "../odyssey/film-catalog";
 
 function film(title: string, slug: string, description: string, loopable = true): FilmDefinition {
   return {

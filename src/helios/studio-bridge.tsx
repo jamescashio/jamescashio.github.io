@@ -46,6 +46,9 @@ export default function Studio({ motion, hash, onClose, onNavigate }: StudioOpti
           motion={activeMotion}
           initialClip={hash.split("=")[1] || "lightwake"}
           additionalCollections={ZENITH_COLLECTIONS}
+          onClipChange={(id) =>
+            history.replaceState(history.state, "", `${location.pathname}${location.search}#film=${id}`)
+          }
           onClose={onClose}
           onExplore={() => onNavigate("#lensing")}
           onSignature={() => onNavigate("#signature")}
