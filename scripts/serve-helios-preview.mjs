@@ -59,7 +59,7 @@ http
               .replace("</head>", '<link rel="stylesheet" href="/review-status.css"></head>')
               .replace(
                 /<body([^>]*)>/,
-                `<body$1><aside class="review-status" aria-label="Preview status">V39.7 REVIEW · UNPUBLISHED</aside>`,
+                `<body$1><aside class="review-status" aria-label="Preview status">V39.8 REVIEW · UNPUBLISHED</aside>`,
               ),
           );
         }

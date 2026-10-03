@@ -1,5 +1,15 @@
 # Changelog
 
+## V39.8 · Prime Directive
+
+Named for the Star Trek rule, and for the house rule that runs this lab: work smarter, not harder.
+
+- Lead with "The machines can think. You still decide." The headline now states the site's thesis: capable tools, human judgment.
+- The gold headline line catches one sweep of light after the page settles. The text color never changes, so contrast holds.
+- Room cards lean toward a fine pointer and catch a soft glare where it rests. Touch and reduced motion keep the flat card.
+- Section labels draw a short cyan signal line the first time they come into view.
+- All new motion ships in the deferred stylesheet, so the entry stylesheet keeps its 19,000 byte budget.
+
 ## V39.7 · Universal Translator
 
 Named for the Star Trek device that lets every listener hear the same words in their own language.

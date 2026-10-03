@@ -1,5 +1,6 @@
 /* Below the fold refinements, adopted after first paint so the entry stylesheet keeps its budget. */
 .room-card {
+  position: relative;
   overflow: hidden;
 }
 .room-art {
@@ -115,6 +116,96 @@
 }
 @media (max-width: 520px) {
   .depth-label {
+    display: none;
+  }
+}
+/* Headline sheen: a single pass of light over the gold line. The text itself never changes color. */
+.hero h1 .em.has-sheen {
+  position: relative;
+  display: inline-block;
+}
+.hero h1 .em.has-sheen::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  color: transparent;
+  background: linear-gradient(105deg, transparent 38%, color-mix(in srgb, #fff 80%, transparent) 50%, transparent 62%);
+  background-size: 260% 100%;
+  background-position: 130% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  pointer-events: none;
+  animation: sheen-pass 1.8s 0.4s var(--ease-ui) both;
+}
+@keyframes sheen-pass {
+  to {
+    background-position: -130% 0;
+  }
+}
+/* Room cards: gentle lean and pointer glare on fine pointers. */
+.room-cards {
+  perspective: 1100px;
+}
+.room-card {
+  transform-style: preserve-3d;
+  transition:
+    transform 0.5s var(--ease-ui),
+    box-shadow 0.5s var(--ease-ui),
+    border-color 0.3s;
+}
+.room-card.is-tilting {
+  transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translateY(-4px);
+  box-shadow:
+    0 22px 48px -24px #000,
+    0 0 0 1px color-mix(in srgb, var(--gold) 45%, transparent);
+  transition:
+    transform 0.12s linear,
+    box-shadow 0.3s var(--ease-ui);
+}
+.room-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    420px circle at var(--glare-x, 50%) var(--glare-y, 0%),
+    color-mix(in srgb, #fff 9%, transparent),
+    transparent 55%
+  );
+  opacity: 0;
+  transition: opacity 0.35s;
+  pointer-events: none;
+}
+.room-card.is-tilting::after {
+  opacity: 1;
+}
+/* Section labels: a short cyan signal line draws in on first view. */
+main .kick {
+  position: relative;
+}
+main .kick::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 36px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--cyan), transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.9s var(--ease-ui) 0.15s;
+}
+main .kick.is-seen::after {
+  transform: scaleX(1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .room-card,
+  main .kick::after {
+    transition: none;
+  }
+  .hero h1 .em.has-sheen::after {
+    animation: none;
     display: none;
   }
 }

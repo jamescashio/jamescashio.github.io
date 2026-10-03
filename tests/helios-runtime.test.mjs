@@ -457,7 +457,7 @@ for (const width of [1440, 768, 390, 320])
     const page = await visit(t, { width, height: width > 700 ? 1000 : 844 });
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width, "no horizontal page overflow");
     await expect(page.locator("main")).toHaveCount(1);
-    await expect(page.locator("h1")).toContainText("Small lab.");
+    await expect(page.locator("h1")).toContainText("The machines");
     const targetFloor = width <= 900 ? 44 : 24;
     for (const target of await page.locator("footer nav a, footer summary, #study-source").all()) {
       if (await target.isVisible()) {
