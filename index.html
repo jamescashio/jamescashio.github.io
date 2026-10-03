@@ -198,7 +198,11 @@
               >Try an experiment <span aria-hidden="true">→</span></a
             >
           </div>
-          <p class="cta-note">30 second flight · 12 illustrated requests · sound off</p>
+          <p class="cta-note">A 30 second starship tour · 12 illustrated requests · sound off</p>
+          <p class="tech-note" data-tech hidden>
+            <span class="tech-tag">FOR ENGINEERS</span> A static site on GitHub Pages behind Cloudflare. Every
+            experiment runs in your browser; nothing you try is sent to my servers.
+          </p>
           <a class="hero-intro" href="/assets/celestial/helios-arrival.mp4" data-scene-route="#film=intro"
             ><span aria-hidden="true">▷</span> Watch the intro <span class="hero-intro-time">· 6 seconds</span></a
           >
@@ -210,13 +214,18 @@
       <section class="block thesis py-48-80" id="workshop" aria-labelledby="workshop-title">
         <div class="wrap profile-strip workshop-note">
           <h2 id="workshop-title">Built at home. Open to inspect.</h2>
+          <div class="depth-switch" role="group" aria-label="How much detail to show" hidden>
+            <span class="depth-label">Read this page</span>
+            <button type="button" class="depth-opt" data-depth="plain" aria-pressed="true">Plain English</button>
+            <button type="button" class="depth-opt" data-depth="tech" aria-pressed="false">Technical detail</button>
+          </div>
           <article class="proof-feature" aria-labelledby="proof-title">
             <div class="proof-copy">
-              <p class="kick gold">FROM THE WORKSHOP · OCTOBER 2, 2026</p>
+              <p class="kick gold">FROM THE WORKSHOP · OCTOBER 3, 2026</p>
               <h3 id="proof-title">A backup that keeps up with the work.</h3>
               <p>
-                A backup is only useful if you can read it. This one was decrypted on a second host and checked against
-                the original files. The receipt keeps the result open to inspect.
+                A backup only counts if you can get your files back. I restored this one on a second machine and checked
+                every file against the original. The receipt shows exactly what was tested, and what was not.
               </p>
               <ol class="proof-sequence" aria-label="The verification sequence">
                 <li><span>01</span> Capture</li>
@@ -239,16 +248,26 @@
                 />
               </figure>
               <div class="proof-facts">
-                <strong>902</strong><span>files verified after decryption on a second host</span>
+                <strong>902</strong><span>files restored on a second machine and matched to the originals</span>
               </div>
               <p>Files verified September 26, 2026. A live system restore was not performed.</p>
+              <p class="tech-note" data-tech hidden>
+                <span class="tech-tag">FOR ENGINEERS</span> The encrypted archive was decrypted on a second host, 902
+                files were compared with the originals and the archive hash matched. This is file level verification,
+                not a full system restore.
+              </p>
             </div>
           </article>
           <article class="workshop-tool" aria-labelledby="brief-artifact-title">
             <div>
-              <p class="kick gold">A TOOL TO TAKE WITH YOU · OCTOBER 2, 2026</p>
+              <p class="kick gold">A TOOL TO TAKE WITH YOU · OCTOBER 3, 2026</p>
               <h3 id="brief-artifact-title">A brief worth keeping.</h3>
               <p>Choose what matters. Keep the sources and the unknowns attached. Take the decision brief with you.</p>
+              <p class="tech-note" data-tech hidden>
+                <span class="tech-tag">FOR ENGINEERS</span> The brief is assembled in your browser from the choices you
+                make. Each claim keeps its source and date, and open questions stay listed instead of being smoothed
+                over.
+              </p>
               <div class="proof-links">
                 <a href="#build=briefing">Make your brief <span aria-hidden="true">→</span></a>
                 <a href="/artifacts/decision-brief.txt" download="cAshIo-example-brief.txt"
@@ -309,7 +328,7 @@
             <div class="lab-brief">
               <h3 class="kick gold">What runs here</h3>
               <p>
-                Zeus and Apollo are my two servers. HERMES schedules jobs; Atlas is a local model. The experiments below
+                Zeus and Apollo are my two servers. Hermes schedules jobs; Atlas is a local model. The experiments below
                 illustrate the routing rules. The dated evidence shows what was actually observed.
               </p>
               <p>
@@ -320,7 +339,7 @@
           </details>
           <div class="profile-foot">
             <p class="profile-links">
-              <span class="profile-open">Open to speaking, advising and comparing notes.</span
+              <span class="profile-open">Open to speaking, mentoring and comparing notes.</span
               ><a href="#contact">Say hello →</a
               ><a href="https://www.credly.com/users/james-cashio/badges/credly" rel="noopener"
                 >Certifications on Credly ↗</a
@@ -383,7 +402,9 @@
         <div class="wrap stack">
           <span class="kick">FOUR WORLDS</span>
           <h2 id="rooms-h">Pick a world.<br /><span class="cy">Stay a while.</span></h2>
-          <p class="lede muted">Each opens as its own page, with return links at both ends.</p>
+          <p class="lede muted">
+            Fly, tinker, watch or read. Each world opens as its own page and brings you right back.
+          </p>
           <div class="room-cards">
             <a class="room-card" href="/rooms/starship/" data-room-route="#starship"
               ><img
@@ -646,7 +667,7 @@
                   </div>
                   <div class="stack min-w-0 sg-10" id="route-result">
                     <div class="flex justify-between items-baseline">
-                      <span class="mono c-mu">EXAMPLE LANE</span><span class="mono c-cy" id="st-code">QUALIFIED</span>
+                      <span class="mono c-mu">WHERE IT GOES</span><span class="mono c-cy" id="st-code">QUALIFIED</span>
                     </div>
                     <div class="flex items-baseline gap-12 flex-wrap">
                       <h4 class="lane cy m-0" id="st-lane" tabindex="-1">Everyday drafting</h4>
@@ -665,8 +686,9 @@
                   <div class="stack sg-6">
                     <span class="mono c-mu">WHY IT MATTERS</span
                     ><span class="muted copy-note" id="st-takebody"
-                      >Routine work gets a general lane. Evidence requirements change the route. Private information
-                      puts a person in the decision. This is the policy behind the cost control idea.</span
+                      >Everyday work goes to a general model. Asking for sources sends it to a research model. Private
+                      information always brings in a person. That one rule keeps AI costs down without cutting
+                      corners.</span
                     ><a
                       class="fs-13 fw-600"
                       id="study-source"
@@ -727,8 +749,13 @@
             </div>
             <div class="stack">
               <p class="lede">
-                Zeus and Apollo, my two servers, do the work. HERMES, my scheduler, assigns the jobs, and DSH, my
-                operator console, keeps the decisions visible. Follow one request across them.
+                Two servers I own, Zeus and Apollo, do the computing. Hermes, my job scheduler, decides where each task
+                goes, and my operator console (DSH) is where I watch and approve. Follow one request across them.
+              </p>
+              <p class="tech-note" data-tech hidden>
+                <span class="tech-tag">FOR ENGINEERS</span> 2 hosts, 20 containers and 1 virtual machine at the
+                September 26, 2026 observation, with 49 of 56 scheduled jobs enabled. The routing shown here is a
+                deterministic model of the policy, not a live trace of production traffic.
               </p>
             </div>
           </header>
@@ -796,7 +823,7 @@
                       <button type="button" data-request-private="true" aria-pressed="false">Private input</button>
                     </div>
                     <div class="request-decision">
-                      <span class="mono" id="request-decision-label">QUALIFIED LANE</span
+                      <span class="mono" id="request-decision-label">ROUTE CHOSEN</span
                       ><strong id="request-outcome">Workhorse</strong>
                     </div>
                   </div>
@@ -1190,7 +1217,7 @@
                 tabindex="0"
               >
                 <div class="scan"></div>
-                <span class="d">Page updated · <span data-fleet="pageRevised">October 2, 2026</span></span
+                <span class="d">Page updated · <span data-fleet="pageRevised">October 3, 2026</span></span
                 ><span class="d"
                   >Fleet, scheduler and Atlas configuration: September 26. Backup integrity: September 24. Console and
                   routing audit: September 18.</span
@@ -1299,7 +1326,7 @@
           <div class="c6 stack sg-14">
             <p class="lede">
               Bring me your trickiest question about local AI, private data or keeping a human in the loop. I am open to
-              speaking, advising and comparing notes. The answer is probably not 42.
+              speaking, mentoring and comparing notes. The answer is probably not 42.
             </p>
             <div class="flex gap-12 items-center flex-wrap">
               <a
@@ -1407,7 +1434,7 @@
           >The Human Reckoning. Frank Herbert’s <em>Dune</em> taught caution about thinking machines; Douglas Adams’s
           <em>Hitchhiker’s Guide</em> taught the rest: keep a towel handy and don’t panic. Capable tools. Human judgment
           in command.</span
-        ><span class="mono c-gd">V39.6 · The Long View · Directed by Doug Cashio · October 2, 2026</span
+        ><span class="mono c-gd">V39.7 · Universal Translator · Directed by Doug Cashio · October 3, 2026</span
         ><span class="colophon fs-14 c-mu"
           >A personal site. The builds and views here are my own and do not speak for my employer.</span
         >

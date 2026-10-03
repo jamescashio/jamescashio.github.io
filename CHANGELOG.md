@@ -1,5 +1,17 @@
 # Changelog
 
+## V39.7 · Universal Translator
+
+Named for the Star Trek device that lets every listener hear the same words in their own language.
+
+- Add a reading depth switch under the workshop heading. Plain English stays the default; "Technical detail" reveals short engineer notes beside the hero, the backup proof, the decision brief and the system map. The choice is remembered on this device only.
+- Rewrite the backup card in plain terms: the files were restored on a second machine and matched to the originals. The engineer note keeps the decryption, hash and file level scope.
+- Replace routing jargon in visitor copy: "qualified lane" becomes "route chosen," and the trace narration says Hermes picks the route and Zeus does the computing.
+- Explain the system map in one sentence: two servers compute, Hermes decides where tasks go, the operator console is where I watch and approve.
+- Retitle the four worlds lede around what visitors do: fly, tinker, watch or read.
+- The contact and profile lines say "speaking, mentoring and comparing notes."
+- Refresh the page date, release receipt, workshop stamps and sitemap to October 3, 2026. Observations keep their own dates.
+
 ## V39.6 · The Long View
 
 Named for one of the original short films in the Studios collection.

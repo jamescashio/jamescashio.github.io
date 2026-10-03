@@ -15,7 +15,7 @@ test("a saved brief keeps the observation date, source and limited scope", () =>
   assert.match(text, /https:\/\/cashio.us\/evidence\/status.json/);
   assert.match(text, /accountable person/);
   assert.doesNotMatch(text, /THE UNKNOWN|routing counts/);
-  assert.doesNotMatch(text, /October 2, 2026/);
+  assert.doesNotMatch(text, /October 3, 2026/);
 });
 test("unknowns cannot become verified claims and empty input cannot produce a brief", () => {
   assert.equal(briefText(FLEET, []), null);
