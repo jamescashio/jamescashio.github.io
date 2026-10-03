@@ -62,7 +62,38 @@ function setupSheen() {
   line.classList.add("has-sheen");
 }
 
+/**
+ * Marks elements while they are on screen (or once, for one time reveals).
+ * @param {string} selector
+ * @param {string} className
+ * @param {boolean} once
+ */
+function watchView(selector, className, once) {
+  const targets = /** @type {HTMLElement[]} */ ($$(selector));
+  if (!targets.length) return;
+  if (!("IntersectionObserver" in window)) {
+    for (const target of targets) target.classList.add(className);
+    return;
+  }
+  const watcher = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        entry.target.classList.toggle(
+          className,
+          entry.isIntersecting || (once && entry.target.classList.contains(className)),
+        );
+        if (once && entry.isIntersecting) watcher.unobserve(entry.target);
+      }
+    },
+    { threshold: 0.35 },
+  );
+  for (const target of targets) watcher.observe(target);
+}
+
 export function setupFlourish() {
+  // Reduced motion is handled in CSS, so these classes are always safe to set.
+  watchView(".room-card", "in-view", false);
+  watchView(".brief-artifact-preview", "is-seen", true);
   setupTilt();
   setupSignalLines();
   setupSheen();

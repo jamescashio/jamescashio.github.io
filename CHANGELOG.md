@@ -8,6 +8,9 @@ Named for the Star Trek rule, and for the house rule that runs this lab: work sm
 - The gold headline line catches one sweep of light after the page settles. The text color never changes, so contrast holds.
 - Room cards lean toward a fine pointer and catch a soft glare where it rests. Touch and reduced motion keep the flat card.
 - Section labels draw a short cyan signal line the first time they come into view.
+- World art drifts slowly while its card is on screen, and pauses when it scrolls away.
+- The decision brief assembles itself row by row, each number lighting gold as it lands.
+- Dated archive links fold into an "Earlier records" disclosure, so the evidence box leads with the current export.
 - All new motion ships in the deferred stylesheet, so the entry stylesheet keeps its 19,000 byte budget.
 
 ## V39.7 · Universal Translator

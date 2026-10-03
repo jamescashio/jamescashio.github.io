@@ -209,3 +209,98 @@ main .kick.is-seen::after {
     display: none;
   }
 }
+/* Earlier records fold away so the evidence box leads with the current export. */
+.earlier-records {
+  display: inline-block;
+}
+.earlier-records summary {
+  cursor: pointer;
+  color: var(--cyan);
+  font-weight: 600;
+  list-style: none;
+}
+.earlier-records summary::-webkit-details-marker {
+  display: none;
+}
+.earlier-records summary::after {
+  content: " ▸";
+  display: inline-block;
+  transition: transform 0.3s var(--ease-ui);
+}
+.earlier-records[open] summary::after {
+  transform: rotate(90deg);
+}
+.earlier-records a {
+  display: inline-block;
+  margin: 10px 20px 0 0;
+}
+.earlier-records[open] {
+  display: block;
+  flex-basis: 100%;
+}
+/* World art drifts slowly while its card is on screen, like a camera holding on a still. */
+.room-art {
+  scale: 1.06;
+  animation: world-drift 16s ease-in-out infinite alternate paused;
+}
+.room-card.in-view .room-art {
+  animation-play-state: running;
+}
+.room-card:nth-child(2) .room-art {
+  animation-delay: -4s;
+}
+.room-card:nth-child(3) .room-art {
+  animation-delay: -8s;
+}
+.room-card:nth-child(4) .room-art {
+  animation-delay: -12s;
+}
+@keyframes world-drift {
+  from {
+    translate: -1.6% -1%;
+  }
+  to {
+    translate: 1.6% 1%;
+  }
+}
+/* The decision brief assembles itself: each row slides in and its number lights up. */
+.brief-artifact-preview li {
+  opacity: 0;
+  transform: translateX(-10px);
+  transition:
+    opacity 0.5s var(--ease-ui),
+    transform 0.5s var(--ease-ui);
+}
+.brief-artifact-preview.is-seen li {
+  opacity: 1;
+  transform: none;
+}
+.brief-artifact-preview.is-seen li:nth-child(2) {
+  transition-delay: 0.18s;
+}
+.brief-artifact-preview.is-seen li:nth-child(3) {
+  transition-delay: 0.36s;
+}
+.brief-artifact-preview.is-seen li > span:first-child {
+  animation: brief-glow 1.2s var(--ease-ui) both;
+}
+@keyframes brief-glow {
+  40% {
+    color: var(--gold);
+    text-shadow: 0 0 12px color-mix(in srgb, var(--gold) 60%, transparent);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .room-art {
+    animation: none;
+    scale: none;
+  }
+  .brief-artifact-preview li {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .brief-artifact-preview.is-seen li > span:first-child {
+    animation: none;
+  }
+}
