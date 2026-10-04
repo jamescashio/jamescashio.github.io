@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "title": "Encrypted console snapshot",
+  "classification": "Redacted execution receipt, not a live status feed",
+  "executingSystem": "DeepSeek Harness operations tooling",
+  "trigger": "Daily schedule configured for 3:45 AM America/Chicago in a retained September 18, 2026 registration receipt. A snapshot gap on September 24 means uninterrupted daily success is not claimed.",
+  "lane": "Backup script and local file verification; no AI routing claim",
+  "receiptCreatedAtUtc": "2026-10-03T08:45:08.043550Z",
+  "receiptDateLong": "October 3, 2026 at 3:45 AM Central Daylight Time",
+  "status": "verified",
+  "encryptedBytes": 137505974,
+  "encryptedSha256": "9464354736d8d9fc2d95c56575e6563b97adc67eb2ab2908cf1f3c14a1835adb",
+  "restoredFilesVerified": 990,
+  "restoredBytesVerified": 223050843,
+  "secondHostDecryptionHashMatched": true,
+  "liveRestorePerformed": false,
+  "outputExcerpt": [
+    "\"status\": \"verified\",",
+    "\"restored_files_verified\": 990,",
+    "\"live_restore_performed\": false,"
+  ],
+  "sourceKind": "Owner supplied execution receipt, checked against the local original and the backup tool source",
+  "scope": "Operator console files only. File readability is not proof that a running system or the fleet can be rebuilt.",
+  "redactions": "Storage paths, host identifiers, identity paths and model or provider details are withheld.",
+  "buildStory": {
+    "problem": "The tool documentation records that a fixed source revision prevented snapshots after the project advanced.",
+    "change": "Archive the current revision while checking that it stays stable during the snapshot. Include installed skills, agent presets and operations scripts.",
+    "result": "The October 3 execution receipt records 990 verified files and a matching archive hash from decryption on a second host.",
+    "limitation": "The original failure is documented in source comments. The successful run is evidenced by a receipt; no live system restore was performed."
+  }
+}

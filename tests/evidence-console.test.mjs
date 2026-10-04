@@ -56,12 +56,11 @@ test("Individual facts retain their audit date instead of inheriting the later f
   for (const command of ["dsh", "routes"]) {
     const reply = evidenceReply(command).join(" ");
     assert.match(reply, /September 18, 2026/);
-    assert.doesNotMatch(reply, /September 26, 2026/);
+    assert.doesNotMatch(reply, /October 3, 2026/);
   }
   for (const command of ["fleet", "hosts", "atlas", "hermes"])
-    assert.match(evidenceReply(command).join(" "), /September 26, 2026/);
-  assert.match(evidenceReply("backups").join(" "), /September 24, 2026/);
-  assert.doesNotMatch(evidenceReply("backups").join(" "), /September 26, 2026/);
+    assert.match(evidenceReply(command).join(" "), /October 3, 2026/);
+  assert.match(evidenceReply("backups").join(" "), /October 3, 2026/);
   assert.match(evidenceReply("hermes").join(" "), /49 enabled of 56 retained definitions/);
   assert.match(evidenceReply("atlas").join(" "), /Primary local model configuration/);
   assert.match(evidenceReply("atlas").join(" "), /settings read, not an inference test/);

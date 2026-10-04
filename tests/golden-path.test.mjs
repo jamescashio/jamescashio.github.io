@@ -9,13 +9,14 @@ import { FILM_DESTINATIONS } from "../src/helios/film-destinations.js";
 test("a saved brief keeps the observation date, source and limited scope", () => {
   const text = briefText(FLEET, ["fleet", "authority"]);
   assert.match(text, /20 containers and 1 virtual machine/);
-  assert.match(text, /September 26, 2026/);
+  assert.match(text, /October 3, 2026/);
   assert.match(text, /does not establish service health or recovery/);
   assert.match(text, /Source: Dated export/);
   assert.match(text, /https:\/\/cashio.us\/evidence\/status.json/);
   assert.match(text, /accountable person/);
   assert.doesNotMatch(text, /THE UNKNOWN|routing counts/);
-  assert.doesNotMatch(text, /October 2, 2026/);
+  // The observation and the page revision share a date this release; the brief still cites only the observation.
+  assert.doesNotMatch(text, /Page updated/);
 });
 test("unknowns cannot become verified claims and empty input cannot produce a brief", () => {
   assert.equal(briefText(FLEET, []), null);

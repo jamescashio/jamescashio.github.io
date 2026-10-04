@@ -13,20 +13,20 @@ export function describeRequest(experiment) {
     labels: held
       ? [
           "Human intent leaves the operator",
-          "HERMES detects private input",
+          "Hermes spots private input",
           "The external route is held",
           "The decision returns to the operator",
         ]
       : [
           "Human intent leaves the operator",
-          `HERMES qualifies the ${route.lane} lane`,
+          `Hermes picks the ${route.lane} route`,
           "Zeus receives the work",
           "Result returns for human review",
         ],
     nodes: held ? ["operator", "hermes", "hermes", "operator"] : ["operator", "hermes", "zeus", "operator"],
     summary: held
       ? "Privacy changed the decision. The external route is held for a person; the compute step is skipped."
-      : `${route.lane} is the qualified lane. Zeus stands in for the compute step.`,
+      : `Hermes picks the ${route.lane} route, and Zeus does the computing.`,
     segments: held
       ? [
           [0, 1.8, "operator", "hermes", 0],
@@ -118,7 +118,7 @@ export function createAtlasTrace({ isMotionEnabled, onSchedule }) {
     $("#request-source").textContent =
       `${experiment.intent[0].toUpperCase() + experiment.intent.slice(1)} · ${experiment.sources ? "sources required" : "sources optional"}`;
     $("#request-outcome").textContent = request.route.lane;
-    $("#request-decision-label").textContent = request.held ? "PRIVACY BOUNDARY" : "QUALIFIED LANE";
+    $("#request-decision-label").textContent = request.held ? "PRIVACY BOUNDARY" : "ROUTE CHOSEN";
     $("#request-summary").textContent = request.summary;
     $("#request-continue").href = request.href;
     $("#request-continue").textContent =

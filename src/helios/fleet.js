@@ -1,25 +1,25 @@
 // Published observations stay dated; pageRevised is the interface date.
 export const FLEET = {
-  observedLong: "September 26, 2026",
-  observedShort: "Sep 26",
+  observedLong: "October 3, 2026",
+  observedShort: "Oct 3",
   method: "cluster API, read only",
   hosts: 2,
   lxc: 20,
   qemu: 1,
   quorate: true,
   routing: "Not verified",
-  pageRevised: "October 2, 2026",
+  pageRevised: "October 3, 2026",
   auditLong: "September 18, 2026",
   consoleBriefLong: "September 8, 2026",
   // Backup coverage counts and per host guest counts stay out of the public record.
   backups: {
     integrity: "every snapshot on record passed verification",
-    checkedLong: "September 24, 2026",
+    checkedLong: "October 3, 2026",
     restoreTested: null,
   },
   // Exact software versions, kernels and the model tag stay out of the public record.
-  atlas: { context: 16384, observedLong: "September 26, 2026" },
-  hermes: { jobs: 49, records: 56, observedLong: "September 26, 2026", budgetPeriod: "September 2026" },
+  atlas: { context: 16384, observedLong: "October 3, 2026" },
+  hermes: { jobs: 49, records: 56, observedLong: "October 3, 2026", budgetPeriod: "October 2026" },
   prior: {
     release: "V37.11",
     fleetLong: "September 7, 2026",

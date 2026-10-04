@@ -2,7 +2,7 @@
 
 Describe the public-facing outcome and why this is the smallest safe change that achieves it.
 
-## Prime Directive
+## First Light
 
 - [ ] This change works smarter, not harder: it removes duplication, automates repetition, or simplifies maintenance.
 - [ ] The change is narrowly scoped and does not replace working components unnecessarily.

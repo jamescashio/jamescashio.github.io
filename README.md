@@ -1,8 +1,12 @@
-# cAshIo V39.6 · Helios / The Long View
+# cAshIo V39.8 · Helios / First Light
 
 The public front door is **[cashio.us](https://cashio.us/)**. The root serves the current orbital workshop directly from `index.html` and `src/helios/`. Former `/v38/` addresses normalize to the root and keep their requested section or scene.
 
-V39.6 puts the four worlds right under the workshop, wakes the cAshIo signature when it comes into view, counts up the verified backup files, gives Studios its own film still, refreshes every page date to October 2, 2026, and removes hyphens and dashes from visitor copy. The hero now places the start of my IT career in 1996, the year Quake went truly 3D.
+V39.8 leads with the headline "The machines can think. You still decide." and adds polish: a single light sweep across the gold line, room cards that lean toward the pointer with a soft glare, and section labels that draw a cyan signal line on first view. All of it stands down for reduced motion.
+
+**Earlier V39.7 work** makes the page readable at two depths. Plain English stays the default; a "Technical detail" switch adds short engineer notes beside the same copy. Routing labels now use everyday words, the backup and system map copy explain what happened in plain terms, and every page date reads October 3, 2026.
+
+**Earlier V39.6 work** puts the four worlds right under the workshop, wakes the cAshIo signature when it comes into view, counts up the verified backup files, gives Studios its own film still, refreshes every page date to October 2, 2026, and removes hyphens and dashes from visitor copy. The hero now places the start of my IT career in 1996, the year Quake went truly 3D.
 
 **Earlier V39.5 work** adds direct film paths in Studios, searchable film titles and an optional next-film trail. The workbench produces a downloadable decision brief that preserves selected sources and unknowns. The film catalog and playback controller have separate owners. Original artwork, media, quiet startup, dated observations, reading editions and the 19,000 byte entry CSS budget remain intact. See [the release notes](CHANGELOG.md) for the complete change.
 

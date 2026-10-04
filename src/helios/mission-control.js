@@ -52,7 +52,7 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
     ],
     [
       "Backup repair and receipt",
-      "902 files verified; no live system restore was performed.",
+      "990 files verified; no live system restore was performed.",
       "#snapshot-story",
       "backup snapshot archive decrypt verification",
     ],

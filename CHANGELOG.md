@@ -1,5 +1,36 @@
 # Changelog
 
+## V39.8 · First Light
+
+Named for an observatory's first light: the first image a telescope takes after it is built. Every fact on the front page was observed again on October 3, 2026.
+
+- Refresh the public record to October 3, 2026 from a read only fleet probe: 2 hosts online and quorate, 20 containers and 1 virtual machine running, 49 of 56 scheduled jobs enabled, Atlas configured window 16,384 tokens, and every backup snapshot passed verification.
+- Publish the October 3 backup receipt: 990 files restored on a second machine and matched to the originals, with the archive hash confirmed. No live system restore was performed.
+- Archive the September 26 record and add it to Earlier records. Every date visible on the front page now reads October 2026; earlier dates live only inside the archive disclosures.
+
+- Lead with "The machines can think. You still decide." The headline now states the site's thesis: capable tools, human judgment.
+- The gold headline line catches one sweep of light after the page settles. The text color never changes, so contrast holds.
+- Room cards lean toward a fine pointer and catch a soft glare where it rests. Touch and reduced motion keep the flat card.
+- Section labels draw a short cyan signal line the first time they come into view.
+- World art drifts slowly while its card is on screen, and pauses when it scrolls away.
+- The decision brief assembles itself row by row, each number lighting gold as it lands.
+- Dated archive links fold into an "Earlier records" disclosure, so the evidence box leads with the current export.
+- All new motion ships in the deferred stylesheet, so the entry stylesheet keeps its 19,000 byte budget.
+- Honor the Motion control for room card tilt and glare, including a saved Motion off choice and device preference changes during a visit.
+- Refresh browser checks for the October 3 fleet record and 990 file receipt; add regression checks for motion toggling and saved preferences.
+
+## V39.7 · Universal Translator
+
+Named for the Star Trek device that lets every listener hear the same words in their own language.
+
+- Add a reading depth switch under the workshop heading. Plain English stays the default; "Technical detail" reveals short engineer notes beside the hero, the backup proof, the decision brief and the system map. The choice is remembered on this device only.
+- Rewrite the backup card in plain terms: the files were restored on a second machine and matched to the originals. The engineer note keeps the decryption, hash and file level scope.
+- Replace routing jargon in visitor copy: "qualified lane" becomes "route chosen," and the trace narration says Hermes picks the route and Zeus does the computing.
+- Explain the system map in one sentence: two servers compute, Hermes decides where tasks go, the operator console is where I watch and approve.
+- Retitle the four worlds lede around what visitors do: fly, tinker, watch or read.
+- The contact and profile lines say "speaking, mentoring and comparing notes."
+- Refresh the page date, release receipt, workshop stamps and sitemap to October 3, 2026. Observations keep their own dates.
+
 ## V39.6 · The Long View
 
 Named for one of the original short films in the Studios collection.

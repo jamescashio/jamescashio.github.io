@@ -1,5 +1,6 @@
 /* Below the fold refinements, adopted after first paint so the entry stylesheet keeps its budget. */
 .room-card {
+  position: relative;
   overflow: hidden;
 }
 .room-art {
@@ -27,5 +28,279 @@
 @media (prefers-reduced-motion: reduce) {
   .room-art {
     transition: none;
+  }
+}
+/* Reading depth: plain English by default, short engineer notes on request. */
+.depth-switch {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  align-self: flex-start;
+  justify-self: start;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 14px 0 6px;
+  padding: 5px;
+  border: 1px solid var(--line2);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--panel) 80%, transparent);
+}
+.depth-switch[hidden] {
+  display: none;
+}
+.depth-label {
+  padding: 0 10px 0 12px;
+  font: 500 12px/1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.depth-opt {
+  min-height: 40px;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink2);
+  font: 600 15px/1.2 var(--sans);
+  cursor: pointer;
+  transition:
+    background 0.3s var(--ease-ui),
+    color 0.3s var(--ease-ui),
+    box-shadow 0.3s var(--ease-ui);
+}
+.depth-opt:hover {
+  color: var(--ink);
+}
+.depth-opt[aria-pressed="true"] {
+  background: var(--gold);
+  color: #0a0f18;
+  box-shadow: 0 0 18px color-mix(in srgb, var(--gold) 35%, transparent);
+}
+.depth-opt:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+.tech-note {
+  margin: 10px 0 0;
+  padding: 10px 14px;
+  border-left: 3px solid var(--cyan);
+  border-radius: 0 10px 10px 0;
+  background: color-mix(in srgb, var(--cyan) 7%, transparent);
+  color: var(--ink2);
+  font-size: 15px;
+  line-height: 1.55;
+  max-width: 68ch;
+  animation: tech-in 0.45s var(--ease-ui) both;
+}
+.tech-tag {
+  display: inline-block;
+  margin-right: 6px;
+  font: 600 11px/1 var(--mono);
+  letter-spacing: 0.14em;
+  color: var(--cyan);
+}
+@keyframes tech-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tech-note,
+  .depth-opt {
+    animation: none;
+    transition: none;
+  }
+}
+@media (max-width: 520px) {
+  .depth-label {
+    display: none;
+  }
+}
+/* Headline sheen: a single pass of light over the gold line. The text itself never changes color. */
+.hero h1 .em.has-sheen {
+  position: relative;
+  display: inline-block;
+}
+.hero h1 .em.has-sheen::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  color: transparent;
+  background: linear-gradient(105deg, transparent 38%, color-mix(in srgb, #fff 80%, transparent) 50%, transparent 62%);
+  background-size: 260% 100%;
+  background-position: 130% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  pointer-events: none;
+  animation: sheen-pass 1.8s 0.4s var(--ease-ui) both;
+}
+@keyframes sheen-pass {
+  to {
+    background-position: -130% 0;
+  }
+}
+/* Room cards: gentle lean and pointer glare on fine pointers. */
+.room-cards {
+  perspective: 1100px;
+}
+.room-card {
+  transform-style: preserve-3d;
+  transition:
+    transform 0.5s var(--ease-ui),
+    box-shadow 0.5s var(--ease-ui),
+    border-color 0.3s;
+}
+.room-card.is-tilting {
+  transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translateY(-4px);
+  box-shadow:
+    0 22px 48px -24px #000,
+    0 0 0 1px color-mix(in srgb, var(--gold) 45%, transparent);
+  transition:
+    transform 0.12s linear,
+    box-shadow 0.3s var(--ease-ui);
+}
+.room-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    420px circle at var(--glare-x, 50%) var(--glare-y, 0%),
+    color-mix(in srgb, #fff 9%, transparent),
+    transparent 55%
+  );
+  opacity: 0;
+  transition: opacity 0.35s;
+  pointer-events: none;
+}
+.room-card.is-tilting::after {
+  opacity: 1;
+}
+/* Section labels: a short cyan signal line draws in on first view. */
+main .kick {
+  position: relative;
+}
+main .kick::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 36px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--cyan), transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.9s var(--ease-ui) 0.15s;
+}
+main .kick.is-seen::after {
+  transform: scaleX(1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .room-card,
+  main .kick::after {
+    transition: none;
+  }
+  .hero h1 .em.has-sheen::after {
+    animation: none;
+    display: none;
+  }
+}
+/* Earlier records fold away so the evidence box leads with the current export. */
+.earlier-records {
+  display: inline-block;
+}
+.earlier-records summary {
+  cursor: pointer;
+  color: var(--cyan);
+  font-weight: 600;
+  list-style: none;
+}
+.earlier-records summary::-webkit-details-marker {
+  display: none;
+}
+.earlier-records summary::after {
+  content: " ▸";
+  display: inline-block;
+  transition: transform 0.3s var(--ease-ui);
+}
+.earlier-records[open] summary::after {
+  transform: rotate(90deg);
+}
+.earlier-records a {
+  display: inline-block;
+  margin: 10px 20px 0 0;
+}
+.earlier-records[open] {
+  display: block;
+  flex-basis: 100%;
+}
+/* World art drifts slowly while its card is on screen, like a camera holding on a still. */
+.room-art {
+  scale: 1.06;
+  animation: world-drift 16s ease-in-out infinite alternate paused;
+}
+.room-card.in-view .room-art {
+  animation-play-state: running;
+}
+.room-card:nth-child(2) .room-art {
+  animation-delay: -4s;
+}
+.room-card:nth-child(3) .room-art {
+  animation-delay: -8s;
+}
+.room-card:nth-child(4) .room-art {
+  animation-delay: -12s;
+}
+@keyframes world-drift {
+  from {
+    translate: -1.6% -1%;
+  }
+  to {
+    translate: 1.6% 1%;
+  }
+}
+/* The decision brief assembles itself: each row slides in and its number lights up. */
+.brief-artifact-preview li {
+  opacity: 0;
+  transform: translateX(-10px);
+  transition:
+    opacity 0.5s var(--ease-ui),
+    transform 0.5s var(--ease-ui);
+}
+.brief-artifact-preview.is-seen li {
+  opacity: 1;
+  transform: none;
+}
+.brief-artifact-preview.is-seen li:nth-child(2) {
+  transition-delay: 0.18s;
+}
+.brief-artifact-preview.is-seen li:nth-child(3) {
+  transition-delay: 0.36s;
+}
+.brief-artifact-preview.is-seen li > span:first-child {
+  animation: brief-glow 1.2s var(--ease-ui) both;
+}
+@keyframes brief-glow {
+  40% {
+    color: var(--gold);
+    text-shadow: 0 0 12px color-mix(in srgb, var(--gold) 60%, transparent);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .room-art {
+    animation: none;
+    scale: none;
+  }
+  .brief-artifact-preview li {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .brief-artifact-preview.is-seen li > span:first-child {
+    animation: none;
   }
 }
