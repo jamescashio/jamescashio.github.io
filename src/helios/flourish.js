@@ -7,12 +7,28 @@ const reduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
  * Touch, coarse pointers and reduced motion keep the flat card.
  */
 function setupTilt() {
-  if (reduced() || !matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  const finePointer = matchMedia("(hover: hover) and (pointer: fine)");
+  const enabled = () => finePointer.matches && !reduced() && !document.documentElement.classList.contains("motion-off");
   for (const card of /** @type {HTMLElement[]} */ ($$(".room-card"))) {
     let frame = 0;
+    const reset = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      card.classList.remove("is-tilting");
+      for (const property of ["--tilt-x", "--tilt-y", "--glare-x", "--glare-y"]) card.style.removeProperty(property);
+    };
     card.addEventListener("pointermove", (event) => {
+      if (!enabled() || event.pointerType === "touch") {
+        reset();
+        return;
+      }
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
+        frame = 0;
+        if (!enabled()) {
+          reset();
+          return;
+        }
         const box = card.getBoundingClientRect();
         const x = (event.clientX - box.left) / box.width;
         const y = (event.clientY - box.top) / box.height;
@@ -23,12 +39,11 @@ function setupTilt() {
         card.classList.add("is-tilting");
       });
     });
-    card.addEventListener("pointerleave", () => {
-      cancelAnimationFrame(frame);
-      card.classList.remove("is-tilting");
-      card.style.removeProperty("--tilt-x");
-      card.style.removeProperty("--tilt-y");
+    card.addEventListener("pointerleave", reset);
+    window.addEventListener("helios-motion", (event) => {
+      if (!event.detail) reset();
     });
+    finePointer.addEventListener("change", reset);
   }
 }
 

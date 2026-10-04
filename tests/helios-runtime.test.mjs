@@ -69,6 +69,12 @@ async function choose(page, id) {
   await page.locator(`#study-${id}`).click();
   await expect(page.locator(`#study-${id}`)).toHaveAttribute("aria-selected", "true");
 }
+async function hasCardTilt(card) {
+  return card.evaluate((element) => {
+    const matrix = new DOMMatrixReadOnly(getComputedStyle(element).transform);
+    return [matrix.m13, matrix.m23, matrix.m31, matrix.m32].some((value) => Math.abs(value) > 0.0001);
+  });
+}
 registerGoldenPathChecks({ visit, audit, output });
 
 test("Flight scene pause stops motion and the tour without losing the visitor's choices", async (t) => {
@@ -140,12 +146,18 @@ test("Featured work leads by keyboard to the dated receipt and preserves the per
     .getByRole("link", { name: "See real work" })
     .click();
   await expect(page.locator("#workshop-title")).toBeFocused();
-  await expect(page.locator(".proof-result")).toContainText("902");
+  await expect(page.locator(".proof-result")).toContainText("990");
   await expect(page.locator(".proof-result")).toContainText("A live system restore was not performed.");
   await page.locator('.proof-feature a[href="#snapshot-story"]').press("Enter");
   await expect(page.locator("#snapshot-story")).toHaveAttribute("open", "");
   await expect(page.locator("#snapshot-story h3")).toBeFocused();
-  await expect(page.locator('#snapshot-story a[href="/evidence/console-snapshot-2026-09-26.json"]')).toBeVisible();
+  const receiptLink = page.locator('#snapshot-story a[href="/evidence/console-snapshot-2026-10-03.json"]');
+  await expect(receiptLink).toBeVisible();
+  const receiptResponse = await page.request.get(new URL(await receiptLink.getAttribute("href"), page.url()).href);
+  assert.equal(receiptResponse.status(), 200);
+  const receipt = await receiptResponse.json();
+  assert.equal(receipt.restoredFilesVerified, 990);
+  assert.equal(receipt.liveRestorePerformed, false);
   await page
     .getByRole("navigation", { name: "Primary", exact: true })
     .getByRole("link", { name: "See real work" })
@@ -733,7 +745,7 @@ test("The full page, atlas, principles, evidence console, hangar and contact sta
     await page.locator(".room-back").click();
     await page.locator("#eve-in").fill("fleet");
     await page.locator("#eve-in").press("Enter");
-    await expect(page.locator("#eve-out")).toContainText("September 26, 2026");
+    await expect(page.locator("#eve-out")).toContainText("October 3, 2026");
     await page.locator("#eve-in").fill("routes");
     await page.locator("#eve-in").press("Enter");
     await expect(page.locator("#eve-out")).toContainText("Routing verification: not established");
@@ -776,7 +788,7 @@ test("Briefing preserves dated evidence and unknowns; empty selections cannot co
   const page = await visit(t, { hash: "#build=briefing" });
   for (const id of ["fleet", "routing", "authority"]) await page.locator(`[data-fact=${id}]`).check();
   await page.locator("[data-compose]").click();
-  await expect(page.locator(".brief-output")).toContainText("September 26, 2026");
+  await expect(page.locator(".brief-output")).toContainText("October 3, 2026");
   await expect(page.locator(".brief-output")).toContainText("remain unverified");
   await expect(page.locator(".brief-output")).toContainText("accountable person");
   for (const id of ["fleet", "routing", "authority"]) await page.locator(`[data-fact=${id}]`).uncheck();
@@ -878,10 +890,52 @@ test("Motion off leaves future sections visible and a system preference change r
   assert.equal(await page.evaluate(() => document.body.style.overflow), "");
 });
 
+test("Room card tilt stops for Motion off and stays off after reload", async (t) => {
+  const page = await visit(t, { motion: "no-preference", hash: "#rooms", expandWorkbenches: false });
+  const card = page.locator('.room-card[data-room-route="#principles"]');
+  await expect(card).toHaveCSS("transform-style", "preserve-3d");
+  await card.hover({ position: { x: 40, y: 40 } });
+  await expect.poll(() => hasCardTilt(card)).toBe(true);
+  // Keyboard activation leaves the pointer on the tilted card while motion changes.
+  await page.locator("#motion-btn").focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#motion-btn")).toHaveAttribute("aria-pressed", "false");
+  await expect.poll(() => hasCardTilt(card)).toBe(false);
+  await expect.poll(() => card.evaluate((element) => getComputedStyle(element, "::after").opacity)).toBe("0");
+  await card.hover({ position: { x: 60, y: 60 } });
+  await expect.poll(() => hasCardTilt(card)).toBe(false);
+  await page.reload({ waitUntil: "networkidle" });
+  await expect(page.locator("#motion-btn")).toHaveAttribute("aria-pressed", "false");
+  await expect(card).toHaveCSS("transform-style", "preserve-3d");
+  await card.hover({ position: { x: 40, y: 40 } });
+  await expect.poll(() => hasCardTilt(card)).toBe(false);
+  await page.locator("#motion-btn").focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#motion-btn")).toHaveAttribute("aria-pressed", "true");
+  await card.hover({ position: { x: 60, y: 60 } });
+  await expect.poll(() => hasCardTilt(card)).toBe(true);
+});
+
+test("Room card tilt follows device preference changes after a reduced motion first visit", async (t) => {
+  const page = await visit(t, { motion: "reduce", hash: "#rooms", expandWorkbenches: false });
+  const card = page.locator('.room-card[data-room-route="#principles"]');
+  await expect(card).toHaveCSS("transform-style", "preserve-3d");
+  await card.hover({ position: { x: 40, y: 40 } });
+  await expect.poll(() => hasCardTilt(card)).toBe(false);
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(page.locator("#motion-btn")).toHaveAttribute("aria-pressed", "true");
+  await card.hover({ position: { x: 60, y: 60 } });
+  await expect.poll(() => hasCardTilt(card)).toBe(true);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(page.locator("#motion-btn")).toHaveAttribute("aria-pressed", "false");
+  await expect.poll(() => hasCardTilt(card)).toBe(false);
+  await expect.poll(() => card.evaluate((element) => getComputedStyle(element, "::after").opacity)).toBe("0");
+});
+
 test("Legacy hash entry, production evidence and unavailable WebGL remain usable", async (t) => {
   const page = await visit(t);
   const data = await page.request.get(new URL("/v38/status.json", url).href);
-  assert.equal((await data.json()).provenance.observedAtUtc, "2026-09-26T21:53:24.866694Z");
+  assert.equal((await data.json()).provenance.observedAtUtc, "2026-10-03T23:37:05Z");
   const context = await browser.newContext({ reducedMotion: "reduce" });
   t.after(() => context.close());
   await context.addInitScript(() => {

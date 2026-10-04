@@ -16,6 +16,8 @@ Named for an observatory's first light: the first image a telescope takes after 
 - The decision brief assembles itself row by row, each number lighting gold as it lands.
 - Dated archive links fold into an "Earlier records" disclosure, so the evidence box leads with the current export.
 - All new motion ships in the deferred stylesheet, so the entry stylesheet keeps its 19,000 byte budget.
+- Honor the Motion control for room card tilt and glare, including a saved Motion off choice and device preference changes during a visit.
+- Refresh browser checks for the October 3 fleet record and 990 file receipt; add regression checks for motion toggling and saved preferences.
 
 ## V39.7 · Universal Translator
 

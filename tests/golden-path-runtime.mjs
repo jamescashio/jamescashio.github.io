@@ -129,7 +129,7 @@ export function registerGoldenPathChecks({ visit, audit, output }) {
     const example = await page.request.get(new URL("/artifacts/decision-brief.txt", page.url()).href);
     assert.equal(example.status(), 200);
     const exampleText = await example.text();
-    assert.match(exampleText, /September 26, 2026/);
+    assert.match(exampleText, /October 3, 2026/);
     assert.match(exampleText, /remain unverified/);
     await page.getByRole("link", { name: "Make your brief", exact: false }).press("Enter");
     await expect(page.locator("#st-name")).toBeFocused();
