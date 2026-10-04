@@ -1,9 +1,9 @@
 {
   "release": "V39.2 Zenith",
-  "revised": "2026-10-03",
+  "revised": "2026-09-26",
   "status": "live-read-only-observation",
-  "verified": "2026-10-03",
-  "verifiedLong": "October 3, 2026",
+  "verified": "2026-09-26",
+  "verifiedLong": "September 26, 2026",
   "expires": null,
   "cluster": {
     "version": null,
@@ -26,7 +26,7 @@
   },
   "routingVerified": null,
   "law": "Quality picks the model. Cost only breaks a tie.",
-  "note": "Static public subset of owner authorized read only observations. Fleet and scheduler records were collected October 3, 2026. Atlas is a configuration read, not an inference test. Backup server verification confirmed every snapshot passed. Counts do not establish application health. Private topology, credentials, spending, model tags and backup coverage counts are withheld. Each fact retains its own date; routing remains unverified.",
+  "note": "Static public subset of owner authorized read only observations. Fleet and scheduler records were collected September 26, 2026. Atlas is a configuration read, not an inference test. Backup integrity retains its September 24, 2026 observation because the newer detailed report was not retrieved. Counts do not establish application health. Private topology, credentials, spending, model tags and backup coverage counts are withheld. Each fact retains its own date; routing remains unverified.",
   "withheldReasons": {
     "lanes.public": "No current public lane inventory and execution record were established.",
     "lanes.privateCatalog": "The private model catalog was intentionally withheld from the public fact sheet.",
@@ -52,46 +52,40 @@
     "atlasActiveContext": 16384,
     "backups": {
       "integrity": "every snapshot on record passed verification",
-      "checkedAtUtc": "2026-10-03T10:23:06Z",
+      "checkedAtUtc": "2026-09-24T21:43:20Z",
       "coverage": null,
       "restoreTested": null,
       "restoreScope": "Full fleet recovery is not established. A historical isolated rehearsal on September 10, 2026 recovered one guest operating system and backup application; datastore contents were excluded.",
       "verificationJob": {
-        "lastRunAtUtc": "2026-10-03T11:06:16.128928Z",
+        "lastRunAtUtc": "2026-09-26T11:06:56.005140Z",
         "reportedStatus": "ok",
-        "observedAtUtc": "2026-10-03T23:36:07Z",
-        "limitation": "Scheduler bookkeeping corroborated by the live backup server verification task result."
+        "observedAtUtc": "2026-09-26T21:53:18.552712Z",
+        "limitation": "Scheduler bookkeeping only. The detailed report was not retrieved; this does not refresh the integrity observation."
       }
     },
-    "budgetPeriod": "2026-10",
-    "hermesJobsObservedAtUtc": "2026-10-03T23:36:07Z",
+    "budgetPeriod": "2026-09",
+    "hermesJobsObservedAtUtc": "2026-09-26T21:53:18.552712Z",
     "hermesJobsScope": "49 enabled jobs in 56 retained scheduler definitions, including 7 disabled definitions. This is not a count of successful executions.",
     "atlasConfiguration": "Primary local model configuration",
-    "atlasConfigurationObservedAtUtc": "2026-10-03T23:37:05Z",
+    "atlasConfigurationObservedAtUtc": "2026-09-26T21:53:27.252617Z",
     "atlasContextMethod": "Configured token window. Other configurations on this host may differ. No inference was run."
   },
   "provenance": {
-    "observedAtUtc": "2026-10-03T23:37:05Z",
-    "observedAtAmericaChicago": "2026-10-03T18:37:05-05:00",
+    "observedAtUtc": "2026-09-26T21:53:24.866694Z",
+    "observedAtAmericaChicago": "2026-09-26T16:53:24.866694-05:00",
     "methods": {
       "cluster": "Read only cluster and guest records from both nodes, corroborated by a separate cluster guest API read.",
-      "backups": "October 3 backup server verification task result read directly; every snapshot passed.",
+      "backups": "September 24 snapshot verification listing retained. September 26 scheduler result is separately dated and does not replace detailed verification.",
       "atlas": "Direct read only model parameter record for the primary local configuration.",
       "dsh": "Local filesystem and settings metadata probe.",
       "bridge": "Existing read only bridge receipt plus adapter provenance.",
       "hermes": "Retained scheduler registry bytes independently recounted. Enabled jobs are distinct from retained definitions."
     },
     "auditCollectedAtUtc": "2026-09-18T22:53:54Z",
-    "refreshCollectedAtUtc": "2026-10-03T23:37:05Z"
+    "refreshCollectedAtUtc": "2026-09-26T21:53:28.310641Z"
   },
   "schemaVersion": 2,
   "archive": [
-    {
-      "release": "V39.2 Zenith",
-      "url": "/evidence/status-2026-09-26.json",
-      "fleetObserved": "2026-09-26",
-      "routingObserved": null
-    },
     {
       "release": "V39.1 evidence",
       "url": "/evidence/status-2026-09-24.json",
@@ -112,7 +106,7 @@
     }
   ],
   "completedJob": {
-    "url": "/evidence/console-snapshot-2026-10-03.json",
+    "url": "/evidence/console-snapshot-2026-09-26.json",
     "executingSystem": "DeepSeek Harness operations tooling",
     "liveSystemRestorePerformed": false
   }

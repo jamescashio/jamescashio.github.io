@@ -54,7 +54,7 @@ jobs:
                 owner,
                 repo,
                 issue_number: pr.number,
-                body: 'Closed automatically by the Prime Directive repository-hygiene policy: this automation or preview branch was inactive for more than 21 days and has been superseded by the current `main` baseline. Reopen only if the change is still required and has been rebased.'
+                body: 'Closed automatically by the First Light repository-hygiene policy: this automation or preview branch was inactive for more than 21 days and has been superseded by the current `main` baseline. Reopen only if the change is still required and has been rebased.'
               });
               await github.rest.pulls.update({
                 owner,

@@ -1,8 +1,12 @@
 # Changelog
 
-## V39.8 · Prime Directive
+## V39.8 · First Light
 
-Named for the Star Trek rule, and for the house rule that runs this lab: work smarter, not harder.
+Named for an observatory's first light: the first image a telescope takes after it is built. Every fact on the front page was observed again on October 3, 2026.
+
+- Refresh the public record to October 3, 2026 from a read only fleet probe: 2 hosts online and quorate, 20 containers and 1 virtual machine running, 49 of 56 scheduled jobs enabled, Atlas configured window 16,384 tokens, and every backup snapshot passed verification.
+- Publish the October 3 backup receipt: 990 files restored on a second machine and matched to the originals, with the archive hash confirmed. No live system restore was performed.
+- Archive the September 26 record and add it to Earlier records. Every date visible on the front page now reads October 2026; earlier dates live only inside the archive disclosures.
 
 - Lead with "The machines can think. You still decide." The headline now states the site's thesis: capable tools, human judgment.
 - The gold headline line catches one sweep of light after the page settles. The text color never changes, so contrast holds.

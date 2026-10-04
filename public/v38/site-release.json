@@ -1,7 +1,7 @@
 {
   "experienceVersion": "39.8.0",
   "releaseId": "helios-39.8.0-20261003",
-  "releaseName": "PRIME DIRECTIVE",
+  "releaseName": "FIRST LIGHT",
   "visualEdition": "Helios",
   "entry": "/",
   "status": "released",
@@ -12,8 +12,8 @@
   "rollbackCommit": "0323e28cd9dc89929d96f2635d09d27dd08d6e18",
   "evidenceSnapshot": {
     "url": "/v38/status.json",
-    "fleetObserved": "2026-09-26",
-    "observedAtUtc": "2026-09-26T21:53:24.866694Z",
+    "fleetObserved": "2026-10-03",
+    "observedAtUtc": "2026-10-03T23:37:05Z",
     "routingObserved": null
   },
   "statement": "The interface and each observation have their own dates. Interactive examples run in the browser and send no AI requests. The separate console snapshot story cites a redacted execution receipt."

@@ -26,7 +26,7 @@ export const EVIDENCE = {
   backups: [
     `Integrity: ${FLEET.backups.integrity} · checked ${FLEET.backups.checkedLong}`,
     "Coverage counts withheld · a restore drill is a separate test",
-    "Full fleet recovery is not established. A September 10, 2026 rehearsal covered one guest and excluded its datastore.",
+    "Full fleet recovery is not established. An earlier isolated rehearsal covered one guest and excluded its datastore.",
   ],
   atlas: [
     `Configuration read: ${FLEET.atlas.observedLong}`,

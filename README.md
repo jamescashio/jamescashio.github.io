@@ -1,4 +1,4 @@
-# cAshIo V39.8 · Helios / Prime Directive
+# cAshIo V39.8 · Helios / First Light
 
 The public front door is **[cashio.us](https://cashio.us/)**. The root serves the current orbital workshop directly from `index.html` and `src/helios/`. Former `/v38/` addresses normalize to the root and keep their requested section or scene.
 
