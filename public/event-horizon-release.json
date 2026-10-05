@@ -28,7 +28,7 @@
   },
   "frontDoor": {
     "entry": "/",
-    "experienceVersion": "40.0.0",
+    "experienceVersion": "40.0.1",
     "visualEdition": "Mostly Harmless",
     "receipt": "/v40/site-release.json"
   }

@@ -141,7 +141,7 @@ function expandScript(scripts, name, seen = new Set()) {
 
 test("V37 software gates preserve the independent V35 dated evidence", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "40.0.0");
+  assert.equal(packageJson.version, "40.0.1");
   const lock = JSON.parse(await read("package-lock.json"));
   assert.equal(lock.version, packageJson.version);
   assert.equal(lock.packages[""].version, packageJson.version);
@@ -711,7 +711,7 @@ test("Helios release identity, signature assets and compatibility receipts agree
     const compatibility = JSON.parse(await read(`dist/${name}`));
     assert.deepEqual(compatibility.frontDoor, {
       entry: "/",
-      experienceVersion: "40.0.0",
+      experienceVersion: "40.0.1",
       visualEdition: "Mostly Harmless",
       receipt: "/v40/site-release.json",
     });
@@ -762,7 +762,7 @@ test("Helios release identity, signature assets and compatibility receipts agree
   assert.ok(doc.querySelector('#snapshot-story a[href="/evidence/console-snapshot-2026-10-03.json"]'));
   assert.deepEqual(JSON.parse(await read("dist/evidence/status.json")), evidence);
   assert.ok((await read("README.md")).startsWith("# cAshIo V40 · Mostly Harmless"));
-  assert.equal((await read("CHANGELOG.md")).match(/^## (V[\d.]+)/m)?.[1], "V40");
+  assert.equal((await read("CHANGELOG.md")).match(/^## (V[\d.]+)/m)?.[1], "V40.0.1");
   const sitemap = new JSDOM(await read("dist/sitemap.xml"), { contentType: "application/xml" }).window.document;
   const home = [...sitemap.querySelectorAll("url")].find(
     (entry) => entry.querySelector("loc")?.textContent === "https://cashio.us/",
