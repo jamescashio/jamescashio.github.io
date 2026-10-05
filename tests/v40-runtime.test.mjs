@@ -168,17 +168,40 @@ test("Shared scenarios restore the human-review boundary", async (t) => {
   await expect(page.locator(".lab-result h4")).toContainText("person");
 });
 
+test("Shared scenarios reject inherited keys while restoring valid bounded values", async (t) => {
+  for (const name of ["__proto__", "constructor", "toString"]) {
+    const page = await visit(t, { hash: `#experiment=${name}&polluted=true&confidence=99` });
+    await expect(page.locator('[role="tab"]').first()).toHaveAttribute("aria-selected", "true");
+    assert.equal(await page.evaluate(() => Object.hasOwn(Object.prototype, "polluted")), false);
+  }
+  const page = await visit(t, {
+    hash: "#experiment=cascade&confidence=999&consequence=true&__proto__=true&constructor=true&polluted=true",
+  });
+  await expect(page.locator("#lab-confidence")).toHaveValue("100");
+  await expect(page.getByLabel("The action would be difficult to undo", { exact: true })).toBeChecked();
+  await expect(page.locator(".lab-result h4")).toContainText("person");
+  await page.getByRole("button", { name: "Reset this example", exact: true }).click();
+  await expect(page.locator("#lab-confidence")).toHaveValue("85");
+  await expect(page.getByLabel("The action would be difficult to undo", { exact: true })).not.toBeChecked();
+  assert.equal(await page.evaluate(() => Object.hasOwn(Object.prototype, "polluted")), false);
+});
+
 test("Old bookmarks and version aliases reach their preserved destinations", async (t) => {
   const page = await visit(t);
   for (const [relative, pathname, hash] of [
     ["/#build=hermes", "/v39/", "#build=hermes"],
     ["/#flight=board", "/v39/", "#flight=board"],
     ["/#lensing", "/v39/", "#lensing"],
+    ["/#glossary", "/v39/", "#glossary"],
+    ["/#atlas-inspection", "/v39/", "#atlas-inspection"],
+    ["/#request-journey", "/v39/", "#request-journey"],
     ["/v40/#contact", "/", "#contact"],
     ["/#deck=eve", "/command-deck.html", "#deck=eve"],
   ]) {
     await page.goto(new URL(relative, url).href);
     await expect.poll(() => new URL(page.url()).pathname).toBe(pathname);
     assert.equal(new URL(page.url()).hash, hash);
+    if (["#glossary", "#atlas-inspection", "#request-journey"].includes(hash))
+      await expect(page.locator(hash)).toBeVisible();
   }
 });

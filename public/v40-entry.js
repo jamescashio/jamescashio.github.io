@@ -12,7 +12,7 @@ function routeVersionedBookmark() {
   }
   url.searchParams.delete("release");
   const legacy =
-    /^#(?:lensing|build=|flight=|mission=|film=|signature$|starship$|principles$|observatory$|studios$|heritage$|build-story$|sovereign-world$|studio-worlds$|zenith-heading$)/;
+    /^#(?:lensing|build=|flight=|mission=|film=|signature$|starship$|principles$|observatory$|studios$|heritage$|build-story$|sovereign-world$|studio-worlds$|zenith-heading$|glossary$|atlas-inspection$|request-journey$)/;
   if (legacy.test(url.hash)) {
     location.replace("/v39/" + url.search + url.hash);
     return;

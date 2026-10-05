@@ -15,7 +15,8 @@
     signal: { count: 2, independent: false, primary: false },
     graphify: { node: "scheduler" },
   };
-  const states = Object.fromEntries(Object.entries(defaults).map(([k, v]) => [k, { ...v }]));
+  const initialState = (name) => Object.assign(Object.create(null), defaults[name]);
+  const states = new Map(Object.keys(defaults).map((name) => [name, initialState(name)]));
   const range = (key, label, min, max) =>
     `<label for="lab-${key}">${label} <output id="lab-${key}-value"></output></label><input id="lab-${key}" data-field="${key}" type="range" min="${min}" max="${max}">`;
   const toggle = (key, label) =>
@@ -92,9 +93,10 @@
     if (host) host.querySelector(".lab-feedback").textContent = message;
   }
   function values() {
-    const s = states[key];
+    const s = states.get(key);
     host.querySelectorAll("[data-field]").forEach((el) => {
       const f = el.dataset.field;
+      if (!Object.hasOwn(defaults[key], f)) return;
       s[f] =
         el.type === "checkbox"
           ? el.checked
@@ -113,7 +115,7 @@
     box.querySelector(".lab-reason").textContent = text;
   }
   function briefText() {
-    const s = states.briefing,
+    const s = states.get("briefing"),
       v = (f) => s[f].trim() || "Not specified";
     return `DECISION BRIEF / cAshIo V40\n\nWHAT WAS OBSERVED\n${v("observed")}\n\nSOURCE AND DATE\n${v("source")}\n\nWHAT REMAINS UNKNOWN\n${v("unknown")}\n\nWHO DECIDES\n${v("owner")}\n\nPrepared locally. Claims have not been independently verified by this tool.\n`;
   }
@@ -218,7 +220,8 @@
   }
   function applyState() {
     host.querySelectorAll("[data-field]").forEach((el) => {
-      const v = states[key][el.dataset.field];
+      if (!Object.hasOwn(defaults[key], el.dataset.field)) return;
+      const v = states.get(key)[el.dataset.field];
       if (el.type === "checkbox") el.checked = !!v;
       else el.value = v;
     });
@@ -228,7 +231,7 @@
     const next = document.querySelector("#local-experiment");
     if (!next || next.closest("x-dc")) return;
     const nextKey = next.dataset.lab;
-    if (!specs[nextKey] || (next === host && key === nextKey)) return;
+    if (!Object.hasOwn(specs, nextKey) || (next === host && key === nextKey)) return;
     host = next;
     key = nextKey;
     const spec = specs[key];
@@ -250,7 +253,7 @@
   }
   function makeLink() {
     const params = new URLSearchParams({ experiment: key });
-    for (const [k, v] of Object.entries(states[key])) params.set(k, String(v));
+    for (const [k, v] of Object.entries(states.get(key))) params.set(k, String(v));
     return location.href.split("#")[0] + "#" + params.toString();
   }
   function restore() {
@@ -259,24 +262,24 @@
       idx = keys.indexOf(k),
       app = window.cashioV40;
     if (idx < 0 || !app) return;
-    if (defaults[k] && k !== "briefing")
+    if (states.has(k) && k !== "briefing")
       for (const [f, v] of Object.entries(defaults[k])) {
         const x = params.get(f);
         if (x === null) continue;
-        if (typeof v === "boolean") states[k][f] = x === "true";
+        if (typeof v === "boolean") states.get(k)[f] = x === "true";
         else if (typeof v === "number") {
           const ranges = { confidence: [0, 100], age: [0, 60], count: [1, 5] };
           const n = Number(x);
           if (Number.isFinite(n)) {
             if (f === "window") {
-              if ([1, 7, 30].includes(n)) states[k][f] = n;
-            } else states[k][f] = Math.round(Math.min(ranges[f][1], Math.max(ranges[f][0], n)));
+              if ([1, 7, 30].includes(n)) states.get(k)[f] = n;
+            } else states.get(k)[f] = Math.round(Math.min(ranges[f][1], Math.max(ranges[f][0], n)));
           }
         } else if (
           (f === "impact" && ["limited", "high"].includes(x)) ||
           (f === "node" && ["scheduler", "storage", "model"].includes(x))
         )
-          states[k][f] = x;
+          states.get(k)[f] = x;
       }
     const restored = { exp: idx };
     if (k === "hermes") {
@@ -310,7 +313,7 @@
     if (!b || !host) return;
     values();
     if (b.dataset.labAction === "reset") {
-      states[key] = { ...defaults[key] };
+      states.set(key, initialState(key));
       applyState();
       if (key === "briefing") host.querySelector(".lab-brief").hidden = true;
       announce("Example reset.");
