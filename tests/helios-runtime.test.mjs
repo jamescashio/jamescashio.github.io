@@ -7,7 +7,7 @@ import path from "node:path";
 import { ZENITH_FILM_IDS } from "../src/helios/zenith-routes.js";
 import { registerGoldenPathChecks } from "./golden-path-runtime.mjs";
 
-const url = process.env.HELIOS_URL || "http://127.0.0.1:4388/";
+const url = process.env.HELIOS_URL || "http://127.0.0.1:4388/v39/";
 const output = path.resolve(process.env.HELIOS_QA_DIR || "../qa/final");
 let browser;
 before(async () => {
@@ -1271,20 +1271,21 @@ test("Helios flight waits for its visitor, offers an optional tour and pauses th
   await expect(page.locator("h1")).toBeFocused();
 });
 
-test("A plain visit stays at cashio.us, old V38 addresses normalize and deliberate archives remain available", async (t) => {
+test("The V39 archive stays available; old world bookmarks and the V40 front door route correctly", async (t) => {
   const page = await visit(t);
-  assert.equal(new URL(page.url()).pathname, "/");
+  assert.equal(new URL(page.url()).pathname, "/v39/");
   assert.equal(new URL(page.url()).search, "");
   const navigation = await page.evaluate(() => performance.getEntriesByType("navigation")[0].name);
-  assert.equal(new URL(navigation).pathname, "/", "the root responds with the current document directly");
+  assert.equal(new URL(navigation).pathname, "/v39/", "the archive responds with its document directly");
   for (const suffix of [
     "/v38/?release=38.4#studios",
     "/v38/index.html?release=38.4#operator",
     "/?release=38.4#studies",
   ]) {
     await page.goto(new URL(suffix, url).href);
-    await expect(page.locator("#study-hermes")).toBeAttached();
-    assert.equal(new URL(page.url()).pathname, "/");
+    const world = suffix.includes("#studios");
+    await expect(page.locator(world ? "#study-hermes" : "#v40-root")).toBeAttached();
+    assert.equal(new URL(page.url()).pathname, world ? "/v39/" : "/");
     assert.equal(new URL(page.url()).search, "");
     assert.equal(new URL(page.url()).hash, new URL(suffix, url).hash);
   }
@@ -1313,7 +1314,7 @@ test("Studios preserve the current page, return focus, Back/Forward and exact si
   const startY = await page.evaluate(() => scrollY);
   await opener.click();
   await expect(page.locator("#brand-studio-title")).toHaveText("Celestial Forge");
-  assert.equal(new URL(page.url()).pathname, "/");
+  assert.equal(new URL(page.url()).pathname, "/v39/");
   await expect(page.locator("html")).toHaveClass(/experience-open/);
   await page.keyboard.press("Escape");
   await expect(opener).toBeFocused();
@@ -1707,7 +1708,7 @@ test("Opening the menu freezes the visible request instrument and resume preserv
   await expect.poll(() => page.locator("#trace-progress").getAttribute("style")).not.toBe(stopped);
 });
 
-test("Shared Observatory settings reload at the root, and reduced motion reaches each open studio", async (t) => {
+test("Shared Observatory settings reload in V39, and reduced motion reaches each open studio", async (t) => {
   const hash = "#lensing&v=1&light=eclipse&view=gate&clouds=23&aurora=61&sun=105&gate=1";
   const page = await visit(t, { width: 390, hash, motion: "no-preference" });
   const observatory = page.locator(".lens-observatory");
@@ -1716,7 +1717,7 @@ test("Shared Observatory settings reload at the root, and reduced motion reaches
   await expect(observatory).toHaveAttribute("data-view", "gate");
   await page.getByRole("button", { name: "Share my universe" }).click();
   const shared = await page.evaluate(() => navigator.clipboard.readText());
-  assert.equal(new URL(shared).pathname, "/");
+  assert.equal(new URL(shared).pathname, "/v39/");
   assert.match(new URL(shared).hash, /light=eclipse&view=gate&clouds=23&aurora=61&sun=105/);
   await page.goto(shared);
   await page.reload();
@@ -1743,7 +1744,7 @@ test("A failed optional studio keeps a clear return and a real reload recovery",
   await page.getByRole("button", { name: "Back to the site", exact: true }).click();
   await expect(link).toBeFocused();
   await expect(page.locator("dialog[open]")).toHaveCount(0);
-  assert.equal(new URL(page.url()).pathname, "/");
+  assert.equal(new URL(page.url()).pathname, "/v39/");
   await page.unroute("**/assets/studio-island-*.js");
   await page.reload();
   await link.click();
@@ -2154,7 +2155,7 @@ test("The V35 archive returns to the current site without adding a cinema tab st
     assert.equal(await back.evaluate((link) => Boolean(link.closest("[inert]"))), false);
     await page.goto(new URL("/command-deck.html", url).href);
     await back.click();
-    await expect(page.locator("#hero-primary")).toBeVisible();
+    await expect(page.locator("#v40-root h1")).toBeVisible();
     assert.equal(new URL(page.url()).pathname, "/");
 
     const staticContext = await browser.newContext({ javaScriptEnabled: false, viewport: { width, height: 844 } });
@@ -2162,7 +2163,7 @@ test("The V35 archive returns to the current site without adding a cinema tab st
     const staticPage = await staticContext.newPage();
     await staticPage.goto(new URL("/command-deck.html", url).href);
     await staticPage.getByRole("link", { name: "Back to current site", exact: false }).click();
-    await expect(staticPage.locator("#hero-primary")).toBeVisible();
+    await expect(staticPage.locator("#v40-root h1")).toBeVisible();
     assert.equal(new URL(staticPage.url()).pathname, "/");
   }
 });
@@ -2252,7 +2253,7 @@ test("Enhanced room cards have native interactive destinations while static edit
     const other = await page.context().newPage();
     await other.goto(address);
     await expect(other.locator(`#${id}`)).toHaveAttribute("data-room-state", "ready");
-    assert.equal(new URL(other.url()).pathname, "/");
+    assert.equal(new URL(other.url()).pathname, "/v39/");
     await other.close();
     await card.press("Enter");
     await expect(page.locator(`#${id}`)).toHaveAttribute("data-room-state", "ready");

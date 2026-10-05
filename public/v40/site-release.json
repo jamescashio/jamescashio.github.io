@@ -1,0 +1,22 @@
+{
+  "experienceVersion": "40.0.0",
+  "releaseId": "mostly-harmless-40.0.0-20261005",
+  "releaseName": "MOSTLY HARMLESS",
+  "visualEdition": "Mostly Harmless",
+  "entry": "/",
+  "status": "released",
+  "published": true,
+  "releaseDate": "2026-10-05",
+  "previousExperience": {
+    "version": "39.8.0",
+    "entry": "/v39/",
+    "receipt": "/v38/site-release.json"
+  },
+  "rollbackCommit": "7bf48629f957cb25fff864ca63629034d0caf2ee",
+  "evidenceSnapshot": {
+    "url": "/v38/status.json",
+    "fleetObserved": "2026-10-03",
+    "routingObserved": null
+  },
+  "statement": "V40 Mostly Harmless. Bit and all demonstrations are scripted browser experiences. Original films and artwork are preserved. Dated evidence is not live monitoring."
+}

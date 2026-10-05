@@ -6,7 +6,7 @@ import { PILOTS } from "../src/helios/heritage-data.js";
 import { PRINCIPLES } from "../src/helios/principles-data.js";
 
 /** Static reading pages share the exact authored content used by the deferred interactive rooms. */
-const root = new JSDOM(await readFile("dist/index.html", "utf8")).window.document;
+const root = new JSDOM(await readFile("dist/v39/index.html", "utf8")).window.document;
 const versions = JSON.parse(await readFile("dist/v38/asset-versions.json", "utf8"));
 // Reading editions use the same room stylesheet, without needing JavaScript.
 const roomStyles = (await readdir("dist/assets")).filter((name) => /^room-content-[\w-]+\.css$/.test(name));
@@ -39,7 +39,7 @@ for (const id of roomIds) {
   doc.head.append(canonical);
   const notice = doc.createElement("header");
   notice.className = "wrap stack p-22-30 sg-16";
-  notice.innerHTML = `<a href="/#rooms">← Back to the four rooms</a><h1 class="display fs-32">${title}</h1><p id="reading-mode">Controls are inactive in this reading edition. It shows the artwork, one example state and all of the text. Open the interactive room to change the inputs and explore the results.</p><a class="btn gold" href="/#${id}">Open the interactive room →</a>`;
+  notice.innerHTML = `<a href="/v39/#rooms">← Back to the four rooms</a><h1 class="display fs-32">${title}</h1><p id="reading-mode">Controls are inactive in this reading edition. It shows the artwork, one example state and all of the text. Open the interactive room to change the inputs and explore the results.</p><a class="btn gold" href="/v39/#${id}">Open the interactive room →</a>`;
   const main = doc.createElement("main");
   main.innerHTML = source;
   for (const image of main.querySelectorAll("img")) {
@@ -49,7 +49,7 @@ for (const id of roomIds) {
   const localAnchors = new Set([...main.querySelectorAll("[id]")].map((node) => node.id));
   for (const link of main.querySelectorAll("a[href^='#']")) {
     const href = link.getAttribute("href")!;
-    if (!localAnchors.has(href.slice(1))) link.setAttribute("href", "/" + href);
+    if (!localAnchors.has(href.slice(1))) link.setAttribute("href", "/v39/" + href);
   }
   for (const control of main.querySelectorAll("button,input,select,textarea")) {
     control.setAttribute("disabled", "");

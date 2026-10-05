@@ -1,6 +1,12 @@
+# cAshIo V40 · Mostly Harmless
+
+V40 is the proposed front door. The faithful cinematic design now includes Bit, seven local demonstrations, a portable review edition and a static reading edition. Its ordinary React build preserves the existing strict security policy. V39.8 remains at `/v39/`; original worlds and shared bookmarks are retained. This branch is a release candidate awaiting final publication approval.
+
+The active page lives in `src/v40`; the preserved Helios experience remains in `src/helios`. Run the established verification suite and the additional V40 browser checks before publication.
+
 # cAshIo V39.8 · Helios / First Light
 
-The public front door is **[cashio.us](https://cashio.us/)**. The root serves the current orbital workshop directly from `index.html` and `src/helios/`. Former `/v38/` addresses normalize to the root and keep their requested section or scene.
+The preserved V39 orbital workshop is served from `/v39/` and `src/helios/`. Former `/v38/` addresses normalize to the current front door; explicit studio, flight and world bookmarks continue to the V39 archive. The notes below record the V39 release history.
 
 V39.8 leads with the headline "The machines can think. You still decide." and adds polish: a single light sweep across the gold line, room cards that lean toward the pointer with a soft glare, and section labels that draw a cyan signal line on first view. All of it stands down for reduced motion.
 
@@ -104,7 +110,7 @@ GitHub Pages publishes only the verified `dist` artifact through `.github/workfl
 
 ## Public asset layout and archive redactions
 
-The current front door lives in `src/helios`; `src/odyssey` supplies shared optional scenes and the V37 archive. `src/components` supplies V35. Public archive dates remain historical. Per host counts, hypervisor identity, private service and model names, private catalog counts and spend are withheld in both the rendered archives and their shipped records. A redaction does not erase copies in previously published Git history.
+The current front door lives in `src/v40`; `src/helios` preserves V39.8 at `/v39/`. `src/odyssey` supplies shared optional scenes and the V37 archive. `src/components` supplies V35. Public archive dates remain historical. Per host counts, hypervisor identity, private service and model names, private catalog counts and spend are withheld in both the rendered archives and their shipped records. A redaction does not erase copies in previously published Git history.
 
 Asset directories preserve compatible URLs and existing cache coverage:
 

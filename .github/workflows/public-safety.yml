@@ -106,6 +106,14 @@ jobs:
           CHROME_PATH: ${{ steps.setup_chrome.outputs.chrome-path }}
           CHROME_DEVEL_SANDBOX: /opt/google/chrome/chrome-sandbox
 
+      - name: Verify V40 and Bit
+        id: v40_runtime
+        continue-on-error: true
+        run: npm run test:v40
+        env:
+          CHROME_PATH: ${{ steps.setup_chrome.outputs.chrome-path }}
+          CHROME_DEVEL_SANDBOX: /opt/google/chrome/chrome-sandbox
+
       - name: Run release artifact tests
         id: release_tests
         continue-on-error: true
@@ -147,5 +155,5 @@ jobs:
           retention-days: 14
 
       - name: Enforce validation results
-        if: steps.install.outcome != 'success' || steps.lint.outcome != 'success' || steps.format.outcome != 'success' || steps.node_tests.outcome != 'success' || steps.odyssey_tests.outcome != 'success' || steps.build.outcome != 'success' || steps.artifact_tests.outcome != 'success' || steps.layout_runtime.outcome != 'success' || steps.v36_runtime.outcome != 'success' || steps.helios_runtime.outcome != 'success' || steps.release_tests.outcome != 'success' || steps.safety_scan.outcome != 'success' || steps.release_consistency.outcome != 'success' || steps.python_syntax.outcome != 'success' || steps.whitespace.outcome != 'success'
+        if: steps.install.outcome != 'success' || steps.lint.outcome != 'success' || steps.format.outcome != 'success' || steps.node_tests.outcome != 'success' || steps.odyssey_tests.outcome != 'success' || steps.build.outcome != 'success' || steps.artifact_tests.outcome != 'success' || steps.layout_runtime.outcome != 'success' || steps.v36_runtime.outcome != 'success' || steps.helios_runtime.outcome != 'success' || steps.v40_runtime.outcome != 'success' || steps.release_tests.outcome != 'success' || steps.safety_scan.outcome != 'success' || steps.release_consistency.outcome != 'success' || steps.python_syntax.outcome != 'success' || steps.whitespace.outcome != 'success'
         run: exit 1

@@ -24,11 +24,11 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Node
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
           node-version: 22
-          # v4 caches only when this input names a package manager.
-          cache: ""
+          # A release always installs from the lockfile without a restored package-manager cache.
+          package-manager-cache: false
 
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
@@ -84,10 +84,15 @@ jobs:
           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
 
       - name: Publish GitHub Release
-        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3
-        with:
-          name: ${{ github.ref_name }} — ZeusApollo Sovereign AI Infrastructure
-          body_path: RELEASE_BODY.md
-          draft: false
-          prerelease: false
-          make_latest: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" \
+              --title "$GITHUB_REF_NAME · cAshIo Mostly Harmless" \
+              --notes-file RELEASE_BODY.md --draft=false --prerelease=false --latest
+          else
+            gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --verify-tag \
+              --title "$GITHUB_REF_NAME · cAshIo Mostly Harmless" \
+              --notes-file RELEASE_BODY.md --latest
+          fi

@@ -131,8 +131,15 @@ async function run() {
       resources.server = await serveDist();
       const base = `http://127.0.0.1:${resources.server.address().port}`;
       const rootHtml = await fetch(`${base}/`).then((response) => response.text());
-      assert.match(rootHtml, /data-helios-styles=/, "root must serve the current Helios document");
-      assert.match(rootHtml, /href="\/rooms\/studios\/"/, "the studios must be reachable before JavaScript");
+      assert.match(rootHtml, /id="v40-root"/, "root must serve the V40 reading edition");
+      assert.match(rootHtml, /You still decide\./, "the V40 story must be readable before JavaScript");
+      const heliosHtml = await fetch(`${base}/v39/index.html`).then((response) => response.text());
+      assert.match(heliosHtml, /data-helios-styles=/, "V39 must retain its original document");
+      assert.match(
+        heliosHtml,
+        /href="\/rooms\/studios\/"/,
+        "the preserved studios must be reachable before JavaScript",
+      );
       const studios = await fetch(`${base}/rooms/studios/index.html`).then((response) => response.text());
       assert.equal(
         (studios.match(/class="studio-card"/g) || []).length,
@@ -140,7 +147,10 @@ async function run() {
         "three original studios and three Zenith features exist without JavaScript",
       );
       for (const hash of ["#lensing", "#signature", "#film=sanctuary"])
-        assert.ok(studios.includes(`class="studio-card" href="/${hash}"`), "each original studio remains available");
+        assert.ok(
+          studios.includes(`class="studio-card" href="/v39/${hash}"`),
+          "each original studio remains available",
+        );
       assert.match(studios, /class="studio-library"/, "the static film library is available");
       const archiveHtml = await fetch(`${base}/odyssey.html`).then((response) => response.text());
       assert.match(archiveHtml, /data-prerendered="odyssey"/, "the archive must retain the prerendered V37 page");
@@ -180,7 +190,7 @@ async function run() {
       });
       report.release = receipt;
       assert.equal(receipt.frontDoor.entry, "/");
-      assert.equal(receipt.frontDoor.experienceVersion, "39.8.0");
+      assert.equal(receipt.frontDoor.experienceVersion, "40.0.0");
       report.checks.push({
         name: "Current root, preserved V37 prerender, release identities and indexing",
         passed: true,

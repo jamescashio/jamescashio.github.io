@@ -1,5 +1,9 @@
 # Changelog
 
+## V40 · Mostly Harmless · 10-05-2026
+
+Release candidate. Restore Bit with original faceted geometry, local copilot replies and keyboard navigation. Preserve the Claude cinematic design, all source artwork and films, and all seven local demonstrations. Replace the editor runtime with ordinary React and external styles under the existing security policy. Retain V39 and legacy destinations.
+
 ## V39.8 · First Light
 
 Named for an observatory's first light: the first image a telescope takes after it is built. Every fact on the front page was observed again on October 3, 2026.
