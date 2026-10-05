@@ -4,8 +4,8 @@
   "releaseName": "MOSTLY HARMLESS",
   "visualEdition": "Mostly Harmless",
   "entry": "/",
-  "status": "release-candidate",
-  "published": false,
+  "status": "released",
+  "published": true,
   "releaseDate": "2026-10-05",
   "previousExperience": {
     "version": "39.8.0",
@@ -18,5 +18,5 @@
     "fleetObserved": "2026-10-03",
     "routingObserved": null
   },
-  "statement": "Local review candidate. Bit and all demonstrations are scripted browser experiences. Dated evidence is not live monitoring. Publication requires final approval."
+  "statement": "V40 Mostly Harmless. Bit and all demonstrations are scripted browser experiences. Original films and artwork are preserved. Dated evidence is not live monitoring."
 }

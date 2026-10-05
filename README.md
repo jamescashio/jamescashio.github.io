@@ -110,7 +110,7 @@ GitHub Pages publishes only the verified `dist` artifact through `.github/workfl
 
 ## Public asset layout and archive redactions
 
-The current front door lives in `src/helios`; `src/odyssey` supplies shared optional scenes and the V37 archive. `src/components` supplies V35. Public archive dates remain historical. Per host counts, hypervisor identity, private service and model names, private catalog counts and spend are withheld in both the rendered archives and their shipped records. A redaction does not erase copies in previously published Git history.
+The current front door lives in `src/v40`; `src/helios` preserves V39.8 at `/v39/`. `src/odyssey` supplies shared optional scenes and the V37 archive. `src/components` supplies V35. Public archive dates remain historical. Per host counts, hypervisor identity, private service and model names, private catalog counts and spend are withheld in both the rendered archives and their shipped records. A redaction does not erase copies in previously published Git history.
 
 Asset directories preserve compatible URLs and existing cache coverage:
 
