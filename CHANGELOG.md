@@ -1,8 +1,12 @@
 # Changelog
 
+## V40.0.1 · Reading polish · 10-05-2026
+
+Keep the reading edition within a 320 pixel screen and make its public contact link work without JavaScript. Initialize compact navigation before rendering, preserve every original media file, and verify bookmarked scenarios after their default parameters are restored.
+
 ## V40 · Mostly Harmless · 10-05-2026
 
-Release candidate. Restore Bit with original faceted geometry, local copilot replies and keyboard navigation. Preserve the Claude cinematic design, all source artwork and films, and all seven local demonstrations. Replace the editor runtime with ordinary React and external styles under the existing security policy. Retain V39 and legacy destinations.
+Released. Restore Bit with original faceted geometry, local copilot replies and keyboard navigation. Preserve the Claude cinematic design, all source artwork and films, and all seven local demonstrations. Replace the editor runtime with ordinary React and external styles under the existing security policy. Retain V39 and legacy destinations.
 
 ## V39.8 · First Light
 

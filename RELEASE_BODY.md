@@ -1,11 +1,7 @@
-# V40 Mostly Harmless
+# V40.0.1 Mostly Harmless
 
-Restore the original Bit copilot within the faithful V40 design, including its personality, useful destinations, accessible controls and reduced-motion behavior. All seven experiments run locally, with a downloadable decision brief. The page now builds as ordinary React with a static reading edition and the existing strict security policy.
+The reading edition now fits a 320 pixel screen and its public email link works without JavaScript. Compact navigation is selected before the first render, and the public contact link opts out of Cloudflare email encoding using the documented per-address markup.
 
-V39.8 remains available at `/v39/`. Original images, typography, films, worlds, dated evidence and legacy bookmarks are preserved. A shared signature bundle now stays separate from the Odyssey page startup, and reading editions return to the correct archive.
+Bit, the cinematic V40 design, all seven experiments, and every original media file remain intact. V39 stays available at `/v39/`. Bookmarked scenarios continue to restore their selections and may append valid default parameters.
 
-Local validation passed: 284 Node tests, 55 interactive model tests, 75 release and public-safety tests, 24 artifact tests, ten V40 browser tests and 86 V39 browser tests. Both legacy browser gates, lint, formatting, release consistency, secret scanning and workflow checks passed. The full V40 page also passed automated accessibility and overflow checks at 320, 390, 1440 and 3079 pixels.
-
-The final review also hardened shared experiment state with a Map and own-field validation, and preserved the glossary, inspection and request journey bookmarks. Regression checks cover inherited property names, bounded values, reset behavior and the three original destinations.
-
-The release workflow uses a pinned Node setup with package-manager caching explicitly disabled and the runner's GitHub CLI to publish version notes. The owner approved publication on October 5, 2026 with the existing Higgsfield films and other assets preserved. The approved design passed hosted verification before its release receipt was promoted; the final release revision must pass the same checks before the protected squash merge and deployment.
+Validation covers reading mode at 320 and 390 pixels, keyboard access, reduced motion, working contact links, all existing V40 interactions, and preserved destinations. Publication uses the existing protected review and deployment checks.

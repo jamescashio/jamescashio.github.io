@@ -58,13 +58,17 @@ async function audit(page, selector) {
 }
 
 test("V40 preserves its content and serves a readable edition without JavaScript", async (t) => {
-  for (const js of [true, false]) {
-    const page = await visit(t, { js, width: 390 });
+  for (const { js, width } of [
+    { js: true, width: 390 },
+    { js: false, width: 390 },
+    { js: false, width: 320 },
+  ]) {
+    const page = await visit(t, { js, width });
     await expect(page.locator("main > section")).toHaveCount(11);
     await expect(page.locator("h1")).toHaveText("The machines can think. You still decide.");
     await expect(page.locator("footer")).toContainText("two releases short of the answer", { ignoreCase: true });
-    await expect(page.locator('a[href^="mailto:doug@cashio.us"]').first()).toBeAttached();
-    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 390);
+    await expect(page.locator('#contact a[href^="mailto:doug@cashio.us"]').first()).toBeVisible();
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
   }
 });
 
@@ -200,7 +204,13 @@ test("Old bookmarks and version aliases reach their preserved destinations", asy
   ]) {
     await page.goto(new URL(relative, url).href);
     await expect.poll(() => new URL(page.url()).pathname).toBe(pathname);
-    assert.equal(new URL(page.url()).hash, hash);
+    if (hash.includes("=")) {
+      // Preserved scenarios can append their defaults after restoring a shared selection.
+      for (const [key, value] of new URLSearchParams(hash.slice(1)))
+        await expect.poll(() => new URLSearchParams(new URL(page.url()).hash.slice(1)).get(key)).toBe(value);
+    } else {
+      assert.equal(new URL(page.url()).hash, hash);
+    }
     if (["#glossary", "#atlas-inspection", "#request-journey"].includes(hash))
       await expect(page.locator(hash)).toBeVisible();
   }

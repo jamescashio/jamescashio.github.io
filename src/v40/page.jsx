@@ -47,6 +47,7 @@ export class V40Page extends React.Component {
   }
   state = {
     wide: typeof window !== "undefined" ? window.innerWidth >= 1180 : true,
+    navOn: typeof window !== "undefined" ? window.innerWidth >= 1100 : true,
     active: "top",
     pv: null,
     pvShown: false,

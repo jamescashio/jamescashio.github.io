@@ -18,6 +18,11 @@ const markup = renderToStaticMarkup(
   }),
 );
 const dom = new JSDOM(`<body>${markup}</body>`);
+// This public contact link must also work without Cloudflare's email decoder.
+for (const link of dom.window.document.querySelectorAll('a[href^="mailto:"]')) {
+  link.before(dom.window.document.createComment("email_off"));
+  link.after(dom.window.document.createComment("/email_off"));
+}
 for (const control of dom.window.document.querySelectorAll("button,input,select,textarea")) {
   control.setAttribute("disabled", "");
   control.setAttribute("aria-describedby", "reading-notice");
