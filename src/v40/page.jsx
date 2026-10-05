@@ -8111,11 +8111,7 @@ function renderPage(v) {
                   "font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)",
                 ),
               },
-              h(
-                React.Fragment,
-                { key: 1895 },
-                "V40 · Preview 05 · Mostly Harmless · Directed by Doug Cashio · October 4, 2026",
-              ),
+              h(React.Fragment, { key: 1895 }, "V40 · Mostly Harmless · Directed by Doug Cashio · October 5, 2026"),
             ),
             " ",
             h(
@@ -8165,7 +8161,7 @@ function renderPage(v) {
                 h(
                   "a",
                   { key: 1910, href: "/v39/" },
-                  h(React.Fragment, { key: 1911 }, "V39.8 First Light · current public site"),
+                  h(React.Fragment, { key: 1911 }, "V39.8 First Light · preserved edition"),
                 ),
                 " ",
                 h(

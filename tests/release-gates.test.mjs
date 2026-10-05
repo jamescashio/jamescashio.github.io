@@ -19,6 +19,8 @@ test("V40 ships its real reading edition under the strict production security po
   assert.equal(root.querySelectorAll("main > section").length, 11);
   assert.equal(root.querySelectorAll("h1").length, 1);
   assert.match(root.textContent, /You still decide\./);
+  assert.match(root.querySelector("footer").textContent, /Mostly Harmless.*October 5, 2026/);
+  assert.doesNotMatch(root.querySelector("footer").textContent, /Preview 05|current public site/);
   assert.equal(root.querySelectorAll("[style]").length, 0, "the reading edition must use external CSS");
   const csp = document.querySelector('meta[http-equiv="Content-Security-Policy"]').content;
   assert.match(csp, /script-src 'self';/);
