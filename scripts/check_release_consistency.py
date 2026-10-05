@@ -523,7 +523,7 @@ def main() -> int:
     parser.add_argument("--preview", action="store_true", help="Validate an explicitly unpublished local preview; never a deployment approval")
     preview = parser.parse_args().preview
     version = "37.17.0-preview.sanctuary" if preview else "37.17.0"
-    package_version = "39.8.0-preview.sanctuary" if preview else "39.8.0"
+    package_version = "40.0.0-preview.sanctuary" if preview else "40.0.0"
     failures: list[str] = []
 
     try:
@@ -605,7 +605,7 @@ def main() -> int:
             failures.append("release receipt must match the latest observation without redating the archive")
         if site_release != compatibility_release:
             failures.append("event-horizon-release.json must match the canonical site-release.json")
-    if package.get("scripts", {}).get("build") != "tsc --noEmit && tsc -p tsconfig.helios.json && vite build && node --import tsx scripts/prerender.mts && node --import tsx scripts/prerender-odyssey.mts && node --import tsx scripts/prerender-helios.mts && node --import tsx scripts/prerender-rooms.mts":
+    if package.get("scripts", {}).get("build") != "tsc --noEmit && tsc -p tsconfig.helios.json && vite build && node --import tsx scripts/prerender.mts && node --import tsx scripts/prerender-odyssey.mts && node --import tsx scripts/prerender-helios.mts && node --import tsx scripts/prerender-rooms.mts && node --import tsx scripts/prerender-v40.mts":
         failures.append("package.json build script changed from the supplied TypeScript + Vite + prerender gate")
 
     vite = read("vite.config.ts")
@@ -927,13 +927,13 @@ def main() -> int:
     source_tree = "\n".join(
         path.read_text(encoding="utf-8")
         for path in sorted((ROOT / "src").rglob("*"))
-        if path.is_file() and path.suffix.lower() in {".ts", ".tsx", ".js", ".css"}
+        if path.is_file() and path.suffix.lower() in {".ts", ".tsx", ".js", ".jsx", ".css"}
     )
     check_current_public_privacy(source_tree, failures, "current source")
     literal_paths = [
         path
         for path in sorted((ROOT / "src").rglob("*"))
-        if path.is_file() and path.suffix.lower() in {".ts", ".tsx", ".js"}
+        if path.is_file() and path.suffix.lower() in {".ts", ".tsx", ".js", ".jsx"}
     ]
     if DIST.is_dir():
         literal_paths.extend(path for path in sorted(DIST.rglob("*.js")) if path.is_file())

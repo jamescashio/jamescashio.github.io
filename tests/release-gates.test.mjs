@@ -12,6 +12,45 @@ import { ZENITH_FILM_IDS, isZenithFilm } from "../src/helios/zenith-routes.js";
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const asset = (path) => new URL(`../${path}`, import.meta.url);
 
+test("V40 ships its real reading edition under the strict production security policy", async () => {
+  const document = new JSDOM(await read("dist/index.html")).window.document;
+  const root = document.querySelector("#v40-root");
+  assert.ok(root);
+  assert.equal(root.querySelectorAll("main > section").length, 11);
+  assert.equal(root.querySelectorAll("h1").length, 1);
+  assert.match(root.textContent, /You still decide\./);
+  assert.equal(root.querySelectorAll("[style]").length, 0, "the reading edition must use external CSS");
+  const csp = document.querySelector('meta[http-equiv="Content-Security-Policy"]').content;
+  assert.match(csp, /script-src 'self';/);
+  assert.match(csp, /style-src 'self';/);
+  assert.doesNotMatch(csp, /unsafe-inline|unsafe-eval|https:/);
+  assert.equal(document.querySelectorAll("script:not([src])").length, 0);
+  assert.equal(
+    root.querySelectorAll("[data-bit-open]").length,
+    1,
+    "the compact reading edition keeps Bit in the header",
+  );
+  assert.equal(root.querySelectorAll('[role="tab"]').length, 7);
+  assert.equal(document.querySelector('meta[property="og:image"]').content, "https://cashio.us/v40/share-card.jpg");
+  assert.ok((await stat(asset("dist/v40/share-card.jpg"))).size < 250_000);
+  const receipt = JSON.parse(await read("dist/v40/site-release.json"));
+  assert.equal(receipt.experienceVersion, JSON.parse(await read("package.json")).version);
+  assert.equal(receipt.previousExperience.entry, "/v39/");
+  assert.equal(receipt.published, receipt.status === "released");
+  assert.equal(receipt.evidenceSnapshot.fleetObserved, "2026-10-03");
+  assert.equal(receipt.evidenceSnapshot.routingObserved, null);
+  const files = await readdir(asset("public/v40/assets"));
+  assert.equal(files.length, 29, "retain the original twenty-nine images and font files");
+  for (const file of files)
+    assert.deepEqual(
+      await readFile(asset(`public/v40/assets/${file}`)),
+      await readFile(asset(`dist/v40/assets/${file}`)),
+    );
+  for (const workflow of ["pages.yml", "public-safety.yml"])
+    assert.match(await read(`.github/workflows/${workflow}`), /npm run test:v40/);
+  assert.match(await read(".github/workflows/public-safety.yml"), /steps\.v40_runtime\.outcome != 'success'/);
+});
+
 function imageDimensions(buffer, extension) {
   if (extension === "avif") {
     const ispe = buffer.indexOf(Buffer.from("ispe"));
@@ -100,7 +139,7 @@ function expandScript(scripts, name, seen = new Set()) {
 
 test("V37 software gates preserve the independent V35 dated evidence", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "39.8.0");
+  assert.equal(packageJson.version, "40.0.0");
   const lock = JSON.parse(await read("package-lock.json"));
   assert.equal(lock.version, packageJson.version);
   assert.equal(lock.packages[""].version, packageJson.version);
@@ -117,7 +156,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
   }
   assert.equal(packageJson.scripts.lint, "eslint . --max-warnings 0");
   const formattingScope =
-    '"src/**/*.{ts,tsx,js,css,html}" "tests/**/*.mjs" "scripts/**/*.{mjs,mts}" "*.{js,json,md,ts}" "docs/**/*.md" ".github/**/*.{md,yml,yaml}" "public/**/*.json" "v38/**/*.html" "index.html" "public/helios-entry.js"';
+    '"src/**/*.{ts,tsx,js,jsx,css,html}" "tests/**/*.mjs" "scripts/**/*.{mjs,mts}" "*.{js,json,md,ts}" "docs/**/*.md" ".github/**/*.{md,yml,yaml}" "public/**/*.json" "v38/**/*.html" "v39/**/*.html" "v40/**/*.html" "index.html" "public/helios-entry.js" "public/v40-entry.js"';
   assert.equal(packageJson.scripts.format, `prettier --write ${formattingScope}`);
   assert.equal(packageJson.scripts["format:check"], `prettier --check ${formattingScope}`);
   const expandedTest = expandScript(packageJson.scripts, "test");
@@ -131,6 +170,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
     "node --import tsx scripts/prerender-odyssey.mts",
     "node --import tsx scripts/prerender-helios.mts",
     "node --import tsx scripts/prerender-rooms.mts",
+    "node --import tsx scripts/prerender-v40.mts",
     packageJson.scripts["test:artifact"],
     packageJson.scripts["test:release"],
   ]);
@@ -152,9 +192,11 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
     "node --import tsx scripts/prerender-odyssey.mts",
     "node --import tsx scripts/prerender-helios.mts",
     "node --import tsx scripts/prerender-rooms.mts",
+    "node --import tsx scripts/prerender-v40.mts",
     packageJson.scripts["test:artifact"],
     "node scripts/check_layout_runtime.mjs",
     "node scripts/check_v36_runtime.mjs",
+    packageJson.scripts["test:v40"],
     packageJson.scripts["test:release"],
     "python scripts/public_repo_guard.py",
     "python scripts/check_release_consistency.py",
@@ -647,17 +689,12 @@ test("Public Site Safety preserves report upload and enforcement after every gat
   }
 });
 
-test("tag publication derives V37 from software metadata and validates one built artifact before publishing", async () => {
+test("tag publication derives its version from software metadata and validates one built artifact before publishing", async () => {
   const workflow = await read(".github/workflows/release.yml");
   assert.match(workflow, /require\('\.\/package\.json'\)\.version\.split\('\.'\)\[0\]/);
   assert.doesNotMatch(workflow, /EXPECTED_TAG[^\n]*status\.json/);
   assert.match(workflow, /node-version:\s*22/);
-  assertOrdered(
-    workflow,
-    requiredWorkflowCommands,
-    "softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64",
-    "GitHub Release",
-  );
+  assertOrdered(workflow, requiredWorkflowCommands, "gh release create", "GitHub Release");
   assert.equal((workflow.match(/run: npm run build/g) ?? []).length, 1);
 });
 
@@ -671,16 +708,16 @@ test("Helios release identity, signature assets and compatibility receipts agree
   for (const name of ["site-release.json", "event-horizon-release.json"]) {
     const compatibility = JSON.parse(await read(`dist/${name}`));
     assert.deepEqual(compatibility.frontDoor, {
-      entry: release.entry,
-      experienceVersion: release.experienceVersion,
-      visualEdition: release.visualEdition,
-      receipt: "/v38/site-release.json",
+      entry: "/",
+      experienceVersion: "40.0.0",
+      visualEdition: "Mostly Harmless",
+      receipt: "/v40/site-release.json",
     });
   }
   const evidence = JSON.parse(await read("public/v38/status.json"));
   assert.equal(release.evidenceSnapshot.observedAtUtc, evidence.provenance.observedAtUtc);
-  const doc = new JSDOM(await read("dist/index.html")).window.document;
-  assert.doesNotMatch(doc.querySelector('meta[name="robots"]').content, /noindex|nofollow/);
+  const doc = new JSDOM(await read("dist/v39/index.html")).window.document;
+  assert.match(doc.querySelector('meta[name="robots"]').content, /noindex/);
   assert.doesNotMatch(doc.body.textContent, /Unpublished refinement/);
   assert.match(doc.body.textContent, /V39\.8 · First Light · Directed by Doug Cashio · October 3, 2026/);
   const releaseDay = new Date(`${release.releaseDate}T00:00:00Z`);
@@ -722,14 +759,13 @@ test("Helios release identity, signature assets and compatibility receipts agree
   );
   assert.ok(doc.querySelector('#snapshot-story a[href="/evidence/console-snapshot-2026-10-03.json"]'));
   assert.deepEqual(JSON.parse(await read("dist/evidence/status.json")), evidence);
-  const shortVersion = release.experienceVersion.split(".").slice(0, 2).join(".");
-  assert.ok((await read("README.md")).startsWith(`# cAshIo V${shortVersion} · Helios`));
-  assert.equal((await read("CHANGELOG.md")).match(/^## (V[\d.]+)/m)?.[1], `V${shortVersion}`);
+  assert.ok((await read("README.md")).startsWith("# cAshIo V40 · Mostly Harmless"));
+  assert.equal((await read("CHANGELOG.md")).match(/^## (V[\d.]+)/m)?.[1], "V40");
   const sitemap = new JSDOM(await read("dist/sitemap.xml"), { contentType: "application/xml" }).window.document;
   const home = [...sitemap.querySelectorAll("url")].find(
     (entry) => entry.querySelector("loc")?.textContent === "https://cashio.us/",
   );
-  assert.equal(home?.querySelector("lastmod")?.textContent, release.releaseDate);
+  assert.equal(home?.querySelector("lastmod")?.textContent, "2026-10-05");
   // The home signature and the Celestial Forge share one full size artwork file, so the forge reuses the cached copy.
   assert.equal(doc.querySelector("#sig-art").getAttribute("src"), "/brand/celestial-1680.webp");
   assert.ok((await read("src/odyssey/brand-mark.tsx")).includes("/brand/celestial-1680.webp 1680w"));
@@ -743,9 +779,9 @@ test("Helios release identity, signature assets and compatibility receipts agree
   }
 });
 
-test("The root ships Helios directly, with bounded compatibility routing and a complete static invitation", async () => {
-  const document = new JSDOM(await read("dist/index.html")).window.document;
-  assert.equal(document.querySelector('link[rel="canonical"]').href, "https://cashio.us/");
+test("The V39 archive ships Helios directly, with bounded compatibility routing and a complete static invitation", async () => {
+  const document = new JSDOM(await read("dist/v39/index.html")).window.document;
+  assert.equal(document.querySelector('link[rel="canonical"]').href, "https://cashio.us/v39/");
   assert.equal(document.querySelectorAll("h1").length, 1);
   assert.equal(document.querySelectorAll(".studio-card").length, 0, "room payload is deferred");
   for (const id of ["starship", "principles", "studios", "heritage"]) {
@@ -754,14 +790,14 @@ test("The root ships Helios directly, with bounded compatibility routing and a c
     const reading = new JSDOM(await read(`dist/rooms/${id}/index.html`)).window.document;
     assert.equal(reading.querySelectorAll("script").length, 0, "reading edition needs no JavaScript");
     assert.equal(reading.querySelectorAll("h1").length, 1);
-    assert.ok(reading.querySelector(`a[href="/#${id}"]`));
-    assert.ok(reading.querySelector('.room-end a[href="/#rooms"]'));
+    assert.ok(reading.querySelector(`a[href="/v39/#${id}"]`));
+    assert.ok(reading.querySelector('.room-end a[href="/v39/#rooms"]'));
     for (const image of reading.querySelectorAll("img"))
       assert.ok((await stat(asset(`dist${image.getAttribute("src")}`))).size > 0);
     if (id === "studios") {
       assert.equal(reading.querySelectorAll(".studio-card").length, 6);
       assert.equal(reading.querySelectorAll(".studio-library a").length, 6);
-      assert.ok(reading.querySelector('.studio-library a[href="/#film=intro"]'));
+      assert.ok(reading.querySelector('.studio-library a[href="/v39/#film=intro"]'));
       assert.ok(reading.querySelector('.studio-paths a[href="#zenith-heading"]'));
       assert.ok(reading.querySelector('.studio-paths a[href="#studio-worlds"]'));
     }
@@ -809,7 +845,7 @@ test("Zenith ships only the fifteen web films, with complete routes and reading-
   assert.deepEqual(
     links.sort(),
     Object.keys(clips)
-      .map((id) => `/#film=${id}`)
+      .map((id) => `/v39/#film=${id}`)
       .sort(),
   );
   const files = await readdir(asset("dist/assets/zenith"));
@@ -829,7 +865,7 @@ test("Zenith ships only the fifteen web films, with complete routes and reading-
 
 test("Versioned Helios artwork and fonts preserve their bytes and share one cache identity", async () => {
   const versions = JSON.parse(await read("dist/v38/asset-versions.json"));
-  const doc = new JSDOM(await read("dist/index.html")).window.document;
+  const doc = new JSDOM(await read("dist/v39/index.html")).window.document;
   for (const [source, entry] of Object.entries(versions)) {
     const original = await readFile(asset(`public${source}`));
     const shipped = await readFile(asset(`dist${entry.url}`));

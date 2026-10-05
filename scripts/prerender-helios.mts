@@ -5,8 +5,8 @@ import { FLEET } from "../src/helios/fleet.js";
 import { briefText } from "../src/helios/decision-brief.js";
 
 // Keep the fingerprinted stylesheet cacheable. The same unchanged byte budget covers its complete contents.
-const target = "dist/index.html";
-let html = await readFile(target, "utf8");
+const target = "dist/v39/index.html";
+let html = (await readFile(target, "utf8")).replace(/\r\n?/g, "\n");
 const styles = [...html.matchAll(/<link rel="stylesheet" crossorigin href="(\/assets\/[\w.-]+\.css)">/g)];
 if (styles.length !== 1) throw new Error("Expected one Helios entry stylesheet");
 const [link, source] = styles[0];

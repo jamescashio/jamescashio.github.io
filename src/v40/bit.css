@@ -1,0 +1,278 @@
+.bit-header {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  border: 1px solid #73542b;
+  border-radius: 12px;
+  background: #141117;
+  color: #ffc46e;
+  cursor: pointer;
+  padding: 0 8px 0 0;
+  min-height: 44px;
+  min-width: 44px;
+  font: 700 10px var(--font-mono);
+  letter-spacing: 0.1em;
+}
+.bit-portrait {
+  position: relative;
+  display: block;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+}
+.bit-portrait canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.bit-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #00f9ff;
+  font: 40px var(--font-display);
+}
+.bit-rendered .bit-fallback {
+  display: none;
+}
+.bit-header:hover,
+.bit-hero:hover {
+  border-color: var(--cyan);
+  background: #11232a;
+}
+.bit-hero {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  width: 100%;
+  padding: 8px 0;
+  border: 0;
+  border-bottom: 1px solid var(--glass-border);
+  background: none;
+  cursor: pointer;
+  color: var(--text);
+  gap: 2px;
+}
+.bit-hero .bit-portrait {
+  width: 86px;
+  height: 86px;
+  margin-left: -8px;
+}
+.bit-hero strong {
+  display: block;
+  font: 900 19px var(--font-display);
+  color: var(--cyan);
+  letter-spacing: 0.12em;
+}
+.bit-hero small {
+  display: block;
+  font: 10px var(--font-mono);
+  color: var(--text-dim);
+  margin: 5px 0 7px;
+  letter-spacing: 0.14em;
+}
+.bit-hero span span {
+  display: block;
+  font: 12px/1.4 var(--font-body);
+  max-width: 140px;
+}
+.bit-dialog {
+  width: min(550px, calc(100vw - 24px));
+  max-height: calc(100dvh - 28px);
+  padding: 0;
+  margin: auto;
+  color: #e4e4f0;
+  background: radial-gradient(ellipse at 15% 15%, #11323866, transparent 48%), #090b13;
+  border: 1px solid #00aebc;
+  border-top: 5px solid #ff9500;
+  border-radius: 20px;
+  box-shadow:
+    0 0 90px #00f9ff12,
+    0 24px 90px #000;
+  overflow: auto;
+}
+.bit-dialog::backdrop {
+  background: #030408e8;
+  backdrop-filter: blur(12px);
+}
+.bit-dialog-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 24px 0;
+}
+.bit-eyebrow {
+  font: 10px var(--font-mono);
+  letter-spacing: 0.2em;
+  color: #00f9ff;
+}
+.bit-dialog h2 {
+  font: 700 21px/1.3 var(--font-display);
+  margin: 10px 0 0;
+}
+.bit-dialog button {
+  cursor: pointer;
+}
+.bit-dialog [data-bit-close] {
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid #3e414e;
+  background: #12151f;
+  border-radius: 10px;
+  color: #e4e4f0;
+  font-size: 26px;
+}
+.bit-intro {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 24px;
+}
+.bit-large {
+  width: 138px;
+  height: 138px;
+}
+.bit-intro p {
+  font: 700 19px/1.4 var(--font-display);
+  margin: 0 0 10px;
+}
+.bit-intro > div > span {
+  font: 13px var(--font-body);
+  color: #b5b8cc;
+}
+.bit-answer {
+  border: 1px solid #26575e;
+  border-left: 3px solid #00f9ff;
+  border-radius: 12px;
+  padding: 17px 18px;
+  margin: 0 24px 18px;
+  background: #05070dbb;
+  min-height: 120px;
+}
+.bit-answer-tag {
+  font: 10px/1.6 var(--font-mono);
+  letter-spacing: 0.1em;
+  color: #00f9ff;
+}
+.bit-answer p {
+  margin: 10px 0 0;
+  font: 16px/1.55 var(--font-body);
+  text-wrap: pretty;
+}
+.bit-dialog[data-mood="no"] .bit-answer {
+  border-left-color: #ff6b89;
+}
+.bit-dialog[data-mood="yes"] .bit-answer {
+  border-left-color: #ffcc18;
+}
+.bit-questions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 0 24px 20px;
+}
+.bit-questions button {
+  border: 1px solid #454958;
+  background: #12141f;
+  color: #e4e4f0;
+  border-radius: 9px;
+  min-height: 44px;
+  font: 600 13px/1.4 var(--font-body);
+  padding: 10px;
+}
+.bit-questions button:hover {
+  border-color: #00f9ff;
+  background: #13262b;
+}
+.bit-destinations {
+  display: grid;
+  gap: 8px;
+  margin: 0 24px 16px;
+}
+.bit-destinations button {
+  border: 1px solid #3c404e;
+  background: transparent;
+  color: #00f9ff;
+  padding: 12px 14px;
+  min-height: 44px;
+  text-align: left;
+  border-radius: 9px;
+  font: 600 13px var(--font-display);
+}
+.bit-destinations button:first-child {
+  background: #ff9500;
+  border-color: #ff9500;
+  color: #07080d;
+}
+.bit-footnote {
+  margin: 0;
+  padding: 0 24px 24px;
+  color: #b5b8cc;
+  font: 12px/1.6 var(--font-body);
+}
+@media (max-width: 600px) {
+  .bit-header {
+    padding: 0;
+    justify-content: center;
+  }
+  .bit-header .bit-portrait {
+    width: 40px;
+    height: 40px;
+  }
+  .bit-header-label {
+    display: none;
+  }
+  header .za-btn {
+    display: none !important;
+  }
+  .hud-control,
+  .motion-control {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .bit-dialog-head {
+    padding: 18px 18px 0;
+  }
+  .bit-dialog h2 {
+    font-size: 19px;
+  }
+  .bit-intro {
+    padding: 0 14px;
+    gap: 0;
+  }
+  .bit-intro p {
+    font-size: 16px;
+  }
+  .bit-large {
+    width: 110px;
+    height: 110px;
+  }
+  .bit-answer {
+    margin-inline: 18px;
+    min-height: 144px;
+  }
+  .bit-questions,
+  .bit-destinations {
+    margin-inline: 18px;
+  }
+  .bit-footnote {
+    padding-inline: 18px;
+  }
+  .bit-questions {
+    grid-template-columns: 1fr;
+  }
+}
+@media (forced-colors: active) {
+  .bit-header,
+  .bit-hero,
+  .bit-dialog,
+  .bit-answer,
+  .bit-questions button {
+    border: 1px solid ButtonText;
+  }
+  .bit-fallback {
+    color: ButtonText;
+  }
+}
