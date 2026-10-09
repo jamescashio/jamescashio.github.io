@@ -591,7 +591,8 @@ const esc=s=>String(s).replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;"
       const io=new IntersectionObserver(es=>{for(const e of es){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}}},{rootMargin:"0px 0px -8% 0px"});
       cards.forEach(el=>io.observe(el));
     }else cards.forEach(el=>el.classList.add("in"));
-    setTimeout(()=>{heroEls.concat(cards).forEach(el=>el.classList.add("in"));},2500); // never leave anything hidden
+    // safety net: after 2.5 s force only what is already on screen; cards below the fold keep their scroll reveal
+    setTimeout(()=>{heroEls.forEach(el=>el.classList.add("in"));cards.forEach(el=>{if(el.getBoundingClientRect().top<innerHeight+40)el.classList.add("in");});},2500);
   }
   // scroll progress
   const bar=$("pgbar");
