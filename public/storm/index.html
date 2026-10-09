@@ -302,7 +302,7 @@ body::before{content:"";position:fixed;inset:-20%;z-index:-1;background:radial-g
     </div>
     <div class="live">
       <span class="pill"><svg class="eye" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c-3 0-6 2-7 5 3-2 6-2 8-1-5 0-8 4-8 8 0 1 0 2 .4 3 .6-4 3.6-7 8-7-2 2-3 4-2.6 7 .5 3 2.6 5 5.2 5.8-1.2-1.6-1.6-3.4-1.2-5.4 1.8 4.6 6.4 5.4 9.2 2.4-3.8.4-6.6-2-7.4-5.4 3 .4 5.4-1 6.6-3.4-2.4 1.6-5.8 1.6-8-.4 2.6 0 5-1.2 6-3.4-2 1.6-5 1.6-7 0 1.6-.8 2.8-2.4 2.8-4.2-1.2 1.6-3.4 2.6-5.8 2.6z"/></svg><span class="dot" id="liveDot"></span><span id="liveTxt">Connecting to AccuWeather</span></span>
-      <span class="pill mono" id="nhcStamp" title="Latest NHC advisory seen by this page">NHC 12 · 10 AM CDT</span>
+      <span class="pill mono" id="nhcStamp" title="Latest NHC advisory seen by this page">NHC 13 · 4 PM CDT</span>
       <button class="btn" id="sirenBtn" type="button" aria-pressed="false" title="Arm an audible alarm for Tornado Warnings and Extreme Wind Warnings at the house"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4"/></svg>Arm siren</button>
       <button class="btn" id="wakeBtn" type="button" aria-pressed="false" title="Keep the screen on while this page is open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Screen on</button>
       <button class="btn" id="lowBtn" type="button" aria-pressed="false" title="Pause animations to save phone battery"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 10v4M6 12h6"/></svg>Battery saver</button>
@@ -313,8 +313,8 @@ body::before{content:"";position:fixed;inset:-20%;z-index:-1;background:radial-g
   <section class="banner" aria-label="Active warning"><div class="rain" aria-hidden="true"></div>
     <svg class="siren" viewBox="0 0 64 64" aria-hidden="true"><g class="spin" fill="currentColor"><path d="M32 6c-9 0-17 5-20 13 6-5 14-6 20-3-12 0-20 9-20 20 0 2 .3 4 1 5 1-10 8-17 19-17 0 0 0 0 0 0-4 4-6 9-5 15 1 7 6 12 12 14-3-4-4-8-3-13 4 11 15 13 22 6-9 1-16-5-18-13 7 1 13-2 16-8-6 4-14 4-19-1 6 0 12-3 14-8-5 4-12 4-17 0 4-2 7-6 7-10-3 4-8 6-14 6z" opacity=".9"/></g><circle cx="32" cy="32" r="5" fill="#060c17"/></svg>
     <div style="position:relative;z-index:1;min-width:0">
-      <h2 id="bannerHead">Major Hurricane Isaias. Hurricane Warning for Pensacola, landfall tonight just east of the house.</h2>
-      <p id="bannerSub">Isaias is a Category 3 at 10 AM: 120 mph, 959 mb, about 190 mi south southeast of the house, moving north northeast at 16 mph. The 10 AM NHC track shifted east and brings the center ashore near Navarre tonight, about 20 mi east of our house. You sit on the west side of the eye, still inside the hurricane force wind field, with winds from the north and northeast this afternoon, north northwest at closest approach, then west overnight.</p>
+      <h2 id="bannerHead">Major Hurricane Isaias, under 90 miles out. Landfall around 9 PM just east of the house.</h2>
+      <p id="bannerSub">Isaias at 4 PM: 115 mph, Category 3, 959 mb, about 88 mi south southeast of the house and now moving due north at 17 mph. The 4 PM NHC track brings the center ashore near Navarre around 9 PM, then north past you early Saturday, still a hurricane inland. You stay on the west side of the eye: winds from the north and northeast through the evening, north northwest at closest approach, then west after midnight.</p>
       <div class="chips" id="chips">
         <span class="chip c-hu">Hurricane Warning</span><span class="chip c-ss">Storm Surge Warning</span><span class="chip c-fl">Flood Watch Fri 1 PM</span><span class="chip c-ts">High Surf Warning</span>
       </div>
@@ -323,7 +323,7 @@ body::before{content:"";position:fixed;inset:-20%;z-index:-1;background:radial-g
   </section>
 
   <section class="kpis" aria-label="Key numbers">
-    <div class="kpi red"><span class="lbl">Isaias winds</span><span class="v mono" id="kWind">120 mph</span><span class="s" id="kWindS">Category 3 · 959 mb</span></div>
+    <div class="kpi red"><span class="lbl">Isaias winds</span><span class="v mono" id="kWind">115 mph</span><span class="s" id="kWindS">Category 3 · 959 mb</span></div>
     <div class="kpi cy"><span class="lbl">Distance to home</span><span class="v mono" id="kDist">505 mi</span><span class="s" id="kDistS">SSW of our house</span></div>
     <div class="kpi amb"><svg class="ring" viewBox="0 0 54 54" aria-hidden="true"><circle class="bg" cx="27" cy="27" r="22"/><circle class="fg" id="ringFg" cx="27" cy="27" r="22" stroke-dasharray="138.2" stroke-dashoffset="0"/></svg><span class="lbl" id="kCountL">Tropical storm winds in</span><span class="v mono" id="kCount">--</span><span class="s" id="kCountS">TS wind field reaches 185 mi from the center</span></div>
     <div class="kpi red"><span class="lbl">Closest approach</span><span class="v mono" id="kCpa">--</span><span class="s" id="kCpaS">--</span></div>
@@ -341,8 +341,8 @@ body::before{content:"";position:fixed;inset:-20%;z-index:-1;background:radial-g
       <canvas id="cBase"></canvas><canvas id="cFx"></canvas><canvas id="cTop"></canvas>
       <div class="tip" id="tip" hidden></div>
       <div class="readout" aria-live="polite">
-        <span class="lbl" id="rWhen">Now · Fri Oct 9, 10 AM CDT</span>
-        <span class="big" id="rCat">Category 3 · 120 mph</span>
+        <span class="lbl" id="rWhen">Now · Fri Oct 9, 4 PM CDT</span>
+        <span class="big" id="rCat">Category 3 · 115 mph</span>
         <span class="mono" id="rDist">505 mi from home</span><span class="tod" id="rTod"></span>
       </div>
       <div class="legend">
@@ -355,11 +355,11 @@ body::before{content:"";position:fixed;inset:-20%;z-index:-1;background:radial-g
     <div class="scrub">
       <div class="scrubrow">
         <button class="btn" id="playBtn" type="button" aria-label="Play forecast"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>Play</span></button>
-        <input type="range" id="slider" min="30" max="57" step="0.25" value="30" aria-label="Forecast time">
+        <input type="range" id="slider" min="36" max="57" step="0.25" value="36" aria-label="Forecast time">
         <button class="btn" id="liveBtn" type="button" aria-pressed="true" title="Follow the clock: the storm glyph sits where the NHC track puts it right now"><span class="dot on"></span><span>Live</span></button>
       </div>
-      <div class="ticks" id="ticks"><span>Fri 10a</span><span>Fri 5p</span><span>Fri 11p</span><span>Sat 6a</span><span>Sat 1p</span></div>
-      <p class="note"><span id="trackSrc">Position, strength and forecast points from NHC advisory 12 (10 AM CDT Oct 9), interpolated between points. The page checks the NHC feed every 15 minutes and redraws when a newer advisory is out.</span> The shaded cone is drawn from typical NHC error radii; the official cone is at nhc.noaa.gov.</p>
+      <div class="ticks" id="ticks"><span>Fri 4p</span><span>Fri 9p</span><span>Sat 2a</span><span>Sat 8a</span><span>Sat 1p</span></div>
+      <p class="note"><span id="trackSrc">Position, strength and forecast points from NHC advisory 13 (4 PM CDT Oct 9), interpolated between points. The page checks the NHC feed every 15 minutes and redraws when a newer advisory is out.</span> The shaded cone is drawn from typical NHC error radii; the official cone is at nhc.noaa.gov.</p>
     </div>
   </section>
 
@@ -417,7 +417,7 @@ body::before{content:"";position:fixed;inset:-20%;z-index:-1;background:radial-g
     <section class="card span4" aria-labelledby="hDial">
       <h3 id="hDial"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-6"/></svg>Strength dial</h3>
       <svg class="dial" viewBox="0 0 220 135" aria-label="Saffir Simpson dial"><g id="dialArcs"></g><g id="dialTicks"></g><g class="needle" id="needle"><path d="M110 115 L106 112 L110 34 L114 112Z" fill="#e8eef8"/><circle cx="110" cy="115" r="7" fill="#e8eef8"/><circle cx="110" cy="115" r="3" fill="#060c17"/></g></svg>
-      <div class="dialv"><div class="big mono" id="dialNum">120</div><div class="lbl" id="dialCat">mph · Category 3</div></div>
+      <div class="dialv"><div class="big mono" id="dialNum">115</div><div class="lbl" id="dialCat">mph · Category 3</div></div>
       <p class="note">Follows the forecast scrubber on the map.</p>
     </section>
     <section class="card span8" aria-labelledby="hDist">
@@ -468,7 +468,7 @@ body::before{content:"";position:fixed;inset:-20%;z-index:-1;background:radial-g
     <section class="card span6" aria-labelledby="hInt">
       <h3 id="hInt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20l5-8 4 4 8-12"/></svg>Isaias strength forecast</h3>
       <div class="chartbox"><canvas id="intChart" aria-label="Intensity forecast chart"></canvas></div>
-      <p class="note"><span id="intNote">Isaias is at its forecast peak now, 120 mph Category 3; about 115 mph at landfall near Navarre around 10 PM tonight, then weakening fast inland Saturday.</span> Bands mark Saffir Simpson categories.</p>
+      <p class="note"><span id="intNote">Isaias 115 mph at 4 PM; near 110 mph at landfall around 9 PM east of Pensacola, still about 85 mph as the center passes north of you early Saturday, then weakening fast.</span> Bands mark Saffir Simpson categories.</p>
     </section>
 
     <section class="card span6" aria-labelledby="hSat">
@@ -493,7 +493,7 @@ body::before{content:"";position:fixed;inset:-20%;z-index:-1;background:radial-g
       <div class="contacts" style="grid-template-columns:1fr">
         <div class="contact"><span class="lbl">Escambia County EMA</span><span class="num">850-471-6400</span><a href="https://myescambia.com/beready" target="_blank" rel="noopener">Evacuation zones and shelters</a></div>
         <div class="contact"><span class="lbl">NWS Mobile</span><a href="https://www.weather.gov/mob" target="_blank" rel="noopener">weather.gov/mob</a></div>
-        <div class="contact"><span class="lbl">National Hurricane Center</span><a href="https://www.nhc.noaa.gov/" target="_blank" rel="noopener">nhc.noaa.gov</a><span class="note"><span id="nextAdv">Next advisories 1 PM and 4 PM CDT</span></span></div>
+        <div class="contact"><span class="lbl">National Hurricane Center</span><a href="https://www.nhc.noaa.gov/" target="_blank" rel="noopener">nhc.noaa.gov</a><span class="note"><span id="nextAdv">Next advisories 7 PM and 10 PM CDT</span></span></div>
         <div class="contact"><span class="lbl">FPL power outage</span><span class="num">1-800-468-8243</span><a href="https://www.fplmaps.com/northwest" target="_blank" rel="noopener">Outage map, Northwest Florida</a></div>
         <div class="contact"><span class="lbl">Shelter · general, pet friendly</span><span>Pensacola Bay Center, 201 E Gregory St</span><span class="note">Opened Thursday 3 PM</span></div>
         <div class="contact"><span class="lbl">Shelter · special needs</span><span>Wedgewood Community Center, 6405 Wagner Rd</span></div>
@@ -504,7 +504,7 @@ body::before{content:"";position:fixed;inset:-20%;z-index:-1;background:radial-g
     </section>
 
     <section class="card span12">
-      <p class="src" id="srcLine">Sources: National Hurricane Center advisories 7 through 12 for Hurricane Isaias (October 8, 2026). Live local data: AccuWeather with NWS Mobile alerts, refreshed every 10 minutes while this page is open. Home position from the U.S. Census geocoder for our housecle, 32504; elevation from the USGS 3DEP point service; evacuation zone from the Florida Division of Emergency Management statewide layer; tides from NOAA CO-OPS station 8729840 Pensacola; shelters and evacuation order from Escambia County statements reported October 8, 2026. This page supplements, and never replaces, official orders from Escambia County.</p>
+      <p class="src" id="srcLine">Sources: National Hurricane Center advisories 7 through 13 for Hurricane Isaias (October 8, 2026). Live local data: AccuWeather with NWS Mobile alerts, refreshed every 10 minutes while this page is open. Home position from the U.S. Census geocoder for our housecle, 32504; elevation from the USGS 3DEP point service; evacuation zone from the Florida Division of Emergency Management statewide layer; tides from NOAA CO-OPS station 8729840 Pensacola; shelters and evacuation order from Escambia County statements reported October 8, 2026. This page supplements, and never replaces, official orders from Escambia County.</p>
     </section>
   </div>
 </div>
@@ -520,9 +520,9 @@ const esc=s=>String(s).replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;"
 let lastDaily=null;let lastWin=null;
 const HOME = {lat:30.467423, lon:-87.168678}; // our house, Census geocoder
 const BASE_UTC = Date.UTC(2026,9,8,9,0); // track hour 0 = 09Z Oct 8
-let NOW_H = 30; // advisory 12 at 15Z Oct 9
-let BAKED_ADV = 12;
-const TRACK = [ // h from base, lat, lon, kt (NHC advisories 7 to 12)
+let NOW_H = 36; // advisory 13 at 21Z Oct 9
+let BAKED_ADV = 13;
+const TRACK = [ // h from base, lat, lon, kt (NHC advisories 7 to 13)
   {h:0,  lat:23.3, lon:-91.2, kt:70},
   {h:6,  lat:23.7, lon:-90.2, kt:74},
   {h:12, lat:24.4, lon:-89.3, kt:85},
@@ -532,14 +532,15 @@ const TRACK = [ // h from base, lat, lon, kt (NHC advisories 7 to 12)
   {h:24, lat:26.4, lon:-88.0, kt:95},
   {h:27, lat:27.0, lon:-87.6, kt:95},
   {h:30, lat:27.7, lon:-87.3, kt:105},
-  {h:39, lat:29.7, lon:-86.8, kt:100},
-  {h:51, lat:32.1, lon:-87.1, kt:55, inland:true},
-  {h:63, lat:34.2, lon:-87.2, kt:35, inland:true},
-  {h:75, lat:36.5, lon:-85.0, kt:25, inland:true},
-  {h:87, lat:39.1, lon:-81.0, kt:20, inland:true}
+  {h:33, lat:28.4, lon:-87.2, kt:105},
+  {h:36, lat:29.2, lon:-87.0, kt:100},
+  {h:45, lat:31.2, lon:-86.8, kt:75, inland:true},
+  {h:57, lat:33.4, lon:-87.2, kt:40, inland:true},
+  {h:69, lat:35.6, lon:-86.1, kt:30, inland:true},
+  {h:81, lat:38.1, lon:-82.5, kt:25, inland:true}
 ];
-const CONE_NM = [[30,12],[39,40],[51,58],[63,76],[75,95],[87,112]];
-const R34 = {NE:180,SE:110,SW:80,NW:160};
+const CONE_NM = [[36,12],[45,40],[57,58],[69,76],[81,95]];
+const R34 = {NE:180,SE:150,SW:90,NW:160};
 const TS_ARRIVE = 1791561600000; // Fri Oct 9, 11 AM CDT, TS wind field now 185 mi wide
 
 const mph = kt => Math.round(kt*1.15078/5)*5;
@@ -870,7 +871,7 @@ function renderTimeline(win){lastWin=win;
     $("tlFill").style.height=Math.max(0,y-6)+"px";$("tlHere").style.top=y+"px";});
 }
 renderTimeline({});
-function renderTicker(list){const items=list||["Hurricane Warning in effect for Escambia Coastal","Storm Surge Warning in effect","Flood Watch Friday 1 PM to Saturday 1 PM","High Surf Warning Friday 7 AM to Sunday 10 AM","NWS Mobile peak wind 60 to 80 mph, gusts to 110","Tropical storm winds Friday afternoon until early Saturday","Surge 6 to 9 ft in surge prone areas, worst east of landfall","Rain 4 to 8 in, locally up to 15 in on the Panhandle","Tornadoes possible east of the track","Isaias now Category 3, 120 mph, 959 mb (10 AM advisory)","Track shifted east: landfall near Navarre, house on the west side of the eye","Winds from the N and NE this afternoon, NNW at closest approach, W overnight","Hurricane force winds reach 35 mi from the center on the NW side","Hurricane Warning Ocean Springs MS to Bay/Gulf County line","NHC surge 5 to 7 ft Dauphin Island to Indian Pass","Hurricane force winds reach 30 mi from the center, TS winds 185 mi","NHC: preparations should be rushed to completion, weather goes downhill quickly today","Next NHC advisories 1 PM and 4 PM CDT"];
+function renderTicker(list){const items=list||["Hurricane Warning in effect for Escambia Coastal","Storm Surge Warning in effect","Flood Watch Friday 1 PM to Saturday 1 PM","High Surf Warning Friday 7 AM to Sunday 10 AM","NWS Mobile peak wind 60 to 80 mph, gusts to 110","Tropical storm winds Friday afternoon until early Saturday","Surge 6 to 9 ft in surge prone areas, worst east of landfall","Rain 4 to 8 in, locally up to 15 in on the Panhandle","Tornadoes possible east of the track","Isaias Category 3, 115 mph, 959 mb, moving due north at 17 mph (4 PM advisory)","Landfall near Navarre around 9 PM; still a hurricane inland at 1 AM Saturday","Track shifted east: landfall near Navarre, house on the west side of the eye","Winds from the N and NE this afternoon, NNW at closest approach, W overnight","Hurricane force winds reach 35 mi from the center on the NW side","Hurricane Warning Ocean Springs MS to Bay/Gulf County line","NHC surge 5 to 7 ft Dauphin Island to Indian Pass","Hurricane force winds reach 30 mi from the center, TS winds 185 mi","NHC: preparations should be rushed to completion, weather goes downhill quickly today","Next NHC advisories 7 PM and 10 PM CDT"];
   const html=items.map(t=>`<span>${esc(t)}</span>`).join("");$("ticker").innerHTML=html+html;}
 renderTicker();
 
@@ -886,7 +887,7 @@ renderChecks();
 
 // ---------- v6: live forecast track from the NHC GIS feed ----------
 const NHC_GIS="https://mapservices.weather.noaa.gov/tropical/rest/services/tropical/NHC_tropical_weather/MapServer";
-let liveAdv="12";
+let liveAdv="13";
 function fmtTicks(){const t=$("ticks");const lo=NOW_H,hi=57;t.innerHTML=[0,.25,.5,.75,1].map(f=>{const h=lo+(hi-lo)*f;const d=new Date(BASE_UTC+h*3600e3);return"<span>"+d.toLocaleString("en-US",{timeZone:"America/Chicago",weekday:"short"})+" "+d.toLocaleString("en-US",{timeZone:"America/Chicago",hour:"numeric"}).toLowerCase().replace(" ","")+"</span>";}).join("");}
 function applyLiveTrack(feats,adv){
   const pts=feats.map(f=>{const a=f.attributes;const m=/^(\d\d)\/(\d\d)(\d\d)$/.exec(a.validtime||"");if(!m)return null;
