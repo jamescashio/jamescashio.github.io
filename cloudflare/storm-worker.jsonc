@@ -1,0 +1,16 @@
+// Cloudflare Worker that mirrors the Pensacola Storm Watch page as static assets.
+// Deployed by .github/workflows/storm-worker.yml on every change to public/storm.
+// The assets directory is assembled by the workflow from public/storm, the site
+// favicon and the brand wordmark so the page's absolute asset paths resolve.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "pensacola-storm-watch",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "../dist-storm",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  },
+  "workers_dev": true,
+  "observability": { "enabled": true }
+}
