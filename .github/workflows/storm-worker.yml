@@ -17,6 +17,8 @@ concurrency:
   cancel-in-progress: true
 jobs:
   deploy:
+    # Manual runs may pick any ref; only main ever reaches the production Worker.
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
