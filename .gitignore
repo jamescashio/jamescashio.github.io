@@ -42,3 +42,7 @@ private/
 homelab-docs/
 status-private.json
 .jules/
+
+# Cloudflare Worker asset bundle, assembled by .github/workflows/storm-worker.yml
+dist-storm/
+.wrangler/
