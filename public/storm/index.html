@@ -518,7 +518,7 @@ if(lowPower){reduce=true;document.documentElement.classList.add("lowpower");}
 const $ = id => document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
 let lastDaily=null;let lastWin=null;
-const HOME = {lat:30.467423, lon:-87.168678}; // our house, Census geocoder
+const HOME = {lat:30.467, lon:-87.169}; // neighborhood, rounded to 3 decimals (about 100 m)
 const BASE_UTC = Date.UTC(2026,9,8,9,0); // track hour 0 = 09Z Oct 8
 let NOW_H = 30; // advisory 12 at 15Z Oct 9
 let BAKED_ADV = 12;
