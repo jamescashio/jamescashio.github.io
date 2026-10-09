@@ -1,0 +1,1187 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Pensacola Storm Watch, shared</title>
+<style>/* Leaflet 1.9.4 CSS, inlined (BSD-2-Clause, Vladimir Agafonkin) */
+.leaflet-image-layer,.leaflet-layer,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-pane,.leaflet-pane>canvas,.leaflet-pane>svg,.leaflet-tile,.leaflet-tile-container,.leaflet-zoom-box{position:absolute;left:0;top:0}.leaflet-container{overflow:hidden}.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-tile{-webkit-user-select:none;-moz-user-select:none;user-select:none;-webkit-user-drag:none}.leaflet-tile::selection{background:0 0}.leaflet-safari .leaflet-tile{image-rendering:-webkit-optimize-contrast}.leaflet-safari .leaflet-tile-container{width:1600px;height:1600px;-webkit-transform-origin:0 0}.leaflet-marker-icon,.leaflet-marker-shadow{display:block}.leaflet-container .leaflet-overlay-pane svg{max-width:none!important;max-height:none!important}.leaflet-container .leaflet-marker-pane img,.leaflet-container .leaflet-shadow-pane img,.leaflet-container .leaflet-tile,.leaflet-container .leaflet-tile-pane img,.leaflet-container img.leaflet-image-layer{max-width:none!important;max-height:none!important;width:auto;padding:0}.leaflet-container img.leaflet-tile{mix-blend-mode:plus-lighter}.leaflet-container.leaflet-touch-zoom{-ms-touch-action:pan-x pan-y;touch-action:pan-x pan-y}.leaflet-container.leaflet-touch-drag{-ms-touch-action:pinch-zoom;touch-action:none;touch-action:pinch-zoom}.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom{-ms-touch-action:none;touch-action:none}.leaflet-container{-webkit-tap-highlight-color:transparent}.leaflet-container a{-webkit-tap-highlight-color:rgba(51,181,229,.4)}.leaflet-tile{filter:inherit;visibility:hidden}.leaflet-tile-loaded{visibility:inherit}.leaflet-zoom-box{width:0;height:0;-moz-box-sizing:border-box;box-sizing:border-box;z-index:800}.leaflet-overlay-pane svg{-moz-user-select:none}.leaflet-pane{z-index:400}.leaflet-tile-pane{z-index:200}.leaflet-overlay-pane{z-index:400}.leaflet-shadow-pane{z-index:500}.leaflet-marker-pane{z-index:600}.leaflet-tooltip-pane{z-index:650}.leaflet-popup-pane{z-index:700}.leaflet-map-pane canvas{z-index:100}.leaflet-map-pane svg{z-index:200}.leaflet-vml-shape{width:1px;height:1px}.lvml{behavior:url(#default#VML);display:inline-block;position:absolute}.leaflet-control{position:relative;z-index:800;pointer-events:visiblePainted;pointer-events:auto}.leaflet-bottom,.leaflet-top{position:absolute;z-index:1000;pointer-events:none}.leaflet-top{top:0}.leaflet-right{right:0}.leaflet-bottom{bottom:0}.leaflet-left{left:0}.leaflet-control{float:left;clear:both}.leaflet-right .leaflet-control{float:right}.leaflet-top .leaflet-control{margin-top:10px}.leaflet-bottom .leaflet-control{margin-bottom:10px}.leaflet-left .leaflet-control{margin-left:10px}.leaflet-right .leaflet-control{margin-right:10px}.leaflet-fade-anim .leaflet-popup{opacity:0;-webkit-transition:opacity .2s linear;-moz-transition:opacity .2s linear;transition:opacity .2s linear}.leaflet-fade-anim .leaflet-map-pane .leaflet-popup{opacity:1}.leaflet-zoom-animated{-webkit-transform-origin:0 0;-ms-transform-origin:0 0;transform-origin:0 0}svg.leaflet-zoom-animated{will-change:transform}.leaflet-zoom-anim .leaflet-zoom-animated{-webkit-transition:-webkit-transform .25s cubic-bezier(0,0,.25,1);-moz-transition:-moz-transform .25s cubic-bezier(0,0,.25,1);transition:transform .25s cubic-bezier(0,0,.25,1)}.leaflet-pan-anim .leaflet-tile,.leaflet-zoom-anim .leaflet-tile{-webkit-transition:none;-moz-transition:none;transition:none}.leaflet-zoom-anim .leaflet-zoom-hide{visibility:hidden}.leaflet-interactive{cursor:pointer}.leaflet-grab{cursor:-webkit-grab;cursor:-moz-grab;cursor:grab}.leaflet-crosshair,.leaflet-crosshair .leaflet-interactive{cursor:crosshair}.leaflet-control,.leaflet-popup-pane{cursor:auto}.leaflet-dragging .leaflet-grab,.leaflet-dragging .leaflet-grab .leaflet-interactive,.leaflet-dragging .leaflet-marker-draggable{cursor:move;cursor:-webkit-grabbing;cursor:-moz-grabbing;cursor:grabbing}.leaflet-image-layer,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-pane>svg path,.leaflet-tile-container{pointer-events:none}.leaflet-image-layer.leaflet-interactive,.leaflet-marker-icon.leaflet-interactive,.leaflet-pane>svg path.leaflet-interactive,svg.leaflet-image-layer.leaflet-interactive path{pointer-events:visiblePainted;pointer-events:auto}.leaflet-container{background:#ddd;outline-offset:1px}.leaflet-container a{color:#0078a8}.leaflet-zoom-box{border:2px dotted #38f;background:rgba(255,255,255,.5)}.leaflet-container{font-family:"Helvetica Neue",Arial,Helvetica,sans-serif;font-size:12px;font-size:.75rem;line-height:1.5}.leaflet-bar{box-shadow:0 1px 5px rgba(0,0,0,.65);border-radius:4px}.leaflet-bar a{background-color:#fff;border-bottom:1px solid #ccc;width:26px;height:26px;line-height:26px;display:block;text-align:center;text-decoration:none;color:#000}.leaflet-bar a,.leaflet-control-layers-toggle{background-position:50% 50%;background-repeat:no-repeat;display:block}.leaflet-bar a:focus,.leaflet-bar a:hover{background-color:#f4f4f4}.leaflet-bar a:first-child{border-top-left-radius:4px;border-top-right-radius:4px}.leaflet-bar a:last-child{border-bottom-left-radius:4px;border-bottom-right-radius:4px;border-bottom:none}.leaflet-bar a.leaflet-disabled{cursor:default;background-color:#f4f4f4;color:#bbb}.leaflet-touch .leaflet-bar a{width:30px;height:30px;line-height:30px}.leaflet-touch .leaflet-bar a:first-child{border-top-left-radius:2px;border-top-right-radius:2px}.leaflet-touch .leaflet-bar a:last-child{border-bottom-left-radius:2px;border-bottom-right-radius:2px}.leaflet-control-zoom-in,.leaflet-control-zoom-out{font:bold 18px 'Lucida Console',Monaco,monospace;text-indent:1px}.leaflet-touch .leaflet-control-zoom-in,.leaflet-touch .leaflet-control-zoom-out{font-size:22px}.leaflet-control-layers{box-shadow:0 1px 5px rgba(0,0,0,.4);background:#fff;border-radius:5px}.leaflet-control-layers-toggle{background-image:url(https://unpkg.com/leaflet@1.9.4/dist/images/layers.png);width:36px;height:36px}.leaflet-retina .leaflet-control-layers-toggle{background-image:url(https://unpkg.com/leaflet@1.9.4/dist/images/layers-2x.png);background-size:26px 26px}.leaflet-touch .leaflet-control-layers-toggle{width:44px;height:44px}.leaflet-control-layers .leaflet-control-layers-list,.leaflet-control-layers-expanded .leaflet-control-layers-toggle{display:none}.leaflet-control-layers-expanded .leaflet-control-layers-list{display:block;position:relative}.leaflet-control-layers-expanded{padding:6px 10px 6px 6px;color:#333;background:#fff}.leaflet-control-layers-scrollbar{overflow-y:scroll;overflow-x:hidden;padding-right:5px}.leaflet-control-layers-selector{margin-top:2px;position:relative;top:1px}.leaflet-control-layers label{display:block;font-size:13px;font-size:1.08333em}.leaflet-control-layers-separator{height:0;border-top:1px solid #ddd;margin:5px -10px 5px -6px}.leaflet-default-icon-path{background-image:url(https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png)}.leaflet-container .leaflet-control-attribution{background:#fff;background:rgba(255,255,255,.8);margin:0}.leaflet-control-attribution,.leaflet-control-scale-line{padding:0 5px;color:#333;line-height:1.4}.leaflet-control-attribution a{text-decoration:none}.leaflet-control-attribution a:focus,.leaflet-control-attribution a:hover{text-decoration:underline}.leaflet-attribution-flag{display:inline!important;vertical-align:baseline!important;width:1em;height:.6669em}.leaflet-left .leaflet-control-scale{margin-left:5px}.leaflet-bottom .leaflet-control-scale{margin-bottom:5px}.leaflet-control-scale-line{border:2px solid #777;border-top:none;line-height:1.1;padding:2px 5px 1px;white-space:nowrap;-moz-box-sizing:border-box;box-sizing:border-box;background:rgba(255,255,255,.8);text-shadow:1px 1px #fff}.leaflet-control-scale-line:not(:first-child){border-top:2px solid #777;border-bottom:none;margin-top:-2px}.leaflet-control-scale-line:not(:first-child):not(:last-child){border-bottom:2px solid #777}.leaflet-touch .leaflet-bar,.leaflet-touch .leaflet-control-attribution,.leaflet-touch .leaflet-control-layers{box-shadow:none}.leaflet-touch .leaflet-bar,.leaflet-touch .leaflet-control-layers{border:2px solid rgba(0,0,0,.2);background-clip:padding-box}.leaflet-popup{position:absolute;text-align:center;margin-bottom:20px}.leaflet-popup-content-wrapper{padding:1px;text-align:left;border-radius:12px}.leaflet-popup-content{margin:13px 24px 13px 20px;line-height:1.3;font-size:13px;font-size:1.08333em;min-height:1px}.leaflet-popup-content p{margin:17px 0;margin:1.3em 0}.leaflet-popup-tip-container{width:40px;height:20px;position:absolute;left:50%;margin-top:-1px;margin-left:-20px;overflow:hidden;pointer-events:none}.leaflet-popup-tip{width:17px;height:17px;padding:1px;margin:-10px auto 0;pointer-events:auto;-webkit-transform:rotate(45deg);-moz-transform:rotate(45deg);-ms-transform:rotate(45deg);transform:rotate(45deg)}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fff;color:#333;box-shadow:0 3px 14px rgba(0,0,0,.4)}.leaflet-container a.leaflet-popup-close-button{position:absolute;top:0;right:0;border:none;text-align:center;width:24px;height:24px;font:16px/24px Tahoma,Verdana,sans-serif;color:#757575;text-decoration:none;background:0 0}.leaflet-container a.leaflet-popup-close-button:focus,.leaflet-container a.leaflet-popup-close-button:hover{color:#585858}.leaflet-popup-scrolled{overflow:auto}.leaflet-oldie .leaflet-popup-content-wrapper{-ms-zoom:1}.leaflet-oldie .leaflet-popup-tip{width:24px;margin:0 auto}.leaflet-oldie .leaflet-control-layers,.leaflet-oldie .leaflet-control-zoom,.leaflet-oldie .leaflet-popup-content-wrapper,.leaflet-oldie .leaflet-popup-tip{border:1px solid #999}.leaflet-div-icon{background:#fff;border:1px solid #666}.leaflet-tooltip{position:absolute;padding:6px;background-color:#fff;border:1px solid #fff;border-radius:3px;color:#222;white-space:nowrap;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;pointer-events:none;box-shadow:0 1px 3px rgba(0,0,0,.4)}.leaflet-tooltip.leaflet-interactive{cursor:pointer;pointer-events:auto}.leaflet-tooltip-bottom:before,.leaflet-tooltip-left:before,.leaflet-tooltip-right:before,.leaflet-tooltip-top:before{position:absolute;pointer-events:none;border:6px solid transparent;background:0 0;content:""}.leaflet-tooltip-bottom{margin-top:6px}.leaflet-tooltip-top{margin-top:-6px}.leaflet-tooltip-bottom:before,.leaflet-tooltip-top:before{left:50%;margin-left:-6px}.leaflet-tooltip-top:before{bottom:0;margin-bottom:-12px;border-top-color:#fff}.leaflet-tooltip-bottom:before{top:0;margin-top:-12px;margin-left:-6px;border-bottom-color:#fff}.leaflet-tooltip-left{margin-left:-6px}.leaflet-tooltip-right{margin-left:6px}.leaflet-tooltip-left:before,.leaflet-tooltip-right:before{top:50%;margin-top:-6px}.leaflet-tooltip-left:before{right:0;margin-right:-12px;border-left-color:#fff}.leaflet-tooltip-right:before{left:0;margin-left:-12px;border-right-color:#fff}@media print{.leaflet-control{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap');
+/* Layout: radar console. Live threat strip on top, big interactive Gulf map, then local panels (alerts, threats, charts, prep) in a responsive grid. Single committed dark look. */
+:root{
+  color-scheme:dark;
+  --bg:#060c17; --panel:#0c1525; --panel2:#101c30; --line:#1c2b44; --fg:#e8eef8; --muted:#90a0ba;
+  --water:#071224; --land:#14233c; --coast:#2f4a72; --grid:#13213a;
+  --home:#46d3ff; --storm:#ff4a5d; --ts:#ffb43f; --surge:#c46cff; --flood:#3fa2ff; --ok:#56d39b;
+  --f-display:'Saira Condensed','Arial Narrow',system-ui,sans-serif;
+  --f-body:'Atkinson Hyperlegible',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--fg)}
+body{font-family:var(--f-body);font-size:17px;line-height:1.5;padding-inline:16px;padding-block:14px 40px}
+.wrap{max-width:1240px;margin:0 auto;display:grid;gap:16px}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;letter-spacing:.02em;margin:0;text-wrap:balance}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.lbl{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.12em;font-size:.82rem;color:var(--muted);font-weight:600}
+a{color:var(--home)}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--home);outline-offset:2px}
+
+/* header */
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+.brand h1{font-size:clamp(2rem,5vw,3.1rem);line-height:1;font-weight:800}
+.brand h1 span{color:var(--storm)}
+.brand p{margin:.35rem 0 0;color:var(--muted)}
+.live{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 14px;font-size:.92rem}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--muted)}
+.dot.on{background:var(--ok);box-shadow:0 0 0 0 var(--ok);animation:ping 2s infinite}
+.dot.bad{background:var(--ts)}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(86,211,155,.6)}100%{box-shadow:0 0 0 10px rgba(86,211,155,0)}}
+.btn{border:1px solid var(--coast);background:var(--panel2);color:var(--fg);border-radius:10px;padding:8px 14px;display:inline-flex;gap:8px;align-items:center}
+.btn:hover{border-color:var(--home)}
+.btn svg{width:18px;height:18px}
+
+/* banner */
+.banner{position:relative;overflow:hidden;border-radius:16px;border:1px solid #5a1a24;background:linear-gradient(100deg,#2a0b12 0%,#170a14 55%,#0c1525 100%);padding:18px 20px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
+.banner::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,transparent 0 22px,rgba(255,74,93,.05) 22px 44px);animation:slide 6s linear infinite;pointer-events:none}
+@keyframes slide{to{background-position:200px 0}}
+.siren{width:64px;height:64px;color:var(--storm)}
+.siren .spin{transform-origin:32px 32px;animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(-360deg)}}
+.banner h2{font-size:clamp(1.5rem,3.6vw,2.2rem);color:#ffd9de}
+.banner p{margin:.25rem 0 0;color:#f3c3ca;max-width:70ch}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{font-family:var(--f-display);font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.85rem;padding:4px 10px;border-radius:6px;border:1px solid}
+.c-hu{color:#ffd0d6;border-color:var(--storm);background:rgba(255,74,93,.15)}
+.c-ss{color:#ecd4ff;border-color:var(--surge);background:rgba(196,108,255,.14)}
+.c-fl{color:#cfe6ff;border-color:var(--flood);background:rgba(63,162,255,.14)}
+.c-ts{color:#ffe6bd;border-color:var(--ts);background:rgba(255,180,63,.12)}
+
+/* kpis */
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;gap:4px;min-width:0}
+.kpi .v{font-family:var(--f-display);font-weight:800;font-size:clamp(1.9rem,4vw,2.6rem);line-height:1}
+.kpi .s{color:var(--muted);font-size:.92rem}
+.kpi.red .v{color:var(--storm)} .kpi.amb .v{color:var(--ts)} .kpi.cy .v{color:var(--home)}
+@media (max-width:820px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* map */
+.mapcard{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.maphead{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line)}
+.seg{display:inline-flex;border:1px solid var(--coast);border-radius:10px;overflow:hidden}
+.seg button{background:transparent;color:var(--muted);border:0;padding:7px 14px;font-family:var(--f-display);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+.seg button[aria-pressed="true"]{background:var(--coast);color:var(--fg)}
+.stage{position:relative;width:100%;aspect-ratio:16/9;max-height:620px;background:var(--water)}
+@media (max-width:640px){.stage{aspect-ratio:4/5}}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.readout{position:absolute;left:12px;top:12px;background:rgba(6,12,23,.82);border:1px solid var(--line);border-radius:12px;padding:10px 14px;display:grid;gap:2px;min-width:200px;backdrop-filter:blur(4px)}
+.readout .big{font-family:var(--f-display);font-size:1.6rem;font-weight:800;line-height:1.05}
+.legend{position:absolute;right:12px;bottom:12px;background:rgba(6,12,23,.82);border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-size:.82rem;display:grid;gap:4px}
+.legend i{display:inline-block;width:14px;height:4px;border-radius:2px;margin-right:8px;vertical-align:middle}
+@media (max-width:640px){.legend{display:none}.readout{min-width:0;font-size:.85rem}.readout .big{font-size:1.25rem}}
+.scrub{padding:14px 16px;display:grid;gap:8px;border-top:1px solid var(--line)}
+.scrubrow{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.scrubrow input[type=range]{flex:1;min-width:200px;accent-color:var(--storm);height:28px}
+.ticks{display:flex;justify-content:space-between;color:var(--muted);font-size:.8rem;font-family:var(--f-mono)}
+.note{color:var(--muted);font-size:.85rem;margin:0}
+
+/* grid of panels */
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 18px;min-width:0;display:grid;gap:12px;align-content:start}
+.card h3{font-size:1.45rem;display:flex;align-items:center;gap:10px}
+.card h3 svg{width:24px;height:24px;color:var(--home)}
+.span7{grid-column:span 7}.span5{grid-column:span 5}.span6{grid-column:span 6}.span12{grid-column:span 12}.span4{grid-column:span 4}.span8{grid-column:span 8}
+@media (max-width:960px){.span7,.span5,.span6,.span4,.span8{grid-column:span 12}}
+
+/* threats */
+.threats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.threat{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--panel2);display:grid;gap:6px}
+.threat .t{display:flex;align-items:center;gap:8px;font-family:var(--f-display);font-weight:700;font-size:1.15rem}
+.threat .t svg{width:22px;height:22px}
+.meter{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.meter span{height:10px;border-radius:3px;background:#1a2740;transition:background .6s}
+.threat .lvl{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.threat .d{color:var(--muted);font-size:.9rem}
+@media (max-width:520px){.threats{grid-template-columns:1fr}}
+
+/* timeline */
+.tl{display:grid;gap:0;position:relative;padding-left:22px}
+.tl::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:linear-gradient(var(--ok),var(--ts),var(--storm),var(--surge),var(--ok))}
+.ev{position:relative;padding:6px 0 12px}
+.ev::before{content:"";position:absolute;left:-20px;top:12px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--c,var(--muted))}
+.ev.now::before{background:var(--home);border-color:var(--home);box-shadow:0 0 0 4px rgba(70,211,255,.25)}
+.ev b{font-family:var(--f-display);font-size:1.1rem;letter-spacing:.02em}
+.ev .w{font-family:var(--f-mono);color:var(--muted);font-size:.85rem}
+
+/* alerts */
+.alerts{display:grid;gap:8px}
+details.al{border:1px solid var(--line);border-left:5px solid var(--c,var(--muted));border-radius:10px;background:var(--panel2)}
+details.al summary{list-style:none;cursor:pointer;padding:10px 12px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+details.al summary::-webkit-details-marker{display:none}
+details.al summary b{font-family:var(--f-display);font-size:1.15rem}
+details.al summary span{color:var(--muted);font-size:.85rem;font-family:var(--f-mono)}
+details.al pre{margin:0;padding:0 12px 12px;white-space:pre-wrap;font-family:var(--f-mono);font-size:.8rem;color:#c7d3e6;max-height:340px;overflow:auto}
+
+/* charts */
+.chartbox{position:relative;width:100%;height:240px}
+.chartbox canvas{width:100%;height:100%;display:block}
+.days{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.day{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px;display:grid;gap:4px;text-align:center}
+.day.hot{border-color:var(--storm);background:linear-gradient(180deg,rgba(255,74,93,.16),var(--panel2))}
+.day .dn{font-family:var(--f-display);font-weight:700;font-size:1.1rem}
+.day .g{font-family:var(--f-display);font-weight:800;font-size:1.5rem}
+.day .p{color:var(--muted);font-size:.85rem}
+@media (max-width:640px){.days{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* now */
+.nowrow{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.temp{font-family:var(--f-display);font-weight:800;font-size:3.4rem;line-height:1}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:100%}
+.stat{background:var(--panel2);border-radius:10px;padding:8px 10px;border:1px solid var(--line)}
+.stat .k{color:var(--muted);font-size:.8rem}
+.stat .vv{font-family:var(--f-mono);font-weight:600}
+.compass{width:96px;height:96px}
+
+/* checklist */
+.prog{height:12px;border-radius:6px;background:#1a2740;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--home),var(--ok));transition:width .5s}
+.checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.checks label{display:flex;gap:10px;align-items:flex-start;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}
+.checks input{width:20px;height:20px;accent-color:var(--ok);margin-top:2px;flex:none}
+.checks label:has(input:checked){border-color:#245a45}
+.checks label:has(input:checked) span{color:var(--muted);text-decoration:line-through}
+@media (max-width:640px){.checks{grid-template-columns:1fr}}
+
+.contacts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.contact{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:grid;gap:2px}
+.contact .num{font-family:var(--f-mono);font-size:1.05rem;user-select:all}
+.copy{cursor:pointer;border-bottom:1px dashed var(--coast)}
+.copy.did{color:var(--ok)}
+@media (max-width:820px){.contacts{grid-template-columns:1fr}}
+
+.state{border:1px dashed var(--coast);border-radius:12px;padding:14px;color:var(--muted)}
+.state b{color:var(--fg)}
+.src{color:var(--muted);font-size:.85rem}
+.src a{color:var(--muted)}
+/* v2 motion and graphics */
+.banner .rain{position:absolute;inset:-40px;background-image:repeating-linear-gradient(105deg,transparent 0 9px,rgba(200,220,255,.09) 9px 10px);animation:rain .45s linear infinite;pointer-events:none}
+@keyframes rain{to{transform:translate(-9.66px,-2.59px)}}
+.banner::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 12% 40%,rgba(255,255,255,.35),transparent 55%);opacity:0;animation:flash 9s infinite;pointer-events:none}
+@keyframes flash{0%,91%,100%{opacity:0}92%{opacity:.9}93%{opacity:.1}94.5%{opacity:.7}96%{opacity:0}}
+.card,.kpi,.mapcard{animation:rise .7s cubic-bezier(.2,.8,.2,1) both}
+.kpi:nth-child(2){animation-delay:.06s}.kpi:nth-child(3){animation-delay:.12s}.kpi:nth-child(4){animation-delay:.18s}
+@keyframes rise{from{transform:translateY(14px)}to{transform:none}}
+.kpi{position:relative;overflow:hidden}
+.kpi::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,transparent,currentColor,transparent);color:var(--line);animation:scan 3.5s linear infinite}
+.kpi.red::after{color:var(--storm)}.kpi.amb::after{color:var(--ts)}.kpi.cy::after{color:var(--home)}
+@keyframes scan{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.ring{position:absolute;right:12px;top:12px;width:54px;height:54px}
+.ring circle{fill:none;stroke-width:6}
+.ring .bg{stroke:#1a2740}.ring .fg{stroke:var(--ts);stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset 1s}
+.tip{position:absolute;pointer-events:none;background:rgba(6,12,23,.92);border:1px solid var(--coast);border-radius:10px;padding:8px 12px;font-size:.85rem;transform:translate(-50%,calc(-100% - 14px));white-space:nowrap;transition:opacity .15s}
+.tip b{font-family:var(--f-display);font-size:1.05rem}
+.stage canvas#cTop{cursor:crosshair}
+.dial{width:100%;max-width:340px;margin:0 auto;display:block}
+.dial .needle{transform-origin:110px 115px;transition:transform .5s cubic-bezier(.3,1.4,.5,1)}
+.dialv{text-align:center;margin-top:-6px}
+.dialv .big{font-family:var(--f-display);font-weight:800;font-size:2.4rem;line-height:1}
+.meter span{box-shadow:none}
+
+/* v3 */
+body{position:relative}
+body::before{content:"";position:fixed;inset:-20%;z-index:-1;background:radial-gradient(60% 50% at 30% 30%,rgba(60,90,160,.14),transparent 70%),radial-gradient(50% 40% at 75% 70%,rgba(120,40,70,.12),transparent 70%);animation:drift 40s ease-in-out infinite alternate;pointer-events:none}
+@keyframes drift{to{transform:translate(6%,4%) scale(1.08)}}
+.ticker{position:relative;z-index:1;margin-top:12px;overflow:hidden;border-top:1px solid rgba(255,120,135,.25);padding-top:8px;mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.ticker .track{display:inline-flex;gap:40px;white-space:nowrap;animation:tick 38s linear infinite;font-family:var(--f-mono);font-size:.85rem;color:#ffd9de}
+.ticker .track:hover{animation-play-state:paused}
+.ticker .track span::before{content:"◆";color:var(--storm);margin-right:10px}
+@keyframes tick{to{transform:translateX(-50%)}}
+.eye{width:18px;height:18px;animation:spin 2.2s linear infinite;color:var(--storm)}
+.water{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.tank{display:grid;gap:6px;text-align:center}
+.tank canvas{width:100%;height:170px;display:block;border-radius:12px;border:1px solid var(--line);background:var(--panel2)}
+.tank .v{font-family:var(--f-display);font-weight:800;font-size:1.6rem;line-height:1}
+.tank .k{color:var(--muted);font-size:.85rem}
+@media (max-width:520px){.water{grid-template-columns:1fr}}
+.anemo{width:96px;height:96px}
+.anemo .cups{transform-origin:48px 44px;animation:spin var(--spd,3s) linear infinite reverse}
+.tl .fill{position:absolute;left:7px;top:6px;width:2px;background:var(--home);box-shadow:0 0 8px var(--home);height:0;transition:height 1.6s cubic-bezier(.2,.8,.2,1)}
+.tl .here{position:absolute;left:-1px;width:18px;height:18px;transform:translateY(-9px);transition:top 1.6s cubic-bezier(.2,.8,.2,1)}
+.ev.past b{color:var(--muted)}
+.ev.past::before{background:var(--c);opacity:.5}
+.checks label:has(input:checked){animation:pop .35s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{40%{transform:scale(1.03)}}
+.day svg{width:34px;height:34px;margin:0 auto;display:block}
+.day .ico-hu{animation:spin 2.5s linear infinite;color:var(--storm)}
+.day .ico-rain{color:var(--flood)}
+.day .ico-rain line{stroke-dasharray:4 6;animation:drop .9s linear infinite}
+@keyframes drop{to{stroke-dashoffset:-10}}
+.day .ico-sun{color:var(--ts);animation:glow 3s ease-in-out infinite alternate}
+@keyframes glow{to{filter:drop-shadow(0 0 6px rgba(255,180,63,.8))}}
+.readout .tod{font-size:.8rem;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* v5: house map, phase card, battery saver */
+.lowpower *,.lowpower *::before,.lowpower *::after{animation-play-state:paused!important}
+.lowpower body::before{display:none}
+.btn[aria-pressed="true"]{border-color:var(--ok);color:var(--ok)}
+.hmap{position:relative;width:100%;height:520px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#0b1220}
+@media (max-width:640px){.hmap{height:440px}}
+.hmap .leaflet-container{background:#0b1220;font-family:var(--f-body)}
+.layers .seg button{padding:6px 12px;font-size:.85rem}
+/* v7 */
+.alarm{position:fixed;inset:0;z-index:9999;background:rgba(40,0,8,.94);display:grid;place-items:center;text-align:center;padding:24px;animation:alarmflash 1s steps(2) infinite}
+@keyframes alarmflash{50%{background:rgba(120,0,20,.96)}}
+.alarm h2{font-size:clamp(2.2rem,8vw,4.5rem);color:#fff;line-height:1;letter-spacing:.04em}
+.alarm p{color:#ffd9de;font-size:1.15rem;max-width:60ch;margin:.5rem 0}
+.alarm .btn{font-size:1.2rem;padding:14px 28px;margin-top:12px;border-color:#fff;color:#fff}
+.pbox{display:grid;gap:4px;margin-top:4px}
+.pbox canvas{width:100%;height:120px;display:block;border-radius:10px;border:1px solid var(--line);background:var(--panel2)}
+.pbox .lbl{display:flex;justify-content:space-between}
+.trend-down{color:var(--storm)} .trend-up{color:var(--ok)}
+
+.hmap .leaflet-control-attribution{background:rgba(6,12,23,.75);color:#8ea0bb;font-size:10px}
+.hmap .leaflet-control-attribution a{color:#9fb6d8}
+.hmap .leaflet-bar a{background:var(--panel2);color:var(--fg);border-color:var(--line)}
+.hmap .leaflet-bar a:hover{background:var(--coast)}
+.homepin{position:relative;width:26px;height:26px}
+.homepin i{position:absolute;inset:0;border-radius:50%;border:2px solid var(--home);animation:hp 2.2s ease-out infinite}
+.homepin i:nth-child(2){animation-delay:1.1s}
+.homepin b{position:absolute;left:7px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--home);box-shadow:0 0 0 3px #060c17,0 0 14px var(--home)}
+@keyframes hp{0%{transform:scale(.5);opacity:1}100%{transform:scale(2.6);opacity:0}}
+.shpin{width:14px;height:14px;border-radius:3px;background:var(--ok);border:2px solid #060c17;box-shadow:0 0 10px var(--ok)}
+.hmap .leaflet-popup-content-wrapper,.hmap .leaflet-popup-tip{background:var(--panel2);color:var(--fg);border:1px solid var(--coast)}
+.hmap .leaflet-popup-content{margin:10px 14px;font-size:.95rem}
+.layers{display:flex;flex-wrap:wrap;gap:8px}
+.layers label{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--panel2);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:.92rem;user-select:none}
+.layers label:has(input:checked){border-color:var(--sw,var(--home))}
+.layers input{accent-color:var(--home);width:16px;height:16px}
+.layers i{width:12px;height:12px;border-radius:3px;background:var(--sw,var(--home));display:inline-block}
+.facts{display:grid;gap:8px}
+.fact{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.fact svg{width:26px;height:26px;color:var(--home);margin-top:2px}
+.fact b{font-family:var(--f-display);font-size:1.2rem;letter-spacing:.02em;display:block;line-height:1.15}
+.fact span{color:var(--muted);font-size:.9rem}
+.fact.ok svg{color:var(--ok)} .fact.ok b{color:var(--ok)}
+.fact.warn svg{color:var(--ts)} .fact.warn b{color:var(--ts)}
+.maplegend{position:absolute;left:10px;bottom:28px;z-index:600;background:rgba(6,12,23,.86);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:.78rem;display:grid;gap:4px;max-width:230px;backdrop-filter:blur(4px)}
+.maplegend i{display:inline-block;width:14px;height:8px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.mapstat{position:absolute;right:10px;top:10px;max-width:60%;text-align:right;z-index:600;background:rgba(6,12,23,.86);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:.78rem;font-family:var(--f-mono);color:var(--muted);backdrop-filter:blur(4px)}
+@media (max-width:640px){.maplegend{display:none}.mapstat{font-size:.7rem;padding:4px 8px}}
+.phases{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.ph{border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:8px 10px;display:grid;gap:2px;min-width:0}
+.ph b{font-family:var(--f-display);font-size:1.02rem;letter-spacing:.02em;line-height:1.1}
+.ph span{color:var(--muted);font-size:.78rem;font-family:var(--f-mono)}
+.ph.past{opacity:.45}
+.ph.now{border-color:var(--home);background:linear-gradient(180deg,rgba(70,211,255,.16),var(--panel2));box-shadow:0 0 0 1px rgba(70,211,255,.3),0 0 22px rgba(70,211,255,.18)}
+.ph.now b{color:var(--home)}
+@media (max-width:820px){.phases{grid-template-columns:repeat(2,minmax(0,1fr))}.ph.now{grid-column:span 2}}
+.dolist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.dolist div{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--c,var(--home));border-radius:10px;padding:10px 12px;font-size:.98rem}
+.dolist div b{font-family:var(--f-display);font-size:1.1rem;display:block;letter-spacing:.02em}
+@media (max-width:640px){.dolist{grid-template-columns:1fr}}
+.phhead{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px}
+.phhead .big{font-family:var(--f-display);font-weight:800;font-size:1.7rem;color:var(--home);line-height:1}
+.sat{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#000;aspect-ratio:1/1;max-height:560px}
+.sat img{width:100%;height:100%;object-fit:cover;display:block}
+.sat .cap{position:absolute;left:0;right:0;bottom:0;padding:6px 10px;background:linear-gradient(transparent,rgba(0,0,0,.75));color:#dbe6f5;font-size:.8rem;font-family:var(--f-mono)}
+.tides{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tide{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;text-align:center}
+.tide b{font-family:var(--f-display);font-size:1.15rem;display:block}
+.tide span{color:var(--muted);font-size:.82rem}
+.tide.key{border-color:var(--surge);background:linear-gradient(180deg,rgba(196,108,255,.16),var(--panel2))}
+@media (max-width:520px){.tides{grid-template-columns:1fr}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="lbl">Pensacola family · Pensacola, Florida 32504</div>
+      <h1>Storm Watch <span>Isaias</span></h1>
+      <p id="greet">Shared snapshot from Pensacola family, Pensacola. Republished after each NHC advisory; live radar, alerts and station data run in the private copy.</p>
+    </div>
+    <div class="live">
+      <span class="pill"><svg class="eye" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c-3 0-6 2-7 5 3-2 6-2 8-1-5 0-8 4-8 8 0 1 0 2 .4 3 .6-4 3.6-7 8-7-2 2-3 4-2.6 7 .5 3 2.6 5 5.2 5.8-1.2-1.6-1.6-3.4-1.2-5.4 1.8 4.6 6.4 5.4 9.2 2.4-3.8.4-6.6-2-7.4-5.4 3 .4 5.4-1 6.6-3.4-2.4 1.6-5.8 1.6-8-.4 2.6 0 5-1.2 6-3.4-2 1.6-5 1.6-7 0 1.6-.8 2.8-2.4 2.8-4.2-1.2 1.6-3.4 2.6-5.8 2.6z"/></svg><span class="dot" id="liveDot"></span><span id="liveTxt">Connecting to AccuWeather</span></span>
+      <span class="pill mono" id="nhcStamp" title="Latest NHC advisory seen by this page">NHC 12 · 10 AM CDT</span>
+      <button class="btn" id="sirenBtn" type="button" aria-pressed="false" title="Arm an audible alarm for Tornado Warnings and Extreme Wind Warnings at the house"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4"/></svg>Arm siren</button>
+      <button class="btn" id="wakeBtn" type="button" aria-pressed="false" title="Keep the screen on while this page is open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Screen on</button>
+      <button class="btn" id="lowBtn" type="button" aria-pressed="false" title="Pause animations to save phone battery"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 10v4M6 12h6"/></svg>Battery saver</button>
+      <button class="btn" id="refreshBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-2.6-6.4M21 4v5h-5"/></svg>Refresh</button>
+    </div>
+  </header>
+
+  <section class="banner" aria-label="Active warning"><div class="rain" aria-hidden="true"></div>
+    <svg class="siren" viewBox="0 0 64 64" aria-hidden="true"><g class="spin" fill="currentColor"><path d="M32 6c-9 0-17 5-20 13 6-5 14-6 20-3-12 0-20 9-20 20 0 2 .3 4 1 5 1-10 8-17 19-17 0 0 0 0 0 0-4 4-6 9-5 15 1 7 6 12 12 14-3-4-4-8-3-13 4 11 15 13 22 6-9 1-16-5-18-13 7 1 13-2 16-8-6 4-14 4-19-1 6 0 12-3 14-8-5 4-12 4-17 0 4-2 7-6 7-10-3 4-8 6-14 6z" opacity=".9"/></g><circle cx="32" cy="32" r="5" fill="#060c17"/></svg>
+    <div style="position:relative;z-index:1;min-width:0">
+      <h2 id="bannerHead">Major Hurricane Isaias. Hurricane Warning for Pensacola, landfall tonight just east of the house.</h2>
+      <p id="bannerSub">Isaias is a Category 3 at 10 AM: 120 mph, 959 mb, about 190 mi south southeast of the house, moving north northeast at 16 mph. The 10 AM NHC track shifted east and brings the center ashore near Navarre tonight, about 20 mi east of our house. You sit on the west side of the eye, still inside the hurricane force wind field, with winds from the north and northeast this afternoon, north northwest at closest approach, then west overnight.</p>
+      <div class="chips" id="chips">
+        <span class="chip c-hu">Hurricane Warning</span><span class="chip c-ss">Storm Surge Warning</span><span class="chip c-fl">Flood Watch Fri 1 PM</span><span class="chip c-ts">High Surf Warning</span>
+      </div>
+      <div class="ticker" aria-hidden="true"><div class="track" id="ticker"></div></div>
+    </div>
+  </section>
+
+  <section class="kpis" aria-label="Key numbers">
+    <div class="kpi red"><span class="lbl">Isaias winds</span><span class="v mono" id="kWind">120 mph</span><span class="s" id="kWindS">Category 3 · 959 mb</span></div>
+    <div class="kpi cy"><span class="lbl">Distance to home</span><span class="v mono" id="kDist">505 mi</span><span class="s" id="kDistS">SSW of our house</span></div>
+    <div class="kpi amb"><svg class="ring" viewBox="0 0 54 54" aria-hidden="true"><circle class="bg" cx="27" cy="27" r="22"/><circle class="fg" id="ringFg" cx="27" cy="27" r="22" stroke-dasharray="138.2" stroke-dashoffset="0"/></svg><span class="lbl" id="kCountL">Tropical storm winds in</span><span class="v mono" id="kCount">--</span><span class="s" id="kCountS">TS wind field reaches 185 mi from the center</span></div>
+    <div class="kpi red"><span class="lbl">Closest approach</span><span class="v mono" id="kCpa">--</span><span class="s" id="kCpaS">--</span></div>
+  </section>
+
+  <section class="mapcard" aria-label="Storm track map">
+    <div class="maphead">
+      <h3 style="font-size:1.45rem">Track and cone</h3>
+      <div class="seg" role="group" aria-label="Map view">
+        <button type="button" id="vGulf" aria-pressed="true">Gulf</button>
+        <button type="button" id="vNear" aria-pressed="false">Approach</button>
+      </div>
+    </div>
+    <div class="stage" id="stage">
+      <canvas id="cBase"></canvas><canvas id="cFx"></canvas><canvas id="cTop"></canvas>
+      <div class="tip" id="tip" hidden></div>
+      <div class="readout" aria-live="polite">
+        <span class="lbl" id="rWhen">Now · Fri Oct 9, 10 AM CDT</span>
+        <span class="big" id="rCat">Category 3 · 120 mph</span>
+        <span class="mono" id="rDist">505 mi from home</span><span class="tod" id="rTod"></span>
+      </div>
+      <div class="legend">
+        <div><i style="background:var(--home)"></i>Your home</div>
+        <div><i style="background:#fff;opacity:.7"></i>Forecast track</div>
+        <div><i style="background:rgba(255,255,255,.18)"></i>Approx. cone</div>
+        <div><i style="background:var(--ts)"></i>TS wind field (current)</div>
+      </div>
+    </div>
+    <div class="scrub">
+      <div class="scrubrow">
+        <button class="btn" id="playBtn" type="button" aria-label="Play forecast"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>Play</span></button>
+        <input type="range" id="slider" min="30" max="57" step="0.25" value="30" aria-label="Forecast time">
+        <button class="btn" id="liveBtn" type="button" aria-pressed="true" title="Follow the clock: the storm glyph sits where the NHC track puts it right now"><span class="dot on"></span><span>Live</span></button>
+      </div>
+      <div class="ticks" id="ticks"><span>Fri 10a</span><span>Fri 5p</span><span>Fri 11p</span><span>Sat 6a</span><span>Sat 1p</span></div>
+      <p class="note"><span id="trackSrc">Position, strength and forecast points from NHC advisory 12 (10 AM CDT Oct 9), interpolated between points. The page checks the NHC feed every 15 minutes and redraws when a newer advisory is out.</span> The shaded cone is drawn from typical NHC error radii; the official cone is at nhc.noaa.gov.</p>
+    </div>
+  </section>
+
+  <div class="grid">
+    <section class="card span12" aria-labelledby="hPhase">
+      <h3 id="hPhase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2.5"/></svg>Right now at our house</h3>
+      <div class="phhead"><span class="big" id="phName">Preparation window</span><span class="lbl" id="phNext">--</span></div>
+      <div class="phases" id="phases"></div>
+      <div class="dolist" id="dolist"></div>
+      <p class="note">Guidance follows the clock against the NHC and NWS timing above. Local officials override everything here.</p>
+    </section>
+
+    <section class="card span8" aria-labelledby="hHouse">
+      <h3 id="hHouse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>Your house on the live map</h3>
+      <div class="layers" id="layerBox">
+        <span class="seg" role="group" aria-label="Base map"><button type="button" data-base="sat" aria-pressed="true">Satellite</button><button type="button" data-base="dark" aria-pressed="false">Dark</button><button type="button" data-base="topo" aria-pressed="false">USGS topo</button></span>
+        <span class="seg" role="group" aria-label="Jump to"><button type="button" id="goHouse" aria-pressed="true">House</button><button type="button" id="goStorm" aria-pressed="false">Storm</button></span>
+        <label style="--sw:#3fe07a"><input type="checkbox" id="lyRadar" checked><i></i>Radar (live)</label>
+        <label style="--sw:#c46cff"><input type="checkbox" id="lySurge" checked><i></i>NHC surge flooding</label>
+        <label style="--sw:#ff4a5d"><input type="checkbox" id="lyNhc" checked><i></i>NHC cone and warnings (zoomed out)</label>
+        <label style="--sw:#3fa2ff"><input type="checkbox" id="lyFema"><i></i>FEMA flood zones</label>
+        <label style="--sw:#ffb43f"><input type="checkbox" id="lyEvac"><i></i>Evacuation zones A to E</label>
+      </div>
+      <div class="hmap" id="hmap">
+        <div class="mapstat" id="mapStat">loading map</div>
+        <div class="maplegend" id="mapLegend"><div><i style="background:#46d3ff"></i>our housecle</div><div><i style="background:#56d39b"></i>Open shelters</div><div><i style="background:#c46cff"></i>Surge flooding above ground (NHC)</div><div><i style="background:#3fe07a"></i>Radar reflectivity</div><div><i style="background:#ffb43f"></i>Evacuation zones A (red) to E (green)</div></div>
+      </div>
+      <p class="note" id="mapNote">Satellite imagery is Esri World Imagery, with USGS as backup. Zoom out past county level and the official NHC cone, track and warnings appear; zoom in to the roof. Radar refreshes every 5 minutes. Surge flooding is the NHC potential inundation layer for Isaias, FEMA zones are the National Flood Hazard Layer, evacuation zones are the Florida statewide layer.</p>
+    </section>
+
+    <section class="card span4" aria-labelledby="hFacts">
+      <h3 id="hFacts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-6 7-12a7 7 0 1 0-14 0c0 6 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>our housecle facts</h3>
+      <div class="facts">
+        <div class="fact ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20h18M6 20V9l6-5 6 5v11"/></svg><div><b>79 ft above sea level</b><span>USGS elevation at the lot. Forecast surge is 5 to 7 ft at the coast, so surge cannot reach the house. Rain runoff and wind are the risks here.</span></div></div>
+        <div class="fact ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12l5 5L20 6"/></svg><div><b>Outside zones A to E</b><span>The Florida statewide evacuation zone layer has no zone polygon at this address. The Escambia order for Zones A and B (noon Thursday) does not cover the house. Confirm at Know Your Zone.</span></div></div>
+        <div class="fact ok" id="femaFact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 17c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 12c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/></svg><div><b>FEMA zone X · minimal flood hazard</b><span>National Flood Hazard Layer, looked up October 8, 2026. Outside the 1% annual chance floodplain. Street ponding is still possible with 4 to 8 in of rain.</span></div></div>
+        <div class="fact warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg><div><b>Tornado and tree risk</b><span>Tornado risk is highest east of the center, and the 10 AM track now puts you just west of it, but rain bands spin up tornadoes on both sides. Interior room away from windows, shoes and helmets handy, phone alerts on loud.</span></div></div>
+        <div class="fact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg><div><b>Nearest open water</b><span>Bayou Texar about 1.6 mi southwest, Escambia Bay about 2.6 mi east (approximate). Both are surge water; neither reaches your elevation.</span></div></div>
+      </div>
+    </section>
+    <section class="card span12" aria-labelledby="hPlan">
+      <h3 id="hPlan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V8l7-5 7 5v13"/><path d="M9 21v-5h6v5M9 12h2M13 12h2"/></svg>House plan: two stories, trees around, riding it out downstairs</h3>
+      <div class="dolist">
+        <div style="--c:var(--storm)"><b>Wind comes around, so trees fall two ways</b>The 10 AM track puts the center about 20 mi east of you, so you are on the west side of the eye. Winds arrive from the northeast and north this afternoon, hold from the north northwest at closest approach, then swing west and southwest overnight. Trees north and northeast of the house lean toward it first; trees west of the house threaten it after midnight.</div>
+        <div style="--c:var(--home)"><b>Pick the room by the trees, not by the floor plan</b>First floor, interior, no exterior walls if possible, and not under the fall line of the tallest trees on either side. A room with the second floor above it is good: the upper floor takes the first hit from a falling trunk.</div>
+        <div style="--c:var(--ts)"><b>Stage the room before dark Friday</b>Mattress or cushions, shoes on, helmets or bike helmets for everyone, flashlights (no candles), water, pet crates, meds, the go bag, a charged power bank each, and the NOAA radio.</div>
+        <div style="--c:var(--surge)"><b>Upstairs is for daylight only</b>Close every upstairs door to slow wind if a window fails. Lay towels at the base of upstairs doors. If you hear a crack or the roof breach, nobody goes up to look until the wind is done.</div>
+        <div style="--c:var(--flood)"><b>Water from above, not below</b>At 79 ft your flood risk is a breached roof or a blown window. Keep a tarp, duct tape and contractor bags downstairs, and know where the main breaker is: if water reaches wiring, kill the power at the panel.</div>
+        <div style="--c:var(--ok)"><b>Tornado warning means the same room, right now</b>Rain bands on the east side spawn quick tornadoes Friday night. Phone alerts loud, radio on, everyone already sleeping in or next to the safe room.</div>
+        <div style="--c:var(--ts)"><b>Cars and the garage</b>Park away from the tallest trees. Brace the garage door from inside if you can; a lost garage door pressurizes the house and lifts the roof.</div>
+        <div style="--c:var(--storm)"><b>The lull is not the end</b>With a 25 mile wide eye tracking near you, the wind may drop to calm for 20 to 40 minutes, then return from the opposite side harder. Stay put until NWS says the center has passed.</div>
+      </div>
+    </section>
+
+    <section class="card span4" aria-labelledby="hDial">
+      <h3 id="hDial"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-6"/></svg>Strength dial</h3>
+      <svg class="dial" viewBox="0 0 220 135" aria-label="Saffir Simpson dial"><g id="dialArcs"></g><g id="dialTicks"></g><g class="needle" id="needle"><path d="M110 115 L106 112 L110 34 L114 112Z" fill="#e8eef8"/><circle cx="110" cy="115" r="7" fill="#e8eef8"/><circle cx="110" cy="115" r="3" fill="#060c17"/></g></svg>
+      <div class="dialv"><div class="big mono" id="dialNum">120</div><div class="lbl" id="dialCat">mph · Category 3</div></div>
+      <p class="note">Follows the forecast scrubber on the map.</p>
+    </section>
+    <section class="card span8" aria-labelledby="hDist">
+      <h3 id="hDist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>Distance from the house</h3>
+      <div class="chartbox"><canvas id="distChart" aria-label="Distance over time chart"></canvas></div>
+      <p class="note">Center of Isaias to our housecle along the forecast track. Tap the chart to jump the map to that hour.</p>
+    </section>
+
+    <section class="card span12" aria-labelledby="hWater">
+      <h3 id="hWater"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 17c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 12c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 7c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/></svg>Water: surge, surf and rain</h3>
+      <div class="water">
+        <div class="tank"><canvas id="tSurge" aria-label="Storm surge gauge"></canvas><div class="v" style="color:var(--surge)">6 to 9 ft</div><div class="k">Peak surge above ground in surge prone areas, NWS Mobile 10 AM; highest east of landfall</div></div>
+        <div class="tank"><canvas id="tSurf" aria-label="Surf height gauge"></canvas><div class="v" style="color:var(--home)">20 to 25 ft</div><div class="k">Breaking waves, NW Florida beaches Friday night · NWS</div></div>
+        <div class="tank"><canvas id="tRain" aria-label="Rainfall gauge"></canvas><div class="v" style="color:var(--flood)">4 to 8 in</div><div class="k">Pensacola zone rainfall, locally up to 15 in · NWS</div></div>
+      </div>
+      <div class="tides">
+        <div class="tide"><b>Fri 6:57 AM · low 0.8 ft</b><span>Pensacola tide, before the storm</span></div>
+        <div class="tide key"><b>Fri 11:06 PM · HIGH 1.4 ft</b><span>High tide lands on top of closest approach (about 10:45 PM). Peak surge and high tide coincide for the bays.</span></div>
+        <div class="tide"><b>Sat 8:33 AM · low 0.6 ft</b><span>Water drains after sunrise Saturday</span></div>
+      </div>
+      <p class="note">our house sits well inland from the bay. Surge applies to surge prone areas near the water; the house risk is wind, rain and tornadoes. Confirm your zone with Escambia EMA.</p>
+    </section>
+
+    <section class="card span7" aria-labelledby="hThreat">
+      <h3 id="hThreat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg>Threat to your area</h3>
+      <div class="threats" id="threats">
+        <div class="state"><b>Waiting for NWS Mobile.</b> Local threat levels load from the Hurricane Warning text once AccuWeather answers.</div>
+      </div>
+      <p class="src">Levels come from the NWS Mobile hurricane local statement for Escambia County: none, limited, elevated, significant, extensive, devastating.</p>
+    </section>
+
+    <section class="card span5" aria-labelledby="hTl">
+      <h3 id="hTl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>What happens when</h3>
+      <div class="tl" id="timeline"></div>
+    </section>
+
+    <section class="card span5" aria-labelledby="hNow">
+      <h3 id="hNow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2"/><circle cx="12" cy="12" r="4"/></svg>At the house now</h3>
+      <div id="nowBox"><div class="state"><b>Loading current conditions.</b> Temperature, wind, gusts and pressure for Pensacola appear here.</div></div>
+    </section>
+
+    <section class="card span7" aria-labelledby="hWind">
+      <h3 id="hWind"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h8"/></svg>Wind gusts at Pensacola, next five days</h3>
+      <div class="chartbox"><canvas id="gustChart" aria-label="Gust forecast chart"></canvas></div>
+      <div class="days" id="days"></div>
+    </section>
+
+    <section class="card span6" aria-labelledby="hInt">
+      <h3 id="hInt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20l5-8 4 4 8-12"/></svg>Isaias strength forecast</h3>
+      <div class="chartbox"><canvas id="intChart" aria-label="Intensity forecast chart"></canvas></div>
+      <p class="note"><span id="intNote">Isaias is at its forecast peak now, 120 mph Category 3; about 115 mph at landfall near Navarre around 10 PM tonight, then weakening fast inland Saturday.</span> Bands mark Saffir Simpson categories.</p>
+    </section>
+
+    <section class="card span6" aria-labelledby="hSat">
+      <h3 id="hSat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M4 12a8 8 0 0 1 8-8M20 12a8 8 0 0 1-8 8M2 12h2M20 12h2M12 2v2M12 20v2"/></svg>Live satellite, Gulf of Mexico</h3>
+      <div class="sat"><img id="satImg" alt="GOES East GeoColor image of the Gulf of Mexico" loading="lazy"><div class="cap" id="satCap">GOES East GeoColor · NOAA STAR · refreshes every 10 min</div></div>
+    </section>
+
+    <section class="card span6" aria-labelledby="hAl">
+      <h3 id="hAl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4"/></svg>Active alerts for your address</h3>
+      <div class="alerts" id="alerts"><div class="state"><b>Loading NWS alerts.</b> Every active watch, warning and statement for Escambia County lists here with full text.</div></div>
+    </section>
+
+    <section class="card span8" aria-labelledby="hPrep">
+      <h3 id="hPrep"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>House prep checklist</h3>
+      <div style="display:flex;justify-content:space-between;align-items:center"><span class="lbl" id="progTxt">0 of 0 done</span><span class="note">Saved in your browser only</span></div>
+      <div class="prog"><i id="progBar"></i></div>
+      <div class="checks" id="checks"></div>
+    </section>
+
+    <section class="card span4" aria-labelledby="hCon">
+      <h3 id="hCon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>Who to call</h3>
+      <div class="contacts" style="grid-template-columns:1fr">
+        <div class="contact"><span class="lbl">Escambia County EMA</span><span class="num">850-471-6400</span><a href="https://myescambia.com/beready" target="_blank" rel="noopener">Evacuation zones and shelters</a></div>
+        <div class="contact"><span class="lbl">NWS Mobile</span><a href="https://www.weather.gov/mob" target="_blank" rel="noopener">weather.gov/mob</a></div>
+        <div class="contact"><span class="lbl">National Hurricane Center</span><a href="https://www.nhc.noaa.gov/" target="_blank" rel="noopener">nhc.noaa.gov</a><span class="note"><span id="nextAdv">Next advisories 1 PM and 4 PM CDT</span></span></div>
+        <div class="contact"><span class="lbl">FPL power outage</span><span class="num">1-800-468-8243</span><a href="https://www.fplmaps.com/northwest" target="_blank" rel="noopener">Outage map, Northwest Florida</a></div>
+        <div class="contact"><span class="lbl">Shelter · general, pet friendly</span><span>Pensacola Bay Center, 201 E Gregory St</span><span class="note">Opened Thursday 3 PM</span></div>
+        <div class="contact"><span class="lbl">Shelter · special needs</span><span>Wedgewood Community Center, 6405 Wagner Rd</span></div>
+        <div class="contact"><span class="lbl">Know Your Zone</span><a href="https://myescambia.com/beready" target="_blank" rel="noopener">Escambia evacuation zone lookup</a><span class="note">Zones A and B ordered, effective noon Thu</span></div>
+        <div class="contact"><span class="lbl">NOAA Weather Radio</span><span class="num">162.400 MHz</span><span class="note">Works when internet and cell are down</span></div>
+        <div class="contact"><span class="lbl">Emergency</span><span class="num">911</span></div>
+      </div>
+    </section>
+
+    <section class="card span12">
+      <p class="src" id="srcLine">Sources: National Hurricane Center advisories 7 through 12 for Hurricane Isaias (October 8, 2026). Live local data: AccuWeather with NWS Mobile alerts, refreshed every 10 minutes while this page is open. Home position from the U.S. Census geocoder for our housecle, 32504; elevation from the USGS 3DEP point service; evacuation zone from the Florida Division of Emergency Management statewide layer; tides from NOAA CO-OPS station 8729840 Pensacola; shelters and evacuation order from Escambia County statements reported October 8, 2026. This page supplements, and never replaces, official orders from Escambia County.</p>
+    </section>
+  </div>
+</div>
+
+<script>
+(() => {
+"use strict";
+let reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let lowPower=false;try{lowPower=localStorage.getItem("isaias-lowpower")==="1";}catch(e){}
+if(lowPower){reduce=true;document.documentElement.classList.add("lowpower");}
+const $ = id => document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
+let lastDaily=null;let lastWin=null;
+const HOME = {lat:30.467, lon:-87.169}; // neighborhood, rounded to 3 decimals (about 100 m)
+const BASE_UTC = Date.UTC(2026,9,8,9,0); // track hour 0 = 09Z Oct 8
+let NOW_H = 30; // advisory 12 at 15Z Oct 9
+let BAKED_ADV = 12;
+const TRACK = [ // h from base, lat, lon, kt (NHC advisories 7 to 12)
+  {h:0,  lat:23.3, lon:-91.2, kt:70},
+  {h:6,  lat:23.7, lon:-90.2, kt:74},
+  {h:12, lat:24.4, lon:-89.3, kt:85},
+  {h:15, lat:24.8, lon:-88.8, kt:88},
+  {h:18, lat:25.4, lon:-88.4, kt:90},
+  {h:21, lat:25.8, lon:-88.4, kt:90},
+  {h:24, lat:26.4, lon:-88.0, kt:95},
+  {h:27, lat:27.0, lon:-87.6, kt:95},
+  {h:30, lat:27.7, lon:-87.3, kt:105},
+  {h:39, lat:29.7, lon:-86.8, kt:100},
+  {h:51, lat:32.1, lon:-87.1, kt:55, inland:true},
+  {h:63, lat:34.2, lon:-87.2, kt:35, inland:true},
+  {h:75, lat:36.5, lon:-85.0, kt:25, inland:true},
+  {h:87, lat:39.1, lon:-81.0, kt:20, inland:true}
+];
+const CONE_NM = [[30,12],[39,40],[51,58],[63,76],[75,95],[87,112]];
+const R34 = {NE:180,SE:110,SW:80,NW:160};
+const TS_ARRIVE = 1791561600000; // Fri Oct 9, 11 AM CDT, TS wind field now 185 mi wide
+
+const mph = kt => Math.round(kt*1.15078/5)*5;
+function cat(m){ if(m>=157)return"Category 5"; if(m>=130)return"Category 4"; if(m>=111)return"Category 3"; if(m>=96)return"Category 2"; if(m>=74)return"Category 1"; if(m>=39)return"Tropical Storm"; return"Depression";}
+function at(h){
+  for(let i=0;i<TRACK.length-1;i++){const a=TRACK[i],b=TRACK[i+1]; if(h>=a.h&&h<=b.h){const f=(h-a.h)/(b.h-a.h); return {lat:a.lat+(b.lat-a.lat)*f, lon:a.lon+(b.lon-a.lon)*f, kt:a.kt+(b.kt-a.kt)*f, inland:f>0.5?b.inland:a.inland};}}
+  return TRACK[TRACK.length-1];
+}
+function dist(a,b){const R=3958.8,r=Math.PI/180,dl=(b.lat-a.lat)*r,dn=(b.lon-a.lon)*r;const x=Math.sin(dl/2)**2+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(x));}
+function bearing(a,b){const r=Math.PI/180;const y=Math.sin((b.lon-a.lon)*r)*Math.cos(b.lat*r);const x=Math.cos(a.lat*r)*Math.sin(b.lat*r)-Math.sin(a.lat*r)*Math.cos(b.lat*r)*Math.cos((b.lon-a.lon)*r);const d=(Math.atan2(y,x)/r+360)%360;return["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"][Math.round(d/22.5)%16];}
+function fmtH(h){const d=new Date(BASE_UTC+h*3600e3);return d.toLocaleString("en-US",{timeZone:"America/Chicago",weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:h%1?"2-digit":undefined})+" CDT";}
+
+// closest approach
+let cpa={d:1e9,h:0};
+for(let h=NOW_H;h<=69;h+=0.25){const p=at(h),d=dist(HOME,p);if(d<cpa.d)cpa={d,h,p};}
+$("kCpa").textContent=Math.round(cpa.d)+" mi";
+$("kCpaS").textContent=fmtH(cpa.h).replace(" CDT","")+" · center passes "+(cpa.p.lon<HOME.lon?"west":"east")+" of you";
+
+// countdown
+function fmtDur(ms){const h=Math.floor(ms/3600e3),m=Math.floor(ms%3600e3/60e3);return h+"h "+String(m).padStart(2,"0")+"m";}
+function tick(){const now=Date.now();const el=$("kCount"),L=$("kCountL"),S=$("kCountS");const tot=TS_ARRIVE-Date.UTC(2026,9,8,15);
+  let ms=TS_ARRIVE-now;
+  if(ms>0){L.textContent="Tropical storm winds in";S.textContent="TS wind field reaches 185 mi from the center";$("ringFg").style.strokeDashoffset=(138.2*(1-Math.max(0,Math.min(1,ms/tot)))).toFixed(1);el.textContent=fmtDur(ms);return;}
+  const cpaMs=BASE_UTC+cpa.h*3600e3;ms=cpaMs-now;
+  if(ms>0){L.textContent="Eye closest in";S.textContent="Center about "+Math.round(cpa.d)+" mi "+(cpa.p.lon<HOME.lon?"west":"east")+" of the house at "+fmtH(cpa.h).split(", ").slice(1).join(" ").replace(" CDT","");$("ringFg").style.strokeDashoffset=(138.2*(1-Math.max(0,Math.min(1,ms/(cpaMs-TS_ARRIVE))))).toFixed(1);el.textContent=fmtDur(ms);return;}
+  L.textContent="Center passed";S.textContent="Back side winds from the west and southwest now; stay in until NWS clears it";$("ringFg").style.strokeDashoffset="0";el.textContent=fmtDur(-ms)+" ago";}
+tick();setInterval(tick,30000);
+
+// ---------- MAP ----------
+const LAND=[[-79,35],[-80.6,32.4],[-81.4,30.7],[-81.2,29.5],[-80.6,28.4],[-80.05,26.8],[-80.1,25.8],[-80.4,25.2],[-81.1,25.1],[-81.7,25.9],[-82.1,26.6],[-82.7,27.5],[-82.8,28.2],[-82.7,29.0],[-83.4,29.7],[-84.0,30.1],[-84.4,29.9],[-85.0,29.6],[-85.4,29.75],[-86.0,30.3],[-86.5,30.4],[-87.2,30.32],[-87.6,30.27],[-88.0,30.25],[-88.0,30.6],[-88.1,30.4],[-88.5,30.38],[-89.4,30.3],[-89.6,30.15],[-89.4,29.9],[-89.2,29.35],[-89.4,29.0],[-90.0,29.1],[-90.6,29.1],[-91.3,29.3],[-92.0,29.6],[-93.0,29.75],[-93.8,29.7],[-94.7,29.35],[-95.3,28.9],[-96.4,28.3],[-97.0,27.8],[-97.3,27.0],[-97.4,26.0],[-97.6,25.0],[-97.7,24.0],[-97.8,22.5],[-97.7,21.5],[-97.2,20.6],[-96.4,19.6],[-95.9,18.9],[-95.0,18.6],[-94.4,18.15],[-93.5,18.4],[-92.5,18.6],[-91.5,18.5],[-91.0,18.7],[-90.7,19.4],[-90.4,20.5],[-90.3,21.0],[-89.6,21.3],[-88.4,21.5],[-87.5,21.5],[-87.0,21.4],[-86.8,20.9],[-87.2,20.3],[-87.5,19.5],[-87.8,18.5],[-88.2,18.0],[-88.5,15.5],[-100,15.5],[-100,35]];
+const CUBA=[[-84.95,21.85],[-84.4,22.4],[-83.5,22.9],[-82.0,23.15],[-80.5,23.1],[-79,22.6],[-78,22.2],[-78,21.3],[-79.5,21.6],[-80.5,21.8],[-81.8,22.2],[-83.0,22.0],[-84.0,21.9]];
+const CITIES=[["New Orleans",29.95,-90.07],["Mobile",30.69,-88.04],["Tampa",27.95,-82.46],["Houston",29.76,-95.37],["Panama City",30.16,-85.66],["Mérida",20.97,-89.62]];
+const VIEWS={gulf:{lon0:-98,lon1:-80,lat0:18,lat1:34},near:{lon0:-91.5,lon1:-84.5,lat0:25.5,lat1:32.2}};
+let view={...VIEWS.gulf}, target={...VIEWS.gulf};
+const stage=$("stage"),cB=$("cBase"),cF=$("cFx"),cT=$("cTop");
+const xB=cB.getContext("2d"),xF=cF.getContext("2d"),xT=cT.getContext("2d");
+let W=0,H=0,DPR=1;
+const K=Math.cos(28*Math.PI/180);
+function proj(lat,lon){const sx=W/((view.lon1-view.lon0)*K),sy=H/(view.lat1-view.lat0),s=Math.min(sx,sy);const cx=(view.lon0+view.lon1)/2,cy=(view.lat0+view.lat1)/2;return[W/2+(lon-cx)*K*s,H/2-(lat-cy)*s,s];}
+function nmToPx(nm){return proj(0,0)[2]*nm/60;}
+function resize(){const r=stage.getBoundingClientRect();DPR=Math.min(2,devicePixelRatio||1);W=r.width;H=r.height;for(const c of[cB,cF,cT]){c.width=W*DPR;c.height=H*DPR;c.getContext("2d").setTransform(DPR,0,0,DPR,0,0);}drawBase();}
+function poly(ctx,pts){ctx.beginPath();pts.forEach(([lon,lat],i)=>{const[x,y]=proj(lat,lon);i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.closePath();}
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+let scrubH=NOW_H;
+function conePoly(){const L=[],R=[];
+  for(let i=0;i<CONE_NM.length;i++){const[h,nm]=CONE_NM[i];const p=at(h),q=at(Math.min(69,h+1)),pp=at(Math.max(0,h-1));
+    const dx=(q.lon-pp.lon)*K,dy=q.lat-pp.lat,len=Math.hypot(dx,dy)||1;const nx=-dy/len,ny=dx/len;const dd=nm/60;
+    L.push([p.lon+nx*dd/K,p.lat+ny*dd]);R.unshift([p.lon-nx*dd/K,p.lat-ny*dd]);}
+  return L.concat(R);}
+function drawBase(){
+  const c=xB;c.clearRect(0,0,W,H);
+  const g=c.createRadialGradient(W*.5,H*.6,10,W*.5,H*.6,Math.max(W,H));g.addColorStop(0,"#0a1830");g.addColorStop(1,css("--water"));c.fillStyle=g;c.fillRect(0,0,W,H);
+  // grid
+  c.strokeStyle=css("--grid");c.lineWidth=1;c.fillStyle=css("--muted");c.font="11px JetBrains Mono, monospace";
+  const step=(view.lon1-view.lon0)>10?4:1;
+  for(let lon=Math.ceil(view.lon0/step)*step-step;lon<=view.lon1+step;lon+=step){const[x]=proj(25,lon);c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke();c.fillText(Math.abs(lon)+"°W",x+3,H-6);}
+  for(let lat=Math.ceil(view.lat0/step)*step-step;lat<=view.lat1+step;lat+=step){const[,y]=proj(lat,-90);c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke();c.fillText(lat+"°N",4,y-3);}
+  // water label
+  {const[gx,gy,s]=proj(25.2,-90.5);c.save();c.fillStyle="rgba(120,160,220,.07)";c.font="800 "+Math.round(s*1.6)+"px Saira Condensed, sans-serif";c.textAlign="center";c.fillText("GULF",gx,gy);c.restore();}
+  // land with texture and glowing coast
+  if(!landPat)mkPat();
+  c.fillStyle=landPat||css("--land");c.strokeStyle=css("--coast");c.lineWidth=1.5;
+  c.save();c.shadowColor="rgba(80,140,230,.55)";c.shadowBlur=10;poly(c,LAND);c.fill();c.stroke();poly(c,CUBA);c.fill();c.stroke();c.restore();
+  c.fillStyle="#6f82a3";c.font="12px Atkinson Hyperlegible, sans-serif";
+  for(const[n,la,lo]of CITIES){const[x,y]=proj(la,lo);if(x<0||x>W||y<0||y>H)continue;c.beginPath();c.arc(x,y,2.5,0,7);c.fill();c.fillText(n,x+5,y-5);}
+  const revealH=NOW_H+trackProg*(69-NOW_H);
+  // cone
+  c.save();c.globalAlpha=trackProg;
+  const cg=c.createLinearGradient(...proj(23.7,-90.2).slice(0,2),...proj(33,-88).slice(0,2));cg.addColorStop(0,"rgba(255,255,255,.04)");cg.addColorStop(1,"rgba(255,255,255,.16)");
+  c.fillStyle=cg;c.strokeStyle="rgba(255,255,255,.35)";c.setLineDash([5,5]);poly(c,conePoly());c.fill();c.stroke();c.setLineDash([]);c.restore();
+  // track past
+  c.strokeStyle="rgba(255,255,255,.4)";c.lineWidth=2;c.beginPath();let[x0,y0]=proj(TRACK[0].lat,TRACK[0].lon);c.moveTo(x0,y0);const[x1,y1]=proj(TRACK[1].lat,TRACK[1].lon);c.lineTo(x1,y1);c.stroke();
+  // forecast track, colored by intensity, revealed on load
+  c.save();c.shadowBlur=8;
+  for(let i=1;i<TRACK.length-1;i++){const a=TRACK[i],b=TRACK[i+1];if(a.h>revealH)break;const e=at(Math.min(b.h,revealH));const[ax,ay]=proj(a.lat,a.lon),[bx,by]=proj(e.lat,e.lon);c.strokeStyle=c.shadowColor=colFor(mph(b.kt));c.lineWidth=3;c.setLineDash([8,6]);c.beginPath();c.moveTo(ax,ay);c.lineTo(bx,by);c.stroke();}
+  c.restore();c.setLineDash([]);
+  for(const p of TRACK.slice(1)){if(p.h>revealH)continue;const[x,y]=proj(p.lat,p.lon);const m=mph(p.kt);c.fillStyle=colFor(m);c.beginPath();c.arc(x,y,6,0,7);c.fill();c.strokeStyle="#060c17";c.lineWidth=2;c.stroke();
+    c.fillStyle="#dce6f5";c.font="600 12px JetBrains Mono, monospace";const lab=(m>=74?cat(m).replace("Category ","C"):m>=39?"TS":"TD");if(p.h>NOW_H)c.fillText(lab+" "+fmtH(p.h).split(",")[0],x+9,y+4);}
+}
+let landPat=null,trackProg=reduce?1:0;
+function mkPat(){const o=document.createElement("canvas");o.width=o.height=140;const g=o.getContext("2d");g.fillStyle=css("--land");g.fillRect(0,0,140,140);
+  for(let i=0;i<900;i++){g.fillStyle="rgba(170,200,255,"+(Math.random()*0.05).toFixed(3)+")";g.fillRect(Math.random()*140,Math.random()*140,1.4,1.4);}
+  g.strokeStyle="rgba(120,160,230,.05)";for(let y=0;y<140;y+=7){g.beginPath();g.moveTo(0,y);g.lineTo(140,y+3);g.stroke();}
+  landPat=xB.createPattern(o,"repeat");}
+let LANDFALL_H=landfallH();
+function landfallH(){for(let i=0;i<TRACK.length-1;i++){const a=TRACK[i],b=TRACK[i+1];if(a.lat<30.27&&b.lat>=30.27)return a.h+(30.27-a.lat)/(b.lat-a.lat)*(b.h-a.h);}return 45;}
+function colFor(m){return m>=111?"#ff3b8a":m>=96?"#ff4a5d":m>=74?"#ff7a45":m>=39?"#ffb43f":"#7dd3fc";}
+
+// particles: vortex around storm
+const P=[];const NP=reduce?0:Math.min(700,Math.round(innerWidth*0.6));
+function seed(p){p.lat=view.lat0+Math.random()*(view.lat1-view.lat0);p.lon=view.lon0+Math.random()*(view.lon1-view.lon0);p.age=Math.random()*120;}
+for(let i=0;i<NP;i++){const p={};seed(p);P.push(p);}
+let stormPos=at(NOW_H);
+function field(lat,lon){const dx=(lon-stormPos.lon)*K,dy=lat-stormPos.lat;const r=Math.hypot(dx,dy)+0.15;const str=Math.min(1.2,mph(stormPos.kt)/90);
+  const v=str*0.9*Math.exp(-r/5)*(1/(0.3+r))*r; // tangential
+  const tx=-dy/r,ty=dx/r; // counterclockwise
+  const ix=-dx/r,iy=-dy/r; // inflow
+  return[(tx*v+ix*v*0.35+0.02)/K,ty*v+iy*v*0.35];}
+let t0=performance.now(),spinA=0;
+function frame(now){
+  const dt=Math.min(50,now-t0);t0=now;
+  if(lowPower){if(trackProg<1){trackProg=1;drawBase();}drawTop(now);if(playing){scrubH+=1;if(scrubH>=57){scrubH=57;stopPlay();}$("slider").value=scrubH;setScrub(scrubH,false);}setTimeout(()=>requestAnimationFrame(frame),playing?250:1500);return;}
+  // view easing
+  let moved=false;for(const k of["lon0","lon1","lat0","lat1"]){const d=target[k]-view[k];if(Math.abs(d)>0.002){view[k]+=d*0.12;moved=true;}else view[k]=target[k];}
+  const vmoved=moved;
+  if(trackProg<1){trackProg=Math.min(1,trackProg+dt/2200);moved=true;}
+  if(moved){drawBase();if(vmoved)xF.clearRect(0,0,W,H);}
+  // particles
+  xF.globalCompositeOperation="destination-out";xF.fillStyle="rgba(0,0,0,0.08)";xF.fillRect(0,0,W,H);xF.globalCompositeOperation="source-over";
+  xF.lineWidth=1.2;
+  for(const p of P){const[x,y]=proj(p.lat,p.lon);const[u,v]=field(p.lat,p.lon);const sc=dt/16*0.06;p.lon+=u*sc;p.lat+=v*sc;p.age--;const[x2,y2]=proj(p.lat,p.lon);
+    const r=Math.hypot((p.lon-stormPos.lon)*K,p.lat-stormPos.lat);xF.strokeStyle=r<3?"rgba(255,140,150,.55)":"rgba(140,190,255,.28)";
+    xF.beginPath();xF.moveTo(x,y);xF.lineTo(x2,y2);xF.stroke();
+    if(p.age<0||p.lat<view.lat0-1||p.lat>view.lat1+1||p.lon<view.lon0-1||p.lon>view.lon1+1||Math.random()<0.002)seed(p);}
+  drawTop(now);
+  if(playing){scrubH+=dt/1000*4;if(scrubH>=57){scrubH=57;stopPlay();}$("slider").value=scrubH;setScrub(scrubH,false);}
+  requestAnimationFrame(frame);
+}
+function drawTop(now){
+  const c=xT;c.clearRect(0,0,W,H);
+  // night shading from scrub time (CDT hour)
+  const lh=((9+scrubH-5)%24+24)%24;const nightA=lh<6?0.42:lh<7.5?0.42*(7.5-lh)/1.5:lh>19.5?0.42:lh>18.4?0.42*(lh-18.4)/1.1:0;
+  if(nightA>0){const ng=c.createLinearGradient(0,0,W,0);ng.addColorStop(0,"rgba(2,6,16,"+(nightA*0.7).toFixed(3)+")");ng.addColorStop(1,"rgba(2,6,16,"+nightA.toFixed(3)+")");c.fillStyle=ng;c.fillRect(0,0,W,H);
+    if(!reduce){c.fillStyle="rgba(255,255,255,.55)";for(let i=0;i<24;i++){const sx2=(i*263)%W,sy2=(i*149)%(H*0.4);const tw=0.4+0.6*Math.abs(Math.sin(now/700+i));c.globalAlpha=nightA*tw;c.fillRect(sx2,sy2,1.5,1.5);}c.globalAlpha=1;}}
+  // wind arrows at coastal cities
+  c.save();c.lineWidth=2;c.lineCap="round";
+  for(const[n,la,lo]of CITIES.concat([["Home",HOME.lat,HOME.lon]])){const[ax,ay]=proj(la,lo);if(ax<0||ax>W||ay<0||ay>H)continue;const[u,v]=field(la,lo);const sp=Math.hypot(u*K,v);const L=Math.min(34,8+sp*90);if(L<9)continue;
+    const dx=u*K/(sp||1),dy=-v/(sp||1);const col=sp>0.25?"rgba(255,120,130,.9)":sp>0.12?"rgba(255,180,63,.85)":"rgba(120,190,255,.7)";
+    c.strokeStyle=col;c.fillStyle=col;c.beginPath();c.moveTo(ax-dx*L*.5,ay-dy*L*.5);c.lineTo(ax+dx*L*.5,ay+dy*L*.5);c.stroke();
+    const tx=ax+dx*L*.5,ty=ay+dy*L*.5;c.beginPath();c.moveTo(tx,ty);c.lineTo(tx-dx*7-dy*4,ty-dy*7+dx*4);c.lineTo(tx-dx*7+dy*4,ty-dy*7-dx*4);c.closePath();c.fill();}
+  c.restore();
+  // home
+  const[hx,hy]=proj(HOME.lat,HOME.lon);const ph=reduce?0:(now/1400)%1;
+  drawRadar(c,hx,hy,now);
+  // next forecast point pulse
+  const nx=TRACK.find(p=>p.h>scrubH+0.01);if(nx&&trackProg>=1){const[px,py]=proj(nx.lat,nx.lon);const pp=reduce?.5:(now/1100)%1;c.strokeStyle=colFor(mph(nx.kt));c.globalAlpha=1-pp;c.lineWidth=2;c.beginPath();c.arc(px,py,7+pp*12,0,7);c.stroke();c.globalAlpha=1;}
+  // ghost trail behind scrub position
+  c.save();for(let k=1;k<=10;k++){const gp=at(Math.max(0,scrubH-k*1.2));const[gx,gy]=proj(gp.lat,gp.lon);c.fillStyle="rgba(255,120,130,"+(0.32*(1-k/11)).toFixed(3)+")";c.beginPath();c.arc(gx,gy,5*(1-k/12),0,7);c.fill();}c.restore();
+  c.strokeStyle="rgba(70,211,255,"+(0.8-ph*0.8)+")";c.lineWidth=2;c.beginPath();c.arc(hx,hy,8+ph*26,0,7);c.stroke();
+  c.strokeStyle="rgba(70,211,255,.35)";c.setLineDash([3,4]);c.beginPath();c.arc(hx,hy,nmToPx(43.4),0,7);c.stroke();c.setLineDash([]); // 50 mi ring
+  c.fillStyle=css("--home");c.beginPath();c.moveTo(hx,hy-9);c.lineTo(hx+8,hy-2);c.lineTo(hx+8,hy+7);c.lineTo(hx-8,hy+7);c.lineTo(hx-8,hy-2);c.closePath();c.fill();
+  c.font="700 13px Saira Condensed, sans-serif";c.fillText("HOME",hx+12,hy+4);
+  // line home to storm
+  const[sx,sy]=proj(stormPos.lat,stormPos.lon);
+  c.strokeStyle="rgba(70,211,255,.45)";c.setLineDash([2,6]);c.beginPath();c.moveTo(hx,hy);c.lineTo(sx,sy);c.stroke();c.setLineDash([]);
+  // TS wind field at current time only
+  if(Math.abs(scrubH-NOW_H)<0.6){c.fillStyle="rgba(255,180,63,.10)";c.strokeStyle="rgba(255,180,63,.6)";c.lineWidth=1.5;c.beginPath();
+    const quads=[["NE",-Math.PI/2,0],["SE",0,Math.PI/2],["SW",Math.PI/2,Math.PI],["NW",Math.PI,Math.PI*1.5]];
+    for(const[q,a0,a1]of quads){c.arc(sx,sy,nmToPx(R34[q]),a0,a1);}c.closePath();c.fill();c.stroke();}
+  // landfall marker
+  if(trackProg>=1){const lp=at(LANDFALL_H);const[lx,ly]=proj(lp.lat,lp.lon);const lpulse=reduce?0.5:(now/900)%1;
+    c.strokeStyle="rgba(196,108,255,"+(1-lpulse)+")";c.lineWidth=2;c.beginPath();c.arc(lx,ly,6+lpulse*16,0,7);c.stroke();
+    c.strokeStyle="#c46cff";c.lineWidth=2.5;c.beginPath();c.moveTo(lx-6,ly-6);c.lineTo(lx+6,ly+6);c.moveTo(lx+6,ly-6);c.lineTo(lx-6,ly+6);c.stroke();
+    c.fillStyle="#e7d2ff";c.font="700 12px Saira Condensed, sans-serif";c.textAlign="right";c.fillText("FORECAST LANDFALL",lx-10,ly+26);c.textAlign="left";}
+  drawStorm(c,sx,sy,mph(stormPos.kt),now);
+}
+function drawRadar(c,hx,hy,now){
+  const R=Math.max(46,nmToPx(70));const a=reduce?-Math.PI/3:(now/2600)*Math.PI*2;
+  c.save();c.translate(hx,hy);
+  for(let i=0;i<24;i++){const a0=a-i*0.045,a1=a-(i+1)*0.045;c.fillStyle="rgba(70,211,255,"+(0.16*(1-i/24)).toFixed(3)+")";c.beginPath();c.moveTo(0,0);c.arc(0,0,R,a1,a0);c.closePath();c.fill();}
+  c.strokeStyle="rgba(70,211,255,.55)";c.lineWidth=1.5;c.beginPath();c.moveTo(0,0);c.lineTo(Math.cos(a)*R,Math.sin(a)*R);c.stroke();
+  c.strokeStyle="rgba(70,211,255,.14)";c.lineWidth=1;for(const f of[.33,.66,1]){c.beginPath();c.arc(0,0,R*f,0,7);c.stroke();}
+  c.restore();
+}
+const bolts=[];
+function drawStorm(c,sx,sy,m,now){
+  const col=colFor(m);const inten=Math.min(1.25,Math.max(.35,m/95));
+  const R=Math.max(20,Math.min(150,nmToPx(70)))*(.65+.35*inten);
+  if(!reduce)spinA-=0.012+0.02*inten;
+  c.save();c.translate(sx,sy);
+  // cloud shield
+  const g=c.createRadialGradient(0,0,R*.08,0,0,R*1.35);g.addColorStop(0,"rgba(245,248,255,.62)");g.addColorStop(.3,"rgba(215,226,245,.36)");g.addColorStop(.7,"rgba(190,205,235,.12)");g.addColorStop(1,"rgba(190,205,235,0)");
+  c.fillStyle=g;c.beginPath();c.arc(0,0,R*1.35,0,7);c.fill();
+  // spiral rain bands, tapered
+  c.rotate(spinA);c.lineCap="round";
+  for(let k=0;k<4;k++){c.save();c.rotate(k*Math.PI/2+(k%2)*0.3);
+    let px=null,py=null;const N=46;
+    for(let i=0;i<=N;i++){const t=i/N;const th=t*Math.PI*1.75;const r=R*(.18+1.15*t);const x=Math.cos(-th)*r,y=Math.sin(-th)*r;
+      if(px!==null){c.strokeStyle="rgba(240,245,255,"+((1-t)*.55).toFixed(3)+")";c.lineWidth=Math.max(1,R*.2*(1-t*.85));c.beginPath();c.moveTo(px,py);c.lineTo(x,y);c.stroke();}px=x;py=y;}
+    c.restore();}
+  c.rotate(-spinA);
+  // eyewall glow by category
+  c.shadowColor=col;c.shadowBlur=22;c.strokeStyle=col;c.lineWidth=Math.max(3,R*.09);c.beginPath();c.arc(0,0,R*.2,0,7);c.stroke();c.shadowBlur=0;
+  const eg=c.createRadialGradient(0,0,0,0,0,R*.16);eg.addColorStop(0,"#03060c");eg.addColorStop(1,"rgba(3,6,12,.4)");c.fillStyle=eg;c.beginPath();c.arc(0,0,R*.16,0,7);c.fill();
+  // lightning
+  if(!reduce&&Math.random()<0.04*inten)bolts.push({a:Math.random()*7,r:R*(.35+Math.random()*.7),life:1});
+  for(let i=bolts.length-1;i>=0;i--){const b=bolts[i];const bx=Math.cos(b.a)*b.r,by=Math.sin(b.a)*b.r;
+    const lg=c.createRadialGradient(bx,by,0,bx,by,R*.28);lg.addColorStop(0,"rgba(255,255,255,"+(.85*b.life).toFixed(2)+")");lg.addColorStop(1,"rgba(180,200,255,0)");c.fillStyle=lg;c.beginPath();c.arc(bx,by,R*.28,0,7);c.fill();
+    b.life-=0.12;if(b.life<=0)bolts.splice(i,1);}
+  c.restore();
+}
+function setScrub(h,fromUser){
+  scrubH=h;stormPos=at(h);const m=mph(stormPos.kt);const d=dist(HOME,stormPos);
+  const chNow=(Date.now()-BASE_UTC)/36e5;$("rWhen").textContent=(Math.abs(h-chNow)<0.26?"Estimated now · ":Math.abs(h-NOW_H)<0.13?"Advisory fix · ":h<chNow?"Earlier · ":"Forecast · ")+fmtH(h);
+  $("rCat").textContent=cat(m)+" · "+m+" mph";$("rCat").style.color=colFor(m);
+  $("rDist").textContent=Math.round(d)+" mi "+bearing(HOME,stormPos)+" of home"+(stormPos.inland?" · inland":"");
+  const lh2=((9+h-5)%24+24)%24;$("rTod").textContent=(lh2<6.5||lh2>18.4?"☾ night":lh2<9?"☀ morning":lh2<17?"☀ daytime":"☀ evening")+" in Pensacola";
+  if(fromUser&&playing)stopPlay();
+  updateDial(m);drawDist();
+}
+// ---- dial ----
+const DIAL_MAX=160;
+function dAng(v){return Math.PI*(1-v/DIAL_MAX);}
+function arcPath(v0,v1,r){const a0=dAng(v0),a1=dAng(v1);const x0=110+r*Math.cos(a0),y0=115-r*Math.sin(a0),x1=110+r*Math.cos(a1),y1=115-r*Math.sin(a1);return`M${x0.toFixed(1)} ${y0.toFixed(1)} A${r} ${r} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`;}
+(function buildDial(){const segs=[[0,39,"#7dd3fc"],[39,74,"#ffb43f"],[74,96,"#ff7a45"],[96,111,"#ff4a5d"],[111,130,"#ff3b8a"],[130,157,"#d94bff"],[157,160,"#ffffff"]];
+  $("dialArcs").innerHTML=`<path d="${arcPath(0,160,88)}" stroke="#1a2740" stroke-width="16" fill="none"/>`+segs.map(([a,b,c])=>`<path d="${arcPath(a+.6,b-.6,88)}" stroke="${c}" stroke-width="16" fill="none" opacity=".85"/>`).join("");
+  $("dialTicks").innerHTML=[0,39,74,96,111,130,157].map(v=>{const a=dAng(v);return`<text x="${(110+64*Math.cos(a)).toFixed(1)}" y="${(118-64*Math.sin(a)).toFixed(1)}" fill="#90a0ba" font-size="9" text-anchor="middle" font-family="JetBrains Mono">${v}</text>`;}).join("");})();
+function updateDial(m){const deg=-90+Math.min(DIAL_MAX,m)/DIAL_MAX*180;$("needle").style.transform=`rotate(${deg}deg)`;$("dialNum").textContent=m;$("dialNum").style.color=colFor(m);$("dialCat").textContent="mph · "+cat(m);}
+// ---- distance chart ----
+const DIST=[];for(let h=NOW_H;h<=57;h+=0.5)DIST.push([h,dist(HOME,at(h))]);
+let distGeo=null;
+function drawDist(){
+  const cv=$("distChart");if(!cv.getBoundingClientRect().width)return;const[c,w,h]=setupCanvas(cv);const pad={l:46,r:14,t:16,b:30};
+  const max=Math.ceil(Math.max(...DIST.map(d=>d[1]))/100)*100;const xs=hh=>pad.l+(hh-NOW_H)/(57-NOW_H)*(w-pad.l-pad.r);const ys=v=>h-pad.b-v/max*(h-pad.t-pad.b);distGeo={xs,pad,w};
+  c.font="11px JetBrains Mono, monospace";c.fillStyle="#90a0ba";c.strokeStyle="#1c2b44";
+  for(let v=0;v<=max;v+=100){c.beginPath();c.moveTo(pad.l,ys(v));c.lineTo(w-pad.r,ys(v));c.stroke();c.fillText(v,6,ys(v)+4);}c.fillText("mi",6,pad.t-4);
+  // danger zone under 100 mi
+  c.fillStyle="rgba(255,74,93,.10)";c.fillRect(pad.l,ys(100),w-pad.l-pad.r,ys(0)-ys(100));c.fillStyle="rgba(255,140,150,.8)";c.fillText("within 100 mi",pad.l+6,ys(100)+14);
+  for(const[hh,l]of[[15,"Thu 7p"],[27,"Fri 7a"],[39,"Fri 7p"],[51,"Sat 7a"]]){c.fillStyle="#90a0ba";c.fillText(l,xs(hh)-18,h-10);c.strokeStyle="#16233a";c.beginPath();c.moveTo(xs(hh),pad.t);c.lineTo(xs(hh),h-pad.b);c.stroke();}
+  const gr=c.createLinearGradient(0,ys(max),0,ys(0));gr.addColorStop(0,"rgba(70,211,255,.05)");gr.addColorStop(1,"rgba(255,74,93,.35)");
+  c.beginPath();DIST.forEach(([hh,d],i)=>i?c.lineTo(xs(hh),ys(d)):c.moveTo(xs(hh),ys(d)));c.lineTo(xs(57),ys(0));c.lineTo(xs(NOW_H),ys(0));c.closePath();c.fillStyle=gr;c.fill();
+  c.lineWidth=2.5;c.strokeStyle="#46d3ff";c.beginPath();DIST.forEach(([hh,d],i)=>i?c.lineTo(xs(hh),ys(d)):c.moveTo(xs(hh),ys(d)));c.stroke();
+  // closest approach
+  c.fillStyle="#ff4a5d";c.beginPath();c.arc(xs(cpa.h),ys(cpa.d),6,0,7);c.fill();c.fillStyle="#ffd9de";c.font="600 12px JetBrains Mono, monospace";c.fillText("closest "+Math.round(cpa.d)+" mi",Math.min(xs(cpa.h)+10,w-130),ys(cpa.d)-8);
+  // scrub marker
+  const sd=dist(HOME,at(scrubH));const sxp=xs(Math.min(57,scrubH));c.strokeStyle="rgba(255,255,255,.6)";c.setLineDash([3,3]);c.beginPath();c.moveTo(sxp,pad.t);c.lineTo(sxp,h-pad.b);c.stroke();c.setLineDash([]);
+  c.fillStyle="#fff";c.beginPath();c.arc(sxp,ys(sd),5,0,7);c.fill();
+}
+$("distChart").addEventListener("click",e=>{if(!distGeo)return;const r=e.currentTarget.getBoundingClientRect();const x=e.clientX-r.left;const hh=NOW_H+(x-distGeo.pad.l)/(distGeo.w-distGeo.pad.l-distGeo.pad.r)*(57-NOW_H);const v=Math.max(NOW_H,Math.min(57,hh));$("slider").value=v;setScrub(v,true);});
+// ---- map hover tooltip and click ----
+cT.addEventListener("mousemove",e=>{const r=cT.getBoundingClientRect();const mx=e.clientX-r.left,my=e.clientY-r.top;let best=null,bd=16;
+  for(const p of TRACK.slice(1)){const[x,y]=proj(p.lat,p.lon);const d=Math.hypot(x-mx,y-my);if(d<bd){bd=d;best={p,x,y};}}
+  const[hx,hy]=proj(HOME.lat,HOME.lon);const tip=$("tip");
+  if(Math.hypot(hx-mx,hy-my)<16){tip.hidden=false;tip.style.left=hx+"px";tip.style.top=hy+"px";tip.innerHTML="<b>our housecle</b><br>Pensacola 32504 · approx. position";return;}
+  if(!best){tip.hidden=true;return;}const m=mph(best.p.kt);tip.hidden=false;tip.style.left=best.x+"px";tip.style.top=best.y+"px";
+  tip.innerHTML=`<b style="color:${colFor(m)}">${cat(m)} · ${m} mph</b><br>${fmtH(best.p.h)}<br>${Math.round(dist(HOME,best.p))} mi ${bearing(HOME,best.p)} of home${best.p.inland?" · inland":""}`;});
+cT.addEventListener("mouseleave",()=>{$("tip").hidden=true;});
+cT.addEventListener("click",e=>{const r=cT.getBoundingClientRect();const mx=e.clientX-r.left,my=e.clientY-r.top;for(const p of TRACK.slice(1)){const[x,y]=proj(p.lat,p.lon);if(Math.hypot(x-mx,y-my)<16&&p.h<=57){$("slider").value=p.h;setScrub(p.h,true);return;}}});
+let playing=false;
+function stopPlay(){playing=false;$("playBtn").querySelector("span").textContent="Play";}
+$("playBtn").onclick=()=>{setLiveClock(false);if(playing){stopPlay();return;}if(scrubH>=56.9)scrubH=NOW_H;playing=true;$("playBtn").querySelector("span").textContent="Pause";};
+let liveClock=true;function clockH(){return Math.max(NOW_H,Math.min(57,(Date.now()-BASE_UTC)/36e5));}
+function followClock(){if(!liveClock||playing)return;const h=clockH();$("slider").value=h;setScrub(h,false);const p=at(h),d=dist(HOME,p);$("kDist").textContent=Math.round(d)+" mi";$("kDistS").textContent=bearing(HOME,p)+" of our house · estimated from the NHC track";}
+function setLiveClock(on){liveClock=on;const b=$("liveBtn");b.setAttribute("aria-pressed",on?"true":"false");b.querySelector(".dot").className="dot"+(on?" on":"");if(on)followClock();}
+$("liveBtn").onclick=()=>setLiveClock(!liveClock);
+setInterval(followClock,30000);setTimeout(followClock,2600);
+$("slider").addEventListener("input",e=>{setLiveClock(false);setScrub(+e.target.value,true);});
+function setView(k){target={...VIEWS[k]};$("vGulf").setAttribute("aria-pressed",k==="gulf");$("vNear").setAttribute("aria-pressed",k==="near");}
+$("vGulf").onclick=()=>setView("gulf");$("vNear").onclick=()=>setView("near");
+new ResizeObserver(resize).observe(stage);
+document.fonts&&document.fonts.ready.then(drawBase);
+setScrub(NOW_H);requestAnimationFrame(frame);
+
+// KPI from baked NHC 8
+const d0=dist(HOME,at(NOW_H));$("kDist").textContent=Math.round(d0)+" mi";$("kDistS").textContent=bearing(HOME,at(NOW_H))+" of our house, closing";
+
+// ---------- intensity chart ----------
+function setupCanvas(cv){const r=cv.getBoundingClientRect();const d=Math.min(2,devicePixelRatio||1);cv.width=r.width*d;cv.height=r.height*d;const c=cv.getContext("2d");c.setTransform(d,0,0,d,0,0);return[c,r.width,r.height];}
+function drawInt(prog){
+  const[c,w,h]=setupCanvas($("intChart"));const pad={l:44,r:12,t:12,b:30};const pts=TRACK.slice(1,7);
+  const xs=hh=>pad.l+(hh-6)/(57-6)*(w-pad.l-pad.r);const ys=v=>h-pad.b-(v/130)*(h-pad.t-pad.b);
+  const bands=[[0,39,"rgba(125,211,252,.06)","TD"],[39,74,"rgba(255,180,63,.08)","TS"],[74,96,"rgba(255,122,69,.10)","Cat 1"],[96,111,"rgba(255,74,93,.12)","Cat 2"],[111,130,"rgba(255,59,138,.12)","Cat 3"]];
+  c.font="11px JetBrains Mono, monospace";
+  for(const[a,b,col,l]of bands){c.fillStyle=col;c.fillRect(pad.l,ys(b),w-pad.l-pad.r,ys(a)-ys(b));c.fillStyle="#8fa0ba";c.fillText(l,w-pad.r-40,ys(b)+13);}
+  c.strokeStyle="#1c2b44";c.fillStyle="#90a0ba";for(const v of[0,40,80,120]){c.beginPath();c.moveTo(pad.l,ys(v));c.lineTo(w-pad.r,ys(v));c.stroke();c.fillText(v,8,ys(v)+4);}
+  c.fillText("mph",8,pad.t+2);
+  for(const p of pts){const d=new Date(BASE_UTC+p.h*3600e3);const l=d.toLocaleString("en-US",{timeZone:"America/Chicago",weekday:"short"})+" "+d.toLocaleString("en-US",{timeZone:"America/Chicago",hour:"numeric"}).replace(" AM","a").replace(" PM","p");c.fillText(l,Math.min(xs(p.h)-16,w-pad.r-44),h-10);}
+  // landfall marker
+  const lf=xs(42.5);c.strokeStyle="rgba(70,211,255,.6)";c.setLineDash([4,4]);c.beginPath();c.moveTo(lf,pad.t);c.lineTo(lf,h-pad.b);c.stroke();c.setLineDash([]);c.fillStyle="#46d3ff";c.fillText("near you",lf+4,pad.t+12);
+  // line
+  const n=Math.max(2,Math.ceil(pts.length*prog));const g=c.createLinearGradient(0,ys(110),0,ys(30));g.addColorStop(0,"rgba(255,74,93,.45)");g.addColorStop(1,"rgba(255,74,93,0)");
+  c.beginPath();pts.slice(0,n).forEach((p,i)=>{const x=xs(p.h),y=ys(mph(p.kt));i?c.lineTo(x,y):c.moveTo(x,y);});
+  const last=pts[n-1];c.lineTo(xs(last.h),ys(0));c.lineTo(xs(pts[0].h),ys(0));c.closePath();c.fillStyle=g;c.fill();
+  c.strokeStyle="#ff4a5d";c.lineWidth=2.5;c.beginPath();pts.slice(0,n).forEach((p,i)=>{const x=xs(p.h),y=ys(mph(p.kt));i?c.lineTo(x,y):c.moveTo(x,y);});c.stroke();
+  for(const p of pts.slice(0,n)){c.fillStyle=colFor(mph(p.kt));c.beginPath();c.arc(xs(p.h),ys(mph(p.kt)),4.5,0,7);c.fill();}
+  const pk=pts[2];c.fillStyle="#fff";c.font="600 12px JetBrains Mono, monospace";c.fillText(mph(pk.kt)+" mph",xs(pk.h)-24,ys(mph(pk.kt))-10);
+}
+let ip=reduce?1:0;function animInt(){ip=Math.min(1,ip+0.04);drawInt(ip);if(ip<1)requestAnimationFrame(animInt);}animInt();
+addEventListener("resize",()=>{drawInt(1);drawDist();if(lastDaily)drawGust(lastDaily,1);});
+// count up the headline numbers
+function countUp(el,to,suf,ms=1400){if(reduce){el.textContent=to+suf;return;}const t0=performance.now();(function s(n){const f=Math.min(1,(n-t0)/ms),e=1-Math.pow(1-f,3);el.textContent=Math.round(to*e)+suf;if(f<1)requestAnimationFrame(s);})(t0);}
+countUp($("kWind"),mph(at(NOW_H).kt)," mph");countUp($("kDist"),Math.round(d0)," mi");countUp($("kCpa"),Math.round(cpa.d)," mi",1800);
+updateDial(mph(at(NOW_H).kt));requestAnimationFrame(drawDist);
+// ---- water gauges ----
+const TANKS=[["tSurge",12,6,9,null,"#c46cff","ft"],["tSurf",30,20,25,null,"#46d3ff","ft"],["tRain",16,4,8,15,"#3fa2ff","in"]];
+let tankProg=reduce?1:0,tankT0=null;
+function drawTanks(now){
+  if(tankT0===null)tankT0=now;if(tankProg<1)tankProg=Math.min(1,(now-tankT0)/1800);const e=1-Math.pow(1-tankProg,3);
+  for(const[id,max,lo,hi,loc,col,unit]of TANKS){const cv=$(id);if(!cv.getBoundingClientRect().width)continue;const[c,w,h]=setupCanvas(cv);const pad={t:14,b:22,l:34,r:10};const ys=v=>h-pad.b-v/max*(h-pad.t-pad.b);
+    c.font="10px JetBrains Mono, monospace";c.fillStyle="#90a0ba";c.strokeStyle="#1c2b44";const step=max>=20?5:max>=15?4:2;
+    for(let v=0;v<=max;v+=step){c.beginPath();c.moveTo(pad.l,ys(v));c.lineTo(w-pad.r,ys(v));c.stroke();c.fillText(v+unit,4,ys(v)+3);}
+    if(loc){c.strokeStyle=col;c.setLineDash([3,3]);c.beginPath();c.moveTo(pad.l,ys(loc));c.lineTo(w-pad.r,ys(loc));c.stroke();c.setLineDash([]);c.fillStyle=col;c.fillText("locally "+loc,w-pad.r-62,ys(loc)-3);}
+    // ground/house baseline
+    c.fillStyle="#1c2b44";c.fillRect(pad.l,ys(0),w-pad.l-pad.r,3);
+    const level=lo+(hi-lo)*0.5;const lv=level*e,hv=hi*e,lov=lo*e;
+    // uncertainty band
+    c.fillStyle=col+"22";c.fillRect(pad.l,ys(hv),w-pad.l-pad.r,ys(lov)-ys(hv));
+    // water body with waves
+    const amp=Math.min(6,(h-pad.t-pad.b)*0.03)*(unit==="in"?0.4:1);const ph=reduce?0:now/600;
+    c.beginPath();c.moveTo(pad.l,ys(0));
+    for(let x=pad.l;x<=w-pad.r;x+=3){const y=ys(lv)+Math.sin(x/18+ph)*amp+Math.sin(x/9-ph*1.6)*amp*0.4;c.lineTo(x,y);}
+    c.lineTo(w-pad.r,ys(0));c.closePath();const g=c.createLinearGradient(0,ys(hv),0,ys(0));g.addColorStop(0,col+"cc");g.addColorStop(1,col+"33");c.fillStyle=g;c.fill();
+    c.strokeStyle="#fff";c.lineWidth=1.5;c.globalAlpha=.8;c.beginPath();for(let x=pad.l;x<=w-pad.r;x+=3){const y=ys(lv)+Math.sin(x/18+ph)*amp+Math.sin(x/9-ph*1.6)*amp*0.4;x===pad.l?c.moveTo(x,y):c.lineTo(x,y);}c.stroke();c.globalAlpha=1;
+    // house silhouette for surge/surf
+    if(unit==="ft"){const hx=w-pad.r-34,base=ys(0);c.fillStyle="#e8eef8";c.beginPath();c.moveTo(hx,base);c.lineTo(hx,base-14);c.lineTo(hx+11,base-24);c.lineTo(hx+22,base-14);c.lineTo(hx+22,base);c.closePath();c.fill();c.fillStyle="#060c17";c.fillRect(hx+8,base-9,6,9);c.fillStyle="#90a0ba";c.fillText("1 story",hx-6,base+14);}
+    else{c.fillStyle="#90a0ba";c.fillText("Fri to Sat",w-pad.r-58,h-6);}
+  }
+  if(tankProg<1||!reduce)requestAnimationFrame(drawTanks);
+}
+requestAnimationFrame(drawTanks);
+
+// ---------- timeline (baked from NHC + NWS window text, live text replaces) ----------
+function renderTimeline(win){lastWin=win;
+  const items=[
+    {c:"var(--home)",now:true,b:"Now: finish preparations",w:"Thu Oct 8 · daylight hours",d:"Calm and partly sunny today. NWS says to rush preparations to completion."},
+    {c:"var(--ts)",b:"Surf and rain bands begin",w:"Fri Oct 9 · morning to 1 PM",d:"High Surf Warning from 7 AM. Flood Watch starts 1 PM. Surge window of concern opens Friday morning."},
+    {c:"var(--storm)",b:"Tropical storm winds arrive",w:win.ts||"Midday Friday until early Saturday morning",d:"Be in place before gusts make driving unsafe."},
+    {c:"var(--storm)",b:"Hurricane force winds",w:win.hu||"Early this evening until early Saturday morning",d:"NWS Mobile 10 AM: peak 60 to 80 mph sustained, gusts to 110 mph for the Pensacola zone on the west side of the eye."},
+    {c:"var(--surge)",b:"Landfall and peak surge",w:"Late Fri to early Sat",d:"Forecast center passes about "+Math.round(cpa.d)+" mi from home near "+fmtH(cpa.h).split(", ").slice(1).join(" ").replace(" CDT","")+". Surge 5 to 7 ft possible in surge prone areas. Pensacola high tide 11:06 PM Friday adds to it."},
+    {c:"var(--flood)",b:"Flooding rain",w:"Fri 1 PM to Sat 1 PM",d:"4 to 8 in widely, locally up to 15 in across the Panhandle (NHC advisory 12)."},
+    {c:"var(--ok)",b:"Clearing",w:"Sun Oct 11",d:"Mostly sunny. Surf stays high until Sunday morning."}
+  ];
+  const times=[Date.UTC(2026,9,8,15),Date.UTC(2026,9,9,12),Date.UTC(2026,9,9,19),Date.UTC(2026,9,9,22),Date.UTC(2026,9,10,6),Date.UTC(2026,9,10,18),Date.UTC(2026,9,11,13)];
+  const nowMs=Date.now();
+  $("timeline").innerHTML='<div class="fill" id="tlFill"></div><svg class="here" id="tlHere" viewBox="0 0 18 18"><path d="M3 9h12M10 4l5 5-5 5" fill="none" stroke="#46d3ff" stroke-width="2.5" stroke-linecap="round"/></svg>'+items.map((i,k)=>`<div class="ev${times[k]<=nowMs&&!(k===times.length-1||times[k+1]>nowMs)?" past":""}${times[k]<=nowMs&&(k===times.length-1||times[k+1]>nowMs)?" now":""}" style="--c:${i.c}"><b>${i.b}</b><div class="w">${i.w}</div><div class="note">${i.d}</div></div>`).join("");
+  requestAnimationFrame(()=>{const evs=[...$("timeline").querySelectorAll(".ev")];let k=times.findIndex(t=>t>nowMs);if(k<0)k=times.length;const top=el=>el.offsetTop+12;
+    let y;if(k===0)y=top(evs[0]);else if(k>=times.length)y=top(evs[evs.length-1]);else{const f=(nowMs-times[k-1])/(times[k]-times[k-1]);y=top(evs[k-1])+(top(evs[k])-top(evs[k-1]))*f;}
+    $("tlFill").style.height=Math.max(0,y-6)+"px";$("tlHere").style.top=y+"px";});
+}
+renderTimeline({});
+function renderTicker(list){const items=list||["Hurricane Warning in effect for Escambia Coastal","Storm Surge Warning in effect","Flood Watch Friday 1 PM to Saturday 1 PM","High Surf Warning Friday 7 AM to Sunday 10 AM","NWS Mobile peak wind 60 to 80 mph, gusts to 110","Tropical storm winds Friday afternoon until early Saturday","Surge 6 to 9 ft in surge prone areas, worst east of landfall","Rain 4 to 8 in, locally up to 15 in on the Panhandle","Tornadoes possible east of the track","Isaias now Category 3, 120 mph, 959 mb (10 AM advisory)","Track shifted east: landfall near Navarre, house on the west side of the eye","Winds from the N and NE this afternoon, NNW at closest approach, W overnight","Hurricane force winds reach 35 mi from the center on the NW side","Hurricane Warning Ocean Springs MS to Bay/Gulf County line","NHC surge 5 to 7 ft Dauphin Island to Indian Pass","Hurricane force winds reach 30 mi from the center, TS winds 185 mi","NHC: preparations should be rushed to completion, weather goes downhill quickly today","Next NHC advisories 1 PM and 4 PM CDT"];
+  const html=items.map(t=>`<span>${esc(t)}</span>`).join("");$("ticker").innerHTML=html+html;}
+renderTicker();
+
+// ---------- checklist ----------
+const TASKS=["Check your evacuation zone at myescambia.com/beready","Water: 1 gallon per person per day, 7 days","Fill vehicle tanks and keep cars on high ground","Refill prescriptions and pack a 7 day supply","Charge phones, power banks and laptops","Bring in patio furniture, grills, trash cans, decor","Close or install shutters and storm panels","Photograph the house and contents for insurance","Put documents and IDs in a waterproof bag","Cash in small bills for after the storm","Pet food, carriers and vet records","Fridge and freezer to coldest setting; freeze water jugs","Clear gutters and yard drains","Know where the main breaker and water shutoff are","Flashlights, batteries and a NOAA weather radio","Pick an interior safe room away from windows for tornado warnings","Fill bathtubs and buckets for flushing and washing","Homelab: shut down non essential servers at the first flicker, verify UPS runtime","Park cars away from trees and the street, windows up","Save the contacts on this page to your phone and screenshot the map","Text instead of calling once the storm hits; set phones to low power","Photograph the paper insurance declarations page (limits and hurricane deductible)","Get the ECUA water account number off a paper bill"];
+let done={};try{done=JSON.parse(localStorage.getItem("isaias-prep")||"{}");}catch(e){}
+function renderChecks(){$("checks").innerHTML=TASKS.map((t,i)=>`<label for="ck${i}"><input type="checkbox" id="ck${i}" ${done[i]?"checked":""}><span>${t}</span></label>`).join("");prog();}
+function prog(){const n=TASKS.filter((_,i)=>done[i]).length;$("progTxt").textContent=n+" of "+TASKS.length+" done";$("progBar").style.width=(n/TASKS.length*100)+"%";}
+$("checks").addEventListener("change",e=>{const i=+e.target.id.slice(2);done[i]=e.target.checked;try{localStorage.setItem("isaias-prep",JSON.stringify(done));}catch(err){}prog();});
+renderChecks();
+
+
+
+// ---------- v6: live forecast track from the NHC GIS feed ----------
+const NHC_GIS="https://mapservices.weather.noaa.gov/tropical/rest/services/tropical/NHC_tropical_weather/MapServer";
+let liveAdv="12";
+function fmtTicks(){const t=$("ticks");const lo=NOW_H,hi=57;t.innerHTML=[0,.25,.5,.75,1].map(f=>{const h=lo+(hi-lo)*f;const d=new Date(BASE_UTC+h*3600e3);return"<span>"+d.toLocaleString("en-US",{timeZone:"America/Chicago",weekday:"short"})+" "+d.toLocaleString("en-US",{timeZone:"America/Chicago",hour:"numeric"}).toLowerCase().replace(" ","")+"</span>";}).join("");}
+function applyLiveTrack(feats,adv){
+  const pts=feats.map(f=>{const a=f.attributes;const m=/^(\d\d)\/(\d\d)(\d\d)$/.exec(a.validtime||"");if(!m)return null;
+    let d=Date.UTC(2026,9,+m[1],+m[2],+m[3]);if(d<BASE_UTC-36e5)d=Date.UTC(2026,10,+m[1],+m[2],+m[3]);
+    const h=(d-BASE_UTC)/36e5;const lon=f.geometry?f.geometry.x:a.lon,lat=f.geometry?f.geometry.y:a.lat;
+    return{h,lat,lon,kt:+a.maxwind||0,inland:/inland|post/i.test(a.tcdvlp||"")||lat>30.35};}).filter(Boolean).sort((a,b)=>a.h-b.h);
+  if(pts.length<3)return false;const h0=pts[0].h;
+  const keep=TRACK.filter(p=>p.h<h0-0.01);TRACK.length=0;keep.forEach(p=>TRACK.push(p));pts.forEach(p=>TRACK.push(p));
+  NOW_H=h0;CONE_NM.length=0;pts.forEach((p,i)=>CONE_NM.push([p.h,[12,40,58,76,95,112,130][Math.min(6,i)]]));
+  LANDFALL_H=landfallH();
+  cpa={d:1e9,h:0};for(let h=NOW_H;h<=69;h+=0.25){const p=at(h),d=dist(HOME,p);if(d<cpa.d)cpa={d,h,p};}
+  $("kCpa").textContent=Math.round(cpa.d)+" mi";$("kCpaS").textContent=fmtH(cpa.h).replace(" CDT","")+" · center passes "+(cpa.p.lon<HOME.lon?"west":"east")+" of you";
+  DIST.length=0;for(let h=NOW_H;h<=57;h+=0.5)DIST.push([h,dist(HOME,at(h))]);
+  const sl=$("slider");sl.min=NOW_H;sl.value=NOW_H;fmtTicks();
+  const nowP=at(NOW_H),m=mph(nowP.kt);const d0=dist(HOME,nowP);
+  $("kWind").textContent=m+" mph";$("kWindS").textContent=cat(m)+" · live NHC feed";$("kDist").textContent=Math.round(d0)+" mi";$("kDistS").textContent=bearing(HOME,nowP)+" of our house, closing";
+  trackProg=1;stormPos=nowP;drawBase();setScrub(NOW_H,false);drawInt(1);
+  const when=fmtH(NOW_H).replace(" CDT","");
+  $("trackSrc").textContent="Position, strength and forecast points from NHC advisory "+adv+" ("+when+" CDT), read live from the NHC GIS feed and interpolated between points. Checked again every 15 minutes.";
+  $("intNote").textContent="Peak forecast "+Math.max(...pts.map(p=>mph(p.kt)))+" mph on the live NHC track; "+mph(at(LANDFALL_H).kt)+" mph at the coast near "+fmtH(LANDFALL_H).replace(" CDT","")+", then weakening inland.";
+  $("bannerSub").textContent="Hurricane Isaias, "+m+" mph per NHC advisory "+adv+" ("+when+"). Forecast center passes "+Math.round(cpa.d)+" mi "+(cpa.p.lon<HOME.lon?"west":"east")+" of the house near "+fmtH(cpa.h).replace(" CDT","")+". You are in the core.";
+  renderTimeline(lastWin||{});
+  return true;}
+async function pollNhc(){try{
+  const r=await fetch(NHC_GIS+"/84/query?where=1%3D1&outFields=advisnum,validtime,maxwind,tcdvlp,lat,lon,tau&returnGeometry=true&outSR=4326&f=json");const j=await r.json();
+  const feats=(j.features||[]).filter(f=>f.attributes);if(!feats.length)return;
+  const adv=feats[0].attributes.advisnum||"";const n=parseInt(adv,10);
+  if(n>BAKED_ADV||(n===BAKED_ADV&&/[A-Z]$/.test(adv)&&liveAdv!==adv)){if(liveAdv!==adv&&applyLiveTrack(feats,adv)){liveAdv=adv;BAKED_ADV=n;}}
+  const st=$("nhcStamp");if(st)st.textContent="NHC "+adv+" · checked "+new Date().toLocaleTimeString("en-US",{timeZone:"America/Chicago",hour:"numeric",minute:"2-digit"});
+}catch(e){}}
+pollNhc();setInterval(()=>{if(!lowPower||Math.random()<0.34)pollNhc();},900000);
+
+document.querySelectorAll(".copy").forEach(el=>el.addEventListener("click",()=>{const t=el.textContent.trim();const ok=()=>{el.classList.add("did");setTimeout(()=>el.classList.remove("did"),1200);};
+  try{navigator.clipboard.writeText(t).then(ok).catch(()=>{const r=document.createRange();r.selectNodeContents(el);const sel=getSelection();sel.removeAllRanges();sel.addRange(r);});}catch(e){}}));
+
+// ---------- v7: siren, alarm overlay, wake lock ----------
+let sirenArmed=false,audioCtx=null;const seenSevere=new Set();
+function beep(){if(!audioCtx)return;const t0=audioCtx.currentTime;for(let i=0;i<6;i++){const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type="square";o.frequency.value=i%2?620:880;g.gain.setValueAtTime(0.0001,t0+i*.45);g.gain.exponentialRampToValueAtTime(0.5,t0+i*.45+.03);g.gain.exponentialRampToValueAtTime(0.0001,t0+i*.45+.4);o.connect(g).connect(audioCtx.destination);o.start(t0+i*.45);o.stop(t0+i*.45+.42);}}
+$("sirenBtn").onclick=()=>{sirenArmed=!sirenArmed;if(sirenArmed){try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();audioCtx.resume();beep();}catch(e){}}$("sirenBtn").setAttribute("aria-pressed",sirenArmed?"true":"false");$("sirenBtn").lastChild.textContent=sirenArmed?"Siren armed":"Arm siren";};
+function showAlarm(ev,txt,until){const d=document.createElement("div");d.className="alarm";d.setAttribute("role","alertdialog");d.innerHTML=`<div><div class="lbl" style="color:#ffd9de">NWS · Escambia County</div><h2>${esc(ev)}</h2><p>${esc(txt)}</p><p class="mono">${until?"Until "+esc(until):""}</p><p><b>Interior room, lowest floor, now.</b> Helmets on, away from windows.</p><button class="btn" type="button">I am in the safe room</button></div>`;d.querySelector("button").onclick=()=>d.remove();document.body.appendChild(d);
+  try{navigator.vibrate&&navigator.vibrate([600,200,600,200,600,200,1200]);}catch(e){}if(sirenArmed)beep();}
+function alarmCheck(list){for(const a of list){if(!/Tornado Warning|Extreme Wind Warning|Flash Flood Emergency/i.test(a.name))continue;const key=a.name+"|"+(a.start||"");if(seenSevere.has(key))continue;seenSevere.add(key);showAlarm(a.name,a.headline||"",a.until||"");}}
+let wakeLock=null;
+async function wake(on){try{if(on){wakeLock=await navigator.wakeLock.request("screen");wakeLock.addEventListener("release",()=>{$("wakeBtn").setAttribute("aria-pressed","false");$("wakeBtn").lastChild.textContent="Screen on";});$("wakeBtn").setAttribute("aria-pressed","true");$("wakeBtn").lastChild.textContent="Screen stays on";}else if(wakeLock){await wakeLock.release();wakeLock=null;}}catch(e){$("wakeBtn").lastChild.textContent="Screen lock refused";}}
+$("wakeBtn").onclick=()=>wake($("wakeBtn").getAttribute("aria-pressed")!=="true");
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&$("wakeBtn").getAttribute("aria-pressed")==="true"&&!wakeLock)wake(true);});
+
+// ---------- v7: Pensacola airport station KPNS, 1.5 mi from the house ----------
+const DIRS16=["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
+let pHist=[];
+async function kpnsObs(){try{
+  const r=await fetch("https://api.weather.gov/stations/KPNS/observations?limit=60",{headers:{"Accept":"application/geo+json"}});const j=await r.json();
+  const obs=(j.features||[]).map(f=>f.properties).filter(o=>o&&o.timestamp);if(!obs.length)return false;
+  const v=(o,k)=>o&&o[k]&&o[k].value!=null?o[k].value:null;const o=obs[0];
+  const mphv=k=>{const x=v(o,k);return x==null?null:Math.round(x*0.621371);};const F=c=>c==null?null:Math.round(c*9/5+32);
+  const ws=mphv("windSpeed"),wg=mphv("windGust"),wd=v(o,"windDirection"),bp=v(o,"barometricPressure"),t=F(v(o,"temperature")),dp=F(v(o,"dewpoint")),rh=v(o,"relativeHumidity"),vis=v(o,"visibility");
+  const dir=wd==null?"":DIRS16[Math.round(wd/22.5)%16];
+  pHist=obs.filter(x=>v(x,"barometricPressure")!=null).map(x=>[Date.parse(x.timestamp),v(x,"barometricPressure")/100]).sort((a,b)=>a[0]-b[0]);
+  const when=new Date(o.timestamp).toLocaleTimeString("en-US",{timeZone:"America/Chicago",hour:"numeric",minute:"2-digit"});
+  renderNow({currentConditions:{temperature:t==null?"--":t+"°F",phrase:(o.textDescription||"")+" · KPNS Pensacola airport",realFeel:(F(v(o,"heatIndex"))||t||"--")+(t==null?"":"°F"),now:"observed "+when+" CDT",
+    extended:{wind:(dir?dir+" ":"")+(ws==null?"--":ws+" mph"),gusts:wg==null?"none reported":wg+" mph",pressure:bp==null?"--":(bp/3386.39).toFixed(2)+" in · "+Math.round(bp/100)+" mb",humidity:rh==null?"--":Math.round(rh)+"%",dewPoint:dp==null?"--":dp+"°F",visibility:vis==null?"--":(vis/1609.34).toFixed(1)+" mi"}}});
+  drawPressure();return true;}catch(e){return false;}}
+function drawPressure(){if(pHist.length<3)return;let box=$("pBox");if(!box){box=document.createElement("div");box.className="pbox";box.id="pBox";box.innerHTML='<div class="lbl"><span>Barometer · KPNS, last '+Math.round((pHist[pHist.length-1][0]-pHist[0][0])/36e5)+' h</span><span id="pTrend"></span></div><canvas id="pChart" aria-label="Pressure trend"></canvas>';$("nowBox").appendChild(box);}
+  const cv=$("pChart");if(!cv.getBoundingClientRect().width)return;const[c,w,h]=setupCanvas(cv);const pad={l:44,r:12,t:12,b:22};
+  const ys_=pHist.map(p=>p[1]);let lo=Math.floor(Math.min(...ys_)-1),hi=Math.ceil(Math.max(...ys_)+1);if(hi-lo<6){const m=(hi+lo)/2;lo=m-3;hi=m+3;}
+  const t0=pHist[0][0],t1=pHist[pHist.length-1][0];const xs=t=>pad.l+(t-t0)/Math.max(1,(t1-t0))*(w-pad.l-pad.r);const ys=v=>h-pad.b-(v-lo)/(hi-lo)*(h-pad.t-pad.b);
+  c.font="10px JetBrains Mono, monospace";c.strokeStyle="#1c2b44";c.fillStyle="#90a0ba";
+  for(let v=Math.ceil(lo);v<=hi;v+=(hi-lo>12?4:2)){c.beginPath();c.moveTo(pad.l,ys(v));c.lineTo(w-pad.r,ys(v));c.stroke();c.fillText(v+"mb",4,ys(v)+3);}
+  const g=c.createLinearGradient(0,pad.t,0,h-pad.b);g.addColorStop(0,"rgba(255,74,93,.35)");g.addColorStop(1,"rgba(255,74,93,0)");
+  c.beginPath();pHist.forEach(([t,v],i)=>i?c.lineTo(xs(t),ys(v)):c.moveTo(xs(t),ys(v)));c.lineTo(xs(t1),h-pad.b);c.lineTo(xs(t0),h-pad.b);c.closePath();c.fillStyle=g;c.fill();
+  c.beginPath();pHist.forEach(([t,v],i)=>i?c.lineTo(xs(t),ys(v)):c.moveTo(xs(t),ys(v)));c.strokeStyle="#ff4a5d";c.lineWidth=2;c.stroke();
+  const[lt,lv]=pHist[pHist.length-1];c.fillStyle="#fff";c.beginPath();c.arc(xs(lt),ys(lv),4,0,7);c.fill();c.fillStyle="#e8eef8";c.font="600 11px JetBrains Mono, monospace";c.fillText(lv.toFixed(1),Math.min(xs(lt)+6,w-44),ys(lv)-6);
+  for(const f of[0,.5,1]){const t=t0+(t1-t0)*f;c.fillStyle="#90a0ba";c.font="10px JetBrains Mono, monospace";c.fillText(new Date(t).toLocaleTimeString("en-US",{timeZone:"America/Chicago",hour:"numeric",minute:"2-digit"}),Math.min(xs(t),w-52),h-6);}
+  const span=(t1-t0)/36e5;const rate=span>0.5?((lv-pHist[0][1])/span):0;const tr=$("pTrend");tr.textContent=(rate<=-0.05?"▼ ":rate>=0.05?"▲ ":"→ ")+Math.abs(rate).toFixed(1)+" mb/h";tr.className=rate<=-0.05?"trend-down":rate>=0.05?"trend-up":"";}
+addEventListener("resize",()=>drawPressure());
+
+// ---------- v5: battery saver ----------
+function setLow(on){lowPower=on;reduce=on||matchMedia("(prefers-reduced-motion: reduce)").matches;document.documentElement.classList.toggle("lowpower",on);const b=$("lowBtn");b.setAttribute("aria-pressed",on?"true":"false");b.lastChild.textContent=on?"Saver on":"Battery saver";try{localStorage.setItem("isaias-lowpower",on?"1":"0");}catch(e){}if(!on){xF.clearRect(0,0,W,H);requestAnimationFrame(drawTanks);}}
+$("lowBtn").onclick=()=>setLow(!lowPower);if(lowPower)setLow(true);
+
+// ---------- v5: phase guidance ----------
+const PHASES=[
+  {k:"prep",n:"Preparation window",t:Date.UTC(2026,9,8,15),w:"Thu to Fri 1 PM",c:"var(--ok)",items:[
+    ["Finish outside work by mid morning","Shutters, loose items, gutters, cars moved. NHC says the weather goes downhill quickly today; gusts make ladders and driving unsafe by late morning."],
+    ["Charge everything tonight","Phones, power banks, laptops, radios, rechargeable lights. Top up again Friday morning."],
+    ["Water and food","Fill bathtubs for flushing, freeze jugs to keep the freezer cold, set the fridge to coldest."],
+    ["Homelab and UPS","Decide now which servers get a clean shutdown at the first flicker. Confirm UPS runtime and that the router is on it."],
+    ["Sleep tonight","Friday night will be long. Rest while it is calm."],
+    ["Fuel and cash","Last fuel run Friday morning. Small bills; card readers die with the power."]]},
+  {k:"ts",n:"Tropical storm winds",t:Date.UTC(2026,9,9,16),w:"Fri 11 AM to 6 PM",c:"var(--ts)",items:[
+    ["Stay in from now on","Driving stops. Everyone, pets included, inside with the safe room ready."],
+    ["Expect the power to go","Shut down servers cleanly while you still choose the moment. Unplug what you want to protect from surges."],
+    ["Windows and doors","Stay out of rooms with large windows. Brace the garage door if you can."],
+    ["Tornado watch likely","Alerts on loud. A warning means the interior room immediately, shoes on, helmets or pillows over heads."],
+    ["Keep the fridge shut","Four hours for the fridge, 48 hours for a full freezer if the door stays closed."],
+    ["Battery saver on this page","Tap Battery saver up top once you are on phone power."]]},
+  {k:"hu",n:"Hurricane conditions",t:Date.UTC(2026,9,9,23),w:"Fri 6 PM to Sat 5 AM",c:"var(--storm)",items:[
+    ["Interior room, lowest floor","Hallway, closet or bathroom with no windows. Mattress or cushions within reach."],
+    ["Do not go out in the lull","The eye is about 25 nm wide and may pass near you. Winds return from the opposite direction within minutes."],
+    ["No generator indoors or in the garage","Carbon monoxide kills in minutes. 20 ft from the house, away from windows."],
+    ["Listen for tornado warnings","Rain bands east of the center spin up tornadoes fast. NOAA radio 162.400 MHz if cell is down."],
+    ["If you smell gas, leave","Get out, then call. Do not flip switches."],
+    ["Text, do not call","Texts get through when voice will not. One check in to family, then save battery."]]},
+  {k:"ease",n:"Winds easing",t:Date.UTC(2026,9,10,10),w:"Sat 5 AM to noon",c:"var(--ts)",items:[
+    ["Stay inside until the all clear","Tropical storm gusts continue Saturday morning. Trees and lines come down after the peak."],
+    ["Report the outage","FPL 1-800-468-8243 or fplmaps.com/northwest. Every report speeds routing."],
+    ["Look, do not touch","Downed lines are live until proven otherwise. Standing water hides them."],
+    ["Check on neighbors by text","Especially anyone alone or on medical equipment."],
+    ["Document as light allows","Photos of any damage before moving anything, for insurance."],
+    ["Water and sewer","Watch for an ECUA boil water notice. Flush with tub water if pressure drops."]]},
+  {k:"after",n:"After the storm",t:Date.UTC(2026,9,10,17),w:"Sat noon onward",c:"var(--ok)",items:[
+    ["Wait for Escambia's all clear","Curfews and road closures are common the first night. Bridges reopen after inspection."],
+    ["Generator rules","Outdoors, 20 ft away, dry, never backfed into the house wiring."],
+    ["Food safety","Fridge food above 40°F for more than 4 hours goes out. Refreeze only if ice crystals remain."],
+    ["Mind chainsaws and roofs","Most post storm injuries are falls and cuts. Daylight only, with a spotter."],
+    ["Insurance and FEMA","Photos, receipts, a written list. File fast; queues grow by the hour."],
+    ["Bring the fleet back slowly","Power quality is poor the first day. Let the UPS settle before restarting servers."]]}
+];
+function renderPhase(){const now=Date.now();let k=PHASES.findIndex((p,i)=>i===PHASES.length-1||PHASES[i+1].t>now);if(k<0)k=0;const cur=PHASES[k],nx=PHASES[k+1];
+  $("phName").textContent=cur.n;$("phName").style.color=cur.c;
+  $("phNext").textContent=nx?"Next: "+nx.n.toLowerCase()+" in "+(()=>{const ms=nx.t-now;const h=Math.floor(ms/3600e3),m=Math.floor(ms%3600e3/60e3);return h>0?h+"h "+String(m).padStart(2,"0")+"m":m+"m";})():"Storm has passed";
+  $("phases").innerHTML=PHASES.map((p,i)=>`<div class="ph ${i<k?"past":i===k?"now":""}"><b>${esc(p.n)}</b><span>${esc(p.w)}</span></div>`).join("");
+  $("dolist").innerHTML=cur.items.map(([b,d])=>`<div style="--c:${cur.c}"><b>${esc(b)}</b>${esc(d)}</div>`).join("");}
+renderPhase();setInterval(renderPhase,60000);
+
+// ---------- v5: satellite ----------
+(function(){const im=$("satImg");const urls=["https://cdn.star.nesdis.noaa.gov/GOES19/ABI/SECTOR/gm/GEOCOLOR/latest.jpg","https://cdn.star.nesdis.noaa.gov/GOES16/ABI/SECTOR/gm/GEOCOLOR/latest.jpg"];let i=0;
+  function load(){im.src=urls[i]+"?t="+Math.floor(Date.now()/600000);}
+  im.onerror=()=>{i++;if(i<urls.length)load();else{$("hSat").parentElement.hidden=true;}};
+  im.onload=()=>{$("satCap").textContent="GOES East GeoColor · NOAA STAR · loaded "+new Date().toLocaleTimeString("en-US",{timeZone:"America/Chicago",hour:"numeric",minute:"2-digit"})+" CDT";};
+  load();setInterval(()=>{if(!lowPower)load();},600000);})();
+
+// ---------- v5: house map (Leaflet) ----------
+(function(){
+  const box=$("hmap"),stat=$("mapStat");
+  function fail(msg){stat.textContent=msg;}
+  function boot(){
+    if(!window.L){fail("map library blocked, see links below");return;}
+    const map=L.map(box,{zoomControl:true,attributionControl:true,scrollWheelZoom:false}).setView([HOME.lat,HOME.lon],15);
+    const BASES={
+      sat:()=>L.layerGroup([L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"Esri World Imagery"}),L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,opacity:.9})]),
+      dark:()=>L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",{maxZoom:16,attribution:"Esri Dark Gray"}),
+      topo:()=>L.tileLayer("https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/tile/{z}/{y}/{x}",{maxZoom:16,attribution:"USGS The National Map"})};
+    const ORDER=["sat","dark","topo"];let base=null,baseKey=null,tileOk=false,blockedShown=false;
+    function firstTile(ly){return ly.getLayers?ly.getLayers()[0]:ly;}
+    function setBase(k,auto){if(base)map.removeLayer(base);baseKey=k;base=BASES[k]();tileOk=false;base.addTo(map);
+      document.querySelectorAll("[data-base]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.base===k?"true":"false"));
+      const t=firstTile(base);t.on("tileload",()=>{tileOk=true;});
+      t.on("tileerror",()=>{if(tileOk||blockedShown)return;const i=ORDER.indexOf(baseKey);if(auto!==false&&i<ORDER.length-1){setBase(ORDER[i+1],true);return;}
+        blockedShown=true;box.innerHTML='<div class="state" style="position:absolute;inset:16px;display:grid;align-content:center;gap:10px;text-align:center"><b style="font-family:var(--f-display);font-size:1.4rem">The live map cannot load in this viewer.</b><span>Map tiles, radar and flood layers are blocked here. This shared page is a snapshot. For the live map, open hurricanes.gov for the official cone and radar.weather.gov for Mobile radar.</span><span class="lbl">Elevation 79 ft · outside zones A to E · FEMA zone X</span></div>';});}
+    document.querySelectorAll("[data-base]").forEach(b=>b.onclick=()=>setBase(b.dataset.base,false));
+    setBase("sat",true);
+    $("goHouse").onclick=()=>{map.flyTo([HOME.lat,HOME.lon],16,{duration:1.2});};
+    $("goStorm").onclick=()=>{const p=at(scrubH);map.flyTo([(p.lat+HOME.lat)/2,(p.lon+HOME.lon)/2],6,{duration:1.4});};
+    map.on("zoomend",()=>{const z=map.getZoom();$("goHouse").setAttribute("aria-pressed",z>=12?"true":"false");$("goStorm").setAttribute("aria-pressed",z<=8?"true":"false");});
+    const home=L.marker([HOME.lat,HOME.lon],{icon:L.divIcon({className:"",html:'<div class="homepin"><i></i><i></i><b></b></div>',iconSize:[26,26],iconAnchor:[13,13]}),zIndexOffset:1000}).addTo(map)
+      .bindPopup("<b>our housecle</b><br>Elevation 79 ft · outside evacuation zones A to E");
+    const sh=[["Pensacola Bay Center",30.416712,-87.210727,"General population shelter, pet friendly · 201 E Gregory St"],["Wedgewood Community Center",30.492091,-87.270055,"Special needs shelter · 6405 Wagner Rd"]];
+    for(const[n,la,lo,d]of sh)L.marker([la,lo],{icon:L.divIcon({className:"",html:'<div class="shpin"></div>',iconSize:[14,14],iconAnchor:[7,7]})}).addTo(map).bindPopup("<b>"+n+"</b><br>"+d);
+    const radar=L.tileLayer.wms("https://opengeo.ncep.noaa.gov/geoserver/conus/conus_bref_qcd/ows",{layers:"conus_bref_qcd",format:"image/png",transparent:true,opacity:.72,attribution:"NWS radar"});
+    const fema=L.tileLayer.wms("https://hazards.fema.gov/arcgis/services/public/NFHL/MapServer/WMSServer",{layers:"28",format:"image/png",transparent:true,opacity:.5,attribution:"FEMA NFHL"});
+    const NHC="https://mapservices.weather.noaa.gov/tropical/rest/services/tropical/NHC_tropical_weather/MapServer";
+    let surge=null,nhc=null,evac=null;
+    if(L.esri){
+      surge=L.esri.dynamicMapLayer({url:NHC,layers:[100],opacity:.75,f:"image",attribution:"NHC inundation"});
+      nhc=L.esri.dynamicMapLayer({url:NHC,layers:[87,86,85,84,95],opacity:.8,f:"image",attribution:"NHC"});
+      evac=L.esri.featureLayer({url:"https://services1.arcgis.com/CY1LXxl9zlJeBuRZ/ArcGIS/rest/services/Evacuation_Zones/FeatureServer/0",where:"County_Nam='ESCAMBIA' OR County_Nam='SANTA ROSA'",
+        style:f=>({color:{A:"#ff4a5d",B:"#ff7a45",C:"#ffb43f",D:"#ffd34d",E:"#56d39b"}[f.properties.EZone]||"#90a0ba",weight:1,fillOpacity:.22})});
+      evac.bindPopup(l=>"<b>Evacuation Zone "+l.feature.properties.EZone+"</b><br>"+l.feature.properties.County_Nam);
+    }
+    const pairs=[["lyRadar",radar],["lySurge",surge],["lyNhc",nhc],["lyFema",fema],["lyEvac",evac]];
+    for(const[id,ly]of pairs){const cb=$(id);if(!ly){cb.disabled=true;cb.checked=false;cb.parentElement.style.opacity=.45;continue;}
+      const sync=()=>{const want=cb.checked&&!(id==="lyNhc"&&map.getZoom()>9);if(want){if(!map.hasLayer(ly))ly.addTo(map);}else if(map.hasLayer(ly))map.removeLayer(ly);};cb.onchange=sync;sync();if(id==="lyNhc")map.on("zoomend",sync);}
+    if(innerWidth>700)home.openPopup();
+    setInterval(()=>{if(lowPower||!map.hasLayer(radar))return;radar.setParams({_t:Date.now()});},300000);
+    // live advisory number from the NHC cone layer
+    fetch(NHC+"/86/query?where=1%3D1&outFields=stormname,advisnum,advdate&returnGeometry=false&f=json").then(r=>r.json()).then(j=>{const a=j.features&&j.features[0]&&j.features[0].attributes;if(!a){fail("NHC GIS: no active cone");return;}
+      const n=parseInt(a.advisnum,10);stat.textContent="NHC advisory "+a.advisnum+(a.advdate?" · "+String(a.advdate).replace(/(\d{1,2})(\d{2}) ([AP]M) CDT \w{3} (\w{3} \d+) \d{4}/,"$1:$2 $3 $4"):"");
+      if(n>BAKED_ADV){stat.style.color="var(--ts)";}}).catch(()=>fail("NHC GIS status unavailable"));
+    // FEMA zone at the lot
+    fetch("https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28/query?geometry="+HOME.lon+","+HOME.lat+"&geometryType=esriGeometryPoint&inSR=4326&outFields=FLD_ZONE,ZONE_SUBTY,SFHA_TF&returnGeometry=false&f=json").then(r=>r.json()).then(j=>{const f=$("femaFact");const a=j.features&&j.features[0]&&j.features[0].attributes;
+      if(!a){f.className="fact";f.querySelector("b").textContent="FEMA zone: not mapped";f.querySelector("span").textContent="No NFHL polygon returned for this point. Look it up at msc.fema.gov.";return;}
+      const hi=a.SFHA_TF==="T";f.className="fact "+(hi?"warn":"ok");f.querySelector("b").textContent="FEMA zone "+a.FLD_ZONE+(a.ZONE_SUBTY?" · "+a.ZONE_SUBTY:"");f.querySelector("span").textContent=hi?"Special Flood Hazard Area: 1% annual chance flood. Expect water in heavy rain bands.":"Outside the 1% annual chance floodplain. Localized street ponding is still possible with 4 to 8 in of rain.";}).catch(()=>{});
+    setTimeout(()=>map.invalidateSize(),400);
+  }
+  function addScript(src,cb){const sc=document.createElement("script");sc.src=src;sc.onload=cb;sc.onerror=()=>fail("map library blocked, see links below");document.head.appendChild(sc);}
+  addScript("https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js",()=>addScript("https://unpkg.com/esri-leaflet@3.0.12/dist/esri-leaflet.js",boot));
+})();
+
+// ---------- v5: NWS alerts straight from api.weather.gov when AccuWeather is not available ----------
+let nwsMode=false;
+async function nwsFallback(){
+  try{const r=await fetch("https://api.weather.gov/alerts/active?point="+HOME.lat.toFixed(2)+","+HOME.lon.toFixed(2),{headers:{"Accept":"application/geo+json"}});const j=await r.json();
+    const list=(j.features||[]).map(f=>{const p=f.properties||{};return{name:p.event||"Alert",affectedAreas:[{text:(p.headline?p.headline+"\n\n":"")+(p.description||"")+(p.instruction?"\n\nINSTRUCTIONS: "+p.instruction:""),startDateTimeEpoch:Date.parse(p.onset||p.effective||p.sent)||Date.now(),endDateTimeEpoch:Date.parse(p.ends||p.expires)||Date.now()}]};});
+    nwsMode=true;renderAlerts(list);setLive("on","NWS live · "+new Date().toLocaleTimeString("en-US",{timeZone:"America/Chicago",hour:"numeric",minute:"2-digit"})+" CDT");
+    alarmCheck((j.features||[]).map(f=>{const p=f.properties||{};return{name:p.event||"",headline:p.headline||"",start:p.onset||p.effective||p.sent,until:p.ends||p.expires?new Date(p.ends||p.expires).toLocaleTimeString("en-US",{timeZone:"America/Chicago",hour:"numeric",minute:"2-digit"})+" CDT":""};}));
+    if(!(await kpnsObs()))$("nowBox").innerHTML='<div class="state"><b>Pensacola airport station is not answering.</b> Alerts and threat levels are live from the National Weather Service; conditions retry on the next refresh.</div>';
+    $("days").innerHTML='<div class="state" style="grid-column:1/-1">Five day gusts need AccuWeather. The NHC and NWS data above does not.</div>';
+    return true;}catch(e){return false;}
+}
+
+// ---------- LIVE: AccuWeather via mcp ----------
+const SRV="AccuWeather",LOC="328165";
+const live={cur:null,daily:null,alerts:null};let mcpRef=null;
+function setLive(state,txt){$("liveDot").className="dot "+(state==="on"?"on":state==="bad"?"bad":"");$("liveTxt").textContent=txt;}
+function errCopy(e){const c=e&&e.code;
+  if(c==="server_not_connected"||c==="selection_required")return"Add or choose the AccuWeather connector in claude.ai Settings, Connectors, then reload.";
+  if(c==="needs_reauth")return"Reconnect AccuWeather in claude.ai Settings, Connectors.";
+  if(c==="not_in_manifest"||c==="approval_required")return"AccuWeather is not allowed for this page yet. Use Refresh to allow it.";
+  if(c==="blocked_by_policy")return"Your organization blocks this AccuWeather tool.";
+  if(c==="server_unavailable"||c==="upstream_error")return"AccuWeather did not answer. Showing the last good data; it retries on the next refresh.";
+  if(c==="tool_error")return"AccuWeather reported a problem: "+(e.message||"");
+  return"Live data unavailable in this view. NHC storm data above is still current as of the advisory named on the map.";}
+const ALCOL=n=>/Hurricane Warning/i.test(n)?"var(--storm)":/Surge/i.test(n)?"var(--surge)":/Flood/i.test(n)?"var(--flood)":/Tropical Storm|Surf|Rip/i.test(n)?"var(--ts)":"var(--muted)";
+const fmtEp=ms=>new Date(ms).toLocaleString("en-US",{timeZone:"America/Chicago",weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});
+
+function renderAlerts(list){
+  try{alarmCheck(list.map(a=>{const ar=(a.affectedAreas&&a.affectedAreas[0])||{};return{name:a.name||"",headline:(ar.text||"").split("\n")[0],start:ar.startDateTimeEpoch,until:ar.endDateTimeEpoch?fmtEp(ar.endDateTimeEpoch):""};}));}catch(e){}
+  if(!list.length){$("alerts").innerHTML='<div class="state"><b>No active alerts.</b> NWS has nothing in effect for Escambia County right now.</div>';return;}
+  $("alerts").innerHTML=list.map(a=>{const ar=(a.affectedAreas&&a.affectedAreas[0])||{};return `<details class="al" style="--c:${ALCOL(a.name)}"><summary><b>${esc(a.name)}</b><span>${ar.startDateTimeEpoch?fmtEp(ar.startDateTimeEpoch)+" to "+fmtEp(ar.endDateTimeEpoch):""}</span></summary><pre>${esc(ar.text||"")}</pre></details>`;}).join("");
+  const tk=[];for(const a of list){const ar=a.affectedAreas&&a.affectedAreas[0];if(!ar)continue;tk.push(a.name+" · "+fmtEp(ar.startDateTimeEpoch)+" to "+fmtEp(ar.endDateTimeEpoch));}
+  const hwt=(list.find(a=>/Hurricane Warning/.test(a.name))||{}).affectedAreas;const t2=hwt&&hwt[0]?hwt[0].text:"";
+  for(const rx of[/Peak Wind Forecast:\s*([^\n]+)/,/Peak Storm Surge Inundation:\s*([\s\S]*?)\n\s*-/,/Peak Rainfall Amounts:\s*([^\n]+)/]){const m=rx.exec(t2);if(m)tk.push(m[1].replace(/\s+/g," ").trim());}
+  if(tk.length)renderTicker(tk);
+  $("chips").innerHTML=list.filter(a=>!/Statement/.test(a.name)).map(a=>{const n=a.name;const cl=/Hurricane/.test(n)?"c-hu":/Surge/.test(n)?"c-ss":/Flood/.test(n)?"c-fl":"c-ts";return`<span class="chip ${cl}">${esc(n)}</span>`;}).join("");
+  // threat levels from the hurricane warning text
+  const hw=list.find(a=>/Hurricane Warning|Tropical Storm Warning|Hurricane Watch/.test(a.name));
+  const txt=hw&&hw.affectedAreas&&hw.affectedAreas[0]?hw.affectedAreas[0].text:"";
+  renderThreats(txt);
+  const win={};const m1=/Window for Tropical Storm force winds:\s*([\s\S]*?)\n\s*-/.exec(txt);if(m1)win.ts=m1[1].replace(/\s+/g," ").trim();
+  const m2=/Window for Hurricane force winds:\s*([\s\S]*?)\n\s*\n/.exec(txt);if(m2)win.hu=m2[1].replace(/\s+/g," ").trim();
+  renderTimeline(win);
+  // NWS statement storm info, if newer numbers are there
+  const tcs=list.find(a=>/Tropical Cyclone Statement/.test(a.name));
+  if(tcs){const t=tcs.affectedAreas[0].text;const mi=/Storm Intensity (\d+) mph/.exec(t);const loc=/About ([^\n]+?) of Pensacola FL/.exec(t.replace(/\n\s*/g," "));
+    if(mi||loc)$("srcLine").textContent=$("srcLine").textContent.split(" NWS Mobile statement:")[0]+" NWS Mobile statement: "+(mi?mi[1]+" mph":"")+(loc?", about "+loc[1]+" of Pensacola":"")+" (may lag the NHC advisory).";}
+}
+const LV={none:0,limited:1,elevated:2,significant:3,extensive:4,devastating:5,catastrophic:5};
+const LVC=["#2a3a55","#56d39b","#ffd34d","#ffb43f","#ff4a5d","#ff3b8a"];
+function renderThreats(txt){
+  if(!txt){$("threats").innerHTML='<div class="state"><b>No hurricane local statement in effect.</b></div>';return;}
+  const parts=[["Wind","* WIND","var(--storm)",'<path d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h8"/>'],["Storm surge","* STORM SURGE","var(--surge)",'<path d="M2 16c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 11c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/>'],["Flooding rain","* FLOODING RAIN","var(--flood)",'<path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/>'],["Tornado","* TORNADO","var(--ts)",'<path d="M3 5h18M5 9h14M8 13h9M10 17h5M12 21h1"/>']];
+  const secs=txt.split(/\n(?=\* )/);
+  $("threats").innerHTML=parts.map(([name,key,col,ico])=>{const s=secs.find(x=>x.startsWith(key))||"";const m=/POTENTIAL IMPACTS:\s*(\w+)/.exec(s);const lvl=m?m[1]:"Unknown";const n=LV[lvl.toLowerCase()]??0;
+    const fc=/LATEST LOCAL FORECAST:\s*([^\n]*)/.exec(s);const pk=/Peak[^:]*:\s*([\s\S]*?)(?:\n\s*-|\n\n)/.exec(s);
+    const desc=((fc&&fc[1].trim())||"")+(pk?" · "+pk[1].replace(/\s+/g," ").trim():"");
+    return `<div class="threat"><div class="t" style="color:${col}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${ico}</svg>${name}</div><div class="meter">${[1,2,3,4,5].map(i=>`<span style="${i<=n?`background:${LVC[n]};box-shadow:0 0 10px ${LVC[n]}88;transition-delay:${i*90}ms`:""}"></span>`).join("")}</div><div class="lvl" style="color:${LVC[n]}">${esc(lvl)}</div><div class="d">${esc(desc||"See alert text")}</div></div>`;}).join("");
+}
+function renderNow(p){
+  const cc=p.currentConditions||{},ex=cc.extended||{};const wind=ex.wind||"";const dir=(wind.split(" ")[0]||"N");
+  const dirs=["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];const deg=Math.max(0,dirs.indexOf(dir))*22.5;
+  $("nowBox").innerHTML=`<div class="nowrow"><div><div class="temp mono">${esc(cc.temperature||"--")}</div><div>${esc(cc.phrase||"")}</div><div class="note">Feels ${esc(cc.realFeel||"--")} · ${esc(cc.now||"")}</div></div>
+  <svg class="anemo" viewBox="0 0 96 96" aria-label="Wind speed ${esc(wind)}" style="--spd:${(Math.max(0.25,Math.min(6,30/Math.max(2,gnum(wind.replace(/^\D+/,""))*1.2)))).toFixed(2)}s"><rect x="45" y="44" width="6" height="40" rx="3" fill="#2f4a72"/><rect x="30" y="82" width="36" height="6" rx="3" fill="#2f4a72"/><g class="cups"><circle cx="48" cy="44" r="4" fill="#90a0ba"/><g stroke="#90a0ba" stroke-width="2.5"><line x1="48" y1="44" x2="48" y2="16"/><line x1="48" y1="44" x2="72" y2="58"/><line x1="48" y1="44" x2="24" y2="58"/></g><path d="M38 16a10 10 0 0 1 20 0z" fill="#46d3ff"/><path d="M72 58a10 10 0 0 1 -10 17 l10 -17z" fill="#46d3ff" transform="rotate(-60 72 58)"/><path d="M24 58a10 10 0 0 0 10 17 l-10 -17z" fill="#46d3ff" transform="rotate(60 24 58)"/></g></svg>
+  <svg class="compass" viewBox="0 0 100 100" aria-label="Wind from ${esc(dir)}"><circle cx="50" cy="50" r="44" fill="none" stroke="#1c2b44" stroke-width="3"/>${["N","E","S","W"].map((l,i)=>`<text x="${50+36*Math.sin(i*Math.PI/2)}" y="${54-36*Math.cos(i*Math.PI/2)}" fill="#90a0ba" font-size="11" text-anchor="middle" font-family="JetBrains Mono">${l}</text>`).join("")}<g style="transform-origin:50px 50px;transform:rotate(${deg}deg);transition:transform 1s"><path d="M50 14 L57 52 L50 46 L43 52Z" fill="#46d3ff"/></g><text x="50" y="72" fill="#e8eef8" font-size="11" text-anchor="middle" font-family="JetBrains Mono">${esc(wind)}</text></svg></div>
+  <div class="stats">${[["Gusts",ex.gusts],["Pressure",ex.pressure],["Humidity",ex.humidity],["Dew point",ex.dewPoint],["Rain 24h",ex.precipSummary&&ex.precipSummary.past24Hours],["Visibility",ex.visibility]].map(([k,v])=>`<div class="stat"><div class="k">${k}</div><div class="vv">${esc(v||"--")}</div></div>`).join("")}</div>`;
+}
+const gnum=s=>parseInt(String(s||"0"),10)||0;
+function drawGust(daily,prog){
+  const halves=[];daily.slice(0,5).forEach(d=>{halves.push({l:d.dayOfWeek+" day",g:gnum(d.day.extended.gusts),w:gnum(d.day.extended.wind.replace(/^\D+/,""))});halves.push({l:d.dayOfWeek+" night",g:gnum(d.night.extended.gusts),w:gnum(d.night.extended.wind.replace(/^\D+/,""))});});
+  const[c,w,h]=setupCanvas($("gustChart"));const pad={l:40,r:10,t:16,b:34};const max=Math.max(80,...halves.map(x=>x.g))*1.1;
+  const bw=(w-pad.l-pad.r)/halves.length;const ys=v=>h-pad.b-v/max*(h-pad.t-pad.b);
+  c.font="11px JetBrains Mono, monospace";c.strokeStyle="#1c2b44";c.fillStyle="#90a0ba";
+  for(const v of[0,39,74,110]){if(v>max)continue;c.beginPath();c.moveTo(pad.l,ys(v));c.lineTo(w-pad.r,ys(v));c.stroke();c.fillText(v,6,ys(v)+4);}
+  c.fillStyle="rgba(255,180,63,.7)";c.fillText("TS 39",w-pad.r-48,ys(39)-4);c.fillStyle="rgba(255,74,93,.8)";c.fillText("HU 74",w-pad.r-48,ys(74)-4);
+  halves.forEach((x,i)=>{const bx=pad.l+i*bw+bw*0.18,bwid=bw*0.64;const gv=x.g*prog;const col=x.g>=74?"#ff4a5d":x.g>=39?"#ffb43f":"#3fa2ff";
+    const gr=c.createLinearGradient(0,ys(gv),0,ys(0));gr.addColorStop(0,col);gr.addColorStop(1,col+"33");c.fillStyle=gr;c.beginPath();c.roundRect?c.roundRect(bx,ys(gv),bwid,ys(0)-ys(gv),[4,4,0,0]):c.rect(bx,ys(gv),bwid,ys(0)-ys(gv));c.fill();
+    c.fillStyle="#e8eef8";c.font="600 11px JetBrains Mono, monospace";if(prog>0.9)c.fillText(x.g,bx+bwid/2-(String(x.g).length*3.3),ys(gv)-5);
+    c.fillStyle="#90a0ba";c.font="10px JetBrains Mono, monospace";if(i%2===0)c.fillText(x.l.split(" ")[0],bx,h-pad.b+16);c.fillText(i%2?"☾":"☀",bx+bwid/2-4,h-6);});
+}
+function renderDaily(daily){
+  lastDaily=daily;let pr=reduce?1:0;(function an(){pr=Math.min(1,pr+0.05);drawGust(daily,pr);if(pr<1)requestAnimationFrame(an);})();
+  $("days").innerHTML=daily.slice(0,5).map(d=>{const g=Math.max(gnum(d.day.extended.gusts),gnum(d.night.extended.gusts));const rain=(d.day.extended.rainValue||0)+(d.night.extended.rainValue||0);const pop=Math.max(d.day.rainProbabilityValue||0,d.night.rainProbabilityValue||0);
+    const ic=g>=60?'<svg class="ico-hu" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-3 0-6 2-7 5 3-2 6-2 8-1-5 0-8 4-8 8 0 1 0 2 .4 3 .6-4 3.6-7 8-7-2 2-3 4-2.6 7 .5 3 2.6 5 5.2 5.8-1.2-1.6-1.6-3.4-1.2-5.4 1.8 4.6 6.4 5.4 9.2 2.4-3.8.4-6.6-2-7.4-5.4 3 .4 5.4-1 6.6-3.4-2.4 1.6-5.8 1.6-8-.4 2.6 0 5-1.2 6-3.4-2 1.6-5 1.6-7 0 1.6-.8 2.8-2.4 2.8-4.2-1.2 1.6-3.4 2.6-5.8 2.6z"/></svg>':pop>=50?'<svg class="ico-rain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 15a4 4 0 0 1 .5-8A5.5 5.5 0 0 1 18 8.5 3.5 3.5 0 0 1 17.5 15z" fill="rgba(63,162,255,.2)"/><line x1="8" y1="17" x2="7" y2="22"/><line x1="12" y1="17" x2="11" y2="22"/><line x1="16" y1="17" x2="15" y2="22"/></svg>':'<svg class="ico-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4" fill="rgba(255,180,63,.3)"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+    return `<div class="day ${g>=74?"hot":""}"><div class="dn">${esc(d.dayOfWeek)} ${esc(d.displayDate||"")}</div>${ic}<div class="g mono" style="color:${g>=74?"var(--storm)":g>=39?"var(--ts)":"var(--fg)"}">${g}</div><div class="p">mph gusts</div><div class="p">${d.day.displayTemperature||""} / ${d.night.displayTemperature||""} · ${pop}% · ${rain.toFixed(2)} in</div></div>`;}).join("");
+}
+function onData(kind,res){const p=res&&res.payload;if(!p||typeof p!=="object")return;live[kind]=p;
+  if(kind==="cur")renderNow(p);if(kind==="daily"&&Array.isArray(p.dailyForecast))renderDaily(p.dailyForecast);if(kind==="alerts"&&Array.isArray(p.alerts))renderAlerts(p.alerts);
+  const st=res.cache&&res.cache.storedAt?new Date(res.cache.storedAt):new Date();setLive("on","Live · updated "+st.toLocaleTimeString("en-US",{timeZone:"America/Chicago",hour:"numeric",minute:"2-digit"})+" CDT");}
+function onErr(kind,e){const msg=errCopy(e);const authz=["needs_reauth","server_not_connected","blocked_by_policy","approval_required","not_in_manifest","selection_required"].includes(e&&e.code);
+  setLive("bad","Live data paused");
+  if(kind==="alerts"&&!nwsMode){nwsFallback();}
+  const box={cur:"nowBox",alerts:"alerts",daily:"days"}[kind];if(kind==="alerts"&&nwsMode)return;if(authz||!live[kind]){$(box).innerHTML=`<div class="state"><b>${kind==="alerts"?"Alerts":"Local data"} unavailable.</b> ${esc(msg)}</div>`;if(kind==="alerts")$("threats").innerHTML=`<div class="state">${esc(msg)}</div>`;}}
+const CALLS=[["cur","widgets-current-claude",{queryParams:{locationKey:LOC,unit:"imperial"}}],["daily","widgets-daily-claude",{queryParams:{locationKey:LOC,unit:"imperial"}}],["alerts","widgets-gov-alert-map-claude",{queryParams:{LocationKey:LOC}}]];
+(async()=>{
+  let mcp=null;try{mcp=await window.claude?.use?.("mcp");}catch(e){}
+  if(!mcp){if(await nwsFallback()){setInterval(nwsFallback,300000);return;}
+    setLive("bad","Snapshot view");const rm='<div class="state"><b>weather.gov is busy.</b> Retrying every two minutes. The chips, ticker and timeline above are from the 10 PM advisory and NWS Mobile.</div>';$("alerts").innerHTML=rm;$("threats").innerHTML=rm;$("nowBox").innerHTML=rm;$("days").innerHTML='<div class="state" style="grid-column:1/-1">'+rm+'</div>';
+    const rt=setInterval(async()=>{if(await nwsFallback()){clearInterval(rt);setInterval(nwsFallback,600000);}},120000);return;
+    setLive("bad","Snapshot mode");const m="Shared snapshot: this view cannot reach live feeds. The storm track, warnings and timeline above are from the NHC advisory named in the header; official updates at hurricanes.gov and weather.gov/mob.";$("nowBox").innerHTML=`<div class="state">${m}</div>`;$("alerts").innerHTML=`<div class="state">${m}</div>`;$("threats").innerHTML=`<div class="state">${m}</div>`;$("days").innerHTML=`<div class="state" style="grid-column:1/-1">${m}</div>`;return;}
+  mcpRef=mcp;
+  for(const[k,tool,inp]of CALLS){mcp.watchTool(SRV,tool,inp,ev=>ev.type==="data"?onData(k,ev.result):onErr(k,ev.error),{refetchInterval:600000,cache:{staleTime:300000}});}
+})();
+$("refreshBtn").onclick=async()=>{if(!mcpRef){if(!(await nwsFallback()))setLive("bad","Live data needs Claude");return;}setLive("","Refreshing");
+  await Promise.all(CALLS.map(([k,tool,inp])=>mcpRef.callTool(SRV,tool,inp,{cache:{refresh:true,staleTime:0}}).then(r=>onData(k,r)).catch(e=>onErr(k,e))));};
+})();
+</script>
+
+</body></html>
