@@ -1,12 +1,12 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <div id="pgbar" aria-hidden="true"></div>
-<title>Pensacola Storm Watch · Cashio.AI</title>
+<title>Pensacola Storm Watch · Recovery · Cashio.AI</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta name="theme-color" content="#08111e">
-<meta name="description" content="Live Hurricane Isaias tracker for the Pensacola area and ZIP 32504: NHC track and cone, NWS alerts, radar, surge and evacuation layers. A Cashio.AI public page.">
+<meta name="description" content="Isaias has passed. Recovery resources, live NWS alerts, radar and current conditions for the Pensacola area and ZIP 32504. A Cashio.AI public page.">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Cashio.AI">
-<meta property="og:title" content="Pensacola Storm Watch · Hurricane Isaias">
-<meta property="og:description" content="Live NHC track, NWS alerts and radar for the Pensacola area and ZIP 32504. Landfall tonight.">
+<meta property="og:title" content="Pensacola Storm Watch · Isaias recovery">
+<meta property="og:description" content="Isaias has passed. Power, water, debris, FEMA and insurance resources for the Pensacola area, with live NWS alerts.">
 <meta property="og:url" content="https://cashio.us/storm/"><meta property="og:image" content="https://cashio.us/brand/celestial-840.webp">
 <meta name="twitter:card" content="summary_large_image">
 <style>/* Leaflet 1.9.4 CSS, inlined (BSD-2-Clause, Vladimir Agafonkin) */
@@ -59,6 +59,18 @@ button{font:inherit;cursor:pointer}
 @keyframes spin{to{transform:rotate(-360deg)}}
 .banner h2{font-size:clamp(1.5rem,3.6vw,2.2rem);color:#ffd9de}
 .banner p{margin:.25rem 0 0;color:#f3c3ca;max-width:70ch}
+html.recovery .banner{border-color:#1f5a46;background:linear-gradient(100deg,#0b2a22 0%,#0c1f2b 55%,#0c1525 100%)}
+html.recovery .banner::after,html.recovery .banner::before,html.recovery .banner .rain{display:none}
+html.recovery .banner h2{color:#d8ffe9}html.recovery .banner p{color:#bfe9d3}
+html.recovery .siren{color:var(--ok);animation:none;filter:drop-shadow(0 0 10px rgba(86,211,155,.5))}html.recovery .siren .spin{animation:none}
+html.recovery .ticker{border-top-color:rgba(86,211,155,.3)}html.recovery .ticker .track{color:#cfeedd}html.recovery .ticker .track span::before{color:var(--ok)}
+html.recovery .pre{display:none}
+.recov{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.recov .item{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--c,var(--ok));border-radius:12px;padding:10px 12px;display:grid;gap:4px;min-width:0}
+.recov .item b{font-family:var(--f-display);font-size:1.1rem;letter-spacing:.02em;line-height:1.15}
+.recov .item span{color:var(--muted);font-size:.9rem}
+.recov .item .num{font-family:var(--f-mono);font-size:1rem;color:var(--fg);user-select:all}
+@media (max-width:820px){.recov{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (max-width:520px){.recov{grid-template-columns:1fr}}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .chip{font-family:var(--f-display);font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.85rem;padding:4px 10px;border-radius:6px;border:1px solid}
 .c-hu{color:#ffd0d6;border-color:var(--storm);background:rgba(255,74,93,.15)}
@@ -378,7 +390,7 @@ html.paused *,html.paused *::before,html.paused *::after{animation-play-state:pa
     </div>
   </section>
 
-  <section class="kpis" aria-label="Key numbers">
+  <section class="kpis pre" aria-label="Key numbers">
     <div class="kpi red"><span class="lbl">Isaias winds</span><span class="v mono" id="kWind">120 mph</span><span class="s" id="kWindS">Category 3 · 959 mb</span></div>
     <div class="kpi cy"><span class="lbl">Distance to Pensacola</span><span class="v mono" id="kDist">505 mi</span><span class="s" id="kDistS">SSW of Pensacola</span></div>
     <div class="kpi amb"><svg class="ring" viewBox="0 0 54 54" aria-hidden="true"><circle class="bg" cx="27" cy="27" r="22"/><circle class="fg" id="ringFg" cx="27" cy="27" r="22" stroke-dasharray="138.2" stroke-dashoffset="0"/></svg><span class="lbl" id="kCountL">Tropical storm winds in</span><span class="v mono" id="kCount">--</span><span class="s" id="kCountS">TS wind field reaches 185 mi from the center</span></div>
@@ -420,6 +432,21 @@ html.paused *,html.paused *::before,html.paused *::after{animation-play-state:pa
   </section>
 
   <div class="grid">
+    <section class="card span12" aria-labelledby="hRecov" id="recovCard">
+      <h3 id="hRecov"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V10l7-6 7 6v11"/><path d="M9 21v-6h6v6"/><path d="M12 4v2"/></svg>Recovery resources for Pensacola and 32504</h3>
+      <div class="recov">
+        <div class="item" style="--c:var(--ts)"><b>Power outages</b><span class="num">1 800 468 8243</span><span>FPL serves Northwest Florida. Report an outage by phone or at <a href="https://www.fplmaps.com/northwest" target="_blank" rel="noopener">fplmaps.com/northwest</a>. Treat every downed line as live.</span></div>
+        <div class="item" style="--c:var(--flood)"><b>Water and sewer</b><span>ECUA posts boil water notices and lift station status at <a href="https://ecua.fl.gov" target="_blank" rel="noopener">ecua.fl.gov</a>. Boil one minute, or use bottled, until the notice lifts.</span></div>
+        <div class="item" style="--c:var(--home)"><b>County recovery and debris</b><span>Escambia County posts road closures, curfews, debris pickup schedules and distribution sites at <a href="https://myescambia.com/beready" target="_blank" rel="noopener">myescambia.com/beready</a>. Stack debris at the curb by type: vegetation, construction, appliances, electronics.</span></div>
+        <div class="item" style="--c:var(--ok)"><b>Help lines</b><span class="num">211</span><span>211 Northwest Florida connects you to food, shelter, tarps and cleanup help. Emergencies are still 911.</span></div>
+        <div class="item" style="--c:var(--surge)"><b>FEMA assistance</b><span class="num">1 800 621 3362</span><span>Apply at <a href="https://www.disasterassistance.gov" target="_blank" rel="noopener">DisasterAssistance.gov</a> once a federal declaration covers Escambia County. Photograph damage before cleanup and keep every receipt.</span></div>
+        <div class="item" style="--c:var(--storm)"><b>Insurance and flood claims</b><span>Call your carrier first; flood damage goes to your NFIP policy at <a href="https://www.floodsmart.gov/start" target="_blank" rel="noopener">floodsmart.gov</a>. Make temporary repairs to stop further damage, keep the receipts, and do not sign a contractor's assignment of benefits in a hurry.</span></div>
+        <div class="item" style="--c:var(--ts)"><b>Generator and chainsaw safety</b><span>Generators outside, 20 ft from any window, never backfed into house wiring. Chainsaw work in daylight with a spotter; most injuries after a storm are falls and cuts.</span></div>
+        <div class="item" style="--c:var(--flood)"><b>Food and medicine</b><span>Fridge food above 40°F for more than 4 hours goes out; refreeze only if ice crystals remain. Pharmacies can refill early after a declared emergency.</span></div>
+        <div class="item" style="--c:var(--home)"><b>Price gouging and scams</b><span class="num">1 866 966 7226</span><span>Florida Attorney General hotline. Pay contractors only after work is done, and ask for a license number and written estimate.</span></div>
+      </div>
+      <p class="note">Official county and state instructions override everything here. Live NWS alerts for Escambia County still load further down the page.</p>
+    </section>
     <section class="card span12" aria-labelledby="hPhase">
       <h3 id="hPhase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2.5"/></svg>Right now in Pensacola</h3>
       <div class="phhead"><span class="big" id="phName">Preparation window</span><span class="lbl" id="phNext">--</span></div>
@@ -456,7 +483,7 @@ html.paused *,html.paused *::before,html.paused *::after{animation-play-state:pa
         <div class="fact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg><div><b>Open water nearby</b><span>Bayou Texar on the southwest edge of 32504 and Escambia Bay on the east are surge water. Streets near them can flood; the higher middle of the ZIP does not.</span></div></div>
       </div>
     </section>
-    <section class="card span12" aria-labelledby="hPlan">
+    <section class="pre card span12" aria-labelledby="hPlan">
       <h3 id="hPlan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V8l7-5 7 5v13"/><path d="M9 21v-5h6v5M9 12h2M13 12h2"/></svg>Home plan if you are staying: high ground, outside the evacuation zones</h3>
       <div class="dolist">
         <div style="--c:var(--storm)"><b>Under an evacuation order? Go, do not ride it out</b>This plan is only for homes outside Zones A and B and off the low ground near Bayou Texar and Escambia Bay. If your address is in an ordered zone, follow the Escambia order and use the shelters listed below.</div>
@@ -471,19 +498,19 @@ html.paused *,html.paused *::before,html.paused *::after{animation-play-state:pa
       </div>
     </section>
 
-    <section class="card span4" aria-labelledby="hDial">
+    <section class="pre card span4" aria-labelledby="hDial">
       <h3 id="hDial"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-6"/></svg>Strength dial</h3>
       <svg class="dial" viewBox="0 0 220 135" aria-label="Saffir Simpson dial"><g id="dialArcs"></g><g id="dialTicks"></g><g class="needle" id="needle"><path d="M110 115 L106 112 L110 34 L114 112Z" fill="#e8eef8"/><circle cx="110" cy="115" r="7" fill="#e8eef8"/><circle cx="110" cy="115" r="3" fill="#060c17"/></g></svg>
       <div class="dialv"><div class="big mono" id="dialNum">120</div><div class="lbl" id="dialCat">mph · Category 3</div></div>
       <p class="note">Follows the forecast scrubber on the map.</p>
     </section>
-    <section class="card span8" aria-labelledby="hDist">
+    <section class="pre card span8" aria-labelledby="hDist">
       <h3 id="hDist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>Distance from Pensacola</h3>
       <div class="chartbox"><canvas id="distChart" aria-label="Distance over time chart"></canvas></div>
       <p class="note">Center of Isaias to the 32504 area along the forecast track. Tap the chart to jump the map to that hour.</p>
     </section>
 
-    <section class="card span12" aria-labelledby="hWater">
+    <section class="pre card span12" aria-labelledby="hWater">
       <h3 id="hWater"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 17c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 12c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 7c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/></svg>Water: surge, surf and rain</h3>
       <div class="water">
         <div class="tank"><canvas id="tSurge" aria-label="Storm surge gauge"></canvas><div class="v" style="color:var(--surge)">6 to 9 ft</div><div class="k">Peak surge above ground in surge prone areas, NWS Mobile 10 AM; highest east of landfall</div></div>
@@ -522,7 +549,7 @@ html.paused *,html.paused *::before,html.paused *::after{animation-play-state:pa
       <div class="days" id="days"></div>
     </section>
 
-    <section class="card span6" aria-labelledby="hInt">
+    <section class="pre card span6" aria-labelledby="hInt">
       <h3 id="hInt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20l5-8 4 4 8-12"/></svg>Isaias strength forecast</h3>
       <div class="chartbox"><canvas id="intChart" aria-label="Intensity forecast chart"></canvas></div>
       <p class="note"><span id="intNote">Isaias is at its forecast peak now, 120 mph Category 3; about 115 mph at landfall near Navarre around 10 PM tonight, then weakening fast inland Saturday.</span> Bands mark Saffir Simpson categories.</p>
@@ -538,7 +565,7 @@ html.paused *,html.paused *::before,html.paused *::after{animation-play-state:pa
       <div class="alerts" id="alerts"><div class="state"><b>Loading NWS alerts.</b> Every active watch, warning and statement for Escambia County lists here with full text.</div></div>
     </section>
 
-    <section class="card span8" aria-labelledby="hPrep">
+    <section class="pre card span8" aria-labelledby="hPrep">
       <h3 id="hPrep"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>Home prep checklist</h3>
       <div style="display:flex;justify-content:space-between;align-items:center"><span class="lbl" id="progTxt">0 of 0 done</span><span class="note">Saved in your browser only</span></div>
       <div class="prog"><i id="progBar"></i></div>
@@ -612,6 +639,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;"
   document.addEventListener("visibilitychange",()=>doc.classList.toggle("paused",document.hidden));
 })();
 let lastDaily=null;let lastWin=null;
+const RECOVERY = true; // storm has passed: calm banner, pre landfall panels hidden, recovery checklist
 const HOME = {lat:30.48, lon:-87.19}; // approximate center of ZIP 32504, northeast Pensacola; not an address
 const BASE_UTC = Date.UTC(2026,9,8,9,0); // track hour 0 = 09Z Oct 8
 let NOW_H = 30; // advisory 12 at 15Z Oct 9
@@ -964,16 +992,29 @@ function renderTimeline(win){lastWin=win;
     $("tlFill").style.height=Math.max(0,y-6)+"px";$("tlHere").style.top=y+"px";});
 }
 renderTimeline({});
-function renderTicker(list){const items=list||["Hurricane Warning in effect for Escambia Coastal","Storm Surge Warning in effect","Flood Watch Friday 1 PM to Saturday 1 PM","High Surf Warning Friday 7 AM to Sunday 10 AM","NWS Mobile peak wind 60 to 80 mph, gusts to 110","Tropical storm winds Friday afternoon until early Saturday","Surge 6 to 9 ft in surge prone areas, worst east of landfall","Rain 4 to 8 in, locally up to 15 in on the Panhandle","Tornadoes possible east of the track","Isaias now Category 3, 120 mph, 959 mb (10 AM advisory)","Track shifted east: landfall near Navarre, Pensacola on the west side of the eye","Winds from the N and NE this afternoon, NNW at closest approach, W overnight","Hurricane force winds reach 35 mi from the center on the NW side","Hurricane Warning Ocean Springs MS to Bay/Gulf County line","NHC surge 5 to 7 ft Dauphin Island to Indian Pass","Hurricane force winds reach 30 mi from the center, TS winds 185 mi","NHC: preparations should be rushed to completion, weather goes downhill quickly today","Next NHC advisories 1 PM and 4 PM CDT"];
+const RECOVERY_TICKER=["Isaias has passed. Wait for Escambia County's all clear for your area","Dark intersections are four way stops","Stay out of flood water: hidden debris, sewage and live wires","Generators outside, 20 ft from the house, never backfed","Check on neighbors, especially anyone on medical equipment","Photograph damage before cleanup; keep every receipt"];
+function renderTicker(list){const items=list||(RECOVERY?RECOVERY_TICKER:["Hurricane Warning in effect for Escambia Coastal","Storm Surge Warning in effect","Flood Watch Friday 1 PM to Saturday 1 PM","High Surf Warning Friday 7 AM to Sunday 10 AM","NWS Mobile peak wind 60 to 80 mph, gusts to 110","Tropical storm winds Friday afternoon until early Saturday","Surge 6 to 9 ft in surge prone areas, worst east of landfall","Rain 4 to 8 in, locally up to 15 in on the Panhandle","Tornadoes possible east of the track","Isaias now Category 3, 120 mph, 959 mb (10 AM advisory)","Track shifted east: landfall near Navarre, Pensacola on the west side of the eye","Winds from the N and NE this afternoon, NNW at closest approach, W overnight","Hurricane force winds reach 35 mi from the center on the NW side","Hurricane Warning Ocean Springs MS to Bay/Gulf County line","NHC surge 5 to 7 ft Dauphin Island to Indian Pass","Hurricane force winds reach 30 mi from the center, TS winds 185 mi","NHC: preparations should be rushed to completion, weather goes downhill quickly today","Next NHC advisories 1 PM and 4 PM CDT"]);
   const html=items.map(t=>`<span>${esc(t)}</span>`).join("");$("ticker").innerHTML=html+html;}
 renderTicker();
+if(RECOVERY){document.documentElement.classList.add("recovery");
+  $("bannerHead").textContent="Isaias has passed. Pensacola is in recovery.";
+  $("bannerSub").textContent="Wait for Escambia County's all clear for your area before travelling. Treat dark intersections as four way stops, stay out of flood water, and keep generators outside and well away from the house. Live NWS alerts for Escambia County still load below; this page no longer tracks the storm.";
+  $("chips").innerHTML="";
+  const prep=$("hPrep");if(prep){prep.lastChild.textContent="Recovery checklist";prep.closest("section").classList.remove("pre");}
+  const rec=$("recovCard");if(rec)rec.classList.remove("pre");
+  const stale=document.querySelectorAll("#nextAdv");stale.forEach(e=>e.textContent="Archive: advisories 7 through 12");
+  document.querySelectorAll(".contact .note").forEach(n=>{if(/Opened Thursday|Zones A and B ordered/.test(n.textContent))n.textContent="Check myescambia.com/beready for current status";});
+  const ts=$("trackSrc");if(ts)ts.textContent="Archived NHC track for Isaias, advisories 7 through 12. The feed is no longer updated for this storm.";
+}
 
 // ---------- checklist ----------
-const TASKS=["Check your evacuation zone at myescambia.com/beready","Water: 1 gallon per person per day, 7 days","Fill vehicle tanks and keep cars on high ground","Refill prescriptions and pack a 7 day supply","Charge phones, power banks and laptops","Bring in patio furniture, grills, trash cans, decor","Close or install shutters and storm panels","Photograph the house and contents for insurance","Put documents and IDs in a waterproof bag","Cash in small bills for after the storm","Pet food, carriers and vet records","Fridge and freezer to coldest setting; freeze water jugs","Clear gutters and yard drains","Know where the main breaker and water shutoff are","Flashlights, batteries and a NOAA weather radio","Pick an interior safe room away from windows for tornado warnings","Fill bathtubs and buckets for flushing and washing","Homelab: shut down non essential servers at the first flicker, verify UPS runtime","Park cars away from trees and the street, windows up","Save the contacts on this page to your phone and screenshot the map","Text instead of calling once the storm hits; set phones to low power","Photograph the paper insurance declarations page (limits and hurricane deductible)","Get the ECUA water account number off a paper bill"];
-let done={};try{done=JSON.parse(localStorage.getItem("isaias-prep")||"{}");}catch(e){}
+const PREP_TASKS=["Check your evacuation zone at myescambia.com/beready","Water: 1 gallon per person per day, 7 days","Fill vehicle tanks and keep cars on high ground","Refill prescriptions and pack a 7 day supply","Charge phones, power banks and laptops","Bring in patio furniture, grills, trash cans, decor","Close or install shutters and storm panels","Photograph the house and contents for insurance","Put documents and IDs in a waterproof bag","Cash in small bills for after the storm","Pet food, carriers and vet records","Fridge and freezer to coldest setting; freeze water jugs","Clear gutters and yard drains","Know where the main breaker and water shutoff are","Flashlights, batteries and a NOAA weather radio","Pick an interior safe room away from windows for tornado warnings","Fill bathtubs and buckets for flushing and washing","Homelab: shut down non essential servers at the first flicker, verify UPS runtime","Park cars away from trees and the street, windows up","Save the contacts on this page to your phone and screenshot the map","Text instead of calling once the storm hits; set phones to low power","Photograph the paper insurance declarations page (limits and hurricane deductible)","Get the ECUA water account number off a paper bill"];
+const RECOVERY_TASKS=["Everyone in the house accounted for and checked for injuries","Walk the property in daylight: roof, trees, lines, gas smell","Photograph all damage before touching anything","Report the power outage to FPL and check the outage map","Check ECUA for a boil water notice before using tap water","Call your insurance carrier and open a claim","Make temporary repairs to stop further damage, keep receipts","Sort debris at the curb by type for county pickup","Check on neighbors and share generator power safely","Apply at DisasterAssistance.gov if a federal declaration is issued"];
+const TASKS=RECOVERY?RECOVERY_TASKS:PREP_TASKS;const TASK_KEY=RECOVERY?"isaias-recovery":"isaias-prep";
+let done={};try{done=JSON.parse(localStorage.getItem(TASK_KEY)||"{}");}catch(e){}
 function renderChecks(){$("checks").innerHTML=TASKS.map((t,i)=>`<label for="ck${i}"><input type="checkbox" id="ck${i}" ${done[i]?"checked":""}><span>${t}</span></label>`).join("");prog();}
 function prog(){const n=TASKS.filter((_,i)=>done[i]).length;$("progTxt").textContent=n+" of "+TASKS.length+" done";$("progBar").style.width=(n/TASKS.length*100)+"%";}
-$("checks").addEventListener("change",e=>{const i=+e.target.id.slice(2);done[i]=e.target.checked;try{localStorage.setItem("isaias-prep",JSON.stringify(done));}catch(err){}prog();});
+$("checks").addEventListener("change",e=>{const i=+e.target.id.slice(2);done[i]=e.target.checked;try{localStorage.setItem(TASK_KEY,JSON.stringify(done));}catch(err){}prog();});
 renderChecks();
 
 
