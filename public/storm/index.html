@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html class="recovery"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <div id="pgbar" aria-hidden="true"></div>
 <title>Pensacola Storm Watch · Recovery · Cashio.AI</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -366,11 +366,11 @@ html.paused *,html.paused *::before,html.paused *::after{animation-play-state:pa
     <div class="brand">
       <div class="brandrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="mk" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#08111e"/><polyline points="15,5 6,16 15,27" fill="none" stroke="#ff9500" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><polygon points="20,12 28,16 20,20" fill="#00f9ff"/></svg><span class="wmwrap"><svg class="orbit" viewBox="0 0 120 48" preserveAspectRatio="none" aria-hidden="true"><ellipse class="o1" cx="60" cy="24" rx="58" ry="20"/><ellipse class="o2" cx="60" cy="24" rx="54" ry="22" transform="rotate(-8 60 24)"/></svg><span class="wm" role="img" aria-label="Cashio.AI">c<span class="g">A</span>sh<span class="c">I</span>o<small>.AI</small></span></span><span class="lbl">Storm Watch · Pensacola, Florida 32504</span></div>
       <h1>Storm Watch <span>Isaias</span></h1>
-      <p id="greet">A Cashio.AI public page for the Pensacola area and ZIP 32504. Republished after each NHC advisory; radar, alerts and station data refresh live in your browser.</p>
+      <p id="greet">A Cashio.AI public page for the Pensacola area and ZIP 32504. Isaias has passed; this page now carries recovery resources, with NWS alerts, radar and current conditions still refreshing live in your browser.</p>
     </div>
     <div class="live">
       <span class="pill"><svg class="eye" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c-3 0-6 2-7 5 3-2 6-2 8-1-5 0-8 4-8 8 0 1 0 2 .4 3 .6-4 3.6-7 8-7-2 2-3 4-2.6 7 .5 3 2.6 5 5.2 5.8-1.2-1.6-1.6-3.4-1.2-5.4 1.8 4.6 6.4 5.4 9.2 2.4-3.8.4-6.6-2-7.4-5.4 3 .4 5.4-1 6.6-3.4-2.4 1.6-5.8 1.6-8-.4 2.6 0 5-1.2 6-3.4-2 1.6-5 1.6-7 0 1.6-.8 2.8-2.4 2.8-4.2-1.2 1.6-3.4 2.6-5.8 2.6z"/></svg><span class="dot" id="liveDot"></span><span id="liveTxt">Connecting to AccuWeather</span></span>
-      <span class="pill mono" id="nhcStamp" title="Latest NHC advisory seen by this page">NHC 12 · 10 AM CDT</span>
+      <span class="pill mono" id="nhcStamp" title="Archived NHC advisory">Archive · NHC 12</span>
       <button class="btn" id="sirenBtn" type="button" aria-pressed="false" title="Arm an audible alarm for Tornado Warnings and Extreme Wind Warnings for Escambia County"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4"/></svg>Arm siren</button>
       <button class="btn" id="wakeBtn" type="button" aria-pressed="false" title="Keep the screen on while this page is open"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Screen on</button>
       <button class="btn" id="lowBtn" type="button" aria-pressed="false" title="Pause animations to save phone battery"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 10v4M6 12h6"/></svg>Battery saver</button>
@@ -378,14 +378,12 @@ html.paused *,html.paused *::before,html.paused *::after{animation-play-state:pa
     </div>
   </header>
 
-  <section class="banner" aria-label="Active warning"><div class="rain" aria-hidden="true"></div>
+  <section class="banner" aria-label="Recovery status"><div class="rain" aria-hidden="true"></div>
     <svg class="siren" viewBox="0 0 64 64" aria-hidden="true"><g class="spin" fill="currentColor"><path d="M32 6c-9 0-17 5-20 13 6-5 14-6 20-3-12 0-20 9-20 20 0 2 .3 4 1 5 1-10 8-17 19-17 0 0 0 0 0 0-4 4-6 9-5 15 1 7 6 12 12 14-3-4-4-8-3-13 4 11 15 13 22 6-9 1-16-5-18-13 7 1 13-2 16-8-6 4-14 4-19-1 6 0 12-3 14-8-5 4-12 4-17 0 4-2 7-6 7-10-3 4-8 6-14 6z" opacity=".9"/></g><circle cx="32" cy="32" r="5" fill="#060c17"/></svg>
     <div style="position:relative;z-index:1;min-width:0">
-      <h2 id="bannerHead">Major Hurricane Isaias. Hurricane Warning for Pensacola, landfall tonight just east of Pensacola.</h2>
-      <p id="bannerSub">Isaias is a Category 3 at 10 AM: 120 mph, 959 mb, about 190 mi south southeast of Pensacola, moving north northeast at 16 mph. The 10 AM NHC track shifted east and brings the center ashore near Navarre tonight, about 20 mi east of Pensacola. The city sits on the west side of the eye, still inside the hurricane force wind field, with winds from the north and northeast this afternoon, north northwest at closest approach, then west overnight.</p>
-      <div class="chips" id="chips">
-        <span class="chip c-hu">Hurricane Warning</span><span class="chip c-ss">Storm Surge Warning</span><span class="chip c-fl">Flood Watch Fri 1 PM</span><span class="chip c-ts">High Surf Warning</span>
-      </div>
+      <h2 id="bannerHead">Isaias has passed. Pensacola is in recovery.</h2>
+      <p id="bannerSub">Wait for Escambia County's all clear for your area before travelling. Treat dark intersections as four way stops, stay out of flood water, and keep generators outside and well away from the house. Live NWS alerts for Escambia County still load below; this page no longer tracks the storm.</p>
+      <div class="chips" id="chips"></div>
       <div class="ticker" aria-hidden="true"><div class="track" id="ticker"></div></div>
     </div>
   </section>
@@ -477,9 +475,9 @@ html.paused *,html.paused *::before,html.paused *::after{animation-play-state:pa
       <h3 id="hFacts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-6 7-12a7 7 0 1 0-14 0c0 6 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>32504 area facts</h3>
       <div class="facts">
         <div class="fact ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20h18M6 20V9l6-5 6 5v11"/></svg><div><b>High ground, mostly 40 to 120 ft</b><span>Most of ZIP 32504 sits well above the forecast 5 to 7 ft coastal surge; Pensacola International Airport, inside the ZIP, is at 121 ft. Rain runoff and wind are the risks here.</span></div></div>
-        <div class="fact ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12l5 5L20 6"/></svg><div><b>Mostly outside zones A to E</b><span>Most of 32504 has no evacuation zone polygon in the Florida statewide layer; low ground along Bayou Texar and Escambia Bay does. The Escambia order covers Zones A and B (noon Thursday). Check your address at Know Your Zone.</span></div></div>
+        <div class="fact ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12l5 5L20 6"/></svg><div><b>Evacuation zones</b><span>Most of 32504 has no evacuation zone polygon in the Florida statewide layer; low ground along Bayou Texar and Escambia Bay does. Orders lift by zone as inspections finish. Check the current status at Know Your Zone before returning to a low lying street.</span></div></div>
         <div class="fact ok" id="femaFact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 17c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 12c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/></svg><div><b>FEMA zones vary by street</b><span>Turn on the FEMA flood zones layer on the map, or look up your address at msc.fema.gov. Street ponding is possible anywhere with 4 to 8 in of rain.</span></div></div>
-        <div class="fact warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg><div><b>Tornado and tree risk</b><span>Tornado risk is highest east of the center, and the 10 AM track now puts you just west of it, but rain bands spin up tornadoes on both sides. Interior room away from windows, shoes and helmets handy, phone alerts on loud.</span></div></div>
+        <div class="fact warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg><div><b>Trees and lines after the storm</b><span>Leaning trees and hanging limbs keep falling for days once the ground is saturated. Every downed line is live until FPL says otherwise, and standing water can hide one. Keep children and pets clear of debris piles.</span></div></div>
         <div class="fact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg><div><b>Open water nearby</b><span>Bayou Texar on the southwest edge of 32504 and Escambia Bay on the east are surge water. Streets near them can flood; the higher middle of the ZIP does not.</span></div></div>
       </div>
     </section>
@@ -533,7 +531,7 @@ html.paused *,html.paused *::before,html.paused *::after{animation-play-state:pa
       <p class="src">Levels come from the NWS Mobile hurricane local statement for Escambia County: none, limited, elevated, significant, extensive, devastating.</p>
     </section>
 
-    <section class="card span5" aria-labelledby="hTl">
+    <section class="pre card span5" aria-labelledby="hTl">
       <h3 id="hTl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>What happens when</h3>
       <div class="tl" id="timeline"></div>
     </section>
@@ -997,9 +995,6 @@ function renderTicker(list){const items=list||(RECOVERY?RECOVERY_TICKER:["Hurric
   const html=items.map(t=>`<span>${esc(t)}</span>`).join("");$("ticker").innerHTML=html+html;}
 renderTicker();
 if(RECOVERY){document.documentElement.classList.add("recovery");
-  $("bannerHead").textContent="Isaias has passed. Pensacola is in recovery.";
-  $("bannerSub").textContent="Wait for Escambia County's all clear for your area before travelling. Treat dark intersections as four way stops, stay out of flood water, and keep generators outside and well away from the house. Live NWS alerts for Escambia County still load below; this page no longer tracks the storm.";
-  $("chips").innerHTML="";
   const prep=$("hPrep");if(prep){prep.lastChild.textContent="Recovery checklist";prep.closest("section").classList.remove("pre");}
   const rec=$("recovCard");if(rec)rec.classList.remove("pre");
   const stale=document.querySelectorAll("#nextAdv");stale.forEach(e=>e.textContent="Archive: advisories 7 through 12");
@@ -1052,7 +1047,7 @@ async function pollNhc(){try{
   if(n>BAKED_ADV||(n===BAKED_ADV&&/[A-Z]$/.test(adv)&&liveAdv!==adv)){if(liveAdv!==adv&&applyLiveTrack(feats,adv)){liveAdv=adv;BAKED_ADV=n;}}
   const st=$("nhcStamp");if(st)st.textContent="NHC "+adv+" · checked "+new Date().toLocaleTimeString("en-US",{timeZone:"America/Chicago",hour:"numeric",minute:"2-digit"});
 }catch(e){}}
-pollNhc();setInterval(()=>{if(!lowPower||Math.random()<0.34)pollNhc();},900000);
+if(!RECOVERY){pollNhc();setInterval(()=>{if(!lowPower||Math.random()<0.34)pollNhc();},900000);}
 
 document.querySelectorAll(".copy").forEach(el=>el.addEventListener("click",()=>{const t=el.textContent.trim();const ok=()=>{el.classList.add("did");setTimeout(()=>el.classList.remove("did"),1200);};
   try{navigator.clipboard.writeText(t).then(ok).catch(()=>{const r=document.createRange();r.selectNodeContents(el);const sel=getSelection();sel.removeAllRanges();sel.addRange(r);});}catch(e){}}));
