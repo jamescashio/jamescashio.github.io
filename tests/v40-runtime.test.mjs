@@ -57,6 +57,48 @@ async function audit(page, selector) {
   );
 }
 
+test("The Sovereign waits for a click, fits every screen, and stops when dismissed or offscreen", async () => {
+  for (const width of [320, 390, 1440]) {
+    const context = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: "reduce" });
+    try {
+      const page = await context.newPage();
+      const errors = [];
+      let playerRequests = 0;
+      page.on("pageerror", (error) => errors.push(error.message));
+      await page.route("https://www.youtube-nocookie.com/**", async (route) => {
+        playerRequests++;
+        await route.fulfill({
+          contentType: "text/html",
+          body: "<title>Test player</title><p>Player loaded after consent.</p>",
+        });
+      });
+      await page.goto(url + "#ai-worm");
+      await expect(page.locator("#bit-dialog")).toBeAttached();
+      const film = page.locator("#ai-worm");
+      const play = film.getByRole("button", { name: "Play The Sovereign, version 9", exact: true });
+      await expect(play).toBeVisible();
+      assert.equal(playerRequests, 0, "no YouTube request before a visitor chooses Play");
+      await expect(film.locator("iframe")).toHaveCount(0);
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+      await audit(page, "#ai-worm");
+      await play.focus();
+      await page.keyboard.press("Enter");
+      await expect(film.locator("iframe")).toHaveAttribute("src", /youtube-nocookie\.com\/embed\/382mPi4ON60\?/);
+      await expect.poll(() => playerRequests).toBe(1);
+      await film.getByRole("button", { name: "Close player ×", exact: true }).click();
+      await expect(film.locator("iframe")).toHaveCount(0);
+      await expect(play).toBeFocused();
+      await play.click();
+      await expect(film.locator("iframe")).toHaveCount(1);
+      await page.locator("#top").scrollIntoViewIfNeeded();
+      await expect(film.locator("iframe")).toHaveCount(0);
+      assert.deepEqual(errors, []);
+    } finally {
+      await context.close();
+    }
+  }
+});
+
 test("V40 preserves its content and serves a readable edition without JavaScript", async (t) => {
   for (const { js, width } of [
     { js: true, width: 390 },

@@ -25,7 +25,14 @@ test("V40 ships its real reading edition under the strict production security po
   const csp = document.querySelector('meta[http-equiv="Content-Security-Policy"]').content;
   assert.match(csp, /script-src 'self';/);
   assert.match(csp, /style-src 'self';/);
-  assert.doesNotMatch(csp, /unsafe-inline|unsafe-eval|https:/);
+  const directives = new Map(
+    csp.split(";").map((value) => {
+      const [name, ...sources] = value.trim().split(/\s+/);
+      return [name, sources];
+    }),
+  );
+  assert.deepEqual(directives.get("frame-src"), ["'self'", "https://www.youtube-nocookie.com"]);
+  assert.doesNotMatch(csp.replace(/frame-src[^;]+;/, ""), /unsafe-inline|unsafe-eval|https:/);
   assert.equal(document.querySelectorAll("script:not([src])").length, 0);
   assert.equal(
     root.querySelectorAll("[data-bit-open]").length,

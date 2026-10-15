@@ -1,5 +1,6 @@
 import React from "react";
 import designSystem from "./design-system.js";
+import { AiWormFilm } from "./ai-worm.jsx";
 const h = React.createElement;
 const styleCache = new Map();
 function style(value) {
@@ -3897,6 +3898,7 @@ function renderPage(v) {
               " ",
             ),
             " ",
+            h(AiWormFilm, { key: "ai-worm" }),
             h(
               "div",
               {
