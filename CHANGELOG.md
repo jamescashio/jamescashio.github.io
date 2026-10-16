@@ -4,9 +4,23 @@
 
 Keep the reading edition within a 320 pixel screen and make its public contact link work without JavaScript. Initialize compact navigation before rendering, preserve every original media file, and verify bookmarked scenarios after their default parameters are restored.
 
+- At 320 pixels with JavaScript disabled, the V40 header rendered desktop navigation and ran ten pixels past the screen. Navigation state now initializes before rendering, so the reading edition fits.
+- The public contact address works without JavaScript through Cloudflare's documented per address email markup and a linked reading notice.
+- Browser coverage verifies reading mode at 320 and 390 pixels and a visible contact link. Preserved bookmark checks accept valid default parameters while still requiring the original selection and destination.
+- Version and release metadata move to 40.0.1. Bit, the cinematic composition, all seven experiments and all 175 original media files are unchanged.
+
 ## V40 · Mostly Harmless · 10-05-2026
 
 Released. Restore Bit with original faceted geometry, local copilot replies and keyboard navigation. Preserve the Claude cinematic design, all source artwork and films, and all seven local demonstrations. Replace the editor runtime with ordinary React and external styles under the existing security policy. Retain V39 and legacy destinations.
+
+- Make V40 Mostly Harmless the front door. The cinematic composition, eleven sections, original art and typography, sixteen films, humor and E.V.E. remain intact.
+- Bit appears in the header and desktop telemetry, answers with clearly labeled scripted dialogue, and leads visitors to working experiments, evidence and Mission Control. His original faceted geometry, accessible modal and reduced motion behavior are restored.
+- Compile the original composition as React source instead of shipping the editor runtime. Keep the strict production security policy and add an external CSS reading edition for visitors without JavaScript.
+- Preserve V39.8 at `/v39/` with every existing world and dated evidence. Old studio, flight and command deck bookmarks keep working, and all 27 publicly linked V39 fragments still resolve.
+- Run all seven V40 demonstrations locally, including a downloadable brief. Shared experiment state is hardened with own field validation, and regression tests cover malformed shared scenarios.
+- Keep the shared celestial signature out of Odyssey's startup bundle so opening the preserved studio cannot boot an unrelated page.
+- Add V40 and Bit to the hosted browser gates. The tag workflow uses a pinned Node setup without package manager caching and publishes through the runner's GitHub CLI, keeping the existing tag and validation requirements.
+- All 175 existing media files remain byte for byte unchanged, including 25 MP4 videos. Publication was approved on October 5, 2026.
 
 ## V39.8 · First Light
 
