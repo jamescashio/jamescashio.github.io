@@ -9,6 +9,9 @@ import "./ai-worm.css";
 import "./polish.js";
 import "./labs.js";
 import "./bit.js";
+import { setupV40Navigation } from "./navigation.js";
+import "./navigation.css";
+setupV40Navigation();
 createRoot(document.getElementById("v40-root")).render(
   React.createElement(V40Page, { heroFilm: "Orbital arrival", scanlines: true, starDensity: 220, techDetail: false }),
 );

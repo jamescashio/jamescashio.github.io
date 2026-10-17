@@ -232,15 +232,15 @@ test("Shared scenarios reject inherited keys while restoring valid bounded value
   assert.equal(await page.evaluate(() => Object.hasOwn(Object.prototype, "polluted")), false);
 });
 
-test("Old bookmarks and version aliases reach their preserved destinations", async (t) => {
+test("Experience bookmarks stay in V40 and explicit version archives stay available", async (t) => {
   const page = await visit(t);
   for (const [relative, pathname, hash] of [
-    ["/#build=hermes", "/v39/", "#build=hermes"],
-    ["/#flight=board", "/v39/", "#flight=board"],
-    ["/#lensing", "/v39/", "#lensing"],
-    ["/#glossary", "/v39/", "#glossary"],
-    ["/#atlas-inspection", "/v39/", "#atlas-inspection"],
-    ["/#request-journey", "/v39/", "#request-journey"],
+    ["/#build=hermes", "/", "#experiment=hermes"],
+    ["/#flight=board", "/", "#flight=board"],
+    ["/#lensing", "/", "#lensing"],
+    ["/#glossary", "/", "#workshop"],
+    ["/#atlas-inspection", "/", "#universe"],
+    ["/#request-journey", "/", "#universe"],
     ["/v40/#contact", "/", "#contact"],
     ["/#deck=eve", "/command-deck.html", "#deck=eve"],
   ]) {
@@ -251,9 +251,127 @@ test("Old bookmarks and version aliases reach their preserved destinations", asy
       for (const [key, value] of new URLSearchParams(hash.slice(1)))
         await expect.poll(() => new URLSearchParams(new URL(page.url()).hash.slice(1)).get(key)).toBe(value);
     } else {
-      assert.equal(new URL(page.url()).hash, hash);
+      await expect.poll(() => new URL(page.url()).hash).toBe(hash);
     }
-    if (["#glossary", "#atlas-inspection", "#request-journey"].includes(hash))
-      await expect(page.locator(hash)).toBeVisible();
+    if (["#workshop", "#universe"].includes(hash)) await expect(page.locator(hash)).toBeVisible();
   }
+});
+
+test("Boarding, reload, Back and closing a scene keep visitors in V40", async (t) => {
+  for (const width of [1440, 390, 320]) {
+    const page = await visit(t, { width });
+    const board = page.locator('a[href="#flight=board"]').first();
+    await board.click();
+    await expect(page.locator("#helios-flight dialog")).toBeVisible();
+    if (width === 390) await audit(page, "#helios-flight");
+    assert.equal(new URL(page.url()).pathname, "/");
+    assert.equal(new URL(page.url()).hash, "#flight=board");
+    await page.reload();
+    await expect(page.locator("#helios-flight dialog")).toBeVisible();
+    assert.equal(new URL(page.url()).pathname, "/");
+    await page.keyboard.press("Escape");
+    await expect(page.locator("#helios-flight")).toHaveCount(0);
+    await expect(page.locator("#v40-root")).not.toHaveAttribute("inert");
+    await page.locator('a[href="#signature"]').click();
+    await expect(page.locator("#helios-studio .brand-studio")).toBeVisible();
+    if (width === 390) await audit(page, "#helios-studio");
+    assert.equal(new URL(page.url()).pathname, "/");
+    await page.goBack();
+    await expect(page.locator("#helios-studio")).toHaveCount(0);
+    await expect(page.locator("#v40-root")).not.toHaveAttribute("inert");
+    await page.locator('a[href="#experiment=briefing"]').first().click();
+    await expect(page.locator("#local-experiment")).toHaveAttribute("data-lab", "briefing");
+    assert.equal(new URL(page.url()).pathname, "/");
+  }
+});
+
+test("Every current room works and its return links lead to the V40 homepage", async (t) => {
+  for (const width of [1440, 390, 320]) {
+    const page = await visit(t, { width });
+    for (const id of ["starship", "principles", "studios", "heritage"]) {
+      await page.goto(new URL(`/rooms/${id}/interactive/`, url).href);
+      await expect(page.locator(`#${id}`)).toHaveAttribute("data-room-state", "ready");
+      if (width === 390) await audit(page);
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+      await expect(page.locator('a[href^="/v39/"]')).toHaveCount(0);
+      if (id === "starship") {
+        await page.locator("#tg-net").click();
+        await expect(page.locator("#tg-net")).toHaveAttribute("aria-pressed", "false");
+        await expect(page.locator("#net-label")).toHaveText("Offline");
+      }
+      if (id === "principles") {
+        await page.locator('[data-pr="1"]').click();
+        await expect(page.locator("#pr-n")).toHaveText("02");
+        await expect(page.locator("#engine")).toHaveAttribute("tabindex", "0");
+      }
+      if (id === "heritage") {
+        const before = await page.locator("#hg-head").textContent();
+        await page.locator("button[data-pilot]").nth(1).click();
+        await expect(page.locator("#hg-head")).not.toHaveText(before);
+      }
+      await page.locator('header a[href="/#rooms"]').click();
+      await expect(page.locator("#v40-root h1")).toBeVisible();
+      assert.equal(new URL(page.url()).pathname, "/");
+      assert.equal(new URL(page.url()).hash, "#rooms");
+    }
+    await page.goto(new URL("/rooms/studios/", url).href);
+    await page.locator('header a[href="/#rooms"]').click();
+    await expect(page.locator("#v40-root h1")).toBeVisible();
+    assert.equal(new URL(page.url()).pathname, "/");
+  }
+});
+
+test("A completed flight brings the requested V40 contact section into view and focus", async (t) => {
+  const page = await visit(t, { hash: "#flight=permission" });
+  await expect(page.locator("#helios-flight dialog")).toBeVisible();
+  await page.getByRole("button", { name: /^Finish/ }).click();
+  await page.getByRole("button", { name: /^Compare notes with Doug/ }).click();
+  await expect(page.locator("#helios-flight")).toHaveCount(0);
+  await expect(page.locator("#contact")).toBeInViewport();
+  await expect(page.locator("#contact")).toBeFocused();
+  assert.equal(new URL(page.url()).pathname, "/");
+});
+
+test("Closing a follow-on film does not leave a closed scene in Back history", async (t) => {
+  const page = await visit(t);
+  await page.locator('a[href="#signature"]').click();
+  await expect(page.locator(".brand-studio")).toBeVisible();
+  await page.getByRole("button", { name: /Watch the signature awaken/ }).click();
+  await expect(page.locator(".lensing-film")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#helios-studio")).toHaveCount(0);
+  await page.goBack();
+  await expect(page.locator("#helios-studio")).toHaveCount(0);
+  await expect(page.locator("#v40-root h1")).toBeVisible();
+});
+
+test("Room motion respects the homepage's saved pause and can be changed locally", async (t) => {
+  const page = await visit(t, { motion: "no-preference", width: 390 });
+  await page.getByRole("button", { name: "Pause motion", exact: true }).first().click();
+  await page.goto(new URL("/rooms/starship/interactive/", url).href);
+  await expect(page.locator("#starship")).toHaveAttribute("data-room-state", "ready");
+  await expect(page.locator("html")).toHaveClass(/motion-off/);
+  await page.getByRole("button", { name: "Resume motion", exact: true }).click();
+  await expect(page.locator("html")).not.toHaveClass(/motion-off/);
+  await page.locator('header a[href="/#rooms"]').click();
+  await expect(page.locator("html")).toHaveAttribute("data-motion", "on");
+});
+
+test("An older online mission bookmark restores its exact cloud and privacy choices", async (t) => {
+  const page = await visit(t);
+  await page.goto(new URL("/#mission=cloud.private.online.permitted", url).href);
+  await expect(page.locator("#starship")).toHaveAttribute("data-room-state", "ready");
+  await expect(page.locator('[data-arch="cloud"]')).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator('[data-sens="private"]')).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator("#tg-permit")).toHaveAttribute("aria-pressed", "true");
+  assert.equal(new URL(page.url()).pathname, "/rooms/starship/interactive/");
+});
+
+test("Sanctuary's working-studies action moves to the requested V40 section", async (t) => {
+  const page = await visit(t, { hash: "#film=sanctuary" });
+  await page.getByRole("button", { name: "Explore the working studies", exact: true }).click();
+  await expect(page.locator("#helios-studio")).toHaveCount(0);
+  await expect(page.locator("#work")).toBeInViewport();
+  await expect(page.locator("#work")).toBeFocused();
+  assert.equal(new URL(page.url()).pathname, "/");
 });

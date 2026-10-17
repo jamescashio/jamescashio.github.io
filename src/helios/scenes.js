@@ -21,7 +21,7 @@ export function setupScenes({ motion }) {
     angle = 0,
     principle = 0;
 
-  const trace = createAtlasTrace({ isMotionEnabled: () => enabled, onSchedule: sync });
+  const trace = atlas ? createAtlasTrace({ isMotionEnabled: () => enabled, onSchedule: sync }) : null;
 
   // The 12 outcomes remain visible as a static manifest while their paths animate above.
   function renderFlow(result, state) {
@@ -101,9 +101,9 @@ export function setupScenes({ motion }) {
       previous = now;
       elapsed += delta;
       if (visible.get(flow)) paintFlow();
-      if (trace.active && visible.get(atlas)) trace.advance(delta);
+      if (trace?.active && visible.get(atlas)) trace.advance(delta);
     }
-    if (enabled && !document.hidden && !blocked() && (visible.get(flow) || (trace.active && visible.get(atlas))))
+    if (enabled && !document.hidden && !blocked() && (visible.get(flow) || (trace?.active && visible.get(atlas))))
       frame = requestAnimationFrame(run);
   }
   async function loadEngine() {
@@ -119,7 +119,7 @@ export function setupScenes({ motion }) {
   }
   function sync() {
     const active = enabled && !document.hidden && !blocked();
-    if (active && (visible.get(flow) || (trace.active && visible.get(atlas)))) {
+    if (active && (visible.get(flow) || (trace?.active && visible.get(atlas)))) {
       if (!frame) {
         previous = 0;
         frame = requestAnimationFrame(run);
@@ -142,10 +142,10 @@ export function setupScenes({ motion }) {
     },
     { threshold: 0.05 },
   );
-  observer.observe(atlas);
+  if (atlas) observer.observe(atlas);
   window.addEventListener("helios-motion", (event) => {
     enabled = event.detail;
-    if (!enabled && trace.active) trace.finish(true);
+    if (!enabled && trace?.active) trace.finish(true);
     paintFlow(!enabled);
     sync();
   });
@@ -174,9 +174,9 @@ export function setupScenes({ motion }) {
     attachRoom,
     renderFlow,
     flowVisible: () => visible.get(flow),
-    updateRequest: trace.update,
-    traceRequest: trace.start,
-    selectAtlas: trace.stop,
+    updateRequest: (request) => trace?.update(request),
+    traceRequest: () => trace?.start(),
+    selectAtlas: () => trace?.stop(),
     rotateEngine(next) {
       angle = next;
       engineScene?.setAngle(next);

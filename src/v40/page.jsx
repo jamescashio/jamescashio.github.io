@@ -1079,7 +1079,7 @@ export class V40Page extends React.Component {
         line: "Your ship. Your intelligence.",
         desc: "Pick a mission, cut the cloud link and compare three designs on the same twelve requests.",
         color: "var(--cyan)",
-        href: "https://cashio.us/rooms/starship/",
+        href: "/rooms/starship/interactive/",
         img: this.res("public/v38/assets/room-starship.webp"),
         video: "/assets/zenith/starship-flyby.mp4",
         hasVideo: true,
@@ -1090,7 +1090,7 @@ export class V40Page extends React.Component {
         line: "Put the principles in motion.",
         desc: "Turn a small instrument and see the design decision behind each rule.",
         color: "var(--accent)",
-        href: "https://cashio.us/rooms/principles/",
+        href: "/rooms/principles/interactive/",
         img: this.res("public/v38/assets/room-principles.webp"),
         video: "/assets/zenith/orbital-instrument.mp4",
         hasVideo: true,
@@ -1101,7 +1101,7 @@ export class V40Page extends React.Component {
         line: "A world worth getting lost in.",
         desc: "Shape the light, ignite a 3D signature, or explore the short film collection.",
         color: "var(--purple)",
-        href: "https://cashio.us/rooms/studios/",
+        href: "/rooms/studios/interactive/",
         img: this.res("public/v38/assets/room-studios-threshold.webp"),
         video: "/assets/zenith/threshold.mp4",
         hasVideo: true,
@@ -1112,7 +1112,7 @@ export class V40Page extends React.Component {
         line: "Built with a test pilot’s mind.",
         desc: "Four aviation pioneers and the working lesson I take from each.",
         color: "var(--amber)",
-        href: "https://cashio.us/rooms/heritage/",
+        href: "/rooms/heritage/interactive/",
         img: this.res("public/v38/assets/room-heritage.webp"),
         video: "",
         hasVideo: false,
@@ -1442,7 +1442,7 @@ export class V40Page extends React.Component {
       boardShip: (e) => {
         e.preventDefault();
         this.warpFlash();
-        window.location.assign("/v39/#flight=board");
+        window.location.hash = "flight=board";
       },
       openIntro: (e) => {
         e.preventDefault();
@@ -1501,7 +1501,7 @@ export class V40Page extends React.Component {
       expTitle: "EXPERIMENT " + "0" + (s.exp + 1),
       expColor: s.exp === 0 ? "accent" : "cyan",
       expLede: E[3],
-      expHref: "/v39/#build=" + E[0],
+      expHref: "#experiment=" + E[0],
       isHermes: s.exp === 0,
       notHermes: s.exp !== 0,
       nextExp: () => this.setState({ exp: (s.exp + 1) % 7 }),
@@ -2246,7 +2246,7 @@ function renderPage(v) {
                 " ",
                 h(
                   designSystem.Button,
-                  { key: 194, as: "a", href: "/v39/#flight=board", onClick: v.boardShip, size: "lg" },
+                  { key: 194, as: "a", href: "#flight=board", onClick: v.boardShip, size: "lg" },
                   h(React.Fragment, { key: 195 }, "Board the starship →"),
                 ),
                 " ",
@@ -2277,7 +2277,7 @@ function renderPage(v) {
                   "a",
                   {
                     key: 206,
-                    href: "/v39/#film=intro",
+                    href: "#film=intro",
                     onClick: v.openIntro,
                     style: style("display:inline-flex;align-items:center;gap:10px"),
                   },
@@ -3028,7 +3028,7 @@ function renderPage(v) {
                   " ",
                   h(
                     "a",
-                    { key: 432, href: "/v39/#build=briefing" },
+                    { key: 432, href: "#experiment=briefing" },
                     h(React.Fragment, { key: 433 }, "Make your brief →"),
                   ),
                   " ",
@@ -3781,22 +3781,10 @@ function renderPage(v) {
               { key: 648, style: style("color:var(--text-dim)") },
               h(React.Fragment, { key: 649 }, "Reading editions:"),
             ),
-            h(
-              "a",
-              { key: 650, href: "https://cashio.us/rooms/starship/" },
-              h(React.Fragment, { key: 651 }, "Starship lab"),
-            ),
-            h(
-              "a",
-              { key: 652, href: "https://cashio.us/rooms/principles/" },
-              h(React.Fragment, { key: 653 }, "Principles"),
-            ),
-            h("a", { key: 654, href: "https://cashio.us/rooms/studios/" }, h(React.Fragment, { key: 655 }, "Studios")),
-            h(
-              "a",
-              { key: 656, href: "https://cashio.us/rooms/heritage/" },
-              h(React.Fragment, { key: 657 }, "Flight heritage"),
-            ),
+            h("a", { key: 650, href: "/rooms/starship/" }, h(React.Fragment, { key: 651 }, "Starship lab")),
+            h("a", { key: 652, href: "/rooms/principles/" }, h(React.Fragment, { key: 653 }, "Principles")),
+            h("a", { key: 654, href: "/rooms/studios/" }, h(React.Fragment, { key: 655 }, "Studios")),
+            h("a", { key: 656, href: "/rooms/heritage/" }, h(React.Fragment, { key: 657 }, "Flight heritage")),
           ),
           " ",
         ),
@@ -4209,7 +4197,7 @@ function renderPage(v) {
                   "a",
                   {
                     key: 764,
-                    href: "https://cashio.us/rooms/studios/",
+                    href: "/rooms/studios/interactive/",
                     style: style("font-size:14px;font-weight:600"),
                   },
                   h(React.Fragment, { key: 765 }, "Open the Studios →"),
@@ -7883,7 +7871,7 @@ function renderPage(v) {
                   "a",
                   {
                     key: 1821,
-                    href: "/v39/#signature",
+                    href: "#signature",
                     style: style("font-size:14px;font-weight:600;color:var(--text)"),
                   },
                   h(React.Fragment, { key: 1822 }, "Explore the celestial signature in 3D →"),
@@ -7893,7 +7881,7 @@ function renderPage(v) {
                   "a",
                   {
                     key: 1824,
-                    href: "/v39/#film=zenith-celestial-signature",
+                    href: "#film=zenith-celestial-signature",
                     style: style("font-size:14px;font-weight:600;color:var(--text)"),
                   },
                   h(React.Fragment, { key: 1825 }, "Watch its quiet orbit · 5 seconds →"),
