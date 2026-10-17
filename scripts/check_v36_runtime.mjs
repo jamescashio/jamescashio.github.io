@@ -148,8 +148,8 @@ async function run() {
       );
       for (const hash of ["#lensing", "#signature", "#film=sanctuary"])
         assert.ok(
-          studios.includes(`class="studio-card" href="/v39/${hash}"`),
-          "each original studio remains available",
+          studios.includes(`class="studio-card" href="/${hash}"`),
+          "each original studio remains available from V40",
         );
       assert.match(studios, /class="studio-library"/, "the static film library is available");
       const archiveHtml = await fetch(`${base}/odyssey.html`).then((response) => response.text());
