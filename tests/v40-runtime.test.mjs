@@ -285,6 +285,15 @@ test("Boarding, reload, Back and closing a scene keep visitors in V40", async (t
   }
 });
 
+test("An older build bookmark does not trap the Back button", async (t) => {
+  const page = await visit(t, { hash: "#work" });
+  await page.goto(new URL("/#build=hermes", url).href);
+  await expect.poll(() => new URL(page.url()).hash.startsWith("#experiment=hermes")).toBe(true);
+  await page.goBack();
+  await expect.poll(() => new URL(page.url()).hash).toBe("#work");
+  await expect(page.locator("#v40-root h1")).toBeAttached();
+});
+
 test("Every current room works and its return links lead to the V40 homepage", async (t) => {
   for (const width of [1440, 390, 320]) {
     const page = await visit(t, { width });

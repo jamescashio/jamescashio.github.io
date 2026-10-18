@@ -37,9 +37,9 @@ export function setupV40Navigation() {
     if (originalTitle !== undefined) document.title = originalTitle;
     originalTitle = undefined;
   }
-  function navigate(hash) {
+  function navigate(hash, replaceEntry = false) {
     requestedHash = activeHash && !sceneKind(hash) ? hash : null;
-    if (hash !== location.hash) history[activeHash ? "replaceState" : "pushState"](null, "", hash);
+    if (hash !== location.hash) history[activeHash || replaceEntry ? "replaceState" : "pushState"](null, "", hash);
     window.dispatchEvent(new HashChangeEvent("hashchange"));
   }
   function focusReturn(hash, destination = false) {
@@ -80,7 +80,7 @@ export function setupV40Navigation() {
       return;
     }
     if (hash.startsWith("#build=") && experiments.has(hash.slice(7).split("&")[0])) {
-      navigate("#experiment=" + hash.slice(7));
+      navigate("#experiment=" + hash.slice(7), true);
       return;
     }
     const kind = sceneKind(hash);
