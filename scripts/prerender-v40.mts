@@ -39,6 +39,14 @@ const fallbackCss = [...rules].map(([name, declarations]) => `.${name}{${declara
 const filename = "v40-reading-" + createHash("sha256").update(fallbackCss).digest("hex").slice(0, 12) + ".css";
 await writeFile("dist/assets/" + filename, fallbackCss);
 let html = await readFile("dist/index.html", "utf8");
+// The routing guard used to live at a stable URL with a four-hour cache lifetime.
+// A content address prevents an updated page from reusing the old V39 redirects.
+const routing = await readFile("public/v40-entry.js", "utf8");
+const routingFile = "v40-entry-" + createHash("sha256").update(routing).digest("hex").slice(0, 12) + ".js";
+await writeFile("dist/assets/" + routingFile, routing);
+html = html.replace('src="/v40-entry.js"', `src="/assets/${routingFile}"`);
+const alias = await readFile("dist/v40/index.html", "utf8");
+await writeFile("dist/v40/index.html", alias.replace('src="/v40-entry.js"', `src="/assets/${routingFile}"`));
 html = html.replace('<div id="v40-root"></div>', `<div id="v40-root">${dom.window.document.body.innerHTML}</div>`);
 html = html.replace("</head>", `<link rel="stylesheet" href="/assets/${filename}"></head>`);
 html = html.replace(

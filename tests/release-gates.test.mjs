@@ -14,6 +14,12 @@ const asset = (path) => new URL(`../${path}`, import.meta.url);
 
 test("V40 ships its real reading edition under the strict production security policy", async () => {
   const document = new JSDOM(await read("dist/index.html")).window.document;
+  const routing = document.querySelector('script[src^="/assets/v40-entry-"]');
+  assert.ok(routing, "changed routing must get a new URL instead of reusing a cached redirect script");
+  const routingFile = routing.getAttribute("src");
+  assert.equal(await read(`dist${routingFile}`), await read("public/v40-entry.js"));
+  const alias = new JSDOM(await read("dist/v40/index.html")).window.document;
+  assert.ok(alias.querySelector(`script[src="${routingFile}"]`));
   const root = document.querySelector("#v40-root");
   assert.ok(root);
   assert.equal(root.querySelectorAll("main > section").length, 11);
@@ -799,14 +805,19 @@ test("The V39 archive ships Helios directly, with bounded compatibility routing 
     const reading = new JSDOM(await read(`dist/rooms/${id}/index.html`)).window.document;
     assert.equal(reading.querySelectorAll("script").length, 0, "reading edition needs no JavaScript");
     assert.equal(reading.querySelectorAll("h1").length, 1);
-    assert.ok(reading.querySelector(`a[href="/v39/#${id}"]`));
-    assert.ok(reading.querySelector('.room-end a[href="/v39/#rooms"]'));
+    assert.ok(reading.querySelector(`a[href="/rooms/${id}/interactive/"]`));
+    assert.ok(reading.querySelector('.room-end a[href="/#rooms"]'));
+    assert.equal(reading.querySelectorAll('a[href^="/v39/"]').length, 0);
+    const interactive = new JSDOM(await read(`dist/rooms/${id}/interactive/index.html`)).window.document;
+    assert.equal(interactive.querySelectorAll('script[type="module"][src]').length, 1);
+    assert.equal(interactive.querySelectorAll('a[href^="/v39/"]').length, 0);
+    assert.ok(interactive.querySelector('a[href="/#rooms"]'));
     for (const image of reading.querySelectorAll("img"))
       assert.ok((await stat(asset(`dist${image.getAttribute("src")}`))).size > 0);
     if (id === "studios") {
       assert.equal(reading.querySelectorAll(".studio-card").length, 6);
       assert.equal(reading.querySelectorAll(".studio-library a").length, 6);
-      assert.ok(reading.querySelector('.studio-library a[href="/v39/#film=intro"]'));
+      assert.ok(reading.querySelector('.studio-library a[href="/#film=intro"]'));
       assert.ok(reading.querySelector('.studio-paths a[href="#zenith-heading"]'));
       assert.ok(reading.querySelector('.studio-paths a[href="#studio-worlds"]'));
     }
@@ -854,7 +865,7 @@ test("Zenith ships only the fifteen web films, with complete routes and reading-
   assert.deepEqual(
     links.sort(),
     Object.keys(clips)
-      .map((id) => `/v39/#film=${id}`)
+      .map((id) => `/#film=${id}`)
       .sort(),
   );
   const files = await readdir(asset("dist/assets/zenith"));

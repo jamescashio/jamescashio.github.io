@@ -1,0 +1,35 @@
+/* Shared scene islands inherit V40's type and palette without restyling its page. */
+#helios-flight,
+#helios-studio {
+  --sans: var(--font-body, "Instrument Sans", sans-serif);
+  --display: var(--font-display, "Unbounded", sans-serif);
+  --mono: var(--font-mono, monospace);
+  --gold: var(--accent, #e9b65c);
+  --ink: var(--text, #eef4fa);
+  --ink2: var(--text-dim, #b4c2d1);
+  --muted: var(--text-dim, #a6b7c9);
+  --line: #304357;
+}
+.v40-scene-status {
+  position: fixed;
+  z-index: 2147483646;
+  inset: 20% max(16px, calc((100% - 560px) / 2)) auto;
+  padding: 24px;
+  border: 1px solid #e9b65c;
+  border-radius: 16px;
+  color: #eef4fa;
+  background: #080f1b;
+  font: 18px/1.5 sans-serif;
+}
+.v40-scene-status button {
+  min-height: 44px;
+  padding: 10px 18px;
+  color: #080f1b;
+  background: #e9b65c;
+  border: 0;
+  border-radius: 8px;
+}
+.v40-scene-status button:focus-visible {
+  outline: 3px solid #22d3ee;
+  outline-offset: 4px;
+}

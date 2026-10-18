@@ -12,6 +12,8 @@ const versions = JSON.parse(await readFile("dist/v38/asset-versions.json", "utf8
 const roomStyles = (await readdir("dist/assets")).filter((name) => /^room-content-[\w-]+\.css$/.test(name));
 if (roomStyles.length !== 1) throw new Error("Expected one deferred room stylesheet");
 const roomIds = ["starship", "principles", "studios", "heritage"];
+const roomEntries = (await readdir("dist/assets")).filter((name) => /^v40Rooms-[\w-]+\.js$/.test(name));
+if (roomEntries.length !== 1) throw new Error("Expected one V40 room entry");
 for (const id of roomIds) {
   const source = await readFile(`src/helios/rooms/${id}.html`, "utf8");
   const doc = new JSDOM("<!doctype html><html lang='en'><head></head><body></body></html>").window.document;
@@ -39,7 +41,7 @@ for (const id of roomIds) {
   doc.head.append(canonical);
   const notice = doc.createElement("header");
   notice.className = "wrap stack p-22-30 sg-16";
-  notice.innerHTML = `<a href="/v39/#rooms">← Back to the four rooms</a><h1 class="display fs-32">${title}</h1><p id="reading-mode">Controls are inactive in this reading edition. It shows the artwork, one example state and all of the text. Open the interactive room to change the inputs and explore the results.</p><a class="btn gold" href="/v39/#${id}">Open the interactive room →</a>`;
+  notice.innerHTML = `<a href="/#rooms">← Back to the four rooms</a><h1 class="display fs-32">${title}</h1><p id="reading-mode">Controls are inactive in this reading edition. It shows the artwork, one example state and all of the text. Open the interactive room to change the inputs and explore the results.</p><a class="btn gold" href="/rooms/${id}/interactive/">Open the interactive room →</a>`;
   const main = doc.createElement("main");
   main.innerHTML = source;
   for (const image of main.querySelectorAll("img")) {
@@ -49,9 +51,10 @@ for (const id of roomIds) {
   const localAnchors = new Set([...main.querySelectorAll("[id]")].map((node) => node.id));
   for (const link of main.querySelectorAll("a[href^='#']")) {
     const href = link.getAttribute("href")!;
-    if (!localAnchors.has(href.slice(1))) link.setAttribute("href", "/v39/" + href);
+    if (!localAnchors.has(href.slice(1))) link.setAttribute("href", "/" + href);
   }
   for (const control of main.querySelectorAll("button,input,select,textarea")) {
+    if (!control.hasAttribute("disabled")) control.setAttribute("data-reading-disabled", "");
     control.setAttribute("disabled", "");
     control.setAttribute("aria-describedby", "reading-mode");
   }
@@ -114,6 +117,44 @@ for (const id of roomIds) {
   doc.body.append(notice, main);
   await mkdir(`dist/rooms/${id}`, { recursive: true });
   await writeFile(`dist/rooms/${id}/index.html`, "<!doctype html>\n" + doc.documentElement.outerHTML + "\n");
+  const interactive = doc.cloneNode(true) as Document;
+  // Restore the authored controls, roles and live regions; the reading copy deliberately removes them.
+  const interactiveMain = interactive.querySelector("main")!;
+  interactiveMain.innerHTML = source;
+  for (const link of interactiveMain.querySelectorAll("a[href^='#']")) {
+    const href = link.getAttribute("href")!;
+    if (!localAnchors.has(href.slice(1))) link.setAttribute("href", "/" + href);
+  }
+  for (const image of interactiveMain.querySelectorAll("img")) {
+    const version = versions[image.getAttribute("src") || ""];
+    if (version) image.setAttribute("src", version.url);
+  }
+  for (const control of interactiveMain.querySelectorAll("button,input,select,textarea")) {
+    if (control.hasAttribute("disabled")) continue;
+    control.setAttribute("data-reading-disabled", "");
+    control.setAttribute("disabled", "");
+  }
+  interactive.querySelector("#reading-mode")!.textContent =
+    "V40 interactive room. Controls require JavaScript. The artwork and text remain available below.";
+  const opener = interactive.querySelector(`a[href="/rooms/${id}/interactive/"]`)!;
+  opener.setAttribute("href", `/rooms/${id}/`);
+  opener.textContent = "Reading edition →";
+  const entry = interactive.createElement("script");
+  entry.type = "module";
+  entry.src = "/assets/" + roomEntries[0];
+  interactive.body.append(entry);
+  const roomCss = (await readdir("dist/assets")).filter((name) => /^v40Rooms-[\w-]+\.css$/.test(name));
+  for (const name of roomCss) {
+    const link = interactive.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "/assets/" + name;
+    interactive.head.append(link);
+  }
+  await mkdir(`dist/rooms/${id}/interactive`, { recursive: true });
+  await writeFile(
+    `dist/rooms/${id}/interactive/index.html`,
+    "<!doctype html>\n" + interactive.documentElement.outerHTML + "\n",
+  );
 }
 /** The full list sits before the room's closing links, so every page still ends with its way back. */
 function placeBeforeEnd(main: Element, id: string, section: Element) {

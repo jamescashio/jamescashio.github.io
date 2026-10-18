@@ -1284,8 +1284,8 @@ test("The V39 archive stays available; old world bookmarks and the V40 front doo
   ]) {
     await page.goto(new URL(suffix, url).href);
     const world = suffix.includes("#studios");
-    await expect(page.locator(world ? "#study-hermes" : "#v40-root")).toBeAttached();
-    assert.equal(new URL(page.url()).pathname, world ? "/v39/" : "/");
+    await expect(page.locator(world ? "#studios" : "#v40-root")).toBeAttached();
+    assert.equal(new URL(page.url()).pathname, world ? "/rooms/studios/interactive/" : "/");
     assert.equal(new URL(page.url()).search, "");
     assert.equal(new URL(page.url()).hash, new URL(suffix, url).hash);
   }
@@ -2099,7 +2099,7 @@ test("All four reading editions remain reachable and readable without JavaScript
           link.href,
         );
       await page.locator(".room-end a").first().click();
-      await expect(page.locator("#rooms-h")).toBeVisible();
+      await expect(page.locator("#v40-root #rooms")).toBeVisible();
     }
   }
 });
