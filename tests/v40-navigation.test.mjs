@@ -44,3 +44,87 @@ test("ordinary V40 navigation cannot send a visitor into the version archive", a
   assert.ok(doc.querySelector('a[href="#signature"]'));
   environment.window.close();
 });
+
+async function initialSectionLifecycle(initialState = "interactive") {
+  const environment = new JSDOM('<!doctype html><html><body><section id="operator"></section></body></html>', {
+    url: "https://cashio.us/#operator",
+    runScripts: "outside-only",
+  });
+  const win = environment.window;
+  let state = initialState;
+  Object.defineProperty(win.document, "readyState", { get: () => state });
+  Object.defineProperty(win.document, "fonts", { value: { ready: Promise.resolve() } });
+  win.matchMedia = () => ({ matches: true, addEventListener() {} });
+  const frames = [];
+  win.requestAnimationFrame = (callback) => frames.push(callback);
+  let visibleSection = "old browser position";
+  win.Element.prototype.scrollIntoView = function () {
+    visibleSection = this.id;
+  };
+  const flush = async () => {
+    for (let step = 0; step < 4; step++) {
+      for (const callback of frames.splice(0)) await callback();
+      await Promise.resolve();
+    }
+  };
+  win.eval(await readFile(new URL("../src/v40/polish.js", import.meta.url), "utf8"));
+  win.dispatchEvent(new win.Event("cashio-ready"));
+  return {
+    win,
+    flush,
+    visible: () => visibleSection,
+    load(position) {
+      state = "complete";
+      win.dispatchEvent(new win.Event("load"));
+      visibleSection = position;
+    },
+  };
+}
+
+for (const initialState of ["interactive", "complete"]) {
+  test(`V40 restores its section after the browser finishes loading (${initialState})`, async () => {
+    const lifecycle = await initialSectionLifecycle(initialState);
+    try {
+      await lifecycle.flush();
+      if (initialState !== "complete") {
+        assert.equal(lifecycle.visible(), "old browser position", "loading has not finished restoring browser state");
+        lifecycle.load("browser restored position after load");
+        await lifecycle.flush();
+      }
+      assert.equal(lifecycle.visible(), "operator", "the requested V40 section wins after browser scroll restoration");
+    } finally {
+      lifecycle.win.close();
+    }
+  });
+}
+
+for (const intent of ["wheel", "touchstart", "pointerdown", "keydown"]) {
+  test(`V40 initial section restoration yields to visitor ${intent}`, async () => {
+    const lifecycle = await initialSectionLifecycle();
+    try {
+      await lifecycle.flush();
+      lifecycle.win.dispatchEvent(new lifecycle.win.Event(intent));
+      lifecycle.load("reader's new position");
+      await lifecycle.flush();
+      assert.equal(lifecycle.visible(), "reader's new position");
+    } finally {
+      lifecycle.win.close();
+    }
+  });
+}
+
+for (const action of ["new hash", "open menu"]) {
+  test(`V40 initial restoration does not interrupt ${action}`, async () => {
+    const lifecycle = await initialSectionLifecycle();
+    try {
+      await lifecycle.flush();
+      if (action === "new hash") lifecycle.win.location.hash = "contact";
+      else lifecycle.win.document.querySelector("#mission-dialog").setAttribute("open", "");
+      lifecycle.load("reader's new position");
+      await lifecycle.flush();
+      assert.equal(lifecycle.visible(), "reader's new position");
+    } finally {
+      lifecycle.win.close();
+    }
+  });
+}
