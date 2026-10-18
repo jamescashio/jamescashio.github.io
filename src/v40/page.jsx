@@ -3888,6 +3888,36 @@ function renderPage(v) {
             " ",
             h(AiWormFilm, { key: "ai-worm" }),
             h(
+              "article",
+              {
+                key: "roadster-studio",
+                id: "roadster-studio",
+                className: "studio-project",
+                "aria-labelledby": "roadster-studio-title",
+              },
+              h(
+                "div",
+                null,
+                h("p", { className: "studio-project-kicker" }, "FROM MY WORKSHOP · INTERACTIVE 3D"),
+                h("h3", { id: "roadster-studio-title" }, "Roadster Studio"),
+                h(
+                  "p",
+                  null,
+                  "Explore the motors, pressure tanks and all ten thrusters in my independent automotive CAD study. Play the cinematic tour or compose your own studio photograph.",
+                ),
+              ),
+              h(
+                "a",
+                {
+                  href: "https://roadster-studio.hotsaucecashio.chatgpt.site/",
+                  target: "_blank",
+                  rel: "noopener noreferrer",
+                  "aria-label": "Explore Roadster Studio, opens in a new tab",
+                },
+                "Explore Roadster Studio ↗",
+              ),
+            ),
+            h(
               "div",
               {
                 key: 688,
