@@ -3896,8 +3896,24 @@ function renderPage(v) {
                 "aria-labelledby": "roadster-studio-title",
               },
               h(
+                "figure",
+                { className: "studio-project-preview" },
+                h("img", {
+                  src: "/images/roadster-studio-960.webp",
+                  srcSet:
+                    "/images/roadster-studio-640.webp 640w, /images/roadster-studio-960.webp 960w, /images/roadster-studio-1600.webp 1600w",
+                  sizes: "(max-width: 760px) calc(100vw - 48px), (max-width: 1200px) 52vw, 650px",
+                  width: 1600,
+                  height: 900,
+                  loading: "lazy",
+                  decoding: "async",
+                  alt: "Pearl white Roadster CAD model with bronze glass and sculpted wheels, lit in a dark cinematic studio.",
+                }),
+                h("figcaption", null, "Rendered from the interactive model"),
+              ),
+              h(
                 "div",
-                null,
+                { className: "studio-project-copy" },
                 h("p", { className: "studio-project-kicker" }, "FROM MY WORKSHOP · INTERACTIVE 3D"),
                 h("h3", { id: "roadster-studio-title" }, "Roadster Studio"),
                 h(
@@ -3905,16 +3921,16 @@ function renderPage(v) {
                   null,
                   "Explore the motors, pressure tanks and all ten thrusters in my independent automotive CAD study. Play the cinematic tour or compose your own studio photograph.",
                 ),
-              ),
-              h(
-                "a",
-                {
-                  href: "https://roadster-studio.hotsaucecashio.chatgpt.site/",
-                  target: "_blank",
-                  rel: "noopener noreferrer",
-                  "aria-label": "Explore Roadster Studio, opens in a new tab",
-                },
-                "Explore Roadster Studio ↗",
+                h(
+                  "a",
+                  {
+                    href: "https://roadster-studio.hotsaucecashio.chatgpt.site/",
+                    target: "_blank",
+                    rel: "noopener noreferrer",
+                    "aria-label": "Explore Roadster Studio, opens in a new tab",
+                  },
+                  "Explore Roadster Studio ↗",
+                ),
               ),
             ),
             h(
