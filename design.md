@@ -1,5 +1,9 @@
 # V39.4 · Heart of Gold · September 29, 2026
 
+## Roadster showcase image. October 18, 2026
+
+Give the existing Roadster Studio entry an actual cinematic capture from its interactive CAD assembly. Use a quiet split composition with the image beside the original copy and one clear link. Stack image and copy on phones. Preserve the cAshIo type, navy, gold and cyan system. Serve optimized responsive WebP images locally, reserve their dimensions and lazy load this below-fold feature. The caption distinguishes the authored render from manufacturer photography. No autoplay or additional dependencies.
+
 An orbital workshop with the clarity of a field journal: original worlds draw people in, and illustrated, dated results make the work inspectable.
 
 The arrival remains available after a first visit: a quiet “Watch the intro” link beneath the two main homepage actions opens the original six-second portal film in the existing cinema. Bit’s menu and the Studios collection offer the same destination. The full-resolution film loads only after Play; reduced-motion visitors retain that explicit choice. Reuse pause, replay, keyboard close and focus return. Accept a completed native seek when the decoder reports slight clock drift, while retaining precise keyboard steps. Preserve the original media and provide a direct video link when JavaScript is unavailable.
