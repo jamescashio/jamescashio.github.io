@@ -140,17 +140,41 @@
       }
     });
     syncButtons();
-    if (location.hash)
-      requestAnimationFrame(async () => {
+    if (location.hash) {
+      const initialHash = location.hash;
+      let cancelled = false;
+      const intents = ["wheel", "touchstart", "pointerdown", "keydown"];
+      const cleanup = () => intents.forEach((type) => window.removeEventListener(type, cancel, true));
+      const cancel = () => {
+        cancelled = true;
+        cleanup();
+      };
+      intents.forEach((type) => window.addEventListener(type, cancel, { capture: true, passive: true }));
+      (async () => {
         await document.fonts.ready;
-        let id;
-        try {
-          id = decodeURIComponent(location.hash.slice(1));
-        } catch (_) {
-          return;
-        }
-        document.getElementById(id)?.scrollIntoView({ block: "start", behavior: "instant" });
-      });
+        if (cancelled) return;
+        // Reload restoration can run after the client selects its section.
+        // Align after loading and the browser's restoration, including cached loads.
+        if (document.readyState !== "complete")
+          await new Promise((resolve) => window.addEventListener("load", resolve, { once: true }));
+        requestAnimationFrame(() => {
+          cleanup();
+          if (
+            cancelled ||
+            location.hash !== initialHash ||
+            document.querySelector("dialog[open],#helios-flight,#helios-studio")
+          )
+            return;
+          let id;
+          try {
+            id = decodeURIComponent(location.hash.slice(1));
+          } catch (_) {
+            return;
+          }
+          document.getElementById(id)?.scrollIntoView({ block: "start", behavior: "instant" });
+        });
+      })();
+    }
   }
   window.addEventListener("cashio-ready", ready);
   document.addEventListener("click", (e) => {

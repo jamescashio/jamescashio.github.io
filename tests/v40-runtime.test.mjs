@@ -15,12 +15,14 @@ before(async () => {
 after(async () => {
   await browser?.close();
 });
-async function visit(t, { width = 1440, motion = "reduce", hash = "", js = true } = {}) {
+async function visit(t, { width = 1440, motion = "reduce", hash = "", js = true, touch = false } = {}) {
   const context = await browser.newContext({
     viewport: { width, height: 900 },
     reducedMotion: motion,
     javaScriptEnabled: js,
     acceptDownloads: true,
+    hasTouch: touch,
+    isMobile: touch,
   });
   const page = await context.newPage();
   const errors = [],
@@ -168,6 +170,48 @@ test("Mission Control searches chapters and closes with a usable focus destinati
   await dialog.locator("[data-chapter]:visible").click();
   await expect(page).toHaveURL(/#studies$/);
   await expect(dialog).not.toBeVisible();
+});
+
+test("Every mobile Menu section stays in V40 and survives a reload", async (t) => {
+  const ids = [
+    "top",
+    "workshop",
+    "rooms",
+    "films",
+    "law",
+    "work",
+    "studies",
+    "universe",
+    "evidence",
+    "operator",
+    "contact",
+  ];
+  for (const width of [390, 320]) {
+    const page = await visit(t, { width, touch: true });
+    assert.deepEqual(
+      await page
+        .locator("#mission-dialog [data-chapter]")
+        .evaluateAll((links) => links.map((link) => link.dataset.chapter)),
+      ids,
+    );
+    for (const id of ids) {
+      await page.locator("header [data-mission-open]").tap();
+      const link = page.locator(`#mission-dialog [data-chapter="${id}"]`);
+      await expect(link).toHaveAttribute("href", `#${id}`);
+      await link.tap();
+      await expect(page.locator("#mission-dialog")).not.toBeVisible();
+      assert.equal(new URL(page.url()).pathname, "/");
+      assert.equal(new URL(page.url()).hash, `#${id}`);
+      await expect(page.locator(`#${id}`)).toBeFocused();
+      await expect(page.locator(`#${id}`)).toBeInViewport();
+      await page.reload();
+      await expect(page.locator("#mission-dialog")).toBeAttached();
+      await expect(page).toHaveTitle(/V40 Mostly Harmless/);
+      assert.equal(new URL(page.url()).pathname, "/");
+      assert.equal(new URL(page.url()).hash, `#${id}`);
+      await expect(page.locator(`#${id}`)).toBeInViewport();
+    }
+  }
 });
 
 test("Private inputs override the routing demonstration", async (t) => {
