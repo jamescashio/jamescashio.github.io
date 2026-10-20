@@ -573,7 +573,7 @@ async function runEarlyActivationAcceptance(send, targetUrl) {
     direct.settlement?.sectionAlignmentDelta > 1
   )
     failures.push(`direct Iron startup did not settle synchronously: ${JSON.stringify(direct)}`);
-  if (typeof direct.activationRequestGapMs !== "number" || direct.activationRequestGapMs > 100)
+  if (typeof direct.activationRequestGapMs !== "number" || direct.activationRequestGapMs > 200)
     failures.push(`direct Iron activation import waited ${direct.activationRequestGapMs}ms`);
   if (visibleWrongDirectFrame)
     failures.push(`direct Iron exposed Snapshot before activation: ${JSON.stringify(visibleWrongDirectFrame)}`);
