@@ -87,7 +87,9 @@ test("The logo reveal is explicit, square, playable, and pauses the other identi
       assert.ok(Math.abs((await reveal.evaluate((video) => video.duration)) - 15.04) < 0.15);
       await reveal.evaluate((video) => (video.muted = false));
       assert.equal(await reveal.evaluate((video) => video.muted), false, "sound remains under native player control");
+      assert.equal(await reveal.evaluate((video) => video.paused), false, "the reveal is playing before the switch");
       await page.locator("#film video").evaluate((video) => video.play());
+      assert.equal(await page.locator("#film video").evaluate((video) => video.paused), false);
       await expect.poll(() => reveal.evaluate((video) => video.paused)).toBe(true);
       await page.locator("#film video").scrollIntoViewIfNeeded();
       await page.locator("#film video").evaluate((video) => video.play());
