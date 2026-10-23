@@ -1,6 +1,7 @@
 import React from "react";
 import designSystem from "./design-system.js";
 import { AiWormFilm } from "./ai-worm.jsx";
+import { HeroReel } from "./hero-reel.jsx";
 const h = React.createElement;
 const styleCache = new Map();
 function style(value) {
@@ -595,8 +596,9 @@ export class V40Page extends React.Component {
     if (pb) pb.style.transform = `scaleX(${H > 0 ? Math.min(1, y / H) : 0})`;
     const hc = document.getElementById("hero-content");
     if (hc && !this.reduce) {
-      const k = Math.min(1, y / 760);
-      hc.style.transform = `translateY(${y * 0.2}px)`;
+      const heroScroll = Math.max(0, y - hc.offsetTop);
+      const k = Math.min(1, heroScroll / 760);
+      hc.style.transform = `translateY(${heroScroll * 0.2}px)`;
       hc.style.opacity = String(1 - k * 0.85);
     }
     const law = document.getElementById("law");
@@ -2023,6 +2025,7 @@ function renderPage(v) {
             ),
           }),
           " ",
+          h(HeroReel, { key: "hero-reel" }),
           v.wide
             ? h(
                 React.Fragment,
