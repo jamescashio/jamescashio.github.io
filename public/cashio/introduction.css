@@ -221,6 +221,35 @@ figcaption {
 .intro p:not(.eyebrow) {
   color: var(--muted);
 }
+.logo-reveal {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(28px, 5vw, 70px);
+  padding: 75px 0;
+  border-top: 1px solid var(--line);
+  scroll-margin-top: 20px;
+}
+.logo-reveal figure {
+  width: min(100%, 512px);
+  justify-self: center;
+}
+.logo-reveal video {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+  margin-top: 0;
+  background: #03060c;
+  border-color: #b38a4b;
+  box-shadow:
+    0 0 60px #22d3ee18,
+    0 24px 70px #0008;
+}
+.logo-reveal figcaption {
+  font-size: 14px;
+  margin-top: 18px;
+}
 #film {
   padding: 75px 0;
   scroll-margin-top: 20px;
@@ -294,6 +323,10 @@ footer {
   .intro {
     grid-template-columns: 1fr;
     gap: 30px;
+    padding: 55px 0;
+  }
+  .logo-reveal {
+    grid-template-columns: minmax(0, 1fr);
     padding: 55px 0;
   }
   #film {

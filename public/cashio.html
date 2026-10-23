@@ -18,7 +18,7 @@
     <meta property="og:type" content="website" />
     <meta
       property="og:description"
-      content="Doug Cashio’s personal AI workspace: its original artwork, a short film and the ideas behind it."
+      content="Doug Cashio’s personal AI workspace: its original artwork, short films and the ideas behind it."
     />
     <meta property="og:url" content="https://cashio.us/cashio.html" />
     <meta property="og:image" content="https://cashio.us/cashio/logo.png" />
@@ -34,7 +34,10 @@
         <a class="wordmark" href="/" aria-label="cAshIo — Doug Cashio’s website"
           ><img src="/cashio/icon.svg" width="29" height="29" alt="" /><span>c<b>A</b>sh<i>I</i>o</span></a
         >
-        <nav aria-label="Main"><a href="#film">Watch the film</a><a href="/">Explore Doug’s work ↗</a></nav>
+        <nav aria-label="Main">
+          <a href="#logo-reveal">Watch the logo reveal</a><a href="#film">The workspace film</a
+          ><a href="/">Explore Doug’s work ↗</a>
+        </nav>
       </header>
       <main id="main" tabindex="-1">
         <section class="hero" aria-labelledby="title">
@@ -42,8 +45,8 @@
             <p class="eyebrow brand-name">Doug Cashio’s personal AI workspace</p>
             <h1 id="title">My personal<br />AI <span>workspace.</span></h1>
             <p class="lead">
-              I call my personal AI workspace <span class="wm">cAsh<span class="wm-i">I</span>o</span>. This page collects its original artwork, a short film and the
-              ideas behind it.
+              I call my personal AI workspace <span class="wm">cAsh<span class="wm-i">I</span>o</span>. This page
+              collects its original artwork, short films and the ideas behind it.
             </p>
             <a class="button" href="#film">Meet the identity ↓</a
             ><a class="text-link" href="/#work">Explore the work ↗</a>
@@ -59,13 +62,61 @@
             <figcaption>Ready when you are.</figcaption>
           </figure>
         </section>
+        <section id="logo-reveal" class="logo-reveal" aria-labelledby="logo-reveal-title">
+          <div>
+            <p class="eyebrow">cAshIo logo reveal · 15 seconds</p>
+            <h2 id="logo-reveal-title">The signature.<br /><span>In motion.</span></h2>
+            <p class="lead">Gold lettering. Blue energy. A signature in motion.</p>
+            <p id="logo-reveal-note">
+              Press play when you’re ready. Starts muted; use the player for sound, replay or full screen.
+            </p>
+            <p class="caption"><a href="/cashio/logo-reveal-512.mp4">Open the video directly ↗</a></p>
+            <details>
+              <summary>Read the visual description</summary>
+              <p>
+                The gold cAshIo wordmark floats against a dark starfield. Blue and gold energy curls around the letters
+                and forms luminous orbits. A small spacecraft passes below the signature before the light gathers around
+                it again.
+              </p>
+            </details>
+          </div>
+          <figure>
+            <video
+              id="logo-reveal-player"
+              width="512"
+              height="512"
+              controls
+              playsinline
+              muted
+              preload="none"
+              poster="/cashio/logo-reveal-poster.webp"
+              aria-labelledby="logo-reveal-title"
+              aria-describedby="logo-reveal-note"
+            >
+              <source src="/cashio/logo-reveal-512.mp4" type="video/mp4" />
+              <track
+                label="English visual descriptions"
+                kind="descriptions"
+                srclang="en"
+                src="/cashio/logo-reveal-description.vtt"
+              />
+              <a href="/cashio/logo-reveal-512.mp4">Watch the 15-second cAshIo logo reveal.</a>
+            </video>
+            <figcaption>cAshIo · A House Cashio signature</figcaption>
+          </figure>
+        </section>
         <section class="intro" aria-labelledby="workspace">
           <div>
             <p class="eyebrow">One family. Clear roles.</p>
-            <h2 id="workspace">House Cashio.<br /><span class="wm">cAsh<span class="wm-i">I</span>o.</span></h2>
+            <h2 id="workspace">
+              House Cashio.<br /><span class="wm">cAsh<span class="wm-i">I</span>o.</span>
+            </h2>
           </div>
           <div>
-            <p class="lead">House Cashio is the umbrella identity. <span class="wm">cAsh<span class="wm-i">I</span>o</span> is Doug’s personal AI workspace within it.</p>
+            <p class="lead">
+              House Cashio is the umbrella identity. <span class="wm">cAsh<span class="wm-i">I</span>o</span> is Doug’s
+              personal AI workspace within it.
+            </p>
             <p>
               It brings a personal, useful approach to working with AI: begin with an idea, make the reasoning visible,
               and keep a human in command.
@@ -107,7 +158,11 @@
           <a class="button" href="/#work">Explore Doug’s work ↗</a>
         </section>
       </main>
-      <footer><span><span class="wm">cAsh<span class="wm-i">I</span>o</span> · A House Cashio workspace</span><a href="/">Back to Doug’s universe ↗</a></footer>
+      <footer>
+        <span
+          ><span class="wm">cAsh<span class="wm-i">I</span>o</span> · A House Cashio workspace</span
+        ><a href="/">Back to Doug’s universe ↗</a>
+      </footer>
     </div>
     <script src="/cashio/introduction.js"></script>
   </body>
