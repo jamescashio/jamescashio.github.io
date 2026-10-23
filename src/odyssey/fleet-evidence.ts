@@ -2,6 +2,7 @@ import snapshot from "../../public/evidence/status-2026-09-07.json";
 
 /** The rendered page and downloadable export share the same dated observation. */
 export const FLEET_EVIDENCE = snapshot;
+export const FLEET_EVIDENCE_URL = "/evidence/status-2026-09-07.json";
 
 export const BRIEF_FACTS = [
   {
@@ -9,14 +10,14 @@ export const BRIEF_FACTS = [
     label: "Fleet evidence",
     fact: `${snapshot.containers.running} LXC containers and ${snapshot.virtualMachines.running} QEMU virtual machine were running at the ${snapshot.verifiedLong} observation.`,
     consequence: "The inventory is dated; running guests alone do not establish service health or recovery readiness.",
-    source: `Fleet observation · ${snapshot.verifiedLong} · /status.json`,
+    source: `Fleet observation · ${snapshot.verifiedLong} · ${FLEET_EVIDENCE_URL}`,
   },
   {
     id: "routing",
     label: "Routing evidence",
     fact: "The latest audit did not establish a current routing inventory or an end to end execution record.",
     consequence: "Current lane counts remain unverified. A past inventory cannot fill that gap.",
-    source: `Audit scope · ${snapshot.verifiedLong} · /status.json`,
+    source: `Audit scope · ${snapshot.verifiedLong} · ${FLEET_EVIDENCE_URL}`,
   },
   {
     id: "authority",
@@ -62,7 +63,7 @@ export function evidenceCommand(raw: string): string[] | null {
       ...fleetEvidenceLines(),
       "SOURCE · OWNER-RUN READ-ONLY HERMES AUDIT",
       "Cluster resource counts were checked against direct guest lists.",
-      "Download the observation at /status.json. Routing remains unverified.",
+      `Download the observation at ${FLEET_EVIDENCE_URL}. Routing remains unverified.`,
       "The website version identifies the experience; the observation has its own timestamp.",
     ];
   }

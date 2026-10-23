@@ -8,13 +8,15 @@ Cold Chrome 155, empty browser contexts, cache disabled, local preview transport
 
 | Viewport  | Before first view without video | After first view without video | Before first view total | After first view total | Before full scroll | After full scroll |
 | --------- | ------------------------------: | -----------------------------: | ----------------------: | ---------------------: | -----------------: | ----------------: |
-| 1440×900  |                       1,002,027 |                        583,761 |              10,157,116 |                583,761 |         17,330,034 |         7,311,482 |
-| 3440×1440 |                       1,002,027 |                        583,761 |              10,157,116 |                583,761 |         17,330,034 |         7,311,482 |
-| 390×844   |                       1,002,027 |                        583,761 |               7,994,428 |                583,761 |         13,128,907 |         6,683,779 |
+| 1440×900  |                       1,002,027 |                        583,742 |              10,157,116 |                583,742 |         17,330,034 |         7,311,463 |
+| 3440×1440 |                       1,002,027 |                        583,742 |              10,157,116 |                583,742 |         17,330,034 |         5,095,340 |
+| 390×844   |                       1,002,027 |                        583,742 |               7,994,428 |                583,742 |         13,128,907 |         6,683,760 |
 
 First view passes the 3 MB desktop and 1.5 MB phone budgets. The headline and both main actions fit at all three sizes in the runtime check at 1.5 seconds after load. Four video requests occur during each measured scroll, with one player owning playback at a time. All passes have zero page errors and no horizontal overflow. [Measurements](v41/measurements.json) include bounds and individual video transfers.
 
 ## Lighthouse on built output
+
+Lighthouse was measured on initial Eagle commit `93ed08f2e0ce62cae9a36924f777525f2598a397`. Final transfer sizes above were measured again after the archive citation and release title fixes. The V41 composition and all media files are unchanged.
 
 Lighthouse 13.5, Chrome 155. Three cold lab runs per viewport. Desktop uses a 40 ms simulated round trip, 10 Mbps and CPU multiplier 1. Phone uses Lighthouse mobile simulated throttling with CPU multiplier 4. The hero fit check uses normal local conditions; a throttled mobile connection can take longer than two seconds to paint.
 

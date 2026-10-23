@@ -1,3 +1,4 @@
+import { FLEET_EVIDENCE_URL } from "./fleet-evidence";
 import type { StudyId } from "./study-experiment";
 
 const SOURCE = "https://github.com/jamescashio/jamescashio.github.io/blob/0c509286ed9329b897741e1afe505376deb443ce/";
@@ -64,7 +65,7 @@ export const STUDY_NOTES: Record<StudyId, StudyNote> = {
       "Include routing evidence, then compose the brief. An unverified routing inventory stays unverified instead of becoming a confident count.",
     boundary:
       "Structured text assembled in this browser. There is no generated answer, and a composed brief does not renew the underlying observation.",
-    source: "/status.json",
+    source: FLEET_EVIDENCE_URL,
     sourceLabel: "Inspect the dated evidence used by this brief",
   },
   dashboards: {
@@ -77,7 +78,7 @@ export const STUDY_NOTES: Record<StudyId, StudyNote> = {
       "Move the clock from 23 to 24 hours. The same observation now needs review. Moving it back demonstrates the model; it does not refresh a real system.",
     boundary:
       "The clock and its review window are hypothetical. The actual fleet export has its own timestamp and no implied future health window.",
-    source: "/status.json",
+    source: FLEET_EVIDENCE_URL,
     sourceLabel: "Compare the actual fleet observation",
   },
   signal: {

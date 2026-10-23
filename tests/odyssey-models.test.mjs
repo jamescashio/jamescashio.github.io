@@ -1,7 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import { affectedModules, escalationExample, exposureExample, PROJECTS, routeExample } from "../src/odyssey/data.ts";
-import { BRIEF_FACTS, evidenceCommand, evidenceCount, FLEET_EVIDENCE } from "../src/odyssey/fleet-evidence.ts";
+import {
+  BRIEF_FACTS,
+  evidenceCommand,
+  evidenceCount,
+  FLEET_EVIDENCE,
+  FLEET_EVIDENCE_URL,
+} from "../src/odyssey/fleet-evidence.ts";
 import { defaultExperiment, parseExperiment, shareExperiment } from "../src/odyssey/study-experiment.ts";
 
 test("shared settings reproduce all seven experiments, including zero and empty selections", () => {
@@ -49,7 +56,7 @@ test("untrusted experiment fragments stay bounded and accept only defined contro
   assert.equal(shareExperiment(extra), "#build=signal&deviation=15&corroborated=0");
 });
 
-test("brief selections are independent and canonical links do not change the evidence", () => {
+test("brief selections are independent and canonical links do not change the evidence", async () => {
   const first = defaultExperiment("briefing");
   first.chosen.push("routing");
   assert.deepEqual(defaultExperiment("briefing").chosen, ["fleet", "authority"]);
@@ -57,6 +64,11 @@ test("brief selections are independent and canonical links do not change the evi
   assert.deepEqual(saved.chosen, ["fleet", "routing", "authority"]);
   assert.match(BRIEF_FACTS.find((fact) => fact.id === "routing").fact, /did not establish a current routing inventory/);
   assert.equal(FLEET_EVIDENCE.routingVerified, null);
+  const download = JSON.parse(await readFile(new URL(`../public${FLEET_EVIDENCE_URL}`, import.meta.url), "utf8"));
+  assert.deepEqual(download, FLEET_EVIDENCE, "the cited download must match the displayed observation");
+  for (const fact of BRIEF_FACTS.filter((fact) => ["fleet", "routing"].includes(fact.id)))
+    assert.ok(fact.source.endsWith(FLEET_EVIDENCE_URL));
+  assert.ok(evidenceCommand("verify").join(" ").includes(FLEET_EVIDENCE_URL));
 });
 
 test("unknown evidence stays unverified while an observed zero remains zero", () => {

@@ -364,6 +364,11 @@ test("the built V35 archive retains its real command deck, critical shell and de
 });
 
 test("the preserved Odyssey document ships the complete V37 story with a usable V35 archive", async () => {
+  const archivedDocument = new JSDOM(await read("dist/odyssey.html")).window.document;
+  assert.equal(
+    archivedDocument.querySelector(".o-evidence-copy .o-text-button").getAttribute("href"),
+    "/evidence/status-2026-09-07.json",
+  );
   for (const entry of ["odyssey.html"]) {
     const document = new JSDOM(await read(`dist/${entry}`)).window.document;
     const root = document.querySelector('#odyssey-root[data-prerendered="odyssey"]');
@@ -732,6 +737,9 @@ test("tag publication derives its version from software metadata and validates o
   const workflow = await read(".github/workflows/release.yml");
   assert.match(workflow, /require\('\.\/package\.json'\)\.version\.split\('\.'\)\[0\]/);
   assert.doesNotMatch(workflow, /EXPECTED_TAG[^\n]*status\.json/);
+  assert.ok(workflow.includes("require('./public/v40/site-release.json').visualEdition"));
+  assert.equal((workflow.match(/--title "\$GITHUB_REF_NAME · cAshIo \$EDITION"/g) ?? []).length, 2);
+  assert.doesNotMatch(workflow, /Mostly Harmless/);
   assert.match(workflow, /node-version:\s*22/);
   assertOrdered(workflow, requiredWorkflowCommands, "gh release create", "GitHub Release");
   assert.equal((workflow.match(/run: npm run build/g) ?? []).length, 1);

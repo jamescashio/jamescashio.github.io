@@ -1,3 +1,4 @@
+import { FLEET_EVIDENCE_URL } from "./fleet-evidence";
 import { loadStudyExample as loadExample } from "./study-navigation";
 import { Arrow } from "./effects";
 import operatingRecord from "../../public/evidence/status-2026-09-07.json";
@@ -148,7 +149,7 @@ export function BuildStory() {
           older observation.
         </p>
         <nav className="o-proof-sources" aria-label="Verify the dated infrastructure record">
-          <a className="o-text-button" href={STUDY + "public/status.json"} target="_blank" rel="noreferrer">
+          <a className="o-text-button" href={STUDY + "public" + FLEET_EVIDENCE_URL} target="_blank" rel="noreferrer">
             Inspect the dated record <Arrow diagonal />
           </a>
           <a className="o-text-button" href={operatingRecord.archive.url} target="_blank" rel="noreferrer">

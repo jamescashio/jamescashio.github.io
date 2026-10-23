@@ -87,12 +87,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          EDITION="$(node -p "require('./public/v40/site-release.json').visualEdition")"
           if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" \
-              --title "$GITHUB_REF_NAME · cAshIo Mostly Harmless" \
+              --title "$GITHUB_REF_NAME · cAshIo $EDITION" \
               --notes-file RELEASE_BODY.md --draft=false --prerelease=false --latest
           else
             gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --verify-tag \
-              --title "$GITHUB_REF_NAME · cAshIo Mostly Harmless" \
+              --title "$GITHUB_REF_NAME · cAshIo $EDITION" \
               --notes-file RELEASE_BODY.md --latest
           fi

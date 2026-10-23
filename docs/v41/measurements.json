@@ -169,9 +169,9 @@
       {
         "width": 1440,
         "height": 900,
-        "initialTotalBytes": 583761,
-        "initialNonVideoBytes": 583761,
-        "scrollBytes": 7311482,
+        "initialTotalBytes": 583742,
+        "initialNonVideoBytes": 583742,
+        "scrollBytes": 7311463,
         "videoRequests": [
           {
             "url": "/assets/hero/cashio-v41-eagle-arrival-1080p-av1.mp4",
@@ -208,9 +208,9 @@
       {
         "width": 3440,
         "height": 1440,
-        "initialTotalBytes": 583761,
-        "initialNonVideoBytes": 583761,
-        "scrollBytes": 7311482,
+        "initialTotalBytes": 583742,
+        "initialNonVideoBytes": 583742,
+        "scrollBytes": 5095340,
         "videoRequests": [
           {
             "url": "/assets/hero/cashio-v41-eagle-arrival-1080p-av1.mp4",
@@ -222,7 +222,7 @@
           },
           {
             "url": "/assets/zenith/orbital-dust.mp4",
-            "bytes": 2216123
+            "bytes": 0
           },
           {
             "url": "/assets/zenith/workshop-after-hours.mp4",
@@ -247,9 +247,9 @@
       {
         "width": 390,
         "height": 844,
-        "initialTotalBytes": 583761,
-        "initialNonVideoBytes": 583761,
-        "scrollBytes": 6683779,
+        "initialTotalBytes": 583742,
+        "initialNonVideoBytes": 583742,
+        "scrollBytes": 6683760,
         "videoRequests": [
           {
             "url": "/assets/hero/cashio-v41-eagle-arrival-720p-av1.mp4",
@@ -783,5 +783,7 @@
         }
       ]
     }
-  ]
+  ],
+  "lighthouseCommit": "93ed08f2e0ce62cae9a36924f777525f2598a397",
+  "transferRevision": "Eagle with archive citation and release title review fixes"
 }
