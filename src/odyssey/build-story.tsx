@@ -5,9 +5,6 @@ import operatingRecord from "../../public/evidence/status-2026-09-07.json";
 import { shareExperiment } from "./study-experiment";
 import { COST_EVIDENCE } from "../lib/cost-evidence";
 
-// Pin the public model and observation. A website edit does not refresh either.
-const STUDY = "https://github.com/jamescashio/jamescashio.github.io/blob/0c509286ed9329b897741e1afe505376deb443ce/";
-
 export function BuildStory() {
   return (
     <article className="o-build-story" aria-labelledby="operating-story-title">
@@ -149,7 +146,7 @@ export function BuildStory() {
           older observation.
         </p>
         <nav className="o-proof-sources" aria-label="Verify the dated infrastructure record">
-          <a className="o-text-button" href={STUDY + "public" + FLEET_EVIDENCE_URL} target="_blank" rel="noreferrer">
+          <a className="o-text-button" href={FLEET_EVIDENCE_URL} target="_blank" rel="noreferrer">
             Inspect the dated record <Arrow diagonal />
           </a>
           <a className="o-text-button" href={operatingRecord.archive.url} target="_blank" rel="noreferrer">

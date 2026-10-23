@@ -16,7 +16,7 @@ First view passes the 3 MB desktop and 1.5 MB phone budgets. The headline and bo
 
 ## Lighthouse on built output
 
-Lighthouse was measured on initial Eagle commit `93ed08f2e0ce62cae9a36924f777525f2598a397`. Final transfer sizes above were measured again after the archive citation and release title fixes. The V41 composition and all media files are unchanged.
+Lighthouse was measured on initial Eagle commit `93ed08f2e0ce62cae9a36924f777525f2598a397`. Transfer sizes above were measured at `d8d494607e36ff22502a3c2583a1e9ca6be4db20` after the initial archive citation and release title fixes. The final followup corrects one archive citation URL. The V41 composition and all media files are unchanged; a few bundled text bytes can differ.
 
 Lighthouse 13.5, Chrome 155. Three cold lab runs per viewport. Desktop uses a 40 ms simulated round trip, 10 Mbps and CPU multiplier 1. Phone uses Lighthouse mobile simulated throttling with CPU multiplier 4. The hero fit check uses normal local conditions; a throttled mobile connection can take longer than two seconds to paint.
 
@@ -110,6 +110,8 @@ Results go under ignored `artifacts/v41/`. `CHROME_PATH` selects an installed br
 ## Risks and review points
 
 🟡 Chromium lab results do not cover physical iOS, Safari, Firefox, spoken screen reader output or field network conditions. Phone timing and remaining image delivery advice are preserved in the reports. Both codecs were decoded and played in Chrome. Historical pages retain dated evidence; no scheduler response, new routing proof or restore rehearsal is implied.
+
+The unchanged development dependency tree has two high severity package findings in `npm audit`: Vite and source-map-js. `npm audit --omit=dev` reports zero production package advisories. These remain a separate tooling update; this preview does not change dependency versions. See the [Vite advisory](https://github.com/advisories/GHSA-587h-7wmj-h5pm) and [source map advisory](https://github.com/advisories/GHSA-68fv-2mgg-jv7q).
 
 Open review points for Doug: Does the arrival pacing feel right on the actual ultrawide display at 90 percent zoom? Are the sparse replay effects at the preferred level when sound is explicitly enabled?
 

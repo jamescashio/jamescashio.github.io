@@ -369,6 +369,11 @@ test("the preserved Odyssey document ships the complete V37 story with a usable 
     archivedDocument.querySelector(".o-evidence-copy .o-text-button").getAttribute("href"),
     "/evidence/status-2026-09-07.json",
   );
+  const buildRecordUrl = archivedDocument.querySelector(".o-build-records .o-text-button").getAttribute("href");
+  assert.equal(buildRecordUrl, "/evidence/status-2026-09-07.json");
+  const buildRecord = JSON.parse(await read(`dist${buildRecordUrl}`));
+  assert.equal(buildRecord.verified, "2026-09-07");
+  assert.ok(archivedDocument.querySelector(".o-build-records").textContent.includes(buildRecord.verifiedLong));
   for (const entry of ["odyssey.html"]) {
     const document = new JSDOM(await read(`dist/${entry}`)).window.document;
     const root = document.querySelector('#odyssey-root[data-prerendered="odyssey"]');
