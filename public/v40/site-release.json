@@ -1,18 +1,18 @@
 {
-  "experienceVersion": "40.0.1",
-  "releaseId": "mostly-harmless-40.0.1-20261005",
+  "experienceVersion": "40.0.2",
+  "releaseId": "mostly-harmless-40.0.2-20261022",
   "releaseName": "MOSTLY HARMLESS",
   "visualEdition": "Mostly Harmless",
   "entry": "/",
   "status": "released",
   "published": true,
-  "releaseDate": "2026-10-05",
+  "releaseDate": "2026-10-22",
   "previousExperience": {
     "version": "39.8.0",
     "entry": "/v39/",
     "receipt": "/v38/site-release.json"
   },
-  "rollbackCommit": "7bf48629f957cb25fff864ca63629034d0caf2ee",
+  "rollbackCommit": "af7194bc72b42b56dc75226d8b56f51fe1f4fd5e",
   "evidenceSnapshot": {
     "url": "/v38/status.json",
     "fleetObserved": "2026-10-03",
