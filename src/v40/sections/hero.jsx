@@ -269,6 +269,16 @@ export function HeroSection({ v }) {
             { key: 203 },
             h(React.Fragment, { key: 204 }, "A 30 second starship tour · 12 illustrated requests · sound off"),
           ),
+          h(
+            "a",
+            {
+              key: "logo-reveal",
+              href: "/cashio.html#logo-reveal",
+              className: "hero-logo-reveal",
+            },
+            h("span", { "aria-hidden": "true" }, "▷"),
+            "Watch the logo reveal · 15 seconds",
+          ),
         ),
         " ",
         v.tech

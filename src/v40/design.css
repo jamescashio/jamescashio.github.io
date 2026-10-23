@@ -1779,6 +1779,13 @@ video::-webkit-media-controls-panel {
   align-items: center;
   gap: 10px;
 }
+.hero-logo-reveal {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  color: var(--accent);
+}
 .v41-6f7237b57e {
   width: 28px;
   height: 28px;
