@@ -427,3 +427,15 @@ html[data-background="true"] *::after {
     padding: 22px;
   }
 }
+
+@media (max-width: 700px), (pointer: coarse) {
+  #v40-root button,
+  #mission-dialog button,
+  #bit-dialog button,
+  .v40-scene-status button,
+  #helios-flight button,
+  #helios-studio button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
