@@ -25,7 +25,7 @@ test("V40 ships its real reading edition under the strict production security po
   assert.equal(root.querySelectorAll("main > section").length, 11);
   assert.equal(root.querySelectorAll("h1").length, 1);
   assert.match(root.textContent, /You still decide\./);
-  assert.match(root.querySelector("footer").textContent, /Mostly Harmless.*October 5, 2026/);
+  assert.match(root.querySelector("footer").textContent, /Mostly Harmless.*October 22, 2026/);
   assert.doesNotMatch(root.querySelector("footer").textContent, /Preview 05|current public site/);
   assert.equal(root.querySelectorAll("[style]").length, 0, "the reading edition must use external CSS");
   const csp = document.querySelector('meta[http-equiv="Content-Security-Policy"]').content;
@@ -154,7 +154,7 @@ function expandScript(scripts, name, seen = new Set()) {
 
 test("V37 software gates preserve the independent V35 dated evidence", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "40.0.1");
+  assert.equal(packageJson.version, "40.0.2");
   const lock = JSON.parse(await read("package-lock.json"));
   assert.equal(lock.version, packageJson.version);
   assert.equal(lock.packages[""].version, packageJson.version);
@@ -724,7 +724,7 @@ test("Helios release identity, signature assets and compatibility receipts agree
     const compatibility = JSON.parse(await read(`dist/${name}`));
     assert.deepEqual(compatibility.frontDoor, {
       entry: "/",
-      experienceVersion: "40.0.1",
+      experienceVersion: "40.0.2",
       visualEdition: "Mostly Harmless",
       receipt: "/v40/site-release.json",
     });
@@ -775,12 +775,12 @@ test("Helios release identity, signature assets and compatibility receipts agree
   assert.ok(doc.querySelector('#snapshot-story a[href="/evidence/console-snapshot-2026-10-03.json"]'));
   assert.deepEqual(JSON.parse(await read("dist/evidence/status.json")), evidence);
   assert.ok((await read("README.md")).startsWith("# cAshIo V40 · Mostly Harmless"));
-  assert.equal((await read("CHANGELOG.md")).match(/^## (V[\d.]+)/m)?.[1], "V40.0.1");
+  assert.equal((await read("CHANGELOG.md")).match(/^## (V[\d.]+)/m)?.[1], "V40.0.2");
   const sitemap = new JSDOM(await read("dist/sitemap.xml"), { contentType: "application/xml" }).window.document;
   const home = [...sitemap.querySelectorAll("url")].find(
     (entry) => entry.querySelector("loc")?.textContent === "https://cashio.us/",
   );
-  assert.equal(home?.querySelector("lastmod")?.textContent, "2026-10-05");
+  assert.equal(home?.querySelector("lastmod")?.textContent, "2026-10-22");
   // The home signature and the Celestial Forge share one full size artwork file, so the forge reuses the cached copy.
   assert.equal(doc.querySelector("#sig-art").getAttribute("src"), "/brand/celestial-1680.webp");
   assert.ok((await read("src/odyssey/brand-mark.tsx")).includes("/brand/celestial-1680.webp 1680w"));

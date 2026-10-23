@@ -63,7 +63,7 @@ export class V40Page extends React.Component {
     traceStep: -1,
     tracing: false,
     eveLog: [
-      ["d", "Page updated · October 5, 2026 · V40 Mostly Harmless"],
+      ["d", "Page updated · October 22, 2026 · V40 Mostly Harmless"],
       [
         "d",
         "Fleet, scheduler, Atlas configuration and backup integrity: October 3. Earlier console and routing audits stay in the archive.",
@@ -150,11 +150,12 @@ export class V40Page extends React.Component {
     if (slug === "intro")
       return {
         slug,
-        title: "Orbital arrival",
-        desc: "Watch the intro · 6 seconds",
-        coll: "Helios",
-        src: "/assets/celestial/helios-arrival-960.mp4",
-        poster: this.res("public/assets/celestial/helios-arrival-poster.jpg"),
+        title: "Mostly Harmless",
+        desc: "Watch the intro · 36 seconds · unmute for the score",
+        coll: "V40",
+        src: "/assets/celestial/cashio-v40-reel-1920.mp4",
+        poster: "/assets/celestial/cashio-v40-reel-poster.webp",
+        noloop: true,
       };
     const f = this.films.find((x) => x[1] === slug) || this.films[2];
     return {
@@ -186,10 +187,34 @@ export class V40Page extends React.Component {
     this.setupFx();
     const hv = document.getElementById("hero-video");
     if (hv) {
+      // The arrival film plays once per browser session; later loads open on the
+      // ambient loop and "Watch the intro" replays the full cut in the cinema.
+      const ARRIVAL_KEY = "cashio-v40-arrival";
+      let arrived = false;
+      try {
+        arrived = sessionStorage.getItem(ARRIVAL_KEY) === "1";
+      } catch (_) {
+        /* Optional browser capability; play the arrival as on a first visit. */
+      }
+      const markArrived = () => {
+        try {
+          sessionStorage.setItem(ARRIVAL_KEY, "1");
+        } catch (_) {
+          /* Optional browser capability; nothing to persist. */
+        }
+      };
       hv.addEventListener("ended", () => {
-        if (hv.dataset.noloop === "1") this.heroHandoff();
+        if (hv.dataset.noloop === "1") {
+          markArrived();
+          this.heroHandoff();
+        }
       });
       hv.addEventListener("error", () => this.heroHandoff());
+      if (arrived && hv.dataset.noloop === "1") {
+        hv.removeAttribute("data-bound-src");
+        hv.removeAttribute("preload");
+        this.skipArrival = true;
+      }
     }
     this.uio = new IntersectionObserver(
       (es) =>
@@ -283,6 +308,7 @@ export class V40Page extends React.Component {
     this.applyScan();
     this.waitForCanvas();
     this.setupVideos();
+    if (this.skipArrival) this.heroHandoff();
     this.setupReveal();
     this.scrollFx();
     this.lastFilm = this.state.film;
@@ -1030,8 +1056,8 @@ export class V40Page extends React.Component {
 
     const heroFilms = {
       "Orbital arrival": [
-        "/assets/celestial/helios-arrival-960.mp4",
-        this.res("public/assets/celestial/helios-arrival-poster.jpg"),
+        "/assets/celestial/cashio-v40-hero-960.mp4",
+        "/assets/celestial/cashio-v40-hero-poster.webp",
         "1",
       ],
       "Ringed horizon": [
@@ -2291,7 +2317,7 @@ function renderPage(v) {
                     },
                     h(React.Fragment, { key: 208 }, "▷"),
                   ),
-                  h(React.Fragment, { key: 209 }, "Watch the intro · 6 seconds"),
+                  h(React.Fragment, { key: 209 }, "Watch the intro · 36 seconds"),
                 ),
                 " ",
               ),
@@ -8148,7 +8174,7 @@ function renderPage(v) {
                   "font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)",
                 ),
               },
-              h(React.Fragment, { key: 1895 }, "V40 · Mostly Harmless · Directed by Doug Cashio · October 5, 2026"),
+              h(React.Fragment, { key: 1895 }, "V40 · Mostly Harmless · Directed by Doug Cashio · October 22, 2026"),
             ),
             " ",
             h(

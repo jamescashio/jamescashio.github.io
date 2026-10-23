@@ -1,5 +1,9 @@
 # Changelog
 
+## V40.0.2 · Arrival reel · 10-22-2026
+
+The front door now opens on a 36 second arrival film rendered from code: a sunrise over a ringed world, the fleet passing in formation and a starship flyby, drawn with real 3D models and composited in the browser pipeline that made the V40 reel. The film plays once per browser session and hands off to the ringed horizon loop; later visits in the same session open on the loop. Watch the intro replays the full cut, with the score and narration available through the player controls, so audio stays opt in. Published dates read October 22, 2026.
+
 ## V40.0.1 · Reading polish · 10-05-2026
 
 Keep the reading edition within a 320 pixel screen and make its public contact link work without JavaScript. Initialize compact navigation before rendering, preserve every original media file, and verify bookmarked scenarios after their default parameters are restored.
