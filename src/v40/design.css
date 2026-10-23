@@ -1585,6 +1585,9 @@ video::-webkit-media-controls-panel {
   align-items: flex-start;
   gap: 8px;
   pointer-events: none;
+}
+/* Fade the decorative rail, but keep its small label at full contrast throughout arrival. */
+.v41-31fb338fa2 > :not(.v41-bf5360592c) {
   animation: v40-fade 1.4s 0.2s both;
 }
 .v41-fdc6b9292e {

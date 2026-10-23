@@ -205,7 +205,14 @@ export function setupMissionControl({ studies, canOpen, onToggle }) {
         history.back();
       }
     }
-    if (!navigating && previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
+    // close is queued: native dialog closure may already have returned focus and the visitor
+    // may have moved to another link. Do not steal that next keyboard action.
+    if (
+      !navigating &&
+      previousFocus?.isConnected &&
+      (document.activeElement === document.body || dialog.contains(document.activeElement))
+    )
+      previousFocus.focus({ preventScroll: true });
     if (ownPop === null) finishClose();
   });
   window.addEventListener("popstate", () => {

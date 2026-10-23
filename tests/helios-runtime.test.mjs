@@ -1012,6 +1012,26 @@ test("Bit keeps navigation working when drawing is unavailable and menu history 
   await expect(page).toHaveURL(/#build=hermes(?:&|$)/);
 });
 
+test("A queued menu close preserves the next keyboard destination", async (t) => {
+  const page = await visit(t, { width: 390, expandWorkbenches: false });
+  await page.locator("#mc-btn").press("Enter");
+  await expect(page.locator("#mc-search")).toBeFocused();
+  await page.evaluate(
+    () =>
+      new Promise((resolve) => {
+        const dialog = document.querySelector("#mc");
+        dialog.addEventListener("close", () => resolve(), { once: true });
+        dialog.close();
+        // The next control receives focus before the queued close event is delivered.
+        document.querySelector(".hero-secondary").focus();
+      }),
+  );
+  await expect(page.locator(".hero-secondary")).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#st-name")).toBeFocused();
+  await expect(page).toHaveURL(/#build=hermes(?:&|$)/);
+});
+
 test("Bit shows decision feedback in reduced motion without animating", async (t) => {
   const page = await visit(t, { expandWorkbenches: false });
   const pixels = () => page.locator("#bitcv").evaluate((canvas) => canvas.toDataURL());

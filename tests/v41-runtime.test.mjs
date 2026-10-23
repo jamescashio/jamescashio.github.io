@@ -73,6 +73,19 @@ for (const [width, height] of [
     assert.deepEqual(missing, [], "world and film cards have descriptions and responsive images");
   });
 }
+test("The Eagle rail label stays readable during the entrance animation", async (t) => {
+  const page = await visit(t, { viewport: { width: 3440, height: 1440 } });
+  await page.goto(url);
+  await page.locator(".v41-31fb338fa2").evaluate((rail) => {
+    for (const animation of rail.getAnimations({ subtree: true })) {
+      animation.pause();
+      animation.currentTime = 700;
+    }
+  });
+  const audit = await new AxeBuilder({ page }).include(".v41-bf5360592c").withRules(["color-contrast"]).analyze();
+  assert.deepEqual(audit.violations, []);
+});
+
 test("The planet stays in the hero; Eagle below it loads only by choice and retains accessible playback", async (t) => {
   const page = await visit(t);
   const filmRequests = [];
