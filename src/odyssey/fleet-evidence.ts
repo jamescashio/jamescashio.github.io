@@ -1,4 +1,4 @@
-import snapshot from "../../public/status.json";
+import snapshot from "../../public/evidence/status-2026-09-07.json";
 
 /** The rendered page and downloadable export share the same dated observation. */
 export const FLEET_EVIDENCE = snapshot;

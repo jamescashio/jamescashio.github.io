@@ -190,13 +190,26 @@ async function run() {
       });
       report.release = receipt;
       assert.equal(receipt.frontDoor.entry, "/");
-      assert.equal(receipt.frontDoor.experienceVersion, "40.0.1");
+      assert.equal(receipt.frontDoor.experienceVersion, "41.0.0");
+      assert.equal(receipt.frontDoor.visualEdition, "Eagle");
       report.checks.push({
         name: "Current root, preserved V37 prerender, release identities and indexing",
         passed: true,
       });
 
-      const evidenceResponse = await fetch(`${base}/status.json`);
+      const currentResponse = await fetch(`${base}/status.json`);
+      assert.equal(currentResponse.status, 200);
+      const currentEvidence = await currentResponse.json();
+      assert.equal(currentEvidence.verified, "2026-10-23");
+      assert.deepEqual(currentEvidence.containers, {
+        running: 19,
+        documented: 20,
+        stopped: 1,
+        zeus: null,
+        apollo: null,
+      });
+      assert.deepEqual(currentEvidence.virtualMachines, { running: 1, documented: 2, stopped: 1 });
+      const evidenceResponse = await fetch(`${base}${receipt.evidenceSnapshot.url}`);
       assert.equal(evidenceResponse.status, 200);
       const evidence = await evidenceResponse.json();
       assert.deepEqual(evidence.containers, { running: 19, documented: 19, stopped: 0, zeus: null, apollo: null });
@@ -205,7 +218,7 @@ async function run() {
       assert.equal(evidence.routingVerified, null);
       assert.equal(evidence.expires, null);
       assert.deepEqual(receipt.evidenceSnapshot, {
-        url: "/status.json",
+        url: "/evidence/status-2026-09-07.json",
         fleetObserved: evidence.verified,
         observedAtUtc: evidence.provenance.observedAtUtc,
         routingObserved: null,
@@ -216,7 +229,7 @@ async function run() {
       assert.equal(archiveText, await readFile(path.join(ROOT, "public", evidence.archive.url), "utf8"));
       assert.equal(JSON.parse(archiveText).verified, "2026-08-28");
       report.checks.push({
-        name: "Latest fleet export, unknown routing, and unchanged historical download",
+        name: "Current export, preserved V37 observation, unknown routing, and unchanged historical download",
         passed: true,
       });
 

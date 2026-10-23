@@ -110,7 +110,7 @@ test("V40 preserves its content and serves a readable edition without JavaScript
     const page = await visit(t, { js, width });
     await expect(page.locator("main > section")).toHaveCount(11);
     await expect(page.locator("h1")).toHaveText("The machines can think. You still decide.");
-    await expect(page.locator("footer")).toContainText("two releases short of the answer", { ignoreCase: true });
+    await expect(page.locator("footer")).toContainText("one release short of the answer", { ignoreCase: true });
     await expect(page.locator('#contact a[href^="mailto:doug@cashio.us"]').first()).toBeVisible();
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
   }
@@ -206,7 +206,7 @@ test("Every mobile Menu section stays in V40 and survives a reload", async (t) =
       await expect(page.locator(`#${id}`)).toBeInViewport();
       await page.reload();
       await expect(page.locator("#mission-dialog")).toBeAttached();
-      await expect(page).toHaveTitle(/V40 Mostly Harmless/);
+      await expect(page).toHaveTitle(/V41 Eagle/);
       assert.equal(new URL(page.url()).pathname, "/");
       assert.equal(new URL(page.url()).hash, `#${id}`);
       await expect(page.locator(`#${id}`)).toBeInViewport();

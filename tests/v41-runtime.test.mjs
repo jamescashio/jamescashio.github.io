@@ -1,0 +1,171 @@
+import { test, before, after } from "node:test";
+import assert from "node:assert/strict";
+import { chromium, expect } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
+
+let browser;
+const url = process.env.V40_URL;
+before(async () => {
+  browser = await chromium.launch({
+    ...(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : { channel: "chrome" }),
+    headless: true,
+  });
+});
+after(async () => {
+  await browser?.close();
+});
+async function visit(t, options = {}) {
+  const context = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+    reducedMotion: "no-preference",
+    ...options,
+  });
+  const page = await context.newPage();
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() === "error") errors.push(message.text());
+  });
+  t.after(async () => {
+    await context.close();
+    assert.deepEqual(errors, [], "no runtime or security policy errors");
+  });
+  return page;
+}
+for (const [width, height] of [
+  [1440, 900],
+  [3440, 1440],
+  [390, 844],
+]) {
+  test(`V41 hero and actions fit at ${width}; whole page has no serious accessibility issues`, async (t) => {
+    const page = await visit(t, { viewport: { width, height }, hasTouch: width === 390 });
+    await page.goto(url);
+    await page.waitForTimeout(1500);
+    await expect(page.locator("h1")).toHaveText("The machines can think. You still decide.");
+    for (const selector of ["h1", 'a[href="#flight=board"]', '#hero-content a[href="#studies"]']) {
+      const rect = await page.locator(selector).first().boundingBox();
+      assert.ok(rect && rect.y >= 68 && rect.y + rect.height <= height, `${selector} is visible in the first view`);
+    }
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+    const audit = await new AxeBuilder({ page })
+      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "best-practice"])
+      .analyze();
+    assert.deepEqual(
+      audit.violations
+        .filter((v) => ["serious", "critical"].includes(v.impact))
+        .map((v) => ({ id: v.id, targets: v.nodes.map((n) => n.target) })),
+      [],
+    );
+    const labels = await new AxeBuilder({ page }).withRules(["label-content-name-mismatch"]).analyze();
+    assert.deepEqual(
+      labels.violations.map((v) => ({ id: v.id, targets: v.nodes.map((n) => n.target) })),
+      [],
+    );
+    for (const [selector, text] of [
+      ["#evidence h2", "Trust has a timestamp."],
+      ["#contact h2", "Don't panic. Say hello."],
+      ["#rooms h2", "Pick a world. Stay a while."],
+    ])
+      await expect(page.locator(selector).first()).toHaveText(text);
+    const missing = await page
+      .locator("#rooms img, #films button img")
+      .evaluateAll((images) => images.filter((i) => !i.alt || !i.srcset).map((i) => i.outerHTML));
+    assert.deepEqual(missing, [], "world and film cards have descriptions and responsive images");
+  });
+}
+test("Arrival is silent, skippable and once per browser session; replay has descriptions and opt in sound", async (t) => {
+  const page = await visit(t);
+  await page.goto(url);
+  const arrival = page.locator("#hero-video");
+  await expect.poll(() => arrival.evaluate((v) => v.currentTime)).toBeGreaterThan(0.1);
+  assert.equal(await arrival.evaluate((v) => v.muted && v.playsInline && !v.controls), true);
+  await page.getByRole("button", { name: "Skip intro", exact: true }).click();
+  await expect(page.locator(".hero-reel")).toHaveAttribute("data-phase", "complete");
+  assert.equal(await arrival.evaluate((v) => v.paused), true);
+  await page.reload();
+  await page.waitForTimeout(2600);
+  assert.equal(await arrival.evaluate((v) => v.paused && !v.currentSrc), true, "reload does not replay the arrival");
+  await page.getByRole("link", { name: /Watch the intro/ }).click();
+  const replay = page.locator("#cinema-video");
+  await expect(replay).toBeVisible();
+  assert.equal(await replay.evaluate((v) => v.muted && v.controls && v.paused), true);
+  await expect(replay.locator("track")).toHaveAttribute("kind", "captions");
+  const sources = await replay.locator("source").evaluateAll((s) => s.map((n) => n.src));
+  assert.ok(sources[0].endsWith("1080p-av1.mp4") && sources[1].endsWith("1080p-h264.mp4"));
+  await replay.evaluate((v) => v.play());
+  await expect.poll(() => replay.evaluate((v) => v.currentTime)).toBeGreaterThan(0.1);
+  assert.equal(await page.locator("video").evaluateAll((v) => v.filter((v) => !v.paused).length), 1);
+  await replay.evaluate((video, fallback) => {
+    video.src = fallback;
+    video.load();
+    return video.play();
+  }, sources[1]);
+  await expect.poll(() => replay.evaluate((v) => v.currentTime)).toBeGreaterThan(0.1);
+  assert.equal(await replay.evaluate((v) => v.muted && v.currentSrc.endsWith("h264.mp4")), true);
+  await page.keyboard.press("Escape");
+  await expect(replay).toHaveCount(0);
+  await expect(page.getByRole("link", { name: /Watch the intro/ })).toBeFocused();
+  await page.goto(url + "#film=intro");
+  await expect(replay).toBeVisible();
+  await expect(page.locator("#helios-studio")).toHaveCount(0);
+  await page.reload();
+  await expect(replay.locator("source").first()).toHaveAttribute("src", /cashio-v41-eagle-replay/);
+  await page.keyboard.press("Escape");
+  await expect(replay).toHaveCount(0);
+});
+test("Data saving and reduced motion keep posters still, while manual replay selects the small rendition", async (t) => {
+  for (const mode of ["saveData", "3g", "reduce"]) {
+    const page = await visit(t, { reducedMotion: mode === "reduce" ? "reduce" : "no-preference" });
+    if (mode !== "reduce")
+      await page.addInitScript(
+        (mode) =>
+          Object.defineProperty(navigator, "connection", {
+            value: {
+              saveData: mode === "saveData",
+              effectiveType: mode === "3g" ? "3g" : "4g",
+              addEventListener() {},
+              removeEventListener() {},
+            },
+          }),
+        mode,
+      );
+    await page.goto(url);
+    await page.waitForTimeout(2600);
+    assert.equal(await page.locator("#hero-video").evaluate((v) => v.paused && !v.currentSrc), true);
+    await page.locator("#feature-video").scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
+    assert.equal(await page.locator("video").evaluateAll((v) => v.every((v) => v.paused)), true);
+    if (mode !== "reduce") {
+      await page.getByRole("link", { name: /Watch the intro/ }).click();
+      const sources = await page.locator("#cinema-video source").evaluateAll((s) => s.map((n) => n.src));
+      assert.ok(sources.every((s) => s.includes("480p")));
+      assert.equal(await page.locator("#cinema-video").evaluate((v) => v.paused), true);
+    }
+  }
+});
+test("Only the visible film plays; leaving its halfway boundary or switching motion off pauses playback", async (t) => {
+  const page = await visit(t);
+  await page.goto(url + "#films");
+  const feature = page.locator("#feature-video");
+  await feature.scrollIntoViewIfNeeded();
+  await expect.poll(() => feature.evaluate((v) => v.paused)).toBe(false);
+  assert.equal(await page.locator("video").evaluateAll((v) => v.filter((v) => !v.paused).length), 1);
+  await page.evaluate(() => {
+    const r = document.querySelector("#feature-video").getBoundingClientRect();
+    scrollBy(0, r.top + r.height * 0.6);
+  });
+  await expect.poll(() => feature.evaluate((v) => v.paused)).toBe(true);
+  await feature.scrollIntoViewIfNeeded();
+  await expect.poll(() => feature.evaluate((v) => v.paused)).toBe(false);
+  await page.keyboard.press("Control+k");
+  await expect(page.locator("#mission-dialog")).toBeVisible();
+  assert.equal(await page.locator("video").evaluateAll((v) => v.every((v) => v.paused)), true);
+  await page.keyboard.press("Escape");
+  await expect.poll(() => feature.evaluate((v) => v.paused)).toBe(false);
+  await page.getByRole("button", { name: "Pause motion", exact: true }).first().click();
+  assert.equal(await page.locator("video").evaluateAll((v) => v.every((v) => v.paused)), true);
+  assert.equal(
+    await page.locator("video").evaluateAll((v) => v.every((v) => v.preload === "none" && Boolean(v.poster))),
+    true,
+  );
+});

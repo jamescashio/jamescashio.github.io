@@ -1,0 +1,787 @@
+{
+  "observed": "October 23, 2026",
+  "baseline": "2c0ffe613a14f9f9ebacf3255b7ff4d0234cf488",
+  "before": {
+    "label": "before",
+    "url": "http://127.0.0.1:4191/",
+    "method": "Cold Chrome CDP encodedDataLength, cache disabled, 2 seconds after load, then 80 percent viewport steps every 180 ms and 1.5 second settling. Local server transport.",
+    "results": [
+      {
+        "width": 1440,
+        "height": 900,
+        "initialTotalBytes": 10157116,
+        "initialNonVideoBytes": 1002027,
+        "scrollBytes": 17330034,
+        "videoRequests": [
+          {
+            "url": "/assets/zenith/ringed-horizon.mp4",
+            "bytes": 1587503
+          },
+          {
+            "url": "/assets/zenith/ringed-horizon.mp4",
+            "bytes": 1587503
+          },
+          {
+            "url": "/assets/celestial/helios-arrival-960.mp4",
+            "bytes": 606131
+          },
+          {
+            "url": "/assets/zenith/starship-flyby.mp4",
+            "bytes": 1550357
+          },
+          {
+            "url": "/assets/hero/cashio-hero-v8-1080p.mp4",
+            "bytes": 7405568
+          },
+          {
+            "url": "/assets/zenith/orbital-dust.mp4",
+            "bytes": 2216123
+          },
+          {
+            "url": "/assets/zenith/workshop-after-hours.mp4",
+            "bytes": 1024730
+          }
+        ],
+        "hero": {
+          "x": 164,
+          "y": 1056.96875,
+          "width": 884,
+          "height": 232.515625
+        },
+        "cta": {
+          "x": 164,
+          "y": 1432.125,
+          "width": 267.046875,
+          "height": 47
+        },
+        "overflow": false,
+        "errors": []
+      },
+      {
+        "width": 3440,
+        "height": 1440,
+        "initialTotalBytes": 10157116,
+        "initialNonVideoBytes": 1002027,
+        "scrollBytes": 17330034,
+        "videoRequests": [
+          {
+            "url": "/assets/zenith/ringed-horizon.mp4",
+            "bytes": 1587503
+          },
+          {
+            "url": "/assets/zenith/ringed-horizon.mp4",
+            "bytes": 1587503
+          },
+          {
+            "url": "/assets/celestial/helios-arrival-960.mp4",
+            "bytes": 606131
+          },
+          {
+            "url": "/assets/zenith/starship-flyby.mp4",
+            "bytes": 1550357
+          },
+          {
+            "url": "/assets/hero/cashio-hero-v8-1080p.mp4",
+            "bytes": 7405568
+          },
+          {
+            "url": "/assets/zenith/orbital-dust.mp4",
+            "bytes": 2216123
+          },
+          {
+            "url": "/assets/zenith/workshop-after-hours.mp4",
+            "bytes": 1024730
+          }
+        ],
+        "hero": {
+          "x": 1164,
+          "y": 1064.96875,
+          "width": 884,
+          "height": 614.96875
+        },
+        "cta": {
+          "x": 1164,
+          "y": 1830.578125,
+          "width": 267.046875,
+          "height": 47
+        },
+        "overflow": false,
+        "errors": []
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "initialTotalBytes": 7994428,
+        "initialNonVideoBytes": 1002027,
+        "scrollBytes": 13128907,
+        "videoRequests": [
+          {
+            "url": "/assets/zenith/ringed-horizon.mp4",
+            "bytes": 1587503
+          },
+          {
+            "url": "/assets/zenith/ringed-horizon.mp4",
+            "bytes": 1587503
+          },
+          {
+            "url": "/assets/celestial/helios-arrival-960.mp4",
+            "bytes": 606131
+          },
+          {
+            "url": "/assets/zenith/starship-flyby.mp4",
+            "bytes": 1550357
+          },
+          {
+            "url": "/assets/hero/cashio-hero-v8-720p.mp4",
+            "bytes": 3211264
+          },
+          {
+            "url": "/assets/zenith/orbital-dust.mp4",
+            "bytes": 2216123
+          },
+          {
+            "url": "/assets/zenith/workshop-after-hours.mp4",
+            "bytes": 1024730
+          }
+        ],
+        "hero": {
+          "x": 22,
+          "y": 595.3125,
+          "width": 346,
+          "height": 226.25
+        },
+        "cta": {
+          "x": 22,
+          "y": 997.28125,
+          "width": 267.046875,
+          "height": 47
+        },
+        "overflow": false,
+        "errors": []
+      }
+    ]
+  },
+  "after": {
+    "label": "after",
+    "url": "http://127.0.0.1:4191/",
+    "method": "Cold Chrome CDP encodedDataLength, cache disabled, 2 seconds after load, then 80 percent viewport steps every 180 ms and 1.5 second settling. Local server transport.",
+    "results": [
+      {
+        "width": 1440,
+        "height": 900,
+        "initialTotalBytes": 583761,
+        "initialNonVideoBytes": 583761,
+        "scrollBytes": 7311482,
+        "videoRequests": [
+          {
+            "url": "/assets/hero/cashio-v41-eagle-arrival-1080p-av1.mp4",
+            "bytes": 1730580
+          },
+          {
+            "url": "/assets/zenith/starship-flyby.mp4",
+            "bytes": 1550357
+          },
+          {
+            "url": "/assets/zenith/orbital-dust.mp4",
+            "bytes": 2216123
+          },
+          {
+            "url": "/assets/zenith/workshop-after-hours.mp4",
+            "bytes": 1024730
+          }
+        ],
+        "hero": {
+          "x": 129.59375,
+          "y": 263.140625,
+          "width": 920.8125,
+          "height": 205.15625
+        },
+        "cta": {
+          "x": 129.59375,
+          "y": 598.9375,
+          "width": 267.046875,
+          "height": 47
+        },
+        "overflow": false,
+        "errors": []
+      },
+      {
+        "width": 3440,
+        "height": 1440,
+        "initialTotalBytes": 583761,
+        "initialNonVideoBytes": 583761,
+        "scrollBytes": 7311482,
+        "videoRequests": [
+          {
+            "url": "/assets/hero/cashio-v41-eagle-arrival-1080p-av1.mp4",
+            "bytes": 1730580
+          },
+          {
+            "url": "/assets/zenith/starship-flyby.mp4",
+            "bytes": 1550357
+          },
+          {
+            "url": "/assets/zenith/orbital-dust.mp4",
+            "bytes": 2216123
+          },
+          {
+            "url": "/assets/zenith/workshop-after-hours.mp4",
+            "bytes": 1024730
+          }
+        ],
+        "hero": {
+          "x": 948,
+          "y": 478.421875,
+          "width": 1236,
+          "height": 352.59375
+        },
+        "cta": {
+          "x": 948,
+          "y": 969.65625,
+          "width": 267.046875,
+          "height": 47
+        },
+        "overflow": false,
+        "errors": []
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "initialTotalBytes": 583761,
+        "initialNonVideoBytes": 583761,
+        "scrollBytes": 6683779,
+        "videoRequests": [
+          {
+            "url": "/assets/hero/cashio-v41-eagle-arrival-720p-av1.mp4",
+            "bytes": 1054316
+          },
+          {
+            "url": "/assets/zenith/starship-flyby.mp4",
+            "bytes": 1550357
+          },
+          {
+            "url": "/assets/zenith/orbital-dust.mp4",
+            "bytes": 2216123
+          },
+          {
+            "url": "/assets/zenith/workshop-after-hours.mp4",
+            "bytes": 1024730
+          }
+        ],
+        "hero": {
+          "x": 22,
+          "y": 211.671875,
+          "width": 346,
+          "height": 118.515625
+        },
+        "cta": {
+          "x": 22,
+          "y": 474.6875,
+          "width": 195.234375,
+          "height": 44
+        },
+        "overflow": false,
+        "errors": []
+      }
+    ]
+  },
+  "lighthouse": [
+    {
+      "width": 1440,
+      "height": 900,
+      "run": 1,
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 69
+      },
+      "metrics": {
+        "first-contentful-paint": 522.9489,
+        "largest-contentful-paint": 622.186125,
+        "total-blocking-time": 0,
+        "cumulative-layout-shift": 0.009563326408125577,
+        "speed-index": 599.7009051659701
+      },
+      "warnings": [],
+      "improvements": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 25\u00a0KiB"
+        },
+        {
+          "id": "is-crawlable",
+          "title": "Page is blocked from indexing"
+        },
+        {
+          "id": "forced-reflow-insight",
+          "title": "Forced reflow"
+        },
+        {
+          "id": "image-delivery-insight",
+          "title": "Improve image delivery",
+          "displayValue": "Est savings of 237\u00a0KiB"
+        },
+        {
+          "id": "network-dependency-tree-insight",
+          "title": "Network dependency tree"
+        },
+        {
+          "id": "render-blocking-insight",
+          "title": "Render-blocking requests",
+          "displayValue": "Est savings of 180\u00a0ms"
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "run": 2,
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 69
+      },
+      "metrics": {
+        "first-contentful-paint": 523.2954,
+        "largest-contentful-paint": 626.61925,
+        "total-blocking-time": 0,
+        "cumulative-layout-shift": 0.009563326408125577,
+        "speed-index": 596.1119266784647
+      },
+      "warnings": [],
+      "improvements": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 25\u00a0KiB"
+        },
+        {
+          "id": "is-crawlable",
+          "title": "Page is blocked from indexing"
+        },
+        {
+          "id": "forced-reflow-insight",
+          "title": "Forced reflow"
+        },
+        {
+          "id": "image-delivery-insight",
+          "title": "Improve image delivery",
+          "displayValue": "Est savings of 237\u00a0KiB"
+        },
+        {
+          "id": "network-dependency-tree-insight",
+          "title": "Network dependency tree"
+        },
+        {
+          "id": "render-blocking-insight",
+          "title": "Render-blocking requests",
+          "displayValue": "Est savings of 180\u00a0ms"
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "run": 3,
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 69
+      },
+      "metrics": {
+        "first-contentful-paint": 523.0339,
+        "largest-contentful-paint": 624.792375,
+        "total-blocking-time": 0,
+        "cumulative-layout-shift": 0.009563326408125577,
+        "speed-index": 591.9070169748366
+      },
+      "warnings": [],
+      "improvements": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 25\u00a0KiB"
+        },
+        {
+          "id": "is-crawlable",
+          "title": "Page is blocked from indexing"
+        },
+        {
+          "id": "forced-reflow-insight",
+          "title": "Forced reflow"
+        },
+        {
+          "id": "image-delivery-insight",
+          "title": "Improve image delivery",
+          "displayValue": "Est savings of 237\u00a0KiB"
+        },
+        {
+          "id": "network-dependency-tree-insight",
+          "title": "Network dependency tree"
+        },
+        {
+          "id": "render-blocking-insight",
+          "title": "Render-blocking requests",
+          "displayValue": "Est savings of 180\u00a0ms"
+        }
+      ]
+    },
+    {
+      "width": 3440,
+      "height": 1440,
+      "run": 1,
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 69
+      },
+      "metrics": {
+        "first-contentful-paint": 544.270125,
+        "largest-contentful-paint": 628.7701250000001,
+        "total-blocking-time": 35.645974999999964,
+        "cumulative-layout-shift": 0.001618040718738345,
+        "speed-index": 742.5593536369371
+      },
+      "warnings": [],
+      "improvements": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 25\u00a0KiB"
+        },
+        {
+          "id": "is-crawlable",
+          "title": "Page is blocked from indexing"
+        },
+        {
+          "id": "forced-reflow-insight",
+          "title": "Forced reflow"
+        },
+        {
+          "id": "image-delivery-insight",
+          "title": "Improve image delivery",
+          "displayValue": "Est savings of 237\u00a0KiB"
+        },
+        {
+          "id": "network-dependency-tree-insight",
+          "title": "Network dependency tree"
+        },
+        {
+          "id": "render-blocking-insight",
+          "title": "Render-blocking requests",
+          "displayValue": "Est savings of 180\u00a0ms"
+        }
+      ]
+    },
+    {
+      "width": 3440,
+      "height": 1440,
+      "run": 2,
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 69
+      },
+      "metrics": {
+        "first-contentful-paint": 523.4394,
+        "largest-contentful-paint": 632.79925,
+        "total-blocking-time": 4.5,
+        "cumulative-layout-shift": 0.001618040718738345,
+        "speed-index": 670.9519788665505
+      },
+      "warnings": [],
+      "improvements": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 25\u00a0KiB"
+        },
+        {
+          "id": "is-crawlable",
+          "title": "Page is blocked from indexing"
+        },
+        {
+          "id": "forced-reflow-insight",
+          "title": "Forced reflow"
+        },
+        {
+          "id": "image-delivery-insight",
+          "title": "Improve image delivery",
+          "displayValue": "Est savings of 237\u00a0KiB"
+        },
+        {
+          "id": "network-dependency-tree-insight",
+          "title": "Network dependency tree"
+        },
+        {
+          "id": "render-blocking-insight",
+          "title": "Render-blocking requests",
+          "displayValue": "Est savings of 180\u00a0ms"
+        }
+      ]
+    },
+    {
+      "width": 3440,
+      "height": 1440,
+      "run": 3,
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 69
+      },
+      "metrics": {
+        "first-contentful-paint": 523.9276,
+        "largest-contentful-paint": 628.9095,
+        "total-blocking-time": 3,
+        "cumulative-layout-shift": 0.001618040718738345,
+        "speed-index": 654.9344089489864
+      },
+      "warnings": [],
+      "improvements": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 25\u00a0KiB"
+        },
+        {
+          "id": "is-crawlable",
+          "title": "Page is blocked from indexing"
+        },
+        {
+          "id": "forced-reflow-insight",
+          "title": "Forced reflow"
+        },
+        {
+          "id": "image-delivery-insight",
+          "title": "Improve image delivery",
+          "displayValue": "Est savings of 237\u00a0KiB"
+        },
+        {
+          "id": "network-dependency-tree-insight",
+          "title": "Network dependency tree"
+        },
+        {
+          "id": "render-blocking-insight",
+          "title": "Render-blocking requests",
+          "displayValue": "Est savings of 180\u00a0ms"
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "run": 1,
+      "scores": {
+        "performance": 89,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 69
+      },
+      "metrics": {
+        "first-contentful-paint": 2328.9663,
+        "largest-contentful-paint": 3141.3052500000003,
+        "total-blocking-time": 152.49999999999977,
+        "cumulative-layout-shift": 0.01772164487685587,
+        "speed-index": 2328.9663
+      },
+      "warnings": [],
+      "improvements": [
+        {
+          "id": "first-contentful-paint",
+          "title": "First Contentful Paint",
+          "displayValue": "2.3\u00a0s"
+        },
+        {
+          "id": "largest-contentful-paint",
+          "title": "Largest Contentful Paint",
+          "displayValue": "3.1\u00a0s"
+        },
+        {
+          "id": "max-potential-fid",
+          "title": "Max Potential First Input Delay",
+          "displayValue": "200\u00a0ms"
+        },
+        {
+          "id": "mainthread-work-breakdown",
+          "title": "Minimize main-thread work",
+          "displayValue": "3.9\u00a0s"
+        },
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 25\u00a0KiB"
+        },
+        {
+          "id": "is-crawlable",
+          "title": "Page is blocked from indexing"
+        },
+        {
+          "id": "forced-reflow-insight",
+          "title": "Forced reflow"
+        },
+        {
+          "id": "image-delivery-insight",
+          "title": "Improve image delivery",
+          "displayValue": "Est savings of 38\u00a0KiB"
+        },
+        {
+          "id": "network-dependency-tree-insight",
+          "title": "Network dependency tree"
+        },
+        {
+          "id": "render-blocking-insight",
+          "title": "Render-blocking requests",
+          "displayValue": "Est savings of 960\u00a0ms"
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "run": 2,
+      "scores": {
+        "performance": 87,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 69
+      },
+      "metrics": {
+        "first-contentful-paint": 2404.35435,
+        "largest-contentful-paint": 3151.1286250000003,
+        "total-blocking-time": 220,
+        "cumulative-layout-shift": 0.01772164487685587,
+        "speed-index": 2404.35435
+      },
+      "warnings": [],
+      "improvements": [
+        {
+          "id": "first-contentful-paint",
+          "title": "First Contentful Paint",
+          "displayValue": "2.4\u00a0s"
+        },
+        {
+          "id": "largest-contentful-paint",
+          "title": "Largest Contentful Paint",
+          "displayValue": "3.2\u00a0s"
+        },
+        {
+          "id": "total-blocking-time",
+          "title": "Total Blocking Time",
+          "displayValue": "220\u00a0ms"
+        },
+        {
+          "id": "max-potential-fid",
+          "title": "Max Potential First Input Delay",
+          "displayValue": "250\u00a0ms"
+        },
+        {
+          "id": "mainthread-work-breakdown",
+          "title": "Minimize main-thread work",
+          "displayValue": "3.9\u00a0s"
+        },
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 25\u00a0KiB"
+        },
+        {
+          "id": "is-crawlable",
+          "title": "Page is blocked from indexing"
+        },
+        {
+          "id": "forced-reflow-insight",
+          "title": "Forced reflow"
+        },
+        {
+          "id": "image-delivery-insight",
+          "title": "Improve image delivery",
+          "displayValue": "Est savings of 38\u00a0KiB"
+        },
+        {
+          "id": "network-dependency-tree-insight",
+          "title": "Network dependency tree"
+        },
+        {
+          "id": "render-blocking-insight",
+          "title": "Render-blocking requests",
+          "displayValue": "Est savings of 970\u00a0ms"
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "run": 3,
+      "scores": {
+        "performance": 89,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 69
+      },
+      "metrics": {
+        "first-contentful-paint": 2328.7953,
+        "largest-contentful-paint": 3140.6627500000004,
+        "total-blocking-time": 152.5,
+        "cumulative-layout-shift": 0.01772164487685587,
+        "speed-index": 2328.7953
+      },
+      "warnings": [],
+      "improvements": [
+        {
+          "id": "first-contentful-paint",
+          "title": "First Contentful Paint",
+          "displayValue": "2.3\u00a0s"
+        },
+        {
+          "id": "largest-contentful-paint",
+          "title": "Largest Contentful Paint",
+          "displayValue": "3.1\u00a0s"
+        },
+        {
+          "id": "max-potential-fid",
+          "title": "Max Potential First Input Delay",
+          "displayValue": "210\u00a0ms"
+        },
+        {
+          "id": "mainthread-work-breakdown",
+          "title": "Minimize main-thread work",
+          "displayValue": "3.7\u00a0s"
+        },
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 25\u00a0KiB"
+        },
+        {
+          "id": "is-crawlable",
+          "title": "Page is blocked from indexing"
+        },
+        {
+          "id": "forced-reflow-insight",
+          "title": "Forced reflow"
+        },
+        {
+          "id": "image-delivery-insight",
+          "title": "Improve image delivery",
+          "displayValue": "Est savings of 38\u00a0KiB"
+        },
+        {
+          "id": "network-dependency-tree-insight",
+          "title": "Network dependency tree"
+        },
+        {
+          "id": "render-blocking-insight",
+          "title": "Render-blocking requests",
+          "displayValue": "Est savings of 980\u00a0ms"
+        }
+      ]
+    }
+  ]
+}

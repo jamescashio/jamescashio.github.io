@@ -13,19 +13,26 @@ export function AiWormFilm() {
     const stopWhenHidden = () => {
       if (document.hidden) setPlaying(false);
     };
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) setPlaying(false);
-    });
-    observer.observe(card.current);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.intersectionRatio < 0.5) setPlaying(false);
+      },
+      { threshold: [0, 0.5, 1] },
+    );
+    observer.observe(card.current.querySelector(".ai-worm-media"));
+    const stop = () => setPlaying(false);
+    document.addEventListener("cashio-motion", stop);
     document.addEventListener("visibilitychange", stopWhenHidden);
     return () => {
       observer.disconnect();
       document.removeEventListener("visibilitychange", stopWhenHidden);
+      document.removeEventListener("cashio-motion", stop);
     };
   }, []);
 
   useEffect(() => {
     if (playing) player.current?.focus({ preventScroll: true });
+    document.dispatchEvent(new Event("cashio-media"));
   }, [playing]);
 
   function closePlayer() {
@@ -60,6 +67,9 @@ export function AiWormFilm() {
             },
             h("img", {
               src: "/assets/sovereign-v9-poster.webp",
+              srcSet:
+                "/v40/thumbs/sovereign-v9-poster-320.webp 320w, /v40/thumbs/sovereign-v9-poster-640.webp 640w, /v40/thumbs/sovereign-v9-poster-1280.webp 1280w",
+              sizes: "(max-width: 600px) 90vw, (max-width: 1179px) 65vw, 760px",
               alt: "Doug with blue eyes and a desert stillsuit in The Sovereign",
               width: 1280,
               height: 720,
@@ -67,7 +77,7 @@ export function AiWormFilm() {
               decoding: "async",
             }),
             h("span", { className: "ai-worm-play-icon", "aria-hidden": "true" }, "▷"),
-            h("span", { className: "ai-worm-play-label" }, "PLAY THE FILM"),
+            h("span", { className: "ai-worm-play-label" }, "PLAY THE SOVEREIGN"),
           ),
     ),
     h(

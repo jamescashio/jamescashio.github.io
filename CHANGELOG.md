@@ -1,5 +1,11 @@
 # Changelog
 
+## V41.0.0 · Eagle preview · October 23, 2026
+
+Integrate the 36 second arrival into the hero, preserve the V40 visual identity and make media wait for its turn. The October 23, 2026 static observation reports 2 hosts, 19 running containers and 1 running virtual machine. The latest reported snapshot for each of 21 guests has an integrity result of ok. Scheduler counts, model configuration and restoration figures are withheld without fresh measurements. The source of truth is `status.json`.
+
+Preview branch only. Doug retains the merge and Cloudflare purge.
+
 ## V40.0.1 · Reading polish · 10-05-2026
 
 Keep the reading edition within a 320 pixel screen and make its public contact link work without JavaScript. Initialize compact navigation before rendering, preserve every original media file, and verify bookmarked scenarios after their default parameters are restored.

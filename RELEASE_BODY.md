@@ -1,7 +1,9 @@
-# V40.0.1 Mostly Harmless
+# V41 · Eagle · Hero reel integration and media diet
 
-The reading edition now fits a 320 pixel screen and its public email link works without JavaScript. Compact navigation is selected before the first render, and the public contact link opts out of Cloudflare email encoding using the documented per-address markup.
+The opening headline and both main actions now share the first screen with a silent 36 second arrival film. Eagle combines the existing planet, ship and instrument films into one continuous 16:9 composition. It plays once per browser session, with a poster first and a skip control. Watch the intro opens the same sequence in the cinema with captions, a text version and sound available through the player controls.
 
-Bit, the cinematic V40 design, all seven experiments, and every original media file remain intact. V39 stays available at `/v39/`. Bookmarked scenarios continue to restore their selections and may append valid default parameters.
+The V40 visual identity, Bit, E.V.E., Mission Control, all seven experiments and historical routes remain. AV1 comes before H.264, with 1080p, 720p and 480p choices. Data saving and reduced motion use still posters. Other films wait until at least half visible and share one playback owner. Responsive thumbnails, descriptive asset names and external section styles reduce the initial transfer and make the page easier to maintain.
 
-Validation covers reading mode at 320 and 390 pixels, keyboard access, reduced motion, working contact links, all existing V40 interactions, and preserved destinations. Publication uses the existing protected review and deployment checks.
+`status.json` is the single source of truth for the October 23, 2026 observation. It reports 19 running containers out of 20 documented containers, one running virtual machine out of two, and two hosts reporting running guests. The backup API listed 124 snapshots and reported integrity verification for the latest snapshot of each of 21 guests. These are inventory and integrity observations, not application health or proof of recovery. Unmeasured scheduler, routing, quorum and model configuration figures are null with explicit reasons. Archived observations retain their original dates.
+
+See [V41 review evidence](docs/v41-review.md) for the transfer table, Lighthouse results, accessibility checks, media sizes, screenshots, scorecard and review limits. The branch remains a preview. Doug owns the merge and Cloudflare purge. Rollback is a reviewed revert or redeployment of baseline `2c0ffe613a14f9f9ebacf3255b7ff4d0234cf488`.

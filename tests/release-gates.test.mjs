@@ -25,7 +25,7 @@ test("V40 ships its real reading edition under the strict production security po
   assert.equal(root.querySelectorAll("main > section").length, 11);
   assert.equal(root.querySelectorAll("h1").length, 1);
   assert.match(root.textContent, /You still decide\./);
-  assert.match(root.querySelector("footer").textContent, /Mostly Harmless.*October 5, 2026/);
+  assert.match(root.querySelector("footer").textContent, /Eagle.*October 23, 2026/);
   assert.doesNotMatch(root.querySelector("footer").textContent, /Preview 05|current public site/);
   assert.equal(root.querySelectorAll("[style]").length, 0, "the reading edition must use external CSS");
   const csp = document.querySelector('meta[http-equiv="Content-Security-Policy"]').content;
@@ -52,10 +52,34 @@ test("V40 ships its real reading edition under the strict production security po
   assert.equal(receipt.experienceVersion, JSON.parse(await read("package.json")).version);
   assert.equal(receipt.previousExperience.entry, "/v39/");
   assert.equal(receipt.published, receipt.status === "released");
-  assert.equal(receipt.evidenceSnapshot.fleetObserved, "2026-10-03");
+  assert.equal(receipt.evidenceSnapshot.fleetObserved, "2026-10-23");
   assert.equal(receipt.evidenceSnapshot.routingObserved, null);
   const files = await readdir(asset("public/v40/assets"));
-  assert.equal(files.length, 29, "retain the original twenty-nine images and font files");
+  const assets = JSON.parse(await read("public/v40/asset-manifest.json"));
+  assert.equal(
+    assets.originalAssets.length,
+    29,
+    "retain the original twenty-nine images and fonts under descriptive names",
+  );
+  assert.equal(files.length, 31, "original assets plus the two modern poster formats");
+  for (const original of assets.originalAssets)
+    assert.equal(
+      createHash("sha256")
+        .update(await readFile(asset(`public${original.path}`)))
+        .digest("hex"),
+      original.sha256,
+    );
+  assert.ok(
+    files.every((name) => !/^[a-f0-9]{8}-/.test(name)),
+    "assets have descriptive names",
+  );
+  const entryStyles = [...document.querySelectorAll('head > link[rel="stylesheet"]')];
+  const entryBytes = (
+    await Promise.all(
+      entryStyles.map(async (link) => gzipSync(await read(`dist${link.getAttribute("href")}`)).byteLength),
+    )
+  ).reduce((sum, n) => sum + n, 0);
+  assert.ok(entryBytes <= 19000, `entry stylesheet transfer budget: ${entryBytes} gzip bytes`);
   for (const file of files)
     assert.deepEqual(
       await readFile(asset(`public/v40/assets/${file}`)),
@@ -154,7 +178,7 @@ function expandScript(scripts, name, seen = new Set()) {
 
 test("V37 software gates preserve the independent V35 dated evidence", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "40.0.1");
+  assert.equal(packageJson.version, "41.0.0");
   const lock = JSON.parse(await read("package-lock.json"));
   assert.equal(lock.version, packageJson.version);
   assert.equal(lock.packages[""].version, packageJson.version);
@@ -233,16 +257,16 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
   assert.equal(archive.expires, "2026-09-27");
   assert.deepEqual(archive.containers, { running: 18, documented: 19, stopped: 1, zeus: null, apollo: null });
   assert.equal(archive.routingVerified, "2026-08-21");
-  assert.equal(status.verified, "2026-09-07");
+  assert.equal(status.verified, "2026-10-23");
   assert.equal(status.routingVerified, null);
   assert.deepEqual(status.lanes, { public: null, privateCatalog: null });
   assert.equal(await read("dist/status.json"), await read("public/status.json"));
   assert.equal(await read(`dist${status.archive.url}`), await read(`public${status.archive.url}`));
   const receipt = JSON.parse(await read("dist/site-release.json"));
   assert.deepEqual(receipt.evidenceSnapshot, {
-    url: "/status.json",
-    fleetObserved: status.verified,
-    observedAtUtc: status.provenance.observedAtUtc,
+    url: "/evidence/status-2026-09-07.json",
+    fleetObserved: "2026-09-07",
+    observedAtUtc: "2026-09-07T23:14:58.5008542Z",
     routingObserved: null,
   });
 });
@@ -724,8 +748,8 @@ test("Helios release identity, signature assets and compatibility receipts agree
     const compatibility = JSON.parse(await read(`dist/${name}`));
     assert.deepEqual(compatibility.frontDoor, {
       entry: "/",
-      experienceVersion: "40.0.1",
-      visualEdition: "Mostly Harmless",
+      experienceVersion: "41.0.0",
+      visualEdition: "Eagle",
       receipt: "/v40/site-release.json",
     });
   }
@@ -773,14 +797,14 @@ test("Helios release identity, signature assets and compatibility receipts agree
     /not recovery of a running system/,
   );
   assert.ok(doc.querySelector('#snapshot-story a[href="/evidence/console-snapshot-2026-10-03.json"]'));
-  assert.deepEqual(JSON.parse(await read("dist/evidence/status.json")), evidence);
-  assert.ok((await read("README.md")).startsWith("# cAshIo V40 · Mostly Harmless"));
-  assert.equal((await read("CHANGELOG.md")).match(/^## (V[\d.]+)/m)?.[1], "V40.0.1");
+  assert.deepEqual(JSON.parse(await read("dist/evidence/status.json")), JSON.parse(await read("status.json")));
+  assert.ok((await read("README.md")).startsWith("# cAshIo V41 · Eagle"));
+  assert.equal((await read("CHANGELOG.md")).match(/^## (V[\d.]+)/m)?.[1], "V41.0.0");
   const sitemap = new JSDOM(await read("dist/sitemap.xml"), { contentType: "application/xml" }).window.document;
   const home = [...sitemap.querySelectorAll("url")].find(
     (entry) => entry.querySelector("loc")?.textContent === "https://cashio.us/",
   );
-  assert.equal(home?.querySelector("lastmod")?.textContent, "2026-10-05");
+  assert.equal(home?.querySelector("lastmod")?.textContent, "2026-10-23");
   // The home signature and the Celestial Forge share one full size artwork file, so the forge reuses the cached copy.
   assert.equal(doc.querySelector("#sig-art").getAttribute("src"), "/brand/celestial-1680.webp");
   assert.ok((await read("src/odyssey/brand-mark.tsx")).includes("/brand/celestial-1680.webp 1680w"));

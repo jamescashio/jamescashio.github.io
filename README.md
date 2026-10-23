@@ -1,129 +1,66 @@
-# cAshIo V40 · Mostly Harmless
+# cAshIo V41 · Eagle
 
-V40 is the proposed front door. The faithful cinematic design now includes Bit, seven local demonstrations, a portable review edition and a static reading edition. Its ordinary React build preserves the existing strict security policy. V39.8 remains at `/v39/`; original worlds and shared bookmarks are retained. This branch is a release candidate awaiting final publication approval.
+Eagle integrates a silent 36 second arrival behind the opening headline. The page keeps the V40 orbital world, LCARS rail, Orbitron, Exo 2, JetBrains Mono, Bit, E.V.E., Mission Control and seven local experiments. The headline and both main actions fit the first screen at 1440×900, 3440×1440 and 390×844.
 
-The active page lives in `src/v40`; the preserved Helios experience remains in `src/helios`. Run the established verification suite and the additional V40 browser checks before publication.
+This is the `preview/v41-hero-integration` branch. Doug owns the merge and Cloudflare purge. No production deployment is part of this pass. The source baseline is `2c0ffe613a14f9f9ebacf3255b7ff4d0234cf488`.
 
-# cAshIo V39.8 · Helios / First Light
+## Current evidence
 
-The preserved V39 orbital workshop is served from `/v39/` and `src/helios/`. Former `/v38/` addresses normalize to the current front door; explicit studio, flight and world bookmarks continue to the V39 archive. The notes below record the V39 release history.
+`status.json`, `public/status.json` and `public/evidence/status.json` are identical public aggregates from the October 23, 2026 read only observation. They report 19 running containers out of 20 documented containers, one running virtual machine out of two, and two hosts reporting running guests. Running guests do not establish application health or cluster quorum.
 
-V39.8 leads with the headline "The machines can think. You still decide." and adds polish: a single light sweep across the gold line, room cards that lean toward the pointer with a soft glare, and section labels that draw a cyan signal line on first view. All of it stands down for reduced motion.
+The backup API listed 124 snapshots and reported successful integrity verification for the latest snapshot of each of 21 guests. This does not assert verification of every listed snapshot, complete coverage, a restore rehearsal or offsite recovery. Scheduler counts, model configuration, routing counts and quorum remain null with explicit `withheldReasons`. Public capability lanes and the private model catalog remain distinct fields. Neither has a fresh published count.
 
-**Earlier V39.7 work** makes the page readable at two depths. Plain English stays the default; a "Technical detail" switch adds short engineer notes beside the same copy. Routing labels now use everyday words, the backup and system map copy explain what happened in plain terms, and every page date reads October 3, 2026.
+The current receipt is `/v40/site-release.json`. Compatibility receipts at `/site-release.json` and `/event-horizon-release.json` retain the V37 identity and point to Eagle through `frontDoor`. Their archived evidence remains the September 7 record. Historical observations and the V35 frozen clock retain their original dates.
 
-**Earlier V39.6 work** puts the four worlds right under the workshop, wakes the cAshIo signature when it comes into view, counts up the verified backup files, gives Studios its own film still, refreshes every page date to October 2, 2026, and removes hyphens and dashes from visitor copy. The hero now places the start of my IT career in 1996, the year Quake went truly 3D.
+## Page and media ownership
 
-**Earlier V39.5 work** adds direct film paths in Studios, searchable film titles and an optional next-film trail. The workbench produces a downloadable decision brief that preserves selected sources and unknowns. The film catalog and playback controller have separate owners. Original artwork, media, quiet startup, dated observations, reading editions and the 19,000 byte entry CSS budget remain intact. See [the release notes](CHANGELOG.md) for the complete change.
+| Concern                                                                                                  | Source                                                                           |
+| -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Entry, strict CSP and reading edition                                                                    | `index.html`, `src/v40/main.jsx`, `scripts/prerender-v40.mts`                    |
+| Shared state and interaction handlers                                                                    | `src/v40/page.jsx`                                                               |
+| Hero, workshop, worlds, films, routing, decisions, experiments, machines, evidence, operator and contact | `src/v40/sections/`                                                              |
+| Shared LCARS primitives                                                                                  | `src/v40/design-system.js`, `src/v40/design.css`                                 |
+| Finite interaction appearance                                                                            | `src/v40/style-variants.js`, `src/v40/style-variants.json`, `src/v40/polish.css` |
+| Arrival and replay                                                                                       | `src/v40/hero-reel.jsx`, `src/v40/hero-reel.css`                                 |
+| Playback ownership, visibility and data saving                                                           | `src/v40/media-policy.js`                                                        |
+| Secondary controls and new film transition                                                               | `src/v40/deferred.css`                                                           |
+| Shared bookmarks and scene handoffs                                                                      | `src/v40/navigation.js`, `public/v40-entry.js`                                   |
+| Public fact formatting                                                                                   | `src/v40/evidence.js`, `public/status.json`                                      |
 
-**Earlier V39.2 work** makes the front door easier to maintain and its controls easier to use. `tsconfig.helios.json` type checks `src/helios` during every build. Each style rule now lives with its component, and the entry stylesheet remains within its 19,000 byte gzip budget. Focus and privacy feedback stay visible, Motion keeps a stable accessible name, and the glossary opens on request. E.V.E. answers `about` and `contact`, suggests a command after a typo, and lets keyboard visitors leave after completing a command. The arrival film waits until it can play, and the saved mission card uses the original signature without a dark rectangle. Reading editions are linked from the room directory and each room, the experiment chooser is one action away, and 3G connections use the still arrival artwork. A September 26, 2026 evidence refresh records 49 enabled jobs in 56 retained definitions and clarifies the primary local configuration. A redacted DeepSeek Harness snapshot receipt supports a real build story. Original assets and archived observations are preserved; each current fact keeps its own date. The opening names the hobby lab, routing results use plain language, and privacy predictions preserve the separate experiment settings. Mission Control contains the orbit extra and wraps keyboard focus. Receipt field names wrap across font metrics, and short phone flight text stays readable.
+The former style helper calls are external CSS classes. The finite style map makes an unknown interaction variant fail visibly during testing instead of injecting CSS. When adding a state, add its rule to `polish.css` and its mapping to `style-variants.json`, then exercise that state in the browser. Section components retain the original `h()` composition style.
 
-**V39.1** is a clarity and code pass on Zenith. Studies are now called experiments, so they no longer sit beside the Studios room under a near twin name. Zeus, Apollo, HERMES, Atlas and DSH are defined in plain words where they first appear, and release and house codenames leave the visitor copy. The first screen keeps two hero actions: Bit's orbit becomes a small text action and the scroll cue gives way on wide screens. An open room is titled by a real h1, the Trace button shows when it is running, and the system map's inspection card stays beside the map on desktop. The home page now refuses inline styles: script-owned styles use constructable stylesheets, so its Content Security Policy no longer needs `'unsafe-inline'` for styles. The home signature, the Studios card and the Celestial Forge share one celestial artwork set, and the entry stylesheet no longer declares a bold mono face.
+The arrival waits until after the initial poster, is muted, has no audio stream or native controls, and plays at most once per browser session. Skip and completion fade back to the live hero. Reduced motion, Motion off, data saving and slow connections keep the poster still. `/#film=intro` opens the same Eagle cut in the existing cinema with native controls, captions and a text version. Its three original site effects remain muted until the visitor enables sound.
 
-**V39.0 Zenith** keeps the Helios world, palette, type, artwork, Bit and quiet sound, and sharpens what a first visit says and feels like:
+AV1 precedes the H.264 fallback. The selector uses 1080p on desktop, 720p on phone and 480p for data saving or slow connections. Other ambient films use `preload="none"`, wait until at least half visible, pause on exit and share one playback owner. A deliberately played cinema can run with background motion paused. Turning Motion off also pauses an active replay. Optional external playback loads only after the visitor chooses Play.
 
-- **Clearer story.** A profile, glossary and one complete privacy test introduce the workshop. Deeper studies and the system map open on demand, and the four creative rooms precede the dated evidence. The Starship lab holds the specific quiet-scene failure and repair story; the Principles room holds the philosophy artwork. Their shared addresses still work.
-- **A living first frame.** After the arrival film, the artwork answers the pointer with a few pixels of depth, the sun breathes and a few stars twinkle. All of it yields to the Motion control, reduced motion, hidden tabs and open scenes.
-- **A jump, not a wait.** Boarding the starship plays a short starfield warp that covers loading, and the flight arrives with a settle. The loader only appears when loading is slow. The flight module warms when a visitor hovers, focuses or touches a boarding link.
-- **E.V.E. lore.** Unlisted console commands carry labelled Dune, aviation and fleet lore. Listed commands answer from the dated export and name each fact’s observation date. The September 18 orchestration audit stays distinct from the September 24 fleet and backup observation.
-- **Craft.** The wordmark I carries the serifs of the celestial signature. The phone starship card no longer collides with its caption, touch links have 44 pixel targets, ultrawide screens get a larger hero, and a designed share card replaces the plain orbit image for social previews. The hero art uses the existing AVIF set; the unseen 504 KB film poster is gone. The dead custom cursor markup and rules are removed.
+The complete media inventory and checksums are in `public/assets/hero/cashio-v41-eagle-manifest.json`. All twelve encodes are 36 seconds; the largest is 3,274,766 bytes. Rebuild them with a local FFmpeg installation that includes libsvtav1 and libx264:
 
-The current receipt remains `/v38/site-release.json`. V37.17 is preserved at `/odyssey.html`, accessible through Version history, and `?v=37.17` links explicitly select it. The package follows V39.4; compatibility receipts retain their V37.17 identity with a `frontDoor` record pointing to V39.4. Interface revisions do not renew evidence observations. See [Helios validation and rollback](docs/helios-release.md).
+```powershell
+python scripts/build-v41-media.py
+```
 
-## Preserved V37.17 compatibility experience
+The script uses existing planet and ship films plus original site effects. It writes temporary masters under ignored `artifacts/v41-media/` and updates the manifest. Encoders can produce different byte hashes across versions. Review regenerated media and rerun the release checks.
 
-Doug Cashio’s interactive universe of AI, security, and owned infrastructure. Built for technical peers and AI enthusiasts, with Bit, orbital artwork, midnight blue, cyan, gold, and human judgment at its center.
+`public/v40/asset-manifest.json` records the original hashes of all 29 renamed assets. The old JPEG is preserved for rollback and has AVIF and WebP derivatives. Current cards request 320, 640 or 1280 pixel WebP thumbnails. Original V8 media remains available in the repository but is not requested by the current hero.
 
-**V37.17 makes the first minute clearer and the phone decision easier to inspect.** The software version is 37.17.0. A concise introduction and three-step path lead from the flight to a visible routing consequence and the shipped interface. Changing a flight decision promotes the recap into the phone's primary action; before/after instruments use the same twelve-request model. Short-phone spacing and expanded text wrapping are refined. Bit, the orbital artwork, seven studies, dated evidence, legacy routes, quiet startup and motion controls retain their identity. See [release validation and rollback](docs/precision-preview-release.md).
-
-## Experience
-
-Start with First Flight: a 30-second, four-chapter journey through arrival, onboard AI, a lost connection, and a human permission decision. Follow twelve illustrative requests, change the scenario, and share the exact choices. Manual chapter controls remain available with motion paused.
-
-The first visit keeps the seven studies and system map in native disclosures. Section navigation and shared experiment links open the relevant disclosure and restore keyboard focus. Seven working studies turn the ideas into experiments. Each explains its rules, suggests a boundary to try, links to its supporting source, and shares reproducible settings. The HERMES comparison loads the same request with public or private handling; the visitor explicitly runs each version.
-
-The Evidence section connects those demonstrations to a real owner-run audit. “How the audit changed this record” compares two dated fleet observations, distinguishes an absent historical field from zero, and leaves unverified routing unknown. E.V.E. offers named links to the evidence, builds, operator, and preserved flight lineage.
-
-The existing cinematic world remains available: Lensing Observatory, the explorable Sanctuary chamber, Celestial Forge, five optional films, controllable ship materials and propulsion, and the original command deck. Films open on still posters and play on request. Motion follows system preferences and the global pause control; audio requires opt-in. Heavy scenes load when opened.
-
-**THE HUMAN RECKONING** is an original release name inspired by the Butlerian Jihad in Frank Herbert’s _Dune_; it is not a quotation or canonical book title. The Lensing edition was crafted with GPT-6 Astra under Doug’s direction. The earlier visual releases are documented in [Continuum](docs/continuum.md), [Vector](docs/vector.md), [Lightwake](docs/lightwake.md), and [Sanctuary](docs/sanctuary.md).
-
-## Routes and evidence
-
-- `/` serves the current V39 Zenith homepage directly. Release builds contain indexable metadata. Separately packaged local previews must disable indexing.
-- `/odyssey.html` preserves V37.17; old `/v38/` addresses normalize to the current homepage.
-- `/command-deck.html` preserves the V35 command deck. Existing `/#deck=…` bookmarks redirect there with their query and selected deck intact.
-- `/command.html` remains the explicitly marked May 2026 archive.
-- `/site-release.json` describes the software release, Lensing edition, and Lensing Observatory; `/event-horizon-release.json` is its identical compatibility alias. Software and evidence dates are separate.
-- `/#flight=board`, `hull`, `blackout`, or `permission` opens a flight chapter.
-- `/#mission=hybrid.mixed.offline.held` restores a bounded routing scenario.
-- `/#build=hermes&intent=analyze&private=1&sources=1` restores a study without running it.
-- `/#signature` opens Celestial Forge.
-- `/#lensing` opens Lensing Observatory; `/#film` opens Orbital arrival.
-- `/#film=sanctuary`, `lightwake`, `signature`, or `awakening` opens that film on its still poster. The films retain their scene handoffs and frame controls.
-
-The published `status.json` and `public/status.json` contain the owner-run observation of **7 September 2026 at 23:14:58 UTC**, collected in the HERMES audit completed at **23:29:51 UTC**. It records 19 running LXC containers, one running QEMU virtual machine, and two online hosts. Per host counts and the hypervisor identity are withheld. These are observations from that time, not live telemetry or application-health guarantees.
-
-Current lane counts, routing verification, and expiry remain `null`. The observation does not establish demonstrated recovery, storage redundancy, failover, or production AI routing.
-
-`public/evidence/status-2026-08-28.json` preserves the dates and aggregate facts of the August export with explicit privacy redactions: its fleet observation is **28 August 2026**, its routing inventory is **21 August 2026**, and its original expiry is **27 September 2026**. That expiry does not extend the September observation. The audit case links to both records.
-
-All request-routing studies execute locally in the browser and send nothing to an AI service. Private operational findings and credentials are excluded from the public evidence.
-
-## Where to make changes
-
-The current homepage is composed in `index.html`. `src/helios/main.js` connects focused controllers for studies, privacy, the atlas, navigation, evidence and the signature. Each room is authored once in `src/helios/rooms/*.html`. `rooms.js` loads its markup and controller on demand, mounts it once and preserves its state between visits. `scripts/prerender-rooms.mts` produces a reading edition at `/rooms/<name>/` from that same content, so native links still work without JavaScript. Direct fragments, history, slow loads and recovery are covered by the Helios browser suite. Room layout lives in `src/helios/rooms.css`; `src/helios/styles.css` defines the stylesheet order. The build ships one fingerprinted, cacheable entry stylesheet with the existing 19,000 byte gzip budget; it does not embed the complete stylesheet in the HTML. The table below describes the preserved V37 experience and its shared models.
-
-| Concern                                               | Source                                                                                             |
-| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| Page composition, overlay handoffs, focus restoration | `app.tsx`, `experience-controller.ts`, `experience-overlays.tsx` in `src/odyssey/`                 |
-| Study interface and rules                             | `labs.tsx`, `data.ts`, `study-experiment.ts`, `study-notes.ts` in `src/odyssey/`                   |
-| Shared dated evidence and audit explanation           | `fleet-evidence.ts`, `audit-story.tsx`, `build-story.tsx` in `src/odyssey/`                        |
-| Modern E.V.E. replies and destinations                | `src/odyssey/public-console.ts` and `evidence-console.tsx`                                         |
-| Shared safe replies, deck names, historical lineage   | `src/lib/eve-common.ts`, `deck-metadata.ts`, `flight-lineage.ts`                                   |
-| First Flight and request model                        | `first-flight.tsx`, `flight-plan.ts`, `flight-requests.ts`, `sovereign-model.ts` in `src/odyssey/` |
-| Motion, visibility, opt-in audio                      | `src/odyssey/hooks.ts`                                                                             |
-| Modern stylesheet order                               | `src/odyssey/main.tsx`                                                                             |
-
-The modern homepage and legacy command deck have separate entry points. Keep shared data in focused modules; importing a legacy component into the homepage can pull its unrelated content into the initial download. Preserve historical wording and dates when editing the legacy view.
-
-E.V.E.'s component-specific appearance lives in `src/odyssey/evidence-console.css`: structure, responsive controls, Aurora colors, and Lensing materials. Site-wide typography and forced-color rules stay in the shared themes. Its stylesheet follows the Lensing surface import so local maintenance preserves the established cascade.
-
-Styles retain the original layered theme. Fix a component in its existing stylesheet rather than adding another global override. Import order is intentional; verify affected desktop and phone states after changing it. Optional scenes keep their styles with their lazy-loaded modules.
-
-## Local development and verification
+## Verification and preview
 
 ```powershell
 npm ci
-npm run build
-npm run preview -- --host 127.0.0.1 --port 4178 --strictPort
 npm run verify
+node scripts/serve-helios-preview.mjs dist 4191
 ```
 
-For focused checks, use `lint`, `format:check`, `test:node`, `test:odyssey`, `test:artifact`, and `test:release`. The full verification command runs those checks, builds both experiences, checks their browser behavior, and verifies public-repository safety, release consistency, and whitespace.
+Open `http://127.0.0.1:4191/`. The loopback server deliberately sends `X-Robots-Tag: noindex, nofollow, noarchive`. This lowers its Lighthouse SEO score and prevents the review surface from being indexed. Production HTML retains its canonical URL and indexable metadata.
 
-The retained `check:v36:runtime` name checks V37 and the preserved V35 experience. Browser gates use Chrome 147 in CI; local verification can use `CHROME_PATH`. The historical `check:preview` command validates explicitly unpublished metadata and intentionally rejects the released receipt in this source tree.
+`npm run verify` includes lint, formatting, unit and model checks, a single build, artifact checks, preserved layout and V36 browser checks, the combined V40 and V41 runtime suite, Python release tests, public data guards, consistency and committed whitespace. The V41 tests cover the first view, accessibility including visible label agreement, the intro bookmark, session replay, data saving and a single visible player. The entry CSS budget remains 19,000 bytes gzip. Heavy scenes and secondary styles remain deferred.
 
-A passing build or browser test does not establish live infrastructure health. Visual release review also covers desktop, phone, narrow-phone, keyboard, reduced motion, opt-in audio, legacy routes, and the actual target artifact.
+See [the V41 review evidence](docs/v41-review.md) for measured transfer sizes, Lighthouse runs, screenshots, the scorecard and limits. A passing frontend check is not a live infrastructure health claim.
 
-GitHub Pages publishes only the verified `dist` artifact through `.github/workflows/pages.yml`. The configured public domain is `cashio.us`. Publish through the protected pull-request workflow, then verify the deployment and live routes. This release does not change DNS or Cloudflare policies. The reproducible audio tool remains available as `python scripts/build_audio_cues.py`.
+## Preserved routes
 
-## Public asset layout and archive redactions
+Ordinary navigation stays in the current edition. Four interactive worlds live under `/rooms/<name>/interactive/`; reading editions live under `/rooms/<name>/`. Shared experiment and flight bookmarks retain their selections and return destinations.
 
-The current front door lives in `src/v40`; `src/helios` preserves V39.8 at `/v39/`. `src/odyssey` supplies shared optional scenes and the V37 archive. `src/components` supplies V35. Public archive dates remain historical. Per host counts, hypervisor identity, private service and model names, private catalog counts and spend are withheld in both the rendered archives and their shipped records. A redaction does not erase copies in previously published Git history.
+`/v39/` preserves Helios and its dated `/v38/status.json`. `/odyssey.html` preserves V37.17 with the September 7 observation. `/command-deck.html` preserves V35 and its August observation. Version history labels these archives explicitly. Keep archive clocks, receipts and wording historical when maintaining them. Their detailed notes remain in [Helios](docs/helios-release.md), [the V37 release](docs/precision-preview-release.md) and the changelog.
 
-Asset directories preserve compatible URLs and existing cache coverage:
-
-| Path                               | Purpose                                                                      |
-| ---------------------------------- | ---------------------------------------------------------------------------- |
-| `/assets/*.js` and `/assets/*.css` | Vite content hashes, covered by the existing immutable cache rule            |
-| `/v38/immutable/`                  | Content-addressed current artwork covered by the same rule                   |
-| `/v38/vendor/`                     | Versioned build output for the animation library                             |
-| `/v38/fonts/` and `/fonts/`        | Local font families shared by current and archived pages                     |
-| `/odyssey/` and `/plates/`         | Preserved scene media and archive artwork                                    |
-| `/cashio/`                         | Personal workspace introduction, original identity artwork and optional film |
-| `/brand/`                          | Celestial signature set shared by the home signature, Studios and the Forge  |
-
-The directory names remain unchanged. Consolidating them would require a separate cache compatibility review. No Cloudflare configuration is changed by this refinement.
-
-The cAshIo introduction uses a 1600px WebP derivative of the original logo and a 720p H.264 film derivative. The originals remain available for provenance; the page serves the lighter files, keeps the film on demand and muted, and uses the same local display/body fonts and content width as Zenith.
+GitHub Pages publishes the verified artifact after the protected main branch workflow succeeds. Rollback is a reviewed revert of the V41 squash commit or a redeployment of the baseline above. This preview does not alter DNS, Cloudflare configuration or fleet services.

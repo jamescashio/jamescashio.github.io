@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "release": "V41 Eagle",
+  "durationSeconds": 36,
+  "source": "Existing site films, assembled without titles. Each six second chapter has a one second dissolve into the next.",
+  "sources": [
+    "/assets/zenith/ringed-horizon.mp4",
+    "/assets/zenith/starship-blue-hour.mp4",
+    "/assets/zenith/starship-dockside.mp4",
+    "/assets/zenith/starship-flyby.mp4",
+    "/assets/zenith/orbital-instrument.mp4"
+  ],
+  "sound": "Arrival has no audio stream. Replay contains three original site effects with silence between. Playback starts muted.",
+  "effects": ["/sfx/fold.wav", "/sfx/warp.wav", "/sfx/epstein.wav"],
+  "variants": [
+    {
+      "file": "cashio-v41-eagle-arrival-1080p-av1.mp4",
+      "bytes": 1730335,
+      "sha256": "82ba77e095e343b21d4c18f967c2f9471f653ec1fe10c9ee3eaad23faf101455",
+      "width": 1920,
+      "height": 1080,
+      "durationSeconds": 36
+    },
+    {
+      "file": "cashio-v41-eagle-replay-1080p-av1.mp4",
+      "bytes": 1777342,
+      "sha256": "859512a6e4262b76e7ff8725341dd092ac1b7b30cdc467e83bdcb174f1df0d1c",
+      "width": 1920,
+      "height": 1080,
+      "durationSeconds": 36
+    },
+    {
+      "file": "cashio-v41-eagle-arrival-1080p-h264.mp4",
+      "bytes": 3226903,
+      "sha256": "80fed39c6a3284261a4d73c7b00e963975685da5741a2cb9fed4a458ed87aa49",
+      "width": 1920,
+      "height": 1080,
+      "durationSeconds": 36
+    },
+    {
+      "file": "cashio-v41-eagle-replay-1080p-h264.mp4",
+      "bytes": 3274766,
+      "sha256": "5aa9f747f029d3af1abef69dba7a7a76962e44dfcbb7701084314a3fbbc247da",
+      "width": 1920,
+      "height": 1080,
+      "durationSeconds": 36
+    },
+    {
+      "file": "cashio-v41-eagle-arrival-720p-av1.mp4",
+      "bytes": 1054071,
+      "sha256": "d19eb4d6f2c0cd1fe82c57175bd2f4c3e5f9163f64b76ab1a4f503d39de3d92e",
+      "width": 1280,
+      "height": 720,
+      "durationSeconds": 36
+    },
+    {
+      "file": "cashio-v41-eagle-replay-720p-av1.mp4",
+      "bytes": 1101078,
+      "sha256": "f215ad827355ceea0d5ec3cfd6254e2cf75a9202c85943a0aefaf4e32a75a88d",
+      "width": 1280,
+      "height": 720,
+      "durationSeconds": 36
+    },
+    {
+      "file": "cashio-v41-eagle-arrival-720p-h264.mp4",
+      "bytes": 1363089,
+      "sha256": "1e24103d0ed10dabe9aa4b2acebd1ceaeb269f4343257ba648a417b4b7872c23",
+      "width": 1280,
+      "height": 720,
+      "durationSeconds": 36
+    },
+    {
+      "file": "cashio-v41-eagle-replay-720p-h264.mp4",
+      "bytes": 1410984,
+      "sha256": "e53a8dcc7986c61909848c420848cdab0d596acc7354019419631303280e6d8a",
+      "width": 1280,
+      "height": 720,
+      "durationSeconds": 36
+    },
+    {
+      "file": "cashio-v41-eagle-arrival-480p-av1.mp4",
+      "bytes": 635349,
+      "sha256": "9837e42c32cba25c5324c42eeb5aa13bb86f559bcc46be2b053165cd28cd78c5",
+      "width": 854,
+      "height": 480,
+      "durationSeconds": 36
+    },
+    {
+      "file": "cashio-v41-eagle-replay-480p-av1.mp4",
+      "bytes": 682372,
+      "sha256": "16c44613158b3d04ba88c819307eb4712bd88f79c17bf3e53264c5cfcbf2bac9",
+      "width": 854,
+      "height": 480,
+      "durationSeconds": 36
+    },
+    {
+      "file": "cashio-v41-eagle-arrival-480p-h264.mp4",
+      "bytes": 684187,
+      "sha256": "631e8e4e87db6df4ac29f443b313a786531b61c6532cf26fbf2b96daee437828",
+      "width": 854,
+      "height": 480,
+      "durationSeconds": 36
+    },
+    {
+      "file": "cashio-v41-eagle-replay-480p-h264.mp4",
+      "bytes": 732098,
+      "sha256": "f1d157cca87215490aedc206f9e882532394125ba7e0352cd7ec784f0a202748",
+      "width": 854,
+      "height": 480,
+      "durationSeconds": 36
+    }
+  ]
+}

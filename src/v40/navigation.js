@@ -3,14 +3,16 @@ import { isZenithFilm } from "../helios/zenith-routes.js";
 const rooms = new Set(["starship", "principles", "studios", "heritage"]);
 const experiments = new Set(["hermes", "cascade", "exposure", "briefing", "dashboards", "signal", "graphify"]);
 export const sceneKind = (hash) =>
-  /^#flight=(board|hull|blackout|permission)$/.test(hash)
-    ? "flight"
-    : isZenithFilm(hash) ||
-        /^#(?:signature|lensing(?:&.*)?|film(?:=(?:intro|sanctuary|lightwake|signature|awakening|arrival))?)$/.test(
-          hash,
-        )
-      ? "studio"
-      : null;
+  hash === "#film=intro"
+    ? "reel"
+    : /^#flight=(board|hull|blackout|permission)$/.test(hash)
+      ? "flight"
+      : isZenithFilm(hash) ||
+          /^#(?:signature|lensing(?:&.*)?|film(?:=(?:intro|sanctuary|lightwake|signature|awakening|arrival))?)$/.test(
+            hash,
+          )
+        ? "studio"
+        : null;
 
 /** The current edition owns shared experiences; the version archive stays an explicit destination. */
 export function setupV40Navigation() {
@@ -98,6 +100,12 @@ export function setupV40Navigation() {
     dispose();
     originalTitle = title;
     activeHash = hash;
+    if (kind === "reel") {
+      scene = { dispose: () => window.cashioV40?.setState({ cinema: null }) };
+      window.cashioV40?.setState({ cinema: "intro" });
+      document.title = "Eagle arrival · cAshIo V41";
+      return;
+    }
     const token = generation;
     const status = document.createElement("div");
     statusPanel = status;
@@ -167,6 +175,9 @@ export function setupV40Navigation() {
   window.addEventListener("hashchange", route);
   window.addEventListener("popstate", route);
   window.addEventListener("cashio-ready", route);
+  window.addEventListener("cashio-cinema-close", () => {
+    if (activeHash === "#film=intro") close();
+  });
   document.addEventListener("cashio-motion", () =>
     window.dispatchEvent(new CustomEvent("helios-motion", { detail: motion() })),
   );
