@@ -1,5 +1,6 @@
 import { snapshot, observedDate, fleetSummary, backupSummary, fleetLine } from "./evidence.js";
 import { installMediaCoordinator } from "./media-policy.js";
+import { frameDeltaSeconds, shouldRenderFrame } from "../lib/animation-timing.ts";
 import { CinemaReel, ReelText, reelPoster } from "./hero-reel.jsx";
 import { HeroSection } from "./sections/hero.jsx";
 import { EagleFilmSection } from "./sections/eagle-film.jsx";
@@ -334,11 +335,15 @@ export class V40Page extends React.Component {
     };
     document.addEventListener("cashio-motion", this.syncMotion);
     document.addEventListener("visibilitychange", this.syncMotion);
-    this.heroObserver = new IntersectionObserver((es) => {
-      this.heroVisible = es[0].isIntersecting;
-      cancelAnimationFrame(this.raf);
-      if (this.heroVisible && this.starLoop) this.starLoop();
-    });
+    const headerHeight = Math.ceil(document.querySelector("header")?.getBoundingClientRect().height || 0);
+    this.heroObserver = new IntersectionObserver(
+      (es) => {
+        this.heroVisible = es[0].isIntersecting;
+        cancelAnimationFrame(this.raf);
+        if (this.heroVisible && this.starLoop) this.starLoop();
+      },
+      { rootMargin: `-${headerHeight}px 0px 0px 0px` },
+    );
     this.heroObserver.observe(document.getElementById("top"));
     window.dispatchEvent(new Event("cashio-ready"));
     this.syncMotion();
@@ -361,6 +366,7 @@ export class V40Page extends React.Component {
     window.removeEventListener("scroll", this.onScroll);
     window.removeEventListener("keydown", this.onKey);
     if (this.onStarResize) window.removeEventListener("resize", this.onStarResize);
+    this.starResizeObserver?.disconnect();
     [this.io, this.vio, this.rio, this.cio, this.sio, this.uio, this.pauseIO].forEach((o) => o && o.disconnect());
     Object.values(this.pkT || {}).forEach((t) => clearTimeout(t));
     if (this.onMove) document.removeEventListener("mousemove", this.onMove);
@@ -541,10 +547,14 @@ export class V40Page extends React.Component {
     const ctx = c.getContext("2d");
 
     const density = this.props.starDensity ?? 220;
-    let w, h, stars;
+    let w, h, stars, dpr;
     const reset = () => {
-      w = c.width = c.offsetWidth * Math.min(devicePixelRatio, 2);
-      h = c.height = c.offsetHeight * Math.min(devicePixelRatio, 2);
+      const width = c.offsetWidth,
+        height = c.offsetHeight;
+      // Preserve sharp stars without allocating a huge backing canvas on high density ultrawides.
+      dpr = Math.min(devicePixelRatio, 2, Math.sqrt(6_000_000 / Math.max(1, width * height)));
+      w = c.width = Math.round(width * dpr);
+      h = c.height = Math.round(height * dpr);
       stars = Array.from({ length: density }, () => ({
         x: Math.random() * w,
         y: Math.random() * h,
@@ -553,16 +563,12 @@ export class V40Page extends React.Component {
       }));
     };
     reset();
-    this.onStarResize = reset;
-    window.addEventListener("resize", reset);
     let t = 0;
-    const dpr = Math.min(devicePixelRatio, 2);
-    const draw = () => {
+    const draw = (delta = 0) => {
       if (!c.isConnected) return;
       const reduce = this.reduce;
-      if (c.offsetWidth * dpr !== w) reset();
-      t += 0.016;
-      const warp = Date.now() < (this.warpUntil || 0);
+      t += delta;
+      const warp = !reduce && Date.now() < (this.warpUntil || 0);
       ctx.clearRect(0, 0, w, h);
       const hz = h * 0.64,
         cols = 28,
@@ -602,7 +608,7 @@ export class V40Page extends React.Component {
           ctx.moveTo(s.x, s.y);
           ctx.lineTo(s.x + len, s.y);
           ctx.stroke();
-          s.x -= 40 * s.z * dpr;
+          s.x -= 2400 * delta * s.z * dpr;
           if (s.x < -len) s.x = w;
           continue;
         }
@@ -610,19 +616,40 @@ export class V40Page extends React.Component {
         ctx.fillStyle = `rgba(228,228,240,${0.25 + 0.6 * tw * s.z})`;
         ctx.fillRect(s.x, s.y, 1.2 * s.z * dpr + 0.4, 1.2 * s.z * dpr + 0.4);
         if (!reduce) {
-          s.x -= 0.04 * s.z * dpr;
+          s.x -= 2.4 * delta * s.z * dpr;
           if (s.x < 0) s.x = w;
         }
       }
       ctx.lineWidth = dpr;
     };
-    const loop = () => {
-      draw();
-      if (!this.reduce && !document.hidden && this.heroVisible !== false && c.isConnected)
-        this.raf = requestAnimationFrame(loop);
+    let lastFrame = null;
+    const loop = (timestamp) => {
+      if (document.hidden || this.heroVisible === false || this.state.cinema || !c.isConnected) {
+        lastFrame = null;
+        return;
+      }
+      if (this.reduce) {
+        draw();
+        lastFrame = null;
+        return;
+      }
+      const now = timestamp ?? performance.now();
+      if (timestamp === undefined) lastFrame = null;
+      const interval = 1000 / (Date.now() < (this.warpUntil || 0) ? 60 : 30) - 1;
+      if (shouldRenderFrame(now, lastFrame, interval)) {
+        draw(lastFrame === null ? 0 : frameDeltaSeconds(now, lastFrame));
+        lastFrame = now;
+      }
+      this.raf = requestAnimationFrame(loop);
     };
     this.starLoop = loop;
-    draw();
+    this.onStarResize = () => {
+      reset();
+      draw();
+    };
+    window.addEventListener("resize", this.onStarResize);
+    this.starResizeObserver = new ResizeObserver(this.onStarResize);
+    this.starResizeObserver.observe(c);
     loop();
   }
 

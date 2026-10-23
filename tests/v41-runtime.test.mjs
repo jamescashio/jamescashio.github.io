@@ -186,3 +186,44 @@ test("Only the visible film plays; leaving its halfway boundary or switching mot
     true,
   );
 });
+
+test("The starfield limits ambient work and stops while offscreen, motion is paused or cinema is open", async (t) => {
+  const page = await visit(t);
+  await page.addInitScript(() => {
+    window.heroDraws = 0;
+    const clear = CanvasRenderingContext2D.prototype.clearRect;
+    CanvasRenderingContext2D.prototype.clearRect = function (...args) {
+      if (this.canvas.id === "hero-stars") window.heroDraws++;
+      return clear.apply(this, args);
+    };
+  });
+  const draws = () => page.evaluate(() => window.heroDraws);
+  const staysStill = async () => {
+    await page.waitForTimeout(300);
+    const before = await draws();
+    await page.waitForTimeout(450);
+    assert.equal(await draws(), before, "an inactive hero does no canvas work");
+  };
+  await page.goto(url);
+  await expect.poll(draws).toBeGreaterThan(2);
+  const before = await draws();
+  await page.waitForTimeout(1000);
+  const rendered = (await draws()) - before;
+  assert.ok(rendered > 0 && rendered <= 35, `ambient starfield stays near 30fps; drew ${rendered} frames`);
+  await page.getByRole("button", { name: "Pause motion", exact: true }).first().click();
+  await staysStill();
+  await page.getByRole("button", { name: "Resume motion", exact: true }).first().click();
+  const resumed = await draws();
+  await expect.poll(draws).toBeGreaterThan(resumed);
+  await page.getByRole("link", { name: "Next: watch Eagle", exact: true }).click();
+  await page.waitForTimeout(900);
+  await staysStill();
+  await page.goto(url + "#film=intro");
+  await expect(page.locator("#cinema-video")).toBeVisible();
+  await staysStill();
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#cinema-video")).toHaveCount(0);
+  await page.locator("#top").scrollIntoViewIfNeeded();
+  const closed = await draws();
+  await expect.poll(draws).toBeGreaterThan(closed);
+});

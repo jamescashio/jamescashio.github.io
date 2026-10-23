@@ -6,6 +6,8 @@ Keep the ringed planet behind the opening headline and ship invitation. Place th
 
 Preview branch only. Doug retains the merge and Cloudflare purge.
 
+Polish the Eagle invitation with a prominent play control, a restrained zoom and visible keyboard focus. Balance the four worlds into two columns at medium widths, improve the Studios label contrast, and soften card tilt. Keep starfield motion consistent across refresh rates, bound its canvas size on dense ultrawide displays, and stop it while hidden, offscreen, paused or behind the cinema.
+
 ## V40.0.1 · Reading polish · 10-05-2026
 
 Keep the reading edition within a 320 pixel screen and make its public contact link work without JavaScript. Initialize compact navigation before rendering, preserve every original media file, and verify bookmarked scenarios after their default parameters are restored.

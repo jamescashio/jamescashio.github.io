@@ -47,7 +47,7 @@
   margin-top: 24px;
   font: 11px/1.7 var(--font-mono);
 }
-.eagle-film-play {
+#eagle-film .eagle-film-play {
   position: relative;
   display: block;
   overflow: hidden;
@@ -55,6 +55,12 @@
   border-radius: var(--radius);
   color: var(--text);
   background: #05060a;
+  box-shadow: 0 18px 50px #0004;
+}
+.eagle-film-visual {
+  position: relative;
+  display: block;
+  overflow: hidden;
 }
 .eagle-film-play img {
   display: block;
@@ -62,6 +68,24 @@
   height: auto;
   aspect-ratio: 16/9;
   object-fit: cover;
+}
+.eagle-film-playmark {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  width: clamp(56px, 5vw, 76px);
+  aspect-ratio: 1;
+  margin: auto;
+  padding-left: 4px;
+  border: 1px solid #ffbd5ce6;
+  border-radius: 50%;
+  background: #080f1bea;
+  color: #ffbd5c;
+  font-size: clamp(20px, 2vw, 26px);
+  box-shadow:
+    0 0 0 8px #080f1b33,
+    0 8px 28px #0006;
 }
 .eagle-film-caption {
   display: flex;
@@ -71,18 +95,23 @@
   border-top: 1px solid var(--glass-border);
   font: 14px/1.5 var(--font-body);
 }
-.eagle-film-icon {
-  color: var(--accent);
-  font-size: 24px;
-  line-height: 1;
-}
 .eagle-film-duration {
   margin-left: auto;
   color: var(--text-dim);
   font: 11px var(--font-mono);
 }
-.eagle-film-play:hover {
+#eagle-film .eagle-film-play:is(:hover, :focus-visible) {
   border-color: var(--accent);
+  box-shadow:
+    0 18px 50px #0006,
+    0 0 30px #ff950018;
+}
+.eagle-film-play:is(:hover, :focus-visible) .eagle-film-playmark {
+  color: #080f1b;
+  background: #ffbd5c;
+  box-shadow:
+    0 0 0 8px #ff950018,
+    0 8px 28px #0006;
 }
 .eagle-film-play:focus-visible {
   outline: 3px solid var(--accent);

@@ -27,23 +27,26 @@ export function EagleFilmSection({ v }) {
           "aria-labelledby": "eagle-film-watch eagle-film-duration",
           "aria-haspopup": "dialog",
         },
-        h("img", {
-          src: "/v40/thumbs/zenith-starship-dockside-poster-640.webp",
-          srcSet: [320, 640, 1280]
-            .map((width) => `/v40/thumbs/zenith-starship-dockside-poster-${width}.webp ${width}w`)
-            .join(", "),
-          sizes: "(max-width: 760px) calc(100vw - 44px), (max-width: 1600px) 50vw, 760px",
-          width: 1280,
-          height: 720,
-          loading: "lazy",
-          decoding: "async",
-          alt: "A starship beside a lamplit workshop under a deep blue evening sky.",
-        }),
+        h(
+          "span",
+          { className: "eagle-film-visual" },
+          h("img", {
+            src: "/v40/thumbs/zenith-starship-dockside-poster-640.webp",
+            srcSet: [320, 640, 1280]
+              .map((width) => `/v40/thumbs/zenith-starship-dockside-poster-${width}.webp ${width}w`)
+              .join(", "),
+            sizes: "(max-width: 760px) calc(100vw - 44px), (max-width: 1600px) 50vw, 760px",
+            width: 1280,
+            height: 720,
+            loading: "lazy",
+            decoding: "async",
+            alt: "A starship beside a lamplit workshop under a deep blue evening sky.",
+          }),
+          h("span", { className: "eagle-film-playmark", "aria-hidden": "true" }, "▶"),
+        ),
         h(
           "span",
           { className: "eagle-film-caption" },
-          h("span", { className: "eagle-film-icon", "aria-hidden": "true" }, "▷"),
-          " ",
           h("span", { id: "eagle-film-watch" }, "Watch Eagle"),
           " ",
           h("span", { id: "eagle-film-duration", className: "eagle-film-duration" }, "36 seconds"),

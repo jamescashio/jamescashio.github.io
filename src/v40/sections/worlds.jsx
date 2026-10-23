@@ -67,7 +67,7 @@ export function WorldsSection({ v }) {
       "div",
       {
         key: 606,
-        className: "v41-8c6a0aa0ef",
+        className: "v41-8c6a0aa0ef world-grid",
       },
       " ",
       (function (parent) {
@@ -81,9 +81,9 @@ export function WorldsSection({ v }) {
               "a",
               {
                 key: 610,
-                className: ["za-card-hover", "v41-cb6566847c"].filter(Boolean).join(" "),
+                className: ["za-card-hover", "v41-cb6566847c", "world-card"].filter(Boolean).join(" "),
                 "data-reveal": "",
-                "data-tilt": "8",
+                "data-tilt": "3",
                 href: v.w.href,
                 onMouseEnter: v.w.enter,
                 onMouseLeave: v.w.leave,
@@ -101,7 +101,7 @@ export function WorldsSection({ v }) {
                   "data-bound-src": v.w.img,
                   alt: v.w.alt,
                   srcSet: v.w.srcSet,
-                  sizes: "(max-width: 600px) 90vw, (max-width: 1179px) 45vw, 320px",
+                  sizes: "(max-width: 600px) 90vw, (max-width: 1279px) 45vw, 320px",
                   width: 1280,
                   height: 720,
                   loading: "lazy",
@@ -167,13 +167,15 @@ export function WorldsSection({ v }) {
                   "span",
                   {
                     key: 631,
-                    className: classFor(
-                      [
-                        "font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:",
-                        v.w.color ?? "",
-                        "",
-                      ].join(""),
-                    ),
+                    className:
+                      "world-label " +
+                      classFor(
+                        [
+                          "font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:",
+                          v.w.color ?? "",
+                          "",
+                        ].join(""),
+                      ),
                   },
                   h(React.Fragment, { key: 632 }, "", h("span", { className: "sc-interp", key: 1 }, v.w.name), ""),
                 ),
