@@ -147,7 +147,7 @@ export class V40Page extends React.Component {
   collections = ["The workshop", "Gold in orbit", "Beyond the doorway"];
 
   filmById(slug) {
-    if (slug === "intro")
+    if (slug === "reel")
       return {
         slug,
         title: "Mostly Harmless",
@@ -289,7 +289,7 @@ export class V40Page extends React.Component {
     this.keyBuf = "";
     this.onKey = (e) => {
       if (e.key === "Escape" && this.state.cinema) {
-        this.setState({ cinema: null });
+        this.closeCinema();
         return;
       }
       if (this.state.cinema && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
@@ -305,6 +305,11 @@ export class V40Page extends React.Component {
       }
     };
     window.addEventListener("keydown", this.onKey);
+    this.onHash = () => {
+      if (window.location.hash === "#film=reel") this.setState({ cinema: "reel" });
+    };
+    window.addEventListener("hashchange", this.onHash);
+    this.onHash();
     this.applyScan();
     this.waitForCanvas();
     this.setupVideos();
@@ -417,6 +422,7 @@ export class V40Page extends React.Component {
     window.removeEventListener("resize", this.onResize);
     window.removeEventListener("scroll", this.onScroll);
     window.removeEventListener("keydown", this.onKey);
+    if (this.onHash) window.removeEventListener("hashchange", this.onHash);
     if (this.onStarResize) window.removeEventListener("resize", this.onStarResize);
     [this.io, this.vio, this.rio, this.cio, this.sio, this.uio, this.pauseIO].forEach((o) => o && o.disconnect());
     Object.values(this.pkT || {}).forEach((t) => clearTimeout(t));
@@ -998,6 +1004,11 @@ export class V40Page extends React.Component {
     };
     tick();
   }
+  closeCinema() {
+    this.setState({ cinema: null });
+    if (window.location.hash === "#film=reel")
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+  }
   heroHandoff() {
     const hv = document.getElementById("hero-video"),
       lp = document.getElementById("hero-loop");
@@ -1472,7 +1483,7 @@ export class V40Page extends React.Component {
       },
       openIntro: (e) => {
         e.preventDefault();
-        this.setState({ cinema: "intro" });
+        this.setState({ cinema: "reel" });
       },
       telemetry,
       tickerItems,
@@ -1497,7 +1508,7 @@ export class V40Page extends React.Component {
       cinemaTitle: C ? C.title : "",
       cinemaDesc: C ? C.desc : "",
       cinemaColl: C ? C.coll : "",
-      closeCinema: () => this.setState({ cinema: null }),
+      closeCinema: () => this.closeCinema(),
       cinemaPrev: () => this.stepCinema(-1),
       cinemaNext: () => this.stepCinema(1),
       lawA,
@@ -2303,7 +2314,7 @@ function renderPage(v) {
                   "a",
                   {
                     key: 206,
-                    href: "#film=intro",
+                    href: "#film=reel",
                     onClick: v.openIntro,
                     style: style("display:inline-flex;align-items:center;gap:10px"),
                   },
