@@ -24,6 +24,7 @@ const mime = {
   ".mp3": "audio/mpeg",
   ".mp4": "video/mp4",
   ".webm": "video/webm",
+  ".vtt": "text/vtt; charset=utf-8",
   ".ico": "image/x-icon",
 };
 const cache = new Map();

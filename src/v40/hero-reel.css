@@ -1,0 +1,84 @@
+.hero-reel {
+  position: relative;
+  z-index: 1;
+  width: min(calc(100% - 56px), 1184px);
+  margin: 68px auto 0;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  background: #05060a;
+  box-shadow: 0 24px 80px #0008;
+}
+.hero-reel video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  background: #000;
+}
+.hero-reel figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 24px;
+  padding: 10px 20px;
+  border-top: 1px solid var(--glass-border);
+  color: var(--text-dim);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.hero-reel figcaption > p {
+  margin: 0;
+}
+.hero-reel-title {
+  color: var(--text);
+  font-weight: 600;
+}
+.hero-reel-title span {
+  margin-left: 12px;
+  color: var(--cyan);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.hero-reel-text {
+  margin-left: auto;
+}
+.hero-reel-text[open] {
+  flex-basis: 100%;
+  margin-left: 0;
+}
+.hero-reel-text summary {
+  display: list-item;
+  min-height: 44px;
+  padding: 11px 0;
+  cursor: pointer;
+  color: var(--text);
+}
+.hero-reel-text p {
+  max-width: 80ch;
+  margin: 8px 0 12px;
+}
+.hero-reel a {
+  color: var(--cyan);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.hero-reel :focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: -3px;
+}
+@media (max-width: 720px) {
+  .hero-reel {
+    width: calc(100% - 32px);
+    margin-top: 24px;
+    border-radius: 12px;
+  }
+  .hero-reel figcaption {
+    padding: 10px 14px;
+  }
+  .hero-reel-text {
+    flex-basis: 100%;
+    margin-left: 0;
+  }
+}

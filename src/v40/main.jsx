@@ -6,6 +6,7 @@ import "./polish.css";
 import "./labs.css";
 import "./bit.css";
 import "./ai-worm.css";
+import "./hero-reel.css";
 import "./polish.js";
 import "./labs.js";
 import "./bit.js";
