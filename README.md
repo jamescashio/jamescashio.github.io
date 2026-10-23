@@ -1,6 +1,6 @@
 # cAshIo V41 · Eagle
 
-Eagle integrates a silent 36 second arrival behind the opening headline. The page keeps the V40 orbital world, LCARS rail, Orbitron, Exo 2, JetBrains Mono, Bit, E.V.E., Mission Control and seven local experiments. The headline and both main actions fit the first screen at 1440×900, 3440×1440 and 390×844.
+The ringed planet anchors the opening headline and the Board the starship invitation. Eagle, a 36 second film, has its own poster below the hero and opens only when chosen. The page keeps the V40 orbital world, LCARS rail, Orbitron, Exo 2, JetBrains Mono, Bit, E.V.E., Mission Control and seven local experiments. The headline and both main actions fit the first screen at 1440×900, 3440×1440 and 390×844.
 
 This is the `preview/v41-hero-integration` branch. Doug owns the merge and Cloudflare purge. No production deployment is part of this pass. The source baseline is `2c0ffe613a14f9f9ebacf3255b7ff4d0234cf488`.
 
@@ -14,22 +14,22 @@ The current receipt is `/v40/site-release.json`. Compatibility receipts at `/sit
 
 ## Page and media ownership
 
-| Concern                                                                                                  | Source                                                                           |
-| -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| Entry, strict CSP and reading edition                                                                    | `index.html`, `src/v40/main.jsx`, `scripts/prerender-v40.mts`                    |
-| Shared state and interaction handlers                                                                    | `src/v40/page.jsx`                                                               |
-| Hero, workshop, worlds, films, routing, decisions, experiments, machines, evidence, operator and contact | `src/v40/sections/`                                                              |
-| Shared LCARS primitives                                                                                  | `src/v40/design-system.js`, `src/v40/design.css`                                 |
-| Finite interaction appearance                                                                            | `src/v40/style-variants.js`, `src/v40/style-variants.json`, `src/v40/polish.css` |
-| Arrival and replay                                                                                       | `src/v40/hero-reel.jsx`, `src/v40/hero-reel.css`                                 |
-| Playback ownership, visibility and data saving                                                           | `src/v40/media-policy.js`                                                        |
-| Secondary controls and new film transition                                                               | `src/v40/deferred.css`                                                           |
-| Shared bookmarks and scene handoffs                                                                      | `src/v40/navigation.js`, `public/v40-entry.js`                                   |
-| Public fact formatting                                                                                   | `src/v40/evidence.js`, `public/status.json`                                      |
+| Concern                                                                                                                    | Source                                                                           |
+| -------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Entry, strict CSP and reading edition                                                                                      | `index.html`, `src/v40/main.jsx`, `scripts/prerender-v40.mts`                    |
+| Shared state and interaction handlers                                                                                      | `src/v40/page.jsx`                                                               |
+| Hero, Eagle invitation, workshop, worlds, films, routing, decisions, experiments, machines, evidence, operator and contact | `src/v40/sections/`                                                              |
+| Shared LCARS primitives                                                                                                    | `src/v40/design-system.js`, `src/v40/design.css`                                 |
+| Finite interaction appearance                                                                                              | `src/v40/style-variants.js`, `src/v40/style-variants.json`, `src/v40/polish.css` |
+| Planet backdrop and Eagle cinema                                                                                           | `src/v40/hero-reel.jsx`, `src/v40/hero-reel.css`                                 |
+| Playback ownership, visibility and data saving                                                                             | `src/v40/media-policy.js`                                                        |
+| Secondary controls                                                                                                         | `src/v40/deferred.css`                                                           |
+| Shared bookmarks and scene handoffs                                                                                        | `src/v40/navigation.js`, `public/v40-entry.js`                                   |
+| Public fact formatting                                                                                                     | `src/v40/evidence.js`, `public/status.json`                                      |
 
 The former style helper calls are external CSS classes. The finite style map makes an unknown interaction variant fail visibly during testing instead of injecting CSS. When adding a state, add its rule to `polish.css` and its mapping to `style-variants.json`, then exercise that state in the browser. Section components retain the original `h()` composition style.
 
-The arrival waits until after the initial poster, is muted, has no audio stream or native controls, and plays at most once per browser session. Skip and completion fade back to the live hero. Reduced motion, Motion off, data saving and slow connections keep the poster still. `/#film=intro` opens the same Eagle cut in the existing cinema with native controls, captions and a text version. Its three original site effects remain muted until the visitor enables sound.
+The hero keeps its planet artwork throughout the visit. The Eagle invitation sits after the hero and telemetry ticker, before the workshop. The hero's Next: watch Eagle link leads to this card, headed A moment in orbit. Waiting, returning and scrolling past its poster do not request the film. Watch Eagle opens the existing cinema with native controls, captions and a text version. The `/#film=intro` bookmark remains compatible. Playback starts on request and its three original site effects remain muted until the visitor enables sound.
 
 AV1 precedes the H.264 fallback. The selector uses 1080p on desktop, 720p on phone and 480p for data saving or slow connections. Other ambient films use `preload="none"`, wait until at least half visible, pause on exit and share one playback owner. A deliberately played cinema can run with background motion paused. Turning Motion off also pauses an active replay. Optional external playback loads only after the visitor chooses Play.
 
@@ -53,9 +53,9 @@ node scripts/serve-helios-preview.mjs dist 4191
 
 Open `http://127.0.0.1:4191/`. The loopback server deliberately sends `X-Robots-Tag: noindex, nofollow, noarchive`. This lowers its Lighthouse SEO score and prevents the review surface from being indexed. Production HTML retains its canonical URL and indexable metadata.
 
-`npm run verify` includes lint, formatting, unit and model checks, a single build, artifact checks, preserved layout and V36 browser checks, the combined V40 and V41 runtime suite, Python release tests, public data guards, consistency and committed whitespace. The V41 tests cover the first view, accessibility including visible label agreement, the intro bookmark, session replay, data saving and a single visible player. The entry CSS budget remains 19,000 bytes gzip. Heavy scenes and secondary styles remain deferred.
+`npm run verify` includes lint, formatting, unit and model checks, a single build, artifact checks, preserved layout and V36 browser checks, the combined V40 and V41 runtime suite, Python release tests, public data guards, consistency and committed whitespace. The V41 tests cover the first view, accessibility including visible label agreement, film placement, no unsolicited Eagle requests, the intro bookmark, explicit playback, data saving and a single visible player. The entry CSS budget remains 19,000 bytes gzip. Heavy scenes and secondary styles remain deferred.
 
-See [the V41 review evidence](docs/v41-review.md) for measured transfer sizes, Lighthouse runs, screenshots, the scorecard and limits. A passing frontend check is not a live infrastructure health claim.
+See [the current layout review](docs/v41-layout-review.md) for the planet hero and optional film placement. The [original V41 review evidence](docs/v41-review.md) retains the earlier composition's transfer sizes, Lighthouse runs, screenshots, scorecard and limits. A passing frontend check is not a live infrastructure health claim.
 
 ## Preserved routes
 

@@ -68,24 +68,39 @@ for (const [width, height] of [
     ])
       await expect(page.locator(selector).first()).toHaveText(text);
     const missing = await page
-      .locator("#rooms img, #films button img")
+      .locator("#rooms img, #films button img, #eagle-film img")
       .evaluateAll((images) => images.filter((i) => !i.alt || !i.srcset).map((i) => i.outerHTML));
     assert.deepEqual(missing, [], "world and film cards have descriptions and responsive images");
   });
 }
-test("Arrival is silent, skippable and once per browser session; replay has descriptions and opt in sound", async (t) => {
+test("The planet stays in the hero; Eagle below it loads only by choice and retains accessible playback", async (t) => {
   const page = await visit(t);
+  const filmRequests = [];
+  page.on("request", (request) => {
+    if (/cashio-v41-eagle-.*\.mp4/.test(request.url())) filmRequests.push(request.url());
+  });
   await page.goto(url);
-  const arrival = page.locator("#hero-video");
-  await expect.poll(() => arrival.evaluate((v) => v.currentTime)).toBeGreaterThan(0.1);
-  assert.equal(await arrival.evaluate((v) => v.muted && v.playsInline && !v.controls), true);
-  await page.getByRole("button", { name: "Skip intro", exact: true }).click();
-  await expect(page.locator(".hero-reel")).toHaveAttribute("data-phase", "complete");
-  assert.equal(await arrival.evaluate((v) => v.paused), true);
+  await page.waitForTimeout(3000);
+  await expect(page.locator("#top video, #top a[href='#film=intro']")).toHaveCount(0);
+  await expect(page.locator("#top .hero-live-poster")).toBeVisible();
+  const order = await page.locator("main > section").evaluateAll((s) => s.slice(0, 3).map((n) => n.id));
+  assert.deepEqual(order, ["top", "eagle-film", "workshop"]);
+  const hero = await page.locator("#top").boundingBox();
+  const film = await page.locator("#eagle-film").boundingBox();
+  assert.ok(film.y >= hero.y + hero.height, "film invitation follows the complete hero");
   await page.reload();
   await page.waitForTimeout(2600);
-  assert.equal(await arrival.evaluate((v) => v.paused && !v.currentSrc), true, "reload does not replay the arrival");
-  await page.getByRole("link", { name: /Watch the intro/ }).click();
+  const watch = page.getByRole("link", { name: "Watch Eagle 36 seconds", exact: true });
+  await page.getByRole("link", { name: "Next: watch Eagle", exact: true }).click();
+  await expect(page).toHaveURL(/#eagle-film$/);
+  await expect(watch).toBeInViewport();
+  await page.waitForTimeout(500);
+  assert.deepEqual(filmRequests, [], "waiting, reloading and scrolling do not download Eagle video");
+  await expect(page.locator("#cinema-video")).toHaveCount(0);
+  await page.locator("#eagle-film summary").click();
+  await expect(page.locator("#eagle-film details p")).toBeVisible();
+  await watch.focus();
+  await page.keyboard.press("Enter");
   const replay = page.locator("#cinema-video");
   await expect(replay).toBeVisible();
   assert.equal(await replay.evaluate((v) => v.muted && v.controls && v.paused), true);
@@ -104,7 +119,8 @@ test("Arrival is silent, skippable and once per browser session; replay has desc
   assert.equal(await replay.evaluate((v) => v.muted && v.currentSrc.endsWith("h264.mp4")), true);
   await page.keyboard.press("Escape");
   await expect(replay).toHaveCount(0);
-  await expect(page.getByRole("link", { name: /Watch the intro/ })).toBeFocused();
+  await expect(watch).toBeFocused();
+  await expect(watch).toBeInViewport();
   await page.goto(url + "#film=intro");
   await expect(replay).toBeVisible();
   await expect(page.locator("#helios-studio")).toHaveCount(0);
@@ -131,12 +147,13 @@ test("Data saving and reduced motion keep posters still, while manual replay sel
       );
     await page.goto(url);
     await page.waitForTimeout(2600);
-    assert.equal(await page.locator("#hero-video").evaluate((v) => v.paused && !v.currentSrc), true);
+    await expect(page.locator("#top video")).toHaveCount(0);
+    await expect(page.locator("#top .hero-live-poster")).toBeVisible();
     await page.locator("#feature-video").scrollIntoViewIfNeeded();
     await page.waitForTimeout(300);
     assert.equal(await page.locator("video").evaluateAll((v) => v.every((v) => v.paused)), true);
     if (mode !== "reduce") {
-      await page.getByRole("link", { name: /Watch the intro/ }).click();
+      await page.getByRole("link", { name: "Watch Eagle 36 seconds", exact: true }).click();
       const sources = await page.locator("#cinema-video source").evaluateAll((s) => s.map((n) => n.src));
       assert.ok(sources.every((s) => s.includes("480p")));
       assert.equal(await page.locator("#cinema-video").evaluate((v) => v.paused), true);

@@ -1,5 +1,7 @@
 # V41 Eagle review evidence
 
+This report records the original V41 arrival composition through commit `04e4df0f8665ee764a32709dbd333e3fcd3ad961`. The subsequent layout revision gives the planet its own hero and moves Eagle below it. See [the layout review](v41-layout-review.md) for that revision. The original screenshots, scores and measurements below remain historical evidence for the earlier composition.
+
 🟢 Eagle is prepared on `preview/v41-hero-integration` from `2c0ffe613a14f9f9ebacf3255b7ff4d0234cf488`. The arrival and headline now share one composition. Doug owns the merge and Cloudflare purge.
 
 ## Transfer measurements

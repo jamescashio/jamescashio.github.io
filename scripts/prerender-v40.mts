@@ -11,7 +11,6 @@ Object.defineProperty(environment.window, "innerWidth", { value: 390 });
 const { V40Page } = await import("../src/v40/page.jsx");
 const markup = renderToStaticMarkup(
   React.createElement(V40Page, {
-    heroFilm: "Orbital arrival",
     scanlines: true,
     starDensity: 220,
     techDetail: false,

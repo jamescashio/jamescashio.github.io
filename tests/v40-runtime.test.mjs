@@ -108,7 +108,7 @@ test("V40 preserves its content and serves a readable edition without JavaScript
     { js: false, width: 320 },
   ]) {
     const page = await visit(t, { js, width });
-    await expect(page.locator("main > section")).toHaveCount(11);
+    await expect(page.locator("main > section")).toHaveCount(12);
     await expect(page.locator("h1")).toHaveText("The machines can think. You still decide.");
     await expect(page.locator("footer")).toContainText("one release short of the answer", { ignoreCase: true });
     await expect(page.locator('#contact a[href^="mailto:doug@cashio.us"]').first()).toBeVisible();

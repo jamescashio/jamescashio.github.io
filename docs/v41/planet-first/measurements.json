@@ -1,0 +1,277 @@
+{
+  "date": "10-23-2026",
+  "baseline": "2c0ffe613a14f9f9ebacf3255b7ff4d0234cf488",
+  "builtHomepageSha256": "86ca024a6151c084b5206abc951d18a510b2f6b9c8d22c8def5001c75745ff8b",
+  "before": {
+    "label": "before",
+    "url": "http://127.0.0.1:4191/",
+    "method": "Cold Chrome CDP encodedDataLength, cache disabled, 2 seconds after load, then 80 percent viewport steps every 180 ms and 1.5 second settling. Local server transport.",
+    "results": [
+      {
+        "width": 1440,
+        "height": 900,
+        "initialTotalBytes": 10157116,
+        "initialNonVideoBytes": 1002027,
+        "scrollBytes": 17330034,
+        "videoRequests": [
+          {
+            "url": "/assets/zenith/ringed-horizon.mp4",
+            "bytes": 1587503
+          },
+          {
+            "url": "/assets/zenith/ringed-horizon.mp4",
+            "bytes": 1587503
+          },
+          {
+            "url": "/assets/celestial/helios-arrival-960.mp4",
+            "bytes": 606131
+          },
+          {
+            "url": "/assets/zenith/starship-flyby.mp4",
+            "bytes": 1550357
+          },
+          {
+            "url": "/assets/hero/cashio-hero-v8-1080p.mp4",
+            "bytes": 7405568
+          },
+          {
+            "url": "/assets/zenith/orbital-dust.mp4",
+            "bytes": 2216123
+          },
+          {
+            "url": "/assets/zenith/workshop-after-hours.mp4",
+            "bytes": 1024730
+          }
+        ],
+        "hero": {
+          "x": 164,
+          "y": 1056.96875,
+          "width": 884,
+          "height": 232.515625
+        },
+        "cta": {
+          "x": 164,
+          "y": 1432.125,
+          "width": 267.046875,
+          "height": 47
+        },
+        "overflow": false,
+        "errors": []
+      },
+      {
+        "width": 3440,
+        "height": 1440,
+        "initialTotalBytes": 10157116,
+        "initialNonVideoBytes": 1002027,
+        "scrollBytes": 17330034,
+        "videoRequests": [
+          {
+            "url": "/assets/zenith/ringed-horizon.mp4",
+            "bytes": 1587503
+          },
+          {
+            "url": "/assets/zenith/ringed-horizon.mp4",
+            "bytes": 1587503
+          },
+          {
+            "url": "/assets/celestial/helios-arrival-960.mp4",
+            "bytes": 606131
+          },
+          {
+            "url": "/assets/zenith/starship-flyby.mp4",
+            "bytes": 1550357
+          },
+          {
+            "url": "/assets/hero/cashio-hero-v8-1080p.mp4",
+            "bytes": 7405568
+          },
+          {
+            "url": "/assets/zenith/orbital-dust.mp4",
+            "bytes": 2216123
+          },
+          {
+            "url": "/assets/zenith/workshop-after-hours.mp4",
+            "bytes": 1024730
+          }
+        ],
+        "hero": {
+          "x": 1164,
+          "y": 1064.96875,
+          "width": 884,
+          "height": 614.96875
+        },
+        "cta": {
+          "x": 1164,
+          "y": 1830.578125,
+          "width": 267.046875,
+          "height": 47
+        },
+        "overflow": false,
+        "errors": []
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "initialTotalBytes": 7994428,
+        "initialNonVideoBytes": 1002027,
+        "scrollBytes": 13128907,
+        "videoRequests": [
+          {
+            "url": "/assets/zenith/ringed-horizon.mp4",
+            "bytes": 1587503
+          },
+          {
+            "url": "/assets/zenith/ringed-horizon.mp4",
+            "bytes": 1587503
+          },
+          {
+            "url": "/assets/celestial/helios-arrival-960.mp4",
+            "bytes": 606131
+          },
+          {
+            "url": "/assets/zenith/starship-flyby.mp4",
+            "bytes": 1550357
+          },
+          {
+            "url": "/assets/hero/cashio-hero-v8-720p.mp4",
+            "bytes": 3211264
+          },
+          {
+            "url": "/assets/zenith/orbital-dust.mp4",
+            "bytes": 2216123
+          },
+          {
+            "url": "/assets/zenith/workshop-after-hours.mp4",
+            "bytes": 1024730
+          }
+        ],
+        "hero": {
+          "x": 22,
+          "y": 595.3125,
+          "width": 346,
+          "height": 226.25
+        },
+        "cta": {
+          "x": 22,
+          "y": 997.28125,
+          "width": 267.046875,
+          "height": 47
+        },
+        "overflow": false,
+        "errors": []
+      }
+    ]
+  },
+  "after": {
+    "label": "planet-pr",
+    "url": "http://127.0.0.1:4191/",
+    "method": "Cold Chrome CDP encodedDataLength, cache disabled, 2 seconds after load, then 80 percent viewport steps every 180 ms and 1.5 second settling. Local server transport.",
+    "results": [
+      {
+        "width": 1440,
+        "height": 900,
+        "initialTotalBytes": 605753,
+        "initialNonVideoBytes": 605753,
+        "scrollBytes": 5602894,
+        "videoRequests": [
+          {
+            "url": "/assets/zenith/starship-flyby.mp4",
+            "bytes": 1550357
+          },
+          {
+            "url": "/assets/zenith/orbital-dust.mp4",
+            "bytes": 2216123
+          },
+          {
+            "url": "/assets/zenith/workshop-after-hours.mp4",
+            "bytes": 1024730
+          }
+        ],
+        "hero": {
+          "x": 129.59375,
+          "y": 295.625,
+          "width": 920.8125,
+          "height": 205.15625
+        },
+        "cta": {
+          "x": 129.59375,
+          "y": 631.421875,
+          "width": 267.046875,
+          "height": 47
+        },
+        "overflow": false,
+        "errors": []
+      },
+      {
+        "width": 3440,
+        "height": 1440,
+        "initialTotalBytes": 605753,
+        "initialNonVideoBytes": 605753,
+        "scrollBytes": 5599459,
+        "videoRequests": [
+          {
+            "url": "/assets/zenith/starship-flyby.mp4",
+            "bytes": 1550357
+          },
+          {
+            "url": "/assets/zenith/orbital-dust.mp4",
+            "bytes": 2216123
+          },
+          {
+            "url": "/assets/zenith/workshop-after-hours.mp4",
+            "bytes": 1024730
+          }
+        ],
+        "hero": {
+          "x": 948,
+          "y": 491.90625,
+          "width": 1236,
+          "height": 352.59375
+        },
+        "cta": {
+          "x": 948,
+          "y": 983.140625,
+          "width": 267.046875,
+          "height": 47
+        },
+        "overflow": false,
+        "errors": []
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "initialTotalBytes": 592168,
+        "initialNonVideoBytes": 592168,
+        "scrollBytes": 5629407,
+        "videoRequests": [
+          {
+            "url": "/assets/zenith/starship-flyby.mp4",
+            "bytes": 1550357
+          },
+          {
+            "url": "/assets/zenith/orbital-dust.mp4",
+            "bytes": 2216123
+          },
+          {
+            "url": "/assets/zenith/workshop-after-hours.mp4",
+            "bytes": 1024730
+          }
+        ],
+        "hero": {
+          "x": 22,
+          "y": 265.671875,
+          "width": 346,
+          "height": 118.515625
+        },
+        "cta": {
+          "x": 22,
+          "y": 528.6875,
+          "width": 195.234375,
+          "height": 44
+        },
+        "overflow": false,
+        "errors": []
+      }
+    ]
+  }
+}

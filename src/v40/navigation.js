@@ -103,7 +103,7 @@ export function setupV40Navigation() {
     if (kind === "reel") {
       scene = { dispose: () => window.cashioV40?.setState({ cinema: null }) };
       window.cashioV40?.setState({ cinema: "intro" });
-      document.title = "Eagle arrival · cAshIo V41";
+      document.title = "Eagle · cAshIo V41";
       return;
     }
     const token = generation;

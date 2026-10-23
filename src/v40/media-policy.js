@@ -3,7 +3,7 @@ export function conservesData() {
   const connection = navigator.connection;
   return Boolean(connection?.saveData || /(^|slow-)2g|3g/.test(connection?.effectiveType || ""));
 }
-export function reelSources(kind = "arrival") {
+export function reelSources(kind = "replay") {
   const size = conservesData() ? "480p" : typeof window !== "undefined" && window.innerWidth <= 720 ? "720p" : "1080p";
   const base = "/assets/hero/cashio-v41-eagle-" + kind + "-" + size;
   return [
@@ -32,7 +32,6 @@ export function installMediaCoordinator() {
     if (document.querySelector("#mission-dialog[open], #bit-dialog[open], #helios-flight, #helios-studio"))
       return false;
     if (document.documentElement.dataset.motion === "off" || conservesData() || ratio(video) < 0.5) return false;
-    if (video.id === "hero-video") return video.dataset.ready === "true";
     if (video.id === "sig-video" || video.dataset.v === "hover") return video.dataset.requested === "true";
     return video.dataset.v === "auto";
   };
@@ -41,7 +40,6 @@ export function installMediaCoordinator() {
     const candidates = [...observed.keys()].filter(allowed);
     const chosen =
       candidates.find((v) => v.id === "cinema-video") ||
-      candidates.find((v) => v.id === "hero-video") ||
       candidates.find((v) => v.dataset.requested === "true") ||
       candidates.sort((a, b) => ratio(b) - ratio(a))[0];
     for (const video of observed.keys()) if (video !== chosen && !video.paused) video.pause();
@@ -65,7 +63,7 @@ export function installMediaCoordinator() {
         video.muted = true;
         video.defaultMuted = true;
         video.playsInline = true;
-        video.loop = video.dataset.noloop !== "1" && video.id !== "hero-video" && video.id !== "cinema-video";
+        video.loop = video.dataset.noloop !== "1" && video.id !== "cinema-video";
         const onPlay = () => {
           if (!allowed(video)) {
             video.pause();

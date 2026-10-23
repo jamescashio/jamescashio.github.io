@@ -2,6 +2,7 @@ import { snapshot, observedDate, fleetSummary, backupSummary, fleetLine } from "
 import { installMediaCoordinator } from "./media-policy.js";
 import { CinemaReel, ReelText, reelPoster } from "./hero-reel.jsx";
 import { HeroSection } from "./sections/hero.jsx";
+import { EagleFilmSection } from "./sections/eagle-film.jsx";
 import { WorkshopSection } from "./sections/workshop.jsx";
 import { WorldsSection } from "./sections/worlds.jsx";
 import { FilmsSection } from "./sections/films.jsx";
@@ -158,7 +159,7 @@ export class V40Page extends React.Component {
     if (slug === "intro")
       return {
         slug,
-        title: "Eagle arrival",
+        title: "Eagle",
         desc: "The workshop in orbit · 36 seconds · Sound effects available",
         coll: "cAshIo",
         src: "",
@@ -321,7 +322,7 @@ export class V40Page extends React.Component {
       document.dispatchEvent(new Event("cashio-media"));
       if (this.reduce) {
         document.querySelectorAll("[data-reveal]").forEach((el) => this.reveal(el));
-        document.querySelectorAll("[data-tilt], [data-mag], #hero-content, #hero-video").forEach((el) => {
+        document.querySelectorAll("[data-tilt], [data-mag], #hero-content").forEach((el) => {
           el.style.transform = "";
           el.style.opacity = "";
         });
@@ -916,26 +917,6 @@ export class V40Page extends React.Component {
       style: `display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 6px;border-radius:10px;color:${activeRail === id ? "var(--accent)" : "var(--text-dim)"};background:${activeRail === id ? "rgba(255,149,0,.08)" : "transparent"};transition:all .45s cubic-bezier(.23,1,.32,1)`,
     }));
 
-    const heroFilms = {
-      "Orbital arrival": [
-        "/assets/celestial/helios-arrival-960.mp4",
-        this.res("public/assets/celestial/helios-arrival-poster.jpg"),
-        "1",
-      ],
-      "Ringed horizon": [
-        "/assets/zenith/ringed-horizon.mp4",
-        this.res("public/assets/zenith/ringed-horizon-poster.webp"),
-        "0",
-      ],
-      "Starship flyby": [
-        "/assets/zenith/starship-flyby.mp4",
-        this.res("public/assets/zenith/starship-flyby-poster.webp"),
-        "0",
-      ],
-      Threshold: ["/assets/zenith/threshold.mp4", this.res("public/assets/zenith/threshold-poster.webp"), "1"],
-    };
-    const hf = heroFilms[this.props.heroFilm] || heroFilms["Orbital arrival"];
-
     const telemetry = [
       [String(snapshot.cluster.hostsOnline), snapshot.cluster.hostsOnline, "Hosts at probe", "var(--cyan)"],
       [String(snapshot.containers.running), snapshot.containers.running, "Containers running", "var(--cyan)"],
@@ -1331,18 +1312,12 @@ export class V40Page extends React.Component {
       navOn: s.navOn ?? true,
       tech,
       railItems,
-      heroSrc: hf[0],
-      heroPoster: hf[1],
-      heroNoLoop: hf[2],
       heroCols: s.wide ? "minmax(0,1fr) 260px" : "minmax(0,1fr)",
       heroMove: (e) => {
         if (this.reduce) return;
-        const v = document.getElementById("hero-video");
-        if (!v) return;
         const b = e.currentTarget.getBoundingClientRect();
         const nx = (e.clientX - b.left) / b.width - 0.5,
           ny = (e.clientY - b.top) / b.height - 0.5;
-        v.style.transform = `translate(${-nx * 22}px, ${-ny * 14}px)`;
         const sp = document.getElementById("hero-spot");
         if (sp)
           sp.style.background = `radial-gradient(520px circle at ${(nx + 0.5) * 100}% ${(ny + 0.5) * 100}%, rgba(0,249,255,.11), transparent 60%)`;
@@ -1879,6 +1854,7 @@ function renderPage(v) {
         ),
         " ",
         " ",
+        h(EagleFilmSection, { v, key: "eagle-film" }),
         h(WorkshopSection, { v, key: "workshop" }),
         " ",
         " ",

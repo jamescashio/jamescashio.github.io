@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
-import { conservesData, reelSources } from "./media-policy.js";
+import React from "react";
+import { reelSources } from "./media-policy.js";
 const h = React.createElement;
-const arrivalSeenStorage = "cashio-v41-arrival-seen";
 export const reelPoster = "/assets/hero/cashio-v41-eagle-poster.webp";
 export function ReelText() {
   return h(
@@ -15,84 +14,18 @@ export function ReelText() {
     ),
   );
 }
-export function HeroReel() {
-  const player = useRef(null);
-  const [sources, setSources] = useState([]);
-  const [phase, setPhase] = useState("poster");
-  const finish = () => {
-    if (player.current) {
-      player.current.dataset.finished = "true";
-      player.current.pause();
-    }
-    setPhase("complete");
-    try {
-      sessionStorage.setItem(arrivalSeenStorage, "1");
-    } catch {
-      /* Optional storage. */
-    }
-    document.dispatchEvent(new Event("cashio-media"));
-  };
-  useEffect(() => {
-    let seen;
-    try {
-      seen = sessionStorage.getItem(arrivalSeenStorage) === "1";
-    } catch {
-      seen = true;
-    }
-    if (seen || conservesData() || document.documentElement.dataset.motion === "off" || location.hash) return;
-    const timer = setTimeout(() => {
-      if (conservesData() || document.documentElement.dataset.motion === "off" || document.hidden) return;
-      setSources(reelSources());
-    }, 2200);
-    return () => clearTimeout(timer);
-  }, []);
-  useEffect(() => {
-    if (!sources.length) return;
-    player.current.dataset.ready = "true";
-    player.current.load();
-    document.dispatchEvent(new Event("cashio-media"));
-  }, [sources]);
+export function HeroPlanet() {
   return h(
-    React.Fragment,
-    null,
-    h(
-      "div",
-      { className: "hero-reel", "data-phase": phase, "aria-hidden": "true" },
-      h("img", {
-        className: "hero-live-poster",
-        src: reelPoster,
-        alt: "",
-        width: 1280,
-        height: 720,
-        fetchPriority: "high",
-      }),
-      h(
-        "video",
-        {
-          ref: player,
-          id: "hero-video",
-          muted: true,
-          playsInline: true,
-          preload: "none",
-          poster: reelPoster,
-          "data-noloop": "1",
-          onEnded: finish,
-          onError: finish,
-          onPlaying: () => {
-            setPhase("playing");
-            try {
-              sessionStorage.setItem(arrivalSeenStorage, "1");
-            } catch {
-              /* Optional storage. */
-            }
-          },
-        },
-        sources.map((source) => h("source", { key: source.src, ...source })),
-      ),
-    ),
-    phase === "playing"
-      ? h("button", { type: "button", className: "arrival-skip", onClick: finish }, "Skip intro")
-      : null,
+    "div",
+    { className: "hero-planet", "aria-hidden": "true" },
+    h("img", {
+      className: "hero-live-poster",
+      src: reelPoster,
+      alt: "",
+      width: 1280,
+      height: 720,
+      fetchPriority: "high",
+    }),
   );
 }
 export function CinemaReel({ title }) {

@@ -11,7 +11,7 @@ import { setupV40Navigation } from "./navigation.js";
 import "./navigation.css";
 setupV40Navigation();
 createRoot(document.getElementById("v40-root")).render(
-  React.createElement(V40Page, { heroFilm: "Orbital arrival", scanlines: true, starDensity: 220, techDetail: false }),
+  React.createElement(V40Page, { scanlines: true, starDensity: 220, techDetail: false }),
 );
 // Secondary surfaces and motion load after the initial hero composition.
 requestAnimationFrame(() => {

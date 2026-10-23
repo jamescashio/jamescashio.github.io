@@ -22,7 +22,12 @@ test("V40 ships its real reading edition under the strict production security po
   assert.ok(alias.querySelector(`script[src="${routingFile}"]`));
   const root = document.querySelector("#v40-root");
   assert.ok(root);
-  assert.equal(root.querySelectorAll("main > section").length, 11);
+  assert.equal(root.querySelectorAll("main > section").length, 12);
+  assert.deepEqual(
+    [...root.querySelectorAll("main > section")].slice(0, 3).map((section) => section.id),
+    ["top", "eagle-film", "workshop"],
+  );
+  assert.equal(root.querySelectorAll("#top video").length, 0);
   assert.equal(root.querySelectorAll("h1").length, 1);
   assert.match(root.textContent, /You still decide\./);
   assert.match(root.querySelector("footer").textContent, /Eagle.*October 23, 2026/);

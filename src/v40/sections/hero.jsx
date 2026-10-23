@@ -1,7 +1,7 @@
 import React from "react";
 import { classFor } from "../style-variants.js";
 import designSystem from "../design-system.js";
-import { HeroReel, ReelText } from "../hero-reel.jsx";
+import { HeroPlanet } from "../hero-reel.jsx";
 const h = React.createElement;
 
 export function HeroSection({ v }) {
@@ -16,7 +16,7 @@ export function HeroSection({ v }) {
       className: "v41-eec0bc3def",
     },
     " ",
-    h(HeroReel, { key: "hero-reel" }),
+    h(HeroPlanet, { key: "hero-planet" }),
     " ",
     h("canvas", {
       key: 119,
@@ -269,27 +269,6 @@ export function HeroSection({ v }) {
             { key: 203 },
             h(React.Fragment, { key: 204 }, "A 30 second starship tour · 12 illustrated requests · sound off"),
           ),
-          " ",
-          h(
-            "a",
-            {
-              key: 206,
-              href: "#film=intro",
-              onClick: v.openIntro,
-              className: "v41-7591ba499b",
-            },
-            h(
-              "span",
-              {
-                key: 207,
-                className: "v41-6f7237b57e",
-              },
-              h(React.Fragment, { key: 208 }, "▷"),
-            ),
-            h(React.Fragment, { key: 209 }, "Watch the intro · 36 seconds"),
-          ),
-          " ",
-          h(ReelText),
         ),
         " ",
         v.tech
@@ -475,10 +454,10 @@ export function HeroSection({ v }) {
       "a",
       {
         key: 271,
-        href: "#workshop",
+        href: "#eagle-film",
         className: "v41-e4105fe0e2",
       },
-      h("span", { key: 272 }, h(React.Fragment, { key: 273 }, "Next: inside the workshop")),
+      h("span", { key: 272 }, h(React.Fragment, { key: 273 }, "Next: watch Eagle")),
       h("span", {
         key: 274,
         className: "v41-1148ccc5c5",
