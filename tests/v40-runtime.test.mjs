@@ -428,3 +428,166 @@ test("Sanctuary's working-studies action moves to the requested V40 section", as
   await expect(page.locator("#work")).toBeFocused();
   assert.equal(new URL(page.url()).pathname, "/");
 });
+
+test("The visual ticker loop exposes each telemetry fact once to assistive technology", async (t) => {
+  const page = await visit(t);
+  const ticker = page.locator('[aria-label="Lab telemetry ticker"]');
+  const spoken = await ticker.ariaSnapshot();
+  assert.equal((spoken.match(/containers/g) || []).length, 1, "the accessible ticker contains one container fact");
+  assert.equal((await ticker.textContent()).match(/containers/g).length, 2, "both visual copies remain for the loop");
+});
+
+test("The quiet orbit link opens the correct silent film and returns focus at every screen width", async (t) => {
+  for (const width of [1440, 390, 320]) {
+    const page = await visit(t, { width });
+    const opener = page.getByRole("link", { name: "Watch its quiet orbit · 5 seconds →", exact: true });
+    await opener.click();
+    const cinema = page.locator(".lensing-film");
+    await expect(cinema).toBeVisible();
+    const video = cinema.locator("video");
+    await expect(video).toHaveAttribute("src", "/assets/zenith/celestial-signature.mp4");
+    assert.equal(await video.evaluate((v) => v.muted && v.paused), true, "the film opens quietly on its poster");
+    await cinema.locator(".lensing-film-play").click();
+    await expect.poll(() => video.evaluate((v) => v.currentTime)).toBeGreaterThan(0.1);
+    assert.equal(await video.evaluate((v) => v.muted), true);
+    await page.keyboard.press("Escape");
+    await expect(page.locator("#helios-studio")).toHaveCount(0);
+    await expect(opener).toBeFocused();
+    assert.equal(new URL(page.url()).pathname, "/");
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+  }
+});
+
+for (const hash of ["#signature", "#flight=board", "#film=zenith-celestial-signature"]) {
+  test(`Mission Control shortcuts leave the active ${hash} scene in command`, async (t) => {
+    const page = await visit(t, { hash });
+    const scene = page.locator("#helios-flight dialog, #helios-studio dialog");
+    await expect(scene).toBeVisible();
+    for (const shortcut of ["Control+k", "Meta+k"]) {
+      await page.keyboard.press(shortcut);
+      assert.equal(
+        await page.locator("#mission-dialog").evaluate((d) => d.open),
+        false,
+        "a background menu cannot open over the active scene",
+      );
+      await expect(scene).toBeVisible();
+    }
+    await page.keyboard.press("Escape");
+    await expect(page.locator("#helios-flight, #helios-studio")).toHaveCount(0);
+    await page.keyboard.press("Control+k");
+    await expect(page.locator("#mission-dialog")).toBeVisible();
+  });
+}
+
+test("Phone buttons keep comfortable 44 pixel touch areas without horizontal overflow", async (t) => {
+  async function checkButtons(page, selector) {
+    const small = await page.locator(selector).evaluateAll((buttons) =>
+      buttons
+        .map((button) => ({
+          name: button.getAttribute("aria-label") || button.textContent.trim(),
+          width: button.getBoundingClientRect().width,
+          height: button.getBoundingClientRect().height,
+        }))
+        .filter((r) => r.width < 43.9 || r.height < 43.9),
+    );
+    assert.deepEqual(small, [], "visible phone buttons have a minimum 44 pixel hit area");
+  }
+  for (const width of [390, 320, 1024]) {
+    const page = await visit(t, { width, touch: true });
+    await checkButtons(page, "#v40-root button:visible");
+    const header = await page.locator("header a:visible, header button:visible").evaluateAll((controls) =>
+      controls.map((c) => {
+        const r = c.getBoundingClientRect();
+        return { name: c.textContent.trim(), x: r.x, y: r.y, right: r.right, bottom: r.bottom };
+      }),
+    );
+    for (const [index, a] of header.entries()) {
+      assert.ok(a.x >= 0 && a.right <= width, "header actions fit the touch viewport");
+      for (const b of header.slice(index + 1)) {
+        assert.ok(
+          Math.min(a.right, b.right) - Math.max(a.x, b.x) <= 1 ||
+            Math.min(a.bottom, b.bottom) - Math.max(a.y, b.y) <= 1,
+          "header actions do not overlap",
+        );
+      }
+    }
+    await page.locator("header [data-mission-open]").click();
+    await checkButtons(page, "#mission-dialog button:visible");
+    await page.keyboard.press("Escape");
+    await page.locator("header [data-bit-open]").click();
+    await checkButtons(page, "#bit-dialog button:visible");
+    await page.keyboard.press("Escape");
+    await page.getByRole("link", { name: "Watch its quiet orbit · 5 seconds →", exact: true }).click();
+    await expect(page.locator(".lensing-film")).toBeVisible();
+    await checkButtons(page, "#helios-studio button:visible");
+    await page.keyboard.press("Escape");
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+  }
+});
+
+test("Closing a film preserves the computed shared experiment and the visitor's place", async (t) => {
+  for (const exit of ["Escape", "Back"]) {
+    const page = await visit(t, { hash: "#experiment=hermes&intent=analyze&private=true&sources=true" });
+    await page.getByRole("button", { name: "Route this request", exact: true }).click();
+    const result = page.locator("#studies h4");
+    await expect(result).toHaveText("Human review");
+    const opener = page.getByRole("link", { name: "Watch its quiet orbit · 5 seconds →", exact: true });
+    await opener.click();
+    await expect(page.locator(".lensing-film")).toBeVisible();
+    if (exit === "Back") await page.goBack();
+    else await page.keyboard.press("Escape");
+    await expect(page.locator("#helios-studio")).toHaveCount(0);
+    await expect(result).toHaveText("Human review");
+    await expect(opener).toBeInViewport();
+    await page.goto(new URL("#experiment=hermes&intent=draft&private=false&sources=false", url).href);
+    await expect(result).toHaveText("Choose a task");
+    await page.getByRole("button", { name: "Route this request", exact: true }).click();
+    await expect(result).toHaveText("Everyday drafting");
+  }
+});
+
+test("Back to a shared experiment after ordinary navigation restores its exact inputs", async (t) => {
+  const page = await visit(t, { hash: "#experiment=hermes&intent=analyze&private=true&sources=true" });
+  await page.locator("header [data-mission-open]").click();
+  await page.locator('#mission-dialog [data-chapter="studies"]').click();
+  await expect(page).toHaveURL(/#studies$/);
+  await page.locator('[role="tab"]').nth(1).click();
+  await expect(page.locator('[role="tab"]').nth(1)).toHaveAttribute("aria-selected", "true");
+  await page.goBack();
+  await expect(page.locator('[role="tab"]').first()).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByRole("button", { name: "Contains private information", exact: true })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  await page.getByRole("button", { name: "Route this request", exact: true }).click();
+  await expect(page.locator("#studies h4")).toHaveText("Human review");
+});
+
+for (const [hash, module] of [
+  ["#signature", "studio-island"],
+  ["#flight=board", "flight-island"],
+  ["#film=zenith-celestial-signature", "studio-island"],
+]) {
+  test(`Mission Control stays closed while ${hash} is loading`, async (t) => {
+    const page = await visit(t);
+    let release;
+    const loading = new Promise((resolve) => {
+      release = resolve;
+    });
+    await page.route(`**/assets/${module}-*.js`, async (route) => {
+      await loading;
+      await route.continue();
+    });
+    try {
+      await page.goto(new URL(hash, url).href);
+      await expect(page.locator(".v40-scene-status")).toBeVisible();
+      await page.keyboard.press("Control+k");
+      assert.equal(await page.locator("#mission-dialog").evaluate((d) => d.open), false);
+    } finally {
+      release();
+    }
+    await expect(page.locator("#helios-flight dialog, #helios-studio dialog")).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.locator("#helios-flight, #helios-studio")).toHaveCount(0);
+  });
+}

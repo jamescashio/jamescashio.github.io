@@ -98,7 +98,7 @@
     ["contact", "Open a channel", "Don’t panic. Say hello."],
   ];
   function openMission(trigger) {
-    if (!panel) return;
+    if (!panel || cinema || document.querySelector("#helios-flight, #helios-studio, .v40-scene-status")) return;
     opener = trigger || document.activeElement;
     panel.querySelector("input").value = "";
     filter("");

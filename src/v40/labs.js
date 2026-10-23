@@ -1,3 +1,5 @@
+import { sceneKind } from "./navigation.js";
+
 /* Local demonstrations inside the original V40 experiment panels. No network calls. */
 (() => {
   "use strict";
@@ -256,12 +258,19 @@
     for (const [k, v] of Object.entries(states.get(key))) params.set(k, String(v));
     return location.href.split("#")[0] + "#" + params.toString();
   }
+  let lastRestoredHash;
   function restore() {
-    const params = new URLSearchParams(location.hash.slice(1));
+    const hash = location.hash;
+    const params = new URLSearchParams(hash.slice(1));
     const k = params.get("experiment"),
       idx = keys.indexOf(k),
       app = window.cashioV40;
-    if (idx < 0 || !app) return;
+    if (idx < 0) {
+      if (!sceneKind(hash)) lastRestoredHash = undefined;
+      return;
+    }
+    if (!app || hash === lastRestoredHash) return;
+    lastRestoredHash = hash;
     if (states.has(k) && k !== "briefing")
       for (const [f, v] of Object.entries(defaults[k])) {
         const x = params.get(f);

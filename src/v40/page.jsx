@@ -1068,7 +1068,12 @@ export class V40Page extends React.Component {
       ["Cost", "only breaks a tie"],
     ];
     const tc = ["var(--cyan)", "var(--accent)", "var(--green)", "var(--purple)", "var(--amber)"];
-    const tickerItems = [...tick, ...tick].map(([value, label], i) => ({ value, label, color: tc[i % tc.length] }));
+    const tickerItems = [...tick, ...tick].map(([value, label], i) => ({
+      value,
+      label,
+      color: tc[i % tc.length],
+      duplicate: i >= tick.length,
+    }));
 
     const enter = (e) => this.hoverIn(e),
       leave = (e) => this.hoverOut(e);
@@ -2538,6 +2543,7 @@ function renderPage(v) {
                     "span",
                     {
                       key: 284,
+                      "aria-hidden": v.t.duplicate || undefined,
                       style: style(
                         "display:inline-flex;align-items:center;gap:12px;padding:0 26px;font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);white-space:nowrap",
                       ),

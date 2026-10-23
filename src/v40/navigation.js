@@ -2,7 +2,7 @@ import { isZenithFilm } from "../helios/zenith-routes.js";
 
 const rooms = new Set(["starship", "principles", "studios", "heritage"]);
 const experiments = new Set(["hermes", "cascade", "exposure", "briefing", "dashboards", "signal", "graphify"]);
-const sceneKind = (hash) =>
+export const sceneKind = (hash) =>
   /^#flight=(board|hull|blackout|permission)$/.test(hash)
     ? "flight"
     : isZenithFilm(hash) ||
