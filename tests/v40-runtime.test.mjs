@@ -59,6 +59,49 @@ async function audit(page, selector) {
   );
 }
 
+test("The logo reveal is explicit, square, playable, and pauses the other identity film", async () => {
+  for (const width of [320, 390, 1440]) {
+    const context = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: "reduce" });
+    try {
+      const page = await context.newPage();
+      const errors = [];
+      const media = [];
+      page.on("pageerror", (error) => errors.push(error.message));
+      page.on("request", (request) => {
+        if (request.url().includes("logo-reveal-512.mp4")) media.push(request.url());
+      });
+      await page.goto(new URL("cashio.html#logo-reveal", url).href);
+      const reveal = page.locator("#logo-reveal-player");
+      await expect(reveal).toBeVisible();
+      await page.locator("#logo-reveal summary").click();
+      assert.equal(media.length, 0, "the poster and description never download the reveal video");
+      assert.equal(await reveal.evaluate((video) => video.paused && video.muted && video.controls), true);
+      const box = await reveal.boundingBox();
+      assert.ok(Math.abs(box.width - box.height) < 1, "preserve the complete square composition");
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+      await audit(page, "#logo-reveal");
+      await reveal.evaluate((video) => video.play());
+      await expect.poll(() => reveal.evaluate((video) => video.currentTime)).toBeGreaterThan(0);
+      assert.equal(await reveal.evaluate((video) => video.videoWidth), 512);
+      assert.equal(await reveal.evaluate((video) => video.videoHeight), 512);
+      assert.ok(Math.abs((await reveal.evaluate((video) => video.duration)) - 15.04) < 0.15);
+      await reveal.evaluate((video) => (video.muted = false));
+      assert.equal(await reveal.evaluate((video) => video.muted), false, "sound remains under native player control");
+      assert.equal(await reveal.evaluate((video) => video.paused), false, "the reveal is playing before the switch");
+      await page.locator("#film video").evaluate((video) => video.play());
+      assert.equal(await page.locator("#film video").evaluate((video) => video.paused), false);
+      await expect.poll(() => reveal.evaluate((video) => video.paused)).toBe(true);
+      await page.locator("#film video").scrollIntoViewIfNeeded();
+      await page.locator("#film video").evaluate((video) => video.play());
+      await page.locator(".hero").scrollIntoViewIfNeeded();
+      await expect.poll(() => page.locator("#film video").evaluate((video) => video.paused)).toBe(true);
+      assert.deepEqual(errors, []);
+    } finally {
+      await context.close();
+    }
+  }
+});
+
 test("The Sovereign waits for a click, fits every screen, and stops when dismissed or offscreen", async () => {
   for (const width of [320, 390, 1440]) {
     const context = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: "reduce" });

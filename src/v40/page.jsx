@@ -2301,6 +2301,16 @@ function renderPage(v) {
                   ),
                   h(React.Fragment, { key: 209 }, "Watch the intro · 6 seconds"),
                 ),
+                h(
+                  "a",
+                  {
+                    key: "logo-reveal",
+                    href: "/cashio.html#logo-reveal",
+                    style: style("display:inline-flex;align-items:center;gap:10px;min-height:44px;color:var(--gold)"),
+                  },
+                  h("span", { "aria-hidden": "true" }, "▷"),
+                  "Watch the logo reveal · 15 seconds",
+                ),
                 " ",
               ),
               " ",
