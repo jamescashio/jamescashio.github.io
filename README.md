@@ -2,7 +2,7 @@
 
 The ringed planet anchors the opening headline and the Board the starship invitation. Eagle, a 36 second film, has its own poster below the hero and opens only when chosen. The page keeps the V40 orbital world, LCARS rail, Orbitron, Exo 2, JetBrains Mono, Bit, E.V.E., Mission Control and seven local experiments. The headline and both main actions fit the first screen at 1440×900, 3440×1440 and 390×844.
 
-This is the `preview/v41-hero-integration` branch. Doug owns the merge and Cloudflare purge. No production deployment is part of this pass. The source baseline is `2c0ffe613a14f9f9ebacf3255b7ff4d0234cf488`.
+V41 is the current production edition. GitHub Pages publishes the validated artifact through the protected main branch workflow. The rollback baseline is `1584144b27f4d520ea74d72ea4deb6ef6a84c2e0`, which preserves the optional cAshIo logo reveal.
 
 ## Current evidence
 
@@ -65,4 +65,4 @@ Ordinary navigation stays in the current edition. Four interactive worlds live u
 
 `/v39/` preserves Helios and its dated `/v38/status.json`. `/odyssey.html` preserves V37.17 with the September 7 observation. `/command-deck.html` preserves V35 and its August observation. Version history labels these archives explicitly. Keep archive clocks, receipts and wording historical when maintaining them. Their detailed notes remain in [Helios](docs/helios-release.md), [the V37 release](docs/precision-preview-release.md) and the changelog.
 
-GitHub Pages publishes the verified artifact after the protected main branch workflow succeeds. Rollback is a reviewed revert of the V41 squash commit or a redeployment of the baseline above. This preview does not alter DNS, Cloudflare configuration or fleet services.
+GitHub Pages publishes the verified artifact after the protected main branch workflow succeeds. Rollback is a reviewed revert of the V41 squash commit or a redeployment of the baseline above.
