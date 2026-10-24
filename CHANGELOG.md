@@ -1,5 +1,13 @@
 # Changelog
 
+## V41.0.0 · Eagle · October 23, 2026
+
+Keep the ringed planet behind the opening headline and ship invitation. Place the 36 second Eagle film below the hero as a separate, optional experience, with a Next: watch Eagle link leading to its poster. Preserve the V40 visual identity and make media wait for its turn. The October 23, 2026 static observation reports 2 hosts, 19 running containers and 1 running virtual machine. The latest reported snapshot for each of 21 guests has an integrity result of ok. Scheduler counts, model configuration and restoration figures are withheld without fresh measurements. The source of truth is `status.json`.
+
+Released through the protected main branch and verified GitHub Pages workflow. Preserve the optional 15 second cAshIo logo reveal from the previous production revision.
+
+Polish the Eagle invitation with a prominent play control, a restrained zoom and visible keyboard focus. Balance the four worlds into two columns at medium widths, improve the Studios label contrast, and soften card tilt. Keep starfield motion consistent across refresh rates, bound its canvas size on dense ultrawide displays, and stop it while hidden, offscreen, paused or behind the cinema.
+
 ## V40.0.1 · Reading polish · 10-05-2026
 
 Keep the reading edition within a 320 pixel screen and make its public contact link work without JavaScript. Initialize compact navigation before rendering, preserve every original media file, and verify bookmarked scenarios after their default parameters are restored.

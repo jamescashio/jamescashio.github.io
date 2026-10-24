@@ -7,7 +7,7 @@ export function briefRecords(fleet, chosen) {
       title: "The observation",
       body: `${fleet.lxc} containers and ${fleet.qemu} virtual machine were running at the ${fleet.observedLong} observation. Guest runtime alone does not establish service health or recovery.`,
       source: `Dated export · ${fleet.observedLong}`,
-      href: "https://cashio.us/evidence/status.json",
+      href: "https://cashio.us/v38/status.json",
     },
     routing: {
       title: "The unknown",

@@ -112,7 +112,7 @@ export function setupStudies({ scenes, motion, copy }) {
     $("#st-trace").hidden = i !== 0;
     $("#secondary-instrument").hidden = i === 0;
     $(".ring-progress").style.display = i === 0 ? "" : "none";
-    $("#study-source").setAttribute("href", i === 3 || i === 4 ? "/evidence/status.json" : s.source);
+    $("#study-source").setAttribute("href", i === 3 || i === 4 ? "/v38/status.json" : s.source);
     $("#study-source").textContent = s.sourceLabel + " ↗";
     if (i > 0)
       mountInstrument($("#secondary-instrument"), studyState.get(s.id), FLEET, (next) => {

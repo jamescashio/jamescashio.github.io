@@ -25,10 +25,14 @@ try {
       });
     });
   }
-  const test = spawn(process.execPath, ["--test", "tests/v40-runtime.test.mjs"], {
-    env: { ...process.env, V40_URL: url },
-    stdio: "inherit",
-  });
+  const test = spawn(
+    process.execPath,
+    ["--test", "--test-concurrency=1", "tests/v40-runtime.test.mjs", "tests/v41-runtime.test.mjs"],
+    {
+      env: { ...process.env, V40_URL: url },
+      stdio: "inherit",
+    },
+  );
   const [code] = await once(test, "exit");
   process.exitCode = code ?? 1;
 } finally {

@@ -1,0 +1,23 @@
+@import "./labs.css";
+@import "./bit.css";
+@import "./ai-worm.css";
+
+.eagle-film-play {
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+.eagle-film-play img {
+  transition: transform 600ms cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.eagle-film-playmark {
+  transition:
+    background 220ms ease,
+    color 220ms ease,
+    box-shadow 220ms ease;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="off"]) .eagle-film-play:is(:hover, :focus-visible) img {
+    transform: scale(1.025);
+  }
+}

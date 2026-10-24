@@ -8,7 +8,7 @@ import { defineConfig, globalIgnores } from "eslint/config";
 export default defineConfig([
   globalIgnores(["dist/**", "node_modules/**", ".superpowers/**", ".worktrees/**", "public/**"]),
   {
-    files: ["src/v40/*.{js,jsx}"],
+    files: ["src/v40/**/*.{js,jsx}"],
     extends: [js.configs.recommended],
     languageOptions: { ecmaVersion: 2022, globals: globals.browser },
     rules: { "no-unused-vars": ["error", { argsIgnorePattern: "^_", caughtErrors: "none" }] },

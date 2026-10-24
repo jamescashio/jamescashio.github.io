@@ -12,10 +12,10 @@ test("a saved brief keeps the observation date, source and limited scope", () =>
   assert.match(text, /October 3, 2026/);
   assert.match(text, /does not establish service health or recovery/);
   assert.match(text, /Source: Dated export/);
-  assert.match(text, /https:\/\/cashio.us\/evidence\/status.json/);
+  assert.match(text, /https:\/\/cashio.us\/v38\/status.json/);
   assert.match(text, /accountable person/);
   assert.doesNotMatch(text, /THE UNKNOWN|routing counts/);
-  // The observation and the page revision share a date this release; the brief still cites only the observation.
+  // Historical briefs cite their matching archived observation, never the current evidence alias.
   assert.doesNotMatch(text, /Page updated/);
 });
 test("unknowns cannot become verified claims and empty input cannot produce a brief", () => {

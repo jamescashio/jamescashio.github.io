@@ -49,20 +49,7 @@
           el.playsInline = true;
         }
         el.setAttribute(attr, val);
-        if (el.tagName === "VIDEO" && attr === "src") {
-          const r = el.getBoundingClientRect(),
-            app = window.cashioV40;
-          const ambient =
-            app &&
-            !app.reduce &&
-            !document.hidden &&
-            el.dataset.v === "auto" &&
-            r.bottom > 0 &&
-            r.top < innerHeight &&
-            !(el.id === "hero-loop" && !app.handedOff) &&
-            !(el.id === "hero-video" && app.handedOff);
-          if (el.id === "cinema-video" || ambient) el.play().catch(() => {});
-        }
+        if (el.tagName === "VIDEO" && attr === "src") document.dispatchEvent(new Event("cashio-media"));
       }
     }
     el.querySelectorAll("[data-bound-src],[data-bound-poster]").forEach(bind);
@@ -119,7 +106,7 @@
     panel.className = "mission-panel";
     panel.id = "mission-dialog";
     panel.setAttribute("aria-labelledby", "mission-title");
-    panel.innerHTML = `<div class="mission-head"><h2 id="mission-title">Mission Control</h2><button type="button" data-mission-close aria-label="Close Mission Control">ESC ×</button></div><label class="mission-search"><span>Where are we going?</span><input type="search" placeholder="Find a world, experiment or answer…" autocomplete="off"></label><nav class="mission-results" aria-label="All chapters">${chapters.map(([id, title, desc], i) => `<a href="#${id}" data-chapter="${id}" data-search="${(title + " " + desc).toLowerCase()}"><small>${String(i + 1).padStart(2, "0")}</small><strong>${title}</strong><span aria-hidden="true">↗</span></a>`).join("")}<p class="mission-empty" hidden>No matching destination. Try “films” or “Doug”.</p></nav><div class="mission-foot"><span>V40 · Mostly Harmless<br>Human in command. Towel optional.</span><button type="button" data-motion-toggle>Pause motion</button></div>`;
+    panel.innerHTML = `<div class="mission-head"><h2 id="mission-title">Mission Control</h2><button type="button" data-mission-close aria-label="Close Mission Control">ESC ×</button></div><label class="mission-search"><span>Where are we going?</span><input type="search" placeholder="Find a world, experiment or answer…" autocomplete="off"></label><nav class="mission-results" aria-label="All chapters">${chapters.map(([id, title, desc], i) => `<a href="#${id}" data-chapter="${id}" data-search="${(title + " " + desc).toLowerCase()}"><small>${String(i + 1).padStart(2, "0")}</small><strong>${title}</strong><span aria-hidden="true">↗</span></a>`).join("")}<p class="mission-empty" hidden>No matching destination. Try “films” or “Doug”.</p></nav><div class="mission-foot"><span>V41 · Eagle<br>Human in command. Towel optional.</span><button type="button" data-motion-toggle>Pause motion</button></div>`;
     document.body.append(panel);
     panel.addEventListener("close", () => opener?.focus({ preventScroll: true }));
     panel.querySelector("input").addEventListener("input", (e) => filter(e.target.value));
@@ -204,7 +191,7 @@
       tabs[i].focus();
     }
     if (cinema && e.key === "Tab") {
-      const targets = [...cinema.querySelectorAll('button,video[controls],a[href],[tabindex="0"]')].filter(
+      const targets = [...cinema.querySelectorAll('button,video[controls],summary,a[href],[tabindex="0"]')].filter(
         (el) => el.getClientRects().length,
       );
       const first = targets[0],

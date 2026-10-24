@@ -14,7 +14,7 @@
   "statement": "The website experience, latest dated infrastructure observation, and preserved V35 archive have separate identities. Neither the website nor its demonstrations establish live service health or model-routing behavior.",
   "legacyEntry": "/command-deck.html",
   "evidenceSnapshot": {
-    "url": "/status.json",
+    "url": "/evidence/status-2026-09-07.json",
     "fleetObserved": "2026-09-07",
     "observedAtUtc": "2026-09-07T23:14:58.5008542Z",
     "routingObserved": null
@@ -28,8 +28,8 @@
   },
   "frontDoor": {
     "entry": "/",
-    "experienceVersion": "40.0.1",
-    "visualEdition": "Mostly Harmless",
+    "experienceVersion": "41.0.0",
+    "visualEdition": "Eagle",
     "receipt": "/v40/site-release.json"
   }
 }

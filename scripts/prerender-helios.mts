@@ -1,4 +1,4 @@
-import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { gzipSync } from "node:zlib";
 import { FLEET } from "../src/helios/fleet.js";
@@ -25,7 +25,7 @@ const hashes = [...html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/scrip
 );
 html = html.replace("script-src 'self';", `script-src 'self' ${hashes.join(" ")};`);
 await writeFile(target, html);
-// The current export also sits beside its archived records under one versionless path; /v38/ stays for old links.
-await copyFile("dist/v38/status.json", "dist/evidence/status.json");
+// Vite copies the current versionless export. The archived experience keeps
+// its original observation at /v38/status.json and must not replace that alias.
 await mkdir("dist/artifacts", { recursive: true });
 await writeFile("dist/artifacts/decision-brief.txt", briefText(FLEET, ["fleet", "routing", "authority"])!);

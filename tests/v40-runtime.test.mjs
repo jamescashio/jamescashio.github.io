@@ -70,7 +70,12 @@ test("The logo reveal is explicit, square, playable, and pauses the other identi
       page.on("request", (request) => {
         if (request.url().includes("logo-reveal-512.mp4")) media.push(request.url());
       });
-      await page.goto(new URL("cashio.html#logo-reveal", url).href);
+      await page.goto(url);
+      const invitation = page.getByRole("link", { name: "Watch the logo reveal · 15 seconds", exact: true });
+      await expect(invitation).toHaveAttribute("href", "/cashio.html#logo-reveal");
+      assert.equal(media.length, 0, "the homepage invitation never downloads the reveal video");
+      await invitation.click();
+      await expect(page).toHaveURL(new URL("cashio.html#logo-reveal", url).href);
       const reveal = page.locator("#logo-reveal-player");
       await expect(reveal).toBeVisible();
       await page.locator("#logo-reveal summary").click();
@@ -151,9 +156,9 @@ test("V40 preserves its content and serves a readable edition without JavaScript
     { js: false, width: 320 },
   ]) {
     const page = await visit(t, { js, width });
-    await expect(page.locator("main > section")).toHaveCount(11);
+    await expect(page.locator("main > section")).toHaveCount(12);
     await expect(page.locator("h1")).toHaveText("The machines can think. You still decide.");
-    await expect(page.locator("footer")).toContainText("two releases short of the answer", { ignoreCase: true });
+    await expect(page.locator("footer")).toContainText("one release short of the answer", { ignoreCase: true });
     await expect(page.locator('#contact a[href^="mailto:doug@cashio.us"]').first()).toBeVisible();
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
   }
@@ -249,7 +254,7 @@ test("Every mobile Menu section stays in V40 and survives a reload", async (t) =
       await expect(page.locator(`#${id}`)).toBeInViewport();
       await page.reload();
       await expect(page.locator("#mission-dialog")).toBeAttached();
-      await expect(page).toHaveTitle(/V40 Mostly Harmless/);
+      await expect(page).toHaveTitle(/V41 Eagle/);
       assert.equal(new URL(page.url()).pathname, "/");
       assert.equal(new URL(page.url()).hash, `#${id}`);
       await expect(page.locator(`#${id}`)).toBeInViewport();

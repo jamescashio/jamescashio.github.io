@@ -306,11 +306,20 @@ test("current status and release surfaces omit raw route identifiers and unprobe
       "schemaVersion",
       "virtualMachines",
       "archive",
+      "backup",
+      "scheduler",
+      "modelConfiguration",
     ].sort(),
   );
-  assert.deepEqual(status.cluster, { version: null, hostsOnline: 2, quorate: true });
-  assert.deepEqual(status.containers, { running: 19, documented: 19, stopped: 0, zeus: null, apollo: null });
-  assert.deepEqual(status.virtualMachines, { running: 1, documented: 1, stopped: 0 });
+  assert.deepEqual(status.cluster, { version: null, hostsOnline: 2, quorate: null });
+  assert.deepEqual(status.containers, { running: 19, documented: 20, stopped: 1, zeus: null, apollo: null });
+  assert.deepEqual(status.virtualMachines, { running: 1, documented: 2, stopped: 1 });
+  assert.deepEqual(status.scheduler, { enabled: null, definitions: null });
+  assert.deepEqual(status.modelConfiguration, { contextWindow: null });
+  assert.equal(status.backup.latestChecked, 21);
+  assert.equal(status.backup.latestVerified, 21);
+  assert.equal(status.backup.restoredFiles, null);
+  assert.ok(status.withheldReasons["cluster.quorate"]);
   assert.deepEqual(status.lanes, { public: null, privateCatalog: null });
   for (const surface of [JSON.stringify(status), releaseBody]) {
     assert.doesNotMatch(surface, /deepseek-v4-(?:flash|pro)/i, "raw DeepSeek route identifiers must remain private");

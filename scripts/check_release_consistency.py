@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the V37 preview or approved homepage and the preserved, dated V35 command archive."""
+"""Validate the V41 homepage and evidence alongside the preserved V37 and V35 archives."""
 
 from __future__ import annotations
 
@@ -341,15 +341,17 @@ def collect_public_code_literals(paths: list[Path]) -> list[dict[str, str]]:
     """Use TypeScript's parser so shipped literals cannot evade the HTML guard."""
     if not paths:
         return []
-    result = subprocess.run(
-        ["node", str(ROOT / "scripts" / "collect_public_code_literals.mjs"), *(str(path) for path in paths)],
-        cwd=ROOT,
-        capture_output=True,
-        check=True,
-        text=True,
-        encoding="utf-8",
-    )
-    return json.loads(result.stdout)
+    # Bound argv size on Windows when the workspace has a long absolute path.
+    # Every file is still parsed and every literal passes through the same guard.
+    literals = []
+    for offset in range(0, len(paths), 40):
+        result = subprocess.run(
+            ["node", str(ROOT / "scripts" / "collect_public_code_literals.mjs"),
+             *(str(path) for path in paths[offset:offset + 40])],
+            cwd=ROOT, capture_output=True, check=True, text=True, encoding="utf-8",
+        )
+        literals.extend(json.loads(result.stdout))
+    return literals
 
 
 def has_stale_current_code_literal(literal: dict[str, str]) -> bool:
@@ -523,7 +525,7 @@ def main() -> int:
     parser.add_argument("--preview", action="store_true", help="Validate an explicitly unpublished local preview; never a deployment approval")
     preview = parser.parse_args().preview
     version = "37.17.0-preview.sanctuary" if preview else "37.17.0"
-    package_version = "40.0.1-preview.sanctuary" if preview else "40.0.1"
+    package_version = "41.0.0"
     failures: list[str] = []
 
     try:
@@ -581,8 +583,28 @@ def main() -> int:
             failures.append(f"{cname} must contain only cashio.us")
 
     package = json.loads(read("package.json"))
-    if latest.get("release") != "V37.17":
-        failures.append("latest evidence release context must remain the V37.17 release")
+    if latest.get("release") != "V41 Eagle":
+        failures.append("latest evidence must identify the V41 Eagle preview")
+    current_receipt = json.loads(read("public/v40/site-release.json"))
+    if current_receipt.get("experienceVersion") != package_version:
+        failures.append("current homepage receipt must match the package version")
+    if current_receipt.get("evidenceSnapshot", {}).get("fleetObserved") != latest.get("verified"):
+        failures.append("current homepage receipt must match the measured observation date")
+    if read("public/evidence/status.json") != read("public/status.json"):
+        failures.append("current public evidence aliases must be byte-identical")
+    for name in ("README.md", "CHANGELOG.md", "RELEASE_BODY.md", "index.html"):
+        text = read(name)
+        if "V41" not in text or "Eagle" not in text:
+            failures.append(f"{name} must identify V41 Eagle")
+    for name in ("README.md", "CHANGELOG.md", "RELEASE_BODY.md"):
+        if latest.get("verifiedLong", "") not in read(name):
+            failures.append(f"{name} must include the current observation date")
+    if latest.get("backup", {}).get("latestVerified", -1) > latest.get("backup", {}).get("latestChecked", -1):
+        failures.append("verified backups cannot exceed the explicitly checked latest snapshots")
+    for field in ("scheduler.enabled", "scheduler.definitions", "modelConfiguration.contextWindow", "backup.restoredFiles", "cluster.quorate"):
+        group, key = field.split(".")
+        if latest.get(group, {}).get(key) is None and not latest.get("withheldReasons", {}).get(field):
+            failures.append(f"withheld {field} needs a reason")
     if package.get("version") != package_version:
         failures.append(f"package.json version must be {package_version}")
     lock = json.loads(read("package-lock.json"))
@@ -595,14 +617,15 @@ def main() -> int:
         failures.append(f"V37 site release metadata is missing or invalid: {exc}")
     else:
         check_site_release(site_release, failures, preview=preview, version=version)
+        archived_observation = json.loads(read("public/evidence/status-2026-09-07.json"))
         expected_snapshot = {
-            "url": "/status.json",
-            "fleetObserved": latest.get("verified"),
-            "observedAtUtc": latest.get("provenance", {}).get("observedAtUtc"),
-            "routingObserved": latest.get("routingVerified"),
+            "url": "/evidence/status-2026-09-07.json",
+            "fleetObserved": archived_observation.get("verified"),
+            "observedAtUtc": archived_observation.get("provenance", {}).get("observedAtUtc"),
+            "routingObserved": archived_observation.get("routingVerified"),
         }
         if site_release.get("evidenceSnapshot") != expected_snapshot:
-            failures.append("release receipt must match the latest observation without redating the archive")
+            failures.append("V37 compatibility receipt must retain its original observation")
         if site_release != compatibility_release:
             failures.append("event-horizon-release.json must match the canonical site-release.json")
     if package.get("scripts", {}).get("build") != "tsc --noEmit && tsc -p tsconfig.helios.json && vite build && node --import tsx scripts/prerender.mts && node --import tsx scripts/prerender-odyssey.mts && node --import tsx scripts/prerender-helios.mts && node --import tsx scripts/prerender-rooms.mts && node --import tsx scripts/prerender-v40.mts":
@@ -960,13 +983,13 @@ def main() -> int:
             failures.append(f"non-audio fetch target found in source: {target!r}")
 
     if failures:
-        print("V37 release consistency check failed:\n")
+        print("V41 and preserved archive consistency check failed:\n")
         for failure in failures:
             print(f"- {failure}")
         return 1
 
     print(
-        f"V37 {'unpublished preview' if preview else 'release'} consistency passed: latest dated observation "
+        f"V41 and preserved archive consistency passed: latest dated observation "
         f"{latest['verified']}, {latest['containers']['running']} LXC and {latest['virtualMachines']['running']} QEMU; "
         "routing unverified; V35 August archive preserved; root Pages base; archive, privacy, "
         "motion, opt-in audio, and forbidden-token gates satisfied."

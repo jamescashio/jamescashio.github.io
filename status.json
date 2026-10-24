@@ -1,60 +1,82 @@
 {
-  "release": "V37.17",
-  "revised": "2026-09-08",
+  "release": "V41 Eagle",
+  "revised": "2026-10-23",
   "status": "dated-export",
-  "verified": "2026-09-07",
-  "verifiedLong": "7 September 2026",
+  "verified": "2026-10-23",
+  "verifiedLong": "October 23, 2026",
   "expires": null,
   "containers": {
     "running": 19,
-    "documented": 19,
-    "stopped": 0,
+    "documented": 20,
+    "stopped": 1,
     "zeus": null,
     "apollo": null
+  },
+  "virtualMachines": {
+    "running": 1,
+    "documented": 2,
+    "stopped": 1
+  },
+  "cluster": {
+    "version": null,
+    "hostsOnline": 2,
+    "quorate": null
   },
   "lanes": {
     "public": null,
     "privateCatalog": null
   },
   "routingVerified": null,
+  "scheduler": {
+    "enabled": null,
+    "definitions": null
+  },
+  "modelConfiguration": {
+    "contextWindow": null
+  },
+  "backup": {
+    "observedAtUtc": "2026-10-23T16:46:43.580935+00:00",
+    "snapshotsListed": 124,
+    "latestChecked": 21,
+    "latestVerified": 21,
+    "restoredFiles": null,
+    "fullSystemRecovery": null
+  },
   "law": "Quality picks the model. Cost only breaks a tie.",
-  "note": "Owner-run read-only observation of 7 September 2026. Counts describe LXC containers and QEMU virtual machines, not application health. This static export makes no production network calls and establishes no future health window. It does not establish backup coverage, demonstrated recovery, storage redundancy, failover readiness, or model-routing behavior. Private operational details have been redacted; original observation dates are unchanged.",
+  "schemaVersion": 2,
+  "note": "Read only observation of October 23, 2026. Running guest counts describe inventory, not application health. This static export makes no production network calls and establishes no future health window. Backup verification describes the latest snapshot reported for each guest only. It does not prove a restore, complete backup coverage or independent offsite recovery.",
   "withheldReasons": {
-    "lanes.public": "The current page and older status export say 10 public lanes, but this audit did not produce a current public-lane inventory or execution record.",
-    "lanes.privateCatalog": "Private catalog count and provider assignments are withheld.",
-    "routingVerified": "Current configuration and historical session metadata are not a current end-to-end routing verification.",
-    "cluster.version": "Hypervisor name and version are withheld.",
-    "containers.zeus": "Per host guest counts are withheld.",
-    "containers.apollo": "Per host guest counts are withheld."
+    "lanes.public": "No fresh inventory and execution record for public capability lanes was measured.",
+    "lanes.privateCatalog": "The private model catalog is withheld and is never added to public capability lanes.",
+    "routingVerified": "No new end to end routing test was run.",
+    "cluster.version": "Hypervisor identity and version are private.",
+    "cluster.quorate": "Cluster quorum was not measured by this probe.",
+    "containers.zeus": "Per host guest counts are private.",
+    "containers.apollo": "Per host guest counts are private.",
+    "scheduler.enabled": "The scheduler was not measured in this probe. A read only refresh was requested from its operator.",
+    "scheduler.definitions": "No fresh scheduler definition inventory was returned.",
+    "modelConfiguration.contextWindow": "No fresh model configuration measurement was made.",
+    "backup.restoredFiles": "No new restore rehearsal was run. Historical receipts retain their original dates in the archive.",
+    "backup.fullSystemRecovery": "Snapshot presence and integrity are not proof of recovery."
   },
   "provenance": {
-    "observedAtUtc": "2026-09-07T23:14:58.5008542Z",
-    "observedAtAmericaChicago": "2026-09-07T18:14:58.5008542-05:00",
+    "observedAtUtc": "2026-10-23T16:46:42.368277+00:00",
+    "observedAtAmericaChicago": "2026-10-23T11:46:42.368277-05:00",
+    "auditCollectedAtUtc": "2026-10-23T16:46:43.580935+00:00",
+    "sourceProposalSha256": "7e43f2e41b5a74fc67a0227c29ef36de72ca8b80e14fd7b8387dda520ae596c1",
     "methods": {
-      "containers": "Compared the cluster inventory with direct guest lists.",
-      "lanes": "Withheld because no current public-lane inventory and execution record were established.",
-      "publication": "The owner-run audit produced an unpublished proposal. Its reviewed public subset was subsequently approved for publication with Cashio.us V37.11; the observation timestamps remain those of the original audit.",
-      "virtualMachines": "Compared the running virtual machine count with the direct guest list.",
-      "cluster": "Read only cluster quorum and guest inventory checks."
-    },
-    "auditCollectedAtUtc": "2026-09-07T23:29:51.3400781Z",
-    "sourceProposalSha256": "8b0b042822f052ff72a4b9429ea5c1664f27b34ea5a39860b63a7f9f05a1ab88"
-  },
-  "schemaVersion": 2,
-  "virtualMachines": {
-    "running": 1,
-    "documented": 1,
-    "stopped": 0
+      "containers": "Counted running, stopped and documented container guests from the cluster guest API.",
+      "virtualMachines": "Counted running, stopped and documented virtual machine guests from the cluster guest API.",
+      "cluster": "Counted distinct hosts reporting running guests. Quorum was not measured.",
+      "backups": "Read the latest reported snapshot verification state for each guest from the backup storage content API.",
+      "publication": "Public aggregates prepared for the V41 preview. No fleet service was changed.",
+      "lanes": "Both counts remain withheld."
+    }
   },
   "archive": {
     "url": "/evidence/status-2026-08-28.json",
     "release": "V35 ALL TENS",
     "fleetObserved": "2026-08-28",
     "routingObserved": "2026-08-21"
-  },
-  "cluster": {
-    "version": null,
-    "hostsOnline": 2,
-    "quorate": true
   }
 }

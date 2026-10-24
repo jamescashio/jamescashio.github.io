@@ -1,5 +1,5 @@
 import { Arrow } from "./effects";
-import { FLEET_EVIDENCE } from "./fleet-evidence";
+import { FLEET_EVIDENCE, FLEET_EVIDENCE_URL } from "./fleet-evidence";
 import { AuditStory } from "./audit-story";
 import { EvidenceConsole } from "./evidence-console";
 export function EvidenceSection({ onArt }: { onArt: () => void }) {
@@ -16,8 +16,8 @@ export function EvidenceSection({ onArt }: { onArt: () => void }) {
           Ask E.V.E. what was observed and what remains unknown. Running guests do not establish application health,
           recovery or failover readiness.
         </p>
-        <a href="/status.json" target="_blank" rel="noreferrer" className="o-text-button">
-          Read the latest dated export
+        <a href={FLEET_EVIDENCE_URL} target="_blank" rel="noreferrer" className="o-text-button">
+          Read this dated observation
           <Arrow diagonal />
         </a>
         <div className="o-archive-dates">

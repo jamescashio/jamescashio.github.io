@@ -8,6 +8,7 @@ __pycache__/
 *.pyc
 node_modules/
 dist/
+artifacts/
 playwright/
 verify_xss_fix.png
 verify_ui.js

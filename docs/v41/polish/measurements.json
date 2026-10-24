@@ -1,0 +1,111 @@
+{
+  "label": "polish",
+  "method": "Cold Chrome CDP encodedDataLength, cache disabled, 2 seconds after load, then 80 percent viewport steps every 180 ms and 1.5 second settling. Local server transport.",
+  "results": [
+    {
+      "width": 1440,
+      "height": 900,
+      "initialTotalBytes": 606955,
+      "initialNonVideoBytes": 606955,
+      "scrollBytes": 5604096,
+      "videoRequests": [
+        {
+          "url": "/assets/zenith/starship-flyby.mp4",
+          "bytes": 1550357
+        },
+        {
+          "url": "/assets/zenith/orbital-dust.mp4",
+          "bytes": 2216123
+        },
+        {
+          "url": "/assets/zenith/workshop-after-hours.mp4",
+          "bytes": 1024730
+        }
+      ],
+      "hero": {
+        "x": 129.59375,
+        "y": 295.625,
+        "width": 920.8125,
+        "height": 205.15625
+      },
+      "cta": {
+        "x": 129.59375,
+        "y": 631.421875,
+        "width": 267.046875,
+        "height": 47
+      },
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 3440,
+      "height": 1440,
+      "initialTotalBytes": 606955,
+      "initialNonVideoBytes": 606955,
+      "scrollBytes": 5600661,
+      "videoRequests": [
+        {
+          "url": "/assets/zenith/starship-flyby.mp4",
+          "bytes": 1550357
+        },
+        {
+          "url": "/assets/zenith/orbital-dust.mp4",
+          "bytes": 2216123
+        },
+        {
+          "url": "/assets/zenith/workshop-after-hours.mp4",
+          "bytes": 1024730
+        }
+      ],
+      "hero": {
+        "x": 948,
+        "y": 491.90625,
+        "width": 1236,
+        "height": 352.59375
+      },
+      "cta": {
+        "x": 948,
+        "y": 983.140625,
+        "width": 267.046875,
+        "height": 47
+      },
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "initialTotalBytes": 593370,
+      "initialNonVideoBytes": 593370,
+      "scrollBytes": 5630609,
+      "videoRequests": [
+        {
+          "url": "/assets/zenith/starship-flyby.mp4",
+          "bytes": 1550357
+        },
+        {
+          "url": "/assets/zenith/orbital-dust.mp4",
+          "bytes": 2216123
+        },
+        {
+          "url": "/assets/zenith/workshop-after-hours.mp4",
+          "bytes": 1024730
+        }
+      ],
+      "hero": {
+        "x": 22,
+        "y": 265.671875,
+        "width": 346,
+        "height": 118.515625
+      },
+      "cta": {
+        "x": 22,
+        "y": 528.6875,
+        "width": 195.234375,
+        "height": 44
+      },
+      "overflow": false,
+      "errors": []
+    }
+  ]
+}

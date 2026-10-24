@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "originalAssets": [
+    {
+      "previousName": "8c3bf29b-903b-44c9-a462-74f54293a7de.webp",
+      "path": "/v40/assets/zenith-celestial-signature-poster.webp",
+      "sha256": "0bebacb341ab903b8821cd60412f9bcd8c7a6869bebec8a7ef788c374f5ab84e"
+    },
+    {
+      "previousName": "bbd13e89-003e-4a1d-9abc-abb63cf3fe0c.webp",
+      "path": "/v40/assets/zenith-armillary-nocturne-poster.webp",
+      "sha256": "5d6555ca119099a30c8e0eff9c7bf89cf528ca3488231b4291d6d146c7923e4d"
+    },
+    {
+      "previousName": "7d5cfa48-0af5-4615-9915-2077fd92a636.webp",
+      "path": "/v40/assets/zenith-armillary-detail-poster.webp",
+      "sha256": "87d5e7271290592824bb4722205507260a963c57f259cedaff533f07f74e0ad8"
+    },
+    {
+      "previousName": "89ad4cf0-e853-446d-be0d-791520759ebb.webp",
+      "path": "/v40/assets/zenith-starship-blue-hour-poster.webp",
+      "sha256": "3990252afb6dd97607504564305af01458bdcec8cb760402d43b2db2706f094f"
+    },
+    {
+      "previousName": "cbbffb9e-1815-49a0-a076-13498335b071.webp",
+      "path": "/v40/assets/room-heritage.webp",
+      "sha256": "c127a7622b3f8bad8fc2b7396e4709a74922656686daa4ee0af26109156a99c5"
+    },
+    {
+      "previousName": "8f1d9b07-6a95-4e48-bd39-47a1ac959099.webp",
+      "path": "/v40/assets/zenith-orbital-dust-poster.webp",
+      "sha256": "f7260330cda6a956c72af12538aa68b201c5ec696045f0f656ea3744b8d33e9b"
+    },
+    {
+      "previousName": "712cc780-c521-4a59-8944-7404e746eeb4.webp",
+      "path": "/v40/assets/zenith-quiet-intelligence-poster.webp",
+      "sha256": "00a9cf81a423c7be74081b6ce0a7b6104aa8f5ffd1a44b7e0ef1303e13c914f0"
+    },
+    {
+      "previousName": "aa50f00a-6b40-4a6f-862a-88225656e189.webp",
+      "path": "/v40/assets/zenith-the-long-view-poster.webp",
+      "sha256": "32b96f1d378f88f23430b50348f1b6847e0f85a09499406f57d235606e74b04d"
+    },
+    {
+      "previousName": "47d7eb5b-c627-4243-a8d5-3bca3cbb8ad4.webp",
+      "path": "/v40/assets/zenith-lamplight-prototype-poster.webp",
+      "sha256": "611d4858d501d9252f3a5527f7b6820150519af88e6f68142fa579f94e8a1f70"
+    },
+    {
+      "previousName": "f884829d-e3b2-4f6b-915f-3e7bb1d0bc64.webp",
+      "path": "/v40/assets/zenith-portal-arrival-poster.webp",
+      "sha256": "a9f10fbd8199e7f5cd8371d759300216bb6bda81ca5a96d2b232b036dfeed28c"
+    },
+    {
+      "previousName": "eca826b5-0914-4171-aaf7-dfa365de155d.webp",
+      "path": "/v40/assets/room-starship.webp",
+      "sha256": "fffca4d1df419e9b95b2a5816ba013fd726f437cca1e15f33e804d2762689dc8"
+    },
+    {
+      "previousName": "4c7b8796-9e7b-4d67-b9f7-011728c09b29.webp",
+      "path": "/v40/assets/zenith-starship-flyby-poster.webp",
+      "sha256": "17d4754286308b4acee97e2553917b33319d3864686ba4c5056751745e32ede0"
+    },
+    {
+      "previousName": "982ab837-0359-4ade-ac13-1d70245b3a1c.webp",
+      "path": "/v40/assets/room-studios-threshold.webp",
+      "sha256": "cb214ff3bef77b05a7633d8c556d365e1e184ad6cf08357ac22b3caa901c4a7f"
+    },
+    {
+      "previousName": "8648b394-ea0e-47f3-83cf-27e95a2971e8.webp",
+      "path": "/v40/assets/zenith-starship-dockside-poster.webp",
+      "sha256": "1d14464c24751b9fafcfd09059e3e2e4a307391dbd856f14d3f685bc9bf9ebe8"
+    },
+    {
+      "previousName": "c6a4e496-a568-41c5-9be9-85f85041954e.webp",
+      "path": "/v40/assets/zenith-threshold-poster.webp",
+      "sha256": "a4b96603bbf02fada8172082209b8fa0b32cf0c1aa66f605e91fee9d23727662"
+    },
+    {
+      "previousName": "3bc5c037-21d7-499d-93c2-0736b4712867.webp",
+      "path": "/v40/assets/zenith-ringed-horizon-poster.webp",
+      "sha256": "d2c1b6fac7c901812f5713571abaebe223629b62c9ae213aa13dc50d88967ab9"
+    },
+    {
+      "previousName": "43d1defe-0ddd-4c72-bab2-67985bf57fc1.webp",
+      "path": "/v40/assets/room-principles.webp",
+      "sha256": "bb0acb0e2cf15001b59498e3e1d1c879e45faadd0ee27f8cc8f37cf8b8360e4a"
+    },
+    {
+      "previousName": "a3955f7d-05c0-46d2-8ea0-3abe602982d4.webp",
+      "path": "/v40/assets/zenith-workshop-after-hours-poster.webp",
+      "sha256": "e4f4ba7979e7ebc868c4bd5ca47814a0268203f3dc1622474dc6124c21846c47"
+    },
+    {
+      "previousName": "97576ef5-b697-4775-8a8a-64422163db70.webp",
+      "path": "/v40/assets/zenith-orbital-instrument-poster.webp",
+      "sha256": "1178f8ecd2ccbc96a55dcfcb05aa5651bcd42c91966fb121351dfdd64ca0567a"
+    },
+    {
+      "previousName": "f1893ce2-f71a-4b0e-b24b-c6aa394ec12a.jpg",
+      "path": "/v40/assets/celestial-helios-arrival-poster.jpg",
+      "sha256": "71fcfb28184a7144dc8d77c979207cab4cbf0da70fb82bf7fbcaf8055fca31d0"
+    },
+    {
+      "previousName": "958b0ebd-ae9b-458e-8a48-3c4ee4f6a3ea.webp",
+      "path": "/v40/assets/cashio-celestial-signature.webp",
+      "sha256": "08900463ac6a647046051ddc05f0b0bb2ba255fb9862b85d370aa8ce736bf44d"
+    },
+    {
+      "previousName": "8520dd15-14c5-4b23-bc67-5f99ce32bb14.woff2",
+      "path": "/v40/assets/orbitron-extended-1.woff2",
+      "sha256": "585062e775d70397653192777533f65f3afb707320fcc2a4bc510470e03762e6"
+    },
+    {
+      "previousName": "d7dfe583-cf43-4175-b15e-6c90a7015f58.woff2",
+      "path": "/v40/assets/orbitron-extended-2.woff2",
+      "sha256": "ee6acc5ad5349018f9ca71fab8118144160e110838931874150a1ac3f97db38d"
+    },
+    {
+      "previousName": "d77b6d55-70b3-4170-928a-ffa3878540fa.woff2",
+      "path": "/v40/assets/orbitron-extended-3.woff2",
+      "sha256": "ce87e6a1b1955bbc7b1d2d1c30fb5b53af5e34edb5b93a33e28068054892ef74"
+    },
+    {
+      "previousName": "56ceb0e7-3897-4c7c-a303-46b8f816da01.woff2",
+      "path": "/v40/assets/exo-2-extended-1.woff2",
+      "sha256": "49c9cd329161f5c5feed3ae80a788199f2dce127c00828e027a61261cf602491"
+    },
+    {
+      "previousName": "028fd860-ec5e-4b8f-8282-f1f38332b353.woff2",
+      "path": "/v40/assets/exo-2-extended-2.woff2",
+      "sha256": "78b3f89f94236f0298cbb49ef6839627430f3aac63a00c75f468a60477742e03"
+    },
+    {
+      "previousName": "5caa3418-b874-44bb-a24b-d3cec3ee6074.woff2",
+      "path": "/v40/assets/exo-2-extended-3.woff2",
+      "sha256": "96c87b1597aed754e0ad45970883774e851a390788e7fba7b3f49f8d1f6e5a6b"
+    },
+    {
+      "previousName": "3f181c33-5e0a-4dae-9b11-a329539b1928.woff2",
+      "path": "/v40/assets/jetbrains-mono-extended-1.woff2",
+      "sha256": "14425ba9c695763c1547f48a206b7aa60350a33ae23de09f0407877f3fcd89eb"
+    },
+    {
+      "previousName": "e34da04b-1f4c-4594-ab26-ddb0ac654d3c.woff2",
+      "path": "/v40/assets/jetbrains-mono-extended-2.woff2",
+      "sha256": "400c6bfda18d5d14acad1c15d6dcb9f8e13c015e7286317e0b9a482539bef147"
+    }
+  ],
+  "derivedPosters": ["celestial-arrival-poster.webp", "celestial-arrival-poster.avif"]
+}
