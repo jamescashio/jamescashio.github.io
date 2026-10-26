@@ -22,10 +22,10 @@ test("V40 ships its real reading edition under the strict production security po
   assert.ok(alias.querySelector(`script[src="${routingFile}"]`));
   const root = document.querySelector("#v40-root");
   assert.ok(root);
-  assert.equal(root.querySelectorAll("main > section").length, 12);
+  assert.equal(root.querySelectorAll("main > section").length, 11);
   assert.deepEqual(
     [...root.querySelectorAll("main > section")].slice(0, 3).map((section) => section.id),
-    ["top", "eagle-film", "workshop"],
+    ["top", "workshop", "rooms"],
   );
   assert.equal(root.querySelectorAll("#top video").length, 0);
   assert.equal(root.querySelectorAll("h1").length, 1);
@@ -51,8 +51,8 @@ test("V40 ships its real reading edition under the strict production security po
     "the compact reading edition keeps Bit in the header",
   );
   assert.equal(root.querySelectorAll('[role="tab"]').length, 7);
-  assert.equal(document.querySelector('meta[property="og:image"]').content, "https://cashio.us/v40/share-card.jpg");
-  assert.ok((await stat(asset("dist/v40/share-card.jpg"))).size < 250_000);
+  assert.equal(document.querySelector('meta[property="og:image"]').content, "https://cashio.us/v41/share-card.jpg");
+  assert.ok((await stat(asset("dist/v41/share-card.jpg"))).size < 250_000);
   const receipt = JSON.parse(await read("dist/v40/site-release.json"));
   assert.equal(receipt.experienceVersion, JSON.parse(await read("package.json")).version);
   assert.equal(receipt.previousExperience.entry, "/v39/");
