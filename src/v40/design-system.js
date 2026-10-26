@@ -14,7 +14,7 @@ function Panel({ color = "accent", title, icon, tag, children, className, ...res
         "div",
         { className: "za-panel-head" },
         icon && h("span", { className: "za-panel-icon", "aria-hidden": "true" }, icon),
-        h("h2", { className: "za-panel-title" }, title),
+        h("h3", { className: "za-panel-title" }, title),
         tag,
         h("span", { className: "za-panel-bar", "aria-hidden": "true" }),
       ),

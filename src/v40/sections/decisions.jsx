@@ -386,7 +386,7 @@ export function DecisionsSection({ v }) {
               key: 941,
               className: "v41-8f81cfc173",
             },
-            h(React.Fragment, { key: 942 }, "From my workshop / smart routing"),
+            h(React.Fragment, { key: 942 }, "In your browser · the rule, tested"),
           ),
           " ",
           h(
@@ -398,64 +398,23 @@ export function DecisionsSection({ v }) {
             h(React.Fragment, { key: 945 }, "Spend the AI budget where it matters."),
           ),
           " ",
-          h(
-            "figure",
-            {
-              key: 947,
-              className: "v41-007dc65812",
-            },
-            " ",
-            h("span", {
-              key: 949,
-              "aria-hidden": "true",
-              className: "v41-16cd4ce1eb",
-            }),
-            " ",
-            h(
-              "blockquote",
-              { key: 951, className: "v41-c5be0519ff" },
-              " ",
-              h(
-                "p",
-                {
-                  key: 953,
-                  className: "v41-30522b9836",
-                },
-                h(React.Fragment, { key: 954 }, "Quality picks the model."),
-              ),
-              " ",
-              h(
-                "p",
-                {
-                  key: 956,
-                  className: "v41-55c8349a17",
-                },
-                h(React.Fragment, { key: 957 }, "Cost only breaks a tie."),
-              ),
-              " ",
-            ),
-            " ",
-            h(
-              "figcaption",
-              {
-                key: 960,
-                className: "v41-cba1cb3df7",
-              },
-              h(React.Fragment, { key: 961 }, "My routing law · published in the dated export"),
-            ),
-            " ",
-          ),
+          h("p", { key: 964, className: "v41-23ab518947" }, "Three moves, one rule. Watch which constraint wins."),
           " ",
           h(
-            "p",
-            {
-              key: 964,
-              className: "v41-23ab518947",
-            },
-            h(
-              React.Fragment,
-              { key: 965 },
-              "Try the rule: change the task, require sources, then make the input private. Watch which constraint wins.",
+            "ol",
+            { key: "steps", className: "routing-steps" },
+            [
+              ["01", "Change the task", "Draft, research or review."],
+              ["02", "Require sources", "Claims must be checkable."],
+              ["03", "Make it private", "The boundary outranks the budget."],
+            ].map(([n, title, note]) =>
+              h(
+                "li",
+                { key: n },
+                h("span", { className: "routing-step-n" }, n),
+                h("strong", null, title),
+                h("span", { className: "routing-step-note" }, note),
+              ),
             ),
           ),
           " ",
