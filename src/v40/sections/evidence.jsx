@@ -178,7 +178,7 @@ export function EvidenceSection({ v }) {
             h(
               "details",
               { className: "evidence-limitations" },
-              h("summary", null, "What is withheld, and why"),
+              h("summary", { className: "evidence-disclosure" }, "What is withheld, and why"),
               h(
                 "dl",
                 null,
@@ -214,7 +214,7 @@ export function EvidenceSection({ v }) {
             h(
               "details",
               { id: "snapshot-story" },
-              h("summary", null, "Read the backup receipt"),
+              h("summary", { className: "evidence-disclosure" }, "Read the backup receipt"),
               h("p", null, backupSummary),
               h("p", null, snapshot.withheldReasons["backup.fullSystemRecovery"]),
               h("a", { href: "/status.json" }, "Read the October 2026 observation"),
@@ -273,22 +273,22 @@ export function EvidenceSection({ v }) {
                     h(
                       "a",
                       { key: 1703, href: "https://cashio.us/evidence/status-2026-09-26.json" },
-                      h(React.Fragment, { key: 1704 }, "Earlier fleet record 4"),
+                      h(React.Fragment, { key: 1704 }, "September 26, 2026 record"),
                     ),
                     h(
                       "a",
                       { key: 1705, href: "https://cashio.us/evidence/status-2026-09-24.json" },
-                      h(React.Fragment, { key: 1706 }, "Earlier fleet record 3"),
+                      h(React.Fragment, { key: 1706 }, "September 24, 2026 record"),
                     ),
                     h(
                       "a",
                       { key: 1707, href: "https://cashio.us/evidence/status-2026-09-07.json" },
-                      h(React.Fragment, { key: 1708 }, "Earlier fleet record 2"),
+                      h(React.Fragment, { key: 1708 }, "September 7, 2026 record"),
                     ),
                     h(
                       "a",
                       { key: 1709, href: "https://cashio.us/evidence/status-2026-08-28.json" },
-                      h(React.Fragment, { key: 1710 }, "Original fleet record"),
+                      h(React.Fragment, { key: 1710 }, "August 28, 2026 record (the first)"),
                     ),
                   ),
                   " ",

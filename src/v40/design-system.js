@@ -58,7 +58,17 @@ function Terminal({ title = "zeusapollo", hint, children, bodyHeight = 340, clas
       h("span", { className: "za-terminal-title" }, h("b", null, title)),
       hint && h("span", { className: "za-terminal-hint" }, hint),
     ),
-    h("div", { className: classes("za-terminal-body", `za-terminal-body--${bodyHeight}`) }, children),
+    h(
+      "div",
+      {
+        className: classes("za-terminal-body", `za-terminal-body--${bodyHeight}`),
+        // the body scrolls, so keyboard users must be able to reach it
+        tabIndex: 0,
+        role: "region",
+        "aria-label": (typeof title === "string" ? title : "Terminal") + " output",
+      },
+      children,
+    ),
   );
 }
 function TerminalLine({ user = "doug", host = "zeus", children }) {

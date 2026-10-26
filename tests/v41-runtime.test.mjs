@@ -47,6 +47,15 @@ for (const [width, height] of [
       assert.ok(rect && rect.y >= 68 && rect.y + rect.height <= height, `${selector} is visible in the first view`);
     }
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+    // Sections that start inside the first view fade in; audit their settled colours, not a frame mid fade.
+    await page.evaluate(() =>
+      Promise.all(
+        document
+          .getAnimations()
+          .filter((a) => a.effect?.getComputedTiming().iterations !== Infinity)
+          .map((a) => a.finished.catch(() => {})),
+      ),
+    );
     const audit = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "best-practice"])
       .analyze();
@@ -68,7 +77,7 @@ for (const [width, height] of [
     ])
       await expect(page.locator(selector).first()).toHaveText(text);
     const missing = await page
-      .locator("#rooms img, #films button img, #eagle-film img")
+      .locator("#rooms img, #films button img")
       .evaluateAll((images) => images.filter((i) => !i.alt || !i.srcset).map((i) => i.outerHTML));
     assert.deepEqual(missing, [], "world and film cards have descriptions and responsive images");
   });
@@ -86,7 +95,7 @@ test("The Eagle rail label stays readable during the entrance animation", async 
   assert.deepEqual(audit.violations, []);
 });
 
-test("The planet stays in the hero; Eagle below it loads only by choice and retains accessible playback", async (t) => {
+test("The planet stays in the hero; the workshop follows it and the Eagle replay keeps accessible playback by link", async (t) => {
   const page = await visit(t);
   const filmRequests = [];
   page.on("request", (request) => {
@@ -97,23 +106,17 @@ test("The planet stays in the hero; Eagle below it loads only by choice and reta
   await expect(page.locator("#top video, #top a[href='#film=intro']")).toHaveCount(0);
   await expect(page.locator("#top .hero-live-poster")).toBeVisible();
   const order = await page.locator("main > section").evaluateAll((s) => s.slice(0, 3).map((n) => n.id));
-  assert.deepEqual(order, ["top", "eagle-film", "workshop"]);
-  const hero = await page.locator("#top").boundingBox();
-  const film = await page.locator("#eagle-film").boundingBox();
-  assert.ok(film.y >= hero.y + hero.height, "film invitation follows the complete hero");
+  assert.deepEqual(order, ["top", "workshop", "rooms"]);
+  await expect(page.locator("#eagle-film")).toHaveCount(0);
   await page.reload();
   await page.waitForTimeout(2600);
-  const watch = page.getByRole("link", { name: "Watch Eagle 36 seconds", exact: true });
-  await page.getByRole("link", { name: "Next: watch Eagle", exact: true }).click();
-  await expect(page).toHaveURL(/#eagle-film$/);
-  await expect(watch).toBeInViewport();
+  await page.getByRole("link", { name: "Next: the workshop", exact: true }).click();
+  await expect(page).toHaveURL(/#workshop$/);
+  await expect(page.locator("#workshop h2").first()).toBeInViewport();
   await page.waitForTimeout(500);
   assert.deepEqual(filmRequests, [], "waiting, reloading and scrolling do not download Eagle video");
   await expect(page.locator("#cinema-video")).toHaveCount(0);
-  await page.locator("#eagle-film summary").click();
-  await expect(page.locator("#eagle-film details p")).toBeVisible();
-  await watch.focus();
-  await page.keyboard.press("Enter");
+  await page.evaluate(() => (location.hash = "#film=intro"));
   const replay = page.locator("#cinema-video");
   await expect(replay).toBeVisible();
   assert.equal(await replay.evaluate((v) => v.muted && v.controls && v.paused), true);
@@ -132,8 +135,6 @@ test("The planet stays in the hero; Eagle below it loads only by choice and reta
   assert.equal(await replay.evaluate((v) => v.muted && v.currentSrc.endsWith("h264.mp4")), true);
   await page.keyboard.press("Escape");
   await expect(replay).toHaveCount(0);
-  await expect(watch).toBeFocused();
-  await expect(watch).toBeInViewport();
   await page.goto(url + "#film=intro");
   await expect(replay).toBeVisible();
   await expect(page.locator("#helios-studio")).toHaveCount(0);
@@ -166,7 +167,7 @@ test("Data saving and reduced motion keep posters still, while manual replay sel
     await page.waitForTimeout(300);
     assert.equal(await page.locator("video").evaluateAll((v) => v.every((v) => v.paused)), true);
     if (mode !== "reduce") {
-      await page.getByRole("link", { name: "Watch Eagle 36 seconds", exact: true }).click();
+      await page.evaluate(() => (location.hash = "#film=intro"));
       const sources = await page.locator("#cinema-video source").evaluateAll((s) => s.map((n) => n.src));
       assert.ok(sources.every((s) => s.includes("480p")));
       assert.equal(await page.locator("#cinema-video").evaluate((v) => v.paused), true);
@@ -228,7 +229,7 @@ test("The starfield limits ambient work and stops while offscreen, motion is pau
   await page.getByRole("button", { name: "Resume motion", exact: true }).first().click();
   const resumed = await draws();
   await expect.poll(draws).toBeGreaterThan(resumed);
-  await page.getByRole("link", { name: "Next: watch Eagle", exact: true }).click();
+  await page.getByRole("link", { name: "Next: the workshop", exact: true }).click();
   await page.waitForTimeout(900);
   await staysStill();
   await page.goto(url + "#film=intro");

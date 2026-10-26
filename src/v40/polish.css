@@ -1865,3 +1865,43 @@ html[data-background="true"] *::after {
   flex-direction: column;
   gap: 10px;
 }
+
+/* plain evidence disclosures read as controls, like "Earlier records" */
+.evidence-disclosure {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--cyan);
+  font: 600 13px/1.5 var(--font-mono);
+  cursor: pointer;
+  list-style: none;
+}
+.evidence-disclosure::-webkit-details-marker {
+  display: none;
+}
+.evidence-disclosure::before {
+  content: "▸";
+  transition: transform 0.2s ease;
+}
+details[open] > .evidence-disclosure::before {
+  transform: rotate(90deg);
+}
+.evidence-disclosure:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .evidence-disclosure::before {
+    transition: none;
+  }
+}
+
+/* system map: the request readout and trace state sit in the empty top corners, clear of the Zeus and Apollo labels */
+#request-map .v41-0045e31d19,
+#request-map .v41-state-6361958006,
+#request-map .v41-state-98f4684e96,
+#request-map .v41-state-0f29c0f4f1 {
+  top: 12px;
+  bottom: auto;
+}
