@@ -31,12 +31,12 @@ export function TrailerCard() {
     h(
       "div",
       { className: "studio-project-copy" },
-      h("p", { className: "studio-project-kicker" }, "FROM MY WORKSHOP · A TRAILER PARODY"),
+      h("p", { className: "studio-project-kicker" }, "THE CREW · A TRAILER PARODY"),
       h("h3", { id: "house-trailer-title" }, "House Cashio: The Trailer"),
       h(
         "p",
         null,
-        "In a world where the machines can think, one homelab refused to let them decide. Braams, a subscription villain, a crew of machines and one cat who was not consulted. Rendered frame by frame in code.",
+        "Before the map, the blockbuster. Zeus, Apollo, Hermes, Atlas, DSH, E.V.E. and Bit face a subscription villain, with braams, a dramatic line up and one cat who was not consulted. Rendered frame by frame in code.",
       ),
       h(
         "a",
@@ -46,7 +46,7 @@ export function TrailerCard() {
         },
         "▶ Watch the trailer · 61 seconds",
       ),
-      h("p", { className: "studio-trailer-note" }, "Sound off to start · Unmute for the score · Captions available"),
+      h("p", { className: "studio-trailer-note" }, "Starts muted · Captions available"),
     ),
   );
 }
