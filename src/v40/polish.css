@@ -440,7 +440,7 @@ html[data-background="true"] *::after {
   outline-offset: 6px;
 }
 .studio-project--trailer {
-  margin-bottom: 22px;
+  margin: 22px 0;
   border-left-color: #ff9500;
 }
 .studio-project--trailer .studio-project-kicker {
