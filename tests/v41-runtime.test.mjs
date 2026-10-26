@@ -47,6 +47,15 @@ for (const [width, height] of [
       assert.ok(rect && rect.y >= 68 && rect.y + rect.height <= height, `${selector} is visible in the first view`);
     }
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+    // Sections that start inside the first view fade in; audit their settled colours, not a frame mid fade.
+    await page.evaluate(() =>
+      Promise.all(
+        document
+          .getAnimations()
+          .filter((a) => a.effect?.getComputedTiming().iterations !== Infinity)
+          .map((a) => a.finished.catch(() => {})),
+      ),
+    );
     const audit = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "best-practice"])
       .analyze();
