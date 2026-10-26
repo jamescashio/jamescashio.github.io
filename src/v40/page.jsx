@@ -692,7 +692,9 @@ export class V40Page extends React.Component {
   stepCinema(d) {
     const list = ["trailer", ...this.films.map((f) => f[1])];
     const i = list.indexOf(this.state.cinema);
-    this.setState({ cinema: list[(i + d + list.length) % list.length] });
+    // a film outside the loop (the Eagle bookmark) steps to the first or last film, never past one
+    const next = i < 0 ? (d > 0 ? 0 : list.length - 1) : (i + d + list.length) % list.length;
+    this.setState({ cinema: list[next] });
   }
   closeCinema() {
     this.setState({ cinema: null });
