@@ -157,6 +157,21 @@ export class V40Page extends React.Component {
   collections = ["The workshop", "Gold in orbit", "Beyond the doorway"];
 
   filmById(slug) {
+    if (slug === "trailer") {
+      const small =
+        typeof window !== "undefined" && (window.innerWidth <= 720 || Boolean(navigator.connection?.saveData));
+      return {
+        slug,
+        title: "House Cashio: The Trailer",
+        desc: "A trailer parody · 61 seconds · Unmute for the score",
+        coll: "House Cashio",
+        src: "/assets/hero/cashio-trailer-" + (small ? "720p" : "1080p") + ".mp4",
+        poster: "/assets/hero/cashio-trailer-poster.webp",
+        captions: "/assets/hero/cashio-trailer-text.vtt",
+        text: "A cold open: in a world where the machines can think. A star rush toward a ringed planet at a classified location. It is a house. He built a lab. At home. The garage was busy. The fleet is counted: two hosts, twenty containers, one virtual machine, forty nine of fifty six scheduled jobs. A record scratch freezes the frame: seven are on a break. In the dark, a subscription monolith rises with scrolling prices. Renewal in three days. The cancel button is not found. Only one crew could stand against it. Meet the machines: Zeus and Apollo, Hermes, Atlas, DSH, E.V.E. and Bit. Uptime. Backups. Snapshots. One very tired admin. A heighliner folds space to keep the lights on. House Cashio, rated MH, mostly harmless, while a cat on the planet's edge turns to the camera. The cat was not consulted. No clouds were harmed in the making of this film. One was slightly inconvenienced.",
+        noloop: true,
+      };
+    }
     if (slug === "intro")
       return {
         slug,
@@ -676,7 +691,7 @@ export class V40Page extends React.Component {
     this.alertT = setTimeout(() => this.setState({ alert: false }), 4200);
   }
   stepCinema(d) {
-    const list = ["intro", ...this.films.map((f) => f[1])];
+    const list = ["intro", "trailer", ...this.films.map((f) => f[1])];
     const i = list.indexOf(this.state.cinema);
     this.setState({ cinema: list[(i + d + list.length) % list.length] });
   }
@@ -1383,6 +1398,8 @@ export class V40Page extends React.Component {
       cinemaIntro: s.cinema === "intro",
       cinemaSrc: C ? C.src : "",
       cinemaPoster: C ? C.poster : "",
+      cinemaCaptions: C ? C.captions || "" : "",
+      cinemaText: C ? C.text || "" : "",
       cinemaTitle: C ? C.title : "",
       cinemaDesc: C ? C.desc : "",
       cinemaColl: C ? C.coll : "",
@@ -2186,16 +2203,28 @@ function renderPage(v) {
                 " ",
                 v.cinemaIntro
                   ? h(CinemaReel, { key: "intro-replay", title: v.cinemaTitle })
-                  : h("video", {
-                      key: 1990,
-                      id: "cinema-video",
-                      "data-bound-src": v.cinemaSrc,
-                      "data-bound-poster": v.cinemaPoster,
-                      controls: true,
-                      preload: "none",
-                      playsInline: "",
-                      className: "v41-f28b60f056",
-                    }),
+                  : h(
+                      "video",
+                      {
+                        key: 1990,
+                        id: "cinema-video",
+                        "data-bound-src": v.cinemaSrc,
+                        "data-bound-poster": v.cinemaPoster,
+                        controls: true,
+                        preload: "none",
+                        playsInline: "",
+                        className: "v41-f28b60f056",
+                      },
+                      v.cinemaCaptions
+                        ? h("track", {
+                            key: "captions",
+                            kind: "captions",
+                            src: v.cinemaCaptions,
+                            srcLang: "en",
+                            label: "English",
+                          })
+                        : null,
+                    ),
                 " ",
               ),
               " ",
@@ -2257,7 +2286,7 @@ function renderPage(v) {
                   " ",
                 ),
                 " ",
-                h(ReelText),
+                h(ReelText, v.cinemaText ? { text: v.cinemaText } : undefined),
               ),
               " ",
             ),

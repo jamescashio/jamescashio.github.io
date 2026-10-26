@@ -2,17 +2,10 @@ import React from "react";
 import { reelSources } from "./media-policy.js";
 const h = React.createElement;
 export const reelPoster = "/assets/hero/cashio-v41-eagle-poster.webp";
-export function ReelText() {
-  return h(
-    "details",
-    { className: "hero-reel-text" },
-    h("summary", null, "Film text version"),
-    h(
-      "p",
-      null,
-      "A ringed planet fills the horizon. A ship rests above a lamplit workshop, turns toward the sky and departs into the blue evening. A brass instrument catches the light. We return to the planet and the workshop. The machines can think. You still decide.",
-    ),
-  );
+const EAGLE_TEXT =
+  "A ringed planet fills the horizon. A ship rests above a lamplit workshop, turns toward the sky and departs into the blue evening. A brass instrument catches the light. We return to the planet and the workshop. The machines can think. You still decide.";
+export function ReelText({ text = EAGLE_TEXT } = {}) {
+  return h("details", { className: "hero-reel-text" }, h("summary", null, "Film text version"), h("p", null, text));
 }
 export function HeroPlanet() {
   return h(
