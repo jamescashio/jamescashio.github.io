@@ -3,7 +3,6 @@ import { installMediaCoordinator } from "./media-policy.js";
 import { frameDeltaSeconds, shouldRenderFrame } from "../lib/animation-timing.ts";
 import { CinemaReel, ReelText, reelPoster } from "./hero-reel.jsx";
 import { HeroSection } from "./sections/hero.jsx";
-import { EagleFilmSection } from "./sections/eagle-film.jsx";
 import { WorkshopSection } from "./sections/workshop.jsx";
 import { WorldsSection } from "./sections/worlds.jsx";
 import { FilmsSection } from "./sections/films.jsx";
@@ -691,7 +690,7 @@ export class V40Page extends React.Component {
     this.alertT = setTimeout(() => this.setState({ alert: false }), 4200);
   }
   stepCinema(d) {
-    const list = ["intro", "trailer", ...this.films.map((f) => f[1])];
+    const list = ["trailer", ...this.films.map((f) => f[1])];
     const i = list.indexOf(this.state.cinema);
     this.setState({ cinema: list[(i + d + list.length) % list.length] });
   }
@@ -1898,7 +1897,6 @@ function renderPage(v) {
         ),
         " ",
         " ",
-        h(EagleFilmSection, { v, key: "eagle-film" }),
         h(WorkshopSection, { v, key: "workshop" }),
         " ",
         " ",

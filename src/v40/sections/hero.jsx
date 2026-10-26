@@ -464,10 +464,10 @@ export function HeroSection({ v }) {
       "a",
       {
         key: 271,
-        href: "#eagle-film",
+        href: "#workshop",
         className: "v41-e4105fe0e2",
       },
-      h("span", { key: 272 }, h(React.Fragment, { key: 273 }, "Next: watch Eagle")),
+      h("span", { key: 272 }, h(React.Fragment, { key: 273 }, "Next: the workshop")),
       h("span", {
         key: 274,
         className: "v41-1148ccc5c5",
