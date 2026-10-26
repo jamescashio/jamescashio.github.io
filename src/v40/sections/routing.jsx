@@ -50,11 +50,7 @@ export function RoutingSection({ v }) {
             className: "v41-c904563b29",
           },
           h("span", { key: 783, className: "v41-3bdbfd324b" }, h(React.Fragment, { key: 784 }, "05")),
-          h(
-            "span",
-            { key: 785, "data-scramble": "" },
-            h(React.Fragment, { key: 786 }, "From my workshop / Smart routing"),
-          ),
+          h("span", { key: 785, "data-scramble": "" }, h(React.Fragment, { key: 786 }, "How I route AI work")),
         ),
         " ",
         h(

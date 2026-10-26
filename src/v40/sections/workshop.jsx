@@ -59,7 +59,7 @@ export function WorkshopSection({ v }) {
               key: 315,
               className: "v41-8f81cfc173",
             },
-            h(React.Fragment, { key: 316 }, "From the workshop · " + v.observedDate),
+            h(React.Fragment, { key: 316 }, "Observed " + v.observedDate),
           ),
           " ",
           h(
@@ -217,7 +217,7 @@ export function WorkshopSection({ v }) {
               key: 371,
               className: "v41-8f81cfc173",
             },
-            h(React.Fragment, { key: 372 }, "A tool to take with you · October 3, 2026"),
+            h(React.Fragment, { key: 372 }, "Built October 3, 2026"),
           ),
           " ",
           h(

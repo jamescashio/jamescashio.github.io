@@ -947,7 +947,7 @@ export class V40Page extends React.Component {
       ["films", "Films"],
       ["work", "Decide"],
       ["studies", "Experiments"],
-      ["universe", "Map"],
+      ["universe", "Machines"],
       ["evidence", "Evidence"],
       ["operator", "Doug"],
       ["contact", "Contact"],
@@ -1016,7 +1016,7 @@ export class V40Page extends React.Component {
       {
         index: "03",
         name: "The Studios",
-        line: "A world worth getting lost in.",
+        line: "Light, signature and short films.",
         desc: "Shape the light, ignite a 3D signature, or explore the short film collection.",
         color: "var(--purple)",
         href: "/rooms/studios/interactive/",
