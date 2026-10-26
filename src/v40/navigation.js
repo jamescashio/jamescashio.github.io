@@ -3,7 +3,7 @@ import { isZenithFilm } from "../helios/zenith-routes.js";
 const rooms = new Set(["starship", "principles", "studios", "heritage"]);
 const experiments = new Set(["hermes", "cascade", "exposure", "briefing", "dashboards", "signal", "graphify"]);
 export const sceneKind = (hash) =>
-  hash === "#film=intro"
+  hash === "#film=intro" || hash === "#film=trailer"
     ? "reel"
     : /^#flight=(board|hull|blackout|permission)$/.test(hash)
       ? "flight"
@@ -102,8 +102,9 @@ export function setupV40Navigation() {
     activeHash = hash;
     if (kind === "reel") {
       scene = { dispose: () => window.cashioV40?.setState({ cinema: null }) };
-      window.cashioV40?.setState({ cinema: "intro" });
-      document.title = "Eagle · cAshIo V41";
+      const trailer = hash === "#film=trailer";
+      window.cashioV40?.setState({ cinema: trailer ? "trailer" : "intro" });
+      document.title = trailer ? "House Cashio: The Trailer · cAshIo V41" : "Eagle · cAshIo V41";
       return;
     }
     const token = generation;
@@ -165,7 +166,9 @@ export function setupV40Navigation() {
       event.preventDefault();
       event.stopImmediatePropagation();
       if (!activeHash) {
-        returnHash = location.hash || (sceneKind(url.hash) === "flight" ? "#top" : "#films");
+        returnHash =
+          location.hash ||
+          (sceneKind(url.hash) === "flight" ? "#top" : url.hash === "#film=trailer" ? "#universe" : "#films");
         opener = link;
       }
       navigate(url.hash);
@@ -176,7 +179,7 @@ export function setupV40Navigation() {
   window.addEventListener("popstate", route);
   window.addEventListener("cashio-ready", route);
   window.addEventListener("cashio-cinema-close", () => {
-    if (activeHash === "#film=intro") close();
+    if (activeHash === "#film=intro" || activeHash === "#film=trailer") close();
   });
   document.addEventListener("cashio-motion", () =>
     window.dispatchEvent(new CustomEvent("helios-motion", { detail: motion() })),

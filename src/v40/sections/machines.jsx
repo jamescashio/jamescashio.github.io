@@ -1,6 +1,7 @@
 import React from "react";
 import { classFor } from "../style-variants.js";
 import designSystem from "../design-system.js";
+import { TrailerCard } from "./trailer-card.jsx";
 const h = React.createElement;
 
 export function MachinesSection({ v }) {
@@ -98,6 +99,8 @@ export function MachinesSection({ v }) {
       ),
       " ",
     ),
+    " ",
+    h(TrailerCard, { key: "house-trailer" }),
     " ",
     h(
       "div",
