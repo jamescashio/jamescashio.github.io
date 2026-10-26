@@ -5,21 +5,22 @@ sources:
   - public/assets/hero/cashio-trailer-720p.mp4
   - public/assets/hero/cashio-trailer-poster.webp
   - public/assets/hero/cashio-trailer-text.vtt
-  - src/v40/sections/films.jsx
+  - src/v40/sections/trailer-card.jsx
+  - src/v40/sections/machines.jsx
   - src/v40/page.jsx
   - src/v40/navigation.js
-verified_at: October 25, 2026
+verified_at: October 26, 2026
 ---
 
 # House Cashio, The Trailer
 
-A 61 second trailer parody in the Films section (04 · The Studios). The card sits after the AI Worm film and before
-Roadster Studio. It opens the screening room, and `#film=trailer` links straight to it.
+A 61 second trailer parody in the Meet the machines section (08 · The system map). The card sits under the section
+intro, before the request trace. It opens the screening room, and `#film=trailer` links straight to it.
 
 ## Behaviour
 
 - The card poster and the watch link both point to `#film=trailer`. The V40 navigation capture opens the screening
-  room with the `trailer` film, titles the tab, and returns focus to `#films` on Escape or close.
+  room with the `trailer` film, titles the tab, and returns to `#universe` with focus on the card on Escape or close.
 - The film plays inside the existing cinema dialog. It starts muted like every other film, with native controls to
   unmute. It joins the previous and next loop directly after Eagle.
 - Screens 720 pixels wide or narrower, and data saver connections, receive the 720p file. Everything else receives

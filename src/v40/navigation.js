@@ -166,7 +166,9 @@ export function setupV40Navigation() {
       event.preventDefault();
       event.stopImmediatePropagation();
       if (!activeHash) {
-        returnHash = location.hash || (sceneKind(url.hash) === "flight" ? "#top" : "#films");
+        returnHash =
+          location.hash ||
+          (sceneKind(url.hash) === "flight" ? "#top" : url.hash === "#film=trailer" ? "#universe" : "#films");
         opener = link;
       }
       navigate(url.hash);
