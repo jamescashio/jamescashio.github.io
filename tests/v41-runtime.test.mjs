@@ -103,7 +103,7 @@ test("The planet stays in the hero; the workshop follows it and the Eagle replay
   await page.waitForTimeout(2600);
   await page.getByRole("link", { name: "Next: the workshop", exact: true }).click();
   await expect(page).toHaveURL(/#workshop$/);
-  await expect(page.locator("#workshop h2")).toBeInViewport();
+  await expect(page.locator("#workshop h2").first()).toBeInViewport();
   await page.waitForTimeout(500);
   assert.deepEqual(filmRequests, [], "waiting, reloading and scrolling do not download Eagle video");
   await expect(page.locator("#cinema-video")).toHaveCount(0);
