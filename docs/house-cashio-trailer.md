@@ -28,6 +28,12 @@ intro, before the request trace. It opens the screening room, and `#film=trailer
 - English captions ship as a `track` (off by default, because the film already sets its key lines on screen). The film
   text version under the player describes the trailer instead of Eagle.
 
+## Fleet figures
+
+The fleet act matches `status.json` and the Meet the machines panel: 2 hosts, 19 containers, 1 virtual machine, and
+scheduled job counts blacked out as withheld. The joke reads "Scheduled jobs · On a break · Counts withheld until
+they get back."
+
 ## Privacy
 
 The home city is withheld, as the release gate requires. The approach shot reads "LOCATION · CLASSIFIED (IT'S A
@@ -37,10 +43,10 @@ HOUSE)" and the narration says "an undisclosed location". The captions and the f
 
 | File                         | Bytes      | SHA 256 (first 16) |
 | ---------------------------- | ---------- | ------------------ |
-| `cashio-trailer-1080p.mp4`   | 19,314,131 | `b264d5bc70e6a8cf` |
-| `cashio-trailer-720p.mp4`    | 7,959,903  | `1b8c2eddf84eb414` |
+| `cashio-trailer-1080p.mp4`   | 19,279,998 | `dbf5f813c7d3848f` |
+| `cashio-trailer-720p.mp4`    | 7,972,958  | `6e5567e5757e85b5` |
 | `cashio-trailer-poster.webp` | 52,746     | `4222a0dda7ba1d08` |
-| `cashio-trailer-text.vtt`    | 1,243      | `4d52ac59a862020a` |
+| `cashio-trailer-text.vtt`    | 1,208      | `22d50f548195a0b6` |
 
 H.264 High, yuv420p, BT.709 tags, 24 fps, AAC stereo, fast start. Master: 1920 by 1080, minus 14.0 LUFS integrated,
 true peak minus 1.1 dBTP.
