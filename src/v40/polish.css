@@ -439,63 +439,6 @@ html[data-background="true"] *::after {
   outline: 2px solid var(--accent);
   outline-offset: 6px;
 }
-.studio-project--trailer {
-  margin: 22px 0;
-  border-left-color: #ff9500;
-}
-.studio-project--trailer .studio-project-kicker {
-  color: #ff9500;
-}
-.studio-trailer-play {
-  display: block;
-  overflow: hidden;
-}
-.studio-trailer-play img {
-  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.studio-trailer-mark {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  display: grid;
-  place-items: center;
-  width: 72px;
-  height: 72px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 50%;
-  background: rgba(10, 10, 15, 0.55);
-  color: #fff;
-  font-size: 22px;
-  transform: translate(-50%, -50%);
-  backdrop-filter: blur(6px);
-  transition:
-    background 0.3s ease,
-    transform 0.3s ease;
-}
-.studio-trailer-play:hover img,
-.studio-trailer-play:focus-visible img {
-  transform: scale(1.03);
-}
-.studio-trailer-play:hover .studio-trailer-mark,
-.studio-trailer-play:focus-visible .studio-trailer-mark {
-  background: rgba(255, 149, 0, 0.85);
-  transform: translate(-50%, -50%) scale(1.06);
-}
-.studio-trailer-play:focus-visible {
-  outline: 2px solid #ff9500;
-  outline-offset: 4px;
-}
-.studio-project .studio-trailer-note {
-  margin-top: 6px;
-  font: 400 11px/1.6 var(--font-mono);
-  letter-spacing: 0.06em;
-}
-@media (prefers-reduced-motion: reduce) {
-  .studio-trailer-play img,
-  .studio-trailer-mark {
-    transition: none;
-  }
-}
 @media (max-width: 760px) {
   .studio-project {
     grid-template-columns: minmax(0, 1fr);
