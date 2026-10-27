@@ -41,7 +41,6 @@ export function WorkshopSection({ v }) {
       "div",
       {
         key: 309,
-        "data-reveal": "",
         className: "v41-7f9ee20c68",
       },
       " ",

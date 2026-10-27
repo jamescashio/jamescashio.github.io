@@ -73,7 +73,7 @@ for (const [width, height] of [
     assert.deepEqual(missing, [], "world and film cards have descriptions and responsive images");
   });
 }
-test("The Eagle rail label stays readable during the entrance animation", async (t) => {
+test("The rail and workshop evidence stay readable during entrance motion", async (t) => {
   const page = await visit(t, { viewport: { width: 3440, height: 1440 } });
   await page.goto(url);
   await page.locator(".v41-31fb338fa2").evaluate((rail) => {
@@ -82,7 +82,19 @@ test("The Eagle rail label stays readable during the entrance animation", async 
       animation.currentTime = 700;
     }
   });
-  const audit = await new AxeBuilder({ page }).include(".v41-bf5360592c").withRules(["color-contrast"]).analyze();
+  await page.locator("#workshop").scrollIntoViewIfNeeded();
+  await page.waitForTimeout(100);
+  await page.locator("#workshop").evaluate((section) => {
+    for (const animation of section.getAnimations({ subtree: true })) {
+      animation.pause();
+      animation.currentTime = 40;
+    }
+  });
+  const audit = await new AxeBuilder({ page })
+    .include(".v41-bf5360592c")
+    .include("#workshop")
+    .withRules(["color-contrast"])
+    .analyze();
   assert.deepEqual(audit.violations, []);
 });
 
