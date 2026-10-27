@@ -3,6 +3,7 @@ import { ReelText } from "../hero-reel.jsx";
 const h = React.createElement;
 
 export function EagleFilmSection({ v }) {
+  // Keep the established section anchor compatible with existing bookmarks.
   return h(
     "section",
     { id: "eagle-film", className: "eagle-film", "aria-labelledby": "eagle-film-title" },
@@ -12,17 +13,20 @@ export function EagleFilmSection({ v }) {
       h(
         "div",
         { className: "eagle-film-copy" },
-        h("p", { className: "eagle-film-label" }, "Eagle · A short film"),
-        h("h2", { id: "eagle-film-title" }, "A moment in orbit."),
-        h("p", null, "From the ringed horizon to the workshop below. A 36 second film from House Cashio."),
-        h("p", { className: "eagle-film-note" }, "Sound off to start · Captions available"),
-        h(ReelText),
+        h("p", { className: "eagle-film-label" }, "The crew · A trailer parody"),
+        h("h2", { id: "eagle-film-title" }, v.trailer.title),
+        h(
+          "p",
+          null,
+          "Zeus, Apollo, Hermes, Atlas, DSH, E.V.E. and Bit face a subscription villain, with braams, a dramatic line up and one cat who was not consulted.",
+        ),
+        h("p", { className: "eagle-film-note" }, "Starts muted · Captions available"),
+        h(ReelText, { text: v.trailer.text }),
       ),
       h(
         "a",
         {
-          href: "#film=intro",
-          onClick: v.openIntro,
+          href: "#film=trailer",
           className: "eagle-film-play",
           "aria-labelledby": "eagle-film-watch eagle-film-duration",
           "aria-haspopup": "dialog",
@@ -31,25 +35,21 @@ export function EagleFilmSection({ v }) {
           "span",
           { className: "eagle-film-visual" },
           h("img", {
-            src: "/v40/thumbs/zenith-starship-dockside-poster-640.webp",
-            srcSet: [320, 640, 1280]
-              .map((width) => `/v40/thumbs/zenith-starship-dockside-poster-${width}.webp ${width}w`)
-              .join(", "),
-            sizes: "(max-width: 760px) calc(100vw - 44px), (max-width: 1600px) 50vw, 760px",
+            src: v.trailer.poster,
             width: 1280,
             height: 720,
             loading: "lazy",
             decoding: "async",
-            alt: "A starship beside a lamplit workshop under a deep blue evening sky.",
+            alt: "The House Cashio title card over a ringed planet, a rating card reading Mostly Harmless, and a cat silhouette on the planet's edge.",
           }),
           h("span", { className: "eagle-film-playmark", "aria-hidden": "true" }, "▶"),
         ),
         h(
           "span",
           { className: "eagle-film-caption" },
-          h("span", { id: "eagle-film-watch" }, "Watch Eagle"),
+          h("span", { id: "eagle-film-watch" }, "Watch House Cashio"),
           " ",
-          h("span", { id: "eagle-film-duration", className: "eagle-film-duration" }, "36 seconds"),
+          h("span", { id: "eagle-film-duration", className: "eagle-film-duration" }, "61 seconds"),
         ),
       ),
     ),

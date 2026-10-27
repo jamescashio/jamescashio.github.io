@@ -1369,10 +1369,7 @@ export class V40Page extends React.Component {
         this.warpFlash();
         window.location.hash = "flight=board";
       },
-      openIntro: (e) => {
-        e.preventDefault();
-        this.setState({ cinema: "intro" });
-      },
+      trailer: this.filmById("trailer"),
       telemetry,
       observedDate,
       fleetSummary,
