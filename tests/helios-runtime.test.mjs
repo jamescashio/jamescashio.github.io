@@ -1248,6 +1248,8 @@ test("Manual quiet mode survives reload and device changes, while blocked storag
   await expect(page.locator("#motion-btn")).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator(".motion-pause")).toBeVisible();
   await expect(page.locator(".motion-device")).toBeHidden();
+  // Let the fresh document paint its initial media state before changing the emulated device preference.
+  await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(page.locator("#motion-btn")).toHaveAttribute("aria-pressed", "false");
   await page.emulateMedia({ reducedMotion: "no-preference" });
