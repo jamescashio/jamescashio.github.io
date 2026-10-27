@@ -68,7 +68,7 @@ for (const [width, height] of [
     ])
       await expect(page.locator(selector).first()).toHaveText(text);
     const missing = await page
-      .locator("#rooms img, #films button img, #eagle-film img")
+      .locator("#rooms img, #films button img")
       .evaluateAll((images) => images.filter((i) => !i.alt || !i.srcset).map((i) => i.outerHTML));
     assert.deepEqual(missing, [], "world and film cards have descriptions and responsive images");
   });
@@ -86,11 +86,11 @@ test("The Eagle rail label stays readable during the entrance animation", async 
   assert.deepEqual(audit.violations, []);
 });
 
-test("The planet stays in the hero; Eagle below it loads only by choice and retains accessible playback", async (t) => {
+test("The planet stays in the hero; House Cashio replaces the featured Eagle film with accessible playback", async (t) => {
   const page = await visit(t);
   const filmRequests = [];
   page.on("request", (request) => {
-    if (/cashio-v41-eagle-.*\.mp4/.test(request.url())) filmRequests.push(request.url());
+    if (/cashio-(?:v41-eagle|trailer)-.*\.mp4/.test(request.url())) filmRequests.push(request.url());
   });
   await page.goto(url);
   await page.waitForTimeout(3000);
@@ -103,26 +103,51 @@ test("The planet stays in the hero; Eagle below it loads only by choice and reta
   assert.ok(film.y >= hero.y + hero.height, "film invitation follows the complete hero");
   await page.reload();
   await page.waitForTimeout(2600);
-  const watch = page.getByRole("link", { name: "Watch Eagle 36 seconds", exact: true });
-  await page.getByRole("link", { name: "Next: watch Eagle", exact: true }).click();
+  const watch = page.getByRole("link", { name: "Watch House Cashio 61 seconds", exact: true });
+  await expect(page.locator("#eagle-film h2")).toHaveText("House Cashio: The Trailer");
+  await expect(page.locator("#eagle-film img")).toHaveAttribute("src", "/assets/hero/cashio-trailer-poster.webp");
+  await expect(page.locator("#eagle-film img")).toHaveAttribute("alt", /House Cashio/);
+  await expect(page.locator("#eagle-film")).not.toContainText("A moment in orbit.");
+  await page.getByRole("link", { name: "Next: watch House Cashio", exact: true }).click();
   await expect(page).toHaveURL(/#eagle-film$/);
   await expect(watch).toBeInViewport();
   await page.waitForTimeout(500);
-  assert.deepEqual(filmRequests, [], "waiting, reloading and scrolling do not download Eagle video");
+  assert.deepEqual(filmRequests, [], "waiting, reloading and scrolling do not download either film");
   await expect(page.locator("#cinema-video")).toHaveCount(0);
   await page.locator("#eagle-film summary").click();
   await expect(page.locator("#eagle-film details p")).toBeVisible();
+  await expect(page.locator("#eagle-film details p")).toContainText("The cat was not consulted.");
   await watch.focus();
   await page.keyboard.press("Enter");
   const replay = page.locator("#cinema-video");
   await expect(replay).toBeVisible();
   assert.equal(await replay.evaluate((v) => v.muted && v.controls && v.paused), true);
   await expect(replay.locator("track")).toHaveAttribute("kind", "captions");
-  const sources = await replay.locator("source").evaluateAll((s) => s.map((n) => n.src));
-  assert.ok(sources[0].endsWith("1080p-av1.mp4") && sources[1].endsWith("1080p-h264.mp4"));
+  await expect(replay.locator("track")).toHaveAttribute("src", "/assets/hero/cashio-trailer-text.vtt");
+  await expect(replay).toHaveAttribute("src", /cashio-trailer-1080p\.mp4$/);
+  await expect(page).toHaveURL(/#film=trailer$/);
   await replay.evaluate((v) => v.play());
   await expect.poll(() => replay.evaluate((v) => v.currentTime)).toBeGreaterThan(0.1);
+  assert.ok(await replay.evaluate((v) => v.duration >= 60 && v.duration <= 62));
   assert.equal(await page.locator("video").evaluateAll((v) => v.filter((v) => !v.paused).length), 1);
+  await page.keyboard.press("Escape");
+  await expect(replay).toHaveCount(0);
+  await expect(watch).toBeFocused();
+  await expect(watch).toBeInViewport();
+  await page.goto(url + "#film=trailer");
+  await expect(replay).toBeVisible();
+  await page.reload();
+  await expect(replay).toHaveAttribute("src", /cashio-trailer-1080p\.mp4$/);
+  await page.keyboard.press("Escape");
+  await expect(replay).toHaveCount(0);
+  // Existing Eagle bookmarks retain their original film and codec fallback.
+  await page.goto(url + "#film=intro");
+  await expect(replay).toBeVisible();
+  await expect(page.locator("#helios-studio")).toHaveCount(0);
+  await page.reload();
+  await expect(replay.locator("source").first()).toHaveAttribute("src", /cashio-v41-eagle-replay/);
+  const sources = await replay.locator("source").evaluateAll((s) => s.map((n) => n.src));
+  assert.ok(sources[0].endsWith("1080p-av1.mp4") && sources[1].endsWith("1080p-h264.mp4"));
   await replay.evaluate((video, fallback) => {
     video.src = fallback;
     video.load();
@@ -130,15 +155,6 @@ test("The planet stays in the hero; Eagle below it loads only by choice and reta
   }, sources[1]);
   await expect.poll(() => replay.evaluate((v) => v.currentTime)).toBeGreaterThan(0.1);
   assert.equal(await replay.evaluate((v) => v.muted && v.currentSrc.endsWith("h264.mp4")), true);
-  await page.keyboard.press("Escape");
-  await expect(replay).toHaveCount(0);
-  await expect(watch).toBeFocused();
-  await expect(watch).toBeInViewport();
-  await page.goto(url + "#film=intro");
-  await expect(replay).toBeVisible();
-  await expect(page.locator("#helios-studio")).toHaveCount(0);
-  await page.reload();
-  await expect(replay.locator("source").first()).toHaveAttribute("src", /cashio-v41-eagle-replay/);
   await page.keyboard.press("Escape");
   await expect(replay).toHaveCount(0);
 });
@@ -166,7 +182,8 @@ test("Data saving and reduced motion keep posters still, while manual replay sel
     await page.waitForTimeout(300);
     assert.equal(await page.locator("video").evaluateAll((v) => v.every((v) => v.paused)), true);
     if (mode !== "reduce") {
-      await page.getByRole("link", { name: "Watch Eagle 36 seconds", exact: true }).click();
+      await page.goto(url + "#film=intro");
+      await expect(page.locator("#cinema-video")).toBeVisible();
       const sources = await page.locator("#cinema-video source").evaluateAll((s) => s.map((n) => n.src));
       assert.ok(sources.every((s) => s.includes("480p")));
       assert.equal(await page.locator("#cinema-video").evaluate((v) => v.paused), true);
@@ -228,7 +245,7 @@ test("The starfield limits ambient work and stops while offscreen, motion is pau
   await page.getByRole("button", { name: "Resume motion", exact: true }).first().click();
   const resumed = await draws();
   await expect.poll(draws).toBeGreaterThan(resumed);
-  await page.getByRole("link", { name: "Next: watch Eagle", exact: true }).click();
+  await page.getByRole("link", { name: "Next: watch House Cashio", exact: true }).click();
   await page.waitForTimeout(900);
   await staysStill();
   await page.goto(url + "#film=intro");

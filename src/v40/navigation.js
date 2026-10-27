@@ -168,7 +168,11 @@ export function setupV40Navigation() {
       if (!activeHash) {
         returnHash =
           location.hash ||
-          (sceneKind(url.hash) === "flight" ? "#top" : url.hash === "#film=trailer" ? "#universe" : "#films");
+          (sceneKind(url.hash) === "flight"
+            ? "#top"
+            : url.hash === "#film=trailer"
+              ? "#" + (link.closest("section[id]")?.id || "universe")
+              : "#films");
         opener = link;
       }
       navigate(url.hash);
