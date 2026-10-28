@@ -2,6 +2,8 @@
 
 ## V41.0.0 · Eagle · October 23, 2026
 
+Observation refresh · October 28, 2026: fresh read only checks confirm 2 hosts, 19 running containers and 1 running virtual machine. The backup inventory now lists 125 snapshots; 21 of 21 latest reported snapshots have successful integrity results. Preserve the October 27, 2026 observation as a dated archive and update current date labels, metadata and sitemap.
+
 Observation refresh · October 27, 2026: repeat the read only fleet and backup checks, preserve the October 23 export, and update the current public aggregates and sitemap. The hero, telemetry badge, evidence console and footer derive their date labels from the shared observation record. The refreshed observation confirms 2 hosts, 19 running containers, 1 running virtual machine and 21 of 21 latest reported snapshots with successful integrity results; other unmeasured fields remain withheld.
 
 Keep the ringed planet behind the opening headline and ship invitation. Place the 36 second Eagle film below the hero as a separate, optional experience, with a Next: watch Eagle link leading to its poster. Preserve the V40 visual identity and make media wait for its turn. The October 23, 2026 static observation reports 2 hosts, 19 running containers and 1 running virtual machine. The latest reported snapshot for each of 21 guests has an integrity result of ok. Scheduler counts, model configuration and restoration figures are withheld without fresh measurements. The source of truth is `status.json`.
