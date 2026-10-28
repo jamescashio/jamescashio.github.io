@@ -1,4 +1,12 @@
-import { snapshot, observedDate, fleetSummary, backupSummary, fleetLine } from "./evidence.js";
+import {
+  snapshot,
+  observedDate,
+  observedShortDate,
+  updatedDate,
+  fleetSummary,
+  backupSummary,
+  fleetLine,
+} from "./evidence.js";
 import { installMediaCoordinator } from "./media-policy.js";
 import { frameDeltaSeconds, shouldRenderFrame } from "../lib/animation-timing.ts";
 import { CinemaReel, ReelText, reelPoster } from "./hero-reel.jsx";
@@ -72,10 +80,12 @@ export class V40Page extends React.Component {
     traceStep: -1,
     tracing: false,
     eveLog: [
-      ["d", "Page updated · October 23, 2026 · V41 Eagle"],
+      ["d", "Page updated · " + updatedDate + " · V41 Eagle"],
       [
         "d",
-        "Fleet and latest backup integrity results were observed October 23, 2026. Unmeasured figures are withheld.",
+        "Fleet and latest backup integrity results were observed " +
+          observedDate +
+          ". Unmeasured figures are withheld.",
       ],
       ["d", "Each reply carries its own date. Easter egg replies are marked lore."],
       ["d", "Tap a command below or type your own. Try help."],
@@ -1371,6 +1381,7 @@ export class V40Page extends React.Component {
       trailer: this.filmById("trailer"),
       telemetry,
       observedDate,
+      observedShortDate,
       fleetSummary,
       fleetLine,
       snapshot,
@@ -1969,7 +1980,7 @@ function renderPage(v) {
                 key: 1894,
                 className: "v41-8f81cfc173",
               },
-              h(React.Fragment, { key: 1895 }, "V41 · Eagle · Directed by Doug Cashio · October 23, 2026"),
+              h(React.Fragment, { key: 1895 }, "V41 · Eagle · Directed by Doug Cashio · Updated " + updatedDate),
             ),
             " ",
             h(

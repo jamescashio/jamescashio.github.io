@@ -345,7 +345,7 @@ export function HeroSection({ v }) {
                     key: 231,
                     className: "v41-5ef7ef42ac",
                   }),
-                  h(React.Fragment, { key: 232 }, "OCT 23"),
+                  h(React.Fragment, { key: 232 }, v.observedShortDate),
                 ),
               ),
               " ",
