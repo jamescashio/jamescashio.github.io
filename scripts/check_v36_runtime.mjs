@@ -200,7 +200,7 @@ async function run() {
       const currentResponse = await fetch(`${base}/status.json`);
       assert.equal(currentResponse.status, 200);
       const currentEvidence = await currentResponse.json();
-      assert.equal(currentEvidence.verified, "2026-10-23");
+      assert.equal(currentEvidence.verified, "2026-10-27");
       assert.deepEqual(currentEvidence.containers, {
         running: 19,
         documented: 20,

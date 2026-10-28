@@ -1,9 +1,9 @@
 {
   "release": "V41 Eagle",
-  "revised": "2026-10-23",
+  "revised": "2026-10-27",
   "status": "dated-export",
-  "verified": "2026-10-23",
-  "verifiedLong": "October 23, 2026",
+  "verified": "2026-10-27",
+  "verifiedLong": "October 27, 2026",
   "expires": null,
   "containers": {
     "running": 19,
@@ -35,7 +35,7 @@
     "contextWindow": null
   },
   "backup": {
-    "observedAtUtc": "2026-10-23T16:46:43.580935+00:00",
+    "observedAtUtc": "2026-10-28T02:54:29.125847+00:00",
     "snapshotsListed": 124,
     "latestChecked": 21,
     "latestVerified": 21,
@@ -44,7 +44,7 @@
   },
   "law": "Quality picks the model. Cost only breaks a tie.",
   "schemaVersion": 2,
-  "note": "Read only observation of October 23, 2026. Running guest counts describe inventory, not application health. This static export makes no production network calls and establishes no future health window. Backup verification describes the latest snapshot reported for each guest only. It does not prove a restore, complete backup coverage or independent offsite recovery.",
+  "note": "Read only observation of October 27, 2026. Running guest counts describe inventory, not application health. This static export makes no production network calls and establishes no future health window. Backup verification describes the latest snapshot reported for each guest only. It does not prove a restore, complete backup coverage or independent offsite recovery.",
   "withheldReasons": {
     "lanes.public": "No fresh inventory and execution record for public capability lanes was measured.",
     "lanes.privateCatalog": "The private model catalog is withheld and is never added to public capability lanes.",
@@ -53,23 +53,23 @@
     "cluster.quorate": "Cluster quorum was not measured by this probe.",
     "containers.zeus": "Per host guest counts are private.",
     "containers.apollo": "Per host guest counts are private.",
-    "scheduler.enabled": "The scheduler was not measured in this probe. A read only refresh was requested from its operator.",
+    "scheduler.enabled": "The scheduler was not measured in this probe.",
     "scheduler.definitions": "No fresh scheduler definition inventory was returned.",
     "modelConfiguration.contextWindow": "No fresh model configuration measurement was made.",
     "backup.restoredFiles": "No new restore rehearsal was run. Historical receipts retain their original dates in the archive.",
     "backup.fullSystemRecovery": "Snapshot presence and integrity are not proof of recovery."
   },
   "provenance": {
-    "observedAtUtc": "2026-10-23T16:46:42.368277+00:00",
-    "observedAtAmericaChicago": "2026-10-23T11:46:42.368277-05:00",
-    "auditCollectedAtUtc": "2026-10-23T16:46:43.580935+00:00",
-    "sourceProposalSha256": "7e43f2e41b5a74fc67a0227c29ef36de72ca8b80e14fd7b8387dda520ae596c1",
+    "observedAtUtc": "2026-10-28T02:54:28.165478+00:00",
+    "observedAtAmericaChicago": "2026-10-27T21:54:28.165478-05:00",
+    "auditCollectedAtUtc": "2026-10-28T02:54:29.125847+00:00",
+    "sourceProposalSha256": "07a28061242f4f951af660c52383e5bf2ffcde6c67a3854d46e6578fe06eab1b",
     "methods": {
       "containers": "Counted running, stopped and documented container guests from the cluster guest API.",
       "virtualMachines": "Counted running, stopped and documented virtual machine guests from the cluster guest API.",
       "cluster": "Counted distinct hosts reporting running guests. Quorum was not measured.",
       "backups": "Read the latest reported snapshot verification state for each guest from the backup storage content API.",
-      "publication": "Public aggregates prepared for the V41 preview. No fleet service was changed.",
+      "publication": "Public aggregates refreshed from read only observations. No fleet service was changed.",
       "lanes": "Both counts remain withheld."
     }
   },
