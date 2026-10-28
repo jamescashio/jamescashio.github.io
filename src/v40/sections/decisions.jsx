@@ -1,4 +1,5 @@
 import React from "react";
+import { RoutingSection } from "./routing.jsx";
 import { classFor } from "../style-variants.js";
 import designSystem from "../design-system.js";
 const h = React.createElement;
@@ -31,7 +32,7 @@ export function DecisionsSection({ v }) {
             key: 821,
             className: "v41-c904563b29",
           },
-          h("span", { key: 822, className: "v41-3bdbfd324b" }, h(React.Fragment, { key: 823 }, "06")),
+          h("span", { key: 822, className: "v41-3bdbfd324b" }, h(React.Fragment, { key: 823 }, "05")),
           h("span", { key: 824, "data-scramble": "" }, h(React.Fragment, { key: 825 }, "One decision")),
         ),
         " ",
@@ -372,116 +373,7 @@ export function DecisionsSection({ v }) {
         " ",
       ),
       " ",
-      h(
-        designSystem.Panel,
-        { key: 937, color: "accent", title: "SMART ROUTING", icon: "▸" },
-        " ",
-        h(
-          "div",
-          { key: 939, className: "v41-84e5cd0cb2" },
-          " ",
-          h(
-            "span",
-            {
-              key: 941,
-              className: "v41-8f81cfc173",
-            },
-            h(React.Fragment, { key: 942 }, "From my workshop / smart routing"),
-          ),
-          " ",
-          h(
-            "h3",
-            {
-              key: 944,
-              className: "v41-ceea826ff0",
-            },
-            h(React.Fragment, { key: 945 }, "Spend the AI budget where it matters."),
-          ),
-          " ",
-          h(
-            "figure",
-            {
-              key: 947,
-              className: "v41-007dc65812",
-            },
-            " ",
-            h("span", {
-              key: 949,
-              "aria-hidden": "true",
-              className: "v41-16cd4ce1eb",
-            }),
-            " ",
-            h(
-              "blockquote",
-              { key: 951, className: "v41-c5be0519ff" },
-              " ",
-              h(
-                "p",
-                {
-                  key: 953,
-                  className: "v41-30522b9836",
-                },
-                h(React.Fragment, { key: 954 }, "Quality picks the model."),
-              ),
-              " ",
-              h(
-                "p",
-                {
-                  key: 956,
-                  className: "v41-55c8349a17",
-                },
-                h(React.Fragment, { key: 957 }, "Cost only breaks a tie."),
-              ),
-              " ",
-            ),
-            " ",
-            h(
-              "figcaption",
-              {
-                key: 960,
-                className: "v41-cba1cb3df7",
-              },
-              h(React.Fragment, { key: 961 }, "My routing law · published in the dated export"),
-            ),
-            " ",
-          ),
-          " ",
-          h(
-            "p",
-            {
-              key: 964,
-              className: "v41-23ab518947",
-            },
-            h(
-              React.Fragment,
-              { key: 965 },
-              "Try the rule: change the task, require sources, then make the input private. Watch which constraint wins.",
-            ),
-          ),
-          " ",
-          h(
-            "div",
-            { key: 967, className: "v41-168e7c51c4" },
-            " ",
-            h(
-              designSystem.Button,
-              { key: 969, as: "a", href: "#studies", size: "sm" },
-              h(React.Fragment, { key: 970 }, "Try the routing demo"),
-            ),
-            " ",
-            h(
-              designSystem.Button,
-              { key: 972, as: "a", href: "#evidence", variant: "secondary", size: "sm" },
-              h(React.Fragment, { key: 973 }, "Read the evidence boundary"),
-            ),
-            " ",
-          ),
-          " ",
-        ),
-        " ",
-      ),
-      " ",
+      h(RoutingSection, { key: "law" }),
     ),
-    " ",
   );
 }

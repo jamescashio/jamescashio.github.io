@@ -31,7 +31,7 @@ export function MachinesSection({ v }) {
             key: 1228,
             className: "v41-c904563b29",
           },
-          h("span", { key: 1229, className: "v41-3bdbfd324b" }, h(React.Fragment, { key: 1230 }, "08")),
+          h("span", { key: 1229, className: "v41-3bdbfd324b" }, h(React.Fragment, { key: 1230 }, "07")),
           h("span", { key: 1231, "data-scramble": "" }, h(React.Fragment, { key: 1232 }, "The system map")),
         ),
         " ",

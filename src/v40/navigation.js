@@ -115,7 +115,7 @@ export function setupV40Navigation() {
     const message = document.createElement("p");
     message.textContent = "Opening your experience…";
     const cancel = document.createElement("button");
-    cancel.textContent = "Return to V40";
+    cancel.textContent = "Return to the homepage";
     cancel.addEventListener("click", () => close());
     status.append(message, cancel);
     document.body.append(status);
@@ -128,7 +128,7 @@ export function setupV40Navigation() {
         kind === "flight"
           ? module.openFlight({ motion: motion(), step: hash.slice(8), onClose: close })
           : module.openStudio({ motion: motion(), hash, onClose: () => close(), onNavigate: navigate });
-      document.title = `${kind === "flight" ? "First flight" : hash === "#signature" ? "Celestial Forge" : hash.startsWith("#lensing") ? "Lensing Observatory" : "Cinema"} · cAshIo V40`;
+      document.title = `${kind === "flight" ? "First flight" : hash === "#signature" ? "Celestial Forge" : hash.startsWith("#lensing") ? "Lensing Observatory" : "Cinema"} · cAshIo V41`;
       for (const node of document.body.children) {
         if (
           !(node instanceof HTMLElement) ||
@@ -141,7 +141,8 @@ export function setupV40Navigation() {
         inerted.push(node);
       }
     } catch {
-      if (token === generation) message.textContent = "This experience could not load. Return to V40 and try again.";
+      if (token === generation)
+        message.textContent = "This experience could not load. Return to the homepage and try again.";
     } finally {
       if (token !== generation) status.remove();
     }

@@ -51,7 +51,7 @@ export function ContactSection({ v }) {
             key: 1847,
             className: "v41-c904563b29",
           },
-          h("span", { key: 1848, className: "v41-3bdbfd324b" }, h(React.Fragment, { key: 1849 }, "11")),
+          h("span", { key: 1848, className: "v41-3bdbfd324b" }, h(React.Fragment, { key: 1849 }, "10")),
           h("span", { key: 1850, "data-scramble": "" }, h(React.Fragment, { key: 1851 }, "Open a channel")),
         ),
         " ",

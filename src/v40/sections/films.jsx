@@ -266,12 +266,13 @@ export function FilmsSection({ v }) {
         ),
         " ",
         h(
-          "div",
+          "details",
           {
             key: 733,
-            "data-reveal": "",
-            className: "v41-0972b80530",
+            open: v.wide,
+            className: "v41-0972b80530 film-library",
           },
+          h("summary", null, "Browse the short films", h("span", { "aria-hidden": "true" }, "＋")),
           " ",
           h(
             "div",
@@ -319,7 +320,7 @@ export function FilmsSection({ v }) {
                       onMouseEnter: v.f.enter,
                       onMouseLeave: v.f.leave,
                       "aria-pressed": v.f.pressed,
-                      "aria-label": v.f.title,
+                      "aria-label": v.f.active ? `▶ NOW ${v.f.title}` : v.f.title,
                       "data-tilt": "10",
                       className: classFor(v.f.style),
                     },

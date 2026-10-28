@@ -156,7 +156,7 @@ test("V40 preserves its content and serves a readable edition without JavaScript
     { js: false, width: 320 },
   ]) {
     const page = await visit(t, { js, width });
-    await expect(page.locator("main > section")).toHaveCount(12);
+    await expect(page.locator("main > section")).toHaveCount(11);
     await expect(page.locator("h1")).toHaveText("The machines can think. You still decide.");
     await expect(page.locator("footer")).toContainText("one release short of the answer", { ignoreCase: true });
     await expect(page.locator('#contact a[href^="mailto:doug@cashio.us"]').first()).toBeVisible();
@@ -221,19 +221,7 @@ test("Mission Control searches chapters and closes with a usable focus destinati
 });
 
 test("Every mobile Menu section stays in V40 and survives a reload", async (t) => {
-  const ids = [
-    "top",
-    "workshop",
-    "rooms",
-    "films",
-    "law",
-    "work",
-    "studies",
-    "universe",
-    "evidence",
-    "operator",
-    "contact",
-  ];
+  const ids = ["top", "workshop", "rooms", "films", "work", "studies", "universe", "evidence", "operator", "contact"];
   for (const width of [390, 320]) {
     const page = await visit(t, { width, touch: true });
     assert.deepEqual(
@@ -291,7 +279,8 @@ test("Briefing treats markup as text and downloads the visitor's actual brief", 
 test("Every experiment remains usable on narrow phones", async (t) => {
   const page = await visit(t, { width: 320 });
   for (let i = 0; i < 7; i++) {
-    await page.locator('[role="tab"]').nth(i).click();
+    await page.getByLabel("Choose an experiment", { exact: true }).selectOption(String(i));
+    await expect(page.getByLabel("Choose an experiment", { exact: true })).toHaveValue(String(i));
     await expect(page.locator('[role="tab"]').nth(i)).toHaveAttribute("aria-selected", "true");
     await expect(page.locator("#experiment-panel")).toBeVisible();
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 320);
@@ -304,6 +293,60 @@ test("Shared scenarios restore the human-review boundary", async (t) => {
   await expect(page.locator("#lab-confidence")).toHaveValue("99");
   await expect(page.getByLabel("The action would be difficult to undo", { exact: true })).toBeChecked();
   await expect(page.locator(".lab-result h4")).toContainText("person");
+});
+
+test("The mobile invitation exposes controls, and choosing another experiment preserves the private scenario", async (t) => {
+  for (const width of [390, 320]) {
+    const page = await visit(t, { width, touch: true });
+    await page.setViewportSize({ width, height: width === 390 ? 844 : 740 });
+    await page.locator('#hero-content a[href="#studies"]').click();
+    const picker = page.getByLabel("Choose an experiment", { exact: true });
+    await expect(picker).toBeVisible();
+    await expect(page.getByRole("tablist", { name: "Experiments" })).not.toBeVisible();
+    const draft = page.getByRole("button", { name: "Draft", exact: true });
+    const rect = await draft.boundingBox();
+    assert.ok(
+      rect && rect.y >= 68 && rect.y + rect.height <= page.viewportSize().height,
+      "the first task control fits without another scroll",
+    );
+    await page.getByRole("button", { name: "Contains private information", exact: true }).click();
+    await picker.selectOption("3");
+    await expect(page.locator("#lab-observed")).toBeVisible();
+    await picker.selectOption("0");
+    await expect(page.getByRole("button", { name: "Contains private information", exact: true })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await page.getByRole("button", { name: "Route this request", exact: true }).click();
+    await expect(page.locator("#studies h4")).toHaveText("Human review");
+    await page.goto(url + "#experiment=cascade&confidence=99&consequence=true");
+    await expect(picker).toHaveValue("1");
+    await expect(page.locator("#lab-confidence")).toHaveValue("99");
+    await page.reload();
+    await expect(picker).toHaveValue("1");
+    await expect(page.getByLabel("The action would be difficult to undo", { exact: true })).toBeChecked();
+  }
+});
+
+test("The consolidated routing-law bookmark and glossary remain readable without JavaScript", async (t) => {
+  const page = await visit(t, { width: 390, js: false, hash: "#law" });
+  await expect(page.locator("#law")).toBeInViewport();
+  await expect(page.locator("#law")).toContainText("Cost only breaks a tie.");
+  await page.locator("#lab-glossary summary").click();
+  await expect(page.locator("#lab-glossary dl")).toBeVisible();
+  await expect(page.locator("#lab-glossary")).toContainText("HERMES");
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 390);
+});
+
+test("Current room and flight titles consistently identify V41", async (t) => {
+  const page = await visit(t);
+  await page.locator('#hero-content a[href="#flight=board"]').click();
+  await expect(page).toHaveTitle("First flight · cAshIo V41");
+  await expect(page.locator("#helios-flight dialog")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page).toHaveTitle(/V41 Eagle/);
+  await page.goto(new URL("/rooms/starship/interactive/", url).href);
+  await expect(page).toHaveTitle("Starship lab · cAshIo V41");
 });
 
 test("Shared scenarios reject inherited keys while restoring valid bounded values", async (t) => {

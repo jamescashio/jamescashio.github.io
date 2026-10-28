@@ -23,7 +23,7 @@ export function OperatorSection({ v }) {
           key: 1760,
           className: "v41-c904563b29",
         },
-        h("span", { key: 1761, className: "v41-3bdbfd324b" }, h(React.Fragment, { key: 1762 }, "10")),
+        h("span", { key: 1761, className: "v41-3bdbfd324b" }, h(React.Fragment, { key: 1762 }, "09")),
         h("span", { key: 1763, "data-scramble": "" }, h(React.Fragment, { key: 1764 }, "Meet Doug")),
       ),
       " ",
@@ -54,8 +54,13 @@ export function OperatorSection({ v }) {
         h(
           React.Fragment,
           { key: 1773 },
-          "I like systems I can take apart, explain and put back together. This site is where that curiosity meets aviation, science fiction and the pleasure of making something work.",
+          "I started in IT in 1996, the year Quake went truly 3D after the brilliant 2.5D worlds of Wolfenstein and Doom. I still like systems I can take apart, explain and put back together.",
         ),
+      ),
+      h(
+        "p",
+        { className: "v41-fe097b123a" },
+        "By day, I’m a Principal Solutions Consultant helping managed service providers deliver security and cloud services, with more than twenty years in cybersecurity. After hours, that curiosity meets aviation, science fiction and the pleasure of making something work.",
       ),
       " ",
       h(

@@ -232,7 +232,7 @@ export function HeroSection({ v }) {
           h(
             React.Fragment,
             { key: 190 },
-            "I’m Doug Cashio. I started in IT in 1996, the year Quake went truly 3D after the brilliant 2.5D worlds of Wolfenstein and Doom. This is my workshop after hours: local AI, original worlds and a few things that fly.",
+            "I’m Doug Cashio. I build local AI experiments and original worlds after hours. Board a starship, try a decision, or explore what I’m making.",
           ),
         ),
         " ",
