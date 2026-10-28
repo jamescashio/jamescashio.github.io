@@ -31,7 +31,7 @@ test("V40 ships its real reading edition under the strict production security po
   assert.equal(root.querySelectorAll("#top video").length, 0);
   assert.equal(root.querySelectorAll("h1").length, 1);
   assert.match(root.textContent, /You still decide\./);
-  assert.match(root.querySelector("footer").textContent, /Eagle.*Updated October 27, 2026/);
+  assert.match(root.querySelector("footer").textContent, /Eagle.*Updated October 28, 2026/);
   assert.doesNotMatch(root.querySelector("footer").textContent, /Preview 05|current public site/);
   assert.equal(root.querySelectorAll("[style]").length, 0, "the reading edition must use external CSS");
   const csp = document.querySelector('meta[http-equiv="Content-Security-Policy"]').content;
@@ -58,7 +58,7 @@ test("V40 ships its real reading edition under the strict production security po
   assert.equal(receipt.experienceVersion, JSON.parse(await read("package.json")).version);
   assert.equal(receipt.previousExperience.entry, "/v39/");
   assert.equal(receipt.published, receipt.status === "released");
-  assert.equal(receipt.evidenceSnapshot.fleetObserved, "2026-10-27");
+  assert.equal(receipt.evidenceSnapshot.fleetObserved, "2026-10-28");
   assert.equal(receipt.evidenceSnapshot.routingObserved, null);
   const files = await readdir(asset("public/v40/assets"));
   const assets = JSON.parse(await read("public/v40/asset-manifest.json"));
@@ -263,7 +263,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
   assert.equal(archive.expires, "2026-09-27");
   assert.deepEqual(archive.containers, { running: 18, documented: 19, stopped: 1, zeus: null, apollo: null });
   assert.equal(archive.routingVerified, "2026-08-21");
-  assert.equal(status.verified, "2026-10-27");
+  assert.equal(status.verified, "2026-10-28");
   assert.equal(status.routingVerified, null);
   assert.deepEqual(status.lanes, { public: null, privateCatalog: null });
   assert.equal(await read("dist/status.json"), await read("public/status.json"));
@@ -823,7 +823,7 @@ test("Helios release identity, signature assets and compatibility receipts agree
   const home = [...sitemap.querySelectorAll("url")].find(
     (entry) => entry.querySelector("loc")?.textContent === "https://cashio.us/",
   );
-  assert.equal(home?.querySelector("lastmod")?.textContent, "2026-10-27");
+  assert.equal(home?.querySelector("lastmod")?.textContent, "2026-10-28");
   // The home signature and the Celestial Forge share one full size artwork file, so the forge reuses the cached copy.
   assert.equal(doc.querySelector("#sig-art").getAttribute("src"), "/brand/celestial-1680.webp");
   assert.ok((await read("src/odyssey/brand-mark.tsx")).includes("/brand/celestial-1680.webp 1680w"));
