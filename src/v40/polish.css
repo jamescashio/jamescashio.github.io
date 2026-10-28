@@ -1,4 +1,15 @@
 /* Narrow enhancements to Claude's original composition. */
+.experiment-picker {
+  display: none;
+}
+@media (max-width: 1179px) {
+  .experiment-picker {
+    display: grid;
+  }
+  #studies .experiment-tabs {
+    display: none;
+  }
+}
 #rooms .world-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -216,16 +227,6 @@ html[data-motion="off"] #hero-content {
 html[data-motion="off"] #top h1 span {
   transform: none !important;
 }
-html[data-motion="off"] #law {
-  height: auto !important;
-  min-height: 80vh;
-}
-html[data-motion="off"] #law > div {
-  position: relative !important;
-  min-height: 80vh;
-  height: auto !important;
-  padding-block: 100px;
-}
 html[data-motion="off"] [data-mword] {
   opacity: 1 !important;
 }
@@ -274,7 +275,7 @@ html[data-background="true"] *::after {
     font-size: 15px !important;
   }
   header .za-btn {
-    font-size: 10px !important;
+    font-size: 12px !important;
     padding-inline: 10px !important;
     min-height: 40px;
   }
@@ -284,7 +285,7 @@ html[data-background="true"] *::after {
   .hud-control {
     min-height: 40px;
     padding: 8px 10px;
-    font-size: 10px;
+    font-size: 12px;
   }
   .motion-control {
     width: 34px;
@@ -308,7 +309,7 @@ html[data-background="true"] *::after {
   }
   #top > a:last-child {
     width: 90%;
-    font-size: 10px !important;
+    font-size: 12px !important;
   }
   #contact h2 {
     font-size: clamp(33px, 10.3vw, 54px) !important;
@@ -461,18 +462,6 @@ html[data-background="true"] *::after {
 }
 
 /* V41 pacing and coarse pointer hit areas. */
-#law {
-  height: auto !important;
-  min-height: 70svh;
-}
-#law > div {
-  position: relative !important;
-  height: auto !important;
-  min-height: 70svh;
-}
-#law [data-mword] {
-  opacity: 1 !important;
-}
 @media (pointer: coarse) {
   #v40-root :is(a, button, summary, [role="tab"], [role="switch"]) {
     min-width: 44px;

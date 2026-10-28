@@ -119,7 +119,7 @@ import { sceneKind } from "./navigation.js";
   function briefText() {
     const s = states.get("briefing"),
       v = (f) => s[f].trim() || "Not specified";
-    return `DECISION BRIEF / cAshIo V40\n\nWHAT WAS OBSERVED\n${v("observed")}\n\nSOURCE AND DATE\n${v("source")}\n\nWHAT REMAINS UNKNOWN\n${v("unknown")}\n\nWHO DECIDES\n${v("owner")}\n\nPrepared locally. Claims have not been independently verified by this tool.\n`;
+    return `DECISION BRIEF / cAshIo V41\n\nWHAT WAS OBSERVED\n${v("observed")}\n\nSOURCE AND DATE\n${v("source")}\n\nWHAT REMAINS UNKNOWN\n${v("unknown")}\n\nWHO DECIDES\n${v("owner")}\n\nPrepared locally. Claims have not been independently verified by this tool.\n`;
   }
   function update() {
     if (!host) return;

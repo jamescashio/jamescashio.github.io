@@ -32,7 +32,7 @@ export function EvidenceSection({ v }) {
             key: 1471,
             className: "v41-c904563b29",
           },
-          h("span", { key: 1472, className: "v41-3bdbfd324b" }, h(React.Fragment, { key: 1473 }, "09")),
+          h("span", { key: 1472, className: "v41-3bdbfd324b" }, h(React.Fragment, { key: 1473 }, "08")),
           h("span", { key: 1474, "data-scramble": "" }, h(React.Fragment, { key: 1475 }, "The evidence")),
         ),
         " ",

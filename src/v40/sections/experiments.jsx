@@ -31,12 +31,8 @@ export function ExperimentsSection({ v }) {
             key: 987,
             className: "v41-c904563b29",
           },
-          h("span", { key: 988, className: "v41-3bdbfd324b" }, h(React.Fragment, { key: 989 }, "07")),
-          h(
-            "span",
-            { key: 990, "data-scramble": "" },
-            h(React.Fragment, { key: 991 }, "Go deeper / Seven experiments"),
-          ),
+          h("span", { key: 988, className: "v41-3bdbfd324b" }, h(React.Fragment, { key: 989 }, "06")),
+          h("span", { key: 990, "data-scramble": "" }, h(React.Fragment, { key: 991 }, "Seven experiments")),
         ),
         " ",
         h(
@@ -45,8 +41,6 @@ export function ExperimentsSection({ v }) {
             key: 993,
             className: "v41-0cf0266feb",
           },
-          h(React.Fragment, { key: 994 }, "Seven questions."),
-          h("br", { key: 995 }),
           h(React.Fragment, { key: 996 }, "Take the controls."),
         ),
         " ",
@@ -68,7 +62,7 @@ export function ExperimentsSection({ v }) {
         h(
           "p",
           { key: 1004, className: "v41-ae4d8addf2" },
-          h(React.Fragment, { key: 1005 }, "Choose a question. Change the inputs. See the rule at work."),
+          h(React.Fragment, { key: 1005 }, "Change an input. See the rule at work."),
         ),
         " ",
       ),
@@ -84,14 +78,31 @@ export function ExperimentsSection({ v }) {
       " ",
       h(
         "div",
+        { className: "experiment-picker" },
+        h("label", { htmlFor: "experiment-picker" }, "Choose an experiment"),
+        h(
+          "select",
+          {
+            id: "experiment-picker",
+            value: v.experimentIndex,
+            onChange: v.chooseExperiment,
+            "aria-controls": "experiment-panel",
+          },
+          v.experiments.map((experiment, index) =>
+            h("option", { key: experiment.id, value: index }, `${experiment.num} · ${experiment.name}`),
+          ),
+        ),
+      ),
+      h(
+        "div",
         {
           key: 1011,
           role: "tablist",
           "aria-label": "Experiments",
           "aria-orientation": "vertical",
-          className: classFor(
-            ["display:flex;flex-direction:column;gap:8px;grid-column:", v.tabsCol ?? "", ""].join(""),
-          ),
+          className:
+            "experiment-tabs " +
+            classFor(["display:flex;flex-direction:column;gap:8px;grid-column:", v.tabsCol ?? "", ""].join("")),
         },
         " ",
         (function (parent) {
@@ -186,7 +197,7 @@ export function ExperimentsSection({ v }) {
           key: 1035,
           role: "tabpanel",
           id: "experiment-panel",
-          "aria-labelledby": v.selectedExperiment,
+          "aria-labelledby": "experiment-heading",
           tabIndex: "0",
           className: classFor(["grid-column:", v.panelCol ?? "", ";min-width:0"].join("")),
         },
@@ -219,6 +230,7 @@ export function ExperimentsSection({ v }) {
             h(
               "h3",
               {
+                id: "experiment-heading",
                 key: 1044,
                 className: "v41-eeec3df7ff",
               },

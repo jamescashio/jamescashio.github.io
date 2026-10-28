@@ -7,7 +7,6 @@ import { EagleFilmSection } from "./sections/eagle-film.jsx";
 import { WorkshopSection } from "./sections/workshop.jsx";
 import { WorldsSection } from "./sections/worlds.jsx";
 import { FilmsSection } from "./sections/films.jsx";
-import { RoutingSection } from "./sections/routing.jsx";
 import { DecisionsSection } from "./sections/decisions.jsx";
 import { ExperimentsSection } from "./sections/experiments.jsx";
 import { MachinesSection } from "./sections/machines.jsx";
@@ -1423,6 +1422,8 @@ export class V40Page extends React.Component {
       panelCol: s.wide ? "2" : "1 / -1",
       expId: E[0],
       selectedExperiment: "experiment-" + s.exp,
+      experimentIndex: s.exp,
+      chooseExperiment: (event) => this.setState({ exp: Number(event.target.value) }),
       experiments,
       expNum: "0" + (s.exp + 1),
       expCode: E[2],
@@ -1433,7 +1434,12 @@ export class V40Page extends React.Component {
       expHref: "#experiment=" + E[0],
       isHermes: s.exp === 0,
       notHermes: s.exp !== 0,
-      nextExp: () => this.setState({ exp: (s.exp + 1) % 7 }),
+      nextExp: () =>
+        this.setState({ exp: (s.exp + 1) % 7 }, () => {
+          const panel = document.getElementById("experiment-panel");
+          panel?.focus({ preventScroll: true });
+          panel?.scrollIntoView({ block: "start", behavior: "instant" });
+        }),
       privatePressed: String(s.priv),
       sourcesPressed: String(s.sources),
       intents,
@@ -1903,9 +1909,6 @@ function renderPage(v) {
         " ",
         " ",
         h(FilmsSection, { v, key: "films" }),
-        " ",
-        " ",
-        h(RoutingSection, { v, key: "law" }),
         " ",
         " ",
         h(DecisionsSection, { v, key: "work" }),
