@@ -61,6 +61,18 @@ test("the optional privacy exercise remains keyboard operated and preserves huma
   await expect(summary).toBeFocused();
 });
 
+test("featured project titles fit their own columns on a narrow phone", async (t) => {
+  const page = await visit(t, { viewport: { width: 320, height: 740 } });
+  await page.goto(url + "#films");
+  await page.evaluate(() => document.fonts.ready);
+  for (const selector of ["#ai-worm-title", "#roadster-studio-title"]) {
+    const size = await page
+      .locator(selector)
+      .evaluate((node) => ({ width: node.clientWidth, content: node.scrollWidth }));
+    assert.ok(size.content <= size.width, `${selector} must not clip inside its card: ${JSON.stringify(size)}`);
+  }
+});
+
 test("fragment bookmarks open the required disclosures, including in the reading edition", async (t) => {
   const page = await visit(t);
   await page.goto(url + "#privacy-test");

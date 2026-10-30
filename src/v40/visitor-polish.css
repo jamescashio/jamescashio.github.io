@@ -575,6 +575,11 @@
   }
 }
 @media (max-width: 359px) {
+  #films .ai-worm-film:not(.is-playing),
+  #films .studio-project {
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 14px;
+  }
   #rooms .world-card {
     grid-template-columns: 72px minmax(0, 1fr);
   }
