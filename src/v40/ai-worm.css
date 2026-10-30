@@ -22,6 +22,7 @@
   background: #000;
 }
 .ai-worm-media iframe,
+.ai-worm-media video,
 .ai-worm-play,
 .ai-worm-play img {
   display: block;
@@ -29,9 +30,11 @@
   height: 100%;
   border: 0;
 }
-.ai-worm-media iframe {
+.ai-worm-media iframe,
+.ai-worm-media video {
   position: absolute;
   inset: 0;
+  object-fit: contain;
 }
 .ai-worm-play {
   position: absolute;

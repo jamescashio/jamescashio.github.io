@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
+import edit from "../../public/assets/sovereign/quick-sand.json";
+import { conservesData } from "./media-policy.js";
 
 const h = React.createElement;
-const videoUrl = "https://www.youtube.com/watch?v=382mPi4ON60";
+const videoUrl = edit.originalUrl;
 
 export function AiWormFilm() {
   const [playing, setPlaying] = useState(false);
@@ -52,14 +54,29 @@ export function AiWormFilm() {
       "div",
       { className: "ai-worm-media" },
       playing
-        ? h("iframe", {
-            ref: player,
-            title: "The Sovereign: My Journey Riding the AI Worm, version 9",
-            src: "https://www.youtube-nocookie.com/embed/382mPi4ON60?autoplay=1&mute=1&playsinline=1&rel=0",
-            allow: "autoplay; encrypted-media; picture-in-picture; fullscreen",
-            allowFullScreen: true,
-            referrerPolicy: "strict-origin-when-cross-origin",
-          })
+        ? h(
+            "video",
+            {
+              ref: player,
+              id: "ai-worm-video",
+              "aria-label": "The Sovereign: Quick Sand Cut",
+              src: (conservesData() ? edit.compact : edit.standard).src,
+              controls: true,
+              autoPlay: true,
+              muted: true,
+              playsInline: true,
+              preload: "none",
+              "data-noloop": "1",
+              tabIndex: 0,
+              onKeyDown: (event) => {
+                if (event.key === "Escape" && !document.fullscreenElement) {
+                  event.preventDefault();
+                  closePlayer();
+                }
+              },
+            },
+            h("track", { kind: "captions", src: edit.captions.src, srcLang: "en", label: "English comedy captions" }),
+          )
         : h(
             "button",
             {
@@ -67,7 +84,7 @@ export function AiWormFilm() {
               className: "ai-worm-play",
               ref: playButton,
               onClick: () => setPlaying(true),
-              "aria-label": "Play The Sovereign, version 9",
+              "aria-label": "Play The Sovereign quick cut",
               "aria-describedby": "ai-worm-playback-note",
             },
             h("img", {
@@ -82,19 +99,19 @@ export function AiWormFilm() {
               decoding: "async",
             }),
             h("span", { className: "ai-worm-play-icon", "aria-hidden": "true" }, "▷"),
-            h("span", { className: "ai-worm-play-label" }, "PLAY THE SOVEREIGN"),
+            h("span", { className: "ai-worm-play-label" }, "PLAY THE SOVEREIGN QUICK CUT"),
           ),
     ),
     h(
       "div",
       { className: "ai-worm-copy" },
-      h("p", { className: "ai-worm-kicker" }, "FEATURED PARODY · 4:59 · VERSION 9"),
+      h("p", { className: "ai-worm-kicker" }, "FEATURED PARODY · " + edit.durationLabel + " · QUICK SAND CUT"),
       h("h3", { id: "ai-worm-title" }, "The Sovereign"),
       h("p", { className: "ai-worm-tagline" }, "One man. Several providers. No remaining hobbies."),
       h(
         "div",
         { className: "ai-worm-actions" },
-        h("a", { href: videoUrl, target: "_blank", rel: "noopener noreferrer" }, "Watch on YouTube ↗"),
+        h("a", { href: videoUrl, target: "_blank", rel: "noopener noreferrer" }, "Full film on YouTube ↗"),
         playing
           ? h("button", { type: "button", onClick: closePlayer, className: "ai-worm-stop" }, "Close player ×")
           : null,
@@ -102,7 +119,7 @@ export function AiWormFilm() {
       h(
         "p",
         { id: "ai-worm-playback-note", className: "ai-worm-note" },
-        "YouTube loads after Play. Starts muted; stops when you leave this film.",
+        "Starts muted. Stops when you leave this film.",
       ),
       h(
         "details",
@@ -111,13 +128,9 @@ export function AiWormFilm() {
         h(
           "p",
           { className: "ai-worm-description" },
-          "My AI journey since 2022, reimagined as an attempt to ride a very large worm. The worm is AI. The sand is apparently a dependency.",
+          "My AI journey since 2022, condensed into one very optimistic free trial. The worm is AI. The sand is apparently a dependency.",
         ),
-        h(
-          "p",
-          { className: "ai-worm-credit" },
-          "AI assisted likeness and original meme captions. Scene and soundtrack: Dune: Part Two. Unofficial fan parody.",
-        ),
+        h("p", { className: "ai-worm-credit" }, edit.credit),
       ),
     ),
   );
