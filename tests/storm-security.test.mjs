@@ -7,8 +7,8 @@ import ts from "typescript";
 import { JSDOM } from "jsdom";
 
 const html = await readFile(new URL("../public/storm/index.html", import.meta.url), "utf8");
-const script = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)]
-  .map((match) => match[1])
+const script = [...new JSDOM(html).window.document.scripts]
+  .map((node) => node.textContent)
   .find((text) => text.includes("function renderDaily("));
 const tree = ts.createSourceFile("storm.js", script, ts.ScriptTarget.Latest, true, ts.ScriptKind.JS);
 function find(predicate) {
