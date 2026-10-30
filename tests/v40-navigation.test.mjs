@@ -6,6 +6,38 @@ import { JSDOM } from "jsdom";
 import { readFile } from "node:fs/promises";
 import vm from "node:vm";
 
+test("current E.V.E. treats inherited object names as unknown and still answers legitimate commands", async () => {
+  const { V40Page } = await import("../src/v40/page.jsx");
+  const receiver = {
+    state: { eveLog: [], eveInput: "" },
+    setState(update) {
+      Object.assign(this.state, typeof update === "function" ? update(this.state) : update);
+    },
+  };
+  for (const command of ["constructor", "__proto__", "valueOf", "__defineGetter__"]) {
+    assert.doesNotThrow(() => V40Page.prototype.eve.call(receiver, command));
+    assert.ok(receiver.state.eveLog.some(([kind, text]) => kind === "er" && text.includes(command)));
+  }
+  V40Page.prototype.eve.call(receiver, "fleet");
+  assert.ok(receiver.state.eveLog.some(([kind, text]) => kind === "ok" && text.includes("containers")));
+  V40Page.prototype.eve.call(receiver, "clear");
+  assert.deepEqual(receiver.state.eveLog, []);
+});
+
+test("fragment destinations reveal only their enclosing disclosures, including encoded IDs", async () => {
+  const { revealHashTarget } = await import("../src/v40/navigation.js");
+  const doc = new JSDOM(
+    '<details id="other"><summary>Other</summary></details><details id="outer"><summary>Films</summary><details id="inner"><summary>Exercise</summary><div id="privacy-test"></div></details></details>',
+  ).window.document;
+  assert.equal(typeof revealHashTarget, "function");
+  assert.equal(revealHashTarget(doc, "#privacy%2Dtest"), doc.getElementById("privacy-test"));
+  assert.equal(doc.getElementById("outer").open, true);
+  assert.equal(doc.getElementById("inner").open, true);
+  assert.equal(doc.getElementById("other").open, false);
+  assert.equal(revealHashTarget(doc, "#%broken"), null);
+  assert.equal(revealHashTarget(doc, "#film=constructor"), null);
+});
+
 test("current experience bookmarks never redirect to V39 before V40 can open them", async () => {
   const script = await readFile(new URL("../public/v40-entry.js", import.meta.url), "utf8");
   for (const hash of ["#flight=board", "#film=intro", "#signature", "#lensing", "#build=briefing"]) {

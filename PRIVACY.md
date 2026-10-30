@@ -36,7 +36,7 @@ The Sovereign uses YouTube's privacy enhanced player at `youtube-nocookie.com`. 
 
 ## Interactive scenes and downloads
 
-The homepage stores your manual motion preference in this browser under `cashio.helios.motion`. This preference is not transmitted to the site operator. Your device's reduced-motion setting takes priority. If browser storage is unavailable, the motion control still works for the current visit.
+The current homepage and interactive rooms store your manual motion preference in this browser under `cashio-v40-motion`. The preserved Helios edition uses `cashio.helios.motion`. These preferences are not transmitted to the site operator. Your device's reduced-motion setting takes priority. If browser storage is unavailable, the motion control still works for the current visit.
 
 The flight, mission outcomes, and public studies run in your browser with illustrative sample data. They do not send AI requests or connect to the private infrastructure described in the portfolio. Saving a mission card creates an image in your browser and downloads it to your device; the site does not upload that image. A shared scene link contains the selected demonstration settings. Observatory links also preserve lighting, atmosphere and camera framing in the fragment after `#`; the recipient opens a paused scene. No screenshot or scene image is uploaded when creating that link.
 

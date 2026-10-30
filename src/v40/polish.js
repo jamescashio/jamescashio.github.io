@@ -35,13 +35,50 @@
   }
   mq.addEventListener("change", (e) => motion(e.matches ? "off" : preference || "on", false));
   document.addEventListener("visibilitychange", () => (root.dataset.background = String(document.hidden)));
+  const readyVideos = new WeakSet();
+  const videoObserver =
+    typeof IntersectionObserver === "function"
+      ? new IntersectionObserver(
+          (entries) => {
+            for (const { target, isIntersecting } of entries) {
+              if (!isIntersecting || target.closest("details:not([open])")) continue;
+              readyVideos.add(target);
+              videoObserver.unobserve(target);
+              bind(target);
+            }
+          },
+          { rootMargin: "250px 0px" },
+        )
+      : null;
   // The export stores bindings in attributes. Wait for resolved values before
   // assigning src/poster; this also prevents requests for literal {{ expressions }}.
   const bind = (el) => {
     if (el.nodeType !== 1) return;
+    if (el.tagName === "VIDEO") {
+      if (el.closest("details:not([open])")) return;
+      if (videoObserver && el.id !== "cinema-video" && !readyVideos.has(el)) {
+        videoObserver.observe(el);
+        return;
+      }
+    }
     for (const attr of ["src", "poster"]) {
       const raw = el.getAttribute("data-bound-" + attr);
-      const val = window.cashioAsset ? window.cashioAsset(raw) : raw;
+      let val = window.cashioAsset ? window.cashioAsset(raw) : raw;
+      if (attr === "poster" && el.dataset.v === "hover") {
+        const image = el.parentElement?.querySelector("img[srcset]");
+        if (image) {
+          val = image.currentSrc || image.srcset.split(",")[0].trim().split(/\s+/)[0];
+          if (!image.currentSrc) {
+            image.addEventListener(
+              "load",
+              () => {
+                if (el.isConnected && image.currentSrc) el.poster = image.currentSrc;
+              },
+              { once: true },
+            );
+          }
+        }
+      }
       if (val && !val.includes("{{") && val !== el.getAttribute(attr)) {
         if (el.tagName === "VIDEO") {
           el.muted = true;
@@ -65,6 +102,16 @@
     attributes: true,
     attributeFilter: ["data-bound-src", "data-bound-poster"],
   });
+  document.addEventListener(
+    "toggle",
+    (event) => {
+      if (event.target.tagName !== "DETAILS") return;
+      if (event.target.open) bind(event.target);
+      else event.target.querySelectorAll("video").forEach((video) => video.pause());
+      document.dispatchEvent(new Event("cashio-media"));
+    },
+    true,
+  );
 
   let panel,
     opener,

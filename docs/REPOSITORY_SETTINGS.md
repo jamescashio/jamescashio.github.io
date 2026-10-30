@@ -8,7 +8,7 @@ Use these values under **About → Edit repository details**:
 
 - **Description:** `Doug Cashio’s public sovereign AI and cybersecurity portfolio — ZeusApollo, multi-model orchestration, autonomous operations, and AI readiness.`
 - **Website:** `https://cashio.us`
-- **Topics:** `artificial-intelligence`, `cybersecurity`, `homelab`, `llm`, `proxmox`, `sovereign-ai`, `ai-agents`, `automation`, `github-pages`, `portfolio`
+- **Topics:** `artificial-intelligence`, `cybersecurity`, `homelab`, `llm`, `sovereign-ai`, `ai-agents`, `automation`, `github-pages`, `portfolio`
 
 ## Main branch protection
 

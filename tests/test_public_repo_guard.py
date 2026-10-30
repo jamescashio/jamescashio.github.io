@@ -92,6 +92,32 @@ class PublicRepoGuardTests(unittest.TestCase):
         self.assertNotIn(".superpowers/local-report.md", scanned)
         self.assertIn("private network address", public_repo_guard.scan_file(leak, root=self.root))
 
+    def test_maintained_source_types_are_scanned_for_disclosures(self) -> None:
+        paths = []
+        for suffix in ("ts", "tsx", "jsx", "mts", "jsonc", "cjs", "cts"):
+            paths.append(self._write(f"src/example.{suffix}", f"host: {PRIVATE_ADDRESS}\n"))
+        self._git("add", "src/example.ts", "src/example.jsx", "src/example.jsonc")
+        scanned = set(public_repo_guard.iter_files(root=self.root))
+        self.assertTrue(set(paths).issubset(scanned), "tracked and untracked maintained sources must be inspected")
+        for path in paths:
+            with self.subTest(path=path.name):
+                self.assertIn("private network address", public_repo_guard.scan_file(path, root=self.root))
+
+    def test_markdown_withholds_private_operational_details_without_losing_dated_aggregates(self) -> None:
+        unsafe = (
+            "Historical hypervisor: Proxmox `9.2.11`",
+            "August probe: Zeus 12/13; Apollo 6/6",
+            "September probe: Zeus 14, Apollo 5",
+            "Routing inventory: thirty-six private catalog entries",
+            "Routing inventory: 36 private model catalog entries",
+        )
+        for index, text in enumerate(unsafe):
+            path = self._write(f".github/record-{index}.md", text)
+            with self.subTest(text=text):
+                self.assertIn("private operational metadata", public_repo_guard.scan_file(path, root=self.root))
+        safe = self._write("docs/dated-record.md", "Observed 2026-08-28; 18/19 guests; two hosts; ten public lanes. Private catalog count withheld.")
+        self.assertEqual(public_repo_guard.scan_file(safe, root=self.root), [])
+
     def test_git_enumeration_failure_is_fail_closed(self) -> None:
         outside_git = self.root / "not-a-repository"
         outside_git.mkdir()

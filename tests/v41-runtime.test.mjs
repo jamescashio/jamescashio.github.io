@@ -190,6 +190,7 @@ test("Data saving and reduced motion keep posters still, while manual replay sel
     await page.waitForTimeout(2600);
     await expect(page.locator("#top video")).toHaveCount(0);
     await expect(page.locator("#top .hero-live-poster")).toBeVisible();
+    await page.locator(".studio-collection > summary").click();
     await page.locator("#feature-video").scrollIntoViewIfNeeded();
     await page.waitForTimeout(300);
     assert.equal(await page.locator("video").evaluateAll((v) => v.every((v) => v.paused)), true);
@@ -205,6 +206,7 @@ test("Data saving and reduced motion keep posters still, while manual replay sel
 test("Only the visible film plays; leaving its halfway boundary or switching motion off pauses playback", async (t) => {
   const page = await visit(t);
   await page.goto(url + "#films");
+  await page.locator(".studio-collection > summary").click();
   const feature = page.locator("#feature-video");
   await feature.scrollIntoViewIfNeeded();
   await expect.poll(() => feature.evaluate((v) => v.paused)).toBe(false);
@@ -224,7 +226,9 @@ test("Only the visible film plays; leaving its halfway boundary or switching mot
   await page.getByRole("button", { name: "Pause motion", exact: true }).first().click();
   assert.equal(await page.locator("video").evaluateAll((v) => v.every((v) => v.paused)), true);
   assert.equal(
-    await page.locator("video").evaluateAll((v) => v.every((v) => v.preload === "none" && Boolean(v.poster))),
+    await page
+      .locator("video")
+      .evaluateAll((v) => v.every((v) => v.preload === "none" && (!v.getAttribute("src") || Boolean(v.poster)))),
     true,
   );
 });

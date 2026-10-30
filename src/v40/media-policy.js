@@ -26,6 +26,7 @@ export function installMediaCoordinator() {
   };
   const allowed = (video) => {
     if (!video.isConnected || document.hidden || video.dataset.finished === "true") return false;
+    if (video.closest("details:not([open])")) return false;
     const cinema = document.querySelector("#cinema-video");
     if (cinema) return video === cinema;
     if (document.querySelector("#ai-worm iframe")) return false;

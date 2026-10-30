@@ -8,6 +8,11 @@ on:
       - public/brand/celestial-420.webp
       - public/brand/celestial-840.webp
       - cloudflare/storm-worker.jsonc
+      - scripts/secure-storm.mjs
+      - scripts/public_repo_guard.py
+      - tests/storm-security.test.mjs
+      - package.json
+      - package-lock.json
       - .github/workflows/storm-worker.yml
   workflow_dispatch:
 permissions:
@@ -28,15 +33,20 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
+      - name: Check storm rendering and public content
+        run: |
+          npm ci --ignore-scripts
+          node --test tests/storm-security.test.mjs
+          python scripts/public_repo_guard.py
       - name: Assemble the static asset bundle
         run: |
           rm -rf dist-storm
           mkdir -p dist-storm/storm dist-storm/brand
-          cp public/storm/index.html dist-storm/storm/index.html
-          cp public/storm/index.html dist-storm/index.html
+          node scripts/secure-storm.mjs public/storm/index.html dist-storm/storm/index.html
+          cp dist-storm/storm/index.html dist-storm/index.html
           cp public/favicon.svg dist-storm/favicon.svg
           cp public/brand/celestial-420.webp public/brand/celestial-840.webp dist-storm/brand/
-          cp public/storm/index.html dist-storm/404.html
+          cp dist-storm/storm/index.html dist-storm/404.html
           find dist-storm -type f | sort
       - name: Require Cloudflare credentials
         env:

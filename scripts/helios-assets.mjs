@@ -14,14 +14,19 @@ export function heliosAssetDelivery() {
       const bytes = readFileSync(path.join(root, filename));
       const sha256 = createHash("sha256").update(bytes).digest("hex");
       const ext = path.extname(filename);
-      const versioned = `v38/immutable/${path.basename(filename, ext)}-${sha256.slice(0, 16)}${ext}`;
+      const edition = filename.startsWith("v40/") ? "v40" : "v38";
+      const versioned = `${edition}/immutable/${path.basename(filename, ext)}-${sha256.slice(0, 16)}${ext}`;
       assets.set(filename, { versioned, sha256, bytes });
     }
     return "/" + assets.get(filename).versioned;
   }
   return {
     renderBuiltUrl(filename, { type }) {
-      if (type !== "public" || !/^v38\/(assets|fonts)\/[\w-]+\.(webp|jpg|woff2)$/.test(filename)) return;
+      if (
+        type !== "public" ||
+        !/^(?:v38\/(assets|fonts)\/[\w-]+\.(webp|jpg|woff2)|v40\/assets\/[\w-]+\.woff2)$/.test(filename)
+      )
+        return;
       return versionAsset(filename);
     },
     plugin: {
@@ -44,13 +49,16 @@ export function heliosAssetDelivery() {
         };
       },
       async writeBundle() {
-        await mkdir(path.join(output, "v38/immutable"), { recursive: true });
-        const manifest = {};
+        const manifests = { v38: {}, v40: {} };
         for (const [source, { versioned, sha256, bytes }] of assets) {
+          await mkdir(path.dirname(path.join(output, versioned)), { recursive: true });
           await writeFile(path.join(output, versioned), bytes);
-          manifest["/" + source] = { url: "/" + versioned, sha256, bytes: bytes.length };
+          manifests[versioned.split("/")[0]]["/" + source] = { url: "/" + versioned, sha256, bytes: bytes.length };
         }
-        await writeFile(path.join(output, "v38/asset-versions.json"), JSON.stringify(manifest, null, 2) + "\n");
+        for (const [edition, manifest] of Object.entries(manifests)) {
+          await mkdir(path.join(output, edition), { recursive: true });
+          await writeFile(path.join(output, edition, "asset-versions.json"), JSON.stringify(manifest, null, 2) + "\n");
+        }
       },
     },
   };

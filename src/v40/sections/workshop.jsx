@@ -22,7 +22,12 @@ export function WorkshopSection({ v }) {
       { className: "workshop-heading" },
       h("span", { className: "v41-c904563b29" }, h("span", { className: "v41-3bdbfd324b" }, "02"), "From the workshop"),
       h("h2", { className: "v41-ebe245028e" }, "Built at home. Open to inspect."),
-      h("p", null, "Two things to take a closer look at: a dated result, and a tool to make your own."),
+      h(
+        "p",
+        null,
+        "Principal Solutions Consultant by day. More than twenty years in cybersecurity. Curious builder after hours.",
+      ),
+      h("a", { className: "visitor-link workshop-intro-link", href: "#operator" }, "Meet Doug →"),
     ),
     h(
       "div",
@@ -33,18 +38,30 @@ export function WorkshopSection({ v }) {
         h("span", { className: "visitor-kicker" }, "A backup with a receipt"),
         h("h3", null, "A backup needs evidence."),
         h(
+          "dl",
+          { className: "workshop-case" },
+          h(
+            "div",
+            null,
+            h("dt", null, "The question"),
+            h("dd", null, "Can the latest backup snapshots pass an integrity check?"),
+          ),
+          h(
+            "div",
+            null,
+            h("dt", null, "My approach"),
+            h("dd", null, "Check the latest snapshot per guest. Publish the date and the limits with the result."),
+          ),
+        ),
+        h(
           "p",
           { className: "workshop-result" },
           h("strong", null, String(v.snapshot.backup.latestVerified)),
           h("span", null, "latest reported snapshots passed their integrity check"),
         ),
         h("p", { className: "workshop-date" }, "Observed " + v.observedDate),
-        h(
-          "p",
-          null,
-          "Integrity is one check. A recovery rehearsal is a separate test; no new rehearsal was performed.",
-        ),
-        h("a", { className: "visitor-link", href: "#evidence" }, "Read the repair and receipt →"),
+        h("p", null, "No new restore rehearsal was performed; full recovery remains unproven."),
+        h("a", { className: "visitor-link", href: "#evidence" }, "Read the dated receipt →"),
       ),
       h(
         "article",
@@ -54,14 +71,7 @@ export function WorkshopSection({ v }) {
         h(
           "p",
           null,
-          "Choose what matters. Keep the sources and the unknowns attached. Take the decision brief with you.",
-        ),
-        h(
-          "ul",
-          { className: "brief-outline" },
-          h("li", null, "What we observed", h("span", null, "A source and a date.")),
-          h("li", null, "What we don’t know", h("span", null, "The unknown stays visible.")),
-          h("li", null, "Who decides", h("span", null, "A person keeps the final say.")),
+          "Create a brief with sources, dates, visible unknowns and a human decision. Keep it here or take a copy.",
         ),
         h(
           "div",
@@ -82,11 +92,7 @@ export function WorkshopSection({ v }) {
     h(
       "div",
       { className: "workshop-boundary" },
-      h(
-        "p",
-        null,
-        "The experiments run in your browser. Nothing reaches my servers. Lab figures come from a dated observation.",
-      ),
+      h("p", null, "Experiment inputs stay in your browser. Lab figures come from a dated observation."),
       h(
         "a",
         { className: "visitor-link", href: "https://github.com/jamescashio/jamescashio.github.io" },

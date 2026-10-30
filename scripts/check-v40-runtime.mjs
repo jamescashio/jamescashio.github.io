@@ -27,7 +27,13 @@ try {
   }
   const test = spawn(
     process.execPath,
-    ["--test", "--test-concurrency=1", "tests/v40-runtime.test.mjs", "tests/v41-runtime.test.mjs"],
+    [
+      "--test",
+      "--test-concurrency=1",
+      "tests/v40-runtime.test.mjs",
+      "tests/v41-runtime.test.mjs",
+      "tests/preview-runtime.test.mjs",
+    ],
     {
       env: { ...process.env, V40_URL: url },
       stdio: "inherit",

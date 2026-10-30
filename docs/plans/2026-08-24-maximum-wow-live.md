@@ -46,8 +46,8 @@ Acceptance criteria:
 4. The four-beat experience must use the Task 1 plan and finish at contact at approximately 30 seconds. It may briefly stage E.V.E. within the fourth beat before completing at contact. It must not call the audio arm path.
 5. Add a focused `BlackBoxReceipt` component to the final contact deck. Show exactly these three dated claims, formatted consistently with the site:
    - `08-21-2026 · 19/19 PUBLISHED CONTAINERS RUNNING AT PROBE`
-   - `08-21-2026 · 2 PROXMOX HOSTS QUORATE`
-   - `08-21-2026 · 10 PUBLIC LANES · 36 PRIVATE CATALOG`
+   - `08-21-2026 · 2 HOSTS QUORATE · HYPERVISOR IDENTITY WITHHELD`
+   - `08-21-2026 · 10 PUBLIC LANES · PRIVATE CATALOG WITHHELD`
 6. The receipt control must use the current canonical deck/article URL. Prefer the Web Share API only after a deliberate click and fall back to copying. Announce success/failure in a polite live region; do not make a network call.
 7. Run focused RED/GREEN evidence and the full suite, then commit.
 

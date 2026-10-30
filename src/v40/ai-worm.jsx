@@ -42,7 +42,12 @@ export function AiWormFilm() {
 
   return h(
     "article",
-    { id: "ai-worm", className: "ai-worm-film", "aria-labelledby": "ai-worm-title", ref: card },
+    {
+      id: "ai-worm",
+      className: "ai-worm-film" + (playing ? " is-playing" : ""),
+      "aria-labelledby": "ai-worm-title",
+      ref: card,
+    },
     h(
       "div",
       { className: "ai-worm-media" },
@@ -69,7 +74,7 @@ export function AiWormFilm() {
               src: "/assets/sovereign-v9-poster.webp",
               srcSet:
                 "/v40/thumbs/sovereign-v9-poster-320.webp 320w, /v40/thumbs/sovereign-v9-poster-640.webp 640w, /v40/thumbs/sovereign-v9-poster-1280.webp 1280w",
-              sizes: "(max-width: 600px) 90vw, (max-width: 1179px) 65vw, 760px",
+              sizes: "(max-width: 600px) 96px, (max-width: 900px) 90vw, (max-width: 1179px) 65vw, 760px",
               alt: "Doug with blue eyes and a desert stillsuit in The Sovereign",
               width: 1280,
               height: 720,
@@ -87,11 +92,6 @@ export function AiWormFilm() {
       h("h3", { id: "ai-worm-title" }, "The Sovereign"),
       h("p", { className: "ai-worm-tagline" }, "One man. Several providers. No remaining hobbies."),
       h(
-        "p",
-        { className: "ai-worm-description" },
-        "My AI journey since 2022, reimagined as an attempt to ride a very large worm. The worm is AI. The sand is apparently a dependency.",
-      ),
-      h(
         "div",
         { className: "ai-worm-actions" },
         h("a", { href: videoUrl, target: "_blank", rel: "noopener noreferrer" }, "Watch on YouTube ↗"),
@@ -102,12 +102,22 @@ export function AiWormFilm() {
       h(
         "p",
         { id: "ai-worm-playback-note", className: "ai-worm-note" },
-        "YouTube loads after Play. Starts muted; use the player to turn sound on. Playback stops when you leave this film.",
+        "YouTube loads after Play. Starts muted; stops when you leave this film.",
       ),
       h(
-        "p",
-        { className: "ai-worm-credit" },
-        "AI assisted likeness and original meme captions. Scene and soundtrack: Dune: Part Two. Unofficial fan parody.",
+        "details",
+        { className: "ai-worm-about" },
+        h("summary", null, "About this film and credits"),
+        h(
+          "p",
+          { className: "ai-worm-description" },
+          "My AI journey since 2022, reimagined as an attempt to ride a very large worm. The worm is AI. The sand is apparently a dependency.",
+        ),
+        h(
+          "p",
+          { className: "ai-worm-credit" },
+          "AI assisted likeness and original meme captions. Scene and soundtrack: Dune: Part Two. Unofficial fan parody.",
+        ),
       ),
     ),
   );
