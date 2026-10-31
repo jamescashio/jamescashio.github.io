@@ -305,14 +305,27 @@ export function EvidenceSection({ v }) {
       ),
       " ",
       h(
-        "div",
+        "details",
         {
           key: 1718,
-          className: classFor(
-            ["grid-column:", v.evRightCol ?? "", ";min-width:0;display:flex;flex-direction:column;gap:10px"].join(""),
-          ),
+          className:
+            "evidence-console " +
+            classFor(
+              ["grid-column:", v.evRightCol ?? "", ";min-width:0;display:flex;flex-direction:column;gap:10px"].join(""),
+            ),
         },
         " ",
+        h(
+          "summary",
+          null,
+          h(
+            "span",
+            null,
+            "Ask the evidence console",
+            h("small", null, "E.V.E. explains the dated record and its limits."),
+          ),
+          h("span", { "aria-hidden": "true" }, "+"),
+        ),
         h(
           designSystem.Terminal,
           { key: 1720, title: "E.V.E. · evaluation verification engine", hint: "DATED", bodyHeight: v.eveHeight },

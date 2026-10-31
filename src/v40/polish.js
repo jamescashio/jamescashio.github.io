@@ -1,4 +1,5 @@
 /* Progressive improvements around the original Claude Design component. */
+import { destinations } from "./destinations.js";
 (() => {
   const root = document.documentElement;
   const mq = matchMedia("(prefers-reduced-motion: reduce)");
@@ -118,18 +119,7 @@
     cinema,
     cinemaOpener,
     inerted = [];
-  const chapters = [
-    ["top", "Orbit", "The machines can think. You still decide."],
-    ["workshop", "Inside the workshop", "Real work, backups and a decision brief"],
-    ["rooms", "Explore four worlds", "Starship, principles, studios and flight heritage"],
-    ["films", "Screening room", "Fifteen films and the orbital arrival"],
-    ["work", "Try a decision", "Privacy, human judgment and the routing law"],
-    ["studies", "Seven experiments", "Take the controls"],
-    ["universe", "Meet the machines", "HERMES, Zeus, Apollo and a request trace"],
-    ["evidence", "Dated evidence + E.V.E.", "Records, answers and the occasional towel"],
-    ["operator", "Meet Doug", "The human in command"],
-    ["contact", "Open a channel", "Don’t panic. Say hello."],
-  ];
+  const chapters = destinations;
   function openMission(trigger) {
     if (!panel || cinema || document.querySelector("#helios-flight, #helios-studio, .v40-scene-status")) return;
     opener = trigger || document.activeElement;

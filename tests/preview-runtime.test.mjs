@@ -33,11 +33,15 @@ test("the compact phone journey keeps projects and professional context visible"
   const page = await visit(t);
   await page.goto(url);
   await page.evaluate(() => document.fonts.ready);
-  await expect(page.locator(".privacy-exercise")).toBeVisible();
+  await expect(page.locator("#decision-story > summary")).toBeVisible();
+  await expect(page.locator("#decision-story")).not.toHaveAttribute("open", "");
   await expect(page.locator(".studio-collection")).not.toHaveAttribute("open", "");
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 390);
   const pageHeight = await page.evaluate(() => document.documentElement.scrollHeight);
-  assert.ok(pageHeight < 14500, `the ${pageHeight}px journey must be shorter than the 16,568px baseline`);
+  assert.ok(
+    pageHeight < 11500,
+    `the ${pageHeight}px journey must be at least 23% shorter than the 15,009px reviewed baseline`,
+  );
   await expect(page.locator("#workshop")).toContainText("Principal Solutions Consultant");
   await expect(page.locator("#workshop")).toContainText("No new restore rehearsal");
   await expect(page.locator("#ai-worm-title")).toHaveText("The Sovereign");
@@ -103,4 +107,50 @@ test("closing the short-film browser stops its playback owner", async (t) => {
   await collection.locator("summary").first().click();
   await expect.poll(() => video.evaluate((node) => node.paused)).toBe(true);
   await expect(collection).not.toHaveAttribute("open", "");
+});
+
+test("the completed brief preview, download and editable starting point agree with the dated record", async (t) => {
+  const page = await visit(t);
+  await page.goto(url + "#workshop");
+  const record = await (await page.request.get(new URL("/status.json", url).href)).json();
+  const example = page.getByRole("figure", { name: "Example decision brief", exact: true });
+  await expect(example).toContainText(
+    `${record.containers.running} containers and ${record.virtualMachines.running} virtual machine on ${record.cluster.hostsOnline} hosts.`,
+  );
+  await expect(example).toContainText(record.verifiedLong);
+  await expect(example).toContainText("not a new check");
+  const download = page.getByRole("link", { name: "Download an example ↓", exact: true });
+  const response = await page.request.get(new URL(await download.getAttribute("href"), url).href);
+  assert.equal(response.status(), 200);
+  const text = await response.text();
+  assert.ok(text.includes(record.verifiedLong));
+  assert.ok(text.includes("https://cashio.us/status.json"));
+  assert.ok(text.includes("Full system recovery and current AI routing were not tested."));
+  await page.getByRole("link", { name: "Make your brief →", exact: true }).click();
+  for (const field of ["observed", "source", "unknown", "owner"]) {
+    const value = await page.locator(`[data-field="${field}"]`).inputValue();
+    assert.ok(value.length > 0 && text.includes(value), `${field} matches the downloadable example`);
+  }
+});
+
+test("the evidence console remains discoverable, keyboard operated and directly bookmarkable", async (t) => {
+  const page = await visit(t);
+  await page.goto(url + "#evidence");
+  const console = page.locator(".evidence-console");
+  const summary = console.locator("summary").first();
+  await expect(console).not.toHaveAttribute("open", "");
+  await summary.focus();
+  await page.keyboard.press("Enter");
+  await console.getByRole("button", { name: "fleet", exact: true }).click();
+  await expect(page.locator("#eve-out")).toContainText("counts describe running guests, not application health");
+  await summary.focus();
+  await page.keyboard.press("Enter");
+  await expect(console).not.toHaveAttribute("open", "");
+  await expect(summary).toBeFocused();
+  await page.goto(url + "#eve-in");
+  await expect(console).toHaveAttribute("open", "");
+  await expect(page.locator("#eve-in")).toBeInViewport();
+  await page.reload();
+  await expect(console).toHaveAttribute("open", "");
+  await expect(page.locator("#eve-in")).toBeInViewport();
 });

@@ -1,4 +1,5 @@
 import React from "react";
+import { exampleBrief } from "../decision-brief.js";
 const h = React.createElement;
 
 const glossary = [
@@ -74,6 +75,25 @@ export function WorkshopSection({ v }) {
           "Create a brief with sources, dates, visible unknowns and a human decision. Keep it here or take a copy.",
         ),
         h(
+          "figure",
+          { className: "brief-preview", "aria-label": "Example decision brief" },
+          h("figcaption", null, h("span", null, "Decision brief"), h("span", null, "Example")),
+          h(
+            "dl",
+            null,
+            h("div", null, h("dt", null, "Observed"), h("dd", null, exampleBrief.observed)),
+            h(
+              "div",
+              null,
+              h("dt", null, "Source"),
+              h("dd", null, h("a", { href: "/status.json" }, "Published record"), " · ", v.observedDate),
+            ),
+            h("div", null, h("dt", null, "Unknown"), h("dd", null, exampleBrief.unknown)),
+            h("div", null, h("dt", null, "Decision"), h("dd", null, exampleBrief.owner)),
+          ),
+          h("p", null, "An example from the published record, not a new check."),
+        ),
+        h(
           "div",
           { className: "visitor-links" },
           h("a", { className: "visitor-link", href: "#experiment=briefing" }, "Make your brief →"),
@@ -81,7 +101,7 @@ export function WorkshopSection({ v }) {
             "a",
             {
               className: "visitor-link",
-              href: "/artifacts/decision-brief.txt",
+              href: "/artifacts/decision-brief-example.txt",
               download: "cashio-decision-brief-example.txt",
             },
             "Download an example ↓",
