@@ -2,6 +2,20 @@ import { isZenithFilm } from "../helios/zenith-routes.js";
 
 const rooms = new Set(["starship", "principles", "studios", "heritage"]);
 const experiments = new Set(["hermes", "cascade", "exposure", "briefing", "dashboards", "signal", "graphify"]);
+
+export function revealHashTarget(doc, hash) {
+  let id;
+  try {
+    id = decodeURIComponent(hash.slice(1));
+  } catch {
+    return null;
+  }
+  const target = doc.getElementById(id);
+  for (let node = target; node; node = node.parentElement) {
+    if (node.tagName === "DETAILS") node.open = true;
+  }
+  return target;
+}
 export const sceneKind = (hash) =>
   hash === "#film=intro" || hash === "#film=trailer"
     ? "reel"
@@ -87,6 +101,12 @@ export function setupV40Navigation() {
     }
     const kind = sceneKind(hash);
     if (!kind) {
+      const target = revealHashTarget(document, hash);
+      if (target?.closest("details")) {
+        requestAnimationFrame(() => {
+          if (location.hash === hash && !activeHash) target.scrollIntoView({ block: "start", behavior: "instant" });
+        });
+      }
       const requested = requestedHash === hash;
       requestedHash = null;
       if (activeHash) {

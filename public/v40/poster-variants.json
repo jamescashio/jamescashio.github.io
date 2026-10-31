@@ -1,0 +1,92 @@
+{
+  "/assets/hero/cashio-trailer-poster.webp": [
+    {
+      "url": "/v40/posters/cashio-trailer-poster-320-03211a533579.webp",
+      "width": 320,
+      "height": 180,
+      "bytes": 7504,
+      "sha256": "03211a5335790d54512fe1628be6c9b4ef825bdf088e5c4f595e2313813a2528"
+    },
+    {
+      "url": "/v40/posters/cashio-trailer-poster-640-417bd0f1e6e8.webp",
+      "width": 640,
+      "height": 360,
+      "bytes": 19262,
+      "sha256": "417bd0f1e6e8daca0c7369586eadb355da456d1877924c06eb8cd249a0f6ec9f"
+    },
+    {
+      "url": "/v40/posters/cashio-trailer-poster-960-0dc12884eb9c.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 33128,
+      "sha256": "0dc12884eb9cd2b5298924cafaa662cb0c792d0dc35b1fb6b9a221847171c3d4"
+    },
+    {
+      "url": "/v40/posters/cashio-trailer-poster-1280-0926f58aed40.webp",
+      "width": 1280,
+      "height": 720,
+      "bytes": 49388,
+      "sha256": "0926f58aed40d9b34325fd330aea624e9dd26ee3026549247e84e7ed4d7d1eb9"
+    }
+  ],
+  "/v40/assets/zenith-celestial-signature-poster.webp": [
+    {
+      "url": "/v40/posters/zenith-celestial-signature-poster-320-6a52a26b1d00.webp",
+      "width": 320,
+      "height": 180,
+      "bytes": 5690,
+      "sha256": "6a52a26b1d00b0b9ddfb0c5d96c767c159ca1a8625a418897d13a710171cee9d"
+    },
+    {
+      "url": "/v40/posters/zenith-celestial-signature-poster-640-9e6a05c2667f.webp",
+      "width": 640,
+      "height": 360,
+      "bytes": 16238,
+      "sha256": "9e6a05c2667f2fc5a682d3da082d0cf840a1e311f66a675f7626b4bb35bc6175"
+    },
+    {
+      "url": "/v40/posters/zenith-celestial-signature-poster-960-eb072c0eb1c9.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 28340,
+      "sha256": "eb072c0eb1c96dc7d967519d3388a54e192add4b73729e60dcb8c971f0bf7884"
+    },
+    {
+      "url": "/v40/posters/zenith-celestial-signature-poster-1280-03e346bda97f.webp",
+      "width": 1280,
+      "height": 720,
+      "bytes": 39736,
+      "sha256": "03e346bda97fbe4ac583291ea2471227b1c9012c8df9a8492da214e9d35da821"
+    }
+  ],
+  "/v40/assets/zenith-starship-flyby-poster.webp": [
+    {
+      "url": "/v40/posters/zenith-starship-flyby-poster-320-cb2b1898d62c.webp",
+      "width": 320,
+      "height": 180,
+      "bytes": 3992,
+      "sha256": "cb2b1898d62c13f94b94c0caf9ced8017a6e8112c9d71849e336a97d4dd01283"
+    },
+    {
+      "url": "/v40/posters/zenith-starship-flyby-poster-640-2c82cbdf0061.webp",
+      "width": 640,
+      "height": 360,
+      "bytes": 9760,
+      "sha256": "2c82cbdf0061388428a8305c88e4682e3791fd935ab2370c282f03ee95e1a2db"
+    },
+    {
+      "url": "/v40/posters/zenith-starship-flyby-poster-960-894da3c76db9.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 15552,
+      "sha256": "894da3c76db9d730bf5ea2a2b8c416bc5bb156484703e786e096d0203a311964"
+    },
+    {
+      "url": "/v40/posters/zenith-starship-flyby-poster-1280-1dc45ea466fe.webp",
+      "width": 1280,
+      "height": 720,
+      "bytes": 22420,
+      "sha256": "1dc45ea466fef9cb94919c35fdec096a7265f9ed4121cee58ddc939effe84cf3"
+    }
+  ]
+}

@@ -23,6 +23,7 @@ IO_REPARSE_TAG_NAME_SURROGATE = getattr(stat, "IO_REPARSE_TAG_NAME_SURROGATE", 0
 TEXT_SUFFIXES = {
     ".html", ".htm", ".js", ".mjs", ".css", ".json", ".md", ".txt",
     ".py", ".sh", ".yml", ".yaml", ".xml", ".svg", ".toml", ".ini",
+    ".ts", ".tsx", ".jsx", ".mts", ".cts", ".cjs", ".jsonc",
 }
 ALLOWED_EMAIL_DOMAINS = {"cashio.us", "users.noreply.github.com"}
 # Third-party libraries carry their own license banners, which sometimes include
@@ -44,6 +45,12 @@ PATTERNS = {
 BACKUP_NAME = re.compile(r"(?:backup|golden[_-]?path|cashio-us-v\d+|^v\d+\.html$)", re.IGNORECASE)
 EMAIL = re.compile(r"\b[A-Z0-9._%+-]+@([A-Z0-9.-]+\.[A-Z]{2,})\b", re.IGNORECASE)
 SENSITIVE_STATUS_KEYS = {"balance", "burn_rate", "load", "swap", "latency", "disk_pct", "storage_pct", "internal_ip"}
+PRIVATE_OPERATIONAL_CLAIMS = re.compile(
+    r"\bProxmox\s+`?\d+(?:\.\d+){1,2}\b"
+    r"|\b(?:Zeus|Apollo)\s*[:=]?\s*`?\d+(?:\s*/\s*\d+)?\b"
+    r"|\b(?:\d+|thirty[ -]six)\s+private\s+(?:model\s+)?catalog\b",
+    re.IGNORECASE,
+)
 
 
 class RepositoryEnumerationError(RuntimeError):
@@ -586,6 +593,9 @@ def scan_file(
 
 def scan_text(relative: Path, text: str) -> list[str]:
     findings: list[str] = []
+
+    if relative.suffix.lower() == ".md" and PRIVATE_OPERATIONAL_CLAIMS.search(text):
+        findings.append("private operational metadata")
 
     if relative.suffix.lower() in {".html", ".htm"} and BACKUP_NAME.search(relative.name):
         findings.append("historical or backup HTML should not be published")

@@ -215,7 +215,7 @@ Named for the starship in Douglas Adams’s _The Hitchhiker’s Guide to the Gal
 
 - Publish the V38 Helios homepage at `/v38/` as a standalone single file page: WebGL ignition ring, GSAP and Lenis motion, Bit the co-pilot, the seven study switchboard with the routing instrument, the system atlas with DSH beside HERMES, the starship request schematic, the flight heritage hangar, and E.V.E. with fleet, kernel, backups, atlas, dsh, hermes, routes, archive and cost.
 - Make `/v38/` the front door: a plain visit to the root moves there from the legacy route script. Fragments and queries keep the V37.17 experience at the root, so every 3D scene deep link and `/?v=37.17` still work.
-- Ship `public/v38/status.json`, the September 18, 2026 read only observation collected through the DeepSeek Harness: 20 LXC guests (Zeus 15, Apollo 5), 1 QEMU guest, Proxmox 9.2.20, quorate, routing withheld as unknown.
+- Ship `public/v38/status.json`, the September 18, 2026 read only observation collected through the DeepSeek Harness: 20 LXC guests (per-host counts withheld), 1 QEMU guest, a private hypervisor (identity and version withheld), quorate, routing withheld as unknown.
 - Vendor gsap 3.15.0, lenis 1.3.25 and three 0.185.1 under `public/v38/vendor/` for the same origin script policy; the public repository guard exempts those files from the email domain rule so their license banners stay intact. Commit `d64249a` (#130).
 
 ## V37.17 — Continuum
@@ -409,8 +409,8 @@ Release name: "MACH ONE." This preservation pass makes the public truth easier t
 
 ### Changed
 
-- Replaced undated health language with a read-only, dated 28 August aggregate export: 18/19 guests running, Zeus 12/13, Apollo 6/6, and two online quorate hosts on Proxmox 9.2.11.
-- Kept routing as a separate 21 August inventory: ten public lanes and thirty-six private catalog entries count different objects.
+- Replaced undated health language with a read-only, dated 28 August aggregate export: 18/19 guests running, per-host counts withheld, and two online quorate hosts on a private hypervisor (identity and version withheld).
+- Kept routing as a separate 21 August inventory: ten public lanes. The private catalog count remains withheld; the two inventories count different objects.
 - Reframed Executive mode around Route Control, Evidence Boundary, and Human Authority; labeled Build Proof and Cashio Operating Lessons.
 
 ### Boundaries
@@ -452,7 +452,7 @@ Release name: "MACH ONE." The public site moves to a Vite 6 + React 19 GitHub Pa
 - Made the corner airframe/Bit HUD compress when its full state would cover marked controls, and closed Hail with a concise human-command mission stamp.
 - Kept airframe audio off by default and explicit-selection-only, with intentional silence for real aircraft lacking a verified source and three original non-franchise transitions.
 - Updated the owner-confirmed multimodal and adversarial lane labels to Gemini 3.7 Flash and Grok 4.6; Sonar Pro remains the research lane.
-- Kept the 21 August 2026 snapshot at 19 of 19 containers, two Proxmox hosts quorate, ten public lanes, and thirty-six private catalog entries.
+- Kept the 21 August 2026 snapshot at 19 of 19 containers, two hosts quorate, ten public lanes; private catalog count withheld.
 - Kept GitHub Pages deployment in `.github/workflows/pages.yml` with Vite base `/`.
 
 ### Boundaries
@@ -462,7 +462,7 @@ Release name: "MACH ONE." The public site moves to a Vite 6 + React 19 GitHub Pa
 
 ## [v31] — 08-10-2026
 
-Release name: "The Grid." The front page was rebuilt around a Dyson-swarm viewscreen and reset to the owner-verified 08-10-2026 public architecture snapshot: 19 of 19 containers running, two Proxmox hosts online, cluster quorate, ten public capability lanes, and thirty-six private model catalog entries.
+Release name: "The Grid." The front page was rebuilt around a Dyson-swarm viewscreen and reset to the owner-verified 08-10-2026 public architecture snapshot: 19 of 19 containers running, two hosts online, cluster quorate, ten public capability lanes; private catalog count withheld.
 
 ### Added
 

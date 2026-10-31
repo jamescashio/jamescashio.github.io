@@ -67,14 +67,54 @@ http
         if (compressed) data = gzipSync(data);
         cache.set(key, data);
       }
-      response.writeHead(200, {
+      const headers = {
         "Content-Type": type,
         "Content-Length": data.length,
         "X-Robots-Tag": "noindex, nofollow, noarchive",
         "Cache-Control": "no-cache",
         Vary: "Accept-Encoding",
         ...(compressed ? { "Content-Encoding": "gzip" } : {}),
-      });
+      };
+      if (!compressed && /^(video|audio)\//.test(type)) {
+        headers["Accept-Ranges"] = "bytes";
+        if (request.headers.range && ["GET", "HEAD"].includes(request.method)) {
+          const match = /^bytes=(\d*)-(\d*)$/.exec(request.headers.range.trim());
+          let start = NaN;
+          let end = NaN;
+          if (match && (match[1] || match[2])) {
+            if (match[1]) {
+              start = Number(match[1]);
+              end = match[2] ? Number(match[2]) : data.length - 1;
+            } else {
+              const suffix = Number(match[2]);
+              if (Number.isSafeInteger(suffix) && suffix > 0) {
+                start = Math.max(0, data.length - suffix);
+                end = data.length - 1;
+              }
+            }
+          }
+          if (
+            !Number.isSafeInteger(start) ||
+            !Number.isSafeInteger(end) ||
+            start < 0 ||
+            start >= data.length ||
+            end < start
+          ) {
+            response.writeHead(416, { ...headers, "Content-Length": 0, "Content-Range": `bytes */${data.length}` });
+            response.end();
+            return;
+          }
+          end = Math.min(end, data.length - 1);
+          response.writeHead(206, {
+            ...headers,
+            "Content-Length": end - start + 1,
+            "Content-Range": `bytes ${start}-${end}/${data.length}`,
+          });
+          response.end(request.method === "HEAD" ? undefined : data.subarray(start, end + 1));
+          return;
+        }
+      }
+      response.writeHead(200, headers);
       response.end(request.method === "HEAD" ? undefined : data);
     } catch {
       response.writeHead(404, { "Content-Type": "text/plain" }).end("Not found");

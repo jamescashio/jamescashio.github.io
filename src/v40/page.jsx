@@ -8,6 +8,7 @@ import {
   fleetLine,
 } from "./evidence.js";
 import { installMediaCoordinator } from "./media-policy.js";
+import { posterForViewport } from "./poster-sources.js";
 import { frameDeltaSeconds, shouldRenderFrame } from "../lib/animation-timing.ts";
 import { CinemaReel, ReelText, reelPoster } from "./hero-reel.jsx";
 import { HeroSection } from "./sections/hero.jsx";
@@ -799,7 +800,7 @@ export class V40Page extends React.Component {
       "LORE · Zeus and Apollo keep the lights on. Hermes carries the messages. Nobody gets a throne.",
       "LORE · Fly it like a test pilot: know the envelope, then write down what the instruments actually said.",
     ];
-    let out = R[cmd];
+    let out = Object.hasOwn(R, cmd) ? R[cmd] : undefined;
     if (cmd === "surprise me" || cmd === "surprise") out = [["lore", lore[Math.floor(Math.random() * lore.length)]]];
     if (cmd === "clear") {
       this.setState({ eveLog: [], eveInput: "" });
@@ -1004,7 +1005,7 @@ export class V40Page extends React.Component {
         index: "01",
         name: "Starship lab",
         line: "Your ship. Your intelligence.",
-        desc: "Pick a mission, cut the cloud link and compare three designs on the same twelve requests.",
+        desc: "Trace twelve requests. Cut the cloud link. Compare three designs.",
         color: "var(--cyan)",
         href: "/rooms/starship/interactive/",
         img: this.res("public/v38/assets/room-starship.webp"),
@@ -1015,7 +1016,7 @@ export class V40Page extends React.Component {
         index: "02",
         name: "Principles engine",
         line: "Put the principles in motion.",
-        desc: "Turn a small instrument and see the design decision behind each rule.",
+        desc: "Turn an instrument. See the decision behind the rule.",
         color: "var(--accent)",
         href: "/rooms/principles/interactive/",
         img: this.res("public/v38/assets/room-principles.webp"),
@@ -1026,7 +1027,7 @@ export class V40Page extends React.Component {
         index: "03",
         name: "The Studios",
         line: "A world worth getting lost in.",
-        desc: "Shape the light, ignite a 3D signature, or explore the short film collection.",
+        desc: "Explore light, signatures and short films.",
         color: "var(--purple)",
         href: "/rooms/studios/interactive/",
         img: this.res("public/v38/assets/room-studios-threshold.webp"),
@@ -1037,7 +1038,7 @@ export class V40Page extends React.Component {
         index: "04",
         name: "Flight heritage",
         line: "Built with a test pilot’s mind.",
-        desc: "Four aviation pioneers and the working lesson I take from each.",
+        desc: "Four aviation pioneers. Four lessons for the workshop.",
         color: "var(--amber)",
         href: "/rooms/heritage/interactive/",
         img: this.res("public/v38/assets/room-heritage.webp"),
@@ -1390,7 +1391,10 @@ export class V40Page extends React.Component {
       collections,
       filmList,
       featSrc: F.src,
-      featPoster: F.poster,
+      featPoster: posterForViewport(
+        F.poster,
+        s.wide ? 720 : Math.min(720, (typeof window === "undefined" ? 390 : window.innerWidth) - 56),
+      ),
       featTitle: F.title,
       featDesc: F.desc,
       featColl: F.coll,

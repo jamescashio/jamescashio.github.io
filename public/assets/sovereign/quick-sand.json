@@ -1,0 +1,22 @@
+{
+  "title": "The Sovereign: Quick Sand Cut",
+  "durationSeconds": 100.475375,
+  "durationLabel": "1:41",
+  "standard": {
+    "src": "/assets/sovereign/quick-sand-720p-ef538cf170d9.mp4",
+    "bytes": 18257192,
+    "sha256": "ef538cf170d98b620c32732068971e77afb0f4e3d289b9e3d7c9a0c893d7643d"
+  },
+  "compact": {
+    "src": "/assets/sovereign/quick-sand-480p-879f7395090c.mp4",
+    "bytes": 8560132,
+    "sha256": "879f7395090cf13544648f18059eabe829473b0f2f7e35c17273274fc07664a0"
+  },
+  "captions": {
+    "src": "/assets/sovereign/quick-sand-captions-f6f722a76f02.vtt",
+    "bytes": 1523,
+    "sha256": "f6f722a76f02919f3dc1d73a7f717b07bfc0a31e345239d0f60c49d0bb1bcc90"
+  },
+  "originalUrl": "https://www.youtube.com/watch?v=382mPi4ON60",
+  "credit": "AI-assisted likeness and original comedy edit. Scene and soundtrack: Dune: Part Two. Unofficial fan parody."
+}

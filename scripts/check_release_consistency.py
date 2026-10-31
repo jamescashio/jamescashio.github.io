@@ -628,8 +628,8 @@ def main() -> int:
             failures.append("V37 compatibility receipt must retain its original observation")
         if site_release != compatibility_release:
             failures.append("event-horizon-release.json must match the canonical site-release.json")
-    if package.get("scripts", {}).get("build") != "tsc --noEmit && tsc -p tsconfig.helios.json && vite build && node --import tsx scripts/prerender.mts && node --import tsx scripts/prerender-odyssey.mts && node --import tsx scripts/prerender-helios.mts && node --import tsx scripts/prerender-rooms.mts && node --import tsx scripts/prerender-v40.mts":
-        failures.append("package.json build script changed from the supplied TypeScript + Vite + prerender gate")
+    if package.get("scripts", {}).get("build") != "tsc --noEmit && tsc -p tsconfig.helios.json && vite build && node --import tsx scripts/prerender.mts && node --import tsx scripts/prerender-odyssey.mts && node --import tsx scripts/prerender-helios.mts && node --import tsx scripts/prerender-rooms.mts && node --import tsx scripts/prerender-v40.mts && node scripts/secure-storm.mjs dist/storm/index.html dist/storm/index.html":
+        failures.append("package.json build script changed from the supplied TypeScript + Vite + prerender + Storm security gate")
 
     vite = read("vite.config.ts")
     base_match = re.search(r"\bbase\s*:\s*([^,\n]+)", vite)

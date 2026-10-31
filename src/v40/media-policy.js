@@ -26,11 +26,14 @@ export function installMediaCoordinator() {
   };
   const allowed = (video) => {
     if (!video.isConnected || document.hidden || video.dataset.finished === "true") return false;
+    if (video.closest("details:not([open])")) return false;
     const cinema = document.querySelector("#cinema-video");
     if (cinema) return video === cinema;
     if (document.querySelector("#ai-worm iframe")) return false;
     if (document.querySelector("#mission-dialog[open], #bit-dialog[open], #helios-flight, #helios-studio"))
       return false;
+    const quickCut = document.getElementById("ai-worm-video");
+    if (quickCut) return video === quickCut && ratio(video) >= 0.5;
     if (document.documentElement.dataset.motion === "off" || conservesData() || ratio(video) < 0.5) return false;
     if (video.id === "sig-video" || video.dataset.v === "hover") return video.dataset.requested === "true";
     return video.dataset.v === "auto";
@@ -43,7 +46,7 @@ export function installMediaCoordinator() {
       candidates.find((v) => v.dataset.requested === "true") ||
       candidates.sort((a, b) => ratio(b) - ratio(a))[0];
     for (const video of observed.keys()) if (video !== chosen && !video.paused) video.pause();
-    if (chosen && chosen.id !== "cinema-video" && chosen.paused && !chosen.ended) {
+    if (chosen && chosen.id !== "cinema-video" && chosen.id !== "ai-worm-video" && chosen.paused && !chosen.ended) {
       if (chosen.id !== "cinema-video") chosen.muted = true;
       chosen.play().catch(() => {});
     }

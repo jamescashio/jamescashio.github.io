@@ -33,6 +33,93 @@
   margin: 0;
   color: var(--text-dim);
 }
+.workshop-intro-link {
+  justify-self: start;
+  padding-block: 0;
+}
+.workshop-case {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+}
+.workshop-case dt {
+  margin-bottom: 4px;
+  color: var(--cyan);
+  font: 600 12px/1.5 var(--font-mono);
+}
+.workshop-case dd {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.studio-collection {
+  min-width: 0;
+  padding: 20px 24px;
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+.studio-collection:not([open]) > div,
+.privacy-exercise:not([open]) > div {
+  display: none;
+}
+.ai-worm-about {
+  margin-top: 10px;
+}
+.ai-worm-about > summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--cyan);
+  font: 500 13px/1.5 var(--font-body);
+  cursor: pointer;
+}
+.ai-worm-about[open] > summary {
+  margin-bottom: 10px;
+}
+.studio-collection > summary,
+.privacy-exercise > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 56px;
+  color: var(--text);
+  font: 600 16px/1.5 var(--font-body);
+  cursor: pointer;
+  list-style: none;
+}
+.studio-collection > summary::-webkit-details-marker,
+.privacy-exercise > summary::-webkit-details-marker {
+  display: none;
+}
+.studio-collection > summary small,
+.privacy-exercise > summary small {
+  display: block;
+  margin-top: 6px;
+  color: var(--text-dim);
+  font: 400 14px/1.6 var(--font-body);
+}
+.studio-collection > summary > span:last-child,
+.privacy-exercise > summary > span:last-child {
+  color: var(--cyan);
+  font-size: 26px;
+}
+.studio-collection[open] > summary,
+.privacy-exercise[open] > summary {
+  margin-bottom: 24px;
+}
+.studio-collection[open] > summary > span:last-child,
+.privacy-exercise[open] > summary > span:last-child {
+  transform: rotate(45deg);
+}
+.studio-collection > summary:focus-visible,
+.privacy-exercise > summary:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 7px;
+  border-radius: 4px;
+}
 .workshop-highlights {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -88,8 +175,9 @@
   font: 500 12px/1.6 var(--font-mono);
 }
 .brief-outline {
-  display: grid;
-  gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
   width: 100%;
   padding: 0;
   margin: 0;
@@ -100,8 +188,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 4px 16px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 4px;
   font-weight: 600;
 }
 .brief-outline span {
@@ -329,6 +416,59 @@
   }
 }
 @media (max-width: 600px) {
+  #films .ai-worm-film,
+  #films .studio-project {
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 18px;
+    padding: 22px;
+    align-items: start;
+  }
+  #films .ai-worm-media {
+    min-height: 0;
+    aspect-ratio: 3 / 4;
+  }
+  #films .ai-worm-play-label {
+    display: none;
+  }
+  #films .ai-worm-play-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 28px;
+  }
+  #films .ai-worm-film.is-playing {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  #films .ai-worm-film.is-playing .ai-worm-media {
+    aspect-ratio: 16 / 9;
+  }
+  #films .ai-worm-copy h3,
+  #films .studio-project h3 {
+    font-size: 23px;
+    margin-bottom: 10px;
+  }
+  #films .ai-worm-tagline {
+    font-size: 16px;
+  }
+  #films .ai-worm-kicker {
+    margin-bottom: 10px;
+    letter-spacing: 0.06em;
+  }
+  #films .studio-project-copy {
+    padding: 0;
+  }
+  #films .studio-project-preview {
+    align-self: start;
+  }
+  #films .studio-project-preview img {
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+  }
+  #films .studio-project-preview figcaption {
+    padding: 10px 0 0;
+  }
+  .studio-collection {
+    padding: 18px 20px;
+  }
   #workshop,
   #rooms,
   #films,
@@ -337,10 +477,10 @@
   #universe,
   #evidence,
   #operator {
-    padding-block: 48px;
+    padding-block: 36px;
   }
   #workshop {
-    gap: 28px;
+    gap: 20px;
   }
   #rooms .world-card {
     display: grid;
@@ -410,7 +550,8 @@
     letter-spacing: 0.06em;
   }
   .workshop-highlight {
-    gap: 16px;
+    gap: 12px;
+    padding: 22px;
   }
   .workshop-result strong {
     font-size: 54px;
@@ -423,13 +564,22 @@
     margin: 4px 0 0;
   }
   .routing-note {
-    padding: 24px;
+    padding: 20px;
+  }
+  .routing-note blockquote {
+    font-size: 22px;
+    margin: 14px 0 10px;
   }
   #contact > div:last-child {
     padding-block: 48px !important;
   }
 }
 @media (max-width: 359px) {
+  #films .ai-worm-film:not(.is-playing),
+  #films .studio-project {
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 14px;
+  }
   #rooms .world-card {
     grid-template-columns: 72px minmax(0, 1fr);
   }

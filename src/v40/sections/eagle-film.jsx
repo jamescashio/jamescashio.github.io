@@ -1,5 +1,6 @@
 import React from "react";
 import { ReelText } from "../hero-reel.jsx";
+import { posterSources } from "../poster-sources.js";
 const h = React.createElement;
 
 export function EagleFilmSection({ v }) {
@@ -36,6 +37,8 @@ export function EagleFilmSection({ v }) {
           { className: "eagle-film-visual" },
           h("img", {
             src: v.trailer.poster,
+            srcSet: posterSources(v.trailer.poster),
+            sizes: "(max-width: 760px) calc(100vw - 48px), (max-width: 1280px) 52vw, 640px",
             width: 1280,
             height: 720,
             loading: "lazy",

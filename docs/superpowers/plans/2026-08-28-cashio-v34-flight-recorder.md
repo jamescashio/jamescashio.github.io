@@ -13,7 +13,7 @@
 ## Global Constraints
 
 - Canonical release: `V34 MACH ONE`, package `34.0.0`, revised `2026-08-28`.
-- Publish the public-safe fleet snapshot verified `2026-08-28`, valid through `2026-09-27` in `America/Chicago`: Proxmox `9.2.11`; two hosts online and quorate; 18/19 guests running; Zeus 12/13; Apollo 6/6; one stopped guest unnamed. Keep the separate ten-lane / thirty-six-entry routing inventory dated `2026-08-21`; add no unverified public claim.
+- Publish the public-safe fleet snapshot verified `2026-08-28`, valid through `2026-09-27` in `America/Chicago`: a private hypervisor (identity and version withheld); two hosts online and quorate; 18/19 guests running; per-host counts withheld; one stopped guest unnamed. Keep the separate ten-public-lane routing inventory (private catalog count withheld) dated `2026-08-21`; add no unverified public claim.
 - Preserve Bit/Dune/LCARS identity, nine decks, Executive mode, hashes/history, 30-second flight timing, craft lineage, audio-off default, complete reduced motion, Contact, Black Box Receipt, and May 2026 `command.html`.
 - No heavy dependency, new route, particle system, generic redesign, always-on audio, or direct production network call.
 - General deck copy resolves within 300–450 ms; article acquisition within 450–620 ms; stage warp decays within 700 ms.
@@ -47,7 +47,7 @@
 - Modify: `CHANGELOG.md`
 - Modify: `RELEASE_BODY.md`
 
-- [ ] Write behavioral release/render/flight tests for V34; fleet verification `2026-08-28` through `2026-09-27`; 18/19 running, Zeus 12/13, Apollo 6/6, two hosts online/quorate on 9.2.11; routing inventory `2026-08-21`; seven allowlisted observed role families; dated export language; Executive outcomes; Builds evidence/control labels; `BUILD PROOF`; Lineage interpretation labels; and unchanged Contact/receipt.
+- [ ] Write behavioral release/render/flight tests for V34; fleet verification `2026-08-28` through `2026-09-27`; 18/19 running, per-host counts withheld, two hosts online/quorate on a private hypervisor (identity and version withheld); routing inventory `2026-08-21`; seven allowlisted observed role families; dated export language; Executive outcomes; Builds evidence/control labels; `BUILD PROOF`; Lineage interpretation labels; and unchanged Contact/receipt.
 - [ ] Run the focused tests and capture expected RED failures caused by the V33/ambiguous content.
 - [ ] Implement the minimal canonical metadata, public-safe copy, and guard changes. Do not identify the stopped guest or publish raw probe detail.
 - [ ] Run focused GREEN tests, then the complete Node and Python suites before committing.

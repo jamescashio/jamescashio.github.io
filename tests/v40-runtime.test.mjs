@@ -114,38 +114,90 @@ test("The Sovereign waits for a click, fits every screen, and stops when dismiss
       const page = await context.newPage();
       const errors = [];
       let playerRequests = 0;
+      const thirdParties = [];
       page.on("pageerror", (error) => errors.push(error.message));
-      await page.route("https://www.youtube-nocookie.com/**", async (route) => {
-        playerRequests++;
-        await route.fulfill({
-          contentType: "text/html",
-          body: "<title>Test player</title><p>Player loaded after consent.</p>",
-        });
+      page.on("request", (request) => {
+        if (/\/assets\/sovereign\/.*\.mp4/.test(request.url())) playerRequests++;
+        if (!request.url().startsWith(new URL(url).origin)) thirdParties.push(request.url());
       });
       await page.goto(url + "#ai-worm");
       await expect(page.locator("#bit-dialog")).toBeAttached();
       const film = page.locator("#ai-worm");
-      const play = film.getByRole("button", { name: "Play The Sovereign, version 9", exact: true });
+      const play = film.getByRole("button", { name: "Play The Sovereign quick cut", exact: true });
       await expect(play).toBeVisible();
-      assert.equal(playerRequests, 0, "no YouTube request before a visitor chooses Play");
-      await expect(film.locator("iframe")).toHaveCount(0);
+      assert.equal(playerRequests, 0, "the movie is not requested before a visitor chooses Play");
+      await expect(film.locator("video,iframe")).toHaveCount(0);
+      await expect(film.getByRole("link", { name: "Full film on YouTube ↗", exact: true })).toHaveAttribute(
+        "href",
+        "https://www.youtube.com/watch?v=382mPi4ON60",
+      );
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
       await audit(page, "#ai-worm");
       await play.focus();
       await page.keyboard.press("Enter");
-      await expect(film.locator("iframe")).toHaveAttribute("src", /youtube-nocookie\.com\/embed\/382mPi4ON60\?/);
-      await expect.poll(() => playerRequests).toBe(1);
+      const video = film.locator("video");
+      await expect(video).toHaveAttribute("src", /\/assets\/sovereign\/quick-sand-720p-/);
+      await expect.poll(() => playerRequests).toBeGreaterThan(0);
+      await expect
+        .poll(() => video.evaluate((node) => !node.paused && node.muted && node.controls && !node.loop))
+        .toBe(true);
+      await expect.poll(() => video.evaluate((node) => node.duration)).toBeGreaterThan(90);
+      assert.ok(await video.evaluate((node) => node.duration < 120));
+      await video.evaluate((node) => node.pause());
+      await page.evaluate(() => document.dispatchEvent(new Event("cashio-media")));
+      await expect.poll(() => video.evaluate((node) => node.paused)).toBe(true);
+      await video.evaluate((node) => {
+        node.currentTime = 49;
+      });
+      await expect.poll(() => video.evaluate((node) => Math.round(node.currentTime))).toBe(49);
       await film.getByRole("button", { name: "Close player ×", exact: true }).click();
-      await expect(film.locator("iframe")).toHaveCount(0);
+      await expect(film.locator("video,iframe")).toHaveCount(0);
       await expect(play).toBeFocused();
       await play.click();
-      await expect(film.locator("iframe")).toHaveCount(1);
+      await expect(film.locator("video")).toHaveCount(1);
       await page.locator("#top").scrollIntoViewIfNeeded();
-      await expect(film.locator("iframe")).toHaveCount(0);
+      await expect(film.locator("video,iframe")).toHaveCount(0);
       assert.deepEqual(errors, []);
+      assert.deepEqual(thirdParties, []);
     } finally {
       await context.close();
     }
+  }
+});
+
+test("the quick cut uses compact playback for data saving and respects Escape and manual pause", async () => {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+  try {
+    await context.addInitScript(() => {
+      Object.defineProperty(navigator, "connection", {
+        configurable: true,
+        value: {
+          saveData: true,
+          effectiveType: "3g",
+          addEventListener() {},
+          removeEventListener() {},
+        },
+      });
+    });
+    const page = await context.newPage();
+    await page.goto(url + "#ai-worm");
+    const film = page.locator("#ai-worm");
+    const play = film.getByRole("button", { name: "Play The Sovereign quick cut", exact: true });
+    await play.click();
+    const video = film.locator("video");
+    await expect(video).toHaveAttribute("src", /quick-sand-480p-/);
+    await expect.poll(() => video.evaluate((node) => !node.paused && node.muted)).toBe(true);
+    await page.locator("header .mission-control").click();
+    await expect.poll(() => video.evaluate((node) => node.paused)).toBe(true);
+    await page.keyboard.press("Escape");
+    await expect(page.locator("#mission-dialog")).not.toHaveAttribute("open", "");
+    await expect.poll(() => video.evaluate((node) => node.paused)).toBe(true);
+    await video.focus();
+    await page.keyboard.press("Escape");
+    await expect(film.locator("video")).toHaveCount(0);
+    await expect(play).toBeFocused();
+  } finally {
+    await context.close();
   }
 });
 
