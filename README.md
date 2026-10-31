@@ -6,7 +6,7 @@ V41 is the current production edition. GitHub Pages publishes the validated arti
 
 ## Current evidence
 
-`status.json`, `public/status.json` and `public/evidence/status.json` are identical public aggregates from the October 28, 2026 read only observation. They report 19 running containers out of 20 documented containers, 1 running virtual machine out of 2, and 2 hosts reporting running guests. Running guests do not establish application health or cluster quorum.
+`status.json`, `public/status.json` and `public/evidence/status.json` are identical public aggregates from the October 31, 2026 read only observation. They report 19 running containers out of 20 documented containers, 1 running virtual machine out of 2, and 2 hosts reporting running guests. Running guests do not establish application health or cluster quorum.
 
 The backup API listed 125 snapshots and reported successful integrity verification for 21 of 21 latest reported guest snapshots. This does not assert verification of every listed snapshot, complete coverage, a restore rehearsal or offsite recovery. Scheduler counts, model configuration, routing counts and quorum remain null with explicit `withheldReasons`. Public capability lanes and the private model catalog remain distinct fields. Neither has a fresh published count.
 
