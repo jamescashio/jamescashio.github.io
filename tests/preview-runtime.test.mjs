@@ -48,6 +48,35 @@ test("the compact phone journey keeps projects and professional context visible"
   await expect(page.locator("#roadster-studio-title")).toHaveText("Roadster Studio");
 });
 
+test("the phone header fits before secondary styles arrive", async (t) => {
+  for (const width of [320, 390]) {
+    const page = await visit(t, { viewport: { width, height: 844 } });
+    let releaseStyles;
+    const stylesReady = new Promise((resolve) => {
+      releaseStyles = resolve;
+    });
+    await page.route("**/assets/deferred-*.css", async (route) => {
+      await stylesReady;
+      await route.continue();
+    });
+    try {
+      await page.goto(url, { waitUntil: "domcontentloaded" });
+      await expect(page.locator(".bit-header .bit-portrait")).toHaveClass(/bit-rendered/);
+      const size = await page.evaluate(() => ({
+        viewport: innerWidth,
+        page: document.documentElement.scrollWidth,
+        header: document.querySelector("header").getBoundingClientRect().right,
+      }));
+      assert.equal(size.viewport, width, "late decorative styles must not expand the mobile viewport");
+      assert.equal(size.page, width, "the phone layout must fit before the secondary stylesheet arrives");
+      assert.ok(size.header <= width, "the header stays within the phone");
+    } finally {
+      releaseStyles();
+      await page.waitForLoadState("networkidle");
+    }
+  }
+});
+
 test("the optional privacy exercise remains keyboard operated and preserves human authority", async (t) => {
   const page = await visit(t);
   await page.goto(url + "#work");

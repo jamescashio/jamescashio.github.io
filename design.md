@@ -35,6 +35,7 @@ A cinematic orbital observatory: a luminous planet, precise cyan instruments, wa
 3. World portals: original artwork becomes the dominant invitation, with controlled depth, illuminated edges, and visible actions.
 4. Supporting explorations: the existing expandable panels inherit the same precise visual language.
 5. Evidence and contact: keep the dated truth boundary and human connection readable and calm.
+6. Initial phone layout: include Bit sizing and phone header controls in the initial stylesheet so delayed secondary styling cannot expand the viewport.
 
 ## Anti-goals and safeguards
 
@@ -51,6 +52,7 @@ A cinematic orbital observatory: a luminous planet, precise cyan instruments, wa
 - [x] The shorter phone journey remains within its existing page-height budget.
 - [x] There are no clipped controls, horizontal overflow, placeholder copy, private reference data, or new console errors.
 - [x] Existing build, accessibility, runtime, public-data, and performance gates pass before preview handoff.
+- [x] Phone controls stay within 320 and 390 pixel viewports while the secondary stylesheet is deliberately withheld.
 
 The following notes are the preserved historical design record.
 
