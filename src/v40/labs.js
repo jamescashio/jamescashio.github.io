@@ -1,4 +1,5 @@
 import { sceneKind } from "./navigation.js";
+import { exampleBrief } from "./decision-brief.js";
 
 /* Local demonstrations inside the original V40 experiment panels. No network calls. */
 (() => {
@@ -7,12 +8,7 @@ import { sceneKind } from "./navigation.js";
   const defaults = {
     cascade: { confidence: 85, consequence: false },
     exposure: { public: true, exploited: false, impact: "limited" },
-    briefing: {
-      observed: "Example: a backup was restored on a second machine and its files were verified.",
-      source: "Example backup receipt · 10-03-2026",
-      unknown: "Recovery of the running system was not tested.",
-      owner: "The human operator",
-    },
+    briefing: exampleBrief,
     dashboards: { age: 3, window: 7 },
     signal: { count: 2, independent: false, primary: false },
     graphify: { node: "scheduler" },

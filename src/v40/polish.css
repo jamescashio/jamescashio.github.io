@@ -1797,3 +1797,19 @@ html[data-background="true"] *::after {
   flex-direction: column;
   gap: 10px;
 }
+/* Keep the first-screen labels readable from the initial render. */
+#v40-root header .za-navlink {
+  font-size: 13px;
+  letter-spacing: 0.06em;
+}
+#v40-root #top .v41-6099e1a2c7,
+#v40-root #top .v41-44a8b78244,
+#v40-root #top .v41-7f5a64038e {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: #cbd2df;
+}
+#v40-root .v41-cbba20e481 {
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}

@@ -109,10 +109,11 @@ test("The planet stays in the hero; House Cashio replaces the featured Eagle fil
   await expect(page.locator("#top video, #top a[href='#film=intro']")).toHaveCount(0);
   await expect(page.locator("#top .hero-live-poster")).toBeVisible();
   const order = await page.locator("main > section").evaluateAll((s) => s.slice(0, 3).map((n) => n.id));
-  assert.deepEqual(order, ["top", "eagle-film", "workshop"]);
+  assert.deepEqual(order, ["top", "workshop", "rooms"]);
   const hero = await page.locator("#top").boundingBox();
-  const film = await page.locator("#eagle-film").boundingBox();
-  assert.ok(film.y >= hero.y + hero.height, "film invitation follows the complete hero");
+  const workshop = await page.locator("#workshop").boundingBox();
+  assert.ok(workshop.y >= hero.y + hero.height, "real projects follow the complete hero");
+  await expect(page.locator("#films-collection")).not.toHaveAttribute("open", "");
   await page.reload();
   await page.waitForTimeout(2600);
   const watch = page.getByRole("link", { name: "Watch House Cashio 61 seconds", exact: true });
@@ -120,8 +121,10 @@ test("The planet stays in the hero; House Cashio replaces the featured Eagle fil
   await expect(page.locator("#eagle-film img")).toHaveAttribute("src", "/assets/hero/cashio-trailer-poster.webp");
   await expect(page.locator("#eagle-film img")).toHaveAttribute("alt", /House Cashio/);
   await expect(page.locator("#eagle-film")).not.toContainText("A moment in orbit.");
-  await page.getByRole("link", { name: "Next: watch House Cashio", exact: true }).click();
-  await expect(page).toHaveURL(/#eagle-film$/);
+  await page.getByRole("link", { name: "Next: explore the projects", exact: true }).click();
+  await expect(page).toHaveURL(/#workshop$/);
+  await page.locator("#films-collection > summary").click();
+  await watch.scrollIntoViewIfNeeded();
   await expect(watch).toBeInViewport();
   await page.waitForTimeout(500);
   assert.deepEqual(filmRequests, [], "waiting, reloading and scrolling do not download either film");
@@ -190,6 +193,7 @@ test("Data saving and reduced motion keep posters still, while manual replay sel
     await page.waitForTimeout(2600);
     await expect(page.locator("#top video")).toHaveCount(0);
     await expect(page.locator("#top .hero-live-poster")).toBeVisible();
+    await page.locator("#films-collection > summary").click();
     await page.locator(".studio-collection > summary").click();
     await page.locator("#feature-video").scrollIntoViewIfNeeded();
     await page.waitForTimeout(300);
@@ -261,7 +265,7 @@ test("The starfield limits ambient work and stops while offscreen, motion is pau
   await page.getByRole("button", { name: "Resume motion", exact: true }).first().click();
   const resumed = await draws();
   await expect.poll(draws).toBeGreaterThan(resumed);
-  await page.getByRole("link", { name: "Next: watch House Cashio", exact: true }).click();
+  await page.getByRole("link", { name: "Next: explore the projects", exact: true }).click();
   await page.waitForTimeout(900);
   await staysStill();
   await page.goto(url + "#film=intro");

@@ -22,11 +22,15 @@ test("V40 ships its real reading edition under the strict production security po
   assert.ok(alias.querySelector(`script[src="${routingFile}"]`));
   const root = document.querySelector("#v40-root");
   assert.ok(root);
-  assert.equal(root.querySelectorAll("main > section").length, 11);
+  assert.equal(
+    root.querySelectorAll("main > section, main > .journey-disclosure > .journey-disclosure-content > section").length,
+    11,
+  );
+  assert.equal(root.querySelectorAll("main > .journey-disclosure:not([open])").length, 3);
   assert.ok(root.querySelector("#work #law"), "the routing law stays available within its decision example");
   assert.deepEqual(
     [...root.querySelectorAll("main > section")].slice(0, 3).map((section) => section.id),
-    ["top", "eagle-film", "workshop"],
+    ["top", "workshop", "rooms"],
   );
   assert.equal(root.querySelectorAll("#top video").length, 0);
   assert.equal(root.querySelectorAll("h1").length, 1);

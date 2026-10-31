@@ -1,0 +1,250 @@
+/* Keep the cinematic front door; let visitors choose how far to explore. */
+#v40-root .journey-disclosure {
+  width: calc(100% - 56px);
+  max-width: 1240px;
+  margin: 0 auto 24px;
+  border: 1px solid rgba(117, 197, 211, 0.24);
+  border-radius: 18px;
+  background: linear-gradient(115deg, #10202c, #0d111c 74%);
+  overflow: clip;
+  scroll-margin-top: 90px;
+}
+#v40-root .journey-disclosure > summary {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  min-height: 120px;
+  padding: 24px 30px;
+  cursor: pointer;
+  list-style: none;
+}
+.journey-disclosure > summary::-webkit-details-marker,
+.evidence-console > summary::-webkit-details-marker {
+  display: none;
+}
+.journey-disclosure > summary img {
+  width: 132px;
+  height: 82px;
+  object-fit: cover;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 179, 63, 0.3);
+}
+.journey-disclosure-copy {
+  flex: 1;
+  min-width: 0;
+}
+.journey-disclosure-copy strong {
+  display: block;
+  color: var(--text);
+  font: 700 clamp(19px, 2vw, 25px)/1.35 var(--font-display);
+}
+.journey-disclosure-copy small,
+.evidence-console > summary small {
+  display: block;
+  margin-top: 8px;
+  color: #c0c8d4;
+  font: 400 15px/1.6 var(--font-body);
+}
+.journey-disclosure-icon,
+.evidence-console > summary > span:last-child {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(0, 249, 255, 0.28);
+  border-radius: 50%;
+  color: var(--cyan);
+  font: 400 26px/1 var(--font-body);
+  transition: transform 180ms ease;
+}
+.journey-disclosure[open] > summary .journey-disclosure-icon,
+.evidence-console[open] > summary > span:last-child {
+  transform: rotate(45deg);
+}
+.journey-disclosure[open] > summary {
+  border-bottom: 1px solid var(--glass-border);
+}
+.journey-disclosure > summary:hover strong {
+  color: var(--cyan);
+}
+.journey-disclosure > summary:focus-visible,
+.evidence-console > summary:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: -5px;
+  border-radius: 14px;
+}
+.journey-disclosure:not([open]) > .journey-disclosure-content,
+#v40-root .evidence-console:not([open]) > :not(summary) {
+  display: none;
+}
+#v40-root .journey-disclosure-content > section {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 40px 28px;
+}
+#v40-root .brief-preview {
+  align-self: stretch;
+  margin: 0;
+  padding: 20px;
+  border: 1px solid rgba(255, 183, 74, 0.3);
+  border-radius: 12px;
+  background: linear-gradient(135deg, #1c2026, #0b131d);
+  box-shadow: 0 14px 32px #0003;
+}
+.brief-preview figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--glass-border);
+  color: #ffc66d;
+  font: 600 13px/1.5 var(--font-mono);
+}
+.brief-preview figcaption span:last-child {
+  color: #c0c8d4;
+  font-weight: 400;
+}
+.brief-preview dl {
+  display: grid;
+  gap: 14px;
+  margin: 16px 0;
+}
+.brief-preview dl > div {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 12px;
+}
+.brief-preview dt {
+  color: #ffc66d;
+  font: 600 13px/1.6 var(--font-body);
+}
+.brief-preview dd {
+  margin: 0;
+  color: #e0e6ef;
+  font: 400 14px/1.6 var(--font-body);
+}
+.brief-preview a {
+  color: var(--cyan);
+  text-underline-offset: 4px;
+}
+#v40-root .brief-preview > p {
+  color: #b9c4d2;
+  font: 400 13px/1.6 var(--font-body);
+}
+#v40-root #evidence .v41-197b0f6418 > div:first-child {
+  grid-column: 1 / -1;
+}
+#v40-root .evidence-console {
+  display: block;
+  grid-column: 1 / -1;
+  min-width: 0;
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 22px;
+  background: #0e1620;
+}
+#v40-root .evidence-console > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 0;
+  min-height: 56px;
+  list-style: none;
+  cursor: pointer;
+  color: var(--text);
+  font: 600 17px/1.5 var(--font-body);
+}
+.evidence-console[open] > summary {
+  margin-bottom: 22px;
+}
+.evidence-console form,
+.evidence-console [role="group"] {
+  margin-top: 14px;
+}
+/* Practical labels get the same care as the display typography. */
+#v40-root .visitor-kicker,
+#v40-root .v41-c904563b29,
+#v40-root .world-label,
+#v40-root .za-stat-label,
+#v40-root .za-terminal-hint,
+#v40-root .workshop-date,
+#v40-root .workshop-case dt,
+#v40-root #studies .v41-f959088bbe,
+#v40-root #studies .v41-00bd1dd87d,
+#v40-root #studies .v41-1d10ce8d52 {
+  font-size: 13px;
+  letter-spacing: 0.06em;
+}
+#v40-root #evidence .v41-9549d2b234,
+#v40-root #evidence .v41-ee9c986f14,
+#v40-root #operator .v41-df452b3fda {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #cbd2df;
+}
+#mission-dialog [data-chapter="contact"] {
+  color: #ffc66d;
+  border: 1px solid rgba(255, 183, 74, 0.3);
+  background: #ffb74a08;
+}
+@media (max-width: 760px) {
+  #v40-root .journey-disclosure {
+    margin-bottom: 16px;
+  }
+  #v40-root .journey-disclosure > summary {
+    padding: 20px;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .journey-disclosure > summary img {
+    width: 88px;
+    height: 56px;
+  }
+  .journey-disclosure > summary:has(img) .journey-disclosure-copy {
+    flex-basis: calc(100% - 104px);
+  }
+  .journey-disclosure > summary:has(img) .journey-disclosure-icon {
+    margin-left: auto;
+  }
+  .journey-disclosure-copy small {
+    font-size: 14px;
+  }
+  #v40-root .journey-disclosure-content > section {
+    padding: 28px 16px;
+  }
+  #v40-root .journey-disclosure #films .v41-0a831b5de0 {
+    padding: 0;
+  }
+  #v40-root .journey-disclosure #films .ai-worm-film,
+  #v40-root .journey-disclosure #films .studio-project {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 18px;
+  }
+  #v40-root .journey-disclosure #films .ai-worm-media,
+  #v40-root .journey-disclosure #films .studio-project-preview img {
+    aspect-ratio: 16 / 9;
+  }
+  #v40-root .brief-preview {
+    padding: 16px;
+  }
+  .brief-preview dl > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+  #v40-root .evidence-console {
+    padding: 18px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .journey-disclosure-icon,
+  .evidence-console > summary > span:last-child {
+    transition: none;
+  }
+}
+html[data-motion="off"] .journey-disclosure-icon,
+html[data-motion="off"] .evidence-console > summary > span:last-child {
+  transition: none;
+}

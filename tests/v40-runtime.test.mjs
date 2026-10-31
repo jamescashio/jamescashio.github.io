@@ -215,7 +215,9 @@ test("V40 preserves its content and serves a readable edition without JavaScript
     { js: false, width: 320 },
   ]) {
     const page = await visit(t, { js, width });
-    await expect(page.locator("main > section")).toHaveCount(11);
+    await expect(
+      page.locator("main > section, main > .journey-disclosure > .journey-disclosure-content > section"),
+    ).toHaveCount(11);
     await expect(page.locator("h1")).toHaveText("The machines can think. You still decide.");
     await expect(page.locator("footer")).toContainText("one release short of the answer", { ignoreCase: true });
     await expect(page.locator('#contact a[href^="mailto:doug@cashio.us"]').first()).toBeVisible();
@@ -280,7 +282,7 @@ test("Mission Control searches chapters and closes with a usable focus destinati
 });
 
 test("Every mobile Menu section stays in V40 and survives a reload", async (t) => {
-  const ids = ["top", "workshop", "rooms", "films", "work", "studies", "universe", "evidence", "operator", "contact"];
+  const ids = ["top", "contact", "workshop", "studies", "rooms", "films", "work", "universe", "evidence", "operator"];
   for (const width of [390, 320]) {
     const page = await visit(t, { width, touch: true });
     assert.deepEqual(

@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { readFile, writeFile, readdir } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { JSDOM } from "jsdom";
+import { exampleBriefText } from "../src/v40/decision-brief.js";
 
 const environment = new JSDOM("<!doctype html><html><body></body></html>");
 Object.assign(globalThis, { window: environment.window, document: environment.window.document });
@@ -56,4 +57,5 @@ html = html.replace(
   "The page above remains readable without JavaScript. Interactive demonstrations need JavaScript.",
 );
 await writeFile("dist/index.html", html);
+await writeFile("dist/artifacts/decision-brief-example.txt", exampleBriefText);
 console.log("V40 reading edition created with external CSS and the existing strict security policy.");

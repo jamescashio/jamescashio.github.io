@@ -22,6 +22,8 @@ import { MachinesSection } from "./sections/machines.jsx";
 import { EvidenceSection } from "./sections/evidence.jsx";
 import { OperatorSection } from "./sections/operator.jsx";
 import { ContactSection } from "./sections/contact.jsx";
+import { JourneyDisclosure } from "./sections/journey-disclosure.jsx";
+import { destinationLabel } from "./destinations.js";
 import React from "react";
 import designSystem from "./design-system.js";
 const h = React.createElement;
@@ -952,20 +954,18 @@ export class V40Page extends React.Component {
     const pad = s.wide ? 72 : 0;
 
     const railDefs = [
-      ["top", "Orbit"],
+      ["top", "Home"],
+      ["workshop", "Projects"],
       ["rooms", "Worlds"],
       ["films", "Films"],
-      ["work", "Decide"],
       ["studies", "Experiments"],
-      ["universe", "Map"],
       ["evidence", "Evidence"],
-      ["operator", "Doug"],
       ["contact", "Contact"],
     ];
-    const activeRail = s.active === "law" ? "work" : s.active === "workshop" ? "top" : s.active;
-    const railItems = railDefs.map(([id, label]) => ({
+    const activeRail = s.active === "law" || s.active === "work" ? "studies" : s.active;
+    const railItems = railDefs.map(([id]) => ({
       href: "#" + id,
-      label,
+      label: destinationLabel(id),
       style: `display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 6px;border-radius:10px;color:${activeRail === id ? "var(--accent)" : "var(--text-dim)"};background:${activeRail === id ? "rgba(255,149,0,.08)" : "transparent"};transition:all .45s cubic-bezier(.23,1,.32,1)`,
     }));
 
@@ -1741,7 +1741,7 @@ function renderPage(v) {
                       className: ["za-navlink", "v41-f959088bbe"].filter(Boolean).join(" "),
                       href: "#studies",
                     },
-                    h(React.Fragment, { key: 68 }, "Try an experiment"),
+                    h(React.Fragment, { key: 68 }, destinationLabel("studies")),
                   ),
                   " ",
                   h(
@@ -1751,7 +1751,7 @@ function renderPage(v) {
                       className: ["za-navlink", "v41-f959088bbe"].filter(Boolean).join(" "),
                       href: "#workshop",
                     },
-                    h(React.Fragment, { key: 71 }, "See real work"),
+                    h(React.Fragment, { key: 71 }, destinationLabel("workshop")),
                   ),
                   " ",
                   h(
@@ -1761,7 +1761,7 @@ function renderPage(v) {
                       className: ["za-navlink", "v41-f959088bbe"].filter(Boolean).join(" "),
                       href: "#rooms",
                     },
-                    h(React.Fragment, { key: 74 }, "Explore the worlds"),
+                    h(React.Fragment, { key: 74 }, destinationLabel("rooms")),
                   ),
                   " ",
                 ),
@@ -1916,23 +1916,51 @@ function renderPage(v) {
         ),
         " ",
         " ",
-        h(EagleFilmSection, { v, key: "eagle-film" }),
         h(WorkshopSection, { v, key: "workshop" }),
         " ",
         " ",
         h(WorldsSection, { v, key: "rooms" }),
         " ",
         " ",
-        h(FilmsSection, { v, key: "films" }),
+        h(
+          JourneyDisclosure,
+          {
+            key: "films-collection",
+            id: "films-collection",
+            title: "Stay for the films.",
+            description: "House Cashio, The Sovereign and more from the studio. Starts muted.",
+            image: "/assets/hero/cashio-trailer-poster.webp",
+          },
+          h(EagleFilmSection, { v, key: "eagle-film" }),
+          h(FilmsSection, { v, key: "films" }),
+        ),
         " ",
         " ",
-        h(DecisionsSection, { v, key: "work" }),
+        h(
+          JourneyDisclosure,
+          {
+            key: "decision-story",
+            id: "decision-story",
+            title: "One document. A different boundary.",
+            description: "Try a quick privacy decision and see the principle behind it.",
+          },
+          h(DecisionsSection, { v, key: "work" }),
+        ),
         " ",
         " ",
         h(ExperimentsSection, { v, key: "studies" }),
         " ",
         " ",
-        h(MachinesSection, { v, key: "universe" }),
+        h(
+          JourneyDisclosure,
+          {
+            key: "system-story",
+            id: "system-story",
+            title: "Follow a request through the lab.",
+            description: "Explore the system map, from human intent to human review.",
+          },
+          h(MachinesSection, { v, key: "universe" }),
+        ),
         " ",
         " ",
         h(EvidenceSection, { v, key: "evidence" }),
@@ -2092,7 +2120,7 @@ function renderPage(v) {
             h(
               "a",
               { key: 1945, href: "#top", className: "v41-6c41898cb4" },
-              h(React.Fragment, { key: 1946 }, "Back to orbit ↑"),
+              h(React.Fragment, { key: 1946 }, "Back to home ↑"),
             ),
             " ",
           ),
