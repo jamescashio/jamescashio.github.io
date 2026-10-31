@@ -123,11 +123,11 @@ test("The Sovereign waits for a click, fits every screen, and stops when dismiss
       await page.goto(url + "#ai-worm");
       await expect(page.locator("#bit-dialog")).toBeAttached();
       const film = page.locator("#ai-worm");
-      const play = film.getByRole("button", { name: "Play The Sovereign quick cut", exact: true });
+      const play = film.getByRole("button", { name: "Play The Sovereign", exact: true });
       await expect(play).toBeVisible();
       assert.equal(playerRequests, 0, "the movie is not requested before a visitor chooses Play");
       await expect(film.locator("video,iframe")).toHaveCount(0);
-      const youtubeCut = film.getByRole("link", { name: "YouTube quick cut ↗", exact: true });
+      const youtubeCut = film.getByRole("link", { name: "YouTube (earlier) ↗", exact: true });
       await expect(youtubeCut).toBeVisible();
       await expect(youtubeCut).toHaveAttribute("href", "https://www.youtube.com/watch?v=METPbuO0SQ4");
       await expect(youtubeCut).toHaveAttribute("rel", "noopener noreferrer");
@@ -144,13 +144,12 @@ test("The Sovereign waits for a click, fits every screen, and stops when dismiss
       await play.focus();
       await page.keyboard.press("Enter");
       const video = film.locator("video");
-      await expect(video).toHaveAttribute("src", /\/assets\/sovereign\/quick-sand-720p-/);
+      await expect(video).toHaveAttribute("src", /\/assets\/sovereign\/galactic-paperwork-720p-/);
       await expect.poll(() => playerRequests).toBeGreaterThan(0);
       await expect
         .poll(() => video.evaluate((node) => !node.paused && node.muted && node.controls && !node.loop))
         .toBe(true);
-      await expect.poll(() => video.evaluate((node) => node.duration)).toBeGreaterThan(90);
-      assert.ok(await video.evaluate((node) => node.duration < 120));
+      await expect.poll(() => video.evaluate((node) => Math.abs(node.duration - 119.994875))).toBeLessThan(0.1);
       await video.evaluate((node) => node.pause());
       await page.evaluate(() => document.dispatchEvent(new Event("cashio-media")));
       await expect.poll(() => video.evaluate((node) => node.paused)).toBe(true);
@@ -173,7 +172,7 @@ test("The Sovereign waits for a click, fits every screen, and stops when dismiss
   }
 });
 
-test("the quick cut uses compact playback for data saving and respects Escape and manual pause", async () => {
+test("the Galactic cut uses compact playback for data saving and respects Escape and manual pause", async () => {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
   try {
     await context.addInitScript(() => {
@@ -190,10 +189,10 @@ test("the quick cut uses compact playback for data saving and respects Escape an
     const page = await context.newPage();
     await page.goto(url + "#ai-worm");
     const film = page.locator("#ai-worm");
-    const play = film.getByRole("button", { name: "Play The Sovereign quick cut", exact: true });
+    const play = film.getByRole("button", { name: "Play The Sovereign", exact: true });
     await play.click();
     const video = film.locator("video");
-    await expect(video).toHaveAttribute("src", /quick-sand-480p-/);
+    await expect(video).toHaveAttribute("src", /galactic-paperwork-480p-/);
     await expect.poll(() => video.evaluate((node) => !node.paused && node.muted)).toBe(true);
     await page.locator("header .mission-control").click();
     await expect.poll(() => video.evaluate((node) => node.paused)).toBe(true);
