@@ -128,12 +128,17 @@ test("The Sovereign waits for a click, fits every screen, and stops when dismiss
       assert.equal(playerRequests, 0, "the movie is not requested before a visitor chooses Play");
       await expect(film.locator("video,iframe")).toHaveCount(0);
       const youtubeCut = film.getByRole("link", { name: "Quick cut on YouTube ↗", exact: true });
+      await expect(youtubeCut).toBeVisible();
       await expect(youtubeCut).toHaveAttribute("href", "https://www.youtube.com/watch?v=METPbuO0SQ4");
       await expect(youtubeCut).toHaveAttribute("rel", "noopener noreferrer");
+      const about = film.locator(".ai-worm-about summary");
+      await about.click();
       await expect(film.getByRole("link", { name: "Full film on YouTube ↗", exact: true })).toHaveAttribute(
         "href",
         "https://www.youtube.com/watch?v=382mPi4ON60",
       );
+      await expect(film.getByRole("link", { name: "Full film on YouTube ↗", exact: true })).toBeVisible();
+      await about.click();
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
       await audit(page, "#ai-worm");
       await play.focus();

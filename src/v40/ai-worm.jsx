@@ -112,7 +112,6 @@ export function AiWormFilm() {
         "div",
         { className: "ai-worm-actions" },
         h("a", { href: edit.youtubeUrl, target: "_blank", rel: "noopener noreferrer" }, "Quick cut on YouTube ↗"),
-        h("a", { href: videoUrl, target: "_blank", rel: "noopener noreferrer" }, "Full film on YouTube ↗"),
         playing
           ? h("button", { type: "button", onClick: closePlayer, className: "ai-worm-stop" }, "Close player ×")
           : null,
@@ -132,6 +131,11 @@ export function AiWormFilm() {
           "My AI journey since 2022, condensed into one very optimistic free trial. The worm is AI. The sand is apparently a dependency.",
         ),
         h("p", { className: "ai-worm-credit" }, edit.credit),
+        h(
+          "div",
+          { className: "ai-worm-actions" },
+          h("a", { href: videoUrl, target: "_blank", rel: "noopener noreferrer" }, "Full film on YouTube ↗"),
+        ),
       ),
     ),
   );
