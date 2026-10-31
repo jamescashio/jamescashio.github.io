@@ -24,6 +24,7 @@ import { OperatorSection } from "./sections/operator.jsx";
 import { ContactSection } from "./sections/contact.jsx";
 import { JourneyDisclosure } from "./sections/journey-disclosure.jsx";
 import { destinationLabel } from "./destinations.js";
+import { drawOrbitalField } from "./orbital-field.js";
 import React from "react";
 import designSystem from "./design-system.js";
 const h = React.createElement;
@@ -208,7 +209,15 @@ export class V40Page extends React.Component {
   componentDidMount() {
     this.reduce = document.documentElement.dataset.motion === "off";
     window.cashioV40 = this;
-    this.onResize = () => this.setState({ wide: window.innerWidth >= 1180, navOn: window.innerWidth >= 1100 });
+    this.onResize = () => {
+      const wide = window.innerWidth >= 1180;
+      if (!wide) {
+        this.orbitPointer = { x: 0, y: 0 };
+        const planet = document.querySelector(".hero-live-poster");
+        if (planet) planet.style.transform = "";
+      }
+      this.setState({ wide, navOn: window.innerWidth >= 1100 });
+    };
     this.sio = new IntersectionObserver(
       (es) =>
         es.forEach((e) => {
@@ -349,8 +358,9 @@ export class V40Page extends React.Component {
 
       document.dispatchEvent(new Event("cashio-media"));
       if (this.reduce) {
+        this.orbitPointer = { x: 0, y: 0 };
         document.querySelectorAll("[data-reveal]").forEach((el) => this.reveal(el));
-        document.querySelectorAll("[data-tilt], [data-mag], #hero-content").forEach((el) => {
+        document.querySelectorAll("[data-tilt], [data-mag], #hero-content, .hero-live-poster").forEach((el) => {
           el.style.transform = "";
           el.style.opacity = "";
         });
@@ -591,40 +601,19 @@ export class V40Page extends React.Component {
     };
     reset();
     let t = 0;
+    const orbitPointer = { x: 0, y: 0 };
     const draw = (delta = 0) => {
       if (!c.isConnected) return;
       const reduce = this.reduce;
       t += delta;
       const warp = !reduce && Date.now() < (this.warpUntil || 0);
       ctx.clearRect(0, 0, w, h);
-      const hz = h * 0.64,
-        cols = 28,
-        rows = 16;
-      ctx.lineWidth = dpr;
-      for (let i = 0; i <= cols; i++) {
-        const x = (i / cols) * w,
-          a = 0.04 + 0.08 * (1 - Math.abs(i / cols - 0.5) * 2);
-        ctx.strokeStyle = `rgba(0,249,255,${a})`;
-        ctx.beginPath();
-        ctx.moveTo(w / 2 + (x - w / 2) * 0.1, hz);
-        ctx.lineTo(w / 2 + (x - w / 2) * 2.8, h);
-        ctx.stroke();
-      }
-      const off = reduce ? 0 : (t * (warp ? 3 : 0.25)) % 1;
-      for (let j = 0; j < rows; j++) {
-        const p = Math.pow((j + off) / rows, 2.2),
-          y = hz + p * (h - hz);
-        ctx.strokeStyle = `rgba(255,149,0,${0.02 + p * 0.2})`;
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(w, y);
-        ctx.stroke();
-      }
-      const g = ctx.createLinearGradient(0, hz - 2, 0, hz + 70);
-      g.addColorStop(0, "rgba(255,149,0,.3)");
-      g.addColorStop(1, "rgba(255,149,0,0)");
-      ctx.fillStyle = g;
-      ctx.fillRect(0, hz - 1, w, 70);
+      const targetPointer = reduce ? { x: 0, y: 0 } : this.orbitPointer || { x: 0, y: 0 };
+      const follow = reduce ? 1 : Math.min(1, delta * 4);
+      orbitPointer.x += (targetPointer.x - orbitPointer.x) * follow;
+      orbitPointer.y += (targetPointer.y - orbitPointer.y) * follow;
+      drawOrbitalField(ctx, { width: w, height: h, dpr, time: t, motion: !reduce, pointer: orbitPointer });
+      const hz = h * 0.88;
       for (const s of stars) {
         if (s.y > hz) continue;
         if (warp) {
@@ -1366,13 +1355,21 @@ export class V40Page extends React.Component {
       railItems,
       heroCols: s.wide ? "minmax(0,1fr) 260px" : "minmax(0,1fr)",
       heroMove: (e) => {
-        if (this.reduce) return;
+        if (this.reduce || !s.wide) return;
         const b = e.currentTarget.getBoundingClientRect();
         const nx = (e.clientX - b.left) / b.width - 0.5,
           ny = (e.clientY - b.top) / b.height - 0.5;
+        this.orbitPointer = { x: nx, y: ny };
+        const planet = e.currentTarget.querySelector(".hero-live-poster");
+        if (planet && s.wide) planet.style.transform = `translate3d(${nx * -12}px,${ny * -8}px,0) scale(1.025)`;
         const sp = document.getElementById("hero-spot");
         if (sp)
           sp.style.background = `radial-gradient(520px circle at ${(nx + 0.5) * 100}% ${(ny + 0.5) * 100}%, rgba(0,249,255,.11), transparent 60%)`;
+      },
+      heroLeave: (e) => {
+        this.orbitPointer = { x: 0, y: 0 };
+        const planet = e.currentTarget.querySelector(".hero-live-poster");
+        if (planet) planet.style.transform = "";
       },
       boardShip: (e) => {
         e.preventDefault();

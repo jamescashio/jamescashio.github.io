@@ -1,0 +1,239 @@
+/* One orbital atmosphere, with quiet reading surfaces in front of it. */
+#v40-root .orbital-observatory {
+  background: #08131d;
+  isolation: isolate;
+}
+.orbital-observatory .hero-live-poster {
+  transform: scale(1.025);
+  transition: transform 1400ms cubic-bezier(0.2, 0.7, 0.3, 1);
+  filter: saturate(0.84) contrast(1.08);
+}
+.orbital-observatory .hero-planet::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 72% 10%, #57d9ed26, transparent 54%),
+    radial-gradient(ellipse at 70% 83%, #ffb35b1f, transparent 46%), linear-gradient(125deg, #06111e99, transparent 62%);
+  mix-blend-mode: screen;
+}
+#v40-root .orbital-observatory > .v41-b75c4d9c44 {
+  background:
+    linear-gradient(90deg, #070c15f0, #070c1599 43%, #070c1514 75%),
+    linear-gradient(180deg, #070c1566, transparent 26%, transparent 74%, #0a0a0f);
+}
+#v40-root .orbital-observatory .v41-32dd3337d5 {
+  background-image: linear-gradient(100deg, #ffe2a4 2%, #ffc267 38%, #e9a441 73%, #ffe3ac);
+  text-shadow: 0 8px 36px #e9a44112;
+}
+#v40-root .orbital-observatory .v41-a353758b92 {
+  opacity: 0.28;
+}
+.orbital-observatory .v41-31fb338fa2,
+.orbital-observatory .v41-b72b79837d {
+  opacity: 0.9;
+}
+.orbital-observatory .v41-fdc6b9292e {
+  width: 106px;
+  height: 58px;
+  border-width: 2px 0 0 2px;
+  border-top-left-radius: 20px;
+  border-color: #ffc56b;
+  filter: drop-shadow(0 0 10px #ffc56b33);
+}
+.orbital-observatory .v41-239c863440,
+.orbital-observatory .v41-cb189694f5,
+.orbital-observatory .v41-7b3ab527b9 {
+  height: 2px;
+}
+.orbital-observatory .v41-239c863440 {
+  width: 70px;
+  background: #ffc56b;
+}
+.orbital-observatory .v41-cb189694f5 {
+  width: 20px;
+  background: #9deaf0;
+}
+.orbital-observatory .v41-bf5360592c {
+  height: 22px;
+  margin-top: -10px;
+  background: #0c1d27;
+  border: 1px solid #94ced54d;
+  border-radius: 3px;
+  color: #b8dfe5;
+  font-size: 10px;
+  letter-spacing: 0.13em;
+}
+.orbital-observatory .v41-84d6fc2938,
+.orbital-observatory .v41-d0ceeed41b {
+  height: 2px;
+}
+.orbital-observatory .v41-d0ceeed41b {
+  width: 34px;
+  background: #ffc56b;
+}
+.orbital-observatory .v41-f1094867b2 {
+  width: 106px;
+  height: 58px;
+  border-width: 0 2px 2px 0;
+  border-bottom-right-radius: 20px;
+  border-color: #9deaf0;
+  filter: drop-shadow(0 0 10px #9deaf033);
+}
+#v40-root .orbital-observatory [aria-label="Lab telemetry"] {
+  border: 1px solid #85c7d63d;
+  background: linear-gradient(145deg, #122a35ed, #080e19f5 68%);
+  box-shadow:
+    0 28px 70px #0005,
+    inset 0 1px #b5e7ed14;
+}
+#v40-root .orbital-observatory [aria-label="Lab telemetry"]::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1px solid #c0dbe014;
+  border-radius: 9px;
+  pointer-events: none;
+}
+#v40-root .orbital-observatory .za-btn--primary {
+  border: 1px solid #ffd18a;
+  background: linear-gradient(130deg, #ffc46a, #f29e32);
+  color: #16110a;
+  box-shadow:
+    0 8px 28px #e7a03925,
+    inset 0 1px #fff4ca80;
+}
+#v40-root .orbital-observatory .za-btn--primary:is(:hover, :focus-visible) {
+  box-shadow:
+    0 10px 36px #ffb54144,
+    inset 0 1px #fff4ca80;
+}
+#v40-root .orbital-observatory .za-btn--secondary {
+  border-color: #8bcedb66;
+  background: #102430bd;
+}
+#v40-root header {
+  background: #080f18ed;
+  box-shadow: 0 10px 36px #0004;
+}
+#v40-root #rooms {
+  background:
+    radial-gradient(ellipse at 8% 10%, #093e4b35, transparent 56%),
+    radial-gradient(ellipse at 94% 75%, #62401f24, transparent 50%);
+}
+#v40-root .world-portal {
+  border: 1px solid #6cb5c144;
+  background: linear-gradient(155deg, #13242f, #0b111c 60%);
+  box-shadow:
+    0 18px 42px #0004,
+    inset 0 1px #bddde412;
+}
+#v40-root .world-portal > div:first-child {
+  isolation: isolate;
+}
+.world-portal > div:first-child::after {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0.65;
+  background:
+    linear-gradient(#95e1eb, #95e1eb) left top / 25px 1px,
+    linear-gradient(#95e1eb, #95e1eb) left top / 1px 25px,
+    linear-gradient(#ffc56b, #ffc56b) right bottom / 25px 1px,
+    linear-gradient(#ffc56b, #ffc56b) right bottom / 1px 25px;
+  background-repeat: no-repeat;
+  transition:
+    inset 400ms ease,
+    opacity 400ms ease;
+}
+#v40-root .world-portal img {
+  filter: saturate(0.9) contrast(1.05);
+  transition:
+    transform 800ms cubic-bezier(0.2, 0.7, 0.3, 1),
+    filter 600ms ease;
+}
+#v40-root .world-portal:is(:hover, :focus-visible) {
+  border-color: #a5e9edb3;
+  box-shadow:
+    0 24px 50px #0006,
+    0 0 24px #38d4e00d;
+}
+#v40-root .world-portal:is(:hover, :focus-visible) img {
+  transform: scale(1.045);
+  filter: saturate(1.05) contrast(1.04);
+}
+.world-portal:is(:hover, :focus-visible) > div:first-child::after {
+  inset: 10px;
+  opacity: 1;
+}
+#v40-root .world-portal:focus-visible {
+  outline: 2px solid #ffc56b;
+  outline-offset: 6px;
+}
+#v40-root .world-portal .v41-fe7aa4b37b {
+  color: #89eff4;
+}
+#v40-root .journey-disclosure {
+  background: radial-gradient(ellipse at 0 0, #16415366, transparent 70%), #0c151f;
+  border-color: #81c5cf40;
+  box-shadow:
+    inset 0 1px #bddde40d,
+    0 12px 30px #0002;
+}
+#v40-root .journey-disclosure[open] {
+  border-color: #b4d5d56b;
+}
+.journey-disclosure > summary img {
+  border-color: #a4c0c25c;
+}
+#v40-root .journey-disclosure-icon {
+  border-color: #87d9e75c;
+  box-shadow: inset 0 0 16px #33d5ea0a;
+}
+#v40-root .journey-disclosure > summary:hover .journey-disclosure-icon {
+  color: #ffd08a;
+  border-color: #ffc56b99;
+}
+#v40-root .brief-preview {
+  border-color: #d6ad655c;
+  box-shadow:
+    inset 0 1px #ffda9912,
+    0 14px 32px #0003;
+}
+@media (max-width: 760px) {
+  .orbital-observatory .hero-live-poster {
+    transform: none;
+  }
+  #v40-root .orbital-observatory > .v41-b75c4d9c44 {
+    background:
+      linear-gradient(90deg, #070c15c9, #070c1580 65%, #070c155c),
+      linear-gradient(180deg, #070c154d, transparent 35%, #0a0a0f 100%);
+  }
+  .world-portal > div:first-child::after {
+    inset: 6px;
+    background-size:
+      14px 1px,
+      1px 14px,
+      14px 1px,
+      1px 14px;
+  }
+  #v40-root .world-portal:is(:hover, :focus-visible) img {
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .orbital-observatory .hero-live-poster,
+  #v40-root .world-portal img,
+  .world-portal > div:first-child::after {
+    transition: none;
+    transform: none;
+  }
+}
+html[data-motion="off"] .orbital-observatory .hero-live-poster,
+html[data-motion="off"] #v40-root .world-portal img,
+html[data-motion="off"] .world-portal > div:first-child::after {
+  transition: none;
+  transform: none;
+}

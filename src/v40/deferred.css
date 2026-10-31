@@ -3,6 +3,7 @@
 @import "./bit.css";
 @import "./ai-worm.css";
 @import "./journey.css";
+@import "./observatory.css";
 
 .eagle-film-play {
   transition:

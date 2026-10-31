@@ -77,7 +77,7 @@ export function WorldsSection({ v }) {
               "a",
               {
                 key: 610,
-                className: ["za-card-hover", "v41-cb6566847c", "world-card"].filter(Boolean).join(" "),
+                className: ["za-card-hover", "v41-cb6566847c", "world-card", "world-portal"].filter(Boolean).join(" "),
                 "data-reveal": "",
                 "data-tilt": "3",
                 href: v.w.href,
