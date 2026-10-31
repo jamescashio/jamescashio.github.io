@@ -1,0 +1,24 @@
+{
+  "title": "The Sovereign: Galactic Paperwork Cut",
+  "durationSeconds": 119.994875,
+  "durationLabel": "2:00",
+  "standard": {
+    "src": "/assets/sovereign/galactic-paperwork-720p-f4f33d0e43d6.mp4",
+    "bytes": 26359441,
+    "sha256": "f4f33d0e43d6f30dfdc281e5c5c3d28e5911d898795b54d9ea6e92bfc4d5cda1"
+  },
+  "compact": {
+    "src": "/assets/sovereign/galactic-paperwork-480p-7e8bda0d7b22.mp4",
+    "bytes": 13030268,
+    "sha256": "7e8bda0d7b222eb535c42458347bfc7588a19f5ddc3910ec2e09508f5ec82f38"
+  },
+  "captions": {
+    "src": "/assets/sovereign/galactic-paperwork-captions-62e33a6e42fd.vtt",
+    "bytes": 3970,
+    "sha256": "62e33a6e42fdf7bf21d7adfb927367cf4908bca8a70c1a7db78909b148a2df64"
+  },
+  "youtubeUrl": "https://www.youtube.com/watch?v=METPbuO0SQ4",
+  "youtubeLabel": "YouTube (earlier) ↗",
+  "originalUrl": "https://www.youtube.com/watch?v=382mPi4ON60",
+  "credit": "AI-assisted likeness and original comedy edit. Scene and soundtrack: Dune: Part Two. Unofficial fan parody."
+}

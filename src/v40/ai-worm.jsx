@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import edit from "../../public/assets/sovereign/quick-sand.json";
+import edit from "../../public/assets/sovereign/galactic-paperwork.json";
 import { conservesData } from "./media-policy.js";
 
 const h = React.createElement;
@@ -59,7 +59,7 @@ export function AiWormFilm() {
             {
               ref: player,
               id: "ai-worm-video",
-              "aria-label": "The Sovereign: Quick Sand Cut",
+              "aria-label": edit.title,
               src: (conservesData() ? edit.compact : edit.standard).src,
               controls: true,
               autoPlay: true,
@@ -84,7 +84,7 @@ export function AiWormFilm() {
               className: "ai-worm-play",
               ref: playButton,
               onClick: () => setPlaying(true),
-              "aria-label": "Play The Sovereign quick cut",
+              "aria-label": "Play The Sovereign",
               "aria-describedby": "ai-worm-playback-note",
             },
             h("img", {
@@ -99,19 +99,19 @@ export function AiWormFilm() {
               decoding: "async",
             }),
             h("span", { className: "ai-worm-play-icon", "aria-hidden": "true" }, "▷"),
-            h("span", { className: "ai-worm-play-label" }, "PLAY THE SOVEREIGN QUICK CUT"),
+            h("span", { className: "ai-worm-play-label" }, "PLAY THE SOVEREIGN"),
           ),
     ),
     h(
       "div",
       { className: "ai-worm-copy" },
-      h("p", { className: "ai-worm-kicker" }, "FEATURED PARODY · " + edit.durationLabel + " · QUICK SAND CUT"),
+      h("p", { className: "ai-worm-kicker" }, "FEATURED PARODY · " + edit.durationLabel + " · GALACTIC CUT"),
       h("h3", { id: "ai-worm-title" }, "The Sovereign"),
       h("p", { className: "ai-worm-tagline" }, "One man. Several providers. No remaining hobbies."),
       h(
         "div",
         { className: "ai-worm-actions" },
-        h("a", { href: edit.youtubeUrl, target: "_blank", rel: "noopener noreferrer" }, "YouTube quick cut ↗"),
+        h("a", { href: edit.youtubeUrl, target: "_blank", rel: "noopener noreferrer" }, edit.youtubeLabel),
         playing
           ? h("button", { type: "button", onClick: closePlayer, className: "ai-worm-stop" }, "Close player ×")
           : null,
@@ -128,7 +128,7 @@ export function AiWormFilm() {
         h(
           "p",
           { className: "ai-worm-description" },
-          "My AI journey since 2022, condensed into one very optimistic free trial. The worm is AI. The sand is apparently a dependency.",
+          "Two minutes of cosmic bureaucracy, eight visual gags, and one very optimistic time-saving device. The worm is AI. Your weekend is the convenience fee.",
         ),
         h("p", { className: "ai-worm-credit" }, edit.credit),
         h(
