@@ -111,6 +111,7 @@ export function AiWormFilm() {
       h(
         "div",
         { className: "ai-worm-actions" },
+        h("a", { href: edit.youtubeUrl, target: "_blank", rel: "noopener noreferrer" }, "Quick cut on YouTube ↗"),
         h("a", { href: videoUrl, target: "_blank", rel: "noopener noreferrer" }, "Full film on YouTube ↗"),
         playing
           ? h("button", { type: "button", onClick: closePlayer, className: "ai-worm-stop" }, "Close player ×")
