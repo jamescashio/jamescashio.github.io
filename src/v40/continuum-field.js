@@ -1,135 +1,163 @@
-// Original projected geometry for V42. The scene is artwork, never fleet telemetry.
+// Original perspective light sculpture. This is artwork, never operational telemetry.
 const TAU = Math.PI * 2;
-const points = Array.from({ length: 1800 }, (_, i) => {
-  const t = i / 1800;
-  const phi = Math.acos(1 - (2 * (i + 0.5)) / 1800);
-  const theta = i * Math.PI * (3 - Math.sqrt(5));
-  return { t, phi, theta, seed: ((i * 16807) % 2147483647) / 2147483647 };
-});
-
+const COUNT = 3200;
+const particles = Array.from({ length: COUNT }, (_, i) => ({
+  t: i / COUNT,
+  a: i * Math.PI * (3 - Math.sqrt(5)),
+  band: i % 4,
+  noise: Math.sin(i * 12.9898) * Math.cos(i * 4.1414),
+}));
+const scenes = new WeakMap();
+function position(p, mode, phase) {
+  if (mode === "signal") {
+    const a = p.t * TAU * 3.5 + (p.band % 2) * Math.PI + phase * 0.4;
+    const radius = 0.6 + p.noise * 0.055;
+    return [Math.cos(a) * radius, (p.t - 0.5) * 2.7, Math.sin(a) * radius];
+  }
+  if (mode === "constellation") {
+    const radius = 0.1 + Math.pow(p.t, 0.55) * 1.3;
+    const a = p.t * TAU * 2.3 + (p.band * Math.PI) / 2 + phase * 0.22;
+    return [Math.cos(a) * radius, p.noise * 0.12 + Math.sin(p.a) * p.t * 0.12, Math.sin(a) * radius];
+  }
+  const a = p.t * TAU * 2 + phase * 0.15;
+  const tube = p.a + phase * 0.07;
+  const radius = 1.1 + 0.09 * Math.cos(tube);
+  return [
+    Math.cos(a) * radius,
+    Math.sin(a) * 0.52 + Math.sin(tube) * 0.08,
+    Math.sin(a) * radius * 0.55 + Math.cos(tube) * 0.08,
+  ];
+}
 export function drawContinuumField(ctx, { width, height, dpr, time, motion, pointer, mode = "orbit", turn = 0 }) {
-  const compact = width / dpr < 460;
-  const radius = Math.min(width * 0.28, height * 0.29);
-  const cx = width * 0.5;
-  const cy = height * 0.48;
-  const angle = turn + (motion ? time * 0.055 : 0) + pointer.x * 0.34;
-  const tilt = -0.2 + pointer.y * 0.2;
+  const compact = width / dpr < 760;
+  const cx = width * (compact ? 0.5 : 0.755),
+    cy = height * (compact ? 0.48 : 0.43);
+  const radius = Math.min(width * (compact ? 0.29 : 0.19), height * (compact ? 0.33 : 0.37));
+  const phase = motion ? time : 0;
+  let scene = scenes.get(ctx);
+  if (!scene) {
+    scene = { mode, previous: mode, since: time };
+    scenes.set(ctx, scene);
+  }
+  if (scene.mode !== mode) {
+    scene.previous = scene.mode;
+    scene.mode = mode;
+    scene.since = time;
+  }
+  const morph = motion ? Math.min(1, Math.max(0, (time - scene.since) / 0.7)) : 1;
+  const blend = morph * morph * (3 - 2 * morph);
+  const angle = turn + phase * 0.045 + pointer.x * 0.45;
+  const tilt = (mode === "constellation" ? -0.64 : -0.16) + pointer.y * 0.25;
   const ca = Math.cos(angle),
     sa = Math.sin(angle),
     ct = Math.cos(tilt),
     st = Math.sin(tilt);
   const project = (x, y, z) => {
-    const x1 = x * ca + z * sa;
-    const z1 = z * ca - x * sa;
-    const y1 = y * ct - z1 * st;
-    const z2 = y * st + z1 * ct;
-    const perspective = 4.8 / (4.8 - z2);
-    return [cx + x1 * radius * perspective, cy + y1 * radius * perspective, perspective, z2];
+    const x1 = x * ca + z * sa,
+      z1 = z * ca - x * sa;
+    const y1 = y * ct - z1 * st,
+      z2 = y * st + z1 * ct;
+    const perspective = 4.4 / (4.4 - z2);
+    return [cx + x1 * radius * perspective, cy + y1 * radius * perspective, z2, perspective];
   };
   ctx.save();
-  const haze = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius * 1.8);
-  haze.addColorStop(0, "rgba(33,132,160,.15)");
-  haze.addColorStop(0.55, "rgba(16,71,98,.10)");
-  haze.addColorStop(1, "rgba(3,9,18,0)");
-  ctx.fillStyle = haze;
-  ctx.fillRect(0, 0, width, height);
-
-  // A calibrated plate keeps the illustration readable even with motion paused.
-  ctx.lineWidth = 0.7 * dpr;
-  for (let r = 0; r < 3; r++) {
-    ctx.strokeStyle = r === 1 ? "rgba(232,191,112,.28)" : "rgba(102,205,224,.13)";
-    ctx.setLineDash(r === 2 ? [1 * dpr, 6 * dpr] : []);
+  ctx.globalCompositeOperation = "screen";
+  if (mode !== "orbit") {
+    const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius * 1.8);
+    glow.addColorStop(0, "rgba(50,156,184,.19)");
+    glow.addColorStop(0.45, "rgba(15,94,145,.12)");
+    glow.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, width, height);
+  }
+  // Thin calibrated rings remain quieter than the sculptural particle form.
+  ctx.lineWidth = 0.65 * dpr;
+  for (let k = 0; k < 2; k++) {
+    ctx.strokeStyle = k ? "rgba(178,224,233,.24)" : "rgba(113,213,227,.11)";
+    ctx.setLineDash(k ? [1 * dpr, 9 * dpr] : []);
     ctx.beginPath();
-    ctx.arc(cx, cy, radius * (1.53 + r * 0.13), 0, TAU);
+    ctx.arc(cx, cy, radius * (1.45 + k * 0.13), 0, TAU);
     ctx.stroke();
   }
   ctx.setLineDash([]);
-  for (let i = 0; i < 80; i++) {
-    const a = (i / 80) * TAU;
-    const r1 = radius * 1.64,
-      r2 = r1 + (i % 5 === 0 ? 9 : 3) * dpr;
-    ctx.strokeStyle = i % 5 === 0 ? "rgba(157,220,231,.5)" : "rgba(126,199,218,.19)";
+  for (let i = 0; i < 72; i++) {
+    const a = (i / 72) * TAU,
+      r = radius * 1.58;
+    ctx.strokeStyle = i % 6 ? "rgba(137,210,230,.15)" : "rgba(229,207,161,.5)";
     ctx.beginPath();
-    ctx.moveTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1);
-    ctx.lineTo(cx + Math.cos(a) * r2, cy + Math.sin(a) * r2);
+    ctx.moveTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+    ctx.lineTo(cx + Math.cos(a) * (r + (i % 6 ? 3 : 10) * dpr), cy + Math.sin(a) * (r + (i % 6 ? 3 : 10) * dpr));
     ctx.stroke();
   }
-
-  // Perspective paths are sampled in 3D; the far side is deliberately quieter.
-  const ring = (r, lean, phase, gold = false) => {
-    for (let i = 0; i < 160; i++) {
-      const a = (i / 160) * TAU + phase;
-      const b = a + TAU / 160;
-      const p = project(Math.cos(a) * r, Math.sin(a) * r * Math.sin(lean), Math.sin(a) * r * Math.cos(lean));
-      const q = project(Math.cos(b) * r, Math.sin(b) * r * Math.sin(lean), Math.sin(b) * r * Math.cos(lean));
-      ctx.strokeStyle = gold
-        ? "rgba(244,203,130," + (p[3] > 0 ? 0.65 : 0.17) + ")"
-        : "rgba(109,221,238," + (p[3] > 0 ? 0.34 : 0.09) + ")";
-      ctx.lineWidth = (gold ? 1.1 : 0.7) * dpr;
+  const lines = mode === "signal" ? 46 : 3;
+  for (let l = 0; l < lines; l++) {
+    const rib = mode === "signal";
+    const segments = rib ? 16 : 150;
+    for (let i = 0; i < segments; i++) {
+      const coords = (j) => {
+        if (rib) {
+          const t = l / (lines - 1),
+            a = t * TAU * 3.5 + phase * 0.4;
+          const f = (j / segments) * 2 - 1;
+          return project(Math.cos(a) * 0.6 * f, (t - 0.5) * 2.7, Math.sin(a) * 0.6 * f);
+        }
+        const a = (j / segments) * TAU + l * 0.2;
+        return project(
+          Math.cos(a) * (1.22 + l * 0.15),
+          Math.sin(a) * (l === 1 ? -0.72 : 0.32 + l * 0.15),
+          Math.sin(a) * (1 + l * 0.15),
+        );
+      };
+      const p = coords(i),
+        q = coords(i + 1),
+        alpha = (p[2] > 0 ? 0.85 : 0.24) * (rib ? 0.8 : 1);
+      ctx.strokeStyle = l % 2 ? "rgba(255,212,144," + alpha + ")" : "rgba(68,235,255," + alpha + ")";
+      ctx.lineWidth = (l === 1 && !rib ? 1.4 : 0.9) * dpr;
       ctx.beginPath();
       ctx.moveTo(p[0], p[1]);
       ctx.lineTo(q[0], q[1]);
       ctx.stroke();
     }
-  };
-  ring(1.43, -0.35, 0, true);
-  ring(1.3, 0.9, 0.6);
-  ring(1.47, 1.75, 1.2);
-
-  const stride = compact ? 2 : 1;
-  const projected = [];
-  for (let i = 0; i < points.length; i += stride) {
-    const p = points[i];
-    let x, y, z;
-    if (mode === "signal") {
-      const a = p.t * TAU * 4 + (Math.floor(i / stride) % 2) * Math.PI;
-      const r = 0.63 + 0.11 * Math.sin(p.theta);
-      x = Math.cos(a) * r;
-      y = (p.t - 0.5) * 2.25;
-      z = Math.sin(a) * r;
-    } else if (mode === "constellation") {
-      const a = p.t * TAU * 7;
-      const r = 0.2 + Math.sqrt(p.t) * 1.15;
-      x = Math.cos(a + (i % 3) * 2.094) * r;
-      y = Math.sin(p.theta) * 0.22 + Math.cos(a) * 0.2;
-      z = Math.sin(a + (i % 3) * 2.094) * r;
-    } else {
-      const r = 0.96 + 0.04 * Math.sin(p.theta * 3);
-      x = Math.sin(p.phi) * Math.cos(p.theta) * r;
-      y = Math.cos(p.phi) * r;
-      z = Math.sin(p.phi) * Math.sin(p.theta) * r;
-    }
-    projected.push({ p: project(x, y, z), gold: i % 11 < 2, i });
   }
-  projected.sort((a, b) => a.p[3] - b.p[3]);
-  for (const { p, gold, i } of projected) {
-    const light = Math.max(0.13, Math.min(0.92, 0.33 + (p[3] + 1.2) * 0.23));
-    const size = (i % 17 === 0 ? 1.65 : 0.8) * dpr * p[2];
-    ctx.fillStyle = gold ? "rgba(255,218,155," + light + ")" : "rgba(129,229,246," + light + ")";
-    ctx.fillRect(p[0], p[1], size, size);
-    if (i % 121 === 0 && p[3] > 0) {
-      ctx.strokeStyle = "rgba(198,246,255,.3)";
+  const projected = [];
+  const stride = compact ? 3 : 1;
+  for (let i = 0; i < COUNT; i += stride) {
+    const p = particles[i],
+      to = position(p, mode, phase),
+      from = blend < 1 ? position(p, scene.previous, phase) : to;
+    const q = project(...to.map((v, k) => from[k] + (v - from[k]) * blend));
+    projected.push({ q, i, gold: i % 9 < 3 });
+  }
+  projected.sort((a, b) => a.q[2] - b.q[2]);
+  for (const { q, i, gold } of projected) {
+    const alpha = Math.max(0.24, Math.min(0.98, 0.58 + q[2] * 0.3));
+    const size = (i % 37 === 0 ? 1.6 : 0.8) * dpr * q[3];
+    ctx.fillStyle = gold ? "rgba(255,218,157," + alpha + ")" : "rgba(92,240,255," + alpha + ")";
+    ctx.fillRect(q[0], q[1], size, size);
+    if (i % 97 === 0 && q[2] > 0) {
+      ctx.strokeStyle = "rgba(214,254,255,.45)";
+      ctx.lineWidth = 0.5 * dpr;
       ctx.beginPath();
-      ctx.moveTo(p[0] - 4 * dpr, p[1]);
-      ctx.lineTo(p[0] + 4 * dpr, p[1]);
-      ctx.moveTo(p[0], p[1] - 4 * dpr);
-      ctx.lineTo(p[0], p[1] + 4 * dpr);
+      ctx.moveTo(q[0] - 5 * dpr, q[1]);
+      ctx.lineTo(q[0] + 5 * dpr, q[1]);
+      ctx.moveTo(q[0], q[1] - 5 * dpr);
+      ctx.lineTo(q[0], q[1] + 5 * dpr);
       ctx.stroke();
     }
   }
-  // Four beacons evoke the four public worlds without implying real host locations.
+  // Four luminous waypoints echo the four fictional worlds.
   for (let i = 0; i < 4; i++) {
-    const a = (i * Math.PI) / 2 + 0.32 + (motion ? time * 0.045 : 0);
-    const p = project(Math.cos(a) * 1.43, Math.sin(a) * -0.49, Math.sin(a) * 1.34);
-    const glow = ctx.createRadialGradient(p[0], p[1], 0, p[0], p[1], 15 * dpr);
-    glow.addColorStop(0, "rgba(255,228,172,.8)");
-    glow.addColorStop(0.15, "rgba(255,204,116,.4)");
-    glow.addColorStop(1, "rgba(255,193,101,0)");
+    const a = (i * TAU) / 4 + phase * 0.045;
+    const p = project(Math.cos(a) * 1.5, Math.sin(a) * 0.5, Math.sin(a) * 1.3);
+    const glow = ctx.createRadialGradient(p[0], p[1], 0, p[0], p[1], 20 * dpr);
+    glow.addColorStop(0, "rgba(255,238,194,.9)");
+    glow.addColorStop(0.12, "rgba(255,207,123,.55)");
+    glow.addColorStop(1, "rgba(255,190,95,0)");
     ctx.fillStyle = glow;
-    ctx.fillRect(p[0] - 15 * dpr, p[1] - 15 * dpr, 30 * dpr, 30 * dpr);
-    ctx.fillStyle = "#ffe3ab";
+    ctx.fillRect(p[0] - 20 * dpr, p[1] - 20 * dpr, 40 * dpr, 40 * dpr);
+    ctx.fillStyle = "#fff0ce";
     ctx.beginPath();
-    ctx.arc(p[0], p[1], 2 * dpr, 0, TAU);
+    ctx.arc(p[0], p[1], 1.8 * dpr, 0, TAU);
     ctx.fill();
   }
   ctx.restore();

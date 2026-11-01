@@ -13,7 +13,9 @@ import { installMediaCoordinator } from "./media-policy.js";
 import { posterForViewport } from "./poster-sources.js";
 import { frameDeltaSeconds, shouldRenderFrame } from "../lib/animation-timing.ts";
 import { CinemaReel, ReelText, reelPoster } from "./hero-reel.jsx";
-import { ContinuumHero as HeroSection, ContinuumPrinciples } from "./continuum-hero.tsx";
+import { ContinuumPrinciples } from "./continuum-hero.tsx";
+import { ImmersiveHero as HeroSection } from "./immersive-hero.tsx";
+import { DiscoveryConsole } from "./discovery-console.tsx";
 import { EagleFilmSection } from "./sections/eagle-film.jsx";
 import { WorkshopSection } from "./sections/workshop.jsx";
 import { WorldsSection } from "./sections/worlds.jsx";
@@ -71,6 +73,8 @@ export class V40Page extends React.Component {
     return resources[id] || p;
   }
   state = {
+    discovery: null,
+    foldCount: 0,
     scene: "orbit",
     sceneTurn: 0,
     wide: typeof window !== "undefined" ? window.innerWidth >= 1180 : true,
@@ -320,6 +324,10 @@ export class V40Page extends React.Component {
     }, 1600);
   }
   componentDidUpdate() {
+    if (this.lastDiscovery !== this.state.discovery) {
+      this.lastDiscovery = this.state.discovery;
+      this.syncMotion?.();
+    }
     if (this.lastScene !== this.state.scene || this.lastSceneTurn !== this.state.sceneTurn) {
       this.lastScene = this.state.scene;
       this.lastSceneTurn = this.state.sceneTurn;
@@ -637,15 +645,18 @@ export class V40Page extends React.Component {
       for (const s of stars) {
         if (s.y > hz) continue;
         if (warp) {
-          const len = 90 * s.z * dpr;
-          ctx.strokeStyle = `rgba(160,250,255,${0.4 + 0.5 * s.z})`;
-          ctx.lineWidth = 1.4 * s.z * dpr;
+          const ox = w * (w / dpr < 760 ? 0.5 : 0.755),
+            oy = h * 0.43;
+          const dx = s.x - ox,
+            dy = s.y - oy,
+            length = Math.max(1, Math.hypot(dx, dy));
+          const len = Math.min(120 * dpr, length * 0.22) * s.z;
+          ctx.strokeStyle = `rgba(160,230,255,${0.2 + 0.35 * s.z})`;
+          ctx.lineWidth = 1.1 * s.z * dpr;
           ctx.beginPath();
           ctx.moveTo(s.x, s.y);
-          ctx.lineTo(s.x + len, s.y);
+          ctx.lineTo(s.x + (dx / length) * len, s.y + (dy / length) * len);
           ctx.stroke();
-          s.x -= 2400 * delta * s.z * dpr;
-          if (s.x < -len) s.x = w;
           continue;
         }
         const tw = reduce ? 1 : 0.55 + 0.45 * Math.sin(t * 1.6 + s.t);
@@ -662,7 +673,13 @@ export class V40Page extends React.Component {
     this.starDraw = draw;
     let lastFrame = null;
     const loop = (timestamp) => {
-      if (document.hidden || this.heroVisible === false || this.state.cinema || !c.isConnected) {
+      if (
+        document.hidden ||
+        this.heroVisible === false ||
+        this.state.cinema ||
+        this.state.discovery ||
+        !c.isConnected
+      ) {
         lastFrame = null;
         return;
       }
@@ -1354,6 +1371,14 @@ export class V40Page extends React.Component {
     return {
       padL: pad,
       scene: s.scene,
+      discovery: s.discovery,
+      openDiscovery: (route) => this.setState({ discovery: route }),
+      closeDiscovery: () => this.setState({ discovery: null }),
+      foldCount: s.foldCount,
+      foldScene: () => {
+        this.warpUntil = this.reduce ? 0 : Date.now() + 1400;
+        this.setState((state) => ({ sceneTurn: state.sceneTurn + Math.PI / 2, foldCount: state.foldCount + 1 }));
+      },
       chooseScene: (scene) => this.setState({ scene }),
       turnScene: () => this.setState((state) => ({ sceneTurn: state.sceneTurn + Math.PI / 4 })),
       wide: s.wide,
@@ -1384,6 +1409,7 @@ export class V40Page extends React.Component {
         window.location.hash = "flight=board";
       },
       trailer: this.filmById("trailer"),
+      featureFilms: ["trailer", "intro", "orbital-instrument", "threshold"].map((id) => this.filmById(id)),
       telemetry,
       observedDate,
       observedShortDate,
@@ -1856,6 +1882,7 @@ function renderPage(v) {
         " ",
       ),
       " ",
+      h(DiscoveryConsole, { key: "discovery-console", routeId: v.discovery, onClose: v.closeDiscovery }),
       h(
         "main",
         { key: 107, id: "main-content", tabIndex: "-1" },

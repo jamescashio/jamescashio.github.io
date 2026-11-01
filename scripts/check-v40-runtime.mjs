@@ -33,6 +33,7 @@ try {
       "tests/v40-runtime.test.mjs",
       "tests/v41-runtime.test.mjs",
       "tests/v42-runtime.test.mjs",
+      "tests/v42-immersive.test.mjs",
       "tests/preview-runtime.test.mjs",
     ],
     {

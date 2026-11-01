@@ -1,6 +1,6 @@
 # V42 · Continuum preview
 
-Continuum rebuilds the front end around original interactive particle artwork, precise orbital instruments and the existing public workshop. Orbit, Signal and Constellation are selectable light studies with manual rotation and a complete static fallback. House Cashio receives a cinematic opening feature; the world map, destination desk, projects, experiments, evidence and contact share a coherent visual system.
+The Immersive edition rebuilds the opening as a monumental cinematic threshold with an original panorama and perspective light sculpture. Orbit, Signal and Constellation morph on selection; Rotate and Fold space remain usable with motion off. A new Discovery console offers Explore, Try and Watch paths, twelve illustrated stops, selectable holographic beacons, keyboard stepping and copyable public routes. The cinema presents four selectable features with House Cashio first. The world map expands each destination into a panoramic composition.
 
 All existing films, captions, routes, four worlds, seven experiments, Bit and E.V.E. remain. The verified November 1, 2026 observation is unchanged. The reference's personal information is excluded. No dependency, infrastructure or security setting changes are included.
 

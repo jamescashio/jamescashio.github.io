@@ -2,6 +2,8 @@
 
 ## V42.0.0 · Continuum preview
 
+Immersive revision · November 1, 2026: an original panoramic gateway, three perspective light forms, a finite Fold space response, and a Discovery console with three paths, twelve destinations and selectable holographic beacons. The cinema gains four selectable features and the world map gains panoramic destination artwork. House Cashio, the complete original media and dated evidence remain intact. This revision is unpublished.
+
 Prepared November 1, 2026. A new orbital interface and interactive generative light studies with the complete existing public content. The verified November 1, 2026 observation remains unchanged. V41 First Light release metadata is archived. This candidate is unpublished and awaits final approval.
 
 ## V41.0.0 · Eagle · October 23, 2026

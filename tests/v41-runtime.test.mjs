@@ -308,8 +308,11 @@ test("The planet stays in the hero; House Cashio replaces the featured Eagle fil
   await page.waitForTimeout(2600);
   const watch = page.getByRole("link", { name: "Watch House Cashio 61 seconds", exact: true });
   await expect(page.locator("#eagle-film h2")).toHaveText("House Cashio: The Trailer");
-  await expect(page.locator("#eagle-film img")).toHaveAttribute("src", "/assets/hero/cashio-trailer-poster.webp");
-  await expect(page.locator("#eagle-film img")).toHaveAttribute("alt", /House Cashio/);
+  await expect(page.locator("#eagle-film .eagle-film-play img")).toHaveAttribute(
+    "src",
+    "/assets/hero/cashio-trailer-poster.webp",
+  );
+  await expect(page.locator("#eagle-film .eagle-film-play img")).toHaveAttribute("alt", /House Cashio/);
   await expect(page.locator("#eagle-film")).not.toContainText("A moment in orbit.");
   await page.locator(".continuum-next").click();
   await expect(page).toHaveURL(/#eagle-film$/);

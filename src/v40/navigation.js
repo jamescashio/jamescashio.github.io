@@ -187,14 +187,15 @@ export function setupV40Navigation() {
       event.preventDefault();
       event.stopImmediatePropagation();
       if (!activeHash) {
+        const fromDiscovery = !!link.closest(".discovery-console");
         returnHash =
           location.hash ||
-          (sceneKind(url.hash) === "flight"
+          (fromDiscovery || sceneKind(url.hash) === "flight"
             ? "#top"
             : url.hash === "#film=trailer"
               ? "#" + (link.closest("section[id]")?.id || "universe")
               : "#films");
-        opener = link;
+        opener = fromDiscovery ? document.getElementById("discovery-launch") || link : link;
       }
       navigate(url.hash);
     },

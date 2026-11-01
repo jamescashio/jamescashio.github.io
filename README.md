@@ -1,6 +1,6 @@
 # cAshIo V42 · Continuum
 
-**Continuum · Worlds in motion** is an unpublished redesign prepared on 11-01-2026. It brings original projected particle artwork, a quieter observation desk, cinematic House Cashio playback, a visual destination search and a unified navy, gold and cyan interface to the existing public workshop.
+**Continuum · Worlds in motion / Immersive edition** is an unpublished redesign prepared on 11-01-2026. A monumental original portal panorama, perspective light sculptures and a Discovery console make the existing workshop a place to explore. Three curated paths connect twelve illustrated stops. The cinema lets visitors select House Cashio, Eagle and two Zenith shorts before quiet playback. The selected world becomes a panoramic destination, while projects, studies and evidence retain the same navy, gold and cyan material system.
 
 Production remains at commit `650f395adc36ae762acd99e43c0a4655d653ed1f` until Doug approves the final preview. The local review server displays an unpublished ribbon and sends noindex headers. The current receipt at `public/v40/site-release.json` explicitly records `published: false`, `status: preview` and no release date.
 
@@ -8,7 +8,7 @@ Production remains at commit `650f395adc36ae762acd99e43c0a4655d653ed1f` until Do
 
 All twelve homepage sections, four worlds, seven experiments, films, captions, reading editions and existing bookmark destinations remain. House Cashio is the opening feature; Eagle remains available at `/#film=intro`. The Sovereign, Roadster Studio, the fifteen Zenith shorts, Bit, E.V.E., the logo reveal, signature and contact routes remain accessible. Motion can be paused, reduced motion is honored, and films start muted only after an explicit choice.
 
-The aesthetic reference informs the moving light, orbital depth and luminous material system. Its personal content and source code are excluded. Continuum uses original Canvas geometry and the project's existing dependencies; no remote runtime is added.
+The aesthetic reference informs the moving light, orbital depth and luminous material system. Its personal content and source code are excluded. Continuum uses an original generated fictional panorama, original Canvas geometry and the project's existing dependencies; no remote runtime is added. The Discovery console adds selectable cyan and gold holographic beacons, an artwork view and a copyable route of public links without sending any data. All three light forms remain manually operable when motion is paused.
 
 ## Current evidence
 
@@ -20,7 +20,7 @@ These inventory and integrity readings do not establish application health, a re
 
 | Concern                                           | Source                                                                        |
 | ------------------------------------------------- | ----------------------------------------------------------------------------- |
-| Continuum opening and fallback illustration       | `src/v40/continuum-hero.tsx`                                                  |
+| Continuum opening and fallback illustration       | `src/v40/immersive-hero.tsx`                                                  |
 | Original projected geometry                       | `src/v40/continuum-field.js`                                                  |
 | Critical opening styles                           | `src/v40/continuum.css`                                                       |
 | Shared secondary material system                  | `src/v40/continuum-panels.css`                                                |

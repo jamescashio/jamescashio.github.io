@@ -1,4 +1,20 @@
-# V42 · Continuum
+# V42 · Continuum / Immersive edition
+
+## Current creative thesis
+
+A monumental gateway into a human imagination: cinematic architecture at full scale, luminous instruments that answer the visitor, and tangible routes into the original films, experiments and worlds.
+
+The previous V42 preview was too restrained for Doug's request. This isolated revision changes the composition and adds useful discovery features. Use an original generated portal panorama as the opening's architecture, with a large quiet reading area and a bright cyan and gold horizon. The light sculpture fills the scene rather than sitting inside a card. Orbit, a double helix and a spiral constellation morph in perspective; Fold space is a finite response to a deliberate click. There is no autoplay audio or strobe.
+
+The Discovery console offers three curated paths with four stops each, illustrated previews, keyboard stepping, direct destination links and a copyable route. Its holographic constellation makes each stop a selectable cyan beacon; gold identifies the selected destination and its traced route. Visitors can switch between the hologram and original artwork. A finite projection pulse follows selection and respects reduced motion and Pause. The cinema offers four selectable features, with House Cashio first. Expand the world map's selected artwork into a cinematic destination with readable foreground copy. Carry the same material system through projects, studies and evidence. Preserve the complete original content, links, historical assets and all public observations.
+
+Keep the established Orbitron, Exo 2 and JetBrains type families. Deep midnight navy holds quiet text, luminous cyan describes spatial structure and warm gold marks human actions. The personal briefing is the reference for atmospheric depth, illuminated instrumentation, particle structures and interactive projections. These are original implementations using only the website's existing public content. Use precise edges, illustrated surfaces, generous chapter transitions and short interaction feedback. Avoid a wall of generic cards, decorative operational numbers, fake live data, private briefing content, forced intros, new dependencies and sound without consent.
+
+The hero has a complete image and vector fallback. Motion is bounded at 30 FPS except the brief user-triggered fold, with capped canvas resolution. Pause, reduced motion, page visibility, offscreen state and open dialogs stop the automatic scene. Manual controls remain usable with motion disabled. Keep the unchanged 19 KB compressed entry CSS limit and responsive touch targets.
+
+Prepare only an unpublished loopback preview. The previous V42 preview at e950e5467fa43756cde9188d183c0b430c066ded remains intact; production rollback remains 650f395adc36ae762acd99e43c0a4655d653ed1f. Publication needs Doug's final approval of this revision.
+
+## Previous V42 design contract
 
 ## Creative thesis
 

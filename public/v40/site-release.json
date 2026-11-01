@@ -1,11 +1,12 @@
 {
   "experienceVersion": "42.0.0",
-  "releaseId": "continuum-42.0.0-preview-20261101",
+  "releaseId": "continuum-42.0.0-immersive-preview-20261101",
   "releaseName": "CONTINUUM",
   "visualEdition": "Continuum",
   "presentation": {
     "name": "Continuum",
     "subtitle": "Worlds in motion",
+    "revision": "Immersive",
     "preparedDate": "2026-11-01"
   },
   "entry": "/",
