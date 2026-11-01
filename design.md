@@ -1,3 +1,62 @@
+# cAshIo Orbital Observatory · approved release · 10-31-2026
+
+## Creative thesis
+
+A cinematic orbital observatory: a luminous planet, precise cyan instruments, warm gold intent, and quiet layers of depth that respond to the visitor.
+
+## Audience and outcome
+
+- Audience: curious builders, technical peers, and potential collaborators.
+- Primary action: board the existing starship or explore a working experiment.
+- Feeling: expansive, tactile, composed.
+- Scope: Doug approved publication of the orbital polish and phone header fix, and requested stronger content and discovery. Preserve the approved visual direction and expose the existing signature projects through a compact, visible showcase.
+
+## Visual system
+
+- Typography: preserve Unbounded for display, Instrument Sans for reading, and JetBrains Mono for instrument labels. Keep the existing readable phone scale and supporting-text improvements. Body copy stays within about 65 characters per line.
+- Color: near-black navy `#070c15` for the canvas, deep blue `#112432` for atmospheric depth, silver `#e6edf5` for text, cool gray `#c0cbd8` for supporting text, cyan `#00f9ff` for interaction, and warm gold `#ffc56b` for human intent. Use restrained cyan borders and warm highlights instead of bathing every component in glow.
+- Layout: preserve the shorter homepage, projects near the opening, expandable supporting material, clear navigation, and prominent Contact Doug. Keep the current grid and responsive breakpoints. No additional introductory screen or new scrolling detour.
+- Imagery: retain the original planetary, starship, studio, and signature artwork. Add authored orbital paths and particles around the hero artwork; keep reading areas dark and quiet. The illustration is atmosphere, never a claim about the live lab.
+- Shape: precise open corners, thin instrument lines, and layered image windows. Use existing rounded cards only where they contain a distinct project or selectable destination.
+- Texture: a faint star field, broad blue atmospheric light, and a controlled gold horizon. Avoid heavy blur, grain over text, glitter on every surface, or a custom cursor.
+
+## Motion and interaction
+
+- One existing hero canvas owns ambient particles and orbital motion. Retain its frame-rate and backing-pixel limits; stop work when hidden, offscreen, paused, or inside cinema.
+- Depth responds gently to the pointer on capable desktop devices. Content and controls remain stable. Phones receive the same composed artwork with simpler motion.
+- World portals gain deliberate focus and hover feedback. Keyboard users receive an equally clear outline and destination; important copy is never hidden until hover.
+- Short transitions of roughly 180 to 500 milliseconds explain selection, expansion, or focus. Ambient orbital movement is slow and remains behind the content.
+- Reduced motion and the existing Pause motion control produce a complete, static composition. Startup remains silent, and all sound remains an explicit choice.
+
+## Components and hierarchy
+
+1. Planetary opening: preserve the promise and two main actions, with a richer orbital backdrop and a restrained instrument frame.
+2. Workshop: retain the completed brief, real dated evidence, and clear reading contrast; refine edges and spacing rather than adding decoration to each fact.
+3. World portals: original artwork becomes the dominant invitation, with controlled depth, illuminated edges, and visible actions.
+4. Supporting explorations: the existing expandable panels inherit the same precise visual language.
+5. Evidence and contact: keep the dated truth boundary and human connection readable and calm.
+6. Initial phone layout: include Bit sizing and phone header controls in the initial stylesheet so delayed secondary styling cannot expand the viewport.
+7. Selected work: give The Sovereign, Roadster Studio, and House Cashio visible, illustrated invitations with concrete descriptions. Each link opens the existing project and preserves its bookmark. Use fine cyan and gold instrument edges, layered light, and deliberate focus feedback. Keep the private reference file and all of its content outside the repository.
+
+## Anti-goals and safeguards
+
+- Do not copy personal data, private content, or data connections from the owner's style reference. Borrow only its visual ideas.
+- Do not replace the established cAshIo identity, invent operational claims, redate observations, add analytics, or change infrastructure.
+- Do not add a dependency for a decorative effect, relax CSP, increase the initial CSS transfer budget, or load large new media on startup.
+- Publish this round only under the specific orbital release approval. Preserve historical observations and release dates.
+
+## Acceptance checks
+
+- [x] The hero and primary actions remain immediately readable at desktop, 390 pixels, and 320 pixels.
+- [x] Orbital depth and portal interactions feel coherent with the existing artwork.
+- [x] Keyboard focus, deep links, motion controls, quiet playback, and reading editions still work.
+- [x] The shorter phone journey remains within its existing page-height budget.
+- [x] There are no clipped controls, horizontal overflow, placeholder copy, private reference data, or new console errors.
+- [x] Existing build, accessibility, runtime, public-data, and performance gates pass before preview handoff.
+- [x] Phone controls stay within 320 and 390 pixel viewports while the secondary stylesheet is deliberately withheld.
+
+The following notes are the preserved historical design record.
+
 # V39.4 · Heart of Gold · September 29, 2026
 
 ## Roadster showcase image. October 18, 2026

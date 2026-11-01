@@ -24,7 +24,7 @@ test("V40 ships its real reading edition under the strict production security po
   assert.ok(root);
   assert.equal(
     root.querySelectorAll("main > section, main > .journey-disclosure > .journey-disclosure-content > section").length,
-    11,
+    12,
   );
   assert.equal(root.querySelectorAll("main > .journey-disclosure:not([open])").length, 3);
   assert.ok(root.querySelector("#work #law"), "the routing law stays available within its decision example");

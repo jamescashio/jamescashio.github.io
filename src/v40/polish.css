@@ -1813,3 +1813,8 @@ html[data-background="true"] *::after {
   font-size: 10px;
   letter-spacing: 0.05em;
 }
+/* Reserve a phone-safe image width before secondary showcase styling arrives. */
+:where(#v40-root .showcase-plate) img {
+  max-width: 100%;
+  height: auto;
+}

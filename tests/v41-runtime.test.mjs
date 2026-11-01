@@ -260,7 +260,22 @@ test("The starfield limits ambient work and stops while offscreen, motion is pau
   await page.waitForTimeout(1000);
   const rendered = (await draws()) - before;
   assert.ok(rendered > 0 && rendered <= 35, `ambient starfield stays near 30fps; drew ${rendered} frames`);
+  const headingBefore = await page.locator("h1").boundingBox();
+  await page.mouse.move(850, 320);
+  const poster = page.locator(".hero-live-poster");
+  await expect.poll(() => poster.evaluate((node) => node.style.transform)).toContain("translate3d");
+  assert.deepEqual(
+    await page.locator("h1").boundingBox(),
+    headingBefore,
+    "orbital depth never moves the reading surface",
+  );
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect.poll(() => poster.evaluate((node) => node.style.transform)).toBe("");
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.mouse.move(840, 330);
+  await expect.poll(() => poster.evaluate((node) => node.style.transform)).toContain("translate3d");
   await page.getByRole("button", { name: "Pause motion", exact: true }).first().click();
+  await expect.poll(() => poster.evaluate((node) => getComputedStyle(node).transform)).toBe("none");
   await staysStill();
   await page.getByRole("button", { name: "Resume motion", exact: true }).first().click();
   const resumed = await draws();

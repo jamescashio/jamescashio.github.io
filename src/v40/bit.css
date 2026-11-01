@@ -1,41 +1,3 @@
-.bit-header {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  border: 1px solid #73542b;
-  border-radius: 12px;
-  background: #141117;
-  color: #ffc46e;
-  cursor: pointer;
-  padding: 0 8px 0 0;
-  min-height: 44px;
-  min-width: 44px;
-  font: 700 10px var(--font-mono);
-  letter-spacing: 0.1em;
-}
-.bit-portrait {
-  position: relative;
-  display: block;
-  width: 48px;
-  height: 48px;
-  flex: 0 0 auto;
-}
-.bit-portrait canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-.bit-fallback {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  color: #00f9ff;
-  font: 40px var(--font-display);
-}
-.bit-rendered .bit-fallback {
-  display: none;
-}
 .bit-header:hover,
 .bit-hero:hover {
   border-color: var(--cyan);
@@ -213,25 +175,6 @@
   font: 12px/1.6 var(--font-body);
 }
 @media (max-width: 600px) {
-  .bit-header {
-    padding: 0;
-    justify-content: center;
-  }
-  .bit-header .bit-portrait {
-    width: 40px;
-    height: 40px;
-  }
-  .bit-header-label {
-    display: none;
-  }
-  header .za-btn {
-    display: none !important;
-  }
-  .hud-control,
-  .motion-control {
-    min-width: 44px;
-    min-height: 44px;
-  }
   .bit-dialog-head {
     padding: 18px 18px 0;
   }
