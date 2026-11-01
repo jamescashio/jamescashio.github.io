@@ -32,6 +32,7 @@ try {
       "--test-concurrency=1",
       "tests/v40-runtime.test.mjs",
       "tests/v41-runtime.test.mjs",
+      "tests/v42-runtime.test.mjs",
       "tests/preview-runtime.test.mjs",
     ],
     {

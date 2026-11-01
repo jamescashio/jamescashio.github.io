@@ -1,28 +1,34 @@
 {
-  "experienceVersion": "41.0.0",
-  "releaseId": "eagle-41.0.0-20261023",
-  "releaseName": "EAGLE",
-  "visualEdition": "Eagle",
+  "experienceVersion": "42.0.0",
+  "releaseId": "continuum-42.0.0-preview-20261101",
+  "releaseName": "CONTINUUM",
+  "visualEdition": "Continuum",
   "presentation": {
-    "name": "First Light",
-    "subtitle": "The next horizon",
+    "name": "Continuum",
+    "subtitle": "Worlds in motion",
     "preparedDate": "2026-11-01"
   },
   "entry": "/",
-  "status": "released",
-  "published": true,
-  "releaseDate": "2026-10-23",
+  "status": "preview",
+  "published": false,
+  "releaseDate": null,
   "previousExperience": {
     "version": "39.8.0",
     "entry": "/v39/",
     "receipt": "/v38/site-release.json"
   },
-  "rollbackCommit": "1584144b27f4d520ea74d72ea4deb6ef6a84c2e0",
+  "rollbackCommit": "650f395adc36ae762acd99e43c0a4655d653ed1f",
   "evidenceSnapshot": {
     "url": "/status.json",
     "fleetObserved": "2026-11-01",
     "routingObserved": null
   },
-  "statement": "V41 Eagle, preserving the V40 Mostly Harmless visual design. Bit and the demonstrations are scripted browser experiences. Dated evidence is not live monitoring.",
-  "updatedDate": "2026-11-01"
+  "statement": "V42 Continuum is an unpublished front end redesign. Bit and the demonstrations are scripted browser experiences. Generative scenes are artwork. Observation records retain their original dates, versions and limits.",
+  "updatedDate": "2026-11-01",
+  "previousRelease": {
+    "version": "41.0.0",
+    "name": "Eagle · First Light",
+    "receipt": "/v41/first-light-release.json",
+    "commit": "650f395adc36ae762acd99e43c0a4655d653ed1f"
+  }
 }

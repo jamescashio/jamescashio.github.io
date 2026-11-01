@@ -47,7 +47,10 @@ await writeFile("dist/assets/" + routingFile, routing);
 html = html.replace('src="/v40-entry.js"', `src="/assets/${routingFile}"`);
 const alias = await readFile("dist/v40/index.html", "utf8");
 await writeFile("dist/v40/index.html", alias.replace('src="/v40-entry.js"', `src="/assets/${routingFile}"`));
-html = html.replace('<div id="v40-root"></div>', `<div id="v40-root">${dom.window.document.body.innerHTML}</div>`);
+html = html.replace(
+  '<div id="v40-root" class="continuum-root"></div>',
+  `<div id="v40-root" class="continuum-root">${dom.window.document.body.innerHTML}</div>`,
+);
 if (fallbackCss) html = html.replace("</head>", `<link rel="stylesheet" href="/assets/${filename}"></head>`);
 const deferredStyles = (await readdir("dist/assets")).find((name) => /^deferred-.*\.css$/.test(name));
 if (!deferredStyles) throw new Error("Missing V41 deferred stylesheet");

@@ -1,3 +1,4 @@
+@import "./polish-states.css";
 @import "./feature-film.css";
 @import "./visitor-polish.css";
 @import "./labs.css";
@@ -8,6 +9,7 @@
 @import "./world-atlas.css";
 @import "./mission-desk.css";
 @import "./signal-polish.css";
+@import "./continuum-panels.css";
 
 .eagle-film-play {
   transition:

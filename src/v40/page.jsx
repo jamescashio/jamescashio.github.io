@@ -13,7 +13,7 @@ import { installMediaCoordinator } from "./media-policy.js";
 import { posterForViewport } from "./poster-sources.js";
 import { frameDeltaSeconds, shouldRenderFrame } from "../lib/animation-timing.ts";
 import { CinemaReel, ReelText, reelPoster } from "./hero-reel.jsx";
-import { HeroSection } from "./sections/hero.jsx";
+import { ContinuumHero as HeroSection, ContinuumPrinciples } from "./continuum-hero.tsx";
 import { EagleFilmSection } from "./sections/eagle-film.jsx";
 import { WorkshopSection } from "./sections/workshop.jsx";
 import { WorldsSection } from "./sections/worlds.jsx";
@@ -27,7 +27,7 @@ import { OperatorSection } from "./sections/operator.jsx";
 import { ContactSection } from "./sections/contact.jsx";
 import { JourneyDisclosure } from "./sections/journey-disclosure.jsx";
 import { destinationLabel } from "./destinations.js";
-import { drawOrbitalField } from "./orbital-field.js";
+import { drawContinuumField } from "./continuum-field.js";
 import React from "react";
 import designSystem from "./design-system.js";
 const h = React.createElement;
@@ -71,6 +71,8 @@ export class V40Page extends React.Component {
     return resources[id] || p;
   }
   state = {
+    scene: "orbit",
+    sceneTurn: 0,
     wide: typeof window !== "undefined" ? window.innerWidth >= 1180 : true,
     navOn: typeof window !== "undefined" ? window.innerWidth >= 1100 : true,
     active: "top",
@@ -87,7 +89,7 @@ export class V40Page extends React.Component {
     traceStep: -1,
     tracing: false,
     eveLog: [
-      ["d", "Page updated · " + updatedDate + " · V41 Eagle / " + presentation.name],
+      ["d", "Page updated · " + updatedDate + " · V42 / " + presentation.name],
       [
         "d",
         "Fleet and latest backup integrity results were observed " +
@@ -318,6 +320,11 @@ export class V40Page extends React.Component {
     }, 1600);
   }
   componentDidUpdate() {
+    if (this.lastScene !== this.state.scene || this.lastSceneTurn !== this.state.sceneTurn) {
+      this.lastScene = this.state.scene;
+      this.lastSceneTurn = this.state.sceneTurn;
+      this.starDraw?.();
+    }
     if (!this.starsStarted) this.waitForCanvas(0);
     if (this.lastScan !== this.props.scanlines) this.applyScan();
     this.setupReveal();
@@ -540,7 +547,7 @@ export class V40Page extends React.Component {
     const pb = document.getElementById("scroll-prog");
     if (pb) pb.style.transform = `scaleX(${H > 0 ? Math.min(1, y / H) : 0})`;
     const hc = document.getElementById("hero-content");
-    if (hc && !this.reduce) {
+    if (hc && !this.reduce && !hc.classList.contains("continuum-composition")) {
       const heroScroll = Math.max(0, y - hc.offsetTop);
       const k = Math.min(1, heroScroll / 760);
       hc.style.transform = `translateY(${heroScroll * 0.2}px)`;
@@ -616,7 +623,16 @@ export class V40Page extends React.Component {
       const follow = reduce ? 1 : Math.min(1, delta * 4);
       orbitPointer.x += (targetPointer.x - orbitPointer.x) * follow;
       orbitPointer.y += (targetPointer.y - orbitPointer.y) * follow;
-      drawOrbitalField(ctx, { width: w, height: h, dpr, time: t, motion: !reduce, pointer: orbitPointer });
+      drawContinuumField(ctx, {
+        width: w,
+        height: h,
+        dpr,
+        time: t,
+        motion: !reduce,
+        pointer: orbitPointer,
+        mode: this.state.scene,
+        turn: this.state.sceneTurn,
+      });
       const hz = h * 0.88;
       for (const s of stars) {
         if (s.y > hz) continue;
@@ -641,7 +657,9 @@ export class V40Page extends React.Component {
         }
       }
       ctx.lineWidth = dpr;
+      c.dataset.ready = "true";
     };
+    this.starDraw = draw;
     let lastFrame = null;
     const loop = (timestamp) => {
       if (document.hidden || this.heroVisible === false || this.state.cinema || !c.isConnected) {
@@ -786,11 +804,11 @@ export class V40Page extends React.Component {
       towel: [["lore", "LORE · Towel located. Kept handy, as advised."]],
       "don't panic": [["lore", "LORE · Large, friendly letters engaged. Nothing on this page requires panic."]],
       "dont panic": [["lore", "LORE · Large, friendly letters engaged. Nothing on this page requires panic."]],
-      "mostly harmless": [["lore", "LORE · V41, Eagle. One release short of the answer, and holding."]],
+      "mostly harmless": [["lore", "LORE · V42, Continuum. The answer is here. The questions are getting better."]],
       spice: [["lore", "LORE · Spice flows on Arrakis. Private data stays home."]],
     };
     const lore = [
-      "LORE · Eagle: V41 ships one release short of the answer.",
+      "LORE · Continuum: V42. The answer is here. Human judgment still required.",
       "LORE · A human in command is not a bottleneck. It is the point.",
       "LORE · Zeus and Apollo keep the lights on. Hermes carries the messages. Nobody gets a throne.",
       "LORE · Fly it like a test pilot: know the envelope, then write down what the instruments actually said.",
@@ -973,24 +991,6 @@ export class V40Page extends React.Component {
         "var(--green)",
       ],
     ].map(([value, count, label, color]) => ({ value, count, label, color }));
-    const tick = [
-      [String(snapshot.cluster.hostsOnline), "hosts"],
-      [String(snapshot.containers.running), "containers"],
-      [String(snapshot.virtualMachines.running), "virtual machine"],
-      [String(snapshot.backup.latestVerified), "latest backup checks passed"],
-      [observedMonth, "dated observation"],
-      ["Read only", "inventory probe"],
-      ["Quality", "picks the model"],
-      ["Cost", "only breaks a tie"],
-    ];
-    const tc = ["var(--cyan)", "var(--accent)", "var(--green)", "var(--purple)", "var(--amber)"];
-    const tickerItems = [...tick, ...tick].map(([value, label], i) => ({
-      value,
-      label,
-      color: tc[i % tc.length],
-      duplicate: i >= tick.length,
-    }));
-
     const enter = (e) => this.hoverIn(e),
       leave = (e) => this.hoverOut(e);
     const worlds = [
@@ -1353,6 +1353,9 @@ export class V40Page extends React.Component {
     const energized = s.sig === "energized";
     return {
       padL: pad,
+      scene: s.scene,
+      chooseScene: (scene) => this.setState({ scene }),
+      turnScene: () => this.setState((state) => ({ sceneTurn: state.sceneTurn + Math.PI / 4 })),
       wide: s.wide,
       navOn: s.navOn ?? true,
       tech,
@@ -1387,7 +1390,6 @@ export class V40Page extends React.Component {
       fleetSummary,
       fleetLine,
       snapshot,
-      tickerItems,
       worlds,
       collections,
       filmList,
@@ -1862,61 +1864,7 @@ function renderPage(v) {
         h(HeroSection, { v, key: "top" }),
         " ",
         " ",
-        h(
-          "div",
-          {
-            key: 278,
-            "aria-label": "Lab telemetry ticker",
-            className: "v41-981bd39a63",
-          },
-          " ",
-          h(
-            "div",
-            { key: 280, className: "v41-85ec42eba3" },
-            " ",
-            (function (parent) {
-              return (v.tickerItems || []).map((item, index) => {
-                const v = { ...parent, t: item, $index: index };
-                return h(
-                  React.Fragment,
-                  { key: index },
-                  " ",
-                  h(
-                    "span",
-                    {
-                      key: 284,
-                      "aria-hidden": v.t.duplicate || undefined,
-                      className: "v41-301f26150c",
-                    },
-                    h(
-                      "span",
-                      {
-                        key: 285,
-                        className: classFor(
-                          [
-                            "color:",
-                            v.t.color ?? "",
-                            ";font-family:var(--font-display);font-weight:700;font-size:15px;letter-spacing:.06em;text-shadow:0 0 14px ",
-                            v.t.color ?? "",
-                            "",
-                          ].join(""),
-                        ),
-                      },
-                      h(React.Fragment, { key: 286 }, "", h("span", { className: "sc-interp", key: 1 }, v.t.value), ""),
-                    ),
-                    h(React.Fragment, { key: 287 }, "", h("span", { className: "sc-interp", key: 1 }, v.t.label), ""),
-                    h("span", { key: 288, className: "v41-d4e594e791" }, h(React.Fragment, { key: 289 }, "◆")),
-                  ),
-                  " ",
-                );
-              });
-            })(v),
-            " ",
-          ),
-          " ",
-        ),
-        " ",
-        " ",
+        h(ContinuumPrinciples, { key: "principles-strip" }),
         h(EagleFilmSection, { v, key: "eagle-film" }),
         h(WorkshopSection, { v, key: "workshop" }),
         " ",
@@ -2016,7 +1964,7 @@ function renderPage(v) {
               h(
                 React.Fragment,
                 { key: 1895 },
-                "V41 · Eagle / " + presentation.name + " · Directed by Doug Cashio · Updated " + updatedDate,
+                "V42 · " + presentation.name + " · Directed by Doug Cashio · Updated " + updatedDate,
               ),
             ),
             " ",
@@ -2180,7 +2128,7 @@ function renderPage(v) {
             key: 1964,
             className: "v41-b9be7637a3",
           },
-          h("span", { key: 1965 }, h(React.Fragment, { key: 1966 }, "V41 · One release short of the answer")),
+          h("span", { key: 1965 }, h(React.Fragment, { key: 1966 }, "V42 · The answer is here. Keep asking.")),
           h("span", { key: 1967 }, h(React.Fragment, { key: 1968 }, "Mostly harmless · Human in command")),
         ),
         " ",

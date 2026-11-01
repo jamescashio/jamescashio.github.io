@@ -227,7 +227,7 @@ for (const [width, height] of [
   [3440, 1440],
   [390, 844],
 ]) {
-  test(`V41 hero and actions fit at ${width}; whole page has no serious accessibility issues`, async (t) => {
+  test(`Current hero and actions fit at ${width}; whole page has no serious accessibility issues`, async (t) => {
     const page = await visit(t, { viewport: { width, height }, hasTouch: width === 390 });
     await page.goto(url);
     await page.waitForTimeout(1500);
@@ -266,7 +266,7 @@ for (const [width, height] of [
 test("The rail and workshop evidence stay readable during entrance motion", async (t) => {
   const page = await visit(t, { viewport: { width: 3440, height: 1440 } });
   await page.goto(url);
-  await page.locator(".v41-31fb338fa2").evaluate((rail) => {
+  await page.locator(".continuum-observation").evaluate((rail) => {
     for (const animation of rail.getAnimations({ subtree: true })) {
       animation.pause();
       animation.currentTime = 700;
@@ -281,7 +281,7 @@ test("The rail and workshop evidence stay readable during entrance motion", asyn
     }
   });
   const audit = await new AxeBuilder({ page })
-    .include(".v41-bf5360592c")
+    .include("nav[aria-label=Sections]")
     .include("#workshop")
     .withRules(["color-contrast"])
     .analyze();
@@ -311,7 +311,7 @@ test("The planet stays in the hero; House Cashio replaces the featured Eagle fil
   await expect(page.locator("#eagle-film img")).toHaveAttribute("src", "/assets/hero/cashio-trailer-poster.webp");
   await expect(page.locator("#eagle-film img")).toHaveAttribute("alt", /House Cashio/);
   await expect(page.locator("#eagle-film")).not.toContainText("A moment in orbit.");
-  await page.getByRole("link", { name: "Next: watch House Cashio", exact: true }).click();
+  await page.locator(".continuum-next").click();
   await expect(page).toHaveURL(/#eagle-film$/);
   await expect(page.locator("main > #eagle-film")).toBeVisible();
   await expect(page.locator("#eagle-film")).toHaveCount(1);
@@ -447,7 +447,7 @@ test("The starfield limits ambient work and stops while offscreen, motion is pau
   };
   await page.goto(url);
   await expect.poll(draws).toBeGreaterThan(2);
-  const telemetry = page.getByRole("complementary", { name: "Lab telemetry", exact: true });
+  const telemetry = page.locator(".continuum-observation");
   await expect(telemetry).toBeVisible();
   const before = await draws();
   await page.waitForTimeout(1000);
@@ -463,7 +463,7 @@ test("The starfield limits ambient work and stops while offscreen, motion is pau
     "orbital depth never moves the reading surface",
   );
   await page.setViewportSize({ width: 390, height: 844 });
-  await expect(telemetry).toBeHidden();
+  await expect(telemetry).toBeVisible();
   await expect.poll(() => poster.evaluate((node) => node.style.transform)).toBe("");
   await page.setViewportSize({ width: 1440, height: 900 });
   // The viewport command can finish before React commits the desktop view and its pointer handler.
@@ -476,7 +476,7 @@ test("The starfield limits ambient work and stops while offscreen, motion is pau
   await page.getByRole("button", { name: "Resume motion", exact: true }).first().click();
   const resumed = await draws();
   await expect.poll(draws).toBeGreaterThan(resumed);
-  await page.getByRole("link", { name: "Next: watch House Cashio", exact: true }).click();
+  await page.locator(".continuum-next").click();
   await page.getByRole("link", { name: "Explore the workshop →", exact: true }).click();
   await expect(page.locator("#top")).not.toBeInViewport();
   await staysStill();

@@ -1,5 +1,7 @@
 # First Light · Signal polish
 
+This earlier unpublished proposal is incorporated into [V42 Continuum](../v42/continuum-preview.md). The observation and rollback statements below describe Signal's original baseline; Continuum retains the verified November 1, 2026 record and its own production rollback commit.
+
 Prepared on 11-01-2026 as an isolated preview of the published First Light presentation. This new round awaits final publication approval.
 
 Mission Control becomes a visual index to the eleven existing destinations. Explore, Try, Watch and Connect filters work together with search. Descriptive rows and a desktop artwork preview help visitors choose a destination; arrow keys, Home, End and Enter support keyboard navigation. An empty search offers a reset that clears both filters. Opening the menu resets the index and scroll position, Escape closes it, and focus returns to its opener. Artwork previews compact themselves for shorter laptop windows. Phones retain a compact list with reachable search, close and motion controls. Hidden phone artwork is not requested.

@@ -219,7 +219,7 @@ test("V40 preserves its content and serves a readable edition without JavaScript
       page.locator("main > section, main > .journey-disclosure > .journey-disclosure-content > section"),
     ).toHaveCount(12);
     await expect(page.locator("h1")).toHaveText("The machines can think. You still decide.");
-    await expect(page.locator("footer")).toContainText("one release short of the answer", { ignoreCase: true });
+    await expect(page.locator("footer")).toContainText("the answer is here. keep asking.", { ignoreCase: true });
     await expect(page.locator('#contact a[href^="mailto:doug@cashio.us"]').first()).toBeVisible();
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
   }
@@ -315,7 +315,7 @@ test("Every mobile Menu section stays in V40 and survives a reload", async (t) =
       await expect(page.locator(`#${id}`)).toBeInViewport();
       await page.reload();
       await expect(page.locator("#mission-dialog")).toBeAttached();
-      await expect(page).toHaveTitle(/V41 Eagle/);
+      await expect(page).toHaveTitle(/V42 Continuum/);
       assert.equal(new URL(page.url()).pathname, "/");
       assert.equal(new URL(page.url()).hash, `#${id}`);
       await expect(page.locator(`#${id}`)).toBeInViewport();
@@ -411,15 +411,15 @@ test("The consolidated routing-law bookmark and glossary remain readable without
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 390);
 });
 
-test("Current room and flight titles consistently identify V41", async (t) => {
+test("Current room and flight titles consistently identify V42", async (t) => {
   const page = await visit(t);
   await page.locator('#hero-content a[href="#flight=board"]').click();
-  await expect(page).toHaveTitle("First flight · cAshIo V41");
+  await expect(page).toHaveTitle("First flight · cAshIo V42");
   await expect(page.locator("#helios-flight dialog")).toBeVisible();
   await page.keyboard.press("Escape");
-  await expect(page).toHaveTitle(/V41 Eagle/);
+  await expect(page).toHaveTitle(/V42 Continuum/);
   await page.goto(new URL("/rooms/starship/interactive/", url).href);
-  await expect(page).toHaveTitle("Starship lab · cAshIo V41");
+  await expect(page).toHaveTitle("Starship lab · cAshIo V42");
 });
 
 test("Shared scenarios reject inherited keys while restoring valid bounded values", async (t) => {
@@ -593,12 +593,19 @@ test("Sanctuary's working-studies action moves to the requested V40 section", as
   assert.equal(new URL(page.url()).pathname, "/");
 });
 
-test("The visual ticker loop exposes each telemetry fact once to assistive technology", async (t) => {
+test("The static principles strip exposes each principle once and preserves the observation date", async (t) => {
   const page = await visit(t);
-  const ticker = page.locator('[aria-label="Lab telemetry ticker"]');
-  const spoken = await ticker.ariaSnapshot();
-  assert.equal((spoken.match(/containers/g) || []).length, 1, "the accessible ticker contains one container fact");
-  assert.equal((await ticker.textContent()).match(/containers/g).length, 2, "both visual copies remain for the loop");
+  const strip = page.locator('[aria-label="Lab principles"]');
+  const spoken = await strip.ariaSnapshot();
+  for (const principle of ["Dated evidence", "Read only", "Quality first", "Human in command"]) {
+    assert.equal(spoken.split(principle).length - 1, 1);
+  }
+  const observation = JSON.parse(await readFile(new URL("../public/status.json", import.meta.url), "utf8"));
+  const month = new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric", timeZone: "UTC" }).format(
+    new Date(observation.verified + "T12:00:00Z"),
+  );
+  assert.ok(spoken.includes(month + " observation"));
+  assert.equal(await strip.evaluate((node) => node.getAnimations({ subtree: true }).length), 0);
 });
 
 test("The quiet orbit link opens the correct silent film and returns focus at every screen width", async (t) => {

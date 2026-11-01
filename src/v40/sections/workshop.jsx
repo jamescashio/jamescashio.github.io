@@ -10,7 +10,7 @@ const glossary = [
   ["Zeus and Apollo", "The two servers I own."],
   ["Atlas", "A local model. No fresh model configuration was measured in this observation."],
   ["cAshIo", "Cashio, with the AI in capitals. My personal AI workspace and the name on this site."],
-  ["Mostly Harmless", "This site’s visual edition. Each evidence record keeps its own date."],
+  ["Mostly Harmless", "The site’s original visual edition and enduring sense of humor. Evidence keeps its own date."],
   ["Workhorse, Research, Synthesis", "Routes for everyday drafting, sourced research and combining information."],
 ];
 

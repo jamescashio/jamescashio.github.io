@@ -1,5 +1,9 @@
 # Changelog
 
+## V42.0.0 · Continuum preview
+
+Prepared November 1, 2026. A new orbital interface and interactive generative light studies with the complete existing public content. The verified November 1, 2026 observation remains unchanged. V41 First Light release metadata is archived. This candidate is unpublished and awaits final approval.
+
 ## V41.0.0 · Eagle · October 23, 2026
 
 Observation refresh · November 1, 2026: fresh read only checks confirm 2 hosts, 19 running containers and 1 running virtual machine. The backup inventory lists 122 snapshots; 21 of 21 latest reported snapshots have successful integrity results. Preserve the October 31, 2026 observation as a dated archive and update current date labels, metadata and sitemap.

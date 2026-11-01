@@ -44,21 +44,21 @@ test("V40 ships its real reading edition under the strict production security po
     year: "numeric",
     timeZone: "UTC",
   }).format(new Date(observation.verified + "T12:00:00Z"));
-  assert.ok(root.querySelector('[aria-label="Lab telemetry ticker"]').textContent.includes(observedMonth));
+  assert.ok(root.querySelector('[aria-label="Lab principles"]').textContent.includes(observedMonth));
   assert.equal(
     root.querySelector('#snapshot-story a[href="/status.json"]').textContent,
     "Read the " + observedMonth + " observation",
   );
   assert.ok(root.textContent.includes(observedMonth + " · Scheduler and routing not measured"));
-  assert.equal(receipt.presentation.name, "First Light");
-  assert.match(root.querySelector("#top").textContent, /First Light · The next horizon/);
+  assert.equal(receipt.presentation.name, "Continuum");
+  assert.match(root.querySelector("#top").textContent, /Continuum · Worlds in motion/);
   const updatedDate = new Intl.DateTimeFormat("en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",
     timeZone: "UTC",
   }).format(new Date(receipt.updatedDate + "T12:00:00Z"));
-  assert.match(root.querySelector("footer").textContent, new RegExp("Eagle.*Updated " + updatedDate));
+  assert.match(root.querySelector("footer").textContent, new RegExp("Continuum.*Updated " + updatedDate));
   assert.doesNotMatch(root.querySelector("footer").textContent, /Preview 05|current public site/);
   assert.equal(root.querySelectorAll("[style]").length, 0, "the reading edition must use external CSS");
   const csp = document.querySelector('meta[http-equiv="Content-Security-Policy"]').content;
@@ -213,7 +213,7 @@ function expandScript(scripts, name, seen = new Set()) {
 
 test("V37 software gates preserve the independent V35 dated evidence", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "41.0.0");
+  assert.equal(packageJson.version, "42.0.0");
   const lock = JSON.parse(await read("package-lock.json"));
   assert.equal(lock.version, packageJson.version);
   assert.equal(lock.packages[""].version, packageJson.version);
@@ -792,8 +792,8 @@ test("Helios release identity, signature assets and compatibility receipts agree
     const compatibility = JSON.parse(await read(`dist/${name}`));
     assert.deepEqual(compatibility.frontDoor, {
       entry: "/",
-      experienceVersion: "41.0.0",
-      visualEdition: "Eagle",
+      experienceVersion: "42.0.0",
+      visualEdition: "Continuum",
       receipt: "/v40/site-release.json",
     });
   }
@@ -842,8 +842,8 @@ test("Helios release identity, signature assets and compatibility receipts agree
   );
   assert.ok(doc.querySelector('#snapshot-story a[href="/evidence/console-snapshot-2026-10-03.json"]'));
   assert.deepEqual(JSON.parse(await read("dist/evidence/status.json")), JSON.parse(await read("status.json")));
-  assert.ok((await read("README.md")).startsWith("# cAshIo V41 · Eagle"));
-  assert.equal((await read("CHANGELOG.md")).match(/^## (V[\d.]+)/m)?.[1], "V41.0.0");
+  assert.ok((await read("README.md")).startsWith("# cAshIo V42 · Continuum"));
+  assert.equal((await read("CHANGELOG.md")).match(/^## (V[\d.]+)/m)?.[1], "V42.0.0");
   const sitemap = new JSDOM(await read("dist/sitemap.xml"), { contentType: "application/xml" }).window.document;
   const home = [...sitemap.querySelectorAll("url")].find(
     (entry) => entry.querySelector("loc")?.textContent === "https://cashio.us/",
