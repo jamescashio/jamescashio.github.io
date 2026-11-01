@@ -2,7 +2,7 @@
 
 Prepared on 11-01-2026 as an isolated preview of the published First Light presentation. This new round awaits final publication approval.
 
-Mission Control becomes a visual index to the eleven existing destinations. Explore, Try, Watch and Connect filters work together with search. Descriptive rows and a desktop artwork preview help visitors choose a destination; arrow keys, Home, End and Enter support keyboard navigation. An empty search offers a reset that clears both filters. Opening the menu resets the index, Escape closes it, and focus returns to its opener. Phones retain a compact list with reachable search, close and motion controls. Hidden phone artwork is not requested.
+Mission Control becomes a visual index to the eleven existing destinations. Explore, Try, Watch and Connect filters work together with search. Descriptive rows and a desktop artwork preview help visitors choose a destination; arrow keys, Home, End and Enter support keyboard navigation. An empty search offers a reset that clears both filters. Opening the menu resets the index and scroll position, Escape closes it, and focus returns to its opener. Artwork previews compact themselves for shorter laptop windows. Phones retain a compact list with reachable search, close and motion controls. Hidden phone artwork is not requested.
 
 The world atlas gains an authored vector globe, orbital tick marks and a small route illustration on phones. The four existing world tabs, descriptions, original artwork, interactive routes and reading editions remain. The illustration is decorative navigation art, not a representation of live systems.
 

@@ -58,6 +58,16 @@ test("Mission Control filters, previews and keyboard navigation reach the intend
   await expect(opener).toBeFocused();
   await opener.click();
   assert.equal(await panel.locator(".mission-results").evaluate((n) => n.scrollTop), 0);
+  await page.setViewportSize({ width: 1280, height: 720 });
+  for (const link of await panel.locator("[data-chapter]").all()) {
+    await link.focus();
+    const previewBounds = await panel.locator(".mission-preview").boundingBox();
+    const descriptionBounds = await panel.locator(".mission-preview p").boundingBox();
+    assert.ok(
+      descriptionBounds.y + descriptionBounds.height <= previewBounds.y + previewBounds.height,
+      "every artwork description fits a short laptop window",
+    );
+  }
 });
 
 test("the visual destination desk fits phones and recovers from an empty combined filter", async (t) => {
