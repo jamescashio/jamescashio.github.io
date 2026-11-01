@@ -108,8 +108,8 @@ test("The planet stays in the hero; House Cashio replaces the featured Eagle fil
   await page.waitForTimeout(3000);
   await expect(page.locator("#top video, #top a[href='#film=intro']")).toHaveCount(0);
   await expect(page.locator("#top .hero-live-poster")).toBeVisible();
-  const order = await page.locator("main > section").evaluateAll((s) => s.slice(0, 3).map((n) => n.id));
-  assert.deepEqual(order, ["top", "workshop", "rooms"]);
+  const order = await page.locator("main > section").evaluateAll((s) => s.slice(0, 4).map((n) => n.id));
+  assert.deepEqual(order, ["top", "eagle-film", "workshop", "rooms"]);
   const hero = await page.locator("#top").boundingBox();
   const workshop = await page.locator("#workshop").boundingBox();
   assert.ok(workshop.y >= hero.y + hero.height, "real projects follow the complete hero");
@@ -121,9 +121,10 @@ test("The planet stays in the hero; House Cashio replaces the featured Eagle fil
   await expect(page.locator("#eagle-film img")).toHaveAttribute("src", "/assets/hero/cashio-trailer-poster.webp");
   await expect(page.locator("#eagle-film img")).toHaveAttribute("alt", /House Cashio/);
   await expect(page.locator("#eagle-film")).not.toContainText("A moment in orbit.");
-  await page.getByRole("link", { name: "Next: explore the projects", exact: true }).click();
-  await expect(page).toHaveURL(/#workshop$/);
-  await page.locator("#films-collection > summary").click();
+  await page.getByRole("link", { name: "Next: watch House Cashio", exact: true }).click();
+  await expect(page).toHaveURL(/#eagle-film$/);
+  await expect(page.locator("main > #eagle-film")).toBeVisible();
+  await expect(page.locator("#eagle-film")).toHaveCount(1);
   await watch.scrollIntoViewIfNeeded();
   await expect(watch).toBeInViewport();
   await page.waitForTimeout(500);
@@ -285,8 +286,9 @@ test("The starfield limits ambient work and stops while offscreen, motion is pau
   await page.getByRole("button", { name: "Resume motion", exact: true }).first().click();
   const resumed = await draws();
   await expect.poll(draws).toBeGreaterThan(resumed);
-  await page.getByRole("link", { name: "Next: explore the projects", exact: true }).click();
-  await page.waitForTimeout(900);
+  await page.getByRole("link", { name: "Next: watch House Cashio", exact: true }).click();
+  await page.getByRole("link", { name: "Explore the workshop →", exact: true }).click();
+  await expect(page.locator("#top")).not.toBeInViewport();
   await staysStill();
   await page.goto(url + "#film=intro");
   await expect(page.locator("#cinema-video")).toBeVisible();

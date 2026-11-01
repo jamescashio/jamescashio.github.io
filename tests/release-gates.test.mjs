@@ -29,13 +29,17 @@ test("V40 ships its real reading edition under the strict production security po
   assert.equal(root.querySelectorAll("main > .journey-disclosure:not([open])").length, 3);
   assert.ok(root.querySelector("#work #law"), "the routing law stays available within its decision example");
   assert.deepEqual(
-    [...root.querySelectorAll("main > section")].slice(0, 3).map((section) => section.id),
-    ["top", "workshop", "rooms"],
+    [...root.querySelectorAll("main > section")].slice(0, 4).map((section) => section.id),
+    ["top", "eagle-film", "workshop", "rooms"],
   );
+  assert.equal(root.querySelectorAll("#eagle-film").length, 1, "the featured trailer has one visible home");
+  assert.ok(root.querySelector('a[href="#workshop"]'), "the reading edition retains a direct workshop link");
   assert.equal(root.querySelectorAll("#top video").length, 0);
   assert.equal(root.querySelectorAll("h1").length, 1);
   assert.match(root.textContent, /You still decide\./);
   const receipt = JSON.parse(await read("dist/v40/site-release.json"));
+  assert.equal(receipt.presentation.name, "Afterglow");
+  assert.match(root.querySelector("#top").textContent, /Afterglow · The October Finale/);
   const updatedDate = new Intl.DateTimeFormat("en-US", {
     month: "long",
     day: "numeric",
@@ -63,8 +67,11 @@ test("V40 ships its real reading edition under the strict production security po
     "the compact reading edition keeps Bit in the header",
   );
   assert.equal(root.querySelectorAll('[role="tab"]').length, 7);
-  assert.equal(document.querySelector('meta[property="og:image"]').content, "https://cashio.us/v40/share-card.jpg");
-  assert.ok((await stat(asset("dist/v40/share-card.jpg"))).size < 250_000);
+  assert.equal(
+    document.querySelector('meta[property="og:image"]').content,
+    "https://cashio.us/v41/afterglow-share-card.jpg",
+  );
+  assert.ok((await stat(asset("dist/v41/afterglow-share-card.jpg"))).size < 250_000);
   assert.equal(receipt.experienceVersion, JSON.parse(await read("package.json")).version);
   assert.equal(receipt.previousExperience.entry, "/v39/");
   assert.equal(receipt.published, receipt.status === "released");

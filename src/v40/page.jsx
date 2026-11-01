@@ -6,6 +6,7 @@ import {
   fleetSummary,
   backupSummary,
   fleetLine,
+  presentation,
 } from "./evidence.js";
 import { installMediaCoordinator } from "./media-policy.js";
 import { posterForViewport } from "./poster-sources.js";
@@ -85,7 +86,7 @@ export class V40Page extends React.Component {
     traceStep: -1,
     tracing: false,
     eveLog: [
-      ["d", "Page updated · " + updatedDate + " · V41 Eagle"],
+      ["d", "Page updated · " + updatedDate + " · V41 Eagle / " + presentation.name],
       [
         "d",
         "Fleet and latest backup integrity results were observed " +
@@ -246,6 +247,7 @@ export class V40Page extends React.Component {
     window.addEventListener("resize", this.onResize);
     const ids = [
       "top",
+      "eagle-film",
       "workshop",
       "rooms",
       "films",
@@ -1914,6 +1916,7 @@ function renderPage(v) {
         ),
         " ",
         " ",
+        h(EagleFilmSection, { v, key: "eagle-film" }),
         h(WorkshopSection, { v, key: "workshop" }),
         " ",
         " ",
@@ -1926,11 +1929,9 @@ function renderPage(v) {
           {
             key: "films-collection",
             id: "films-collection",
-            title: "Step inside the screening room.",
-            description: "The featured projects, their stories, and the full short film collection. Films start muted.",
-            image: "/assets/hero/cashio-trailer-poster.webp",
+            title: "Enter the screening room.",
+            description: "The Sovereign, Roadster Studio, and the complete short film collection. Films start muted.",
           },
-          h(EagleFilmSection, { v, key: "eagle-film" }),
           h(FilmsSection, { v, key: "films" }),
         ),
         " ",
@@ -2011,7 +2012,11 @@ function renderPage(v) {
                 key: 1894,
                 className: "v41-8f81cfc173",
               },
-              h(React.Fragment, { key: 1895 }, "V41 · Eagle · Directed by Doug Cashio · Updated " + updatedDate),
+              h(
+                React.Fragment,
+                { key: 1895 },
+                "V41 · Eagle / " + presentation.name + " · Directed by Doug Cashio · Updated " + updatedDate,
+              ),
             ),
             " ",
             h(

@@ -56,7 +56,7 @@ test("the visible showcase opens every featured project from a keyboard without 
   });
   await page.goto(url);
   await page.waitForLoadState("networkidle");
-  for (const id of ["ai-worm", "roadster-studio", "eagle-film"]) {
+  for (const id of ["ai-worm", "roadster-studio"]) {
     const link = page.locator(`#showcase a[href="#${id}"]`);
     await expect(link).toBeVisible();
     await link.focus();
@@ -69,7 +69,9 @@ test("the visible showcase opens every featured project from a keyboard without 
   assert.deepEqual(filmRequests, [], "project discovery does not download a film");
   const reading = await visit(t, { javaScriptEnabled: false });
   await reading.goto(url);
-  await expect(reading.locator("#showcase a")).toHaveCount(3);
+  await expect(reading.locator("#showcase a")).toHaveCount(2);
+  await expect(reading.locator('main > #eagle-film a[href="#film=trailer"]')).toBeVisible();
+  await expect(reading.locator("#eagle-film")).toHaveCount(1);
   await expect(reading.locator("#showcase")).toContainText("independent automotive CAD concept");
 });
 

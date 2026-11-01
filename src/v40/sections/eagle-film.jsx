@@ -7,22 +7,23 @@ export function EagleFilmSection({ v }) {
   // Keep the established section anchor compatible with existing bookmarks.
   return h(
     "section",
-    { id: "eagle-film", className: "eagle-film", "aria-labelledby": "eagle-film-title" },
+    { id: "eagle-film", className: "eagle-film afterglow-feature", "aria-labelledby": "eagle-film-title" },
     h(
       "div",
       { className: "eagle-film-inner" },
       h(
         "div",
         { className: "eagle-film-copy" },
-        h("p", { className: "eagle-film-label" }, "The crew · A trailer parody"),
+        h("p", { className: "eagle-film-label" }, "Opening feature · Trailer parody"),
         h("h2", { id: "eagle-film-title" }, v.trailer.title),
-        h(
-          "p",
-          null,
-          "Zeus, Apollo, Hermes, Atlas, DSH, E.V.E. and Bit face a subscription villain, with braams, a dramatic line up and one cat who was not consulted.",
-        ),
+        h("p", null, "A subscription villain, an unlikely crew, and a cat who was not consulted."),
         h("p", { className: "eagle-film-note" }, "Starts muted · Captions available"),
-        h(ReelText, { text: v.trailer.text }),
+        h(
+          "div",
+          { className: "eagle-film-links" },
+          h(ReelText, { text: v.trailer.text }),
+          h("a", { href: "#workshop", className: "visitor-link" }, "Explore the workshop →"),
+        ),
       ),
       h(
         "a",
