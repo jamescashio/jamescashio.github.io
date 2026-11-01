@@ -13,10 +13,12 @@ export function HeroPlanet() {
     { className: "hero-planet", "aria-hidden": "true" },
     h("img", {
       className: "hero-live-poster",
-      src: reelPoster,
+      src: "/v41/first-light-observatory-1920.webp",
+      srcSet: "/v41/first-light-observatory-960.webp 960w, /v41/first-light-observatory-1920.webp 1920w",
+      sizes: "100vw",
       alt: "",
-      width: 1280,
-      height: 720,
+      width: 1920,
+      height: 1080,
       fetchPriority: "high",
     }),
   );

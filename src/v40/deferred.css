@@ -1,9 +1,11 @@
+@import "./feature-film.css";
 @import "./visitor-polish.css";
 @import "./labs.css";
 @import "./bit.css";
 @import "./ai-worm.css";
 @import "./journey.css";
 @import "./observatory.css";
+@import "./world-atlas.css";
 
 .eagle-film-play {
   transition:

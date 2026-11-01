@@ -337,7 +337,7 @@ test("Private inputs override the routing demonstration", async (t) => {
 
 test("Briefing treats markup as text and downloads the visitor's actual brief", async (t) => {
   const page = await visit(t);
-  await page.locator('[role="tab"]').nth(3).click();
+  await page.locator('#studies [role="tab"]').nth(3).click();
   await page.locator("#lab-observed").fill('<img src=x onerror="window.injected=true"> is an observation.');
   await page.locator("#lab-source").fill("Example, 10-05-2026");
   await page.getByRole("button", { name: "Build my brief →", exact: true }).click();
@@ -354,7 +354,7 @@ test("Every experiment remains usable on narrow phones", async (t) => {
   for (let i = 0; i < 7; i++) {
     await page.getByLabel("Choose an experiment", { exact: true }).selectOption(String(i));
     await expect(page.getByLabel("Choose an experiment", { exact: true })).toHaveValue(String(i));
-    await expect(page.locator('[role="tab"]').nth(i)).toHaveAttribute("aria-selected", "true");
+    await expect(page.locator('#studies [role="tab"]').nth(i)).toHaveAttribute("aria-selected", "true");
     await expect(page.locator("#experiment-panel")).toBeVisible();
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 320);
     await audit(page, "#studies");
@@ -425,7 +425,7 @@ test("Current room and flight titles consistently identify V41", async (t) => {
 test("Shared scenarios reject inherited keys while restoring valid bounded values", async (t) => {
   for (const name of ["__proto__", "constructor", "toString"]) {
     const page = await visit(t, { hash: `#experiment=${name}&polluted=true&confidence=99` });
-    await expect(page.locator('[role="tab"]').first()).toHaveAttribute("aria-selected", "true");
+    await expect(page.locator('#studies [role="tab"]').first()).toHaveAttribute("aria-selected", "true");
     assert.equal(await page.evaluate(() => Object.hasOwn(Object.prototype, "polluted")), false);
   }
   const page = await visit(t, {
@@ -715,10 +715,10 @@ test("Back to a shared experiment after ordinary navigation restores its exact i
   await page.locator("header [data-mission-open]").click();
   await page.locator('#mission-dialog [data-chapter="studies"]').click();
   await expect(page).toHaveURL(/#studies$/);
-  await page.locator('[role="tab"]').nth(1).click();
-  await expect(page.locator('[role="tab"]').nth(1)).toHaveAttribute("aria-selected", "true");
+  await page.locator('#studies [role="tab"]').nth(1).click();
+  await expect(page.locator('#studies [role="tab"]').nth(1)).toHaveAttribute("aria-selected", "true");
   await page.goBack();
-  await expect(page.locator('[role="tab"]').first()).toHaveAttribute("aria-selected", "true");
+  await expect(page.locator('#studies [role="tab"]').first()).toHaveAttribute("aria-selected", "true");
   await expect(page.getByRole("button", { name: "Contains private information", exact: true })).toHaveAttribute(
     "aria-pressed",
     "true",

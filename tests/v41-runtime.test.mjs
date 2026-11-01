@@ -14,6 +14,83 @@ before(async () => {
 after(async () => {
   await browser?.close();
 });
+
+test("the world atlas connects keyboard and map selection to the correct destination", async (t) => {
+  const page = await visit(t);
+  const media = [];
+  page.on("request", (request) => {
+    if (/\.(mp4|webm)(\?|$)/.test(request.url())) media.push(request.url());
+  });
+  await page.goto(url);
+  const atlas = page.getByRole("tablist", { name: "World atlas", exact: true });
+  await atlas.getByRole("tab").first().focus();
+  const cases = [
+    ["End", 3, "heritage"],
+    ["ArrowRight", 0, "starship"],
+    ["ArrowDown", 1, "principles"],
+    ["ArrowRight", 2, "studios"],
+    ["Home", 0, "starship"],
+    ["ArrowLeft", 3, "heritage"],
+  ];
+  for (const [key, index, slug] of cases) {
+    await page.keyboard.press(key);
+    await expect(atlas.getByRole("tab").nth(index)).toBeFocused();
+    await expect(atlas.getByRole("tab").nth(index)).toHaveAttribute("aria-selected", "true");
+    await expect(page.locator(".atlas-destination:visible")).toHaveCount(1);
+    await expect(page.locator(".atlas-destination:visible a")).toHaveAttribute("href", `/rooms/${slug}/interactive/`);
+  }
+  await page.getByRole("button", { name: "Preview Studios in the atlas", exact: true }).click();
+  await expect(atlas.getByRole("tab").nth(2)).toBeFocused();
+  await expect(page.locator(".atlas-destination:visible")).toContainText("Follow the light.");
+  assert.deepEqual(media, [], "choosing a destination does not preload or play any film");
+});
+
+test("all four atlas destinations fit phones with accessible controls", async (t) => {
+  for (const width of [320, 390]) {
+    const page = await visit(t, { viewport: { width, height: 844 }, isMobile: true, hasTouch: true });
+    await page.goto(url);
+    await page.evaluate(() => document.fonts.ready);
+    for (let index = 0; index < 4; index++) {
+      const tab = page.getByRole("tablist", { name: "World atlas", exact: true }).getByRole("tab").nth(index);
+      await tab.click();
+      const target = await tab.boundingBox();
+      assert.ok(target.width >= 44 && target.height >= 44);
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+      await expect(page.locator(".atlas-destination:visible a")).toBeVisible();
+    }
+    const audit = await new AxeBuilder({ page })
+      .include("#rooms")
+      .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+      .analyze();
+    assert.deepEqual(audit.violations, []);
+  }
+});
+
+test("the atlas reading edition exposes all original world links without JavaScript", async (t) => {
+  const page = await visit(t, { javaScriptEnabled: false });
+  await page.goto(url);
+  for (const slug of ["starship", "principles", "studios", "heritage"]) {
+    await expect(page.locator(`#rooms a[href="/rooms/${slug}/interactive/"]`)).toBeVisible();
+    await expect(page.locator(`#rooms a[href="/rooms/${slug}/"]`)).toBeVisible();
+  }
+  await expect(page.locator(".atlas-destination:visible")).toHaveCount(4);
+  await expect(page.locator("#rooms")).toContainText("A world worth getting lost in.");
+});
+
+test("atlas transitions respect both reduced motion and the site's pause control", async (t) => {
+  for (const reducedMotion of ["reduce", "no-preference"]) {
+    const page = await visit(t, { reducedMotion });
+    await page.goto(url);
+    if (reducedMotion === "no-preference") {
+      await page.getByRole("button", { name: "Pause motion", exact: true }).first().click();
+    }
+    await page.getByRole("tablist", { name: "World atlas", exact: true }).getByRole("tab").nth(1).click();
+    const motion = await page
+      .locator(".atlas-route, .atlas-destination:visible img")
+      .evaluateAll((nodes) => nodes.map((node) => getComputedStyle(node).animationName));
+    assert.deepEqual(motion, ["none", "none"]);
+  }
+});
 async function visit(t, options = {}) {
   const context = await browser.newContext({
     viewport: { width: 1440, height: 900 },

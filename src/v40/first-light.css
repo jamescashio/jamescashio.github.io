@@ -1,0 +1,135 @@
+/* The hero's reading surface and instrument shelf are complete before deferred CSS. */
+.world-atlas,
+.atlas-destinations {
+  min-width: 0;
+}
+.atlas-map svg,
+.atlas-art img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.atlas-selectors {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.atlas-selectors button {
+  min-width: 0;
+  min-height: 44px;
+  white-space: normal;
+}
+@media (max-width: 900px) {
+  .atlas-instrument {
+    display: none;
+  }
+}
+@media (min-width: 1180px) {
+  #hero-content > div:first-child {
+    max-width: 66%;
+  }
+  #hero-content h1 {
+    font-size: clamp(54px, 5.2vw, 92px) !important;
+  }
+  #hero-content .v41-c07ca12d3d {
+    display: grid;
+    grid-template-columns: 120px 170px repeat(4, minmax(0, 1fr)) 110px;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+    padding: 18px 20px;
+    border: 1px solid #8ab6c13d;
+    border-radius: 3px;
+    background: #08121ce8;
+  }
+  #hero-content .v41-c07ca12d3d::after {
+    display: none;
+  }
+  #hero-content .v41-c07ca12d3d > .v41-23960c13b1 {
+    display: none;
+  }
+  #hero-content .v41-7f5a64038e {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  #hero-content .bit-hero {
+    display: flex;
+    align-items: center;
+    border: 0;
+    padding: 0;
+    gap: 8px;
+    background: transparent;
+    text-align: left;
+    color: #d9e9f1;
+    cursor: pointer;
+  }
+  #hero-content .bit-hero .bit-portrait {
+    width: 44px;
+    height: 44px;
+    margin: 0;
+  }
+  #hero-content .bit-hero strong {
+    font-size: 15px;
+  }
+  #hero-content .bit-hero small {
+    font-size: 9px;
+    margin: 4px 0;
+  }
+  #hero-content .bit-hero > span:last-child > span {
+    font-size: 10px;
+    line-height: 1.4;
+  }
+  #hero-content .v41-7f06ff0f58 {
+    display: grid;
+    gap: 8px;
+    padding: 0 0 0 16px;
+    border: 0;
+    border-left: 1px solid #9cb9c22b;
+  }
+  #hero-content .v41-7f06ff0f58 > span:first-child {
+    font-size: 23px;
+    text-shadow: none;
+  }
+  #hero-content .v41-44a8b78244 {
+    font-size: 9px;
+    line-height: 1.5;
+    text-align: left;
+  }
+  #hero-content .v41-a94a57b906 {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 9px;
+  }
+}
+@media (min-width: 1180px) and (max-height: 1050px) {
+  #hero-content {
+    padding-block: 54px 76px !important;
+    gap: 32px;
+  }
+  #hero-content h1 {
+    font-size: clamp(48px, 6.5vh, 74px) !important;
+  }
+}
+@media (min-width: 1180px) and (max-width: 1370px) {
+  #hero-content .v41-c07ca12d3d {
+    grid-template-columns: 100px 145px repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+  #hero-content .v41-a94a57b906 {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 8px;
+    border-top: 1px solid #9cb9c22b;
+  }
+}
+@media (max-width: 600px) {
+  .hero-live-poster {
+    object-position: 77% 50%;
+  }
+}
