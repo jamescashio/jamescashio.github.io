@@ -48,6 +48,31 @@ test("the compact phone journey keeps projects and professional context visible"
   await expect(page.locator("#roadster-studio-title")).toHaveText("Roadster Studio");
 });
 
+test("the visible showcase opens every featured project from a keyboard without starting media", async (t) => {
+  const page = await visit(t);
+  const filmRequests = [];
+  page.on("request", (request) => {
+    if (/\.(mp4|webm)(\?|$)/.test(request.url())) filmRequests.push(request.url());
+  });
+  await page.goto(url);
+  await page.waitForLoadState("networkidle");
+  for (const id of ["ai-worm", "roadster-studio", "eagle-film"]) {
+    const link = page.locator(`#showcase a[href="#${id}"]`);
+    await expect(link).toBeVisible();
+    await link.focus();
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL(new RegExp(`#${id}$`));
+    await expect(page.locator(`#${id}`)).toBeInViewport();
+    await expect(page.locator("#films-collection")).toHaveAttribute("open", "");
+    await page.locator("#films-collection > summary").click();
+  }
+  assert.deepEqual(filmRequests, [], "project discovery does not download a film");
+  const reading = await visit(t, { javaScriptEnabled: false });
+  await reading.goto(url);
+  await expect(reading.locator("#showcase a")).toHaveCount(3);
+  await expect(reading.locator("#showcase")).toContainText("independent automotive CAD concept");
+});
+
 test("the phone header fits before secondary styles arrive", async (t) => {
   for (const width of [320, 390]) {
     const page = await visit(t, { viewport: { width, height: 844 } });

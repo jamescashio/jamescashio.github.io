@@ -1,4 +1,4 @@
-# cAshIo Orbital Observatory · approval preview · 10-31-2026
+# cAshIo Orbital Observatory · approved release · 10-31-2026
 
 ## Creative thesis
 
@@ -9,7 +9,7 @@ A cinematic orbital observatory: a luminous planet, precise cyan instruments, wa
 - Audience: curious builders, technical peers, and potential collaborators.
 - Primary action: board the existing starship or explore a working experiment.
 - Feeling: expansive, tactile, composed.
-- Scope: visual and interaction polish above the four approved homepage improvements. This round remains an unpublished preview until Doug reviews it.
+- Scope: Doug approved publication of the orbital polish and phone header fix, and requested stronger content and discovery. Preserve the approved visual direction and expose the existing signature projects through a compact, visible showcase.
 
 ## Visual system
 
@@ -36,13 +36,14 @@ A cinematic orbital observatory: a luminous planet, precise cyan instruments, wa
 4. Supporting explorations: the existing expandable panels inherit the same precise visual language.
 5. Evidence and contact: keep the dated truth boundary and human connection readable and calm.
 6. Initial phone layout: include Bit sizing and phone header controls in the initial stylesheet so delayed secondary styling cannot expand the viewport.
+7. Selected work: give The Sovereign, Roadster Studio, and House Cashio visible, illustrated invitations with concrete descriptions. Each link opens the existing project and preserves its bookmark. Use fine cyan and gold instrument edges, layered light, and deliberate focus feedback. Keep the private reference file and all of its content outside the repository.
 
 ## Anti-goals and safeguards
 
 - Do not copy personal data, private content, or data connections from the owner's style reference. Borrow only its visual ideas.
 - Do not replace the established cAshIo identity, invent operational claims, redate observations, add analytics, or change infrastructure.
 - Do not add a dependency for a decorative effect, relax CSP, increase the initial CSS transfer budget, or load large new media on startup.
-- Do not publish this new visual round under the approval for the previous four improvements.
+- Publish this round only under the specific orbital release approval. Preserve historical observations and release dates.
 
 ## Acceptance checks
 

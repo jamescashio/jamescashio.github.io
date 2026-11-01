@@ -15,6 +15,7 @@ import { HeroSection } from "./sections/hero.jsx";
 import { EagleFilmSection } from "./sections/eagle-film.jsx";
 import { WorkshopSection } from "./sections/workshop.jsx";
 import { WorldsSection } from "./sections/worlds.jsx";
+import { ShowcaseSection } from "./sections/showcase.jsx";
 import { FilmsSection } from "./sections/films.jsx";
 import { DecisionsSection } from "./sections/decisions.jsx";
 import { ExperimentsSection } from "./sections/experiments.jsx";
@@ -1917,6 +1918,7 @@ function renderPage(v) {
         " ",
         " ",
         h(WorldsSection, { v, key: "rooms" }),
+        h(ShowcaseSection, { key: "showcase" }),
         " ",
         " ",
         h(
@@ -1924,8 +1926,8 @@ function renderPage(v) {
           {
             key: "films-collection",
             id: "films-collection",
-            title: "Stay for the films.",
-            description: "House Cashio, The Sovereign and more from the studio. Starts muted.",
+            title: "Step inside the screening room.",
+            description: "The featured projects, their stories, and the full short film collection. Films start muted.",
             image: "/assets/hero/cashio-trailer-poster.webp",
           },
           h(EagleFilmSection, { v, key: "eagle-film" }),
