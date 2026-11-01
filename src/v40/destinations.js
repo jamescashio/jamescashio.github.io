@@ -4,7 +4,7 @@ export const destinations = [
   ["eagle-film", "House Cashio", "Watch the 61 second trailer. The crew, Bit and a cat"],
   ["workshop", "Projects", "Inside the workshop. Real work, backups and a decision brief"],
   ["studies", "Experiments", "Seven experiments. Take the controls"],
-  ["rooms", "Worlds", "Starship, principles, studios and flight heritage"],
+  ["rooms", "Worlds", "World atlas. Starship, principles, studios and flight heritage"],
   ["films", "Films", "House Cashio, The Sovereign and the short film collection"],
   ["work", "Quick decision", "Privacy, human judgment and the routing law"],
   ["universe", "System map", "HERMES, Zeus, Apollo and a request trace"],

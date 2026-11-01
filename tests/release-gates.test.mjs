@@ -38,8 +38,8 @@ test("V40 ships its real reading edition under the strict production security po
   assert.equal(root.querySelectorAll("h1").length, 1);
   assert.match(root.textContent, /You still decide\./);
   const receipt = JSON.parse(await read("dist/v40/site-release.json"));
-  assert.equal(receipt.presentation.name, "Afterglow");
-  assert.match(root.querySelector("#top").textContent, /Afterglow · The October Finale/);
+  assert.equal(receipt.presentation.name, "First Light");
+  assert.match(root.querySelector("#top").textContent, /First Light · The next horizon/);
   const updatedDate = new Intl.DateTimeFormat("en-US", {
     month: "long",
     day: "numeric",
@@ -69,9 +69,9 @@ test("V40 ships its real reading edition under the strict production security po
   assert.equal(root.querySelectorAll('[role="tab"]').length, 7);
   assert.equal(
     document.querySelector('meta[property="og:image"]').content,
-    "https://cashio.us/v41/afterglow-share-card.jpg",
+    "https://cashio.us/v41/first-light-share-card.jpg",
   );
-  assert.ok((await stat(asset("dist/v41/afterglow-share-card.jpg"))).size < 250_000);
+  assert.ok((await stat(asset("dist/v41/first-light-share-card.jpg"))).size < 250_000);
   assert.equal(receipt.experienceVersion, JSON.parse(await read("package.json")).version);
   assert.equal(receipt.previousExperience.entry, "/v39/");
   assert.equal(receipt.published, receipt.status === "released");
