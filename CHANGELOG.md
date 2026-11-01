@@ -2,6 +2,8 @@
 
 ## V41.0.0 · Eagle · October 23, 2026
 
+Observation refresh · November 1, 2026: fresh read only checks confirm 2 hosts, 19 running containers and 1 running virtual machine. The backup inventory lists 122 snapshots; 21 of 21 latest reported snapshots have successful integrity results. Preserve the October 31, 2026 observation as a dated archive and update current date labels, metadata and sitemap.
+
 Observation refresh · October 31, 2026: fresh read only checks confirm 2 hosts, 19 running containers and 1 running virtual machine. The backup inventory lists 125 snapshots; 21 of 21 latest reported snapshots have successful integrity results. Preserve the October 28, 2026 observation as a dated archive and update current date labels, metadata and sitemap.
 
 Observation refresh · October 28, 2026: fresh read only checks confirm 2 hosts, 19 running containers and 1 running virtual machine. The backup inventory now lists 125 snapshots; 21 of 21 latest reported snapshots have successful integrity results. Preserve the October 27, 2026 observation as a dated archive and update current date labels, metadata and sitemap.
