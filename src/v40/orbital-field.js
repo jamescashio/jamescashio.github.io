@@ -13,7 +13,7 @@ export function drawOrbitalField(ctx, { width, height, dpr, time, motion, pointe
     const rx = radius * (1 + ring * 0.16);
     const ry = radius * (0.31 + ring * 0.055);
     ctx.lineWidth = dpr * (ring === 1 ? 0.8 : 0.5);
-    ctx.strokeStyle = ring === 1 ? "rgba(255, 197, 107,.26)" : "rgba(244, 206, 118,.24)";
+    ctx.strokeStyle = ring === 1 ? "rgba(218, 197, 255, 0.26)" : "rgba(221, 202, 255, 0.24)";
     ctx.setLineDash(ring === 2 ? [2 * dpr, 10 * dpr] : []);
     ctx.beginPath();
     ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
@@ -54,7 +54,7 @@ export function drawOrbitalField(ctx, { width, height, dpr, time, motion, pointe
   ctx.restore();
 
   if (!narrow) {
-    ctx.strokeStyle = "rgba(232, 201, 130,.12)";
+    ctx.strokeStyle = "rgba(216, 194, 255, 0.12)";
     ctx.lineWidth = 0.6 * dpr;
     const x = width * 0.91;
     const y = height * 0.18;

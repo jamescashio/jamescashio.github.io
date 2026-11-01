@@ -1,5 +1,6 @@
 import React, { useRef, useState, useSyncExternalStore } from "react";
 import { AtlasCore, AtlasTicks, MobileAtlasTrack } from "./signal-graphics.jsx";
+import { destinationColors } from "./light-spectrum.js";
 const subscribe = () => () => {};
 const client = () => true;
 const server = () => false;
@@ -68,23 +69,23 @@ function AtlasInstrument({ selected, onChoose }) {
           React.createElement(
             "radialGradient",
             { id: "atlas-core" },
-            React.createElement("stop", { stopColor: "#f3e3bc" }),
-            React.createElement("stop", { offset: ".2", stopColor: "#9b8144" }),
-            React.createElement("stop", { offset: "1", stopColor: "#211e17" }),
+            React.createElement("stop", { stopColor: "#eadfff" }),
+            React.createElement("stop", { offset: ".2", stopColor: "#9574c6" }),
+            React.createElement("stop", { offset: "1", stopColor: "#1e1e1e" }),
           ),
           React.createElement(
             "linearGradient",
             { id: "atlas-orbit", x1: "0", y1: "0", x2: "1", y2: "1" },
-            React.createElement("stop", { stopColor: "#e6ca8a" }),
-            React.createElement("stop", { offset: ".5", stopColor: "#e6ca8a", stopOpacity: ".1" }),
-            React.createElement("stop", { offset: "1", stopColor: "#ffc56b" }),
+            React.createElement("stop", { stopColor: "#d9c3ff" }),
+            React.createElement("stop", { offset: ".5", stopColor: "#d9c3ff", stopOpacity: ".1" }),
+            React.createElement("stop", { offset: "1", stopColor: "#dac5ff" }),
           ),
         ),
         React.createElement("circle", {
           cx: "200",
           cy: "200",
           r: "168",
-          stroke: "#d4c8ab",
+          stroke: "#c9c9c9",
           strokeOpacity: ".15",
           strokeDasharray: "1 7",
         }),
@@ -109,19 +110,19 @@ function AtlasInstrument({ selected, onChoose }) {
           rx: "167",
           ry: "88",
           transform: "rotate(54 200 200)",
-          stroke: "#e6ca8a",
+          stroke: "#d9c3ff",
           strokeOpacity: ".22",
         }),
         React.createElement("path", {
           d: "M200 21v24M200 355v24M21 200h24M355 200h24",
-          stroke: "#c7b791",
+          stroke: "#caa9ff",
           strokeWidth: ".7",
         }),
         React.createElement("path", {
           key: selected,
           className: "atlas-route",
           d: `M200 200Q${destination.x} 200 ${destination.x} ${destination.y}`,
-          stroke: "#ffd08a",
+          stroke: destinationColors[selected],
           strokeWidth: "1.5",
           pathLength: "1",
         }),
@@ -130,7 +131,10 @@ function AtlasInstrument({ selected, onChoose }) {
         destinations.map((item, index) =>
           React.createElement(
             "g",
-            { key: item.short, className: selected === index ? "atlas-waypoint is-selected" : "atlas-waypoint" },
+            {
+              key: item.short,
+              className: `atlas-waypoint atlas-waypoint-${index}${selected === index ? " is-selected" : ""}`,
+            },
             React.createElement("circle", { cx: item.x, cy: item.y, r: "15" }),
             React.createElement("circle", { cx: item.x, cy: item.y, r: "5" }),
             React.createElement(

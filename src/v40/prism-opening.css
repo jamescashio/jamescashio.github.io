@@ -1,4 +1,4 @@
-/* Aurum: an obsidian atelier with illuminated gold instruments. */
+/* Prism: neutral instruments, with a full spectrum of authored light. */
 .atlas-mobile-route {
   display: none;
 }
@@ -25,28 +25,28 @@
   white-space: normal;
 }
 #v40-root {
-  --accent: #e9bd72;
-  --accent-2: #bd833b;
-  --accent-glow: #e9bd7230;
-  --cyan: #e6c891;
-  --cyan-glow: #dcb96624;
-  --purple: #c6a373;
-  --purple-glow: #b9843820;
-  --text: #f4f0e8;
-  --text-dim: #c6bdad;
-  --glass: #171410ed;
-  --glass-border: #b49a6638;
+  --accent: #d2b7ff;
+  --accent-2: #a17ed6;
+  --accent-glow: #d2b7ff30;
+  --cyan: #d8c1ff;
+  --cyan-glow: #cdafff24;
+  --purple: #be95fc;
+  --purple-glow: #a17dd520;
+  --text: #f0f0f0;
+  --text-dim: #bebebe;
+  --glass: #141414ed;
+  --glass-border: #b28beb38;
   --void: #080706;
-  --surface: #12100d;
+  --surface: #101010;
   --radius: 0;
   --radius-lg: 0;
-  --continuum-line: #dac39a30;
+  --continuum-line: #d4baff30;
   background: #080706;
   color: var(--text);
 }
 #v40-root header {
   background: #080706ed;
-  border-bottom: 1px solid #bca67c30;
+  border-bottom: 1px solid #be95fb30;
   backdrop-filter: blur(20px);
 }
 #v40-root header .v41-d28b3b93ee {
@@ -61,14 +61,14 @@
 }
 #v40-root header .v41-0413664e13 {
   background: transparent;
-  color: #ebc584;
-  border: 1px solid #c8a76b70;
+  color: #d7c0ff;
+  border: 1px solid #c198ff70;
   border-radius: 50%;
-  box-shadow: inset 0 0 16px #d3a65818;
+  box-shadow: inset 0 0 16px #c29aff18;
 }
 #v40-root header .za-btn {
-  background: #e4be7b;
-  color: #100c07;
+  background: #d2b7ff;
+  color: #0d0d0d;
   border-radius: 0;
   padding: 14px 20px;
   box-shadow: none;
@@ -76,9 +76,9 @@
 #v40-root .hud-control,
 #v40-root .bit-header {
   border-radius: 0;
-  background: #15120d;
-  border-color: #b89b653b;
-  color: #ead8b6;
+  background: #121212;
+  border-color: #b38ced3b;
+  color: #e2d3ff;
   box-shadow: none;
 }
 #v40-root .bit-portrait canvas {
@@ -94,8 +94,8 @@
   padding: 6px;
   display: flex;
   flex-direction: row;
-  background: #11100de8;
-  border: 1px solid #c6ac763f;
+  background: #101010e8;
+  border: 1px solid #c49cff3f;
   border-radius: 40px;
   box-shadow: 0 8px 45px #0009;
   backdrop-filter: blur(20px);
@@ -132,7 +132,7 @@
   height: 4px;
 }
 #v40-root .v41-514cfd682d {
-  background: linear-gradient(90deg, #8f6330, #eed69e, #a67b37);
+  background: linear-gradient(90deg, #7a5fa3, #e1d1ff, #9473c4);
 }
 .continuum-hero {
   position: relative;
@@ -176,7 +176,7 @@
   z-index: -2;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(ellipse at 70% 30%, #d69b3910, transparent 65%);
+  background: radial-gradient(ellipse at 70% 30%, #bb92f810, transparent 65%);
 }
 .continuum-arrival {
   max-width: 1560px;
@@ -185,29 +185,29 @@
   align-items: center;
   gap: 24px;
   padding: 22px 0;
-  border-bottom: 1px solid #e5c58e23;
-  color: #bcae96;
+  border-bottom: 1px solid #d6beff23;
+  color: #b0b0b0;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   font: 9px/1.6 var(--font-mono);
 }
 .continuum-arrival > span:first-child {
-  color: #f1d49e;
+  color: #e1d0ff;
 }
 .continuum-arrival-end {
   margin-left: auto;
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #100e0ad9;
+  background: #0e0e0ed9;
   padding: 7px 12px;
 }
 .continuum-arrival i {
   width: 4px;
   height: 4px;
-  background: #f4d290;
+  background: #e0ceff;
   border-radius: 50%;
-  box-shadow: 0 0 12px #ffd479a0;
+  box-shadow: 0 0 12px #e2d2ffa0;
 }
 .continuum-hero #hero-content.continuum-composition {
   position: relative;
@@ -228,7 +228,7 @@
 }
 .continuum-label,
 .continuum-eyebrow {
-  color: #d5ba88;
+  color: #ceafff;
   font: 9px/1.6 var(--font-mono);
   text-transform: uppercase;
   letter-spacing: 0.16em;
@@ -242,11 +242,11 @@
 .continuum-eyebrow > span {
   width: 26px;
   height: 1px;
-  background: #d6ad66;
+  background: #c7a2ff;
 }
 .continuum-hero #hero-content h1 {
   max-width: 900px;
-  color: #f6f1e8;
+  color: #f1f1f1;
   font:
     500 clamp(62px, 7.25vw, 116px)/0.95 "Exo 2",
     sans-serif !important;
@@ -256,18 +256,18 @@
   text-shadow: 0 3px 40px #0008;
 }
 .continuum-hero #hero-content h1 > span {
-  color: #edc179;
+  color: #d5bcff;
   font-weight: 400;
   font-style: italic;
 }
 .aurum-manifesto {
   font: 500 17px/1.5 var(--font-body);
-  color: #e7dcc9;
+  color: #dddddd;
   margin: 0 0 12px;
 }
 .continuum-intro {
   max-width: 440px;
-  color: #c7bcaa;
+  color: #bdbdbd;
   font: 400 15px/1.75 var(--font-body);
   margin: 0 0 28px;
 }
@@ -289,32 +289,32 @@
   font: 700 12px/1.5 var(--font-body);
 }
 .continuum-primary {
-  color: #100c07;
-  background: linear-gradient(110deg, #f0d19a, #d4a55c);
-  border: 1px solid #f0ce91;
-  box-shadow: 0 5px 30px #bc862518;
+  color: #0d0d0d;
+  background: linear-gradient(110deg, #dfcdff, #c29aff);
+  border: 1px solid #ddcaff;
+  box-shadow: 0 5px 30px #a37fd818;
 }
 .continuum-secondary {
-  color: #e5d8c1;
+  color: #d9d9d9;
   background: transparent;
-  border-bottom: 1px solid #c6a7745c;
+  border-bottom: 1px solid #c198ff5c;
   padding-inline: 4px;
 }
 .continuum-primary:hover {
-  background: #ffe1a8;
-  color: #100c07;
+  background: #eae0ff;
+  color: #0d0d0d;
 }
 .continuum-secondary:hover {
-  color: #fff1d3;
-  border-color: #e5c891;
+  color: #f5f0ff;
+  border-color: #d8c1ff;
 }
 .continuum-footnote {
-  color: #b8aa91;
+  color: #ababab;
   font: 8px/1.7 var(--font-mono);
   margin: 14px 0 10px;
 }
 .continuum-hero .hero-logo-reveal {
-  color: #cab996;
+  color: #ccacff;
   font: 9px/1.5 var(--font-mono);
   padding: 10px 0;
   display: inline-flex;
@@ -356,13 +356,13 @@
   right: 0;
   display: grid;
   gap: 7px;
-  color: #e9cb92;
+  color: #dac5ff;
   font: 8px/1.5 var(--font-mono);
   text-align: right;
   letter-spacing: 0.13em;
-  background: #0b0906c9;
+  background: #090909c9;
   padding: 12px 14px;
-  border-top: 1px solid #c8a26375;
+  border-top: 1px solid #bd94fa75;
 }
 .continuum-scene-deck {
   position: absolute;
@@ -370,8 +370,8 @@
   bottom: 68px;
   right: 0;
   width: 340px;
-  background: #090805db;
-  border: 1px solid #ac8d5540;
+  background: #080808db;
+  border: 1px solid #a480da40;
   backdrop-filter: blur(14px);
 }
 .continuum-scene-controls {
@@ -384,9 +384,9 @@
   gap: 8px;
   min-height: 58px;
   border: 0;
-  border-bottom: 1px solid #a58d6040;
+  border-bottom: 1px solid #a37fd840;
   background: none;
-  color: #b7a98f;
+  color: #aaaaaa;
   text-align: left;
   padding: 10px 13px;
   font: 10px var(--font-mono);
@@ -394,12 +394,12 @@
 }
 .continuum-scene-controls button > span {
   font-size: 7px;
-  color: #ac9979;
+  color: #b089e8;
 }
 .continuum-scene-controls button[aria-pressed="true"] {
-  color: #ffe3ac;
-  background: #3b2d146e;
-  border-bottom-color: #e6b968;
+  color: #ece2ff;
+  background: #2f2f2f6e;
+  border-bottom-color: #cfb2ff;
 }
 .continuum-stage-bottom {
   display: flex;
@@ -411,7 +411,7 @@
 .continuum-stage-bottom button {
   border: 0;
   background: none;
-  color: #dec79d;
+  color: #d6bfff;
   font: 9px var(--font-mono);
   min-height: 44px;
   min-width: 44px;
@@ -422,14 +422,14 @@
   font-size: 14px;
 }
 .continuum-art-label {
-  color: #aa9b81;
+  color: #9d9d9d;
   font: 7px var(--font-mono);
 }
 .continuum-scene-caption {
   margin: 0;
   padding: 10px 14px 12px;
-  border-top: 1px solid #9f835021;
-  color: #b9ab91;
+  border-top: 1px solid #9977cb21;
+  color: #acacac;
   font: 9px/1.6 var(--font-body);
 }
 .continuum-launchpad {
@@ -449,7 +449,7 @@
   min-height: 44px;
   background: none;
   border: 0;
-  color: #ebca91;
+  color: #dac5ff;
   font: 10px var(--font-mono);
   cursor: pointer;
 }
@@ -468,10 +468,10 @@
   min-width: 0;
   text-align: left;
   border: 0;
-  border-block: 1px solid #b99a5d42;
+  border-block: 1px solid #b38cec42;
   padding: 16px 0;
   background: #080706a8;
-  color: #f1e4cd;
+  color: #e5e5e5;
   cursor: pointer;
 }
 .continuum-paths img {
@@ -484,22 +484,22 @@
   gap: 10px;
 }
 .continuum-paths small {
-  color: #c9ad7a;
+  color: #c59fff;
   font: 8px var(--font-mono);
   letter-spacing: 0.08em;
 }
 .continuum-paths strong {
-  color: #eee3d0;
+  color: #e4e4e4;
   font: 500 16px/1.3 var(--font-body);
 }
 .continuum-path-arrow {
   margin-left: auto;
   margin-right: 10px;
-  color: #d6b26d;
+  color: #c9a7ff;
 }
 .continuum-paths button:is(:hover, :focus-visible) {
-  border-color: #e9c37a;
-  background: #241b0c9c;
+  border-color: #d5bdff;
+  background: #1c1c1c9c;
 }
 .continuum-observation {
   position: relative;
@@ -511,18 +511,18 @@
   padding: 26px 0;
   max-width: 1560px;
   margin: auto;
-  border-bottom: 1px solid #b99a5d36;
+  border-bottom: 1px solid #b38cec36;
   background: #080706;
 }
 .continuum-observation-date {
   display: grid;
   gap: 8px;
-  color: #bdae93;
+  color: #c49dff;
   text-decoration: none;
   font: 9px/1.5 var(--font-mono);
 }
 .continuum-observation-date strong {
-  color: #e5dac6;
+  color: #dbdbdb;
   font: 500 13px/1.5 var(--font-body);
 }
 .continuum-readings {
@@ -535,17 +535,17 @@
   display: flex;
   flex-direction: column-reverse;
   gap: 8px;
-  border-left: 1px solid #ac906132;
+  border-left: 1px solid #a782de32;
   padding-left: 18px;
 }
 .continuum-readings dt {
-  color: #b4a78e;
+  color: #a8a8a8;
   font: 8px/1.5 var(--font-mono);
   text-transform: uppercase;
 }
 .continuum-readings dd {
   margin: 0;
-  color: #f1cf94;
+  color: #decbff;
   font: 400 36px/1 var(--font-body);
   letter-spacing: -0.04em;
 }
@@ -557,7 +557,7 @@
   max-width: 1560px;
   margin: auto;
   min-height: 66px;
-  color: #e9dec8;
+  color: #dfdfdf;
   text-decoration: none;
   font: 13px/1.5 var(--font-body);
 }
@@ -568,10 +568,10 @@
 }
 .continuum-next > span:last-child {
   font: 10px var(--font-mono);
-  color: #baa783;
+  color: #bf95fc;
 }
 .continuum-next > span:last-child > span {
-  color: #eecb8b;
+  color: #dbc6ff;
   font-size: 22px;
 }
 .continuum-principles {
@@ -579,9 +579,9 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   padding: 22px clamp(22px, 4.5vw, 80px);
   gap: 24px;
-  border-block: 1px solid #b99a5d25;
-  background: #11100c;
-  color: #aa9f8d;
+  border-block: 1px solid #b38cec25;
+  background: #101010;
+  color: #a0a0a0;
   font: 9px/1.6 var(--font-mono);
 }
 .continuum-principles span {
@@ -589,7 +589,7 @@
   gap: 4px;
 }
 .continuum-principles b {
-  color: #dbc39a;
+  color: #d4baff;
   font-weight: 500;
 }
 .discovery-console:not([open]) {
@@ -882,4 +882,49 @@
       background 180ms,
       border-color 180ms;
   }
+}
+/* The spectrum belongs to the sculpture and selected controls; prose stays quiet. */
+#v40-root {
+  --accent: #ff9acb;
+  --accent-2: #a6e9bd;
+  --cyan: #bdeed0;
+  --purple: #d7b9ff;
+  --text: #f4f3f6;
+  --text-dim: #c6c4ce;
+  --void: #09090b;
+}
+#v40-root header .za-btn,
+.continuum-primary {
+  background: #f0edf5;
+  color: #141017;
+  border-color: #f0edf5;
+}
+#v40-root .bit-portrait canvas {
+  filter: none;
+}
+.continuum-hero #hero-content h1 > span {
+  background: linear-gradient(100deg, #ffb69d 8%, #ffa7d9 38%, #d7bdff 65%, #a8edc3 96%);
+  background-clip: text;
+  color: transparent;
+}
+.aurum-manifesto,
+.continuum-intro {
+  color: #dedbe4;
+}
+.continuum-scene-controls button:nth-child(1) {
+  --light: #a6e9bd;
+}
+.continuum-scene-controls button:nth-child(2) {
+  --light: #ffacb7;
+}
+.continuum-scene-controls button:nth-child(3) {
+  --light: #d7b9ff;
+}
+.continuum-scene-controls button[aria-pressed="true"] {
+  color: var(--light);
+  border-bottom-color: var(--light);
+  background: #ffffff08;
+}
+#v40-root .v41-514cfd682d {
+  background: linear-gradient(90deg, #ff92c9, #ffa288, #d1a6ff, #8be5b1);
 }

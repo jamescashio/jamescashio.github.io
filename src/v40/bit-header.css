@@ -2,10 +2,10 @@
   display: flex;
   align-items: center;
   gap: 2px;
-  border: 1px solid #73542b;
+  border: 1px solid #664f89;
   border-radius: 12px;
-  background: #171511;
-  color: #ffc46e;
+  background: #151515;
+  color: #dac5ff;
   cursor: pointer;
   padding: 0 8px 0 0;
   min-height: 44px;
@@ -30,7 +30,7 @@
   inset: 0;
   display: grid;
   place-items: center;
-  color: #ffb300;
+  color: #d0b4ff;
   font: 40px var(--font-display);
 }
 .bit-rendered .bit-fallback {

@@ -1,6 +1,6 @@
 .eagle-film {
   border-bottom: 1px solid var(--glass-border);
-  background: radial-gradient(ellipse at 80% 45%, #27231b55, transparent 65%);
+  background: radial-gradient(ellipse at 80% 45%, #23232355, transparent 65%);
 }
 .eagle-film-copy h2 {
   max-width: 13ch;
@@ -30,7 +30,7 @@
   border: 1px solid var(--glass-border);
   border-radius: var(--radius);
   color: var(--text);
-  background: #090806;
+  background: #080808;
   box-shadow: 0 18px 50px #0004;
 }
 .eagle-film-visual {
@@ -47,13 +47,13 @@
   aspect-ratio: 1;
   margin: auto;
   padding-left: 4px;
-  border: 1px solid #ffbd5ce6;
+  border: 1px solid #ffb7afe6;
   border-radius: 50%;
-  background: #15130eea;
-  color: #ffbd5c;
+  background: #131313ea;
+  color: #ffb7af;
   font-size: clamp(20px, 2vw, 26px);
   box-shadow:
-    0 0 0 8px #15130e33,
+    0 0 0 8px #13131333,
     0 8px 28px #0006;
 }
 .eagle-film-caption {
@@ -73,13 +73,13 @@
   border-color: var(--accent);
   box-shadow:
     0 18px 50px #0006,
-    0 0 30px #ff950018;
+    0 0 30px #f7948718;
 }
 .eagle-film-play:is(:hover, :focus-visible) .eagle-film-playmark {
-  color: #15130e;
-  background: #ffbd5c;
+  color: #131313;
+  background: #ffb7af;
   box-shadow:
-    0 0 0 8px #ff950018,
+    0 0 0 8px #f7948718,
     0 8px 28px #0006;
 }
 .eagle-film-play:focus-visible {
@@ -103,7 +103,7 @@
   max-height: 72vh;
   aspect-ratio: 16/9;
   object-fit: contain;
-  background: #090806;
+  background: #080808;
 }
 @media (max-width: 760px) {
   .eagle-film-copy h2 {

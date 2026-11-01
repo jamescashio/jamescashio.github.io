@@ -1,6 +1,6 @@
-# V42 · Aurum preview
+# V42 · Prism preview
 
-Aurum rebuilds the visual language in obsidian, ivory and metallic gold. An original armillary sculpture, oversized editorial typography, a floating chapter dock and open asymmetric sections replace the blue interface. Orbit, Signal and Constellation morph on selection; Rotate and Fold space remain usable with motion off. A new Discovery console offers Explore, Try and Watch paths, twelve illustrated stops, selectable holographic beacons, keyboard stepping and copyable public routes. The cinema presents four selectable features with House Cashio first. The world map expands each destination into a panoramic composition.
+Prism brings emerald, magenta, coral, violet and pearl light to a futuristic charcoal interface. An original photonic sculpture, multicolor projected particles, distinct destination colors and restored full-color illustrations carry the spectrum through the existing editorial layout. Orbit, Signal and Constellation morph on selection; Rotate and Fold space remain usable with motion off. A new Discovery console offers Explore, Try and Watch paths, twelve illustrated stops, selectable holographic beacons, keyboard stepping and copyable public routes. The cinema presents four selectable features with House Cashio first. The world map expands each destination into a panoramic composition.
 
 All existing films, captions, routes, four worlds, seven experiments, Bit and E.V.E. remain. The verified November 1, 2026 observation is unchanged. The reference's personal information is excluded. No dependency, infrastructure or security setting changes are included.
 

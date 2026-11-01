@@ -1,3 +1,21 @@
+# V42 · Prism
+
+## Current creative thesis
+
+A photonic atelier: a full spectrum of light inside a precise charcoal instrument, with color revealing the character of each world instead of coating the entire interface in one metal.
+
+Doug asked for a multitude of colors after reviewing the all-gold Aurum preview. Keep its large editorial typography, cAshIo identity, dimensional graphics and complete content. Use emerald #7ee6ae, magenta #ff8fcc, coral #ff998b, violet #c197ff and pearl #f5f3f8 on neutral charcoal #09090b. Avoid a dominant blue background or an all-gold finish. Bit may retain its small established gold authority signal. Color alone never communicates state.
+
+The opening becomes an original photonic sculpture with crystal, titanium and distinct colored light. The second headline line refracts the spectrum; ordinary copy stays neutral. Orbit, Signal and Constellation use authored multicolor particle bands and a bounded morph. The Discovery map and four atlas destinations have distinct color accents. Restore the original full-color thumbnails and world illustrations. Films, projects, experiments and evidence receive coral, mint and violet accents around quiet reading surfaces. No universal rainbow cards or extra panel clutter.
+
+Keep the stable layout and responsive controls, including the dock clearance on short screens. Preserve all sections, films, captions, routes, worlds, experiments and the original human-in-command statement. House Cashio remains the first cinema feature. The verified November 1 observation and all archived records remain unchanged. No private briefing content is imported.
+
+Keep existing dependencies, strict CSP, muted playback, Pause, reduced motion, keyboard controls and complete static reading. Maintain the 19,000 byte compressed entry CSS limit, phone compactness, 44 pixel touch targets and bounded rendering. Review desktop and narrow phone screenshots plus actual film playback and all repository gates.
+
+This isolated preview is unpublished. Aurum remains preserved at eacc2554eb99de9ec948b870a0cbbf48a8f9e71b. Production and rollback remain 650f395adc36ae762acd99e43c0a4655d653ed1f. Final approval is required before publication.
+
+## Previous creative directions, superseded by Prism
+
 # V42 · Aurum
 
 ## Current creative thesis

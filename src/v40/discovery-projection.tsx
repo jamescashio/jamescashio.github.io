@@ -1,4 +1,5 @@
 import { useId } from "react";
+import { destinationColors } from "./light-spectrum.js";
 
 // An original public-content map. Its four beacons represent the four real
 // destinations on the selected path, never a live or private system inventory.
@@ -23,12 +24,12 @@ export function DiscoveryProjection({
       <svg viewBox="0 0 600 400" preserveAspectRatio="none" fill="none" aria-hidden="true">
         <defs>
           <radialGradient id={id + "-aura"}>
-            <stop stopColor="#efb42a" stopOpacity=".3" />
-            <stop offset="1" stopColor="#efb42a" stopOpacity="0" />
+            <stop stopColor={destinationColors[index]} stopOpacity=".22" />
+            <stop offset="1" stopColor={destinationColors[index]} stopOpacity="0" />
           </radialGradient>
           <linearGradient id={id + "-beam"} x1="300" y1="40" x2="300" y2="300" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#ffcc55" stopOpacity="0" />
-            <stop offset="1" stopColor="#ffcc55" stopOpacity=".14" />
+            <stop stopColor="#d6b7ff" stopOpacity="0" />
+            <stop offset="1" stopColor="#ff9fce" stopOpacity=".14" />
           </linearGradient>
           <filter id={id + "-glow"} x="-100%" y="-100%" width="300%" height="300%">
             <feGaussianBlur stdDeviation="3" />
@@ -43,7 +44,7 @@ export function DiscoveryProjection({
             cy={238 + i * 8}
             rx={238 - i * 18}
             ry={87 - i * 6}
-            stroke={i === 0 ? "#f6cd83" : "#efbd48"}
+            stroke={destinationColors[i % destinationColors.length]}
             strokeOpacity={i === 0 ? ".8" : ".18"}
             strokeDasharray={i % 2 ? "2 7" : undefined}
           />
@@ -54,13 +55,13 @@ export function DiscoveryProjection({
             <path
               key={i}
               d={`M${300 + Math.cos(angle) * 252} ${238 + Math.sin(angle) * 95}l${Math.cos(angle) * 8} ${Math.sin(angle) * 4}`}
-              stroke={i % 4 ? "#cca23f" : "#ffe0a5"}
+              stroke={destinationColors[i % destinationColors.length]}
               strokeOpacity={i % 4 ? ".4" : ".9"}
             />
           );
         })}
         {points.map(([x, y], i) => (
-          <g key={i} stroke={i === index ? "#ffdd96" : "#f2c459"}>
+          <g key={i} stroke={destinationColors[i]}>
             <path
               d={`M300 210 300 ${y + 28} ${x} ${y}`}
               strokeOpacity={i === index ? ".95" : ".22"}
@@ -76,7 +77,7 @@ export function DiscoveryProjection({
             cx={18 + ((i * 137.5) % 564)}
             cy={40 + ((i * 67.3) % 305)}
             r={i % 7 === 0 ? 1.4 : 0.65}
-            fill={i % 3 ? "#e9c674" : "#ffda9c"}
+            fill={destinationColors[i % destinationColors.length]}
             opacity={i % 4 === 0 ? ".8" : ".35"}
           />
         ))}
@@ -85,21 +86,21 @@ export function DiscoveryProjection({
           cy="210"
           rx="63"
           ry="24"
-          stroke="#f3cb6d"
+          stroke={destinationColors[index]}
           strokeWidth="6"
           filter={"url(#" + id + "-glow)"}
           opacity=".65"
         />
-        <ellipse cx="300" cy="210" rx="63" ry="24" stroke="#f7d992" />
-        <ellipse cx="300" cy="210" rx="49" ry="17" stroke="#ffe0a6" strokeDasharray="2 5" />
-        <path d="m300 182 9 19 22 9-22 8-9 19-9-19-22-8 22-9Z" fill="#f1ede2" fillOpacity=".8" />
+        <ellipse cx="300" cy="210" rx="63" ry="24" stroke={destinationColors[index]} />
+        <ellipse cx="300" cy="210" rx="49" ry="17" stroke="#ece2ff" strokeDasharray="2 5" />
+        <path d="m300 182 9 19 22 9-22 8-9 19-9-19-22-8 22-9Z" fill="#f6f2fa" fillOpacity=".8" />
         <circle
           key={index}
           className="discovery-projection-pulse"
           cx="300"
           cy="210"
           r="65"
-          stroke="#ebe5d6"
+          stroke="#f6f2fa"
           opacity="0"
         />
       </svg>

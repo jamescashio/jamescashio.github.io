@@ -651,7 +651,7 @@ export class V40Page extends React.Component {
             dy = s.y - oy,
             length = Math.max(1, Math.hypot(dx, dy));
           const len = Math.min(120 * dpr, length * 0.22) * s.z;
-          ctx.strokeStyle = `rgba(255,217,156,${0.2 + 0.35 * s.z})`;
+          ctx.strokeStyle = `rgba(225,208,255,${0.2 + 0.35 * s.z})`;
           ctx.lineWidth = 1.1 * s.z * dpr;
           ctx.beginPath();
           ctx.moveTo(s.x, s.y);
@@ -660,7 +660,7 @@ export class V40Page extends React.Component {
           continue;
         }
         const tw = reduce ? 1 : 0.55 + 0.45 * Math.sin(t * 1.6 + s.t);
-        ctx.fillStyle = `rgba(240,229,207,${0.25 + 0.6 * tw * s.z})`;
+        ctx.fillStyle = `rgba(241,239,247,${0.25 + 0.6 * tw * s.z})`;
         ctx.fillRect(s.x, s.y, 1.2 * s.z * dpr + 0.4, 1.2 * s.z * dpr + 0.4);
         if (!reduce) {
           s.x -= 2.4 * delta * s.z * dpr;
@@ -821,11 +821,11 @@ export class V40Page extends React.Component {
       towel: [["lore", "LORE · Towel located. Kept handy, as advised."]],
       "don't panic": [["lore", "LORE · Large, friendly letters engaged. Nothing on this page requires panic."]],
       "dont panic": [["lore", "LORE · Large, friendly letters engaged. Nothing on this page requires panic."]],
-      "mostly harmless": [["lore", "LORE · V42, Aurum. The answer is here. The questions are getting better."]],
+      "mostly harmless": [["lore", "LORE · V42, Prism. The answer is here. The questions are getting better."]],
       spice: [["lore", "LORE · Spice flows on Arrakis. Private data stays home."]],
     };
     const lore = [
-      "LORE · Aurum: V42. The answer is here. Human judgment still required.",
+      "LORE · Prism: V42. The answer is here. Human judgment still required.",
       "LORE · A human in command is not a bottleneck. It is the point.",
       "LORE · Zeus and Apollo keep the lights on. Hermes carries the messages. Nobody gets a throne.",
       "LORE · Fly it like a test pilot: know the envelope, then write down what the instruments actually said.",

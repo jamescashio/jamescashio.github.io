@@ -594,8 +594,8 @@ def main() -> int:
         failures.append("current public evidence aliases must be byte-identical")
     for name in ("README.md", "CHANGELOG.md", "RELEASE_BODY.md", "index.html"):
         text = read(name)
-        if "V42" not in text or "Aurum" not in text:
-            failures.append(f"{name} must identify V42 Aurum")
+        if "V42" not in text or "Prism" not in text:
+            failures.append(f"{name} must identify V42 Prism")
     for name in ("README.md", "CHANGELOG.md", "RELEASE_BODY.md"):
         if latest.get("verifiedLong", "") not in read(name):
             failures.append(f"{name} must include the current observation date")

@@ -1,6 +1,10 @@
 # Changelog
 
-## V42.0.0 · Aurum preview
+## V42.0.0 · Prism preview
+
+Prism revision · November 1, 2026: a photonic sculpture and a coordinated spectrum of emerald, magenta, coral, violet and pearl. Three projected light forms gain distinct color behavior, holographic destinations use individual color accents, and original illustrations regain their full colors. All content, media and dated evidence are preserved. This revision remains unpublished.
+
+### Earlier Aurum preview
 
 Aurum revision · November 1, 2026: an original gold sculpture, an obsidian and ivory palette, oversized editorial typography, a floating desktop chapter dock, a larger cinema and asymmetric workshop. Holographic instruments and all current interface surfaces use warm light. Existing artwork and media files remain unchanged. Complete content and verified observations are preserved. This revision is unpublished.
 

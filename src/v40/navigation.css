@@ -4,32 +4,32 @@
   --sans: var(--font-body, "Instrument Sans", sans-serif);
   --display: var(--font-display, "Unbounded", sans-serif);
   --mono: var(--font-mono, monospace);
-  --gold: var(--accent, #e9b65c);
-  --ink: var(--text, #f8f6f0);
-  --ink2: var(--text-dim, #d1c8b4);
-  --muted: var(--text-dim, #c9bfa6);
-  --line: #574b30;
+  --gold: var(--accent, #ceb0ff);
+  --ink: var(--text, #f6f6f6);
+  --ink2: var(--text-dim, #c9c9c9);
+  --muted: var(--text-dim, #c0c0c0);
+  --line: #4c4c4c;
 }
 .v40-scene-status {
   position: fixed;
   z-index: 2147483646;
   inset: 20% max(16px, calc((100% - 560px) / 2)) auto;
   padding: 24px;
-  border: 1px solid #e9b65c;
+  border: 1px solid #ceb0ff;
   border-radius: 16px;
-  color: #f8f6f0;
-  background: #15130e;
+  color: #f6f6f6;
+  background: #131313;
   font: 18px/1.5 sans-serif;
 }
 .v40-scene-status button {
   min-height: 44px;
   padding: 10px 18px;
-  color: #15130e;
-  background: #e9b65c;
+  color: #131313;
+  background: #ceb0ff;
   border: 0;
   border-radius: 8px;
 }
 .v40-scene-status button:focus-visible {
-  outline: 3px solid #eeb122;
+  outline: 3px solid #ccacff;
   outline-offset: 4px;
 }

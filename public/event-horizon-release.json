@@ -29,7 +29,7 @@
   "frontDoor": {
     "entry": "/",
     "experienceVersion": "42.0.0",
-    "visualEdition": "Aurum",
+    "visualEdition": "Prism",
     "receipt": "/v40/site-release.json"
   }
 }

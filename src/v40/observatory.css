@@ -1,6 +1,6 @@
 /* One orbital atmosphere, with quiet reading surfaces in front of it. */
 #v40-root .orbital-observatory {
-  background: #16140f;
+  background: #141414;
   isolation: isolate;
 }
 .orbital-observatory .hero-live-poster {
@@ -13,18 +13,18 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 72% 10%, #edc05726, transparent 54%),
-    radial-gradient(ellipse at 70% 83%, #ffb35b1f, transparent 46%), linear-gradient(125deg, #15130f99, transparent 62%);
+    radial-gradient(ellipse at 72% 10%, #d4baff26, transparent 54%),
+    radial-gradient(ellipse at 70% 83%, #d1b6ff1f, transparent 46%), linear-gradient(125deg, #13131399, transparent 62%);
   mix-blend-mode: screen;
 }
 #v40-root .orbital-observatory > .v41-b75c4d9c44 {
   background:
-    linear-gradient(90deg, #110f0bf0, #110f0b99 43%, #110f0b14 75%),
-    linear-gradient(180deg, #110f0b66, transparent 26%, transparent 74%, #0f0d0a);
+    linear-gradient(90deg, #0f0f0ff0, #0f0f0f99 43%, #0f0f0f14 75%),
+    linear-gradient(180deg, #0f0f0f66, transparent 26%, transparent 74%, #0d0d0d);
 }
 #v40-root .orbital-observatory .v41-32dd3337d5 {
-  background-image: linear-gradient(100deg, #ffe2a4 2%, #ffc267 38%, #e9a441 73%, #ffe3ac);
-  text-shadow: 0 8px 36px #e9a44112;
+  background-image: linear-gradient(100deg, #ebe0ff 2%, #d9c3ff 38%, #c5a0ff 73%, #ece2ff);
+  text-shadow: 0 8px 36px #c5a0ff12;
 }
 #v40-root .orbital-observatory .v41-a353758b92 {
   opacity: 0.28;
@@ -38,8 +38,8 @@
   height: 58px;
   border-width: 2px 0 0 2px;
   border-top-left-radius: 20px;
-  border-color: #ffc56b;
-  filter: drop-shadow(0 0 10px #ffc56b33);
+  border-color: #dac5ff;
+  filter: drop-shadow(0 0 10px #dac5ff33);
 }
 .orbital-observatory .v41-239c863440,
 .orbital-observatory .v41-cb189694f5,
@@ -48,19 +48,19 @@
 }
 .orbital-observatory .v41-239c863440 {
   width: 70px;
-  background: #ffc56b;
+  background: #dac5ff;
 }
 .orbital-observatory .v41-cb189694f5 {
   width: 20px;
-  background: #f0d79d;
+  background: #e2d2ff;
 }
 .orbital-observatory .v41-bf5360592c {
   height: 22px;
   margin-top: -10px;
-  background: #1e1b15;
-  border: 1px solid #d5c2944d;
+  background: #1b1b1b;
+  border: 1px solid #d2b7ff4d;
   border-radius: 3px;
-  color: #e5d8b8;
+  color: #e2d2ff;
   font-size: 10px;
   letter-spacing: 0.13em;
 }
@@ -70,63 +70,63 @@
 }
 .orbital-observatory .v41-d0ceeed41b {
   width: 34px;
-  background: #ffc56b;
+  background: #dac5ff;
 }
 .orbital-observatory .v41-f1094867b2 {
   width: 106px;
   height: 58px;
   border-width: 0 2px 2px 0;
   border-bottom-right-radius: 20px;
-  border-color: #f0d79d;
-  filter: drop-shadow(0 0 10px #f0d79d33);
+  border-color: #e2d2ff;
+  filter: drop-shadow(0 0 10px #e2d2ff33);
 }
 #v40-root .orbital-observatory [aria-label="Lab telemetry"] {
-  border: 1px solid #d6be853d;
-  background: linear-gradient(145deg, #2a261ded, #13120ef5 68%);
+  border: 1px solid #d0b3ff3d;
+  background: linear-gradient(145deg, #262626ed, #121212f5 68%);
   box-shadow:
     0 28px 70px #0005,
-    inset 0 1px #eddcb514;
+    inset 0 1px #e5d7ff14;
 }
 #v40-root .orbital-observatory [aria-label="Lab telemetry"]::after {
   content: "";
   position: absolute;
   inset: 8px;
-  border: 1px solid #e0d6c014;
+  border: 1px solid #d7d7d714;
   border-radius: 9px;
   pointer-events: none;
 }
 #v40-root .orbital-observatory .za-btn--primary {
-  border: 1px solid #ffd18a;
-  background: linear-gradient(130deg, #ffc46a, #f29e32);
-  color: #16110a;
+  border: 1px solid #e1d1ff;
+  background: linear-gradient(130deg, #dac4ff, #c59eff);
+  color: #121212;
   box-shadow:
-    0 8px 28px #e7a03925,
-    inset 0 1px #fff4ca80;
+    0 8px 28px #c39bff25,
+    inset 0 1px #f6f2ff80;
 }
 #v40-root .orbital-observatory .za-btn--primary:is(:hover, :focus-visible) {
   box-shadow:
-    0 10px 36px #ffb54144,
-    inset 0 1px #fff4ca80;
+    0 10px 36px #d2b7ff44,
+    inset 0 1px #f6f2ff80;
 }
 #v40-root .orbital-observatory .za-btn--secondary {
-  border-color: #dbc38b66;
-  background: #26221abd;
+  border-color: #d3b9ff66;
+  background: #222222bd;
 }
 #v40-root header {
-  background: #13110ded;
+  background: #111111ed;
   box-shadow: 0 10px 36px #0004;
 }
 #v40-root #rooms {
   background:
-    radial-gradient(ellipse at 8% 10%, #322d2235, transparent 56%),
-    radial-gradient(ellipse at 94% 75%, #62401f24, transparent 50%);
+    radial-gradient(ellipse at 8% 10%, #2d2d2d35, transparent 56%),
+    radial-gradient(ellipse at 94% 75%, #523e6e24, transparent 50%);
 }
 #v40-root .world-portal {
-  border: 1px solid #c1a86c44;
-  background: linear-gradient(155deg, #27231b, #171510 60%);
+  border: 1px solid #c097fe44;
+  background: linear-gradient(155deg, #232323, #151515 60%);
   box-shadow:
     0 18px 42px #0004,
-    inset 0 1px #e4d8bd12;
+    inset 0 1px #d9d9d912;
 }
 #v40-root .world-portal > div:first-child {
   isolation: isolate;
@@ -139,10 +139,10 @@
   pointer-events: none;
   opacity: 0.65;
   background:
-    linear-gradient(#ebd195, #ebd195) left top / 25px 1px,
-    linear-gradient(#ebd195, #ebd195) left top / 1px 25px,
-    linear-gradient(#ffc56b, #ffc56b) right bottom / 25px 1px,
-    linear-gradient(#ffc56b, #ffc56b) right bottom / 1px 25px;
+    linear-gradient(#decbff, #decbff) left top / 25px 1px,
+    linear-gradient(#decbff, #decbff) left top / 1px 25px,
+    linear-gradient(#dac5ff, #dac5ff) right bottom / 25px 1px,
+    linear-gradient(#dac5ff, #dac5ff) right bottom / 1px 25px;
   background-repeat: no-repeat;
   transition:
     inset 400ms ease,
@@ -155,10 +155,10 @@
     filter 600ms ease;
 }
 #v40-root .world-portal:is(:hover, :focus-visible) {
-  border-color: #edd7a5b3;
+  border-color: #e2d2ffb3;
   box-shadow:
     0 24px 50px #0006,
-    0 0 24px #e0ae380d;
+    0 0 24px #c8a5ff0d;
 }
 #v40-root .world-portal:is(:hover, :focus-visible) img {
   transform: scale(1.045);
@@ -169,37 +169,37 @@
   opacity: 1;
 }
 #v40-root .world-portal:focus-visible {
-  outline: 2px solid #ffc56b;
+  outline: 2px solid #dac5ff;
   outline-offset: 6px;
 }
 #v40-root .world-portal .v41-fe7aa4b37b {
-  color: #f4d489;
+  color: #e1d0ff;
 }
 #v40-root .journey-disclosure {
-  background: radial-gradient(ellipse at 0 0, #3e382b66, transparent 70%), #191712;
-  border-color: #cfb88140;
+  background: radial-gradient(ellipse at 0 0, #39393966, transparent 70%), #171717;
+  border-color: #cbabff40;
   box-shadow:
-    inset 0 1px #e4d8bd0d,
+    inset 0 1px #d9d9d90d,
     0 12px 30px #0002;
 }
 #v40-root .journey-disclosure[open] {
-  border-color: #d5cbb46b;
+  border-color: #cccccc6b;
 }
 .journey-disclosure > summary img {
-  border-color: #c2b9a45c;
+  border-color: #bababa5c;
 }
 #v40-root .journey-disclosure-icon {
-  border-color: #e7ca875c;
-  box-shadow: inset 0 0 16px #eab3330a;
+  border-color: #d9c3ff5c;
+  box-shadow: inset 0 0 16px #ccadff0a;
 }
 #v40-root .journey-disclosure > summary:hover .journey-disclosure-icon {
-  color: #ffd08a;
-  border-color: #ffc56b99;
+  color: #e1d0ff;
+  border-color: #dac5ff99;
 }
 #v40-root .brief-preview {
-  border-color: #d6ad655c;
+  border-color: #c7a2ff5c;
   box-shadow:
-    inset 0 1px #ffda9912,
+    inset 0 1px #e6d9ff12,
     0 14px 32px #0003;
 }
 #v40-root .observatory-showcase {
@@ -217,21 +217,21 @@
 }
 .showcase-kicker,
 .showcase-medium {
-  color: #ffc56b;
+  color: #dac5ff;
   font: 500 11px/1.6 var(--font-mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 .showcase-heading h2 {
   margin: 10px 0 0;
-  color: #f4f0e7;
+  color: #f0f0f0;
   font: 750 clamp(24px, 3vw, 36px)/1.2 var(--font-display);
   text-wrap: balance;
 }
 .showcase-heading > p {
   margin: 0;
   max-width: 48ch;
-  color: #d8d1c0;
+  color: #d1d1d1;
   font: 400 16px/1.65 var(--font-body);
 }
 .showcase-grid {
@@ -246,11 +246,11 @@
   flex-direction: column;
   min-width: 0;
   overflow: hidden;
-  border: 1px solid #c5af7a40;
+  border: 1px solid #c59fff40;
   border-radius: 14px;
-  color: #f4f0e7;
+  color: #f0f0f0;
   text-decoration: none;
-  background: linear-gradient(145deg, #2c281e, #16140f 70%);
+  background: linear-gradient(145deg, #282828, #141414 70%);
   box-shadow: 0 20px 42px #0003;
 }
 .showcase-project::after {
@@ -258,16 +258,16 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  border-top: 1px solid #e9e2d14d;
+  border-top: 1px solid #e2e2e24d;
   pointer-events: none;
-  background: linear-gradient(120deg, #e8e0ce12, transparent 35%, transparent 70%, #ffc56b08);
+  background: linear-gradient(120deg, #e1e1e112, transparent 35%, transparent 70%, #dac5ff08);
 }
 .showcase-plate {
   position: relative;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  border-bottom: 1px solid #c5af7a40;
-  background: #14120e;
+  border-bottom: 1px solid #c59fff40;
+  background: #121212;
 }
 .showcase-plate img {
   display: block;
@@ -284,9 +284,9 @@
   width: 28px;
   height: 28px;
   place-items: center;
-  border: 1px solid #f0d79d80;
-  color: #eee8db;
-  background: #16140fcc;
+  border: 1px solid #e2d2ff80;
+  color: #e8e8e8;
+  background: #141414cc;
   font: 300 20px/1 var(--font-mono);
 }
 .showcase-copy {
@@ -306,7 +306,7 @@
 }
 .showcase-description {
   margin: 0 0 20px;
-  color: #d8d1c0;
+  color: #d1d1d1;
   font: 400 15px/1.65 var(--font-body);
 }
 .showcase-action {
@@ -315,19 +315,19 @@
   justify-content: space-between;
   gap: 12px;
   margin-top: auto;
-  color: #f0d79d;
+  color: #e2d2ff;
   font: 600 13px/1.6 var(--font-body);
 }
 .showcase-action > span {
-  color: #ffc56b;
+  color: #dac5ff;
   font-size: 21px;
 }
 .showcase-project:is(:hover, :focus-visible) {
   border-color: #c9d8c6b3;
-  background: linear-gradient(145deg, #363125, #1b1913 70%);
+  background: linear-gradient(145deg, #313131, #191919 70%);
 }
 .showcase-project:focus-visible {
-  outline: 2px solid #ffc56b;
+  outline: 2px solid #dac5ff;
   outline-offset: 5px;
 }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
@@ -359,7 +359,7 @@
   .showcase-plate {
     aspect-ratio: auto;
     border-bottom: 0;
-    border-right: 1px solid #c5af7a40;
+    border-right: 1px solid #c59fff40;
   }
   .showcase-plate img {
     position: absolute;
@@ -394,8 +394,8 @@
   }
   #v40-root .orbital-observatory > .v41-b75c4d9c44 {
     background:
-      linear-gradient(90deg, #110f0bc9, #110f0b80 65%, #110f0b5c),
-      linear-gradient(180deg, #110f0b4d, transparent 35%, #0f0d0a 100%);
+      linear-gradient(90deg, #0f0f0fc9, #0f0f0f80 65%, #0f0f0f5c),
+      linear-gradient(180deg, #0f0f0f4d, transparent 35%, #0d0d0d 100%);
   }
   .world-portal > div:first-child::after {
     inset: 6px;
@@ -431,15 +431,15 @@ html[data-motion="off"] .world-portal > div:first-child::after {
   position: relative;
   scroll-margin-top: 76px;
   background:
-    radial-gradient(ellipse at 8% 100%, #b8742520, transparent 55%),
-    radial-gradient(ellipse at 90% 12%, #d9a63014, transparent 50%), #13120e;
+    radial-gradient(ellipse at 8% 100%, #9574c520, transparent 55%),
+    radial-gradient(ellipse at 90% 12%, #c39bff14, transparent 50%), #121212;
 }
 .afterglow-feature::before {
   content: "";
   position: absolute;
   inset: 0 8% auto;
   height: 1px;
-  background: linear-gradient(90deg, transparent, #ffc56b90, #e5c88555, transparent);
+  background: linear-gradient(90deg, transparent, #dac5ff90, #d7c1ff55, transparent);
 }
 .afterglow-feature .eagle-film-inner {
   max-width: 1340px;
@@ -453,19 +453,19 @@ html[data-motion="off"] .world-portal > div:first-child::after {
   text-wrap: balance;
 }
 .afterglow-feature .eagle-film-copy > p {
-  color: #d8d1c0;
+  color: #d1d1d1;
 }
 .afterglow-feature .eagle-film-copy .eagle-film-label {
-  color: #ffc56b;
+  color: #dac5ff;
   font-size: 11px;
   letter-spacing: 0.09em;
 }
 #eagle-film.afterglow-feature .eagle-film-play {
-  border-color: #d5bd854d;
+  border-color: #cfb2ff4d;
   box-shadow: 0 22px 60px #0005;
 }
 .afterglow-feature .eagle-film-caption {
-  background: linear-gradient(110deg, #2a271e, #1c1913);
+  background: linear-gradient(110deg, #272727, #191919);
 }
 .afterglow-feature .eagle-film-copy .eagle-film-note {
   margin: 12px 0 0;

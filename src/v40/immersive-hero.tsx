@@ -18,7 +18,7 @@ type HeroView = {
   foldCount: number;
 };
 const scenes = [
-  { id: "orbit", label: "Orbit", caption: "Interlocking gold. An instrument for the imagination." },
+  { id: "orbit", label: "Orbit", caption: "A spectrum in orbit. An instrument for the imagination." },
   { id: "signal", label: "Signal", caption: "A luminous double helix. Ideas finding their form." },
   { id: "constellation", label: "Constellation", caption: "A spiral of possibilities. Follow your curiosity." },
 ];
@@ -30,7 +30,7 @@ function ContinuumStill() {
         cy="370"
         rx="300"
         ry="210"
-        stroke="#ffe5a7"
+        stroke="#d5b8ff"
         strokeOpacity=".38"
         transform="rotate(-30 1170 370)"
       />
@@ -39,11 +39,11 @@ function ContinuumStill() {
         cy="370"
         rx="335"
         ry="190"
-        stroke="#ffe1aa"
+        stroke="#8ee9b4"
         strokeOpacity=".48"
         transform="rotate(23 1170 370)"
       />
-      <circle cx="1170" cy="370" r="320" stroke="#ffe5a7" strokeOpacity=".2" strokeDasharray="2 14" />
+      <circle cx="1170" cy="370" r="320" stroke="#d5b8ff" strokeOpacity=".2" strokeDasharray="2 14" />
     </svg>
   );
 }
@@ -62,8 +62,8 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
       <div className="hero-planet" aria-hidden="true">
         <img
           className="hero-live-poster"
-          src="/v42/aurum-sculpture-1672.webp"
-          srcSet="/v42/aurum-sculpture-960.webp 960w, /v42/aurum-sculpture-1672.webp 1672w"
+          src="/v42/prism-sculpture-1672.webp"
+          srcSet="/v42/prism-sculpture-960.webp 960w, /v42/prism-sculpture-1672.webp 1672w"
           sizes="100vw"
           width="1672"
           height="941"
@@ -74,7 +74,7 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
       <div className="continuum-horizon" aria-hidden="true" />
       <div className="continuum-arrival">
         <span>cAshIo / V42</span>
-        <span>Aurum · Imagination, with intention</span>
+        <span>Prism · Imagination, with intention</span>
         <span className="continuum-arrival-end">
           <i aria-hidden="true" /> Human in command
         </span>
@@ -85,7 +85,7 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
             <canvas id="hero-stars" aria-hidden="true" />
             <ContinuumStill />
             <div className="continuum-reticle" aria-hidden="true">
-              <span>AURUM / 0{scenes.indexOf(scene) + 1}</span>
+              <span>PRISM / 0{scenes.indexOf(scene) + 1}</span>
               <span>THE IMAGINATION ENGINE</span>
             </div>
           </div>

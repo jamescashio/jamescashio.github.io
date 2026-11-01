@@ -8,7 +8,7 @@ const root = path.resolve(process.argv[2] || "dist");
 const port = Number(process.argv[3] || 4388);
 const review = process.argv.includes("--review");
 const reviewStyle =
-  ".review-status{position:fixed;bottom:12px;left:auto;right:12px;transform:none;z-index:1000;max-width:95vw;padding:6px 12px;border:1px solid #e9b65c66;border-radius:20px;background:#0d0b08f2;color:#e9b65c;font:11px/1.4 system-ui;white-space:nowrap;pointer-events:none}@media(max-width:700px){.review-status{left:auto;right:2px;bottom:12px;transform:none;writing-mode:vertical-rl;font-size:9px;padding:4px 2px;border-radius:5px;max-width:18px}}";
+  ".review-status{position:fixed;bottom:12px;left:auto;right:12px;transform:none;z-index:1000;max-width:95vw;padding:6px 12px;border:1px solid #d8adff66;border-radius:20px;background:#101014f2;color:#edddff;font:11px/1.4 system-ui;white-space:nowrap;pointer-events:none}@media(max-width:700px){.review-status{left:auto;right:2px;bottom:12px;transform:none;writing-mode:vertical-rl;font-size:9px;padding:4px 2px;border-radius:5px;max-width:18px}}";
 const mime = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",

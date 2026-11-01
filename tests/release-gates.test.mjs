@@ -50,15 +50,15 @@ test("V40 ships its real reading edition under the strict production security po
     "Read the " + observedMonth + " observation",
   );
   assert.ok(root.textContent.includes(observedMonth + " · Scheduler and routing not measured"));
-  assert.equal(receipt.presentation.name, "Aurum");
-  assert.match(root.querySelector("#top").textContent, /Aurum · Imagination, with intention/);
+  assert.equal(receipt.presentation.name, "Prism");
+  assert.match(root.querySelector("#top").textContent, /Prism · Imagination, with intention/);
   const updatedDate = new Intl.DateTimeFormat("en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",
     timeZone: "UTC",
   }).format(new Date(receipt.updatedDate + "T12:00:00Z"));
-  assert.match(root.querySelector("footer").textContent, new RegExp("Aurum.*Updated " + updatedDate));
+  assert.match(root.querySelector("footer").textContent, new RegExp("Prism.*Updated " + updatedDate));
   assert.doesNotMatch(root.querySelector("footer").textContent, /Preview 05|current public site/);
   assert.equal(root.querySelectorAll("[style]").length, 0, "the reading edition must use external CSS");
   const csp = document.querySelector('meta[http-equiv="Content-Security-Policy"]').content;
@@ -81,11 +81,11 @@ test("V40 ships its real reading edition under the strict production security po
   assert.equal(root.querySelectorAll('[role="tab"]').length, 7);
   assert.equal(
     document.querySelector('meta[property="og:image"]').content,
-    "https://cashio.us/v42/aurum-sculpture-960.webp",
+    "https://cashio.us/v42/prism-sculpture-960.webp",
   );
   assert.equal(document.querySelector('meta[property="og:image:width"]').content, "960");
   assert.equal(document.querySelector('meta[property="og:image:height"]').content, "540");
-  assert.ok((await stat(asset("dist/v42/aurum-sculpture-960.webp"))).size < 250_000);
+  assert.ok((await stat(asset("dist/v42/prism-sculpture-960.webp"))).size < 250_000);
   assert.ok((await stat(asset("dist/v41/first-light-share-card.jpg"))).size < 250_000);
   assert.equal(receipt.experienceVersion, JSON.parse(await read("package.json")).version);
   assert.equal(receipt.previousExperience.entry, "/v39/");
@@ -796,7 +796,7 @@ test("Helios release identity, signature assets and compatibility receipts agree
     assert.deepEqual(compatibility.frontDoor, {
       entry: "/",
       experienceVersion: "42.0.0",
-      visualEdition: "Aurum",
+      visualEdition: "Prism",
       receipt: "/v40/site-release.json",
     });
   }
@@ -845,7 +845,7 @@ test("Helios release identity, signature assets and compatibility receipts agree
   );
   assert.ok(doc.querySelector('#snapshot-story a[href="/evidence/console-snapshot-2026-10-03.json"]'));
   assert.deepEqual(JSON.parse(await read("dist/evidence/status.json")), JSON.parse(await read("status.json")));
-  assert.ok((await read("README.md")).startsWith("# cAshIo V42 · Aurum"));
+  assert.ok((await read("README.md")).startsWith("# cAshIo V42 · Prism"));
   assert.equal((await read("CHANGELOG.md")).match(/^## (V[\d.]+)/m)?.[1], "V42.0.0");
   const sitemap = new JSDOM(await read("dist/sitemap.xml"), { contentType: "application/xml" }).window.document;
   const home = [...sitemap.querySelectorAll("url")].find(

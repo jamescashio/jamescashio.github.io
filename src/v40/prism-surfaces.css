@@ -1,4 +1,4 @@
-/* One editorial system, with the content itself providing the variety. */
+/* One editorial system, with color revealing each destination's character. */
 html:has(.continuum-root) {
   scroll-padding-bottom: 100px;
 }
@@ -11,10 +11,10 @@ html:has(.continuum-root) {
 }
 #v40-root main > section:not(#top) {
   padding-inline: clamp(22px, 5.8vw, 96px);
-  background: #0b0a08;
+  background: #0a0a0a;
 }
 #v40-root #eagle-film {
-  background: radial-gradient(ellipse at 70% 25%, #6e4d181e, transparent 60%), #100e0a;
+  background: radial-gradient(ellipse at 70% 25%, #5f497f1e, transparent 60%), #0e0e0e;
   padding-block: 80px;
 }
 #v40-root .eagle-film-inner {
@@ -28,37 +28,37 @@ html:has(.continuum-root) {
   letter-spacing: -0.065em;
   font-weight: 500;
   line-height: 1.03;
-  color: #f3e9d6;
+  color: #eaeaea;
 }
 #v40-root .eagle-film-play {
   border-radius: 0;
-  border: 1px solid #b58a434d;
+  border: 1px solid #a480da4d;
   box-shadow: 0 30px 100px #0007;
 }
 #v40-root .eagle-film-caption {
-  background: #17130b;
+  background: #131313;
   padding: 18px 24px;
 }
 #v40-root .eagle-film-playmark {
-  background: #0a0804ba;
-  border-color: #e6c281;
-  box-shadow: 0 0 70px #e9b96325;
+  background: #080808ba;
+  border-color: #d4bbff;
+  box-shadow: 0 0 70px #d0b3ff25;
 }
 #v40-root .cinema-selection {
   gap: 18px;
 }
 #v40-root .cinema-selection button {
   border: 0;
-  border-block: 1px solid #ab8b5238;
+  border-block: 1px solid #a27fd738;
   background: transparent;
   padding: 14px 0;
-  color: #c7b695;
+  color: #caa8ff;
 }
 #v40-root .cinema-selection button[aria-pressed="true"] {
-  background: #c5973814;
-  border-color: #d9b471;
+  background: #b38cec14;
+  border-color: #cbaaff;
   box-shadow: none;
-  color: #f5dfb5;
+  color: #e8dcff;
 }
 #v40-root .cinema-selection img,
 #v40-root .continuum-paths img {
@@ -81,7 +81,7 @@ html:has(.continuum-root) {
   font-size: clamp(42px, 4.8vw, 76px);
   line-height: 1.06;
   letter-spacing: -0.065em;
-  color: #f0e6d4;
+  color: #e7e7e7;
 }
 #v40-root .workshop-highlights {
   grid-template-columns: 1fr;
@@ -90,19 +90,19 @@ html:has(.continuum-root) {
 #v40-root .workshop-highlight {
   background: transparent;
   border: 0;
-  border-top: 1px solid #c4a26b61;
+  border-top: 1px solid #bd93f961;
   padding: 28px 0 0;
   box-shadow: none;
 }
 #v40-root .workshop-highlight h3 {
   font-size: 30px;
-  color: #e1bc7d;
+  color: #d0b4ff;
 }
 #v40-root .workshop-overview > :not(.workshop-heading):not(.workshop-highlights) {
   grid-column: 1/-1;
 }
 #v40-root #rooms {
-  background: #100e0b;
+  background: #0e0e0e;
   padding-block: 76px;
 }
 #v40-root #rooms h2 {
@@ -111,7 +111,7 @@ html:has(.continuum-root) {
   line-height: 1.02;
   letter-spacing: -0.065em;
   font-weight: 400;
-  color: #f1e9db;
+  color: #eaeaea;
 }
 #v40-root .world-atlas {
   max-width: 1560px;
@@ -122,7 +122,7 @@ html:has(.continuum-root) {
 }
 #v40-root .atlas-selectors {
   gap: 0;
-  border-block: 1px solid #b2976652;
+  border-block: 1px solid #af88e752;
 }
 #v40-root .atlas-selectors button {
   min-height: 72px;
@@ -131,12 +131,12 @@ html:has(.continuum-root) {
   background: transparent;
   font-family: var(--font-body);
   font-size: 18px;
-  color: #b7a98f;
+  color: #aaaaaa;
 }
 #v40-root .atlas-selectors button[aria-selected="true"] {
-  background: #d6b3650d;
-  color: #efd7a7;
-  border-bottom-color: #ddb873;
+  background: #c9a7ff0d;
+  color: #e2d2ff;
+  border-bottom-color: #cdafff;
 }
 #v40-root .atlas-stage {
   grid-template-columns: minmax(230px, 0.5fr) minmax(0, 1.6fr);
@@ -166,27 +166,27 @@ html:has(.continuum-root) {
   font-size: clamp(36px, 3.5vw, 56px);
   line-height: 1.05;
   letter-spacing: -0.06em;
-  color: #f2d29b;
+  color: #e0ceff;
 }
 #v40-root .atlas-field-note {
   border: 0;
-  border-left: 1px solid #d7b578;
+  border-left: 1px solid #cbaaff;
   padding: 10px 18px;
-  background: #110e087a;
+  background: #0e0e0e7a;
 }
 #v40-root .atlas-enter {
-  background: #e4be7b;
-  color: #0b0804;
+  background: #d2b7ff;
+  color: #080808;
 }
 #v40-root .showcase-heading h2 {
   font-size: clamp(38px, 4.5vw, 72px);
   line-height: 1.06;
-  color: #f2e9d8;
+  color: #eaeaea;
 }
 #v40-root .showcase-card {
   border-radius: 0;
   border: 0;
-  border-bottom: 1px solid #bfa06a66;
+  border-bottom: 1px solid #ba91f566;
   background: transparent;
   box-shadow: none;
 }
@@ -197,9 +197,9 @@ html:has(.continuum-root) {
   width: calc(100% - clamp(44px, 11.6vw, 192px));
   margin-inline: auto;
   border: 0;
-  border-block: 1px solid #b4966042;
+  border-block: 1px solid #ae88e742;
   border-radius: 0;
-  background: #12100c;
+  background: #101010;
   box-shadow: none;
 }
 #v40-root .journey-disclosure > summary {
@@ -207,8 +207,8 @@ html:has(.continuum-root) {
 }
 #v40-root .study-card {
   border-radius: 0;
-  background: #14110c;
-  border-color: #b99a5b50;
+  background: #111111;
+  border-color: #b28bec50;
   box-shadow: none;
 }
 #v40-root footer {
@@ -216,8 +216,8 @@ html:has(.continuum-root) {
   background: #080706;
 }
 .discovery-console {
-  background: #0d0b08;
-  border-color: #bca16b61;
+  background: #0b0b0b;
+  border-color: #ba91f561;
   border-radius: 0;
   box-shadow: 0 30px 150px #000e;
 }
@@ -227,59 +227,59 @@ html:has(.continuum-root) {
   line-height: 1.06;
   letter-spacing: -0.05em;
   font-weight: 500;
-  color: #f3dfb8;
+  color: #e8dcff;
 }
 .discovery-heading > p:last-child {
-  color: #c9bda6;
+  color: #bebebe;
 }
 .discovery-paths button {
-  background: #15120d;
-  color: #cdbb99;
+  background: #121212;
+  color: #cdafff;
 }
 .discovery-paths button[aria-pressed="true"] {
-  background: #2e2415;
-  color: #f8dfae;
+  background: #262626;
+  color: #e8dcff;
 }
 .discovery-description h3 {
   font-family: "Exo 2", sans-serif;
   font-size: 36px;
   letter-spacing: -0.04em;
-  color: #f2ce8e;
+  color: #ddcaff;
 }
 .discovery-description > p:not(.continuum-label) {
-  color: #cec1a9;
+  color: #c2c2c2;
 }
 .discovery-visual {
-  border-color: #b99b5c55;
-  box-shadow: 0 0 55px #cd982a0d;
+  border-color: #b38ced55;
+  box-shadow: 0 0 55px #b68ef00d;
 }
 .discovery-projection {
-  background: radial-gradient(ellipse at 50% 35%, #a5782633, transparent 65%), #090805;
+  background: radial-gradient(ellipse at 50% 35%, #9171c033, transparent 65%), #080808;
 }
 .discovery-view-controls {
-  background: #17130c;
-  border-color: #be9b5940;
+  background: #131313;
+  border-color: #b58def40;
 }
 .discovery-view-controls button[aria-pressed="true"] {
-  background: #3a2b115c;
-  color: #fae0ab;
-  border-color: #d6ad64;
+  background: #2d2d2d5c;
+  color: #e9deff;
+  border-color: #c7a2ff;
 }
 .discovery-console .discovery-beacon {
-  background: radial-gradient(circle at 35% 25%, #795d2f, #211706 75%);
-  border-color: #dcb773;
-  color: #ffedc7;
+  background: radial-gradient(circle at 35% 25%, #6f5694, #191919 75%);
+  border-color: #cdaeff;
+  color: #f2ecff;
   box-shadow:
-    0 0 0 5px #ad813520,
-    0 0 30px #b77d2644;
+    0 0 0 5px #9b78cd20,
+    0 0 30px #9b78cd44;
 }
 .discovery-console .discovery-beacon[aria-pressed="true"] {
-  background: radial-gradient(circle at 35% 25%, #ffe7b7, #957343 75%);
-  border-color: #fff2d0;
-  color: #140d03;
+  background: radial-gradient(circle at 35% 25%, #eee6ff, #896ab6 75%);
+  border-color: #f5f1ff;
+  color: #0e0e0e;
   box-shadow:
-    0 0 0 5px #e3b96330,
-    0 0 35px #ecc57480;
+    0 0 0 5px #cfb1ff30,
+    0 0 35px #d7bfff80;
 }
 @media (max-width: 900px) {
   #v40-root .workshop-overview {
@@ -382,4 +382,213 @@ html:has(.continuum-root) {
   .discovery-heading h2 {
     font-size: 30px;
   }
+}
+/* Restore the original illustrations and give each chapter its own light. */
+#v40-root .cinema-selection img,
+#v40-root .continuum-paths img,
+#v40-root .atlas-art img,
+#v40-root .showcase-card img {
+  filter: none;
+}
+#v40-root .atlas-art img {
+  opacity: 0.9;
+}
+#v40-root .continuum-paths button:nth-child(1),
+#v40-root nav[aria-label="Sections"] a[href="#rooms"] {
+  --chapter: #a6e9bd;
+}
+#v40-root .continuum-paths button:nth-child(2),
+#v40-root nav[aria-label="Sections"] a[href="#studies"] {
+  --chapter: #d7b9ff;
+}
+#v40-root .continuum-paths button:nth-child(3),
+#v40-root nav[aria-label="Sections"] a[href="#films"] {
+  --chapter: #ffb09c;
+}
+#v40-root .continuum-paths button {
+  border-bottom-color: var(--chapter);
+}
+#v40-root .continuum-paths small {
+  color: var(--chapter);
+}
+#v40-root .continuum-paths strong {
+  color: #f2eff5;
+}
+#v40-root nav[aria-label="Sections"] .v41-b5d5368cf2 {
+  background: var(--chapter, #e4d5f6);
+}
+#v40-root .continuum-readings > div:nth-child(1) dd {
+  color: #a6e9bd;
+}
+#v40-root .continuum-readings > div:nth-child(2) dd {
+  color: #d7b9ff;
+}
+#v40-root .continuum-readings > div:nth-child(3) dd {
+  color: #ffb09c;
+}
+#v40-root .continuum-readings > div:nth-child(4) dd {
+  color: #ffafd7;
+}
+#v40-root #eagle-film {
+  background: radial-gradient(ellipse at 75% 20%, #ff714e12, transparent 60%), #101011;
+}
+#v40-root .eagle-film-copy h2 {
+  color: #fff0e9;
+}
+#v40-root .eagle-film-label,
+#v40-root .eagle-film-note {
+  color: #ffb3a0;
+}
+#v40-root .eagle-film-play {
+  border-color: #ffab8b52;
+}
+#v40-root .eagle-film-playmark {
+  border-color: #ffd1bb;
+  color: #ffe8da;
+  box-shadow: 0 0 70px #fa6e3c20;
+}
+#v40-root .eagle-film-caption {
+  background: #1a1413;
+}
+#v40-root .cinema-selection button[aria-pressed="true"] {
+  border-color: #ffae91;
+  background: #f0884810;
+  color: #ffd1bc;
+}
+#v40-root .workshop-heading h2 {
+  color: #eaf9ee;
+}
+#v40-root .workshop-highlight {
+  border-top-color: #9ae0b16e;
+}
+#v40-root .workshop-highlight h3,
+#v40-root .workshop-result strong {
+  color: #abeac0;
+}
+#v40-root #rooms {
+  background: radial-gradient(ellipse at 75% 35%, #a572ec12, transparent 65%), #0d0d10;
+}
+#v40-root .atlas-selectors button:nth-child(1),
+.atlas-point-0 {
+  --destination: #a6e9bd;
+}
+#v40-root .atlas-selectors button:nth-child(2),
+.atlas-point-1 {
+  --destination: #d7b9ff;
+}
+#v40-root .atlas-selectors button:nth-child(3),
+.atlas-point-2 {
+  --destination: #ffb09c;
+}
+#v40-root .atlas-selectors button:nth-child(4),
+.atlas-point-3 {
+  --destination: #ffe0a8;
+}
+#v40-root .atlas-selectors button[aria-selected="true"] {
+  color: var(--destination);
+  border-bottom-color: var(--destination);
+  background: #ffffff06;
+}
+#v40-root .atlas-enter {
+  background: #ede6f8;
+  color: #121016;
+}
+#v40-root .atlas-copy h3 {
+  color: #f0e5ff;
+}
+#v40-root #studies .za-panel {
+  border-color: #9dd7b644;
+  background: #121714;
+}
+#v40-root #studies .za-panel h3 {
+  color: #bcf0ce;
+}
+#v40-root #evidence .za-panel {
+  border-color: #c0a2e44f;
+}
+#v40-root #evidence h2,
+#v40-root #evidence h3 {
+  color: #e1caff;
+}
+#v40-root #contact h2 span {
+  color: #ffb4d7;
+}
+.discovery-console {
+  background: #0e0e11;
+  border-color: #d0b6ec66;
+}
+.discovery-heading h2,
+.discovery-description h3 {
+  color: #f2ebfc;
+}
+.discovery-projection {
+  background:
+    radial-gradient(ellipse at 20% 25%, #52c17c1e, transparent 60%),
+    radial-gradient(ellipse at 85% 70%, #e772b327, transparent 60%), #0c0b0e;
+}
+.discovery-beacon-0 {
+  --beacon: #9fe7b9;
+}
+.discovery-beacon-1 {
+  --beacon: #d6b7ff;
+}
+.discovery-beacon-2 {
+  --beacon: #ffb09c;
+}
+.discovery-beacon-3 {
+  --beacon: #ffe0a8;
+}
+.discovery-console .discovery-beacon {
+  border-color: var(--beacon);
+  color: var(--beacon);
+  background: #15121de8;
+  box-shadow:
+    0 0 0 5px #ffffff07,
+    0 0 30px #ffffff0a;
+}
+.discovery-console .discovery-beacon[aria-pressed="true"] {
+  color: #17121b;
+  border-color: #faf5ff;
+  background: var(--beacon);
+  box-shadow:
+    0 0 0 5px #ffffff20,
+    0 0 35px #dbb9ff3d;
+}
+.discovery-view-controls button[aria-pressed="true"] {
+  background: #251d33;
+  color: #e5ceff;
+  border-color: #ceacff;
+}
+.discovery-paths button[aria-pressed="true"] {
+  background: #24202b;
+  color: #f0e0ff;
+}
+.discovery-stops button[aria-pressed="true"] {
+  border-color: #d0b8ee;
+  color: #f0e3ff;
+  background: #26222d;
+}
+.atlas-waypoint-0 {
+  --destination: #9fe7b9;
+}
+.atlas-waypoint-1 {
+  --destination: #d6b7ff;
+}
+.atlas-waypoint-2 {
+  --destination: #ffb09c;
+}
+.atlas-waypoint-3 {
+  --destination: #ffe0a8;
+}
+.atlas-waypoint circle:first-child,
+.atlas-waypoint.is-selected circle:first-child {
+  stroke: var(--destination);
+}
+.atlas-waypoint circle:nth-child(2),
+.atlas-waypoint.is-selected circle:nth-child(2),
+.atlas-waypoint.is-selected text {
+  fill: var(--destination);
+}
+.atlas-point[aria-pressed="true"] {
+  border-color: var(--destination);
 }
