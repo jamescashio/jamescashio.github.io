@@ -1,4 +1,10 @@
 /* The hero's reading surface and instrument shelf are complete before deferred CSS. */
+.atlas-mobile-route {
+  display: none;
+}
+.mission-preview img {
+  max-width: 100%;
+}
 .world-atlas,
 .atlas-destinations {
   min-width: 0;

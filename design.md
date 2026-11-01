@@ -1,3 +1,17 @@
+# First Light · Signal polish preview · 11-01-2026
+
+A living orbital instrument: the existing observatory, artwork and stories gain precise navigation, luminous vector detail and short, deliberate responses to human input.
+
+- Keep the published First Light hero, original type, navy, gold and cyan identity, Bit, all content, media and routes. This is a new isolated preview based on `014990ae756514281e8b7290aa39f25b53f01d80`; final publication approval remains pending.
+- Turn Mission Control into a visual destination desk. Keep all eleven destinations and search; add Explore, Try, Watch and Connect filters, descriptive rows, a desktop artwork preview, keyboard browsing and an explicit empty-state reset. Phones get an immediately usable compact menu with Close and search always in reach.
+- Give the atlas an authored wireframe globe, calibrated orbital markings and clear destination illumination. Add a small decorative route graphic to phones without duplicating controls. Keep the four accessible tabs, original world illustrations, direct links and complete reading edition.
+- Frame House Cashio as a small cinema: machined corners, an aperture-shaped play target, a finite light response to hover or keyboard focus and a quieter, clearer caption rail. Keep the original 61-second film and its quiet native player unchanged.
+- Refine section edges and focus feedback with precise lines and material contrast. Avoid extra panels, invented telemetry, a new intro, gratuitous loops, a new color palette or decorative text that looks like real data.
+- Motion explains selection and invitation. New movement lasts under 700 ms and responds to input. Reduced motion and Pause motion give a finished static composition. Never animate body copy or start sound.
+- Reuse optimized local artwork; add no dependency or public data changes. Keep the entry CSS below 19,000 compressed bytes and the existing compact phone-height limit. Verify at desktop, 390 and 320 widths, including keyboard navigation, late styles, media, no JavaScript, accessibility and content preservation.
+
+The following notes preserve the approved First Light presentation and earlier design history.
+
 # cAshIo First Light · The next horizon · 11-01-2026
 
 ## This presentation

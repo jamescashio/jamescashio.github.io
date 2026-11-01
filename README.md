@@ -2,6 +2,8 @@
 
 **First Light · The next horizon** is the current presentation: an original orbital observatory opens the site, and an interactive atlas connects the four existing worlds. House Cashio remains the opening film. Doug approved publication on 11-01-2026. See the [presentation and content-preservation notes](docs/v41/first-light.md) and the [preceding Afterglow presentation](docs/v41/afterglow.md).
 
+This branch previews [Signal polish](docs/v41/signal-polish.md): visual Mission Control navigation, more detailed atlas geometry and an aperture play control for House Cashio. This new round remains unpublished and awaits final approval.
+
 The ringed planet anchors the opening headline and the Board the starship invitation. House Cashio: The Trailer, a 61 second parody, replaces the Eagle invitation below the hero and opens only when chosen. The page keeps the V40 orbital world, LCARS rail, Orbitron, Exo 2, JetBrains Mono, Bit, E.V.E., Mission Control and seven local experiments. The headline and both main actions fit the first screen at 1440×900, 3440×1440 and 390×844.
 
 V41 is the current production edition. GitHub Pages publishes the validated artifact through the protected main branch workflow. The rollback baseline is `1584144b27f4d520ea74d72ea4deb6ef6a84c2e0`, which preserves the optional cAshIo logo reveal.

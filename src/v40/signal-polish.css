@@ -1,0 +1,276 @@
+/* Signal: precise surfaces, hand-drawn instruments and finite responses. */
+#v40-root .orbital-observatory .za-btn {
+  border-radius: 4px;
+}
+.orbital-observatory .hero-live-poster {
+  filter: saturate(0.94) contrast(1.07);
+}
+#hero-content .v41-c07ca12d3d {
+  box-shadow:
+    inset 0 1px #bdebf91a,
+    0 20px 65px #0004;
+}
+.world-atlas {
+  border-color: #8ac4d35c;
+  background: #08121f;
+  box-shadow:
+    0 30px 90px #0005,
+    inset 0 1px #c3efff16;
+}
+.atlas-selectors {
+  background: linear-gradient(110deg, #142432, #0a1420);
+}
+.atlas-selectors button {
+  position: relative;
+  transition:
+    background 200ms,
+    color 200ms;
+}
+.atlas-selectors button[aria-selected="true"] {
+  background: linear-gradient(135deg, #28404c, #132934);
+}
+.atlas-selectors button[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 24px;
+  right: 24px;
+  height: 1px;
+  background: #ffe0a4;
+  box-shadow: 0 0 9px #ffd18b70;
+}
+.atlas-instrument {
+  padding: 26px;
+  background:
+    radial-gradient(ellipse at 50% 42%, #267a8a24, transparent 62%), linear-gradient(135deg, #0d1f2d, #07111e);
+}
+.atlas-instrument::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  pointer-events: none;
+  border: 1px solid #abcbd313;
+}
+.atlas-instrument-caption {
+  padding: 7px 4px 14px;
+  border-bottom: 1px solid #8bbdca26;
+  font-size: 10px;
+}
+.atlas-map {
+  margin-block: 16px 10px;
+}
+.atlas-core-grid {
+  transform-origin: 200px 200px;
+  animation: atlas-core-align 650ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+.atlas-point:hover {
+  box-shadow: 0 0 24px #edbb6126;
+}
+.atlas-waypoint.is-selected circle:first-child {
+  filter: drop-shadow(0 0 5px #ffca7b5c);
+}
+.atlas-art::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  inset: 10px 10px auto auto;
+  width: 44px;
+  height: 44px;
+  border-top: 1px solid #cdf7ff8c;
+  border-right: 1px solid #cdf7ff8c;
+}
+.atlas-art img {
+  height: 244px;
+}
+.atlas-art > span {
+  border-color: #ffe0a4;
+  border-radius: 0;
+  background: #06101bf0;
+}
+.atlas-copy {
+  padding-top: 12px;
+  background: radial-gradient(ellipse at 90% 0, #16334b50, transparent 75%);
+}
+#v40-root .atlas-enter {
+  position: relative;
+  border-color: #82d5de8c;
+  background: linear-gradient(115deg, #173642, #102431);
+  transition:
+    background 200ms,
+    border-color 200ms;
+}
+#v40-root .atlas-enter > span {
+  transition: transform 220ms;
+}
+#v40-root .atlas-enter:is(:hover, :focus-visible) > span {
+  transform: translate(2px, -2px);
+}
+.atlas-mobile-route {
+  border-bottom: 1px solid #83b2c333;
+  background: radial-gradient(ellipse at 50% 0, #21627c2e, transparent 80%), #0a1724;
+}
+.atlas-mobile-route svg {
+  display: block;
+  width: 100%;
+}
+.atlas-mobile-route text {
+  font: 10px var(--font-mono);
+}
+.afterglow-feature {
+  background:
+    radial-gradient(ellipse at 15% 30%, #b8752924, transparent 55%),
+    radial-gradient(ellipse at 90% 70%, #2b718a24, transparent 65%), #080f19;
+}
+#eagle-film .eagle-film-play {
+  border-radius: 4px;
+  border-color: #9bc9d667;
+  box-shadow:
+    0 26px 65px #0007,
+    0 0 0 6px #14313f20;
+}
+#eagle-film .eagle-film-caption {
+  padding-block: 18px;
+  background: linear-gradient(110deg, #1d3440, #0c1926);
+  border-top-color: #a2c5cd42;
+}
+.eagle-film-duration {
+  padding: 5px 8px;
+  border-left: 1px solid #a3c3cf40;
+}
+.film-frame-corner {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  z-index: 2;
+  pointer-events: none;
+  border-color: #ffdb9b9e;
+}
+.film-frame-corner-a {
+  top: 12px;
+  left: 12px;
+  border-top: 1px solid;
+  border-left: 1px solid;
+}
+.film-frame-corner-b {
+  bottom: 12px;
+  right: 12px;
+  border-bottom: 1px solid;
+  border-right: 1px solid;
+}
+#eagle-film .eagle-film-playmark {
+  width: clamp(68px, 6.5vw, 92px);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #ffe0a4;
+}
+.film-aperture {
+  display: block;
+  filter: drop-shadow(0 4px 12px #000b);
+}
+.film-aperture-ring {
+  transform-origin: 50px 50px;
+  transition: transform 550ms cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+#eagle-film .eagle-film-play:is(:hover, :focus-visible) .eagle-film-playmark {
+  background: transparent;
+  color: #ffe3ad;
+  box-shadow: none;
+}
+.eagle-film-play:is(:hover, :focus-visible) .film-aperture-ring {
+  transform: rotate(30deg);
+}
+.eagle-film-visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(110deg, transparent 30%, #d7f4ff17 48%, transparent 65%);
+  opacity: 0;
+  transform: translateX(-110%);
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="off"]) .eagle-film-play:is(:hover, :focus-visible) .eagle-film-visual::after {
+    animation: film-light-pass 650ms ease-out;
+  }
+}
+@keyframes film-light-pass {
+  20% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(110%);
+  }
+}
+@keyframes atlas-core-align {
+  from {
+    transform: rotate(-12deg) scale(0.94);
+  }
+  to {
+    transform: none;
+  }
+}
+@media (max-width: 900px) {
+  .atlas-mobile-route {
+    display: block;
+  }
+  .atlas-art img {
+    height: 210px;
+  }
+}
+@media (max-width: 600px) {
+  #rooms {
+    gap: 24px;
+  }
+  #rooms > .v41-260a3097b1 {
+    margin-bottom: 0;
+  }
+  .atlas-selectors button {
+    min-height: 48px;
+  }
+  .atlas-selectors button[aria-selected="true"]::after {
+    left: 12px;
+    right: 12px;
+  }
+  .atlas-art img {
+    height: 176px;
+  }
+  .atlas-copy {
+    padding-top: 10px;
+  }
+  #eagle-film .eagle-film-caption {
+    padding: 12px;
+  }
+  .eagle-film-duration {
+    padding: 3px 0 3px 8px;
+  }
+  .film-frame-corner {
+    width: 22px;
+    height: 22px;
+  }
+}
+html[data-motion="off"] .atlas-core-grid,
+html[data-motion="off"] .eagle-film-visual::after {
+  animation: none;
+}
+html[data-motion="off"] .film-aperture-ring,
+html[data-motion="off"] .atlas-enter > span,
+html[data-motion="off"] .atlas-selectors button {
+  transition: none;
+  transform: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .atlas-core-grid,
+  .eagle-film-visual::after {
+    animation: none;
+  }
+  .film-aperture-ring,
+  .atlas-enter > span,
+  .atlas-selectors button {
+    transition: none;
+    transform: none !important;
+  }
+}

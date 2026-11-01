@@ -1,4 +1,5 @@
 import React, { useRef, useState, useSyncExternalStore } from "react";
+import { AtlasCore, AtlasTicks, MobileAtlasTrack } from "./signal-graphics.jsx";
 const subscribe = () => () => {};
 const client = () => true;
 const server = () => false;
@@ -124,28 +125,8 @@ function AtlasInstrument({ selected, onChoose }) {
           strokeWidth: "1.5",
           pathLength: "1",
         }),
-        React.createElement("circle", {
-          cx: "200",
-          cy: "200",
-          r: "42",
-          fill: "url(#atlas-core)",
-          stroke: "#94d8df",
-          strokeOpacity: ".7",
-        }),
-        React.createElement("ellipse", {
-          cx: "200",
-          cy: "200",
-          rx: "60",
-          ry: "17",
-          transform: "rotate(-34 200 200)",
-          stroke: "#ffcf8a",
-          strokeWidth: "2",
-        }),
-        React.createElement("path", {
-          d: "M185 181l26-9 15 25-14 30-30-13-8-20zM185 181l27 46m-38-33 52 3m-15-25-29 42",
-          stroke: "#b9eef1",
-          strokeOpacity: ".3",
-        }),
+        React.createElement(AtlasTicks),
+        React.createElement(AtlasCore, { key: `core-${selected}` }),
         destinations.map((item, index) =>
           React.createElement(
             "g",
@@ -239,6 +220,7 @@ export function WorldAtlas({ worlds }) {
     React.createElement(
       "div",
       { className: "atlas-stage" },
+      interactive && React.createElement(MobileAtlasTrack, { selected }),
       interactive &&
         React.createElement(AtlasInstrument, {
           selected,

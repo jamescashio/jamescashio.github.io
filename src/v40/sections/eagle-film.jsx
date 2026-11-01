@@ -1,6 +1,7 @@
 import React from "react";
 import { ReelText } from "../hero-reel.jsx";
 import { posterSources } from "../poster-sources.js";
+import { FilmAperture } from "../signal-graphics.jsx";
 const h = React.createElement;
 
 export function EagleFilmSection({ v }) {
@@ -46,7 +47,9 @@ export function EagleFilmSection({ v }) {
             decoding: "async",
             alt: "The House Cashio title card over a ringed planet, a rating card reading Mostly Harmless, and a cat silhouette on the planet's edge.",
           }),
-          h("span", { className: "eagle-film-playmark", "aria-hidden": "true" }, "▶"),
+          h("span", { className: "eagle-film-playmark", "aria-hidden": "true" }, h(FilmAperture)),
+          h("span", { className: "film-frame-corner film-frame-corner-a", "aria-hidden": "true" }),
+          h("span", { className: "film-frame-corner film-frame-corner-b", "aria-hidden": "true" }),
         ),
         h(
           "span",
