@@ -1,6 +1,6 @@
 # First Light · The next horizon
 
-Prepared 11-01-2026 as an unpublished preview on the Afterglow production baseline. This round requires Doug's final preview approval before publication.
+Prepared and approved for publication on 11-01-2026 after Doug reviewed the isolated preview. The approved presentation is based on the Afterglow production release.
 
 The opening uses original fictional orbital observatory artwork, optimized into local 960 and 1920 pixel WebP assets. The existing headline, two primary actions, bounded starfield, pointer depth and motion controls remain. Desktop readings move into a compact shelf beneath the introduction; they retain the verified observation date.
 

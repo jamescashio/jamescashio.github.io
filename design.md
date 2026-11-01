@@ -1,8 +1,8 @@
 # cAshIo First Light · The next horizon · 11-01-2026
 
-## This preview
+## This presentation
 
-An orbital observatory at sunrise: monumental architecture, precise instruments, and a human invitation to explore. This is a new, unpublished preview based on the approved Afterglow release. Hold all pushes, pull requests and publication for Doug's review of this round.
+An orbital observatory at sunrise: monumental architecture, precise instruments, and a human invitation to explore. Doug approved this presentation for publication on 11-01-2026 after reviewing the isolated First Light preview. Use the checked release workflow and verify the deployed desktop and phone experience, including the atlas and House Cashio video.
 
 - **Arrival:** a new original fictional observatory artwork opens the right half of the hero. Keep the left reading surface dark and the existing headline and two primary actions. Move desktop lab readings into a compact instrument shelf so they do not cover the view. Preserve Bit and every dated label.
 - **World atlas:** replace the uniform world-card grid with a spatial atlas and one detailed destination at a time. Four accessible selectors illuminate the matching orbital waypoint and reveal the original artwork, original description, a specific thing to try, and a direct world link. Keyboard arrows, Home and End work. The reading edition exposes all four worlds with ordinary links.
