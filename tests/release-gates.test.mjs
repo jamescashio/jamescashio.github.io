@@ -38,6 +38,18 @@ test("V40 ships its real reading edition under the strict production security po
   assert.equal(root.querySelectorAll("h1").length, 1);
   assert.match(root.textContent, /You still decide\./);
   const receipt = JSON.parse(await read("dist/v40/site-release.json"));
+  const observation = JSON.parse(await read("dist/status.json"));
+  const observedMonth = new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(observation.verified + "T12:00:00Z"));
+  assert.ok(root.querySelector('[aria-label="Lab telemetry ticker"]').textContent.includes(observedMonth));
+  assert.equal(
+    root.querySelector('#snapshot-story a[href="/status.json"]').textContent,
+    "Read the " + observedMonth + " observation",
+  );
+  assert.ok(root.textContent.includes(observedMonth + " · Scheduler and routing not measured"));
   assert.equal(receipt.presentation.name, "First Light");
   assert.match(root.querySelector("#top").textContent, /First Light · The next horizon/);
   const updatedDate = new Intl.DateTimeFormat("en-US", {
@@ -75,7 +87,7 @@ test("V40 ships its real reading edition under the strict production security po
   assert.equal(receipt.experienceVersion, JSON.parse(await read("package.json")).version);
   assert.equal(receipt.previousExperience.entry, "/v39/");
   assert.equal(receipt.published, receipt.status === "released");
-  assert.equal(receipt.evidenceSnapshot.fleetObserved, "2026-10-31");
+  assert.equal(receipt.evidenceSnapshot.fleetObserved, "2026-11-01");
   assert.equal(receipt.evidenceSnapshot.routingObserved, null);
   const files = await readdir(asset("public/v40/assets"));
   const assets = JSON.parse(await read("public/v40/asset-manifest.json"));
@@ -282,7 +294,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
   assert.equal(archive.expires, "2026-09-27");
   assert.deepEqual(archive.containers, { running: 18, documented: 19, stopped: 1, zeus: null, apollo: null });
   assert.equal(archive.routingVerified, "2026-08-21");
-  assert.equal(status.verified, "2026-10-31");
+  assert.equal(status.verified, "2026-11-01");
   assert.equal(status.routingVerified, null);
   assert.deepEqual(status.lanes, { public: null, privateCatalog: null });
   assert.equal(await read("dist/status.json"), await read("public/status.json"));
@@ -836,7 +848,7 @@ test("Helios release identity, signature assets and compatibility receipts agree
   const home = [...sitemap.querySelectorAll("url")].find(
     (entry) => entry.querySelector("loc")?.textContent === "https://cashio.us/",
   );
-  assert.equal(home?.querySelector("lastmod")?.textContent, "2026-10-31");
+  assert.equal(home?.querySelector("lastmod")?.textContent, "2026-11-01");
   // The home signature and the Celestial Forge share one full size artwork file, so the forge reuses the cached copy.
   assert.equal(doc.querySelector("#sig-art").getAttribute("src"), "/brand/celestial-1680.webp");
   assert.ok((await read("src/odyssey/brand-mark.tsx")).includes("/brand/celestial-1680.webp 1680w"));
