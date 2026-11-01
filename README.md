@@ -1,5 +1,7 @@
 # cAshIo V41 · Eagle
 
+**Afterglow · The October Finale** is the current presentation: House Cashio has a visible opening feature, The Sovereign and Roadster retain their illustrated invitations, and Mission Control links directly to the trailer. The new sharing cover contains no operational readings. See the [presentation and content-preservation notes](docs/v41/afterglow.md).
+
 The ringed planet anchors the opening headline and the Board the starship invitation. House Cashio: The Trailer, a 61 second parody, replaces the Eagle invitation below the hero and opens only when chosen. The page keeps the V40 orbital world, LCARS rail, Orbitron, Exo 2, JetBrains Mono, Bit, E.V.E., Mission Control and seven local experiments. The headline and both main actions fit the first screen at 1440×900, 3440×1440 and 390×844.
 
 V41 is the current production edition. GitHub Pages publishes the validated artifact through the protected main branch workflow. The rollback baseline is `1584144b27f4d520ea74d72ea4deb6ef6a84c2e0`, which preserves the optional cAshIo logo reveal.

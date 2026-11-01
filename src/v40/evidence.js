@@ -1,6 +1,7 @@
 import snapshot from "../../public/status.json";
 import release from "../../public/v40/site-release.json";
 export { snapshot };
+export const presentation = release.presentation;
 export const observedDate = snapshot.verifiedLong;
 const formatDate = (date, options) =>
   new Intl.DateTimeFormat("en-US", { timeZone: "UTC", ...options }).format(new Date(date + "T12:00:00Z"));

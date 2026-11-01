@@ -1,5 +1,6 @@
 /* Progressive improvements around the original Claude Design component. */
 import { destinations } from "./destinations.js";
+import { presentation } from "./evidence.js";
 (() => {
   const root = document.documentElement;
   const mq = matchMedia("(prefers-reduced-motion: reduce)");
@@ -142,7 +143,7 @@ import { destinations } from "./destinations.js";
     panel.className = "mission-panel";
     panel.id = "mission-dialog";
     panel.setAttribute("aria-labelledby", "mission-title");
-    panel.innerHTML = `<div class="mission-head"><h2 id="mission-title">Mission Control</h2><button type="button" data-mission-close aria-label="Close Mission Control">ESC ×</button></div><label class="mission-search"><span>Where are we going?</span><input type="search" placeholder="Find a world, experiment or answer…" autocomplete="off"></label><nav class="mission-results" aria-label="All chapters">${chapters.map(([id, title, desc], i) => `<a href="#${id}" data-chapter="${id}" data-search="${(title + " " + desc).toLowerCase()}"><small>${String(i + 1).padStart(2, "0")}</small><strong>${title}</strong><span aria-hidden="true">↗</span></a>`).join("")}<p class="mission-empty" hidden>No matching destination. Try “films” or “Doug”.</p></nav><div class="mission-foot"><span>V41 · Eagle<br>Human in command. Towel optional.</span><button type="button" data-motion-toggle>Pause motion</button></div>`;
+    panel.innerHTML = `<div class="mission-head"><h2 id="mission-title">Mission Control</h2><button type="button" data-mission-close aria-label="Close Mission Control">ESC ×</button></div><label class="mission-search"><span>Where are we going?</span><input type="search" placeholder="Find a world, experiment or answer…" autocomplete="off"></label><nav class="mission-results" aria-label="All chapters">${chapters.map(([id, title, desc], i) => `<a href="#${id}" data-chapter="${id}" data-search="${(title + " " + desc).toLowerCase()}"><small>${String(i + 1).padStart(2, "0")}</small><strong>${title}</strong><span aria-hidden="true">↗</span></a>`).join("")}<p class="mission-empty" hidden>No matching destination. Try “films” or “Doug”.</p></nav><div class="mission-foot"><span>V41 · ${presentation.name}<br>Human in command. Towel optional.</span><button type="button" data-motion-toggle>Pause motion</button></div>`;
     document.body.append(panel);
     panel.addEventListener("close", () => opener?.focus({ preventScroll: true }));
     panel.querySelector("input").addEventListener("input", (e) => filter(e.target.value));

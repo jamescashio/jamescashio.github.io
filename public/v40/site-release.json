@@ -3,6 +3,11 @@
   "releaseId": "eagle-41.0.0-20261023",
   "releaseName": "EAGLE",
   "visualEdition": "Eagle",
+  "presentation": {
+    "name": "Afterglow",
+    "subtitle": "The October Finale",
+    "preparedDate": "2026-10-31"
+  },
   "entry": "/",
   "status": "released",
   "published": true,

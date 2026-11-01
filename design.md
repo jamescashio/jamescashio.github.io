@@ -1,4 +1,14 @@
-# cAshIo Orbital Observatory · approved release · 10-31-2026
+# cAshIo Afterglow · October finale preview · 10-31-2026
+
+## This review
+
+Doug requested a complete content check, a prominent House Cashio video, a fitting month-end name, fresh verification, and a polished preview before approving publication. This isolated preview is not authorized for publication yet.
+
+Afterglow is the presentation name for the October finale within V41 Eagle. Its prepared date describes the presentation; observation dates retain their own verified provenance. Keep the original Eagle film, all historical releases, and every existing public asset.
+
+The House Cashio trailer moves into a visible section immediately after the opening. Its poster opens the existing 61-second player, with quiet startup, captions and a text version. The hero's next link and Mission Control both reach it directly. The Sovereign and Roadster retain two illustrated invitations, while their complete stories and the full film collection remain inside the screening room. Removing the duplicate House Cashio invitation makes space for its complete visible feature without extending the compact phone journey.
+
+Use a warm horizon line and restrained cyan light around the opening feature. Preserve the orbital hero, stable phone header, readable type, motion controls, and original media. This is an editorial and navigation refinement, not a replacement of the site's content.
 
 ## Creative thesis
 
@@ -9,11 +19,11 @@ A cinematic orbital observatory: a luminous planet, precise cyan instruments, wa
 - Audience: curious builders, technical peers, and potential collaborators.
 - Primary action: board the existing starship or explore a working experiment.
 - Feeling: expansive, tactile, composed.
-- Scope: Doug approved publication of the orbital polish and phone header fix, and requested stronger content and discovery. Preserve the approved visual direction and expose the existing signature projects through a compact, visible showcase.
+- Scope: prepare Afterglow on the published orbital baseline, improve content discovery, and verify completeness. Hold publication until Doug approves this preview.
 
 ## Visual system
 
-- Typography: preserve Unbounded for display, Instrument Sans for reading, and JetBrains Mono for instrument labels. Keep the existing readable phone scale and supporting-text improvements. Body copy stays within about 65 characters per line.
+- Typography: preserve the implemented Orbitron display face, Exo 2 for reading, and JetBrains Mono for instrument labels. Keep the existing readable phone scale and supporting-text improvements. Body copy stays within about 65 characters per line.
 - Color: near-black navy `#070c15` for the canvas, deep blue `#112432` for atmospheric depth, silver `#e6edf5` for text, cool gray `#c0cbd8` for supporting text, cyan `#00f9ff` for interaction, and warm gold `#ffc56b` for human intent. Use restrained cyan borders and warm highlights instead of bathing every component in glow.
 - Layout: preserve the shorter homepage, projects near the opening, expandable supporting material, clear navigation, and prominent Contact Doug. Keep the current grid and responsive breakpoints. No additional introductory screen or new scrolling detour.
 - Imagery: retain the original planetary, starship, studio, and signature artwork. Add authored orbital paths and particles around the hero artwork; keep reading areas dark and quiet. The illustration is atmosphere, never a claim about the live lab.
@@ -43,7 +53,7 @@ A cinematic orbital observatory: a luminous planet, precise cyan instruments, wa
 - Do not copy personal data, private content, or data connections from the owner's style reference. Borrow only its visual ideas.
 - Do not replace the established cAshIo identity, invent operational claims, redate observations, add analytics, or change infrastructure.
 - Do not add a dependency for a decorative effect, relax CSP, increase the initial CSS transfer budget, or load large new media on startup.
-- Publish this round only under the specific orbital release approval. Preserve historical observations and release dates.
+- Publish Afterglow only after Doug approves this preview. Preserve historical observations and release dates.
 
 ## Acceptance checks
 

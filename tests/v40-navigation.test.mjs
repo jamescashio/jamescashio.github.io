@@ -100,12 +100,18 @@ async function initialSectionLifecycle(initialState = "interactive") {
     }
   };
   const { destinations } = await import("../src/v40/destinations.js");
+  const { presentation } = await import("../src/v40/evidence.js");
   const source = await readFile(new URL("../src/v40/polish.js", import.meta.url), "utf8");
   win.eval(
-    source.replace(
-      'import { destinations } from "./destinations.js";',
-      `const destinations = ${JSON.stringify(destinations)};`,
-    ),
+    source
+      .replace(
+        'import { destinations } from "./destinations.js";',
+        `const destinations = ${JSON.stringify(destinations)};`,
+      )
+      .replace(
+        'import { presentation } from "./evidence.js";',
+        `const presentation = ${JSON.stringify(presentation)};`,
+      ),
   );
   win.dispatchEvent(new win.Event("cashio-ready"));
   return {

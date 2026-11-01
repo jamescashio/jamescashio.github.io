@@ -2,6 +2,7 @@ import React from "react";
 import { classFor } from "../style-variants.js";
 import designSystem from "../design-system.js";
 import { HeroPlanet } from "../hero-reel.jsx";
+import { presentation } from "../evidence.js";
 const h = React.createElement;
 
 export function HeroSection({ v }) {
@@ -85,7 +86,7 @@ export function HeroSection({ v }) {
                 key: 139,
                 className: "v41-bf5360592c",
               },
-              h(React.Fragment, { key: 140 }, "V41 · EAGLE"),
+              h(React.Fragment, { key: 140 }, "V41 · " + presentation.name.toUpperCase()),
             ),
             " ",
           ),
@@ -171,7 +172,7 @@ export function HeroSection({ v }) {
           h(
             "span",
             { key: 170, "data-scramble": "" },
-            h(React.Fragment, { key: 171 }, "A hobby lab for local AI · A human in command"),
+            h(React.Fragment, { key: 171 }, presentation.name + " · " + presentation.subtitle),
           ),
           " ",
         ),
@@ -465,10 +466,10 @@ export function HeroSection({ v }) {
       "a",
       {
         key: 271,
-        href: "#workshop",
+        href: "#eagle-film",
         className: "v41-e4105fe0e2",
       },
-      h("span", { key: 272 }, h(React.Fragment, { key: 273 }, "Next: explore the projects")),
+      h("span", { key: 272 }, h(React.Fragment, { key: 273 }, "Next: watch House Cashio")),
       h("span", {
         key: 274,
         className: "v41-1148ccc5c5",

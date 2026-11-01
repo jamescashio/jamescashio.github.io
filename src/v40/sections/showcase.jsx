@@ -17,17 +17,8 @@ const projects = [
     title: "Roadster Studio",
     medium: "02 / Interactive design study",
     image: "/images/roadster-studio-640.webp",
-    description: "An independent automotive CAD concept. Explore the form, change the view, compose a photograph.",
+    description: "An independent automotive CAD concept. Explore the model and compose a photograph.",
     action: "Explore the Roadster",
-  },
-  {
-    id: "house",
-    href: "#eagle-film",
-    title: "House Cashio",
-    medium: "03 / Trailer parody",
-    image: "/assets/hero/cashio-trailer-poster.webp",
-    description: "The lab becomes a movie. A subscription villain, an unlikely crew, and a cat who was not consulted.",
-    action: "Meet the crew",
   },
 ];
 
@@ -44,11 +35,7 @@ export function ShowcaseSection() {
         h("p", { className: "showcase-kicker" }, "Selected work / From the studio"),
         h("h2", { id: "showcase-title" }, "Imagination, made tangible."),
       ),
-      h(
-        "p",
-        null,
-        "A film. A design study. A world with a story. Built to be explored, with a human behind every choice.",
-      ),
+      h("p", null, "One original film. One independent design study. Both yours to explore."),
     ),
     h(
       "div",

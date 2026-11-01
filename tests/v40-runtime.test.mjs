@@ -282,7 +282,19 @@ test("Mission Control searches chapters and closes with a usable focus destinati
 });
 
 test("Every mobile Menu section stays in V40 and survives a reload", async (t) => {
-  const ids = ["top", "contact", "workshop", "studies", "rooms", "films", "work", "universe", "evidence", "operator"];
+  const ids = [
+    "top",
+    "contact",
+    "eagle-film",
+    "workshop",
+    "studies",
+    "rooms",
+    "films",
+    "work",
+    "universe",
+    "evidence",
+    "operator",
+  ];
   for (const width of [390, 320]) {
     const page = await visit(t, { width, touch: true });
     assert.deepEqual(
