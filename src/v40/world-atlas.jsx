@@ -69,16 +69,16 @@ function AtlasInstrument({ selected, onChoose }) {
           React.createElement(
             "radialGradient",
             { id: "atlas-core" },
-            React.createElement("stop", { stopColor: "#eadfff" }),
-            React.createElement("stop", { offset: ".2", stopColor: "#9574c6" }),
+            React.createElement("stop", { stopColor: "#c0ebf7" }),
+            React.createElement("stop", { offset: ".2", stopColor: "#1b90a4" }),
             React.createElement("stop", { offset: "1", stopColor: "#1e1e1e" }),
           ),
           React.createElement(
             "linearGradient",
             { id: "atlas-orbit", x1: "0", y1: "0", x2: "1", y2: "1" },
-            React.createElement("stop", { stopColor: "#d9c3ff" }),
-            React.createElement("stop", { offset: ".5", stopColor: "#d9c3ff", stopOpacity: ".1" }),
-            React.createElement("stop", { offset: "1", stopColor: "#dac5ff" }),
+            React.createElement("stop", { stopColor: "#77dbf2" }),
+            React.createElement("stop", { offset: ".5", stopColor: "#77dbf2", stopOpacity: ".1" }),
+            React.createElement("stop", { offset: "1", stopColor: "#7edcf2" }),
           ),
         ),
         React.createElement("circle", {
@@ -110,12 +110,12 @@ function AtlasInstrument({ selected, onChoose }) {
           rx: "167",
           ry: "88",
           transform: "rotate(54 200 200)",
-          stroke: "#d9c3ff",
+          stroke: "#77dbf2",
           strokeOpacity: ".22",
         }),
         React.createElement("path", {
           d: "M200 21v24M200 355v24M21 200h24M355 200h24",
-          stroke: "#caa9ff",
+          stroke: "#2acae4",
           strokeWidth: ".7",
         }),
         React.createElement("path", {

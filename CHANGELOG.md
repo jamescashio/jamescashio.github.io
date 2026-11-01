@@ -1,6 +1,10 @@
 # Changelog
 
-## V42.0.0 · Prism preview
+## V42.0.0 · Signature Flight preview
+
+Signature Flight revision · November 1, 2026: restored original planetary artwork, the cAshIo celestial identity and the original headline. Added a visible camera approach and manual close view inside the existing bounded motion owner. Black, metallic gold, electric cyan and angular instruments replace the formal spectrum treatment. This revision remains unpublished.
+
+### Earlier Prism preview
 
 Prism revision · November 1, 2026: a photonic sculpture and a coordinated spectrum of emerald, magenta, coral, violet and pearl. Three projected light forms gain distinct color behavior, holographic destinations use individual color accents, and original illustrations regain their full colors. All content, media and dated evidence are preserved. This revision remains unpublished.
 

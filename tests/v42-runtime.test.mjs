@@ -95,11 +95,73 @@ test("Continuum keeps a complete static illustration and content when scripts ar
   const page = await visit(t, { javaScriptEnabled: false });
   await expect(page.locator(".continuum-still")).toBeVisible();
   assert.equal(await page.locator(".continuum-still").evaluate((n) => getComputedStyle(n).opacity), "1");
-  await expect(page.locator("#top h1")).toHaveText("Imagination. With intention.");
-  await expect(page.locator(".aurum-manifesto")).toHaveText("The machines can think. You still decide.");
+  await expect(page.locator("#top h1")).toHaveText("The machines can think. You still decide.");
+  await expect(page.locator(".aurum-manifesto")).toHaveText("Imagination, with intention.");
   await expect(page.locator(".continuum-observation-date")).toContainText(observation.verifiedLong);
   await expect(page.locator("#eagle-film h2")).toHaveText("House Cashio: The Trailer");
   await expect(page.locator(".atlas-destination:visible")).toHaveCount(4);
   for (const button of await page.locator(".continuum-scene-controls button, .continuum-stage-bottom button").all())
     await expect(button).toBeDisabled();
+});
+
+test("Signature Flight visibly approaches the original artwork and freezes with pause, offscreen and dialog state", async (t) => {
+  const page = await visit(t, { reducedMotion: "no-preference" });
+  const camera = page.locator(".hero-flight-camera");
+  const view = () => camera.evaluate((el) => getComputedStyle(el).transform);
+  await expect(page.locator(".hero-live-poster")).toHaveAttribute("src", "/v41/first-light-observatory-1920.webp");
+  const original = await view();
+  await expect.poll(view).not.toBe(original);
+  await page.locator("header [data-motion-toggle]").click();
+  const paused = await view();
+  await page.waitForTimeout(350);
+  assert.equal(await view(), paused, "pause stops the camera as well as the foreground stars");
+  const control = page.getByRole("button", { name: /^(Fly closer to|Pull back from) the horizon$/ });
+  await control.click();
+  await expect(control).toHaveAttribute("aria-pressed", "true");
+  await expect(control).toHaveAccessibleName("Pull back from the horizon");
+  assert.notEqual(await view(), paused, "manual close framing still works without animation");
+  const close = await view();
+  await page.waitForTimeout(250);
+  assert.equal(await view(), close);
+  await page.locator("header [data-motion-toggle]").click();
+  await expect.poll(view).not.toBe(close);
+  await page.locator("#contact").scrollIntoViewIfNeeded();
+  await page.waitForTimeout(150);
+  const away = await view();
+  await page.waitForTimeout(350);
+  assert.equal(await view(), away, "the camera does no offscreen work");
+  await page.locator("#top").scrollIntoViewIfNeeded();
+  await page.getByRole("button", { name: "Plot a course", exact: true }).click();
+  const covered = await view();
+  await page.waitForTimeout(350);
+  assert.equal(await view(), covered, "the camera freezes behind the Discovery dialog");
+  await page.keyboard.press("Escape");
+  await expect.poll(view).not.toBe(covered);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(page.locator("header [data-motion-toggle]")).toHaveAccessibleName("Resume motion");
+  const reduced = await view();
+  await page.waitForTimeout(350);
+  assert.equal(await view(), reduced);
+});
+
+test("Signature Flight keeps manual camera framing and the original hero usable on a reduced-motion phone", async (t) => {
+  const page = await visit(t, {
+    viewport: { width: 320, height: 740 },
+    isMobile: true,
+    hasTouch: true,
+    reducedMotion: "reduce",
+  });
+  const camera = page.locator(".hero-flight-camera");
+  const before = await camera.evaluate((el) => getComputedStyle(el).transform);
+  const control = page.getByRole("button", { name: /^(Fly closer to|Pull back from) the horizon$/ });
+  const box = await control.boundingBox();
+  assert.ok(box.width >= 44 && box.height >= 44 && box.x >= 0 && box.x + box.width <= 320);
+  await control.click();
+  await expect(control).toHaveAccessibleName("Pull back from the horizon");
+  const after = await camera.evaluate((el) => getComputedStyle(el).transform);
+  assert.notEqual(after, before);
+  await page.waitForTimeout(250);
+  assert.equal(await camera.evaluate((el) => getComputedStyle(el).transform), after);
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 320);
+  await expect(page.locator("#top h1")).toHaveText("The machines can think. You still decide.");
 });

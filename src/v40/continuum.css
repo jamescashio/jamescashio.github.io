@@ -30,27 +30,27 @@
   }
 }
 #v40-root {
-  --accent: #dcc8ff;
-  --accent-glow: #d2b7ff30;
-  --cyan: #d8c1ff;
-  --cyan-glow: #d8c1ff24;
+  --accent: #87def3;
+  --accent-glow: #42d5f030;
+  --cyan: #70daf1;
+  --cyan-glow: #70daf124;
   --text: #f7f7f7;
   --text-dim: #d1d1d1;
   --glass: #1c1c1ceb;
-  --glass-border: #d6bdff38;
+  --glass-border: #61d8f138;
   --radius: 4px;
-  --continuum-line: #ddcaff32;
+  --continuum-line: #8ddff332;
   background: #0e0e0e;
   color: var(--text);
 }
 #v40-root header {
-  border-bottom: 1px solid #d6bfff2b;
+  border-bottom: 1px solid #68d9f12b;
   background: #121212e8;
   backdrop-filter: blur(24px);
 }
 #v40-root header .za-btn {
   border-radius: 3px;
-  background: #dbc7ff;
+  background: #84ddf2;
   color: #1a1a1a;
   box-shadow: none;
 }
@@ -60,14 +60,14 @@
   box-shadow: none;
 }
 #v40-root header .v41-0413664e13 {
-  color: #ece2ff;
+  color: #c7edf8;
   background: #272727;
   border-radius: 4px;
-  box-shadow: inset 0 0 15px #dcc8ff19;
+  box-shadow: inset 0 0 15px #87def319;
 }
 #v40-root nav[aria-label="Sections"] {
   background: #131313ec;
-  border-right-color: #d7c0ff24;
+  border-right-color: #6cd9f124;
   backdrop-filter: blur(16px);
 }
 #v40-root .v41-2bad502360 {
@@ -117,7 +117,7 @@
   z-index: -2;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(ellipse at 70% 30%, #e4d5ff0c, transparent 65%);
+  background: radial-gradient(ellipse at 70% 30%, #aae5f50c, transparent 65%);
 }
 .continuum-arrival {
   max-width: 1600px;
@@ -126,14 +126,14 @@
   align-items: center;
   gap: 22px;
   padding-bottom: 18px;
-  border-bottom: 1px solid #d9c4ff30;
+  border-bottom: 1px solid #7adbf230;
   color: #d6d6d6;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font: 10px/1.6 var(--font-mono);
 }
 .continuum-arrival > span:first-child {
-  color: #eadeff;
+  color: #bfebf7;
 }
 .continuum-arrival-end {
   margin-left: auto;
@@ -146,9 +146,9 @@
 .continuum-arrival i {
   height: 5px;
   width: 5px;
-  background: #e0cfff;
+  background: #9ae2f4;
   border-radius: 50%;
-  box-shadow: 0 0 9px #e6d8ff;
+  box-shadow: 0 0 9px #b1e7f6;
 }
 .continuum-hero #hero-content.continuum-composition {
   position: relative;
@@ -183,8 +183,8 @@
 .continuum-eyebrow > span {
   height: 1px;
   width: 40px;
-  background: #e3d4ff;
-  box-shadow: 0 0 16px #deccff;
+  background: #a7e5f5;
+  box-shadow: 0 0 16px #92e0f3;
 }
 .continuum-hero #hero-content h1 {
   font: 650 clamp(42px, 4.8vw, 78px)/1.08 var(--font-display) !important;
@@ -195,10 +195,10 @@
   text-shadow: 0 3px 30px #0007;
 }
 .continuum-hero #hero-content h1 > span {
-  color: #e7dbff;
+  color: #b7e9f7;
   font-size: 0.84em;
   letter-spacing: -0.05em;
-  text-shadow: 0 0 40px #dcc7ff22;
+  text-shadow: 0 0 40px #84ddf322;
 }
 .continuum-intro {
   max-width: 490px;
@@ -225,19 +225,19 @@
   text-decoration: none;
 }
 .continuum-primary {
-  border: 1px solid #eee5ff;
+  border: 1px solid #cdeff9;
   border-radius: 2px;
-  background: #deccff;
+  background: #92e0f3;
   color: #1b1b1b;
-  box-shadow: 0 0 30px #d3b8ff26;
+  box-shadow: 0 0 30px #49d5f026;
 }
 .continuum-secondary {
   color: #ebebeb;
   padding-inline: 0;
-  border-bottom: 1px solid #dfceff59;
+  border-bottom: 1px solid #97e1f459;
 }
 .continuum-primary:hover {
-  background: #eadfff;
+  background: #c0ebf7;
   color: #101010;
 }
 .continuum-secondary:hover {
@@ -306,7 +306,7 @@
 .continuum-reticle::after {
   content: "";
   height: 30px;
-  border-right: 1px solid #e5d7ff9c;
+  border-right: 1px solid #aee6f69c;
   margin-top: 10px;
 }
 .continuum-scene-deck {
@@ -320,7 +320,7 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   background: #191919e8;
-  border: 1px solid #e1d1ff3d;
+  border: 1px solid #9fe3f43d;
   backdrop-filter: blur(15px);
 }
 .continuum-scene-controls button {
@@ -339,15 +339,15 @@
 }
 .continuum-scene-controls button span {
   font-size: 8px;
-  color: #ceb0ff;
+  color: #2bd0eb;
 }
 .continuum-scene-controls button[aria-pressed="true"] {
-  background: #e2d3ff12;
-  border-bottom-color: #decbff;
-  color: #ebe1ff;
+  background: #a4e4f512;
+  border-bottom-color: #90e0f3;
+  color: #c5ecf8;
 }
 .continuum-scene-controls button:hover {
-  background: #ddc9ff1c;
+  background: #8adef31c;
   color: #fff;
 }
 .continuum-stage-bottom {
@@ -367,7 +367,7 @@
   padding: 10px 12px;
   border: 0;
   background: none;
-  color: #e2d1ff;
+  color: #a0e3f5;
   font: 10px var(--font-mono);
   cursor: pointer;
 }
@@ -380,7 +380,7 @@
 }
 .continuum-art-label {
   font: 8px var(--font-mono);
-  color: #d1b5ff;
+  color: #34d4ef;
 }
 .continuum-scene-caption {
   margin: 8px 0 0;
@@ -403,7 +403,7 @@
   margin-bottom: 8px;
 }
 .continuum-launch-heading button {
-  color: #dfceff;
+  color: #97e1f4;
   background: none;
   padding: 8px 0 8px 10px;
   min-height: 44px;
@@ -425,7 +425,7 @@
   align-items: center;
   text-align: left;
   gap: 15px;
-  border: 1px solid #d9c3ff35;
+  border: 1px solid #77dbf235;
   background: #202020d9;
   color: #f6f6f6;
   padding: 10px;
@@ -438,14 +438,14 @@
   width: 90px;
   flex-shrink: 0;
   object-fit: cover;
-  border: 1px solid #dcc8ff30;
+  border: 1px solid #87def330;
 }
 .continuum-paths button > span:not(.continuum-path-arrow) {
   display: grid;
   gap: 8px;
 }
 .continuum-paths small {
-  color: #ddcaff;
+  color: #8ddff3;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font: 9px var(--font-mono);
@@ -456,7 +456,7 @@
 .continuum-path-arrow {
   margin-left: auto;
   padding: 0 8px;
-  color: #e1d0ff;
+  color: #9de2f4;
 }
 .continuum-paths button:hover {
   border-color: #d2d2d28c;
@@ -472,7 +472,7 @@
   gap: 26px;
   align-items: center;
   padding: 22px 0;
-  border-block: 1px solid #dcc8ff2e;
+  border-block: 1px solid #87def32e;
   background: #101010c9;
 }
 .continuum-observation-date {
@@ -496,7 +496,7 @@
   display: flex;
   flex-direction: column-reverse;
   gap: 8px;
-  border-left: 1px solid #ceb0ff2e;
+  border-left: 1px solid #2bd0eb2e;
   padding-left: 18px;
 }
 .continuum-readings dt {
@@ -506,7 +506,7 @@
 }
 .continuum-readings dd {
   margin: 0;
-  color: #ebe0ff;
+  color: #c3ecf8;
   font: 500 26px/1 var(--font-display);
 }
 .continuum-next {
@@ -531,7 +531,7 @@
   color: #d5d5d5;
 }
 .continuum-next > span:last-child > span {
-  color: #e1d1ff;
+  color: #9fe3f4;
   font-size: 22px;
 }
 .continuum-principles {
@@ -539,7 +539,7 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   padding: 22px max(28px, calc((100% - 1500px) / 2));
   gap: 24px;
-  border-block: 1px solid #cdaeff26;
+  border-block: 1px solid #2bcee926;
   background: #1b1b1b;
   color: #cfcfcf;
   font: 10px/1.6 var(--font-mono);
@@ -549,7 +549,7 @@
   gap: 4px;
 }
 .continuum-principles b {
-  color: #e1d0ff;
+  color: #9de2f4;
   font-weight: 500;
 }
 .discovery-console:not([open]) {

@@ -30,6 +30,8 @@ import { ContactSection } from "./sections/contact.jsx";
 import { JourneyDisclosure } from "./sections/journey-disclosure.jsx";
 import { destinationLabel } from "./destinations.js";
 import { drawContinuumField } from "./continuum-field.js";
+import { drawOrbitalField } from "./orbital-field.js";
+import { heroCameraTransform } from "./hero-camera.js";
 import React from "react";
 import designSystem from "./design-system.js";
 const h = React.createElement;
@@ -77,6 +79,7 @@ export class V40Page extends React.Component {
     foldCount: 0,
     scene: "orbit",
     sceneTurn: 0,
+    cameraClose: false,
     wide: typeof window !== "undefined" ? window.innerWidth >= 1180 : true,
     navOn: typeof window !== "undefined" ? window.innerWidth >= 1100 : true,
     active: "top",
@@ -328,9 +331,14 @@ export class V40Page extends React.Component {
       this.lastDiscovery = this.state.discovery;
       this.syncMotion?.();
     }
-    if (this.lastScene !== this.state.scene || this.lastSceneTurn !== this.state.sceneTurn) {
+    if (
+      this.lastScene !== this.state.scene ||
+      this.lastSceneTurn !== this.state.sceneTurn ||
+      this.lastCameraClose !== this.state.cameraClose
+    ) {
       this.lastScene = this.state.scene;
       this.lastSceneTurn = this.state.sceneTurn;
+      this.lastCameraClose = this.state.cameraClose;
       this.starDraw?.();
     }
     if (!this.starsStarted) this.waitForCanvas(0);
@@ -620,6 +628,8 @@ export class V40Page extends React.Component {
     };
     reset();
     let t = 0;
+    let closeMix = 0;
+    const camera = document.querySelector(".hero-flight-camera");
     const orbitPointer = { x: 0, y: 0 };
     const draw = (delta = 0) => {
       if (!c.isConnected) return;
@@ -631,7 +641,8 @@ export class V40Page extends React.Component {
       const follow = reduce ? 1 : Math.min(1, delta * 4);
       orbitPointer.x += (targetPointer.x - orbitPointer.x) * follow;
       orbitPointer.y += (targetPointer.y - orbitPointer.y) * follow;
-      drawContinuumField(ctx, {
+      const drawField = this.state.scene === "orbit" ? drawOrbitalField : drawContinuumField;
+      drawField(ctx, {
         width: w,
         height: h,
         dpr,
@@ -641,6 +652,16 @@ export class V40Page extends React.Component {
         mode: this.state.scene,
         turn: this.state.sceneTurn,
       });
+      closeMix = reduce
+        ? Number(this.state.cameraClose)
+        : closeMix + (Number(this.state.cameraClose) - closeMix) * Math.min(1, delta * 2.2);
+      if (camera)
+        camera.style.transform = heroCameraTransform({
+          time: t,
+          close: closeMix,
+          reduced: reduce,
+          pointer: orbitPointer,
+        });
       const hz = h * 0.88;
       for (const s of stars) {
         if (s.y > hz) continue;
@@ -821,11 +842,13 @@ export class V40Page extends React.Component {
       towel: [["lore", "LORE · Towel located. Kept handy, as advised."]],
       "don't panic": [["lore", "LORE · Large, friendly letters engaged. Nothing on this page requires panic."]],
       "dont panic": [["lore", "LORE · Large, friendly letters engaged. Nothing on this page requires panic."]],
-      "mostly harmless": [["lore", "LORE · V42, Prism. The answer is here. The questions are getting better."]],
+      "mostly harmless": [
+        ["lore", "LORE · V42, Signature Flight. The answer is here. The questions are getting better."],
+      ],
       spice: [["lore", "LORE · Spice flows on Arrakis. Private data stays home."]],
     };
     const lore = [
-      "LORE · Prism: V42. The answer is here. Human judgment still required.",
+      "LORE · Signature Flight: V42. The answer is here. Human judgment still required.",
       "LORE · A human in command is not a bottleneck. It is the point.",
       "LORE · Zeus and Apollo keep the lights on. Hermes carries the messages. Nobody gets a throne.",
       "LORE · Fly it like a test pilot: know the envelope, then write down what the instruments actually said.",
@@ -1371,6 +1394,8 @@ export class V40Page extends React.Component {
     return {
       padL: pad,
       scene: s.scene,
+      cameraClose: s.cameraClose,
+      toggleCamera: () => this.setState((state) => ({ cameraClose: !state.cameraClose })),
       discovery: s.discovery,
       openDiscovery: (route) => this.setState({ discovery: route }),
       closeDiscovery: () => this.setState({ discovery: null }),
@@ -1392,8 +1417,6 @@ export class V40Page extends React.Component {
         const nx = (e.clientX - b.left) / b.width - 0.5,
           ny = (e.clientY - b.top) / b.height - 0.5;
         this.orbitPointer = { x: nx, y: ny };
-        const planet = e.currentTarget.querySelector(".hero-live-poster");
-        if (planet && s.wide) planet.style.transform = `translate3d(${nx * -12}px,${ny * -8}px,0) scale(1.025)`;
         const sp = document.getElementById("hero-spot");
         if (sp)
           sp.style.background = `radial-gradient(520px circle at ${(nx + 0.5) * 100}% ${(ny + 0.5) * 100}%, rgba(0,249,255,.11), transparent 60%)`;

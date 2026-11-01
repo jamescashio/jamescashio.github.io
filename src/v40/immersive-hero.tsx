@@ -16,9 +16,11 @@ type HeroView = {
   closeDiscovery: () => void;
   foldScene: () => void;
   foldCount: number;
+  cameraClose: boolean;
+  toggleCamera: () => void;
 };
 const scenes = [
-  { id: "orbit", label: "Orbit", caption: "A spectrum in orbit. An instrument for the imagination." },
+  { id: "orbit", label: "Orbit", caption: "The original horizon. A new way to fly." },
   { id: "signal", label: "Signal", caption: "A luminous double helix. Ideas finding their form." },
   { id: "constellation", label: "Constellation", caption: "A spiral of possibilities. Follow your curiosity." },
 ];
@@ -30,7 +32,7 @@ function ContinuumStill() {
         cy="370"
         rx="300"
         ry="210"
-        stroke="#d5b8ff"
+        stroke="#edbd6c"
         strokeOpacity=".38"
         transform="rotate(-30 1170 370)"
       />
@@ -39,11 +41,11 @@ function ContinuumStill() {
         cy="370"
         rx="335"
         ry="190"
-        stroke="#8ee9b4"
+        stroke="#72e5f4"
         strokeOpacity=".48"
         transform="rotate(23 1170 370)"
       />
-      <circle cx="1170" cy="370" r="320" stroke="#d5b8ff" strokeOpacity=".2" strokeDasharray="2 14" />
+      <circle cx="1170" cy="370" r="320" stroke="#edbd6c" strokeOpacity=".2" strokeDasharray="2 14" />
     </svg>
   );
 }
@@ -56,25 +58,29 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
       aria-label="Introduction"
       data-screen-label="Home"
       data-scene={scene.id}
+      data-camera={v.cameraClose ? "close" : "wide"}
       onMouseMove={v.heroMove}
       onMouseLeave={v.heroLeave}
     >
       <div className="hero-planet" aria-hidden="true">
-        <img
-          className="hero-live-poster"
-          src="/v42/prism-sculpture-1672.webp"
-          srcSet="/v42/prism-sculpture-960.webp 960w, /v42/prism-sculpture-1672.webp 1672w"
-          sizes="100vw"
-          width="1672"
-          height="941"
-          fetchPriority="high"
-          alt=""
-        />
+        <div className="hero-flight-camera">
+          <img
+            className="hero-live-poster"
+            src="/v41/first-light-observatory-1920.webp"
+            srcSet="/v41/first-light-observatory-960.webp 960w, /v41/first-light-observatory-1920.webp 1920w"
+            sizes="100vw"
+            width="1920"
+            height="1080"
+            fetchPriority="high"
+            alt=""
+          />
+        </div>
+        <div className="flight-atmosphere" />
       </div>
       <div className="continuum-horizon" aria-hidden="true" />
       <div className="continuum-arrival">
         <span>cAshIo / V42</span>
-        <span>Prism · Imagination, with intention</span>
+        <span>Signature Flight · Imagination, with intention</span>
         <span className="continuum-arrival-end">
           <i aria-hidden="true" /> Human in command
         </span>
@@ -84,21 +90,32 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
           <div className="continuum-stage" data-scene={scene.id}>
             <canvas id="hero-stars" aria-hidden="true" />
             <ContinuumStill />
+            <img
+              className="flight-signature"
+              src="/brand/celestial-840.webp"
+              srcSet="/brand/celestial-420.webp 420w, /brand/celestial-840.webp 840w"
+              sizes="(max-width: 600px) 200px, 340px"
+              width="840"
+              height="315"
+              alt=""
+              aria-hidden="true"
+            />
             <div className="continuum-reticle" aria-hidden="true">
-              <span>PRISM / 0{scenes.indexOf(scene) + 1}</span>
-              <span>THE IMAGINATION ENGINE</span>
+              <span>V42 / SIGNATURE FLIGHT</span>
+              <span>THE HORIZON IS YOURS</span>
             </div>
           </div>
         </div>
         <div className="continuum-copy">
           <p className="continuum-eyebrow">
-            <span /> The workshop after hours
+            <span /> A little order. A lot of universe.
           </p>
           <h1>
-            Imagination. <br />
-            <span>With intention.</span>
+            The machines
+            <br /> can think. <br />
+            <span>You still decide.</span>
           </h1>
-          <p className="aurum-manifesto">The machines can think. You still decide.</p>
+          <p className="aurum-manifesto">Imagination, with intention.</p>
           <p className="continuum-intro">
             I’m Doug Cashio. I build local AI experiments and original worlds after hours. Board a starship, try a
             decision, or explore what I’m making.
@@ -117,6 +134,17 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
           </a>
         </div>
         <div className="continuum-scene-deck">
+          <div className="flight-camera-control">
+            <span>{v.cameraClose ? "Close approach" : "Wide orbit"}</span>
+            <button
+              type="button"
+              aria-pressed={v.cameraClose}
+              onClick={v.toggleCamera}
+              aria-label={v.cameraClose ? "Pull back from the horizon" : "Fly closer to the horizon"}
+            >
+              {v.cameraClose ? "Pull back" : "Fly closer"} <span aria-hidden="true">↗</span>
+            </button>
+          </div>
           <div className="continuum-scene-controls" role="group" aria-label="Light study form">
             {scenes.map((s, i) => (
               <button key={s.id} type="button" aria-pressed={scene.id === s.id} onClick={() => v.chooseScene(s.id)}>

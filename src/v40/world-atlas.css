@@ -1,14 +1,14 @@
 /* A spatial index into the four existing worlds, not operational telemetry. */
 .world-atlas {
   color: #f0f0f0;
-  border: 1px solid #ba91f541;
+  border: 1px solid #24b4cc41;
   background: #131313;
   box-shadow: 0 28px 70px #0004;
 }
 .atlas-selectors {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  border-bottom: 1px solid #ba91f541;
+  border-bottom: 1px solid #24b4cc41;
 }
 .atlas-selectors button {
   display: flex;
@@ -19,7 +19,7 @@
   min-height: 64px;
   padding: 16px 22px;
   border: 0;
-  border-right: 1px solid #ba91f526;
+  border-right: 1px solid #24b4cc26;
   border-bottom: 2px solid transparent;
   background: transparent;
   color: #d3d3d3;
@@ -27,16 +27,16 @@
   cursor: pointer;
 }
 .atlas-selectors button span {
-  color: #c59fff;
+  color: #27c1db;
   font: 11px var(--font-mono);
 }
 .atlas-selectors button[aria-selected="true"] {
-  border-bottom-color: #dac5ff;
+  border-bottom-color: #7edcf2;
   background: #2a2a2a;
   color: #f5f1ff;
 }
 .atlas-selectors button[aria-selected="true"] span {
-  color: #dac5ff;
+  color: #7edcf2;
 }
 .atlas-selectors button:hover {
   background: #292929;
@@ -57,17 +57,17 @@
   overflow: hidden;
   background:
     radial-gradient(ellipse at 45% 45%, #42424238, transparent 62%),
-    radial-gradient(#c197ff2b 0.6px, transparent 0.6px) 0 0 / 19px 19px;
+    radial-gradient(#26bbd42b 0.6px, transparent 0.6px) 0 0 / 19px 19px;
 }
 .atlas-instrument-caption {
   display: flex;
   justify-content: space-between;
-  color: #d5bcff;
+  color: #5dd7f0;
   font: 10px/1.8 var(--font-mono);
   letter-spacing: 0.15em;
 }
 .atlas-instrument-caption span {
-  color: #dac5ff;
+  color: #7edcf2;
 }
 .atlas-map {
   position: relative;
@@ -110,16 +110,16 @@
   top: 38%;
 }
 .atlas-point:hover {
-  border-color: #e0cfff;
-  background: #e0cfff12;
+  border-color: #9ae2f4;
+  background: #9ae2f412;
 }
 .atlas-point span {
   position: absolute;
   bottom: 100%;
   opacity: 0;
   padding: 6px 9px;
-  border: 1px solid #c5a0ff73;
-  color: #f4efff;
+  border: 1px solid #28c2dc73;
+  color: #e1f5fb;
   background: #141414;
   font: 11px/1.6 var(--font-mono);
   pointer-events: none;
@@ -142,24 +142,24 @@
 }
 .atlas-waypoint circle:first-child {
   fill: #191919;
-  stroke: #ad87e5;
+  stroke: #21a8be;
 }
 .atlas-waypoint circle:nth-child(2) {
-  fill: #bd94fa;
+  fill: #25b7d0;
 }
 .atlas-waypoint text {
   fill: #d6d6d6;
   font: 11px var(--font-mono);
 }
 .atlas-waypoint.is-selected circle:first-child {
-  stroke: #e0ceff;
+  stroke: #98e1f4;
   stroke-width: 2;
 }
 .atlas-waypoint.is-selected circle:nth-child(2) {
-  fill: #e0ceff;
+  fill: #98e1f4;
 }
 .atlas-waypoint.is-selected text {
-  fill: #e0ceff;
+  fill: #98e1f4;
 }
 .atlas-route {
   stroke-dasharray: 1;
@@ -180,7 +180,7 @@
   font: 16px/1.8 var(--font-body);
 }
 .atlas-instrument p strong {
-  color: #e2d2ff;
+  color: #a2e3f5;
   font-weight: 500;
 }
 .atlas-chart-note {
@@ -191,7 +191,7 @@
 }
 .atlas-destinations {
   min-width: 0;
-  border-left: 1px solid #ba91f52b;
+  border-left: 1px solid #24b4cc2b;
 }
 .atlas-destination {
   background: #171717;
@@ -224,14 +224,14 @@
   padding: 7px 12px;
   background: #121212eb;
   color: #e4e4e4;
-  border-left: 2px solid #dac5ff;
+  border-left: 2px solid #7edcf2;
   font: 11px/1.6 var(--font-mono);
 }
 .atlas-copy {
   padding: 8px 32px 28px;
 }
 .atlas-world-name {
-  color: #d9c3ff;
+  color: #77dbf2;
   font: 11px/1.6 var(--font-mono);
   letter-spacing: 0.13em;
   text-transform: uppercase;
@@ -249,10 +249,10 @@
 .atlas-field-note {
   margin: 22px 0;
   padding-left: 16px;
-  border-left: 1px solid #c096fe78;
+  border-left: 1px solid #26bad378;
 }
 .atlas-field-note > span {
-  color: #d0b3ff;
+  color: #2cd2ee;
   font: 10px/1.6 var(--font-mono);
   letter-spacing: 0.12em;
 }
@@ -274,7 +274,7 @@
   gap: 16px;
   min-height: 48px;
   padding: 12px 17px;
-  border: 1px solid #ceb1ff8c;
+  border: 1px solid #2bd0ec8c;
   border-radius: 2px;
   box-shadow: none;
   background: #292929;
@@ -284,7 +284,7 @@
 }
 #v40-root .atlas-enter:hover {
   background: #363636;
-  border-color: #e2d2ff;
+  border-color: #a2e3f5;
 }
 .atlas-copy .atlas-lesson {
   margin-top: 16px;

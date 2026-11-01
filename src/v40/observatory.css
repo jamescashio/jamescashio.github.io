@@ -13,8 +13,8 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 72% 10%, #d4baff26, transparent 54%),
-    radial-gradient(ellipse at 70% 83%, #d1b6ff1f, transparent 46%), linear-gradient(125deg, #13131399, transparent 62%);
+    radial-gradient(ellipse at 72% 10%, #53d6f026, transparent 54%),
+    radial-gradient(ellipse at 70% 83%, #3bd4ef1f, transparent 46%), linear-gradient(125deg, #13131399, transparent 62%);
   mix-blend-mode: screen;
 }
 #v40-root .orbital-observatory > .v41-b75c4d9c44 {
@@ -23,8 +23,8 @@
     linear-gradient(180deg, #0f0f0f66, transparent 26%, transparent 74%, #0d0d0d);
 }
 #v40-root .orbital-observatory .v41-32dd3337d5 {
-  background-image: linear-gradient(100deg, #ebe0ff 2%, #d9c3ff 38%, #c5a0ff 73%, #ece2ff);
-  text-shadow: 0 8px 36px #c5a0ff12;
+  background-image: linear-gradient(100deg, #c3ecf8 2%, #77dbf2 38%, #28c2dc 73%, #c7edf8);
+  text-shadow: 0 8px 36px #28c2dc12;
 }
 #v40-root .orbital-observatory .v41-a353758b92 {
   opacity: 0.28;
@@ -38,8 +38,8 @@
   height: 58px;
   border-width: 2px 0 0 2px;
   border-top-left-radius: 20px;
-  border-color: #dac5ff;
-  filter: drop-shadow(0 0 10px #dac5ff33);
+  border-color: #7edcf2;
+  filter: drop-shadow(0 0 10px #7edcf233);
 }
 .orbital-observatory .v41-239c863440,
 .orbital-observatory .v41-cb189694f5,
@@ -48,19 +48,19 @@
 }
 .orbital-observatory .v41-239c863440 {
   width: 70px;
-  background: #dac5ff;
+  background: #7edcf2;
 }
 .orbital-observatory .v41-cb189694f5 {
   width: 20px;
-  background: #e2d2ff;
+  background: #a2e3f5;
 }
 .orbital-observatory .v41-bf5360592c {
   height: 22px;
   margin-top: -10px;
   background: #1b1b1b;
-  border: 1px solid #d2b7ff4d;
+  border: 1px solid #42d5f04d;
   border-radius: 3px;
-  color: #e2d2ff;
+  color: #a2e3f5;
   font-size: 10px;
   letter-spacing: 0.13em;
 }
@@ -70,22 +70,22 @@
 }
 .orbital-observatory .v41-d0ceeed41b {
   width: 34px;
-  background: #dac5ff;
+  background: #7edcf2;
 }
 .orbital-observatory .v41-f1094867b2 {
   width: 106px;
   height: 58px;
   border-width: 0 2px 2px 0;
   border-bottom-right-radius: 20px;
-  border-color: #e2d2ff;
-  filter: drop-shadow(0 0 10px #e2d2ff33);
+  border-color: #a2e3f5;
+  filter: drop-shadow(0 0 10px #a2e3f533);
 }
 #v40-root .orbital-observatory [aria-label="Lab telemetry"] {
-  border: 1px solid #d0b3ff3d;
+  border: 1px solid #2cd2ee3d;
   background: linear-gradient(145deg, #262626ed, #121212f5 68%);
   box-shadow:
     0 28px 70px #0005,
-    inset 0 1px #e5d7ff14;
+    inset 0 1px #aee6f614;
 }
 #v40-root .orbital-observatory [aria-label="Lab telemetry"]::after {
   content: "";
@@ -96,20 +96,20 @@
   pointer-events: none;
 }
 #v40-root .orbital-observatory .za-btn--primary {
-  border: 1px solid #e1d1ff;
-  background: linear-gradient(130deg, #dac4ff, #c59eff);
+  border: 1px solid #9fe3f4;
+  background: linear-gradient(130deg, #7bdcf2, #27c1da);
   color: #121212;
   box-shadow:
-    0 8px 28px #c39bff25,
+    0 8px 28px #27bed825,
     inset 0 1px #f6f2ff80;
 }
 #v40-root .orbital-observatory .za-btn--primary:is(:hover, :focus-visible) {
   box-shadow:
-    0 10px 36px #d2b7ff44,
+    0 10px 36px #42d5f044,
     inset 0 1px #f6f2ff80;
 }
 #v40-root .orbital-observatory .za-btn--secondary {
-  border-color: #d3b9ff66;
+  border-color: #4ed6f066;
   background: #222222bd;
 }
 #v40-root header {
@@ -119,10 +119,10 @@
 #v40-root #rooms {
   background:
     radial-gradient(ellipse at 8% 10%, #2d2d2d35, transparent 56%),
-    radial-gradient(ellipse at 94% 75%, #523e6e24, transparent 50%);
+    radial-gradient(ellipse at 94% 75%, #0a4f5a24, transparent 50%);
 }
 #v40-root .world-portal {
-  border: 1px solid #c097fe44;
+  border: 1px solid #26bbd444;
   background: linear-gradient(155deg, #232323, #151515 60%);
   box-shadow:
     0 18px 42px #0004,
@@ -139,10 +139,10 @@
   pointer-events: none;
   opacity: 0.65;
   background:
-    linear-gradient(#decbff, #decbff) left top / 25px 1px,
-    linear-gradient(#decbff, #decbff) left top / 1px 25px,
-    linear-gradient(#dac5ff, #dac5ff) right bottom / 25px 1px,
-    linear-gradient(#dac5ff, #dac5ff) right bottom / 1px 25px;
+    linear-gradient(#90e0f3, #90e0f3) left top / 25px 1px,
+    linear-gradient(#90e0f3, #90e0f3) left top / 1px 25px,
+    linear-gradient(#7edcf2, #7edcf2) right bottom / 25px 1px,
+    linear-gradient(#7edcf2, #7edcf2) right bottom / 1px 25px;
   background-repeat: no-repeat;
   transition:
     inset 400ms ease,
@@ -155,10 +155,10 @@
     filter 600ms ease;
 }
 #v40-root .world-portal:is(:hover, :focus-visible) {
-  border-color: #e2d2ffb3;
+  border-color: #a2e3f5b3;
   box-shadow:
     0 24px 50px #0006,
-    0 0 24px #c8a5ff0d;
+    0 0 24px #29c6e10d;
 }
 #v40-root .world-portal:is(:hover, :focus-visible) img {
   transform: scale(1.045);
@@ -169,15 +169,15 @@
   opacity: 1;
 }
 #v40-root .world-portal:focus-visible {
-  outline: 2px solid #dac5ff;
+  outline: 2px solid #7edcf2;
   outline-offset: 6px;
 }
 #v40-root .world-portal .v41-fe7aa4b37b {
-  color: #e1d0ff;
+  color: #9de2f4;
 }
 #v40-root .journey-disclosure {
   background: radial-gradient(ellipse at 0 0, #39393966, transparent 70%), #171717;
-  border-color: #cbabff40;
+  border-color: #2acbe640;
   box-shadow:
     inset 0 1px #d9d9d90d,
     0 12px 30px #0002;
@@ -189,17 +189,17 @@
   border-color: #bababa5c;
 }
 #v40-root .journey-disclosure-icon {
-  border-color: #d9c3ff5c;
-  box-shadow: inset 0 0 16px #ccadff0a;
+  border-color: #77dbf25c;
+  box-shadow: inset 0 0 16px #2acde80a;
 }
 #v40-root .journey-disclosure > summary:hover .journey-disclosure-icon {
-  color: #e1d0ff;
-  border-color: #dac5ff99;
+  color: #9de2f4;
+  border-color: #7edcf299;
 }
 #v40-root .brief-preview {
-  border-color: #c7a2ff5c;
+  border-color: #28c4de5c;
   box-shadow:
-    inset 0 1px #e6d9ff12,
+    inset 0 1px #b3e8f612,
     0 14px 32px #0003;
 }
 #v40-root .observatory-showcase {
@@ -217,7 +217,7 @@
 }
 .showcase-kicker,
 .showcase-medium {
-  color: #dac5ff;
+  color: #7edcf2;
   font: 500 11px/1.6 var(--font-mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -246,7 +246,7 @@
   flex-direction: column;
   min-width: 0;
   overflow: hidden;
-  border: 1px solid #c59fff40;
+  border: 1px solid #27c1db40;
   border-radius: 14px;
   color: #f0f0f0;
   text-decoration: none;
@@ -260,13 +260,13 @@
   border-radius: inherit;
   border-top: 1px solid #e2e2e24d;
   pointer-events: none;
-  background: linear-gradient(120deg, #e1e1e112, transparent 35%, transparent 70%, #dac5ff08);
+  background: linear-gradient(120deg, #e1e1e112, transparent 35%, transparent 70%, #7edcf208);
 }
 .showcase-plate {
   position: relative;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  border-bottom: 1px solid #c59fff40;
+  border-bottom: 1px solid #27c1db40;
   background: #121212;
 }
 .showcase-plate img {
@@ -284,7 +284,7 @@
   width: 28px;
   height: 28px;
   place-items: center;
-  border: 1px solid #e2d2ff80;
+  border: 1px solid #a2e3f580;
   color: #e8e8e8;
   background: #141414cc;
   font: 300 20px/1 var(--font-mono);
@@ -315,19 +315,19 @@
   justify-content: space-between;
   gap: 12px;
   margin-top: auto;
-  color: #e2d2ff;
+  color: #a2e3f5;
   font: 600 13px/1.6 var(--font-body);
 }
 .showcase-action > span {
-  color: #dac5ff;
+  color: #7edcf2;
   font-size: 21px;
 }
 .showcase-project:is(:hover, :focus-visible) {
-  border-color: #c9d8c6b3;
+  border-color: #91e0f3b3;
   background: linear-gradient(145deg, #313131, #191919 70%);
 }
 .showcase-project:focus-visible {
-  outline: 2px solid #dac5ff;
+  outline: 2px solid #7edcf2;
   outline-offset: 5px;
 }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
@@ -359,7 +359,7 @@
   .showcase-plate {
     aspect-ratio: auto;
     border-bottom: 0;
-    border-right: 1px solid #c59fff40;
+    border-right: 1px solid #27c1db40;
   }
   .showcase-plate img {
     position: absolute;
@@ -431,15 +431,15 @@ html[data-motion="off"] .world-portal > div:first-child::after {
   position: relative;
   scroll-margin-top: 76px;
   background:
-    radial-gradient(ellipse at 8% 100%, #9574c520, transparent 55%),
-    radial-gradient(ellipse at 90% 12%, #c39bff14, transparent 50%), #121212;
+    radial-gradient(ellipse at 8% 100%, #1b90a420, transparent 55%),
+    radial-gradient(ellipse at 90% 12%, #27bed814, transparent 50%), #121212;
 }
 .afterglow-feature::before {
   content: "";
   position: absolute;
   inset: 0 8% auto;
   height: 1px;
-  background: linear-gradient(90deg, transparent, #dac5ff90, #d7c1ff55, transparent);
+  background: linear-gradient(90deg, transparent, #7edcf290, #6fdaf155, transparent);
 }
 .afterglow-feature .eagle-film-inner {
   max-width: 1340px;
@@ -456,12 +456,12 @@ html[data-motion="off"] .world-portal > div:first-child::after {
   color: #d1d1d1;
 }
 .afterglow-feature .eagle-film-copy .eagle-film-label {
-  color: #dac5ff;
+  color: #7edcf2;
   font-size: 11px;
   letter-spacing: 0.09em;
 }
 #eagle-film.afterglow-feature .eagle-film-play {
-  border-color: #cfb2ff4d;
+  border-color: #2cd1ed4d;
   box-shadow: 0 22px 60px #0005;
 }
 .afterglow-feature .eagle-film-caption {

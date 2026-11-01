@@ -5,7 +5,7 @@ import "./design.css";
 import "./polish.css";
 import "./hero-reel.css";
 import "./bit-header.css";
-import "./prism-opening.css";
+import "./signature-opening.css";
 import "./polish.js";
 import "./labs.js";
 import "./bit.js";

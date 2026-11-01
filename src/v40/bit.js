@@ -93,7 +93,7 @@
           ? { base: [255, 24, 58], edge: [255, 154, 170], glow: "rgba(255,0,51,0.52)" }
           : m === "think"
             ? { base: [255, 149, 0], edge: [255, 214, 150], glow: "rgba(255,149,0,0.46)" }
-            : { base: [204, 185, 235], edge: [247, 240, 255], glow: "rgba(204,185,235,0.46)" };
+            : { base: [26, 210, 238], edge: [177, 246, 255], glow: "rgba(26,210,238,0.46)" };
     const rot = (v, rx, ry) => {
       const cy = Math.cos(ry),
         sy = Math.sin(ry),

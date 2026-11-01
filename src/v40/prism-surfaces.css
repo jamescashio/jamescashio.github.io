@@ -14,7 +14,7 @@ html:has(.continuum-root) {
   background: #0a0a0a;
 }
 #v40-root #eagle-film {
-  background: radial-gradient(ellipse at 70% 25%, #5f497f1e, transparent 60%), #0e0e0e;
+  background: radial-gradient(ellipse at 70% 25%, #0d5c691e, transparent 60%), #0e0e0e;
   padding-block: 80px;
 }
 #v40-root .eagle-film-inner {
@@ -32,7 +32,7 @@ html:has(.continuum-root) {
 }
 #v40-root .eagle-film-play {
   border-radius: 0;
-  border: 1px solid #a480da4d;
+  border: 1px solid #1f9fb54d;
   box-shadow: 0 30px 100px #0007;
 }
 #v40-root .eagle-film-caption {
@@ -41,24 +41,24 @@ html:has(.continuum-root) {
 }
 #v40-root .eagle-film-playmark {
   background: #080808ba;
-  border-color: #d4bbff;
-  box-shadow: 0 0 70px #d0b3ff25;
+  border-color: #57d7f0;
+  box-shadow: 0 0 70px #2cd2ee25;
 }
 #v40-root .cinema-selection {
   gap: 18px;
 }
 #v40-root .cinema-selection button {
   border: 0;
-  border-block: 1px solid #a27fd738;
+  border-block: 1px solid #1e9db338;
   background: transparent;
   padding: 14px 0;
-  color: #caa8ff;
+  color: #29c9e4;
 }
 #v40-root .cinema-selection button[aria-pressed="true"] {
-  background: #b38cec14;
-  border-color: #cbaaff;
+  background: #22adc514;
+  border-color: #2acbe5;
   box-shadow: none;
-  color: #e8dcff;
+  color: #bae9f7;
 }
 #v40-root .cinema-selection img,
 #v40-root .continuum-paths img {
@@ -90,13 +90,13 @@ html:has(.continuum-root) {
 #v40-root .workshop-highlight {
   background: transparent;
   border: 0;
-  border-top: 1px solid #bd93f961;
+  border-top: 1px solid #25b6cf61;
   padding: 28px 0 0;
   box-shadow: none;
 }
 #v40-root .workshop-highlight h3 {
   font-size: 30px;
-  color: #d0b4ff;
+  color: #2cd3ef;
 }
 #v40-root .workshop-overview > :not(.workshop-heading):not(.workshop-highlights) {
   grid-column: 1/-1;
@@ -122,7 +122,7 @@ html:has(.continuum-root) {
 }
 #v40-root .atlas-selectors {
   gap: 0;
-  border-block: 1px solid #af88e752;
+  border-block: 1px solid #21a9c052;
 }
 #v40-root .atlas-selectors button {
   min-height: 72px;
@@ -134,9 +134,9 @@ html:has(.continuum-root) {
   color: #aaaaaa;
 }
 #v40-root .atlas-selectors button[aria-selected="true"] {
-  background: #c9a7ff0d;
-  color: #e2d2ff;
-  border-bottom-color: #cdafff;
+  background: #29c8e30d;
+  color: #a2e3f5;
+  border-bottom-color: #2bcfea;
 }
 #v40-root .atlas-stage {
   grid-template-columns: minmax(230px, 0.5fr) minmax(0, 1.6fr);
@@ -166,16 +166,16 @@ html:has(.continuum-root) {
   font-size: clamp(36px, 3.5vw, 56px);
   line-height: 1.05;
   letter-spacing: -0.06em;
-  color: #e0ceff;
+  color: #98e1f4;
 }
 #v40-root .atlas-field-note {
   border: 0;
-  border-left: 1px solid #cbaaff;
+  border-left: 1px solid #2acbe5;
   padding: 10px 18px;
   background: #0e0e0e7a;
 }
 #v40-root .atlas-enter {
-  background: #d2b7ff;
+  background: #42d5f0;
   color: #080808;
 }
 #v40-root .showcase-heading h2 {
@@ -186,7 +186,7 @@ html:has(.continuum-root) {
 #v40-root .showcase-card {
   border-radius: 0;
   border: 0;
-  border-bottom: 1px solid #ba91f566;
+  border-bottom: 1px solid #24b4cc66;
   background: transparent;
   box-shadow: none;
 }
@@ -197,7 +197,7 @@ html:has(.continuum-root) {
   width: calc(100% - clamp(44px, 11.6vw, 192px));
   margin-inline: auto;
   border: 0;
-  border-block: 1px solid #ae88e742;
+  border-block: 1px solid #21a9bf42;
   border-radius: 0;
   background: #101010;
   box-shadow: none;
@@ -208,7 +208,7 @@ html:has(.continuum-root) {
 #v40-root .study-card {
   border-radius: 0;
   background: #111111;
-  border-color: #b28bec50;
+  border-color: #22acc450;
   box-shadow: none;
 }
 #v40-root footer {
@@ -217,7 +217,7 @@ html:has(.continuum-root) {
 }
 .discovery-console {
   background: #0b0b0b;
-  border-color: #ba91f561;
+  border-color: #24b4cc61;
   border-radius: 0;
   box-shadow: 0 30px 150px #000e;
 }
@@ -227,59 +227,59 @@ html:has(.continuum-root) {
   line-height: 1.06;
   letter-spacing: -0.05em;
   font-weight: 500;
-  color: #e8dcff;
+  color: #bae9f7;
 }
 .discovery-heading > p:last-child {
   color: #bebebe;
 }
 .discovery-paths button {
   background: #121212;
-  color: #cdafff;
+  color: #2bcfea;
 }
 .discovery-paths button[aria-pressed="true"] {
   background: #262626;
-  color: #e8dcff;
+  color: #bae9f7;
 }
 .discovery-description h3 {
   font-family: "Exo 2", sans-serif;
   font-size: 36px;
   letter-spacing: -0.04em;
-  color: #ddcaff;
+  color: #8ddff3;
 }
 .discovery-description > p:not(.continuum-label) {
   color: #c2c2c2;
 }
 .discovery-visual {
-  border-color: #b38ced55;
-  box-shadow: 0 0 55px #b68ef00d;
+  border-color: #22aec555;
+  box-shadow: 0 0 55px #23b0c80d;
 }
 .discovery-projection {
-  background: radial-gradient(ellipse at 50% 35%, #9171c033, transparent 65%), #080808;
+  background: radial-gradient(ellipse at 50% 35%, #1a8ca033, transparent 65%), #080808;
 }
 .discovery-view-controls {
   background: #131313;
-  border-color: #b58def40;
+  border-color: #23afc740;
 }
 .discovery-view-controls button[aria-pressed="true"] {
   background: #2d2d2d5c;
-  color: #e9deff;
-  border-color: #c7a2ff;
+  color: #beeaf7;
+  border-color: #28c4de;
 }
 .discovery-console .discovery-beacon {
-  background: radial-gradient(circle at 35% 25%, #6f5694, #191919 75%);
-  border-color: #cdaeff;
-  color: #f2ecff;
+  background: radial-gradient(circle at 35% 25%, #116c7b, #191919 75%);
+  border-color: #2bcee9;
+  color: #dbf3fa;
   box-shadow:
-    0 0 0 5px #9b78cd20,
-    0 0 30px #9b78cd44;
+    0 0 0 5px #1c96aa20,
+    0 0 30px #1c96aa44;
 }
 .discovery-console .discovery-beacon[aria-pressed="true"] {
-  background: radial-gradient(circle at 35% 25%, #eee6ff, #896ab6 75%);
+  background: radial-gradient(circle at 35% 25%, #cfeff9, #188497 75%);
   border-color: #f5f1ff;
   color: #0e0e0e;
   box-shadow:
-    0 0 0 5px #cfb1ff30,
-    0 0 35px #d7bfff80;
+    0 0 0 5px #2bd0ec30,
+    0 0 35px #69d9f180;
 }
 @media (max-width: 900px) {
   #v40-root .workshop-overview {
@@ -399,11 +399,11 @@ html:has(.continuum-root) {
 }
 #v40-root .continuum-paths button:nth-child(2),
 #v40-root nav[aria-label="Sections"] a[href="#studies"] {
-  --chapter: #d7b9ff;
+  --chapter: #54d6f0;
 }
 #v40-root .continuum-paths button:nth-child(3),
 #v40-root nav[aria-label="Sections"] a[href="#films"] {
-  --chapter: #ffb09c;
+  --chapter: #efbb60;
 }
 #v40-root .continuum-paths button {
   border-bottom-color: var(--chapter);
@@ -415,45 +415,45 @@ html:has(.continuum-root) {
   color: #f2eff5;
 }
 #v40-root nav[aria-label="Sections"] .v41-b5d5368cf2 {
-  background: var(--chapter, #e4d5f6);
+  background: var(--chapter, #a7e5f5);
 }
 #v40-root .continuum-readings > div:nth-child(1) dd {
   color: #a6e9bd;
 }
 #v40-root .continuum-readings > div:nth-child(2) dd {
-  color: #d7b9ff;
+  color: #54d6f0;
 }
 #v40-root .continuum-readings > div:nth-child(3) dd {
-  color: #ffb09c;
+  color: #efbb60;
 }
 #v40-root .continuum-readings > div:nth-child(4) dd {
-  color: #ffafd7;
+  color: #efbf6f;
 }
 #v40-root #eagle-film {
   background: radial-gradient(ellipse at 75% 20%, #ff714e12, transparent 60%), #101011;
 }
 #v40-root .eagle-film-copy h2 {
-  color: #fff0e9;
+  color: #e5f6fc;
 }
 #v40-root .eagle-film-label,
 #v40-root .eagle-film-note {
-  color: #ffb3a0;
+  color: #efbe69;
 }
 #v40-root .eagle-film-play {
-  border-color: #ffab8b52;
+  border-color: #ecb75152;
 }
 #v40-root .eagle-film-playmark {
-  border-color: #ffd1bb;
-  color: #ffe8da;
+  border-color: #f4d6ae;
+  color: #f9ead8;
   box-shadow: 0 0 70px #fa6e3c20;
 }
 #v40-root .eagle-film-caption {
   background: #1a1413;
 }
 #v40-root .cinema-selection button[aria-pressed="true"] {
-  border-color: #ffae91;
-  background: #f0884810;
-  color: #ffd1bc;
+  border-color: #eeb957;
+  background: #ca9c4410;
+  color: #f4d6ae;
 }
 #v40-root .workshop-heading h2 {
   color: #eaf9ee;
@@ -466,7 +466,7 @@ html:has(.continuum-root) {
   color: #abeac0;
 }
 #v40-root #rooms {
-  background: radial-gradient(ellipse at 75% 35%, #a572ec12, transparent 65%), #0d0d10;
+  background: radial-gradient(ellipse at 75% 35%, #1d99ae12, transparent 65%), #0d0d10;
 }
 #v40-root .atlas-selectors button:nth-child(1),
 .atlas-point-0 {
@@ -474,15 +474,15 @@ html:has(.continuum-root) {
 }
 #v40-root .atlas-selectors button:nth-child(2),
 .atlas-point-1 {
-  --destination: #d7b9ff;
+  --destination: #54d6f0;
 }
 #v40-root .atlas-selectors button:nth-child(3),
 .atlas-point-2 {
-  --destination: #ffb09c;
+  --destination: #efbb60;
 }
 #v40-root .atlas-selectors button:nth-child(4),
 .atlas-point-3 {
-  --destination: #ffe0a8;
+  --destination: #f7e1c5;
 }
 #v40-root .atlas-selectors button[aria-selected="true"] {
   color: var(--destination);
@@ -490,53 +490,53 @@ html:has(.continuum-root) {
   background: #ffffff06;
 }
 #v40-root .atlas-enter {
-  background: #ede6f8;
+  background: #cdeff9;
   color: #121016;
 }
 #v40-root .atlas-copy h3 {
-  color: #f0e5ff;
+  color: #ceeff9;
 }
 #v40-root #studies .za-panel {
   border-color: #9dd7b644;
   background: #121714;
 }
 #v40-root #studies .za-panel h3 {
-  color: #bcf0ce;
+  color: #c0ebf7;
 }
 #v40-root #evidence .za-panel {
-  border-color: #c0a2e44f;
+  border-color: #27bfd84f;
 }
 #v40-root #evidence h2,
 #v40-root #evidence h3 {
-  color: #e1caff;
+  color: #90e0f3;
 }
 #v40-root #contact h2 span {
-  color: #ffb4d7;
+  color: #f0c37b;
 }
 .discovery-console {
   background: #0e0e11;
-  border-color: #d0b6ec66;
+  border-color: #2cd2ee66;
 }
 .discovery-heading h2,
 .discovery-description h3 {
-  color: #f2ebfc;
+  color: #d9f2fa;
 }
 .discovery-projection {
   background:
     radial-gradient(ellipse at 20% 25%, #52c17c1e, transparent 60%),
-    radial-gradient(ellipse at 85% 70%, #e772b327, transparent 60%), #0c0b0e;
+    radial-gradient(ellipse at 85% 70%, #bf934027, transparent 60%), #0c0b0e;
 }
 .discovery-beacon-0 {
   --beacon: #9fe7b9;
 }
 .discovery-beacon-1 {
-  --beacon: #d6b7ff;
+  --beacon: #4ad5f0;
 }
 .discovery-beacon-2 {
-  --beacon: #ffb09c;
+  --beacon: #efbb60;
 }
 .discovery-beacon-3 {
-  --beacon: #ffe0a8;
+  --beacon: #f7e1c5;
 }
 .discovery-console .discovery-beacon {
   border-color: var(--beacon);
@@ -552,33 +552,33 @@ html:has(.continuum-root) {
   background: var(--beacon);
   box-shadow:
     0 0 0 5px #ffffff20,
-    0 0 35px #dbb9ff3d;
+    0 0 35px #59d7f03d;
 }
 .discovery-view-controls button[aria-pressed="true"] {
-  background: #251d33;
-  color: #e5ceff;
-  border-color: #ceacff;
+  background: #212121;
+  color: #9ce2f4;
+  border-color: #2acde8;
 }
 .discovery-paths button[aria-pressed="true"] {
   background: #24202b;
-  color: #f0e0ff;
+  color: #c6edf8;
 }
 .discovery-stops button[aria-pressed="true"] {
-  border-color: #d0b8ee;
-  color: #f0e3ff;
+  border-color: #35d4ef;
+  color: #cbeef9;
   background: #26222d;
 }
 .atlas-waypoint-0 {
   --destination: #9fe7b9;
 }
 .atlas-waypoint-1 {
-  --destination: #d6b7ff;
+  --destination: #4ad5f0;
 }
 .atlas-waypoint-2 {
-  --destination: #ffb09c;
+  --destination: #efbb60;
 }
 .atlas-waypoint-3 {
-  --destination: #ffe0a8;
+  --destination: #f7e1c5;
 }
 .atlas-waypoint circle:first-child,
 .atlas-waypoint.is-selected circle:first-child {

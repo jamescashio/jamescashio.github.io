@@ -228,10 +228,10 @@
   flex-shrink: 0;
 }
 .za-terminal-light--red {
-  background: #a984df;
+  background: #20a4ba;
 }
 .za-terminal-light--amber {
-  background: #d5bdff;
+  background: #60d8f1;
 }
 .za-terminal-light--green {
   background: #27c93f;
@@ -371,21 +371,21 @@
    LCARS-inspired neon palette on a near-black "void". */
 :root {
   /* ---- Signature neons ---- */
-  --accent: #c49cff; /* LCARS orange — primary action / brand */
-  --accent-2: #ac86e4; /* hotter orange for gradients */
-  --cyan: #d0b4ff; /* signal cyan — links, focus, data */
-  --green: #d0b4ff; /* nominal / success / "warp" */
-  --purple: #d0b4ff; /* media / secondary accent */
+  --accent: #27bfd9; /* LCARS orange — primary action / brand */
+  --accent-2: #21a6bd; /* hotter orange for gradients */
+  --cyan: #2cd3ef; /* signal cyan — links, focus, data */
+  --green: #2cd3ef; /* nominal / success / "warp" */
+  --purple: #2cd3ef; /* media / secondary accent */
   --red: #ff0033; /* red alert / critical */
-  --amber: #ddc9ff; /* caution / changelog */
+  --amber: #8adef3; /* caution / changelog */
 
   /* ---- Neon glows (use in box/text-shadow) ---- */
-  --accent-glow: rgba(196, 156, 255, 0.35);
-  --cyan-glow: rgba(208, 180, 255, 0.3);
-  --green-glow: rgba(208, 180, 255, 0.4);
+  --accent-glow: rgba(39, 191, 217, 0.35);
+  --cyan-glow: rgba(44, 211, 239, 0.3);
+  --green-glow: rgba(44, 211, 239, 0.4);
   --red-glow: rgba(255, 0, 51, 0.5);
-  --amber-glow: rgba(221, 201, 255, 0.3);
-  --purple-glow: rgba(208, 180, 255, 0.35);
+  --amber-glow: rgba(138, 222, 243, 0.3);
+  --purple-glow: rgba(44, 211, 239, 0.35);
 
   /* ---- Surfaces ---- */
   --void: #0d0d0d; /* page background */
@@ -417,9 +417,9 @@
 
   /* ---- Ambient page wash (radial neon bloom) ---- */
   --page-wash:
-    radial-gradient(circle at 15% 10%, rgba(208, 180, 255, 0.06), transparent 40%),
-    radial-gradient(circle at 85% 30%, rgba(208, 180, 255, 0.05), transparent 45%),
-    radial-gradient(circle at 50% 100%, rgba(196, 156, 255, 0.05), transparent 50%); /* @kind other */
+    radial-gradient(circle at 15% 10%, rgba(44, 211, 239, 0.06), transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(44, 211, 239, 0.05), transparent 45%),
+    radial-gradient(circle at 50% 100%, rgba(39, 191, 217, 0.05), transparent 50%); /* @kind other */
 }
 
 /* ZEUSAPOLLO — Typography scale */
@@ -818,21 +818,21 @@ a:hover {
    LCARS-inspired neon palette on a near-black "void". */
 :root {
   /* ---- Signature neons ---- */
-  --accent: #c49cff; /* LCARS orange — primary action / brand */
-  --accent-2: #ac86e4; /* hotter orange for gradients */
-  --cyan: #d0b4ff; /* signal cyan — links, focus, data */
-  --green: #d0b4ff; /* nominal / success / "warp" */
-  --purple: #d0b4ff; /* media / secondary accent */
+  --accent: #27bfd9; /* LCARS orange — primary action / brand */
+  --accent-2: #21a6bd; /* hotter orange for gradients */
+  --cyan: #2cd3ef; /* signal cyan — links, focus, data */
+  --green: #2cd3ef; /* nominal / success / "warp" */
+  --purple: #2cd3ef; /* media / secondary accent */
   --red: #ff0033; /* red alert / critical */
-  --amber: #ddc9ff; /* caution / changelog */
+  --amber: #8adef3; /* caution / changelog */
 
   /* ---- Neon glows (use in box/text-shadow) ---- */
-  --accent-glow: rgba(196, 156, 255, 0.35);
-  --cyan-glow: rgba(208, 180, 255, 0.3);
-  --green-glow: rgba(208, 180, 255, 0.4);
+  --accent-glow: rgba(39, 191, 217, 0.35);
+  --cyan-glow: rgba(44, 211, 239, 0.3);
+  --green-glow: rgba(44, 211, 239, 0.4);
   --red-glow: rgba(255, 0, 51, 0.5);
-  --amber-glow: rgba(221, 201, 255, 0.3);
-  --purple-glow: rgba(208, 180, 255, 0.35);
+  --amber-glow: rgba(138, 222, 243, 0.3);
+  --purple-glow: rgba(44, 211, 239, 0.35);
 
   /* ---- Surfaces ---- */
   --void: #0d0d0d; /* page background */
@@ -864,9 +864,9 @@ a:hover {
 
   /* ---- Ambient page wash (radial neon bloom) ---- */
   --page-wash:
-    radial-gradient(circle at 15% 10%, rgba(208, 180, 255, 0.06), transparent 40%),
-    radial-gradient(circle at 85% 30%, rgba(208, 180, 255, 0.05), transparent 45%),
-    radial-gradient(circle at 50% 100%, rgba(196, 156, 255, 0.05), transparent 50%); /* @kind other */
+    radial-gradient(circle at 15% 10%, rgba(44, 211, 239, 0.06), transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(44, 211, 239, 0.05), transparent 45%),
+    radial-gradient(circle at 50% 100%, rgba(39, 191, 217, 0.05), transparent 50%); /* @kind other */
 }
 
 /* ZEUSAPOLLO — Typography scale */
@@ -1551,7 +1551,7 @@ video::-webkit-media-controls-panel {
   inset: 0;
   pointer-events: none;
   mix-blend-mode: screen;
-  background: radial-gradient(520px circle at 72% 38%, rgba(208, 180, 255, 0.1), transparent 60%);
+  background: radial-gradient(520px circle at 72% 38%, rgba(44, 211, 239, 0.1), transparent 60%);
 }
 .v41-b75c4d9c44 {
   position: absolute;
@@ -1572,7 +1572,7 @@ video::-webkit-media-controls-panel {
   right: 0;
   top: 0;
   height: 140px;
-  background: linear-gradient(180deg, transparent, rgba(208, 180, 255, 0.05), transparent);
+  background: linear-gradient(180deg, transparent, rgba(44, 211, 239, 0.05), transparent);
   animation: v40-scan 8s linear infinite;
   pointer-events: none;
 }
@@ -1597,7 +1597,7 @@ video::-webkit-media-controls-panel {
   border-left: 36px solid var(--accent);
   border-top-left-radius: 46px;
   flex: 0 0 auto;
-  filter: drop-shadow(0 0 14px rgba(196, 156, 255, 0.35));
+  filter: drop-shadow(0 0 14px rgba(39, 191, 217, 0.35));
 }
 .v41-239c863440 {
   height: 14px;
@@ -1614,7 +1614,7 @@ video::-webkit-media-controls-panel {
 .v41-7b3ab527b9 {
   height: 14px;
   flex: 1;
-  background: linear-gradient(90deg, rgba(196, 156, 255, 0.5), rgba(196, 156, 255, 0.04));
+  background: linear-gradient(90deg, rgba(39, 191, 217, 0.5), rgba(39, 191, 217, 0.04));
   border-radius: 2px;
 }
 .v41-bf5360592c {
@@ -1644,7 +1644,7 @@ video::-webkit-media-controls-panel {
 .v41-84d6fc2938 {
   height: 10px;
   flex: 1;
-  background: linear-gradient(90deg, rgba(208, 180, 255, 0.04), rgba(208, 180, 255, 0.5));
+  background: linear-gradient(90deg, rgba(44, 211, 239, 0.04), rgba(44, 211, 239, 0.5));
   border-radius: 2px;
 }
 .v41-d0ceeed41b {
@@ -1660,7 +1660,7 @@ video::-webkit-media-controls-panel {
   border-right: 30px solid var(--cyan);
   border-bottom-right-radius: 40px;
   flex: 0 0 auto;
-  filter: drop-shadow(0 0 14px rgba(208, 180, 255, 0.35));
+  filter: drop-shadow(0 0 14px rgba(44, 211, 239, 0.35));
 }
 .v41-e2b130896a {
   display: flex;
@@ -1740,11 +1740,11 @@ video::-webkit-media-controls-panel {
 .v41-32dd3337d5 {
   display: block;
   animation: v40-up 1.2s cubic-bezier(0.23, 1, 0.32, 1) 0.41s both;
-  background: linear-gradient(92deg, var(--accent) 0%, #ddc9ff 42%, var(--cyan) 100%);
+  background: linear-gradient(92deg, var(--accent) 0%, #8adef3 42%, var(--cyan) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 0 26px rgba(196, 156, 255, 0.3));
+  filter: drop-shadow(0 0 26px rgba(39, 191, 217, 0.3));
 }
 .v41-5359105f2e {
   max-width: 60ch;
@@ -2399,8 +2399,8 @@ video::-webkit-media-controls-panel {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 25% 20%, rgba(208, 180, 255, 0.1), transparent 50%),
-    radial-gradient(ellipse at 85% 90%, rgba(208, 180, 255, 0.07), transparent 50%);
+    radial-gradient(ellipse at 25% 20%, rgba(44, 211, 239, 0.1), transparent 50%),
+    radial-gradient(ellipse at 85% 90%, rgba(44, 211, 239, 0.07), transparent 50%);
 }
 .v41-0a831b5de0 {
   position: relative;
@@ -2422,7 +2422,7 @@ video::-webkit-media-controls-panel {
   border: 1px solid var(--glass-border);
   box-shadow:
     var(--shadow-panel),
-    0 0 90px -30px rgba(208, 180, 255, 0.45);
+    0 0 90px -30px rgba(44, 211, 239, 0.45);
   background: #000;
   aspect-ratio: 16/9;
   min-width: 0;
@@ -2805,8 +2805,8 @@ video::-webkit-media-controls-panel {
   align-items: flex-start;
   padding: 14px 16px;
   border-radius: 12px;
-  border: 1px solid rgba(196, 156, 255, 0.4);
-  background: rgba(196, 156, 255, 0.06);
+  border: 1px solid rgba(39, 191, 217, 0.4);
+  background: rgba(39, 191, 217, 0.06);
 }
 .v41-41858cab1a {
   width: 10px;
@@ -3256,7 +3256,7 @@ video::-webkit-media-controls-panel {
   margin: 0 12px 12px;
   border-radius: 14px;
   background:
-    radial-gradient(ellipse at 50% 50%, rgba(208, 180, 255, 0.08), transparent 62%),
+    radial-gradient(ellipse at 50% 50%, rgba(44, 211, 239, 0.08), transparent 62%),
     radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px), var(--void-deep);
   background-size:
     auto,
@@ -3273,7 +3273,7 @@ video::-webkit-media-controls-panel {
   aspect-ratio: 1;
   margin: -75% 0 0 -75%;
   border-radius: 50%;
-  background: conic-gradient(from 0deg, rgba(196, 156, 255, 0.16), rgba(196, 156, 255, 0) 14%, transparent 100%);
+  background: conic-gradient(from 0deg, rgba(39, 191, 217, 0.16), rgba(39, 191, 217, 0) 14%, transparent 100%);
   animation: v40-spin 7s linear infinite;
   -webkit-mask: radial-gradient(circle, #000 0 44%, transparent 62%);
   mask: radial-gradient(circle, #000 0 44%, transparent 62%);
@@ -3292,7 +3292,7 @@ video::-webkit-media-controls-panel {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  border: 1px dashed rgba(196, 156, 255, 0.28);
+  border: 1px dashed rgba(39, 191, 217, 0.28);
   animation: v40-spin 18s linear infinite;
 }
 .v41-aed6e9a663 {
@@ -3308,7 +3308,7 @@ video::-webkit-media-controls-panel {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  border: 1px dashed rgba(208, 180, 255, 0.16);
+  border: 1px dashed rgba(44, 211, 239, 0.16);
   animation: v40-spin 32s linear infinite reverse;
 }
 .v41-f1c312a5a0 {
@@ -3556,8 +3556,8 @@ video::-webkit-media-controls-panel {
   gap: 10px;
   padding: 16px 18px;
   border-radius: 12px;
-  border: 1px solid rgba(196, 156, 255, 0.35);
-  background: rgba(196, 156, 255, 0.05);
+  border: 1px solid rgba(39, 191, 217, 0.35);
+  background: rgba(39, 191, 217, 0.05);
 }
 .v41-f207835f58 {
   display: flex;
@@ -3679,7 +3679,7 @@ video::-webkit-media-controls-panel {
   border: 1px solid var(--glass-border);
   box-shadow:
     var(--shadow-panel),
-    0 0 90px -40px rgba(196, 156, 255, 0.5);
+    0 0 90px -40px rgba(39, 191, 217, 0.5);
   display: flex;
   flex-direction: column;
 }
@@ -3753,7 +3753,7 @@ video::-webkit-media-controls-panel {
 .v41-6d3cacfe3a {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 120%, rgba(196, 156, 255, 0.2), transparent 55%);
+  background: radial-gradient(ellipse at 50% 120%, rgba(39, 191, 217, 0.2), transparent 55%);
 }
 .v41-31ee932428 {
   position: relative;
@@ -3775,11 +3775,11 @@ video::-webkit-media-controls-panel {
   margin: 0;
 }
 .v41-2793278dee {
-  background: linear-gradient(92deg, var(--accent), #ddc9ff 45%, var(--cyan));
+  background: linear-gradient(92deg, var(--accent), #8adef3 45%, var(--cyan));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 0 24px rgba(196, 156, 255, 0.3));
+  filter: drop-shadow(0 0 24px rgba(39, 191, 217, 0.3));
 }
 .v41-6274b871a0 {
   display: flex;
@@ -3863,12 +3863,12 @@ video::-webkit-media-controls-panel {
   user-select: none;
 }
 .v41-9a8ee10d86 {
-  -webkit-text-stroke: 1px rgba(196, 156, 255, 0.75);
-  text-shadow: 0 0 60px rgba(196, 156, 255, 0.25);
+  -webkit-text-stroke: 1px rgba(39, 191, 217, 0.75);
+  text-shadow: 0 0 60px rgba(39, 191, 217, 0.25);
 }
 .v41-a5a4adb222 {
-  -webkit-text-stroke: 1px rgba(208, 180, 255, 0.75);
-  text-shadow: 0 0 60px rgba(208, 180, 255, 0.25);
+  -webkit-text-stroke: 1px rgba(44, 211, 239, 0.75);
+  text-shadow: 0 0 60px rgba(44, 211, 239, 0.25);
 }
 .v41-147bbdb8eb {
   position: absolute;
@@ -3948,7 +3948,7 @@ video::-webkit-media-controls-panel {
   overflow: hidden;
   border: 1px solid var(--glass-border);
   box-shadow:
-    0 0 120px -20px rgba(208, 180, 255, 0.25),
+    0 0 120px -20px rgba(44, 211, 239, 0.25),
     0 40px 120px rgba(0, 0, 0, 0.8);
   background: #000;
   animation: v40-rise 0.6s cubic-bezier(0.23, 1, 0.32, 1) both;
@@ -4053,7 +4053,7 @@ video::-webkit-media-controls-panel {
   background: radial-gradient(
     circle at 50% 50%,
     rgba(255, 255, 255, 0.9),
-    rgba(208, 180, 255, 0.5) 28%,
+    rgba(44, 211, 239, 0.5) 28%,
     rgba(13, 13, 13, 0) 70%
   );
   animation: v40-flash 0.9s cubic-bezier(0.23, 1, 0.32, 1) both;

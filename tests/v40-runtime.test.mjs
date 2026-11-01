@@ -218,8 +218,8 @@ test("V40 preserves its content and serves a readable edition without JavaScript
     await expect(
       page.locator("main > section, main > .journey-disclosure > .journey-disclosure-content > section"),
     ).toHaveCount(12);
-    await expect(page.locator("h1")).toHaveText("Imagination. With intention.");
-    await expect(page.locator(".aurum-manifesto")).toHaveText("The machines can think. You still decide.");
+    await expect(page.locator("h1")).toHaveText("The machines can think. You still decide.");
+    await expect(page.locator(".aurum-manifesto")).toHaveText("Imagination, with intention.");
     await expect(page.locator("footer")).toContainText("the answer is here. keep asking.", { ignoreCase: true });
     await expect(page.locator('#contact a[href^="mailto:doug@cashio.us"]').first()).toBeVisible();
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
@@ -316,7 +316,7 @@ test("Every mobile Menu section stays in V40 and survives a reload", async (t) =
       await expect(page.locator(`#${id}`)).toBeInViewport();
       await page.reload();
       await expect(page.locator("#mission-dialog")).toBeAttached();
-      await expect(page).toHaveTitle(/V42 Prism/);
+      await expect(page).toHaveTitle(/V42 Signature Flight/);
       assert.equal(new URL(page.url()).pathname, "/");
       assert.equal(new URL(page.url()).hash, `#${id}`);
       await expect(page.locator(`#${id}`)).toBeInViewport();
@@ -418,7 +418,7 @@ test("Current room and flight titles consistently identify V42", async (t) => {
   await expect(page).toHaveTitle("First flight · cAshIo V42");
   await expect(page.locator("#helios-flight dialog")).toBeVisible();
   await page.keyboard.press("Escape");
-  await expect(page).toHaveTitle(/V42 Prism/);
+  await expect(page).toHaveTitle(/V42 Signature Flight/);
   await page.goto(new URL("/rooms/starship/interactive/", url).href);
   await expect(page).toHaveTitle("Starship lab · cAshIo V42");
 });

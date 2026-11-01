@@ -14,7 +14,7 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 #rooms .world-card:nth-child(3) .world-label {
-  color: #ffd8eb;
+  color: #bdeaf7;
 }
 #rooms .world-card:focus-visible {
   border-color: var(--cyan);
@@ -46,7 +46,7 @@ input {
   -webkit-tap-highlight-color: transparent;
 }
 :focus-visible {
-  outline: 2px solid #ffa6d5 !important;
+  outline: 2px solid #eeb954 !important;
   outline-offset: 5px !important;
 }
 .skip-link {
@@ -55,7 +55,7 @@ input {
   left: 90px;
   z-index: 200;
   padding: 12px 18px;
-  background: #ffa6d5;
+  background: #eeb954;
   color: #080808;
   transform: translateY(-160%);
 }
@@ -82,7 +82,7 @@ input {
 .hud-control:hover {
   color: var(--cyan);
   border-color: var(--cyan);
-  box-shadow: 0 0 16px rgba(255, 166, 213, 0.1);
+  box-shadow: 0 0 16px rgba(238, 185, 84, 0.1);
 }
 .motion-control {
   width: 36px;
@@ -104,10 +104,10 @@ input {
   padding: 0;
   color: #ececec;
   background: #0f0f0f;
-  border: 1px solid rgba(255, 166, 213, 0.4);
+  border: 1px solid rgba(238, 185, 84, 0.4);
   border-radius: 18px;
   box-shadow:
-    0 0 90px rgba(255, 166, 213, 0.12),
+    0 0 90px rgba(238, 185, 84, 0.12),
     0 24px 90px #000;
   overflow: auto;
 }
@@ -120,7 +120,7 @@ input {
   align-items: center;
   justify-content: space-between;
   padding: 22px 24px;
-  border-top: 6px solid #f98bc7;
+  border-top: 6px solid #d8a74a;
   border-bottom: 1px solid #2e2e2e;
   gap: 12px;
 }
@@ -177,7 +177,7 @@ input {
   background: #1e1e1e;
 }
 .mission-results small {
-  color: #ffa6d5;
+  color: #eeb954;
   font: 11px var(--font-mono);
 }
 .mission-results strong {
@@ -201,7 +201,7 @@ input {
   background: none;
   border: 1px solid #525252;
   border-radius: 8px;
-  color: #ffa6d5;
+  color: #eeb954;
   padding: 10px 12px;
   cursor: pointer;
 }
@@ -522,7 +522,7 @@ html[data-background="true"] *::after {
   padding: 10px 6px;
   border-radius: 10px;
   color: var(--accent);
-  background: rgba(249, 139, 199, 0.08);
+  background: rgba(216, 167, 74, 0.08);
   transition: all 0.45s cubic-bezier(0.23, 1, 0.32, 1);
 }
 .v41-state-87448a098a {

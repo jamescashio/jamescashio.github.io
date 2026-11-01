@@ -232,8 +232,8 @@ for (const [width, height] of [
     const page = await visit(t, { viewport: { width, height }, hasTouch: width === 390 });
     await page.goto(url);
     await page.waitForTimeout(1500);
-    await expect(page.locator("h1")).toHaveText("Imagination. With intention.");
-    await expect(page.locator(".aurum-manifesto")).toHaveText("The machines can think. You still decide.");
+    await expect(page.locator("h1")).toHaveText("The machines can think. You still decide.");
+    await expect(page.locator(".aurum-manifesto")).toHaveText("Imagination, with intention.");
     const dock = page.locator('nav[aria-label="Sections"]');
     const dockRect = (await dock.isVisible()) ? await dock.boundingBox() : null;
     const selectors = ["h1", 'a[href="#flight=board"]', '#hero-content a[href="#studies"]'];
@@ -471,9 +471,16 @@ test("The starfield limits ambient work and stops while offscreen, motion is pau
   const rendered = (await draws()) - before;
   assert.ok(rendered > 0 && rendered <= 35, `ambient starfield stays near 30fps; drew ${rendered} frames`);
   const headingBefore = await page.locator("h1").boundingBox();
-  await page.mouse.move(850, 320);
+  // The camera now owns image depth; the poster remains an untransformed image inside it.
+  const camera = page.locator(".hero-flight-camera");
+  const cameraX = () => camera.evaluate((node) => new DOMMatrixReadOnly(getComputedStyle(node).transform).m41);
+  await page.mouse.move(200, 320);
+  await page.waitForTimeout(450);
+  const leftView = await cameraX();
+  await page.mouse.move(1200, 320);
+  await expect.poll(cameraX).toBeLessThan(leftView - 3);
   const poster = page.locator(".hero-live-poster");
-  await expect.poll(() => poster.evaluate((node) => node.style.transform)).toContain("translate3d");
+  await expect.poll(() => camera.evaluate((node) => node.style.transform)).toContain("translate3d");
   assert.deepEqual(
     await page.locator("h1").boundingBox(),
     headingBefore,
@@ -486,10 +493,12 @@ test("The starfield limits ambient work and stops while offscreen, motion is pau
   // The viewport command can finish before React commits the desktop view and its pointer handler.
   await expect(telemetry).toBeVisible();
   await page.mouse.move(840, 330);
-  await expect.poll(() => poster.evaluate((node) => node.style.transform)).toContain("translate3d");
+  await expect.poll(() => camera.evaluate((node) => node.style.transform)).toContain("translate3d");
   await page.getByRole("button", { name: "Pause motion", exact: true }).first().click();
   await expect.poll(() => poster.evaluate((node) => getComputedStyle(node).transform)).toBe("none");
+  const pausedCamera = await camera.evaluate((node) => getComputedStyle(node).transform);
   await staysStill();
+  assert.equal(await camera.evaluate((node) => getComputedStyle(node).transform), pausedCamera);
   await page.getByRole("button", { name: "Resume motion", exact: true }).first().click();
   const resumed = await draws();
   await expect.poll(draws).toBeGreaterThan(resumed);

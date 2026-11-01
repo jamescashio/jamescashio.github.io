@@ -1,12 +1,12 @@
 {
   "experienceVersion": "42.0.0",
-  "releaseId": "prism-42.0.0-preview-20261101",
-  "releaseName": "PRISM",
-  "visualEdition": "Prism",
+  "releaseId": "signature-flight-42.0.0-preview-20261101",
+  "releaseName": "SIGNATURE FLIGHT",
+  "visualEdition": "Signature Flight",
   "presentation": {
-    "name": "Prism",
+    "name": "Signature Flight",
     "subtitle": "Imagination, with intention",
-    "revision": "A spectrum of possibilities",
+    "revision": "Back into the wild",
     "preparedDate": "2026-11-01"
   },
   "entry": "/",
@@ -24,7 +24,7 @@
     "fleetObserved": "2026-11-01",
     "routingObserved": null
   },
-  "statement": "V42 Prism is an unpublished front end redesign. Bit and the demonstrations are scripted browser experiences. Generative scenes are artwork. Observation records retain their original dates, versions and limits.",
+  "statement": "V42 Signature Flight is an unpublished front end redesign. Bit and the demonstrations are scripted browser experiences. Generative scenes are artwork. Observation records retain their original dates, versions and limits.",
   "updatedDate": "2026-11-01",
   "previousRelease": {
     "version": "41.0.0",

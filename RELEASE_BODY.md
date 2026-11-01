@@ -1,6 +1,6 @@
-# V42 · Prism preview
+# V42 · Signature Flight preview
 
-Prism brings emerald, magenta, coral, violet and pearl light to a futuristic charcoal interface. An original photonic sculpture, multicolor projected particles, distinct destination colors and restored full-color illustrations carry the spectrum through the existing editorial layout. Orbit, Signal and Constellation morph on selection; Rotate and Fold space remain usable with motion off. A new Discovery console offers Explore, Try and Watch paths, twelve illustrated stops, selectable holographic beacons, keyboard stepping and copyable public routes. The cinema presents four selectable features with House Cashio first. The world map expands each destination into a panoramic composition.
+Signature Flight restores the original planetary hero and cAshIo celestial signature. Black, metallic gold and electric cyan frame a moving approach, manual close view, layered particles and angular instruments. The original headline returns. All existing content, media and evidence remain. Orbit, Signal and Constellation morph on selection; Rotate and Fold space remain usable with motion off. A new Discovery console offers Explore, Try and Watch paths, twelve illustrated stops, selectable holographic beacons, keyboard stepping and copyable public routes. The cinema presents four selectable features with House Cashio first. The world map expands each destination into a panoramic composition.
 
 All existing films, captions, routes, four worlds, seven experiments, Bit and E.V.E. remain. The verified November 1, 2026 observation is unchanged. The reference's personal information is excluded. No dependency, infrastructure or security setting changes are included.
 

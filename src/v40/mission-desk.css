@@ -4,7 +4,7 @@
   max-height: min(820px, calc(100dvh - 40px));
   overflow: hidden;
   border-radius: 5px;
-  border-color: #ffa6d45c;
+  border-color: #eeb8545c;
   background: #141414;
   box-shadow:
     0 30px 120px #000c,
@@ -17,14 +17,14 @@
 .mission-head {
   flex: none;
   padding: 24px 30px 18px;
-  border-top: 2px solid #ffc8e3;
-  border-bottom-color: #e37fb52e;
+  border-top: 2px solid #f4d2a5;
+  border-bottom-color: #c598432e;
   background: linear-gradient(110deg, #2e2e2e, #181818 65%);
 }
 .mission-eyebrow {
   display: block;
   margin-bottom: 10px;
-  color: #ffb1d9;
+  color: #f0c174;
   font: 10px/1.5 var(--font-mono);
   letter-spacing: 0.17em;
 }
@@ -48,13 +48,13 @@
 }
 .mission-search input {
   border-radius: 3px;
-  border-color: #d878ac52;
+  border-color: #bb903f52;
   background: #101010;
   padding: 13px 16px;
-  caret-color: #ffc8e3;
+  caret-color: #f4d2a5;
 }
 .mission-search input:focus-visible {
-  outline: 2px solid #ffbadd;
+  outline: 2px solid #f1c789;
   outline-offset: 3px;
 }
 .mission-categories {
@@ -75,12 +75,12 @@
   cursor: pointer;
 }
 .mission-categories button[aria-pressed="true"] {
-  color: #ffd4e9;
+  color: #b5e8f6;
   background: #292929;
-  border-color: #ffc8e370;
+  border-color: #f4d2a570;
 }
 .mission-categories button:hover {
-  border-color: #db7aae6b;
+  border-color: #be92406b;
 }
 .mission-results-meta {
   display: flex;
@@ -94,7 +94,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
   min-height: 0;
-  border-top: 1px solid #e07db333;
+  border-top: 1px solid #c3964233;
 }
 .mission-results {
   overflow: auto;
@@ -102,7 +102,7 @@
   align-content: start;
   padding: 12px;
   gap: 4px;
-  scrollbar-color: #b96693 #141414;
+  scrollbar-color: #a07b34 #141414;
   scrollbar-width: thin;
 }
 .mission-results a {
@@ -116,15 +116,15 @@
     background 180ms;
 }
 .mission-results a[data-preview-active="true"] {
-  border-color: #ffb3da59;
+  border-color: #f0c27959;
   background: linear-gradient(105deg, #2b2b2b, #1b1b1b);
 }
 .mission-results a:focus-visible {
-  outline: 2px solid #ffc7e3;
+  outline: 2px solid #f3d2a4;
   outline-offset: -3px;
 }
 .mission-results small {
-  color: #ffb3da;
+  color: #f0c279;
 }
 .mission-row-copy {
   min-width: 0;
@@ -141,7 +141,7 @@
   font: 13px/1.5 var(--font-body);
 }
 .mission-arrow {
-  color: #ffa7d5;
+  color: #eeb958;
 }
 .mission-preview {
   align-self: stretch;
@@ -150,9 +150,9 @@
   overflow: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
-  scrollbar-color: #b96693 #171717;
-  border-left: 1px solid #e07db333;
-  background: radial-gradient(ellipse at 80% 0, #86486a35, transparent 65%), #171717;
+  scrollbar-color: #a07b34 #171717;
+  border-left: 1px solid #c3964233;
+  background: radial-gradient(ellipse at 80% 0, #74582335, transparent 65%), #171717;
 }
 .mission-preview[hidden] {
   display: none;
@@ -226,14 +226,14 @@
   padding: 4px 30px 24px;
 }
 .mission-preview-category {
-  color: #ffb6db;
+  color: #f1c480;
   font: 10px/1.5 var(--font-mono);
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
 .mission-preview h3 {
   margin: 14px 0 12px;
-  color: #ffd5e9;
+  color: #b7e9f7;
   font: 600 25px/1.35 var(--font-display);
   text-wrap: balance;
 }
@@ -245,13 +245,13 @@
 .mission-preview-hint {
   display: block;
   margin-top: 25px;
-  color: #ffaad6;
+  color: #efbb61;
   font: 11px/1.6 var(--font-mono);
 }
 .mission-orbit-mark {
   margin: 0 30px 20px;
   padding-top: 14px;
-  border-top: 1px solid #ff90cc33;
+  border-top: 1px solid #deac4c33;
   color: #c2c2c2;
   font: 9px/1.5 var(--font-mono);
   letter-spacing: 0.1em;
@@ -260,7 +260,7 @@
   flex: none;
   padding: 13px 30px;
   background: #121212;
-  border-top-color: #e07db333;
+  border-top-color: #c3964233;
 }
 .mission-foot button,
 .mission-empty button {
@@ -268,7 +268,7 @@
   min-width: 44px;
 }
 .mission-empty button {
-  border: 1px solid #ff9ed2;
+  border: 1px solid #e9b450;
   border-radius: 3px;
   padding: 10px 14px;
   background: #272727;
