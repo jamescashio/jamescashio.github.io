@@ -135,7 +135,7 @@
   border: 1px solid var(--glass-border);
   border-top: 2px solid var(--cyan);
   border-radius: 18px;
-  background: linear-gradient(145deg, rgba(0, 249, 255, 0.035), var(--surface) 60%);
+  background: linear-gradient(145deg, rgba(255, 179, 0, 0.035), var(--surface) 60%);
 }
 .workshop-highlight h3 {
   margin: 0;
@@ -303,7 +303,7 @@
   padding: 12px 40px 12px 16px;
   border: 1px solid var(--cyan);
   border-radius: 10px;
-  background: #101823;
+  background: #1e1b15;
   color: var(--text);
   font: 600 16px/1.4 var(--font-body);
   cursor: pointer;

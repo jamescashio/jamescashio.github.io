@@ -5,10 +5,10 @@
   --display: var(--font-display, "Unbounded", sans-serif);
   --mono: var(--font-mono, monospace);
   --gold: var(--accent, #e9b65c);
-  --ink: var(--text, #eef4fa);
-  --ink2: var(--text-dim, #b4c2d1);
-  --muted: var(--text-dim, #a6b7c9);
-  --line: #304357;
+  --ink: var(--text, #f8f6f0);
+  --ink2: var(--text-dim, #d1c8b4);
+  --muted: var(--text-dim, #c9bfa6);
+  --line: #574b30;
 }
 .v40-scene-status {
   position: fixed;
@@ -17,19 +17,19 @@
   padding: 24px;
   border: 1px solid #e9b65c;
   border-radius: 16px;
-  color: #eef4fa;
-  background: #080f1b;
+  color: #f8f6f0;
+  background: #15130e;
   font: 18px/1.5 sans-serif;
 }
 .v40-scene-status button {
   min-height: 44px;
   padding: 10px 18px;
-  color: #080f1b;
+  color: #15130e;
   background: #e9b65c;
   border: 0;
   border-radius: 8px;
 }
 .v40-scene-status button:focus-visible {
-  outline: 3px solid #22d3ee;
+  outline: 3px solid #eeb122;
   outline-offset: 4px;
 }

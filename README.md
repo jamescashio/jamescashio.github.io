@@ -1,6 +1,6 @@
-# cAshIo V42 · Continuum
+# cAshIo V42 · Aurum
 
-**Continuum · Worlds in motion / Immersive edition** is an unpublished redesign prepared on 11-01-2026. A monumental original portal panorama, perspective light sculptures and a Discovery console make the existing workshop a place to explore. Three curated paths connect twelve illustrated stops. The cinema lets visitors select House Cashio, Eagle and two Zenith shorts before quiet playback. The selected world becomes a panoramic destination, while projects, studies and evidence retain the same navy, gold and cyan material system.
+**Aurum · Imagination, with intention** is an unpublished redesign prepared on 11-01-2026. Obsidian, ivory and metallic gold replace the previous blue interface. An original gold sculpture fills the opening, oversized editorial type establishes a new rhythm, and a floating chapter dock connects the page. Three light forms, a holographic Discovery console, a panoramic atlas and a four feature cinema make the complete existing content interactive. House Cashio remains the opening feature.
 
 Production remains at commit `650f395adc36ae762acd99e43c0a4655d653ed1f` until Doug approves the final preview. The local review server displays an unpublished ribbon and sends noindex headers. The current receipt at `public/v40/site-release.json` explicitly records `published: false`, `status: preview` and no release date.
 
@@ -8,7 +8,7 @@ Production remains at commit `650f395adc36ae762acd99e43c0a4655d653ed1f` until Do
 
 All twelve homepage sections, four worlds, seven experiments, films, captions, reading editions and existing bookmark destinations remain. House Cashio is the opening feature; Eagle remains available at `/#film=intro`. The Sovereign, Roadster Studio, the fifteen Zenith shorts, Bit, E.V.E., the logo reveal, signature and contact routes remain accessible. Motion can be paused, reduced motion is honored, and films start muted only after an explicit choice.
 
-The aesthetic reference informs the moving light, orbital depth and luminous material system. Its personal content and source code are excluded. Continuum uses an original generated fictional panorama, original Canvas geometry and the project's existing dependencies; no remote runtime is added. The Discovery console adds selectable cyan and gold holographic beacons, an artwork view and a copyable route of public links without sending any data. All three light forms remain manually operable when motion is paused.
+The aesthetic reference informs the moving light, orbital depth and luminous material system. Its personal content and source code are excluded. Aurum uses an original generated gold sculpture, original Canvas geometry and the project's existing dependencies; no remote runtime is added. The Discovery console adds selectable amber and gold holographic beacons, an artwork view and a copyable route of public links without sending any data. All three light forms remain manually operable when motion is paused.
 
 ## Current evidence
 
@@ -20,10 +20,10 @@ These inventory and integrity readings do not establish application health, a re
 
 | Concern                                           | Source                                                                        |
 | ------------------------------------------------- | ----------------------------------------------------------------------------- |
-| Continuum opening and fallback illustration       | `src/v40/immersive-hero.tsx`                                                  |
+| Aurum opening and fallback illustration           | `src/v40/immersive-hero.tsx`                                                  |
 | Original projected geometry                       | `src/v40/continuum-field.js`                                                  |
-| Critical opening styles                           | `src/v40/continuum.css`                                                       |
-| Shared secondary material system                  | `src/v40/continuum-panels.css`                                                |
+| Critical opening styles                           | `src/v40/aurum-opening.css`                                                   |
+| Shared secondary material system                  | `src/v40/aurum-surfaces.css`, `src/v40/continuum-panels.css`                  |
 | Page state, visibility and bounded animation loop | `src/v40/page.jsx`                                                            |
 | Destination search and previews                   | `src/v40/mission-desk.js`                                                     |
 | Existing content and world atlas                  | `src/v40/sections/`                                                           |
@@ -37,7 +37,7 @@ The `v40` source and receipt paths are compatibility paths, not the current vers
 
 Run `npm run verify`. It includes lint, formatting, model and unit checks, the production build, artifact checks, preserved layout and V36 checks, current browser tests, Python release checks, public-data guards, consistency and committed whitespace. The initial stylesheet budget stays at 19,000 gzip bytes. Heavy scenes and secondary styles load on demand. The new canvas stops while hidden, paused, offscreen or covered by cinema; its frame rate and backing-pixel budget are bounded.
 
-For review, run `node scripts/serve-helios-preview.mjs dist 4401 --review`. See [the V42 design and content contract](docs/v42/continuum-preview.md) for scope and acceptance. Browser emulation covers desktop and phone viewports; it is not physical phone testing.
+For review, run `node scripts/serve-helios-preview.mjs dist 4403 --review`. See [the V42 design and content contract](docs/v42/aurum-preview.md) for scope and acceptance. Browser emulation covers desktop and phone viewports; it is not physical phone testing.
 
 ## History and publication
 

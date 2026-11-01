@@ -15,9 +15,9 @@ export function AtlasCore() {
       React.createElement(
         "radialGradient",
         { id: "atlas-sphere-light", cx: "35%", cy: "25%", r: "80%" },
-        React.createElement("stop", { stopColor: "#d9faff", stopOpacity: ".72" }),
-        React.createElement("stop", { offset: ".32", stopColor: "#29818f", stopOpacity: ".65" }),
-        React.createElement("stop", { offset: "1", stopColor: "#061828" }),
+        React.createElement("stop", { stopColor: "#f3efe5", stopOpacity: ".72" }),
+        React.createElement("stop", { offset: ".32", stopColor: "#8f7029", stopOpacity: ".65" }),
+        React.createElement("stop", { offset: "1", stopColor: "#1b1913" }),
       ),
     ),
     React.createElement("circle", {
@@ -25,7 +25,7 @@ export function AtlasCore() {
       cy: "200",
       r: "57",
       fill: "none",
-      stroke: "#71c4d7",
+      stroke: "#d7b871",
       strokeOpacity: ".18",
     }),
     React.createElement("circle", {
@@ -33,7 +33,7 @@ export function AtlasCore() {
       cy: "200",
       r: "50",
       fill: "none",
-      stroke: "#99dce6",
+      stroke: "#e6cf99",
       strokeOpacity: ".35",
       strokeDasharray: "40 12 4 12",
     }),
@@ -42,7 +42,7 @@ export function AtlasCore() {
       cy: "200",
       r: "46",
       fill: "url(#atlas-sphere-light)",
-      stroke: "#b5eaf1",
+      stroke: "#f1dfb5",
       strokeOpacity: ".8",
     }),
     React.createElement(
@@ -51,7 +51,7 @@ export function AtlasCore() {
         clipPath: "url(#atlas-sphere-clip)",
         transform: "rotate(-24 200 200)",
         fill: "none",
-        stroke: "#bef4f8",
+        stroke: "#e8e0ce",
         strokeWidth: ".6",
         strokeOpacity: ".5",
       },
@@ -80,7 +80,7 @@ export function AtlasCore() {
 export function AtlasTicks() {
   return React.createElement(
     "g",
-    { fill: "none", stroke: "#a2d5de", className: "atlas-calibration", "aria-hidden": "true" },
+    { fill: "none", stroke: "#decca2", className: "atlas-calibration", "aria-hidden": "true" },
     Array.from({ length: 60 }, (_, index) => {
       const major = index % 5 === 0;
       return React.createElement("path", {
@@ -103,10 +103,10 @@ export function MobileAtlasTrack({ selected }) {
       { viewBox: "0 0 360 64", width: "100%", height: "64", fill: "none" },
       React.createElement("path", {
         d: "M45 32C100 0 260 64 315 32M45 32C100 64 260 0 315 32",
-        stroke: "#83bac8",
+        stroke: "#c8b383",
         strokeOpacity: ".26",
       }),
-      React.createElement("path", { d: "M45 32h270", stroke: "#6c98a7", strokeDasharray: "2 5", strokeOpacity: ".55" }),
+      React.createElement("path", { d: "M45 32h270", stroke: "#a7956c", strokeDasharray: "2 5", strokeOpacity: ".55" }),
       [45, 135, 225, 315].map((x, index) =>
         React.createElement(
           "g",
@@ -115,14 +115,14 @@ export function MobileAtlasTrack({ selected }) {
             cx: x,
             cy: "32",
             r: selected === index ? 16 : 11,
-            fill: "#0a1725",
-            stroke: selected === index ? "#ffce8a" : "#7daab7",
+            fill: "#1c1913",
+            stroke: selected === index ? "#ffce8a" : "#b7a67d",
           }),
           selected === index &&
             React.createElement("circle", { cx: x, cy: "32", r: "20", stroke: "#ffce8a", strokeOpacity: ".22" }),
           React.createElement(
             "text",
-            { x: x, y: "36", textAnchor: "middle", fill: selected === index ? "#ffdc9b" : "#b3cbd6" },
+            { x: x, y: "36", textAnchor: "middle", fill: selected === index ? "#ffdc9b" : "#d6ccb3" },
             String(index + 1).padStart(2, "0"),
           ),
         ),
@@ -155,7 +155,7 @@ export function FilmAperture() {
       cx: "50",
       cy: "50",
       r: "30",
-      fill: "#08131dec",
+      fill: "#16140fec",
       stroke: "currentColor",
       strokeOpacity: ".8",
     }),

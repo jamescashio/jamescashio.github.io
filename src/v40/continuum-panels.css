@@ -18,11 +18,11 @@
   left: max(28px, calc((100% - 1240px) / 2));
   width: 60px;
   height: 1px;
-  background: linear-gradient(90deg, #f4cf92, #7cc7d426);
+  background: linear-gradient(90deg, #f4cf92, #d4ba7c26);
 }
 #v40-root .eagle-film {
-  border-block: 1px solid #8ebdce23;
-  background: radial-gradient(ellipse at 83% 40%, #16435438, transparent 60%), #07121d;
+  border-block: 1px solid #cebb8e23;
+  background: radial-gradient(ellipse at 83% 40%, #3f392b38, transparent 60%), #15130f;
 }
 #v40-root .eagle-film-inner {
   max-width: 1380px;
@@ -31,7 +31,7 @@
   grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
 }
 #v40-root .eagle-film-label {
-  color: #82d9e3;
+  color: #e3c682;
   letter-spacing: 0.17em;
   font-size: 10px;
 }
@@ -41,30 +41,30 @@
   color: #eee9de;
 }
 #v40-root .eagle-film-copy > p:not(.eagle-film-label) {
-  color: #b9cbd8;
+  color: #d8cfb9;
 }
 #v40-root .eagle-film-play {
   border-radius: 3px;
-  border-color: #9ebac84a;
-  background: #060d15;
+  border-color: #c8bb9e4a;
+  background: #100e0b;
   box-shadow: 0 24px 90px #0005;
 }
 #v40-root .eagle-film-playmark {
   border: 1px solid #f9d79d88;
   color: #f9d79d;
-  background: #071522dc;
+  background: #181611dc;
   backdrop-filter: blur(12px);
 }
 #v40-root .eagle-film-caption {
-  background: #0c1b28;
-  color: #e8eff4;
+  background: #1f1c15;
+  color: #f4f0e8;
   padding: 16px 20px;
 }
 #v40-root .workshop-overview {
-  background: #07101a;
+  background: #13120e;
 }
 #v40-root .workshop-heading {
-  border-left: 1px solid #84bacc3b;
+  border-left: 1px solid #ccb6843b;
   padding-left: 24px;
 }
 #v40-root .workshop-heading h2 {
@@ -75,9 +75,9 @@
   gap: 20px;
 }
 #v40-root .workshop-highlight {
-  border: 1px solid #81b3c23b;
+  border: 1px solid #c2af813b;
   border-radius: 4px;
-  background: linear-gradient(135deg, #102534 0%, #08141f 75%);
+  background: linear-gradient(135deg, #28241c 0%, #171510 75%);
   box-shadow: none;
   position: relative;
   overflow: hidden;
@@ -89,42 +89,42 @@
   left: 24px;
   width: 52px;
   height: 2px;
-  background: #93dce2;
+  background: #e2ca93;
 }
 #v40-root .workshop-highlight h3 {
   color: #f3e6d0;
   font-weight: 500;
 }
 #v40-root .workshop-result {
-  border-left-color: #8bddde;
-  color: #d2e4eb;
+  border-left-color: #dec58b;
+  color: #eae3d3;
 }
 #v40-root .workshop-result strong {
   color: #f5d49e;
 }
 #v40-root .workshop-glossary {
   border-radius: 3px;
-  border-color: #8ebdce32;
-  background: #0b1925;
+  border-color: #cebb8e32;
+  background: #1c1a14;
 }
 #v40-root #rooms {
-  background: radial-gradient(ellipse at 20% 40%, #14324665, transparent 60%), #050e18;
+  background: radial-gradient(ellipse at 20% 40%, #35302565, transparent 60%), #11100c;
 }
 #v40-root .world-atlas {
-  border: 1px solid #86bbc24a;
+  border: 1px solid #c2b0864a;
   border-radius: 3px;
   overflow: hidden;
-  background: #081521;
+  background: #181611;
   box-shadow: 0 30px 90px #0005;
 }
 #v40-root .atlas-selectors button {
-  background: #091722;
+  background: #191712;
   min-height: 68px;
-  color: #b7ccd8;
+  color: #d8ceb7;
   font-size: 15px;
 }
 #v40-root .atlas-selectors button[aria-selected="true"] {
-  background: #172a34;
+  background: #2c281f;
   color: #ffe0a8;
   border-bottom-color: #f1c884;
 }
@@ -136,9 +136,9 @@
 }
 #v40-root .atlas-instrument {
   background:
-    radial-gradient(ellipse at 50% 48%, #1a506b40, transparent 60%),
-    radial-gradient(#7cd5df26 0.65px, transparent 0.8px) 0 0 / 23px 23px,
-    #07131e;
+    radial-gradient(ellipse at 50% 48%, #6b531a40, transparent 60%),
+    radial-gradient(#dfc17c26 0.65px, transparent 0.8px) 0 0 / 23px 23px,
+    #16140f;
   padding: 30px 32px;
 }
 #v40-root .atlas-map {
@@ -151,7 +151,7 @@
   border-radius: 0;
 }
 #v40-root .atlas-destination {
-  background: #0d1c28;
+  background: #1f1c16;
 }
 #v40-root .atlas-destination h3 {
   color: #f4e4c9;
@@ -161,12 +161,12 @@
   border-left-color: #e0bb7a;
 }
 #v40-root .observatory-showcase {
-  background: #08131d;
+  background: #16140f;
 }
 #v40-root .showcase-project {
   border-radius: 3px;
-  border-color: #84b8c242;
-  background: #0d1c28;
+  border-color: #c2af8442;
+  background: #1f1c16;
   box-shadow: none;
 }
 #v40-root .showcase-plate {
@@ -177,13 +177,13 @@
   font-weight: 500;
 }
 #v40-root .showcase-project:hover {
-  border-color: #b8dbe1;
+  border-color: #e1d5b8;
   box-shadow: 0 14px 42px #0003;
 }
 #v40-root .journey-disclosure {
   border-radius: 3px;
-  border-color: #81b1be36;
-  background: linear-gradient(100deg, #102534, #08121e);
+  border-color: #beac8136;
+  background: linear-gradient(100deg, #28241c, #161410);
 }
 #v40-root .journey-disclosure > summary {
   min-height: 118px;
@@ -197,17 +197,17 @@
   flex-shrink: 0;
   width: 50px;
   height: 62px;
-  border: 1px solid #83c9d44a;
-  color: #d4edeb;
+  border: 1px solid #d4bc834a;
+  color: #ebe5d6;
   font: 30px/1 var(--font-body);
-  background: #0b1d2a;
+  background: #1f1c16;
 }
 #v40-root .journey-disclosure-copy strong {
   font-size: clamp(19px, 2vw, 25px);
   font-weight: 500;
 }
 #v40-root .journey-disclosure-copy small {
-  color: #abc3d2;
+  color: #d2c6ab;
 }
 #v40-root .journey-disclosure-icon {
   border-radius: 3px;
@@ -215,14 +215,14 @@
   color: #ecd1a2;
 }
 #v40-root #studies {
-  background: radial-gradient(ellipse at 90% 40%, #15374c36, transparent 60%), #060f19;
+  background: radial-gradient(ellipse at 90% 40%, #39342836, transparent 60%), #12110d;
 }
 #v40-root .experiment-tabs button {
   border-radius: 4px;
   box-shadow: none;
 }
 #v40-root .experiment-tabs button[aria-selected="true"] {
-  background: #173039;
+  background: #2f2b21;
   border-color: #e4bd7a;
 }
 #v40-root .experiment-tabs button span {
@@ -230,65 +230,65 @@
 }
 #v40-root #experiment-panel {
   border-radius: 4px;
-  border-color: #8fbaca42;
+  border-color: #cab88f42;
   box-shadow: 0 18px 65px #0003;
 }
 #v40-root #experiment-panel > .za-panel,
 #v40-root #evidence .za-panel {
   border-radius: 4px;
-  background: #0b1c28;
-  border-color: #91bdca50;
+  background: #1e1b15;
+  border-color: #cab99150;
   box-shadow: none;
 }
 #v40-root .experiment-picker select {
   min-height: 48px;
   border-radius: 3px;
-  border-color: #89bbc84f;
-  background: #102330;
+  border-color: #c8b5894f;
+  background: #26221a;
 }
 #v40-root #evidence {
-  background: #0a1722;
+  background: #1a1812;
 }
 #v40-root .evidence-console {
   border-radius: 4px;
-  border-color: #75b4c34f;
-  background: #08131d;
+  border-color: #c3ac754f;
+  background: #16140f;
 }
 #v40-root .evidence-console > summary {
   border-radius: 4px;
 }
 #v40-root #eve-out {
-  background: #050d16;
+  background: #100e0b;
 }
 #v40-root #operator {
-  background: radial-gradient(ellipse at 15% 70%, #153b4b40, transparent 58%), #08131e;
+  background: radial-gradient(ellipse at 15% 70%, #39332740, transparent 58%), #161410;
 }
 #v40-root #contact {
-  background: linear-gradient(140deg, #102634, #070f1a 65%);
-  border-top: 1px solid #8ebdce35;
+  background: linear-gradient(140deg, #28241c, #13120e 65%);
+  border-top: 1px solid #cebb8e35;
 }
 #v40-root #contact h2 {
   color: #f2dfbe;
 }
 #v40-root footer {
-  background: #050d16;
-  border-top-color: #8ebdce30;
+  background: #100e0b;
+  border-top-color: #cebb8e30;
 }
 #v40-root .mission-desk {
   border-radius: 6px;
-  background: #07121e;
+  background: #16140f;
 }
 #v40-root .mission-preview {
-  background: #0b1e2a;
+  background: #1f1c16;
 }
 #v40-root .mission-result[aria-selected="true"] {
   border-color: #e1c492;
-  background: #16303c;
+  background: #302c22;
 }
 #v40-root a:focus-visible,
 #v40-root button:focus-visible,
 #v40-root summary:focus-visible {
-  outline: 2px solid #b7eff2;
+  outline: 2px solid #f2e0b7;
   outline-offset: 4px;
 }
 @media (max-width: 900px) {

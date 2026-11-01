@@ -95,7 +95,8 @@ test("Continuum keeps a complete static illustration and content when scripts ar
   const page = await visit(t, { javaScriptEnabled: false });
   await expect(page.locator(".continuum-still")).toBeVisible();
   assert.equal(await page.locator(".continuum-still").evaluate((n) => getComputedStyle(n).opacity), "1");
-  await expect(page.locator("#top h1")).toHaveText("The machines can think. You still decide.");
+  await expect(page.locator("#top h1")).toHaveText("Imagination. With intention.");
+  await expect(page.locator(".aurum-manifesto")).toHaveText("The machines can think. You still decide.");
   await expect(page.locator(".continuum-observation-date")).toContainText(observation.verifiedLong);
   await expect(page.locator("#eagle-film h2")).toHaveText("House Cashio: The Trailer");
   await expect(page.locator(".atlas-destination:visible")).toHaveCount(4);

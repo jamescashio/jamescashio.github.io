@@ -4,7 +4,7 @@
   gap: 2px;
   border: 1px solid #73542b;
   border-radius: 12px;
-  background: #141117;
+  background: #171511;
   color: #ffc46e;
   cursor: pointer;
   padding: 0 8px 0 0;
@@ -30,7 +30,7 @@
   inset: 0;
   display: grid;
   place-items: center;
-  color: #00f9ff;
+  color: #ffb300;
   font: 40px var(--font-display);
 }
 .bit-rendered .bit-fallback {

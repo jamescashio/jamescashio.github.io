@@ -224,6 +224,7 @@ async function visit(t, options = {}) {
 }
 for (const [width, height] of [
   [1440, 900],
+  [1280, 720],
   [3440, 1440],
   [390, 844],
 ]) {
@@ -231,10 +232,23 @@ for (const [width, height] of [
     const page = await visit(t, { viewport: { width, height }, hasTouch: width === 390 });
     await page.goto(url);
     await page.waitForTimeout(1500);
-    await expect(page.locator("h1")).toHaveText("The machines can think. You still decide.");
-    for (const selector of ["h1", 'a[href="#flight=board"]', '#hero-content a[href="#studies"]']) {
+    await expect(page.locator("h1")).toHaveText("Imagination. With intention.");
+    await expect(page.locator(".aurum-manifesto")).toHaveText("The machines can think. You still decide.");
+    const dock = page.locator('nav[aria-label="Sections"]');
+    const dockRect = (await dock.isVisible()) ? await dock.boundingBox() : null;
+    const selectors = ["h1", 'a[href="#flight=board"]', '#hero-content a[href="#studies"]'];
+    if (dockRect) selectors.push(".continuum-scene-deck");
+    for (const selector of selectors) {
       const rect = await page.locator(selector).first().boundingBox();
       assert.ok(rect && rect.y >= 68 && rect.y + rect.height <= height, `${selector} is visible in the first view`);
+      if (dockRect) {
+        const overlaps =
+          rect.x < dockRect.x + dockRect.width &&
+          rect.x + rect.width > dockRect.x &&
+          rect.y < dockRect.y + dockRect.height &&
+          rect.y + rect.height > dockRect.y;
+        assert.equal(overlaps, false, `${selector} stays clear of the floating chapter dock`);
+      }
     }
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
     const audit = await new AxeBuilder({ page })

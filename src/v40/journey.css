@@ -3,9 +3,9 @@
   width: calc(100% - 56px);
   max-width: 1240px;
   margin: 0 auto 24px;
-  border: 1px solid rgba(117, 197, 211, 0.24);
+  border: 1px solid rgba(211, 183, 117, 0.24);
   border-radius: 18px;
-  background: linear-gradient(115deg, #10202c, #0d111c 74%);
+  background: linear-gradient(115deg, #232019, #181611 74%);
   overflow: clip;
   scroll-margin-top: 90px;
 }
@@ -42,7 +42,7 @@
 .evidence-console > summary small {
   display: block;
   margin-top: 8px;
-  color: #c0c8d4;
+  color: #d4cec0;
   font: 400 15px/1.6 var(--font-body);
 }
 .journey-disclosure-icon,
@@ -52,7 +52,7 @@
   place-items: center;
   width: 40px;
   height: 40px;
-  border: 1px solid rgba(0, 249, 255, 0.28);
+  border: 1px solid rgba(255, 179, 0, 0.28);
   border-radius: 50%;
   color: var(--cyan);
   font: 400 26px/1 var(--font-body);
@@ -90,7 +90,7 @@
   padding: 20px;
   border: 1px solid rgba(255, 183, 74, 0.3);
   border-radius: 12px;
-  background: linear-gradient(135deg, #1c2026, #0b131d);
+  background: linear-gradient(135deg, #26231c, #181510);
   box-shadow: 0 14px 32px #0003;
 }
 .brief-preview figcaption {
@@ -103,7 +103,7 @@
   font: 600 13px/1.5 var(--font-mono);
 }
 .brief-preview figcaption span:last-child {
-  color: #c0c8d4;
+  color: #d4cec0;
   font-weight: 400;
 }
 .brief-preview dl {
@@ -122,7 +122,7 @@
 }
 .brief-preview dd {
   margin: 0;
-  color: #e0e6ef;
+  color: #efebe0;
   font: 400 14px/1.6 var(--font-body);
 }
 .brief-preview a {
@@ -130,7 +130,7 @@
   text-underline-offset: 4px;
 }
 #v40-root .brief-preview > p {
-  color: #b9c4d2;
+  color: #d2cab9;
   font: 400 13px/1.6 var(--font-body);
 }
 #v40-root #evidence .v41-197b0f6418 > div:first-child {
@@ -143,7 +143,7 @@
   border: 1px solid var(--glass-border);
   border-radius: 14px;
   padding: 22px;
-  background: #0e1620;
+  background: #1b1913;
 }
 #v40-root .evidence-console > summary {
   display: flex;
@@ -183,7 +183,7 @@
 #v40-root #operator .v41-df452b3fda {
   font-size: 14px;
   line-height: 1.7;
-  color: #cbd2df;
+  color: #dfd9cb;
 }
 #mission-dialog [data-chapter="contact"] {
   color: #ffc66d;

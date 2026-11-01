@@ -1,3 +1,23 @@
+# V42 · Aurum
+
+## Current creative thesis
+
+A futuristic atelier in obsidian and molten gold: monumental sculptural light, confident editorial typography and responsive instruments reveal the human imagination behind the machines.
+
+Doug explicitly rejected the blue interface. Use black #080706, charcoal #15120d, ivory #f4e9d7 and metallic gold #e6c281, with amber light. No blue, cyan, teal or purple in the current interface. Historical destinations and original media retain their identity. Tint only promotional thumbnails through presentation styles; preserve the source files and playing films.
+
+The opening is a full width original armillary sculpture with generous dark reading space. Exo 2 becomes the primary editorial voice at a monumental scale; keep the cAshIo wordmark and JetBrains instrument labels. Replace the desktop sidebar with a floating horizontal chapter dock. Give the cinema broad proportions, the workshop an asymmetric two column composition, and the atlas a panoramic stage. Use precise ruled surfaces rather than repeated rounded cards.
+
+The scene keeps three manually selectable projected light forms, Rotate and finite Fold space. The Discovery console keeps three curated paths, twelve destinations, interactive holographic beacons, artwork and keyboard navigation. Motion is bounded, pausable, stopped when hidden or covered and respects reduced motion. No automatic sound, forced intro, fake live data or decorative telemetry.
+
+Keep all original sections, routes, films, captions, four worlds, seven experiments, Bit and E.V.E. House Cashio stays prominently first in the cinema. Retain the original statement, “The machines can think. You still decide.” No personal information from the reference enters public source. The November 1 verified observation is unchanged.
+
+No dependency or remote runtime is added. Keep the 19,000 byte compressed critical CSS budget, 44 pixel touch targets and existing compact phone height contract. Inspect desktop, 390 and 320 pixel renderings, interactions, keyboard access, reduced motion, no JavaScript, original media playback and content preservation before handoff.
+
+This isolated loopback preview is unpublished and requires final approval. The earlier Immersive iteration is preserved at c74d167a4724e96a9f63859a055bdaf5c72f3fc7. Production rollback remains 650f395adc36ae762acd99e43c0a4655d653ed1f.
+
+## Earlier creative directions, superseded by Aurum
+
 # V42 · Continuum / Immersive edition
 
 ## Current creative thesis

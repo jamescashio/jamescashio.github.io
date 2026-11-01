@@ -1,6 +1,10 @@
 # Changelog
 
-## V42.0.0 · Continuum preview
+## V42.0.0 · Aurum preview
+
+Aurum revision · November 1, 2026: an original gold sculpture, an obsidian and ivory palette, oversized editorial typography, a floating desktop chapter dock, a larger cinema and asymmetric workshop. Holographic instruments and all current interface surfaces use warm light. Existing artwork and media files remain unchanged. Complete content and verified observations are preserved. This revision is unpublished.
+
+### Earlier V42 preview iterations
 
 Immersive revision · November 1, 2026: an original panoramic gateway, three perspective light forms, a finite Fold space response, and a Discovery console with three paths, twelve destinations and selectable holographic beacons. The cinema gains four selectable features and the world map gains panoramic destination artwork. House Cashio, the complete original media and dated evidence remain intact. This revision is unpublished.
 

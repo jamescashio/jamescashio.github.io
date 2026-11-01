@@ -18,7 +18,7 @@ type HeroView = {
   foldCount: number;
 };
 const scenes = [
-  { id: "orbit", label: "Orbit", caption: "The threshold. A world waiting on the other side." },
+  { id: "orbit", label: "Orbit", caption: "Interlocking gold. An instrument for the imagination." },
   { id: "signal", label: "Signal", caption: "A luminous double helix. Ideas finding their form." },
   { id: "constellation", label: "Constellation", caption: "A spiral of possibilities. Follow your curiosity." },
 ];
@@ -30,7 +30,7 @@ function ContinuumStill() {
         cy="370"
         rx="300"
         ry="210"
-        stroke="#a7f2ff"
+        stroke="#ffe5a7"
         strokeOpacity=".38"
         transform="rotate(-30 1170 370)"
       />
@@ -43,7 +43,7 @@ function ContinuumStill() {
         strokeOpacity=".48"
         transform="rotate(23 1170 370)"
       />
-      <circle cx="1170" cy="370" r="320" stroke="#a7f2ff" strokeOpacity=".2" strokeDasharray="2 14" />
+      <circle cx="1170" cy="370" r="320" stroke="#ffe5a7" strokeOpacity=".2" strokeDasharray="2 14" />
     </svg>
   );
 }
@@ -62,8 +62,8 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
       <div className="hero-planet" aria-hidden="true">
         <img
           className="hero-live-poster"
-          src="/v42/continuum-threshold-1672.webp"
-          srcSet="/v42/continuum-threshold-960.webp 960w, /v42/continuum-threshold-1672.webp 1672w"
+          src="/v42/aurum-sculpture-1672.webp"
+          srcSet="/v42/aurum-sculpture-960.webp 960w, /v42/aurum-sculpture-1672.webp 1672w"
           sizes="100vw"
           width="1672"
           height="941"
@@ -74,7 +74,7 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
       <div className="continuum-horizon" aria-hidden="true" />
       <div className="continuum-arrival">
         <span>cAshIo / V42</span>
-        <span>Continuum · Worlds in motion</span>
+        <span>Aurum · Imagination, with intention</span>
         <span className="continuum-arrival-end">
           <i aria-hidden="true" /> Human in command
         </span>
@@ -85,7 +85,7 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
             <canvas id="hero-stars" aria-hidden="true" />
             <ContinuumStill />
             <div className="continuum-reticle" aria-hidden="true">
-              <span>CONTINUUM / 0{scenes.indexOf(scene) + 1}</span>
+              <span>AURUM / 0{scenes.indexOf(scene) + 1}</span>
               <span>THE IMAGINATION ENGINE</span>
             </div>
           </div>
@@ -95,10 +95,10 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
             <span /> The workshop after hours
           </p>
           <h1>
-            The machines <br />
-            can think. <br />
-            <span>You still decide.</span>
+            Imagination. <br />
+            <span>With intention.</span>
           </h1>
+          <p className="aurum-manifesto">The machines can think. You still decide.</p>
           <p className="continuum-intro">
             I’m Doug Cashio. I build local AI experiments and original worlds after hours. Board a starship, try a
             decision, or explore what I’m making.

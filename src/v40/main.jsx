@@ -5,7 +5,7 @@ import "./design.css";
 import "./polish.css";
 import "./hero-reel.css";
 import "./bit-header.css";
-import "./continuum.css";
+import "./aurum-opening.css";
 import "./polish.js";
 import "./labs.js";
 import "./bit.js";

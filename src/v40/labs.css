@@ -67,7 +67,7 @@
 }
 .lab-toggle:has(input:checked) {
   border-color: var(--cyan);
-  background: rgba(0, 249, 255, 0.05);
+  background: rgba(255, 179, 0, 0.05);
 }
 .lab-toggle input {
   width: 20px;
@@ -82,7 +82,7 @@
   font: 15px/1.5 var(--font-body);
   color: var(--text);
   background: var(--void-deep);
-  border: 1px solid #4b4b64;
+  border: 1px solid #645d4b;
   border-radius: 10px;
   padding: 11px 13px;
   width: 100%;

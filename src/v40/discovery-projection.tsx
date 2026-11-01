@@ -23,12 +23,12 @@ export function DiscoveryProjection({
       <svg viewBox="0 0 600 400" preserveAspectRatio="none" fill="none" aria-hidden="true">
         <defs>
           <radialGradient id={id + "-aura"}>
-            <stop stopColor="#2adeef" stopOpacity=".3" />
-            <stop offset="1" stopColor="#2adeef" stopOpacity="0" />
+            <stop stopColor="#efb42a" stopOpacity=".3" />
+            <stop offset="1" stopColor="#efb42a" stopOpacity="0" />
           </radialGradient>
           <linearGradient id={id + "-beam"} x1="300" y1="40" x2="300" y2="300" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#55efff" stopOpacity="0" />
-            <stop offset="1" stopColor="#55efff" stopOpacity=".14" />
+            <stop stopColor="#ffcc55" stopOpacity="0" />
+            <stop offset="1" stopColor="#ffcc55" stopOpacity=".14" />
           </linearGradient>
           <filter id={id + "-glow"} x="-100%" y="-100%" width="300%" height="300%">
             <feGaussianBlur stdDeviation="3" />
@@ -43,7 +43,7 @@ export function DiscoveryProjection({
             cy={238 + i * 8}
             rx={238 - i * 18}
             ry={87 - i * 6}
-            stroke={i === 0 ? "#f6cd83" : "#48dfef"}
+            stroke={i === 0 ? "#f6cd83" : "#efbd48"}
             strokeOpacity={i === 0 ? ".8" : ".18"}
             strokeDasharray={i % 2 ? "2 7" : undefined}
           />
@@ -54,13 +54,13 @@ export function DiscoveryProjection({
             <path
               key={i}
               d={`M${300 + Math.cos(angle) * 252} ${238 + Math.sin(angle) * 95}l${Math.cos(angle) * 8} ${Math.sin(angle) * 4}`}
-              stroke={i % 4 ? "#3fb9cc" : "#ffe0a5"}
+              stroke={i % 4 ? "#cca23f" : "#ffe0a5"}
               strokeOpacity={i % 4 ? ".4" : ".9"}
             />
           );
         })}
         {points.map(([x, y], i) => (
-          <g key={i} stroke={i === index ? "#ffdd96" : "#59e3f2"}>
+          <g key={i} stroke={i === index ? "#ffdd96" : "#f2c459"}>
             <path
               d={`M300 210 300 ${y + 28} ${x} ${y}`}
               strokeOpacity={i === index ? ".95" : ".22"}
@@ -76,7 +76,7 @@ export function DiscoveryProjection({
             cx={18 + ((i * 137.5) % 564)}
             cy={40 + ((i * 67.3) % 305)}
             r={i % 7 === 0 ? 1.4 : 0.65}
-            fill={i % 3 ? "#74dce9" : "#ffda9c"}
+            fill={i % 3 ? "#e9c674" : "#ffda9c"}
             opacity={i % 4 === 0 ? ".8" : ".35"}
           />
         ))}
@@ -85,21 +85,21 @@ export function DiscoveryProjection({
           cy="210"
           rx="63"
           ry="24"
-          stroke="#6debf3"
+          stroke="#f3cb6d"
           strokeWidth="6"
           filter={"url(#" + id + "-glow)"}
           opacity=".65"
         />
-        <ellipse cx="300" cy="210" rx="63" ry="24" stroke="#92f4f7" />
+        <ellipse cx="300" cy="210" rx="63" ry="24" stroke="#f7d992" />
         <ellipse cx="300" cy="210" rx="49" ry="17" stroke="#ffe0a6" strokeDasharray="2 5" />
-        <path d="m300 182 9 19 22 9-22 8-9 19-9-19-22-8 22-9Z" fill="#d4ffff" fillOpacity=".8" />
+        <path d="m300 182 9 19 22 9-22 8-9 19-9-19-22-8 22-9Z" fill="#f1ede2" fillOpacity=".8" />
         <circle
           key={index}
           className="discovery-projection-pulse"
           cx="300"
           cy="210"
           r="65"
-          stroke="#c2fdff"
+          stroke="#ebe5d6"
           opacity="0"
         />
       </svg>

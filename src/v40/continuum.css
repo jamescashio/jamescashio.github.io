@@ -32,26 +32,26 @@
 #v40-root {
   --accent: #f4cb8f;
   --accent-glow: #efbb6c30;
-  --cyan: #54e6f5;
-  --cyan-glow: #73ddeb24;
-  --text: #f2f6f9;
-  --text-dim: #bbd0da;
-  --glass: #0a1b2beb;
-  --glass-border: #8dd5df38;
+  --cyan: #f5c554;
+  --cyan-glow: #ebc77324;
+  --text: #f9f7f2;
+  --text-dim: #dad1bb;
+  --glass: #1f1c16eb;
+  --glass-border: #dfc68d38;
   --radius: 4px;
-  --continuum-line: #a6d6e332;
-  background: #050c15;
+  --continuum-line: #e3d1a632;
+  background: #0f0e0b;
   color: var(--text);
 }
 #v40-root header {
-  border-bottom: 1px solid #9dcfda2b;
-  background: #06121ce8;
+  border-bottom: 1px solid #dac89d2b;
+  background: #14120ee8;
   backdrop-filter: blur(24px);
 }
 #v40-root header .za-btn {
   border-radius: 3px;
   background: #efcb95;
-  color: #101720;
+  color: #1c1a14;
   box-shadow: none;
 }
 #v40-root .hud-control,
@@ -61,13 +61,13 @@
 }
 #v40-root header .v41-0413664e13 {
   color: #ffe3b0;
-  background: #112738;
+  background: #2b271e;
   border-radius: 4px;
-  box-shadow: inset 0 0 15px #89e1ec19;
+  box-shadow: inset 0 0 15px #ecce8919;
 }
 #v40-root nav[aria-label="Sections"] {
-  background: #07131dec;
-  border-right-color: #94d4df24;
+  background: #15130fec;
+  border-right-color: #dfc99424;
   backdrop-filter: blur(16px);
 }
 #v40-root .v41-2bad502360 {
@@ -79,7 +79,7 @@
   overflow: clip;
   min-height: 0;
   padding: 30px clamp(26px, 4vw, 64px) 0;
-  background: #030b17;
+  background: #0f0e0b;
 }
 .continuum-hero .hero-planet {
   position: absolute;
@@ -104,8 +104,8 @@
   z-index: -3;
   pointer-events: none;
   background:
-    linear-gradient(90deg, #030b17bd 0%, #030b1740 48%, transparent 70%),
-    linear-gradient(0deg, #050c15 12%, #050c15ed 18%, transparent 50%);
+    linear-gradient(90deg, #0f0e0bbd 0%, #0f0e0b40 48%, transparent 70%),
+    linear-gradient(0deg, #0f0e0b 12%, #0f0e0bed 18%, transparent 50%);
 }
 .continuum-hero[data-scene="signal"] .hero-live-poster,
 .continuum-hero[data-scene="constellation"] .hero-live-poster {
@@ -117,7 +117,7 @@
   z-index: -2;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(ellipse at 70% 30%, #7bffff0c, transparent 65%);
+  background: radial-gradient(ellipse at 70% 30%, #ffd77b0c, transparent 65%);
 }
 .continuum-arrival {
   max-width: 1600px;
@@ -126,8 +126,8 @@
   align-items: center;
   gap: 22px;
   padding-bottom: 18px;
-  border-bottom: 1px solid #a1d2df30;
-  color: #bed6df;
+  border-bottom: 1px solid #dfcca130;
+  color: #dfd5be;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font: 10px/1.6 var(--font-mono);
@@ -137,7 +137,7 @@
 }
 .continuum-arrival-end {
   margin-left: auto;
-  background: #04111fce;
+  background: #15130ece;
   padding: 6px 10px;
   display: flex;
   align-items: center;
@@ -146,9 +146,9 @@
 .continuum-arrival i {
   height: 5px;
   width: 5px;
-  background: #aae8de;
+  background: #e8d5aa;
   border-radius: 50%;
-  box-shadow: 0 0 9px #9ef6e5;
+  box-shadow: 0 0 9px #f6dc9e;
 }
 .continuum-hero #hero-content.continuum-composition {
   position: relative;
@@ -169,7 +169,7 @@
 }
 .continuum-label,
 .continuum-eyebrow {
-  color: #b9dce2;
+  color: #e2d6b9;
   font: 10px/1.6 var(--font-mono);
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -189,7 +189,7 @@
 .continuum-hero #hero-content h1 {
   font: 650 clamp(42px, 4.8vw, 78px)/1.08 var(--font-display) !important;
   letter-spacing: -0.055em;
-  color: #f3f8fb;
+  color: #faf8f4;
   margin: 0 0 24px;
   text-wrap: balance;
   text-shadow: 0 3px 30px #0007;
@@ -203,7 +203,7 @@
 .continuum-intro {
   max-width: 490px;
   margin: 0 0 24px;
-  color: #c4d7e3;
+  color: #e3dac4;
   font: 400 17px/1.65 var(--font-body);
   text-wrap: pretty;
 }
@@ -228,24 +228,24 @@
   border: 1px solid #ffe6bd;
   border-radius: 2px;
   background: #f5ce96;
-  color: #101922;
+  color: #1e1b15;
   box-shadow: 0 0 30px #f4ba6726;
 }
 .continuum-secondary {
-  color: #d9f2f6;
+  color: #f0ebdf;
   padding-inline: 0;
-  border-bottom: 1px solid #a5e0e859;
+  border-bottom: 1px solid #e8d4a559;
 }
 .continuum-primary:hover {
   background: #ffe0af;
-  color: #080e15;
+  color: #11100c;
 }
 .continuum-secondary:hover {
   border-color: #fff1d3;
   color: #fff1d3;
 }
 .continuum-footnote {
-  color: #aec9d5;
+  color: #d5c9ae;
   font: 10px/1.6 var(--font-mono);
   margin: 18px 0 4px;
   max-width: 480px;
@@ -254,7 +254,7 @@
   display: inline-flex;
   align-items: center;
   min-height: 36px;
-  color: #b7cfdc;
+  color: #dcd1b7;
   font: 10px var(--font-mono);
   margin: 0;
   letter-spacing: 0.02em;
@@ -296,17 +296,17 @@
   display: grid;
   gap: 7px;
   text-align: right;
-  color: #dcfaff;
+  color: #f4f0e7;
   font: 9px/1.6 var(--font-mono);
   letter-spacing: 0.18em;
   text-shadow: 0 2px 10px #000;
-  background: #04111f9c;
+  background: #15130e9c;
   padding: 10px 12px;
 }
 .continuum-reticle::after {
   content: "";
   height: 30px;
-  border-right: 1px solid #a6f2ee9c;
+  border-right: 1px solid #f2dba69c;
   margin-top: 10px;
 }
 .continuum-scene-deck {
@@ -319,8 +319,8 @@
 .continuum-scene-controls {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  background: #071928e8;
-  border: 1px solid #9fe6ed3d;
+  background: #1c1913e8;
+  border: 1px solid #edd69f3d;
   backdrop-filter: blur(15px);
 }
 .continuum-scene-controls button {
@@ -333,21 +333,21 @@
   border: 0;
   border-bottom: 2px solid transparent;
   background: transparent;
-  color: #c2d9e3;
+  color: #e3d9c2;
   cursor: pointer;
   font: 11px/1.4 var(--font-mono);
 }
 .continuum-scene-controls button span {
   font-size: 8px;
-  color: #9bbecb;
+  color: #cbbd9b;
 }
 .continuum-scene-controls button[aria-pressed="true"] {
-  background: #a1eeef12;
+  background: #efd8a112;
   border-bottom-color: #f4ce91;
   color: #ffe2ac;
 }
 .continuum-scene-controls button:hover {
-  background: #99dfe71c;
+  background: #e7d0991c;
   color: #fff;
 }
 .continuum-stage-bottom {
@@ -355,8 +355,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  color: #bcd5e0;
-  background: #040e18d9;
+  color: #e0d5bc;
+  background: #110f0bd9;
 }
 .continuum-stage-bottom button {
   display: flex;
@@ -373,18 +373,18 @@
 }
 .continuum-stage-bottom button:hover {
   color: #fff;
-  background: #d2e9f211;
+  background: #ece6d811;
 }
 .continuum-stage-bottom button > span {
   font-size: 16px;
 }
 .continuum-art-label {
   font: 8px var(--font-mono);
-  color: #a1c1cf;
+  color: #cfc1a1;
 }
 .continuum-scene-caption {
   margin: 8px 0 0;
-  color: #b2cbd7;
+  color: #d7ccb2;
   font: 11px/1.6 var(--font-body);
   text-align: right;
   min-height: 18px;
@@ -425,9 +425,9 @@
   align-items: center;
   text-align: left;
   gap: 15px;
-  border: 1px solid #9fd5de35;
-  background: #092032d9;
-  color: #eef7fc;
+  border: 1px solid #decb9f35;
+  background: #232018d9;
+  color: #f9f6f2;
   padding: 10px;
   cursor: pointer;
   overflow: hidden;
@@ -438,14 +438,14 @@
   width: 90px;
   flex-shrink: 0;
   object-fit: cover;
-  border: 1px solid #a8d5e130;
+  border: 1px solid #e1d0a830;
 }
 .continuum-paths button > span:not(.continuum-path-arrow) {
   display: grid;
   gap: 8px;
 }
 .continuum-paths small {
-  color: #a6dce4;
+  color: #e4d1a6;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font: 9px var(--font-mono);
@@ -460,7 +460,7 @@
 }
 .continuum-paths button:hover {
   border-color: #d5d4ac8c;
-  background: #143449e6;
+  background: #373226e6;
 }
 .continuum-observation {
   position: relative;
@@ -472,18 +472,18 @@
   gap: 26px;
   align-items: center;
   padding: 22px 0;
-  border-block: 1px solid #9ad7e52e;
-  background: #050e18c9;
+  border-block: 1px solid #e5cf9a2e;
+  background: #11100cc9;
 }
 .continuum-observation-date {
   display: grid;
   gap: 5px;
-  color: #bdd3df;
+  color: #dfd5bd;
   text-decoration: none;
   font: 10px/1.5 var(--font-mono);
 }
 .continuum-observation-date strong {
-  color: #e6f0f6;
+  color: #f4f0e8;
   font: 500 13px/1.5 var(--font-body);
 }
 .continuum-readings {
@@ -496,17 +496,17 @@
   display: flex;
   flex-direction: column-reverse;
   gap: 8px;
-  border-left: 1px solid #91c3cf2e;
+  border-left: 1px solid #cfbc912e;
   padding-left: 18px;
 }
 .continuum-readings dt {
-  color: #b0cbd6;
+  color: #d6cbb0;
   font: 9px/1.5 var(--font-mono);
   text-transform: uppercase;
 }
 .continuum-readings dd {
   margin: 0;
-  color: #b8f5f6;
+  color: #f6e3b8;
   font: 500 26px/1 var(--font-display);
 }
 .continuum-next {
@@ -517,7 +517,7 @@
   max-width: 1600px;
   margin: auto;
   min-height: 64px;
-  color: #e1eaf0;
+  color: #f0ebe1;
   text-decoration: none;
   font: 13px/1.5 var(--font-body);
 }
@@ -528,7 +528,7 @@
 }
 .continuum-next > span:last-child {
   font: 11px var(--font-mono);
-  color: #b9d6e0;
+  color: #e0d4b9;
 }
 .continuum-next > span:last-child > span {
   color: #f9d398;
@@ -539,9 +539,9 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   padding: 22px max(28px, calc((100% - 1500px) / 2));
   gap: 24px;
-  border-block: 1px solid #8ebdce26;
-  background: #0b1a27;
-  color: #b6ccd8;
+  border-block: 1px solid #cebb8e26;
+  background: #1e1b15;
+  color: #d8ceb6;
   font: 10px/1.6 var(--font-mono);
 }
 .continuum-principles span {
@@ -629,7 +629,7 @@
     opacity: 0.8;
   }
   .continuum-hero::before {
-    background: linear-gradient(180deg, #030b17 8%, #030b17d9 20%, #030b1770 40%, transparent 53%, #050c15 67%);
+    background: linear-gradient(180deg, #0f0e0b 8%, #0f0e0bd9 20%, #0f0e0b70 40%, transparent 53%, #0f0e0b 67%);
   }
   .continuum-hero #hero-content.continuum-composition {
     display: flex;

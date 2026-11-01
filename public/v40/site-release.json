@@ -1,12 +1,12 @@
 {
   "experienceVersion": "42.0.0",
-  "releaseId": "continuum-42.0.0-immersive-preview-20261101",
-  "releaseName": "CONTINUUM",
-  "visualEdition": "Continuum",
+  "releaseId": "aurum-42.0.0-preview-20261101",
+  "releaseName": "AURUM",
+  "visualEdition": "Aurum",
   "presentation": {
-    "name": "Continuum",
-    "subtitle": "Worlds in motion",
-    "revision": "Immersive",
+    "name": "Aurum",
+    "subtitle": "Imagination, with intention",
+    "revision": "Obsidian and gold",
     "preparedDate": "2026-11-01"
   },
   "entry": "/",
@@ -24,7 +24,7 @@
     "fleetObserved": "2026-11-01",
     "routingObserved": null
   },
-  "statement": "V42 Continuum is an unpublished front end redesign. Bit and the demonstrations are scripted browser experiences. Generative scenes are artwork. Observation records retain their original dates, versions and limits.",
+  "statement": "V42 Aurum is an unpublished front end redesign. Bit and the demonstrations are scripted browser experiences. Generative scenes are artwork. Observation records retain their original dates, versions and limits.",
   "updatedDate": "2026-11-01",
   "previousRelease": {
     "version": "41.0.0",
