@@ -256,6 +256,8 @@ test("The starfield limits ambient work and stops while offscreen, motion is pau
   };
   await page.goto(url);
   await expect.poll(draws).toBeGreaterThan(2);
+  const telemetry = page.getByRole("complementary", { name: "Lab telemetry", exact: true });
+  await expect(telemetry).toBeVisible();
   const before = await draws();
   await page.waitForTimeout(1000);
   const rendered = (await draws()) - before;
@@ -270,8 +272,11 @@ test("The starfield limits ambient work and stops while offscreen, motion is pau
     "orbital depth never moves the reading surface",
   );
   await page.setViewportSize({ width: 390, height: 844 });
+  await expect(telemetry).toBeHidden();
   await expect.poll(() => poster.evaluate((node) => node.style.transform)).toBe("");
   await page.setViewportSize({ width: 1440, height: 900 });
+  // The viewport command can finish before React commits the desktop view and its pointer handler.
+  await expect(telemetry).toBeVisible();
   await page.mouse.move(840, 330);
   await expect.poll(() => poster.evaluate((node) => node.style.transform)).toContain("translate3d");
   await page.getByRole("button", { name: "Pause motion", exact: true }).first().click();
