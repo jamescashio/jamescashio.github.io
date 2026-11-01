@@ -218,7 +218,8 @@ test("V40 preserves its content and serves a readable edition without JavaScript
     await expect(
       page.locator("main > section, main > .journey-disclosure > .journey-disclosure-content > section"),
     ).toHaveCount(12);
-    await expect(page.locator("h1")).toHaveText("The machines can think. You still decide.");
+    await expect(page.locator("h1")).toHaveText("Imagination. With intention.");
+    await expect(page.locator(".aurum-manifesto")).toHaveText("The machines can think. You still decide.");
     await expect(page.locator("footer")).toContainText("the answer is here. keep asking.", { ignoreCase: true });
     await expect(page.locator('#contact a[href^="mailto:doug@cashio.us"]').first()).toBeVisible();
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
