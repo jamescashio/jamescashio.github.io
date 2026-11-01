@@ -60,7 +60,6 @@ export function ShowcaseSection() {
             key: project.id,
             href: project.href,
             className: "showcase-project",
-            "aria-labelledby": `showcase-${project.id}-title showcase-${project.id}-action`,
           },
           h(
             "div",
