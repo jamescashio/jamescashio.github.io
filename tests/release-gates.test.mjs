@@ -38,6 +38,18 @@ test("V40 ships its real reading edition under the strict production security po
   assert.equal(root.querySelectorAll("h1").length, 1);
   assert.match(root.textContent, /You still decide\./);
   const receipt = JSON.parse(await read("dist/v40/site-release.json"));
+  const observation = JSON.parse(await read("dist/status.json"));
+  const observedMonth = new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(observation.verified + "T12:00:00Z"));
+  assert.ok(root.querySelector('[aria-label="Lab telemetry ticker"]').textContent.includes(observedMonth));
+  assert.equal(
+    root.querySelector('#snapshot-story a[href="/status.json"]').textContent,
+    "Read the " + observedMonth + " observation",
+  );
+  assert.ok(root.textContent.includes(observedMonth + " · Scheduler and routing not measured"));
   assert.equal(receipt.presentation.name, "First Light");
   assert.match(root.querySelector("#top").textContent, /First Light · The next horizon/);
   const updatedDate = new Intl.DateTimeFormat("en-US", {

@@ -1,4 +1,4 @@
-import { snapshot, observedDate, fleetSummary, backupSummary } from "../evidence.js";
+import { snapshot, observedDate, observedMonth, fleetSummary, backupSummary } from "../evidence.js";
 import React from "react";
 import { classFor } from "../style-variants.js";
 import designSystem from "../design-system.js";
@@ -217,7 +217,7 @@ export function EvidenceSection({ v }) {
               h("summary", null, "Read the backup receipt"),
               h("p", null, backupSummary),
               h("p", null, snapshot.withheldReasons["backup.fullSystemRecovery"]),
-              h("a", { href: "/status.json" }, "Read the October 2026 observation"),
+              h("a", { href: "/status.json" }, "Read the " + observedMonth + " observation"),
               h(
                 "p",
                 null,
