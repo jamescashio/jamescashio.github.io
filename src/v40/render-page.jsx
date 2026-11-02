@@ -9,7 +9,7 @@ import { WorkshopSection } from "./sections/workshop.jsx";
 import { WorldsSection } from "./sections/worlds.jsx";
 import { ShowcaseSection } from "./sections/showcase.jsx";
 import { FilmsSection } from "./sections/films.ts";
-import { DecisionsSection } from "./sections/decisions.jsx";
+import { DecisionsSection } from "./sections/decisions.ts";
 import { ExperimentsSection } from "./sections/experiments.ts";
 import { MachinesSection } from "./sections/machines.ts";
 import { EvidenceSection } from "./sections/evidence.ts";

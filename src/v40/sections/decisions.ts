@@ -1,10 +1,11 @@
+import type { GeneratedView, GeneratedProps, GeneratedValue } from "../generated-view.ts";
 import React from "react";
 import { RoutingSection } from "./routing.ts";
 import { classFor } from "../style-variants.ts";
 import designSystem from "../design-system.ts";
-const h = React.createElement;
+import { h } from "../generated-view.ts";
 
-export function DecisionsSection({ v }) {
+export function DecisionsSection({ v }: GeneratedProps) {
   return h(
     "section",
     {
@@ -278,8 +279,8 @@ export function DecisionsSection({ v }) {
                     className: "v41-d5129e1520",
                   },
                   " ",
-                  (function (parent) {
-                    return (v.pvChoices || []).map((item, index) => {
+                  (function (parent: GeneratedView) {
+                    return (v.pvChoices || []).map((item: GeneratedValue, index: number) => {
                       const v = { ...parent, c: item, $index: index };
                       return h(
                         React.Fragment,
