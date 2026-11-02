@@ -104,7 +104,7 @@ test("V40 ships its real reading edition under the strict production security po
   assert.equal(receipt.experienceVersion, JSON.parse(await read("package.json")).version);
   assert.equal(receipt.previousExperience.entry, "/v39/");
   assert.equal(receipt.published, receipt.status === "released");
-  assert.equal(receipt.evidenceSnapshot.fleetObserved, "2026-11-01");
+  assert.equal(receipt.evidenceSnapshot.fleetObserved, "2026-11-02");
   assert.equal(receipt.evidenceSnapshot.routingObserved, null);
   const files = await readdir(asset("public/v40/assets"));
   const assets = JSON.parse(await read("public/v40/asset-manifest.json"));
@@ -315,7 +315,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
   assert.equal(archive.expires, "2026-09-27");
   assert.deepEqual(archive.containers, { running: 18, documented: 19, stopped: 1, zeus: null, apollo: null });
   assert.equal(archive.routingVerified, "2026-08-21");
-  assert.equal(status.verified, "2026-11-01");
+  assert.equal(status.verified, "2026-11-02");
   assert.equal(status.routingVerified, null);
   assert.deepEqual(status.lanes, { public: null, privateCatalog: null });
   assert.equal(await read("dist/status.json"), await read("public/status.json"));

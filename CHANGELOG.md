@@ -2,6 +2,8 @@
 
 ## V42.0.0 · Omnius, Overruled · 11-02-2026
 
+Observation refresh · November 2, 2026: new read only checks confirm unchanged public aggregates: 19 of 20 containers running, 1 of 2 virtual machines running and 2 hosts reporting running guests. The backup inventory lists 122 snapshots; all 21 latest reported snapshots show successful integrity results. Archive the November 1 observation unchanged and advance the shared observation date and current evidence pointer. No new restore or offsite recovery result is claimed.
+
 Director’s cut · 11-02-2026: two illustrated build stories explain the backup receipt and decision brief through keyboard operated diagrams, decisions, results and limits. A first-visit route connects House Cashio to the routing experiment. Refine the workshop’s desktop composition, phone reading surfaces, cinema edges and project interactions. Preserve the original moving hero, all media and the verified November 1, 2026 observation. Initial styles arrive in the page, interactive code yields network priority to the artwork, and offscreen background films load only when approached in supporting browsers.
 
 ### Preserved preview history
