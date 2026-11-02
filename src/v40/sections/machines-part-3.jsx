@@ -1,4 +1,4 @@
-import { renderMachinesPart1 } from "./machines-part-1.jsx";
+import { renderMachinesPart1 } from "./machines-part-1.ts";
 import React from "react";
 import { classFor } from "../style-variants.ts";
 

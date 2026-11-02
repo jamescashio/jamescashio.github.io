@@ -1,8 +1,9 @@
-import React from "react";
+import type { GeneratedView } from "../generated-view.ts";
+
 import { classFor } from "../style-variants.ts";
 
-const h = React.createElement;
-export function renderMachinesPart1(v) {
+import { h } from "../generated-view.ts";
+export function renderMachinesPart1(v: GeneratedView) {
   return h(
     "svg",
     {
