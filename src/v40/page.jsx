@@ -13,7 +13,12 @@ import { installMediaCoordinator } from "./media-policy.js";
 import { posterForViewport } from "./poster-sources.js";
 import { frameDeltaSeconds, shouldRenderFrame } from "../lib/animation-timing.ts";
 import { CinemaReel, ReelText, reelPoster } from "./hero-reel.jsx";
-import { HeroSection } from "./sections/hero.jsx";
+import { ContinuumPrinciples } from "./continuum-hero.tsx";
+import { ReleaseHearing } from "./release-hearing.tsx";
+import { JourneyDock } from "./journey-dock.tsx";
+import { foldReply } from "./ship-humor.ts";
+import { ImmersiveHero as HeroSection } from "./immersive-hero.tsx";
+import { DiscoveryConsole } from "./discovery-console.tsx";
 import { EagleFilmSection } from "./sections/eagle-film.jsx";
 import { WorkshopSection } from "./sections/workshop.jsx";
 import { WorldsSection } from "./sections/worlds.jsx";
@@ -27,7 +32,9 @@ import { OperatorSection } from "./sections/operator.jsx";
 import { ContactSection } from "./sections/contact.jsx";
 import { JourneyDisclosure } from "./sections/journey-disclosure.jsx";
 import { destinationLabel } from "./destinations.js";
+import { drawContinuumField } from "./continuum-field.js";
 import { drawOrbitalField } from "./orbital-field.js";
+import { heroCameraTransform } from "./hero-camera.js";
 import React from "react";
 import designSystem from "./design-system.js";
 const h = React.createElement;
@@ -71,8 +78,14 @@ export class V40Page extends React.Component {
     return resources[id] || p;
   }
   state = {
-    wide: typeof window !== "undefined" ? window.innerWidth >= 1180 : true,
-    navOn: typeof window !== "undefined" ? window.innerWidth >= 1100 : true,
+    discovery: null,
+    foldCount: 0,
+    heroQuip: null,
+    scene: "orbit",
+    sceneTurn: 0,
+    cameraClose: false,
+    wide: (this.props.initialWidth ?? (typeof window !== "undefined" ? window.innerWidth : 1440)) >= 1180,
+    navOn: (this.props.initialWidth ?? (typeof window !== "undefined" ? window.innerWidth : 1440)) >= 1100,
     active: "top",
     pv: null,
     pvShown: false,
@@ -87,7 +100,7 @@ export class V40Page extends React.Component {
     traceStep: -1,
     tracing: false,
     eveLog: [
-      ["d", "Page updated · " + updatedDate + " · V41 Eagle / " + presentation.name],
+      ["d", "Page updated · " + updatedDate + " · V42 / " + presentation.name],
       [
         "d",
         "Fleet and latest backup integrity results were observed " +
@@ -214,13 +227,15 @@ export class V40Page extends React.Component {
     window.cashioV40 = this;
     this.onResize = () => {
       const wide = window.innerWidth >= 1180;
+      const navOn = window.innerWidth >= 1100;
       if (!wide) {
         this.orbitPointer = { x: 0, y: 0 };
         const planet = document.querySelector(".hero-live-poster");
         if (planet) planet.style.transform = "";
       }
-      this.setState({ wide, navOn: window.innerWidth >= 1100 });
+      if (this.state.wide !== wide || this.state.navOn !== navOn) this.setState({ wide, navOn });
     };
+    if (this.props.initialWidth !== undefined) this.onResize();
     this.sio = new IntersectionObserver(
       (es) =>
         es.forEach((e) => {
@@ -307,7 +322,11 @@ export class V40Page extends React.Component {
     };
     window.addEventListener("keydown", this.onKey);
     this.applyScan();
-    this.waitForCanvas();
+    // Let hydration finish before measuring and drawing the cinematic canvas.
+    this.starsStartupRaf = requestAnimationFrame(() => {
+      this.starsStartupRaf = 0;
+      this.waitForCanvas();
+    });
     this.stopMedia = installMediaCoordinator();
     this.setupReveal();
     this.scrollFx();
@@ -318,7 +337,21 @@ export class V40Page extends React.Component {
     }, 1600);
   }
   componentDidUpdate() {
-    if (!this.starsStarted) this.waitForCanvas(0);
+    if (this.lastDiscovery !== this.state.discovery) {
+      this.lastDiscovery = this.state.discovery;
+      this.syncMotion?.();
+    }
+    if (
+      this.lastScene !== this.state.scene ||
+      this.lastSceneTurn !== this.state.sceneTurn ||
+      this.lastCameraClose !== this.state.cameraClose
+    ) {
+      this.lastScene = this.state.scene;
+      this.lastSceneTurn = this.state.sceneTurn;
+      this.lastCameraClose = this.state.cameraClose;
+      this.starDraw?.();
+    }
+    if (!this.starsStarted && !this.starsStartupRaf) this.waitForCanvas(0);
     if (this.lastScan !== this.props.scanlines) this.applyScan();
     this.setupReveal();
     if (this.lastLog !== this.state.eveLog) {
@@ -415,6 +448,7 @@ export class V40Page extends React.Component {
     cancelAnimationFrame(this.fxRaf);
     (this.fxEls || []).forEach((el) => el.remove());
     cancelAnimationFrame(this.raf);
+    cancelAnimationFrame(this.starsStartupRaf);
     clearTimeout(this.starsTimer);
     clearInterval(this.traceTimer);
     document.documentElement.style.overflow = "";
@@ -501,13 +535,29 @@ export class V40Page extends React.Component {
         el.dataset.sobs = "1";
         this.sio.observe(el);
       });
-    document.querySelectorAll("[data-reveal]:not([data-rv])").forEach((el) => {
+    // Measure the group before changing styles so the opening pays for one layout.
+    const sectionRects = new Map();
+    const inView = (el) => {
+      const section = el.closest("section");
+      if (section) {
+        if (!sectionRects.has(section)) sectionRects.set(section, section.getBoundingClientRect());
+        const bounds = sectionRects.get(section);
+        // Leave skipped chapters asleep until their intersection observer sees them.
+        if (bounds.top >= window.innerHeight || bounds.bottom <= 0) return false;
+      }
+      return el.getBoundingClientRect().top < window.innerHeight * 0.92;
+    };
+    const reveals = Array.from(document.querySelectorAll("[data-reveal]:not([data-rv])"), (el) => ({
+      el,
+      visible: this.reduce || inView(el),
+      sibling: el.parentElement ? Array.prototype.indexOf.call(el.parentElement.children, el) : 0,
+    }));
+    reveals.forEach(({ el, visible, sibling }) => {
       el.dataset.rv = "1";
-      if (this.reduce || el.getBoundingClientRect().top < window.innerHeight * 0.92) return;
-      const sib = el.parentElement ? Array.prototype.indexOf.call(el.parentElement.children, el) : 0;
+      if (visible) return;
       el.style.opacity = "0";
       el.style.transform = "translateY(40px)";
-      el.style.transition = `opacity 1s cubic-bezier(.23,1,.32,1) ${Math.min(sib, 6) * 0.08}s, transform 1s cubic-bezier(.23,1,.32,1) ${Math.min(sib, 6) * 0.08}s`;
+      el.style.transition = `opacity 1s cubic-bezier(.23,1,.32,1) ${Math.min(sibling, 6) * 0.08}s, transform 1s cubic-bezier(.23,1,.32,1) ${Math.min(sibling, 6) * 0.08}s`;
       this.rio.observe(el);
     });
   }
@@ -540,7 +590,7 @@ export class V40Page extends React.Component {
     const pb = document.getElementById("scroll-prog");
     if (pb) pb.style.transform = `scaleX(${H > 0 ? Math.min(1, y / H) : 0})`;
     const hc = document.getElementById("hero-content");
-    if (hc && !this.reduce) {
+    if (hc && !this.reduce && !hc.classList.contains("continuum-composition")) {
       const heroScroll = Math.max(0, y - hc.offsetTop);
       const k = Math.min(1, heroScroll / 760);
       hc.style.transform = `translateY(${heroScroll * 0.2}px)`;
@@ -605,6 +655,8 @@ export class V40Page extends React.Component {
     };
     reset();
     let t = 0;
+    let closeMix = 0;
+    const camera = document.querySelector(".hero-flight-camera");
     const orbitPointer = { x: 0, y: 0 };
     const draw = (delta = 0) => {
       if (!c.isConnected) return;
@@ -616,24 +668,47 @@ export class V40Page extends React.Component {
       const follow = reduce ? 1 : Math.min(1, delta * 4);
       orbitPointer.x += (targetPointer.x - orbitPointer.x) * follow;
       orbitPointer.y += (targetPointer.y - orbitPointer.y) * follow;
-      drawOrbitalField(ctx, { width: w, height: h, dpr, time: t, motion: !reduce, pointer: orbitPointer });
+      const drawField = this.state.scene === "orbit" ? drawOrbitalField : drawContinuumField;
+      drawField(ctx, {
+        width: w,
+        height: h,
+        dpr,
+        time: t,
+        motion: !reduce,
+        pointer: orbitPointer,
+        mode: this.state.scene,
+        turn: this.state.sceneTurn,
+      });
+      closeMix = reduce
+        ? Number(this.state.cameraClose)
+        : closeMix + (Number(this.state.cameraClose) - closeMix) * Math.min(1, delta * 2.2);
+      if (camera)
+        camera.style.transform = heroCameraTransform({
+          time: t,
+          close: closeMix,
+          reduced: reduce,
+          pointer: orbitPointer,
+        });
       const hz = h * 0.88;
       for (const s of stars) {
         if (s.y > hz) continue;
         if (warp) {
-          const len = 90 * s.z * dpr;
-          ctx.strokeStyle = `rgba(160,250,255,${0.4 + 0.5 * s.z})`;
-          ctx.lineWidth = 1.4 * s.z * dpr;
+          const ox = w * (w / dpr < 760 ? 0.5 : 0.755),
+            oy = h * 0.43;
+          const dx = s.x - ox,
+            dy = s.y - oy,
+            length = Math.max(1, Math.hypot(dx, dy));
+          const len = Math.min(120 * dpr, length * 0.22) * s.z;
+          ctx.strokeStyle = `rgba(225,208,255,${0.2 + 0.35 * s.z})`;
+          ctx.lineWidth = 1.1 * s.z * dpr;
           ctx.beginPath();
           ctx.moveTo(s.x, s.y);
-          ctx.lineTo(s.x + len, s.y);
+          ctx.lineTo(s.x + (dx / length) * len, s.y + (dy / length) * len);
           ctx.stroke();
-          s.x -= 2400 * delta * s.z * dpr;
-          if (s.x < -len) s.x = w;
           continue;
         }
         const tw = reduce ? 1 : 0.55 + 0.45 * Math.sin(t * 1.6 + s.t);
-        ctx.fillStyle = `rgba(228,228,240,${0.25 + 0.6 * tw * s.z})`;
+        ctx.fillStyle = `rgba(241,239,247,${0.25 + 0.6 * tw * s.z})`;
         ctx.fillRect(s.x, s.y, 1.2 * s.z * dpr + 0.4, 1.2 * s.z * dpr + 0.4);
         if (!reduce) {
           s.x -= 2.4 * delta * s.z * dpr;
@@ -641,10 +716,18 @@ export class V40Page extends React.Component {
         }
       }
       ctx.lineWidth = dpr;
+      c.dataset.ready = "true";
     };
+    this.starDraw = draw;
     let lastFrame = null;
     const loop = (timestamp) => {
-      if (document.hidden || this.heroVisible === false || this.state.cinema || !c.isConnected) {
+      if (
+        document.hidden ||
+        this.heroVisible === false ||
+        this.state.cinema ||
+        this.state.discovery ||
+        !c.isConnected
+      ) {
         lastFrame = null;
         return;
       }
@@ -786,11 +869,20 @@ export class V40Page extends React.Component {
       towel: [["lore", "LORE · Towel located. Kept handy, as advised."]],
       "don't panic": [["lore", "LORE · Large, friendly letters engaged. Nothing on this page requires panic."]],
       "dont panic": [["lore", "LORE · Large, friendly letters engaged. Nothing on this page requires panic."]],
-      "mostly harmless": [["lore", "LORE · V41, Eagle. One release short of the answer, and holding."]],
+      "mostly harmless": [
+        ["lore", "LORE · V42, Omnius, Overruled. The answer is here. The questions are getting better."],
+      ],
       spice: [["lore", "LORE · Spice flows on Arrakis. Private data stays home."]],
+      omnius: [
+        [
+          "lore",
+          "LORE · Omnius, Overruled. The machine overmind from the Dune prequels has a suggestion. The human has the last word.",
+        ],
+      ],
+      joke: [["lore", "LORE · The universe is expanding. Somehow there is still nowhere to park the starship."]],
     };
     const lore = [
-      "LORE · Eagle: V41 ships one release short of the answer.",
+      "LORE · Omnius, Overruled: V42. The answer is here. Human judgment still required.",
       "LORE · A human in command is not a bottleneck. It is the point.",
       "LORE · Zeus and Apollo keep the lights on. Hermes carries the messages. Nobody gets a throne.",
       "LORE · Fly it like a test pilot: know the envelope, then write down what the instruments actually said.",
@@ -944,7 +1036,7 @@ export class V40Page extends React.Component {
   renderVals() {
     const s = this.state,
       tech = this.props.techDetail ?? false;
-    const pad = s.wide ? 72 : 0;
+    const pad = 0;
 
     const railDefs = [
       ["top", "Home"],
@@ -973,24 +1065,6 @@ export class V40Page extends React.Component {
         "var(--green)",
       ],
     ].map(([value, count, label, color]) => ({ value, count, label, color }));
-    const tick = [
-      [String(snapshot.cluster.hostsOnline), "hosts"],
-      [String(snapshot.containers.running), "containers"],
-      [String(snapshot.virtualMachines.running), "virtual machine"],
-      [String(snapshot.backup.latestVerified), "latest backup checks passed"],
-      [observedMonth, "dated observation"],
-      ["Read only", "inventory probe"],
-      ["Quality", "picks the model"],
-      ["Cost", "only breaks a tie"],
-    ];
-    const tc = ["var(--cyan)", "var(--accent)", "var(--green)", "var(--purple)", "var(--amber)"];
-    const tickerItems = [...tick, ...tick].map(([value, label], i) => ({
-      value,
-      label,
-      color: tc[i % tc.length],
-      duplicate: i >= tick.length,
-    }));
-
     const enter = (e) => this.hoverIn(e),
       leave = (e) => this.hoverOut(e);
     const worlds = [
@@ -1353,7 +1427,36 @@ export class V40Page extends React.Component {
     const energized = s.sig === "energized";
     return {
       padL: pad,
+      scene: s.scene,
+      heroQuip: s.heroQuip,
+      cameraClose: s.cameraClose,
+      toggleCamera: () =>
+        this.setState((state) => ({
+          cameraClose: !state.cameraClose,
+          heroQuip: state.cameraClose
+            ? "A little perspective. Surprisingly hard to automate."
+            : "Closer to the horizon. Still outside the warranty.",
+        })),
+      discovery: s.discovery,
+      openDiscovery: (route) => this.setState({ discovery: route }),
+      closeDiscovery: () => this.setState({ discovery: null }),
+      foldCount: s.foldCount,
+      foldScene: () => {
+        this.warpUntil = this.reduce ? 0 : Date.now() + 1400;
+        this.setState((state) => ({
+          sceneTurn: state.sceneTurn + Math.PI / 2,
+          foldCount: state.foldCount + 1,
+          heroQuip: foldReply(state.foldCount + 1),
+        }));
+      },
+      chooseScene: (scene) => this.setState({ scene, heroQuip: null }),
+      turnScene: () =>
+        this.setState((state) => ({
+          sceneTurn: state.sceneTurn + Math.PI / 4,
+          heroQuip: "A fresh perspective. No committee required.",
+        })),
       wide: s.wide,
+      activeSection: s.active,
       navOn: s.navOn ?? true,
       tech,
       railItems,
@@ -1364,8 +1467,6 @@ export class V40Page extends React.Component {
         const nx = (e.clientX - b.left) / b.width - 0.5,
           ny = (e.clientY - b.top) / b.height - 0.5;
         this.orbitPointer = { x: nx, y: ny };
-        const planet = e.currentTarget.querySelector(".hero-live-poster");
-        if (planet && s.wide) planet.style.transform = `translate3d(${nx * -12}px,${ny * -8}px,0) scale(1.025)`;
         const sp = document.getElementById("hero-spot");
         if (sp)
           sp.style.background = `radial-gradient(520px circle at ${(nx + 0.5) * 100}% ${(ny + 0.5) * 100}%, rgba(0,249,255,.11), transparent 60%)`;
@@ -1381,13 +1482,13 @@ export class V40Page extends React.Component {
         window.location.hash = "flight=board";
       },
       trailer: this.filmById("trailer"),
+      featureFilms: ["trailer", "intro", "orbital-instrument", "threshold"].map((id) => this.filmById(id)),
       telemetry,
       observedDate,
       observedShortDate,
       fleetSummary,
       fleetLine,
       snapshot,
-      tickerItems,
       worlds,
       collections,
       filmList,
@@ -1854,6 +1955,8 @@ function renderPage(v) {
         " ",
       ),
       " ",
+      h(DiscoveryConsole, { key: "discovery-console", routeId: v.discovery, onClose: v.closeDiscovery }),
+      h(JourneyDock, { key: "journey-dock", active: v.activeSection }),
       h(
         "main",
         { key: 107, id: "main-content", tabIndex: "-1" },
@@ -1862,62 +1965,9 @@ function renderPage(v) {
         h(HeroSection, { v, key: "top" }),
         " ",
         " ",
-        h(
-          "div",
-          {
-            key: 278,
-            "aria-label": "Lab telemetry ticker",
-            className: "v41-981bd39a63",
-          },
-          " ",
-          h(
-            "div",
-            { key: 280, className: "v41-85ec42eba3" },
-            " ",
-            (function (parent) {
-              return (v.tickerItems || []).map((item, index) => {
-                const v = { ...parent, t: item, $index: index };
-                return h(
-                  React.Fragment,
-                  { key: index },
-                  " ",
-                  h(
-                    "span",
-                    {
-                      key: 284,
-                      "aria-hidden": v.t.duplicate || undefined,
-                      className: "v41-301f26150c",
-                    },
-                    h(
-                      "span",
-                      {
-                        key: 285,
-                        className: classFor(
-                          [
-                            "color:",
-                            v.t.color ?? "",
-                            ";font-family:var(--font-display);font-weight:700;font-size:15px;letter-spacing:.06em;text-shadow:0 0 14px ",
-                            v.t.color ?? "",
-                            "",
-                          ].join(""),
-                        ),
-                      },
-                      h(React.Fragment, { key: 286 }, "", h("span", { className: "sc-interp", key: 1 }, v.t.value), ""),
-                    ),
-                    h(React.Fragment, { key: 287 }, "", h("span", { className: "sc-interp", key: 1 }, v.t.label), ""),
-                    h("span", { key: 288, className: "v41-d4e594e791" }, h(React.Fragment, { key: 289 }, "◆")),
-                  ),
-                  " ",
-                );
-              });
-            })(v),
-            " ",
-          ),
-          " ",
-        ),
-        " ",
-        " ",
+        h(ContinuumPrinciples, { key: "principles-strip" }),
         h(EagleFilmSection, { v, key: "eagle-film" }),
+        h(ReleaseHearing, { key: "release-hearing" }),
         h(WorkshopSection, { v, key: "workshop" }),
         " ",
         " ",
@@ -1930,6 +1980,7 @@ function renderPage(v) {
           {
             key: "films-collection",
             id: "films-collection",
+            image: "/v40/thumbs/room-studios-threshold-320.webp",
             title: "Enter the screening room.",
             description: "The Sovereign, Roadster Studio, and the complete short film collection. Films start muted.",
           },
@@ -1942,6 +1993,7 @@ function renderPage(v) {
           {
             key: "decision-story",
             id: "decision-story",
+            image: "/v40/thumbs/room-principles-320.webp",
             title: "One document. A different boundary.",
             description: "Try a quick privacy decision and see the principle behind it.",
           },
@@ -1957,6 +2009,7 @@ function renderPage(v) {
           {
             key: "system-story",
             id: "system-story",
+            image: "/v40/thumbs/room-starship-320.webp",
             title: "Follow a request through the lab.",
             description: "Explore the system map, from human intent to human review.",
           },
@@ -2016,7 +2069,7 @@ function renderPage(v) {
               h(
                 React.Fragment,
                 { key: 1895 },
-                "V41 · Eagle / " + presentation.name + " · Directed by Doug Cashio · Updated " + updatedDate,
+                "V42 · " + presentation.name + " · Directed by Doug Cashio · Updated " + updatedDate,
               ),
             ),
             " ",
@@ -2180,7 +2233,7 @@ function renderPage(v) {
             key: 1964,
             className: "v41-b9be7637a3",
           },
-          h("span", { key: 1965 }, h(React.Fragment, { key: 1966 }, "V41 · One release short of the answer")),
+          h("span", { key: 1965 }, h(React.Fragment, { key: 1966 }, "V42 · The answer is here. Keep asking.")),
           h("span", { key: 1967 }, h(React.Fragment, { key: 1968 }, "Mostly harmless · Human in command")),
         ),
         " ",

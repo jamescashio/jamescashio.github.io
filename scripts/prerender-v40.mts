@@ -1,5 +1,5 @@
 import React from "react";
-import { renderToStaticMarkup } from "react-dom/server";
+import { renderToString } from "react-dom/server";
 import { readFile, writeFile, readdir } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { JSDOM } from "jsdom";
@@ -10,11 +10,12 @@ Object.assign(globalThis, { window: environment.window, document: environment.wi
 // The reading edition uses the compact composition so it remains readable on every screen.
 Object.defineProperty(environment.window, "innerWidth", { value: 390 });
 const { V40Page } = await import("../src/v40/page.jsx");
-const markup = renderToStaticMarkup(
+const markup = renderToString(
   React.createElement(V40Page, {
     scanlines: true,
     starDensity: 220,
     techDetail: false,
+    initialWidth: 390,
   }),
 );
 const dom = new JSDOM(`<body>${markup}</body>`);
@@ -39,6 +40,9 @@ const fallbackCss = [...rules].map(([name, declarations]) => `.${name}{${declara
 const filename = "v40-reading-" + createHash("sha256").update(fallbackCss).digest("hex").slice(0, 12) + ".css";
 if (fallbackCss) await writeFile("dist/assets/" + filename, fallbackCss);
 let html = await readFile("dist/index.html", "utf8");
+// The complete opening is already rendered; its artwork and fonts take network priority.
+html = html.replace(/<script\b(?=[^>]*type="module")/g, '<script fetchpriority="low"');
+html = html.replace(/<link\b(?=[^>]*rel="modulepreload")/g, '<link fetchpriority="low"');
 // The routing guard used to live at a stable URL with a four-hour cache lifetime.
 // A content address prevents an updated page from reusing the old V39 redirects.
 const routing = await readFile("public/v40-entry.js", "utf8");
@@ -47,8 +51,24 @@ await writeFile("dist/assets/" + routingFile, routing);
 html = html.replace('src="/v40-entry.js"', `src="/assets/${routingFile}"`);
 const alias = await readFile("dist/v40/index.html", "utf8");
 await writeFile("dist/v40/index.html", alias.replace('src="/v40-entry.js"', `src="/assets/${routingFile}"`));
-html = html.replace('<div id="v40-root"></div>', `<div id="v40-root">${dom.window.document.body.innerHTML}</div>`);
+html = html.replace(
+  '<div id="v40-root" class="continuum-root"></div>',
+  `<div id="v40-root" class="continuum-root">${dom.window.document.body.innerHTML}</div>`,
+);
 if (fallbackCss) html = html.replace("</head>", `<link rel="stylesheet" href="/assets/${filename}"></head>`);
+// Deliver the small opening stylesheet with the first document, under exact CSP hashes.
+// The compiled assets remain available for parity checks and the rest of the site.
+const styleHashes = [];
+for (const [link] of html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*>/g)) {
+  const source = link.match(/href="(\/assets\/[\w.-]+\.css)"/)?.[1];
+  if (!source) throw new Error("Opening styles must use a compiled local asset");
+  const css = await readFile("dist" + source, "utf8");
+  if (/<\/style/i.test(css)) throw new Error("Opening styles cannot contain an HTML closing tag");
+  styleHashes.push(`'sha256-${createHash("sha256").update(css).digest("base64")}'`);
+  html = html.replace(link, `<style data-v42-styles="${source}">${css}</style>`);
+}
+if (!styleHashes.length || !html.includes("style-src 'self';")) throw new Error("Opening style policy missing");
+html = html.replace("style-src 'self';", `style-src 'self' ${styleHashes.join(" ")};`);
 const deferredStyles = (await readdir("dist/assets")).find((name) => /^deferred-.*\.css$/.test(name));
 if (!deferredStyles) throw new Error("Missing V41 deferred stylesheet");
 html = html.replace("</head>", `<noscript><link rel="stylesheet" href="/assets/${deferredStyles}"></noscript></head>`);
@@ -58,4 +78,4 @@ html = html.replace(
 );
 await writeFile("dist/index.html", html);
 await writeFile("dist/artifacts/decision-brief-example.txt", exampleBriefText);
-console.log("V40 reading edition created with external CSS and the existing strict security policy.");
+console.log("V40 reading edition created with hash-authorized opening CSS and the strict security policy.");

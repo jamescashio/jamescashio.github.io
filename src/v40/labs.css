@@ -67,7 +67,7 @@
 }
 .lab-toggle:has(input:checked) {
   border-color: var(--cyan);
-  background: rgba(0, 249, 255, 0.05);
+  background: rgba(116, 212, 160, 0.05);
 }
 .lab-toggle input {
   width: 20px;
@@ -82,7 +82,7 @@
   font: 15px/1.5 var(--font-body);
   color: var(--text);
   background: var(--void-deep);
-  border: 1px solid #4b4b64;
+  border: 1px solid #5d5d5d;
   border-radius: 10px;
   padding: 11px 13px;
   width: 100%;
@@ -154,9 +154,9 @@
 }
 .lab-actions .lab-primary {
   color: var(--void-deep);
-  background: linear-gradient(110deg, var(--accent), #ff6a00);
+  background: linear-gradient(110deg, var(--accent), #5aa87e);
   border-color: var(--accent);
-  box-shadow: 0 0 22px rgba(255, 149, 0, 0.15);
+  box-shadow: 0 0 22px rgba(104, 192, 145, 0.15);
 }
 .lab-actions .lab-primary:hover {
   color: var(--void-deep);
@@ -222,8 +222,8 @@
 }
 .lab-path li.affected {
   color: var(--amber);
-  border-color: rgba(255, 149, 0, 0.4);
-  background: rgba(255, 149, 0, 0.04);
+  border-color: rgba(104, 192, 145, 0.4);
+  background: rgba(104, 192, 145, 0.04);
 }
 .lab-path li > span:first-child {
   font: 18px var(--font-mono);

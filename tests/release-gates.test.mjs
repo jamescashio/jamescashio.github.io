@@ -44,32 +44,46 @@ test("V40 ships its real reading edition under the strict production security po
     year: "numeric",
     timeZone: "UTC",
   }).format(new Date(observation.verified + "T12:00:00Z"));
-  assert.ok(root.querySelector('[aria-label="Lab telemetry ticker"]').textContent.includes(observedMonth));
+  assert.ok(root.querySelector('[aria-label="Lab principles"]').textContent.includes(observedMonth));
   assert.equal(
     root.querySelector('#snapshot-story a[href="/status.json"]').textContent,
     "Read the " + observedMonth + " observation",
   );
   assert.ok(root.textContent.includes(observedMonth + " · Scheduler and routing not measured"));
-  assert.equal(receipt.presentation.name, "First Light");
-  assert.match(root.querySelector("#top").textContent, /First Light · The next horizon/);
+  assert.equal(receipt.presentation.name, "Omnius, Overruled");
+  assert.equal(
+    root.querySelector("#top .continuum-arrival > span:nth-child(2)").textContent,
+    receipt.presentation.name,
+  );
+  assert.equal(root.querySelector("#top .aurum-manifesto").textContent, receipt.presentation.subtitle + ".");
   const updatedDate = new Intl.DateTimeFormat("en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",
     timeZone: "UTC",
   }).format(new Date(receipt.updatedDate + "T12:00:00Z"));
-  assert.match(root.querySelector("footer").textContent, new RegExp("Eagle.*Updated " + updatedDate));
+  assert.match(root.querySelector("footer").textContent, new RegExp("Omnius, Overruled.*Updated " + updatedDate));
   assert.doesNotMatch(root.querySelector("footer").textContent, /Preview 05|current public site/);
-  assert.equal(root.querySelectorAll("[style]").length, 0, "the reading edition must use external CSS");
+  assert.equal(root.querySelectorAll("[style]").length, 0, "the reading edition must not use inline style attributes");
   const csp = document.querySelector('meta[http-equiv="Content-Security-Policy"]').content;
   assert.match(csp, /script-src 'self';/);
-  assert.match(csp, /style-src 'self';/);
   const directives = new Map(
     csp.split(";").map((value) => {
       const [name, ...sources] = value.trim().split(/\s+/);
       return [name, sources];
     }),
   );
+  const openingStyles = [...document.querySelectorAll("head > style[data-v42-styles]")];
+  assert.ok(openingStyles.length, "the opening must paint without a blocking stylesheet round trip");
+  const expectedStyleSources = ["'self'"];
+  for (const style of openingStyles) {
+    const source = style.getAttribute("data-v42-styles");
+    assert.match(source, /^\/assets\/[\w.-]+\.css$/);
+    assert.equal(style.textContent, await read(`dist${source}`), "inline and compiled styles must match exactly");
+    expectedStyleSources.push(`'sha256-${createHash("sha256").update(style.textContent).digest("base64")}'`);
+  }
+  assert.deepEqual(directives.get("style-src"), expectedStyleSources, "only the exact opening styles are authorized");
+  assert.equal(document.querySelectorAll("style:not([data-v42-styles])").length, 0);
   assert.deepEqual(directives.get("frame-src"), ["'self'", "https://www.youtube-nocookie.com"]);
   assert.doesNotMatch(csp.replace(/frame-src[^;]+;/, ""), /unsafe-inline|unsafe-eval|https:/);
   assert.equal(document.querySelectorAll("script:not([src])").length, 0);
@@ -83,6 +97,9 @@ test("V40 ships its real reading edition under the strict production security po
     document.querySelector('meta[property="og:image"]').content,
     "https://cashio.us/v41/first-light-share-card.jpg",
   );
+  assert.equal(document.querySelector('meta[property="og:image:width"]').content, "1200");
+  assert.equal(document.querySelector('meta[property="og:image:height"]').content, "630");
+  assert.ok((await stat(asset("dist/v42/prism-sculpture-960.webp"))).size < 250_000);
   assert.ok((await stat(asset("dist/v41/first-light-share-card.jpg"))).size < 250_000);
   assert.equal(receipt.experienceVersion, JSON.parse(await read("package.json")).version);
   assert.equal(receipt.previousExperience.entry, "/v39/");
@@ -109,11 +126,15 @@ test("V40 ships its real reading edition under the strict production security po
     "assets have descriptive names",
   );
   const entryStyles = [...document.querySelectorAll('head > link[rel="stylesheet"]')];
+  assert.equal(entryStyles.length, 0, "the first view must not wait for external opening styles");
   const entryBytes = (
     await Promise.all(
       entryStyles.map(async (link) => gzipSync(await read(`dist${link.getAttribute("href")}`)).byteLength),
     )
-  ).reduce((sum, n) => sum + n, 0);
+  ).reduce(
+    (sum, n) => sum + n,
+    openingStyles.reduce((sum, style) => sum + gzipSync(style.textContent).byteLength, 0),
+  );
   assert.ok(entryBytes <= 19000, `entry stylesheet transfer budget: ${entryBytes} gzip bytes`);
   for (const file of files)
     assert.deepEqual(
@@ -213,7 +234,7 @@ function expandScript(scripts, name, seen = new Set()) {
 
 test("V37 software gates preserve the independent V35 dated evidence", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "41.0.0");
+  assert.equal(packageJson.version, "42.0.0");
   const lock = JSON.parse(await read("package-lock.json"));
   assert.equal(lock.version, packageJson.version);
   assert.equal(lock.packages[""].version, packageJson.version);
@@ -792,8 +813,8 @@ test("Helios release identity, signature assets and compatibility receipts agree
     const compatibility = JSON.parse(await read(`dist/${name}`));
     assert.deepEqual(compatibility.frontDoor, {
       entry: "/",
-      experienceVersion: "41.0.0",
-      visualEdition: "Eagle",
+      experienceVersion: "42.0.0",
+      visualEdition: "Omnius, Overruled",
       receipt: "/v40/site-release.json",
     });
   }
@@ -842,13 +863,13 @@ test("Helios release identity, signature assets and compatibility receipts agree
   );
   assert.ok(doc.querySelector('#snapshot-story a[href="/evidence/console-snapshot-2026-10-03.json"]'));
   assert.deepEqual(JSON.parse(await read("dist/evidence/status.json")), JSON.parse(await read("status.json")));
-  assert.ok((await read("README.md")).startsWith("# cAshIo V41 · Eagle"));
-  assert.equal((await read("CHANGELOG.md")).match(/^## (V[\d.]+)/m)?.[1], "V41.0.0");
+  assert.ok((await read("README.md")).startsWith("# cAshIo V42 · Omnius, Overruled"));
+  assert.equal((await read("CHANGELOG.md")).match(/^## (V[\d.]+)/m)?.[1], "V42.0.0");
   const sitemap = new JSDOM(await read("dist/sitemap.xml"), { contentType: "application/xml" }).window.document;
   const home = [...sitemap.querySelectorAll("url")].find(
     (entry) => entry.querySelector("loc")?.textContent === "https://cashio.us/",
   );
-  assert.equal(home?.querySelector("lastmod")?.textContent, "2026-11-01");
+  assert.equal(home?.querySelector("lastmod")?.textContent, "2026-11-02");
   // The home signature and the Celestial Forge share one full size artwork file, so the forge reuses the cached copy.
   assert.equal(doc.querySelector("#sig-art").getAttribute("src"), "/brand/celestial-1680.webp");
   assert.ok((await read("src/odyssey/brand-mark.tsx")).includes("/brand/celestial-1680.webp 1680w"));

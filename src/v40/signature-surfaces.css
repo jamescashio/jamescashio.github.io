@@ -1,0 +1,367 @@
+.continuum-observation {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  align-items: center;
+  gap: 28px;
+  padding: 22px 0;
+  max-width: 1560px;
+  margin: auto;
+  border-block: 1px solid #5fbdcd38;
+  background: #050608;
+}
+.continuum-observation-date {
+  display: grid;
+  gap: 7px;
+  color: #91d4df;
+  text-decoration: none;
+  font: 12px/1.5 var(--font-mono);
+}
+.continuum-observation-date strong {
+  color: #dce8eb;
+  font: 500 13px/1.5 var(--font-body);
+}
+.continuum-readings {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+}
+.continuum-readings > div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 8px;
+  border-left: 1px solid #5fc5d533;
+  padding-left: 16px;
+}
+.continuum-readings dt {
+  color: #a8bbc4;
+  font: 12px/1.5 var(--font-mono);
+  text-transform: uppercase;
+}
+.continuum-readings dd {
+  margin: 0;
+  color: #8aebf4;
+  font: 600 31px/1 var(--font-display);
+  letter-spacing: -0.04em;
+}
+.continuum-next {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  max-width: 1560px;
+  margin: auto;
+  min-height: 64px;
+  color: #e4edf1;
+  text-decoration: none;
+  font: 13px/1.5 var(--font-body);
+}
+.continuum-next > span {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+.continuum-next > span:last-child {
+  color: #ecd5a5;
+  font: 12px var(--font-mono);
+}
+.continuum-next > span:last-child > span {
+  font-size: 22px;
+}
+.continuum-principles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  padding: 18px clamp(24px, 4.6vw, 84px);
+  border-block: 1px solid #52b3c135;
+  background: #080d11;
+  color: #a5b9c3;
+  font: 12px/1.6 var(--font-mono);
+}
+.continuum-principles span {
+  display: grid;
+  gap: 4px;
+}
+.continuum-principles b {
+  color: #e9c682;
+  font-weight: 500;
+}
+@media (max-width: 900px) {
+  .continuum-observation {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}
+@media (max-width: 600px) {
+  .continuum-observation {
+    padding: 18px 0;
+    gap: 20px;
+  }
+  .continuum-readings {
+    gap: 18px 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .continuum-readings > div {
+    padding-left: 9px;
+  }
+  .continuum-readings dd {
+    font-size: 24px;
+  }
+  .continuum-readings dt {
+    font-size: 12px;
+  }
+  .continuum-next {
+    min-height: 56px;
+    font-size: 14px;
+  }
+  .continuum-next .continuum-label {
+    display: none;
+  }
+  .continuum-principles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 18px;
+    font-size: 12px;
+  }
+}
+/* Let the original cAshIo materials carry through the public content. */
+html:has(.continuum-root) {
+  scroll-padding-bottom: 24px;
+}
+#v40-root.continuum-root main h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+}
+#v40-root.continuum-root main h3 {
+  letter-spacing: -0.02em;
+}
+#v40-root .eagle-film-copy h2 {
+  font: 700 clamp(32px, 3.7vw, 60px)/1.12 var(--font-display);
+  color: #f9edd7;
+  letter-spacing: -0.045em;
+}
+#v40-root .workshop-heading h2,
+#v40-root #rooms h2 {
+  font-size: clamp(35px, 4.1vw, 65px);
+  line-height: 1.12;
+  color: #edf4f6;
+}
+#v40-root .workshop-highlight h3 {
+  color: #b5eef4;
+}
+#v40-root .showcase-heading h2 {
+  font-size: clamp(34px, 3.7vw, 60px);
+  line-height: 1.1;
+}
+#v40-root .atlas-copy h3 {
+  font: 600 clamp(29px, 3vw, 44px)/1.15 var(--font-display);
+  color: #f3ead6;
+  letter-spacing: -0.03em;
+}
+#v40-root #eagle-film {
+  background: radial-gradient(ellipse at 75% 20%, #bd8b2512, transparent 65%), #080a0d;
+}
+#v40-root #rooms {
+  background: radial-gradient(ellipse at 75% 35%, #229bc212, transparent 65%), #070b0f;
+}
+#v40-root .workshop-overview {
+  background: #050608;
+}
+#v40-root .eagle-film-play {
+  border-radius: 3px;
+  border-color: #e7bb6c70;
+  box-shadow:
+    0 18px 70px #0008,
+    0 0 30px #57cce00c;
+}
+#v40-root .eagle-film-copy .eagle-film-label,
+#v40-root .eagle-film-copy .eagle-film-note {
+  color: #f0cd8d;
+}
+#v40-root .eagle-film-playmark {
+  border-color: #ffda8d;
+  color: #fff0d3;
+  box-shadow: 0 0 65px #e9b65c2c;
+}
+#v40-root .eagle-film-caption {
+  background: #0a0e12;
+}
+#v40-root .cinema-selection button[aria-pressed="true"] {
+  border-color: #efc276;
+  color: #ffdda2;
+  background: #e9b65c10;
+}
+#v40-root .atlas-enter {
+  background: linear-gradient(120deg, #ffe2a4, #e9b65c);
+  color: #151009;
+}
+#v40-root .atlas-selectors button:nth-child(1),
+.atlas-point-0,
+.atlas-waypoint-0 {
+  --destination: #72e5f4;
+}
+#v40-root .atlas-selectors button:nth-child(2),
+.atlas-point-1,
+.atlas-waypoint-1 {
+  --destination: #f2c46e;
+}
+#v40-root .atlas-selectors button:nth-child(3),
+.atlas-point-2,
+.atlas-waypoint-2 {
+  --destination: #b8f2ef;
+}
+#v40-root .atlas-selectors button:nth-child(4),
+.atlas-point-3,
+.atlas-waypoint-3 {
+  --destination: #ffe0a8;
+}
+#v40-root .continuum-paths > a:nth-child(1) {
+  --chapter: #7ce8f6;
+}
+#v40-root .continuum-paths > a:nth-child(2) {
+  --chapter: #f2c46e;
+}
+#v40-root .continuum-paths > a:nth-child(3) {
+  --chapter: #9ce5e7;
+}
+#v40-root .continuum-readings > div:nth-child(odd) dd {
+  color: #76e2f3;
+}
+#v40-root .continuum-readings > div:nth-child(even) dd {
+  color: #f1ce8b;
+}
+#v40-root .journey-disclosure {
+  background: linear-gradient(110deg, #0d1c24, #0a0c10);
+  border: 1px solid #52b7ce50;
+  border-left: 3px solid #e9b65c;
+  box-shadow: 0 12px 40px #0005;
+}
+#v40-root .workshop-highlight {
+  border-top-color: #69d0df66;
+}
+#v40-root #studies .za-panel {
+  background: #080e13;
+  border-color: #4cb9d44f;
+}
+#v40-root #studies .za-panel h3 {
+  color: #bcebf3;
+}
+#v40-root #evidence .za-panel {
+  border-color: #ddbd794d;
+}
+#v40-root #evidence h2,
+#v40-root #evidence h3 {
+  color: #f3dba9;
+}
+#v40-root #contact h2 span {
+  color: #f2c979;
+}
+.discovery-console {
+  border-color: #7ac7d669;
+  background: #070b0e;
+}
+.discovery-heading h2,
+.discovery-description h3 {
+  color: #eef3f3;
+  font-family: var(--font-display);
+  letter-spacing: -0.04em;
+}
+.discovery-projection {
+  background:
+    radial-gradient(ellipse at 15% 20%, #1598ba18, transparent 65%),
+    radial-gradient(ellipse at 90% 80%, #be8d2627, transparent 65%), #05090c;
+}
+.discovery-beacon-0 {
+  --beacon: #72e5f4;
+}
+.discovery-beacon-1 {
+  --beacon: #f2c46e;
+}
+.discovery-beacon-2 {
+  --beacon: #b8f2ef;
+}
+.discovery-beacon-3 {
+  --beacon: #ffe0a8;
+}
+.discovery-console .discovery-beacon {
+  background: #081116ec;
+  color: var(--beacon);
+  border-color: var(--beacon);
+}
+.discovery-console .discovery-beacon[aria-pressed="true"] {
+  background: var(--beacon);
+  color: #080d0f;
+  border-color: #ecf9fc;
+  box-shadow:
+    0 0 0 5px #57d2e71c,
+    0 0 35px #50c9de40;
+}
+.discovery-view-controls button[aria-pressed="true"],
+.discovery-paths button[aria-pressed="true"] {
+  background: #13303a;
+  color: #cbf6fb;
+  border-color: #79dbe9;
+}
+.discovery-stops button[aria-pressed="true"] {
+  background: #2a2419;
+  color: #ffe5b2;
+  border-color: #e9c278;
+}
+@media (min-width: 1180px) {
+  #v40-root .continuum-principles {
+    padding-left: clamp(24px, 4.6vw, 84px);
+  }
+}
+@media (max-width: 600px) {
+  #v40-root .eagle-film-copy h2 {
+    font-size: 32px;
+  }
+  #v40-root .workshop-heading h2,
+  #v40-root #rooms h2,
+  #v40-root .showcase-heading h2 {
+    font-size: 32px;
+  }
+  #v40-root .atlas-copy h3 {
+    font-size: 28px;
+  }
+  .discovery-heading h2,
+  .discovery-description h3 {
+    font-size: 25px;
+    line-height: 1.2;
+  }
+  #v40-root .atlas-copy {
+    padding-top: 86px;
+  }
+  #v40-root .workshop-highlight h3 {
+    font-size: 25px;
+  }
+  #v40-root #showcase {
+    width: auto;
+    margin: 0 0 20px;
+    padding-inline: 22px;
+  }
+  #v40-root #evidence .za-panel,
+  #v40-root #studies .za-panel {
+    padding: 20px 16px;
+  }
+  #v40-root .continuum-principles {
+    font: 13px/1.5 var(--font-body);
+    gap: 12px 18px;
+    padding-block: 14px;
+  }
+  #v40-root main > section:not(#top) {
+    padding-block: 12px;
+    padding-inline: 16px;
+  }
+  #v40-root .workshop-overview,
+  #v40-root .workshop-highlights {
+    gap: 16px;
+  }
+  #v40-root .workshop-highlight {
+    gap: 8px;
+  }
+  #v40-root #contact .v41-31ee932428 {
+    padding-block: 12px;
+    gap: 16px;
+  }
+}

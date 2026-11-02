@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the V41 homepage and evidence alongside the preserved V37 and V35 archives."""
+"""Validate the V42 homepage and evidence alongside the preserved V37 and V35 archives."""
 
 from __future__ import annotations
 
@@ -525,7 +525,7 @@ def main() -> int:
     parser.add_argument("--preview", action="store_true", help="Validate an explicitly unpublished local preview; never a deployment approval")
     preview = parser.parse_args().preview
     version = "37.17.0-preview.sanctuary" if preview else "37.17.0"
-    package_version = "41.0.0"
+    package_version = "42.0.0"
     failures: list[str] = []
 
     try:
@@ -584,7 +584,7 @@ def main() -> int:
 
     package = json.loads(read("package.json"))
     if latest.get("release") != "V41 Eagle":
-        failures.append("latest evidence must identify the V41 Eagle preview")
+        failures.append("the retained observation must preserve its original V41 Eagle identity")
     current_receipt = json.loads(read("public/v40/site-release.json"))
     if current_receipt.get("experienceVersion") != package_version:
         failures.append("current homepage receipt must match the package version")
@@ -594,8 +594,8 @@ def main() -> int:
         failures.append("current public evidence aliases must be byte-identical")
     for name in ("README.md", "CHANGELOG.md", "RELEASE_BODY.md", "index.html"):
         text = read(name)
-        if "V41" not in text or "Eagle" not in text:
-            failures.append(f"{name} must identify V41 Eagle")
+        if "V42" not in text or "Omnius, Overruled" not in text:
+            failures.append(f"{name} must identify V42 Omnius, Overruled")
     for name in ("README.md", "CHANGELOG.md", "RELEASE_BODY.md"):
         if latest.get("verifiedLong", "") not in read(name):
             failures.append(f"{name} must include the current observation date")
@@ -983,13 +983,13 @@ def main() -> int:
             failures.append(f"non-audio fetch target found in source: {target!r}")
 
     if failures:
-        print("V41 and preserved archive consistency check failed:\n")
+        print("V42 and preserved archive consistency check failed:\n")
         for failure in failures:
             print(f"- {failure}")
         return 1
 
     print(
-        f"V41 and preserved archive consistency passed: latest dated observation "
+        f"V42 and preserved archive consistency passed: latest dated observation "
         f"{latest['verified']}, {latest['containers']['running']} LXC and {latest['virtualMachines']['running']} QEMU; "
         "routing unverified; V35 August archive preserved; root Pages base; archive, privacy, "
         "motion, opt-in audio, and forbidden-token gates satisfied."

@@ -15,6 +15,119 @@ after(async () => {
   await browser?.close();
 });
 
+test("Mission Control filters, previews and keyboard navigation reach the intended chapter quietly", async (t) => {
+  const page = await visit(t);
+  const films = [];
+  page.on("request", (request) => {
+    if (/\.(mp4|webm)(\?|$)/.test(request.url())) films.push(request.url());
+  });
+  await page.goto(url);
+  const opener = page.locator("header [data-mission-open]");
+  await opener.click();
+  const panel = page.locator("#mission-dialog");
+  await expect(panel.locator("[data-chapter]:visible")).toHaveCount(11);
+  for (const [name, count] of [
+    ["Explore", 4],
+    ["Try", 3],
+    ["Watch", 2],
+    ["Connect", 2],
+    ["All", 11],
+  ]) {
+    await panel.getByRole("button", { name, exact: true }).click();
+    await expect(panel.locator("[data-chapter]:visible")).toHaveCount(count);
+  }
+  await panel.getByRole("button", { name: "Watch", exact: true }).click();
+  const search = panel.getByRole("searchbox");
+  await search.fill("TRAILER");
+  await expect(panel.locator("[data-chapter]:visible")).toHaveCount(1);
+  await search.press("ArrowDown");
+  await expect(panel.getByRole("link", { name: "03 House Cashio", exact: true })).toBeFocused();
+  await expect(panel.locator(".mission-preview h3")).toHaveText("An unlikely crew.");
+  await expect(panel.locator(".mission-preview img")).toHaveAttribute("src", "/assets/hero/cashio-trailer-poster.webp");
+  await page.keyboard.press("Enter");
+  await expect(panel).not.toBeVisible();
+  await expect(page).toHaveURL(/#eagle-film$/);
+  await expect(page.locator("#eagle-film")).toBeInViewport();
+  await expect(page.locator("#cinema-video")).toHaveCount(0);
+  assert.deepEqual(films, [], "browsing destinations never downloads or starts a film");
+  await opener.click();
+  await expect(panel.locator("[data-chapter]:visible")).toHaveCount(11);
+  await panel.getByRole("link", { name: "11 About Doug", exact: true }).focus();
+  assert.ok(await panel.locator(".mission-results").evaluate((n) => n.scrollTop > 0));
+  await page.keyboard.press("Escape");
+  await expect(opener).toBeFocused();
+  await opener.click();
+  assert.equal(await panel.locator(".mission-results").evaluate((n) => n.scrollTop), 0);
+  await page.setViewportSize({ width: 1280, height: 720 });
+  for (const link of await panel.locator("[data-chapter]").all()) {
+    await link.focus();
+    const previewBounds = await panel.locator(".mission-preview").boundingBox();
+    const descriptionBounds = await panel.locator(".mission-preview p").boundingBox();
+    assert.ok(
+      descriptionBounds.y + descriptionBounds.height <= previewBounds.y + previewBounds.height,
+      "every artwork description fits a short laptop window",
+    );
+  }
+});
+
+test("the visual destination desk fits phones and recovers from an empty combined filter", async (t) => {
+  for (const width of [320, 390]) {
+    const page = await visit(t, { viewport: { width, height: 640 }, isMobile: true, hasTouch: true });
+    await page.goto(url);
+    await page.locator("header [data-mission-open]").click();
+    const panel = page.locator("#mission-dialog");
+    assert.equal(
+      await panel.locator(".mission-preview img").getAttribute("src"),
+      null,
+      "phones do not download hidden menu artwork",
+    );
+    await panel.getByRole("button", { name: "Watch", exact: true }).click();
+    await panel.getByRole("searchbox").fill("atlas");
+    await expect(panel.locator("[data-chapter]:visible")).toHaveCount(0);
+    await expect(panel.getByText("No matching destination.", { exact: false })).toBeVisible();
+    await panel.getByRole("button", { name: "Show all destinations", exact: true }).click();
+    await expect(panel.locator("[data-chapter]:visible")).toHaveCount(11);
+    await expect(panel.getByRole("searchbox")).toBeFocused();
+    await expect(panel.getByRole("button", { name: "All", exact: true })).toHaveAttribute("aria-pressed", "true");
+    await expect(panel.getByRole("button", { name: "Close Mission Control", exact: true })).toBeInViewport();
+    const bounds = await panel.boundingBox();
+    assert.ok(bounds.x >= 0 && bounds.x + bounds.width <= width);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+    const targets = await panel.locator("button:visible").evaluateAll((buttons) =>
+      buttons.map((b) => ({
+        label: b.textContent,
+        width: b.getBoundingClientRect().width,
+        height: b.getBoundingClientRect().height,
+      })),
+    );
+    assert.deepEqual(
+      targets.filter((b) => b.width < 44 || b.height < 44),
+      [],
+    );
+    const audit = await new AxeBuilder({ page })
+      .include("#mission-dialog")
+      .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+      .analyze();
+    assert.deepEqual(audit.violations, []);
+  }
+});
+
+test("the new atlas and film graphics obey reduced motion and pause without losing their controls", async (t) => {
+  for (const reducedMotion of ["reduce", "no-preference"]) {
+    const page = await visit(t, { reducedMotion });
+    await page.goto(url);
+    if (reducedMotion === "no-preference")
+      await page.getByRole("button", { name: "Pause motion", exact: true }).first().click();
+    await page.getByRole("tab", { name: "02 Principles", exact: true }).click();
+    assert.equal(await page.locator(".atlas-core-grid").evaluate((n) => getComputedStyle(n).animationName), "none");
+    await page.getByRole("link", { name: "Watch House Cashio 61 seconds", exact: true }).hover();
+    assert.equal(await page.locator(".film-aperture-ring").evaluate((n) => getComputedStyle(n).transform), "none");
+    await page.locator("header [data-mission-open]").click();
+    await page.locator('#mission-dialog [data-chapter="rooms"]').focus();
+    assert.equal(await page.locator(".mission-preview img").evaluate((n) => n.getAnimations().length), 0);
+  }
+});
+
 test("the world atlas connects keyboard and map selection to the correct destination", async (t) => {
   const page = await visit(t);
   const media = [];
@@ -111,17 +224,31 @@ async function visit(t, options = {}) {
 }
 for (const [width, height] of [
   [1440, 900],
+  [1280, 720],
   [3440, 1440],
   [390, 844],
 ]) {
-  test(`V41 hero and actions fit at ${width}; whole page has no serious accessibility issues`, async (t) => {
+  test(`Current hero and actions fit at ${width}; whole page has no serious accessibility issues`, async (t) => {
     const page = await visit(t, { viewport: { width, height }, hasTouch: width === 390 });
     await page.goto(url);
     await page.waitForTimeout(1500);
     await expect(page.locator("h1")).toHaveText("The machines can think. You still decide.");
-    for (const selector of ["h1", 'a[href="#flight=board"]', '#hero-content a[href="#studies"]']) {
+    await expect(page.locator(".aurum-manifesto")).toHaveText("Imagination, with intention.");
+    const dock = page.locator('nav[aria-label="Sections"]');
+    const dockRect = (await dock.isVisible()) ? await dock.boundingBox() : null;
+    const selectors = ["h1", 'a[href="#flight=board"]', '#hero-content a[href="#studies"]'];
+    if (dockRect) selectors.push(".continuum-scene-deck");
+    for (const selector of selectors) {
       const rect = await page.locator(selector).first().boundingBox();
       assert.ok(rect && rect.y >= 68 && rect.y + rect.height <= height, `${selector} is visible in the first view`);
+      if (dockRect) {
+        const overlaps =
+          rect.x < dockRect.x + dockRect.width &&
+          rect.x + rect.width > dockRect.x &&
+          rect.y < dockRect.y + dockRect.height &&
+          rect.y + rect.height > dockRect.y;
+        assert.equal(overlaps, false, `${selector} stays clear of the floating chapter dock`);
+      }
     }
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
     const audit = await new AxeBuilder({ page })
@@ -153,7 +280,7 @@ for (const [width, height] of [
 test("The rail and workshop evidence stay readable during entrance motion", async (t) => {
   const page = await visit(t, { viewport: { width: 3440, height: 1440 } });
   await page.goto(url);
-  await page.locator(".v41-31fb338fa2").evaluate((rail) => {
+  await page.locator(".continuum-observation").evaluate((rail) => {
     for (const animation of rail.getAnimations({ subtree: true })) {
       animation.pause();
       animation.currentTime = 700;
@@ -168,7 +295,7 @@ test("The rail and workshop evidence stay readable during entrance motion", asyn
     }
   });
   const audit = await new AxeBuilder({ page })
-    .include(".v41-bf5360592c")
+    .include("nav[aria-label=Sections]")
     .include("#workshop")
     .withRules(["color-contrast"])
     .analyze();
@@ -195,10 +322,13 @@ test("The planet stays in the hero; House Cashio replaces the featured Eagle fil
   await page.waitForTimeout(2600);
   const watch = page.getByRole("link", { name: "Watch House Cashio 61 seconds", exact: true });
   await expect(page.locator("#eagle-film h2")).toHaveText("House Cashio: The Trailer");
-  await expect(page.locator("#eagle-film img")).toHaveAttribute("src", "/assets/hero/cashio-trailer-poster.webp");
-  await expect(page.locator("#eagle-film img")).toHaveAttribute("alt", /House Cashio/);
+  await expect(page.locator("#eagle-film .eagle-film-play img")).toHaveAttribute(
+    "src",
+    "/assets/hero/cashio-trailer-poster.webp",
+  );
+  await expect(page.locator("#eagle-film .eagle-film-play img")).toHaveAttribute("alt", /House Cashio/);
   await expect(page.locator("#eagle-film")).not.toContainText("A moment in orbit.");
-  await page.getByRole("link", { name: "Next: watch House Cashio", exact: true }).click();
+  await page.locator(".continuum-next").click();
   await expect(page).toHaveURL(/#eagle-film$/);
   await expect(page.locator("main > #eagle-film")).toBeVisible();
   await expect(page.locator("#eagle-film")).toHaveCount(1);
@@ -334,36 +464,45 @@ test("The starfield limits ambient work and stops while offscreen, motion is pau
   };
   await page.goto(url);
   await expect.poll(draws).toBeGreaterThan(2);
-  const telemetry = page.getByRole("complementary", { name: "Lab telemetry", exact: true });
+  const telemetry = page.locator(".continuum-observation");
   await expect(telemetry).toBeVisible();
   const before = await draws();
   await page.waitForTimeout(1000);
   const rendered = (await draws()) - before;
   assert.ok(rendered > 0 && rendered <= 35, `ambient starfield stays near 30fps; drew ${rendered} frames`);
   const headingBefore = await page.locator("h1").boundingBox();
-  await page.mouse.move(850, 320);
+  // The camera now owns image depth; the poster remains an untransformed image inside it.
+  const camera = page.locator(".hero-flight-camera");
+  const cameraX = () => camera.evaluate((node) => new DOMMatrixReadOnly(getComputedStyle(node).transform).m41);
+  await page.mouse.move(200, 320);
+  await page.waitForTimeout(450);
+  const leftView = await cameraX();
+  await page.mouse.move(1200, 320);
+  await expect.poll(cameraX).toBeLessThan(leftView - 3);
   const poster = page.locator(".hero-live-poster");
-  await expect.poll(() => poster.evaluate((node) => node.style.transform)).toContain("translate3d");
+  await expect.poll(() => camera.evaluate((node) => node.style.transform)).toContain("translate3d");
   assert.deepEqual(
     await page.locator("h1").boundingBox(),
     headingBefore,
     "orbital depth never moves the reading surface",
   );
   await page.setViewportSize({ width: 390, height: 844 });
-  await expect(telemetry).toBeHidden();
+  await expect(telemetry).toBeVisible();
   await expect.poll(() => poster.evaluate((node) => node.style.transform)).toBe("");
   await page.setViewportSize({ width: 1440, height: 900 });
   // The viewport command can finish before React commits the desktop view and its pointer handler.
   await expect(telemetry).toBeVisible();
   await page.mouse.move(840, 330);
-  await expect.poll(() => poster.evaluate((node) => node.style.transform)).toContain("translate3d");
+  await expect.poll(() => camera.evaluate((node) => node.style.transform)).toContain("translate3d");
   await page.getByRole("button", { name: "Pause motion", exact: true }).first().click();
   await expect.poll(() => poster.evaluate((node) => getComputedStyle(node).transform)).toBe("none");
+  const pausedCamera = await camera.evaluate((node) => getComputedStyle(node).transform);
   await staysStill();
+  assert.equal(await camera.evaluate((node) => getComputedStyle(node).transform), pausedCamera);
   await page.getByRole("button", { name: "Resume motion", exact: true }).first().click();
   const resumed = await draws();
   await expect.poll(draws).toBeGreaterThan(resumed);
-  await page.getByRole("link", { name: "Next: watch House Cashio", exact: true }).click();
+  await page.locator(".continuum-next").click();
   await page.getByRole("link", { name: "Explore the workshop →", exact: true }).click();
   await expect(page.locator("#top")).not.toBeInViewport();
   await staysStill();

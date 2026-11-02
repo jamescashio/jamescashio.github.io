@@ -1,5 +1,6 @@
 import React from "react";
 import { exampleBrief } from "../decision-brief.js";
+import { BuildStory } from "../build-stories";
 const h = React.createElement;
 
 const glossary = [
@@ -10,7 +11,7 @@ const glossary = [
   ["Zeus and Apollo", "The two servers I own."],
   ["Atlas", "A local model. No fresh model configuration was measured in this observation."],
   ["cAshIo", "Cashio, with the AI in capitals. My personal AI workspace and the name on this site."],
-  ["Mostly Harmless", "This site’s visual edition. Each evidence record keeps its own date."],
+  ["Mostly Harmless", "The site’s original visual edition and enduring sense of humor. Evidence keeps its own date."],
   ["Workhorse, Research, Synthesis", "Routes for everyday drafting, sourced research and combining information."],
 ];
 
@@ -26,7 +27,7 @@ export function WorkshopSection({ v }) {
       h(
         "p",
         null,
-        "Principal Solutions Consultant by day. More than twenty years in cybersecurity. Curious builder after hours.",
+        "Two builds from my after-hours workbench. I’m a Principal Solutions Consultant; here you can inspect the choices and limits behind the work.",
       ),
       h("a", { className: "visitor-link workshop-intro-link", href: "#operator" }, "Meet Doug →"),
     ),
@@ -63,6 +64,7 @@ export function WorkshopSection({ v }) {
         h("p", { className: "workshop-date" }, "Observed " + v.observedDate),
         h("p", null, "No new restore rehearsal was performed; full recovery remains unproven."),
         h("a", { className: "visitor-link", href: "#evidence" }, "Read the dated receipt →"),
+        h(BuildStory, { kind: "evidence" }),
       ),
       h(
         "article",
@@ -107,6 +109,7 @@ export function WorkshopSection({ v }) {
             "Download an example ↓",
           ),
         ),
+        h(BuildStory, { kind: "brief" }),
       ),
     ),
     h(

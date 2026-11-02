@@ -101,6 +101,7 @@ async function initialSectionLifecycle(initialState = "interactive") {
   };
   const { destinations } = await import("../src/v40/destinations.js");
   const { presentation } = await import("../src/v40/evidence.js");
+  const missionDeskSource = await readFile(new URL("../src/v40/mission-desk.js", import.meta.url), "utf8");
   const source = await readFile(new URL("../src/v40/polish.js", import.meta.url), "utf8");
   win.eval(
     source
@@ -108,9 +109,10 @@ async function initialSectionLifecycle(initialState = "interactive") {
         'import { destinations } from "./destinations.js";',
         `const destinations = ${JSON.stringify(destinations)};`,
       )
+      .replace('import { presentation } from "./evidence.js";', `const presentation = ${JSON.stringify(presentation)};`)
       .replace(
-        'import { presentation } from "./evidence.js";',
-        `const presentation = ${JSON.stringify(presentation)};`,
+        'import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.js";',
+        missionDeskSource.replaceAll("export function ", "function "),
       ),
   );
   win.dispatchEvent(new win.Event("cashio-ready"));

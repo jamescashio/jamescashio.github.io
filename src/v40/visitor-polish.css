@@ -135,7 +135,7 @@
   border: 1px solid var(--glass-border);
   border-top: 2px solid var(--cyan);
   border-radius: 18px;
-  background: linear-gradient(145deg, rgba(0, 249, 255, 0.035), var(--surface) 60%);
+  background: linear-gradient(145deg, rgba(116, 212, 160, 0.035), var(--surface) 60%);
 }
 .workshop-highlight h3 {
   margin: 0;
@@ -148,7 +148,7 @@
 }
 .workshop-tool {
   border-top-color: var(--accent);
-  background: linear-gradient(145deg, rgba(255, 149, 0, 0.04), var(--surface) 60%);
+  background: linear-gradient(145deg, rgba(104, 192, 145, 0.04), var(--surface) 60%);
 }
 .workshop-tool .visitor-kicker {
   color: var(--accent);
@@ -267,7 +267,7 @@
   padding: 30px;
   border: 1px solid var(--glass-border);
   border-radius: 16px;
-  background: linear-gradient(145deg, rgba(255, 149, 0, 0.06), var(--surface) 70%);
+  background: linear-gradient(145deg, rgba(104, 192, 145, 0.06), var(--surface) 70%);
 }
 .routing-note blockquote {
   padding: 0;
@@ -303,7 +303,7 @@
   padding: 12px 40px 12px 16px;
   border: 1px solid var(--cyan);
   border-radius: 10px;
-  background: #101823;
+  background: #1b1b1b;
   color: var(--text);
   font: 600 16px/1.4 var(--font-body);
   cursor: pointer;

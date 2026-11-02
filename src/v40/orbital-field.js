@@ -1,10 +1,10 @@
 // Authored atmosphere for the existing bounded hero canvas. These paths are decorative.
-export function drawOrbitalField(ctx, { width, height, dpr, time, motion, pointer }) {
+export function drawOrbitalField(ctx, { width, height, dpr, time, motion, pointer, turn = 0 }) {
   const narrow = width / dpr < 760;
   const cx = width * (narrow ? 0.76 : 0.7) + pointer.x * 16 * dpr;
   const cy = height * 0.48 + pointer.y * 12 * dpr;
   const radius = Math.min(width * (narrow ? 0.8 : 0.39), height * 0.77);
-  const phase = motion ? time * 0.026 : 0;
+  const phase = turn + (motion ? time * 0.06 : 0);
 
   ctx.save();
   ctx.translate(cx, cy);
@@ -13,7 +13,7 @@ export function drawOrbitalField(ctx, { width, height, dpr, time, motion, pointe
     const rx = radius * (1 + ring * 0.16);
     const ry = radius * (0.31 + ring * 0.055);
     ctx.lineWidth = dpr * (ring === 1 ? 0.8 : 0.5);
-    ctx.strokeStyle = ring === 1 ? "rgba(255,197,107,.26)" : "rgba(118,232,244,.24)";
+    ctx.strokeStyle = ring === 1 ? "rgba(255, 203, 114, 0.26)" : "rgba(64, 216, 243, 0.24)";
     ctx.setLineDash(ring === 2 ? [2 * dpr, 10 * dpr] : []);
     ctx.beginPath();
     ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
@@ -24,7 +24,7 @@ export function drawOrbitalField(ctx, { width, height, dpr, time, motion, pointe
     const leadingAngle = phase * (ring % 2 ? -1 : 1) + ring * 1.8;
     for (let trail = 0; trail < 6; trail++) {
       const alpha = (6 - trail) * 0.055;
-      ctx.strokeStyle = ring === 1 ? `rgba(255,211,143,${alpha})` : `rgba(174,244,255,${alpha})`;
+      ctx.strokeStyle = ring === 1 ? `rgba(255, 211, 143,${alpha})` : `rgba(84, 226, 255,${alpha})`;
       ctx.lineWidth = 1.2 * dpr;
       ctx.beginPath();
       ctx.ellipse(0, 0, rx, ry, 0, leadingAngle - trail * 0.045, leadingAngle - trail * 0.045 + 0.045);
@@ -38,12 +38,12 @@ export function drawOrbitalField(ctx, { width, height, dpr, time, motion, pointe
       const x = Math.cos(angle) * rx;
       const y = Math.sin(angle) * ry;
       const alpha = 0.16 + depth * 0.58;
-      ctx.fillStyle = ring === 1 ? `rgba(255,205,128,${alpha})` : `rgba(160,244,255,${alpha})`;
+      ctx.fillStyle = ring === 1 ? `rgba(255, 205, 128,${alpha})` : `rgba(122, 236, 255,${alpha})`;
       ctx.beginPath();
       ctx.arc(x, y, (0.55 + depth * 1.15) * dpr, 0, Math.PI * 2);
       ctx.fill();
       if (i % 12 === 0) {
-        ctx.strokeStyle = `rgba(139,237,251,${alpha * 0.35})`;
+        ctx.strokeStyle = `rgba(251, 217, 139,${alpha * 0.35})`;
         ctx.lineWidth = 0.6 * dpr;
         ctx.beginPath();
         ctx.arc(x, y, 4.5 * dpr, 0, Math.PI * 2);
@@ -54,7 +54,7 @@ export function drawOrbitalField(ctx, { width, height, dpr, time, motion, pointe
   ctx.restore();
 
   if (!narrow) {
-    ctx.strokeStyle = "rgba(130,215,232,.12)";
+    ctx.strokeStyle = "rgba(122, 223, 244, 0.22)";
     ctx.lineWidth = 0.6 * dpr;
     const x = width * 0.91;
     const y = height * 0.18;

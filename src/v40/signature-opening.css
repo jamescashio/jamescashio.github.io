@@ -1,0 +1,882 @@
+/* Signature Flight: the original horizon, inside a living cAshIo instrument. */
+.atlas-mobile-route {
+  display: none;
+}
+.mission-preview img {
+  max-width: 100%;
+}
+.world-atlas,
+.atlas-destinations {
+  min-width: 0;
+}
+.atlas-map svg,
+.atlas-art img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.atlas-selectors {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.atlas-selectors button {
+  min-width: 0;
+  min-height: 44px;
+  white-space: normal;
+}
+#v40-root {
+  --accent: #edbd68;
+  --accent-2: #22d3ee;
+  --accent-glow: #edbd6833;
+  --cyan: #6ee8fa;
+  --cyan-glow: #22d3ee30;
+  --purple: #9ce7ef;
+  --purple-glow: #22d3ee22;
+  --text: #edf4f6;
+  --text-dim: #bdc8ce;
+  --glass: #090d11ed;
+  --glass-border: #58b9ce44;
+  --void: #050608;
+  --surface: #0a0e12;
+  --continuum-line: #48d3ec36;
+  --radius: 3px;
+  --radius-lg: 6px;
+  background: #050608;
+  color: var(--text);
+}
+#v40-root header {
+  background: #050608ed;
+  border-bottom: 1px solid #75bdcb3d;
+  backdrop-filter: blur(14px);
+}
+#v40-root header .v41-d28b3b93ee {
+  max-width: 1760px;
+  padding-inline: 28px;
+  height: 76px;
+  gap: 22px;
+}
+#v40-root header .v41-9fb65157a3 {
+  font-size: 23px;
+  letter-spacing: -0.025em;
+}
+#v40-root header .v41-0413664e13 {
+  background: #131008;
+  color: #ffcf77;
+  border: 1px solid #efbd6566;
+  box-shadow: 0 0 24px #e9b65c25;
+}
+#v40-root header .za-btn {
+  background: linear-gradient(120deg, #ffe0a4, #edac41);
+  color: #171109;
+  border: 1px solid #ffdc99;
+  border-radius: 3px;
+  box-shadow: 0 0 25px #e9b65c1f;
+}
+#v40-root .hud-control,
+#v40-root .bit-header {
+  background: #080d12;
+  border: 1px solid #55cce63d;
+  color: #c0f3fb;
+  box-shadow: none;
+  border-radius: 3px;
+}
+#v40-root .v41-514cfd682d {
+  background: linear-gradient(90deg, #f1ba57, #ffe0a0, #22d3ee);
+}
+#v40-root nav[aria-label="Sections"] {
+  position: fixed;
+  inset: 76px auto 0 0;
+  width: 96px;
+  max-width: 96px;
+  height: auto;
+  border: 0;
+  border-right: 1px solid #53c3df33;
+  border-radius: 0;
+  padding: 12px 6px;
+  background: #05080de8;
+  backdrop-filter: blur(14px);
+  transform: none;
+  z-index: 35;
+}
+#v40-root nav[aria-label="Sections"] > a {
+  display: none;
+}
+#v40-root nav[aria-label="Sections"] .v41-a0e1b1fc48 {
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  padding: 0;
+  overflow: visible;
+}
+#v40-root nav[aria-label="Sections"] .v41-a0e1b1fc48 > a {
+  min-width: 84px;
+  min-height: 58px;
+  width: 84px;
+  padding: 8px 4px;
+  flex-direction: column;
+  border-radius: 3px;
+  gap: 6px;
+}
+#v40-root nav[aria-label="Sections"] .v41-cbba20e481 {
+  font-size: 12px;
+  letter-spacing: 0;
+  writing-mode: horizontal-tb;
+  transform: none;
+  font-family: var(--font-body);
+  white-space: normal;
+  text-align: center;
+  line-height: 1.3;
+}
+#v40-root nav[aria-label="Sections"] .v41-b5d5368cf2 {
+  width: 4px;
+  height: 4px;
+  background: #88e6f0;
+}
+#v40-root nav[aria-label="Sections"] .v41-2bad502360 {
+  margin-top: auto;
+}
+#v40-root nav[aria-label="Sections"] a[aria-current] {
+  background: linear-gradient(150deg, #edbd6826, #141414);
+  color: #ffda91;
+}
+.continuum-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  padding: 0 clamp(24px, 4.6vw, 84px);
+  background: #050608;
+}
+.continuum-hero .hero-planet {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 950px;
+  z-index: -5;
+  overflow: hidden;
+}
+.hero-flight-camera {
+  position: absolute;
+  inset: -5%;
+  transform: translate3d(0, 0, 0) scale(1.025) rotate(0deg);
+  transform-origin: 75% 45%;
+  will-change: transform;
+}
+.continuum-hero .hero-live-poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 68% center;
+  opacity: 1;
+  transform: none !important;
+  animation: none;
+}
+/* Finish the opening image in the first stylesheet, before secondary surfaces arrive. */
+.continuum-hero.orbital-observatory .hero-live-poster {
+  filter: none;
+  transition: none;
+}
+.continuum-hero.orbital-observatory .hero-planet::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 72% 10%, #53d6f026, transparent 54%),
+    radial-gradient(ellipse at 70% 83%, #3bd4ef1f, transparent 46%), linear-gradient(125deg, #13131399, transparent 62%);
+  mix-blend-mode: normal;
+  opacity: 0.3;
+}
+.flight-atmosphere {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 90% 40%, transparent 24%, #05060840 75%);
+}
+.continuum-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -4;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, #030507d9 4%, #03050795 34%, transparent 72%),
+    linear-gradient(0deg, #050608 4%, #050608e0 14%, transparent 48%);
+}
+.continuum-hero[data-scene="signal"] .hero-live-poster,
+.continuum-hero[data-scene="constellation"] .hero-live-poster {
+  opacity: 0.35;
+}
+.continuum-horizon {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 84% 12%, #ecb55e15, transparent 50%);
+}
+.continuum-arrival {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  max-width: 1560px;
+  margin: auto;
+  padding: 20px 0;
+  color: #9fbdc5;
+  text-transform: uppercase;
+  font: 12px/1.6 var(--font-mono);
+  letter-spacing: 0.11em;
+}
+.continuum-arrival > span:first-child {
+  color: #f2ce88;
+}
+.continuum-arrival-end {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: #daedf1;
+}
+.continuum-arrival i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #53ebce;
+  box-shadow: 0 0 15px #53ebce88;
+}
+.continuum-hero #hero-content.continuum-composition {
+  position: relative;
+  max-width: 1560px;
+  min-height: 680px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  padding: 40px 0 96px !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+.continuum-hero #hero-content > .continuum-copy {
+  position: relative;
+  z-index: 3;
+  width: 65%;
+  max-width: 850px;
+  padding: 0;
+}
+.continuum-label,
+.continuum-eyebrow {
+  color: #84e1ee;
+  font: 12px/1.6 var(--font-mono);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.continuum-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 26px;
+}
+.continuum-eyebrow > span {
+  width: 32px;
+  height: 2px;
+  background: linear-gradient(90deg, #e9b65c, #e9b65c00);
+}
+.continuum-hero #hero-content h1 {
+  max-width: 850px;
+  font: 800 clamp(42px, 4.7vw, 76px)/1.04 var(--font-display);
+  font-size: clamp(42px, 4.7vw, 76px) !important;
+  letter-spacing: -0.045em;
+  color: #f2f5f6;
+  margin: 0;
+  text-wrap: balance;
+  text-shadow: 0 3px 25px #0009;
+}
+.continuum-hero #hero-content h1 > span {
+  display: inline-block;
+  color: #ffcf78;
+  background: linear-gradient(100deg, #fff0bd, #f4bd5e 65%, #dc9e41);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.aurum-manifesto {
+  color: #9de6ef;
+  font: 12px/1.5 var(--font-mono);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin: 24px 0 12px;
+}
+.continuum-intro {
+  color: #d3dce1;
+  max-width: 48ch;
+  font: 400 17px/1.7 var(--font-body);
+  margin: 0 0 24px;
+  text-shadow: 0 1px 12px #000;
+}
+.continuum-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+.continuum-primary,
+.continuum-secondary {
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  min-height: 50px;
+  padding: 15px 21px;
+  font: 600 15px/1.4 var(--font-body);
+  text-decoration: none;
+}
+.continuum-primary {
+  border: 1px solid #ffd483;
+  background: linear-gradient(110deg, #ffe0a1, #edb14c);
+  color: #191109;
+  box-shadow: 0 0 30px #e9b65c25;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+}
+.continuum-secondary {
+  color: #b6f1fa;
+  border: 1px solid #55c9e35c;
+  background: #061019c9;
+}
+.continuum-primary:is(:hover, :focus-visible) {
+  background: #ffdf9e;
+  box-shadow: 0 0 35px #e9b65c60;
+}
+.continuum-secondary:is(:hover, :focus-visible) {
+  border-color: #a9f4ff;
+  background: #0b232e;
+}
+.continuum-footnote {
+  color: #a6b4bb;
+  font: 12px/1.8 var(--font-mono);
+  letter-spacing: 0.02em;
+  margin: 14px 0 10px;
+}
+.continuum-copy .hero-logo-reveal {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: #f2c77e;
+  font: 12px/1.5 var(--font-mono);
+}
+.continuum-visual {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+.continuum-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.continuum-stage #hero-stars,
+.continuum-still {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+}
+.continuum-stage:has(#hero-stars[data-ready="true"]) .continuum-still {
+  display: none;
+}
+.flight-signature {
+  position: absolute;
+  top: 26px;
+  right: -6px;
+  width: clamp(220px, 25vw, 360px);
+  height: auto;
+  mix-blend-mode: screen;
+  opacity: 0.96;
+  transform: rotate(-3deg);
+}
+.continuum-reticle {
+  position: absolute;
+  top: 174px;
+  right: 10px;
+  display: grid;
+  gap: 6px;
+  color: #bfe6ef;
+  text-align: right;
+  font: 12px/1.6 var(--font-mono);
+  letter-spacing: 0.12em;
+}
+.continuum-reticle::after {
+  content: "";
+  justify-self: end;
+  width: 90px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e9b65c);
+}
+.continuum-scene-deck {
+  position: absolute;
+  z-index: 5;
+  right: 0;
+  bottom: 56px;
+  width: 340px;
+  background: linear-gradient(125deg, #081017ef, #05080de8);
+  border: 1px solid #5fc9dd6e;
+  border-top-color: #edc780b0;
+  box-shadow:
+    0 15px 60px #0008,
+    inset 0 0 30px #1599c00c;
+  backdrop-filter: blur(12px);
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+}
+.flight-camera-control {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px 8px 16px;
+  border-bottom: 1px solid #50bdcf33;
+}
+.flight-camera-control > span {
+  color: #a6d6e0;
+  font: 12px/1.5 var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.flight-camera-control button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  min-height: 44px;
+  min-width: 136px;
+  background: #ecc27d;
+  color: #15100a;
+  border: 1px solid #ffdda1;
+  font: 600 12px var(--font-mono);
+  padding: 10px 13px;
+  cursor: pointer;
+}
+.continuum-scene-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.continuum-scene-controls button {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  min-height: 54px;
+  padding: 10px 12px;
+  text-align: left;
+  border: 0;
+  border-bottom: 1px solid #47bdd32b;
+  border-right: 1px solid #47bdd31b;
+  background: transparent;
+  color: #b4c6ce;
+  font: 600 13px var(--font-body);
+  cursor: pointer;
+}
+.continuum-scene-controls button > span {
+  font-size: 12px;
+  color: #80cddb;
+}
+.continuum-scene-controls button[aria-pressed="true"] {
+  color: #ffe0a4;
+  border-bottom-color: #ecc270;
+  background: linear-gradient(0deg, #a16e2726, transparent);
+}
+.continuum-stage-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  padding: 0 10px;
+  flex-wrap: wrap;
+  gap: 0 10px;
+}
+.continuum-stage-bottom button {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 6px 3px;
+  border: 0;
+  background: transparent;
+  color: #9eeaf5;
+  font: 12px var(--font-mono);
+  cursor: pointer;
+}
+.continuum-stage-bottom button span {
+  margin-left: 6px;
+  font-size: 14px;
+}
+.continuum-art-label {
+  font: 12px var(--font-mono);
+  color: #9cabb5;
+  text-align: center;
+  order: 3;
+  grid-column: 1 / -1;
+  padding-bottom: 8px;
+}
+.continuum-stage-bottom button:last-child {
+  justify-self: end;
+}
+.continuum-scene-caption {
+  padding: 10px 16px 13px;
+  margin: 0;
+  border-top: 1px solid #4dc1d61c;
+  color: #adc3cc;
+  font: 14px/1.5 var(--font-body);
+}
+.discovery-console:not([open]) {
+  display: none;
+}
+@media (min-width: 1180px) {
+  #v40-root.continuum-root main {
+    margin-left: 96px !important;
+    padding-left: 0 !important;
+  }
+  #v40-root header {
+    padding-left: 96px;
+  }
+}
+@media (min-width: 1900px) {
+  .continuum-hero #hero-content.continuum-composition {
+    min-height: 740px;
+  }
+  .continuum-hero .hero-planet {
+    height: 1080px;
+  }
+}
+@media (max-height: 800px) and (min-width: 1180px) {
+  .continuum-hero #hero-content.continuum-composition {
+    min-height: 560px;
+    padding-top: 18px !important;
+    padding-bottom: 58px !important;
+  }
+  .continuum-hero #hero-content h1 {
+    font-size: clamp(38px, 4.3vw, 60px) !important;
+  }
+  .continuum-eyebrow {
+    margin-bottom: 18px;
+  }
+  .aurum-manifesto {
+    margin-top: 18px;
+  }
+  .continuum-intro {
+    margin-bottom: 18px;
+    font-size: 16px;
+  }
+  .continuum-scene-deck {
+    bottom: 44px;
+    width: 310px;
+  }
+  .flight-signature {
+    top: 8px;
+    width: 265px;
+  }
+  .continuum-reticle {
+    top: 120px;
+  }
+}
+@media (max-width: 1179px) {
+  #v40-root header .v41-d28b3b93ee {
+    height: 72px;
+    padding-inline: 22px;
+    gap: 18px;
+  }
+  #v40-root nav[aria-label="Sections"] {
+    display: none;
+  }
+  #v40-root.continuum-root main {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+  }
+  .continuum-hero #hero-content h1 {
+    font-size: clamp(40px, 5vw, 60px) !important;
+  }
+  .continuum-scene-deck {
+    width: 290px;
+  }
+}
+@media (max-width: 900px) {
+  .atlas-instrument {
+    display: none;
+  }
+  .continuum-arrival-end {
+    display: none;
+  }
+  .flight-signature {
+    width: 230px;
+    top: 10px;
+    right: 0;
+    opacity: 0.8;
+  }
+  .continuum-hero #hero-content.continuum-composition {
+    min-height: 700px;
+    padding-bottom: 210px !important;
+  }
+  .continuum-hero #hero-content > .continuum-copy {
+    width: 84%;
+  }
+  .continuum-scene-deck {
+    bottom: 0;
+  }
+  .continuum-reticle {
+    top: 110px;
+  }
+}
+@media (max-width: 600px) {
+  .continuum-hero {
+    padding-inline: 18px;
+  }
+  .continuum-hero .hero-planet {
+    height: 900px;
+  }
+  .hero-flight-camera {
+    transform-origin: 72% 60%;
+  }
+  .continuum-hero .hero-live-poster {
+    object-position: 76% center;
+  }
+  .continuum-hero::before {
+    background:
+      linear-gradient(0deg, #050608 3%, transparent 44%),
+      linear-gradient(180deg, #050608bd 0, #050608c4 36%, transparent 70%);
+  }
+  #v40-root header .v41-d28b3b93ee {
+    height: 68px;
+    gap: 6px;
+    padding-inline: 16px;
+  }
+  .continuum-arrival {
+    justify-content: space-between;
+    padding: 16px 0;
+    font-size: 12px;
+    gap: 12px;
+    letter-spacing: 0.02em;
+  }
+  .continuum-arrival > span:nth-child(2) {
+    max-width: 160px;
+    text-align: right;
+  }
+  .continuum-hero #hero-content.continuum-composition {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 0;
+    padding: 20px 0 12px !important;
+  }
+  .continuum-hero #hero-content > .continuum-copy {
+    width: 100%;
+    max-width: none;
+  }
+  .continuum-eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    margin-bottom: 14px;
+    gap: 8px;
+  }
+  .continuum-eyebrow > span {
+    width: 18px;
+  }
+  .continuum-hero #hero-content h1 {
+    font-size: clamp(29px, 8.4vw, 46px) !important;
+    line-height: 1.12;
+    letter-spacing: -0.05em;
+  }
+  .aurum-manifesto {
+    font-size: 12px;
+    letter-spacing: 0.07em;
+    margin: 18px 0 10px;
+  }
+  .continuum-intro {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .continuum-actions {
+    gap: 8px;
+    flex-wrap: nowrap;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .continuum-primary,
+  .continuum-secondary {
+    padding: 12px;
+    gap: 8px;
+    font-size: 14px;
+    min-height: 56px;
+    min-width: 0;
+  }
+  .continuum-primary {
+    flex: 1;
+  }
+  .continuum-footnote {
+    font-size: 12px;
+  }
+  .continuum-copy .hero-logo-reveal {
+    font-size: 12px;
+  }
+  .continuum-visual {
+    position: relative;
+    order: 2;
+    inset: auto;
+    height: 140px;
+    margin-top: 6px;
+  }
+  .continuum-stage #hero-stars {
+    mask-image: none;
+  }
+  .continuum-still {
+    object-fit: cover;
+  }
+  .flight-signature {
+    width: 190px;
+    right: -2px;
+    top: 4px;
+    opacity: 0.94;
+  }
+  .continuum-reticle {
+    top: 92px;
+    right: 0;
+    font-size: 12px;
+  }
+  .continuum-scene-deck {
+    position: relative;
+    order: 3;
+    inset: auto;
+    width: 100%;
+    margin-top: 0;
+  }
+  .flight-camera-control {
+    padding-block: 5px;
+  }
+  .continuum-scene-controls button {
+    min-height: 48px;
+    font-size: 12px;
+    gap: 5px;
+    padding: 10px 6px;
+  }
+  .continuum-stage-bottom {
+    min-height: 44px;
+  }
+  .continuum-scene-caption {
+    padding-block: 8px;
+  }
+  .continuum-label {
+    font-size: 12px;
+  }
+}
+@media (max-width: 360px) {
+  .continuum-hero {
+    padding-inline: 18px;
+  }
+  .continuum-hero #hero-content h1 {
+    font-size: 28px !important;
+  }
+  .continuum-primary,
+  .continuum-secondary {
+    font-size: 14px;
+    padding-inline: 8px;
+    gap: 6px;
+  }
+  .continuum-intro {
+    font-size: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-flight-camera {
+    transform: translate3d(0, 0, 0) scale(1.145) rotate(0deg);
+    will-change: auto;
+  }
+}
+html[data-motion="off"] .hero-flight-camera {
+  transform: translate3d(0, 0, 0) scale(1.145) rotate(0deg);
+  will-change: auto;
+}
+@media (forced-colors: active) {
+  .continuum-hero #hero-content h1 > span {
+    -webkit-text-fill-color: CanvasText;
+    background: none;
+    color: CanvasText;
+  }
+  .continuum-primary {
+    clip-path: none;
+    border: 2px solid ButtonText;
+  }
+}
+.continuum-footnote strong {
+  color: #f2ce88;
+  font-weight: 500;
+}
+#v40-root header .hud-control {
+  font-size: 12px;
+}
+#v40-root header nav[aria-label="Primary"] a {
+  font-size: 13px;
+}
+@media (max-width: 600px) {
+  .continuum-scene-controls button > span {
+    display: none;
+  }
+  .continuum-art-label {
+    order: 3;
+    width: 100%;
+    padding-bottom: 8px;
+  }
+  .continuum-stage-bottom button:last-child {
+    margin-left: auto;
+  }
+}
+
+/* Quiet instruments leave the invitation in command. */
+@media (scripting: enabled) {
+  #main-content > section:not(#top, #studies) {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 900px;
+  }
+}
+#v40-root #main-content :is(a, button, [role="tab"]) {
+  transition-property: color, background-color, border-color, box-shadow, transform, opacity;
+}
+.scene-tools > summary {
+  display: none;
+}
+.journey-dock {
+  display: none;
+}
+.flight-camera-control button {
+  background: #0c2028;
+  color: #c2f1f7;
+  border-color: #73cbdc80;
+  font: 600 14px/1.4 var(--font-body);
+}
+.continuum-footnote,
+.continuum-copy .hero-logo-reveal {
+  font-size: 13px;
+  color: #d1dce2;
+}
+#v40-root nav[aria-label="Sections"] .v41-cbba20e481 {
+  font-size: 13px;
+}
+@media (max-width: 1179px) {
+  .scene-tools > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 48px;
+    padding: 10px 16px;
+    font: 500 14px/1.5 var(--font-body);
+    color: #c4e8ef;
+    cursor: pointer;
+    list-style: none;
+  }
+  .scene-tools > summary::-webkit-details-marker {
+    display: none;
+  }
+  .scene-tools > summary > span {
+    font-size: 21px;
+    color: #f3d491;
+  }
+  .scene-tools[open] > summary > span {
+    transform: rotate(45deg);
+  }
+  .scene-tools > summary:focus-visible {
+    outline: 2px solid #ffe0a4;
+    outline-offset: -4px;
+  }
+}

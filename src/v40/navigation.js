@@ -124,7 +124,7 @@ export function setupV40Navigation() {
       scene = { dispose: () => window.cashioV40?.setState({ cinema: null }) };
       const trailer = hash === "#film=trailer";
       window.cashioV40?.setState({ cinema: trailer ? "trailer" : "intro" });
-      document.title = trailer ? "House Cashio: The Trailer · cAshIo V41" : "Eagle · cAshIo V41";
+      document.title = trailer ? "House Cashio: The Trailer · cAshIo V42" : "Eagle · cAshIo V42";
       return;
     }
     const token = generation;
@@ -148,7 +148,7 @@ export function setupV40Navigation() {
         kind === "flight"
           ? module.openFlight({ motion: motion(), step: hash.slice(8), onClose: close })
           : module.openStudio({ motion: motion(), hash, onClose: () => close(), onNavigate: navigate });
-      document.title = `${kind === "flight" ? "First flight" : hash === "#signature" ? "Celestial Forge" : hash.startsWith("#lensing") ? "Lensing Observatory" : "Cinema"} · cAshIo V41`;
+      document.title = `${kind === "flight" ? "First flight" : hash === "#signature" ? "Celestial Forge" : hash.startsWith("#lensing") ? "Lensing Observatory" : "Cinema"} · cAshIo V42`;
       for (const node of document.body.children) {
         if (
           !(node instanceof HTMLElement) ||
@@ -187,14 +187,15 @@ export function setupV40Navigation() {
       event.preventDefault();
       event.stopImmediatePropagation();
       if (!activeHash) {
+        const fromDiscovery = !!link.closest(".discovery-console");
         returnHash =
           location.hash ||
-          (sceneKind(url.hash) === "flight"
+          (fromDiscovery || sceneKind(url.hash) === "flight"
             ? "#top"
             : url.hash === "#film=trailer"
               ? "#" + (link.closest("section[id]")?.id || "universe")
               : "#films");
-        opener = link;
+        opener = fromDiscovery ? document.getElementById("discovery-launch") || link : link;
       }
       navigate(url.hash);
     },

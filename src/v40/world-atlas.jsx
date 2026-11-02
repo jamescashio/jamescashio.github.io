@@ -1,4 +1,6 @@
 import React, { useRef, useState, useSyncExternalStore } from "react";
+import { AtlasCore, AtlasTicks, MobileAtlasTrack } from "./signal-graphics.jsx";
+import { destinationColors } from "./light-spectrum.js";
 const subscribe = () => () => {};
 const client = () => true;
 const server = () => false;
@@ -67,23 +69,23 @@ function AtlasInstrument({ selected, onChoose }) {
           React.createElement(
             "radialGradient",
             { id: "atlas-core" },
-            React.createElement("stop", { stopColor: "#bceff3" }),
-            React.createElement("stop", { offset: ".2", stopColor: "#448d9b" }),
-            React.createElement("stop", { offset: "1", stopColor: "#0c1d2c" }),
+            React.createElement("stop", { stopColor: "#c0ebf7" }),
+            React.createElement("stop", { offset: ".2", stopColor: "#1b90a4" }),
+            React.createElement("stop", { offset: "1", stopColor: "#1e1e1e" }),
           ),
           React.createElement(
             "linearGradient",
             { id: "atlas-orbit", x1: "0", y1: "0", x2: "1", y2: "1" },
-            React.createElement("stop", { stopColor: "#8adbe6" }),
-            React.createElement("stop", { offset: ".5", stopColor: "#8adbe6", stopOpacity: ".1" }),
-            React.createElement("stop", { offset: "1", stopColor: "#ffc56b" }),
+            React.createElement("stop", { stopColor: "#77dbf2" }),
+            React.createElement("stop", { offset: ".5", stopColor: "#77dbf2", stopOpacity: ".1" }),
+            React.createElement("stop", { offset: "1", stopColor: "#7edcf2" }),
           ),
         ),
         React.createElement("circle", {
           cx: "200",
           cy: "200",
           r: "168",
-          stroke: "#abcbd4",
+          stroke: "#c9c9c9",
           strokeOpacity: ".15",
           strokeDasharray: "1 7",
         }),
@@ -108,48 +110,31 @@ function AtlasInstrument({ selected, onChoose }) {
           rx: "167",
           ry: "88",
           transform: "rotate(54 200 200)",
-          stroke: "#8adbe6",
+          stroke: "#77dbf2",
           strokeOpacity: ".22",
         }),
         React.createElement("path", {
           d: "M200 21v24M200 355v24M21 200h24M355 200h24",
-          stroke: "#91bdc7",
+          stroke: "#2acae4",
           strokeWidth: ".7",
         }),
         React.createElement("path", {
           key: selected,
           className: "atlas-route",
           d: `M200 200Q${destination.x} 200 ${destination.x} ${destination.y}`,
-          stroke: "#ffd08a",
+          stroke: destinationColors[selected],
           strokeWidth: "1.5",
           pathLength: "1",
         }),
-        React.createElement("circle", {
-          cx: "200",
-          cy: "200",
-          r: "42",
-          fill: "url(#atlas-core)",
-          stroke: "#94d8df",
-          strokeOpacity: ".7",
-        }),
-        React.createElement("ellipse", {
-          cx: "200",
-          cy: "200",
-          rx: "60",
-          ry: "17",
-          transform: "rotate(-34 200 200)",
-          stroke: "#ffcf8a",
-          strokeWidth: "2",
-        }),
-        React.createElement("path", {
-          d: "M185 181l26-9 15 25-14 30-30-13-8-20zM185 181l27 46m-38-33 52 3m-15-25-29 42",
-          stroke: "#b9eef1",
-          strokeOpacity: ".3",
-        }),
+        React.createElement(AtlasTicks),
+        React.createElement(AtlasCore, { key: `core-${selected}` }),
         destinations.map((item, index) =>
           React.createElement(
             "g",
-            { key: item.short, className: selected === index ? "atlas-waypoint is-selected" : "atlas-waypoint" },
+            {
+              key: item.short,
+              className: `atlas-waypoint atlas-waypoint-${index}${selected === index ? " is-selected" : ""}`,
+            },
             React.createElement("circle", { cx: item.x, cy: item.y, r: "15" }),
             React.createElement("circle", { cx: item.x, cy: item.y, r: "5" }),
             React.createElement(
@@ -239,6 +224,7 @@ export function WorldAtlas({ worlds }) {
     React.createElement(
       "div",
       { className: "atlas-stage" },
+      interactive && React.createElement(MobileAtlasTrack, { selected }),
       interactive &&
         React.createElement(AtlasInstrument, {
           selected,

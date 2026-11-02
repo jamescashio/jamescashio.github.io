@@ -1,6 +1,7 @@
 /* Progressive improvements around the original Claude Design component. */
 import { destinations } from "./destinations.js";
 import { presentation } from "./evidence.js";
+import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.js";
 (() => {
   const root = document.documentElement;
   const mq = matchMedia("(prefers-reduced-motion: reduce)");
@@ -116,6 +117,7 @@ import { presentation } from "./evidence.js";
   );
 
   let panel,
+    missionDesk,
     opener,
     cinema,
     cinemaOpener,
@@ -124,18 +126,13 @@ import { presentation } from "./evidence.js";
   function openMission(trigger) {
     if (!panel || cinema || document.querySelector("#helios-flight, #helios-studio, .v40-scene-status")) return;
     opener = trigger || document.activeElement;
-    panel.querySelector("input").value = "";
-    filter("");
     panel.showModal();
-    panel.querySelector("input").focus();
-  }
-  function filter(query) {
-    let count = 0;
-    panel.querySelectorAll("[data-chapter]").forEach((a) => {
-      a.hidden = !a.dataset.search.includes(query.toLowerCase().trim());
-      if (!a.hidden) count++;
-    });
-    panel.querySelector(".mission-empty").hidden = count > 0;
+    missionDesk.reset();
+    // Opening the phone menu should reveal destinations without summoning the keyboard.
+    const initialFocus = window.matchMedia("(max-width: 700px)").matches
+      ? panel.querySelector("[data-mission-close]")
+      : panel.querySelector("input");
+    initialFocus.focus({ preventScroll: true });
   }
   function ready() {
     if (panel) return;
@@ -143,10 +140,10 @@ import { presentation } from "./evidence.js";
     panel.className = "mission-panel";
     panel.id = "mission-dialog";
     panel.setAttribute("aria-labelledby", "mission-title");
-    panel.innerHTML = `<div class="mission-head"><h2 id="mission-title">Mission Control</h2><button type="button" data-mission-close aria-label="Close Mission Control">ESC ×</button></div><label class="mission-search"><span>Where are we going?</span><input type="search" placeholder="Find a world, experiment or answer…" autocomplete="off"></label><nav class="mission-results" aria-label="All chapters">${chapters.map(([id, title, desc], i) => `<a href="#${id}" data-chapter="${id}" data-search="${(title + " " + desc).toLowerCase()}"><small>${String(i + 1).padStart(2, "0")}</small><strong>${title}</strong><span aria-hidden="true">↗</span></a>`).join("")}<p class="mission-empty" hidden>No matching destination. Try “films” or “Doug”.</p></nav><div class="mission-foot"><span>V41 · ${presentation.name}<br>Human in command. Towel optional.</span><button type="button" data-motion-toggle>Pause motion</button></div>`;
+    panel.innerHTML = missionDeskMarkup(chapters, presentation);
     document.body.append(panel);
+    missionDesk = bindMissionDesk(panel);
     panel.addEventListener("close", () => opener?.focus({ preventScroll: true }));
-    panel.querySelector("input").addEventListener("input", (e) => filter(e.target.value));
     panel.addEventListener("click", (e) => {
       if (e.target.closest("[data-mission-close]")) panel.close();
       const a = e.target.closest("[data-chapter]");

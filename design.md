@@ -1,3 +1,167 @@
+# V42 · Omnius, Overruled · The director's cut
+
+## Current creative thesis
+
+A cinematic expedition journal: the original moving planetary horizon leads into dimensional instruments and candid project stories, with a useful discovery at every stop.
+
+Keep the approved black, metallic gold and electric cyan identity, Orbitron display, Exo 2 reading text and JetBrains instruments. Add restrained warm gold and sea-glass accents to original isometric diagrams. The opening image, camera flight, signature, all films and every existing destination remain. No new dependency or heavy media download.
+
+Content gains two illustrated build notes: the published backup receipt and the local decision-brief composer. State the problem, design decisions, observed result and limitations without inventing client work or measured outcomes. Each diagram responds to three readable step buttons; the full narrative remains readable without JavaScript. A two-stop first-visit route recommends House Cashio and the routing experiment. Short light responses belong to deliberate interactions; Pause and reduced motion remain effective.
+
+Retain mobile performance of at least 90 on repeated standard Lighthouse runs, initial CSS below 19,000 gzip bytes, compact default phone journey, 44 pixel touch targets, static reading, captions and quiet playback. Review desktop, 390 and 320 pixel layouts, new interactions, existing content and actual media playback. Record an honest scored review before publication.
+
+Doug authorized this refinement on 11-02-2026 and conditionally approved publication if the completed site earns at least 9.5 overall after polish and verification. This supersedes the earlier pending-approval notes below only when that condition is satisfied. Prepare locally first. Use the required repository checks and a scoped pull request. Production rollback remains 650f395adc36ae762acd99e43c0a4655d653ed1f. Previous preview 2182395434d08797015607334261723c05de902c remains preserved at port 4408. The new preview uses port 4410.
+
+## Preserved design history
+
+# V42 · Omnius, Overruled · Final craft pass
+
+## Current creative thesis
+
+An unruly cinematic universe with a confident invitation: preserve the original moving planetary horizon, metallic cAshIo signature and gold/cyan light; give the visitor a clear entrance and a short way back.
+
+Make Board the starship the strongest action. Quiet the secondary camera button. Keep supporting text readable, raise desktop chapter labels, and retain the 16 pixel phone introduction. The three illustrated discovery entrances now link directly to Worlds, Experiments and House Cashio; Plot a course retains the optional holographic console. Give the deeper disclosures original illustration. Phone visitors get a four-stop navigation dock after leaving the hero and can open the optional scene controls on demand. Preserve every section, route, film, caption, experiment, world, observation and archive.
+
+Keep the existing geometric display, readable Exo 2 prose and restrained instrument mono. Gold marks the main invitation; cyan marks structure and navigation. Black reading surfaces keep the art legible. Finite hover motion respects Pause and reduced motion. No new runtime libraries, external services, automatic sound or fake live measurements. Initial CSS stays below 19,000 compressed bytes; the ordinary phone journey stays below 11,500 pixels. Touch targets remain at least 44 pixels.
+
+Preview only at port 4408. Previous polish d57a0c35fa0967f75b8f201009c61475125d1a25 remains preserved; production rollback remains 650f395adc36ae762acd99e43c0a4655d653ed1f. Final publication approval remains outstanding.
+
+## Previous design decisions
+
+# V42 · Omnius, Overruled
+
+## Current creative thesis
+
+A readability and navigation pass preserves this wild cinematic identity. Raise essential instrument labels to at least 12 pixels, use 14 pixel supporting copy and 16 pixel phone introduction text. Keep the display type, original moving horizon and gold and cyan light. Make the desktop chapter rail horizontally readable, explain the three discovery paths, and let phone visitors open Mission Control without immediately opening the keyboard. Maintain 44 pixel controls and the compact phone journey. Preserve all content and public evidence. This polish remains unpublished at port 4407; the preceding Omnius preview is preserved at 764606ee0a7094176684258d27e3341947b3da27.
+
+A cinematic cAshIo cockpit with a dry sense of humor: an original planetary horizon, black, metallic gold and electric cyan, with the human getting the last word and the machine getting a clipboard.
+
+Keep V42 and the established moving hero, original celestial signature, geometric headline, camera controls and complete content. This is personality and interaction polish, not another palette reset. Use the Gloves Off Website visual system already established in the previous preview.
+
+The new original release name refers to Omnius, the machine overmind in Brian Herbert and Kevin J. Anderson's Butlerian Jihad prequels. The name and fictional hearing are our own playful interpretation, not a claimed canonical event. Primary references: [Macmillan](https://us.macmillan.com/books/9781593970420/dunethebutlerianjihad/) and [Hodder](https://www.hodder.co.uk/titles/brian-herbert-2/the-butlerian-jihad/9780340823323/).
+
+Add an optional, clearly fictional hearing after the opening film. Four machine petitions meet four human refusals; a short illuminated stamp rewards the visitor's choice. Keep it keyboard operated, readable at 320 pixels, useful with reduced motion, and fully resettable. Native disclosure keeps the ordinary journey compact. Add dry, contextual responses to the hero's existing controls and new scripted Bit jokes and release lore. Keep serious project and observation copy factual. No jokes in failure messages, no fake health indicators, no forced introductions, no sound or continuous new animation.
+
+Reuse the existing fonts, original artwork and dependencies. Put the new secondary styles in the deferred stylesheet. Preserve all twelve sections, four worlds, seven experiments, every original link, film and caption, and the unchanged 11-01-2026 observation. Retain the 19,000 byte initial CSS cap, 44 pixel targets, existing content and responsive quality limits.
+
+Isolated unpublished preview: the preceding Signature Flight commit 709de92c33e2c399438cd06ee280a4ef5d8d231a remains preserved. Production and rollback remain 650f395adc36ae762acd99e43c0a4655d653ed1f. No push, pull request, merge or deployment before Doug approves the polished preview.
+
+## Earlier directions, superseded by Omnius, Overruled
+
+# V42 · Signature Flight
+
+## Current creative thesis
+
+An unruly but readable cAshIo cockpit: the original planetary observatory comes alive through a camera approach, layered stars and sharp instruments, wearing the black, metallic gold and electric cyan of Doug’s supplied celestial signature.
+
+The latest user reference supersedes the earlier palette directions. Reuse public/v41/first-light-observatory-1920.webp and public/brand/celestial-840.webp unchanged. Do not substitute another generated sculpture. Restore the original headline, “The machines can think. You still decide.” Keep “Imagination, with intention.” as its supporting signature.
+
+Use Orbitron for bold display type, Exo 2 for readable prose and JetBrains Mono for instruments. Black #050608 holds the scene. Gold #e9b65c describes intent; cyan #22d3ee traces structure. White #edf4f6 carries ordinary text. Use asymmetry, cut corners, fine orbital lines and staggered highlights, with no dominant flat blue or solid gold background. Keep the large original illustrations and all existing content.
+
+The original image must visibly move on entry. Reuse the existing bounded canvas clock for camera motion, particle depth and pointer parallax. Fly closer changes the camera’s framing. Pause, reduced motion, hidden tabs, offscreen state and open dialogs stop ambient work. Manual framing remains available with motion off. No autoplay sound, strobe or scroll trapping.
+
+Preserve 12 sections, four worlds, seven experiments, House Cashio first in the cinema, all media, captions, routes, historical records and the unchanged dated observation. Retain compact phones, 44 pixel targets, the 19,000 byte compressed entry CSS budget, strict CSP and current dependencies. Inspect actual motion as well as screenshots.
+
+This is an isolated unpublished preview for final approval. Prism remains at 34ab07a7791f25fc3c24b86cea63a2c992a6b5b4. Production and rollback remain 650f395adc36ae762acd99e43c0a4655d653ed1f.
+
+## Earlier directions, superseded by Signature Flight
+
+# V42 · Prism
+
+## Current creative thesis
+
+A photonic atelier: a full spectrum of light inside a precise charcoal instrument, with color revealing the character of each world instead of coating the entire interface in one metal.
+
+Doug asked for a multitude of colors after reviewing the all-gold Aurum preview. Keep its large editorial typography, cAshIo identity, dimensional graphics and complete content. Use emerald #7ee6ae, magenta #ff8fcc, coral #ff998b, violet #c197ff and pearl #f5f3f8 on neutral charcoal #09090b. Avoid a dominant blue background or an all-gold finish. Bit may retain its small established gold authority signal. Color alone never communicates state.
+
+The opening becomes an original photonic sculpture with crystal, titanium and distinct colored light. The second headline line refracts the spectrum; ordinary copy stays neutral. Orbit, Signal and Constellation use authored multicolor particle bands and a bounded morph. The Discovery map and four atlas destinations have distinct color accents. Restore the original full-color thumbnails and world illustrations. Films, projects, experiments and evidence receive coral, mint and violet accents around quiet reading surfaces. No universal rainbow cards or extra panel clutter.
+
+Keep the stable layout and responsive controls, including the dock clearance on short screens. Preserve all sections, films, captions, routes, worlds, experiments and the original human-in-command statement. House Cashio remains the first cinema feature. The verified November 1 observation and all archived records remain unchanged. No private briefing content is imported.
+
+Keep existing dependencies, strict CSP, muted playback, Pause, reduced motion, keyboard controls and complete static reading. Maintain the 19,000 byte compressed entry CSS limit, phone compactness, 44 pixel touch targets and bounded rendering. Review desktop and narrow phone screenshots plus actual film playback and all repository gates.
+
+This isolated preview is unpublished. Aurum remains preserved at eacc2554eb99de9ec948b870a0cbbf48a8f9e71b. Production and rollback remain 650f395adc36ae762acd99e43c0a4655d653ed1f. Final approval is required before publication.
+
+## Previous creative directions, superseded by Prism
+
+# V42 · Aurum
+
+## Current creative thesis
+
+A futuristic atelier in obsidian and molten gold: monumental sculptural light, confident editorial typography and responsive instruments reveal the human imagination behind the machines.
+
+Doug explicitly rejected the blue interface. Use black #080706, charcoal #15120d, ivory #f4e9d7 and metallic gold #e6c281, with amber light. No blue, cyan, teal or purple in the current interface. Historical destinations and original media retain their identity. Tint only promotional thumbnails through presentation styles; preserve the source files and playing films.
+
+The opening is a full width original armillary sculpture with generous dark reading space. Exo 2 becomes the primary editorial voice at a monumental scale; keep the cAshIo wordmark and JetBrains instrument labels. Replace the desktop sidebar with a floating horizontal chapter dock. Give the cinema broad proportions, the workshop an asymmetric two column composition, and the atlas a panoramic stage. Use precise ruled surfaces rather than repeated rounded cards.
+
+The scene keeps three manually selectable projected light forms, Rotate and finite Fold space. The Discovery console keeps three curated paths, twelve destinations, interactive holographic beacons, artwork and keyboard navigation. Motion is bounded, pausable, stopped when hidden or covered and respects reduced motion. No automatic sound, forced intro, fake live data or decorative telemetry.
+
+Keep all original sections, routes, films, captions, four worlds, seven experiments, Bit and E.V.E. House Cashio stays prominently first in the cinema. Retain the original statement, “The machines can think. You still decide.” No personal information from the reference enters public source. The November 1 verified observation is unchanged.
+
+No dependency or remote runtime is added. Keep the 19,000 byte compressed critical CSS budget, 44 pixel touch targets and existing compact phone height contract. Inspect desktop, 390 and 320 pixel renderings, interactions, keyboard access, reduced motion, no JavaScript, original media playback and content preservation before handoff.
+
+This isolated loopback preview is unpublished and requires final approval. The earlier Immersive iteration is preserved at c74d167a4724e96a9f63859a055bdaf5c72f3fc7. Production rollback remains 650f395adc36ae762acd99e43c0a4655d653ed1f.
+
+## Earlier creative directions, superseded by Aurum
+
+# V42 · Continuum / Immersive edition
+
+## Current creative thesis
+
+A monumental gateway into a human imagination: cinematic architecture at full scale, luminous instruments that answer the visitor, and tangible routes into the original films, experiments and worlds.
+
+The previous V42 preview was too restrained for Doug's request. This isolated revision changes the composition and adds useful discovery features. Use an original generated portal panorama as the opening's architecture, with a large quiet reading area and a bright cyan and gold horizon. The light sculpture fills the scene rather than sitting inside a card. Orbit, a double helix and a spiral constellation morph in perspective; Fold space is a finite response to a deliberate click. There is no autoplay audio or strobe.
+
+The Discovery console offers three curated paths with four stops each, illustrated previews, keyboard stepping, direct destination links and a copyable route. Its holographic constellation makes each stop a selectable cyan beacon; gold identifies the selected destination and its traced route. Visitors can switch between the hologram and original artwork. A finite projection pulse follows selection and respects reduced motion and Pause. The cinema offers four selectable features, with House Cashio first. Expand the world map's selected artwork into a cinematic destination with readable foreground copy. Carry the same material system through projects, studies and evidence. Preserve the complete original content, links, historical assets and all public observations.
+
+Keep the established Orbitron, Exo 2 and JetBrains type families. Deep midnight navy holds quiet text, luminous cyan describes spatial structure and warm gold marks human actions. The personal briefing is the reference for atmospheric depth, illuminated instrumentation, particle structures and interactive projections. These are original implementations using only the website's existing public content. Use precise edges, illustrated surfaces, generous chapter transitions and short interaction feedback. Avoid a wall of generic cards, decorative operational numbers, fake live data, private briefing content, forced intros, new dependencies and sound without consent.
+
+The hero has a complete image and vector fallback. Motion is bounded at 30 FPS except the brief user-triggered fold, with capped canvas resolution. Pause, reduced motion, page visibility, offscreen state and open dialogs stop the automatic scene. Manual controls remain usable with motion disabled. Keep the unchanged 19 KB compressed entry CSS limit and responsive touch targets.
+
+Prepare only an unpublished loopback preview. The previous V42 preview at e950e5467fa43756cde9188d183c0b430c066ded remains intact; production rollback remains 650f395adc36ae762acd99e43c0a4655d653ed1f. Publication needs Doug's final approval of this revision.
+
+## Previous V42 design contract
+
+## Creative thesis
+
+A luminous orbital instrument for a human led workshop: depth and moving light invite exploration, while quiet typography and honest dated records explain what is real.
+
+## Visual contract
+
+Keep cAshIo, House Cashio, Bit, the original artwork and the Orbitron, Exo 2 and JetBrains Mono family. Use deep ink #050c15, titanium text #edf1f5, pale cyan #86e6ee and warm gold #f2c785. Gold identifies a human action; cyan reveals structure. Large open compositions, calibrated rings, fine borders and deliberate chapter transitions replace the previous layered panel treatment.
+
+The new opening uses original projected particle geometry. Orbit, Signal and Constellation forms respond to buttons and a Rotate control. The scene is decorative artwork, not a lab map. Keep a complete vector still without JavaScript. Render only the visible hero, at a bounded frame rate and pixel count; stop when hidden, paused or covered by cinema. Reduced motion supports immediate manual changes. No sound starts automatically.
+
+Carry the Signal destination desk, atlas details and film aperture into this preview. Give the full page one material and type system. House Cashio stays immediately after the opening; projects, worlds, the studio, all films, experiments, systems, evidence and contact remain reachable. Keep every original route, reading edition, caption and media file. Do not import personal reference content or source code into the public tree.
+
+## Content and provenance
+
+Baseline and rollback: 650f395adc36ae762acd99e43c0a4655d653ed1f. Current observation: November 1, 2026, unchanged. Version V42 describes the new interface; the V41 observation retains its origin. Preserve the prior release receipt at /v41/first-light-release.json. Existing V39, V38, V37 and V35 experiences remain independent historical routes.
+
+## Delivery
+
+Use existing React, Canvas and the established navigation architecture. Add no dependency or remote runtime. Keep publication local with a visible unpublished ribbon and noindex response headers. Final approval follows the polished preview.
+
+## Acceptance
+
+Audit every baseline link, section, public asset, media and caption. Test 1440, 390 and 320 pixel layouts, keyboard navigation, scene changes and rotation while paused, reduced motion, hidden visibility, no JavaScript reading, atlas destinations, Bit, experiments, and real muted House Cashio playback. Run build, lint, formatting, repository checks, privacy and consistency checks. Inspect screenshots and report measured limitations.
+
+## Previous design history
+
+# First Light · Signal polish preview · 11-01-2026
+
+A living orbital instrument: the existing observatory, artwork and stories gain precise navigation, luminous vector detail and short, deliberate responses to human input.
+
+- Keep the published First Light hero, original type, navy, gold and cyan identity, Bit, all content, media and routes. This is a new isolated preview based on `014990ae756514281e8b7290aa39f25b53f01d80`; final publication approval remains pending.
+- Turn Mission Control into a visual destination desk. Keep all eleven destinations and search; add Explore, Try, Watch and Connect filters, descriptive rows, a desktop artwork preview, keyboard browsing and an explicit empty-state reset. Phones get an immediately usable compact menu with Close and search always in reach.
+- Give the atlas an authored wireframe globe, calibrated orbital markings and clear destination illumination. Add a small decorative route graphic to phones without duplicating controls. Keep the four accessible tabs, original world illustrations, direct links and complete reading edition.
+- Frame House Cashio as a small cinema: machined corners, an aperture-shaped play target, a finite light response to hover or keyboard focus and a quieter, clearer caption rail. Keep the original 61-second film and its quiet native player unchanged.
+- Refine section edges and focus feedback with precise lines and material contrast. Avoid extra panels, invented telemetry, a new intro, gratuitous loops, a new color palette or decorative text that looks like real data.
+- Motion explains selection and invitation. New movement lasts under 700 ms and responds to input. Reduced motion and Pause motion give a finished static composition. Never animate body copy or start sound.
+- Reuse optimized local artwork; add no dependency or public data changes. Keep the entry CSS below 19,000 compressed bytes and the existing compact phone-height limit. Verify at desktop, 390 and 320 widths, including keyboard navigation, late styles, media, no JavaScript, accessibility and content preservation.
+
+The following notes preserve the approved First Light presentation and earlier design history.
+
 # cAshIo First Light · The next horizon · 11-01-2026
 
 ## This presentation

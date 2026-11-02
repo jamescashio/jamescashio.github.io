@@ -1,5 +1,33 @@
 # Changelog
 
+## V42.0.0 · Omnius, Overruled · 11-02-2026
+
+Director’s cut · 11-02-2026: two illustrated build stories explain the backup receipt and decision brief through keyboard operated diagrams, decisions, results and limits. A first-visit route connects House Cashio to the routing experiment. Refine the workshop’s desktop composition, phone reading surfaces, cinema edges and project interactions. Preserve the original moving hero, all media and the verified November 1, 2026 observation. Initial styles arrive in the page, interactive code yields network priority to the artwork, and offscreen background films load only when approached in supporting browsers.
+
+### Preserved preview history
+
+Readability polish · 11-01-2026: larger instrument labels and captions, horizontal desktop chapter names, clearer discovery descriptions and a phone menu that opens without focusing Search. Retain the moving hero, humor, original content and dated evidence. This revision remains unpublished.
+
+Prepared 11-01-2026. Keep the original planetary hero and black, metallic gold and electric cyan identity. Add an optional fictional hearing, four machine proposals to overrule, finite verdict graphics, contextual flight control humor and new Bit replies. Name the release after the machine overmind from the Butlerian Jihad prequels, with a publisher reference and a clear distinction between literary lore and the original comic scene. Preserve all public content, films, captions, routes and the existing dated observation. This preview remains unpublished pending final approval.
+
+## V42.0.0 · Signature Flight preview
+
+Signature Flight revision · November 1, 2026: restored original planetary artwork, the cAshIo celestial identity and the original headline. Added a visible camera approach and manual close view inside the existing bounded motion owner. Black, metallic gold, electric cyan and angular instruments replace the formal spectrum treatment. This revision remains unpublished.
+
+### Earlier Prism preview
+
+Prism revision · November 1, 2026: a photonic sculpture and a coordinated spectrum of emerald, magenta, coral, violet and pearl. Three projected light forms gain distinct color behavior, holographic destinations use individual color accents, and original illustrations regain their full colors. All content, media and dated evidence are preserved. This revision remains unpublished.
+
+### Earlier Aurum preview
+
+Aurum revision · November 1, 2026: an original gold sculpture, an obsidian and ivory palette, oversized editorial typography, a floating desktop chapter dock, a larger cinema and asymmetric workshop. Holographic instruments and all current interface surfaces use warm light. Existing artwork and media files remain unchanged. Complete content and verified observations are preserved. This revision is unpublished.
+
+### Earlier V42 preview iterations
+
+Immersive revision · November 1, 2026: an original panoramic gateway, three perspective light forms, a finite Fold space response, and a Discovery console with three paths, twelve destinations and selectable holographic beacons. The cinema gains four selectable features and the world map gains panoramic destination artwork. House Cashio, the complete original media and dated evidence remain intact. This revision is unpublished.
+
+Prepared November 1, 2026. A new orbital interface and interactive generative light studies with the complete existing public content. The verified November 1, 2026 observation remains unchanged. V41 First Light release metadata is archived. This candidate is unpublished and awaits final approval.
+
 ## V41.0.0 · Eagle · October 23, 2026
 
 Observation refresh · November 1, 2026: fresh read only checks confirm 2 hosts, 19 running containers and 1 running virtual machine. The backup inventory lists 122 snapshots; 21 of 21 latest reported snapshots have successful integrity results. Preserve the October 31, 2026 observation as a dated archive and update current date labels, metadata and sitemap.
