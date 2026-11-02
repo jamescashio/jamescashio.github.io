@@ -1,7 +1,7 @@
 import { renderExperimentsPart2 } from "./experiments-part-2.jsx";
 
 import React from "react";
-import { classFor } from "../style-variants.js";
+import { classFor } from "../style-variants.ts";
 import designSystem from "../design-system.js";
 const h = React.createElement;
 

@@ -19,7 +19,7 @@ import { JourneyDisclosure } from "./sections/journey-disclosure.jsx";
 
 import React from "react";
 
-import { classFor } from "./style-variants.js";
+import { classFor } from "./style-variants.ts";
 const h = React.createElement;
 import { renderRail } from "./render-rail.jsx";
 import { renderHeader } from "./render-header.jsx";

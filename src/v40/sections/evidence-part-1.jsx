@@ -1,6 +1,6 @@
 import { snapshot, observedMonth, fleetSummary, backupSummary } from "../evidence.ts";
 import React from "react";
-import { classFor } from "../style-variants.js";
+import { classFor } from "../style-variants.ts";
 import designSystem from "../design-system.js";
 const h = React.createElement;
 export function renderEvidencePart1(v) {

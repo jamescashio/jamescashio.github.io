@@ -1,6 +1,6 @@
 import React from "react";
 import { RoutingSection } from "./routing.jsx";
-import { classFor } from "../style-variants.js";
+import { classFor } from "../style-variants.ts";
 import designSystem from "../design-system.js";
 const h = React.createElement;
 

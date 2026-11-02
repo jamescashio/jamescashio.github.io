@@ -1,5 +1,5 @@
 import React from "react";
-import { classFor } from "../style-variants.js";
+import { classFor } from "../style-variants.ts";
 
 const h = React.createElement;
 export function renderMachinesPart1(v) {

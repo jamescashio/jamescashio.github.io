@@ -1,7 +1,7 @@
 import { renderEvidencePart1 } from "./evidence-part-1.jsx";
 import { observedDate } from "../evidence.ts";
 import React from "react";
-import { classFor } from "../style-variants.js";
+import { classFor } from "../style-variants.ts";
 import designSystem from "../design-system.js";
 const h = React.createElement;
 
