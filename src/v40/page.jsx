@@ -84,8 +84,8 @@ export class V40Page extends React.Component {
     scene: "orbit",
     sceneTurn: 0,
     cameraClose: false,
-    wide: typeof window !== "undefined" ? window.innerWidth >= 1180 : true,
-    navOn: typeof window !== "undefined" ? window.innerWidth >= 1100 : true,
+    wide: (this.props.initialWidth ?? (typeof window !== "undefined" ? window.innerWidth : 1440)) >= 1180,
+    navOn: (this.props.initialWidth ?? (typeof window !== "undefined" ? window.innerWidth : 1440)) >= 1100,
     active: "top",
     pv: null,
     pvShown: false,
@@ -227,13 +227,15 @@ export class V40Page extends React.Component {
     window.cashioV40 = this;
     this.onResize = () => {
       const wide = window.innerWidth >= 1180;
+      const navOn = window.innerWidth >= 1100;
       if (!wide) {
         this.orbitPointer = { x: 0, y: 0 };
         const planet = document.querySelector(".hero-live-poster");
         if (planet) planet.style.transform = "";
       }
-      this.setState({ wide, navOn: window.innerWidth >= 1100 });
+      if (this.state.wide !== wide || this.state.navOn !== navOn) this.setState({ wide, navOn });
     };
+    if (this.props.initialWidth !== undefined) this.onResize();
     this.sio = new IntersectionObserver(
       (es) =>
         es.forEach((e) => {
@@ -528,13 +530,29 @@ export class V40Page extends React.Component {
         el.dataset.sobs = "1";
         this.sio.observe(el);
       });
-    document.querySelectorAll("[data-reveal]:not([data-rv])").forEach((el) => {
+    // Measure the group before changing styles so the opening pays for one layout.
+    const sectionRects = new Map();
+    const inView = (el) => {
+      const section = el.closest("section");
+      if (section) {
+        if (!sectionRects.has(section)) sectionRects.set(section, section.getBoundingClientRect());
+        const bounds = sectionRects.get(section);
+        // Leave skipped chapters asleep until their intersection observer sees them.
+        if (bounds.top >= window.innerHeight || bounds.bottom <= 0) return false;
+      }
+      return el.getBoundingClientRect().top < window.innerHeight * 0.92;
+    };
+    const reveals = Array.from(document.querySelectorAll("[data-reveal]:not([data-rv])"), (el) => ({
+      el,
+      visible: this.reduce || inView(el),
+      sibling: el.parentElement ? Array.prototype.indexOf.call(el.parentElement.children, el) : 0,
+    }));
+    reveals.forEach(({ el, visible, sibling }) => {
       el.dataset.rv = "1";
-      if (this.reduce || el.getBoundingClientRect().top < window.innerHeight * 0.92) return;
-      const sib = el.parentElement ? Array.prototype.indexOf.call(el.parentElement.children, el) : 0;
+      if (visible) return;
       el.style.opacity = "0";
       el.style.transform = "translateY(40px)";
-      el.style.transition = `opacity 1s cubic-bezier(.23,1,.32,1) ${Math.min(sib, 6) * 0.08}s, transform 1s cubic-bezier(.23,1,.32,1) ${Math.min(sib, 6) * 0.08}s`;
+      el.style.transition = `opacity 1s cubic-bezier(.23,1,.32,1) ${Math.min(sibling, 6) * 0.08}s, transform 1s cubic-bezier(.23,1,.32,1) ${Math.min(sibling, 6) * 0.08}s`;
       this.rio.observe(el);
     });
   }

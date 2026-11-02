@@ -29,6 +29,41 @@ async function visit(t, options = {}) {
   return page;
 }
 
+test("the interactive page preserves its first painted hero on desktop and phone", async (t) => {
+  for (const width of [390, 1440]) {
+    const page = await visit(t, { viewport: { width, height: 900 }, isMobile: width < 600 });
+    const hydrationErrors = [];
+    page.on("console", (message) => {
+      if (message.type() === "error") hydrationErrors.push(message.text());
+    });
+    let release;
+    const ready = new Promise((resolve) => {
+      release = resolve;
+    });
+    await page.route("**/assets/mostlyHarmless-*.js", async (route) => {
+      await ready;
+      await route.continue();
+    });
+    try {
+      await page.goto(url, { waitUntil: "commit" });
+      await expect(page.locator(".hero-live-poster")).toBeVisible();
+      await page.evaluate(() => {
+        window.firstPaintedHero = document.querySelector(".hero-live-poster");
+      });
+    } finally {
+      release();
+    }
+    await page.waitForFunction(() => Boolean(window.cashioV40));
+    await expect(page.locator("[data-mission-open]")).toBeEnabled();
+    assert.equal(
+      await page.evaluate(() => window.firstPaintedHero === document.querySelector(".hero-live-poster")),
+      true,
+    );
+    assert.equal(await page.evaluate(() => window.cashioV40.state.wide), width >= 1180);
+    assert.deepEqual(hydrationErrors, []);
+  }
+});
+
 test("the compact phone journey keeps projects and professional context visible", async (t) => {
   const page = await visit(t);
   await page.goto(url);

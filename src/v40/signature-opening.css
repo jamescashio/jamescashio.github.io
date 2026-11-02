@@ -156,6 +156,7 @@
 .hero-flight-camera {
   position: absolute;
   inset: -5%;
+  transform: translate3d(0, 0, 0) scale(1.025) rotate(0deg);
   transform-origin: 75% 45%;
   will-change: transform;
 }
@@ -167,6 +168,21 @@
   opacity: 1;
   transform: none !important;
   animation: none;
+}
+/* Finish the opening image in the first stylesheet, before secondary surfaces arrive. */
+.continuum-hero.orbital-observatory .hero-live-poster {
+  filter: none;
+  transition: none;
+}
+.continuum-hero.orbital-observatory .hero-planet::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 72% 10%, #53d6f026, transparent 54%),
+    radial-gradient(ellipse at 70% 83%, #3bd4ef1f, transparent 46%), linear-gradient(125deg, #13131399, transparent 62%);
+  mix-blend-mode: normal;
+  opacity: 0.3;
 }
 .flight-atmosphere {
   position: absolute;
@@ -764,10 +780,12 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-flight-camera {
+    transform: translate3d(0, 0, 0) scale(1.145) rotate(0deg);
     will-change: auto;
   }
 }
 html[data-motion="off"] .hero-flight-camera {
+  transform: translate3d(0, 0, 0) scale(1.145) rotate(0deg);
   will-change: auto;
 }
 @media (forced-colors: active) {
@@ -806,6 +824,13 @@ html[data-motion="off"] .hero-flight-camera {
 }
 
 /* Quiet instruments leave the invitation in command. */
+html[data-motion] #main-content > section:not(#top, #studies) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}
+#v40-root #main-content :is(a, button, [role="tab"]) {
+  transition-property: color, background-color, border-color, box-shadow, transform, opacity;
+}
 .scene-tools > summary {
   display: none;
 }

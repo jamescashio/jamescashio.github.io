@@ -1,5 +1,5 @@
 import React from "react";
-import { renderToStaticMarkup } from "react-dom/server";
+import { renderToString } from "react-dom/server";
 import { readFile, writeFile, readdir } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { JSDOM } from "jsdom";
@@ -10,11 +10,12 @@ Object.assign(globalThis, { window: environment.window, document: environment.wi
 // The reading edition uses the compact composition so it remains readable on every screen.
 Object.defineProperty(environment.window, "innerWidth", { value: 390 });
 const { V40Page } = await import("../src/v40/page.jsx");
-const markup = renderToStaticMarkup(
+const markup = renderToString(
   React.createElement(V40Page, {
     scanlines: true,
     starDensity: 220,
     techDetail: false,
+    initialWidth: 390,
   }),
 );
 const dom = new JSDOM(`<body>${markup}</body>`);
