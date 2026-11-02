@@ -1,6 +1,6 @@
 // A visual index into existing destinations. Search and previews stay in this browser.
 const groups = ["All", "Explore", "Try", "Watch", "Connect"];
-const descriptions = {
+const descriptions: Record<string, string> = {
   top: "Begin at the observatory.",
   contact: "Speaking, mentoring and comparing notes.",
   "eagle-film": "An unlikely crew. A 61 second escape.",
@@ -13,7 +13,7 @@ const descriptions = {
   evidence: "Dated observations, sources and visible unknowns.",
   operator: "The builder behind the worlds.",
 };
-const scenes = {
+const scenes: Record<string, [string, string, string, string]> = {
   top: [
     "Explore",
     "/v41/first-light-observatory-960.webp",
@@ -81,10 +81,16 @@ const scenes = {
     "Meet Doug. Security by day, aviation and science fiction after hours, curiosity throughout.",
   ],
 };
-const escape = (value) =>
-  value.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const escape = (value: string) =>
+  value.replace(
+    /[&<>"']/g,
+    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c as "&" | "<" | ">" | '"' | "'"],
+  );
 
-export function missionDeskMarkup(chapters, presentation) {
+export function missionDeskMarkup(
+  chapters: readonly (readonly [string, string, string])[],
+  presentation: { name: string },
+) {
   return `<div class="mission-head"><div><span class="mission-eyebrow">THE cAshIo OBSERVATORY</span><h2 id="mission-title">Mission Control</h2></div><button type="button" data-mission-close aria-label="Close Mission Control">ESC ×</button></div>
     <div class="mission-toolbar"><label class="mission-search"><span>Where are we going?</span><input type="search" placeholder="Find a world, experiment or answer…" autocomplete="off" aria-controls="mission-results"></label>
     <div class="mission-categories" role="group" aria-label="Filter destinations">${groups.map((group) => `<button type="button" data-mission-group="${group}" aria-pressed="${group === "All"}">${group}</button>`).join("")}</div>
@@ -95,15 +101,15 @@ export function missionDeskMarkup(chapters, presentation) {
     <div class="mission-foot"><span>V42 · ${escape(presentation.name)}<br>Human in command. Towel optional.</span><button type="button" data-motion-toggle>Pause motion</button></div>`;
 }
 
-export function bindMissionDesk(panel) {
-  const input = panel.querySelector("input");
-  const links = [...panel.querySelectorAll("[data-chapter]")];
-  const preview = panel.querySelector(".mission-preview");
-  const image = preview.querySelector("img");
+export function bindMissionDesk(panel: HTMLDialogElement) {
+  const input = panel.querySelector<HTMLInputElement>("input")!;
+  const links = [...panel.querySelectorAll<HTMLAnchorElement>("[data-chapter]")];
+  const preview = panel.querySelector<HTMLElement>(".mission-preview")!;
+  const image = preview.querySelector<HTMLImageElement>("img")!;
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
   const widePreview = matchMedia("(min-width: 701px)");
   let group = "All";
-  let active;
+  let active: HTMLAnchorElement | null | undefined;
   function cancelMotion() {
     image.getAnimations().forEach((animation) => animation.cancel());
   }
@@ -119,32 +125,33 @@ export function bindMissionDesk(panel) {
       );
     }
   }
-  function choose(link) {
+  function choose(link: HTMLAnchorElement | null | undefined) {
     if (!link || link === active) return;
     active = link;
     links.forEach((item) => {
       item.dataset.previewActive = String(item === link);
     });
-    const [category, src, title, description] = scenes[link.dataset.chapter];
+    const [category, src, title, description] = scenes[link.dataset.chapter!];
     preview.hidden = false;
-    preview.querySelector(".mission-preview-category").textContent =
-      category + " / " + link.querySelector("strong").textContent;
-    preview.querySelector("h3").textContent = title;
-    preview.querySelector("p").textContent = description;
-    preview.querySelector(".mission-preview-number").textContent = link.querySelector("small").textContent;
+    preview.querySelector<HTMLElement>(".mission-preview-category")!.textContent =
+      category + " / " + link.querySelector<HTMLElement>("strong")!.textContent;
+    preview.querySelector<HTMLElement>("h3")!.textContent = title;
+    preview.querySelector<HTMLElement>("p")!.textContent = description;
+    preview.querySelector<HTMLElement>(".mission-preview-number")!.textContent =
+      link.querySelector<HTMLElement>("small")!.textContent;
     // A closed menu does not fetch preview artwork.
     if (panel.open && widePreview.matches && image.getAttribute("src") !== src) image.src = src;
   }
   function filter() {
     const query = input.value.trim().toLowerCase();
     const visible = links.filter((link) => {
-      link.hidden = !(group === "All" || link.dataset.group === group) || !link.dataset.search.includes(query);
+      link.hidden = !(group === "All" || link.dataset.group === group) || !(link.dataset.search ?? "").includes(query);
       return !link.hidden;
     });
-    panel.querySelector(".mission-empty").hidden = visible.length > 0;
-    panel.querySelector("[data-mission-count]").textContent =
+    panel.querySelector<HTMLElement>(".mission-empty")!.hidden = visible.length > 0;
+    panel.querySelector<HTMLElement>("[data-mission-count]")!.textContent =
       `${visible.length} ${visible.length === 1 ? "destination" : "destinations"}`;
-    panel.querySelector(".mission-results").scrollTop = 0;
+    panel.querySelector<HTMLElement>(".mission-results")!.scrollTop = 0;
     if (visible.length) choose(visible[0]);
     else {
       active = null;
@@ -157,7 +164,7 @@ export function bindMissionDesk(panel) {
     input.value = "";
     active = null;
     panel
-      .querySelectorAll("[data-mission-group]")
+      .querySelectorAll<HTMLElement>("[data-mission-group]")
       .forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.missionGroup === group)));
     filter();
   }
@@ -168,26 +175,32 @@ export function bindMissionDesk(panel) {
   document.addEventListener("visibilitychange", cancelMotion);
   reduced.addEventListener("change", cancelMotion);
   widePreview.addEventListener("change", () => {
-    if (widePreview.matches && panel.open && active) image.src = scenes[active.dataset.chapter][1];
+    if (widePreview.matches && panel.open && active) image.src = scenes[active.dataset.chapter!][1];
   });
-  panel.addEventListener("pointerover", (event) => choose(event.target.closest("[data-chapter]")));
-  panel.addEventListener("focusin", (event) => choose(event.target.closest("[data-chapter]")));
+  panel.addEventListener("pointerover", (event) =>
+    choose(event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("[data-chapter]") : null),
+  );
+  panel.addEventListener("focusin", (event) =>
+    choose(event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("[data-chapter]") : null),
+  );
   panel.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-mission-group]");
+    if (!(event.target instanceof Element)) return;
+    const button = event.target.closest<HTMLElement>("[data-mission-group]");
     if (button) {
-      group = button.dataset.missionGroup;
+      group = button.dataset.missionGroup!;
       panel
-        .querySelectorAll("[data-mission-group]")
+        .querySelectorAll<HTMLElement>("[data-mission-group]")
         .forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
       filter();
     }
-    if (event.target.closest("[data-mission-reset]")) {
+    if (event.target.closest<HTMLElement>("[data-mission-reset]")) {
       reset();
       input.focus();
     }
   });
   panel.addEventListener("keydown", (event) => {
-    if (event.target !== input && !event.target.closest("[data-chapter]")) return;
+    if (!(event.target instanceof Element)) return;
+    if (event.target !== input && !event.target.closest<HTMLAnchorElement>("[data-chapter]")) return;
     const visible = links.filter((link) => !link.hidden);
     if (!visible.length) return;
     if (event.key === "Enter" && event.target === input) {
@@ -196,7 +209,7 @@ export function bindMissionDesk(panel) {
     } else if (["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) {
       if (event.target === input && ["Home", "End"].includes(event.key)) return;
       event.preventDefault();
-      const current = visible.indexOf(event.target.closest("[data-chapter]"));
+      const current = visible.indexOf(event.target.closest<HTMLAnchorElement>("[data-chapter]")!);
       const index =
         event.key === "Home"
           ? 0

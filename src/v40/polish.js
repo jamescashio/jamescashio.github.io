@@ -1,7 +1,7 @@
 /* Progressive improvements around the original Claude Design component. */
 import { destinations } from "./destinations.ts";
 import { presentation } from "./evidence.ts";
-import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.js";
+import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.ts";
 (() => {
   const root = document.documentElement;
   const mq = matchMedia("(prefers-reduced-motion: reduce)");
