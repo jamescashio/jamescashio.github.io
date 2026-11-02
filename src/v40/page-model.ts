@@ -60,7 +60,7 @@ export interface PageState {
 // The component owns lifecycle resources; extracted controllers share this exact
 // contract rather than an open property bag or generated presentation types.
 export interface PageHost {
-  props: Readonly<PageProps>;
+  readonly props: Readonly<PageProps>;
   state: Readonly<PageState>;
   setState: React.Component<PageProps, PageState>["setState"];
   viewportWidth: number;

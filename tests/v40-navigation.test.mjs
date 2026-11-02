@@ -7,7 +7,7 @@ import { readFile } from "node:fs/promises";
 import vm from "node:vm";
 
 test("current E.V.E. treats inherited object names as unknown and still answers legitimate commands", async () => {
-  const { V40Page } = await import("../src/v40/page.jsx");
+  const { V40Page } = await import("../src/v40/page.tsx");
   const receiver = {
     state: { eveLog: [], eveInput: "" },
     setState(update) {
@@ -63,7 +63,7 @@ test("current experience bookmarks never redirect to V39 before V40 can open the
 test("ordinary V40 navigation cannot send a visitor into the version archive", async () => {
   const environment = new JSDOM("<!doctype html><html><body></body></html>");
   Object.assign(globalThis, { window: environment.window, document: environment.window.document });
-  const { V40Page } = await import("../src/v40/page.jsx");
+  const { V40Page } = await import("../src/v40/page.tsx");
   const doc = new JSDOM(renderToStaticMarkup(React.createElement(V40Page))).window.document;
   const archive = [...doc.querySelectorAll('a[href^="/v39/"]')];
   assert.deepEqual(

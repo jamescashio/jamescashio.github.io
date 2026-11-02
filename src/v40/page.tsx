@@ -1,3 +1,4 @@
+import type { PageHost, PageProps, PageState, FilmTuple, Point } from "./page-model.ts";
 import { waitForCanvas, startStars } from "./hero-field.ts";
 import { componentDidMount, componentWillUnmount, installPolish } from "./page-observers.ts";
 import { componentDidUpdate, applyScan, copyValue } from "./page-updates.ts";
@@ -14,13 +15,64 @@ import { observedDate, updatedDate, presentation } from "./evidence.ts";
 
 import React from "react";
 
-export class V40Page extends React.Component {
+export class V40Page extends React.Component<PageProps, PageState> implements PageHost {
+  // Controllers initialize these resources during the React lifecycle.
+  declare reduce: PageHost["reduce"];
+  declare heroVisible: PageHost["heroVisible"];
+  declare autoTraced: PageHost["autoTraced"];
+  declare ioAlive: PageHost["ioAlive"];
+  declare starsStarted: PageHost["starsStarted"];
+  declare orbitPointer: PageHost["orbitPointer"];
+  declare foldT: PageHost["foldT"];
+  declare warpT: PageHost["warpT"];
+  declare alertT: PageHost["alertT"];
+  declare traceTimer: PageHost["traceTimer"];
+  declare starsTimer: PageHost["starsTimer"];
+  declare pkT: PageHost["pkT"];
+  declare warpUntil: PageHost["warpUntil"];
+  declare raf: PageHost["raf"];
+  declare fxRaf: PageHost["fxRaf"];
+  declare starsStartupRaf: PageHost["starsStartupRaf"];
+  declare sio: PageHost["sio"];
+  declare uio: PageHost["uio"];
+  declare rio: PageHost["rio"];
+  declare io: PageHost["io"];
+  declare vio: PageHost["vio"];
+  declare cio: PageHost["cio"];
+  declare pauseIO: PageHost["pauseIO"];
+  declare heroObserver: PageHost["heroObserver"];
+  declare starResizeObserver: PageHost["starResizeObserver"];
+  declare onResize: PageHost["onResize"];
+  declare onScroll: PageHost["onScroll"];
+  declare onKey: PageHost["onKey"];
+  declare onStarResize: PageHost["onStarResize"];
+  declare onMove: PageHost["onMove"];
+  declare onOut: PageHost["onOut"];
+  declare syncMotion: PageHost["syncMotion"];
+  declare stopMedia: PageHost["stopMedia"];
+  declare starDraw: PageHost["starDraw"];
+  declare starLoop: PageHost["starLoop"];
+  declare keyBuf: PageHost["keyBuf"];
+  declare tiltEl: PageHost["tiltEl"];
+  declare mags: PageHost["mags"];
+  declare magT: PageHost["magT"];
+  declare fxEls: PageHost["fxEls"];
+  declare lastDiscovery: PageHost["lastDiscovery"];
+  declare lastScene: PageHost["lastScene"];
+  declare lastSceneTurn: PageHost["lastSceneTurn"];
+  declare lastCameraClose: PageHost["lastCameraClose"];
+  declare lastCinema: PageHost["lastCinema"];
+  declare lastFilm: PageHost["lastFilm"];
+  declare lastScan: PageHost["lastScan"];
+  declare lastLog: PageHost["lastLog"];
+  declare lastTrace: PageHost["lastTrace"];
+
   viewportWidth = this.props.initialWidth ?? (typeof window !== "undefined" ? window.innerWidth : 1440);
-  res(p) {
+  res(p: string) {
     const id = "r_" + p.replace(/[^a-z0-9]/gi, "_");
     return resources[id] || p;
   }
-  state = {
+  state: PageState = {
     discovery: null,
     foldCount: 0,
     heroQuip: null,
@@ -64,7 +116,7 @@ export class V40Page extends React.Component {
     traceLog: [["[ 0.00]", "READY", "Standing by. Press Trace a request, or let it run when the map comes into view."]],
   };
 
-  films = [
+  films: FilmTuple[] = [
     [
       0,
       "starship-blue-hour",
@@ -128,86 +180,86 @@ export class V40Page extends React.Component {
   ];
   collections = ["The workshop", "Gold in orbit", "Beyond the doorway"];
 
-  filmById(...args) {
+  filmById(...args: Parameters<typeof filmById>) {
     return filmById.apply(this, args);
   }
 
-  componentDidMount(...args) {
+  componentDidMount(...args: Parameters<typeof componentDidMount>) {
     return componentDidMount.apply(this, args);
   }
-  componentDidUpdate(...args) {
+  componentDidUpdate(...args: Parameters<typeof componentDidUpdate>) {
     return componentDidUpdate.apply(this, args);
   }
-  installPolish(...args) {
+  installPolish(...args: Parameters<typeof installPolish>) {
     return installPolish.apply(this, args);
   }
-  copyValue(...args) {
+  copyValue(...args: Parameters<typeof copyValue>) {
     return copyValue.apply(this, args);
   }
-  componentWillUnmount(...args) {
+  componentWillUnmount(...args: Parameters<typeof componentWillUnmount>) {
     return componentWillUnmount.apply(this, args);
   }
-  applyScan(...args) {
+  applyScan(...args: Parameters<typeof applyScan>) {
     return applyScan.apply(this, args);
   }
 
-  tilt(...args) {
+  tilt(...args: Parameters<typeof tilt>) {
     return tilt.apply(this, args);
   }
-  magnet(...args) {
+  magnet(...args: Parameters<typeof magnet>) {
     return magnet.apply(this, args);
   }
-  scramble(...args) {
+  scramble(...args: Parameters<typeof scramble>) {
     return scramble.apply(this, args);
   }
-  setupReveal(...args) {
+  setupReveal(...args: Parameters<typeof setupReveal>) {
     return setupReveal.apply(this, args);
   }
-  reveal(...args) {
+  reveal(...args: Parameters<typeof reveal>) {
     return reveal.apply(this, args);
   }
-  countUp(...args) {
+  countUp(...args: Parameters<typeof countUp>) {
     return countUp.apply(this, args);
   }
-  scrollFx(...args) {
+  scrollFx(...args: Parameters<typeof scrollFx>) {
     return scrollFx.apply(this, args);
   }
 
-  waitForCanvas(...args) {
+  waitForCanvas(...args: Parameters<typeof waitForCanvas>) {
     return waitForCanvas.apply(this, args);
   }
-  startStars(...args) {
+  startStars(...args: Parameters<typeof startStars>) {
     return startStars.apply(this, args);
   }
 
-  warpFlash(...args) {
+  warpFlash(...args: Parameters<typeof warpFlash>) {
     return warpFlash.apply(this, args);
   }
-  defiant(...args) {
+  defiant(...args: Parameters<typeof defiant>) {
     return defiant.apply(this, args);
   }
-  stepCinema(...args) {
+  stepCinema(...args: Parameters<typeof stepCinema>) {
     return stepCinema.apply(this, args);
   }
-  closeCinema(...args) {
+  closeCinema(...args: Parameters<typeof closeCinema>) {
     return closeCinema.apply(this, args);
   }
 
-  lane(...args) {
+  lane(...args: Parameters<typeof lane>) {
     return lane.apply(this, args);
   }
 
-  eve(...args) {
+  eve(...args: Parameters<typeof eve>) {
     return eve.apply(this, args);
   }
 
-  startTrace(...args) {
+  startTrace(...args: Parameters<typeof startTrace>) {
     return startTrace.apply(this, args);
   }
-  traceCaps(...args) {
+  traceCaps(...args: Parameters<typeof traceCaps>) {
     return traceCaps.apply(this, args);
   }
-  edgeDefs = {
+  edgeDefs: Record<string, [Point, Point, Point]> = {
     opHe: [
       [200, 40],
       [200, 95],
@@ -234,21 +286,21 @@ export class V40Page extends React.Component {
       [300, 252],
     ],
   };
-  runPacket(...args) {
+  runPacket(...args: Parameters<typeof runPacket>) {
     return runPacket.apply(this, args);
   }
-  animPk(...args) {
+  animPk(...args: Parameters<typeof animPk>) {
     return animPk.apply(this, args);
   }
 
-  hoverIn(...args) {
+  hoverIn(...args: Parameters<typeof hoverIn>) {
     return hoverIn.apply(this, args);
   }
-  hoverOut(...args) {
+  hoverOut(...args: Parameters<typeof hoverOut>) {
     return hoverOut.apply(this, args);
   }
 
-  renderVals(...args) {
+  renderVals(...args: Parameters<typeof renderVals>) {
     return renderVals.apply(this, args);
   }
   render() {

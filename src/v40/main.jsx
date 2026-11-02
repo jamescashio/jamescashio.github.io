@@ -1,6 +1,6 @@
 import React from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
-import { V40Page } from "./page.jsx";
+import { V40Page } from "./page.tsx";
 import "./chapters/opening.css";
 import "./polish.js";
 import "./labs.js";
