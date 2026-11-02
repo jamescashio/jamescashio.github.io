@@ -1,11 +1,12 @@
+import type { GeneratedView } from "./generated-view.ts";
 import { destinationLabel } from "./destinations.ts";
 
 import React from "react";
 import designSystem from "./design-system.ts";
 
-const h = React.createElement;
+import { h } from "./generated-view.ts";
 
-export function renderHeader(v) {
+export function renderHeader(v: GeneratedView) {
   return h(
     "header",
     {
