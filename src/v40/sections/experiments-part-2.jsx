@@ -1,4 +1,4 @@
-import { renderExperimentsPart1 } from "./experiments-part-1.jsx";
+import { renderExperimentsPart1 } from "./experiments-part-1.ts";
 import React from "react";
 
 import designSystem from "../design-system.ts";

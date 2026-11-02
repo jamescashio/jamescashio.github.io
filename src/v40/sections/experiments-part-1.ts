@@ -1,8 +1,9 @@
+import type { GeneratedView, GeneratedValue } from "../generated-view.ts";
 import React from "react";
 import { classFor } from "../style-variants.ts";
 import designSystem from "../design-system.ts";
-const h = React.createElement;
-export function renderExperimentsPart1(v) {
+import { h } from "../generated-view.ts";
+export function renderExperimentsPart1(v: GeneratedView) {
   return h(
     "div",
     {
@@ -20,8 +21,8 @@ export function renderExperimentsPart1(v) {
         "div",
         { key: 1059, className: "v41-c9dc9b5648" },
         " ",
-        (function (parent) {
-          return (v.intents || []).map((item, index) => {
+        (function (parent: GeneratedView) {
+          return (v.intents || []).map((item: GeneratedValue, index: number) => {
             const v = { ...parent, it: item, $index: index };
             return h(
               React.Fragment,
@@ -135,8 +136,8 @@ export function renderExperimentsPart1(v) {
           className: "v41-093e865861",
         },
         " ",
-        (function (parent) {
-          return (v.routeSteps || []).map((item, index) => {
+        (function (parent: GeneratedView) {
+          return (v.routeSteps || []).map((item: GeneratedValue, index: number) => {
             const v = { ...parent, s: item, $index: index };
             return h(
               React.Fragment,
