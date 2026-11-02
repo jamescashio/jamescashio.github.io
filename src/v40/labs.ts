@@ -1,3 +1,6 @@
+import type { PageState } from "./page-model.ts";
+type LabValue = string | number | boolean;
+type LabState = Record<string, LabValue>;
 import { sceneKind } from "./navigation.js";
 import { exampleBrief } from "./decision-brief.ts";
 
@@ -5,7 +8,7 @@ import { exampleBrief } from "./decision-brief.ts";
 (() => {
   "use strict";
   const keys = ["hermes", "cascade", "exposure", "briefing", "dashboards", "signal", "graphify"];
-  const defaults = {
+  const defaults: Record<string, LabState> = {
     cascade: { confidence: 85, consequence: false },
     exposure: { public: true, exploited: false, impact: "limited" },
     briefing: exampleBrief,
@@ -13,17 +16,17 @@ import { exampleBrief } from "./decision-brief.ts";
     signal: { count: 2, independent: false, primary: false },
     graphify: { node: "scheduler" },
   };
-  const initialState = (name) => Object.assign(Object.create(null), defaults[name]);
+  const initialState = (name: string): LabState => Object.assign(Object.create(null) as LabState, defaults[name]);
   const states = new Map(Object.keys(defaults).map((name) => [name, initialState(name)]));
-  const range = (key, label, min, max) =>
+  const range = (key: string, label: string, min: number, max: number) =>
     `<label for="lab-${key}">${label} <output id="lab-${key}-value"></output></label><input id="lab-${key}" data-field="${key}" type="range" min="${min}" max="${max}">`;
-  const toggle = (key, label) =>
+  const toggle = (key: string, label: string) =>
     `<label class="lab-toggle"><input data-field="${key}" type="checkbox"><span>${label}</span></label>`;
-  const select = (key, label, options) =>
+  const select = (key: string, label: string, options: [string | number, string][]) =>
     `<label for="lab-${key}">${label}</label><select id="lab-${key}" data-field="${key}">${options.map(([v, t]) => `<option value="${v}">${t}</option>`).join("")}</select>`;
-  const field = (key, label, multiline = false) =>
+  const field = (key: string, label: string, multiline = false) =>
     `<label for="lab-${key}">${label}</label>${multiline ? `<textarea id="lab-${key}" data-field="${key}" maxlength="3000" rows="3"></textarea>` : `<input id="lab-${key}" data-field="${key}" maxlength="1000" type="text">`}`;
-  const specs = {
+  const specs: Record<string, { controls: string; boundary: string; try: string }> = {
     cascade: {
       controls:
         range("confidence", "Illustrative confidence", 0, 100) +
@@ -86,17 +89,17 @@ import { exampleBrief } from "./decision-brief.ts";
       try: "Compare a scheduler interruption with a shared-storage interruption.",
     },
   };
-  let host, key;
-  function announce(message) {
-    if (host) host.querySelector(".lab-feedback").textContent = message;
+  let host: HTMLElement, key: string;
+  function announce(message: string) {
+    if (host) host.querySelector<HTMLElement>(".lab-feedback")!.textContent = message;
   }
   function values() {
-    const s = states.get(key);
-    host.querySelectorAll("[data-field]").forEach((el) => {
-      const f = el.dataset.field;
+    const s = states.get(key)!;
+    host.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>("[data-field]").forEach((el) => {
+      const f = el.dataset.field!;
       if (!Object.hasOwn(defaults[key], f)) return;
       s[f] =
-        el.type === "checkbox"
+        el instanceof HTMLInputElement && el.type === "checkbox"
           ? el.checked
           : el.type === "range" || (key === "dashboards" && f === "window")
             ? Number(el.value)
@@ -104,44 +107,44 @@ import { exampleBrief } from "./decision-brief.ts";
     });
     return s;
   }
-  function showResult(code, title, text, held = false) {
-    const box = host.querySelector(".lab-result");
+  function showResult(code: string, title: string, text: string, held = false) {
+    const box = host.querySelector<HTMLElement>(".lab-result")!;
     box.hidden = false;
     box.classList.toggle("lab-held", held);
-    box.querySelector(".lab-code").textContent = code;
-    box.querySelector("h4").textContent = title;
-    box.querySelector(".lab-reason").textContent = text;
+    box.querySelector<HTMLElement>(".lab-code")!.textContent = code;
+    box.querySelector<HTMLElement>("h4")!.textContent = title;
+    box.querySelector<HTMLElement>(".lab-reason")!.textContent = text;
   }
   function briefText() {
-    const s = states.get("briefing"),
-      v = (f) => s[f].trim() || "Not specified";
+    const s = states.get("briefing")!,
+      v = (f: string) => String(s[f]).trim() || "Not specified";
     return `DECISION BRIEF / cAshIo V42\n\nWHAT WAS OBSERVED\n${v("observed")}\n\nSOURCE AND DATE\n${v("source")}\n\nWHAT REMAINS UNKNOWN\n${v("unknown")}\n\nWHO DECIDES\n${v("owner")}\n\nPrepared locally. Claims have not been independently verified by this tool.\n`;
   }
   function update() {
     if (!host) return;
     const s = values();
     host
-      .querySelectorAll('input[type="range"]')
+      .querySelectorAll<HTMLInputElement>('input[type="range"]')
       .forEach(
         (el) =>
-          (host.querySelector("#" + el.id + "-value").textContent =
+          (host.querySelector<HTMLElement>("#" + el.id + "-value")!.textContent =
             el.value + (key === "cascade" ? "%" : key === "dashboards" ? " days" : "")),
       );
     if (key === "cascade") {
-      const held = s.consequence || s.confidence < 80;
+      const held = Boolean(s.consequence) || Number(s.confidence) < 80;
       showResult(
         held ? "PAUSE FOR REVIEW" : "ILLUSTRATIVE THRESHOLD MET",
         held ? "Bring in a person." : "Continue within the toy rule.",
         s.consequence
           ? "An action that is hard to undo takes priority over confidence. The person keeps the decision."
-          : s.confidence < 80
+          : Number(s.confidence) < 80
             ? "The input is below the illustrative threshold. Pause and review."
             : "The threshold is met and the action is reversible. Human authority still applies.",
         held,
       );
     }
     if (key === "exposure") {
-      const urgent = s.exploited || (s.public && s.impact === "high");
+      const urgent = Boolean(s.exploited) || (Boolean(s.public) && s.impact === "high");
       showResult(
         urgent ? "HIGHER PRIORITY IN THIS MODEL" : "CONTEXT STILL MATTERS",
         urgent
@@ -167,13 +170,13 @@ import { exampleBrief } from "./decision-brief.ts";
       );
     }
     if (key === "signal") {
-      const enough = s.count >= 2 && s.independent && s.primary;
+      const enough = Number(s.count) >= 2 && Boolean(s.independent) && Boolean(s.primary);
       showResult(
         enough ? "CORROBORATION RULE MET" : "MORE EVIDENCE NEEDED",
         enough ? "Ready for closer review." : "Keep the question open.",
         enough
           ? "Inspect quality, timing and contradictions. The rule is a starting point for judgment."
-          : s.count < 2
+          : Number(s.count) < 2
             ? "One report is a starting point. Seek another independent source."
             : !s.independent
               ? "Repeated versions of the same story do not become independent evidence."
@@ -182,13 +185,13 @@ import { exampleBrief } from "./decision-brief.ts";
       );
     }
     if (key === "graphify") {
-      const sets = {
+      const sets: Record<string, string[]> = {
           scheduler: ["Scheduled jobs", "Daily brief"],
           storage: ["Backups", "Local model", "Scheduled jobs", "Daily brief"],
           model: ["Local model", "Daily brief"],
         },
-        affected = sets[s.node];
-      const list = host.querySelector(".lab-path");
+        affected = sets[String(s.node)];
+      const list = host.querySelector<HTMLElement>(".lab-path")!;
       list.replaceChildren();
       for (const name of ["Backups", "Local model", "Scheduled jobs", "Daily brief"]) {
         const li = document.createElement("li");
@@ -211,38 +214,39 @@ import { exampleBrief } from "./decision-brief.ts";
       );
     }
     if (key === "briefing") {
-      host.querySelector(".lab-result").hidden = true;
-      const result = host.querySelector(".lab-brief");
+      host.querySelector<HTMLElement>(".lab-result")!.hidden = true;
+      const result = host.querySelector<HTMLElement>(".lab-brief")!;
       if (!result.hidden) result.textContent = briefText();
     }
   }
   function applyState() {
-    host.querySelectorAll("[data-field]").forEach((el) => {
-      if (!Object.hasOwn(defaults[key], el.dataset.field)) return;
-      const v = states.get(key)[el.dataset.field];
-      if (el.type === "checkbox") el.checked = !!v;
-      else el.value = v;
+    host.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>("[data-field]").forEach((el) => {
+      if (!Object.hasOwn(defaults[key], el.dataset.field!)) return;
+      const v = states.get(key)![el.dataset.field!];
+      if (el instanceof HTMLInputElement && el.type === "checkbox") el.checked = !!v;
+      else el.value = String(v);
     });
     update();
   }
   function mount() {
-    const next = document.querySelector("#local-experiment");
-    if (!next || next.closest("x-dc")) return;
+    const next = document.querySelector<HTMLElement>("#local-experiment")!;
+    if (!next || next.closest<HTMLElement>("x-dc")) return;
     const nextKey = next.dataset.lab;
+    if (!nextKey) return;
     if (!Object.hasOwn(specs, nextKey) || (next === host && key === nextKey)) return;
     host = next;
     key = nextKey;
     const spec = specs[key];
     host.innerHTML = `<div class="lab-heading"><span class="lab-kicker">RUN IT HERE</span><span class="lab-local">● Local demonstration</span></div><p class="lab-try"></p><div class="lab-controls">${spec.controls}</div><div class="lab-result" role="status" aria-live="polite"><span class="lab-code"></span><h4></h4><p class="lab-reason"></p></div>${key === "briefing" ? '<div class="lab-actions"><button type="button" class="lab-primary" data-lab-action="brief">Build my brief →</button><button type="button" data-lab-action="copy">Copy brief</button><button type="button" data-lab-action="download">Download .txt ↓</button></div><pre class="lab-brief" tabindex="0" aria-label="Your decision brief" hidden></pre>' : '<div class="lab-actions"><button type="button" data-lab-action="link">Copy scenario link</button></div>'}<p class="lab-boundary"></p><p class="lab-feedback" role="status" aria-live="polite"></p><button type="button" class="lab-reset" data-lab-action="reset">Reset this example</button>`;
-    host.querySelector(".lab-try").textContent = spec.try;
-    host.querySelector(".lab-boundary").textContent = spec.boundary;
+    host.querySelector<HTMLElement>(".lab-try")!.textContent = spec.try;
+    host.querySelector<HTMLElement>(".lab-boundary")!.textContent = spec.boundary;
     applyState();
   }
-  async function copy(text, message) {
+  async function copy(text: string, message: string) {
     try {
       await navigator.clipboard.writeText(text);
       announce(message);
-    } catch (_) {
+    } catch {
       announce(
         "Copy is unavailable in this browser. " +
           (key === "briefing" ? "Use Download .txt instead." : "Your choices remain visible above."),
@@ -251,14 +255,14 @@ import { exampleBrief } from "./decision-brief.ts";
   }
   function makeLink() {
     const params = new URLSearchParams({ experiment: key });
-    for (const [k, v] of Object.entries(states.get(key))) params.set(k, String(v));
+    for (const [k, v] of Object.entries(states.get(key)!)) params.set(k, String(v));
     return location.href.split("#")[0] + "#" + params.toString();
   }
-  let lastRestoredHash;
+  let lastRestoredHash: string | undefined;
   function restore() {
     const hash = location.hash;
     const params = new URLSearchParams(hash.slice(1));
-    const k = params.get("experiment"),
+    const k = params.get("experiment") ?? "",
       idx = keys.indexOf(k),
       app = window.cashioV40;
     if (idx < 0) {
@@ -271,35 +275,36 @@ import { exampleBrief } from "./decision-brief.ts";
       for (const [f, v] of Object.entries(defaults[k])) {
         const x = params.get(f);
         if (x === null) continue;
-        if (typeof v === "boolean") states.get(k)[f] = x === "true";
+        if (typeof v === "boolean") states.get(k)![f] = x === "true";
         else if (typeof v === "number") {
-          const ranges = { confidence: [0, 100], age: [0, 60], count: [1, 5] };
+          const ranges: Record<string, [number, number]> = { confidence: [0, 100], age: [0, 60], count: [1, 5] };
           const n = Number(x);
           if (Number.isFinite(n)) {
             if (f === "window") {
-              if ([1, 7, 30].includes(n)) states.get(k)[f] = n;
-            } else states.get(k)[f] = Math.round(Math.min(ranges[f][1], Math.max(ranges[f][0], n)));
+              if ([1, 7, 30].includes(n)) states.get(k)![f] = n;
+            } else states.get(k)![f] = Math.round(Math.min(ranges[f][1], Math.max(ranges[f][0], n)));
           }
         } else if (
           (f === "impact" && ["limited", "high"].includes(x)) ||
           (f === "node" && ["scheduler", "storage", "model"].includes(x))
         )
-          states.get(k)[f] = x;
+          states.get(k)![f] = x;
       }
-    const restored = { exp: idx };
+    const restored: Partial<PageState> = { exp: idx };
     if (k === "hermes") {
       const intent = params.get("intent");
-      if (["draft", "research", "analyze"].includes(intent)) restored.intent = intent;
+      if (intent && ["draft", "research", "analyze"].includes(intent)) restored.intent = intent;
       for (const [param, field] of [
         ["private", "priv"],
         ["sources", "sources"],
       ]) {
         const v = params.get(param);
-        if (["true", "false", "1", "0"].includes(v)) restored[field] = v === "true" || v === "1";
+        if (v && ["true", "false", "1", "0"].includes(v))
+          restored[field as "priv" | "sources"] = v === "true" || v === "1";
       }
       restored.routed = null;
     }
-    app.setState(restored);
+    app.setState((state) => ({ ...state, ...restored }));
     requestAnimationFrame(async () => {
       mount();
       if (host && key === k) applyState();
@@ -308,23 +313,26 @@ import { exampleBrief } from "./decision-brief.ts";
     });
   }
   document.addEventListener("input", (e) => {
-    if (e.target.closest("#local-experiment")) update();
+    if (!(e.target instanceof Element)) return;
+    if (e.target.closest<HTMLElement>("#local-experiment")) update();
   });
   document.addEventListener("change", (e) => {
-    if (e.target.closest("#local-experiment")) update();
+    if (!(e.target instanceof Element)) return;
+    if (e.target.closest<HTMLElement>("#local-experiment")) update();
   });
   document.addEventListener("click", (e) => {
-    const b = e.target.closest("[data-lab-action]");
+    if (!(e.target instanceof Element)) return;
+    const b = e.target.closest<HTMLElement>("[data-lab-action]");
     if (!b || !host) return;
     values();
     if (b.dataset.labAction === "reset") {
       states.set(key, initialState(key));
       applyState();
-      if (key === "briefing") host.querySelector(".lab-brief").hidden = true;
+      if (key === "briefing") host.querySelector<HTMLElement>(".lab-brief")!.hidden = true;
       announce("Example reset.");
     }
     if (b.dataset.labAction === "brief") {
-      const pre = host.querySelector(".lab-brief");
+      const pre = host.querySelector<HTMLElement>(".lab-brief")!;
       pre.textContent = briefText();
       pre.hidden = false;
       pre.focus();

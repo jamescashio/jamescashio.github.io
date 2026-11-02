@@ -3,7 +3,7 @@ import { createRoot, hydrateRoot } from "react-dom/client";
 import { V40Page } from "./page.tsx";
 import "./chapters/opening.css";
 import "./polish.ts";
-import "./labs.js";
+import "./labs.ts";
 import "./bit.ts";
 import { setupV40Navigation } from "./navigation.js";
 setupV40Navigation();
