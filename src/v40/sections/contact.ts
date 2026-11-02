@@ -1,8 +1,9 @@
+import type { GeneratedProps } from "../generated-view.ts";
 import React from "react";
 import designSystem from "../design-system.ts";
-const h = React.createElement;
+import { h } from "../generated-view.ts";
 
-export function ContactSection({ v }) {
+export function ContactSection({ v }: GeneratedProps) {
   return h(
     "section",
     {
