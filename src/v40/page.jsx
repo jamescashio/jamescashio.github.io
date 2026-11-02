@@ -73,6 +73,7 @@ const thumbnailSources = (path) =>
     )
     .join(", ");
 export class V40Page extends React.Component {
+  viewportWidth = this.props.initialWidth ?? (typeof window !== "undefined" ? window.innerWidth : 1440);
   res(p) {
     const id = "r_" + p.replace(/[^a-z0-9]/gi, "_");
     return resources[id] || p;
@@ -84,8 +85,8 @@ export class V40Page extends React.Component {
     scene: "orbit",
     sceneTurn: 0,
     cameraClose: false,
-    wide: (this.props.initialWidth ?? (typeof window !== "undefined" ? window.innerWidth : 1440)) >= 1180,
-    navOn: (this.props.initialWidth ?? (typeof window !== "undefined" ? window.innerWidth : 1440)) >= 1100,
+    wide: this.viewportWidth >= 1180,
+    navOn: this.viewportWidth >= 1100,
     active: "top",
     pv: null,
     pvShown: false,
@@ -187,8 +188,7 @@ export class V40Page extends React.Component {
 
   filmById(slug) {
     if (slug === "trailer") {
-      const small =
-        typeof window !== "undefined" && (window.innerWidth <= 720 || Boolean(navigator.connection?.saveData));
+      const small = this.viewportWidth <= 720 || (typeof navigator !== "undefined" && navigator.connection?.saveData);
       return {
         slug,
         title: "House Cashio: The Trailer",
@@ -226,8 +226,9 @@ export class V40Page extends React.Component {
     this.reduce = document.documentElement.dataset.motion === "off";
     window.cashioV40 = this;
     this.onResize = () => {
-      const wide = window.innerWidth >= 1180;
-      const navOn = window.innerWidth >= 1100;
+      this.viewportWidth = window.innerWidth;
+      const wide = this.viewportWidth >= 1180;
+      const navOn = this.viewportWidth >= 1100;
       if (!wide) {
         this.orbitPointer = { x: 0, y: 0 };
         const planet = document.querySelector(".hero-live-poster");
@@ -329,7 +330,6 @@ export class V40Page extends React.Component {
     });
     this.stopMedia = installMediaCoordinator();
     this.setupReveal();
-    this.scrollFx();
     this.lastFilm = this.state.film;
     this.installPolish();
     setTimeout(() => {
@@ -420,7 +420,9 @@ export class V40Page extends React.Component {
     );
     this.heroObserver.observe(document.getElementById("top"));
     window.dispatchEvent(new Event("cashio-ready"));
-    this.syncMotion();
+    // Initial motion and media intent are already installed. Measure the
+    // progress effects once; later preference changes use syncMotion.
+    this.scrollFx();
   }
   async copyValue(text, key) {
     try {
@@ -587,6 +589,8 @@ export class V40Page extends React.Component {
   scrollFx() {
     const y = window.scrollY,
       H = document.documentElement.scrollHeight - window.innerHeight;
+    const law = document.getElementById("law");
+    const lawBounds = law && !law.closest("details:not([open])") ? law.getBoundingClientRect() : null;
     const pb = document.getElementById("scroll-prog");
     if (pb) pb.style.transform = `scaleX(${H > 0 ? Math.min(1, y / H) : 0})`;
     const hc = document.getElementById("hero-content");
@@ -596,9 +600,8 @@ export class V40Page extends React.Component {
       hc.style.transform = `translateY(${heroScroll * 0.2}px)`;
       hc.style.opacity = String(1 - k * 0.85);
     }
-    const law = document.getElementById("law");
-    if (law) {
-      const r = law.getBoundingClientRect(),
+    if (lawBounds) {
+      const r = lawBounds,
         span = r.height - window.innerHeight;
       const p = Math.max(0, Math.min(1, -r.top / (span || 1)));
       const ws = law.querySelectorAll("[data-mword]"),
@@ -1493,10 +1496,7 @@ export class V40Page extends React.Component {
       collections,
       filmList,
       featSrc: F.src,
-      featPoster: posterForViewport(
-        F.poster,
-        s.wide ? 720 : Math.min(720, (typeof window === "undefined" ? 390 : window.innerWidth) - 56),
-      ),
+      featPoster: posterForViewport(F.poster, s.wide ? 720 : Math.min(720, this.viewportWidth - 56)),
       featTitle: F.title,
       featDesc: F.desc,
       featColl: F.coll,

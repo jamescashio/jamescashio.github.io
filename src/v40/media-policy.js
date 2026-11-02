@@ -34,9 +34,12 @@ export function installMediaCoordinator() {
       return false;
     const quickCut = document.getElementById("ai-worm-video");
     if (quickCut) return video === quickCut && ratio(video) >= 0.5;
-    if (document.documentElement.dataset.motion === "off" || conservesData() || ratio(video) < 0.5) return false;
-    if (video.id === "sig-video" || video.dataset.v === "hover") return video.dataset.requested === "true";
-    return video.dataset.v === "auto";
+    const requested =
+      video.id === "sig-video" || video.dataset.v === "hover"
+        ? video.dataset.requested === "true"
+        : video.dataset.v === "auto";
+    if (!requested || document.documentElement.dataset.motion === "off" || conservesData()) return false;
+    return ratio(video) >= 0.5;
   };
   const sync = () => {
     if (disposed) return;

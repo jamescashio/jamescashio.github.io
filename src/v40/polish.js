@@ -143,7 +143,12 @@ import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.js";
     panel.innerHTML = missionDeskMarkup(chapters, presentation);
     document.body.append(panel);
     missionDesk = bindMissionDesk(panel);
-    panel.addEventListener("close", () => opener?.focus({ preventScroll: true }));
+    panel.addEventListener("close", () => {
+      // The close event is queued. Preserve a newer focus destination selected
+      // after close(), including a film's keyboard controls or a chapter link.
+      const focused = document.activeElement;
+      if (!focused || focused === document.body || panel.contains(focused)) opener?.focus({ preventScroll: true });
+    });
     panel.addEventListener("click", (e) => {
       if (e.target.closest("[data-mission-close]")) panel.close();
       const a = e.target.closest("[data-chapter]");
