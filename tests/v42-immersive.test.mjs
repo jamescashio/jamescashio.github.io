@@ -100,8 +100,12 @@ test("Discovery direct links close the console and reach an existing experiment 
   page.on("request", (r) => {
     if (/\.(mp4|webm)(\?|$)/.test(r.url())) movies.push(r.url());
   });
-  await page.getByRole("button", { name: /Make something click/ }).click();
+  await page.getByRole("button", { name: "Plot a course", exact: true }).click();
   const dialog = page.locator(".discovery-console");
+  await dialog
+    .getByRole("group", { name: "Discovery path", exact: true })
+    .getByRole("button", { name: "Try", exact: true })
+    .click();
   await expect(dialog.getByRole("heading", { level: 3 })).toHaveText("A decision worth tracing");
   await dialog.getByRole("button", { name: "02 Seven small experiments", exact: true }).click();
   await dialog.getByRole("link", { name: "Open the experiments", exact: true }).click();
@@ -109,7 +113,11 @@ test("Discovery direct links close the console and reach an existing experiment 
   await expect(page).toHaveURL(/#studies$/);
   await expect(page.locator("#studies")).toBeInViewport();
   assert.deepEqual(movies, []);
-  await page.getByRole("button", { name: /Enter the cinema/ }).click();
+  await page.getByRole("button", { name: "Plot a course", exact: true }).click();
+  await dialog
+    .getByRole("group", { name: "Discovery path", exact: true })
+    .getByRole("button", { name: "Watch", exact: true })
+    .click();
   await dialog.getByRole("link", { name: "Watch House Cashio", exact: true }).click();
   await expect(dialog).not.toBeVisible();
   await expect(page.locator("#cinema-video")).toBeVisible();
@@ -122,8 +130,12 @@ test("Discovery direct links close the console and reach an existing experiment 
 test("Discovery remains operable on 390 and 320 pixel phones including the sticky close control", async (t) => {
   for (const width of [390, 320]) {
     const page = await visit(t, { viewport: { width, height: 740 }, isMobile: true, hasTouch: true });
-    await page.getByRole("button", { name: /Enter the cinema/ }).click();
+    await page.getByRole("button", { name: "Plot a course", exact: true }).click();
     const dialog = page.locator(".discovery-console");
+    await dialog
+      .getByRole("group", { name: "Discovery path", exact: true })
+      .getByRole("button", { name: "Watch", exact: true })
+      .click();
     await expect(dialog).toBeVisible();
     await expect(dialog.getByRole("heading", { level: 3 })).toHaveText("House Cashio");
     const box = await dialog.boundingBox();

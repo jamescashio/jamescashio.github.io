@@ -49,7 +49,7 @@ test("Omnius polish keeps instrument text readable and phone navigation delibera
       "Try seven hands-on experiments",
       "House Cashio and original films",
     ]);
-    for (const action of await page.locator(".continuum-actions a, .continuum-paths button").all()) {
+    for (const action of await page.locator(".continuum-actions a, .continuum-paths a").all()) {
       const b = await action.boundingBox();
       assert.ok(b.width >= 44 && b.height >= 44 && b.x >= 0 && b.x + b.width <= width);
       assert.ok(await action.evaluate((n) => n.scrollWidth <= n.clientWidth), "no clipped action label");
@@ -92,7 +92,7 @@ test("Omnius chapter rail is readable, unclipped and navigable on a short deskto
     const label = link.locator(".v41-cbba20e481");
     assert.deepEqual(
       await label.evaluate((n) => ({ size: getComputedStyle(n).fontSize, writing: getComputedStyle(n).writingMode })),
-      { size: "12px", writing: "horizontal-tb" },
+      { size: "13px", writing: "horizontal-tb" },
     );
     assert.ok(await link.evaluate((n) => n.scrollWidth <= n.clientWidth), "chapter label fits");
   }
@@ -101,6 +101,62 @@ test("Omnius chapter rail is readable, unclipped and navigable on a short deskto
   await expect(page.locator("#rooms")).toBeInViewport();
   await page.locator("header [data-mission-open]").click();
   await expect(page.locator("#mission-dialog").getByRole("searchbox")).toBeFocused();
+});
+
+test("The three illustrated entrances reach their content directly without a modal or media download", async (t) => {
+  const page = await visit(t, { reducedMotion: "reduce" });
+  const movies = [];
+  page.on("request", (r) => {
+    if (/\.(mp4|webm)(\?|$)/.test(r.url())) movies.push(r.url());
+  });
+  for (const id of ["rooms", "studies", "eagle-film"]) {
+    const entrance = page.locator(`.continuum-paths a[href="#${id}"]`);
+    await entrance.focus();
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL(new RegExp(`#${id}$`));
+    await expect(page.locator(`#${id}`)).toBeInViewport();
+    await expect(page.locator(".discovery-console")).not.toBeVisible();
+  }
+  assert.deepEqual(movies, []);
+});
+
+test("Phone quick destinations stay reachable and return keyboard focus to the selected content", async (t) => {
+  for (const width of [320, 390]) {
+    const page = await visit(t, {
+      viewport: { width, height: 740 },
+      reducedMotion: "reduce",
+      isMobile: true,
+      hasTouch: true,
+    });
+    const dock = page.getByRole("navigation", { name: "Quick destinations", exact: true });
+    await expect(dock).not.toBeVisible();
+    await page.locator('.continuum-paths a[href="#eagle-film"]').click();
+    await expect(dock).toBeInViewport({ ratio: 1 });
+    for (const [name, id] of [
+      ["Worlds", "rooms"],
+      ["Try", "studies"],
+      ["Watch", "eagle-film"],
+    ]) {
+      const link = dock.getByRole("link", { name, exact: true });
+      const box = await link.boundingBox();
+      assert.ok(box.width >= 44 && box.height >= 44);
+      assert.equal(
+        await link.evaluate((el) => {
+          const b = el.getBoundingClientRect();
+          return el.contains(document.elementFromPoint(b.x + b.width / 2, b.y + b.height / 2));
+        }),
+        true,
+      );
+      await link.focus();
+      await page.keyboard.press("Enter");
+      await expect(page.locator(`#${id}`)).toBeFocused();
+      await expect(link).toHaveAttribute("aria-current", "location");
+    }
+    await dock.getByRole("link", { name: "Top", exact: true }).click();
+    await expect(page.locator("#top")).toBeFocused();
+    await expect(dock).not.toBeVisible();
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+  }
 });
 
 test("Continuum's three forms and manual rotation work with reduced motion and pause", async (t) => {
@@ -140,6 +196,8 @@ test("Continuum phone controls and the observation desk fit narrow touch screens
       hasTouch: true,
       reducedMotion: "reduce",
     });
+    await expect(page.locator(".scene-tools")).not.toHaveAttribute("open", "");
+    await page.locator(".scene-tools > summary").click();
     const controls = page.locator(".continuum-scene-controls button, .continuum-stage-bottom button");
     for (const control of await controls.all()) {
       const box = await control.boundingBox();

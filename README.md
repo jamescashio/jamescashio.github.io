@@ -6,7 +6,7 @@ Production remains at commit `650f395adc36ae762acd99e43c0a4655d653ed1f` until Do
 
 ## Preserved content
 
-The latest polish increases small labels and captions, clarifies the three discovery paths, widens the desktop chapter rail and improves phone reading and touch controls. Mission Control opens without focusing Search on phones. See the [polish acceptance contract](docs/v42/omnius-polish-preview.md).
+The final craft pass turns Explore, Try and Watch into direct illustrated entrances, makes the starship invitation visually primary, and gives the deeper sections illustrated previews. A compact phone dock reaches Watch, Worlds, Try and Top after the hero; optional scene controls expand on demand. Larger supporting text and chapter labels retain the cinematic identity. Mission Control opens without focusing Search on phones. See the [final acceptance contract](docs/v42/omnius-finale-preview.md).
 
 All twelve homepage sections, four worlds, seven experiments, films, captions, reading editions and existing bookmark destinations remain. House Cashio is the opening feature; Eagle remains available at `/#film=intro`. The Sovereign, Roadster Studio, the fifteen Zenith shorts, Bit, E.V.E., the logo reveal, signature and contact routes remain accessible. Motion can be paused, reduced motion is honored, and films start muted only after an explicit choice.
 
@@ -42,7 +42,7 @@ The `v40` source and receipt paths are compatibility paths, not the current vers
 
 Run `npm run verify`. It includes lint, formatting, model and unit checks, the production build, artifact checks, preserved layout and V36 checks, current browser tests, Python release checks, public-data guards, consistency and committed whitespace. The initial stylesheet budget stays at 19,000 gzip bytes. Heavy scenes and secondary styles load on demand. The new canvas stops while hidden, paused, offscreen or covered by cinema; its frame rate and backing-pixel budget are bounded.
 
-For review, run `node scripts/serve-helios-preview.mjs dist 4407 --review`. See [the V42 design and content contract](docs/v42/omnius-polish-preview.md) for scope and acceptance. Browser emulation covers desktop and phone viewports; it is not physical phone testing.
+For review, run `node scripts/serve-helios-preview.mjs dist 4408 --review`. See [the V42 design and content contract](docs/v42/omnius-finale-preview.md) for scope and acceptance. Browser emulation covers desktop and phone viewports; it is not physical phone testing.
 
 ## History and publication
 

@@ -15,6 +15,7 @@ import { frameDeltaSeconds, shouldRenderFrame } from "../lib/animation-timing.ts
 import { CinemaReel, ReelText, reelPoster } from "./hero-reel.jsx";
 import { ContinuumPrinciples } from "./continuum-hero.tsx";
 import { ReleaseHearing } from "./release-hearing.tsx";
+import { JourneyDock } from "./journey-dock.tsx";
 import { foldReply } from "./ship-humor.ts";
 import { ImmersiveHero as HeroSection } from "./immersive-hero.tsx";
 import { DiscoveryConsole } from "./discovery-console.tsx";
@@ -1432,6 +1433,7 @@ export class V40Page extends React.Component {
           heroQuip: "A fresh perspective. No committee required.",
         })),
       wide: s.wide,
+      activeSection: s.active,
       navOn: s.navOn ?? true,
       tech,
       railItems,
@@ -1931,6 +1933,7 @@ function renderPage(v) {
       ),
       " ",
       h(DiscoveryConsole, { key: "discovery-console", routeId: v.discovery, onClose: v.closeDiscovery }),
+      h(JourneyDock, { key: "journey-dock", active: v.activeSection }),
       h(
         "main",
         { key: 107, id: "main-content", tabIndex: "-1" },
@@ -1954,6 +1957,7 @@ function renderPage(v) {
           {
             key: "films-collection",
             id: "films-collection",
+            image: "/v40/thumbs/room-studios-threshold-320.webp",
             title: "Enter the screening room.",
             description: "The Sovereign, Roadster Studio, and the complete short film collection. Films start muted.",
           },
@@ -1966,6 +1970,7 @@ function renderPage(v) {
           {
             key: "decision-story",
             id: "decision-story",
+            image: "/v40/thumbs/room-principles-320.webp",
             title: "One document. A different boundary.",
             description: "Try a quick privacy decision and see the principle behind it.",
           },
@@ -1981,6 +1986,7 @@ function renderPage(v) {
           {
             key: "system-story",
             id: "system-story",
+            image: "/v40/thumbs/room-starship-320.webp",
             title: "Follow a request through the lab.",
             description: "Explore the system map, from human intent to human review.",
           },

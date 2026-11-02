@@ -1,6 +1,8 @@
 import type { MouseEventHandler } from "react";
 import { discoveryRoutes } from "./discovery-routes";
+import { posterSources } from "./poster-sources.js";
 type HeroView = {
+  wide: boolean;
   scene: string;
   turnScene: () => void;
   chooseScene: (scene: string) => void;
@@ -148,39 +150,53 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
               {v.cameraClose ? "Pull back" : "Fly closer"} <span aria-hidden="true">↗</span>
             </button>
           </div>
-          <div className="continuum-scene-controls" role="group" aria-label="Light study form">
-            {scenes.map((s, i) => (
-              <button key={s.id} type="button" aria-pressed={scene.id === s.id} onClick={() => v.chooseScene(s.id)}>
-                <span aria-hidden="true">0{i + 1}</span>
-                {s.label}
+          <details className="scene-tools" open={v.wide}>
+            <summary>
+              Play with the universe <span aria-hidden="true">＋</span>
+            </summary>
+            <div className="continuum-scene-controls" role="group" aria-label="Light study form">
+              {scenes.map((s, i) => (
+                <button key={s.id} type="button" aria-pressed={scene.id === s.id} onClick={() => v.chooseScene(s.id)}>
+                  <span aria-hidden="true">0{i + 1}</span>
+                  {s.label}
+                </button>
+              ))}
+            </div>
+            <div className="continuum-stage-bottom">
+              <button type="button" onClick={v.turnScene} aria-label="Rotate the light study">
+                Rotate <span aria-hidden="true">↻</span>
               </button>
-            ))}
-          </div>
-          <div className="continuum-stage-bottom">
-            <button type="button" onClick={v.turnScene} aria-label="Rotate the light study">
-              Rotate <span aria-hidden="true">↻</span>
-            </button>
-            <span className="continuum-art-label">Interactive artwork</span>
-            <button type="button" onClick={v.foldScene}>
-              Fold space <span aria-hidden="true">✦</span>
-            </button>
-          </div>
-          <p className="continuum-scene-caption" aria-live="polite">
-            {v.heroQuip || scene.caption}
-          </p>
+              <span className="continuum-art-label">Interactive artwork</span>
+              <button type="button" onClick={v.foldScene}>
+                Fold space <span aria-hidden="true">✦</span>
+              </button>
+            </div>
+            <p className="continuum-scene-caption" aria-live="polite">
+              {v.heroQuip || scene.caption}
+            </p>
+          </details>
         </div>
       </div>
       <div className="continuum-launchpad">
         <div className="continuum-launch-heading">
-          <span className="continuum-label">Your next discovery</span>
+          <span className="continuum-label">Three ways into the universe</span>
           <button id="discovery-launch" type="button" onClick={() => v.openDiscovery("worlds")}>
             Plot a course <span aria-hidden="true">↗</span>
           </button>
         </div>
         <div className="continuum-paths">
           {discoveryRoutes.map((r, i) => (
-            <button type="button" key={r.id} onClick={() => v.openDiscovery(r.id)} aria-haspopup="dialog">
-              <img src={r.stops[0].image} alt="" width="160" height="90" loading="lazy" />
+            <a key={r.id} href={["#rooms", "#studies", "#eagle-film"][i]}>
+              <img
+                src={r.stops[0].image}
+                srcSet={posterSources(r.stops[0].image)}
+                sizes="(max-width: 600px) 80px, 33vw"
+                alt=""
+                width="640"
+                height="360"
+                loading="lazy"
+                decoding="async"
+              />
               <span>
                 <small>
                   0{i + 1} / {r.label}
@@ -199,7 +215,7 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
               <span className="continuum-path-arrow" aria-hidden="true">
                 ↗
               </span>
-            </button>
+            </a>
           ))}
         </div>
       </div>

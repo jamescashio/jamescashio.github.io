@@ -1,3 +1,17 @@
+# V42 · Omnius, Overruled · Final craft pass
+
+## Current creative thesis
+
+An unruly cinematic universe with a confident invitation: preserve the original moving planetary horizon, metallic cAshIo signature and gold/cyan light; give the visitor a clear entrance and a short way back.
+
+Make Board the starship the strongest action. Quiet the secondary camera button. Keep supporting text readable, raise desktop chapter labels, and retain the 16 pixel phone introduction. The three illustrated discovery entrances now link directly to Worlds, Experiments and House Cashio; Plot a course retains the optional holographic console. Give the deeper disclosures original illustration. Phone visitors get a four-stop navigation dock after leaving the hero and can open the optional scene controls on demand. Preserve every section, route, film, caption, experiment, world, observation and archive.
+
+Keep the existing geometric display, readable Exo 2 prose and restrained instrument mono. Gold marks the main invitation; cyan marks structure and navigation. Black reading surfaces keep the art legible. Finite hover motion respects Pause and reduced motion. No new runtime libraries, external services, automatic sound or fake live measurements. Initial CSS stays below 19,000 compressed bytes; the ordinary phone journey stays below 11,500 pixels. Touch targets remain at least 44 pixels.
+
+Preview only at port 4408. Previous polish d57a0c35fa0967f75b8f201009c61475125d1a25 remains preserved; production rollback remains 650f395adc36ae762acd99e43c0a4655d653ed1f. Final publication approval remains outstanding.
+
+## Previous design decisions
+
 # V42 · Omnius, Overruled
 
 ## Current creative thesis

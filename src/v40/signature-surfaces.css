@@ -215,13 +215,13 @@ html:has(.continuum-root) {
 .atlas-waypoint-3 {
   --destination: #ffe0a8;
 }
-#v40-root .continuum-paths button:nth-child(1) {
+#v40-root .continuum-paths > a:nth-child(1) {
   --chapter: #7ce8f6;
 }
-#v40-root .continuum-paths button:nth-child(2) {
+#v40-root .continuum-paths > a:nth-child(2) {
   --chapter: #f2c46e;
 }
-#v40-root .continuum-paths button:nth-child(3) {
+#v40-root .continuum-paths > a:nth-child(3) {
   --chapter: #9ce5e7;
 }
 #v40-root .continuum-readings > div:nth-child(odd) dd {
