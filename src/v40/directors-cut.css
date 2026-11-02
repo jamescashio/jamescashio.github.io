@@ -72,6 +72,11 @@
   --build-light: #9bece2;
   --build-dim: #588b92;
 }
+#v40-root .brief-preview dd a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
 .build-story-brief {
   --build-light: #f6ce88;
   --build-dim: #a28b60;

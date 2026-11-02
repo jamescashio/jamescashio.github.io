@@ -105,7 +105,12 @@ test("the visible showcase opens every featured project from a keyboard without 
   const reading = await visit(t, { javaScriptEnabled: false });
   await reading.goto(url);
   await expect(reading.locator("#showcase a")).toHaveCount(2);
-  await expect(reading.locator('main > #eagle-film a[href="#film=trailer"]')).toBeVisible();
+  await expect(reading.locator('main > #eagle-film .eagle-film-play[href="#film=trailer"]')).toBeVisible();
+  await expect(
+    reading
+      .getByRole("navigation", { name: "Recommended first visit" })
+      .getByRole("link", { name: /Meet House Cashio/ }),
+  ).toBeVisible();
   await expect(reading.locator("#eagle-film")).toHaveCount(1);
   await expect(reading.locator("#showcase")).toContainText("independent automotive CAD concept");
 });
