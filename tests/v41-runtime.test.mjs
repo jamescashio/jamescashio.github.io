@@ -251,6 +251,10 @@ for (const [width, height] of [
       }
     }
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+    // axe scrolls offscreen text into view to measure it, which starts that chapter's one second fade.
+    // Measure every chapter at rest, as a visitor sees it, instead of mid fade.
+    await page.evaluate(() => document.querySelectorAll("[data-reveal]").forEach((el) => window.cashioV40?.reveal(el)));
+    await page.waitForTimeout(1200);
     const audit = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "best-practice"])
       .analyze();
@@ -313,7 +317,7 @@ test("The planet stays in the hero; House Cashio replaces the featured Eagle fil
   await expect(page.locator("#top video, #top a[href='#film=intro']")).toHaveCount(0);
   await expect(page.locator("#top .hero-live-poster")).toBeVisible();
   const order = await page.locator("main > section").evaluateAll((s) => s.slice(0, 4).map((n) => n.id));
-  assert.deepEqual(order, ["top", "eagle-film", "workshop", "rooms"]);
+  assert.deepEqual(order, ["top", "eagle-film", "rooms", "showcase"]);
   const hero = await page.locator("#top").boundingBox();
   const workshop = await page.locator("#workshop").boundingBox();
   assert.ok(workshop.y >= hero.y + hero.height, "real projects follow the complete hero");

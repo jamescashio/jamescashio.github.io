@@ -435,6 +435,7 @@ export class V40Page extends React.Component {
   }
   componentWillUnmount() {
     this.stopMedia?.();
+    clearTimeout(this.foldT);
     document.removeEventListener("cashio-motion", this.syncMotion);
     document.removeEventListener("visibilitychange", this.syncMotion);
     if (this.heroObserver) this.heroObserver.disconnect();
@@ -1043,9 +1044,9 @@ export class V40Page extends React.Component {
 
     const railDefs = [
       ["top", "Home"],
-      ["workshop", "Projects"],
       ["rooms", "Worlds"],
       ["films", "Films"],
+      ["workshop", "Projects"],
       ["studies", "Experiments"],
       ["evidence", "Evidence"],
       ["contact", "Contact"],
@@ -1446,6 +1447,15 @@ export class V40Page extends React.Component {
       foldCount: s.foldCount,
       foldScene: () => {
         this.warpUntil = this.reduce ? 0 : Date.now() + 1400;
+        const hero = document.getElementById("top");
+        if (hero && !this.reduce) {
+          // Restart the finite fold response even when the visitor folds twice in a row.
+          hero.removeAttribute("data-folding");
+          void hero.offsetWidth;
+          hero.setAttribute("data-folding", "");
+          clearTimeout(this.foldT);
+          this.foldT = setTimeout(() => hero.removeAttribute("data-folding"), 1200);
+        }
         this.setState((state) => ({
           sceneTurn: state.sceneTurn + Math.PI / 2,
           foldCount: state.foldCount + 1,
@@ -1674,7 +1684,12 @@ function renderPage(v) {
           ].join(""),
         ),
       },
-      " ",
+      // The skip link is the first stop for keyboard visitors, ahead of the section rail.
+      h(
+        "a",
+        { key: 41, className: "skip-link", href: "#main-content" },
+        h(React.Fragment, { key: 42 }, "Skip to content"),
+      ),
       " ",
       v.wide
         ? h(
@@ -1747,37 +1762,11 @@ function renderPage(v) {
                 " ",
               ),
               " ",
-              h(
-                "div",
-                {
-                  key: 30,
-                  className: "v41-2bad502360",
-                },
-                " ",
-                h("span", {
-                  key: 32,
-                  className: "v41-44bf1c8cdd",
-                }),
-                " ",
-                h("span", { key: 34, className: "v41-70386b085d" }),
-                " ",
-                h("span", {
-                  key: 36,
-                  className: "v41-538177e3b9",
-                }),
-                " ",
-              ),
-              " ",
             ),
             " ",
           )
         : null,
       " ",
-      h(
-        "a",
-        { key: 41, className: "skip-link", href: "#main-content" },
-        h(React.Fragment, { key: 42 }, "Skip to content"),
-      ),
       " ",
       " ",
       h(
@@ -1828,7 +1817,8 @@ function renderPage(v) {
             " ",
           ),
           " ",
-          v.navOn
+          // The section rail already lists every chapter on wide screens; the header links cover the narrower band.
+          v.navOn && !v.wide
             ? h(
                 React.Fragment,
                 { key: 64 },
@@ -1968,9 +1958,7 @@ function renderPage(v) {
         h(ContinuumPrinciples, { key: "principles-strip" }),
         h(EagleFilmSection, { v, key: "eagle-film" }),
         h(ReleaseHearing, { key: "release-hearing" }),
-        h(WorkshopSection, { v, key: "workshop" }),
-        " ",
-        " ",
+        // Creative work leads; the workshop's receipts and evidence follow for visitors who want the detail.
         h(WorldsSection, { v, key: "rooms" }),
         h(ShowcaseSection, { key: "showcase" }),
         " ",
@@ -1986,6 +1974,9 @@ function renderPage(v) {
           },
           h(FilmsSection, { v, key: "films" }),
         ),
+        " ",
+        " ",
+        h(WorkshopSection, { v, key: "workshop" }),
         " ",
         " ",
         h(

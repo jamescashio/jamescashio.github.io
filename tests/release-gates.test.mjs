@@ -30,7 +30,7 @@ test("V40 ships its real reading edition under the strict production security po
   assert.ok(root.querySelector("#work #law"), "the routing law stays available within its decision example");
   assert.deepEqual(
     [...root.querySelectorAll("main > section")].slice(0, 4).map((section) => section.id),
-    ["top", "eagle-film", "workshop", "rooms"],
+    ["top", "eagle-film", "rooms", "showcase"],
   );
   assert.equal(root.querySelectorAll("#eagle-film").length, 1, "the featured trailer has one visible home");
   assert.ok(root.querySelector('a[href="#workshop"]'), "the reading edition retains a direct workshop link");

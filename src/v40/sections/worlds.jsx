@@ -13,7 +13,7 @@ export function WorldsSection({ v }) {
         React.createElement(
           "span",
           { className: "v41-c904563b29" },
-          React.createElement("span", { className: "v41-3bdbfd324b" }, "03"),
+          React.createElement("span", { className: "v41-3bdbfd324b" }, "02"),
           React.createElement("span", { "data-scramble": "" }, "Four worlds"),
         ),
         React.createElement(

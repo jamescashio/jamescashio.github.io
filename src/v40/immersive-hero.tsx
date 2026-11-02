@@ -27,6 +27,9 @@ const scenes = [
   { id: "signal", label: "Signal", caption: "Big ideas. Questionable cable management." },
   { id: "constellation", label: "Constellation", caption: "Connect the dots. The universe misplaced the manual." },
 ];
+// The cinema card uses text free artwork so its label never sits on top of the trailer's title art.
+const pathImage = (r: { stops: Array<{ image: string }> }, i: number) =>
+  i === 2 ? "/v40/assets/zenith-threshold-poster.webp" : r.stops[0].image;
 function ContinuumStill() {
   return (
     <svg className="continuum-still" viewBox="0 0 1600 820" fill="none" aria-hidden="true">
@@ -104,7 +107,6 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
               aria-hidden="true"
             />
             <div className="continuum-reticle" aria-hidden="true">
-              <span>V42 / OMNIUS, OVERRULED</span>
               <span>THE HORIZON IS YOURS</span>
             </div>
           </div>
@@ -188,8 +190,8 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
           {discoveryRoutes.map((r, i) => (
             <a key={r.id} href={["#rooms", "#studies", "#eagle-film"][i]}>
               <img
-                src={r.stops[0].image}
-                srcSet={posterSources(r.stops[0].image)}
+                src={pathImage(r, i)}
+                srcSet={posterSources(pathImage(r, i))}
                 sizes="(max-width: 600px) 80px, 33vw"
                 alt=""
                 width="640"
@@ -206,7 +208,7 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
                   {
                     [
                       "Explore four interactive worlds",
-                      "Try seven hands-on experiments",
+                      "Try seven interactive experiments",
                       "House Cashio and original films",
                     ][i]
                   }

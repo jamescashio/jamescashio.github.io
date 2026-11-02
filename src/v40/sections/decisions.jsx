@@ -76,7 +76,7 @@ export function DecisionsSection({ v }) {
                 "span",
                 null,
                 "One document. A different boundary.",
-                h("small", null, "Try the private-document decision · about 20 seconds"),
+                h("small", null, "Try the private document decision · about 20 seconds"),
               ),
               h("span", { "aria-hidden": "true" }, "+"),
             ),

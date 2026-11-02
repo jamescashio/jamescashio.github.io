@@ -21,8 +21,8 @@ try {
 const motion = () => preference !== "off" && !mq.matches;
 const motionButton = document.createElement("button");
 motionButton.type = "button";
-motionButton.className = "btn";
-document.querySelector("header").append(motionButton);
+motionButton.className = "room-motion";
+(document.querySelector("header .room-bar-actions") || document.querySelector("header")).append(motionButton);
 function syncMotion() {
   document.documentElement.classList.toggle("motion-off", !motion());
   document.documentElement.dataset.motion = motion() ? "on" : "off";

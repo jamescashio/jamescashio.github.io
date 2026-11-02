@@ -109,7 +109,7 @@ test("the visible showcase opens every featured project from a keyboard without 
   await expect(
     reading
       .getByRole("navigation", { name: "Recommended first visit" })
-      .getByRole("link", { name: /Meet House Cashio/ }),
+      .getByRole("link", { name: /Board the starship/ }),
   ).toBeVisible();
   await expect(reading.locator("#eagle-film")).toHaveCount(1);
   await expect(reading.locator("#showcase")).toContainText("independent automotive CAD concept");

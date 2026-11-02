@@ -270,7 +270,7 @@
 
 .first-orbit {
   display: grid;
-  grid-template-columns: 1.05fr 1fr 1fr;
+  grid-template-columns: 1.05fr repeat(3, minmax(0, 1fr));
   gap: 20px;
   grid-column: 1 / -1;
   padding: 24px 0 0;
@@ -375,7 +375,7 @@
 }
 @media (max-width: 1000px) {
   .first-orbit {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
   .first-orbit > div {
     grid-column: 1 / -1;
@@ -433,5 +433,102 @@
   }
   .build-steps button[aria-pressed="true"] {
     border: 3px solid Highlight;
+  }
+}
+
+/* Boarding: a finite camera push through the ring before First Flight opens. Pause and reduced motion skip it. */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="off"]) #v40-root .continuum-hero[data-boarding] .hero-planet {
+    transform-origin: 74% 44%;
+    animation: hero-board-push 640ms cubic-bezier(0.55, 0, 0.8, 0.25) forwards;
+  }
+  html:not([data-motion="off"])
+    #v40-root
+    .continuum-hero[data-boarding]
+    :is(
+      .continuum-copy,
+      .continuum-scene-deck,
+      .continuum-launchpad,
+      .continuum-observation,
+      .continuum-next,
+      .continuum-arrival
+    ) {
+    animation: hero-board-clear 360ms ease-in forwards;
+  }
+  html:not([data-motion="off"]) #v40-root .continuum-hero[data-boarding] .continuum-visual {
+    animation: hero-board-signature 640ms cubic-bezier(0.55, 0, 0.8, 0.25) forwards;
+  }
+  html:not([data-motion="off"]) #v40-root .continuum-hero[data-folding] .hero-planet {
+    animation: hero-fold 1100ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  html:not([data-motion="off"]) #v40-root .continuum-hero[data-folding] .continuum-stage::after {
+    content: "";
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+    border-radius: 50%;
+    border: 1px solid #f3cf8acc;
+    box-shadow:
+      0 0 24px #64dcef80,
+      inset 0 0 18px #f3cf8a55;
+    pointer-events: none;
+    animation: hero-fold-ring 1100ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  }
+}
+@media (max-width: 760px) {
+  #v40-root .continuum-hero[data-boarding] .hero-planet {
+    transform-origin: 58% 30%;
+  }
+}
+@keyframes hero-board-push {
+  0% {
+    transform: scale(1);
+    filter: none;
+  }
+  60% {
+    filter: brightness(1.2) saturate(1.15);
+  }
+  100% {
+    transform: scale(2.1);
+    filter: brightness(1.7) saturate(1.2) blur(3px);
+    opacity: 0.6;
+  }
+}
+@keyframes hero-board-clear {
+  to {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+@keyframes hero-board-signature {
+  to {
+    opacity: 0;
+    transform: scale(1.35);
+  }
+}
+@keyframes hero-fold {
+  0% {
+    transform: none;
+    filter: none;
+  }
+  32% {
+    transform: scale(1.06) rotate(-1.4deg);
+    filter: hue-rotate(-14deg) brightness(1.3) contrast(1.06);
+  }
+  100% {
+    transform: none;
+    filter: none;
+  }
+}
+@keyframes hero-fold-ring {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(42);
   }
 }

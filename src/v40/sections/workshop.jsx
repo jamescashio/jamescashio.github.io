@@ -22,12 +22,12 @@ export function WorkshopSection({ v }) {
     h(
       "div",
       { className: "workshop-heading" },
-      h("span", { className: "v41-c904563b29" }, h("span", { className: "v41-3bdbfd324b" }, "02"), "From the workshop"),
+      h("span", { className: "v41-c904563b29" }, h("span", { className: "v41-3bdbfd324b" }, "04"), "From the workshop"),
       h("h2", { className: "v41-ebe245028e" }, "Built at home. Open to inspect."),
       h(
         "p",
         null,
-        "Two builds from my after-hours workbench. I’m a Principal Solutions Consultant; here you can inspect the choices and limits behind the work.",
+        "Two builds from my workbench after hours. I’m a Principal Solutions Consultant; here you can inspect the choices and limits behind the work.",
       ),
       h("a", { className: "visitor-link workshop-intro-link", href: "#operator" }, "Meet Doug →"),
     ),

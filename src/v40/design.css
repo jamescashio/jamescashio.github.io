@@ -980,32 +980,6 @@ details > summary::-webkit-details-marker {
   transform: rotate(180deg);
   line-height: 1;
 }
-.v41-2bad502360 {
-  padding: 12px 10px;
-  border-top: 1px solid var(--glass-border);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  align-items: center;
-}
-.v41-44bf1c8cdd {
-  width: 52px;
-  height: 18px;
-  border-radius: 9px 9px 2px 2px;
-  background: var(--accent);
-}
-.v41-70386b085d {
-  width: 52px;
-  height: 10px;
-  border-radius: 2px;
-  background: var(--cyan);
-}
-.v41-538177e3b9 {
-  width: 52px;
-  height: 10px;
-  border-radius: 2px 2px 9px 9px;
-  background: var(--purple);
-}
 .v41-16a0aa070f {
   position: sticky;
   top: 0;

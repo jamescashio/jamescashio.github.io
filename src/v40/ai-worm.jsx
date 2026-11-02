@@ -128,7 +128,7 @@ export function AiWormFilm() {
         h(
           "p",
           { className: "ai-worm-description" },
-          "Two minutes of cosmic bureaucracy, eight visual gags, and one very optimistic time-saving device. The worm is AI. Your weekend is the convenience fee.",
+          "Two minutes of cosmic bureaucracy, eight visual gags, and one very optimistic device for saving time. The worm is AI. Your weekend is the convenience fee.",
         ),
         h("p", { className: "ai-worm-credit" }, edit.credit),
         h(

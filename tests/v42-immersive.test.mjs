@@ -61,18 +61,21 @@ test("Build notes expose the decisions and limits with keyboard controls on desk
   }
 });
 
-test("The first-visit route opens the original film and continues to a real experiment", async (t) => {
+test("The first-visit route boards the starship, cuts the cloud link and continues to the worlds", async (t) => {
   const page = await visit(t, { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   const route = page.getByRole("navigation", { name: "Recommended first visit" });
-  const film = route.getByRole("link", { name: /Meet House Cashio/ });
-  await film.click();
-  await expect(page.locator("#cinema-dialog")).toBeVisible();
-  await expect(page.locator("#cinema-video")).toHaveJSProperty("muted", true);
+  const board = route.getByRole("link", { name: /Board the starship/ });
+  await board.click();
+  await expect(page.locator("#helios-flight dialog")).toBeVisible();
+  await expect(page).toHaveURL(/#flight=board$/);
   await page.keyboard.press("Escape");
-  await expect(film).toBeFocused();
-  await route.getByRole("link", { name: /Choose a route/ }).click();
-  await expect(page).toHaveURL(/#experiment=hermes$/);
-  await expect(page.getByRole("heading", { name: "Choose a route", exact: true })).toBeVisible();
+  await expect(page.locator("#helios-flight")).toHaveCount(0);
+  await route.getByRole("link", { name: /Cut the cloud link/ }).click();
+  await expect(page).toHaveURL(/#flight=blackout$/);
+  await expect(page.locator("#helios-flight dialog")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await route.getByRole("link", { name: /Pick a world/ }).click();
+  await expect(page.locator("#rooms")).toBeInViewport();
 });
 
 test("Every build-story step remains readable without JavaScript", async (t) => {

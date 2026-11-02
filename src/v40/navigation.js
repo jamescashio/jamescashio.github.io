@@ -37,6 +37,7 @@ export function setupV40Navigation() {
     requestedHash,
     opener,
     returnHash = "#top",
+    boarding = false,
     generation = 0;
   const inerted = [];
   const motion = () =>
@@ -196,6 +197,23 @@ export function setupV40Navigation() {
               ? "#" + (link.closest("section[id]")?.id || "universe")
               : "#films");
         opener = fromDiscovery ? document.getElementById("discovery-launch") || link : link;
+      }
+      // Boarding from the opening: the camera pushes through the ring, then the flight opens.
+      // Pause and reduced motion board at once.
+      const hero = link.closest("#top");
+      if (sceneKind(url.hash) === "flight" && hero && motion() && !activeHash) {
+        if (boarding) return;
+        boarding = true;
+        hero.setAttribute("data-boarding", "");
+        window.cashioV40?.warpFlash?.();
+        import("../helios/flight-island").catch(() => {});
+        setTimeout(() => {
+          boarding = false;
+          navigate(url.hash);
+          // The flight covers the opening before the camera settles back.
+          setTimeout(() => hero.removeAttribute("data-boarding"), 600);
+        }, 640);
+        return;
       }
       navigate(url.hash);
     },

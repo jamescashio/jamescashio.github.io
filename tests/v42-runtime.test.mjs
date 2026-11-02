@@ -46,7 +46,7 @@ test("Omnius polish keeps instrument text readable and phone navigation delibera
     assert.equal(await page.locator(".continuum-intro").evaluate((n) => getComputedStyle(n).fontSize), "16px");
     await expect(page.locator(".continuum-path-description")).toHaveText([
       "Explore four interactive worlds",
-      "Try seven hands-on experiments",
+      "Try seven interactive experiments",
       "House Cashio and original films",
     ]);
     for (const action of await page.locator(".continuum-actions a, .continuum-paths a").all()) {

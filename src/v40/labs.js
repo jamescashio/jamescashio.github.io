@@ -133,7 +133,7 @@ import { exampleBrief } from "./decision-brief.js";
         held ? "PAUSE FOR REVIEW" : "ILLUSTRATIVE THRESHOLD MET",
         held ? "Bring in a person." : "Continue within the toy rule.",
         s.consequence
-          ? "A difficult-to-undo action takes priority over confidence. The person keeps the decision."
+          ? "An action that is hard to undo takes priority over confidence. The person keeps the decision."
           : s.confidence < 80
             ? "The input is below the illustrative threshold. Pause and review."
             : "The threshold is met and the action is reversible. Human authority still applies.",

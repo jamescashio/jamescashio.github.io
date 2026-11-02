@@ -1,3 +1,6 @@
+/* Wider screens style the launch strip with the opening, so it does not shift when secondary styles arrive.
+   Phones keep it deferred: their strip does not shift, and the opening artwork keeps network priority. */
+@import "./finale-surfaces.css" (min-width: 761px);
 /* Signature Flight: the original horizon, inside a living cAshIo instrument. */
 .atlas-mobile-route {
   display: none;
@@ -131,9 +134,6 @@
   width: 4px;
   height: 4px;
   background: #88e6f0;
-}
-#v40-root nav[aria-label="Sections"] .v41-2bad502360 {
-  margin-top: auto;
 }
 #v40-root nav[aria-label="Sections"] a[aria-current] {
   background: linear-gradient(150deg, #edbd6826, #141414);
@@ -883,5 +883,31 @@ html[data-motion="off"] .hero-flight-camera {
   .scene-tools > summary:focus-visible {
     outline: 2px solid #ffe0a4;
     outline-offset: -4px;
+  }
+}
+/* Ultrawide screens: widen the opening composition so the headline does not float beside an empty band. */
+@media (min-width: 2400px) {
+  #v40-root header .v41-d28b3b93ee {
+    max-width: 2096px;
+  }
+  #v40-root .continuum-hero :is(.continuum-arrival, .continuum-launchpad, .continuum-observation, .continuum-next),
+  #v40-root .continuum-hero #hero-content.continuum-composition {
+    max-width: 2040px;
+  }
+  #v40-root .continuum-hero #hero-content.continuum-composition {
+    min-height: 860px;
+  }
+  #v40-root .continuum-hero #hero-content h1 {
+    font-size: 104px !important;
+  }
+  #v40-root .continuum-hero #hero-content .continuum-copy {
+    max-width: 1000px;
+  }
+  #v40-root .continuum-intro {
+    font-size: 22px;
+    max-width: 680px;
+  }
+  #v40-root .continuum-hero .hero-planet {
+    height: 1240px;
   }
 }

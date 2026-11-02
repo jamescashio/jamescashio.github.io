@@ -13,9 +13,14 @@ sources = (
     "assets/hero/cashio-trailer-poster.webp",
     "v40/assets/zenith-celestial-signature-poster.webp",
     "v40/assets/zenith-starship-flyby-poster.webp",
+    "assets/hero/cashio-v41-eagle-poster.webp",
 )
-manifest = {}
-for relative in sources:
+import sys
+# Pass source paths to build only those; existing entries in the manifest are kept unchanged.
+selected = tuple(arg for arg in sys.argv[1:] if arg in sources) or sources
+manifest_path = public / "v40/poster-variants.json"
+manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else {}
+for relative in selected:
     source = Image.open(public / relative).convert("RGB")
     variants = []
     for width in (320, 640, 960, 1280):
@@ -31,4 +36,4 @@ for relative in sources:
         variants.append({"url": "/v40/posters/" + name, "width": width, "height": height, "bytes": len(data), "sha256": digest})
     manifest["/" + relative] = variants
     print(f"{Path(relative).name}: {len(variants)} responsive sizes")
-(public / "v40/poster-variants.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
