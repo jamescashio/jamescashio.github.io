@@ -1,7 +1,7 @@
 import { renderFilmsPart1 } from "./films-part-1.jsx";
 import React from "react";
 
-import { AiWormFilm } from "../ai-worm.jsx";
+import { AiWormFilm } from "../ai-worm.tsx";
 const h = React.createElement;
 
 export function FilmsSection({ v }) {

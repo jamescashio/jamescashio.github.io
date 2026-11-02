@@ -7,9 +7,9 @@ const videoUrl = edit.originalUrl;
 
 export function AiWormFilm() {
   const [playing, setPlaying] = useState(false);
-  const card = useRef(null);
-  const player = useRef(null);
-  const playButton = useRef(null);
+  const card = useRef<HTMLElement>(null);
+  const player = useRef<HTMLIFrameElement>(null);
+  const playButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const stopWhenHidden = () => {
@@ -21,7 +21,8 @@ export function AiWormFilm() {
       },
       { threshold: [0, 0.5, 1] },
     );
-    observer.observe(card.current.querySelector(".ai-worm-media"));
+    const media = card.current?.querySelector(".ai-worm-media");
+    if (media) observer.observe(media);
     const stop = () => setPlaying(false);
     document.addEventListener("cashio-motion", stop);
     document.addEventListener("visibilitychange", stopWhenHidden);
@@ -68,7 +69,7 @@ export function AiWormFilm() {
               preload: "none",
               "data-noloop": "1",
               tabIndex: 0,
-              onKeyDown: (event) => {
+              onKeyDown: (event: React.KeyboardEvent<HTMLIFrameElement>) => {
                 if (event.key === "Escape" && !document.fullscreenElement) {
                   event.preventDefault();
                   closePlayer();
