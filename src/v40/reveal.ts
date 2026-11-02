@@ -1,9 +1,10 @@
+import type { PageHost } from "./page-model.ts";
 
-export function scramble(el) {
-  if (this.reduce) return;
+export function scramble(this: PageHost, el: Element) {
+  if (!(el instanceof HTMLElement) || this.reduce) return;
   if (el.dataset.scrambled) return;
   el.dataset.scrambled = "1";
-  const final = el.textContent,
+  const final = el.textContent ?? "",
     chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789▸◆/·";
   let f = 0;
   const step = () => {
@@ -24,25 +25,25 @@ export function scramble(el) {
   step();
 }
 
-export function setupReveal() {
+export function setupReveal(this: PageHost) {
   if (this.sio && !this.reduce)
-    document.querySelectorAll("[data-scramble]:not([data-sobs])").forEach((el) => {
+    document.querySelectorAll<HTMLElement>("[data-scramble]:not([data-sobs])").forEach((el) => {
       el.dataset.sobs = "1";
       this.sio.observe(el);
     });
   // Measure the group before changing styles so the opening pays for one layout.
-  const sectionRects = new Map();
-  const inView = (el) => {
+  const sectionRects = new Map<Element, DOMRect>();
+  const inView = (el: HTMLElement) => {
     const section = el.closest("section");
     if (section) {
       if (!sectionRects.has(section)) sectionRects.set(section, section.getBoundingClientRect());
-      const bounds = sectionRects.get(section);
+      const bounds = sectionRects.get(section)!;
       // Leave skipped chapters asleep until their intersection observer sees them.
       if (bounds.top >= window.innerHeight || bounds.bottom <= 0) return false;
     }
     return el.getBoundingClientRect().top < window.innerHeight * 0.92;
   };
-  const reveals = Array.from(document.querySelectorAll("[data-reveal]:not([data-rv])"), (el) => ({
+  const reveals = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]:not([data-rv])"), (el) => ({
     el,
     visible: this.reduce || inView(el),
     sibling: el.parentElement ? Array.prototype.indexOf.call(el.parentElement.children, el) : 0,
@@ -57,20 +58,21 @@ export function setupReveal() {
   });
 }
 
-export function reveal(el) {
+export function reveal(this: PageHost, el: Element) {
+  if (!(el instanceof HTMLElement)) return;
   el.style.opacity = "1";
   el.style.transform = "none";
-  el.querySelectorAll("[data-count]").forEach((n) => this.countUp(n));
+  el.querySelectorAll<HTMLElement>("[data-count]").forEach((n) => this.countUp(n));
 }
 
-export function countUp(n) {
+export function countUp(this: PageHost, n: HTMLElement) {
   if (n.dataset.counted) return;
   n.dataset.counted = "1";
   if (this.reduce) {
     n.textContent = Number(n.dataset.count).toLocaleString("en-US");
     return;
   }
-  const to = parseFloat(n.dataset.count),
+  const to = parseFloat(n.dataset.count ?? ""),
     t0 = Date.now(),
     dur = 1400;
   const tick = () => {
@@ -82,7 +84,7 @@ export function countUp(n) {
   tick();
 }
 
-export function scrollFx() {
+export function scrollFx(this: PageHost) {
   const y = window.scrollY,
     H = document.documentElement.scrollHeight - window.innerHeight;
   const law = document.getElementById("law");
@@ -96,11 +98,11 @@ export function scrollFx() {
     hc.style.transform = `translateY(${heroScroll * 0.2}px)`;
     hc.style.opacity = String(1 - k * 0.85);
   }
-  if (lawBounds) {
+  if (law && lawBounds) {
     const r = lawBounds,
       span = r.height - window.innerHeight;
     const p = Math.max(0, Math.min(1, -r.top / (span || 1)));
-    const ws = law.querySelectorAll("[data-mword]"),
+    const ws = law.querySelectorAll<HTMLElement>("[data-mword]"),
       n = ws.length;
     ws.forEach((w, i) => {
       const a = this.reduce ? 1 : Math.max(0, Math.min(1, p * (n + 1.5) * 1.1 - i));
