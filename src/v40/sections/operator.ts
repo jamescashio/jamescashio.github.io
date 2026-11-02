@@ -1,9 +1,10 @@
+import type { GeneratedProps } from "../generated-view.ts";
 import React from "react";
 import { classFor } from "../style-variants.ts";
 import designSystem from "../design-system.ts";
-const h = React.createElement;
+import { h } from "../generated-view.ts";
 
-export function OperatorSection({ v }) {
+export function OperatorSection({ v }: GeneratedProps) {
   return h(
     "section",
     {

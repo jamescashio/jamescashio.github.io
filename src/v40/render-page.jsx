@@ -13,7 +13,7 @@ import { DecisionsSection } from "./sections/decisions.jsx";
 import { ExperimentsSection } from "./sections/experiments.ts";
 import { MachinesSection } from "./sections/machines.ts";
 import { EvidenceSection } from "./sections/evidence.ts";
-import { OperatorSection } from "./sections/operator.jsx";
+import { OperatorSection } from "./sections/operator.ts";
 import { ContactSection } from "./sections/contact.ts";
 import { JourneyDisclosure } from "./sections/journey-disclosure.ts";
 
