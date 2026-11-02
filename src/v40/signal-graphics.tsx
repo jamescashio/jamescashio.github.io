@@ -94,7 +94,7 @@ export function AtlasTicks() {
     React.createElement("path", { d: "M34 59V34h25M341 34h25v25M34 341v25h25M341 366h25v-25", strokeOpacity: ".2" }),
   );
 }
-export function MobileAtlasTrack({ selected }) {
+export function MobileAtlasTrack({ selected }: { selected: number }) {
   return React.createElement(
     "div",
     { className: "atlas-mobile-route", "aria-hidden": "true" },

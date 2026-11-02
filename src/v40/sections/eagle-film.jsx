@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ReelText } from "../hero-reel.tsx";
 import { posterSources } from "../poster-sources.ts";
-import { FilmAperture } from "../signal-graphics.jsx";
+import { FilmAperture } from "../signal-graphics.tsx";
 import { FirstOrbit } from "../build-stories";
 const h = React.createElement;
 

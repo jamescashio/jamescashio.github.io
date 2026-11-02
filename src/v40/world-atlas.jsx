@@ -1,5 +1,5 @@
 import React, { useRef, useState, useSyncExternalStore } from "react";
-import { AtlasCore, AtlasTicks, MobileAtlasTrack } from "./signal-graphics.jsx";
+import { AtlasCore, AtlasTicks, MobileAtlasTrack } from "./signal-graphics.tsx";
 import { destinationColors } from "./light-spectrum.js";
 const subscribe = () => () => {};
 const client = () => true;
