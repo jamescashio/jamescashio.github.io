@@ -1,10 +1,11 @@
+import type { GeneratedView } from "../generated-view.ts";
 import React from "react";
 
 import designSystem from "../design-system.ts";
 
 import { presentation } from "../evidence.ts";
-const h = React.createElement;
-export function renderHeroPart1(v) {
+import { h } from "../generated-view.ts";
+export function renderHeroPart1(v: GeneratedView) {
   return h(
     "div",
     { key: 155, className: "v41-e2b130896a" },

@@ -1,4 +1,4 @@
-import { renderHeroPart1 } from "./hero-part-1.jsx";
+import { renderHeroPart1 } from "./hero-part-1.ts";
 import React from "react";
 import { classFor } from "../style-variants.ts";
 
