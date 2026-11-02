@@ -1,11 +1,12 @@
+import type { GeneratedView, GeneratedProps, GeneratedValue } from "../generated-view.ts";
 import { renderEvidencePart1 } from "./evidence-part-1.ts";
 import { observedDate } from "../evidence.ts";
 import React from "react";
 import { classFor } from "../style-variants.ts";
 import designSystem from "../design-system.ts";
-const h = React.createElement;
+import { h } from "../generated-view.ts";
 
-export function EvidenceSection({ v }) {
+export function EvidenceSection({ v }: GeneratedProps) {
   return h(
     "section",
     {
@@ -130,8 +131,8 @@ export function EvidenceSection({ v }) {
               className: "v41-08a40a3c03",
             },
             " ",
-            (function (parent) {
-              return (v.eveLog || []).map((item, index) => {
+            (function (parent: GeneratedView) {
+              return (v.eveLog || []).map((item: GeneratedValue, index: number) => {
                 const v = { ...parent, l: item, $index: index };
                 return h(
                   React.Fragment,
@@ -160,8 +161,8 @@ export function EvidenceSection({ v }) {
             className: "v41-f26d0e34f5",
           },
           " ",
-          (function (parent) {
-            return (v.eveChips || []).map((item, index) => {
+          (function (parent: GeneratedView) {
+            return (v.eveChips || []).map((item: GeneratedValue, index: number) => {
               const v = { ...parent, ch: item, $index: index };
               return h(
                 React.Fragment,

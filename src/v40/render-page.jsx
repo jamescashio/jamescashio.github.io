@@ -12,7 +12,7 @@ import { FilmsSection } from "./sections/films.jsx";
 import { DecisionsSection } from "./sections/decisions.jsx";
 import { ExperimentsSection } from "./sections/experiments.jsx";
 import { MachinesSection } from "./sections/machines.jsx";
-import { EvidenceSection } from "./sections/evidence.jsx";
+import { EvidenceSection } from "./sections/evidence.ts";
 import { OperatorSection } from "./sections/operator.jsx";
 import { ContactSection } from "./sections/contact.ts";
 import { JourneyDisclosure } from "./sections/journey-disclosure.jsx";
