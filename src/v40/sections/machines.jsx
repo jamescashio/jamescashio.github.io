@@ -1,4 +1,4 @@
-import { renderMachinesPart3 } from "./machines-part-3.jsx";
+import { renderMachinesPart3 } from "./machines-part-3.ts";
 import { renderMachinesPart2 } from "./machines-part-2.ts";
 
 import React from "react";
