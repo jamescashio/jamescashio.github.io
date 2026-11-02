@@ -16,9 +16,9 @@ The optional hearing is an original fictional scene. Its lore links to the publi
 
 ## Current evidence
 
-The verified record remains **November 1, 2026**. `status.json`, `public/status.json` and `public/evidence/status.json` remain byte identical to the production baseline. They report 19 running containers out of 20, 1 running virtual machine out of 2, and 2 hosts reporting running guests. The backup source listed 122 snapshots and reported successful integrity verification for 21 of 21 latest reported guest snapshots.
+The verified record was refreshed on **November 2, 2026** from new read only checks. `status.json`, `public/status.json` and `public/evidence/status.json` are identical public aggregates. They report 19 running containers out of 20, 1 running virtual machine out of 2, and 2 hosts reporting running guests. The backup source listed 122 snapshots and reported successful integrity verification for 21 of 21 latest reported guest snapshots.
 
-These inventory and integrity readings do not establish application health, a restore rehearsal, offsite recovery or current AI routing. Unmeasured fields remain null with their reasons. V42 describes the interface; the existing observation retains its V41 source identity and provenance. No operational data was recollected for this design change.
+These inventory and integrity readings do not establish application health, a restore rehearsal, offsite recovery or current AI routing. Unmeasured fields remain null with their reasons. V42 describes the interface; the observation schema retains its V41 source identity. Fresh collection provenance is recorded in UTC and America/Chicago. The November 1, 2026 record is preserved unchanged at `/evidence/status-2026-11-01.json`.
 
 ## Source ownership
 
