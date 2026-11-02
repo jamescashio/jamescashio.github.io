@@ -1,40 +1,10 @@
-@import "./design-surfaces.css";
-@import "./polish-states.css";
-@import "./feature-film.css";
-@import "./visitor-polish.css";
-@import "./labs.css";
-@import "./bit.css";
-@import "./ai-worm.css";
-@import "./journey.css";
-@import "./observatory.css";
-@import "./world-atlas.css";
-@import "./mission-desk.css";
-@import "./signal-polish.css";
-@import "./continuum-panels.css";
-@import "./immersive-surfaces.css";
-@import "./prism-surfaces.css";
-@import "./signature-surfaces.css";
-@import "./release-hearing.css";
-@import "./finale-surfaces.css";
-@import "./directors-cut.css";
-@import "./hud.css";
-
-.eagle-film-play {
-  transition:
-    border-color 220ms ease,
-    box-shadow 220ms ease;
-}
-.eagle-film-play img {
-  transition: transform 600ms cubic-bezier(0.2, 0.7, 0.3, 1);
-}
-.eagle-film-playmark {
-  transition:
-    background 220ms ease,
-    color 220ms ease,
-    box-shadow 220ms ease;
-}
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) .eagle-film-play:is(:hover, :focus-visible) img {
-    transform: scale(1.025);
-  }
-}
+@import "./chapters/instruments.css";
+@import "./chapters/header-rail.css";
+@import "./chapters/cinema.css";
+@import "./chapters/worlds.css";
+@import "./chapters/workshop.css";
+@import "./chapters/experiments.css";
+@import "./chapters/system-map.css";
+@import "./chapters/evidence.css";
+@import "./chapters/contact.css";
+@import "./chapters/rooms.css";

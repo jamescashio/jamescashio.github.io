@@ -1,16 +1,11 @@
 import React from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 import { V40Page } from "./page.jsx";
-import "./design.css";
-import "./polish.css";
-import "./hero-reel.css";
-import "./bit-header.css";
-import "./signature-opening.css";
+import "./chapters/opening.css";
 import "./polish.js";
 import "./labs.js";
 import "./bit.js";
 import { setupV40Navigation } from "./navigation.js";
-import "./navigation.css";
 setupV40Navigation();
 const container = document.getElementById("v40-root");
 const prerendered = container.hasChildNodes();
