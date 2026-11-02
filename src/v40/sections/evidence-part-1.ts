@@ -1,9 +1,10 @@
+import type { GeneratedView, GeneratedValue } from "../generated-view.ts";
 import { snapshot, observedMonth, fleetSummary, backupSummary } from "../evidence.ts";
 import React from "react";
 import { classFor } from "../style-variants.ts";
 import designSystem from "../design-system.ts";
-const h = React.createElement;
-export function renderEvidencePart1(v) {
+import { h } from "../generated-view.ts";
+export function renderEvidencePart1(v: GeneratedView) {
   return h(
     "div",
     { key: 1504, className: classFor(["grid-column:", v.evLeftCol ?? "", ";min-width:0"].join("")) },
@@ -97,7 +98,7 @@ export function renderEvidencePart1(v) {
             "dl",
             null,
             Object.entries(snapshot.withheldReasons)
-              .filter(([key]) =>
+              .filter(([key]: GeneratedValue) =>
                 [
                   "scheduler.enabled",
                   "modelConfiguration.contextWindow",
@@ -105,7 +106,7 @@ export function renderEvidencePart1(v) {
                   "backup.restoredFiles",
                 ].includes(key),
               )
-              .map(([key, reason]) =>
+              .map(([key, reason]: GeneratedValue) =>
                 h(
                   React.Fragment,
                   { key },
@@ -117,7 +118,13 @@ export function renderEvidencePart1(v) {
                       "modelConfiguration.contextWindow": "Local model",
                       "lanes.public": "Public capability lanes",
                       "backup.restoredFiles": "Recovery rehearsal",
-                    }[key],
+                    }[
+                      key as
+                        | "scheduler.enabled"
+                        | "modelConfiguration.contextWindow"
+                        | "lanes.public"
+                        | "backup.restoredFiles"
+                    ],
                   ),
                   h("dd", null, reason),
                 ),
