@@ -1,10 +1,11 @@
+import type { GeneratedProps } from "../generated-view.ts";
 import { renderFilmsPart1 } from "./films-part-1.ts";
 import React from "react";
 
 import { AiWormFilm } from "../ai-worm.tsx";
-const h = React.createElement;
+import { h } from "../generated-view.ts";
 
-export function FilmsSection({ v }) {
+export function FilmsSection({ v }: GeneratedProps) {
   return h(
     "section",
     {

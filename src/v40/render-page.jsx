@@ -8,7 +8,7 @@ import { EagleFilmSection } from "./sections/eagle-film.ts";
 import { WorkshopSection } from "./sections/workshop.jsx";
 import { WorldsSection } from "./sections/worlds.jsx";
 import { ShowcaseSection } from "./sections/showcase.jsx";
-import { FilmsSection } from "./sections/films.jsx";
+import { FilmsSection } from "./sections/films.ts";
 import { DecisionsSection } from "./sections/decisions.jsx";
 import { ExperimentsSection } from "./sections/experiments.ts";
 import { MachinesSection } from "./sections/machines.jsx";
