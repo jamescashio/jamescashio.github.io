@@ -4,7 +4,7 @@ import { posterForViewport } from "./poster-sources.ts";
 
 import { foldReply } from "./ship-humor.ts";
 
-import { openingValues } from "./view-opening.js";
+import { openingValues } from "./view-opening.ts";
 import { experimentValues } from "./view-experiments.js";
 import { systemValues } from "./view-system.js";
 import { evidenceValues } from "./view-evidence.js";

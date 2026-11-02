@@ -1,10 +1,11 @@
+import type React from "react";
+import type { PageHost } from "./page-model.ts";
 import { snapshot } from "./evidence.ts";
 
 import { destinationLabel } from "./destinations.ts";
 
-
 import { thumbnailSources } from "./page-assets.ts";
-export function openingValues() {
+export function openingValues(this: PageHost) {
   const s = this.state,
     tech = this.props.techDetail ?? false;
   const pad = 0;
@@ -34,8 +35,8 @@ export function openingValues() {
       "var(--green)",
     ],
   ].map(([value, count, label, color]) => ({ value, count, label, color }));
-  const enter = (e) => this.hoverIn(e),
-    leave = (e) => this.hoverOut(e);
+  const enter = (e: React.MouseEvent<HTMLElement>) => this.hoverIn(e),
+    leave = (e: React.MouseEvent<HTMLElement>) => this.hoverOut(e);
   const worlds = [
     {
       index: "01",
@@ -91,7 +92,7 @@ export function openingValues() {
       "02": "A brass instrument with glowing orbital rings",
       "03": "A golden doorway opening toward a distant ringed world",
       "04": "Aviation drawings and instruments arranged on a workbench",
-    }[w.index],
+    }[w.index as "01" | "02" | "03" | "04"],
   }));
   const F = this.filmById(s.film);
   const collections = this.collections.map((label, i) => ({
