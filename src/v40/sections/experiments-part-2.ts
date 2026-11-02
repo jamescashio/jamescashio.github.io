@@ -1,9 +1,10 @@
+import type { GeneratedView } from "../generated-view.ts";
 import { renderExperimentsPart1 } from "./experiments-part-1.ts";
 import React from "react";
 
 import designSystem from "../design-system.ts";
-const h = React.createElement;
-export function renderExperimentsPart2(v) {
+import { h } from "../generated-view.ts";
+export function renderExperimentsPart2(v: GeneratedView) {
   return h(
     React.Fragment,
     { key: 1047 },
