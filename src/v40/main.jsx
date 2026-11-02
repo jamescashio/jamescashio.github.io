@@ -5,7 +5,7 @@ import "./chapters/opening.css";
 import "./polish.ts";
 import "./labs.ts";
 import "./bit.ts";
-import { setupV40Navigation } from "./navigation.js";
+import { setupV40Navigation } from "./navigation.ts";
 setupV40Navigation();
 const container = document.getElementById("v40-root");
 const prerendered = container.hasChildNodes();

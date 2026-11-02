@@ -3,7 +3,7 @@ import { isZenithFilm } from "../helios/zenith-routes.js";
 const rooms = new Set(["starship", "principles", "studios", "heritage"]);
 const experiments = new Set(["hermes", "cascade", "exposure", "briefing", "dashboards", "signal", "graphify"]);
 
-export function revealHashTarget(doc, hash) {
+export function revealHashTarget(doc: Document, hash: string) {
   let id;
   try {
     id = decodeURIComponent(hash.slice(1));
@@ -12,11 +12,11 @@ export function revealHashTarget(doc, hash) {
   }
   const target = doc.getElementById(id);
   for (let node = target; node; node = node.parentElement) {
-    if (node.tagName === "DETAILS") node.open = true;
+    if (node.tagName === "DETAILS") (node as HTMLDetailsElement).open = true;
   }
   return target;
 }
-export const sceneKind = (hash) =>
+export const sceneKind = (hash: string) =>
   hash === "#film=intro" || hash === "#film=trailer"
     ? "reel"
     : /^#flight=(board|hull|blackout|permission)$/.test(hash)
@@ -30,16 +30,16 @@ export const sceneKind = (hash) =>
 
 /** The current edition owns shared experiences; the version archive stays an explicit destination. */
 export function setupV40Navigation() {
-  let scene,
-    activeHash,
-    originalTitle,
-    statusPanel,
-    requestedHash,
-    opener,
+  let scene: { dispose: () => void } | null | undefined,
+    activeHash: string | null | undefined,
+    originalTitle: string | undefined,
+    statusPanel: HTMLElement | null | undefined,
+    requestedHash: string | null | undefined,
+    opener: HTMLElement | null | undefined,
     returnHash = "#top",
     boarding = false,
     generation = 0;
-  const inerted = [];
+  const inerted: HTMLElement[] = [];
   const motion = () =>
     document.documentElement.dataset.motion !== "off" && !matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -54,12 +54,12 @@ export function setupV40Navigation() {
     if (originalTitle !== undefined) document.title = originalTitle;
     originalTitle = undefined;
   }
-  function navigate(hash, replaceEntry = false) {
+  function navigate(hash: string, replaceEntry = false) {
     requestedHash = activeHash && !sceneKind(hash) ? hash : null;
     if (hash !== location.hash) history[activeHash || replaceEntry ? "replaceState" : "pushState"](null, "", hash);
     window.dispatchEvent(new HashChangeEvent("hashchange"));
   }
-  function focusReturn(hash, destination = false) {
+  function focusReturn(hash: string, destination = false) {
     requestAnimationFrame(() => {
       if (activeHash || location.hash !== hash) return;
       const target =
@@ -72,7 +72,7 @@ export function setupV40Navigation() {
       if (destination) target.scrollIntoView({ block: "start", behavior: "instant" });
     });
   }
-  function close(destination) {
+  function close(destination?: string) {
     dispose();
     const next = destination
       ? destination.startsWith("build=")
@@ -147,8 +147,17 @@ export function setupV40Navigation() {
       status.remove();
       scene =
         kind === "flight"
-          ? module.openFlight({ motion: motion(), step: hash.slice(8), onClose: close })
-          : module.openStudio({ motion: motion(), hash, onClose: () => close(), onNavigate: navigate });
+          ? (module as typeof import("../helios/flight-island")).openFlight({
+              motion: motion(),
+              step: hash.slice(8),
+              onClose: close,
+            })
+          : (module as typeof import("../helios/studio-island")).openStudio({
+              motion: motion(),
+              hash,
+              onClose: () => close(),
+              onNavigate: navigate,
+            });
       document.title = `${kind === "flight" ? "First flight" : hash === "#signature" ? "Celestial Forge" : hash.startsWith("#lensing") ? "Lensing Observatory" : "Cinema"} · cAshIo V42`;
       for (const node of document.body.children) {
         if (
@@ -171,7 +180,7 @@ export function setupV40Navigation() {
   document.addEventListener(
     "click",
     (event) => {
-      const link = event.target.closest?.("a[href]");
+      const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[href]") : null;
       if (
         !link ||
         event.button !== 0 ||

@@ -1,7 +1,7 @@
 import type { PageState } from "./page-model.ts";
 type LabValue = string | number | boolean;
 type LabState = Record<string, LabValue>;
-import { sceneKind } from "./navigation.js";
+import { sceneKind } from "./navigation.ts";
 import { exampleBrief } from "./decision-brief.ts";
 
 /* Local demonstrations inside the original V40 experiment panels. No network calls. */

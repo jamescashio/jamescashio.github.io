@@ -25,7 +25,7 @@ test("current E.V.E. treats inherited object names as unknown and still answers 
 });
 
 test("fragment destinations reveal only their enclosing disclosures, including encoded IDs", async () => {
-  const { revealHashTarget } = await import("../src/v40/navigation.js");
+  const { revealHashTarget } = await import("../src/v40/navigation.ts");
   const doc = new JSDOM(
     '<details id="other"><summary>Other</summary></details><details id="outer"><summary>Films</summary><details id="inner"><summary>Exercise</summary><div id="privacy-test"></div></details></details>',
   ).window.document;
