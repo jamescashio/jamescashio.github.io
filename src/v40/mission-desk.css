@@ -25,7 +25,7 @@
   display: block;
   margin-bottom: 10px;
   color: #f0c174;
-  font: 10px/1.5 var(--font-mono);
+  font: 12px/1.5 var(--font-mono);
   letter-spacing: 0.17em;
 }
 .mission-head h2 {
@@ -88,7 +88,7 @@
   gap: 10px;
   padding: 14px 30px;
   color: #c4c4c4;
-  font: 10px/1.5 var(--font-mono);
+  font: 12px/1.5 var(--font-mono);
 }
 .mission-body {
   display: grid;
@@ -100,6 +100,7 @@
   overflow: auto;
   overscroll-behavior: contain;
   align-content: start;
+  grid-auto-rows: max-content;
   padding: 12px;
   gap: 4px;
   scrollbar-color: #a07b34 #141414;
@@ -227,7 +228,7 @@
 }
 .mission-preview-category {
   color: #f1c480;
-  font: 10px/1.5 var(--font-mono);
+  font: 12px/1.5 var(--font-mono);
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
@@ -246,14 +247,14 @@
   display: block;
   margin-top: 25px;
   color: #efbb61;
-  font: 11px/1.6 var(--font-mono);
+  font: 12px/1.6 var(--font-mono);
 }
 .mission-orbit-mark {
   margin: 0 30px 20px;
   padding-top: 14px;
   border-top: 1px solid #deac4c33;
   color: #c2c2c2;
-  font: 9px/1.5 var(--font-mono);
+  font: 12px/1.5 var(--font-mono);
   letter-spacing: 0.1em;
 }
 .mission-foot {
@@ -310,19 +311,19 @@
     font-size: 18px;
   }
   .mission-eyebrow {
-    font-size: 8px;
+    font-size: 12px;
     letter-spacing: 0.1em;
     margin-bottom: 6px;
   }
   .mission-head button {
-    font-size: 11px;
+    font-size: 12px;
     padding-inline: 10px;
   }
   .mission-search {
     padding: 14px 16px 10px;
   }
   .mission-search span {
-    font-size: 10px;
+    font-size: 12px;
   }
   .mission-search input {
     padding: 12px;
@@ -358,18 +359,18 @@
     gap: 8px;
   }
   .mission-description {
-    font-size: 12px;
+    font-size: 14px;
   }
   .mission-foot {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 10px;
     padding: 10px 16px;
-    font-size: 10px;
+    font-size: 12px;
   }
   .mission-foot button {
     padding-inline: 9px;
-    font-size: 11px;
+    font-size: 12px;
   }
 }
 @media (prefers-reduced-motion: no-preference) {

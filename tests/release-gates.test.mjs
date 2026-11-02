@@ -51,7 +51,11 @@ test("V40 ships its real reading edition under the strict production security po
   );
   assert.ok(root.textContent.includes(observedMonth + " · Scheduler and routing not measured"));
   assert.equal(receipt.presentation.name, "Omnius, Overruled");
-  assert.match(root.querySelector("#top").textContent, /Omnius, Overruled · Imagination, with intention/);
+  assert.equal(
+    root.querySelector("#top .continuum-arrival > span:nth-child(2)").textContent,
+    receipt.presentation.name,
+  );
+  assert.equal(root.querySelector("#top .aurum-manifesto").textContent, receipt.presentation.subtitle + ".");
   const updatedDate = new Intl.DateTimeFormat("en-US", {
     month: "long",
     day: "numeric",

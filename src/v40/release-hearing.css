@@ -34,7 +34,7 @@
 .hearing-kicker,
 .hearing-case,
 .hearing-subject {
-  font: 9px/1.6 var(--font-mono);
+  font: 12px/1.6 var(--font-mono);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: #9cdde7;
@@ -44,7 +44,7 @@
   color: #f2d499;
 }
 .hearing-open {
-  font: 10px/1.6 var(--font-mono);
+  font: 12px/1.6 var(--font-mono);
   color: #c1e9ee;
   display: flex;
   gap: 22px;
@@ -100,7 +100,7 @@
   border-bottom: 1px solid #58d3e34f;
 }
 .hearing-lore p.hearing-note {
-  font-size: 11px;
+  font-size: 12px;
   color: #a3bac4;
   margin-top: 18px;
 }
@@ -116,7 +116,7 @@
   display: flex;
   justify-content: space-between;
   gap: 14px;
-  font-size: 8px;
+  font-size: 12px;
 }
 .hearing-case > span:last-child {
   color: #ebc989;
@@ -201,7 +201,7 @@
   background: linear-gradient(110deg, #ffe2a4, #edb95d);
   color: #171109;
   border: 1px solid #ffdd96;
-  font: 600 11px/1.5 var(--font-display);
+  font: 600 12px/1.5 var(--font-display);
   cursor: pointer;
   clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
 }
@@ -212,7 +212,7 @@
   outline-offset: -4px;
 }
 .hearing-footer {
-  font: 9px/1.7 var(--font-mono);
+  font: 12px/1.7 var(--font-mono);
   color: #acc2ca;
   min-height: 31px;
   margin: 13px 0 0;
@@ -231,12 +231,12 @@
     font-size: 28px;
   }
   .hearing-invitation small {
-    font-size: 7px;
+    font-size: 12px;
   }
   .hearing-open {
     grid-column: 2;
     justify-content: space-between;
-    font-size: 9px;
+    font-size: 12px;
   }
   .hearing-open b {
     font-size: 20px;
@@ -251,7 +251,7 @@
     padding: 16px;
   }
   .hearing-case {
-    font-size: 7px;
+    font-size: 12px;
     letter-spacing: 0.03em;
   }
   .hearing-seal {

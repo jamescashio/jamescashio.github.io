@@ -28,7 +28,7 @@
 }
 .atlas-selectors button span {
   color: #27c1db;
-  font: 11px var(--font-mono);
+  font: 12px var(--font-mono);
 }
 .atlas-selectors button[aria-selected="true"] {
   border-bottom-color: #7edcf2;
@@ -63,7 +63,7 @@
   display: flex;
   justify-content: space-between;
   color: #5dd7f0;
-  font: 10px/1.8 var(--font-mono);
+  font: 12px/1.8 var(--font-mono);
   letter-spacing: 0.15em;
 }
 .atlas-instrument-caption span {
@@ -121,7 +121,7 @@
   border: 1px solid #28c2dc73;
   color: #e1f5fb;
   background: #141414;
-  font: 11px/1.6 var(--font-mono);
+  font: 12px/1.6 var(--font-mono);
   pointer-events: none;
 }
 .atlas-point:is(:hover, :focus-visible) span {
@@ -149,7 +149,7 @@
 }
 .atlas-waypoint text {
   fill: #d6d6d6;
-  font: 11px var(--font-mono);
+  font: 12px var(--font-mono);
 }
 .atlas-waypoint.is-selected circle:first-child {
   stroke: #98e1f4;
@@ -186,7 +186,7 @@
 .atlas-chart-note {
   text-align: center;
   color: #c0c0c0;
-  font: 10px/1.6 var(--font-mono);
+  font: 12px/1.6 var(--font-mono);
   letter-spacing: 0.08em;
 }
 .atlas-destinations {
@@ -225,14 +225,14 @@
   background: #121212eb;
   color: #e4e4e4;
   border-left: 2px solid #7edcf2;
-  font: 11px/1.6 var(--font-mono);
+  font: 12px/1.6 var(--font-mono);
 }
 .atlas-copy {
   padding: 8px 32px 28px;
 }
 .atlas-world-name {
   color: #77dbf2;
-  font: 11px/1.6 var(--font-mono);
+  font: 12px/1.6 var(--font-mono);
   letter-spacing: 0.13em;
   text-transform: uppercase;
 }
@@ -253,7 +253,7 @@
 }
 .atlas-field-note > span {
   color: #2cd2ee;
-  font: 10px/1.6 var(--font-mono);
+  font: 12px/1.6 var(--font-mono);
   letter-spacing: 0.12em;
 }
 .atlas-field-note h4 {
@@ -319,7 +319,7 @@
     font-size: 13px;
   }
   .atlas-selectors button span {
-    font-size: 10px;
+    font-size: 12px;
   }
   .atlas-art img {
     height: 176px;
@@ -327,7 +327,7 @@
   .atlas-art > span {
     top: 12px;
     left: 16px;
-    font-size: 10px;
+    font-size: 12px;
   }
   .atlas-copy {
     padding: 8px 18px 20px;

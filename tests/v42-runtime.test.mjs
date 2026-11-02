@@ -29,6 +29,80 @@ async function visit(t, options = {}) {
   return page;
 }
 
+test("Omnius polish keeps instrument text readable and phone navigation deliberate", async (t) => {
+  for (const width of [320, 390]) {
+    const page = await visit(t, {
+      viewport: { width, height: 740 },
+      isMobile: true,
+      hasTouch: true,
+      reducedMotion: "reduce",
+    });
+    const labels = page.locator(
+      ".continuum-eyebrow, .continuum-footnote, .hero-logo-reveal, .continuum-readings dt, .flight-camera-control > span, .continuum-scene-controls button, .continuum-paths small",
+    );
+    for (const label of await labels.all()) {
+      assert.ok(await label.evaluate((n) => parseFloat(getComputedStyle(n).fontSize) >= 12), await label.innerText());
+    }
+    assert.equal(await page.locator(".continuum-intro").evaluate((n) => getComputedStyle(n).fontSize), "16px");
+    await expect(page.locator(".continuum-path-description")).toHaveText([
+      "Explore four interactive worlds",
+      "Try seven hands-on experiments",
+      "House Cashio and original films",
+    ]);
+    for (const action of await page.locator(".continuum-actions a, .continuum-paths button").all()) {
+      const b = await action.boundingBox();
+      assert.ok(b.width >= 44 && b.height >= 44 && b.x >= 0 && b.x + b.width <= width);
+      assert.ok(await action.evaluate((n) => n.scrollWidth <= n.clientWidth), "no clipped action label");
+    }
+    const opener = page.locator("header [data-mission-open]");
+    await opener.click();
+    const panel = page.locator("#mission-dialog");
+    await expect(panel.getByRole("button", { name: "Close Mission Control", exact: true })).toBeFocused();
+    await expect(panel.locator("[data-chapter]:visible")).toHaveCount(11);
+    await expect(panel.getByRole("link", { name: "01 Home", exact: true })).toBeInViewport();
+    for (const destination of await panel.locator("[data-chapter]:visible").all()) {
+      const row = await destination.boundingBox();
+      const description = await destination.locator(".mission-description").boundingBox();
+      assert.ok(
+        description.y + description.height <= row.y + row.height - 8,
+        "each destination contains its wrapped description",
+      );
+    }
+    // Search remains available when explicitly chosen, and results retain their original routes.
+    await panel.getByRole("searchbox").fill("trailer");
+    await expect(panel.locator("[data-chapter]:visible")).toHaveCount(1);
+    await panel.getByRole("link", { name: "03 House Cashio", exact: true }).click();
+    await expect(page).toHaveURL(/#eagle-film$/);
+    await expect(page.locator("#eagle-film")).toBeInViewport();
+    await opener.click();
+    await page.keyboard.press("Escape");
+    await expect(opener).toBeFocused();
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+  }
+});
+
+test("Omnius chapter rail is readable, unclipped and navigable on a short desktop", async (t) => {
+  const page = await visit(t, { viewport: { width: 1280, height: 720 }, reducedMotion: "reduce" });
+  const rail = page.getByRole("navigation", { name: "Sections", exact: true });
+  const links = rail.locator(".v41-a0e1b1fc48 > a");
+  await expect(links).toHaveCount(7);
+  for (const link of await links.all()) {
+    const b = await link.boundingBox();
+    assert.ok(b.x >= 0 && b.y >= 76 && b.y + b.height <= 720);
+    const label = link.locator(".v41-cbba20e481");
+    assert.deepEqual(
+      await label.evaluate((n) => ({ size: getComputedStyle(n).fontSize, writing: getComputedStyle(n).writingMode })),
+      { size: "12px", writing: "horizontal-tb" },
+    );
+    assert.ok(await link.evaluate((n) => n.scrollWidth <= n.clientWidth), "chapter label fits");
+  }
+  await rail.getByRole("link", { name: "Worlds", exact: true }).click();
+  await expect(page).toHaveURL(/#rooms$/);
+  await expect(page.locator("#rooms")).toBeInViewport();
+  await page.locator("header [data-mission-open]").click();
+  await expect(page.locator("#mission-dialog").getByRole("searchbox")).toBeFocused();
+});
+
 test("Continuum's three forms and manual rotation work with reduced motion and pause", async (t) => {
   for (const reducedMotion of ["reduce", "no-preference"]) {
     const page = await visit(t, { reducedMotion });

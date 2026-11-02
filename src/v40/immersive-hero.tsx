@@ -81,7 +81,7 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
       <div className="continuum-horizon" aria-hidden="true" />
       <div className="continuum-arrival">
         <span>cAshIo / V42</span>
-        <span>Omnius, Overruled · Imagination, with intention</span>
+        <span>Omnius, Overruled</span>
         <span className="continuum-arrival-end">
           <i aria-hidden="true" /> Human in command
         </span>
@@ -129,7 +129,9 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
               Try an experiment <span aria-hidden="true">↗</span>
             </a>
           </div>
-          <p className="continuum-footnote">A 30 second starship tour · 12 illustrated requests · sound off</p>
+          <p className="continuum-footnote">
+            <strong>Start here:</strong> a 30 second starship tour · 12 illustrated requests · sound off
+          </p>
           <a href="/cashio.html#logo-reveal" className="hero-logo-reveal">
             <span aria-hidden="true">▷ </span>Watch the logo reveal · 15 seconds
           </a>
@@ -184,6 +186,15 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
                   0{i + 1} / {r.label}
                 </small>
                 <strong>{["Find your world", "Make something click", "Enter the cinema"][i]}</strong>
+                <span className="continuum-path-description">
+                  {
+                    [
+                      "Explore four interactive worlds",
+                      "Try seven hands-on experiments",
+                      "House Cashio and original films",
+                    ][i]
+                  }
+                </span>
               </span>
               <span className="continuum-path-arrow" aria-hidden="true">
                 ↗

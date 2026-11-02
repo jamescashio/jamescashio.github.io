@@ -128,7 +128,11 @@ import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.js";
     opener = trigger || document.activeElement;
     panel.showModal();
     missionDesk.reset();
-    panel.querySelector("input").focus();
+    // Opening the phone menu should reveal destinations without summoning the keyboard.
+    const initialFocus = window.matchMedia("(max-width: 700px)").matches
+      ? panel.querySelector("[data-mission-close]")
+      : panel.querySelector("input");
+    initialFocus.focus({ preventScroll: true });
   }
   function ready() {
     if (panel) return;

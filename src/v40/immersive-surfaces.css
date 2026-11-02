@@ -30,7 +30,7 @@ html:has(.discovery-console[open]) {
   padding-bottom: 16px;
   border-bottom: 1px solid #cccccc2e;
   color: #87def3;
-  font: 10px var(--font-mono);
+  font: 12px var(--font-mono);
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
@@ -41,7 +41,7 @@ html:has(.discovery-console[open]) {
 }
 .discovery-console button {
   cursor: pointer;
-  font: 11px/1.5 var(--font-mono);
+  font: 12px/1.5 var(--font-mono);
   min-height: 44px;
   min-width: 44px;
 }
@@ -148,7 +148,7 @@ html:has(.discovery-console[open]) {
   position: absolute;
   margin: 0;
   inset: 14px 16px auto;
-  font: 8px/1.6 var(--font-mono);
+  font: 12px/1.6 var(--font-mono);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: #a4e4f5;
@@ -269,7 +269,7 @@ html:has(.discovery-console[open]) {
   left: 18px;
   right: 18px;
   z-index: 2;
-  font: 8px var(--font-mono);
+  font: 12px var(--font-mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #b8e9f7;
@@ -291,7 +291,7 @@ html:has(.discovery-console[open]) {
   margin-top: 10px;
 }
 .discovery-description > .discovery-hint {
-  font: 10px/1.6 var(--font-mono) !important;
+  font: 12px/1.6 var(--font-mono) !important;
   margin-bottom: 0;
   color: #c4c4c4 !important;
 }
@@ -310,11 +310,11 @@ html:has(.discovery-console[open]) {
   background: #212121;
   color: #d2d2d2;
   border: 1px solid #60d8f132;
-  font-size: 10px;
+  font-size: 12px;
 }
 .discovery-stops button > span {
   color: #2cd3ef;
-  font-size: 9px;
+  font-size: 12px;
 }
 .discovery-stops button[aria-pressed="true"] {
   color: #bfebf7;
@@ -328,7 +328,7 @@ html:has(.discovery-console[open]) {
   gap: 16px;
   margin-top: 18px;
   color: #69d9f1;
-  font: 10px var(--font-mono);
+  font: 12px var(--font-mono);
 }
 .discovery-footer button {
   color: #e2e2e2;
@@ -430,7 +430,7 @@ html:has(.discovery-console[open]) {
   gap: 7px;
 }
 .cinema-selection small {
-  font: 9px var(--font-mono);
+  font: 12px var(--font-mono);
   color: #49d5f0;
 }
 .cinema-selection strong {
@@ -440,7 +440,7 @@ html:has(.discovery-console[open]) {
   margin-left: auto;
   padding-right: 7px;
   color: #84ddf3;
-  font: 10px var(--font-mono);
+  font: 12px var(--font-mono);
 }
 .cinema-selection button[aria-pressed="true"] {
   border-color: #49d5f09c;
@@ -539,7 +539,7 @@ html:has(.discovery-console[open]) {
 }
 #v40-root .atlas-world-name {
   color: #a4e4f5;
-  font-size: 11px;
+  font-size: 12px;
 }
 #v40-root .atlas-copy h3 {
   font-size: clamp(26px, 2.5vw, 40px);
@@ -694,7 +694,7 @@ html:has(.discovery-console[open]) {
     z-index: 5;
     padding: 10px 0;
     background: #161616;
-    font-size: 8px;
+    font-size: 12px;
     letter-spacing: 0.03em;
     gap: 8px;
   }
@@ -703,7 +703,7 @@ html:has(.discovery-console[open]) {
     margin-right: 6px;
   }
   .discovery-topline button {
-    font-size: 9px;
+    font-size: 12px;
     gap: 9px;
     padding-inline: 10px;
   }
@@ -721,7 +721,7 @@ html:has(.discovery-console[open]) {
     margin-bottom: 16px;
   }
   .discovery-paths button {
-    font-size: 10px;
+    font-size: 12px;
     padding-inline: 10px;
   }
   .discovery-view {
@@ -733,7 +733,7 @@ html:has(.discovery-console[open]) {
     aspect-ratio: 1.9;
   }
   .discovery-art-caption {
-    font-size: 7px;
+    font-size: 12px;
     bottom: 14px;
     left: 14px;
   }
@@ -755,16 +755,16 @@ html:has(.discovery-console[open]) {
   }
   .discovery-stops button {
     padding: 9px;
-    font-size: 10px;
+    font-size: 12px;
     gap: 8px;
     min-height: 50px;
   }
   .discovery-footer {
-    font-size: 9px;
+    font-size: 12px;
     gap: 8px;
   }
   .discovery-footer button {
-    font-size: 10px;
+    font-size: 12px;
     padding: 8px 10px;
   }
   #v40-root .eagle-film {
@@ -802,7 +802,7 @@ html:has(.discovery-console[open]) {
     height: 48px;
   }
   .cinema-selection strong {
-    font-size: 11px;
+    font-size: 12px;
   }
   .cinema-selection button > span:not(.cinema-selected-mark) {
     gap: 4px;
@@ -830,7 +830,7 @@ html:has(.discovery-console[open]) {
   #v40-root .atlas-art > span {
     right: 16px;
     top: 16px;
-    font-size: 9px;
+    font-size: 12px;
   }
   #v40-root .atlas-field-note {
     padding: 10px 12px;

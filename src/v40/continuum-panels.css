@@ -33,7 +33,7 @@
 #v40-root .eagle-film-label {
   color: #65d8f1;
   letter-spacing: 0.17em;
-  font-size: 10px;
+  font-size: 12px;
 }
 #v40-root .eagle-film-copy h2 {
   font-size: clamp(30px, 3.1vw, 48px);
@@ -315,7 +315,7 @@
     line-height: 1.5;
   }
   #v40-root #evidence .v41-fc22463955 .za-stat-label {
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.6;
   }
   #v40-root footer .v41-cbfac2beab {
@@ -371,7 +371,7 @@
     font-size: 13px;
   }
   #v40-root .atlas-selectors button span {
-    font-size: 10px;
+    font-size: 12px;
   }
   #v40-root .journey-disclosure > summary {
     min-height: 112px;

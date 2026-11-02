@@ -2,6 +2,8 @@
 
 ## Current creative thesis
 
+A readability and navigation pass preserves this wild cinematic identity. Raise essential instrument labels to at least 12 pixels, use 14 pixel supporting copy and 16 pixel phone introduction text. Keep the display type, original moving horizon and gold and cyan light. Make the desktop chapter rail horizontally readable, explain the three discovery paths, and let phone visitors open Mission Control without immediately opening the keyboard. Maintain 44 pixel controls and the compact phone journey. Preserve all content and public evidence. This polish remains unpublished at port 4407; the preceding Omnius preview is preserved at 764606ee0a7094176684258d27e3341947b3da27.
+
 A cinematic cAshIo cockpit with a dry sense of humor: an original planetary horizon, black, metallic gold and electric cyan, with the human getting the last word and the machine getting a clipboard.
 
 Keep V42 and the established moving hero, original celestial signature, geometric headline, camera controls and complete content. This is personality and interaction polish, not another palette reset. Use the Gloves Off Website visual system already established in the previous preview.

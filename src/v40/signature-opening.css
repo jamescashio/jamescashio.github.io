@@ -53,7 +53,7 @@
   max-width: 1760px;
   padding-inline: 28px;
   height: 76px;
-  gap: 28px;
+  gap: 22px;
 }
 #v40-root header .v41-9fb65157a3 {
   font-size: 23px;
@@ -86,8 +86,8 @@
 #v40-root nav[aria-label="Sections"] {
   position: fixed;
   inset: 76px auto 0 0;
-  width: 64px;
-  max-width: 64px;
+  width: 96px;
+  max-width: 96px;
   height: auto;
   border: 0;
   border-right: 1px solid #53c3df33;
@@ -109,19 +109,23 @@
   overflow: visible;
 }
 #v40-root nav[aria-label="Sections"] .v41-a0e1b1fc48 > a {
-  min-width: 48px;
-  min-height: 62px;
-  width: 48px;
-  padding: 10px 6px;
+  min-width: 84px;
+  min-height: 58px;
+  width: 84px;
+  padding: 8px 4px;
   flex-direction: column;
   border-radius: 3px;
-  gap: 7px;
+  gap: 6px;
 }
 #v40-root nav[aria-label="Sections"] .v41-cbba20e481 {
-  font-size: 7px;
-  letter-spacing: 0.1em;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
+  font-size: 12px;
+  letter-spacing: 0;
+  writing-mode: horizontal-tb;
+  transform: none;
+  font-family: var(--font-body);
+  white-space: normal;
+  text-align: center;
+  line-height: 1.3;
 }
 #v40-root nav[aria-label="Sections"] .v41-b5d5368cf2 {
   width: 4px;
@@ -200,7 +204,7 @@
   padding: 20px 0;
   color: #9fbdc5;
   text-transform: uppercase;
-  font: 8px/1.6 var(--font-mono);
+  font: 12px/1.6 var(--font-mono);
   letter-spacing: 0.11em;
 }
 .continuum-arrival > span:first-child {
@@ -241,7 +245,7 @@
 .continuum-label,
 .continuum-eyebrow {
   color: #84e1ee;
-  font: 9px/1.6 var(--font-mono);
+  font: 12px/1.6 var(--font-mono);
   letter-spacing: 0.15em;
   text-transform: uppercase;
 }
@@ -275,7 +279,7 @@
 }
 .aurum-manifesto {
   color: #9de6ef;
-  font: 10px/1.5 var(--font-mono);
+  font: 12px/1.5 var(--font-mono);
   letter-spacing: 0.22em;
   text-transform: uppercase;
   margin: 24px 0 12px;
@@ -301,7 +305,7 @@
   gap: 24px;
   min-height: 50px;
   padding: 15px 21px;
-  font: 600 11px/1.4 var(--font-display);
+  font: 600 15px/1.4 var(--font-body);
   text-decoration: none;
 }
 .continuum-primary {
@@ -326,7 +330,7 @@
 }
 .continuum-footnote {
   color: #a6b4bb;
-  font: 8px/1.8 var(--font-mono);
+  font: 12px/1.8 var(--font-mono);
   letter-spacing: 0.02em;
   margin: 14px 0 10px;
 }
@@ -335,7 +339,7 @@
   align-items: center;
   min-height: 44px;
   color: #f2c77e;
-  font: 9px/1.5 var(--font-mono);
+  font: 12px/1.5 var(--font-mono);
 }
 .continuum-visual {
   position: absolute;
@@ -379,7 +383,7 @@
   gap: 6px;
   color: #bfe6ef;
   text-align: right;
-  font: 8px/1.6 var(--font-mono);
+  font: 12px/1.6 var(--font-mono);
   letter-spacing: 0.12em;
 }
 .continuum-reticle::after {
@@ -413,7 +417,7 @@
 }
 .flight-camera-control > span {
   color: #a6d6e0;
-  font: 8px/1.5 var(--font-mono);
+  font: 12px/1.5 var(--font-mono);
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
@@ -427,7 +431,7 @@
   background: #ecc27d;
   color: #15100a;
   border: 1px solid #ffdda1;
-  font: 600 10px var(--font-mono);
+  font: 600 12px var(--font-mono);
   padding: 10px 13px;
   cursor: pointer;
 }
@@ -447,11 +451,11 @@
   border-right: 1px solid #47bdd31b;
   background: transparent;
   color: #b4c6ce;
-  font: 10px var(--font-mono);
+  font: 600 13px var(--font-body);
   cursor: pointer;
 }
 .continuum-scene-controls button > span {
-  font-size: 7px;
+  font-size: 12px;
   color: #80cddb;
 }
 .continuum-scene-controls button[aria-pressed="true"] {
@@ -460,11 +464,14 @@
   background: linear-gradient(0deg, #a16e2726, transparent);
 }
 .continuum-stage-bottom {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
   justify-content: space-between;
   min-height: 44px;
   padding: 0 10px;
+  flex-wrap: wrap;
+  gap: 0 10px;
 }
 .continuum-stage-bottom button {
   min-height: 44px;
@@ -473,7 +480,7 @@
   border: 0;
   background: transparent;
   color: #9eeaf5;
-  font: 9px var(--font-mono);
+  font: 12px var(--font-mono);
   cursor: pointer;
 }
 .continuum-stage-bottom button span {
@@ -481,15 +488,22 @@
   font-size: 14px;
 }
 .continuum-art-label {
-  font: 7px var(--font-mono);
+  font: 12px var(--font-mono);
   color: #9cabb5;
+  text-align: center;
+  order: 3;
+  grid-column: 1 / -1;
+  padding-bottom: 8px;
+}
+.continuum-stage-bottom button:last-child {
+  justify-self: end;
 }
 .continuum-scene-caption {
   padding: 10px 16px 13px;
   margin: 0;
   border-top: 1px solid #4dc1d61c;
   color: #adc3cc;
-  font: 9px/1.5 var(--font-body);
+  font: 14px/1.5 var(--font-body);
 }
 .continuum-launchpad {
   position: relative;
@@ -509,7 +523,7 @@
   background: transparent;
   border: 0;
   color: #ecc985;
-  font: 10px var(--font-mono);
+  font: 12px var(--font-mono);
   cursor: pointer;
 }
 .continuum-launch-heading button > span {
@@ -522,7 +536,7 @@
 }
 .continuum-paths button {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   align-items: center;
   min-width: 0;
   min-height: 80px;
@@ -539,22 +553,22 @@
   border-left-color: #5fdbed;
 }
 .continuum-paths img {
-  width: 80px;
-  height: 54px;
+  width: 64px;
+  height: 60px;
   object-fit: cover;
 }
 .continuum-paths button > span:not(.continuum-path-arrow) {
   display: grid;
-  gap: 8px;
+  gap: 4px;
 }
 .continuum-paths small {
   color: #9de6ef;
-  font: 8px/1.5 var(--font-mono);
+  font: 12px/1.5 var(--font-mono);
   letter-spacing: 0.05em;
 }
 .continuum-paths strong {
   color: #ecf3f5;
-  font: 600 15px/1.3 var(--font-body);
+  font: 600 17px/1.3 var(--font-body);
 }
 .continuum-path-arrow {
   margin-left: auto;
@@ -564,104 +578,16 @@
   border-color: #95eafa;
   background: #11232c;
 }
-.continuum-observation {
-  display: grid;
-  grid-template-columns: 1fr 1.6fr;
-  align-items: center;
-  gap: 28px;
-  padding: 22px 0;
-  max-width: 1560px;
-  margin: auto;
-  border-block: 1px solid #5fbdcd38;
-  background: #050608;
-}
-.continuum-observation-date {
-  display: grid;
-  gap: 7px;
-  color: #91d4df;
-  text-decoration: none;
-  font: 9px/1.5 var(--font-mono);
-}
-.continuum-observation-date strong {
-  color: #dce8eb;
-  font: 500 13px/1.5 var(--font-body);
-}
-.continuum-readings {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
-  margin: 0;
-}
-.continuum-readings > div {
-  display: flex;
-  flex-direction: column-reverse;
-  gap: 8px;
-  border-left: 1px solid #5fc5d533;
-  padding-left: 16px;
-}
-.continuum-readings dt {
-  color: #a8bbc4;
-  font: 8px/1.5 var(--font-mono);
-  text-transform: uppercase;
-}
-.continuum-readings dd {
-  margin: 0;
-  color: #8aebf4;
-  font: 600 31px/1 var(--font-display);
-  letter-spacing: -0.04em;
-}
-.continuum-next {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  max-width: 1560px;
-  margin: auto;
-  min-height: 64px;
-  color: #e4edf1;
-  text-decoration: none;
-  font: 13px/1.5 var(--font-body);
-}
-.continuum-next > span {
-  display: flex;
-  gap: 18px;
-  align-items: center;
-}
-.continuum-next > span:last-child {
-  color: #ecd5a5;
-  font: 10px var(--font-mono);
-}
-.continuum-next > span:last-child > span {
-  font-size: 22px;
-}
-.continuum-principles {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 24px;
-  padding: 18px clamp(24px, 4.6vw, 84px);
-  border-block: 1px solid #52b3c135;
-  background: #080d11;
-  color: #a5b9c3;
-  font: 9px/1.6 var(--font-mono);
-}
-.continuum-principles span {
-  display: grid;
-  gap: 4px;
-}
-.continuum-principles b {
-  color: #e9c682;
-  font-weight: 500;
-}
 .discovery-console:not([open]) {
   display: none;
 }
 @media (min-width: 1180px) {
   #v40-root.continuum-root main {
-    margin-left: 64px !important;
+    margin-left: 96px !important;
     padding-left: 0 !important;
   }
   #v40-root header {
-    padding-left: 64px;
+    padding-left: 96px;
   }
 }
 @media (min-width: 1900px) {
@@ -756,17 +682,13 @@
   .continuum-reticle {
     top: 110px;
   }
-  .continuum-observation {
-    grid-template-columns: 1fr;
-    gap: 18px;
-  }
   .continuum-paths img {
     display: none;
   }
 }
 @media (max-width: 600px) {
   .continuum-hero {
-    padding-inline: 22px;
+    padding-inline: 18px;
   }
   .continuum-hero .hero-planet {
     height: 900px;
@@ -790,8 +712,9 @@
   .continuum-arrival {
     justify-content: space-between;
     padding: 16px 0;
-    font-size: 6px;
-    gap: 15px;
+    font-size: 12px;
+    gap: 12px;
+    letter-spacing: 0.02em;
   }
   .continuum-arrival > span:nth-child(2) {
     max-width: 160px;
@@ -809,9 +732,9 @@
     max-width: none;
   }
   .continuum-eyebrow {
-    font-size: 7px;
-    letter-spacing: 0.08em;
-    margin-bottom: 18px;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    margin-bottom: 14px;
     gap: 8px;
   }
   .continuum-eyebrow > span {
@@ -823,40 +746,43 @@
     letter-spacing: -0.05em;
   }
   .aurum-manifesto {
-    font-size: 8px;
-    letter-spacing: 0.15em;
+    font-size: 12px;
+    letter-spacing: 0.07em;
     margin: 18px 0 10px;
   }
   .continuum-intro {
-    font-size: 14px;
-    line-height: 1.65;
+    font-size: 16px;
+    line-height: 1.6;
     margin-bottom: 20px;
   }
   .continuum-actions {
-    gap: 10px;
+    gap: 8px;
     flex-wrap: nowrap;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .continuum-primary,
   .continuum-secondary {
-    padding: 12px 10px;
-    gap: 9px;
-    font-size: 9px;
-    min-height: 46px;
+    padding: 12px;
+    gap: 8px;
+    font-size: 14px;
+    min-height: 56px;
+    min-width: 0;
   }
   .continuum-primary {
     flex: 1;
   }
   .continuum-footnote {
-    font-size: 6px;
+    font-size: 12px;
   }
   .continuum-copy .hero-logo-reveal {
-    font-size: 8px;
+    font-size: 12px;
   }
   .continuum-visual {
     position: relative;
     order: 2;
     inset: auto;
-    height: 190px;
+    height: 140px;
     margin-top: 6px;
   }
   .continuum-stage #hero-stars {
@@ -874,7 +800,7 @@
   .continuum-reticle {
     top: 92px;
     right: 0;
-    font-size: 6px;
+    font-size: 12px;
   }
   .continuum-scene-deck {
     position: relative;
@@ -887,9 +813,10 @@
     padding-block: 5px;
   }
   .continuum-scene-controls button {
-    min-height: 46px;
-    font-size: 9px;
+    min-height: 48px;
+    font-size: 12px;
     gap: 5px;
+    padding: 10px 6px;
   }
   .continuum-stage-bottom {
     min-height: 44px;
@@ -904,10 +831,10 @@
     margin: 0;
   }
   .continuum-launch-heading .continuum-label {
-    font-size: 7px;
+    font-size: 12px;
   }
   .continuum-launch-heading button {
-    font-size: 9px;
+    font-size: 12px;
   }
   .continuum-paths {
     grid-template-columns: 1fr;
@@ -924,44 +851,16 @@
     height: 46px;
   }
   .continuum-paths small {
-    font-size: 7px;
-  }
-  .continuum-paths strong {
-    font-size: 14px;
-  }
-  .continuum-paths button > span:not(.continuum-path-arrow) {
-    gap: 6px;
-  }
-  .continuum-observation {
-    padding: 18px 0;
-    gap: 20px;
-  }
-  .continuum-label {
-    font-size: 8px;
-  }
-  .continuum-readings {
-    gap: 7px;
-  }
-  .continuum-readings > div {
-    padding-left: 9px;
-  }
-  .continuum-readings dd {
-    font-size: 24px;
-  }
-  .continuum-readings dt {
-    font-size: 6px;
-  }
-  .continuum-next {
-    min-height: 56px;
     font-size: 12px;
   }
-  .continuum-next .continuum-label {
-    display: none;
+  .continuum-paths strong {
+    font-size: 17px;
   }
-  .continuum-principles {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px 18px;
-    font-size: 8px;
+  .continuum-paths button > span:not(.continuum-path-arrow) {
+    gap: 4px;
+  }
+  .continuum-label {
+    font-size: 12px;
   }
 }
 @media (max-width: 360px) {
@@ -973,12 +872,12 @@
   }
   .continuum-primary,
   .continuum-secondary {
-    font-size: 8px;
+    font-size: 14px;
     padding-inline: 8px;
     gap: 6px;
   }
   .continuum-intro {
-    font-size: 13px;
+    font-size: 16px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -998,5 +897,38 @@ html[data-motion="off"] .hero-flight-camera {
   .continuum-primary {
     clip-path: none;
     border: 2px solid ButtonText;
+  }
+}
+.continuum-path-description {
+  color: #bfccd3;
+  font: 14px/1.45 var(--font-body);
+}
+.continuum-footnote strong {
+  color: #f2ce88;
+  font-weight: 500;
+}
+#v40-root header .hud-control {
+  font-size: 12px;
+}
+#v40-root header nav[aria-label="Primary"] a {
+  font-size: 13px;
+}
+@media (max-width: 600px) {
+  .continuum-scene-controls button > span {
+    display: none;
+  }
+  .continuum-art-label {
+    order: 3;
+    width: 100%;
+    padding-bottom: 8px;
+  }
+  .continuum-stage-bottom button:last-child {
+    margin-left: auto;
+  }
+  .continuum-launch-heading {
+    gap: 12px;
+  }
+  .continuum-launch-heading button > span {
+    margin-left: 5px;
   }
 }

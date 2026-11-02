@@ -1,5 +1,7 @@
 # V42 · Omnius, Overruled preview
 
+This polished candidate makes the small instrument text readable, gives the desktop chapter rail clear horizontal labels, explains each discovery path and refines narrow phone controls. The phone menu opens on its close control so the keyboard appears only when Search is chosen. The cinematic artwork, moving horizon, humor and complete content are preserved.
+
 Omnius, Overruled adds a dry sense of humor, a fictional four motion hearing with human verdicts, new Bit jokes and a sourced release story tied to the Butlerian Jihad prequels. The design retains the original planetary hero and cAshIo celestial signature. Black, metallic gold and electric cyan frame a moving approach, manual close view, layered particles and angular instruments. The original headline returns. All existing content, media and evidence remain. Orbit, Signal and Constellation morph on selection; Rotate and Fold space remain usable with motion off. A new Discovery console offers Explore, Try and Watch paths, twelve illustrated stops, selectable holographic beacons, keyboard stepping and copyable public routes. The cinema presents four selectable features with House Cashio first. The world map expands each destination into a panoramic composition.
 
 All existing films, captions, routes, four worlds, seven experiments, Bit and E.V.E. remain. The verified November 1, 2026 observation is unchanged. The reference's personal information is excluded. No dependency, infrastructure or security setting changes are included.
