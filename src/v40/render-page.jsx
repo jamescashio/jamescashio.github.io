@@ -15,7 +15,7 @@ import { MachinesSection } from "./sections/machines.jsx";
 import { EvidenceSection } from "./sections/evidence.ts";
 import { OperatorSection } from "./sections/operator.jsx";
 import { ContactSection } from "./sections/contact.ts";
-import { JourneyDisclosure } from "./sections/journey-disclosure.jsx";
+import { JourneyDisclosure } from "./sections/journey-disclosure.ts";
 
 import React from "react";
 

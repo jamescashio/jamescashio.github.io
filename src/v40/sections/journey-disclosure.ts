@@ -1,7 +1,19 @@
 import React from "react";
 const h = React.createElement;
 
-export function JourneyDisclosure({ id, title, description, image, children }) {
+export function JourneyDisclosure({
+  id,
+  title,
+  description,
+  image,
+  children,
+}: {
+  id: string;
+  title: string;
+  description: string;
+  image?: string;
+  children?: React.ReactNode;
+}) {
   return h(
     "details",
     { id, className: "journey-disclosure" },
