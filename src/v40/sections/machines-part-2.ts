@@ -1,8 +1,9 @@
+import type { GeneratedView, GeneratedValue } from "../generated-view.ts";
 import React from "react";
 import { classFor } from "../style-variants.ts";
 import designSystem from "../design-system.ts";
-const h = React.createElement;
-export function renderMachinesPart2(v) {
+import { h } from "../generated-view.ts";
+export function renderMachinesPart2(v: GeneratedView) {
   return h(
     "div",
     { key: 1255, className: "v41-84e5cd0cb2" },
@@ -122,8 +123,8 @@ export function renderMachinesPart2(v) {
           className: "v41-fb97ac650b",
         },
         " ",
-        (function (parent) {
-          return (v.traceLog || []).map((item, index) => {
+        (function (parent: GeneratedView) {
+          return (v.traceLog || []).map((item: GeneratedValue, index: number) => {
             const v = { ...parent, l: item, $index: index };
             return h(
               React.Fragment,

@@ -1,5 +1,5 @@
 import { renderMachinesPart3 } from "./machines-part-3.jsx";
-import { renderMachinesPart2 } from "./machines-part-2.jsx";
+import { renderMachinesPart2 } from "./machines-part-2.ts";
 
 import React from "react";
 import { classFor } from "../style-variants.ts";
