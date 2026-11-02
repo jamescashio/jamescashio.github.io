@@ -5,6 +5,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { JSDOM } from "jsdom";
 import { readFile } from "node:fs/promises";
 import vm from "node:vm";
+import ts from "typescript";
 
 test("current E.V.E. treats inherited object names as unknown and still answers legitimate commands", async () => {
   const { V40Page } = await import("../src/v40/page.tsx");
@@ -103,18 +104,21 @@ async function initialSectionLifecycle(initialState = "interactive") {
   const { presentation } = await import("../src/v40/evidence.ts");
   const missionDeskSource = await readFile(new URL("../src/v40/mission-desk.ts", import.meta.url), "utf8");
   const source = await readFile(new URL("../src/v40/polish.ts", import.meta.url), "utf8");
-  win.eval(
-    source
-      .replace(
-        'import { destinations } from "./destinations.js";',
-        `const destinations = ${JSON.stringify(destinations)};`,
-      )
-      .replace('import { presentation } from "./evidence.js";', `const presentation = ${JSON.stringify(presentation)};`)
-      .replace(
-        'import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.js";',
-        missionDeskSource.replaceAll("export function ", "function "),
-      ),
-  );
+  const prepared = source
+    .replace(
+      'import { destinations } from "./destinations.ts";',
+      `const destinations = ${JSON.stringify(destinations)};`,
+    )
+    .replace('import { presentation } from "./evidence.ts";', `const presentation = ${JSON.stringify(presentation)};`)
+    .replace(
+      'import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.ts";',
+      missionDeskSource.replaceAll("export function ", "function "),
+    );
+  // Evaluate the same emitted JavaScript the browser receives after the TS migration.
+  const compiled = ts.transpileModule(prepared, {
+    compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
+  }).outputText;
+  win.eval(compiled.replace(/export \{\};?/g, ""));
   win.dispatchEvent(new win.Event("cashio-ready"));
   return {
     win,
