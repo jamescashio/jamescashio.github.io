@@ -12,6 +12,8 @@ Each story has an original isometric diagram and three explicit steps. Selection
 
 The first-visit links open the original House Cashio player and the existing `#experiment=hermes` destination. All prior links, scenes, media, captions and archives remain. The workshop now has a broad editorial introduction and two balanced project columns on desktop, with a single reading column on phones. New graphics reuse the current palette and add no image transfer or dependency.
 
+The cinema selector now uses the smaller Orbital Instrument and Threshold derivatives already present in the preserved media library. Its image size hints match the displayed 48, 64 and 84 pixel thumbnails, with asynchronous decoding and low fetch priority. The selected feature can still choose a larger responsive poster. Original artwork, film renditions and captions remain byte-for-byte unchanged.
+
 ## Evidence and verification
 
 The current operational observation remains November 1, 2026. The three current observation JSON copies and archived records are unchanged. The interface preparation and sitemap date are 11-02-2026.

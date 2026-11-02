@@ -89,11 +89,13 @@ export function EagleFilmSection({ v }) {
             h("img", {
               src: film.poster,
               srcSet: posterSources(film.poster),
-              sizes: "160px",
+              sizes: "(max-width: 760px) 48px, (max-width: 1100px) 64px, 84px",
               alt: "",
               width: 160,
               height: 90,
               loading: "lazy",
+              decoding: "async",
+              fetchPriority: "low",
             }),
             h(
               "span",
