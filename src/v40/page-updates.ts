@@ -1,5 +1,6 @@
+import type { PageHost } from "./page-model.ts";
 
-export function componentDidUpdate() {
+export function componentDidUpdate(this: PageHost) {
   if (this.lastDiscovery !== this.state.discovery) {
     this.lastDiscovery = this.state.discovery;
     this.syncMotion?.();
@@ -32,7 +33,7 @@ export function componentDidUpdate() {
   if (this.lastFilm !== this.state.film) {
     this.lastFilm = this.state.film;
     const v = document.getElementById("feature-video");
-    if (v) {
+    if (v instanceof HTMLVideoElement) {
       v.load();
       document.dispatchEvent(new Event("cashio-media"));
     }
@@ -42,7 +43,7 @@ export function componentDidUpdate() {
     if (this.syncMotion) this.syncMotion();
     document.documentElement.style.overflow = this.state.cinema ? "hidden" : "";
     const v = document.getElementById("cinema-video");
-    if (v) {
+    if (v instanceof HTMLVideoElement) {
       v.muted = true;
       v.load();
       document.dispatchEvent(new Event("cashio-media"));
@@ -50,17 +51,21 @@ export function componentDidUpdate() {
   }
 }
 
-export function applyScan() {
+export function applyScan(this: PageHost) {
   this.lastScan = this.props.scanlines;
   document.body.classList.toggle("za-scanlines", this.props.scanlines ?? true);
 }
 
-export async function copyValue(text, key) {
+export async function copyValue(this: PageHost, text: string, key: "copied" | "emailCopied") {
+  const update = (value: boolean | "failed") => {
+    if (key === "copied") this.setState({ copied: value });
+    else this.setState({ emailCopied: value });
+  };
   try {
     await navigator.clipboard.writeText(text);
-    this.setState({ [key]: true });
-  } catch (e) {
-    this.setState({ [key]: "failed" });
+    update(true);
+  } catch {
+    update("failed");
   }
-  setTimeout(() => this.setState({ [key]: false }), 2400);
+  setTimeout(() => update(false), 2400);
 }
