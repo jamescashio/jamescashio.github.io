@@ -1,10 +1,11 @@
+import type { GeneratedView } from "./generated-view.ts";
 import { updatedDate, presentation } from "./evidence.ts";
 
 import React from "react";
 
-const h = React.createElement;
+import { h } from "./generated-view.ts";
 
-export function renderFooter(_v) {
+export function renderFooter(_v: GeneratedView) {
   return h(
     "footer",
     { key: 1879, className: "v41-cf9133e23d" },

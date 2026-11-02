@@ -23,7 +23,7 @@ import { classFor } from "./style-variants.ts";
 const h = React.createElement;
 import { renderRail } from "./render-rail.jsx";
 import { renderHeader } from "./render-header.jsx";
-import { renderFooter } from "./render-footer.jsx";
+import { renderFooter } from "./render-footer.ts";
 import { renderCinema } from "./render-cinema.ts";
 export function renderPage(v) {
   return h(
