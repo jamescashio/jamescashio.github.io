@@ -1,5 +1,5 @@
 import React from "react";
-import { WorldAtlas } from "../world-atlas.jsx";
+import { WorldAtlas } from "../world-atlas.tsx";
 export function WorldsSection({ v }) {
   return React.createElement(
     "section",

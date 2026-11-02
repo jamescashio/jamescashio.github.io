@@ -46,7 +46,7 @@ const destinations = [
     y: 152,
   },
 ];
-function AtlasInstrument({ selected, onChoose }) {
+function AtlasInstrument({ selected, onChoose }: { selected: number; onChoose: (index: number) => void }) {
   const destination = destinations[selected];
   return React.createElement(
     "div",
@@ -172,11 +172,21 @@ function AtlasInstrument({ selected, onChoose }) {
     React.createElement("span", { className: "atlas-chart-note" }, "A map of the imagination"),
   );
 }
-export function WorldAtlas({ worlds }) {
+type World = {
+  index: string;
+  img: string;
+  srcSet: string;
+  alt: string;
+  name: string;
+  line: string;
+  desc: string;
+  href: string;
+};
+export function WorldAtlas({ worlds }: { worlds: World[] }) {
   const [selected, select] = useState(0);
   const interactive = useSyncExternalStore(subscribe, client, server);
-  const controls = useRef([]);
-  function navigate(event, index) {
+  const controls = useRef<Array<HTMLButtonElement | null>>([]);
+  function navigate(event: React.KeyboardEvent<HTMLButtonElement>, index: number) {
     let next;
     if (event.key === "ArrowRight" || event.key === "ArrowDown") next = (index + 1) % worlds.length;
     else if (event.key === "ArrowLeft" || event.key === "ArrowUp") next = (index + worlds.length - 1) % worlds.length;
@@ -201,7 +211,7 @@ export function WorldAtlas({ worlds }) {
             "button",
             {
               key: world.index,
-              ref: (element) => {
+              ref: (element: HTMLButtonElement | null) => {
                 controls.current[index] = element;
               },
               id: `atlas-tab-${index}`,
@@ -211,7 +221,7 @@ export function WorldAtlas({ worlds }) {
               "aria-selected": index === selected,
               tabIndex: index === selected ? 0 : -1,
               onClick: () => select(index),
-              onKeyDown: (event) => navigate(event, index),
+              onKeyDown: (event: React.KeyboardEvent<HTMLButtonElement>) => navigate(event, index),
             },
             React.createElement("span", null, world.index),
             " ",
