@@ -208,6 +208,30 @@ test("the Galactic cut uses compact playback for data saving and respects Escape
   }
 });
 
+test("closing Mission Control preserves an explicit focus handoff to a film", async (t) => {
+  const page = await visit(t, { width: 390, hash: "#ai-worm" });
+  const film = page.locator("#ai-worm");
+  const play = film.getByRole("button", { name: "Play The Sovereign", exact: true });
+  await play.click();
+  const video = film.locator("video");
+  await expect(video).toBeVisible();
+  await page.locator("header .mission-control").click();
+  await expect(page.locator("#mission-dialog")).toHaveAttribute("open", "");
+  await page.evaluate(
+    () =>
+      new Promise((resolve) => {
+        const dialog = document.getElementById("mission-dialog");
+        dialog.addEventListener("close", resolve, { once: true });
+        dialog.close();
+        document.querySelector("#ai-worm video").focus();
+      }),
+  );
+  await expect(video).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(film.locator("video")).toHaveCount(0);
+  await expect(play).toBeFocused();
+});
+
 test("V40 preserves its content and serves a readable edition without JavaScript", async (t) => {
   for (const { js, width } of [
     { js: true, width: 390 },
