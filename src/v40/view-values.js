@@ -5,7 +5,7 @@ import { posterForViewport } from "./poster-sources.ts";
 import { foldReply } from "./ship-humor.ts";
 
 import { openingValues } from "./view-opening.ts";
-import { experimentValues } from "./view-experiments.js";
+import { experimentValues } from "./view-experiments.ts";
 import { systemValues } from "./view-system.js";
 import { evidenceValues } from "./view-evidence.js";
 export function renderVals() {

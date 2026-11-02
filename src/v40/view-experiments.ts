@@ -1,8 +1,9 @@
+import type { PageHost, PageState } from "./page-model.ts";
 
-export function experimentValues(s) {
+export function experimentValues(this: PageHost, s: Readonly<PageState>) {
   const lawA = "Quality picks the model.".split(" ").map((t) => ({ t }));
   const lawB = "Cost only breaks a tie.".split(" ").map((t) => ({ t }));
-  const pill = (on, gold) =>
+  const pill = (on: boolean, gold: boolean) =>
     `padding:9px 16px;border-radius:999px;cursor:pointer;font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;transition:all .3s;border:1px solid ${on ? (gold ? "var(--accent)" : "var(--cyan)") : "var(--glass-border)"};background:${on ? (gold ? "rgba(255,149,0,.14)" : "rgba(0,249,255,.1)") : "var(--glass)"};color:${on ? (gold ? "var(--accent)" : "var(--cyan)") : "var(--text)"};box-shadow:${on ? (gold ? "0 0 18px var(--accent-glow)" : "0 0 18px var(--cyan-glow)") : "none"}`;
   const pvChoices = [
     {
@@ -31,11 +32,11 @@ export function experimentValues(s) {
     style: pill(s.intent === k, false),
     pick: () => this.setState({ intent: k, routed: null }),
   }));
-  const tog = (on, gold) =>
+  const tog = (on: boolean, gold: boolean) =>
     `display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px 10px 14px;border-radius:12px;cursor:pointer;font-family:var(--font-body);font-size:14px;color:var(--text);text-align:left;border:1px solid ${on ? (gold ? "var(--accent)" : "var(--cyan)") : "var(--glass-border)"};background:${on ? (gold ? "rgba(255,149,0,.08)" : "rgba(0,249,255,.06)") : "var(--glass)"};transition:all .3s`;
-  const knob = (on, gold) =>
+  const knob = (on: boolean, gold: boolean) =>
     `width:40px;height:22px;border-radius:11px;flex:0 0 auto;position:relative;background:${on ? (gold ? "var(--accent)" : "var(--cyan)") : "rgba(255,255,255,.12)"};transition:background .3s;box-shadow:${on ? (gold ? "0 0 14px var(--accent-glow)" : "0 0 14px var(--cyan-glow)") : "none"}`;
-  const dot = (on) =>
+  const dot = (on: boolean) =>
     `position:absolute;top:3px;left:${on ? 21 : 3}px;width:16px;height:16px;border-radius:50%;background:${on ? "var(--void)" : "var(--text)"};transition:left .3s cubic-bezier(.23,1,.32,1)`;
   const r = s.routed;
   const L = r || {
