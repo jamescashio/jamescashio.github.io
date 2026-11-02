@@ -1,4 +1,5 @@
 import { setupScenes } from "../helios/scenes.js";
+import type { RoomModule } from "../helios/room-contract";
 import "../helios/room-content.css";
 import { parseMissionHash } from "../odyssey/flight-plan";
 
@@ -8,11 +9,11 @@ const loaders = {
   studios: () => import("../helios/room-studios.js"),
   heritage: () => import("../helios/room-heritage.js"),
 };
-const id = document.documentElement.dataset.room;
-const room = document.getElementById(id);
-const status = document.getElementById("reading-mode");
+const id = document.documentElement.dataset.room as keyof typeof loaders;
+const room = document.getElementById(id)!;
+const status = document.getElementById("reading-mode")!;
 const mq = matchMedia("(prefers-reduced-motion: reduce)");
-let preference;
+let preference: string | null | undefined;
 try {
   preference = localStorage.getItem("cashio-v40-motion");
 } catch {
@@ -22,7 +23,7 @@ const motion = () => preference !== "off" && !mq.matches;
 const motionButton = document.createElement("button");
 motionButton.type = "button";
 motionButton.className = "room-motion";
-(document.querySelector("header .room-bar-actions") || document.querySelector("header")).append(motionButton);
+(document.querySelector("header .room-bar-actions") || document.querySelector("header"))!.append(motionButton);
 function syncMotion() {
   document.documentElement.classList.toggle("motion-off", !motion());
   document.documentElement.dataset.motion = motion() ? "on" : "off";
@@ -45,13 +46,13 @@ syncMotion();
 
 async function mount() {
   try {
-    const module = await loaders[id]();
+    const module: RoomModule = await loaders[id]();
     const scenes = setupScenes({ motion: motion() });
     scenes.attachRoom(room);
-    const say = (_title, message) => {
+    const say = (_title: string, message: string) => {
       status.textContent = message;
     };
-    const copy = async (value) => {
+    const copy = async (value: string) => {
       try {
         await navigator.clipboard.writeText(value);
         status.textContent = "Copied.";
@@ -62,7 +63,7 @@ async function mount() {
     const controller = module.mount?.({ scenes, motion, say, copy });
     const restoreMission = () => {
       const mission = parseMissionHash(location.hash.replace(/\.online\./, ".connected."));
-      if (id === "starship" && mission)
+      if (id === "starship" && mission && controller && "setMission" in controller)
         controller.setMission({
           arch: mission.architecture,
           sens: mission.sensitivity,
@@ -78,7 +79,8 @@ async function mount() {
       control.removeAttribute("aria-describedby");
     }
     // Principle choices also change their action link after a click.
-    const currentLink = (link) => {
+    const currentLink = (link: Node) => {
+      if (!(link instanceof Element)) return;
       const href = link.getAttribute("href");
       if (!href?.startsWith("#")) return;
       const target = room.querySelector(`[id="${CSS.escape(href.slice(1))}"]`);
