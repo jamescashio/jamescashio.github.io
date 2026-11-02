@@ -1,4 +1,4 @@
-import { reelPoster } from "./hero-reel.jsx";
+import { reelPoster } from "./hero-reel.tsx";
 
 
 export function filmById(slug) {

@@ -23,7 +23,7 @@ export function HeroPlanet() {
     }),
   );
 }
-export function CinemaReel({ title }) {
+export function CinemaReel({ title }: { title: string }) {
   return h(
     "video",
     {

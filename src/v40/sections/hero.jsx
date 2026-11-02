@@ -2,7 +2,7 @@ import { renderHeroPart1 } from "./hero-part-1.jsx";
 import React from "react";
 import { classFor } from "../style-variants.ts";
 
-import { HeroPlanet } from "../hero-reel.jsx";
+import { HeroPlanet } from "../hero-reel.tsx";
 import { presentation } from "../evidence.ts";
 const h = React.createElement;
 

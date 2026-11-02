@@ -1,4 +1,4 @@
-import { CinemaReel, ReelText } from "./hero-reel.jsx";
+import { CinemaReel, ReelText } from "./hero-reel.tsx";
 
 import React from "react";
 import designSystem from "./design-system.js";
