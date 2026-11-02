@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ReelText } from "../hero-reel.jsx";
 import { posterSources } from "../poster-sources.js";
 import { FilmAperture } from "../signal-graphics.jsx";
+import { FirstOrbit } from "../build-stories";
 const h = React.createElement;
 
 export function EagleFilmSection({ v }) {
@@ -104,6 +105,7 @@ export function EagleFilmSection({ v }) {
           ),
         ),
       ),
+      h(FirstOrbit),
     ),
   );
 }

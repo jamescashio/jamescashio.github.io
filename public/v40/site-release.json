@@ -1,18 +1,18 @@
 {
   "experienceVersion": "42.0.0",
-  "releaseId": "omnius-overruled-42.0.0-preview-mobile-20261101",
+  "releaseId": "omnius-overruled-42.0.0-directors-20261102",
   "releaseName": "OMNIUS, OVERRULED",
   "visualEdition": "Omnius, Overruled",
   "presentation": {
     "name": "Omnius, Overruled",
     "subtitle": "Imagination, with intention",
-    "revision": "One universe. A clearer way in.",
-    "preparedDate": "2026-11-01"
+    "revision": "The director’s cut. Stories worth exploring.",
+    "preparedDate": "2026-11-02"
   },
   "entry": "/",
-  "status": "preview",
-  "published": false,
-  "releaseDate": null,
+  "status": "released",
+  "published": true,
+  "releaseDate": "2026-11-02",
   "previousExperience": {
     "version": "39.8.0",
     "entry": "/v39/",
@@ -24,8 +24,8 @@
     "fleetObserved": "2026-11-01",
     "routingObserved": null
   },
-  "statement": "V42 Omnius, Overruled is an unpublished front end redesign. Bit and the demonstrations are scripted browser experiences. Generative scenes are artwork. Observation records retain their original dates, versions and limits.",
-  "updatedDate": "2026-11-01",
+  "statement": "V42 Omnius, Overruled is a front end redesign with illustrated project stories and a guided first visit. Bit and the demonstrations are scripted browser experiences. Generative scenes are artwork. Observation records retain their original dates, versions and limits.",
+  "updatedDate": "2026-11-02",
   "previousRelease": {
     "version": "41.0.0",
     "name": "Eagle · First Light",

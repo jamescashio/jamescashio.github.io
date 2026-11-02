@@ -1,5 +1,6 @@
 import React from "react";
 import { exampleBrief } from "../decision-brief.js";
+import { BuildStory } from "../build-stories";
 const h = React.createElement;
 
 const glossary = [
@@ -26,7 +27,7 @@ export function WorkshopSection({ v }) {
       h(
         "p",
         null,
-        "Principal Solutions Consultant by day. More than twenty years in cybersecurity. Curious builder after hours.",
+        "Two builds from my after-hours workbench. I’m a Principal Solutions Consultant; here you can inspect the choices and limits behind the work.",
       ),
       h("a", { className: "visitor-link workshop-intro-link", href: "#operator" }, "Meet Doug →"),
     ),
@@ -63,6 +64,7 @@ export function WorkshopSection({ v }) {
         h("p", { className: "workshop-date" }, "Observed " + v.observedDate),
         h("p", null, "No new restore rehearsal was performed; full recovery remains unproven."),
         h("a", { className: "visitor-link", href: "#evidence" }, "Read the dated receipt →"),
+        h(BuildStory, { kind: "evidence" }),
       ),
       h(
         "article",
@@ -107,6 +109,7 @@ export function WorkshopSection({ v }) {
             "Download an example ↓",
           ),
         ),
+        h(BuildStory, { kind: "brief" }),
       ),
     ),
     h(

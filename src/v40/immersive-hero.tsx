@@ -85,7 +85,7 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
         <span>cAshIo / V42</span>
         <span>Omnius, Overruled</span>
         <span className="continuum-arrival-end">
-          <i aria-hidden="true" /> Human in command
+          <i aria-hidden="true" /> Built after hours
         </span>
       </div>
       <div id="hero-content" className="continuum-composition">

@@ -1,3 +1,19 @@
+# V42 · Omnius, Overruled · The director's cut
+
+## Current creative thesis
+
+A cinematic expedition journal: the original moving planetary horizon leads into dimensional instruments and candid project stories, with a useful discovery at every stop.
+
+Keep the approved black, metallic gold and electric cyan identity, Orbitron display, Exo 2 reading text and JetBrains instruments. Add restrained warm gold and sea-glass accents to original isometric diagrams. The opening image, camera flight, signature, all films and every existing destination remain. No new dependency or heavy media download.
+
+Content gains two illustrated build notes: the published backup receipt and the local decision-brief composer. State the problem, design decisions, observed result and limitations without inventing client work or measured outcomes. Each diagram responds to three readable step buttons; the full narrative remains readable without JavaScript. A two-stop first-visit route recommends House Cashio and the routing experiment. Short light responses belong to deliberate interactions; Pause and reduced motion remain effective.
+
+Retain mobile performance of at least 90 on repeated standard Lighthouse runs, initial CSS below 19,000 gzip bytes, compact default phone journey, 44 pixel touch targets, static reading, captions and quiet playback. Review desktop, 390 and 320 pixel layouts, new interactions, existing content and actual media playback. Record an honest scored review before publication.
+
+Doug authorized this refinement on 11-02-2026 and conditionally approved publication if the completed site earns at least 9.5 overall after polish and verification. This supersedes the earlier pending-approval notes below only when that condition is satisfied. Prepare locally first. Use the required repository checks and a scoped pull request. Production rollback remains 650f395adc36ae762acd99e43c0a4655d653ed1f. Previous preview 2182395434d08797015607334261723c05de902c remains preserved at port 4408. The new preview uses port 4410.
+
+## Preserved design history
+
 # V42 · Omnius, Overruled · Final craft pass
 
 ## Current creative thesis

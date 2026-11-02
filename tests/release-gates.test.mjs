@@ -869,7 +869,7 @@ test("Helios release identity, signature assets and compatibility receipts agree
   const home = [...sitemap.querySelectorAll("url")].find(
     (entry) => entry.querySelector("loc")?.textContent === "https://cashio.us/",
   );
-  assert.equal(home?.querySelector("lastmod")?.textContent, "2026-11-01");
+  assert.equal(home?.querySelector("lastmod")?.textContent, "2026-11-02");
   // The home signature and the Celestial Forge share one full size artwork file, so the forge reuses the cached copy.
   assert.equal(doc.querySelector("#sig-art").getAttribute("src"), "/brand/celestial-1680.webp");
   assert.ok((await read("src/odyssey/brand-mark.tsx")).includes("/brand/celestial-1680.webp 1680w"));

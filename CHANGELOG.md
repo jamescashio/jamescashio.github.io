@@ -1,6 +1,10 @@
 # Changelog
 
-## V42.0.0 · Omnius, Overruled preview
+## V42.0.0 · Omnius, Overruled · 11-02-2026
+
+Director’s cut · 11-02-2026: two illustrated build stories explain the backup receipt and decision brief through keyboard operated diagrams, decisions, results and limits. A first-visit route connects House Cashio to the routing experiment. Refine the workshop’s desktop composition, phone reading surfaces, cinema edges and project interactions. Preserve the original moving hero, all media and the verified November 1, 2026 observation. Initial styles arrive in the page, interactive code yields network priority to the artwork, and offscreen background films load only when approached in supporting browsers.
+
+### Preserved preview history
 
 Readability polish · 11-01-2026: larger instrument labels and captions, horizontal desktop chapter names, clearer discovery descriptions and a phone menu that opens without focusing Search. Retain the moving hero, humor, original content and dated evidence. This revision remains unpublished.
 

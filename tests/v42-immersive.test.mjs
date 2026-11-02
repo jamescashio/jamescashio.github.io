@@ -28,6 +28,66 @@ async function visit(t, options = {}) {
   await page.evaluate(() => document.fonts.ready);
   return page;
 }
+
+test("Build notes expose the decisions and limits with keyboard controls on desktop and narrow phones", async (t) => {
+  for (const width of [1440, 320]) {
+    const page = await visit(t, { viewport: { width, height: 900 } });
+    for (const [id, finalLabel, expected] of [
+      ["evidence", "Publish", "latest reported snapshots passed their integrity check"],
+      ["brief", "Keep", "claims have not been independently verified"],
+    ]) {
+      const notes = page.locator(`#build-${id}`);
+      await notes.locator("summary").click();
+      const steps = notes.getByRole("group");
+      await steps.getByRole("button", { name: new RegExp(finalLabel) }).press("Space");
+      await expect(steps.getByRole("button", { name: new RegExp(finalLabel) })).toHaveAttribute("aria-pressed", "true");
+      await expect(notes.locator(".build-story-page[data-selected=true]")).toContainText(expected);
+      assert.equal(await notes.locator(".build-story-page:visible").count(), 1);
+      assert.equal(
+        await page
+          .locator(".build-route-light")
+          .first()
+          .evaluate((node) => getComputedStyle(node).animationName),
+        "none",
+      );
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+      const { violations } = await new AxeBuilder({ page }).include(`#build-${id}`).analyze();
+      assert.deepEqual(
+        violations.map((item) => item.id),
+        [],
+      );
+      await notes.locator("summary").click();
+    }
+  }
+});
+
+test("The first-visit route opens the original film and continues to a real experiment", async (t) => {
+  const page = await visit(t, { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  const route = page.getByRole("navigation", { name: "Recommended first visit" });
+  const film = route.getByRole("link", { name: /Meet House Cashio/ });
+  await film.click();
+  await expect(page.locator("#cinema-dialog")).toBeVisible();
+  await expect(page.locator("#cinema-video")).toHaveJSProperty("muted", true);
+  await page.keyboard.press("Escape");
+  await expect(film).toBeFocused();
+  await route.getByRole("link", { name: /Choose a route/ }).click();
+  await expect(page).toHaveURL(/#experiment=hermes$/);
+  await expect(page.getByRole("heading", { name: "Choose a route", exact: true })).toBeVisible();
+});
+
+test("Every build-story step remains readable without JavaScript", async (t) => {
+  const context = await browser.newContext({ viewport: { width: 320, height: 900 }, javaScriptEnabled: false });
+  t.after(() => context.close());
+  const page = await context.newPage();
+  await page.goto(url);
+  for (const id of ["evidence", "brief"]) {
+    const notes = page.locator(`#build-${id}`);
+    await notes.locator("summary").click();
+    for (const story of await notes.locator(".build-story-page").all()) await expect(story).toBeVisible();
+    await expect(notes.locator(".build-lesson")).toBeVisible();
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+  }
+});
 test("Discovery offers twelve real destinations, keyboard stepping, a copyable route and focus restoration", async (t) => {
   const page = await visit(t, { permissions: ["clipboard-read", "clipboard-write"] });
   const opener = page.getByRole("button", { name: "Plot a course", exact: true });

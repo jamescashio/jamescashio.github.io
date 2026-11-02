@@ -1,8 +1,8 @@
 # cAshIo V42 · Omnius, Overruled
 
-**Omnius, Overruled · Imagination, with intention** is an unpublished V42 preview prepared on 11-01-2026. The name nods to the machine overmind in the Butlerian Jihad prequels. A fictional hearing gives visitors the last word over four absurd machine proposals. Dry shipboard responses and new Bit jokes add personality to the original moving planetary hero, black, metallic gold and electric cyan. The original content, films and dated evidence remain, with House Cashio first in the cinema.
+**Omnius, Overruled · Imagination, with intention** is the V42 interface prepared on 11-02-2026. The director’s cut adds illustrated build stories, responsive dimensional diagrams and a curated first visit. The original moving planetary hero, gold and cyan identity, four worlds, seven experiments and complete film collection remain. House Cashio is the opening feature. The name nods to the machine overmind in the Butlerian Jihad prequels; the fictional hearing and Bit’s humor keep the human in charge.
 
-Production remains at commit `650f395adc36ae762acd99e43c0a4655d653ed1f` until Doug approves the final preview. The local review server displays an unpublished ribbon and sends noindex headers. The current receipt at `public/v40/site-release.json` explicitly records `published: false`, `status: preview` and no release date.
+The current receipt is `public/v40/site-release.json`. Local review mode displays an unpublished ribbon and sends noindex headers; the ordinary production build is indexable. Publication follows the completed quality review and required repository checks. The prior production and rollback commit is `650f395adc36ae762acd99e43c0a4655d653ed1f`. See [the director’s cut](docs/v42/directors-cut.md).
 
 ## Preserved content
 
