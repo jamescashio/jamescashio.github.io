@@ -1,9 +1,10 @@
+import type { GeneratedView, GeneratedValue } from "../generated-view.ts";
 import React from "react";
 import { classFor } from "../style-variants.ts";
 import designSystem from "../design-system.ts";
 
-const h = React.createElement;
-export function renderFilmsPart1(v) {
+import { h } from "../generated-view.ts";
+export function renderFilmsPart1(v: GeneratedView) {
   return h(
     "div",
     {
@@ -159,8 +160,8 @@ export function renderFilmsPart1(v) {
           className: "v41-c9dc9b5648",
         },
         " ",
-        (function (parent) {
-          return (v.collections || []).map((item, index) => {
+        (function (parent: GeneratedView) {
+          return (v.collections || []).map((item: GeneratedValue, index: number) => {
             const v = { ...parent, c: item, $index: index };
             return h(
               React.Fragment,
@@ -180,8 +181,8 @@ export function renderFilmsPart1(v) {
         "div",
         { key: 742, className: "v41-5e522fd9b2" },
         " ",
-        (function (parent) {
-          return (v.filmList || []).map((item, index) => {
+        (function (parent: GeneratedView) {
+          return (v.filmList || []).map((item: GeneratedValue, index: number) => {
             const v = { ...parent, f: item, $index: index };
             return h(
               React.Fragment,

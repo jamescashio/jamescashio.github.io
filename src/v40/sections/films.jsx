@@ -1,4 +1,4 @@
-import { renderFilmsPart1 } from "./films-part-1.jsx";
+import { renderFilmsPart1 } from "./films-part-1.ts";
 import React from "react";
 
 import { AiWormFilm } from "../ai-worm.tsx";
