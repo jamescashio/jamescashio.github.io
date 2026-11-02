@@ -1,3 +1,4 @@
+import type { GeneratedView } from "./generated-view.ts";
 import { ContinuumPrinciples } from "./continuum-hero.tsx";
 import { ReleaseHearing } from "./release-hearing.tsx";
 import { JourneyDock } from "./journey-dock.tsx";
@@ -20,12 +21,12 @@ import { JourneyDisclosure } from "./sections/journey-disclosure.ts";
 import React from "react";
 
 import { classFor } from "./style-variants.ts";
-const h = React.createElement;
+import { h } from "./generated-view.ts";
 import { renderRail } from "./render-rail.ts";
 import { renderHeader } from "./render-header.ts";
 import { renderFooter } from "./render-footer.ts";
 import { renderCinema } from "./render-cinema.ts";
-export function renderPage(v) {
+export function renderPage(v: GeneratedView) {
   return h(
     React.Fragment,
     null,
