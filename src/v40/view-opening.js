@@ -3,7 +3,7 @@ import { snapshot } from "./evidence.ts";
 import { destinationLabel } from "./destinations.ts";
 
 
-import { thumbnailSources } from "./page-assets.js";
+import { thumbnailSources } from "./page-assets.ts";
 export function openingValues() {
   const s = this.state,
     tech = this.props.techDetail ?? false;

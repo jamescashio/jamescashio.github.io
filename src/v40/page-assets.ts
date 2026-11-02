@@ -1,5 +1,4 @@
-
-export const resources = {
+export const resources: Record<string, string> = {
   r_public_assets_zenith_celestial_signature_poster_webp: "/v40/assets/zenith-celestial-signature-poster.webp",
   r_public_assets_zenith_armillary_nocturne_poster_webp: "/v40/assets/zenith-armillary-nocturne-poster.webp",
   r_public_assets_zenith_armillary_detail_poster_webp: "/v40/assets/zenith-armillary-detail-poster.webp",
@@ -21,13 +20,9 @@ export const resources = {
   r_public_assets_zenith_orbital_instrument_poster_webp: "/v40/assets/zenith-orbital-instrument-poster.webp",
   r_public_assets_celestial_helios_arrival_poster_jpg: "/v40/assets/celestial-arrival-poster.webp",
 };
-export const thumbnailSources = (path) =>
+export const thumbnailSources = (path: string) =>
   [320, 640, 1280]
     .map(
-      (width) =>
-        `/v40/thumbs/${path
-          .split("/")
-          .pop()
-          .replace(/\.webp$/, "")}-${width}.webp ${width}w`,
+      (width) => `/v40/thumbs/${path.slice(path.lastIndexOf("/") + 1).replace(/\.webp$/, "")}-${width}.webp ${width}w`,
     )
     .join(", ");

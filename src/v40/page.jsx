@@ -9,7 +9,7 @@ import { eve } from "./evidence-console.js";
 import { startTrace, traceCaps, runPacket, animPk } from "./request-trace.js";
 import { renderVals } from "./view-values.js";
 import { renderPage } from "./render-page.jsx";
-import { resources } from "./page-assets.js";
+import { resources } from "./page-assets.ts";
 import { observedDate, updatedDate, presentation } from "./evidence.ts";
 
 import React from "react";
