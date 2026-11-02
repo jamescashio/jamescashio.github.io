@@ -5,7 +5,7 @@ import { scramble, setupReveal, reveal, countUp, scrollFx } from "./reveal.js";
 import { tilt, magnet, hoverIn, hoverOut, warpFlash, defiant } from "./pointer-effects.js";
 import { filmById, stepCinema, closeCinema } from "./cinema-control.ts";
 import { lane } from "./experiment-state.ts";
-import { eve } from "./evidence-console.js";
+import { eve } from "./evidence-console.ts";
 import { startTrace, traceCaps, runPacket, animPk } from "./request-trace.js";
 import { renderVals } from "./view-values.js";
 import { renderPage } from "./render-page.ts";

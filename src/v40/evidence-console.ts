@@ -1,7 +1,7 @@
+import type { PageHost } from "./page-model.ts";
 import { snapshot, observedDate, fleetSummary, backupSummary } from "./evidence.ts";
 
-
-export function eve(raw) {
+export function eve(this: PageHost, raw: string) {
   const cmd = raw.trim().toLowerCase();
   if (!cmd) return;
   if (cmd === "defiant") {
@@ -9,7 +9,7 @@ export function eve(raw) {
     this.defiant();
     return;
   }
-  const R = {
+  const R: Record<string, [string, string][]> = {
     help: [["r", "Commands: fleet · hosts · backups · atlas · routes · cost · about · contact · surprise me"]],
     fleet: [
       ["ok", fleetSummary],
@@ -78,5 +78,6 @@ export function eve(raw) {
       ["d", near ? `did you mean ${near}? try help` : "try help"],
     ];
   }
-  this.setState((s) => ({ eveLog: [...s.eveLog, ["cmd", raw.trim()], ...out], eveInput: "" }));
+  const reply = out;
+  this.setState((s) => ({ eveLog: [...s.eveLog, ["cmd", raw.trim()], ...reply], eveInput: "" }));
 }
