@@ -99,7 +99,7 @@ async function initialSectionLifecycle(initialState = "interactive") {
       await Promise.resolve();
     }
   };
-  const { destinations } = await import("../src/v40/destinations.js");
+  const { destinations } = await import("../src/v40/destinations.ts");
   const { presentation } = await import("../src/v40/evidence.ts");
   const missionDeskSource = await readFile(new URL("../src/v40/mission-desk.js", import.meta.url), "utf8");
   const source = await readFile(new URL("../src/v40/polish.js", import.meta.url), "utf8");

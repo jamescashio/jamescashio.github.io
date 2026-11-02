@@ -12,4 +12,4 @@ export const destinations = [
   ["operator", "About Doug", "The human in command"],
 ];
 
-export const destinationLabel = (id) => destinations.find(([key]) => key === id)?.[1] || id;
+export const destinationLabel = (id: string) => destinations.find(([key]) => key === id)?.[1] || id;

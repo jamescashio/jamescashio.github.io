@@ -1,4 +1,4 @@
-import { destinationLabel } from "./destinations.js";
+import { destinationLabel } from "./destinations.ts";
 
 import React from "react";
 import designSystem from "./design-system.js";

@@ -1,6 +1,6 @@
 import { snapshot } from "./evidence.ts";
 
-import { destinationLabel } from "./destinations.js";
+import { destinationLabel } from "./destinations.ts";
 
 
 import { thumbnailSources } from "./page-assets.js";

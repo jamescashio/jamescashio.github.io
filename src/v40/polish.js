@@ -1,5 +1,5 @@
 /* Progressive improvements around the original Claude Design component. */
-import { destinations } from "./destinations.js";
+import { destinations } from "./destinations.ts";
 import { presentation } from "./evidence.ts";
 import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.js";
 (() => {
