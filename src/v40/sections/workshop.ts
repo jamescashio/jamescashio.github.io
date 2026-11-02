@@ -1,7 +1,8 @@
-import React from "react";
+import type { GeneratedProps, GeneratedValue } from "../generated-view.ts";
+
 import { exampleBrief } from "../decision-brief.ts";
 import { BuildStory } from "../build-stories";
-const h = React.createElement;
+import { h } from "../generated-view.ts";
 
 const glossary = [
   ["Bit", "The gold copilot. It marks where a person holds authority."],
@@ -15,7 +16,7 @@ const glossary = [
   ["Workhorse, Research, Synthesis", "Routes for everyday drafting, sourced research and combining information."],
 ];
 
-export function WorkshopSection({ v }) {
+export function WorkshopSection({ v }: GeneratedProps) {
   return h(
     "section",
     { id: "workshop", "data-screen-label": "Workshop", className: "v41-666dcca5e4 workshop-overview" },
@@ -134,7 +135,9 @@ export function WorkshopSection({ v }) {
       h(
         "dl",
         null,
-        glossary.map(([term, definition]) => h("div", { key: term }, h("dt", null, term), h("dd", null, definition))),
+        glossary.map(([term, definition]: GeneratedValue) =>
+          h("div", { key: term }, h("dt", null, term), h("dd", null, definition)),
+        ),
       ),
     ),
   );
