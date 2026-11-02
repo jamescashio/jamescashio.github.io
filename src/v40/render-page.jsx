@@ -6,7 +6,7 @@ import { ImmersiveHero as HeroSection } from "./immersive-hero.tsx";
 import { DiscoveryConsole } from "./discovery-console.tsx";
 import { EagleFilmSection } from "./sections/eagle-film.ts";
 import { WorkshopSection } from "./sections/workshop.ts";
-import { WorldsSection } from "./sections/worlds.jsx";
+import { WorldsSection } from "./sections/worlds.ts";
 import { ShowcaseSection } from "./sections/showcase.ts";
 import { FilmsSection } from "./sections/films.ts";
 import { DecisionsSection } from "./sections/decisions.ts";

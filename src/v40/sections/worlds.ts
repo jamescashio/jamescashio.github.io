@@ -1,6 +1,7 @@
+import type { GeneratedProps } from "../generated-view.ts";
 import React from "react";
 import { WorldAtlas } from "../world-atlas.tsx";
-export function WorldsSection({ v }) {
+export function WorldsSection({ v }: GeneratedProps) {
   return React.createElement(
     "section",
     { id: "rooms", "data-screen-label": "Four worlds", className: "v41-43f26deb62" },
