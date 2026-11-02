@@ -1,5 +1,5 @@
 import React from "react";
-import { exampleBrief } from "../decision-brief.js";
+import { exampleBrief } from "../decision-brief.ts";
 import { BuildStory } from "../build-stories";
 const h = React.createElement;
 

@@ -1,5 +1,5 @@
 import { sceneKind } from "./navigation.js";
-import { exampleBrief } from "./decision-brief.js";
+import { exampleBrief } from "./decision-brief.ts";
 
 /* Local demonstrations inside the original V40 experiment panels. No network calls. */
 (() => {

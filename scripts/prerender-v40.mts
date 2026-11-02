@@ -3,7 +3,7 @@ import { renderToString } from "react-dom/server";
 import { readFile, writeFile, readdir } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { JSDOM } from "jsdom";
-import { exampleBriefText } from "../src/v40/decision-brief.js";
+import { exampleBriefText } from "../src/v40/decision-brief.ts";
 
 const environment = new JSDOM("<!doctype html><html><body></body></html>");
 Object.assign(globalThis, { window: environment.window, document: environment.window.document });
