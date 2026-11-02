@@ -53,6 +53,19 @@ html = html.replace(
   `<div id="v40-root" class="continuum-root">${dom.window.document.body.innerHTML}</div>`,
 );
 if (fallbackCss) html = html.replace("</head>", `<link rel="stylesheet" href="/assets/${filename}"></head>`);
+// Deliver the small opening stylesheet with the first document, under exact CSP hashes.
+// The compiled assets remain available for parity checks and the rest of the site.
+const styleHashes = [];
+for (const [link] of html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*>/g)) {
+  const source = link.match(/href="(\/assets\/[\w.-]+\.css)"/)?.[1];
+  if (!source) throw new Error("Opening styles must use a compiled local asset");
+  const css = await readFile("dist" + source, "utf8");
+  if (/<\/style/i.test(css)) throw new Error("Opening styles cannot contain an HTML closing tag");
+  styleHashes.push(`'sha256-${createHash("sha256").update(css).digest("base64")}'`);
+  html = html.replace(link, `<style data-v42-styles="${source}">${css}</style>`);
+}
+if (!styleHashes.length || !html.includes("style-src 'self';")) throw new Error("Opening style policy missing");
+html = html.replace("style-src 'self';", `style-src 'self' ${styleHashes.join(" ")};`);
 const deferredStyles = (await readdir("dist/assets")).find((name) => /^deferred-.*\.css$/.test(name));
 if (!deferredStyles) throw new Error("Missing V41 deferred stylesheet");
 html = html.replace("</head>", `<noscript><link rel="stylesheet" href="/assets/${deferredStyles}"></noscript></head>`);
@@ -62,4 +75,4 @@ html = html.replace(
 );
 await writeFile("dist/index.html", html);
 await writeFile("dist/artifacts/decision-brief-example.txt", exampleBriefText);
-console.log("V40 reading edition created with external CSS and the existing strict security policy.");
+console.log("V40 reading edition created with hash-authorized opening CSS and the strict security policy.");

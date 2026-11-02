@@ -64,16 +64,26 @@ test("V40 ships its real reading edition under the strict production security po
   }).format(new Date(receipt.updatedDate + "T12:00:00Z"));
   assert.match(root.querySelector("footer").textContent, new RegExp("Omnius, Overruled.*Updated " + updatedDate));
   assert.doesNotMatch(root.querySelector("footer").textContent, /Preview 05|current public site/);
-  assert.equal(root.querySelectorAll("[style]").length, 0, "the reading edition must use external CSS");
+  assert.equal(root.querySelectorAll("[style]").length, 0, "the reading edition must not use inline style attributes");
   const csp = document.querySelector('meta[http-equiv="Content-Security-Policy"]').content;
   assert.match(csp, /script-src 'self';/);
-  assert.match(csp, /style-src 'self';/);
   const directives = new Map(
     csp.split(";").map((value) => {
       const [name, ...sources] = value.trim().split(/\s+/);
       return [name, sources];
     }),
   );
+  const openingStyles = [...document.querySelectorAll("head > style[data-v42-styles]")];
+  assert.ok(openingStyles.length, "the opening must paint without a blocking stylesheet round trip");
+  const expectedStyleSources = ["'self'"];
+  for (const style of openingStyles) {
+    const source = style.getAttribute("data-v42-styles");
+    assert.match(source, /^\/assets\/[\w.-]+\.css$/);
+    assert.equal(style.textContent, await read(`dist${source}`), "inline and compiled styles must match exactly");
+    expectedStyleSources.push(`'sha256-${createHash("sha256").update(style.textContent).digest("base64")}'`);
+  }
+  assert.deepEqual(directives.get("style-src"), expectedStyleSources, "only the exact opening styles are authorized");
+  assert.equal(document.querySelectorAll("style:not([data-v42-styles])").length, 0);
   assert.deepEqual(directives.get("frame-src"), ["'self'", "https://www.youtube-nocookie.com"]);
   assert.doesNotMatch(csp.replace(/frame-src[^;]+;/, ""), /unsafe-inline|unsafe-eval|https:/);
   assert.equal(document.querySelectorAll("script:not([src])").length, 0);
@@ -116,11 +126,15 @@ test("V40 ships its real reading edition under the strict production security po
     "assets have descriptive names",
   );
   const entryStyles = [...document.querySelectorAll('head > link[rel="stylesheet"]')];
+  assert.equal(entryStyles.length, 0, "the first view must not wait for external opening styles");
   const entryBytes = (
     await Promise.all(
       entryStyles.map(async (link) => gzipSync(await read(`dist${link.getAttribute("href")}`)).byteLength),
     )
-  ).reduce((sum, n) => sum + n, 0);
+  ).reduce(
+    (sum, n) => sum + n,
+    openingStyles.reduce((sum, style) => sum + gzipSync(style.textContent).byteLength, 0),
+  );
   assert.ok(entryBytes <= 19000, `entry stylesheet transfer budget: ${entryBytes} gzip bytes`);
   for (const file of files)
     assert.deepEqual(

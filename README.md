@@ -44,6 +44,8 @@ Run `npm run verify`. It includes lint, formatting, model and unit checks, the p
 
 For review, run `node scripts/serve-helios-preview.mjs dist 4408 --review`. See [the V42 design and content contract](docs/v42/omnius-finale-preview.md) for scope and acceptance. Browser emulation covers desktop and phone viewports; it is not physical phone testing.
 
+The [mobile delivery pass](docs/v42/mobile-performance-preview.md) sends the opening styles with the first document under exact content hashes. The full reading edition, artwork and interactions remain. Its acceptance target is at least 90 in three standard mobile Lighthouse runs, with accessibility and best practices retained.
+
 ## History and publication
 
 The exact previous current receipt is retained at `/v41/first-light-release.json`. The [First Light implementation notes](docs/v41/first-light-implementation.md), [First Light presentation](docs/v41/first-light.md), [Afterglow](docs/v41/afterglow.md) and changelog preserve earlier design decisions. The V39, V37 and V35 experiences keep their own original receipts, dates and evidence. Compatibility receipts preserve their historical V37 identity while their frontDoor pointer identifies the V42 preview receipt. Publication state is explicit in that current receipt.

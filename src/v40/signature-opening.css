@@ -824,9 +824,11 @@ html[data-motion="off"] .hero-flight-camera {
 }
 
 /* Quiet instruments leave the invitation in command. */
-html[data-motion] #main-content > section:not(#top, #studies) {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 900px;
+@media (scripting: enabled) {
+  #main-content > section:not(#top, #studies) {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 900px;
+  }
 }
 #v40-root #main-content :is(a, button, [role="tab"]) {
   transition-property: color, background-color, border-color, box-shadow, transform, opacity;
