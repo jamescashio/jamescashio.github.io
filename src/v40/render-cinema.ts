@@ -1,11 +1,12 @@
+import type { GeneratedView } from "./generated-view.ts";
 import { CinemaReel, ReelText } from "./hero-reel.tsx";
 
 import React from "react";
 import designSystem from "./design-system.ts";
 
-const h = React.createElement;
+import { h } from "./generated-view.ts";
 
-export function renderCinema(v) {
+export function renderCinema(v: GeneratedView) {
   return h(
     "div",
     {

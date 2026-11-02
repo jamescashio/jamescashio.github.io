@@ -24,7 +24,7 @@ const h = React.createElement;
 import { renderRail } from "./render-rail.jsx";
 import { renderHeader } from "./render-header.jsx";
 import { renderFooter } from "./render-footer.jsx";
-import { renderCinema } from "./render-cinema.jsx";
+import { renderCinema } from "./render-cinema.ts";
 export function renderPage(v) {
   return h(
     React.Fragment,
