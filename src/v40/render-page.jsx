@@ -11,7 +11,7 @@ import { ShowcaseSection } from "./sections/showcase.jsx";
 import { FilmsSection } from "./sections/films.ts";
 import { DecisionsSection } from "./sections/decisions.jsx";
 import { ExperimentsSection } from "./sections/experiments.ts";
-import { MachinesSection } from "./sections/machines.jsx";
+import { MachinesSection } from "./sections/machines.ts";
 import { EvidenceSection } from "./sections/evidence.ts";
 import { OperatorSection } from "./sections/operator.jsx";
 import { ContactSection } from "./sections/contact.ts";

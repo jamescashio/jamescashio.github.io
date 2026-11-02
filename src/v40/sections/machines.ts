@@ -1,12 +1,13 @@
+import type { GeneratedView, GeneratedProps, GeneratedValue } from "../generated-view.ts";
 import { renderMachinesPart3 } from "./machines-part-3.ts";
 import { renderMachinesPart2 } from "./machines-part-2.ts";
 
 import React from "react";
 import { classFor } from "../style-variants.ts";
 import designSystem from "../design-system.ts";
-const h = React.createElement;
+import { h } from "../generated-view.ts";
 
-export function MachinesSection({ v }) {
+export function MachinesSection({ v }: GeneratedProps) {
   return h(
     "section",
     {
@@ -185,8 +186,8 @@ export function MachinesSection({ v }) {
               "div",
               { key: 1337, role: "group", "aria-label": "Request privacy", className: "v41-69374f356a" },
               " ",
-              (function (parent) {
-                return (v.traceChoices || []).map((item, index) => {
+              (function (parent: GeneratedView) {
+                return (v.traceChoices || []).map((item: GeneratedValue, index: number) => {
                   const v = { ...parent, t: item, $index: index };
                   return h(
                     React.Fragment,
@@ -266,8 +267,8 @@ export function MachinesSection({ v }) {
               className: "v41-5656f4e91c",
             },
             " ",
-            (function (parent) {
-              return (v.stages || []).map((item, index) => {
+            (function (parent: GeneratedView) {
+              return (v.stages || []).map((item: GeneratedValue, index: number) => {
                 const v = { ...parent, st: item, $index: index };
                 return h(
                   React.Fragment,
