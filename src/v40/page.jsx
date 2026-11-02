@@ -1,4 +1,4 @@
-import { waitForCanvas, startStars } from "./hero-field.js";
+import { waitForCanvas, startStars } from "./hero-field.ts";
 import { componentDidMount, componentWillUnmount, installPolish } from "./page-observers.ts";
 import { componentDidUpdate, applyScan, copyValue } from "./page-updates.ts";
 import { scramble, setupReveal, reveal, countUp, scrollFx } from "./reveal.ts";

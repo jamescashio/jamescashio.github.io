@@ -1,18 +1,19 @@
+import type { PageHost } from "./page-model.ts";
 import { frameDeltaSeconds, shouldRenderFrame } from "../lib/animation-timing.ts";
 
 import { drawContinuumField } from "./continuum-field.ts";
 import { drawOrbitalField } from "./orbital-field.ts";
 import { heroCameraTransform } from "./hero-camera.js";
 
-export function waitForCanvas(tries = 0) {
+export function waitForCanvas(this: PageHost, tries = 0) {
   if (this.starsStarted) return;
   const c = document.getElementById("hero-stars");
-  if (c && c.offsetWidth > 0) {
+  if (c instanceof HTMLCanvasElement && c.offsetWidth > 0) {
     this.starsStarted = true;
     try {
       this.startStars(c);
     } catch (e) {
-      console.error("startStars", e && e.stack);
+      console.error("startStars", e instanceof Error ? e.stack : String(e));
     }
     return;
   }
@@ -20,12 +21,14 @@ export function waitForCanvas(tries = 0) {
   if (tries < 150) this.starsTimer = setTimeout(() => this.waitForCanvas(tries + 1), 60);
 }
 
-export function startStars(c) {
+export function startStars(this: PageHost, c: HTMLCanvasElement) {
   if (!c) return;
   const ctx = c.getContext("2d");
+  if (!ctx) return;
 
   const density = this.props.starDensity ?? 220;
-  let w, h, stars, dpr;
+  let w: number, h: number, dpr: number;
+  let stars: { x: number; y: number; z: number; t: number }[];
   const reset = () => {
     const width = c.offsetWidth,
       height = c.offsetHeight;
@@ -43,7 +46,7 @@ export function startStars(c) {
   reset();
   let t = 0;
   let closeMix = 0;
-  const camera = document.querySelector(".hero-flight-camera");
+  const camera = document.querySelector<HTMLElement>(".hero-flight-camera");
   const orbitPointer = { x: 0, y: 0 };
   const draw = (delta = 0) => {
     if (!c.isConnected) return;
@@ -106,8 +109,8 @@ export function startStars(c) {
     c.dataset.ready = "true";
   };
   this.starDraw = draw;
-  let lastFrame = null;
-  const loop = (timestamp) => {
+  let lastFrame: number | null = null;
+  const loop = (timestamp?: number) => {
     if (document.hidden || this.heroVisible === false || this.state.cinema || this.state.discovery || !c.isConnected) {
       lastFrame = null;
       return;
