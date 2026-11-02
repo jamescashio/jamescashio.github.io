@@ -1,5 +1,5 @@
 import React from "react";
-import designSystem from "./design-system.js";
+import designSystem from "./design-system.ts";
 
 export function evidenceValues(s) {
   const eveColors = {

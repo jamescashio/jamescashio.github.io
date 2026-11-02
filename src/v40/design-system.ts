@@ -1,10 +1,27 @@
 import React from "react";
+type Surface = React.HTMLAttributes<HTMLElement> & { [attribute: string]: unknown };
 const h = React.createElement;
-const classes = (...names) => names.filter(Boolean).join(" ");
-function Button({ variant = "primary", size = "md", as = "button", glow: _glow, children, className, ...rest }) {
+const classes = (...names: Array<string | undefined | false>) => names.filter(Boolean).join(" ");
+function Button({
+  variant = "primary",
+  size = "md",
+  as = "button",
+  glow: _glow,
+  children,
+  className,
+  ...rest
+}: Surface & { variant?: string; size?: string; as?: React.ElementType; glow?: boolean }) {
   return h(as, { ...rest, className: classes("za-btn", `za-btn--${variant}`, `za-btn--${size}`, className) }, children);
 }
-function Panel({ color = "accent", title, icon, tag, children, className, ...rest }) {
+function Panel({
+  color = "accent",
+  title,
+  icon,
+  tag,
+  children,
+  className,
+  ...rest
+}: Surface & { color?: string; icon?: React.ReactNode; tag?: React.ReactNode }) {
   return h(
     "section",
     { ...rest, className: classes("za-panel", `za-color-${color}`, className) },
@@ -21,7 +38,13 @@ function Panel({ color = "accent", title, icon, tag, children, className, ...res
     children,
   );
 }
-function StatusDot({ status = "on", size = 8, label, className, ...rest }) {
+function StatusDot({
+  status = "on",
+  size = 8,
+  label,
+  className,
+  ...rest
+}: Surface & { status?: string; size?: number; label?: React.ReactNode }) {
   const dot = h("span", {
     className: classes("za-dot", `za-dot--${status}`, `za-dot--${size}`),
     "aria-hidden": "true",
@@ -33,10 +56,17 @@ function StatusDot({ status = "on", size = 8, label, className, ...rest }) {
     label && h("span", { className: "za-micro" }, label),
   );
 }
-function Tag({ color = "cyan", children, className, ...rest }) {
+function Tag({ color = "cyan", children, className, ...rest }: Surface & { color?: string }) {
   return h("span", { ...rest, className: classes("za-tag", `za-color-${color}`, className) }, children);
 }
-function StatCell({ value, label, sub, color = "cyan", className, ...rest }) {
+function StatCell({
+  value,
+  label,
+  sub,
+  color = "cyan",
+  className,
+  ...rest
+}: Surface & { value?: React.ReactNode; label?: React.ReactNode; sub?: React.ReactNode; color?: string }) {
   return h(
     "div",
     { ...rest, className: classes("za-statcell", `za-color-${color}`, className) },
@@ -45,7 +75,14 @@ function StatCell({ value, label, sub, color = "cyan", className, ...rest }) {
     sub && h("div", { className: "za-stat-sub" }, sub),
   );
 }
-function Terminal({ title = "zeusapollo", hint, children, bodyHeight = 340, className, ...rest }) {
+function Terminal({
+  title = "zeusapollo",
+  hint,
+  children,
+  bodyHeight = 340,
+  className,
+  ...rest
+}: Surface & { hint?: React.ReactNode; bodyHeight?: number }) {
   return h(
     "div",
     { ...rest, className: classes("za-terminal", className) },
@@ -61,7 +98,15 @@ function Terminal({ title = "zeusapollo", hint, children, bodyHeight = 340, clas
     h("div", { className: classes("za-terminal-body", `za-terminal-body--${bodyHeight}`) }, children),
   );
 }
-function TerminalLine({ user = "doug", host = "zeus", children }) {
+function TerminalLine({
+  user = "doug",
+  host = "zeus",
+  children,
+}: {
+  user?: string;
+  host?: string;
+  children?: React.ReactNode;
+}) {
   return h(
     "div",
     { className: "za-terminal-line" },
@@ -74,10 +119,10 @@ function TerminalLine({ user = "doug", host = "zeus", children }) {
     children,
   );
 }
-function Chip({ children, className, ...rest }) {
+function Chip({ children, className, ...rest }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return h("button", { ...rest, className: classes("za-chip", className) }, children);
 }
-function Input({ className, ...rest }) {
+function Input({ className, ...rest }: React.InputHTMLAttributes<HTMLInputElement>) {
   return h("input", { ...rest, className: classes("za-input", className) });
 }
 export default { Button, Panel, StatusDot, Tag, StatCell, Terminal, TerminalLine, Chip, Input };

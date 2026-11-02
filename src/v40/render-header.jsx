@@ -1,7 +1,7 @@
 import { destinationLabel } from "./destinations.ts";
 
 import React from "react";
-import designSystem from "./design-system.js";
+import designSystem from "./design-system.ts";
 
 const h = React.createElement;
 

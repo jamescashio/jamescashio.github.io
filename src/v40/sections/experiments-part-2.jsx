@@ -1,7 +1,7 @@
 import { renderExperimentsPart1 } from "./experiments-part-1.jsx";
 import React from "react";
 
-import designSystem from "../design-system.js";
+import designSystem from "../design-system.ts";
 const h = React.createElement;
 export function renderExperimentsPart2(v) {
   return h(

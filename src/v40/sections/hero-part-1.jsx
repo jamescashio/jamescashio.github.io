@@ -1,6 +1,6 @@
 import React from "react";
 
-import designSystem from "../design-system.js";
+import designSystem from "../design-system.ts";
 
 import { presentation } from "../evidence.ts";
 const h = React.createElement;

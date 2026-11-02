@@ -2,7 +2,7 @@ import { renderEvidencePart1 } from "./evidence-part-1.jsx";
 import { observedDate } from "../evidence.ts";
 import React from "react";
 import { classFor } from "../style-variants.ts";
-import designSystem from "../design-system.js";
+import designSystem from "../design-system.ts";
 const h = React.createElement;
 
 export function EvidenceSection({ v }) {
