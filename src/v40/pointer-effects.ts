@@ -1,9 +1,11 @@
+import type React from "react";
+import type { PageHost } from "./page-model.ts";
 
-export function tilt(e) {
-  const el = e.target.closest && e.target.closest("[data-tilt]");
+export function tilt(this: PageHost, e: MouseEvent) {
+  const el = e.target instanceof Element ? e.target.closest<HTMLElement>("[data-tilt]") : null;
   if (this.tiltEl && this.tiltEl !== el) {
     this.tiltEl.style.transform = "";
-    const og = this.tiltEl.querySelector(":scope > [data-glare]");
+    const og = this.tiltEl.querySelector<HTMLElement>(":scope > [data-glare]");
     if (og) og.style.opacity = "0";
   }
   this.tiltEl = el;
@@ -11,10 +13,10 @@ export function tilt(e) {
   const b = el.getBoundingClientRect(),
     nx = (e.clientX - b.left) / b.width,
     ny = (e.clientY - b.top) / b.height;
-  const amt = parseFloat(el.dataset.tilt) || 6;
+  const amt = parseFloat(el.dataset.tilt ?? "") || 6;
   el.style.transition = "transform .25s cubic-bezier(.23,1,.32,1), box-shadow .45s, border-color .45s";
   el.style.transform = `perspective(1000px) rotateX(${(0.5 - ny) * amt}deg) rotateY(${(nx - 0.5) * amt}deg) translateY(-4px)`;
-  let g = el.querySelector(":scope > [data-glare]");
+  let g = el.querySelector<HTMLElement>(":scope > [data-glare]");
   if (!g) {
     g = document.createElement("span");
     g.setAttribute("data-glare", "");
@@ -28,9 +30,9 @@ export function tilt(e) {
   g.style.background = `radial-gradient(circle at ${nx * 100}% ${ny * 100}%, rgba(255,255,255,.16), rgba(0,249,255,.05) 30%, transparent 60%)`;
 }
 
-export function magnet(e) {
+export function magnet(this: PageHost, e: MouseEvent) {
   if (!this.mags || Date.now() - this.magT > 1500) {
-    this.mags = Array.from(document.querySelectorAll(".za-btn--primary"));
+    this.mags = Array.from(document.querySelectorAll<HTMLElement>(".za-btn--primary"));
     this.magT = Date.now();
   }
   for (const m of this.mags) {
@@ -48,7 +50,7 @@ export function magnet(e) {
   }
 }
 
-export function hoverIn(e) {
+export function hoverIn(this: PageHost, e: React.MouseEvent<HTMLElement>) {
   const video = e.currentTarget.querySelector("video");
   if (video) {
     video.dataset.requested = "true";
@@ -57,7 +59,7 @@ export function hoverIn(e) {
   }
 }
 
-export function hoverOut(e) {
+export function hoverOut(this: PageHost, e: React.MouseEvent<HTMLElement>) {
   const video = e.currentTarget.querySelector("video");
   if (video) {
     video.dataset.requested = "false";
@@ -66,7 +68,7 @@ export function hoverOut(e) {
   }
 }
 
-export function warpFlash() {
+export function warpFlash(this: PageHost) {
   if (this.reduce || document.hidden) return;
   this.warpUntil = Date.now() + 1400;
   clearTimeout(this.warpT);
@@ -74,7 +76,7 @@ export function warpFlash() {
   this.warpT = setTimeout(() => this.setState({ warp: false }), 950);
 }
 
-export function defiant() {
+export function defiant(this: PageHost) {
   this.warpFlash();
   this.warpUntil = Date.now() + 2600;
   clearTimeout(this.alertT);

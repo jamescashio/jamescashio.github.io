@@ -2,7 +2,7 @@ import { waitForCanvas, startStars } from "./hero-field.js";
 import { componentDidMount, componentWillUnmount, installPolish } from "./page-observers.js";
 import { componentDidUpdate, applyScan, copyValue } from "./page-updates.js";
 import { scramble, setupReveal, reveal, countUp, scrollFx } from "./reveal.js";
-import { tilt, magnet, hoverIn, hoverOut, warpFlash, defiant } from "./pointer-effects.js";
+import { tilt, magnet, hoverIn, hoverOut, warpFlash, defiant } from "./pointer-effects.ts";
 import { filmById, stepCinema, closeCinema } from "./cinema-control.ts";
 import { lane } from "./experiment-state.ts";
 import { eve } from "./evidence-console.ts";
