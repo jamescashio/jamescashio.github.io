@@ -322,7 +322,11 @@ export class V40Page extends React.Component {
     };
     window.addEventListener("keydown", this.onKey);
     this.applyScan();
-    this.waitForCanvas();
+    // Let hydration finish before measuring and drawing the cinematic canvas.
+    this.starsStartupRaf = requestAnimationFrame(() => {
+      this.starsStartupRaf = 0;
+      this.waitForCanvas();
+    });
     this.stopMedia = installMediaCoordinator();
     this.setupReveal();
     this.scrollFx();
@@ -347,7 +351,7 @@ export class V40Page extends React.Component {
       this.lastCameraClose = this.state.cameraClose;
       this.starDraw?.();
     }
-    if (!this.starsStarted) this.waitForCanvas(0);
+    if (!this.starsStarted && !this.starsStartupRaf) this.waitForCanvas(0);
     if (this.lastScan !== this.props.scanlines) this.applyScan();
     this.setupReveal();
     if (this.lastLog !== this.state.eveLog) {
@@ -444,6 +448,7 @@ export class V40Page extends React.Component {
     cancelAnimationFrame(this.fxRaf);
     (this.fxEls || []).forEach((el) => el.remove());
     cancelAnimationFrame(this.raf);
+    cancelAnimationFrame(this.starsStartupRaf);
     clearTimeout(this.starsTimer);
     clearInterval(this.traceTimer);
     document.documentElement.style.overflow = "";

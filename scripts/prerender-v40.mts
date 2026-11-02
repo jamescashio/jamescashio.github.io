@@ -40,6 +40,9 @@ const fallbackCss = [...rules].map(([name, declarations]) => `.${name}{${declara
 const filename = "v40-reading-" + createHash("sha256").update(fallbackCss).digest("hex").slice(0, 12) + ".css";
 if (fallbackCss) await writeFile("dist/assets/" + filename, fallbackCss);
 let html = await readFile("dist/index.html", "utf8");
+// The complete opening is already rendered; its artwork and fonts take network priority.
+html = html.replace(/<script\b(?=[^>]*type="module")/g, '<script fetchpriority="low"');
+html = html.replace(/<link\b(?=[^>]*rel="modulepreload")/g, '<link fetchpriority="low"');
 // The routing guard used to live at a stable URL with a four-hour cache lifetime.
 // A content address prevents an updated page from reusing the old V39 redirects.
 const routing = await readFile("public/v40-entry.js", "utf8");

@@ -6,6 +6,12 @@ Preserve the Omnius, Overruled visual composition, motion, content and media whi
 
 The build includes the small compiled opening stylesheet in the first HTML response. Each style block is authorized by its exact SHA-256 content hash; arbitrary inline styles, inline scripts and external origins remain disallowed. The independently compiled CSS remains in the artifact, and the artifact gate compares its bytes with the inline copy, checks the exact policy hashes and retains the 19,000 byte compressed CSS budget. Secondary styles still load separately.
 
+The opening's module script and module preload links use low network priority. The already rendered artwork and fonts take priority over the interactive runtime during a constrained connection. The same scripts still load automatically, without an added timer, interaction requirement or change to their contents.
+
+The signature and contact background videos use native lazy loading with reserved dimensions. Supporting browsers defer their poster downloads until those sections approach the viewport. The original posters and films remain intact, and browsers without this optimization retain ordinary loading. The reading edition and manually opened House Cashio player retain their existing behavior.
+
+Canvas measurement and the first cinematic draw run in the frame after hydration completes. This separates graphics setup from activating the page's controls. The scheduled frame is cancelled if the page unmounts; motion preferences and visibility rules remain in force.
+
 The browser can defer rendering offscreen chapters immediately when scripting is enabled. The CSS scripting media feature replaces a flag that arrived after the first layout. The variable experiment panel stays fully rendered, and the no JavaScript reading edition remains uncontained. Unsupported browsers fall back to ordinary rendering. Native links, search, keyboard focus, scrolling and all original content remain.
 
 No artwork, video, audio or caption files are removed or reduced in fidelity. The original moving planetary hero, all three light forms, camera controls, atlas, seven experiments and House Cashio trailer remain. Observation records and their dates remain unchanged. No dependencies or infrastructure change.
