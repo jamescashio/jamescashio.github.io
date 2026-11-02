@@ -1,8 +1,9 @@
+import type { PageHost, PageState } from "./page-model.ts";
 import React from "react";
 import designSystem from "./design-system.ts";
 
-export function evidenceValues(s) {
-  const eveColors = {
+export function evidenceValues(this: PageHost, s: Readonly<PageState>) {
+  const eveColors: Record<string, string> = {
     d: "var(--text-dim)",
     ok: "var(--green)",
     r: "var(--cyan)",
