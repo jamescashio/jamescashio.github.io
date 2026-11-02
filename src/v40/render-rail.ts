@@ -1,9 +1,10 @@
+import type { GeneratedView, GeneratedValue } from "./generated-view.ts";
 import React from "react";
 
 import { classFor } from "./style-variants.ts";
-const h = React.createElement;
+import { h } from "./generated-view.ts";
 
-export function renderRail(v) {
+export function renderRail(v: GeneratedView) {
   return h(
     "nav",
     {
@@ -31,8 +32,8 @@ export function renderRail(v) {
         className: "v41-a0e1b1fc48",
       },
       " ",
-      (function (parent) {
-        return (v.railItems || []).map((item, index) => {
+      (function (parent: GeneratedView) {
+        return (v.railItems || []).map((item: GeneratedValue, index: number) => {
           const v = { ...parent, r: item, $index: index };
           return h(
             React.Fragment,

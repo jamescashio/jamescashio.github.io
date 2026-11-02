@@ -21,7 +21,7 @@ import React from "react";
 
 import { classFor } from "./style-variants.ts";
 const h = React.createElement;
-import { renderRail } from "./render-rail.jsx";
+import { renderRail } from "./render-rail.ts";
 import { renderHeader } from "./render-header.ts";
 import { renderFooter } from "./render-footer.ts";
 import { renderCinema } from "./render-cinema.ts";
