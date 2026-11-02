@@ -1,5 +1,9 @@
+import type { FieldOptions } from "./field-model.ts";
 // Authored atmosphere for the existing bounded hero canvas. These paths are decorative.
-export function drawOrbitalField(ctx, { width, height, dpr, time, motion, pointer, turn = 0 }) {
+export function drawOrbitalField(
+  ctx: CanvasRenderingContext2D,
+  { width, height, dpr, time, motion, pointer, turn = 0 }: FieldOptions,
+) {
   const narrow = width / dpr < 760;
   const cx = width * (narrow ? 0.76 : 0.7) + pointer.x * 16 * dpr;
   const cy = height * 0.48 + pointer.y * 12 * dpr;

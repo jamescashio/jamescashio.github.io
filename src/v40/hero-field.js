@@ -1,7 +1,7 @@
 import { frameDeltaSeconds, shouldRenderFrame } from "../lib/animation-timing.ts";
 
 import { drawContinuumField } from "./continuum-field.js";
-import { drawOrbitalField } from "./orbital-field.js";
+import { drawOrbitalField } from "./orbital-field.ts";
 import { heroCameraTransform } from "./hero-camera.js";
 
 export function waitForCanvas(tries = 0) {
