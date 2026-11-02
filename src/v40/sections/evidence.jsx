@@ -264,7 +264,7 @@ export function EvidenceSection({ v }) {
                   h(
                     "summary",
                     { key: 1699, className: "v41-946d8528f3" },
-                    h(React.Fragment, { key: 1700 }, "Earlier records (4) ▾"),
+                    h(React.Fragment, { key: 1700 }, "Earlier records (9) ▾"),
                   ),
                   " ",
                   h(
@@ -272,23 +272,48 @@ export function EvidenceSection({ v }) {
                     { key: 1702, className: "v41-613ce876c7" },
                     h(
                       "a",
-                      { key: 1703, href: "https://cashio.us/evidence/status-2026-09-26.json" },
-                      h(React.Fragment, { key: 1704 }, "Earlier fleet record 4"),
+                      { key: 1703, href: "/evidence/status-2026-11-01.json" },
+                      h(React.Fragment, { key: 1704 }, "Sun Nov 1, 2026 · V41 Eagle"),
                     ),
                     h(
                       "a",
-                      { key: 1705, href: "https://cashio.us/evidence/status-2026-09-24.json" },
-                      h(React.Fragment, { key: 1706 }, "Earlier fleet record 3"),
+                      { key: 1705, href: "/evidence/status-2026-10-31.json" },
+                      h(React.Fragment, { key: 1706 }, "Sat Oct 31, 2026 · V41 Eagle"),
                     ),
                     h(
                       "a",
-                      { key: 1707, href: "https://cashio.us/evidence/status-2026-09-07.json" },
-                      h(React.Fragment, { key: 1708 }, "Earlier fleet record 2"),
+                      { key: 1707, href: "/evidence/status-2026-10-28.json" },
+                      h(React.Fragment, { key: 1708 }, "Wed Oct 28, 2026 · V41 Eagle"),
                     ),
                     h(
                       "a",
-                      { key: 1709, href: "https://cashio.us/evidence/status-2026-08-28.json" },
-                      h(React.Fragment, { key: 1710 }, "Original fleet record"),
+                      { key: 1709, href: "/evidence/status-2026-10-27.json" },
+                      h(React.Fragment, { key: 1710 }, "Tue Oct 27, 2026 · V41 Eagle"),
+                    ),
+                    h(
+                      "a",
+                      { key: 1711, href: "/evidence/status-2026-10-23.json" },
+                      h(React.Fragment, { key: 1712 }, "Fri Oct 23, 2026 · V41 Eagle"),
+                    ),
+                    h(
+                      "a",
+                      { key: 1713, href: "/evidence/status-2026-09-26.json" },
+                      h(React.Fragment, { key: 1714 }, "Sat Sep 26, 2026 · V39.2 Zenith"),
+                    ),
+                    h(
+                      "a",
+                      { key: 1715, href: "/evidence/status-2026-09-24.json" },
+                      h(React.Fragment, { key: 1716 }, "Thu Sep 24, 2026 · V39.2 Zenith"),
+                    ),
+                    h(
+                      "a",
+                      { key: 1717, href: "/evidence/status-2026-09-07.json" },
+                      h(React.Fragment, { key: 1718 }, "Mon Sep 7, 2026 · V37.11"),
+                    ),
+                    h(
+                      "a",
+                      { key: 1719, href: "/evidence/status-2026-08-28.json" },
+                      h(React.Fragment, { key: 1720 }, "Fri Aug 28, 2026 · V35 ALL TENS"),
                     ),
                   ),
                   " ",

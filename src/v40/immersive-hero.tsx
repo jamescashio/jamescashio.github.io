@@ -55,6 +55,50 @@ function ContinuumStill() {
     </svg>
   );
 }
+// Instrument overlay drawn in the poster's own 1920 x 1080 space, so it tracks the planet through every camera move.
+function HeroHud() {
+  return (
+    <div className="hero-hud" aria-hidden="true">
+      <svg className="hud-track" viewBox="0 0 1920 1080" fill="none">
+        <circle cx="1508" cy="508" r="360" stroke="#72e5f4" strokeOpacity=".38" strokeWidth="1.5" />
+        <circle
+          cx="1508"
+          cy="508"
+          r="372"
+          stroke="#edbd6c"
+          strokeOpacity=".55"
+          strokeWidth="8"
+          strokeDasharray="1.5 21.87"
+        />
+        <circle
+          cx="1508"
+          cy="508"
+          r="381"
+          stroke="#ffd98f"
+          strokeOpacity=".82"
+          strokeWidth="18"
+          strokeDasharray="3 236.39"
+        />
+        <circle
+          cx="1508"
+          cy="508"
+          r="402"
+          stroke="#72e5f4"
+          strokeOpacity=".2"
+          strokeWidth="2"
+          strokeDasharray="118 39.86"
+        />
+        <path
+          className="hud-lock"
+          d="M1273 380V368H1285M1309 368H1321V380M1321 404V416H1309M1285 416H1273V404"
+          stroke="#ffe0a1"
+          strokeWidth="2.5"
+        />
+      </svg>
+      <span className="hud-orbiter" />
+    </div>
+  );
+}
 export function ImmersiveHero({ v }: { v: HeroView }) {
   const scene = scenes.find((s) => s.id === v.scene) || scenes[0];
   return (
@@ -80,6 +124,7 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
             fetchPriority="high"
             alt=""
           />
+          <HeroHud />
         </div>
         <div className="flight-atmosphere" />
       </div>

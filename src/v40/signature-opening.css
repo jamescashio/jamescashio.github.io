@@ -391,6 +391,10 @@
   opacity: 0.96;
   transform: rotate(-3deg);
 }
+/* The orbital instrument waits for the deferred HUD layer. */
+.hero-hud {
+  display: none;
+}
 .continuum-reticle {
   position: absolute;
   top: 174px;

@@ -17,6 +17,7 @@
 @import "./release-hearing.css";
 @import "./finale-surfaces.css";
 @import "./directors-cut.css";
+@import "./hud.css";
 
 .eagle-film-play {
   transition:
