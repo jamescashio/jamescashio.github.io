@@ -7,82 +7,15 @@
   align-items: center;
   font-size: 14px;
 }
-.world-label,
-.world-card .v41-fe7aa4b37b {
-  font-size: 12px;
-  letter-spacing: 0.12em;
-}
 @media (max-width: 600px) {
   #rooms {
     padding-block: 36px;
   }
 }
 @media (max-width: 600px) {
-  #rooms .world-card {
-    display: grid;
-    grid-template-columns: 96px minmax(0, 1fr);
-  }
-}
-@media (max-width: 600px) {
-  #rooms .world-card > div:first-child {
-    height: 100%;
-    aspect-ratio: auto;
-    min-height: 182px;
-  }
-}
-@media (max-width: 600px) {
-  #rooms .world-card img {
-    height: 100%;
-    object-fit: cover;
-  }
-}
-@media (max-width: 600px) {
-  #rooms .world-card > div:nth-child(2) {
-    padding: 18px 16px;
-    gap: 8px;
-  }
-}
-@media (max-width: 600px) {
-  #rooms .world-card .v41-aee5c1c0e5 {
-    font-size: 15px;
-    line-height: 1.4;
-  }
-}
-@media (max-width: 600px) {
-  #rooms .world-card .v41-3fd1c5734b {
-    font-size: 14px;
-    line-height: 1.5;
-  }
-}
-@media (max-width: 600px) {
-  #rooms .world-card .v41-fe7aa4b37b {
-    margin-top: 4px;
-    font-size: 12px;
-  }
-}
-@media (max-width: 600px) {
-  #rooms .world-grid {
-    gap: 14px;
-  }
-}
-@media (max-width: 600px) {
   #rooms .v41-260a3097b1 {
     margin-bottom: 24px;
   }
-}
-@media (max-width: 359px) {
-  #rooms .world-card {
-    grid-template-columns: 72px minmax(0, 1fr);
-  }
-}
-@media (max-width: 359px) {
-  #rooms .world-card > div:nth-child(2) {
-    padding: 16px 12px;
-  }
-}
-#v40-root .world-label {
-  font-size: 13px;
-  letter-spacing: 0.06em;
 }
 #v40-root .world-portal {
   border: 1px solid #26bbd444;
@@ -134,9 +67,6 @@
 #v40-root .world-portal:focus-visible {
   outline: 2px solid #7edcf2;
   outline-offset: 6px;
-}
-#v40-root .world-portal .v41-fe7aa4b37b {
-  color: #9de2f4;
 }
 @media (max-width: 760px) {
   .world-portal > div:first-child::after {
@@ -719,9 +649,6 @@ html[data-motion="off"] .atlas-selectors button {
 #v40-root .atlas-destination h3 {
   color: #c5ecf8;
   font-weight: 500;
-}
-#v40-root .atlas-detail {
-  border-left-color: #2cd2ee;
 }
 @media (max-width: 760px) {
   #v40-root :is(#workshop, #rooms, #studies, #evidence, #operator) {

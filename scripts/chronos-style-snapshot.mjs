@@ -43,6 +43,12 @@ if (mode === "diff") {
         for (const motion of ["no-preference", "reduce"]) {
           const context = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: motion });
           const page = await context.newPage();
+          // Compare engineering-only CSS against the pre-enhancement baseline.
+          // The optional scene is independently verified by its motion harness.
+          if (process.env.CHRONOS_HERO === "off")
+            await page.addInitScript(() => {
+              HTMLCanvasElement.prototype.transferControlToOffscreen = undefined;
+            });
           await page.clock.install({ time: new Date("2026-11-02T18:00:00Z") });
           await page.clock.pauseAt(new Date("2026-11-02T18:00:01Z"));
           const errors = [];
@@ -99,6 +105,7 @@ if (mode === "diff") {
           motion: ["no-preference", "reduce"],
           state: "At rest, entrances complete; infinite CSS animations at time zero; closed disclosures retained",
           base,
+          optionalHero: process.env.CHRONOS_HERO === "off" ? "original fallback" : "default",
         },
         null,
         2,

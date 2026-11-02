@@ -850,10 +850,6 @@ html[data-motion="off"] .mission-results a {
 #v40-root .mission-preview {
   background: #1c1c1c;
 }
-#v40-root .mission-result[aria-selected="true"] {
-  border-color: #60d8f1;
-  background: #2c2c2c;
-}
 @media (max-width: 760px) {
   #v40-root .journey-disclosure > summary {
     min-height: 112px;

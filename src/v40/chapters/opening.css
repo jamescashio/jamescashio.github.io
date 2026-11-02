@@ -366,8 +366,7 @@ body.za-scanlines::after {
 .za-navlink {
   transition: color var(--dur-fast) var(--ease);
 }
-.za-navlink:hover,
-.za-navlink.is-active {
+.za-navlink:hover {
   color: var(--cyan);
   text-shadow: 0 0 8px var(--cyan-glow);
 }
@@ -670,26 +669,6 @@ details > summary::-webkit-details-marker {
   }
   #studies .experiment-tabs {
     display: none;
-  }
-}
-#rooms .world-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-#rooms .world-card:nth-child(3) .world-label {
-  color: #bdeaf7;
-}
-#rooms .world-card:focus-visible {
-  border-color: var(--cyan);
-  box-shadow: 0 0 30px var(--cyan-glow);
-}
-@media (min-width: 1280px) {
-  #rooms .world-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-@media (max-width: 600px) {
-  #rooms .world-grid {
-    grid-template-columns: minmax(0, 1fr);
   }
 }
 html {
@@ -1127,13 +1106,6 @@ html[data-background="true"] *::after {
   font-size: 13px;
   letter-spacing: 0.06em;
 }
-#v40-root #top .v41-6099e1a2c7,
-#v40-root #top .v41-44a8b78244,
-#v40-root #top .v41-7f5a64038e {
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  color: #d9d9d9;
-}
 #v40-root .v41-cbba20e481 {
   font-size: 10px;
   letter-spacing: 0.05em;
@@ -1242,12 +1214,10 @@ html[data-background="true"] *::after {
 }
 #hero-content:not(.continuum-composition) > div:first-child > div:first-child,
 #hero-content:not(.continuum-composition) > div:first-child > div:nth-child(2),
-#hero-content:not(.continuum-composition) .v41-870557c7e4,
 #top > a:last-child:not(.continuum-next) {
   font-size: 12px;
 }
-#hero-content:not(.continuum-composition) > div:first-child > p,
-#hero-content:not(.continuum-composition) .v41-523178e37a {
+#hero-content:not(.continuum-composition) > div:first-child > p {
   animation: none;
 }
 #top > a:last-child:not(.continuum-next) {
