@@ -1,12 +1,13 @@
+import type { GeneratedView, GeneratedProps, GeneratedValue } from "../generated-view.ts";
 import { renderHeroPart1 } from "./hero-part-1.ts";
 import React from "react";
 import { classFor } from "../style-variants.ts";
 
 import { HeroPlanet } from "../hero-reel.tsx";
 import { presentation } from "../evidence.ts";
-const h = React.createElement;
+import { h } from "../generated-view.ts";
 
-export function HeroSection({ v }) {
+export function HeroSection({ v }: GeneratedProps) {
   return h(
     "section",
     {
@@ -204,8 +205,8 @@ export function HeroSection({ v }) {
                 " ",
               ),
               " ",
-              (function (parent) {
-                return (v.telemetry || []).map((item, index) => {
+              (function (parent: GeneratedView) {
+                return (v.telemetry || []).map((item: GeneratedValue, index: number) => {
                   const v = { ...parent, m: item, $index: index };
                   return h(
                     React.Fragment,
