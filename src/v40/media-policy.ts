@@ -13,9 +13,9 @@ export function reelSources(kind = "replay") {
 }
 // All playback intent passes through one owner, including hover and dialogs.
 export function installMediaCoordinator() {
-  const observed = new Map();
+  const observed = new Map<HTMLVideoElement, () => void>();
   let disposed = false;
-  const ratio = (video) => {
+  const ratio = (video: HTMLVideoElement) => {
     const r = video.getBoundingClientRect();
     const area = r.width * r.height;
     return area
@@ -24,15 +24,15 @@ export function installMediaCoordinator() {
           area
       : 0;
   };
-  const allowed = (video) => {
+  const allowed = (video: HTMLVideoElement) => {
     if (!video.isConnected || document.hidden || video.dataset.finished === "true") return false;
     if (video.closest("details:not([open])")) return false;
-    const cinema = document.querySelector("#cinema-video");
+    const cinema = document.querySelector<HTMLVideoElement>("#cinema-video");
     if (cinema) return video === cinema;
     if (document.querySelector("#ai-worm iframe")) return false;
     if (document.querySelector("#mission-dialog[open], #bit-dialog[open], #helios-flight, #helios-studio"))
       return false;
-    const quickCut = document.getElementById("ai-worm-video");
+    const quickCut = document.getElementById("ai-worm-video") as HTMLVideoElement | null;
     if (quickCut) return video === quickCut && ratio(video) >= 0.5;
     const requested =
       video.id === "sig-video" || video.dataset.v === "hover"
@@ -63,7 +63,7 @@ export function installMediaCoordinator() {
         video.removeEventListener("play", onPlay);
         observed.delete(video);
       }
-    for (const video of document.querySelectorAll("#v40-root video"))
+    for (const video of document.querySelectorAll<HTMLVideoElement>("#v40-root video"))
       if (!observed.has(video)) {
         video.preload = "none";
         video.muted = true;
@@ -87,9 +87,9 @@ export function installMediaCoordinator() {
   const mutation = new MutationObserver((records) => {
     const affectsPlayback = records.some((record) =>
       record.type === "attributes"
-        ? record.target.matches("#mission-dialog, #bit-dialog")
+        ? record.target instanceof Element && record.target.matches("#mission-dialog, #bit-dialog")
         : [...record.addedNodes, ...record.removedNodes].some(
-            (node) => node.nodeType === 1 && (node.matches(playbackNodes) || node.querySelector(playbackNodes)),
+            (node) => node instanceof Element && (node.matches(playbackNodes) || node.querySelector(playbackNodes)),
           ),
     );
     if (affectsPlayback) register();

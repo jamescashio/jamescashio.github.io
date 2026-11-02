@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import edit from "../../public/assets/sovereign/galactic-paperwork.json";
-import { conservesData } from "./media-policy.js";
+import { conservesData } from "./media-policy.ts";
 
 const h = React.createElement;
 const videoUrl = edit.originalUrl;

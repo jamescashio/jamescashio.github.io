@@ -1,5 +1,5 @@
 import variants from "../../public/v40/poster-variants.json";
-import { conservesData } from "./media-policy.js";
+import { conservesData } from "./media-policy.ts";
 
 // These original film derivatives already ship with the preserved media library.
 const libraryVariants = Object.fromEntries(

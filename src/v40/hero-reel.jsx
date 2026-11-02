@@ -1,5 +1,5 @@
 import React from "react";
-import { reelSources } from "./media-policy.js";
+import { reelSources } from "./media-policy.ts";
 const h = React.createElement;
 export const reelPoster = "/assets/hero/cashio-v41-eagle-poster.webp";
 const EAGLE_TEXT =

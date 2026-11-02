@@ -1,4 +1,4 @@
-import { installMediaCoordinator } from "./media-policy.js";
+import { installMediaCoordinator } from "./media-policy.ts";
 
 
 export function componentDidMount() {
