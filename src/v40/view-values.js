@@ -6,7 +6,7 @@ import { foldReply } from "./ship-humor.ts";
 
 import { openingValues } from "./view-opening.ts";
 import { experimentValues } from "./view-experiments.ts";
-import { systemValues } from "./view-system.js";
+import { systemValues } from "./view-system.ts";
 import { evidenceValues } from "./view-evidence.js";
 export function renderVals() {
   const { s, tech, pad, railItems, telemetry, worlds, F, collections, filmList, C } = openingValues.call(this);

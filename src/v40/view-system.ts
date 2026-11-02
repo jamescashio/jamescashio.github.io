@@ -1,8 +1,20 @@
+import type { PageHost, PageState } from "./page-model.ts";
 import { snapshot, observedDate, observedMonth, fleetSummary } from "./evidence.ts";
 
-
-export function systemValues(s, pill) {
-  const nodeInfo = {
+export function systemValues(this: PageHost, s: Readonly<PageState>, pill: (on: boolean, gold: boolean) => string) {
+  const nodeInfo: Record<
+    string,
+    {
+      title: string;
+      role: string;
+      value: string;
+      unit: string;
+      summary: string;
+      body: string;
+      evidence: string;
+      color: string;
+    }
+  > = {
     hermes: {
       title: "HERMES",
       role: "Job scheduler",
@@ -57,13 +69,19 @@ export function systemValues(s, pill) {
   const N = nodeInfo[s.node];
   const ts = s.traceStep,
     tp = s.tracePrivate;
-  const litNow = (k) =>
+  const litNow = (k: string) =>
     s.node === k ||
     (ts === 0 && k === "operator") ||
     (ts === 1 && k === "hermes") ||
     (ts === 2 && (tp ? k === "dsh" : k === "zeus" || k === "apollo")) ||
     (ts === 3 && (k === "operator" || k === "dsh"));
-  const pos = { operator: [50, 13.33], dsh: [16, 36], hermes: [50, 50], zeus: [25, 84], apollo: [75, 84] };
+  const pos: Record<string, [number, number]> = {
+    operator: [50, 13.33],
+    dsh: [16, 36],
+    hermes: [50, 50],
+    zeus: [25, 84],
+    apollo: [75, 84],
+  };
   const nodes = [
     ["operator", "The operator", "Authority", "◆", "var(--amber)"],
     ["dsh", "DSH", "Console", "▣", "var(--cyan)"],
@@ -88,20 +106,20 @@ export function systemValues(s, pill) {
     };
   });
   const edgeLit = tp ? [["opHe"], ["opHe"], ["dshHe"], ["opDsh"]] : [["opHe"], ["opHe"], ["heZe", "heAp"], ["dshHe"]];
-  const edgeColor = {
+  const edgeColor: Record<string, string> = {
     opHe: "var(--amber)",
     opDsh: "var(--amber)",
     dshHe: "var(--accent)",
     heZe: "var(--cyan)",
     heAp: "var(--purple)",
   };
-  const edgeState = (k) => {
+  const edgeState = (k: string) => {
     if (ts < 0) return "idle";
     if (edgeLit[ts].includes(k)) return "on";
     for (let i = 0; i < ts; i++) if (edgeLit[i].includes(k)) return "past";
     return "off";
   };
-  const edgeVals = (k) => {
+  const edgeVals = (k: string) => {
     const st = edgeState(k),
       c = edgeColor[k];
     return {
@@ -109,7 +127,7 @@ export function systemValues(s, pill) {
       glow: `stroke:${c};stroke-width:9;opacity:${st === "on" ? 0.2 : 0};transition:opacity .5s`,
     };
   };
-  const tagColor = {
+  const tagColor: Record<string, string> = {
     READY: "var(--text-dim)",
     INTENT: "var(--amber)",
     QUALIFY: "var(--accent)",
@@ -126,7 +144,7 @@ export function systemValues(s, pill) {
     style:
       "white-space:pre-wrap;word-break:break-word;color:var(--text);animation:v40-rise .4s cubic-bezier(.23,1,.32,1) both",
   }));
-  const wire = (active, color) => (active ? color : "rgba(255,255,255,.14)");
+  const wire = (active: boolean, color: string) => (active ? color : "rgba(255,255,255,.14)");
   const traceOutcomeL = this.lane("draft", tp, false);
   const stageLabels = ["Intent", "Qualify", tp ? "Hold" : "Compute", "Review"];
   const stages = stageLabels.map((label, i) => ({
@@ -142,10 +160,12 @@ export function systemValues(s, pill) {
       : "Compute · the job runs on Zeus or Apollo.",
     "Review · the result returns to the operator console.",
   ];
-  const traceChoices = [
-    ["Public input", false],
-    ["Private input", true],
-  ].map(([label, v]) => ({
+  const traceChoices = (
+    [
+      ["Public input", false],
+      ["Private input", true],
+    ] as [string, boolean][]
+  ).map(([label, v]) => ({
     label,
     pressed: String(tp === v),
     style: pill(tp === v, v),
