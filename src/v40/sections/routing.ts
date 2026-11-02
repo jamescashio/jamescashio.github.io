@@ -1,5 +1,4 @@
-import React from "react";
-const h = React.createElement;
+import { h } from "../generated-view.ts";
 
 export function RoutingSection() {
   return h(

@@ -1,5 +1,5 @@
 import React from "react";
-import { RoutingSection } from "./routing.jsx";
+import { RoutingSection } from "./routing.ts";
 import { classFor } from "../style-variants.ts";
 import designSystem from "../design-system.ts";
 const h = React.createElement;
