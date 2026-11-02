@@ -16,13 +16,14 @@ type HeroView = {
   closeDiscovery: () => void;
   foldScene: () => void;
   foldCount: number;
+  heroQuip: string | null;
   cameraClose: boolean;
   toggleCamera: () => void;
 };
 const scenes = [
-  { id: "orbit", label: "Orbit", caption: "The original horizon. A new way to fly." },
-  { id: "signal", label: "Signal", caption: "A luminous double helix. Ideas finding their form." },
-  { id: "constellation", label: "Constellation", caption: "A spiral of possibilities. Follow your curiosity." },
+  { id: "orbit", label: "Orbit", caption: "Excellent view. Deeply unreasonable parking." },
+  { id: "signal", label: "Signal", caption: "Big ideas. Questionable cable management." },
+  { id: "constellation", label: "Constellation", caption: "Connect the dots. The universe misplaced the manual." },
 ];
 function ContinuumStill() {
   return (
@@ -80,7 +81,7 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
       <div className="continuum-horizon" aria-hidden="true" />
       <div className="continuum-arrival">
         <span>cAshIo / V42</span>
-        <span>Signature Flight · Imagination, with intention</span>
+        <span>Omnius, Overruled · Imagination, with intention</span>
         <span className="continuum-arrival-end">
           <i aria-hidden="true" /> Human in command
         </span>
@@ -101,7 +102,7 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
               aria-hidden="true"
             />
             <div className="continuum-reticle" aria-hidden="true">
-              <span>V42 / SIGNATURE FLIGHT</span>
+              <span>V42 / OMNIUS, OVERRULED</span>
               <span>THE HORIZON IS YOURS</span>
             </div>
           </div>
@@ -163,8 +164,7 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
             </button>
           </div>
           <p className="continuum-scene-caption" aria-live="polite">
-            {scene.caption}
-            {v.foldCount > 0 ? " Space folded. A new perspective awaits." : ""}
+            {v.heroQuip || scene.caption}
           </p>
         </div>
       </div>

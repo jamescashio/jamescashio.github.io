@@ -1,5 +1,9 @@
 # Changelog
 
+## V42.0.0 · Omnius, Overruled preview
+
+Prepared 11-01-2026. Keep the original planetary hero and black, metallic gold and electric cyan identity. Add an optional fictional hearing, four machine proposals to overrule, finite verdict graphics, contextual flight control humor and new Bit replies. Name the release after the machine overmind from the Butlerian Jihad prequels, with a publisher reference and a clear distinction between literary lore and the original comic scene. Preserve all public content, films, captions, routes and the existing dated observation. This preview remains unpublished pending final approval.
+
 ## V42.0.0 · Signature Flight preview
 
 Signature Flight revision · November 1, 2026: restored original planetary artwork, the cAshIo celestial identity and the original headline. Added a visible camera approach and manual close view inside the existing bounded motion owner. Black, metallic gold, electric cyan and angular instruments replace the formal spectrum treatment. This revision remains unpublished.

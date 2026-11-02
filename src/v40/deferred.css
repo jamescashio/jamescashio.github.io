@@ -13,6 +13,7 @@
 @import "./immersive-surfaces.css";
 @import "./prism-surfaces.css";
 @import "./signature-surfaces.css";
+@import "./release-hearing.css";
 
 .eagle-film-play {
   transition:

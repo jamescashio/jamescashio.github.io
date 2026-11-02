@@ -316,7 +316,7 @@ test("Every mobile Menu section stays in V40 and survives a reload", async (t) =
       await expect(page.locator(`#${id}`)).toBeInViewport();
       await page.reload();
       await expect(page.locator("#mission-dialog")).toBeAttached();
-      await expect(page).toHaveTitle(/V42 Signature Flight/);
+      await expect(page).toHaveTitle(/V42 Omnius, Overruled/);
       assert.equal(new URL(page.url()).pathname, "/");
       assert.equal(new URL(page.url()).hash, `#${id}`);
       await expect(page.locator(`#${id}`)).toBeInViewport();
@@ -418,7 +418,7 @@ test("Current room and flight titles consistently identify V42", async (t) => {
   await expect(page).toHaveTitle("First flight · cAshIo V42");
   await expect(page.locator("#helios-flight dialog")).toBeVisible();
   await page.keyboard.press("Escape");
-  await expect(page).toHaveTitle(/V42 Signature Flight/);
+  await expect(page).toHaveTitle(/V42 Omnius, Overruled/);
   await page.goto(new URL("/rooms/starship/interactive/", url).href);
   await expect(page).toHaveTitle("Starship lab · cAshIo V42");
 });

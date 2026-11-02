@@ -53,17 +53,23 @@
     0 0 90px #ffb30012,
     0 24px 90px #000;
   overflow: auto;
+  scroll-padding-block: 130px 20px;
 }
 .bit-dialog::backdrop {
   background: #060605e8;
   backdrop-filter: blur(12px);
 }
 .bit-dialog-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-  padding: 24px 24px 0;
+  padding: 24px 24px 14px;
+  background: #17140f;
+  border-bottom: 1px solid #5e4d264d;
 }
 .bit-eyebrow {
   font: 10px var(--font-mono);
@@ -176,7 +182,7 @@
 }
 @media (max-width: 600px) {
   .bit-dialog-head {
-    padding: 18px 18px 0;
+    padding: 18px 18px 12px;
   }
   .bit-dialog h2 {
     font-size: 19px;
@@ -204,7 +210,7 @@
     padding-inline: 18px;
   }
   .bit-questions {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 @media (forced-colors: active) {

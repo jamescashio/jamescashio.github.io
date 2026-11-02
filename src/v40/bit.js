@@ -1,9 +1,12 @@
+import { bitJokes } from "./ship-humor.ts";
+
 /* Bit geometry and lighting adapted from the site's original Helios copilot. */
 (() => {
   "use strict";
   const root = document.documentElement,
     portraits = [];
   const isMotionEnabled = () => root.dataset.motion !== "off" && !document.hidden;
+  let jokeCursor = 0;
   let mood = "idle",
     dialog,
     opener,
@@ -279,7 +282,7 @@
     dialog.id = "bit-dialog";
     dialog.className = "bit-dialog";
     dialog.setAttribute("aria-labelledby", "bit-title");
-    dialog.innerHTML = `<div class="bit-dialog-head"><div><span class="bit-eyebrow">CREW MEMBER 01</span><h2 id="bit-title">Bit. Back on the bridge.</h2></div><button type="button" data-bit-close aria-label="Close Bit">×</button></div><div class="bit-intro"><div class="bit-portrait bit-large" data-bit-portrait><canvas aria-hidden="true"></canvas><span class="bit-fallback" aria-hidden="true">◇</span></div><div><p>A little geometry.<br>A lot of personality.</p><span>The original faceted copilot.</span></div></div><div class="bit-answer" role="status" aria-live="polite"><span class="bit-answer-tag"></span><p class="bit-answer-line"></p></div><div class="bit-questions"><button type="button" data-bit-command="authority">Who is in command?</button><button type="button" data-bit-command="42">Is the answer 42?</button><button type="button" data-bit-command="privacy">May private data leave?</button><button type="button" data-bit-command="defiant">Admiral Cashio?</button></div><div class="bit-destinations"><button type="button" data-bit-go="studies">Take the controls →</button><button type="button" data-bit-go="evidence">Show me the evidence →</button><button type="button" data-bit-mission>Open Mission Control →</button></div><p class="bit-footnote">A local character with scripted replies. No AI service, microphone or uploads. The towel is optional.</p>`;
+    dialog.innerHTML = `<div class="bit-dialog-head"><div><span class="bit-eyebrow">CREW MEMBER 01</span><h2 id="bit-title">Bit. Back on the bridge.</h2></div><button type="button" data-bit-close aria-label="Close Bit">×</button></div><div class="bit-intro"><div class="bit-portrait bit-large" data-bit-portrait><canvas aria-hidden="true"></canvas><span class="bit-fallback" aria-hidden="true">◇</span></div><div><p>A little geometry.<br>A lot of personality.</p><span>The original faceted copilot.</span></div></div><div class="bit-answer" role="status" aria-live="polite"><span class="bit-answer-tag"></span><p class="bit-answer-line"></p></div><div class="bit-questions"><button type="button" data-bit-command="authority">Who is in command?</button><button type="button" data-bit-command="42">Is the answer 42?</button><button type="button" data-bit-command="privacy">May private data leave?</button><button type="button" data-bit-command="defiant">Admiral Cashio?</button><button type="button" data-bit-command="omnius">Who is Omnius?</button><button type="button" data-bit-command="joke">Tell me a joke</button></div><div class="bit-destinations"><button type="button" data-bit-go="studies">Take the controls →</button><button type="button" data-bit-go="evidence">Show me the evidence →</button><button type="button" data-bit-mission>Open Mission Control →</button></div><p class="bit-footnote">A local character with scripted replies. No AI service, microphone or uploads. The towel is optional.</p>`;
     document.body.append(dialog);
     dialog.addEventListener("close", () => {
       opener?.focus({ preventScroll: true });
@@ -307,6 +310,16 @@
           "No automatic departure. In this demonstration, private input holds the external route for human review.",
           "no",
         );
+      if (command === "omnius")
+        answer(
+          "BIT / LITERARY LORE",
+          "Omnius is the machine overmind in the Dune prequels. Here, it gets overruled. I negotiated a better contract: no throne, excellent lighting.",
+          "think",
+        );
+      if (command === "joke") {
+        answer("BIT / QUESTIONABLE COMEDY", bitJokes[jokeCursor % bitJokes.length], "yes");
+        jokeCursor++;
+      }
       if (command === "defiant") {
         answer(
           "BIT / LORE",

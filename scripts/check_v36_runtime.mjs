@@ -191,7 +191,7 @@ async function run() {
       report.release = receipt;
       assert.equal(receipt.frontDoor.entry, "/");
       assert.equal(receipt.frontDoor.experienceVersion, "42.0.0");
-      assert.equal(receipt.frontDoor.visualEdition, "Signature Flight");
+      assert.equal(receipt.frontDoor.visualEdition, "Omnius, Overruled");
       report.checks.push({
         name: "Current root, preserved V37 prerender, release identities and indexing",
         passed: true,

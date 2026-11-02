@@ -14,6 +14,8 @@ import { posterForViewport } from "./poster-sources.js";
 import { frameDeltaSeconds, shouldRenderFrame } from "../lib/animation-timing.ts";
 import { CinemaReel, ReelText, reelPoster } from "./hero-reel.jsx";
 import { ContinuumPrinciples } from "./continuum-hero.tsx";
+import { ReleaseHearing } from "./release-hearing.tsx";
+import { foldReply } from "./ship-humor.ts";
 import { ImmersiveHero as HeroSection } from "./immersive-hero.tsx";
 import { DiscoveryConsole } from "./discovery-console.tsx";
 import { EagleFilmSection } from "./sections/eagle-film.jsx";
@@ -77,6 +79,7 @@ export class V40Page extends React.Component {
   state = {
     discovery: null,
     foldCount: 0,
+    heroQuip: null,
     scene: "orbit",
     sceneTurn: 0,
     cameraClose: false,
@@ -843,12 +846,19 @@ export class V40Page extends React.Component {
       "don't panic": [["lore", "LORE · Large, friendly letters engaged. Nothing on this page requires panic."]],
       "dont panic": [["lore", "LORE · Large, friendly letters engaged. Nothing on this page requires panic."]],
       "mostly harmless": [
-        ["lore", "LORE · V42, Signature Flight. The answer is here. The questions are getting better."],
+        ["lore", "LORE · V42, Omnius, Overruled. The answer is here. The questions are getting better."],
       ],
       spice: [["lore", "LORE · Spice flows on Arrakis. Private data stays home."]],
+      omnius: [
+        [
+          "lore",
+          "LORE · Omnius, Overruled. The machine overmind from the Dune prequels has a suggestion. The human has the last word.",
+        ],
+      ],
+      joke: [["lore", "LORE · The universe is expanding. Somehow there is still nowhere to park the starship."]],
     };
     const lore = [
-      "LORE · Signature Flight: V42. The answer is here. Human judgment still required.",
+      "LORE · Omnius, Overruled: V42. The answer is here. Human judgment still required.",
       "LORE · A human in command is not a bottleneck. It is the point.",
       "LORE · Zeus and Apollo keep the lights on. Hermes carries the messages. Nobody gets a throne.",
       "LORE · Fly it like a test pilot: know the envelope, then write down what the instruments actually said.",
@@ -1394,18 +1404,33 @@ export class V40Page extends React.Component {
     return {
       padL: pad,
       scene: s.scene,
+      heroQuip: s.heroQuip,
       cameraClose: s.cameraClose,
-      toggleCamera: () => this.setState((state) => ({ cameraClose: !state.cameraClose })),
+      toggleCamera: () =>
+        this.setState((state) => ({
+          cameraClose: !state.cameraClose,
+          heroQuip: state.cameraClose
+            ? "A little perspective. Surprisingly hard to automate."
+            : "Closer to the horizon. Still outside the warranty.",
+        })),
       discovery: s.discovery,
       openDiscovery: (route) => this.setState({ discovery: route }),
       closeDiscovery: () => this.setState({ discovery: null }),
       foldCount: s.foldCount,
       foldScene: () => {
         this.warpUntil = this.reduce ? 0 : Date.now() + 1400;
-        this.setState((state) => ({ sceneTurn: state.sceneTurn + Math.PI / 2, foldCount: state.foldCount + 1 }));
+        this.setState((state) => ({
+          sceneTurn: state.sceneTurn + Math.PI / 2,
+          foldCount: state.foldCount + 1,
+          heroQuip: foldReply(state.foldCount + 1),
+        }));
       },
-      chooseScene: (scene) => this.setState({ scene }),
-      turnScene: () => this.setState((state) => ({ sceneTurn: state.sceneTurn + Math.PI / 4 })),
+      chooseScene: (scene) => this.setState({ scene, heroQuip: null }),
+      turnScene: () =>
+        this.setState((state) => ({
+          sceneTurn: state.sceneTurn + Math.PI / 4,
+          heroQuip: "A fresh perspective. No committee required.",
+        })),
       wide: s.wide,
       navOn: s.navOn ?? true,
       tech,
@@ -1916,6 +1941,7 @@ function renderPage(v) {
         " ",
         h(ContinuumPrinciples, { key: "principles-strip" }),
         h(EagleFilmSection, { v, key: "eagle-film" }),
+        h(ReleaseHearing, { key: "release-hearing" }),
         h(WorkshopSection, { v, key: "workshop" }),
         " ",
         " ",
