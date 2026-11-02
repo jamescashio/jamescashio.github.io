@@ -5,7 +5,7 @@ const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
 const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
 const motionOn = () => !reduced.matches && root.dataset.motion !== "off";
 
-function systemsCheck(hero) {
+function systemsCheck(hero: HTMLElement) {
   if (!motionOn() || window.scrollY > 160 || document.visibilityState !== "visible") return;
   let seen = false;
   try {
@@ -23,7 +23,7 @@ function systemsCheck(hero) {
   }, 2400);
 }
 
-function idleWhenAway(hero) {
+function idleWhenAway(hero: HTMLElement) {
   if (!("IntersectionObserver" in window)) return;
   new IntersectionObserver(([entry]) => {
     if (entry.isIntersecting) hero.removeAttribute("data-hud-idle");
@@ -33,9 +33,9 @@ function idleWhenAway(hero) {
 
 function chapterSweeps() {
   if (!("IntersectionObserver" in window)) return;
-  const titles = Array.from(document.querySelectorAll("#v40-root main h2")).filter(
+  const titles = Array.from(document.querySelectorAll<HTMLElement>("#v40-root main h2")).filter(
     (h) =>
-      !h.closest("#top") &&
+      !h.closest<HTMLElement>("#top") &&
       parseFloat(window.getComputedStyle(h).fontSize) >= 30 &&
       window.getComputedStyle(h, "::after").content === "none",
   );
@@ -58,7 +58,7 @@ const HOLO = ".continuum-paths a, .showcase-project, .eagle-film-play, .workshop
 const TILT = ".continuum-paths a, .showcase-project";
 function holographicCards() {
   let frame = 0;
-  let pending = null;
+  let pending: { card: HTMLElement; x: number; y: number } | null = null;
   const paint = () => {
     frame = 0;
     if (!pending) return;
@@ -79,7 +79,7 @@ function holographicCards() {
     "pointermove",
     (e) => {
       if (e.pointerType !== "mouse" || !finePointer.matches || !motionOn()) return;
-      const card = e.target instanceof Element ? e.target.closest(HOLO) : null;
+      const card = e.target instanceof Element ? e.target.closest<HTMLElement>(HOLO) : null;
       if (!card) return;
       pending = { card, x: e.clientX, y: e.clientY };
       if (!frame) frame = window.requestAnimationFrame(paint);
@@ -89,7 +89,7 @@ function holographicCards() {
   document.addEventListener(
     "pointerout",
     (e) => {
-      const card = e.target instanceof Element ? e.target.closest(HOLO) : null;
+      const card = e.target instanceof Element ? e.target.closest<HTMLElement>(HOLO) : null;
       if (!card || (e.relatedTarget instanceof Node && card.contains(e.relatedTarget))) return;
       if (pending && pending.card === card) pending = null;
       card.style.removeProperty("--holo-rx");

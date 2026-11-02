@@ -24,7 +24,7 @@ const startPage = () => {
   if (prerendered) hydrateRoot(container, page);
   else createRoot(container).render(page);
   // Instruments start once their styles are in, so the systems check never plays unstyled.
-  import("./deferred.css").then(() => import("./hud.js")).catch(() => {});
+  import("./deferred.css").then(() => import("./hud.ts")).catch(() => {});
 };
 // Give the already readable opening a paint before preparing the interactive chapters.
 if (prerendered) requestAnimationFrame(() => requestAnimationFrame(startPage));
