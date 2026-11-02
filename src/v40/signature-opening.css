@@ -831,7 +831,7 @@ html[data-motion="off"] .hero-flight-camera {
   }
   /* Anchor destinations need actual heights for the chapters above them.
      Keep chapters below the destination deferred without shifting its landing. */
-  #main-content > section:is(:target, :has(:target), :has(~ section:target), :has(~ section :target)) {
+  #v40-root #main-content > section:is(:target, :has(:target), :has(~ section:target), :has(~ section :target)) {
     content-visibility: visible;
   }
 }
