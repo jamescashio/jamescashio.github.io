@@ -121,18 +121,22 @@ import { bitJokes } from "./ship-humor.ts";
       lookT = 0,
       blink = 1,
       nextBlink = performance.now() + 3000;
-    window.addEventListener(
-      "pointermove",
-      (e) => {
-        const r = cv.getBoundingClientRect();
-        lookT = Math.max(-0.6, Math.min(0.6, ((e.clientX - (r.left + r.width / 2)) / window.innerWidth) * 2));
-      },
-      { passive: true },
-    );
+    const onPointer = (e) => {
+      const r = cv.getBoundingClientRect();
+      lookT = Math.max(-0.6, Math.min(0.6, ((e.clientX - (r.left + r.width / 2)) / window.innerWidth) * 2));
+    };
+    window.addEventListener("pointermove", onPointer, { passive: true });
+    // Canvas frames reuse the measured size instead of forcing layout after
+    // another animated surface has moved. Resizing still repaints paused Bit.
+    let css = cv.clientWidth || 96;
+    const sizeObserver = new ResizeObserver(([entry]) => {
+      css = entry.contentRect.width || 96;
+      draw(isMotionEnabled() ? performance.now() : 0);
+    });
+    sizeObserver.observe(cv);
     function draw(now) {
       if (!ctx) return;
       const dpr = Math.min(2, window.devicePixelRatio || 1);
-      const css = cv.clientWidth || 96;
       const want = Math.round(css * dpr);
       if (cv.width !== want) {
         cv.width = want;
@@ -206,6 +210,10 @@ import { bitJokes } from "./ship-humor.ts";
       canvas: cv,
       visible: true,
       draw,
+      dispose() {
+        sizeObserver.disconnect();
+        window.removeEventListener("pointermove", onPointer);
+      },
       paint(value) {
         mood = value;
         draw(isMotionEnabled() ? performance.now() : 0);
@@ -246,6 +254,7 @@ import { bitJokes } from "./ship-humor.ts";
     for (let i = portraits.length - 1; i >= 0; i--)
       if (!portraits[i].canvas.isConnected) {
         observer.unobserve(portraits[i].canvas);
+        portraits[i].dispose();
         portraits.splice(i, 1);
       }
     sync();
@@ -356,7 +365,16 @@ import { bitJokes } from "./ship-humor.ts";
       .querySelectorAll("[data-platform-shortcut]")
       .forEach((k) => (k.textContent = /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘ K" : "Ctrl K"));
     new MutationObserver((records) => {
-      if (records.some((r) => r.addedNodes.length || r.removedNodes.length)) discover();
+      // Text reveals and counters do not change Bit's portraits. Avoid a new
+      // geometry measurement and canvas repaint for every animated character.
+      const portraitsChanged = records.some((record) =>
+        [...record.addedNodes, ...record.removedNodes].some(
+          (node) =>
+            node.nodeType === 1 &&
+            (node.matches("[data-bit-portrait], canvas") || node.querySelector("[data-bit-portrait]")),
+        ),
+      );
+      if (portraitsChanged) discover();
     }).observe(document.getElementById("main-content").parentElement, { childList: true, subtree: true });
     discover();
   }
