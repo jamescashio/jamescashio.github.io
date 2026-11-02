@@ -4,7 +4,7 @@ import { JourneyDock } from "./journey-dock.tsx";
 
 import { ImmersiveHero as HeroSection } from "./immersive-hero.tsx";
 import { DiscoveryConsole } from "./discovery-console.tsx";
-import { EagleFilmSection } from "./sections/eagle-film.jsx";
+import { EagleFilmSection } from "./sections/eagle-film.ts";
 import { WorkshopSection } from "./sections/workshop.jsx";
 import { WorldsSection } from "./sections/worlds.jsx";
 import { ShowcaseSection } from "./sections/showcase.jsx";

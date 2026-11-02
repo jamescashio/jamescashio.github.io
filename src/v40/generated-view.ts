@@ -11,6 +11,6 @@ export type GeneratedProps = { v: GeneratedView };
 // remains their existing runtime owner; do not spread this adapter into new code.
 export const h = React.createElement as (
   type: React.ElementType,
-  props: Record<string, unknown> | null | undefined,
+  props?: Record<string, unknown> | null,
   ...children: React.ReactNode[]
 ) => React.ReactElement;

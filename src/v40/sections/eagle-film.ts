@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import type { GeneratedProps, GeneratedValue } from "../generated-view.ts";
+import { useState } from "react";
 import { ReelText } from "../hero-reel.tsx";
 import { posterSources } from "../poster-sources.ts";
 import { FilmAperture } from "../signal-graphics.tsx";
 import { FirstOrbit } from "../build-stories";
-const h = React.createElement;
+import { h } from "../generated-view.ts";
 
-export function EagleFilmSection({ v }) {
+export function EagleFilmSection({ v }: GeneratedProps) {
   const [selected, select] = useState(0);
   const feature = v.featureFilms[selected];
   const watchTitle = selected === 0 ? "Watch House Cashio" : "Watch " + feature.title;
@@ -82,7 +83,7 @@ export function EagleFilmSection({ v }) {
       h(
         "div",
         { className: "cinema-selection", role: "group", "aria-label": "Featured cinema" },
-        v.featureFilms.map((film, index) =>
+        v.featureFilms.map((film: GeneratedValue, index: number) =>
           h(
             "button",
             { key: film.slug, type: "button", "aria-pressed": selected === index, onClick: () => select(index) },
