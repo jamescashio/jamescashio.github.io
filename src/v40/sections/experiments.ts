@@ -1,11 +1,12 @@
+import type { GeneratedView, GeneratedProps, GeneratedValue } from "../generated-view.ts";
 import { renderExperimentsPart2 } from "./experiments-part-2.ts";
 
 import React from "react";
 import { classFor } from "../style-variants.ts";
 import designSystem from "../design-system.ts";
-const h = React.createElement;
+import { h } from "../generated-view.ts";
 
-export function ExperimentsSection({ v }) {
+export function ExperimentsSection({ v }: GeneratedProps) {
   return h(
     "section",
     {
@@ -90,7 +91,7 @@ export function ExperimentsSection({ v }) {
             onChange: v.chooseExperiment,
             "aria-controls": "experiment-panel",
           },
-          v.experiments.map((experiment, index) =>
+          v.experiments.map((experiment: GeneratedValue, index: number) =>
             h("option", { key: experiment.id, value: index }, `${experiment.num} · ${experiment.name}`),
           ),
         ),
@@ -107,8 +108,8 @@ export function ExperimentsSection({ v }) {
             classFor(["display:flex;flex-direction:column;gap:8px;grid-column:", v.tabsCol ?? "", ""].join("")),
         },
         " ",
-        (function (parent) {
-          return (v.experiments || []).map((item, index) => {
+        (function (parent: GeneratedView) {
+          return (v.experiments || []).map((item: GeneratedValue, index: number) => {
             const v = { ...parent, e: item, $index: index };
             return h(
               React.Fragment,

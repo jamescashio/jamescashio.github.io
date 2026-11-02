@@ -10,7 +10,7 @@ import { WorldsSection } from "./sections/worlds.jsx";
 import { ShowcaseSection } from "./sections/showcase.jsx";
 import { FilmsSection } from "./sections/films.jsx";
 import { DecisionsSection } from "./sections/decisions.jsx";
-import { ExperimentsSection } from "./sections/experiments.jsx";
+import { ExperimentsSection } from "./sections/experiments.ts";
 import { MachinesSection } from "./sections/machines.jsx";
 import { EvidenceSection } from "./sections/evidence.ts";
 import { OperatorSection } from "./sections/operator.jsx";
