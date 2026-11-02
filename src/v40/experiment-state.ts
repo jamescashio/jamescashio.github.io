@@ -1,5 +1,4 @@
-
-export function lane(intent, priv, sources) {
+export function lane(intent: string, priv: boolean, sources: boolean) {
   if (priv)
     return {
       name: "Human review",

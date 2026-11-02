@@ -4,7 +4,7 @@ import { componentDidUpdate, applyScan, copyValue } from "./page-updates.js";
 import { scramble, setupReveal, reveal, countUp, scrollFx } from "./reveal.js";
 import { tilt, magnet, hoverIn, hoverOut, warpFlash, defiant } from "./pointer-effects.js";
 import { filmById, stepCinema, closeCinema } from "./cinema-control.js";
-import { lane } from "./experiment-state.js";
+import { lane } from "./experiment-state.ts";
 import { eve } from "./evidence-console.js";
 import { startTrace, traceCaps, runPacket, animPk } from "./request-trace.js";
 import { renderVals } from "./view-values.js";
