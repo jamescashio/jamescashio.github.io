@@ -7,7 +7,7 @@ import { filmById, stepCinema, closeCinema } from "./cinema-control.ts";
 import { lane } from "./experiment-state.ts";
 import { eve } from "./evidence-console.ts";
 import { startTrace, traceCaps, runPacket, animPk } from "./request-trace.ts";
-import { renderVals } from "./view-values.js";
+import { renderVals } from "./view-values.ts";
 import { renderPage } from "./render-page.ts";
 import { resources } from "./page-assets.ts";
 import { observedDate, updatedDate, presentation } from "./evidence.ts";

@@ -1,3 +1,5 @@
+import type React from "react";
+import type { PageHost } from "./page-model.ts";
 import { snapshot, observedDate, observedShortDate, fleetSummary, fleetLine } from "./evidence.ts";
 
 import { posterForViewport } from "./poster-sources.ts";
@@ -8,7 +10,7 @@ import { openingValues } from "./view-opening.ts";
 import { experimentValues } from "./view-experiments.ts";
 import { systemValues } from "./view-system.ts";
 import { evidenceValues } from "./view-evidence.ts";
-export function renderVals() {
+export function renderVals(this: PageHost) {
   const { s, tech, pad, railItems, telemetry, worlds, F, collections, filmList, C } = openingValues.call(this);
   const { lawA, lawB, pill, pvChoices, pvText, intents, tog, knob, dot, L, routeSteps, experiments, E } =
     experimentValues.call(this, s);
@@ -28,7 +30,7 @@ export function renderVals() {
           : "Closer to the horizon. Still outside the warranty.",
       })),
     discovery: s.discovery,
-    openDiscovery: (route) => this.setState({ discovery: route }),
+    openDiscovery: (route: string) => this.setState({ discovery: route }),
     closeDiscovery: () => this.setState({ discovery: null }),
     foldCount: s.foldCount,
     foldScene: () => {
@@ -48,7 +50,7 @@ export function renderVals() {
         heroQuip: foldReply(state.foldCount + 1),
       }));
     },
-    chooseScene: (scene) => this.setState({ scene, heroQuip: null }),
+    chooseScene: (scene: string) => this.setState({ scene, heroQuip: null }),
     turnScene: () =>
       this.setState((state) => ({
         sceneTurn: state.sceneTurn + Math.PI / 4,
@@ -60,7 +62,7 @@ export function renderVals() {
     tech,
     railItems,
     heroCols: s.wide ? "minmax(0,1fr) 260px" : "minmax(0,1fr)",
-    heroMove: (e) => {
+    heroMove: (e: React.MouseEvent<HTMLElement>) => {
       if (this.reduce || !s.wide) return;
       const b = e.currentTarget.getBoundingClientRect();
       const nx = (e.clientX - b.left) / b.width - 0.5,
@@ -70,12 +72,12 @@ export function renderVals() {
       if (sp)
         sp.style.background = `radial-gradient(520px circle at ${(nx + 0.5) * 100}% ${(ny + 0.5) * 100}%, rgba(0,249,255,.11), transparent 60%)`;
     },
-    heroLeave: (e) => {
+    heroLeave: (e: React.MouseEvent<HTMLElement>) => {
       this.orbitPointer = { x: 0, y: 0 };
-      const planet = e.currentTarget.querySelector(".hero-live-poster");
+      const planet = e.currentTarget.querySelector<HTMLElement>(".hero-live-poster");
       if (planet) planet.style.transform = "";
     },
-    boardShip: (e) => {
+    boardShip: (e: React.MouseEvent<HTMLElement>) => {
       e.preventDefault();
       this.warpFlash();
       window.location.hash = "flight=board";
@@ -136,7 +138,8 @@ export function renderVals() {
     expId: E[0],
     selectedExperiment: "experiment-" + s.exp,
     experimentIndex: s.exp,
-    chooseExperiment: (event) => this.setState({ exp: Number(event.target.value) }),
+    chooseExperiment: (event: React.ChangeEvent<HTMLSelectElement>) =>
+      this.setState({ exp: Number(event.target.value) }),
     experiments,
     expNum: "0" + (s.exp + 1),
     expCode: E[2],
@@ -216,8 +219,8 @@ export function renderVals() {
     eveLog,
     eveChips,
     eveInput: s.eveInput,
-    eveChange: (e) => this.setState({ eveInput: e.target.value }),
-    eveSubmit: (e) => {
+    eveChange: (e: React.ChangeEvent<HTMLInputElement>) => this.setState({ eveInput: e.target.value }),
+    eveSubmit: (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       this.eve(s.eveInput);
     },
@@ -229,7 +232,7 @@ export function renderVals() {
     energize: () => {
       const on = !energized;
       const v = document.getElementById("sig-video");
-      if (v) {
+      if (v instanceof HTMLVideoElement) {
         v.muted = true;
         v.loop = true;
         v.dataset.requested = String(on);
