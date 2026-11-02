@@ -7,7 +7,7 @@ import "./labs.ts";
 import "./bit.ts";
 import { setupV40Navigation } from "./navigation.ts";
 setupV40Navigation();
-const container = document.getElementById("v40-root");
+const container = document.getElementById("v40-root")!;
 const prerendered = container.hasChildNodes();
 const startPage = () => {
   // Reuse the first painted composition instead of replacing its images and text.
