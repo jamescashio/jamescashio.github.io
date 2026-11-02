@@ -1,31 +1,29 @@
-import React from "react";
-import { createRoot, hydrateRoot } from "react-dom/client";
-import { V40Page } from "./page.tsx";
 import "./chapters/opening.css";
-import "./polish.ts";
-import "./labs.ts";
-import "./bit.ts";
-import { setupV40Navigation } from "./navigation.ts";
-setupV40Navigation();
-const container = document.getElementById("v40-root")!;
-const prerendered = container.hasChildNodes();
-const startPage = () => {
-  // Reuse the first painted composition instead of replacing its images and text.
-  container.querySelectorAll('[aria-describedby="reading-notice"]').forEach((control) => {
-    control.removeAttribute("disabled");
-    control.removeAttribute("aria-describedby");
-  });
-  const page = React.createElement(V40Page, {
-    scanlines: true,
-    starDensity: 220,
-    techDetail: false,
-    initialWidth: prerendered ? 390 : undefined,
-  });
-  if (prerendered) hydrateRoot(container, page);
-  else createRoot(container).render(page);
-  // Instruments start once their styles are in, so the systems check never plays unstyled.
-  import("./deferred.css").then(() => import("./hud.ts")).catch(() => {});
+
+// The complete reading edition is already present. Give its high priority
+// poster a paint before downloading and hydrating the interactive component tree.
+let requested = false;
+let fallback = 0;
+const activate = () => {
+  if (requested) return;
+  requested = true;
+  clearTimeout(fallback);
+  window.removeEventListener("pointerdown", activate);
+  window.removeEventListener("keydown", activate);
+  void import("./page-client").then(({ startPage }) => startPage());
 };
-// Give the already readable opening a paint before preparing the interactive chapters.
-if (prerendered) requestAnimationFrame(() => requestAnimationFrame(startPage));
-else startPage();
+const afterPaint = () => requestAnimationFrame(() => requestAnimationFrame(activate));
+const container = document.getElementById("v40-root");
+const poster = container?.querySelector<HTMLImageElement>(".hero-live-poster");
+if (!container?.hasChildNodes() || !poster) activate();
+else {
+  window.addEventListener("pointerdown", activate, { once: true, passive: true });
+  window.addEventListener("keydown", activate, { once: true });
+  if (poster.complete) afterPaint();
+  else {
+    poster.addEventListener("load", afterPaint, { once: true });
+    poster.addEventListener("error", afterPaint, { once: true });
+  }
+  // A slow or failed image must never hold up the page's controls.
+  fallback = window.setTimeout(activate, 1500);
+}
