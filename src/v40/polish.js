@@ -158,6 +158,10 @@ import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.js";
         setTimeout(() => {
           section?.setAttribute("tabindex", "-1");
           section?.focus({ preventScroll: true });
+          section?.scrollIntoView({
+            block: "start",
+            behavior: root.dataset.motion === "off" ? "instant" : "smooth",
+          });
         }, 0);
       }
       if (e.target === panel) {
