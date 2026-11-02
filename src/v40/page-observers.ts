@@ -1,7 +1,7 @@
+import type { PageHost } from "./page-model.ts";
 import { installMediaCoordinator } from "./media-policy.ts";
 
-
-export function componentDidMount() {
+export function componentDidMount(this: PageHost) {
   this.reduce = document.documentElement.dataset.motion === "off";
   window.cashioV40 = this;
   this.onResize = () => {
@@ -10,7 +10,7 @@ export function componentDidMount() {
     const navOn = this.viewportWidth >= 1100;
     if (!wide) {
       this.orbitPointer = { x: 0, y: 0 };
-      const planet = document.querySelector(".hero-live-poster");
+      const planet = document.querySelector<HTMLElement>(".hero-live-poster");
       if (planet) planet.style.transform = "";
     }
     if (this.state.wide !== wide || this.state.navOn !== navOn) this.setState({ wide, navOn });
@@ -88,11 +88,15 @@ export function componentDidMount() {
       this.closeCinema();
       return;
     }
-    if (this.state.cinema && e.target.tagName !== "VIDEO" && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
+    if (
+      this.state.cinema &&
+      (!(e.target instanceof Element) || e.target.tagName !== "VIDEO") &&
+      (e.key === "ArrowRight" || e.key === "ArrowLeft")
+    ) {
       this.stepCinema(e.key === "ArrowRight" ? 1 : -1);
       return;
     }
-    const t = e.target && e.target.tagName;
+    const t = e.target instanceof Element ? e.target.tagName : null;
     if (t === "INPUT" || t === "TEXTAREA" || !e.key || e.key.length !== 1) return;
     this.keyBuf = (this.keyBuf + e.key.toLowerCase()).slice(-7);
     if (this.keyBuf === "defiant") {
@@ -112,11 +116,11 @@ export function componentDidMount() {
   this.lastFilm = this.state.film;
   this.installPolish();
   setTimeout(() => {
-    if (!this.ioAlive) document.querySelectorAll('[data-rv="1"]').forEach((el) => this.reveal(el));
+    if (!this.ioAlive) document.querySelectorAll<HTMLElement>('[data-rv="1"]').forEach((el) => this.reveal(el));
   }, 1600);
 }
 
-export function componentWillUnmount() {
+export function componentWillUnmount(this: PageHost) {
   this.stopMedia?.();
   clearTimeout(this.foldT);
   document.removeEventListener("cashio-motion", this.syncMotion);
@@ -140,7 +144,7 @@ export function componentWillUnmount() {
   document.documentElement.style.overflow = "";
 }
 
-export function installPolish() {
+export function installPolish(this: PageHost) {
   this.heroVisible = true;
   this.syncMotion = () => {
     this.reduce = document.documentElement.dataset.motion === "off";
@@ -150,12 +154,14 @@ export function installPolish() {
     document.dispatchEvent(new Event("cashio-media"));
     if (this.reduce) {
       this.orbitPointer = { x: 0, y: 0 };
-      document.querySelectorAll("[data-reveal]").forEach((el) => this.reveal(el));
-      document.querySelectorAll("[data-tilt], [data-mag], #hero-content, .hero-live-poster").forEach((el) => {
-        el.style.transform = "";
-        el.style.opacity = "";
-      });
-      document.querySelectorAll("[data-glare]").forEach((el) => (el.style.opacity = "0"));
+      document.querySelectorAll<HTMLElement>("[data-reveal]").forEach((el) => this.reveal(el));
+      document
+        .querySelectorAll<HTMLElement>("[data-tilt], [data-mag], #hero-content, .hero-live-poster")
+        .forEach((el) => {
+          el.style.transform = "";
+          el.style.opacity = "";
+        });
+      document.querySelectorAll<HTMLElement>("[data-glare]").forEach((el) => (el.style.opacity = "0"));
     }
 
     if (this.heroVisible && this.starLoop) this.starLoop();
@@ -163,7 +169,7 @@ export function installPolish() {
   };
   document.addEventListener("cashio-motion", this.syncMotion);
   document.addEventListener("visibilitychange", this.syncMotion);
-  const headerHeight = Math.ceil(document.querySelector("header")?.getBoundingClientRect().height || 0);
+  const headerHeight = Math.ceil(document.querySelector<HTMLElement>("header")?.getBoundingClientRect().height || 0);
   this.heroObserver = new IntersectionObserver(
     (es) => {
       this.heroVisible = es[0].isIntersecting;
@@ -172,7 +178,8 @@ export function installPolish() {
     },
     { rootMargin: `-${headerHeight}px 0px 0px 0px` },
   );
-  this.heroObserver.observe(document.getElementById("top"));
+  const hero = document.getElementById("top");
+  if (hero) this.heroObserver.observe(hero);
   window.dispatchEvent(new Event("cashio-ready"));
   // Initial motion and media intent are already installed. Measure the
   // progress effects once; later preference changes use syncMotion.
