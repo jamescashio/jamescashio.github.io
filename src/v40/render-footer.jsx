@@ -1,4 +1,4 @@
-import { updatedDate, presentation } from "./evidence.js";
+import { updatedDate, presentation } from "./evidence.ts";
 
 import React from "react";
 

@@ -1,4 +1,4 @@
-import { snapshot, observedDate, observedShortDate, fleetSummary, fleetLine } from "./evidence.js";
+import { snapshot, observedDate, observedShortDate, fleetSummary, fleetLine } from "./evidence.ts";
 
 import { posterForViewport } from "./poster-sources.js";
 

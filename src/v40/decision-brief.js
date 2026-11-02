@@ -1,4 +1,4 @@
-import { fleetSummary, observedDate } from "./evidence.js";
+import { fleetSummary, observedDate } from "./evidence.ts";
 
 // The preview, editable starting point and download share one dated example.
 export const exampleBrief = {

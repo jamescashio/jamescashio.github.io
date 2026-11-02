@@ -13,7 +13,7 @@ type HeroView = {
   telemetry: Array<{ label: string; value: string | number }>;
 };
 import { HeroPlanet } from "./hero-reel.jsx";
-import { presentation, observedMonth } from "./evidence.js";
+import { presentation, observedMonth } from "./evidence.ts";
 
 export function ContinuumPrinciples() {
   return (

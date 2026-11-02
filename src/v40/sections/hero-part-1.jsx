@@ -2,7 +2,7 @@ import React from "react";
 
 import designSystem from "../design-system.js";
 
-import { presentation } from "../evidence.js";
+import { presentation } from "../evidence.ts";
 const h = React.createElement;
 export function renderHeroPart1(v) {
   return h(

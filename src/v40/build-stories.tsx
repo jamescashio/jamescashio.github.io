@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { snapshot, observedDate } from "./evidence.js";
+import { snapshot, observedDate } from "./evidence.ts";
 
 const stories = {
   evidence: {

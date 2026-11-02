@@ -1,4 +1,4 @@
-import { snapshot } from "./evidence.js";
+import { snapshot } from "./evidence.ts";
 
 import { destinationLabel } from "./destinations.js";
 

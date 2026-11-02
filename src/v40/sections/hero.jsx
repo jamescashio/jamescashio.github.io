@@ -3,7 +3,7 @@ import React from "react";
 import { classFor } from "../style-variants.js";
 
 import { HeroPlanet } from "../hero-reel.jsx";
-import { presentation } from "../evidence.js";
+import { presentation } from "../evidence.ts";
 const h = React.createElement;
 
 export function HeroSection({ v }) {

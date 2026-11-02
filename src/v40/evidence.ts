@@ -3,7 +3,7 @@ import release from "../../public/v40/site-release.json";
 export { snapshot };
 export const presentation = release.presentation;
 export const observedDate = snapshot.verifiedLong;
-const formatDate = (date, options) =>
+const formatDate = (date: string, options: Intl.DateTimeFormatOptions) =>
   new Intl.DateTimeFormat("en-US", { timeZone: "UTC", ...options }).format(new Date(date + "T12:00:00Z"));
 export const observedShortDate = formatDate(snapshot.verified, { month: "short", day: "numeric" }).toUpperCase();
 export const observedMonth = formatDate(snapshot.verified, { month: "long", year: "numeric" });
