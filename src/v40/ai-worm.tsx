@@ -8,7 +8,7 @@ const videoUrl = edit.originalUrl;
 export function AiWormFilm() {
   const [playing, setPlaying] = useState(false);
   const card = useRef<HTMLElement>(null);
-  const player = useRef<HTMLIFrameElement>(null);
+  const player = useRef<HTMLVideoElement>(null);
   const playButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export function AiWormFilm() {
               preload: "none",
               "data-noloop": "1",
               tabIndex: 0,
-              onKeyDown: (event: React.KeyboardEvent<HTMLIFrameElement>) => {
+              onKeyDown: (event: React.KeyboardEvent<HTMLVideoElement>) => {
                 if (event.key === "Escape" && !document.fullscreenElement) {
                   event.preventDefault();
                   closePlayer();
