@@ -2,7 +2,7 @@ import React from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 import { V40Page } from "./page.tsx";
 import "./chapters/opening.css";
-import "./polish.js";
+import "./polish.ts";
 import "./labs.js";
 import "./bit.js";
 import { setupV40Navigation } from "./navigation.js";

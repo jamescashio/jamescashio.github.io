@@ -1,3 +1,8 @@
+declare global {
+  interface Window {
+    cashioAsset?: (value: string | null) => string | null;
+  }
+}
 /* Progressive improvements around the original Claude Design component. */
 import { destinations } from "./destinations.ts";
 import { presentation } from "./evidence.ts";
@@ -5,16 +10,16 @@ import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.ts";
 (() => {
   const root = document.documentElement;
   const mq = matchMedia("(prefers-reduced-motion: reduce)");
-  let preference;
+  let preference: string | null | undefined;
   try {
     preference = localStorage.getItem("cashio-v40-motion");
-  } catch (_) {
+  } catch {
     /* Optional browser capability; keep the fallback available. */
   }
   root.dataset.motion = preference === "off" || mq.matches ? "off" : "on";
   function syncButtons() {
     const off = root.dataset.motion === "off";
-    document.querySelectorAll("[data-motion-toggle]").forEach((b) => {
+    document.querySelectorAll<HTMLElement>("[data-motion-toggle]").forEach((b) => {
       const label = off ? "Resume motion" : "Pause motion";
       if (b.getAttribute("aria-label") !== label) b.setAttribute("aria-label", label);
       if (b.getAttribute("aria-pressed") !== String(off)) b.setAttribute("aria-pressed", String(off));
@@ -23,13 +28,13 @@ import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.ts";
       if (b.textContent !== text) b.textContent = text;
     });
   }
-  function motion(value, save = true) {
+  function motion(value: string, save = true) {
     root.dataset.motion = value;
     if (save) {
       preference = value;
       try {
         localStorage.setItem("cashio-v40-motion", value);
-      } catch (_) {
+      } catch {
         /* Optional browser capability; keep the fallback available. */
       }
     }
@@ -38,15 +43,15 @@ import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.ts";
   }
   mq.addEventListener("change", (e) => motion(e.matches ? "off" : preference || "on", false));
   document.addEventListener("visibilitychange", () => (root.dataset.background = String(document.hidden)));
-  const readyVideos = new WeakSet();
+  const readyVideos = new WeakSet<Element>();
   const videoObserver =
     typeof IntersectionObserver === "function"
       ? new IntersectionObserver(
           (entries) => {
             for (const { target, isIntersecting } of entries) {
-              if (!isIntersecting || target.closest("details:not([open])")) continue;
+              if (!isIntersecting || target.closest<HTMLElement>("details:not([open])")) continue;
               readyVideos.add(target);
-              videoObserver.unobserve(target);
+              videoObserver?.unobserve(target);
               bind(target);
             }
           },
@@ -55,10 +60,10 @@ import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.ts";
       : null;
   // The export stores bindings in attributes. Wait for resolved values before
   // assigning src/poster; this also prevents requests for literal {{ expressions }}.
-  const bind = (el) => {
-    if (el.nodeType !== 1) return;
-    if (el.tagName === "VIDEO") {
-      if (el.closest("details:not([open])")) return;
+  const bind = (el: Node) => {
+    if (!(el instanceof HTMLElement)) return;
+    if (el instanceof HTMLVideoElement) {
+      if (el.closest<HTMLElement>("details:not([open])")) return;
       if (videoObserver && el.id !== "cinema-video" && !readyVideos.has(el)) {
         videoObserver.observe(el);
         return;
@@ -67,8 +72,8 @@ import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.ts";
     for (const attr of ["src", "poster"]) {
       const raw = el.getAttribute("data-bound-" + attr);
       let val = window.cashioAsset ? window.cashioAsset(raw) : raw;
-      if (attr === "poster" && el.dataset.v === "hover") {
-        const image = el.parentElement?.querySelector("img[srcset]");
+      if (attr === "poster" && el instanceof HTMLVideoElement && el.dataset.v === "hover") {
+        const image = el.parentElement?.querySelector<HTMLImageElement>("img[srcset]");
         if (image) {
           val = image.currentSrc || image.srcset.split(",")[0].trim().split(/\s+/)[0];
           if (!image.currentSrc) {
@@ -83,16 +88,16 @@ import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.ts";
         }
       }
       if (val && !val.includes("{{") && val !== el.getAttribute(attr)) {
-        if (el.tagName === "VIDEO") {
+        if (el instanceof HTMLVideoElement) {
           el.muted = true;
           el.defaultMuted = true;
           el.playsInline = true;
         }
         el.setAttribute(attr, val);
-        if (el.tagName === "VIDEO" && attr === "src") document.dispatchEvent(new Event("cashio-media"));
+        if (el instanceof HTMLVideoElement && attr === "src") document.dispatchEvent(new Event("cashio-media"));
       }
     }
-    el.querySelectorAll("[data-bound-src],[data-bound-poster]").forEach(bind);
+    el.querySelectorAll<HTMLElement>("[data-bound-src],[data-bound-poster]").forEach(bind);
   };
   new MutationObserver((records) => {
     for (const r of records) {
@@ -108,30 +113,32 @@ import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.ts";
   document.addEventListener(
     "toggle",
     (event) => {
-      if (event.target.tagName !== "DETAILS") return;
+      if (!(event.target instanceof Element)) return;
+      if (!(event.target instanceof HTMLDetailsElement)) return;
       if (event.target.open) bind(event.target);
-      else event.target.querySelectorAll("video").forEach((video) => video.pause());
+      else event.target.querySelectorAll<HTMLVideoElement>("video").forEach((video) => video.pause());
       document.dispatchEvent(new Event("cashio-media"));
     },
     true,
   );
 
-  let panel,
-    missionDesk,
-    opener,
-    cinema,
-    cinemaOpener,
-    inerted = [];
+  let panel: HTMLDialogElement,
+    missionDesk: ReturnType<typeof bindMissionDesk>,
+    opener: HTMLElement | null,
+    cinema: HTMLElement | null | undefined,
+    cinemaOpener: HTMLElement | null,
+    inerted: HTMLElement[] = [];
   const chapters = destinations;
-  function openMission(trigger) {
-    if (!panel || cinema || document.querySelector("#helios-flight, #helios-studio, .v40-scene-status")) return;
-    opener = trigger || document.activeElement;
+  function openMission(trigger?: HTMLElement) {
+    if (!panel || cinema || document.querySelector<HTMLElement>("#helios-flight, #helios-studio, .v40-scene-status")!)
+      return;
+    opener = trigger || (document.activeElement instanceof HTMLElement ? document.activeElement : null);
     panel.showModal();
     missionDesk.reset();
     // Opening the phone menu should reveal destinations without summoning the keyboard.
     const initialFocus = window.matchMedia("(max-width: 700px)").matches
-      ? panel.querySelector("[data-mission-close]")
-      : panel.querySelector("input");
+      ? panel.querySelector<HTMLElement>("[data-mission-close]")!
+      : panel.querySelector<HTMLInputElement>("input")!;
     initialFocus.focus({ preventScroll: true });
   }
   function ready() {
@@ -150,11 +157,12 @@ import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.ts";
       if (!focused || focused === document.body || panel.contains(focused)) opener?.focus({ preventScroll: true });
     });
     panel.addEventListener("click", (e) => {
-      if (e.target.closest("[data-mission-close]")) panel.close();
-      const a = e.target.closest("[data-chapter]");
+      if (!(e.target instanceof Element)) return;
+      if (e.target.closest<HTMLElement>("[data-mission-close]")) panel.close();
+      const a = e.target.closest<HTMLElement>("[data-chapter]");
       if (a) {
         panel.close();
-        const section = document.getElementById(a.dataset.chapter);
+        const section = document.getElementById(a.dataset.chapter!);
         setTimeout(() => {
           section?.setAttribute("tabindex", "-1");
           section?.focus({ preventScroll: true });
@@ -186,19 +194,19 @@ import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.ts";
         // Reload restoration can run after the client selects its section.
         // Align after loading and the browser's restoration, including cached loads.
         if (document.readyState !== "complete")
-          await new Promise((resolve) => window.addEventListener("load", resolve, { once: true }));
+          await new Promise<void>((resolve) => window.addEventListener("load", () => resolve(), { once: true }));
         requestAnimationFrame(() => {
           cleanup();
           if (
             cancelled ||
             location.hash !== initialHash ||
-            document.querySelector("dialog[open],#helios-flight,#helios-studio")
+            document.querySelector<HTMLElement>("dialog[open],#helios-flight,#helios-studio")!
           )
             return;
           let id;
           try {
             id = decodeURIComponent(location.hash.slice(1));
-          } catch (_) {
+          } catch {
             return;
           }
           document.getElementById(id)?.scrollIntoView({ block: "start", behavior: "instant" });
@@ -208,21 +216,24 @@ import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.ts";
   }
   window.addEventListener("cashio-ready", ready);
   document.addEventListener("click", (e) => {
-    const toggle = e.target.closest("[data-motion-toggle]");
+    if (!(e.target instanceof Element)) return;
+    const toggle = e.target.closest<HTMLElement>("[data-motion-toggle]");
     if (toggle) motion(root.dataset.motion === "off" ? "on" : "off");
-    const trigger = e.target.closest("[data-mission-open]");
+    const trigger = e.target.closest<HTMLElement>("[data-mission-open]");
     if (trigger) openMission(trigger);
   });
   document.addEventListener("keydown", (e) => {
+    if (!(e.target instanceof Element)) return;
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
       e.preventDefault();
       if (cinema) return;
-      panel?.open ? panel.close() : openMission();
+      if (panel?.open) panel.close();
+      else openMission();
     }
-    const tab = e.target.closest?.('[role="tab"]');
+    const tab = e.target.closest<HTMLElement>('[role="tab"]');
     if (tab && ["ArrowDown", "ArrowUp", "Home", "End"].includes(e.key)) {
       e.preventDefault();
-      const tabs = [...tab.closest('[role="tablist"]').querySelectorAll('[role="tab"]')];
+      const tabs = [...tab.closest<HTMLElement>('[role="tablist"]')!.querySelectorAll<HTMLElement>('[role="tab"]')];
       let i = tabs.indexOf(tab);
       i =
         e.key === "Home"
@@ -234,9 +245,9 @@ import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.ts";
       tabs[i].focus();
     }
     if (cinema && e.key === "Tab") {
-      const targets = [...cinema.querySelectorAll('button,video[controls],summary,a[href],[tabindex="0"]')].filter(
-        (el) => el.getClientRects().length,
-      );
+      const targets = [
+        ...cinema.querySelectorAll<HTMLElement>('button,video[controls],summary,a[href],[tabindex="0"]'),
+      ].filter((el) => el.getClientRects().length);
       const first = targets[0],
         last = targets.at(-1);
       if (e.shiftKey && document.activeElement === first) {
@@ -253,20 +264,20 @@ import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.ts";
   new MutationObserver(() => {
     if (!window.cashioV40) return;
     const next = document.getElementById("cinema-dialog");
-    if (next?.closest("x-dc")) return;
+    if (next?.closest<HTMLElement>("x-dc")) return;
     if (next === cinema) return;
     if (next) {
       cinema = next;
-      cinemaOpener = document.activeElement;
-      for (let node = cinema; node && node !== document.body; node = node.parentElement) {
-        for (const sibling of node.parentElement.children) {
-          if (sibling !== node && !sibling.inert) {
+      cinemaOpener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      for (let node: HTMLElement | null = cinema; node && node !== document.body; node = node.parentElement) {
+        for (const sibling of node.parentElement!.children) {
+          if (sibling instanceof HTMLElement && sibling !== node && !sibling.inert) {
             sibling.inert = true;
             inerted.push(sibling);
           }
         }
       }
-      cinema.querySelector("button")?.focus();
+      cinema.querySelector<HTMLElement>("button")?.focus();
     } else {
       cinema = null;
       inerted.forEach((el) => (el.inert = false));

@@ -1,4 +1,4 @@
-export const destinations = [
+export const destinations: [string, string, string][] = [
   ["top", "Home", "The machines can think. You still decide. Orbit"],
   ["contact", "Contact Doug", "Email, speaking, mentoring and comparing notes"],
   ["eagle-film", "House Cashio", "Watch the 61 second trailer. The crew, Bit and a cat"],
