@@ -1,6 +1,6 @@
 import { frameDeltaSeconds, shouldRenderFrame } from "../lib/animation-timing.ts";
 
-import { drawContinuumField } from "./continuum-field.js";
+import { drawContinuumField } from "./continuum-field.ts";
 import { drawOrbitalField } from "./orbital-field.ts";
 import { heroCameraTransform } from "./hero-camera.js";
 

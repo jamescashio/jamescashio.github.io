@@ -1,3 +1,4 @@
+import type { FieldOptions } from "./field-model.ts";
 // Original perspective light sculpture. This is artwork, never operational telemetry.
 import { lightColors } from "./light-spectrum.js";
 const TAU = Math.PI * 2;
@@ -8,8 +9,8 @@ const particles = Array.from({ length: COUNT }, (_, i) => ({
   band: i % 4,
   noise: Math.sin(i * 12.9898) * Math.cos(i * 4.1414),
 }));
-const scenes = new WeakMap();
-function position(p, mode, phase) {
+const scenes = new WeakMap<CanvasRenderingContext2D, { mode: string; previous: string; since: number }>();
+function position(p: (typeof particles)[number], mode: string, phase: number): [number, number, number] {
   if (mode === "signal") {
     const a = p.t * TAU * 3.5 + (p.band % 2) * Math.PI + phase * 0.4;
     const radius = 0.6 + p.noise * 0.055;
@@ -29,8 +30,11 @@ function position(p, mode, phase) {
     Math.sin(a) * radius * 0.55 + Math.cos(tube) * 0.08,
   ];
 }
-export function drawContinuumField(ctx, { width, height, dpr, time, motion, pointer, mode = "orbit", turn = 0 }) {
-  const palette = lightColors[mode] || lightColors.orbit;
+export function drawContinuumField(
+  ctx: CanvasRenderingContext2D,
+  { width, height, dpr, time, motion, pointer, mode = "orbit", turn = 0 }: FieldOptions,
+) {
+  const palette = lightColors[mode as keyof typeof lightColors] || lightColors.orbit;
   const compact = width / dpr < 760;
   const cx = width * (compact ? 0.5 : 0.755),
     cy = height * (compact ? 0.48 : 0.43);
@@ -54,7 +58,7 @@ export function drawContinuumField(ctx, { width, height, dpr, time, motion, poin
     sa = Math.sin(angle),
     ct = Math.cos(tilt),
     st = Math.sin(tilt);
-  const project = (x, y, z) => {
+  const project = (x: number, y: number, z: number): [number, number, number, number] => {
     const x1 = x * ca + z * sa,
       z1 = z * ca - x * sa;
     const y1 = y * ct - z1 * st,
@@ -96,7 +100,7 @@ export function drawContinuumField(ctx, { width, height, dpr, time, motion, poin
     const rib = mode === "signal";
     const segments = rib ? 16 : 150;
     for (let i = 0; i < segments; i++) {
-      const coords = (j) => {
+      const coords = (j: number) => {
         if (rib) {
           const t = l / (lines - 1),
             a = t * TAU * 3.5 + phase * 0.4;
@@ -127,7 +131,7 @@ export function drawContinuumField(ctx, { width, height, dpr, time, motion, poin
     const p = particles[i],
       to = position(p, mode, phase),
       from = blend < 1 ? position(p, scene.previous, phase) : to;
-    const q = project(...to.map((v, k) => from[k] + (v - from[k]) * blend));
+    const q = project(...(to.map((v, k) => from[k] + (v - from[k]) * blend) as [number, number, number]));
     projected.push({ q, i, color: palette[p.band] });
   }
   projected.sort((a, b) => a.q[2] - b.q[2]);
