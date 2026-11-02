@@ -4,7 +4,7 @@ import { V40Page } from "./page.tsx";
 import "./chapters/opening.css";
 import "./polish.ts";
 import "./labs.js";
-import "./bit.js";
+import "./bit.ts";
 import { setupV40Navigation } from "./navigation.js";
 setupV40Navigation();
 const container = document.getElementById("v40-root");

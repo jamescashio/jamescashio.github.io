@@ -4,17 +4,17 @@ import { bitJokes } from "./ship-humor.ts";
 (() => {
   "use strict";
   const root = document.documentElement,
-    portraits = [];
+    portraits: NonNullable<ReturnType<typeof portrait>>[] = [];
   const isMotionEnabled = () => root.dataset.motion !== "off" && !document.hidden;
   let jokeCursor = 0;
   let mood = "idle",
-    dialog,
-    opener,
+    dialog: HTMLDialogElement,
+    opener: HTMLElement | null,
     raf = 0,
     lastFrame = 0;
-  function portrait(cv) {
+  function portrait(cv: HTMLCanvasElement) {
     const PHI = (1 + Math.sqrt(5)) / 2;
-    const norm = (v) => {
+    const norm = (v: number[]) => {
       const l = Math.hypot(v[0], v[1], v[2]) || 1;
       return [v[0] / l, v[1] / l, v[2] / l];
     };
@@ -74,9 +74,9 @@ import { bitJokes } from "./ship-humor.ts";
         [0, 3, 5],
       ],
     };
-    function stell(spike) {
+    function stell(spike: number) {
       const vertices = V.map((v) => v.slice()),
-        faces = [];
+        faces: number[][] = [];
       F.forEach((f) => {
         const a = V[f[0]],
           b = V[f[1]],
@@ -89,7 +89,7 @@ import { bitJokes } from "./ship-humor.ts";
       return { vertices, faces };
     }
     const NO = stell(1.78);
-    const pal = (m) =>
+    const pal = (m: string) =>
       m === "yes"
         ? { base: [255, 204, 24], edge: [255, 248, 176], glow: "rgba(255,204,0,0.5)" }
         : m === "no" || m === "alert"
@@ -97,7 +97,7 @@ import { bitJokes } from "./ship-humor.ts";
           : m === "think"
             ? { base: [255, 149, 0], edge: [255, 214, 150], glow: "rgba(255,149,0,0.46)" }
             : { base: [26, 210, 238], edge: [177, 246, 255], glow: "rgba(26,210,238,0.46)" };
-    const rot = (v, rx, ry) => {
+    const rot = (v: number[], rx: number, ry: number) => {
       const cy = Math.cos(ry),
         sy = Math.sin(ry),
         cx = Math.cos(rx),
@@ -106,14 +106,14 @@ import { bitJokes } from "./ship-humor.ts";
         z1 = v[2] * cy - v[0] * sy;
       return [x, v[1] * cx - z1 * sx, v[1] * sx + z1 * cx];
     };
-    let ctx;
+    let ctx: CanvasRenderingContext2D | null | undefined;
     try {
       ctx = cv.getContext("2d");
-    } catch (_) {
+    } catch {
       /* Optional browser capability; keep the fallback available. */
     }
     if (!ctx) return null;
-    cv.parentElement.classList.add("bit-rendered");
+    cv.parentElement!.classList.add("bit-rendered");
     let mood = "idle",
       angle = 0,
       last = 0,
@@ -121,7 +121,7 @@ import { bitJokes } from "./ship-humor.ts";
       lookT = 0,
       blink = 1,
       nextBlink = performance.now() + 3000;
-    const onPointer = (e) => {
+    const onPointer = (e: PointerEvent) => {
       const r = cv.getBoundingClientRect();
       lookT = Math.max(-0.6, Math.min(0.6, ((e.clientX - (r.left + r.width / 2)) / window.innerWidth) * 2));
     };
@@ -134,7 +134,7 @@ import { bitJokes } from "./ship-humor.ts";
       draw(isMotionEnabled() ? performance.now() : 0);
     });
     sizeObserver.observe(cv);
-    function draw(now) {
+    function draw(now: number) {
       if (!ctx) return;
       const dpr = Math.min(2, window.devicePixelRatio || 1);
       const want = Math.round(css * dpr);
@@ -164,7 +164,7 @@ import { bitJokes } from "./ship-humor.ts";
       const radius = baseR * (mood === "yes" ? 1.3 : mood === "no" || mood === "alert" ? 0.96 : 1);
       const focal = 5.2;
       const pts = geo.vertices.map((v) => rot(v, rx, angle + look));
-      const proj = (p) => {
+      const proj = (p: number[]) => {
         const sc = focal / (focal + p[2]);
         return [center + p[0] * radius * sc, center + p[1] * radius * sc * blink];
       };
@@ -214,13 +214,13 @@ import { bitJokes } from "./ship-humor.ts";
         sizeObserver.disconnect();
         window.removeEventListener("pointermove", onPointer);
       },
-      paint(value) {
+      paint(value: string) {
         mood = value;
         draw(isMotionEnabled() ? performance.now() : 0);
       },
     };
   }
-  function loop(now) {
+  function loop(now: number) {
     raf = 0;
     if (!isMotionEnabled()) return;
     if (now - lastFrame >= 33) {
@@ -243,7 +243,7 @@ import { bitJokes } from "./ship-humor.ts";
     sync();
   });
   function discover() {
-    document.querySelectorAll("[data-bit-portrait] canvas:not([data-bit-ready])").forEach((cv) => {
+    document.querySelectorAll<HTMLCanvasElement>("[data-bit-portrait] canvas:not([data-bit-ready])").forEach((cv) => {
       cv.dataset.bitReady = "true";
       const p = portrait(cv);
       if (p) {
@@ -259,23 +259,23 @@ import { bitJokes } from "./ship-humor.ts";
       }
     sync();
   }
-  function answer(tag, line, state = "idle") {
+  function answer(tag: string, line: string, state = "idle") {
     mood = state;
-    dialog.querySelector(".bit-answer-tag").textContent = tag;
-    dialog.querySelector(".bit-answer-line").textContent = line;
+    dialog.querySelector<HTMLElement>(".bit-answer-tag")!.textContent = tag;
+    dialog.querySelector<HTMLElement>(".bit-answer-line")!.textContent = line;
     dialog.dataset.mood = state;
     sync();
   }
-  function open(button) {
+  function open(button: HTMLElement) {
     opener = button;
     dialog.showModal();
     answer(
       "BIT / BACK ON THE BRIDGE",
       "I turn, I glow, I have opinions. You still make the decisions. What shall we explore?",
     );
-    dialog.querySelector("[data-bit-close]").focus();
+    dialog.querySelector<HTMLElement>("[data-bit-close]")!.focus();
   }
-  function destination(id) {
+  function destination(id: string) {
     opener = null;
     dialog.close();
     const target = document.getElementById(id);
@@ -299,8 +299,9 @@ import { bitJokes } from "./ship-humor.ts";
       sync();
     });
     dialog.addEventListener("click", (e) => {
-      if (e.target.closest("[data-bit-close]")) dialog.close();
-      const command = e.target.closest("[data-bit-command]")?.dataset.bitCommand;
+      if (!(e.target instanceof Element)) return;
+      if (e.target.closest<HTMLElement>("[data-bit-close]")) dialog.close();
+      const command = e.target.closest<HTMLElement>("[data-bit-command]")?.dataset.bitCommand;
       if (command === "authority")
         answer(
           "BIT / HUMAN IN COMMAND",
@@ -337,12 +338,12 @@ import { bitJokes } from "./ship-humor.ts";
         );
         window.cashioV40?.defiant();
       }
-      const go = e.target.closest("[data-bit-go]")?.dataset.bitGo;
+      const go = e.target.closest<HTMLElement>("[data-bit-go]")?.dataset.bitGo;
       if (go) destination(go);
-      if (e.target.closest("[data-bit-mission]")) {
+      if (e.target.closest<HTMLElement>("[data-bit-mission]")) {
         opener = null;
         dialog.close();
-        document.querySelector("header [data-mission-open]")?.click();
+        document.querySelector<HTMLElement>("header [data-mission-open]")?.click();
       }
       if (e.target === dialog) {
         const r = dialog.getBoundingClientRect();
@@ -350,19 +351,21 @@ import { bitJokes } from "./ship-humor.ts";
       }
     });
     document.addEventListener("click", (e) => {
-      const button = e.target.closest("[data-bit-open]");
+      if (!(e.target instanceof Element)) return;
+      const button = e.target.closest<HTMLElement>("[data-bit-open]");
       if (button) open(button);
     });
-    const originalSetState = window.cashioV40.setState.bind(window.cashioV40);
-    window.cashioV40.setState = (next, ...rest) => {
+    const app = window.cashioV40!;
+    const originalSetState = app.setState.bind(app);
+    app.setState = (next, ...rest) => {
       originalSetState(next, ...rest);
-      if (next && typeof next === "object" && next.routed) {
+      if (next && typeof next === "object" && "routed" in next && next.routed) {
         mood = next.routed.name === "Human review" ? "no" : "think";
         sync();
       }
     };
     document
-      .querySelectorAll("[data-platform-shortcut]")
+      .querySelectorAll<HTMLElement>("[data-platform-shortcut]")
       .forEach((k) => (k.textContent = /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘ K" : "Ctrl K"));
     new MutationObserver((records) => {
       // Text reveals and counters do not change Bit's portraits. Avoid a new
@@ -370,12 +373,12 @@ import { bitJokes } from "./ship-humor.ts";
       const portraitsChanged = records.some((record) =>
         [...record.addedNodes, ...record.removedNodes].some(
           (node) =>
-            node.nodeType === 1 &&
-            (node.matches("[data-bit-portrait], canvas") || node.querySelector("[data-bit-portrait]")),
+            node instanceof Element &&
+            (node.matches("[data-bit-portrait], canvas") || node.querySelector<HTMLElement>("[data-bit-portrait]")!),
         ),
       );
       if (portraitsChanged) discover();
-    }).observe(document.getElementById("main-content").parentElement, { childList: true, subtree: true });
+    }).observe(document.getElementById("main-content")!.parentElement!, { childList: true, subtree: true });
     discover();
   }
   document.addEventListener("cashio-motion", sync);
