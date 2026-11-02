@@ -7,9 +7,9 @@ const base = process.env.V40_URL || "http://127.0.0.1:4392/";
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch({ channel: "chrome", headless: true });
 const results = [];
-async function activity(page, width, releaseHero) {
+async function activity(page, width, releaseEnhancement) {
   if (effect === "hero") {
-    releaseHero();
+    releaseEnhancement();
     if (width >= 1000) await page.locator('[data-living-hero="ready"]').waitFor({ timeout: 15000 });
     await page.waitForTimeout(1200);
     for (let i = 0; i < 18; i++) {
@@ -22,6 +22,8 @@ async function activity(page, width, releaseHero) {
     await page.waitForTimeout(900);
     await page.goBack();
     await page.waitForLoadState("networkidle");
+    if (effect === "instruments") await page.locator("#evidence").scrollIntoViewIfNeeded();
+    if (effect === "edge") await page.locator(".workshop-highlight").first().scrollIntoViewIfNeeded();
     await page.locator("#top").waitFor();
     await page.waitForTimeout(1000);
   } else if (effect === "reveal") {
@@ -34,14 +36,15 @@ async function activity(page, width, releaseHero) {
     await page.locator('a[href="#flight=board"]').first().click();
     await page.waitForTimeout(2200);
   } else if (effect === "cinema") {
-    const card = page.locator("#films [data-tilt]").first();
+    const card = page.locator(".film-library button[data-tilt]").first();
     if (width >= 1000) await card.hover();
     await page.waitForTimeout(4000);
   } else if (effect === "instruments") {
-    await page.locator("#evidence").scrollIntoViewIfNeeded();
-    await page.waitForTimeout(1800);
+    releaseEnhancement();
+    await page.waitForFunction(() => document.querySelector('#evidence [data-counted="1"]'));
+    await page.waitForTimeout(3000);
+  } else if (effect === "edge") {
     const card = page.locator(".workshop-highlight").first();
-    await card.scrollIntoViewIfNeeded();
     if (width >= 1000) {
       const box = await card.boundingBox();
       for (let i = 0; i < 18; i++) {
@@ -49,6 +52,7 @@ async function activity(page, width, releaseHero) {
         await page.waitForTimeout(80);
       }
     }
+    await page.waitForTimeout(1000);
   } else throw new Error(`Unknown effect ${effect}`);
 }
 
@@ -69,13 +73,18 @@ try {
       ...(record ? { recordVideo: { dir: output, size: { width, height: width === 390 ? 844 : 900 } } } : {}),
     });
 
-    let releaseHero = () => {};
-    const heroGate = new Promise((resolve) => {
-      releaseHero = resolve;
+    let releaseEnhancement = () => {};
+    const enhancementGate = new Promise((resolve) => {
+      releaseEnhancement = resolve;
     });
     if (effect === "hero")
       await context.route("**/living-hero-*.js", async (route) => {
-        await heroGate;
+        await enhancementGate;
+        await route.continue();
+      });
+    if (effect === "instruments")
+      await context.route("**/hud-*.js", async (route) => {
+        await enhancementGate;
         await route.continue();
       });
     const page = await context.newPage();
@@ -89,7 +98,19 @@ try {
     await page.waitForTimeout(3500);
     if (effect === "worlds")
       await page.locator(".atlas-destination:not([hidden]) .atlas-enter").scrollIntoViewIfNeeded();
-    if (effect === "cinema") await page.locator("#films").scrollIntoViewIfNeeded();
+    if (effect === "cinema") {
+      await page
+        .locator(".film-library button[data-tilt]")
+        .first()
+        .evaluate((card) => {
+          for (let node = card.parentElement; node; node = node.parentElement)
+            if (node instanceof HTMLDetailsElement) node.open = true;
+        });
+      await page.locator(".film-library button[data-tilt]").first().scrollIntoViewIfNeeded();
+      await page.waitForTimeout(2000);
+    }
+    if (effect === "instruments") await page.locator("#evidence").scrollIntoViewIfNeeded();
+    if (effect === "edge") await page.locator(".workshop-highlight").first().scrollIntoViewIfNeeded();
     await page.locator("#top").waitFor();
     await page.waitForTimeout(1000);
     if (!record)
@@ -100,7 +121,7 @@ try {
       });
     let failure = null;
     try {
-      await activity(page, width, releaseHero);
+      await activity(page, width, releaseEnhancement);
     } catch (error) {
       failure = error.message;
     }
