@@ -7,7 +7,7 @@ import { DiscoveryConsole } from "./discovery-console.tsx";
 import { EagleFilmSection } from "./sections/eagle-film.ts";
 import { WorkshopSection } from "./sections/workshop.jsx";
 import { WorldsSection } from "./sections/worlds.jsx";
-import { ShowcaseSection } from "./sections/showcase.jsx";
+import { ShowcaseSection } from "./sections/showcase.ts";
 import { FilmsSection } from "./sections/films.ts";
 import { DecisionsSection } from "./sections/decisions.ts";
 import { ExperimentsSection } from "./sections/experiments.ts";

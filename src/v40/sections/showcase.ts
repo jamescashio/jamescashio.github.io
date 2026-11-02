@@ -1,5 +1,6 @@
-import React from "react";
-const h = React.createElement;
+import type { GeneratedValue } from "../generated-view.ts";
+
+import { h } from "../generated-view.ts";
 
 const projects = [
   {
@@ -40,7 +41,7 @@ export function ShowcaseSection() {
     h(
       "div",
       { className: "showcase-grid" },
-      projects.map((project) =>
+      projects.map((project: GeneratedValue) =>
         h(
           "a",
           {
