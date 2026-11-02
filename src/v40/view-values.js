@@ -1,6 +1,6 @@
 import { snapshot, observedDate, observedShortDate, fleetSummary, fleetLine } from "./evidence.ts";
 
-import { posterForViewport } from "./poster-sources.js";
+import { posterForViewport } from "./poster-sources.ts";
 
 import { foldReply } from "./ship-humor.ts";
 

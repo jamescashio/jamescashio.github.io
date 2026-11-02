@@ -9,14 +9,16 @@ const libraryVariants = Object.fromEntries(
   ]),
 );
 
-export function posterSources(path) {
-  return (variants[path] || libraryVariants[path])?.map(({ url, width }) => `${url} ${width}w`).join(", ");
+export function posterSources(path: string) {
+  return ((variants as Record<string, Array<{ url: string; width: number }>>)[path] || libraryVariants[path])
+    ?.map(({ url, width }) => `${url} ${width}w`)
+    .join(", ");
 }
 
-export function posterForViewport(path, width) {
-  const choices = variants[path] || libraryVariants[path];
+export function posterForViewport(path: string, width: number) {
+  const choices = (variants as Record<string, Array<{ url: string; width: number }>>)[path] || libraryVariants[path];
   if (!choices) return path;
   const scale = typeof window === "undefined" ? 1 : window.devicePixelRatio || 1;
   const desired = Math.min(width * scale, conservesData() ? 640 : 1280);
-  return (choices.find((item) => item.width >= desired) || choices.at(-1)).url;
+  return (choices.find((item) => item.width >= desired) || choices.at(-1)!).url;
 }

@@ -1,6 +1,6 @@
 import type { MouseEventHandler } from "react";
 import { discoveryRoutes } from "./discovery-routes";
-import { posterSources } from "./poster-sources.js";
+import { posterSources } from "./poster-sources.ts";
 type HeroView = {
   wide: boolean;
   scene: string;
