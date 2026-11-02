@@ -829,6 +829,11 @@ html[data-motion="off"] .hero-flight-camera {
     content-visibility: auto;
     contain-intrinsic-size: auto 900px;
   }
+  /* Anchor destinations need actual heights for the chapters above them.
+     Keep chapters below the destination deferred without shifting its landing. */
+  #v40-root #main-content > section:is(:target, :has(:target), :has(~ section:target), :has(~ section :target)) {
+    content-visibility: visible;
+  }
 }
 #v40-root #main-content :is(a, button, [role="tab"]) {
   transition-property: color, background-color, border-color, box-shadow, transform, opacity;

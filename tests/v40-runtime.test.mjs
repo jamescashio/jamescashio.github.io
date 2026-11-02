@@ -195,6 +195,7 @@ test("the Galactic cut uses compact playback for data saving and respects Escape
     await expect(video).toHaveAttribute("src", /galactic-paperwork-480p-/);
     await expect.poll(() => video.evaluate((node) => !node.paused && node.muted)).toBe(true);
     await page.locator("header .mission-control").click();
+    await expect(page.locator("#mission-dialog")).toHaveAttribute("open", "");
     await expect.poll(() => video.evaluate((node) => node.paused)).toBe(true);
     await page.keyboard.press("Escape");
     await expect(page.locator("#mission-dialog")).not.toHaveAttribute("open", "");
@@ -338,11 +339,21 @@ test("Every mobile Menu section stays in V40 and survives a reload", async (t) =
       assert.equal(new URL(page.url()).hash, `#${id}`);
       await expect(page.locator(`#${id}`)).toBeFocused();
       await expect(page.locator(`#${id}`)).toBeInViewport();
+      await page.evaluate(async () => {
+        await document.fonts.ready;
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      });
+      await expect(page.locator(`#${id}`)).toBeInViewport();
       await page.reload();
       await expect(page.locator("#mission-dialog")).toBeAttached();
       await expect(page).toHaveTitle(/V42 Omnius, Overruled/);
       assert.equal(new URL(page.url()).pathname, "/");
       assert.equal(new URL(page.url()).hash, `#${id}`);
+      await expect(page.locator(`#${id}`)).toBeInViewport();
+      await page.evaluate(async () => {
+        await document.fonts.ready;
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      });
       await expect(page.locator(`#${id}`)).toBeInViewport();
     }
   }
