@@ -53,11 +53,26 @@ export function startStars(this: PageHost, c: HTMLCanvasElement) {
     const reduce = this.reduce;
     t += delta;
     const warp = !reduce && Date.now() < (this.warpUntil || 0);
-    ctx.clearRect(0, 0, w, h);
     const targetPointer = reduce ? { x: 0, y: 0 } : this.orbitPointer || { x: 0, y: 0 };
     const follow = reduce ? 1 : Math.min(1, delta * 4);
     orbitPointer.x += (targetPointer.x - orbitPointer.x) * follow;
     orbitPointer.y += (targetPointer.y - orbitPointer.y) * follow;
+    closeMix = reduce
+      ? Number(this.state.cameraClose)
+      : closeMix + (Number(this.state.cameraClose) - closeMix) * Math.min(1, delta * 2.2);
+    if (camera)
+      camera.style.transform = heroCameraTransform({
+        time: t,
+        close: closeMix,
+        reduced: reduce,
+        pointer: orbitPointer,
+      });
+    if (this.heroEnhancement?.active()) {
+      this.heroEnhancement.render(t, orbitPointer);
+      if (c.dataset.ready !== "true") c.dataset.ready = "true";
+      return;
+    }
+    ctx.clearRect(0, 0, w, h);
     const drawField = this.state.scene === "orbit" ? drawOrbitalField : drawContinuumField;
     drawField(ctx, {
       width: w,
@@ -69,16 +84,6 @@ export function startStars(this: PageHost, c: HTMLCanvasElement) {
       mode: this.state.scene,
       turn: this.state.sceneTurn,
     });
-    closeMix = reduce
-      ? Number(this.state.cameraClose)
-      : closeMix + (Number(this.state.cameraClose) - closeMix) * Math.min(1, delta * 2.2);
-    if (camera)
-      camera.style.transform = heroCameraTransform({
-        time: t,
-        close: closeMix,
-        reduced: reduce,
-        pointer: orbitPointer,
-      });
     const hz = h * 0.88;
     for (const s of stars) {
       if (s.y > hz) continue;
@@ -106,26 +111,31 @@ export function startStars(this: PageHost, c: HTMLCanvasElement) {
       }
     }
     ctx.lineWidth = dpr;
-    c.dataset.ready = "true";
+    if (c.dataset.ready !== "true") c.dataset.ready = "true";
   };
   this.starDraw = draw;
   let lastFrame: number | null = null;
+  let lastDraw: number | null = null;
   const loop = (timestamp?: number) => {
     if (document.hidden || this.heroVisible === false || this.state.cinema || this.state.discovery || !c.isConnected) {
-      lastFrame = null;
+      lastFrame = lastDraw = null;
       return;
     }
     if (this.reduce) {
       draw();
-      lastFrame = null;
+      lastFrame = lastDraw = null;
       return;
     }
     const now = timestamp ?? performance.now();
-    if (timestamp === undefined) lastFrame = null;
-    const interval = 1000 / (Date.now() < (this.warpUntil || 0) ? 60 : 30) - 1;
+    if (timestamp === undefined) lastFrame = lastDraw = null;
+    const enhanced = this.heroEnhancement?.active();
+    const interval = enhanced ? 1000 / 60 : 1000 / (Date.now() < (this.warpUntil || 0) ? 60 : 30) - 1;
     if (shouldRenderFrame(now, lastFrame, interval)) {
-      draw(lastFrame === null ? 0 : frameDeltaSeconds(now, lastFrame));
-      lastFrame = now;
+      draw(lastDraw === null ? 0 : frameDeltaSeconds(now, lastDraw));
+      lastDraw = now;
+      // Carry the cadence remainder on high refresh displays instead of rounding
+      // every 60 Hz draw up to three 144 Hz screen ticks.
+      lastFrame = enhanced && lastFrame !== null ? now - ((now - lastFrame) % interval) : now;
     }
     this.raf = requestAnimationFrame(loop);
   };

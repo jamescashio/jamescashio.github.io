@@ -449,9 +449,12 @@ test("Only the visible film plays; leaving its halfway boundary or switching mot
   );
 });
 
-test("The starfield limits ambient work and stops while offscreen, motion is paused or cinema is open", async (t) => {
+test("The fallback starfield limits ambient work and stops while offscreen, motion is paused or cinema is open", async (t) => {
   const page = await visit(t);
   await page.addInitScript(() => {
+    // Exercise the original 2D renderer. The optional worker scene has its own
+    // cadence, pause and progressive-fallback checks in chronos-hero-checks.mjs.
+    HTMLCanvasElement.prototype.transferControlToOffscreen = undefined;
     window.heroDraws = 0;
     const clear = CanvasRenderingContext2D.prototype.clearRect;
     CanvasRenderingContext2D.prototype.clearRect = function (...args) {

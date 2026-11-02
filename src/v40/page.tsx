@@ -18,6 +18,8 @@ import React from "react";
 export class V40Page extends React.Component<PageProps, PageState> implements PageHost {
   // Controllers initialize these resources during the React lifecycle.
   declare reduce: PageHost["reduce"];
+  declare stopLivingHero: PageHost["stopLivingHero"];
+  declare heroEnhancement: PageHost["heroEnhancement"];
   declare heroVisible: PageHost["heroVisible"];
   declare autoTraced: PageHost["autoTraced"];
   declare ioAlive: PageHost["ioAlive"];

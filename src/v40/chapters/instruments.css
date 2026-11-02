@@ -5007,3 +5007,29 @@ html:has(.continuum-root) {
     opacity: 1;
   }
 }
+
+/* Deferred signature motion: the original poster remains the complete fallback. */
+:root {
+  --ease-launch: cubic-bezier(0.45, 0, 0.2, 1);
+  --ease-settle: cubic-bezier(0.23, 1, 0.32, 1);
+  --dur-quick: 180ms;
+  --dur-scene: 640ms;
+  --dur-cinematic: 1500ms;
+  --dur-orbit: 40000ms;
+}
+.living-hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  display: none;
+}
+@media (min-width: 1000px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="off"]) .continuum-hero[data-scene="orbit"] .living-hero-canvas {
+    display: block;
+  }
+  html:not([data-motion="off"]) .continuum-hero[data-scene="orbit"] .living-poster-replaced {
+    visibility: hidden;
+  }
+}

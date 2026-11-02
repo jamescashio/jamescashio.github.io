@@ -23,5 +23,10 @@ export const startPage = () => {
   if (prerendered) hydrateRoot(container, page);
   else createRoot(container).render(page);
   // Instruments start once their styles are in, so the systems check never plays unstyled.
-  import("./deferred.css").then(() => import("./hud.ts")).catch(() => {});
+  import("./deferred.css")
+    .then(() => {
+      void import("./hud.ts");
+      void import("./hero-enhancement").then(({ installLivingHero }) => installLivingHero());
+    })
+    .catch(() => {});
 };

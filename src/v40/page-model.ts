@@ -1,3 +1,4 @@
+import type { HeroEnhancement } from "./hero-enhancement";
 import type React from "react";
 import type { lane } from "./experiment-state.ts";
 
@@ -69,6 +70,8 @@ export interface PageHost {
   edgeDefs: Record<string, [Point, Point, Point]>;
   reduce: boolean;
   heroVisible?: boolean;
+  heroEnhancement?: HeroEnhancement;
+  stopLivingHero?: () => void;
   autoTraced?: boolean;
   ioAlive?: boolean;
   starsStarted?: boolean;

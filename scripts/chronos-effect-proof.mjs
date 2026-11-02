@@ -7,12 +7,9 @@ const base = process.env.V40_URL || "http://127.0.0.1:4392/";
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch({ channel: "chrome", headless: true });
 const results = [];
-async function activity(page, width) {
+async function activity(page, width, releaseHero) {
   if (effect === "hero") {
-    await page.evaluate(() => {
-      document.documentElement.dataset.motion = "on";
-      document.dispatchEvent(new Event("cashio-motion"));
-    });
+    releaseHero();
     if (width >= 1000) await page.locator('[data-living-hero="ready"]').waitFor({ timeout: 15000 });
     await page.waitForTimeout(1200);
     for (let i = 0; i < 18; i++) {
@@ -20,11 +17,12 @@ async function activity(page, width) {
       await page.waitForTimeout(100);
     }
   } else if (effect === "worlds") {
-    await page.locator(".atlas-enter").click();
+    await page.locator(".atlas-destination:not([hidden]) .atlas-enter").click();
     await page.waitForLoadState("networkidle");
     await page.waitForTimeout(900);
     await page.goBack();
     await page.waitForLoadState("networkidle");
+    await page.locator("#top").waitFor();
     await page.waitForTimeout(1000);
   } else if (effect === "reveal") {
     for (let i = 0; i < 18; i++) {
@@ -70,18 +68,29 @@ try {
       hasTouch: width === 390,
       ...(record ? { recordVideo: { dir: output, size: { width, height: width === 390 ? 844 : 900 } } } : {}),
     });
-    if (effect === "hero") await context.addInitScript(() => localStorage.setItem("cashio-v40-motion", "off"));
+
+    let releaseHero = () => {};
+    const heroGate = new Promise((resolve) => {
+      releaseHero = resolve;
+    });
+    if (effect === "hero")
+      await context.route("**/living-hero-*.js", async (route) => {
+        await heroGate;
+        await route.continue();
+      });
     const page = await context.newPage();
     const errors = [];
     page.on("pageerror", (error) => errors.push(error.message));
     const cdp = await context.newCDPSession(page);
     await cdp.send("Emulation.setCPUThrottlingRate", { rate: cpu });
-    await page.goto(base);
+    await page.goto(base, { waitUntil: "domcontentloaded" });
     await page.waitForFunction(() => window.cashioV40);
     await page.evaluate(() => document.fonts.ready);
     await page.waitForTimeout(3500);
-    if (effect === "worlds") await page.locator(".atlas-enter").scrollIntoViewIfNeeded();
+    if (effect === "worlds")
+      await page.locator(".atlas-destination:not([hidden]) .atlas-enter").scrollIntoViewIfNeeded();
     if (effect === "cinema") await page.locator("#films").scrollIntoViewIfNeeded();
+    await page.locator("#top").waitFor();
     await page.waitForTimeout(1000);
     if (!record)
       await cdp.send("Tracing.start", {
@@ -91,7 +100,7 @@ try {
       });
     let failure = null;
     try {
-      await activity(page, width);
+      await activity(page, width, releaseHero);
     } catch (error) {
       failure = error.message;
     }
