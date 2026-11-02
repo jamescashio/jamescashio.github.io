@@ -1,7 +1,7 @@
+import type { PageHost } from "./page-model.ts";
 import { reelPoster } from "./hero-reel.tsx";
 
-
-export function filmById(slug) {
+export function filmById(this: PageHost, slug: string) {
   if (slug === "trailer") {
     const small = this.viewportWidth <= 720 || (typeof navigator !== "undefined" && navigator.connection?.saveData);
     return {
@@ -37,13 +37,13 @@ export function filmById(slug) {
   };
 }
 
-export function stepCinema(d) {
+export function stepCinema(this: PageHost, d: number) {
   const list = ["intro", "trailer", ...this.films.map((f) => f[1])];
-  const i = list.indexOf(this.state.cinema);
+  const i = list.indexOf(this.state.cinema ?? "");
   this.setState({ cinema: list[(i + d + list.length) % list.length] });
 }
 
-export function closeCinema() {
+export function closeCinema(this: PageHost) {
   this.setState({ cinema: null });
   window.dispatchEvent(new Event("cashio-cinema-close"));
 }
