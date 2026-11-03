@@ -35,6 +35,9 @@ async function png(page, format, dimensions) {
   const finale = page.locator(".ff-finale");
   await finale.getByRole("button", { name: new RegExp(`^${format}`, "i") }).click();
   await expect(finale.locator(".ff-keepsake > img")).toBeVisible();
+  await expect
+    .poll(() => finale.locator(".ff-keepsake > img").evaluate((image) => image.complete && image.naturalWidth > 0))
+    .toBe(true);
   const download = page.waitForEvent("download");
   await finale.getByRole("button", { name: /^Save mission card/ }).click();
   const saved = await download;
@@ -123,6 +126,21 @@ test("phone endings preserve the chosen permission, readable actions and onward 
       JSON.stringify(roadsterViolations.map(({ id, nodes }) => ({ id, nodes }))),
     );
   }
+});
+
+test("the mission card preview works with the live site's data-only image policy", async (t) => {
+  const page = await visit(t);
+  await page.evaluate(() => {
+    const policy = document.createElement("meta");
+    policy.httpEquiv = "Content-Security-Policy";
+    policy.content = "img-src 'self' data:";
+    document.head.append(policy);
+  });
+  const flight = page.locator(".ff-showcase");
+  await expect(flight.locator(".ff-stage")).toHaveClass(/ff-stage-ready/);
+  await flight.getByRole("button", { name: "Finish →", exact: true }).click();
+  await png(page, "portrait", [1080, 1440]);
+  await png(page, "landscape", [1600, 1000]);
 });
 
 test("native sharing uses a prepared PNG within the gesture and handles failure and cancellation", async (t) => {

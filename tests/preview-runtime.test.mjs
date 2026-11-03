@@ -67,6 +67,13 @@ test("the interactive page preserves its first painted hero on desktop and phone
 test("the compact phone journey keeps projects and professional context visible", async (t) => {
   const page = await visit(t);
   await page.goto(url);
+  // Chapter styles arrive after the first hero paint. Measure their finished
+  // layout rather than the opening stylesheet's offscreen placeholders.
+  await page.waitForFunction(() =>
+    [...document.querySelectorAll('link[rel="stylesheet"]')].some(
+      (link) => link.href.includes("/assets/deferred-") && link.sheet,
+    ),
+  );
   await page.evaluate(() => document.fonts.ready);
   await expect(page.locator("#decision-story > summary")).toBeVisible();
   await expect(page.locator("#decision-story")).not.toHaveAttribute("open", "");

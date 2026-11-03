@@ -4,7 +4,19 @@ import { missionRecord } from "./mission-card";
 import type { MissionFormat } from "./cinematic-mission-card";
 import { StarshipPoster } from "./starship-poster";
 
-type PreparedCard = { url: string; file: File; shareable: boolean };
+type PreparedCard = { url: string; preview: string; file: File; shareable: boolean };
+
+function imagePreview(blob: Blob): Promise<string> {
+  // The live site's image policy permits inline PNGs, but excludes Blob image URLs.
+  // Read the already encoded image without rendering or encoding the card again.
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () =>
+      typeof reader.result === "string" ? resolve(reader.result) : reject(new Error("The image could not be read."));
+    reader.onerror = () => reject(reader.error || new Error("The image could not be read."));
+    reader.readAsDataURL(blob);
+  });
+}
 
 export function MissionFinale({
   still,
@@ -51,6 +63,8 @@ export function MissionFinale({
               `${location.origin}${location.pathname}`,
             );
             if (cancelled) return null;
+            const preview = await imagePreview(blob);
+            if (cancelled) return null;
             const url = URL.createObjectURL(blob);
             urls.push(url);
             const file = new File([blob], filename, { type: "image/png" });
@@ -60,7 +74,7 @@ export function MissionFinale({
             } catch {
               /* Save and copy remain available. */
             }
-            return [layout, { url, file, shareable }] as const;
+            return [layout, { url, preview, file, shareable }] as const;
           }),
         );
         if (cancelled) return;
@@ -114,7 +128,7 @@ export function MissionFinale({
       <div className="ff-keepsake" data-format={format}>
         {selected ? (
           <img
-            src={selected.url}
+            src={selected.preview}
             width={format === "portrait" ? 1080 : 1600}
             height={format === "portrait" ? 1440 : 1000}
             alt={`Your flight record: ${record.title} ${record.outcome.local} onboard, ${record.outcome.cloud} in cloud, ${record.outcome.held} held. ${record.connection}. ${record.permission}.`}
