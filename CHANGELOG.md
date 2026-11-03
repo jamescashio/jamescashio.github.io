@@ -2,6 +2,8 @@
 
 ## V42.0.0 · Omnius, Overruled · 11-02-2026
 
+Cinematic flight and keepsakes · 11-03-2026: the optional tour gives the starship the stage with one caption, progress and compact Pause and Close controls. Pausing or taking command restores the instruments. The finale freezes the actual scene into a mission card, with portrait and landscape PNGs, native sharing where supported and clear save and copy fallbacks. The same scenario drives the card, counters and link. Roadster Studio now has a visible editorial showcase in the main journey. Preserve the original art, fonts, gold and cyan identity, manual and reduced motion modes, and classic archive experience. No new runtime dependency or media asset.
+
 First Flight entrance · 11-03-2026: a prominent gold invitation starts the optional thirty second tour; ordinary boarding remains visitor paced. Larger reading text, experiment results and controls improve legibility. Save and copy actions keep their labels on phones. The workshop illustrations gain shaded facets, illuminated bases and a finite light trace that respects Pause and reduced motion. The original artwork, identity and existing destinations remain. The tour button reads “Play the 30 second tour”, matching the site’s other mentions of the tour.
 
 Homepage films · 11-03-2026: the Eagle film leaves the homepage again, as asked on October 26, 2026. Portal Arrival, the silent Zenith short of a doorway and a ringed planet, takes the second seat in the House Cashio feature picker and the cinema stop on the guided route, using its existing posters. Eagle stays reachable from the Studios room, Mission Control and its /#film=intro link. Duration and caption notes now follow each film rather than its seat.

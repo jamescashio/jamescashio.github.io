@@ -1,6 +1,6 @@
-# Cinematic flight, mission keepsake and Roadster · Unpublished preview · 2026-11-03
+# Cinematic flight, mission keepsake and Roadster · Approved release · 2026-11-03
 
-Doug requested all three next refinements and a preview before publication. Work locally on codex/v42-cinematic-keepsake-preview from main 7838b78. No push, pull request, merge or deployment is authorized for this pass. This instruction supersedes the historical release authorization below.
+Doug reviewed the local preview at ed45299 and approved publication with “Make it so approved”. Publish the reviewed implementation from codex/v42-cinematic-keepsake-preview, based on main 7838b78, through the normal pull request, validation and deployment process. This approval supersedes the earlier preview-only restriction. Preserve the approved appearance and verify the live result; 7838b78 remains the rollback revision.
 
 Creative thesis: a short film you can take command of, a flight record you want to keep, and a studio worth entering. Preserve the original planetary artwork, starship, black surfaces, metallic gold, cyan instruments, Orbitron, Exo 2 and JetBrains Mono. Reuse the existing Roadster artwork and renderer; add no runtime dependency or media download.
 
@@ -10,7 +10,7 @@ Move Roadster into the ordinary page journey, retaining its existing anchor and 
 
 The now-visible Roadster feature has a 700 pixel phone allowance, with an accurate deferred layout estimate. The existing default phone journey retains its previous 11,500 pixel budget excluding that added feature; do not compress its reading text to make room.
 
-Verify desktop, 390 and 320 pixel layouts, keyboard focus, automatic/manual playback, reduced motion, downloads, sharing fallback, truthful outcomes, archive compatibility and repository checks. Preserve the 19,000 byte compressed opening CSS budget. The local preview is the review artifact; publication waits for Doug's review.
+Verify desktop, 390 and 320 pixel layouts, keyboard focus, automatic/manual playback, reduced motion, downloads, sharing fallback, truthful outcomes, archive compatibility and repository checks. Preserve the 19,000 byte compressed opening CSS budget. The local preview remains the reviewed artifact; publication is authorized after the release checks pass.
 
 ## Previous approved release
 
