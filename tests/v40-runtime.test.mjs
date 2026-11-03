@@ -243,7 +243,7 @@ test("V40 preserves its content and serves a readable edition without JavaScript
     const page = await visit(t, { js, width });
     await expect(
       page.locator("main > section, main > .journey-disclosure > .journey-disclosure-content > section"),
-    ).toHaveCount(12);
+    ).toHaveCount(13);
     await expect(page.locator("h1")).toHaveText("The machines can think. You still decide.");
     await expect(page.locator(".aurum-manifesto")).toHaveText("Imagination, with intention.");
     await expect(page.locator("footer")).toContainText("the answer is here. keep asking.", { ignoreCase: true });

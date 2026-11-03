@@ -1,0 +1,486 @@
+/* The current front door gets the cinematic composition. Archived flights keep their layout. */
+#helios-flight .ff-showcase {
+  --ff-gold: #e9b65c;
+  --ff-cyan: #81e3ed;
+  background: #050608;
+  border-color: #a2855180;
+}
+#helios-flight .ff-showcase .ff-header {
+  background: #080a0c;
+  border-color: #d0ae6933;
+}
+#helios-flight .ff-showcase[data-view="cinema"] .ff-header {
+  gap: 12px;
+  padding: 18px 26px;
+}
+#helios-flight .ff-showcase[data-view="cinema"] .ff-header > div {
+  flex: 1;
+}
+#helios-flight .ff-showcase[data-view="cinema"] .ff-header h2 {
+  font-size: 16px;
+  margin-top: 5px;
+}
+#helios-flight .ff-showcase .ff-cinema-pause {
+  border-color: #c2a16a88;
+  background: #1b1914;
+  color: #f4d39b;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+#helios-flight
+  .ff-showcase[data-view="cinema"]
+  :is(.ff-scene-tools, .ff-story, .ff-chapters, .ff-chapter-picker, .ff-footer, .ff-mobile-command, .ff-shot-label),
+#helios-flight
+  .ff-showcase[data-complete="true"]
+  :is(.ff-body, .ff-scene-tools, .ff-chapters, .ff-chapter-picker, .ff-footer, .ff-mobile-command) {
+  display: none;
+}
+#helios-flight .ff-showcase[data-view="cinema"] .ff-body {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+}
+#helios-flight .ff-showcase[data-view="cinema"] .ff-stage {
+  height: 100%;
+}
+#helios-flight .ff-showcase[data-view="cinema"] .ff-shot-reticle {
+  inset: 9% 6% 36%;
+  opacity: 0.35;
+}
+#helios-flight .ff-showcase[data-view="cinema"] .ff-stage-cap {
+  top: 22px;
+  left: 30px;
+  right: 30px;
+}
+#helios-flight .ff-showcase[data-view="cinema"] .ff-telemetry {
+  inset: 70px 30px auto auto;
+  width: 244px;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #050b10cf;
+  border: 1px solid #90b6c22e;
+}
+#helios-flight .ff-showcase[data-view="cinema"] .ff-telemetry strong {
+  font: 500 24px/1.2 var(--display);
+}
+#helios-flight .ff-showcase[data-view="cinema"] .ff-telemetry div {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+#helios-flight .ff-showcase .ff-film-caption {
+  display: none;
+}
+#helios-flight .ff-showcase[data-view="cinema"] .ff-film-caption {
+  display: block;
+  position: absolute;
+  inset: auto 0 0;
+  padding: 90px 42px 28px;
+  background: linear-gradient(transparent, #05090eea 45%, #05090e);
+  pointer-events: none;
+}
+.ff-film-caption h3 {
+  max-width: 24ch;
+  margin: 14px 0 12px;
+  font: 600 clamp(28px, 3.9vw, 52px)/1.15 var(--display);
+  letter-spacing: -0.035em;
+  color: #f0f4ef;
+  text-wrap: balance;
+}
+.ff-film-caption p {
+  max-width: 62ch;
+  margin: 0;
+  color: #c5d5d9;
+  font: 400 18px/1.6 var(--sans);
+}
+.ff-film-progress {
+  display: flex;
+  gap: 8px;
+  margin-top: 24px;
+  max-width: 560px;
+}
+.ff-film-progress > span {
+  position: relative;
+  height: 2px;
+  flex: 1;
+  overflow: hidden;
+  background: #6a7c804d;
+}
+.ff-film-progress > span[data-passed="true"] {
+  background: #d6b47c;
+}
+.ff-film-progress i {
+  display: block;
+  height: 100%;
+  background: #e9b65c;
+  transform-origin: left;
+  transform: scaleX(0);
+}
+.ff-film-progress > span[data-active="true"] i {
+  animation: ff-film-clock linear both;
+}
+@keyframes ff-film-clock {
+  to {
+    transform: scaleX(1);
+  }
+}
+.ff-film-hint {
+  display: block;
+  margin-top: 12px;
+  color: #c7b58e;
+  font: 13px/1.4 var(--sans);
+}
+#helios-flight .ff-showcase .ff-boundary {
+  background: #080a0c;
+  color: #b3c1c7;
+}
+#helios-flight .ff-showcase .ff-finale {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.94fr);
+  align-items: start;
+  gap: clamp(28px, 4vw, 60px);
+  padding: 32px clamp(24px, 4vw, 60px) 40px;
+  background: radial-gradient(ellipse at 25% 35%, #1a2425, #080b0e 65%);
+  scrollbar-color: #a48752 #0b1014;
+}
+.ff-keepsake {
+  min-width: 0;
+  width: 100%;
+  max-width: 510px;
+  margin: 0 auto;
+}
+.ff-keepsake > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  box-shadow: 0 18px 55px #0009;
+}
+.ff-keepsake-loading {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  background: #050a0e;
+  border: 1px solid #d0ae6955;
+}
+.ff-keepsake-loading img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.ff-keepsake-loading > span {
+  position: absolute;
+  left: 20px;
+  bottom: 24px;
+  color: #e9b65c;
+  font: 18px var(--display);
+}
+.ff-card-formats {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+#helios-flight .ff-card-formats button {
+  background: #090d11;
+  border-color: #6c7c7b88;
+  font-size: 14px;
+}
+#helios-flight .ff-card-formats button[aria-pressed="true"] {
+  color: #f2d7a6;
+  border-color: #d6b47c;
+}
+.ff-card-formats span {
+  margin-left: 8px;
+  font: 12px var(--mono);
+  color: #aebdbf;
+}
+.ff-card-scroll-cue {
+  display: none;
+}
+.ff-finale-copy {
+  min-width: 0;
+  padding-top: 8px;
+}
+.ff-finale-copy > .ff-eyebrow {
+  margin: 0 0 18px;
+  color: #dac090;
+}
+#helios-flight .ff-finale h3 {
+  margin: 0;
+  font: 600 clamp(30px, 3.4vw, 48px)/1.16 var(--display);
+  letter-spacing: -0.035em;
+}
+.ff-finale h3 em {
+  font-style: normal;
+  color: #e9b65c;
+}
+.ff-finale h3:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: 8px;
+}
+.ff-finale-summary {
+  max-width: 42ch;
+  margin: 20px 0;
+  color: #c8d6d9;
+  font: 18px/1.65 var(--sans);
+}
+.ff-finale-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 26px 0;
+  gap: 16px;
+}
+.ff-finale-metrics > div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 6px;
+  border-top: 1px solid #7cb5bc66;
+  padding-top: 14px;
+}
+.ff-finale-metrics dt {
+  font: 14px var(--sans);
+  color: #bacacf;
+}
+.ff-finale-metrics dd {
+  margin: 0;
+  font: 500 36px/1 var(--display);
+  color: #81e3ed;
+}
+.ff-finale-metrics > div:nth-child(2) dd {
+  color: #e9b65c;
+}
+.ff-finale-metrics > div:nth-child(3) dd {
+  color: #ffb39e;
+}
+.ff-finale-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+#helios-flight .ff-finale-actions button {
+  min-height: 48px;
+  padding: 12px 16px;
+  font-size: 16px;
+  flex: 1 1 auto;
+}
+#helios-flight .ff-finale-actions :is(.ff-save, .ff-card-native) {
+  background: #e9c58a;
+  border-color: #e9c58a;
+  color: #11171b;
+}
+#helios-flight .ff-finale-actions .ff-share {
+  border-color: #a3b5b580;
+  color: #d8e6e8;
+}
+.ff-finale-status {
+  color: #b4c8cf;
+  font: 14px/1.5 var(--sans);
+  min-height: 42px;
+  margin: 12px 0 22px;
+}
+.ff-finale-detail {
+  border-block: 1px solid #9cb7b433;
+  padding: 2px 0;
+}
+.ff-finale-detail summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  min-height: 48px;
+  padding: 10px 0;
+  font: 16px/1.5 var(--sans);
+  color: #e4d0a9;
+  cursor: pointer;
+}
+.ff-finale-detail summary > span {
+  color: #81e3ed;
+  font-size: 23px;
+}
+.ff-finale-detail .ff-recap {
+  margin-bottom: 20px;
+}
+.ff-finale-next {
+  margin-top: 26px;
+}
+#helios-flight .ff-roadster-next {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  margin-top: 12px;
+  padding: 0;
+  overflow: hidden;
+  border-color: #b1966077;
+  background: #090c10;
+  text-align: left;
+}
+.ff-roadster-next img {
+  display: block;
+  width: 110px;
+  height: 82px;
+  object-fit: cover;
+}
+.ff-roadster-next > span {
+  padding: 12px 14px 12px 0;
+  color: #f1d5a3;
+  font-size: 18px;
+}
+.ff-roadster-next small {
+  display: block;
+  margin-top: 6px;
+  color: #bdccd2;
+  font: 13px/1.5 var(--sans);
+}
+.ff-finale-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-top: 12px;
+}
+#helios-flight .ff-finale-links button {
+  border: 0;
+  padding: 8px 0;
+  background: transparent;
+  color: #b9d5df;
+  font-size: 14px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ff-showcase[data-motion="on"] .ff-film-caption h3 {
+    animation: ff-caption-enter 640ms ease-out both;
+  }
+  .ff-showcase[data-motion="on"] .ff-finale {
+    animation: ff-caption-enter 640ms ease-out both;
+  }
+}
+@keyframes ff-caption-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-width: 700px) {
+  #helios-flight .ff-showcase[data-view="cinema"] .ff-header {
+    padding: 12px 14px;
+    flex-wrap: wrap;
+  }
+  #helios-flight .ff-showcase[data-view="cinema"] .ff-header > div {
+    flex: 1 1 100%;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  #helios-flight .ff-showcase[data-view="cinema"] .ff-header h2 {
+    display: none;
+  }
+  #helios-flight .ff-showcase[data-view="cinema"] .ff-header > .ff-eyebrow {
+    font-size: 12px;
+  }
+  #helios-flight .ff-showcase[data-view="cinema"] .ff-cinema-pause {
+    flex: 1;
+    justify-content: center;
+  }
+  #helios-flight .ff-showcase[data-view="cinema"] .ff-close {
+    min-width: 90px;
+  }
+  #helios-flight .ff-showcase[data-view="cinema"] .ff-stage-cap {
+    inset: 16px 14px auto;
+    font-size: 12px;
+    gap: 6px;
+  }
+  #helios-flight .ff-showcase[data-view="cinema"] .ff-telemetry {
+    top: 54px;
+    right: 14px;
+    width: 194px;
+    padding: 8px 12px;
+  }
+  #helios-flight .ff-showcase[data-view="cinema"] .ff-telemetry strong {
+    font-size: 20px;
+  }
+  #helios-flight .ff-showcase[data-view="cinema"] .ff-film-caption {
+    padding: 70px 20px 22px;
+  }
+  .ff-film-caption h3 {
+    font-size: clamp(26px, 7.2vw, 36px);
+    margin-block: 10px;
+  }
+  .ff-film-caption p {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  .ff-film-progress {
+    margin-top: 18px;
+  }
+  .ff-film-hint {
+    font-size: 12px;
+  }
+  #helios-flight .ff-showcase .ff-finale {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding: 22px 18px 32px;
+  }
+  .ff-keepsake {
+    max-width: 380px;
+  }
+  .ff-card-scroll-cue {
+    display: block;
+    margin: 14px 0 0;
+    text-align: center;
+    color: #c6ba9f;
+    font: 14px/1.5 var(--sans);
+  }
+  .ff-finale-copy {
+    width: 100%;
+    padding: 0;
+  }
+  .ff-finale-summary {
+    font-size: 17px;
+  }
+  #helios-flight .ff-finale-actions button {
+    font-size: 15px;
+    width: 100%;
+    min-height: 60px;
+  }
+  .ff-finale-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  #helios-flight .ff-finale-actions .ff-card-native {
+    grid-column: 1 / -1;
+    min-height: 52px;
+  }
+  .ff-finale-status {
+    margin-bottom: 18px;
+  }
+  .ff-roadster-next img {
+    width: 92px;
+  }
+  .ff-roadster-next > span {
+    font-size: 16px;
+  }
+}
+@media (max-height: 650px) and (min-width: 701px) {
+  #helios-flight .ff-showcase[data-view="cinema"] .ff-film-caption {
+    padding: 50px 30px 18px;
+  }
+  .ff-film-caption h3 {
+    font-size: 30px;
+    margin-block: 8px;
+  }
+  .ff-film-caption p {
+    font-size: 16px;
+  }
+  .ff-film-progress {
+    margin-top: 14px;
+  }
+}

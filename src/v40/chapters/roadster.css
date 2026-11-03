@@ -1,0 +1,200 @@
+.roadster-showcase {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 76px 50px 64px;
+  scroll-margin-top: 100px;
+}
+.roadster-kicker {
+  margin: 0 0 20px;
+  color: #e9b65c;
+  font: 12px/1.6 var(--font-mono);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.roadster-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+.roadster-heading h2 {
+  margin: 0;
+  font: 600 clamp(32px, 4.6vw, 66px)/1.1 var(--font-display);
+  letter-spacing: -0.04em;
+  color: #edf4f6;
+}
+.roadster-heading em {
+  display: block;
+  color: #e9b65c;
+  font-style: normal;
+}
+.roadster-heading p {
+  margin: 0 0 4px;
+  color: #c7d4d8;
+  font: 18px/1.6 var(--font-body);
+}
+.roadster-plate {
+  position: relative;
+}
+.roadster-stage {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  isolation: isolate;
+  color: #edf4f6;
+  background: #060708;
+  border: 1px solid #a8874a66;
+  text-decoration: none;
+}
+.roadster-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, #05060844, transparent 30%, transparent 60%, #050608e8);
+  box-shadow: inset 0 0 90px #0005;
+}
+.roadster-stage img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+}
+.roadster-stage-label {
+  pointer-events: none;
+  position: absolute;
+  top: 24px;
+  left: 28px;
+  z-index: 1;
+  padding-left: 16px;
+  border-left: 2px solid #22d3ee;
+  font: 12px/1.5 var(--font-mono);
+  letter-spacing: 1.3px;
+  text-shadow: 0 1px 8px #000;
+}
+.roadster-orbit {
+  position: absolute;
+  inset: 12% 7%;
+  border: 1px solid #d5bb7c26;
+  border-radius: 50%;
+  transform: rotate(-12deg);
+  pointer-events: none;
+}
+.roadster-orbit::before,
+.roadster-orbit::after {
+  content: "+";
+  position: absolute;
+  top: 50%;
+  left: -6px;
+  color: #e9b65c;
+  font: 18px/1 var(--font-mono);
+}
+.roadster-orbit::after {
+  left: auto;
+  right: -6px;
+}
+.roadster-cta {
+  position: absolute;
+  bottom: 28px;
+  right: 28px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 16px 22px;
+  color: #f5daaa;
+  border: 1px solid #e9b65c88;
+  background: #090b0eed;
+  font: 600 17px/1.4 var(--font-body);
+}
+.roadster-cta > span {
+  color: #22d3ee;
+  font-size: 24px;
+}
+.roadster-stage:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: 5px;
+}
+.roadster-stage:is(:hover, :focus-visible) .roadster-cta {
+  border-color: #e9b65c;
+  background: #15130f;
+}
+.roadster-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 24px;
+  padding-top: 20px;
+  color: #b8c8cd;
+  font: 16px/1.6 var(--font-body);
+}
+.roadster-caption p {
+  max-width: 60ch;
+  margin: 0;
+}
+.roadster-caption > span {
+  flex-shrink: 0;
+  font-size: 13px;
+  color: #d4ba8c;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="off"]) .roadster-stage img {
+    transition: transform 640ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  html:not([data-motion="off"]) .roadster-stage:is(:hover, :focus-visible) img {
+    transform: scale(1.035);
+  }
+}
+@media (max-width: 760px) {
+  /* Reserve the feature's actual phone footprint while it is below the viewport. */
+  #v40-root #main-content > .roadster-showcase {
+    contain-intrinsic-size: auto 610px;
+  }
+  .roadster-showcase {
+    padding: 44px 18px;
+  }
+  .roadster-heading {
+    display: block;
+    margin-bottom: 22px;
+  }
+  .roadster-heading h2 {
+    font-size: clamp(30px, 8vw, 48px);
+  }
+  .roadster-heading em {
+    display: inline;
+  }
+  .roadster-heading p {
+    margin-top: 16px;
+    font-size: 17px;
+  }
+  .roadster-kicker {
+    max-width: 30ch;
+    letter-spacing: 0.8px;
+  }
+  .roadster-stage img {
+    aspect-ratio: 4 / 3;
+  }
+  .roadster-stage-label {
+    top: 14px;
+    left: 14px;
+    font-size: 11px;
+  }
+  .roadster-cta {
+    position: relative;
+    inset: auto;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-width: 1px 0 0;
+    font-size: 16px;
+  }
+  .roadster-caption {
+    display: block;
+    padding-top: 16px;
+  }
+  .roadster-caption > span {
+    display: block;
+    margin-top: 10px;
+  }
+}

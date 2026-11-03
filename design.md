@@ -1,3 +1,19 @@
+# Cinematic flight, mission keepsake and Roadster · Unpublished preview · 2026-11-03
+
+Doug requested all three next refinements and a preview before publication. Work locally on codex/v42-cinematic-keepsake-preview from main 7838b78. No push, pull request, merge or deployment is authorized for this pass. This instruction supersedes the historical release authorization below.
+
+Creative thesis: a short film you can take command of, a flight record you want to keep, and a studio worth entering. Preserve the original planetary artwork, starship, black surfaces, metallic gold, cyan instruments, Orbitron, Exo 2 and JetBrains Mono. Reuse the existing Roadster artwork and renderer; add no runtime dependency or media download.
+
+The automatic tour gives the ship the stage, one concise caption and a compact Pause/Close pair. Pausing, keyboard navigation or manipulating the scene restores the detailed controls. Motion off remains manual. At the ending, present a large mission poster made from the actual frozen scene and the same scenario as the counters and link. Offer portrait and landscape PNGs, native file sharing when supported, and clear save/copy fallbacks. Keep an inspectable decision recap and an onward route to Roadster Studio.
+
+Move Roadster into the ordinary page journey, retaining its existing anchor and destination. Use its original cinematic model image, larger editorial typography, honest concept copy and a deliberate, finite hover response. Keep mobile imagery substantial and touch controls readable.
+
+The now-visible Roadster feature has a 700 pixel phone allowance, with an accurate deferred layout estimate. The existing default phone journey retains its previous 11,500 pixel budget excluding that added feature; do not compress its reading text to make room.
+
+Verify desktop, 390 and 320 pixel layouts, keyboard focus, automatic/manual playback, reduced motion, downloads, sharing fallback, truthful outcomes, archive compatibility and repository checks. Preserve the 19,000 byte compressed opening CSS budget. The local preview is the review artifact; publication waits for Doug's review.
+
+## Previous approved release
+
 # First Flight entrance · Approved release · 2026-11-03
 
 Doug approved the preview and explicitly requested publication after a slight graphics and animation improvement to the workshop illustrations in his screenshot. Preserve the reviewed c10db31 preview and the newer homepage film update on main at d330126. Working branch: codex/v42-first-flight-release. A reviewed pull request, merge and deployment are authorized after verification. These instructions supersede historical delivery directions below.

@@ -89,6 +89,18 @@ test("the explicit tour starts on readiness while ordinary boarding stays at the
   await expect(page).toHaveURL(/#flight=tour$/);
   await expect(flight).toHaveAttribute("data-playback", "tour");
   await expect(flight.getByRole("button", { name: "Pause tour", exact: true })).toBeVisible();
+  await expect(flight).toHaveAttribute("data-view", "cinema");
+  await expect(flight.locator(".ff-story")).toBeHidden();
+  for (const column of await flight.locator(".ff-telemetry > div").all()) {
+    const bounds = await column.boundingBox();
+    const label = await column.locator("span").boundingBox();
+    assert.ok(
+      label.x >= bounds.x && label.x + label.width <= bounds.x + bounds.width + 1,
+      "phone readout labels fit their columns",
+    );
+  }
+  await flight.getByRole("button", { name: "Pause tour", exact: true }).click();
+  await expect(flight.getByRole("button", { name: "Play tour", exact: true })).toBeFocused();
   await flight.getByRole("button", { name: /Cut the cloud link/ }).click();
   await expect(flight).toHaveAttribute("data-playback", "manual");
   await expect(flight.locator(".ff-telemetry")).toContainText("12Onboard");
