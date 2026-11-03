@@ -3,7 +3,7 @@ import { conservesData } from "./media-policy.ts";
 
 // These original film derivatives already ship with the preserved media library.
 const libraryVariants = Object.fromEntries(
-  ["zenith-orbital-instrument-poster", "zenith-threshold-poster"].map((name) => [
+  ["zenith-orbital-instrument-poster", "zenith-portal-arrival-poster", "zenith-threshold-poster"].map((name) => [
     `/v40/assets/${name}.webp`,
     [320, 640, 1280].map((width) => ({ url: `/v40/thumbs/${name}-${width}.webp`, width })),
   ]),

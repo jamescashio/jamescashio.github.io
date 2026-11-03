@@ -83,7 +83,7 @@ export function renderVals(this: PageHost) {
       window.location.hash = "flight=board";
     },
     trailer: this.filmById("trailer"),
-    featureFilms: ["trailer", "intro", "orbital-instrument", "threshold"].map((id) => this.filmById(id)),
+    featureFilms: ["trailer", "portal-arrival", "orbital-instrument", "threshold"].map((id) => this.filmById(id)),
     telemetry,
     observedDate,
     observedShortDate,
