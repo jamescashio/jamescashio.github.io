@@ -33,14 +33,24 @@ export const startPage = () => {
         })
         .catch(() => {});
       void import("./hero-enhancement").then(({ installLivingHero }) => installLivingHero());
-      // V43 Starfall: the deep sky and flight instruments arrive last, after the page is interactive.
-      void import("./starfall.css")
-        .then(() => import("./starfall"))
-        .then(({ installStarfall }) => {
-          const stop = installStarfall();
-          if (window.cashioV40) window.cashioV40.stopStarfall = stop;
-        })
-        .catch(() => {});
+      // V43 Starfall: the deep sky and flight instruments arrive last, once the page has
+      // loaded and the main thread is idle, so they never compete with hydration.
+      const startStarfall = () =>
+        void import("./starfall.css")
+          .then(() => import("./starfall"))
+          .then(({ installStarfall }) => {
+            const stop = installStarfall();
+            if (window.cashioV40) window.cashioV40.stopStarfall = stop;
+          })
+          .catch(() => {});
+      const whenIdle = () => {
+        if (typeof window.requestIdleCallback === "function")
+          window.requestIdleCallback(startStarfall, { timeout: 3000 });
+        else setTimeout(startStarfall, 1200);
+      };
+      const afterLoad = () => window.setTimeout(whenIdle, 900);
+      if (document.readyState === "complete") afterLoad();
+      else window.addEventListener("load", afterLoad, { once: true });
     })
     .catch(() => {});
 };

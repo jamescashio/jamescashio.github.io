@@ -95,6 +95,9 @@ export function installStarfall(): () => void {
     lastJump = 0,
     frameAt = 0,
     stepNow = 1,
+    heroBottom = 0,
+    skyDirty = true,
+    meteorDirty = false,
     idleT = 0,
     toastT = 0;
 
@@ -139,93 +142,105 @@ export function installStarfall(): () => void {
 
   const draw = (t: number, animate: boolean) => {
     if (!ctx) return;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, W, H);
-    // Without motion the sky holds still: no parallax, no twinkle, no streaks.
-    const scroll = animate ? window.scrollY : 0;
-    const cx = W / 2,
-      cy = H * 0.45;
-    const streak = animate ? clamp(Math.abs(vel) * 1.6, 0, 240) : 0;
-    const warp = animate ? boost : 0;
-    const dir = vel >= 0 ? -1 : 1;
-    for (const s of stars) {
-      let x = s.x;
-      let y = (((s.y - scroll * s.z * 0.32) % H) + H) % H;
-      // A gentle gravity lens around the pointer.
-      if (fine && animate && px > -999) {
-        const dx = x - px,
-          dy = y - py,
-          d = Math.hypot(dx, dy);
-        if (d < 150 && d > 0.1) {
-          const push = (1 - d / 150) * 14 * s.z;
-          x += (dx / d) * push;
-          y += (dy / d) * push;
-        }
+    // The opaque opening hides the sky completely, so it costs nothing until the hero scrolls away.
+    const hidden = window.scrollY + H < heroBottom - 4;
+    if (hidden) {
+      if (skyDirty) {
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, W, H);
+        skyDirty = false;
       }
-      const a = (0.28 + 0.62 * s.z) * (animate ? 0.72 + 0.28 * Math.sin(t * 0.001 * s.tw + s.ph) : 0.85);
-      const len = streak * s.z + warp * 110 * s.z;
-      if (len > 1.5) {
-        // Hyperspace: stars stretch against the scroll, and outward from the vanishing point during a jump.
-        let ex = x,
-          ey = y + dir * streak * s.z;
-        if (warp > 0.02) {
-          const ox = x - cx,
-            oy = y - cy,
-            od = Math.hypot(ox, oy) || 1;
-          ex = x - (ox / od) * warp * 110 * s.z;
-          ey = y - (oy / od) * warp * 110 * s.z + dir * streak * s.z * (1 - warp);
+    } else {
+      skyDirty = true;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, W, H);
+      // Without motion the sky holds still: no parallax, no twinkle, no streaks.
+      const scroll = animate ? window.scrollY : 0;
+      const cx = W / 2,
+        cy = H * 0.45;
+      const streak = animate ? clamp(Math.abs(vel) * 1.6, 0, 240) : 0;
+      const warp = animate ? boost : 0;
+      const dir = vel >= 0 ? -1 : 1;
+      for (const s of stars) {
+        let x = s.x;
+        let y = (((s.y - scroll * s.z * 0.32) % H) + H) % H;
+        // A gentle gravity lens around the pointer.
+        if (fine && animate && px > -999) {
+          const dx = x - px,
+            dy = y - py,
+            d = Math.hypot(dx, dy);
+          if (d < 150 && d > 0.1) {
+            const push = (1 - d / 150) * 14 * s.z;
+            x += (dx / d) * push;
+            y += (dy / d) * push;
+          }
         }
-        ctx.globalAlpha = a * 0.8;
-        ctx.strokeStyle = SOLID[s.c];
-        ctx.lineWidth = Math.max(0.6, s.r * 1.1);
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(ex, ey);
-        ctx.stroke();
-      } else {
-        ctx.globalAlpha = a;
-        ctx.fillStyle = SOLID[s.c];
-        const r = s.r;
-        if (r < 0.9) ctx.fillRect(x, y, r * 1.6, r * 1.6);
-        else {
+        const a = (0.28 + 0.62 * s.z) * (animate ? 0.72 + 0.28 * Math.sin(t * 0.001 * s.tw + s.ph) : 0.85);
+        const len = streak * s.z + warp * 110 * s.z;
+        if (len > 1.5) {
+          // Hyperspace: stars stretch against the scroll, and outward from the vanishing point during a jump.
+          let ex = x,
+            ey = y + dir * streak * s.z;
+          if (warp > 0.02) {
+            const ox = x - cx,
+              oy = y - cy,
+              od = Math.hypot(ox, oy) || 1;
+            ex = x - (ox / od) * warp * 110 * s.z;
+            ey = y - (oy / od) * warp * 110 * s.z + dir * streak * s.z * (1 - warp);
+          }
+          ctx.globalAlpha = a * 0.8;
+          ctx.strokeStyle = SOLID[s.c];
+          ctx.lineWidth = Math.max(0.6, s.r * 1.1);
           ctx.beginPath();
-          ctx.arc(x, y, r, 0, 6.283);
-          ctx.fill();
-          if (s.z === 1 && s.c !== 0) {
-            ctx.globalAlpha = a * 0.16;
+          ctx.moveTo(x, y);
+          ctx.lineTo(ex, ey);
+          ctx.stroke();
+        } else {
+          ctx.globalAlpha = a;
+          ctx.fillStyle = SOLID[s.c];
+          const r = s.r;
+          if (r < 0.9) ctx.fillRect(x, y, r * 1.6, r * 1.6);
+          else {
             ctx.beginPath();
-            ctx.arc(x, y, r * 4, 0, 6.283);
+            ctx.arc(x, y, r, 0, 6.283);
             ctx.fill();
+            if (s.z === 1 && s.c !== 0) {
+              ctx.globalAlpha = a * 0.16;
+              ctx.beginPath();
+              ctx.arc(x, y, r * 4, 0, 6.283);
+              ctx.fill();
+            }
           }
         }
       }
-    }
-    ctx.globalAlpha = 1;
-    // Constellation lines from the pointer to its three nearest bright stars.
-    if (fine && px > -999 && animate && streak < 4) {
-      const near: Array<{ x: number; y: number; d: number }> = [];
-      for (const st of stars) {
-        if (st.z !== 1) continue;
-        const sy = (((st.y - scroll * 0.32) % H) + H) % H;
-        const d = Math.hypot(st.x - px, sy - py);
-        if (d >= 190) continue;
-        near.push({ x: st.x, y: sy, d });
-        if (near.length > 3) {
-          near.sort((m, n) => m.d - n.d);
-          near.length = 3;
+      ctx.globalAlpha = 1;
+      // Constellation lines from the pointer to its three nearest bright stars.
+      if (fine && px > -999 && animate && streak < 4) {
+        const near: Array<{ x: number; y: number; d: number }> = [];
+        for (const st of stars) {
+          if (st.z !== 1) continue;
+          const sy = (((st.y - scroll * 0.32) % H) + H) % H;
+          const d = Math.hypot(st.x - px, sy - py);
+          if (d >= 190) continue;
+          near.push({ x: st.x, y: sy, d });
+          if (near.length > 3) {
+            near.sort((m, n) => m.d - n.d);
+            near.length = 3;
+          }
         }
-      }
-      ctx.lineWidth = 0.8;
-      for (const s of near) {
-        ctx.strokeStyle = `rgba(114,229,244,${0.34 * (1 - s.d / 190)})`;
-        ctx.beginPath();
-        ctx.moveTo(px, py);
-        ctx.lineTo(s.x, s.y);
-        ctx.stroke();
+        ctx.lineWidth = 0.8;
+        for (const s of near) {
+          ctx.strokeStyle = `rgba(114,229,244,${0.34 * (1 - s.d / 190)})`;
+          ctx.beginPath();
+          ctx.moveTo(px, py);
+          ctx.lineTo(s.x, s.y);
+          ctx.stroke();
+        }
       }
     }
     // Shooting stars fly above the chapters, so the opening shower crosses the planet itself.
-    if (!mctx) return;
+    if (!mctx || (!meteors.length && !meteorDirty)) return;
+    meteorDirty = meteors.length > 0;
     mctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     mctx.clearRect(0, 0, W, H);
     for (let i = meteors.length - 1; i >= 0; i--) {
@@ -295,13 +310,25 @@ export function installStarfall(): () => void {
     flight.dataset.readout = String(railBox.readout);
   };
 
+  // Page height is cached: reading it every frame after a style write forces a full layout.
+  let maxScroll = 1;
+  const measurePage = () => {
+    maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    const hero = document.getElementById("top");
+    heroBottom = hero ? hero.offsetTop + hero.offsetHeight : 0;
+  };
+  let lastP = "";
   const instruments = () => {
-    const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-    const p = clamp(window.scrollY / max, 0, 1);
-    flight.style.setProperty("--sf-p", p.toFixed(4));
+    if (!railBox.ok) return;
+    const p = clamp(window.scrollY / maxScroll, 0, 1);
+    const pText = p.toFixed(4);
+    if (pText !== lastP) {
+      lastP = pText;
+      flight.style.setProperty("--sf-p", pText);
+    }
     const kmLeft = 400 * Math.pow(1 - p, 2.1);
     const landed = p > 0.992;
-    flight.dataset.landed = String(landed);
+    if (flight.dataset.landed !== String(landed)) flight.dataset.landed = String(landed);
     const altText = landed
       ? "TOUCHDOWN"
       : kmLeft >= 1
@@ -358,7 +385,8 @@ export function installStarfall(): () => void {
     const pointerBusy = t - lastMove < 450;
     const busy = Math.abs(vel) > 0.4 || boost > 0 || meteors.length > 0 || pointerBusy;
     const covered = !!document.querySelector("dialog[open], [data-cinema-open], .cinema-open");
-    const interval = busy ? 15 : lite ? 100 : 50;
+    const skyHidden = window.scrollY + H < heroBottom - 4;
+    const interval = busy ? (lite ? 32 : 15) : skyHidden ? 250 : lite ? 100 : 50;
     if (t - last >= interval || !animate) {
       last = t;
       draw(t, animate);
@@ -537,6 +565,7 @@ export function installStarfall(): () => void {
         H = window.innerHeight;
         canvas.height = sky.height = Math.round(H * dpr);
       }
+      measurePage();
       measureRail();
       kick();
     }, 140);
@@ -558,7 +587,10 @@ export function installStarfall(): () => void {
   const motionObserver = new MutationObserver(onVisibility);
 
   seed();
+  measurePage();
   measureRail();
+  const pageObserver = new ResizeObserver(() => measurePage());
+  pageObserver.observe(document.body);
   observe();
   tintFor("top");
   syncFlag();
@@ -589,7 +621,7 @@ export function installStarfall(): () => void {
   }
   const arrivalTimers: number[] = [];
   if (!arrived && moving() && window.scrollY < H * 0.5) {
-    [300, 900, 1350, 2100, 2600, 3400].forEach((ms) =>
+    [200, 800, 1250, 2000, 2500, 3300].forEach((ms) =>
       arrivalTimers.push(window.setTimeout(() => (spawnMeteor(), kick()), ms)),
     );
   }
@@ -603,6 +635,7 @@ export function installStarfall(): () => void {
     clearTimeout(resizeT);
     clearTimeout(toastT);
     headingIO.disconnect();
+    pageObserver.disconnect();
     sectionIO.disconnect();
     motionObserver.disconnect();
     reduceQuery.removeEventListener("change", onVisibility);
