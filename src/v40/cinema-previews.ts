@@ -44,10 +44,23 @@ export function installCinemaPreviews() {
   );
   const refresh = () => {
     observer.disconnect();
-    if (allowed())
+    if (allowed()) {
       room
         .querySelectorAll<HTMLVideoElement>("video[data-preview-src]:not([data-preview-ready])")
         .forEach((video) => observer.observe(video));
+      return;
+    }
+    // A hidden tab only waits; the media coordinator already paused playback.
+    if (document.hidden) return;
+    // Pause, reduced motion or Save Data: release loaded loops and stop fetching.
+    // They reload on approach once motion is allowed again.
+    room.querySelectorAll<HTMLVideoElement>("video[data-preview-ready]").forEach((video) => {
+      video.pause();
+      video.removeAttribute("src");
+      video.preload = "none";
+      video.load();
+      delete video.dataset.previewReady;
+    });
   };
   const changed = new MutationObserver((records) => {
     if (

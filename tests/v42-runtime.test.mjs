@@ -451,5 +451,10 @@ test("Screening room hover loops load only for a desktop pointer with motion on,
       previews.every((p) => !/\/assets\/zenith\//.test(p)),
       "hover never pulls a full film",
     );
+    // Pause releases loaded loops so nothing keeps fetching.
+    await page.locator("header [data-motion-toggle]").click();
+    await expect
+      .poll(() => video.evaluate((v) => !v.getAttribute("src") && v.preload === "none" && v.paused))
+      .toBe(true);
   }
 });
