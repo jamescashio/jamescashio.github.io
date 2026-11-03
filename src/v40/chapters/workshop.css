@@ -741,24 +741,26 @@ html[data-motion="off"] #v40-root .showcase-project {
   min-width: 0;
   margin-top: 24px;
   --build-light: #9bece2;
-  --build-dim: #588b92;
+  --build-dim: #71a8af;
+  --build-glow: #8ce7da40;
 }
 .build-story-brief {
   --build-light: #f6ce88;
-  --build-dim: #a28b60;
+  --build-dim: #b59b6b;
+  --build-glow: #f6ce8840;
 }
 .build-illustration {
   position: relative;
   overflow: hidden;
   border-block: 1px solid #c5ecf51b;
-  background: radial-gradient(ellipse at 50% 80%, #b2deed0e, transparent 65%), #050a0d;
+  background: radial-gradient(ellipse at 50% 80%, #b2deed14, transparent 65%), #050a0d;
   padding: 15px 0 12px;
 }
 .build-illustration-label,
 .build-illustration-caption {
   display: block;
   padding-inline: 16px;
-  font: 12px/1.5 var(--font-mono);
+  font: 13px/1.5 var(--font-mono);
 }
 .build-illustration-label {
   color: var(--build-light);
@@ -776,15 +778,46 @@ html[data-motion="off"] #v40-root .showcase-project {
   stroke-linecap: round;
 }
 .build-floor {
-  stroke: #9dcedc12;
+  stroke: #9dcedc1d;
+}
+.build-plinth {
+  fill: #081015;
+  stroke: var(--build-dim);
+  stroke-width: 1;
+  opacity: 0.45;
+}
+.build-plinth.is-selected {
+  stroke: var(--build-light);
+  opacity: 0.85;
+}
+.build-ground-light {
+  fill: var(--build-glow);
+  stroke: none;
+}
+.build-face-top {
+  fill: var(--build-light);
+  fill-opacity: 0.16;
+}
+.build-face-shadow {
+  fill: #000;
+  fill-opacity: 0.3;
+  stroke: none;
+}
+.build-node.is-selected .build-face-top {
+  fill-opacity: 0.3;
+}
+.build-seal {
+  fill: #0a171e;
+  stroke: var(--build-light);
 }
 .build-route {
-  stroke: #b3d8db33;
+  stroke: #b3d8db55;
   stroke-width: 1.5;
 }
 .build-route-light {
   stroke: var(--build-light);
-  stroke-width: 2;
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 4px var(--build-glow));
 }
 .build-node {
   stroke: var(--build-dim);
@@ -961,9 +994,14 @@ html[data-motion="off"] #v40-root .showcase-project {
   }
 }
 @media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) .build-story:has(.build-notes[open]) .build-route-light {
-    stroke-dasharray: 320;
-    animation: build-trace 650ms ease-out both;
+  html:not([data-motion="off"]) .build-story:is(:hover, :focus-within, :has(.build-notes[open])) .build-route-light {
+    stroke-dasharray: 1;
+    animation: build-trace 640ms ease-out both;
+  }
+  html:not([data-motion="off"])
+    .build-story:is(:hover, :focus-within, :has(.build-notes[open]))
+    .build-node.is-selected {
+    animation: build-node-settle 640ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
   }
 }
 @media (max-width: 600px) {

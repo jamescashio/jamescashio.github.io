@@ -1,3 +1,19 @@
+# First Flight entrance · Approved release · 2026-11-03
+
+Doug approved the preview and explicitly requested publication after a slight graphics and animation improvement to the workshop illustrations in his screenshot. Preserve the reviewed c10db31 preview and the newer homepage film update on main at d330126. Working branch: codex/v42-first-flight-release. A reviewed pull request, merge and deployment are authorized after verification. These instructions supersede historical delivery directions below.
+
+Creative thesis: a gold boarding pass into the existing cinematic universe. Make the optional thirty-second journey the obvious first invitation; keep ordinary boarding at the visitor's pace. Preserve the original planetary horizon, celestial signature, Orbitron, Exo 2, JetBrains Mono, black surfaces, metallic gold and cyan instruments. No new media, runtime dependencies, sounds or ambient effects.
+
+The explicit tour entrance starts the existing four chapters only when the scene is ready and motion is allowed. Decisions, keyboard navigation and manual chapter changes pause the tour. Reduced motion and the site's Pause setting retain manual controls. Existing bookmarks, worlds, experiments, films, captions and archives remain available.
+
+Use 18 pixel desktop and 17 pixel phone introduction text, 14 pixel supporting copy and controls, and 16 pixel reading text in experiments and the flight. Keep Save mission card and Copy this flight/scenario visibly labeled throughout the phone journey. Maintain comfortable touch targets, readable focus states and the original colors.
+
+Verify the actual desktop, 390 and 320 pixel experience, the guided/manual routes, keyboard return, decisions, downloads, clipboard fallback and reduced motion. Run repository checks and measure the built preview. Preserve the 19,000 byte compressed opening CSS budget. The preview is the approval artifact; local measurements are not production field data.
+
+Workshop polish: retain the two original cyan and gold diagrams and their exact meaning. Give the existing objects brighter edges, shaded facets and small illuminated bases. A single 640 ms trace and slight settling movement respond to opening the notes or selecting a step. Keep the full illustration visible at rest; Pause and reduced motion remove the movement. No loop, asset download, dependency or change to the evidence claims.
+
+## Preserved design history
+
 # Chronos Round 3 · Engineering and cinematic proof
 
 The current task begins at f1dede3 on chore/chronos-v42-round3. Only that review branch may be pushed. No pull request, merge, deployment or cache purge is authorized by this task. Historical delivery directions below do not apply to this pass.

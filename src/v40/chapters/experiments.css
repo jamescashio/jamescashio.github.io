@@ -233,12 +233,12 @@
   gap: 6px;
 }
 .v41-047d0f2421 {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--text);
 }
 .v41-a34c8ac04c {
   color: var(--text-dim);
-  font-size: 13px;
+  font-size: 16px;
   line-height: 1.55;
   margin: 0;
 }
@@ -250,7 +250,7 @@
   border-top: 1px solid var(--glass-border);
 }
 .v41-f4d14c945c {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
 }
 .v41-1278d81cb0 {
@@ -411,7 +411,7 @@
 #studies .za-panel button:not(.za-btn),
 #studies .v41-00bd1dd87d,
 #studies .v41-1d10ce8d52 {
-  font-size: 12px;
+  font-size: 14px;
 }
 @media (max-width: 1179px) {
   #studies > div:first-child {
@@ -517,7 +517,7 @@
 }
 .lab-try {
   color: var(--text);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.6;
   margin: 0;
 }
@@ -531,7 +531,7 @@
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text);
   font-weight: 600;
 }
@@ -555,7 +555,7 @@
   border: 1px solid var(--glass-border);
   border-radius: 12px;
   background: var(--glass);
-  font-size: 14px;
+  font-size: 16px;
   cursor: pointer;
   line-height: 1.5;
 }
@@ -573,7 +573,7 @@
 .lab-controls select,
 .lab-controls input[type="text"],
 .lab-controls textarea {
-  font: 15px/1.5 var(--font-body);
+  font: 16px/1.5 var(--font-body);
   color: var(--text);
   background: var(--void-deep);
   border: 1px solid #5d5d5d;
@@ -622,7 +622,7 @@
   margin: 10px 0;
 }
 .lab-reason {
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.65;
   color: var(--text-dim);
   margin: 0;
@@ -633,13 +633,13 @@
   gap: 10px;
 }
 .lab-actions button {
-  min-height: 42px;
+  min-height: 48px;
   border: 1px solid var(--glass-border);
   background: var(--glass);
   color: var(--text);
   padding: 10px 14px;
   border-radius: 10px;
-  font: 600 11px/1.4 var(--font-display);
+  font: 600 14px/1.4 var(--font-body);
   cursor: pointer;
 }
 .lab-actions button:hover {
@@ -659,13 +659,13 @@
 .lab-boundary {
   border-top: 1px solid var(--glass-border);
   padding-top: 14px;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.65;
   color: var(--text-dim);
   margin: 0;
 }
 .lab-feedback {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--cyan);
   line-height: 1.5;
   margin: 0;
@@ -682,7 +682,7 @@
   text-underline-offset: 4px;
   padding: 6px 0;
   cursor: pointer;
-  font: 12px var(--font-body);
+  font: 14px var(--font-body);
 }
 .lab-brief {
   white-space: pre-wrap;
@@ -742,7 +742,7 @@
 #v40-root #studies .v41-f959088bbe,
 #v40-root #studies .v41-00bd1dd87d,
 #v40-root #studies .v41-1d10ce8d52 {
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: 0.06em;
 }
 #v40-root #studies {
@@ -1086,5 +1086,10 @@ html[data-motion="off"] .hearing-seal {
   }
 }
 #v40-root .experiment-picker label {
-  font-size: 13px;
+  font-size: 14px;
+}
+#v40-root #studies .za-btn {
+  min-height: 48px;
+  font-size: 14px;
+  line-height: 1.4;
 }

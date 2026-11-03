@@ -61,6 +61,32 @@ test("Build notes expose the decisions and limits with keyboard controls on desk
   }
 });
 
+test("workshop illustrations settle after a step change and remain still when motion is paused", async (t) => {
+  const page = await visit(t, { reducedMotion: "no-preference" });
+  const notes = page.locator("#build-evidence");
+  await notes.locator("summary").click();
+  await notes.getByRole("button", { name: /Reconcile/ }).click();
+  const diagram = page.locator(".build-story-evidence .build-diagram");
+  await expect
+    .poll(() =>
+      diagram.evaluate((node) => {
+        const animations = node.getAnimations({ subtree: true });
+        return animations.length > 0 && animations.every((animation) => animation.playState === "finished");
+      }),
+    )
+    .toBe(true);
+  await expect(notes.locator('.build-story-page[data-selected="true"]')).toContainText("Count the right things");
+  await page.getByRole("button", { name: "Pause motion", exact: true }).first().click();
+  await notes.getByRole("button", { name: /Publish/ }).click();
+  assert.equal(await diagram.evaluate((node) => node.getAnimations({ subtree: true }).length), 0);
+  await expect(notes.locator('.build-story-page[data-selected="true"]')).toContainText(
+    "Keep the claim small enough to trust",
+  );
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await notes.getByRole("button", { name: /Read/, exact: false }).click();
+  assert.equal(await diagram.evaluate((node) => node.getAnimations({ subtree: true }).length), 0);
+});
+
 test("The first-visit route boards the starship, cuts the cloud link and continues to the worlds", async (t) => {
   const page = await visit(t, { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   const route = page.getByRole("navigation", { name: "Recommended first visit" });

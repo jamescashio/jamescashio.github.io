@@ -55,27 +55,43 @@ const stories = {
 };
 
 function BuildDiagram({ selected, kind }: { selected: number; kind: keyof typeof stories }) {
+  const trace = ["M36 114h76", "M112 114h135l53-30", "M300 84l53 30h135"][selected];
   return (
-    <svg className="build-diagram" viewBox="0 0 600 200" fill="none" aria-hidden="true">
+    <svg className="build-diagram" viewBox="0 0 600 220" fill="none" aria-hidden="true">
       <path
         className="build-floor"
         d="m0 152 184-96 416 84M0 177 184-96 416 84M80 200 184-96 336 68M0 120l390 79M60 88l474 96M140 46l460 93"
       />
       <ellipse className="build-orbit" cx="300" cy="107" rx="260" ry="72" />
+      {[
+        [112, 174],
+        [300, 157],
+        [488, 187],
+      ].map(([x, y], i) => (
+        <g
+          key={x}
+          className={selected === i ? "build-plinth is-selected" : "build-plinth"}
+          transform={`translate(${x} ${y})`}
+        >
+          <ellipse rx="60" ry="18" className="build-ground-light" />
+          <path d="m-56 0 56-29 56 29-56 29Z" />
+          <path d="m-56 0v6l56 29 56-29V0M0 29v6" />
+        </g>
+      ))}
       <path className="build-route" d="M112 114h135l53-30 53 30h135" />
-      <path
-        key={selected}
-        className="build-route-light"
-        d={["M36 114h76", "M112 114h135l53-30", "M300 84l53 30h135"][selected]}
-      />
+      <path key={selected} className="build-route-light" pathLength="1" d={trace} />
       <g className={selected === 0 ? "build-node is-selected" : "build-node"}>
         <path className="build-node-fill" d="m71 71 41-23 41 23v71l-41 24-41-24Z" />
+        <path className="build-face-shadow" d="m112 95 41-24v71l-41 24Z" />
+        <path className="build-face-top" d="m71 71 41-23 41 23-41 24Z" />
         <path d="m71 71 41 24 41-24M112 95v71M80 93l23 13m-23 8 23 13m-23 8 23 13" />
         <path d={kind === "evidence" ? "m122 106 20-12m-20 33 20-12m-20 33 20-12" : "m122 106 20-12m-20 33 13-8"} />
         <circle cx="112" cy="49" r="4" />
       </g>
       <g className={selected === 1 ? "build-node is-selected" : "build-node"}>
         <path className="build-node-fill" d="m300 40 48 27v54l-48 28-48-28V67Z" />
+        <path className="build-face-shadow" d="m300 94 48-27v54l-48 28Z" />
+        <path className="build-face-top" d="m252 67 48-27 48 27-48 27Z" />
         <path d="m252 67 48 27 48-27M300 94v55" />
         <ellipse cx="300" cy="67" rx="26" ry="15" />
         <path d={kind === "evidence" ? "m286 66 10 6 18-10" : "m283 67 17-10 17 10-17 10Z"} />
@@ -83,9 +99,11 @@ function BuildDiagram({ selected, kind }: { selected: number; kind: keyof typeof
       </g>
       <g className={selected === 2 ? "build-node is-selected" : "build-node"}>
         <path className="build-node-fill" d="m456 54 44 9 24 30v70l-68-14Z" />
+        <path className="build-face-shadow" d="m490 88 34 5v70l-34-7Z" />
+        <path className="build-face-top" d="m500 63 24 30-24-5Z" />
         <path d="M500 63v25l24 5m-54 6 38 8m-38 8 38 8m-38 8 21 4" />
         <path d="m466 157-10 12 55 12 24-18-11-8" />
-        <circle cx="512" cy="146" r="15" />
+        <circle className="build-seal" cx="512" cy="146" r="15" />
         <path d="m505 146 5 5 9-10" />
       </g>
       {[112, 300, 488].map((x, i) => (
@@ -93,7 +111,7 @@ function BuildDiagram({ selected, kind }: { selected: number; kind: keyof typeof
           key={x}
           className={selected === i ? "build-beacon is-selected" : "build-beacon"}
           cx={x}
-          cy="185"
+          cy="210"
           r="3"
         />
       ))}
