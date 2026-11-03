@@ -571,6 +571,9 @@ html[data-motion="off"] .journey-disclosure-icon {
   color: #eeb958;
 }
 .mission-preview {
+  /* A column, so the artwork gives up height before the copy has to scroll. */
+  display: flex;
+  flex-direction: column;
   align-self: stretch;
   min-width: 0;
   position: relative;
@@ -586,7 +589,9 @@ html[data-motion="off"] .journey-disclosure-icon {
 }
 .mission-preview-art {
   position: relative;
+  flex: 0 1 auto;
   height: 195px;
+  min-height: 72px;
   overflow: hidden;
   background: #121212;
 }
