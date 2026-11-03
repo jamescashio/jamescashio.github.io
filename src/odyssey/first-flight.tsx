@@ -19,11 +19,14 @@ export default function FirstFlight({
   edition = "V37 / LIGHTFOLD",
   helios = false,
   visitorPaced = false,
+  startTour = false,
 }: {
   edition?: string;
   /** The current Helios front door: its recap, phone layout and contact exit. The V37 archive keeps the default. */
   helios?: boolean;
   visitorPaced?: boolean;
+  /** Explicit tour entrance only; ordinary boarding and reduced motion remain visitor paced. */
+  startTour?: boolean;
   motion: boolean;
   initialStep: string;
   onClose: (destination?: string) => void;
@@ -34,7 +37,7 @@ export default function FirstFlight({
   const remainingMs = useRef(FIRST_FLIGHT[flightStepIndex(initialStep)].durationMs);
   const timerChapter = useRef("");
   const [step, setStep] = useState(() => flightStepIndex(initialStep));
-  const [paused, setPaused] = useState(visitorPaced || !motion || initialStep !== "board");
+  const [paused, setPaused] = useState((visitorPaced && !startTour) || !motion || initialStep !== "board");
   const [phase, setPhase] = useState<"loading" | "ready" | "fallback">("loading");
   const [complete, setComplete] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -367,7 +370,9 @@ export default function FirstFlight({
       </header>
       {helios && (
         <div className="ff-scene-tools">
-          <p className="ff-scroll-cue">{compact ? "Scroll the scene ↓" : "3D flight · your pace"}</p>
+          <p className="ff-scroll-cue">
+            {playing ? `Tour · chapter ${step + 1} of 4` : compact ? "Scroll the scene ↓" : "3D flight · your pace"}
+          </p>
           <button
             type="button"
             disabled={!globalMotion}
@@ -532,7 +537,7 @@ export default function FirstFlight({
             </>
           )}
           {(complete || changed) && (
-            <p className="ff-memento">Keep your decision: save the card or copy its settings.</p>
+            <p className="ff-memento">Keep your decision: save a mission image or copy a link to this scenario.</p>
           )}
           <p className="ff-card-status" role="status">
             {cardStatus === "saving"

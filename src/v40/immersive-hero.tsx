@@ -169,8 +169,20 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
             I’m Doug Cashio. I build local AI experiments and original worlds after hours. Board a starship, try a
             decision, or explore what I’m making.
           </p>
-          <div className="continuum-actions">
-            <a href="#flight=board" onClick={v.boardShip} className="continuum-primary">
+          <a href="#flight=tour" className="continuum-primary tour-launch">
+            <span className="tour-launch-symbol" aria-hidden="true">
+              ▷
+            </span>
+            <span className="tour-launch-copy">
+              <strong>Play the 30-second tour</strong>
+              <small>Board. Cut the cloud. Take command.</small>
+            </span>
+            <span className="tour-launch-arrow" aria-hidden="true">
+              ↗
+            </span>
+          </a>
+          <div className="continuum-actions tour-alternatives">
+            <a href="#flight=board" onClick={v.boardShip} className="continuum-secondary">
               Board the starship <span aria-hidden="true">↗</span>
             </a>
             <a href="#studies" className="continuum-secondary">
@@ -178,7 +190,7 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
             </a>
           </div>
           <p className="continuum-footnote">
-            <strong>Start here:</strong> a 30 second starship tour · 12 illustrated requests · sound off
+            <strong>Your pace. Your command.</strong> Four scenes · sound off · pause any time.
           </p>
           <a href="/cashio.html#logo-reveal" className="hero-logo-reveal">
             <span aria-hidden="true">▷ </span>Watch the logo reveal · 15 seconds

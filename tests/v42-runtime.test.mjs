@@ -43,7 +43,7 @@ test("Omnius polish keeps instrument text readable and phone navigation delibera
     for (const label of await labels.all()) {
       assert.ok(await label.evaluate((n) => parseFloat(getComputedStyle(n).fontSize) >= 12), await label.innerText());
     }
-    assert.equal(await page.locator(".continuum-intro").evaluate((n) => getComputedStyle(n).fontSize), "16px");
+    assert.equal(await page.locator(".continuum-intro").evaluate((n) => getComputedStyle(n).fontSize), "17px");
     await expect(page.locator(".continuum-path-description")).toHaveText([
       "Explore four interactive worlds",
       "Try seven interactive experiments",
@@ -78,6 +78,69 @@ test("Omnius polish keeps instrument text readable and phone navigation delibera
     await page.keyboard.press("Escape");
     await expect(opener).toBeFocused();
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+  }
+});
+
+test("the explicit tour starts on readiness while ordinary boarding stays at the visitor's pace", async (t) => {
+  const page = await visit(t, { viewport: { width: 390, height: 844 }, reducedMotion: "no-preference" });
+  const entrance = page.locator("#top .tour-launch");
+  await entrance.click();
+  const flight = page.locator("#helios-flight dialog");
+  await expect(page).toHaveURL(/#flight=tour$/);
+  await expect(flight).toHaveAttribute("data-playback", "tour");
+  await expect(flight.getByRole("button", { name: "Pause tour", exact: true })).toBeVisible();
+  await flight.getByRole("button", { name: /Cut the cloud link/ }).click();
+  await expect(flight).toHaveAttribute("data-playback", "manual");
+  await expect(flight.locator(".ff-telemetry")).toContainText("12Onboard");
+  await page.keyboard.press("Escape");
+  await expect(entrance).toBeFocused();
+  await page.locator('#top a[href="#flight=board"]').click();
+  await expect(flight).toHaveAttribute("data-playback", "manual");
+  await flight.getByRole("button", { name: "Play tour", exact: true }).click();
+  await expect(flight).toHaveAttribute("data-playback", "tour");
+  await page.keyboard.press("Tab");
+  await expect(flight).toHaveAttribute("data-playback", "manual");
+});
+
+test("the tour respects reduced motion and phone keepsakes remain readable and functional", async (t) => {
+  for (const width of [320, 390]) {
+    const page = await visit(t, {
+      viewport: { width, height: 740 },
+      reducedMotion: "reduce",
+      permissions: ["clipboard-read", "clipboard-write"],
+    });
+    await page.locator("#top .tour-launch").click();
+    const flight = page.locator("#helios-flight dialog");
+    await expect(flight).toHaveAttribute("data-playback", "manual");
+    await expect(flight.getByRole("button", { name: "Manual flight", exact: true })).toBeDisabled();
+    for (const action of await flight.locator(".ff-save, .ff-share").all()) {
+      const box = await action.boundingBox();
+      assert.ok(box.width >= 44 && box.height >= 44 && box.x >= 0 && box.x + box.width <= width);
+      assert.ok(
+        await action.locator("span").evaluate((n) => {
+          const style = getComputedStyle(n);
+          return style.clipPath === "none" && n.getBoundingClientRect().width > 40;
+        }),
+        "the action has a readable label, not only an accessible name",
+      );
+    }
+    await flight.getByRole("button", { name: "Copy this flight", exact: true }).click();
+    await expect(flight.getByRole("button", { name: "Link copied", exact: true })).toBeVisible();
+    assert.equal(await page.evaluate(() => navigator.clipboard.readText()), new URL("#flight=board", url).href);
+    const download = page.waitForEvent("download");
+    await flight.getByRole("button", { name: "Save mission card", exact: true }).click();
+    const saved = await download;
+    assert.match(saved.suggestedFilename(), /\.png$/);
+    const bytes = await readFile(await saved.path());
+    assert.deepEqual([...bytes.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
+    await flight.getByRole("button", { name: "Next →", exact: true }).click();
+    await expect(flight.locator(".ff-story > .ff-eyebrow")).toContainText("02 / 04");
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+    const { violations } = await new AxeBuilder({ page }).include("#helios-flight").analyze();
+    assert.deepEqual(
+      violations.map((item) => item.id),
+      [],
+    );
   }
 });
 

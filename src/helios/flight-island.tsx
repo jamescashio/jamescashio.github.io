@@ -8,11 +8,13 @@ export function openFlight({
   step,
   onClose,
   arrive = false,
+  startTour = false,
 }: {
   motion: boolean;
   step: string;
   onClose: (destination?: string) => void;
   arrive?: boolean;
+  startTour?: boolean;
 }) {
   const host = document.createElement("div");
   host.id = "helios-flight";
@@ -21,7 +23,7 @@ export function openFlight({
   document.body.append(host);
   window.dispatchEvent(new Event("helios-overlay"));
   const root = createRoot(host);
-  root.render(<FlightBridge motion={motion} step={step} onClose={onClose} />);
+  root.render(<FlightBridge motion={motion} step={step} startTour={startTour} onClose={onClose} />);
   return {
     dispose() {
       root.unmount();

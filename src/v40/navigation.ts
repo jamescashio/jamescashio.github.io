@@ -19,7 +19,7 @@ export function revealHashTarget(doc: Document, hash: string) {
 export const sceneKind = (hash: string) =>
   hash === "#film=intro" || hash === "#film=trailer"
     ? "reel"
-    : /^#flight=(board|hull|blackout|permission)$/.test(hash)
+    : /^#flight=(tour|board|hull|blackout|permission)$/.test(hash)
       ? "flight"
       : isZenithFilm(hash) ||
           /^#(?:signature|lensing(?:&.*)?|film(?:=(?:intro|sanctuary|lightwake|signature|awakening|arrival))?)$/.test(
@@ -149,7 +149,8 @@ export function setupV40Navigation() {
         kind === "flight"
           ? (module as typeof import("../helios/flight-island")).openFlight({
               motion: motion(),
-              step: hash.slice(8),
+              step: hash === "#flight=tour" ? "board" : hash.slice(8),
+              startTour: hash === "#flight=tour",
               onClose: close,
             })
           : (module as typeof import("../helios/studio-island")).openStudio({

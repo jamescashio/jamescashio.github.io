@@ -41,7 +41,7 @@ test("fragment destinations reveal only their enclosing disclosures, including e
 
 test("current experience bookmarks never redirect to V39 before V40 can open them", async () => {
   const script = await readFile(new URL("../public/v40-entry.js", import.meta.url), "utf8");
-  for (const hash of ["#flight=board", "#film=intro", "#signature", "#lensing", "#build=briefing"]) {
+  for (const hash of ["#flight=tour", "#flight=board", "#film=intro", "#signature", "#lensing", "#build=briefing"]) {
     const url = new URL("https://cashio.us/" + hash);
     let replacement;
     vm.runInNewContext(script, {

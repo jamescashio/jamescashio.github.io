@@ -8,10 +8,12 @@ import { adoptStyles } from "./adopted-styles";
 export default function FlightBridge({
   motion,
   step,
+  startTour = false,
   onClose,
 }: {
   motion: boolean;
   step: string;
+  startTour?: boolean;
   onClose: (destination?: string) => void;
 }) {
   const [activeMotion, setActiveMotion] = useState(motion);
@@ -29,6 +31,7 @@ export default function FlightBridge({
       edition="FIRST FLIGHT"
       helios
       visitorPaced
+      startTour={startTour}
     />
   );
 }

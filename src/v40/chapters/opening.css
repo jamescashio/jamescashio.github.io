@@ -1978,7 +1978,7 @@ html[data-background="true"] *::after {
 .continuum-intro {
   color: #d3dce1;
   max-width: 48ch;
-  font: 400 17px/1.7 var(--font-body);
+  font: 400 18px/1.7 var(--font-body);
   margin: 0 0 24px;
   text-shadow: 0 1px 12px #000;
 }
@@ -2234,10 +2234,11 @@ html[data-background="true"] *::after {
   }
   .continuum-intro {
     margin-bottom: 18px;
-    font-size: 16px;
+    font-size: 17px;
   }
   .continuum-scene-deck {
-    bottom: 44px;
+    top: clamp(140px, calc(100svh - 460px), 300px);
+    bottom: auto;
     width: 310px;
   }
   .flight-signature {
@@ -2360,7 +2361,7 @@ html[data-background="true"] *::after {
     margin: 18px 0 10px;
   }
   .continuum-intro {
-    font-size: 16px;
+    font-size: 17px;
     line-height: 1.6;
     margin-bottom: 20px;
   }
@@ -2451,7 +2452,7 @@ html[data-background="true"] *::after {
     gap: 6px;
   }
   .continuum-intro {
-    font-size: 16px;
+    font-size: 17px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -2527,7 +2528,7 @@ html[data-motion="off"] .hero-flight-camera {
 }
 .continuum-footnote,
 .continuum-copy .hero-logo-reveal {
-  font-size: 13px;
+  font-size: 14px;
   color: #d1dce2;
 }
 #v40-root nav[aria-label="Sections"] .v41-cbba20e481 {
@@ -2584,6 +2585,81 @@ html[data-motion="off"] .hero-flight-camera {
   }
   #v40-root .continuum-hero .hero-planet {
     height: 1240px;
+  }
+}
+/* A boarding pass in the existing gold light: the guided entrance is explicit. */
+.continuum-copy .tour-launch {
+  display: flex;
+  width: min(100%, 520px);
+  gap: 14px;
+  padding: 18px;
+  text-align: left;
+  background: linear-gradient(110deg, #ffe8b5, #efbc64 70%, #e5a63f);
+}
+.tour-launch-symbol {
+  display: grid;
+  place-items: center;
+  flex: 0 0 38px;
+  height: 38px;
+  border: 1px solid #5b3b2080;
+  border-radius: 50%;
+  font: 24px/1 var(--font-body);
+}
+.tour-launch-copy {
+  flex: 1;
+  min-width: 0;
+}
+.tour-launch-copy strong,
+.tour-launch-copy small {
+  display: block;
+}
+.tour-launch-copy strong {
+  font: 700 18px/1.35 var(--font-body);
+}
+.tour-launch-copy small {
+  margin-top: 5px;
+  font: 500 14px/1.4 var(--font-body);
+}
+.tour-launch-arrow {
+  font-size: 22px;
+}
+.tour-alternatives {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: min(100%, 520px);
+  gap: 10px;
+  margin-top: 10px;
+}
+.tour-alternatives .continuum-secondary {
+  padding: 12px 14px;
+  font-size: 15px;
+  gap: 10px;
+  min-width: 0;
+}
+@media (max-width: 360px) {
+  #v40-root header .v41-d28b3b93ee {
+    padding-inline: 12px;
+  }
+  #v40-root header .v41-076bc5e3cc,
+  #v40-root header .v41-21f61ee01b {
+    gap: 6px;
+  }
+  #v40-root header .v41-9fb65157a3 {
+    font-size: 20px;
+  }
+  .continuum-copy .tour-launch {
+    padding: 14px 12px;
+    gap: 10px;
+  }
+  .tour-launch-symbol {
+    flex-basis: 30px;
+    height: 30px;
+  }
+  .tour-launch-arrow {
+    display: none;
+  }
+  .tour-alternatives .continuum-secondary {
+    padding-inline: 10px;
   }
 }
 /* Shared scene islands inherit V40's type and palette without restyling its page. */

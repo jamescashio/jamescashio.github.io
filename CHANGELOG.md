@@ -2,6 +2,8 @@
 
 ## V42.0.0 · Omnius, Overruled · 11-02-2026
 
+First Flight entrance · 11-03-2026: a prominent gold invitation starts the optional thirty-second tour; ordinary boarding remains visitor paced. Larger reading text, experiment results and controls improve legibility. Save and copy actions keep their labels on phones. The workshop illustrations gain shaded facets, illuminated bases and a finite light trace that respects Pause and reduced motion. The original artwork, identity and existing destinations remain.
+
 Homepage films · 11-03-2026: the Eagle film leaves the homepage again, as asked on October 26, 2026. Portal Arrival, the silent Zenith short of a doorway and a ringed planet, takes the second seat in the House Cashio feature picker and the cinema stop on the guided route, using its existing posters. Eagle stays reachable from the Studios room, Mission Control and its /#film=intro link. Duration and caption notes now follow each film rather than its seat.
 
 Screening room loops · 11-02-2026: on a desktop pointer with motion on, each short film card plays a silent three second loop on hover, cut from the film itself (15 loops, 912 KB in all, the largest 172 KB). They load only after the collection opens and nears view, never on phones, with Save Data, reduced motion or Pause, and hover no longer pulls the full film file. Measured against the existing hover playback on the same machine, the loops added no slow frames.
