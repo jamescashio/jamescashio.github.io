@@ -50,7 +50,7 @@ test("V40 ships its real reading edition under the strict production security po
     "Read the " + observedMonth + " observation",
   );
   assert.ok(root.textContent.includes(observedMonth + " · Scheduler and routing not measured"));
-  assert.equal(receipt.presentation.name, "Omnius, Overruled");
+  assert.equal(receipt.presentation.name, "Starfall");
   assert.equal(
     root.querySelector("#top .continuum-arrival > span:nth-child(2)").textContent,
     receipt.presentation.name,
@@ -62,7 +62,7 @@ test("V40 ships its real reading edition under the strict production security po
     year: "numeric",
     timeZone: "UTC",
   }).format(new Date(receipt.updatedDate + "T12:00:00Z"));
-  assert.match(root.querySelector("footer").textContent, new RegExp("Omnius, Overruled.*Updated " + updatedDate));
+  assert.match(root.querySelector("footer").textContent, new RegExp("Starfall.*Updated " + updatedDate));
   assert.doesNotMatch(root.querySelector("footer").textContent, /Preview 05|current public site/);
   assert.equal(root.querySelectorAll("[style]").length, 0, "the reading edition must not use inline style attributes");
   const csp = document.querySelector('meta[http-equiv="Content-Security-Policy"]').content;
@@ -234,7 +234,7 @@ function expandScript(scripts, name, seen = new Set()) {
 
 test("V37 software gates preserve the independent V35 dated evidence", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "42.0.0");
+  assert.equal(packageJson.version, "43.0.0");
   const lock = JSON.parse(await read("package-lock.json"));
   assert.equal(lock.version, packageJson.version);
   assert.equal(lock.packages[""].version, packageJson.version);
@@ -813,8 +813,8 @@ test("Helios release identity, signature assets and compatibility receipts agree
     const compatibility = JSON.parse(await read(`dist/${name}`));
     assert.deepEqual(compatibility.frontDoor, {
       entry: "/",
-      experienceVersion: "42.0.0",
-      visualEdition: "Omnius, Overruled",
+      experienceVersion: "43.0.0",
+      visualEdition: "Starfall",
       receipt: "/v40/site-release.json",
     });
   }
@@ -863,8 +863,8 @@ test("Helios release identity, signature assets and compatibility receipts agree
   );
   assert.ok(doc.querySelector('#snapshot-story a[href="/evidence/console-snapshot-2026-10-03.json"]'));
   assert.deepEqual(JSON.parse(await read("dist/evidence/status.json")), JSON.parse(await read("status.json")));
-  assert.ok((await read("README.md")).startsWith("# cAshIo V42 · Omnius, Overruled"));
-  assert.equal((await read("CHANGELOG.md")).match(/^## (V[\d.]+)/m)?.[1], "V42.0.0");
+  assert.ok((await read("README.md")).startsWith("# cAshIo V43 · Starfall"));
+  assert.equal((await read("CHANGELOG.md")).match(/^## (V[\d.]+)/m)?.[1], "V43.0.0");
   const sitemap = new JSDOM(await read("dist/sitemap.xml"), { contentType: "application/xml" }).window.document;
   const home = [...sitemap.querySelectorAll("url")].find(
     (entry) => entry.querySelector("loc")?.textContent === "https://cashio.us/",

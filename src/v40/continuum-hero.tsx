@@ -94,7 +94,7 @@ export function ContinuumHero({ v }: { v: HeroView }) {
       <HeroPlanet />
       <div className="continuum-grid" aria-hidden="true" />
       <div className="continuum-arrival">
-        <span>cAshIo / V42</span>
+        <span>cAshIo / V43</span>
         <span>
           {presentation.name} · {presentation.subtitle}
         </span>

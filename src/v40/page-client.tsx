@@ -33,6 +33,14 @@ export const startPage = () => {
         })
         .catch(() => {});
       void import("./hero-enhancement").then(({ installLivingHero }) => installLivingHero());
+      // V43 Starfall: the deep sky and flight instruments arrive last, after the page is interactive.
+      void import("./starfall.css")
+        .then(() => import("./starfall"))
+        .then(({ installStarfall }) => {
+          const stop = installStarfall();
+          if (window.cashioV40) window.cashioV40.stopStarfall = stop;
+        })
+        .catch(() => {});
     })
     .catch(() => {});
 };

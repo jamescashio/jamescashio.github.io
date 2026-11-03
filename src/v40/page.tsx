@@ -98,7 +98,7 @@ export class V40Page extends React.Component<PageProps, PageState> implements Pa
     traceStep: -1,
     tracing: false,
     eveLog: [
-      ["d", "Page updated · " + updatedDate + " · V42 / " + presentation.name],
+      ["d", "Page updated · " + updatedDate + " · V43 / " + presentation.name],
       [
         "d",
         // The date prints once; a second line names it only if the observation day differs.

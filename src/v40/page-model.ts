@@ -105,6 +105,7 @@ export interface PageHost {
   syncMotion: () => void;
   stopMedia?: () => void;
   stopCinemaPreviews?: () => void;
+  stopStarfall?: () => void;
   starDraw?: (delta?: number) => void;
   starLoop?: (timestamp?: number) => void;
   keyBuf: string;

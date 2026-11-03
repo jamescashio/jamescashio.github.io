@@ -8,3 +8,10 @@
 @import "./chapters/evidence.css";
 @import "./chapters/contact.css";
 @import "./chapters/rooms.css";
+
+/* V43: footer links meet the 24 px minimum target size on every viewport. */
+#v40-root footer a:not(p a) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+}

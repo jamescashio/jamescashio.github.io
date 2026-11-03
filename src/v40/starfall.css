@@ -1,0 +1,454 @@
+/* V43 Starfall. Loaded on demand after hydration, so the opening stylesheet budget is untouched. */
+
+/* The sky sits under the chapters. The root gives up its flat fill and the chapters turn to smoked glass. */
+html.sf-on body {
+  background-color: #050608;
+}
+html.sf-on #v40-root {
+  background: transparent;
+}
+html.sf-on #v40-root main > section[id]:not(#top) {
+  background-color: rgb(8 9 12 / 0.62);
+}
+
+.sf-sky,
+.sf-nebula {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+.sf-nebula {
+  opacity: 0;
+  transition: opacity 1600ms ease;
+  background:
+    radial-gradient(
+      ellipse 60% 45% at 82% 18%,
+      color-mix(in srgb, var(--sf-a, #f4bd5e) 22%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 55% 50% at 12% 86%,
+      color-mix(in srgb, var(--sf-b, #72e5f4) 20%, transparent),
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 40% 30% at 50% 50%,
+      color-mix(in srgb, var(--sf-a, #f4bd5e) 6%, transparent),
+      transparent 80%
+    );
+}
+.sf-nebula[data-show="true"] {
+  opacity: 1;
+}
+
+/* Overlays share one fixed layer above the content and below the header, rail and dialogs. */
+.sf-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 24;
+  overflow: hidden;
+  pointer-events: none;
+}
+.sf-locks {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 24;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Hyperspace jump: a breath of light from the vanishing point. */
+.sf-jump {
+  position: absolute;
+  inset: -20%;
+  opacity: 0;
+  background:
+    radial-gradient(circle at 50% 45%, #fff7e0b0 0, #72e5f455 9%, transparent 34%),
+    repeating-conic-gradient(from 0deg at 50% 45%, #72e5f412 0 1.2deg, transparent 1.2deg 6deg);
+  mix-blend-mode: screen;
+}
+.sf-jump.sf-go {
+  animation: sf-jump 640ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+@keyframes sf-jump {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  22% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+/* Holographic glint: pointer lit sheen and a light that runs the card's edge. */
+.sf-glint {
+  position: absolute;
+  left: var(--l, 0);
+  top: var(--t, 0);
+  width: var(--w, 0);
+  height: var(--h, 0);
+  opacity: 0;
+  transition: opacity 260ms ease;
+  background: radial-gradient(circle 220px at var(--gx, 50%) var(--gy, 50%), #ffffff1c, #72e5f40f 38%, transparent 70%);
+  mix-blend-mode: screen;
+}
+.sf-glint::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: radial-gradient(circle 160px at var(--gx, 50%) var(--gy, 50%), #ffe0a1, #72e5f4aa 45%, transparent 75%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+.sf-glint[data-show="true"] {
+  opacity: 1;
+}
+
+/* Click ripple. The native pointer stays. */
+.sf-ripple {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border: 1.5px solid #ffd98f;
+  border-radius: 50%;
+  box-shadow: 0 0 14px #72e5f4aa;
+  animation: sf-ripple 620ms cubic-bezier(0.1, 0.7, 0.2, 1) forwards;
+}
+@keyframes sf-ripple {
+  to {
+    transform: scale(7);
+    opacity: 0;
+    border-color: #72e5f4;
+  }
+}
+
+/* Target lock on each chapter heading: four brackets converge, then a scan beam reads the line. */
+.sf-lock {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--w);
+  height: var(--h);
+  animation: sf-lock-fade 1500ms ease forwards;
+}
+.sf-lock i {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 0 solid #ffd98f;
+  filter: drop-shadow(0 0 6px #f4bd5e99);
+  animation: sf-bracket 620ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+.sf-lock i:nth-child(1) {
+  left: 0;
+  top: 0;
+  border-width: 2px 0 0 2px;
+  --dx: -26px;
+  --dy: -18px;
+}
+.sf-lock i:nth-child(2) {
+  right: 0;
+  top: 0;
+  border-width: 2px 2px 0 0;
+  --dx: 26px;
+  --dy: -18px;
+}
+.sf-lock i:nth-child(3) {
+  left: 0;
+  bottom: 0;
+  border-width: 0 0 2px 2px;
+  --dx: -26px;
+  --dy: 18px;
+}
+.sf-lock i:nth-child(4) {
+  right: 0;
+  bottom: 0;
+  border-width: 0 2px 2px 0;
+  --dx: 26px;
+  --dy: 18px;
+}
+.sf-lock b {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.sf-lock b::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 18%;
+  background: linear-gradient(90deg, transparent, #72e5f455 60%, #e9fbffcc 92%, transparent);
+  mix-blend-mode: screen;
+  transform: translateX(-120%);
+  animation: sf-scan 900ms 260ms cubic-bezier(0.5, 0, 0.3, 1) forwards;
+}
+@keyframes sf-bracket {
+  from {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy)) scale(1.6);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes sf-scan {
+  to {
+    transform: translateX(620%);
+  }
+}
+@keyframes sf-lock-fade {
+  0%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Flight instruments on the Sections rail: a descent from orbit to touchdown. */
+.sf-flight {
+  position: fixed;
+  inset: 0;
+  z-index: 36;
+  pointer-events: none;
+  display: none;
+}
+.sf-flight[data-on="true"] {
+  display: block;
+}
+.sf-track {
+  position: absolute;
+  left: var(--sf-left);
+  top: var(--sf-top);
+  width: 2px;
+  height: var(--sf-h);
+  background: linear-gradient(180deg, #72e5f455, #f4bd5e33 70%, #ffd98f66);
+  border-radius: 2px;
+}
+.sf-track::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: calc(var(--sf-p, 0) * 100%);
+  background: linear-gradient(180deg, #72e5f4, #ffd98f);
+  box-shadow: 0 0 8px #72e5f4aa;
+  border-radius: 2px;
+}
+.sf-craft {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--sf-p, 0) * 100%);
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fffaf0 0 30%, #72e5f4 55%, transparent 72%);
+  box-shadow:
+    0 0 10px #72e5f4,
+    0 0 22px #72e5f466;
+}
+.sf-craft::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 70%;
+  width: 2px;
+  height: 26px;
+  margin-left: -1px;
+  background: linear-gradient(0deg, #72e5f4cc, transparent);
+  border-radius: 2px;
+}
+.sf-flight[data-landed="true"] .sf-craft {
+  background: radial-gradient(circle, #fffaf0 0 30%, #ffd98f 55%, transparent 72%);
+  box-shadow:
+    0 0 12px #ffd98f,
+    0 0 28px #f4bd5e88;
+  animation: sf-landed 1600ms ease-in-out infinite;
+}
+.sf-flight[data-landed="true"] .sf-craft::after {
+  opacity: 0;
+}
+.sf-flight.sf-boom .sf-craft::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border: 1.5px solid #e9fbff;
+  border-radius: 50%;
+  animation: sf-boom 900ms cubic-bezier(0.1, 0.7, 0.2, 1) forwards;
+}
+@keyframes sf-boom {
+  to {
+    transform: scale(6.5);
+    opacity: 0;
+  }
+}
+@keyframes sf-landed {
+  50% {
+    box-shadow:
+      0 0 18px #ffd98f,
+      0 0 40px #f4bd5eaa;
+  }
+}
+.sf-readout {
+  position: absolute;
+  left: 0;
+  bottom: calc(var(--sf-rail-bottom, 0px) + 16px);
+  width: var(--sf-rail-w, 96px);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font:
+    500 11px/1.2 "JetBrains Mono",
+    ui-monospace,
+    monospace;
+  letter-spacing: 0.06em;
+  color: #9fe3f4;
+  text-align: center;
+}
+.sf-flight[data-readout="true"] .sf-readout {
+  display: flex;
+}
+.sf-readout strong {
+  font-weight: 600;
+  color: #ffd98f;
+  white-space: nowrap;
+}
+.sf-readout span {
+  color: #9fb4bd;
+  font-size: 10px;
+  max-width: 88px;
+}
+
+/* Easter egg toast. */
+.sf-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  z-index: 60;
+  padding: 10px 16px;
+  border: 1px solid #72e5f466;
+  border-radius: 6px;
+  background: #090b10e8;
+  box-shadow:
+    0 12px 40px #000a,
+    0 0 24px #72e5f422;
+  color: #e9f1ff;
+  font:
+    500 14px/1.3 "JetBrains Mono",
+    ui-monospace,
+    monospace;
+  transform: translate(-50%, 16px);
+  opacity: 0;
+  transition:
+    opacity 260ms ease,
+    transform 260ms ease;
+  pointer-events: none;
+}
+.sf-toast[data-show="true"] {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* Holographic sheen across the gold promise in the hero. */
+html.sf-on[data-sf-motion="on"] #top h1 > span {
+  background-image: linear-gradient(
+    100deg,
+    #fff0bd 0%,
+    #f4bd5e 30%,
+    #dc9e41 44%,
+    #fffaf0 50%,
+    #dc9e41 56%,
+    #f4bd5e 70%,
+    #fff0bd 100%
+  );
+  background-size: 260% 100%;
+  animation: sf-sheen 7s ease-in-out 1.2s infinite;
+}
+@keyframes sf-sheen {
+  0%,
+  55% {
+    background-position: 100% 0;
+  }
+  85%,
+  100% {
+    background-position: 0% 0;
+  }
+}
+
+/* Without motion everything decorative holds still. */
+html[data-motion="off"] .sf-nebula {
+  transition: none;
+}
+html[data-motion="off"] :is(.sf-jump, .sf-glint, .sf-ripple, .sf-lock),
+html[data-sf-motion="off"] :is(.sf-jump, .sf-glint, .sf-ripple, .sf-lock) {
+  display: none;
+}
+html[data-motion="off"] .sf-craft,
+html[data-motion="off"] .sf-flight[data-landed="true"] .sf-craft {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sf-nebula,
+  .sf-toast {
+    transition: none;
+  }
+  .sf-jump,
+  .sf-glint,
+  .sf-ripple,
+  .sf-lock {
+    display: none;
+  }
+  .sf-flight[data-landed="true"] .sf-craft,
+  #top h1 > span {
+    animation: none;
+  }
+}
+@media (forced-colors: active) {
+  .sf-sky,
+  .sf-nebula,
+  .sf-overlay,
+  .sf-locks,
+  .sf-flight {
+    display: none;
+  }
+}
+@media print {
+  .sf-sky,
+  .sf-nebula,
+  .sf-overlay,
+  .sf-locks,
+  .sf-flight,
+  .sf-toast {
+    display: none;
+  }
+}
+
+.sf-meteors {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  mix-blend-mode: screen;
+}

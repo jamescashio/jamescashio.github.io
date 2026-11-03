@@ -9,6 +9,9 @@ export function eve(this: PageHost, raw: string) {
     this.defiant();
     return;
   }
+  // Starfall commands reach the deep sky layer, so phones get the eggs without a keyboard.
+  const sky = { starfall: "starfall", engage: "engage", zoom: "zoom" } as const;
+  if (Object.hasOwn(sky, cmd)) window.dispatchEvent(new CustomEvent("cashio-starfall", { detail: cmd }));
   const R: Record<string, [string, string][]> = {
     help: [["r", "Commands: fleet · hosts · backups · atlas · routes · cost · about · contact · surprise me"]],
     fleet: [
@@ -47,9 +50,7 @@ export function eve(this: PageHost, raw: string) {
     towel: [["lore", "LORE · Towel located. Kept handy, as advised."]],
     "don't panic": [["lore", "LORE · Large, friendly letters engaged. Nothing on this page requires panic."]],
     "dont panic": [["lore", "LORE · Large, friendly letters engaged. Nothing on this page requires panic."]],
-    "mostly harmless": [
-      ["lore", "LORE · V42, Omnius, Overruled. The answer is here. The questions are getting better."],
-    ],
+    "mostly harmless": [["lore", "LORE · V43, Starfall. The answer is here. The questions are getting better."]],
     spice: [["lore", "LORE · Spice flows on Arrakis. Private data stays home."]],
     omnius: [
       [
@@ -57,10 +58,15 @@ export function eve(this: PageHost, raw: string) {
         "LORE · Omnius, Overruled. The machine overmind from the Dune prequels has a suggestion. The human has the last word.",
       ],
     ],
+    starfall: [["lore", "LORE · Starfall. Look up. Make a wish, then make it testable."]],
+    engage: [["lore", "LORE · Engaging. Warp factor sensible. The human still holds the helm."]],
+    zoom: [["lore", "LORE · Zoom. Somewhere a test pilot nods and writes down what the instruments said."]],
+    mach: [["lore", "LORE · Scroll fast enough and the rail reads Mach 1. Yeager would want the data, not the boom."]],
     joke: [["lore", "LORE · The universe is expanding. Somehow there is still nowhere to park the starship."]],
   };
   const lore = [
-    "LORE · Omnius, Overruled: V42. The answer is here. Human judgment still required.",
+    "LORE · Starfall: V43. The answer is here. Human judgment still required.",
+    "LORE · Type starfall anywhere on the page. Bring a wish and a test plan.",
     "LORE · A human in command is not a bottleneck. It is the point.",
     "LORE · Zeus and Apollo keep the lights on. Hermes carries the messages. Nobody gets a throne.",
     "LORE · Fly it like a test pilot: know the envelope, then write down what the instruments actually said.",

@@ -42,7 +42,7 @@ export function ReleaseHearing() {
           ◇
         </span>
         <span className="hearing-invitation">
-          <small>V42 / Omnius, Overruled</small>
+          <small>The V42 hearing / Omnius</small>
           <strong>Overrule the overmind.</strong>
         </span>
         <span className="hearing-open">

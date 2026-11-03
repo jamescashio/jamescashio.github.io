@@ -347,7 +347,7 @@ test("Every mobile Menu section stays in V40 and survives a reload", async (t) =
       await expect(page.locator(`#${id}`)).toBeInViewport();
       await page.reload();
       await expect(page.locator("#mission-dialog")).toBeAttached();
-      await expect(page).toHaveTitle(/V42 Omnius, Overruled/);
+      await expect(page).toHaveTitle(/V43 Starfall/);
       assert.equal(new URL(page.url()).pathname, "/");
       assert.equal(new URL(page.url()).hash, `#${id}`);
       await expect(page.locator(`#${id}`)).toBeInViewport();
@@ -448,15 +448,15 @@ test("The consolidated routing-law bookmark and glossary remain readable without
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 390);
 });
 
-test("Current room and flight titles consistently identify V42", async (t) => {
+test("Current room and flight titles consistently identify V43", async (t) => {
   const page = await visit(t);
   await page.locator('#hero-content a[href="#flight=board"]').click();
-  await expect(page).toHaveTitle("First flight · cAshIo V42");
+  await expect(page).toHaveTitle("First flight · cAshIo V43");
   await expect(page.locator("#helios-flight dialog")).toBeVisible();
   await page.keyboard.press("Escape");
-  await expect(page).toHaveTitle(/V42 Omnius, Overruled/);
+  await expect(page).toHaveTitle(/V43 Starfall/);
   await page.goto(new URL("/rooms/starship/interactive/", url).href);
-  await expect(page).toHaveTitle("Starship lab · cAshIo V42");
+  await expect(page).toHaveTitle("Starship lab · cAshIo V43");
 });
 
 test("Shared scenarios reject inherited keys while restoring valid bounded values", async (t) => {

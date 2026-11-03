@@ -1,5 +1,11 @@
 # Changelog
 
+## V43.0.0 · Starfall · 11-03-2026
+
+Starfall · 11-03-2026: the page becomes a descent from orbit to touchdown. A deep sky with three parallax star depths and a nebula tinted per chapter lives behind every chapter, whose backgrounds turn to smoked glass. Fast scrolling stretches the stars into hyperspace streaks; chapter links and long jumps burst outward from the vanishing point. The Sections rail carries a flight track with a craft, an altitude readout falling from 400 km to touchdown and a Mach readout with a sonic ring. Chapter titles arrive under a target lock with a scan beam, cards and panels answer the pointer with a holographic glint and edge light, actions answer a click with a ring, and the gold promise in the hero carries a slow holographic sheen. A short meteor shower crosses the opening frame once per browser session. Typing starfall, engage or zoom anywhere, or in E.V.E., fires a shower or a jump; E.V.E. also answers mach. Everything loads after the page is interactive, sits outside the React tree, makes no sound, sends nothing and holds still under Pause, reduced motion, forced colors and print.
+
+Content · 11-03-2026: the Your first orbit strip under the trailer is removed because the hero tour and the three entrances already offer the same route. The hero tour label drops its last hyphen. The V42 receipt is preserved at /v42/omnius-overruled-release.json, and the Omnius hearing keeps its place, labeled as the V42 hearing. The verified November 2, 2026 observation is unchanged.
+
 ## V42.0.0 · Omnius, Overruled · 11-02-2026
 
 First Flight entrance · 11-03-2026: a prominent gold invitation starts the optional thirty-second tour; ordinary boarding remains visitor paced. Larger reading text, experiment results and controls improve legibility. Save and copy actions keep their labels on phones. The workshop illustrations gain shaded facets, illuminated bases and a finite light trace that respects Pause and reduced motion. The original artwork, identity and existing destinations remain.

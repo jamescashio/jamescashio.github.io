@@ -47,7 +47,7 @@ export function renderFooter(_v: GeneratedView) {
           h(
             React.Fragment,
             { key: 1895 },
-            "V42 · " + presentation.name + " · Directed by Doug Cashio · Updated " + updatedDate,
+            "V43 · " + presentation.name + " · Directed by Doug Cashio · Updated " + updatedDate,
           ),
         ),
         " ",
@@ -211,7 +211,7 @@ export function renderFooter(_v: GeneratedView) {
         key: 1964,
         className: "v41-b9be7637a3",
       },
-      h("span", { key: 1965 }, h(React.Fragment, { key: 1966 }, "V42 · The answer is here. Keep asking.")),
+      h("span", { key: 1965 }, h(React.Fragment, { key: 1966 }, "V43 · The answer is here. Keep asking.")),
       h("span", { key: 1967 }, h(React.Fragment, { key: 1968 }, "Mostly harmless · Human in command")),
     ),
     " ",

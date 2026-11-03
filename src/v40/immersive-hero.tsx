@@ -129,8 +129,8 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
       </div>
       <div className="continuum-horizon" aria-hidden="true" />
       <div className="continuum-arrival">
-        <span>cAshIo / V42</span>
-        <span>Omnius, Overruled</span>
+        <span>cAshIo / V43</span>
+        <span>Starfall</span>
         <span className="continuum-arrival-end">
           <i aria-hidden="true" /> Built after hours
         </span>
@@ -174,7 +174,7 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
               ▷
             </span>
             <span className="tour-launch-copy">
-              <strong>Play the 30-second tour</strong>
+              <strong>Play the 30 second tour</strong>
               <small>Board. Cut the cloud. Take command.</small>
             </span>
             <span className="tour-launch-arrow" aria-hidden="true">

@@ -1,35 +1,35 @@
 {
-  "experienceVersion": "42.0.0",
-  "releaseId": "omnius-overruled-42.0.0-directors-20261102",
-  "releaseName": "OMNIUS, OVERRULED",
-  "visualEdition": "Omnius, Overruled",
+  "experienceVersion": "43.0.0",
+  "releaseId": "starfall-43.0.0-20261103",
+  "releaseName": "STARFALL",
+  "visualEdition": "Starfall",
   "presentation": {
-    "name": "Omnius, Overruled",
+    "name": "Starfall",
     "subtitle": "Imagination, with intention",
-    "revision": "The director’s cut. Stories worth exploring.",
-    "preparedDate": "2026-11-02"
+    "revision": "A descent from orbit to touchdown. The sky comes with you.",
+    "preparedDate": "2026-11-03"
   },
   "entry": "/",
   "status": "released",
   "published": true,
-  "releaseDate": "2026-11-02",
+  "releaseDate": "2026-11-03",
   "previousExperience": {
     "version": "39.8.0",
     "entry": "/v39/",
     "receipt": "/v38/site-release.json"
   },
-  "rollbackCommit": "650f395adc36ae762acd99e43c0a4655d653ed1f",
+  "rollbackCommit": "4b9600ca10d1c57ebe3860b2deff101982f49411",
   "evidenceSnapshot": {
     "url": "/status.json",
     "fleetObserved": "2026-11-02",
     "routingObserved": null
   },
-  "statement": "V42 Omnius, Overruled is a front end redesign with illustrated project stories and a guided first visit. Bit and the demonstrations are scripted browser experiences. Generative scenes are artwork. Observation records retain their original dates, versions and limits.",
-  "updatedDate": "2026-11-02",
+  "statement": "V43 Starfall adds a deep sky behind every chapter, flight instruments on the Sections rail, hyperspace jumps between chapters, target locks on chapter titles and holographic light on cards. Bit and the demonstrations are scripted browser experiences. Generative scenes are artwork. Observation records retain their original dates, versions and limits.",
+  "updatedDate": "2026-11-03",
   "previousRelease": {
-    "version": "41.0.0",
-    "name": "Eagle · First Light",
-    "receipt": "/v41/first-light-release.json",
-    "commit": "650f395adc36ae762acd99e43c0a4655d653ed1f"
+    "version": "42.0.0",
+    "name": "Omnius, Overruled",
+    "receipt": "/v42/omnius-overruled-release.json",
+    "commit": "4b9600ca10d1c57ebe3860b2deff101982f49411"
   }
 }

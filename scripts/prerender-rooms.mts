@@ -137,7 +137,7 @@ for (const id of roomIds) {
     control.setAttribute("disabled", "");
   }
   interactive.querySelector("#reading-mode")!.textContent =
-    "V42 interactive room. Controls require JavaScript. The artwork and text remain available below.";
+    "V43 interactive room. Controls require JavaScript. The artwork and text remain available below.";
   const opener = interactive.querySelector(`header a[href="/rooms/${id}/interactive/"]`)!;
   opener.setAttribute("href", `/rooms/${id}/`);
   opener.classList.remove("room-mode-primary");

@@ -91,9 +91,9 @@ async function mount() {
       attributes: true,
       attributeFilter: ["href"],
     });
-    status.textContent = "V42 interactive room. Change the controls to explore. Your inputs stay in this browser.";
+    status.textContent = "V43 interactive room. Change the controls to explore. Your inputs stay in this browser.";
     room.dataset.roomState = "ready";
-    document.title = document.title.replace(" · cAshIo", " · cAshIo V42");
+    document.title = document.title.replace(" · cAshIo", " · cAshIo V43");
   } catch {
     status.textContent =
       "The interactive controls could not load. The artwork and reading edition remain available below.";

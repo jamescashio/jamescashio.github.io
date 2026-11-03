@@ -1,8 +1,22 @@
-# cAshIo V42 · Omnius, Overruled
+# cAshIo V43 · Starfall
 
-**Omnius, Overruled · Imagination, with intention** is the V42 interface prepared on 11-02-2026. The director’s cut adds illustrated build stories, responsive dimensional diagrams and a curated first visit. The original moving planetary hero, gold and cyan identity, four worlds, seven experiments and complete film collection remain. House Cashio is the opening feature. The name nods to the machine overmind in the Butlerian Jihad prequels; the fictional hearing and Bit’s humor keep the human in charge.
+**Starfall · Imagination, with intention** is the V43 interface prepared on 11-03-2026. The page now reads as a descent: a deep sky lives behind every chapter, the Sections rail becomes a flight instrument that falls from orbit to touchdown, chapter links jump through hyperspace, chapter titles arrive under a target lock, and cards answer the pointer with holographic light. The original moving planetary hero, gold and cyan identity, four worlds, seven experiments, complete film collection, Bit and E.V.E. remain.
 
-The current receipt is `public/v40/site-release.json`. Local review mode displays an unpublished ribbon and sends noindex headers; the ordinary production build is indexable. Publication follows the completed quality review and required repository checks. The prior production and rollback commit is `650f395adc36ae762acd99e43c0a4655d653ed1f`. See [the director’s cut](docs/v42/directors-cut.md).
+The current receipt is `public/v40/site-release.json`; the V42 Omnius, Overruled receipt is preserved at `/v42/omnius-overruled-release.json`. Local review mode displays an unpublished ribbon and sends noindex headers; the ordinary production build is indexable. Publication follows the completed quality review and required repository checks. The prior production and rollback commit is `4b9600ca10d1c57ebe3860b2deff101982f49411`. See [the Starfall notes](docs/v43/starfall.md).
+
+## Starfall
+
+`src/v40/starfall.ts` and `src/v40/starfall.css` load on demand after the page is interactive, so the opening stylesheet budget is untouched. Every Starfall element is decorative, sits outside the React tree, ignores the pointer, and honors Pause motion, reduced motion, forced colors, print and hidden tabs. Nothing makes a sound and nothing leaves the browser.
+
+| Layer              | What a visitor sees                                                                                                                       |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Deep sky           | Three parallax star depths and a nebula wash tinted per chapter, seen through smoked glass chapter backgrounds                            |
+| Hyperspace         | Fast scrolling stretches the stars; chapter links and long jumps burst outward from the vanishing point                                   |
+| Flight instruments | A track on the Sections rail with a craft, altitude from 400 km to touchdown and a Mach readout with a once per twenty seconds sonic ring |
+| Target lock        | Four brackets converge and a scan beam reads each chapter title the first time it arrives                                                 |
+| Holographic glint  | A pointer lit sheen and an edge light on cards and panels                                                                                 |
+| Starfall arrival   | A short meteor shower across the opening frame, once per browser session                                                                  |
+| Easter eggs        | Type starfall, engage or zoom anywhere, or in E.V.E.; E.V.E. also answers mach                                                            |
 
 ## Preserved content
 
@@ -18,7 +32,7 @@ The optional hearing is an original fictional scene. Its lore links to the publi
 
 The verified record was refreshed on **November 2, 2026** from new read only checks. `status.json`, `public/status.json` and `public/evidence/status.json` are identical public aggregates. They report 19 running containers out of 20, 1 running virtual machine out of 2, and 2 hosts reporting running guests. The backup source listed 122 snapshots and reported successful integrity verification for 21 of 21 latest reported guest snapshots.
 
-These inventory and integrity readings do not establish application health, a restore rehearsal, offsite recovery or current AI routing. Unmeasured fields remain null with their reasons. V42 describes the interface; the observation schema retains its V41 source identity. Fresh collection provenance is recorded in UTC and America/Chicago. The November 1, 2026 record is preserved unchanged at `/evidence/status-2026-11-01.json`.
+These inventory and integrity readings do not establish application health, a restore rehearsal, offsite recovery or current AI routing. Unmeasured fields remain null with their reasons. V43 describes the interface; the observation schema retains its V41 source identity. Fresh collection provenance is recorded in UTC and America/Chicago. The November 1, 2026 record is preserved unchanged at `/evidence/status-2026-11-01.json`.
 
 ## Source ownership
 
@@ -48,6 +62,6 @@ The [mobile delivery pass](docs/v42/mobile-performance-preview.md) sends the ope
 
 ## History and publication
 
-The exact previous current receipt is retained at `/v41/first-light-release.json`. The [First Light implementation notes](docs/v41/first-light-implementation.md), [First Light presentation](docs/v41/first-light.md), [Afterglow](docs/v41/afterglow.md) and changelog preserve earlier design decisions. The V39, V37 and V35 experiences keep their own original receipts, dates and evidence. Compatibility receipts preserve their historical V37 identity while their frontDoor pointer identifies the V42 preview receipt. Publication state is explicit in that current receipt.
+The exact previous current receipt is retained at `/v42/omnius-overruled-release.json`, and the one before it at `/v41/first-light-release.json`. The [First Light implementation notes](docs/v41/first-light-implementation.md), [First Light presentation](docs/v41/first-light.md), [Afterglow](docs/v41/afterglow.md) and changelog preserve earlier design decisions. The V39, V37 and V35 experiences keep their own original receipts, dates and evidence. Compatibility receipts preserve their historical V37 identity while their frontDoor pointer identifies the V43 receipt. Publication state is explicit in that current receipt.
 
-Final publication requires Doug's approval of the preview. At that point prepare released metadata, pass the protected repository checks, publish the verified artifact, and verify the ordinary live desktop and phone site. The production rollback baseline is `650f395adc36ae762acd99e43c0a4655d653ed1f`.
+Final publication requires Doug's approval of the preview. At that point prepare released metadata, pass the protected repository checks, publish the verified artifact, and verify the ordinary live desktop and phone site. The production rollback baseline is `4b9600ca10d1c57ebe3860b2deff101982f49411`.
