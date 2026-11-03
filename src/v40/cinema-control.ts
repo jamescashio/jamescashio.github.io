@@ -38,7 +38,8 @@ export function filmById(this: PageHost, slug: string) {
 }
 
 export function stepCinema(this: PageHost, d: number) {
-  const list = ["intro", "trailer", ...this.films.map((f) => f[1])];
+  // Eagle left the homepage on Mr. Cashio's request (Oct 26, 2026); /#film=intro still opens it.
+  const list = ["trailer", ...this.films.map((f) => f[1])];
   const i = list.indexOf(this.state.cinema ?? "");
   this.setState({ cinema: list[(i + d + list.length) % list.length] });
 }

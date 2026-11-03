@@ -10,7 +10,7 @@ export function EagleFilmSection({ v }: GeneratedProps) {
   const [selected, select] = useState(0);
   const feature = v.featureFilms[selected];
   const watchTitle = selected === 0 ? "Watch House Cashio" : "Watch " + feature.title;
-  const duration = ["61 seconds", "36 seconds", "Short film", "Short film"][selected];
+  const duration = feature.slug === "trailer" ? "61 seconds" : "Short film";
   // Keep the established section anchor compatible with existing bookmarks.
   return h(
     "section",
@@ -35,12 +35,12 @@ export function EagleFilmSection({ v }: GeneratedProps) {
         h(
           "p",
           { className: "eagle-film-note" },
-          selected < 2 ? "Starts muted · Captions available" : "Starts muted · Visual description below",
+          feature.slug === "trailer" ? "Starts muted · Captions available" : "Starts muted · Visual description below",
         ),
         h(
           "div",
           { className: "eagle-film-links" },
-          h(ReelText, { text: feature.text || (selected === 1 ? undefined : feature.desc) }),
+          h(ReelText, { text: feature.text || feature.desc }),
           h("a", { href: "#workshop", className: "visitor-link" }, "Explore the workshop →"),
         ),
       ),

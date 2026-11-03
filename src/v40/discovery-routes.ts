@@ -96,12 +96,12 @@ export const discoveryRoutes: Route[] = [
         action: "Watch House Cashio",
       },
       {
-        title: "Eagle",
-        kind: "02 / The workshop in orbit · 36 seconds",
-        text: "A ringed planet, a lamplit workshop, and a ship finding its way into the blue evening.",
-        image: "/assets/hero/cashio-v41-eagle-poster.webp",
-        href: "#film=intro",
-        action: "Watch Eagle",
+        title: "Portal Arrival",
+        kind: "02 / Zenith short film",
+        text: "A doorway in space, and a ringed planet waiting on the other side. Silent, and over in a breath.",
+        image: "/v40/assets/zenith-portal-arrival-poster.webp",
+        href: "#film=portal-arrival",
+        action: "Watch Portal Arrival",
       },
       {
         title: "Orbital Instrument",

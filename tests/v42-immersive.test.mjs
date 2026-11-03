@@ -145,7 +145,10 @@ test("Discovery offers twelve real destinations, keyboard stepping, a copyable r
       const href = await dialog.locator(".continuum-primary").getAttribute("href");
       if (href.startsWith("/")) assert.equal((await page.request.get(new URL(href, url).href)).status(), 200);
       else
-        assert.match(href, /^#(?:film=(?:trailer|intro|orbital-instrument|threshold)|work|studies|universe|evidence)$/);
+        assert.match(
+          href,
+          /^#(?:film=(?:trailer|portal-arrival|orbital-instrument|threshold)|work|studies|universe|evidence)$/,
+        );
     }
   }
   await dialog.getByRole("button", { name: "Copy this route", exact: true }).click();
@@ -217,7 +220,7 @@ test("Discovery remains operable on 390 and 320 pixel phones including the stick
       assert.ok(b.width >= 44 && b.height >= 44, "44 pixel targets");
     }
     await dialog.getByRole("button", { name: "Next discovery", exact: true }).click();
-    await expect(dialog.getByRole("heading", { level: 3 })).toHaveText("Eagle");
+    await expect(dialog.getByRole("heading", { level: 3 })).toHaveText("Portal Arrival");
     await expect(dialog.getByRole("button", { name: "Close discovery console", exact: true })).toBeInViewport();
     assert.equal(await dialog.evaluate((el) => el.scrollWidth > el.clientWidth), false);
     const audit = await new AxeBuilder({ page })
@@ -232,7 +235,7 @@ test("Discovery remains operable on 390 and 320 pixel phones including the stick
     assert.equal(await page.evaluate(() => document.documentElement.style.overflow), "");
   }
 });
-test("The cinema selector changes the featured film quietly and retains genuine Eagle playback and captions", async (t) => {
+test("The cinema selector changes the featured film quietly and plays the House Cashio trailer with captions", async (t) => {
   const page = await visit(t);
   const movies = [];
   page.on("request", (r) => {
@@ -242,8 +245,8 @@ test("The cinema selector changes the featured film quietly and retains genuine 
   for (const [name, title, href, note] of [
     ["03 Orbital Instrument", "Orbital Instrument", "#film=orbital-instrument", "Visual description below"],
     ["04 Threshold", "Threshold", "#film=threshold", "Visual description below"],
+    ["02 Portal Arrival", "Portal Arrival", "#film=portal-arrival", "Visual description below"],
     ["01 House Cashio", "House Cashio: The Trailer", "#film=trailer", "Captions available"],
-    ["02 Eagle", "Eagle", "#film=intro", "Captions available"],
   ]) {
     await group.getByRole("button", { name, exact: true }).click();
     await expect(page.locator("#eagle-film h2")).toHaveText(title);
@@ -251,10 +254,12 @@ test("The cinema selector changes the featured film quietly and retains genuine 
     await expect(page.locator(".eagle-film-note")).toContainText(note);
   }
   assert.deepEqual(movies, []);
-  await page.getByRole("link", { name: "Watch Eagle 36 seconds", exact: true }).click();
+  // Eagle left the homepage (Oct 26, 2026); its bookmark is covered in v41-runtime.
+  await expect(page.locator("#eagle-film a[href='#film=intro'], .cinema-selection")).not.toContainText("Eagle");
+  await page.getByRole("link", { name: "Watch House Cashio 61 seconds", exact: true }).click();
   const video = page.locator("#cinema-video");
   await expect(video).toBeVisible();
-  await expect(video.locator("track")).toHaveAttribute("src", "/assets/hero/cashio-v41-eagle-text.vtt");
+  await expect(video.locator("track")).toHaveAttribute("src", "/assets/hero/cashio-trailer-text.vtt");
   await video.evaluate((v) => v.play());
   await expect.poll(() => video.evaluate((v) => v.currentTime)).toBeGreaterThan(0.15);
   assert.equal(await video.evaluate((v) => v.muted), true);
