@@ -2,6 +2,8 @@
 
 ## V42.0.0 · Omnius, Overruled · 11-02-2026
 
+Homepage films · 11-03-2026: the Eagle film leaves the homepage again, as asked on October 26, 2026. Portal Arrival, the silent Zenith short of a doorway and a ringed planet, takes the second seat in the House Cashio feature picker and the cinema stop on the guided route, using its existing posters. Eagle stays reachable from the Studios room, Mission Control and its /#film=intro link. Duration and caption notes now follow each film rather than its seat.
+
 Screening room loops · 11-02-2026: on a desktop pointer with motion on, each short film card plays a silent three second loop on hover, cut from the film itself (15 loops, 912 KB in all, the largest 172 KB). They load only after the collection opens and nears view, never on phones, with Save Data, reduced motion or Pause, and hover no longer pulls the full film file. Measured against the existing hover playback on the same machine, the loops added no slow frames.
 
 One finder · 11-02-2026: Plot a course now opens Mission Control, and the three guided routes (Find your world, Make something click, Enter the cinema) live inside it, so the site has one place to look. The opening freezes behind Mission Control as it already did behind the routes. The observation date now prints 9 times instead of 16, about once per chapter; the evidence chapter shows its sources in plain view instead of repeating the backup receipt in a drawer, and full recovery joins the list of what is withheld. The privacy exercise and the short film list no longer sit in a second drawer inside the first, and on phones the workshop diagrams appear with their notes, shortening the scrolled phone page by about 320 px. No figures, films or experiments were removed.
