@@ -983,8 +983,8 @@ export function OrbitInstrument({ motion, onSelect }: { motion: boolean; onSelec
               resets it.{!motion && " Motion is off. You can still explore with the controls."}
             </p>
             <p className="eh-orbit-boundary">
-              A hands-on concept study. These orbital relationships illustrate a design philosophy; they are not live
-              infrastructure telemetry.
+              An interactive concept study. These orbital relationships illustrate a design philosophy; they are not
+              live infrastructure telemetry.
             </p>
             <output className="eh-orbit-status" aria-live="polite">
               {status}

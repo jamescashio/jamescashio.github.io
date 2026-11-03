@@ -88,5 +88,35 @@
       "bytes": 22420,
       "sha256": "1dc45ea466fef9cb94919c35fdec096a7265f9ed4121cee58ddc939effe84cf3"
     }
+  ],
+  "/assets/hero/cashio-v41-eagle-poster.webp": [
+    {
+      "url": "/v40/posters/cashio-v41-eagle-poster-320-6f566aa2f26f.webp",
+      "width": 320,
+      "height": 180,
+      "bytes": 3706,
+      "sha256": "6f566aa2f26f8b851a5f882b74e918bbbd072eb1451e42fdbd52cbd2be5bacdb"
+    },
+    {
+      "url": "/v40/posters/cashio-v41-eagle-poster-640-d57eac7f2c95.webp",
+      "width": 640,
+      "height": 360,
+      "bytes": 9496,
+      "sha256": "d57eac7f2c95f109d147d42211ce62b89f98d57cd23ca5daab9a95624fea61e5"
+    },
+    {
+      "url": "/v40/posters/cashio-v41-eagle-poster-960-61c4e7caa6f9.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 15812,
+      "sha256": "61c4e7caa6f9a14f731826b3b7957ca1c2dc42e36f2ca100c24fe4b022104103"
+    },
+    {
+      "url": "/v40/posters/cashio-v41-eagle-poster-1280-4b2c8e5ae82e.webp",
+      "width": 1280,
+      "height": 720,
+      "bytes": 23478,
+      "sha256": "4b2c8e5ae82e4178fb389afaba51a7cf840c97c8477507f9c955f9fd22445867"
+    }
   ]
 }

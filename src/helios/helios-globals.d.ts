@@ -23,5 +23,5 @@ interface WindowEventMap {
 
 interface Navigator {
   /** Network Information API, present in Chromium browsers. */
-  connection?: { saveData?: boolean; effectiveType?: string };
+  connection?: EventTarget & { saveData?: boolean; effectiveType?: string };
 }

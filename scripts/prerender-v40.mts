@@ -3,13 +3,13 @@ import { renderToString } from "react-dom/server";
 import { readFile, writeFile, readdir } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { JSDOM } from "jsdom";
-import { exampleBriefText } from "../src/v40/decision-brief.js";
+import { exampleBriefText } from "../src/v40/decision-brief.ts";
 
 const environment = new JSDOM("<!doctype html><html><body></body></html>");
 Object.assign(globalThis, { window: environment.window, document: environment.window.document });
 // The reading edition uses the compact composition so it remains readable on every screen.
 Object.defineProperty(environment.window, "innerWidth", { value: 390 });
-const { V40Page } = await import("../src/v40/page.jsx");
+const { V40Page } = await import("../src/v40/page.tsx");
 const markup = renderToString(
   React.createElement(V40Page, {
     scanlines: true,

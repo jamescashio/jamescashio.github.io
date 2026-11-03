@@ -36,7 +36,7 @@ export default defineConfig({
         mostlyHarmless: path.resolve(__dirname, "index.html"),
         heliosAlias: path.resolve(__dirname, "v38/index.html"),
         mostlyHarmlessAlias: path.resolve(__dirname, "v40/index.html"),
-        v40Rooms: path.resolve(__dirname, "src/v40/room-main.js"),
+        v40Rooms: path.resolve(__dirname, "src/v40/room-main.ts"),
         odyssey: path.resolve(__dirname, "odyssey.html"),
         commandDeck: path.resolve(__dirname, "command-deck.html"),
       },

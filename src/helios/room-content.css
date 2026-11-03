@@ -699,3 +699,138 @@
     min-width: 140px;
   }
 }
+
+/* Room entrance bar: the homepage's header language, with the reading edition as a quiet secondary link. */
+.room-bar {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 30;
+  background: #050608ed;
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid #75bdcb3d;
+}
+.room-bar-inner {
+  max-width: 1560px;
+  margin: 0 auto;
+  padding-block: 14px;
+  padding-left: max(var(--gutter), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px 28px;
+}
+.room-bar-lead {
+  display: grid;
+  gap: 4px;
+}
+.room-bar .room-wordmark {
+  font: 700 22px/1 var(--display);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.room-wordmark-a {
+  color: var(--gold);
+}
+.room-wordmark-i {
+  color: var(--cyan);
+}
+.room-back {
+  font: 13px/1.4 var(--sans);
+  color: #a9dbe6;
+}
+.room-bar-title {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding-left: 28px;
+  border-left: 1px solid #75bdcb33;
+}
+.room-world {
+  font: 500 12px/1.4 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.room-title {
+  margin: 0;
+  font-size: clamp(22px, 2.4vw, 30px);
+  line-height: 1.1;
+  text-wrap: balance;
+}
+.room-status {
+  margin: 4px 0 0;
+  max-width: 70ch;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.room-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.room-bar .room-mode-link,
+.room-bar .room-motion {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid #75bdcb4d;
+  border-radius: 10px;
+  font: 500 13px/1 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #cfe9ee;
+  background: #0b141c;
+}
+.room-mode-link:hover,
+.room-motion:hover:not(:disabled) {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+/* On a reading edition, entering the interactive room is the main action. */
+.room-bar .room-mode-primary {
+  border-color: transparent;
+  color: #1a1204;
+  background: linear-gradient(135deg, #f7d48c, #d9a94f);
+}
+.room-bar .room-mode-primary:hover {
+  color: #1a1204;
+  border-color: transparent;
+}
+.room-motion:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+@media (max-width: 860px) {
+  .room-bar {
+    position: static;
+  }
+  .room-bar-inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .room-bar-lead {
+    grid-auto-flow: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .room-bar-title {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .room-bar-actions {
+    justify-content: flex-start;
+    gap: 8px;
+  }
+  .room-bar .room-mode-link,
+  .room-bar .room-motion {
+    padding: 0 12px;
+    font-size: 12px;
+  }
+  .room-bar .room-wordmark {
+    font-size: 20px;
+  }
+}

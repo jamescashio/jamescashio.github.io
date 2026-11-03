@@ -61,18 +61,21 @@ test("Build notes expose the decisions and limits with keyboard controls on desk
   }
 });
 
-test("The first-visit route opens the original film and continues to a real experiment", async (t) => {
+test("The first-visit route boards the starship, cuts the cloud link and continues to the worlds", async (t) => {
   const page = await visit(t, { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   const route = page.getByRole("navigation", { name: "Recommended first visit" });
-  const film = route.getByRole("link", { name: /Meet House Cashio/ });
-  await film.click();
-  await expect(page.locator("#cinema-dialog")).toBeVisible();
-  await expect(page.locator("#cinema-video")).toHaveJSProperty("muted", true);
+  const board = route.getByRole("link", { name: /Board the starship/ });
+  await board.click();
+  await expect(page.locator("#helios-flight dialog")).toBeVisible();
+  await expect(page).toHaveURL(/#flight=board$/);
   await page.keyboard.press("Escape");
-  await expect(film).toBeFocused();
-  await route.getByRole("link", { name: /Choose a route/ }).click();
-  await expect(page).toHaveURL(/#experiment=hermes$/);
-  await expect(page.getByRole("heading", { name: "Choose a route", exact: true })).toBeVisible();
+  await expect(page.locator("#helios-flight")).toHaveCount(0);
+  await route.getByRole("link", { name: /Cut the cloud link/ }).click();
+  await expect(page).toHaveURL(/#flight=blackout$/);
+  await expect(page.locator("#helios-flight dialog")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await route.getByRole("link", { name: /Pick a world/ }).click();
+  await expect(page.locator("#rooms")).toBeInViewport();
 });
 
 test("Every build-story step remains readable without JavaScript", async (t) => {
@@ -88,10 +91,19 @@ test("Every build-story step remains readable without JavaScript", async (t) => 
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
   }
 });
+// Plot a course opens Mission Control, the one finder; the guided routes live inside it.
+async function openRoute(page, label = "Find your world") {
+  await page.getByRole("button", { name: "Plot a course", exact: true }).click();
+  await page
+    .locator("#mission-dialog")
+    .getByRole("group", { name: "Guided routes", exact: true })
+    .getByRole("button", { name: label, exact: true })
+    .click();
+}
 test("Discovery offers twelve real destinations, keyboard stepping, a copyable route and focus restoration", async (t) => {
   const page = await visit(t, { permissions: ["clipboard-read", "clipboard-write"] });
   const opener = page.getByRole("button", { name: "Plot a course", exact: true });
-  await opener.click();
+  await openRoute(page);
   const dialog = page.locator(".discovery-console");
   await expect(dialog).toBeVisible();
   await expect(dialog.getByRole("heading", { level: 3 })).toHaveText("Starship lab");
@@ -160,7 +172,7 @@ test("Discovery direct links close the console and reach an existing experiment 
   page.on("request", (r) => {
     if (/\.(mp4|webm)(\?|$)/.test(r.url())) movies.push(r.url());
   });
-  await page.getByRole("button", { name: "Plot a course", exact: true }).click();
+  await openRoute(page);
   const dialog = page.locator(".discovery-console");
   await dialog
     .getByRole("group", { name: "Discovery path", exact: true })
@@ -173,7 +185,7 @@ test("Discovery direct links close the console and reach an existing experiment 
   await expect(page).toHaveURL(/#studies$/);
   await expect(page.locator("#studies")).toBeInViewport();
   assert.deepEqual(movies, []);
-  await page.getByRole("button", { name: "Plot a course", exact: true }).click();
+  await openRoute(page);
   await dialog
     .getByRole("group", { name: "Discovery path", exact: true })
     .getByRole("button", { name: "Watch", exact: true })
@@ -190,7 +202,7 @@ test("Discovery direct links close the console and reach an existing experiment 
 test("Discovery remains operable on 390 and 320 pixel phones including the sticky close control", async (t) => {
   for (const width of [390, 320]) {
     const page = await visit(t, { viewport: { width, height: 740 }, isMobile: true, hasTouch: true });
-    await page.getByRole("button", { name: "Plot a course", exact: true }).click();
+    await openRoute(page);
     const dialog = page.locator(".discovery-console");
     await dialog
       .getByRole("group", { name: "Discovery path", exact: true })

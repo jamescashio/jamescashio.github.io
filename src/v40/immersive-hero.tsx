@@ -1,6 +1,6 @@
 import type { MouseEventHandler } from "react";
 import { discoveryRoutes } from "./discovery-routes";
-import { posterSources } from "./poster-sources.js";
+import { posterSources } from "./poster-sources.ts";
 type HeroView = {
   wide: boolean;
   scene: string;
@@ -14,7 +14,6 @@ type HeroView = {
   fleetLine: string;
   telemetry: Array<{ label: string; value: string | number }>;
   discovery: string | null;
-  openDiscovery: (route: string) => void;
   closeDiscovery: () => void;
   foldScene: () => void;
   foldCount: number;
@@ -27,6 +26,9 @@ const scenes = [
   { id: "signal", label: "Signal", caption: "Big ideas. Questionable cable management." },
   { id: "constellation", label: "Constellation", caption: "Connect the dots. The universe misplaced the manual." },
 ];
+// The cinema card uses text free artwork so its label never sits on top of the trailer's title art.
+const pathImage = (r: { stops: Array<{ image: string }> }, i: number) =>
+  i === 2 ? "/v40/assets/zenith-threshold-poster.webp" : r.stops[0].image;
 function ContinuumStill() {
   return (
     <svg className="continuum-still" viewBox="0 0 1600 820" fill="none" aria-hidden="true">
@@ -50,6 +52,50 @@ function ContinuumStill() {
       />
       <circle cx="1170" cy="370" r="320" stroke="#edbd6c" strokeOpacity=".2" strokeDasharray="2 14" />
     </svg>
+  );
+}
+// Instrument overlay drawn in the poster's own 1920 x 1080 space, so it tracks the planet through every camera move.
+function HeroHud() {
+  return (
+    <div className="hero-hud" aria-hidden="true">
+      <svg className="hud-track" viewBox="0 0 1920 1080" fill="none">
+        <circle cx="1508" cy="508" r="360" stroke="#72e5f4" strokeOpacity=".38" strokeWidth="1.5" />
+        <circle
+          cx="1508"
+          cy="508"
+          r="372"
+          stroke="#edbd6c"
+          strokeOpacity=".55"
+          strokeWidth="8"
+          strokeDasharray="1.5 21.87"
+        />
+        <circle
+          cx="1508"
+          cy="508"
+          r="381"
+          stroke="#ffd98f"
+          strokeOpacity=".82"
+          strokeWidth="18"
+          strokeDasharray="3 236.39"
+        />
+        <circle
+          cx="1508"
+          cy="508"
+          r="402"
+          stroke="#72e5f4"
+          strokeOpacity=".2"
+          strokeWidth="2"
+          strokeDasharray="118 39.86"
+        />
+        <path
+          className="hud-lock"
+          d="M1273 380V368H1285M1309 368H1321V380M1321 404V416H1309M1285 416H1273V404"
+          stroke="#ffe0a1"
+          strokeWidth="2.5"
+        />
+      </svg>
+      <span className="hud-orbiter" />
+    </div>
   );
 }
 export function ImmersiveHero({ v }: { v: HeroView }) {
@@ -77,6 +123,7 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
             fetchPriority="high"
             alt=""
           />
+          <HeroHud />
         </div>
         <div className="flight-atmosphere" />
       </div>
@@ -104,7 +151,6 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
               aria-hidden="true"
             />
             <div className="continuum-reticle" aria-hidden="true">
-              <span>V42 / OMNIUS, OVERRULED</span>
               <span>THE HORIZON IS YOURS</span>
             </div>
           </div>
@@ -180,7 +226,8 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
       <div className="continuum-launchpad">
         <div className="continuum-launch-heading">
           <span className="continuum-label">Three ways into the universe</span>
-          <button id="discovery-launch" type="button" onClick={() => v.openDiscovery("worlds")}>
+          {/* One finder: Plot a course opens Mission Control, where the guided routes now live. */}
+          <button id="discovery-launch" type="button" data-mission-open="" aria-haspopup="dialog">
             Plot a course <span aria-hidden="true">↗</span>
           </button>
         </div>
@@ -188,8 +235,8 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
           {discoveryRoutes.map((r, i) => (
             <a key={r.id} href={["#rooms", "#studies", "#eagle-film"][i]}>
               <img
-                src={r.stops[0].image}
-                srcSet={posterSources(r.stops[0].image)}
+                src={pathImage(r, i)}
+                srcSet={posterSources(pathImage(r, i))}
                 sizes="(max-width: 600px) 80px, 33vw"
                 alt=""
                 width="640"
@@ -206,7 +253,7 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
                   {
                     [
                       "Explore four interactive worlds",
-                      "Try seven hands-on experiments",
+                      "Try seven interactive experiments",
                       "House Cashio and original films",
                     ][i]
                   }
@@ -221,7 +268,7 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
       </div>
       <div className="continuum-observation" aria-label="Dated lab observation">
         <a className="continuum-observation-date" href="#evidence">
-          <span className="continuum-label">Observation desk · {v.observedShortDate}</span>
+          <span className="continuum-label">Observation desk</span>
           <strong>My lab, observed {v.observedDate}</strong>
           <span>{v.fleetLine}</span>
         </a>

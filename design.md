@@ -1,3 +1,15 @@
+# Chronos Round 3 · Engineering and cinematic proof
+
+The current task begins at f1dede3 on chore/chronos-v42-round3. Only that review branch may be pushed. No pull request, merge, deployment or cache purge is authorized by this task. Historical delivery directions below do not apply to this pass.
+
+Preserve the original observatory artwork, gold and cyan instruments, type, copy, routes, films, Bit and quiet playback. The first four work packages preserve the composition. The fifth tests six independent effects in order: a living desktop observatory for arrival; a world to room transition for discovery; progressive scroll entrances; a skippable boarding warp; quiet film previews; and truthful instrument readouts with pointer edge light.
+
+Use a shared motion vocabulary: quick 180 ms, scene 640 ms, cinematic 1500 ms, orbit 40000 ms; launch and settle easing. Decorative motion is never telemetry. Every continuous effect stops offscreen, hidden, paused and under reduced motion. Every enhancement has the existing composed still as its fallback. Add no runtime dependency, host or sound. Opening image priority stays unchanged; enhancement code and CSS arrive after paint.
+
+Each effect must earn its place through the requested Chrome frame limits, desktop and phone recordings, three density checks, full width coverage, accessibility at rest and unchanged budgets. Omit an effect that cannot pass, and preserve the evidence and reason. Targets are five run median Lighthouse mobile 92 and desktop 98, initial CSS at most 19000 gzip bytes, phone height at most 11500 pixels, and desktop CLS at most 0.02. Doug remains the final visual judge.
+
+## Earlier design history
+
 # V42 · Omnius, Overruled · The director's cut
 
 ## Current creative thesis

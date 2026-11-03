@@ -39,9 +39,11 @@ for (const id of roomIds) {
   canonical.rel = "canonical";
   canonical.href = `https://cashio.us/rooms/${id}/`;
   doc.head.append(canonical);
+  appendShareCard(doc, id, title);
   const notice = doc.createElement("header");
-  notice.className = "wrap stack p-22-30 sg-16";
-  notice.innerHTML = `<a href="/#rooms">← Back to the four rooms</a><h1 class="display fs-32">${title}</h1><p id="reading-mode">Controls are inactive in this reading edition. It shows the artwork, one example state and all of the text. Open the interactive room to change the inputs and explore the results.</p><a class="btn gold" href="/rooms/${id}/interactive/">Open the interactive room →</a>`;
+  notice.className = "room-bar";
+  // The same header language as the homepage: wordmark, world number, title, a quiet mode link and motion control.
+  notice.innerHTML = `<div class="room-bar-inner"><div class="room-bar-lead"><a class="room-wordmark" href="/" aria-label="cAshIo home">c<span class="room-wordmark-a">A</span>sh<span class="room-wordmark-i">I</span>o</a><a class="room-back" href="/#rooms">← Back to the four rooms</a></div><div class="room-bar-title"><span class="room-world">World ${String(roomIds.indexOf(id) + 1).padStart(2, "0")} of 04</span><h1 class="display room-title">${title}</h1><p id="reading-mode" class="room-status">Controls are inactive in this reading edition. It shows the artwork, one example state and all of the text. Open the interactive room to change the inputs and explore the results.</p></div><div class="room-bar-actions"><a class="room-mode-link room-mode-primary" href="/rooms/${id}/interactive/">Open the interactive room →</a></div></div>`;
   const main = doc.createElement("main");
   main.innerHTML = source;
   for (const image of main.querySelectorAll("img")) {
@@ -136,9 +138,10 @@ for (const id of roomIds) {
   }
   interactive.querySelector("#reading-mode")!.textContent =
     "V42 interactive room. Controls require JavaScript. The artwork and text remain available below.";
-  const opener = interactive.querySelector(`a[href="/rooms/${id}/interactive/"]`)!;
+  const opener = interactive.querySelector(`header a[href="/rooms/${id}/interactive/"]`)!;
   opener.setAttribute("href", `/rooms/${id}/`);
-  opener.textContent = "Reading edition →";
+  opener.classList.remove("room-mode-primary");
+  opener.textContent = "Reading edition";
   const entry = interactive.createElement("script");
   entry.type = "module";
   entry.src = "/assets/" + roomEntries[0];
@@ -156,6 +159,37 @@ for (const id of roomIds) {
     "<!doctype html>\n" + interactive.documentElement.outerHTML + "\n",
   );
 }
+/** Each world gets its own social card, so a shared link previews that world rather than a blank card. */
+function appendShareCard(doc: Document, id: string, title: string) {
+  const shareCards: Record<string, string> = {
+    starship: "Step aboard. Trace twelve requests, cut the cloud link and see which decisions stay yours.",
+    principles: "Turn an instrument and watch a principle change a real decision.",
+    studios: "Light, signatures and short films from Doug Cashio's workshop. Films start muted.",
+    heritage: "Four aviation pioneers and the test pilot questions behind the workshop.",
+  };
+  const properties: Array<[string, string, string]> = [
+    ["property", "og:type", "website"],
+    ["property", "og:site_name", "cAshIo"],
+    ["property", "og:title", `${title} · cAshIo`],
+    ["property", "og:description", shareCards[id]],
+    ["property", "og:url", `https://cashio.us/rooms/${id}/interactive/`],
+    ["property", "og:image", `https://cashio.us/v42/share/${id}.jpg`],
+    ["property", "og:image:width", "1200"],
+    ["property", "og:image:height", "630"],
+    ["property", "og:image:alt", `${title}, a world in Doug Cashio's cAshIo workshop.`],
+    ["name", "twitter:card", "summary_large_image"],
+    ["name", "twitter:title", `${title} · cAshIo`],
+    ["name", "twitter:description", shareCards[id]],
+    ["name", "twitter:image", `https://cashio.us/v42/share/${id}.jpg`],
+  ];
+  for (const [key, name, content] of properties) {
+    const meta = doc.createElement("meta");
+    meta.setAttribute(key, name);
+    meta.setAttribute("content", content);
+    doc.head.append(meta);
+  }
+}
+
 /** The full list sits before the room's closing links, so every page still ends with its way back. */
 function placeBeforeEnd(main: Element, id: string, section: Element) {
   const end = main.querySelector(`#${id} .room-end`);

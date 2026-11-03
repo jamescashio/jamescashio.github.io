@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { snapshot, observedDate } from "./evidence.js";
+import { snapshot } from "./evidence.ts";
 
 const stories = {
   evidence: {
@@ -11,7 +11,7 @@ const stories = {
       {
         label: "Read",
         title: "Begin with the record",
-        text: "The observation brings together a read-only guest inventory and the backup service’s reported snapshot checks. The collection time travels with the figures, so a visitor can tell when they were observed.",
+        text: "The observation brings together a read only guest inventory and the backup service’s reported snapshot checks. The collection time travels with the figures, so a visitor can tell when they were observed.",
       },
       {
         label: "Reconcile",
@@ -21,7 +21,7 @@ const stories = {
       {
         label: "Publish",
         title: "Keep the claim small enough to trust",
-        text: `${snapshot.backup.latestVerified} of ${snapshot.backup.latestChecked} latest reported snapshots passed their integrity check in the ${observedDate} observation. The public receipt keeps aggregate counts and explicit unknowns; private addresses and service details stay out.`,
+        text: `${snapshot.backup.latestVerified} of ${snapshot.backup.latestChecked} latest reported snapshots passed their integrity check in that same dated observation. The public receipt keeps aggregate counts and explicit unknowns; private addresses and service details stay out.`,
       },
     ],
     link: "/status.json",
@@ -168,28 +168,37 @@ export function BuildStory({ kind }: { kind: keyof typeof stories }) {
 }
 
 export function FirstOrbit() {
+  // The same route the hero recommends: board, make one decision, then choose where to go next.
   return (
     <nav className="first-orbit" aria-label="Recommended first visit">
       <div>
         <span className="visitor-kicker">Your first orbit</span>
-        <strong>A little cinema. A useful idea.</strong>
-        <p>Start with the story, then try the rule behind it.</p>
+        <strong>Board. Decide. Explore.</strong>
+        <p>Three stops, about two minutes. Sound stays off.</p>
       </div>
-      <a href="#film=trailer">
+      <a href="#flight=board">
         <span className="first-orbit-number">01</span>
         <span>
-          <strong>Meet House Cashio</strong>
-          <small>61 seconds · A very unofficial trailer</small>
-        </span>
-        <span aria-hidden="true">▷</span>
-      </a>
-      <a href="#experiment=hermes">
-        <span className="first-orbit-number">02</span>
-        <span>
-          <strong>Choose a route</strong>
-          <small>Try sending private work through the lab</small>
+          <strong>Board the starship</strong>
+          <small>Your pace, or the 30 second tour</small>
         </span>
         <span aria-hidden="true">↗</span>
+      </a>
+      <a href="#flight=blackout">
+        <span className="first-orbit-number">02</span>
+        <span>
+          <strong>Cut the cloud link</strong>
+          <small>See which work stays aboard</small>
+        </span>
+        <span aria-hidden="true">↗</span>
+      </a>
+      <a href="#rooms">
+        <span className="first-orbit-number">03</span>
+        <span>
+          <strong>Pick a world</strong>
+          <small>Four worlds to fly, turn and watch</small>
+        </span>
+        <span aria-hidden="true">↓</span>
       </a>
     </nav>
   );

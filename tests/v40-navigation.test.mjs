@@ -5,9 +5,10 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { JSDOM } from "jsdom";
 import { readFile } from "node:fs/promises";
 import vm from "node:vm";
+import ts from "typescript";
 
 test("current E.V.E. treats inherited object names as unknown and still answers legitimate commands", async () => {
-  const { V40Page } = await import("../src/v40/page.jsx");
+  const { V40Page } = await import("../src/v40/page.tsx");
   const receiver = {
     state: { eveLog: [], eveInput: "" },
     setState(update) {
@@ -25,7 +26,7 @@ test("current E.V.E. treats inherited object names as unknown and still answers 
 });
 
 test("fragment destinations reveal only their enclosing disclosures, including encoded IDs", async () => {
-  const { revealHashTarget } = await import("../src/v40/navigation.js");
+  const { revealHashTarget } = await import("../src/v40/navigation.ts");
   const doc = new JSDOM(
     '<details id="other"><summary>Other</summary></details><details id="outer"><summary>Films</summary><details id="inner"><summary>Exercise</summary><div id="privacy-test"></div></details></details>',
   ).window.document;
@@ -63,7 +64,7 @@ test("current experience bookmarks never redirect to V39 before V40 can open the
 test("ordinary V40 navigation cannot send a visitor into the version archive", async () => {
   const environment = new JSDOM("<!doctype html><html><body></body></html>");
   Object.assign(globalThis, { window: environment.window, document: environment.window.document });
-  const { V40Page } = await import("../src/v40/page.jsx");
+  const { V40Page } = await import("../src/v40/page.tsx");
   const doc = new JSDOM(renderToStaticMarkup(React.createElement(V40Page))).window.document;
   const archive = [...doc.querySelectorAll('a[href^="/v39/"]')];
   assert.deepEqual(
@@ -99,22 +100,25 @@ async function initialSectionLifecycle(initialState = "interactive") {
       await Promise.resolve();
     }
   };
-  const { destinations } = await import("../src/v40/destinations.js");
-  const { presentation } = await import("../src/v40/evidence.js");
-  const missionDeskSource = await readFile(new URL("../src/v40/mission-desk.js", import.meta.url), "utf8");
-  const source = await readFile(new URL("../src/v40/polish.js", import.meta.url), "utf8");
-  win.eval(
-    source
-      .replace(
-        'import { destinations } from "./destinations.js";',
-        `const destinations = ${JSON.stringify(destinations)};`,
-      )
-      .replace('import { presentation } from "./evidence.js";', `const presentation = ${JSON.stringify(presentation)};`)
-      .replace(
-        'import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.js";',
-        missionDeskSource.replaceAll("export function ", "function "),
-      ),
-  );
+  const { destinations } = await import("../src/v40/destinations.ts");
+  const { presentation } = await import("../src/v40/evidence.ts");
+  const missionDeskSource = await readFile(new URL("../src/v40/mission-desk.ts", import.meta.url), "utf8");
+  const source = await readFile(new URL("../src/v40/polish.ts", import.meta.url), "utf8");
+  const prepared = source
+    .replace(
+      'import { destinations } from "./destinations.ts";',
+      `const destinations = ${JSON.stringify(destinations)};`,
+    )
+    .replace('import { presentation } from "./evidence.ts";', `const presentation = ${JSON.stringify(presentation)};`)
+    .replace(
+      'import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.ts";',
+      missionDeskSource.replaceAll("export function ", "function "),
+    );
+  // Evaluate the same emitted JavaScript the browser receives after the TS migration.
+  const compiled = ts.transpileModule(prepared, {
+    compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
+  }).outputText;
+  win.eval(compiled.replace(/export \{\};?/g, ""));
   win.dispatchEvent(new win.Event("cashio-ready"));
   return {
     win,

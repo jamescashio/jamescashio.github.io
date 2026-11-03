@@ -6,7 +6,7 @@ import tseslint from "typescript-eslint";
 import { defineConfig, globalIgnores } from "eslint/config";
 
 export default defineConfig([
-  globalIgnores(["dist/**", "node_modules/**", ".superpowers/**", ".worktrees/**", "public/**"]),
+  globalIgnores(["dist/**", "artifacts/**", "node_modules/**", ".superpowers/**", ".worktrees/**", "public/**"]),
   {
     files: ["src/v40/**/*.{js,jsx}"],
     extends: [js.configs.recommended],

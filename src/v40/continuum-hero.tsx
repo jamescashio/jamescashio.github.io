@@ -12,8 +12,8 @@ type HeroView = {
   fleetLine: string;
   telemetry: Array<{ label: string; value: string | number }>;
 };
-import { HeroPlanet } from "./hero-reel.jsx";
-import { presentation, observedMonth } from "./evidence.js";
+import { HeroPlanet } from "./hero-reel.tsx";
+import { presentation, observedMonth } from "./evidence.ts";
 
 export function ContinuumPrinciples() {
   return (

@@ -46,7 +46,7 @@ test("Omnius polish keeps instrument text readable and phone navigation delibera
     assert.equal(await page.locator(".continuum-intro").evaluate((n) => getComputedStyle(n).fontSize), "16px");
     await expect(page.locator(".continuum-path-description")).toHaveText([
       "Explore four interactive worlds",
-      "Try seven hands-on experiments",
+      "Try seven interactive experiments",
       "House Cashio and original films",
     ]);
     for (const action of await page.locator(".continuum-actions a, .continuum-paths a").all()) {
@@ -273,7 +273,7 @@ test("Omnius, Overruled visibly approaches the original artwork and freezes with
   await page.getByRole("button", { name: "Plot a course", exact: true }).click();
   const covered = await view();
   await page.waitForTimeout(350);
-  assert.equal(await view(), covered, "the camera freezes behind the Discovery dialog");
+  assert.equal(await view(), covered, "the camera freezes behind Mission Control");
   await page.keyboard.press("Escape");
   await expect.poll(view).not.toBe(covered);
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -417,4 +417,44 @@ test("the flight deck's humor responds to the chosen control without enabling mo
   assert.equal(await camera.evaluate((el) => getComputedStyle(el).transform), still);
   await expect(page.locator("header [data-motion-toggle]")).toHaveAccessibleName("Resume motion");
   assert.equal(await page.locator(".continuum-observation").innerText(), evidence);
+});
+
+test("Screening room hover loops load only for a desktop pointer with motion on, and never before the collection opens", async (t) => {
+  for (const [label, options] of [
+    ["desktop", {}],
+    ["reduced motion", { reducedMotion: "reduce" }],
+    ["phone", { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }],
+  ]) {
+    const page = await visit(t, options);
+    const previews = [];
+    page.on("request", (request) => {
+      if (request.url().includes("/v42/previews/")) previews.push(request.url());
+    });
+    await page.waitForTimeout(400);
+    assert.deepEqual(previews, [], `${label}: no loop loads before the collection opens`);
+    await page.locator("#films-collection > summary").click();
+    await page.locator(".studio-collection > summary").click();
+    const card = page.locator(".film-library button[data-tilt]").first();
+    await card.scrollIntoViewIfNeeded();
+    const video = card.locator("video");
+    if (label !== "desktop") {
+      await page.waitForTimeout(800);
+      assert.deepEqual(previews, [], `${label}: loops stay unloaded`);
+      continue;
+    }
+    await expect(video).toHaveAttribute("src", /^\/v42\/previews\/[a-z-]+\.mp4$/);
+    await card.hover();
+    await expect.poll(() => video.evaluate((v) => !v.paused && v.muted && v.currentTime > 0)).toBe(true);
+    await page.mouse.move(4, 4);
+    await expect.poll(() => video.evaluate((v) => v.paused)).toBe(true);
+    assert.ok(
+      previews.every((p) => !/\/assets\/zenith\//.test(p)),
+      "hover never pulls a full film",
+    );
+    // Pause releases loaded loops so nothing keeps fetching.
+    await page.locator("header [data-motion-toggle]").click();
+    await expect
+      .poll(() => video.evaluate((v) => !v.getAttribute("src") && v.preload === "none" && v.paused))
+      .toBe(true);
+  }
 });
