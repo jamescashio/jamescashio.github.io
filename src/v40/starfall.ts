@@ -13,6 +13,7 @@ type Meteor = { x: number; y: number; vx: number; vy: number; life: number; max:
 type Palette = [string, string];
 
 const COLORS = ["233,241,255", "244,189,94", "114,229,244"];
+const SOLID = COLORS.map((c) => `rgb(${c})`);
 // Each chapter tints the nebula behind it. Gold and cyan stay the house colours.
 const PALETTES: Record<string, Palette> = {
   top: ["#f4bd5e", "#72e5f4"],
@@ -90,6 +91,11 @@ export function installStarfall(): () => void {
     nebulaFlip = false,
     chapter = "",
     keyBuf = "",
+    lastMove = 0,
+    lastJump = 0,
+    frameAt = 0,
+    stepNow = 1,
+    idleT = 0,
     toastT = 0;
 
   const seed = () => {
@@ -146,7 +152,7 @@ export function installStarfall(): () => void {
       let x = s.x;
       let y = (((s.y - scroll * s.z * 0.32) % H) + H) % H;
       // A gentle gravity lens around the pointer.
-      if (fine && px > -999) {
+      if (fine && animate && px > -999) {
         const dx = x - px,
           dy = y - py,
           d = Math.hypot(dx, dy);
@@ -157,7 +163,6 @@ export function installStarfall(): () => void {
         }
       }
       const a = (0.28 + 0.62 * s.z) * (animate ? 0.72 + 0.28 * Math.sin(t * 0.001 * s.tw + s.ph) : 0.85);
-      const rgb = COLORS[s.c];
       const len = streak * s.z + warp * 110 * s.z;
       if (len > 1.5) {
         // Hyperspace: stars stretch against the scroll, and outward from the vanishing point during a jump.
@@ -170,17 +175,16 @@ export function installStarfall(): () => void {
           ex = x - (ox / od) * warp * 110 * s.z;
           ey = y - (oy / od) * warp * 110 * s.z + dir * streak * s.z * (1 - warp);
         }
-        const g = ctx.createLinearGradient(x, y, ex, ey);
-        g.addColorStop(0, `rgba(${rgb},${a})`);
-        g.addColorStop(1, `rgba(${rgb},0)`);
-        ctx.strokeStyle = g;
+        ctx.globalAlpha = a * 0.8;
+        ctx.strokeStyle = SOLID[s.c];
         ctx.lineWidth = Math.max(0.6, s.r * 1.1);
         ctx.beginPath();
         ctx.moveTo(x, y);
         ctx.lineTo(ex, ey);
         ctx.stroke();
       } else {
-        ctx.fillStyle = `rgba(${rgb},${a})`;
+        ctx.globalAlpha = a;
+        ctx.fillStyle = SOLID[s.c];
         const r = s.r;
         if (r < 0.9) ctx.fillRect(x, y, r * 1.6, r * 1.6);
         else {
@@ -188,7 +192,7 @@ export function installStarfall(): () => void {
           ctx.arc(x, y, r, 0, 6.283);
           ctx.fill();
           if (s.z === 1 && s.c !== 0) {
-            ctx.fillStyle = `rgba(${rgb},${a * 0.16})`;
+            ctx.globalAlpha = a * 0.16;
             ctx.beginPath();
             ctx.arc(x, y, r * 4, 0, 6.283);
             ctx.fill();
@@ -196,17 +200,21 @@ export function installStarfall(): () => void {
         }
       }
     }
+    ctx.globalAlpha = 1;
     // Constellation lines from the pointer to its three nearest bright stars.
     if (fine && px > -999 && animate && streak < 4) {
-      const near = stars
-        .filter((s) => s.z === 1)
-        .map((s) => {
-          const y = (((s.y - scroll * s.z * 0.32) % H) + H) % H;
-          return { x: s.x, y, d: Math.hypot(s.x - px, y - py) };
-        })
-        .filter((s) => s.d < 190)
-        .sort((a, b) => a.d - b.d)
-        .slice(0, 3);
+      const near: Array<{ x: number; y: number; d: number }> = [];
+      for (const st of stars) {
+        if (st.z !== 1) continue;
+        const sy = (((st.y - scroll * 0.32) % H) + H) % H;
+        const d = Math.hypot(st.x - px, sy - py);
+        if (d >= 190) continue;
+        near.push({ x: st.x, y: sy, d });
+        if (near.length > 3) {
+          near.sort((m, n) => m.d - n.d);
+          near.length = 3;
+        }
+      }
       ctx.lineWidth = 0.8;
       for (const s of near) {
         ctx.strokeStyle = `rgba(114,229,244,${0.34 * (1 - s.d / 190)})`;
@@ -223,9 +231,9 @@ export function installStarfall(): () => void {
     for (let i = meteors.length - 1; i >= 0; i--) {
       const m = meteors[i];
       if (animate) {
-        m.x += m.vx;
-        m.y += m.vy;
-        m.life++;
+        m.x += m.vx * stepNow;
+        m.y += m.vy * stepNow;
+        m.life += stepNow;
       }
       const k = 1 - m.life / m.max;
       if (k <= 0) {
@@ -265,6 +273,7 @@ export function installStarfall(): () => void {
       flight.dataset.on = "false";
       return;
     }
+    // The first link is the rail's cAshIo mark; the track starts at the first chapter.
     const first = links[1] ?? links[0];
     const lastLink = links[links.length - 1];
     const a = first.getBoundingClientRect(),
@@ -293,13 +302,15 @@ export function installStarfall(): () => void {
     const kmLeft = 400 * Math.pow(1 - p, 2.1);
     const landed = p > 0.992;
     flight.dataset.landed = String(landed);
-    alt.textContent = landed
+    const altText = landed
       ? "TOUCHDOWN"
       : kmLeft >= 1
         ? `ALT ${Math.round(kmLeft)} km`
         : `ALT ${Math.round(kmLeft * 1000)} m`;
     const m = Math.abs(vel) / 26;
-    mach.textContent = landed ? "Mostly harmless" : `MACH ${m.toFixed(1)}`;
+    const machText = landed ? "Mostly harmless" : `MACH ${m.toFixed(1)}`;
+    if (alt.textContent !== altText) alt.textContent = altText;
+    if (mach.textContent !== machText) mach.textContent = machText;
     const now = performance.now();
     if (m >= 1 && now - machAt > 20000 && railBox.ok && moving()) {
       machAt = now;
@@ -325,38 +336,54 @@ export function installStarfall(): () => void {
   const frame = (t: number) => {
     raf = 0;
     const animate = moving();
+    // Frame rate independence: 120 Hz screens fall at the same speed as 60 Hz ones.
+    const step = clamp((t - (frameAt || t - 16.7)) / 16.7, 0.25, 3);
+    frameAt = t;
+    stepNow = step;
     const y = window.scrollY;
     const dy = y - lastY;
     lastY = y;
     // A long jump (anchor, keyboard End, scrollbar drag) reads as hyperspace, not as rain.
     if (Math.abs(dy) > 260 && animate) boost = Math.max(boost, Math.min(1.2, Math.abs(dy) / 900));
     vel = vel * 0.82 + clamp(dy, -70, 70) * 0.18;
+    if (Math.abs(vel) < 0.05) vel = 0;
     // Pausing motion clears anything mid flight rather than freezing it on screen.
     if (!animate) meteors.length = 0;
-    boost *= 0.93;
+    boost *= Math.pow(0.93, step);
     if (boost < 0.01) boost = 0;
     if (animate && t > nextMeteor) {
       spawnMeteor();
       nextMeteor = t + rand(7000, 15000);
     }
-    const busy = Math.abs(vel) > 0.4 || boost > 0 || meteors.length > 0 || px > -999;
-    const interval = busy ? 15 : lite ? 66 : 33;
+    const pointerBusy = t - lastMove < 450;
+    const busy = Math.abs(vel) > 0.4 || boost > 0 || meteors.length > 0 || pointerBusy;
+    const covered = !!document.querySelector("dialog[open], [data-cinema-open], .cinema-open");
+    const interval = busy ? 15 : lite ? 100 : 50;
     if (t - last >= interval || !animate) {
       last = t;
       draw(t, animate);
       instruments();
     }
-    if (animate) raf = requestAnimationFrame(frame);
+    // Busy moments run on animation frames; an idle sky only wakes on a timer for its twinkle.
+    if (!animate) return;
+    if (covered) idleT = window.setTimeout(kick, 600);
+    else if (busy) raf = requestAnimationFrame(frame);
+    else idleT = window.setTimeout(kick, interval);
   };
   const kick = () => {
-    if (!raf) raf = requestAnimationFrame(frame);
+    if (raf) return;
+    clearTimeout(idleT);
+    raf = requestAnimationFrame(frame);
   };
 
   const say = (text: string) => {
     toast.textContent = text;
     toast.dataset.show = "true";
     clearTimeout(toastT);
-    toastT = window.setTimeout(() => (toast.dataset.show = "false"), 3200);
+    toastT = window.setTimeout(() => {
+      toast.dataset.show = "false";
+      window.setTimeout(() => (toast.textContent = ""), 300);
+    }, 3200);
   };
 
   const hyperspace = (strength = 1) => {
@@ -410,8 +437,9 @@ export function installStarfall(): () => void {
     if (e.pointerType !== "mouse") return;
     px = e.clientX;
     py = e.clientY;
-    kick();
     if (!moving()) return;
+    lastMove = performance.now();
+    kick();
     const inside = e.target instanceof Element && !e.target.closest("footer, header, nav, dialog") ? e.target : null;
     let target = inside ? inside.closest(CARD) : null;
     while (target) {
@@ -454,7 +482,10 @@ export function installStarfall(): () => void {
   const onClick = (e: MouseEvent) => {
     const a = e.target instanceof Element ? e.target.closest<HTMLAnchorElement>('a[href^="#"]') : null;
     const hash = a?.getAttribute("href") ?? "";
-    if (hash.length < 2) return;
+    if (hash.length < 2 || hash === "#main-content" || a?.closest(".skip-link")) return;
+    const now = performance.now();
+    if (now - lastJump < 700) return;
+    lastJump = now;
     const dest = /^#[\w-]+$/.test(hash) ? document.getElementById(hash.slice(1)) : null;
     hyperspace(dest ? 1 : 0.55);
     if (dest) {
@@ -488,7 +519,7 @@ export function installStarfall(): () => void {
   const onKey = (e: KeyboardEvent) => {
     const t = e.target;
     if (t instanceof HTMLElement && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
-    if (e.key.length !== 1) return;
+    if (e.key.length !== 1 || e.ctrlKey || e.metaKey || e.altKey || e.isComposing) return;
     keyBuf = (keyBuf + e.key.toLowerCase()).slice(-8);
     const egg = EGGS.find((w) => keyBuf.endsWith(w));
     if (!egg) return;
@@ -500,23 +531,37 @@ export function installStarfall(): () => void {
   const onResize = () => {
     clearTimeout(resizeT);
     resizeT = window.setTimeout(() => {
-      seed();
+      // Phones fire resize as the address bar slides; keep the same stars unless the width changed.
+      if (window.innerWidth !== W) seed();
+      else {
+        H = window.innerHeight;
+        canvas.height = sky.height = Math.round(H * dpr);
+      }
       measureRail();
       kick();
     }, 140);
   };
-  const onScroll = () => kick();
-  const onVisibility = () => kick();
-  const motionObserver = new MutationObserver(() => {
-    html.dataset.sfMotion = moving() ? "on" : "off";
+  const onScroll = () => {
+    if (glintFor) {
+      glint.dataset.show = "false";
+      glintFor = null;
+    }
     kick();
-  });
+  };
+  const syncFlag = () => {
+    html.dataset.sfMotion = html.dataset.motion !== "off" && !reduceQuery.matches ? "on" : "off";
+  };
+  const onVisibility = () => {
+    syncFlag();
+    kick();
+  };
+  const motionObserver = new MutationObserver(onVisibility);
 
   seed();
   measureRail();
   observe();
   tintFor("top");
-  html.dataset.sfMotion = moving() ? "on" : "off";
+  syncFlag();
   motionObserver.observe(html, { attributes: true, attributeFilter: ["data-motion"] });
   reduceQuery.addEventListener("change", onVisibility);
   window.addEventListener("resize", onResize, { passive: true });
@@ -529,6 +574,7 @@ export function installStarfall(): () => void {
   window.addEventListener("cashio-starfall", onEgg);
   document.addEventListener("visibilitychange", onVisibility);
   // Late chapters and the rail can settle after hydration; look again once things are calm.
+  void document.fonts?.ready.then(measureRail);
   const settle = window.setTimeout(() => {
     observe();
     measureRail();
@@ -552,6 +598,7 @@ export function installStarfall(): () => void {
   return () => {
     arrivalTimers.forEach(clearTimeout);
     cancelAnimationFrame(raf);
+    clearTimeout(idleT);
     clearTimeout(settle);
     clearTimeout(resizeT);
     clearTimeout(toastT);
