@@ -1094,3 +1094,89 @@ html[data-motion="off"] .mission-results a {
   stroke: #aad6de20;
   stroke-dasharray: 2 9;
 }
+
+.first-orbit {
+  display: grid;
+  grid-template-columns: 1.05fr repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  grid-column: 1 / -1;
+  padding: 24px 0 0;
+  margin-top: 8px;
+  border-top: 1px solid #b2d9e136;
+}
+.first-orbit > div > strong {
+  display: block;
+  color: #ecf3f5;
+  font: 600 18px/1.4 var(--font-body);
+  margin-top: 7px;
+}
+#v40-root .first-orbit > div > p {
+  color: #bcced7;
+  font: 14px/1.6 var(--font-body);
+  margin: 5px 0 0;
+}
+.first-orbit > a {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 76px;
+  padding: 13px 14px;
+  border-left: 1px solid #dfb77080;
+  text-decoration: none;
+  background: #090f14;
+  color: #f0d49a;
+}
+.first-orbit > a:last-child {
+  border-color: #7bcfd599;
+  color: #a3e5eb;
+}
+.first-orbit-number {
+  font: 500 24px/1 var(--font-display);
+  opacity: 0.85;
+}
+.first-orbit > a strong {
+  display: block;
+  color: #eef4f6;
+  font: 600 16px/1.4 var(--font-body);
+}
+.first-orbit > a small {
+  display: block;
+  color: #bdcdd4;
+  font: 13px/1.5 var(--font-body);
+  margin-top: 5px;
+}
+.first-orbit > a > span:last-child {
+  margin-left: auto;
+  font-size: 22px;
+}
+.first-orbit > a:is(:hover, :focus-visible) {
+  background: #15242c;
+  outline: 2px solid #ffe0a4;
+  outline-offset: 2px;
+}
+@media (max-width: 1000px) {
+  .first-orbit {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 1000px) {
+  .first-orbit > div {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 600px) {
+  .first-orbit {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+@media (max-width: 600px) {
+  .first-orbit > div {
+    margin-bottom: 6px;
+  }
+}
+@media (max-width: 600px) {
+  .first-orbit > a {
+    min-height: 72px;
+  }
+}

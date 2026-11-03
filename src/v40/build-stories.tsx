@@ -184,3 +184,40 @@ export function BuildStory({ kind }: { kind: keyof typeof stories }) {
     </div>
   );
 }
+
+export function FirstOrbit() {
+  // The same route the hero recommends: board, make one decision, then choose where to go next.
+  return (
+    <nav className="first-orbit" aria-label="Recommended first visit">
+      <div>
+        <span className="visitor-kicker">Your first orbit</span>
+        <strong>Board. Decide. Explore.</strong>
+        <p>Three stops, about two minutes. Sound stays off.</p>
+      </div>
+      <a href="#flight=board">
+        <span className="first-orbit-number">01</span>
+        <span>
+          <strong>Board the starship</strong>
+          <small>Your pace, or the 30 second tour</small>
+        </span>
+        <span aria-hidden="true">↗</span>
+      </a>
+      <a href="#flight=blackout">
+        <span className="first-orbit-number">02</span>
+        <span>
+          <strong>Cut the cloud link</strong>
+          <small>See which work stays aboard</small>
+        </span>
+        <span aria-hidden="true">↗</span>
+      </a>
+      <a href="#rooms">
+        <span className="first-orbit-number">03</span>
+        <span>
+          <strong>Pick a world</strong>
+          <small>Four worlds to fly, turn and watch</small>
+        </span>
+        <span aria-hidden="true">↓</span>
+      </a>
+    </nav>
+  );
+}
