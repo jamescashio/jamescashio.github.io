@@ -1632,7 +1632,7 @@ test("Zenith repeat is opt-in, pauses when hidden and resets when a collection c
   await expect(film).toHaveAttribute("data-clip", "zenith-threshold");
   await expect(player).toHaveJSProperty("loop", false);
   await expect(page.getByRole("button", { name: "Repeat film", exact: true })).toHaveCount(0);
-  await page.getByRole("button", { name: "Ringed Horizon, 5-second film", exact: true }).click();
+  await page.getByRole("button", { name: "Ringed Horizon 0:05", exact: true }).click();
   await expect(page.getByRole("button", { name: "Repeat film", exact: true })).toHaveAttribute("aria-pressed", "false");
   await page.getByRole("combobox", { name: "FILM COLLECTION" }).selectOption({ label: "The original films" });
   await expect(film).toHaveAttribute("data-clip", "intro");
