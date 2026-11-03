@@ -55,6 +55,12 @@ test("the uninterrupted cinematic tour ends in an honest, downloadable record", 
   assert.ok(stage.width > 1300 && stage.height > 600, "the tour gives the ship the full stage");
   await expect(flight).toHaveAttribute("data-complete", "true", { timeout: 40000 });
   await expect(flight.locator("#ff-finale-title")).toBeFocused();
+  // Two full-size PNGs are encoded asynchronously after the scene freezes.
+  // Wait for the explicit ready state on software-rendered CI machines.
+  await expect(flight.locator(".ff-finale-status")).toHaveText(
+    "Your record is ready. Save the image or copy your scenario link.",
+    { timeout: 15000 },
+  );
   await expect(flight.locator(".ff-keepsake > img")).toHaveAttribute("alt", /0 onboard, 0 in cloud, 12 held/);
   await expect(flight.locator(".ff-finale-metrics dd")).toHaveText(["00", "00", "12"]);
   await png(page, "portrait", [1080, 1440]);
