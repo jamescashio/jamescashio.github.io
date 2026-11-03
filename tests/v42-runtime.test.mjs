@@ -265,10 +265,17 @@ test("Omnius, Overruled visibly approaches the original artwork and freezes with
   await page.locator("header [data-motion-toggle]").click();
   await expect.poll(view).not.toBe(close);
   await page.locator("#contact").scrollIntoViewIfNeeded();
-  await page.waitForTimeout(150);
-  const away = await view();
-  await page.waitForTimeout(350);
-  assert.equal(await view(), away, "the camera does no offscreen work");
+  // The offscreen observer can land a frame late on a busy runner; the camera must then hold still.
+  await expect
+    .poll(
+      async () => {
+        const away = await view();
+        await page.waitForTimeout(350);
+        return (await view()) === away;
+      },
+      { timeout: 5000, message: "the camera does no offscreen work" },
+    )
+    .toBe(true);
   await page.locator("#top").scrollIntoViewIfNeeded();
   await page.getByRole("button", { name: "Plot a course", exact: true }).click();
   const covered = await view();

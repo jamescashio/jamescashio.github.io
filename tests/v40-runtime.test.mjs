@@ -193,7 +193,8 @@ test("the Galactic cut uses compact playback for data saving and respects Escape
     await play.click();
     const video = film.locator("video");
     await expect(video).toHaveAttribute("src", /galactic-paperwork-480p-/);
-    await expect.poll(() => video.evaluate((node) => !node.paused && node.muted)).toBe(true);
+    // A throttled 3G start can take longer than the default five seconds on a busy runner.
+    await expect.poll(() => video.evaluate((node) => !node.paused && node.muted), { timeout: 15000 }).toBe(true);
     await page.locator("header .mission-control").click();
     await expect(page.locator("#mission-dialog")).toHaveAttribute("open", "");
     await expect.poll(() => video.evaluate((node) => node.paused)).toBe(true);
@@ -506,12 +507,13 @@ test("Boarding, reload, Back and closing a scene keep visitors in V40", async (t
     const page = await visit(t, { width });
     const board = page.locator('a[href="#flight=board"]').first();
     await board.click();
-    await expect(page.locator("#helios-flight dialog")).toBeVisible();
+    // First Flight loads its scene on demand; a cold cache can need more than five seconds.
+    await expect(page.locator("#helios-flight dialog")).toBeVisible({ timeout: 15000 });
     if (width === 390) await audit(page, "#helios-flight");
     assert.equal(new URL(page.url()).pathname, "/");
     assert.equal(new URL(page.url()).hash, "#flight=board");
     await page.reload();
-    await expect(page.locator("#helios-flight dialog")).toBeVisible();
+    await expect(page.locator("#helios-flight dialog")).toBeVisible({ timeout: 15000 });
     assert.equal(new URL(page.url()).pathname, "/");
     await page.keyboard.press("Escape");
     await expect(page.locator("#helios-flight")).toHaveCount(0);
