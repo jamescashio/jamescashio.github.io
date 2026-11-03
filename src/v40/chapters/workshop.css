@@ -997,6 +997,19 @@ html[data-motion="off"] #v40-root .showcase-project {
     margin-top: 18px;
   }
 }
+/* Phones: the diagram appears with its notes, after the summary, instead of above a closed drawer. */
+@media (max-width: 600px) {
+  .build-story {
+    display: flex;
+    flex-direction: column;
+  }
+  .build-story > .build-illustration {
+    order: 1;
+  }
+  .build-story:has(> .build-notes:not([open])) > .build-illustration {
+    display: none;
+  }
+}
 @media (max-width: 600px) {
   .build-illustration-label,
   .build-illustration-caption {

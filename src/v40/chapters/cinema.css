@@ -365,32 +365,6 @@
   outline-offset: 7px;
   border-radius: 4px;
 }
-.film-library > summary {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  min-height: 56px;
-  padding: 12px 16px;
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
-  color: var(--cyan);
-  font: 600 15px/1.5 var(--font-body);
-  list-style: none;
-  cursor: pointer;
-}
-.film-library > summary::-webkit-details-marker {
-  display: none;
-}
-.film-library > summary span {
-  transition: transform 180ms ease;
-}
-.film-library[open] > summary span {
-  transform: rotate(45deg);
-}
-.film-library[open] > summary {
-  margin-bottom: 20px;
-}
 .film-library > a {
   min-height: 44px;
   display: flex;

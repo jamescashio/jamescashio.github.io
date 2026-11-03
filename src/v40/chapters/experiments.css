@@ -349,44 +349,6 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
-.privacy-exercise:not([open]) > div {
-  display: none;
-}
-.privacy-exercise > summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  min-height: 56px;
-  color: var(--text);
-  font: 600 16px/1.5 var(--font-body);
-  cursor: pointer;
-  list-style: none;
-}
-.privacy-exercise > summary::-webkit-details-marker {
-  display: none;
-}
-.privacy-exercise > summary small {
-  display: block;
-  margin-top: 6px;
-  color: var(--text-dim);
-  font: 400 14px/1.6 var(--font-body);
-}
-.privacy-exercise > summary > span:last-child {
-  color: var(--cyan);
-  font-size: 26px;
-}
-.privacy-exercise[open] > summary {
-  margin-bottom: 24px;
-}
-.privacy-exercise[open] > summary > span:last-child {
-  transform: rotate(45deg);
-}
-.privacy-exercise > summary:focus-visible {
-  outline: 2px solid var(--cyan);
-  outline-offset: 7px;
-  border-radius: 4px;
-}
 .routing-note {
   align-self: start;
   padding: 30px;

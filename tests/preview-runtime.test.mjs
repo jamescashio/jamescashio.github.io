@@ -146,18 +146,21 @@ test("the phone header fits before secondary styles arrive", async (t) => {
 
 test("the optional privacy exercise remains keyboard operated and preserves human authority", async (t) => {
   const page = await visit(t);
-  await page.goto(url + "#work");
-  const exercise = page.locator(".privacy-exercise");
-  const summary = exercise.locator("summary").first();
+  await page.goto(url);
+  // One drawer: the decision story opens straight onto the exercise.
+  const story = page.locator("#decision-story");
+  const exercise = story.locator(".privacy-exercise");
+  const summary = story.locator(":scope > summary");
   await summary.focus();
   await page.keyboard.press("Enter");
-  await expect(exercise).toHaveAttribute("open", "");
+  await expect(story).toHaveAttribute("open", "");
+  await expect(exercise.locator("summary")).toHaveCount(0);
   await exercise.getByRole("button", { name: "A person", exact: true }).click();
   await exercise.getByRole("button", { name: "Show the answer", exact: true }).click();
   await expect(exercise.locator('[role="status"]')).toContainText(/person|human|review/i);
   await summary.focus();
   await page.keyboard.press("Enter");
-  await expect(exercise).not.toHaveAttribute("open", "");
+  await expect(story).not.toHaveAttribute("open", "");
   await expect(summary).toBeFocused();
 });
 
@@ -176,14 +179,14 @@ test("featured project titles fit their own columns on a narrow phone", async (t
 test("fragment bookmarks open the required disclosures, including in the reading edition", async (t) => {
   const page = await visit(t);
   await page.goto(url + "#privacy-test");
-  await expect(page.locator(".privacy-exercise")).toHaveAttribute("open", "");
+  await expect(page.locator("#decision-story")).toHaveAttribute("open", "");
   await expect(page.locator("#privacy-test")).toBeInViewport();
   await page.goto(url + "#feature-video");
   await expect(page.locator(".studio-collection")).toHaveAttribute("open", "");
   await expect(page.locator("#feature-video")).toBeInViewport();
   const reading = await visit(t, { javaScriptEnabled: false });
   await reading.goto(url + "#privacy-test");
-  await expect(reading.locator(".privacy-exercise")).toHaveAttribute("open", "");
+  await expect(reading.locator("#decision-story")).toHaveAttribute("open", "");
   await expect(reading.locator("#privacy-test")).toContainText("No uploads");
 });
 

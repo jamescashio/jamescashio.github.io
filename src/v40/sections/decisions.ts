@@ -67,20 +67,10 @@ export function DecisionsSection({ v }: GeneratedProps) {
           designSystem.Panel,
           { key: 841, color: "cyan", title: "THE PRIVACY TEST", icon: "▸" },
           " ",
+          // The surrounding drawer already carries this title, so the exercise is not a second drawer.
           h(
-            "details",
+            "div",
             { className: "privacy-exercise" },
-            h(
-              "summary",
-              null,
-              h(
-                "span",
-                null,
-                "One document. A different boundary.",
-                h("small", null, "Try the private document decision · about 20 seconds"),
-              ),
-              h("span", { "aria-hidden": "true" }, "+"),
-            ),
             h(
               "div",
               { key: 843, id: "privacy-test", className: "v41-84e5cd0cb2" },

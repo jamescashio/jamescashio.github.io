@@ -142,14 +142,13 @@ export function renderFilmsPart1(v: GeneratedView) {
       " ",
     ),
     " ",
+    // Shown in full once the collection opens; no third drawer.
     h(
-      "details",
+      "div",
       {
         key: 733,
-        open: v.wide,
         className: "v41-0972b80530 film-library",
       },
-      h("summary", null, "Browse the short films", h("span", { "aria-hidden": "true" }, "＋")),
       " ",
       h(
         "div",
