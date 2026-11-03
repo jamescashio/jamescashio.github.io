@@ -91,9 +91,17 @@ test("the explicit tour starts on readiness while ordinary boarding stays at the
   await expect(flight.getByRole("button", { name: "Pause tour", exact: true })).toBeVisible();
   await expect(flight).toHaveAttribute("data-view", "cinema");
   await expect(flight.locator(".ff-story")).toBeHidden();
-  for (const column of await flight.locator(".ff-telemetry > div").all()) {
-    const bounds = await column.boundingBox();
-    const label = await column.locator("span").boundingBox();
+  // A chapter replaces the readout nodes. Measure each label and its column
+  // together so a timed chapter change cannot detach one between browser calls.
+  const readouts = await flight.locator(".ff-telemetry > div").evaluateAll((columns) =>
+    columns.map((column) => ({
+      bounds: column.getBoundingClientRect().toJSON(),
+      label: column.querySelector("span").getBoundingClientRect().toJSON(),
+    })),
+  );
+  assert.equal(readouts.length, 3);
+  for (const { bounds, label } of readouts) {
+    assert.ok(bounds.width > 0 && label.width > 0, "phone readouts are visible");
     assert.ok(
       label.x >= bounds.x && label.x + label.width <= bounds.x + bounds.width + 1,
       "phone readout labels fit their columns",
