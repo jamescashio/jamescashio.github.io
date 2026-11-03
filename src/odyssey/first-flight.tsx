@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { FIRST_FLIGHT, flightStepIndex, missionHash } from "./flight-plan";
 import { flightChapterInput, chapterRecap, type FlightChoices } from "./flight-state";
 import { RequestConstellation } from "./request-constellation";
@@ -9,6 +9,7 @@ import { FlightRecap } from "./flight-recap";
 import { DecisionDelta } from "./decision-delta";
 import type { FlightDecision } from "./flight-recap-model";
 import { HumanReviewSignal } from "./human-review-signal";
+import { MissionFinale } from "./mission-finale";
 import { shareExperiment } from "./study-experiment";
 import "./first-flight.css";
 
@@ -20,6 +21,7 @@ export default function FirstFlight({
   helios = false,
   visitorPaced = false,
   startTour = false,
+  showcase = false,
 }: {
   edition?: string;
   /** The current Helios front door: its recap, phone layout and contact exit. The V37 archive keeps the default. */
@@ -27,6 +29,8 @@ export default function FirstFlight({
   visitorPaced?: boolean;
   /** Explicit tour entrance only; ordinary boarding and reduced motion remain visitor paced. */
   startTour?: boolean;
+  /** Current front door only. Historical editions retain their existing composition and export. */
+  showcase?: boolean;
   motion: boolean;
   initialStep: string;
   onClose: (destination?: string) => void;
@@ -59,6 +63,10 @@ export default function FirstFlight({
   const restoreDecisionFocus = useRef(false);
   const completionFocus = useRef<HTMLHeadingElement>(null);
   const focusCompletion = useRef(false);
+  const cinematicPause = useRef<HTMLButtonElement>(null);
+  const manualPlayback = useRef<HTMLButtonElement>(null);
+  const restorePlaybackFocus = useRef(false);
+  const finaleStill = useRef<HTMLCanvasElement | null>(null);
   const scene = FIRST_FLIGHT[step];
   const currentInput = useMemo(() => flightChapterInput(step, choice), [step, choice]);
   const changed =
@@ -81,6 +89,7 @@ export default function FirstFlight({
   const independent = input.architecture === "hybrid" && !input.connected;
   const flightHash = changed || complete ? missionHash(input) : `#flight=${scene.id}`;
   const playing = motion && !paused && !complete && pageVisible && phase !== "loading";
+  const cinema = showcase && motion && !paused && !complete;
   // In the Helios flight a relay choice carried from an earlier chapter keeps this chapter's own title.
   const changedHere = changed && (!helios || currentDecision !== null);
   const sceneTitle = complete
@@ -94,6 +103,50 @@ export default function FirstFlight({
           ? "The relay is back."
           : "Connection lost. Work stays."
       : scene.title;
+
+  const captureScene = useCallback(() => {
+    controller.current?.setPlaying(false);
+    if (phase === "ready" && controller.current) return controller.current.captureFrame();
+    const poster = panel.current?.querySelector<HTMLImageElement>(".ff-fallback");
+    if (!poster?.complete || !poster.naturalWidth) throw new Error("The ship image is still preparing.");
+    const still = document.createElement("canvas");
+    still.width = poster.naturalWidth;
+    still.height = poster.naturalHeight;
+    const paint = still.getContext("2d");
+    if (!paint) throw new Error("Image export is unavailable.");
+    paint.drawImage(poster, 0, 0);
+    return still;
+  }, [phase]);
+
+  const finish = useCallback(
+    (focus = true) => {
+      if (showcase) {
+        // Capture before the ending changes the stage layout or the renderer's dimensions.
+        try {
+          finaleStill.current = captureScene();
+        } catch {
+          finaleStill.current = null;
+        }
+      }
+      focusCompletion.current = focus;
+      setComplete(true);
+      setPaused(true);
+    },
+    [showcase, captureScene],
+  );
+
+  useLayoutEffect(() => {
+    if (!showcase || complete) return;
+    const active = document.activeElement;
+    if (
+      restorePlaybackFocus.current ||
+      (active instanceof HTMLElement && panel.current?.contains(active) && !active.getClientRects().length)
+    ) {
+      const control = (cinema ? cinematicPause : manualPlayback).current;
+      (control?.disabled ? firstFocus.current : control)?.focus({ preventScroll: true });
+      restorePlaybackFocus.current = false;
+    }
+  }, [showcase, cinema, complete]);
 
   useEffect(() => {
     const pending = downloads.current;
@@ -129,12 +182,12 @@ export default function FirstFlight({
     const body = panel.current?.querySelector<HTMLElement>(".ff-body");
     const stage = panel.current?.querySelector<HTMLElement>(".ff-stage");
     if (story) story.scrollTop = 0;
-    if (body) body.scrollTop = complete && compact ? (stage?.offsetHeight ?? 0) : 0;
+    if (body) body.scrollTop = complete && compact && !showcase ? (stage?.offsetHeight ?? 0) : 0;
     if (focusCompletion.current) {
       completionFocus.current?.focus({ preventScroll: true });
       focusCompletion.current = false;
     }
-  }, [complete, compact, step]);
+  }, [complete, compact, step, showcase]);
 
   useEffect(() => {
     const dialog = panel.current;
@@ -196,13 +249,13 @@ export default function FirstFlight({
         setCopied(false);
         setCopyError(false);
         setStep(step + 1);
-      } else setComplete(true);
+      } else finish(showcase);
     }, remainingMs.current);
     return () => {
       clearTimeout(timer);
       remainingMs.current = Math.max(0, remainingMs.current - (performance.now() - started));
     };
-  }, [playing, step, visit, scene.durationMs]);
+  }, [playing, step, visit, scene.durationMs, finish, showcase]);
 
   function select(next: number) {
     captureGeneration.current += 1;
@@ -213,19 +266,18 @@ export default function FirstFlight({
     setCopied(false);
     setCopyError(false);
     setCardStatus("idle");
+    finaleStill.current = null;
   }
   function replay() {
     select(0);
     setChoice({});
     setLastDecision(null);
-    setPaused(visitorPaced || !motion);
+    setPaused(showcase ? !motion : visitorPaced || !motion);
     // Replay removes the completed controls; return focus to a stable control.
     firstFocus.current?.focus({ preventScroll: true });
   }
   function reviewDecision() {
-    focusCompletion.current = true;
-    setComplete(true);
-    setPaused(true);
+    finish();
   }
   async function saveCard() {
     if (captureBusy.current || phase === "loading") return;
@@ -236,19 +288,7 @@ export default function FirstFlight({
     const selectedInput = { ...input };
     const selectedChapter = displayScene.title;
     try {
-      controller.current?.setPlaying(false);
-      let still: HTMLCanvasElement;
-      if (phase === "ready" && controller.current) still = controller.current.captureFrame();
-      else {
-        const poster = panel.current?.querySelector<HTMLImageElement>(".ff-fallback");
-        if (!poster?.complete || !poster.naturalWidth) throw new Error("The ship image is still preparing.");
-        still = document.createElement("canvas");
-        still.width = poster.naturalWidth;
-        still.height = poster.naturalHeight;
-        const paint = still.getContext("2d");
-        if (!paint) throw new Error("Image export is unavailable.");
-        paint.drawImage(poster, 0, 0);
-      }
+      const still = captureScene();
       const { createMissionCard } = await import("./mission-card");
       await document.fonts.ready;
       const { blob, record } = await createMissionCard(still, selectedInput, selectedChapter, {
@@ -328,7 +368,8 @@ export default function FirstFlight({
   return (
     <dialog
       ref={panel}
-      className="first-flight ff-cinematic"
+      className={`first-flight ff-cinematic${showcase ? " ff-showcase" : ""}`}
+      data-view={cinema ? "cinema" : "controls"}
       data-shot={displayScene.shot}
       data-motion={motion ? "on" : "off"}
       data-complete={complete}
@@ -342,6 +383,12 @@ export default function FirstFlight({
       }}
       onKeyDown={(event) => {
         if (event.key !== "Tab") return;
+        if (cinema) {
+          event.preventDefault();
+          restorePlaybackFocus.current = true;
+          setPaused(true);
+          return;
+        }
         if (visitorPaced && playing) setPaused(true);
         const controls = [
           ...event.currentTarget.querySelectorAll<HTMLElement>(
@@ -364,6 +411,19 @@ export default function FirstFlight({
             First contact. <em>Human command.</em>
           </h2>
         </div>
+        {cinema && (
+          <button
+            className="ff-cinema-pause"
+            ref={cinematicPause}
+            type="button"
+            onClick={() => {
+              restorePlaybackFocus.current = true;
+              setPaused(true);
+            }}
+          >
+            Pause tour <span aria-hidden="true">Ⅱ</span>
+          </button>
+        )}
         <button ref={firstFocus} type="button" className="ff-close" onClick={() => onClose()}>
           Close <span aria-hidden="true">×</span>
         </button>
@@ -428,6 +488,41 @@ export default function FirstFlight({
               <span>Held</span>
             </div>
           </div>
+          {showcase && (
+            <div className="ff-film-caption" aria-hidden={!cinema}>
+              <span className="ff-eyebrow">
+                0{step + 1} / 04 · {phase === "loading" ? "PREPARING THE SHIP" : "FIRST FLIGHT"}
+              </span>
+              <h3 key={sceneTitle}>{sceneTitle}</h3>
+              <p>
+                {
+                  [
+                    changed
+                      ? outcome.summary
+                      : "Twelve requests. Private work stays aboard. Public work can reach the cloud.",
+                    "The hull opens. The intelligence is yours to inspect.",
+                    changed ? outcome.summary : "The cloud goes dark. This ship keeps the work aboard.",
+                    changed
+                      ? outcome.summary
+                      : "Twelve private requests. Cloud only. Nothing leaves without permission.",
+                  ][step]
+                }
+              </p>
+              <div className="ff-film-progress" aria-label={`Chapter ${step + 1} of 4`}>
+                {FIRST_FLIGHT.map((chapter, index) => (
+                  <span key={`${chapter.id}-${visit}`} data-passed={index < step} data-active={index === step}>
+                    <i
+                      style={{
+                        animationDuration: `${scene.durationMs}ms`,
+                        animationPlayState: playing ? "running" : "paused",
+                      }}
+                    />
+                  </span>
+                ))}
+              </div>
+              <span className="ff-film-hint">Pause to take command</span>
+            </div>
+          )}
         </div>
         <section className="ff-story" aria-labelledby="ff-scene-title">
           <span className="ff-eyebrow">
@@ -438,7 +533,7 @@ export default function FirstFlight({
                 ? "PREPARING THE SHIP"
                 : ["BOARD", "OPEN THE HULL", "CUT THE CLOUD", "HUMAN COMMAND"][step]}
           </span>
-          <h3 id="ff-scene-title" ref={completionFocus} tabIndex={-1}>
+          <h3 id="ff-scene-title" ref={showcase && complete ? undefined : completionFocus} tabIndex={-1}>
             {sceneTitle}
           </h3>
           {complete ? (
@@ -550,6 +645,34 @@ export default function FirstFlight({
           </p>
         </section>
       </div>
+      {showcase && complete && (
+        <MissionFinale
+          still={finaleStill.current}
+          input={input}
+          headingRef={completionFocus}
+          copied={copied}
+          onCopy={copy}
+          onReplay={replay}
+          onClose={onClose}
+          privateRequest={privateRequest}
+        >
+          <FlightRecap
+            decision={recapDecision}
+            visitorChoice={currentDecision !== null}
+            wording={
+              step === 3 && !currentDecision
+                ? {
+                    eyebrow: "THE LAST CHAPTER, BOTH WAYS",
+                    captions: ["If you say yes", "If you say no"],
+                    before: "Permission on",
+                    after: "Permission off",
+                    note: "Same twelve private requests. Only your permission changes the route.",
+                  }
+                : undefined
+            }
+          />
+        </MissionFinale>
+      )}
       {compact && (
         <div className="ff-mobile-command">
           {complete ? (
@@ -624,11 +747,15 @@ export default function FirstFlight({
             </button>
           )}
           <button
+            ref={manualPlayback}
             type="button"
             disabled={phase === "loading" || (!complete && !motion)}
             onClick={() => {
               if (complete) replay();
-              else setPaused(!paused);
+              else {
+                if (showcase) restorePlaybackFocus.current = true;
+                setPaused(!paused);
+              }
             }}
           >
             {complete
@@ -648,9 +775,7 @@ export default function FirstFlight({
               type="button"
               onClick={() => {
                 if (step === 3) {
-                  focusCompletion.current = true;
-                  setComplete(true);
-                  setPaused(true);
+                  finish();
                 } else select(step + 1);
               }}
             >
