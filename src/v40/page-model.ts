@@ -71,6 +71,7 @@ export interface PageHost {
   reduce: boolean;
   heroVisible?: boolean;
   heroEnhancement?: HeroEnhancement;
+  discoveryOpener?: HTMLElement | null;
   stopLivingHero?: () => void;
   autoTraced?: boolean;
   ioAlive?: boolean;

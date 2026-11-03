@@ -54,7 +54,7 @@ test("the interactive page preserves its first painted hero on desktop and phone
       release();
     }
     await page.waitForFunction(() => Boolean(window.cashioV40));
-    await expect(page.locator("[data-mission-open]")).toBeEnabled();
+    await expect(page.locator("header [data-mission-open]")).toBeEnabled();
     assert.equal(
       await page.evaluate(() => window.firstPaintedHero === document.querySelector(".hero-live-poster")),
       true,

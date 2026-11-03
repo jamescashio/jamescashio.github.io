@@ -151,6 +151,11 @@ import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.ts";
     document.body.append(panel);
     missionDesk = bindMissionDesk(panel);
     panel.addEventListener("close", () => {
+      const app = window.cashioV40;
+      if (app && app.heroVisible !== false && app.starLoop) {
+        cancelAnimationFrame(app.raf);
+        app.starLoop();
+      }
       // The close event is queued. Preserve a newer focus destination selected
       // after close(), including a film's keyboard controls or a chapter link.
       const focused = document.activeElement;
@@ -159,6 +164,20 @@ import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.ts";
     panel.addEventListener("click", (e) => {
       if (!(e.target instanceof Element)) return;
       if (e.target.closest<HTMLElement>("[data-mission-close]")) panel.close();
+      // Guided routes live inside Mission Control: one finder, with the tour one step away.
+      const route = e.target.closest<HTMLElement>("[data-mission-route]");
+      const app = window.cashioV40;
+      if (route && app) {
+        const back =
+          opener && opener !== document.body
+            ? opener
+            : [...document.querySelectorAll<HTMLElement>("[data-mission-open]")].find((el) => el.offsetParent) || null;
+        panel.close();
+        back?.focus({ preventScroll: true });
+        app.discoveryOpener = back;
+        setTimeout(() => app.setState({ discovery: route.dataset.missionRoute! }), 0);
+        return;
+      }
       const a = e.target.closest<HTMLElement>("[data-chapter]");
       if (a) {
         panel.close();

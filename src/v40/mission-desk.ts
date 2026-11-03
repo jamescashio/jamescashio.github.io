@@ -1,5 +1,12 @@
 // A visual index into existing destinations. Search and previews stay in this browser.
 const groups = ["All", "Explore", "Try", "Watch", "Connect"];
+// Guided routes, keyed by the ids in discovery-routes.ts. They reuse the opening's three doors so they never
+// read like the filters above them, and stay inline because this module is evaluated without imports in tests.
+const routeNames: Record<string, string> = {
+  worlds: "Find your world",
+  lab: "Make something click",
+  cinema: "Enter the cinema",
+};
 const descriptions: Record<string, string> = {
   top: "Begin at the observatory.",
   contact: "Speaking, mentoring and comparing notes.",
@@ -94,6 +101,14 @@ export function missionDeskMarkup(
   return `<div class="mission-head"><div><span class="mission-eyebrow">THE cAshIo OBSERVATORY</span><h2 id="mission-title">Mission Control</h2></div><button type="button" data-mission-close aria-label="Close Mission Control">ESC ×</button></div>
     <div class="mission-toolbar"><label class="mission-search"><span>Where are we going?</span><input type="search" placeholder="Find a world, experiment or answer…" autocomplete="off" aria-controls="mission-results"></label>
     <div class="mission-categories" role="group" aria-label="Filter destinations">${groups.map((group) => `<button type="button" data-mission-group="${group}" aria-pressed="${group === "All"}">${group}</button>`).join("")}</div>
+    <div class="mission-routes" role="group" aria-label="Guided routes"><span class="mission-routes-label">Or take a guided route</span>${Object.entries(
+      routeNames,
+    )
+      .map(
+        ([id, name]) =>
+          `<button type="button" data-mission-route="${id}">${escape(name)} <span aria-hidden="true">↗</span></button>`,
+      )
+      .join("")}</div>
     <div class="mission-results-meta"><span role="status" aria-live="polite" data-mission-count></span><span aria-hidden="true">↑ ↓ to browse · Enter to go</span></div></div>
     <div class="mission-body"><nav id="mission-results" class="mission-results" aria-label="All chapters">${chapters.map(([id, title, desc], i) => `<a href="#${id}" data-chapter="${id}" data-search="${escape((title + " " + desc).toLowerCase())}" data-group="${scenes[id][0]}" aria-label="${String(i + 1).padStart(2, "0")} ${escape(title)}" aria-describedby="mission-desc-${id}"><small>${String(i + 1).padStart(2, "0")}</small><span class="mission-row-copy"><strong>${escape(title)}</strong><span id="mission-desc-${id}" class="mission-description">${escape(descriptions[id])}</span></span><span class="mission-arrow" aria-hidden="true">↗</span></a>`).join("")}
     <div class="mission-empty" hidden><p>No matching destination. Try “films” or “Doug”.</p><button type="button" data-mission-reset>Show all destinations</button></div></nav>

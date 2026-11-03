@@ -273,7 +273,7 @@ test("Omnius, Overruled visibly approaches the original artwork and freezes with
   await page.getByRole("button", { name: "Plot a course", exact: true }).click();
   const covered = await view();
   await page.waitForTimeout(350);
-  assert.equal(await view(), covered, "the camera freezes behind the Discovery dialog");
+  assert.equal(await view(), covered, "the camera freezes behind Mission Control");
   await page.keyboard.press("Escape");
   await expect.poll(view).not.toBe(covered);
   await page.emulateMedia({ reducedMotion: "reduce" });

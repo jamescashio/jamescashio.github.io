@@ -14,7 +14,6 @@ type HeroView = {
   fleetLine: string;
   telemetry: Array<{ label: string; value: string | number }>;
   discovery: string | null;
-  openDiscovery: (route: string) => void;
   closeDiscovery: () => void;
   foldScene: () => void;
   foldCount: number;
@@ -227,7 +226,8 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
       <div className="continuum-launchpad">
         <div className="continuum-launch-heading">
           <span className="continuum-label">Three ways into the universe</span>
-          <button id="discovery-launch" type="button" onClick={() => v.openDiscovery("worlds")}>
+          {/* One finder: Plot a course opens Mission Control, where the guided routes now live. */}
+          <button id="discovery-launch" type="button" data-mission-open="" aria-haspopup="dialog">
             Plot a course <span aria-hidden="true">↗</span>
           </button>
         </div>

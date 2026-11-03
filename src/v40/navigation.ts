@@ -205,7 +205,7 @@ export function setupV40Navigation() {
             : url.hash === "#film=trailer"
               ? "#" + (link.closest("section[id]")?.id || "universe")
               : "#films");
-        opener = fromDiscovery ? document.getElementById("discovery-launch") || link : link;
+        opener = fromDiscovery ? window.cashioV40?.discoveryOpener || link : link;
       }
       // Boarding from the opening: the camera pushes through the ring, then the flight opens.
       // Pause and reduced motion board at once.

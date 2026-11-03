@@ -117,7 +117,10 @@ export function startStars(this: PageHost, c: HTMLCanvasElement) {
   let lastFrame: number | null = null;
   let lastDraw: number | null = null;
   const loop = (timestamp?: number) => {
-    if (document.hidden || this.heroVisible === false || this.state.cinema || this.state.discovery || !c.isConnected) {
+    // Any covering dialog (cinema, a guided route or Mission Control) freezes the opening behind it.
+    const covered =
+      this.state.cinema || this.state.discovery || document.getElementById("mission-dialog")?.hasAttribute("open");
+    if (document.hidden || this.heroVisible === false || covered || !c.isConnected) {
       lastFrame = lastDraw = null;
       return;
     }

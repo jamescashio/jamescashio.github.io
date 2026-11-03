@@ -460,6 +460,54 @@ html[data-motion="off"] .journey-disclosure-icon {
 .mission-categories button:hover {
   border-color: #be92406b;
 }
+/* Guided routes: the Discovery tours, reached from the one finder. */
+.mission-routes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  padding: 12px 30px 0;
+}
+.mission-routes-label {
+  margin-right: 4px;
+  color: #9fdfe9;
+  font: 12px/1.5 var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.mission-routes button {
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 1px solid #72e5f44d;
+  border-radius: 2px;
+  background: #72e5f40d;
+  color: #d6f5fa;
+  font: 600 13px/1.4 var(--font-body);
+  cursor: pointer;
+}
+.mission-routes button:hover,
+.mission-routes button:focus-visible {
+  border-color: #f4d2a5a8;
+  color: #ffe0a1;
+}
+.mission-routes button:focus-visible {
+  outline: 2px solid #f1c789;
+  outline-offset: 2px;
+}
+@media (max-width: 700px) {
+  .mission-routes {
+    gap: 4px 6px;
+    padding: 10px 12px 0;
+  }
+  .mission-routes-label {
+    flex-basis: 100%;
+    font-size: 11px;
+  }
+  .mission-routes button {
+    padding-inline: 10px;
+    font-size: 12px;
+  }
+}
 .mission-results-meta {
   display: flex;
   justify-content: space-between;

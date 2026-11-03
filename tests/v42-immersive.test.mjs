@@ -91,10 +91,19 @@ test("Every build-story step remains readable without JavaScript", async (t) => 
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
   }
 });
+// Plot a course opens Mission Control, the one finder; the guided routes live inside it.
+async function openRoute(page, label = "Find your world") {
+  await page.getByRole("button", { name: "Plot a course", exact: true }).click();
+  await page
+    .locator("#mission-dialog")
+    .getByRole("group", { name: "Guided routes", exact: true })
+    .getByRole("button", { name: label, exact: true })
+    .click();
+}
 test("Discovery offers twelve real destinations, keyboard stepping, a copyable route and focus restoration", async (t) => {
   const page = await visit(t, { permissions: ["clipboard-read", "clipboard-write"] });
   const opener = page.getByRole("button", { name: "Plot a course", exact: true });
-  await opener.click();
+  await openRoute(page);
   const dialog = page.locator(".discovery-console");
   await expect(dialog).toBeVisible();
   await expect(dialog.getByRole("heading", { level: 3 })).toHaveText("Starship lab");
@@ -163,7 +172,7 @@ test("Discovery direct links close the console and reach an existing experiment 
   page.on("request", (r) => {
     if (/\.(mp4|webm)(\?|$)/.test(r.url())) movies.push(r.url());
   });
-  await page.getByRole("button", { name: "Plot a course", exact: true }).click();
+  await openRoute(page);
   const dialog = page.locator(".discovery-console");
   await dialog
     .getByRole("group", { name: "Discovery path", exact: true })
@@ -176,7 +185,7 @@ test("Discovery direct links close the console and reach an existing experiment 
   await expect(page).toHaveURL(/#studies$/);
   await expect(page.locator("#studies")).toBeInViewport();
   assert.deepEqual(movies, []);
-  await page.getByRole("button", { name: "Plot a course", exact: true }).click();
+  await openRoute(page);
   await dialog
     .getByRole("group", { name: "Discovery path", exact: true })
     .getByRole("button", { name: "Watch", exact: true })
@@ -193,7 +202,7 @@ test("Discovery direct links close the console and reach an existing experiment 
 test("Discovery remains operable on 390 and 320 pixel phones including the sticky close control", async (t) => {
   for (const width of [390, 320]) {
     const page = await visit(t, { viewport: { width, height: 740 }, isMobile: true, hasTouch: true });
-    await page.getByRole("button", { name: "Plot a course", exact: true }).click();
+    await openRoute(page);
     const dialog = page.locator(".discovery-console");
     await dialog
       .getByRole("group", { name: "Discovery path", exact: true })
