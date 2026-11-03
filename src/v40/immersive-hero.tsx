@@ -174,7 +174,7 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
               ▷
             </span>
             <span className="tour-launch-copy">
-              <strong>Play the 30-second tour</strong>
+              <strong>Play the 30 second tour</strong>
               <small>Board. Cut the cloud. Take command.</small>
             </span>
             <span className="tour-launch-arrow" aria-hidden="true">
