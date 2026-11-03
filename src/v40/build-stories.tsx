@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { snapshot, observedDate } from "./evidence.ts";
+import { snapshot } from "./evidence.ts";
 
 const stories = {
   evidence: {
@@ -21,7 +21,7 @@ const stories = {
       {
         label: "Publish",
         title: "Keep the claim small enough to trust",
-        text: `${snapshot.backup.latestVerified} of ${snapshot.backup.latestChecked} latest reported snapshots passed their integrity check in the ${observedDate} observation. The public receipt keeps aggregate counts and explicit unknowns; private addresses and service details stay out.`,
+        text: `${snapshot.backup.latestVerified} of ${snapshot.backup.latestChecked} latest reported snapshots passed their integrity check in that same dated observation. The public receipt keeps aggregate counts and explicit unknowns; private addresses and service details stay out.`,
       },
     ],
     link: "/status.json",

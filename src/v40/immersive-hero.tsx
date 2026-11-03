@@ -268,7 +268,7 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
       </div>
       <div className="continuum-observation" aria-label="Dated lab observation">
         <a className="continuum-observation-date" href="#evidence">
-          <span className="continuum-label">Observation desk · {v.observedShortDate}</span>
+          <span className="continuum-label">Observation desk</span>
           <strong>My lab, observed {v.observedDate}</strong>
           <span>{v.fleetLine}</span>
         </a>

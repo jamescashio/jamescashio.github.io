@@ -119,6 +119,23 @@
   min-height: 44px;
   padding-block: 10px;
 }
+/* Sources in plain view: the raw observation and the preserved recovery receipt. */
+#evidence .evidence-sources {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 22px;
+  margin: 6px 0 0;
+}
+#evidence .evidence-sources-label {
+  color: #edbd6c;
+  font: 12px/1.5 var(--font-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+#evidence .evidence-sources a {
+  color: var(--cyan);
+}
 @media (max-width: 600px) {
   #evidence {
     padding-block: 36px;

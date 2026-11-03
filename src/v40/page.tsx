@@ -100,8 +100,10 @@ export class V40Page extends React.Component<PageProps, PageState> implements Pa
       ["d", "Page updated · " + updatedDate + " · V42 / " + presentation.name],
       [
         "d",
-        "Fleet and latest backup integrity results were observed " +
-          observedDate +
+        // The date prints once; a second line names it only if the observation day differs.
+        (observedDate === updatedDate
+          ? "Fleet and latest backup integrity results come from that day’s observation"
+          : "Fleet and latest backup integrity results were observed " + observedDate) +
           ". Unmeasured figures are withheld.",
       ],
       ["d", "Each reply carries its own date. Easter egg replies are marked lore."],

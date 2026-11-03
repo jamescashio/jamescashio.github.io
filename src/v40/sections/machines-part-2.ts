@@ -99,7 +99,7 @@ export function renderMachinesPart2(v: GeneratedView) {
           key: 1294,
           className: "v41-f959088bbe",
         },
-        h(React.Fragment, { key: 1295 }, "Fleet · " + v.observedDate),
+        h(React.Fragment, { key: 1295 }, "Fleet · " + v.fleetLine),
       ),
       h(
         "a",

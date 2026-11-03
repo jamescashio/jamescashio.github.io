@@ -1,5 +1,5 @@
 import type { GeneratedView, GeneratedValue } from "../generated-view.ts";
-import { snapshot, observedMonth, fleetSummary, backupSummary } from "../evidence.ts";
+import { snapshot, observedMonth, fleetSummary, backupResult } from "../evidence.ts";
 import React from "react";
 import { classFor } from "../style-variants.ts";
 import designSystem from "../design-system.ts";
@@ -64,7 +64,7 @@ export function renderEvidencePart1(v: GeneratedView) {
               },
               h(React.Fragment, { key: 1523 }, "BACKUPS"),
             ),
-            h("span", { key: 1524, className: "v41-ee9c986f14" }, h(React.Fragment, { key: 1525 }, backupSummary)),
+            h("span", { key: 1524, className: "v41-ee9c986f14" }, h(React.Fragment, { key: 1525 }, backupResult)),
           ),
           " ",
           h(
@@ -104,6 +104,7 @@ export function renderEvidencePart1(v: GeneratedView) {
                   "modelConfiguration.contextWindow",
                   "lanes.public",
                   "backup.restoredFiles",
+                  "backup.fullSystemRecovery",
                 ].includes(key),
               )
               .map(([key, reason]: GeneratedValue) =>
@@ -118,12 +119,14 @@ export function renderEvidencePart1(v: GeneratedView) {
                       "modelConfiguration.contextWindow": "Local model",
                       "lanes.public": "Public capability lanes",
                       "backup.restoredFiles": "Recovery rehearsal",
+                      "backup.fullSystemRecovery": "Full recovery",
                     }[
                       key as
                         | "scheduler.enabled"
                         | "modelConfiguration.contextWindow"
                         | "lanes.public"
                         | "backup.restoredFiles"
+                        | "backup.fullSystemRecovery"
                     ],
                   ),
                   h("dd", null, reason),
@@ -132,18 +135,13 @@ export function renderEvidencePart1(v: GeneratedView) {
           ),
         ),
         " ",
+        // The backup line and its date already lead this chapter; the sources sit in plain view instead of a drawer.
         h(
-          "details",
-          { id: "snapshot-story" },
-          h("summary", null, "Read the backup receipt"),
-          h("p", null, backupSummary),
-          h("p", null, snapshot.withheldReasons["backup.fullSystemRecovery"]),
+          "p",
+          { id: "snapshot-story", className: "evidence-sources" },
+          h("span", { className: "evidence-sources-label" }, "Sources"),
           h("a", { href: "/status.json" }, "Read the " + observedMonth + " observation"),
-          h(
-            "p",
-            null,
-            h("a", { href: "/evidence/console-snapshot-2026-10-03.json" }, "Preserved console recovery receipt"),
-          ),
+          h("a", { href: "/evidence/console-snapshot-2026-10-03.json" }, "Preserved console recovery receipt"),
         ),
         " ",
         h(
