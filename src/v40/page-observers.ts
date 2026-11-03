@@ -122,6 +122,7 @@ export function componentDidMount(this: PageHost) {
 
 export function componentWillUnmount(this: PageHost) {
   this.stopMedia?.();
+  this.stopCinemaPreviews?.();
   this.stopLivingHero?.();
   clearTimeout(this.foldT);
   document.removeEventListener("cashio-motion", this.syncMotion);

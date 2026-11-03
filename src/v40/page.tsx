@@ -52,6 +52,7 @@ export class V40Page extends React.Component<PageProps, PageState> implements Pa
   declare onOut: PageHost["onOut"];
   declare syncMotion: PageHost["syncMotion"];
   declare stopMedia: PageHost["stopMedia"];
+  declare stopCinemaPreviews: PageHost["stopCinemaPreviews"];
   declare starDraw: PageHost["starDraw"];
   declare starLoop: PageHost["starLoop"];
   declare keyBuf: PageHost["keyBuf"];

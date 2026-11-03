@@ -418,3 +418,38 @@ test("the flight deck's humor responds to the chosen control without enabling mo
   await expect(page.locator("header [data-motion-toggle]")).toHaveAccessibleName("Resume motion");
   assert.equal(await page.locator(".continuum-observation").innerText(), evidence);
 });
+
+test("Screening room hover loops load only for a desktop pointer with motion on, and never before the collection opens", async (t) => {
+  for (const [label, options] of [
+    ["desktop", {}],
+    ["reduced motion", { reducedMotion: "reduce" }],
+    ["phone", { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }],
+  ]) {
+    const page = await visit(t, options);
+    const previews = [];
+    page.on("request", (request) => {
+      if (request.url().includes("/v42/previews/")) previews.push(request.url());
+    });
+    await page.waitForTimeout(400);
+    assert.deepEqual(previews, [], `${label}: no loop loads before the collection opens`);
+    await page.locator("#films-collection > summary").click();
+    await page.locator(".studio-collection > summary").click();
+    const card = page.locator(".film-library button[data-tilt]").first();
+    await card.scrollIntoViewIfNeeded();
+    const video = card.locator("video");
+    if (label !== "desktop") {
+      await page.waitForTimeout(800);
+      assert.deepEqual(previews, [], `${label}: loops stay unloaded`);
+      continue;
+    }
+    await expect(video).toHaveAttribute("src", /^\/v42\/previews\/[a-z-]+\.mp4$/);
+    await card.hover();
+    await expect.poll(() => video.evaluate((v) => !v.paused && v.muted && v.currentTime > 0)).toBe(true);
+    await page.mouse.move(4, 4);
+    await expect.poll(() => video.evaluate((v) => v.paused)).toBe(true);
+    assert.ok(
+      previews.every((p) => !/\/assets\/zenith\//.test(p)),
+      "hover never pulls a full film",
+    );
+  }
+});

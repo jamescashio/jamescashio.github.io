@@ -217,7 +217,7 @@ export function renderFilmsPart1(v: GeneratedView) {
                 h("video", {
                   key: 750,
                   "data-v": "hover",
-                  "data-bound-src": v.f.src,
+                  "data-preview-src": v.f.preview,
                   "data-bound-poster": v.f.poster,
                   preload: "none",
                   "aria-hidden": "true",

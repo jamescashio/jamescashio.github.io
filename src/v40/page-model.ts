@@ -104,6 +104,7 @@ export interface PageHost {
   onOut?: (event: MouseEvent) => void;
   syncMotion: () => void;
   stopMedia?: () => void;
+  stopCinemaPreviews?: () => void;
   starDraw?: (delta?: number) => void;
   starLoop?: (timestamp?: number) => void;
   keyBuf: string;

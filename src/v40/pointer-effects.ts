@@ -51,6 +51,8 @@ export function magnet(this: PageHost, e: MouseEvent) {
 }
 
 export function hoverIn(this: PageHost, e: React.MouseEvent<HTMLElement>) {
+  // Hover loops are a desktop pointer treat; touch taps go straight to the film.
+  if (!matchMedia("(min-width: 1000px) and (hover: hover) and (pointer: fine)").matches) return;
   const video = e.currentTarget.querySelector("video");
   if (video) {
     video.dataset.requested = "true";

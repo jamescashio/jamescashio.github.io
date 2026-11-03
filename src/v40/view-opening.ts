@@ -110,6 +110,7 @@ export function openingValues(this: PageHost) {
         srcSet: thumbnailSources(this.res(`public/assets/zenith/${f[1]}-poster.webp`)),
         poster: this.res(`public/assets/zenith/${f[1]}-poster.webp`),
         src: `/assets/zenith/${f[1]}.mp4`,
+        preview: `/v42/previews/${f[1]}.mp4`,
         active: on,
         pressed: String(on),
         enter,

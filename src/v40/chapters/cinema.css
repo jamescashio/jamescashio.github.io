@@ -1160,3 +1160,9 @@ html[data-motion="off"] .film-aperture-ring {
     transform: scale(1.025);
   }
 }
+
+/* Hover loops fade in and out on the shared motion tokens. */
+.film-library video[data-preview-src] {
+  will-change: opacity;
+  transition: opacity var(--dur-quick) var(--ease-settle);
+}

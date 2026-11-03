@@ -26,6 +26,12 @@ export const startPage = () => {
   import("./deferred.css")
     .then(() => {
       void import("./hud.ts");
+      void import("./cinema-previews")
+        .then(({ installCinemaPreviews }) => {
+          const stop = installCinemaPreviews();
+          if (window.cashioV40) window.cashioV40.stopCinemaPreviews = stop;
+        })
+        .catch(() => {});
       void import("./hero-enhancement").then(({ installLivingHero }) => installLivingHero());
     })
     .catch(() => {});
