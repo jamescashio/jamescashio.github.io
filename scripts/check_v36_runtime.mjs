@@ -802,7 +802,7 @@ async function run() {
       assert.equal(await evaluate(`document.querySelector('.lensing-film video')?.paused`), true);
       // A chapter selection explicitly loads a paused frame. All subsequent
       // timeline changes must come from native keyboard input, not JS seeks.
-      await click('[aria-label="Seek to Awakening"]');
+      await click('[data-chapter="Awakening"]');
       const pausedSeek = `(() => {
         const panel = document.querySelector('.lensing-film');
         const video = panel?.querySelector('video');

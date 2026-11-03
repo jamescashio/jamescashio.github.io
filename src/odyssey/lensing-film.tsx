@@ -260,7 +260,6 @@ export default function LensingFilm({
                 type="button"
                 className="lensing-film-choice"
                 aria-pressed={clipId === id}
-                aria-label={`${clips[id].title}, ${clips[id].duration}-second film`}
                 onClick={() => selectClip(id)}
               >
                 <img
@@ -272,8 +271,11 @@ export default function LensingFilm({
                   loading="lazy"
                   decoding="async"
                 />
-                <span>{clips[id].title}</span>
-                <small aria-hidden="true">0:{String(clips[id].duration).padStart(2, "0")}</small>
+                {/* Label in Name (WCAG 2.5.3): the visible title and time are the accessible name. */}
+                <span>{clips[id].title}</span>{" "}
+                <small>
+                  <time dateTime={`PT${clips[id].duration}S`}>0:{String(clips[id].duration).padStart(2, "0")}</time>
+                </small>
               </button>
             ))}
           </div>
@@ -307,14 +309,15 @@ export default function LensingFilm({
                     key={chapter.name}
                     type="button"
                     onClick={() => seekFilm(chapter.time)}
-                    aria-label={`Seek to ${chapter.name}`}
+                    data-chapter={chapter.name}
                     aria-current={current ? "step" : undefined}
                   >
+                    <span className="lensing-film-sr">Seek to </span>
                     <img src={chapter.thumbnail} alt="" width="112" height="64" loading="lazy" decoding="async" />
                     <span>
                       <strong>{chapter.name}</strong>
                       <small>
-                        0{index + 1} <span aria-hidden="true">/</span> 0:
+                        0{index + 1} <span>/</span> 0:
                         {String(Math.floor(chapter.time)).padStart(2, "0")}
                       </small>
                     </span>
@@ -345,8 +348,9 @@ export default function LensingFilm({
                   key={chapter.name}
                   type="button"
                   onClick={() => seekFilm(chapter.time)}
-                  aria-label={`Seek to ${chapter.name}`}
+                  data-chapter={chapter.name}
                 >
+                  <span className="lensing-film-sr">Seek to </span>
                   <span>0{index + 1}</span> {chapter.name}
                 </button>
               ))}
