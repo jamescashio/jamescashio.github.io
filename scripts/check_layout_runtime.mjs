@@ -1829,6 +1829,17 @@ async function main() {
         const frames = [];
         Object.defineProperty(window, "__v35DirectFrames", { value: frames });
         let count = 0;
+        // The route's ResizeObserver aligns font-driven changes after rAF and
+        // before paint. Register our observer later, in rAF, to sample that
+        // same frame after alignment instead of a transient pre-layout state.
+        const queueSample = () => requestAnimationFrame(() => {
+          if (!document.documentElement) return sample();
+          const frameObserver = new ResizeObserver(() => {
+            frameObserver.disconnect();
+            sample();
+          });
+          frameObserver.observe(document.documentElement);
+        });
         const sample = () => {
           const root = document.querySelector("#root");
           const scroller = document.querySelector("#main-content");
@@ -1874,9 +1885,9 @@ async function main() {
             frame.sectionAlignmentDelta = Math.abs(frame.sectionTop - frame.expectedSectionTop);
           }
           count += 1;
-          if (count < 60 && root?.dataset.clientActivated !== "true") requestAnimationFrame(sample);
+          if (count < 60 && root?.dataset.clientActivated !== "true") queueSample();
         };
-        requestAnimationFrame(sample);
+        queueSample();
       })();`,
     });
     const criticalShellParity = [
