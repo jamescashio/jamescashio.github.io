@@ -51,7 +51,7 @@ try {
     for (const [index, name] of ["body", "wheels", "thrusters"].entries()) {
       await page.locator(".roadster-views button").nth(index).click();
       await page.waitForTimeout(1800);
-      await page.locator(".roadster-plate").screenshot({ path: path.join(directory, `roadster-${name}.png`) });
+      await page.screenshot({ path: path.join(directory, `roadster-${name}.png`) });
     }
     checks.push("All three desktop Roadster views inspected in motion.");
     await context.close();
@@ -68,7 +68,7 @@ try {
     await screen.goto(base + "#roadster-studio");
     await screen.locator(".roadster-cta").click();
     await expect(screen.locator(".roadster-inspection")).toHaveAttribute("data-phase", "ready", { timeout: 20000 });
-    await screen.locator(".roadster-plate").screenshot({ path: path.join(directory, `roadster-${width}.png`) });
+    await screen.screenshot({ path: path.join(directory, `roadster-${width}.png`) });
     if (await screen.evaluate(() => document.documentElement.scrollWidth !== innerWidth))
       throw new Error(`Overflow at ${width}`);
     await screen.goto(base + "#flight=permission");
