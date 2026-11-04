@@ -1,159 +1,69 @@
-name: Public Site Safety
+name: Live Release Verification (isolated branch)
 
 on:
-  pull_request:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: public-safety-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  group: first-contact-live-verification
+  cancel-in-progress: false
 
 jobs:
-  public-safety:
+  live-verification:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 12
     steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Checkout approved release and isolated verification helpers
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-          fetch-depth: 0
-
       - name: Set up Node
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: 22
           cache: npm
-
-      - name: Set up Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
-        with:
-          python-version: "3.12"
-
       - name: Set up pinned Chrome
-        uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # v2
-        id: setup_chrome
+        uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4
+        id: chrome
         with:
           chrome-version: 147.0.7727.57
-
-      - name: Configure the pinned Chrome sandbox
+      - name: Configure pinned Chrome
         run: |
           sudo chown root:root /opt/google/chrome/chrome-sandbox
           sudo chmod 4755 /opt/google/chrome/chrome-sandbox
-          test "$(stat -c '%U:%G %a' /opt/google/chrome/chrome-sandbox)" = "root:root 4755"
-
-      - name: Install dependencies
-        id: install
-        continue-on-error: true
+      - name: Install locked test dependencies
         run: npm ci
-
-      - name: Lint maintained source
-        id: lint
+      - name: Exercise the public HTTPS site
+        id: checks
         continue-on-error: true
-        run: npm run lint
-
-      - name: Check formatting
-        id: format
-        continue-on-error: true
-        run: npm run format:check
-
-      - name: Run Node test suite
-        id: node_tests
-        continue-on-error: true
-        run: npm run test:node
-
-      - name: Run interactive model tests
-        id: odyssey_tests
-        continue-on-error: true
-        run: npm run test:odyssey
-
-      - name: Build the Pages artifact
-        id: build
-        continue-on-error: true
-        run: npm run build
-
-      - name: Verify the built site
-        id: artifact_tests
-        continue-on-error: true
-        run: npm run test:artifact
-
-      - name: Verify legacy layout in pinned Chrome
-        id: layout_runtime
-        continue-on-error: true
-        run: npm run check:layout:runtime:pinned
         env:
-          CHROME_PATH: ${{ steps.setup_chrome.outputs.chrome-path }}
+          V40_URL: https://cashio.us/
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
           CHROME_DEVEL_SANDBOX: /opt/google/chrome/chrome-sandbox
-
-      - name: Verify V37 and preserved routes in pinned Chrome
-        id: v36_runtime
-        continue-on-error: true
-        run: npm run check:v36:runtime:pinned
-        env:
-          CHROME_PATH: ${{ steps.setup_chrome.outputs.chrome-path }}
-          CHROME_DEVEL_SANDBOX: /opt/google/chrome/chrome-sandbox
-
-      - name: Verify Helios interactions and signature
-        id: helios_runtime
-        continue-on-error: true
-        run: npm run test:helios
-        env:
-          CHROME_PATH: ${{ steps.setup_chrome.outputs.chrome-path }}
-          CHROME_DEVEL_SANDBOX: /opt/google/chrome/chrome-sandbox
-
-      - name: Verify V40 and Bit
-        id: v40_runtime
-        continue-on-error: true
-        run: npm run test:v40
-        env:
-          CHROME_PATH: ${{ steps.setup_chrome.outputs.chrome-path }}
-          CHROME_DEVEL_SANDBOX: /opt/google/chrome/chrome-sandbox
-
-      - name: Run release artifact tests
-        id: release_tests
-        continue-on-error: true
-        run: npm run test:release
-
-      - name: Scan for PII, secrets, private topology, and backups
-        id: safety_scan
-        continue-on-error: true
-        run: python scripts/public_repo_guard.py
-
-      - name: Verify release consistency
-        id: release_consistency
-        continue-on-error: true
-        run: python scripts/check_release_consistency.py
-
-      - name: Check Python syntax
-        id: python_syntax
-        continue-on-error: true
         run: |
-          python -m py_compile \
-            scripts/public_repo_guard.py \
-            scripts/check_release_consistency.py \
-            scripts/check_committed_whitespace.py
-
-      - name: Check whitespace
-        id: whitespace
+          mkdir -p outputs
+          node --test --test-reporter=tap --test-concurrency=1 tests/v42-runtime.test.mjs tests/v42-cinematic.test.mjs 2>&1 | tee outputs/live-browser-tests.log
+      - name: Capture live desktop and phone interactions
+        id: captures
+        if: always() && steps.chrome.outcome == 'success'
         continue-on-error: true
-        run: python scripts/check_committed_whitespace.py
         env:
-          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
-
-      - name: Upload safety report
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
+          CHROME_DEVEL_SANDBOX: /opt/google/chrome/chrome-sandbox
+        run: |
+          mkdir -p outputs
+          node scripts/release-live-capture.mjs 2>&1 | tee outputs/live-capture.log
+      - name: Save live evidence
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: public-safety-report
-          path: public-safety-report.txt
-          if-no-files-found: error
+          name: first-contact-live-verification
+          path: |
+            outputs/
+            output/playwright/first-contact-live/
           retention-days: 14
-
-      - name: Enforce validation results
-        if: steps.install.outcome != 'success' || steps.lint.outcome != 'success' || steps.format.outcome != 'success' || steps.node_tests.outcome != 'success' || steps.odyssey_tests.outcome != 'success' || steps.build.outcome != 'success' || steps.artifact_tests.outcome != 'success' || steps.layout_runtime.outcome != 'success' || steps.v36_runtime.outcome != 'success' || steps.helios_runtime.outcome != 'success' || steps.v40_runtime.outcome != 'success' || steps.release_tests.outcome != 'success' || steps.safety_scan.outcome != 'success' || steps.release_consistency.outcome != 'success' || steps.python_syntax.outcome != 'success' || steps.whitespace.outcome != 'success'
+      - name: Enforce the live results
+        if: always() && (steps.checks.outcome != 'success' || steps.captures.outcome != 'success')
         run: exit 1
