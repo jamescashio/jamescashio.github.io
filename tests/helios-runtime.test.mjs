@@ -346,7 +346,10 @@ test("The first-minute path, chapter labels and principles lead to their working
     .poll(() => page.locator("#evidence").evaluate((element) => Math.abs(element.getBoundingClientRect().top - 100)))
     .toBeLessThan(45);
   const chapter = page.locator('.sections a[href="#principles"]');
+  // Focus does not auto-wait for the rail's scroll-driven visibility.
+  await expect(chapter).toBeVisible();
   await chapter.focus();
+  await expect(chapter).toBeFocused();
   await expect(chapter.locator("span")).toBeVisible();
   await page.keyboard.press("Enter");
   await expect(page.locator("#pr-h")).toBeFocused();

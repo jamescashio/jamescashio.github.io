@@ -89,6 +89,26 @@ test("the explicit tour starts on readiness while ordinary boarding stays at the
   await expect(page).toHaveURL(/#flight=tour$/);
   await expect(flight).toHaveAttribute("data-playback", "tour");
   await expect(flight.getByRole("button", { name: "Pause tour", exact: true })).toBeVisible();
+  await expect(flight).toHaveAttribute("data-view", "cinema");
+  await expect(flight.locator(".ff-story")).toBeHidden();
+  // A chapter replaces the readout nodes. Measure each label and its column
+  // together so a timed chapter change cannot detach one between browser calls.
+  const readouts = await flight.locator(".ff-telemetry > div").evaluateAll((columns) =>
+    columns.map((column) => ({
+      bounds: column.getBoundingClientRect().toJSON(),
+      label: column.querySelector("span").getBoundingClientRect().toJSON(),
+    })),
+  );
+  assert.equal(readouts.length, 3);
+  for (const { bounds, label } of readouts) {
+    assert.ok(bounds.width > 0 && label.width > 0, "phone readouts are visible");
+    assert.ok(
+      label.x >= bounds.x && label.x + label.width <= bounds.x + bounds.width + 1,
+      "phone readout labels fit their columns",
+    );
+  }
+  await flight.getByRole("button", { name: "Pause tour", exact: true }).click();
+  await expect(flight.getByRole("button", { name: "Play tour", exact: true })).toBeFocused();
   await flight.getByRole("button", { name: /Cut the cloud link/ }).click();
   await expect(flight).toHaveAttribute("data-playback", "manual");
   await expect(flight.locator(".ff-telemetry")).toContainText("12Onboard");

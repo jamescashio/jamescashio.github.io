@@ -9,11 +9,13 @@ export default function FlightBridge({
   motion,
   step,
   startTour = false,
+  showcase = false,
   onClose,
 }: {
   motion: boolean;
   step: string;
   startTour?: boolean;
+  showcase?: boolean;
   onClose: (destination?: string) => void;
 }) {
   const [activeMotion, setActiveMotion] = useState(motion);
@@ -32,6 +34,7 @@ export default function FlightBridge({
       helios
       visitorPaced
       startTour={startTour}
+      showcase={showcase}
     />
   );
 }

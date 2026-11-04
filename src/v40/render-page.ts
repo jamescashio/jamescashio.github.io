@@ -10,6 +10,7 @@ import { WorkshopSection } from "./sections/workshop.ts";
 import { WorldsSection } from "./sections/worlds.ts";
 import { ShowcaseSection } from "./sections/showcase.ts";
 import { FilmsSection } from "./sections/films.ts";
+import { RoadsterShowcase } from "./sections/roadster-showcase.tsx";
 import { DecisionsSection } from "./sections/decisions.ts";
 import { ExperimentsSection } from "./sections/experiments.ts";
 import { MachinesSection } from "./sections/machines.ts";
@@ -72,6 +73,7 @@ export function renderPage(v: GeneratedView) {
         // Creative work leads; the workshop's receipts and evidence follow for visitors who want the detail.
         h(WorldsSection, { v, key: "rooms" }),
         h(ShowcaseSection, { key: "showcase" }),
+        h(RoadsterShowcase, { key: "roadster-showcase" }),
         " ",
         " ",
         h(
@@ -81,7 +83,7 @@ export function renderPage(v: GeneratedView) {
             id: "films-collection",
             image: "/v40/thumbs/room-studios-threshold-320.webp",
             title: "Enter the screening room.",
-            description: "The Sovereign, Roadster Studio, and the complete short film collection. Films start muted.",
+            description: "The Sovereign and the complete short film collection. Films start muted.",
           },
           h(FilmsSection, { v, key: "films" }),
         ),

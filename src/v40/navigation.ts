@@ -151,6 +151,7 @@ export function setupV40Navigation() {
               motion: motion(),
               step: hash === "#flight=tour" ? "board" : hash.slice(8),
               startTour: hash === "#flight=tour",
+              showcase: true,
               onClose: close,
             })
           : (module as typeof import("../helios/studio-island")).openStudio({

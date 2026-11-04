@@ -80,52 +80,6 @@ export function FilmsSection({ v }: GeneratedProps) {
       " ",
       h(AiWormFilm, { key: "ai-worm" }),
       h(
-        "article",
-        {
-          key: "roadster-studio",
-          id: "roadster-studio",
-          className: "studio-project",
-          "aria-labelledby": "roadster-studio-title",
-        },
-        h(
-          "figure",
-          { className: "studio-project-preview" },
-          h("img", {
-            src: "/images/roadster-studio-960.webp",
-            srcSet:
-              "/images/roadster-studio-640.webp 640w, /images/roadster-studio-960.webp 960w, /images/roadster-studio-1600.webp 1600w",
-            sizes: "(max-width: 600px) 96px, (max-width: 760px) calc(100vw - 48px), (max-width: 1200px) 52vw, 650px",
-            width: 1600,
-            height: 900,
-            loading: "lazy",
-            decoding: "async",
-            alt: "Pearl white Roadster CAD model with bronze glass and sculpted wheels, lit in a dark cinematic studio.",
-          }),
-          h("figcaption", null, "Rendered from the interactive model"),
-        ),
-        h(
-          "div",
-          { className: "studio-project-copy" },
-          h("p", { className: "studio-project-kicker" }, "FROM MY WORKSHOP · INTERACTIVE 3D"),
-          h("h3", { id: "roadster-studio-title" }, "Roadster Studio"),
-          h(
-            "p",
-            null,
-            "An independent automotive CAD study, with ten thrusters and a cinematic studio. Explore the model or compose your own photograph.",
-          ),
-          h(
-            "a",
-            {
-              href: "https://roadster-studio.hotsaucecashio.chatgpt.site/",
-              target: "_blank",
-              rel: "noopener noreferrer",
-              "aria-label": "Explore Roadster Studio, opens in a new tab",
-            },
-            "Explore Roadster Studio ↗",
-          ),
-        ),
-      ),
-      h(
         "details",
         {
           key: "studio-collection",

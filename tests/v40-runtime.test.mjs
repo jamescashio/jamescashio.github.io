@@ -197,10 +197,14 @@ test("the Galactic cut uses compact playback for data saving and respects Escape
     await expect.poll(() => video.evaluate((node) => !node.paused && node.muted), { timeout: 15000 }).toBe(true);
     await page.locator("header .mission-control").click();
     await expect(page.locator("#mission-dialog")).toHaveAttribute("open", "");
-    await expect.poll(() => video.evaluate((node) => node.paused)).toBe(true);
+    // Opening the dialog can move the inline film out of view and close it.
+    // Both a paused player and a removed player are valid stopped states.
+    const stopped = () => video.evaluateAll((nodes) => nodes.every((node) => node.paused));
+    await expect.poll(stopped).toBe(true);
     await page.keyboard.press("Escape");
     await expect(page.locator("#mission-dialog")).not.toHaveAttribute("open", "");
-    await expect.poll(() => video.evaluate((node) => node.paused)).toBe(true);
+    await expect.poll(stopped).toBe(true);
+    if ((await video.count()) === 0) await play.click();
     await video.focus();
     await page.keyboard.press("Escape");
     await expect(film.locator("video")).toHaveCount(0);
@@ -243,7 +247,7 @@ test("V40 preserves its content and serves a readable edition without JavaScript
     const page = await visit(t, { js, width });
     await expect(
       page.locator("main > section, main > .journey-disclosure > .journey-disclosure-content > section"),
-    ).toHaveCount(12);
+    ).toHaveCount(13);
     await expect(page.locator("h1")).toHaveText("The machines can think. You still decide.");
     await expect(page.locator(".aurum-manifesto")).toHaveText("Imagination, with intention.");
     await expect(page.locator("footer")).toContainText("the answer is here. keep asking.", { ignoreCase: true });

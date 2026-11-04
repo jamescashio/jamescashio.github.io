@@ -24,7 +24,7 @@ test("V40 ships its real reading edition under the strict production security po
   assert.ok(root);
   assert.equal(
     root.querySelectorAll("main > section, main > .journey-disclosure > .journey-disclosure-content > section").length,
-    12,
+    13,
   );
   assert.equal(root.querySelectorAll("main > .journey-disclosure:not([open])").length, 3);
   assert.ok(root.querySelector("#work #law"), "the routing law stays available within its decision example");
@@ -33,6 +33,12 @@ test("V40 ships its real reading edition under the strict production security po
     ["top", "eagle-film", "rooms", "showcase"],
   );
   assert.equal(root.querySelectorAll("#eagle-film").length, 1, "the featured trailer has one visible home");
+  assert.equal(root.querySelectorAll("#roadster-studio").length, 1, "Roadster has one visible home");
+  assert.equal(
+    root.querySelector("#roadster-studio").parentElement.tagName,
+    "MAIN",
+    "Roadster is outside closed disclosures",
+  );
   assert.ok(root.querySelector('a[href="#workshop"]'), "the reading edition retains a direct workshop link");
   assert.equal(root.querySelectorAll("#top video").length, 0);
   assert.equal(root.querySelectorAll("h1").length, 1);

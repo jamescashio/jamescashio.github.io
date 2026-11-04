@@ -67,15 +67,24 @@ test("the interactive page preserves its first painted hero on desktop and phone
 test("the compact phone journey keeps projects and professional context visible", async (t) => {
   const page = await visit(t);
   await page.goto(url);
+  // Chapter styles arrive after the first hero paint. Measure their finished
+  // layout rather than the opening stylesheet's offscreen placeholders.
+  await page.waitForFunction(() =>
+    [...document.querySelectorAll('link[rel="stylesheet"]')].some(
+      (link) => link.href.includes("/assets/deferred-") && link.sheet,
+    ),
+  );
   await page.evaluate(() => document.fonts.ready);
   await expect(page.locator("#decision-story > summary")).toBeVisible();
   await expect(page.locator("#decision-story")).not.toHaveAttribute("open", "");
   await expect(page.locator(".studio-collection")).not.toHaveAttribute("open", "");
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 390);
   const pageHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+  const roadsterHeight = await page.locator("#roadster-studio").evaluate((node) => node.getBoundingClientRect().height);
+  assert.ok(roadsterHeight <= 700, "the newly visible Roadster feature stays compact on a phone");
   assert.ok(
-    pageHeight < 11500,
-    `the ${pageHeight}px journey must be at least 23% shorter than the 15,009px reviewed baseline`,
+    pageHeight - roadsterHeight < 11500,
+    `the existing journey retains its 11,500px budget; the new Roadster feature contributes ${roadsterHeight}px to ${pageHeight}px total`,
   );
   await expect(page.locator("#workshop")).toContainText("Principal Solutions Consultant");
   await expect(page.locator("#workshop")).toContainText("No new restore rehearsal");
@@ -98,8 +107,13 @@ test("the visible showcase opens every featured project from a keyboard without 
     await page.keyboard.press("Enter");
     await expect(page).toHaveURL(new RegExp(`#${id}$`));
     await expect(page.locator(`#${id}`)).toBeInViewport();
-    await expect(page.locator("#films-collection")).toHaveAttribute("open", "");
-    await page.locator("#films-collection > summary").click();
+    if (id === "ai-worm") {
+      await expect(page.locator("#films-collection")).toHaveAttribute("open", "");
+      await page.locator("#films-collection > summary").click();
+    } else {
+      await expect(page.locator("#films-collection")).not.toHaveAttribute("open", "");
+      assert.equal(await page.locator("#roadster-studio").evaluate((node) => node.closest("details") === null), true);
+    }
   }
   assert.deepEqual(filmRequests, [], "project discovery does not download a film");
   const reading = await visit(t, { javaScriptEnabled: false });
