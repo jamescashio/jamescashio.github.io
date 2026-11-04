@@ -2,9 +2,18 @@ name: Live Release Verification (isolated branch)
 
 on:
   workflow_dispatch:
+    inputs:
+      capture_only:
+        description: Capture evidence after a successful independent live test run
+        type: boolean
+        default: false
 
 permissions:
   contents: read
+
+defaults:
+  run:
+    shell: bash
 
 concurrency:
   group: first-contact-live-verification
@@ -35,8 +44,11 @@ jobs:
           sudo chmod 4755 /opt/google/chrome/chrome-sandbox
       - name: Install locked test dependencies
         run: npm ci
+      - name: Install the test video encoder
+        run: npx --no-install playwright install ffmpeg
       - name: Exercise the public HTTPS site
         id: checks
+        if: ${{ !inputs.capture_only }}
         continue-on-error: true
         env:
           V40_URL: https://cashio.us/
@@ -65,5 +77,5 @@ jobs:
             output/playwright/first-contact-live/
           retention-days: 14
       - name: Enforce the live results
-        if: always() && (steps.checks.outcome != 'success' || steps.captures.outcome != 'success')
+        if: always() && ((!inputs.capture_only && steps.checks.outcome != 'success') || steps.captures.outcome != 'success')
         run: exit 1
