@@ -54,6 +54,8 @@ async function png(page, format, dimensions) {
 test("the uninterrupted cinematic tour ends in an honest, downloadable record", async (t) => {
   const page = await visit(t, { motion: "no-preference", hash: "#flight=tour" });
   const flight = page.locator(".ff-showcase");
+  await expect(flight.locator(".ff-stage")).toHaveClass(/ff-stage-ready/, { timeout: 15000 });
+  await expect(flight.locator(".ff-entrance")).toHaveCount(0);
   await expect(flight).toHaveAttribute("data-playback", "tour");
   await expect(flight.locator(".ff-story")).toBeHidden();
   const stage = await flight.locator(".ff-stage").boundingBox();

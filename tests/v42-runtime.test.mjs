@@ -181,6 +181,10 @@ test("the explicit tour starts on readiness while ordinary boarding stays at the
   await entrance.click();
   const flight = page.locator("#helios-flight dialog");
   await expect(page).toHaveURL(/#flight=tour$/);
+  // Scene preparation and the intentional 2.2 second entrance are separate stages.
+  // Software rendering on CI may use most of the default wait before the entrance begins.
+  await expect(flight.locator(".ff-stage")).toHaveClass(/ff-stage-ready/, { timeout: 15000 });
+  await expect(flight.locator(".ff-entrance")).toHaveCount(0);
   await expect(flight).toHaveAttribute("data-playback", "tour");
   await expect(flight.getByRole("button", { name: "Pause tour", exact: true })).toBeVisible();
   await expect(flight).toHaveAttribute("data-view", "cinema");
