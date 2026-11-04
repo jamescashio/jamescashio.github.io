@@ -72,7 +72,7 @@ export async function createLivingHero(
         size: size(),
         artwork: poster.currentSrc || poster.src,
         depth: new URL("/v42/observatory-depth.webp", location.href).href,
-        orbit: (parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--dur-orbit")) || 40000) / 1000,
+        orbit: (parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--dur-orbit")) || 64000) / 1000,
       },
       [offscreen],
     );

@@ -3448,24 +3448,7 @@ html:has(.continuum-root) {
 }
 @media (prefers-reduced-motion: no-preference) {
   html:not([data-motion="off"]) #v40-root .continuum-hero[data-folding] .hero-planet {
-    animation: hero-fold 1100ms cubic-bezier(0.2, 0.7, 0.2, 1);
-  }
-}
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) #v40-root .continuum-hero[data-folding] .continuum-stage::after {
-    content: "";
-    position: absolute;
-    inset: 50% auto auto 50%;
-    width: 24px;
-    height: 24px;
-    margin: -12px 0 0 -12px;
-    border-radius: 50%;
-    border: 1px solid #f3cf8acc;
-    box-shadow:
-      0 0 24px #64dcef80,
-      inset 0 0 18px #f3cf8a55;
-    pointer-events: none;
-    animation: hero-fold-ring 1100ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+    animation: hero-fold 1600ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 @media (max-width: 760px) {
@@ -3502,25 +3485,12 @@ html:has(.continuum-root) {
 @keyframes hero-fold {
   0% {
     transform: none;
-    filter: none;
   }
-  32% {
-    transform: scale(1.06) rotate(-1.4deg);
-    filter: hue-rotate(-14deg) brightness(1.3) contrast(1.06);
+  50% {
+    transform: scale(1.018) rotate(-0.35deg);
   }
   100% {
     transform: none;
-    filter: none;
-  }
-}
-@keyframes hero-fold-ring {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(42);
   }
 }
 @media (min-width: 1000px) {
@@ -3557,12 +3527,12 @@ html:has(.continuum-root) {
 @media (min-width: 1000px) {
   .hud-orbiter {
     position: absolute;
-    left: 59.167%;
-    top: 12.593%;
-    width: 38.75%;
-    height: 68.889%;
+    left: 60.729%;
+    top: 15.37%;
+    width: 35.625%;
+    height: 63.333%;
     border-radius: 50%;
-    filter: drop-shadow(0 0 5px #72e5f4aa);
+    border: 1px solid #72e5f41a;
     will-change: transform;
   }
 }
@@ -3572,84 +3542,22 @@ html:has(.continuum-root) {
     position: absolute;
     inset: 0;
     border-radius: 50%;
-    background: conic-gradient(from 0deg, transparent 0 286deg, #72e5f400 286deg, #9ff0fbf2 358deg, transparent 360deg);
-    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
-    mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+    background: conic-gradient(from 0deg, transparent 0 320deg, #72e5f400 320deg, #8cdae280 358deg, transparent 360deg);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
   }
 }
 @media (min-width: 1000px) {
   .hud-orbiter::after {
     content: "";
     position: absolute;
-    top: -4px;
-    left: calc(50% - 4px);
-    width: 8px;
-    height: 8px;
+    top: -2.5px;
+    left: calc(50% - 2.5px);
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
-    background: #ffe7b3;
-    box-shadow:
-      0 0 10px 2px #ffcf7acc,
-      0 0 26px 6px #72e5f455;
-  }
-}
-@keyframes hud-acquire {
-  from {
-    opacity: 0;
-    transform: scale(0.9) rotate(-14deg);
-  }
-  60% {
-    opacity: 1;
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-@keyframes hud-lock-on {
-  0%,
-  35% {
-    opacity: 0;
-    transform: scale(2.4);
-  }
-  70% {
-    opacity: 1;
-    transform: scale(0.92);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-@keyframes hud-scan {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 0, 0);
-  }
-  8% {
-    opacity: 1;
-  }
-  85% {
-    opacity: 0.85;
-  }
-  to {
-    opacity: 0;
-    transform: translate3d(0, var(--hud-scan-depth, 900px), 0);
-  }
-}
-@keyframes hud-flicker {
-  0%,
-  12% {
-    opacity: 0;
-  }
-  16% {
-    opacity: 1;
-  }
-  22% {
-    opacity: 0.25;
-  }
-  30%,
-  to {
-    opacity: 1;
+    background: #d9bc82;
+    box-shadow: 0 0 8px 1px #72e5f430;
   }
 }
 @keyframes hud-spin {
@@ -3685,79 +3593,13 @@ html:has(.continuum-root) {
 
 @media (prefers-reduced-motion: no-preference) {
   html:not([data-motion="off"]) .hud-orbiter {
-    animation: hud-spin 46s linear infinite;
+    animation: hud-spin var(--dur-orbit, 64000ms) linear infinite;
   }
 }
 
 @media (prefers-reduced-motion: no-preference) {
   html:not([data-motion="off"]) #top[data-hud-idle] .hud-orbiter {
     animation-play-state: paused;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) #top[data-hud-boot] .hud-track {
-    transform-origin: 78.5% 47%;
-    animation: hud-acquire 1500ms cubic-bezier(0.16, 0.84, 0.3, 1) both;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) #top[data-hud-boot] .hud-lock {
-    transform-box: fill-box;
-    transform-origin: center;
-    animation: hud-lock-on 1700ms cubic-bezier(0.2, 0.8, 0.3, 1) both;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) #top[data-hud-boot] .hud-orbiter {
-    animation:
-      hud-flicker 900ms steps(1, end) 500ms both,
-      hud-spin 46s linear infinite;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) #top[data-hud-boot]::after {
-    content: "";
-    position: absolute;
-    z-index: 4;
-    left: 0;
-    right: 0;
-    top: 0;
-    height: 2px;
-    pointer-events: none;
-    background: linear-gradient(90deg, transparent, #72e5f4 18%, #ffe0a1 50%, #72e5f4 82%, transparent);
-    box-shadow:
-      0 0 18px 2px #72e5f466,
-      0 -60px 90px #72e5f40d;
-    animation: hud-scan 1300ms cubic-bezier(0.45, 0.05, 0.25, 1) both;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) #top[data-hud-boot] .continuum-arrival > span,
-  html:not([data-motion="off"]) #top[data-hud-boot] .continuum-reticle {
-    animation: hud-flicker 800ms steps(1, end) both;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) #top[data-hud-boot] .continuum-arrival > span:nth-child(2) {
-    animation-delay: 120ms;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) #top[data-hud-boot] .continuum-arrival > span:nth-child(3) {
-    animation-delay: 240ms;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) #top[data-hud-boot] .continuum-reticle {
-    animation-delay: 700ms;
   }
 }
 
@@ -3857,7 +3699,7 @@ html:has(.continuum-root) {
   --dur-quick: 180ms;
   --dur-scene: 640ms;
   --dur-cinematic: 1500ms;
-  --dur-orbit: 40000ms;
+  --dur-orbit: 64000ms;
 }
 .living-hero-canvas {
   position: absolute;

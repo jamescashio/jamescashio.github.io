@@ -29,6 +29,65 @@ async function visit(t, options = {}) {
   return page;
 }
 
+test("the orbit offers readable persistent motion controls at desktop and both phone widths", async (t) => {
+  for (const width of [1440, 390, 320]) {
+    const page = await visit(t, { viewport: { width, height: 844 }, reducedMotion: "no-preference" });
+    const header = page.locator("header [data-motion-toggle]");
+    const local = page.locator(".scene-motion-control");
+    for (const button of [header, local]) {
+      await expect(button).toHaveText("Pause motion");
+      const box = await button.boundingBox();
+      assert.ok(box.width >= 44 && box.height >= 44);
+      assert.ok(box.x >= 0 && box.x + box.width <= width + 1, "motion control stays within the screen");
+    }
+    await local.press("Space");
+    for (const button of [header, local]) {
+      await expect(button).toHaveText("Resume motion");
+      await expect(button).toHaveAttribute("aria-pressed", "true");
+    }
+    await page.reload({ waitUntil: "networkidle" });
+    await expect(local).toHaveText("Resume motion");
+    await page.getByRole("button", { name: /Fly closer to the horizon/ }).click();
+    await expect(local).toHaveText("Resume motion");
+    await header.press("Space");
+    await expect(local).toHaveText("Pause motion");
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+  }
+});
+
+test("the fallback orbit stays steadily lit and Fold space does not brighten or flash", async (t) => {
+  const page = await visit(t, { reducedMotion: "no-preference" });
+  await expect(page.locator('link[rel="stylesheet"][href*="/assets/deferred-"]')).toHaveCount(1);
+  const orbiter = page.locator(".hud-orbiter");
+  const motion = await orbiter.evaluate((node) => ({
+    animations: node.getAnimations().map((animation) => ({
+      duration: animation.effect.getTiming().duration,
+      easing: animation.effect.getTiming().easing,
+      frames: animation.effect.getKeyframes(),
+    })),
+    opacity: getComputedStyle(node).opacity,
+  }));
+  assert.equal(motion.animations.length, 1);
+  assert.ok(motion.animations[0].duration >= 60000);
+  assert.equal(motion.animations[0].easing, "linear");
+  assert.equal(motion.opacity, "1");
+  assert.ok(motion.animations[0].frames.every((frame) => !("opacity" in frame) && !("filter" in frame)));
+  assert.equal(await page.locator("#top[data-hud-boot]").count(), 0);
+  await page.getByRole("button", { name: "Fold space", exact: true }).click();
+  const response = await page.locator(".hero-planet").evaluate((node) => ({
+    filter: getComputedStyle(node).filter,
+    frames: node.getAnimations().flatMap((animation) => animation.effect.getKeyframes()),
+    flash: getComputedStyle(document.querySelector(".continuum-stage"), "::after").content,
+  }));
+  assert.equal(response.filter, "none");
+  assert.ok(response.frames.every((frame) => !("filter" in frame) && !("opacity" in frame)));
+  assert.equal(response.flash, "none");
+  await page.locator(".scene-motion-control").click();
+  assert.equal(await orbiter.evaluate((node) => node.getAnimations().length), 0);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  assert.equal(await orbiter.evaluate((node) => node.getAnimations().length), 0);
+});
+
 test("Omnius polish keeps instrument text readable and phone navigation deliberate", async (t) => {
   for (const width of [320, 390]) {
     const page = await visit(t, {

@@ -233,6 +233,9 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
               {v.heroQuip || scene.caption}
             </p>
           </details>
+          <button type="button" className="scene-motion-control" data-motion-toggle="" aria-pressed="false">
+            Pause motion
+          </button>
         </div>
       </div>
       <div className="continuum-launchpad">

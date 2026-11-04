@@ -24,7 +24,7 @@ import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.ts";
       if (b.getAttribute("aria-label") !== label) b.setAttribute("aria-label", label);
       if (b.getAttribute("aria-pressed") !== String(off)) b.setAttribute("aria-pressed", String(off));
       if (b.title !== label) b.title = label;
-      const text = b.classList.contains("motion-control") ? (off ? "▷" : "Ⅱ") : label;
+      const text = label;
       if (b.textContent !== text) b.textContent = text;
     });
   }

@@ -5,24 +5,6 @@ const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
 const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
 const motionOn = () => !reduced.matches && root.dataset.motion !== "off";
 
-function systemsCheck(hero: HTMLElement) {
-  if (!motionOn() || window.scrollY > 160 || document.visibilityState !== "visible") return;
-  let seen = false;
-  try {
-    seen = window.sessionStorage.getItem("cashio-systems-check") === "1";
-    window.sessionStorage.setItem("cashio-systems-check", "1");
-  } catch {
-    // Private windows can refuse storage; the check simply runs again next visit.
-  }
-  if (seen) return;
-  hero.style.setProperty("--hud-scan-depth", `${Math.min(hero.offsetHeight, window.innerHeight)}px`);
-  hero.setAttribute("data-hud-boot", "");
-  window.setTimeout(() => {
-    hero.removeAttribute("data-hud-boot");
-    hero.style.removeProperty("--hud-scan-depth");
-  }, 2400);
-}
-
 function idleWhenAway(hero: HTMLElement) {
   if (!("IntersectionObserver" in window)) return;
   new IntersectionObserver(([entry]) => {
@@ -103,7 +85,6 @@ function holographicCards() {
 export function startFlightInstruments() {
   const hero = document.getElementById("top");
   if (hero) {
-    systemsCheck(hero);
     idleWhenAway(hero);
   }
   chapterSweeps();

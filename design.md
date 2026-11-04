@@ -1,3 +1,13 @@
+# Smooth orbit and motion comfort · Review preview · 11-03-2026
+
+Doug reports that the flashing ring is irritating and asks for smooth, cool movement within it, along with a new nine-category review. Preserve the artwork, composition, typography, colors, tour, cards and Roadster. Work from production 4f2ee0c. This refinement is prepared as a local preview for review under the existing preview-first preference.
+
+Creative thesis: a quietly precise orbital instrument inside the original cinematic world. Replace the startup flicker and scan with immediately readable, steady instruments. A small gold escort and soft cyan trail follow one 64 second orbit inside the ring. Keep brightness steady in both the GPU artwork and its CSS fallback; remove dust pulsing. Fold space becomes a small, smooth spatial movement without a brightness burst or expanding flash. Keep the Pause motion label visible in the header and beside the artwork, including phones. Offscreen, hidden, reduced motion and explicit pause must stop decorative motion.
+
+Verify desktop and phone layouts, steady ring output, optional GPU and fallback behavior, all three scenes, Pause persistence, reduced motion, camera controls, existing tour/cards and representative routes. No new dependencies or image downloads. Retain existing release and layout limits, with production 4f2ee0c as the unchanged reference.
+
+## Previous approved release
+
 # Cinematic flight, mission keepsake and Roadster · Approved release · 2026-11-03
 
 Doug reviewed the local preview at ed45299 and approved publication with “Make it so approved”. Publish the reviewed implementation from codex/v42-cinematic-keepsake-preview, based on main 7838b78, through the normal pull request, validation and deployment process. This approval supersedes the earlier preview-only restriction. Preserve the approved appearance and verify the live result; 7838b78 remains the rollback revision.

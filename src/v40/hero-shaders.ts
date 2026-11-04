@@ -18,6 +18,12 @@ float stroke(float distance, float width) {
   float aa = max(fwidth(distance), .45);
   return 1.0 - smoothstep(width-aa, width+aa, abs(distance));
 }
+float ticks(float angle, float count, float width) {
+  float unit = angle / TAU * count;
+  float distance = abs(fract(unit + .5) - .5);
+  float aa = max(fwidth(unit), .001);
+  return 1.0 - smoothstep(width-aa, width+aa, distance);
+}
 void main() {
   vec2 uv = posterUv * fit + (1.0-fit) * vec2(.68,.5);
   float depth = texture2D(depthMap, uv).r;
@@ -30,8 +36,9 @@ void main() {
   float angle = atan(delta.y,delta.x);
   vec3 cyan = vec3(.447,.898,.957);
   vec3 gold = vec3(.929,.741,.424);
-  float fineTicks = step(.92, fract(angle/TAU*100.));
-  float majorTicks = step(.97, fract(angle/TAU*10.));
+  // Smooth the tick edges so slow camera movement cannot make thin marks shimmer.
+  float fineTicks = ticks(angle, 100., .04);
+  float majorTicks = ticks(angle, 10., .015);
   color += cyan * stroke(radius-360., .75) * .38;
   color += gold * stroke(radius-372., 4.) * fineTicks * .55;
   color += vec3(1.,.851,.561) * stroke(radius-381., 9.) * majorTicks * .82;
@@ -39,10 +46,16 @@ void main() {
   vec2 bracket = abs(p-vec2(1297.,688.));
   float corners = step(12., min(bracket.x,bracket.y));
   color += vec3(1.,.878,.631) * stroke(max(bracket.x,bracket.y)-24.,1.25) * corners;
-  float phase = time * TAU / orbitDuration;
-  vec2 orbiter = center + vec2(cos(phase),sin(phase))*402.;
-  float glow = exp(-dot(p-orbiter,p-orbiter)/55.);
-  color += cyan * glow * .8;
+  // One steady escort inside the instrument ring. Constant light, no pulse or flash.
+  float phase = TAU * .25 - time * TAU / orbitDuration;
+  float lag = mod(angle-phase+TAU,TAU);
+  float trail = (1.0-smoothstep(0.,.68,lag)) * smoothstep(0.,.025,lag);
+  float orbit = stroke(radius-342., 1.2);
+  color += cyan * orbit * (.10 + trail*.32);
+  vec2 orbiter = center + vec2(cos(phase),sin(phase))*342.;
+  float glow = exp(-dot(p-orbiter,p-orbiter)/32.);
+  float core = exp(-dot(p-orbiter,p-orbiter)/5.);
+  color += cyan * glow * .16 + gold * core * .42;
   // The same authored depth displaces the picture and its instruments. No reading is implied.
   vec2 sun = vec2(.973,.655);
   vec2 ray = uv-sun;
@@ -55,7 +68,7 @@ void main() {
   float seed = hash(cell);
   vec2 mote = fract(field)-vec2(.2+.6*seed,.25+.5*hash(cell+7.));
   float dust = exp(-dot(mote,mote)*1700.) * step(.84,seed);
-  color += mix(cyan,gold,seed) * dust * (.35+.25*sin(time+seed*TAU));
+  color += mix(cyan,gold,seed) * dust * .18;
   gl_FragColor = vec4(color,1.);
   #include <tonemapping_fragment>
   #include <colorspace_fragment>

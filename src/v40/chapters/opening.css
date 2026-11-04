@@ -2697,3 +2697,44 @@ html[data-motion="off"] .hero-flight-camera {
   outline: 3px solid #2acce7;
   outline-offset: 4px;
 }
+
+/* Motion controls remain readable before secondary artwork loads. */
+#v40-root header .motion-control {
+  width: auto;
+  min-width: 100px;
+  min-height: 44px;
+  padding: 8px;
+  white-space: nowrap;
+}
+.scene-motion-control {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  border: 0;
+  border-top: 1px solid #72e5f433;
+  background: #0a171e;
+  color: #c5e4e9;
+  font: 600 14px var(--font-body);
+  cursor: pointer;
+}
+.scene-motion-control:hover {
+  background: #12252c;
+  color: #ffe0a1;
+}
+.scene-motion-control:focus-visible {
+  outline: 2px solid #edbd6c;
+  outline-offset: -4px;
+}
+.scene-motion-control[aria-pressed="true"] {
+  color: #edbd6c;
+}
+@media (max-width: 600px) {
+  #v40-root header .motion-control {
+    width: 54px;
+    min-width: 54px;
+    padding: 6px;
+    white-space: normal;
+    font-size: 11px;
+    line-height: 1.3;
+  }
+}
