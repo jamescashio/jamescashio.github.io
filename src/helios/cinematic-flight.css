@@ -267,14 +267,63 @@
   font-size: 16px;
   flex: 1 1 auto;
 }
-#helios-flight .ff-finale-actions :is(.ff-save, .ff-card-native) {
+#helios-flight .ff-finale-actions .ff-save {
   background: #e9c58a;
   border-color: #e9c58a;
   color: #11171b;
 }
-#helios-flight .ff-finale-actions .ff-share {
+#helios-flight .ff-finale-actions :is(.ff-share, .ff-card-native) {
   border-color: #a3b5b580;
   color: #d8e6e8;
+  background: #0e1822;
+}
+.ff-personalize {
+  margin: 0 0 24px;
+}
+.ff-personalize label {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #edf0e9;
+  font: 600 16px/1.5 var(--sans);
+}
+.ff-personalize label span {
+  color: #c4cacc;
+  font-weight: 400;
+  font-size: 14px;
+}
+.ff-personalize > div {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+#helios-flight .ff-personalize input {
+  min-width: 0;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px;
+  color: #edf0e9;
+  background: #0e1822;
+  border: 1px solid #6d858b;
+  border-radius: 0;
+  font: 16px/1.4 var(--sans);
+}
+#helios-flight .ff-personalize input::placeholder {
+  color: #b3c0c7;
+}
+#helios-flight .ff-personalize button {
+  min-height: 48px;
+  padding: 10px 16px;
+  color: #91d8df;
+}
+#helios-flight .ff-personalize input:focus-visible {
+  outline: 2px solid #91d8df;
+  outline-offset: 3px;
+}
+.ff-personalize p {
+  color: #b4c8cf;
+  margin: 9px 0 0;
+  font: 13px/1.6 var(--sans);
 }
 .ff-finale-status {
   color: #b4c8cf;
@@ -455,7 +504,7 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  #helios-flight .ff-finale-actions .ff-card-native {
+  #helios-flight .ff-finale-actions .ff-save {
     grid-column: 1 / -1;
     min-height: 52px;
   }
@@ -467,6 +516,14 @@
   }
   .ff-roadster-next > span {
     font-size: 16px;
+  }
+}
+@media (max-width: 380px) {
+  .ff-finale-actions {
+    grid-template-columns: 1fr;
+  }
+  #helios-flight .ff-finale-actions button {
+    min-height: 52px;
   }
 }
 @media (max-height: 650px) and (min-width: 701px) {

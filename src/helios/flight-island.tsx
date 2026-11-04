@@ -3,6 +3,7 @@ import FlightBridge from "./flight-bridge";
 import "./island-fonts.css";
 import "./flight.css";
 import "./cinematic-flight.css";
+import "./flight-entrance.css";
 
 export function openFlight({
   motion,

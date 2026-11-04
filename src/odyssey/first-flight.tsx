@@ -36,6 +36,7 @@ export default function FirstFlight({
   onClose: (destination?: string) => void;
 }) {
   const [scenePaused, setScenePaused] = useState(false);
+  const [entranceDone, setEntranceDone] = useState(!showcase || !startTour || !globalMotion);
   const motion = globalMotion && !scenePaused;
   const [visit, setVisit] = useState(0);
   const remainingMs = useRef(FIRST_FLIGHT[flightStepIndex(initialStep)].durationMs);
@@ -88,7 +89,8 @@ export default function FirstFlight({
   const outcome = computeWorldOutcome(input);
   const independent = input.architecture === "hybrid" && !input.connected;
   const flightHash = changed || complete ? missionHash(input) : `#flight=${scene.id}`;
-  const playing = motion && !paused && !complete && pageVisible && phase !== "loading";
+  const entering = !entranceDone && motion && !paused && !complete;
+  const playing = motion && !paused && !complete && pageVisible && phase !== "loading" && !entering;
   const cinema = showcase && motion && !paused && !complete;
   // In the Helios flight a relay choice carried from an earlier chapter keeps this chapter's own title.
   const changedHere = changed && (!helios || currentDecision !== null);
@@ -117,6 +119,10 @@ export default function FirstFlight({
     paint.drawImage(poster, 0, 0);
     return still;
   }, [phase]);
+
+  useEffect(() => {
+    if (!motion || paused) setEntranceDone(true);
+  }, [motion, paused]);
 
   const finish = useCallback(
     (focus = true) => {
@@ -375,6 +381,7 @@ export default function FirstFlight({
       data-complete={complete}
       data-changed={changed}
       data-playback={playing ? "tour" : "manual"}
+      data-entrance={entering}
       aria-labelledby="ff-title"
       aria-describedby="ff-boundary"
       onCancel={(event) => {
@@ -385,6 +392,7 @@ export default function FirstFlight({
         if (event.key !== "Tab") return;
         if (cinema) {
           event.preventDefault();
+          setEntranceDone(true);
           restorePlaybackFocus.current = true;
           setPaused(true);
           return;
@@ -418,6 +426,7 @@ export default function FirstFlight({
             type="button"
             onClick={() => {
               restorePlaybackFocus.current = true;
+              setEntranceDone(true);
               setPaused(true);
             }}
           >
@@ -449,6 +458,45 @@ export default function FirstFlight({
         <div className={`ff-stage ff-stage-${phase}`} data-independent={independent}>
           <StarshipPoster imageClassName="ff-fallback" eager />
           <canvas ref={canvas} aria-hidden="true" />
+          {entering && (
+            <div
+              className="ff-entrance"
+              data-ready={phase !== "loading"}
+              style={{ animationPlayState: pageVisible ? "running" : "paused" }}
+              onAnimationEnd={(event) => {
+                if (event.target === event.currentTarget) setEntranceDone(true);
+              }}
+            >
+              <img
+                className="ff-entrance-world"
+                src="/v41/first-light-observatory-1920.webp"
+                srcSet="/v41/first-light-observatory-960.webp 960w, /v41/first-light-observatory-1920.webp 1920w"
+                sizes="100vw"
+                alt=""
+                aria-hidden="true"
+              />
+              <div className="ff-entrance-vignette" aria-hidden="true" />
+              <div className="ff-entrance-copy">
+                <span className="ff-eyebrow">THE OBSERVATORY / DEPARTURE 01</span>
+                <h3>
+                  Beyond the ring.
+                  <br />
+                  <em>Your command.</em>
+                </h3>
+                <p>{phase === "loading" ? "Preparing your ship…" : "A short flight. The final say stays yours."}</p>
+              </div>
+              <button
+                type="button"
+                className="ff-entrance-skip"
+                onClick={() => {
+                  setEntranceDone(true);
+                  firstFocus.current?.focus({ preventScroll: true });
+                }}
+              >
+                Skip entrance <span aria-hidden="true">→</span>
+              </button>
+            </div>
+          )}
           <div className="ff-stage-cap">
             <span>{helios ? "EXPLORER 01" : "CSV SOVEREIGN"}</span>
             <span>{input.connected ? "RELAY CONNECTED" : "RELAY OFFLINE"}</span>
@@ -825,9 +873,11 @@ export default function FirstFlight({
             : helios && complete
               ? "Replay, save your card or test a private request."
               : visitorPaced
-                ? playing
-                  ? "30 second tour. Any decision pauses it."
-                  : "Your pace. Use Next, or play the 30 second tour."
+                ? entering
+                  ? "Skip the entrance or pause at any time."
+                  : playing
+                    ? "30 second tour. Any decision pauses it."
+                    : "Your pace. Use Next, or play the 30 second tour."
                 : "Explore at your own pace."}
       </p>
       <span className="o-sr-only" role="status" aria-atomic="true">

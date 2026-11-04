@@ -1,6 +1,8 @@
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { gunzipSync } from "node:zlib";
+import { createHash } from "node:crypto";
 import { chromium, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
@@ -52,6 +54,8 @@ async function png(page, format, dimensions) {
 test("the uninterrupted cinematic tour ends in an honest, downloadable record", async (t) => {
   const page = await visit(t, { motion: "no-preference", hash: "#flight=tour" });
   const flight = page.locator(".ff-showcase");
+  await expect(flight.locator(".ff-stage")).toHaveClass(/ff-stage-ready/, { timeout: 15000 });
+  await expect(flight.locator(".ff-entrance")).toHaveCount(0);
   await expect(flight).toHaveAttribute("data-playback", "tour");
   await expect(flight.locator(".ff-story")).toBeHidden();
   const stage = await flight.locator(".ff-stage").boundingBox();
@@ -222,4 +226,169 @@ test("image and clipboard failures retain the actual scenario and an accessible 
   await page.getByRole("button", { name: "Replay flight", exact: true }).click();
   await expect(page.locator(".ff-showcase")).toHaveAttribute("data-playback", "manual");
   await expect(page.locator(".ff-finale")).toHaveCount(0);
+});
+
+test("a personalized record exports the applied name and actual outcome without sharing the name in a URL", async (t) => {
+  const page = await visit(t, {
+    width: 390,
+    setup: () => {
+      window.printedCardText = [];
+      const fill = CanvasRenderingContext2D.prototype.fillText;
+      CanvasRenderingContext2D.prototype.fillText = function (...args) {
+        if ([1080, 1600].includes(this.canvas.width)) window.printedCardText.push(String(args[0]));
+        return fill.apply(this, args);
+      };
+    },
+  });
+  const requests = [];
+  page.on("request", (request) => requests.push(request.url()));
+  await expect(page.locator(".ff-stage")).toHaveClass(/ff-stage-ready/);
+  await page.getByRole("button", { name: /Permit these private requests/ }).click();
+  await page.getByRole("button", { name: /Skip to the ending/ }).click();
+  const finale = page.locator(".ff-finale");
+  await expect(finale.locator(".ff-finale-summary")).toContainText("All 12 requests use an external cloud provider");
+  const input = finale.locator("#ff-callsign");
+  await input.fill("Doug 🚀");
+  await finale.getByRole("button", { name: "Apply", exact: true }).click();
+  await expect(finale.locator(".ff-keepsake > img")).toHaveAttribute("alt", /for Doug 🚀:/);
+  await png(page, "portrait", [1080, 1440]);
+  await png(page, "landscape", [1600, 1000]);
+  const printed = await page.evaluate(() => window.printedCardText);
+  assert.equal(
+    printed.filter((line) => line === "CALLSIGN / Doug 🚀").length,
+    2,
+    "both exports carry the applied callsign",
+  );
+  assert.ok(
+    printed.some((line) => line.includes("All 12 requests use an external")),
+    "the actual decision is printed",
+  );
+  await finale.getByRole("button", { name: "Copy this scenario", exact: true }).click();
+  assert.equal(
+    await page.evaluate(() => navigator.clipboard.readText()),
+    new URL("#mission=cloud.private.connected.permitted", url).href,
+  );
+  assert.ok(requests.every((request) => !request.includes("Doug") && !request.includes(encodeURIComponent("Doug 🚀"))));
+  // A cancelled generation must not re-enable a revoked download from an earlier identity.
+  await input.fill("Second name");
+  await finale.getByRole("button", { name: "Apply", exact: true }).click();
+  await input.fill("");
+  await finale.getByRole("button", { name: "Apply", exact: true }).click();
+  await expect(finale.locator(".ff-keepsake > img")).toHaveAttribute("alt", /^Your flight record:/);
+  await png(page, "portrait", [1080, 1440]);
+});
+
+test("the entrance can be skipped, paused or closed and never delays reduced motion", async (t) => {
+  const page = await visit(t, { hash: "#flight=tour", motion: "no-preference" });
+  const flight = page.locator(".ff-showcase");
+  await expect(flight.locator(".ff-entrance")).toBeVisible();
+  await expect(flight).toHaveAttribute("data-playback", "manual");
+  await flight.getByRole("button", { name: /Skip entrance/ }).click();
+  await expect(flight.locator(".ff-entrance")).toHaveCount(0);
+  await expect(flight).toHaveAttribute("data-playback", "tour");
+  await flight.getByRole("button", { name: /^Close/ }).click();
+  await expect(flight).toHaveCount(0);
+  await page.locator(".tour-launch").click();
+  await expect(flight.locator(".ff-entrance")).toBeVisible();
+  await flight.getByRole("button", { name: /Pause tour/ }).click();
+  await expect(flight).toHaveAttribute("data-view", "controls");
+  await expect(flight.locator(".ff-entrance")).toHaveCount(0);
+  await page.keyboard.press("Escape");
+  await expect(flight).toHaveCount(0);
+  await page.locator(".tour-launch").click();
+  await expect(flight.locator(".ff-entrance")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(flight).toHaveCount(0);
+  await page.waitForTimeout(2400);
+  await expect(flight).toHaveCount(0);
+  await expect(page.locator(".tour-launch")).toBeFocused();
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.locator(".tour-launch").click();
+  await expect(flight).toHaveAttribute("data-view", "controls");
+  await expect(flight.locator(".ff-entrance")).toHaveCount(0);
+});
+
+test("Roadster delivery preserves every byte of the original CAD model", async () => {
+  const bytes = gunzipSync(await readFile(new URL("../public/models/roadster-inspection.glb.gz", import.meta.url)));
+  assert.equal(bytes.length, 17575480);
+  assert.equal(
+    createHash("sha256").update(bytes).digest("hex"),
+    "a1266057d40b348d69eab67cd5233191bd4876a2afaad6cb0b759fadbed380e5",
+  );
+  const gltf = JSON.parse(bytes.subarray(20, 20 + bytes.readUInt32LE(12)).toString());
+  assert.equal(gltf.meshes.length, 699);
+});
+
+test("Roadster loads on request, offers three accessible views and stops drawing at rest", async (t) => {
+  for (const width of [1440, 390, 320]) {
+    const page = await visit(t, {
+      width,
+      hash: "#roadster-studio",
+      setup: () => {
+        window.roadsterDraws = 0;
+        for (const Context of [WebGLRenderingContext, WebGL2RenderingContext]) {
+          const draw = Context.prototype.drawElements;
+          Context.prototype.drawElements = function (...args) {
+            if (this.canvas.closest?.(".roadster-inspection")) window.roadsterDraws++;
+            return draw.apply(this, args);
+          };
+        }
+      },
+    });
+    assert.equal(
+      await page.evaluate(() =>
+        performance.getEntriesByType("resource").some((entry) => /roadster-inspection/.test(entry.name)),
+      ),
+      false,
+    );
+    const consoleErrors = [];
+    page.on("console", (message) => {
+      if (message.type() === "error") consoleErrors.push(message.text());
+    });
+    await page.locator(".roadster-cta").click();
+    await expect(page.locator(".roadster-inspection")).toHaveAttribute("data-phase", "ready", { timeout: 20000 });
+    for (const name of [/Body/, /Wheels/, /Thrusters/]) {
+      const button = page.getByRole("group", { name: "Inspect Roadster details" }).getByRole("button", { name });
+      await button.click();
+      await expect(button).toHaveAttribute("aria-pressed", "true");
+    }
+    await page.locator(".roadster-inspection canvas").focus();
+    const before = await page.evaluate(() => window.roadsterDraws);
+    await page.keyboard.press("ArrowRight");
+    await expect.poll(() => page.evaluate(() => window.roadsterDraws)).toBeGreaterThan(before);
+    await page.waitForTimeout(100);
+    const settled = await page.evaluate(() => window.roadsterDraws);
+    await page.waitForTimeout(400);
+    assert.equal(await page.evaluate(() => window.roadsterDraws), settled, "no idle rendering loop");
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+    for (const button of await page.locator(".roadster-inspection button, .roadster-views button").all()) {
+      const box = await button.boundingBox();
+      assert.ok(box.width >= 44 && box.height >= 44 && box.x >= 0 && box.x + box.width <= width);
+    }
+    const { violations } = await new AxeBuilder({ page }).include("#roadster-studio").analyze();
+    assert.deepEqual(
+      violations.map(({ id }) => id),
+      [],
+    );
+    assert.deepEqual(consoleErrors, []);
+    if (width === 320) {
+      await page.getByRole("button", { name: "03 Thrusters" }).focus();
+      await page.keyboard.press("Escape");
+    } else await page.getByRole("button", { name: "Close 3D" }).click();
+    await expect(page.locator(".roadster-cta")).toBeFocused();
+    await expect(page.locator(".roadster-inspection")).toHaveCount(0);
+  }
+});
+
+test("Roadster download failure keeps a usable poster, retry and full Studio link", async (t) => {
+  const page = await visit(t, { width: 320, hash: "#roadster-studio" });
+  await page.route("**/models/roadster-inspection.glb.gz", (route) => route.abort());
+  await page.locator(".roadster-cta").click();
+  await expect(page.locator(".roadster-inspection")).toHaveAttribute("data-phase", "error");
+  await expect(page.getByRole("link", { name: "Explore Roadster Studio, opens in a new tab" })).toBeVisible();
+  await page.unroute("**/models/roadster-inspection.glb.gz");
+  await page.getByRole("button", { name: "Try 3D again" }).click();
+  await expect(page.locator(".roadster-inspection")).toHaveAttribute("data-phase", "ready", { timeout: 20000 });
+  await page.getByRole("button", { name: "Close 3D" }).click();
+  await expect(page.locator(".roadster-stage > img")).toBeVisible();
 });

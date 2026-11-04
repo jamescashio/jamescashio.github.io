@@ -1,10 +1,10 @@
 import { useEffect, useState, type ReactNode, type RefObject } from "react";
 import type { WorldInput } from "./sovereign-model";
-import { missionRecord } from "./mission-card";
+import { missionRecord, normalizeCallsign } from "./mission-card";
 import type { MissionFormat } from "./cinematic-mission-card";
 import { StarshipPoster } from "./starship-poster";
 
-type PreparedCard = { url: string; preview: string; file: File; shareable: boolean };
+type PreparedCard = { url: string; preview: string; file: File; shareable: boolean; callsign: string };
 
 function imagePreview(blob: Blob): Promise<string> {
   // The live site's image policy permits inline PNGs, but excludes Blob image URLs.
@@ -43,8 +43,10 @@ export function MissionFinale({
   const [cards, setCards] = useState<Partial<Record<MissionFormat, PreparedCard>>>({});
   const [status, setStatus] = useState("Preparing your flight record…");
   const [sharing, setSharing] = useState(false);
+  const [draftCallsign, setDraftCallsign] = useState("");
+  const [callsign, setCallsign] = useState("");
   const record = missionRecord(input, `${location.origin}${location.pathname}`);
-  const selected = cards[format];
+  const selected = cards[format]?.callsign === callsign ? cards[format] : undefined;
 
   useEffect(() => {
     let cancelled = false;
@@ -61,6 +63,7 @@ export function MissionFinale({
               input,
               layout,
               `${location.origin}${location.pathname}`,
+              callsign,
             );
             if (cancelled) return null;
             const preview = await imagePreview(blob);
@@ -74,7 +77,7 @@ export function MissionFinale({
             } catch {
               /* Save and copy remain available. */
             }
-            return [layout, { url, preview, file, shareable }] as const;
+            return [layout, { url, preview, file, shareable, callsign }] as const;
           }),
         );
         if (cancelled) return;
@@ -90,7 +93,7 @@ export function MissionFinale({
       cancelled = true;
       urls.forEach((url) => URL.revokeObjectURL(url));
     };
-  }, [still, input]);
+  }, [still, input, callsign]);
 
   function save() {
     if (!selected) return;
@@ -131,7 +134,7 @@ export function MissionFinale({
             src={selected.preview}
             width={format === "portrait" ? 1080 : 1600}
             height={format === "portrait" ? 1440 : 1000}
-            alt={`Your flight record: ${record.title} ${record.outcome.local} onboard, ${record.outcome.cloud} in cloud, ${record.outcome.held} held. ${record.connection}. ${record.permission}.`}
+            alt={`Your flight record${callsign ? ` for ${callsign}` : ""}: ${record.title} ${record.outcome.local} onboard, ${record.outcome.cloud} in cloud, ${record.outcome.held} held. ${record.connection}. ${record.permission}.`}
           />
         ) : (
           <div className="ff-keepsake-loading">
@@ -156,7 +159,7 @@ export function MissionFinale({
           <br />
           <em>Still yours.</em>
         </h3>
-        <p className="ff-finale-summary">{record.title} Keep the scene, the settings, and the decision.</p>
+        <p className="ff-finale-summary">{record.decision}</p>
         <dl className="ff-finale-metrics" aria-label="Final routing outcome">
           <div>
             <dt>Onboard</dt>
@@ -171,15 +174,48 @@ export function MissionFinale({
             <dd>{record.outcome.held.toString().padStart(2, "0")}</dd>
           </div>
         </dl>
+        <form
+          className="ff-personalize"
+          onSubmit={(event) => {
+            event.preventDefault();
+            const next = normalizeCallsign(draftCallsign);
+            setDraftCallsign(next);
+            if (next !== callsign) {
+              setCards({});
+              setStatus("Preparing your personalized flight record…");
+              setCallsign(next);
+            }
+          }}
+        >
+          <label htmlFor="ff-callsign">
+            Make it yours <span>Optional callsign</span>
+          </label>
+          <div>
+            <input
+              id="ff-callsign"
+              value={draftCallsign}
+              onChange={(event) => setDraftCallsign(event.target.value)}
+              maxLength={48}
+              autoComplete="off"
+              spellCheck={false}
+              placeholder="Your callsign"
+              aria-describedby="ff-callsign-note"
+            />
+            <button type="submit" disabled={sharing || normalizeCallsign(draftCallsign) === callsign}>
+              Apply
+            </button>
+          </div>
+          <p id="ff-callsign-note">Up to 24 characters. Added only to this image, never to the scenario link.</p>
+        </form>
         <div className="ff-finale-actions">
+          <button type="button" className="ff-save" onClick={save} disabled={!selected}>
+            Save mission card <span aria-hidden="true">↓</span>
+          </button>
           {selected?.shareable && (
             <button type="button" className="ff-card-native" onClick={share} disabled={sharing}>
               {sharing ? "Opening share…" : "Share mission card"} <span aria-hidden="true">↗</span>
             </button>
           )}
-          <button type="button" className="ff-save" onClick={save} disabled={!selected}>
-            Save mission card <span aria-hidden="true">↓</span>
-          </button>
           <button type="button" className="ff-share" onClick={onCopy}>
             {copied ? "Link copied ✓" : "Copy this scenario"}
           </button>

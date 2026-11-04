@@ -7,6 +7,7 @@ import argparse
 import base64
 import hashlib
 import gzip
+import io
 import json
 import html
 import math
@@ -16,6 +17,7 @@ import struct
 import sys
 import unicodedata
 import wave
+import zlib
 from datetime import datetime
 from html.parser import HTMLParser
 from pathlib import Path
@@ -132,6 +134,34 @@ def collect_text(folder: Path) -> str:
         if path.is_file() and path.suffix.lower() in TEXT_SUFFIXES:
             chunks.append(path.read_text(encoding="utf-8"))
     return "\n".join(chunks)
+
+
+ROADSTER_FETCH_TARGET = "/models/roadster-inspection.glb.gz"
+ROADSTER_NATIVE_SIZE = 17_575_480
+ROADSTER_NATIVE_SHA256 = "a1266057d40b348d69eab67cd5233191bd4876a2afaad6cb0b759fadbed380e5"
+
+
+def check_media_fetch_targets(source: str, failures: list[str]) -> None:
+    targets = [target for _, target in re.findall(r"fetch\(\s*([\x60'\"])(.+?)\1", source)]
+    if not targets:
+        failures.append("no literal fetch target found in source; the same-origin egress gate cannot read it")
+    for target in targets:
+        if not target.startswith("/sfx/") and target != ROADSTER_FETCH_TARGET:
+            failures.append(f"unapproved media fetch target found in source: {target!r}")
+
+
+def check_roadster_asset(data: bytes, failures: list[str], label: str) -> None:
+    """The single new fetch is a bounded, byte-identical copy of the published CAD model."""
+    if len(data) > 7_000_000:
+        failures.append(f"{label}: Roadster delivery exceeds its 7 MB bound")
+        return
+    try:
+        with gzip.GzipFile(fileobj=io.BytesIO(data)) as stream:
+            native = stream.read(ROADSTER_NATIVE_SIZE + 1)
+        if len(native) != ROADSTER_NATIVE_SIZE or hashlib.sha256(native).hexdigest() != ROADSTER_NATIVE_SHA256:
+            failures.append(f"{label}: Roadster native geometry identity changed")
+    except (OSError, EOFError, zlib.error):
+        failures.append(f"{label}: Roadster delivery is not a valid gzip asset")
 
 
 def check_current_public_privacy(text: str, failures: list[str], label: str) -> None:
@@ -973,14 +1003,12 @@ def main() -> int:
     for token in ("google-analytics", "googletagmanager", "plausible.io", "segment.io", "mixpanel"):
         if token in source_tree.lower():
             failures.append(f"tracking/analytics dependency found in source: {token}")
-    fetch_targets = [target for _, target in re.findall(r"fetch\(\s*([\x60'\"])(.+?)\1", source_tree)]
-    if not fetch_targets:
-        # A refactor that hides every literal behind a helper would otherwise
-        # pass this gate vacuously while still being free to reach anywhere.
-        failures.append("no literal fetch target found in source; the same-origin egress gate cannot read it")
-    for target in fetch_targets:
-        if not target.startswith("/sfx/"):
-            failures.append(f"non-audio fetch target found in source: {target!r}")
+    check_media_fetch_targets(source_tree, failures)
+    for delivery in (ROOT / "public", DIST):
+        try:
+            check_roadster_asset((delivery / ROADSTER_FETCH_TARGET.lstrip("/")).read_bytes(), failures, delivery.name)
+        except OSError:
+            failures.append(f"{delivery.name}: approved Roadster model is missing")
 
     if failures:
         print("V42 and preserved archive consistency check failed:\n")

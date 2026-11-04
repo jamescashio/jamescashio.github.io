@@ -1,6 +1,19 @@
 import { missionHash } from "./flight-plan";
 import { computeWorldOutcome, type WorldInput } from "./sovereign-model";
 
+/** A short display label, never part of a scenario link, filename or request. */
+export function normalizeCallsign(value: string) {
+  return Array.from(
+    value
+      .normalize("NFKC")
+      .replace(/[\p{Cc}\p{Cf}]/gu, " ")
+      .replace(/\s+/gu, " ")
+      .trim(),
+  )
+    .slice(0, 24)
+    .join("");
+}
+
 /** The same bounded scenario powers the live counters, saved card, and reopen link. */
 export function missionRecord(input: WorldInput, baseUrl = "https://cashio.us/") {
   const outcome = computeWorldOutcome(input);
@@ -16,6 +29,7 @@ export function missionRecord(input: WorldInput, baseUrl = "https://cashio.us/")
             : "One ship. A chosen boundary.";
   return {
     title,
+    decision: outcome.summary,
     outcome,
     architecture: { sovereign: "SOVEREIGN / LOCAL", hybrid: "HYBRID", cloud: "CLOUD" }[input.architecture],
     connection: input.connected ? "RELAY CONNECTED" : "RELAY OFFLINE",
