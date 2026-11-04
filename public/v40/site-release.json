@@ -18,7 +18,7 @@
     "entry": "/v39/",
     "receipt": "/v38/site-release.json"
   },
-  "rollbackCommit": "4b9600ca10d1c57ebe3860b2deff101982f49411",
+  "rollbackCommit": "4f2ee0ceaa870c295d355eab99e7a2e1eb4c4e07",
   "evidenceSnapshot": {
     "url": "/status.json",
     "fleetObserved": "2026-11-02",
@@ -30,6 +30,6 @@
     "version": "42.0.0",
     "name": "Omnius, Overruled",
     "receipt": "/v42/omnius-overruled-release.json",
-    "commit": "4b9600ca10d1c57ebe3860b2deff101982f49411"
+    "commit": "4f2ee0ceaa870c295d355eab99e7a2e1eb4c4e07"
   }
 }

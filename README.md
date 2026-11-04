@@ -2,7 +2,7 @@
 
 **Starfall · Imagination, with intention** is the V43 interface prepared on 11-03-2026. The page now reads as a descent: a deep sky lives behind every chapter, the Sections rail becomes a flight instrument that falls from orbit to touchdown, chapter links jump through hyperspace, chapter titles arrive under a target lock, and cards answer the pointer with holographic light. The original moving planetary hero, gold and cyan identity, four worlds, seven experiments, complete film collection, Bit and E.V.E. remain.
 
-The current receipt is `public/v40/site-release.json`; the V42 Omnius, Overruled receipt is preserved at `/v42/omnius-overruled-release.json`. Local review mode displays an unpublished ribbon and sends noindex headers; the ordinary production build is indexable. Publication follows the completed quality review and required repository checks. The prior production and rollback commit is `4b9600ca10d1c57ebe3860b2deff101982f49411`. See [the Starfall notes](docs/v43/starfall.md).
+The current receipt is `public/v40/site-release.json`; the V42 Omnius, Overruled receipt is preserved at `/v42/omnius-overruled-release.json`. Local review mode displays an unpublished ribbon and sends noindex headers; the ordinary production build is indexable. Publication follows the completed quality review and required repository checks. The prior production and rollback commit is `4f2ee0ceaa870c295d355eab99e7a2e1eb4c4e07`. See [the Starfall notes](docs/v43/starfall.md).
 
 ## Starfall
 
@@ -64,4 +64,4 @@ The [mobile delivery pass](docs/v42/mobile-performance-preview.md) sends the ope
 
 The exact previous current receipt is retained at `/v42/omnius-overruled-release.json`, and the one before it at `/v41/first-light-release.json`. The [First Light implementation notes](docs/v41/first-light-implementation.md), [First Light presentation](docs/v41/first-light.md), [Afterglow](docs/v41/afterglow.md) and changelog preserve earlier design decisions. The V39, V37 and V35 experiences keep their own original receipts, dates and evidence. Compatibility receipts preserve their historical V37 identity while their frontDoor pointer identifies the V43 receipt. Publication state is explicit in that current receipt.
 
-Final publication requires Doug's approval of the preview. At that point prepare released metadata, pass the protected repository checks, publish the verified artifact, and verify the ordinary live desktop and phone site. The production rollback baseline is `4b9600ca10d1c57ebe3860b2deff101982f49411`.
+Final publication requires Doug's approval of the preview. At that point prepare released metadata, pass the protected repository checks, publish the verified artifact, and verify the ordinary live desktop and phone site. The production rollback baseline is `4f2ee0ceaa870c295d355eab99e7a2e1eb4c4e07`.

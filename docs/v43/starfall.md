@@ -1,6 +1,6 @@
 # V43 · Starfall
 
-Prepared 11-03-2026 on top of V42 Omnius, Overruled (`4b9600c`), keeping its look and feel.
+Prepared 11-03-2026 on top of V42 Omnius, Overruled (`4f2ee0c`), keeping its look and feel.
 
 ## Idea
 
