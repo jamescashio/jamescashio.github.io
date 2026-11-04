@@ -228,7 +228,7 @@ test("the completed brief preview, download and editable starting point agree wi
   const record = await (await page.request.get(new URL("/status.json", url).href)).json();
   const example = page.getByRole("figure", { name: "Example decision brief", exact: true });
   await expect(example).toContainText(
-    `${record.containers.running} containers and ${record.virtualMachines.running} virtual machine on ${record.cluster.hostsOnline} hosts.`,
+    `${record.containers.running} containers and ${record.virtualMachines.running} virtual machine${record.virtualMachines.running === 1 ? "" : "s"} on ${record.cluster.hostsOnline} hosts.`,
   );
   await expect(example).toContainText(record.verifiedLong);
   await expect(example).toContainText("not a new check");
