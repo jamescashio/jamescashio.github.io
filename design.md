@@ -1,3 +1,7 @@
+# Orbit continuity correction · Review preview · 11-04-2026
+
+Doug asks again to fix the orbit and identifies the ring in a screenshot. Keep the palette preview, original artwork and composition. Use one SVG instrument overlay with a small gold light and a short cyan trail inside the stationary ring. The existing bounded hero clock owns its phase in both GPU and fallback rendering, including exact pause/resume, offscreen and dialog suspension. Remove the duplicate shader instruments and independent CSS rotation so enhancement and motion controls cannot swap or reset the orbit. Keep the picture aligned with the overlay through the shared camera. The build minified 64000ms to 64s, which the former shader setup incorrectly divided by 1000 again. Keep the 64 second duration numeric in the shared timing contract and verify actual frame movement in the built page. Show the moving preview directly. Publication remains pending review.
+
 # Palette and craft refinement · Review preview · 11-03-2026
 
 Doug asks to improve the colors while retaining the identity, then expands the request to graphics, animations and content. This is a new isolated preview based on the smooth-orbit revision f94bfb2. The earlier preview at port 4423 and public site remain available for comparison. No publication is authorized by this pass.

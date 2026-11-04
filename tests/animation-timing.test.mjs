@@ -28,6 +28,7 @@ test("semantic motion completes within the approved readable bounds", () => {
   const copy = timing.motionDurationMs("deck-copy");
   const acquisition = timing.motionDurationMs("article-acquisition");
   const warp = timing.motionDurationMs("stage-warp");
+  const orbit = timing.motionDurationMs("hero-orbit");
 
   assert.ok(copy >= 300 && copy <= 450, `deck copy must resolve in 300–450ms, received ${copy}`);
   assert.ok(
@@ -35,6 +36,7 @@ test("semantic motion completes within the approved readable bounds", () => {
     `article acquisition must resolve in 450–620ms, received ${acquisition}`,
   );
   assert.ok(warp <= 700, `stage warp must decay within 700ms, received ${warp}`);
+  assert.ok(orbit >= 60000 && orbit <= 90000, "the ambient orbit takes at least a minute, in milliseconds");
 });
 
 test("inactive deck work stands down without rewriting the selected article", () => {

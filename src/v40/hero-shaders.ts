@@ -10,53 +10,17 @@ uniform sampler2D depthMap;
 uniform vec2 fit;
 uniform vec2 pointer;
 uniform float time;
-uniform float orbitDuration;
 varying vec2 posterUv;
-const float TAU = 6.28318530718;
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453); }
-float stroke(float distance, float width) {
-  float aa = max(fwidth(distance), .45);
-  return 1.0 - smoothstep(width-aa, width+aa, abs(distance));
-}
-float ticks(float angle, float count, float width) {
-  float unit = angle / TAU * count;
-  float distance = abs(fract(unit + .5) - .5);
-  float aa = max(fwidth(unit), .001);
-  return 1.0 - smoothstep(width-aa, width+aa, distance);
-}
 void main() {
   vec2 uv = posterUv * fit + (1.0-fit) * vec2(.68,.5);
   float depth = texture2D(depthMap, uv).r;
-  uv += vec2(pointer.x,-pointer.y) * .007 * depth;
+  // Move the picture and SVG instruments together through the shared camera.
+  // Distorting the picture here would make its rim slide beneath the overlay.
   vec3 color = texture2D(artwork, clamp(uv, .001, .999)).rgb;
-  vec2 p = uv * vec2(1920.,1080.);
-  vec2 center = vec2(1508.,572.);
-  vec2 delta = p-center;
-  float radius = length(delta);
-  float angle = atan(delta.y,delta.x);
   vec3 cyan = vec3(.447,.898,.957);
   vec3 gold = vec3(.929,.741,.424);
-  // Smooth the tick edges so slow camera movement cannot make thin marks shimmer.
-  float fineTicks = ticks(angle, 100., .04);
-  float majorTicks = ticks(angle, 10., .015);
-  color += cyan * stroke(radius-360., .75) * .38;
-  color += gold * stroke(radius-372., 4.) * fineTicks * .55;
-  color += vec3(1.,.851,.561) * stroke(radius-381., 9.) * majorTicks * .82;
-  color += cyan * stroke(radius-402., 1.) * step(.25, fract(angle/TAU*16.)) * .2;
-  vec2 bracket = abs(p-vec2(1297.,688.));
-  float corners = step(12., min(bracket.x,bracket.y));
-  color += vec3(1.,.878,.631) * stroke(max(bracket.x,bracket.y)-24.,1.25) * corners;
-  // One steady escort inside the instrument ring. Constant light, no pulse or flash.
-  float phase = TAU * .25 - time * TAU / orbitDuration;
-  float lag = mod(angle-phase+TAU,TAU);
-  float trail = (1.0-smoothstep(0.,.68,lag)) * smoothstep(0.,.025,lag);
-  float orbit = stroke(radius-342., 1.2);
-  color += cyan * orbit * (.10 + trail*.32);
-  vec2 orbiter = center + vec2(cos(phase),sin(phase))*342.;
-  float glow = exp(-dot(p-orbiter,p-orbiter)/32.);
-  float core = exp(-dot(p-orbiter,p-orbiter)/5.);
-  color += cyan * glow * .16 + gold * core * .42;
-  // The same authored depth displaces the picture and its instruments. No reading is implied.
+  // Only subtle atmosphere belongs in this shader. The SVG owns the entire ring.
   vec2 sun = vec2(.973,.655);
   vec2 ray = uv-sun;
   float rayAngle = atan(ray.y,ray.x);

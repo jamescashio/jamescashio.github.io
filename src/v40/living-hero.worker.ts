@@ -43,7 +43,6 @@ async function initialize(message: Extract<HeroCommand, { type: "init" }>) {
     fit: { value: new Vector2(1, 1) },
     pointer: { value: new Vector2() },
     time: { value: 0 },
-    orbitDuration: { value: message.orbit },
   };
   const scene = new Scene();
   const view = new OrthographicCamera(-1, 1, 1, -1, 0, 1);

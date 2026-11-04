@@ -5,6 +5,7 @@ const MOTION_DURATION_MS = {
   "article-acquisition": 560,
   "stage-warp": 680,
   "stage-arrival": 2200,
+  "hero-orbit": 64000,
 } as const;
 
 type MotionKind = keyof typeof MOTION_DURATION_MS;

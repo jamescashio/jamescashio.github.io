@@ -3501,6 +3501,7 @@ html:has(.continuum-root) {
 @media (min-width: 1000px) {
   .continuum-hero[data-scene="orbit"] .hero-hud {
     position: absolute;
+    z-index: 2;
     left: 68%;
     top: 50%;
     display: block;
@@ -3526,49 +3527,8 @@ html:has(.continuum-root) {
 }
 @media (min-width: 1000px) {
   .hud-orbiter {
-    position: absolute;
-    left: 60.729%;
-    top: 15.37%;
-    width: 35.625%;
-    height: 63.333%;
-    border-radius: 50%;
-    border: 1px solid rgb(var(--signal-rgb) / 0.102);
+    transform-origin: 1508px 508px;
     will-change: transform;
-  }
-}
-@media (min-width: 1000px) {
-  .hud-orbiter::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background: conic-gradient(
-      from 0deg,
-      transparent 0 320deg,
-      rgb(var(--signal-rgb) / 0) 320deg,
-      #8cdae280 358deg,
-      transparent 360deg
-    );
-    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
-    mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
-  }
-}
-@media (min-width: 1000px) {
-  .hud-orbiter::after {
-    content: "";
-    position: absolute;
-    top: -2.5px;
-    left: calc(50% - 2.5px);
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: #d9bc82;
-    box-shadow: 0 0 8px 1px rgb(var(--signal-rgb) / 0.188);
-  }
-}
-@keyframes hud-spin {
-  to {
-    transform: rotate(360deg);
   }
 }
 @keyframes hud-laser {
@@ -3583,18 +3543,6 @@ html:has(.continuum-root) {
   to {
     opacity: 0;
     transform: scaleX(1);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) .hud-orbiter {
-    animation: hud-spin var(--dur-orbit, 64000ms) linear infinite;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) #top[data-hud-idle] .hud-orbiter {
-    animation-play-state: paused;
   }
 }
 
@@ -3704,7 +3652,6 @@ html:has(.continuum-root) {
   --dur-quick: 180ms;
   --dur-scene: 640ms;
   --dur-cinematic: 1500ms;
-  --dur-orbit: 64000ms;
 }
 .living-hero-canvas {
   position: absolute;

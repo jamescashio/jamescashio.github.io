@@ -55,23 +55,46 @@ test("the orbit offers readable persistent motion controls at desktop and both p
   }
 });
 
-test("the fallback orbit stays steadily lit and Fold space does not brighten or flash", async (t) => {
+test("the shared orbit stays steadily lit, pauses in place and Fold space does not flash", async (t) => {
   const page = await visit(t, { reducedMotion: "no-preference" });
   await expect(page.locator('link[rel="stylesheet"][href*="/assets/deferred-"]')).toHaveCount(1);
   const orbiter = page.locator(".hud-orbiter");
+  await expect(page.locator(".hero-hud")).toBeVisible();
+  const phase = () => orbiter.evaluate((node) => parseFloat(node.style.transform.slice(7)));
+  const initial = await phase();
+  await expect.poll(phase).toBeGreaterThan(initial);
+  // Sample the built page over real frames. Checking the declared CSS duration
+  // missed the 64s/64000ms conversion bug in the previous GPU implementation.
+  const speed = await orbiter.evaluate(async (node) => {
+    const samples = [];
+    const start = performance.now();
+    await new Promise((resolve) => {
+      const sample = (now) => {
+        samples.push({ time: now, angle: parseFloat(node.style.transform.slice(7)) });
+        if (now - start >= 1200) resolve();
+        else requestAnimationFrame(sample);
+      };
+      requestAnimationFrame(sample);
+    });
+    const steps = samples.slice(1).map((sample, i) => ((sample.angle - samples[i].angle + 540) % 360) - 180);
+    const seconds = (samples.at(-1).time - samples[0].time) / 1000;
+    return {
+      degreesPerSecond: steps.reduce((sum, step) => sum + step, 0) / seconds,
+      maxStep: Math.max(...steps.map(Math.abs)),
+    };
+  });
+  assert.ok(speed.degreesPerSecond >= 4 && speed.degreesPerSecond <= 6.5, JSON.stringify(speed));
+  assert.ok(speed.maxStep < 1, "no frame may skip a visible arc of the orbit");
   const motion = await orbiter.evaluate((node) => ({
-    animations: node.getAnimations().map((animation) => ({
-      duration: animation.effect.getTiming().duration,
-      easing: animation.effect.getTiming().easing,
-      frames: animation.effect.getKeyframes(),
-    })),
+    animations: node.getAnimations().length,
     opacity: getComputedStyle(node).opacity,
+    filter: getComputedStyle(node).filter,
+    rendererHidesOverlay: node.closest(".hero-hud").classList.contains("living-poster-replaced"),
   }));
-  assert.equal(motion.animations.length, 1);
-  assert.ok(motion.animations[0].duration >= 60000);
-  assert.equal(motion.animations[0].easing, "linear");
+  assert.equal(motion.animations, 0, "the bounded hero clock is the only animation owner");
   assert.equal(motion.opacity, "1");
-  assert.ok(motion.animations[0].frames.every((frame) => !("opacity" in frame) && !("filter" in frame)));
+  assert.equal(motion.filter, "none");
+  assert.equal(motion.rendererHidesOverlay, false);
   assert.equal(await page.locator("#top[data-hud-boot]").count(), 0);
   await page.getByRole("button", { name: "Fold space", exact: true }).click();
   const response = await page.locator(".hero-planet").evaluate((node) => ({
@@ -82,10 +105,19 @@ test("the fallback orbit stays steadily lit and Fold space does not brighten or 
   assert.equal(response.filter, "none");
   assert.ok(response.frames.every((frame) => !("filter" in frame) && !("opacity" in frame)));
   assert.equal(response.flash, "none");
+  const beforePause = await phase();
   await page.locator(".scene-motion-control").click();
-  assert.equal(await orbiter.evaluate((node) => node.getAnimations().length), 0);
+  const paused = await phase();
+  assert.ok(paused >= beforePause && paused - beforePause < 2, "pause preserves the orbit position");
+  await page.waitForTimeout(350);
+  assert.equal(await phase(), paused);
+  await page.locator(".scene-motion-control").click();
+  await expect.poll(phase).toBeGreaterThan(paused);
+  assert.ok((await phase()) - paused < 3, "resume continues from the same position");
   await page.emulateMedia({ reducedMotion: "reduce" });
-  assert.equal(await orbiter.evaluate((node) => node.getAnimations().length), 0);
+  const reduced = await phase();
+  await page.waitForTimeout(350);
+  assert.equal(await phase(), reduced);
 });
 
 test("Omnius polish keeps instrument text readable and phone navigation deliberate", async (t) => {

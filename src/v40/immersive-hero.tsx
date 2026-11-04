@@ -59,6 +59,12 @@ function HeroHud() {
   return (
     <div className="hero-hud" aria-hidden="true">
       <svg className="hud-track" viewBox="0 0 1920 1080" fill="none">
+        <defs>
+          <linearGradient id="hero-orbit-trail" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0" stopColor="var(--cyan)" stopOpacity="0" />
+            <stop offset="1" stopColor="var(--cyan)" stopOpacity=".5" />
+          </linearGradient>
+        </defs>
         <circle cx="1508" cy="508" r="360" stroke="#72e5f4" strokeOpacity=".38" strokeWidth="1.5" />
         <circle
           cx="1508"
@@ -93,8 +99,18 @@ function HeroHud() {
           stroke="#ffe0a1"
           strokeWidth="2.5"
         />
+        <circle cx="1508" cy="508" r="342" stroke="var(--cyan)" strokeOpacity=".12" />
+        <g className="hud-orbiter">
+          <path
+            d="M1326.77 217.97 A342 342 0 0 1 1508 166"
+            stroke="url(#hero-orbit-trail)"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+          />
+          <circle cx="1508" cy="166" r="7" fill="var(--cyan)" fillOpacity=".1" />
+          <circle cx="1508" cy="166" r="2.8" fill="var(--accent-light)" fillOpacity=".9" />
+        </g>
       </svg>
-      <span className="hud-orbiter" />
     </div>
   );
 }
