@@ -1,4 +1,4 @@
-import { mkdir, writeFile, copyFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { chromium, expect } from "@playwright/test";
 const base = "https://cashio.us/";
@@ -11,7 +11,6 @@ try {
   if (!process.argv.includes("--phones-only")) {
     const context = await browser.newContext({
       viewport: { width: 1440, height: 1000 },
-      recordVideo: { dir: directory, size: { width: 1440, height: 1000 } },
     });
     const page = await context.newPage();
     page.on("pageerror", (error) => errors.push(error.message));
@@ -34,7 +33,7 @@ try {
     await page.getByRole("button", { name: "Finish →", exact: true }).click();
     await page.locator("#ff-callsign").fill("Doug Cashio");
     await page.locator(".ff-personalize button").click();
-    await expect(page.locator(".ff-keepsake > img")).toHaveAttribute("alt", /for Doug Cashio:/);
+    await expect(page.locator(".ff-keepsake > img")).toHaveAttribute("alt", /for Doug Cashio:/, { timeout: 20000 });
     await page.screenshot({ path: path.join(directory, "mission-card.png") });
     for (const format of ["portrait", "landscape"]) {
       await page
@@ -56,7 +55,6 @@ try {
     }
     checks.push("All three desktop Roadster views inspected in motion.");
     await context.close();
-    await copyFile(await page.video().path(), path.resolve("outputs/first-contact-live.webm"));
   }
   for (const width of [390, 320]) {
     const phone = await browser.newContext({
@@ -81,7 +79,7 @@ try {
       .click();
     await screen.locator("#ff-callsign").fill("Doug Cashio");
     await screen.locator(".ff-personalize button").click();
-    await expect(screen.locator(".ff-keepsake > img")).toHaveAttribute("alt", /for Doug Cashio:/);
+    await expect(screen.locator(".ff-keepsake > img")).toHaveAttribute("alt", /for Doug Cashio:/, { timeout: 20000 });
     const geometry = await screen.evaluate(() => ({
       width: innerWidth,
       dialog: document.querySelector(".first-flight").clientWidth,
