@@ -27,7 +27,12 @@ export function openingValues(this: PageHost) {
   const telemetry = [
     [String(snapshot.cluster.hostsOnline), snapshot.cluster.hostsOnline, "Hosts at probe", "var(--cyan)"],
     [String(snapshot.containers.running), snapshot.containers.running, "Containers running", "var(--cyan)"],
-    [String(snapshot.virtualMachines.running), snapshot.virtualMachines.running, "Virtual machine", "var(--cyan)"],
+    [
+      String(snapshot.virtualMachines.running),
+      snapshot.virtualMachines.running,
+      snapshot.virtualMachines.running === 1 ? "Virtual machine" : "Virtual machines",
+      "var(--cyan)",
+    ],
     [
       String(snapshot.backup.latestVerified),
       snapshot.backup.latestVerified,

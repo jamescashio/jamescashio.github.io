@@ -313,11 +313,11 @@ test("current status and release surfaces omit raw route identifiers and unprobe
   );
   assert.deepEqual(status.cluster, { version: null, hostsOnline: 2, quorate: null });
   assert.deepEqual(status.containers, { running: 19, documented: 20, stopped: 1, zeus: null, apollo: null });
-  assert.deepEqual(status.virtualMachines, { running: 1, documented: 2, stopped: 1 });
+  assert.deepEqual(status.virtualMachines, { running: 2, documented: 3, stopped: 1 });
   assert.deepEqual(status.scheduler, { enabled: null, definitions: null });
   assert.deepEqual(status.modelConfiguration, { contextWindow: null });
-  assert.equal(status.backup.latestChecked, 21);
-  assert.equal(status.backup.latestVerified, 21);
+  assert.equal(status.backup.latestChecked, 22);
+  assert.equal(status.backup.latestVerified, 22);
   assert.equal(status.backup.restoredFiles, null);
   assert.ok(status.withheldReasons["cluster.quorate"]);
   assert.deepEqual(status.lanes, { public: null, privateCatalog: null });
