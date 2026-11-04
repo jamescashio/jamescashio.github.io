@@ -28,7 +28,7 @@ export function WorkshopSection({ v }: GeneratedProps) {
       h(
         "p",
         null,
-        "I’m a Principal Solutions Consultant by day. These are two personal projects: a backup check you can inspect and a decision brief you can take away.",
+        "I’m a Principal Solutions Consultant by day. After hours: backup evidence you can inspect, and a decision brief you can make your own.",
       ),
       h("a", { className: "visitor-link workshop-intro-link", href: "#operator" }, "Meet Doug →"),
     ),

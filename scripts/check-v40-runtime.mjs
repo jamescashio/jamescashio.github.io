@@ -35,6 +35,8 @@ try {
       "tests/v42-runtime.test.mjs",
       "tests/v42-cinematic.test.mjs",
       "tests/v42-immersive.test.mjs",
+      "tests/roadster-polish.test.mjs",
+      "tests/mission-finale-polish.test.mjs",
       "tests/preview-runtime.test.mjs",
     ],
     {

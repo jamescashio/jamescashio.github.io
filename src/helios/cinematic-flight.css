@@ -142,13 +142,16 @@
   overflow-y: auto;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(300px, 0.94fr);
+  grid-template-areas: "card intro" "card copy";
+  grid-template-rows: auto 1fr;
   align-items: start;
-  gap: clamp(28px, 4vw, 60px);
+  column-gap: clamp(28px, 4vw, 60px);
   padding: 32px clamp(24px, 4vw, 60px) 40px;
   background: radial-gradient(ellipse at 25% 35%, #1a2425, #080b0e 65%);
   scrollbar-color: #a48752 #0b1014;
 }
 .ff-keepsake {
+  grid-area: card;
   min-width: 0;
   width: 100%;
   max-width: 510px;
@@ -158,11 +161,15 @@
   display: block;
   width: 100%;
   height: auto;
+  max-height: clamp(280px, 45svh, 480px);
+  object-fit: contain;
+  background: #050a0e;
   box-shadow: 0 18px 55px #0009;
 }
 .ff-keepsake-loading {
   position: relative;
   aspect-ratio: 3 / 4;
+  max-height: clamp(280px, 45svh, 480px);
   background: #050a0e;
   border: 1px solid #d0ae6955;
 }
@@ -198,14 +205,16 @@
   font: 12px var(--mono);
   color: #aebdbf;
 }
-.ff-card-scroll-cue {
-  display: none;
-}
-.ff-finale-copy {
+.ff-finale-intro {
+  grid-area: intro;
   min-width: 0;
   padding-top: 8px;
 }
-.ff-finale-copy > .ff-eyebrow {
+.ff-finale-copy {
+  grid-area: copy;
+  min-width: 0;
+}
+.ff-finale-intro > .ff-eyebrow {
   margin: 0 0 18px;
   color: #dac090;
 }
@@ -215,6 +224,7 @@
   letter-spacing: -0.035em;
 }
 .ff-finale h3 em {
+  display: block;
   font-style: normal;
   color: #e9b65c;
 }
@@ -257,20 +267,27 @@
   color: #ffb39e;
 }
 .ff-finale-actions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
+  margin-top: 12px;
 }
 #helios-flight .ff-finale-actions button {
+  min-width: 0;
   min-height: 48px;
   padding: 12px 16px;
   font-size: 16px;
-  flex: 1 1 auto;
+  white-space: normal;
+  text-wrap: balance;
 }
 #helios-flight .ff-finale-actions .ff-save {
+  grid-column: 1 / -1;
   background: #e9c58a;
   border-color: #e9c58a;
   color: #11171b;
+}
+.ff-finale-actions[data-native-share="false"] .ff-share {
+  grid-column: 1 / -1;
 }
 #helios-flight .ff-finale-actions :is(.ff-share, .ff-card-native) {
   border-color: #a3b5b580;
@@ -278,7 +295,9 @@
   background: #0e1822;
 }
 .ff-personalize {
-  margin: 0 0 24px;
+  margin: 18px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid #9cb7b433;
 }
 .ff-personalize label {
   display: flex;
@@ -295,13 +314,13 @@
 .ff-personalize > div {
   display: flex;
   gap: 8px;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 #helios-flight .ff-personalize input {
   min-width: 0;
   width: 100%;
-  min-height: 48px;
-  padding: 12px;
+  min-height: 44px;
+  padding: 10px 12px;
   color: #edf0e9;
   background: #0e1822;
   border: 1px solid #6d858b;
@@ -312,7 +331,7 @@
   color: #b3c0c7;
 }
 #helios-flight .ff-personalize button {
-  min-height: 48px;
+  min-height: 44px;
   padding: 10px 16px;
   color: #91d8df;
 }
@@ -322,14 +341,22 @@
 }
 .ff-personalize p {
   color: #b4c8cf;
-  margin: 9px 0 0;
+  margin: 8px 0 0;
   font: 13px/1.6 var(--sans);
 }
 .ff-finale-status {
   color: #b4c8cf;
   font: 14px/1.5 var(--sans);
   min-height: 42px;
-  margin: 12px 0 22px;
+  margin: 10px 0 0;
+}
+#helios-flight .ff-card-retry {
+  min-height: 44px;
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px 12px;
+  white-space: normal;
+  color: #91d8df;
 }
 .ff-finale-detail {
   border-block: 1px solid #9cb7b433;
@@ -397,6 +424,27 @@
   background: transparent;
   color: #b9d5df;
   font-size: 14px;
+}
+.ff-finale-routes {
+  margin-top: 8px;
+  border-top: 1px solid #9cb7b433;
+}
+.ff-finale-routes summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  gap: 12px;
+  color: #b9d5df;
+  font: 14px/1.5 var(--sans);
+  cursor: pointer;
+}
+.ff-finale-routes summary span {
+  color: #81e3ed;
+  font-size: 20px;
+}
+.ff-finale-routes .ff-finale-links {
+  margin-top: 0;
 }
 @media (prefers-reduced-motion: no-preference) {
   .ff-showcase[data-motion="on"] .ff-film-caption h3 {
@@ -475,55 +523,71 @@
   #helios-flight .ff-showcase .ff-finale {
     display: flex;
     flex-direction: column;
-    gap: 28px;
-    padding: 22px 18px 32px;
+    gap: 18px;
+    padding: 18px 18px 32px;
+  }
+  .ff-finale-intro {
+    width: 100%;
+    padding: 0;
+  }
+  .ff-finale-intro > .ff-eyebrow {
+    margin-bottom: 8px;
+    font-size: 11px;
+  }
+  #helios-flight .ff-finale h3 {
+    font-size: clamp(24px, 6.2vw, 30px);
+    line-height: 1.25;
+  }
+  .ff-finale h3 em {
+    display: inline;
   }
   .ff-keepsake {
     max-width: 380px;
   }
-  .ff-card-scroll-cue {
-    display: block;
-    margin: 14px 0 0;
-    text-align: center;
-    color: #c6ba9f;
-    font: 14px/1.5 var(--sans);
+  .ff-keepsake > img,
+  .ff-keepsake-loading {
+    max-height: clamp(180px, 27svh, 240px);
+  }
+  .ff-card-formats {
+    gap: 8px;
+    margin-top: 12px;
+  }
+  #helios-flight .ff-card-formats button {
+    flex: 1;
+    min-width: 0;
+    min-height: 44px;
+    padding-inline: 8px;
   }
   .ff-finale-copy {
     width: 100%;
     padding: 0;
   }
   .ff-finale-summary {
+    margin-top: 0;
     font-size: 17px;
   }
   #helios-flight .ff-finale-actions button {
     font-size: 15px;
     width: 100%;
-    min-height: 60px;
+    min-height: 52px;
+    padding: 10px 8px;
   }
   .ff-finale-actions {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
   }
   #helios-flight .ff-finale-actions .ff-save {
     grid-column: 1 / -1;
     min-height: 52px;
   }
   .ff-finale-status {
-    margin-bottom: 18px;
+    min-height: 42px;
+    font-size: 13px;
   }
   .ff-roadster-next img {
     width: 92px;
   }
   .ff-roadster-next > span {
     font-size: 16px;
-  }
-}
-@media (max-width: 380px) {
-  .ff-finale-actions {
-    grid-template-columns: 1fr;
-  }
-  #helios-flight .ff-finale-actions button {
-    min-height: 52px;
   }
 }
 @media (max-height: 650px) and (min-width: 701px) {

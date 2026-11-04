@@ -1,24 +1,27 @@
 import { useEffect, useRef, useState } from "react";
-import type { RoadsterController, RoadsterView } from "../roadster-inspection";
+import type { RoadsterController, RoadsterFinish, RoadsterView } from "../roadster-inspection";
 
 const views = [
   {
     id: "body",
     label: "Body",
     title: "Every line, intentional.",
-    text: "Pearl white surfaces, a bronze canopy, and a low, sculpted silhouette. An independent reconstruction, ready to inspect.",
+    text: "Follow the light from the low nose to the rear haunches. Pearl white bodywork and a bronze canopy make the silhouette easy to read.",
+    detail: "Look for the continuous line above the front wheel.",
   },
   {
     id: "wheels",
     label: "Wheels",
     title: "The detail earns a closer look.",
     text: "Machined faces meet dark spokes and a deep barrel. Move around the front wheel to see how the surfaces catch the light.",
+    detail: "Look for the beveled edges around each spoke.",
   },
   {
     id: "thrusters",
     label: "Thrusters",
     title: "A very unreasonable departure.",
     text: "Ten concept thrusters are modeled across the car. This rear view reveals the nozzle bank. An exploration of the idea, not a flight capability claim.",
+    detail: "Look for the nozzle lips nested inside the rear fascia.",
   },
 ] as const;
 
@@ -27,6 +30,7 @@ export function RoadsterShowcase() {
   const [attempt, setAttempt] = useState(0);
   const [phase, setPhase] = useState<"loading" | "ready" | "error">("loading");
   const [view, setView] = useState<RoadsterView>("body");
+  const [finish, setFinish] = useState<RoadsterFinish>("studio");
   const canvas = useRef<HTMLCanvasElement>(null);
   const viewer = useRef<RoadsterController | null>(null);
   const launch = useRef<HTMLButtonElement>(null);
@@ -66,9 +70,14 @@ export function RoadsterShowcase() {
     setView(next);
     viewer.current?.view(next);
   }
+  function appearance(next: RoadsterFinish) {
+    viewer.current?.finish(next);
+    setFinish(next);
+  }
   function leave() {
     setOpen(false);
     setView("body");
+    setFinish("studio");
     requestAnimationFrame(() => launch.current?.focus({ preventScroll: true }));
   }
 
@@ -136,14 +145,15 @@ export function RoadsterShowcase() {
           </>
         )}
         {open && (
-          <div className="roadster-inspection" data-phase={phase} data-view={view}>
+          <div className="roadster-inspection" data-phase={phase} data-view={view} data-finish={finish}>
             <div className="roadster-inspection-top">
-              <span>STUDIO / INSPECT</span>
+              <span>{finish === "blueprint" ? "OUTLINE / CONCEPT" : "STUDIO / INSPECT"}</span>
               <button type="button" ref={close} onClick={leave}>
                 Close 3D <span aria-hidden="true">×</span>
               </button>
             </div>
             <canvas
+              key={attempt}
               ref={canvas}
               tabIndex={phase === "ready" ? 0 : -1}
               aria-label="Roadster 3D view. Drag horizontally or use arrow keys to orbit. Use plus and minus to zoom. Views below show the same details."
@@ -161,6 +171,7 @@ export function RoadsterShowcase() {
                     type="button"
                     onClick={() => {
                       setView("body");
+                      setFinish("studio");
                       setAttempt((value) => value + 1);
                     }}
                   >
@@ -193,6 +204,31 @@ export function RoadsterShowcase() {
       </div>
       {open && (
         <div className="roadster-inspection-details">
+          <div className="roadster-appearance">
+            <p id="roadster-finish-note">
+              {finish === "blueprint"
+                ? "Same geometry. A different way to see it."
+                : "Light, surface, silhouette. Explore three details."}
+            </p>
+            <div role="group" aria-label="Roadster rendering" aria-describedby="roadster-finish-note">
+              <button
+                type="button"
+                aria-pressed={finish === "studio"}
+                disabled={phase !== "ready"}
+                onClick={() => appearance("studio")}
+              >
+                Studio
+              </button>
+              <button
+                type="button"
+                aria-pressed={finish === "blueprint"}
+                disabled={phase !== "ready"}
+                onClick={() => appearance("blueprint")}
+              >
+                Blueprint
+              </button>
+            </div>
+          </div>
           <div className="roadster-views" role="group" aria-label="Inspect Roadster details">
             {views.map((item, index) => (
               <button
@@ -210,6 +246,12 @@ export function RoadsterShowcase() {
           <div className="roadster-view-note" aria-live="polite">
             <h3>{selected.title}</h3>
             <p>{selected.text}</p>
+            <p className="roadster-detail-cue">{selected.detail}</p>
+            {finish === "blueprint" && (
+              <p className="roadster-concept-note">
+                Outline study of the concept geometry, not a manufacturing drawing.
+              </p>
+            )}
           </div>
         </div>
       )}

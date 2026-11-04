@@ -18,7 +18,8 @@ const projects = [
     title: "Roadster Studio",
     medium: "02 / Interactive design study",
     image: "/images/roadster-studio-640.webp",
-    description: "An independent automotive CAD concept. Explore the model and compose a photograph.",
+    description:
+      "An independent automotive CAD concept. Inspect the details here; compose a photograph in the full Studio.",
     action: "Explore the Roadster",
   },
 ];
@@ -36,7 +37,7 @@ export function ShowcaseSection() {
         h("p", { className: "showcase-kicker" }, "Selected work / From the studio"),
         h("h2", { id: "showcase-title" }, "Imagination, made tangible."),
       ),
-      h("p", null, "One original film. One independent design study. Both yours to explore."),
+      h("p", null, "Watch an original film, then turn a design study in your hands."),
     ),
     h(
       "div",

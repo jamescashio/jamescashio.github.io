@@ -4,6 +4,12 @@
   padding: 76px 50px 64px;
   scroll-margin-top: 100px;
 }
+/* This lightweight section needs its real height for the link and following disclosure.
+   The image stays lazy and the 3D renderer still loads only after a request. */
+#v40-root #main-content > .roadster-showcase {
+  content-visibility: visible;
+  contain-intrinsic-size: none;
+}
 .roadster-kicker {
   margin: 0 0 20px;
   color: var(--accent);
@@ -200,7 +206,7 @@
   font: 12px/1.5 var(--font-mono);
   letter-spacing: 1.5px;
 }
-.roadster-showcase :is(.roadster-inspection, .roadster-views) button {
+.roadster-showcase :is(.roadster-inspection, .roadster-views, .roadster-appearance) button {
   min-height: 44px;
   min-width: 44px;
   padding: 10px 14px;
@@ -247,11 +253,35 @@
 .roadster-inspection-details {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 36px;
+  gap: 24px 36px;
   padding: 24px;
   border: 1px solid #826f4e66;
   border-top: 0;
   background: #0e182280;
+}
+.roadster-appearance {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #54717c40;
+}
+.roadster-appearance p {
+  margin: 0;
+  color: var(--text-dim);
+  font: 14px/1.6 var(--font-body);
+}
+.roadster-appearance [role="group"] {
+  display: flex;
+  flex-shrink: 0;
+  gap: 6px;
+}
+.roadster-showcase .roadster-appearance button[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: #ddbd8712;
+  color: var(--accent-light);
 }
 .roadster-views {
   display: grid;
@@ -275,7 +305,7 @@
   color: var(--accent-light);
   background: #ddbd870e;
 }
-.roadster-showcase .roadster-views button:disabled {
+.roadster-showcase :is(.roadster-views, .roadster-appearance) button:disabled {
   opacity: 0.6;
   cursor: wait;
 }
@@ -288,6 +318,17 @@
   margin: 0;
   color: var(--text-dim);
   font: 16px/1.65 var(--font-body);
+}
+.roadster-view-note .roadster-detail-cue {
+  margin-top: 12px;
+  padding-left: 12px;
+  border-left: 1px solid var(--signal);
+  color: var(--text);
+}
+.roadster-view-note .roadster-concept-note {
+  margin-top: 12px;
+  color: var(--cyan);
+  font: 12px/1.6 var(--font-mono);
 }
 .roadster-stage:focus-visible {
   outline: 2px solid var(--signal);
@@ -324,10 +365,6 @@
   }
 }
 @media (max-width: 760px) {
-  /* Reserve the feature's actual phone footprint while it is below the viewport. */
-  #v40-root #main-content > .roadster-showcase {
-    contain-intrinsic-size: auto 610px;
-  }
   .roadster-showcase {
     padding: 44px 18px;
   }
@@ -387,6 +424,16 @@
     display: block;
     padding: 16px;
   }
+  .roadster-appearance {
+    display: block;
+    margin-bottom: 20px;
+  }
+  .roadster-appearance [role="group"] {
+    margin-top: 12px;
+  }
+  .roadster-appearance button {
+    flex: 1;
+  }
   .roadster-showcase .roadster-views button {
     padding: 10px 8px;
     font-size: 14px;
@@ -404,6 +451,9 @@
   .roadster-caption {
     display: block;
     padding-top: 16px;
+  }
+  .roadster-caption a {
+    margin-top: 8px;
   }
   .roadster-caption > span {
     display: block;

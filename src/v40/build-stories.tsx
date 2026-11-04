@@ -190,9 +190,9 @@ export function FirstOrbit() {
   return (
     <nav className="first-orbit" aria-label="Recommended first visit">
       <div>
-        <span className="visitor-kicker">Your first orbit</span>
-        <strong>Board. Decide. Explore.</strong>
-        <p>Three stops, about two minutes. Sound stays off.</p>
+        <span className="visitor-kicker">Explore at your pace</span>
+        <strong>Pick up anywhere.</strong>
+        <p>Choose a starting point. Sound stays off.</p>
       </div>
       <a href="#flight=board">
         <span className="first-orbit-number">01</span>
