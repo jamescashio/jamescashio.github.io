@@ -59,6 +59,12 @@ function HeroHud() {
   return (
     <div className="hero-hud" aria-hidden="true">
       <svg className="hud-track" viewBox="0 0 1920 1080" fill="none">
+        <defs>
+          <linearGradient id="hero-orbit-trail" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0" stopColor="var(--cyan)" stopOpacity="0" />
+            <stop offset="1" stopColor="var(--cyan)" stopOpacity=".5" />
+          </linearGradient>
+        </defs>
         <circle cx="1508" cy="508" r="360" stroke="#72e5f4" strokeOpacity=".38" strokeWidth="1.5" />
         <circle
           cx="1508"
@@ -93,8 +99,18 @@ function HeroHud() {
           stroke="#ffe0a1"
           strokeWidth="2.5"
         />
+        <circle cx="1508" cy="508" r="342" stroke="var(--cyan)" strokeOpacity=".12" />
+        <g className="hud-orbiter">
+          <path
+            d="M1326.77 217.97 A342 342 0 0 1 1508 166"
+            stroke="url(#hero-orbit-trail)"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+          />
+          <circle cx="1508" cy="166" r="7" fill="var(--cyan)" fillOpacity=".1" />
+          <circle cx="1508" cy="166" r="2.8" fill="var(--accent-light)" fillOpacity=".9" />
+        </g>
       </svg>
-      <span className="hud-orbiter" />
     </div>
   );
 }
@@ -166,8 +182,8 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
           </h1>
           <p className="aurum-manifesto">Imagination, with intention.</p>
           <p className="continuum-intro">
-            I’m Doug Cashio. I build local AI experiments and original worlds after hours. Board a starship, try a
-            decision, or explore what I’m making.
+            I’m Doug Cashio. I build local AI experiments and original worlds after hours. Step aboard, make a decision,
+            and see what stays in your control.
           </p>
           <a href="#flight=tour" className="continuum-primary tour-launch">
             <span className="tour-launch-symbol" aria-hidden="true">
@@ -175,7 +191,7 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
             </span>
             <span className="tour-launch-copy">
               <strong>Play the 30 second tour</strong>
-              <small>Board. Cut the cloud. Take command.</small>
+              <small>Board. Cut the cloud. Keep your mission card.</small>
             </span>
             <span className="tour-launch-arrow" aria-hidden="true">
               ↗
@@ -233,6 +249,9 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
               {v.heroQuip || scene.caption}
             </p>
           </details>
+          <button type="button" className="scene-motion-control" data-motion-toggle="" aria-pressed="false">
+            Pause motion
+          </button>
         </div>
       </div>
       <div className="continuum-launchpad">

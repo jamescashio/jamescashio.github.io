@@ -2874,10 +2874,10 @@ html:has(.discovery-console[open]) {
   --chapter: #a6e9bd;
 }
 #v40-root .continuum-paths button:nth-child(2) {
-  --chapter: #54d6f0;
+  --chapter: var(--cyan);
 }
 #v40-root .continuum-paths button:nth-child(3) {
-  --chapter: #efbb60;
+  --chapter: var(--accent);
 }
 #v40-root .continuum-paths button {
   border-bottom-color: var(--chapter);
@@ -2892,10 +2892,10 @@ html:has(.discovery-console[open]) {
   color: #a6e9bd;
 }
 #v40-root .continuum-readings > div:nth-child(2) dd {
-  color: #54d6f0;
+  color: var(--cyan);
 }
 #v40-root .continuum-readings > div:nth-child(3) dd {
-  color: #efbb60;
+  color: var(--accent);
 }
 #v40-root .continuum-readings > div:nth-child(4) dd {
   color: #efbf6f;
@@ -2933,7 +2933,7 @@ html:has(.discovery-console[open]) {
 }
 .continuum-readings dd {
   margin: 0;
-  color: #8aebf4;
+  color: var(--cyan);
   font: 600 31px/1 var(--font-display);
   letter-spacing: -0.04em;
 }
@@ -2967,7 +2967,7 @@ html:has(.discovery-console[open]) {
   gap: 24px;
   padding: 18px clamp(24px, 4.6vw, 84px);
   border-block: 1px solid #52b3c135;
-  background: #080d11;
+  background: var(--surface);
   color: #a5b9c3;
   font: 12px/1.6 var(--font-mono);
 }
@@ -3042,7 +3042,7 @@ html:has(.continuum-root) {
   color: #76e2f3;
 }
 #v40-root .continuum-readings > div:nth-child(even) dd {
-  color: #f1ce8b;
+  color: var(--accent);
 }
 .discovery-console {
   border-color: #7ac7d669;
@@ -3050,7 +3050,7 @@ html:has(.continuum-root) {
 }
 .discovery-heading h2,
 .discovery-description h3 {
-  color: #eef3f3;
+  color: var(--text);
   font-family: var(--font-display);
   letter-spacing: -0.04em;
 }
@@ -3060,7 +3060,7 @@ html:has(.continuum-root) {
     radial-gradient(ellipse at 90% 80%, #be8d2627, transparent 65%), #05090c;
 }
 .discovery-beacon-0 {
-  --beacon: #72e5f4;
+  --beacon: var(--cyan);
 }
 .discovery-beacon-1 {
   --beacon: #f2c46e;
@@ -3165,12 +3165,12 @@ html:has(.continuum-root) {
   border: 1px solid #5fb8c441;
   border-left: 2px solid #e1af59;
   text-align: left;
-  color: #ecf3f5;
+  color: var(--text);
   cursor: pointer;
   clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
 }
 .continuum-paths > a:nth-child(2) {
-  border-left-color: #5fdbed;
+  border-left-color: var(--cyan);
 }
 .continuum-paths img {
   width: 64px;
@@ -3187,7 +3187,7 @@ html:has(.continuum-root) {
   letter-spacing: 0.05em;
 }
 .continuum-paths strong {
-  color: #ecf3f5;
+  color: var(--text);
   font: 600 17px/1.3 var(--font-body);
 }
 .continuum-path-arrow {
@@ -3269,7 +3269,7 @@ html:has(.continuum-root) {
   padding: 24px 20px;
   overflow: hidden;
   text-decoration: none;
-  background: #090d10;
+  background: var(--surface);
   transition: border-color 180ms ease;
 }
 .continuum-paths > a::before {
@@ -3302,7 +3302,7 @@ html:has(.continuum-root) {
 }
 .continuum-paths > a:is(:hover, :focus-visible) {
   border-color: #a6eff7;
-  background: #090d10;
+  background: var(--surface);
 }
 .continuum-paths > a:focus-visible {
   outline: 3px solid #fff0bf;
@@ -3448,24 +3448,7 @@ html:has(.continuum-root) {
 }
 @media (prefers-reduced-motion: no-preference) {
   html:not([data-motion="off"]) #v40-root .continuum-hero[data-folding] .hero-planet {
-    animation: hero-fold 1100ms cubic-bezier(0.2, 0.7, 0.2, 1);
-  }
-}
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) #v40-root .continuum-hero[data-folding] .continuum-stage::after {
-    content: "";
-    position: absolute;
-    inset: 50% auto auto 50%;
-    width: 24px;
-    height: 24px;
-    margin: -12px 0 0 -12px;
-    border-radius: 50%;
-    border: 1px solid #f3cf8acc;
-    box-shadow:
-      0 0 24px #64dcef80,
-      inset 0 0 18px #f3cf8a55;
-    pointer-events: none;
-    animation: hero-fold-ring 1100ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+    animation: hero-fold 1600ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 @media (max-width: 760px) {
@@ -3502,25 +3485,12 @@ html:has(.continuum-root) {
 @keyframes hero-fold {
   0% {
     transform: none;
-    filter: none;
   }
-  32% {
-    transform: scale(1.06) rotate(-1.4deg);
-    filter: hue-rotate(-14deg) brightness(1.3) contrast(1.06);
+  50% {
+    transform: scale(1.018) rotate(-0.35deg);
   }
   100% {
     transform: none;
-    filter: none;
-  }
-}
-@keyframes hero-fold-ring {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(42);
   }
 }
 @media (min-width: 1000px) {
@@ -3531,6 +3501,7 @@ html:has(.continuum-root) {
 @media (min-width: 1000px) {
   .continuum-hero[data-scene="orbit"] .hero-hud {
     position: absolute;
+    z-index: 2;
     left: 68%;
     top: 50%;
     display: block;
@@ -3556,215 +3527,28 @@ html:has(.continuum-root) {
 }
 @media (min-width: 1000px) {
   .hud-orbiter {
-    position: absolute;
-    left: 59.167%;
-    top: 12.593%;
-    width: 38.75%;
-    height: 68.889%;
-    border-radius: 50%;
-    filter: drop-shadow(0 0 5px #72e5f4aa);
+    transform-origin: 1508px 508px;
     will-change: transform;
-  }
-}
-@media (min-width: 1000px) {
-  .hud-orbiter::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background: conic-gradient(from 0deg, transparent 0 286deg, #72e5f400 286deg, #9ff0fbf2 358deg, transparent 360deg);
-    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
-    mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
-  }
-}
-@media (min-width: 1000px) {
-  .hud-orbiter::after {
-    content: "";
-    position: absolute;
-    top: -4px;
-    left: calc(50% - 4px);
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #ffe7b3;
-    box-shadow:
-      0 0 10px 2px #ffcf7acc,
-      0 0 26px 6px #72e5f455;
-  }
-}
-@keyframes hud-acquire {
-  from {
-    opacity: 0;
-    transform: scale(0.9) rotate(-14deg);
-  }
-  60% {
-    opacity: 1;
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-@keyframes hud-lock-on {
-  0%,
-  35% {
-    opacity: 0;
-    transform: scale(2.4);
-  }
-  70% {
-    opacity: 1;
-    transform: scale(0.92);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-@keyframes hud-scan {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 0, 0);
-  }
-  8% {
-    opacity: 1;
-  }
-  85% {
-    opacity: 0.85;
-  }
-  to {
-    opacity: 0;
-    transform: translate3d(0, var(--hud-scan-depth, 900px), 0);
-  }
-}
-@keyframes hud-flicker {
-  0%,
-  12% {
-    opacity: 0;
-  }
-  16% {
-    opacity: 1;
-  }
-  22% {
-    opacity: 0.25;
-  }
-  30%,
-  to {
-    opacity: 1;
-  }
-}
-@keyframes hud-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-@keyframes hud-title-glow {
-  from {
-    filter: drop-shadow(0 0 0 #72e5f400);
-  }
-  35% {
-    filter: drop-shadow(0 0 16px #72e5f48c);
-  }
-  to {
-    filter: drop-shadow(0 0 0 #72e5f400);
   }
 }
 @keyframes hud-laser {
   from {
-    opacity: 1;
+    opacity: 0.35;
     transform: scaleX(0);
   }
   55% {
-    opacity: 1;
+    opacity: 0.35;
     transform: scaleX(1);
   }
   to {
     opacity: 0;
     transform: scaleX(1);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) .hud-orbiter {
-    animation: hud-spin 46s linear infinite;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) #top[data-hud-idle] .hud-orbiter {
-    animation-play-state: paused;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) #top[data-hud-boot] .hud-track {
-    transform-origin: 78.5% 47%;
-    animation: hud-acquire 1500ms cubic-bezier(0.16, 0.84, 0.3, 1) both;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) #top[data-hud-boot] .hud-lock {
-    transform-box: fill-box;
-    transform-origin: center;
-    animation: hud-lock-on 1700ms cubic-bezier(0.2, 0.8, 0.3, 1) both;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) #top[data-hud-boot] .hud-orbiter {
-    animation:
-      hud-flicker 900ms steps(1, end) 500ms both,
-      hud-spin 46s linear infinite;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) #top[data-hud-boot]::after {
-    content: "";
-    position: absolute;
-    z-index: 4;
-    left: 0;
-    right: 0;
-    top: 0;
-    height: 2px;
-    pointer-events: none;
-    background: linear-gradient(90deg, transparent, #72e5f4 18%, #ffe0a1 50%, #72e5f4 82%, transparent);
-    box-shadow:
-      0 0 18px 2px #72e5f466,
-      0 -60px 90px #72e5f40d;
-    animation: hud-scan 1300ms cubic-bezier(0.45, 0.05, 0.25, 1) both;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) #top[data-hud-boot] .continuum-arrival > span,
-  html:not([data-motion="off"]) #top[data-hud-boot] .continuum-reticle {
-    animation: hud-flicker 800ms steps(1, end) both;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) #top[data-hud-boot] .continuum-arrival > span:nth-child(2) {
-    animation-delay: 120ms;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) #top[data-hud-boot] .continuum-arrival > span:nth-child(3) {
-    animation-delay: 240ms;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) #top[data-hud-boot] .continuum-reticle {
-    animation-delay: 700ms;
   }
 }
 
 @media (prefers-reduced-motion: no-preference) {
   html:not([data-motion="off"]) #v40-root h2[data-sweep] {
     position: relative;
-    animation: hud-title-glow 1500ms ease-out 150ms both;
   }
 }
 
@@ -3775,10 +3559,16 @@ html:has(.continuum-root) {
     left: 0;
     right: 0;
     bottom: -10px;
-    height: 2px;
+    height: 1px;
     pointer-events: none;
-    background: linear-gradient(90deg, #72e5f400, #72e5f4 18%, #ffe0a1 62%, #ffe0a100);
-    box-shadow: 0 0 14px 1px #72e5f4aa;
+    background: linear-gradient(
+      90deg,
+      rgb(var(--signal-rgb) / 0),
+      var(--cyan) 18%,
+      var(--accent-light) 62%,
+      rgb(var(--gold-rgb) / 0)
+    );
+    opacity: 0.4;
     transform-origin: left center;
     animation: hud-laser 1500ms cubic-bezier(0.2, 0.7, 0.3, 1) 150ms both;
   }
@@ -3796,7 +3586,7 @@ html:has(.continuum-root) {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(105deg, transparent 32%, #ffffffa6 48%, #fff4d900 64%);
+    background: linear-gradient(105deg, transparent 32%, #fff7df22 48%, #fff4d900 64%);
     transform: translateX(-130%);
   }
 }
@@ -3804,7 +3594,7 @@ html:has(.continuum-root) {
 @media (prefers-reduced-motion: no-preference) {
   html:not([data-motion="off"]) .continuum-primary:is(:hover, :focus-visible)::after {
     transform: translateX(130%);
-    transition: transform 750ms cubic-bezier(0.2, 0.7, 0.3, 1);
+    transition: transform 900ms cubic-bezier(0.2, 0.7, 0.3, 1);
   }
 }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
@@ -3814,7 +3604,7 @@ html:has(.continuum-root) {
 }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   html:not([data-motion="off"]) #v40-root :is(.continuum-paths a, .showcase-project)[data-holo="on"] {
-    transition-duration: 120ms;
+    transition-duration: 240ms;
   }
 }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
@@ -3827,12 +3617,17 @@ html:has(.continuum-root) {
     inset: 0;
     pointer-events: none;
     background:
-      radial-gradient(460px circle at var(--holo-x, 50%) var(--holo-y, 50%), #ffe0a142, #72e5f41c 38%, transparent 62%),
+      radial-gradient(
+        460px circle at var(--holo-x, 50%) var(--holo-y, 50%),
+        rgb(var(--gold-rgb) / 0.12),
+        rgb(var(--signal-rgb) / 0.05) 38%,
+        transparent 62%
+      ),
       linear-gradient(
         115deg,
         transparent 28%,
-        #72e5f40f calc(var(--holo-x, 50%) - 12%),
-        #ffe0a11a var(--holo-x, 50%),
+        rgb(var(--signal-rgb) / 0.059) calc(var(--holo-x, 50%) - 12%),
+        rgb(var(--gold-rgb) / 0.102) var(--holo-x, 50%),
         #b28cff0d calc(var(--holo-x, 50%) + 12%),
         transparent 74%
       ),
@@ -3857,7 +3652,6 @@ html:has(.continuum-root) {
   --dur-quick: 180ms;
   --dur-scene: 640ms;
   --dur-cinematic: 1500ms;
-  --dur-orbit: 40000ms;
 }
 .living-hero-canvas {
   position: absolute;

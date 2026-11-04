@@ -1,3 +1,33 @@
+# Orbit correction · Approved release · 11-04-2026
+
+Doug explicitly requests, "Please make the fix live," after reviewing the corrected orbit preview. Publish the reviewed preview through the repository's checked pull request and Pages workflow, including the existing palette, copy and motion refinements. The approved implementation is 134b3d3; the current live rollback revision is 4f2ee0ceaa870c295d355eab99e7a2e1eb4c4e07. Verify the deployed assets and actual 64 second orbit, pause/resume and phone controls. This approval supersedes the preview-only delivery notes below; it does not authorize unrelated changes.
+
+# Orbit continuity correction · Review preview · 11-04-2026
+
+Doug asks again to fix the orbit and identifies the ring in a screenshot. Keep the palette preview, original artwork and composition. Use one SVG instrument overlay with a small gold light and a short cyan trail inside the stationary ring. The existing bounded hero clock owns its phase in both GPU and fallback rendering, including exact pause/resume, offscreen and dialog suspension. Remove the duplicate shader instruments and independent CSS rotation so enhancement and motion controls cannot swap or reset the orbit. Keep the picture aligned with the overlay through the shared camera. The build minified 64000ms to 64s, which the former shader setup incorrectly divided by 1000 again. Keep the 64 second duration numeric in the shared timing contract and verify actual frame movement in the built page. Show the moving preview directly. Publication remains pending review.
+
+# Palette and craft refinement · Review preview · 11-03-2026
+
+Doug asks to improve the colors while retaining the identity, then expands the request to graphics, animations and content. This is a new isolated preview based on the smooth-orbit revision f94bfb2. The earlier preview at port 4423 and public site remain available for comparison. No publication is authorized by this pass.
+
+Creative thesis: an observatory in warm brass and cool starlight. Keep the original artwork and gold/cyan identity, using champagne gold for the main invitation, a softer luminous cyan for interaction, warm white for reading, and layered ink surfaces for depth. Decorative light supports the hierarchy. Never dim useful text to create atmosphere or change semantic status colors.
+
+Refine the existing component styles around shared palette tokens instead of adding another theme override. Tighten the hero and workshop copy around what visitors can try or take away; preserve the headline, personality, destinations, factual observations and their limits. Give artwork frames fine brass details. Reduce card tilt and entrance distance, keep labels readable rather than scrambling their letters, and replace bright heading and button sweeps with restrained responses. Retain the smooth 64 second inner orbit and all Pause and reduced-motion behavior. No new runtime dependency or image download.
+
+Review desktop and phone screenshots against the preceding palette, including the hero, workshop and Roadster. Verify contrast, keyboard and motion controls, short desktop composition, narrow phone layout, tour/card behavior and existing budgets. The comparison is a review artifact; it does not add palette controls to the public page.
+
+## Previous preview
+
+# Smooth orbit and motion comfort · Review preview · 11-03-2026
+
+Doug reports that the flashing ring is irritating and asks for smooth, cool movement within it, along with a new nine-category review. Preserve the artwork, composition, typography, colors, tour, cards and Roadster. Work from production 4f2ee0c. This refinement is prepared as a local preview for review under the existing preview-first preference.
+
+Creative thesis: a quietly precise orbital instrument inside the original cinematic world. Replace the startup flicker and scan with immediately readable, steady instruments. A small gold escort and soft cyan trail follow one 64 second orbit inside the ring. Keep brightness steady in both the GPU artwork and its CSS fallback; remove dust pulsing. Fold space becomes a small, smooth spatial movement without a brightness burst or expanding flash. Keep the Pause motion label visible in the header and beside the artwork, including phones. Offscreen, hidden, reduced motion and explicit pause must stop decorative motion.
+
+Verify desktop and phone layouts, steady ring output, optional GPU and fallback behavior, all three scenes, Pause persistence, reduced motion, camera controls, existing tour/cards and representative routes. No new dependencies or image downloads. Retain existing release and layout limits, with production 4f2ee0c as the unchanged reference.
+
+## Previous approved release
+
 # Cinematic flight, mission keepsake and Roadster · Approved release · 2026-11-03
 
 Doug reviewed the local preview at ed45299 and approved publication with “Make it so approved”. Publish the reviewed implementation from codex/v42-cinematic-keepsake-preview, based on main 7838b78, through the normal pull request, validation and deployment process. This approval supersedes the earlier preview-only restriction. Preserve the approved appearance and verify the live result; 7838b78 remains the rollback revision.

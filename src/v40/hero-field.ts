@@ -1,5 +1,5 @@
 import type { PageHost } from "./page-model.ts";
-import { frameDeltaSeconds, shouldRenderFrame } from "../lib/animation-timing.ts";
+import { frameDeltaSeconds, motionDurationMs, shouldRenderFrame } from "../lib/animation-timing.ts";
 
 import { drawContinuumField } from "./continuum-field.ts";
 import { drawOrbitalField } from "./orbital-field.ts";
@@ -47,11 +47,17 @@ export function startStars(this: PageHost, c: HTMLCanvasElement) {
   let t = 0;
   let closeMix = 0;
   const camera = document.querySelector<HTMLElement>(".hero-flight-camera");
+  const orbiter = document.querySelector<SVGGElement>(".hud-orbiter");
+  // Keep timing numeric: the CSS minifier can turn 64000ms into 64s.
+  const orbitSeconds = motionDurationMs("hero-orbit") / 1000;
   const orbitPointer = { x: 0, y: 0 };
   const draw = (delta = 0) => {
     if (!c.isConnected) return;
     const reduce = this.reduce;
     t += delta;
+    // One clock and one overlay across GPU and fallback rendering. A pause keeps
+    // the exact phase instead of removing a CSS animation and snapping to its start.
+    if (orbiter) orbiter.style.transform = `rotate(${(((t / orbitSeconds) * 360) % 360) - 90}deg)`;
     const warp = !reduce && Date.now() < (this.warpUntil || 0);
     const targetPointer = reduce ? { x: 0, y: 0 } : this.orbitPointer || { x: 0, y: 0 };
     const follow = reduce ? 1 : Math.min(1, delta * 4);

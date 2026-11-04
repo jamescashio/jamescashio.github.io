@@ -34,7 +34,7 @@ export function renderVals(this: PageHost) {
     closeDiscovery: () => this.setState({ discovery: null }),
     foldCount: s.foldCount,
     foldScene: () => {
-      this.warpUntil = this.reduce ? 0 : Date.now() + 1400;
+      this.warpUntil = 0;
       const hero = document.getElementById("top");
       if (hero && !this.reduce) {
         // Restart the finite fold response even when the visitor folds twice in a row.
@@ -42,7 +42,7 @@ export function renderVals(this: PageHost) {
         void hero.offsetWidth;
         hero.setAttribute("data-folding", "");
         clearTimeout(this.foldT);
-        this.foldT = setTimeout(() => hero.removeAttribute("data-folding"), 1200);
+        this.foldT = setTimeout(() => hero.removeAttribute("data-folding"), 1700);
       }
       this.setState((state) => ({
         sceneTurn: state.sceneTurn + Math.PI / 2,

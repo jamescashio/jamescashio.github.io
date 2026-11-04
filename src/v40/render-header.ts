@@ -154,7 +154,7 @@ export function renderHeader(v: GeneratedView) {
             title: "Pause motion",
             "aria-pressed": "false",
           },
-          h(React.Fragment, { key: 96 }, "Ⅱ"),
+          h(React.Fragment, { key: 96 }, "Pause motion"),
         ),
         " ",
         h(

@@ -30,7 +30,8 @@ export async function createLivingHero(
     app.state.scene === "orbit" &&
     !conservesData();
   // Keep the original image painted beneath the opaque scene for instant fallback.
-  const originals = [camera.querySelector(".hero-hud"), document.getElementById("hero-stars")];
+  // Instruments stay in the same SVG before, during and after GPU enhancement.
+  const originals = [document.getElementById("hero-stars")];
   const observer = new ResizeObserver(() => {
     if (!lost) post({ type: "resize", size: size() });
   });
@@ -72,7 +73,6 @@ export async function createLivingHero(
         size: size(),
         artwork: poster.currentSrc || poster.src,
         depth: new URL("/v42/observatory-depth.webp", location.href).href,
-        orbit: (parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--dur-orbit")) || 40000) / 1000,
       },
       [offscreen],
     );
