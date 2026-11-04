@@ -42,7 +42,7 @@ export function RoadsterShowcase() {
         <span className="roadster-orbit" aria-hidden="true" />
       </div>
       <div className="roadster-caption">
-        <p>Explore the independent automotive CAD model in its cinematic studio, and compose your own photograph.</p>
+        <p>Explore the independent 3D design study. Find your favorite angle and compose your own photograph.</p>
         <span>Interactive 3D · Opens a new tab</span>
       </div>
     </section>

@@ -1,28 +1,9 @@
 import type { PageHost } from "./page-model.ts";
 
 export function scramble(this: PageHost, el: Element) {
-  if (!(el instanceof HTMLElement) || this.reduce) return;
-  if (el.dataset.scrambled) return;
+  if (!(el instanceof HTMLElement)) return;
+  // Labels stay readable; the artwork carries the movement.
   el.dataset.scrambled = "1";
-  const final = el.textContent ?? "",
-    chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789▸◆/·";
-  let f = 0;
-  const step = () => {
-    if (this.reduce || document.hidden) {
-      el.textContent = final;
-      return;
-    }
-    f++;
-    const reveal = Math.floor(f * 1.5);
-    let out = "";
-    for (let i = 0; i < final.length; i++) {
-      const ch = final[i];
-      out += i < reveal || ch === " " ? ch : chars[Math.floor(Math.random() * chars.length)];
-    }
-    el.textContent = reveal >= final.length ? final : out;
-    if (reveal < final.length) setTimeout(step, 30);
-  };
-  step();
 }
 
 export function setupReveal(this: PageHost) {
@@ -52,8 +33,8 @@ export function setupReveal(this: PageHost) {
     el.dataset.rv = "1";
     if (visible) return;
     el.style.opacity = "0";
-    el.style.transform = "translateY(40px)";
-    el.style.transition = `opacity 1s cubic-bezier(.23,1,.32,1) ${Math.min(sibling, 6) * 0.08}s, transform 1s cubic-bezier(.23,1,.32,1) ${Math.min(sibling, 6) * 0.08}s`;
+    el.style.transform = "translateY(20px)";
+    el.style.transition = `opacity 640ms cubic-bezier(.23,1,.32,1) ${Math.min(sibling, 6) * 0.05}s, transform 640ms cubic-bezier(.23,1,.32,1) ${Math.min(sibling, 6) * 0.05}s`;
     this.rio.observe(el);
   });
 }

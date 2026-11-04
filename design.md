@@ -1,3 +1,15 @@
+# Palette and craft refinement · Review preview · 11-03-2026
+
+Doug asks to improve the colors while retaining the identity, then expands the request to graphics, animations and content. This is a new isolated preview based on the smooth-orbit revision f94bfb2. The earlier preview at port 4423 and public site remain available for comparison. No publication is authorized by this pass.
+
+Creative thesis: an observatory in warm brass and cool starlight. Keep the original artwork and gold/cyan identity, using champagne gold for the main invitation, a softer luminous cyan for interaction, warm white for reading, and layered ink surfaces for depth. Decorative light supports the hierarchy. Never dim useful text to create atmosphere or change semantic status colors.
+
+Refine the existing component styles around shared palette tokens instead of adding another theme override. Tighten the hero and workshop copy around what visitors can try or take away; preserve the headline, personality, destinations, factual observations and their limits. Give artwork frames fine brass details. Reduce card tilt and entrance distance, keep labels readable rather than scrambling their letters, and replace bright heading and button sweeps with restrained responses. Retain the smooth 64 second inner orbit and all Pause and reduced-motion behavior. No new runtime dependency or image download.
+
+Review desktop and phone screenshots against the preceding palette, including the hero, workshop and Roadster. Verify contrast, keyboard and motion controls, short desktop composition, narrow phone layout, tour/card behavior and existing budgets. The comparison is a review artifact; it does not add palette controls to the public page.
+
+## Previous preview
+
 # Smooth orbit and motion comfort · Review preview · 11-03-2026
 
 Doug reports that the flashing ring is irritating and asks for smooth, cool movement within it, along with a new nine-category review. Preserve the artwork, composition, typography, colors, tour, cards and Roadster. Work from production 4f2ee0c. This refinement is prepared as a local preview for review under the existing preview-first preference.

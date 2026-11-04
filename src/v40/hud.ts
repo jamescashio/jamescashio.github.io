@@ -52,8 +52,8 @@ function holographicCards() {
     card.style.setProperty("--holo-x", `${(nx * 100).toFixed(1)}%`);
     card.style.setProperty("--holo-y", `${(ny * 100).toFixed(1)}%`);
     if (card.matches(TILT)) {
-      card.style.setProperty("--holo-rx", `${((nx - 0.5) * 7).toFixed(2)}deg`);
-      card.style.setProperty("--holo-ry", `${((0.5 - ny) * 6).toFixed(2)}deg`);
+      card.style.setProperty("--holo-rx", `${((nx - 0.5) * 2.5).toFixed(2)}deg`);
+      card.style.setProperty("--holo-ry", `${((0.5 - ny) * 2).toFixed(2)}deg`);
     }
     card.setAttribute("data-holo", "on");
   };

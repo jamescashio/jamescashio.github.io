@@ -28,7 +28,7 @@ export function WorkshopSection({ v }: GeneratedProps) {
       h(
         "p",
         null,
-        "Two builds from my workbench after hours. I’m a Principal Solutions Consultant; here you can inspect the choices and limits behind the work.",
+        "I’m a Principal Solutions Consultant by day. These are two personal projects: a backup check you can inspect and a decision brief you can take away.",
       ),
       h("a", { className: "visitor-link workshop-intro-link", href: "#operator" }, "Meet Doug →"),
     ),
@@ -75,7 +75,7 @@ export function WorkshopSection({ v }: GeneratedProps) {
         h(
           "p",
           null,
-          "Create a brief with sources, dates, visible unknowns and a human decision. Keep it here or take a copy.",
+          "Turn a question into a clear decision. Record your sources, name the unknowns, and download your brief.",
         ),
         h(
           "figure",

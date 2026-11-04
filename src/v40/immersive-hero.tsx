@@ -166,8 +166,8 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
           </h1>
           <p className="aurum-manifesto">Imagination, with intention.</p>
           <p className="continuum-intro">
-            I’m Doug Cashio. I build local AI experiments and original worlds after hours. Board a starship, try a
-            decision, or explore what I’m making.
+            I’m Doug Cashio. I build local AI experiments and original worlds after hours. Step aboard, make a decision,
+            and see what stays in your control.
           </p>
           <a href="#flight=tour" className="continuum-primary tour-launch">
             <span className="tour-launch-symbol" aria-hidden="true">
@@ -175,7 +175,7 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
             </span>
             <span className="tour-launch-copy">
               <strong>Play the 30 second tour</strong>
-              <small>Board. Cut the cloud. Take command.</small>
+              <small>Board. Cut the cloud. Keep your mission card.</small>
             </span>
             <span className="tour-launch-arrow" aria-hidden="true">
               ↗

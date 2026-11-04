@@ -625,7 +625,7 @@ html[data-motion="off"] #v40-root .showcase-project {
 #v40-root .workshop-heading h2 {
   font-size: clamp(35px, 4.1vw, 65px);
   line-height: 1.12;
-  color: #edf4f6;
+  color: var(--text);
 }
 #v40-root .workshop-highlight h3 {
   color: #b5eef4;
@@ -716,21 +716,21 @@ html[data-motion="off"] #v40-root .showcase-project {
   padding-top: 24px;
 }
 #v40-root .workshop-highlight {
-  background: linear-gradient(135deg, #152126, #0a1014 70%);
-  border-color: #72cbd244;
+  background: linear-gradient(135deg, rgb(var(--signal-rgb) / 0.07), transparent 60%), var(--surface);
+  border-color: rgb(var(--signal-rgb) / 0.25);
   box-shadow: inset 0 1px #d3fbff10;
   padding: 28px;
 }
 #v40-root .workshop-tool {
-  background: linear-gradient(135deg, #272319, #10100e 70%);
-  border-color: #e5ba684d;
+  background: linear-gradient(135deg, rgb(var(--gold-rgb) / 0.09), transparent 60%), var(--surface);
+  border-color: rgb(var(--gold-rgb) / 0.25);
 }
 #v40-root .workshop-highlight::before {
   width: 82px;
-  background: #85e1db;
+  background: var(--cyan);
 }
 #v40-root .workshop-tool::before {
-  background: #f3cf8b;
+  background: var(--accent);
 }
 #v40-root .workshop-highlight h3 {
   font-size: clamp(24px, 2.2vw, 32px);
@@ -740,20 +740,20 @@ html[data-motion="off"] #v40-root .showcase-project {
   width: 100%;
   min-width: 0;
   margin-top: 24px;
-  --build-light: #9bece2;
+  --build-light: var(--cyan);
   --build-dim: #71a8af;
-  --build-glow: #8ce7da40;
+  --build-glow: rgb(var(--signal-rgb) / 0.2);
 }
 .build-story-brief {
-  --build-light: #f6ce88;
+  --build-light: var(--accent-light);
   --build-dim: #b59b6b;
-  --build-glow: #f6ce8840;
+  --build-glow: rgb(var(--gold-rgb) / 0.2);
 }
 .build-illustration {
   position: relative;
   overflow: hidden;
   border-block: 1px solid #c5ecf51b;
-  background: radial-gradient(ellipse at 50% 80%, #b2deed14, transparent 65%), #050a0d;
+  background: radial-gradient(ellipse at 50% 80%, rgb(var(--signal-rgb) / 0.06), transparent 65%), var(--void);
   padding: 15px 0 12px;
 }
 .build-illustration-label,
@@ -887,7 +887,7 @@ html[data-motion="off"] #v40-root .showcase-project {
   padding: 4px 0 16px;
 }
 #v40-root .build-premise {
-  color: #edf4f6;
+  color: var(--text);
   font-size: 17px;
   line-height: 1.6;
   margin: 0 0 20px;
@@ -929,7 +929,7 @@ html[data-motion="off"] #v40-root .showcase-project {
 }
 #v40-root .build-story-page h4 {
   margin: 0 0 12px;
-  color: #edf4f6;
+  color: var(--text);
   font: 600 20px/1.4 var(--font-body);
 }
 #v40-root .build-story-page p,
@@ -1089,12 +1089,17 @@ html[data-motion="off"] #v40-root .showcase-project {
     inset: 0;
     pointer-events: none;
     background:
-      radial-gradient(460px circle at var(--holo-x, 50%) var(--holo-y, 50%), #ffe0a142, #72e5f41c 38%, transparent 62%),
+      radial-gradient(
+        460px circle at var(--holo-x, 50%) var(--holo-y, 50%),
+        rgb(var(--gold-rgb) / 0.259),
+        rgb(var(--signal-rgb) / 0.11) 38%,
+        transparent 62%
+      ),
       linear-gradient(
         115deg,
         transparent 28%,
-        #72e5f40f calc(var(--holo-x, 50%) - 12%),
-        #ffe0a11a var(--holo-x, 50%),
+        rgb(var(--signal-rgb) / 0.059) calc(var(--holo-x, 50%) - 12%),
+        rgb(var(--gold-rgb) / 0.102) var(--holo-x, 50%),
         #b28cff0d calc(var(--holo-x, 50%) + 12%),
         transparent 74%
       ),

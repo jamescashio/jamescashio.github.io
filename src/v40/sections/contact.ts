@@ -96,7 +96,7 @@ export function ContactSection({ v }: GeneratedProps) {
           h(
             React.Fragment,
             { key: 1863 },
-            "Bring me your trickiest question about local AI, private data or keeping a human in the loop. I am open to speaking, mentoring and comparing notes. The answer is probably not 42.",
+            "Have a question about local AI, private data or human judgment? Tell me what you’re trying to do. I’m open to speaking, mentoring and comparing notes. The answer is probably not 42.",
           ),
         ),
         " ",
