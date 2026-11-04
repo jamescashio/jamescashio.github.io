@@ -1,4 +1,4 @@
-import { missionRecord } from "./mission-card";
+import { missionRecord, normalizeCallsign } from "./mission-card";
 import type { WorldInput } from "./sovereign-model";
 
 export type MissionFormat = "portrait" | "landscape";
@@ -24,8 +24,10 @@ export async function createCinematicMissionCard(
   input: WorldInput,
   format: MissionFormat,
   baseUrl: string,
+  callsign = "",
 ) {
   const record = missionRecord(input, baseUrl);
+  const label = normalizeCallsign(callsign);
   const [width, height] = MISSION_SIZES[format];
   const portrait = format === "portrait";
   const card = document.createElement("canvas");
@@ -51,9 +53,14 @@ export async function createCinematicMissionCard(
     ctx.ellipse(width * 0.5, height * 0.48, width * (0.28 + i * 0.1), height * 0.24, -0.25, 0, Math.PI * 2);
     ctx.stroke();
   }
-  ctx.fillStyle = "#e9b65c";
+  ctx.fillStyle = "#ddbd87";
   ctx.font = "600 38px Orbitron, sans-serif";
   ctx.fillText("cAshIo", 64, 100);
+  // Give the capital I its wordmark serifs so the signature cannot read as cAshlo.
+  const glyph = ctx.measureText("I");
+  const centre = 64 + ctx.measureText("cAsh").width + glyph.width / 2;
+  ctx.fillRect(centre - 8.7, 100 - glyph.actualBoundingBoxAscent, 17.4, 3);
+  ctx.fillRect(centre - 8.7, 97, 17.4, 3);
   ctx.fillStyle = "#c4d2d6";
   ctx.font = '18px "JetBrains Mono", monospace';
   ctx.textAlign = "right";
@@ -66,8 +73,12 @@ export async function createCinematicMissionCard(
   ctx.stroke();
 
   const titleX = portrait ? 64 : 930;
-  const titleY = portrait ? 210 : 230;
+  const titleY = 230;
   const titleWidth = portrait ? 950 : 590;
+  ctx.fillStyle = "#91d8df";
+  ctx.font = '18px "JetBrains Mono", monospace';
+  const identity = label ? `CALLSIGN / ${label}` : "EXPLORER / FIRST FLIGHT";
+  ctx.fillText(identity, titleX, portrait ? 172 : 174, titleWidth);
   ctx.fillStyle = "#f1f4ef";
   ctx.font = `600 ${portrait ? 57 : 51}px Orbitron, sans-serif`;
   const titleBottom = wrap(ctx, record.title, titleX, titleY, titleWidth, portrait ? 76 : 68);
@@ -75,7 +86,7 @@ export async function createCinematicMissionCard(
   ctx.font = '18px "JetBrains Mono", monospace';
   ctx.fillText("A HUMAN IN COMMAND.", titleX, titleBottom + 14);
 
-  const area = portrait ? { x: 38, y: 410, w: 1004, h: 580 } : { x: 36, y: 160, w: 850, h: 570 };
+  const area = portrait ? { x: 38, y: 416, w: 1004, h: 470 } : { x: 36, y: 160, w: 850, h: 570 };
   const scale = Math.min(area.w / still.width, area.h / still.height);
   ctx.globalCompositeOperation = "lighten";
   ctx.drawImage(
@@ -102,7 +113,7 @@ export async function createCinematicMissionCard(
   }
   ctx.fillStyle = "#bccbd1";
   ctx.font = '23px "Exo 2", sans-serif';
-  if (!portrait) wrap(ctx, record.outcome.summary, titleX, titleBottom + 76, titleWidth, 34);
+  wrap(ctx, record.decision, titleX, portrait ? 936 : titleBottom + 76, titleWidth, 34);
   const settingsY = portrait ? 1010 : 580;
   ctx.font = '17px "JetBrains Mono", monospace';
   [record.architecture + " / " + record.connection, record.sensitivity, record.permission].forEach((label, i) => {

@@ -1,3 +1,19 @@
+# First contact, Roadster inspection and a personal record · Unpublished preview · 11-04-2026
+
+Doug requests all three next steps and explicitly asks to review a preview before publication. This isolated branch starts from live revision 968efc8. Earlier release approvals below do not cover this work. No push, pull request, merge or deployment belongs to this pass.
+
+Creative thesis: the same observatory becomes a journey you can enter, a real object you can inspect, and a decision you can keep. Preserve the planetary artwork, celestial signature, champagne gold, cyan, ink surfaces, typography, dry humor, existing routes and factual evidence. The corrected 64 second orbit remains untouched.
+
+The explicit tour opens with a short, skippable passage through the original ring into the existing ship. Keep lighting steady; no flash, pulse, brightness filter, forced audio or repeating intro. Start the tour clock after the ship is ready and the entrance finishes. Close, Pause, reduced motion, hidden tabs and keyboard navigation remain authoritative.
+
+Roadster gains an intentional on-page inspection with three composed viewpoints: body, wheels and thrusters. Reuse the original independent CAD reconstruction with documented asset provenance, compressed for delivery. Load the model and viewer only on request; preserve the poster, clear loading/failure recovery, and full Studio link. Use deliberate camera moves and drag/keyboard controls, no idle rotation or added runtime dependency. Explain that this is a design study rather than a validated vehicle.
+
+The finale offers an optional callsign held only in the current card session, never in a scenario URL or network request. The same normalized callsign and truthful decision sentence appear in the preview and both PNG formats. Keep Save as the primary action, native Share when supported, and Copy scenario as the dependable fallback. Prevent stale downloads during personalization and retain every onward destination.
+
+Review the actual entrance, Roadster views and exported cards on desktop, 390 and 320 pixel layouts. Check keyboard, cancellation, reduced motion, failed loading, native sharing fallback, unchanged orbit behavior, accessibility and existing performance/layout budgets. Deliver a visibly unpublished local preview with screenshots and validation evidence. Production remains unchanged pending review.
+
+## Previous approved release
+
 # Orbit correction · Approved release · 11-04-2026
 
 Doug explicitly requests, "Please make the fix live," after reviewing the corrected orbit preview. Publish the reviewed preview through the repository's checked pull request and Pages workflow, including the existing palette, copy and motion refinements. The approved implementation is 134b3d3; the current live rollback revision is 4f2ee0ceaa870c295d355eab99e7a2e1eb4c4e07. Verify the deployed assets and actual 64 second orbit, pause/resume and phone controls. This approval supersedes the preview-only delivery notes below; it does not authorize unrelated changes.

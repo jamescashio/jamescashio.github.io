@@ -8,9 +8,17 @@ import {
   parseMissionHash,
 } from "../src/odyssey/flight-plan.ts";
 import { computeWorldOutcome } from "../src/odyssey/sovereign-model.ts";
-import { missionRecord } from "../src/odyssey/mission-card.ts";
+import { missionRecord, normalizeCallsign } from "../src/odyssey/mission-card.ts";
 import { flightRecap } from "../src/odyssey/flight-recap-model.ts";
 import { flightChapterInput, chapterRecap } from "../src/odyssey/flight-state.ts";
+
+test("optional callsigns preserve readable Unicode and remove invisible controls", () => {
+  assert.equal(normalizeCallsign("  Doug\n  Cashio\u202e  "), "Doug Cashio");
+  assert.equal(normalizeCallsign("Ｋａｒｉ"), "Kari");
+  assert.equal(normalizeCallsign("Clara 🚀"), "Clara 🚀");
+  assert.equal(Array.from(normalizeCallsign("🚀".repeat(30))).length, 24);
+  assert.equal(normalizeCallsign("\u0000\u200b\u2066"), "");
+});
 
 test("a flight recap compares the same workload before and after cloud loss", () => {
   const before = { architecture: "hybrid", sensitivity: "mixed", connected: true, allowPrivateEgress: false };

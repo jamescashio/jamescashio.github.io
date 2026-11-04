@@ -3421,65 +3421,8 @@ html:has(.continuum-root) {
   }
 }
 @media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) #v40-root .continuum-hero[data-boarding] .hero-planet {
-    transform-origin: 74% 44%;
-    animation: hero-board-push 640ms cubic-bezier(0.55, 0, 0.8, 0.25) forwards;
-  }
-}
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"])
-    #v40-root
-    .continuum-hero[data-boarding]
-    :is(
-      .continuum-copy,
-      .continuum-scene-deck,
-      .continuum-launchpad,
-      .continuum-observation,
-      .continuum-next,
-      .continuum-arrival
-    ) {
-    animation: hero-board-clear 360ms ease-in forwards;
-  }
-}
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="off"]) #v40-root .continuum-hero[data-boarding] .continuum-visual {
-    animation: hero-board-signature 640ms cubic-bezier(0.55, 0, 0.8, 0.25) forwards;
-  }
-}
-@media (prefers-reduced-motion: no-preference) {
   html:not([data-motion="off"]) #v40-root .continuum-hero[data-folding] .hero-planet {
     animation: hero-fold 1600ms cubic-bezier(0.4, 0, 0.2, 1);
-  }
-}
-@media (max-width: 760px) {
-  #v40-root .continuum-hero[data-boarding] .hero-planet {
-    transform-origin: 58% 30%;
-  }
-}
-@keyframes hero-board-push {
-  0% {
-    transform: scale(1);
-    filter: none;
-  }
-  60% {
-    filter: brightness(1.2) saturate(1.15);
-  }
-  100% {
-    transform: scale(2.1);
-    filter: brightness(1.7) saturate(1.2) blur(3px);
-    opacity: 0.6;
-  }
-}
-@keyframes hero-board-clear {
-  to {
-    opacity: 0;
-    transform: translateY(-12px);
-  }
-}
-@keyframes hero-board-signature {
-  to {
-    opacity: 0;
-    transform: scale(1.35);
   }
 }
 @keyframes hero-fold {

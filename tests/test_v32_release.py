@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import gzip
 import importlib.util
 import math
 import re
@@ -27,6 +28,32 @@ def read_stage() -> str:
 
 def read(relative: str) -> str:
     return (ROOT / relative).read_text(encoding="utf-8")
+
+
+class RoadsterDeliveryValidationTests(unittest.TestCase):
+    def test_the_model_exception_does_not_allow_other_fetch_destinations(self) -> None:
+        accepted = ["/sfx/ready.webm", "/models/roadster-inspection.glb.gz"]
+        rejected = ["https://example.com/model.glb", "/models/other.glb.gz", "/models/roadster-inspection.glb.gz?name=Doug", "//example.com/sfx/ready.webm"]
+        for target in accepted + rejected:
+            with self.subTest(target=target):
+                failures: list[str] = []
+                release_consistency.check_media_fetch_targets(f"fetch('{target}')", failures)
+                self.assertEqual(bool(failures), target in rejected)
+        failures = []
+        release_consistency.check_media_fetch_targets("fetch(hiddenDestination)", failures)
+        self.assertTrue(failures)
+
+    def test_model_delivery_rejects_missing_corrupt_changed_and_oversized_data(self) -> None:
+        original = (ROOT / "public/models/roadster-inspection.glb.gz").read_bytes()
+        failures: list[str] = []
+        release_consistency.check_roadster_asset(original, failures, "test")
+        self.assertEqual(failures, [])
+        damaged = bytearray(original)
+        damaged[32] ^= 255
+        for invalid in (b"", b"not gzip", original[:100], bytes(damaged), gzip.compress(b"different geometry"), b"x" * 7_000_001):
+            failures = []
+            release_consistency.check_roadster_asset(invalid, failures, "test")
+            self.assertTrue(failures)
 
 
 class V37PromotionValidationTests(unittest.TestCase):
