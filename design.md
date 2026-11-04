@@ -1,3 +1,7 @@
+# Orbit correction · Approved release · 11-04-2026
+
+Doug explicitly requests, "Please make the fix live," after reviewing the corrected orbit preview. Publish the reviewed preview through the repository's checked pull request and Pages workflow, including the existing palette, copy and motion refinements. The approved implementation is 134b3d3; the current live rollback revision is 4f2ee0ceaa870c295d355eab99e7a2e1eb4c4e07. Verify the deployed assets and actual 64 second orbit, pause/resume and phone controls. This approval supersedes the preview-only delivery notes below; it does not authorize unrelated changes.
+
 # Orbit continuity correction · Review preview · 11-04-2026
 
 Doug asks again to fix the orbit and identifies the ring in a screenshot. Keep the palette preview, original artwork and composition. Use one SVG instrument overlay with a small gold light and a short cyan trail inside the stationary ring. The existing bounded hero clock owns its phase in both GPU and fallback rendering, including exact pause/resume, offscreen and dialog suspension. Remove the duplicate shader instruments and independent CSS rotation so enhancement and motion controls cannot swap or reset the orbit. Keep the picture aligned with the overlay through the shared camera. The build minified 64000ms to 64s, which the former shader setup incorrectly divided by 1000 again. Keep the 64 second duration numeric in the shared timing contract and verify actual frame movement in the built page. Show the moving preview directly. Publication remains pending review.
