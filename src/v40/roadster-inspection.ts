@@ -1,20 +1,21 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 
 export type RoadsterView = "body" | "wheels" | "thrusters";
+export type RoadsterFinish = "studio" | "blueprint";
 export type RoadsterController = {
   view: (name: RoadsterView) => void;
+  finish: (name: RoadsterFinish) => void;
   orbit: (direction: number) => void;
   zoom: (direction: number) => void;
   dispose: () => void;
 };
 const shots = {
-  body: { position: [-4.3, 2.25, 5.1], target: [0, 0.55, 0] },
+  body: { position: [-4.6, 2.05, 5.3], target: [0, 0.48, 0] },
   wheels: { position: [-2.7, 1.05, 2.6], target: [-1.4125, 0.45, 0.9] },
-  thrusters: { position: [4.7, 1.65, 3.3], target: [1.6, 0.65, 0] },
+  thrusters: { position: [4.5, 1.35, 3.1], target: [1.6, 0.65, 0] },
 };
 
 function materials() {
@@ -22,20 +23,20 @@ function materials() {
     new THREE.MeshStandardMaterial({ color, roughness, metalness });
   return {
     paint: new THREE.MeshPhysicalMaterial({
-      color: 0xe3e6de,
-      metalness: 0.16,
-      roughness: 0.26,
+      color: 0xe6e5dc,
+      metalness: 0.28,
+      roughness: 0.22,
       clearcoat: 1,
-      clearcoatRoughness: 0.18,
+      clearcoatRoughness: 0.12,
     }),
-    glass: new THREE.MeshPhysicalMaterial({ color: 0x64564b, metalness: 0.35, roughness: 0.12, clearcoat: 1 }),
+    glass: new THREE.MeshPhysicalMaterial({ color: 0x51463c, metalness: 0.55, roughness: 0.13, clearcoat: 1 }),
     rubber: metal(0x141a1f, 0.92, 0),
     carbon: metal(0x19242c, 0.48, 0.34),
     cavity: metal(0x06090c, 0.95, 0),
-    wheelFace: metal(0xc3c9ca, 0.4, 0.72),
-    wheelDark: metal(0x27323b, 0.3, 0.8),
-    wheelBevel: metal(0x737d83, 0.34, 0.8),
-    titanium: metal(0x8d9290, 0.38, 0.83),
+    wheelFace: metal(0xbec8cc, 0.28, 0.82),
+    wheelDark: metal(0x202c36, 0.29, 0.8),
+    wheelBevel: metal(0xa2acaf, 0.23, 0.86),
+    titanium: metal(0x969b98, 0.3, 0.83),
     metal: metal(0x8d999e),
     black: metal(0x171e26, 0.5, 0.24),
     leather: metal(0xd5d5c9, 0.8, 0),
@@ -91,11 +92,32 @@ function materialFor(name: string): keyof ReturnType<typeof materials> {
 function disposeTree(root: THREE.Object3D) {
   const disposedMaterials = new Set<THREE.Material>();
   root.traverse((node) => {
-    if (!(node instanceof THREE.Mesh)) return;
+    if (!(node instanceof THREE.Mesh) && !(node instanceof THREE.LineSegments)) return;
     node.geometry.dispose();
     for (const mat of Array.isArray(node.material) ? node.material : [node.material]) disposedMaterials.add(mat);
   });
   disposedMaterials.forEach((mat) => mat.dispose());
+  return disposedMaterials;
+}
+
+/** Static softboxes give the original surfaces a readable highlight, without an HDR download. */
+function studioEnvironment() {
+  const room = new THREE.Scene();
+  room.background = new THREE.Color(0x18222d);
+  const softbox = (width: number, height: number, position: [number, number, number], color: number, power: number) => {
+    const panel = new THREE.Mesh(
+      new THREE.PlaneGeometry(width, height),
+      new THREE.MeshBasicMaterial({ color: new THREE.Color(color).multiplyScalar(power), side: THREE.DoubleSide }),
+    );
+    panel.position.set(...position);
+    panel.lookAt(0, 0.4, 0);
+    room.add(panel);
+  };
+  softbox(8, 3, [-2, 6, 3], 0xfff3df, 3.2);
+  softbox(7, 1.4, [0, 3, -5], 0xb6e0eb, 2.2);
+  softbox(1.4, 5, [-5, 2, -1], 0xe5cfaa, 1.4);
+  softbox(4, 3, [5, 4, 4], 0xe1ecf0, 1.8);
+  return room;
 }
 
 export async function createRoadsterInspection(
@@ -137,6 +159,9 @@ export async function createRoadsterInspection(
   let resize: ResizeObserver | undefined;
   let observer: IntersectionObserver | undefined;
   const paint = materials();
+  const model: { mesh: THREE.Mesh; material: THREE.Material; type: keyof typeof paint }[] = [];
+  let blueprint: THREE.Group | undefined;
+  let blueprintSurface: THREE.MeshBasicMaterial | undefined;
 
   function request() {
     if (!disposed && !frame && visible && !document.hidden) frame = requestAnimationFrame(draw);
@@ -150,7 +175,9 @@ export async function createRoadsterInspection(
     if (transition) {
       if (!allowsMotion()) transition = null;
       else {
-        transition.elapsed += previous ? Math.min(50, now - previous) : 0;
+        // Foreground time keeps a requested move brief even on a slower GPU.
+        // Visibility changes clear `previous`, so returning to the tab never jumps ahead.
+        transition.elapsed += previous ? now - previous : 0;
         const progress = Math.min(1, transition.elapsed / 1100);
         const eased = 0.5 - Math.cos(progress * Math.PI) / 2;
         const orbit = new THREE.Spherical(
@@ -189,7 +216,7 @@ export async function createRoadsterInspection(
       target = new THREE.Vector3(...shot.target);
     const position = new THREE.Vector3(...shot.position)
       .sub(target)
-      .multiplyScalar(Math.max(1, (name === "body" ? 1.7 : name === "thrusters" ? 1.25 : 0.95) / camera.aspect))
+      .multiplyScalar(Math.max(1, (name === "body" ? 1.3 : name === "thrusters" ? 1.25 : 0.95) / camera.aspect))
       .add(target);
     move(position, target, instant);
   }
@@ -202,6 +229,37 @@ export async function createRoadsterInspection(
     const offset = camera.position.clone().sub(controls.target);
     offset.setLength(THREE.MathUtils.clamp(offset.length() * (direction < 0 ? 0.84 : 1.19), 0.75, 16));
     move(offset.add(controls.target), controls.target.clone());
+  }
+  function finish(name: RoadsterFinish) {
+    if (disposed) return;
+    if (name === "blueprint" && !blueprint) {
+      blueprint = new THREE.Group();
+      blueprintSurface = new THREE.MeshBasicMaterial({
+        color: 0x101e2b,
+        polygonOffset: true,
+        polygonOffsetFactor: 1,
+        polygonOffsetUnits: 1,
+      });
+      const outline = new THREE.LineBasicMaterial({ color: 0x82ccd7, transparent: true, opacity: 0.82 });
+      const accent = new THREE.LineBasicMaterial({ color: 0xd9bb82, transparent: true, opacity: 0.9 });
+      // Extract real edges only when requested. No synthetic parts or engineering dimensions.
+      for (const { mesh, type } of model) {
+        const lines = new THREE.LineSegments(
+          new THREE.EdgesGeometry(mesh.geometry, 32),
+          type === "titanium" || type === "wheelFace" ? accent : outline,
+        );
+        blueprint.add(lines);
+      }
+      const grid = new THREE.GridHelper(6.4, 16, 0x36545f, 0x20343f);
+      grid.position.y = -0.006;
+      blueprint.add(grid);
+      scene.add(blueprint);
+    }
+    const technical = name === "blueprint";
+    for (const item of model) item.mesh.material = technical ? blueprintSurface! : item.material;
+    if (blueprint) blueprint.visible = technical;
+    canvas.dataset.finish = name;
+    request();
   }
   function key(event: KeyboardEvent) {
     if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "+", "=", "-"].includes(event.key)) {
@@ -243,8 +301,11 @@ export async function createRoadsterInspection(
     document.removeEventListener("visibilitychange", visibility);
     query.removeEventListener("change", motionChange);
     signal.removeEventListener("abort", dispose);
-    disposeTree(scene);
-    Object.values(paint).forEach((material) => material.dispose());
+    const disposedMaterials = disposeTree(scene);
+    Object.values(paint).forEach((material) => {
+      if (!disposedMaterials.has(material)) material.dispose();
+    });
+    if (blueprintSurface && !disposedMaterials.has(blueprintSurface)) blueprintSurface.dispose();
     environment?.dispose();
     contactTexture?.dispose();
     renderer.dispose();
@@ -284,36 +345,50 @@ export async function createRoadsterInspection(
     for (const [type, geometries] of groups) {
       const merged = mergeGeometries(geometries);
       geometries.forEach((geometry) => geometry.dispose());
-      if (merged) scene.add(new THREE.Mesh(merged, paint[type]));
+      if (merged) {
+        const mesh = new THREE.Mesh(merged, paint[type]);
+        model.push({ mesh, material: paint[type], type });
+        scene.add(mesh);
+      }
     }
     disposeTree(gltf.scene);
-    const room = new RoomEnvironment();
+    const room = studioEnvironment();
     const pmrem = new THREE.PMREMGenerator(renderer);
     environment = pmrem.fromScene(room, 0.04);
     scene.environment = environment.texture;
-    scene.environmentIntensity = 0.7;
-    room.dispose();
+    scene.environmentIntensity = 0.85;
+    disposeTree(room);
     pmrem.dispose();
-    scene.add(new THREE.HemisphereLight(0xc7e3ef, 0x393021, 1));
-    const keyLight = new THREE.DirectionalLight(0xffead1, 2);
-    keyLight.position.set(-3, 6, 5);
+    scene.add(new THREE.HemisphereLight(0xc7e3ef, 0x191712, 0.6));
+    const keyLight = new THREE.DirectionalLight(0xffead1, 1.65);
+    keyLight.position.set(-3, 5, 4);
     scene.add(keyLight);
-    const fill = new THREE.DirectionalLight(0x9dc9df, 1.2);
+    const fill = new THREE.DirectionalLight(0x9dc9df, 0.95);
     fill.position.set(2, 3, -5);
     scene.add(fill);
-    const floor = new THREE.Mesh(new THREE.CircleGeometry(6, 96), new THREE.MeshBasicMaterial({ color: 0x0b141c }));
+    const floor = new THREE.Mesh(new THREE.CircleGeometry(6, 96), new THREE.MeshBasicMaterial({ color: 0x14212b }));
     floor.rotation.x = -Math.PI / 2;
     floor.position.y = -0.012;
     scene.add(floor);
     const contact = document.createElement("canvas");
-    contact.width = contact.height = 128;
+    contact.width = contact.height = 256;
     const ctx = contact.getContext("2d")!;
-    const gradient = ctx.createRadialGradient(64, 64, 8, 64, 64, 64);
-    gradient.addColorStop(0, "#000d");
-    gradient.addColorStop(0.6, "#0009");
+    const gradient = ctx.createRadialGradient(128, 128, 15, 128, 128, 125);
+    gradient.addColorStop(0, "#000e");
+    gradient.addColorStop(0.55, "#000b");
     gradient.addColorStop(1, "#0000");
     ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 128, 128);
+    ctx.fillRect(0, 0, 256, 256);
+    // Four denser contact patches seat the tires on the same quiet studio floor.
+    for (const x of [70, 186]) {
+      for (const y of [55, 201]) {
+        const patch = ctx.createRadialGradient(x, y, 2, x, y, 22);
+        patch.addColorStop(0, "#000d");
+        patch.addColorStop(1, "#0000");
+        ctx.fillStyle = patch;
+        ctx.fillRect(x - 22, y - 22, 44, 44);
+      }
+    }
     contactTexture = new THREE.CanvasTexture(contact);
     const shadow = new THREE.Mesh(
       new THREE.PlaneGeometry(6.2, 3.1),
@@ -356,7 +431,8 @@ export async function createRoadsterInspection(
     document.addEventListener("visibilitychange", visibility);
     query.addEventListener("change", motionChange);
     view("body", true);
-    return { view, orbit, zoom, dispose };
+    canvas.dataset.finish = "studio";
+    return { view, finish, orbit, zoom, dispose };
   } catch (error) {
     dispose();
     throw error;

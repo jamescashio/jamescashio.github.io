@@ -43,6 +43,8 @@ export function MissionFinale({
   const [cards, setCards] = useState<Partial<Record<MissionFormat, PreparedCard>>>({});
   const [status, setStatus] = useState("Preparing your flight record…");
   const [sharing, setSharing] = useState(false);
+  const [preparationFailed, setPreparationFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   const [draftCallsign, setDraftCallsign] = useState("");
   const [callsign, setCallsign] = useState("");
   const record = missionRecord(input, `${location.origin}${location.pathname}`);
@@ -84,8 +86,14 @@ export function MissionFinale({
         setCards(Object.fromEntries(images.filter((item) => item !== null)));
         setStatus("Your record is ready. Save the image or copy your scenario link.");
       } catch {
-        if (!cancelled)
-          setStatus("The image could not be prepared. Your scenario link still works; replay to try the image again.");
+        if (!cancelled) {
+          setPreparationFailed(true);
+          setStatus(
+            still
+              ? "The image could not be prepared. Your scenario link still works. Try the image again below."
+              : "The flight image could not be captured. Your scenario link still works. Replay to capture a new image.",
+          );
+        }
       }
     }
     void prepare();
@@ -93,7 +101,7 @@ export function MissionFinale({
       cancelled = true;
       urls.forEach((url) => URL.revokeObjectURL(url));
     };
-  }, [still, input, callsign]);
+  }, [still, input, callsign, attempt]);
 
   function save() {
     if (!selected) return;
@@ -128,6 +136,12 @@ export function MissionFinale({
 
   return (
     <section className="ff-finale" aria-labelledby="ff-finale-title">
+      <header className="ff-finale-intro">
+        <p className="ff-eyebrow">FLIGHT COMPLETE / YOUR RECORD</p>
+        <h3 id="ff-finale-title" tabIndex={-1} ref={headingRef}>
+          The final say. <em>Still yours.</em>
+        </h3>
+      </header>
       <div className="ff-keepsake" data-format={format}>
         {selected ? (
           <img
@@ -150,30 +164,40 @@ export function MissionFinale({
             Landscape <span>8:5</span>
           </button>
         </div>
-        <p className="ff-card-scroll-cue">Your record. Save & share below ↓</p>
-      </div>
-      <div className="ff-finale-copy">
-        <p className="ff-eyebrow">FLIGHT COMPLETE / YOUR RECORD</p>
-        <h3 id="ff-finale-title" tabIndex={-1} ref={headingRef}>
-          The final say.
-          <br />
-          <em>Still yours.</em>
-        </h3>
-        <p className="ff-finale-summary">{record.decision}</p>
-        <dl className="ff-finale-metrics" aria-label="Final routing outcome">
-          <div>
-            <dt>Onboard</dt>
-            <dd>{record.outcome.local.toString().padStart(2, "0")}</dd>
-          </div>
-          <div>
-            <dt>Cloud</dt>
-            <dd>{record.outcome.cloud.toString().padStart(2, "0")}</dd>
-          </div>
-          <div>
-            <dt>Held</dt>
-            <dd>{record.outcome.held.toString().padStart(2, "0")}</dd>
-          </div>
-        </dl>
+        <div className="ff-finale-actions" data-native-share={selected?.shareable ? "true" : "false"}>
+          <button type="button" className="ff-save" onClick={save} disabled={!selected}>
+            Save mission card <span aria-hidden="true">↓</span>
+          </button>
+          {selected?.shareable && (
+            <button type="button" className="ff-card-native" onClick={share} disabled={sharing}>
+              {sharing ? "Opening share…" : "Share mission card"} <span aria-hidden="true">↗</span>
+            </button>
+          )}
+          <button type="button" className="ff-share" onClick={onCopy}>
+            {copied ? "Link copied ✓" : "Copy this scenario"}
+          </button>
+        </div>
+        <p className="ff-finale-status" role="status">
+          {status}
+        </p>
+        {preparationFailed && (
+          <button
+            type="button"
+            className="ff-card-retry"
+            onClick={() => {
+              if (!still) {
+                onReplay();
+                return;
+              }
+              setCards({});
+              setPreparationFailed(false);
+              setStatus("Preparing your flight record…");
+              setAttempt((value) => value + 1);
+            }}
+          >
+            {still ? "Try preparing the image again" : "Replay to capture your card"}
+          </button>
+        )}
         <form
           className="ff-personalize"
           onSubmit={(event) => {
@@ -182,13 +206,14 @@ export function MissionFinale({
             setDraftCallsign(next);
             if (next !== callsign) {
               setCards({});
+              setPreparationFailed(false);
               setStatus("Preparing your personalized flight record…");
               setCallsign(next);
             }
           }}
         >
           <label htmlFor="ff-callsign">
-            Make it yours <span>Optional callsign</span>
+            Your callsign <span>Optional</span>
           </label>
           <div>
             <input
@@ -205,24 +230,25 @@ export function MissionFinale({
               Apply
             </button>
           </div>
-          <p id="ff-callsign-note">Up to 24 characters. Added only to this image, never to the scenario link.</p>
+          <p id="ff-callsign-note">24 characters. Only on your image, never in your link.</p>
         </form>
-        <div className="ff-finale-actions">
-          <button type="button" className="ff-save" onClick={save} disabled={!selected}>
-            Save mission card <span aria-hidden="true">↓</span>
-          </button>
-          {selected?.shareable && (
-            <button type="button" className="ff-card-native" onClick={share} disabled={sharing}>
-              {sharing ? "Opening share…" : "Share mission card"} <span aria-hidden="true">↗</span>
-            </button>
-          )}
-          <button type="button" className="ff-share" onClick={onCopy}>
-            {copied ? "Link copied ✓" : "Copy this scenario"}
-          </button>
-        </div>
-        <p className="ff-finale-status" role="status">
-          {status}
-        </p>
+      </div>
+      <div className="ff-finale-copy">
+        <p className="ff-finale-summary">{record.decision}</p>
+        <dl className="ff-finale-metrics" aria-label="Final routing outcome">
+          <div>
+            <dt>Onboard</dt>
+            <dd>{record.outcome.local.toString().padStart(2, "0")}</dd>
+          </div>
+          <div>
+            <dt>Cloud</dt>
+            <dd>{record.outcome.cloud.toString().padStart(2, "0")}</dd>
+          </div>
+          <div>
+            <dt>Held</dt>
+            <dd>{record.outcome.held.toString().padStart(2, "0")}</dd>
+          </div>
+        </dl>
         <details className="ff-finale-detail">
           <summary>
             Inspect the decision <span aria-hidden="true">+</span>
@@ -230,27 +256,34 @@ export function MissionFinale({
           {children}
         </details>
         <div className="ff-finale-next">
-          <span className="ff-eyebrow">NEXT / FROM THE WORKSHOP</span>
+          <span className="ff-eyebrow">YOUR NEXT DEPARTURE</span>
           <button type="button" className="ff-roadster-next" onClick={() => onClose("roadster-studio")}>
             <img src="/images/roadster-studio-640.webp" width="640" height="360" alt="" loading="lazy" />
             <span>
-              Roadster Studio<small>Take the next unreasonable departure →</small>
+              Roadster Studio<small>Explore the build from every angle →</small>
             </span>
           </button>
           <div className="ff-finale-links">
             <button type="button" onClick={onReplay}>
               Replay flight
             </button>
-            <button type="button" onClick={() => onClose(privateRequest)}>
-              Test a private request →
-            </button>
-            <button type="button" onClick={() => onClose("smart-routing")}>
-              See the real build story →
-            </button>
             <button type="button" onClick={() => onClose("contact")}>
               Compare notes with Doug →
             </button>
           </div>
+          <details className="ff-finale-routes">
+            <summary>
+              More from the workshop <span aria-hidden="true">+</span>
+            </summary>
+            <div className="ff-finale-links">
+              <button type="button" onClick={() => onClose(privateRequest)}>
+                Test a private request →
+              </button>
+              <button type="button" onClick={() => onClose("smart-routing")}>
+                See the real build story →
+              </button>
+            </div>
+          </details>
         </div>
       </div>
     </section>

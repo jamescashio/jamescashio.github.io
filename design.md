@@ -1,3 +1,53 @@
+# cAshIo · Observatory polish
+
+## Creative thesis
+
+An after-hours observatory where cinematic wonder leads into objects and decisions the visitor can inspect and keep.
+
+## Audience and outcome
+
+- Curious first-time visitors, makers and people exploring human-directed AI.
+- Primary action: take the existing short tour, make a decision and save a personal mission card.
+- Feeling: considered, curious, quietly spectacular.
+
+## Visual system
+
+- Preserve Orbitron display, Exo 2 body and JetBrains Mono instrument text. Body copy stays comfortably readable on phones; essential controls remain at least 44 px.
+- Canvas: orbital navy #080d13. Surfaces: #0e1822. Text: ivory #edf0e9. Secondary text: #b4c8cf. Gold #e9c58a marks primary actions; cyan #91d8df identifies controls and engineering detail. Coral is reserved for consequences.
+- Preserve the original ring artwork, celestial signature, cut corners, restrained borders and established section grid. Use typography and breathing room before adding decoration.
+- Keep the current photographic and film assets. Roadster improvements use the original CAD geometry with better material separation, controlled studio reflections and a grounded contact shadow. Blueprint mode is a visual inspection aid, not a technical drawing or validated engineering claim.
+- Phone layouts prioritize the object and the next useful action. Save and sharing controls sit beside the card; optional identity and supporting detail follow. All existing destinations remain available.
+
+## Motion
+
+- Preserve the smooth, steadily illuminated orbit and finite entrance. No flash, brightness pulse, automatic sound or idle Roadster rotation.
+- Animate only deliberate camera changes and short transitions. Pause, hidden-page suspension, reduced motion and keyboard control remain first-class.
+- Static/reduced-motion views retain the entire story and controls. Don't hide content to improve a score.
+
+## Content hierarchy
+
+1. Existing hero promise and primary tour.
+2. Films and worlds for exploration at the visitor's own pace.
+3. Roadster: finished object, useful detail, optional blueprint, honest concept limits.
+4. Workshop: concise questions, inspectable evidence and something useful to take away.
+5. A direct invitation to compare notes with Doug.
+
+## Components and acceptance
+
+- Roadster: same original geometry, request-only download, low idle cost, readable light/materials, all camera and blueprint controls accessible.
+- Mission finale: actual outcome and applied name in both PNG formats; save/share nearby; names never sent or placed in URLs; stale exports and failure recovery remain safe.
+- Opening: useful content immediately, prioritize only critical assets and defer secondary enhancement without breaking direct links.
+- Verify 1440, 390 and 320 px; audit 412 px tap-area finding; check keyboard focus, overflow, reduced motion, console errors and export behavior.
+- Measure improvements against the earlier live review. Lighthouse results are lab measurements, never a promise of perfect scores.
+
+## Boundaries
+
+Keep established content, public routes, media and evidence dates. No invented biography, build history or capability claims. No new runtime dependency for decoration. Build an explicitly unpublished local preview; publication follows review of this new round.
+
+---
+
+## Previous design decisions
+
 # First contact, Roadster inspection and a personal record · Unpublished preview · 11-04-2026
 
 Doug requests all three next steps and explicitly asks to review a preview before publication. This isolated branch starts from live revision 968efc8. Earlier release approvals below do not cover this work. No push, pull request, merge or deployment belongs to this pass.
