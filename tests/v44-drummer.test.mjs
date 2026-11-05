@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
 import { mkdtemp, mkdir, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -8,7 +9,7 @@ import { route } from "../src/v44/route.ts";
 import { layoutFor } from "../src/v44/layout.ts";
 import { fillStatus, longDate, statusTokens, transcript, withheldList } from "../scripts/v44-status.mjs";
 
-const root = path.resolve(new URL("..", import.meta.url).pathname);
+const root = fileURLToPath(new URL("..", import.meta.url));
 const read = (p) => readFile(path.join(root, p), "utf8");
 
 test("the helm keeps the Odyssey routing rule for every input", () => {

@@ -1,10 +1,11 @@
+import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 import { JSDOM } from "jsdom";
 
-const root = path.resolve(new URL("..", import.meta.url).pathname);
+const root = fileURLToPath(new URL("..", import.meta.url));
 const read = (p) => readFile(path.join(root, p), "utf8");
 const exists = (p) =>
   access(path.join(root, p)).then(

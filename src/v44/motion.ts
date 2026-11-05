@@ -37,6 +37,17 @@ export function onMotionChange(fn: () => void) {
   listeners.add(fn);
 }
 
+// Another open page of the site (a room, the preserved edition) can change the shared setting,
+// and a page restored from the back forward cache may have missed a change.
+const resync = () => {
+  const next = initial();
+  if (next === enabled) return;
+  enabled = next;
+  document.documentElement.dataset.motion = enabled ? "on" : "off";
+  listeners.forEach((fn) => fn());
+};
+addEventListener("storage", (e) => e.key === KEY && resync());
+addEventListener("pageshow", (e) => e.persisted && resync());
 reduce.addEventListener("change", () => {
   enabled = initial();
   document.documentElement.dataset.motion = enabled ? "on" : "off";

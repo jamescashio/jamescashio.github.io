@@ -156,6 +156,8 @@ test("Pause stills the page: typing finishes and nothing keeps animating", async
     await line.locator(".sr").textContent(),
     "the typed line is complete the moment motion pauses",
   );
+  await expect(page.locator("[data-eve-log]")).not.toHaveAttribute("data-typing", "");
+  await expect(page.locator("[data-bit-open]")).not.toHaveAttribute("data-spinning", "");
   await page.waitForTimeout(200);
   const running = await page.evaluate(
     () =>
@@ -284,4 +286,21 @@ test("on phones Bit steps aside while reading down, returns, and its card closes
   await expect(card).toBeVisible();
   await page.mouse.click(30, 300);
   await expect(card).toBeHidden();
+});
+
+test("with motion on, tabbing into a card that has not faded in yet shows it at once", async (t) => {
+  const page = await visit(t, { motion: "no-preference" });
+  const card = page.locator(".world").first();
+  await expect(card).not.toHaveClass(/\bin\b/);
+  await card.locator("a").first().focus();
+  await expect(card).toHaveClass(/\bin\b/);
+  assert.equal(await card.evaluate((node) => getComputedStyle(node).opacity), "1");
+});
+
+test("the station sheet closes when the window widens to the desktop navigation", async (t) => {
+  const page = await visit(t, { width: 900, height: 900 });
+  await page.locator("[data-menu-toggle]").click();
+  await expect(page.locator("#station-sheet")).toBeVisible();
+  await page.setViewportSize({ width: 1300, height: 900 });
+  await expect(page.locator("#station-sheet")).toBeHidden();
 });

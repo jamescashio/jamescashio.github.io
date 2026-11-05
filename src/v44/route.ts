@@ -51,6 +51,13 @@ export function route(input: RouteInput): Route {
   };
 }
 
+/** A concrete task for each kind of work, so the route reads as a decision about something real. */
+const EXAMPLES: Record<Intent, string> = {
+  draft: "a first draft of a project update.",
+  research: "what changed in a public standard, with the sources cited.",
+  analyze: "compare two backup plans and the risks each one leaves.",
+};
+
 const CODE_LABEL: Record<Route["code"], string> = {
   HOLD: "Held for a person",
   EVIDENCE: "Evidence required",
@@ -64,6 +71,7 @@ export function mountHelm(form: HTMLFormElement, result: HTMLElement) {
   const steps = result.querySelector<HTMLOListElement>("[data-helm-steps]")!;
   // The route map draws the same decision: a packet rides the chosen lane, or stops at the gate when held.
   const map = (form.closest(".helm-grid") || result).querySelector<SVGSVGElement>("[data-route-map]");
+  const example = form.querySelector<HTMLElement>("[data-helm-example]");
   const read = (): RouteInput => {
     const data = new FormData(form);
     return {
@@ -78,6 +86,7 @@ export function mountHelm(form: HTMLFormElement, result: HTMLElement) {
     code.textContent = CODE_LABEL[r.code];
     detail.textContent = r.detail;
     result.dataset.code = r.code;
+    if (example) example.textContent = `Example task: ${EXAMPLES[read().intent]}`;
     if (map) {
       map.dataset.route = r.code === "HOLD" ? "hold" : r.code === "EVIDENCE" ? "research" : r.lane.toLowerCase();
       if (animate) {

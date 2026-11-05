@@ -168,6 +168,20 @@ $$(".station:not(.arrival) .station-head, .station .hull, .after-note").forEach(
   el.setAttribute("data-reveal", "");
   reveal.observe(el);
 });
+// Keyboard focus never lands inside something still waiting to fade in: it appears at once.
+document.addEventListener("focusin", (e) => {
+  const waiting = (e.target as Element).closest?.("[data-reveal]:not(.in)");
+  if (waiting) {
+    waiting.setAttribute("data-reveal", "now");
+    waiting.classList.add("in");
+    reveal.unobserve(waiting);
+  }
+});
+// The workshop map's packets run only while the map is on screen.
+const mapWatch = new IntersectionObserver((entries) =>
+  entries.forEach((e) => (e.target as HTMLElement).toggleAttribute("data-visible", e.isIntersecting)),
+);
+$$(".system-map").forEach((el) => mapWatch.observe(el));
 
 /* Pointer light on hull plates and a small tilt on worlds, fine pointers only. */
 if (matchMedia("(pointer: fine)").matches) {
@@ -226,6 +240,17 @@ document.addEventListener("keydown", (e) => e.key === "Escape" && sheetOpen() &&
 document.addEventListener("pointerdown", (e) => {
   const t = e.target as Node;
   if (sheetOpen() && !sheet.contains(t) && !menu.contains(t)) closeSheet();
+});
+// Tabbing out of the sheet closes it, and so does widening the window to the desktop navigation.
+sheet.addEventListener("focusout", (e) => {
+  const next = e.relatedTarget as Node | null;
+  if (next && !sheet.contains(next) && !menu.contains(next)) closeSheet();
+});
+matchMedia("(min-width: 1180px)").addEventListener("change", (e) => {
+  if (!e.matches || !sheetOpen()) return;
+  const inside = sheet.contains(document.activeElement);
+  closeSheet();
+  if (inside) document.querySelector<HTMLElement>('.stations a[aria-current="true"]')?.focus();
 });
 
 /* Navigation with a warp surge through the gate. Focus moves to the station's heading, and Back returns. */

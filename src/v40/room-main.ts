@@ -43,6 +43,12 @@ motionButton.addEventListener("click", () => {
   syncMotion();
 });
 mq.addEventListener("change", syncMotion);
+// A Pause chosen on another open page of the site reaches this room too.
+addEventListener("storage", (e) => {
+  if (e.key !== "cashio-v40-motion") return;
+  preference = e.newValue;
+  syncMotion();
+});
 syncMotion();
 
 async function mount() {

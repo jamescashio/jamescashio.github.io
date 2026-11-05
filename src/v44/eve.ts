@@ -46,6 +46,7 @@ export function mountEve(root: HTMLElement, hooks: EveHooks) {
   // Lines still typing finish at once when motion is paused, so Pause leaves nothing moving.
   const typing = new Set<() => void>();
   const finishTyping = () => typing.forEach((finish) => finish());
+  const markTyping = () => log.toggleAttribute("data-typing", typing.size > 0);
   onMotionChange(finishTyping);
   const say = (text: string, cls?: string) => {
     const p = document.createElement("p");
@@ -69,6 +70,7 @@ export function mountEve(root: HTMLElement, hooks: EveHooks) {
     const finish = () => {
       clearTimeout(timer);
       typing.delete(finish);
+      markTyping();
       shown.textContent = text;
       log.scrollTop = log.scrollHeight;
     };
@@ -80,6 +82,7 @@ export function mountEve(root: HTMLElement, hooks: EveHooks) {
       else finish();
     };
     typing.add(finish);
+    markTyping();
     tick();
   };
   const run = async (raw: string, byVisitor = true) => {

@@ -202,11 +202,11 @@
 .packet-d {
   offset-path: path("M150 68 L150 188 C150 230 225 230 225 265");
 }
-html[data-motion="on"] .system-map.in .packet {
+html[data-motion="on"] .system-map.in[data-visible] .packet {
   animation: packet 5.2s cubic-bezier(0.45, 0, 0.25, 1) infinite;
 }
-html[data-motion="on"] .system-map.in .packet-b,
-html[data-motion="on"] .system-map.in .packet-d {
+html[data-motion="on"] .system-map.in[data-visible] .packet-b,
+html[data-motion="on"] .system-map.in[data-visible] .packet-d {
   animation-delay: 2.6s;
 }
 @keyframes packet {

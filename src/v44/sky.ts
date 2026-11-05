@@ -27,7 +27,7 @@ const IDLE_GATE_MS = 30000;
 
 export type SkyState = { transit: number; dim: number; warpBoost: number; column?: { left: number; right: number } };
 /** Reasons the sky may not animate. Any one of them holds it on its last frame. */
-export type Hold = "motion" | "hidden" | "film" | "lost" | "idle";
+export type Hold = "motion" | "hidden" | "film" | "lost" | "idle" | "slow";
 
 export class Sky {
   private gl: WebGLRenderingContext | null = null;
@@ -196,12 +196,14 @@ export class Sky {
   private run() {
     if (!this.program || this.running) return;
     this.running = true;
+    this.canvas.setAttribute("data-running", "");
     this.last = 0;
     this.raf = requestAnimationFrame(this.frame);
   }
 
   private halt() {
     this.running = false;
+    this.canvas.removeAttribute("data-running");
     cancelAnimationFrame(this.raf);
     this.redraw();
   }
@@ -237,6 +239,12 @@ export class Sky {
     if (this.samples.length < 30) return;
     const avg = this.samples.reduce((a, b) => a + b, 0) / this.samples.length;
     this.samples = [];
+    // Still too slow at the smallest backing store: the painted poster serves this device better.
+    if (this.scale <= 0.33 && avg > 70) {
+      this.hold("slow", true);
+      this.onLive(false);
+      return;
+    }
     const target = this.state().transit >= 1 ? 34 : 18;
     if (avg > target * 1.25 && this.scale > 0.32) this.scale *= 0.82;
     else if (avg < target * 0.7 && this.scale < this.maxScale) this.scale = Math.min(this.maxScale, this.scale * 1.08);

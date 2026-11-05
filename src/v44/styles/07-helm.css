@@ -310,3 +310,10 @@ html[data-motion="on"] .route-map.ride .route-packet {
   color: var(--muted);
   font-size: 16px;
 }
+
+.helm-example {
+  font-size: 16.5px;
+  color: var(--pearl);
+  padding-left: 12px;
+  border-left: 2px solid var(--blue);
+}

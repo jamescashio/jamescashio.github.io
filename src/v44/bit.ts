@@ -131,10 +131,14 @@ export function mountBit(
     glow *= 0.96;
     drawFace(ctx, canvas.width, now / 1000, glow);
     raf = active() ? requestAnimationFrame(loop) : 0;
+    button.toggleAttribute("data-spinning", raf !== 0);
   };
   const wake = (ms = 0) => {
     spinUntil = Math.max(spinUntil, performance.now() + ms);
-    if (!raf && active()) raf = requestAnimationFrame(loop);
+    if (!raf && active()) {
+      raf = requestAnimationFrame(loop);
+      button.setAttribute("data-spinning", "");
+    }
   };
   if (ctx) drawFace(ctx, canvas.width, 1.2, 0);
   // The arrival spin waits until the page has loaded, so it never competes with the first paint.
@@ -157,8 +161,8 @@ export function mountBit(
     const f = (e as CustomEvent<{ id: string; title: string }>).detail;
     remark =
       f.id === "trailer"
-        ? "You watched the trailer. The cat has notes. The cat always has notes."
-        : `${f.title}. Fifteen quiet seconds, beautifully lit. I counted.`;
+        ? "You put the trailer on. The cat has notes. The cat always has notes."
+        : `You put on the ${f.title.toLowerCase()}. Fifteen quiet seconds, beautifully lit. I counted.`;
     wake(900);
   });
   document.addEventListener("v44:eve", (e) => {
