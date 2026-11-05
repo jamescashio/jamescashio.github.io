@@ -14,24 +14,30 @@ const asset = (path) => new URL(`../${path}`, import.meta.url);
 const currentRelease = JSON.parse(await read("public/v40/site-release.json"));
 const currentVersionLabel = `V${currentRelease.experienceVersion.split(".")[0]}`;
 
-test("Centauri identity advances the current release and preserves the exact V42 receipt", async () => {
-  assert.equal(currentRelease.experienceVersion, "43.0.0");
-  assert.equal(currentRelease.releaseName, "CENTAURI");
-  assert.equal(currentRelease.visualEdition, "Centauri");
+test("Drummer identity advances the current release and preserves the exact V43 and V42 receipts", async () => {
+  assert.equal(currentRelease.experienceVersion, "44.0.0");
+  assert.equal(currentRelease.releaseName, "DRUMMER");
+  assert.equal(currentRelease.visualEdition, "Drummer");
   assert.equal(currentRelease.presentation.name, currentRelease.visualEdition);
-  assert.equal(currentRelease.releaseId, "centauri-43.0.0-20261105");
-  assert.equal(currentRelease.releaseDate, "2026-11-05");
+  assert.equal(currentRelease.releaseId, "drummer-44.0.0-20261105");
   assert.equal(currentRelease.updatedDate, "2026-11-05");
-  assert.equal(currentRelease.presentation.preparedDate, "2026-11-04");
-  assert.equal(currentRelease.status, "released");
-  assert.equal(currentRelease.published, true);
+  assert.equal(currentRelease.presentation.preparedDate, "2026-11-05");
+  // A preview stays unpublished until Doug approves it; approval sets the release date and published flag together.
+  assert.equal(currentRelease.published, currentRelease.status === "released");
+  assert.equal(currentRelease.releaseDate === null, !currentRelease.published);
   assert.deepEqual(currentRelease.previousRelease, {
-    version: "42.0.0",
-    name: "Omnius, Overruled",
-    receipt: "/v42/site-release.json",
-    commit: "d1728250e7968141c9d26be0b6ba90927521dec6",
+    version: "43.0.0",
+    name: "Centauri",
+    receipt: "/v43/site-release.json",
+    commit: "e75c774b285c1cca75c1e878c758af0a94731579",
   });
   assert.equal(currentRelease.rollbackCommit, currentRelease.previousRelease.commit);
+  const centauri = await readFile(asset("public/v43/site-release.json"));
+  assert.equal(
+    createHash("sha256").update(centauri).digest("hex"),
+    "a9bf7cbcfcefb648315d7092cd918baecfcd691a22489fc88dae76ba3268cc8e",
+  );
+  assert.deepEqual(await readFile(asset("dist/v43/site-release.json")), centauri);
   const previous = await readFile(asset("public/v42/site-release.json"));
   assert.equal(
     createHash("sha256").update(previous).digest("hex"),
@@ -42,8 +48,10 @@ test("Centauri identity advances the current release and preserves the exact V42
   assert.equal(JSON.parse(await read("public/status.json")).release, "V41 Eagle");
 });
 
-test("V40 ships its real reading edition under the strict production security policy", async () => {
-  const document = new JSDOM(await read("dist/index.html")).window.document;
+test("V43 Centauri keeps its real reading edition at /v43/ under the strict production security policy", async () => {
+  const currentRelease = JSON.parse(await read("public/v43/site-release.json"));
+  const currentVersionLabel = `V${currentRelease.experienceVersion.split(".")[0]}`;
+  const document = new JSDOM(await read("dist/v43/index.html")).window.document;
   const routing = document.querySelector('script[src^="/assets/v40-entry-"]');
   assert.ok(routing, "changed routing must get a new URL instead of reusing a cached redirect script");
   const routingFile = routing.getAttribute("src");
@@ -73,7 +81,7 @@ test("V40 ships its real reading edition under the strict production security po
   assert.equal(root.querySelectorAll("#top video").length, 0);
   assert.equal(root.querySelectorAll("h1").length, 1);
   assert.match(root.textContent, /You still decide\./);
-  const receipt = JSON.parse(await read("dist/v40/site-release.json"));
+  const receipt = JSON.parse(await read("dist/v43/site-release.json"));
   const observation = JSON.parse(await read("dist/status.json"));
   const observedMonth = new Intl.DateTimeFormat("en-US", {
     month: "long",
@@ -150,7 +158,8 @@ test("V40 ships its real reading edition under the strict production security po
   assert.ok((await stat(asset("dist/v41/first-light-share-card.jpg"))).size < 250_000);
   assert.ok((await stat(asset("dist/brand/platinum/share-card.jpg"))).size < 250_000);
   assert.ok((await stat(asset("dist/brand/platinum/signature-840.webp"))).size < 60_000);
-  assert.equal(receipt.experienceVersion, JSON.parse(await read("package.json")).version);
+  // The preserved edition keeps its own version; the package now carries the V44 front door.
+  assert.equal(receipt.experienceVersion, "43.0.0");
   assert.equal(receipt.previousExperience.entry, "/v39/");
   assert.equal(receipt.published, receipt.status === "released");
   assert.equal(receipt.evidenceSnapshot.fleetObserved, "2026-11-04");
@@ -300,7 +309,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
   }
   assert.equal(packageJson.scripts.lint, "eslint . --max-warnings 0");
   const formattingScope =
-    '"src/**/*.{ts,tsx,js,jsx,css,html}" "tests/**/*.mjs" "scripts/**/*.{mjs,mts}" "*.{js,json,md,ts}" "docs/**/*.md" ".github/**/*.{md,yml,yaml}" "public/**/*.json" "v38/**/*.html" "v39/**/*.html" "v40/**/*.html" "index.html" "public/helios-entry.js" "public/v40-entry.js"';
+    '"src/**/*.{ts,tsx,js,jsx,css,html}" "tests/**/*.mjs" "scripts/**/*.{mjs,mts}" "*.{js,json,md,ts}" "docs/**/*.md" ".github/**/*.{md,yml,yaml}" "public/**/*.json" "v38/**/*.html" "v39/**/*.html" "v40/**/*.html" "v43/**/*.html" "index.html" "public/helios-entry.js" "public/v40-entry.js"';
   assert.equal(packageJson.scripts.format, `prettier --write ${formattingScope}`);
   assert.equal(packageJson.scripts["format:check"], `prettier --check ${formattingScope}`);
   const expandedTest = expandScript(packageJson.scripts, "test");
@@ -322,7 +331,10 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
   assert.match(expandedTest[0], /^node --import tsx --test --test-concurrency=1 /);
   assert.match(expandedTest[0], /tests\/prerender\.test\.mjs/);
   assert.doesNotMatch(expandedTest[0], /tests\/release-gates\.test\.mjs/);
-  assert.equal(packageJson.scripts["test:artifact"], "node --import tsx --test tests/release-gates.test.mjs");
+  assert.equal(
+    packageJson.scripts["test:artifact"],
+    "node --import tsx --test tests/release-gates.test.mjs tests/v44-artifact.test.mjs",
+  );
   assert.match(expandedTest.at(-2), /tests\/release-gates\.test\.mjs/);
   assert.match(expandedTest.at(-1), /^python -m unittest /);
   assert.deepEqual(expandScript(packageJson.scripts, "verify"), [
@@ -946,18 +958,19 @@ test("The V39 archive ships Helios directly, with bounded compatibility routing 
     assert.equal(reading.querySelectorAll("script").length, 0, "reading edition needs no JavaScript");
     assert.equal(reading.querySelectorAll("h1").length, 1);
     assert.ok(reading.querySelector(`a[href="/rooms/${id}/interactive/"]`));
-    assert.ok(reading.querySelector('.room-end a[href="/#rooms"]'));
+    assert.ok(reading.querySelector('.room-end a[href="/#worlds"]'), "the way back lands on the V44 worlds station");
     assert.equal(reading.querySelectorAll('a[href^="/v39/"]').length, 0);
     const interactive = new JSDOM(await read(`dist/rooms/${id}/interactive/index.html`)).window.document;
     assert.equal(interactive.querySelectorAll('script[type="module"][src]').length, 1);
     assert.equal(interactive.querySelectorAll('a[href^="/v39/"]').length, 0);
-    assert.ok(interactive.querySelector('a[href="/#rooms"]'));
+    assert.ok(interactive.querySelector('a[href="/#worlds"]'));
     for (const image of reading.querySelectorAll("img"))
       assert.ok((await stat(asset(`dist${image.getAttribute("src")}`))).size > 0);
     if (id === "studios") {
       assert.equal(reading.querySelectorAll(".studio-card").length, 6);
       assert.equal(reading.querySelectorAll(".studio-library a").length, 6);
-      assert.ok(reading.querySelector('.studio-library a[href="/#film=intro"]'));
+      // Film deep links open the preserved V43 player directly rather than bouncing through the V44 front door.
+      assert.ok(reading.querySelector('.studio-library a[href="/v43/#film=intro"]'));
       assert.ok(reading.querySelector('.studio-paths a[href="#zenith-heading"]'));
       assert.ok(reading.querySelector('.studio-paths a[href="#studio-worlds"]'));
     }
@@ -1005,7 +1018,7 @@ test("Zenith ships only the fifteen web films, with complete routes and reading-
   assert.deepEqual(
     links.sort(),
     Object.keys(clips)
-      .map((id) => `/#film=${id}`)
+      .map((id) => `/v43/#film=${id}`)
       .sort(),
   );
   const files = await readdir(asset("dist/assets/zenith"));

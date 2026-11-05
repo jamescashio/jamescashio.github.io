@@ -1,57 +1,57 @@
-# cAshIo V43 · Centauri
+# cAshIo V44 · Drummer
 
-Current personal identity: the [platinum cAshIo brand kit](https://cashio.us/brand/platinum/) with preserved inlaid detail, electric blue and laser red. See [brand guidance](docs/brand/PLATINUM.md) for everyday marks, icons and accessible color usage.
+**Drummer · Human in command** is a ground up rebuild of the cashio.us front door, prepared on 11-05-2026 and named for the captain of _The Expanse_ who keeps a cool head when it counts. It is a preview until Doug approves publication.
 
-**Centauri · Imagination, with intention** is the V43 interface prepared on 11-04-2026, with the approved red A and blue I correction on 11-05-2026. The approved platinum identity accompanies a clearer first visit, richer on-demand Roadster inspection and an expandable personal mission card. The original planetary hero, four worlds, seven experiments, films and dry humor remain. House Cashio is the opening feature; the corrected 64 second orbit keeps steady illumination.
+One transit gate, seven stations, the captain decides. The page opens on a live, generative gate in the platinum cAshIo identity: hull segments ignite once per visit, scrolling flies the camera through the ring, and the same sky carries on behind every station. Films, worlds, the routing helm, the dated evidence and E.V.E. sit on that sky as hull plates. Bit is in the corner.
 
-The current receipt is `public/v40/site-release.json`. Local review mode displays an unpublished ribbon and sends noindex headers; the ordinary production build is indexable. Publication follows the completed quality review and required repository checks. The prior production and rollback commit is `d1728250e7968141c9d26be0b6ba90927521dec6`. Its exact V42 receipt is preserved at `public/v42/site-release.json`. See [the Centauri release contract](docs/v43/centauri.md).
+The previous front door is preserved unchanged as [V43 Centauri at /v43/](https://cashio.us/v43/), with its receipt at `public/v43/site-release.json`. Its rollback commit is `e75c774b285c1cca75c1e878c758af0a94731579`. The current receipt is `public/v40/site-release.json`; the `v40` path is a compatibility path, not the version label. See [the Drummer release contract](docs/v44/drummer.md).
 
-## Preserved content
+## The seven stations
 
-The tour is the primary invitation, with a concise route expectation and clearly optional manual boarding and experiments. Roadster inspection adds controlled reflections, a movable light, a finite light sweep and model detail callouts while keeping its original geometry and request-only loading. The mission card inspector offers fit and detail views plus two compositions made from the actual scene and decision. The preview, saved PNG and native share use the same current card. Larger supporting text, readable phone controls and the narrow header retain the cinematic identity.
+| Station     | What a visitor does                                                               |
+| ----------- | --------------------------------------------------------------------------------- |
+| 01 Arrival  | Watches the gate ignite, then begins the transit                                  |
+| 02 Cinema   | Plays House Cashio: The Trailer or a silent short; The Sovereign links to YouTube |
+| 03 Worlds   | Enters the starship lab, principles engine, Studios or flight heritage            |
+| 04 Workshop | Opens Roadster Studio, reads the system map, the backup receipt and the brief     |
+| 05 Helm     | Steers a teaching model of the routing rule, entirely in the browser              |
+| 06 Evidence | Reads the dated record and asks E.V.E. about it                                   |
+| 07 Doug     | Meets Doug and says hello                                                         |
 
-The existing chapter structure, four worlds, seven experiments, films, captions, reading editions and bookmark destinations remain. House Cashio is the opening feature; Eagle remains available at `/#film=intro`. The Sovereign, Roadster Studio, the fifteen Zenith shorts, Bit, E.V.E., the logo reveal, signature and contact routes remain accessible. Motion can be paused, reduced motion is honored, and films start muted only after an explicit choice.
-
-The aesthetic reference informs the moving light, orbital depth and luminous material system. Its personal content and source code are excluded. Centauri reuses the original planetary observatory, original Canvas geometry and the project's existing dependencies; no remote runtime is added. The Discovery console adds selectable multicolor holographic beacons, an artwork view and a copyable route of public links without sending any data. All three light forms remain manually operable when motion is paused.
-
-The optional Omnius hearing is an original fictional scene retained from V42, with its original literary attribution. Its lore links to the publisher, its verdicts respond only to visitor choices, and its brief stamp respects Pause and reduced motion. It does not operate or claim to control an AI service. The release hearing and styling live in `src/v40/release-hearing.tsx` and `src/v40/release-hearing.css`; shared jokes live in `src/v40/ship-humor.ts`.
+The six further experiments, the 30 second tour, mission cards, the Omnius hearing and the Roadster inspection remain in V43 Centauri.
 
 ## Current evidence
 
 The verified record was refreshed on **November 4, 2026** from new read only checks. `status.json`, `public/status.json` and `public/evidence/status.json` are identical public aggregates. They report 19 running containers out of 20, 2 running virtual machines out of 3, and 2 hosts reporting running guests. The backup source listed 161 snapshots and reported successful integrity verification for 22 of 22 latest reported guest snapshots.
 
-These inventory and integrity readings do not establish application health, a restore rehearsal, offsite recovery or current AI routing. Unmeasured fields remain null with their reasons. V43 describes the interface; the observation schema retains its V41 source identity. Fresh collection provenance is recorded in UTC and America/Chicago. The November 2, 2026 record is preserved unchanged at `/evidence/status-2026-11-02.json`.
+The V44 page prints these figures at build time from `status.json` through `scripts/v44-status.mjs`, so the page and the record cannot disagree, and the build fails if a figure is missing. The page makes no network requests of its own. These readings do not establish application health, a restore rehearsal, offsite recovery or current AI routing.
 
 ## Source ownership
 
-| Concern                                           | Source                                                                                         |
-| ------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Centauri opening and fallback illustration        | `src/v40/immersive-hero.tsx`                                                                   |
-| Original projected geometry                       | `src/v40/orbital-field.js`, `src/v40/continuum-field.js`                                       |
-| Original artwork camera                           | `src/v40/hero-camera.ts`                                                                       |
-| Critical opening styles                           | `src/v40/signature-opening.css`                                                                |
-| Shared secondary material system                  | `src/v40/signature-surfaces.css`, `src/v40/prism-surfaces.css`, `src/v40/continuum-panels.css` |
-| Page state, visibility and bounded animation loop | `src/v40/page.tsx`                                                                             |
-| Destination search and previews                   | `src/v40/mission-desk.ts`                                                                      |
-| Existing content and world atlas                  | `src/v40/sections/`                                                                            |
-| Observation formatting and release presentation   | `src/v40/evidence.ts`                                                                          |
-| Finite interaction styles                         | `src/v40/polish-states.css`, with first-render frame variants in `polish.css`                  |
-| Strict CSP and complete reading edition           | `index.html`, `scripts/prerender-v40.mts`                                                      |
+| Concern                                        | Source                                             |
+| ---------------------------------------------- | -------------------------------------------------- |
+| Front door markup and copy                     | `index.html`                                       |
+| Evidence figures filled from the record        | `scripts/v44-status.mjs`                           |
+| Gate, sun, planet, nebula and stars            | `src/v44/shader.ts`                                |
+| Sky engine: layout, ignition, budget, fallback | `src/v44/sky.ts`                                   |
+| Page wiring: stations, transit, reveal, eggs   | `src/v44/main.ts`                                  |
+| Motion preference and Pause                    | `src/v44/motion.ts`                                |
+| Screening room                                 | `src/v44/cinema.ts`                                |
+| Helm routing model                             | `src/v44/route.ts`                                 |
+| E.V.E. terminal                                | `src/v44/eve.ts`                                   |
+| Bit                                            | `src/v44/bit.ts`, jokes in `src/v40/ship-humor.ts` |
+| Styles                                         | `src/v44/v44.css`                                  |
+| Gate posters for software rendering            | `public/v44/gate-*.webp`                           |
+| Preserved V43 Centauri entry and receipt       | `v43/index.html`, `public/v43/site-release.json`   |
 
-The `v40` source and receipt paths are compatibility paths, not the current version label. Four current interactive worlds remain at `/rooms/<name>/interactive/`, alongside their static reading editions.
+## Performance and motion
+
+The gate runs on a real GPU. Software rasterizers get the painted poster of the same scene, because a full screen shader on a CPU costs more than it gives. The canvas backing store is capped near 2.1 million pixels, steps down at once after a slow frame, renders the sky behind content at half rate, and stops when the tab is hidden, motion is paused or a film plays. Pause and the reduced motion preference leave a complete still page. Nothing makes sound.
 
 ## Verification
 
-Run `npm run verify`. It includes lint, formatting, model and unit checks, the production build, artifact checks, preserved layout and V36 checks, current browser tests, Python release checks, public-data guards, consistency and committed whitespace. The initial stylesheet budget stays at 19,000 gzip bytes. Heavy scenes and secondary styles load on demand. The new canvas stops while hidden, paused, offscreen or covered by cinema; its frame rate and backing-pixel budget are bounded.
-
-The Node core suite runs with `--test-concurrency=1`. Preserved command-deck fixtures use real wall-clock scroll and animation timers; running their files together can starve those timers on shared CI hosts. Serial file execution preserves every assertion and production timer.
-
-For review, run `node scripts/serve-helios-preview.mjs dist 4408 --review`. See [the Centauri release contract](docs/v43/centauri.md) for scope and acceptance. Browser emulation covers desktop and phone viewports; it is not physical phone testing.
-
-The [mobile delivery pass](docs/v42/mobile-performance-preview.md) sends the opening styles with the first document under exact content hashes. The full reading edition, artwork and interactions remain. Its acceptance target is at least 90 in three standard mobile Lighthouse runs, with accessibility and best practices retained.
+Run `npm run verify`. `tests/v44-drummer.test.mjs` covers the helm rule against the Odyssey teaching model, the gate layout at phone, laptop and ultrawide sizes, the evidence filler and the built page: strict security policy, station order, evidence parity with `status.json`, image dimensions and text, and links that resolve inside the build.
 
 ## History and publication
 
-The exact preceding V42 receipt is retained at `/v42/site-release.json`; the earlier First Light receipt remains at `/v41/first-light-release.json`. The [First Light implementation notes](docs/v41/first-light-implementation.md), [First Light presentation](docs/v41/first-light.md), [Afterglow](docs/v41/afterglow.md) and changelog preserve earlier design decisions. The V39, V37 and V35 experiences keep their own original receipts, dates and evidence. Compatibility receipts preserve their historical V37 identity while their frontDoor pointer identifies the current V43 receipt. Publication state is explicit in that current receipt.
-
-Doug approved publication of this revision. Release metadata records that approved candidate; successful deployment still requires the protected repository checks and verification of the ordinary live desktop and phone site. The production rollback baseline is `d1728250e7968141c9d26be0b6ba90927521dec6`.
+V43 Centauri, V42 Omnius, Overruled, V41 First Light, V39.8, V37.17, V35 and the May 2026 command center keep their own receipts, dates and evidence. Publication requires Doug's approval, the protected repository checks and a look at the ordinary live desktop and phone site.

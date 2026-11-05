@@ -1,17 +1,17 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-motion="on">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src 'self' https://www.youtube-nocookie.com; object-src 'none'; base-uri 'none'; form-action 'none'"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
     />
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#0D1017" />
     <meta
       name="description"
-      content="Doug Cashio’s workshop after hours. Local AI, original worlds and a human in command."
+      content="Doug Cashio’s after hours workshop: local AI experiments, original films and worlds you can explore. The machines can think. You still decide."
     />
     <link rel="icon" href="/brand/platinum/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/brand/platinum/favicon-32.png" sizes="32x32" type="image/png" />
@@ -19,31 +19,781 @@
     <link rel="manifest" href="/brand/platinum/site.webmanifest" />
     <link rel="canonical" href="https://cashio.us/" />
     <meta property="og:url" content="https://cashio.us/" />
-    <meta property="og:title" content="Centauri · Imagination, with intention · cAshIo" />
+    <meta property="og:title" content="Doug Cashio · cAshIo · V44 Drummer" />
     <meta
       property="og:description"
-      content="Watch House Cashio, meet The Sovereign, explore the Roadster and take seven experiments for a spin. Human in command."
+      content="Fly through the gate: original films, four worlds, a routing experiment you can steer and a dated record of the lab. Human in command."
     />
     <meta property="og:image" content="https://cashio.us/brand/platinum/share-card.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta
       property="og:image:alt"
-      content="The sculpted platinum cAshIo signature with electric-blue and laser-red orbital inlays. Imagination, with intention."
+      content="The sculpted platinum cAshIo signature with electric blue and laser red inlays."
     />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="preload" href="/v40/assets/orbitron-extended-3.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/v40/assets/exo-2-extended-1.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/v40/assets/jetbrains-mono-extended-1.woff2" as="font" type="font/woff2" crossorigin />
-    <script src="/v40-entry.js" defer></script>
-    <title>Doug Cashio · cAshIo · V43 Centauri</title>
-    <script type="module" src="/src/v40/main.tsx"></script>
+    <link rel="preload" href="/fonts/oxanium-latin-variable.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/exo2-500.woff2" as="font" type="font/woff2" crossorigin />
+    <link
+      rel="preload"
+      as="image"
+      href="/v44/gate-1600.webp"
+      imagesrcset="/v44/gate-portrait-720.webp 720w, /v44/gate-portrait-1080.webp 1080w"
+      media="(orientation: portrait)"
+      fetchpriority="high"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="/v44/gate-1600.webp"
+      imagesrcset="/v44/gate-960.webp 960w, /v44/gate-1600.webp 1600w, /v44/gate-2400.webp 2400w"
+      media="(orientation: landscape)"
+      fetchpriority="high"
+    />
+    <title>Doug Cashio · cAshIo · V44 Drummer</title>
+    <script type="module" src="/src/v44/main.ts"></script>
   </head>
   <body>
-    <div id="v40-root" class="continuum-root"></div>
-    <noscript id="reading-notice"
-      >cAshIo V43 is an interactive local AI workshop. The reading edition is being prepared. Contact Doug at
-      <a href="mailto:doug@cashio.us">doug@cashio.us</a>.</noscript
+    <a class="skip" href="#main">Skip to content</a>
+
+    <div class="sky" data-stage="gate" aria-hidden="true">
+      <picture>
+        <source
+          media="(orientation: portrait)"
+          srcset="/v44/gate-portrait-720.webp 720w, /v44/gate-portrait-1080.webp 1080w"
+          sizes="100vw"
+        />
+        <img
+          class="sky-poster"
+          src="/v44/gate-1600.webp"
+          srcset="/v44/gate-960.webp 960w, /v44/gate-1600.webp 1600w, /v44/gate-2400.webp 2400w"
+          sizes="100vw"
+          width="1600"
+          height="900"
+          alt=""
+          fetchpriority="high"
+          decoding="async"
+        />
+      </picture>
+      <canvas class="sky-canvas"></canvas>
+      <div class="sky-scrim"></div>
+    </div>
+
+    <header class="hud" data-hud>
+      <div class="hud-bar frame">
+        <a class="brand" href="#arrival" aria-label="cAshIo, back to the gate">
+          <img src="/brand/platinum/icon.svg" width="30" height="30" alt="" />
+          <img class="brand-word" src="/brand/platinum/wordmark.svg" width="104" height="24" alt="" />
+        </a>
+        <nav class="stations" aria-label="Stations">
+          <ol>
+            <li>
+              <a href="#arrival" data-station-link="arrival"><span class="num">01</span> Arrival</a>
+            </li>
+            <li>
+              <a href="#cinema" data-station-link="cinema"><span class="num">02</span> Cinema</a>
+            </li>
+            <li>
+              <a href="#worlds" data-station-link="worlds"><span class="num">03</span> Worlds</a>
+            </li>
+            <li>
+              <a href="#workshop" data-station-link="workshop"><span class="num">04</span> Workshop</a>
+            </li>
+            <li>
+              <a href="#helm" data-station-link="helm"><span class="num">05</span> Helm</a>
+            </li>
+            <li>
+              <a href="#evidence" data-station-link="evidence"><span class="num">06</span> Evidence</a>
+            </li>
+            <li>
+              <a href="#doug" data-station-link="doug"><span class="num">07</span> Doug</a>
+            </li>
+          </ol>
+        </nav>
+        <div class="hud-actions">
+          <button
+            type="button"
+            class="chip menu-toggle"
+            data-menu-toggle
+            aria-expanded="false"
+            aria-controls="station-sheet"
+          >
+            Stations
+          </button>
+          <button type="button" class="chip" data-motion-toggle aria-pressed="false" aria-label="Pause motion">
+            <span class="motion-long" data-motion-long>Pause motion</span
+            ><span class="motion-short" data-motion-short>Pause</span>
+          </button>
+          <a class="chip chip-solid" href="#contact">Say hello</a>
+        </div>
+      </div>
+      <div class="transit-line" aria-hidden="true"><span data-transit-fill></span></div>
+      <div class="station-sheet" id="station-sheet" hidden>
+        <ol>
+          <li>
+            <a href="#arrival"><span class="num">01</span> Arrival</a>
+          </li>
+          <li>
+            <a href="#cinema"><span class="num">02</span> Cinema</a>
+          </li>
+          <li>
+            <a href="#worlds"><span class="num">03</span> Worlds</a>
+          </li>
+          <li>
+            <a href="#workshop"><span class="num">04</span> Workshop</a>
+          </li>
+          <li>
+            <a href="#helm"><span class="num">05</span> Helm</a>
+          </li>
+          <li>
+            <a href="#evidence"><span class="num">06</span> Evidence</a>
+          </li>
+          <li>
+            <a href="#doug"><span class="num">07</span> Doug</a>
+          </li>
+        </ol>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="station arrival" id="arrival" aria-labelledby="arrival-title" data-station="arrival">
+        <div class="frame arrival-frame">
+          <div class="arrival-copy">
+            <p class="kicker"><span class="dot"></span>Doug Cashio · Local AI workshop</p>
+            <h1 id="arrival-title" class="headline">
+              <span class="line">The machines</span>
+              <span class="line">can think.</span>
+              <span class="line accent">You still decide.</span>
+            </h1>
+            <p class="lede">
+              I’m Doug Cashio. This is my after hours workshop for local AI experiments, original films and worlds you
+              can explore.
+            </p>
+            <div class="arrival-actions">
+              <a class="cta" href="#cinema" data-transit-go>
+                <span class="cta-label">Begin the transit</span>
+                <span class="cta-note">Seven stations. Sound stays off.</span>
+                <span class="cta-arrow" aria-hidden="true">↓</span>
+              </a>
+            </div>
+          </div>
+          <div class="gate-readout" aria-live="polite">
+            <p><span class="label">Gate</span> <span data-gate-status>Aligning</span></p>
+            <p><span class="label">Helm</span> Human</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="station cinema" id="cinema" aria-labelledby="cinema-title" data-station="cinema">
+        <div class="frame">
+          <header class="station-head">
+            <p class="station-num" aria-hidden="true">02</p>
+            <div>
+              <p class="kicker">Station 02 · Cinema</p>
+              <h2 id="cinema-title">House Cashio: The Trailer</h2>
+              <p class="sub">A subscription villain, an unlikely crew, and a cat who was not consulted.</p>
+            </div>
+          </header>
+          <div class="cinema-grid">
+            <figure class="screen hull" data-screen>
+              <div class="screen-media">
+                <img
+                  class="screen-poster"
+                  src="/v40/posters/cashio-trailer-poster-960-0dc12884eb9c.webp"
+                  srcset="
+                    /v40/posters/cashio-trailer-poster-640-417bd0f1e6e8.webp   640w,
+                    /v40/posters/cashio-trailer-poster-960-0dc12884eb9c.webp   960w,
+                    /v40/posters/cashio-trailer-poster-1280-0926f58aed40.webp 1280w
+                  "
+                  sizes="(max-width: 1000px) 100vw, 860px"
+                  width="1280"
+                  height="720"
+                  alt="House Cashio: The Trailer poster. Rated MH: Mostly Harmless. The cat was not consulted."
+                  loading="lazy"
+                  decoding="async"
+                  data-screen-poster
+                />
+                <video
+                  class="screen-video"
+                  preload="none"
+                  playsinline
+                  controls
+                  muted
+                  hidden
+                  data-screen-video
+                  aria-label="House Cashio: The Trailer"
+                ></video>
+                <button type="button" class="play" data-screen-play>
+                  <span class="play-icon" aria-hidden="true"></span>
+                  <span class="play-text"
+                    ><span data-screen-label>Play the trailer</span
+                    ><small data-screen-meta>61 seconds · Starts muted · Captions on</small></span
+                  >
+                </button>
+              </div>
+              <figcaption class="screen-caption">
+                <span data-screen-title>House Cashio: The Trailer</span>
+                <a href="/assets/hero/cashio-trailer-text.vtt">Read the film text</a>
+              </figcaption>
+            </figure>
+            <div class="reel">
+              <h3>From the screening room</h3>
+              <p class="swipe-hint" aria-hidden="true">Swipe for more films →</p>
+              <ul class="reel-list">
+                <li>
+                  <button type="button" class="reel-item" data-film="trailer" aria-pressed="true">
+                    <img
+                      src="/v40/posters/cashio-trailer-poster-320-03211a533579.webp"
+                      width="320"
+                      height="180"
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <span><strong>House Cashio</strong><small>Trailer parody · 61 seconds</small></span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="reel-item" data-film="portal" aria-pressed="false">
+                    <img
+                      src="/v40/thumbs/zenith-portal-arrival-poster-320.webp"
+                      width="320"
+                      height="180"
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <span><strong>Portal Arrival</strong><small>Silent short · 5 seconds</small></span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="reel-item" data-film="flyby" aria-pressed="false">
+                    <img
+                      src="/v40/posters/zenith-starship-flyby-poster-320-cb2b1898d62c.webp"
+                      width="320"
+                      height="180"
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <span><strong>Starship Flyby</strong><small>Silent short · 5 seconds</small></span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="reel-item" data-film="longview" aria-pressed="false">
+                    <img
+                      src="/v40/thumbs/zenith-the-long-view-poster-320.webp"
+                      width="320"
+                      height="180"
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <span><strong>The Long View</strong><small>Silent short · 5 seconds</small></span>
+                  </button>
+                </li>
+              </ul>
+              <a class="sovereign hull" href="https://www.youtube.com/watch?v=nQfPT3-sJzk" rel="noopener">
+                <img
+                  src="/v40/thumbs/sovereign-v9-poster-320.webp"
+                  width="320"
+                  height="180"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span>
+                  <strong>The Sovereign</strong>
+                  <small>One man. Several providers. No remaining hobbies. A two minute parody on YouTube ↗</small>
+                </span>
+              </a>
+              <a class="text-link" href="/rooms/studios/interactive/">Enter the Studios for the full collection ↗</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="station worlds" id="worlds" aria-labelledby="worlds-title" data-station="worlds">
+        <div class="frame">
+          <header class="station-head">
+            <p class="station-num" aria-hidden="true">03</p>
+            <div>
+              <p class="kicker">Station 03 · Worlds</p>
+              <h2 id="worlds-title">Pick a world. Stay a while.</h2>
+              <p class="sub">
+                Four original worlds, each with a different kind of curiosity. Fly, tinker, watch or read.
+              </p>
+            </div>
+          </header>
+          <p class="swipe-hint" aria-hidden="true">Swipe for all four worlds →</p>
+          <ul class="world-grid">
+            <li class="world hull" data-tilt>
+              <img
+                src="/v40/thumbs/room-starship-640.webp"
+                srcset="/v40/thumbs/room-starship-640.webp 640w, /v40/thumbs/room-starship-1280.webp 1280w"
+                sizes="(max-width: 760px) 82vw, (max-width: 1100px) 45vw, 320px"
+                width="640"
+                height="360"
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+              <div class="world-copy">
+                <p class="world-tag">Systems you can fly</p>
+                <h3>Starship lab</h3>
+                <p>Trace twelve requests, cut the cloud link and see which work stays aboard.</p>
+                <p class="world-links">
+                  <a href="/rooms/starship/interactive/">Board the starship ↗</a>
+                  <a class="quiet" href="/rooms/starship/">Reading edition</a>
+                </p>
+              </div>
+            </li>
+            <li class="world hull" data-tilt>
+              <img
+                src="/v40/thumbs/room-principles-640.webp"
+                srcset="/v40/thumbs/room-principles-640.webp 640w, /v40/thumbs/room-principles-1280.webp 1280w"
+                sizes="(max-width: 760px) 82vw, (max-width: 1100px) 45vw, 320px"
+                width="640"
+                height="360"
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+              <div class="world-copy">
+                <p class="world-tag">Ideas you can turn</p>
+                <h3>Principles engine</h3>
+                <p>Turn an instrument and follow a principle into the decision it changes.</p>
+                <p class="world-links">
+                  <a href="/rooms/principles/interactive/">Turn the instrument ↗</a>
+                  <a class="quiet" href="/rooms/principles/">Reading edition</a>
+                </p>
+              </div>
+            </li>
+            <li class="world hull" data-tilt>
+              <img
+                src="/v40/thumbs/room-studios-threshold-640.webp"
+                srcset="
+                  /v40/thumbs/room-studios-threshold-640.webp   640w,
+                  /v40/thumbs/room-studios-threshold-1280.webp 1280w
+                "
+                sizes="(max-width: 760px) 82vw, (max-width: 1100px) 45vw, 320px"
+                width="640"
+                height="360"
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+              <div class="world-copy">
+                <p class="world-tag">A little room for wonder</p>
+                <h3>The Studios</h3>
+                <p>Light, signatures and short films. A ship, a workshop, a distant world.</p>
+                <p class="world-links">
+                  <a href="/rooms/studios/interactive/">Follow the light ↗</a>
+                  <a class="quiet" href="/rooms/studios/">Reading edition</a>
+                </p>
+              </div>
+            </li>
+            <li class="world hull" data-tilt>
+              <img
+                src="/v40/thumbs/room-heritage-640.webp"
+                srcset="/v40/thumbs/room-heritage-640.webp 640w, /v40/thumbs/room-heritage-1280.webp 1280w"
+                sizes="(max-width: 760px) 82vw, (max-width: 1100px) 45vw, 320px"
+                width="640"
+                height="360"
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+              <div class="world-copy">
+                <p class="world-tag">Curiosity with a flight plan</p>
+                <h3>Flight heritage</h3>
+                <p>Four aviation pioneers and what a test pilot would check before trusting anything.</p>
+                <p class="world-links">
+                  <a href="/rooms/heritage/interactive/">Meet the pioneers ↗</a>
+                  <a class="quiet" href="/rooms/heritage/">Reading edition</a>
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="station workshop" id="workshop" aria-labelledby="workshop-title" data-station="workshop">
+        <div class="frame">
+          <header class="station-head">
+            <p class="station-num" aria-hidden="true">04</p>
+            <div>
+              <p class="kicker">Station 04 · Workshop</p>
+              <h2 id="workshop-title">Built at home. Open to inspect.</h2>
+              <p class="sub">
+                Two servers I own, Zeus and Apollo, do the computing. Hermes, my job scheduler, decides where each task
+                goes. I watch and approve.
+              </p>
+            </div>
+          </header>
+          <div class="workshop-grid">
+            <a class="roadster hull" href="https://roadster-studio.hotsaucecashio.chatgpt.site/" rel="noopener">
+              <img
+                src="/images/roadster-studio-960.webp"
+                srcset="/images/roadster-studio-640.webp 640w, /images/roadster-studio-960.webp 960w"
+                sizes="(max-width: 900px) 100vw, 720px"
+                width="960"
+                height="540"
+                alt="The Roadster Studio concept car, a white wedge shaped roadster in a dark studio"
+                loading="lazy"
+                decoding="async"
+              />
+              <span class="roadster-copy">
+                <span class="world-tag">Independent design study</span>
+                <strong>Roadster Studio</strong>
+                <span
+                  >A roadster. Ten thrusters. One unreasonable departure. Compose a photograph in the full studio
+                  ↗</span
+                >
+              </span>
+            </a>
+            <figure class="system-map hull">
+              <svg viewBox="0 0 520 300" role="img" aria-labelledby="map-title map-desc">
+                <title id="map-title">How a request moves through the lab</title>
+                <desc id="map-desc">
+                  A person sends intent to Hermes, the scheduler. Hermes places work on Zeus or Apollo, and the result
+                  returns to the person for review.
+                </desc>
+                <defs>
+                  <linearGradient id="wire" x1="0" x2="1">
+                    <stop offset="0" stop-color="#3578ff" stop-opacity="0.2" />
+                    <stop offset="1" stop-color="#9abeff" stop-opacity="0.9" />
+                  </linearGradient>
+                </defs>
+                <path class="wire" d="M70 150 C150 150 160 150 230 150" />
+                <path class="wire" d="M290 150 C350 150 360 80 420 80" />
+                <path class="wire" d="M290 150 C350 150 360 220 420 220" />
+                <path class="wire wire-back" d="M450 112 C470 190 300 268 70 186" />
+                <circle class="packet packet-a" r="4" />
+                <circle class="packet packet-b" r="4" />
+                <g class="node node-human" transform="translate(40 150)">
+                  <circle r="30" />
+                  <text y="5">You</text>
+                </g>
+                <g class="node node-hermes" transform="translate(260 150)">
+                  <rect x="-34" y="-30" width="68" height="60" rx="10" />
+                  <text y="-2">Hermes</text>
+                  <text class="node-sub" y="16">scheduler</text>
+                </g>
+                <g class="node" transform="translate(450 80)">
+                  <rect x="-34" y="-26" width="68" height="52" rx="8" />
+                  <text y="5">Zeus</text>
+                </g>
+                <g class="node" transform="translate(450 220)">
+                  <rect x="-34" y="-26" width="68" height="52" rx="8" />
+                  <text y="5">Apollo</text>
+                </g>
+                <text class="map-note" x="190" y="284">Results come back to a person for review</text>
+              </svg>
+              <figcaption>A conceptual map. Private addresses and per host roles stay private.</figcaption>
+            </figure>
+            <article class="receipt hull">
+              <p class="world-tag">A backup with a receipt</p>
+              <h3>A backup needs evidence.</h3>
+              <p>Check the latest snapshot for each guest, then publish the date and the limits with the result.</p>
+              <p class="receipt-figure">
+                <strong>{{status.backup.latestVerified}} of {{status.backup.latestChecked}}</strong> latest reported
+                snapshots passed their integrity check on {{status.verifiedDay}}.
+              </p>
+              <p class="fine">No new restore rehearsal was run, so full recovery remains unproven.</p>
+              <a class="text-link" href="#evidence">Read the dated record ↓</a>
+            </article>
+            <article class="receipt hull">
+              <p class="world-tag">A tool to take with you</p>
+              <h3>A brief worth keeping.</h3>
+              <p>
+                Turn a question into a clear decision: what was observed, the source, what is unknown and who decides.
+              </p>
+              <p class="fine">An example made from the published record, not a new check.</p>
+              <a class="text-link" href="/artifacts/decision-brief-example.txt" download>Download an example brief ↓</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="station helm" id="helm" aria-labelledby="helm-title" data-station="helm">
+        <div class="frame">
+          <header class="station-head">
+            <p class="station-num" aria-hidden="true">05</p>
+            <div>
+              <p class="kicker">Station 05 · Helm</p>
+              <h2 id="helm-title">Take the helm.</h2>
+              <p class="sub">
+                Change an input and watch the route change. A teaching model of how I route work, running entirely in
+                your browser. No request is sent.
+              </p>
+            </div>
+          </header>
+          <div class="helm-grid hull">
+            <form class="helm-controls" data-helm aria-label="Routing inputs">
+              <fieldset>
+                <legend>Choose the work</legend>
+                <div class="segmented">
+                  <label><input type="radio" name="intent" value="draft" checked /> <span>Draft</span></label>
+                  <label><input type="radio" name="intent" value="research" /> <span>Research</span></label>
+                  <label><input type="radio" name="intent" value="analyze" /> <span>Analyze</span></label>
+                </div>
+              </fieldset>
+              <fieldset>
+                <legend>Add a boundary</legend>
+                <label class="switch"
+                  ><input type="checkbox" name="privateData" /> <span class="switch-track" aria-hidden="true"></span>
+                  <span>Contains private information</span></label
+                >
+                <label class="switch"
+                  ><input type="checkbox" name="sources" /> <span class="switch-track" aria-hidden="true"></span>
+                  <span>Requires attributable sources</span></label
+                >
+              </fieldset>
+              <p class="fine">Try this: choose Research, then add private information. Watch what wins.</p>
+            </form>
+            <div class="helm-result" aria-live="polite" data-helm-result>
+              <p class="kicker">Route chosen</p>
+              <p class="lane" data-helm-lane>Workhorse</p>
+              <p class="code"><span data-helm-code>Qualified</span></p>
+              <p class="detail" data-helm-detail>
+                Routine drafting fits a general work lane. Greater expense needs a reason.
+              </p>
+              <ol class="steps" data-helm-steps>
+                <li>Intent identified</li>
+                <li>Public input accepted</li>
+                <li>Workhorse lane selected</li>
+                <li>Decision recorded</li>
+                <li>Operator reviews the draft</li>
+              </ol>
+            </div>
+          </div>
+          <p class="after-note">
+            Six more experiments, from escalation to exposure triage, live in the previous edition.
+            <a href="/v43/#studies">Open all seven experiments ↗</a>
+          </p>
+        </div>
+      </section>
+
+      <section class="station evidence" id="evidence" aria-labelledby="evidence-title" data-station="evidence">
+        <div class="frame">
+          <header class="station-head">
+            <p class="station-num" aria-hidden="true">06</p>
+            <div>
+              <p class="kicker">Station 06 · Evidence</p>
+              <h2 id="evidence-title">Trust has a timestamp.</h2>
+              <p class="sub">A dated look inside the lab, with the limits printed beside the numbers.</p>
+            </div>
+          </header>
+          <div class="evidence-grid">
+            <div class="readings hull">
+              <p class="observed">
+                <span class="label">Observed</span> <time datetime="{{status.verified}}">{{status.verifiedDay}}</time>
+                <span class="label">Read only probe</span>
+              </p>
+              <dl class="figures">
+                <div>
+                  <dt>Containers running</dt>
+                  <dd><strong>{{status.containers.running}}</strong> of {{status.containers.documented}}</dd>
+                </div>
+                <div>
+                  <dt>Virtual machines</dt>
+                  <dd><strong>{{status.virtualMachines.running}}</strong> of {{status.virtualMachines.documented}}</dd>
+                </div>
+                <div>
+                  <dt>Hosts reporting</dt>
+                  <dd><strong>{{status.cluster.hostsOnline}}</strong></dd>
+                </div>
+                <div>
+                  <dt>Latest snapshots verified</dt>
+                  <dd><strong>{{status.backup.latestVerified}}</strong> of {{status.backup.latestChecked}}</dd>
+                </div>
+              </dl>
+              <p class="fine">
+                These counts and integrity checks do not establish application health, full recovery or current AI
+                routing. Private addresses, service names, spending and the model catalog stay private. The browser
+                experiments are simulations.
+              </p>
+              <details class="withheld">
+                <summary>What is withheld, and why</summary>
+                <ul>
+                  {{status.withheld}}
+                </ul>
+              </details>
+              <p class="evidence-links">
+                <a href="/status.json">Read the latest export ↗</a>
+                <a href="/evidence/console-snapshot-2026-10-03.json">Preserved console recovery receipt ↗</a>
+              </p>
+              <details class="withheld">
+                <summary>Earlier dated records</summary>
+                <ul class="record-list">
+                  {{status.history}}
+                </ul>
+              </details>
+            </div>
+            <div class="eve hull" data-eve data-record="{{status.record}}">
+              <div class="eve-top">
+                <p><strong>E.V.E.</strong> <span>Evaluation Verification Engine</span></p>
+                <span class="eve-led" aria-hidden="true"></span>
+              </div>
+              <div
+                class="eve-log"
+                role="log"
+                aria-live="polite"
+                aria-label="E.V.E. console output"
+                tabindex="0"
+                data-eve-log
+              >
+                <p>E.V.E. online. I explain the dated record and its limits.</p>
+                <p>Type <kbd>help</kbd>, or try <kbd>status</kbd>, <kbd>backups</kbd> or <kbd>limits</kbd>.</p>
+              </div>
+              <form class="eve-input" data-eve-form>
+                <label for="eve-cmd" class="eve-prompt">eve&gt;</label>
+                <input
+                  id="eve-cmd"
+                  name="cmd"
+                  autocomplete="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  enterkeyhint="send"
+                  placeholder="type a command"
+                />
+                <button type="submit" class="chip">Run</button>
+              </form>
+              <div class="eve-quick" aria-label="Quick commands">
+                <button type="button" class="chip" data-eve-cmd="status">status</button>
+                <button type="button" class="chip" data-eve-cmd="backups">backups</button>
+                <button type="button" class="chip" data-eve-cmd="limits">limits</button>
+                <button type="button" class="chip" data-eve-cmd="help">help</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="station doug" id="doug" aria-labelledby="doug-title" data-station="doug">
+        <div class="frame">
+          <header class="station-head">
+            <p class="station-num" aria-hidden="true">07</p>
+            <div>
+              <p class="kicker">Station 07 · Doug</p>
+              <h2 id="doug-title">A workbench for the things I keep wondering about.</h2>
+            </div>
+          </header>
+          <div class="doug-grid">
+            <div class="bio">
+              <p>
+                I started in IT in 1996, the year Quake went truly 3D after the brilliant 2.5D worlds of Wolfenstein and
+                Doom. I still like systems I can take apart, explain and put back together.
+              </p>
+              <p>
+                By day, I’m a Principal Solutions Consultant helping managed service providers deliver security and
+                cloud services, with more than twenty years in cybersecurity. After hours, that curiosity meets
+                aviation, science fiction and the pleasure of making something work.
+              </p>
+              <ul class="profile-links">
+                <li><a class="chip" href="https://www.linkedin.com/in/dougcashio/" rel="me noopener">LinkedIn</a></li>
+                <li>
+                  <a class="chip" href="https://github.com/jamescashio" rel="me noopener">GitHub · @jamescashio</a>
+                </li>
+                <li>
+                  <a class="chip" href="https://www.credly.com/users/james-cashio/badges/credly" rel="me noopener"
+                    >Credly · @james-cashio</a
+                  >
+                </li>
+              </ul>
+              <p class="fine">The GitHub and Credly handles use my first name, James. Everyone calls me Doug.</p>
+            </div>
+            <div class="contact hull" id="contact">
+              <img
+                class="signature"
+                src="/brand/platinum/signature-840.webp"
+                srcset="/brand/platinum/signature-420.webp 420w, /brand/platinum/signature-840.webp 840w"
+                sizes="(max-width: 700px) 80vw, 420px"
+                width="840"
+                height="387"
+                alt="The cAshIo signature in sculpted platinum with a red A and a blue I"
+                loading="lazy"
+                decoding="async"
+              />
+              <h2 class="contact-title">Don’t panic. Say hello.</h2>
+              <p>
+                Have a question about local AI, private data or human judgment? Tell me what you’re trying to do. I’m
+                open to speaking, mentoring and comparing notes. The answer is probably not 42.
+              </p>
+              <p class="contact-actions">
+                <!--email_off--><a
+                  class="cta cta-small"
+                  href="mailto:doug@cashio.us?subject=Comparing%20notes%20from%20cashio.us"
+                  >doug@cashio.us</a
+                ><!--/email_off-->
+                <button type="button" class="chip" data-copy-email>Copy email address</button>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="frame footer-grid">
+        <div>
+          <p>
+            <strong>The Human Reckoning.</strong> Frank Herbert’s <cite>Dune</cite> taught caution about thinking
+            machines; Douglas Adams’s <cite>Hitchhiker’s Guide</cite> taught the rest: keep a towel handy and don’t
+            panic. Capable tools. Human judgment in command.
+          </p>
+          <p class="fine">
+            V44 · Drummer, named for the captain of <cite>The Expanse</cite> who keeps a cool head when it counts.
+            Directed by Doug Cashio. Updated Thu Nov 5, 2026.
+          </p>
+          <p class="fine">A personal site. The builds and views here are my own and do not speak for my employer.</p>
+        </div>
+        <nav aria-label="Previous editions and project links">
+          <ul class="footer-links">
+            <li><a href="/v43/">V43 Centauri · previous edition</a></li>
+            <li><a href="/v39/">V39.8 First Light</a></li>
+            <li><a href="/odyssey.html">V37.17 Continuum</a></li>
+            <li><a href="/command-deck.html">V35 command deck</a></li>
+            <li><a href="/cashio.html">My AI workspace</a></li>
+            <li><a href="https://github.com/jamescashio/jamescashio.github.io" rel="noopener">View source</a></li>
+            <li>
+              <a href="https://github.com/jamescashio/jamescashio.github.io/blob/main/CHANGELOG.md" rel="noopener"
+                >Changelog</a
+              >
+            </li>
+            <li>
+              <a href="https://github.com/jamescashio/jamescashio.github.io/blob/main/PRIVACY.md" rel="noopener"
+                >Privacy</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </footer>
+
+    <button type="button" class="bit" data-bit-open aria-haspopup="dialog" aria-label="Talk to Bit, your copilot">
+      <canvas class="bit-face" width="96" height="96" aria-hidden="true"></canvas>
+      <span class="bit-name">Bit</span>
+    </button>
+    <dialog class="bit-dialog" data-bit-dialog aria-labelledby="bit-title">
+      <div class="bit-head">
+        <p id="bit-title"><strong>Bit</strong> <span>your copilot</span></p>
+        <button type="button" class="chip" data-bit-close>Close</button>
+      </div>
+      <p class="bit-line" data-bit-line aria-live="polite">
+        Welcome aboard. The gate is open and the coffee is mostly harmless.
+      </p>
+      <div class="bit-actions">
+        <button type="button" class="chip" data-bit-joke>Tell me a joke</button>
+        <button type="button" class="chip" data-bit-go="helm">Take me to the helm</button>
+        <button type="button" class="chip" data-bit-go="evidence">Open E.V.E.</button>
+      </div>
+    </dialog>
+    <noscript
+      ><p class="noscript">
+        This page reads fully without JavaScript. The gate, the helm and E.V.E. need JavaScript to move.
+      </p></noscript
     >
   </body>
 </html>

@@ -5,7 +5,8 @@ import { chromium, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
 const url = process.env.V40_URL;
-const currentRelease = JSON.parse(await readFile(new URL("../public/v40/site-release.json", import.meta.url), "utf8"));
+// This suite exercises the preserved V43 edition at /v43/, so its identity comes from the preserved receipt.
+const currentRelease = JSON.parse(await readFile(new URL("../public/v43/site-release.json", import.meta.url), "utf8"));
 const currentVersionLabel = `V${currentRelease.experienceVersion.split(".")[0]}`;
 const currentTitle = `Doug Cashio · cAshIo · ${currentVersionLabel} ${currentRelease.presentation.name}`;
 let browser;
@@ -78,7 +79,7 @@ test("The logo reveal is explicit, square, playable, and pauses the other identi
       await expect(invitation).toHaveAttribute("href", "/cashio.html#logo-reveal");
       assert.equal(media.length, 0, "the homepage invitation never downloads the reveal video");
       await invitation.click();
-      await expect(page).toHaveURL(new URL("cashio.html#logo-reveal", url).href);
+      await expect(page).toHaveURL(new URL("/cashio.html#logo-reveal", url).href);
       const reveal = page.locator("#logo-reveal-player");
       await expect(reveal).toBeVisible();
       await page.locator("#logo-reveal summary").click();
@@ -343,7 +344,7 @@ test("Every mobile Menu section stays in V40 and survives a reload", async (t) =
       await expect(link).toHaveAttribute("href", `#${id}`);
       await link.tap();
       await expect(page.locator("#mission-dialog")).not.toBeVisible();
-      assert.equal(new URL(page.url()).pathname, "/");
+      assert.equal(new URL(page.url()).pathname, new URL(url).pathname);
       assert.equal(new URL(page.url()).hash, `#${id}`);
       await expect(page.locator(`#${id}`)).toBeFocused();
       await expect(page.locator(`#${id}`)).toBeInViewport();
@@ -355,7 +356,7 @@ test("Every mobile Menu section stays in V40 and survives a reload", async (t) =
       await page.reload();
       await expect(page.locator("#mission-dialog")).toBeAttached();
       await expect(page).toHaveTitle(currentTitle);
-      assert.equal(new URL(page.url()).pathname, "/");
+      assert.equal(new URL(page.url()).pathname, new URL(url).pathname);
       assert.equal(new URL(page.url()).hash, `#${id}`);
       await expect(page.locator(`#${id}`)).toBeInViewport();
       await page.evaluate(async () => {
@@ -487,13 +488,14 @@ test("Shared scenarios reject inherited keys while restoring valid bounded value
 test("Experience bookmarks stay in V40 and explicit version archives stay available", async (t) => {
   const page = await visit(t);
   for (const [relative, pathname, hash] of [
-    ["/#build=hermes", "/", "#experiment=hermes"],
-    ["/#flight=board", "/", "#flight=board"],
-    ["/#lensing", "/", "#lensing"],
-    ["/#glossary", "/", "#workshop"],
-    ["/#atlas-inspection", "/", "#universe"],
-    ["/#request-journey", "/", "#universe"],
-    ["/v40/#contact", "/", "#contact"],
+    // V43 deep links on the V44 front door open the preserved edition, which restores them as before.
+    ["/#build=hermes", "/v43/", "#experiment=hermes"],
+    ["/#flight=board", "/v43/", "#flight=board"],
+    ["/#lensing", "/v43/", "#lensing"],
+    ["/#glossary", "/v43/", "#workshop"],
+    ["/#atlas-inspection", "/v43/", "#universe"],
+    ["/#request-journey", "/v43/", "#universe"],
+    ["/v40/#contact", "/v43/", "#contact"],
     ["/#deck=eve", "/command-deck.html", "#deck=eve"],
   ]) {
     await page.goto(new URL(relative, url).href);
@@ -517,37 +519,37 @@ test("Boarding, reload, Back and closing a scene keep visitors in V40", async (t
     // First Flight loads its scene on demand; a cold cache can need more than five seconds.
     await expect(page.locator("#helios-flight dialog")).toBeVisible({ timeout: 15000 });
     if (width === 390) await audit(page, "#helios-flight");
-    assert.equal(new URL(page.url()).pathname, "/");
+    assert.equal(new URL(page.url()).pathname, new URL(url).pathname);
     assert.equal(new URL(page.url()).hash, "#flight=board");
     await page.reload();
     await expect(page.locator("#helios-flight dialog")).toBeVisible({ timeout: 15000 });
-    assert.equal(new URL(page.url()).pathname, "/");
+    assert.equal(new URL(page.url()).pathname, new URL(url).pathname);
     await page.keyboard.press("Escape");
     await expect(page.locator("#helios-flight")).toHaveCount(0);
     await expect(page.locator("#v40-root")).not.toHaveAttribute("inert");
     await page.locator('a[href="#signature"]').click();
     await expect(page.locator("#helios-studio .brand-studio")).toBeVisible();
     if (width === 390) await audit(page, "#helios-studio");
-    assert.equal(new URL(page.url()).pathname, "/");
+    assert.equal(new URL(page.url()).pathname, new URL(url).pathname);
     await page.goBack();
     await expect(page.locator("#helios-studio")).toHaveCount(0);
     await expect(page.locator("#v40-root")).not.toHaveAttribute("inert");
     await page.locator('a[href="#experiment=briefing"]').first().click();
     await expect(page.locator("#local-experiment")).toHaveAttribute("data-lab", "briefing");
-    assert.equal(new URL(page.url()).pathname, "/");
+    assert.equal(new URL(page.url()).pathname, new URL(url).pathname);
   }
 });
 
 test("An older build bookmark does not trap the Back button", async (t) => {
   const page = await visit(t, { hash: "#work" });
-  await page.goto(new URL("/#build=hermes", url).href);
+  await page.goto(new URL("#build=hermes", url).href);
   await expect.poll(() => new URL(page.url()).hash.startsWith("#experiment=hermes")).toBe(true);
   await page.goBack();
   await expect.poll(() => new URL(page.url()).hash).toBe("#work");
   await expect(page.locator("#v40-root h1")).toBeAttached();
 });
 
-test("Every current room works and its return links lead to the V40 homepage", async (t) => {
+test("Every current room works and its return links lead to the V44 front door", async (t) => {
   for (const width of [1440, 390, 320]) {
     const page = await visit(t, { width });
     for (const id of ["starship", "principles", "studios", "heritage"]) {
@@ -571,14 +573,14 @@ test("Every current room works and its return links lead to the V40 homepage", a
         await page.locator("button[data-pilot]").nth(1).click();
         await expect(page.locator("#hg-head")).not.toHaveText(before);
       }
-      await page.locator('header a[href="/#rooms"]').click();
-      await expect(page.locator("#v40-root h1")).toBeVisible();
+      await page.locator('header a[href="/#worlds"]').click();
+      await expect(page.locator("#arrival h1")).toBeVisible();
       assert.equal(new URL(page.url()).pathname, "/");
-      assert.equal(new URL(page.url()).hash, "#rooms");
+      assert.equal(new URL(page.url()).hash, "#worlds");
     }
     await page.goto(new URL("/rooms/studios/", url).href);
-    await page.locator('header a[href="/#rooms"]').click();
-    await expect(page.locator("#v40-root h1")).toBeVisible();
+    await page.locator('header a[href="/#worlds"]').click();
+    await expect(page.locator("#arrival h1")).toBeVisible();
     assert.equal(new URL(page.url()).pathname, "/");
   }
 });
@@ -591,7 +593,7 @@ test("A completed flight brings the requested V40 contact section into view and 
   await expect(page.locator("#helios-flight")).toHaveCount(0);
   await expect(page.locator("#contact")).toBeInViewport();
   await expect(page.locator("#contact")).toBeFocused();
-  assert.equal(new URL(page.url()).pathname, "/");
+  assert.equal(new URL(page.url()).pathname, new URL(url).pathname);
 });
 
 test("Closing a follow-on film does not leave a closed scene in Back history", async (t) => {
@@ -615,13 +617,13 @@ test("Room motion respects the homepage's saved pause and can be changed locally
   await expect(page.locator("html")).toHaveClass(/motion-off/);
   await page.getByRole("button", { name: "Resume motion", exact: true }).click();
   await expect(page.locator("html")).not.toHaveClass(/motion-off/);
-  await page.locator('header a[href="/#rooms"]').click();
+  await page.locator('header a[href="/#worlds"]').click();
   await expect(page.locator("html")).toHaveAttribute("data-motion", "on");
 });
 
 test("An older online mission bookmark restores its exact cloud and privacy choices", async (t) => {
   const page = await visit(t);
-  await page.goto(new URL("/#mission=cloud.private.online.permitted", url).href);
+  await page.goto(new URL("#mission=cloud.private.online.permitted", url).href);
   await expect(page.locator("#starship")).toHaveAttribute("data-room-state", "ready");
   await expect(page.locator('[data-arch="cloud"]')).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator('[data-sens="private"]')).toHaveAttribute("aria-pressed", "true");
@@ -635,7 +637,7 @@ test("Sanctuary's working-studies action moves to the requested V40 section", as
   await expect(page.locator("#helios-studio")).toHaveCount(0);
   await expect(page.locator("#work")).toBeInViewport();
   await expect(page.locator("#work")).toBeFocused();
-  assert.equal(new URL(page.url()).pathname, "/");
+  assert.equal(new URL(page.url()).pathname, new URL(url).pathname);
 });
 
 test("The static principles strip exposes each principle once and preserves the observation date", async (t) => {
@@ -669,7 +671,7 @@ test("The quiet orbit link opens the correct silent film and returns focus at ev
     await page.keyboard.press("Escape");
     await expect(page.locator("#helios-studio")).toHaveCount(0);
     await expect(opener).toBeFocused();
-    assert.equal(new URL(page.url()).pathname, "/");
+    assert.equal(new URL(page.url()).pathname, new URL(url).pathname);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
   }
 });

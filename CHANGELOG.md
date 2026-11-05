@@ -1,5 +1,11 @@
 # Changelog
 
+## V44.0.0 · Drummer · 11-05-2026
+
+A ground up rebuild of the front door, named for the captain of _The Expanse_. One generative transit gate, rendered live on a real GPU with a painted poster for software rendering, ignites once per visit; scrolling flies through the ring and the sky continues behind seven stations. Thirteen sections become seven, the laptop scroll drops from 13 screens to 9 and the phone scroll from 16 to 12. Station navigation replaces the side rail so ultrawide screens keep one composition. The trailer play button no longer covers the poster's rating line. Text has a 12.5 pixel floor and touch targets meet 44 pixels on coarse pointers.
+
+The helm keeps the Odyssey routing rule and runs it in the browser. E.V.E. reads the record without a network request. Bit, Pause, reduced motion, the skip link and silent playback until asked remain. Evidence figures are printed from `status.json` at build time; the observation of November 4, 2026 is unchanged. Pause is one setting across the front door, the rooms and the preserved edition. Old deep links open the matching place in V43, and the room reading editions return to the worlds station without JavaScript. V43 Centauri is preserved at `/v43/`. This revision is a preview.
+
 ## V43.0.0 · Centauri · 11-05-2026
 
 Prepared 11-04-2026. Branding corrected 11-05-2026. The publication date records this revision; the observation and historical release dates remain unchanged.
