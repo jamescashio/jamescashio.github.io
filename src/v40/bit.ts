@@ -89,14 +89,15 @@ import { bitJokes } from "./ship-humor.ts";
       return { vertices, faces };
     }
     const NO = stell(1.78);
+    // Yellow affirmation and amber thinking retain their existing mood meanings.
     const pal = (m: string) =>
       m === "yes"
         ? { base: [255, 204, 24], edge: [255, 248, 176], glow: "rgba(255,204,0,0.5)" }
         : m === "no" || m === "alert"
-          ? { base: [255, 24, 58], edge: [255, 154, 170], glow: "rgba(255,0,51,0.52)" }
+          ? { base: [255, 61, 85], edge: [255, 167, 180], glow: "rgba(255,61,85,0.52)" }
           : m === "think"
             ? { base: [255, 149, 0], edge: [255, 214, 150], glow: "rgba(255,149,0,0.46)" }
-            : { base: [26, 210, 238], edge: [177, 246, 255], glow: "rgba(26,210,238,0.46)" };
+            : { base: [226, 230, 238], edge: [111, 160, 255], glow: "rgba(53,120,255,0.46)" };
     const rot = (v: number[], rx: number, ry: number) => {
       const cy = Math.cos(ry),
         sy = Math.sin(ry),

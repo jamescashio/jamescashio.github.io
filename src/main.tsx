@@ -1,6 +1,7 @@
 import "./styles.css";
 import "./experience-shell.css";
 import "./experience.css";
+import "./branding/platinum-v35.css";
 import { createRoot, hydrateRoot } from "react-dom/client";
 import { CashioApp } from "@/app";
 import { clientReady } from "@/lib/client-ready";

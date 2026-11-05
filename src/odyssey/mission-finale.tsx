@@ -1,10 +1,120 @@
-import { useEffect, useState, type ReactNode, type RefObject } from "react";
+import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import type { WorldInput } from "./sovereign-model";
 import { missionRecord, normalizeCallsign } from "./mission-card";
-import type { MissionFormat } from "./cinematic-mission-card";
+import type { MissionComposition, MissionFormat } from "./cinematic-mission-card";
 import { StarshipPoster } from "./starship-poster";
 
-type PreparedCard = { url: string; preview: string; file: File; shareable: boolean; callsign: string };
+type PreparedCard = {
+  url: string;
+  preview: string;
+  file: File;
+  shareable: boolean;
+  callsign: string;
+  composition: MissionComposition;
+};
+
+type InspectedCard = { preview: string; alt: string; format: MissionFormat; composition: MissionComposition };
+
+function MissionCardInspector({
+  card,
+  takeaway,
+  onDismiss,
+}: {
+  card: InspectedCard;
+  takeaway: string;
+  onDismiss: () => void;
+}) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  const closeButton = useRef<HTMLButtonElement>(null);
+  const imageRegion = useRef<HTMLDivElement>(null);
+  const [detail, setDetail] = useState(false);
+  useEffect(() => {
+    const panel = dialog.current;
+    panel?.showModal();
+    closeButton.current?.focus();
+    return () => panel?.close();
+  }, []);
+  useEffect(() => {
+    if (detail) imageRegion.current?.focus({ preventScroll: true });
+  }, [detail]);
+  function dismiss() {
+    dialog.current?.close();
+    onDismiss();
+  }
+  return (
+    <dialog
+      ref={dialog}
+      className="ff-card-inspector"
+      aria-labelledby="ff-card-inspector-title"
+      aria-describedby="ff-card-inspector-takeaway"
+      onCancel={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        dismiss();
+      }}
+      onKeyDown={(event) => {
+        // The flight has its own keyboard loop. This dialog owns its keys while open.
+        event.stopPropagation();
+        if (event.key !== "Tab") return;
+        const controls = [...event.currentTarget.querySelectorAll<HTMLElement>("button, [tabindex='0']")];
+        const first = controls[0];
+        const last = controls.at(-1);
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first?.focus();
+        }
+      }}
+      onClick={(event) => {
+        if (event.target !== event.currentTarget) return;
+        const box = event.currentTarget.getBoundingClientRect();
+        if (
+          event.clientX < box.left ||
+          event.clientX > box.right ||
+          event.clientY < box.top ||
+          event.clientY > box.bottom
+        )
+          dismiss();
+      }}
+    >
+      <header className="ff-card-inspector-header">
+        <div>
+          <p className="ff-eyebrow">
+            {card.composition === "cinematic" ? "CINEMATIC" : "FIELD REPORT"} / {card.format.toUpperCase()}
+          </p>
+          <h4 id="ff-card-inspector-title">Your mission card.</h4>
+        </div>
+        <button ref={closeButton} type="button" onClick={dismiss}>
+          Close preview <span aria-hidden="true">×</span>
+        </button>
+      </header>
+      <p id="ff-card-inspector-takeaway">{takeaway}</p>
+      <div className="ff-card-inspector-tools">
+        <button type="button" aria-pressed={detail} onClick={() => setDetail((value) => !value)}>
+          {detail ? "Fit card to screen" : "View full size"}
+        </button>
+        <span>{detail ? "Scroll or swipe to inspect the image." : "The complete image, ready to save."}</span>
+      </div>
+      <div
+        ref={imageRegion}
+        className="ff-card-inspector-image"
+        data-detail={detail}
+        tabIndex={detail ? 0 : -1}
+        role="region"
+        aria-label={detail ? "Full-size mission card. Scroll to inspect." : "Mission card preview"}
+      >
+        <img
+          src={card.preview}
+          width={card.format === "portrait" ? 1080 : 1600}
+          height={card.format === "portrait" ? 1440 : 1000}
+          alt={card.alt}
+        />
+      </div>
+    </dialog>
+  );
+}
 
 function imagePreview(blob: Blob): Promise<string> {
   // The live site's image policy permits inline PNGs, but excludes Blob image URLs.
@@ -40,6 +150,9 @@ export function MissionFinale({
   children: ReactNode;
 }) {
   const [format, setFormat] = useState<MissionFormat>("portrait");
+  const [composition, setComposition] = useState<MissionComposition>("cinematic");
+  const [inspection, setInspection] = useState<InspectedCard | null>(null);
+  const inspectTrigger = useRef<HTMLButtonElement>(null);
   const [cards, setCards] = useState<Partial<Record<MissionFormat, PreparedCard>>>({});
   const [status, setStatus] = useState("Preparing your flight record…");
   const [sharing, setSharing] = useState(false);
@@ -48,7 +161,9 @@ export function MissionFinale({
   const [draftCallsign, setDraftCallsign] = useState("");
   const [callsign, setCallsign] = useState("");
   const record = missionRecord(input, `${location.origin}${location.pathname}`);
-  const selected = cards[format]?.callsign === callsign ? cards[format] : undefined;
+  const selected =
+    cards[format]?.callsign === callsign && cards[format]?.composition === composition ? cards[format] : undefined;
+  const imageAlt = `Your flight record${callsign ? ` for ${callsign}` : ""}: ${record.title} ${record.outcome.local} onboard, ${record.outcome.cloud} in cloud, ${record.outcome.held} held. ${record.connection}. ${record.permission}.`;
 
   useEffect(() => {
     let cancelled = false;
@@ -66,6 +181,7 @@ export function MissionFinale({
               layout,
               `${location.origin}${location.pathname}`,
               callsign,
+              composition,
             );
             if (cancelled) return null;
             const preview = await imagePreview(blob);
@@ -79,7 +195,7 @@ export function MissionFinale({
             } catch {
               /* Save and copy remain available. */
             }
-            return [layout, { url, preview, file, shareable, callsign }] as const;
+            return [layout, { url, preview, file, shareable, callsign, composition }] as const;
           }),
         );
         if (cancelled) return;
@@ -101,7 +217,7 @@ export function MissionFinale({
       cancelled = true;
       urls.forEach((url) => URL.revokeObjectURL(url));
     };
-  }, [still, input, callsign, attempt]);
+  }, [still, input, callsign, composition, attempt]);
 
   function save() {
     if (!selected) return;
@@ -148,13 +264,27 @@ export function MissionFinale({
             src={selected.preview}
             width={format === "portrait" ? 1080 : 1600}
             height={format === "portrait" ? 1440 : 1000}
-            alt={`Your flight record${callsign ? ` for ${callsign}` : ""}: ${record.title} ${record.outcome.local} onboard, ${record.outcome.cloud} in cloud, ${record.outcome.held} held. ${record.connection}. ${record.permission}.`}
+            alt={imageAlt}
           />
         ) : (
           <div className="ff-keepsake-loading">
             <StarshipPoster eager />
             <span>Your flight record</span>
           </div>
+        )}
+        {selected && (
+          <button
+            ref={inspectTrigger}
+            type="button"
+            className="ff-card-inspect"
+            aria-label="Inspect mission card"
+            aria-haspopup="dialog"
+            onClick={() => setInspection({ preview: selected.preview, alt: imageAlt, format, composition })}
+          >
+            <span>
+              Inspect mission card <span aria-hidden="true">↗</span>
+            </span>
+          </button>
         )}
         <div className="ff-card-formats" role="group" aria-label="Mission card format">
           <button type="button" aria-pressed={format === "portrait"} onClick={() => setFormat("portrait")}>
@@ -198,6 +328,30 @@ export function MissionFinale({
             {still ? "Try preparing the image again" : "Replay to capture your card"}
           </button>
         )}
+        <fieldset className="ff-card-composition">
+          <legend>
+            Choose your composition <span>Same flight. A different framing.</span>
+          </legend>
+          <div>
+            {(["cinematic", "field-report"] as const).map((choice) => (
+              <button
+                key={choice}
+                type="button"
+                aria-pressed={composition === choice}
+                disabled={sharing}
+                onClick={() => {
+                  if (choice === composition) return;
+                  setCards({});
+                  setPreparationFailed(false);
+                  setStatus("Preparing your chosen composition…");
+                  setComposition(choice);
+                }}
+              >
+                {choice === "cinematic" ? "Cinematic" : "Field report"}
+              </button>
+            ))}
+          </div>
+        </fieldset>
         <form
           className="ff-personalize"
           onSubmit={(event) => {
@@ -260,7 +414,7 @@ export function MissionFinale({
           <button type="button" className="ff-roadster-next" onClick={() => onClose("roadster-studio")}>
             <img src="/images/roadster-studio-640.webp" width="640" height="360" alt="" loading="lazy" />
             <span>
-              Roadster Studio<small>Explore the build from every angle →</small>
+              Roadster Studio<small>Next, get hands-on with the build →</small>
             </span>
           </button>
           <div className="ff-finale-links">
@@ -286,6 +440,16 @@ export function MissionFinale({
           </details>
         </div>
       </div>
+      {inspection && (
+        <MissionCardInspector
+          card={inspection}
+          takeaway={record.decision}
+          onDismiss={() => {
+            setInspection(null);
+            inspectTrigger.current?.focus({ preventScroll: true });
+          }}
+        />
+      )}
     </section>
   );
 }

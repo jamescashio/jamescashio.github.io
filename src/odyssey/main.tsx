@@ -25,6 +25,7 @@ import "./field-notes.css";
 import "./page-sections.css";
 import "./audit-story.css";
 import "./visitor-polish.css";
+import "../branding/platinum-odyssey.css";
 
 const root = document.getElementById("odyssey-root")!;
 const app = (

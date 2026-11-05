@@ -421,6 +421,12 @@ details > summary::-webkit-details-marker {
 .v41-aab9b2719f {
   color: var(--cyan);
 }
+.cashio-brand-a {
+  color: #ff3d55;
+}
+.cashio-brand-i {
+  color: #3578ff;
+}
 .v41-a0e1b1fc48 {
   flex: 1;
   display: flex;
@@ -558,7 +564,7 @@ input {
   -webkit-tap-highlight-color: transparent;
 }
 :focus-visible {
-  outline: 2px solid #eeb954 !important;
+  outline: 2px solid var(--focus) !important;
   outline-offset: 5px !important;
 }
 .skip-link {
@@ -567,7 +573,7 @@ input {
   left: 90px;
   z-index: 200;
   padding: 12px 18px;
-  background: #eeb954;
+  background: var(--platinum);
   color: #080808;
   transform: translateY(-160%);
 }
@@ -594,7 +600,7 @@ input {
 .hud-control:hover {
   color: var(--cyan);
   border-color: var(--cyan);
-  box-shadow: 0 0 16px rgba(238, 185, 84, 0.1);
+  box-shadow: 0 0 16px rgb(var(--platinum-rgb) / 0.1);
 }
 .motion-control {
   width: 36px;
@@ -616,10 +622,10 @@ input {
   padding: 0;
   color: #ececec;
   background: #0f0f0f;
-  border: 1px solid rgba(238, 185, 84, 0.4);
+  border: 1px solid rgb(var(--platinum-rgb) / 0.4);
   border-radius: 18px;
   box-shadow:
-    0 0 90px rgba(238, 185, 84, 0.12),
+    0 0 90px rgb(var(--platinum-rgb) / 0.12),
     0 24px 90px #000;
   overflow: auto;
 }
@@ -632,7 +638,7 @@ input {
   align-items: center;
   justify-content: space-between;
   padding: 22px 24px;
-  border-top: 6px solid #d8a74a;
+  border-top: 6px solid var(--platinum);
   border-bottom: 1px solid #2e2e2e;
   gap: 12px;
 }
@@ -689,7 +695,7 @@ input {
   background: #1e1e1e;
 }
 .mission-results small {
-  color: #eeb954;
+  color: var(--platinum);
   font: 11px var(--font-mono);
 }
 .mission-results strong {
@@ -713,7 +719,7 @@ input {
   background: none;
   border: 1px solid #525252;
   border-radius: 8px;
-  color: #eeb954;
+  color: var(--platinum);
   padding: 10px 12px;
   cursor: pointer;
 }
@@ -1010,7 +1016,7 @@ html[data-background="true"] *::after {
   padding: 10px 6px;
   border-radius: 10px;
   color: var(--accent);
-  background: rgba(216, 167, 74, 0.08);
+  background: rgb(var(--platinum-rgb) / 0.08);
   transition: all 0.45s cubic-bezier(0.23, 1, 0.32, 1);
 }
 .v41-state-87448a098a {
@@ -1150,10 +1156,10 @@ html[data-background="true"] *::after {
   display: flex;
   align-items: center;
   gap: 2px;
-  border: 1px solid #0f6371;
+  border: 1px solid var(--link);
   border-radius: 12px;
   background: #151515;
-  color: #7edcf2;
+  color: var(--link);
   cursor: pointer;
   padding: 0 8px 0 0;
   min-height: 44px;
@@ -1178,7 +1184,7 @@ html[data-background="true"] *::after {
   inset: 0;
   display: grid;
   place-items: center;
-  color: #2cd3ef;
+  color: var(--link);
   font: 40px var(--font-display);
 }
 .bit-rendered .bit-fallback {
@@ -1225,7 +1231,7 @@ html[data-background="true"] *::after {
     min-height: 44px;
     background: transparent;
     border: 0;
-    color: #ecc985;
+    color: var(--platinum);
     cursor: pointer;
   }
   .continuum-launch-heading button > span {
@@ -1240,8 +1246,8 @@ html[data-background="true"] *::after {
     display: flex;
     gap: 12px;
     min-width: 0;
-    border: 1px solid #5fb8c441;
-    border-left: 2px solid #e1af59;
+    border: 1px solid rgb(var(--blue-rgb) / 0.255);
+    border-left: 2px solid var(--platinum);
     text-align: left;
     color: var(--text);
     cursor: pointer;
@@ -1260,7 +1266,7 @@ html[data-background="true"] *::after {
     gap: 4px;
   }
   .continuum-paths small {
-    color: #9de6ef;
+    color: var(--link);
     font: 12px/1.5 var(--font-mono);
     letter-spacing: 0.05em;
   }
@@ -1270,7 +1276,7 @@ html[data-background="true"] *::after {
   }
   .continuum-path-arrow {
     margin-left: auto;
-    color: #f3cd8a;
+    color: var(--platinum);
   }
   @media (max-width: 1179px) {
     .continuum-paths {
@@ -1357,22 +1363,22 @@ html[data-background="true"] *::after {
     font-size: 22px;
   }
   .continuum-path-description {
-    color: #d5e0e6;
+    color: var(--text-dim);
   }
   .continuum-path-arrow {
     align-self: flex-end;
     font-size: 24px;
   }
   .continuum-paths > a:is(:hover, :focus-visible) {
-    border-color: #a6eff7;
+    border-color: var(--link);
     background: var(--surface);
   }
   .continuum-paths > a:focus-visible {
-    outline: 3px solid #fff0bf;
+    outline: 3px solid var(--focus);
     outline-offset: -5px;
   }
   .continuum-launch-heading .continuum-label {
-    color: #d9e5e9;
+    color: var(--text-dim);
     letter-spacing: 0.08em;
   }
   .continuum-launch-heading button {
@@ -1385,7 +1391,7 @@ html[data-background="true"] *::after {
     font-size: 15px;
   }
   .continuum-readings dt {
-    color: #c3d0d7;
+    color: var(--text-dim);
   }
   #v40-root .workshop-case dt,
   #v40-root .workshop-date,
@@ -1408,14 +1414,14 @@ html[data-background="true"] *::after {
     border-radius: 2px;
   }
   #v40-root .journey-disclosure-copy small {
-    color: #d4dee3;
+    color: var(--text-dim);
   }
   #v40-root .journey-disclosure-icon {
     border-radius: 2px;
-    color: #f5d99e;
+    color: var(--platinum);
   }
   #v40-root .mission-description {
-    color: #cad7de;
+    color: var(--text-dim);
   }
   .journey-dock {
     display: none;
@@ -1436,8 +1442,8 @@ html[data-background="true"] *::after {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       padding: 4px;
-      border: 1px solid #74cad166;
-      border-top-color: #e6c27b;
+      border: 1px solid rgb(var(--blue-rgb) / 0.4);
+      border-top-color: var(--platinum);
       border-radius: 4px;
       background: #070c10f5;
       box-shadow: 0 8px 35px #000b;
@@ -1449,23 +1455,23 @@ html[data-background="true"] *::after {
       align-content: center;
       gap: 3px;
       min-height: 50px;
-      color: #d2e6eb;
+      color: var(--link);
       text-decoration: none;
       font: 500 13px/1.2 var(--font-body);
     }
     .journey-dock a > span {
-      color: #9feaf4;
+      color: var(--link);
       font-size: 18px;
     }
     .journey-dock a[aria-current] {
-      color: #ffe0a4;
+      color: var(--pearl);
       background: rgb(var(--gold-rgb) / 0.09);
     }
     .journey-dock a[aria-current] > span {
-      color: #ffe0a4;
+      color: var(--pearl);
     }
     .journey-dock a:focus-visible {
-      outline: 2px solid #ffe0a4;
+      outline: 2px solid var(--focus);
       outline-offset: -2px;
     }
     #v40-root footer {
@@ -1492,7 +1498,7 @@ html[data-background="true"] *::after {
       flex-shrink: 0;
     }
     .continuum-paths > a::before {
-      background: linear-gradient(110deg, #102027, #070b0e);
+      background: linear-gradient(110deg, var(--surface-2), #070b0e);
     }
     .continuum-paths strong {
       font-size: 18px;
@@ -1578,29 +1584,6 @@ html[data-background="true"] *::after {
   white-space: normal;
 }
 #v40-root {
-  /* Platinum structure, electric blue instruments, and a restrained red counterpoint. */
-  --accent: #e2e6ee;
-  --accent-light: #f5f5f7;
-  --accent-2: #b8c3d5;
-  --gold-rgb: 226 230 238;
-  --signal-rgb: 53 120 255;
-  --void-rgb: 13 16 23;
-  --accent-glow: rgb(var(--gold-rgb) / 0.12);
-  --signal: #3578ff;
-  --cyan: #9abeff;
-  --cyan-glow: rgb(var(--signal-rgb) / 0.14);
-  --purple: #c9d7ff;
-  --purple-glow: rgb(var(--signal-rgb) / 0.1);
-  --text: #f5f5f7;
-  --text-dim: #b8c1d0;
-  --glass: #111217ed;
-  --glass-border: #91acdd35;
-  --void: #0d1017;
-  --surface: #111217;
-  --surface-2: #1b202b;
-  --continuum-line: #91acdd35;
-  --primary-fill: linear-gradient(115deg, #f5f5f7, #c3cbd8);
-  --title-metal: linear-gradient(100deg, #f5f5f7, #e2e6ee 62%, #aab6ca);
   --radius: 3px;
   --radius-lg: 6px;
   background: var(--void);
@@ -1608,7 +1591,7 @@ html[data-background="true"] *::after {
 }
 #v40-root header {
   background: rgb(var(--void-rgb) / 0.929);
-  border-bottom: 1px solid #75bdcb3d;
+  border-bottom: 1px solid rgb(var(--blue-rgb) / 0.239);
   backdrop-filter: blur(14px);
 }
 #v40-root header .v41-d28b3b93ee {
@@ -1617,19 +1600,28 @@ html[data-background="true"] *::after {
   height: 76px;
   gap: 22px;
 }
-#v40-root header .v41-9fb65157a3 {
-  font-size: 23px;
-  letter-spacing: -0.025em;
+#v40-root header .v41-076bc5e3cc {
+  flex-shrink: 0;
+  gap: 8px;
+  min-height: 44px;
 }
-#v40-root header .v41-0413664e13 {
-  background: #131008;
-  color: #ffcf77;
-  border: 1px solid #efbd6566;
-  box-shadow: 0 0 24px rgb(var(--gold-rgb) / 0.145);
+.cashio-brand-icon,
+.cashio-brand-wordmark {
+  display: block;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+.cashio-brand-icon {
+  width: 34px;
+  height: 34px;
+}
+.cashio-brand-wordmark {
+  width: 104px;
+  height: auto;
 }
 #v40-root header .za-btn {
   background: var(--primary-fill);
-  color: #171109;
+  color: var(--on-accent);
   border: 1px solid var(--accent-light);
   border-radius: 3px;
   box-shadow: 0 0 25px rgb(var(--gold-rgb) / 0.122);
@@ -1637,13 +1629,13 @@ html[data-background="true"] *::after {
 #v40-root .hud-control,
 #v40-root .bit-header {
   background: #080d12;
-  border: 1px solid #55cce63d;
-  color: #c0f3fb;
+  border: 1px solid rgb(var(--blue-rgb) / 0.239);
+  color: var(--link);
   box-shadow: none;
   border-radius: 3px;
 }
 #v40-root .v41-514cfd682d {
-  background: linear-gradient(90deg, #f1ba57, #ffe0a0, var(--signal));
+  background: linear-gradient(90deg, var(--electric-blue), var(--platinum) 58%, var(--laser-red));
 }
 #v40-root nav[aria-label="Sections"] {
   position: fixed;
@@ -1652,7 +1644,7 @@ html[data-background="true"] *::after {
   max-width: 96px;
   height: auto;
   border: 0;
-  border-right: 1px solid #53c3df33;
+  border-right: 1px solid rgb(var(--blue-rgb) / 0.2);
   border-radius: 0;
   padding: 12px 6px;
   background: #05080de8;
@@ -1691,11 +1683,11 @@ html[data-background="true"] *::after {
 #v40-root nav[aria-label="Sections"] .v41-b5d5368cf2 {
   width: 4px;
   height: 4px;
-  background: #88e6f0;
+  background: var(--link);
 }
 #v40-root nav[aria-label="Sections"] a[aria-current] {
   background: linear-gradient(150deg, rgb(var(--gold-rgb) / 0.149), #141414);
-  color: #ffda91;
+  color: var(--platinum);
 }
 .continuum-hero {
   position: relative;
@@ -1737,8 +1729,9 @@ html[data-background="true"] *::after {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 72% 10%, #53d6f026, transparent 54%),
-    radial-gradient(ellipse at 70% 83%, #3bd4ef1f, transparent 46%), linear-gradient(125deg, #13131399, transparent 62%);
+    radial-gradient(ellipse at 72% 10%, rgb(var(--blue-rgb) / 0.149), transparent 54%),
+    radial-gradient(ellipse at 70% 83%, rgb(var(--blue-rgb) / 0.122), transparent 46%),
+    linear-gradient(125deg, #13131399, transparent 62%);
   mix-blend-mode: normal;
   opacity: 0.3;
 }
@@ -1766,7 +1759,7 @@ html[data-background="true"] *::after {
   inset: 0;
   z-index: -3;
   pointer-events: none;
-  background: radial-gradient(ellipse at 84% 12%, #ecb55e15, transparent 50%);
+  background: radial-gradient(ellipse at 84% 12%, rgb(var(--platinum-rgb) / 0.082), transparent 50%);
 }
 .continuum-arrival {
   position: relative;
@@ -1776,27 +1769,28 @@ html[data-background="true"] *::after {
   max-width: 1560px;
   margin: auto;
   padding: 20px 0;
-  color: #9fbdc5;
+  color: var(--text-dim);
   text-transform: uppercase;
   font: 12px/1.6 var(--font-mono);
   letter-spacing: 0.11em;
 }
 .continuum-arrival > span:first-child {
-  color: var(--accent);
+  color: var(--platinum);
+  text-transform: none;
 }
 .continuum-arrival-end {
   margin-left: auto;
   display: flex;
   gap: 10px;
   align-items: center;
-  color: #daedf1;
+  color: var(--link);
 }
 .continuum-arrival i {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--signal);
-  box-shadow: 0 0 15px #53ebce88;
+  background: var(--laser-red);
+  box-shadow: 0 0 12px rgb(var(--red-rgb) / 0.2);
 }
 .continuum-hero #hero-content.continuum-composition {
   position: relative;
@@ -1846,13 +1840,13 @@ html[data-background="true"] *::after {
 }
 .continuum-hero #hero-content h1 > span {
   display: inline-block;
-  color: #ffcf78;
+  color: var(--platinum);
   background: var(--title-metal);
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 .aurum-manifesto {
-  color: var(--cyan);
+  color: var(--link);
   font: 12px/1.5 var(--font-mono);
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -1885,25 +1879,28 @@ html[data-background="true"] *::after {
 .continuum-primary {
   border: 1px solid var(--accent-light);
   background: var(--primary-fill);
-  color: #191109;
+  color: var(--on-accent);
   box-shadow: 0 0 30px rgb(var(--gold-rgb) / 0.145);
   clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
 }
 .continuum-secondary {
-  color: #b6f1fa;
-  border: 1px solid #55c9e35c;
-  background: #061019c9;
+  color: var(--link);
+  border: 1px solid rgb(var(--blue-rgb) / 0.361);
+  background: rgb(17 18 23 / 0.788);
 }
 .continuum-primary:is(:hover, :focus-visible) {
   background: var(--accent-light);
   box-shadow: 0 8px 24px rgb(var(--gold-rgb) / 0.16);
 }
+.continuum-primary:focus-visible {
+  clip-path: none;
+}
 .continuum-secondary:is(:hover, :focus-visible) {
-  border-color: #a9f4ff;
-  background: #0b232e;
+  border-color: var(--link);
+  background: var(--surface-2);
 }
 .continuum-footnote {
-  color: #a6b4bb;
+  color: var(--text-dim);
   font: 12px/1.8 var(--font-mono);
   letter-spacing: 0.02em;
   margin: 14px 0 10px;
@@ -1912,7 +1909,7 @@ html[data-background="true"] *::after {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  color: #f2c77e;
+  color: var(--platinum);
   font: 12px/1.5 var(--font-mono);
 }
 .continuum-visual {
@@ -1920,7 +1917,7 @@ html[data-background="true"] *::after {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  mix-blend-mode: screen;
+  mix-blend-mode: normal;
 }
 .continuum-stage {
   position: relative;
@@ -1939,37 +1936,37 @@ html[data-background="true"] *::after {
 .continuum-stage:has(#hero-stars[data-ready="true"]) .continuum-still {
   display: none;
 }
-.flight-signature {
+.flight-signature-plaque {
   position: absolute;
   top: 26px;
-  right: -6px;
-  width: clamp(220px, 25vw, 360px);
+  right: 0;
+  width: 340px;
+  margin: 0;
+  padding: 8px;
+  border: 1px solid rgb(var(--platinum-rgb) / 0.3);
+  background: var(--void-deep);
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+}
+.flight-signature {
+  display: block;
+  width: 100%;
   height: auto;
-  mix-blend-mode: screen;
-  opacity: 0.96;
-  transform: rotate(-3deg);
+  mix-blend-mode: normal;
+  opacity: 1;
+  transform: none;
 }
 /* The orbital instrument waits for the deferred HUD layer. */
 .hero-hud {
   display: none;
 }
 .continuum-reticle {
-  position: absolute;
-  top: 174px;
-  right: 10px;
-  display: grid;
-  gap: 6px;
-  color: #bfe6ef;
+  margin-top: 8px;
+  padding: 8px 4px 4px;
+  border-top: 1px solid var(--glass-border);
+  color: var(--platinum);
   text-align: right;
   font: 12px/1.6 var(--font-mono);
-  letter-spacing: 0.12em;
-}
-.continuum-reticle::after {
-  content: "";
-  justify-self: end;
-  width: 90px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent));
+  letter-spacing: 0.08em;
 }
 .continuum-scene-deck {
   position: absolute;
@@ -1977,12 +1974,12 @@ html[data-background="true"] *::after {
   right: 0;
   bottom: 56px;
   width: 340px;
-  background: linear-gradient(125deg, #081017ef, #05080de8);
-  border: 1px solid #5fc9dd6e;
-  border-top-color: #edc780b0;
+  background: linear-gradient(125deg, rgb(17 18 23 / 0.937), #05080de8);
+  border: 1px solid rgb(var(--blue-rgb) / 0.431);
+  border-top-color: rgb(var(--platinum-rgb) / 0.69);
   box-shadow:
     0 15px 60px #0008,
-    inset 0 0 30px #1599c00c;
+    inset 0 0 30px rgb(var(--blue-rgb) / 0.047);
   backdrop-filter: blur(12px);
   clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
 }
@@ -1991,10 +1988,10 @@ html[data-background="true"] *::after {
   justify-content: space-between;
   align-items: center;
   padding: 8px 12px 8px 16px;
-  border-bottom: 1px solid #50bdcf33;
+  border-bottom: 1px solid rgb(var(--blue-rgb) / 0.2);
 }
 .flight-camera-control > span {
-  color: #a6d6e0;
+  color: var(--link);
   font: 12px/1.5 var(--font-mono);
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -2022,21 +2019,21 @@ html[data-background="true"] *::after {
   padding: 10px 12px;
   text-align: left;
   border: 0;
-  border-bottom: 1px solid #47bdd32b;
-  border-right: 1px solid #47bdd31b;
+  border-bottom: 1px solid rgb(var(--blue-rgb) / 0.169);
+  border-right: 1px solid rgb(var(--blue-rgb) / 0.106);
   background: transparent;
-  color: #b4c6ce;
+  color: var(--text-dim);
   font: 600 13px var(--font-body);
   cursor: pointer;
 }
 .continuum-scene-controls button > span {
   font-size: 12px;
-  color: #80cddb;
+  color: var(--link);
 }
 .continuum-scene-controls button[aria-pressed="true"] {
-  color: #ffe0a4;
-  border-bottom-color: #ecc270;
-  background: linear-gradient(0deg, #a16e2726, transparent);
+  color: var(--pearl);
+  border-bottom-color: var(--platinum);
+  background: linear-gradient(0deg, rgb(var(--platinum-rgb) / 0.149), transparent);
 }
 .continuum-stage-bottom {
   display: grid;
@@ -2054,7 +2051,7 @@ html[data-background="true"] *::after {
   padding: 6px 3px;
   border: 0;
   background: transparent;
-  color: #9eeaf5;
+  color: var(--link);
   font: 12px var(--font-mono);
   cursor: pointer;
 }
@@ -2064,7 +2061,7 @@ html[data-background="true"] *::after {
 }
 .continuum-art-label {
   font: 12px var(--font-mono);
-  color: #9cabb5;
+  color: var(--text-dim);
   text-align: center;
   order: 3;
   grid-column: 1 / -1;
@@ -2076,8 +2073,8 @@ html[data-background="true"] *::after {
 .continuum-scene-caption {
   padding: 10px 16px 13px;
   margin: 0;
-  border-top: 1px solid #4dc1d61c;
-  color: #adc3cc;
+  border-top: 1px solid rgb(var(--blue-rgb) / 0.11);
+  color: var(--text-dim);
   font: 14px/1.5 var(--font-body);
 }
 .discovery-console:not([open]) {
@@ -2110,26 +2107,32 @@ html[data-background="true"] *::after {
     font-size: clamp(38px, 4.3vw, 60px) !important;
   }
   .continuum-eyebrow {
-    margin-bottom: 18px;
+    margin-bottom: 12px;
   }
   .aurum-manifesto {
-    margin-top: 18px;
+    margin-top: 12px;
   }
   .continuum-intro {
-    margin-bottom: 18px;
+    margin-bottom: 12px;
     font-size: 17px;
+  }
+  .continuum-hero .continuum-copy .tour-launch {
+    padding-block: 12px;
+  }
+  .continuum-hero .continuum-footnote {
+    margin: 10px 0 4px;
+  }
+  .continuum-hero .tour-alternatives {
+    margin: 10px 0 6px;
   }
   .continuum-scene-deck {
     top: clamp(140px, calc(100svh - 460px), 300px);
     bottom: auto;
     width: 310px;
   }
-  .flight-signature {
+  .flight-signature-plaque {
     top: 8px;
-    width: 265px;
-  }
-  .continuum-reticle {
-    top: 120px;
+    width: 310px;
   }
 }
 @media (max-width: 1179px) {
@@ -2151,6 +2154,9 @@ html[data-background="true"] *::after {
   .continuum-scene-deck {
     width: 290px;
   }
+  .flight-signature-plaque {
+    width: 290px;
+  }
 }
 @media (max-width: 900px) {
   .atlas-instrument {
@@ -2159,11 +2165,8 @@ html[data-background="true"] *::after {
   .continuum-arrival-end {
     display: none;
   }
-  .flight-signature {
-    width: 230px;
+  .flight-signature-plaque {
     top: 10px;
-    right: 0;
-    opacity: 0.8;
   }
   .continuum-hero #hero-content.continuum-composition {
     min-height: 700px;
@@ -2174,9 +2177,6 @@ html[data-background="true"] *::after {
   }
   .continuum-scene-deck {
     bottom: 0;
-  }
-  .continuum-reticle {
-    top: 110px;
   }
 }
 @media (max-width: 600px) {
@@ -2208,6 +2208,10 @@ html[data-background="true"] *::after {
     font-size: 12px;
     gap: 12px;
     letter-spacing: 0.02em;
+  }
+  .cashio-brand-icon {
+    width: 32px;
+    height: 32px;
   }
   .continuum-arrival > span:nth-child(2) {
     max-width: 160px;
@@ -2275,8 +2279,11 @@ html[data-background="true"] *::after {
     position: relative;
     order: 2;
     inset: auto;
-    height: 140px;
-    margin-top: 6px;
+    height: auto;
+    margin: 8px 0 12px;
+  }
+  .continuum-stage {
+    height: auto;
   }
   .continuum-stage #hero-stars {
     mask-image: none;
@@ -2284,16 +2291,10 @@ html[data-background="true"] *::after {
   .continuum-still {
     object-fit: cover;
   }
-  .flight-signature {
-    width: 190px;
-    right: -2px;
-    top: 4px;
-    opacity: 0.94;
-  }
-  .continuum-reticle {
-    top: 92px;
-    right: 0;
-    font-size: 12px;
+  .flight-signature-plaque {
+    position: relative;
+    top: auto;
+    width: 100%;
   }
   .continuum-scene-deck {
     position: relative;
@@ -2360,7 +2361,7 @@ html[data-motion="off"] .hero-flight-camera {
   }
 }
 .continuum-footnote strong {
-  color: #f2ce88;
+  color: var(--platinum);
   font-weight: 500;
 }
 #v40-root header .hud-control {
@@ -2404,15 +2405,15 @@ html[data-motion="off"] .hero-flight-camera {
   display: none;
 }
 .flight-camera-control button {
-  background: #0c2028;
-  color: #c2f1f7;
-  border-color: #73cbdc80;
+  background: var(--surface-2);
+  color: var(--link);
+  border-color: rgb(var(--blue-rgb) / 0.502);
   font: 600 14px/1.4 var(--font-body);
 }
 .continuum-footnote,
 .continuum-copy .hero-logo-reveal {
   font-size: 14px;
-  color: #d1dce2;
+  color: var(--text-dim);
 }
 #v40-root nav[aria-label="Sections"] .v41-cbba20e481 {
   font-size: 13px;
@@ -2425,7 +2426,7 @@ html[data-motion="off"] .hero-flight-camera {
     min-height: 48px;
     padding: 10px 16px;
     font: 500 14px/1.5 var(--font-body);
-    color: #c4e8ef;
+    color: var(--link);
     cursor: pointer;
     list-style: none;
   }
@@ -2434,13 +2435,13 @@ html[data-motion="off"] .hero-flight-camera {
   }
   .scene-tools > summary > span {
     font-size: 21px;
-    color: #f3d491;
+    color: var(--platinum);
   }
   .scene-tools[open] > summary > span {
     transform: rotate(45deg);
   }
   .scene-tools > summary:focus-visible {
-    outline: 2px solid #ffe0a4;
+    outline: 2px solid var(--focus);
     outline-offset: -4px;
   }
 }
@@ -2470,12 +2471,12 @@ html[data-motion="off"] .hero-flight-camera {
     height: 1240px;
   }
 }
-/* A boarding pass in the existing gold light: the guided entrance is explicit. */
+/* A platinum boarding pass keeps the guided entrance explicit. */
 .continuum-copy .tour-launch {
   display: flex;
   width: min(100%, 520px);
   gap: 14px;
-  padding: 18px;
+  padding: 16px 18px;
   text-align: left;
   background: var(--primary-fill);
 }
@@ -2484,7 +2485,7 @@ html[data-motion="off"] .hero-flight-camera {
   place-items: center;
   flex: 0 0 38px;
   height: 38px;
-  border: 1px solid #5b3b2080;
+  border: 1px solid rgb(var(--platinum-rgb) / 0.502);
   border-radius: 50%;
   font: 24px/1 var(--font-body);
 }
@@ -2493,15 +2494,22 @@ html[data-motion="off"] .hero-flight-camera {
   min-width: 0;
 }
 .tour-launch-copy strong,
-.tour-launch-copy small {
+.tour-launch-copy small,
+.tour-launch-kicker {
   display: block;
+}
+.tour-launch-kicker {
+  margin-bottom: 5px;
+  font: 600 13px/1.4 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 .tour-launch-copy strong {
   font: 700 18px/1.35 var(--font-body);
 }
 .tour-launch-copy small {
   margin-top: 5px;
-  font: 500 14px/1.4 var(--font-body);
+  font: 500 15px/1.4 var(--font-body);
 }
 .tour-launch-arrow {
   font-size: 22px;
@@ -2511,13 +2519,24 @@ html[data-motion="off"] .hero-flight-camera {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   width: min(100%, 520px);
   gap: 10px;
-  margin-top: 10px;
+  margin: 16px 0 8px;
 }
 .tour-alternatives .continuum-secondary {
   padding: 12px 14px;
   font-size: 15px;
   gap: 10px;
   min-width: 0;
+}
+.tour-alternatives :is(strong, small) {
+  display: block;
+}
+.tour-alternatives strong {
+  font-weight: 600;
+}
+.tour-alternatives small {
+  margin-top: 5px;
+  color: var(--text-dim);
+  font: 400 14px/1.45 var(--font-body);
 }
 @media (max-width: 360px) {
   #v40-root header .v41-d28b3b93ee {
@@ -2527,8 +2546,11 @@ html[data-motion="off"] .hero-flight-camera {
   #v40-root header .v41-21f61ee01b {
     gap: 6px;
   }
-  #v40-root header .v41-9fb65157a3 {
-    font-size: 20px;
+  .cashio-brand-icon {
+    display: none;
+  }
+  .cashio-brand-wordmark {
+    width: 104px;
   }
   .continuum-copy .tour-launch {
     padding: 14px 12px;
@@ -2551,7 +2573,7 @@ html[data-motion="off"] .hero-flight-camera {
   --sans: var(--font-body, "Instrument Sans", sans-serif);
   --display: var(--font-display, "Unbounded", sans-serif);
   --mono: var(--font-mono, monospace);
-  --gold: var(--accent, #2bd0eb);
+  --gold: var(--accent, var(--link));
   --ink: var(--text, #f6f6f6);
   --ink2: var(--text-dim, #c9c9c9);
   --muted: var(--text-dim, #c0c0c0);
@@ -2562,7 +2584,7 @@ html[data-motion="off"] .hero-flight-camera {
   z-index: 2147483646;
   inset: 20% max(16px, calc((100% - 560px) / 2)) auto;
   padding: 24px;
-  border: 1px solid #2bd0eb;
+  border: 1px solid var(--link);
   border-radius: 16px;
   color: #f6f6f6;
   background: #131313;
@@ -2572,12 +2594,12 @@ html[data-motion="off"] .hero-flight-camera {
   min-height: 44px;
   padding: 10px 18px;
   color: #131313;
-  background: #2bd0eb;
+  background: var(--link);
   border: 0;
   border-radius: 8px;
 }
 .v40-scene-status button:focus-visible {
-  outline: 3px solid #2acce7;
+  outline: 3px solid var(--focus);
   outline-offset: 4px;
 }
 
@@ -2595,21 +2617,21 @@ html[data-motion="off"] .hero-flight-camera {
   min-height: 44px;
   border: 0;
   border-top: 1px solid rgb(var(--signal-rgb) / 0.2);
-  background: #0a171e;
-  color: #c5e4e9;
+  background: var(--surface-2);
+  color: var(--link);
   font: 600 14px var(--font-body);
   cursor: pointer;
 }
 .scene-motion-control:hover {
-  background: #12252c;
+  background: var(--surface-2);
   color: var(--accent-light);
 }
 .scene-motion-control:focus-visible {
-  outline: 2px solid #edbd6c;
+  outline: 2px solid var(--focus);
   outline-offset: -4px;
 }
 .scene-motion-control[aria-pressed="true"] {
-  color: #edbd6c;
+  color: var(--platinum);
 }
 @media (max-width: 600px) {
   #v40-root header .motion-control {
@@ -2619,40 +2641,5 @@ html[data-motion="off"] .hero-flight-camera {
     white-space: normal;
     font-size: 11px;
     line-height: 1.3;
-  }
-}
-
-/* Approved everyday identity: blue A, red I, and platinum surroundings. */
-#v40-root .v41-097ae647c2 {
-  color: #9abeff;
-}
-#v40-root .v41-aab9b2719f {
-  color: #ff8a9d;
-}
-#v40-root header .za-btn {
-  color: #111217;
-}
-#v40-root .v41-514cfd682d {
-  background: linear-gradient(90deg, #e2e6ee, #3578ff, #ff3d55);
-}
-#v40-root .hud-control,
-#v40-root .bit-header {
-  background: #111217;
-  border-color: #3578ff55;
-  color: #d4e1ff;
-}
-#v40-root .cashio-everyday-wordmark {
-  max-width: none;
-}
-@media (max-width: 360px) {
-  #v40-root .cashio-everyday-lockup {
-    gap: 5px;
-  }
-  #v40-root .cashio-everyday-icon {
-    width: 24px;
-    height: 24px;
-  }
-  #v40-root .cashio-everyday-wordmark {
-    width: 78px;
   }
 }

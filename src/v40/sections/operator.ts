@@ -187,7 +187,7 @@ export function OperatorSection({ v }: GeneratedProps) {
           key: 1812,
           d: "M14 40 V14 H40 M360 14 H386 V40 M14 260 V286 H40 M360 286 H386 V260",
           fill: "none",
-          stroke: "rgba(255,149,0,.55)",
+          stroke: "rgba(226,230,238,.55)",
           strokeWidth: "1.5",
         }),
       ),

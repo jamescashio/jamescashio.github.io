@@ -128,8 +128,8 @@
   align-items: flex-start;
   padding: 14px 16px;
   border-radius: 12px;
-  border: 1px solid rgba(39, 191, 217, 0.4);
-  background: rgba(39, 191, 217, 0.06);
+  border: 1px solid rgb(var(--blue-rgb) / 0.4);
+  background: rgb(var(--blue-rgb) / 0.06);
 }
 .v41-41858cab1a {
   width: 10px;
@@ -354,7 +354,7 @@
   padding: 30px;
   border: 1px solid var(--glass-border);
   border-radius: 16px;
-  background: linear-gradient(145deg, rgba(104, 192, 145, 0.06), var(--surface) 70%);
+  background: linear-gradient(145deg, rgb(var(--blue-rgb) / 0.06), var(--surface) 70%);
 }
 .routing-note blockquote {
   padding: 0;
@@ -561,7 +561,7 @@
 }
 .lab-toggle:has(input:checked) {
   border-color: var(--cyan);
-  background: rgba(116, 212, 160, 0.05);
+  background: rgb(var(--blue-rgb) / 0.05);
 }
 .lab-toggle input {
   width: 20px;
@@ -648,13 +648,13 @@
 }
 .lab-actions .lab-primary {
   color: var(--void-deep);
-  background: linear-gradient(110deg, var(--accent), #5aa87e);
+  background: var(--primary-fill);
   border-color: var(--accent);
-  box-shadow: 0 0 22px rgba(104, 192, 145, 0.15);
+  box-shadow: 0 0 22px rgb(var(--blue-rgb) / 0.15);
 }
 .lab-actions .lab-primary:hover {
   color: var(--void-deep);
-  filter: brightness(1.1);
+  background: var(--pearl);
 }
 .lab-boundary {
   border-top: 1px solid var(--glass-border);
@@ -716,8 +716,8 @@
 }
 .lab-path li.affected {
   color: var(--amber);
-  border-color: rgba(104, 192, 145, 0.4);
-  background: rgba(104, 192, 145, 0.04);
+  border-color: rgb(var(--blue-rgb) / 0.4);
+  background: rgb(var(--blue-rgb) / 0.04);
 }
 .lab-path li > span:first-child {
   font: 18px var(--font-mono);
@@ -754,34 +754,34 @@
 }
 #v40-root .experiment-tabs button[aria-selected="true"] {
   background: #2b2b2b;
-  border-color: #3bd4ef;
+  border-color: var(--link);
 }
 #v40-root .experiment-tabs button span {
   text-shadow: none;
 }
 #v40-root #experiment-panel {
   border-radius: 4px;
-  border-color: #2acbe542;
+  border-color: rgb(var(--blue-rgb) / 0.259);
   box-shadow: 0 18px 65px #0003;
 }
 #v40-root #experiment-panel > .za-panel {
   border-radius: 4px;
   background: #1b1b1b;
-  border-color: #2acbe750;
+  border-color: rgb(var(--blue-rgb) / 0.314);
   box-shadow: none;
 }
 #v40-root .experiment-picker select {
   min-height: 48px;
   border-radius: 3px;
-  border-color: #29c8e34f;
+  border-color: rgb(var(--blue-rgb) / 0.31);
   background: #222222;
 }
 #v40-root #studies .za-panel {
   background: #080e13;
-  border-color: #4cb9d44f;
+  border-color: rgb(var(--blue-rgb) / 0.31);
 }
 #v40-root #studies .za-panel h3 {
-  color: #bcebf3;
+  color: var(--link);
 }
 @media (max-width: 600px) {
   #v40-root #studies .za-panel {
@@ -790,9 +790,9 @@
 }
 .release-hearing {
   margin: 0 clamp(22px, 4.6vw, 84px) 34px;
-  border-block: 1px solid #60d7e64d;
+  border-block: 1px solid rgb(var(--blue-rgb) / 0.302);
   background: #070b0e;
-  color: #e6f1f3;
+  color: var(--text-dim);
   scroll-margin-top: 95px;
 }
 .release-hearing > summary {
@@ -811,8 +811,8 @@
 .hearing-mark {
   font-size: 39px;
   line-height: 1;
-  color: #82e5f1;
-  text-shadow: 0 0 26px #2bcee36b;
+  color: var(--link);
+  text-shadow: 0 0 26px rgb(var(--blue-rgb) / 0.42);
 }
 .hearing-invitation {
   display: grid;
@@ -826,15 +826,15 @@
   font: 12px/1.6 var(--font-mono);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #9cdde7;
+  color: var(--link);
 }
 .hearing-invitation strong {
   font: 600 clamp(15px, 1.6vw, 21px)/1.4 var(--font-display);
-  color: #f2d499;
+  color: var(--platinum);
 }
 .hearing-open {
   font: 12px/1.6 var(--font-mono);
-  color: #c1e9ee;
+  color: var(--link);
   display: flex;
   gap: 22px;
   align-items: center;
@@ -847,10 +847,10 @@
   transform: rotate(45deg);
 }
 .release-hearing > summary:hover {
-  background: #10232a;
+  background: var(--surface-2);
 }
 .release-hearing :is(summary, button, a):focus-visible {
-  outline: 2px solid #a1f0f8;
+  outline: 2px solid var(--focus);
   outline-offset: 5px;
 }
 .hearing-body {
@@ -858,14 +858,14 @@
   grid-template-columns: 0.9fr 1.1fr;
   gap: clamp(24px, 5vw, 84px);
   padding: 32px 28px 36px;
-  border-top: 1px solid #58bacd38;
+  border-top: 1px solid rgb(var(--blue-rgb) / 0.22);
 }
 .hearing-lore {
   align-self: center;
   min-width: 0;
 }
 .hearing-kicker {
-  color: #edc780;
+  color: var(--platinum);
   margin: 0 0 15px;
 }
 #v40-root .hearing-lore h2 {
@@ -876,30 +876,30 @@
 }
 .hearing-lore > p:not(.hearing-kicker) {
   font: 14px/1.8 var(--font-body);
-  color: #c2d1d6;
+  color: var(--text-dim);
 }
 .hearing-lore a {
   display: inline-flex;
   align-items: center;
   gap: 20px;
   min-height: 44px;
-  color: #8ce5f1;
+  color: var(--link);
   font: 12px/1.5 var(--font-mono);
   text-decoration: none;
-  border-bottom: 1px solid #58d3e34f;
+  border-bottom: 1px solid rgb(var(--blue-rgb) / 0.31);
 }
 .hearing-lore p.hearing-note {
   font-size: 12px;
-  color: #a3bac4;
+  color: var(--text-dim);
   margin-top: 18px;
 }
 .hearing-console {
   position: relative;
   min-width: 0;
   padding: 22px;
-  border: 1px solid #60cbd657;
-  border-top-color: #edc78099;
-  background: radial-gradient(ellipse at 50% 28%, #1d5a692b, transparent 65%), #080e12;
+  border: 1px solid rgb(var(--blue-rgb) / 0.341);
+  border-top-color: rgb(var(--platinum-rgb) / 0.6);
+  background: radial-gradient(ellipse at 50% 28%, rgb(var(--blue-rgb) / 0.169), transparent 65%), #080e12;
 }
 .hearing-case {
   display: flex;
@@ -908,7 +908,7 @@
   font-size: 12px;
 }
 .hearing-case > span:last-child {
-  color: #ebc989;
+  color: var(--platinum);
 }
 .hearing-machine {
   position: relative;
@@ -919,19 +919,19 @@
 .hearing-machine svg {
   height: 100%;
   width: 100%;
-  stroke: #6fdfed;
+  stroke: var(--link);
   stroke-width: 0.8;
 }
 .hearing-machine svg ellipse {
-  stroke: #e8bc6d88;
+  stroke: rgb(var(--platinum-rgb) / 0.533);
 }
 .hearing-machine .hearing-eye {
-  fill: #66daec2b;
-  stroke: #eac681;
+  fill: rgb(var(--blue-rgb) / 0.169);
+  stroke: var(--platinum);
 }
 .hearing-machine svg circle {
-  fill: #e9c378;
-  stroke: #ffebbd;
+  fill: var(--platinum);
+  stroke: var(--pearl);
 }
 .hearing-console[data-ruling="overruled"] .hearing-machine svg {
   opacity: 0.42;
@@ -943,11 +943,11 @@
   font: 700 clamp(22px, 2.8vw, 34px)/1.1 var(--font-display);
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #ffd994;
-  border-block: 2px solid #ecc173;
+  color: var(--platinum);
+  border-block: 2px solid var(--platinum);
   padding: 12px 18px;
   background: #090e10ee;
-  box-shadow: 0 0 35px #e9b65c28;
+  box-shadow: 0 0 35px rgb(var(--platinum-rgb) / 0.157);
   animation: ruling-arrives 280ms ease-out both;
 }
 .hearing-subject {
@@ -963,11 +963,11 @@
 .hearing-verdict {
   min-height: 46px;
   font: 14px/1.65 var(--font-body);
-  color: #b7dbe1;
+  color: var(--link);
   margin: 12px 0 18px;
 }
 .hearing-console[data-ruling="overruled"] .hearing-verdict {
-  color: #ffdc9d;
+  color: var(--platinum);
 }
 .hearing-console button {
   display: flex;
@@ -977,22 +977,22 @@
   width: 100%;
   min-height: 48px;
   padding: 14px 18px;
-  background: linear-gradient(110deg, #ffe2a4, #edb95d);
-  color: #171109;
-  border: 1px solid #ffdd96;
+  background: linear-gradient(110deg, var(--pearl), var(--platinum));
+  color: var(--on-accent);
+  border: 1px solid var(--platinum);
   font: 600 12px/1.5 var(--font-display);
   cursor: pointer;
   clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
 }
 .hearing-console button:hover {
-  background: #ffe1a2;
+  background: var(--pearl);
 }
 .hearing-console button:focus-visible {
   outline-offset: -4px;
 }
 .hearing-footer {
   font: 12px/1.7 var(--font-mono);
-  color: #acc2ca;
+  color: var(--text-dim);
   min-height: 31px;
   margin: 13px 0 0;
 }

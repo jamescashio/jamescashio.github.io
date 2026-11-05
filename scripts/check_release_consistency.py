@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the V42 homepage and evidence alongside the preserved V37 and V35 archives."""
+"""Validate the current homepage and evidence alongside the preserved V37 and V35 archives."""
 
 from __future__ import annotations
 
@@ -555,7 +555,6 @@ def main() -> int:
     parser.add_argument("--preview", action="store_true", help="Validate an explicitly unpublished local preview; never a deployment approval")
     preview = parser.parse_args().preview
     version = "37.17.0-preview.sanctuary" if preview else "37.17.0"
-    package_version = "42.0.0"
     failures: list[str] = []
 
     try:
@@ -613,19 +612,36 @@ def main() -> int:
             failures.append(f"{cname} must contain only cashio.us")
 
     package = json.loads(read("package.json"))
+    package_version = package.get("version", "")
+    if not re.fullmatch(r"\d+\.\d+\.\d+", package_version):
+        failures.append("package.json must identify a stable semantic release version")
+    version_label = "V" + package_version.split(".")[0]
     if latest.get("release") != "V41 Eagle":
         failures.append("the retained observation must preserve its original V41 Eagle identity")
     current_receipt = json.loads(read("public/v40/site-release.json"))
+    release_name = current_receipt.get("presentation", {}).get("name", "")
+    if not release_name or current_receipt.get("visualEdition") != release_name:
+        failures.append("current receipt presentation and visual edition must share a nonempty name")
     if current_receipt.get("experienceVersion") != package_version:
         failures.append("current homepage receipt must match the package version")
     if current_receipt.get("evidenceSnapshot", {}).get("fleetObserved") != latest.get("verified"):
         failures.append("current homepage receipt must match the measured observation date")
     if read("public/evidence/status.json") != read("public/status.json"):
         failures.append("current public evidence aliases must be byte-identical")
-    for name in ("README.md", "CHANGELOG.md", "RELEASE_BODY.md", "index.html"):
-        text = read(name)
-        if "V42" not in text or "Omnius, Overruled" not in text:
-            failures.append(f"{name} must identify V42 Omnius, Overruled")
+    for name, heading in {
+        "README.md": f"# cAshIo {version_label} · {release_name}",
+        "RELEASE_BODY.md": f"# {version_label} · {release_name}",
+    }.items():
+        if read(name).splitlines()[0] != heading:
+            failures.append(f"{name} must begin with the current release identity {heading!r}")
+    changelog_release = re.search(r"^## (.+)$", read("CHANGELOG.md"), re.MULTILINE)
+    if not changelog_release or not changelog_release.group(1).startswith(f"V{package_version} · {release_name} · "):
+        failures.append("CHANGELOG.md must begin its release history with the current package version and name")
+    if f"<title>Doug Cashio · cAshIo · {version_label} {release_name}</title>" not in read("index.html"):
+        failures.append("index.html title must identify the current receipt and package version")
+    prior_receipt = ROOT / "public/v42/site-release.json"
+    if not prior_receipt.exists() or hashlib.sha256(prior_receipt.read_bytes()).hexdigest() != "f8e9685cc2e900c6b072aa2527cd56cf6c7359ddc5972146d268b3307a007ec8":
+        failures.append("the previous production V42 receipt must remain byte-identical")
     for name in ("README.md", "CHANGELOG.md", "RELEASE_BODY.md"):
         if latest.get("verifiedLong", "") not in read(name):
             failures.append(f"{name} must include the current observation date")
@@ -635,8 +651,6 @@ def main() -> int:
         group, key = field.split(".")
         if latest.get(group, {}).get(key) is None and not latest.get("withheldReasons", {}).get(field):
             failures.append(f"withheld {field} needs a reason")
-    if package.get("version") != package_version:
-        failures.append(f"package.json version must be {package_version}")
     lock = json.loads(read("package-lock.json"))
     if lock.get("version") != package_version or lock.get("packages", {}).get("", {}).get("version") != package_version:
         failures.append(f"package-lock.json root versions must match {package_version}")
@@ -647,6 +661,15 @@ def main() -> int:
         failures.append(f"V37 site release metadata is missing or invalid: {exc}")
     else:
         check_site_release(site_release, failures, preview=preview, version=version)
+        expected_front_door = {
+            "entry": "/",
+            "experienceVersion": package_version,
+            "visualEdition": release_name,
+            "receipt": "/v40/site-release.json",
+        }
+        for label, receipt in (("site-release.json", site_release), ("event-horizon-release.json", compatibility_release)):
+            if receipt.get("frontDoor") != expected_front_door:
+                failures.append(f"{label} frontDoor must identify the current release without rewriting its archive identity")
         archived_observation = json.loads(read("public/evidence/status-2026-09-07.json"))
         expected_snapshot = {
             "url": "/evidence/status-2026-09-07.json",
@@ -1011,13 +1034,13 @@ def main() -> int:
             failures.append(f"{delivery.name}: approved Roadster model is missing")
 
     if failures:
-        print("V42 and preserved archive consistency check failed:\n")
+        print(f"{version_label} and preserved archive consistency check failed:\n")
         for failure in failures:
             print(f"- {failure}")
         return 1
 
     print(
-        f"V42 and preserved archive consistency passed: latest dated observation "
+        f"{version_label} and preserved archive consistency passed: latest dated observation "
         f"{latest['verified']}, {latest['containers']['running']} LXC and {latest['virtualMachines']['running']} QEMU; "
         "routing unverified; V35 August archive preserved; root Pages base; archive, privacy, "
         "motion, opt-in audio, and forbidden-token gates satisfied."

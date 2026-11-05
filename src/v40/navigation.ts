@@ -1,4 +1,5 @@
 import { isZenithFilm } from "../helios/zenith-routes.js";
+import { versionLabel } from "./evidence.ts";
 
 const rooms = new Set(["starship", "principles", "studios", "heritage"]);
 const experiments = new Set(["hermes", "cascade", "exposure", "briefing", "dashboards", "signal", "graphify"]);
@@ -116,6 +117,17 @@ export function setupV40Navigation() {
       return;
     }
     if (hash === activeHash) return;
+    // A keyboard visitor can follow the reading edition's link before this
+    // deferred router installs its click listener. Retain that exact focused
+    // trigger before the scene takes focus, rather than returning to the section.
+    if (!opener && document.activeElement instanceof HTMLAnchorElement) {
+      const focused = document.activeElement;
+      const target = new URL(focused.href, location.href);
+      if (target.origin === location.origin && target.pathname === location.pathname && target.hash === hash) {
+        opener = focused;
+        returnHash = "#" + (focused.closest("section[id]")?.id || "top");
+      }
+    }
     const title = originalTitle ?? document.title;
     dispose();
     originalTitle = title;
@@ -124,7 +136,7 @@ export function setupV40Navigation() {
       scene = { dispose: () => window.cashioV40?.setState({ cinema: null }) };
       const trailer = hash === "#film=trailer";
       window.cashioV40?.setState({ cinema: trailer ? "trailer" : "intro" });
-      document.title = trailer ? "House Cashio: The Trailer · cAshIo V42" : "Eagle · cAshIo V42";
+      document.title = `${trailer ? "House Cashio: The Trailer" : "Eagle"} · cAshIo ${versionLabel}`;
       return;
     }
     const token = generation;
@@ -159,7 +171,7 @@ export function setupV40Navigation() {
               onClose: () => close(),
               onNavigate: navigate,
             });
-      document.title = `${kind === "flight" ? "First flight" : hash === "#signature" ? "Celestial Forge" : hash.startsWith("#lensing") ? "Lensing Observatory" : "Cinema"} · cAshIo V42`;
+      document.title = `${kind === "flight" ? "First flight" : hash === "#signature" ? "Celestial Forge" : hash.startsWith("#lensing") ? "Lensing Observatory" : "Cinema"} · cAshIo ${versionLabel}`;
       for (const node of document.body.children) {
         if (
           !(node instanceof HTMLElement) ||

@@ -1,0 +1,13 @@
+{
+  "name": "cAshIo · Doug Cashio",
+  "short_name": "cAshIo",
+  "id": "/",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#0D1017",
+  "theme_color": "#0D1017",
+  "icons": [
+    { "src": "/brand/platinum/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/brand/platinum/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

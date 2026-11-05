@@ -1,5 +1,17 @@
 # Changelog
 
+## V43.0.0 · Centauri · 11-05-2026
+
+Prepared 11-04-2026. Branding corrected 11-05-2026. The publication date records this revision; the observation and historical release dates remain unchanged.
+
+The approved platinum cAshIo identity uses sculpted lettering, electric blue and a restrained laser-red counterpoint. The original planetary artwork, typefaces, cut corners, content, media, bookmarks and historical editions remain. The full signature sits within an instrument plaque; compact wordmarks, icons, focus indicators and buttons share the same identity. The narrow phone header preserves readable controls without hiding them under the scrollbar. The capital A is red and the barred capital I is blue. The coordinated personal-site update extends platinum themes and current marks to older editions and reading rooms; historical content, films and the original interactive Celestial artwork remain intact.
+
+The entrance gives the optional tour a clear promise and route expectation, with manual boarding and experiments available alongside it. Roadster inspection adds controlled reflections, a movable light, an optional finite light sweep and three model detail callouts. Its original geometry, Studio and Blueprint modes, camera controls and request-only loading remain. The expandable mission card shows the actual scene, decision and locally applied callsign, with fit and detail views and two compositions. Preview, save and share use the same current image; scenario links do not include names.
+
+Keep the corrected 64 second orbit, steady illumination, motion pause, reduced motion and opt-in sound. Preserve the November 4, 2026 observation and its V41 source identity; this visual release does not claim new operational measurements. The V42 Omnius hearing and lore remain identified as history. The prior production receipt is preserved byte for byte at `/v42/site-release.json`, with rollback commit `d1728250e7968141c9d26be0b6ba90927521dec6`.
+
+Current release labels derive from the receipt. The Node core suite executes files serially because legacy command-deck fixtures use real wall-clock timers; assertions and production timing remain unchanged.
+
 ## V42.0.0 · Omnius, Overruled · 11-02-2026
 
 Observation refresh · November 4, 2026: new read only checks report 19 running containers out of 20, 2 running virtual machines out of 3, and 2 hosts reporting running guests. The backup source listed 161 snapshots and reported successful integrity verification for 22 of 22 latest reported guest snapshots. Preserve the November 2 observation unchanged and update the current record, evidence pointer, sitemap and displayed date. Virtual machine labels follow the observed count. No application health, new backup creation, restore or offsite recovery result is claimed.

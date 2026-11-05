@@ -372,7 +372,10 @@ test("Roadster loads on request, offers three accessible views and stops drawing
     );
     assert.deepEqual(consoleErrors, []);
     if (width === 320) {
-      await page.getByRole("button", { name: "03 Thrusters" }).focus();
+      await page
+        .getByRole("group", { name: "Inspect Roadster details" })
+        .getByRole("button", { name: "Thrusters", exact: true })
+        .focus();
       await page.keyboard.press("Escape");
     } else await page.getByRole("button", { name: "Close 3D" }).click();
     await expect(page.locator(".roadster-cta")).toBeFocused();

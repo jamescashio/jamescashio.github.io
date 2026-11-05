@@ -18,8 +18,8 @@ void main() {
   // Move the picture and SVG instruments together through the shared camera.
   // Distorting the picture here would make its rim slide beneath the overlay.
   vec3 color = texture2D(artwork, clamp(uv, .001, .999)).rgb;
-  vec3 cyan = vec3(.447,.898,.957);
-  vec3 gold = vec3(.929,.741,.424);
+  vec3 platinum = vec3(.886,.902,.933);
+  vec3 blue = vec3(.208,.471,1.);
   // Only subtle atmosphere belongs in this shader. The SVG owns the entire ring.
   vec2 sun = vec2(.973,.655);
   vec2 ray = uv-sun;
@@ -32,7 +32,7 @@ void main() {
   float seed = hash(cell);
   vec2 mote = fract(field)-vec2(.2+.6*seed,.25+.5*hash(cell+7.));
   float dust = exp(-dot(mote,mote)*1700.) * step(.84,seed);
-  color += mix(cyan,gold,seed) * dust * .18;
+  color += mix(platinum,blue,seed) * dust * .18;
   gl_FragColor = vec4(color,1.);
   #include <tonemapping_fragment>
   #include <colorspace_fragment>

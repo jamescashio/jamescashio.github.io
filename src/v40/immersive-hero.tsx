@@ -1,6 +1,7 @@
 import type { MouseEventHandler } from "react";
 import { discoveryRoutes } from "./discovery-routes";
 import { posterSources } from "./poster-sources.ts";
+import { presentation, versionLabel } from "./evidence.ts";
 type HeroView = {
   wide: boolean;
   scene: string;
@@ -79,7 +80,7 @@ function HeroHud() {
           cx="1508"
           cy="508"
           r="381"
-          stroke="#ff3d55"
+          stroke="#e2e6ee"
           strokeOpacity=".82"
           strokeWidth="18"
           strokeDasharray="3 236.39"
@@ -96,7 +97,7 @@ function HeroHud() {
         <path
           className="hud-lock"
           d="M1273 380V368H1285M1309 368H1321V380M1321 404V416H1309M1285 416H1273V404"
-          stroke="#e2e6ee"
+          stroke="#f5f5f7"
           strokeWidth="2.5"
         />
         <circle cx="1508" cy="508" r="342" stroke="var(--cyan)" strokeOpacity=".12" />
@@ -145,8 +146,8 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
       </div>
       <div className="continuum-horizon" aria-hidden="true" />
       <div className="continuum-arrival">
-        <span>cAshIo / V42</span>
-        <span>Omnius, Overruled</span>
+        <span>cAshIo / {versionLabel}</span>
+        <span>{presentation.name}</span>
         <span className="continuum-arrival-end">
           <i aria-hidden="true" /> Built after hours
         </span>
@@ -156,19 +157,18 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
           <div className="continuum-stage" data-scene={scene.id}>
             <canvas id="hero-stars" aria-hidden="true" />
             <ContinuumStill />
-            <img
-              className="flight-signature"
-              src="/brand/platinum/signature-840.webp"
-              srcSet="/brand/platinum/signature-420.webp 420w, /brand/platinum/signature-840.webp 840w"
-              sizes="(max-width: 600px) 200px, 340px"
-              width="840"
-              height="387"
-              alt=""
-              aria-hidden="true"
-            />
-            <div className="continuum-reticle" aria-hidden="true">
-              <span>THE HORIZON IS YOURS</span>
-            </div>
+            <figure className="flight-signature-plaque" aria-hidden="true">
+              <img
+                className="flight-signature"
+                src="/brand/platinum/signature-840.webp"
+                srcSet="/brand/platinum/signature-420.webp 420w, /brand/platinum/signature-840.webp 840w"
+                sizes="(max-width: 600px) calc(100vw - 54px), (max-width: 1179px) 272px, (max-height: 800px) 292px, 322px"
+                width="840"
+                height="387"
+                alt=""
+              />
+              <figcaption className="continuum-reticle">THE HORIZON IS YOURS</figcaption>
+            </figure>
           </div>
         </div>
         <div className="continuum-copy">
@@ -182,32 +182,41 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
           </h1>
           <p className="aurum-manifesto">Imagination, with intention.</p>
           <p className="continuum-intro">
-            I’m Doug Cashio. I build local AI experiments and original worlds after hours. Step aboard, make a decision,
-            and see what stays in your control.
+            I’m Doug Cashio. This is my after-hours workshop for local AI experiments, original films, and worlds you
+            can explore.
           </p>
-          <a href="#flight=tour" className="continuum-primary tour-launch">
+          <a href="#flight=tour" className="continuum-primary tour-launch" aria-describedby="tour-expectations">
             <span className="tour-launch-symbol" aria-hidden="true">
               ▷
             </span>
             <span className="tour-launch-copy">
+              <span className="tour-launch-kicker">Start here</span>
               <strong>Play the 30 second tour</strong>
-              <small>Board. Cut the cloud. Keep your mission card.</small>
+              <small>Make a decision. Keep your mission card.</small>
             </span>
             <span className="tour-launch-arrow" aria-hidden="true">
               ↗
             </span>
           </a>
-          <div className="continuum-actions tour-alternatives">
+          <p id="tour-expectations" className="continuum-footnote">
+            Four scenes. <strong>Sound off. Pause any time.</strong>
+          </p>
+          <nav className="continuum-actions tour-alternatives" aria-label="Other ways to begin">
             <a href="#flight=board" onClick={v.boardShip} className="continuum-secondary">
-              Board the starship <span aria-hidden="true">↗</span>
+              <span>
+                <strong>Board the starship</strong>
+                <small>Explore at your pace</small>
+              </span>
+              <span aria-hidden="true">↗</span>
             </a>
             <a href="#studies" className="continuum-secondary">
-              Try an experiment <span aria-hidden="true">↗</span>
+              <span>
+                <strong>Try an experiment</strong>
+                <small>Change an input. See why.</small>
+              </span>
+              <span aria-hidden="true">↗</span>
             </a>
-          </div>
-          <p className="continuum-footnote">
-            <strong>Your pace. Your command.</strong> Four scenes · sound off · pause any time.
-          </p>
+          </nav>
           <a href="/cashio.html#logo-reveal" className="hero-logo-reveal">
             <span aria-hidden="true">▷ </span>Watch the logo reveal · 15 seconds
           </a>
@@ -256,7 +265,7 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
       </div>
       <div className="continuum-launchpad">
         <div className="continuum-launch-heading">
-          <span className="continuum-label">Three ways into the universe</span>
+          <span className="continuum-label">Or follow your curiosity</span>
           {/* One finder: Plot a course opens Mission Control, where the guided routes now live. */}
           <button id="discovery-launch" type="button" data-mission-open="" aria-haspopup="dialog">
             Plot a course <span aria-hidden="true">↗</span>
@@ -279,7 +288,7 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
                 <small>
                   0{i + 1} / {r.label}
                 </small>
-                <strong>{["Find your world", "Make something click", "Enter the cinema"][i]}</strong>
+                <strong>{["Explore the worlds", "Try the experiments", "Enter the cinema"][i]}</strong>
                 <span className="continuum-path-description">
                   {
                     [

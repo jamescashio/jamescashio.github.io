@@ -2137,6 +2137,7 @@ test("the real airframe role-button owns shortcut keys while Enter and Space sti
     airframe.focus();
 
     for (const key of ["ArrowLeft", "ArrowRight", "a", "t", "1", "9"]) {
+      await view.scrollDeck(4);
       await act(async () => useDeck.setState(baseline));
       airframe.focus();
       await view.key(airframe, key);
@@ -2149,6 +2150,7 @@ test("the real airframe role-button owns shortcut keys while Enter and Space sti
     }
 
     for (const key of ["Enter", " "]) {
+      await view.scrollDeck(4);
       await act(async () => useDeck.setState(baseline));
       airframe.focus();
       await view.key(airframe, key);
@@ -2165,6 +2167,7 @@ test("unmodified global printable keys do not trigger hidden page commands", asy
     await view.render();
     const baseline = { deck: 4, sel: 3, audio: false, tour: false, alert: false };
     for (const key of ["a", "r", "t", "1", "9"]) {
+      await view.scrollDeck(4);
       await act(async () => useDeck.setState(baseline));
       const event = await view.key(view.document.body, key);
       assert.equal(event.defaultPrevented, false, `${key} must retain its native page behavior`);

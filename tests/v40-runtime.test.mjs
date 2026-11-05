@@ -5,6 +5,9 @@ import { chromium, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
 const url = process.env.V40_URL;
+const currentRelease = JSON.parse(await readFile(new URL("../public/v40/site-release.json", import.meta.url), "utf8"));
+const currentVersionLabel = `V${currentRelease.experienceVersion.split(".")[0]}`;
+const currentTitle = `Doug Cashio · cAshIo · ${currentVersionLabel} ${currentRelease.presentation.name}`;
 let browser;
 before(async () => {
   browser = await chromium.launch({
@@ -351,7 +354,7 @@ test("Every mobile Menu section stays in V40 and survives a reload", async (t) =
       await expect(page.locator(`#${id}`)).toBeInViewport();
       await page.reload();
       await expect(page.locator("#mission-dialog")).toBeAttached();
-      await expect(page).toHaveTitle(/V42 Omnius, Overruled/);
+      await expect(page).toHaveTitle(currentTitle);
       assert.equal(new URL(page.url()).pathname, "/");
       assert.equal(new URL(page.url()).hash, `#${id}`);
       await expect(page.locator(`#${id}`)).toBeInViewport();
@@ -452,15 +455,15 @@ test("The consolidated routing-law bookmark and glossary remain readable without
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 390);
 });
 
-test("Current room and flight titles consistently identify V42", async (t) => {
+test("Current room and flight titles consistently identify the release", async (t) => {
   const page = await visit(t);
   await page.locator('#hero-content a[href="#flight=board"]').click();
-  await expect(page).toHaveTitle("First flight · cAshIo V42");
+  await expect(page).toHaveTitle(`First flight · cAshIo ${currentVersionLabel}`);
   await expect(page.locator("#helios-flight dialog")).toBeVisible();
   await page.keyboard.press("Escape");
-  await expect(page).toHaveTitle(/V42 Omnius, Overruled/);
+  await expect(page).toHaveTitle(currentTitle);
   await page.goto(new URL("/rooms/starship/interactive/", url).href);
-  await expect(page).toHaveTitle("Starship lab · cAshIo V42");
+  await expect(page).toHaveTitle(`Starship lab · cAshIo ${currentVersionLabel}`);
 });
 
 test("Shared scenarios reject inherited keys while restoring valid bounded values", async (t) => {

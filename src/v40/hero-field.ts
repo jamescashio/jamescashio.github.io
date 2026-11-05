@@ -100,7 +100,7 @@ export function startStars(this: PageHost, c: HTMLCanvasElement) {
           dy = s.y - oy,
           length = Math.max(1, Math.hypot(dx, dy));
         const len = Math.min(120 * dpr, length * 0.22) * s.z;
-        ctx.strokeStyle = `rgba(225,208,255,${0.2 + 0.35 * s.z})`;
+        ctx.strokeStyle = `rgba(157,187,255,${0.2 + 0.35 * s.z})`;
         ctx.lineWidth = 1.1 * s.z * dpr;
         ctx.beginPath();
         ctx.moveTo(s.x, s.y);
@@ -109,7 +109,7 @@ export function startStars(this: PageHost, c: HTMLCanvasElement) {
         continue;
       }
       const tw = reduce ? 1 : 0.55 + 0.45 * Math.sin(t * 1.6 + s.t);
-      ctx.fillStyle = `rgba(241,239,247,${0.25 + 0.6 * tw * s.z})`;
+      ctx.fillStyle = `rgba(245,245,247,${0.25 + 0.6 * tw * s.z})`;
       ctx.fillRect(s.x, s.y, 1.2 * s.z * dpr + 0.4, 1.2 * s.z * dpr + 0.4);
       if (!reduce) {
         s.x -= 2.4 * delta * s.z * dpr;

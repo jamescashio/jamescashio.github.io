@@ -385,10 +385,12 @@ export default function FirstFlight({
       aria-labelledby="ff-title"
       aria-describedby="ff-boundary"
       onCancel={(event) => {
+        if (event.target !== event.currentTarget) return;
         event.preventDefault();
         onClose();
       }}
       onKeyDown={(event) => {
+        if ((event.target as HTMLElement).closest("dialog") !== event.currentTarget) return;
         if (event.key !== "Tab") return;
         if (cinema) {
           event.preventDefault();

@@ -28,8 +28,8 @@ export function DiscoveryProjection({
             <stop offset="1" stopColor={destinationColors[index]} stopOpacity="0" />
           </radialGradient>
           <linearGradient id={id + "-beam"} x1="300" y1="40" x2="300" y2="300" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#4ad5f0" stopOpacity="0" />
-            <stop offset="1" stopColor="#e9b450" stopOpacity=".14" />
+            <stop stopColor="#3578ff" stopOpacity="0" />
+            <stop offset="1" stopColor="#e2e6ee" stopOpacity=".14" />
           </linearGradient>
           <filter id={id + "-glow"} x="-100%" y="-100%" width="300%" height="300%">
             <feGaussianBlur stdDeviation="3" />
@@ -92,15 +92,15 @@ export function DiscoveryProjection({
           opacity=".65"
         />
         <ellipse cx="300" cy="210" rx="63" ry="24" stroke={destinationColors[index]} />
-        <ellipse cx="300" cy="210" rx="49" ry="17" stroke="#c7edf8" strokeDasharray="2 5" />
-        <path d="m300 182 9 19 22 9-22 8-9 19-9-19-22-8 22-9Z" fill="#f6f2fa" fillOpacity=".8" />
+        <ellipse cx="300" cy="210" rx="49" ry="17" stroke="#b5cbff" strokeDasharray="2 5" />
+        <path d="m300 182 9 19 22 9-22 8-9 19-9-19-22-8 22-9Z" fill="#f5f5f7" fillOpacity=".8" />
         <circle
           key={index}
           className="discovery-projection-pulse"
           cx="300"
           cy="210"
           r="65"
-          stroke="#f6f2fa"
+          stroke="#f5f5f7"
           opacity="0"
         />
       </svg>

@@ -53,7 +53,7 @@
   border: 1px solid var(--glass-border);
   box-shadow:
     var(--shadow-panel),
-    0 0 90px -40px rgba(39, 191, 217, 0.5);
+    0 0 90px -40px rgb(var(--blue-rgb) / 0.5);
   display: flex;
   flex-direction: column;
 }
@@ -127,7 +127,7 @@
 .v41-6d3cacfe3a {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 120%, rgba(39, 191, 217, 0.2), transparent 55%);
+  background: radial-gradient(ellipse at 50% 120%, rgb(var(--blue-rgb) / 0.2), transparent 55%);
 }
 .v41-31ee932428 {
   position: relative;
@@ -203,13 +203,13 @@
 }
 #v40-root #contact {
   background: linear-gradient(140deg, #242424, #121212 65%);
-  border-top: 1px solid #2bcee935;
+  border-top: 1px solid rgb(var(--blue-rgb) / 0.208);
 }
 #v40-root #contact h2 {
   color: var(--cyan);
 }
 #v40-root footer {
-  border-top-color: #2bcee930;
+  border-top-color: rgb(var(--blue-rgb) / 0.188);
 }
 @media (max-width: 760px) {
   #v40-root footer .v41-cbfac2beab {

@@ -1,5 +1,5 @@
 import type { GeneratedView } from "./generated-view.ts";
-import { updatedDate, presentation } from "./evidence.ts";
+import { updatedDate, presentation, versionLabel } from "./evidence.ts";
 
 import React from "react";
 
@@ -47,7 +47,7 @@ export function renderFooter(_v: GeneratedView) {
           h(
             React.Fragment,
             { key: 1895 },
-            "V42 · " + presentation.name + " · Directed by Doug Cashio · Updated " + updatedDate,
+            versionLabel + " · " + presentation.name + " · Directed by Doug Cashio · Updated " + updatedDate,
           ),
         ),
         " ",
@@ -141,9 +141,9 @@ export function renderFooter(_v: GeneratedView) {
           "a",
           { key: 1933, href: "https://cashio.us/cashio.html" },
           h(React.Fragment, { key: 1934 }, "My AI workspace · c"),
-          h("span", { key: 1935, className: "v41-097ae647c2" }, h(React.Fragment, { key: 1936 }, "A")),
+          h("span", { key: 1935, className: "v41-097ae647c2 cashio-brand-a" }, h(React.Fragment, { key: 1936 }, "A")),
           h(React.Fragment, { key: 1937 }, "sh"),
-          h("span", { key: 1938, className: "v41-aab9b2719f" }, h(React.Fragment, { key: 1939 }, "I")),
+          h("span", { key: 1938, className: "v41-aab9b2719f cashio-brand-i" }, h(React.Fragment, { key: 1939 }, "I")),
           h(React.Fragment, { key: 1940 }, "o →"),
         ),
         " ",
@@ -211,7 +211,7 @@ export function renderFooter(_v: GeneratedView) {
         key: 1964,
         className: "v41-b9be7637a3",
       },
-      h("span", { key: 1965 }, h(React.Fragment, { key: 1966 }, "V42 · The answer is here. Keep asking.")),
+      h("span", { key: 1965 }, h(React.Fragment, { key: 1966 }, versionLabel + " · The answer is here. Keep asking.")),
       h("span", { key: 1967 }, h(React.Fragment, { key: 1968 }, "Mostly harmless · Human in command")),
     ),
     " ",

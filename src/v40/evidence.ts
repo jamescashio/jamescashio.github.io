@@ -1,7 +1,8 @@
 import snapshot from "../../public/status.json";
 import release from "../../public/v40/site-release.json";
 export { snapshot };
-export const presentation = release.presentation;
+export const versionLabel = `V${release.experienceVersion.split(".")[0]}`;
+export const presentation = { ...release.presentation, versionLabel };
 export const observedDate = snapshot.verifiedLong;
 const formatDate = (date: string, options: Intl.DateTimeFormatOptions) =>
   new Intl.DateTimeFormat("en-US", { timeZone: "UTC", ...options }).format(new Date(date + "T12:00:00Z"));

@@ -1,4 +1,4 @@
-// Flight instruments for the V42 opening and chapters. Loaded after the deferred styles,
+// Flight instruments for the current opening and chapters. Loaded after the deferred styles,
 // so nothing here competes with the first paint. Every effect is finite or pausable.
 const root = document.documentElement;
 const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");

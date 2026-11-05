@@ -48,7 +48,7 @@ export function eve(this: PageHost, raw: string) {
     "don't panic": [["lore", "LORE · Large, friendly letters engaged. Nothing on this page requires panic."]],
     "dont panic": [["lore", "LORE · Large, friendly letters engaged. Nothing on this page requires panic."]],
     "mostly harmless": [
-      ["lore", "LORE · V42, Omnius, Overruled. The answer is here. The questions are getting better."],
+      ["lore", "LORE · From V42, Omnius, Overruled. The answer is here. The questions are getting better."],
     ],
     spice: [["lore", "LORE · Spice flows on Arrakis. Private data stays home."]],
     omnius: [
@@ -60,7 +60,7 @@ export function eve(this: PageHost, raw: string) {
     joke: [["lore", "LORE · The universe is expanding. Somehow there is still nowhere to park the starship."]],
   };
   const lore = [
-    "LORE · Omnius, Overruled: V42. The answer is here. Human judgment still required.",
+    "LORE · From V42, Omnius, Overruled. The answer is here. Human judgment still required.",
     "LORE · A human in command is not a bottleneck. It is the point.",
     "LORE · Zeus and Apollo keep the lights on. Hermes carries the messages. Nobody gets a throne.",
     "LORE · Fly it like a test pilot: know the envelope, then write down what the instruments actually said.",

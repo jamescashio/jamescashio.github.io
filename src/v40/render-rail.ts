@@ -21,8 +21,8 @@ export function renderRail(v: GeneratedView) {
         className: "v41-72a932cfed",
       },
       h(React.Fragment, { key: 10 }, "c"),
-      h("span", { key: 11, className: "v41-097ae647c2" }, h(React.Fragment, { key: 12 }, "A")),
-      h("span", { key: 13, className: "v41-aab9b2719f" }, h(React.Fragment, { key: 14 }, "I")),
+      h("span", { key: 11, className: "v41-097ae647c2 cashio-brand-a" }, h(React.Fragment, { key: 12 }, "A")),
+      h("span", { key: 13, className: "v41-aab9b2719f cashio-brand-i" }, h(React.Fragment, { key: 14 }, "I")),
     ),
     " ",
     h(

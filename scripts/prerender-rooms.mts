@@ -4,6 +4,7 @@ import { JSDOM } from "jsdom";
 import { computeWorldOutcome } from "../src/odyssey/sovereign-model";
 import { PILOTS } from "../src/helios/heritage-data.js";
 import { PRINCIPLES } from "../src/helios/principles-data.js";
+import { versionLabel } from "../src/v40/evidence.ts";
 
 /** Static reading pages share the exact authored content used by the deferred interactive rooms. */
 const root = new JSDOM(await readFile("dist/v39/index.html", "utf8")).window.document;
@@ -137,7 +138,7 @@ for (const id of roomIds) {
     control.setAttribute("disabled", "");
   }
   interactive.querySelector("#reading-mode")!.textContent =
-    "V42 interactive room. Controls require JavaScript. The artwork and text remain available below.";
+    `${versionLabel} interactive room. Controls require JavaScript. The artwork and text remain available below.`;
   const opener = interactive.querySelector(`header a[href="/rooms/${id}/interactive/"]`)!;
   opener.setAttribute("href", `/rooms/${id}/`);
   opener.classList.remove("room-mode-primary");

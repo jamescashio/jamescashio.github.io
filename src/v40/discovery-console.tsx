@@ -119,7 +119,7 @@ export function DiscoveryConsole({ routeId, onClose }: { routeId: string | null;
                     cx={300 + Math.cos((i * Math.PI) / 2 - Math.PI / 4) * 250}
                     cy={200 + Math.sin((i * Math.PI) / 2 - Math.PI / 4) * 145}
                     r={i === index ? 7 : 3}
-                    fill={i === index ? "#ffdc9e" : "#91e5ec"}
+                    fill={i === index ? "#f5f5f7" : "#3578ff"}
                   />
                 ))}
               </svg>

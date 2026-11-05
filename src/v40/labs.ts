@@ -3,6 +3,7 @@ type LabValue = string | number | boolean;
 type LabState = Record<string, LabValue>;
 import { sceneKind } from "./navigation.ts";
 import { exampleBrief } from "./decision-brief.ts";
+import { versionLabel } from "./evidence.ts";
 
 /* Local demonstrations inside the original V40 experiment panels. No network calls. */
 (() => {
@@ -118,7 +119,7 @@ import { exampleBrief } from "./decision-brief.ts";
   function briefText() {
     const s = states.get("briefing")!,
       v = (f: string) => String(s[f]).trim() || "Not specified";
-    return `DECISION BRIEF / cAshIo V42\n\nWHAT WAS OBSERVED\n${v("observed")}\n\nSOURCE AND DATE\n${v("source")}\n\nWHAT REMAINS UNKNOWN\n${v("unknown")}\n\nWHO DECIDES\n${v("owner")}\n\nPrepared locally. Claims have not been independently verified by this tool.\n`;
+    return `DECISION BRIEF / cAshIo ${versionLabel}\n\nWHAT WAS OBSERVED\n${v("observed")}\n\nSOURCE AND DATE\n${v("source")}\n\nWHAT REMAINS UNKNOWN\n${v("unknown")}\n\nWHO DECIDES\n${v("owner")}\n\nPrepared locally. Claims have not been independently verified by this tool.\n`;
   }
   function update() {
     if (!host) return;

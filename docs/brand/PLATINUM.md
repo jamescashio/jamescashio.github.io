@@ -8,6 +8,8 @@ Rich, precise and futuristic, with a subtly patriotic platinum/blue/red palette.
 
 The exact wordmark is **cAshIo**: lowercase c, uppercase A, lowercase s, lowercase h, uppercase I, lowercase o. The display name may be **cAshIo AI**. Preserve readable top and bottom bars on the everyday capital I.
 
+The capital **A is laser red `#FF3D55`** and the capital **I is electric blue `#3578FF`**. Keep the other letters platinum. This letter assignment applies to the current signature, everyday marks and text fallbacks; blue remains the principal luminous accent across the wider interface.
+
 ## Palette
 
 | Role                   | Color     |
@@ -29,14 +31,18 @@ Canonical published kit: `https://cashio.us/brand/platinum/`.
 
 - Detailed signature: `signature-420.webp`, `signature-840.webp`, `signature-1680.webp`; the full-resolution image is `signature.png`. Aspect ratio is 1847:851 (1680:774 for the largest optimized export).
 - Everyday wordmark: outlined, font-independent `everyday-dark.svg` and `everyday-light.svg`. Use the matching C beside it when space permits.
+- Current site header: the compact outlined `wordmark.svg`, paired with `icon.svg`. The everyday marks remain available for other placements.
 - Small placements: `favicon.svg`, `icon.svg`, and PNGs at 16, 32, 48, 64, 180, 192 and 512 pixels. Use the bold C silhouette at small sizes.
-- Social image: `social-preview.jpg`, 1200 by 630 pixels.
-- Tokens and provenance: `tokens.css` and `brand-manifest.json` with SHA-256 hashes.
+- Current browser and home-screen placements: `favicon-16.png`, `favicon-32.png`, `favicon-48.png`, `favicon-64.png` and `apple-touch-icon.png`. `site.webmanifest` references `icon-192.png` and `icon-512.png`; the canonical `icon-16.png` through `icon-180.png` exports remain in the kit.
+- Social images: the current site's `share-card.jpg` and the kit's `social-preview.jpg`, both 1200 by 630 pixels.
+- Tokens and provenance: `tokens.css`, `provenance.json` and `brand-manifest.json` with SHA-256 hashes and a current-site placement map.
+
+`node scripts/build-platinum-assets.mjs` refreshes the generated mobile icons and current share card, then synchronizes all listed asset hashes and byte counts. Use `node scripts/build-platinum-assets.mjs --manifest-only` to refresh the inventory without rendering or changing artwork.
 
 Keep the detailed signature intact at comfortable display sizes. Simplify the mark according to size rather than erasing the main signature's inlays. Verify small icons at native pixel size, on light and dark browser chrome.
 
 ## Application guardrails
 
-Preserve site content, project-specific artwork, historical editions, dates and evidence, access settings, schedules, keyboard behavior, reduced motion and opt-in audio. Earlier gold films remain earlier gold films and must be labeled accurately. Do not apply this palette wholesale to unrelated organizations or separately branded projects.
+Apply the palette to all Cashio-branded personal-site themes, including older editions. Preserve site content, project-specific artwork, historical edition content, dates and evidence, access settings, schedules, keyboard behavior, reduced motion and opt-in audio. Earlier gold films remain earlier gold films and must be labeled accurately. Do not apply this palette wholesale to unrelated organizations or separately branded projects.
 
 Check 1440, 390 and 320 pixel layouts, contrast, asset loading and focus before publication. Use the existing deployment path, record the source revision and retain rollback.

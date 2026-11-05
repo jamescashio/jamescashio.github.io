@@ -1,0 +1,106 @@
+/* Palette only; local/cloud/held and all artwork retain their authored colors. */
+:root {
+  --void: #0d1017;
+  --deep: #111217;
+  --panel: #111217;
+  --panel2: #111217;
+  --ink: #f5f5f7;
+  --ink2: #e2e6ee;
+  --muted: #aab2c3;
+  --cyan: #9abeff;
+  --gold: #e2e6ee;
+  --gold2: #e2e6ee;
+  --line: #313849;
+  --line2: #e2e6ee17;
+}
+.nav {
+  background: #0d1017d9;
+  border-bottom-color: #313849;
+}
+.brand {
+  color: #e2e6ee;
+}
+.brand .em,
+.room-wordmark-a {
+  color: #ff8a9d;
+}
+.brand .cy,
+.room-wordmark-i {
+  color: #9abeff;
+}
+.brand > svg > rect {
+  fill: #111217;
+  stroke: #313849;
+}
+.brand > svg > path:first-of-type {
+  stroke: #ff3d55;
+}
+.brand > svg > path:last-of-type {
+  fill: #3578ff;
+}
+.nav nav a[aria-current] {
+  color: #9abeff;
+}
+.panel {
+  background: linear-gradient(180deg, #111217e6, #0d1017eb);
+}
+.soft,
+.room-card {
+  background: #111217b8;
+}
+.btn.gold {
+  background: linear-gradient(135deg, #f5f5f7, #e2e6ee);
+  color: #111217;
+  box-shadow: 0 14px 44px #3578ff47;
+}
+.btn.ghost {
+  background: #3578ff0f;
+  border-color: #3578ff4d;
+}
+.pill {
+  background: #111217cc;
+  border-color: #e2e6ee29;
+}
+.pill:hover {
+  border-color: #9abeff;
+}
+.pill[aria-pressed="true"] {
+  background: #3578ff1f;
+  border-color: #9abeff;
+  box-shadow: 0 0 24px #3578ff40;
+}
+.pill.gold[aria-pressed="true"] {
+  background: #e2e6ee24;
+  border-color: #e2e6ee;
+  box-shadow: 0 0 24px #3578ff40;
+}
+.hair {
+  background: linear-gradient(90deg, #3578ff00, #3578ff66, #3578ff00);
+}
+.skip {
+  background: #e2e6ee;
+  color: #111217;
+}
+#mc {
+  background: linear-gradient(160deg, #111217, #0d1017 68%);
+  border-color: #313849;
+}
+#mc-search {
+  border-color: #313849;
+}
+#mc-clear:hover {
+  background: #3578ff14;
+}
+#railbar {
+  background: #3578ff;
+}
+.room-film {
+  background: #111217;
+}
+section.block {
+  background: linear-gradient(180deg, #0d10178c, #111217b3);
+}
+::selection {
+  background: #3578ff59;
+  color: #f5f5f7;
+}
