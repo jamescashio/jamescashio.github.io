@@ -376,10 +376,10 @@ footer {
   background: var(--ink);
 }
 .wm-i {
-  color: var(--red);
+  color: var(--blue);
 }
 .wm-a {
-  color: var(--blue);
+  color: var(--red);
 }
 a:hover {
   text-decoration-color: var(--blue);

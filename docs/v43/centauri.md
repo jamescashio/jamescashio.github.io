@@ -1,6 +1,6 @@
 # V43 · Centauri
 
-Prepared 11-04-2026. Doug approved the reviewed platinum preview for publication and chose Centauri as the release name. Release metadata identifies the approved candidate; repository checks and live verification determine whether publication has completed.
+Prepared 11-04-2026. Branding corrected 11-05-2026. Doug approved the reviewed platinum preview for publication and chose Centauri as the release name. Release metadata identifies the approved candidate; repository checks and live verification determine whether publication has completed.
 
 ## Scope
 

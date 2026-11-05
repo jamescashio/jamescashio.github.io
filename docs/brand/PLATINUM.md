@@ -8,6 +8,8 @@ Rich, precise and futuristic, with a subtly patriotic platinum/blue/red palette.
 
 The exact wordmark is **cAshIo**: lowercase c, uppercase A, lowercase s, lowercase h, uppercase I, lowercase o. The display name may be **cAshIo AI**. Preserve readable top and bottom bars on the everyday capital I.
 
+The capital **A is laser red `#FF3D55`** and the capital **I is electric blue `#3578FF`**. Keep the other letters platinum. This letter assignment applies to the current signature, everyday marks and text fallbacks; blue remains the principal luminous accent across the wider interface.
+
 ## Palette
 
 | Role                   | Color     |

@@ -1,6 +1,8 @@
 # Changelog
 
-## V43.0.0 · Centauri · 11-04-2026
+## V43.0.0 · Centauri · 11-05-2026
+
+Prepared 11-04-2026 and corrected for the pending 11-05-2026 release. The publication date records this revision; the observation and historical release dates remain unchanged.
 
 The approved platinum cAshIo identity uses sculpted lettering, electric blue and a restrained laser-red counterpoint. The original planetary artwork, typefaces, cut corners, content, media, bookmarks and historical editions remain. The full signature sits within an instrument plaque; compact wordmarks, icons, focus indicators and buttons share the same identity. The narrow phone header preserves readable controls without hiding them under the scrollbar.
 

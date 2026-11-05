@@ -82,6 +82,42 @@ async function assertKeyboardFocus(page, target) {
 test("current brand assets decode at their advertised sizes while the archived edition retains its artwork", async (t) => {
   const { page, context } = await visit(t, "/", 1440, 900);
   await assertMetadata(page);
+  const kit = await context.request.get(new URL(`${brand}brand-manifest.json`, url).href);
+  assert.equal(kit.status(), 200);
+  assert.deepEqual((await kit.json()).logoAccentOrder, { A: "red", I: "blue" });
+  const provenance = await context.request.get(new URL(`${brand}provenance.json`, url).href);
+  assert.equal(provenance.status(), 200);
+  assert.equal(
+    (await provenance.json()).source_sha256,
+    "98b34ec176dd3a27babb155cafd5d1e37b9dd1b497648804280e3416e7d9f654",
+    "the detailed signature uses Doug's corrected red-A / blue-I artwork",
+  );
+  for (const file of ["wordmark.svg", "everyday-dark.svg", "everyday-light.svg"]) {
+    const vector = await context.request.get(new URL(`${brand}${file}`, url).href);
+    assert.equal(vector.status(), 200);
+    const accents = await page.evaluate(
+      (source) => {
+        const svg = new DOMParser().parseFromString(source, "image/svg+xml");
+        return [...svg.querySelectorAll("path[fill]")]
+          .map((path) => path.getAttribute("fill").toUpperCase())
+          .filter((color) => ["#FF3D55", "#3578FF"].includes(color));
+      },
+      await vector.text(),
+    );
+    assert.deepEqual(accents, ["#FF3D55", "#3578FF"], `${file} keeps the red A before the blue capital I`);
+  }
+  for (const [glyph, color] of [
+    ["a", "rgb(255, 61, 85)"],
+    ["i", "rgb(53, 120, 255)"],
+  ]) {
+    const letters = page.locator(`#v40-root .cashio-brand-${glyph}`);
+    assert.ok(await letters.count(), "current text wordmarks carry explicit letter colors");
+    assert.ok(
+      (await letters.evaluateAll((nodes) => nodes.map((node) => getComputedStyle(node).color))).every(
+        (value) => value === color,
+      ),
+    );
+  }
   const response = await context.request.get(new URL(`${brand}site.webmanifest`, url).href);
   assert.equal(response.status(), 200);
   const manifest = await response.json();

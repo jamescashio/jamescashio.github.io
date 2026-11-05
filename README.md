@@ -2,7 +2,7 @@
 
 Current personal identity: the [platinum cAshIo brand kit](https://cashio.us/brand/platinum/) with preserved inlaid detail, electric blue and laser red. See [brand guidance](docs/brand/PLATINUM.md) for everyday marks, icons and accessible color usage.
 
-**Centauri · Imagination, with intention** is the V43 interface prepared on 11-04-2026. The approved platinum identity accompanies a clearer first visit, richer on-demand Roadster inspection and an expandable personal mission card. The original planetary hero, four worlds, seven experiments, films and dry humor remain. House Cashio is the opening feature; the corrected 64 second orbit keeps steady illumination.
+**Centauri · Imagination, with intention** is the V43 interface prepared on 11-04-2026, with the approved red A and blue I correction on 11-05-2026. The approved platinum identity accompanies a clearer first visit, richer on-demand Roadster inspection and an expandable personal mission card. The original planetary hero, four worlds, seven experiments, films and dry humor remain. House Cashio is the opening feature; the corrected 64 second orbit keeps steady illumination.
 
 The current receipt is `public/v40/site-release.json`. Local review mode displays an unpublished ribbon and sends noindex headers; the ordinary production build is indexable. Publication follows the completed quality review and required repository checks. The prior production and rollback commit is `d1728250e7968141c9d26be0b6ba90927521dec6`. Its exact V42 receipt is preserved at `public/v42/site-release.json`. See [the Centauri release contract](docs/v43/centauri.md).
 

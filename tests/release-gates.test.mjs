@@ -19,7 +19,10 @@ test("Centauri identity advances the current release and preserves the exact V42
   assert.equal(currentRelease.releaseName, "CENTAURI");
   assert.equal(currentRelease.visualEdition, "Centauri");
   assert.equal(currentRelease.presentation.name, currentRelease.visualEdition);
-  assert.equal(currentRelease.releaseDate, "2026-11-04");
+  assert.equal(currentRelease.releaseId, "centauri-43.0.0-20261105");
+  assert.equal(currentRelease.releaseDate, "2026-11-05");
+  assert.equal(currentRelease.updatedDate, "2026-11-05");
+  assert.equal(currentRelease.presentation.preparedDate, "2026-11-04");
   assert.equal(currentRelease.status, "released");
   assert.equal(currentRelease.published, true);
   assert.deepEqual(currentRelease.previousRelease, {
@@ -917,7 +920,7 @@ test("Helios release identity, signature assets and compatibility receipts agree
   const home = [...sitemap.querySelectorAll("url")].find(
     (entry) => entry.querySelector("loc")?.textContent === "https://cashio.us/",
   );
-  assert.equal(home?.querySelector("lastmod")?.textContent, "2026-11-04");
+  assert.equal(home?.querySelector("lastmod")?.textContent, currentRelease.updatedDate);
   // The home signature and the Celestial Forge share one full size artwork file, so the forge reuses the cached copy.
   assert.equal(doc.querySelector("#sig-art").getAttribute("src"), "/brand/celestial-1680.webp");
   assert.ok((await read("src/odyssey/brand-mark.tsx")).includes("/brand/celestial-1680.webp 1680w"));

@@ -17,7 +17,8 @@ async function renderPlacements() {
   });
   try {
     const page = await browser.newPage({ deviceScaleFactor: 1 });
-    for (const size of [180, 192, 512]) {
+    const iconSizes = process.argv.includes("--share-card-only") ? [] : [180, 192, 512];
+    for (const size of iconSizes) {
       await page.setViewportSize({ width: size, height: size });
       await page.setContent(
         `<style>body{margin:0;background:#111217}img{display:block;width:100%;height:100%}</style><img src="${icon}">`,
@@ -38,7 +39,11 @@ async function renderPlacements() {
     await page.locator("img").evaluate((image) => image.decode());
     await page.evaluate(() => document.fonts.ready);
     await page.screenshot({ path: `${directory}/share-card.jpg`, type: "jpeg", quality: 91 });
-    console.log("Rendered 180/192/512 px mobile icons and the 1200 × 630 social card.");
+    console.log(
+      iconSizes.length
+        ? "Rendered 180/192/512 px mobile icons and the 1200 × 630 social card."
+        : "Rendered the 1200 × 630 social card; existing icons were preserved.",
+    );
   } finally {
     await browser.close();
   }

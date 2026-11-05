@@ -421,6 +421,12 @@ details > summary::-webkit-details-marker {
 .v41-aab9b2719f {
   color: var(--cyan);
 }
+.cashio-brand-a {
+  color: #ff3d55;
+}
+.cashio-brand-i {
+  color: #3578ff;
+}
 .v41-a0e1b1fc48 {
   flex: 1;
   display: flex;

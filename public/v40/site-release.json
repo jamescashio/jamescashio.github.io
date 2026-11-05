@@ -1,6 +1,6 @@
 {
   "experienceVersion": "43.0.0",
-  "releaseId": "centauri-43.0.0-20261104",
+  "releaseId": "centauri-43.0.0-20261105",
   "releaseName": "CENTAURI",
   "visualEdition": "Centauri",
   "presentation": {
@@ -12,7 +12,7 @@
   "entry": "/",
   "status": "released",
   "published": true,
-  "releaseDate": "2026-11-04",
+  "releaseDate": "2026-11-05",
   "previousExperience": {
     "version": "39.8.0",
     "entry": "/v39/",
@@ -25,7 +25,7 @@
     "routingObserved": null
   },
   "statement": "V43 Centauri refines the cinematic entrance, on-demand Roadster inspection and personal mission cards in the platinum cAshIo identity. Bit and the demonstrations are scripted browser experiences. Generative scenes are artwork. Observation records and historical releases retain their original dates, versions and limits.",
-  "updatedDate": "2026-11-04",
+  "updatedDate": "2026-11-05",
   "previousRelease": {
     "version": "42.0.0",
     "name": "Omnius, Overruled",
