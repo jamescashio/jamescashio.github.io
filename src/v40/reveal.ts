@@ -89,7 +89,11 @@ export function scrollFx(this: PageHost) {
       const a = this.reduce ? 1 : Math.max(0, Math.min(1, p * (n + 1.5) * 1.1 - i));
       w.style.opacity = String(0.12 + a * 0.88);
       w.style.textShadow =
-        a > 0.95 ? (w.dataset.mword === "b" ? "0 0 40px rgba(255,149,0,.55)" : "0 0 40px rgba(0,249,255,.35)") : "none";
+        a > 0.95
+          ? w.dataset.mword === "b"
+            ? "0 0 40px rgba(226,230,238,.55)"
+            : "0 0 40px rgba(53,120,255,.35)"
+          : "none";
     });
     const bar = document.getElementById("law-bar");
     if (bar) bar.style.transform = `scaleX(${p})`;

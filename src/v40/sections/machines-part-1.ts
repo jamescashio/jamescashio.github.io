@@ -158,17 +158,17 @@ export function renderMachinesPart1(v: GeneratedView) {
     h(
       "g",
       { key: 1415, id: "map-pk-a", opacity: "0" },
-      h("circle", { key: 1416, r: "11", fill: "#ff9500", opacity: ".22" }),
-      h("circle", { key: 1417, r: "6", fill: "#ff9500", opacity: ".5" }),
-      h("circle", { key: 1418, r: "2.6", fill: "#fff" }),
+      h("circle", { key: 1416, r: "11", fill: "var(--accent)", opacity: ".22" }),
+      h("circle", { key: 1417, r: "6", fill: "var(--accent)", opacity: ".5" }),
+      h("circle", { key: 1418, r: "2.6", fill: "var(--pearl)" }),
     ),
     " ",
     h(
       "g",
       { key: 1420, id: "map-pk-b", opacity: "0" },
-      h("circle", { key: 1421, r: "11", fill: "#cc00ff", opacity: ".22" }),
-      h("circle", { key: 1422, r: "6", fill: "#cc00ff", opacity: ".5" }),
-      h("circle", { key: 1423, r: "2.6", fill: "#fff" }),
+      h("circle", { key: 1421, r: "11", fill: "var(--cyan)", opacity: ".22" }),
+      h("circle", { key: 1422, r: "6", fill: "var(--cyan)", opacity: ".5" }),
+      h("circle", { key: 1423, r: "2.6", fill: "var(--pearl)" }),
     ),
     " ",
   );

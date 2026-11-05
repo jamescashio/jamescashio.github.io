@@ -27,7 +27,7 @@ export function tilt(this: PageHost, e: MouseEvent) {
     el.appendChild(g);
   }
   g.style.opacity = "1";
-  g.style.background = `radial-gradient(circle at ${nx * 100}% ${ny * 100}%, rgba(255,255,255,.16), rgba(0,249,255,.05) 30%, transparent 60%)`;
+  g.style.background = `radial-gradient(circle at ${nx * 100}% ${ny * 100}%, rgba(245,245,247,.16), rgba(53,120,255,.05) 30%, transparent 60%)`;
 }
 
 export function magnet(this: PageHost, e: MouseEvent) {

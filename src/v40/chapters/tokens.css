@@ -1,56 +1,71 @@
 /* Shared color, typography and motion values. */
 
+/* Loaded only by the current V40 front door. Historical editions keep their own tokens.
+   Platinum leads; electric blue identifies interaction; laser red is a small signature accent.
+   The legacy accent/cyan/gold names remain aliases so existing components share one palette. */
 :root {
-  /* ---- Signature neons ---- */
-  --accent: #27bfd9; /* LCARS orange — primary action / brand */
-  --accent-2: #21a6bd; /* hotter orange for gradients */
-  --cyan: #2cd3ef; /* signal cyan — links, focus, data */
-  --green: #2cd3ef; /* nominal / success / "warp" */
-  --purple: #2cd3ef; /* media / secondary accent */
-  --red: #ff0033; /* red alert / critical */
-  --amber: #8adef3; /* caution / changelog */
+  --platinum: #e2e6ee;
+  --pearl: #f5f5f7;
+  --graphite: #111217;
+  --deep: #0d1017;
+  --electric-blue: #3578ff;
+  --laser-red: #ff3d55;
+  --platinum-rgb: 226 230 238;
+  --blue-rgb: 53 120 255;
+  --red-rgb: 255 61 85;
+  --accent: var(--platinum);
+  --accent-light: var(--pearl);
+  --accent-2: #b9c5db;
+  --accent-glow: rgb(var(--platinum-rgb) / 0.12);
+  --gold-rgb: var(--platinum-rgb);
+  --signal: var(--electric-blue);
+  --signal-rgb: var(--blue-rgb);
+  --cyan: #9dbdff;
+  --cyan-glow: rgb(var(--blue-rgb) / 0.14);
+  --purple: #c6d6ff;
+  --purple-glow: rgb(var(--blue-rgb) / 0.1);
+  --link: var(--cyan);
+  --link-hover: #cfdeff;
+  --focus: #aac7ff;
 
-  /* ---- Neon glows (use in box/text-shadow) ---- */
-  --accent-glow: rgba(39, 191, 217, 0.35);
-  --cyan-glow: rgba(44, 211, 239, 0.3);
-  --green-glow: rgba(44, 211, 239, 0.4);
-  --red-glow: rgba(255, 0, 51, 0.5);
-  --amber-glow: rgba(138, 222, 243, 0.3);
-  --purple-glow: rgba(44, 211, 239, 0.35);
+  /* Status colors carry meaning and are not brand decoration. */
+  --green: #a6e9bd;
+  --amber: #f0c174;
+  --red: var(--laser-red);
+  --green-glow: rgb(166 233 189 / 0.2);
+  --amber-glow: rgb(240 193 116 / 0.2);
+  --red-glow: rgb(var(--red-rgb) / 0.2);
 
-  /* ---- Surfaces ---- */
-  --void: #0d0d0d; /* page background */
-  --void-deep: #080808; /* terminals / inset wells */
-  --surface: rgba(18, 18, 18, 0.88); /* panels */
-  --surface-2: rgba(27, 27, 27, 0.75); /* nested cards */
-  --glass: rgba(255, 255, 255, 0.04); /* chips, faint fills */
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-highlight: rgba(255, 255, 255, 0.12);
-
-  /* ---- Text ---- */
-  --text: #ececec; /* primary */
-  --text-dim: #d9d9d9; /* secondary / labels */
-  --on-accent: #101010; /* text on orange fills */
-  --on-cyan: #101010; /* text on cyan fills */
-
-  /* ---- Semantic aliases ---- */
+  --void: var(--deep);
+  --void-deep: #080a10;
+  --void-rgb: 13 16 23;
+  --surface: var(--graphite);
+  --surface-2: #1a1e28;
+  --glass: rgb(17 18 23 / 0.93);
+  --glass-border: rgb(var(--platinum-rgb) / 0.19);
+  --glass-highlight: rgb(var(--platinum-rgb) / 0.12);
+  --border-strong: rgb(var(--platinum-rgb) / 0.42);
+  --continuum-line: var(--glass-border);
+  --text: var(--pearl);
+  --text-dim: #b9c2d3;
+  --on-accent: #111217;
+  --on-cyan: #0d1017;
+  --primary-fill: linear-gradient(115deg, var(--pearl), var(--platinum));
+  --title-metal: linear-gradient(100deg, var(--pearl), var(--platinum) 62%, #aab5c9);
   --bg-page: var(--void);
   --text-body: var(--text);
   --text-muted: var(--text-dim);
-  --link: var(--cyan);
-  --brand: var(--accent);
+  --brand: var(--platinum);
   --status-ok: var(--green);
   --status-warn: var(--amber);
   --status-crit: var(--red);
   --surface-panel: var(--surface);
   --surface-card: var(--surface-2);
   --border: var(--glass-border);
-
-  /* ---- Ambient page wash (radial neon bloom) ---- */
   --page-wash:
-    radial-gradient(circle at 15% 10%, rgba(44, 211, 239, 0.06), transparent 40%),
-    radial-gradient(circle at 85% 30%, rgba(44, 211, 239, 0.05), transparent 45%),
-    radial-gradient(circle at 50% 100%, rgba(39, 191, 217, 0.05), transparent 50%); /* @kind other */
+    radial-gradient(circle at 15% 10%, rgb(var(--blue-rgb) / 0.04), transparent 40%),
+    radial-gradient(circle at 85% 30%, rgb(var(--platinum-rgb) / 0.035), transparent 45%),
+    radial-gradient(circle at 50% 100%, rgb(var(--red-rgb) / 0.015), transparent 50%);
 }
 :root {
   /* ---- Families ---- */
@@ -125,8 +140,8 @@
   --shadow-hud: 0 2px 30px rgba(0, 0, 0, 0.5);
   --shadow-terminal: 0 10px 44px rgba(0, 0, 0, 0.6), inset 0 0 30px rgba(0, 0, 0, 0.5);
 
-  /* ---- Neon focus ring (cyan double-stroke) ---- */
-  --ring: 0 0 0 2px var(--void), 0 0 0 4px var(--cyan), 0 0 20px var(--cyan-glow);
+  /* ---- Accessible focus ring ---- */
+  --ring: 0 0 0 2px var(--void), 0 0 0 4px var(--focus), 0 0 20px var(--cyan-glow);
 
   /* ---- Hover glows by color (box-shadow) ---- */
   --glow-cyan: 0 0 18px var(--cyan-glow);

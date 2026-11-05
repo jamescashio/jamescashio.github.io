@@ -1,4 +1,32 @@
-# cAshIo · Observatory polish
+# cAshIo · Platinum observatory
+
+## Current preview · 11-04-2026
+
+An after-hours observatory in sculpted platinum, with electric-blue instruments and a restrained laser-red counterpoint, where light responds to your hand and a decision becomes a keepsake worth opening.
+
+This round starts from production `243eb89ffa3cb4b9114081fda3718a42158e9f60` in the isolated `codex/v42-studio-finale-preview` worktree. The user requests a preview before publishing. Keep this round local and visibly unpublished; earlier approvals cover earlier versions only.
+
+### Visual contract
+
+- Doug's approved palette supersedes earlier brand colors for the current site: platinum #E2E6EE, pearl #F5F5F7, graphite #111217, deep background #0D1017, electric blue #3578FF and laser red #FF3D55. Platinum is dominant; blue is the primary luminous accent; red is a smaller counterpoint. Express the subtle patriotic quality through color alone. No jade, emerald, mint or teal brand treatments. Preserve meaningful status colors.
+- Preserve the original ring artwork, Orbitron / Exo 2 / JetBrains Mono, cut corners, section structure and dry humor. Use the approved platinum signature with its recessed circuitry, A and I miniature scenes, sculpted frames and orbital details intact at large sizes. Compact placements use carefully spaced cAshIo lettering with a blue A and a red I with clear top and bottom bars. Small icons use the matching simplified C.
+- Platinum and blue identify primary actions and inspectable detail. Use a lighter blue for readable text and visible focus where saturated blue lacks contrast; keep essential controls at least 44 px. Rich dark surfaces and controlled highlights take priority over glow.
+- One primary entrance: the existing short tour, with a clear promise of making a decision and keeping a card. Manual boarding and experiments remain explicit optional paths. No additional gate, delay or forced scrolling.
+- Roadster: unchanged original CAD, richer controlled studio reflections, constant light intensity, a direct light-position control, and three useful model-anchored detail callouts. Optional finite light sweep only on request. The camera stays still until the visitor moves it. Preserve Studio/Blueprint and all existing views, reset, failure recovery and original asset provenance.
+- Mission card: retain compact Save/Share/Copy placement, add a full-size inspector with fit/detail modes, and offer two coherent compositions using the actual scene and decision. The inspected, saved and shared images must agree. Keep callsigns local and scenario links free of names.
+- Match the existing instrument language across entrance, studio and finale. Refinement should make the site easier to understand and more enjoyable to inspect.
+
+### Motion and performance
+
+Keep the corrected 64-second orbit, steady illumination, pause control, hidden-page suspension and reduced motion. No flash, brightness pulse, idle Roadster spin or automatic audio. Light changes reuse the existing scene and environment; avoid adding dependencies or network assets. Stop drawing at rest and dispose all event handlers and graphics resources.
+
+### Acceptance
+
+Inspect the actual built preview at 1440, 390 and 320 px, including Cashio AI, small-icon clarity, contrast, focus and asset loading. Verify the primary journey, Roadster lighting/hotspots, keyboard and reduced motion, nested-dialog focus and Escape, exact portrait/landscape PNG exports, composition changes without stale files, native sharing fallback, recovery states and existing routes. Run appropriate build, lint, privacy, regression and performance checks. Preserve all content, media, evidence dates and historical receipts. Historical artwork and archives keep their own identity. Inspect the latest source for concurrent changes before release.
+
+---
+
+# Previous approved design · cAshIo Observatory polish
 
 ## Creative thesis
 

@@ -29,12 +29,12 @@
   padding: 0;
   margin: auto;
   color: #f0ece4;
-  background: radial-gradient(ellipse at 15% 15%, #2b271e66, transparent 48%), #110f0b;
-  border: 1px solid #bc8400;
-  border-top: 5px solid #ff9500;
+  background: radial-gradient(ellipse at 15% 15%, rgb(17 18 23 / 0.4), transparent 48%), #110f0b;
+  border: 1px solid var(--platinum);
+  border-top: 5px solid var(--platinum);
   border-radius: 20px;
   box-shadow:
-    0 0 90px #ffb30012,
+    0 0 90px rgb(var(--platinum-rgb) / 0.071),
     0 24px 90px #000;
   overflow: auto;
   scroll-padding-block: 130px 20px;
@@ -53,12 +53,12 @@
   gap: 16px;
   padding: 24px 24px 14px;
   background: #17140f;
-  border-bottom: 1px solid #5e4d264d;
+  border-bottom: 1px solid rgb(var(--platinum-rgb) / 0.302);
 }
 .bit-eyebrow {
   font: 10px var(--font-mono);
   letter-spacing: 0.2em;
-  color: #ffb300;
+  color: var(--platinum);
 }
 .bit-dialog h2 {
   font: 700 21px/1.3 var(--font-display);
@@ -70,7 +70,7 @@
 .bit-dialog [data-bit-close] {
   min-width: 44px;
   min-height: 44px;
-  border: 1px solid #4e493e;
+  border: 1px solid var(--surface-2);
   background: #1d1a14;
   border-radius: 10px;
   color: #f0ece4;
@@ -92,11 +92,11 @@
 }
 .bit-intro > div > span {
   font: 13px var(--font-body);
-  color: #ccc5b5;
+  color: var(--platinum);
 }
 .bit-answer {
-  border: 1px solid #5e4d26;
-  border-left: 3px solid #ffb300;
+  border: 1px solid var(--platinum);
+  border-left: 3px solid var(--platinum);
   border-radius: 12px;
   padding: 17px 18px;
   margin: 0 24px 18px;
@@ -106,7 +106,7 @@
 .bit-answer-tag {
   font: 10px/1.6 var(--font-mono);
   letter-spacing: 0.1em;
-  color: #ffb300;
+  color: var(--platinum);
 }
 .bit-answer p {
   margin: 10px 0 0;
@@ -114,10 +114,10 @@
   text-wrap: pretty;
 }
 .bit-dialog[data-mood="no"] .bit-answer {
-  border-left-color: #ff6b89;
+  border-left-color: var(--red);
 }
 .bit-dialog[data-mood="yes"] .bit-answer {
-  border-left-color: #ffcc18;
+  border-left-color: var(--green);
 }
 .bit-questions {
   display: grid;
@@ -126,7 +126,7 @@
   margin: 0 24px 20px;
 }
 .bit-questions button {
-  border: 1px solid #585245;
+  border: 1px solid var(--platinum);
   background: #1d1a14;
   color: #f0ece4;
   border-radius: 9px;
@@ -135,7 +135,7 @@
   padding: 10px;
 }
 .bit-questions button:hover {
-  border-color: #ffb300;
+  border-color: var(--platinum);
   background: #252119;
 }
 .bit-destinations {
@@ -144,9 +144,9 @@
   margin: 0 24px 16px;
 }
 .bit-destinations button {
-  border: 1px solid #4e493c;
+  border: 1px solid var(--surface-2);
   background: transparent;
-  color: #ffb300;
+  color: var(--platinum);
   padding: 12px 14px;
   min-height: 44px;
   text-align: left;
@@ -154,14 +154,14 @@
   font: 600 13px var(--font-display);
 }
 .bit-destinations button:first-child {
-  background: #ff9500;
-  border-color: #ff9500;
+  background: var(--platinum);
+  border-color: var(--platinum);
   color: #0c0b08;
 }
 .bit-footnote {
   margin: 0;
   padding: 0 24px 24px;
-  color: #ccc5b5;
+  color: var(--platinum);
   font: 12px/1.6 var(--font-body);
 }
 @media (max-width: 600px) {
@@ -246,7 +246,7 @@
   height: 82px;
   object-fit: cover;
   border-radius: 9px;
-  border: 1px solid rgba(238, 185, 88, 0.3);
+  border: 1px solid rgb(var(--platinum-rgb) / 0.3);
 }
 .journey-disclosure-copy {
   flex: 1;
@@ -269,7 +269,7 @@
   place-items: center;
   width: 40px;
   height: 40px;
-  border: 1px solid rgba(238, 185, 85, 0.28);
+  border: 1px solid rgb(var(--platinum-rgb) / 0.28);
   border-radius: 50%;
   color: var(--cyan);
   font: 400 26px/1 var(--font-body);
@@ -299,9 +299,9 @@
   padding: 40px 28px;
 }
 #mission-dialog [data-chapter="contact"] {
-  color: #f2ca90;
-  border: 1px solid rgba(239, 189, 102, 0.3);
-  background: #efbd6608;
+  color: var(--platinum);
+  border: 1px solid rgb(var(--platinum-rgb) / 0.3);
+  background: rgb(var(--platinum-rgb) / 0.031);
 }
 @media (max-width: 760px) {
   #v40-root .journey-disclosure {
@@ -371,18 +371,18 @@ html[data-motion="off"] .journey-disclosure-icon {
   border-color: #bababa5c;
 }
 #v40-root .journey-disclosure-icon {
-  box-shadow: inset 0 0 16px #2acde80a;
+  box-shadow: inset 0 0 16px rgb(var(--blue-rgb) / 0.039);
 }
 #v40-root .journey-disclosure > summary:hover .journey-disclosure-icon {
-  color: #9de2f4;
-  border-color: #7edcf299;
+  color: var(--link);
+  border-color: rgb(var(--blue-rgb) / 0.6);
 }
 .mission-panel {
   width: min(1080px, calc(100vw - 40px));
   max-height: min(820px, calc(100dvh - 40px));
   overflow: hidden;
   border-radius: 5px;
-  border-color: #eeb8545c;
+  border-color: rgb(var(--platinum-rgb) / 0.361);
   background: #141414;
   box-shadow:
     0 30px 120px #000c,
@@ -395,14 +395,14 @@ html[data-motion="off"] .journey-disclosure-icon {
 .mission-head {
   flex: none;
   padding: 24px 30px 18px;
-  border-top: 2px solid #f4d2a5;
-  border-bottom-color: #c598432e;
+  border-top: 2px solid var(--platinum);
+  border-bottom-color: rgb(var(--platinum-rgb) / 0.18);
   background: linear-gradient(110deg, #2e2e2e, #181818 65%);
 }
 .mission-eyebrow {
   display: block;
   margin-bottom: 10px;
-  color: #f0c174;
+  color: var(--platinum);
   font: 12px/1.5 var(--font-mono);
   letter-spacing: 0.17em;
 }
@@ -426,13 +426,13 @@ html[data-motion="off"] .journey-disclosure-icon {
 }
 .mission-search input {
   border-radius: 3px;
-  border-color: #bb903f52;
+  border-color: rgb(var(--platinum-rgb) / 0.322);
   background: #101010;
   padding: 13px 16px;
-  caret-color: #f4d2a5;
+  caret-color: var(--platinum);
 }
 .mission-search input:focus-visible {
-  outline: 2px solid #f1c789;
+  outline: 2px solid var(--focus);
   outline-offset: 3px;
 }
 .mission-categories {
@@ -453,12 +453,12 @@ html[data-motion="off"] .journey-disclosure-icon {
   cursor: pointer;
 }
 .mission-categories button[aria-pressed="true"] {
-  color: #b5e8f6;
+  color: var(--link);
   background: #292929;
-  border-color: #f4d2a570;
+  border-color: rgb(var(--platinum-rgb) / 0.439);
 }
 .mission-categories button:hover {
-  border-color: #be92406b;
+  border-color: rgb(var(--platinum-rgb) / 0.42);
 }
 /* Guided routes: the Discovery tours, reached from the one finder. */
 .mission-routes {
@@ -470,7 +470,7 @@ html[data-motion="off"] .journey-disclosure-icon {
 }
 .mission-routes-label {
   margin-right: 4px;
-  color: #9fdfe9;
+  color: var(--link);
   font: 12px/1.5 var(--font-mono);
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -478,20 +478,20 @@ html[data-motion="off"] .journey-disclosure-icon {
 .mission-routes button {
   min-height: 44px;
   padding: 8px 14px;
-  border: 1px solid #72e5f44d;
+  border: 1px solid rgb(var(--blue-rgb) / 0.302);
   border-radius: 2px;
-  background: #72e5f40d;
-  color: #d6f5fa;
+  background: rgb(var(--blue-rgb) / 0.051);
+  color: var(--link);
   font: 600 13px/1.4 var(--font-body);
   cursor: pointer;
 }
 .mission-routes button:hover,
 .mission-routes button:focus-visible {
-  border-color: #f4d2a5a8;
-  color: #ffe0a1;
+  border-color: rgb(var(--platinum-rgb) / 0.659);
+  color: var(--pearl);
 }
 .mission-routes button:focus-visible {
-  outline: 2px solid #f1c789;
+  outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
 @media (max-width: 700px) {
@@ -520,7 +520,7 @@ html[data-motion="off"] .journey-disclosure-icon {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
   min-height: 0;
-  border-top: 1px solid #c3964233;
+  border-top: 1px solid rgb(var(--platinum-rgb) / 0.2);
 }
 .mission-results {
   overflow: auto;
@@ -529,7 +529,7 @@ html[data-motion="off"] .journey-disclosure-icon {
   grid-auto-rows: max-content;
   padding: 12px;
   gap: 4px;
-  scrollbar-color: #a07b34 #141414;
+  scrollbar-color: var(--platinum) #141414;
   scrollbar-width: thin;
 }
 .mission-results a {
@@ -543,15 +543,15 @@ html[data-motion="off"] .journey-disclosure-icon {
     background 180ms;
 }
 .mission-results a[data-preview-active="true"] {
-  border-color: #f0c27959;
+  border-color: rgb(var(--platinum-rgb) / 0.349);
   background: linear-gradient(105deg, #2b2b2b, #1b1b1b);
 }
 .mission-results a:focus-visible {
-  outline: 2px solid #f3d2a4;
+  outline: 2px solid var(--focus);
   outline-offset: -3px;
 }
 .mission-results small {
-  color: #f0c279;
+  color: var(--platinum);
 }
 .mission-row-copy {
   min-width: 0;
@@ -568,7 +568,7 @@ html[data-motion="off"] .journey-disclosure-icon {
   font: 13px/1.5 var(--font-body);
 }
 .mission-arrow {
-  color: #eeb958;
+  color: var(--platinum);
 }
 .mission-preview {
   /* A column, so the artwork gives up height before the copy has to scroll. */
@@ -580,9 +580,9 @@ html[data-motion="off"] .journey-disclosure-icon {
   overflow: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
-  scrollbar-color: #a07b34 #171717;
-  border-left: 1px solid #c3964233;
-  background: radial-gradient(ellipse at 80% 0, #74582335, transparent 65%), #171717;
+  scrollbar-color: var(--platinum) #171717;
+  border-left: 1px solid rgb(var(--platinum-rgb) / 0.2);
+  background: radial-gradient(ellipse at 80% 0, rgb(var(--platinum-rgb) / 0.208), transparent 65%), #171717;
 }
 .mission-preview[hidden] {
   display: none;
@@ -658,14 +658,14 @@ html[data-motion="off"] .journey-disclosure-icon {
   padding: 4px 30px 24px;
 }
 .mission-preview-category {
-  color: #f1c480;
+  color: var(--platinum);
   font: 12px/1.5 var(--font-mono);
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
 .mission-preview h3 {
   margin: 14px 0 12px;
-  color: #b7e9f7;
+  color: var(--link);
   font: 600 25px/1.35 var(--font-display);
   text-wrap: balance;
 }
@@ -677,13 +677,13 @@ html[data-motion="off"] .journey-disclosure-icon {
 .mission-preview-hint {
   display: block;
   margin-top: 25px;
-  color: #efbb61;
+  color: var(--platinum);
   font: 12px/1.6 var(--font-mono);
 }
 .mission-orbit-mark {
   margin: 0 30px 20px;
   padding-top: 14px;
-  border-top: 1px solid #deac4c33;
+  border-top: 1px solid rgb(var(--platinum-rgb) / 0.2);
   color: #c2c2c2;
   font: 12px/1.5 var(--font-mono);
   letter-spacing: 0.1em;
@@ -692,7 +692,7 @@ html[data-motion="off"] .journey-disclosure-icon {
   flex: none;
   padding: 13px 30px;
   background: #121212;
-  border-top-color: #c3964233;
+  border-top-color: rgb(var(--platinum-rgb) / 0.2);
 }
 .mission-foot button,
 .mission-empty button {
@@ -700,7 +700,7 @@ html[data-motion="off"] .journey-disclosure-icon {
   min-width: 44px;
 }
 .mission-empty button {
-  border: 1px solid #e9b450;
+  border: 1px solid var(--platinum);
   border-radius: 3px;
   padding: 10px 14px;
   background: #272727;
@@ -871,7 +871,7 @@ html[data-motion="off"] .mission-results a {
   }
 }
 #v40-root .journey-disclosure {
-  border-color: #26bed736;
+  border-color: rgb(var(--blue-rgb) / 0.212);
 }
 #v40-root .journey-disclosure > summary {
   min-height: 118px;
@@ -884,7 +884,7 @@ html[data-motion="off"] .mission-results a {
   flex-shrink: 0;
   width: 50px;
   height: 62px;
-  border: 1px solid #2bd0eb4a;
+  border: 1px solid rgb(var(--blue-rgb) / 0.29);
   color: #e5e5e5;
   font: 30px/1 var(--font-body);
   background: #1c1c1c;
@@ -894,7 +894,7 @@ html[data-motion="off"] .mission-results a {
   font-weight: 500;
 }
 #v40-root .journey-disclosure-icon {
-  border-color: #26bad366;
+  border-color: rgb(var(--blue-rgb) / 0.4);
 }
 #v40-root .mission-desk {
   border-radius: 6px;
@@ -942,7 +942,7 @@ html[data-motion="off"] .mission-results a {
 #v40-root .journey-disclosure {
   width: calc(100% - clamp(44px, 11.6vw, 192px));
   margin-inline: auto;
-  border-block: 1px solid #21a9bf42;
+  border-block: 1px solid rgb(var(--blue-rgb) / 0.259);
 }
 #v40-root .journey-disclosure > summary {
   padding: 28px 30px;
@@ -954,21 +954,21 @@ html[data-motion="off"] .mission-results a {
   }
 }
 #v40-root nav[aria-label="Sections"] a[href="#rooms"] {
-  --chapter: #a6e9bd;
+  --chapter: var(--platinum);
 }
 #v40-root nav[aria-label="Sections"] a[href="#studies"] {
-  --chapter: #54d6f0;
+  --chapter: var(--link);
 }
 #v40-root nav[aria-label="Sections"] a[href="#films"] {
-  --chapter: #efbb60;
+  --chapter: var(--platinum);
 }
 #v40-root nav[aria-label="Sections"] .v41-b5d5368cf2 {
-  background: var(--chapter, #a7e5f5);
+  background: var(--chapter, var(--link));
 }
 #v40-root .journey-disclosure {
-  background: linear-gradient(110deg, #0d1c24, #0a0c10);
-  border: 1px solid #52b7ce50;
-  border-left: 3px solid #e9b65c;
+  background: linear-gradient(110deg, var(--surface-2), #0a0c10);
+  border: 1px solid rgb(var(--blue-rgb) / 0.314);
+  border-left: 3px solid var(--platinum);
   box-shadow: 0 12px 40px #0005;
 }
 #v40-root .journey-disclosure {
@@ -984,14 +984,14 @@ html[data-motion="off"] .mission-results a {
   border-radius: 2px;
 }
 #v40-root .journey-disclosure-copy small {
-  color: #d4dee3;
+  color: var(--text-dim);
 }
 #v40-root .journey-disclosure-icon {
   border-radius: 2px;
-  color: #f5d99e;
+  color: var(--platinum);
 }
 #v40-root .mission-description {
-  color: #cad7de;
+  color: var(--text-dim);
 }
 .journey-dock {
   display: none;
@@ -1007,8 +1007,8 @@ html[data-motion="off"] .mission-results a {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     padding: 4px;
-    border: 1px solid #74cad166;
-    border-top-color: #e6c27b;
+    border: 1px solid rgb(var(--blue-rgb) / 0.4);
+    border-top-color: var(--platinum);
     border-radius: 4px;
     background: #070c10f5;
     box-shadow: 0 8px 35px #000b;
@@ -1022,31 +1022,31 @@ html[data-motion="off"] .mission-results a {
     align-content: center;
     gap: 3px;
     min-height: 50px;
-    color: #d2e6eb;
+    color: var(--link);
     text-decoration: none;
     font: 500 13px/1.2 var(--font-body);
   }
 }
 @media (max-width: 1179px) {
   .journey-dock a > span {
-    color: #9feaf4;
+    color: var(--link);
     font-size: 18px;
   }
 }
 @media (max-width: 1179px) {
   .journey-dock a[aria-current] {
-    color: #ffe0a4;
-    background: #edbd6817;
+    color: var(--pearl);
+    background: rgb(var(--platinum-rgb) / 0.09);
   }
 }
 @media (max-width: 1179px) {
   .journey-dock a[aria-current] > span {
-    color: #ffe0a4;
+    color: var(--pearl);
   }
 }
 @media (max-width: 1179px) {
   .journey-dock a:focus-visible {
-    outline: 2px solid #ffe0a4;
+    outline: 2px solid var(--focus);
     outline-offset: -2px;
   }
 }
@@ -1091,7 +1091,7 @@ html[data-motion="off"] .mission-results a {
   }
 }
 .build-orbit {
-  stroke: #aad6de20;
+  stroke: rgb(var(--blue-rgb) / 0.125);
   stroke-dasharray: 2 9;
 }
 
@@ -1102,7 +1102,7 @@ html[data-motion="off"] .mission-results a {
   grid-column: 1 / -1;
   padding: 24px 0 0;
   margin-top: 8px;
-  border-top: 1px solid #b2d9e136;
+  border-top: 1px solid rgb(var(--blue-rgb) / 0.212);
 }
 .first-orbit > div > strong {
   display: block;
@@ -1111,7 +1111,7 @@ html[data-motion="off"] .mission-results a {
   margin-top: 7px;
 }
 #v40-root .first-orbit > div > p {
-  color: #bcced7;
+  color: var(--text-dim);
   font: 14px/1.6 var(--font-body);
   margin: 5px 0 0;
 }
@@ -1121,14 +1121,14 @@ html[data-motion="off"] .mission-results a {
   gap: 16px;
   min-height: 76px;
   padding: 13px 14px;
-  border-left: 1px solid #dfb77080;
+  border-left: 1px solid rgb(var(--platinum-rgb) / 0.502);
   text-decoration: none;
   background: #090f14;
-  color: #f0d49a;
+  color: var(--platinum);
 }
 .first-orbit > a:last-child {
-  border-color: #7bcfd599;
-  color: #a3e5eb;
+  border-color: rgb(var(--blue-rgb) / 0.6);
+  color: var(--link);
 }
 .first-orbit-number {
   font: 500 24px/1 var(--font-display);
@@ -1141,7 +1141,7 @@ html[data-motion="off"] .mission-results a {
 }
 .first-orbit > a small {
   display: block;
-  color: #bdcdd4;
+  color: var(--text-dim);
   font: 13px/1.5 var(--font-body);
   margin-top: 5px;
 }
@@ -1150,8 +1150,8 @@ html[data-motion="off"] .mission-results a {
   font-size: 22px;
 }
 .first-orbit > a:is(:hover, :focus-visible) {
-  background: #15242c;
-  outline: 2px solid #ffe0a4;
+  background: var(--surface-2);
+  outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
 @media (max-width: 1000px) {

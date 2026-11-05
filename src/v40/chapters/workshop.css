@@ -62,7 +62,7 @@
   border: 1px solid var(--glass-border);
   border-top: 2px solid var(--cyan);
   border-radius: 18px;
-  background: linear-gradient(145deg, rgba(116, 212, 160, 0.035), var(--surface) 60%);
+  background: linear-gradient(145deg, rgb(var(--blue-rgb) / 0.035), var(--surface) 60%);
 }
 .workshop-highlight h3 {
   margin: 0;
@@ -75,7 +75,7 @@
 }
 .workshop-tool {
   border-top-color: var(--accent);
-  background: linear-gradient(145deg, rgba(104, 192, 145, 0.04), var(--surface) 60%);
+  background: linear-gradient(145deg, rgb(var(--blue-rgb) / 0.04), var(--surface) 60%);
 }
 .workshop-tool .visitor-kicker {
   color: var(--accent);
@@ -241,7 +241,7 @@
 }
 .showcase-kicker,
 .showcase-medium {
-  color: #7edcf2;
+  color: var(--link);
   font: 500 11px/1.6 var(--font-mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -270,7 +270,7 @@
   flex-direction: column;
   min-width: 0;
   overflow: hidden;
-  border: 1px solid #27c1db40;
+  border: 1px solid rgb(var(--blue-rgb) / 0.251);
   border-radius: 14px;
   color: #f0f0f0;
   text-decoration: none;
@@ -284,12 +284,12 @@
   border-radius: inherit;
   border-top: 1px solid #e2e2e24d;
   pointer-events: none;
-  background: linear-gradient(120deg, #e1e1e112, transparent 35%, transparent 70%, #7edcf208);
+  background: linear-gradient(120deg, #e1e1e112, transparent 35%, transparent 70%, rgb(var(--blue-rgb) / 0.031));
 }
 .showcase-plate {
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  border-bottom: 1px solid #27c1db40;
+  border-bottom: 1px solid rgb(var(--blue-rgb) / 0.251);
   background: #121212;
 }
 .showcase-plate img {
@@ -307,7 +307,7 @@
   width: 28px;
   height: 28px;
   place-items: center;
-  border: 1px solid #a2e3f580;
+  border: 1px solid rgb(var(--blue-rgb) / 0.502);
   color: #e8e8e8;
   background: #141414cc;
   font: 300 20px/1 var(--font-mono);
@@ -338,19 +338,19 @@
   justify-content: space-between;
   gap: 12px;
   margin-top: auto;
-  color: #a2e3f5;
+  color: var(--link);
   font: 600 13px/1.6 var(--font-body);
 }
 .showcase-action > span {
-  color: #7edcf2;
+  color: var(--link);
   font-size: 21px;
 }
 .showcase-project:is(:hover, :focus-visible) {
-  border-color: #91e0f3b3;
+  border-color: rgb(var(--blue-rgb) / 0.702);
   background: linear-gradient(145deg, #313131, #191919 70%);
 }
 .showcase-project:focus-visible {
-  outline: 2px solid #7edcf2;
+  outline: 2px solid var(--focus);
   outline-offset: 5px;
 }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
@@ -392,7 +392,7 @@
   .showcase-plate {
     aspect-ratio: auto;
     border-bottom: 0;
-    border-right: 1px solid #27c1db40;
+    border-right: 1px solid rgb(var(--blue-rgb) / 0.251);
   }
 }
 @media (max-width: 760px) {
@@ -446,7 +446,7 @@ html[data-motion="off"] .showcase-plate img {
   transform: none;
 }
 #v40-root .workshop-heading {
-  border-left: 1px solid #29c9e43b;
+  border-left: 1px solid rgb(var(--blue-rgb) / 0.231);
   padding-left: 24px;
 }
 #v40-root .workshop-highlight {
@@ -465,15 +465,15 @@ html[data-motion="off"] .showcase-plate img {
   font-weight: 500;
 }
 #v40-root .workshop-result {
-  border-left-color: #5dd7f0;
+  border-left-color: var(--link);
   color: #e3e3e3;
 }
 #v40-root .workshop-result strong {
-  color: #9fe3f4;
+  color: var(--link);
 }
 #v40-root .workshop-glossary {
   border-radius: 3px;
-  border-color: #2bcee932;
+  border-color: rgb(var(--blue-rgb) / 0.196);
   background: #1a1a1a;
 }
 #v40-root .observatory-showcase {
@@ -481,7 +481,7 @@ html[data-motion="off"] .showcase-plate img {
 }
 #v40-root .showcase-project {
   border-radius: 3px;
-  border-color: #27c1db42;
+  border-color: rgb(var(--blue-rgb) / 0.259);
   background: #1c1c1c;
   box-shadow: none;
 }
@@ -569,7 +569,7 @@ html[data-motion="off"] #v40-root .showcase-project {
 }
 #v40-root .workshop-highlight {
   border: 0;
-  border-top: 1px solid #25b6cf61;
+  border-top: 1px solid rgb(var(--blue-rgb) / 0.38);
 }
 #v40-root .workshop-overview > :not(.workshop-heading):not(.workshop-highlights) {
   grid-column: 1/-1;
@@ -580,7 +580,7 @@ html[data-motion="off"] #v40-root .showcase-project {
 #v40-root .showcase-card {
   border-radius: 0;
   border: 0;
-  border-bottom: 1px solid #24b4cc66;
+  border-bottom: 1px solid rgb(var(--blue-rgb) / 0.4);
   background: transparent;
   box-shadow: none;
 }
@@ -620,7 +620,7 @@ html[data-motion="off"] #v40-root .showcase-project {
 }
 #v40-root .workshop-highlight h3,
 #v40-root .workshop-result strong {
-  color: #abeac0;
+  color: var(--platinum);
 }
 #v40-root .workshop-heading h2 {
   font-size: clamp(35px, 4.1vw, 65px);
@@ -628,14 +628,14 @@ html[data-motion="off"] #v40-root .showcase-project {
   color: var(--text);
 }
 #v40-root .workshop-highlight h3 {
-  color: #b5eef4;
+  color: var(--link);
 }
 #v40-root .showcase-heading h2 {
   font-size: clamp(34px, 3.7vw, 60px);
   line-height: 1.1;
 }
 #v40-root .workshop-highlight {
-  border-top-color: #69d0df66;
+  border-top-color: rgb(var(--blue-rgb) / 0.4);
 }
 @media (max-width: 600px) {
   #v40-root .workshop-heading h2,
@@ -672,7 +672,7 @@ html[data-motion="off"] #v40-root .showcase-project {
 }
 #v40-root .workshop-overview {
   display: block;
-  background: radial-gradient(ellipse at 0 30%, #56442318, transparent 55%), #090d0f;
+  background: radial-gradient(ellipse at 0 30%, rgb(var(--platinum-rgb) / 0.094), transparent 55%), #090d0f;
 }
 #v40-root .workshop-heading {
   display: grid;
@@ -718,7 +718,7 @@ html[data-motion="off"] #v40-root .showcase-project {
 #v40-root .workshop-highlight {
   background: linear-gradient(135deg, rgb(var(--signal-rgb) / 0.07), transparent 60%), var(--surface);
   border-color: rgb(var(--signal-rgb) / 0.25);
-  box-shadow: inset 0 1px #d3fbff10;
+  box-shadow: inset 0 1px rgb(var(--blue-rgb) / 0.063);
   padding: 28px;
 }
 #v40-root .workshop-tool {
@@ -741,18 +741,18 @@ html[data-motion="off"] #v40-root .showcase-project {
   min-width: 0;
   margin-top: 24px;
   --build-light: var(--cyan);
-  --build-dim: #71a8af;
+  --build-dim: var(--link);
   --build-glow: rgb(var(--signal-rgb) / 0.2);
 }
 .build-story-brief {
   --build-light: var(--accent-light);
-  --build-dim: #b59b6b;
+  --build-dim: var(--platinum);
   --build-glow: rgb(var(--gold-rgb) / 0.2);
 }
 .build-illustration {
   position: relative;
   overflow: hidden;
-  border-block: 1px solid #c5ecf51b;
+  border-block: 1px solid rgb(var(--blue-rgb) / 0.106);
   background: radial-gradient(ellipse at 50% 80%, rgb(var(--signal-rgb) / 0.06), transparent 65%), var(--void);
   padding: 15px 0 12px;
 }
@@ -767,7 +767,7 @@ html[data-motion="off"] #v40-root .showcase-project {
   letter-spacing: 0.055em;
 }
 .build-illustration-caption {
-  color: #c0ccd0;
+  color: var(--text-dim);
 }
 .build-diagram {
   display: block;
@@ -778,10 +778,10 @@ html[data-motion="off"] #v40-root .showcase-project {
   stroke-linecap: round;
 }
 .build-floor {
-  stroke: #9dcedc1d;
+  stroke: rgb(var(--blue-rgb) / 0.114);
 }
 .build-plinth {
-  fill: #081015;
+  fill: var(--surface-2);
   stroke: var(--build-dim);
   stroke-width: 1;
   opacity: 0.45;
@@ -807,11 +807,11 @@ html[data-motion="off"] #v40-root .showcase-project {
   fill-opacity: 0.3;
 }
 .build-seal {
-  fill: #0a171e;
+  fill: var(--surface-2);
   stroke: var(--build-light);
 }
 .build-route {
-  stroke: #b3d8db55;
+  stroke: rgb(var(--blue-rgb) / 0.333);
   stroke-width: 1.5;
 }
 .build-route-light {
@@ -824,7 +824,7 @@ html[data-motion="off"] #v40-root .showcase-project {
   stroke-width: 1.6;
 }
 .build-node-fill {
-  fill: #0a171e;
+  fill: var(--surface-2);
 }
 .build-story-brief .build-node-fill {
   fill: #1a1711;
@@ -834,10 +834,10 @@ html[data-motion="off"] #v40-root .showcase-project {
   stroke-width: 2;
 }
 .build-node.is-selected .build-node-fill {
-  fill: #16363e;
+  fill: var(--surface-2);
 }
 .build-story-brief .build-node.is-selected .build-node-fill {
-  fill: #42331c;
+  fill: var(--surface-2);
 }
 #v40-root .workshop-tool .brief-preview {
   border-radius: 2px;
@@ -867,7 +867,7 @@ html[data-motion="off"] #v40-root .showcase-project {
 }
 .build-notes > summary small {
   display: block;
-  color: #b7c8ce;
+  color: var(--text-dim);
   font: 400 13px/1.5 var(--font-body);
   margin-top: 3px;
 }
@@ -880,7 +880,7 @@ html[data-motion="off"] #v40-root .showcase-project {
   transform: rotate(45deg);
 }
 .build-notes > summary:focus-visible {
-  outline: 2px solid #ffe0a4;
+  outline: 2px solid var(--focus);
   outline-offset: 3px;
 }
 .build-notes-body {
@@ -903,15 +903,15 @@ html[data-motion="off"] #v40-root .showcase-project {
   gap: 4px;
   padding: 10px 6px;
   min-height: 58px;
-  border: 1px solid #92b7bf48;
+  border: 1px solid rgb(var(--blue-rgb) / 0.282);
   border-radius: 0;
   background: #070d10;
-  color: #d5e2e7;
+  color: var(--text-dim);
   font: 500 14px/1.5 var(--font-body);
   cursor: pointer;
 }
 .build-steps button span {
-  color: #b8c7cc;
+  color: var(--text-dim);
   font: 12px/1.3 var(--font-mono);
 }
 .build-steps button[aria-pressed="true"] {
@@ -920,8 +920,8 @@ html[data-motion="off"] #v40-root .showcase-project {
   box-shadow: inset 0 -2px var(--build-light);
 }
 .build-steps button:is(:hover, :focus-visible) {
-  background: #18272d;
-  outline: 2px solid #f7dda3;
+  background: var(--surface-2);
+  outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
 .build-story-pages {
@@ -934,12 +934,12 @@ html[data-motion="off"] #v40-root .showcase-project {
 }
 #v40-root .build-story-page p,
 #v40-root .build-lesson p {
-  color: #c5d4db;
+  color: var(--text-dim);
   font: 400 16px/1.7 var(--font-body);
   margin: 0;
 }
 .build-lesson {
-  border-top: 1px solid #b2d9e12c;
+  border-top: 1px solid rgb(var(--blue-rgb) / 0.173);
   padding-block: 18px;
   margin-top: 18px;
 }
@@ -969,14 +969,14 @@ html[data-motion="off"] #v40-root .showcase-project {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  border: 1px solid #cdf8f529;
-  background: linear-gradient(120deg, transparent 25%, #ddf6ff10 42%, transparent 56%);
+  border: 1px solid rgb(var(--blue-rgb) / 0.161);
+  background: linear-gradient(120deg, transparent 25%, rgb(var(--blue-rgb) / 0.063) 42%, transparent 56%);
 }
 .showcase-plate {
   position: relative;
 }
 .showcase-project {
-  border-bottom: 1px solid #9bd8df55;
+  border-bottom: 1px solid rgb(var(--blue-rgb) / 0.333);
 }
 .showcase-project .showcase-plate img {
   transition: transform 550ms cubic-bezier(0.2, 0.7, 0.3, 1);
@@ -1100,7 +1100,7 @@ html[data-motion="off"] #v40-root .showcase-project {
         transparent 28%,
         rgb(var(--signal-rgb) / 0.059) calc(var(--holo-x, 50%) - 12%),
         rgb(var(--gold-rgb) / 0.102) var(--holo-x, 50%),
-        #b28cff0d calc(var(--holo-x, 50%) + 12%),
+        rgb(var(--red-rgb) / 0.05) calc(var(--holo-x, 50%) + 12%),
         transparent 74%
       ),
       repeating-linear-gradient(0deg, #ffffff06 0 1px, transparent 1px 3px);

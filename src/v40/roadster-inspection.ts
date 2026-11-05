@@ -5,9 +5,16 @@ import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 
 export type RoadsterView = "body" | "wheels" | "thrusters";
 export type RoadsterFinish = "studio" | "blueprint";
+export type RoadsterEvents = {
+  lighting?: (angle: number, sweeping: boolean) => void;
+  hotspot?: (point: { x: number; y: number; anchored: boolean }) => void;
+};
 export type RoadsterController = {
   view: (name: RoadsterView) => void;
   finish: (name: RoadsterFinish) => void;
+  light: (angle: number) => void;
+  sweep: () => void;
+  detail: (active: boolean) => void;
   orbit: (direction: number) => void;
   zoom: (direction: number) => void;
   dispose: () => void;
@@ -17,38 +24,48 @@ const shots = {
   wheels: { position: [-2.7, 1.05, 2.6], target: [-1.4125, 0.45, 0.9] },
   thrusters: { position: [4.5, 1.35, 3.1], target: [1.6, 0.65, 0] },
 };
+const componentParts = {
+  body: /^windshield$/,
+  wheels: /^rim_aero_FL_/,
+  thrusters: /^rear_thruster_[0-3]_nozzle$/,
+};
+const componentNormals = {
+  body: new THREE.Vector3(0, 1, 0),
+  wheels: new THREE.Vector3(0, 0, 1),
+  thrusters: new THREE.Vector3(1, 0, 0),
+};
 
 function materials() {
   const metal = (color: number, roughness = 0.4, metalness = 0.7) =>
     new THREE.MeshStandardMaterial({ color, roughness, metalness });
   return {
     paint: new THREE.MeshPhysicalMaterial({
-      color: 0xe6e5dc,
-      metalness: 0.28,
-      roughness: 0.22,
+      color: 0xe2e6ee,
+      metalness: 0.36,
+      roughness: 0.25,
       clearcoat: 1,
       clearcoatRoughness: 0.12,
     }),
-    glass: new THREE.MeshPhysicalMaterial({ color: 0x51463c, metalness: 0.55, roughness: 0.13, clearcoat: 1 }),
-    rubber: metal(0x141a1f, 0.92, 0),
-    carbon: metal(0x19242c, 0.48, 0.34),
+    glass: new THREE.MeshPhysicalMaterial({ color: 0x292d39, metalness: 0.55, roughness: 0.13, clearcoat: 1 }),
+    rubber: metal(0x111217, 0.92, 0),
+    carbon: metal(0x1a1d26, 0.48, 0.34),
     cavity: metal(0x06090c, 0.95, 0),
-    wheelFace: metal(0xbec8cc, 0.28, 0.82),
-    wheelDark: metal(0x202c36, 0.29, 0.8),
-    wheelBevel: metal(0xa2acaf, 0.23, 0.86),
-    titanium: metal(0x969b98, 0.3, 0.83),
-    metal: metal(0x8d999e),
-    black: metal(0x171e26, 0.5, 0.24),
-    leather: metal(0xd5d5c9, 0.8, 0),
+    wheelFace: metal(0xc8cfdd, 0.28, 0.82),
+    wheelDark: metal(0x222632, 0.29, 0.8),
+    wheelBevel: metal(0xb8c0cf, 0.23, 0.86),
+    titanium: metal(0xa0a7b4, 0.3, 0.83),
+    metal: metal(0x929bab),
+    black: metal(0x171a23, 0.5, 0.24),
+    leather: metal(0xd5d7df, 0.8, 0),
     micro: metal(0x58616a, 0.95, 0),
     copper: metal(0xbf743f, 0.36, 0.86),
     brake: metal(0x8c2331, 0.36, 0.3),
-    ceramic: metal(0x5c6667, 0.75, 0.25),
+    ceramic: metal(0x626775, 0.75, 0.25),
     orange: metal(0xea6517, 0.6, 0),
-    coolant: metal(0x277f8d, 0.5, 0.6),
-    gold: metal(0xc59836, 0.35, 0.8),
-    frontLED: new THREE.MeshStandardMaterial({ color: 0xe1f4ff, emissive: 0x91d8df, emissiveIntensity: 0.7 }),
-    tailLED: new THREE.MeshStandardMaterial({ color: 0xcf263e, emissive: 0x8b1828, emissiveIntensity: 0.7 }),
+    coolant: metal(0x3578ff, 0.5, 0.6),
+    spring: metal(0xacb3c1, 0.35, 0.8),
+    frontLED: new THREE.MeshStandardMaterial({ color: 0xe2e6ee, emissive: 0x3578ff, emissiveIntensity: 0.45 }),
+    tailLED: new THREE.MeshStandardMaterial({ color: 0xff3d55, emissive: 0x8b1f32, emissiveIntensity: 0.45 }),
     marker: metal(0xcc651f, 0.4, 0.3),
   };
 }
@@ -81,7 +98,7 @@ function materialFor(name: string): keyof ReturnType<typeof materials> {
   if (/motor_copper/.test(name)) return "copper";
   if (/HV_cable/.test(name)) return "orange";
   if (/coolant_/.test(name)) return "coolant";
-  if (/spring_/.test(name)) return "gold";
+  if (/spring_/.test(name)) return "spring";
   if (name === "front_LED") return "frontLED";
   if (name === "tail_LED") return "tailLED";
   if (/side_marker/.test(name)) return "marker";
@@ -100,10 +117,10 @@ function disposeTree(root: THREE.Object3D) {
   return disposedMaterials;
 }
 
-/** Static softboxes give the original surfaces a readable highlight, without an HDR download. */
+/** One cached softbox environment gives readable reflections without an HDR download. */
 function studioEnvironment() {
   const room = new THREE.Scene();
-  room.background = new THREE.Color(0x18222d);
+  room.background = new THREE.Color(0x161923);
   const softbox = (width: number, height: number, position: [number, number, number], color: number, power: number) => {
     const panel = new THREE.Mesh(
       new THREE.PlaneGeometry(width, height),
@@ -113,10 +130,10 @@ function studioEnvironment() {
     panel.lookAt(0, 0.4, 0);
     room.add(panel);
   };
-  softbox(8, 3, [-2, 6, 3], 0xfff3df, 3.2);
-  softbox(7, 1.4, [0, 3, -5], 0xb6e0eb, 2.2);
-  softbox(1.4, 5, [-5, 2, -1], 0xe5cfaa, 1.4);
-  softbox(4, 3, [5, 4, 4], 0xe1ecf0, 1.8);
+  softbox(8, 2.2, [-2, 6, 3], 0xf5f5f7, 2.6);
+  softbox(7, 1.4, [0, 3, -5], 0x3578ff, 1.8);
+  softbox(0.7, 4, [-5, 2, -1], 0xff3d55, 0.65);
+  softbox(4, 3, [5, 4, 4], 0xe2e6ee, 1.4);
   return room;
 }
 
@@ -124,13 +141,14 @@ export async function createRoadsterInspection(
   canvas: HTMLCanvasElement,
   signal: AbortSignal,
   unavailable: () => void,
+  events: RoadsterEvents = {},
 ): Promise<RoadsterController> {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "low-power" });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1;
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x080d13);
+  scene.background = new THREE.Color(0x0d1017);
   const camera = new THREE.PerspectiveCamera(36, 1, 0.05, 60);
   const controls = new OrbitControls(camera, canvas);
   controls.enableDamping = false;
@@ -159,7 +177,18 @@ export async function createRoadsterInspection(
   let resize: ResizeObserver | undefined;
   let observer: IntersectionObserver | undefined;
   const paint = materials();
+  const keyLight = new THREE.DirectionalLight(0xadc7ff, 1.35);
+  const fill = new THREE.DirectionalLight(0xe2e6ee, 0.75);
+  const rimLight = new THREE.DirectionalLight(0xff3d55, 0.2);
+  const lightAxis = new THREE.Vector3(0, 1, 0);
+  let lightAngle = 0;
+  let lightSweep: { from: number; to: number; elapsed: number } | null = null;
+  let currentFinish: RoadsterFinish = "studio";
   const model: { mesh: THREE.Mesh; material: THREE.Material; type: keyof typeof paint }[] = [];
+  const components = new Map<
+    RoadsterView,
+    { geometry: THREE.BufferGeometry; point: THREE.Vector3; outline?: THREE.LineSegments }
+  >();
   let blueprint: THREE.Group | undefined;
   let blueprintSurface: THREE.MeshBasicMaterial | undefined;
 
@@ -172,12 +201,13 @@ export async function createRoadsterInspection(
       previous = 0;
       return;
     }
+    const delta = previous ? now - previous : 0;
     if (transition) {
       if (!allowsMotion()) transition = null;
       else {
         // Foreground time keeps a requested move brief even on a slower GPU.
         // Visibility changes clear `previous`, so returning to the tab never jumps ahead.
-        transition.elapsed += previous ? now - previous : 0;
+        transition.elapsed += delta;
         const progress = Math.min(1, transition.elapsed / 1100);
         const eased = 0.5 - Math.cos(progress * Math.PI) / 2;
         const orbit = new THREE.Spherical(
@@ -191,9 +221,20 @@ export async function createRoadsterInspection(
         if (progress === 1) transition = null;
       }
     }
+    if (lightSweep) {
+      if (!allowsMotion()) stopSweep();
+      else {
+        lightSweep.elapsed += delta;
+        const progress = Math.min(1, lightSweep.elapsed / 3200);
+        const eased = 0.5 - Math.cos(progress * Math.PI) / 2;
+        applyLight(THREE.MathUtils.lerp(lightSweep.from, lightSweep.to, eased));
+        if (progress === 1) stopSweep();
+      }
+    }
     previous = now;
+    projectHotspot();
     renderer.render(scene, camera);
-    if (transition) request();
+    if (transition || lightSweep) request();
   }
   function move(position: THREE.Vector3, target: THREE.Vector3, instant = false) {
     const from = new THREE.Spherical().setFromVector3(camera.position.clone().sub(controls.target));
@@ -210,7 +251,8 @@ export async function createRoadsterInspection(
     }
     request();
   }
-  function view(name: RoadsterView, instant = false) {
+  function view(name: RoadsterView, instant = false, preserveDetail = false) {
+    if (!preserveDetail) detail(false);
     selected = name;
     const shot = shots[name],
       target = new THREE.Vector3(...shot.target);
@@ -232,16 +274,18 @@ export async function createRoadsterInspection(
   }
   function finish(name: RoadsterFinish) {
     if (disposed) return;
+    currentFinish = name;
+    stopSweep();
     if (name === "blueprint" && !blueprint) {
       blueprint = new THREE.Group();
       blueprintSurface = new THREE.MeshBasicMaterial({
-        color: 0x101e2b,
+        color: 0x111925,
         polygonOffset: true,
         polygonOffsetFactor: 1,
         polygonOffsetUnits: 1,
       });
-      const outline = new THREE.LineBasicMaterial({ color: 0x82ccd7, transparent: true, opacity: 0.82 });
-      const accent = new THREE.LineBasicMaterial({ color: 0xd9bb82, transparent: true, opacity: 0.9 });
+      const outline = new THREE.LineBasicMaterial({ color: 0xe2e6ee, transparent: true, opacity: 0.72 });
+      const accent = new THREE.LineBasicMaterial({ color: 0x3578ff, transparent: true, opacity: 0.9 });
       // Extract real edges only when requested. No synthetic parts or engineering dimensions.
       for (const { mesh, type } of model) {
         const lines = new THREE.LineSegments(
@@ -250,7 +294,7 @@ export async function createRoadsterInspection(
         );
         blueprint.add(lines);
       }
-      const grid = new THREE.GridHelper(6.4, 16, 0x36545f, 0x20343f);
+      const grid = new THREE.GridHelper(6.4, 16, 0x454b5b, 0x242936);
       grid.position.y = -0.006;
       blueprint.add(grid);
       scene.add(blueprint);
@@ -260,6 +304,78 @@ export async function createRoadsterInspection(
     if (blueprint) blueprint.visible = technical;
     canvas.dataset.finish = name;
     request();
+  }
+  function applyLight(angle: number) {
+    lightAngle = THREE.MathUtils.clamp(angle, -80, 80);
+    const radians = THREE.MathUtils.degToRad(lightAngle);
+    // Rotate the same reflection field and lights. Their power and exposure stay fixed.
+    scene.environmentRotation.y = radians;
+    keyLight.position.set(-3, 5, 4).applyAxisAngle(lightAxis, radians);
+    fill.position.set(2, 3, -5).applyAxisAngle(lightAxis, radians);
+    rimLight.position.set(4, 2, -4).applyAxisAngle(lightAxis, radians);
+    canvas.dataset.lightAngle = String(Math.round(lightAngle));
+    events.lighting?.(lightAngle, lightSweep !== null);
+  }
+  function stopSweep() {
+    lightSweep = null;
+    events.lighting?.(lightAngle, false);
+  }
+  function light(angle: number) {
+    if (disposed || currentFinish !== "studio" || !Number.isFinite(angle)) return;
+    lightSweep = null;
+    applyLight(angle);
+    request();
+  }
+  function sweep() {
+    if (disposed || currentFinish !== "studio") return;
+    if (lightSweep) stopSweep();
+    else if (allowsMotion() && !document.hidden) {
+      // Explicit control framing can precede the asynchronous intersection notification.
+      const bounds = canvas.getBoundingClientRect();
+      visible = bounds.bottom > 0 && bounds.top < innerHeight && bounds.right > 0 && bounds.left < innerWidth;
+      if (!visible) return;
+      lightSweep = { from: lightAngle, to: lightAngle <= 0 ? 80 : -80, elapsed: 0 };
+      previous = 0;
+      events.lighting?.(lightAngle, true);
+      request();
+    }
+  }
+  function detail(active: boolean) {
+    if (disposed) return;
+    for (const component of components.values()) if (component.outline) component.outline.visible = false;
+    const component = components.get(selected);
+    if (active && component) {
+      if (!component.outline) {
+        component.outline = new THREE.LineSegments(
+          new THREE.EdgesGeometry(component.geometry, 22),
+          new THREE.LineBasicMaterial({ color: 0x3578ff, depthTest: true }),
+        );
+        scene.add(component.outline);
+      }
+      component.outline.visible = true;
+    }
+    canvas.dataset.detail = active ? selected : "none";
+    request();
+  }
+  function projectHotspot() {
+    const component = components.get(selected);
+    if (!component) return;
+    // A still frame must project through the new camera pose, not the previous render.
+    camera.updateMatrixWorld();
+    const projected = component.point.clone().project(camera);
+    const towardCamera = camera.position.clone().sub(component.point);
+    const anchored =
+      projected.z > -1 &&
+      projected.z < 1 &&
+      Math.abs(projected.x) < 0.95 &&
+      Math.abs(projected.y) < 0.8 &&
+      towardCamera.dot(componentNormals[selected]) > 0;
+    // An occluded component keeps a reachable locator; activating it restores its composed view.
+    events.hotspot?.({
+      x: anchored ? (projected.x + 1) / 2 : 0.5,
+      y: anchored ? (1 - projected.y) / 2 : 0.6,
+      anchored,
+    });
   }
   function key(event: KeyboardEvent) {
     if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "+", "=", "-"].includes(event.key)) {
@@ -272,12 +388,16 @@ export async function createRoadsterInspection(
     transition = null;
   }
   function motionChange() {
-    if (!allowsMotion()) cancelMove();
+    if (!allowsMotion()) {
+      cancelMove();
+      stopSweep();
+    }
     request();
   }
   function visibility() {
     previous = 0;
     if (document.hidden) {
+      stopSweep();
       cancelAnimationFrame(frame);
       frame = 0;
     } else request();
@@ -292,6 +412,7 @@ export async function createRoadsterInspection(
     disposed = true;
     cancelAnimationFrame(frame);
     transition = null;
+    lightSweep = null;
     resize?.disconnect();
     observer?.disconnect();
     controls.dispose();
@@ -306,6 +427,7 @@ export async function createRoadsterInspection(
       if (!disposedMaterials.has(material)) material.dispose();
     });
     if (blueprintSurface && !disposedMaterials.has(blueprintSurface)) blueprintSurface.dispose();
+    for (const component of components.values()) component.geometry.dispose();
     environment?.dispose();
     contactTexture?.dispose();
     renderer.dispose();
@@ -329,6 +451,7 @@ export async function createRoadsterInspection(
     }
     gltf.scene.updateMatrixWorld(true);
     const groups = new Map<keyof typeof paint, THREE.BufferGeometry[]>();
+    const componentGeometry = new Map<RoadsterView, THREE.BufferGeometry[]>();
     gltf.scene.traverse((node) => {
       if (!(node instanceof THREE.Mesh)) return;
       const type = materialFor(node.name);
@@ -336,6 +459,12 @@ export async function createRoadsterInspection(
       // These untextured materials need only positions and normals. Some original parts also carry UVs.
       for (const attribute of Object.keys(geometry.attributes)) {
         if (attribute !== "position" && attribute !== "normal") geometry.deleteAttribute(attribute);
+      }
+      for (const name of Object.keys(componentParts) as RoadsterView[]) {
+        if (!componentParts[name].test(node.name)) continue;
+        const parts = componentGeometry.get(name) || [];
+        parts.push(geometry.clone());
+        componentGeometry.set(name, parts);
       }
       const group = groups.get(type) || [];
       group.push(geometry);
@@ -351,6 +480,13 @@ export async function createRoadsterInspection(
         scene.add(mesh);
       }
     }
+    for (const [name, parts] of componentGeometry) {
+      const geometry = mergeGeometries(parts);
+      parts.forEach((part) => part.dispose());
+      if (!geometry) continue;
+      geometry.computeBoundingBox();
+      components.set(name, { geometry, point: geometry.boundingBox!.getCenter(new THREE.Vector3()) });
+    }
     disposeTree(gltf.scene);
     const room = studioEnvironment();
     const pmrem = new THREE.PMREMGenerator(renderer);
@@ -359,14 +495,12 @@ export async function createRoadsterInspection(
     scene.environmentIntensity = 0.85;
     disposeTree(room);
     pmrem.dispose();
-    scene.add(new THREE.HemisphereLight(0xc7e3ef, 0x191712, 0.6));
-    const keyLight = new THREE.DirectionalLight(0xffead1, 1.65);
-    keyLight.position.set(-3, 5, 4);
+    scene.add(new THREE.HemisphereLight(0xe2e6ee, 0x111217, 0.6));
     scene.add(keyLight);
-    const fill = new THREE.DirectionalLight(0x9dc9df, 0.95);
-    fill.position.set(2, 3, -5);
     scene.add(fill);
-    const floor = new THREE.Mesh(new THREE.CircleGeometry(6, 96), new THREE.MeshBasicMaterial({ color: 0x14212b }));
+    scene.add(rimLight);
+    applyLight(0);
+    const floor = new THREE.Mesh(new THREE.CircleGeometry(6, 96), new THREE.MeshBasicMaterial({ color: 0x111217 }));
     floor.rotation.x = -Math.PI / 2;
     floor.position.y = -0.012;
     scene.add(floor);
@@ -399,7 +533,7 @@ export async function createRoadsterInspection(
     scene.add(shadow);
     const ring = new THREE.Mesh(
       new THREE.RingGeometry(2.9, 2.905, 120),
-      new THREE.MeshBasicMaterial({ color: 0x6c624b, side: THREE.DoubleSide }),
+      new THREE.MeshBasicMaterial({ color: 0x3578ff, transparent: true, opacity: 0.4, side: THREE.DoubleSide }),
     );
     ring.rotation.x = -Math.PI / 2;
     ring.position.y = -0.008;
@@ -411,7 +545,7 @@ export async function createRoadsterInspection(
       renderer.setSize(width, height, false);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
-      view(selected, true);
+      view(selected, true, true);
     });
     resize.observe(canvas);
     observer = new IntersectionObserver(([entry]) => {
@@ -419,6 +553,7 @@ export async function createRoadsterInspection(
       previous = 0;
       if (visible) request();
       else {
+        stopSweep();
         cancelAnimationFrame(frame);
         frame = 0;
       }
@@ -432,7 +567,7 @@ export async function createRoadsterInspection(
     query.addEventListener("change", motionChange);
     view("body", true);
     canvas.dataset.finish = "studio";
-    return { view, finish, orbit, zoom, dispose };
+    return { view, finish, light, sweep, detail, orbit, zoom, dispose };
   } catch (error) {
     dispose();
     throw error;

@@ -14,6 +14,478 @@
   font-family: Exo, Arial, sans-serif;
   color-scheme: dark;
 }
+
+/* The saved card is the actual export. Inspection and composition stay local to this flight. */
+#helios-flight .ff-keepsake {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+#helios-flight .ff-keepsake > * {
+  grid-column: 1;
+}
+#helios-flight .ff-keepsake > img,
+#helios-flight .ff-keepsake-loading,
+#helios-flight .ff-card-inspect {
+  grid-row: 1;
+}
+#helios-flight .ff-card-inspect {
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  cursor: zoom-in;
+}
+#helios-flight .ff-card-inspect:hover {
+  background: transparent;
+}
+#helios-flight .ff-card-inspect > span {
+  position: absolute;
+  inset: 10px 10px auto auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--mission-border, #8db5be88);
+  background: var(--mission-panel, #08131ced);
+  color: var(--mission-text, #d9f0f1);
+  font: 600 14px/1.4 var(--sans);
+}
+#helios-flight .ff-card-inspect:focus-visible {
+  outline-offset: -3px;
+}
+.ff-card-composition {
+  min-width: 0;
+  margin: 18px 0 0;
+  padding: 0;
+  border: 0;
+}
+.ff-card-composition legend {
+  padding: 0;
+  color: var(--mission-pearl, #edf0e9);
+  font: 600 15px/1.5 var(--sans);
+}
+.ff-card-composition legend span {
+  display: block;
+  margin-top: 4px;
+  color: var(--mission-muted, #b4c8cf);
+  font: 13px/1.5 var(--sans);
+}
+.ff-card-composition > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+#helios-flight .ff-card-composition button {
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 8px;
+  color: var(--mission-text, #d3e4e8);
+  background: var(--mission-deep, #0b1720);
+  border-color: var(--mission-border, #7f9da577);
+}
+#helios-flight .ff-card-composition button[aria-pressed="true"] {
+  color: var(--mission-pearl, #f2d7a6);
+  border-color: var(--mission-blue, #d6b47c);
+  background: var(--mission-selected, #211d16);
+}
+#helios-flight .ff-card-inspector {
+  box-sizing: border-box;
+  width: min(1100px, calc(100vw - 32px));
+  height: min(1050px, calc(100dvh - 32px));
+  max-width: none;
+  max-height: none;
+  margin: auto;
+  padding: 20px;
+  overflow: hidden;
+  border: 1px solid var(--mission-text, #c3a571);
+  color: var(--mission-pearl, #edf0e9);
+  background: var(--mission-deep, #07121b);
+  box-shadow: 0 24px 100px #000b;
+  font-family: var(--sans);
+}
+#helios-flight .ff-card-inspector[open] {
+  display: flex;
+  flex-direction: column;
+}
+.ff-card-inspector::backdrop {
+  background: var(--mission-backdrop, #010509e8);
+}
+.ff-card-inspector-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.ff-card-inspector-header > div {
+  min-width: 0;
+}
+.ff-card-inspector-header .ff-eyebrow {
+  margin: 0 0 7px;
+  color: var(--mission-text, #81e3ed);
+}
+.ff-card-inspector h4 {
+  margin: 0;
+  font: 600 25px/1.3 var(--display);
+  letter-spacing: -0.025em;
+}
+#helios-flight .ff-card-inspector-header button {
+  flex-shrink: 0;
+  min-height: 44px;
+  border-color: var(--mission-border, #b1966077);
+  background: var(--mission-panel, #172028);
+  color: var(--mission-text, #f2d7a6);
+}
+#ff-card-inspector-takeaway {
+  margin: 16px 0;
+  padding-left: 14px;
+  border-left: 2px solid var(--mission-blue, #d4ad69);
+  color: var(--mission-text, #e4e9e6);
+  font: 18px/1.5 var(--sans);
+}
+.ff-card-inspector-tools {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+#helios-flight .ff-card-inspector-tools button {
+  flex-shrink: 0;
+  min-height: 44px;
+  background: var(--mission-panel, #10232e);
+  border-color: var(--mission-border, #7f9da577);
+  color: var(--mission-text, #c9edf0);
+}
+.ff-card-inspector-tools > span {
+  color: var(--mission-muted, #adc3cb);
+  font: 14px/1.5 var(--sans);
+}
+.ff-card-inspector-image {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--mission-border, #64858c55);
+  background: var(--mission-deep, #03080d);
+  scrollbar-color: var(--mission-text, #8ba6ae) var(--mission-deep, #07121b);
+}
+.ff-card-inspector-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: contain;
+}
+.ff-card-inspector-image[data-detail="true"] img {
+  width: auto;
+  height: auto;
+}
+.ff-card-inspector-image:focus-visible {
+  outline: 2px solid var(--mission-blue, #81e3ed);
+  outline-offset: -3px;
+}
+@media (max-width: 700px) {
+  #helios-flight .ff-card-inspector {
+    width: calc(100vw - 16px);
+    height: calc(100dvh - 16px);
+    padding: 12px;
+  }
+  .ff-card-inspector-header {
+    gap: 10px;
+  }
+  .ff-card-inspector-header .ff-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.4px;
+  }
+  .ff-card-inspector h4 {
+    font-size: 20px;
+  }
+  #helios-flight .ff-card-inspector-header button {
+    padding: 9px;
+    font-size: 13px;
+  }
+  #ff-card-inspector-takeaway {
+    margin-block: 12px;
+    font-size: 16px;
+  }
+  .ff-card-inspector-tools {
+    gap: 10px;
+  }
+  #helios-flight .ff-card-inspector-tools button {
+    padding: 10px;
+    font-size: 13px;
+  }
+  .ff-card-inspector-tools > span {
+    font-size: 12px;
+  }
+}
+/* Current-edition mission chrome. Archived Helios routes retain their original colors. */
+body:has(#v40-root) #helios-flight {
+  --mission-text: #e2e6ee;
+  --mission-pearl: #f5f5f7;
+  --mission-muted: #b6bfce;
+  --mission-panel: #111217;
+  --mission-deep: #0d1017;
+  --mission-blue: #3578ff;
+  --mission-red: #ff3d55;
+  --mission-border: #e2e6ee55;
+  --mission-selected: #3578ff1c;
+  --mission-backdrop: #0d1017ed;
+}
+body:has(#v40-root) #helios-flight .first-flight {
+  --ff-cyan: #9ebeff;
+  --ff-gold: #e2e6ee;
+  color: var(--mission-pearl);
+  background: var(--mission-deep);
+  border-color: var(--mission-border);
+}
+body:has(#v40-root)
+  #helios-flight
+  :is(.ff-header, .ff-footer, .ff-chapters, .ff-mobile-command, .ff-boundary, .ff-scene-tools) {
+  background: var(--mission-panel);
+  border-color: var(--mission-border);
+  color: var(--mission-muted);
+}
+body:has(#v40-root) #helios-flight .ff-story {
+  background: radial-gradient(ellipse at 100% 0, #202633, var(--mission-deep) 65%);
+  scrollbar-color: var(--mission-text) var(--mission-deep);
+}
+body:has(#v40-root)
+  #helios-flight
+  :is(
+    .ff-header button,
+    .ff-playback button,
+    .ff-chapters button,
+    .ff-scene-tools button,
+    .ff-next button,
+    .ff-restore-scene,
+    .ff-entrance-skip
+  ) {
+  color: var(--mission-text);
+  background: var(--mission-panel);
+  border-color: var(--mission-border);
+}
+body:has(#v40-root)
+  #helios-flight
+  :is(.ff-header button, .ff-playback button, .ff-scene-tools button, .ff-next button, .ff-entrance-skip):hover {
+  color: var(--mission-pearl);
+  background: #202633;
+  border-color: var(--mission-blue);
+}
+body:has(#v40-root)
+  #helios-flight
+  :is(
+    .ff-eyebrow,
+    .ff-stage-cap,
+    .ff-shot-label,
+    .ff-lab-heading,
+    .ff-chapter-number,
+    .ff-film-caption p,
+    .ff-story p,
+    .ff-recap-state dt,
+    .ff-recap > small
+  ) {
+  color: var(--mission-text);
+}
+body:has(#v40-root) #helios-flight :is(.ff-film-caption h3, .ff-story h3, .ff-entrance-copy, .ff-entrance-copy em) {
+  color: var(--mission-pearl);
+}
+body:has(#v40-root) #helios-flight :is(.ff-film-hint, .ff-telemetry span, .ff-entrance-copy p) {
+  color: var(--mission-muted);
+}
+body:has(#v40-root) #helios-flight :is(.ff-stage, .ff-entrance, .ff-stage-cap span, .ff-shot-label) {
+  background: var(--mission-deep);
+}
+body:has(#v40-root)
+  #helios-flight
+  :is(
+    .ff-stage-cap span:last-child,
+    .ff-shot-reticle i,
+    .ff-command-lab,
+    .ff-takeaway,
+    .ff-recap-pair,
+    .ff-recap-state:last-child,
+    .ff-recap-state dl > div,
+    .ff-story .ff-memento
+  ) {
+  border-color: var(--mission-border);
+}
+body:has(#v40-root) #helios-flight .ff-showcase[data-view="cinema"] .ff-film-caption {
+  background: linear-gradient(transparent, #0d1017ea 45%, var(--mission-deep));
+}
+body:has(#v40-root) #helios-flight .ff-entrance-vignette {
+  background:
+    linear-gradient(90deg, #0d1017d9, #0d101740 52%, transparent), linear-gradient(0deg, #0d1017bf, transparent 40%);
+}
+body:has(#v40-root) #helios-flight .ff-film-progress > span {
+  background: #e2e6ee33;
+}
+body:has(#v40-root) #helios-flight .ff-film-progress > span[data-passed="true"] {
+  background: var(--mission-text);
+}
+body:has(#v40-root) #helios-flight :is(.ff-film-progress i, .ff-chapters i) {
+  background: var(--mission-blue);
+}
+body:has(#v40-root) #helios-flight .ff-telemetry {
+  background: linear-gradient(transparent, #0d1017 28%);
+  border-color: var(--mission-border);
+}
+body:has(#v40-root) #helios-flight .ff-showcase[data-view="cinema"] .ff-telemetry {
+  background: #0d1017cf;
+}
+body:has(#v40-root) #helios-flight :is(.ff-telemetry strong, .ff-recap-state dd) {
+  color: var(--mission-text);
+}
+body:has(#v40-root) #helios-flight :is(.ff-telemetry div:nth-child(2) strong, .ff-recap-state [data-route="cloud"] dd) {
+  color: var(--ff-cyan);
+}
+body:has(#v40-root) #helios-flight :is(.ff-telemetry div:nth-child(3) strong, .ff-recap-state [data-route="held"] dd) {
+  color: var(--mission-red);
+}
+body:has(#v40-root) #helios-flight .first-flight .ff-boundary-toggle,
+body:has(#v40-root) #helios-flight .first-flight .ff-next-primary {
+  background: var(--mission-blue);
+  border-color: var(--mission-blue);
+  color: var(--mission-deep);
+}
+body:has(#v40-root) #helios-flight .first-flight .ff-boundary-toggle:hover,
+body:has(#v40-root) #helios-flight .first-flight .ff-next-primary:hover {
+  background: #5b92ff;
+  border-color: #5b92ff;
+  color: var(--mission-deep);
+}
+body:has(#v40-root) #helios-flight .first-flight .ff-boundary-toggle[data-active="true"],
+body:has(#v40-root) #helios-flight .ff-chapters button[aria-current] {
+  color: var(--mission-pearl);
+  background: #1a2945;
+  border-color: var(--mission-blue);
+  box-shadow: inset 0 2px var(--mission-blue);
+}
+body:has(#v40-root) #helios-flight .ff-chapter-picker {
+  color: var(--mission-text);
+  background: var(--mission-panel);
+  border-color: var(--mission-border);
+}
+body:has(#v40-root) #helios-flight .ff-recap-state:last-child {
+  background: #e2e6ee08;
+}
+body:has(#v40-root)
+  #helios-flight
+  .first-flight[data-motion="on"]
+  .ff-stage[data-independent="true"]
+  .ff-telemetry
+  strong {
+  animation-name: ff-platinum-arrival;
+}
+@keyframes ff-platinum-arrival {
+  from {
+    text-shadow: 0 0 22px #e2e6ee;
+    transform: translateY(4px);
+  }
+  to {
+    text-shadow: none;
+    transform: none;
+  }
+}
+body:has(#v40-root) #helios-flight .ff-showcase .ff-finale {
+  color: var(--mission-text);
+  background: radial-gradient(ellipse at 25% 35%, #202633, var(--mission-deep) 65%);
+  scrollbar-color: var(--mission-text) var(--mission-deep);
+}
+body:has(#v40-root) #helios-flight :is(.ff-keepsake > img, .ff-keepsake-loading) {
+  background: var(--mission-deep);
+  border-color: var(--mission-border);
+}
+body:has(#v40-root) #helios-flight :is(.ff-keepsake-loading > span, .ff-finale h3, .ff-finale h3 em) {
+  color: var(--mission-pearl);
+}
+body:has(#v40-root) #helios-flight .ff-finale-intro > .ff-eyebrow {
+  color: var(--mission-text);
+  padding-left: 12px;
+  border-left: 3px solid var(--mission-red);
+}
+body:has(#v40-root) #helios-flight .ff-card-formats button {
+  color: var(--mission-text);
+  background: var(--mission-panel);
+  border-color: var(--mission-border);
+}
+body:has(#v40-root) #helios-flight .ff-card-formats button[aria-pressed="true"] {
+  color: var(--mission-pearl);
+  border-color: var(--mission-blue);
+  background: var(--mission-selected);
+}
+body:has(#v40-root)
+  #helios-flight
+  :is(
+    .ff-card-formats span,
+    .ff-finale-status,
+    .ff-personalize p,
+    .ff-personalize label span,
+    .ff-roadster-next small
+  ) {
+  color: var(--mission-muted);
+}
+body:has(#v40-root) #helios-flight :is(.ff-finale-summary, .ff-finale-metrics dt, .ff-personalize label) {
+  color: var(--mission-text);
+}
+body:has(#v40-root) #helios-flight .ff-finale-metrics > div {
+  border-color: var(--mission-border);
+}
+body:has(#v40-root) #helios-flight .ff-finale-metrics dd {
+  color: var(--mission-text);
+}
+body:has(#v40-root) #helios-flight .ff-finale-metrics > div:nth-child(2) dd {
+  color: var(--mission-blue);
+}
+body:has(#v40-root) #helios-flight .ff-finale-metrics > div:nth-child(3) dd {
+  color: var(--mission-red);
+}
+body:has(#v40-root) #helios-flight .ff-finale-actions .ff-save {
+  color: var(--mission-deep);
+  background: var(--mission-blue);
+  border-color: var(--mission-blue);
+}
+body:has(#v40-root) #helios-flight .ff-finale-actions .ff-save:hover {
+  background: #5b92ff;
+  border-color: #5b92ff;
+}
+body:has(#v40-root)
+  #helios-flight
+  :is(
+    .ff-finale-actions .ff-share,
+    .ff-finale-actions .ff-card-native,
+    .ff-personalize input,
+    .ff-personalize button,
+    .ff-card-retry,
+    .ff-roadster-next
+  ) {
+  color: var(--mission-text);
+  background: var(--mission-panel);
+  border-color: var(--mission-border);
+}
+body:has(#v40-root) #helios-flight .ff-personalize input::placeholder {
+  color: var(--mission-muted);
+}
+body:has(#v40-root) #helios-flight :is(.ff-personalize, .ff-finale-detail, .ff-finale-routes) {
+  border-color: var(--mission-border);
+}
+body:has(#v40-root)
+  #helios-flight
+  :is(.ff-finale-detail summary, .ff-finale-routes summary, .ff-finale-links button, .ff-roadster-next > span) {
+  color: var(--mission-text);
+}
+body:has(#v40-root) #helios-flight :is(.ff-finale-detail summary > span, .ff-finale-routes summary > span) {
+  color: var(--mission-blue);
+}
+body:has(#v40-root) #helios-flight .ff-finale :is(button, input, summary, h3):focus-visible {
+  outline-color: var(--mission-blue);
+}
 .first-flight[open] {
   display: flex;
   flex-direction: column;

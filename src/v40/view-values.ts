@@ -70,7 +70,7 @@ export function renderVals(this: PageHost) {
       this.orbitPointer = { x: nx, y: ny };
       const sp = document.getElementById("hero-spot");
       if (sp)
-        sp.style.background = `radial-gradient(520px circle at ${(nx + 0.5) * 100}% ${(ny + 0.5) * 100}%, rgba(0,249,255,.11), transparent 60%)`;
+        sp.style.background = `radial-gradient(520px circle at ${(nx + 0.5) * 100}% ${(ny + 0.5) * 100}%, rgba(53,120,255,.11), transparent 60%)`;
     },
     heroLeave: (e: React.MouseEvent<HTMLElement>) => {
       this.orbitPointer = { x: 0, y: 0 };

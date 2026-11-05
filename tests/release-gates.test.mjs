@@ -101,12 +101,14 @@ test("V40 ships its real reading edition under the strict production security po
   assert.equal(root.querySelectorAll('[role="tab"]').length, 7);
   assert.equal(
     document.querySelector('meta[property="og:image"]').content,
-    "https://cashio.us/v41/first-light-share-card.jpg",
+    "https://cashio.us/brand/platinum/share-card.jpg",
   );
   assert.equal(document.querySelector('meta[property="og:image:width"]').content, "1200");
   assert.equal(document.querySelector('meta[property="og:image:height"]').content, "630");
   assert.ok((await stat(asset("dist/v42/prism-sculpture-960.webp"))).size < 250_000);
   assert.ok((await stat(asset("dist/v41/first-light-share-card.jpg"))).size < 250_000);
+  assert.ok((await stat(asset("dist/brand/platinum/share-card.jpg"))).size < 250_000);
+  assert.ok((await stat(asset("dist/brand/platinum/signature-840.webp"))).size < 60_000);
   assert.equal(receipt.experienceVersion, JSON.parse(await read("package.json")).version);
   assert.equal(receipt.previousExperience.entry, "/v39/");
   assert.equal(receipt.published, receipt.status === "released");

@@ -19,8 +19,8 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 25% 20%, rgba(44, 211, 239, 0.1), transparent 50%),
-    radial-gradient(ellipse at 85% 90%, rgba(44, 211, 239, 0.07), transparent 50%);
+    radial-gradient(ellipse at 25% 20%, rgb(var(--blue-rgb) / 0.1), transparent 50%),
+    radial-gradient(ellipse at 85% 90%, rgb(var(--blue-rgb) / 0.07), transparent 50%);
 }
 .v41-0a831b5de0 {
   position: relative;
@@ -42,7 +42,7 @@
   border: 1px solid var(--glass-border);
   box-shadow:
     var(--shadow-panel),
-    0 0 90px -30px rgba(44, 211, 239, 0.45);
+    0 0 90px -30px rgb(var(--blue-rgb) / 0.45);
   background: #000;
   aspect-ratio: 16/9;
   min-width: 0;
@@ -248,10 +248,10 @@
   aspect-ratio: 1;
   margin: auto;
   padding-left: 4px;
-  border: 1px solid #f0c277e6;
+  border: 1px solid rgb(var(--platinum-rgb) / 0.902);
   border-radius: 50%;
   background: #131313ea;
-  color: #f0c277;
+  color: var(--platinum);
   font-size: clamp(20px, 2vw, 26px);
   box-shadow:
     0 0 0 8px #13131333,
@@ -274,13 +274,13 @@
   border-color: var(--accent);
   box-shadow:
     0 18px 50px #0006,
-    0 0 30px #d8a74a18;
+    0 0 30px rgb(var(--platinum-rgb) / 0.094);
 }
 .eagle-film-play:is(:hover, :focus-visible) .eagle-film-playmark {
   color: #131313;
-  background: #f0c277;
+  background: var(--platinum);
   box-shadow:
-    0 0 0 8px #d8a74a18,
+    0 0 0 8px rgb(var(--platinum-rgb) / 0.094),
     0 8px 28px #0006;
 }
 .eagle-film-play:focus-visible {
@@ -475,9 +475,9 @@
   gap: clamp(22px, 3vw, 38px);
   min-width: 0;
   padding: clamp(14px, 2vw, 24px);
-  border: 1px solid rgba(236, 182, 81, 0.3);
+  border: 1px solid rgb(var(--platinum-rgb) / 0.3);
   border-radius: 24px;
-  background: radial-gradient(ellipse at 0 0, rgba(216, 167, 74, 0.09), transparent 65%), #0f0f0f;
+  background: radial-gradient(ellipse at 0 0, rgb(var(--platinum-rgb) / 0.09), transparent 65%), #0f0f0f;
   box-shadow: var(--shadow-panel);
   scroll-margin-top: 110px;
 }
@@ -553,7 +553,7 @@
 .ai-worm-play:focus-visible .ai-worm-play-icon {
   border-color: var(--cyan);
   color: var(--cyan);
-  box-shadow: 0 0 28px rgba(238, 185, 85, 0.2);
+  box-shadow: 0 0 28px rgb(var(--platinum-rgb) / 0.2);
 }
 .ai-worm-copy {
   min-width: 0;
@@ -646,12 +646,12 @@
   color: #d1d1d1;
 }
 .afterglow-feature .eagle-film-copy .eagle-film-label {
-  color: #7edcf2;
+  color: var(--link);
   font-size: 11px;
   letter-spacing: 0.09em;
 }
 #eagle-film.afterglow-feature .eagle-film-play {
-  border-color: #2cd1ed4d;
+  border-color: rgb(var(--blue-rgb) / 0.302);
   box-shadow: 0 22px 60px #0005;
 }
 .afterglow-feature .eagle-film-caption {
@@ -709,7 +709,7 @@
 }
 #eagle-film .eagle-film-play {
   border-radius: 4px;
-  border-color: #efbe6967;
+  border-color: rgb(var(--platinum-rgb) / 0.404);
   box-shadow:
     0 26px 65px #0007,
     0 0 0 6px #2c2c2c20;
@@ -717,11 +717,11 @@
 #eagle-film .eagle-film-caption {
   padding-block: 18px;
   background: linear-gradient(110deg, #323232, #1b1b1b);
-  border-top-color: #eeb95442;
+  border-top-color: rgb(var(--platinum-rgb) / 0.259);
 }
 .eagle-film-duration {
   padding: 5px 8px;
-  border-left: 1px solid #efbb5e40;
+  border-left: 1px solid rgb(var(--platinum-rgb) / 0.251);
 }
 .film-frame-corner {
   position: absolute;
@@ -729,7 +729,7 @@
   height: 30px;
   z-index: 2;
   pointer-events: none;
-  border-color: #b5e8f69e;
+  border-color: rgb(var(--blue-rgb) / 0.62);
 }
 .film-frame-corner-a {
   top: 12px;
@@ -749,7 +749,7 @@
   border: 0;
   background: transparent;
   box-shadow: none;
-  color: #c0ebf7;
+  color: var(--link);
 }
 .film-aperture {
   display: block;
@@ -761,7 +761,7 @@
 }
 #eagle-film .eagle-film-play:is(:hover, :focus-visible) .eagle-film-playmark {
   background: transparent;
-  color: #c6edf8;
+  color: var(--link);
   box-shadow: none;
 }
 .eagle-film-play:is(:hover, :focus-visible) .film-aperture-ring {
@@ -811,13 +811,13 @@ html[data-motion="off"] .film-aperture-ring {
   }
 }
 #v40-root .eagle-film {
-  border-block: 1px solid #2bcee923;
+  border-block: 1px solid rgb(var(--blue-rgb) / 0.137);
 }
 #v40-root .eagle-film-inner {
   padding-block: 72px;
 }
 #v40-root .eagle-film-label {
-  color: #65d8f1;
+  color: var(--link);
   letter-spacing: 0.17em;
   font-size: 12px;
 }
@@ -873,7 +873,7 @@ html[data-motion="off"] .film-aperture-ring {
 #v40-root .eagle-film-playmark {
   width: 88px;
   height: 88px;
-  border: 1px solid #7edcf288;
+  border: 1px solid rgb(var(--blue-rgb) / 0.533);
   backdrop-filter: blur(8px);
 }
 .cinema-selection {
@@ -889,7 +889,7 @@ html[data-motion="off"] .film-aperture-ring {
   gap: 13px;
   min-width: 0;
   min-height: 74px;
-  border: 1px solid #2cd1ed3d;
+  border: 1px solid rgb(var(--blue-rgb) / 0.239);
   padding: 8px;
   background: #1d1d1d;
   color: #e3e3e3;
@@ -907,7 +907,7 @@ html[data-motion="off"] .film-aperture-ring {
 }
 .cinema-selection small {
   font: 12px var(--font-mono);
-  color: #49d5f0;
+  color: var(--link);
 }
 .cinema-selection strong {
   font: 500 12px/1.4 var(--font-body);
@@ -915,14 +915,14 @@ html[data-motion="off"] .film-aperture-ring {
 .cinema-selected-mark {
   margin-left: auto;
   padding-right: 7px;
-  color: #84ddf3;
+  color: var(--link);
   font: 12px var(--font-mono);
 }
 .cinema-selection button[aria-pressed="true"] {
-  border-color: #49d5f09c;
+  border-color: rgb(var(--blue-rgb) / 0.612);
   background: #303030;
-  color: #cdeff9;
-  box-shadow: inset 0 -2px #9de2f4;
+  color: var(--link);
+  box-shadow: inset 0 -2px var(--link);
 }
 .cinema-selection button:hover {
   border-color: #dedede78;
@@ -1037,7 +1037,7 @@ html[data-motion="off"] .film-aperture-ring {
   line-height: 1.03;
 }
 #v40-root .eagle-film-play {
-  border: 1px solid #1f9fb54d;
+  border: 1px solid rgb(var(--blue-rgb) / 0.302);
 }
 #v40-root .eagle-film-caption {
   padding: 18px 24px;
@@ -1050,10 +1050,10 @@ html[data-motion="off"] .film-aperture-ring {
 }
 #v40-root .cinema-selection button {
   border: 0;
-  border-block: 1px solid #1e9db338;
+  border-block: 1px solid rgb(var(--blue-rgb) / 0.22);
   background: transparent;
   padding: 14px 0;
-  color: #29c9e4;
+  color: var(--link);
 }
 #v40-root .cinema-selection button[aria-pressed="true"] {
   box-shadow: none;
@@ -1089,39 +1089,39 @@ html[data-motion="off"] .film-aperture-ring {
 }
 #v40-root .eagle-film-label,
 #v40-root .eagle-film-note {
-  color: #efbe69;
+  color: var(--platinum);
 }
 #v40-root .eagle-film-copy h2 {
   font: 700 clamp(32px, 3.7vw, 60px)/1.12 var(--font-display);
-  color: #f9edd7;
+  color: var(--pearl);
   letter-spacing: -0.045em;
 }
 #v40-root #eagle-film {
-  background: radial-gradient(ellipse at 75% 20%, #bd8b2512, transparent 65%), #080a0d;
+  background: radial-gradient(ellipse at 75% 20%, rgb(var(--platinum-rgb) / 0.071), transparent 65%), #080a0d;
 }
 #v40-root .eagle-film-play {
   border-radius: 3px;
-  border-color: #e7bb6c70;
+  border-color: rgb(var(--platinum-rgb) / 0.439);
   box-shadow:
     0 18px 70px #0008,
-    0 0 30px #57cce00c;
+    0 0 30px rgb(var(--blue-rgb) / 0.047);
 }
 #v40-root .eagle-film-copy .eagle-film-label,
 #v40-root .eagle-film-copy .eagle-film-note {
-  color: #f0cd8d;
+  color: var(--platinum);
 }
 #v40-root .eagle-film-playmark {
-  border-color: #ffda8d;
-  color: #fff0d3;
-  box-shadow: 0 0 65px #e9b65c2c;
+  border-color: var(--platinum);
+  color: var(--pearl);
+  box-shadow: 0 0 65px rgb(var(--platinum-rgb) / 0.173);
 }
 #v40-root .eagle-film-caption {
   background: #0a0e12;
 }
 #v40-root .cinema-selection button[aria-pressed="true"] {
-  border-color: #efc276;
-  color: #ffdda2;
-  background: #e9b65c10;
+  border-color: var(--platinum);
+  color: var(--platinum);
+  background: rgb(var(--platinum-rgb) / 0.063);
 }
 @media (max-width: 600px) {
   #v40-root .eagle-film-copy h2 {
@@ -1137,8 +1137,8 @@ html[data-motion="off"] .film-aperture-ring {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  border: 1px solid #cdf8f529;
-  background: linear-gradient(120deg, transparent 25%, #ddf6ff10 42%, transparent 56%);
+  border: 1px solid rgb(var(--blue-rgb) / 0.161);
+  background: linear-gradient(120deg, transparent 25%, rgb(var(--blue-rgb) / 0.063) 42%, transparent 56%);
 }
 
 .eagle-film-play {
